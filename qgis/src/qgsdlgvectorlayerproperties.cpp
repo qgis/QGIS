@@ -27,6 +27,9 @@
 #include <qlayout.h>
 #include <qmessagebox.h>
 #include <qspinbox.h>
+#include <qwidgetstack.h>
+#include <qpushbutton.h>
+#include <qwidget.h>
 
 #include "qgis.h"
 #include "qgsrect.h"
@@ -43,8 +46,6 @@
 #include "qgssimarenderer.h"
 #include "qgssimadialog.h"
 #include "qgslegenditem.h"
-#include <qwidgetstack.h>
-#include <qpushbutton.h>
 #include "qgssisydialog.h"
 #include "qgsgramadialog.h"
 #include "qgsgrasydialog.h"
@@ -122,8 +123,6 @@ bufferRenderer(layer->
   actionLayout->addWidget( actionDialog );
 
   QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, SLOT(alterLayerDialog(const QString &)));
-  QObject::connect(btnApply, SIGNAL(clicked()), this, SLOT(apply()));
-  QObject::connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
 
   //insert the renderer dialog of the vector layer into the widget stack
   widgetStackRenderers->addWidget(bufferDialog);
@@ -212,7 +211,69 @@ void QgsDlgVectorLayerProperties::setRendererDirty(bool enabled)
   rendererDirty = enabled;
 }
 
-void QgsDlgVectorLayerProperties::apply()
+
+QDialog *QgsDlgVectorLayerProperties::getBufferDialog()
+{
+  return bufferDialog;
+}
+
+QgsRenderer *QgsDlgVectorLayerProperties::getBufferRenderer()
+{
+  return bufferRenderer;
+}
+
+void QgsDlgVectorLayerProperties::setLegendType(QString type)
+{
+  legendtypecombobox->setCurrentText(tr(type));
+}
+
+void QgsDlgVectorLayerProperties::setDisplayField(QString name)
+{
+  displayFieldComboBox->setCurrentText(name);
+}
+
+void QgsDlgVectorLayerProperties::reset( void )
+{
+    actionDialog->init();
+    labelDialog->init();
+    labelCheckBox->setChecked(layer->labelOn());
+}
+//
+// methods reimplemented from qt designer base class
+//
+
+void QgsDlgVectorLayerProperties::pbnCancel_clicked()
+{
+ reject();
+}
+void QgsDlgVectorLayerProperties::btnHelp_clicked()
+{
+
+}
+void QgsDlgVectorLayerProperties::pbnOK_clicked()
+{
+  //make sure changes are applied
+  pbnApply_clicked(); 
+  //
+  if (rendererDirty)
+    {
+      widgetStackRenderers->removeWidget(bufferDialog);
+      delete bufferDialog;
+      delete bufferRenderer;
+      bufferDialog = layer->rendererDialog();
+      bufferRenderer = layer->renderer();
+      widgetStackRenderers->addWidget(bufferDialog);
+      widgetStackRenderers->raiseWidget(bufferDialog);
+      rendererDirty = false;
+      //restore the right name in the combobox
+      if(bufferRenderer)
+      {
+	  legendtypecombobox->setCurrentText(tr(bufferRenderer->name()));
+      }
+    }
+  reject();
+}
+void QgsDlgVectorLayerProperties::pbnApply_clicked()
 {
 
   // set up the scale based layer visibility stuff....
@@ -272,57 +333,4 @@ void QgsDlgVectorLayerProperties::apply()
   }
 
   rendererDirty = false;
-}
-
-void QgsDlgVectorLayerProperties::closeEvent(QCloseEvent* e)
-{
-    close();
-}
-
-void QgsDlgVectorLayerProperties::close()
-{
-  if (rendererDirty)
-    {
-      widgetStackRenderers->removeWidget(bufferDialog);
-      delete bufferDialog;
-      delete bufferRenderer;
-      bufferDialog = layer->rendererDialog();
-      bufferRenderer = layer->renderer();
-      widgetStackRenderers->addWidget(bufferDialog);
-      widgetStackRenderers->raiseWidget(bufferDialog);
-      rendererDirty = false;
-      //restore the right name in the combobox
-      if(bufferRenderer)
-      {
-	  legendtypecombobox->setCurrentText(tr(bufferRenderer->name()));
-      }
-    }
-  reject();
-}
-
-QDialog *QgsDlgVectorLayerProperties::getBufferDialog()
-{
-  return bufferDialog;
-}
-
-QgsRenderer *QgsDlgVectorLayerProperties::getBufferRenderer()
-{
-  return bufferRenderer;
-}
-
-void QgsDlgVectorLayerProperties::setLegendType(QString type)
-{
-  legendtypecombobox->setCurrentText(tr(type));
-}
-
-void QgsDlgVectorLayerProperties::setDisplayField(QString name)
-{
-  displayFieldComboBox->setCurrentText(name);
-}
-
-void QgsDlgVectorLayerProperties::reset( void )
-{
-    actionDialog->init();
-    labelDialog->init();
-    labelCheckBox->setChecked(layer->labelOn());
 }
