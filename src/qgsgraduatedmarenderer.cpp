@@ -299,3 +299,13 @@ bool QgsGraduatedMaRenderer::writeXML( QDomNode & layer_node, QDomDocument & doc
     }
     return returnvalue;
 }
+
+const std::list<QgsRenderItem*> QgsGraduatedMaRenderer::items() const
+{
+    std::list<QgsRenderItem*> list;
+    for(std::list<QgsRangeRenderItem*>::const_iterator iter=mItems.begin();iter!=mItems.end();++iter)
+    {
+	list.push_back(*iter);
+    }
+    return list;
+}

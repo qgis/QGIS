@@ -212,3 +212,13 @@ std::map<QString,QgsRenderItem*>& QgsUValMaRenderer::items()
 {
     return mEntries;
 }
+
+const std::list<QgsRenderItem*> QgsUValMaRenderer::items() const
+{
+    std::list<QgsRenderItem*> list;
+    for(std::map<QString,QgsRenderItem*>::const_iterator iter=mEntries.begin();iter!=mEntries.end();++iter)
+    {
+	list.push_back(iter->second);
+    }
+    return list;
+}

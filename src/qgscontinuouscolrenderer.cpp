@@ -416,3 +416,11 @@ bool QgsContinuousColRenderer::writeXML( QDomNode & layer_node, QDomDocument & d
     }
     
 }
+
+const std::list<QgsRenderItem*> QgsContinuousColRenderer::items() const
+{
+    std::list<QgsRenderItem*> list;
+    list.push_back(mMinimumItem);
+    list.push_back(mMaximumItem);
+    return list;
+}

@@ -58,6 +58,8 @@ class QgsSingleSymRenderer: public QgsRenderer
     virtual std::list<int> classificationAttributes();
     /**Returns the renderers name*/
     virtual QString name();
+    /**Return symbology items*/
+    const std::list<QgsRenderItem*> items() const;
  protected:
     QgsRenderItem* mItem;
 };
