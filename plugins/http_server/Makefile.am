@@ -10,7 +10,6 @@
 #
 # $Id$
 
-# Ganked from qgis/plugins/plugin_template/Makefile.am
 
 libdir    = ${prefix}/lib/qgis
 pkglibdir = ${libdir}
@@ -43,10 +42,7 @@ plugin_UISOURCES = $(plugin_UI:.ui=.uic.cpp)
 plugin_UIMOC = $(plugin_UI:.ui=.moc.uic.cpp)
 
 ## MOC files
-plugin_MOC = plugin.moc.cpp \
-	     plugingui.moc.cpp \
-	     pluginguibase.moc.cpp \
-	     httpdaemon.moc.cpp
+plugin_MOC = plugin.moc.cpp plugingui.moc.cpp httpdaemon.moc.cpp
 
 
 libhttpserverplugin_la_SOURCES =  plugin.cpp \
@@ -67,7 +63,7 @@ libhttpserverplugin_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(plugin_UI) icon_om.xpm
+EXTRA_DIST = $(plugin_UI) icon.xpm
 
 
 

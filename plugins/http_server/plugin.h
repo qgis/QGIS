@@ -19,11 +19,10 @@ email                : tim@linfiniti.com
 /*  $Id$ */
 #ifndef PLUGIN
 #define PLUGIN
+#include <qwidget.h>
+
 #include <qgisplugin.h>
 #include <qgisapp.h>
-#include <qwidget.h>
-#include <qgisapp.h>
-#include <qobject.h>
 // non qt includes
 #include "httpdaemon.h"
 /**

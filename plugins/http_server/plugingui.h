@@ -12,7 +12,7 @@
 #ifndef PLUGINGUI_H
 #define PLUGINGUI_H
 
-#include <pluginguibase.h>
+#include <pluginguibase.uic.h>
 #include <qstring.h>
 /**
 @author Tim Sutton
