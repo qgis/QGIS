@@ -1,9 +1,9 @@
 /***************************************************************************
                           qgsmarkersymbol.h  -  description
                              -------------------
-    begin                : Sat Jun 22 2002
-    copyright            : (C) 2002 by Gary E.Sherman
-    email                : sherman at mrcc.com
+    begin                : March 2004
+    copyright            : (C) 2004 by Marco Hugentobler
+    email                : mhugent@geo.unizh.ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -18,27 +18,53 @@
 
 #ifndef QGSMARKERSYMBOL_H
 #define QGSMARKERSYMBOL_H
-#include "qgssymbol.h"
-class QString;
 
-/*! \class QgsMarkerSymbol
- * \brief Symbol for displaying markers (points)
- */
-class QgsMarkerSymbol : public QgsSymbol{
+#include "qgssymbol.h"
+#include <qpicture.h>
+
+/**Representation of a marker symbol*/
+class QgsMarkerSymbol : public QgsSymbol
+{
  public:
-    //! Constructor
+    /**Constructor*/
     QgsMarkerSymbol();
-    //! Destructor
+    /**Destructor*/
     ~QgsMarkerSymbol();
-          /*! Comparison operator
-      @return True if symbols are equal
-    */
-    bool operator==(const QgsMarkerSymbol &r1);
-    /*! Assignment operator
-     * @param r1 QgsMarkerSymbol to assign from
-     */
-    QgsMarkerSymbol & operator=(const QgsMarkerSymbol &r1);
- private:
-  
+    /**Renders the symbol at position x/y scaled by mScaleFactor
+       @param x the x-coordinate of the painting position
+       @param y the y-coordinate of the painting position
+       @param p the painter object used for rendering*/
+    void render(int x, int y, QPainter* p);
+    /**Loads the QPainter commands from an svg file
+       @param svgpath the pathe to the svg file which stores the picture*/
+    void setPicture(const QString& svgpath);
+    /**Sets the scale factor*/
+    void setScaleFactor(double factor);
+ protected:
+    /**QPicture object storing the QPainter commands*/
+    QPicture mPicture;
+    /**Scale factor. 1 keeps the size as it is, 2 doubles the size, etc.*/
+    double mScaleFactor;
 };
-#endif // QGSMARKERSYMBOL_H
+
+inline QgsMarkerSymbol::QgsMarkerSymbol(): QgsSymbol(), mScaleFactor(1)
+{
+
+}
+
+inline QgsMarkerSymbol::~QgsMarkerSymbol()
+{
+
+}
+
+inline void QgsMarkerSymbol::setPicture(const QString& svgpath)
+{
+    mPicture.load(svgpath,"svg");
+}
+
+inline void QgsMarkerSymbol::setScaleFactor(double factor)
+{
+    mScaleFactor=factor;
+}
+
+#endif

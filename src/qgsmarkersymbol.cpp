@@ -1,10 +1,9 @@
 /***************************************************************************
                           qgsmarkersymbol.cpp  -  description
                              -------------------
-    begin                : Sun Aug 11 2002
-    copyright            : (C) 2002 by Gary E.Sherman
-    email                : sherman at mrcc dot com
-       Romans 3:23=>Romans 6:23=>Romans 5:8=>Romans 10:9,10=>Romans 12
+    begin                : March 2004
+    copyright            : (C) 2004 by Marco Hugentobler
+    email                : mhugent@geo.unizh.ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,12 +14,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
-#include "qgsmarkersymbol.h"
-QgsMarkerSymbol::QgsMarkerSymbol()
-{
-}
+/* $Id */
 
-QgsMarkerSymbol::~QgsMarkerSymbol()
+#include "qgsmarkersymbol.h"
+#include "qpainter.h"
+
+void QgsMarkerSymbol::render(int x, int y, QPainter* p)
 {
+    if(p)
+    {
+	p->scale(mScaleFactor,mScaleFactor);
+	p->drawPicture(x*mScaleFactor,y*mScaleFactor,mPicture);//scale the picture but keep the coordinates constant.todo: write the code such that x,y is in the midpoint of the image
+	p->resetXForm();
+    }
 }
+    
+
