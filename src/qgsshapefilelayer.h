@@ -20,14 +20,17 @@
 
 #include <qgsmaplayer.h>
 
-/**
-  *@author Gary E.Sherman
-  */
+/*! \class QgsShapeFileLayer
+ * \brief Shapefile layer
+ */
 
 class QgsShapeFileLayer : public QgsMapLayer  {
 public: 
+    //! Constructor
 	QgsShapeFileLayer();
+	//! Destructor
 	~QgsShapeFileLayer();
+       
 enum SHAPETYPE {
 	Point,
 	Line,

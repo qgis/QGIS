@@ -4,7 +4,7 @@
     begin                : Fri Jun 28 2002
     copyright            : (C) 2002 by Gary E.Sherman
     email                : sherman@mrcc.com
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -19,15 +19,16 @@
 #define QGSRASTERLAYER_H
 
 #include "qgsmaplayer.h"
-
-/**
-  *@author Gary E.Sherman
-  */
+/*! \class QgsRasterLayer
+ * \brief Raster layer class
+ */
 
 class QgsRasterLayer : public QgsMapLayer  {
-public: 
-	QgsRasterLayer();
-	~QgsRasterLayer();
+ public: 
+    //! Constructor
+    QgsRasterLayer();
+    //! Destructor
+    ~QgsRasterLayer();
 };
 
 #endif

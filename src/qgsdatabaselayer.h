@@ -20,19 +20,32 @@
 class QString;
 #include "qgsmaplayer.h"
 
-/**
-  *@author Gary E.Sherman
-  */
-
+/*! \class QgsDatabaseLayer
+ * \brief A map layer based on data stored in a relational database.
+ *
+ * At present Qgis supports PostGIS "layers" in PostgresQL. 
+ */
 class QgsDatabaseLayer : public QgsMapLayer  {
 public: 
+    /*! Constructor
+     * @param conninfo Pointer to the connection information required to
+     * connect to PostgresQl
+     *@param table Name of the table in the database that this layer
+     * represents
+     */
 	QgsDatabaseLayer(const char *conninfo=0, QString table=QString::null);
+	//! Destructor
 	~QgsDatabaseLayer();
  private:
+	//! Calculates extent of the layer using SQL and PostGIS functions
 	void calculateExtent();
-	QString type; // maps to one of the OGIS Simple geometry types
+	//! Type geometry contained in the layer. This corresponds to one of the OGIS Simple geometry types
+	QString type; 
+	//! Name of the database containing the layer (table)
 	QString database;
+	//! Name of the table containing the features
 	QString tableName;
+	//! Name of the columen in the table that contains the geometry for the features
 	QString geometryColumn;
 	
 	

@@ -20,43 +20,66 @@
 
 #include <qwidget.h>
 #include "qgsdatasource.h"
-/**
- *@author Gary E.Sherman
- */
+
 class QRect;
+
+/** \class QgsMapLayer
+ * \brief Base class for all map layer types.
+ * This class is the base class for all map layer types (shapefile,
+ * raster, database). 
+ */
 class QgsMapLayer : public QgsDataSource  {
 
-	public: 
+ public: 
+    /*! Constructor
+     * @param type Type of layer as defined in LAYERS enum
+     * @param lyrname Display Name of the layer
+     */
     QgsMapLayer(int type=0, QString lyrname=QString::null );
+    //! Destructor
     virtual ~QgsMapLayer();
-  /** Read property of int layerType. */
-  const int type();
-  /** Write property of QString layerName. */
-  void setlayerName( const QString& _newVal);
-  /** Read property of QString layerName. */
-  const QString name();
-  virtual void calculateExtent();
-  const QRect extent();
+    /*! Get the type of the layer
+     * @return Integer matching a value in the LAYERS enum
+     */
+    const int type();
+    /*! Set the name of the layer
+      # @param name New name for the layer
+    */
+    void setlayerName( const QString& name);
+    /*! Get the name of the layer
+     * @return the layer name
+     */
+    const QString name();
+    /*! Virtual function to calculate the extent of the current layer.
+     * This function must be overridden in all child classes and implemented
+     * based on the layer type
+     */
+    virtual void calculateExtent();
+    /*! Return the extent of the layer as a QRect
+     */
+    const QRect extent();
 
 
-public: // Public attributes
-enum LAYERS {
+ public: // Public attributes
+    //! Layers enum defining the types of layers that can be added to a map
+    enum LAYERS {
 	VECTOR,
 	RASTER,
-DATABASE
-}  ;
+	DATABASE
+    }  ;
  protected:
- QRect layerExtent; 
-  //! Position in the map stack 
-  int zpos;
-private: // Private attributes
-  /** Name of the layer - used for display  */
-  QString layerName;
-  /** Type of the layer (eg. vector, raster, database  */
-  int layerType;
+    //! Extent of the layer
+    QRect layerExtent; 
+    //! Position in the map stack 
+    int zpos;
+ private: // Private attributes
+    /** Name of the layer - used for display  */
+    QString layerName;
+    /** Type of the layer (eg. vector, raster, database  */
+    int layerType;
 
-  //! Tag for embedding additional information
-  QString tag;
+    //! Tag for embedding additional information
+    QString tag;
  
 };
 

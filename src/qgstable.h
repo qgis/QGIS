@@ -20,13 +20,16 @@
 
 #include <qgsdatasource.h>
 
-/**
-  *@author Gary E.Sherman
-  */
+/*! \class QgsTable
+ * \brief Class to represent an attribute table related
+ * to a map layer of any type
+ */
 
 class QgsTable : public QgsDataSource  {
 public: 
+    //! Constructor
 	QgsTable();
+	//! Destructor
 	~QgsTable();
 };
 

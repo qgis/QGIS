@@ -22,29 +22,37 @@ class QRect;
 class QCanvasView;
 class QStringList;
 #include "qgisappbase.h"
-/**
-  *@author Gary E.Sherman
-  */
-class QgsMapCanvas;
 
+class QgsMapCanvas;
+/*! \class QgisApp
+ * \brief Main window for the Qgis application
+ */
 class QgisApp : public QgisAppBase  {
 public: 
 	QgisApp(QWidget *parent=0, const char * name=0, WFlags fl = WType_TopLevel );
 	
 	~QgisApp();
 	//public slots:
+	//! Add a layer to the map
 	void addLayer();
+	//! Exit Qgis
 	void fileExit();
+	//! Zoom out
  	void zoomOut();
+	//! Zoom int
   	void zoomIn();
+	//! Read Well Known Binary stream from PostGIS
 	void readWKB(const char *, QStringList tables);
+	//! Draw a point on the map canvas
 	void drawPoint(double x, double y);
 private:
-	//QCanvasView *cv;
-//QCanvas *canvas;
+	//! Map canvase 
 QgsMapCanvas *mapCanvas;
+//! Table of contents (legend) for the map
 QWidget *mapToc;
+//! scale factor
  double scaleFactor;
+ //! Current map window extent in real-world coordinates
  QRect *mapWindow;
 
 };

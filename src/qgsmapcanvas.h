@@ -22,18 +22,26 @@
 
 class QgsMapLayer;
 
-/**Map canvas class for displaying all GIS data types
-  *@author Gary E.Sherman
-  */
+/*! \class QgsMapCanvas
+ * \brief Map canvas class for displaying all GIS data types.
+ */
 
 class QgsMapCanvas : public QWidget  {
    Q_OBJECT
 public: 
+   //! Constructor
 	QgsMapCanvas(QWidget *parent=0, const char *name=0);
+   //! Destructor
 	~QgsMapCanvas();
+	/*! Adds a layer to the map canvas.
+	 * @param lyr Pointer to a layer derived from QgsMapLayer
+	 */
 	void addLayer(QgsMapLayer *lyr);
+	/*! Draw the map using the symbology set for each layer
+	 */
 	void render();
 private:
+
 //! map containing the layers by name
 	map<QString,QgsMapLayer> layers;
 };
