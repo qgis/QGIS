@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.93 2004/05/25 17:18:41 timlinux Exp
+ChangeLog,v 1.94 2004/05/25 17:54:10 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-25 [larsl] 0.2.0devel36
+** Fixed some more instances of the same bug in raster layer
 
 2004-05-25 [ts] 0.2.0devel35
 Disable overview widget for release. Minor bugfix in rasterlayer picker up by
