@@ -63,7 +63,7 @@ void CDPWizardBase::pbtnTotalSolarRad_clicked()
 
 void CDPWizardBase::pbtnOutputPath_clicked()
 {
-  QString myFileNameQString = QFileDialog::getExistingDirectory(QString("/home/aps02ts/tmp/"),0, QString("select dir"), QString("select dir"), true, true);
+    QString myFileNameQString = QFileDialog::getExistingDirectory(QString::null,0, QString("select dir"), QString("select dir"), true, true);
   leOutputPath->setText(myFileNameQString);
 }
 

@@ -225,6 +225,9 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
     //update the output file format summary box
     leInputFormatSummary->setText(cboFileType->currentText());
 
+    //update the file output path box
+    leOutputPathSummary->setText(leOutputPath->text());
+    
     txtInputFileSummary->clear();
     txtInputFileSummary->append(leMeanTemp->text());
     txtInputFileSummary->append(leMinTemp->text());
@@ -249,92 +252,23 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
     //                                                         //
     /////////////////////////////////////////////////////////////
 
-    //
     // get the first year in file value
-    //
-    QSpinBox *myQSpinBox = (QSpinBox *) this->child("spinFirstYearInFile");
-    if (myQSpinBox)
-    {
-      myFirstYearInFileInt = myQSpinBox->value();
-      climateDataProcessor->setFileStartYearInt(myFirstYearInFileInt);
-    }
-    else
-    {
-      std::cout << "Could not locate spinFirstYearInFile!" << std::endl;
-    }
-
-    //
+    climateDataProcessor->setFileStartYearInt(spinFirstYearInFile->value());
+    
     // get the first year in file to be processed in this job
-    //
-    myQSpinBox = (QSpinBox *) this->child("spinFirstYearToCalc");
-    if (myQSpinBox)
-    {
-      myJobStartYearInt = myQSpinBox->value();
-      climateDataProcessor->setJobStartYearInt(myJobStartYearInt);
-    }
-    else
-    {
-      std::cout << "Could not locate spinFirstYearToCalc!" << std::endl;
-    }
-
-    //
+    climateDataProcessor->setJobStartYearInt(spinFirstYearToCalc->value());
+    
     // get the last year in file to be processed in this job
-    //
-    myQSpinBox = (QSpinBox *) this->child("spinLastYearToCalc");
-    if (myQSpinBox)
-    {
-      myJobEndYearInt = myQSpinBox->value();
-      climateDataProcessor->setJobEndYearInt(myJobEndYearInt);
-    }
-    else
-    {
-      std::cout << "Could not locate spinLastYearToCalc!" << std::endl;
-    }
-
-    //
-    // get the input file type
-    //
-    QComboBox *myQComboBox = (QComboBox *) this->child("cboFileType");
-    if (myQComboBox)
-    {
-      myQString = myQComboBox->currentText();
-      myInputFileTypeString =  myQString.latin1();
-      climateDataProcessor->setInputFileType(myInputFileTypeString);
-    }
-    else
-    {
-      std::cout << "Could not locate cboFileType!" << std::endl;
-    }
-
-    //
-    // get the ouput file type
-    //
-    myQComboBox = (QComboBox *) this->child("cboOutputFormat");
-    if (myQComboBox)
-    {
-      myQString = myQComboBox->currentText();
-      myInputFileTypeString =  myQString.latin1();
-      climateDataProcessor->setOutputFileType(myInputFileTypeString);
-    }
-    else
-    {
-      std::cout << "Could not locate cboOutputFormat!" << std::endl;
-    }
-
-    //
+    climateDataProcessor->setJobEndYearInt(spinLastYearToCalc->value());
+    
     // get the ouput file path
-    //
-    QLineEdit * myQLineEdit = (QLineEdit *) this->child("leOutputPath");
-    if (myQLineEdit)
-    {
-      myQString = myQLineEdit->text();
-      myOutputPathString =  myQString.latin1();
-      climateDataProcessor->setOutputFilePathString(myOutputPathString);
-    }
-    else
-    {
-      std::cout << "Could not locate cboOutputFormat!" << std::endl;
-    }
+    climateDataProcessor->setOutputFilePathString(leOutputPath->text());
+       
+    // get the input file type 
+    climateDataProcessor->setInputFileType(cboFileType->currentText());
+    
+    // get the ouput file type
+    climateDataProcessor->setOutputFileType(cboOutputFormat->currentText());
 
     //
     // find out if datafiles are in series (discrete files for each month)
@@ -343,25 +277,18 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
     //' to use the isVisibleTo(parent) property, with a reference to the wzard page as parent
     //
     QWidget *  myPageWidget = page(1);
-    QLabel *myLabel = (QLabel *) this->child("lblFileSeriesNote");
-    if (myLabel)
+    std::cout << "\nMyLabel visible? "<<   lblFileSeriesNote->isVisible() << std::endl;
+    if (lblFileSeriesNote->isVisibleTo(myPageWidget))
     {
-      cout << "\nMyLabel visible? "<<   myLabel->isVisible() << endl;
-      if (myLabel->isVisibleTo(myPageWidget))
-      {
-        cout << "Setting files in series flag to true" << endl;
-        climateDataProcessor->setFilesInSeriesFlag(true);
-      }
-      else
-      {
-        cout << "Setting files in series flag to false" << endl;
-        climateDataProcessor->setFilesInSeriesFlag(false);
-      }
+      std::cout << "Setting files in series flag to true" << std::endl;
+      climateDataProcessor->setFilesInSeriesFlag(true);
     }
     else
     {
-      std::cout << "Could not locate lblFileSeriesNote!" << std::endl;
+      std::cout << "Setting files in series flag to false" << std::endl;
+      climateDataProcessor->setFilesInSeriesFlag(false);
     }
+
 
     //setup the climate data processor's filereaders
     climateDataProcessor->makeFileGroups (1);    //hardcoding year 1 for now
