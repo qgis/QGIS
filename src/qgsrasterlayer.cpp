@@ -421,6 +421,7 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
   if ( ! baseName.isEmpty() )   // XXX shouldn't this happen in parent?
   {
       QString layerTitle = baseName;
+      std::cout << "layertitle length" << layerTitle.length() << std::endl; 
       layerTitle = layerTitle.left(1).upper() + layerTitle.mid(1);
       setLayerName(layerTitle);
   }
@@ -523,7 +524,7 @@ QgsRasterLayer::readFile( QString const & fileName )
         //myRasterBandStats.bandName=QString::number(i) + " : " + myColorQString;
         myRasterBandStats.bandNoInt = i;
         myRasterBandStats.statsGatheredFlag = false;
-
+        myRasterBandStats.histogramVector = new RasterBandStats::HistogramVector();
         // Read color table
         readColorTable ( myGdalBand, &(myRasterBandStats.colorTable) );
 
@@ -613,6 +614,9 @@ void QgsRasterLayer::showLayerProperties()
   if ( ! mLayerProperties )
   {
     mLayerProperties = new QgsRasterLayerProperties(this);
+#ifdef QGISDEBUG
+  std::cout << "Creating new raster properties dialog instance" << std::endl;
+#endif
   }
 
   mLayerProperties->sync();
@@ -1908,7 +1912,7 @@ const bool QgsRasterLayer::hasStats(int theBandNoInt)
   <li>myRasterBandStats.meanDouble
   <li>myRasterBandStats.sumSqrDevDouble
   <li>myRasterBandStats.stdDevDouble
-  <li>myRasterBandStats.histogram
+  <li>myRasterBandStats.colorTable
   </ul>
 
   @seealso RasterBandStats
@@ -1953,8 +1957,6 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
 
-  //calculate the histogram for this band
-  myGdalBand->GetHistogram( -0.5, 255.5, 256, myRasterBandStats.histogram, FALSE, FALSE, GDALDummyProgress, NULL );
   
   QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
 
@@ -2249,13 +2251,20 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 #endif
 
   CPLFree(myData);
+  
   myRasterBandStats.statsGatheredFlag = true;
 
+#ifdef QGISDEBUG
+  std::cout << "adding stats to stats collection at position " << theBandNoInt - 1<< std::endl;
+#endif
   //add this band to the class stats map
   rasterStatsVector[theBandNoInt - 1] = myRasterBandStats;
   emit setProgress(rasterYDimInt, rasterYDimInt); //reset progress
   QApplication::restoreOverrideCursor(); //restore the cursor
 
+#ifdef QGISDEBUG
+  std::cout << "Stats collection completed returning " << std::endl;
+#endif
   return myRasterBandStats;
 
 } // QgsRasterLayer::getRasterBandStats
@@ -2825,10 +2834,11 @@ QString QgsRasterLayer::getMetadata()
   }
   myMetadataQString += "</td></tr>";
 
+  //layer coordinate system
   if (gdalDataset->GetProjectionRef() != NULL)
   {
     myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr("Projection: ");
+    myMetadataQString += tr("Layer Spatial Reference System: ");
     myMetadataQString += "</td></tr>";
     myMetadataQString += "<tr><td bgcolor=\"white\">";
     //note we inject some white space so the projection wraps better in the <td>
@@ -2837,6 +2847,17 @@ QString QgsRasterLayer::getMetadata()
     myMetadataQString += myProjectionQString ;
     myMetadataQString += "</td></tr>";
   }
+  // output coordinate system
+  QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT","");
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Project Spatial Reference System: ");
+  myMetadataQString += "</td></tr>";
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  //note we inject some white space so the projection wraps better in the <td>
+  myDestWKT = myDestWKT.replace(QRegExp("\"")," \"");
+  myMetadataQString += myDestWKT ;
+  myMetadataQString += "</td></tr>";
+  
   if (gdalDataset->GetGeoTransform(adfGeoTransform) == CE_None)
   {
     myMetadataQString += "<tr><td bgcolor=\"gray\">";
@@ -3586,3 +3607,31 @@ void QgsRasterLayer::identify(QgsRect * r)
 } // void QgsRasterLayer::identify(QgsRect * r)
 
 
+void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt)
+{
+
+  GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
+  RasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
+  //calculate the histogram for this band
+  //we assume that it only needs to be calculated if the lenght of the histogram 
+  //vector is not equal to the number of bins 
+  //i.e if the histogram has never previously been generated or the user has
+  //selected a new number of bins.
+  if (myRasterBandStats.histogramVector->size()!=theBinCountInt)
+  {
+    myRasterBandStats.histogramVector->clear();
+    int myHistogramArray[theBinCountInt];
+    myGdalBand->GetHistogram( -0.5, theBinCountInt-.5, theBinCountInt, myHistogramArray , FALSE, TRUE, GDALDummyProgress, NULL );
+    for (int myBin = 0; myBin <theBinCountInt; myBin++)
+    {
+      myRasterBandStats.histogramVector->push_back( myHistogramArray[myBin]);
+#ifdef QGISDEBUG
+      std::cout << "Added " <<  myHistogramArray[myBin] << " to histogram vector" << std::endl;
+#endif
+    }
+
+  }
+#ifdef QGISDEBUG
+      std::cout << ">>>>>>>>>>> Histogram vector now contains " <<  myRasterBandStats.histogramVector->size() << " elements" << std::endl;
+#endif
+}
