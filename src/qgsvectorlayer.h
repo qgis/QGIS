@@ -93,11 +93,8 @@ class QgsVectorLayer : public QgsMapLayer
 
   QgsVectorDataProvider * getDataProvider();
 
-  /** \brief Query gdal to find out the WKT projection string for this layer. This implements the virtual method of the same name defined in QgsMapLayer*/
-  QString getProjectionWKT() 
-  { 
-  //delegate to data provider...
-  };
+  /** \brief Query data provider to find out the WKT projection string for this layer. This implements the virtual method of the same name defined in QgsMapLayer*/
+  QString getProjectionWKT(); 
     
   QgsLabel *label();
 

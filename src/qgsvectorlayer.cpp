@@ -73,7 +73,7 @@
 #include "qgsrect.h"
 #include "qgslabelattributes.h"
 #include "qgslabel.h"
-
+#include "qgscoordinatetransform.h"
 //#include "wkbheader.h"
 
 #ifdef TESTPROVIDERLIB
@@ -105,9 +105,27 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! providerKey.isEmpty() )
   {
-      setDataProvider( providerKey );
+      setDataProvider( providerKey );         
   }
-
+  //
+  // Get the layers project info and set up the QgsCoordinateTransform for this layer
+  //
+  QString mySourceWKT = getProjectionWKT();
+  //hard coding to geo/wgs84 for now
+  QString myDestWKT =     "GEOGCS[\"WGS 84\", "
+    "  DATUM[\"WGS_1984\", "
+    "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
+    "      AUTHORITY[\"EPSG\",7030]], "
+    "    TOWGS84[0,0,0,0,0,0,0], "
+    "    AUTHORITY[\"EPSG\",6326]], "
+    "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
+    "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
+    "  AXIS[\"Lat\",NORTH], "
+    "  AXIS[\"Long\",EAST], "
+    "  AUTHORITY[\"EPSG\",4326]]";
+  mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
+  
+  
   //draw the selected features in yellow
   selectionColor.setRgb(255, 255, 0);
 
@@ -161,6 +179,18 @@ QgsVectorLayer::~QgsVectorLayer()
   delete popMenu;
   // delete the provider lib pointer
   delete myLib;
+}
+QString QgsVectorLayer::getProjectionWKT()
+{
+  //delegate to the provider
+  if (valid)
+  {
+    return dataProvider->getProjectionWKT();
+  }
+  else
+  {
+    return NULL;
+  }
 }
 
 QString QgsVectorLayer::providerType()
@@ -256,7 +286,7 @@ void QgsVectorLayer::setDisplayField(QString fldName)
 // NOTE this is a temporary method added by Tim to prevent label clipping
 // which was occurring when labeller was called in the main draw loop
 // This method will probably be removed again in the near future!
-void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf, QPaintDevice* dst)
+void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst)
 {
   if ( /*1 == 1 */ m_renderer)
   {
@@ -289,7 +319,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
           if(mDeleted.find(fet->featureId())==mDeleted.end())//don't render labels of deleted features
           {
               bool sel=mSelected.find(fet->featureId()) != mSelected.end();
-              mLabel->renderLabel ( p, viewExtent, cXf, dst, fet, sel);
+              mLabel->renderLabel ( p, viewExtent, theMapToPixelTransform, dst, fet, sel);
           }
       }
       delete fet;
@@ -300,7 +330,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
     for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
     {
         bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
-        mLabel->renderLabel ( p, viewExtent, cXf, dst, *it, sel);
+        mLabel->renderLabel ( p, viewExtent, theMapToPixelTransform, dst, *it, sel);
     }
 
 
@@ -313,7 +343,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
   }
 }
 
-void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf, QPaintDevice* dst)
+void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst)
 {
     if ( /*1 == 1 */ m_renderer)
     {
@@ -392,7 +422,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cX
                     bool sel=mSelected.find(fet->featureId()) != mSelected.end();
                     m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel);
 
-                    drawFeature(p,fet,cXf,&marker, markerScaleFactor);
+                    drawFeature(p,fet,theMapToPixelTransform,&marker, markerScaleFactor);
                     ++featureCount;
                     delete fet;
                 }
@@ -403,7 +433,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cX
         {
             bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
             m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel);
-            drawFeature(p,*it,cXf,&marker,markerScaleFactor);
+            drawFeature(p,*it,theMapToPixelTransform,&marker,markerScaleFactor);
         }
 
 #ifdef QGISDEBUG
@@ -1884,7 +1914,7 @@ bool QgsVectorLayer::rollBack()
     return true;
 }
 
-void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPicture* marker, double markerScaleFactor)
+void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * theMapToPixelTransform, QPicture* marker, double markerScaleFactor)
 {
   unsigned char *feature;
   bool attributesneeded = m_renderer->needsAttributes();
@@ -1908,7 +1938,10 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * c
           //    std::cout << "transforming point\n";
           pt.setX(*x);
           pt.setY(*y);
-          cXf->transform(&pt);
+	  //reproject the point to the map coordinate system
+	  pt=mCoordinateTransform->transform(pt);
+	  //transform from projected coordinate system to pixel position on map canvas
+          theMapToPixelTransform->transform(&pt);
           //std::cout << "drawing marker for feature " << featureCount << "\n";
           p->drawRect(static_cast<int>(pt.x()), static_cast<int>(pt.y()), 5, 5);
           p->scale(markerScaleFactor,markerScaleFactor);
@@ -1938,7 +1971,10 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * c
               // transform the point
               pt.setX(*x);
               pt.setY(*y);
-              cXf->transform(&pt);
+	      //reproject the point to the map coordinate system
+	      pt=mCoordinateTransform->transform(pt);
+	      //transform from projected coordinate system to pixel position on map canvas
+              theMapToPixelTransform->transform(&pt);
               if (idx == 0)
                   p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
               else
@@ -1971,7 +2007,10 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * c
                   // transform the point
                   pt.setX(*x);
                   pt.setY(*y);
-                  cXf->transform(&pt);
+                  //reproject the point to the map coordinate system
+                  pt=mCoordinateTransform->transform(pt);
+                  //transform from projected coordinate system to pixel position on map canvas
+                  theMapToPixelTransform->transform(&pt);
                   if (idx == 0)
                       p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
                   else
@@ -2026,7 +2065,10 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * c
                   ptr += sizeof(double);
                   pt.setX(*x);
                   pt.setY(*y);
-                  cXf->transform(&pt);
+                  //reproject the point to the map coordinate system
+                  pt=mCoordinateTransform->transform(pt);
+                  //transform from projected coordinate system to pixel position on map canvas
+                  theMapToPixelTransform->transform(&pt);
                   pa->setPoint(pdx++, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
               }
               if ( idx == 0 ) { // remember last outer ring point
@@ -2091,7 +2133,10 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * c
 #endif
                       pt.setX(*x);
                       pt.setY(*y);
-                      cXf->transform(&pt);
+	              //reproject the point to the map coordinate system
+	              pt=mCoordinateTransform->transform(pt);
+	              //transform from projected coordinate system to pixel position on map canvas
+                      theMapToPixelTransform->transform(&pt);
                       pa->setPoint(jdx, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
                   }
                   // draw the ring

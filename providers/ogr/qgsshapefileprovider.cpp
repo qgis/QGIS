@@ -130,6 +130,16 @@ QgsShapeFileProvider::~QgsShapeFileProvider()
     delete geometryFactory;
     delete wktReader;
 }
+QString QgsShapeFileProvider::getProjectionWKT()
+{ 
+  //TODO add some decent behaviour here for when no spatial ref sys has been defined for a layer!
+  char    *pszWKT = NULL;
+  ogrLayer->GetSpatialRef()->exportToWkt( &pszWKT );
+  QString myWKTString = QString(pszWKT);
+  OGRFree(pszWKT);  
+  return myWKTString;
+}
+
 
 /**
  * Get the first feature resutling from a select operation

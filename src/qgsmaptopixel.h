@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
-#ifndef QGSCOORDINATETRANSFORM_H
-#define QGSCOORDINATETRANSFORM_H
+#ifndef QGSMAPTOPIXEL
+#define QGSMAPTOPIXEL
 
 #include "qgspoint.h"
 class QgsPoint;
@@ -127,4 +127,4 @@ inline void QgsMapToPixel::transform(QgsPoint* p)
     p->setY(yMax-((p->y() - yMin)) / mapUnitsPerPixel);
 }
 
-#endif // QGSCOORDINATETRANSFORM_H
+#endif // QGSMAPTOPIXEL
