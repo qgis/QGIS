@@ -330,11 +330,15 @@ void QgsContinuousColRenderer::writeXML(std::ofstream& xml)
     QgsSymbol *lsymbol = lowestitem->getSymbol();
     xml << "\t\t\t<lowestitem>\n";
     xml << "\t\t\t\t<renderitem>\n";
-    xml << "\t\t\t\t<value>" + lowestitem->value() + "</value>\n";
+    xml << "\t\t\t\t<value>" << lowestitem->value().ascii() << "</value>\n";
     xml << "\t\t\t\t\t<symbol>\n";
-    xml << "\t\t\t\t\t\t<outlinecolor red=\"" + QString::number(lsymbol->pen().color().red()) + "\" green=\"" +
-  QString::number(lsymbol->pen().color().green()) + "\" blue=\"" + QString::number(lsymbol->pen().color().blue()) +
-  "\" />\n";
+    xml << "\t\t\t\t\t\t<outlinecolor red=\"" 
+      << QString::number(lsymbol->pen().color().red()).ascii() 
+      << "\" green=\"" 
+      << QString::number(lsymbol->pen().color().green()).ascii()
+      <<  "\" blue=\"" 
+      << QString::number(lsymbol->pen().color().blue()).ascii() 
+      << "\" />\n";
     xml << "\t\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(lsymbol->pen().style()) +
   "</outlinestyle>\n";
     xml << "\t\t\t\t\t\t<outlinewidth>" + QString::number(lsymbol->pen().width()) + "</outlinewidth>\n";

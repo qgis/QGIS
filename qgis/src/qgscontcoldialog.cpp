@@ -31,6 +31,8 @@
 #include "qgsdataprovider.h"
 #include "qgsfield.h"
 #include <qspinbox.h>
+#include <qtoolbutton.h>
+#include <qlabel.h>
 
 QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(), mVectorLayer(layer)
 {
@@ -38,8 +40,8 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(
     qWarning("constructor QgsContColDialog");
 #endif
 
-    QObject::connect(mincolorbutton, SIGNAL(clicked()), this, SLOT(selectMinimumColor()));
-    QObject::connect(maxcolorbutton, SIGNAL(clicked()), this, SLOT(selectMaximumColor()));
+    QObject::connect(btnMinValue, SIGNAL(clicked()), this, SLOT(selectMinimumColor()));
+    QObject::connect(btnMaxValue, SIGNAL(clicked()), this, SLOT(selectMaximumColor()));
 
     //find out the numerical fields of mVectorLayer
     QgsDataProvider *provider;
@@ -89,13 +91,13 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer):QgsContColDialogBase(
 	QgsRenderItem *maxitem = renderer->maximumItem();
 	if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
         {
-	    mincolorbutton->setPaletteBackgroundColor(minitem->getSymbol()->pen().color());
-	    maxcolorbutton->setPaletteBackgroundColor(maxitem->getSymbol()->pen().color());
+	    lblMinValue->setPaletteBackgroundColor(minitem->getSymbol()->pen().color());
+	    lblMaxValue->setPaletteBackgroundColor(maxitem->getSymbol()->pen().color());
 	} 
 	else
         {
-	    mincolorbutton->setPaletteBackgroundColor(minitem->getSymbol()->brush().color());
-	    maxcolorbutton->setPaletteBackgroundColor(maxitem->getSymbol()->brush().color());
+	    lblMinValue->setPaletteBackgroundColor(minitem->getSymbol()->brush().color());
+	    lblMaxValue->setPaletteBackgroundColor(maxitem->getSymbol()->brush().color());
         }
 	outlinewidthspinbox->setValue(minitem->getSymbol()->pen().width());
 	outlinewidthspinbox->setMinValue(1);
@@ -145,11 +147,11 @@ void QgsContColDialog::apply()
     QgsSymbol* minsymbol = new QgsSymbol();
     if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
     {
-	minsymbol->setPen(QPen(mincolorbutton->paletteBackgroundColor(),outlinewidthspinbox->value()));
+	minsymbol->setPen(QPen(lblMinValue->paletteBackgroundColor(),outlinewidthspinbox->value()));
     } 
     else
     {
-	minsymbol->setBrush(QBrush(mincolorbutton->paletteBackgroundColor()));
+	minsymbol->setBrush(QBrush(lblMinValue->paletteBackgroundColor()));
 	minsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
     }
     QgsRenderItem *minimumitem = new QgsRenderItem(minsymbol, QString::number(minimum, 'f'), " ");
@@ -158,11 +160,11 @@ void QgsContColDialog::apply()
     QgsSymbol* maxsymbol = new QgsSymbol();
     if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
     {
-	maxsymbol->setPen(QPen(maxcolorbutton->paletteBackgroundColor(),outlinewidthspinbox->value()));
+	maxsymbol->setPen(QPen(lblMaxValue->paletteBackgroundColor(),outlinewidthspinbox->value()));
     } 
     else
     {
-	maxsymbol->setBrush(QBrush(maxcolorbutton->paletteBackgroundColor()));
+	maxsymbol->setBrush(QBrush(lblMaxValue->paletteBackgroundColor()));
 	maxsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
     }
     QgsRenderItem *maximumitem = new QgsRenderItem(maxsymbol, QString::number(maximum, 'f'), " ");
@@ -235,7 +237,7 @@ void QgsContColDialog::apply()
     //draw the color range line by line
     for (int i = 0; i < gradientheight; i++)
     {
-	p.setPen(QColor(mincolorbutton->paletteBackgroundColor().red() + (maxcolorbutton->paletteBackgroundColor().red() - mincolorbutton->paletteBackgroundColor().red()) / gradientheight * i, mincolorbutton->paletteBackgroundColor().green() + (maxcolorbutton->paletteBackgroundColor().green() - mincolorbutton->paletteBackgroundColor().green()) / gradientheight * i, mincolorbutton->paletteBackgroundColor().blue() + (maxcolorbutton->paletteBackgroundColor().blue() - mincolorbutton->paletteBackgroundColor().blue()) / gradientheight * i)); //use the appropriate color
+	p.setPen(QColor(lblMinValue->paletteBackgroundColor().red() + (lblMaxValue->paletteBackgroundColor().red() - lblMinValue->paletteBackgroundColor().red()) / gradientheight * i, lblMinValue->paletteBackgroundColor().green() + (lblMaxValue->paletteBackgroundColor().green() - lblMinValue->paletteBackgroundColor().green()) / gradientheight * i, lblMinValue->paletteBackgroundColor().blue() + (lblMaxValue->paletteBackgroundColor().blue() - lblMinValue->paletteBackgroundColor().blue()) / gradientheight * i)); //use the appropriate color
 	p.drawLine(leftspace, rangeoffset + i, leftspace + gradientwidth, rangeoffset + i);
     }
     
@@ -260,12 +262,12 @@ void QgsContColDialog::apply()
 
 void QgsContColDialog::selectMinimumColor()
 {
-    mincolorbutton->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
+    lblMinValue->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
     setActiveWindow();
 }
 
 void QgsContColDialog::selectMaximumColor()
 {
-    maxcolorbutton->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
+    lblMaxValue->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
     setActiveWindow();
 }
