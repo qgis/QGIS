@@ -956,7 +956,15 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter,
     theQPainter->drawImage(theRasterViewPort->topLeftPoint.xToInt(), theRasterViewPort->topLeftPoint.yToInt(),myQImage);
 
 }
+void drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort)
+{
 
+}
+
+void drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort)
+{
+
+}
 void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter,
         RasterViewPort * theRasterViewPort)
 {
