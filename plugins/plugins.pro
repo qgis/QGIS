@@ -3,7 +3,7 @@
 # This file is used by qmake to generate the Makefiles for building
 # QGIS plugins on Windows
 #
-# plugins.pro,v 1.5 2004/08/16 18:37:46 gsherman Exp
+# plugins.pro,v 1.6 2004/08/16 19:06:00 gsherman Exp
 ####################################################################
 
 TEMPLATE = subdirs
@@ -12,4 +12,5 @@ SUBDIRS =  copyright_label \
            grid_maker \
            north_arrow \
            scale_bar \
-	   gps_importer
+      	   gps_importer \
+           spit
