@@ -852,6 +852,12 @@ QgsProject::read( )
     qWarning("opened document " + imp_->file.name());
 #endif
 
+    // before we start loading everything, let's clear out the current set of
+    // properties first so that we don't have the properties from the previous
+    // project still hanging around
+
+    imp_->properties_.clear();
+
 
     // first get the map layers
     if ( ! _getMapLayers( *doc ) )

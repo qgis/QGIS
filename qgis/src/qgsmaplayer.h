@@ -64,7 +64,7 @@ public:
   const int type();
 
   /*! Get this layer's unique ID */
-  QString getLayerID();
+  QString const & getLayerID() const;
 
   /*! Set the display name of the layer
      # @param name New name for the layer
@@ -74,13 +74,13 @@ public:
   /*! Get the display name of the layer
    * @return the layer name
    */
-  const QString name();
+  QString const & name() const;
 
   /*! Get the internal name of the layer. This is the name used to created the
    * layer from the data source
    * @return internal datasource name of the layer
    */
-  QString sourceName();
+  QString const & sourceName() const;
 
   /*! Virtual function to calculate the extent of the current layer.
    * This function must be overridden in all child classes and implemented
@@ -132,7 +132,7 @@ public:
   bool visible();
 
   //! Returns the source for the layer
-  QString source();
+  QString const & source() const;
 
   /** Write property of int featureType. */
   virtual void setFeatureType(const int &_newVal);

@@ -324,13 +324,20 @@ qgis_LDFLAGS = -rdynamic
 qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) 
 
 libqgis_la_SOURCES =				\
+		qgisapp.cpp			\
+		qgisapp.moc.cpp			\
+		qgisappbase.uic.cpp		\
+		qgisappbase.moc.uic.cpp		\
 		qgsacetateobject.cpp		\
 		qgsacetaterectangle.cpp		\
 		qgscolortable.cpp		\
+		qgscontinuouscolrenderer.cpp	\
 		qgscoordinatetransform.cpp	\
 		qgsfeatureattribute.cpp		\
 		qgsfeature.cpp			\
 		qgsfield.cpp			\
+		qgsgraduatedmarenderer.cpp	\
+		qgsgraduatedsymrenderer.cpp	\
 		qgsmapcanvas.cpp		\
 		qgsmapcanvas.moc.cpp		\
 		qgsmaplayer.cpp			\
@@ -344,7 +351,11 @@ libqgis_la_SOURCES =				\
 		qgsrasterlayer.moc.cpp		\
 		qgsrect.cpp			\
 		qgsscalecalculator.cpp		\
+		qgssimarenderer.cpp		\
+		qgssinglesymrenderer.cpp	\
 		qgssymbol.cpp			\
+		qgsuniquevalrenderer.cpp	\
+		qgsuvalmarenderer.cpp		\
 		qgsvectorfilewriter.cpp		\
 		qgsvectorlayer.cpp		\
 		qgsvectorlayer.moc.cpp 
