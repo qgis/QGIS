@@ -28,7 +28,7 @@ class QgsRenderer {
 	//! Field name used to render layer
 	QString field;
 	//! map of render items (ie. classes)
-	map<QString, QgsRenderItem>items;
+	std::map<QString, QgsRenderItem>items;
 	public:
 	//! Constructor
 	QgsRenderer(int _type, QString _field);
