@@ -60,7 +60,7 @@ QgsSpit::QgsSpit(QWidget *parent, const char *name) : QgsSpitBase(parent, name){
   defSrid = -1;
   defGeom = "the_geom";
   total_features = 0;
-  setFixedSize(QSize(579, 504));
+  setFixedSize(QSize(605, 612));
   
   tblShapefiles->verticalHeader()->hide();
   tblShapefiles->adjustColumn(3);
@@ -121,6 +121,7 @@ void QgsSpit::removeConnection()
 	if(result == 0){
 		settings.removeEntry(key + "/host");
 		settings.removeEntry(key + "/database");
+		settings.removeEntry(key + "/port");
 		settings.removeEntry(key + "/username");
 		settings.removeEntry(key + "/password");
 		settings.removeEntry(key + "/save");
@@ -265,16 +266,27 @@ void QgsSpit::useDefaultGeom(){
 void QgsSpit::helpInfo(){
   QString message = "General Interface Help:\n\n";
 	message += QString(
-		"Connection:\n")+QString(
-		"-you need to select a connection that works (connects properly) in oder to import files\n")+QString(
+		"PostgreSQL Connections:\n")+QString(
+		"----------------------------------------------------------------------------------------\n")+QString(
+		"[New ...] - create a new connection\n")+QString(
+		"[Edit ...] - edit the currently selected connection\n")+QString(
+		"[Remove] - remove the currently selected connection\n")+QString(
+		"-you need to select a connection that works (connects properly) in order to import files\n")+QString(
 		"-when changing connections Global Schema also changes accordingly\n\n")+QString(
 		"Shapefile List:\n")+QString(
-		"[Add] - open a File dialog and browse to the desired file(s) to import\n")+QString(
+		"----------------------------------------------------------------------------------------\n")+QString(
+		"[Add ...] - open a File dialog and browse to the desired file(s) to import\n")+QString(
 		"[Remove] - remove the currently selected file(s) from the list\n")+QString(
 		"[Remove All] - remove all the files in the list\n")+QString(
-		"SRID - Reference ID for the shapefiles to be imported; Use Default - set SRID to -1\n")+QString(
-		"Geometry Column Name - name of the geometry column in the database; Use Default - set column name to \'the_geom\'\n")+QString(
-		"Glogal Schema - set the schema to import into in the connected database\n");
+		"[SRID] - Reference ID for the shapefiles to be imported\n")+QString(
+		"[Use Default (SRID)] - set SRID to -1\n")+QString(
+		"[Geometry Column Name] - name of the geometry column in the database\n")+QString(
+		"[Use Default (Geometry Column Name)] - set column name to \'the_geom\'\n")+QString(
+		"[Glogal Schema] - set the schema for all files to be imported into\n\n")+QString(
+		"----------------------------------------------------------------------------------------\n")+QString(
+		"[Import] - import the current shapefiles in the list\n")+QString(
+		"[Quit] - quit the program\n")+QString(
+		"[Help] - display this help dialog\n\n");
   QgsMessageViewer * e = new QgsMessageViewer(this, "HelpMessage");
   e->setMessage(message);
   e->exec();
@@ -290,8 +302,10 @@ PGconn* QgsSpit::checkConnection(){
 		result = false;
   }
 	else{
-    QString connInfo = "host=" + settings.readEntry(gl_key +connName+ "/host") + " dbname=" + 
-			settings.readEntry(gl_key+connName+"/database") +" user=" + settings.readEntry(gl_key+connName+ "/username") + 
+    QString connInfo = "host=" + settings.readEntry(gl_key +connName+ "/host") + 
+			" dbname=" + settings.readEntry(gl_key+connName+"/database") +
+			" port=" + settings.readEntry(gl_key+connName+ "/port") +
+			" user=" + settings.readEntry(gl_key+connName+ "/username") + 
 			" password=" + settings.readEntry(gl_key+connName+ "/password");
     pd = PQconnectdb((const char *) connInfo);
 
