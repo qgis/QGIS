@@ -1593,7 +1593,7 @@ void QgisApp::saveMapAsImage()
   //prompt the user for a filename
   QString myOutputFileNameQString = QFileDialog::getSaveFileName(
           ".",
-          "PNG Files (*.pn223g)",
+          "PNG Files (*.png)",
           this,
           "save file dialog"
           "Choose a filename to save the map image as" );
