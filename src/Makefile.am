@@ -49,10 +49,10 @@ headers =		qgis.h					\
 			qgsfeature.h				\
 			qgsfeatureattribute.h			\
 			qgsfield.h				\
-		qgsgraduatedmarenderer.h		\
+			qgsgraduatedmarenderer.h		\
 			qgsgraduatedsymrenderer.h		\
-		qgsgramadialog.h			\
-		qgsgramaextensionwidget.h		\
+			qgsgramadialog.h			\
+			qgsgramaextensionwidget.h		\
 			qgsgrasydialog.h			\
 			qgsgrasyextensionwidget.h		\
 			qgshelpviewer.h				\
@@ -64,9 +64,9 @@ headers =		qgis.h					\
 			qgsmapcanvas.h				\
 			qgsmaplayer.h				\
 			qgsmaplayerinterface.h			\
-		qgsmaplayerregistry.h			\
-		qgsmapserverexport.h			\
-		qgsmarkerdialog.h			\
+			qgsmaplayerregistry.h			\
+			qgsmapserverexport.h			\
+			qgsmarkerdialog.h			\
 			qgsmarkersymbol.h			\
 			qgspatterndialog.h			\
 			qgspluginitem.h				\
@@ -98,8 +98,8 @@ headers =		qgis.h					\
 			qgsprojectproperties.h \
 			qgsoptions.h \
 			qgsacetateobject.h \
-			qgsacetaterectangle.h 
-
+			qgsacetaterectangle.h \ 
+			qgsvectorfilewriter.h
 
 ## qt designer files for all the GUI stuff
 qgis_UIC =	qgisappbase.ui					\
@@ -240,8 +240,9 @@ qgis_SOURCES =  main.cpp			\
 		qgsscalecalculator.cpp  \
 		qgsprojectproperties.cpp \
 		qgsoptions.cpp \
-			qgsacetateobject.cpp \
-			qgsacetaterectangle.cpp 
+		qgsacetateobject.cpp \
+		qgsacetaterectangle.cpp \
+		qgsvectorfilewriter.cpp
 
 postgresHEADERS = qgsdbsourceselect.h qgsnewconnection.h
 postgresSOURCES = qgsdbsourceselect.cpp qgsnewconnection.cpp
@@ -274,7 +275,7 @@ BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) \
 
 
 qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB)
-qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
+qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) 
 
 libqgis_la_SOURCES = qgsmapcanvas.cpp \
 										 qgsmapcanvas.moc.cpp \
@@ -283,20 +284,22 @@ libqgis_la_SOURCES = qgsmapcanvas.cpp \
 										 qgsrasterlayer.cpp \
 										 qgsvectorlayer.cpp \
 										 qgsmaplayer.moc.cpp \
-  qgsproviderregistry.cpp			\
+										 qgsproviderregistry.cpp \
 										 qgsrasterlayer.moc.cpp \
 										 qgsvectorlayer.moc.cpp \
 										 qgsfield.cpp \
 										 qgsfeature.cpp \
 										 qgsfeatureattribute.cpp \
-										 qgspoint.cpp \
 										 qgsrect.cpp \
 										 qgscoordinatetransform.cpp \
 										 qgsscalecalculator.cpp \
 										 qgsacetaterectangle.cpp \
 										 qgsacetateobject.cpp \
 										 qgsmaplayerregistry.cpp \
-										 qgsmaplayerregistry.moc.cpp
+										 qgsmaplayerregistry.moc.cpp \
+										 qgspoint.cpp \
+										 qgspoint.moc.cpp \
+										 qgsvectorfilewriter.cpp
 libqgis_la_LIBFLAGS =  $(QT_LDADD)
 libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS)
 
