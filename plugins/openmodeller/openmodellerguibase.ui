@@ -9,7 +9,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>695</width>
+            <width>641</width>
             <height>483</height>
         </rect>
     </property>
@@ -309,10 +309,10 @@ The openModeller wizard will assist you in carrying out a species distribution m
                                 <cstring>txtAlgorithmDescription</cstring>
                             </property>
                             <property name="frameShape">
-                                <enum>ToolBarPanel</enum>
+                                <enum>Box</enum>
                             </property>
                             <property name="frameShadow">
-                                <enum>Plain</enum>
+                                <enum>Sunken</enum>
                             </property>
                             <property name="text">
                                 <string>Description added programmatically</string>
@@ -336,10 +336,10 @@ The openModeller wizard will assist you in carrying out a species distribution m
                                 <cstring>txtBibliography</cstring>
                             </property>
                             <property name="frameShape">
-                                <enum>ToolBarPanel</enum>
+                                <enum>Box</enum>
                             </property>
                             <property name="frameShadow">
-                                <enum>Plain</enum>
+                                <enum>Sunken</enum>
                             </property>
                             <property name="text">
                                 <string>Bibliography added programmatically</string>
@@ -998,77 +998,7 @@ Select a file that will be used to mask areas from the model.</string>
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="QLabel" row="1" column="1">
-                <property name="name">
-                    <cstring>lblSelectModelParameters_3</cstring>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>0</width>
-                        <height>0</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>&lt;b&gt;Add parameter:&lt;/b&gt;</string>
-                </property>
-            </widget>
-            <widget class="QLayoutWidget" row="2" column="1">
-                <property name="name">
-                    <cstring>layout14</cstring>
-                </property>
-                <hbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QComboBox">
-                        <property name="name">
-                            <cstring>cbxParameterType</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>7</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                    </widget>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>textLabel1</cstring>
-                        </property>
-                        <property name="text">
-                            <string>with value</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>txtParameterValue</cstring>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>32767</width>
-                                <height>32767</height>
-                            </size>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>pbnAddParameter</cstring>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>30</width>
-                                <height>32767</height>
-                            </size>
-                        </property>
-                        <property name="text">
-                            <string>+</string>
-                        </property>
-                    </widget>
-                </hbox>
-            </widget>
-            <widget class="QTextBrowser" row="0" column="1">
+            <widget class="QTextBrowser" row="0" column="1" rowspan="1" colspan="2">
                 <property name="name">
                     <cstring>txtAlgorithmParameters</cstring>
                 </property>
@@ -1101,119 +1031,112 @@ Select a file that will be used to mask areas from the model.</string>
 If you would like to specify any special parameters for the algorithm you have selected, use the form below. You will need to consult the algorithm documentation to find out what additional parameters can be specified.</string>
                 </property>
             </widget>
-            <widget class="QLayoutWidget" row="5" column="1">
+            <widget class="QLayoutWidget" row="0" column="0" rowspan="2" colspan="1">
                 <property name="name">
-                    <cstring>layout16</cstring>
+                    <cstring>layout9</cstring>
                 </property>
-                <hbox>
+                <vbox>
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
                     <widget class="QLabel">
                         <property name="name">
-                            <cstring>lblSelectModelParameters_2_2</cstring>
+                            <cstring>pmAcmeLogo_12_2</cstring>
                         </property>
-                        <property name="minimumSize">
-                            <size>
-                                <width>230</width>
-                                <height>0</height>
-                            </size>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>0</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
                         </property>
-                        <property name="text">
-                            <string>&lt;b&gt;Remove selected parameter(s):&lt;/b&gt;</string>
+                        <property name="frameShape">
+                            <enum>Box</enum>
                         </property>
-                    </widget>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>pbnRemoveParameter</cstring>
+                        <property name="pixmap">
+                            <pixmap>image1</pixmap>
                         </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>30</width>
-                                <height>32767</height>
-                            </size>
-                        </property>
-                        <property name="text">
-                            <string>X</string>
+                        <property name="scaledContents">
+                            <bool>true</bool>
                         </property>
                     </widget>
                     <spacer>
                         <property name="name">
-                            <cstring>spacer28</cstring>
+                            <cstring>spacer20</cstring>
                         </property>
                         <property name="orientation">
-                            <enum>Horizontal</enum>
+                            <enum>Vertical</enum>
                         </property>
                         <property name="sizeType">
                             <enum>Expanding</enum>
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>221</width>
-                                <height>21</height>
+                                <width>21</width>
+                                <height>81</height>
                             </size>
                         </property>
                     </spacer>
-                </hbox>
+                </vbox>
             </widget>
-            <widget class="QListBox" row="3" column="1" rowspan="2" colspan="1">
+            <spacer row="1" column="2">
                 <property name="name">
-                    <cstring>lstParameters</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>7</hsizetype>
-                        <vsizetype>7</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>50</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>0</width>
-                        <height>50</height>
-                    </size>
-                </property>
-            </widget>
-            <widget class="QLabel" row="0" column="0" rowspan="4" colspan="1">
-                <property name="name">
-                    <cstring>pmAcmeLogo_13</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>5</hsizetype>
-                        <vsizetype>5</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="frameShape">
-                    <enum>Box</enum>
-                </property>
-                <property name="pixmap">
-                    <pixmap>image1</pixmap>
-                </property>
-                <property name="scaledContents">
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <spacer row="4" column="0" rowspan="2" colspan="1">
-                <property name="name">
-                    <cstring>spacer20</cstring>
+                    <cstring>spacer16_2</cstring>
                 </property>
                 <property name="orientation">
-                    <enum>Vertical</enum>
+                    <enum>Horizontal</enum>
                 </property>
                 <property name="sizeType">
                     <enum>Expanding</enum>
                 </property>
                 <property name="sizeHint">
                     <size>
-                        <width>21</width>
-                        <height>81</height>
+                        <width>190</width>
+                        <height>31</height>
                     </size>
                 </property>
             </spacer>
+            <widget class="QFrame" row="1" column="1">
+                <property name="name">
+                    <cstring>frameParameters</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>0</hsizetype>
+                        <vsizetype>5</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>300</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="maximumSize">
+                    <size>
+                        <width>300</width>
+                        <height>32767</height>
+                    </size>
+                </property>
+                <property name="frameShape">
+                    <enum>NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                    <enum>Raised</enum>
+                </property>
+                <property name="lineWidth">
+                    <number>0</number>
+                </property>
+                <property name="margin">
+                    <number>3</number>
+                </property>
+                <property name="midLineWidth">
+                    <number>0</number>
+                </property>
+            </widget>
         </grid>
     </widget>
     <widget class="QWidget">
@@ -1524,18 +1447,6 @@ If you would like to specify any special parameters for the algorithm you have s
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>OpenModellerGuiBase</receiver>
         <slot>leOutputFileName_textChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>pbnRemoveParameter</sender>
-        <signal>clicked()</signal>
-        <receiver>OpenModellerGuiBase</receiver>
-        <slot>pbnRemoveParameter_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>pbnAddParameter</sender>
-        <signal>clicked()</signal>
-        <receiver>OpenModellerGuiBase</receiver>
-        <slot>pbnAddParameter_clicked()</slot>
     </connection>
     <connection>
         <sender>pbnRemoveLayerFile</sender>

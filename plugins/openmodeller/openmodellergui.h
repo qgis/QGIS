@@ -18,6 +18,9 @@
 #include <qstringlist.h>
 #include <qstring.h>
 #include <openmodeller/om.hh>
+#include <qmap.h> 
+
+
 /**
 @author Tim Sutton
 */
@@ -72,6 +75,13 @@ private:
     QStringList extraParametersQStringList;
     QString outputFileNameQString;
     bool useTheseSettingsAgainFlag;
+    void makeParametersGui();
+    typedef QMap<QString, QWidget *> ParametersMap;
+    //setup QMap object and layout for the frame into which the controls will go
+    ParametersMap mMap;
+    typedef QMap<QString, QWidget *> ParameterLabels;
+    ParameterLabels mLabelsMap;
+    QVBoxLayout* mLayout;
     
 signals:
    void drawRasterLayer(QString);

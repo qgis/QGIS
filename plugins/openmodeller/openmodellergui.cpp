@@ -31,6 +31,10 @@
 #include <qapplication.h> 
 #include <qdir.h> 
 #include <qfileinfo.h>
+#include <qcheckbox.h>
+#include <qlayout.h>
+#include <qspinbox.h>
+#include <qtooltip.h> 
 
 //
 //openmodeller includes
@@ -52,18 +56,22 @@
 OpenModellerGui::OpenModellerGui()
  : OpenModellerGuiBase()
 {
+  mLayout = new QVBoxLayout(frameParameters);
   getAlgorithmList();
 }
 
 OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : OpenModellerGuiBase( parent, name, modal, fl )
 {
-   
+  mLayout = new QVBoxLayout(frameParameters); 
   getAlgorithmList();
 }  
 
 OpenModellerGui::~OpenModellerGui()
 {
+  delete mLayout;
+  // DO ME!!
+  //if (mMap!=NULL) delete mMap;
 }
 
 void OpenModellerGui::getAlgorithmList()
@@ -88,75 +96,152 @@ void OpenModellerGui::getAlgorithmList()
 
 void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 {
+
+  std::cout <<"getParameterList called" << std::endl;
+  
   OpenModeller  myOpenModeller;
   // Find out which model algorithm is to be used.
   AlgMetadata **myAlgorithmsMetadataArray = myOpenModeller.availableAlgorithms();
   AlgMetadata *myAlgorithmMetadata;
   std::cerr << "-------------- openModeller plugin :  Reading algorithm list..." << std::endl;
+ 
 
-  //Clear parameters combo pick list in case reloading page
-  cbxParameterType->clear();
+  
   
   while ( myAlgorithmMetadata = *myAlgorithmsMetadataArray++ )
   {
+    //delete current parameter map contents
+    ParametersMap::Iterator myIterator;
+
+    for ( myIterator = mMap.begin(); myIterator != mMap.end(); ++myIterator ) 
+    {
+      delete myIterator.data();
+      //mMap.remove(myIterator);
+    }
+    mMap.clear();
+    
+    ParameterLabels::Iterator myLabelIterator;
+    for ( myLabelIterator = mLabelsMap.begin(); myLabelIterator != mLabelsMap.end(); ++myLabelIterator ) 
+    {
+      delete myLabelIterator.data();
+      //mLabelsMap.remove(myIterator);
+    }
+    mLabelsMap.clear();
+    
+    //QString myFontName = "Arial [Monotype]";
+    //QFont myLabelFont(myFontName, 12, 75);
+    
+    // Scan openModeller algorithm list for the selected algorithm
     std::cerr << "Found Algorithm: " << myAlgorithmMetadata->id << std::endl;
     QString myAlgorithmNameQString=myAlgorithmMetadata->id;
+    
     if (myAlgorithmNameQString==theAlgorithmNameQString)
     {
-
       int myParameterCountInt = myAlgorithmMetadata->nparam;
       AlgParamMetadata * myParameter = myAlgorithmMetadata->param;
-      //detailed list of parameters and their useage
-      //to be placed in a textbox control on the algorithm selection page
 
-      txtAlgorithmParameters->setText("<h3>Algorithm Parameters</h3><p>Use the descriptions below set parameters for this algorithm</p>");
+      //interate through parameters adding the correct control type
       for ( int i = 0; i < myParameterCountInt; i++, myParameter++ )
       {
-        //
-        //first we add a new combo item to the parameter picklist
-        //
-        QString myQString = myParameter->name ;
-        cbxParameterType->insertItem(myQString);
-        //
-        // Now we build up a detailed description of the parameters
-        //
+    	QString myParameterType(myParameter->type);
+	std::cout << "Parameter " << myParameter->name << " is a " << myParameterType << std::endl;
+        if (myParameterType=="Integer")
+	{
+	   //Create a spinbox for integer values
+	   std::cout << myParameter->name << " parameter is integer type" << std::endl;
+	   
+	   //Create components
+	   QSpinBox * mySpinBox = new QSpinBox (frameParameters, ("spin"+QString(myParameter->name)));
+	   QLabel * myLabel = new QLabel (frameParameters, ("lbl"+QString(myParameter->name)));
+	   
+	   //set spinbox details and write to map
+	   if (!myParameter->has_min==0) mySpinBox->setMinValue(myParameter->min);
+	   if (!myParameter->has_max==0) mySpinBox->setMaxValue(myParameter->max);
+	   mySpinBox->setValue(atoi(myParameter->typical));
+	   
+	   QToolTip::add(mySpinBox, myParameter->description);
+	    
+	   //Set label details and write to map
+	   myLabel->setText(myParameter->name);	   
+	   
+	   //add label and control to form
+	   mLayout->addWidget(myLabel);
+	   mLayout->addWidget(mySpinBox);
+	   mySpinBox->show();
+	   std::cout << mySpinBox->name() << " created" << std::endl;
+	   std::cout << myLabel->name() << " created" << std::endl;
+	   
+	   //
+	   // Add the widget to the map
+	   //
+	   mMap[myParameter->name] = mySpinBox;
+	   mLabelsMap[myParameter->name] = myLabel;
+	}
 
-        //check if the parameter has min and max constraints
-        QString myDescriptionQString=""; 
-        QString myHeadingQString=""; 
-
-        myQString="";
-        if ( myParameter->has_min && myParameter->has_max )
-        {
-          myQString.sprintf( "<p><b>%s (&gt;= %f and &lt;= %f) default is %f</b></p>\n", myParameter->name, myParameter->min, myParameter->max, myParameter->typical );
+	if (myParameterType=="Real")
+	{
+	   std::cout << myParameter->name << " parameter is float type" << std::endl;
+	   
+	   //Create components
+	   QLineEdit * myLineEdit = new QLineEdit (frameParameters, ("le"+QString(myParameter->name)));
+	   QLabel * myLabel = new QLabel (frameParameters, ("lbl"+QString(myParameter->name)));
+	   
+	   //set line edit details and write to map
+	   myLineEdit->setText(myParameter->typical);
+	   QToolTip::add(myLineEdit, myParameter->description);
+	   
+	   //Set label details and write to map
+	   myLabel->setText(myParameter->name);	   
+	    
+	   //add label and control to form
+	   mLayout->addWidget(myLabel);
+	   mLayout->addWidget(myLineEdit);
+	   myLineEdit->show();
+	   std::cout << myLineEdit->name() << " created" << std::endl;
+	   std::cout << myLabel->name() << " created" << std::endl;
+	   
+	   //
+	   // Add the widget to the map
+	   //
+	   mMap[myParameter->name] = myLineEdit;
+	   mLabelsMap[myParameter->name] = myLabel;
+	}
+      }     
+      
+	/*
+        //interate through adding controls to form and setting 
+        for ( int i = 0; i < myParameterCountInt; i++, myParameter++ )
+        {  
+           ParametersMap::Iterator myIterator;
+	
+           for ( myIterator = myMap.begin(); myIterator != myMap.end(); ++myIterator ) 
+	   {
+              QString myParameterName = myIterator.key();
+              QWidget * myWidget = myIterator.data();
+	      myLayout->addWidget(myWidget);
+	      myWidget->show();
+	   }
         }
-        //or just min constraint
-        else if ( myParameter->has_min )
-        {
-          myQString.sprintf( "<p>%s (&gt;= %f) default is %f</b></p>\n", myParameter->name, myParameter->min, myParameter->typical );
-        }
-        //or just max contraint
-        if ( myParameter->has_max )
-        {
-          myQString.sprintf( "<p>%s (&lt;= %f) default is %f</b></p>\n", myParameter->name, myParameter->max, myParameter->typical );
-        }
-        //or neither
-        else
-        {
-          myQString.sprintf( "<p>%s default is %f</b></p>\n", myParameter->name, myParameter->typical);
-        }
-
-        myHeadingQString.sprintf( "<p>%s</p>", myParameter->description );
-        txtAlgorithmParameters->setText(txtAlgorithmParameters->text()+myQString+myDescriptionQString);
-        std::cerr << txtAlgorithmParameters->text() << std::endl;
-      }
+*/
+	//Exit loop because we have found the correct algorithm
+	break;      
+     }
     }
-  }
-  
+    ParametersMap::Iterator myNewIterator;
+    for ( myNewIterator = mMap.begin(); myNewIterator != mMap.end(); ++myNewIterator ) 
+    {
+      std::cout << "Widget map has: " <<myNewIterator.key() << std::endl;
+    }
+    
+    ParameterLabels::Iterator myLabelIterator;
+    for ( myLabelIterator = mLabelsMap.begin(); myLabelIterator != mLabelsMap.end(); ++myLabelIterator ) 
+    {
+      std::cout << "Label map has: " <<myLabelIterator.key() << std::endl;
+    }
   
   // no matching algorthm was found :-(
-  delete myAlgorithmsMetadataArray;
-  delete myAlgorithmMetadata;
+  //delete myAlgorithmsMetadataArray;
+  //delete myAlgorithmMetadata;
   return;
   
 }
@@ -257,6 +342,13 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
       setNextEnabled(currentPage(),true);
     }
   }
+  if (thePageNameQString==tr("Step 6 of 8"))
+  {
+   makeParametersGui(); 
+    
+  }
+  
+  
   if (thePageNameQString==tr("Step 7 of 8")) 
   {  
     leOutputDirectory->setText(settings.readEntry("/openmodeller/outputDirectory"));
@@ -442,12 +534,12 @@ void OpenModellerGui::accept()
   myQSettings.writeEntry("/openmodeller/layerNames",layerNamesQStringList);
   // build up the model parameters qstringlist
   extraParametersQStringList.clear();
-  for ( unsigned int myInt = 0; myInt < lstParameters->count(); myInt++ )
+/*  for ( unsigned int myInt = 0; myInt < lstParameters->count(); myInt++ )
   {
      QListBoxItem *myItem = lstParameters->item( myInt );
      extraParametersQStringList.append(myItem->text());      
   }   
-  
+  */
   maskNameQString=cboMaskLayer->currentText();
   taxonNameQString=cboTaxon->currentText();
   makeConfigFile();
@@ -482,6 +574,7 @@ void OpenModellerGui::pbnSelectOutputDirectory_clicked()
 
 void OpenModellerGui::pbnRemoveParameter_clicked()
 {
+/*
     for ( unsigned int myInt = 0; myInt< lstParameters->count(); myInt++ )
     {
         QListBoxItem *myItem = lstParameters->item( myInt );
@@ -496,11 +589,13 @@ void OpenModellerGui::pbnRemoveParameter_clicked()
 	    lstParameters->removeItem(myInt);
         }
     }
+    */
 }
 
 
 void OpenModellerGui::pbnAddParameter_clicked()
 {
+/*
   QString myParameterString = "";
   
   //create parameter string 
@@ -511,6 +606,7 @@ void OpenModellerGui::pbnAddParameter_clicked()
   lstParameters->insertItem(myParameterString);
   //clear value box
   txtParameterValue->setText("");
+  */
 }
 
 
@@ -752,6 +848,7 @@ void OpenModellerGui::pbnSelectLayerFolder_clicked()
   
   if (myLayersDirectoryQString==NULL || myLayersDirectoryQString=="") return;
   
+  settings.writeEntry("/openmodeller/layersDirectory",myLayersDirectoryQString);
   traverseDirectories(myLayersDirectoryQString);
   
   
@@ -872,4 +969,14 @@ void OpenModellerGui::mapCallback( float progress, void *extra_param )
   std::cout << "Map creation progress : " << ( 100 * progress ) << std::endl;
   //progressBar1->setProgress(100 * progress, 100);
 }
+
+
+void OpenModellerGui::makeParametersGui()
+{
+        
+
+	
+        return;
+}
+
 
