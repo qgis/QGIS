@@ -771,6 +771,10 @@
         <source>Plugins</source>
         <translation>Plugins</translation>
     </message>
+    <message>
+        <source>Peter Brewer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableBase</name>
@@ -2110,6 +2114,26 @@ identifying features without zooming in very close.
     <message>
         <source>Pixel Size:</source>
         <translation>Tamanho do Pixel:</translation>
+    </message>
+    <message>
+        <source>Red</source>
+        <translation type="unfinished">Vermelho</translation>
+    </message>
+    <message>
+        <source>Green</source>
+        <translation type="unfinished">Verde</translation>
+    </message>
+    <message>
+        <source>Blue</source>
+        <translation type="unfinished">Azul</translation>
+    </message>
+    <message>
+        <source>Raster Extent: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clipped area: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

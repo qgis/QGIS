@@ -1,6 +1,6 @@
 
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.58 2004/04/18 23:44:40 jobi Exp
+dnl configure.in,v 1.59 2004/04/22 08:10:39 jobi Exp
 
 AC_INIT
 
@@ -24,7 +24,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=1
 MICRO_VERSION=0
-EXTRA_VERSION=34
+EXTRA_VERSION=35
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
@@ -196,6 +196,11 @@ AC_SUBST(DEBUG_QGIS)
 AC_CONFIG_FILES([
   Makefile 
   src/Makefile 
+  src/svg/Makefile
+  src/svg/biology/Makefile
+  src/svg/geometric/Makefile
+  src/svg/icon/Makefile
+  src/svg/symbol/Makefile
   providers/Makefile 
   providers/ogr/Makefile
   providers/postgres/Makefile
