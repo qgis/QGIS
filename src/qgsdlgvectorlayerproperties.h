@@ -33,12 +33,17 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   ~QgsDlgVectorLayerProperties();
   /**Sets the legend type to "single symbol", "graduated symbol" or "continuous color"*/
   void setLegendType(QString type);
+  /**Returns the display name entered in the dialog*/
   QString displayName();
+  /**Sets the rendererDirty flag*/
   void setRendererDirty(bool enabled=true);
   /**Returns a pointer to the bufferDialog*/
   QDialog* getBufferDialog();
+  /**Sets the buffer dialog*/
   void setBufferDialog(QDialog* dialog);
+  /**Returns a pointer to the buffer pixmap*/
   QPixmap* getBufferPixmap();
+  /**Returns a pointer to the buffer renderer*/
   QgsRenderer* getBufferRenderer();
 
 
@@ -49,11 +54,13 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
 
   protected:
   QgsVectorLayer *layer;
-  /**Flag indicating if the render type still has to be changed (true) or not (false)*/
+  /**Flag indicating that the render type has changed compared to the vector layer (true)*/
   bool rendererDirty;
-  /**Renderer dialog. If the legend type has changed, it is assigned to the vectorlayer if apply or ok are pressed*/
+  /**Renderer dialog which is shown. If apply is pressed, it assigned to the vector layer*/
   QDialog* bufferDialog;
+  /**Buffer renderer, which is assigned to the vector layer when apply is pressed*/
   QgsRenderer* bufferRenderer;
+  /**Buffer pixmap which takes the picture of renderers before they are assigned to the vector layer*/
   QPixmap bufferPixmap;
 };
 
