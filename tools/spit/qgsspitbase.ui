@@ -15,61 +15,70 @@
     <property name="caption">
         <string>SPIT - Shapefile to PostGIS Import Tool</string>
     </property>
+    <property name="sizeGripEnabled">
+        <bool>false</bool>
+    </property>
     <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <spacer row="2" column="0">
+        <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="7">
             <property name="name">
-                <cstring>spacer1_2</cstring>
+                <cstring>groupBox8</cstring>
             </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
+            <property name="title">
+                <string>PostgreSQL Connections</string>
             </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>170</width>
-                    <height>31</height>
-                </size>
-            </property>
-        </spacer>
-        <spacer row="2" column="3">
-            <property name="name">
-                <cstring>spacer1</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>150</width>
-                    <height>31</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QPushButton" row="2" column="1">
-            <property name="name">
-                <cstring>btnImport</cstring>
-            </property>
-            <property name="text">
-                <string>Import</string>
-            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Connection</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>cmbConnections</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>200</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="3">
+                    <property name="name">
+                        <cstring>btnRemove</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Remove</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="2">
+                    <property name="name">
+                        <cstring>btnEdit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Edit</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="1">
+                    <property name="name">
+                        <cstring>btnNew</cstring>
+                    </property>
+                    <property name="text">
+                        <string>New</string>
+                    </property>
+                </widget>
+            </grid>
         </widget>
-        <widget class="QPushButton" row="2" column="2">
-            <property name="name">
-                <cstring>btnCancel</cstring>
-            </property>
-            <property name="text">
-                <string>Cancel</string>
-            </property>
-        </widget>
-        <widget class="QGroupBox" row="1" column="0" rowspan="1" colspan="4">
+        <widget class="QGroupBox" row="1" column="0" rowspan="1" colspan="7">
             <property name="name">
                 <cstring>groupBox1</cstring>
             </property>
@@ -106,22 +115,6 @@
                 </property>
                 <property name="text">
                     <string>Remove</string>
-                </property>
-            </widget>
-            <widget class="QLabel">
-                <property name="name">
-                    <cstring>textLabel1_2</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>20</x>
-                        <y>70</y>
-                        <width>64</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>SRID</string>
                 </property>
             </widget>
             <widget class="QPushButton">
@@ -189,6 +182,38 @@
                     <enum>Extended</enum>
                 </property>
             </widget>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>chkUseDefault</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>270</x>
+                        <y>70</y>
+                        <width>100</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Use Default</string>
+                </property>
+            </widget>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>textLabel1_2</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>70</y>
+                        <width>60</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>SRID</string>
+                </property>
+            </widget>
             <widget class="QSpinBox">
                 <property name="name">
                     <cstring>spinSrid</cstring>
@@ -211,79 +236,90 @@
                     <number>-1</number>
                 </property>
             </widget>
-            <widget class="QCheckBox">
-                <property name="name">
-                    <cstring>chkUseDefault</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>270</x>
-                        <y>70</y>
-                        <width>100</width>
-                        <height>21</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Use Default</string>
-                </property>
-            </widget>
         </widget>
-        <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="4">
+        <widget class="QPushButton" row="2" column="5">
             <property name="name">
-                <cstring>groupBox8</cstring>
+                <cstring>btnAbout</cstring>
             </property>
-            <property name="title">
-                <string>PostgreSQL Connections</string>
+            <property name="text">
+                <string>About</string>
             </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Connection</string>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="3">
-                    <property name="name">
-                        <cstring>cmbConnections</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>200</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="3">
-                    <property name="name">
-                        <cstring>btnRemove</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Remove</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="2">
-                    <property name="name">
-                        <cstring>btnEdit</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Edit</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="1">
-                    <property name="name">
-                        <cstring>btnNew</cstring>
-                    </property>
-                    <property name="text">
-                        <string>New</string>
-                    </property>
-                </widget>
-            </grid>
         </widget>
+        <widget class="QPushButton" row="2" column="1">
+            <property name="name">
+                <cstring>btnImport</cstring>
+            </property>
+            <property name="text">
+                <string>Import</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="2">
+            <property name="name">
+                <cstring>btnCancel</cstring>
+            </property>
+            <property name="text">
+                <string>Cancel</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="4">
+            <property name="name">
+                <cstring>btnHelp</cstring>
+            </property>
+            <property name="text">
+                <string>Help</string>
+            </property>
+        </widget>
+        <spacer row="2" column="6">
+            <property name="name">
+                <cstring>spacer1_2_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>110</width>
+                    <height>31</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="2" column="0">
+            <property name="name">
+                <cstring>spacer1_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>110</width>
+                    <height>31</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="2" column="3">
+            <property name="name">
+                <cstring>spacer11</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>41</width>
+                    <height>30</height>
+                </size>
+            </property>
+        </spacer>
     </grid>
 </widget>
 <connections>
@@ -341,6 +377,18 @@
         <receiver>QgsSpitBase</receiver>
         <slot>useDefault()</slot>
     </connection>
+    <connection>
+        <sender>btnHelp</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>help()</slot>
+    </connection>
+    <connection>
+        <sender>btnAbout</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsSpitBase</receiver>
+        <slot>about()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>import()</slot>
@@ -351,6 +399,8 @@
     <slot>removeFile()</slot>
     <slot>removeAllFiles()</slot>
     <slot>useDefault()</slot>
+    <slot>help()</slot>
+    <slot>about()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

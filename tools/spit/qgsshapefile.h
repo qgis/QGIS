@@ -1,7 +1,7 @@
 /***************************************************************************
-                          qgsconnectiondialog.h  -  description
+                          qgsshapefile.h  -  description
                              -------------------
-    begin                : Thu Dec 10 2003
+    begin                : Fri Dec 19 2003
     copyright            : (C) 2003 by Denis Antipov
     email                : 
  ***************************************************************************/
@@ -15,19 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCONNECTIONDIALOG_H
-#define QGSCONNECTIONDIALOG_H
-
-#include "qgsconnectiondialogbase.h"
-
-class QgsConnectionDialog : public QgsConnectionDialogBase
+#include<qstring.h>
+ 
+//#include "qva	OGRDataSource *ogrDataSource;luevector.h"
+ 
+class QgsShapeFile
 {
- public:
+  public:
+  
+  QgsShapeFile(QString filename);
+  ~QgsShapeFile();
 
-    QgsConnectionDialog(QWidget* parent = 0, QString connName=QString::null, bool modal = true, WFlags fl = 0);
-    ~QgsConnectionDialog();
-    void testConnection();
-    void saveConnection();
+
+  private:
+  //OGRDataSource *ogrDataSource;
+
 };
-
-#endif

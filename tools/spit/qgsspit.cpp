@@ -33,20 +33,25 @@ void QgsSpit::populateConnectionList(){
 		cmbConnections->insertItem(*it);
 		++it;
 	}
+  if(cmbConnections->count()==0) changeEditAndRemove(0);
+  
+  setMinimumSize(QSize(579, 504));
+  setMaximumSize(QSize(579, 504));
 }
 
 void QgsSpit::newConnection()
 {  
-	QgsConnectionDialog *con = new QgsConnectionDialog();
+	QgsConnectionDialog *con = new QgsConnectionDialog(this, "New Connection");
 
 	if (con->exec()) {
 		populateConnectionList();
 	}
+  if(cmbConnections->count()!=0) changeEditAndRemove(1);
 }
 
 void QgsSpit::editConnection()
 {
-	QgsConnectionDialog *con = new QgsConnectionDialog(cmbConnections->currentText());
+	QgsConnectionDialog *con = new QgsConnectionDialog(this, cmbConnections->currentText());
 	if (con->exec()) {
 		con->saveConnection();
 	}
@@ -64,10 +69,9 @@ void QgsSpit::removeConnection()
 		settings.removeEntry(key + "/username");
 		settings.removeEntry(key + "/password");
 		settings.removeEntry(key + "/save");
-		//if(!success){
-		//	QMessageBox::information(this,"Unable to Remove","Unable to remove the connection " + cmbConnections->currentText());
-		//}
-		cmbConnections->removeItem(cmbConnections->currentItem());// populateConnectionList();
+
+		cmbConnections->removeItem(cmbConnections->currentItem());
+    if(cmbConnections->count()==0) changeEditAndRemove(0);
 	}
 }
 
@@ -116,5 +120,16 @@ void QgsSpit::useDefault(){
   else {
     spinSrid->setEnabled(true);
     spinSrid->setValue(default_value);
+  }
+}
+
+void QgsSpit::changeEditAndRemove(int mode){
+  if(mode==0){
+    btnEdit->setEnabled(false);
+    btnRemove->setEnabled(false);
+  }
+  else if(mode==1){
+    btnEdit->setEnabled(true);
+    btnRemove->setEnabled(true);
   }
 }

@@ -23,7 +23,8 @@
 #include <libpq++.h>
 #include "qgsconnectiondialog.h"
 
-QgsConnectionDialog::QgsConnectionDialog(QString connName):QgsConnectionDialogBase()
+QgsConnectionDialog::QgsConnectionDialog (QWidget* parent, QString connName, bool modal, WFlags fl)
+  : QgsConnectionDialogBase(parent,(const char *)connName,modal,fl)
 {
 	if (!connName.isEmpty()) {
 		QSettings settings;
@@ -37,6 +38,8 @@ QgsConnectionDialog::QgsConnectionDialog(QString connName):QgsConnectionDialogBa
     }
 		txtName->setText(connName);
 	}
+  setMinimumSize(QSize(411, 230));
+  setMaximumSize(QSize(411, 230));
 }
 
 QgsConnectionDialog::~QgsConnectionDialog()

@@ -1,7 +1,7 @@
 /***************************************************************************
-                          qgsconnectiondialog.h  -  description
+                          qgsshapefile.cpp  -  description
                              -------------------
-    begin                : Thu Dec 10 2003
+    begin                : Fri Dec 19 2003
     copyright            : (C) 2003 by Denis Antipov
     email                : 
  ***************************************************************************/
@@ -15,19 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCONNECTIONDIALOG_H
-#define QGSCONNECTIONDIALOG_H
+#include <ogrsf_frmts.h>
+#include <ogr_geometry.h>
 
-#include "qgsconnectiondialogbase.h"
+#include "qgsshapefile.h"
 
-class QgsConnectionDialog : public QgsConnectionDialogBase
-{
- public:
+QgsShapeFile::QgsShapeFile(QString filename){
+  /*
+  ogrDataSource = OGRSFDriverRegistrar::Open((const char *) filename);
+  if (ogrDataSource != NULL) qWarning("Valid!");
+  else qWarning("Invalid!");
+  */
+}
+QgsShapeFile::~QgsShapeFile(){
 
-    QgsConnectionDialog(QWidget* parent = 0, QString connName=QString::null, bool modal = true, WFlags fl = 0);
-    ~QgsConnectionDialog();
-    void testConnection();
-    void saveConnection();
-};
-
-#endif
+}

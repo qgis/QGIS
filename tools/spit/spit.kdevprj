@@ -60,7 +60,7 @@ type=DATA
 
 [Makefile.am]
 dist=true
-files=spit.kdevprj,AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,main.cpp,qgsconnectiondialogbase.cpp,qgsconnectiondialogbase.h,qgsspitbase.cpp,qgsspitbase.h,qgsspit.cpp,qgsspit.h,qgsconnectiondialog.h,qgsconnectiondialog.cpp,Makefile,Makefile.am,moc_qgsconnectiondialogbase.cpp,moc_qgsspitbase.cpp,qgsconnectiondialogbase.ui,qgsspitbase.ui,spit.kdevses,spit.pro
+files=spit.kdevprj,AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,main.cpp,qgsconnectiondialogbase.cpp,qgsconnectiondialogbase.h,qgsspitbase.cpp,qgsspitbase.h,qgsspit.cpp,qgsspit.h,qgsconnectiondialog.h,qgsconnectiondialog.cpp,Makefile,Makefile.am,moc_qgsconnectiondialogbase.cpp,moc_qgsspitbase.cpp,qgsconnectiondialogbase.ui,qgsspitbase.ui,spit.kdevses,spit.pro,qgsshapefile.cpp,qgsshapefile.h
 install=false
 install_location=
 sub_dirs=spit,src
@@ -126,6 +126,18 @@ install=false
 install_location=
 type=SOURCE
 
+[qgsshapefile.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[qgsshapefile.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
 [qgsspit.cpp]
 dist=true
 install=false
@@ -175,6 +187,7 @@ install_location=
 type=DATA
 
 [spit/Makefile.am]
+files=spit/qgsshapefile.cpp,spit/qgsshapefile.h
 sub_dirs=
 type=prog_main
 
@@ -185,6 +198,18 @@ type=normal
 [spit/docs/en/Makefile.am]
 sub_dirs=
 type=normal
+
+[spit/qgsshapefile.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[spit/qgsshapefile.h]
+dist=true
+install=false
+install_location=
+type=HEADER
 
 [src/Makefile]
 dist=true
