@@ -2109,7 +2109,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * c
   }
 }
 
-void QgsVectorLayer::saveAsShapefile(){
+void QgsVectorLayer::saveAsShapefile() 
+{
   // call the dataproviders saveAsShapefile method
   dataProvider->saveAsShapefile();
 //  QMessageBox::information(0,"Save As Shapefile", "Someday...");
