@@ -36,6 +36,8 @@ bool GPSObject::parseNode(const QDomNode& node) {
   node2 = node.namedItem("url");
   if (!node2.isNull())
     url = (const char*)node2.firstChild().nodeValue();
+  //TODO - gsherman added this to get it to compile under win32
+  return true;
 }
 
 
