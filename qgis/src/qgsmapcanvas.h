@@ -127,6 +127,8 @@ class QgsMapCanvas:public QWidget
     void resizeEvent(QResizeEvent * e);
     //! Overridden paint event
     void paintEvent(QPaintEvent * pe);
+		//! Gets the value used to calculated the identify search radius
+		double calculateSearchRadiusValue();
     //! map containing the layers by name
     std::map < QString, QgsMapLayer * >layers;
     //! list containing the names of layers in zorder
@@ -183,6 +185,9 @@ class QgsMapCanvas:public QWidget
      * when no real change has occurred
      */
     bool dirty;
+		//! Value use to calculate the search radius when identifying features
+		// TODO - Do we need this?
+		double radiusValue;
 };
 
 #endif
