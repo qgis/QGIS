@@ -139,6 +139,7 @@ qgsoptions.cpp \
 qgsoptionsbase.cpp \
 qgspatterndialog.cpp \
 qgspatterndialogbase.cpp \
+qgspgutil.cpp \
 qgspluginitem.cpp \
 qgspluginmanager.cpp \
 qgspluginmanagerbase.cpp \
