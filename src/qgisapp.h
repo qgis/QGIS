@@ -155,6 +155,10 @@ private:
   QString activeLayerSource();
   //! Open the help contents in a browser
   void helpContents();
+  //! Open the QGIS homepage in users browser
+  void helpQgisHomePage();
+  //! Open the QGIS Sourceforge page in users browser
+  void helpQgisSourceForge();
   //! Open a url in the users configured browser
   void openURL(QString url, bool useQgisDocDirectory=true);
 	//! Check qgis version against the qgis version server

@@ -1689,9 +1689,16 @@ void QgisApp::options()
 
 void QgisApp::helpContents()
 {
-    openURL("index.html");
+   openURL("index.html");
 }
-
+void QgisApp::helpQgisHomePage()
+{
+  openURL("http://qgis.org", false);
+}
+void QgisApp::helpQgisSourceForge()
+{
+  openURL("http://sourceforge.net/projects/qgis", false);
+}
 void QgisApp::openURL(QString url, bool useQgisDocDirectory)
 {
     // open help in user browser
