@@ -305,13 +305,34 @@ bool QgsGrassProvider::getNextFeature(QgsFeature &feature, bool fetchAttributes)
 */
 QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
 {
+    #if QGISDEBUG > 3
+    std::cout << "QgsGrassProvider::getNextFeature() mNextCidx = " << mNextCidx 
+    	      << " fetchAttributes = " << fetchAttributes << std::endl;
+    #endif
+    
+    if ( isEdited() )
+	return 0;
+
+    std::list<int> attlist;
+
+    if ( fetchAttributes ) {
+	int fc = fieldCount();
+	for ( int i = 0; i < fc; i++ ) {
+	    attlist.push_back(i);
+	}
+    }
+
+    return ( getNextFeature(attlist) );
+}
+
+QgsFeature* QgsGrassProvider::getNextFeature(std::list<int>& attlist)
+{
     int cat, type, id, idx;
     unsigned char *wkb;
     int wkbsize;
 
-    #if QGISDEBUG > 3
-    std::cout << "QgsGrassProvider::getNextFeature() mNextCidx = " << mNextCidx 
-    	      << " fetchAttributes = " << fetchAttributes << std::endl;
+    #ifdef QGISDEBUG
+    std::cout << "QgsGrassProvider::getNextFeature( attlist )" << std::endl;
     #endif
 
     if ( isEdited() )
@@ -414,21 +435,9 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
 
     f->setGeometry(wkb, wkbsize);
 
-    if ( fetchAttributes ) {
-	QgsGrassProvider::setFeatureAttributes( mLayerId, cat, f );  
-    }
+    QgsGrassProvider::setFeatureAttributes( mLayerId, cat, f, attlist );  
     
     return f;
-}
-
-QgsFeature* QgsGrassProvider::getNextFeature(std::list<int>& attlist)
-{
-    #ifdef QGISDEBUG
-    std::cout << "QgsGrassProvider::getNextFeature()" << std::endl;
-    #endif
-
-    if ( isEdited() )
-	return 0;
 
     return 0;//soon
 }
