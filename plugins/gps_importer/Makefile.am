@@ -57,7 +57,7 @@ pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
-libgpsimporterplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la
+libgpsimporterplugin_la_LIBADD = $(QT_LDADD)  $(GDAL_LADD) ../../src/libqgis.la
 libgpsimporterplugin_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
 libgpsimporterplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
 libgpsimporterplugin_la_LDFLAGS = -avoid-version -module
@@ -77,7 +77,7 @@ gpsimporter_SOURCES = main.cpp \
 	pluginguibase.cpp \
 	$(standalone_MOC) 
 
-gpsimporter_LDADD = $(QT_LDADD) 
+gpsimporter_LDADD = $(QT_LDADD)  $(GDAL_LADD)
 gpsimporter_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
 gpsimporter_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src 
 
