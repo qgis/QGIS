@@ -26,7 +26,6 @@
 #include "qgsvectorlayer.h"
 #include "qpixmap.h"
 #include "qgslegenditem.h"
-#include "qgslayerproperties.h"
 #include "qgsrenderitem.h"
 #include "qgssinglesymrenderer.h"
 #include "qgsvectorlayerproperties.h"
