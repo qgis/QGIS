@@ -91,8 +91,6 @@ public slots:
  signals:
  	void xyCoordinates(QgsPoint &p);
  private:
-   void keyPressEvent(QKeyEvent* ev);
-   void keyReleaseEvent(QKeyEvent* ev);
    void mouseMoveEvent(QMouseEvent *e);
    void mousePressEvent(QMouseEvent *e);
    void mouseReleaseEvent(QMouseEvent *e);
@@ -143,9 +141,6 @@ public slots:
   * when no real change has occurred
   */
   bool dirty;
-  /**Flag which tells if the ctrl-button is pressed*/
-  bool ctrlPressed;
-
 };
 
 #endif
