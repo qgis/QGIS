@@ -30,6 +30,10 @@
 // #include <qguardedptr.h>
 // #endif
 
+#ifndef QDOM_H
+#include <qdom.h>
+#endif
+
 #ifndef QLISTVIEW_H
 #include <qlistview.h>
 #endif
@@ -1748,3 +1752,51 @@ void QgsMapCanvas::connectNotify( const char * signal )
 #endif
 } //  QgsMapCanvas::connectNotify( const char * signal )
 
+
+bool QgsMapCanvas::writeXML(QDomNode & layerNode, QDomDocument & doc)
+{
+    // Write current view extents
+    QDomElement extentNode = doc.createElement("extent");
+    layerNode.appendChild(extentNode);
+
+    QDomElement xMin = doc.createElement("xmin");
+    QDomElement yMin = doc.createElement("ymin");
+    QDomElement xMax = doc.createElement("xmax");
+    QDomElement yMax = doc.createElement("ymax");
+
+    QDomText xMinText = doc.createTextNode(QString::number(mCanvasProperties->currentExtent.xMin(), 'f'));
+    QDomText yMinText = doc.createTextNode(QString::number(mCanvasProperties->currentExtent.yMin(), 'f'));
+    QDomText xMaxText = doc.createTextNode(QString::number(mCanvasProperties->currentExtent.xMax(), 'f'));
+    QDomText yMaxText = doc.createTextNode(QString::number(mCanvasProperties->currentExtent.yMax(), 'f'));
+
+    xMin.appendChild(xMinText);
+    yMin.appendChild(yMinText);
+    xMax.appendChild(xMaxText);
+    yMax.appendChild(yMaxText);
+
+    extentNode.appendChild(xMin);
+    extentNode.appendChild(yMin);
+    extentNode.appendChild(xMax);
+    extentNode.appendChild(yMax);
+
+    // Iterate over layers in zOrder
+    // Call writeXML() on each
+    QDomElement projectLayersNode = doc.createElement("projectlayers");
+    projectLayersNode.setAttribute("layercount", mCanvasProperties->layers.size());
+
+    std::list < QString >::iterator li = mCanvasProperties->zOrder.begin();
+    while (li != mCanvasProperties->zOrder.end())
+    {
+        QgsMapLayer *ml = mCanvasProperties->layers[*li];
+
+        if (ml)
+        {
+            ml->writeXML(projectLayersNode, doc);
+        }
+        li++;
+    }
+
+    layerNode.appendChild(projectLayersNode);
+
+    return true;
+}
