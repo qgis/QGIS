@@ -116,8 +116,6 @@
     <include location="local" impldecl="in implementation">pluginguibase.ui.h</include>
 </includes>
 <slots>
-    <slot>pbnInputFile_clicked()</slot>
-    <slot>pbnOutputFile_clicked()</slot>
     <slot>pbnOK_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
