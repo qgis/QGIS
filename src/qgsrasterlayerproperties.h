@@ -46,8 +46,10 @@ class QgsRasterLayerProperties : public QgsRasterLayerPropertiesBase
         void sliderMinGreen_valueChanged( int );
         void sliderMaxGray_valueChanged( int );
         void sliderMinGray_valueChanged( int );
-
+        void rbtnSingleBand_toggled( bool );
+        void rbtnThreeBand_toggled( bool );
     private:
+        void fillStatsTable();
         void makeScalePreview(QString theColor);
         QgsRasterLayer * rasterLayer;
 };
