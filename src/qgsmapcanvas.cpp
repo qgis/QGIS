@@ -643,6 +643,10 @@ QgsRect const & QgsMapCanvas::extent() const
   return mCanvasProperties->currentExtent;
 } // extent
 
+QgsRect const & QgsMapCanvas::fullExtent() const
+{
+  return mCanvasProperties->fullExtent;
+} // extent
 
 void QgsMapCanvas::setExtent(QgsRect const & r)
 {
@@ -1121,6 +1125,10 @@ void QgsMapCanvas::freeze(bool frz)
   mCanvasProperties->frozen = frz;
 } // freeze
 
+bool QgsMapCanvas::isFrozen()
+{
+  return mCanvasProperties->frozen ;
+} // freeze
 
 
 void QgsMapCanvas::remove(QString key)
