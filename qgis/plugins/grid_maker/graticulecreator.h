@@ -22,7 +22,7 @@ class GraticuleCreator
                 int theCoordinateCountInt, 
                 double * theXArrayDouble, 
                 double * theYArrayDouble ); 
-        void generatePoints (QString theInputFileName, DBFHandle theDbfHandle, SHPHandle theShapeHandle) ;
+        void generateGraticule(DBFHandle theDbfHandle, SHPHandle theShapeHandle,float theXIntervalFloat,float theYIntervalFloat);
 
     private:
 };
