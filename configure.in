@@ -295,6 +295,10 @@ AC_CONFIG_FILES([
   plugins/gps_importer/Makefile
   plugins/grid_maker/Makefile
   plugins/grass/Makefile
+  plugins/grass/config/Makefile
+  plugins/grass/modules/Makefile
+  plugins/grass/themes/Makefile
+  plugins/grass/themes/default/Makefile
   doc/Makefile
   doc/install_guide/Makefile
   doc/images/Makefile
