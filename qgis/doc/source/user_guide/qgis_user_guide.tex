@@ -17,6 +17,7 @@
 \usepackage{fancyhdr}
 \usepackage{extramarks}
 \usepackage{makeidx}
+\usepackage{datetime}
 \pagestyle{empty}
 %define tip float
 \usepackage{float}
@@ -28,11 +29,13 @@
  \renewcommand{\textfraction}{0.1}
 \renewcommand{\floatpagefraction}{0.75}
 \makeindex
-
+%Added by Tim to define a month year date style
+\newdateformat{mydate}{\monthname[\THEMONTH] \THEYEAR}
 %\renewcommand\familydefault{lucidabrightsans}
 \title{Quantum GIS User Guide\\
 \large Version 0.6 \textsl{'Simon'}}
 \author{Gary E. Sherman \\Tim Sutton \\Radim Blazek (GRASS)\\
+\date{\mydate\today}
 }
 
 
