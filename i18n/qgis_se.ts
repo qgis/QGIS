@@ -1105,6 +1105,42 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
         <source>Unable to save project to </source>
         <translation>Kan inte spara projekt som</translation>
     </message>
+    <message>
+        <source>&amp;Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save delimited text as shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved Delimited Text plugin, including preview of text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display SQL query used to create a PostGIS layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostgreSQL query builder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ability to redefine the query used for PostgreSQL layers from the layer properties dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>North arrow, scalebar, and copyright plugins save their state in the project file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Datasets with UTF8, Kanjii and CJK filenames now load properly</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -1805,51 +1841,51 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>Gary E. Sherman</source>
-        <translation>Gary E. Sherman</translation>
+        <translation type="obsolete">Gary E. Sherman</translation>
     </message>
     <message>
         <source>Steve Halasz</source>
-        <translation>Steve Halasz</translation>
+        <translation type="obsolete">Steve Halasz</translation>
     </message>
     <message>
         <source>Tim Sutton</source>
-        <translation>Tim Sutton</translation>
+        <translation type="obsolete">Tim Sutton</translation>
     </message>
     <message>
         <source>Marco Hugentobler</source>
-        <translation>Marco Hugentobler</translation>
+        <translation type="obsolete">Marco Hugentobler</translation>
     </message>
     <message>
         <source>Denis Antipov</source>
-        <translation>Denis Antipov</translation>
+        <translation type="obsolete">Denis Antipov</translation>
     </message>
     <message>
         <source>Mark Coletti</source>
-        <translation>Mark Coletti</translation>
+        <translation type="obsolete">Mark Coletti</translation>
     </message>
     <message>
         <source>Jens Oberender</source>
-        <translation>Jens Oberender</translation>
+        <translation type="obsolete">Jens Oberender</translation>
     </message>
     <message>
         <source>Radim Blazek</source>
-        <translation>Radim Blazek</translation>
+        <translation type="obsolete">Radim Blazek</translation>
     </message>
     <message>
         <source>Carl Anderson</source>
-        <translation>Carl Anderson</translation>
+        <translation type="obsolete">Carl Anderson</translation>
     </message>
     <message>
         <source>Masaru Hoshi</source>
-        <translation>Masaru Hoshi</translation>
+        <translation type="obsolete">Masaru Hoshi</translation>
     </message>
     <message>
         <source>Lars Luthman</source>
-        <translation>Lars Luthman</translation>
+        <translation type="obsolete">Lars Luthman</translation>
     </message>
     <message>
         <source>Peter Brewer</source>
-        <translation>Peter Brewer</translation>
+        <translation type="obsolete">Peter Brewer</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</source>
@@ -1875,15 +1911,15 @@ Vi ber om ursäkt om någon har glömts bort. Var vänlig kontakta projektadmini
     </message>
     <message>
         <source>Christoph Spoerri</source>
-        <translation>Christoph Spoerri</translation>
+        <translation type="obsolete">Christoph Spoerri</translation>
     </message>
     <message>
         <source>Gavin Macaulay</source>
-        <translation>Gavin Macaulay</translation>
+        <translation type="obsolete">Gavin Macaulay</translation>
     </message>
     <message>
         <source>Tom Elwertowski</source>
-        <translation>Tom Elwertowski</translation>
+        <translation type="obsolete">Tom Elwertowski</translation>
     </message>
 </context>
 <context>

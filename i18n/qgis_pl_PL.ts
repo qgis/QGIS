@@ -677,6 +677,42 @@
         <source>Extents: </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&amp;Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save delimited text as shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved Delimited Text plugin, including preview of text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display SQL query used to create a PostGIS layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostgreSQL query builder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ability to redefine the query used for PostgreSQL layers from the layer properties dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>North arrow, scalebar, and copyright plugins save their state in the project file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Datasets with UTF8, Kanjii and CJK filenames now load properly</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -1290,66 +1326,6 @@
     </message>
     <message>
         <source>&lt;h2&gt;QGIS Contributors&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gary E. Sherman</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Steve Halasz</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tim Sutton</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Marco Hugentobler</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Denis Antipov</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mark Coletti</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Jens Oberender</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Radim Blazek</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Carl Anderson</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Masaru Hoshi</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lars Luthman</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Peter Brewer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Christoph Spoerri</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gavin Macaulay</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tom Elwertowski</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4423,6 +4399,17 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsScanGeometries</name>
+    <message>
+        <source>Scanning Geometries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>textLabel1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

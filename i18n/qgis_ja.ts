@@ -892,6 +892,70 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
         <source>Unable to save project to </source>
         <translation>以下の場所にプロジェクトが保存できません</translation>
     </message>
+    <message>
+        <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays the current map scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save delimited text as shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved Delimited Text plugin, including preview of text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display SQL query used to create a PostGIS layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostgreSQL query builder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ability to redefine the query used for PostgreSQL layers from the layer properties dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>North arrow, scalebar, and copyright plugins save their state in the project file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Datasets with UTF8, Kanjii and CJK filenames now load properly</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -1505,51 +1569,51 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
     </message>
     <message>
         <source>Gary E. Sherman</source>
-        <translation>Gary E. Sherman</translation>
+        <translation type="obsolete">Gary E. Sherman</translation>
     </message>
     <message>
         <source>Steve Halasz</source>
-        <translation>Steve Halasz</translation>
+        <translation type="obsolete">Steve Halasz</translation>
     </message>
     <message>
         <source>Tim Sutton</source>
-        <translation>Tim Sutton</translation>
+        <translation type="obsolete">Tim Sutton</translation>
     </message>
     <message>
         <source>Marco Hugentobler</source>
-        <translation>Marco Hugentobler</translation>
+        <translation type="obsolete">Marco Hugentobler</translation>
     </message>
     <message>
         <source>Denis Antipov</source>
-        <translation>Denis Antipov</translation>
+        <translation type="obsolete">Denis Antipov</translation>
     </message>
     <message>
         <source>Mark Coletti</source>
-        <translation>Mark Coletti</translation>
+        <translation type="obsolete">Mark Coletti</translation>
     </message>
     <message>
         <source>Jens Oberender</source>
-        <translation>Jens Oberender</translation>
+        <translation type="obsolete">Jens Oberender</translation>
     </message>
     <message>
         <source>Radim Blazek</source>
-        <translation>Radim Blazek</translation>
+        <translation type="obsolete">Radim Blazek</translation>
     </message>
     <message>
         <source>Carl Anderson</source>
-        <translation>Carl Anderson</translation>
+        <translation type="obsolete">Carl Anderson</translation>
     </message>
     <message>
         <source>Masaru Hoshi</source>
-        <translation>Masaru Hoshi</translation>
+        <translation type="obsolete">Masaru Hoshi</translation>
     </message>
     <message>
         <source>Lars Luthman</source>
-        <translation>Lars Luthman</translation>
+        <translation type="obsolete">Lars Luthman</translation>
     </message>
     <message>
         <source>Peter Brewer</source>
-        <translation>Peter Brewer</translation>
+        <translation type="obsolete">Peter Brewer</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</source>
@@ -1590,7 +1654,7 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
     </message>
     <message>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clikcing on the item.</source>
-        <translation>この一覧は、現在のレイヤに定義された全てのアクションです。アクションを追加するには、下のコントロールに詳細を入力し、アクションを挿入ボタンを押してください。アクションを編集するには項目をダブルクリックしてください。</translation>
+        <translation type="obsolete">この一覧は、現在のレイヤに定義された全てのアクションです。アクションを追加するには、下のコントロールに詳細を入力し、アクションを挿入ボタンを押してください。アクションを編集するには項目をダブルクリックしてください。</translation>
     </message>
     <message>
         <source>Move up</source>
@@ -1634,7 +1698,7 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
     </message>
     <message>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected.</source>
-        <translation>アクションを入力。システム上のプログラム、スクリプト、コマンドなど。アクションが実行される際に % とフィールド名の部分は、当該フィールドの値に置換された上で実行されます。%% というキャラクタは選択中のフィールドの値に置換されます。</translation>
+        <translation type="obsolete">アクションを入力。システム上のプログラム、スクリプト、コマンドなど。アクションが実行される際に % とフィールド名の部分は、当該フィールドの値に置換された上で実行されます。%% というキャラクタは選択中のフィールドの値に置換されます。</translation>
     </message>
     <message>
         <source>Enter the action command here</source>
@@ -1675,6 +1739,14 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
     <message>
         <source>The valid attribute names for this layer</source>
         <translation>このレイヤに有効な属性名</translation>
+    </message>
+    <message>
+        <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2217,6 +2289,50 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
     <message>
         <source>Unique Value Marker</source>
         <translation>固有値マーカ</translation>
+    </message>
+    <message>
+        <source>The source of the data (path name or database connection information)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry type of the features in this layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The number of features in this layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In order for QGIS to support SVG markers under Windows, we need to build QGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> using the commercial version of Qt. As this project is developed by volunteers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> donating their time, we don&apos;t have the financial resources to purchase Qt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> commercial.  If you would like to help us, please visit the QGIS sourceforge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> home page to make a donation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No SVG Support</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3923,6 +4039,30 @@ identifying features without zooming in very close.<byte value="xd"/>
         <source>An error occurred when executing the query:</source>
         <translation>クエリを実行中にエラーが発生しました:</translation>
     </message>
+    <message>
+        <source>Connection Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection to the database failed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to get sample of field values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Records</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPgQueryBuilderBase</name>
@@ -4685,6 +4825,17 @@ identifying features without zooming in very close.<byte value="xd"/>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
         <translation>このレイヤを表示する最小縮尺。</translation>
+    </message>
+</context>
+<context>
+    <name>QgsScanGeometries</name>
+    <message>
+        <source>Scanning Geometries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>textLabel1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
