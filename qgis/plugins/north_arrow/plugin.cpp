@@ -149,26 +149,45 @@ void Plugin::renderNorthArrow()
   QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
   //paint device that we can draw our pixmap onto
   QPainter myQPainter(myQPixmap);
-  QPointArray myPointArray;
+  //QPointArray myPointArray;
   //save the current canvas rotation
   myQPainter.save();
   //rotate the canvas  
   myQPainter.rotate( myRotationInt );
-  myPointArray.setPoints( 30,10, -10,-10 , 20,0 );
+  //myPointArray.setPoints( 30,10, -10,-10 , 20,0 );
   //myQPainter.drawPolygon( myPointArray );
   
-  //QPicture myQPicture;
-  //myQPicture.load(myDirString+QString("/default.svg"));
-  //myQPainter.drawPicture(140,140,myQPicture);  
   
 
-
+  QString myFileNameQString = QString(PKGDATAPATH)+QString("/svg/north_arrows/NorthArrow4.svg");
+  QPixmap myNarrowPixmap;
+  QPicture myQPicture;
+  //try to load the n-arrow as a svg
+  if (myQPicture.load(myFileNameQString))
+  {
+    myQPainter.drawPicture(5,5,myQPicture);  
+  }
+  else
+  {
+    std::cout << " *************** North Arrow png failed to load **************\n" << myFileNameQString << endl;
+  }
   
+  myFileNameQString = QString(PKGDATAPATH)+QString("/svg/north_arrows/default.png");
+  //try to load the narrow as a pixmap
+  if (myNarrowPixmap.load(myFileNameQString))
+  {
+    myQPainter.drawPixmap(5,5,myNarrowPixmap);
+  }
+  else
+  {
+    std::cout << " *************** North Arrow png failed to load **************\n" << myFileNameQString << endl;
+  }
   /* This is how you write some text to the qpainter */
-  QFont myQFont("time", 24, QFont::Bold);
-  myQPainter.setFont(myQFont);
-  myQPainter.setPen(Qt::black);
-  myQPainter.drawText(15, 50, QString("N"));
+  //QFont myQFont("time", 24, QFont::Bold);
+  //myQPainter.setFont(myQFont);
+  //myQPainter.setPen(Qt::black);
+  //myQPainter.drawText(15, 50, QString("N"));
+  
   //unrotate the canvase again
   myQPainter.restore();
 }
