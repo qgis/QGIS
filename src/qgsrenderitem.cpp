@@ -16,6 +16,7 @@
  ***************************************************************************/
 /* $Id$ */
 #include <qstring.h>
+#include <cassert>
 #include "qgsrenderitem.h"
 
 QgsRenderItem::QgsRenderItem(): mSymbol(new QgsSymbol())
@@ -59,7 +60,7 @@ void QgsRenderItem::setValue(QString value)
 }
 QgsSymbol* QgsRenderItem::getSymbol()
 {
-  Q_ASSERT(this == 0);
+  assert(this != 0);
     return mSymbol;
 }
 
