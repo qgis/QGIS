@@ -80,6 +80,8 @@ public:
 	void setDirty(bool _dirty);
 	friend class QgsLegend;
 public slots:
+        /**Sets dirty=true and calls render2()*/
+        void refresh();
 	void render2();
 	//! This slot is connected to the visibility change of one or more layers
 	void layerStateChange();

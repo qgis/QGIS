@@ -247,6 +247,7 @@ void QgisApp::addLayer()
 		// create the layer
 
 		QgsShapeFileLayer *lyr = new QgsShapeFileLayer(*it, base);
+		QObject::connect(lyr,SIGNAL(repaintRequested()),mapCanvas,SLOT(refresh()));
 		// give it a random color
 
 		if (lyr->isValid()) {

@@ -27,10 +27,28 @@
 
 class QgsAttributeTable:public QTable
 {
-  Q_OBJECT public:
-	QgsAttributeTable(QWidget * parent = 0, const char *name = 0);
-	 ~QgsAttributeTable();
-	public slots:void columnClicked(int col);
+  Q_OBJECT 
+
+      public:
+  QgsAttributeTable(QWidget * parent = 0, const char *name = 0);
+  ~QgsAttributeTable();
+
+      public slots:
+      void columnClicked(int col);
+      protected slots:
+	  void handleChangedSelections();
+      protected:
+      /**Flag telling if the ctrl-button or the shift-button is pressed*/
+      bool lockKeyPressed;
+      void keyPressEvent(QKeyEvent* ev);
+      void keyReleaseEvent(QKeyEvent* ev);
+        signals:
+      /**Is emitted when a row was selected*/
+      void selected(int);
+      /**Is emitted when all rows have been deselected*/
+      void selectionRemoved();
+      /**Is emmited when a set of related selection and deselection signals have been emitted*/
+      void repaintRequested();
 };
 
 #endif

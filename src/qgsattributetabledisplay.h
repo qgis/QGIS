@@ -32,6 +32,9 @@ class QgsAttributeTableDisplay:public QgsAttributeTableBase
 	~QgsAttributeTableDisplay();
 	QgsAttributeTable *table();
 	void setTitle(QString title);
+ signals:
+	/**Is emitted before the widget deletes itself*/
+	void deleted();
 };
 
 #endif

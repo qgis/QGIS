@@ -29,7 +29,6 @@
 #include "qgsshapefilelayer.h"
 #include "qgsidentifyresults.h"
 #include "qgsattributetable.h"
-#include "qgsattributetabledisplay.h"
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
 
@@ -38,7 +37,7 @@ QgsShapeFileLayer::QgsShapeFileLayer(QString vectorLayerPath, QString baseName)
 {
 
 // test ogr access to a shapefile
-
+    
 	ogrDataSource = OGRSFDriverRegistrar::Open((const char *) dataSource);
 	if (ogrDataSource != NULL) {
 		//std::cout << "Adding " << dataSource << std::endl;
@@ -67,11 +66,32 @@ QgsShapeFileLayer::QgsShapeFileLayer(QString vectorLayerPath, QString baseName)
 		valid = false;
 	}
 
+	//create a boolean vector and set every entry to false
+
+	if(valid)
+	{
+	    selected=new QValueVector<bool>(ogrLayer->GetFeatureCount(),false);
+	}
+	else
+	{
+	    selected=0;
+	}
+	tabledisplay=0;
+	//draw the selected features in yellow
+	selectionColor.setRgb(255,255,0);
 }
 
 QgsShapeFileLayer::~QgsShapeFileLayer()
 {
 //delete ogrDataSource;
+    if(selected)
+    {
+	delete selected;
+    }
+    if(tabledisplay)
+    {
+	tabledisplay->close();
+    }
 }
 
 /** No descriptions */
@@ -111,6 +131,7 @@ void QgsShapeFileLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTr
 	OGRErr result = ((OGRPolygon *) filter)->importFromWkt(&wktText);
 	if (result == OGRERR_NONE) {
 
+	        
 		ogrLayer->SetSpatialFilter(filter);
 		int featureCount = 0;
 		while (OGRFeature * fet = ogrLayer->GetNextFeature()) {
@@ -119,6 +140,20 @@ void QgsShapeFileLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTr
 			}
 		//std::cout << "reading feautures\n";
 			//fet->DumpReadable(stdout);
+
+		
+		//if feature is selected, change the color of the painter
+		if((*selected)[fet->GetFID()]==true)
+		{
+		    p->setPen(selectionColor);
+		    brush->setColor(selectionColor);
+		}
+		else
+		{
+		    p->setPen(sym->color());  
+		    brush->setColor(sym->fillColor());
+		}
+
 			OGRGeometry *geom = fet->GetGeometryRef();
 			if(!geom){
 				std::cout << "geom pointer is null" << std::endl;
@@ -166,7 +201,6 @@ QString val;
 				  //std::cout << "marker draw complete\n";
 				  break;
 			  case WKBLineString:
-
 				  // get number of points in the line 
 				  ptr = feature + 5;
 				  nPoints = (int *) ptr;
@@ -182,7 +216,6 @@ QString val;
 						  p->moveTo(pt.xToInt(), pt.yToInt());
 					  else
 						  p->lineTo(pt.xToInt(), pt.yToInt());
-
 				  }
 				  break;
 			  case WKBMultiLineString:
@@ -347,33 +380,44 @@ void QgsShapeFileLayer::identify(QgsRect * r)
 }
 void QgsShapeFileLayer::table()
 {
+    if(tabledisplay)
+    {
+	tabledisplay->raise();
+    }
+    else
+    {
 	// display the attribute table
 	QApplication::setOverrideCursor(Qt::waitCursor);
 	ogrLayer->SetSpatialFilter(0);
 	OGRFeature *fet = ogrLayer->GetNextFeature();
 	int numFields = fet->GetFieldCount();
-	QgsAttributeTableDisplay *at = new QgsAttributeTableDisplay();
-	at->table()->setNumRows(ogrLayer->GetFeatureCount(true));
-	at->table()->setNumCols(numFields);
+	tabledisplay = new QgsAttributeTableDisplay();
+        QObject:connect(tabledisplay,SIGNAL(deleted()),this,SLOT(invalidateTableDisplay()));
+	tabledisplay->table()->setNumRows(ogrLayer->GetFeatureCount(true));
+	tabledisplay->table()->setNumCols(numFields+1);//+1 for the id-column
 
 	int row = 0;
 	// set up the column headers
-	QHeader *colHeader = at->table()->horizontalHeader();
-	for (int h = 0; h < numFields; h++) {
-		OGRFieldDefn *fldDef = fet->GetFieldDefnRef(h);
+	QHeader *colHeader = tabledisplay->table()->horizontalHeader();
+	colHeader->setLabel(0,"id");//label for the id-column
+	for (int h = 1; h < numFields+1; h++) {
+	    OGRFieldDefn *fldDef = fet->GetFieldDefnRef(h-1);
 		QString fld = fldDef->GetNameRef();
 		colHeader->setLabel(h, fld);
 	}
 	while (fet) {
-		for (int i = 0; i < numFields; i++) {
+	    
+	    //id-field
+	    tabledisplay->table()->setText(row,0,QString::number(fet->GetFID()));
+	    for (int i = 1; i < numFields+1; i++) {
 			// get the field values
 			QString val;
 			//if(fldType ==  16604 )    // geometry
 			val = "(geometry column)";
 			// else
-			val = fet->GetFieldAsString(i);
-
-			at->table()->setText(row, i, val);
+			val = fet->GetFieldAsString(i-1);
+			
+			tabledisplay->table()->setText(row, i, val);
 
 		}
 		row++;
@@ -381,14 +425,40 @@ void QgsShapeFileLayer::table()
 		fet = ogrLayer->GetNextFeature();
 
 	}
-	// reset the pointer to start of features so
+	// reset the pointer to start of fetabledisplayures so
 	// subsequent reads will not fail
 	ogrLayer->ResetReading();
-	at->table()->setSorting(true);
+	tabledisplay->table()->setSorting(true);
 
 
-	at->setTitle("Attribute table - " + name());
+	tabledisplay->setTitle("Tabledisplaytribute table - " + name());
 	QApplication::restoreOverrideCursor();
-	at->show();
+	QObject::connect(tabledisplay->table(),SIGNAL(selected(int)),this,SLOT(select(int)));
+	QObject::connect(tabledisplay->table(),SIGNAL(selectionRemoved()),this,SLOT(removeSelection()));
+	QObject::connect(tabledisplay->table(),SIGNAL(repaintRequested()),this,SLOT(triggerRepaint()));
+	tabledisplay->show();
+    }
+}
 
+void QgsShapeFileLayer::select(int number)
+{
+    (*selected)[number]=true;
+}
+
+void QgsShapeFileLayer::removeSelection()
+{
+    for(int i=0;i<(int)selected->size();i++)
+    {
+	(*selected)[i]=false;
+    }
+}
+
+void QgsShapeFileLayer::triggerRepaint()
+{
+    emit repaintRequested();
+}
+
+void QgsShapeFileLayer::invalidateTableDisplay()
+{
+    tabledisplay=0;
 }
