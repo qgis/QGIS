@@ -38,6 +38,8 @@ class QgsContinuousColRenderer: public QgsRenderer
     void initializeSymbology(QgsVectorLayer* layer);
     /**Renders the feature using the minimum and maximum value of the classification field*/
     void renderFeature(QPainter* p, QgsFeature* f, QgsCoordinateTransform* t);
+    /**Returns the number of the classification field*/
+    int classificationField() const;
     /**Sets the id of the classification field*/
     void setClassificationField(int id);
     /**Sets the item for the minimum value. The item has to be created using the new operator and is automatically deleted when inserting a new item or when the instance is destroyed*/
@@ -62,6 +64,11 @@ class QgsContinuousColRenderer: public QgsRenderer
 inline QgsContinuousColRenderer::QgsContinuousColRenderer(): m_minimumItem(0), m_maximumItem(0)
 {
 
+}
+
+inline int QgsContinuousColRenderer::classificationField() const
+{
+    return m_classificationField;
 }
 
 inline void QgsContinuousColRenderer::setClassificationField(int id)

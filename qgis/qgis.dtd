@@ -22,7 +22,7 @@
   --  General Map Layer Properties
   --  (apply to both vector and raster)
   -->
-<!ELEMENT maplayer (layername, datasource, zorder, symbol) >
+<!ELEMENT maplayer (layername, datasource, zorder, (singlesymbol|graduatedsymbol|continuoussymbol|rasterproperties) >
 <!ELEMENT layername (#PCDATA) >
 <!ELEMENT datasource (#PCDATA) >
 <!ELEMENT zorder (#PCDATA) >
@@ -31,25 +31,57 @@
 	type (vector|raster|database) "vector"
 	visible (1|0) "0"
 	>
+
 <!--
-  --  Vector Layer Properties
+  --  Element symbol contains the settings for a qpainter
   --
   -->
-<!ELEMENT symbol (linewidth, outlinecolor, fillcolor) >
-<!ELEMENT linewidth (#PCDATA) >
-<!ELEMENT fillcolor EMPTY>
-<!ELEMENT outlinecolor EMPTY>
-<!--  Attribute Lists -->
-<!ATTLIST fillcolor 
-	red CDATA #IMPLIED
-	green CDATA #IMPLIED
-	blue CDATA #IMPLIED
-	>
+
+<!ELEMENT symbol (outlinecolor,outlinestyle,outlinewidth,fillcolor,fillpattern) >
+<!ELEMENT outlinecolor EMPTY >
+<!ELEMENT outlinestyle (#PCDATA) >
+<!ELEMENT outlinewidth (#PCDATA) >
+<!ELEMENT fillcolor EMPTY >
+<!ELEMENT fillpattern (#PCDATA) >
+
 <!ATTLIST outlinecolor 
-	red CDATA #IMPLIED
-	green CDATA #IMPLIED
-	blue CDATA #IMPLIED
+	red CDATA #REQUIRED
+	green CDATA #REQUIRED
+	blue CDATA #REQUIRED
 	>
+
+<!ATTLIST outlinecolor 
+	red CDATA #REQUIRED
+	green CDATA #REQUIRED
+	blue CDATA #REQUIRED
+	>
+
+<!--
+  --  renderitem and rangerenderitem
+  --
+  -->
+
+<!ELEMENT renderitem (value,symbol,label) >
+<!ELEMENT value (#PCDATA) >
+<!ELEMENT label (#PCDATA) >
+
+<!ELEMENT rangerenderitem (lowervalue,uppervalue,symbol,label) >
+<!ELEMENT lowervalue (#PCDATA) >
+<!ELEMENT uppervalue (#PCDATA) >
+
+<!--
+  --  elements to store the settings of the different symbology types
+  --
+  -->
+
+<!ELEMENT singlesymbol (renderitem) >
+<!ELEMENT graduatedsymbol (classificationfield,rangerenderitem+) >
+<!ELEMENT classificationfield (#PCDATA) >
+<!ELEMENT continuoussymbol (classificationfield,lowestitem,highestitem) >
+<!ELEMENT lowestitem (renderitem) >
+<!ELEMENT highestitem (renderitem) >
+
+
 <!--
   --  Raster Layer Properties
   --
