@@ -141,6 +141,8 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
             }else{
               swapEndian = true;
             }
+            PQclear(fResult);
+
             // end the cursor transaction
             PQexec(pd, "end work");
             #ifdef QGISDEBUG
@@ -161,17 +163,43 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
             PQclear(result);
             // get the extents
            
+            sql = "select extent(" + geometryColumn + ") from " + tableName;
+
+#if WASTE_TIME
             sql = "select xmax(extent(" + geometryColumn + ")) as xmax,"
               "xmin(extent(" + geometryColumn + ")) as xmin,"
               "ymax(extent(" + geometryColumn + ")) as ymax," "ymin(extent(" + geometryColumn + ")) as ymin" " from " + tableName;
+#endif
+
               #ifdef QGISDEBUG 
               std::cerr << "Getting extents using schema.table: " + sql << std::endl;
               #endif
             result = PQexec(pd, (const char *) sql);
-            layerExtent.setXmax(QString(PQgetvalue(result, 0, PQfnumber(result, "xmax"))).toDouble());
-            layerExtent.setXmin(QString(PQgetvalue(result, 0, PQfnumber(result, "xmin"))).toDouble());
-            layerExtent.setYmax(QString(PQgetvalue(result, 0, PQfnumber(result, "ymax"))).toDouble());
-            layerExtent.setYmin(QString(PQgetvalue(result, 0, PQfnumber(result, "ymin"))).toDouble());
+	    std::string box3d = PQgetvalue(result, 0, 0);
+	    std::string s;
+
+	    box3d = box3d.substr(box3d.find_first_of("(")+1);
+            box3d = box3d.substr(box3d.find_first_not_of(" "));
+            s = box3d.substr(0, box3d.find_first_of(" "));
+            double minx = strtod(s.c_str(), NULL);
+
+            box3d = box3d.substr(box3d.find_first_of(" ")+1);
+            s = box3d.substr(0, box3d.find_first_of(" "));
+            double miny = strtod(s.c_str(), NULL);
+
+            box3d = box3d.substr(box3d.find_first_of(",")+1);
+            box3d = box3d.substr(box3d.find_first_not_of(" "));
+            s = box3d.substr(0, box3d.find_first_of(" "));
+            double maxx = strtod(s.c_str(), NULL);
+
+            box3d = box3d.substr(box3d.find_first_of(" ")+1);
+            s = box3d.substr(0, box3d.find_first_of(" "));
+            double maxy = strtod(s.c_str(), NULL);
+
+            layerExtent.setXmax(maxx);
+            layerExtent.setXmin(minx);
+            layerExtent.setYmax(maxy);
+            layerExtent.setYmin(miny);
             QString xMsg;
             QTextOStream(&xMsg).precision(18);
             QTextOStream(&xMsg).width(18);
@@ -240,7 +268,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
             #ifdef QGISDEBUG
             std::cerr << "Number of features: " << numberFeatures << std::endl;
             #endif
-           
+            PQclear(result);
             }else{
               numberFeatures = 0;
               valid = false;
