@@ -1370,6 +1370,8 @@ QPixmap QgsSymbologyUtils::brushStyle2Pixmap(Qt::BrushStyle brushstyle)
 	case (Qt::DiagCrossPattern):
 	    return QPixmap(diagCrossData);
 	    break;
+	case (Qt::NoBrush):
+	    return QPixmap();
 	default:
 	    qWarning("Warning, no matching pattern found in QgsSymbologyUtils::brushStyle2Pixmap");
     }
