@@ -10,7 +10,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>424</width>
+            <width>442</width>
             <height>450</height>
         </rect>
     </property>
@@ -24,93 +24,6 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>layout4</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QGroupBox">
-                    <property name="name">
-                        <cstring>groupBox4</cstring>
-                    </property>
-                    <property name="title">
-                        <string>Operators</string>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QPushButton" row="1" column="0">
-                            <property name="name">
-                                <cstring>btnNot</cstring>
-                            </property>
-                            <property name="text">
-                                <string>!</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton" row="1" column="1">
-                            <property name="name">
-                                <cstring>btnPct</cstring>
-                            </property>
-                            <property name="text">
-                                <string>%</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton" row="1" column="2">
-                            <property name="name">
-                                <cstring>btnIn</cstring>
-                            </property>
-                            <property name="text">
-                                <string>in</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton" row="1" column="3">
-                            <property name="name">
-                                <cstring>btnNotIn</cstring>
-                            </property>
-                            <property name="text">
-                                <string>not in</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton" row="0" column="0">
-                            <property name="name">
-                                <cstring>btnEqual</cstring>
-                            </property>
-                            <property name="text">
-                                <string>=</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton" row="0" column="2">
-                            <property name="name">
-                                <cstring>btnGreaterThan</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&gt;</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton" row="0" column="1">
-                            <property name="name">
-                                <cstring>btnLessThan</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&lt;</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton" row="0" column="3">
-                            <property name="name">
-                                <cstring>btnLike</cstring>
-                            </property>
-                            <property name="text">
-                                <string>like</string>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-            </hbox>
-        </widget>
         <widget class="QGroupBox" row="2" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>groupBox3</cstring>
@@ -129,9 +42,264 @@
                 </widget>
             </grid>
         </widget>
+        <widget class="QGroupBox" row="1" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>groupBox4</cstring>
+            </property>
+            <property name="title">
+                <string>Operators</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>btnEqual</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>25</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>=</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="5">
+                    <property name="name">
+                        <cstring>btnIn</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>25</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>IN</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="6">
+                    <property name="name">
+                        <cstring>btnNotIn</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>25</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>NOT IN</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>btnLessThan</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>25</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>&lt;</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="2">
+                    <property name="name">
+                        <cstring>btnGreaterThan</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>25</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>&gt;</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="4">
+                    <property name="name">
+                        <cstring>btnPct</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>25</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>%</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>btnLessEqual</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>25</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>&lt;=</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="1">
+                    <property name="name">
+                        <cstring>btnGreaterEqual</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>25</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>&gt;=</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="2">
+                    <property name="name">
+                        <cstring>btnNotEqual</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>25</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>!=</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="3">
+                    <property name="name">
+                        <cstring>btnLike</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>25</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>LIKE</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="3">
+                    <property name="name">
+                        <cstring>btnAnd</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>25</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>AND</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="4">
+                    <property name="name">
+                        <cstring>btnOr</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>25</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>OR</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="5">
+                    <property name="name">
+                        <cstring>btnNot</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>25</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>NOT</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Fields</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QListBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>lstFields</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="0" column="1">
+            <property name="name">
+                <cstring>groupBox2</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string>Values</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton" row="1" column="1">
+                    <property name="name">
+                        <cstring>btnGetAllValues</cstring>
+                    </property>
+                    <property name="text">
+                        <string>All</string>
+                    </property>
+                </widget>
+                <widget class="QListBox" row="0" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>lstValues</cstring>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>btnSampleValues</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Sample</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
         <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="2">
             <property name="name">
-                <cstring>layout7</cstring>
+                <cstring>layout5</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -149,11 +317,22 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>60</width>
+                            <width>30</width>
                             <height>21</height>
                         </size>
                     </property>
                 </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnClear</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Clear</string>
+                    </property>
+                    <property name="default">
+                        <bool>false</bool>
+                    </property>
+                </widget>
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>btnTest</cstring>
@@ -196,64 +375,12 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>70</width>
+                            <width>30</width>
                             <height>21</height>
                         </size>
                     </property>
                 </spacer>
             </hbox>
-        </widget>
-        <widget class="QGroupBox" row="0" column="1">
-            <property name="name">
-                <cstring>groupBox2</cstring>
-            </property>
-            <property name="title">
-                <string>Values</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QListBox" row="0" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>lstValues</cstring>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="0">
-                    <property name="name">
-                        <cstring>btnSampleValues</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Sample</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="1">
-                    <property name="name">
-                        <cstring>btnGetAllValues</cstring>
-                    </property>
-                    <property name="text">
-                        <string>All</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="QGroupBox" row="0" column="0">
-            <property name="name">
-                <cstring>groupBox1</cstring>
-            </property>
-            <property name="title">
-                <string>Fields</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QListBox" row="0" column="0">
-                    <property name="name">
-                        <cstring>lstFields</cstring>
-                    </property>
-                </widget>
-            </grid>
         </widget>
     </grid>
 </widget>
@@ -264,22 +391,28 @@
 </images>
 <connections>
     <connection>
+        <sender>btnAnd</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPgQueryBuilderBase</receiver>
+        <slot>insAnd()</slot>
+    </connection>
+    <connection>
         <sender>btnEqual</sender>
         <signal>clicked()</signal>
         <receiver>QgsPgQueryBuilderBase</receiver>
         <slot>insEqual()</slot>
     </connection>
     <connection>
-        <sender>btnNot</sender>
+        <sender>btnGetAllValues</sender>
         <signal>clicked()</signal>
         <receiver>QgsPgQueryBuilderBase</receiver>
-        <slot>insNot()</slot>
+        <slot>getAllValues()</slot>
     </connection>
     <connection>
-        <sender>btnLessThan</sender>
+        <sender>btnGreaterEqual</sender>
         <signal>clicked()</signal>
         <receiver>QgsPgQueryBuilderBase</receiver>
-        <slot>insLt()</slot>
+        <slot>insGreaterThanEqual()</slot>
     </connection>
     <connection>
         <sender>btnGreaterThan</sender>
@@ -288,16 +421,40 @@
         <slot>insGt()</slot>
     </connection>
     <connection>
+        <sender>btnIn</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPgQueryBuilderBase</receiver>
+        <slot>insIn()</slot>
+    </connection>
+    <connection>
+        <sender>btnLessEqual</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPgQueryBuilderBase</receiver>
+        <slot>insLessThanEqual()</slot>
+    </connection>
+    <connection>
+        <sender>btnLessThan</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPgQueryBuilderBase</receiver>
+        <slot>insLt()</slot>
+    </connection>
+    <connection>
         <sender>btnLike</sender>
         <signal>clicked()</signal>
         <receiver>QgsPgQueryBuilderBase</receiver>
         <slot>insLike()</slot>
     </connection>
     <connection>
-        <sender>btnIn</sender>
+        <sender>btnNot</sender>
         <signal>clicked()</signal>
         <receiver>QgsPgQueryBuilderBase</receiver>
-        <slot>insIn()</slot>
+        <slot>insNot()</slot>
+    </connection>
+    <connection>
+        <sender>btnNotEqual</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPgQueryBuilderBase</receiver>
+        <slot>insNotEqual()</slot>
     </connection>
     <connection>
         <sender>btnNotIn</sender>
@@ -306,28 +463,22 @@
         <slot>insNotIn()</slot>
     </connection>
     <connection>
-        <sender>btnPct</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsPgQueryBuilderBase</receiver>
-        <slot>insPct()</slot>
-    </connection>
-    <connection>
-        <sender>Cancel</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsPgQueryBuilderBase</receiver>
-        <slot>reject()</slot>
-    </connection>
-    <connection>
         <sender>btnOk</sender>
         <signal>clicked()</signal>
         <receiver>QgsPgQueryBuilderBase</receiver>
         <slot>accept()</slot>
     </connection>
     <connection>
-        <sender>btnTest</sender>
+        <sender>btnOr</sender>
         <signal>clicked()</signal>
         <receiver>QgsPgQueryBuilderBase</receiver>
-        <slot>testSqll()</slot>
+        <slot>insOr()</slot>
+    </connection>
+    <connection>
+        <sender>btnPct</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPgQueryBuilderBase</receiver>
+        <slot>insPct()</slot>
     </connection>
     <connection>
         <sender>btnSampleValues</sender>
@@ -336,10 +487,16 @@
         <slot>getSampleValues()</slot>
     </connection>
     <connection>
-        <sender>btnGetAllValues</sender>
+        <sender>btnTest</sender>
         <signal>clicked()</signal>
         <receiver>QgsPgQueryBuilderBase</receiver>
-        <slot>getAllValues()</slot>
+        <slot>testSql()</slot>
+    </connection>
+    <connection>
+        <sender>Cancel</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPgQueryBuilderBase</receiver>
+        <slot>reject()</slot>
     </connection>
     <connection>
         <sender>lstFields</sender>
@@ -349,9 +506,15 @@
     </connection>
     <connection>
         <sender>lstValues</sender>
-        <signal>clicked(QListBoxItem*)</signal>
+        <signal>doubleClicked(QListBoxItem*)</signal>
         <receiver>QgsPgQueryBuilderBase</receiver>
         <slot>valueDoubleClick(QListBoxItem*)</slot>
+    </connection>
+    <connection>
+        <sender>btnClear</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPgQueryBuilderBase</receiver>
+        <slot>clearSQL()</slot>
     </connection>
 </connections>
 <includes>
@@ -361,18 +524,24 @@
     <slot>insEqual()</slot>
     <slot>insLt()</slot>
     <slot>insGt()</slot>
-    <slot>insNot()</slot>
     <slot>insPct()</slot>
     <slot>insIn()</slot>
     <slot>insNotIn()</slot>
     <slot>insLike()</slot>
     <slot returnType="QString">sql()</slot>
     <slot>setSql( QString sqlStatement )</slot>
-    <slot>testSqll()</slot>
+    <slot>testSql()</slot>
     <slot>getAllValues()</slot>
     <slot>getSampleValues()</slot>
     <slot>fieldDoubleClick( QListBoxItem * item )</slot>
     <slot>valueDoubleClick( QListBoxItem * item )</slot>
+    <slot>insLessThanEqual()</slot>
+    <slot>insGreaterThanEqual()</slot>
+    <slot>insNotEqual()</slot>
+    <slot>insAnd()</slot>
+    <slot>insNot()</slot>
+    <slot>insOr()</slot>
+    <slot>clearSQL()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

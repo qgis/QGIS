@@ -14,6 +14,8 @@
  ***************************************************************************/
 #include <iostream>
 #include <qlistbox.h>
+#include <qmessagebox.h>
+#include <qtextedit.h>
 #include "qgsfield.h"
 #include "qgspgquerybuilder.h"
 
@@ -83,6 +85,7 @@ void QgsPgQueryBuilder::populateFields()
       << fieldModifier << std::endl;
 #endif
 */
+    std::cerr << "Field parms: Name = " + fieldName + ", Type = " + fieldType << std::endl; 
     mFieldMap[fieldName] = QgsField(fieldName, fieldType, fieldSize.toInt(), fieldModifier);
     lstFields->insertItem(fieldName);
   }
@@ -100,6 +103,9 @@ void QgsPgQueryBuilder::getSampleValues()
     + " limit 25";
   // clear the values list 
   lstValues->clear();
+  // determine the field type
+  QgsField field = mFieldMap[lstFields->currentText()];
+  bool isCharField = field.type().find("char") > -1;
   PGresult *result = PQexec(mPgConnection, (const char *) sql);
 
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
@@ -107,7 +113,15 @@ void QgsPgQueryBuilder::getSampleValues()
     int rowCount =  PQntuples(result);
     for(int i=0; i < rowCount; i++)
     {
-      lstValues->insertItem(PQgetvalue(result, i, 0));
+      QString value = PQgetvalue(result, i, 0);
+      if(isCharField)
+      {
+        lstValues->insertItem("'" + value + "'");
+      }
+      else
+      {
+        lstValues->insertItem(value);
+      }
     }
 
   }else
@@ -124,6 +138,10 @@ void QgsPgQueryBuilder::getAllValues()
     + " from " + mTableName + " order by " + lstFields->currentText();
   // clear the values list 
   lstValues->clear();
+ // determine the field type
+  QgsField field = mFieldMap[lstFields->currentText()];
+  bool isCharField = field.type().find("char") > -1;
+
   PGresult *result = PQexec(mPgConnection, (const char *) sql);
 
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
@@ -131,7 +149,16 @@ void QgsPgQueryBuilder::getAllValues()
     int rowCount =  PQntuples(result);
     for(int i=0; i < rowCount; i++)
     {
-      lstValues->insertItem(PQgetvalue(result, i, 0));
+      QString value = PQgetvalue(result, i, 0);
+
+       if(isCharField)
+      {
+        lstValues->insertItem("'" + value + "'");
+      }
+      else
+      {
+        lstValues->insertItem(value);
+      }
     }
 
   }else
@@ -144,7 +171,24 @@ void QgsPgQueryBuilder::getAllValues()
 
 void QgsPgQueryBuilder::testSql()
 {
-
+  // test the sql statement to see if it works
+  // by counting the number of records that would be
+  // returned
+  QString sql = "select count(*) from " + mTableName
+    + " where " + txtSQL->text();
+  PGresult *result = PQexec(mPgConnection, (const char *)sql);
+  if (PQresultStatus(result) == PGRES_TUPLES_OK) 
+  {
+    QString numRows = PQgetvalue(result, 0, 0);
+    //numRows.setNum(rowCount);
+    QMessageBox::information(this, "Query Result", "The where clause returned " + numRows + " rows.");
+  }
+  else
+  {
+    QMessageBox::warning(this, "Query Failed", "An error occurred when executing the query:\n" + QString(PQresultErrorMessage(result)));
+  }
+// free the result set
+PQclear(result);
 }
 
 void QgsPgQueryBuilder::setConnection(PGconn *con)
