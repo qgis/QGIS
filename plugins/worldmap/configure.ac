@@ -33,9 +33,8 @@ dnl
 AC_CHECK_PROG( QGIS_CONFIG, qgis_config, yes,
                AC_MSG_ERROR([No Qgis C++ library -- get from http://qgis.sf.net/]) )
 
-qgis_inc_path=`qgis_config --includedir`
-QGIS_CFLAGS="-I${qgis_inc_path} -I${qgis_inc_path}/qgis"
-QGIS_LDFLAGS="-L`qgis_config --libdir`/lib"
+QGIS_CFLAGS="`qgis_config --cflags`"
+QGIS_LDFLAGS="`qgis_config --libs`"
 
 dnl must add Qt header search path as qgis headers, in turn, include Qt stuff
 saved_CPPFLAGS=$CPPFLAGS
