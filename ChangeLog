@@ -1,7 +1,16 @@
 QGIS Change Log
-ChangeLog,v 1.126 2004/06/12 19:24:28 gsherman Exp
+ChangeLog,v 1.127 2004/06/13 15:02:32 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+2004-06-10 [ts] 0.3.0devel31
+** Implemented a new map cursor type : Capture Point (little pencil icon on your toolbar). 
+   At the moment clicking on the map in capture point mode will cause QgsMapCanvas to emit 
+   an xyClickCoordinate(QgsPoint) signal which is picked up by qgisapp and the coordinates
+   are placed into the system clipboard. 
+
+  In release 0.5 this will be extended to provide simple point vector file data capture / 
+  digitising facility. This will be implemented by means of a plugin which will utilise the 
+  aforementioned xyClickCoordinate(QgsPoint) signal.
 
 2004-06-12 [gsherman] 0.3.0devel30
 ** Windows support -- lots of changes
