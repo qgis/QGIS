@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>QgsNewConnectionBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>392</width>
-            <height>196</height>
+            <width>394</width>
+            <height>248</height>
         </rect>
     </property>
     <property name="caption">
@@ -55,7 +55,7 @@
                         <string>OK</string>
                     </property>
                     <property name="accel">
-                        <number>0</number>
+                        <string></string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -77,7 +77,7 @@
                         <string>Cancel</string>
                     </property>
                     <property name="accel">
-                        <number>0</number>
+                        <string></string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -96,7 +96,7 @@
                         <string>Help</string>
                     </property>
                     <property name="accel">
-                        <number>4144</number>
+                        <string>F1</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -144,130 +144,192 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="2">
+                <widget class="QLayoutWidget" row="0" column="0">
                     <property name="name">
-                        <cstring>txtHost</cstring>
+                        <cstring>layout13</cstring>
                     </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout12</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>TextLabel1_2</cstring>
+                                    </property>
+                                    <property name="font">
+                                        <font>
+                                            <family>Helvetica</family>
+                                            <pointsize>11</pointsize>
+                                        </font>
+                                    </property>
+                                    <property name="text">
+                                        <string>Name</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>TextLabel1</cstring>
+                                    </property>
+                                    <property name="font">
+                                        <font>
+                                            <family>Helvetica</family>
+                                            <pointsize>11</pointsize>
+                                        </font>
+                                    </property>
+                                    <property name="text">
+                                        <string>Host</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>TextLabel2</cstring>
+                                    </property>
+                                    <property name="font">
+                                        <font>
+                                            <family>helvetica</family>
+                                            <pointsize>11</pointsize>
+                                        </font>
+                                    </property>
+                                    <property name="text">
+                                        <string>Database</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>TextLabel2_2</cstring>
+                                    </property>
+                                    <property name="font">
+                                        <font>
+                                            <family>helvetica</family>
+                                            <pointsize>11</pointsize>
+                                        </font>
+                                    </property>
+                                    <property name="text">
+                                        <string>Port</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>TextLabel3</cstring>
+                                    </property>
+                                    <property name="font">
+                                        <font>
+                                            <family>Helvetica</family>
+                                            <pointsize>11</pointsize>
+                                        </font>
+                                    </property>
+                                    <property name="text">
+                                        <string>Username</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>TextLabel3_2</cstring>
+                                    </property>
+                                    <property name="font">
+                                        <font>
+                                            <family>helvetica</family>
+                                            <pointsize>11</pointsize>
+                                        </font>
+                                    </property>
+                                    <property name="text">
+                                        <string>Password</string>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout11</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLineEdit">
+                                    <property name="name">
+                                        <cstring>txtName</cstring>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Name of the new connection</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit">
+                                    <property name="name">
+                                        <cstring>txtHost</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit">
+                                    <property name="name">
+                                        <cstring>txtDatabase</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit">
+                                    <property name="name">
+                                        <cstring>txtPort</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>5432</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit">
+                                    <property name="name">
+                                        <cstring>txtUsername</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit">
+                                    <property name="name">
+                                        <cstring>txtPassword</cstring>
+                                    </property>
+                                    <property name="echoMode">
+                                        <enum>Password</enum>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                    </hbox>
                 </widget>
-                <widget class="QLabel" row="1" column="0">
+                <widget class="QLayoutWidget" row="1" column="0">
                     <property name="name">
-                        <cstring>TextLabel1</cstring>
+                        <cstring>layout14</cstring>
                     </property>
-                    <property name="font">
-                        <font>
-                            <family>Helvetica [Adobe]</family>
-                            <pointsize>11</pointsize>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>Host</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>txtDatabase</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="0">
-                    <property name="name">
-                        <cstring>TextLabel2</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <family>helvetica</family>
-                            <pointsize>11</pointsize>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>Database</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="3" column="1">
-                    <property name="name">
-                        <cstring>txtUsername</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="3" column="0">
-                    <property name="name">
-                        <cstring>TextLabel3</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <family>Helvetica [Adobe]</family>
-                            <pointsize>11</pointsize>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>Username</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="4" column="1">
-                    <property name="name">
-                        <cstring>txtPassword</cstring>
-                    </property>
-                    <property name="echoMode">
-                        <enum>Password</enum>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>TextLabel1_2</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <family>Helvetica [Adobe]</family>
-                            <pointsize>11</pointsize>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>Name</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>txtName</cstring>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Name of the new connection</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="4" column="0">
-                    <property name="name">
-                        <cstring>TextLabel3_2</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                            <family>helvetica</family>
-                            <pointsize>11</pointsize>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>Password</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="3" column="2" rowspan="2" colspan="1">
-                    <property name="name">
-                        <cstring>btnConnect</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>Test Connect</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox" row="5" column="1" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>chkStorePassword</cstring>
-                    </property>
-                    <property name="font">
-                        <font>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>Save Password</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>chkStorePassword</cstring>
+                            </property>
+                            <property name="font">
+                                <font>
+                                </font>
+                            </property>
+                            <property name="text">
+                                <string>Save Password</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>btnConnect</cstring>
+                            </property>
+                            <property name="font">
+                                <font>
+                                </font>
+                            </property>
+                            <property name="text">
+                                <string>Test Connect</string>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
             </grid>
         </widget>
