@@ -5,18 +5,19 @@ INCLUDEPATH += . $(GDAL)\include \
                 $(POSTGRESQL)\src\include \
                 $(GEOS)\include
 LIBS += $(GDAL)\lib\gdal_i.lib \
-        $(GEOS)\lib\geos.lib
+        $(GEOS)\lib\geos.lib \
+        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib 
 CONFIG += qt thread rtti
 DLLDESTDIR= ..\..\src\lib\qgis
 # Input
-SOURCES += moc_qgisapp.cpp \
+SOURCES +=  moc_qgisapp.cpp \
 moc_qgisappbase.cpp \
 moc_qgisinterface.cpp \ 
 moc_qgsabout.cpp \
-moc_qgsattributedialog.cpp \
-moc_qgsattributedialogbase.cpp \
 moc_qgsattributeactiondialog.cpp \
 moc_qgsattributeactiondialogbase.cpp \
+moc_qgsattributedialog.cpp \
+moc_qgsattributedialogbase.cpp \
 moc_qgsattributetable.cpp \
 moc_qgsattributetablebase.cpp \
 moc_qgscontcoldialog.cpp \
@@ -25,6 +26,7 @@ moc_qgsdbsourceselect.cpp \
 moc_qgsdbsourceselectbase.cpp \
 moc_qgsdlgvectorlayerproperties.cpp \
 moc_qgsdlgvectorlayerpropertiesbase.cpp \
+moc_qgsgeomtypedialogbase.cpp \
 moc_qgsgramadialog.cpp \
 moc_qgsgramadialogbase.cpp \
 moc_qgsgramaextensionwidget.cpp \
@@ -40,6 +42,8 @@ moc_qgslegend.cpp \
 moc_qgslegenditembase.cpp \
 moc_qgslinestyledialog.cpp \
 moc_qgslinestyledialogbase.cpp \
+moc_qgsludialog.cpp \
+moc_qgsludialogbase.cpp \
 moc_qgsmapcanvas.cpp \
 moc_qgsmaplayer.cpp \
 moc_qgsmaplayerinterface.cpp \
@@ -55,6 +59,8 @@ moc_qgsoptions.cpp \
 moc_qgsoptionsbase.cpp \
 moc_qgspatterndialog.cpp \
 moc_qgspatterndialogbase.cpp \
+moc_qgspgquerybuilder.cpp \
+moc_qgspgquerybuilderbase.cpp \
 moc_qgspluginmanager.cpp \
 moc_qgspluginmanagerbase.cpp \
 moc_qgsprojectproperties.cpp \
@@ -68,12 +74,10 @@ moc_qgssisydialog.cpp \
 moc_qgssisydialogbase.cpp \
 moc_qgsuvaldialog.cpp \
 moc_qgsuvaldialogbase.cpp \
-moc_qgsludialogbase.cpp \
-moc_qgsludialog.cpp \
-moc_qgsvectorlayer.cpp \
-moc_splashscreen.cpp \
 moc_qgsuvalmadialog.cpp \
 moc_qgsuvalmadialogbase.cpp \
+moc_qgsvectorlayer.cpp \
+moc_splashscreen.cpp \
 qgisapp.cpp \
 qgisappbase.cpp \
 qgisiface.cpp \
@@ -103,6 +107,8 @@ qgsdlgvectorlayerpropertiesbase.cpp \
 qgsfeature.cpp \
 qgsfeatureattribute.cpp \
 qgsfield.cpp \
+qgsgeomtypedialog.cpp \
+qgsgeomtypedialogbase.cpp \
 qgsgraduatedmarenderer.cpp \
 qgsgraduatedsymrenderer.cpp \
 qgsgramadialog.cpp \
@@ -124,6 +130,8 @@ qgslegenditembase.cpp \
 qgslinestyledialog.cpp \
 qgslinestyledialogbase.cpp \
 qgslinesymbol.cpp \
+qgsludialog.cpp \
+qgsludialogbase.cpp \
 qgsmapcanvas.cpp \
 qgsmaplayer.cpp \
 qgsmaplayerregistry.cpp \
@@ -139,6 +147,8 @@ qgsoptions.cpp \
 qgsoptionsbase.cpp \
 qgspatterndialog.cpp \
 qgspatterndialogbase.cpp \
+qgspgquerybuilder.cpp \
+qgspgquerybuilderbase.cpp \
 qgspgutil.cpp \
 qgspluginitem.cpp \
 qgspluginmanager.cpp \
@@ -171,14 +181,9 @@ qgssymbologyutils.cpp \
 qgsuniquevalrenderer.cpp \
 qgsuvaldialog.cpp \
 qgsuvaldialogbase.cpp \
-qgsvectorfilewriter.cpp \
-qgsludialogbase.cpp \
-qgsludialog.cpp \
-qgsvectorlayer.cpp \
-qgsvectordataprovider.cpp \
 qgsuvalmadialog.cpp \
 qgsuvalmadialogbase.cpp \
 qgsuvalmarenderer.cpp \
-qgsgeomtypedialog.cpp \
-qgsgeomtypedialogbase.cpp \
-moc_qgsgeomtypedialogbase.cpp 
+qgsvectordataprovider.cpp \
+qgsvectorfilewriter.cpp \
+qgsvectorlayer.cpp 

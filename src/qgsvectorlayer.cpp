@@ -2077,5 +2077,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsCoordinateTran
 }
 
 void QgsVectorLayer::saveAsShapefile(){
-  QMessageBox::information(0,"Save As Shapefile", "Someday...");
+  // call the dataproviders saveAsShapefile method
+  dataProvider->saveAsShapefile();  
+//  QMessageBox::information(0,"Save As Shapefile", "Someday...");
 }

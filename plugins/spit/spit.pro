@@ -22,10 +22,12 @@ HEADERS += qgsconnectiondialog.h \
            qgsmessageviewer.h \
            qgsshapefile.h \
            qgsspit.h \
-           qgsspitplugin.h 
+           qgsspitplugin.h \
+           qgspgutil.h
 INTERFACES += qgsconnectiondialogbase.ui qgsmessageviewerbase.ui qgsspitbase.ui
 SOURCES += qgsconnectiondialog.cpp \
            qgsmessageviewer.cpp \
            qgsshapefile.cpp \
            qgsspit.cpp \
-           qgsspitplugin.cpp 
+           qgsspitplugin.cpp \
+           qgspgutil.cpp
