@@ -119,10 +119,12 @@ void QgsPgGeoprocessing::initGui()
 void QgsPgGeoprocessing::buffer()
 {
     // need to get a pointer to the current layer
-    QgsVectorLayer *lyr = (QgsVectorLayer *) qI->activeLayer();
-    if (lyr) {
+    QgsMapLayer *layer = qI->activeLayer();
+    if (layer) {
+        QgsVectorLayer *lyr = (QgsVectorLayer*)layer;
         // check the layer to see if its a postgres layer
-        if (lyr->providerType() == "postgres") {
+        if (layer->type() != QgsMapLayer::RASTER && 
+	    lyr->providerType() == "postgres") {
          
             QString dataSource = lyr->source(); //qI->activeLayerSource();
 
