@@ -25,6 +25,7 @@
 #include "qgspoint.h"
 #include "qgsfeature.h"
 #include <iostream>
+#include "qgsvectorlayerproperties.h"
 
 
 /**Renderer class which interpolates rgb values linear between the minimum and maximum value of the classification field*/
@@ -35,7 +36,7 @@ class QgsContinuousColRenderer: public QgsRenderer
     ~QgsContinuousColRenderer();
     /**Sets the initial symbology configuration for a layer. An instance of the corresponding renderer dialog is created and associated with the layer. Finally, a pixmap for the legend is drawn
      @param layer the vector layer associated with the renderer*/
-    void initializeSymbology(QgsVectorLayer* layer);
+    void initializeSymbology(QgsVectorLayer* layer, QgsVectorLayerProperties* pr=0);
     /**Renders the feature using the minimum and maximum value of the classification field*/
     void renderFeature(QPainter* p, QgsFeature* f, QgsCoordinateTransform* t);
     /**Returns the number of the classification field*/

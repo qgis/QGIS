@@ -22,6 +22,8 @@ class QgsVectorLayer;
 #include "qgssymbol.h"
 class QString;
 #include "qgsvectorlayerpropertiesbase.h"
+#include "qgsrenderer.h"
+#include "qpixmap.h"
 
 
 /**Property sheet for a map layer
@@ -42,11 +44,67 @@ public:
 	QgsSymbol* getSymbol();
 	/**Sets the legend type to "single symbol", "graduated symbol" or "continuous color"*/
 	void setLegendType(QString type);
+	/**Sets the dirty flag to false*/
+	void unsetRendererDirty();
+	/**Returns the value of rendererDirty*/
+	bool getRendererDirty() const;
+	/**Returns a pointer to the bufferDialog*/
+	QDialog* getBufferDialog();
+	/**Sets the buffer dialog*/
+	void setBufferDialog(QDialog* dialog);
+	QgsRenderer* getBufferRenderer();
+	QPixmap* getBufferPixmap();
 private:
 	QgsVectorLayer* layer;
+	/**Flag indicating if the render type still has to be changed (true) or not (false)*/
+	bool rendererDirty;
+	/**Renderer dialog. If the legend type has changed, it is assigned to the vectorlayer if apply or ok are pressed*/
+	QDialog* bufferDialog;
+	QgsRenderer* bufferRenderer;
+	QPixmap bufferPixmap;
+public slots:
+    void alterLayerDialog(const QString& string);
+    /**Sets the dirty flag to true*/ 
+    void setRendererDirty();
+    void apply();
+    void cancel();
 protected slots:
-    void showSymbolSettings();
-    void alterLayerDialog(const QString& string); 
+    void showSymbolSettings(); 
 };
+
+inline bool QgsVectorLayerProperties::getRendererDirty() const
+{
+    return rendererDirty;
+}
+
+inline void QgsVectorLayerProperties::setRendererDirty()
+{
+    rendererDirty=true; 
+}
+
+inline void QgsVectorLayerProperties::unsetRendererDirty()
+{
+    rendererDirty=false;
+}
+
+inline QDialog* QgsVectorLayerProperties::getBufferDialog()
+{
+    return bufferDialog;
+}
+
+inline void QgsVectorLayerProperties::setBufferDialog(QDialog* dialog)
+{
+    bufferDialog=dialog; 
+}
+
+inline QgsRenderer* QgsVectorLayerProperties::getBufferRenderer()
+{
+    return bufferRenderer;
+}
+
+inline QPixmap* QgsVectorLayerProperties::getBufferPixmap()
+{
+    return &bufferPixmap;
+}
 
 #endif

@@ -35,8 +35,11 @@
 #include <cfloat>
 #include "qgslegenditem.h"
 #include "qgscontinuouscolrenderer.h"
+#include "qgssisydialog.h"
+#include "qgsgrasydialog.h"
+#include "qgscontcoldialog.h"
 
-QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer* lyr):layer(lyr)
+QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer* lyr):layer(lyr), rendererDirty(false), bufferDialog(layer->rendererDialog()), bufferRenderer(layer->renderer())
 {
 	// populate the property sheet based on the layer properties
 	// general info
@@ -49,6 +52,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer* lyr):layer(ly
 	legendtypecombobox->insertItem(tr("graduated symbol"));
 	legendtypecombobox->insertItem(tr("continuous color"));
 	QObject::connect(legendtypecombobox,SIGNAL(activated(const QString&)),this,SLOT(alterLayerDialog(const QString&)));
+	QObject::connect(buttonOk,SIGNAL(clicked()),this,SLOT(apply()));
+	QObject::connect(buttonCancel,SIGNAL(clicked()),this,SLOT(cancel()));
 }
 
 QgsVectorLayerProperties::~QgsVectorLayerProperties()
@@ -63,36 +68,68 @@ QgsSymbol* QgsVectorLayerProperties::getSymbol()
 
 void QgsVectorLayerProperties::alterLayerDialog(const QString& string)
 {
+    if(rendererDirty)
+    {
+	delete bufferDialog;
+	delete bufferRenderer;	
+    }
+
     //create a new Dialog
     if(string==tr("single symbol"))
     {
-	QgsSingleSymRenderer* renderer=new QgsSingleSymRenderer();
-	layer->setRenderer(renderer);
-	renderer->initializeSymbology(layer);
+        bufferRenderer=new QgsSingleSymRenderer();
+	bufferRenderer->initializeSymbology(layer,this);
     }
     else if(string==tr("graduated symbol"))
     {
-	QgsGraduatedSymRenderer* renderer=new QgsGraduatedSymRenderer();
-	layer->setRenderer(renderer);
-	renderer->initializeSymbology(layer);
+	bufferRenderer=new QgsGraduatedSymRenderer();
+	bufferRenderer->initializeSymbology(layer,this);
     }
     else if(string==tr("continuous color"))
     {
-	QgsContinuousColRenderer* renderer=new QgsContinuousColRenderer();
-	layer->setRenderer(renderer);
-	renderer->initializeSymbology(layer);
+	bufferRenderer=new QgsContinuousColRenderer();
+	bufferRenderer->initializeSymbology(layer,this);
     }
-    layer->triggerRepaint();
-    
+    rendererDirty=true;
 }
 
 void QgsVectorLayerProperties::showSymbolSettings()
 {
-    layer->rendererDialog()->show();
-    layer->rendererDialog()->raise();
+    bufferDialog->show();
+    bufferDialog->raise();
 }
 
 void QgsVectorLayerProperties::setLegendType(QString type)
 {
     legendtypecombobox->setCurrentText(type);  
 }
+
+void QgsVectorLayerProperties::apply()
+{
+    if(rendererDirty)
+    {
+	layer->setRenderer(bufferRenderer);
+	layer->setRendererDialog(bufferDialog);
+	rendererDirty=false;
+	//copy the bufferPixmap to the vectorlayer and to its legend item
+	*(layer->legendPixmap())=bufferPixmap;
+	if(layer->legendItem())
+	{
+	    layer->legendItem()->setPixmap(0,bufferPixmap);
+	}
+    }
+    accept();
+    layer->triggerRepaint();
+}
+
+void QgsVectorLayerProperties::cancel()
+{
+    //todo: add code to free memory here
+    if(rendererDirty)
+    {
+	delete bufferDialog;
+	delete bufferRenderer;
+    }
+    reject();
+}
+

@@ -52,8 +52,14 @@ void QgsContinuousColRenderer::setMaximumItem(QgsRenderItem* it)
     m_maximumItem=it;
 }
 
-void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer* layer)
+void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer* layer, QgsVectorLayerProperties* pr)
 {
+    bool toproperties=false;//if false: rendererDialog is associated with the vector layer and image is rendered, true: rendererDialog is associated with buffer dialog of vector layer properties and no image is rendered
+    if(pr)
+    {
+	toproperties=true;
+    }
+
     setClassificationField(0);//the classification field does not matter
     
     if(layer)
@@ -73,7 +79,15 @@ void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer* layer)
 	QFont f( "times", 12, QFont::Normal );
 	QFontMetrics fm(f);
 
-	QPixmap* pixmap=layer->legendPixmap();
+	QPixmap* pixmap;
+	if(toproperties)
+	{
+	    pixmap=pr->getBufferPixmap();
+	}
+	else
+	{
+	    pixmap=layer->legendPixmap();
+	}
 	QString name=layer->name();
 	int width=40+fm.width(layer->name());
 	int height=(fm.height()+10>35) ? fm.height()+10 : 35;
@@ -117,12 +131,19 @@ void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer* layer)
 	setMaximumItem(QgsRenderItem2);
 
 	QgsContColDialog* dialog=new QgsContColDialog(layer);
-	layer->setRendererDialog(dialog);
-
-	QgsLegendItem* item;
-	if(item=layer->legendItem())
+       
+	if(toproperties)
 	{
-	    item->setPixmap(0,(*pixmap));
+	    pr->setBufferDialog(dialog);
+	}
+	else
+	{
+	    layer->setRendererDialog(dialog);
+	    QgsLegendItem* item;
+	    if(item=layer->legendItem())
+	    {
+		item->setPixmap(0,(*pixmap));
+	    }
 	}
     }
     else

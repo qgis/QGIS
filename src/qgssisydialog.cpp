@@ -126,7 +126,9 @@ void QgsSiSyDialog::apply()
     sy.pen().setWidth(outlinewidthspinbox->value());
     sy.pen().setColor(outlinecolorbutton->paletteBackgroundColor());
     QgsRenderItem ri(sy,"blabla", "blabla");
-    QgsSingleSymRenderer* renderer=dynamic_cast<QgsSingleSymRenderer*>(m_vectorlayer->renderer());
+    
+    QgsSingleSymRenderer* renderer=dynamic_cast<QgsSingleSymRenderer*>(m_vectorlayer->propertiesDialog()->getBufferRenderer());
+
     if(renderer)
     {
 	renderer->addItem(ri);
@@ -177,6 +179,10 @@ void QgsSiSyDialog::apply()
       m_vectorlayer->legendItem()->setPixmap(0,(*pix));
   }
 
-    //repaint the map canvas
-    m_vectorlayer->triggerRepaint();
+  m_vectorlayer->setRenderer(renderer);
+  m_vectorlayer->setRendererDialog(this);
+  m_vectorlayer->propertiesDialog()->unsetRendererDirty();
+
+  //repaint the map canvas
+  m_vectorlayer->triggerRepaint();
 }
