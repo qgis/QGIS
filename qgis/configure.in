@@ -27,48 +27,60 @@ dnl GDAL/OGR
 dnl ---------------------------------------------------------------------------
 AC_ARG_WITH(gdal,
   AC_HELP_STRING([--with-gdal=path],
-                 [Full path to 'gdal-config' script, e.g. '--with-gdal=/usr/local/bin/gdal-config']),
-  [if test -x "$with_gdal/gdal-config" ; then
-       GDAL_CONFIG="$with_gdal/gdal-config"
-   else
-       AC_MSG_ERROR("Cannot find $with_gdal")
-   fi],
-  [GDAL_CONFIG=`which gdal-config`
-   if test ! -x "$GDAL_CONFIG" ; then
-       AC_MSG_ERROR(["Cannot find gdal-config, try to use --with-gdal option"])
-   fi])
-
-AC_MSG_CHECKING([for GDAL/OGR])
-if test x`$GDAL_CONFIG --ogr-enabled` = "xno" ; then
-  AC_MSG_ERROR([GDAL must be compiled with OGR support and currently is not.])
+                 [Full path to 'gdal-config' script, e.g. '--with-gdal=/usr/local/bin/gdal-config']))
+								 
+AC_MSG_CHECKING([for GDAL])
+if test x"$with_gdal" = "xyes" -o x"$with_gdal" = "x" ; then
+	GDAL_CONFIG=`which gdal-config`
+	if test ! -x "$GDAL_CONFIG" ; then
+		AC_MSG_ERROR(["Cannot find gdal-config, try to use --with-gdal option"])
+	fi
+	AC_MSG_RESULT([yes])
+elif test x"$with_gdal" = "xno" ; then
+	ac_gdalogr=no
+	AC_MSG_RESULT([no])
+else
+	if test -x "$with_gdal/gdal-config" ; then
+		GDAL_CONFIG="$with_gdal/gdal-config"
+		AC_MSG_RESULT([yes])
+	else
+		AC_MSG_ERROR("Cannot find $with_gdal/gdal-config")
+	fi
 fi
-AC_MSG_RESULT(yes)
 
-GDAL_LIB="`$GDAL_CONFIG --libs`"
-GDAL_CFLAGS="`$GDAL_CONFIG --cflags`"
+if test x"$ac_gdalogr" != "xno" ; then
+	AC_MSG_CHECKING([for OGR in GDAL])
+	if test x`$GDAL_CONFIG --ogr-enabled` = "xno" ; then
+	  AC_MSG_ERROR([GDAL must be compiled with OGR support and currently is not.])
+	fi
+	AC_MSG_RESULT(yes)
+	ac_gdalogr=yes
 
-AC_SUBST(GDAL_LIB)
-AC_SUBST(GDAL_CFLAGS)
+	GDAL_LIB="`$GDAL_CONFIG --libs`"
+	GDAL_CFLAGS="`$GDAL_CONFIG --cflags`"
 
+	AC_SUBST(GDAL_LIB)
+	AC_SUBST(GDAL_CFLAGS)
+fi
 
 
 dnl ---------------------------------------------------------------------------
 dnl PostgreSQL
 dnl ---------------------------------------------------------------------------
-AC_ARG_WITH(pg,
-  AC_HELP_STRING([--with-pg=path],
+AC_ARG_WITH(postgresql,
+  AC_HELP_STRING([--with-postgresql=path],
                  [PostgreSQL (PostGIS) Support (full path to pg_config)]))
 
 AC_MSG_CHECKING([for PostgreSQL])
-if test x"$with_pg" = "xyes" -o x"$with_pg" = "x" ; then
+if test x"$with_postgresql" = "xyes" -o x"$with_postgresql" = "x" ; then
   AC_MSG_RESULT([yes])
   AC_PATH_PROG([PG_CONFIG], [pg_config], [no])
-elif test x"$with_pg" = "xno" ; then
+elif test x"$with_postgresql" = "xno" ; then
   AC_MSG_RESULT([no])
   PG_CONFIG=no
 else
   AC_MSG_RESULT([yes])
-  PG_CONFIG="$with_pg/pg_config"
+  PG_CONFIG="$with_postgresql/pg_config"
 fi
 
 if test x"$PG_CONFIG" != "xno" ; then
@@ -88,6 +100,14 @@ AM_CONDITIONAL([HAVE_POSTGRESDB], [test "$ac_postgresql" = "yes"])
 
 
 dnl ---------------------------------------------------------------------------
+dnl checking if gdal and/or postgresql are available
+dnl ---------------------------------------------------------------------------
+if test x"$ac_postgresql" = "xno" -a x"$ac_gdalogr" = "xno"; then
+	AC_MSG_ERROR("QGIS without GDAL(with OGR support) and PostgreSQL makes no sense!")
+fi
+
+
+dnl ---------------------------------------------------------------------------
 dnl SPIT plugin
 dnl ---------------------------------------------------------------------------
 AC_ARG_ENABLE(spit,
@@ -97,11 +117,15 @@ AC_ARG_ENABLE(spit,
                  
 AC_MSG_CHECKING([for SPIT])
 if test x"$ac_spit" = "xyes"; then
-	if test x"$ac_postgresql" = "xyes"; then
+	if test x"$ac_postgresql" = "xyes" -a x"$ac_gdalogr" = "xyes"; then
 		AC_MSG_RESULT([yes])
 	else
 		ac_spit="no"
-		AC_MSG_RESULT([no (no PostgreSQL available)])
+		if test x"$ac_postgresql" = "xno" ; then
+			AC_MSG_RESULT([no (PostgreSQL not available)])
+		else
+			AC_MSG_RESULT([no (GDAL with OGR support not available)])
+		fi
 	fi
 else
   AC_MSG_RESULT([no])
@@ -198,7 +222,7 @@ echo ""
 echo "=========================================="
 echo "$PACKAGE $VERSION"
 echo "------------------------------------------"
-echo "GDAL/OGR      : yes"
+echo "GDAL/OGR      : $ac_gdalogr"
 echo "PostgreSQL    : $ac_postgresql"
 echo "SPIT          : $ac_spit"
 echo ""
