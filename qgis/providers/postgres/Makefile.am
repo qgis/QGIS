@@ -2,11 +2,12 @@ plugindir = ${pkglibdir}
 plugin_LTLIBRARIES     = postgresprovider.la
                       
 postgresprovider_la_SOURCES = qgspostgresprovider.cpp \
-                      ../../src/qgsfeature.cpp \
-                       ../../src/qgsfeatureattribute.cpp \
-                       ../../src/qgsrect.cpp \
-                       ../../src/qgspoint.cpp \
-                       ../../src/qgsfield.cpp       
+														qgspostgresprovider.h \
+														../../src/qgsfeature.cpp \
+														../../src/qgsfeatureattribute.cpp \
+														../../src/qgsrect.cpp \
+														../../src/qgspoint.cpp \
+														../../src/qgsfield.cpp       
                        
 AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) $(DEBUG_QGIS)
 
