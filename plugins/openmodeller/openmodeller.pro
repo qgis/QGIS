@@ -19,7 +19,8 @@ INCLUDEPATH += . %GDAL%\include ..\..\qgis_win32\plugins ..\..\qgis_win32\src
 #libs for standalone mode
 #LIBS += $(GDAL)\lib\gdal_i.lib libopenmodeller_static.lib 
 #libs for dll
-LIBS += $(GDAL)\lib\gdal_i.lib libopenmodeller_static.lib ..\..\qgis_win32\src\libqgis.lib
+#LIBS += $(GDAL)\lib\gdal_i.lib libopenmodeller_static.lib ..\..\qgis_win32\src\libqgis.lib
+LIBS += libopenmodeller_static.lib ..\..\qgis_win32\src\libqgis.lib
 
 # config for standalone mode
 # CONFIG += qt thread rtti debug console

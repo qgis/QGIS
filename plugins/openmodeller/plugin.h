@@ -21,7 +21,6 @@
 #ifndef PLUGIN
 #define PLUGIN
 #include <qwidget.h>
-
 #include <qgisapp.h>
 #include <qgisplugin.h>
 

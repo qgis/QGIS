@@ -47,12 +47,12 @@
 #else
   #include <openmodeller/om_control.hh>
   #include <openmodeller/om.hh>
+  //gdal includes
+  #include "gdal_priv.h"
 #endif
   #include <om_alg_parameter.hh>
   #include <request_file.hh>
 
-//gdal includes
-#include "gdal_priv.h"
 
 //standard includes
 #include <stdlib.h>
@@ -1001,6 +1001,9 @@ void OpenModellerGui::traverseDirectories(const QString& dirname)
             (fi->extension(false)=="bil") ||
             (fi->extension(false)=="jpg")   )
     {      
+#ifdef WIN32
+ //dont test layers with gdal
+#else
       //test whether the file is GDAL compatible
 
       GDALAllRegister();
@@ -1034,6 +1037,7 @@ void OpenModellerGui::traverseDirectories(const QString& dirname)
 
         GDALClose(myTestFile);
       }  
+#endif
     }
     ++it;
   }

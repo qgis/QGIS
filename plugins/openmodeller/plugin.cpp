@@ -30,12 +30,9 @@ email                : tim@linfiniti.com
 
 #include <qtoolbar.h>
 #include <qmenubar.h>
-#include <qmessagebox.h>
 #include <qpopupmenu.h>
-#include <qlineedit.h>
 #include <qaction.h>
 #include <qapplication.h>
-#include <qcursor.h>
 #include <qfileinfo.h>
 //non qt includes
 #include <iostream>
@@ -153,35 +150,41 @@ void Plugin::unload()
 // Class factory to return a new instance of the plugin class
 QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
+  std::cout << " omgui classfactory called" << std::endl;
   return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
 QGISEXTERN QString name()
 {
+  std::cout << " omgui classfactory called" << std::endl;
   return sName;
 }
 
 // Return the description
 QGISEXTERN QString description()
 {
+  std::cout << " omgui description called" << std::endl;
   return sDescription;
 }
 
 // Return the type (either UI or MapLayer plugin)
 QGISEXTERN int type()
 {
+  std::cout << " omgui type called" << std::endl;
   return sType;
 }
 
 // Return the version number for the plugin
 QGISEXTERN QString version()
 {
+  std::cout << " omgui version called" << std::endl;
   return sVersion;
 }
 
 // Delete ourself
 QGISEXTERN void unload(QgisPlugin * thePluginPointer)
 {
+  std::cout << " omgui unload called" << std::endl;
   delete thePluginPointer;
 }
