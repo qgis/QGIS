@@ -72,7 +72,7 @@ void QgsSpit::addFile()
   QStringList files = QFileDialog::getOpenFileNames(
     "Shapefiles (*.shp);; All Files (*)", "", this, "add file dialog", "Add Shapefiles" );
   for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it ){
-    QCheckListItem *lvi = new QCheckListItem(lstShapefiles, *it ,QCheckListItem::CheckBox);
+    QListViewItem *lvi = new QListViewItem(lstShapefiles, *it);
   	lvi->setText(1, "Polygon");
     lvi->setText(2, "2Mb");
   }

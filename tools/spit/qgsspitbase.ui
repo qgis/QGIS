@@ -142,6 +142,22 @@
                     <string>Add</string>
                 </property>
             </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>btnRemoveFile</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>290</x>
+                        <y>30</y>
+                        <width>118</width>
+                        <height>29</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Remove</string>
+                </property>
+            </widget>
             <widget class="QListView">
                 <column>
                     <property name="text">
@@ -187,21 +203,8 @@
                         <height>260</height>
                     </rect>
                 </property>
-            </widget>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>btnRemoveFile</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>290</x>
-                        <y>30</y>
-                        <width>118</width>
-                        <height>29</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Remove</string>
+                <property name="selectionMode">
+                    <enum>Extended</enum>
                 </property>
             </widget>
         </widget>

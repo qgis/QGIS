@@ -52,8 +52,17 @@ Sources=*.cpp,*.c,*.cc,*.C,*.cxx,*.ec,*.ecpp,*.lxx,*.l++,*.ll,*.l
 User Interface=*.kdevdlg,*.ui,*.rc,*.dlg
 groups=Headers,Sources,User Interface,GNU,Others
 
+[Makefile]
+dist=true
+install=false
+install_location=
+type=DATA
+
 [Makefile.am]
-files=spit.kdevprj,AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,main.cpp,qgsconnectiondialogbase.cpp,qgsconnectiondialogbase.h,qgsspitbase.cpp,qgsspitbase.h,qgsspit.cpp,qgsspit.h,qgsconnectiondialog.h,qgsconnectiondialog.cpp
+dist=true
+files=spit.kdevprj,AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,main.cpp,qgsconnectiondialogbase.cpp,qgsconnectiondialogbase.h,qgsspitbase.cpp,qgsspitbase.h,qgsspit.cpp,qgsspit.h,qgsconnectiondialog.h,qgsconnectiondialog.cpp,Makefile,Makefile.am,moc_qgsconnectiondialogbase.cpp,moc_qgsspitbase.cpp,qgsconnectiondialogbase.ui,qgsspitbase.ui,spit.kdevses,spit.pro
+install=false
+install_location=
 sub_dirs=spit,src
 type=static_library
 
@@ -70,6 +79,18 @@ install_location=
 type=DATA
 
 [main.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[moc_qgsconnectiondialogbase.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[moc_qgsspitbase.cpp]
 dist=true
 install=false
 install_location=
@@ -99,6 +120,12 @@ install=false
 install_location=
 type=HEADER
 
+[qgsconnectiondialogbase.ui]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
 [qgsspit.cpp]
 dist=true
 install=false
@@ -123,7 +150,25 @@ install=false
 install_location=
 type=HEADER
 
+[qgsspitbase.ui]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
 [spit.kdevprj]
+dist=true
+install=false
+install_location=
+type=DATA
+
+[spit.kdevses]
+dist=true
+install=false
+install_location=
+type=DATA
+
+[spit.pro]
 dist=true
 install=false
 install_location=
