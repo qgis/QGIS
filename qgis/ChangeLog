@@ -1,8 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.127 2004/06/13 15:02:32 timlinux Exp
+ChangeLog,v 1.128 2004/06/13 15:52:10 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
-2004-06-10 [ts] 0.3.0devel31
+2004-06-13 [ts] 0.3.0devel32
+** Add version name to splash
+
+2004-06-13 [ts] 0.3.0devel31
 ** Implemented a new map cursor type : Capture Point (little pencil icon on your toolbar). 
    At the moment clicking on the map in capture point mode will cause QgsMapCanvas to emit 
    an xyClickCoordinate(QgsPoint) signal which is picked up by qgisapp and the coordinates
