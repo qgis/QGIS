@@ -4284,3 +4284,5 @@ void QgisApp::keyPressEvent ( QKeyEvent * e )
     std::cout << e->ascii() << " (keypress recevied)" << std::endl;
     emit keyPressed (e);
 }
+
+

@@ -27,6 +27,7 @@
 #include <netinet/in.h>
 #endif
 
+#include <qobject.h>
 #include <qstring.h>
 
 class QgsRect;
@@ -35,11 +36,21 @@ class QgsField;
 class QgsDataSourceURI;
 
 /** \class QgsDataProvider
-* \brief Abstract base class for spatial data provider implementations
-  *@author Gary E.Sherman
-  */
+ * \brief Abstract base class for spatial data provider implementations
+ * @author Gary E.Sherman
+ * 
+ * This object needs to inherit from QObject to enable event 
+ * processing in the Postgres/PostGIS provider (QgsPostgresProvider).
+ * It is called *here* so that this vtable and the vtable for 
+ * QgsPostgresProvider don't get misaligned - 
+ * the QgsVectorLayer class factory (which refers
+ * to generic QgsVectorDataProvider's) depends on it.
+ */
 
-class QgsDataProvider {
+
+class QgsDataProvider : public QObject {
+
+Q_OBJECT
 
 public: 
   /**
@@ -151,6 +162,14 @@ public:
     return QString::null;
   }
 
+signals:
+  
+  /** 
+   *   This is emitted whenever the worker thread has fully calculated the
+   *   PostGIS extents for this layer, and its event has been received by this
+   *   provider.
+   */  
+  virtual void fullExtentCalculated();
     
 };
 
