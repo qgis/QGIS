@@ -120,7 +120,7 @@ class QgsVectorLayer:public QgsMapLayer
   QString providerKey;
   
 	bool registered;
-  QPopupMenu *popMenu;
+  
 	enum ENDIAN
 	{
 		NDR = 1,
@@ -137,6 +137,7 @@ class QgsVectorLayer:public QgsMapLayer
 	};
   private:						// Private methods
 	int endian();
+	
 
 };
 
