@@ -66,8 +66,8 @@ class GDALRasterBand;
 struct RasterBandStats
 {
     QString bandName;
+    int bandNoInt; //the gdal band number (starts at 1)
     bool statsGatheredFlag; //use so we can only gather stats once for a layer
-    int bandNo;
     double minValDouble;
     double maxValDouble;
     //the distance between min & max
@@ -98,7 +98,7 @@ struct RasterViewPort
 };
 
 
-typedef QMap<QString, RasterBandStats> RasterStatsMap;
+typedef QValueVector<RasterBandStats> RasterStatsVector;
 
 /*! \class QgsRasterLayer
  * \brief Raster layer class
@@ -144,12 +144,16 @@ public:
     //get the number of bands in this layer
     const unsigned int getBandCount()
     {
-        return rasterStatsMap.size();
+        return rasterStatsVector.size();
     };
     // Get RasterBandStats for a band given its numer (read only)
     const  RasterBandStats getRasterBandStats(int);
+    /** Check whether a given band number has stats associated with it */
+    const bool hasStats(int theBandNoInt);
     // Overloaded method that also returns stats for a band, but uses the band color name
-    const  RasterBandStats getRasterBandStats(QString theBandName);
+    // Note this approach is not recommeneded because it is possibly for two gdal raster
+    // bands to have the same name!
+    const  RasterBandStats getRasterBandStats(QString);
     // Find out whether a given band exists
     bool hasBand(QString theBandName);
     //accessor for transparency level
@@ -318,27 +322,31 @@ private:
     //
     void showDebugOverlay(QPainter * theQPainter, RasterViewPort * theRasterViewPort);
 
-    void drawSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort, GDALRasterBand * theGdalBand);
+    void drawSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort,int theBandNoInt);
 
-    void drawSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,  GDALRasterBand * theGdalBand);
+    void drawSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,int theBandNoInt);
 
     void drawPalettedSingleBandGray(QPainter * theQPainter,
                                 RasterViewPort * theRasterViewPort,
-                                GDALRasterBand * theGdalBand,
+                                int theBandNoInt,
                                 QString theColorQString);
 
     void drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
                                 RasterViewPort * theRasterViewPort,
-                                GDALRasterBand * theGdalBand,
+                                int theBandNoInt,
                                 QString theColorQString);
 
     void drawPalettedMultiBandColor(QPainter * theQPainter,
                                 RasterViewPort * theRasterViewPort,
-                                GDALRasterBand * theGdalBand);
+                                int theBandNoInt);
 
-    void drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort, GDALRasterBand * theGdalBand);
+    void drawMultiBandSingleBandGray(QPainter * theQPainter,
+                                RasterViewPort * theRasterViewPort, 
+                                int theBandNoInt);
 
-    void drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort, GDALRasterBand * theGdalBand);
+    void drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, 
+                                RasterViewPort * theRasterViewPort, 
+                                int theBandNoInt);
 
     void drawMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort);
 
@@ -349,9 +357,6 @@ private:
 
     //flag to indicate whether debug infor overlay should be rendered onto the raster
     bool showDebugOverlayFlag;
-    //private method to calculate various stats about this layers band. If none is specified it will try to calc
-    // stats for any Undefined, Gray or Palette layers it finds.
-    void calculateStats(QString theBandNameQString);
     GDALDataset * gdalDataset;
     // values for mapping pixel to world coordinates
     double adfGeoTransform[6];
@@ -360,8 +365,8 @@ private:
     // Number of stddev to plot (0) to ignore
     double stdDevsToPlotDouble;
     // a collection of stats - one for each band in the layer
-    // the map key corresonds to the gdal GetColorInterpretation for that band
-    RasterStatsMap rasterStatsMap;
+    // the typedef for this is defined above before class declaration
+    RasterStatsVector rasterStatsVector;
     // transparency for this layer should be 0-255
     unsigned int transparencyLevelInt;
     //the band to be associated with the color red - usually 1
