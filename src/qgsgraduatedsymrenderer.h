@@ -56,7 +56,11 @@ class QgsGraduatedSymRenderer: public QgsRenderer
        @param pr the property dialog. This is only needed if the renderer is created from the property dialog and not yet associated with the vector layer, otherwise 0*/
     void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     /**Returns the list with the render items*/
-    std::list<QgsRangeRenderItem*>& items();
+    std::list<QgsRangeRenderItem*>& items(); 
+    /**Reads the renderer configuration from an XML file
+     @param rnode the DOM node to read 
+     @param vl the vector layer which will be associated with the renderer*/
+    virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file*/
     virtual void writeXML(std::ofstream& xml);
     /** Returns true*/

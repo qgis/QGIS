@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.35 2004/04/17 17:36:02 mhugent Exp */
+/* qgsprojectio.cpp,v 1.36 2004/04/19 05:28:50 mhugent Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -29,6 +29,7 @@
 #include "qgsprojectio.h"
 #include "qgssinglesymrenderer.h"
 #include "qgssimarenderer.h"
+#include "qgsgraduatedmarenderer.h"
 #include "qgsgraduatedsymrenderer.h"
 #include "qgscontinuouscolrenderer.h"
 #include "qgssymbologyutils.h"
@@ -210,317 +211,37 @@ bool QgsProjectIo::read(QString path)
               QDomNode graduatednode = node.namedItem("graduatedsymbol");
               QDomNode continuousnode = node.namedItem("continuoussymbol");
 	      QDomNode singlemarkernode = node.namedItem("singlemarker");
-
-              if (!singlenode.isNull()) //read configuration for single symbol
-                {
-                  QgsSymbol* sy = new QgsSymbol();
-                  QPen pen;
-                  QBrush brush;
-
-                  QDomNode rinode = singlenode.namedItem("renderitem");
-
-                  QDomNode vnode = rinode.namedItem("value");
-                  QDomElement velement = vnode.toElement();
-                  QString value = velement.text();
-
-                  QDomNode synode = rinode.namedItem("symbol");
-
-                  QDomNode outlcnode = synode.namedItem("outlinecolor");
-                  QDomElement oulcelement = outlcnode.toElement();
-                  int red = oulcelement.attribute("red").toInt();
-                  int green = oulcelement.attribute("green").toInt();
-                  int blue = oulcelement.attribute("blue").toInt();
-                  pen.setColor(QColor(red, green, blue));
-
-                  QDomNode outlstnode = synode.namedItem("outlinestyle");
-                  QDomElement outlstelement = outlstnode.toElement();
-                  pen.setStyle(QgsSymbologyUtils::qString2PenStyle(outlstelement.text()));
-
-                  QDomNode outlwnode = synode.namedItem("outlinewidth");
-                  QDomElement outlwelement = outlwnode.toElement();
-                  pen.setWidth(outlwelement.text().toInt());
-
-                  QDomNode fillcnode = synode.namedItem("fillcolor");
-                  QDomElement fillcelement = fillcnode.toElement();
-                  red = fillcelement.attribute("red").toInt();
-                  green = fillcelement.attribute("green").toInt();
-                  blue = fillcelement.attribute("blue").toInt();
-                  brush.setColor(QColor(red, green, blue));
-
-                  QDomNode fillpnode = synode.namedItem("fillpattern");
-                  QDomElement fillpelement = fillpnode.toElement();
-                  brush.setStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));
-
-                  QDomNode lnode = rinode.namedItem("label");
-                  QDomElement lnodee = lnode.toElement();
-                  QString label = lnodee.text();
-
-                  //create a renderer and add it to the vector layer
-                  sy->setBrush(brush);
-                  sy->setPen(pen);
-                  QgsRenderItem* ri = new QgsRenderItem(sy, value, label);
-                  QgsSingleSymRenderer *srenderer = new QgsSingleSymRenderer();
-                  srenderer->addItem(ri);
-                  dbl->setRenderer(srenderer);
-                  QgsSiSyDialog *sdialog = new QgsSiSyDialog(dbl);
-                  dbl->setRendererDialog(sdialog);
-
-                  QgsDlgVectorLayerProperties *properties = new QgsDlgVectorLayerProperties(dbl);
-                  dbl->setLayerProperties(properties);
-                  properties->setLegendType("Single Symbol");
-
-                  sdialog->apply();
-                }
-
-              else if (!graduatednode.isNull()) //read configuration for graduated symbol
-                {
-                  QgsGraduatedSymRenderer *grenderer = new QgsGraduatedSymRenderer();
-
-                  QDomNode classnode = graduatednode.namedItem("classificationfield");
-                  int classificationfield = classnode.toElement().text().toInt();
-                  grenderer->setClassificationField(classificationfield);
-
-                  QDomNode rangerendernode = graduatednode.namedItem("rangerenderitem");
-                  while (!rangerendernode.isNull())
-                    {
-                      QgsSymbol* sy = new QgsSymbol();
-                      QPen pen;
-                      QBrush brush;
-
-                      QDomNode lvnode = rangerendernode.namedItem("lowervalue");
-                      QString lowervalue = lvnode.toElement().text();
-
-                      QDomNode uvnode = rangerendernode.namedItem("uppervalue");
-                      QString uppervalue = uvnode.toElement().text();
-
-                      QDomNode synode = rangerendernode.namedItem("symbol");
-
-                      QDomElement oulcelement = synode.namedItem("outlinecolor").toElement();
-                      int red = oulcelement.attribute("red").toInt();
-                      int green = oulcelement.attribute("green").toInt();
-                      int blue = oulcelement.attribute("blue").toInt();
-                      pen.setColor(QColor(red, green, blue));
-
-                      QDomElement oustelement = synode.namedItem("outlinestyle").toElement();
-                      pen.setStyle(QgsSymbologyUtils::qString2PenStyle(oustelement.text()));
-
-                      QDomElement oulwelement = synode.namedItem("outlinewidth").toElement();
-                      pen.setWidth(oulwelement.text().toInt());
-
-                      QDomElement fillcelement = synode.namedItem("fillcolor").toElement();
-                      red = fillcelement.attribute("red").toInt();
-                      green = fillcelement.attribute("green").toInt();
-                      blue = fillcelement.attribute("blue").toInt();
-                      brush.setColor(QColor(red, green, blue));
-
-                      QDomElement fillpelement = synode.namedItem("fillpattern").toElement();
-                      brush.setStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));
-
-                      QDomElement labelelement = rangerendernode.namedItem("label").toElement();
-                      QString label = labelelement.text();
-
-                      //create a renderitem and add it to the renderer
-                      sy->setBrush(brush);
-                      sy->setPen(pen);
-
-                      QgsRangeRenderItem *ri = new QgsRangeRenderItem(sy, lowervalue, uppervalue, label);
-                      grenderer->addItem(ri);
-
-                      rangerendernode = rangerendernode.nextSibling();
-                    }
-
-                  dbl->setRenderer(grenderer);
-                  QgsGraSyDialog *gdialog = new QgsGraSyDialog(dbl);
-                  dbl->setRendererDialog(gdialog);
-
-                  QgsDlgVectorLayerProperties *properties = new QgsDlgVectorLayerProperties(dbl);
-                  dbl->setLayerProperties(properties);
-                  properties->setLegendType("Graduated Symbol");
-
-                  gdialog->apply();
-                }
-
-              else if (!continuousnode.isNull())  //read configuration for continuous symbol
-                {
-                  qWarning("continuous node");
-                  QgsSymbol* lsy = new QgsSymbol(); 
-		  QgsSymbol* usy = new QgsSymbol();
-                  QPen lpen, upen;
-                  QBrush lbrush, ubrush;
-
-                  QgsContinuousColRenderer *crenderer = new QgsContinuousColRenderer();
-
-                  QDomNode classnode = continuousnode.namedItem("classificationfield");
-                  int classificationfield = classnode.toElement().text().toInt();
-		  crenderer->setClassificationField(classificationfield);
-
-                  //read the settings for the renderitem of the minimum value
-                  QDomNode lowernode = continuousnode.namedItem("lowestitem");
-                  QDomNode litemnode = lowernode.namedItem("renderitem");
-                  QString lvalue = litemnode.namedItem("value").toElement().text();
-
-                  QDomNode lsymbol = litemnode.namedItem("symbol");
-
-                  QDomElement loulcelement = lsymbol.namedItem("outlinecolor").toElement();
-                  int red = loulcelement.attribute("red").toInt();
-                  int green = loulcelement.attribute("green").toInt();
-                  int blue = loulcelement.attribute("blue").toInt();
-                  lpen.setColor(QColor(red, green, blue));
-
-                  QDomElement loustelement = lsymbol.namedItem("outlinestyle").toElement();
-                  lpen.setStyle(QgsSymbologyUtils::qString2PenStyle(loustelement.text()));
-
-                  QDomElement loulwelement = lsymbol.namedItem("outlinewidth").toElement();
-                  lpen.setWidth(loulwelement.text().toInt());
-
-                  QDomElement lfillcelement = lsymbol.namedItem("fillcolor").toElement();
-                  red = lfillcelement.attribute("red").toInt();
-                  green = lfillcelement.attribute("green").toInt();
-                  blue = lfillcelement.attribute("blue").toInt();
-                  lbrush.setColor(QColor(red, green, blue));
-
-                  QDomElement lfillpelement = lsymbol.namedItem("fillpattern").toElement();
-                  lbrush.setStyle(QgsSymbologyUtils::qString2BrushStyle(lfillpelement.text()));
-
-                  QString llabel = litemnode.namedItem("label").toElement().text();
-
-                  //read the settings tor the renderitem of the maximum value
-                  QDomNode uppernode = continuousnode.namedItem("highestitem");
-                  QDomNode uitemnode = uppernode.namedItem("renderitem");
-                  QString uvalue = uitemnode.namedItem("value").toElement().text();
-
-                  QDomNode usymbol = uitemnode.namedItem("symbol");
-
-                  QDomElement uoulcelement = usymbol.namedItem("outlinecolor").toElement();
-                  red = uoulcelement.attribute("red").toInt();
-                  green = uoulcelement.attribute("green").toInt();
-                  blue = uoulcelement.attribute("blue").toInt();
-                  upen.setColor(QColor(red, green, blue));
-
-                  QDomElement uoustelement = usymbol.namedItem("outlinestyle").toElement();
-                  upen.setStyle(QgsSymbologyUtils::qString2PenStyle(uoustelement.text()));
-
-                  QDomElement uoulwelement = usymbol.namedItem("outlinewidth").toElement();
-                  upen.setWidth(uoulwelement.text().toInt());
-
-                  QDomElement ufillcelement = usymbol.namedItem("fillcolor").toElement();
-                  red = ufillcelement.attribute("red").toInt();
-                  qWarning("red: " + QString::number(red));
-                  green = ufillcelement.attribute("green").toInt();
-                  qWarning("green: " + QString::number(green));
-                  blue = ufillcelement.attribute("blue").toInt();
-                  qWarning("blue: " + QString::number(blue));
-                  ubrush.setColor(QColor(red, green, blue));
-
-                  QDomElement ufillpelement = usymbol.namedItem("fillpattern").toElement();
-                  ubrush.setStyle(QgsSymbologyUtils::qString2BrushStyle(ufillpelement.text()));
-
-                  QString ulabel = uitemnode.namedItem("label").toElement().text();
-
-                  //add all together
-                  lsy->setPen(lpen);
-                  lsy->setBrush(lbrush);
-                  usy->setPen(upen);
-                  usy->setBrush(ubrush);
-
-                  QgsRenderItem *litem = new QgsRenderItem(lsy, lvalue, llabel);
-                  QgsRenderItem *uitem = new QgsRenderItem(usy, uvalue, ulabel);
-
-                  crenderer->setMinimumItem(litem);
-                  crenderer->setMaximumItem(uitem);
-
-                  dbl->setRenderer(crenderer);
-                  QgsContColDialog *cdialog = new QgsContColDialog(dbl);
-                  dbl->setRendererDialog(cdialog);
-
-                  QgsDlgVectorLayerProperties *properties = new QgsDlgVectorLayerProperties(dbl);
-                  dbl->setLayerProperties(properties);
-                  properties->setLegendType("Continuous Color");
-
-                  cdialog->apply();
-
-                }else if(!singlemarkernode.isNull())
-		{
-		    QgsMarkerSymbol* msy = new QgsMarkerSymbol();
-		    QPen pen;
-		    QBrush brush;
-		    QString svgpath;
-		    double scalefactor;
-		    QString value, label;
-
-		    QDomNode rinode = singlemarkernode.namedItem("renderitem");
-
-		    QDomNode vnode = rinode.namedItem("value");
-		    QDomElement velement = vnode.toElement();
-		    value = velement.text();
-
-		    QDomNode synode = rinode.namedItem("markersymbol");
-		    
-
-		    QDomNode svgnode = synode.namedItem("svgpath");
-		    svgpath = svgnode.toElement().text();
-
-		    QDomNode scalenode = synode.namedItem("scalefactor");
-		    scalefactor = scalenode.toElement().text().toDouble();
-
-		    QDomNode outlcnode = synode.namedItem("outlinecolor");
-		    QDomElement oulcelement = outlcnode.toElement();
-		    int red = oulcelement.attribute("red").toInt();
-		    int green = oulcelement.attribute("green").toInt();
-		    int blue = oulcelement.attribute("blue").toInt();
-		    pen.setColor(QColor(red, green, blue));
-
-		    QDomNode outlstnode = synode.namedItem("outlinestyle");
-		    QDomElement outlstelement = outlstnode.toElement();
-		    pen.setStyle(QgsSymbologyUtils::qString2PenStyle(outlstelement.text()));
-
-		    QDomNode outlwnode = synode.namedItem("outlinewidth");
-		    QDomElement outlwelement = outlwnode.toElement();
-		    pen.setWidth(outlwelement.text().toInt());
-
-		    QDomNode fillcnode = synode.namedItem("fillcolor");
-		    QDomElement fillcelement = fillcnode.toElement();
-		    red = fillcelement.attribute("red").toInt();
-		    green = fillcelement.attribute("green").toInt();
-		    blue = fillcelement.attribute("blue").toInt();
-		    brush.setColor(QColor(red, green, blue));
-
-		    QDomNode fillpnode = synode.namedItem("fillpattern");
-		    QDomElement fillpelement = fillpnode.toElement();
-		    brush.setStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));
-
-		    QDomNode lnode = rinode.namedItem("label");
-		    QDomElement lnodee = lnode.toElement();
-		    label = lnodee.text();
-
-		    //create a renderer and add it to the vector layer
-		    msy->setBrush(brush);
-		    msy->setPen(pen);
-		    msy->setPicture(svgpath);
-		    qWarning("the svgpath: "+svgpath);
-		    msy->setScaleFactor(scalefactor);
-		    qWarning("the scalefactor: "+QString::number(scalefactor,'f',2));
-
-		    QgsRenderItem* ri = new QgsRenderItem();
-		    ri->setSymbol(msy);
-		    ri->setLabel(label);
-		    ri->setValue(value);
-
-		    QgsSiMaRenderer *smrenderer = new QgsSiMaRenderer();
-		    smrenderer->addItem(ri);
-		    dbl->setRenderer(smrenderer);
-		    QgsSiMaDialog *smdialog = new QgsSiMaDialog(dbl);
-		    dbl->setRendererDialog(smdialog);
-
-		    QgsDlgVectorLayerProperties *properties = new QgsDlgVectorLayerProperties(dbl);
-		    dbl->setLayerProperties(properties);
-		    properties->setLegendType("Single Marker");
-
-		    smdialog->apply();
-		}
+	      QDomNode graduatedmarkernode = node.namedItem("graduatedmarker");
+
+	      QgsRenderer* renderer;
+
+	      if (!singlenode.isNull())
+	      {
+		  renderer = new QgsSingleSymRenderer();
+		  renderer->readXML(singlenode,*dbl);
+	      }
+	      else if (!graduatednode.isNull())
+	      {
+		  renderer = new QgsGraduatedSymRenderer();
+		  renderer->readXML(graduatednode,*dbl);
+	      }
+	      else if (!continuousnode.isNull())
+	      {
+		  renderer = new QgsContinuousColRenderer();
+		  renderer->readXML(continuousnode,*dbl);
+	      }
+	      else if(!singlemarkernode.isNull())
+	      {
+		  renderer = new QgsSiMaRenderer();
+		  renderer->readXML(singlemarkernode,*dbl);
+	      }
+	      else if(!graduatedmarkernode.isNull())
+	      {
+		  renderer = new QgsGraduatedMaRenderer();
+		  renderer->readXML(graduatedmarkernode,*dbl);
+	      }
 
               dbl->setVisible(visible == "1");
-              qWarning("adde den Layer");
               dbl->initContextMenu(qgisApp);
               map->addLayer(dbl);
           } else if (type == "raster")
@@ -687,145 +408,6 @@ void QgsProjectIo::writeXML()
 		  renderer->writeXML(xml);
 	      }
 
-              /*QgsSingleSymRenderer *srenderer = dynamic_cast < QgsSingleSymRenderer * >(layer->renderer());
-              QgsGraduatedSymRenderer *grenderer = dynamic_cast < QgsGraduatedSymRenderer * >(layer->renderer());
-              QgsContinuousColRenderer *crenderer = dynamic_cast < QgsContinuousColRenderer * >(layer->renderer());
-	      QgsSiMaRenderer *smrenderer = dynamic_cast < QgsSiMaRenderer * >(layer->renderer());
-
-              if (srenderer)
-                {
-                  xml << "\t\t<singlesymbol>\n";
-                  xml << "\t\t\t<renderitem>\n";
-                  xml << "\t\t\t\t<value>" + srenderer->item()->value() + "</value>\n";
-                  QgsSymbol *symbol = srenderer->item()->getSymbol();
-                  xml << "\t\t\t\t<symbol>\n";
-                  xml << "\t\t\t\t\t<outlinecolor red=\"" + QString::number(symbol->pen().color().red()) + "\" green=\"" +
-                    QString::number(symbol->pen().color().green()) + "\" blue=\"" + QString::number(symbol->pen().color().blue()) +
-                    "\" />\n";
-                  xml << "\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(symbol->pen().style()) + "</outlinestyle>\n";
-                  xml << "\t\t\t\t\t<outlinewidth>" + QString::number(symbol->pen().width()) + "</outlinewidth>\n";
-                  xml << "\t\t\t\t\t<fillcolor red=\"" + QString::number(symbol->brush().color().red()) + "\" green=\"" +
-                    QString::number(symbol->brush().color().green()) + "\" blue=\"" + QString::number(symbol->brush().color().blue()) +
-                    "\" />\n";
-                  xml << "\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(symbol->brush().style()) +
-                    "</fillpattern>\n";
-                  xml << "\t\t\t\t</symbol>\n";
-                  xml << "\t\t\t\t<label>" + srenderer->item()->label() + "</label>\n";
-                  xml << "\t\t\t</renderitem>\n";
-                  xml << "\t\t</singlesymbol>\n";
-              } else if (grenderer)
-                {
-                  xml << "\t\t<graduatedsymbol>\n";
-                  xml << "\t\t\t<classificationfield>" + QString::number(grenderer->classificationField()) +
-                    "</classificationfield>\n";
-                  for (std::list < QgsRangeRenderItem * >::iterator it = grenderer->items().begin(); it != grenderer->items().end();
-                       ++it)
-                    {
-                      xml << "\t\t\t<rangerenderitem>\n";
-                      xml << "\t\t\t\t<lowervalue>" + (*it)->value() + "</lowervalue>\n";
-                      xml << "\t\t\t\t<uppervalue>" + (*it)->upper_value() + "</uppervalue>\n";
-                      xml << "\t\t\t\t<symbol>\n";
-                      QgsSymbol *symbol = (*it)->getSymbol();
-                      xml << "\t\t\t\t\t<outlinecolor red=\"" + QString::number(symbol->pen().color().red()) + "\" green=\"" +
-                        QString::number(symbol->pen().color().green()) + "\" blue=\"" + QString::number(symbol->pen().color().blue()) +
-                        "\" />\n";
-                      xml << "\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(symbol->pen().style()) +
-                        "</outlinestyle>\n";
-                      xml << "\t\t\t\t\t<outlinewidth>" + QString::number(symbol->pen().width()) + "</outlinewidth>\n";
-                      xml << "\t\t\t\t\t<fillcolor red=\"" + QString::number(symbol->brush().color().red()) + "\" green=\"" +
-                        QString::number(symbol->brush().color().green()) + "\" blue=\"" +
-                        QString::number(symbol->brush().color().blue()) + "\" />\n";
-                      xml << "\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(symbol->brush().style()) +
-                        "</fillpattern>\n";
-                      xml << "\t\t\t\t</symbol>\n";
-                      xml << "\t\t\t\t<label>" + (*it)->label() + "</label>\n";
-                      xml << "\t\t\t</rangerenderitem>\n";
-                    }
-                  xml << "\t\t</graduatedsymbol>\n";
-              } else if (crenderer)
-                {
-                  xml << "\t\t<continuoussymbol>\n";
-                  xml << "\t\t\t<classificationfield>" + QString::number(crenderer->classificationField()) +
-                    "</classificationfield>\n";
-
-
-                  QgsRenderItem *lowestitem = crenderer->minimumItem();
-                  QgsSymbol *lsymbol = lowestitem->getSymbol();
-                  xml << "\t\t\t<lowestitem>\n";
-                  xml << "\t\t\t\t<renderitem>\n";
-                  xml << "\t\t\t\t<value>" + lowestitem->value() + "</value>\n";
-                  xml << "\t\t\t\t\t<symbol>\n";
-                  xml << "\t\t\t\t\t\t<outlinecolor red=\"" + QString::number(lsymbol->pen().color().red()) + "\" green=\"" +
-                    QString::number(lsymbol->pen().color().green()) + "\" blue=\"" + QString::number(lsymbol->pen().color().blue()) +
-                    "\" />\n";
-                  xml << "\t\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(lsymbol->pen().style()) +
-                    "</outlinestyle>\n";
-                  xml << "\t\t\t\t\t\t<outlinewidth>" + QString::number(lsymbol->pen().width()) + "</outlinewidth>\n";
-                  xml << "\t\t\t\t\t\t<fillcolor red=\"" + QString::number(lsymbol->brush().color().red()) + "\" green=\"" +
-                    QString::number(lsymbol->brush().color().green()) + "\" blue=\"" +
-                    QString::number(lsymbol->brush().color().blue()) + "\" />\n";
-                  xml << "\t\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(lsymbol->brush().style()) +
-                    "</fillpattern>\n";
-                  xml << "\t\t\t\t\t</symbol>\n";
-                  xml << "\t\t\t\t\t<label>" + lowestitem->label() + "</label>\n";
-                  xml << "\t\t\t\t</renderitem>\n";
-                  xml << "\t\t\t</lowestitem>\n";
-
-                  QgsRenderItem *highestitem = crenderer->maximumItem();
-                  QgsSymbol *hsymbol = highestitem->getSymbol();
-                  xml << "\t\t\t<highestitem>\n";
-                  xml << "\t\t\t\t<renderitem>\n";
-                  xml << "\t\t\t\t<value>" + highestitem->value() + "</value>\n";
-                  xml << "\t\t\t\t\t<symbol>\n";
-                  xml << "\t\t\t\t\t\t<outlinecolor red=\"" + QString::number(hsymbol->pen().color().red()) + "\" green=\"" +
-                    QString::number(hsymbol->pen().color().green()) + "\" blue=\"" + QString::number(hsymbol->pen().color().blue()) +
-                    "\" />\n";
-                  xml << "\t\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(hsymbol->pen().style()) +
-                    "</outlinestyle>\n";
-                  xml << "\t\t\t\t\t\t<outlinewidth>" + QString::number(hsymbol->pen().width()) + "</outlinewidth>\n";
-                  xml << "\t\t\t\t\t\t<fillcolor red=\"" + QString::number(hsymbol->brush().color().red()) + "\" green=\"" +
-                    QString::number(hsymbol->brush().color().green()) + "\" blue=\"" +
-                    QString::number(hsymbol->brush().color().blue()) + "\" />\n";
-                  xml << "\t\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(hsymbol->brush().style()) +
-                    "</fillpattern>\n";
-                  xml << "\t\t\t\t\t</symbol>\n";
-                  xml << "\t\t\t\t\t<label>" + highestitem->label() + "</label>\n";
-                  xml << "\t\t\t\t</renderitem>\n";
-                  xml << "\t\t\t</highestitem>\n";
-                  xml << "\t\t</continuoussymbol>\n";
-                }else if(smrenderer)
-		{
-		    xml << "\t\t<singlemarker>\n";
-		    xml << "\t\t\t<renderitem>\n";
-		    xml << "\t\t\t\t<value>" + smrenderer->item()->value() + "</value>\n";
-
-		    QgsMarkerSymbol *markersymbol = dynamic_cast<QgsMarkerSymbol*>(smrenderer->item()->getSymbol());
-		    if(markersymbol)
-		    {
-			xml << "\t\t\t\t<markersymbol>\n";
-			xml << "\t\t\t\t\t<svgpath>" + markersymbol->picture() + "</svgpath>\n";
-			xml << "\t\t\t\t\t<scalefactor>" + QString::number(markersymbol->scaleFactor()) + "</scalefactor>\n";
-			xml << "\t\t\t\t\t<outlinecolor red=\"" + QString::number(markersymbol->pen().color().red()) + "\" green=\"" +
-			    QString::number(markersymbol->pen().color().green()) + "\" blue=\"" + QString::number(markersymbol->pen().color().blue()) +
-			    "\" />\n";
-			xml << "\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(markersymbol->pen().style()) + "</outlinestyle>\n";
-			xml << "\t\t\t\t\t<outlinewidth>" + QString::number(markersymbol->pen().width()) + "</outlinewidth>\n";
-			xml << "\t\t\t\t\t<fillcolor red=\"" + QString::number(markersymbol->brush().color().red()) + "\" green=\"" +
-			    QString::number(markersymbol->brush().color().green()) + "\" blue=\"" + QString::number(markersymbol->brush().color().blue()) +
-			    "\" />\n";
-			xml << "\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(markersymbol->brush().style()) +
-			    "</fillpattern>\n";
-			xml << "\t\t\t\t</markersymbol>\n";
-			xml << "\t\t\t\t<label>" + smrenderer->item()->label() + "</label>\n";
-			xml << "\t\t\t</renderitem>\n";
-			xml << "\t\t</singlemarker>\n";
-		    }else
-		    {
-			qWarning("warning, type cast failed in qgsprojectio.cpp line 715"); 
-			}
-			}*/
-
-            
           } else                //raster layer properties
             {
               //cast the maplayer to rasterlayer
