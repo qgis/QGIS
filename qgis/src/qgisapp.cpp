@@ -235,12 +235,9 @@ void QgisApp::about()
 	QString watsNew = "Version ";
 	watsNew += QGis::qgisVersion;
 	watsNew += "\n"
-	"** New build system (uses GNU Automake/Autoconf)\n"
-  "** Improvement to sorting in attribute table\n"
-  "** Persistent selections (shapefiles only)\n"
-  "** Display order can be changed by dragging a layer to a new position in the legend\n"
-  "** Export QGIS view as a Mapserver map file\n"
-  "** Fix for crash on SuSE 9.0 when moving mouse in legend area\n"
+	"** Raster support\n"
+  "** Improved data source handling\n"
+  "** Symbology\n"
   "\n"
 		;
 
@@ -306,6 +303,7 @@ void QgisApp::addRasterLayer()
   QString myArcInfoAsciiGridFilterString="Arc Info Ascii Grid (*.asc;*.grd)";
   QString myGeoTiffFilterString="Geo tiff (*.tif)";
   QString myUsgsAsciiDemFilterString="USGS ASCII DEM (*.dem)";
+  QString myAllRasterFormats = "All Rasters (*.adf;*.asc;*.grd;*.tif;*.png;*.jpg;*.dem)";
   //QString myBilFilterString="Band Interleaved by Line (*.bil)";
   //QString myJpgFilterString="Geo jpg (*.jpg)";
   QStringList myFileNameQStringList = QFileDialog::getOpenFileNames(
@@ -314,7 +312,8 @@ void QgisApp::addRasterLayer()
           //myBilFilterString + ";;" +
           //myJpgFilterString + ";;" +  
           myGeoTiffFilterString + ";;" +
-          myUsgsAsciiDemFilterString, //filters to select
+          myUsgsAsciiDemFilterString + ";;" + 
+	  myAllRasterFormats, //filters to select
           "." , //initial dir
           this , //parent dialog
           "OpenFileDialog" , //QFileDialog qt object name
@@ -770,7 +769,7 @@ void QgisApp::layerProperties(QListViewItem * lvi)
             qApp->processEvents();
           }
         }
-        else if (lyr->type()==QgsMapLayer::VECTOR)
+        else if ((lyr->type()==QgsMapLayer::VECTOR) || (lyr->type()==QgsMapLayer::DATABASE))
         {
           QgsLayerProperties *lp = new QgsLayerProperties(lyr);
           if (lp->exec()) {
