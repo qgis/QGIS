@@ -18,6 +18,30 @@
 
 class QgsFeature;
 class QgsField;
+#include <qdatetime.h>
+
+/* Update.
+ * Vectors are updated (reloaded) if:
+ * 1) Vector was find to be outdated on some occasion. Currently the only occasion is the beginning
+ *    of QgsGrassProvider::select() 
+ *    Note that if the vector was rewritten by GRASS module and it was not yet updated in QGIS,
+ *    it should read without problems from old (deleted file), at least on local disk on *nix system.
+ *    (NFS - cache, Cygwin?)
+ *
+ * 2) Editing is closed by closeEdit
+ * 
+ * Member variables which must be updated after updateMap() are marked !UPDATE! in this file.
+ */
+
+/* Editing.
+ * If editing is started by startEdit, vector map is reopened in update mode, and GMAP.update 
+ * is set to true. All data loaded from the map to QgsGrassProvider remain unchanged
+ * untill closeEdit is called. 
+ * During editing:
+ * getNextFeature() and getFirstFeature() returns 0
+ * featureCount() returns 0
+ * fieldCount() returns original (old) number of fields
+ */
 
 /* Attributes. Cache of database attributes (because selection from database is slow). */
 struct GATT {
@@ -56,6 +80,10 @@ struct GMAP {
                            // valid is set to false and no more used
     struct  Map_info *map; // map header
     int     nUsers;        // number layers using this map
+    int     update;        // true if the map is opened in update mode -> disabled standard reading
+                           // through getNextFeature(), featureCount() returns 0
+    QDateTime lastModified; // lastModified time of the vector directory, when the map was opened
+    int     version;       // version, increased by each closeEdit() and updateMap()
 };
 
 /**
@@ -151,9 +179,174 @@ public:
 	   @param position the number of the attribute*/
 	QString maxValue(int position);
 
-	/**Returns true if this is a valid shapefile
+	/** Update (reload) non static members (marked !UPDATE!) from the static layer and the map.
+	*   This method MUST be called whenever lastUpdate of the map is later then mapLastUpdate 
+	*   of the instance.
+	*/
+	void update();
+
+	/**Returns true if this is a valid layer
 	*/
 	bool isValid();
+
+	// ----------------------------------- Edit ----------------------------------
+	
+	/** Is the layer editable? I.e. the layer is valid and current user is owner of the mapset
+	*   @return true the layer editable
+	*   @return false the is not editable
+	*/
+	bool isEditable();
+
+	/** Returns true if the layer is currently edited (opened in update mode)
+	*   @return true in update mode
+	*   @return false not edited
+	*/
+	bool isEdited();
+
+	/** Start editing. Reopen the vector for update and set GMAP.update = true
+	*   @return true success
+	*   @return false failed to reopen success
+	*/
+	bool startEdit();
+
+	/** Close editing. Rebuild topology, GMAP.update = false 
+	*   @return true success
+	*   @return false failed to close vector or vector was not in update mode
+	*/
+	bool closeEdit();
+
+	/** Get current number of lines. 
+	*   @return number of lines
+	*/
+	int numLines ( void );
+
+	/** Get current number of nodes. 
+	*   @return number of nodes
+	*/
+	int numNodes ( void );
+
+	/** Read line 
+	*   @param Points pointer to existing structure or NULL
+	*   @param Cats pointer to existing structure or NULL
+	*   @param line line number
+	*   @return line type
+	*   @return <0 deadline or error
+	*/
+	int readLine ( struct line_pnts * Points, struct line_cats * Cats, int line );
+
+	/** Read node coordinates 
+	*   @param line line number
+	*   @return true node is alive
+	*   @return false node is dead
+	*/
+	bool nodeCoor ( int node, double *x, double *y );
+
+	/** Read line nodes 
+	*   @param line line number
+	*   @return true line is alive
+	*   @return false line is dead
+	*/
+	bool lineNodes ( int line, int *node1, int *node2 );
+
+	/** Read boundary areas 
+	*   @param line line number
+	*   @return true line is alive
+	*   @return false line is dead
+	*/
+	bool lineAreas ( int line, int *left, int *right );
+
+	/** Get centroid area 
+	*   @param centroid line number
+	*   @return area number (negative for island)
+	*/
+	int centroidArea ( int centroid );
+
+	/** Get number of lines at node 
+	*   @param node node number
+	*   @return number of lines at node (including dead lines)
+	*/
+	int nodeNLines ( int node );
+
+	/** Get line number of line at node for given line index
+	*   @param node node number
+	*   @param idx line index
+	*   @return line number
+	*/
+	int nodeLine ( int node, int idx );
+
+	/** True if line is alive
+	*   @param line line number
+	*   @return true alive
+	*   @return false dead
+	*/
+	int lineAlive ( int line );
+
+	/** True if node is alive
+	*   @param node node number
+	*   @return true alive
+	*   @return false dead
+	*/
+	int nodeAlive ( int node );
+
+	/** Write a new line into vector. 
+	*   @return line number
+	*   @return -1 error
+	*/
+	long writeLine ( int type, struct line_pnts *Points, struct line_cats *Cats );
+
+	/** Rewrite line. 
+	*   @return line number
+	*   @return -1 error
+	*/
+	int rewriteLine ( int line, int type, struct line_pnts *Points, struct line_cats *Cats );
+
+	/** Delete line 
+	*   @return 0 OK
+	*   @return -1 error
+	*/
+	int deleteLine ( int line );
+
+	/** Number of updated lines 
+	*/
+	int numUpdatedLines ( void );
+
+	/** Number of updated nodes 
+	*/
+	int numUpdatedNodes ( void );
+
+	/** Get updated line 
+	*/
+	int updatedLine ( int idx );
+
+	/** Get updated node 
+	*/
+	int updatedNode ( int idx );
+
+	/** Find nearest line 
+	*   @param threshold maximum distance
+	*   @return line number
+	*   @return 0 nothing found
+	*/
+	int findLine ( double x, double y, int type, double threshold );
+
+	/** Find nearest node 
+	*   @param threshold maximum distance
+	*   @return node number
+	*   @return 0 nothing found
+	*/
+	int findNode ( double x, double y, double threshold );
+
+
+	/* Following functions work only until first edit operation! (category index used) */
+	
+	/** Get number of fields in category index */
+	int cidxGetNumFields ( void );
+
+	/** Get field number for index */
+	int cidxGetFieldNumber ( int idx );
+
+	/** Get maximum category for field index */
+	int cidxGetMaxCat ( int idx );
 
 	/**Adds a feature
 	   @return true in case of success and false in case of failure*/
@@ -187,18 +380,18 @@ private:
 	int     mLayerField;    // field part of layer or -1 if no field specified
 	int     mLayerType;     // layer type POINT, LINE, ...
 	int     mGrassType;     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA, 
-	                       // ( GV_BOUNDARY, GV_CENTROID )
+	                        // ( GV_BOUNDARY, GV_CENTROID )
 	int     mQgisType;      // WKBPoint, WKBLineString, ...
 	int     mLayerId;       // ID used in layers
         struct  Map_info *mMap; // vector header pointer
+	int     mMapVersion;    // The version of the map for which the instance was last time updated
 	
         struct line_pnts *mPoints; // points structure 
         struct line_cats *mCats;   // cats structure
 	struct ilist     *mList; 
-	BOUND_BOX mMapBox;         // map bounding box
-	int    mCidxFieldIndex;    // index for layerField in category index or -1 if no such field
-	int    mCidxFieldNumCats;  // Number of records in field index
-	int    mNextCidx;          // next index in cidxFieldIndex to be read, used to find nextFeature
+	int    mCidxFieldIndex;    // !UPDATE! Index for layerField in category index or -1 if no such field
+	int    mCidxFieldNumCats;  // !UPDATE! Number of records in field index
+	int    mNextCidx;          // !UPDATE! Next index in cidxFieldIndex to be read, used to find nextFeature
 
 	// selection: array of size nlines or nareas + 1, set to 1 - selected or 0 - not selected, 2 - read
 	// Code 2 means that the line was already read in this cycle, all 2 must be reset to 1
@@ -207,12 +400,12 @@ private:
 	// read from the table and geometry is append and selection set to 2.
 	// In the end the selection array is scanned for 1 (attributes missing), and the geometry 
 	// is returned without attributes
-	char    *mSelection;   
-	int     mSelectionSize; // size of selection array
+	char    *mSelection;           // !UPDATE!
+	int     mSelectionSize;        // !UPDATE! Size of selection array
 
 	QString mDataSourceUri;
-	bool    mValid;
-	long    mNumberFeatures;
+	bool    mValid;                // !UPDATE! 
+	long    mNumberFeatures;       // !UPDATE!
 	int     mEndian;               // endian
 	
 	void resetSelection(bool sel); // reset selection
@@ -239,6 +432,17 @@ private:
 	 */
 	static int openLayer(QString gisdbase, QString location, QString mapset, QString mapName, int field);
 
+	/*! Load sources from the map.
+	 *  Must be set: layer.mapId, layer.map, layer.field
+	 *  Updates: layer.fieldInfo, layer.nColumns, layer.nAttributes, layer.attributes, layer.keyColumn
+	 *  Unchanged: layer.valid
+	 *
+	 *  Old sources are released, namely: layer.fields and layer.attributes
+	 *
+	 *  layer.attributes must be pointer to existing array or 0
+	 */
+	static void loadLayerSourcesFromMap ( GLAYER &layer );
+
 	/*! Close layer. 
 	 *  @param layerId 
 	 */
@@ -258,6 +462,27 @@ private:
 	 *  @param mapId 
 	 */
 	static void closeMap( int mapId );
+
+	/*! Update map. Close and reopen vector, all layers in mLayers using this map are also updated.
+	 *  Instances of QgsGrassProvider are not updated and should call update() method.
+	 *  @param mapId 
+	 */
+	static void updateMap( int mapId );
+
+	/*! The map is outdated. The map was for example rewritten by GRASS module outside QGIS.
+	 *  This function checks internal timestamp stored in QGIS.
+	 *  @param mapId 
+	 */
+	static bool mapOutdated( int mapId );
+
+	/*! Allocate sellection array for given map id. The array is large enough for lines or areas
+	 *  (bigger from num lines and num areas)
+	 *  Possible old selection array is not released.
+	 *  @param map pointer to map structure 
+	 *  @param selection pointer to pointer to char array
+	 *  @return selection size
+	 */
+	static int allocateSelection(  struct Map_info *map, char **selection );
 	
 	/*! Get layer map. 
 	 *  @param layerId 
@@ -288,7 +513,6 @@ private:
 	 */
 	static void setFeatureAttributes ( int layerId, int cat, QgsFeature *feature, std::list<int>& attlist);
 
-	//
 	/* Static arrays of opened layers and vectors */
 	static 	std::vector<GLAYER> mLayers; // Map + field/attributes
 	static 	std::vector<GMAP> mMaps;     // Map
