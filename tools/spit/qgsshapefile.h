@@ -24,13 +24,10 @@
 #include <qobject.h>
 #include <ogrsf_frmts.h>
 #include <qprogressdialog.h>
-extern "C"
-{
-  #include <libpq-fe.h>
-}
 
 class OGRLayer;
 class OGRDataSource;
+class PGconn;
  
 class QgsShapeFile : public QObject
 {

@@ -20,7 +20,11 @@
 #include <qlineedit.h>
 #include <qcheckbox.h>
 #include <qmessagebox.h>
-#include <libpq++.h>
+extern "C"
+{
+  #include <libpq-fe.h>
+}
+
 #include "qgsconnectiondialog.h"
 #include "qgsmessageviewer.h"
 
@@ -52,16 +56,16 @@ void QgsConnectionDialog::testConnection()
 {
 	QString connInfo = "host=" + txtHost->text() + " dbname=" + txtDatabase->text() +
 	  " user=" + txtUsername->text() + " password=" + txtPassword->text();
-	PgDatabase *pd = new PgDatabase((const char *) connInfo);
+  PGconn *pd = PQconnectdb((const char *) connInfo);
 
-	if (pd->Status() == CONNECTION_OK) {
+	if (PQstatus(pd) == CONNECTION_OK) {
 		// Database successfully opened; we can now issue SQL commands.
 		QMessageBox::information(this, "Test connection", "Connection to " + txtDatabase->text() + " was successfull");
 	} else {
 		QMessageBox::information(this, "Test connection", "Connection failed - Check settings and try again ");
 	}
-  
-	delete pd;
+ 
+  PQfinish(pd);
 }
 
 void QgsConnectionDialog::saveConnection()

@@ -23,10 +23,15 @@
 #include <iostream>
 #include <fstream>
 #include <cstdio>
+extern "C"
+{
+  #include <libpq-fe.h>
+}
 
 #include "qgsdbfbase.h"
 #include "cpl_error.h"
 #include "qgsshapefile.h"
+
 
 QgsShapeFile::QgsShapeFile(QString name){
   filename = name;
