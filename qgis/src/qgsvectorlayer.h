@@ -81,6 +81,8 @@ class QgsVectorLayer:public QgsMapLayer
 	void setRenderer(QgsRenderer* r);
 	/**Sets the renderer dialog. If a renderer dialog is already present, it is deleted*/
 	void setRendererDialog(QDialog* dialog);
+	/**Sets m_propertiesDialog*/
+	void setLayerProperties(QgsVectorLayerProperties* properties);
 	/**Returns point, line or polygon*/
 	QGis::VectorType vectorType();
 	/**Returns a pointer to the properties dialog*/

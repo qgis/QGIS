@@ -40,6 +40,8 @@ public:
 	~QgsVectorLayerProperties();
 	//! Name to display in legend
 	QgsSymbol* getSymbol();
+	/**Sets the legend type to "single symbol", "graduated symbol" or "continuous color"*/
+	void setLegendType(QString type);
 private:
 	QgsVectorLayer* layer;
 protected slots:

@@ -941,3 +941,12 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
     }
     return rect;
 }
+
+void QgsVectorLayer::setLayerProperties(QgsVectorLayerProperties* properties)
+{
+    if(m_propertiesDialog)
+    {
+	delete m_propertiesDialog;
+    }
+    m_propertiesDialog=properties;
+}
