@@ -6,7 +6,7 @@ Requirements:
    (http://www.trolltech.com/developer/download/qt-x11.html)
 4. GDAL/OGR library compiled and installed (with headers). QGIS assumes
    that the headers and library will be in a standard (i.e. /usr/local)
-   location. See http://www.remotesensing.org/gdal.
+   location. A Linux binary is available at http://www.remotesensing.org/gdal.
 5. Optional - Qt PostgreSQL driver (can be built with Qt or separately
 -- see Qt SQL docs)
 
