@@ -1221,195 +1221,208 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     }
     else
     {
-        // map tools that rely on a click not a drag
-        switch (mCanvasProperties->mapTool)
-        {
+      // map tools that rely on a click not a drag
+      switch (mCanvasProperties->mapTool)
+      {
         case QGis::Identify:
+          {
+            // call identify method for selected layer
+            QgsMapLayer * lyr = mCanvasProperties->mapLegend->currentLayer();
+
+            if (lyr)
             {
-                // call identify method for selected layer
-                QgsMapLayer * lyr = mCanvasProperties->mapLegend->currentLayer();
 
-                if (lyr)
-                {
+              // create the search rectangle
+              double searchRadius = extent().width() * calculateSearchRadiusValue();
+              QgsRect * search = new QgsRect;
+              // convert screen coordinates to map coordinates
+              QgsPoint idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+              search->setXmin(idPoint.x() - searchRadius);
+              search->setXmax(idPoint.x() + searchRadius);
+              search->setYmin(idPoint.y() - searchRadius);
+              search->setYmax(idPoint.y() + searchRadius);
 
-                    // create the search rectangle
-                    double searchRadius = extent().width() * calculateSearchRadiusValue();
-                    QgsRect * search = new QgsRect;
-                    // convert screen coordinates to map coordinates
-                    QgsPoint idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-                    search->setXmin(idPoint.x() - searchRadius);
-                    search->setXmax(idPoint.x() + searchRadius);
-                    search->setYmin(idPoint.y() - searchRadius);
-                    search->setYmax(idPoint.y() + searchRadius);
+              lyr->identify(search);
 
-                    lyr->identify(search);
-
-                    delete search;
-                }
-                else
-                {
-                    QMessageBox::warning(this,
-                                         tr("No active layer"),
-                                         tr("To identify features, you must choose an layer active by clicking on its name in the legend"));
-                }
-            }
-            break;
-
-        case QGis::CapturePoint:
-            {
-                QgsPoint  idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-                emit xyClickCoordinates(idPoint);
-
-                QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
-
-                if(vlayer)
-                {
-                    if(!vlayer->isEditable())
-                    {
-                        QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
-                        break;
-                    }
-
-                    QgsFeature* f = new QgsFeature(0,"WKBPoint");
-                    int size=5+2*sizeof(double);
-                    unsigned char *wkb = new unsigned char[size];
-                    int wkbtype=QGis::WKBPoint;
-                    double x=idPoint.x();
-                    double y=idPoint.y();
-                    memcpy(&wkb[1],&wkbtype, sizeof(int));
-                    memcpy(&wkb[5], &x, sizeof(double));
-                    memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
-                    f->setGeometry(&wkb[0],size);
-
-                    //add the fields to the QgsFeature
-                    std::vector<QgsField> fields=vlayer->fields();
-                    for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
-                    {
-                        f->addAttribute((*it).name(), vlayer->getDefaultValue(it->name(),f));
-                    }
-
-                    //show the dialog to enter attribute values
-                    f->attributeDialog();
-
-                    vlayer->addFeature(f);
-                    refresh();
-                }
-                else
-                {
-                    QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
-                }
-
-                //add the feature to the active layer
-#ifdef QGISDEBUG
-                std::cout << "CapturePoint : " << idPoint.x() << "," << idPoint.y() << std::endl;
-#endif
-
-            }
-            break;
-
-        case QGis::CaptureLine:
-        case QGis::CapturePolygon:
-
-            QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
-            if(vlayer)
-            {
-                if(!vlayer->isEditable())
-                {
-                    QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
-                    break;
-                }
+              delete search;
             }
             else
             {
-                QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
+              QMessageBox::warning(this,
+                  tr("No active layer"),
+                  tr("To identify features, you must choose an layer active by clicking on its name in the legend"));
             }
+          }
+          break;
 
-            mCaptureList.push_back(mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y()));
-            if(mCaptureList.size()>1)
+        case QGis::CapturePoint:
+          {
+            QgsVectorLayer* vlayer=
+              dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+
+            QgsPoint  idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+            emit xyClickCoordinates(idPoint);
+            // grass editing doesn't use any of the code below
+            // XXX This is kind of a mess since we are testing for a
+            //     specific provider type
+            if(vlayer->providerType().lower() != "grass")
             {
-                QPainter paint(this);
-                paint.setPen(QPen(QColor(255,0,0),4,Qt::DashLine));
-                std::list<QgsPoint>::iterator it=mCaptureList.end();
-                --it;
-                --it;
-                QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
-                paint.drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),
-                               e->x(),e->y());
-            }
-            if(e->button()==Qt::RightButton)
-            {
-                //create QgsFeature with wkb representation
-                QgsFeature* f=new QgsFeature(0,"WKBLineString");
-                unsigned char* wkb;
-                int size;
-                if(mCanvasProperties->mapTool==QGis::CaptureLine)
+
+
+              if(vlayer)
+              {
+                if(!vlayer->isEditable() )
                 {
-                    size=1+2*sizeof(int)+2*mCaptureList.size()*sizeof(double);
-                    wkb= new unsigned char[size];
-                    int wkbtype=QGis::WKBLineString;
-                    int length=mCaptureList.size();
-                    memcpy(&wkb[1],&wkbtype, sizeof(int));
-                    memcpy(&wkb[5],&length, sizeof(int));
-                    int position=1+2*sizeof(int);
-                    double x,y;
-                    for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
-                    {
-                        x=it->x();
-                        memcpy(&wkb[position],&x,sizeof(double));
-                        position+=sizeof(double);
-                        y=it->y();
-                        memcpy(&wkb[position],&y,sizeof(double));
-                        position+=sizeof(double);
-                    }
+                  QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
+                  break;
                 }
-                else//polygon
-                {
-                    size=1+3*sizeof(int)+2*(mCaptureList.size()+1)*sizeof(double);
-                    wkb= new unsigned char[size];
-                    int wkbtype=QGis::WKBPolygon;
-                    int length=mCaptureList.size()+1;//+1 because the first point is needed twice
-                    int numrings=1;
-                    memcpy(&wkb[1],&wkbtype, sizeof(int));
-                    memcpy(&wkb[5],&numrings,sizeof(int));
-                    memcpy(&wkb[9],&length, sizeof(int));
-                    int position=1+3*sizeof(int);
-                    double x,y;
-                    std::list<QgsPoint>::iterator it;
-                    for(it=mCaptureList.begin();it!=mCaptureList.end();++it)
-                    {
-                        x=it->x();
-                        memcpy(&wkb[position],&x,sizeof(double));
-                        position+=sizeof(double);
-                        y=it->y();
-                        memcpy(&wkb[position],&y,sizeof(double));
-                        position+=sizeof(double);
-                    }
-                    //close the polygon
-                    it=mCaptureList.begin();
-                    x=it->x();
-                    memcpy(&wkb[position],&x,sizeof(double));
-                    position+=sizeof(double);
-                    y=it->y();
-                    memcpy(&wkb[position],&y,sizeof(double));
-                }
+
+                QgsFeature* f = new QgsFeature(0,"WKBPoint");
+                int size=5+2*sizeof(double);
+                unsigned char *wkb = new unsigned char[size];
+                int wkbtype=QGis::WKBPoint;
+                double x=idPoint.x();
+                double y=idPoint.y();
+                memcpy(&wkb[1],&wkbtype, sizeof(int));
+                memcpy(&wkb[5], &x, sizeof(double));
+                memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
                 f->setGeometry(&wkb[0],size);
 
                 //add the fields to the QgsFeature
                 std::vector<QgsField> fields=vlayer->fields();
                 for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
                 {
-                    f->addAttribute((*it).name(),vlayer->getDefaultValue(it->name(), f));
+                  f->addAttribute((*it).name(), vlayer->getDefaultValue(it->name(),f));
                 }
 
                 //show the dialog to enter attribute values
-                f->attributeDialog();
+                  f->attributeDialog();
 
                 vlayer->addFeature(f);
-                mCaptureList.clear();
                 refresh();
+              }
+              else
+              {
+                QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
+              }
+
+              //add the feature to the active layer
+#ifdef QGISDEBUG
+              std::cout << "CapturePoint : " << idPoint.x() << "," << idPoint.y() << std::endl;
+#endif
+
             }
-            break;
-        }
+          }
+          break;
+
+        case QGis::CaptureLine:
+        case QGis::CapturePolygon:
+
+          QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+
+          if(vlayer)
+          {
+            if(!vlayer->isEditable())// && (vlayer->providerType().lower() != "grass"))
+            {
+              QMessageBox::information(0,"Layer not editable","Cannot edit the vector layer. Use 'Start editing' in the legend item menu",QMessageBox::Ok);
+              break;
+            }
+          }
+          else
+          {
+            QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
+          }
+
+          mCaptureList.push_back(mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y()));
+          if(mCaptureList.size()>1)
+          {
+            QPainter paint(this);
+            paint.setPen(QPen(QColor(255,0,0),4,Qt::DashLine));
+            std::list<QgsPoint>::iterator it=mCaptureList.end();
+            --it;
+            --it;
+            QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
+            paint.drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),
+                e->x(),e->y());
+          }
+          if(e->button()==Qt::RightButton)
+          {
+            //create QgsFeature with wkb representation
+            QgsFeature* f=new QgsFeature(0,"WKBLineString");
+            unsigned char* wkb;
+            int size;
+            if(mCanvasProperties->mapTool==QGis::CaptureLine)
+            {
+              size=1+2*sizeof(int)+2*mCaptureList.size()*sizeof(double);
+              wkb= new unsigned char[size];
+              int wkbtype=QGis::WKBLineString;
+              int length=mCaptureList.size();
+              memcpy(&wkb[1],&wkbtype, sizeof(int));
+              memcpy(&wkb[5],&length, sizeof(int));
+              int position=1+2*sizeof(int);
+              double x,y;
+              for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
+              {
+                x=it->x();
+                memcpy(&wkb[position],&x,sizeof(double));
+                position+=sizeof(double);
+                y=it->y();
+                memcpy(&wkb[position],&y,sizeof(double));
+                position+=sizeof(double);
+              }
+            }
+            else//polygon
+            {
+              size=1+3*sizeof(int)+2*(mCaptureList.size()+1)*sizeof(double);
+              wkb= new unsigned char[size];
+              int wkbtype=QGis::WKBPolygon;
+              int length=mCaptureList.size()+1;//+1 because the first point is needed twice
+              int numrings=1;
+              memcpy(&wkb[1],&wkbtype, sizeof(int));
+              memcpy(&wkb[5],&numrings,sizeof(int));
+              memcpy(&wkb[9],&length, sizeof(int));
+              int position=1+3*sizeof(int);
+              double x,y;
+              std::list<QgsPoint>::iterator it;
+              for(it=mCaptureList.begin();it!=mCaptureList.end();++it)
+              {
+                x=it->x();
+                memcpy(&wkb[position],&x,sizeof(double));
+                position+=sizeof(double);
+                y=it->y();
+                memcpy(&wkb[position],&y,sizeof(double));
+                position+=sizeof(double);
+              }
+              //close the polygon
+              it=mCaptureList.begin();
+              x=it->x();
+              memcpy(&wkb[position],&x,sizeof(double));
+              position+=sizeof(double);
+              y=it->y();
+              memcpy(&wkb[position],&y,sizeof(double));
+            }
+            f->setGeometry(&wkb[0],size);
+
+            //add the fields to the QgsFeature
+            std::vector<QgsField> fields=vlayer->fields();
+            for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
+            {
+              f->addAttribute((*it).name(),vlayer->getDefaultValue(it->name(), f));
+            }
+
+            //show the dialog to enter attribute values
+            //if(vlayer->providerType().lower() != "grass")
+            {
+              f->attributeDialog();
+            }
+
+            vlayer->addFeature(f);
+            mCaptureList.clear();
+            refresh();
+
+          }
+          break;
+      }
     }
 } // mouseReleaseEvent
 
@@ -1417,110 +1430,110 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
 void QgsMapCanvas::resizeEvent(QResizeEvent * e)
 {
-    mCanvasProperties->dirty = true;
-    mCanvasProperties->pmCanvas->resize(e->size());
-    emit extentsChanged(mCanvasProperties->currentExtent);
+  mCanvasProperties->dirty = true;
+  mCanvasProperties->pmCanvas->resize(e->size());
+  emit extentsChanged(mCanvasProperties->currentExtent);
 } // resizeEvent
 
 void QgsMapCanvas::wheelEvent(QWheelEvent *e)
 {
-    // Zoom the map canvas in response to a mouse wheel event. Moving the
-    // wheel forward (away) from the user zooms in by a factor of 2.
-    // TODO The scale factor needs to be customizable by the user.
+  // Zoom the map canvas in response to a mouse wheel event. Moving the
+  // wheel forward (away) from the user zooms in by a factor of 2.
+  // TODO The scale factor needs to be customizable by the user.
 #ifdef QGISDEBUG
-    std::cout << "Wheel event delta " << e->delta() << std::endl;
+  std::cout << "Wheel event delta " << e->delta() << std::endl;
 #endif
-    // change extent
-    double scaleFactor;
-    if(e->delta() > 0)
-    {
-        scaleFactor = .5;
-    }
-    else
-    {
-        scaleFactor = 2;
-    }
-    // transform the mouse pos to map coordinates
-    QgsPoint center  = mCanvasProperties->coordXForm->toMapPoint(e->x(), e->y());
-    mCanvasProperties->currentExtent.scale(scaleFactor,&center );
-    clear();
-    render();
-    emit extentsChanged(mCanvasProperties->currentExtent);
+  // change extent
+  double scaleFactor;
+  if(e->delta() > 0)
+  {
+    scaleFactor = .5;
+  }
+  else
+  {
+    scaleFactor = 2;
+  }
+  // transform the mouse pos to map coordinates
+  QgsPoint center  = mCanvasProperties->coordXForm->toMapPoint(e->x(), e->y());
+  mCanvasProperties->currentExtent.scale(scaleFactor,&center );
+  clear();
+  render();
+  emit extentsChanged(mCanvasProperties->currentExtent);
 
 
 }
 
 void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 {
-    if (!mUserInteractionAllowed)
-        return;
-    // XXX magic numbers BAD -- 513?
-    if (e->state() == Qt::LeftButton || e->state() == 513)
+  if (!mUserInteractionAllowed)
+    return;
+  // XXX magic numbers BAD -- 513?
+  if (e->state() == Qt::LeftButton || e->state() == 513)
+  {
+    int dx, dy;
+    QPainter paint;
+    QPen pen(Qt::gray);
+
+    // this is a drag-type operation (zoom, pan or other maptool)
+
+    switch (mCanvasProperties->mapTool)
     {
-        int dx, dy;
-        QPainter paint;
-        QPen pen(Qt::gray);
+      case QGis::Select:
+      case QGis::ZoomIn:
+      case QGis::ZoomOut:
+        // draw the rubber band box as the user drags the mouse
+        mCanvasProperties->dragging = true;
 
-        // this is a drag-type operation (zoom, pan or other maptool)
+        paint.begin(this);
+        paint.setPen(pen);
+        paint.setRasterOp(Qt::XorROP);
+        paint.drawRect(mCanvasProperties->zoomBox);
 
-        switch (mCanvasProperties->mapTool)
+        mCanvasProperties->zoomBox.setLeft(mCanvasProperties->boxStartPoint.x());
+        mCanvasProperties->zoomBox.setTop(mCanvasProperties->boxStartPoint.y());
+        mCanvasProperties->zoomBox.setRight(e->pos().x());
+        mCanvasProperties->zoomBox.setBottom(e->pos().y());
+
+        paint.drawRect(mCanvasProperties->zoomBox);
+        paint.end();
+        break;
+
+      case QGis::Pan:
+        // show the pmCanvas as the user drags the mouse
+        mCanvasProperties->dragging = true;
+        // bitBlt the pixmap on the screen, offset by the
+        // change in mouse coordinates
+        dx = e->pos().x() - mCanvasProperties->boxStartPoint.x();
+        dy = e->pos().y() - mCanvasProperties->boxStartPoint.y();
+
+        //erase only the necessary parts to avoid flickering
+        if (dx > 0)
         {
-        case QGis::Select:
-        case QGis::ZoomIn:
-        case QGis::ZoomOut:
-            // draw the rubber band box as the user drags the mouse
-            mCanvasProperties->dragging = true;
-
-            paint.begin(this);
-            paint.setPen(pen);
-            paint.setRasterOp(Qt::XorROP);
-            paint.drawRect(mCanvasProperties->zoomBox);
-
-            mCanvasProperties->zoomBox.setLeft(mCanvasProperties->boxStartPoint.x());
-            mCanvasProperties->zoomBox.setTop(mCanvasProperties->boxStartPoint.y());
-            mCanvasProperties->zoomBox.setRight(e->pos().x());
-            mCanvasProperties->zoomBox.setBottom(e->pos().y());
-
-            paint.drawRect(mCanvasProperties->zoomBox);
-            paint.end();
-            break;
-
-        case QGis::Pan:
-            // show the pmCanvas as the user drags the mouse
-            mCanvasProperties->dragging = true;
-            // bitBlt the pixmap on the screen, offset by the
-            // change in mouse coordinates
-            dx = e->pos().x() - mCanvasProperties->boxStartPoint.x();
-            dy = e->pos().y() - mCanvasProperties->boxStartPoint.y();
-
-            //erase only the necessary parts to avoid flickering
-            if (dx > 0)
-            {
-                erase(0, 0, dx, height());
-            }
-            else
-            {
-                erase(width() + dx, 0, -dx, height());
-            }
-            if (dy > 0)
-            {
-                erase(0, 0, width(), dy);
-            }
-            else
-            {
-                erase(0, height() + dy, width(), -dy);
-            }
-
-            bitBlt(this, dx, dy, mCanvasProperties->pmCanvas);
-            break;
+          erase(0, 0, dx, height());
+        }
+        else
+        {
+          erase(width() + dx, 0, -dx, height());
+        }
+        if (dy > 0)
+        {
+          erase(0, 0, width(), dy);
+        }
+        else
+        {
+          erase(0, height() + dy, width(), -dy);
         }
 
+        bitBlt(this, dx, dy, mCanvasProperties->pmCanvas);
+        break;
     }
 
-    // show x y on status bar
-    QPoint xy = e->pos();
-    QgsPoint coord = mCanvasProperties->coordXForm->toMapCoordinates(xy);
-    emit xyCoordinates(coord);
+  }
+
+  // show x y on status bar
+  QPoint xy = e->pos();
+  QgsPoint coord = mCanvasProperties->coordXForm->toMapCoordinates(xy);
+  emit xyCoordinates(coord);
 
 } // mouseMoveEvent
 
@@ -1528,43 +1541,43 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 /** Sets the map tool currently being used on the canvas */
 void QgsMapCanvas::setMapTool(int tool)
 {
-    mCanvasProperties->mapTool = tool;
-    mCaptureList.clear();
+  mCanvasProperties->mapTool = tool;
+  mCaptureList.clear();
 } // setMapTool
 
 
 /** Write property of QColor bgColor. */
 void QgsMapCanvas::setbgColor(const QColor & _newVal)
 {
-    mCanvasProperties->bgColor = _newVal;
-    setEraseColor(_newVal);
+  mCanvasProperties->bgColor = _newVal;
+  setEraseColor(_newVal);
 } // setbgColor
 
 
 /** Updates the full extent to include the mbr of the rectangle r */
 void QgsMapCanvas::updateFullExtent(QgsRect const & r)
 {
-    if (r.xMin() < mCanvasProperties->fullExtent.xMin())
-    {
-        mCanvasProperties->fullExtent.setXmin(r.xMin());
-    }
+  if (r.xMin() < mCanvasProperties->fullExtent.xMin())
+  {
+    mCanvasProperties->fullExtent.setXmin(r.xMin());
+  }
 
-    if (r.xMax() > mCanvasProperties->fullExtent.xMax())
-    {
-        mCanvasProperties->fullExtent.setXmax(r.xMax());
-    }
+  if (r.xMax() > mCanvasProperties->fullExtent.xMax())
+  {
+    mCanvasProperties->fullExtent.setXmax(r.xMax());
+  }
 
-    if (r.yMin() < mCanvasProperties->fullExtent.yMin())
-    {
-        mCanvasProperties->fullExtent.setYmin(r.yMin());
-    }
+  if (r.yMin() < mCanvasProperties->fullExtent.yMin())
+  {
+    mCanvasProperties->fullExtent.setYmin(r.yMin());
+  }
 
-    if (r.yMax() > mCanvasProperties->fullExtent.yMax())
-    {
-        mCanvasProperties->fullExtent.setYmax(r.yMax());
-    }
+  if (r.yMax() > mCanvasProperties->fullExtent.yMax())
+  {
+    mCanvasProperties->fullExtent.setYmax(r.yMax());
+  }
 
-    emit extentsChanged(mCanvasProperties->currentExtent);
+  emit extentsChanged(mCanvasProperties->currentExtent);
 } // updateFullExtent
 
 
@@ -1575,97 +1588,97 @@ void QgsMapCanvas::updateFullExtent(QgsRect const & r)
   */
 int QgsMapCanvas::layerCount() const
 {
-    return mCanvasProperties->layers.size();
+  return mCanvasProperties->layers.size();
 } // layerCount
 
 
 
 void QgsMapCanvas::layerStateChange()
 {
-    if (!mCanvasProperties->frozen)
-    {
-        clear();
-        render();
-    }
+  if (!mCanvasProperties->frozen)
+  {
+    clear();
+    render();
+  }
 } // layerStateChange
 
 
 
 void QgsMapCanvas::freeze(bool frz)
 {
-    mCanvasProperties->frozen = frz;
+  mCanvasProperties->frozen = frz;
 } // freeze
 
 bool QgsMapCanvas::isFrozen()
 {
-    return mCanvasProperties->frozen ;
+  return mCanvasProperties->frozen ;
 } // freeze
 
 
-void QgsMapCanvas::remove
-    (QString key)
+  void QgsMapCanvas::remove
+(QString key)
 {
-    // XXX As a safety precaution, shouldn't we check to see if the 'key' is
-    // XXX in 'layers'?  Theoretically it should be ok to skip this check since
-    // XXX this should always be called with correct keys.
+  // XXX As a safety precaution, shouldn't we check to see if the 'key' is
+  // XXX in 'layers'?  Theoretically it should be ok to skip this check since
+  // XXX this should always be called with correct keys.
 
-    // We no longer delete the layer here - deleting of layers is now managed
-    // by the MapLayerRegistry. All we do now is remove any local reference to this layer.
-    // delete mCanvasProperties->layers[key];
+  // We no longer delete the layer here - deleting of layers is now managed
+  // by the MapLayerRegistry. All we do now is remove any local reference to this layer.
+  // delete mCanvasProperties->layers[key];
 
-    // first delete the map layer itself
+  // first delete the map layer itself
 
-    // convenience variable
-    QgsMapLayer * layer = mCanvasProperties->layers[key];
+  // convenience variable
+  QgsMapLayer * layer = mCanvasProperties->layers[key];
 
-    Q_ASSERT( layer );
+  Q_ASSERT( layer );
 
-    // disconnect layer signals
-    QObject::disconnect(layer, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
-    QObject::disconnect(layer, SIGNAL(repaintRequested()), this, SLOT(refresh()));
+  // disconnect layer signals
+  QObject::disconnect(layer, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
+  QObject::disconnect(layer, SIGNAL(repaintRequested()), this, SLOT(refresh()));
 
-    // we DO NOT disconnect this as this is currently the only means for overview
-    // canvases to add layers; natch this is irrelevent if this is NOT the overview canvas
+  // we DO NOT disconnect this as this is currently the only means for overview
+  // canvases to add layers; natch this is irrelevent if this is NOT the overview canvas
 
-    // QObject::disconnect(lyr, SIGNAL(showInOverView(QgsMapLayer *, bool)),
-    //                     this, SLOT(showInOverView(QgsMapLayer *, bool )));
+  // QObject::disconnect(lyr, SIGNAL(showInOverView(QgsMapLayer *, bool)),
+  //                     this, SLOT(showInOverView(QgsMapLayer *, bool )));
 
-    mCanvasProperties->layers[key] = 0;
-    mCanvasProperties->layers.erase( key );  // then erase its entry from layer table
+  mCanvasProperties->layers[key] = 0;
+  mCanvasProperties->layers.erase( key );  // then erase its entry from layer table
 
-    // XXX after removing this layer, we should probably compact the
-    // XXX remaining Z values
-    mCanvasProperties->zOrder.remove(key);   // ... and it's Z order entry, too
+  // XXX after removing this layer, we should probably compact the
+  // XXX remaining Z values
+  mCanvasProperties->zOrder.remove(key);   // ... and it's Z order entry, too
 
-    // Since we removed a layer, we may have to adjust the map canvas'
-    // over-all extent; so we update to the largest extent found in the
-    // remaining layers.
+  // Since we removed a layer, we may have to adjust the map canvas'
+  // over-all extent; so we update to the largest extent found in the
+  // remaining layers.
 
-    if ( mCanvasProperties->layers.empty() )
+  if ( mCanvasProperties->layers.empty() )
+  {
+    // XXX do we want to reset the extents if the last layer is deleted?
+  }
+  else
+  {
+    std::map < QString, QgsMapLayer * >::iterator mi =
+      mCanvasProperties->layers.begin();
+
+    mCanvasProperties->fullExtent = mi->second->extent();
+    mCanvasProperties->fullExtent.scale(1.1); // XXX why set the scale to this magic
+    // XXX number?
+
+    ++mi;
+
+    for ( ; mi != mCanvasProperties->layers.end(); ++mi )
     {
-        // XXX do we want to reset the extents if the last layer is deleted?
+      updateFullExtent(mi->second->extent());
     }
-    else
-    {
-        std::map < QString, QgsMapLayer * >::iterator mi =
-            mCanvasProperties->layers.begin();
+  }
 
-        mCanvasProperties->fullExtent = mi->second->extent();
-        mCanvasProperties->fullExtent.scale(1.1); // XXX why set the scale to this magic
-        // XXX number?
+  mCanvasProperties->dirty = true;
 
-        ++mi;
-
-        for ( ; mi != mCanvasProperties->layers.end(); ++mi )
-        {
-            updateFullExtent(mi->second->extent());
-        }
-    }
-
-    mCanvasProperties->dirty = true;
-
-    // signal that we've erased this layer
-    emit removedLayer( key );
+  // signal that we've erased this layer
+  emit removedLayer( key );
 
 } // QgsMapCanvas::remove()
 
@@ -1674,43 +1687,43 @@ void QgsMapCanvas::remove
 void QgsMapCanvas::removeAll()
 {
 
-    // Welllllll, yeah, this works, but now we have to ensure that the
-    // removedLayer() signal is emitted.
-    //   mCanvasProperties->layers.clear();
-    //   mCanvasProperties->zOrder.clear();
+  // Welllllll, yeah, this works, but now we have to ensure that the
+  // removedLayer() signal is emitted.
+  //   mCanvasProperties->layers.clear();
+  //   mCanvasProperties->zOrder.clear();
 
-    // So:
-    std::map < QString, QgsMapLayer * >::iterator mi =
-        mCanvasProperties->layers.begin();
+  // So:
+  std::map < QString, QgsMapLayer * >::iterator mi =
+    mCanvasProperties->layers.begin();
 
-    QString current_key;
+  QString current_key;
 
-    // first disconnnect all layer signals from this canvas
-    while ( mi != mCanvasProperties->layers.end() )
-    {
-        // save the current key
-        current_key = mi->first;
+  // first disconnnect all layer signals from this canvas
+  while ( mi != mCanvasProperties->layers.end() )
+  {
+    // save the current key
+    current_key = mi->first;
 
-        QgsMapLayer * layer = mCanvasProperties->layers[current_key];
+    QgsMapLayer * layer = mCanvasProperties->layers[current_key];
 
-        // disconnect layer signals
-        QObject::disconnect(layer, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
-        QObject::disconnect(layer, SIGNAL(repaintRequested()), this, SLOT(refresh()));
+    // disconnect layer signals
+    QObject::disconnect(layer, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
+    QObject::disconnect(layer, SIGNAL(repaintRequested()), this, SLOT(refresh()));
 
-        ++mi;
-    }
+    ++mi;
+  }
 
-    // then empty all the other state containers
+  // then empty all the other state containers
 
-    mCanvasProperties->layers.clear();
+  mCanvasProperties->layers.clear();
 
-    mCanvasProperties->acetateObjects.clear(); // XXX are these managed elsewhere?
+  mCanvasProperties->acetateObjects.clear(); // XXX are these managed elsewhere?
 
-    mCanvasProperties->zOrder.clear();
+  mCanvasProperties->zOrder.clear();
 
-    mCanvasProperties->dirty = true;
+  mCanvasProperties->dirty = true;
 
-    emit removedAll();              // let observers know we're now empty
+  emit removedAll();              // let observers know we're now empty
 
 } // QgsMapCanvas::removeAll
 
@@ -1721,182 +1734,182 @@ void QgsMapCanvas::removeAll()
  */
 double QgsMapCanvas::calculateSearchRadiusValue()
 {
-    QSettings settings;
+  QSettings settings;
 
-    int identifyValue = settings.readNumEntry("/qgis/map/identifyRadius", 5);
+  int identifyValue = settings.readNumEntry("/qgis/map/identifyRadius", 5);
 
-    return(identifyValue/1000.0);
+  return(identifyValue/1000.0);
 
 } // calculateSearchRadiusValue
 
 
 QPixmap * QgsMapCanvas::canvasPixmap()
 {
-    return mCanvasProperties->pmCanvas;
+  return mCanvasProperties->pmCanvas;
 } // canvasPixmap
 
 
 
 void QgsMapCanvas::setCanvasPixmap(QPixmap * theQPixmap)
 {
-    mCanvasProperties->pmCanvas = theQPixmap;
+  mCanvasProperties->pmCanvas = theQPixmap;
 } // setCanvasPixmap
 
 
 void QgsMapCanvas::setZOrder(std::list <QString> theZOrder)
 {
-    //
-    // We need to evaluate each layer in the zOrder and see
-    // if it is actually a member of this mapCanvas
-    //
-    std::list < QString >::iterator li = theZOrder.begin();
-    mCanvasProperties->zOrder.clear();
-    while (li != theZOrder.end())
+  //
+  // We need to evaluate each layer in the zOrder and see
+  // if it is actually a member of this mapCanvas
+  //
+  std::list < QString >::iterator li = theZOrder.begin();
+  mCanvasProperties->zOrder.clear();
+  while (li != theZOrder.end())
+  {
+    QgsMapLayer *ml = mCanvasProperties->layers[*li];
+
+    if (ml)
     {
-        QgsMapLayer *ml = mCanvasProperties->layers[*li];
-
-        if (ml)
-        {
 #ifdef QGISDEBUG
-            std::cout << "Adding  " << ml->name() << " to zOrder" << std::endl;
+      std::cout << "Adding  " << ml->name() << " to zOrder" << std::endl;
 #endif
 
-            mCanvasProperties->zOrder.push_back(ml->getLayerID());
-        }
-        else
-        {
-#ifdef QGISDEBUG
-            std::cout << "Cant add  " << ml->name() << " to zOrder (it isnt in layers array)" << std::endl;
-#endif
-
-        }
-        li++;
+      mCanvasProperties->zOrder.push_back(ml->getLayerID());
     }
+    else
+    {
+#ifdef QGISDEBUG
+      std::cout << "Cant add  " << ml->name() << " to zOrder (it isnt in layers array)" << std::endl;
+#endif
+
+    }
+    li++;
+  }
 }
 
 std::list < QString > const & QgsMapCanvas::zOrders() const
 {
-    return mCanvasProperties->zOrder;
+  return mCanvasProperties->zOrder;
 } // zOrders
 
 
 std::list < QString >       & QgsMapCanvas::zOrders()
 {
-    return mCanvasProperties->zOrder;
+  return mCanvasProperties->zOrder;
 } // zOrders
 
 //! determines whether the user can interact with the overview canvas.
 void QgsMapCanvas::userInteractionAllowed(bool theFlag)
 {
-    mUserInteractionAllowed = theFlag;
+  mUserInteractionAllowed = theFlag;
 }
 //! determines whether the user can interact with the overview canvas.
 bool QgsMapCanvas::isUserInteractionAllowed()
 {
-    return mUserInteractionAllowed;
+  return mUserInteractionAllowed;
 }
 
 
 double QgsMapCanvas::mupp() const
 {
-    return mCanvasProperties->m_mupp;
+  return mCanvasProperties->m_mupp;
 } // mupp
 
 
 void QgsMapCanvas::setMapUnits(QgsScaleCalculator::units u)
 {
 #ifdef QGISDEBUG
-    std::cerr << "Setting map units to " << static_cast<int>(u) << std::endl;
+  std::cerr << "Setting map units to " << static_cast<int>(u) << std::endl;
 #endif
 
-    mCanvasProperties->setMapUnits(u);
+  mCanvasProperties->setMapUnits(u);
 }
 
 
 QgsScaleCalculator::units QgsMapCanvas::mapUnits() const
 {
-    return mCanvasProperties->mapUnits();
+  return mCanvasProperties->mapUnits();
 }
 
 
 void QgsMapCanvas::setRenderFlag(bool theFlag)
 {
-    mRenderFlag = theFlag;
-    // render the map
-    if(mRenderFlag)
-    {
-        refresh();
-    }
+  mRenderFlag = theFlag;
+  // render the map
+  if(mRenderFlag)
+  {
+    refresh();
+  }
 }
 
 void QgsMapCanvas::connectNotify( const char * signal )
 {
 #ifdef QGISDEBUG
-    std::cerr << "QgsMapCanvas connected to " << signal << "\n";
+  std::cerr << "QgsMapCanvas connected to " << signal << "\n";
 #endif
 } //  QgsMapCanvas::connectNotify( const char * signal )
 
 
 bool QgsMapCanvas::writeXML(QDomNode & layerNode, QDomDocument & doc)
 {
-    // Write current view extents
-    QDomElement extentNode = doc.createElement("extent");
-    layerNode.appendChild(extentNode);
+  // Write current view extents
+  QDomElement extentNode = doc.createElement("extent");
+  layerNode.appendChild(extentNode);
 
-    QDomElement xMin = doc.createElement("xmin");
-    QDomElement yMin = doc.createElement("ymin");
-    QDomElement xMax = doc.createElement("xmax");
-    QDomElement yMax = doc.createElement("ymax");
+  QDomElement xMin = doc.createElement("xmin");
+  QDomElement yMin = doc.createElement("ymin");
+  QDomElement xMax = doc.createElement("xmax");
+  QDomElement yMax = doc.createElement("ymax");
 
-    QDomText xMinText = doc.createTextNode(QString::number(mCanvasProperties->currentExtent.xMin(), 'f'));
-    QDomText yMinText = doc.createTextNode(QString::number(mCanvasProperties->currentExtent.yMin(), 'f'));
-    QDomText xMaxText = doc.createTextNode(QString::number(mCanvasProperties->currentExtent.xMax(), 'f'));
-    QDomText yMaxText = doc.createTextNode(QString::number(mCanvasProperties->currentExtent.yMax(), 'f'));
+  QDomText xMinText = doc.createTextNode(QString::number(mCanvasProperties->currentExtent.xMin(), 'f'));
+  QDomText yMinText = doc.createTextNode(QString::number(mCanvasProperties->currentExtent.yMin(), 'f'));
+  QDomText xMaxText = doc.createTextNode(QString::number(mCanvasProperties->currentExtent.xMax(), 'f'));
+  QDomText yMaxText = doc.createTextNode(QString::number(mCanvasProperties->currentExtent.yMax(), 'f'));
 
-    xMin.appendChild(xMinText);
-    yMin.appendChild(yMinText);
-    xMax.appendChild(xMaxText);
-    yMax.appendChild(yMaxText);
+  xMin.appendChild(xMinText);
+  yMin.appendChild(yMinText);
+  xMax.appendChild(xMaxText);
+  yMax.appendChild(yMaxText);
 
-    extentNode.appendChild(xMin);
-    extentNode.appendChild(yMin);
-    extentNode.appendChild(xMax);
-    extentNode.appendChild(yMax);
+  extentNode.appendChild(xMin);
+  extentNode.appendChild(yMin);
+  extentNode.appendChild(xMax);
+  extentNode.appendChild(yMax);
 
-    // Iterate over layers in zOrder
-    // Call writeXML() on each
-    QDomElement projectLayersNode = doc.createElement("projectlayers");
-    projectLayersNode.setAttribute("layercount", mCanvasProperties->layers.size());
+  // Iterate over layers in zOrder
+  // Call writeXML() on each
+  QDomElement projectLayersNode = doc.createElement("projectlayers");
+  projectLayersNode.setAttribute("layercount", mCanvasProperties->layers.size());
 
-    std::list < QString >::iterator li = mCanvasProperties->zOrder.begin();
-    while (li != mCanvasProperties->zOrder.end())
+  std::list < QString >::iterator li = mCanvasProperties->zOrder.begin();
+  while (li != mCanvasProperties->zOrder.end())
+  {
+    QgsMapLayer *ml = mCanvasProperties->layers[*li];
+
+    if (ml)
     {
-        QgsMapLayer *ml = mCanvasProperties->layers[*li];
-
-        if (ml)
-        {
-            ml->writeXML(projectLayersNode, doc);
-        }
-        li++;
+      ml->writeXML(projectLayersNode, doc);
     }
+    li++;
+  }
 
-    layerNode.appendChild(projectLayersNode);
+  layerNode.appendChild(projectLayersNode);
 
-    return true;
+  return true;
 }
 
 void QgsMapCanvas::recalculateExtents()
 {
 #ifdef QGISDEBUG
-   std::cout << "QgsMapCanvas::recalculateExtents() called !" << std::endl;
+  std::cout << "QgsMapCanvas::recalculateExtents() called !" << std::endl;
 #endif
 
-// reset the map canvas extent since the extent may now be smaller
-// We can't use a constructor since QgsRect normalizes the rectangle upon construction
-        mCanvasProperties->fullExtent.setXmin(9999999999.0);
-        mCanvasProperties->fullExtent.setYmin(999999999.0);
-        mCanvasProperties->fullExtent.setXmax(-999999999.0);
-        mCanvasProperties->fullExtent.setYmax(-999999999.0);
+  // reset the map canvas extent since the extent may now be smaller
+  // We can't use a constructor since QgsRect normalizes the rectangle upon construction
+  mCanvasProperties->fullExtent.setXmin(9999999999.0);
+  mCanvasProperties->fullExtent.setYmin(999999999.0);
+  mCanvasProperties->fullExtent.setXmax(-999999999.0);
+  mCanvasProperties->fullExtent.setYmax(-999999999.0);
   // get the map layer register collection
   QgsMapLayerRegistry *reg = QgsMapLayerRegistry::instance();
   std::map<QString, QgsMapLayer*>layers = reg->mapLayers();
@@ -1907,7 +1920,7 @@ void QgsMapCanvas::recalculateExtents()
   {
     QgsMapLayer * lyr = dynamic_cast<QgsMapLayer *>(mit->second);
 #ifdef QGISDEBUG
-  std::cout << "Updating extent using " << lyr->name() << std::endl;
+    std::cout << "Updating extent using " << lyr->name() << std::endl;
 #endif 
     updateFullExtent(lyr->extent());
     mit++;
