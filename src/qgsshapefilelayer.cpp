@@ -434,6 +434,7 @@ void QgsShapeFileLayer::table()
 
 	tabledisplay->setTitle("Tabledisplaytribute table - " + name());
 	tabledisplay->show();
+	tabledisplay->table()->clearSelection();//deselect the first row
 
 	//select the rows of the already selected features
 	QObject::disconnect(tabledisplay->table(),SIGNAL(selectionChanged()),tabledisplay->table(),SLOT(handleChangedSelections()));
@@ -456,7 +457,6 @@ void QgsShapeFileLayer::table()
 
 void QgsShapeFileLayer::select(int number)
 {
-    std::cout << "bin in QgsShapeFileLayer::select(int) " << number << std::endl;
     (*selected)[number]=true;
 }
 
@@ -467,9 +467,7 @@ void QgsShapeFileLayer::select(QgsRect* rect, bool lock)
     {
 	QObject::disconnect(tabledisplay->table(),SIGNAL(selectionChanged()),tabledisplay->table(),SLOT(handleChangedSelections()));
 	QObject::disconnect(tabledisplay->table(),SIGNAL(selected(int)),this,SLOT(select(int)));//disconnecting because of performance reason
-	tabledisplay->raise();
     }
-    std::cout << "bin in QgsShapeFileLayer::select(QgsRect)" << std::endl;
     
     if(lock==false)
     {
@@ -496,7 +494,6 @@ void QgsShapeFileLayer::select(QgsRect* rect, bool lock)
 	    if(fet)
 	    {
 		select(fet->GetFID());
-		std::cout << "rufe die Methode selectRow auf" << fet->GetFID() << std::endl;
 		if(tabledisplay)
 		{
 		    tabledisplay->table()->selectRowWithId(fet->GetFID());
