@@ -60,6 +60,8 @@ class QgsDatabaseLayer:public QgsMapLayer
 	QString tableName;
 	//! Name of the column in the table that contains the geometry for the features
 	QString geometryColumn;
+	//! Spatial reference id
+	QString srid;
 	//OGIS WKB types
 
 	enum ENDIAN
