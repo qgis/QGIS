@@ -15,9 +15,6 @@
     <property name="caption">
         <string>Choose a marker symbol</string>
     </property>
-    <property name="modal">
-        <bool>false</bool>
-    </property>
     <grid>
         <property name="name">
             <cstring>unnamed</cstring>
