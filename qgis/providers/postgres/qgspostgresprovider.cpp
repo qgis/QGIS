@@ -394,8 +394,8 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
   if (valid){
     QString fetch = "fetch forward 1 from qgisf";
     queryResult = PQexec(connection, (const char *)fetch);
-    std::cerr << "Error: " << PQerrorMessage(connection) << std::endl;
-    std::cerr << "Fetched " << PQntuples(queryResult) << "rows" << std::endl;
+//    std::cerr << "Error: " << PQerrorMessage(connection) << std::endl;
+//   std::cerr << "Fetched " << PQntuples(queryResult) << "rows" << std::endl;
     if(PQntuples(queryResult) == 0){
       PQexec(connection, "end work");
       ready = false;
@@ -407,7 +407,7 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 
     int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
 #ifdef QGISDEBUG
-    std::cerr << "OID from database: " << oid << std::endl; 
+   // std::cerr << "OID from database: " << oid << std::endl; 
 #endif
     // oid is in big endian
     int *noid;
@@ -424,7 +424,7 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
     {
       if(swapEndian){
 #ifdef QGISDEBUG
-        std::cerr << "swapping endian for oid" << std::endl;
+//        std::cerr << "swapping endian for oid" << std::endl;
 #endif 
         // convert oid to opposite endian
         char *temp  = new char[sizeof(oid)];
@@ -443,7 +443,7 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
     // noid contains the oid to be used in fetching attributes if 
     // fetchAttributes = true
 #ifdef QGISDEBUG
-    std::cerr << "Using OID: " << *noid << std::endl;
+//    std::cerr << "Using OID: " << *noid << std::endl;
 #endif
     int returnedLength = PQgetlength(queryResult,0, PQfnumber(queryResult,"qgs_feature_geometry"));
     //--std::cout << "Returned length is " << returnedLength << std::endl;
@@ -692,7 +692,7 @@ int QgsPostgresProvider::fieldCount()
 void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f){
   QString sql = QString("select * from %1 where %2 = %3").arg(tableName).arg(primaryKey).arg(key);
 #ifdef QGISDEBUG
-  std::cerr << "getFeatureAttributes using: " << sql << std::endl; 
+//  std::cerr << "getFeatureAttributes using: " << sql << std::endl; 
 #endif
   PGresult *attr = PQexec(connection, (const char *)sql);
 
