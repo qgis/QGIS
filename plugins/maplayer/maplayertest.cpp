@@ -1,6 +1,6 @@
 #include <qpopupmenu.h>
 #include <qmessagebox.h>
-
+#include "../qgisplugin.h"
 #include "maplayertest.h"
 // xpm for creating the toolbar icon
 #include "matrix1.xpm"
@@ -50,4 +50,9 @@ extern "C" QString name(){
 }
 extern "C" QString description(){
 	return QString("Map Layer test plugin using QgsMapLayerInterface interface");
+}
+// Return the type (either UI or MapLayer plugin)
+extern "C" int type()
+{
+    return QgisPlugin::MAPLAYER;
 }
