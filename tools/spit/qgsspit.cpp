@@ -182,6 +182,7 @@ void QgsSpit::removeAllFiles(){
     array[n] = n;
 
   fileList.clear();
+  total_features = 0;
   tblShapefiles->removeRows(array);
 }
 
