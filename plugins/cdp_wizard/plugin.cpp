@@ -68,7 +68,7 @@
 //
 //the gui subclass
 //
-#include "plugingui.h"
+#include "cdpwizard.h"
 
 //
 // xpm for creating the toolbar icon
@@ -140,11 +140,11 @@ void Plugin::help()
 // Slot called when the buffer menu item is activated
 void Plugin::run()
 {
-  PluginGui *myPluginGui=new PluginGui(mQGisApp,"Climate Data Processor",true,0);
+  CDPWizard *myCDPWizard=new CDPWizard(mQGisApp,"Climate Data Processor",true,0);
   //listen for when the layer has been made so we can draw it
-  connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
-  connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
-  myPluginGui->show();
+  //connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
+  //connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
+  myCDPWizard->show();
 }
 
 // Unload the plugin by cleaning up the GUI

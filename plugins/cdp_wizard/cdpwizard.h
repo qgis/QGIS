@@ -20,7 +20,6 @@
 
 using namespace std;
 // include files for Qt
-#include <cdpwizardbase.h>
 #include <qwidget.h>
 #include <qpushbutton.h>
 #include <qtextedit.h>
@@ -33,6 +32,7 @@ using namespace std;
 #include "dataprocessor.h"
 #include "filereader.h"
 #include "filewriter.h"
+#include "cdpwizardbase.uic.h"
 //other libs
 #include <sstream>
 #include <vector>
@@ -41,35 +41,35 @@ using namespace std;
 
 
 /**This is the inherited class from the QTDesigner CDPWizardBase.ui
-  *@author Tim Sutton
-  */
+ *@author Tim Sutton
+ */
 
 class CDPWizard : public CDPWizardBase
 {
-     Q_OBJECT
-public: 
-	CDPWizard();
-    CDPWizard( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-	~CDPWizard();
-private:
-  bool initialise();
+  Q_OBJECT
+    public: 
+      CDPWizard();
+      CDPWizard( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+      ~CDPWizard();
+    private:
+      bool initialise();
 
-  FileReader* fileReader;
-  FileGroup* fileGroup;
+      FileReader* fileReader;
+      FileGroup* fileGroup;
 
-  //debugging
-  bool debugModeFlag;
-  
-  //the climate data proccessor does all the work
-  ClimateDataProcessor *climateDataProcessor;
+      //debugging
+      bool debugModeFlag;
+
+      //the climate data proccessor does all the work
+      ClimateDataProcessor *climateDataProcessor;
 
 
-public slots: // Public slots
+      public slots: // Public slots
 
-  /** This method overrides the virtual CDPWizardBase method of the same name. */
-  void cboFileType_activated( const QString &myQString );
-  /** This method overrides the virtual CDPWizardBase method (slot) of the same name. */
-  void formSelected(const QString &thePageNameQString);
+          /** This method overrides the virtual CDPWizardBase method of the same name. */
+          void cboFileType_activated( const QString &myQString );
+      /** This method overrides the virtual CDPWizardBase method (slot) of the same name. */
+      void formSelected(const QString &thePageNameQString);
 };
 
 #endif
