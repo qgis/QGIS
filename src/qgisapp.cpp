@@ -100,6 +100,8 @@ QgisApp::addLayer ()
 	 
 	  ++it;
 	}
+      qApp->processEvents();
+      mapCanvas->render();
 
     }
 

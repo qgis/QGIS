@@ -20,7 +20,9 @@ HEADERS += qgsdbsourceselectbase.ui.h \
            qgstable.h \
            qgsdbsourceselect.h \
            qgsnewconnection.h \
-           qgsrect.h
+           qgsrect.h \
+           qgspoint.h \
+           qgscoordinatetransorm.h
            
 INTERFACES += qgsdbsourceselectbase.ui qgisappbase.ui qgsnewconnectionbase.ui
 SOURCES += main.cpp \
@@ -32,4 +34,6 @@ SOURCES += main.cpp \
            qgsrasterlayer.cpp \
            qgsdbsourceselect.cpp \
            qgsnewconnection.cpp \
-           qgsrect.cpp
+           qgsrect.cpp \
+           qgspoint.cpp \
+           qgscoordinatetransform.cpp
