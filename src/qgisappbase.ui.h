@@ -156,3 +156,9 @@ void QgisAppBase::exportMapServer()
 {
 
 }
+
+
+void QgisAppBase::addRasterLayer()
+{
+
+}

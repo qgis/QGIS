@@ -1,9 +1,9 @@
 /***************************************************************************
-                          gsrasterlayer.h  -  description
-                             -------------------
-    begin                : Fri Jun 28 2002
-    copyright            : (C) 2002 by Gary E.Sherman
-    email                : sherman at mrcc.com
+						  gsrasterlayer.h  -  description
+							 -------------------
+	begin                : Fri Jun 28 2002
+	copyright            : (C) 2002 by Gary E.Sherman
+	email                : sherman at mrcc.com
 ***************************************************************************/
 
 /***************************************************************************
@@ -19,20 +19,28 @@
 #define QGSRASTERLAYER_H
 
 class QgsRect;
+class GDALDataset;
+
 #include "qgsmaplayer.h"
 /*! \class QgsRasterLayer
  * \brief Raster layer class
  */
 
 class QgsRasterLayer : public QgsMapLayer  {
-Q_OBJECT
- public: 
-    //! Constructor
-    QgsRasterLayer();
-    //! Destructor
-    ~QgsRasterLayer();
-    void draw(QPainter *p, QRect *viewExtent);
-    //void identify(QgsRect *r);
+	Q_OBJECT
+public: 
+	//! Constructor
+	QgsRasterLayer(QString path = 0, QString baseName = 0);
+	//! Destructor
+	~QgsRasterLayer();
+	void draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTransform * cXf);
+	//void identify(QgsRect *r);
+	
+private:
+	GDALDataset  *gdalDataset;
+	
+signals:
+	void repaintRequested();
 };
 
 #endif
