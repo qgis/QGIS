@@ -17,17 +17,21 @@
 #include <iostream>
 #include <qspinbox.h>
 #include <qslider.h>
+#include <qtabwidget.h>
 //standard includes
 
 PluginGui::PluginGui() : PluginGuiBase()
 {
   
+  //temporary hack until this is implemented
+  tabNorthArrowOptions->removePage( tabIcon );
 }
 
 PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : PluginGuiBase( parent, name, modal, fl )
 {
-   
+  //temporary hack until this is implemented
+  tabNorthArrowOptions->removePage( tabIcon );
 }  
 PluginGui::~PluginGui()
 {
