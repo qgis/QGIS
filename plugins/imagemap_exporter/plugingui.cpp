@@ -18,6 +18,7 @@
 #include <qlineedit.h>
 #include <qmessagebox.h>
 #include <qspinbox.h>
+#include <qtextstream.h>
 
 //standard includes
 #include <algorithm>
@@ -69,18 +70,19 @@ void PluginGui::pbnOK_clicked()
     QMessageBox::critical(this, "Error", "You must choose an output file.");
     return;
   }
-  std::ofstream file(leSelectHTML->text());
-  if (!file) {
+  
+  // open the HTML file
+  QFile f(leSelectHTML->text());
+  if (!f.open(IO_WriteOnly)) {
     QMessageBox::critical(this, "Error", 
 			  QString("Could not write to %1. "
 				  "Please select another file.")
 			  .arg(leSelectHTML->text()));
     return;
   }
-  
+  QTextStream file(&f);
   
   // write the image file
-  QFile f(leSelectHTML->text());
   QFileInfo fi(f);
   QString dir = fi.dir().path() + "/";
   QString basename = fi.fileName();
@@ -95,11 +97,11 @@ void PluginGui::pbnOK_clicked()
 			  qgisIFace->getMapCanvas()->extent().xMin(),
 			  qgisIFace->getMapCanvas()->extent().yMin(),
 			  qgisIFace->getMapCanvas()->height());
-  file<<"<HTML>"<<std::endl
-      <<"  <BODY>"<<std::endl
+  file<<"<HTML>"<<endl
+      <<"  <BODY>"<<endl
       <<"    <IMG src=\""<<imageFile
-      <<"\" usemap=\"#qgismap\" border=0>"<<std::endl
-      <<"    <MAP name=\"qgismap\">"<<std::endl;
+      <<"\" usemap=\"#qgismap\" border=0>"<<endl
+      <<"    <MAP name=\"qgismap\">"<<endl;
   QgsRect extentRect((qgisIFace->getMapCanvas()->extent()));
   layer->select(&extentRect, false);
 
@@ -161,7 +163,7 @@ void PluginGui::pbnOK_clicked()
       }
     }
 
-    // sort the features so clusters are contiguous
+    // sort the features so clusters are contiguous in the vector
     std::sort(features.begin(), features.end(), cluster_comp);
     
     // get urls
@@ -206,7 +208,7 @@ void PluginGui::pbnOK_clicked()
       else if (altIndex != -1)
 	file<<(alts[features[i].second][0].isNull() ? "" : 
 	       alts[features[i].second][0]);
-      file<<"\">"<<std::endl;
+      file<<"\">"<<endl;
     }
     
     break;
@@ -246,7 +248,7 @@ void PluginGui::pbnOK_clicked()
 	    file<<"nohref";
 	  else
 	    file<<"href=\""<<url<<"\"";
-	  file<<" alt=\""<<alt<<"\">"<<std::endl;
+	  file<<" alt=\""<<alt<<"\">"<<endl;
 	  ringBegin += 4 + numPoints * 16;
 	}
       }
@@ -257,10 +259,9 @@ void PluginGui::pbnOK_clicked()
 
   }
   
-  file<<"    </MAP>"<<std::endl
-      <<"  </BODY>"<<std::endl
-      <<"</HTML>"<<std::endl;
-  file.close();
+  file<<"    </MAP>"<<endl
+      <<"  </BODY>"<<endl
+      <<"</HTML>"<<endl;
   
   done(1);
 } 
