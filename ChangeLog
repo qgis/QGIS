@@ -1,7 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.158 2004/07/10 06:45:34 gsherman Exp
+ChangeLog,v 1.159 2004/07/10 17:20:11 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-07-10 [larsl] 0.4.0devel4
+** Added code to QgsProjectIo that saves and loads the provider key of a vector
+   layer in the project file, so delimited text layers and GPX layers can be
+   saved in a project. Haven't tested for grass vector layers, but it should
+   work.
 
 2004-07-09 [gsherman] 0.4.0devel3
 ** First pass at defining PostgreSQL layers using a where clause in the
