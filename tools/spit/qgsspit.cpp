@@ -149,6 +149,7 @@ void QgsSpit::addFile()
         tblShapefiles->setText(row, 1, file->getFeatureClass());
         tblShapefiles->setText(row, 2, QString("%1").arg(file->getFeatureCount()));        
         tblShapefiles->setText(row, 3, file->getTable());
+				tblShapefiles->setText(row, 4, "public");
         total_features += file->getFeatureCount();
       }
       else{
@@ -237,13 +238,16 @@ void QgsSpit::helpInfo(){
 void QgsSpit::import(){
   tblShapefiles->setCurrentCell(-1, 0);
     
-  QString connName = cmbConnections->currentText();
-  bool cancelled = false;
+	bool cancelled = false;
+  QString connName = cmbConnections->currentText();	
   PGresult *res;
   QString query;
   if (connName.isEmpty()){
     QMessageBox::warning(this, "Import Shapefiles", "You need to specify a Connection first");
   }
+	else if(total_features==0){
+		QMessageBox::warning(this, "Import Shapefiles", "You need to add shapefiles to the list first");
+	}
   else{
     QSettings settings;
     QString key = "/Qgis/connections/" + connName;
@@ -262,39 +266,39 @@ void QgsSpit::import(){
       qApp->processEvents();
       
       for(int i=0; i<fileList.size() ; i++){
-				QString error = "Problem inserting features from file:\n"+fileList[i]->getName();
+				QString error = "Problem inserting features from file:\n"+tblShapefiles->text(i,0);
         // if a name starts with invalid character
-        if(!(fileList[i]->getTable()[0]).isLetter()){
-          QMessageBox::warning(pro, "Import Shapefiles", "Problem inserting file:\n"+fileList[i]->getName()+"\nInvalid table name.");
-          pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
+        if(!(tblShapefiles->text(i,3))[0].isLetter()){
+          QMessageBox::warning(pro, "Import Shapefiles", "Problem inserting file:\n"+tblShapefiles->text(i,0)+"\nInvalid table name.");
+          pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
           continue;
         }
         
         fileList[i]->setTable(tblShapefiles->text(i, 3));
-        pro->setLabelText("Importing files\n"+fileList[i]->getName());
+        pro->setLabelText("Importing files\n"+tblShapefiles->text(i,0));
         bool rel_exists1 = false;
         bool rel_exists2 = false;
-        query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'"+fileList[i]->getTable()+"\'";
+        query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'"+tblShapefiles->text(i,3)+"\'";
         res = PQexec(pd, (const char *)query);
         rel_exists1 = (PQntuples(res)>0);
         if(PQresultStatus(res)!=PGRES_TUPLES_OK){
 					qWarning(PQresultErrorMessage(res));
           QMessageBox::warning(pro, "Import Shapefiles", error);
-          pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
+          pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
           continue;
         }
         else {
           PQclear(res);
         }
         
-        query = "SELECT tablename FROM pg_tables WHERE tablename=\'"+fileList[i]->getTable()+"\'";
+        query = "SELECT tablename FROM pg_tables WHERE tablename=\'"+tblShapefiles->text(i,3)+"\'";
         res = PQexec(pd, (const char *)query);
         qWarning(query);
         rel_exists2 = (PQntuples(res)>0);
         if(PQresultStatus(res)!=PGRES_TUPLES_OK){
           qWarning(PQresultErrorMessage(res));
           QMessageBox::warning(pro, "Import Shapefiles", error);
-          pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
+          pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
           continue;
         }
         else {
@@ -307,20 +311,21 @@ void QgsSpit::import(){
         if(PQresultStatus(res)!=PGRES_COMMAND_OK){
           qWarning(PQresultErrorMessage(res));
 					QMessageBox::warning(pro, "Import Shapefiles", error);
-          pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
+          pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
           continue;
         }
         else {
           PQclear(res);
         }
 				        
-				query = "SET SEARCH_PATH TO \'public\'";
+				query = "SET SEARCH_PATH TO \'"+tblShapefiles->text(i,4)+"\'";
         res = PQexec(pd, query);
+				qWarning(query);
         if(PQresultStatus(res)!=PGRES_COMMAND_OK){
           qWarning(PQresultErrorMessage(res));
 					qWarning(PQresStatus(PQresultStatus(res)));
 					QMessageBox::warning(pro, "Import Shapefiles", error);
-          pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
+          pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
           continue;
         }
         else {
@@ -330,10 +335,10 @@ void QgsSpit::import(){
         QMessageBox *del_confirm;
         if(rel_exists1 || rel_exists2){
           del_confirm = new QMessageBox("Import Shapefiles - Relation Exists",
-            "The Shapefile:\n"+fileList[i]->getName()+"\nwill use ["+
-            QString(fileList[i]->getTable())+"] relation for its data,\nwhich already exists and possibly contains data.\n"+
+            "The Shapefile:\n"+tblShapefiles->text(i,0)+"\nwill use ["+
+            tblShapefiles->text(i,3)+"] relation for its data,\nwhich already exists and possibly contains data.\n"+
             "To avoid data loss change the \"DB Relation Name\" \nfor this Shapefile in the main dialog file list.\n\n"+
-            "Do you want to overwrite the ["+fileList[i]->getTable()+"] relation?",
+            "Do you want to overwrite the ["+tblShapefiles->text(i,3)+"] relation?",
           QMessageBox::Warning,
           QMessageBox::Yes | QMessageBox::Default,
           QMessageBox::No  | QMessageBox::Escape,
@@ -341,13 +346,13 @@ void QgsSpit::import(){
 
 					if(del_confirm->exec() == QMessageBox::Yes){
          		if (rel_exists2){
-            	query = "DROP TABLE " + fileList[i]->getTable();            
+            	query = "DROP TABLE " + tblShapefiles->text(i,3);            
             	qWarning(query);
             	res = PQexec(pd, (const char *)query);
             	if(PQresultStatus(res)!=PGRES_COMMAND_OK){
               	qWarning(PQresultErrorMessage(res));
           			QMessageBox::warning(pro, "Import Shapefiles", error);
-          			pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
+          			pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
           			continue;								
             	}
             	else {
@@ -356,14 +361,16 @@ void QgsSpit::import(){
 						}
 
           	if(rel_exists1){
-            	query = "SELECT DropGeometryColumn(\'"+QString(settings.readEntry(key + "/database"))+"\', \'"+
-              	fileList[i]->getTable()+"\', \'"+txtGeomName->text()+"')";           
+            	/*query = "SELECT DropGeometryColumn(\'"+QString(settings.readEntry(key + "/database"))+"\', \'"+
+              	fileList[i]->getTable()+"\', \'"+txtGeomName->text()+"')";*/
+							query = "DELETE FROM geometry_columns WHERE f_table_schema=\'"+tblShapefiles->text(i,4)+"\' AND "+
+								"f_table_name=\'"+tblShapefiles->text(i,3)+"\'";
             	qWarning(query);
             	res = PQexec(pd, (const char *)query);
-            	if(PQresultStatus(res)!=PGRES_TUPLES_OK){
+            	if(PQresultStatus(res)!=PGRES_COMMAND_OK){
               	qWarning(PQresultErrorMessage(res));
           			QMessageBox::warning(pro, "Import Shapefiles", error);
-          			pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
+          			pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
           			continue;
             	}
             	else {
@@ -381,12 +388,13 @@ void QgsSpit::import(){
             else {
               PQclear(res);
             }
-						pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
+						pro->setProgress(pro->progress()+(tblShapefiles->text(i,2)).toInt());
 						continue;
           }
         }
 	
 				// importing file here
+				int temp_progress = pro->progress();
 				cancelled = false;
         if(fileList[i]->insertLayer(settings.readEntry(key + "/database"), txtGeomName->text(),
           QString("%1").arg(spinSrid->value()), pd, pro, cancelled) && !cancelled)
@@ -414,7 +422,7 @@ void QgsSpit::import(){
 					
         }
 				else if(!cancelled){ // if problem importing file occured
-					pro->setProgress(pro->progress()+fileList[i]->getFeatureCount());
+					pro->setProgress(temp_progress+(tblShapefiles->text(i,2)).toInt());
           QMessageBox::warning(this, "Import Shapefiles", error);
           query = "ROLLBACK";
           res = PQexec(pd, query);
