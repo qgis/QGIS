@@ -104,7 +104,7 @@ QString QgsAttributeAction::expandAction(QString action, const std::vector<std::
 
   // This function will potentially fall apart if any of the
   // substitutions produce text that could match another
-  // substition. May be better to adopt a two pass approach - identify
+  // substitution. May be better to adopt a two pass approach - identify
   // all matches and their substitutions and then do a second pass 
   // for the actual substitutions.
 

@@ -24,6 +24,8 @@ back to QgsVectorLayer.
 #define QGSATTRIBUTEACTIONDIALOG_H
 
 #include <qobject.h>
+#include <qgsfield.h>
+#include <vector>
 
 #ifdef WIN32
 #include "qgsattributeactiondialogbase.h"
@@ -40,6 +42,7 @@ class QgsAttributeActionDialog : public QgsAttributeActionDialogBase
   
  public:
   QgsAttributeActionDialog(QgsAttributeAction* actions, 
+			   const std::vector<QgsField>& fields,
 			   QWidget* parent = 0);
 
   ~QgsAttributeActionDialog() {};
@@ -47,13 +50,22 @@ class QgsAttributeActionDialog : public QgsAttributeActionDialogBase
   void init();
 
  public slots:
-  void apply();
-  void add();
+  void moveUp();
+  void moveDown();
+  void browse();
   void remove();
-  void clearAll();
+  void insert();
+  void insertField();
+  void apply();
+  void update();
+  void rowSelected(int, int, int, const QPoint&);
 
  private:
  
+  void insert(int pos);
+
+  QString uniqueName(QString name);
+
   // Pointer to the QgsAttributeAction in the class that created us.
   QgsAttributeAction* mActions;
 };
