@@ -1,0 +1,239 @@
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<class>QgsDbSourceSelectBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsDbSourceSelectBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>305</width>
+            <height>338</height>
+        </rect>
+    </property>
+    <property name="font">
+        <font>
+            <family>Helvetica [Urw]</family>
+            <pointsize>10</pointsize>
+        </font>
+    </property>
+    <property name="caption">
+        <string>Add PostGIS Table(s)</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QLayoutWidget" row="2" column="1">
+            <property name="name">
+                <cstring>Layout5</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QPushButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>btnAdd</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Add</string>
+                    </property>
+                    <property name="accel">
+                        <number>0</number>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="2" column="0">
+                    <property name="name">
+                        <cstring>btnCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <number>0</number>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="3" column="0">
+                    <property name="name">
+                        <cstring>btnHelp</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Help</string>
+                    </property>
+                    <property name="accel">
+                        <number>4144</number>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <spacer row="0" column="0">
+                    <property name="name">
+                        <cstring>Spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Fixed</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>100</height>
+                        </size>
+                    </property>
+                </spacer>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>GroupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Connection Information</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QComboBox" row="0" column="0" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>cmbConnections</cstring>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>btnConnect</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Connect</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="2">
+                    <property name="name">
+                        <cstring>btnEdit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Edit</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="1">
+                    <property name="name">
+                        <cstring>btnNew</cstring>
+                    </property>
+                    <property name="text">
+                        <string>New</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QLabel" row="1" column="0">
+            <property name="name">
+                <cstring>TextLabel3_2_2</cstring>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>11</pointsize>
+                </font>
+            </property>
+            <property name="text">
+                <string>Tables</string>
+            </property>
+        </widget>
+        <widget class="QListBox" row="2" column="0">
+            <property name="name">
+                <cstring>lstTables</cstring>
+            </property>
+            <property name="selectionMode">
+                <enum>Extended</enum>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>btnCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsDbSourceSelectBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>btnConnect</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsDbSourceSelectBase</receiver>
+        <slot>dbConnect()</slot>
+    </connection>
+    <connection>
+        <sender>btnAdd</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsDbSourceSelectBase</receiver>
+        <slot>addTables()</slot>
+    </connection>
+    <connection>
+        <sender>btnNew</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsDbSourceSelectBase</receiver>
+        <slot>addNewConnection()</slot>
+    </connection>
+    <connection>
+        <sender>btnEdit</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsDbSourceSelectBase</receiver>
+        <slot>editConnection()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>cmbConnections</tabstop>
+    <tabstop>btnConnect</tabstop>
+    <tabstop>btnNew</tabstop>
+    <tabstop>btnEdit</tabstop>
+    <tabstop>lstTables</tabstop>
+    <tabstop>btnAdd</tabstop>
+    <tabstop>btnCancel</tabstop>
+    <tabstop>btnHelp</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">qgsdbsourceselectbase.ui.h</include>
+</includes>
+<slots>
+    <slot>addNewConnection()</slot>
+    <slot>addTables()</slot>
+    <slot>dbConnect()</slot>
+    <slot>init()</slot>
+    <slot>editConnection()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
