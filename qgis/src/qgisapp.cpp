@@ -73,7 +73,6 @@
 #include "qgslegend.h"
 #include "qgsprojectio.h"
 #include "qgsmapserverexport.h"
-#include <splashscreen.h>
 
 #ifdef POSTGRESQL
 #include "qgsdbsourceselect.h"
@@ -221,10 +220,10 @@ static char *identify_cursor[] = {
 QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(parent, name, fl)
 {
   //
-  // Set up the splash screen
+  // Splash screen global is declared in qgisapp.h header
   //
-  SplashScreen *mySplash = new SplashScreen();
-  mySplash->setStatus(tr("Loading QGIS..."));
+  gSplashScreen = new SplashScreen(); //this is supposed to be instantiated in main.cpp but we get segfaults...
+  gSplashScreen->setStatus(tr("Loading QGIS..."));
 
  // register all GDAL and OGR plug-ins
   GDALAllRegister();           
@@ -242,7 +241,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   QBitmap zoomincurmask;
   //  zoomincurmask = QBitmap(cursorzoomin_mask);
 
-  mySplash->setStatus(tr("Setting up QGIS gui..."));
+  gSplashScreen->setStatus(tr("Setting up QGIS gui..."));
   QGridLayout *FrameLayout = new QGridLayout(frameMain, 1, 2, 4, 6, "mainFrameLayout");
   QSplitter *split = new QSplitter(frameMain);
 
@@ -284,7 +283,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   actionAddLayer->removeFrom(PopupMenu_2);
   actionAddLayer->removeFrom(DataToolbar);
 #endif
-  mySplash->setStatus(tr("Loading plugins..."));
+  gSplashScreen->setStatus(tr("Loading plugins..."));
   // store the application dir
   appDir = PREFIX;
   // Get pointer to the provider registry singleton
@@ -300,8 +299,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   restoreWindowState();
   // set the focus to the map canvase
   mapCanvas->setFocus();
-  mySplash->finish(this);
-  delete mySplash;
+  gSplashScreen->finish(this);
+  delete gSplashScreen;
 
 #ifdef QGISDEBUG
   std::cout << "Plugins are installed in " << plib << std::endl;
@@ -1428,6 +1427,8 @@ void QgisApp::saveMapAsImage(QString theImageFileNameQString, QPixmap * theQPixm
   }
   else
   {
+    //force the size of the canvase
+    mapCanvas->resize(theQPixmap->width(), theQPixmap->height());
     //save the mapview to the selected file
     mapCanvas->saveAsImage(theImageFileNameQString,theQPixmap);
   }

@@ -38,6 +38,8 @@ class QgsHelpViewer;
 #include "qgisappbase.h"
 #include "qgisiface.h"
 class QgsMapCanvas;
+#include "splashscreen.h"
+static SplashScreen * gSplashScreen ;
 /*! \class QgisApp
  * \brief Main window for the Qgis application
  */

@@ -32,10 +32,10 @@ email                : sherman at mrcc.com
 #include "qgisapp.h"
 #include <qstringlist.h> 
 
+#include <splashscreen.h>
 
 
 static const char * const ident_ = "$Id$";
-
 
 /** print usage text
  */
@@ -205,6 +205,9 @@ int main(int argc, char *argv[])
   //a.setStyle("Windows");
 
   QgisApp *qgis = new QgisApp();
+  //
+  // Now we can instantiate the splashscreen global that is declared in qgisapp.h
+  //
   a.setMainWidget(qgis);
 
 
@@ -251,7 +254,9 @@ int main(int argc, char *argv[])
   /////////////////////////////////////////////////////////////////////
   if(mySnapshotFileName!="")
   {
+   // qgis->show();
     QPixmap * myQPixmap = new QPixmap(800,600);
+    myQPixmap->fill();
     qgis->saveMapAsImage(mySnapshotFileName,myQPixmap);
     return 1;
   }
