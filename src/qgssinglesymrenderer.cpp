@@ -39,7 +39,7 @@ void QgsSingleSymRenderer::addItem(QgsRenderItem ri)
 
 }
 
-void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f)
+void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, double* scalefactor)
 {
   p->setPen(mItem.getSymbol()->pen());
   p->setBrush(mItem.getSymbol()->brush());

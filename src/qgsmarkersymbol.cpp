@@ -19,14 +19,9 @@
 #include "qgsmarkersymbol.h"
 #include "qpainter.h"
 
-void QgsMarkerSymbol::render(int x, int y, QPainter* p)
+void QgsMarkerSymbol::setPicture(const QString& svgpath)
 {
-    if(p)
-    {
-	p->scale(mScaleFactor,mScaleFactor);
-	p->drawPicture(x*mScaleFactor,y*mScaleFactor,mPicture);//scale the picture but keep the coordinates constant.todo: write the code such that x,y is in the midpoint of the image
-	p->resetXForm();
-    }
+    mPicture.load(svgpath,"svg");
 }
     
 
