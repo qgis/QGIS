@@ -153,10 +153,10 @@ public:
   virtual bool rollBack();
 
   /**Returns true if the provider is in editing mode*/
-  virtual bool isEditable() const {return false;}
+  virtual bool isEditable() const { return mEditable; }
 
   /**Returns true if the provider has been modified since the last commit*/
-  virtual bool isModified() const {return false;}
+  virtual bool isModified() const { return mAddedFeatures.size() > 0; }
 
   /**Adds a feature
      @return true in case of success and false in case of failure*/
@@ -178,6 +178,8 @@ public:
   
  private:
   
+  bool mEditable;
+  std::vector<GPSObject*> mAddedFeatures;
   GPSData* data;
   void fillMinMaxCash();
   //! Fields
