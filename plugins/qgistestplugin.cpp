@@ -11,11 +11,11 @@
 * In addition, a plugin must implement a the classFactory and unload
 * functions. Note that these functions must be declared as extern "C"
 */
-#include <qstring.h>
 
 #ifndef qgisplugintest_h
 #define qgisplugintest_h
 #include "qgisplugin.h"
+
 #include "qgisplugingui.h"
 
 class QgisTestPlugin : public QgisPlugin{
@@ -30,6 +30,7 @@ private:
 	QString pName;
 	QString pVersion;
 	QString pDescription;
+	QgisPluginGui *guiCollection;
 };
 
 #endif
@@ -37,6 +38,7 @@ QgisTestPlugin::QgisTestPlugin(){
 	pName = "Test Plugin";
 	pVersion = "Version 0.0";
 	pDescription = "This test plugin does nothing but tell you its name, version, and description";
+	guiCollection = new QgisPluginGui();
 }
 QgisTestPlugin::~QgisTestPlugin(){
 	
