@@ -243,6 +243,9 @@ public:
 
   /** mutator for sql where clause used to limit dataset size */
   void setSubsetString(QString theSQL); //{sqlWhereClause = theSQL;};
+  
+  /**Returns a bitmask containing the supported capabilities*/
+  int capabilities();
 
 private:
 
