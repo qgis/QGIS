@@ -94,6 +94,7 @@ headers =		qgis.h					\
 			qgsuvalmarenderer.h			\
 			qgsuvaldialog.h				\
 			qgsuvalmadialog.h			\
+			qgsvectordataprovider.h			\
 			qgsvectorlayer.h			\
 			splashscreen.h				\
 			qgisapp.h \

@@ -27,7 +27,7 @@
 #include "qgsgraduatedsymrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgslegenditem.h"
-#include "qgsdataprovider.h"
+#include "qgsvectordataprovider.h"
 #include "qgsfield.h"
 #include "qscrollview.h"
 #include <qlayout.h>
@@ -45,7 +45,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
     setSizeGripEnabled(true);
 
     //find out the numerical fields of mVectorLayer
-    QgsDataProvider *provider;
+    QgsVectorDataProvider *provider;
     if (provider = mVectorLayer->getDataProvider())
     {
 	std::vector < QgsField > &fields = provider->fields();
@@ -327,7 +327,7 @@ void QgsGraSyDialog::adjustClassification()
 {
     mClassBreakBox->clear();
     QGis::VectorType m_type = mVectorLayer->vectorType();
-    QgsDataProvider *provider = mVectorLayer->getDataProvider();
+    QgsVectorDataProvider *provider = mVectorLayer->getDataProvider();
     double minimum, maximum;
     
     //delete all previous entries

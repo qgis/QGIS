@@ -649,6 +649,25 @@ bool QgsGrassProvider::isValid(){
     return mValid;
 }
 
+bool QgsGrassProvider::startEditing()
+{
+    return false;
+}
+
+void QgsGrassProvider::stopEditing()
+{
+}
+
+bool QgsGrassProvider::commitChanges()
+{
+    return false;
+}
+
+bool QgsGrassProvider::rollBack()
+{
+    return false;
+}
+
 bool QgsGrassProvider::addFeature(QgsFeature* f)
 {
     #ifdef QGISDEBUG

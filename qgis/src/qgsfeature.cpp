@@ -45,11 +45,6 @@ QgsFeature::QgsFeature( QgsFeature const & feature )
       geometrySize( feature.geometrySize ),
       mTypeName( feature.mTypeName )
 {
-    if ( geometry )
-    {
-        delete [] geometry;
-    }
-
     geometry = 0;
 
     if ( geometrySize && feature.geometry )

@@ -42,7 +42,6 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayer.h"
 #include "qgsidentifyresults.h"
 #include "qgsattributetable.h"
-#include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include <qlistview.h>
@@ -67,7 +66,7 @@ email                : sherman at mrcc.com
 #endif
 
 // typedef for the QgsDataProvider class factory
-typedef QgsDataProvider *create_it(const char *uri);
+typedef QgsVectorDataProvider *create_it(const char *uri);
 
 QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey):QgsMapLayer(VECTOR, baseName, vectorLayerPath), providerKey(providerKey), tabledisplay(0), m_renderer(0), m_propertiesDialog(0), m_rendererDialog(0)
 {
@@ -871,7 +870,7 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
       tabledisplay = 0;
     }
 
-    QgsDataProvider *QgsVectorLayer::getDataProvider()
+    QgsVectorDataProvider *QgsVectorLayer::getDataProvider()
     {
       return dataProvider;
     }
@@ -972,6 +971,8 @@ QObject:connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDispl
       popMenu->insertItem(tr("&Properties"), this, SLOT(showLayerProperties()));
       //show in overview slot is implemented in maplayer superclass!
       mShowInOverviewItemId = popMenu->insertItem(tr("Show In &Overview"), this, SLOT(toggleShowInOverview()));
+      popMenu->insertItem(tr("Start editing"),this,SLOT(startEditing()));
+      popMenu->insertItem(tr("Stop editing"),this,SLOT(stopEditing()));
 
       popMenu->insertSeparator();
       popMenu->insertItem(tr("&Remove"), app, SLOT(removeLayer()));
@@ -1347,3 +1348,41 @@ bool QgsVectorLayer::labelOn ( void )
     return mLabelOn;
 }
 
+void QgsVectorLayer::startEditing()
+{
+    if(dataProvider)
+    {
+	if(!dataProvider->startEditing())
+	{
+	    QMessageBox::information(0,"Start editing failed","Provider cannot be opened for editing",QMessageBox::Ok);
+	}
+    }
+}
+
+void QgsVectorLayer::stopEditing()
+{
+    if(dataProvider)
+    {
+	if(dataProvider->isModified())
+	{
+	    //commit or roll back?
+	    int commit=QMessageBox::question(0,"Stop editing","Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
+	    if(commit==QMessageBox::Yes)
+	    {
+		if(!dataProvider->commitChanges())
+		{
+		    QMessageBox::information(0,"Error","Could not commit changes",QMessageBox::Ok); 
+		}
+	    }
+	    else if(commit==QMessageBox::No)
+	    {
+		if(!dataProvider->rollBack())
+		{
+		    QMessageBox::information(0,"Error","Problems during roll back",QMessageBox::Ok);   
+		}
+	    }
+	    triggerRepaint();
+	}
+	dataProvider->stopEditing();
+    }
+}
