@@ -1959,7 +1959,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
   double *x;
   double *y;
   int wkbType;
-  QgsPoint pt;
+  QgsPoint pt,myProjectedPoint;
 
   QPen pen;
   feature = fet->getGeometry();
@@ -1976,11 +1976,11 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
           pt.setX(*x);
           pt.setY(*y);
 	  //reproject the point to the map coordinate system
-	  pt=mCoordinateTransform->transform(pt);
+	  myProjectedPoint=mCoordinateTransform->transform(pt);
 	  //transform from projected coordinate system to pixel position on map canvas
-          theMapToPixelTransform->transform(&pt);
+          theMapToPixelTransform->transform(&myProjectedPoint);
           //std::cout << "drawing marker for feature " << featureCount << "\n";
-          p->drawRect(static_cast<int>(pt.x()), static_cast<int>(pt.y()), 5, 5);
+          p->drawRect(static_cast<int>(myProjectedPoint.x()), static_cast<int>(myProjectedPoint.y()), 5, 5);
           p->scale(markerScaleFactor,markerScaleFactor);
           p->drawPicture((int)(static_cast<int>(pt.x()) / markerScaleFactor - marker->boundingRect().width() / 2),
                          (int)(static_cast<int>(pt.y()) / markerScaleFactor - marker->boundingRect().height() / 2),
@@ -2009,13 +2009,13 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
               pt.setX(*x);
               pt.setY(*y);
 	      //reproject the point to the map coordinate system
-	      pt=mCoordinateTransform->transform(pt);
+	      myProjectedPoint=mCoordinateTransform->transform(pt);
 	      //transform from projected coordinate system to pixel position on map canvas
-              theMapToPixelTransform->transform(&pt);
+              theMapToPixelTransform->transform(&myProjectedPoint);
               if (idx == 0)
-                  p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+                  p->moveTo(static_cast<int>(myProjectedPoint.x()), static_cast<int>(myProjectedPoint.y()));
               else
-                  p->lineTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+                  p->lineTo(static_cast<int>(myProjectedPoint.x()), static_cast<int>(myProjectedPoint.y()));
           }
           break;
       }
@@ -2045,13 +2045,13 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
                   pt.setX(*x);
                   pt.setY(*y);
                   //reproject the point to the map coordinate system
-                  pt=mCoordinateTransform->transform(pt);
+                  myProjectedPoint=mCoordinateTransform->transform(pt);
                   //transform from projected coordinate system to pixel position on map canvas
-                  theMapToPixelTransform->transform(&pt);
+                  theMapToPixelTransform->transform(&myProjectedPoint);
                   if (idx == 0)
-                      p->moveTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+                      p->moveTo(static_cast<int>(myProjectedPoint.x()), static_cast<int>(myProjectedPoint.y()));
                   else
-                      p->lineTo(static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+                      p->lineTo(static_cast<int>(myProjectedPoint.x()), static_cast<int>(myProjectedPoint.y()));
               }
           }
           break;
@@ -2103,10 +2103,10 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
                   pt.setX(*x);
                   pt.setY(*y);
                   //reproject the point to the map coordinate system
-                  pt=mCoordinateTransform->transform(pt);
+                  myProjectedPoint=mCoordinateTransform->transform(pt);
                   //transform from projected coordinate system to pixel position on map canvas
-                  theMapToPixelTransform->transform(&pt);
-                  pa->setPoint(pdx++, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+                  theMapToPixelTransform->transform(&myProjectedPoint);
+                  pa->setPoint(pdx++, static_cast<int>(myProjectedPoint.x()), static_cast<int>(myProjectedPoint.y()));
               }
               if ( idx == 0 ) { // remember last outer ring point
                   x0 = static_cast<int>(pt.x());
@@ -2171,10 +2171,10 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
                       pt.setX(*x);
                       pt.setY(*y);
 	              //reproject the point to the map coordinate system
-	              pt=mCoordinateTransform->transform(pt);
+	              myProjectedPoint=mCoordinateTransform->transform(pt);
 	              //transform from projected coordinate system to pixel position on map canvas
-                      theMapToPixelTransform->transform(&pt);
-                      pa->setPoint(jdx, static_cast<int>(pt.x()), static_cast<int>(pt.y()));
+                      theMapToPixelTransform->transform(&myProjectedPoint);
+                      pa->setPoint(jdx, static_cast<int>(myProjectedPoint.x()), static_cast<int>(myProjectedPoint.y()));
                   }
                   // draw the ring
                   p->drawPolygon(*pa);
