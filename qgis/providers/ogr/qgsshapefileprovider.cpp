@@ -283,6 +283,9 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
     while ((fet = ogrLayer->GetNextFeature()) != NULL) {
       if (fet->GetGeometryRef())
       {
+#ifdef QGISDEBUG
+	  qWarning("Testing a geometry for intersection with geos");
+#endif
         if(mUseIntersect)
         {
     //TODO Following ifndef can be removed once WIN32 GEOS support
@@ -299,17 +302,28 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 //          std::cerr << "Using geos intersect to filter features\n";
           geom  =  fet->GetGeometryRef();
           char *wkt = new char[2 * geom->WkbSize()];
-
+#ifdef QGISDEBUG
+	  qWarning("before exportToWkt");
+#endif
           geom->exportToWkt(&wkt);
+#ifdef QGISDEBUG
+	  qWarning("after exportToWkt");
+#endif
           //std::cerr << "Passing " << wkt << " to goes\n";
 //          std::cerr << "Creating geos geometry from wkt\n";
+#ifdef QGISDEBUG
+	  qWarning("before readWkt");
+#endif	  
           geos::Geometry *geosGeom = wktReader->read(wkt);
+#ifdef QGISDEBUG
+	  qWarning("after readWkt");
+#endif
           assert(geosGeom != 0);
 //          std::cerr << "Geometry type of geos object is : " << geosGeom->getGeometryType() << std::endl; 
           // get the selection rectangle and create a geos geometry from it
           char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
           mSelectionRectangle->exportToWkt(&sWkt);
-//          std::cerr << "Passing " << sWkt << " to goes\n";
+//          std::cerr << "Passing " << sWkt << " to goes\n";	  
           geos::Geometry *geosRect = wktReader->read(sWkt);
           assert(geosRect != 0);
 //          std::cerr << "About to apply intersects function\n";
@@ -318,12 +332,20 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
 #ifdef QGISDEBUG
 //          std::cerr << "Testing intersection using geos\n";
 #endif
-
+#ifdef QGISDEBUG
+	  qWarning("before geos intersection test");
+#endif
           if(geosGeom->intersects(geosRect))
+#ifdef QGISDEBUG
+	  qWarning("after geos intersection test");
+#endif
           //if(geom->Overlaps(mSelectionRectangle))
           {
 //            std::cerr << "Intersection found\n";
             break;
+#ifdef QGISDEBUG
+	  qWarning("intersection test finished");
+#endif 
           }
 //          std::cerr << "Deleting objects used in geos intersect\n";
 #ifndef WIN32
@@ -340,6 +362,9 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
         {
           break;
         }
+#ifdef QGISDEBUG
+	  qWarning("intersection test finished");
+#endif
       }
     }
     //TODO Following ifndef can be removed once WIN32 GEOS support
@@ -605,6 +630,7 @@ void QgsShapeFileProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature *
     QString val;
     //val = ogrFet->GetFieldAsString(attindex);
     val = QString::fromUtf8(ogrFet->GetFieldAsString(attindex));
+    //val = QString::fromLatin1(ogrFet->GetFieldAsString(attindex));
     f->addAttribute(fld, val);
 }
 
@@ -709,6 +735,9 @@ bool QgsShapeFileProvider::isValid()
 
 bool QgsShapeFileProvider::addFeature(QgsFeature* f)
 { 
+#ifdef QGISDEBUG
+    qWarning("in add Feature");
+#endif
     bool returnValue = true;
     OGRFeatureDefn* fdef=ogrLayer->GetLayerDefn();
     OGRFeature* feature=new OGRFeature(fdef);
@@ -783,6 +812,7 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
           int size=1+2*sizeof(int)+numlines*sizeof(int)+totalpoints*2*sizeof(double);
           multil->importFromWkb(f->getGeometry(),size);
           feature->SetGeometry(multil);
+	  break;
         }
       case QGis::WKBMultiPolygon:
         {
@@ -813,29 +843,51 @@ bool QgsShapeFileProvider::addFeature(QgsFeature* f)
           int size=1+2*sizeof(int)+numpolys*sizeof(int)+totalrings*sizeof(int)+totalpoints*2*sizeof(double);
           multipol->importFromWkb(f->getGeometry(),size);
           feature->SetGeometry(multipol);
+	  break;
         }
+    }
 	//add possible attribute information
-       
+#ifdef QGISDEBUG
+	qWarning("before attribute commit section");
+#endif
 	for(int i=0;i<f->attributeMap().size();++i)
 	{
 	    QString s=(f->attributeMap())[i].fieldValue();
+#ifdef QGISDEBUG
+	    qWarning("adding attribute: "+s);
+#endif
 	    if(!s.isEmpty())
 	    {
 		if(fdef->GetFieldDefn(i)->GetType()==OFTInteger)
 		{
 		    feature->SetField(i,s.toInt());
+#ifdef QGISDEBUG
+	    qWarning("OFTInteger, attribute value: "+s.toInt());
+#endif
 		}
 		else if(fdef->GetFieldDefn(i)->GetType()==OFTReal)
 		{
 		    feature->SetField(i,s.toDouble());
+#ifdef QGISDEBUG
+	    qWarning("OFTReal, attribute value: "+QString::number(s.toDouble(),'f',3));
+#endif
 		}
 		else if(fdef->GetFieldDefn(i)->GetType()==OFTString)
 		{
 		    feature->SetField(i,s.ascii());
+#ifdef QGISDEBUG
+	    qWarning("OFTString, attribute value: "+QString(s.ascii()));
+#endif
+		}
+		else
+		{
+#ifdef QGISDEBUG
+		    qWarning("no type found");
+#endif
 		}
 	    }
 	}
-    }
+    
 
     if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
     {
