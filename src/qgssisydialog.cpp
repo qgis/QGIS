@@ -43,7 +43,19 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer* layer): QgsSiSyDialogBase(), m_vect
     {
 	//Set the initial display name
 	displaynamefield->setText(m_vectorlayer->name());
-	QgsSingleSymRenderer* renderer=dynamic_cast<QgsSingleSymRenderer*>(layer->renderer());
+
+	QgsSingleSymRenderer* renderer;
+
+	//initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
+	if(m_vectorlayer->propertiesDialog())
+	{
+	    renderer=dynamic_cast<QgsSingleSymRenderer*>(layer->propertiesDialog()->getBufferRenderer());
+	}
+	else
+	{
+	    renderer=dynamic_cast<QgsSingleSymRenderer*>(layer->renderer());
+	}
+
 	if(renderer)
 	{
 	    outlinewidthspinbox->setValue(renderer->item()->getSymbol()->pen().width());

@@ -41,7 +41,6 @@ void QgsSingleSymRenderer::addItem(QgsRenderItem ri)
 
 void QgsSingleSymRenderer::renderFeature(QPainter* p, QgsFeature* f, QgsCoordinateTransform* t)
 {
-    qWarning("rendere feature");
     p->setPen(m_item.getSymbol()->pen());
     p->setBrush(m_item.getSymbol()->brush());
     unsigned char *feature= f->getGeometry();
