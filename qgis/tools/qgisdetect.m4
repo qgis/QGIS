@@ -1,6 +1,6 @@
-dnl ---------------------------------------------------------------------------
-dnl QGIS
-dnl ---------------------------------------------------------------------------
+dnl Detect QGIS
+dnl
+dnl AQ_CHECK_QGIS
 
 # Check for QGIS compiler and linker flags
 # Jens Oberender <j.obi@troja.net> 2004
