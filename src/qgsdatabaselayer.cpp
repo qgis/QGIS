@@ -1,5 +1,6 @@
 #include <qstring.h>
 #include <qpainter.h>
+#include <qpointarray.h>
 #include "qgsrect.h"
 #include <libpq++.h>
 #include <qmessagebox.h>
@@ -90,20 +91,24 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
       double *x;
       double *y;
       int *nPoints;
+      int *numRings;
+      int *numPolygons;
       int numPoints;
       int numLineStrings;
-      int idx,jdx;
+      int idx,jdx,kdx;
       char *ptr;
       char lsb;
       int ttype;
+      QPointArray *pa;
       switch(wkbType){
       case WKBPoint:
+	p->setPen(Qt::red);
 	x = (double *) (feature + 5);
 	y = (double *) (feature + 5 + sizeof (double));
-	  p->drawRect ((int) *x, yTransform - (int) *y, 15000,
-			  15000);
+	p->drawRect ((int) *x, yTransform - (int) *y, 15000,  15000);
 	break;
       case WKBLineString:
+	p->setPen(Qt::blue);
 	// get number of points in the line
 	numPoints = (int)(feature + 1 + sizeof(int));
 	ptr = feature + 1 + 2 * sizeof(int);
@@ -120,6 +125,7 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
 	}
 	break;
       case WKBMultiLineString:
+	p->setPen(Qt::blue);
 	numLineStrings =  (int)(feature[5]);
 	ptr = feature+9;
 	for(jdx = 0; jdx < numLineStrings; jdx++){
@@ -128,20 +134,71 @@ void QgsDatabaseLayer::draw(QPainter *p, QgsRect *viewExtent, int yTransform){
 	  ptr += 5; // skip type since we know its 2
 	  nPoints = (int *)ptr;
 	  ptr += sizeof(int);
-	for(idx = 0; idx < *nPoints; idx++){
-	  x = (double *) ptr;
-	  ptr += sizeof(double);
-	  y = (double *) ptr;
-	  ptr += sizeof(double);
-	  if(idx == 0)
-	    p->moveTo((int) *x, yTransform - (int) *y);
-	  else
-	    p->lineTo((int) *x, yTransform - (int) *y);
+	  for(idx = 0; idx < *nPoints; idx++){
+	    x = (double *) ptr;
+	    ptr += sizeof(double);
+	    y = (double *) ptr;
+	    ptr += sizeof(double);
+	    if(idx == 0)
+	      p->moveTo((int) *x, yTransform - (int) *y);
+	    else
+	      p->lineTo((int) *x, yTransform - (int) *y);
 	    
-	}
+	  }
 	}
 	break;
       case WKBPolygon:
+	p->setPen(Qt::blue);
+	// get number of rings in the polygon
+	numRings = (int *)(feature + 1 + sizeof(int));
+	ptr = feature + 1 + 2 * sizeof(int);
+	for(idx = 0; idx < *numRings; idx++){
+	  // get number of points in the ring
+	  nPoints = (int *)ptr;
+	  ptr += 4;
+	  pa = new QPointArray(*nPoints);
+	  for(jdx = 0; jdx < *nPoints; jdx++){
+	    // add points to a point array for drawing the polygon
+	    x = (double *) ptr;
+	    ptr += sizeof(double);
+	    y = (double *) ptr;
+	    ptr += sizeof(double);
+	    pa->setPoint(jdx,(int)*x, yTransform - (int)*y);
+	  }
+	  // draw the ring
+	  p->drawPolygon(*pa);
+	    
+	}
+	break;
+      case WKBMultiPolygon:
+	p->setPen(Qt::blue);
+	// get the number of polygons
+	ptr = feature + 5;
+	numPolygons = (int *)ptr;
+	  for(kdx = 0; kdx < *numPolygons; kdx++){
+	    //skip the endian and feature type info and
+	    // get number of rings in the polygon
+	    ptr = feature + 14;
+	    numRings = (int *)ptr;
+	    ptr += 4;
+	    for(idx = 0; idx < *numRings; idx++){
+	      // get number of points in the ring
+	      nPoints = (int *)ptr;
+	      ptr += 4;
+	      pa = new QPointArray(*nPoints);
+	      for(jdx = 0; jdx < *nPoints; jdx++){
+		// add points to a point array for drawing the polygon
+		x = (double *) ptr;
+		ptr += sizeof(double);
+		y = (double *) ptr;
+		ptr += sizeof(double);
+		pa->setPoint(jdx,(int)*x, yTransform - (int)*y);
+	      }
+	      // draw the ring
+	      p->drawPolygon(*pa);
+	      delete pa;
+	    }
+	  }
 	break;
       }
  
