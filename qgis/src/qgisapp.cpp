@@ -1396,7 +1396,11 @@ void QgisApp::newVectorLayer()
         //file dialog rejected
         return;
     }
-
+    // check to see if user specified the extension. if not, add it...
+    if(filename.find(QRegExp("\\.shp$")) == -1)
+    {
+      filename += ".shp";
+    }
     //strange, the 'provider way' does not work...
     /*QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
     QString ogrlib = pReg->library("ogr");
@@ -1585,6 +1589,11 @@ void QgisApp::fileSave()
         {
             return;             // they didn't select anything, so just abort
         }
+        // make sure we have the .qgs extension in the file name
+        if(fullPath.find(QRegExp("\\.qgs$")) == -1)
+        {
+          fullPath += ".qgs";
+        }
 
         QgsProject::instance()->filename( fullPath );
     }
@@ -1614,6 +1623,11 @@ void QgisApp::fileSaveAs()
     if ( fullPath.isNull() )
     {
         return;             // they didn't select anything, so just abort
+    }
+    // make sure the .qgs extension is included in the path name. if not, add it...
+    if (fullPath.find(QRegExp("\\.qgs$")) == -1)
+    {
+      fullPath += ".qgs";
     }
 
     QgsProject::instance()->filename( fullPath );
