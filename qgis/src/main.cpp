@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 {
 	QString myArgString;
 	QFile myQFile;
-	QStringList myVectorFileStringList, myRasterFileStringList;
+	QStringList myFileStringList;
 	bool myFileExistsFlag;
 
 	QApplication a(argc, argv);
@@ -57,56 +57,36 @@ int main(int argc, char *argv[])
         // 
         // autoload any filenames that were passed in on the command line
         // 
-	for(int myIteratorInt = 1; myIteratorInt < argc; myIteratorInt++) {
+        for(int myIteratorInt = 1; myIteratorInt < argc; myIteratorInt++) {
 #ifdef DEBUG                                
-		printf("%d: %s\n", myIteratorInt, argv[myIteratorInt]);
+          printf("%d: %s\n", myIteratorInt, argv[myIteratorInt]);
 #endif                                
-		myQFile.setName(argv[myIteratorInt]);
-		myFileExistsFlag = myQFile.open(IO_ReadOnly);
-		myQFile.close();
-		if(myFileExistsFlag) {
+          myQFile.setName(argv[myIteratorInt]);
+          myFileExistsFlag = myQFile.open(IO_ReadOnly);
+          myQFile.close();
+          if(myFileExistsFlag) 
+          {
 #ifdef DEBUG                                
-			printf("OK\n");
+            printf("OK\n");
 #endif                                
-			myArgString = argv[myIteratorInt];
-			if(myArgString.endsWith(".shp", FALSE)) {
-				myVectorFileStringList.append(myArgString);
+            myArgString = argv[myIteratorInt];
 #ifdef DEBUG                                
-				printf("Vector count: %d\n",myVectorFileStringList.count());
+            printf("Layer count: %d\n",myFileStringList.count());
 #endif                                
-			}	else if (myArgString.endsWith(".adf", FALSE) || 
-					myArgString.endsWith(".asc", FALSE) ||
-					myArgString.endsWith(".grd", FALSE) ||
-					myArgString.endsWith(".img", FALSE) ||
-					myArgString.endsWith(".tif", FALSE) ||
-					myArgString.endsWith(".png", FALSE) ||
-					myArgString.endsWith(".jpg", FALSE) ||
-					myArgString.endsWith(".dem", FALSE) ||
-					myArgString.endsWith(".ddf", FALSE)) {
-				myRasterFileStringList.append(myArgString);
-#ifdef DEBUG                                
-				printf("Raster count: %d\n",myRasterFileStringList.count());
-#endif                                
-			}
+            myFileStringList.append(myArgString);
 
-		}
-	}
+          }
+        }
 #ifdef DEBUG                                
-	printf("vCount: %d\n",myVectorFileStringList.count());
-	printf("rCount: %d\n",myRasterFileStringList.count());
+	printf("rCount: %d\n",myFileStringList.count());
 #endif                                
-	if(!myVectorFileStringList.isEmpty()) {
+	if(!myFileStringList.isEmpty()) {
 #ifdef DEBUG                                
 		printf("Loading vector files...\n");
 #endif                                
-		qgis->addLayer(myVectorFileStringList);
-	}
-	if(!myRasterFileStringList.isEmpty()) {
-#ifdef DEBUG                                
-		printf("Load raster files...\n");
-#endif            
-                //todo implement this in qgsrasterlayer.cpp
-		//qgis->addRasterLayer(myRasterFileStringList);
+                //try to add all these layers - any unsupported file types will be refected automatically
+		qgis->addLayer(myFileStringList);
+		qgis->addRasterLayer(myFileStringList);
 	}
 
 	a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
