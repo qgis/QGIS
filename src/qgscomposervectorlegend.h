@@ -128,12 +128,18 @@ public:
 public slots:
     // Open font dialog
     void changeFont ( void );
+
+    // Title changed
+    void titleChanged ( void );
     
     // Called by GUI if preview style was changed
     void previewModeChanged ( int i );
 
     // Called by GUI when map selection changed
-    void mapChanged ( int i );
+    void mapSelectionChanged ( int i );
+
+    // Called when map was changed
+    void mapChanged ( int id );
 
 private:
     // Pointer to composition
