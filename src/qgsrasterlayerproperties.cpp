@@ -52,7 +52,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
     //update the transparency percentage label
     sliderTransparency_valueChanged(255-rasterLayer->getTransparency());
     //decide whether user can change rgb settings
-    if (rasterLayer->getBandCount() > 2)
+    if (rasterLayer->getRasterLayerType()==QgsRasterLayer::MULTIBAND)
     {
         rbtnThreeBand->toggle();
         //multiband images can also be rendered as single band (using only one of the bands)
@@ -60,7 +60,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
         rbtnSingleBand->setEnabled(true);
         txtSymologyNotes->setText(tr("<h3>Multiband Image Notes</h3><p>This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:</p><ul><li>Visible Blue (0.45 to 0.52 microns) - not mapped</li><li>Visible Green (0.52 to 0.60 microns) - not mapped</li></li>Visible Red (0.63 to 0.69 microns) - mapped to red in image</li><li>Near Infrared (0.76 to 0.90 microns) - mapped to green in image</li><li>Mid Infrared (1.55 to 1.75 microns) - not mapped</li><li>Thermal Infrared (10.4 to 12.5 microns) - not mapped</li><li>Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image</li></ul>" ));
     }
-    else if(rasterLayer->hasBand("Palette"))
+    else if(rasterLayer->getRasterLayerType()==QgsRasterLayer::PALETTE)
     {
         //paletted images (e.g. tif) can only be rendered as three band rgb images
         rbtnThreeBand->toggle();
@@ -140,16 +140,14 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr) : QgsRaste
             ++myIteratorInt)
     {
 
-        RasterBandStats myRasterBandStats=rasterLayer->getRasterBandStats(myIteratorInt)
-                                          ;
+        RasterBandStats myRasterBandStats=rasterLayer->getRasterBandStats(myIteratorInt);
         //keep a list of band names for later use
         myBandNameQStringList.append(myRasterBandStats.bandName);
     }
     //
     // Set up the combo boxes that contain band lists using the qstring list generated above
     //
-    if (rasterLayer->hasBand("Palette")
-       ) //paletted layers have hard coded color entries
+    if (rasterLayer->getRasterLayerType()==QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
     {
         cboRed->insertItem("Red");
         cboGreen->insertItem("Red");
