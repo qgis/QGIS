@@ -69,6 +69,9 @@ class QgsMapCanvas : public QWidget
     //! Get a pointer to the legend control used with this canvas
     QgsLegend * getLegend();
 
+    //! Get the last reported scale of the canvas
+    double getScale();
+    
     //! Clear the map canvas
     void clear();
 
@@ -212,10 +215,10 @@ private:
     QgsMapCanvas( QgsMapCanvas const & );
 
     /// implementation struct
-    struct Imp;
+    struct CanvasProperties;
 
     /// Handle pattern for implementation object
-    std::auto_ptr<Imp> imp_;
+    std::auto_ptr<CanvasProperties> mCanvasProperties;
 
     //! Overridden mouse move event
     void mouseMoveEvent(QMouseEvent * e);
