@@ -409,6 +409,8 @@ buildSupportedVectorFileFilter_( QString & fileFilters )
    {
       driver = driverRegistrar->GetDriver( i );
 
+      Q_CHECK_PTR( driver );
+
       if ( ! driver )
       {
          qWarning( "unable to get driver %d", i );
@@ -432,8 +434,9 @@ buildSupportedVectorFileFilter_( QString & fileFilters )
       }
       else if ( driverName.startsWith( "SDTS" ) )
       {
-         fileFilters += createFileFilter_( "Spatial Data Transfer Standard", 
-                                           "*catd.ddf" );
+// XXX not yet supported; post 0.1 release task
+//          fileFilters += createFileFilter_( "Spatial Data Transfer Standard", 
+//                                            "*catd.ddf" );
       }
       else if ( driverName.startsWith( "TIGER" ) )
       {
@@ -469,8 +472,9 @@ buildSupportedVectorFileFilter_( QString & fileFilters )
       }
       else if ( driverName.startsWith( "GML" ) )
       {
-         fileFilters += createFileFilter_( "Geography Markup Language", 
-                                           "*.gml" );
+// XXX not yet supported; post 0.1 release task
+//          fileFilters += createFileFilter_( "Geography Markup Language", 
+//                                            "*.gml" );
       }
       else
       {
@@ -523,16 +527,18 @@ QgisApp::addLayer()
 
 /** \brief overloaded vesion of the above method that takes a list of
  * filenames instead of prompting user with a dialog. */
-void QgisApp::addLayer(QStringList theLayerQStringList)
+void
+QgisApp::addLayer(QStringList const & theLayerQStringList)
 {
     // check to see if we have an ogr provider available
     QString pOgr = providerRegistry->library("ogr");
     if (pOgr.length() > 0) {
         mapCanvas->freeze();
         QApplication::setOverrideCursor(Qt::WaitCursor);
-        QStringList::Iterator it = theLayerQStringList.begin();
+        QStringList::ConstIterator it = theLayerQStringList.begin();
         while (it != theLayerQStringList.end()) {
-            if (isValidVectorFileName(*it)) {
+            if ( true ) {
+//            if (isValidVectorFileName(*it)) {
 
                 QFileInfo fi(*it);
                 QString base = fi.baseName();
@@ -577,6 +583,55 @@ void QgisApp::addLayer(QStringList theLayerQStringList)
     }
 
 }
+
+
+/**
+   The subset of GDAL formats that we currently support.
+
+   @note
+
+   Some day this won't be necessary as there'll be a time when
+   theoretically we'll support everything that GDAL can throw at us.
+
+   These are GDAL driver description strings.
+*/
+static const char* const supportedRasterFormats_[] =
+{ "SDTS",
+  "AIG",
+  "AAIGrid",
+  "GTiff",
+  "USGSDEM",
+  "HFA",
+  "GRASS",
+  "" // used to indicate end of list
+};
+
+
+
+/**
+   returns true if the given raster driver name is one currently
+   supported, otherwise it returns false
+
+   @param driverName GDAL driver description string
+*/
+static
+bool
+isSupportedRasterDriver_( QString const & driverName )
+{
+   size_t i = 0;
+
+   while ( supportedRasterFormats_[i][0] ) // while not end of string list
+   {
+      if ( driverName == supportedRasterFormats_[i] )
+      {
+         return true;
+      }
+
+      i++;
+   }
+
+   return false;
+} // isSupportedRasterDriver_
 
 
 
@@ -632,9 +687,23 @@ buildSupportedRasterFileFilter_( QString & fileFilters )
    {
       driver = driverManager->GetDriver( i );
 
+      Q_CHECK_PTR( driver );
+
       if ( ! driver )
       {
          qWarning( "unable to get driver %d", i );
+         continue;
+      }
+
+      // now we need to see if the driver is for something currently
+      // supported; if not, we give it a miss for the next driver
+
+      if ( ! isSupportedRasterDriver_( driver->GetDescription() ) )
+      {
+         // not supported, therefore skip
+#ifdef QT_DEBUG
+         qWarning( "skipping unsupported driver %s", driver->GetDescription() );
+#endif
          continue;
       }
 
@@ -730,7 +799,7 @@ QgisApp::addRasterLayer()
 
 
 
-void QgisApp::addRasterLayer(QStringList theFileNameQStringList)
+void QgisApp::addRasterLayer(QStringList const & theFileNameQStringList)
 {
     if (theFileNameQStringList.empty()) {   // no files selected so bail out, but
         // allow mapCanvas to handle events
@@ -740,7 +809,7 @@ void QgisApp::addRasterLayer(QStringList theFileNameQStringList)
     }
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
-    for (QStringList::Iterator myIterator = theFileNameQStringList.begin(); myIterator != theFileNameQStringList.end(); ++myIterator) {
+    for (QStringList::ConstIterator myIterator = theFileNameQStringList.begin(); myIterator != theFileNameQStringList.end(); ++myIterator) {
         if (isValidRasterFileName(*myIterator)) {
             QFileInfo myFileInfo(*myIterator);
             QString myDirNameQString = myFileInfo.dirPath();    //get the directory the .adf file was in
