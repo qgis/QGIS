@@ -352,7 +352,7 @@ void QgsPgGeoprocessing::buffer()
                 QMessageBox::critical(0, err, PQerrorMessage(conn));
             }
         }else{
-          QMessageBox::critical(0,"No GEOS support","Buffer function required GEOS support in PostGIS");
+          QMessageBox::critical(0,"No GEOS support","Buffer function requires GEOS support in PostGIS");
         }
         } else {
             QMessageBox::critical(0, "Not a PostgreSQL/PosGIS Layer",
@@ -379,15 +379,15 @@ QString QgsPgGeoprocessing::postgisVersion(PGconn *connection){
   QStringList postgisParts = QStringList::split(" ", postgisVersionInfo);
   QStringList geos = postgisParts.grep("GEOS");
   if(geos.size() == 1){
-    geosAvailable = (geos[0].find("=1"));  
+    geosAvailable = (geos[0].find("=1") > -1);  
   }
   QStringList gist = postgisParts.grep("STATS");
   if(gist.size() == 1){
-    gistAvailable = (geos[0].find("=1"));
+    gistAvailable = (geos[0].find("=1") > -1);
   }
   QStringList proj = postgisParts.grep("PROJ");
   if(proj.size() == 1){
-    projAvailable = (proj[0].find("=1"));
+    projAvailable = (proj[0].find("=1") > -1);
   }
   return postgisVersionInfo;
 }
