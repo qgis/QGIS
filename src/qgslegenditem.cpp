@@ -74,7 +74,7 @@ QString QgsLegendItem::layerID() const
 } // layerID
 
 
-void QgsLegendItem::setOn( bool b )
-{
-    m_layer->setVisible( b );
-} // setOn
+//void QgsLegendItem::setOn( bool b )
+//{
+//    m_layer->setVisible( b );
+//} // setOn
