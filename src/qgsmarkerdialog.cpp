@@ -25,7 +25,7 @@
 #include <qpushbutton.h>
 #include <qpainter.h>
 
-QgsMarkerDialog::QgsMarkerDialog(QString startdir): QgsMarkerDialogBase(), mCurrentDir(startdir)
+QgsMarkerDialog::QgsMarkerDialog(QString startdir): QgsMarkerDialogBase(0,0,true,Qt::WStyle_StaysOnTop), mCurrentDir(startdir)
 {
     QObject::connect(mOkButton,SIGNAL(clicked()),this,SLOT(accept()));
     QObject::connect(mCancelButton,SIGNAL(clicked()),this,SLOT(reject()));

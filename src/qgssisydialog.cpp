@@ -101,7 +101,7 @@ QgsSiSyDialog::~QgsSiSyDialog()
 
 void QgsSiSyDialog::selectOutlineColor()
 {
-    outlinecolorbutton->setPaletteBackgroundColor(QColorDialog::getColor());
+    outlinecolorbutton->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
     setActiveWindow();
 }
 
@@ -118,7 +118,7 @@ void QgsSiSyDialog::selectOutlineStyle()
 
 void QgsSiSyDialog::selectFillColor()
 {
-    fillcolorbutton->setPaletteBackgroundColor(QColorDialog::getColor());
+    fillcolorbutton->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
     setActiveWindow();
 }
 
