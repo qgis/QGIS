@@ -5,7 +5,7 @@
 
 TARGET = qgis
 TEMPLATE = app
-exists ( $(PGSQL) ) {
+exists ( $(PGSQL)/bin/psql ) {
 	message ( "Configuring to build with PostgreSQL support" )
 	LIBS += -L$(PGSQL)/lib  -lpq++
 	INCLUDEPATH += $(PGSQL)/include
