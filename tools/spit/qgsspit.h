@@ -16,5 +16,8 @@ class QgsSpit :public QgsSpitBase{
   void addFile();
   void removeFile();
   void removeAllFiles();
+  void useDefault();
 
+  private:
+  int default_value;
 };

@@ -140,22 +140,6 @@
                     <string>Remove All</string>
                 </property>
             </widget>
-            <widget class="QCheckBox">
-                <property name="name">
-                    <cstring>chckUseDefault</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>270</x>
-                        <y>70</y>
-                        <width>100</width>
-                        <height>21</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Use Default</string>
-                </property>
-            </widget>
             <widget class="QListView">
                 <column>
                     <property name="text">
@@ -222,6 +206,25 @@
                 </property>
                 <property name="minValue">
                     <number>-1</number>
+                </property>
+                <property name="value">
+                    <number>-1</number>
+                </property>
+            </widget>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>chkUseDefault</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>270</x>
+                        <y>70</y>
+                        <width>100</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Use Default</string>
                 </property>
             </widget>
         </widget>
@@ -333,8 +336,8 @@
         <slot>removeAllFiles()</slot>
     </connection>
     <connection>
-        <sender>chckUseDefault</sender>
-        <signal>pressed()</signal>
+        <sender>chkUseDefault</sender>
+        <signal>clicked()</signal>
         <receiver>QgsSpitBase</receiver>
         <slot>useDefault()</slot>
     </connection>

@@ -10,6 +10,8 @@
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qmessagebox.h>
+#include <qspinbox.h>
+#include <qcheckbox.h>
 #include <qinputdialog.h>
 #include <qfiledialog.h>
 #include "qgsspit.h"
@@ -17,6 +19,7 @@
 
 QgsSpit::QgsSpit(QWidget *parent, const char *name) : QgsSpitBase(parent, name){
   populateConnectionList();
+  default_value = -1;
 }
 
 QgsSpit::~QgsSpit(){}
@@ -56,7 +59,7 @@ void QgsSpit::removeConnection()
 	QString msg = "Are you sure you want to remove the [" + cmbConnections->currentText() + "] connection and all associated settings?";
 	int result = QMessageBox::information(this, "Confirm Delete", msg, "Yes", "No");
 	if(result == 0){
-		settings.removeEntry(key + "/host");
+		if(settings.removeEntry(key + "/host")) qWarning("/host removed");
 		settings.removeEntry(key + "/database");
 		settings.removeEntry(key + "/username");
 		settings.removeEntry(key + "/password");
@@ -69,18 +72,29 @@ void QgsSpit::removeConnection()
 
 void QgsSpit::addFile()
 {
+  QListViewItemIterator n(lstShapefiles);
+  bool exist;
   QStringList files = QFileDialog::getOpenFileNames(
     "Shapefiles (*.shp);; All Files (*)", "", this, "add file dialog", "Add Shapefiles" );
+    
   for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it ){
-    QListViewItem *lvi = new QListViewItem(lstShapefiles, *it);
-  	lvi->setText(1, "Polygon");
-    lvi->setText(2, "2Mb");
+    exist = false;
+    for(;n.current();++n)
+        if(n.current()->text(0) == *it){
+          exist = true;
+          break;
+        }
+    if(!exist){
+      QListViewItem *lvi = new QListViewItem(lstShapefiles, *it);
+      lvi->setText(1, "Polygon");
+      lvi->setText(2, "lots");
+    }
   }
 }
+
 void QgsSpit::removeFile()
 {
   QListViewItemIterator it(lstShapefiles);
-
   while(it.current())
     if ( it.current()->isSelected() ){
       delete it.current();
@@ -91,4 +105,15 @@ void QgsSpit::removeFile()
 void QgsSpit::removeAllFiles(){
   lstShapefiles->selectAll(true);
   removeFile();
+}
+void QgsSpit::useDefault(){
+  if(chkUseDefault->isChecked()) {
+    default_value = spinSrid->value();
+    spinSrid->setValue(-1);
+    spinSrid->setEnabled(false);
+  }
+  else {
+    spinSrid->setEnabled(true);
+    spinSrid->setValue(default_value);
+  }
 }
