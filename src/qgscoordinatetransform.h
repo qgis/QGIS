@@ -21,6 +21,7 @@
 
 //qgis includes
 #include "qgspoint.h"
+#include "qgsrect.h"
 #include "qgscsexception.h"
 
 //gdal and ogr includes
@@ -31,7 +32,6 @@
 //non qt includes
 #include <iostream>
 
-class QgsPoint;
 class QString;
 
 /*! \class QgsCoordinateTransform
@@ -59,6 +59,12 @@ class QgsCoordinateTransform{
     */
     QgsPoint transform(double x, double y);
 
+    /*! Transform a QgsRect to the dest Coordinate system 
+    * @param QgsRect rect to transform
+    * @return QgsRect in Destination Coordinate System
+    */        
+    QgsRect transform(QgsRect theRect);
+    
     QString showParameters();
     
     //! Accessor and mutator for source WKT
@@ -106,6 +112,46 @@ inline QgsPoint QgsCoordinateTransform::transform(QgsPoint thePoint)
     return QgsPoint(x, y);
   } 
 }
+
+inline QgsRect QgsCoordinateTransform::transform(QgsRect theRect)
+{
+  if (mShortCircuit || !mInitialisedFlag) return theRect;
+  // transform x
+  double x1 = theRect.xMin(); 
+  double y1 = theRect.yMin();
+  double x2 = theRect.xMax(); 
+  double y2 = theRect.yMax();  
+  // Number of points to reproject------+
+  //                                    | 
+  //                                    V 
+  if ( ! mSourceToDestXForm->Transform( 1, &x1, &y1 ) || ! mSourceToDestXForm->Transform( 1, &x2, &y2 ) )
+  {
+    //something bad happened....
+    throw QgsCsException(QString("Coordinate transform failed"));
+  }
+  else
+  {
+#ifdef QGISDEBUG 
+    std::cout << "Rect projection..." 
+              << "Xmin : " 
+              << theRect.xMin() 
+	      << "-->" << x1 
+	      << ", Ymin: " 
+	      << theRect.yMin() 
+	      << " -->" << y1
+              << "Xmax : " 
+              << theRect.xMax() 
+	      << "-->" << x2 
+	      << ", Ymax: " 
+	      << theRect.yMax() 
+	      << " -->" << y2	      
+	      << std::endl;
+#endif        
+    return QgsRect(x1, y1, x2 , y2);
+  } 
+}
+
+
 inline QgsPoint QgsCoordinateTransform::transform(double theX, double theY)
 {
   if (mShortCircuit || !mInitialisedFlag) return QgsPoint(theX,theY);
