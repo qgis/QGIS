@@ -6,7 +6,7 @@
     email                : sherman at mrcc.com
              Romans 3:23=>Romans 6:23=>Romans 10:9,10=>Romans 12
 ***************************************************************************/
-/* $Id$ */
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,6 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+ /* $Id$ */
 #include <dlfcn.h>
 
 #include <qapplication.h>
@@ -79,7 +80,7 @@ typedef QString name_t();
 typedef QString description_t();
 
 // version
-static const char *qgisVersion = "0.0.12 pre 1 - July 4, 2003";
+static const char *qgisVersion = "0.0.12 pre 2 - August 15, 2003";
 static const int qgisVersionInt = 11;
 // cursors
 static unsigned char zoom_in_bits[] = {
