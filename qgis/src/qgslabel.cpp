@@ -613,28 +613,50 @@ void QgsLabel::writeXML(std::ostream& xml)
 
     xml << "\t\t<labelattributes>\n";
 
-    /* Text */
-    xml << "\t\t\t<label text=\"" << mLabelAttributes->text() << "\" field=\"" << mLabelField[Text] << "\" />\n";
 
-    /* Family */
-    xml << "\t\t\t<family name=\"" << mLabelAttributes->family() << "\" field=\"" << mLabelField[Family] << "\" />\n";
+    if ( mLabelAttributes->textIsSet() )
+    {
+        /* Text */
+        xml << "\t\t\t<label text=\"" << mLabelAttributes->text() << "\" field=\"" << mLabelField[Text] << "\" />\n";
+    }
 
-    /* Size */
-    xml << "\t\t\t<size value=\"" << mLabelAttributes->size() << "\" units=\""
-    << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->sizeType()) << "\" field=\"" << mLabelField[Size] << "\" />\n";
+    if ( mLabelAttributes->familyIsSet() && ! mLabelAttributes->family().isEmpty() )
+    {
+        /* Family */
+        xml << "\t\t\t<family name=\"" << mLabelAttributes->family() << "\" field=\"" << mLabelField[Family] << "\" />\n";
+    }
 
-    /* Bold */
-    xml << "\t\t\t<bold on=\"" << mLabelAttributes->bold() << "\" field=\"" << mLabelField[Bold] << "\" />\n";
+    if ( mLabelAttributes->sizeIsSet() )
+    {
+        /* Size */
+        xml << "\t\t\t<size value=\"" << mLabelAttributes->size() << "\" units=\""
+            << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->sizeType()) << "\" field=\"" << mLabelField[Size] << "\" />\n";
+    }
 
-    /* Italic */
-    xml << "\t\t\t<italic on=\"" << mLabelAttributes->italic() << "\" field=\"" << mLabelField[Italic] << "\" />\n";
+    if ( mLabelAttributes->boldIsSet() )
+    {
+        /* Bold */
+        xml << "\t\t\t<bold on=\"" << mLabelAttributes->bold() << "\" field=\"" << mLabelField[Bold] << "\" />\n";
+    }
 
-    /* Underline */
-    xml << "\t\t\t<underline on=\"" << mLabelAttributes->underline() << "\" field=\"" << mLabelField[Underline] << "\" />\n";
+    if ( mLabelAttributes->italicIsSet() )
+    {
+        /* Italic */
+        xml << "\t\t\t<italic on=\"" << mLabelAttributes->italic() << "\" field=\"" << mLabelField[Italic] << "\" />\n";
+    }
 
-    /* Color */
-    xml << "\t\t\t<color red=\"" << mLabelAttributes->color().red() << "\" green=\"" << mLabelAttributes->color().green()
-    << "\" blue=\"" << mLabelAttributes->color().blue() << "\" field=\"" << mLabelField[Color] << "\" />\n";
+    if ( mLabelAttributes->underlineIsSet() )
+    {
+        /* Underline */
+        xml << "\t\t\t<underline on=\"" << mLabelAttributes->underline() << "\" field=\"" << mLabelField[Underline] << "\" />\n";
+    }
+
+    if ( mLabelAttributes->colorIsSet() && ! mLabelField[Color].isEmpty() )
+    {
+        /* Color */
+        xml << "\t\t\t<color red=\"" << mLabelAttributes->color().red() << "\" green=\"" << mLabelAttributes->color().green()
+            << "\" blue=\"" << mLabelAttributes->color().blue() << "\" field=\"" << mLabelField[Color] << "\" />\n";
+    }
 
     /* X */
     xml << "\t\t\t<x field=\"" << mLabelField[XCoordinate] << "\" />\n";
@@ -642,27 +664,46 @@ void QgsLabel::writeXML(std::ostream& xml)
     /* Y */
     xml << "\t\t\t<y field=\"" << mLabelField[YCoordinate] << "\" />\n";
 
-    /* Offset */
-    xml << "\t\t\t<offset  units=\"" << QgsLabelAttributes::unitsName(mLabelAttributes->offsetType())
-    << "\" x=\"" << mLabelAttributes->xOffset() << "\" xfield=\"" << mLabelField[XOffset]
-    << "\" y=\"" << mLabelAttributes->yOffset() << "\" yfield=\"" << mLabelField[YOffset]
-    << "\" />\n";
+    if ( mLabelAttributes->offsetIsSet() )
+    {
+        /* Offset */
+        xml << "\t\t\t<offset  units=\"" << QgsLabelAttributes::unitsName(mLabelAttributes->offsetType())
+            << "\" x=\"" << mLabelAttributes->xOffset() << "\" xfield=\"" << mLabelField[XOffset]
+            << "\" y=\"" << mLabelAttributes->yOffset() << "\" yfield=\"" << mLabelField[YOffset]
+            << "\" />\n";
+    }
 
-    /* Angle */
-    xml << "\t\t\t<angle value=\"" << mLabelAttributes->angle() << "\" field=\"" << mLabelField[Angle] << "\" />\n";
+    if ( mLabelAttributes->angleIsSet() )
+    {
+        /* Angle */
+        xml << "\t\t\t<angle value=\"" << mLabelAttributes->angle() << "\" field=\"" << mLabelField[Angle] << "\" />\n";
+    }
 
-    /* Alignment */
-    xml << "\t\t\t<alignment value=\"" << QgsLabelAttributes::alignmentName(mLabelAttributes->alignment())
-    << "\" field=\"" << mLabelField[Alignment] << "\" />\n";
+    if ( mLabelAttributes->alignmentIsSet() )
+    {
+        /* Alignment */
+        xml << "\t\t\t<alignment value=\"" << QgsLabelAttributes::alignmentName(mLabelAttributes->alignment())
+            << "\" field=\"" << mLabelField[Alignment] << "\" />\n";
+    }
 
 
-    // Buffer settings
-    xml << "\t\t\t<buffercolor red=\"" << mLabelAttributes->bufferColor().red() << "\" green=\"" << mLabelAttributes->bufferColor().green()
-    << "\" blue=\"" << mLabelAttributes->bufferColor().blue() << "\" field=\"" << mLabelField[BufferColor] << "\" />\n";
-    xml << "\t\t\t<buffersize value=\"" << mLabelAttributes->bufferSize() << "\" units=\""
-    << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->bufferSizeType()) << "\" field=\"" << mLabelField[BufferSize] << "\" />\n";
+    if ( mLabelAttributes->bufferColorIsSet() && ! mLabelField[BufferColor].isEmpty() )
+    {
+        // Buffer settings
+        xml << "\t\t\t<buffercolor red=\"" << mLabelAttributes->bufferColor().red() << "\" green=\"" << mLabelAttributes->bufferColor().green()
+            << "\" blue=\"" << mLabelAttributes->bufferColor().blue() << "\" field=\"" << mLabelField[BufferColor] << "\" />\n";
+    }
 
-    xml << "\t\t\t<bufferenabled on=\"" << mLabelAttributes->bufferEnabled() << "\" field=\"" << mLabelField[BufferEnabled] << "\" />\n";
+    if ( mLabelAttributes->bufferSizeIsSet() && ! mLabelField[BufferSize].isEmpty() )
+    {
+        xml << "\t\t\t<buffersize value=\"" << mLabelAttributes->bufferSize() << "\" units=\""
+            << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->bufferSizeType()) << "\" field=\"" << mLabelField[BufferSize] << "\" />\n";
+    }
+
+    if ( mLabelAttributes->bufferEnabled() && ! mLabelField[BufferEnabled].isEmpty() )
+    {
+        xml << "\t\t\t<bufferenabled on=\"" << mLabelAttributes->bufferEnabled() << "\" field=\"" << mLabelField[BufferEnabled] << "\" />\n";
+    }
 
     xml << "\t\t</labelattributes>\n";
 }
