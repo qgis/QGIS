@@ -1404,7 +1404,10 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       if(mCaptureList.size()>1)
       {
         QPainter paint(this);
-        paint.setPen(QPen(QColor(255,0,0),4,Qt::DashLine));
+	QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),
+			  QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),
+			  QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
+        paint.setPen(QPen(digitcolor,QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",1),Qt::SolidLine));
         std::list<QgsPoint>::iterator it=mCaptureList.end();
         --it;
         --it;
