@@ -57,3 +57,9 @@ void QgsRenderItem::setValue(QString value)
 {
     mValue=value;
 }
+QgsSymbol* QgsRenderItem::getSymbol()
+{
+  Q_ASSERT(this == 0);
+    return mSymbol;
+}
+

@@ -38,7 +38,11 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
 
     //find out the fields of mVectorLayer
     QgsVectorDataProvider *provider;
+#ifndef WIN32
     if (provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider()))
+#else
+    if (provider = (QgsVectorDataProvider *)(mVectorLayer->getDataProvider()))
+#endif
     {
 	std::vector < QgsField > &fields = provider->fields();
 	QString str;
@@ -67,11 +71,19 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
     //initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
     if (mVectorLayer->propertiesDialog())
     {
+#ifndef WIN32
 	renderer = dynamic_cast < QgsUniqueValRenderer * >(mVectorLayer->propertiesDialog()->getBufferRenderer());
+#else
+	renderer = (QgsUniqueValRenderer * )(mVectorLayer->propertiesDialog()->getBufferRenderer());
+#endif
     } 
     else
     {
+#ifndef WIN32
 	renderer = dynamic_cast < QgsUniqueValRenderer * >(mVectorLayer->renderer());
+#else
+	renderer = ( QgsUniqueValRenderer * )(mVectorLayer->renderer());
+#endif
     }
 
 
@@ -139,7 +151,11 @@ void QgsUValDialog::apply()
 	}
     }
 
+#ifndef WIN32
     QgsUniqueValRenderer *renderer = dynamic_cast < QgsUniqueValRenderer * >(mVectorLayer->renderer());
+#else
+    QgsUniqueValRenderer *renderer = ( QgsUniqueValRenderer * )(mVectorLayer->renderer());
+#endif
 
     //go through mValues and add the entries to the renderer
     if(renderer)
@@ -260,7 +276,11 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
     }
     mValues.clear();
     
+#ifndef WIN32
     QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
+#else
+    QgsVectorDataProvider *provider = (QgsVectorDataProvider *)(mVectorLayer->getDataProvider());
+#endif
     if (provider)
     {
 	QString value;
