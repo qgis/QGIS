@@ -183,6 +183,8 @@ private:
     void identify();
     //! show the attribute table for the currently selected layer
     void attributeTable();
+    /**Deletes the selected attributes for the currently selected vector layer*/
+    void deleteSelected();
     //! Read Well Known Binary stream from PostGIS
     //void readWKB(const char *, QStringList tables);
     //! Draw a point on the map canvas

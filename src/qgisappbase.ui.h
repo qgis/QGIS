@@ -249,3 +249,5 @@ void QgisAppBase::captureLine()
 {
 
 }
+
+

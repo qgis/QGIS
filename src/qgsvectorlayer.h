@@ -142,8 +142,13 @@ class QgsVectorLayer:public QgsMapLayer
   */
   virtual std::vector<QgsField> const & fields() const;
 
-  /**Adds a feature*/
+  /**Adds a feature
+   @return true in case of success and false in case of error*/
   bool addFeature(QgsFeature* f);
+
+  /**Deletes the selected features
+     @return true in case of success and false otherwise*/
+  bool deleteSelectedFeatures();
   
 
 
