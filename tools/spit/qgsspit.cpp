@@ -80,9 +80,13 @@ void QgsSpit::addFile()
 void QgsSpit::removeFile()
 {
   QListViewItemIterator it(lstShapefiles);
-  for(;it.current();++it)
-    if ( it.current()->isSelected() )
+
+  while(it.current())
+    if ( it.current()->isSelected() ){
       delete it.current();
+      it = lstShapefiles->firstChild();
+    }
+    else ++it;
 }
 void QgsSpit::removeAllFiles(){
   lstShapefiles->selectAll(true);

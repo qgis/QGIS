@@ -108,6 +108,54 @@
                     <string>Remove</string>
                 </property>
             </widget>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>textLabel1_2</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>20</x>
+                        <y>70</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>SRID</string>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>btnRemoveAll</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>270</x>
+                        <y>30</y>
+                        <width>111</width>
+                        <height>29</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Remove All</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>chckUseDefault</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>270</x>
+                        <y>70</y>
+                        <width>100</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Use Default</string>
+                </property>
+            </widget>
             <widget class="QListView">
                 <column>
                     <property name="text">
@@ -157,22 +205,6 @@
                     <enum>Extended</enum>
                 </property>
             </widget>
-            <widget class="QLabel">
-                <property name="name">
-                    <cstring>textLabel1_2</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>20</x>
-                        <y>70</y>
-                        <width>64</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>SRID</string>
-                </property>
-            </widget>
             <widget class="QSpinBox">
                 <property name="name">
                     <cstring>spinSrid</cstring>
@@ -185,37 +217,11 @@
                         <height>21</height>
                     </rect>
                 </property>
-            </widget>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>btnRemoveAll</cstring>
+                <property name="maxValue">
+                    <number>1000000</number>
                 </property>
-                <property name="geometry">
-                    <rect>
-                        <x>270</x>
-                        <y>30</y>
-                        <width>111</width>
-                        <height>29</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Remove All</string>
-                </property>
-            </widget>
-            <widget class="QCheckBox">
-                <property name="name">
-                    <cstring>chckUseDefault</cstring>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>270</x>
-                        <y>70</y>
-                        <width>100</width>
-                        <height>21</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Use Default</string>
+                <property name="minValue">
+                    <number>-1</number>
                 </property>
             </widget>
         </widget>
