@@ -1180,14 +1180,40 @@ void QgisApp::fileOpen()
 
   if (answer != QMessageBox::Cancel)
   {
-    QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::OPEN, this);
+    QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::OPEN, mMapCanvas);
     mOverviewCanvas->freeze(true);
     mMapCanvas->freeze(true);
-    if (pio->read())
+    // clear the map canvas
+    removeAllLayers();
+    //loading a project will add all layers to the registry and
+    //return the zorder for those layers.
+    std::list<QString> myZOrder = pio->read();
+    std::list < QString >::iterator li = myZOrder.begin();
+#ifdef QGISDEBUG
+    std::cout << "fileOpen -> listing zOrder returned from projectio" << std::endl;
+#endif
+    while (li != myZOrder.end())
     {
-      setCaption(tr("Quantum GIS --") + " " + pio->baseName());
-      mFullPathName = pio->fullPathName();
+#ifdef QGISDEBUG
+      std::cout << "Found  " << *li << " in zOrder" << std::endl;
+#endif
+      QgsMapLayer * myMapLayer = mMapLayerRegistry->mapLayer(*li);
+      //find out what type of file it is and add it to the project
+      if (myMapLayer->type() == QgsMapLayer::VECTOR)
+      {
+        addMapLayer(myMapLayer);
+      }
+      else
+      {
+        addRasterLayer((QgsRasterLayer*)myMapLayer);
+      }
+      li++;
     }
+
+    setCaption(tr("Quantum GIS --") + " " + pio->baseName());
+    mFullPathName = pio->fullPathName();
+    setZOrder(myZOrder);
+    setOverviewZOrder(mMapLegend);
     delete pio;
     mOverviewCanvas->freeze(false);
     mMapCanvas->freeze(false);
@@ -1195,10 +1221,60 @@ void QgisApp::fileOpen()
   }
 }
 
+bool QgisApp::addProject(QString projectFile)
+{
+  // adds a saved project to qgis, usually called on startup by
+  // specifying a project file on the command line
+  bool returnValue = false;
+  mOverviewCanvas->freeze(true);
+  mMapCanvas->freeze(true);
+  // clear the map canvas
+  removeAllLayers();
+  QgsProjectIo *pio = new QgsProjectIo(QgsProjectIo::OPEN, mMapCanvas);
+#ifdef QGISDEBUG
+  std::cout << "Loading Project - about to call ProjectIO->read()" << std::endl;
+#endif
+  mMapCanvas->freeze(true);
+  std::list<QString> myZOrder = pio->read(projectFile);
+  std::list < QString >::iterator li = myZOrder.begin();
+#ifdef QGISDEBUG
+  std::cout << "fileOpen -> listing zOrder returned from projectio" << std::endl;
+#endif
+  while (li != myZOrder.end())
+  {
+#ifdef QGISDEBUG
+    std::cout << "Found  " << *li << " in zOrder" << std::endl;
+#endif
+    QgsMapLayer * myMapLayer = mMapLayerRegistry->mapLayer(*li);
+    //find out what type of file it is and add it to the project
+    if (myMapLayer->type() == QgsMapLayer::VECTOR)
+    {
+      addMapLayer(myMapLayer);
+    }
+    else
+    {
+      addRasterLayer((QgsRasterLayer*)myMapLayer);
+    }
+    li++;
+  }
+  setCaption(tr("Quantum GIS --") + " " + pio->baseName());
+  mFullPathName = pio->fullPathName();
+  // mMapLegend->update(); UPDATED VIA SIGNAL/SLOTS
+  mMapCanvas->freeze(false);
+  mProjectIsDirtyFlag = false;
+  returnValue = true;
+  setZOrder(myZOrder);
+  setOverviewZOrder(mMapLegend);
+  delete pio;
+  mOverviewCanvas->freeze(false);
+  mMapCanvas->freeze(false);
+
+  return returnValue;
+}
 
 void QgisApp::fileSave()
 {
-  QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::SAVE);
+  QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::SAVE,mMapCanvas);
   pio->setFileName(mFullPathName);
   if (pio->write(mMapCanvas->extent()))
     {
@@ -1212,7 +1288,7 @@ void QgisApp::fileSave()
 
 void QgisApp::fileSaveAs()
 {
-  QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::SAVEAS);
+  QgsProjectIo *pio = new QgsProjectIo( QgsProjectIo::SAVEAS,mMapCanvas);
   if (pio->write(mMapCanvas->extent()))
     {
       setCaption(tr("Quantum GIS --") + " " + pio->baseName());
@@ -1367,29 +1443,6 @@ void QgisApp::addAllToOverview()
 
 
 
-bool QgisApp::addProject(QString projectFile)
-{
-  // adds a saved project to qgis, usually called on startup by
-  // specifying a project file on the command line
-  bool returnValue = false;
-  QgsProjectIo *pio = new QgsProjectIo(QgsProjectIo::OPEN, this);
-#ifdef QGISDEBUG
-  std::cout << "Loading Project - about to call ProjectIO->read()" << std::endl;
-#endif
-  if (pio->read(projectFile))
-  {
-    mMapCanvas->freeze(true);
-    setCaption(tr("Quantum GIS --") + " " + pio->baseName());
-    mFullPathName = pio->fullPathName();
-    // mMapLegend->update(); UPDATED VIA SIGNAL/SLOTS
-    mMapCanvas->freeze(false);
-    mProjectIsDirtyFlag = false;
-    returnValue = true;
-  }
-  delete pio;
-  
- return returnValue;
-}
 void QgisApp::exportMapServer()
 {
   // check to see if there are any layers to export
@@ -2740,10 +2793,10 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
 }
 
 //set the zorder of both overview and mapcanvas
-void QgisApp::setZOrder (std::list<QString>)
+void QgisApp::setZOrder (std::list<QString> theZOrder)
 {
-  //do me!
-
+  mMapCanvas->setZOrder(theZOrder);
+  //mOverviewCanvas->setZOrder(theZOrder);
 }
 
 //copy the click coord to clipboard and let the user know its there

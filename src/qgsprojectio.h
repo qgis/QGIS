@@ -12,12 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.h,v 1.6 2004/06/10 23:07:08 timlinux Exp */
+/* qgsprojectio.h,v 1.7 2004/06/24 07:58:45 timlinux Exp */
 
 #ifndef _QGSPROJECTIO_H_
 #define _QGSPROJECTIO_H_
 
-class QgisApp;
+class QgisMapCanvas;
 class QgsMapLayerRegistry;
 class QgsRect;
 /*! \class QgsProjectIo
@@ -27,10 +27,10 @@ class QgsProjectIo
 {
 
 public:
-  QgsProjectIo(int action=SAVE, QgisApp *qgis=0);
+  QgsProjectIo(int action, QgsMapCanvas * theMapCanvas);
   ~QgsProjectIo();
   //! Read the file and create the map
-  bool read(QString path=0);
+  std::list<QString> read(QString path=0);
   //! Write the contents of the map to a file
   bool write(QgsRect theExtent);
   //! Open a file dialog, the type determined by action (SAVE AS or OPEN)
@@ -51,9 +51,8 @@ public:
   QString fileName;
   QString fullPath;
   bool neverSaved;
-  //! pointer to the main app for connecting slots
-  QgisApp *qgisApp;
   QgsMapLayerRegistry * mMapLayerRegistry;
+  QgsMapCanvas * mMapCanvas;
   int action;
 };
 
