@@ -1478,8 +1478,8 @@ void QgisApp::fileSave()
     {
       setCaption(tr("Quantum GIS --") + " " + pio->baseName());
       statusBar()->message(tr("Saved map to:") + " " + pio->fullPathName());
+      fullPath = pio->fullPathName();
     }
-  fullPath = pio->fullPathName();
   delete pio;
   projectIsDirty = false;
 }
@@ -1491,6 +1491,7 @@ void QgisApp::fileSaveAs()
     {
       setCaption(tr("Quantum GIS --") + " " + pio->baseName());
       statusBar()->message(tr("Saved map to:") + " " + pio->fullPathName());
+      fullPath = pio->fullPathName();
     }
   delete pio;
   projectIsDirty = false;
@@ -1504,15 +1505,11 @@ void QgisApp::saveMapAsImage()
           this,
           "save file dialog"
           "Choose a filename to save the map image as" );
-  if ( myOutputFileNameQString=="")
-  {
-    //no filename chosen
-    return;
-  }
-  else
+  if ( myOutputFileNameQString !="")
   {
     //save the mapview to the selected file
     mapCanvas->saveAsImage(myOutputFileNameQString);
+    statusBar()->message(tr("Saved map image to") + " " + myOutputFileNameQString);
   }
 
 }
