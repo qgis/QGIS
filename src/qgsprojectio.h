@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.h,v 1.4 2004/01/27 03:01:11 gsherman Exp */
+/* qgsprojectio.h,v 1.5 2004/02/21 20:54:26 gsherman Exp */
 
 #ifndef _QGSPROJECTIO_H_
 #define _QGSPROJECTIO_H_
@@ -29,7 +29,7 @@ public:
   QgsProjectIo(QgsMapCanvas *map=0, int action=SAVE, QgisApp *qgis=0);
   ~QgsProjectIo();
   //! Read the file and create the map
-  bool read();
+  bool read(QString path=0);
   //! Write the contents of the map to a file
   bool write();
   void setMapCanvas(QgsMapCanvas *map);
