@@ -47,12 +47,12 @@ void QgisIface::zoomActiveLayer()
   qgis->zoomToLayerExtent();
 }
 
-void QgisIface::addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)
+bool QgisIface::addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)
 {
   qgis->addVectorLayer(vectorLayerPath, baseName, providerKey);
 }
 
-void QgisIface::addRasterLayer(QString rasterLayerPath)
+bool QgisIface::addRasterLayer(QString rasterLayerPath)
 {
   qgis->addRasterLayer(rasterLayerPath);
 }

@@ -45,9 +45,9 @@ class QgisIface : public QgisInterface{
         //! Zoom to active layer
         void zoomActiveLayer();
         //! Add a vector layer
-        void addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
+        bool addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey);
         //! Add a raster layer
-        void addRasterLayer(QString rasterLayerPath);
+        bool addRasterLayer(QString rasterLayerPath);
         //! Add a project
         bool addProject(QString theProjectName);
         //! Get pointer to the active layer (layer selected in the legend)
