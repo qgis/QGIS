@@ -135,6 +135,12 @@ public:
   
   bool deleteFeatures(std::list<int> const & id);
   
+  bool changeAttributeValues(std::map<int,std::map<QString,QString> > const & 
+			     attr_map);
+  
+  void changeAttributeValues(GPSObject& obj, 
+			     const std::map<QString, QString>& attrs);
+  
   /** Adds one feature (used by addFeatures()) */
   bool QgsGPXProvider::addFeature(QgsFeature* f);
   
@@ -151,7 +157,7 @@ public:
   bool boundsCheck(double x, double y);
 
   int capabilities() const {
-    return AddFeatures | DeleteFeatures;
+    return AddFeatures | DeleteFeatures | ChangeAttributeValues;
   }
   
   QgsDataSourceURI *getURI()
