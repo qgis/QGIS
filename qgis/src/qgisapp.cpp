@@ -68,6 +68,7 @@
 #include "qgsdbsourceselect.h"
 #endif
 #include "qgsmessageviewer.h"
+#include "qgshelpviewer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsvectorlayer.h"
@@ -270,11 +271,14 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   actionAddLayer->removeFrom(DataToolbar);
 #endif
   mySplash->setStatus(tr("Loading plugins..."));
-
+ // store the application dir
+ appDir = PREFIX;
   // Get pointer to the provider registry singleton
-  providerRegistry = QgsProviderRegistry::instance(PLUGINS);
+  QString plib = PREFIX;
+  plib += "/lib";
+  providerRegistry = QgsProviderRegistry::instance(plib);
   // set the provider plugin path 
-  std::cout << "Setting plugin lib dir to " << PLUGINS << std::endl;
+  std::cout << "Setting plugin lib dir to " << plib << std::endl;
   // connect the "cleanup" slot
   connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()));
   restoreWindowState();
@@ -282,7 +286,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mapCanvas->setFocus();
   mySplash->finish( this );
   delete mySplash;
-  QString plib = PLUGINS;
+  
   std::cout << "Plugins are installed in " << plib << std::endl;
   // set the dirty flag to false -- no changes yet
   projectIsDirty = false;
@@ -1369,6 +1373,9 @@ void QgisApp::helpContents(){
   // find a browser
   // find the installed location of the help files
   // open index.html using browser
+  helpViewer = new QgsHelpViewer(this,"helpviewer",false);
+  helpViewer->showContent(appDir +"/share/doc","index.html");
+  helpViewer->show();
 }
 /** Get a pointer to the currently selected map layer */
 QgsMapLayer *QgisApp::activeLayer(){
