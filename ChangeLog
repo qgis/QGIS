@@ -1,7 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.35 2004/03/23 01:02:28 timlinux Exp
+ChangeLog,v 1.36 2004/03/26 12:24:40 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-03-26 [didge] 0.1.0devel10
+
+** Fixed bug #920070
+** Made plugin-libdir 64bit compatible (e.g. /usr/lib64/qgis)
+   for AMD64 and PPC64 systems
 
 2004-03-22 [mac] 0.1.0devel9
 
