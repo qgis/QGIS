@@ -19,7 +19,7 @@
  #include <qmessagebox.h>
  #include <qcolor.h>
  #include "qgsmaplayer.h"
- #ifdef PGDB
+ #ifdef POSTGRESQL
  #include "qgsdatabaselayer.h"
  #endif
  #include "qgsshapefilelayer.h"
@@ -155,7 +155,7 @@ bool QgsProjectIo::read(){
 		// add the layer to the maplayer
 		
 		if(type == "database"){
-			#ifdef PGDB
+			#ifdef POSTGRESQL
 				QgsDatabaseLayer *dbl = new QgsDatabaseLayer(dataSource, layerName);
 				
 				map->addLayer(dbl);
