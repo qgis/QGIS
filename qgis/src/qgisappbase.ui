@@ -65,6 +65,9 @@
     <item text="View" name="PopupMenu_2">
         <action name="actionAddLayer"/>
     </item>
+    <item text="&amp;Help" name="PopupMenu_3">
+        <action name="actionHelpAbout"/>
+    </item>
 </menubar>
 <toolbars>
     <toolbar dock="2">
@@ -217,6 +220,14 @@
             </property>
         </action>
     </actiongroup>
+    <action>
+        <property name="name">
+            <cstring>actionHelpAbout</cstring>
+        </property>
+        <property name="text">
+            <string>&amp;About Quantum GIS</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -290,20 +301,27 @@
         <receiver>QgisAppBase</receiver>
         <slot>pan()</slot>
     </connection>
+    <connection>
+        <sender>actionHelpAbout</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>about()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgisappbase.ui.h</include>
 </includes>
 <slots>
+    <slot>addLayer()</slot>
+    <slot>drawLayers()</slot>
     <slot>fileExit()</slot>
     <slot>fileOpen()</slot>
-    <slot>addLayer()</slot>
+    <slot>init()</slot>
+    <slot>about()</slot>
+    <slot>pan()</slot>
+    <slot>zoomFull()</slot>
     <slot>zoomIn()</slot>
     <slot>zoomOut()</slot>
-    <slot>init()</slot>
-    <slot>drawLayers()</slot>
-    <slot>zoomFull()</slot>
-    <slot>pan()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
