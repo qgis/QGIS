@@ -46,6 +46,49 @@ AC_SUBST(GDAL_CFLAGS)
 AC_SUBST(GDAL_LDADD)
 ])
 
+dnl ------------------------------------------------------------------------
+dnl Detect GEOS
+dnl
+dnl use AQ_CHECK_GEOS to detect GEOS
+dnl it sets:
+dnl   GEOS_CFLAGS
+dnl   GEOS_LDADD
+dnl ------------------------------------------------------------------------
+
+# Check for GEOS
+
+AC_DEFUN([AQ_CHECK_GEOS],
+[
+AC_ARG_WITH([geos],
+  AC_HELP_STRING([--with-geos=path],
+    [Full path to 'geos-config' script, e.g. '--with-geos=/usr/local/bin/geos-config']),
+  [ac_geos_config_path=$withval])
+
+if test x"$ac_geos_config_path" = x ; then
+  ac_geos_config_path=`which geos-config`
+fi
+
+ac_geos_config_path=`dirname $ac_geos_config_path 2> /dev/null`
+AC_PATH_PROG(GEOS_CONFIG, geos-config, no, $ac_geos_config_path)
+
+if test x${GEOS_CONFIG} = xno ; then
+  AC_MSG_ERROR([geos-config not found! Supply it with --with-geos=PATH])
+else
+  AC_MSG_CHECKING([GEOS_CFLAGS])
+  GEOS_CFLAGS=`$GEOS_CONFIG --cflags`
+  AC_MSG_RESULT($GEOS_CFLAGS)
+
+  AC_MSG_CHECKING([GEOS_LDADD])
+  GEOS_LDADD=`$GEOS_CONFIG --libs`
+  AC_MSG_RESULT($GEOS_LDADD)
+
+  ac_geos="yes"
+fi
+
+AC_SUBST(GEOS_CFLAGS)
+AC_SUBST(GEOS_LDADD)
+])
+
 dnl ------------------------------------------------------------------------                                                                             
 dnl Detect QT3
 dnl

@@ -1,6 +1,6 @@
 
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.199 2004/10/18 18:55:26 larsl Exp
+dnl configure.in,v 1.200 2004/10/19 05:03:44 gsherman Exp
 
 
 
@@ -83,6 +83,13 @@ dnl GDAL/OGR
 dnl ---------------------------------------------------------------------------
 AQ_CHECK_GDAL
 
+dnl ---------------------------------------------------------------------------
+dnl GEOS
+dnl ---------------------------------------------------------------------------
+AQ_CHECK_GEOS
+if test x"$ac_geos" = "xno"; then
+  AC_MSG_ERROR("GEOS is required and was not found")
+fi
 
 dnl ---------------------------------------------------------------------------
 dnl PostgreSQL
@@ -273,6 +280,7 @@ echo "=========================================="
 echo "$PACKAGE $VERSION"
 echo "------------------------------------------"
 echo "GDAL/OGR      : $ac_gdalogr"
+echo "GEOS          : $ac_geos"
 echo "PostgreSQL    : $ac_postgresql"
 echo "GRASS         : $ac_grass"
 echo "SPIT          : $ac_spit"
