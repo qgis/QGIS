@@ -41,7 +41,8 @@ bool GPSObject::parseNode(const QDomNode& node) {
 }
 
 
-void GPSObject::fillElement(QDomDocument& qdd, QDomElement& elt) {
+void GPSObject::fillElement(QDomElement& elt) {
+  QDomDocument qdd = elt.ownerDocument();
   if (!name.isEmpty()) {
     QDomElement nameElt = qdd.createElement("name");
     nameElt.appendChild(qdd.createTextNode(name));
@@ -86,8 +87,9 @@ bool GPSPoint::parseNode(const QDomNode& node) {
 }
 
 
-void GPSPoint::fillElement(QDomDocument& qdd, QDomElement& elt) {
-  GPSObject::fillElement(qdd, elt);
+void GPSPoint::fillElement(QDomElement& elt) {
+  GPSObject::fillElement(elt);
+  QDomDocument qdd = elt.ownerDocument();
   elt.setAttribute("lat", QString("%1").arg(lat, 0, 'f'));
   elt.setAttribute("lon", QString("%1").arg(lon, 0, 'f'));
   if (ele != -std::numeric_limits<double>::max()) {
@@ -98,8 +100,8 @@ void GPSPoint::fillElement(QDomDocument& qdd, QDomElement& elt) {
 }
 
 
-void GPSExtended::fillElement(QDomDocument& qdd, QDomElement& elt) {
-  GPSObject::fillElement(qdd, elt);
+void GPSExtended::fillElement(QDomElement& elt) {
+  GPSObject::fillElement(elt);
 }
 
 
@@ -136,12 +138,14 @@ bool Route::parseNode(const QDomNode& node) {
 }
 
 
-void Route::fillElement(QDomDocument& qdd, QDomElement& elt) {
-  GPSExtended::fillElement(qdd, elt);
+void Route::fillElement(QDomElement& elt) {
+  GPSExtended::fillElement(elt);
+  
+  QDomDocument qdd = elt.ownerDocument();
   
   for (int i = 0; i < points.size(); ++i) {
     QDomElement ptElt = qdd.createElement("rtept");
-    points[i].fillElement(qdd, ptElt);
+    points[i].fillElement(ptElt);
     elt.appendChild(ptElt);
   }
 }
@@ -189,13 +193,15 @@ bool Track::parseNode(const QDomNode& node) {
 }
 
 
-void Track::fillElement(QDomDocument& qdd, QDomElement& elt) {
-  GPSExtended::fillElement(qdd, elt);
+void Track::fillElement(QDomElement& elt) {
+  GPSExtended::fillElement(elt);
+  QDomDocument qdd = elt.ownerDocument();
+  
   for (int i = 0; i < segments.size(); ++i) {
     QDomElement sgmElt = qdd.createElement("trkseg");
     for (int j = 0; j < segments[i].points.size(); ++j) {
       QDomElement ptElt = qdd.createElement("trkpt");
-      segments[i].points[j].fillElement(qdd, ptElt);
+      segments[i].points[j].fillElement(ptElt);
       sgmElt.appendChild(ptElt);
     }
     elt.appendChild(sgmElt);
@@ -365,21 +371,21 @@ void GPSData::fillDom(QDomDocument& qdd) {
   // add waypoints
   for (int i = 0; i < waypoints.size(); ++i) {
     QDomElement wptElt = qdd.createElement("wpt");
-    waypoints[i].fillElement(qdd, wptElt);
+    waypoints[i].fillElement(wptElt);
     gpxElt.appendChild(wptElt);
   }
 
   // add routes
   for (int i = 0; i < routes.size(); ++i) {
     QDomElement rteElt = qdd.createElement("rte");
-    routes[i].fillElement(qdd, rteElt);
+    routes[i].fillElement(rteElt);
     gpxElt.appendChild(rteElt);
   }
 
   // add tracks
   for (int i = 0; i < tracks.size(); ++i) {
     QDomElement trkElt = qdd.createElement("trk");
-    tracks[i].fillElement(qdd, trkElt);
+    tracks[i].fillElement(trkElt);
     gpxElt.appendChild(trkElt);
   }
 }
