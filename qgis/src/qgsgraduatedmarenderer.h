@@ -49,6 +49,8 @@ class QgsGraduatedMaRenderer: public QgsRenderer
     /**Writes the contents of the renderer to a configuration file*/
     virtual void writeXML(std::ofstream& xml);
     virtual bool needsAttributes();
+    /**Returns a list with the index of the classification attribute*/
+    virtual std::list<int> classificationAttributes();
  protected:
     /**Name of the classification field (it must be a numerical field)*/
     int mClassificationField;

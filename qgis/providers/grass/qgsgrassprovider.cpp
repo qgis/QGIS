@@ -348,6 +348,11 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
     return f;
 }
 
+QgsFeature* QgsGrassProvider::getNextFeature(std::list<int>& attlist)
+{
+    return 0;//soon
+}
+
 void QgsGrassProvider::resetSelection( bool sel)
 {
     memset ( mSelection, (int) sel, mSelectionSize );

@@ -371,3 +371,10 @@ void QgsContinuousColRenderer::writeXML(std::ofstream& xml)
     xml << "\t\t\t</highestitem>\n";
     xml << "\t\t</continuoussymbol>\n";
 }
+
+std::list<int> QgsContinuousColRenderer::classificationAttributes()
+{
+    std::list<int> list;
+    list.push_back(mClassificationField);
+    return list;
+}

@@ -442,6 +442,11 @@ QgsFeature *QgsDelimitedTextProvider::getNextFeature(bool fetchAttributes)
   return f;
 }
 
+QgsFeature * QgsDelimitedTextProvider::getNextFeature(std::list<int>& attlist)
+{
+    return 0;//soon
+}
+
 /**
  * Select features based on a bounding rectangle. Features can be retrieved
  * with calls to getFirstFeature and getNextFeature.

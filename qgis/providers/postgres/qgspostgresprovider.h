@@ -55,7 +55,10 @@ class QgsPostgresProvider:public QgsDataProvider
   */
     QgsFeature *getNextFeature(bool fetchAttributes = false);
     bool getNextFeature(QgsFeature &feature, bool fetchAttributes=0);
-
+    /**Get the next feature resulting from a select operation.
+     *@param attlist a list containing the indexes of the attribute fields to copy
+     */
+    QgsFeature* getNextFeature(std::list<int>& attlist);
     /** Get the feature type. This corresponds to 
     * WKBPoint,
     * WKBLineString,

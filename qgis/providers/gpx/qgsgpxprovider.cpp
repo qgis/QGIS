@@ -236,6 +236,10 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
   return result;
 }
 
+QgsFeature * getNextFeature(std::list<int>& attlist)
+{
+    return 0;//soon
+}
 
 /**
  * Select features based on a bounding rectangle. Features can be retrieved

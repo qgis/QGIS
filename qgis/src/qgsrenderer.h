@@ -27,6 +27,7 @@ class QPicture;
 class QDomNode;
 
 #include <fstream>
+#include <list>
 
 
 /**Abstract base class for renderers. A renderer holds all the information necessary to draw the contents of a vector layer to a map canvas. The vector layer then passes each feature to paint to the renderer*/
@@ -40,7 +41,7 @@ class QgsRenderer
     /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter
      @param p the painter storing brush and pen
      @param f a pointer to the feature to be rendered
-     @param pic pointer to a marker from SVG (is only used by marker renderers
+     @param pic pointer to a marker from SVG (is only used by marker renderers)
      @param scalefactor pointer to the scale factor for the marker image*/
     virtual void renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor)=0;
     /**Reads the renderer configuration from an XML file
@@ -51,6 +52,8 @@ class QgsRenderer
     virtual void writeXML(std::ofstream& xml)=0;
     /** Returns true, if attribute values are used by the renderer and false otherwise*/
     virtual bool needsAttributes()=0;
+    /**Returns a list with indexes of classification attributes*/
+    virtual std::list<int> classificationAttributes()=0;
 };
 
 #endif // QGSRENDERER_H

@@ -269,3 +269,10 @@ void QgsGraduatedSymRenderer::writeXML(std::ofstream& xml)
     }
     xml << "\t\t</graduatedsymbol>\n";
 }
+
+std::list<int> QgsGraduatedSymRenderer::classificationAttributes()
+{
+    std::list<int> list;
+    list.push_back(mClassificationField);
+    return list;
+}
