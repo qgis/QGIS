@@ -32,7 +32,7 @@ class QgsSiMaRenderer: public QgsRenderer
     /**Replaces the current mItem by ri*/
     void addItem(QgsRenderItem* ri);
     void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
-    void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor);
+    void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor, bool selected);
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
      @param vl the vector layer which will be associated with the renderer*/

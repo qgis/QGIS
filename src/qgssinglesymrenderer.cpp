@@ -25,7 +25,7 @@
 #include "qgssymbologyutils.h"
 #include <qdom.h>
 
-QgsSingleSymRenderer::QgsSingleSymRenderer(): mItem(new QgsRenderItem())
+QgsSingleSymRenderer::QgsSingleSymRenderer(): mItem(new QgsRenderItem()), mSelectionColor(QColor(255,255,0))
 {
     
 }
@@ -41,10 +41,19 @@ void QgsSingleSymRenderer::addItem(QgsRenderItem* ri)
     mItem = ri;
 }
 
-void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, double* scalefactor)
+void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, double* scalefactor, bool selected)
 {
-  p->setPen(mItem->getSymbol()->pen());
-  p->setBrush(mItem->getSymbol()->brush());
+	p->setPen(mItem->getSymbol()->pen());
+	p->setBrush(mItem->getSymbol()->brush());
+	if(selected)
+	{
+	    QPen pen=mItem->getSymbol()->pen();
+	    pen.setColor(mSelectionColor);
+	    QBrush brush=mItem->getSymbol()->brush();
+	    brush.setColor(mSelectionColor);
+	    p->setPen(pen);
+	    p->setBrush(brush);
+	}
 }
 
 void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVectorLayerProperties * pr)
