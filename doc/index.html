@@ -16,7 +16,7 @@
 <!--================= end Group Logo ==================-->
 <!--================= start Project Logo ==================--><td align="center" bgcolor="#FFFFFF">
 <div class="headerlogo">
-<a href="http://qgis.org/"><img border="0" class="logoImage" alt="QGIS" src="images/project-logo.gif"></a>
+<a href="http://qgis.org/"><img border="0" class="logoImage" alt="QGIS" src="images/project.png"></a>
 </div>
 </td>
 <!--================= end Project Logo ==================-->
@@ -45,7 +45,7 @@
 <tr>
 <td align="right" bgcolor="#a5b6c6" colspan="4"><img width="1" height="10" alt="" src="skin/images/spacer.gif"><span class="datenote"><script type="text/javascript" language="JavaScript"><!--
                   //document.write("Published: " + document.lastModified);
-		  document.write("-- QGIS Version 0.2 Pumpkin  --");
+		  document.write("-- QGIS Version 0.3 Madison  --");
                   //  --></script></span></td>
 </tr>
 </table>
@@ -82,7 +82,7 @@
 <a href="#Introduction">Introduction</a>
 </div>
 <div class="menupageitem">
-<a title="Whats new in Version 0.2" href="#Whats+new+in+Version+0.2">Whats new in Versio...</a>
+<a title="Whats new in Version 0.3" href="#Whats+new+in+Version+0.2">Whats new in Versio...</a>
 </div>
 <div class="menupageitem">
 <a title="Available Documents" href="#Available+Documents">Available Documents...</a>
@@ -190,7 +190,7 @@
 <tbody>
 <tr>
 <td height="10" width="9"></td><td>
-<h3>Whats new in Version 0.2</h3>
+<h3>Whats new in Version 0.3</h3>
 </td><td></td>
 </tr>
 <tr>
@@ -215,34 +215,11 @@
 </tbody>
 </table>
 <ol>
-          
-<li>Simple and graduated SVG marker symbols </li>
-          
-<li>SVG Marker library</li>
-          
-<li>Mapcanvas is updated as features are drawn (every 1,000 features) </li>
-          
-<li>WhatsThis? help for menus and toolbar buttons </li>
-          
-<li>Save map canvas as an image (.png) </li>
-          
-<li>Search radius for identifying features can be specified in the preferences dialog </li>
-          
-<li>Splashscreen can be disabled in user preferences</li>
-          
-<li>Raster statistics</li>
-          
-<li>Thumbnail preview in raster properties dialog</li>
-          
-<li>Metadata tab in raster properties dialog</li>
-          
-<li>Internationalization for several languages</li>
-          
-<li>Snapshot mode (invoked from command line)</li>
-          
-<li>Command line options for loading project files/layers</li>
-          
-<li>Currently loaded plugins are restored each time QGIS is started</li>
+          <li>Raster pyramids</li>
+          <li>Scale display</li>
+          <li>Map units can be specified (meters, feet, decimal degrees)</li>
+          <li>Desktop icons (installed in share/qgis/images/icons)</li>
+          <li>Mac OS X vector support now works</li>
         
 </ol>
       
@@ -251,7 +228,7 @@
 <tbody>
 <tr>
 <td height="10" width="9"></td><td>
-<h4>New Core Plugins</h4>
+<h4>Core Plugins</h4>
 </td><td></td>
 </tr>
 <tr>
@@ -261,13 +238,10 @@
 </table>
 <ol>
         
-<li>Delimited text plugin for creating a map layer from a set of x, y coordinates</li>
-        
-<li>GPS importer plugin</li>
-        
-<li>Grid/graticule maker plugin</li>
-        
-<li>Grass plugin</li>
+        <li>New North Arrow plugin</li>
+        <li>Improved GPS tools plugin</li>
+        <li>New Copyright plugin</li>
+        <li>Improved Grass plugin with raster and vector loaders</li>
       
 </ol>
     
@@ -284,16 +258,10 @@
 </tr>
 </tbody>
 </table>
+  <i>These plugins are available from community.qgis.org or CVS (module plugins)</i>
 <ol>
-        
-<li>Launcher plugin runs a system script or program</li>
-        
-<li>Worldmap</li>
-        
-<li>Fishing_spots tutorial plugin</li>
-        
-<li>Open modeller</li>
-      
+
+        <li>HTTP server</li>
 </ol>
     
 <a name="N1007F"></a><a name="Known+Issues"></a>
@@ -311,7 +279,8 @@
 </table>
 <ol>
         
-<li>Vector rendering does not work on big-endian platforms (OSX, Solaris)</li>
+  <li>Map units are not stored when a QGIS project is saved</li>
+
       
 </ol>
   
@@ -352,7 +321,7 @@
     
 <div class="frame note">
 <div class="label">Note</div>
-<div class="content">This documentation is based on QGIS 0.2 (Pumpkin)</div>
+<div class="content">This documentation is based on QGIS 0.3 (Madison)</div>
 </div>
   
 </div>

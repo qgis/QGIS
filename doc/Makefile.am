@@ -17,6 +17,7 @@ docdata_DATA = \
      index.html \
      index.pdf \
      install.html \
+		 install.css \
      install.pdf \
      plugins \
      skin \
