@@ -79,7 +79,9 @@ void QgsAbout::setPluginInfo(QString txt){
 void QgsAbout::showAuthorPic( QListBoxItem * theItem)
 {
   //replace spaces in author name
+#ifdef QGISDEBUG 
   printf ("Loading mug: "); 
+#endif 
 #if defined(Q_OS_MACX) || defined(WIN32)
   QString appPath = qApp->applicationDirPath() + "/share/qgis";
 #else
