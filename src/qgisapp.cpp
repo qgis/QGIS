@@ -257,8 +257,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   mapLegend = new QgsLegend(legendOverviewSplit); //frameMain);
   mapLegend->addColumn(tr("Layers"));
   mapLegend->setSorting(-1);
-  QLabel * myQLabel = new QLabel(legendOverviewSplit);
-  myQLabel->setText("Legend");
+  mOverviewLabel = new QLabel(legendOverviewSplit);
+  mOverviewLabel->setText("Overview");
   // mL = new QScrollView(canvasLegendSplit);
   //add a canvas
   mapCanvas = new QgsMapCanvas(canvasLegendSplit);
@@ -1193,7 +1193,14 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile)
       // add it to the mapcanvas collection
       mapCanvas->addLayer(layer);
       projectIsDirty = true;
-
+      // use this layer in the map overview - well need to move this logic elsewher later
+    
+      //get the thumbnail for the layer
+      QPixmap myQPixmap = QPixmap(mOverviewLabel->width(),mOverviewLabel->height());
+      layer->drawThumbnail(&myQPixmap);
+      mOverviewLabel->setText("");
+      mOverviewLabel->setPixmap(myQPixmap);
+          
       // init the context menu so it can connect to slots in main app
       layer->initContextMenu(this);
    } else
@@ -1280,7 +1287,15 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 
                // add it to the mapcanvas collection
               mapCanvas->addLayer(layer);
-              projectIsDirty = true;
+              
+             //get the thumbnail for the layer
+             QPixmap myQPixmap = QPixmap(mOverviewLabel->width(),mOverviewLabel->height());
+             layer->drawThumbnail(&myQPixmap);
+             mOverviewLabel->setText("");
+             mOverviewLabel->setPixmap(myQPixmap);
+      
+      	      
+	      projectIsDirty = true;
               // init the context menu so it can connect to slots in main app
               // XXX Yes, but what if the layer is invalid?  Should we still be doing this?
               layer->initContextMenu(this);

@@ -29,6 +29,7 @@ class QgsLegend;
 class QgsLegendView;
 class QVBox;
 class QCursor;
+class QLabel;
 class QListView;
 class QListViewItem;
 class QFileInfo;
@@ -246,6 +247,8 @@ private:
   void socketError(int e);
 /*  void urlData(); */
   private:
+  //! Overview label where the map overview is shown
+  QLabel * mOverviewLabel;
 //! Popup menu
     QPopupMenu * popMenu;
     //! Top level plugin menu
