@@ -22,6 +22,7 @@
 #include <qobject.h>
 #include "qgsdatasource.h"
 #include "qgsrect.h"
+#include "qgis.h"
 #include "qgscoordinatetransform.h"
 #include "qgssymbol.h"
 //Class QgsSymbol;
@@ -71,7 +72,7 @@ class QgsMapLayer : public QObject {
   /** Write property of QgsSymbol * symbol. */
   virtual void setSymbol( QgsSymbol * _newVal);
   /** Read property of QgsSymbol * symbol. */
-  virtual const QgsSymbol * symbol();
+  virtual QgsSymbol * symbol();
   /** Write property of QString labelField. */
   virtual void setlabelField( const QString& _newVal);
   /** Read property of QString labelField. */
@@ -84,6 +85,10 @@ class QgsMapLayer : public QObject {
 	bool visible();
 	//! set visibility
 	void setVisible(bool vis);
+  /** Write property of int featureType. */
+  virtual void setFeatureType( const int& _newVal);
+  /** Read property of int featureType. */
+  virtual const int& featureType();
  public: // Public attributes
     //! Layers enum defining the types of layers that can be added to a map
     enum LAYERS {
@@ -101,6 +106,7 @@ class QgsMapLayer : public QObject {
     //! Indicates if the layer is valid and can be drawn
     bool valid;
     QString dataSource;
+    int feature;
  private: // Private attributes
     /** Name of the layer - used for display  */
     QString layerName;
@@ -113,6 +119,8 @@ class QgsMapLayer : public QObject {
   QgsSymbol * m_symbol;
   
     bool m_visible;
+  /**  */
+  
 public: // Public attributes
   /**  */
   QString m_labelField;

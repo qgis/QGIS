@@ -19,6 +19,7 @@
 #include <qpainter.h>
 #include <qpointarray.h>
 #include <qbrush.h>
+#include "qgis.h"
 #include "qgsrect.h"
 #include "qgspoint.h"
 #include <libpq++.h>
@@ -36,12 +37,21 @@ QgsMapLayer (QgsMapLayer::DATABASE, table, conninfo), tableName (table)
     {
       // get the geometry column
       QString sql =
-	"select f_geometry_column from geometry_columns where f_table_name='"
+	"select f_geometry_column,type from geometry_columns where f_table_name='"
 	+ tableName + "'";
       qWarning ("Getting geometry column: " + sql);
       int result = pd->ExecTuplesOk ((const char *) sql);
-      if (result)
-	{
+      if (result){
+      // set the simple type for use with symbology operations
+      QString fType = pd->GetValue(0, "type");
+      if(fType == "POINT" || fType == "MULTIPOINT")
+      	feature = QGis::WKBPoint;
+       else
+       	if(fType == "LINESTRING" || fType == "MULTILINESTRING")
+      	feature = QGis::WKBLineString;
+       	   else
+       	if(fType == "POLYGON" || fType == "MULTIPOLYGON")
+      		feature = QGis::WKBPolygon;
 	  geometryColumn = pd->GetValue (0, "f_geometry_column");
 	  // set the extent of the layer
 	  QString sql = "select xmax(extent(" + geometryColumn + ")) as xmax,"
@@ -110,6 +120,10 @@ void
      3. transform
      4. draw
    */
+
+   // set pen and fill
+   QgsSymbol *sym =  symbol();
+   p->setPen(sym->color());
   std::cout << "Drawing layer using view extent " << viewExtent->
     stringRep () << " with a y transform of " << yTransform << std::endl;
   PgCursor pgs (dataSource, "drawCursor");
@@ -143,18 +157,17 @@ void
       int idx, jdx, kdx;
       char *ptr;
       char lsb;
-      int ttype;
+      
       QPointArray *pa;
+      QBrush *brush;
       switch (wkbType)
 	{
-	case WKBPoint:
-	  p->setPen (Qt::red);
+	case QGis::WKBPoint:
 	  x = (double *) (feature + 5);
 	  y = (double *) (feature + 5 + sizeof (double));
 	  p->drawRect ((int) *x, yTransform - (int) *y, 15000, 15000);
 	  break;
-	case WKBLineString:
-	  p->setPen (Qt::blue);
+	case QGis::WKBLineString:
 	  // get number of points in the line
 	  numPoints = (int) (feature + 1 + sizeof (int));
 	  ptr = feature + 1 + 2 * sizeof (int);
@@ -171,8 +184,7 @@ void
 
 	    }
 	  break;
-	case WKBMultiLineString:
-	  p->setPen (Qt::blue);
+	case QGis::WKBMultiLineString:
 	  numLineStrings = (int) (feature[5]);
 	  ptr = feature + 9;
 	  for (jdx = 0; jdx < numLineStrings; jdx++)
@@ -196,8 +208,9 @@ void
 		}
 	    }
 	  break;
-	case WKBPolygon:
-	  p->setPen (Qt::blue);
+	case QGis::WKBPolygon:
+		brush = new QBrush(sym->fillColor());
+	  p->setBrush (*brush);
 	  // get number of rings in the polygon
 	  numRings = (int *) (feature + 1 + sizeof (int));
 	  ptr = feature + 1 + 2 * sizeof (int);
@@ -221,10 +234,9 @@ void
 
 	    }
 	  break;
-	case WKBMultiPolygon:
-	  p->setPen (Qt::darkGreen);
-	  QBrush brush (Qt::green);
-	  p->setBrush (brush);
+	case QGis::WKBMultiPolygon:
+	  brush =new QBrush(sym->fillColor());
+	  p->setBrush (*brush);
 	  // get the number of polygons
 	  ptr = feature + 5;
 	  numPolygons = (int *) ptr;
@@ -274,6 +286,8 @@ void
      3. transform
      4. draw
    */
+   QgsSymbol *sym =  symbol();
+   p->setPen(sym->color());
   PgCursor pgs (dataSource, "drawCursor");
   QString sql = "select asbinary(" + geometryColumn + ",'" + endianString ();
   sql += "') as features from " + tableName;
@@ -310,17 +324,18 @@ void
       char lsb;
       QgsPoint pt;
       QPointArray *pa;
+      QBrush *brush;
       switch (wkbType)
 	{
-	case WKBPoint:
-	  p->setPen (Qt::red);
+	case QGis::WKBPoint:
+
 	  x = (double *) (feature + 5);
 	  y = (double *) (feature + 5 + sizeof (double));
 	  pt = cXf->transform (*x, *y);
 	  p->drawRect (pt.xToInt (), pt.yToInt (), 5, 5);
 	  break;
-	case WKBLineString:
-	  p->setPen (Qt::blue);
+	case QGis::WKBLineString:
+
 	  // get number of points in the line
 	  numPoints = (int) (feature + 1 + sizeof (int));
 	  ptr = feature + 1 + 2 * sizeof (int);
@@ -339,8 +354,8 @@ void
 
 	    }
 	  break;
-	case WKBMultiLineString:
-	  p->setPen (Qt::blue);
+	case QGis::WKBMultiLineString:
+
 	  numLineStrings = (int) (feature[5]);
 	  ptr = feature + 9;
 	  for (jdx = 0; jdx < numLineStrings; jdx++)
@@ -366,8 +381,9 @@ void
 		}
 	    }
 	  break;
-	case WKBPolygon:
-	  p->setPen (Qt::blue);
+	case QGis::WKBPolygon:
+		brush = new QBrush(sym->fillColor());
+		p->setBrush(*brush);
 	  // get number of rings in the polygon
 	  numRings = (int *) (feature + 1 + sizeof (int));
 	  ptr = feature + 1 + 2 * sizeof (int);
@@ -392,10 +408,9 @@ void
 
 	    }
 	  break;
-	case WKBMultiPolygon:
-	  p->setPen (Qt::darkGreen);
-	  QBrush brush (Qt::green);
-	  p->setBrush (brush);
+	case QGis::WKBMultiPolygon:
+	 brush = new QBrush(sym->fillColor());
+		p->setBrush(*brush);
 	  // get the number of polygons
 	  ptr = feature + 5;
 	  numPolygons = (int *) ptr;

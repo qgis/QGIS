@@ -40,6 +40,7 @@
 #include <iomanip>
 #include "qgsrect.h"
 #include "qgsmapcanvas.h"
+#include "qgslegenditem.h"
 #include "qgslegend.h"
 #include "qgsdbsourceselect.h"
 #include "qgsdatabaselayer.h"
@@ -82,6 +83,7 @@ QgisApp::QgisApp (QWidget * parent, const char *name,
   setCaption(caption);
   connect (mapCanvas, SIGNAL (xyCoordinates (QgsPoint &)), this,
 	   SLOT (showMouseCoordinate (QgsPoint &)));
+	connect (lv, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
 
 }
 
@@ -371,4 +373,8 @@ void QgisApp::testButton ()
   mapCanvas->addLayer (sfl);
 //      delete sfl;
 
+}
+void QgisApp::layerProperties(QListViewItem *lvi){
+		QgsMapLayer *lyr = ((QgsLegendItem *)lvi)->layer();
+		QMessageBox::information(this,"Layer Properties",lyr->name());
 }

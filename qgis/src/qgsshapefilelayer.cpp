@@ -44,6 +44,13 @@ QgsShapeFileLayer::QgsShapeFileLayer (QString vectorLayerPath, QString baseName)
       layerExtent.setXmin (ext->MinX);
       layerExtent.setYmax (ext->MaxY);
       layerExtent.setYmin (ext->MinY);
+      // get the feature type
+      OGRFeature *feat = ogrLayer->GetNextFeature();
+      OGRGeometry *geom = feat->GetGeometryRef ();
+      feature = geom->getGeometryType();
+     	ogrLayer->ResetReading();
+      delete feat;
+	  	
     }else{
     	valid = false;
     }
@@ -71,7 +78,10 @@ void
      3. transform
      4. draw
    */
-
+    // set pen and fill
+   QgsSymbol *sym =  symbol();
+   QBrush *brush = new QBrush(sym->fillColor());
+   p->setPen(sym->color());
   // reset the pointer to read from start of features
 
   // set the spatial filter
@@ -112,18 +122,18 @@ void
 	  char lsb;
 	  QgsPoint pt;
 	  QPointArray *pa;
-	  QBrush brush (Qt::green);
+	  
 	  switch (wkbType)
 	    {
 	    case WKBPoint:
-	      p->setPen (Qt::red);
+	      
 	      x = (double *) (feature + 5);
 	      y = (double *) (feature + 5 + sizeof (double));
 	      pt = cXf->transform (*x, *y);
 	      p->drawRect (pt.xToInt (), pt.yToInt (), 5, 5);
 	      break;
 	    case WKBLineString:
-	      p->setPen (Qt::blue);
+	      
 	      // get number of points in the line 
 	      ptr = feature + 5;
 	      nPoints = (int *) ptr;
@@ -144,7 +154,7 @@ void
 		}
 	      break;
 	    case WKBMultiLineString:
-	      p->setPen (Qt::blue);
+	      
 	      numLineStrings = (int) (feature[5]);
 	      ptr = feature + 9;
 	      for (jdx = 0; jdx < numLineStrings; jdx++)
@@ -171,9 +181,7 @@ void
 		}
 	      break;
 	    case WKBPolygon:
-	      p->setPen (Qt::blue);
-
-	      p->setBrush (brush);
+	      p->setBrush (*brush);
 	      // get number of rings in the polygon
 	      numRings = (int *) (feature + 1 + sizeof (int));
 	      ptr = feature + 1 + 2 * sizeof (int);
@@ -199,8 +207,7 @@ void
 		}
 	      break;
 	    case WKBMultiPolygon:
-	      p->setPen (Qt::darkGreen);
-	      p->setBrush (brush);
+      p->setBrush (*brush);
 	      // get the number of polygons
 	      ptr = feature + 5;
 	      numPolygons = (int *) ptr;
