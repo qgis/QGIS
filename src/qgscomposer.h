@@ -26,9 +26,12 @@
 #include "qgscomposerview.h"
 #include "qgscomposition.h"
 
+class QGridLayout;
 class QPrinter;
 class QDomNode;
 class QDomDocument;
+class QMoveEvent;
+class QResizeEvent;
 class QgisApp;
 class QgsComposerItem;
 
@@ -79,6 +82,18 @@ public:
     //! Sets state from DOM document
     bool readXML( QDomNode & node );
 
+    //! Save window state
+    void saveWindowState();
+
+    //! Restore the window and toolbar state
+    void restoreWindowState();
+
+    //! Move event
+    void moveEvent ( QMoveEvent * );
+    
+    //! Resize event
+    void resizeEvent ( QResizeEvent * );
+
 public slots:
     //! Print the composition
     void print(void);
@@ -122,6 +137,12 @@ private:
 
     //! The composer was opened first time (-> set defaults)
     bool mFirstTime;
+
+    //! Layout 
+    QGridLayout *mCompositionOptionsLayout;
+
+    //! Layout
+    QGridLayout *mItemOptionsLayout;
 };
 
 #endif

@@ -71,6 +71,7 @@ public:
     // Reimplement QgsComposerItem:
     void setSelected( bool s );
     bool selected( void );
+    QWidget *options ( void );
     bool writeSettings ( void );
     bool readSettings ( void );
     bool writeXML( QDomNode & node, QDomDocument & document, bool temp = false );
@@ -93,6 +94,18 @@ public:
 
     /** \brief Set values in GUI to current values */
     void setOptions ( void );
+    
+    /** \brief Map name, used in legend combobox etc. */
+    QString name ( void );
+
+    /** \brief Width scale */
+    double widthScale(void);
+    
+    /** \brief Symbol scale */
+    double symbolScale ( void );
+    
+    /** \brief Font size scale */
+    double fontScale ( void );
 
 public slots:
     // Called by GUI if with or height was changed 
@@ -102,7 +115,7 @@ public slots:
     void setCurrentExtent ( void );
     
     // Called by GUI if with  scale was changed 
-    void widthScaleChanged ( void );
+    void scaleChanged ( void );
     
     // Called by GUI if preview style was changed
     void previewModeChanged ( int i );
@@ -113,6 +126,9 @@ private:
     
     // Pointer to map canvas
     QgsMapCanvas *mMapCanvas;
+    
+    /** \brief Map name, used in legend combobox etc. */
+    QString mName;
 
     // Map region in map units specified by user 
     QgsRect mUserExtent;
@@ -129,7 +145,7 @@ private:
     //double mWidth;
     //double mHeight;
 
-    // Scale from map to paper, i.e. size_on_paper/size_in_map
+    // Scale from map (in map units) to paper (in canvas points), i.e. size_on_paper/size_in_map
     double mScale;
 
     // Cache used in composer preview
@@ -143,6 +159,12 @@ private:
 
     // Line width scale
     double mWidthScale;
+
+    // Symbol scale
+    double mSymbolScale;
+
+    // Font size scale from screen pixels to typographic points
+    double mFontScale;
     
     /** \brief Preview style  */
     PreviewMode mPreviewMode;

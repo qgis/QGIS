@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>725</width>
-            <height>560</height>
+            <height>526</height>
         </rect>
     </property>
     <property name="caption">
@@ -27,7 +27,7 @@
         </property>
         <widget class="QSplitter">
             <property name="name">
-                <cstring>splitter2</cstring>
+                <cstring>mSplitter</cstring>
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
@@ -94,7 +94,7 @@
                 </property>
                 <property name="minimumSize">
                     <size>
-                        <width>250</width>
+                        <width>150</width>
                         <height>10</height>
                     </size>
                 </property>
@@ -122,10 +122,26 @@
                             <property name="enabled">
                                 <bool>false</bool>
                             </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
                         </widget>
                         <widget class="QLabel" row="0" column="0">
                             <property name="name">
                                 <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
                             <property name="text">
                                 <string>Composition</string>

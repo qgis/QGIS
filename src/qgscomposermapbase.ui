@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>220</width>
-            <height>309</height>
+            <width>265</width>
+            <height>607</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -23,11 +23,33 @@
     <property name="caption">
         <string>Map options</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLabel" row="0" column="0">
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>mNameLabel</cstring>
+            </property>
+            <property name="text">
+                <string>&lt;b&gt;Map&lt;/b&gt;</string>
+            </property>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QLabel">
             <property name="name">
                 <cstring>textLabel1_3</cstring>
             </property>
@@ -35,81 +57,7 @@
                 <string>Calculate</string>
             </property>
         </widget>
-        <widget class="QLabel" row="3" column="0">
-            <property name="name">
-                <cstring>textLabel1_2</cstring>
-            </property>
-            <property name="text">
-                <string>Scale 1 :</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="2" column="0">
-            <property name="name">
-                <cstring>textLabel2</cstring>
-            </property>
-            <property name="text">
-                <string>Height</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="1" column="0">
-            <property name="name">
-                <cstring>textLabel1</cstring>
-            </property>
-            <property name="text">
-                <string>Width</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="5" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>textLabel1_4</cstring>
-            </property>
-            <property name="text">
-                <string>Line Width Scale</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="6" column="0">
-            <property name="name">
-                <cstring>textLabel1_5</cstring>
-            </property>
-            <property name="text">
-                <string>Preview</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="4" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>mSetCurrentExtentButton</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>Set Current Map Extent</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="3" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>mScaleLineEdit</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>mHeightLineEdit</cstring>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>mWidthLineEdit</cstring>
-            </property>
-        </widget>
-        <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="2">
+        <widget class="QComboBox">
             <property name="name">
                 <cstring>mCalculateComboBox</cstring>
             </property>
@@ -124,16 +72,160 @@
                     <verstretch>0</verstretch>
                 </sizepolicy>
             </property>
+            <property name="minimumSize">
+                <size>
+                    <width>0</width>
+                    <height>0</height>
+                </size>
+            </property>
         </widget>
-        <widget class="QLineEdit" row="5" column="2">
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>Width</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>mWidthLineEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel2</cstring>
+            </property>
+            <property name="text">
+                <string>Height</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>mHeightLineEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox2</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string>Scale</string>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1_6</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>1 :</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>mScaleLineEdit</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="lineWidth">
+                        <number>2</number>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>mSetCurrentExtentButton</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>Set Extent</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Set map extent to current extent in QGIS map canvas</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1_4</cstring>
+            </property>
+            <property name="text">
+                <string>Line width scale</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
             <property name="name">
                 <cstring>mWidthScaleLineEdit</cstring>
             </property>
             <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Width of one unit in millimeters</string>
             </property>
         </widget>
-        <widget class="QComboBox" row="6" column="1" rowspan="1" colspan="2">
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1_2</cstring>
+            </property>
+            <property name="text">
+                <string>Symbol scale</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>mSymbolScaleLineEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel2_2</cstring>
+            </property>
+            <property name="text">
+                <string>Font size scale</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>mFontScaleLineEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1_5</cstring>
+            </property>
+            <property name="text">
+                <string>Preview</string>
+            </property>
+        </widget>
+        <widget class="QComboBox">
             <property name="name">
                 <cstring>mPreviewModeComboBox</cstring>
             </property>
@@ -146,7 +238,24 @@
                 </sizepolicy>
             </property>
         </widget>
-    </grid>
+        <spacer>
+            <property name="name">
+                <cstring>spacer4</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>21</width>
+                    <height>35</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
 </widget>
 <connections>
     <connection>
@@ -171,7 +280,7 @@
         <sender>mWidthScaleLineEdit</sender>
         <signal>returnPressed()</signal>
         <receiver>QgsComposerMapBase</receiver>
-        <slot>widthScaleChanged()</slot>
+        <slot>scaleChanged()</slot>
     </connection>
     <connection>
         <sender>mPreviewModeComboBox</sender>
@@ -179,11 +288,23 @@
         <receiver>QgsComposerMapBase</receiver>
         <slot>previewModeChanged(int)</slot>
     </connection>
+    <connection>
+        <sender>mSymbolScaleLineEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>QgsComposerMapBase</receiver>
+        <slot>scaleChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mFontScaleLineEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>QgsComposerMapBase</receiver>
+        <slot>scaleChanged()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>sizeChanged()</slot>
     <slot>setCurrentExtent()</slot>
-    <slot>widthScaleChanged()</slot>
+    <slot>scaleChanged()</slot>
     <slot>previewModeChanged(int)</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>

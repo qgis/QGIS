@@ -70,6 +70,7 @@ public:
     // Reimplement QgsComposerItem:
     void setSelected( bool s );
     bool selected( void );
+    QWidget *options ( void );
     bool writeSettings ( void );
     bool readSettings ( void );
     bool writeXML( QDomNode & node, QDomDocument & document, bool temp = false );
