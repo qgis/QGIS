@@ -315,6 +315,7 @@ AC_CONFIG_FILES([
   plugins/copyright_label/Makefile
   plugins/scale_bar/Makefile
   designer_plugins/Makefile
+  plugins/community_reg_plugin/Makefile
 ])
 
 AC_OUTPUT
@@ -335,5 +336,7 @@ echo "Debug         : $ac_debug"
 echo "Plugin dir    : ${libdir}/$PACKAGE"
 echo ""
 echo "The binary will be installed in $prefix/bin"
+echo ""
+echo "The build is using Qt in $QTDIR"
 echo "------------------------------------------"
 echo "Configure finished, type 'make' to build."
