@@ -776,6 +776,7 @@ static void openFilesRememberingFilter_(QString const &filterName, QString const
 
   // allow for selection of more than one file
   openFileDialog->setMode(QFileDialog::ExistingFiles);
+  openFileDialog->setCaption(QFileDialog::tr("Open an OGR Supported Data Source"));
 
   if (haveLastUsedFilter)       // set the filter to the last one used
     {
