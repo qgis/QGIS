@@ -32,11 +32,31 @@ bool GPSObject::parseNode(const QDomNode& node) {
   if (!node2.isNull())
     name = (const char*)node2.firstChild().nodeValue();
   
+  // cmt is optional
+  node2 = node.namedItem("cmt");
+  if (!node2.isNull())
+    cmt = (const char*)node2.firstChild().nodeValue();
+  
+  // desc is optional
+  node2 = node.namedItem("desc");
+  if (!node2.isNull())
+    desc = (const char*)node2.firstChild().nodeValue();
+  
+  // src is optional
+  node2 = node.namedItem("src");
+  if (!node2.isNull())
+    src = (const char*)node2.firstChild().nodeValue();
+  
   // url is optional
   node2 = node.namedItem("url");
   if (!node2.isNull())
     url = (const char*)node2.firstChild().nodeValue();
-  //TODO - gsherman added this to get it to compile under win32
+  
+  // urlname is optional
+  node2 = node.namedItem("urlname");
+  if (!node2.isNull())
+    urlname = (const char*)node2.firstChild().nodeValue();
+  
   return true;
 }
 
@@ -48,10 +68,30 @@ void GPSObject::fillElement(QDomElement& elt) {
     nameElt.appendChild(qdd.createTextNode(name));
     elt.appendChild(nameElt);
   }
+  if (!cmt.isEmpty()) {
+    QDomElement cmtElt = qdd.createElement("cmt");
+    cmtElt.appendChild(qdd.createTextNode(cmt));
+    elt.appendChild(cmtElt);
+  }
+  if (!desc.isEmpty()) {
+    QDomElement descElt = qdd.createElement("desc");
+    descElt.appendChild(qdd.createTextNode(desc));
+    elt.appendChild(descElt);
+  }
+  if (!src.isEmpty()) {
+    QDomElement srcElt = qdd.createElement("src");
+    srcElt.appendChild(qdd.createTextNode(src));
+    elt.appendChild(srcElt);
+  }
   if (!url.isEmpty()) {
     QDomElement urlElt = qdd.createElement("url");
     urlElt.appendChild(qdd.createTextNode(url));
     elt.appendChild(urlElt);
+  }
+  if (!urlname.isEmpty()) {
+    QDomElement urlnameElt = qdd.createElement("urlname");
+    urlnameElt.appendChild(qdd.createTextNode(urlname));
+    elt.appendChild(urlnameElt);
   }
 }
 
@@ -83,6 +123,11 @@ bool GPSPoint::parseNode(const QDomNode& node) {
   else
     ele = -std::numeric_limits<double>::max();
   
+  // sym is optional
+  node2 = node.namedItem("sym");
+  if (!node2.isNull())
+    sym = (const char*)node2.firstChild().nodeValue();
+  
   return true;
 }
 
@@ -97,16 +142,40 @@ void GPSPoint::fillElement(QDomElement& elt) {
     eleElt.appendChild(qdd.createTextNode(QString("%1").arg(ele, 0, 'f')));
     elt.appendChild(eleElt);
   }
+  if (!sym.isEmpty()) {
+    QDomElement symElt = qdd.createElement("sym");
+    symElt.appendChild(qdd.createTextNode(sym));
+    elt.appendChild(symElt);
+  }
+}
+
+
+bool GPSExtended::parseNode(const QDomNode& node) {
+  GPSObject::parseNode(node);
+
+  // number is optional
+  QDomNode node2 = node.namedItem("number");
+  if (!node2.isNull())
+    number = std::atoi((const char*)node2.firstChild().nodeValue());
+  else
+    number = std::numeric_limits<int>::max();
+  return true;
 }
 
 
 void GPSExtended::fillElement(QDomElement& elt) {
   GPSObject::fillElement(elt);
+  QDomDocument qdd = elt.ownerDocument();
+  if (number != std::numeric_limits<int>::max()) {
+    QDomElement numberElt = qdd.createElement("number");
+    numberElt.appendChild(qdd.createTextNode(QString("%1").arg(number)));
+    elt.appendChild(numberElt);
+  }
 }
 
 
 bool Route::parseNode(const QDomNode& node) {
-  GPSObject::parseNode(node);
+  GPSExtended::parseNode(node);
   
   QDomNode node2;
   
@@ -152,7 +221,7 @@ void Route::fillElement(QDomElement& elt) {
 
 
 bool Track::parseNode(const QDomNode& node) {
-  GPSObject::parseNode(node);
+  GPSExtended::parseNode(node);
   
   QDomNode node2, node3;
 

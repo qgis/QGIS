@@ -47,9 +47,10 @@ class GPSObject {
 class GPSPoint : public GPSObject {
  public:
   GPSPoint();
-  bool parseNode(const QDomNode& node);
-  void fillElement(QDomElement& elt);
+  virtual bool parseNode(const QDomNode& node);
+  virtual void fillElement(QDomElement& elt);
   double lat, lon, ele;
+  QString sym;
 };
 
 
@@ -58,8 +59,9 @@ class GPSPoint : public GPSObject {
     those classes. */
 class GPSExtended : public GPSObject {
  public:
-  int number;
+  virtual bool parseNode(const QDomNode& node);
   virtual void fillElement(QDomElement& elt);
+  int number;
   double xMin, xMax, yMin, yMax;
 };
 

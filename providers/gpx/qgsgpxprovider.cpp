@@ -65,17 +65,22 @@ QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
     attributeFields.push_back(QgsField("lat", "text"));
     attributeFields.push_back(QgsField("lon", "text"));
     attributeFields.push_back(QgsField("ele", "text"));
+    attributeFields.push_back(QgsField("sym", "text"));
   }
   else if (mFeatureType == "route" || mFeatureType == "track") {
     mGeomType = 2;
+    attributeFields.push_back(QgsField("number", "text"));
   }
   else {
     std::cerr<<"Unknown feature type: "<<mFeatureType<<std::endl;
     return;
   }
+  attributeFields.push_back(QgsField("cmt", "text"));
+  attributeFields.push_back(QgsField("desc", "text"));
+  attributeFields.push_back(QgsField("src", "text"));
   attributeFields.push_back(QgsField("url", "text"));
+  attributeFields.push_back(QgsField("urlname", "text"));
   mFileName = uri.left(fileNameEnd);
-  
 
   // set the selection rectangle to null
   mSelectionRectangle = 0;
@@ -148,7 +153,7 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	std::memcpy(geo+13, &wpt.lat, sizeof(double));
 	result->setGeometry((unsigned char *)geo, sizeof(wkbPoint));
 	result->setValid(true);
-	
+
 	// add attributes if they are wanted
 	if (fetchAttributes) {
 	  result->addAttribute("name", wpt.name);
@@ -158,7 +163,12 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	    result->addAttribute("ele", "");
 	  else
 	    result->addAttribute("ele", QString("%1").arg(wpt.ele));
+	  result->addAttribute("sym", wpt.sym);
+	  result->addAttribute("cmt", wpt.cmt);
+	  result->addAttribute("desc", wpt.desc);
+	  result->addAttribute("src", wpt.src);
 	  result->addAttribute("url", wpt.url);
+	  result->addAttribute("urlname", wpt.urlname);
 	}
 	
 	++mFid;
@@ -197,7 +207,15 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	// add attributes if they are wanted
 	if (fetchAttributes) {
 	  result->addAttribute("name", rte.name);
+	  if (rte.number == std::numeric_limits<int>::max())
+	    result->addAttribute("number", "");
+	  else
+	    result->addAttribute("number", QString("%1").arg(rte.number));
+	  result->addAttribute("cmt", rte.cmt);
+	  result->addAttribute("desc", rte.desc);
+	  result->addAttribute("src", rte.src);
 	  result->addAttribute("url", rte.url);
+	  result->addAttribute("urlname", rte.urlname);
 	}
 	
 	++mFid;
@@ -238,7 +256,15 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	// add attributes if they are wanted
 	if (fetchAttributes) {
 	  result->addAttribute("name", trk.name);
+	  if (trk.number == std::numeric_limits<int>::max())
+	    result->addAttribute("number", "");
+	  else
+	    result->addAttribute("number", QString("%1").arg(trk.number));
+	  result->addAttribute("cmt", trk.cmt);
+	  result->addAttribute("desc", trk.desc);
+	  result->addAttribute("src", trk.src);
 	  result->addAttribute("url", trk.url);
+	  result->addAttribute("urlname", trk.urlname);
 	}
 	
 	++mFid;
@@ -292,7 +318,22 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
 	      result->addAttribute("ele", QString("%1").arg(wpt.ele));
 	    break;
 	  case 4:
+	    result->addAttribute("sym", wpt.sym);
+	    break;
+	  case 5:
+	    result->addAttribute("cmt", wpt.cmt);
+	    break;
+	  case 6:
+	    result->addAttribute("desc", wpt.desc);
+	    break;
+	  case 7:
+	    result->addAttribute("src", wpt.src);
+	    break;
+	  case 8:
 	    result->addAttribute("url", wpt.url);
+	    break;
+	  case 9:
+	    result->addAttribute("urlname", wpt.urlname);
 	    break;
 	  }
 	}
@@ -334,8 +375,22 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
 	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
 	  if (*iter == 0)
 	    result->addAttribute("name", rte.name);
-	  else if (*iter == 1)
+	  else if (*iter == 1) {
+	    if (rte.number == std::numeric_limits<int>::max())
+	      result->addAttribute("number", "");
+	    else
+	      result->addAttribute("number", QString("%1").arg(rte.number));
+	  }
+	  else if (*iter == 2)
+	    result->addAttribute("cmt", rte.url);
+	  else if (*iter == 3)
+	    result->addAttribute("desc", rte.url);
+	  else if (*iter == 4)
+	    result->addAttribute("src", rte.url);
+	  else if (*iter == 5)
 	    result->addAttribute("url", rte.url);
+	  else if (*iter == 6)
+	    result->addAttribute("urlname", rte.url);
 	}
 	
 	++mFid;
@@ -377,8 +432,22 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist) {
 	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
 	  if (*iter == 0)
 	    result->addAttribute("name", trk.name);
-	  else if (*iter == 1)
+	  else if (*iter == 1) {
+	    if (trk.number == std::numeric_limits<int>::max())
+	      result->addAttribute("number", "");
+	    else
+	      result->addAttribute("number", QString("%1").arg(trk.number));
+	  }
+	  else if (*iter == 2)
+	    result->addAttribute("cmt", trk.url);
+	  else if (*iter == 3)
+	    result->addAttribute("desc", trk.url);
+	  else if (*iter == 4)
+	    result->addAttribute("src", trk.url);
+	  else if (*iter == 5)
 	    result->addAttribute("url", trk.url);
+	  else if (*iter == 6)
+	    result->addAttribute("urlname", trk.url);
 	}
 	
 	++mFid;
@@ -596,8 +665,18 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
 	wpt.name = iter->fieldValue();
       else if (iter->fieldName() == "ele")
 	wpt.ele = iter->fieldValue().toDouble();
+      else if (iter->fieldName() == "sym")
+	wpt.sym = iter->fieldValue();
+      else if (iter->fieldName() == "cmt")
+	wpt.cmt = iter->fieldValue();
+      else if (iter->fieldName() == "desc")
+	wpt.desc = iter->fieldValue();
+      else if (iter->fieldName() == "src")
+	wpt.src = iter->fieldValue();
       else if (iter->fieldName() == "url")
 	wpt.url = iter->fieldValue();
+      else if (iter->fieldName() == "urlname")
+	wpt.urlname = iter->fieldValue();
     }
     break;
   }
