@@ -131,10 +131,13 @@ void QgsSiMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     msy->setBrush(brush);
     msy->setPen(pen);
     msy->setPicture(svgpath);
+#ifdef QGISDEBUG
     qWarning("the svgpath: "+svgpath);
+#endif
     msy->setScaleFactor(scalefactor);
+#ifdef QGISDEBUG
     qWarning("the scalefactor: "+QString::number(scalefactor,'f',2));
-
+#endif
     QgsRenderItem* ri = new QgsRenderItem();
     ri->setSymbol(msy);
     ri->setLabel(label);
