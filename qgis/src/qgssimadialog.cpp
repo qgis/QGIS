@@ -222,6 +222,8 @@ void QgsSiMaDialog::selectMarker()
     p.scale(scalefactor,scalefactor);
     p.drawPicture(0,0,pic);
     mImageButton->setPixmap(pixmap);
+
+    setActiveWindow();
 }
 
 void QgsSiMaDialog::updateMarkerSize()
