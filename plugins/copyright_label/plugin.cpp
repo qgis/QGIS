@@ -36,6 +36,9 @@ email                : tim@linfiniti.com
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qpixmap.h>
+#include <qpainter.h>
+#include <qfont.h>
 
 //non qt includes
 #include <iostream>
@@ -89,12 +92,15 @@ void Plugin::initGui()
   QAction *myQActionPointer = new QAction("Copyright Label", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
+  // This calls the north arrow renderer everytime the cnavas has drawn itself
+  connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete()), this, SLOT(renderLabel()));
+    
   // Add the toolbar
   toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "Decorations");
   toolBarPointer->setLabel("Copyright Label");
   // Add the zoom previous tool to the toolbar
   myQActionPointer->addTo(toolBarPointer);
-
+  refreshCanvas();
 
 }
 //method defined in interface
@@ -108,8 +114,10 @@ void Plugin::run()
 {
   PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"Copyright Label",true,0);
   //listen for when the layer has been made so we can draw it
-  connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
-  connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
+  //connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
+  //connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
+  //refresh the canvas when the user presses ok
+  connect(myPluginGui, SIGNAL(refreshCanvas()), this, SLOT(refreshCanvas()));
   myPluginGui->show();
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
@@ -125,6 +133,28 @@ void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQStr
  qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
 }
 
+//! Refresh the map display using the mapcanvas exported via the plugin interface
+void Plugin::refreshCanvas()
+{
+ qGisInterface->getMapCanvas()->refresh();
+}
+
+void Plugin::renderLabel()
+{
+  QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
+  // Draw a text alabel onto the pixmap 
+  //
+  QPainter myQPainter(myQPixmap);
+  myQPainter.rotate(-45);
+  //could use somthing like next line to draw a pic instead of text
+  //myQPainter.drawImage(-70, 0, myQImage);
+  myQPainter.rotate(45);
+  QFont myQFont("time", 24, QFont::Bold);
+  myQPainter.setFont(myQFont);
+  myQPainter.setPen(Qt::white);
+  myQPainter.drawText(15, 50, QString("N"));
+
+}
 // Unload the plugin by cleaning up the GUI
 void Plugin::unload()
 {

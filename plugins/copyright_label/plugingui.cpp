@@ -39,6 +39,7 @@ void PluginGui::pbnOK_clicked()
   // emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
   //
   //close the dialog
+  //emit refreshCanvas();
   done(1);
 } 
 void PluginGui::pbnCancel_clicked()
