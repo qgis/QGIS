@@ -45,7 +45,7 @@ qgsdlgpgbufferbase.h: qgsdlgpgbufferbase.ui
 
 BUILT_SOURCES = $(pggeoprocessing_MOC) $(pggeoprocessing_UI)
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) 
+AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PGDB) -I$(PG_INC) $(DEBUG_QGIS)
 
 libpggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) 
 endif
