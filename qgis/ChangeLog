@@ -1,7 +1,10 @@
 QGIS Change Log
-ChangeLog,v 1.116 2004/06/08 20:39:45 larsl Exp
+ChangeLog,v 1.117 2004/06/08 22:18:16 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-06-09 [larsl] 0.3.0devel21
+** Hid the "GPS download file importer" tab
 
 2004-06-08 [larsl] 0.3.0devel20
 ** Call GPSBabel using QProcess instead of system(), show a progress bar while
