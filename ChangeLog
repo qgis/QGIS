@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.182 2004/09/12 14:58:05 larsl Exp
+ChangeLog,v 1.183 2004/09/12 16:40:43 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.5 'Bandit' .... development version
+
+2004-09-12 [larsl] 0.4.0devel30
+** Scale down SVG symbols
+** Display rasters without geotransform info as "1 pixel = 1 unit"
 
 2004-09-12 [larsl] 0.4.0devel29
 ** Fixed bug in scale_bar plugin that would cause QGIS to freeze when a

@@ -800,7 +800,7 @@ void QgsRasterLayer::draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsCo
   myRasterViewPort->bottomRightPoint = theQgsCoordinateTransform->transform(myRasterExtent.xMax(), myRasterExtent.yMin());
   myRasterViewPort->drawableAreaXDimInt = myRasterViewPort->bottomRightPoint.xToInt() - myRasterViewPort->topLeftPoint.xToInt();
   myRasterViewPort->drawableAreaYDimInt = myRasterViewPort->bottomRightPoint.yToInt() - myRasterViewPort->topLeftPoint.yToInt();
-
+  
   draw(theQPainter,myRasterViewPort);
   delete myRasterViewPort;
 }
@@ -2651,6 +2651,10 @@ QString QgsRasterLayer::getMetadata()
     myMetadataQString += ",";
     myMetadataQString += QString::number(adfGeoTransform[5]);
     myMetadataQString += "</td></tr>";
+  }
+  else
+  {
+    adfGeoTransform[5] = -1;
   }
   //
   // Add the stats for each band to the output table
