@@ -175,7 +175,7 @@ void QgsSiSyDialog::apply()
 	name = "";
     }
 
-    int width = 40 + fm.width(name);  //problem, how do we determine the width of the displaynamefield now?
+    int width = 40 + fm.width(name);
     int height = (fm.height() + 10 > 35) ? fm.height() + 10 : 35;
     pix->resize(width, height);
     pix->fill();
@@ -198,15 +198,12 @@ void QgsSiSyDialog::apply()
 
     p.setPen(Qt::black);
     p.setFont(f);
-    p.drawText(35, pix->height() - 10, name); //the problem again
+    p.drawText(35, pix->height() - 10, name);
 
     if (mVectorLayer->legendItem())
     {
 	mVectorLayer->legendItem()->setPixmap(0, (*pix));
     }
-    
-    mVectorLayer->setRenderer(renderer);
-    mVectorLayer->setRendererDialog(this);
     
     if (mVectorLayer->propertiesDialog())
     {

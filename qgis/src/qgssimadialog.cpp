@@ -23,9 +23,11 @@
 #include "qgsmarkersymbol.h"
 #include "qgsrenderitem.h"
 #include "qgsdlgvectorlayerproperties.h"
+#include "qgslegenditem.h"
 #include <qfiledialog.h>
 #include <qpushbutton.h>
 #include <qlineedit.h>
+#include <qpainter.h>
 
 
 QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), mVectorLayer(vectorlayer)
@@ -67,8 +69,46 @@ void QgsSiMaDialog::apply()
 	return;
     }
 
-    mVectorLayer->setRenderer(renderer);
-    mVectorLayer->setRendererDialog(this);
+    //add a pixmap to the legend item
+    
+    //font tor the legend text
+    QFont f("times", 12, QFont::Normal);
+    QFontMetrics fm(f);
+
+    QString name;
+    if (mVectorLayer->propertiesDialog())
+    {
+	name = mVectorLayer->propertiesDialog()->displayName();
+    } 
+    else
+    {
+	name = "";
+    }
+
+    QPicture pic;
+    pic.load(string,"svg");
+
+    QPixmap *pix = mVectorLayer->legendPixmap();
+
+    int width = 20+pic.boundingRect().width()*ms->scaleFactor()+fm.width(name);
+    int height = (pic.boundingRect().height()*ms->scaleFactor() > fm.height()) ? pic.boundingRect().height()*ms->scaleFactor() +10 : fm.height()+10;
+    pix->resize(width, height);
+    pix->fill();
+
+    QPainter p(pix);
+    p.scale(ms->scaleFactor(),ms->scaleFactor());
+    p.drawPicture(10/ms->scaleFactor(),5/ms->scaleFactor(),pic);
+    p.resetXForm(); 
+
+    p.setPen(Qt::black);
+    p.setFont(f);
+    p.drawText(15+pic.boundingRect().width()*ms->scaleFactor(), pix->height() - 10, name);
+
+    if (mVectorLayer->legendItem())
+    {
+	mVectorLayer->legendItem()->setPixmap(0, (*pix));
+    }
+    
     
     if (mVectorLayer->propertiesDialog())
     {

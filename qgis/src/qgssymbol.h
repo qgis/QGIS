@@ -29,7 +29,9 @@ class QgsSymbol{
 
  public:
     /**Constructor*/
-    QgsSymbol(QColor c = QColor(0,0,0));
+    QgsSymbol();
+    /**Constructor*/
+    QgsSymbol(QColor c);
     /**Sets the brush*/
     virtual void setBrush(QBrush b);
     /**Gets a reference to m_brush*/
@@ -54,28 +56,28 @@ class QgsSymbol{
     virtual ~QgsSymbol();
 
  protected:
-    QPen m_pen;
-    QBrush m_brush;
+    QPen mPen;
+    QBrush mBrush;
 };
 
 inline void QgsSymbol::setBrush(QBrush b)
 {
-    m_brush=b;
+    mBrush=b;
 }
 
 inline QBrush& QgsSymbol::brush()
 {
-    return m_brush;
+    return mBrush;
 }
 
 inline void QgsSymbol::setPen(QPen p)
 {
-    m_pen=p;
+    mPen=p;
 }
 
 inline QPen& QgsSymbol::pen()
 {
-    return m_pen;
+    return mPen;
 }
 
 #endif // QGSSYMBOL_H
