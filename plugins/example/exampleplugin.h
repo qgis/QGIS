@@ -44,11 +44,11 @@ Q_OBJECT public:
 * @param qI Pointer to the QgisIface object. 
 */
     ExamplePlugin(QgisApp * qgis, QgisIface * qI);
-  //! init the gui
-  virtual void initGui();
   //! Destructor
     virtual ~ ExamplePlugin();
   public slots:
+  //! init the gui
+  virtual void initGui();
 //! open something
   void open();
   //! create something new

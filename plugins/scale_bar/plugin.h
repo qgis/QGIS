@@ -47,11 +47,11 @@ class Plugin:public QObject, public QgisPlugin
       
 
         
-  //! init the gui
-  virtual void initGui();
   //! Destructor
   virtual ~ Plugin();
   public slots:
+  //! init the gui
+  virtual void initGui();
   void renderScaleBar(QPainter *);
   //! Show the dialog box
   void run();

@@ -55,11 +55,11 @@ class Plugin:public QObject, public QgisPlugin
    * Return the plugin type
    */
   virtual int type();
-  //! init the gui
-  virtual void initGui();
   //! Destructor
   virtual ~ Plugin();
   public slots:
+  //! init the gui
+  virtual void initGui();
   //! Show the dialog box
   void run();
   //!draw a raster layer in the qui

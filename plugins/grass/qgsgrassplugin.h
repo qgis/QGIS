@@ -54,8 +54,6 @@ Q_OBJECT public:
    * Return the plugin type
    */
   virtual int type();
-  //! init the gui
-  virtual void initGui();
   //! Destructor
   virtual ~ QgsGrassPlugin();
 
@@ -65,6 +63,8 @@ Q_OBJECT public:
   void setRegionPen(QPen &);
 
 public slots:
+  //! init the gui
+  virtual void initGui();
   //! Show the dialog box for new vector
   void addVector();
   //! Show the dialog box for new raster

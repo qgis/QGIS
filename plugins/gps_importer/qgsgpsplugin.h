@@ -39,12 +39,12 @@ public:
   */
   QgsGPSPlugin(QgisApp * , QgisIface * );
 
-  //! init the gui
-  virtual void initGui();
   //! Destructor
   virtual ~QgsGPSPlugin();
 
 public slots:
+  //! init the gui
+  virtual void initGui();
   //! Show the dialog box
   void run();
   //! Create a new GPX layer
