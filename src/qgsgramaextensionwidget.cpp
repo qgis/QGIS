@@ -140,7 +140,9 @@ QgsGraMaExtensionWidget::QgsGraMaExtensionWidget()
 
 void QgsGraMaExtensionWidget::selectMarker()
 {
-    QgsMarkerDialog mdialog(QDir::homeDirPath());
+    //QgsMarkerDialog mdialog(QDir::homeDirPath());
+    QgsMarkerDialog mdialog(QString(PKGDATAPATH)+"/svg");
+
     if(mdialog.exec()==QDialog::Accepted)
     {
 	QString svgfile=mdialog.selectedMarker();
@@ -200,5 +202,29 @@ void QgsGraMaExtensionWidget::resizeEvent(QResizeEvent* e)
 
 void QgsGraMaExtensionWidget::adjustMarkers()
 {
-    //soon
+    for(int i=0;i<mNumberOfClasses;++i)
+    {
+	double scalefactor=((QLineEdit*)mWidgetVector[i*5+4])->text().toDouble();	
+	QPicture pic;
+	pic.load(((QPushButton*)mWidgetVector[i*5+3])->name(),"svg");
+	int width=(int)(pic.boundingRect().width()*scalefactor);
+	int height=(int)(pic.boundingRect().height()*scalefactor);
+	
+	//prevent 0 width or height, which would cause a crash
+	if(width==0)
+	{
+	    width=1;
+	}
+	if(height==0)
+	{
+	    height=1;
+	}
+
+	QPixmap pixmap(height,width);
+	pixmap.fill();
+	QPainter p(&pixmap);
+	p.scale(scalefactor,scalefactor);
+	p.drawPicture(0,0,pic);
+	((QPushButton *)mWidgetVector[i*5+3])->setPixmap(pixmap);	
+    }
 }

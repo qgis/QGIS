@@ -138,6 +138,8 @@ void QgsGraMaDialog::apply()
 {
     if (ext)
     {
+	ext->adjustMarkers();
+
 	if (mClassificationComboBox->currentText().isEmpty())  //don't do anything, it there is no classification field
         {
 	    return;
