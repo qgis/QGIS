@@ -1,0 +1,15 @@
+##############################################
+       QGIS GEOREFERENCER PLUGIN
+
+             Lars Luthman 2004
+##############################################
+
+This is a plugin for Quantum GIS (http://qgis.org). It can 
+generate projection info for a raster layer that lacks such info
+by fitting a chosen transform to user-specified map and pixel
+coordinates.
+
+New versions will be available at http://community.qgis.org.
+
+
+-- Lars Luthman <larsl@users.sourceforge.net>
