@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.198 2004/10/19 11:17:50 larsl Exp
+ChangeLog,v 1.199 2004/10/19 11:51:43 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
+
+2004-10-19 [larsl] 0.5.0devel9
+** Changed GPX attribute names from three letter abbreviations to more
+   userfriendly whole words
 
 2004-10-19 [larsl] 0.5.0devel8
 ** Changed mFeatureType in qgsgpxprovider.cpp from a QString to an enum to
