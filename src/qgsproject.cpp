@@ -18,6 +18,7 @@
 #include "qgsproject.h"
 
 #include <memory>
+#include <iostream>
 
 #include "qgisapp.h"
 #include "qgsrect.h"
@@ -53,8 +54,11 @@ struct QgsProject::Imp
     /// current physical project file
     QFile file;
 
-    /// set of plug-in (and possibly qgis) related properties
-    QgsProject::Properties properties_;
+    /** set of plug-in (and possibly qgis) related properties
+
+        String key is scope; i.e., QMap<Scope,Properties>
+     */
+    QMap< QString, QgsProject::Properties > properties_;
 
     /// project title
     QString title;
@@ -824,6 +828,61 @@ QgsProject::write( )
         return false;                 // XXX some sort of error value?  Exception?
     }
 
+    // now add the optional extra properties
+
+    qDebug( "there are %d property scopes", imp_->properties_.count() );
+
+    if ( ! imp_->properties_.empty() ) // only worry about properties if we
+                                       // actually have any
+    {
+        // <properties>
+        QDomElement propertiesElement = doc->createElement( "properties" );
+        qgisNode.appendChild( propertiesElement );
+
+        for ( QMap< QString, QgsProject::Properties >::iterator curr_scope =
+                  imp_->properties_.begin();
+              curr_scope != imp_->properties_.end();
+              curr_scope++ )
+        {
+            qDebug( "scope ``%s'' has %d entries", curr_scope.key().ascii(), curr_scope.data().count() );
+
+            // <$scope>
+
+            QDomElement scopeElement = doc->createElement( curr_scope.key() );
+            propertiesElement.appendChild( scopeElement );
+
+            for ( Properties::iterator curr_property = curr_scope.data().begin();
+                  curr_property != curr_scope.data().end();
+                  curr_property ++ )
+            {
+                qDebug( "storing %s -> %s: %s", 
+                        curr_scope.key().ascii(), 
+                        (*curr_property).first.ascii(),
+                        (*curr_property).second.toString().ascii() );
+
+                // <property type="$type">
+                QDomElement propertyElement = doc->createElement( (*curr_property).first );
+
+                // we store the QVariant type so that we can properly decode it later in read()
+                propertyElement.setAttribute( "type", (*curr_property).second.typeName() );
+                scopeElement.appendChild( propertyElement );
+
+                // XXX Of course this assumes that the true underlying value of QVariant can be
+                // XXX converted to string form; should add QVariant::canCast(T) sanity checks
+                QDomText propertyText = doc->createTextNode( (*curr_property).second.toString() );
+                propertyElement.appendChild( propertyText );
+
+                // </property>
+
+            } // </$scope>
+
+        } // </properties>
+
+    } // if any properties
+
+    // now wrap it up and ship it to the project file
+
+
     doc->normalize();           // XXX I'm not entirely sure what this does
 
     QString xml = doc->toString( 4 ); // write to string with indentation of four characters
@@ -847,7 +906,7 @@ QgsProject::write( )
 
 
 QgsProject::Properties & 
-QgsProject::properties()
+QgsProject::properties( QString const & scope )
 {
-    return imp_->properties_;
+    return imp_->properties_[scope];
 } // QgsProject::properties
