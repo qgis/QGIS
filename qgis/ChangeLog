@@ -1,7 +1,24 @@
 QGIS Change Log
-ChangeLog,v 1.61 2004/04/28 22:07:58 timlinux Exp
+ChangeLog,v 1.62 2004/04/29 07:45:58 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... developement version
+
+2004-04-27 [ts] 0.2.0devel2
+
+** Added preliminary support for building pyramids in raster files
+using the GDAL overview function. Currently it is hard coded to use Nearest
+neighbour algorithm with pyramids at levels  2, 4 and 8. Adding pyramids to
+your raster layer can greatly improve rendering performance. This new
+functionality is accessed by right clicking on a raster legen entry and
+choosing 'Build Pyramids' from the popup menu.
+
+*** PLEASE USE WITH CAUTION ***
+This current implementation does not warn you of possible side effects
+including:
+- possible image degradation if too many pyramids are generated
+- possuble large increase in image side
+- currently this process IS NOT KNOWN TO BE REVERSIBLE so please backup data
+first before experimenting.
 
 2004-04-27 [ts] 0.2.0devel1
 
