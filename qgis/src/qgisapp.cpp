@@ -2397,10 +2397,19 @@ void QgisApp::drawLayers()
 
 void QgisApp::showMouseCoordinate(QgsPoint & p)
 {
-    //@todo Softcode precsion later
-    mCoordsLabel->setText(p.stringRep(2));
-    //qWarning("X,Y is: " + p.stringRep(2));
+  // Work out a suitable number of decimal places for the mouse
+  // coordinates with the aim of always having enough decimal places
+  // to show the difference in position between adjacent pixels.
+  // Also avoid taking the log of 0.
+  int dp = 0;
+  if (getMapCanvas()->mupp() != 0.0)
+    dp = static_cast<int> (ceil(-1.0*log10(getMapCanvas()->mupp())));
 
+  // Limit decimal places to keep the mouse coordinate display sensible.
+  if (dp < 0) dp = 0;
+  if (dp > 5) dp = 5;
+
+  mCoordsLabel->setText(p.stringRep(dp));
 }
 
 void QgisApp::showScale(QString theScale)
