@@ -62,23 +62,23 @@
     </message>
     <message>
         <source>GPS Download File Importer</source>
-        <translation>Importation Fichier GPS Téléchagé</translation>
+        <translation type="obsolete">Importation Fichier GPS Téléchagé</translation>
     </message>
     <message>
         <source>Input File:</source>
-        <translation>Fichier d&apos;Entrée:</translation>
+        <translation type="obsolete">Fichier d&apos;Entrée:</translation>
     </message>
     <message>
         <source>Output (Shape) File:</source>
-        <translation>Fichier de Sortie (Shape):</translation>
+        <translation type="obsolete">Fichier de Sortie (Shape):</translation>
     </message>
     <message>
         <source>Minimum time gap (s):</source>
-        <translation>Espace de Temps Minimum (s):</translation>
+        <translation type="obsolete">Espace de Temps Minimum (s):</translation>
     </message>
     <message>
         <source>Minimum distance gap (dd):</source>
-        <translation>Distance Minimale (dd):</translation>
+        <translation type="obsolete">Distance Minimale (dd):</translation>
     </message>
     <message>
         <source>...</source>
@@ -153,27 +153,27 @@
     </message>
     <message>
         <source>GPS Tools</source>
-        <translation>Outils GPS</translation>
+        <translation type="obsolete">Outils GPS</translation>
     </message>
     <message>
         <source>File:</source>
-        <translation>Fichier:</translation>
+        <translation type="obsolete">Fichier:</translation>
     </message>
     <message>
         <source>Feature types:</source>
-        <translation>Types de données:</translation>
+        <translation type="obsolete">Types de données:</translation>
     </message>
     <message>
         <source>Waypoints</source>
-        <translation>Objectifs</translation>
+        <translation type="obsolete">Objectifs</translation>
     </message>
     <message>
         <source>Routes</source>
-        <translation>Itinéraires</translation>
+        <translation type="obsolete">Itinéraires</translation>
     </message>
     <message>
         <source>Tracks</source>
-        <translation>Voies</translation>
+        <translation type="obsolete">Voies</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -183,7 +183,7 @@
 &lt;p&gt;Use the minimum distance gap to define what distance between two readings should be considered the start of a new feature.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Sélectionnez le fichier GPS téléchargé que vous voudriez convertir en shapefile et ce plugin fera le travail pour vous! &lt;/p&gt;
 &lt;p&gt;Sélectionnez un espace de temps minimum pour laisser l&apos;importateur reconnaitre quel interval de temps devrait être utilisé avant de commencer une nouvelle donnée. &lt;/p&gt;
@@ -272,27 +272,27 @@
     </message>
     <message>
         <source>Import other file</source>
-        <translation>Importer un autre fichier</translation>
+        <translation type="obsolete">Importer un autre fichier</translation>
     </message>
     <message>
         <source>File to import:</source>
-        <translation>Fichier à importer:</translation>
+        <translation type="obsolete">Fichier à importer:</translation>
     </message>
     <message>
         <source>Feature type:</source>
-        <translation>Type de données:</translation>
+        <translation type="obsolete">Type de données:</translation>
     </message>
     <message>
         <source>GPX output file:</source>
-        <translation>Fichier de sortie GPX:</translation>
+        <translation type="obsolete">Fichier de sortie GPX:</translation>
     </message>
     <message>
         <source>Layer name:</source>
-        <translation>Nom de la couche:</translation>
+        <translation type="obsolete">Nom de la couche:</translation>
     </message>
     <message>
         <source>Download from GPS</source>
-        <translation>Télécharger depuis GPS</translation>
+        <translation type="obsolete">Télécharger depuis GPS</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -306,7 +306,7 @@ you want to store the data.&lt;/p&gt;
 don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt; Cet utilitaire vous aidera à télécharger des données depuis votre périphérique GPS. Sélectionnez 
 le protocole,  le périphérique GPS, le type de donnée que vous voulez télécharger 
@@ -318,27 +318,19 @@ n&apos;avez pas installé GPSBabel où QGIS peut le trouver, cet outil ne marche
     </message>
     <message>
         <source>Protocol:</source>
-        <translation>Protocole:</translation>
+        <translation type="obsolete">Protocole:</translation>
     </message>
     <message>
         <source>Device file:</source>
-        <translation>Fichier périphérique:</translation>
+        <translation type="obsolete">Fichier périphérique:</translation>
     </message>
     <message>
         <source>Output file:</source>
-        <translation>Fichier de sortie:</translation>
-    </message>
-    <message>
-        <source>Garmin</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Magellan</source>
-        <translation></translation>
+        <translation type="obsolete">Fichier de sortie:</translation>
     </message>
     <message>
         <source>Upload to GPS</source>
-        <translation>Télécharger sur le GPS</translation>
+        <translation type="obsolete">Télécharger sur le GPS</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -350,7 +342,7 @@ GPS is connected to.&lt;/p&gt;
 have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Cet utilitaire vous aidera à uploader les données depuis une couche GPX vers un périphérique GPS. 
 Sélectionner la couche à uploader, le protocole, et le périphérique GPS.&lt;/p&gt;
@@ -361,7 +353,7 @@ n&apos;avez pas installé GPSBabel où QGIS peut le trouver, cet outil ne marche
     </message>
     <message>
         <source>Data layer:</source>
-        <translation>Couche de données:</translation>
+        <translation type="obsolete">Couche de données:</translation>
     </message>
     <message>
         <source>Scale Bar Plugin</source>
@@ -428,7 +420,7 @@ n&apos;avez pas installé GPSBabel où QGIS peut le trouver, cet outil ne marche
     </message>
     <message>
         <source>Load GPX file</source>
-        <translation>Charger un fichier GPX</translation>
+        <translation type="obsolete">Charger un fichier GPX</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -437,7 +429,7 @@ n&apos;avez pas installé GPSBabel où QGIS peut le trouver, cet outil ne marche
 &lt;p&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Le format GPX,&lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt;, est utilisé pour stocker des informations sur les destinations, les itinéraires et les voies.&lt;/p&gt;
 &lt;p&gt;Sélectionnez un fichier GPX et les informations que vous voulez charger.&lt;/p&gt;
@@ -456,7 +448,7 @@ and a name for the new layer. All file formats can not store waypoints, routes, 
 tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;QGIS peut seulement chager par lui-même des fichiers GPX, mais beaucoup d&apos;autres formats
 peuvent être convertis en GPX en utilisant GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
@@ -466,6 +458,30 @@ voulez utiliser, un nom de fichier GPX dans lequel stocker vos données converti
 et un nouveau nom de couche. Tous les formats ne peuvent stocker les itinéraires, les destinations et les voies,
 certaines possibilités seront donc désactivées.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Origin (Lower Left)</source>
+        <translation>Origine (en Bas à Gauche)</translation>
+    </message>
+    <message>
+        <source>Latitude:</source>
+        <translation>Latitude:</translation>
+    </message>
+    <message>
+        <source>Longitude:</source>
+        <translation>Longitude:</translation>
+    </message>
+    <message>
+        <source>End point (Upper Right)</source>
+        <translation>Fin (en Haut à Droite)</translation>
+    </message>
+    <message>
+        <source>Output (Shape) File</source>
+        <translation>Fichier de Sortie (Shape)</translation>
+    </message>
+    <message>
+        <source>Graticule Size (units in degrees)</source>
+        <translation>Taille du graticule (en degrés)</translation>
     </message>
 </context>
 <context>
@@ -504,19 +520,19 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     </message>
     <message>
         <source>Overwrite File?</source>
-        <translation>Réécrire le fichier?</translation>
+        <translation type="obsolete">Réécrire le fichier?</translation>
     </message>
     <message>
         <source>%1 exists.%2Do you want to overwrite it?</source>
-        <translation>%1 existe.%2Voulez-vous le réécrire?</translation>
+        <translation type="obsolete">%1 existe.%2Voulez-vous le réécrire?</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation>Oui</translation>
+        <translation type="obsolete">Oui</translation>
     </message>
     <message>
         <source>No</source>
-        <translation>Non</translation>
+        <translation type="obsolete">Non</translation>
     </message>
     <message>
         <source>QGis files (*.qgs)</source>
@@ -528,7 +544,11 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     </message>
     <message>
         <source>Choose a filename to save</source>
-        <translation>Choisissez un nom pour le fichier de sauvegarde</translation>
+        <translation type="obsolete">Choisissez un nom pour le fichier de sauvegarde</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file</source>
+        <translation>Choisissez un fichier projet QGIS</translation>
     </message>
 </context>
 <context>
@@ -587,11 +607,7 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     </message>
     <message>
         <source>Quantum GIS -- Untitled</source>
-        <translation>Quantum GIS -- Non nommé</translation>
-    </message>
-    <message>
-        <source>Quantum GIS --</source>
-        <translation></translation>
+        <translation type="obsolete">Quantum GIS -- Non nommé</translation>
     </message>
     <message>
         <source>Saved map to:</source>
@@ -771,7 +787,7 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     </message>
     <message>
         <source>QGIS ready</source>
-        <translation>QGIS prêt</translation>
+        <translation type="obsolete">QGIS prêt</translation>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
@@ -780,6 +796,146 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     <message>
         <source>http://www.gnu.org/licenses</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
+        <translation>Carte des légendes affichant toutes les couches actuellement posées sur le cannevas. Cocher la case pour activer ou non une couche. Double-cliquez sur une couche dans la légende afin de modifier son apparence et ses propriétés.</translation>
+    </message>
+    <message>
+        <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
+        <translation>Cannevas de prévisualisation des cartes. Il peut être utilisé afin d&apos;afficher une représentation de l&apos;agrandissement courant du cannevas des cartes. La zone agrandie est signalée par un rectangle rouge. Toutes les couches de la carte peuvent être ajoutées au cannevas de prévisualisation.</translation>
+    </message>
+    <message>
+        <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
+        <translation>Cannevas des cartes. Cette zone sert à l&apos;affichage des couches rasters et vecteurs ajoutées à la carte</translation>
+    </message>
+    <message>
+        <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
+        <translation>Barre de progression affichant l&apos;état d&apos;avancement du rendu des couches et d&apos;autres opérations gourmandes en temps CPU</translation>
+    </message>
+    <message>
+        <source>Displays the current map scale</source>
+        <translation>Affiche l&apos;échelle de la carte courante</translation>
+    </message>
+    <message>
+        <source>Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved.</source>
+        <translation>Montre les coordonnées du point sous le curseur dans l&apos;unité de la carte. L&apos;affichage est mis à jour à chaque mouvement de souris.</translation>
+    </message>
+    <message>
+        <source>Render</source>
+        <translation>Rendu</translation>
+    </message>
+    <message>
+        <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
+        <translation>Quand cochée, les couches de la carte sont rendues (opérations de calcul et d&apos;affichage) à chaque commande de navigation sur la carte et à d&apos;autres évènements. Sinon, aucun rendu n&apos;est fait. Celà vous permet d&apos;ajouter un grand nombre de couche et de les identifier avant le rendu à l&apos;écran.</translation>
+    </message>
+    <message>
+        <source>Setting theme...</source>
+        <translation>Modifier le thème...</translation>
+    </message>
+    <message>
+        <source>QGIS Ready</source>
+        <translation>QGIS prêt</translation>
+    </message>
+    <message>
+        <source>GEOS support in the OGR provider to refine selection of features via identify. This improves over the previous method of feature selection which used a simple MBR intersection check.</source>
+        <translation>Support de GEOS par le fournisseur OGR afin d&apos;affiner la sélection des propriétés par identification. Celà améliore la première méthode de sélection de propriété qui utilisait une simple vérification d&apos;intersection par MBR.</translation>
+    </message>
+    <message>
+        <source>PostGIS editing support in provider</source>
+        <translation>Support de l&apos;éditeur pour PostGIS dans le fournisseur</translation>
+    </message>
+    <message>
+        <source>Vector dialog redesign to improve usability</source>
+        <translation>Amélioration de l&apos;ergonomie de la boîte de dialogue Vecteur</translation>
+    </message>
+    <message>
+        <source>Improvement in project handling (loading and saving)</source>
+        <translation>Amélioration dans la gestion des projets (chargement et sauvegarde)</translation>
+    </message>
+    <message>
+        <source>Scale dependent rendering</source>
+        <translation>Rendu dépendant de la mise à l&apos;échelle</translation>
+    </message>
+    <message>
+        <source>User option to load layers with out drawing them, thus allowing you to set scale dependency, etc without waiting for the initial draw to complete</source>
+        <translation>Option modifiable par l&apos;utilisateur de chargement des couches sans avoir à les redessiner, vous permettant d&apos;appliquer des facteurs de mises à l&apos;échelle, etc sans avoir à attendre la fin du premier traçage</translation>
+    </message>
+    <message>
+        <source>Attribute actions - the ability to run an external program based on the contents of an attribute field in a layer</source>
+        <translation>Attribut d&apos;actions - permet de lancer un programme externe basé sur les valeurs d&apos;un champ d&apos;attribut dans une couche</translation>
+    </message>
+    <message>
+        <source>Create new vector layer (shapefile) for editing</source>
+        <translation>Créer une nouvelle couche vecteur (shapefile) pour édition</translation>
+    </message>
+    <message>
+        <source>Windows installer</source>
+        <translation>Installateur Windows</translation>
+    </message>
+    <message>
+        <source>Mac OSX binary</source>
+        <translation>Binaire Mac OSX</translation>
+    </message>
+    <message>
+        <source>New options in the graticule builder plugin</source>
+        <translation>Nouvelles options dans le plugin de construction de graticule</translation>
+    </message>
+    <message>
+        <source>Enhancements to the GPS plugin</source>
+        <translation>Améliorations du plugin GPS</translation>
+    </message>
+    <message>
+        <source>Man page</source>
+        <translation>Page de &quot;man&quot;</translation>
+    </message>
+    <message>
+        <source>Save delimited text as shapefile</source>
+        <translation>Enregistrer le texte délimité comme un shapefile</translation>
+    </message>
+    <message>
+        <source>Improved Delimited Text plugin, including preview of text file</source>
+        <translation>Amélioration du plugin de Texte Délimité, incluant la prévisualisation du fichier texte</translation>
+    </message>
+    <message>
+        <source>Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types</source>
+        <translation>Améliorations de SPIT dans la détection des mots réservés pour PostgreSQL et des shapefiles à multiple types de géométrie</translation>
+    </message>
+    <message>
+        <source>Display SQL query used to create a PostGIS layer</source>
+        <translation>Affichage de la requête SQL utilisée pour créer une couche PostGIS</translation>
+    </message>
+    <message>
+        <source>PostgreSQL query builder</source>
+        <translation>Constructeur de requête PostgreSQL</translation>
+    </message>
+    <message>
+        <source>Ability to redefine the query used for PostgreSQL layers from the layer properties dialog</source>
+        <translation>Possibilité de redéfinir la requête utilisée pour les couches PostgreSQL depuis la boîte de dialogue des propriétés de la couche</translation>
+    </message>
+    <message>
+        <source>North arrow, scalebar, and copyright plugins save their state in the project file</source>
+        <translation>Les plugins de &quot;flèche du Nord&quot;, &quot;Echelle&quot; et &quot;Copyright&quot; sauvent leurs états dans le fichier projet</translation>
+    </message>
+    <message>
+        <source>Datasets with UTF8, Kanjii and CJK filenames now load properly</source>
+        <translation>Les ensemble de données aux formats UTF8, Kanjii et CJK se chargent maintenant correctement</translation>
+    </message>
+    <message>
+        <source>QGis files (*.qgs)</source>
+        <translation>Fichiers QGIS (*.qgs)</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file</source>
+        <translation>Choisissez un fichier projet QGIS</translation>
+    </message>
+    <message>
+        <source>Unable to save project</source>
+        <translation>Impossible de sauvegarder le projet</translation>
+    </message>
+    <message>
+        <source>Unable to save project to </source>
+        <translation>Impossible de sauvegarder le projet sous</translation>
     </message>
 </context>
 <context>
@@ -790,7 +946,7 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     </message>
     <message>
         <source>&amp;Tools</source>
-        <translation>Ou&amp;tils</translation>
+        <translation type="obsolete">Ou&amp;tils</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -1215,7 +1371,7 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     </message>
     <message>
         <source>E&amp;xport As Image</source>
-        <translation>Exporter dans un fichier &amp;Image</translation>
+        <translation type="obsolete">Exporter dans un fichier &amp;Image</translation>
     </message>
     <message>
         <source>&amp;Whats this?</source>
@@ -1227,7 +1383,7 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     </message>
     <message>
         <source>Project &amp;Properties</source>
-        <translation>&amp;Propriétés du Projet</translation>
+        <translation type="obsolete">&amp;Propriétés du Projet</translation>
     </message>
     <message>
         <source>Properties</source>
@@ -1337,6 +1493,30 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
         <source>Plugins Toolbar</source>
         <translation>Bar d&apos;outils des Plugins</translation>
     </message>
+    <message>
+        <source>&amp;Settings</source>
+        <translation>&amp;Préférences</translation>
+    </message>
+    <message>
+        <source>&amp;Export As Image</source>
+        <translation>&amp;Exporter comme Image</translation>
+    </message>
+    <message>
+        <source>P&amp;roject Properties</source>
+        <translation>Propriétés du P&amp;rojet</translation>
+    </message>
+    <message>
+        <source>Remove Layer</source>
+        <translation>Enlever la Couche</translation>
+    </message>
+    <message>
+        <source>Toggle In Overview</source>
+        <translation>Basculer dans la Prévisualisation</translation>
+    </message>
+    <message>
+        <source>New Vectorlayer</source>
+        <translation>Nouvelle couche Vecteur</translation>
+    </message>
 </context>
 <context>
     <name>QgsAbout</name>
@@ -1437,6 +1617,149 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     <message>
         <source>Providers</source>
         <translation>Fournisseurs</translation>
+    </message>
+    <message>
+        <source>&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;<byte value="xd"/>
+&lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</source>
+        <translation>&lt;p align=&quot;center&quot;&gt;Quantum GIS est sous licence GNU General Public License&lt;p&gt;
+&lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Christoph Spoerri</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Gavin Macaulay</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Tom Elwertowski</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeActionDialogBase</name>
+    <message>
+        <source>Form1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
+        <translation>Cette liste contient toutes les actions qui ont été définies pour la couche courante. Ajoutez des actions en entrant les détails dans les champs ci-dessous et en pressant ensuite le bouton &quot;Insérer action&quot;. Les actions peuvent être éditées ici en double cliquant dessus.</translation>
+    </message>
+    <message>
+        <source>Move up</source>
+        <translation>Monter</translation>
+    </message>
+    <message>
+        <source>Move the selected action up</source>
+        <translation>Monter l&apos;action sélectionnée</translation>
+    </message>
+    <message>
+        <source>Move down</source>
+        <translation>Descendre</translation>
+    </message>
+    <message>
+        <source>Move the selected action down</source>
+        <translation>Descendre l&apos;action sélectionnée</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Enlever</translation>
+    </message>
+    <message>
+        <source>Remove the selected action</source>
+        <translation>Enlever l&apos;action sélectionnée</translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation>Nom:</translation>
+    </message>
+    <message>
+        <source>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</source>
+        <translation>Entrez ici le nom de l&apos;action. Il doit être unique (QGIS le rendrant unique le cas échéant).</translation>
+    </message>
+    <message>
+        <source>Enter the action name here</source>
+        <translation>Entrez le nom de l&apos;action ici</translation>
+    </message>
+    <message>
+        <source>Action:</source>
+        <translation>Action:</translation>
+    </message>
+    <message>
+        <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
+        <translation>Entrez l&apos;action ici. Ce peut être n&apos;importe quel programme, script ou commande accessible sur votre système. Quand une action est invoquée, tous les mots commencant par un % suivi d&apos;un nom de champ sont remplacés par la valeur de ce champ. Le caractère spécial %% sera remplacé par la valeur du champ sélectionné. Le texte entourné par des doubles quotes est considéré comme un argument simple par le programme, script ou commande. Les doubles quotes précédées d&apos;un backslash sont ignorées </translation>
+    </message>
+    <message>
+        <source>Enter the action command here</source>
+        <translation>Entrez la commande de l&apos;action ici</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation>Parcourir</translation>
+    </message>
+    <message>
+        <source>Browse for action commands</source>
+        <translation>Parcourir les commandes d&apos;action</translation>
+    </message>
+    <message>
+        <source>Insert action</source>
+        <translation>Insérer une action</translation>
+    </message>
+    <message>
+        <source>Inserts the action into the list above</source>
+        <translation>Insérer l&apos;action dans la liste ci-dessus</translation>
+    </message>
+    <message>
+        <source>Update action</source>
+        <translation>Mettre à jour l&apos;action</translation>
+    </message>
+    <message>
+        <source>Update the selected action</source>
+        <translation>Mettre à jour l&apos;action sélectionnée</translation>
+    </message>
+    <message>
+        <source>Insert field</source>
+        <translation>Insérer un champ</translation>
+    </message>
+    <message>
+        <source>Inserts the selected field into the action, prepended with a %</source>
+        <translation>Insérer le champ sélectionné dans l&apos;action, précédé d&apos;un %</translation>
+    </message>
+    <message>
+        <source>The valid attribute names for this layer</source>
+        <translation>Le nom d&apos;attribut valide pour cette couche</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeDialogBase</name>
+    <message>
+        <source>Enter Attribute Values</source>
+        <translation>Entrez les valeurs d&apos;attributs</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeTable</name>
+    <message>
+        <source>&lt;center&gt;Run action&lt;/center&gt;</source>
+        <translation>&lt;center&gt;Exécuter l&apos;action&lt;/center&gt;</translation>
     </message>
 </context>
 <context>
@@ -1588,7 +1911,11 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     </message>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.</source>
-        <translation>La connection vers %1 sur %2 a échoué. Soit la base de donnée est fermée soit vos paramètres sont incorrects.%3Vérifiez votre nom d&apos;utilisateur et votre mot de passe et reéssayez.</translation>
+        <translation type="obsolete">La connection vers %1 sur %2 a échoué. Soit la base de donnée est fermée soit vos paramètres sont incorrects.%3Vérifiez votre nom d&apos;utilisateur et votre mot de passe et reéssayez.</translation>
+    </message>
+    <message>
+        <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4%5</source>
+        <translation>La connection à %1 sur %2 a échoué. Soit la base de données est HS soit vos paramètres sont incorrects. %3 Vérifiez vos login et mot de passe et reéssayez.%4%5</translation>
     </message>
 </context>
 <context>
@@ -1648,6 +1975,29 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     <message>
         <source>Sql</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>QgsDelimitedTextPluginGui</name>
+    <message>
+        <source>No layer name</source>
+        <translation>Pas de nom de couche</translation>
+    </message>
+    <message>
+        <source>Please enter a layer name before adding the layer to the map</source>
+        <translation>Entrez s&apos;il vous plaît un nom de couche avant d&apos;ajouter la couche à la carte</translation>
+    </message>
+    <message>
+        <source>No delimiter</source>
+        <translation>Pas de délimiteur</translation>
+    </message>
+    <message>
+        <source>Please specify a delimiter prior to parsing the file</source>
+        <translation>Spécifiez s&apos;il vous plaît un délimiteur avant d&apos;analyser le fichier</translation>
+    </message>
+    <message>
+        <source>Choose a delimited text file to open</source>
+        <translation>Choisissez un fichier CSV à ouvrir</translation>
     </message>
 </context>
 <context>
@@ -1720,7 +2070,7 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
 &lt;p&gt;Use the X and Y fields to specify which columns represent latitude and longitude..&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Sélectionnez le fichier à texte délimité (CSV) contenant les coordonnées en lat/lon que vous voudriez utiliser comme couche de point et ce plugin fera le travail pour vous!&lt;/p&gt;
 &lt;p&gt;Renseignez le nom de la couche qui sera utilisé dans la légende. Sélectionner le délimiteur (espace, virgule, tabulation) du fichier CSV. Notez que vous pouvez utiliser des expressions régulières, comme \t pour la tabulation. Après celà, pressez le bouton Analyser afin de voir quels noms de champ ont été détecté dans votre fichier.&lt;/p&gt;
@@ -1814,6 +2164,23 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     <message>
         <source>Alt+C</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Sample text</source>
+        <translation>Echantillon de texte</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p&gt;
+&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, commar or tab). Note this box accepts regular expressions so use \t for tab and so on. After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Sélectionnez un fichier CSV contenant les coordonnées x et y que vous souhaitez utiliser comme couche de point et ce plugin fera le reste! &lt;/p&gt;
+&lt;p&gt;Utilisez le champ &quot;nom&quot; de la couche afin de spécifier un nom. Utilisez le champ &quot;délimiteur&quot; pour définir le délimiteur du fichier CSV (c-à-d espace, virgule ou tabulation). Notez que ce champ accepte les expressions régulières comme \t pour tabulation. Pressez ensuite le bouton &quot;Parcourir&quot; et sélectionnez les colonnes contenant les valeurs x et y pour la couche.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1913,6 +2280,50 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
         <source>Unique Value Marker</source>
         <translation>Marqueur de Valeur Unique</translation>
     </message>
+    <message>
+        <source>The source of the data (path name or database connection information)</source>
+        <translation>La source de donnée (chemin ou information de connection à un base de donnée)</translation>
+    </message>
+    <message>
+        <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
+        <translation>Ce bouton ouvre le constructeur de requête PostgreSQL et vous permet de créer un sous-ensemble de propriétés à afficher dans le cannevas de carte au lieu d&apos;afficher toutes les propriétés dans la couche</translation>
+    </message>
+    <message>
+        <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
+        <translation>Se trouve ici la requête utilisée afin de limiter les propriétés affichées dans la couche. Pour l&apos;instant seul les couches PostgreSQL sont supportées. Pour modifier la requête, cliquez sur le bouton &quot;Constructeur de Requête&quot;</translation>
+    </message>
+    <message>
+        <source>Geometry type of the features in this layer</source>
+        <translation>Type de géométrie des propriétés dans cette couche</translation>
+    </message>
+    <message>
+        <source>The number of features in this layer</source>
+        <translation>Le nombre de propriétés dans cette couche</translation>
+    </message>
+    <message>
+        <source>In order for QGIS to support SVG markers under Windows, we need to build QGIS</source>
+        <translation>Afin de supporter les marqueurs SVG dans QGIS sous Windows, nous avons besoin de compiler QGIS</translation>
+    </message>
+    <message>
+        <source> using the commercial version of Qt. As this project is developed by volunteers</source>
+        <translation>utilisant la version commerciale de Qt. Comme ce projet est développé par des volontaires</translation>
+    </message>
+    <message>
+        <source> donating their time, we don&apos;t have the financial resources to purchase Qt</source>
+        <translation>donnant de leur temps, nous n&apos;avons pas les ressources financières pour acheter une licence Qt</translation>
+    </message>
+    <message>
+        <source> commercial.  If you would like to help us, please visit the QGIS sourceforge</source>
+        <translation>commerciale.  Si vous souhaitez nous aider, visitez s&apos;il vous plaît le site QGIS sur sourceforge</translation>
+    </message>
+    <message>
+        <source> home page to make a donation</source>
+        <translation> pour faire une donation</translation>
+    </message>
+    <message>
+        <source>No SVG Support</source>
+        <translation>Pas de support SVG</translation>
+    </message>
 </context>
 <context>
     <name>QgsDlgVectorLayerPropertiesBase</name>
@@ -1926,7 +2337,7 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     </message>
     <message>
         <source>Close</source>
-        <translation>Fermer</translation>
+        <translation type="obsolete">Fermer</translation>
     </message>
     <message>
         <source>General</source>
@@ -2002,7 +2413,7 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     </message>
     <message>
         <source>Legend</source>
-        <translation>Légende</translation>
+        <translation type="obsolete">Légende</translation>
     </message>
     <message>
         <source>Legend type:</source>
@@ -2015,6 +2426,393 @@ certaines possibilités seront donc désactivées.&lt;/p&gt;
     <message>
         <source>Display labels</source>
         <translation>Afficher les étiquettes</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>Aide</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Symbology</source>
+        <translation>Convention de signes</translation>
+    </message>
+    <message>
+        <source>Visibility</source>
+        <translation>Visibilité</translation>
+    </message>
+    <message>
+        <source>Use scale dependent rendering</source>
+        <translation>Utiliser le Rendu dépendant de la mise à l&apos;échelle</translation>
+    </message>
+    <message>
+        <source>Maximum 1:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Maximum scale at which this layer will be displayed. </source>
+        <translation>Mise à l&apos;échelle maximum à laquelle cette couche sera affichée.</translation>
+    </message>
+    <message>
+        <source>Minimum 1:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Minimum scale at which this layer will be displayed. </source>
+        <translation>Mise à l&apos;échelle minimum à laquelle cette couche sera affichée.</translation>
+    </message>
+    <message>
+        <source>Display field</source>
+        <translation>Champ affichage</translation>
+    </message>
+    <message>
+        <source>Display field for the Identify Results dialog box</source>
+        <translation>Champ affichage pour la boîte de dialogue des Résultats d&apos;Identification</translation>
+    </message>
+    <message>
+        <source>This sets the display field for the Identify Results dialog box</source>
+        <translation>Ceci paramètre le champ affichage pour la boîte de dialogue des Résultats d&apos;Identification</translation>
+    </message>
+    <message>
+        <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
+        <translation>Utilisez ce contrôle afin de paramètrer quel champ doit être placé au dessus de la boîte de dialogue des Résultats d&apos;Identification</translation>
+    </message>
+    <message>
+        <source>Subset:</source>
+        <translation>Sous-Ensemble:</translation>
+    </message>
+    <message>
+        <source>Query Builder</source>
+        <translation>Constructeur de requête</translation>
+    </message>
+    <message>
+        <source>Metadata</source>
+        <translation>Métadonnée</translation>
+    </message>
+    <message>
+        <source>Actions</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>QgsEditReservedWordsBase</name>
+    <message>
+        <source>Edit Reserved Words</source>
+        <translation>Editer les Mots Réservés</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Statut</translation>
+    </message>
+    <message>
+        <source>Column name</source>
+        <translation>Nom de Colonne</translation>
+    </message>
+    <message>
+        <source>Index</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used. You may also change any column name if desired.</source>
+        <translation>Ce shapefile contient des mots réservés. Ceci peut affecter l&apos;importation dans PostgreSQL. Editez les noms de colonnes afin que tous les mots réservés listés à droite ne soient plus utilisés. Vous pouvez si désiré changer n&apos;importe quel nom de colonne.</translation>
+    </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation>&amp;Aide</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Annuler</translation>
+    </message>
+    <message>
+        <source>Reserved Words</source>
+        <translation>Mots Réservés</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGPSDeviceDialogBase</name>
+    <message>
+        <source>GPS Device Editor</source>
+        <translation>Editeur de périphérique GPS</translation>
+    </message>
+    <message>
+        <source>Device name:</source>
+        <translation>Nom de périphérique:</translation>
+    </message>
+    <message>
+        <source>Download command:</source>
+        <translation>Commande de téléchargement:</translation>
+    </message>
+    <message>
+        <source>This is the command that will be used to download GPS data from the device. %in and %out will be replaced by the port and the GPX filename, respectively.</source>
+        <translation>Ceci est la commande qui sera utilisée afin de télécharger les données depuis le périphérique GPS. %in et %out seront remplacés respectivement par le port et le nom de fichier GPX.</translation>
+    </message>
+    <message>
+        <source>This is the name of the device as it will appear in the lists</source>
+        <translation>Ceci est le nom du périphérique tel qu&apos;il apparaîtra dans les listes</translation>
+    </message>
+    <message>
+        <source>This is the command that will be used to upload GPS data to the device. %in and %out will be replaced by the GPX filename and the port, respectively.</source>
+        <translation>Ceci est la commande qui sera utilisée afin d&apos;uploader les données dans le périphérique GPS. %in et %out seront remplacés respectivement par le nom du fichier GPX et le port.</translation>
+    </message>
+    <message>
+        <source>Upload command:</source>
+        <translation>Commande d&apos;upload:</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/p&gt;
+&lt;i&gt;%babel&lt;/i&gt; - the path to GPSBabel&lt;br&gt;
+&lt;i&gt;%type&lt;/i&gt; - the flag for the feature type that is being transferred (-w, -r or -t)&lt;br&gt;
+&lt;i&gt;%in&lt;/i&gt; - the GPX filename when uploading or the port when downloading&lt;br&gt;
+&lt;i&gt;%out&lt;/i&gt; - the port when uploading or the GPX filename when downloading</source>
+        <translation>&lt;p&gt;Des mots spéciaux peuvent être utilisés dans les commandes de téléchargement et d&apos;upload et seront remplacés par QGIS le cas échéant : &lt;/p&gt;
+&lt;i&gt;%babel&lt;/i&gt; - Le chemin vers GPSBabel&lt;br&gt;
+&lt;i&gt;%type&lt;/i&gt; - L&apos;option pour le type de propriété à transférée(-w, -r ou -t)&lt;br&gt;
+&lt;i&gt;%in&lt;/i&gt; - Le nom de fichier GPX lors de l&apos;upload ou le port lors du téléchargement&lt;br&gt;
+&lt;i&gt;%out&lt;/i&gt; - Le port lors du téléchargement ou le nom de fichier GPX lors de l&apos;upload</translation>
+    </message>
+    <message>
+        <source>Update device</source>
+        <translation>Mise à jour du périphérique</translation>
+    </message>
+    <message>
+        <source>Delete device</source>
+        <translation>Effacer le périphérique</translation>
+    </message>
+    <message>
+        <source>New device</source>
+        <translation>Nouveau périphérique</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Fermer</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGPSPluginGuiBase</name>
+    <message>
+        <source>GPS Tools</source>
+        <translation>Outils GPS</translation>
+    </message>
+    <message>
+        <source>Load GPX file</source>
+        <translation>Charger un fichier GPX</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;GPX is the &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt;, which is used to store information about waypoints, routes, and tracks.&lt;/p&gt;
+&lt;p&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Le format GPX,&lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt;, est utilisé pour stocker des informations sur les destinations, les itinéraires et les voies.&lt;/p&gt;
+&lt;p&gt;Sélectionnez un fichier GPX et les informations que vous voulez charger.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>File:</source>
+        <translation>Fichier:</translation>
+    </message>
+    <message>
+        <source>Feature types:</source>
+        <translation>Types de données:</translation>
+    </message>
+    <message>
+        <source>Waypoints</source>
+        <translation>Objectifs</translation>
+    </message>
+    <message>
+        <source>Routes</source>
+        <translation>Itinéraires</translation>
+    </message>
+    <message>
+        <source>Tracks</source>
+        <translation>Voies</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <source>Import other file</source>
+        <translation>Importer un autre fichier</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;QGIS can only load GPX files by itself, but many other formats 
+can be converted to GPX using GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
+http://gpsbabel.sf.net&lt;/a&gt;). This requires that you have GPSBabel installed where 
+QGIS can find it.&lt;/p&gt;
+&lt;p&gt;Select a GPS file format and the file that you want to import, the feature type 
+that you want to use, a GPX filename that you want to save the converted file as, 
+and a name for the new layer. All file formats can not store waypoints, routes, and 
+tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;QGIS peut seulement chager par lui-même des fichiers GPX, mais beaucoup d&apos;autres formats
+peuvent être convertis en GPX en utilisant GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;
+http://gpsbabel.sf.net&lt;/a&gt;). Ceci implique queGPSBabel soit installé où QGIS peut le trouver.&lt;/p&gt;
+&lt;p&gt;Sélectionnez un format GPS et le fichier que vous voulez importer, le type d&apos;information que vous 
+voulez utiliser, un nom de fichier GPX dans lequel stocker vos données converties, 
+et un nouveau nom de couche. Tous les formats ne peuvent stocker les itinéraires, les destinations et les voies,
+certaines possibilités seront donc désactivées.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>File to import:</source>
+        <translation>Fichier à importer:</translation>
+    </message>
+    <message>
+        <source>Feature type:</source>
+        <translation>Type de données:</translation>
+    </message>
+    <message>
+        <source>GPX output file:</source>
+        <translation>Fichier de sortie GPX:</translation>
+    </message>
+    <message>
+        <source>Layer name:</source>
+        <translation>Nom de la couche:</translation>
+    </message>
+    <message>
+        <source>Download from GPS</source>
+        <translation>Télécharger depuis GPS</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This tool will help you download data from a GPS device. Choose your 
+GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, 
+and the GPX file where you want to store the data. If your device isn&apos;t listed, or if 
+you want to change some settings, you can also edit the devices.&lt;/p&gt;
+&lt;p&gt;This tool uses the program GPSBabel 
+(&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) to transfer the data. If you 
+don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Cet outil va vous aider à télécharger des données depuis un périphérique GPS. Choisissez 
+votre périphérique GPS, le port sur lequel il est connecté, le type de propriété que vous voulez télécharger,
+un nom pour la nouvelle couche, et le fichier GPX dans lequel vous souhaitez stocker les données. Si 
+votre périphéirque n&apos;est pas listé, ou si vous voulez modifier des paramètres, vous pouvez aussi éditer
+les périphériques.&lt;/p&gt;
+&lt;p&gt;Cet outil utilise le programme GPSBabel 
+(&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) pour le transfert des données. Si vous n&apos;avez pas
+ GPSBabel à un endroit où QGIS peut le trouver, cet outil ne fonctionnera pas.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Edit devices</source>
+        <translation>Editer les périphériques</translation>
+    </message>
+    <message>
+        <source>GPS device:</source>
+        <translation>Périphérique GPS:</translation>
+    </message>
+    <message>
+        <source>Output file:</source>
+        <translation>Fichier de sortie:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Upload to GPS</source>
+        <translation>Uploader vers le GPS</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This tool will help you upload data from a GPX layer to a GPS device. 
+Choose the layer you want to upload, the device you want to upload it to, and the port 
+your device is connected to. 
+If your device isn&apos;t listed, or if you want to change some settings, you can also 
+edit the devices.&lt;/p&gt;
+&lt;p&gt;This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) 
+to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Cet outil va vous aider à uploader des données vers un périphérique GPS. Choisissez 
+la couche que vous voulez uploader, le périphérique GPS de destination et le port sur lequel il est connecté. 
+Si votre périphéirque n&apos;est pas listé, ou si vous voulez modifier des paramètres, vous pouvez aussi éditer
+les périphériques.&lt;/p&gt;
+&lt;p&gt;Cet outil utilise le programme GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;) 
+pour le transfert des données. Si vous n&apos;avez pas GPSBabel à un endroit où QGIS peut le trouver, cet outil ne fonctionnera pas.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Data layer:</source>
+        <translation>Couche de données:</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Annuler</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGeomTypeDialogBase</name>
+    <message>
+        <source>Select Geometry type</source>
+        <translation>Sélectionnez un type de géométrie</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation>Ligne</translation>
+    </message>
+    <message>
+        <source>Polygon</source>
+        <translation>Polygone</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
     </message>
 </context>
 <context>
@@ -2408,6 +3206,13 @@ Facteur</translation>
     </message>
 </context>
 <context>
+    <name>QgsIdentifyResults</name>
+    <message>
+        <source>&lt;center&gt;Run action&lt;/center&gt;</source>
+        <translation>&lt;center&gt;Exécuter l&apos;action&lt;/center&gt;</translation>
+    </message>
+</context>
+<context>
     <name>QgsIdentifyResultsBase</name>
     <message>
         <source>Identify Results</source>
@@ -2489,7 +3294,7 @@ Facteur</translation>
     </message>
     <message>
         <source>Default Style</source>
-        <translation>Style par défaut</translation>
+        <translation type="obsolete">Style par défaut</translation>
     </message>
     <message>
         <source>Font Style</source>
@@ -2655,6 +3460,18 @@ Facteur</translation>
         <source>&amp;Colour:</source>
         <translation>C&amp;ouleur:</translation>
     </message>
+    <message>
+        <source>Font and Alignment</source>
+        <translation>Fontes et Alignement</translation>
+    </message>
+    <message>
+        <source>Buffer and Position</source>
+        <translation>Remplissage et Position</translation>
+    </message>
+    <message>
+        <source>Advanced Data Defined Style</source>
+        <translation>Style Avancé de Donnée Définie</translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendItemBase</name>
@@ -2703,6 +3520,21 @@ Facteur</translation>
     <message>
         <source>To identify features, you must choose an layer active by clicking on its name in the legend</source>
         <translation>Pour identifier des données, vous devez d&apos;abord activer une couche en cliquant sur son nom dans la légende</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapLayer</name>
+    <message>
+        <source>&amp;Zoom to extent of selected layer</source>
+        <translation>&amp;Zoomer afin d&apos;étendre à la couche sélectionnée</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>&amp;Enlever</translation>
+    </message>
+    <message>
+        <source>&amp;Properties</source>
+        <translation>&amp;Propriétés</translation>
     </message>
 </context>
 <context>
@@ -2905,7 +3737,16 @@ Facteur</translation>
     </message>
     <message>
         <source>Connection failed - Check settings and try again </source>
-        <translation>La connection a échoué - Vérifiez les paramètres et reéssayez</translation>
+        <translation type="obsolete">La connection a échoué - Vérifiez les paramètres et reéssayez</translation>
+    </message>
+    <message>
+        <source>Connection failed - Check settings and try again.
+
+Extended error information:
+</source>
+        <translation>La connection a échouée - Vérifiez vos paramètres et reessayez.
+
+Information d&apos;erreur supplémentaire :</translation>
     </message>
 </context>
 <context>
@@ -3098,7 +3939,7 @@ By default QGIS uses a value of 5. Increase the value if you have trouble
 identifying features without zooming in very close.
 &lt;/html&gt;</source>
         <translation>&lt;html&gt;
-&lt;b&gt;Note:&lt;/b&gt; Spécifiez la valeur en centaines. Le rayon de recherche est calculé ainsi:&lt;br&gt;
+&lt;b&gt;Note:&lt;/b&gt; Spécifiez la valeur en milliers. Le rayon de recherche est calculé ainsi:&lt;br&gt;
 &amp;nbsp;&amp;nbsp;&lt;i&gt;(Largeur de carte visualisée) * ( Valeur/1000.0)&lt;/i&gt;
 &lt;br&gt;
 Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencontrez des problèmes
@@ -3120,6 +3961,30 @@ Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencont
     <message>
         <source>...</source>
         <translation>...</translation>
+    </message>
+    <message>
+        <source>Initial Visibility</source>
+        <translation>Visibilité Initiale</translation>
+    </message>
+    <message>
+        <source>New layers added to the map are not displayed</source>
+        <translation>Les nouvelles couches ajoutées à la carte ne sont pas affichées</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;<byte value="xd"/>
+&lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;<byte value="xd"/>
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;<byte value="xd"/>
+&lt;br&gt;<byte value="xd"/>
+By default QGIS uses a value of 5. Increase the value if you have trouble<byte value="xd"/>
+identifying features without zooming in very close.<byte value="xd"/>
+&lt;/html&gt;</source>
+        <translation>&lt;html&gt;
+&lt;b&gt;Note:&lt;/b&gt; Spécifiez la valeur en milliers. Le rayon de recherche est calculé ainsi:&lt;br&gt;
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Largeur de carte visualisée) * ( Valeur/1000.0)&lt;/i&gt;
+&lt;br&gt;
+Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencontrez des problèmes
+ d&apos;identification de données sans utiliser un fort grossissement.
+&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3146,6 +4011,164 @@ Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencont
     <message>
         <source>Error connecting to the database</source>
         <translation>Erreur durant la connection à la base de donnée</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPgQueryBuilder</name>
+    <message>
+        <source>Table &lt;b&gt;%1&lt;/b&gt; in database &lt;b&gt;%2&lt;/b&gt; on host &lt;b&gt;%3&lt;/b&gt;, user &lt;b&gt;%4&lt;/b&gt;</source>
+        <translation>Table &lt;b&gt;%1&lt;/b&gt; dans la base &lt;b&gt;%2&lt;/b&gt; sur l&apos;hôte &lt;b&gt;%3&lt;/b&gt;, utilisateur &lt;b&gt;%4&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Connection Failed</source>
+        <translation>La connection a échoué</translation>
+    </message>
+    <message>
+        <source>Connection to the database failed:</source>
+        <translation>La connection à la base de donnée a échoué:</translation>
+    </message>
+    <message>
+        <source>Database error</source>
+        <translation>Erreur de Base de Donnée</translation>
+    </message>
+    <message>
+        <source>Failed to get sample of field values</source>
+        <translation>Erreur à la lecture d&apos;un échantillon des valeurs du champ </translation>
+    </message>
+    <message>
+        <source>Query Result</source>
+        <translation>Résultat de requête</translation>
+    </message>
+    <message>
+        <source>The where clause returned </source>
+        <translation>La clause WHERE a retourné</translation>
+    </message>
+    <message>
+        <source> rows.</source>
+        <translation>lignes.</translation>
+    </message>
+    <message>
+        <source>Query Failed</source>
+        <translation>La requête a échoué</translation>
+    </message>
+    <message>
+        <source>An error occurred when executing the query:</source>
+        <translation>Une erreur a été rencontré lors de l&apos;exécution de la requête:</translation>
+    </message>
+    <message>
+        <source>No Records</source>
+        <translation>Pas d&apos;enregistrements</translation>
+    </message>
+    <message>
+        <source>The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature.</source>
+        <translation>La requête que vous avez spécifiée a retourné 0 enregistrement. Les couches PostgreSQL doivent au moins contenir une propriété pour être valides.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPgQueryBuilderBase</name>
+    <message>
+        <source>PostgreSQL Query Builder</source>
+        <translation>Constructeur de requête PostgreSQL</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Effacer</translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
+    </message>
+    <message>
+        <source>Values</source>
+        <translation>Valeurs</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>Tout</translation>
+    </message>
+    <message>
+        <source>Sample</source>
+        <translation>Echantillon</translation>
+    </message>
+    <message>
+        <source>Fields</source>
+        <translation>Champs</translation>
+    </message>
+    <message>
+        <source>Datasource:</source>
+        <translation>Source de données:</translation>
+    </message>
+    <message>
+        <source>Operators</source>
+        <translation>Opérateurs</translation>
+    </message>
+    <message>
+        <source>=</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>IN</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>NOT IN</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;=</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&gt;=</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>!=</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>LIKE</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>AND</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>ILIKE</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>OR</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>NOT</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>SQL where clause</source>
+        <translation>Clause SQL WHERE</translation>
     </message>
 </context>
 <context>
@@ -3183,11 +4206,11 @@ Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencont
     </message>
     <message>
         <source>Ok</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Fermer</translation>
+        <translation type="obsolete">Fermer</translation>
     </message>
     <message>
         <source>Plugin Directory</source>
@@ -3204,6 +4227,38 @@ Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencont
     <message>
         <source>Version</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Select All</source>
+        <translation>&amp;Sélectionner tout</translation>
+    </message>
+    <message>
+        <source>Alt+S</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>C&amp;lear All</source>
+        <translation>E&amp;ffacer tout</translation>
+    </message>
+    <message>
+        <source>Alt+L</source>
+        <translation>Alt+f</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation>&amp;Fermer</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation>Alt-F</translation>
     </message>
 </context>
 <context>
@@ -3244,6 +4299,14 @@ Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencont
         <source>&amp;Cancel</source>
         <translation>&amp;Annuler</translation>
     </message>
+    <message>
+        <source>Title</source>
+        <translation>Titre</translation>
+    </message>
+    <message>
+        <source>Default project title</source>
+        <translation>Titre de projet par défaut</translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayer</name>
@@ -3253,15 +4316,15 @@ Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencont
     </message>
     <message>
         <source>&amp;Zoom to extent of selected layer</source>
-        <translation>&amp;Zoomer afin d&apos;étendre à la couche sélectionnée</translation>
+        <translation type="obsolete">&amp;Zoomer afin d&apos;étendre à la couche sélectionnée</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
-        <translation>&amp;Propriétés</translation>
+        <translation type="obsolete">&amp;Propriétés</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation>&amp;Enlever</translation>
+        <translation type="obsolete">&amp;Enlever</translation>
     </message>
     <message>
         <source>Driver:</source>
@@ -3449,7 +4512,7 @@ Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencont
     </message>
     <message>
         <source>Show In &amp;Overview</source>
-        <translation>&amp;Montrer dans l&apos;aperçu</translation>
+        <translation type="obsolete">&amp;Montrer dans l&apos;aperçu</translation>
     </message>
     <message>
         <source>&lt;center&gt;&lt;b&gt;Transparency&lt;/b&gt;&lt;/center&gt;</source>
@@ -3741,6 +4804,41 @@ Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencont
 &lt;/body&gt;&lt;/html&gt;
 </translation>
     </message>
+    <message>
+        <source>Visibility</source>
+        <translation>Visibilité</translation>
+    </message>
+    <message>
+        <source>Use scale dependent rendering</source>
+        <translation>Utiliser le Rendu dépendant de la mise à l&apos;échelle</translation>
+    </message>
+    <message>
+        <source>Maximum 1:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Maximum scale at which this layer will be displayed. </source>
+        <translation>Mise à l&apos;échelle maximum à laquelle cette couche sera affiché.</translation>
+    </message>
+    <message>
+        <source>Minimum 1:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Minimum scale at which this layer will be displayed. </source>
+        <translation>Mise à l&apos;échelle minimum à laquelle cette couche sera affichée.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsScanGeometries</name>
+    <message>
+        <source>Scanning Geometries</source>
+        <translation>Scannage des géométries</translation>
+    </message>
+    <message>
+        <source>textLabel1</source>
+        <translation>Etiquette1</translation>
+    </message>
 </context>
 <context>
     <name>QgsSiMaDialogBase</name>
@@ -3776,28 +4874,24 @@ Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencont
         <translation>Symbole Unique</translation>
     </message>
     <message>
-        <source>Style</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Fill color</source>
-        <translation>Couleur</translation>
+        <translation type="obsolete">Couleur</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation>Largeur</translation>
+        <translation type="obsolete">Largeur</translation>
     </message>
     <message>
         <source>Outline color</source>
-        <translation>Couleur</translation>
+        <translation type="obsolete">Couleur</translation>
     </message>
     <message>
         <source>Pattern</source>
-        <translation>Modèle</translation>
+        <translation type="obsolete">Modèle</translation>
     </message>
     <message>
         <source>Outline</source>
-        <translation>Bordure</translation>
+        <translation type="obsolete">Bordure</translation>
     </message>
     <message>
         <source>...</source>
@@ -3805,11 +4899,39 @@ Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencont
     </message>
     <message>
         <source>Fill</source>
-        <translation>Remplissage</translation>
+        <translation type="obsolete">Remplissage</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation>Etiquette</translation>
+        <translation type="obsolete">Etiquette</translation>
+    </message>
+    <message>
+        <source>Label:</source>
+        <translation>Etiquette:</translation>
+    </message>
+    <message>
+        <source>Outline Style:</source>
+        <translation>Style de bordure externe:</translation>
+    </message>
+    <message>
+        <source>Fill Color:</source>
+        <translation>Couleur de remplissage:</translation>
+    </message>
+    <message>
+        <source>Outline color:</source>
+        <translation>Couleur de bordure externe:</translation>
+    </message>
+    <message>
+        <source>Outline Width:</source>
+        <translation>Largeur de bordure externe:</translation>
+    </message>
+    <message>
+        <source>Fill Patterns:</source>
+        <translation>Modèles de remplissage:</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Effacer</translation>
     </message>
 </context>
 <context>
@@ -3989,7 +5111,7 @@ Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencont
     </message>
     <message>
         <source>&amp;Zoom to extent of selected layer</source>
-        <translation>&amp;Zoomer afin d&apos;étendre à la couche sélectionnée</translation>
+        <translation type="obsolete">&amp;Zoomer afin d&apos;étendre à la couche sélectionnée</translation>
     </message>
     <message>
         <source>&amp;Open attribute table</source>
@@ -3997,11 +5119,11 @@ Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencont
     </message>
     <message>
         <source>&amp;Properties</source>
-        <translation>&amp;Propriétés</translation>
+        <translation type="obsolete">&amp;Propriétés</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation>&amp;Enlever</translation>
+        <translation type="obsolete">&amp;Enlever</translation>
     </message>
     <message>
         <source>&lt;center&gt;&lt;b&gt;Vector Layer&lt;/b&gt;&lt;/center&gt;</source>
@@ -4009,7 +5131,35 @@ Par défaut QGIS utilise une valeur de 5. Augmenter cette valeur si vous rencont
     </message>
     <message>
         <source>Show In &amp;Overview</source>
-        <translation>&amp;Montrer dans l&apos;aperçu</translation>
+        <translation type="obsolete">&amp;Montrer dans l&apos;aperçu</translation>
+    </message>
+    <message>
+        <source>Start editing</source>
+        <translation>Commencer l&apos;édition</translation>
+    </message>
+    <message>
+        <source>Stop editing</source>
+        <translation>Arrêter l&apos;édition</translation>
+    </message>
+    <message>
+        <source>Save as shapefile...</source>
+        <translation>Enregistrer comme shapefile...</translation>
+    </message>
+    <message>
+        <source>Provider does not support deletion</source>
+        <translation>Le fournisseur ne supporte pas l&apos;effacement</translation>
+    </message>
+    <message>
+        <source>Data provider does not support deleting features</source>
+        <translation>Le fournisseur de donnée ne supporte pas l&apos;effacement des propriétés</translation>
+    </message>
+    <message>
+        <source>Layer not editable</source>
+        <translation>Couche non éditable</translation>
+    </message>
+    <message>
+        <source>The current layer is not editable. Choose &apos;start editing&apos; in the legend item right click menu</source>
+        <translation>La couche courante n&apos;est pas éditable. Choisissez &apos;Commencer l&apos;édition&apos; dans le menu par clic-droit sur l&apos;entrée dans la légende</translation>
     </message>
 </context>
 <context>
