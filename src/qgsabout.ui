@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>521</width>
-            <height>338</height>
+            <height>368</height>
         </rect>
     </property>
     <property name="caption">
@@ -592,22 +592,19 @@
                 <attribute name="title">
                     <string>Providers</string>
                 </attribute>
-                <widget class="QTextBrowser">
+                <grid>
                     <property name="name">
-                        <cstring>txtBrowserPlugins</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>10</x>
-                            <y>10</y>
-                            <width>422</width>
-                            <height>153</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                </widget>
+                    <widget class="QTextBrowser" row="0" column="0">
+                        <property name="name">
+                            <cstring>txtBrowserPlugins</cstring>
+                        </property>
+                        <property name="text">
+                            <string></string>
+                        </property>
+                    </widget>
+                </grid>
             </widget>
         </widget>
     </grid>
