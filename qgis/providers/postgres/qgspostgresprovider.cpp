@@ -390,7 +390,60 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 
 QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int>& attlist)
 {
-    return 0;//soon
+    QgsFeature *f = 0;
+    if (valid)
+    {
+	QString fetch = "fetch forward 1 from qgisf";
+        queryResult = PQexec(connection, (const char *)fetch);
+	if(PQntuples(queryResult) == 0)
+	{
+	    PQexec(connection, "end work");
+	    ready = false;
+	    return 0;
+        } 
+	int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
+	int *noid;
+	if(swapEndian)
+	{
+	    char *temp  = new char[sizeof(oid)];
+	    char *ptr = (char *)&oid + sizeof(oid) -1;
+	    int cnt = 0;
+	    while(cnt < sizeof(oid))
+	    {
+		temp[cnt] = *ptr--;
+		cnt++;
+	    }  
+	    noid = (int *)temp;
+        }
+	else
+	{
+	    noid = &oid;
+	}
+	int returnedLength = PQgetlength(queryResult,0, PQfnumber(queryResult,"qgs_feature_geometry"));	
+	if(returnedLength > 0)
+	{
+	  unsigned char *feature = new unsigned char[returnedLength + 1];
+	  memset(feature, '\0', returnedLength + 1);
+	  memcpy(feature, PQgetvalue(queryResult,0,PQfnumber(queryResult,"qgs_feature_geometry")), returnedLength); 
+	  int wkbType = *((int *) (feature + 1));
+	  f = new QgsFeature(*noid);
+	  f->setGeometry(feature, returnedLength + 1);
+	  if(!attlist.empty())
+	  {
+	      getFeatureAttributes(*noid, f, attlist);
+	  } 
+	  
+	}
+	else
+	{
+	    //--std::cout <<"Couldn't get the feature geometry in binary form" << std::endl;
+	}
+    }
+    else 
+    {
+        //--std::cout << "Read attempt on an invalid postgresql data source\n";
+    }
+    return f;	  
 }
 
     /**
@@ -542,6 +595,32 @@ int QgsPostgresProvider::fieldCount()
      }
    }
 } 
+
+/**Fetch attributes with indices contained in attlist*/
+void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f, std::list<int>& attlist)
+{
+    std::list<int>::iterator iter;
+    int i=-1;
+  for(iter=attlist.begin();iter!=attlist.end();++iter)
+  {
+      ++i;
+      //QString sql = QString("select * from %1 where %2 = %3").arg(tableName).arg(primaryKey).arg(key);//todo: only query one attribute
+      QString sql = QString("select %1 from %2 where %3 = %4").arg(fields()[*iter].name()).arg(tableName).arg(primaryKey).arg(key);//todo: only query one attribute
+      //qWarning(QString("select %1 from %2 where %3 = %4").arg(fields()[*iter].name()).arg(tableName).arg(primaryKey).arg(key));
+      //qWarning(fields()[*iter].name());
+      PGresult *attr = PQexec(connection, (const char *)sql);
+      QString fld = PQfname(attr, 0);
+      // Dont add the WKT representation of the geometry column to the identify
+      // results
+      if(fld != geometryColumn)
+      {
+	  // Add the attribute to the feature
+	  QString val = PQgetvalue(attr,0, i);
+	  //qWarning(val);
+	  f->addAttribute(fld, val);
+      }
+  }
+}
 
 std::vector<QgsField>& QgsPostgresProvider::fields()
 {
