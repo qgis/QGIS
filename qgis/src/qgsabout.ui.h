@@ -8,6 +8,38 @@
 #include <qsettings.h>
 #include <qprocess.h>
 #include <qinputdialog.h>
+#include <qfile.h>
+#include <qstringlist.h>
+#include <qtextstream.h>
+#include <qstring.h>
+#include <qstringlist.h>
+
+void QgsAbout::init()
+{
+    //read the authors file to populate the contributors list
+    QStringList lines;
+    QFile file( "AUTHORS" );
+    printf ("Readng authors file.............................................\n");
+    if ( file.open( IO_ReadOnly ) ) {
+        QTextStream stream( &file );
+        QString line;
+        int i = 1;
+        while ( !stream.atEnd() ) 
+      {
+            line = stream.readLine(); // line of text excluding '\n'
+	    //ignore the line if it starts with a hash....
+	    if (line.left(1)=="#") continue;
+	    printf( "Contributor: %3d: %s\n", i++, line.latin1() );
+	    QStringList myTokens = QStringList::split("\t",line);
+	    //printf ("Added contributor name to listbox: %s ",myTokens[0]);
+            lines += myTokens[0];
+        }
+        file.close();
+	listBox1->clear();
+	listBox1->insertStringList(lines,0);
+    }
+    
+}
 void QgsAbout::setVersion(QString v){
  lblVersion->setText(v) ;
 }
@@ -22,9 +54,17 @@ void QgsAbout::setPluginInfo(QString txt){
 }
 
 
-void QgsAbout::showAuthorPic( QListBoxItem * )
+void QgsAbout::showAuthorPic( QListBoxItem * theItem)
 {
-
+    //replace spaces in author name
+    printf ("Loading mug: "); 
+    QString myString = listBox1->currentText();
+     myString = myString.replace(" ","_");
+        printf ("Loading mug: %s", myString.ascii()); 
+    myString =QString("src/images/developers/") + myString + QString(".jpg");
+    printf ("Loading mug: %s\n", myString.ascii()); 
+    QPixmap *pixmap = new QPixmap(myString);
+  pixAuthorMug->setPixmap(*pixmap);
 }
 
 
