@@ -289,14 +289,25 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr):QgsRasterL
   //
   // Set up the pyramiding tab
   //
-  int myWidth=rasterLayer->getRasterXDim();
-  int myHeight=rasterLayer->getRasterYDim();
-  for (int myDivisorInt=2; myDivisorInt < 14; myDivisorInt++)
+  QPixmap myPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
+  QPixmap myNoPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
+  RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
+  RasterPyramidList::iterator myRasterPyramidIterator;
+  for ( myRasterPyramidIterator=myPyramidList.begin();
+          myRasterPyramidIterator != myPyramidList.end();
+          ++myRasterPyramidIterator )
   {
-    if((myWidth/myDivisorInt > 256) && ((myHeight/myDivisorInt)>256))
+    if ((*myRasterPyramidIterator).existsFlag==true)
     {
-      lbxPyramidResolutions->insertItem(QString::number(myWidth/myDivisorInt) + QString(" x ") + 
-              QString::number(myHeight/myDivisorInt));
+      lbxPyramidResolutions->insertItem(myPyramidPixmap,
+              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
+              QString::number((*myRasterPyramidIterator).yDimInt)); 
+    }
+    else
+    {
+      lbxPyramidResolutions->insertItem(myNoPyramidPixmap,
+              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
+              QString::number((*myRasterPyramidIterator).yDimInt)); 
     }
   }
 
@@ -729,4 +740,50 @@ void QgsRasterLayerProperties::rbtnSingleBand_toggled(bool)
 void QgsRasterLayerProperties::rbtnThreeBand_toggled(bool)
 {}
 
+void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
+{
+
+  //
+  // Go through the list marking any files that are selected in the listview
+  // as true so that we can generate pyramids for them.
+  //
+  RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
+  for ( unsigned int myCounterInt = 0; myCounterInt < lbxPyramidResolutions->count(); myCounterInt++ )
+  {
+    QListBoxItem *myItem = lbxPyramidResolutions->item( myCounterInt );
+      if ( myItem->isSelected() )
+      {
+        //mark to be pyramided
+        myPyramidList[myCounterInt].existsFlag=true;
+      }
+  }
+  //
+  // Ask raster layer to build the pyramids
+  //
+  rasterLayer->buildPyramids(myPyramidList);  
+  //
+  // repopulate the pyramids list
+  //
+  lbxPyramidResolutions->clear();
+  QPixmap myPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
+  QPixmap myNoPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
+  RasterPyramidList::iterator myRasterPyramidIterator;
+  for ( myRasterPyramidIterator=myPyramidList.begin();
+          myRasterPyramidIterator != myPyramidList.end();
+          ++myRasterPyramidIterator )
+  {
+    if ((*myRasterPyramidIterator).existsFlag==true)
+    {
+      lbxPyramidResolutions->insertItem(myPyramidPixmap,
+              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
+              QString::number((*myRasterPyramidIterator).yDimInt)); 
+    }
+    else
+    {
+      lbxPyramidResolutions->insertItem(myNoPyramidPixmap,
+              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
+              QString::number((*myRasterPyramidIterator).yDimInt)); 
+    }
+  }
+}
 

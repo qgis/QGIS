@@ -104,6 +104,21 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName):QgsMapLayer(RASTE
         valid = FALSE;
         return;
     }
+    //check f this file has pyramids
+    GDALRasterBandH myGDALBand = GDALGetRasterBand( gdalDataset, 1 ); //just use the first band
+    if( GDALGetOverviewCount(myGDALBand) > 0 )
+    {
+      hasPyramidsFlag=true;
+    }
+    else
+    {
+      hasPyramidsFlag=false;
+    }
+    //populate the list of what pyramids exist
+    buildRasterPyramidList(); 
+    //load  up the pyramid icons
+    mPyramidPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
+    mNoPyramidPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
     //just testing remove this later
     getMetadata();
 
@@ -2025,16 +2040,31 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
         //hard coding thes values for now.
         if (myLegendQPixmap.width() == 3)
         {
-            //scale width by factor of 40
-            myQWMatrix.scale(40, myHeightInt);
+            //scale width by factor of 50 (=150px wide)
+            myQWMatrix.scale(60, myHeightInt);
         }
-        else                    //assume 100px so scale by factor of 1.2
+        else                    
         {
-            myQWMatrix.scale(1.2, myHeightInt);
+            //assume 100px so scale by factor of 1.5 (=150px wide)
+            myQWMatrix.scale(1.8, myHeightInt);
         }
         //apply the matrix
         QPixmap myQPixmap2 = myLegendQPixmap.xForm(myQWMatrix);
         QPainter myQPainter(&myQPixmap2);
+        //
+        // Overlay a pyramid icon
+        //
+        if (hasPyramidsFlag)
+        {
+          myQPainter.drawPixmap(0,myHeightInt-mPyramidPixmap.height(),mPyramidPixmap);
+        }
+        else
+        {
+          myQPainter.drawPixmap(0,myHeightInt-mNoPyramidPixmap.height(),mNoPyramidPixmap);
+        }
+        //
+        // Overlay the layername
+        //
         if (drawingStyle == MULTI_BAND_SINGLE_BAND_GRAY || drawingStyle == PALETTED_SINGLE_BAND_GRAY || drawingStyle == SINGLE_BAND_GRAY)
         {
             myQPainter.setPen(Qt::white);
@@ -2044,7 +2074,10 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
             myQPainter.setPen(Qt::black);
         }
         myQPainter.setFont(myQFont);
-        myQPainter.drawText(5, myHeightInt - 10, this->name());
+        myQPainter.drawText(25, myHeightInt - 10, this->name());
+        //
+        // finish up
+        //
         myLegendQPixmap = myQPixmap2;
         myQPainter.end();
     }
@@ -2074,7 +2107,6 @@ void QgsRasterLayer::initContextMenu(QgisApp * theApp)
     popMenu->insertItem(tr("&Properties"), theApp, SLOT(layerProperties()));
     popMenu->insertSeparator();
     popMenu->insertItem(tr("&Remove"), theApp, SLOT(removeLayer()));
-    popMenu->insertItem(tr("&Build Pyramid"), this, SLOT(buildOverviews()));
 }
 
 QString QgsRasterLayer::getMetadata()
@@ -2285,44 +2317,152 @@ QString QgsRasterLayer::getMetadata()
   return myMetadataQString;
 }
 
-void QgsRasterLayer::buildOverviews()
+void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList)
 {
-    //first test if the file is writeable
-    QFile myQFile(dataSource);
-    if (!myQFile.open(IO_WriteOnly| IO_Append))
+  //first test if the file is writeable
+  QFile myQFile(dataSource);
+  if (!myQFile.open(IO_WriteOnly| IO_Append))
+  {
+
+    QMessageBox myMessageBox( tr("Write access denied"),
+            tr("Write access denied. Adjust the file permissions and try again.\n\n"),
+            QMessageBox::Warning,
+            QMessageBox::Ok,
+            QMessageBox::NoButton,
+            QMessageBox::NoButton );
+    myMessageBox.exec();
+
+    return;
+  }
+  myQFile.close();
+
+  GDALAllRegister();
+  //close the gdal dataset and reopen it in read / write mode
+  delete gdalDataset;
+  gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_Update);
+  //
+  // Iterate through the Raster Layer Pyramid Vector, building any pyramid 
+  // marked as exists in eaxh RasterPyramid struct.
+  //
+  RasterPyramidList::iterator myRasterPyramidIterator;
+  for ( myRasterPyramidIterator=theRasterPyramidList.begin(); 
+          myRasterPyramidIterator != theRasterPyramidList.end(); 
+          ++myRasterPyramidIterator )
+  {
+    std::cout << "Buld pyramids:: Level " << (*myRasterPyramidIterator).levelInt
+        << "x :" << (*myRasterPyramidIterator).xDimInt
+        << "y :" << (*myRasterPyramidIterator).yDimInt
+        << "exists :" << (*myRasterPyramidIterator).existsFlag
+        << std::endl;
+    if ((*myRasterPyramidIterator).existsFlag)
     {
-
-        QMessageBox myMessageBox( tr("Write access denied"),
-                                  tr("Write access denied. Adjust the file permissions and try again.\n\n"),
-                                  QMessageBox::Warning,
-				  QMessageBox::Ok,
-				  QMessageBox::NoButton,
-				  QMessageBox::NoButton );
-        myMessageBox.exec();
-
-        return;
+      std::cout << "Building....." << std::endl;
+      int myOverviewLevelsIntArray[1] = {(*myRasterPyramidIterator).levelInt };
+      /* From : http://remotesensing.org/gdal/classGDALDataset.html#a23
+       * pszResampling : one of "NEAREST", "AVERAGE" or "MODE" controlling the downsampling method applied.
+       * nOverviews : number of overviews to build. 
+       * panOverviewList : the list of overview decimation factors to build. 
+       * nBand : number of bands to build overviews for in panBandList. Build for all bands if this is 0. 
+       * panBandList : list of band numbers. 
+       * pfnProgress : a function to call to report progress, or NULL. 
+       * pProgressData : application data to pass to the progress function.
+       */
+      gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
+              GDALTermProgress, NULL );
     }
-    myQFile.close();
-
-
-
-
-    GDALAllRegister();
-    //close the gdal dataset and reopen it in read / write mode
-    delete gdalDataset;
-    gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_Update);
-    int myOverviewLevelsIntArray[3] = { 2, 4, 8 };
-    gdalDataset->BuildOverviews( "NEAREST", 3, myOverviewLevelsIntArray, 0, NULL,
-                                 GDALTermProgress, NULL );
     std::cout << "Pyramid overviews built" << std::endl;
 
     //close the gdal dataset and reopen it in read only mode
     delete gdalDataset;
     gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_ReadOnly);
+  }
 }
+RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
+{
+  //
+  // First we build up a list of potential pyramid layers
+  //
+  int myWidth=rasterXDimInt;
+  int myHeight=rasterYDimInt;
+  int myDivisorInt=2;
+  mPyramidList.clear();
+  std::cout << "Building initial pyramid list" << std::endl;
+  while((myWidth/myDivisorInt > 64) && ((myHeight/myDivisorInt)>64))
+  {
+    RasterPyramid myRasterPyramid;
+    myRasterPyramid.levelInt=myDivisorInt;
+    myRasterPyramid.xDimInt = myWidth/myDivisorInt;
+    myRasterPyramid.yDimInt = myHeight/myDivisorInt;
+    myRasterPyramid.existsFlag=false;
+    mPyramidList.append(myRasterPyramid);
+    std::cout << "Appended " << myRasterPyramid.levelInt << " "
+        << myRasterPyramid.xDimInt << " "
+        << myRasterPyramid.yDimInt << " "
+        << " to pyramid list" << std::endl;
+    //sqare the divisor each step
+    myDivisorInt=(myDivisorInt *2);
+  }
 
+  //
+  // Now we mark which ones actually exist in the raster
+  //
+  std::cout << "Marking pyramids in list that are built" << std::endl;
+  GDALRasterBandH myGDALBand = GDALGetRasterBand( gdalDataset, 1 ); //just use the first band
+  if( GDALGetOverviewCount(myGDALBand) > 0 )
+  {
+    int myOverviewInt;
+    for( myOverviewInt = 0;
+            myOverviewInt < GDALGetOverviewCount(myGDALBand);
+            myOverviewInt++ )
+    {
+      GDALRasterBandH myOverview;
+      myOverview = GDALGetOverview( myGDALBand, myOverviewInt );
+      int myOverviewXDim = GDALGetRasterBandXSize( myOverview );
+      int myOverviewYDim = GDALGetRasterBandYSize( myOverview );
+      //
+      // Iterate through the PyramidList looking to see if there are any matches...
+      //
+      RasterPyramidList::iterator myRasterPyramidIterator;
+      for ( myRasterPyramidIterator=mPyramidList.begin(); 
+              myRasterPyramidIterator != mPyramidList.end(); 
+              ++myRasterPyramidIterator )
+      {
+        std::cout << "buildPyramidList -> checking whether " <<
+            (*myRasterPyramidIterator).xDimInt << " x " <<
+            (*myRasterPyramidIterator).yDimInt << " matches " << 
+            myOverviewXDim << " x " << myOverviewYDim ;
 
+        if ((myOverviewXDim==(*myRasterPyramidIterator).xDimInt ) && 
+                (myOverviewYDim==(*myRasterPyramidIterator).yDimInt))
+        {
+          (*myRasterPyramidIterator).existsFlag=true;
+          std::cout << ".....YES!" << std::endl;
+        }
+        else
+        {
+          (*myRasterPyramidIterator).existsFlag=false;
+          std::cout << ".....no." << std::endl;
+        }
+      }
+    }
+  }
+  return mPyramidList;
+}
+/*
+RasterPyramid QgsRasterLayer::getRasterPyramid(int thePyramidNoInt)
+{
+  if (thePyramidNoInt < 0 || thePyramidNoInt > mPyramidList.size())
+  {
+    return NULL;
+  }
+  else
+  {
+    return mPyramidList[thePyramidNoInt];
+  }
+}
+*/
 //currently not used! See also typedef by same name near top of rasterlayer header file.
+/*
 int QgsRasterLayer::showTextProgress( double theProgressDouble,
                                       const char *theMessageCharArray,
                                       void *theData)
@@ -2337,3 +2477,4 @@ int QgsRasterLayer::showTextProgress( double theProgressDouble,
 
     return TRUE;
 }
+*/

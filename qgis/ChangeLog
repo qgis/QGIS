@@ -1,7 +1,13 @@
 QGIS Change Log
-ChangeLog,v 1.88 2004/05/21 06:26:22 gsherman Exp
+ChangeLog,v 1.89 2004/05/21 11:25:39 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+2004-05-20 [ts] 0.2.0devel31
+** First working version for gui pyramid manager (implemented as tab in raster
+props). Raster legend entry now stretched to width of legend and show an icon
+indicating whether the layer has overviews or not. Added struct and qvaluelist
+to raster to store pyramids state in.
 
 2004-05-20 [gsherman] 0.2.0devel30
 ** Changed release name to Madison in qgis.h
