@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.166 2004/08/17 16:14:08 larsl Exp
+ChangeLog,v 1.167 2004/08/17 18:13:05 larsl Exp
 ------------------------------------------------------------------------------
 Version 0.4 'Baby' .... development version
+
+2004-08-17 [larsl] 0.4.0devel11
+** Implemented GPX file writing - GPX layers are now written back to file
+   when features are added
 
 2004-08-17 [larsl] 0.4.0devel10
 * More digitizing support for the GPX provider. Routes and tracks can now be 

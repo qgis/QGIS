@@ -599,7 +599,7 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
       else if (iter->fieldName() == "url")
 	wpt.url = iter->fieldValue();
     }
-    return true;
+    break;
   }
     
     // the user is trying to add a line feature
@@ -626,7 +626,6 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
 	std::memcpy(&rpt.lat, geo + 9 + 16 * i + 8, sizeof(double));
 	rte.points.push_back(rpt);
       }
-      return true;
     }
     
     // add track
@@ -641,15 +640,30 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
 	trkSeg.points.push_back(tpt);
       }
       trk.segments.push_back(trkSeg);
-      return true;
     }
     
     break;
   }
+    
+    // unsupported geometry - something's wrong
+  default:
+    return false;
+    
   }
   
-  // something went wrong, or we wouldn't be here
-  return false;
+  // write back to file
+  QDomDocument qdd;
+  data->fillDom(qdd);
+  QFile file(mFileName);
+  if (file.open(IO_WriteOnly)) {
+    QTextStream stream(&file);
+    stream<<qdd.toString();
+  }
+  else {
+    std::cerr<<"Could not write \""<<mFileName<<"\""<<std::endl;
+  }
+  
+  return true;
 }
 
 
