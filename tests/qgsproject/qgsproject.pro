@@ -212,6 +212,8 @@ LIBPATH += $(HOME)/lib
 
 CONFIG += qt warn_on debug thread exceptions stl rtti
 
+DEFINES = QGISDEBUG
+
 LIBS += -lcppunit -dl -lqgis $$QGIS_OBJS $$GDAL_LIBS
 
 # Input
