@@ -73,6 +73,7 @@ QString QgsMapLayer::sourceName()
 {
   return internalName;
 }
+
 const QgsRect QgsMapLayer::extent()
 {
   return layerExtent;
@@ -122,6 +123,17 @@ void QgsMapLayer::setVisible(bool vis)
   emit visibilityChanged();
 }  /** Read property of int featureType. */
 
+void QgsMapLayer::showInOverview(bool theFlag)
+{
+  if (theFlag)
+  {
+    //do me
+  }
+  else
+  {
+    //do me
+  }
+}
 
 const int &QgsMapLayer::featureType()
 {
