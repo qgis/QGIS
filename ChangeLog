@@ -1,7 +1,20 @@
 QGIS Change Log
-ChangeLog,v 1.129 2004/06/13 17:25:58 timlinux Exp
+ChangeLog,v 1.130 2004/06/13 22:04:47 timlinux Exp
 ------------------------------------------------------------------------------
 Version 0.3 'Madison' .... development version
+
+
+2004-06-13 [ts] 0.3.0devel34
+** Removed gdal deps in qgisapp.
+
+** Moved raster load stuff to a group at the end of qgisapp.cpp file.
+
+** Removed generically useable raster fns from qgisapp to static methods of qgsrasterlayer.
+
+** Some renaming of variable names etc.
+
+** Added addRaster(QgsRasterLayer *) private method to qgisapp - which is intended for 
+   use via plugins that want to load  'ready made' / symbolised raster layer into the mapCanvas.
 
 2004-06-13 [ts] 0.3.0devel33
 
