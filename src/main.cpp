@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
   // special behaviours. Any remaining non command arguments will be kept aside to
   // be passed as a list of layers and / or a project that should be loaded.
   //
-  
+
   // This behaviour is used to load the app, snapshot the map,
   // save the image to disk and then exit
   QString mySnapshotFileName="";
@@ -145,12 +145,12 @@ int main(int argc, char *argv[])
 
         case 'h':
         case '?':
-	    usage( argv[0] );
-	    return 2;		// XXX need standard exit codes
+            usage( argv[0] );
+            return 2;		// XXX need standard exit codes
             break;
 
         default:
-	    std::cerr << argv[0] << ": getopt returned character code " << optionChar << "\n";
+            std::cerr << argv[0] << ": getopt returned character code " << optionChar << "\n";
             return 1;		// XXX need standard exit codes
     }
   }
@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
       myFileList->append(argv[optind++]);
     }
   }
-  
+
   /////////////////////////////////////////////////////////////////////
   // Now we have the handlers for the different behaviours...
   ////////////////////////////////////////////////////////////////////
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
   /////////////////////////////////////////////////////////////////////
   // Initialise the application and the translation stuff
   /////////////////////////////////////////////////////////////////////
-  
+
   QApplication a(argc, argv);
   // a.setFont(QFont("helvetica", 11));
 
@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
   {
     tor.load(QString("qgis_") + QTextCodec::locale(), ".");
   }
-  
+
   //tor.load("qgis_go", "." );
   a.installTranslator(&tor);
   /* uncomment the following line, if you want a Windows 95 look */
@@ -207,25 +207,25 @@ int main(int argc, char *argv[])
   QgisApp *qgis = new QgisApp();
   a.setMainWidget(qgis);
 
-  
+
   /////////////////////////////////////////////////////////////////////
   // Load a project file if one was specified
   /////////////////////////////////////////////////////////////////////
-    if(myProjectFileName!="")
-    {
-      qgis->addProject(myProjectFileName);
-    }
+  if(myProjectFileName!="")
+  {
+    qgis->addProject(myProjectFileName);
+  }
 
 
   /////////////////////////////////////////////////////////////////////
   // autoload any filenames that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
 #ifdef QGISDEBUG
-    std::cout << "Number of files in myFileList: " << myFileList->count() << std::endl;
+  std::cout << "Number of files in myFileList: " << myFileList->count() << std::endl;
 #endif
   for ( QStringList::Iterator myIterator = myFileList->begin(); myIterator != myFileList->end(); ++myIterator ) 
   {
-    
+
 #ifdef QGISDEBUG
     std::cout << "Trying to load file : " << *myIterator << std::endl;
 #endif
@@ -245,22 +245,22 @@ int main(int argc, char *argv[])
       }
     }
   }
-  
+
   /////////////////////////////////////////////////////////////////////
   // Take a snapshot of the map view then exit if snapshot mode requested
   /////////////////////////////////////////////////////////////////////
-    if(myProjectFileName!="")
-    {
-      qgis->saveMapAsImage(mySnapshotFileName);
-      return 1;
-    }
+  if(mySnapshotFileName!="")
+  {
+    QPixmap * myQPixmap = new QPixmap(800,600);
+    qgis->saveMapAsImage(mySnapshotFileName,myQPixmap);
+    return 1;
+  }
 
-    
+
   /////////////////////////////////////////////////////////////////////
   // Continue on to interactive gui...
   /////////////////////////////////////////////////////////////////////
   qgis->show();
-
   a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 
   return a.exec();

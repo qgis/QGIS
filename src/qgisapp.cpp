@@ -1419,7 +1419,7 @@ void QgisApp::saveMapAsImage()
 
 }
 //overloaded version of the above function
-void QgisApp::saveMapAsImage(QString theImageFileNameQString)
+void QgisApp::saveMapAsImage(QString theImageFileNameQString, QPixmap * theQPixmap)
 {
   if ( theImageFileNameQString=="")
   {
@@ -1429,7 +1429,7 @@ void QgisApp::saveMapAsImage(QString theImageFileNameQString)
   else
   {
     //save the mapview to the selected file
-    mapCanvas->saveAsImage(theImageFileNameQString);
+    mapCanvas->saveAsImage(theImageFileNameQString,theQPixmap);
   }
 }
 bool QgisApp::addProject(QString projectFile)
