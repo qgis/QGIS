@@ -1,7 +1,11 @@
 QGIS Change Log
-ChangeLog,v 1.53 2004/04/04 15:27:33 jobi Exp
+ChangeLog,v 1.54 2004/04/04 22:53:47 jobi Exp
 ------------------------------------------------------------------------------
 Version 0.2 'Pumpkin' .... development version
+
+2004-04-05 [jobi] 0.1.0devel30
+** fixed qgiscommit (didn't work when in qgis root)
+** cosmetics for qgis-config to be more "standardconform"
 
 2004-04-04 [jobi] 0.1.0devel29
 ** fixed GRASS provider

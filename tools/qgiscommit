@@ -10,7 +10,6 @@ if [ ! -f CVS/Repository -a ! `grep qgis CVS/Root` ]; then
         exit -1
 fi
 
-
 #
 # Get Changes
 #
@@ -43,7 +42,7 @@ fi
 #
 
 # find out where the top directory is
-WAY2ROOT=`dirname $PWD | sed -e 's/\(.*\/qgis\).*/\1/'`
+WAY2ROOT="`dirname $PWD | sed -e 's#\(.*\)\/qgis.*#\1#'`/qgis"
 
 # if we're not already in the top directory, push the current directory on stack and 
 # cd to the top directory
