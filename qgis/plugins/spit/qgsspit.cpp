@@ -77,6 +77,7 @@ QgsSpit::QgsSpit(QWidget *parent, const char *name) : QgsSpitBase(parent, name){
   
 	schema_list << "public";
 	gl_key = "/Qgis/connections/";
+	getSchema();
 }
 
 QgsSpit::~QgsSpit(){  
