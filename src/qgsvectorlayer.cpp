@@ -372,7 +372,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                         x = (double *) (feature + 5);
                         y = (double *) (feature + 5 + sizeof(double));
                         //    std::cout << "transforming point\n";
-                        pt = cXf->transform(*x, *y);
+			pt.setX(*x);
+			pt.setY(*y);
+                        cXf->transform(&pt);
                         //std::cout << "drawing marker for feature " << featureCount << "\n";
                         p->drawRect(pt.xToInt(), pt.yToInt(), 5, 5);
 	  
@@ -395,7 +397,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                             y = (double *) ptr;
                             ptr += sizeof(double);
                             // transform the point
-                            pt = cXf->transform(*x, *y);
+                            pt.setX(*x);
+			    pt.setY(*y);
+			    cXf->transform(&pt);
                             if (idx == 0)
                               p->moveTo(pt.xToInt(), pt.yToInt());
                             else
@@ -421,7 +425,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                                 y = (double *) ptr;
                                 ptr += sizeof(double);
                                 // transform the point
-                                pt = cXf->transform(*x, *y);
+                                pt.setX(*x);
+				pt.setY(*y);
+				cXf->transform(&pt);
                                 if (idx == 0)
                                   p->moveTo(pt.xToInt(), pt.yToInt());
                                 else
@@ -451,7 +457,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                                 ptr += sizeof(double);
                                 y = (double *) ptr;
                                 ptr += sizeof(double);
-                                pt = cXf->transform(*x, *y);
+                                pt.setX(*x);
+				pt.setY(*y);
+				cXf->transform(&pt);
                                 pa->setPoint(jdx, pt.xToInt(), pt.yToInt());
                               }
                             // draw the ring
@@ -490,7 +498,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsCoordinateTrans
                                     ptr += sizeof(double);
                                     // std::cout << "Transforming " << *x << "," << *y << " to ";
 
-                                    pt = cXf->transform(*x, *y);
+                                    pt.setX(*x);
+				    pt.setY(*y);
+				    cXf->transform(&pt);
                                     //std::cout << pt.xToInt() << "," << pt.yToInt() << std::endl;
                                     pa->setPoint(jdx, pt.xToInt(), pt.yToInt());
 
