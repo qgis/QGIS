@@ -156,6 +156,19 @@ QString QgsOgrProvider::getProjectionWKT()
   }
   else
   {
+    // if appropriate, morph the projection from ESRI form
+    QString fileName = ogrDataSource->GetName();
+#ifdef QGISDEBUG 
+    std::cerr << "Data source file name is : " << fileName << std::endl; 
+#endif 
+    if(fileName.contains(".shp"))
+    {
+#ifdef QGISDEBUG 
+      std::cerr << "Morphing " << fileName << " WKT from ESRI" << std::endl; 
+#endif 
+      // morph it
+      mySpatialRefSys->morphFromESRI();
+    }
     char    *pszWKT = NULL;
     mySpatialRefSys->exportToWkt( &pszWKT );
     QString myWKTString = QString(pszWKT);
