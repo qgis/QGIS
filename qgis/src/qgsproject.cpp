@@ -279,44 +279,173 @@ _getScopeProperties( QDomNode const & scopeNode,
         // original values *and* types
         QVariant restoredValue;
 
-        // XXX instead of using "QString" or whatever, maybe we should be
-        // XXX using the strings returned from QVariant
-        if ( "QString" == currentProperty.toElement().attributeNode("type").value() )
-        {
-            restoredValue = currentValue.nodeValue(); // no translating necessary
-        }
-        else if ( "Bool" == currentProperty.toElement().attributeNode("type").value() )
-        {
-            restoredValue = QVariant(currentValue.nodeValue()).asBool();
-        }
-        else if ( "Int" == currentProperty.toElement().attributeNode("type").value() )
-        {
-            restoredValue = QVariant(currentValue.nodeValue()).asInt();
-        }
-        else if ( "UInt" == currentProperty.toElement().attributeNode("type").value() )
-        {
-            restoredValue = QVariant(currentValue.nodeValue()).asUInt();
-        }
-        else if ( "LongLong" == currentProperty.toElement().attributeNode("type").value() )
-        {
-            restoredValue = QVariant(currentValue.nodeValue()).asLongLong();
-        }
-        else if ( "ULongLong" == currentProperty.toElement().attributeNode("type").value() )
-        {
-            restoredValue = QVariant(currentValue.nodeValue()).asULongLong();
-        }
-        else if ( "Double" == currentProperty.toElement().attributeNode("type").value() )
-        {
-            restoredValue = QVariant(currentValue.nodeValue()).asDouble();
-        }
-        else                    // unsupported value, so reset to null
-        {
-            qDebug( "unsupported value type %s .. needs to be added to qgsproject.cpp:%d",
-                    currentProperty.toElement().attributeNode("type").value().ascii(),
-                    __LINE__ );
+        // get the type associated with the value first
+        QVariant::Type type = 
+            QVariant::nameToType( currentProperty.toElement().attributeNode("type").value() );
 
-            restoredValue.clear();
+        switch ( type )
+        {
+            case QVariant::Invalid :
+                qDebug( "qgsproject.cpp:%d invalid value type %s .. ",
+                        __LINE__,
+                        currentProperty.toElement().attributeNode("type").value().ascii() );
+
+                restoredValue.clear();
+
+                ++i;
+
+                continue;
+
+                break;
+
+            case QVariant::Map :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Map", __LINE__ );
+                break;
+
+            case QVariant::List :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::List", __LINE__ );
+                break;
+
+            case QVariant::String :
+                restoredValue = currentValue.nodeValue(); // no translating necessary
+                break;
+
+            case QVariant::StringList :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::StringList", __LINE__ );
+                break;
+
+            case QVariant::Font :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Font", __LINE__ );
+                break;
+
+            case QVariant::Pixmap :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Pixmap", __LINE__ );
+                break;
+
+            case QVariant::Brush :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Brush", __LINE__ );
+                break;
+
+            case QVariant::Rect :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Rect", __LINE__ );
+                break;
+
+            case QVariant::Size :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Size", __LINE__ );
+                break;
+
+            case QVariant::Color :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Color", __LINE__ );
+                break;
+
+            case QVariant::Palette :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Palette", __LINE__ );
+                break;
+
+            case QVariant::ColorGroup :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::ColorGroup", __LINE__ );
+                break;
+
+            case QVariant::IconSet :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::IconSet", __LINE__ );
+                break;
+
+            case QVariant::Point :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Point", __LINE__ );
+                break;
+
+            case QVariant::Image :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Image", __LINE__ );
+                break;
+
+            case QVariant::Int :
+                restoredValue = QVariant(currentValue.nodeValue()).asInt();
+                break;
+
+            case QVariant::UInt :
+                restoredValue = QVariant(currentValue.nodeValue()).asUInt();
+                break;
+
+            case QVariant::Bool :
+                restoredValue = QVariant(currentValue.nodeValue()).asBool();
+                break;
+
+            case QVariant::Double :
+                restoredValue = QVariant(currentValue.nodeValue()).asDouble();
+                break;
+
+            case QVariant::CString :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::CString", __LINE__ );
+                break;
+
+            case QVariant::PointArray :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::PointArray", __LINE__ );
+                break;
+
+            case QVariant::Region :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Region", __LINE__ );
+                break;
+
+            case QVariant::Bitmap :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Bitmap", __LINE__ );
+                break;
+
+            case QVariant::Cursor :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Cursor", __LINE__ );
+                break;
+
+            case QVariant::SizePolicy :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::SizePolicy", __LINE__ );
+                break;
+
+            case QVariant::Date :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Date", __LINE__ );
+                break;
+
+            case QVariant::Time :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Time", __LINE__ );
+                break;
+
+            case QVariant::DateTime :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::DateTime", __LINE__ );
+                break;
+
+            case QVariant::ByteArray :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::ByteArray", __LINE__ );
+                break;
+
+            case QVariant::BitArray :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::BitArray", __LINE__ );
+                break;
+
+            case QVariant::KeySequence :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::KeySequence", __LINE__ );
+                break;
+
+            case QVariant::Pen :
+                qDebug( "qgsproject.cpp:%d add support for QVariant::Pen", __LINE__ );
+                break;
+
+            case QVariant::LongLong :
+                restoredValue = QVariant(currentValue.nodeValue()).asLongLong();
+                break;
+
+            case QVariant::ULongLong :
+                restoredValue = QVariant(currentValue.nodeValue()).asULongLong();
+                break;
+
+            default :
+                qDebug( "unsupported value type %s .. not propertly translated to QVariant in qgsproject.cpp:%d",
+                        currentProperty.toElement().attributeNode("type").value().ascii(),
+                        __LINE__ );
+
+                restoredValue.clear();
+
+                ++i;
+
+                continue;
         }
+
 
         project_properties[ scopeName ].append( QgsProject::PropertyValue( currentProperty.nodeName(), 
                                                                            restoredValue ) );
