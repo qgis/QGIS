@@ -1,4 +1,19 @@
 dnl ------------------------------------------------------------------------
+dnl Detect if this is a 64bit environment
+dnl
+dnl it sets:
+dnl   _lib
+dnl ------------------------------------------------------------------------
+AC_DEFUN([AQ_CHECK_LIB64],
+[
+if test `echo ${libdir} | sed -e 's#.*lib64.*#64#'` = "64"; then
+  _lib="lib64"
+else
+  _lib="lib"
+fi
+])
+
+dnl ------------------------------------------------------------------------
 dnl Detect GDAL/OGR
 dnl
 dnl use AQ_CHECK_GDAL to detect GDAL and OGR
@@ -117,7 +132,7 @@ AC_MSG_CHECKING([QTDIR])
 AC_ARG_WITH([qtdir], [  --with-qtdir=DIR        Qt installation directory [default=/usr/local]], QTDIR=$withval)
 # Check that QTDIR is defined or that --with-qtdir given
 if test x$QTDIR = x ; then
-  QT_SEARCH="/usr/lib/qt31 /usr/local/qt31 /usr/lib/qt3 /usr/local/qt3 /usr/lib/qt2 /usr/local/qt2 /usr/lib/qt /usr/local/qt /usr /usr/local"
+  QT_SEARCH=" /usr/lib/qt31 /usr/lib64/qt31 /usr/local/qt31 /usr/lib/qt3 /usr/lib64/qt3 /usr/local/qt3 /usr/lib/qt2 /usr/lib64/qt2 /usr/local/qt2 /usr/lib/qt /usr/lib64/qt /usr/local/qt /usr /usr/local"
   for i in $QT_SEARCH; do
     if test x$QTDIR = x; then
       if test -f $i/include/qt/qglobal.h -o -f $i/include/qglobal.h -o -f $i/include/qt3/qglobal.h; then
@@ -243,9 +258,9 @@ case "${host}" in
     ;;
   *)
     # determin static or dynamic -- prefer dynamic
-    QT_IS_DYNAMIC=`ls $QTDIR/lib/libqt*.so 2> /dev/null`
+    QT_IS_DYNAMIC=`ls $QTDIR/${_lib}/libqt*.so 2> /dev/null`
     if test "x$QT_IS_DYNAMIC" = x;  then
-      QT_IS_STATIC=`ls $QTDIR/lib/libqt*.a 2> /dev/null`
+      QT_IS_STATIC=`ls $QTDIR/${_lib}/libqt*.a 2> /dev/null`
       if test "x$QT_IS_STATIC" = x; then
         QT_IS_STATIC="no"
         AC_MSG_ERROR([*** Couldn't find any Qt libraries])
@@ -256,20 +271,20 @@ case "${host}" in
       QT_IS_STATIC="no"
     fi
     # set link parameters based on shared/mt libs or static lib
-    if test "x`ls $QTDIR/lib/libqt.a* 2> /dev/null`" != x ; then
+    if test "x`ls $QTDIR/${_lib}/libqt.a* 2> /dev/null`" != x ; then
       QT_LIB="-lqt"
       QT_IS_MT="no"
-    elif test "x`ls $QTDIR/lib/libqt-mt.so* 2> /dev/null`" != x ; then
+    elif test "x`ls $QTDIR/${_lib}/libqt-mt.so* 2> /dev/null`" != x ; then
       QT_LIB="-lqt-mt"
       QT_IS_MT="yes"
-    elif test "x`ls $QTDIR/lib/libqt.so* 2> /dev/null`" != x ; then
+    elif test "x`ls $QTDIR/${_lib}/libqt.so* 2> /dev/null`" != x ; then
       QT_LIB="-lqt"
       QT_IS_MT="no"
-    elif test "x`ls $QTDIR/lib/libqte.* 2> /dev/null`" != x ; then
+    elif test "x`ls $QTDIR/${_lib}/libqte.* 2> /dev/null`" != x ; then
       QT_LIB="-lqte"
       QT_IS_MT="no"
       QT_IS_EMBEDDED="yes"
-    elif test "x`ls $QTDIR/lib/libqte-mt.* 2> /dev/null`" != x ; then
+    elif test "x`ls $QTDIR/${_lib}/libqte-mt.* 2> /dev/null`" != x ; then
       QT_LIB="-lqte-mt"
       QT_IS_MT="yes"
       QT_IS_EMBEDDED="yes"
@@ -358,7 +373,7 @@ if test x"$QT_IS_MT" = "xyes" ; then
   QT_CXXFLAGS="$QT_CXXFLAGS -D_REENTRANT -DQT_THREAD_SUPPORT"
 fi
 
-QT_LDADD="-L$QTDIR/lib $QT_LIBS"
+QT_LDADD="-L$QTDIR/${_lib} $QT_LIBS"
 
 if test x$QT_IS_STATIC = xyes ; then
   OLDLIBS="$LIBS"

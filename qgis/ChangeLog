@@ -3,6 +3,10 @@ QGIS Change Log
 ** Applied patches from M. Loskot for a build error and missing Q_OBJECT
    macros in qgsspit.h and qgsattributetable.h
 2005-01-01 [larsl] 0.6.0devel4
+2005-03-13 [jobi] 0.6.0devel6
+- fix for building on 64bit architecture
+- fixed dependencies of designer-plugin/stuff
+2005-01-01 [larsl] 0.6.0devel4
 ** Fixed a bug that crashed QGIS when loading rasters from a project file, pt 2
 QGIS Change Log
 2005-01-01 [larsl] 0.6.0devel3
