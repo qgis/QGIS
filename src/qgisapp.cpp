@@ -283,7 +283,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   connect(mapCanvas, SIGNAL(extentsChanged(QString )),this,SLOT(showExtents(QString )));
   connect(mapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(showScale(QString)));
   connect(mapCanvas, SIGNAL(addedLayer(QgsMapLayer *)), mapLegend, SLOT(addLayer(QgsMapLayer *)));
-  connect(mapCanvas, SIGNAL(removedLayer(QString)), mapLegend, SLOT(removedLayer(QString)));
+  connect(mapCanvas, SIGNAL(removedLayer(QString)), mapLegend, SLOT(removeLayer(QString)));
 
   connect(mapLegend, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
   connect(mapLegend, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
