@@ -43,6 +43,8 @@ class QgsGraMaExtensionWidget: public QScrollView
     int classfield();
     /**Access to the widget objects. In QgsGraMaDialog, the widgets have to be casted to the proper subclasses to retrieve their information*/
     QWidget* getWidget(int column, int row);
+    /**Resizes the marker images in the dialogs (in case the scale factors may have changed)*/
+    void adjustMarkers();
 
  protected:
     /**Number of the field to classify*/

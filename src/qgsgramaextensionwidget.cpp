@@ -147,7 +147,25 @@ void QgsGraMaExtensionWidget::selectMarker()
 	((QPushButton *) sender())->setName(svgfile);
 	//draw the SVG-Image on the button
 	QPicture pic;
-	double scalefactor=1;//mScaleEdit->text().toDouble();//add a more sophisticated solution after
+
+	int indexnumber;//index position of the sender button
+
+	//find out the row of the sender to check for the chosen scale factor
+	for(int i=1;i<=mNumberOfClasses;++i)
+	{
+	    if(sender()==mWidgetVector[5 * (i - 1) + 3])
+	    {
+		indexnumber=5 * (i - 1) + 3;
+		break;
+	    } 
+	}
+
+#ifdef QGISDEBUG	
+	qWarning("indexnumber: "+QString::number(indexnumber));
+#endif
+
+	double scalefactor=((QLineEdit*)mWidgetVector[indexnumber+1])->text().toDouble();
+
 	pic.load(svgfile,"svg");
 
 	int width=(int)(pic.boundingRect().width()*scalefactor);
@@ -178,4 +196,9 @@ void QgsGraMaExtensionWidget::resizeEvent(QResizeEvent* e)
 {
     setContentsPos (0,0);
     QScrollView::resizeEvent(e);
+}
+
+void QgsGraMaExtensionWidget::adjustMarkers()
+{
+    //soon
 }
