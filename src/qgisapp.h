@@ -310,6 +310,8 @@ private slots:
     /*  void urlData(); */
     /** Used to (re)set the zordering of the overview map*/
     void setOverviewZOrder(QgsLegend * );
+    //! Kills the splash screen 
+    void killSplashScreen();
 public slots:
     void showProgress(int theProgress, int theTotalSteps);
     void showExtents(QgsRect theExtents);

@@ -67,6 +67,7 @@
 #include <qclipboard.h>
 #include <qapplication.h>
 #include <qtoolbutton.h>
+#include <qtimer.h>
 
 #include <iostream>
 #include <iomanip>
@@ -390,7 +391,6 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
   
   if (! myHideSplashFlag)
   {
-
     gSplashScreen->setStatus(tr("Loading plugins..."));
   }
 
@@ -465,8 +465,8 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl):QgisAppBase(pare
 
   if (!myHideSplashFlag)
   {
-    gSplashScreen->finish(this);
-    delete gSplashScreen;
+    QTimer::singleShot( 5000, this, SLOT(killSplashScreen()) );
+    gSplashScreen->setStatus(tr("QGIS ready"));
   }
  
 } // QgisApp ctor
@@ -3306,4 +3306,9 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList)
 //
 ///////////////////////////////////////////////////////////////////
 
+void QgisApp::killSplashScreen()
+{
+    gSplashScreen->finish(this);
+    delete gSplashScreen;
+}
 
