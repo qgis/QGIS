@@ -293,6 +293,18 @@
         <slot>saveConnection()</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>txtName</tabstop>
+    <tabstop>txtHost</tabstop>
+    <tabstop>txtDatabase</tabstop>
+    <tabstop>txtUsername</tabstop>
+    <tabstop>txtPassword</tabstop>
+    <tabstop>chkStorePassword</tabstop>
+    <tabstop>btnConnect</tabstop>
+    <tabstop>buttonOk</tabstop>
+    <tabstop>buttonCancel</tabstop>
+    <tabstop>buttonHelp</tabstop>
+</tabstops>
 <slots>
     <slot>saveConnection()</slot>
     <slot>testConnection()</slot>
