@@ -113,8 +113,9 @@ void Plugin::initGui()
 
 void Plugin::projectRead()
 {
+#ifdef QGISDEBUG
     std::cout << "+++++++++ Copyright plugin - project read slot called...." << std::endl;
-    //default text to start with - try to fetch it from qgsproject
+#endif    //default text to start with - try to fetch it from qgsproject
 
 
     mQFont.setFamily(QgsProject::instance()->readEntry("CopyrightLabel","/FontName","Arial"));
