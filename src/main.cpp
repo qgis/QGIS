@@ -183,7 +183,17 @@ int main(int argc, char *argv[])
   // Initialise the application and the translation stuff
   /////////////////////////////////////////////////////////////////////
 
-  QApplication a(argc, argv);
+#ifdef Q_WS_X11
+  bool myUseGuiFlag = getenv( "DISPLAY" ) != 0;
+#else
+  bool myUseGuiFlag = TRUE;
+#endif
+  if (!myUseGuiFlag) 
+  {
+    std::cerr << "QGIS starting in non-interactive mode because you have no DISPLAY environment variable set." << std::endl;
+  }
+  QApplication a(argc, argv, myUseGuiFlag );
+
   // a.setFont(QFont("helvetica", 11));
 
   QTranslator tor(0);
