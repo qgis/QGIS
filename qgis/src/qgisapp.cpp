@@ -1711,19 +1711,29 @@ void QgisApp::fileSave()
 {
     // if we don't have a filename, then obviously we need to get one; note
     // that the project file name is reset to null in fileNew()
-
+    QString fullPath;
+    bool isNewProject = FALSE;
     if ( QgsProject::instance()->filename().isNull() )
     {
-        // XXX maybe as a convenience have it remember the last directory we
-        // XXX saved project files to to use that instead of "./"
-        QString fullPath =
-            QFileDialog::getSaveFileName("./", tr("QGis files (*.qgs)"), 0, 0,
-                                         tr("Choose a QGIS project file"));
-
-        if ( fullPath.isNull() )
+        isNewProject = TRUE;
+        
+        // Retrieve last used project dir from persistent settings
+        QSettings settings;
+        QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
+        
+        QFileDialog * saveFileDialog = new QFileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0, 
+                                                        QFileDialog::tr("Choose a QGIS project file"));
+        saveFileDialog->setMode(QFileDialog::AnyFile);
+        
+        if (saveFileDialog->exec() == QDialog::Accepted)
         {
-            return;             // they didn't select anything, so just abort
+            fullPath = saveFileDialog->selectedFile();
+        } else {
+            // if they didn't select anything, just return
+            delete saveFileDialog;
+            return;
         }
+        
         // make sure we have the .qgs extension in the file name
         if(fullPath.find(QRegExp("\\.qgs$")) == -1)
         {
@@ -1738,6 +1748,13 @@ void QgisApp::fileSave()
         if ( QgsProject::instance()->write() )
         {
             statusBar()->message(tr("Saved map to:") + " " + QgsProject::instance()->filename() );
+            
+            if (isNewProject)
+            {
+                // add this to the list of recently used project files
+                QSettings settings;
+                saveRecentProjectPath(fullPath, settings);
+            }
         }
         else
         {
