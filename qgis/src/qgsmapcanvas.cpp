@@ -86,6 +86,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgspolygonsymbol.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
 
 
 
@@ -118,6 +119,12 @@ public:
         coordXForm = new QgsCoordinateTransform;
         pmCanvas = new QPixmap(width, height);
         scaleCalculator = new QgsScaleCalculator;
+        // set the initial extent - can't use a constructor since QgsRect
+        // normalizes the rectangle upon construction
+        fullExtent.setXmin(9999999999.0);
+        fullExtent.setYmin(999999999.0);
+        fullExtent.setXmax(-999999999.0);
+        fullExtent.setYmax(-999999999.0);
     }
 
     CanvasProperties()
@@ -1534,7 +1541,6 @@ void QgsMapCanvas::setbgColor(const QColor & _newVal)
 } // setbgColor
 
 
-
 /** Updates the full extent to include the mbr of the rectangle r */
 void QgsMapCanvas::updateFullExtent(QgsRect const & r)
 {
@@ -1885,6 +1891,25 @@ void QgsMapCanvas::recalculateExtents()
    std::cout << "QgsMapCanvas::recalculateExtents() called !" << std::endl;
 #endif
 
-  //gsherman magick goes here
-
+// reset the map canvas extent since the extent may now be smaller
+// We can't use a constructor since QgsRect normalizes the rectangle upon construction
+        mCanvasProperties->fullExtent.setXmin(9999999999.0);
+        mCanvasProperties->fullExtent.setYmin(999999999.0);
+        mCanvasProperties->fullExtent.setXmax(-999999999.0);
+        mCanvasProperties->fullExtent.setYmax(-999999999.0);
+  // get the map layer register collection
+  QgsMapLayerRegistry *reg = QgsMapLayerRegistry::instance();
+  std::map<QString, QgsMapLayer*>layers = reg->mapLayers();
+  // iterate through the map layers and test each layers extent
+  // against the current min and max values
+  std::map<QString, QgsMapLayer*>::iterator mit = layers.begin();
+  while(mit != layers.end())
+  {
+    QgsMapLayer * lyr = dynamic_cast<QgsMapLayer *>(mit->second);
+#ifdef QGISDEBUG
+  std::cout << "Updating extent using " << lyr->name() << std::endl;
+#endif 
+    updateFullExtent(lyr->extent());
+    mit++;
+  }
 }

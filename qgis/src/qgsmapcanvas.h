@@ -256,10 +256,16 @@ public slots:
      */
     void showInOverview( QgsMapLayer * maplayer, bool visible );
 
-    /** Called when we want to recalculate the extents for the canvas - for
-        example if a user changes a layers subset query */
-
+    /**
+    Recalculate the full extent for the map canvas. This slot is connected to
+    each map layer and is "called" when the layers extent changes, either
+    through editing or subsetting via SQL query or other method. The full
+    extent is calculated by getting the layer collection from the map layer
+    registry and iterating through it, passing the extent of each layer to
+    the updateFullExtent method.
+     */
     void recalculateExtents();
+
 
 signals:
     /** Let the owner know how far we are with render operations */

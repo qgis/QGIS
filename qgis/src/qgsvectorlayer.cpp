@@ -1100,7 +1100,15 @@ void QgsVectorLayer::select(int number)
       }
       else
       {
-        dataProvider->updateExtents();
+#ifdef QGISDEBUG
+        qDebug("***Getting current extents from the provider***");
+        qDebug(dataProvider->extent()->stringRep());
+#endif 
+        // get the extent of the layer from the provider
+       layerExtent.setXmin(dataProvider->extent()->xMin()); 
+       layerExtent.setYmin(dataProvider->extent()->yMin()); 
+       layerExtent.setXmax(dataProvider->extent()->xMax()); 
+       layerExtent.setYmax(dataProvider->extent()->yMax()); 
       }
     }
 
@@ -1124,11 +1132,14 @@ void QgsVectorLayer::select(int number)
       else
       {
         dataProvider->setSubsetString(subset);
+        updateExtents();
       }
       //trigger a recalculate extents request to any attached canvases
 #ifdef QGISDEBUG
       std::cout << "Subset query changed, emitting recalculateExtents() signal" << std::endl;
 #endif
+      // emit the signal  to inform any listeners that the extent of this
+      // layer has changed
       emit recalculateExtents();
     }
     int QgsVectorLayer::fieldCount() const

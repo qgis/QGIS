@@ -488,7 +488,7 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int>& attlist)
     int *noid;
     int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
 #ifdef QGISDEBUG 
-  std::cerr << "Primary key type is " << primaryKeyType << std::endl; 
+//  std::cerr << "Primary key type is " << primaryKeyType << std::endl; 
 #endif  
   // We don't support primary keys that are not int4 so if
   // the key is int8 we use the oid as the id instead.
@@ -1143,7 +1143,7 @@ long QgsPostgresProvider::getFeatureCount()
 #endif
 
 #ifdef QGISDEBUG 
-        std::cerr << "Getting extents using schema.table: " + sql << std::endl;
+        qDebug("+++++++++QgsPostgresProvider::calculateExtents -  Getting extents using schema.table: " + sql);
 #endif
         PGresult *result = PQexec(connection, (const char *) sql);
         std::string box3d = PQgetvalue(result, 0, 0);

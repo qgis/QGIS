@@ -309,7 +309,10 @@ void QgsDlgVectorLayerProperties::pbnApply_clicked()
   if(layer->providerType() == "postgres")
   {
     grpSubset->setEnabled(true);
-    layer->setSubsetString(txtSubsetSQL->text());    
+    // set the subset sql for the layer
+    layer->setSubsetString(txtSubsetSQL->text());   
+    // update the extents of the layer (fetched from the provider)
+    layer->updateExtents(); 
   }
 #endif
   // set up the scale based layer visibility stuff....
