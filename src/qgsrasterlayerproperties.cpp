@@ -902,9 +902,17 @@ void QgsRasterLayerProperties::sync()
 void QgsRasterLayerProperties::pbnHistRefresh_clicked()
 {
 
+  // Explanation:
+  // During the raster layer metadata gathering process, the gdal histogram 
+  // creation routine is called for each layer. Currently the hist is hardcoded
+  // to create 256 bins. Each bin stores the total number of cells that 
+  // fit into the range defined by that bin.
   //
-  //draw the histogram
+  // The graph routine below determines the greatest number of pixesl in any given 
+  // bin in all selected layers, and the min. It then draws a scaled line between min 
+  // and max - scaled to image height. 1 line drawn per selected band
   //
+  const int BINS = 256; 
   int myHistogramWidth =256; // pixHistogram->width();
   int myHistogramHeight = 256; // pixHistogram->height();
   int myBandCountInt = rasterLayer->getBandCount();
@@ -918,7 +926,7 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
 
 
   //
-  // First scan through to get max value from among selected layers
+  // First scan through to get max and min cell counts from among selected layers' histograms
   //
   long myMaxVal=0;
   long myMinVal=0;
@@ -930,24 +938,37 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
     QListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
     if ( myItem->isSelected() )
     {
-      RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
-      if ( myRasterBandStats.maxValDouble > myMaxVal)
+      for (int myBin = 0; myBin <BINS; myBin++)
       {
-        myMaxVal = myRasterBandStats.maxValDouble;
-      }
-      if ( myIteratorInt==1)
-      {
-        myMinVal = myRasterBandStats.minValDouble;
-      }
-      if ( myRasterBandStats.minValDouble < myMinVal)
-      {
-        myMinVal = myRasterBandStats.minValDouble;
+        int myBinValue = myRasterBandStats.histogram[myBin];
+        if ( myIteratorInt==1)
+        {
+          myMinVal = myBinValue;
+          myMaxVal = myBinValue;
+          continue;
+        }
+        
+        if (myBinValue  > myMaxVal)
+        {
+          myMaxVal = myBinValue;
+        }
+        if ( myBinValue < myMinVal)
+        {
+          myMinVal = myBinValue;
+        }
       }
     }
   }
 
+
+
+  
+  
+  
   lblHistYMax->setText(QString::number(myMaxVal));
   lblHistYMin->setText(QString::number(myMinVal));
+
+  //
   //now draw actual graphs
   //
   for (int myIteratorInt = 1;
@@ -959,15 +980,15 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
     if ( myItem->isSelected() )
     {
 
-      QPointArray myPointArray(256);
-      for (int myBin = 0; myBin <256; myBin++)
+      QPointArray myPointArray(BINS);
+      for (int myBin = 0; myBin <BINS; myBin++)
       {
         int myBinValue = myRasterBandStats.histogram[myBin];
-        int myX = (myHistogramWidth/256)*myBin;
+        int myX = (((double)myHistogramWidth)/((double)BINS))*myBin;
         //height varies according to freq. and scaled to greatet value in all layers
         //NOTE: Int division is 0 if the numerator is smaller than the denominator.
         //hence the casts
-        int myY = (((double)myBinValue)/((double)myCellCount))*myHistogramHeight;
+        int myY = (((double)myBinValue)/((double)myMaxVal))*myHistogramHeight;
         //adjust for image origin being top left
         myY = myHistogramHeight - myY;
 #ifdef QGISDEBUG
