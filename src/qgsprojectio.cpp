@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.24 2004/02/04 07:15:46 mhugent Exp */
+/* qgsprojectio.cpp,v 1.25 2004/02/04 12:03:43 mhugent Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -212,6 +212,11 @@ bool QgsProjectIo::read(){
 				dbl->setRenderer(srenderer);
 				QgsSiSyDialog* sdialog=new QgsSiSyDialog(dbl);
 				dbl->setRendererDialog(sdialog);
+
+				QgsDlgVectorLayerProperties* properties = new QgsDlgVectorLayerProperties(dbl);
+				dbl->setLayerProperties(properties);
+				properties->setLegendType("graduated symbol");
+				
 				sdialog->apply();
 			    }
 
@@ -275,10 +280,12 @@ bool QgsProjectIo::read(){
 				dbl->setRenderer(grenderer);
 				QgsGraSyDialog* gdialog=new QgsGraSyDialog(dbl);
 				dbl->setRendererDialog(gdialog);
-				gdialog->apply();
+
 				QgsDlgVectorLayerProperties* properties = new QgsDlgVectorLayerProperties(dbl);
 				dbl->setLayerProperties(properties);
 				properties->setLegendType("graduated symbol");
+
+				gdialog->apply();
 			    }
 
 			    else if(!continuousnode.isNull())//read configuration for continuous symbol
@@ -372,11 +379,13 @@ bool QgsProjectIo::read(){
 				dbl->setRenderer(crenderer);
 				QgsContColDialog* cdialog=new QgsContColDialog(dbl);
 				dbl->setRendererDialog(cdialog);
-				cdialog->apply();
 
 				QgsDlgVectorLayerProperties* properties = new QgsDlgVectorLayerProperties(dbl);
 				dbl->setLayerProperties(properties);
 				properties->setLegendType("continuous color");
+
+				cdialog->apply();
+
 			    }
 			    
 			    dbl->setVisible(visible == "1");
