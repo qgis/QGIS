@@ -760,8 +760,12 @@ QString QgsPostgresProvider::getPrimaryKey(){
       QMessageBox::warning(0, QObject::tr("No oid column"),
 	  QObject::tr("The table or view has no oid column. \n"
 	  "This is most likely because it is a view.\n"
-	  "For Qgis to work correctly the view must have an"
-	  " oid column."));
+	  "For Qgis to work correctly the view must have a"
+	  " column called oid. This column should have an integer"
+	  " type and be unique for each row in the view."
+          " For better performance, the column should"
+          " also be indexed or be derived come from an indexed"
+          " column."));
       QApplication::setOverrideCursor(Qt::waitCursor);
     }
     PQclear(oidPresent);
