@@ -42,7 +42,7 @@ protected slots:
   void slotResponseHeaderReceived ( const QHttpResponseHeader & resp );
   void slotRequestFinished ( int id, bool error );
   void slotTimeOut();
-
+  
 signals:
 
   void finished();

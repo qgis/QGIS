@@ -48,10 +48,6 @@ void PluginGui::pbnOK_clicked()
   check(); 
   
   
-  //close the dialog
-  
-  
-  done(1);
 } 
 
 void PluginGui::pbnCancel_clicked()
@@ -90,7 +86,7 @@ void PluginGui::check()
   mHeaderIdInt = mQhttp.head(mRequestQString);
   std::cerr << "ID head: " << mHeaderIdInt << std::endl;
   
-  QTimer::singleShot( mTimeOutInt * 1000, this, SLOT(slotTimeOut()) );
+  //QTimer::singleShot( mTimeOutInt * 1000, this, SLOT(slotTimeOut()) );
 }
 
 void PluginGui::slotRequestFinished(int id, bool error)
@@ -115,12 +111,14 @@ void PluginGui::slotRequestFinished(int id, bool error)
 
 void PluginGui::slotResponseHeaderReceived(const QHttpResponseHeader& resp)
 {
+  std::cerr << "slotResponseHeaderReceived " << std::endl;
   std::cerr << resp.toString() << std::endl;
   mQHttpResponseHeader = resp;
 }
 
 void PluginGui::slotTimeOut()
 {
+  std::cerr << "slotTimeout " << std::endl;
   if(mQhttp.state() == QHttp::Connecting) 
     {
       assert(mQhttp.currentId() == mHeaderIdInt || 
@@ -134,8 +132,22 @@ void PluginGui::slotTimeOut()
 
 void PluginGui::slotStateChanged(int state) 
 {
+  std::cerr << "slotStateChanged " << std::endl;
   std::cerr << "Current id: " << mQhttp.currentId() << std::endl;
   std::cerr << "State: " << state << std::endl;
+
+  switch (state)
+  {
+      case QHttp::Unconnected: std::cout <<"Unconnected" << std::endl; break;
+      case QHttp::HostLookup:  std::cout <<"Host Lookup" << std::endl; break;
+      case QHttp::Connecting:  std::cout <<"Connecting"  << std::endl; break;
+      case QHttp::Sending:     std::cout <<"Sending"     << std::endl; break;
+      case QHttp::Reading:     std::cout <<"Reading"     << std::endl; break;
+      case QHttp::Connected:   std::cout <<"Connected"   << std::endl; break;
+      case QHttp::Closing:     std::cout <<"Closing"     << std::endl; break;
+      default :  std::cout <<"Illegal state"             << std::endl; break;
+  }
+
 }
 
 void PluginGui::requestHeadFinished(int id)
@@ -182,6 +194,7 @@ void PluginGui::requestGetFinished(int id)
 
 void PluginGui::finish()
 {
+  std::cerr << "finish: " <<  std::endl;
 /*
   Don't go back to slotRequestFinished
 */
@@ -189,4 +202,8 @@ void PluginGui::finish()
              this, SLOT(slotRequestFinished(int, bool)));
 
   mQhttp.closeConnection();
+  //close the dialog
+  done(1);
 }
+
+
