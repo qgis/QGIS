@@ -57,17 +57,9 @@ QgisApp::QgisApp (QWidget * parent, const char *name, WFlags fl):
   //    canvas->resize(r.width(), r.height());
   mapCanvas->setBackgroundColor (Qt::white); //QColor (220, 235, 255));
   mapCanvas->setMinimumWidth (400);
-
-
-
-
-
-
-
-
-
-  FrameLayout->addWidget (split, 0, 0);
+    FrameLayout->addWidget (split, 0, 0);
   mapToc->setBackgroundColor (QColor (192, 192, 192));
+  connect( mapCanvas, SIGNAL( xyCoordinates(QgsPoint &) ), this, SLOT( showMouseCoordinate(QgsPoint &) ) );
 
 }
 
@@ -269,4 +261,9 @@ QgisApp::drawPoint (double x, double y)
 void QgisApp::drawLayers(){
   cout << "In  QgisApp::drawLayers()" << endl;
   mapCanvas->render2();
+}
+void QgisApp::showMouseCoordinate(QgsPoint &p){
+	statusBar()->message(p.stringRep());
+	qWarning("X,Y is: " + p.stringRep());
+	//qApp->processEvents();
 }

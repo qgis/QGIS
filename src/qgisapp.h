@@ -21,6 +21,7 @@ class QCanvas;
 class QRect;
 class QCanvasView;
 class QStringList;
+class QgsPoint;
 #include "qgisappbase.h"
 
 class QgsMapCanvas;
@@ -28,6 +29,7 @@ class QgsMapCanvas;
  * \brief Main window for the Qgis application
  */
 class QgisApp : public QgisAppBase  {
+	Q_OBJECT
 public: 
 	QgisApp(QWidget *parent=0, const char * name=0, WFlags fl = WType_TopLevel );
 	
@@ -49,6 +51,8 @@ public:
 	void drawPoint(double x, double y);
 	//! draw layers
 	void drawLayers();
+public slots:
+	void showMouseCoordinate(QgsPoint &);	
 private:
 	//! Map canvase 
 QgsMapCanvas *mapCanvas;

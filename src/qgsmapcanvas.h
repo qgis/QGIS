@@ -21,9 +21,12 @@
 #include <qwidget.h>
 #include <qevent.h>
 #include "qgsrect.h"
+#include "qgspoint.h"
 class QRect;
 class QgsCoordinateTransform;
 class QgsMapLayer;
+class QMouseEvent;
+class QgsPoint;
 
 /*! \class QgsMapCanvas
  * \brief Map canvas class for displaying all GIS data types.
@@ -49,7 +52,10 @@ public:
     QgsRect extent();
     void setExtent(QgsRect );
     void zoomFullExtent();
+ signals:
+ 	void xyCoordinates(QgsPoint &p);
  private:
+   void mouseMoveEvent(QMouseEvent *e);
     void paintEvent(QPaintEvent *pe);
     //! map containing the layers by name
     map<QString,QgsMapLayer *>layers;
