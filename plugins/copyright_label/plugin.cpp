@@ -140,20 +140,23 @@ void Plugin::refreshCanvas()
 }
 
 void Plugin::renderLabel()
-{
+{ 
+  //@todo softcode this!
+  int myRotationInt = 90;
   QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
   // Draw a text alabel onto the pixmap 
   //
   QPainter myQPainter(myQPixmap);
-  myQPainter.rotate(-45);
+  //myQPainter.rotate(-myRotationInt);
   //could use somthing like next line to draw a pic instead of text
   //myQPainter.drawImage(-70, 0, myQImage);
-  myQPainter.rotate(45);
+  
   QFont myQFont("time", 24, QFont::Bold);
   myQPainter.setFont(myQFont);
   myQPainter.setPen(Qt::white);
-  myQPainter.drawText(15, 50, QString("N"));
-
+  myQPainter.drawText(10, myQPixmap->height()-10, QString("© QGIS 2004"));
+  
+  //myQPainter.rotate(myRotationInt);
 }
 // Unload the plugin by cleaning up the GUI
 void Plugin::unload()

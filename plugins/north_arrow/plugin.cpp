@@ -39,6 +39,7 @@ email                : tim@linfiniti.com
 #include <qpixmap.h>
 #include <qpainter.h>
 #include <qfont.h>
+#include <qpicture.h>
 
 //non qt includes
 #include <iostream>
@@ -139,19 +140,28 @@ void Plugin::refreshCanvas()
 
 void Plugin::renderNorthArrow()
 {
+  //how much should the north arrow be rotated by?
+  int myRotationInt = 0;
+  //dir where north arrows live
+  //QString myDirString = QString(PKGDATAPATH)+"/svg/north_arrows/";
+  //pixmap containing map
   QPixmap * myQPixmap = qGisInterface->getMapCanvas()->canvasPixmap();
-  // Draw a text alabel onto the pixmap 
-  //
+  //paint device that we can draw our pixmap onto
   QPainter myQPainter(myQPixmap);
-  myQPainter.rotate(-45);
-  //could use somthing like next line to draw a pic instead of text
-  //myQPainter.drawImage(-70, 0, myQImage);
-  myQPainter.rotate(45);
+  //rotate the canvas
+  //myQPainter.rotate(-myRotationInt);
+  
+  QPicture myQPicture;
+  myQPicture.load(QString("/home/aps02ts/share/qgis/svg/north_arrows/Default.svg"));
+  myQPainter.drawPicture(140,140,myQPicture);
+  
+  /* This is how you write some text to the qpainter */
   QFont myQFont("time", 24, QFont::Bold);
   myQPainter.setFont(myQFont);
   myQPainter.setPen(Qt::white);
   myQPainter.drawText(15, 50, QString("N"));
-
+  /* */
+  //myQPainter.rotate(myRotationInt);
 }
 
 // Unload the plugin by cleaning up the GUI
