@@ -2834,7 +2834,7 @@ int QgisApp::addPluginMenu(QString menuText, QPopupMenu *menu)
 void QgisApp::showProgress(int theProgress, int theTotalSteps)
 {
 #ifdef QGISDEBUG
-  std::cout << "setProgress called with " << theProgress << "/" << theTotalSteps << endl;
+  std::cout << "setProgress called with " << theProgress << "/" << theTotalSteps << std::endl;
 #endif
 
   if (theProgress==theTotalSteps)
