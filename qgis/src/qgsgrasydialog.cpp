@@ -32,7 +32,7 @@
 #include "qscrollview.h"
 #include <qlayout.h>
 
-QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext(0), scv(0), m_vectorlayer(layer)
+QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext(0), m_vectorlayer(layer)
 {
 
 
@@ -68,10 +68,10 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext
       return;
     }
 
+  setSizeGripEnabled(true);
+
   modeComboBox->insertItem("Empty");
   modeComboBox->insertItem("Equal Interval");
-
-  setSizeGripEnabled(true);
 
   //restore the correct settings
   QgsGraduatedSymRenderer *renderer;
@@ -116,25 +116,18 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), ext
           number++;
         }
 
-      if (scv)
-        {
-          QgsGraSyDialogBaseLayout->remove(scv);
-          delete scv;
-        }
-
       numberofclassesspinbox->setValue(list.size());
-
+      
       if (numberofclassesspinbox->value() == 0)
         {
-          scv = 0;
+          ext = 0;
           return;
         }
-
-      scv = new QScrollView(this);
-      scv->setResizePolicy(QScrollView::AutoOneFit);
-      scv->addChild(ext);
-      QgsGraSyDialogBaseLayout->addMultiCellWidget(scv, 5, 5, 0, 3);
-      scv->show();
+ 
+      numberofclassesspinbox->setValue(list.size());
+      QgsGraSyDialogBaseLayout->addMultiCellWidget(ext, 5, 5, 0, 3);
+      ext->show();
+      
     }
 
   //do the necessary signal/slot connections
@@ -176,6 +169,12 @@ void QgsGraSyDialog::adjustNumberOfClasses()
   std::map < QString, int >::iterator iter = m_fieldmap.find(fieldstring);
   int field = iter->second;
 
+  if(ext)
+  {
+      QgsGraSyDialogBaseLayout->remove(ext);
+      delete ext;
+  }
+
   //create a new extension dialog
   if (modeComboBox->currentText() == "Empty")
     {
@@ -184,26 +183,16 @@ void QgsGraSyDialog::adjustNumberOfClasses()
     {
       ext = new QgsGraSyExtensionWidget(this, field, QgsGraSyDialog::EQUAL_INTERVAL, numberofclassesspinbox->value(), m_vectorlayer);
     }
-
-  if (scv)
-    {
-      QgsGraSyDialogBaseLayout->remove(scv);
-      delete scv;
-    }
-
+ 
   if (numberofclassesspinbox->value() == 0)
-    {
-      scv = 0;
+  {
+      ext = 0;
       return;
-    }
+  }
 
-  scv = new QScrollView(this);
-  scv->setResizePolicy(QScrollView::AutoOneFit);
-  scv->addChild(ext);
-
-  QgsGraSyDialogBaseLayout->addMultiCellWidget(scv, 5, 5, 0, 3);
-  scv->show();
-
+  QgsGraSyDialogBaseLayout->addMultiCellWidget(ext, 5, 5, 0, 3);
+  ext->show();
+  
 }
 
 void QgsGraSyDialog::apply()

@@ -32,32 +32,39 @@ email                : mhugent@geo.unizh.ch
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 
-QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfield, QgsGraSyDialog::mode mode, int nofclasses, QgsVectorLayer * vlayer):QWidget(parent), m_classfield(classfield), m_gridlayout(new QGridLayout(this, 1, 8)), m_mode(mode), m_numberofclasses(nofclasses),
-m_vectorlayer
-(vlayer)
+QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(QWidget * parent, int classfield, QgsGraSyDialog::mode mode, int nofclasses, QgsVectorLayer * vlayer):QScrollView(parent), m_classfield(classfield), m_gridlayout(new QGridLayout(viewport(), 1, 8)), m_mode(mode), m_numberofclasses(nofclasses), m_vectorlayer(vlayer)
 {
 #ifdef QGISDEBUG
   qWarning("constructor QgsGraSyExtensionWidget");
 #endif
-
-  m_gridlayout->setSpacing(10);
+ 
+  setResizePolicy(QScrollView::AutoOneFit);
+  m_gridlayout->setSpacing(5);
 
   //fill the title line into the grid layout
-  QLabel *lvaluelabel = new QLabel(tr("Lower"), this);
+  QLabel *lvaluelabel = new QLabel(tr("Lower"),viewport());
+  lvaluelabel->setMaximumHeight(50);
   m_gridlayout->addWidget(lvaluelabel, 0, 0);
-  QLabel *uvaluelabel = new QLabel(tr("Upper"), this);
+  QLabel *uvaluelabel = new QLabel(tr("Upper"),viewport());
+  uvaluelabel->setMaximumHeight(50);
   m_gridlayout->addWidget(uvaluelabel, 0, 1);
-  QLabel *labellabel = new QLabel(tr("Label"), this);
+  QLabel *labellabel = new QLabel(tr("Label"),viewport());
+  labellabel->setMaximumHeight(50);
   m_gridlayout->addWidget(labellabel, 0, 2);
-  QLabel *outlinecolorlabel = new QLabel(tr("Outline\nColor"), this);
+  QLabel *outlinecolorlabel = new QLabel(tr("Outline\nColor"),viewport());
+  outlinecolorlabel->setMaximumHeight(50);
   m_gridlayout->addWidget(outlinecolorlabel, 0, 3);
-  QLabel *outlinestylelabel = new QLabel(tr("Outline\nStyle"), this);
+  QLabel *outlinestylelabel = new QLabel(tr("Outline\nStyle"),viewport());
+  outlinestylelabel->setMaximumHeight(50);
   m_gridlayout->addWidget(outlinestylelabel, 0, 4);
-  QLabel *outlinewidthlabel = new QLabel(tr("Outline\nWidth"), this);
+  QLabel *outlinewidthlabel = new QLabel(tr("Outline\nWidth"),viewport());
+  outlinewidthlabel->setMaximumHeight(50);
   m_gridlayout->addWidget(outlinewidthlabel, 0, 5);
-  QLabel *fillcolorlabel = new QLabel(tr("Fill\nColor"), this);
+  QLabel *fillcolorlabel = new QLabel(tr("Fill\nColor"),viewport());
+  fillcolorlabel->setMaximumHeight(50);
   m_gridlayout->addWidget(fillcolorlabel, 0, 6);
-  QLabel *fillpatternlabel = new QLabel(tr("Fill\nPattern"), this);
+  QLabel *fillpatternlabel = new QLabel(tr("Fill\nPattern"),viewport());
+  fillpatternlabel->setMaximumHeight(50);
   m_gridlayout->addWidget(fillpatternlabel, 0, 7);
 
   //fint the minimum and maximum of the classification variable
@@ -88,63 +95,54 @@ m_vectorlayer
   for (int i = 1; i <= m_numberofclasses; i++)
     {
 
-      QLineEdit *ltextfield = new QLineEdit(this);
-      ltextfield->setMaximumWidth(60);
-      m_gridlayout->addWidget(ltextfield, i, 0);
-      m_widgetvector[8 * (i - 1)] = ltextfield;
-      ltextfield->setAlignment(Qt::AlignLeft);
+	QLineEdit *ltextfield = new QLineEdit(viewport());
+	m_gridlayout->addWidget(ltextfield, i, 0);
+	m_widgetvector[8 * (i - 1)] = ltextfield;
+	ltextfield->setAlignment(Qt::AlignLeft);
 
-      QLineEdit *utextfield = new QLineEdit(this);
-      utextfield->setMaximumWidth(60);
-      m_gridlayout->addWidget(utextfield, i, 1);
-      m_widgetvector[8 * (i - 1) + 1] = utextfield;
-      ltextfield->setAlignment(Qt::AlignLeft);
+	QLineEdit *utextfield = new QLineEdit(viewport());
+	m_gridlayout->addWidget(utextfield, i, 1);
+	m_widgetvector[8 * (i - 1) + 1] = utextfield;
+	ltextfield->setAlignment(Qt::AlignLeft);
 
-      QLineEdit *labeltextfield = new QLineEdit(this);
-      labeltextfield->setMaximumWidth(90);
-      m_gridlayout->addWidget(labeltextfield, i, 2);
-      m_widgetvector[8 * (i - 1) + 2] = labeltextfield;
-      ltextfield->setAlignment(Qt::AlignLeft);
+	QLineEdit *labeltextfield = new QLineEdit(viewport());
+	m_gridlayout->addWidget(labeltextfield, i, 2);
+	m_widgetvector[8 * (i - 1) + 2] = labeltextfield;
+	ltextfield->setAlignment(Qt::AlignLeft);
 
-      QPushButton *outlinecolorbutton = new QPushButton(this);
-      outlinecolorbutton->setMaximumWidth(20);
-      outlinecolorbutton->setPaletteBackgroundColor(QColor(0, 0, 0));
-      m_gridlayout->addWidget(outlinecolorbutton, i, 3);
-      m_widgetvector[8 * (i - 1) + 3] = outlinecolorbutton;
-      QObject::connect(outlinecolorbutton, SIGNAL(clicked()), this, SLOT(selectColor()));
+	QPushButton *outlinecolorbutton = new QPushButton(viewport());
+	outlinecolorbutton->setMinimumWidth(20);
+	outlinecolorbutton->setPaletteBackgroundColor(QColor(0, 0, 0));
+	m_gridlayout->addWidget(outlinecolorbutton, i, 3);
+	m_widgetvector[8 * (i - 1) + 3] = outlinecolorbutton;
+	QObject::connect(outlinecolorbutton, SIGNAL(clicked()), this, SLOT(selectColor()));
 
-      QPushButton *outlinestylebutton = new QPushButton(this);
-      outlinestylebutton->setMaximumWidth(20);
-      outlinestylebutton->setMaximumHeight(20);
-      outlinestylebutton->setName("SolidLine");
-      outlinestylebutton->setPixmap(QgsSymbologyUtils::char2LinePixmap("SolidLine"));
-      m_gridlayout->addWidget(outlinestylebutton, i, 4);
-      m_widgetvector[8 * (i - 1) + 4] = outlinestylebutton;
-      QObject::connect(outlinestylebutton, SIGNAL(clicked()), this, SLOT(selectOutlineStyle()));
+	QPushButton *outlinestylebutton = new QPushButton(viewport());
+	outlinestylebutton->setMinimumWidth(20);
+	outlinestylebutton->setName("SolidLine");
+	outlinestylebutton->setPixmap(QgsSymbologyUtils::char2LinePixmap("SolidLine"));
+	m_gridlayout->addWidget(outlinestylebutton, i, 4);
+	m_widgetvector[8 * (i - 1) + 4] = outlinestylebutton;
+	QObject::connect(outlinestylebutton, SIGNAL(clicked()), this, SLOT(selectOutlineStyle()));
 
-      QSpinBox *outlinewidthspinbox = new QSpinBox(this);
-      outlinewidthspinbox->setMaximumWidth(60);
-      outlinewidthspinbox->setValue(1);
-      m_gridlayout->addWidget(outlinewidthspinbox, i, 5);
-      m_widgetvector[8 * (i - 1) + 5] = outlinewidthspinbox;
+	QSpinBox *outlinewidthspinbox = new QSpinBox(viewport());
+	outlinewidthspinbox->setValue(1);
+	m_gridlayout->addWidget(outlinewidthspinbox, i, 5);
+	m_widgetvector[8 * (i - 1) + 5] = outlinewidthspinbox;
 
+	QPushButton *fillcolorbutton = new QPushButton(viewport());
+	fillcolorbutton->setMinimumWidth(20);
+	m_gridlayout->addWidget(fillcolorbutton, i, 6);
+	m_widgetvector[8 * (i - 1) + 6] = fillcolorbutton;
+	QObject::connect(fillcolorbutton, SIGNAL(clicked()), this, SLOT(selectColor()));
 
-
-      QPushButton *fillcolorbutton = new QPushButton(this);
-      fillcolorbutton->setMaximumWidth(20);
-      fillcolorbutton->setMaximumHeight(20);
-      m_gridlayout->addWidget(fillcolorbutton, i, 6);
-      m_widgetvector[8 * (i - 1) + 6] = fillcolorbutton;
-      QObject::connect(fillcolorbutton, SIGNAL(clicked()), this, SLOT(selectColor()));
-
-      QPushButton *fillpatternbutton = new QPushButton(this);
-      fillpatternbutton->setMaximumWidth(20);
-      fillpatternbutton->setMaximumHeight(20);
-      fillpatternbutton->setName("SolidPattern");
-      fillpatternbutton->setPixmap(QgsSymbologyUtils::char2PatternPixmap("SolidPattern"));
-      m_gridlayout->addWidget(fillpatternbutton, i, 7);
-      m_widgetvector[8 * (i - 1) + 7] = fillpatternbutton;
-      QObject::connect(fillpatternbutton, SIGNAL(clicked()), this, SLOT(selectFillPattern()));
+	QPushButton *fillpatternbutton = new QPushButton(viewport());
+	fillpatternbutton->setMinimumWidth(20);
+	fillpatternbutton->setName("SolidPattern");
+	fillpatternbutton->setPixmap(QgsSymbologyUtils::char2PatternPixmap("SolidPattern"));
+	m_gridlayout->addWidget(fillpatternbutton, i, 7);
+	m_widgetvector[8 * (i - 1) + 7] = fillpatternbutton;
+	QObject::connect(fillpatternbutton, SIGNAL(clicked()), this, SLOT(selectFillPattern()));
 
 
 
@@ -203,9 +201,12 @@ m_vectorlayer
           utextfield->setText(QString::number(minimum + (maximum - minimum) / m_numberofclasses * i, 'f', 2));
         }
     }
+
+  resizeContents(200,200);
+  
 }
 
-QgsGraSyExtensionWidget::QgsGraSyExtensionWidget()
+QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(): QScrollView(0)
 {
 #ifdef QGISDEBUG
   qWarning("constructor QgsGraSyExtensionWidget");

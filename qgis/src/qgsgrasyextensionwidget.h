@@ -19,7 +19,7 @@
 #ifndef QGSGRASYEXTENSIONWIDGET_H
 #define QGSGRASYEXTENSIONWIDGET_H
 
-#include <qwidget.h>
+#include <qscrollview.h>
 #include "qgsgrasydialog.h"
 #include <vector>
 
@@ -27,7 +27,7 @@ class QGridLayout;
 class QgsVectorLayer;
 
 /**This widget can be used as extension to QgsGraSyDialog. QgsGraSyDialog creates a new instance every time the number of classes or the mode changes*/
-class QgsGraSyExtensionWidget: public QWidget
+class QgsGraSyExtensionWidget: public QScrollView
 {
     Q_OBJECT
  public:
