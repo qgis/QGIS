@@ -44,6 +44,11 @@
 #endif
 
 
+const char* QgsGPXProvider::attr[] = { "Name", "Elevation", "Symbol", "Number",
+				       "Comment", "Description", "Source", 
+				       "URL", "URL name" };
+
+
 QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
 					      mMinMaxCacheDirty(true),
 					      mEditable(false) {
@@ -62,25 +67,21 @@ QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
 		  (typeStr == "route" ? RouteType : TrackType));
   
   // set up the attributes and the geometry type depending on the feature type
-  attributeFields.push_back(QgsField("name", "text"));
+  attributeFields.push_back(QgsField(attr[NameAttr], "text"));
   if (mFeatureType == WaypointType) {
     mGeomType = 1;
-    attributeFields.push_back(QgsField("ele", "text"));
-    attributeFields.push_back(QgsField("sym", "text"));
+    attributeFields.push_back(QgsField(attr[EleAttr], "text"));
+    attributeFields.push_back(QgsField(attr[SymAttr], "text"));
   }
   else if (mFeatureType == RouteType || mFeatureType == TrackType) {
     mGeomType = 2;
-    attributeFields.push_back(QgsField("number", "text"));
+    attributeFields.push_back(QgsField(attr[NumAttr], "text"));
   }
-  else {
-    std::cerr<<"Unknown feature type: "<<mFeatureType<<std::endl;
-    return;
-  }
-  attributeFields.push_back(QgsField("cmt", "text"));
-  attributeFields.push_back(QgsField("desc", "text"));
-  attributeFields.push_back(QgsField("src", "text"));
-  attributeFields.push_back(QgsField("url", "text"));
-  attributeFields.push_back(QgsField("urlname", "text"));
+  attributeFields.push_back(QgsField(attr[CmtAttr], "text"));
+  attributeFields.push_back(QgsField(attr[DscAttr], "text"));
+  attributeFields.push_back(QgsField(attr[SrcAttr], "text"));
+  attributeFields.push_back(QgsField(attr[URLAttr], "text"));
+  attributeFields.push_back(QgsField(attr[URLNameAttr], "text"));
   mFileName = uri.left(fileNameEnd);
 
   // set the selection rectangle to null
@@ -162,17 +163,17 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 
 	// add attributes if they are wanted
 	if (fetchAttributes) {
-	  result->addAttribute("name", wpt->name);
+	  result->addAttribute(attr[NameAttr], wpt->name);
 	  if (wpt->ele == -std::numeric_limits<double>::max())
-	    result->addAttribute("ele", "");
+	    result->addAttribute(attr[EleAttr], "");
 	  else
-	    result->addAttribute("ele", QString("%1").arg(wpt->ele));
-	  result->addAttribute("sym", wpt->sym);
-	  result->addAttribute("cmt", wpt->cmt);
-	  result->addAttribute("desc", wpt->desc);
-	  result->addAttribute("src", wpt->src);
-	  result->addAttribute("url", wpt->url);
-	  result->addAttribute("urlname", wpt->urlname);
+	    result->addAttribute(attr[EleAttr], QString("%1").arg(wpt->ele));
+	  result->addAttribute(attr[SymAttr], wpt->sym);
+	  result->addAttribute(attr[CmtAttr], wpt->cmt);
+	  result->addAttribute(attr[DscAttr], wpt->desc);
+	  result->addAttribute(attr[SrcAttr], wpt->src);
+	  result->addAttribute(attr[URLAttr], wpt->url);
+	  result->addAttribute(attr[URLNameAttr], wpt->urlname);
 	}
 	
 	++mFid;
@@ -210,16 +211,16 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	
 	// add attributes if they are wanted
 	if (fetchAttributes) {
-	  result->addAttribute("name", rte.name);
+	  result->addAttribute(attr[NameAttr], rte.name);
 	  if (rte.number == std::numeric_limits<int>::max())
-	    result->addAttribute("number", "");
+	    result->addAttribute(attr[NumAttr], "");
 	  else
-	    result->addAttribute("number", QString("%1").arg(rte.number));
-	  result->addAttribute("cmt", rte.cmt);
-	  result->addAttribute("desc", rte.desc);
-	  result->addAttribute("src", rte.src);
-	  result->addAttribute("url", rte.url);
-	  result->addAttribute("urlname", rte.urlname);
+	    result->addAttribute(attr[NumAttr], QString("%1").arg(rte.number));
+	  result->addAttribute(attr[CmtAttr], rte.cmt);
+	  result->addAttribute(attr[DscAttr], rte.desc);
+	  result->addAttribute(attr[SrcAttr], rte.src);
+	  result->addAttribute(attr[URLAttr], rte.url);
+	  result->addAttribute(attr[URLNameAttr], rte.urlname);
 	}
 	
 	++mFid;
@@ -259,16 +260,16 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 	
 	// add attributes if they are wanted
 	if (fetchAttributes) {
-	  result->addAttribute("name", trk.name);
+	  result->addAttribute(attr[NameAttr], trk.name);
 	  if (trk.number == std::numeric_limits<int>::max())
-	    result->addAttribute("number", "");
+	    result->addAttribute(attr[NumAttr], "");
 	  else
-	    result->addAttribute("number", QString("%1").arg(trk.number));
-	  result->addAttribute("cmt", trk.cmt);
-	  result->addAttribute("desc", trk.desc);
-	  result->addAttribute("src", trk.src);
-	  result->addAttribute("url", trk.url);
-	  result->addAttribute("urlname", trk.urlname);
+	    result->addAttribute(attr[NumAttr], QString("%1").arg(trk.number));
+	  result->addAttribute(attr[CmtAttr], trk.cmt);
+	  result->addAttribute(attr[DscAttr], trk.desc);
+	  result->addAttribute(attr[SrcAttr], trk.src);
+	  result->addAttribute(attr[URLAttr], trk.url);
+	  result->addAttribute(attr[URLNameAttr], trk.urlname);
 	}
 	
 	++mFid;
@@ -316,31 +317,31 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
 	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
 	  switch (*iter) {
 	  case 0:
-	    result->addAttribute("name", wpt->name);
+	    result->addAttribute(attr[NameAttr], wpt->name);
 	    break;
 	  case 1:
 	    if (wpt->ele == -std::numeric_limits<double>::max())
-	      result->addAttribute("ele", "");
+	      result->addAttribute(attr[EleAttr], "");
 	    else
-	      result->addAttribute("ele", QString("%1").arg(wpt->ele));
+	      result->addAttribute(attr[EleAttr], QString("%1").arg(wpt->ele));
 	    break;
 	  case 2:
-	    result->addAttribute("sym", wpt->sym);
+	    result->addAttribute(attr[SymAttr], wpt->sym);
 	    break;
 	  case 3:
-	    result->addAttribute("cmt", wpt->cmt);
+	    result->addAttribute(attr[CmtAttr], wpt->cmt);
 	    break;
 	  case 4:
-	    result->addAttribute("desc", wpt->desc);
+	    result->addAttribute(attr[DscAttr], wpt->desc);
 	    break;
 	  case 5:
-	    result->addAttribute("src", wpt->src);
+	    result->addAttribute(attr[SrcAttr], wpt->src);
 	    break;
 	  case 6:
-	    result->addAttribute("url", wpt->url);
+	    result->addAttribute(attr[URLAttr], wpt->url);
 	    break;
 	  case 7:
-	    result->addAttribute("urlname", wpt->urlname);
+	    result->addAttribute(attr[URLNameAttr], wpt->urlname);
 	    break;
 	  }
 	}
@@ -390,23 +391,23 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
 	// add attributes if they are wanted
 	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
 	  if (*iter == 0)
-	    result->addAttribute("name", rte->name);
+	    result->addAttribute(attr[NameAttr], rte->name);
 	  else if (*iter == 1) {
 	    if (rte->number == std::numeric_limits<int>::max())
-	      result->addAttribute("number", "");
+	      result->addAttribute(attr[NumAttr], "");
 	    else
-	      result->addAttribute("number", QString("%1").arg(rte->number));
+	      result->addAttribute(attr[NumAttr], QString("%1").arg(rte->number));
 	  }
 	  else if (*iter == 2)
-	    result->addAttribute("cmt", rte->url);
+	    result->addAttribute(attr[CmtAttr], rte->url);
 	  else if (*iter == 3)
-	    result->addAttribute("desc", rte->url);
+	    result->addAttribute(attr[DscAttr], rte->url);
 	  else if (*iter == 4)
-	    result->addAttribute("src", rte->url);
+	    result->addAttribute(attr[SrcAttr], rte->url);
 	  else if (*iter == 5)
-	    result->addAttribute("url", rte->url);
+	    result->addAttribute(attr[URLAttr], rte->url);
 	  else if (*iter == 6)
-	    result->addAttribute("urlname", rte->url);
+	    result->addAttribute(attr[URLNameAttr], rte->url);
 	}
 	
 	++mFid;
@@ -456,23 +457,23 @@ QgsFeature * QgsGPXProvider::getNextFeature(std::list<int>& attlist, bool getnot
 	// add attributes if they are wanted
 	for (iter = attlist.begin(); iter != attlist.end(); ++iter) {
 	  if (*iter == 0)
-	    result->addAttribute("name", trk->name);
+	    result->addAttribute(attr[NameAttr], trk->name);
 	  else if (*iter == 1) {
 	    if (trk->number == std::numeric_limits<int>::max())
-	      result->addAttribute("number", "");
+	      result->addAttribute(attr[NumAttr], "");
 	    else
-	      result->addAttribute("number", QString("%1").arg(trk->number));
+	      result->addAttribute(attr[NumAttr], QString("%1").arg(trk->number));
 	  }
 	  else if (*iter == 2)
-	    result->addAttribute("cmt", trk->url);
+	    result->addAttribute(attr[CmtAttr], trk->cmt);
 	  else if (*iter == 3)
-	    result->addAttribute("desc", trk->url);
+	    result->addAttribute(attr[DscAttr], trk->desc);
 	  else if (*iter == 4)
-	    result->addAttribute("src", trk->url);
+	    result->addAttribute(attr[SrcAttr], trk->src);
 	  else if (*iter == 5)
-	    result->addAttribute("url", trk->url);
+	    result->addAttribute(attr[URLAttr], trk->url);
 	  else if (*iter == 6)
-	    result->addAttribute("urlname", trk->url);
+	    result->addAttribute(attr[URLNameAttr], trk->urlname);
 	}
 	
 	++mFid;
