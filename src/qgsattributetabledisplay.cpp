@@ -49,7 +49,14 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAtt
     edit->setItemEnabled(1,false);
 
     btnStopEditing->setEnabled(false);
-    if(!layer->getDataProvider()->supportsAttributeEditing())
+    int cap=layer->getDataProvider()->capabilities();
+    if((cap&QgsVectorDataProvider::ChangeAttributeValues)
+       ||(cap&QgsVectorDataProvider::AddAttributes)
+       ||(cap&QgsVectorDataProvider::DeleteAttributes))
+    {
+	btnStartEditing->setEnabled(true);
+    }
+    else
     {
 	btnStartEditing->setEnabled(false);
     }
@@ -113,7 +120,7 @@ void QgsAttributeTableDisplay::startEditing()
 	   edit->setItemEnabled(1,true); 
 	   editing=true;
 	}
-	if(provider->capabilities()&QgsVectorDataProvider::ChangeAttributes)
+	if(provider->capabilities()&QgsVectorDataProvider::ChangeAttributeValues)
 	{
 	    table()->setReadOnly(false);
 	    table()->setColumnReadOnly(0,true);//id column is not editable

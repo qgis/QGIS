@@ -220,15 +220,6 @@ public:
        @return true in case of success and false in case of failure*/
   bool changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map);
 
-  bool supportsFeatureAddition() const 
-  { return true; }
-
-  bool supportsFeatureDeletion() const 
-  {return true;}
-
-  bool supportsAttributeEditing() const
-  {return true;}
-
   //! Flag to indicate if the provider can export to shapefile
   bool supportsSaveAsShapefile() const;
 
@@ -245,7 +236,7 @@ public:
   void setSubsetString(QString theSQL); //{sqlWhereClause = theSQL;};
   
   /**Returns a bitmask containing the supported capabilities*/
-  int capabilities();
+  int capabilities() const;
 
 private:
 

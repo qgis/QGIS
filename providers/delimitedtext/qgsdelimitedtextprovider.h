@@ -206,9 +206,7 @@ public:
   */
   bool boundsCheck(double x, double y);
 
-  //! We support saving as shapefile - used to add item to the
-  //  layers context menu
-  bool supportsSaveAsShapefile() const;
+  int capabilities() const;
 
   //! Save the layer as a shapefile
   bool saveAsShapefile();

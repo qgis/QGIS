@@ -933,6 +933,12 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
   return true;
 }
 
+int QgsOgrProvider::capabilities() const
+{
+    return (QgsVectorDataProvider::AddFeatures
+	    | QgsVectorDataProvider::ChangeAttributeValues);
+}
+
 /**
  * Class factory to return a pointer to a newly created 
  * QgsOgrProvider object

@@ -146,15 +146,13 @@ class QgsOgrProvider:public QgsVectorDataProvider
     /**Changes attribute values of existing features */
     bool changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map);
 
-    bool supportsFeatureAddition() const 
-    { 
-        return true;
-    }
-
     QgsDataSourceURI * getURI()
     { 
         return 0;
     }
+
+    /**Returns a bitmask containing the supported capabilities*/
+    int capabilities() const;
 
   private:
     unsigned char *getGeometryPointer(OGRFeature * fet);

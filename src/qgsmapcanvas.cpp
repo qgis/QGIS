@@ -1354,7 +1354,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 	    //only do the rest for provider with feature addition support
 	    //note that for the grass provider, this will return false since
 	    //grass provider has its own mechanism of feature addition
-	    if(vlayer->getDataProvider()->supportsFeatureAddition())
+	    if(vlayer->getDataProvider()->capabilities()&QgsVectorDataProvider::AddFeatures)
 	    {
 		if(!vlayer->isEditable() )
 		{
