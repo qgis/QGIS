@@ -318,7 +318,8 @@ As of version 0.6 QGIS supports basic capabilities for editing spatial data. Bef
 
 \textbf{Note} - the procedure for editing GRASS layers is different - see Section \ref{grass_digitising} for details.
 
-
+\subsection{Editing an Existing Layer}
+\label{sec:edit_existing_layer}
 if you wish to edit an existing layer,  choose `Start Editing' from the context menu after right clicking on the legend entry for that layer. Remember to back up your data before starting! Once the layer is in edit mode you will see a small \includegraphics[scale=1]{qgis_user_guide_images/editable} icon to remind you.
 
 Now that the layer is editable, you can use the `Capture Points' icon (or similiar icon for line and polygon layers) to put the qgis cursor into digitising mode. If you are capturing a point feature simple use the pan and zoom tools to arrive at an appropriate place in your layer, then click the `Capture Points' tool and click on the map area were you woul like your new point feature. A window will appear where you can set the attributes. Figure \ref{fig:vector_digitising} shows setting attributes of for a fictitious new city in the Antartic.
@@ -335,3 +336,20 @@ In its current implementation the attributes dialog box does not check that type
 \subsection{Creating new layers from scratch}
 
 In its current incarnation, the editing of attributes associated with spatial features is extremely basic and subsequently some of the procedures explained below involve some `hoop jumping' which will later no longer be necessary as QGIS's editing tools mature.
+
+To create a new layer, choose `New Vector Layer' from the `Layer' menu. You will be prompted for the layer type - either point, line or polygon. Note QGIS that does not yet support creation of 2.5D features (i.e. features with X,Y,Z coordinates) or measure features. Also in version 0.6 only shapefiles can be created - in future versions any OGR creatable layer type will be supported. Having selected the layer type, you will be prompted for the filename for your new layer. QGIS will automatically add a .shp extension to the name you specify. Once the layer has been created, you edit it in the same way as described in Section \ref{sec:edit_existing_layer} above. However when you add your first feature you will notice that only one attribute field is specified for the layer called 'dummy' (this is not an oblique reference to the collective intelligence of the QGIS development team!). In order to add additional fields you need to embark on the `hoop jumping' exercise referred to earlier \footnote{These limitations will be removed in the next version of QGIS.}. 
+
+So on with the hoop jumping.... Immediately after creating your new shape file, remove it from the legend. Then in a bash or msdos shell use the shapelib\footnote{shapelib is available from \url{http://shapelib.maptools.org/}} `dbfcreate' tool to create a new copy of the associated .dbf file. Heres an example:
+
+
+\begin{verbatim}
+# dbfcreate timtest.dbf -s taxon_name 255, -n lat 3 5, -n long 3 5, -s notes 255
+# dbfdump -h timtest.dbf
+Field 0: Type=String, Title=`taxon_name', Width=255, Decimals=0
+Field 1: Type=Double, Title=`lat', Width=3, Decimals=5
+Field 2: Type=Double, Title=`long', Width=3, Decimals=5
+Field 3: Type=String, Title=`notes', Width=255, Decimals=0
+
+\end{verbatim} 
+
+Having modified the .dbf file to your needs you can now go ahead and digitise features using the same procedure as described in Section \ref{sec:edit_existing_layer}.
