@@ -172,9 +172,18 @@ void Plugin::refreshCanvas()
 void Plugin::renderScaleBar(QPainter * theQPainter)
 {
   int myBufferSize=1; //softcode this later
-  // Exit if there are no layers loaded otherwise QGIS will freeze
+
+  //Get canvas dimensions
+  QPaintDeviceMetrics myMetrics( theQPainter->device() );
+  int myCanvasHeight = myMetrics.height();
+  int myCanvasWidth = myMetrics.width();
+
+  //Get map units per pixel   
+  double myMuppDouble=qGisInterface->getMapCanvas()->mupp();   
+
+  // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
   int myLayerCount=qGisInterface->getMapCanvas()->layerCount();          
-  if (!myLayerCount) return;
+  if (!myLayerCount || !myCanvasWidth || !myMuppDouble) return;
 
   //Large if statement which determines whether to render the scale bar
   if (mEnabled)
@@ -185,14 +194,6 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
     int myTextOffsetY=3;
     double myActualSize=mPreferredSize;
     int myMargin=20;
-
-    //Get canvas dimensions
-    QPaintDeviceMetrics myMetrics( theQPainter->device() );
-    int myCanvasHeight = myMetrics.height();
-    int myCanvasWidth = myMetrics.width();
-
-    //Get map units per pixel   
-    double myMuppDouble=qGisInterface->getMapCanvas()->mupp();   
 
     //Calculate size of scale bar for preferred number of map units
     double myScaleBarWidth = mPreferredSize / myMuppDouble;
