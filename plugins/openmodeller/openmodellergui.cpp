@@ -71,6 +71,19 @@
   mParametersVBox = new QVBox (mParametersScrollView->viewport());
   mParametersScrollView->addChild(mParametersVBox);
   mParametersFrame = new QFrame(mParametersVBox);
+  
+    //Scroll view within the frame
+  mScrollView = new QScrollView(frameParameters);
+  //mScrollView->setGeometry();   
+  std::cout << "Creating scrollview layout" << std::endl;
+  mScrollViewLayout = new QGridLayout(frameParameters, 0,0);
+  std::cout << "Adding scrollview to scrollview layout" << std::endl;
+  mScrollViewLayout->addWidget(mScrollView,0,0);
+  std::cout << "Creating top level widget to place in scroll view" << std::endl;
+  //LayoutWidget within the scroll view
+  mLayoutWidget=new QWidget();
+  
+  
   //temporarily make a layout
   //mLayout = new QGridLayout(mParametersFrame,1,2);
   mLayout = new QGridLayout(frameParameters,1,2);
@@ -155,19 +168,11 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
   }
   
    
-  //Scroll view within the frame
-  QScrollView *myScrollView = new QScrollView(frameParameters);
-  //myScrollView->setGeometry();   
-  
-  QGridLayout *myScrollViewLayout = new QGridLayout(frameParameters, 0,0);
-  myScrollViewLayout->addWidget(myScrollView,0,0);
-  
-  //LayoutWidget within the scroll view
-  QWidget *myLayoutWidget=new QWidget();
-  //myLayoutWidget->setGeometry();
-  
+
+  //mLayoutWidget->setGeometry();
+  std::cout << "Adding a layout scroll view's top level widget" << std::endl;
   //GridLayout within the LayoutWidget
-  mLayout = new QGridLayout(myLayoutWidget, myRowCountInt+1,3); 
+  mLayout = new QGridLayout(mLayoutWidget, myRowCountInt+1,3); 
   mLayout->setColSpacing(1,10);
   
 
@@ -221,8 +226,8 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             std::cout << QString(myParameter->id).ascii() << " parameter is integer type" << std::endl;
 
             //Create components
-            QSpinBox * mySpinBox = new QSpinBox (myLayoutWidget, ("spin"+QString(myParameter->id)));
-            QLabel * myLabel = new QLabel (myLayoutWidget, ("lbl"+QString(myParameter->id)));
+            QSpinBox * mySpinBox = new QSpinBox (mLayoutWidget, ("spin"+QString(myParameter->id)));
+            QLabel * myLabel = new QLabel (mLayoutWidget, ("lbl"+QString(myParameter->id)));
 
             //set spinbox details and write to map
             if (!myParameter->has_min==0) mySpinBox->setMinValue(myParameter->min);
@@ -267,8 +272,8 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
                       << " type" << std::endl;
 
             //Create components
-            QLineEdit * myLineEdit = new QLineEdit (myLayoutWidget, ("le"+QString(myParameter->id)));
-            QLabel * myLabel = new QLabel (myLayoutWidget, ("lbl"+QString(myParameter->id)));	
+            QLineEdit * myLineEdit = new QLineEdit (mLayoutWidget, ("le"+QString(myParameter->id)));
+            QLabel * myLabel = new QLabel (mLayoutWidget, ("lbl"+QString(myParameter->id)));	
 
             //Set value to previous otherwise to default
             QString myPreviousValue = settings.readEntry("/openmodeller/"+cboModelAlgorithm->currentText()+"/"+myParameter->id);
@@ -302,8 +307,8 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
           }
         
 	}
-	myScrollView->addChild(myLayoutWidget,0,0);	
-	myScrollView->setResizePolicy(QScrollView::AutoOneFit);	
+	mScrollView->addChild(mLayoutWidget,0,0);	
+	mScrollView->setResizePolicy(QScrollView::AutoOneFit);	
       }     
       //Exit loop because we have found the correct algorithm
       break;      

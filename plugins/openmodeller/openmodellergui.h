@@ -100,6 +100,12 @@ private:
     QVBox * mParametersVBox; //will be placed in the above layout
     QFrame * mParametersFrame; //will be placed in the above 
     QGridLayout* mLayout; //will be placed in the above 
+    
+    
+    //Scroll view within the frame
+    QScrollView *mScrollView;
+    QGridLayout *mScrollViewLayout;
+    QWidget *mLayoutWidget;
     void getProjList();
     
 signals:
