@@ -578,11 +578,11 @@ void QgisApp::testPluginFunctions()
 			std::cout << "Getting pointer to a QgisPlugin object from the library\n";
 			QgisPlugin *pl = cf();
 			std::cout << "Displaying name, version, and description\n";
-			std::cout << "Plugin name: " << pl->pluginName() << std::endl;
-			std::cout << "Plugin version: " << pl->pluginVersion() << std::endl;
-			std::cout << "Plugin description: " << pl->pluginDescription() << std::endl;
+			std::cout << "Plugin name: " << pl->name() << std::endl;
+			std::cout << "Plugin version: " << pl->version() << std::endl;
+			std::cout << "Plugin description: " << pl->description() << std::endl;
           QMessageBox::information(this,"Plugin Information","QGis loaded the following plugin:\nName: "
-            + pl->pluginName() + "\nVersion: " + pl->pluginVersion() + "\nDescription: " + pl->pluginDescription());
+            + pl->name() + "\nVersion: " + pl->version() + "\nDescription: " + pl->description());
 			// unload the plugin (delete it)
 			std::cout << "Attempting to resolve the unload function" << std::endl;
 			unload_t *ul = (unload_t *) myLib.resolve("unload");
