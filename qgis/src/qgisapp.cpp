@@ -38,6 +38,7 @@
 #include <qbitmap.h>
 #include <qsplitter.h>
 #include <qpopupmenu.h>
+#include <qprocess.h>
 #include <qrect.h>
 #include <qpoint.h>
 #include <qpainter.h>
@@ -51,6 +52,7 @@
 #include <qsettings.h>
 #include <qtextstream.h>
 #include <qsocket.h>
+#include <qinputdialog.h>
 
 #include <iostream>
 #include <iomanip>
@@ -84,6 +86,7 @@
 #include "qgssinglesymrenderer.h"
 //#include "qgssisydialog.h"
 #include "../plugins/qgisplugin.h"
+#include "qgsoptionsbase.h"
 #include "xpm/qgis.xpm"
 #include <ogrsf_frmts.h>
 
@@ -1497,15 +1500,42 @@ switch(e){
 	}
            
     }
-    
+void QgisApp::options(){
+  QgsOptionsBase *optionsDialog = new QgsOptionsBase(this);
+  optionsDialog->exec();
+}
 void QgisApp::helpContents(){
   // open help in user browser
-  // find a browser
-  // find the installed location of the help files
-  // open index.html using browser
-  helpViewer = new QgsHelpViewer(this,"helpviewer",false);
+    // find a browser
+  QSettings settings;
+  QString browser = settings.readEntry("/qgis/browser");
+  if(browser.length() == 0){
+    // ask user for browser and use it
+    bool ok;
+    QString text = QInputDialog::getText(
+            "QGIS Browser Selection", "Enter the name of a web browser to use (eg. konqueror).\nEnter the full path if the browser is not in your PATH.\nYou can change this option later by selection Options from the Tools menu.", QLineEdit::Normal,
+            QString::null, &ok, this );
+    if ( ok && !text.isEmpty() ) {
+        // user entered something and pressed OK
+        browser = text;
+        // save the setting
+        settings.writeEntry("/qgis/browser", browser);
+    } else {
+       browser = "";
+    }
+           
+  }
+  if(browser.length() > 0){
+    // find the installed location of the help files
+    // open index.html using browser
+    QProcess *helpProcess = new QProcess(this);
+    helpProcess->addArgument(browser);
+    helpProcess->addArgument(appDir +"/share/doc/index.html");
+    helpProcess->start();
+  }
+ /*  helpViewer = new QgsHelpViewer(this,"helpviewer",false);
   helpViewer->showContent(appDir +"/share/doc","index.html");
-  helpViewer->show();
+  helpViewer->show(); */
 }
 /** Get a pointer to the currently selected map layer */
 QgsMapLayer *QgisApp::activeLayer(){
