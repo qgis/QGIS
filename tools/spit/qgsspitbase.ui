@@ -198,30 +198,6 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QPushButton" row="0" column="0">
-                    <property name="name">
-                        <cstring>btnAddFile</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Add ...</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="0" column="1">
-                    <property name="name">
-                        <cstring>btnRemoveFile</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Remove</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="0" column="2" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>btnRemoveAll</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Remove All</string>
-                    </property>
-                </widget>
                 <widget class="QTable" row="4" column="0" rowspan="1" colspan="6">
                     <column>
                         <property name="text">
@@ -243,6 +219,11 @@
                             <string>DB Relation Name</string>
                         </property>
                     </column>
+                    <column>
+                        <property name="text">
+                            <string>Schema</string>
+                        </property>
+                    </column>
                     <property name="name">
                         <cstring>tblShapefiles</cstring>
                     </property>
@@ -250,7 +231,7 @@
                         <number>0</number>
                     </property>
                     <property name="numCols">
-                        <number>4</number>
+                        <number>5</number>
                     </property>
                     <property name="showGrid">
                         <bool>false</bool>
@@ -265,7 +246,7 @@
                         <enum>FollowStyle</enum>
                     </property>
                 </widget>
-                <widget class="QSpinBox" row="2" column="1">
+                <widget class="QSpinBox" row="2" column="1" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>spinSrid</cstring>
                     </property>
@@ -311,23 +292,6 @@
                         <string>SRID</string>
                     </property>
                 </widget>
-                <spacer row="0" column="4" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>spacer8</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>241</width>
-                            <height>31</height>
-                        </size>
-                    </property>
-                </spacer>
                 <widget class="QLineEdit" row="2" column="5">
                     <property name="name">
                         <cstring>txtGeomName</cstring>
@@ -347,6 +311,47 @@
                         <enum>Horizontal</enum>
                     </property>
                 </widget>
+                <widget class="QPushButton" row="0" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>btnAddFile</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Add ...</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="2" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>btnRemoveFile</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Remove</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="4">
+                    <property name="name">
+                        <cstring>btnRemoveAll</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Remove All</string>
+                    </property>
+                </widget>
+                <spacer row="0" column="5">
+                    <property name="name">
+                        <cstring>spacer7</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>201</width>
+                            <height>41</height>
+                        </size>
+                    </property>
+                </spacer>
             </grid>
         </widget>
     </grid>
