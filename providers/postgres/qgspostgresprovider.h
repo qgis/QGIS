@@ -206,6 +206,7 @@ private:
       std::vector < QgsFeature > features;
       std::vector < bool > *selected;
       std::vector < QgsField > attributeFields;
+      std::map < int, int > attributeFieldsIdMap;
     QString dataSourceUri;
   /**
   * Pointer to the PostgreSQL query result object. If this pointer is 0,
