@@ -12,7 +12,7 @@
 
 plugindir = ${pkglibdir}
 #[pluginname] below to be replaced with the name of the plugin
-plugin_LTLIBRARIES = libp[pluginname]lugin.la
+plugin_LTLIBRARIES = lib[pluginname]plugin.la
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -52,7 +52,7 @@ BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS)
 
-lib[pluginname]plugin_la_LIBADD = $(QT_LDADD) -
+lib[pluginname]plugin_la_LIBADD = $(QT_LDADD)
 lib[pluginname]plugin_la_LDFLAGS = -avoid-version -module
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm
