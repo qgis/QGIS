@@ -21,6 +21,7 @@
 #include <qpixmap.h>
 #include <qlistbox.h>
 #include <qstringlist.h>
+#include <qlabel.h>
 #include <qcombobox.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
@@ -47,6 +48,16 @@ QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
 	first = false;
     }
     QgsGrassSelect::type = type;
+
+    if ( type == QgsGrassSelect::RASTER ) {
+	/* Remove layer combo box */
+	Layer->hide();
+	elayer->hide();
+	resize ( width(), height() - 40 );
+	setCaption ( "Add GRASS Raster Layer" );
+    } else { // vector
+	setCaption ( "Add GRASS Vector Layer" );
+    }
 	    
     egisdbase->setText(lastGisdbase);
 
@@ -61,7 +72,8 @@ bool QgsGrassSelect::first = true;
 QString QgsGrassSelect::lastGisdbase;
 QString QgsGrassSelect::lastLocation;
 QString QgsGrassSelect::lastMapset;
-QString QgsGrassSelect::lastMap;
+QString QgsGrassSelect::lastVectorMap;
+QString QgsGrassSelect::lastRasterMap;
 QString QgsGrassSelect::lastLayer;
 
 void QgsGrassSelect::setLocations()
@@ -77,6 +89,8 @@ void QgsGrassSelect::setLocations()
     int sel = -1;
     // Add all subdirs containing PERMANENT/DEFAULT_WIND
     for ( unsigned int i = 0; i < d.count(); i++ ) {
+	if ( d[i] == "." || d[i] == ".." ) continue; 
+
 	QString chf = egisdbase->text() + "/" + d[i] + "/PERMANENT/DEFAULT_WIND";
 	if ( QFile::exists ( chf ) ) {
             elocation->insertItem ( QString ( d[i] ), -1 );
@@ -161,26 +175,40 @@ void QgsGrassSelect::setMaps()
 	    if ( QFile::exists ( chf ) ) {
 		QString m = QString( md[j] );
 		emap->insertItem ( m, -1 );
-		if ( m == lastMap ) {
+		if ( m == lastVectorMap ) {
 		    sel = idx;
 		}
 		idx++;
 	    }
 	}
     } else { // raster
-	ldpath.append ( "/cell/" );
-	QDir md = QDir( ldpath );
+	/* add cells */
+	QDir md = QDir( ldpath + "/cell/" );
 	md.setFilter (QDir::Files);
 	
 	for ( unsigned int j = 0; j < md.count(); j++ ) {
 	    QString m = QString( md[j] );
 	    emap->insertItem ( m, -1 );
-	    if ( m == lastMap ) {
+	    if ( m == lastRasterMap ) {
 		sel = idx;
 	    }
 	    idx++;
 	}
 
+	/* add groups */
+	md = QDir( ldpath + "/group/" );
+	md.setFilter (QDir::Dirs);
+	
+	for ( unsigned int j = 0; j < md.count(); j++ ) {
+	    if ( md[j] == "." || md[j] == ".." ) continue; 
+
+	    QString m = QString( md[j] + " (GROUP)" );
+	    emap->insertItem ( m, -1 );
+	    if ( m == lastRasterMap ) {
+		sel = idx;
+	    }
+	    idx++;
+	}
     }
     if ( idx >= 0 ) {
 	emap->setCurrentItem(sel);
@@ -319,11 +347,25 @@ void QgsGrassSelect::accept()
 	return;
     }
     
-    lastMap = map;
 
-    layer = elayer->currentText().stripWhiteSpace();
-    lastLayer = layer;
+    if ( type == QgsGrassSelect::VECTOR ) {
+        lastVectorMap = map;
+	layer = elayer->currentText().stripWhiteSpace();
+	lastLayer = layer;
+    } else { // RASTER
+        lastRasterMap = map;
+	if ( map.find(" (GROUP)") != -1 ) {
+	    map.remove ( " (GROUP)" );
+	    selectedType = QgsGrassSelect::GROUP;
+	} else {
+	    selectedType = QgsGrassSelect::RASTER;
+	}
+    }
     
     QDialog::accept();
 }
 
+void QgsGrassSelect::reject()
+{
+    QDialog::reject();
+}

@@ -29,10 +29,13 @@ public:
     //! Destructor
     ~QgsGrassSelect();
 
-    enum TYPE { VECTOR, RASTER };
+    enum TYPE { VECTOR, RASTER, GROUP }; // GROUP = group of rasters, used in selectedType
 
     //! OK 
     void accept (void);
+
+    //! Cancel
+    void reject (void);
     
     //! Open dialog for Gisdbase
     void getGisdbase(void);
@@ -54,6 +57,7 @@ public:
     QString  mapset;
     QString  map;
     QString  layer;
+    int      selectedType;  // RASTER or GROUP
 
 private:
     int type; // map type (mapset element)
@@ -61,8 +65,9 @@ private:
     static QString lastGisdbase; // Last selected values
     static QString lastLocation;
     static QString lastMapset;
-    static QString lastMap;
-    static QString lastLayer;
+    static QString lastVectorMap;
+    static QString lastRasterMap;
+    static QString lastLayer; // vector layer
 };
 
 
