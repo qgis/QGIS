@@ -64,6 +64,7 @@
 #include <cstdio>
 #include <cmath>
 #include <limits>
+#include <iostream>
 
 #include <qapplication.h>
 #include <qcursor.h>
@@ -71,6 +72,7 @@
 #include <qimage.h>
 #include <qfont.h>
 #include <qfile.h>
+#include <qfileinfo.h>
 #include <qfontmetrics.h>
 #include <qwmatrix.h>
 #include <qpopupmenu.h>
@@ -462,6 +464,10 @@ QgsRasterLayer::readFile( QString const & fileName )
         valid = FALSE;
         return false;
     }
+
+    // Store timestamp
+    mLastModified = lastModified ( fileName.local8Bit() );
+    
     //check f this file has pyramids
     GDALRasterBandH myGDALBand = GDALGetRasterBand( gdalDataset, 1 ); //just use the first band
     if( GDALGetOverviewCount(myGDALBand) > 0 )
@@ -605,6 +611,97 @@ QgsRasterLayer::readFile( QString const & fileName )
 
 } // QgsRasterLayer::readFile
 
+void QgsRasterLayer::closeDataset()
+{
+    if ( !valid  ) return;
+    valid = FALSE;
+  
+    GDALClose(gdalDataset);
+    gdalDataset = 0;
+
+    hasPyramidsFlag=false;
+    mPyramidList.clear();
+    
+    rasterStatsVector.clear();
+} 
+
+bool QgsRasterLayer::update()
+{
+#ifdef QGISDEBUG
+    std::cerr << "QgsRasterLayer::update" << std::endl;
+#endif
+    
+    if ( mLastModified < QgsRasterLayer::lastModified ( source() ) ) {
+#ifdef QGISDEBUG
+    std::cerr << "Outdated -> reload" << std::endl;
+#endif
+        closeDataset();
+        return readFile ( source() );
+    }
+    return true;
+}
+
+QDateTime QgsRasterLayer::lastModified ( QString name )
+{
+#ifdef QGISDEBUG
+    std::cerr << "QgsRasterLayer::lastModified: " << name << std::endl;
+#endif
+    QDateTime t;
+    
+    QFileInfo fi ( name );
+
+    // Is it file?
+    if ( !fi.exists() ) return t;
+
+    t = fi.lastModified();
+
+    // Check also color table for GRASS
+    if ( name.contains( "cellhd" ) > 0 ) { // most probably GRASS
+	QString dir = fi.dirPath();
+	QString map = fi.fileName();
+        fi.setFile ( dir + "/../colr/" + map );
+
+	if ( fi.exists() ) {
+	    if ( fi.lastModified() > t ) t = fi.lastModified();
+	}
+    }
+
+    // Check GRASS group members (bands) 
+    if ( name.contains( "group" ) > 0 ) { // probably GRASS group
+    	fi.setFile ( name + "/REF" );
+
+	if ( fi.exists() ) {  // most probably GRASS group 
+	    QFile f ( name + "/REF" );
+	    if ( f.open ( IO_ReadOnly ) ) {
+		 QString ln;
+		 QString dir = fi.dirPath() + "/../../../";
+		 while ( f.readLine(ln,100) != -1 ) { 
+		     QStringList sl = QStringList::split ( ' ', ln.stripWhiteSpace() );
+		     QString map = sl.first();
+		     sl.pop_front();
+		     QString mapset = sl.first();
+		     
+		     // header
+		     fi.setFile ( dir + mapset + "/cellhd/" +  map );
+		     if ( fi.exists() ) {
+			 if ( fi.lastModified() > t ) t = fi.lastModified();
+		     }
+		     
+		     // color
+		     fi.setFile ( dir + mapset + "/colr/" +  map );
+		     if ( fi.exists() ) {
+			 if ( fi.lastModified() > t ) t = fi.lastModified();
+		     }
+		 }
+	    }
+	}
+    }
+#ifdef QGISDEBUG
+    std::cerr << "last modified = " << t.toString() << std::endl;
+#endif
+	
+    return t;
+}
 
 
 void QgsRasterLayer::showLayerProperties()
@@ -853,6 +950,8 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   if (transparencyLevelInt == 0)
     return;
 
+  // Check timestamp
+  if ( !update() ) return;
 
   // clip raster extent to view extent
   QgsRect myRasterExtent = theViewExtent->intersect(&layerExtent);
