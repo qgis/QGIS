@@ -192,8 +192,13 @@ bool QgsShapeFileProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
   bool returnValue;
   if(valid){
     //std::cerr << "getting next feature\n";
-    OGRFeature *fet = ogrLayer->GetNextFeature();
-    if(fet && fet->GetGeometryRef()){
+    // skip features without geometry
+    OGRFeature *fet;
+    while ((fet = ogrLayer->GetNextFeature()) != NULL) {
+      if (fet->GetGeometryRef())
+	break;
+    }
+    if(fet){
       OGRGeometry *geom = fet->GetGeometryRef();
 
       // get the wkb representation
@@ -246,8 +251,13 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(bool fetchAttributes)
   QgsFeature *f = 0;
   if(valid){
     //std::cerr << "getting next feature\n";
-    OGRFeature *fet = ogrLayer->GetNextFeature();
-    if(fet && fet->GetGeometryRef()){
+    // skip features without geometry
+    OGRFeature *fet;
+    while ((fet = ogrLayer->GetNextFeature()) != NULL) {
+      if (fet->GetGeometryRef())
+	break;
+    }
+    if(fet){
       OGRGeometry *geom = fet->GetGeometryRef();
 
       // get the wkb representation
@@ -291,8 +301,13 @@ QgsFeature *QgsShapeFileProvider::getNextFeature(std::list<int>& attlist)
    QgsFeature *f = 0; 
    if(valid)
    {
-       OGRFeature *fet = ogrLayer->GetNextFeature();
-       if(fet && fet->GetGeometryRef())
+       // skip features without geometry
+       OGRFeature *fet;
+       while ((fet = ogrLayer->GetNextFeature()) != NULL) {
+	 if (fet->GetGeometryRef())
+	   break;
+       }
+       if(fet)
        {
 	 OGRGeometry *geom = fet->GetGeometryRef();
          // get the wkb representation
