@@ -17,10 +17,13 @@
 #define QGSVECTORDATAPROVIDER_H
 #include "qgsdataprovider.h"
 
-/**Interface class for vector data providers*/
+/**Base class for vector data providers*/
 class QgsVectorDataProvider: public QgsDataProvider
 {
  public:
+
+    QgsVectorDataProvider();
+
     virtual ~QgsVectorDataProvider() {};
 
     /** 
@@ -91,12 +94,12 @@ class QgsVectorDataProvider: public QgsDataProvider
 
     /**Adds a feature (but does not commit it)
        @return true in case of success and false in case of failure*/
-    virtual bool addFeature(QgsFeature* f)=0;
+    virtual bool addFeature(QgsFeature* f);
 
     /**Deletes a feature
        @param id the number of the feature
        @return true in case of success and false in case of failure*/
-    virtual bool deleteFeature(int id)=0;
+    virtual bool deleteFeature(int id);
 
     /**
      * Identify features within the search radius specified by rect
@@ -104,10 +107,51 @@ class QgsVectorDataProvider: public QgsDataProvider
      * @return std::vector containing QgsFeature objects that intersect rect
      */
     virtual std::vector<QgsFeature>& identify(QgsRect *rect)=0;
+
+    /**
+     *Enables editing capabilities of the provider (if supported)
+     *@return false in case of error or if the provider does not support editing
+    */
+  virtual bool startEditing();
+
+  /**
+   *Disables the editing capabilities of the provider
+   */
+  virtual void stopEditing();
+
+  /**
+     Commits changes
+     @return false in case of problems
+  */
+  virtual bool commitChanges();
+
+  /**
+     Discards changes
+     @return false in case of problems
+  */
+  virtual bool rollBack();
+
+  /**Returns true if the provider is in editing mode*/
+  virtual bool isEditable() const {return mEditable;}
+
+  /**Returns true if the provider has been modified since the last commit*/
+  virtual bool isModified() const {return mModified;}
+
+  
  protected:
 
     /**Flag indicating wheter the provider is in editing mode or not*/
     bool mEditable;
+    /**Flag indicating wheter the provider has been modified since the last commit*/
+    bool mModified;
+    /**Features which are added but not yet commited*/
+    std::list<QgsFeature*> mAddedFeatures;
+    /**Commits a feature
+     @return true in case of success and false in case of failure*/
+    virtual bool commitFeature(QgsFeature* f);
+    /**If getNextFeature needs to returns pointers to not commited features, 
+    this member points to the latest feature*/
+    std::list<QgsFeature*>::iterator mAddedFeaturesIt;
 };
 
 #endif
