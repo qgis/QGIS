@@ -17,6 +17,7 @@ email                : sherman at mrcc.com
 #ifndef QGSFEATURE_H
 #define QGSFEATURE_H
 
+#include <geos.h>
 #include <qstring.h>
 #include <map>
 #include <vector>
@@ -129,6 +130,9 @@ class QgsFeature {
 
     /**Returns the bounding box of this feature*/
     QgsRect boundingBox() const;
+
+    /**Creates a geos geometry from this features geometry. Note, that the returned object needs to be deleted*/
+    geos::Geometry* geosGeometry() const;
 
   private:
 
