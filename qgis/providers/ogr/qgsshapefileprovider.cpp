@@ -19,6 +19,7 @@
 #include "../../src/qgsfeature.h"
 #include "../../src/qgsfield.h"
 #include "../../src/qgsrect.h"
+#include "../../src/qgis.h"
 #ifdef WIN32
 #define QGISEXTERN extern "C" __declspec( dllexport )
 #else
@@ -568,29 +569,40 @@ bool QgsShapeFileProvider::isValid()
 bool QgsShapeFileProvider::addFeature(QgsFeature* f)
 {
   bool returnValue = true;
-    OGRFeatureDefn* fdef=ogrLayer->GetLayerDefn();
-    OGRFeature* feature=new OGRFeature(fdef);
-    /*double x;
-    double y;
-    memcpy(&x,(f->getGeometry()+5),sizeof(double));
+  OGRFeatureDefn* fdef=ogrLayer->GetLayerDefn();
+  OGRFeature* feature=new OGRFeature(fdef);
+  QGis::WKBTYPE ftype;
+  memcpy(&ftype, (f->getGeometry()+1), sizeof(int));
+  switch(ftype)
+  {
+      case QGis::WKBPoint:
+      {
+	  OGRPoint* p=new OGRPoint();
+	  p->importFromWkb(f->getGeometry(),1+sizeof(int)+2*sizeof(double));
+	  feature->SetGeometry(p);
+	  break;
+      }
+      case QGis::WKBLineString:
+      {
+	  OGRLineString* l=new OGRLineString();
+	  int length;
+	  memcpy(&length,f->getGeometry()+5,sizeof(int));
 #ifdef QGISDEBUG
-    qWarning("x: "+QString::number(x,'f'));
+	  qWarning("length: "+QString::number(length));
 #endif
-    memcpy(&y,(f->getGeometry()+5+sizeof(double)),sizeof(double));
-#ifdef QGISDEBUG
-    qWarning("y: "+QString::number(y,'f'));
-#endif
-OGRPoint* p=new OGRPoint(x,y,0);*/
-    OGRPoint* p=new OGRPoint();
-    p->importFromWkb(f->getGeometry(),21);
-    feature->SetGeometry(p);
-    if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
-    {
-	//writing failed
-	QMessageBox::warning (0, "Warning", "Writing of the feature failed", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
-  returnValue = false;
-    }
-    ogrLayer->SyncToDisk();
+	  l->importFromWkb(f->getGeometry(),1+2*sizeof(int)+2*length*sizeof(double));
+	  feature->SetGeometry(l);
+	  break;
+      }
+  }
+
+  if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
+  {
+      //writing failed
+      QMessageBox::warning (0, "Warning", "Writing of the feature failed", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
+      returnValue = false;
+  }
+  ogrLayer->SyncToDisk();
   return returnValue;
 }
 

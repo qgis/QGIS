@@ -195,6 +195,8 @@ private:
     void about();
     //! activates the capture point tool
     void capturePoint();
+    //! activates the capture line tool
+    void captureLine();
     //! activates the selection tool
     void select();
     //! check to see if file is dirty and if so, prompt the user th save it

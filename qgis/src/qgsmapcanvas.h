@@ -242,6 +242,9 @@ private:
     /// Handle pattern for implementation object
     std::auto_ptr<CanvasProperties> mCanvasProperties;
 
+    /**List to store the points of digitised lines and polygons*/
+    std::list<QgsPoint> mCaptureList;
+
     //! Overridden mouse move event
     void mouseMoveEvent(QMouseEvent * e);
 

@@ -243,3 +243,9 @@ void QgisAppBase::showAllLayers()
 {
 
 }
+
+
+void QgisAppBase::captureLine()
+{
+
+}
