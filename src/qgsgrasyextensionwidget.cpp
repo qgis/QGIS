@@ -234,6 +234,7 @@ QWidget *QgsGraSyExtensionWidget::getWidget(int column, int row)
 void QgsGraSyExtensionWidget::selectColor()
 {
     ((QPushButton *) sender())->setPaletteBackgroundColor(QColorDialog::getColor());
+    setActiveWindow();
 }
 
 void QgsGraSyExtensionWidget::selectFillPattern()
@@ -244,6 +245,7 @@ void QgsGraSyExtensionWidget::selectFillPattern()
 	((QPushButton *) sender())->setName(QgsSymbologyUtils::brushStyle2Char(patterndialog.pattern()));
 	((QPushButton *) sender())->setPixmap(QgsSymbologyUtils::brushStyle2Pixmap(patterndialog.pattern()));
     }
+    setActiveWindow();
 }
 
 void QgsGraSyExtensionWidget::selectOutlineStyle()
@@ -254,6 +256,7 @@ void QgsGraSyExtensionWidget::selectOutlineStyle()
 	((QPushButton *) sender())->setName(QgsSymbologyUtils::penStyle2Char(linestyledialog.style()));
 	((QPushButton *) sender())->setPixmap(QgsSymbologyUtils::penStyle2Pixmap(linestyledialog.style()));
     }
+    setActiveWindow();
 }
 
 void QgsGraSyExtensionWidget::resizeEvent(QResizeEvent* e)

@@ -259,13 +259,11 @@ void QgsContColDialog::apply()
 void QgsContColDialog::selectMinimumColor()
 {
     mincolorbutton->setPaletteBackgroundColor(QColorDialog::getColor());
-    mVectorLayer->propertiesDialog()->raise();
-    raise();
+    setActiveWindow();
 }
 
 void QgsContColDialog::selectMaximumColor()
 {
     maxcolorbutton->setPaletteBackgroundColor(QColorDialog::getColor());
-    mVectorLayer->propertiesDialog()->raise();
-    raise();
+    setActiveWindow();
 }
