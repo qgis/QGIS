@@ -23,7 +23,7 @@ class QgsPoint;
 class QPainter;
 class QgsCoordinateTransform;
 
-/** \class QgsAcetateObject
+/*! \class QgsAcetateObject
 * \brief Base class for all objects that are drawn on the acetate layer of a map canvas.
 *
 * An acetate object is a graphic or text object that is drawn on top of the map canvas 
