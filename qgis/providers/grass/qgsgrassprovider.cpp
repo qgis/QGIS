@@ -1221,10 +1221,10 @@ struct Map_info *QgsGrassProvider::layerMap ( int layerId )
 
 //-----------------------------------------  Edit -------------------------------------------------------
 
-bool QgsGrassProvider::isEditable ( void )
+bool QgsGrassProvider::isGrassEditable ( void )
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrassProvider::isEditable" << std::endl;
+    std::cerr << "QgsGrassProvider::isGrassEditable" << std::endl;
     #endif
 
     if ( !isValid() ) 
@@ -1257,7 +1257,7 @@ bool QgsGrassProvider::startEdit ( void )
     std::cerr << "  mMaps.size() = " << mMaps.size() << std::endl;
     #endif
 
-    if ( !isEditable() )
+    if ( !isGrassEditable() )
 	return false;
 
     // Check number of maps (the problem may appear if static variables are not shared - runtime linker)
@@ -1273,7 +1273,7 @@ bool QgsGrassProvider::startEdit ( void )
 
     QgsGrass::setLocation ( (char *) map->gisdbase.ascii(), (char *) map->location.ascii() ); 
 
-    // Set current mapset (mapset was previously checked by isEditable() )
+    // Set current mapset (mapset was previously checked by isGrassEditable() )
     // TODO: Should be done better / in other place ?
     G__setenv( "MAPSET", (char *) map->mapset.ascii() );
 
@@ -1319,7 +1319,7 @@ bool QgsGrassProvider::closeEdit ( void )
 
     QgsGrass::setLocation ( (char *) map->gisdbase.ascii(), (char *) map->location.ascii() ); 
 
-    // Set current mapset (mapset was previously checked by isEditable() )
+    // Set current mapset (mapset was previously checked by isGrassEditable() )
     // TODO: Should be done better / in other place ?
     // TODO: Is it necessary for build/close ?
     G__setenv( "MAPSET", (char *) map->mapset.ascii() );

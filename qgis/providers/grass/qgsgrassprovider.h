@@ -196,7 +196,7 @@ public:
 	*   @return true the layer editable
 	*   @return false the is not editable
 	*/
-	bool isEditable();
+	bool isGrassEditable();
 
 	/** Returns true if the layer is currently edited (opened in update mode)
 	*   @return true in update mode
@@ -432,7 +432,7 @@ public:
 	virtual bool rollBack();
 
 	/**Returns true if the provider is in editing mode*/
-	virtual bool isEditable() const {return false;}
+	virtual bool isEditable() const {return true;}
 
 	/**Returns true if the provider has been modified since the last commit*/
 	virtual bool isModified() const {return false;}
