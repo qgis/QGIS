@@ -11,6 +11,8 @@ SOURCES += moc_qgisapp.cpp \
 moc_qgisappbase.cpp \
 moc_qgisinterface.cpp \ 
 moc_qgsabout.cpp \
+moc_qgsattributedialog.cpp \
+moc_qgsattributedialogbase.cpp \
 moc_qgsattributetable.cpp \
 moc_qgsattributetablebase.cpp \
 moc_qgscontcoldialog.cpp \
@@ -75,6 +77,8 @@ qgisinterface.cpp \
 qgsabout.cpp \
 qgsacetateobject.cpp \
 qgsacetaterectangle.cpp \
+qgsattributedialog.cpp \
+qgsattributedialogbase.cpp \
 qgsattributetable.cpp \
 qgsattributetablebase.cpp \
 qgsattributetabledisplay.cpp \
@@ -134,7 +138,7 @@ qgspluginmetadata.cpp \
 qgspluginregistry.cpp \
 qgspoint.cpp \
 qgspolygonsymbol.cpp \
-qgsprojectio.cpp \
+qgsproject.cpp \
 qgsprojectproperties.cpp \
 qgsprojectpropertiesbase.cpp \
 qgsprovidermetadata.cpp \
@@ -162,6 +166,7 @@ qgsvectorfilewriter.cpp \
 qgsludialogbase.cpp \
 qgsludialog.cpp \
 qgsvectorlayer.cpp \
+qgsvectordataprovider.cpp \
 qgsuvalmadialog.cpp \
 qgsuvalmadialogbase.cpp \
 qgsuvalmarenderer.cpp \

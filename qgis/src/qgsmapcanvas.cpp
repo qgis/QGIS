@@ -20,6 +20,7 @@
 
 #include <iosfwd>
 #include <cmath>
+#include <cfloat>
 
 // added double sentinals to take load off gcc 3.3.3 pre-processor, which was dying 
 
@@ -932,10 +933,10 @@ void QgsMapCanvas::zoomToSelected()
 
     // no selected features
     // XXX where is rectange set to "empty"? Shouldn't we use QgsRect::isEmpty()?
-    if (rect.xMin() == std::numeric_limits<double>::infinity() &&
-        rect.yMin() == std::numeric_limits<double>::infinity() &&
-        rect.xMax() == std::numeric_limits<double>::min() &&
-        rect.yMax() == std::numeric_limits<double>::min())
+    if (rect.xMin() == DBL_MAX && 
+         rect.yMin() == DBL_MAX && 
+         rect.xMax() == -DBL_MAX && 
+         rect.yMax() == -DBL_MAX)
     {
       return;
     }
