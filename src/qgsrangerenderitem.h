@@ -26,7 +26,7 @@ class QgsRangeRenderItem: public QgsRenderItem
 {
  public:
     QgsRangeRenderItem();
-    QgsRangeRenderItem(QgsSymbol symbol, QString _value, QString u_value, QString _label);
+    QgsRangeRenderItem(QgsSymbol* symbol, QString _value, QString u_value, QString _label);
     void setUpperValue(QString value);
     const QString& upper_value() const;
  protected:

@@ -64,10 +64,14 @@ void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDl
     
     if (layer)
     {
-	QgsSymbol sy;
-	sy.brush().setStyle(Qt::SolidPattern);
-	sy.pen().setStyle(Qt::SolidLine);
-	sy.pen().setWidth(1);
+	QgsSymbol* misy = new QgsSymbol();
+	QgsSymbol* masy = new QgsSymbol();
+	misy->brush().setStyle(Qt::SolidPattern);
+	masy->brush().setStyle(Qt::SolidPattern);
+	misy->pen().setStyle(Qt::SolidLine);
+	masy->pen().setStyle(Qt::SolidLine);
+	misy->pen().setWidth(1);
+	masy->pen().setWidth(1);
 	
 	//random fill colors for points and polygons and pen colors for lines
 	int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
@@ -96,18 +100,21 @@ void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDl
 
 	if (layer->vectorType() == QGis::Line)
         {
-	    sy.pen().setColor(QColor(red, green, blue));
+	    misy->pen().setColor(QColor(red, green, blue));
+	    masy->pen().setColor(QColor(red, green, blue));
 	    //paint the pixmap for the legend
-	    p.setPen(sy.pen());
+	    p.setPen(misy->pen());
 	    p.drawLine(10, pixmap->height() - 25, 25, pixmap->height() - 10);
 	} 
 	else
         {
-	    sy.brush().setColor(QColor(red, green, blue));
-	    sy.pen().setColor(QColor(0, 0, 0));
+	    misy->brush().setColor(QColor(red, green, blue));
+	    masy->brush().setColor(QColor(red, green, blue));
+	    misy->pen().setColor(QColor(0, 0, 0));
+	    masy->pen().setColor(QColor(0, 0, 0));
 	    //paint the pixmap for the legend
-	    p.setPen(sy.pen());
-	    p.setBrush(sy.brush());
+	    p.setPen(misy->pen());
+	    p.setBrush(misy->brush());
 	    if (layer->vectorType() == QGis::Point)
             {
 		p.drawRect(20, pixmap->height() - 17, 5, 5);
@@ -122,8 +129,8 @@ void QgsContinuousColRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDl
 	p.setFont(f);
 	p.drawText(35, pixmap->height() - 10, name);
 	
-	QgsRenderItem *QgsRenderItem1 = new QgsRenderItem(sy, QString::number(DBL_MIN, 'f', 6), "");
-	QgsRenderItem *QgsRenderItem2 = new QgsRenderItem(sy, QString::number(DBL_MAX, 'f', 6), "");
+	QgsRenderItem *QgsRenderItem1 = new QgsRenderItem(misy, QString::number(DBL_MIN, 'f', 6), "");
+	QgsRenderItem *QgsRenderItem2 = new QgsRenderItem(masy, QString::number(DBL_MAX, 'f', 6), "");
 
 	setMinimumItem(QgsRenderItem1);
 	setMaximumItem(QgsRenderItem2);

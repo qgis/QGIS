@@ -37,11 +37,11 @@ class QgsRenderItem {
     /**Default Constructor*/
     QgsRenderItem();
      /** Constructor
-    * @param symbol Symbol to use for rendering matching features
+    * @param symbol Symbol to use for rendering matching features. It needs to be constructed using the new-operator and is automatically deleted by QgsRenderItem
     * @param _value Value of the field
     * @param _label Label to use in the legend
     */
-    QgsRenderItem(QgsSymbol symbol, QString _value, QString _label);
+    QgsRenderItem(QgsSymbol* symbol, QString _value, QString _label);
     /**Destructor*/
     ~QgsRenderItem();
     /** Gets the symbol associated with this render item

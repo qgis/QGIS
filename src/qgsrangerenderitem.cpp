@@ -22,7 +22,7 @@ QgsRangeRenderItem::QgsRangeRenderItem():QgsRenderItem()
 
 }
 
-QgsRangeRenderItem::QgsRangeRenderItem(QgsSymbol symbol, QString _value, QString u_value, QString _label):QgsRenderItem(symbol, _value, _label),
+QgsRangeRenderItem::QgsRangeRenderItem(QgsSymbol* symbol, QString _value, QString u_value, QString _label):QgsRenderItem(symbol, _value, _label),
 m_upper_value(u_value)
 {
 

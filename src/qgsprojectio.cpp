@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* qgsprojectio.cpp,v 1.32 2004/03/21 15:35:37 mhugent Exp */
+/* qgsprojectio.cpp,v 1.33 2004/03/23 13:31:50 mhugent Exp */
 #include <iostream>
 #include <fstream>
 #include <qfiledialog.h>
@@ -213,7 +213,7 @@ bool QgsProjectIo::read(QString path)
 
               if (!singlenode.isNull()) //read configuration for single symbol
                 {
-                  QgsSymbol sy;
+                  QgsSymbol* sy = new QgsSymbol();
                   QPen pen;
                   QBrush brush;
 
@@ -256,8 +256,8 @@ bool QgsProjectIo::read(QString path)
                   QString label = lnodee.text();
 
                   //create a renderer and add it to the vector layer
-                  sy.setBrush(brush);
-                  sy.setPen(pen);
+                  sy->setBrush(brush);
+                  sy->setPen(pen);
                   QgsRenderItem* ri = new QgsRenderItem(sy, value, label);
                   QgsSingleSymRenderer *srenderer = new QgsSingleSymRenderer();
                   srenderer->addItem(ri);
@@ -283,7 +283,7 @@ bool QgsProjectIo::read(QString path)
                   QDomNode rangerendernode = graduatednode.namedItem("rangerenderitem");
                   while (!rangerendernode.isNull())
                     {
-                      QgsSymbol sy;
+                      QgsSymbol* sy = new QgsSymbol();
                       QPen pen;
                       QBrush brush;
 
@@ -320,8 +320,8 @@ bool QgsProjectIo::read(QString path)
                       QString label = labelelement.text();
 
                       //create a renderitem and add it to the renderer
-                      sy.setBrush(brush);
-                      sy.setPen(pen);
+                      sy->setBrush(brush);
+                      sy->setPen(pen);
 
                       QgsRangeRenderItem *ri = new QgsRangeRenderItem(sy, lowervalue, uppervalue, label);
                       grenderer->addItem(ri);
@@ -343,7 +343,8 @@ bool QgsProjectIo::read(QString path)
               else if (!continuousnode.isNull())  //read configuration for continuous symbol
                 {
                   qWarning("continuous node");
-                  QgsSymbol lsy, usy;
+                  QgsSymbol* lsy = new QgsSymbol(); 
+		  QgsSymbol* usy = new QgsSymbol();
                   QPen lpen, upen;
                   QBrush lbrush, ubrush;
 
@@ -417,10 +418,10 @@ bool QgsProjectIo::read(QString path)
                   QString ulabel = uitemnode.namedItem("label").toElement().text();
 
                   //add all together
-                  lsy.setPen(lpen);
-                  lsy.setBrush(lbrush);
-                  usy.setPen(upen);
-                  usy.setBrush(ubrush);
+                  lsy->setPen(lpen);
+                  lsy->setBrush(lbrush);
+                  usy->setPen(upen);
+                  usy->setBrush(ubrush);
 
                   QgsRenderItem *litem = new QgsRenderItem(lsy, lvalue, llabel);
                   QgsRenderItem *uitem = new QgsRenderItem(usy, uvalue, ulabel);
