@@ -93,7 +93,7 @@ public:
     It's much better to try to just open one file at a time.
 
     */
-    bool addLayer(QStringList const & theLayerQStringList, const QgsVectorDataProvider::Encoding enc);
+    bool addLayer(QStringList const & theLayerQStringList, const QString& enc);
 
     /** open a vector layer for the given file
 
