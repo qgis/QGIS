@@ -104,10 +104,20 @@ void Plugin::initGui()
   myQActionPointer = new QAction("Copyright Label", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
-  // This calls the north arrow renderer everytime the cnavas has drawn itself
+  // This calls the renderer everytime the cnavas has drawn itself
   connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderLabel(QPainter *)));
+  //this resets this plugin up if a project is loaded
+  connect(qgisMainWindowPointer, SIGNAL(projectRead()), this, SLOT(projectRead()));
+  
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon(myQActionPointer);
+  //initialise default values in the gui
+  projectRead();
+}
+
+void Plugin::projectRead()
+{
+  std::cout << "Copyright plugin - project read slot called...." << std::endl;
   //default text to start with - try to fetch it from qgsproject
   QgsProject::Properties myProperties = QgsProject::instance()->properties("CopyrightLabel");
   for ( QgsProject::Properties::const_iterator i = myProperties.begin();
@@ -147,7 +157,6 @@ void Plugin::initGui()
   mLabelQColor = QColor(Qt::black);
 
   refreshCanvas();
-
 }
 //method defined in interface
 void Plugin::help()
