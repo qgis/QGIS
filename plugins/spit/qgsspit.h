@@ -29,6 +29,7 @@ extern "C"
 
 class QgsSpit : public QgsSpitBase
 {
+  Q_OBJECT;
 public:
   QgsSpit( QWidget *parent = 0, const char *name = 0 );
   ~QgsSpit();
