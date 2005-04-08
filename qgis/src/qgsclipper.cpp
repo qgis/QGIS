@@ -22,8 +22,7 @@
 #include <cmath>
 #include <iostream>
 
-bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to, 
-			  QgsPoint& tFrom, QgsPoint& tTo)
+bool QgsClipper::trimLine(QgsPoint& from, QgsPoint& to)
 {
   // To determine the intersection between a line given by the points
   // A and B, and the line given by the points C and D, calculate
@@ -57,7 +56,7 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
   //
   // Also do a check to see if the line segment is inside or outside
   // the limits. If outside, return false to let the caller know that
-  // the shouldn't plot the line segment. 
+  // it shouldn't plot the line segment. 
   // 
   // This function has more than one exit point - as soon as the code
   // determines that it has trimmed the lines appropriately, it exits,
@@ -67,14 +66,12 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
   // point in doing further checks, so return from the function
   // if that occurs.
   bool toDone = false, fromDone = false;
+  QgsPoint trimmedTo = to, trimmedFrom = from;
 
   // Check for the need to trim first
   if (from.x() < minX || from.x() > maxX || to.x() < minX || to.x() > maxX ||
       from.y() < minY || from.y() > maxY || to.y() < minY || to.y() > maxY)
   {
-    tFrom = from;
-    tTo = to;
-    
     // Check the top boundary
     double r_n = (from.y() -     minY) * (maxX - minX);
     double dTB = - (to.y() - from.y()) * (maxX - minX);
@@ -95,14 +92,14 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
 	if (from.y() <= minY) // trim from
 	{
 	  fromDone = true;
-	  tFrom.setX(from.x() + r_nOverd*(to.x() - from.x()));
-	  tFrom.setY(from.y() + r_nOverd*(to.y() - from.y()));
+	  trimmedFrom.setX(from.x() + r_nOverd*(to.x() - from.x()));
+	  trimmedFrom.setY(from.y() + r_nOverd*(to.y() - from.y()));
 	}
 	else // trim to
 	{
 	  toDone = true;
-	  tTo.setX(from.x() + r_nOverd*(to.x() - from.x()));
-	  tTo.setY(from.y() + r_nOverd*(to.y() - from.y()));
+	  trimmedTo.setX(from.x() + r_nOverd*(to.x() - from.x()));
+	  trimmedTo.setY(from.y() + r_nOverd*(to.y() - from.y()));
 	}
       }
     }
@@ -126,21 +123,25 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
 	if (from.x() >= maxX) // trim from
 	{
 	  fromDone = true;
-	  tFrom.setX(from.x() + r_nOverd*(to.x() - from.x()));
-	  tFrom.setY(from.y() + r_nOverd*(to.y() - from.y()));
+	  trimmedFrom.setX(from.x() + r_nOverd*(to.x() - from.x()));
+	  trimmedFrom.setY(from.y() + r_nOverd*(to.y() - from.y()));
 	}
 	else // trim to
 	{
 	  toDone = true;
-	  tTo.setX(from.x() + r_nOverd*(to.x() - from.x()));
-	  tTo.setY(from.y() + r_nOverd*(to.y() - from.y()));
+	  trimmedTo.setX(from.x() + r_nOverd*(to.x() - from.x()));
+	  trimmedTo.setY(from.y() + r_nOverd*(to.y() - from.y()));
 	}
       }
     }
 
     // Done both ends of the line, so leave.
     if (toDone && fromDone)
+    {
+      to = trimmedTo;
+      from = trimmedFrom;
       return true;
+    }
 
     // the left border
     r_n = - (from.x() - minX) * (maxY - minY);
@@ -162,21 +163,25 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
 	if (from.x() <= minX) // trim from
 	{
 	  fromDone = true;
-	  tFrom.setX(from.x() + r_nOverd*(to.x() - from.x()));
-	  tFrom.setY(from.y() + r_nOverd*(to.y() - from.y()));
+	  trimmedFrom.setX(from.x() + r_nOverd*(to.x() - from.x()));
+	  trimmedFrom.setY(from.y() + r_nOverd*(to.y() - from.y()));
 	}
 	else // trim to
 	{
 	  toDone = true;
-	  tTo.setX(from.x() + r_nOverd*(to.x() - from.x()));
-	  tTo.setY(from.y() + r_nOverd*(to.y() - from.y()));
+	  trimmedTo.setX(from.x() + r_nOverd*(to.x() - from.x()));
+	  trimmedTo.setY(from.y() + r_nOverd*(to.y() - from.y()));
 	}
       }
     }
 
     // Done both ends of the line, so leave.
     if (toDone && fromDone)
+    {
+      to = trimmedTo;
+      from = trimmedFrom;
       return true;
+    }
 
     // the bottom border
     r_n = (from.y() - maxY) * (maxX - minX);
@@ -197,27 +202,25 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
 	if (from.y() >= maxY) // trim from
 	{
 	  fromDone = true;
-	  tFrom.setX(from.x() + r_nOverd*(to.x() - from.x()));
-	  tFrom.setY(from.y() + r_nOverd*(to.y() - from.y()));
+	  trimmedFrom.setX(from.x() + r_nOverd*(to.x() - from.x()));
+	  trimmedFrom.setY(from.y() + r_nOverd*(to.y() - from.y()));
 	}
 	else // trim to
 	{
 	  toDone = true;
-	  tTo.setX(from.x() + r_nOverd*(to.x() - from.x()));
-	  tTo.setY(from.y() + r_nOverd*(to.y() - from.y()));
+	  trimmedTo.setX(from.x() + r_nOverd*(to.x() - from.x()));
+	  trimmedTo.setY(from.y() + r_nOverd*(to.y() - from.y()));
 	}
       }
     }
     // If the line hasn't been trimmed yet, it is entirely outside the
     // boundary, so tell the calling code.
     if (!toDone && !fromDone)
-      return false;
-  }
-  else
-  {
-    // The entire line is visible on screen, so do nothing.
-    tFrom = from;
-    tTo = to;
+    {
+      to = trimmedTo;
+      from = trimmedFrom;
+      return true;
+    }
   }
 
   // Too verbose for QGISDEBUG, but handy sometimes.
@@ -227,6 +230,9 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
 	    << "Point 2 trimmed from " << to.x() << ", " << to.y() 
 	    << " to " << tTo.x() << ", " << tTo.y() << "\n\n";
   */
+  to = trimmedTo;
+  from = trimmedFrom;
+
   return true;
 }
 
@@ -241,26 +247,22 @@ bool QgsClipper::trimLine(const QgsPoint& from, const QgsPoint& to,
 // one (the only?) that is guaranteed to always give the correct
 // result. 
 
-void QgsClipper::trimPolygon(QPointArray* pa)
+void QgsClipper::trimPolygon(std::vector<QgsPoint>& polygon)
 {
-  // std::cerr << "Trimming polygon...\n";
+  // Not the most efficient way - needs to be redone. Efficiency is
+  // important here, so std::vector<> might not be the most
+  // appropriate data structure.
 
-  // Trim the polygon against the four boundaries in turn.
-  QPointArray* tmp = new QPointArray();
-  trimPolygonToBoundary(pa, tmp, Xmax);
-  pa->resize(0);
-  trimPolygonToBoundary(tmp, pa, Ymax);
-  tmp->resize(0);
-  trimPolygonToBoundary(pa, tmp, Xmin);
-  pa->resize(0);
-  trimPolygonToBoundary(tmp, pa, Ymin);
-  delete tmp;
-  /*
-  for (int i = 0; i < pa->size(); ++i)
-    std::cerr << pa->point(i).x() << ", "
-	      << pa->point(i).y() << "; ";
-  std::cerr <<'\n';
-  */
+  std::vector<QgsPoint> tmp1;
+  std::vector<QgsPoint> tmp2;
+  std::vector<QgsPoint> tmp3;
+  std::vector<QgsPoint> tmp4;
+
+  trimPolygonToBoundary(polygon, tmp1, Xmax);
+  trimPolygonToBoundary(tmp1, tmp2, Ymax);
+  trimPolygonToBoundary(tmp2, tmp3, Xmin);
+  trimPolygonToBoundary(tmp3, tmp4, Ymin);
+  polygon = tmp4;
 }
 
 // An auxilary function that is part of the polygon trimming
@@ -268,64 +270,56 @@ void QgsClipper::trimPolygon(QPointArray* pa)
 // the trimmed polygon in the out pointer. Uses Sutherland and
 // Hodgman's polygon-clipping algorithm.
 
-void QgsClipper::trimPolygonToBoundary(QPointArray* in, 
-				       QPointArray* out, boundary b)
+void QgsClipper::trimPolygonToBoundary(const std::vector<QgsPoint>& in, 
+				       std::vector<QgsPoint>& out, boundary b)
 {
-  QPoint i;
-
-  int i1 = in->size()-1; // start with last point
+  int i1 = in.size()-1; // start with last point
 
   // and compare to the first point initially.
-  for (int i2 = 0; i2 < in->size() ; ++i2)
-    { // look at each edge of the polygon in turn
+  for (int i2 = 0; i2 < in.size() ; ++i2)
+  { // look at each edge of the polygon in turn
     if (inside(in, i2, b)) // end point of edge is inside boundary
     {
       if (inside(in, i1, b)) // edge is entirely inside boundary, so pass-thru
-	out->putPoints(out->size(), 1, in->point(i2).x(), in->point(i2).y());
+	out.push_back(in[i2]);
       else
       {
 	// edge crosses into the boundary, so trim back to the boundary, and
 	// store both ends of the new edge
-	i = intersect(in, i1, i2, b);
- 	out->putPoints(out->size(), 1, i.x(), i.y());
-	out->putPoints(out->size(), 1, in->point(i2).x(), in->point(i2).y());
+ 	out.push_back( intersect(in, i1, i2, b) );
+	out.push_back( in[i2] );
       }
     }
     else // end point of edge is outside boundary
     {
-      if (inside(in, i1, b))
-      { // start point is in boundary, so need to trim back
-	i = intersect(in, i1, i2, b);
-	out->putPoints(out->size(), 1, i.x(), i.y());
-      }
+      if (inside(in, i1, b)) // start point is in boundary, so need to trim back
+	out.push_back( intersect(in, i1, i2, b) );
     }
     i1 = i2;
   }
-  //  std::cerr << in->size() << " -> " << out->size() << '\n';
 }
-
 
 // An auxilary function to trimPolygonToBoundarY() that returns
 // whether a point is inside or outside the given boundary. 
 
-bool QgsClipper::inside(QPointArray* pa, int p, boundary b)
+bool QgsClipper::inside(const std::vector<QgsPoint>& pa, int p, boundary b)
 {
   switch (b)
   {
   case Xmax: // x < maxX is inside
-    if ((pa->point(p)).x() < maxX)
+    if ((pa[p]).x() < maxX)
       return true;
     break;
   case Xmin: // x > minX is inside
-    if ((pa->point(p)).x() > minX)
+    if ((pa[p]).x() > minX)
       return true;
     break;
   case Ymax: // y < maxY is inside
-    if ((pa->point(p)).y() < maxY)
+    if ((pa[p]).y() < maxY)
       return true;
     break;
   case Ymin: // y > minY is inside
-    if ((pa->point(p)).y() > minY)
+    if ((pa[p]).y() > minY)
       return true;
     break;
   }
@@ -337,20 +331,14 @@ bool QgsClipper::inside(QPointArray* pa, int p, boundary b)
 // returns the intersection of the line defined by the given points
 // and the given boundary.
 
-QPoint QgsClipper::intersect(QPointArray* pa, int i1, int i2, boundary b)
+QgsPoint QgsClipper::intersect(const std::vector<QgsPoint>& pa, int i1, int i2, boundary b)
 {
   // This function assumes that the two given points cross the given
   // boundary. Making this assumption allows some optimisations.
 
-  QPoint p1 = pa->point(i1);
-  QPoint p2 = pa->point(i2);
-  QPoint p;
+  QgsPoint p1 = pa[i1];
+  QgsPoint p2 = pa[i2];
   double r_n, r_d;
-
-  /*
-  std::cerr << pa->point(i1).x() << ", " << pa->point(i1).y() << ", "
-	    << pa->point(i2).x() << ", " << pa->point(i2).y() << '\n';
-  */
 
   switch (b)
   {
@@ -372,11 +360,12 @@ QPoint QgsClipper::intersect(QPointArray* pa, int i1, int i2, boundary b)
     break;
   }
 
+  QgsPoint p;
+
   if (std::abs(r_d) > SMALL_NUM && std::abs(r_n) > SMALL_NUM)
   { // they cross
     double r = r_n / r_d;
-    p.setX(static_cast<int>(round(p1.x() + r*(p2.x() - p1.x()))));
-    p.setY(static_cast<int>(round(p1.y() + r*(p2.y() - p1.y()))));
+    p.set(p1.x() + r*(p2.x() - p1.x()), p1.y() + r*(p2.y() - p1.y()));
   }
   else
   {
