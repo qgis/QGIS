@@ -621,13 +621,32 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 {
   // Don't allow zooms where the current extent is so small that it
   // can't be accurately represented using a double (which is what
-  // currentExtent uses). Excluding 0 avoids an infinite loop when
-  // rendering to a new canvas.
-  static const double minExtent = 1e-12;
-  if ((mCanvasProperties->currentExtent.width() > 0 &&
-       mCanvasProperties->currentExtent.width() < minExtent) ||
-      (mCanvasProperties->currentExtent.height() > 0 &&
-       mCanvasProperties->currentExtent.height() < minExtent))
+  // currentExtent uses). Excluding 0 avoids a divide by zero and an
+  // infinite loop when rendering to a new canvas. Excluding extents
+  // greater than 1 avoids doing unnecessary calculations.
+
+  // The scheme is to compare the width against the mean x coordinate
+  // (and height against mean y coordinate) and only allow zooms where
+  // the ratio indicates that there is more than about 12 significant
+  // figures (there are about 16 significant figures in a double).
+
+  if (mCanvasProperties->currentExtent.width()  > 0 &&
+      mCanvasProperties->currentExtent.height() > 0 && 
+      mCanvasProperties->currentExtent.width()  < 1 &&
+      mCanvasProperties->currentExtent.height() < 1)
+  {
+    QgsRect extent = mCanvasProperties->currentExtent;
+
+    // Use abs() on the extent to avoid the case where the extent is
+    // symmetrical about 0.
+    double xMean = (std::abs(extent.xMin()) + std::abs(extent.xMax())) * 0.5;
+    double yMean = (std::abs(extent.yMin()) + std::abs(extent.yMax())) * 0.5;
+
+    double xRange = extent.width() / xMean;
+    double yRange = extent.height() / yMean;
+
+    static const double minProportion = 1e-12;
+    if (xRange < minProportion || yRange < minProportion)
     {
       // Go back to the previous extent
       mCanvasProperties->currentExtent = 
@@ -635,6 +654,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       repaint();
       return;
     }
+  }
 
 #ifdef QGISDEBUG
   QString msg = mCanvasProperties->frozen ? "frozen" : "thawed";
@@ -700,7 +720,8 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       {
         dymin = mCanvasProperties->currentExtent.yMin();
         dymax = mCanvasProperties->currentExtent.yMax();
-        whitespace = ((myWidth * mCanvasProperties->m_mupp) - mCanvasProperties->currentExtent.width()) / 2;
+        whitespace = ((myWidth * mCanvasProperties->m_mupp) - 
+		      mCanvasProperties->currentExtent.width()) / 2;
         dxmin = mCanvasProperties->currentExtent.xMin() - whitespace;
         dxmax = mCanvasProperties->currentExtent.xMax() + whitespace;
       }
@@ -708,7 +729,8 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       {
         dxmin = mCanvasProperties->currentExtent.xMin();
         dxmax = mCanvasProperties->currentExtent.xMax();
-        whitespace = ((myHeight * mCanvasProperties->m_mupp) - mCanvasProperties->currentExtent.height()) / 2;
+        whitespace = ((myHeight * mCanvasProperties->m_mupp) - 
+		      mCanvasProperties->currentExtent.height()) / 2;
         dymin = mCanvasProperties->currentExtent.yMin() - whitespace;
         dymax = mCanvasProperties->currentExtent.yMax() + whitespace;
       }
@@ -774,11 +796,13 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
           {
             //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
 #ifdef QGISDEBUG
-            std::cout << "QgsMapCanvas::render: Rendering layer " << ml->name() << std::endl;
-            std::cout << "Layer minscale " << ml->minScale() << ", maxscale " << ml->maxScale() 
-		      << ". Scale dep. visibility enabled? " << ml->scaleBasedVisibility() 
+            std::cout << "QgsMapCanvas::render: Rendering layer " << ml->name() << '\n'
+		      << "Layer minscale " << ml->minScale() 
+		      << ", maxscale " << ml->maxScale() << '\n' 
+		      << ". Scale dep. visibility enabled? " 
+		      << ml->scaleBasedVisibility() << '\n'
+		      << "Input extent: " << ml->extent().stringRep() 
 		      << std::endl;
-            std::cout << "Input extent: " << ml->extent().stringRep() << std::endl;
             try
             {
               std::cout << "Transformed extent" 
@@ -924,19 +948,21 @@ void QgsMapCanvas::currentScale(int thePrecision)
   std::cout << "----------   Current Scale --------------- " << std::endl;
   std::cout << "------------------------------------------ " << std::endl;
 
-  std::cout << "Current extent is " <<
-  mCanvasProperties->currentExtent.stringRep() << std::endl;
-  std::cout << "MuppX is: " <<
-  muppX << "\nMuppY is: " << muppY << std::endl;
-  std::cout << "Canvas width: " << width() << ", height: " << height() << std::endl;
-  std::cout << "Extent width: " << mCanvasProperties->currentExtent.width() << ", height: "
-  << mCanvasProperties->currentExtent.height() << std::endl;
+  std::cout << "Current extent is " 
+	    << mCanvasProperties->currentExtent.stringRep() << std::endl;
+  std::cout << "MuppX is: " << muppX << "\n"
+	    << "MuppY is: " << muppY << std::endl;
+  std::cout << "Canvas width: " << width() 
+	    << ", height: " << height() << std::endl;
+  std::cout << "Extent width: " 
+	    << mCanvasProperties->currentExtent.width() << ", height: "
+	    << mCanvasProperties->currentExtent.height() << std::endl;
 
   QPaintDeviceMetrics pdm(this);
-  std::cout << "dpiX " << pdm.logicalDpiX() << ", dpiY " <<
-  pdm.logicalDpiY() << std::endl;
-  std::cout << "widthMM " << pdm.widthMM() << ", heightMM "
-  << pdm.heightMM() << std::endl;
+  std::cout << "dpiX " << pdm.logicalDpiX() 
+	    << ", dpiY " << pdm.logicalDpiY() << std::endl;
+  std::cout << "widthMM " << pdm.widthMM() 
+	    << ", heightMM " << pdm.heightMM() << std::endl;
 
 #endif
   // calculate the actual extent of the mapCanvas
@@ -963,7 +989,7 @@ void QgsMapCanvas::currentScale(int thePrecision)
 #ifdef QGISDEBUG
 
   std::cout << "Scale (assuming meters as map units) = 1:"
-  << mCanvasProperties->mScale << std::endl;
+	    << mCanvasProperties->mScale << std::endl;
 #endif
   // return scale based on geographic
   //
