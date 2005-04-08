@@ -59,6 +59,12 @@ class QgsPoint
       m_y = y;
   }
     
+  /*! Sets the x and y value of the point */
+  void set(double x, double y)
+  {
+    m_x = x;
+    m_y = y;
+  }  
     
   /*! Get the x value of the point
    * @return x coordinate
