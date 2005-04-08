@@ -34,30 +34,32 @@
 #include <qpointarray.h>
 
 QgsSymbol::QgsSymbol()
-{
-  mPointSymbolName = "hard:circle";
-  mPointSize = 6;
-  mPointSymbolPixmap.resize(1,1);
-  mCacheUpToDate = mCacheUpToDate2 = false;
-  mOversampling = 1;
-  mWidthScale = 1.;
-}
+    : mPointSymbolName( "hard:circle" ),
+      mPointSize( 6 ),
+      mCacheUpToDate( false ),
+      mCacheUpToDate2( false ),
+      mPointSymbolPixmap(1,1),
+      mOversampling(1),
+      mWidthScale(1.0)
+{}
+
 
 QgsSymbol::QgsSymbol(QColor c)
-{
-  mPointSymbolName = "hard:circle";
-  mPen.setColor(c);
-  mBrush.setColor(c);
-  mPointSize = 6;
-  mPointSymbolPixmap.resize(1,1);
-  mCacheUpToDate = mCacheUpToDate2 = false;
-  mOversampling = 1;
-  mWidthScale = 1.;
-}
+    : mPen( c ),
+      mBrush( c ),
+      mPointSymbolName( "hard:circle" ),
+      mPointSize( 6 ),
+      mCacheUpToDate( false ),
+      mCacheUpToDate2( false ),
+      mPointSymbolPixmap(1,1),
+      mOversampling(1),
+      mWidthScale(1.0)
+{}
 
 QgsSymbol::~QgsSymbol()
-{
-}
+{}
+
+
 QColor QgsSymbol::color() const
 {
   return mPen.color();
@@ -286,13 +288,24 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document )
 
 bool QgsSymbol::readXML( QDomNode & synode )
 {
+    // Legacy project file formats didn't have support for pointsymbol nor
+    // pointsize DOM elements.  Therefore we should check whether these
+    // actually exist.
     QDomNode psymbnode = synode.namedItem("pointsymbol");
-    QDomElement psymbelement = psymbnode.toElement();
-    setNamedPointSymbol( psymbelement.text() );
+
+    if ( ! psymbnode.isNull() )
+    {
+        QDomElement psymbelement = psymbnode.toElement();
+        setNamedPointSymbol( psymbelement.text() );
+    }
     
     QDomNode psizenode = synode.namedItem("pointsize");
-    QDomElement psizeelement = psizenode.toElement();
-    setPointSize( psizeelement.text().toInt() );
+    
+    if ( !  psizenode.isNull() )
+    {
+        QDomElement psizeelement = psizenode.toElement();
+        setPointSize( psizeelement.text().toInt() );
+    }
 
     QDomNode outlcnode = synode.namedItem("outlinecolor");
     QDomElement oulcelement = outlcnode.toElement();
