@@ -23,6 +23,8 @@
 #include "qgspoint.h"
 #include "qpointarray.h"
 
+#include <vector>
+
 // The functions in this class are likely to be called from within a
 // render loop and hence need to as CPU efficient as possible. 
 
@@ -53,27 +55,28 @@ class QgsClipper
 
   // Trims the given line segment to a rectangular box. Returns the
   // trimmed line segement in tFrom and tTo.
-  static bool trimLine(const QgsPoint& from, const QgsPoint& to, 
-		       QgsPoint& tFrom, QgsPoint& tTo);
+  static bool trimLine(QgsPoint& from, QgsPoint& to);
 
   // Trims the given polygon to a rectangular box. Returns the trimmed
   // polygon in the given QPointArray.
-  static void trimPolygon(QPointArray* pa);
+  //  static void trimPolygon(QPointArray* pa);
+
+  static void trimPolygon(std::vector<QgsPoint>& polygon);
 
  private:
 
   // Trims the given polygon to the given boundary. Returns the
   // trimmed polygon in the out pointer.
-  static void trimPolygonToBoundary(QPointArray* in,
-				    QPointArray* out,
+  static void trimPolygonToBoundary(const std::vector<QgsPoint>& in,
+				    std::vector<QgsPoint>& out,
 				    boundary b);
 
   // Determines if a point is inside or outside a boundary
-  static bool inside(QPointArray* pa, int p, boundary b);
+  static bool inside(const std::vector<QgsPoint>& pa, int p, boundary b);
 
   // Calculates the intersection point between a line defined by a
   // line segment and a boundary
-  static QPoint intersect(QPointArray* pa, int i1, int i2, boundary b);
+  static QgsPoint intersect(const std::vector<QgsPoint>& pa, int i1, int i2, boundary b);
 
 };
 
