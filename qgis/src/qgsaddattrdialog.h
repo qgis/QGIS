@@ -31,6 +31,7 @@ class QgsAddAttrDialog: public QgsAddAttrDialogBase
     Q_OBJECT
  public:
     QgsAddAttrDialog(QgsVectorDataProvider* provider);
+    QgsAddAttrDialog(const std::list<QString>& typelist);
     QString name() const;
     QString type() const;
  protected:
