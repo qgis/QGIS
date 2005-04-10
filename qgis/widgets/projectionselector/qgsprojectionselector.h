@@ -10,7 +10,7 @@
 #ifndef QGSPROJECTIONSELECTOR_H
 #define QGSPROJECTIONSELECTOR_H
 
-#ifdef WIN32
+#ifndef WIN32
 #include "qgsprojectionselectorbase.uic.h"
 #else
 #include "qgsprojectionselectorbase.h"
