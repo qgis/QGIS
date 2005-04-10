@@ -2,6 +2,9 @@
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 QGIS Change Log
+2005-04-09 [ges] 0.6.0devel8
+** Fixed problems with the Makefile.am related to the merge of
+   Projections_Branch into HEAD
 2005-04-09 [ges] 0.6.0devel7
 ** Merged Projections_Branch into HEAD
 	 Problems:
