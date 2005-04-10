@@ -35,23 +35,23 @@ class QPopupMenu;
 
 class QgsAttributeTableDisplay:public QgsAttributeTableBase
 {
-    Q_OBJECT
+  Q_OBJECT
   public:
-	QgsAttributeTableDisplay(QgsVectorLayer* layer);
-	~QgsAttributeTableDisplay();
-	QgsAttributeTable *table();
-	void setTitle(QString title);
- protected:
-	QgsVectorLayer* mLayer;
-	QPopupMenu* edit;
+    QgsAttributeTableDisplay(QgsVectorLayer* layer);
+    ~QgsAttributeTableDisplay();
+    QgsAttributeTable *table();
+    void setTitle(QString title);
+  protected:
+    QgsVectorLayer* mLayer;
+    QPopupMenu* edit;
 
- protected slots:
-     void deleteAttributes();
-     void addAttribute();
-     void startEditing();
-     void stopEditing();
-     void selectedToTop();
-     void invertSelection();
+    protected slots:
+      void deleteAttributes();
+    void addAttribute();
+    void startEditing();
+    void stopEditing();
+    void selectedToTop();
+    void invertSelection();
 };
 
 #endif

@@ -107,6 +107,9 @@
         <separator/>
         <action name="actionHelpAbout"/>
     </item>
+    <item text="Debug" name="Debug">
+        <action name="actionDebugHook"/>
+    </item>
 </menubar>
 <toolbars>
     <toolbar dock="2">
@@ -1105,6 +1108,17 @@
             <string>New Vectorlayer</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>actionDebugHook</cstring>
+        </property>
+        <property name="text">
+            <string>DebugHook</string>
+        </property>
+        <property name="toolTip">
+            <string>DebugHook to which random stuff can be attached</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -1493,6 +1507,12 @@
         <receiver>QgisAppBase</receiver>
         <slot>measure()</slot>
     </connection>
+    <connection>
+        <sender>actionDebugHook</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>debugHook()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in implementation">iostream</include>
@@ -1548,6 +1568,7 @@
     <slot>deleteSelected()</slot>
     <slot>zoomToLayer()</slot>
     <slot>zoomToLayerExtent()</slot>
+    <slot>debugHook()</slot>
     <slot>measure()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>

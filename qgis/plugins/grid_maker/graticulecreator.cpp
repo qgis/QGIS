@@ -133,39 +133,55 @@ void GraticuleCreator::generateGraticule(DBFHandle theDbfHandle,
   //create the arrays for storing the coordinates
   double * myXArrayDouble;
   double * myYArrayDouble;
-  myXArrayDouble = (double *)malloc(2 * sizeof(double)); //2=no vertices
-  myYArrayDouble = (double *)malloc(2 * sizeof(double));
+  //we want out graticule to be made of short line segments rather tban
+  //long ones that imply span xmin <-> xmax
+  //so that when reprojecting the graticule will warp properly
+  //so first we need to work out how many intersections there are...
+  //
+  
+  long myXIntersectionCount = ((theXEndPointDouble - theXOriginDouble) / theXIntervalDouble)+1;
+  long myYIntersectionCount = ((theYEndPointDouble - theYOriginDouble) / theYIntervalDouble)+1;
+  
   
   //
   //Longitude loop
   //
+  myXArrayDouble = (double *)malloc(myYIntersectionCount * sizeof(double));
+  myYArrayDouble = (double *)malloc(myYIntersectionCount * sizeof(double));
   for (double myXDouble = theXOriginDouble;myXDouble <=theXEndPointDouble;myXDouble+=theXIntervalDouble)
   {
-    
-    myXArrayDouble[0]=myXDouble;
-    myXArrayDouble[1]=myXDouble;
-    myYArrayDouble[0]=theYOriginDouble;
-    myYArrayDouble[1]=theYEndPointDouble;
-
+    long myVertexNo=0;
+    for (double myYDouble=theYOriginDouble;myYDouble<=theYEndPointDouble;myYDouble+=theYIntervalDouble)
+    {
+      myXArrayDouble[myVertexNo]=myXDouble;
+      myYArrayDouble[myVertexNo]=myYDouble;
+      ++myVertexNo;
+    }
     writeDbfRecord(theDbfHandle,myRecordInt,"testing");
-    writeLine(theShapeHandle, myRecordInt, 2, myXArrayDouble, myYArrayDouble); //2=no vertices
-    
+    writeLine(theShapeHandle, myRecordInt, myYIntersectionCount, myXArrayDouble, myYArrayDouble); 
+
     ++myRecordInt;
   }
+  delete myXArrayDouble;
+  delete myYArrayDouble;
 
   //
   //Latitude loop
   //
+  myXArrayDouble = (double *)malloc(myXIntersectionCount * sizeof(double));
+  myYArrayDouble = (double *)malloc(myXIntersectionCount * sizeof(double));
   for (double myYDouble=theYOriginDouble;myYDouble<=theYEndPointDouble;myYDouble+=theYIntervalDouble)
   {
-    
-    myXArrayDouble[0]=theXOriginDouble;
-    myXArrayDouble[1]=theXEndPointDouble;
-    myYArrayDouble[0]=myYDouble;
-    myYArrayDouble[1]=myYDouble;
+    long myVertexNo=0;
+    for (double myXDouble=theXOriginDouble;myXDouble<=theXEndPointDouble;myXDouble+=theXIntervalDouble)
+    {
+      myXArrayDouble[myVertexNo]=myXDouble;
+      myYArrayDouble[myVertexNo]=myYDouble;
+      ++myVertexNo;
+    }
     
     writeDbfRecord(theDbfHandle,myRecordInt,"testing");
-    writeLine(theShapeHandle, myRecordInt, 2, myXArrayDouble, myYArrayDouble); //2=no vertices
+    writeLine(theShapeHandle, myRecordInt,myXIntersectionCount, myXArrayDouble, myYArrayDouble); 
 
     ++myRecordInt;
   }

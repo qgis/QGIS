@@ -42,8 +42,8 @@ class QgsIdentifyResults:public QgsIdentifyResultsBase
   //! Constructor - takes it own copy of the QgsAttributeAction so
   // that it is independent of whoever created it.
   QgsIdentifyResults(const QgsAttributeAction&, QWidget *parent = 0, const char * name = 0, 
-	             WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title 
-		     | Qt::WStyle_Dialog | Qt::WStyle_Tool);
+               WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title 
+         | Qt::WStyle_Dialog | Qt::WStyle_Tool);
 
   ~QgsIdentifyResults();
   /** Add an attribute to the feature display node */

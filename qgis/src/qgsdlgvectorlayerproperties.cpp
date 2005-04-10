@@ -75,80 +75,7 @@ bufferRenderer(layer->
                renderer())
 {
 
-  // populate the general information
-  QString source = layer->source();
-  source = source.left(source.find("password"));
-  lblSource->setText(source);
-  txtDisplayName->setText(layer->name());
-  // set whats this stuff
-  QWhatsThis::add(lblSource, tr("The source of the data (path name or database connection information)"));
-  QWhatsThis::add(pbnQueryBuilder, tr("This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer"));
-  QWhatsThis::add(txtSubsetSQL, tr("The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button"));
-
-  //we are dealing with a pg layer here so that we can enable the sql box
-  QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
-  //see if we are dealing with a pg layer here
-  if(layer->providerType() == "postgres")
-  {
-    grpSubset->setEnabled(true);
-    txtSubsetSQL->setText(layer->subsetString());
-    // if the user is allowed to type an adhoc query, the app will crash if the query
-    // is bad. For this reason, the sql box is disabled and the query must be built
-    // using the query builder, either by typing it in by hand or using the buttons, etc
-    // on the builder. If the ability to enter a query directly into the box is required,
-    // a mechanism to check it must be implemented.
-    txtSubsetSQL->setEnabled(false); 
-    pbnQueryBuilder->setEnabled(true);
-  }
-  else
-  {
-    grpSubset->setEnabled(false);
-  }
-
-   //get field list for display field combo
-  std::vector<QgsField> myFields = dp->fields();
-  for (int i = 0; i < myFields.size(); i++)
-  {
-    QgsField myField = myFields[i];            
-    displayFieldComboBox->insertItem( myField.name() );
-  }   
-  
-  // set up the scale based layer visibility stuff....
-  chkUseScaleDependentRendering->setChecked(lyr->scaleBasedVisibility());
-  spinMinimumScale->setValue(lyr->minScale());
-  spinMaximumScale->setValue(lyr->maxScale());
-
-  // symbology initialization
-  legendtypecombobox->insertItem(tr("Single Symbol"));
-  legendtypecombobox->insertItem(tr("Graduated Symbol"));
-  legendtypecombobox->insertItem(tr("Continuous Color"));
-  legendtypecombobox->insertItem(tr("Unique Value"));
-  if( layer->vectorType()==QGis::Point )
-  {
-      legendtypecombobox->insertItem(tr("Single Marker"));
-      legendtypecombobox->insertItem(tr("Graduated Marker"));
-      legendtypecombobox->insertItem(tr("Unique Value Marker"));
-  }
-
-  QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
-  labelDialog = new QgsLabelDialog ( layer->label(),labelOptionsFrame);
-  layout->addWidget( labelDialog );
-
-  QGridLayout *actionLayout = new QGridLayout( actionOptionsFrame );
-  std::vector<QgsField> fields = dp->fields();
-  actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields,
-                                                actionOptionsFrame );
-  actionLayout->addWidget( actionDialog,0,0 );
-
-  QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, SLOT(alterLayerDialog(const QString &)));
-
-  //insert the renderer dialog of the vector layer into the widget stack
-  widgetStackRenderers->addWidget(bufferDialog);
-  widgetStackRenderers->raiseWidget(bufferDialog);
-  
-  //set the metadata contents
-  teMetadata->setText(getMetadata());
-
+  reset();
 }
 
 QgsDlgVectorLayerProperties::~QgsDlgVectorLayerProperties()
@@ -260,11 +187,85 @@ void QgsDlgVectorLayerProperties::setDisplayField(QString name)
   displayFieldComboBox->setCurrentText(name);
 }
 
+//! @note in raster props, this metho d is called sync()
 void QgsDlgVectorLayerProperties::reset( void )
 {
-    actionDialog->init();
-    labelDialog->init();
-    labelCheckBox->setChecked(layer->labelOn());
+  // populate the general information
+  QString source = layer->source();
+  source = source.left(source.find("password"));
+  lblSource->setText(source);
+  txtDisplayName->setText(layer->name());
+  // set whats this stuff
+  QWhatsThis::add(lblSource, tr("The source of the data (path name or database connection information)"));
+  QWhatsThis::add(pbnQueryBuilder, tr("This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer"));
+  QWhatsThis::add(txtSubsetSQL, tr("The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button"));
+
+  //we are dealing with a pg layer here so that we can enable the sql box
+  QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
+  //see if we are dealing with a pg layer here
+  if(layer->providerType() == "postgres")
+  {
+    grpSubset->setEnabled(true);
+    txtSubsetSQL->setText(layer->subsetString());
+    // if the user is allowed to type an adhoc query, the app will crash if the query
+    // is bad. For this reason, the sql box is disabled and the query must be built
+    // using the query builder, either by typing it in by hand or using the buttons, etc
+    // on the builder. If the ability to enter a query directly into the box is required,
+    // a mechanism to check it must be implemented.
+    txtSubsetSQL->setEnabled(false); 
+    pbnQueryBuilder->setEnabled(true);
+  }
+  else
+  {
+    grpSubset->setEnabled(false);
+  }
+
+  //get field list for display field combo
+  std::vector<QgsField> myFields = dp->fields();
+  for (int i = 0; i < myFields.size(); i++)
+  {
+    QgsField myField = myFields[i];            
+    displayFieldComboBox->insertItem( myField.name() );
+  }   
+
+  // set up the scale based layer visibility stuff....
+  chkUseScaleDependentRendering->setChecked(layer->scaleBasedVisibility());
+  spinMinimumScale->setValue(layer->minScale());
+  spinMaximumScale->setValue(layer->maxScale());
+
+  // symbology initialization
+  legendtypecombobox->insertItem(tr("Single Symbol"));
+  legendtypecombobox->insertItem(tr("Graduated Symbol"));
+  legendtypecombobox->insertItem(tr("Continuous Color"));
+  legendtypecombobox->insertItem(tr("Unique Value"));
+  if( layer->vectorType()==QGis::Point )
+  {
+    legendtypecombobox->insertItem(tr("Single Marker"));
+    legendtypecombobox->insertItem(tr("Graduated Marker"));
+    legendtypecombobox->insertItem(tr("Unique Value Marker"));
+  }
+
+  QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
+  labelDialog = new QgsLabelDialog ( layer->label(),labelOptionsFrame);
+  layout->addWidget( labelDialog );
+
+  QGridLayout *actionLayout = new QGridLayout( actionOptionsFrame );
+  std::vector<QgsField> fields = dp->fields();
+  actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields,
+          actionOptionsFrame );
+  actionLayout->addWidget( actionDialog,0,0 );
+
+  QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, SLOT(alterLayerDialog(const QString &)));
+
+  //insert the renderer dialog of the vector layer into the widget stack
+  widgetStackRenderers->addWidget(bufferDialog);
+  widgetStackRenderers->raiseWidget(bufferDialog);
+
+  //set the metadata contents
+  teMetadata->setText(getMetadata());
+  actionDialog->init();
+  labelDialog->init();
+  labelCheckBox->setChecked(layer->labelOn());
 }
 //
 // methods reimplemented from qt designer base class

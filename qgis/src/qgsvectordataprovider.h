@@ -181,6 +181,39 @@ class QgsVectorDataProvider : public QgsDataProvider
   void setEncoding(const QString& e);
   QString encoding() const;
 
+  /*! Indicates if the provider does its own coordinate transforms
+   * @return true if the provider transforms its coordinates, otherwise false
+   */
+  virtual bool supportsNativeTransform(){return false;};
+  /*! Used to determine if the provider supports transformation using the
+   * SRID of the target SRS.
+   * @return true if SRID is used, otherwise false
+   */
+  virtual bool usesSrid(){return false;};
+  /*! Used to determine if the provider supports transformation using the
+   * WKT of the target SRS.
+   * @return true if WKT is used, otherwise false
+   */
+  virtual bool usesWKT(){return false;};
+  /*! Set the SRID of the target SRS.
+   * This is only implemented if the provider supports native
+   * transformation of its coordinates
+   * @param srid Spatial reference id of the target (map canvas)
+   */
+  virtual void setSrid(int srid){};
+  /*! Get the SRID of the target SRS
+   * If the provider isn't capable of reporting the SRID of
+   * the projection, ti will return 0
+   */
+  virtual int getSrid(){return 0;};
+  /*! Set the WKT of the target SRS.
+   * This is only implemented if the provider supports native
+   * transformation of its coordinates
+   *
+   * @param wkt Well known text of the target (map canvas) SRS
+   */
+  virtual void setWKT(QString wkt){};
+
 
 protected:
     /**Encoding*/
@@ -189,6 +222,17 @@ protected:
     std::list<QString> mNonNumericalTypes;
     /**List of type names for numerical types*/
     std::list<QString> mNumericalTypes;
+    /** The spatial reference id of the map canvas. This is the 
+     * SRID the provider should transform its coordinates to if 
+     * supportsNativeTransform is true. Otherwise this member is unused.
+     */
+    int mTargetSrid;
+    /** The WKT of the SRS of the map canvas. This is the 
+     * SRS the provider should transform its coordinates to if 
+     * supportsNativeTransform is true. Otherwise this member is unused.
+     * The provider may choose to support transformation using SRID or WKT.
+     */
+    int mTargetWKT;
 };
 
 #endif

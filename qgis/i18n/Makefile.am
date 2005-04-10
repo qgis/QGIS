@@ -17,6 +17,7 @@ nodist_i18n_DATA = \
 	qgis_fr.qm \
 	qgis_it.qm \
 	qgis_nl.qm \
+	qgis_pl_PL.qm \
 	qgis_pt_BR.qm \
 	qgis_ru.qm \
 	qgis_se.qm \
@@ -28,6 +29,7 @@ i18n_SOURCES = \
 	qgis_fr.ts \
 	qgis_it.ts \
 	qgis_nl.ts \
+	qgis_pl_PL.ts \
 	qgis_pt_BR.ts \
 	qgis_ru.ts \
 	qgis_se.ts \

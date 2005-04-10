@@ -39,13 +39,13 @@ QgsSingleSymRenderer::QgsSingleSymRenderer(): mItem(new QgsRenderItem())
 
 QgsSingleSymRenderer::~QgsSingleSymRenderer()
 {
-    delete mItem;
+  delete mItem;
 }
 
 void QgsSingleSymRenderer::addItem(QgsRenderItem* ri)
 {
-    delete mItem;
-    mItem = ri;
+  delete mItem;
+  mItem = ri;
 }
 
 void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, 
@@ -84,13 +84,82 @@ void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture*
 
 void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVectorLayerProperties * pr)
 {
-    bool toproperties = false;    //if false: rendererDialog is associated with the vector layer and image is rendered, true: rendererDialog is associated with buffer dialog of vector layer properties and no image is rendered
-    if (pr)
+  bool toproperties = false;    //if false: rendererDialog is associated with the vector layer and image is rendered, true: rendererDialog is associated with buffer dialog of vector layer properties and no image is rendered
+  if (pr)
+  {
+    toproperties = true;
+  }
+
+  if (layer)
+  {
+    mVectorType = layer->vectorType();
+    QgsSymbol* sy = new QgsSymbol();
+    sy->brush().setStyle(Qt::SolidPattern);
+    sy->pen().setStyle(Qt::SolidLine);
+    sy->pen().setWidth(1);//set width 1 as default instead of width 0
+
+    //random fill colors for points and polygons and pen colors for lines
+    int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+    int green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+    int blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+
+    //font tor the legend text
+    QFont f("arial", 10, QFont::Normal);
+    QFontMetrics fm(f);
+
+    QPixmap *pixmap;
+    if (toproperties)
     {
-	toproperties = true;
+      pixmap = pr->getBufferPixmap();
+    } 
+    else
+    {
+      pixmap = layer->legendPixmap();
     }
 
-    if (layer)
+    QString name = layer->name();
+    int width = 40 + fm.width(layer->name());
+    int height = (fm.height() + 10 > 35) ? fm.height() + 10 : 35;
+
+    pixmap->resize(width, height);
+    pixmap->fill();
+    QPainter p(pixmap);
+    p.setPen(sy->pen());
+
+    if (layer->vectorType() == QGis::Line)
+    {
+      sy->pen().setColor(QColor(red, green, blue));
+      //paint the pixmap for the legend
+      p.setPen(sy->pen());
+      p.drawLine(10, pixmap->height() - 25, 25, pixmap->height() - 10);
+    } 
+    else
+    {
+      sy->brush().setColor(QColor(red, green, blue));
+      sy->pen().setColor(QColor(0, 0, 0));
+      //paint the pixmap for the legend
+      p.setPen(sy->pen());
+      p.setBrush(sy->brush());
+      if (layer->vectorType() == QGis::Point)
+      {
+        //p.drawRect(20, pixmap->height() - 17, 5, 5);
+        QPixmap pm = sy->getPointSymbolAsPixmap();
+        p.drawPixmap ( (int) (17-pm.width()/2), (int) ((pixmap->height()-pm.height())/2), pm );
+      } 
+      else                //polygon
+      {
+        p.drawRect(10, pixmap->height() - 25, 20, 15);
+      }
+    }
+
+    p.setPen(Qt::black);
+    p.setFont(f);
+    p.drawText(35, pixmap->height() - 10, name);
+    QgsRenderItem* ri = new QgsRenderItem(sy, "", "");
+    addItem(ri);
+
+    QgsSiSyDialog *dialog = new QgsSiSyDialog(layer);
+    if (toproperties)
     {
         mVectorType = layer->vectorType();
 	QgsSymbol* sy = new QgsSymbol();
@@ -172,8 +241,15 @@ void QgsSingleSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVec
     } 
     else
     {
-	qWarning("Warning, null pointer in QgsSingleSymRenderer::initializeSymbology()");
+      layer->setRendererDialog(dialog);
+      QgsLegendItem *item;
+      layer->updateItemPixmap();
     }
+  } 
+  else
+  {
+    qWarning("Warning, null pointer in QgsSingleSymRenderer::initializeSymbology()");
+  }
 }
 
 void QgsSingleSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
@@ -181,7 +257,7 @@ void QgsSingleSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     mVectorType = vl.vectorType();
     QgsSymbol* sy = new QgsSymbol();
 
-    QDomNode rinode = rnode.namedItem("renderitem");
+  QDomNode rinode = rnode.namedItem("renderitem");
 
     QDomNode vnode = rinode.namedItem("value");
     QDomElement velement = vnode.toElement();
@@ -210,31 +286,32 @@ void QgsSingleSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 
 bool QgsSingleSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
 {
-    bool returnval=false;
-    QDomElement singlesymbol=document.createElement("singlesymbol");
-    layer_node.appendChild(singlesymbol);
-    if(mItem)
-    {
-	returnval=mItem->writeXML(singlesymbol,document);
-    }
-    return returnval;
+  bool returnval=false;
+  QDomElement singlesymbol=document.createElement("singlesymbol");
+  layer_node.appendChild(singlesymbol);
+  if(mItem)
+  {
+    returnval=mItem->writeXML(singlesymbol,document);
+  }
+  return returnval;
 }
 
 
 std::list<int> QgsSingleSymRenderer::classificationAttributes()
 {
-    std::list<int> list;
-    return list;//return an empty list
+  std::list<int> list;
+  return list;//return an empty list
 }
 
 QString QgsSingleSymRenderer::name()
 {
-    return "Single Symbol";
+  return "Single Symbol";
 }
 
 const std::list<QgsRenderItem*> QgsSingleSymRenderer::items() const
 {
-    std::list<QgsRenderItem*> list;
-    list.push_back(mItem);
-    return list;
+  std::list<QgsRenderItem*> list;
+  list.push_back(mItem);
+  return list;
 }
+
