@@ -39,6 +39,16 @@ QgsAddAttrDialog::QgsAddAttrDialog(QgsVectorDataProvider* provider): QgsAddAttrD
     }
 }
 
+QgsAddAttrDialog::QgsAddAttrDialog(const std::list<QString>& typelist): QgsAddAttrDialogBase(), mDataProvider(0)
+{
+    QObject::connect((QObject*)mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
+    QObject::connect((QObject*)mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    for(std::list<QString>::const_iterator iter=typelist.begin();iter!=typelist.end();++iter)
+    {
+	mTypeBox->insertItem(*iter);
+    }
+}
+
 QString QgsAddAttrDialog::name() const
 {
     return mNameEdit->text();

@@ -163,7 +163,7 @@ bool QgsVectorFileWriter::createField(QString theName, OGRFieldType theType, int
   {
     return false;
   }
-  OGRFieldDefnH myFieldDefinitionHandle;;
+  OGRFieldDefnH myFieldDefinitionHandle;
 
   //
   // OGRFieldType types as defined in  ogr_core.h :
