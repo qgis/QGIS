@@ -26,7 +26,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=6
 MICRO_VERSION=0
-EXTRA_VERSION=6
+EXTRA_VERSION=7
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
@@ -314,6 +314,8 @@ AC_CONFIG_FILES([
   plugins/north_arrow/Makefile
   plugins/copyright_label/Makefile
   plugins/scale_bar/Makefile
+  widgets/Makefile
+  widgets/projectionselector/Makefile
   designer_plugins/Makefile
   plugins/community_reg_plugin/Makefile
 ])

@@ -28,13 +28,13 @@
 #include "qgsidentifyresults.h"
 
 QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& aa, QWidget *parent, 
-	                               const char * name, WFlags f) :
-    QgsIdentifyResultsBase ( parent, name, f),
-    mActions(aa), mClickedOnValue(0), mActionPopup(0)
+    const char * name, WFlags f) :
+  QgsIdentifyResultsBase ( parent, name, f),
+  mActions(aa), mClickedOnValue(0), mActionPopup(0)
 {
-    lstResults->setResizeMode(QListView::AllColumns);
+  lstResults->setResizeMode(QListView::AllColumns);
 
-    connect ( lstResults, SIGNAL(clicked(QListViewItem *)), this, SLOT(clicked(QListViewItem *)));
+  connect ( lstResults, SIGNAL(clicked(QListViewItem *)), this, SLOT(clicked(QListViewItem *)));
 }
 
 QgsIdentifyResults::~QgsIdentifyResults()
@@ -61,12 +61,12 @@ void QgsIdentifyResults::closeEvent(QCloseEvent *e)
 // actions that can be applied to the data in the identify results
 // dialog box.
 void QgsIdentifyResults::popupContextMenu(QListViewItem* item, 
-					  const QPoint& p, int i)
+    const QPoint& p, int i)
 {
   // if the user clicked below the end of the attribute list, just return
   if (item == NULL)
     return;
-  
+
   // The assumption is made that an instance of QgsIdentifyResults is
   // created for each new Identify Results dialog box, and that the
   // contents of the popup menu doesn't change during the time that
@@ -80,11 +80,11 @@ void QgsIdentifyResults::popupContextMenu(QListViewItem* item,
     mActionPopup->insertItem(popupLabel);
     mActionPopup->insertSeparator();
 
-    QgsAttributeAction::aIter	iter = mActions.begin();
+    QgsAttributeAction::aIter iter = mActions.begin();
     for (int j = 0; iter != mActions.end(); ++iter, ++j)
     {
       int id = mActionPopup->insertItem(iter->name(), this, 
-					SLOT(popupItemSelected(int)));
+          SLOT(popupItemSelected(int)));
       mActionPopup->setItemParameter(id, j);
     }
   }
@@ -106,20 +106,20 @@ void QgsIdentifyResults::popupContextMenu(QListViewItem* item,
   mValues.clear();
   int j = 0;
   while (child != 0)
-    {
-      if ( child->text(2) != "action" ) {
-	  mValues.push_back(std::make_pair(child->text(0), child->text(1)));
-	  // Need to do the comparison on the text strings rather than the
-	  // pointers because if the user clicked on the parent, we need
-	  // to pick up which child that actually is (the parent in the
-	  // identify results dialog box is just one of the children
-	  // that has been chosen by some method).
-	  if (child->text(0) == item->text(0))
-	    mClickedOnValue = j;
-	  ++j;
-      }
-      child = child->nextSibling();
+  {
+    if ( child->text(2) != "action" ) {
+      mValues.push_back(std::make_pair(child->text(0), child->text(1)));
+      // Need to do the comparison on the text strings rather than the
+      // pointers because if the user clicked on the parent, we need
+      // to pick up which child that actually is (the parent in the
+      // identify results dialog box is just one of the children
+      // that has been chosen by some method).
+      if (child->text(0) == item->text(0))
+        mClickedOnValue = j;
+      ++j;
     }
+    child = child->nextSibling();
+  }
 
   mActionPopup->popup(p);
 }
@@ -171,7 +171,7 @@ void QgsIdentifyResults::addAction(QListViewItem * fnode, int id, QString field,
 #endif
 
   QString img = appDir + "/share/qgis/themes/default/action.png";
-  
+
   QPixmap pm ( img );
   item->setPixmap ( 0, pm ); 
 }
@@ -189,7 +189,7 @@ void QgsIdentifyResults::setTitle(QString title)
 
 void QgsIdentifyResults::setColumnText ( int column, const QString & label )
 {
-    lstResults->setColumnText ( column, label );
+  lstResults->setColumnText ( column, label );
 }
 
 // Run the action that was selected in the popup menu
@@ -207,51 +207,51 @@ void QgsIdentifyResults::showAllAttributes() {
 
 void QgsIdentifyResults::clear()
 {
-    lstResults->clear();
+  lstResults->clear();
 }
 
 void QgsIdentifyResults::setMessage( QString shortMsg, QString longMsg )
 {
-    new QListViewItem(lstResults, shortMsg, longMsg );
+  new QListViewItem(lstResults, shortMsg, longMsg );
 }
 
 void QgsIdentifyResults::setActions( const QgsAttributeAction& actions  )
 {
-    mActions = actions;
+  mActions = actions;
 }
 
 void QgsIdentifyResults::clicked ( QListViewItem *item )
 {
-    if ( !item ) return;
-    
-    if ( item->text(2) != "action" ) return;
-    
-    int id = item->text(3).toInt();
-    
-    QListViewItem* parent = item->parent();
-    QListViewItem* child;
+  if ( !item ) return;
 
-    if (item->parent() == 0)
-      child = item->firstChild();
-    else
-      child = parent->firstChild();
+  if ( item->text(2) != "action" ) return;
 
-    mValues.clear();
+  int id = item->text(3).toInt();
 
-    int j = 0;
-    
-    while (child != 0)
-    {
-      if ( child->text(2) != "action" ) {
-	  mValues.push_back(std::make_pair(child->text(0), child->text(1)));
+  QListViewItem* parent = item->parent();
+  QListViewItem* child;
 
-	  if (child->text(0) == item->text(0))
-	      mClickedOnValue = j;
-	  
-	  ++j;
-      }
-      child = child->nextSibling();
+  if (item->parent() == 0)
+    child = item->firstChild();
+  else
+    child = parent->firstChild();
+
+  mValues.clear();
+
+  int j = 0;
+
+  while (child != 0)
+  {
+    if ( child->text(2) != "action" ) {
+      mValues.push_back(std::make_pair(child->text(0), child->text(1)));
+
+      if (child->text(0) == item->text(0))
+        mClickedOnValue = j;
+
+      ++j;
     }
+    child = child->nextSibling();
+  }
 
-    mActions.doAction(id, mValues, mClickedOnValue);
+  mActions.doAction(id, mValues, mClickedOnValue);
 }

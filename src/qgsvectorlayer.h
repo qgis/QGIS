@@ -96,12 +96,19 @@ const QString displayField() const { return fieldIndex; }
      @todo XXX should this return bool?  Throw exceptions?
   */
   void setDataProvider( QString const & provider );
+  
+  //! Setup the coordinate system tranformation for the layer
+  void setCoordinateSystem();
 
   QgsVectorDataProvider * getDataProvider();
 
   /** \brief Query data provider to find out the WKT projection string for this layer. This implements the virtual method of the same name defined in QgsMapLayer*/
   QString getProjectionWKT();
-
+  /*!
+   * Gets the SRID of the layer by querying the underlying data provider
+   * @return The SRID if the provider is able to provide it, otherwise 0
+   */
+  int getProjectionSrid();
   QgsLabel *label();
 
   QgsAttributeAction* actions() { return &mActions; }

@@ -360,6 +360,7 @@ public slots:
     void setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag);
     void drawExtentRectangle(QPainter *);
     void updateMouseCoordinatePrecision();
+    void debugHook();
     void stopZoom();
 
 signals:

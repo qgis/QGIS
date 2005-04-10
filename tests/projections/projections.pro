@@ -12,7 +12,8 @@ CONFIG += debug
 # get gdal info
 GDAL_LIBS = $$system(gdal-config --libs)
 GDAL_DEPS = $$system(gdal-config --dep-libs)
-LIBS = $$GDAL_LIBS $$GDAL_DEPS -lcppunit -ldl 
+PG_LIBS = $$system(pg_config --libdir)
+LIBS = $$GDAL_LIBS $$GDAL_DEPS -L$$PG_LIBS -lcppunit -ldl 
 # Input
 HEADERS += projectioncshandlingtest.h
 SOURCES += main.cpp 

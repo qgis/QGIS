@@ -12,7 +12,7 @@
 
  resourcedir = ${pkgdatadir}/resources
 
- resource_DATA = wkt_defs.txt
+ resource_DATA = spatial_ref_sys.txt srs.db
 
  EXTRA_DIST = $(resource_DATA)
  

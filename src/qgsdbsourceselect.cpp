@@ -181,29 +181,29 @@ void QgsDbSourceSelect::dbConnect()
       geomCol details;
       if (getGeometryColumnInfo(pd, details))
       {
-	geomCol::const_iterator iter = details.begin();
-	for (; iter != details.end(); ++iter)
-	{
-	  QPixmap *p = 0;
-	  if (iter->second == "POINT" || iter->second == "MULTIPOINT")
-	    p = &pxPoint;
-	  else if (iter->second == "MULTIPOLYGON" || iter->second == "POLYGON")
-	    p = &pxPoly;
-	  else if (iter->second == "LINESTRING" || iter->second == "MULTILINESTRING")
-	    p = &pxLine;
+  geomCol::const_iterator iter = details.begin();
+  for (; iter != details.end(); ++iter)
+  {
+    QPixmap *p = 0;
+    if (iter->second == "POINT" || iter->second == "MULTIPOINT")
+      p = &pxPoint;
+    else if (iter->second == "MULTIPOLYGON" || iter->second == "POLYGON")
+      p = &pxPoly;
+    else if (iter->second == "LINESTRING" || iter->second == "MULTILINESTRING")
+      p = &pxLine;
 
-	  if (p != 0)
-	  {
-	    QListViewItem *lItem = new QListViewItem(lstTables);
-	    lItem->setText(1,iter->first);
-	    lItem->setPixmap(0,*p);
-	    lstTables->insertItem(lItem);
-	  }
-	  else
-	  {
-	    qDebug("Unknown geometry type of " + iter->second);
-	  }
-	}
+    if (p != 0)
+    {
+      QListViewItem *lItem = new QListViewItem(lstTables);
+      lItem->setText(1,iter->first);
+      lItem->setPixmap(0,*p);
+      lstTables->insertItem(lItem);
+    }
+    else
+    {
+      qDebug("Unknown geometry type of " + iter->second);
+    }
+  }
       }
       else
       {
@@ -212,7 +212,7 @@ void QgsDbSourceSelect::dbConnect()
       }
       // BEGIN CHANGES ECOS
       if (cmbConnections->count() > 0)
-	btnAdd->setEnabled(true);
+  btnAdd->setEnabled(true);
       // END CHANGES ECOS
     } else
     {
@@ -262,7 +262,7 @@ void QgsDbSourceSelect::addLayer(QListBoxItem * item)
 }
 
 bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg, 
-					      geomCol& details)
+                geomCol& details)
 {
   bool ok = false;
 
@@ -287,28 +287,28 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
 
       PGresult* exists = PQexec(pg, (const char*)sql);
       if (PQntuples(exists) == 1)
-	{
-	  QString v = "";
-	  if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"))))
-	  {
-	    v += PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"));
-	    v += ".";
-	  }
+  {
+    QString v = "";
+    if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"))))
+    {
+      v += PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"));
+      v += ".";
+    }
 
-	  if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"))))
-	  {
-	    v += PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"));
-	    v += ".";
-	  }
+    if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"))))
+    {
+      v += PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"));
+      v += ".";
+    }
 
-	  v += tableName;
-	  v += " (";
-	  v += PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
-	  v += ")";
+    v += tableName;
+    v += " (";
+    v += PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
+    v += ")";
 
-	  QString type = PQgetvalue(result, idx, PQfnumber(result, "type"));
-	  details.push_back(geomPair(v, type));
-	}
+    QString type = PQgetvalue(result, idx, PQfnumber(result, "type"));
+    details.push_back(geomPair(v, type));
+  }
       PQclear(exists);
     }
     ok = true;
@@ -353,8 +353,8 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     if (PQresultStatus(gresult) != PGRES_TUPLES_OK)
     {
       qDebug(tr("Access to relation ") + table + tr(" using sql;\n") + sql +
-	     tr("\nhas failed. The database said:\n") +
-	     PQresultErrorMessage(gresult));
+       tr("\nhas failed. The database said:\n") +
+       PQresultErrorMessage(gresult));
     }
     else
     {
@@ -362,7 +362,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
       QString schema = PQgetvalue(gresult, 0, 1); // current_schema
       QString full_desc = "";
       if (schema.length() > 0)
-	full_desc = schema + ".";
+  full_desc = schema + ".";
       full_desc += table + " (" + column + ")";
       details.push_back(geomPair(full_desc, type));
     }

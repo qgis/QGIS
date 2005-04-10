@@ -81,4 +81,6 @@ EXTRA_DIST = $(plugin_UIC) icon.xpm \
 	qgsgpsdevicedialog.h
 
 
+
+
 endif

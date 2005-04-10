@@ -1,0 +1,95 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>QgsLayerProjectionSelectorBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsLayerProjectionSelectorBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>605</width>
+            <height>563</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Layer Projection Selector</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QPushButton" row="2" column="1">
+            <property name="name">
+                <cstring>pbnOK</cstring>
+            </property>
+            <property name="text">
+                <string>OK</string>
+            </property>
+        </widget>
+        <spacer row="2" column="0">
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>221</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QgsProjectionSelector" row="1" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>projectionSelector</cstring>
+            </property>
+        </widget>
+        <widget class="QTextEdit" row="0" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>textEdit1</cstring>
+            </property>
+            <property name="text">
+                <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Bitstream Vera Sans"&gt;
+&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:18pt;font-weight:600"&gt;Define this layer's projection:&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This layer appears to have no projection specification. By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</string>
+            </property>
+            <property name="wordWrap">
+                <enum>WidgetWidth</enum>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<images>
+    <image name="image0">
+        <data format="PNG" length="727">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000029e49444154388d95925b48530118c7ff3b3bd3b9a6392f9b97b42413a7b912b1de7ab10cc44c3408c5348d0a0c347b29848c2233d0613d1651122a09f950a1f83012ba4b379b28a37969a6a6e7ecd2e6e639673b971e62656e41fddfbeefe3fffbe0ff7dc07f28e63cb2355d7848666277b047fc8b31ba05a99a4edc966b3121aca0849f86189c91e10c2b2b3d09b1b152cd946572879c64f977b639aaa97fb888d049a440830260ffeb3686e92be105a3e3f148b95713a7aca93ba93ffad25a21a61849497d1cdf22f6e205007558f3eaea1d4340b8c6cc398e4975a7b24700a8c80c90fa4ef5bcae8d949a2f1aa623b5f20200f2b0192895dfdb299f55e95b0b60d6ea790380511d41f3b2e84d3b149189fafaeced8d0d79fb81df19fc020c0d9d51f132ba98e1fcf07302a815c6a66e849e88c7d52c2a61ed74e54ea8a31548cf509701880c01e4e64a495cc01311acfd82109027a147a4c11ed6e9879393370100542a790a005508c06c76ba7970120010840c5b8a34e70e64e71516713983b5d5056332990c0060a73916801402282b7be0b2bb58330044a9481c346ccd8f18152d4d5539a5b189e4155e14c171023ebca52700f8c28528be7e4e75b10c0f829061d2b2e4ecbf35599b911ed7ed62a8287f40c0ab67cb6ba6e1857b00fc2100721b88b366d352e7a38f0e3bcda0aa2c8b34ec4a746be33591003035e10cdcb86e36badddc684747d59f678caa8442598c768146efe0a7cf71272e3ffd3231ee98696ddb333063631b045184d7cbfb9c76a18f65efb6aeb1f60684910280565581fb91fbd08d9fdf96f6c4547ac14a554b56aa5a72f95afcbd03e5768582280c9ae4eb0022009f221f0b220d088b1803e059fcca8c7bdcfe54dbec6acce0a065fea6f1fd258fdb6fc2ba67da2842aec3e60d3d128006400c00d9fac10f3d4b18bb5f2121880000000049454e44ae426082</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>pbnOK</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsLayerProjectionSelectorBase</receiver>
+        <slot>pbnOK_clicked()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">qgslayerprojectionselectorbase.ui.h</include>
+</includes>
+<slots>
+    <slot>pbnOK_clicked()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>qgsprojectionselector.h</includehint>
+</includehints>
+</UI>

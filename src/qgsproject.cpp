@@ -45,8 +45,7 @@ using namespace std;
 
 
 
-static const char *const ident_ =
-"$Id$";
+static const char *const ident_ = "$Id$";
 
 
 
