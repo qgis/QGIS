@@ -142,6 +142,7 @@ headers =	qgisapp.h					\
 		splashscreen.h				\
 		qgslayerprojectionselector.h \
 		$(WIDGETPATH)/projectionselector/qgsprojectionselector.h \
+		qgscustomprojectiondialog.h \
 		qgspointstylewidget.h				\
 		qgslinestylewidget.h				\
 		qgsfillstylewidget.h				\
@@ -189,6 +190,7 @@ qgis_UIC =	qgisappbase.ui				\
 		qgsuvaldialogbase.ui			\
 		qgslayerprojectionselectorbase.ui \
 		$(WIDGETPATH)/projectionselector/qgsprojectionselectorbase.ui \
+		qgscustomprojectiondialogbase.ui \
 		qgsuvalmadialogbase.ui			\
 		qgspointstylewidgetbase.ui		\
 		qgsfillstylewidgetbase.ui		\
@@ -213,7 +215,8 @@ qgis_UIH =	qgisappbase.ui.h			\
 		qgsrasterlayerpropertiesbase.ui.h	\
 		qgslabeldialogbase.ui.h			\
 		qgslayerprojectionselectorbase.ui.h \
-		qgsprojectpropertiesbase.ui.h		
+		qgsprojectpropertiesbase.ui.h	\
+		qgscustomprojectiondialogbase.ui.h
 
 ## these generated files need MOC files, too
 qgis_UIMOC = $(qgis_UIC:.ui=.moc.uic.cpp)
@@ -276,7 +279,8 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsvectordataprovider.moc.cpp		\
 		qgsvectorlayer.moc.cpp			\
 		splashscreen.moc.cpp		\
-		$(WIDGETPATH)/projectionselector/qgsprojectionselector.moc.cpp
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.moc.cpp \
+		qgscustomprojectiondialog.moc.cpp
 
 #		qgsvectorsymbologywidget.moc.cpp	
 
@@ -384,7 +388,8 @@ qgis_SOURCES =	main.cpp			\
 		qgsvectorfilewriter.cpp		\
 		qgsvectorlayer.cpp		\
 		splashscreen.cpp \
-		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp \
+		qgscustomprojectiondialog.cpp
 
 #		qgsvectorsymbologywidget.cpp	
 
@@ -526,7 +531,8 @@ libqgis_la_SOURCES =				\
 		qgsvectordataprovider.moc.cpp	\
 		qgsvectorfilewriter.cpp		\
 		qgsvectorlayer.cpp		\
-		qgsvectorlayer.moc.cpp 
+		qgsvectorlayer.moc.cpp \
+		qgscustomprojectiondialog.moc.cpp 
 
 if HAVE_POSTGRESQL
 libqgis_la_SOURCES += $(postgresLIBSOURCES)
