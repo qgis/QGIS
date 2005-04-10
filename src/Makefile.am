@@ -503,7 +503,6 @@ libqgis_la_SOURCES =				\
 		qgspointstylewidget.cpp		\
 		qgspointstylewidget.moc.cpp	\
 		qgsprojectproperty.cpp		\
-		qgsprojectproperty.cpp		\
 		qgsprovidercountcalcevent.cpp	\
 		qgsproviderextentcalcevent.cpp	\
 		qgsproviderregistry.cpp		\
@@ -511,7 +510,6 @@ libqgis_la_SOURCES =				\
 		qgsrasterlayer.cpp		\
 		qgsrasterlayer.moc.cpp		\
 		qgsrect.cpp			\
-		qgsrenderer.cpp 		\
 		qgsrenderer.cpp 		\
 		qgsrenderitem.cpp		\
 		qgsrunprocess.cpp		\
