@@ -475,7 +475,7 @@ libqgis_la_SOURCES =				\
 		qgsfillstylewidgetbase.moc.uic.cpp	\
 		qgsfillstylewidgetbase.uic.cpp		\
 		qgsfillstylewidget.cpp		\
-		qgsfillstylewidget.moc.cpp	
+		qgsfillstylewidget.moc.cpp	\
 		qgsgraduatedmarenderer.cpp	\
 		qgsgraduatedsymrenderer.cpp	\
 		qgslabel.cpp			\
