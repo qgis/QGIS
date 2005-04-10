@@ -14,6 +14,7 @@
 #include <iostream>
 #include <cassert>
 #include <sqlite3.h>
+#include <cstdlib>
 
 //qgis includes
 #include "qgscsexception.h"
@@ -28,11 +29,6 @@
 #include <qmessagebox.h>
 #include <qregexp.h>
 #include <qprogressdialog.h> 
-#include <qapplication.h>
-
-//stdc++ includes
-#include <iostream>
-#include <cstdlib>
 
 //gdal and ogr includes
 // XXX DO WE NEED THESE?
