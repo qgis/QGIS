@@ -44,20 +44,30 @@ class QgsOptions :public QgsOptionsBase{
      * @return theme name (a directory name in the themes directory)
      */
     QString theme();
+
+    public slots:
+      //! Slot to change the theme this is handled when the user 
+      // activates or highlights a theme name in the drop-down list
+      void themeChanged(const QString &);
+      //! Slot called when user chooses to change the project wide projection.
+      void pbnSelectProjection_clicked();
+      void findBrowser();
+      void setCurrentTheme();
+      void addTheme(QString item);
+      void cbxHideSplash_toggled( bool );
+      void saveOptions();
+      
     /**
      * Return the desired state of newly added layers. If a layer
      * is to be drawn when added to the map, this function returns
      * true.
      */
     bool newVisible();
-
-    public slots:
-      //! Slot to change the theme this is handled when the user 
-      // activates or highlights a theme name in the drop-down list
-      void themeChanged(const QString &);
   private:
     //! Pointer to our parent
     QWidget *qparent;
+    //!Global default projection used for new layers added that have no projection
+    QString mGlobalWKT;
 };
 
 #endif // #ifndef QGSOPTIONS_H

@@ -173,6 +173,12 @@ QString QgsOgrProvider::getProjectionWKT()
       // morph it
       mySpatialRefSys->morphFromESRI();
     }
+    // get the proj4 text
+    char * ppszProj4;
+    mySpatialRefSys->exportToProj4   ( &ppszProj4 );
+    std::cout << "vvvvvvvvvvvvvvvvv PROJ4 TEXT vvvvvvvvvvvvvvv" << std::endl; 
+    std::cout << ppszProj4 << std::endl; 
+    std::cout << "^^^^^^^^^^^^^^^^^ PROJ4 TEXT ^^^^^^^^^^^^^^^" << std::endl; 
     char    *pszWKT = NULL;
     mySpatialRefSys->exportToWkt( &pszWKT );
     QString myWKTString = QString(pszWKT);

@@ -108,7 +108,7 @@ void Track::writeXML(QTextStream& stream) {
     stream<<"<trkseg>\n";
     for (int j = 0; j < segments[i].points.size(); ++j) {
       stream<<"<trkpt lat=\""<<segments[i].points[j].lat
-	    <<"\" lon=\""<<segments[i].points[j].lon<<"\">\n";
+      <<"\" lon=\""<<segments[i].points[j].lon<<"\">\n";
       segments[i].points[j].writeXML(stream);
       stream<<"</trkpt>\n";
     }
@@ -180,7 +180,7 @@ GPSData::TrackIterator GPSData::tracksEnd() {
 
 
 GPSData::WaypointIterator GPSData::addWaypoint(double lat, double lon, 
-					       QString name, double ele) {
+                 QString name, double ele) {
   Waypoint wpt;
   wpt.lat = lat;
   wpt.lon = lon;
@@ -292,7 +292,7 @@ void GPSData::removeTracks(std::list<int> const & ids) {
 void GPSData::writeXML(QTextStream& stream) {
   stream.setEncoding(QTextStream::UnicodeUTF8);
   stream<<"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-	<<"<gpx version=\"1.0\" creator=\"Quantum GIS\">\n";
+  <<"<gpx version=\"1.0\" creator=\"Quantum GIS\">\n";
   for (WaypointIterator wIter = waypoints.begin(); 
        wIter != waypoints.end(); ++wIter)
     wIter->writeXML(stream);
@@ -326,13 +326,13 @@ GPSData* GPSData::getData(const QString& filename) {
     while (!file.atEnd()) {
       long int readBytes = file.readBlock(buffer, bufsize);
       if (file.atEnd())
-	atEnd = 1;
+  atEnd = 1;
       if (!XML_Parse(p, buffer, readBytes, atEnd)) {
-	std::cerr<<"Parse error at line "
-		 <<XML_GetCurrentLineNumber(p)<<": "
-		 <<XML_ErrorString(XML_GetErrorCode(p))<<std::endl;
-	failed = true;
-	break;
+  std::cerr<<"Parse error at line "
+     <<XML_GetCurrentLineNumber(p)<<": "
+     <<XML_ErrorString(XML_GetErrorCode(p))<<std::endl;
+  failed = true;
+  break;
       }
     }
     delete [] buffer;
@@ -387,9 +387,9 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
     mWpt = Waypoint();
     for (int i = 0; attr[2*i] != NULL; ++i) {
       if (!std::strcmp(attr[2*i], "lat"))
-	mWpt.lat = QString(attr[2*i+1]).toDouble();
+  mWpt.lat = QString(attr[2*i+1]).toDouble();
       else if (!std::strcmp(attr[2*i], "lon"))
-	mWpt.lon = QString(attr[2*i+1]).toDouble();
+  mWpt.lon = QString(attr[2*i+1]).toDouble();
     }
     mObj = &mWpt;
   }
@@ -407,8 +407,8 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
   // common properties
   else if (!std::strcmp(qName, "name")) {
     if (parseModes.top() == ParsingWaypoint ||
-	parseModes.top() == ParsingRoute ||
-	parseModes.top() == ParsingTrack) {
+  parseModes.top() == ParsingRoute ||
+  parseModes.top() == ParsingTrack) {
       mString = &mObj->name;
       mCharBuffer = "";
       parseModes.push(ParsingString);
@@ -418,8 +418,8 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
   }
   else if (!std::strcmp(qName, "cmt")) {
     if (parseModes.top() == ParsingWaypoint ||
-	parseModes.top() == ParsingRoute ||
-	parseModes.top() == ParsingTrack) {
+  parseModes.top() == ParsingRoute ||
+  parseModes.top() == ParsingTrack) {
       mString = &mObj->cmt;
       mCharBuffer = "";
       parseModes.push(ParsingString);
@@ -429,8 +429,8 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
   }
   else if (!std::strcmp(qName, "desc")) {
     if (parseModes.top() == ParsingWaypoint ||
-	parseModes.top() == ParsingRoute ||
-	parseModes.top() == ParsingTrack) {
+  parseModes.top() == ParsingRoute ||
+  parseModes.top() == ParsingTrack) {
       mString = &mObj->desc;
       mCharBuffer = "";
       parseModes.push(ParsingString);
@@ -440,8 +440,8 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
   }
   else if (!std::strcmp(qName, "src")) {
     if (parseModes.top() == ParsingWaypoint ||
-	parseModes.top() == ParsingRoute ||
-	parseModes.top() == ParsingTrack) {
+  parseModes.top() == ParsingRoute ||
+  parseModes.top() == ParsingTrack) {
       mString = &mObj->src;
       mCharBuffer = "";
       parseModes.push(ParsingString);
@@ -451,8 +451,8 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
   }
   else if (!std::strcmp(qName, "url")) {
     if (parseModes.top() == ParsingWaypoint ||
-	parseModes.top() == ParsingRoute ||
-	parseModes.top() == ParsingTrack) {
+  parseModes.top() == ParsingRoute ||
+  parseModes.top() == ParsingTrack) {
       mString = &mObj->url;
       mCharBuffer = "";
       parseModes.push(ParsingString);
@@ -462,8 +462,8 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
   }
   else if (!std::strcmp(qName, "urlname")) {
     if (parseModes.top() == ParsingWaypoint ||
-	parseModes.top() == ParsingRoute ||
-	parseModes.top() == ParsingTrack) {
+  parseModes.top() == ParsingRoute ||
+  parseModes.top() == ParsingTrack) {
       mString = &mObj->urlname;
       mCharBuffer = "";
       parseModes.push(ParsingString);
@@ -512,10 +512,10 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
     if (parseModes.top() == ParsingRoute) {
       mRtept = Routepoint();
       for (int i = 0; attr[2*i] != NULL; ++i) {
-	if (!std::strcmp(attr[2*i], "lat"))
-	  mRtept.lat = QString(attr[2*i+1]).toDouble();
-	else if (!std::strcmp(attr[2*i], "lon"))
-	  mRtept.lon = QString(attr[2*i+1]).toDouble();
+  if (!std::strcmp(attr[2*i], "lat"))
+    mRtept.lat = QString(attr[2*i+1]).toDouble();
+  else if (!std::strcmp(attr[2*i], "lon"))
+    mRtept.lon = QString(attr[2*i+1]).toDouble();
       }
       parseModes.push(ParsingRoutepoint);
     }
@@ -536,10 +536,10 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
     if (parseModes.top() == ParsingTrackSegment) {
       mTrkpt = Trackpoint();
       for (int i = 0; attr[2*i] != NULL; ++i) {
-	if (!std::strcmp(attr[2*i], "lat"))
-	  mTrkpt.lat = QString(attr[2*i+1]).toDouble();
-	else if (!std::strcmp(attr[2*i], "lon"))
-	  mTrkpt.lon = QString(attr[2*i+1]).toDouble();
+  if (!std::strcmp(attr[2*i], "lat"))
+    mTrkpt.lat = QString(attr[2*i+1]).toDouble();
+  else if (!std::strcmp(attr[2*i], "lon"))
+    mTrkpt.lon = QString(attr[2*i+1]).toDouble();
       }
       parseModes.push(ParsingTrackpoint);
     }

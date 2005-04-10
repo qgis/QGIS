@@ -1016,7 +1016,7 @@ private:
        @todo XXX should consider generalizing this
     */
     QgsRasterLayerProperties * mLayerProperties;
-
+    
     //! Pointer to the identify results dialog
     QgsIdentifyResults *mIdentifyResults;
 

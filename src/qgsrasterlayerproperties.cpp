@@ -903,7 +903,6 @@ void QgsRasterLayerProperties::sync()
 
 } // QgsRasterLayerProperties::sync()
 
-
 void QgsRasterLayerProperties::pbnHistRefresh_clicked()
 {
 #ifdef QGISDEBUG

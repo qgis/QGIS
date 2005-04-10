@@ -125,31 +125,31 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
     int nlayers = mMapCanvas->layerCount();
 
     for ( int i = 0; i < nlayers; i++ ) {
-	QgsMapLayer *layer = mMapCanvas->getZpos(i);
+  QgsMapLayer *layer = mMapCanvas->getZpos(i);
 
-	if ( !layer->visible() ) continue;
+  if ( !layer->visible() ) continue;
 
-	if ( layer->type() == QgsMapLayer::VECTOR ) {
-	    QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
+  if ( layer->type() == QgsMapLayer::VECTOR ) {
+      QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
 
-	    double widthScale = mWidthScale * mComposition->scale();
-	    if ( plotStyle() == QgsComposition::Preview && mPreviewMode == Render ) {
-		widthScale *= mComposition->viewScale();
-	    }
-	    double symbolScale = mSymbolScale * mComposition->scale();
-	    vector->draw( painter, extent, transform, device, widthScale, symbolScale, 0 );
+      double widthScale = mWidthScale * mComposition->scale();
+      if ( plotStyle() == QgsComposition::Preview && mPreviewMode == Render ) {
+    widthScale *= mComposition->viewScale();
+      }
+      double symbolScale = mSymbolScale * mComposition->scale();
+      vector->draw( painter, extent, transform, device, widthScale, symbolScale, 0 );
 
-	    if ( vector->labelOn() ) {
-	        double fontScale = 25.4 * mFontScale * mComposition->scale() / 72;
-		if ( plotStyle() == QgsComposition::Postscript ) {
-		    // I have no idea why 2.54 - it is an empirical value
-		    fontScale = 2.54 * 72.0 / mComposition->resolution();
-		}
-		vector->drawLabels (  painter, extent, transform, device, fontScale );
-	    }
-	} else {
-	    layer->draw( painter, extent, transform, device );
-	}
+      if ( vector->labelOn() ) {
+          double fontScale = 25.4 * mFontScale * mComposition->scale() / 72;
+    if ( plotStyle() == QgsComposition::Postscript ) {
+        // I have no idea why 2.54 - it is an empirical value
+        fontScale = 2.54 * 72.0 / mComposition->resolution();
+    }
+    vector->drawLabels (  painter, extent, transform, device, fontScale );
+      }
+  } else {
+      layer->draw( painter, extent, transform, device );
+  }
     }
     mMapCanvas->freeze(false);
 }
@@ -183,7 +183,7 @@ void QgsComposerMap::cache ( void )
     double scale = mExtent.width() / w;
     mCacheExtent.setXmax ( mCacheExtent.xMin() + w * scale );
     mCacheExtent.setYmax ( mCacheExtent.yMin() + h * scale );
-	    
+      
     mCachePixmap.resize( w, h );
 
     // WARNING: ymax in QgsMapToPixel is device height!!!
@@ -208,74 +208,74 @@ void QgsComposerMap::draw ( QPainter & painter )
     mDrawing = true;
 
     std::cout << "draw mPlotStyle = " << plotStyle() 
-	      << " mPreviewMode = " << mPreviewMode << std::endl;
+        << " mPreviewMode = " << mPreviewMode << std::endl;
     
     if ( plotStyle() == QgsComposition::Preview &&  mPreviewMode == Cache ) { // Draw from cache
         std::cout << "use cache" << std::endl;
 
-	if ( !mCacheUpdated || mMapCanvas->layerCount() != mNumCachedLayers ) {
-	    cache();
-	}
-	
-	// Scale so that the cache fills the map rectangle
-	double scale = 1.0 * QCanvasRectangle::width() / mCachePixmap.width();
-	
-	
-	painter.save();
+  if ( !mCacheUpdated || mMapCanvas->layerCount() != mNumCachedLayers ) {
+      cache();
+  }
+  
+  // Scale so that the cache fills the map rectangle
+  double scale = 1.0 * QCanvasRectangle::width() / mCachePixmap.width();
+  
+  
+  painter.save();
 
-	painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
-	painter.scale(scale,scale);
-	std::cout << "scale = " << scale << std::endl;
+  painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
+  painter.scale(scale,scale);
+  std::cout << "scale = " << scale << std::endl;
         std::cout << "translate: " << QCanvasRectangle::x() << ", " << QCanvasRectangle::y() << std::endl;
-	// Note: drawing only a visible part of the pixmap doesn't make it much faster
-	painter.drawPixmap(0,0, mCachePixmap);
+  // Note: drawing only a visible part of the pixmap doesn't make it much faster
+  painter.drawPixmap(0,0, mCachePixmap);
 
-	painter.restore();
+  painter.restore();
 
     } else if ( (plotStyle() == QgsComposition::Preview && mPreviewMode == Render) || 
-	         plotStyle() == QgsComposition::Print ||
-	   	 plotStyle() == QgsComposition::Postscript ) 
+           plotStyle() == QgsComposition::Print ||
+       plotStyle() == QgsComposition::Postscript ) 
     {
         std::cout << "render" << std::endl;
-	
-	double scale = mExtent.width() / QCanvasRectangle::width();
-	QgsMapToPixel transform(scale, QCanvasRectangle::height(), mExtent.yMin(), mExtent.xMin() );
-	
-	painter.save();
-	painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
-	   
-	// Note: CoordDevice doesn't work well
-	painter.setClipRect ( 0, 0, QCanvasRectangle::width(), QCanvasRectangle::height(), QPainter::CoordPainter );
-	
-	draw( &painter, &mExtent, &transform, painter.device() );
-	painter.restore();
+  
+  double scale = mExtent.width() / QCanvasRectangle::width();
+  QgsMapToPixel transform(scale, QCanvasRectangle::height(), mExtent.yMin(), mExtent.xMin() );
+  
+  painter.save();
+  painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
+     
+  // Note: CoordDevice doesn't work well
+  painter.setClipRect ( 0, 0, QCanvasRectangle::width(), QCanvasRectangle::height(), QPainter::CoordPainter );
+  
+  draw( &painter, &mExtent, &transform, painter.device() );
+  painter.restore();
     } 
 
     // Draw frame around
     if ( mFrame ) {
-	painter.setPen( QPen(QColor(0,0,0), 1) );
-	painter.setBrush( Qt::NoBrush );
+  painter.setPen( QPen(QColor(0,0,0), 1) );
+  painter.setBrush( Qt::NoBrush );
         painter.save();
-	painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
-	painter.drawRect ( 0, 0, QCanvasRectangle::width()+1, QCanvasRectangle::height()+1 ); // is it right?
+  painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
+  painter.drawRect ( 0, 0, QCanvasRectangle::width()+1, QCanvasRectangle::height()+1 ); // is it right?
         painter.restore();
     }
 
     // Show selected / Highlight
     if ( mSelected && plotStyle() == QgsComposition::Preview ) {
-	painter.setPen( mComposition->selectionPen() );
-	painter.setBrush( mComposition->selectionBrush() );
-	int x = (int) QCanvasRectangle::x();
-	int y = (int) QCanvasRectangle::y();
-	int s = mComposition->selectionBoxSize();
+  painter.setPen( mComposition->selectionPen() );
+  painter.setBrush( mComposition->selectionBrush() );
+  int x = (int) QCanvasRectangle::x();
+  int y = (int) QCanvasRectangle::y();
+  int s = mComposition->selectionBoxSize();
 
-	painter.drawRect ( x, y, s, s );
-	x += QCanvasRectangle::width();
-	painter.drawRect ( x-s, y, s, s );
-	y += QCanvasRectangle::height();
-	painter.drawRect ( x-s, y-s, s, s );
-	x -= QCanvasRectangle::width();
-	painter.drawRect ( x, y-s, s, s );
+  painter.drawRect ( x, y, s, s );
+  x += QCanvasRectangle::width();
+  painter.drawRect ( x-s, y, s, s );
+  y += QCanvasRectangle::height();
+  painter.drawRect ( x-s, y-s, s, s );
+  x -= QCanvasRectangle::width();
+  painter.drawRect ( x, y-s, s, s );
     }
     
     mDrawing = false;
@@ -302,14 +302,14 @@ void QgsComposerMap::calculateChanged ( void )
     mCalculate = mCalculateComboBox->currentItem();
     
     if ( mCalculate == Scale ) { // return to extent defined by user
-	recalculate();
+  recalculate();
 
-	mCacheUpdated = false;
-	//QCanvasRectangle::canvas()->setAllChanged(); // must be setAllChanged(), not sure why
-    	QCanvasRectangle::canvas()->setChanged( QCanvasRectangle::boundingRect() );
-	QCanvasRectangle::canvas()->update();
+  mCacheUpdated = false;
+  //QCanvasRectangle::canvas()->setAllChanged(); // must be setAllChanged(), not sure why
+      QCanvasRectangle::canvas()->setChanged( QCanvasRectangle::boundingRect() );
+  QCanvasRectangle::canvas()->update();
     
-	mComposition->emitMapChanged ( mId );
+  mComposition->emitMapChanged ( mId );
     }
     setOptions();
     writeSettings();
@@ -320,15 +320,15 @@ double QgsComposerMap::scaleFromUserScale ( double us )
     double s;
     
     switch ( QgsProject::instance()->mapUnits() ) {
-	case QgsScaleCalculator::METERS :
-	    s = 1000. * mComposition->scale() / us;
-	    break;
-	case QgsScaleCalculator::FEET :
-	    s = 304.8 * mComposition->scale() / us;
-	    break;
-	case QgsScaleCalculator::DEGREES :
-	    s = mComposition->scale() / us;
-	    break;
+  case QgsScaleCalculator::METERS :
+      s = 1000. * mComposition->scale() / us;
+      break;
+  case QgsScaleCalculator::FEET :
+      s = 304.8 * mComposition->scale() / us;
+      break;
+  case QgsScaleCalculator::DEGREES :
+      s = mComposition->scale() / us;
+      break;
     }
     return s;
 }
@@ -338,15 +338,15 @@ double QgsComposerMap::userScaleFromScale ( double s )
     double us;
     
     switch ( QgsProject::instance()->mapUnits() ) {
-	case QgsScaleCalculator::METERS :
-	    us = 1000. * mComposition->scale() / s; 
-	    break;
-	case QgsScaleCalculator::FEET :
-	    us = 304.8 * mComposition->scale() / s; 
-	    break;
-	case QgsScaleCalculator::DEGREES :
-	    us = mComposition->scale() / s;
-	    break;
+  case QgsScaleCalculator::METERS :
+      us = 1000. * mComposition->scale() / s; 
+      break;
+  case QgsScaleCalculator::FEET :
+      us = 304.8 * mComposition->scale() / s; 
+      break;
+  case QgsScaleCalculator::DEGREES :
+      us = mComposition->scale() / s;
+      break;
     }
     
     return us;
@@ -408,41 +408,41 @@ void QgsComposerMap::recalculate ( void )
 
     if ( mCalculate == Scale ) 
     {
-	// Calculate scale from extent and rectangle
-	double xscale = QCanvasRectangle::width() / mUserExtent.width();
-	double yscale = QCanvasRectangle::height() / mUserExtent.height();
+  // Calculate scale from extent and rectangle
+  double xscale = QCanvasRectangle::width() / mUserExtent.width();
+  double yscale = QCanvasRectangle::height() / mUserExtent.height();
 
-	mExtent = mUserExtent;
+  mExtent = mUserExtent;
 
-	if ( xscale < yscale ) {
-	    mScale = xscale;
-	    // extend y
-	    double d = ( 1. * QCanvasRectangle::height() / mScale - mUserExtent.height() ) / 2 ;
-	    mExtent.setYmin ( mUserExtent.yMin() - d );
-	    mExtent.setYmax ( mUserExtent.yMax() + d );
-	} else {
-	    mScale = yscale;
-	    // extend x
-	    double d = ( 1.* QCanvasRectangle::width() / mScale - mUserExtent.width() ) / 2 ;
-	    mExtent.setXmin ( mUserExtent.xMin() - d );
-	    mExtent.setXmax ( mUserExtent.xMax() + d );
-	}
+  if ( xscale < yscale ) {
+      mScale = xscale;
+      // extend y
+      double d = ( 1. * QCanvasRectangle::height() / mScale - mUserExtent.height() ) / 2 ;
+      mExtent.setYmin ( mUserExtent.yMin() - d );
+      mExtent.setYmax ( mUserExtent.yMax() + d );
+  } else {
+      mScale = yscale;
+      // extend x
+      double d = ( 1.* QCanvasRectangle::width() / mScale - mUserExtent.width() ) / 2 ;
+      mExtent.setXmin ( mUserExtent.xMin() - d );
+      mExtent.setXmax ( mUserExtent.xMax() + d );
+  }
 
-	mUserScale = userScaleFromScale ( mScale );
+  mUserScale = userScaleFromScale ( mScale );
     } 
     else
     {
-	// Calculate extent
-	double xc = ( mUserExtent.xMax() + mUserExtent.xMin() ) / 2;
-	double yc = ( mUserExtent.yMax() + mUserExtent.yMin() ) / 2;
+  // Calculate extent
+  double xc = ( mUserExtent.xMax() + mUserExtent.xMin() ) / 2;
+  double yc = ( mUserExtent.yMax() + mUserExtent.yMin() ) / 2;
     
-	double width = QCanvasRectangle::width() / mScale;
-	double height = QCanvasRectangle::height() / mScale;
-	
-	mExtent.setXmin ( xc - width/2  );
-	mExtent.setXmax ( xc + width/2  );
-	mExtent.setYmin ( yc - height/2  );
-	mExtent.setYmax ( yc + height/2  );
+  double width = QCanvasRectangle::width() / mScale;
+  double height = QCanvasRectangle::height() / mScale;
+  
+  mExtent.setXmin ( xc - width/2  );
+  mExtent.setXmax ( xc + width/2  );
+  mExtent.setYmin ( yc - height/2  );
+  mExtent.setYmax ( yc + height/2  );
 
     }
 
@@ -479,18 +479,18 @@ void QgsComposerMap::setOptions ( void )
     
     // Scale
     switch ( QgsProject::instance()->mapUnits() ) {
-	case QgsScaleCalculator::METERS :
-	case QgsScaleCalculator::FEET :
+  case QgsScaleCalculator::METERS :
+  case QgsScaleCalculator::FEET :
             mScaleLineEdit->setText ( QString("%1").arg((int)mUserScale) );
-	    break;
-	case QgsScaleCalculator::DEGREES :
+      break;
+  case QgsScaleCalculator::DEGREES :
             mScaleLineEdit->setText ( QString("%1").arg(mUserScale,0,'f') );
-	    break;
+      break;
     }
     if ( mCalculate == Scale ) {
-	mScaleLineEdit->setEnabled(false);	
+  mScaleLineEdit->setEnabled(false);  
     } else {
-	mScaleLineEdit->setEnabled(true);	
+  mScaleLineEdit->setEnabled(true); 
     }
     
     mWidthScaleLineEdit->setText ( QString("%1").arg(mWidthScale,0,'g',2) );

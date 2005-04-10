@@ -303,6 +303,12 @@ void QgisAppBase::zoomToLayerExtent()
 }
 
 
+void QgisAppBase::debugHook()
+{
+
+}
+
+
 
 
 void QgisAppBase::measure()

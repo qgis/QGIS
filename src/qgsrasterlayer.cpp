@@ -290,6 +290,16 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
         catchallFilter += QString(myGdalDriver->GetDescription()) + " ";
       }
     }
+    
+    // A number of drivers support JPEG 2000. Add it in for those.
+    if (  myGdalDriverDescription.startsWith("MrSID") 
+          || myGdalDriverDescription.startsWith("ECW")
+          || myGdalDriverDescription.startsWith("JPEG2000")
+          || myGdalDriverDescription.startsWith("JP2KAK") )
+    {
+      QString glob = "*.jp2 *.j2k";
+      theFileFiltersString += "JPEG 2000 (" + glob.lower() + " " + glob.upper() + ");;";
+    }
 
     // A number of drivers support JPEG 2000. Add it in for those.
     if (  myGdalDriverDescription.startsWith("MrSID")
@@ -2367,7 +2377,6 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 #endif
 
   CPLFree(myData);
-
   myRasterBandStats.statsGatheredFlag = true;
 
 #ifdef QGISDEBUG

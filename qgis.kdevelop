@@ -1,27 +1,26 @@
 <?xml version = '1.0'?>
 <kdevelop>
   <general>
-    <author>The QGIS Team</author>
-    <email>qgis-developer@lists.sourceforge.net</email>
+    <author>Gary Sherman</author>
+    <email>gsherman at mrcc dot com</email>
     <version>$VERSION$</version>
     <projectmanagement>KDevAutoProject</projectmanagement>
     <primarylanguage>C++</primarylanguage>
     <ignoreparts/>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <secondaryLanguages/>
+    <description></description>
   </general>
   <kdevautoproject>
     <general>
       <activetarget>src/qgis</activetarget>
-      <useconfiguration>default</useconfiguration>
+      <useconfiguration>debug</useconfiguration>
     </general>
     <run>
-      <mainprogram>/home/aps02ts/bin/qgis</mainprogram>
+      <mainprogram>/home/gsherman/development/qgis07_dev/debug/src/qgis</mainprogram>
       <directoryradio>custom</directoryradio>
-      <customdirectory>/home/aps02ts/bin/</customdirectory>
-      <programargs/>
+      <customdirectory>/</customdirectory>
+      <programargs></programargs>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
@@ -35,60 +34,43 @@
         <cxxflags>-O2 -g0</cxxflags>
       </optimized>
       <debug>
-        <configargs>--enable-debug=full --prefix=$HOME</configargs>
+        <configargs>--enable-debug=full --prefix=/home/gsherman/qgis07_head --with-grass=/usr/local/grass-5.7.0_org</configargs>
         <builddir>debug</builddir>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpgf77options</f77compiler>
         <cxxflags>-O0 -g3</cxxflags>
         <envvars/>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <f77flags/>
+        <topsourcedir></topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <f77flags></f77flags>
       </debug>
-      <default>
-        <envvars/>
-        <configargs>--prefix=$HOME --enable-debug</configargs>
-        <builddir/>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
-        <ccompiler>kdevgccoptions</ccompiler>
-        <cxxcompiler>kdevgppoptions</cxxcompiler>
-        <f77compiler>kdevpgf77options</f77compiler>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <cxxflags/>
-        <f77flags/>
-      </default>
     </configurations>
     <make>
       <envvars>
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
       </envvars>
-      <abortonerror>false</abortonerror>
+      <abortonerror>true</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin/>
+      <makebin></makebin>
       <prio>0</prio>
     </make>
   </kdevautoproject>
   <kdevdebugger>
     <general>
       <dbgshell>libtool</dbgshell>
-      <programargs/>
-      <gdbpath/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <programargs></programargs>
+      <gdbpath></gdbpath>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -172,31 +154,26 @@
       <argumentsHintDelay>400</argumentsHintDelay>
       <headerCompletionDelay>250</headerCompletionDelay>
     </codecompletion>
-    <references/>
+    <creategettersetter>
+      <prefixGet></prefixGet>
+      <prefixSet>set</prefixSet>
+      <prefixVariable>m_,_</prefixVariable>
+      <parameterName>theValue</parameterName>
+      <inlineGet>true</inlineGet>
+      <inlineSet>true</inlineSet>
+    </creategettersetter>
+    <references>
+      <pcs>Qt</pcs>
+    </references>
   </kdevcppsupport>
-  <kdevdocumentation>
-    <projectdoc>
-      <docsystem/>
-      <docurl/>
-      <usermanualurl/>
-    </projectdoc>
-  </kdevdocumentation>
   <kdevfileview>
     <groups>
       <hidenonprojectfiles>false</hidenonprojectfiles>
       <hidenonlocation>false</hidenonlocation>
     </groups>
     <tree>
-      <showvcsfields>false</showvcsfields>
-      <hidenonprojectfiles>false</hidenonprojectfiles>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
+      <hidenonprojectfiles>false</hidenonprojectfiles>
     </tree>
   </kdevfileview>
-  <kdevcvsservice>
-    <recursivewhenupdate>true</recursivewhenupdate>
-    <prunedirswhenupdate>true</prunedirswhenupdate>
-    <createdirswhenupdate>true</createdirswhenupdate>
-    <recursivewhencommitremove>true</recursivewhencommitremove>
-    <revertoptions>-C</revertoptions>
-  </kdevcvsservice>
 </kdevelop>

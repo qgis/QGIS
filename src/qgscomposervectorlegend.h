@@ -76,12 +76,15 @@ class QgsRect;
 class QgsMapToPixel;
 class QgsComposition;
 class QgsComposerMap;
+class QgsComposerItem;
 
 /** \class QgsComposerVectorLegend 
  *  \brief Object representing map window. 
  */
 // NOTE: QgsComposerVectorLegendBase must be first, otherwise does not compile
-class QgsComposerVectorLegend : public QgsComposerVectorLegendBase, public QCanvasRectangle, public QgsComposerItem
+class QgsComposerVectorLegend : public QgsComposerVectorLegendBase, 
+                                public QCanvasRectangle, 
+                                public QgsComposerItem
 {
     Q_OBJECT
 

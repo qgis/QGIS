@@ -420,6 +420,8 @@ public:
   int cidxGetMaxCat ( int idx );
   /** get data source uri (not implemented) */
   QgsDataSourceURI * getURI(){ return 0;};
+  
+
 
 private:
   // Layer type (layerType)
