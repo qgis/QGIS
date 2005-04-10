@@ -8,18 +8,18 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>330</width>
-            <height>244</height>
+            <width>389</width>
+            <height>532</height>
         </rect>
     </property>
     <property name="caption">
-        <string>Select Geometry type</string>
+        <string>New Vector Layer</string>
     </property>
     <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QButtonGroup" row="0" column="0">
+        <widget class="QButtonGroup" row="0" column="0" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>buttonGroup1</cstring>
             </property>
@@ -59,7 +59,7 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QLayoutWidget" row="1" column="0">
+        <widget class="QLayoutWidget" row="4" column="0" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>layout3</cstring>
             </property>
@@ -119,6 +119,71 @@
                 </spacer>
             </hbox>
         </widget>
+        <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mAttributeLabel</cstring>
+            </property>
+            <property name="text">
+                <string>Attributes:</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="0">
+            <property name="name">
+                <cstring>mAddAttributeButton</cstring>
+            </property>
+            <property name="text">
+                <string>Add</string>
+            </property>
+        </widget>
+        <widget class="QListView" row="3" column="0" rowspan="1" colspan="3">
+            <column>
+                <property name="text">
+                    <string>Column 1</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+        <item>
+            <property name="text">
+                <string>New Item</string>
+            </property>
+            <property name="pixmap">
+                <pixmap></pixmap>
+            </property>
+        </item>
+            <property name="name">
+                <cstring>mAttributeView</cstring>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="1">
+            <property name="name">
+                <cstring>mRemoveAttributeButton</cstring>
+            </property>
+            <property name="text">
+                <string>Remove</string>
+            </property>
+        </widget>
+        <spacer row="2" column="2">
+            <property name="name">
+                <cstring>spacer3</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>91</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
     </grid>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>

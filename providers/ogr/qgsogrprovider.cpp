@@ -912,7 +912,7 @@ bool QgsOgrProvider::addFeature(QgsFeature* f)
       }
       else if(fdef->GetFieldDefn(i)->GetType()==OFTString)
       {
-        feature->SetField(i,s.ascii());
+	  feature->SetField(i,s.ascii());
 #ifdef QGISDEBUG
         qWarning("OFTString, attribute value: "+QString(s.ascii()));
 #endif

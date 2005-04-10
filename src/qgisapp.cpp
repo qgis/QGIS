@@ -1515,6 +1515,9 @@ void QgisApp::newVectorLayer()
     }
     geometrytype = geomDialog.selectedType();
 
+    std::list<std::pair<QString, QString> > attributes;
+    geomDialog.attributes(attributes);
+
     QString filename=QFileDialog::getSaveFileName();
     if(filename.isNull())
     {
@@ -1571,35 +1574,37 @@ void QgisApp::newVectorLayer()
         }
         }*/
 
+    QgsVectorFileWriter* writer=0;
+
     if(geometrytype == QGis::WKBPoint)
     {
-        QgsVectorFileWriter writer(filename,wkbPoint);
-        if(!writer.initialise())
+        writer=new QgsVectorFileWriter(filename,wkbPoint);
+        if(!writer->initialise())
         {
             QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
             return;
         }
-        writer.createField("dummy", OFTReal, 1, 1);
+        //writer.createField("dummy", OFTReal, 1, 1);
     }
     else if(geometrytype == QGis::WKBLineString)
     {
-        QgsVectorFileWriter writer(filename,wkbLineString);
-        if(!writer.initialise())
+        writer=new QgsVectorFileWriter(filename,wkbLineString);
+        if(!writer->initialise())
         {
             QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
             return;
         }
-        writer.createField("dummy", OFTReal, 1, 1);
+        //writer.createField("dummy", OFTReal, 1, 1);
     }
     else if(geometrytype == QGis::WKBPolygon)
     {
-        QgsVectorFileWriter writer(filename,wkbPolygon);
-        if(!writer.initialise())
+        writer=new QgsVectorFileWriter(filename,wkbPolygon);
+        if(!writer->initialise())
         {
             QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
             return;
         }
-        writer.createField("dummy", OFTReal, 1, 1);
+        //writer.createField("dummy", OFTReal, 1, 1);
     }
     else
     {
@@ -1609,6 +1614,26 @@ void QgisApp::newVectorLayer()
 
         return;
     }
+
+    if(writer)
+    {
+	for(std::list<std::pair<QString, QString> >::iterator it=attributes.begin();it!=attributes.end();++it)
+	{
+	    if(it->second=="OFTReal")
+	    {
+		writer->createField(it->first, OFTReal, 10, 3);
+	    }
+	    else if(it->second=="OFTInteger")
+	    {
+		writer->createField(it->first, OFTInteger, 10, 3);
+	    }
+	    else if(it->second=="OFTString")
+	    {
+		writer->createField(it->first, OFTString, 40, 1);
+	    }
+	}
+    }
+    delete writer;
 
     //then add the layer to the view
     QFileInfo fileinfo(filename);

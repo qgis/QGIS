@@ -15,14 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+
+#include "qgsaddattrdialog.h"
 #include "qgsgeomtypedialog.h"
+#include <qlistview.h>
 #include <qradiobutton.h>
 
 QgsGeomTypeDialog::QgsGeomTypeDialog(): QgsGeomTypeDialogBase()
 {
     QObject::connect((QObject*)mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
     QObject::connect((QObject*)mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    QObject::connect((QObject*)mAddAttributeButton, SIGNAL(clicked()), this, SLOT(addAttribute()));
+    QObject::connect((QObject*)mRemoveAttributeButton, SIGNAL(clicked()), this, SLOT(removeAttribute()));
     mPointRadioButton->setChecked(true);
+    mAttributeView->removeColumn(0);
+    mAttributeView->addColumn(tr("Name"));
+    mAttributeView->addColumn(tr("Type"));
+    QListViewItem* dummyitem=new QListViewItem(mAttributeView,"dummy","OFTReal");
 }
 
 QgsGeomTypeDialog::~QgsGeomTypeDialog()
@@ -46,4 +55,39 @@ QGis::WKBTYPE QgsGeomTypeDialog::selectedType()
     }
 
     return QGis::WKBUnknown;
+}
+
+void QgsGeomTypeDialog::addAttribute()
+{
+    std::list<QString> types;
+    types.push_back("OFTReal");
+    types.push_back("OFTInteger");
+    types.push_back("OFTString");
+    QgsAddAttrDialog d(types);
+    if(d.exec()==QDialog::Accepted)
+    {
+	QListViewItem* attritem=new QListViewItem(mAttributeView, d.name(), d.type());
+    }
+}
+
+void QgsGeomTypeDialog::removeAttribute()
+{
+    if(mAttributeView->childCount()>1)
+    {
+	delete(mAttributeView->currentItem());
+    }
+}
+
+void QgsGeomTypeDialog::attributes(std::list<std::pair<QString, QString> >& at) const
+{
+    QListViewItemIterator it(mAttributeView);
+    while ( it.current() ) 
+    {
+	QListViewItem *item = it.current();
+	at.push_back(std::make_pair(item->text(0), item->text(1)));
+#ifdef QGISDEBUG
+	qWarning("appending "+item->text(0)+"//"+item->text(1));
+#endif	
+	++it;
+    }
 }
