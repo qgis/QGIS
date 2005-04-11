@@ -84,7 +84,7 @@
 #include "qgsproject.h"
 #include "qgsmapserverexport.h"
 #include "qgsgeomtypedialog.h"
-
+#include "qgscustomprojectiondialog.h"
 
 #ifdef HAVE_POSTGRESQL
 #include "qgsdbsourceselect.h"
@@ -4412,4 +4412,9 @@ void QgisApp::debugHook()
   std::cout << "Hello from debug hook" << std::endl; 
   // show the map canvas extent
   std::cout << mMapCanvas->extent() << std::endl; 
+}
+void QgisApp::actionCustomProjection_activated()
+{
+  QgsCustomProjectionDialog * myDialog = new QgsCustomProjectionDialog(this);
+  myDialog->show();
 }

@@ -315,3 +315,9 @@ void QgisAppBase::measure()
 {
 
 }
+
+
+void QgisAppBase::actionCustomProjection_activated()
+{
+
+}
