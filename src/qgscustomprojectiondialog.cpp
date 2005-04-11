@@ -117,7 +117,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
   int myEntriesCount = sqlite3_column_int(myPreparedStatement, 0);
   sqlite3_finalize(myPreparedStatement);
 
-  // Set up the query to retreive the projection information needed to populate the list
+  // Set up the query to retreive the projection information needed to populate the PROJECTION list
   mySql = "select * from tbl_projection order by name";
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -141,6 +141,17 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
     // update the progress bar to 100% -- just for eye candy purposes (some people hate to
     // see a progress dialog end at 99%)
     myProgressBar.setProgress(myEntriesCount);
+  }
+  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  mySql = "select * from tbl_ellipsoid order by name";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+    while(sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+    {
+      cboEllipsoid->insertItem((char *)sqlite3_column_text(myPreparedStatement,1));
+    }
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
