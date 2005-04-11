@@ -78,7 +78,7 @@
   // set the default wkt to WGS 84
 //  QString defaultWkt = QgsSpatialReferences::instance()->getSrsBySrid(defaultWktKey)->srText();
   // the /selectedWKT entry stores the wkt entry selected in the list of projections
-  QString srsWkt =  QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT","WGS84");
+  QString srsWkt =  QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT","WGS 84");
 
   projectionSelector->setSelectedWKT(srsWkt);
   

@@ -2,6 +2,9 @@
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 QGIS Change Log
+2005-04-11 [ges]
+** Fixed default projection (WGS 84) so it is now selected when the 
+   project properties dialog is opened and no projection has been set.
 2005-04-10 [timlinux]
 ** Added custom  projection maker dialog to main app menu. Dialog is still
 under construction.
