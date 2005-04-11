@@ -31,6 +31,8 @@
 #include <qregexp.h>
 #include <qstring.h>
 #include <qurloperator.h>
+#include <qcombobox.h>
+#include <qprogressdialog.h>
 
 //stdc++ includes
 #include <iostream>
@@ -86,9 +88,63 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
       myOutputStream.put(myChar);
     }
 
-    // 
-    // Populate the projection combo
   }
+  // 
+  // Populate the projection combo
+  // 
+  // open the database containing the spatial reference data
+  sqlite3 *myDatabase;
+  char *myErrorMessage = 0;
+  int myResult;
+  myResult = sqlite3_open(QString(myQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+  // prepare the sql statement
+  const char *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  // get total count of records in the projection table
+  QString mySql = "select count(*) from tbl_projection";
+
+  myResult = sqlite3_prepare(myDatabase, mySql, mySql.length(), &myPreparedStatement, &myTail);
+  assert(myResult == SQLITE_OK);
+  sqlite3_step(myPreparedStatement);
+  // Set the max for the progress dialog to the number of entries in the srs_name table
+  int myEntriesCount = sqlite3_column_int(myPreparedStatement, 0);
+  sqlite3_finalize(myPreparedStatement);
+
+  // Set up the query to retreive the projection information needed to populate the list
+  mySql = "select * from tbl_projection order by name";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+    // set up the progress dialog
+    int myProgress = 1;
+    QProgressDialog myProgressBar( "Building Projections List...", 0, myEntriesCount,
+            this, "progress", TRUE );
+    // set initial value to 1
+    myProgressBar.setProgress(myProgress);
+    while(sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+    {
+      // only update the progress dialog every 10 records
+      if((myProgress++ % 10) == 0)
+      {
+        myProgressBar.setProgress(myProgress++);
+      }
+      cboProjectionFamily->insertItem((char *)sqlite3_column_text(myPreparedStatement,1));
+    }
+    // update the progress bar to 100% -- just for eye candy purposes (some people hate to
+    // see a progress dialog end at 99%)
+    myProgressBar.setProgress(myEntriesCount);
+  }
+  // close the sqlite3 statement
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
 }
 
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
