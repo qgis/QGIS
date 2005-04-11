@@ -56,12 +56,16 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
 #if defined(Q_OS_MACX) || defined(WIN32)
     QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
-    QString masterDatabaseFileName = PKGDATAPATH;
-    masterDatabaseFileName += "/resources/home/user_projections.db";
+    QString myMasterDatabaseFileName = PKGDATAPATH;
+    myMasterDatabaseFileName += "/resources/user_projections.db";
     //now make sure the users .qgis dir exists 
     //XXX make windows friendly too!!!
     QUrlOperator *myUrlOperator = new QUrlOperator();
-    myUrlOperator->copy ("file:/"+masterDatabaseFileName,
+#ifdef QGISDEBUG
+   std::cout << "copying " << myMasterDatabaseFileName << " to " << myUserProjectionDb << std::endl;
+#endif
+    
+    myUrlOperator->copy ("file:/"+myMasterDatabaseFileName,
             "file:/"+myUserProjectionDb,
             false, false);
     delete myUrlOperator;
