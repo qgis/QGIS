@@ -2549,7 +2549,7 @@ void QgsVectorLayer::setCoordinateSystem()
 #endif
     QApplication::restoreOverrideCursor();
     mCoordinateTransform = new QgsCoordinateTransform("", "");
-    dataProvider->setWKT(QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT","WGS84"));
+    dataProvider->setWKT(QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT","WGS 84"));
     return;
   }
   else
@@ -2569,7 +2569,7 @@ void QgsVectorLayer::setCoordinateSystem()
         //it in the ctor of the layer projection selector
         QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector();
         QString srsWkt =  
-          QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT","WGS84");
+          QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT","WGS 84");
         mySelector->setSelectedWKT(srsWkt);
         if(mySelector->exec())
         {
@@ -2593,7 +2593,7 @@ void QgsVectorLayer::setCoordinateSystem()
       }
       else if (myDefaultProjectionOption=="useProject")
       {
-        mySourceWKT = QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT","WGS84");
+        mySourceWKT = QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT","WGS 84");
       }
       else ///qgis/projections/defaultBehaviour==useDefault
       {
