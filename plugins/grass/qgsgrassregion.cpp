@@ -413,12 +413,25 @@ void QgsGrassRegion::postRender(QPainter *painter)
 
 void QgsGrassRegion::accept()
 {
+    // TODO: better repaint region
+    QSettings settings;
+
+    bool on = settings.readBoolEntry ("/qgis/grass/region/on", true );
+
+    if ( on ) {
+	mPlugin->switchRegion(false); // delete
+    }
+    
     QgsGrass::setLocation ( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
     G__setenv( "MAPSET", (char *) QgsGrass::getDefaultMapset().latin1() );
     
     if ( G_put_window(&mWindow) == -1 ) {
 	QMessageBox::warning( 0, "Warning", "Cannot write region" );
         return;
+    }
+
+    if ( on ) {
+	mPlugin->switchRegion(on);  // draw new
     }
 
     saveWindowLocation();
