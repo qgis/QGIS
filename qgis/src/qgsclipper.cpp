@@ -223,13 +223,6 @@ bool QgsClipper::trimLine(QgsPoint& from, QgsPoint& to)
     }
   }
 
-  // Too verbose for QGISDEBUG, but handy sometimes.
-  /*  
-  std::cerr << "Point 1 trimmed from " << from.x() << ", " << from.y() 
-	    << " to " << tFrom.x() << ", " << tFrom.y() << '\n'
-	    << "Point 2 trimmed from " << to.x() << ", " << to.y() 
-	    << " to " << tTo.x() << ", " << tTo.y() << "\n\n";
-  */
   to = trimmedTo;
   from = trimmedFrom;
 
@@ -249,29 +242,28 @@ bool QgsClipper::trimLine(QgsPoint& from, QgsPoint& to)
 
 void QgsClipper::trimPolygon(std::vector<QgsPoint>& polygon)
 {
-  // Not the most efficient way - needs to be redone. Efficiency is
-  // important here, so std::vector<> might not be the most
-  // appropriate data structure.
+  std::vector<QgsPoint> tmp;
+  trimPolygonToBoundary(polygon, tmp, Xmax);
 
-  std::vector<QgsPoint> tmp1;
-  std::vector<QgsPoint> tmp2;
-  std::vector<QgsPoint> tmp3;
-  std::vector<QgsPoint> tmp4;
+  polygon.resize(0);
+  trimPolygonToBoundary(tmp, polygon, Ymax);
 
-  trimPolygonToBoundary(polygon, tmp1, Xmax);
-  trimPolygonToBoundary(tmp1, tmp2, Ymax);
-  trimPolygonToBoundary(tmp2, tmp3, Xmin);
-  trimPolygonToBoundary(tmp3, tmp4, Ymin);
-  polygon = tmp4;
+  tmp.resize(0);
+  trimPolygonToBoundary(polygon, tmp, Xmin);
+
+  polygon.resize(0);
+  trimPolygonToBoundary(tmp, polygon, Ymin);
 }
 
 // An auxilary function that is part of the polygon trimming
 // code. Will trim the given polygon to the given boundary and return
 // the trimmed polygon in the out pointer. Uses Sutherland and
 // Hodgman's polygon-clipping algorithm.
+// Need to keep track of how the trimming alters the contents of rings
 
 void QgsClipper::trimPolygonToBoundary(const std::vector<QgsPoint>& in, 
-				       std::vector<QgsPoint>& out, boundary b)
+				       std::vector<QgsPoint>& out, 
+				       boundary b)
 {
   int i1 = in.size()-1; // start with last point
 
@@ -292,7 +284,8 @@ void QgsClipper::trimPolygonToBoundary(const std::vector<QgsPoint>& in,
     }
     else // end point of edge is outside boundary
     {
-      if (inside(in, i1, b)) // start point is in boundary, so need to trim back
+      // start point is in boundary, so need to trim back
+      if (inside(in, i1, b))
 	out.push_back( intersect(in, i1, i2, b) );
     }
     i1 = i2;
@@ -307,19 +300,19 @@ bool QgsClipper::inside(const std::vector<QgsPoint>& pa, int p, boundary b)
   switch (b)
   {
   case Xmax: // x < maxX is inside
-    if ((pa[p]).x() < maxX)
+    if (pa[p].x() < maxX)
       return true;
     break;
   case Xmin: // x > minX is inside
-    if ((pa[p]).x() > minX)
+    if (pa[p].x() > minX)
       return true;
     break;
   case Ymax: // y < maxY is inside
-    if ((pa[p]).y() < maxY)
+    if (pa[p].y() < maxY)
       return true;
     break;
   case Ymin: // y > minY is inside
-    if ((pa[p]).y() > minY)
+    if (pa[p].y() > minY)
       return true;
     break;
   }
