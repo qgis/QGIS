@@ -251,7 +251,7 @@ void QgsGrassPlugin::initGui()
 
   // Add the toolbar
   toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "GRASS");
-  toolBarPointer->setLabel("Add GRASS layer");
+  toolBarPointer->setLabel(tr("GRASS"));
 
   // Add to the toolbar
   addVectorAction->addTo(toolBarPointer);
