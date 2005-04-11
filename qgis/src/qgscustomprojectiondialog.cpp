@@ -15,6 +15,7 @@
 #include <iostream>
 #include <cassert>
 #include <sqlite3.h>
+#include <fstream>
 
 //qgis includes
 #include "qgscsexception.h"
@@ -38,11 +39,11 @@
 QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const char* name , WFlags fl  )
     : QgsCustomProjectionDialogBase( parent, "Projection Designer", fl )
 {
-  QString myUserProjectionDb = QDir::homeDirPath () + "/.qgis/user_projections.db";
+  QString myQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
   // first we look for ~/.qgis/user_projections.db
   // if it doesnt exist we copy it in from the global resources dir
   QFileInfo myFileInfo;
-  myFileInfo.setFile(myUserProjectionDb);
+  myFileInfo.setFile(myQGisSettingsDir+"user_projections.db");
   if ( !myFileInfo.exists( ) )
   {
     // make sure the ~/.qgis dir exists first
@@ -50,6 +51,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
     QString myPath = QDir::homeDirPath();
     myPath += "/.qgis";
     myUserQGisDir.setPath(myPath);
+    //now make sure the users .qgis dir exists 
     makeDir(myUserQGisDir);
     // Get the package data path and set the full path name to the sqlite3 spatial reference
     // database.
@@ -58,28 +60,40 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
 #endif
     QString myMasterDatabaseFileName = PKGDATAPATH;
     myMasterDatabaseFileName += "/resources/user_projections.db";
-    //now make sure the users .qgis dir exists 
-    //XXX make windows friendly too!!!
-    QUrlOperator *myUrlOperator = new QUrlOperator();
-#ifdef QGISDEBUG
-   std::cout << "copying " << myMasterDatabaseFileName << " to " << myUserProjectionDb << std::endl;
-#endif
-    
-    myUrlOperator->copy ("file:/"+myMasterDatabaseFileName,
-            "file:/"+myUserProjectionDb,
-            false, false);
-    delete myUrlOperator;
+    //now copy the master file into the users .qgis dir
+    std::ifstream myInputStream(myMasterDatabaseFileName.latin1() );
 
+    if (! myInputStream)
+    {
+      std::cerr << "unable to open input file: "
+          << myMasterDatabaseFileName << " --bailing out! \n";
+      //XXX Do better error handling
+      return ;
+    }
+
+    std::ofstream myOutputStream(QString(myQGisSettingsDir+"user_projections.db").latin1());
+
+    if (! myOutputStream)
+    {
+      std::cerr << "cannot open " << QString(myQGisSettingsDir+"user_projections.db").latin1()  << "  for output\n";
+      //XXX Do better error handling
+      return ;
+    }
+
+    char myChar;
+    while (myInputStream.get(myChar))
+    {
+      myOutputStream.put(myChar);
+    }
+
+    // 
+    // Populate the projection combo
   }
-  // 
-  // Populate the projection combo
 }
-
 
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
 {
 }
-
 
 
 void QgsCustomProjectionDialog::pbnHelp_clicked()
