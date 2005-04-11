@@ -29,6 +29,7 @@
 #include <sstream>
 #include <memory>
 #include <vector>
+#include <utility>
 #include <cassert>
 
 // for htonl
@@ -81,7 +82,9 @@
 #include "qgslabel.h"
 #include "qgscoordinatetransform.h"
 #include "qgsattributedialog.h"
+#ifdef Q_WS_X11
 #include "qgsclipper.h"
+#endif
 #include "qgssvgcache.h"
 #include "qgslayerprojectionselector.h"
 //#include "wkbheader.h"
@@ -375,6 +378,146 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
 
   }
 }
+
+unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature, 
+					   QPainter* p, 
+					   QgsMapToPixel* mtp, 
+					   bool projectionsEnabledFlag)
+{
+  double *x, *y;
+  // get number of rings in the polygon
+  unsigned int numRings = *((int*)(feature + 1 + sizeof(int)));
+
+  if ( numRings == 0 )  // sanity check for zero rings in polygon
+    return feature + 9;
+
+  int total_points = 0;
+  QgsPoint pt, myProjectedPoint;
+  std::vector< std::vector<QgsPoint>* > rings;
+
+  // set pointer to the first ring
+  unsigned char* ptr = feature + 1 + 2 * sizeof(int); 
+  for (unsigned int idx = 0; idx < numRings; idx++)
+  {
+#if defined(Q_WS_X11)
+    bool needToTrim = false;
+#endif
+
+    // get number of points in the ring
+    int nPoints = *((int*)ptr);
+    std::vector<QgsPoint>* ring = new std::vector<QgsPoint>(nPoints);
+    ptr += 4;
+
+    for (unsigned int jdx = 0; jdx < nPoints; jdx++)
+    {
+      // add points to a point array for drawing the polygon
+      x = (double *) ptr;
+      ptr += sizeof(double);
+      y = (double *) ptr;
+      ptr += sizeof(double);
+      pt.set(*x, *y);
+
+      if (projectionsEnabledFlag)
+      {
+	// reproject the point to the map coordinate system
+	try 
+	{
+	  myProjectedPoint=mCoordinateTransform->transform(pt);
+	}
+	catch (QgsCsException &e)
+	{
+	  qDebug( "Transform error caught in %s line %d:\n%s", 
+		  __FILE__, __LINE__, e.what());
+	}
+	// transform from projected coordinate system to pixel 
+	// position on map canvas
+	mtp->transform(&myProjectedPoint);
+      }
+      else
+      {
+	myProjectedPoint=mtp->transform(pt);
+      }
+#if defined(Q_WS_X11)
+      if (std::abs(myProjectedPoint.x()) > QgsClipper::maxX ||
+	  std::abs(myProjectedPoint.y()) > QgsClipper::maxY)
+	needToTrim = true;
+#endif
+      ring->operator[](jdx) = myProjectedPoint;
+    }
+
+#if defined(Q_WS_X11)
+    // Work around a +/- 32768 limitation on coordinates in X11
+    if (needToTrim)
+      QgsClipper::trimPolygon(*ring);
+#endif
+    // Don't bother if the ring has been trimmed out of
+    // existence.
+    if (ring->size() > 0)
+      rings.push_back(ring);
+    total_points += ring->size();
+  }
+
+  int ii = 0;
+  QPoint outerRingPt;
+
+  // Stores the start positon of each ring (first) and the number
+  // of points in each ring (second).
+  std::vector<std::pair<unsigned int, unsigned int> > ringDetails;
+
+  // Need to copy the polygon vertices into a QPointArray for the
+  // QPainter::drawpolygon() call. The size is the sum of points in
+  // the polygon plus one extra point for each ring except for the
+  // first ring.
+  QPointArray *pa = new QPointArray(total_points + rings.size() - 1);
+
+  for (int i = 0; i < rings.size(); ++i)
+  {
+    // Store the start index of this ring, and the number of
+    // points in the ring.
+    ringDetails.push_back(std::make_pair(ii, rings[i]->size()));
+
+    // Transfer points to the QPointArray
+    std::vector<QgsPoint>::const_iterator j = rings[i]->begin();
+    for (; j != rings[i]->end(); ++j)
+      pa->setPoint(ii++, static_cast<int>(round(j->x())),
+		         static_cast<int>(round(j->y())));
+
+    // Store the last point of the first ring, and insert it at
+    // the end of all other rings. This makes all the other rings
+    // appear as holes in the first ring.
+    if (i == 0)
+    {
+      outerRingPt.setX(pa->point(ii-1).x());
+      outerRingPt.setY(pa->point(ii-1).y());
+    }
+    else
+      pa->setPoint(ii++, outerRingPt);
+
+    delete rings[i];
+  }
+  
+  // draw the polygon fill
+  QPen pen = p->pen(); // store current pen
+  p->setPen ( Qt::NoPen ); // no boundary
+  p->drawPolygon(*pa);
+  p->setPen ( pen );
+
+  // draw the polygon outline. Draw each ring as a separate
+  // polygon to avoid the lines associated with the outerRingPt.
+  QBrush brush = p->brush();
+  p->setBrush ( Qt::NoBrush );
+  std::vector<std::pair<unsigned int, unsigned int> >::const_iterator
+    ri = ringDetails.begin();
+  for (; ri != ringDetails.end(); ++ri)
+    p->drawPolygon( *pa, FALSE, ri->first, ri->second);
+
+  p->setBrush ( brush );
+
+  delete pa;
+
+  return ptr;
+}
+
 
 void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst)
 {
@@ -2163,7 +2306,55 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
     }
   case WKBMultiPoint:
     {
-      std::cerr << "Qgis doesn't draw multipoints yet.\n";
+      QgsPoint myProjectedPoint;
+
+      unsigned char *ptr = feature + 5;
+      unsigned int nPoints = *((int*)ptr);
+      ptr += 4;
+
+      p->save();
+      p->scale(markerScaleFactor,markerScaleFactor);
+
+      for (int i = 0; i < nPoints; ++i)
+      {
+	ptr += 5;
+	double *x = (double *) ptr;
+	ptr += sizeof(double);
+	double *y = (double *) ptr;
+	ptr += sizeof(double);
+
+	QgsPoint pt(*x, *y);
+
+	if (projectionsEnabledFlag)
+	{
+	  // reproject the point to the map coordinate system
+	  try 
+	  {
+	    myProjectedPoint=mCoordinateTransform->transform(pt);
+	  }
+	  catch (QgsCsException &e)
+	  {
+	    qDebug( "Transform error caught in %s line %d:\n%s", 
+		    __FILE__, __LINE__, e.what());
+	  }
+	  // transform from projected coordinate system to pixel position 
+	  // on map canvas
+	  theMapToPixelTransform->transform(&myProjectedPoint);
+	}
+	else
+	{
+	  myProjectedPoint=theMapToPixelTransform->transform(pt);
+	}
+
+	p->drawPicture((int)(static_cast<int>(myProjectedPoint.x()) 
+			     / markerScaleFactor - marker->boundingRect().x() 
+			     - marker->boundingRect().width() / 2),
+		       (int)(static_cast<int>(myProjectedPoint.y()) 
+			     / markerScaleFactor - marker->boundingRect().y() 
+			     - marker->boundingRect().height() / 2),
+		       *marker);
+      }
+      p->restore();
 
       break;
     }
@@ -2237,7 +2428,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
   case WKBMultiLineString:
     {
       QgsPoint pt, ptFrom, ptTo;
-      unsigned int numLineStrings = *((int*)feature[5]);
+      unsigned int numLineStrings = *((int*)feature + 5);
       unsigned char *ptr = feature + 9;
       double *x, *y;
 
@@ -2306,190 +2497,18 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
     }
   case WKBPolygon:
     {
-      double *x, *y;
-      // get number of rings in the polygon
-      unsigned int numRings = *((int*)(feature + 1 + sizeof(int)));
-
-      if ( numRings == 0 )  // sanity check for zero rings in polygon
-      {
-        break;
-      }
-
-      // index of first point for each ring
-      unsigned int *ringStart = new unsigned int[numRings]; 
-      // number of points in each ring
-      unsigned int *ringNumPoints = new unsigned int[numRings]; 
-
-      std::vector<QgsPoint> polygon;
-      int pdx = 0;
-      QgsPoint pt, outerRingPt, myProjectedPoint;
-
-      unsigned char* ptr = feature + 1 + 2 * sizeof(int); // set pointer to the first ring
-      for (unsigned int idx = 0; idx < numRings; idx++)
-      {
-        // get number of points in the ring
-        int nPoints = *((int*)ptr);
-        ringStart[idx] = pdx;
-        ringNumPoints[idx] = nPoints;
-        ptr += 4;
-
-  // better to calc size for all rings before?
-  polygon.resize(polygon.size() + nPoints + 1);
-
-        for (unsigned int jdx = 0; jdx < nPoints; jdx++)
-        {
-          // add points to a point array for drawing the polygon
-          x = (double *) ptr;
-          ptr += sizeof(double);
-          y = (double *) ptr;
-          ptr += sizeof(double);
-          pt.set(*x, *y);
-
-          if (projectionsEnabledFlag)
-          {
-            // reproject the point to the map coordinate system
-      try 
-      {
-        myProjectedPoint=mCoordinateTransform->transform(pt);
-      }
-      catch (QgsCsException &e)
-      {
-        qDebug( "Transform error caught in %s line %d:\n%s", 
-          __FILE__, __LINE__, e.what());
-      }
-            // transform from projected coordinate system to pixel 
-      // position on map canvas
-            theMapToPixelTransform->transform(&myProjectedPoint);
-          }
-          else
-          {
-            myProjectedPoint=theMapToPixelTransform->transform(pt);
-          }
-#if defined(Q_WS_X11)
-      if (std::abs(myProjectedPoint.x()) > QgsClipper::maxX ||
-    std::abs(myProjectedPoint.y()) > QgsClipper::maxY)
-        needToTrim = true;
-#endif
-      polygon[pdx++] = myProjectedPoint;
-        }
-        if ( idx == 0 )
-        { // remember last outer ring point
-    outerRingPt = myProjectedPoint;
-        }
-        else
-        { // return to x0,y0 (inner rings - islands)
-    polygon[pdx++] = outerRingPt;
-        }
-      }
-
-      // draw the polygon fill
-      QPen pen = p->pen(); // store current pen
-      p->setPen ( Qt::NoPen ); // no boundary
-#if defined(Q_WS_X11)
-      // Work around a +/- 32768 limitation on coordinates in X11
-      if (needToTrim)
-  QgsClipper::trimPolygon(polygon);
-#endif
-
-      QPointArray *pa = new QPointArray(polygon.size());
-      for (int i = 0; i < polygon.size(); ++i)
-  pa->setPoint(i, static_cast<int>(round(polygon[i].x())),
-            static_cast<int>(round(polygon[i].y())));
-
-      p->drawPolygon(*pa);
-
-      /*
-      // draw outline
-      p->setPen ( pen );
-      p->setBrush ( Qt::NoBrush );
-      for (idx = 0; idx < *numRings; idx++)
-      {
-        p->drawPolygon( *pa, FALSE, ringStart[idx], ringNumPoints[idx]);
-      }
-      */
-      delete pa;
-      delete [] ringStart;
-      delete [] ringNumPoints;
-
+      drawPolygon(feature, p, theMapToPixelTransform,
+		  projectionsEnabledFlag);
       break;
-
     }
   case WKBMultiPolygon:
     {
-      QgsPoint pt, myProjectedPoint;
-      double *x, *y;
       unsigned char *ptr = feature + 5;
-      // get the number of polygons
       unsigned int numPolygons = *((int*)ptr);
       ptr = feature + 9;
       for (int kdx = 0; kdx < numPolygons; kdx++)
-      {
-        // skip the endian and feature type info and
-        // get number of rings in the polygon
-        ptr += 5;
-        unsigned int numRings = *((int*)ptr);
-        ptr += 4;
-        for (unsigned int idx = 0; idx < numRings; idx++)
-        {
-          // get number of points in the ring
-          unsigned int nPoints = *((int*)ptr);
-          ptr += 4;
-    std::vector<QgsPoint> polygon(nPoints);
-
-          for (unsigned int jdx = 0; jdx < nPoints; jdx++)
-          {
-            // add points to a point array for drawing the polygon
-            x = (double *) ptr;
-            ptr += sizeof(double);
-            y = (double *) ptr;
-            ptr += sizeof(double);
-#ifdef QGISX11DEBUG
-            std::cout << "Transforming " << *x << "," << *y << " to ";
-#endif
-            pt.set(*x, *y);
-            if (projectionsEnabledFlag)
-            {
-              // reproject the point to the map coordinate system
-        try 
-        {
-    myProjectedPoint=mCoordinateTransform->transform(pt);
-        }
-        catch (QgsCsException &e)
-        {
-    qDebug( "Transform error caught in %s line %d:\n%s", 
-      __FILE__, __LINE__, e.what());
-        }
-              // transform from projected coordinate system to 
-        // pixel position on map canvas
-              theMapToPixelTransform->transform(&myProjectedPoint);
-            }
-            else
-            {
-              myProjectedPoint=theMapToPixelTransform->transform(pt);
-            }
-#if defined(Q_WS_X11)
-      if (std::abs(myProjectedPoint.x()) > QgsClipper::maxX ||
-    std::abs(myProjectedPoint.y()) > QgsClipper::maxY)
-        needToTrim = true;
-
-#endif
-      polygon[jdx] = myProjectedPoint;
-          }
-          // draw the ring
-#if defined(Q_WS_X11)
-    // Work around a +/- 32768 limitation on coordinates in X11
-    if (needToTrim)
-      QgsClipper::trimPolygon(polygon);
-#endif
-    QPointArray *pa = new QPointArray(polygon.size());
-    for (int i = 0; i < polygon.size(); ++i)
-      pa->setPoint(i, static_cast<int>(round(polygon[i].x())),
-          static_cast<int>(round(polygon[i].y())));
-
-          p->drawPolygon(*pa);
-          delete pa;
-        }
-      }
+	ptr = drawPolygon(ptr, p, theMapToPixelTransform, 
+			  projectionsEnabledFlag);
       break;
     }
   default:
