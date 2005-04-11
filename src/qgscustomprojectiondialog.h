@@ -13,6 +13,7 @@
 #define QGSCUSTOMPROJECTIONDIALOG_H
 
 #include <qdir.h>
+#include <qnetworkprotocol.h> 
 #include <qgscustomprojectiondialogbase.uic.h>
 
 /**
@@ -34,7 +35,6 @@ public slots:
     void pbnApply_clicked();
     void pbnCancel_clicked();
     void cboProjectionFamily_textChanged( const QString & );
-
 };
 
 #endif
