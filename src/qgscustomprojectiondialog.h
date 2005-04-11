@@ -25,10 +25,10 @@ class QgsCustomProjectionDialog : public QgsCustomProjectionDialogBase
 Q_OBJECT
 public:
     QgsCustomProjectionDialog(QWidget* parent , const char* name = "", WFlags fl=0);
+    ~QgsCustomProjectionDialog();
     //a recursive function to make a directory and its ancestors
     bool makeDir(QDir &theQDir);
 public slots:    
-    ~QgsCustomProjectionDialog();
     void pbnHelp_clicked();
     void pbnOK_clicked();
     void pbnApply_clicked();
