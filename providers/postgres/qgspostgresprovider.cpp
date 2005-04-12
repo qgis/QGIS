@@ -1477,7 +1477,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
       }
       insert+=hex;
     }
-    insert+="',-1)";
+    insert+="',"+srid+")";
 
     //add the field values to the insert statement
     for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)

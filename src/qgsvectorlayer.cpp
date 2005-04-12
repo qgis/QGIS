@@ -1607,6 +1607,7 @@ void QgsVectorLayer::stopEditing()
         }
         else
         {
+	    dataProvider->updateExtents();
           //hide and delete the table because it is not up to date any more
           if (tabledisplay)
           {
