@@ -2346,13 +2346,20 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 	  myProjectedPoint=theMapToPixelTransform->transform(pt);
 	}
 
-	p->drawPicture((int)(static_cast<int>(myProjectedPoint.x()) 
-			     / markerScaleFactor - marker->boundingRect().x() 
-			     - marker->boundingRect().width() / 2),
-		       (int)(static_cast<int>(myProjectedPoint.y()) 
-			     / markerScaleFactor - marker->boundingRect().y() 
-			     - marker->boundingRect().height() / 2),
-		       *marker);
+#if defined(Q_WS_X11)
+	// Work around a +/- 32768 limitation on coordinates in X11
+	if (std::abs(myProjectedPoint.x()) > QgsClipper::maxX ||
+	    std::abs(myProjectedPoint.y()) > QgsClipper::maxY)
+	  needToTrim = true;
+	else
+#endif
+	  p->drawPicture((int)(static_cast<int>(myProjectedPoint.x()) 
+			   / markerScaleFactor - marker->boundingRect().x() 
+			   - marker->boundingRect().width() / 2),
+			 (int)(static_cast<int>(myProjectedPoint.y()) 
+			   / markerScaleFactor - marker->boundingRect().y() 
+			   - marker->boundingRect().height() / 2),
+			 *marker);
       }
       p->restore();
 
@@ -2379,16 +2386,16 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
         {
           // reproject the point to the map coordinate system
           try 
-    {
-      ptTo=mCoordinateTransform->transform(pt);
-    }
-    catch (QgsCsException &e)
-    {
-      qDebug( "Transform error caught in %s line %d:\n%s", 
-        __FILE__, __LINE__, e.what());
-    }
+	  {
+	    ptTo=mCoordinateTransform->transform(pt);
+	  }
+	  catch (QgsCsException &e)
+	  {
+	    qDebug( "Transform error caught in %s line %d:\n%s", 
+		    __FILE__, __LINE__, e.what());
+	  }
           // transform from projected coordinate system to pixel 
-    // position on map canvas
+	  // position on map canvas
           theMapToPixelTransform->transform(&ptTo);
         }
         else
@@ -2396,32 +2403,32 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
           ptTo=theMapToPixelTransform->transform(pt);
         }
 #if defined(Q_WS_X11)
-    if (std::abs(ptTo.x()) > QgsClipper::maxX ||
-        std::abs(ptTo.y()) > QgsClipper::maxY)
-      needToTrim = true;
+	if (std::abs(ptTo.x()) > QgsClipper::maxX ||
+	    std::abs(ptTo.y()) > QgsClipper::maxY)
+	  needToTrim = true;
 #endif
-        if (idx == 0)
-    ptFrom = ptTo;
-  else
-  {
+	if (idx == 0)
+	  ptFrom = ptTo;
+	else
+	{
 #if defined(Q_WS_X11)
-    // Work around a +/- 32768 limitation on coordinates in X11
-    if (needToTrim)
-    {
-      if (QgsClipper::trimLine(ptFrom, ptTo))
-        p->drawLine(static_cast<int>(ptFrom.x()),
-        static_cast<int>(ptFrom.y()),
-        static_cast<int>(ptTo.x()),
-        static_cast<int>(ptTo.y()));
-    }
-    else
+	  // Work around a +/- 32768 limitation on coordinates in X11
+	  if (needToTrim)
+	  {
+	    if (QgsClipper::trimLine(ptFrom, ptTo))
+	      p->drawLine(static_cast<int>(ptFrom.x()),
+			  static_cast<int>(ptFrom.y()),
+			  static_cast<int>(ptTo.x()),
+			  static_cast<int>(ptTo.y()));
+	  }
+	  else
 #endif
-      p->drawLine(static_cast<int>(ptFrom.x()),
-      static_cast<int>(ptFrom.y()),
-      static_cast<int>(ptTo.x()),
-      static_cast<int>(ptTo.y()));
-    ptFrom = ptTo;
-  }
+	    p->drawLine(static_cast<int>(ptFrom.x()),
+			static_cast<int>(ptFrom.y()),
+			static_cast<int>(ptTo.x()),
+			static_cast<int>(ptTo.y()));
+	  ptFrom = ptTo;
+	}
       }
       break;
     }
