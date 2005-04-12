@@ -245,11 +245,11 @@ void QgsDlgVectorLayerProperties::reset( void )
     legendtypecombobox->insertItem(tr("Unique Value Marker"));
   }
 
-  QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
+  QVBoxLayout *layout = new QVBoxLayout();
   labelDialog = new QgsLabelDialog ( layer->label(),labelOptionsFrame);
   layout->addWidget( labelDialog );
 
-  QGridLayout *actionLayout = new QGridLayout( actionOptionsFrame );
+  QGridLayout *actionLayout = new QGridLayout();
   std::vector<QgsField> fields = dp->fields();
   actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields,
           actionOptionsFrame );
