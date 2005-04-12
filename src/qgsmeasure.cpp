@@ -35,6 +35,7 @@ QgsMeasure::QgsMeasure( QgsMapCanvas *mc, QWidget *parent, const char * name, WF
     mMapCanvas = mc;
     mDynamic = false;
     mPixmap = mMapCanvas->canvasPixmap();
+    mTotal = 0.;
 
     mTable->setLeftMargin(0); // hide row labels
 
