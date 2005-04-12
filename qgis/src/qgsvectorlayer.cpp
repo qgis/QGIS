@@ -2270,16 +2270,16 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       {
         //reproject the point to the map coordinate system
         try 
-  {
-    myProjectedPoint=mCoordinateTransform->transform(pt);
-  }
-  catch (QgsCsException &e)
-  {
-    qDebug( "Transform error caught in %s line %d:\n%s", 
-      __FILE__, __LINE__, e.what());
-  }
+        {
+	  myProjectedPoint=mCoordinateTransform->transform(pt);
+	}
+	catch (QgsCsException &e)
+	{
+	  qDebug( "Transform error caught in %s line %d:\n%s", 
+		  __FILE__, __LINE__, e.what());
+	}
         // transform from projected coordinate system to pixel position 
-  // on map canvas
+	// on map canvas
         theMapToPixelTransform->transform(&myProjectedPoint);
       }
       else
