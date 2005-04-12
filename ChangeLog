@@ -2,7 +2,9 @@
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 QGIS Change Log
-2005-04-10 [timlinux] 0.6devel11
+2005-04-12 [timlinux] 0.6devel12
+** Fix for [ 1181249 ] Crash when loading shape files
+2005-04-11 [timlinux] 0.6devel11
 ** Data binding on projection and ellipsoid selector on custom projection
 dialog
 2005-04-11 [ges] 0.6.0devel10
