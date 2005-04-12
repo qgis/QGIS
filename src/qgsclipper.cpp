@@ -69,8 +69,8 @@ bool QgsClipper::trimLine(QgsPoint& from, QgsPoint& to)
   QgsPoint trimmedTo = to, trimmedFrom = from;
 
   // Check for the need to trim first
-  if (from.x() < minX || from.x() > maxX || to.x() < minX || to.x() > maxX ||
-      from.y() < minY || from.y() > maxY || to.y() < minY || to.y() > maxY)
+  if (std::abs(from.x()) > maxX || std::abs(to.x()) > maxX ||
+      std::abs(from.y()) > maxY || std::abs(to.y()) > maxY)
   {
     // Check the top boundary
     double r_n = (from.y() -     minY) * (maxX - minX);
@@ -213,19 +213,25 @@ bool QgsClipper::trimLine(QgsPoint& from, QgsPoint& to)
 	}
       }
     }
-    // If the line hasn't been trimmed yet, it is entirely outside the
-    // boundary, so tell the calling code.
-    if (!toDone && !fromDone)
+
+    // Done something, so leave.
+    if (toDone || fromDone)
     {
       to = trimmedTo;
       from = trimmedFrom;
       return true;
     }
+
+    // If the line hasn't been trimmed yet, it is entirely outside the
+    // boundary, so tell the calling code.
+    if (!toDone && !fromDone)
+      return false;
+
+    // Shouldn't get here
+    std::cerr << "XXXXXXXXXXXXXXXXXXXXXXXXXXX\n";
   }
 
-  to = trimmedTo;
-  from = trimmedFrom;
-
+  // The line is inside the boundary. Needs to be drawn.
   return true;
 }
 
