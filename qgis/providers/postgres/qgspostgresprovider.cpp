@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 /* $Id$ */
-
+#define QGISDEBUG
 #include <fstream>
 #include <iostream>
 
@@ -388,7 +388,6 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature &feature, bool fetchAttribut
  */
 QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 {
-
   QgsFeature *f = 0;
 
   if (valid){
@@ -401,7 +400,6 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
       ready = false;
       return 0;
     } 
-
     //  //--std::cout <<"Raw value of the geometry field: " << PQgetvalue(queryResult,0,PQfnumber(queryResult,"qgs_feature_geometry")) << std::endl;
     //--std::cout << "Length of oid is " << PQgetlength(queryResult,0, PQfnumber(queryResult,"oid")) << std::endl;
 
@@ -449,7 +447,6 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 #ifdef QGISDEBUG
     //    std::cerr << "Using OID: " << *noid << std::endl;
 #endif
-
     f = new QgsFeature(*noid);
     if (fetchAttributes)
       getFeatureAttributes(*noid, f);
@@ -477,7 +474,6 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
   {
     //--std::cout << "Read attempt on an invalid postgresql data source\n";
   }
-
   return f;
 }
 
@@ -497,7 +493,6 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist)
       ready = false;
       return 0;
     }
-
     int *noid;
     int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
 #ifdef QGISDEBUG 
@@ -530,13 +525,11 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist)
       }   
     }
 
-
     f = new QgsFeature(*noid);    
     if(!attlist.empty())
     {
       getFeatureAttributes(*noid, f, attlist);
     } 
-
     int returnedLength = PQgetlength(queryResult,0, PQfnumber(queryResult,"qgs_feature_geometry")); 
     if(returnedLength > 0)
     {
@@ -548,7 +541,6 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist)
       //int wkbType = *((int *) (feature + 1));
       //std::cout << "WKBtype is: " << wkbType << std::endl;
 #endif
-
       f->setGeometry(feature, returnedLength + 1);
 
     }
@@ -586,7 +578,7 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
 #endif
   if(useIntersect){
     //    declare += " where intersects(" + geometryColumn;
-    //    declare += ", GeometryFromText('BOX3D(" + rect->stringRep();
+    //    declare += ", GeometryFromText('BOX3D(" + rect->asWKTCoords();
     //    declare += ")'::box3d,";
     //    declare += srid;
     //    declare += "))";
@@ -594,18 +586,18 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
     // Contributed by #qgis irc "creeping"
     // This version actually invokes PostGIS's use of spatial indexes
     declare += " where " + geometryColumn;
-    declare += " && setsrid('BOX3D(" + rect->stringRep();
+    declare += " && setsrid('BOX3D(" + rect->asWKTCoords();
     declare += ")'::box3d,";
     declare += srid;
     declare += ")";
     declare += " and intersects(" + geometryColumn;
-    declare += ", setsrid('BOX3D(" + rect->stringRep();
+    declare += ", setsrid('BOX3D(" + rect->asWKTCoords();
     declare += ")'::box3d,";
     declare += srid;
     declare += "))";
   }else{
     declare += " where " + geometryColumn;
-    declare += " && setsrid('BOX3D(" + rect->stringRep();
+    declare += " && setsrid('BOX3D(" + rect->asWKTCoords();
     declare += ")'::box3d,";
     declare += srid;
     declare += ")";

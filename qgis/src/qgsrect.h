@@ -79,6 +79,8 @@ class QgsRect
     void combineExtentWith(QgsRect *rect);
     //! test if rectangle is empty
     bool isEmpty();
+    //! returns string representation in WKT form
+    QString asWKTCoords() const;
     //! returns string representation of form xmin,ymin xmax,ymax
     QString stringRep(bool automaticPrecision = false) const;
     //! overloaded stringRep that allows precision of numbers to be set
