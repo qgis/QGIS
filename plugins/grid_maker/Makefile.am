@@ -10,7 +10,9 @@
 #
 # $Id$
 
+if !HAVE_QTMAC
 PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
+endif
 
 plugindir = ${pkglibdir}
 

@@ -83,6 +83,8 @@ dnl Qt check
 dnl ---------------------------------------------------------------------------
 AQ_CHECK_QT
 
+AM_CONDITIONAL([HAVE_QTMAC], [test x$QTDIR != x -a -f "$QTDIR/config.tests/mac/tst_mac_version"])
+
 
 dnl ---------------------------------------------------------------------------
 dnl GDAL/OGR
