@@ -13,6 +13,10 @@ int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
 
+#if defined(Q_OS_MACX) || defined(WIN32)
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
+
   /* Load translationfile */
   QTranslator tor(0);
   tor.load(QString("qgis_") + QTextCodec::locale(), QString(PKGDATAPATH) + "/i18n");

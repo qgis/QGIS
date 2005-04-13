@@ -11,7 +11,9 @@
 # $Id$
 
 plugindir = ${pkglibdir}
+if !HAVE_QTMAC
 PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
+endif
 
 
 %.moc.cpp: %.h
