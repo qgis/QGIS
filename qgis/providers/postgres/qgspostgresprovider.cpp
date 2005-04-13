@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 /* $Id$ */
-#define QGISDEBUG
+
 #include <fstream>
 #include <iostream>
 
