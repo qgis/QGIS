@@ -16,6 +16,7 @@
 #include <cmath>
 #include <iostream>
 
+#include <qapplication.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qimage.h>
