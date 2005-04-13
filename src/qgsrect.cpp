@@ -140,8 +140,18 @@ bool QgsRect::isEmpty()
   }
 }
 
+QString QgsRect::asWKTCoords() const
+{
+  QString rep = 
+    QString::number(xmin,'f',16) + " " +
+    QString::number(ymin,'f',16) + ", " +
+    QString::number(xmax,'f',16) + " " +
+    QString::number(ymax,'f',16);
 
-// Return a string representation of the rectangle with high precision
+    return rep;
+}
+
+// Return a string representation of the rectangle with automatic or high precision
 QString QgsRect::stringRep(bool automaticPrecision) const
 {
   if (automaticPrecision)
