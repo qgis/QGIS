@@ -10,7 +10,6 @@
 #
 # $Id$
 
-PREFIX=-DPREFIX=\"$(prefix)\"
 plugindir = ${pkglibdir}
 
 plugin_LTLIBRARIES = spitplugin.la
