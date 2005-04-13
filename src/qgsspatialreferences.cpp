@@ -21,6 +21,7 @@
 #include <qstring.h>
 #include <qdir.h>
 #include <qmap.h>
+#include <qapplication.h>
 #include "qgsspatialreferences.h"
 
 QgsSpatialReferences *QgsSpatialReferences::_instance = 0;

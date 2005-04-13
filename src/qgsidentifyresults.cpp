@@ -17,6 +17,7 @@
  ***************************************************************************/
 /* $Id$ */
 #include <iostream>
+#include <qapplication.h>
 #include <qlistview.h>
 #include <qsettings.h>
 #include <qpoint.h>
