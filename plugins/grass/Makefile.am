@@ -15,7 +15,9 @@ SUBDIRS = config modules themes
 INCLUDES = -I../../src
 
 DEFS=-DGRASS_BASE=\"$(GRASS_BASE)\"
+if !HAVE_QTMAC
 PREFIX=-DPREFIX=\"$(prefix)\"
+endif
 
 plugindir = ${pkglibdir}
 

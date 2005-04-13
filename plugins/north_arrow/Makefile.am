@@ -11,7 +11,9 @@
 # $Id$
 
 plugindir = ${pkglibdir}
+if !HAVE_QTMAC
 PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
+endif
 #NorthArrow below to be replaced with the name of the plugin
 plugin_LTLIBRARIES = northarrowplugin.la
 

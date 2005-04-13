@@ -10,9 +10,11 @@
 
 SUBDIRS = svg images themes resources
 
+if !HAVE_QTMAC
 PREFIX=-DPREFIX=\"$(prefix)\"
 PLUGINPATH=-DPLUGINPATH=\"$(pkglibdir)\"
 PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
+endif
 WIDGETPATH=../widgets
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -430,7 +432,11 @@ BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) \
 
 
 qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) -lproj -lsqlite3 libqgis.la
+if HAVE_QTMAC
+qgis_LDFLAGS = -framework ApplicationServices
+else
 qgis_LDFLAGS = -rdynamic
+endif
 qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) -I../widgets/projectionselector/
 
 libqgis_la_SOURCES =				\
