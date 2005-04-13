@@ -2,6 +2,8 @@
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 QGIS Change Log
+2005-04-12 [ges] 0.6.0devel12
+** Applied patches from Markus Neteler to allow compilation on Qt 3.1
 2005-04-12 [timlinux] 0.6devel12
 ** Fix for [ 1181249 ] Crash when loading shape files
 2005-04-11 [timlinux] 0.6devel11
