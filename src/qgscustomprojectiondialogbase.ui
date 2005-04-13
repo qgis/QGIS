@@ -193,6 +193,18 @@ Parameters:</string>
         <receiver>QgsCustomProjectionDialogBase</receiver>
         <slot>cboProjectionFamily_textChanged(const QString&amp;)</slot>
     </connection>
+    <connection>
+        <sender>cboProjectionFamily</sender>
+        <signal>activated(const QString&amp;)</signal>
+        <receiver>QgsCustomProjectionDialogBase</receiver>
+        <slot>cboProjectionFamily_activated(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>cboProjectionFamily</sender>
+        <signal>highlighted(const QString&amp;)</signal>
+        <receiver>QgsCustomProjectionDialogBase</receiver>
+        <slot>cboProjectionFamily_highlighted(const QString&amp;)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgscustomprojectiondialogbase.ui.h</include>
@@ -203,6 +215,8 @@ Parameters:</string>
     <slot>pbnOK_clicked()</slot>
     <slot>pbnHelp_clicked()</slot>
     <slot>cboProjectionFamily_textChanged( const QString &amp; )</slot>
+    <slot>cboProjectionFamily_activated( const QString &amp; )</slot>
+    <slot>cboProjectionFamily_highlighted( const QString &amp; )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

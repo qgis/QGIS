@@ -34,7 +34,7 @@ public slots:
     void pbnOK_clicked();
     void pbnApply_clicked();
     void pbnCancel_clicked();
-    void cboProjectionFamily_textChanged( const QString & );
+    void cboProjectionFamily_highlighted( const QString & );
 };
 
 #endif
