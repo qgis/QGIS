@@ -12,8 +12,6 @@
 
 if HAVE_EXPAT
 
-PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
-
 plugindir = ${pkglibdir}
 
 plugin_LTLIBRARIES = gpsimporterplugin.la
