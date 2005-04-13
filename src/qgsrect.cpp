@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 
 #include <qstring.h>
 #include <qtextstream.h> 
