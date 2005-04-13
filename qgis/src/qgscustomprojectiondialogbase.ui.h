@@ -39,3 +39,15 @@ void QgsCustomProjectionDialogBase::cboProjectionFamily_textChanged( const QStri
 {
 
 }
+
+
+void QgsCustomProjectionDialogBase::cboProjectionFamily_activated( const QString & )
+{
+
+}
+
+
+void QgsCustomProjectionDialogBase::cboProjectionFamily_highlighted( const QString & )
+{
+
+}

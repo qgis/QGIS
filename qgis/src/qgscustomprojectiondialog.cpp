@@ -164,11 +164,49 @@ void QgsCustomProjectionDialog::pbnCancel_clicked()
 }
 
 
-
-    
-void QgsCustomProjectionDialog::cboProjectionFamily_textChanged( const QString & )
+void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString & theText)
 {
+#ifdef QGISDEBUG
+    std::cout << "Projection selected from combo" << std::endl;
+#endif
+  //search the sqlite user projections db for the projection entry 
+  //and display its parameters
+  QString myQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  //check the db is available
+  myResult = sqlite3_open(QString(myQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
 
+  // Set up the query to retreive the projection information needed to populate the PROJECTION list
+  QString mySql = "select parameters from tbl_projection name where name='"+theText+"'";
+#ifdef QGISDEBUG
+    std::cout << "Query to get proj params:" << mySql << std::endl;
+#endif
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+    sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+    QString myParametersString = (char *)sqlite3_column_text(myPreparedStatement,0);
+#ifdef QGISDEBUG
+    std::cout << "Setting parameters text box to: " << myParametersString << std::endl;
+#endif
+    txtExpectedParameters->setReadOnly(false);
+    txtExpectedParameters->setText(myParametersString);
+    txtExpectedParameters->setReadOnly(true);
+  }
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
 }
 
 
