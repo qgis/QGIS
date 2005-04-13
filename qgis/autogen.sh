@@ -13,6 +13,14 @@ AC_2=57
 LT_1=1
 LT_2=4
 
+# Libtoolname
+LIBTOOL=libtool
+LIBTOOLIZE=libtoolize
+if [ "`uname`" = "Darwin" ]; then
+	LIBTOOL=glibtool
+	LIBTOOLIZE=glibtoolize
+fi
+
 # Check automake version
 AM_VERSION=`automake --version | sed -n -e 's#[^0-9]* \([0-9]*\)\.\([0-9]*\)\.\([0-9]*\).*$#\1 \2 \3#p'`
 AM_V1=`echo $AM_VERSION | awk '{print $1}'`
@@ -69,7 +77,7 @@ if [ "$AC_ERROR" = "1" ]; then
 fi
 
 # Check libtool version
-LT_VERSION=`libtool --version | sed -n -e 's#[^0-9]* \([0-9]*\)\.\([0-9]*\).*$#\1 \2#p'`
+LT_VERSION=`$LIBTOOL --version | sed -n -e 's#[^0-9]* \([0-9]*\)\.\([0-9]*\).*$#\1 \2#p'`
 LT_V1=`echo $LT_VERSION | awk '{print $1}'`
 LT_V2=`echo $LT_VERSION | awk '{print $2}'`
 
@@ -85,7 +93,7 @@ fi
 
 if [ "$LT_ERROR" = "1" ]; then
 	echo -e  '\E[31;m'
-	echo -n "Your libtool version `libtool --version | sed -n -e 's#[^0-9]* \([0-9]*\.[0-9]*\).*#\1#p'`"
+	echo -n "Your libtool version `$LIBTOOL --version | sed -n -e 's#[^0-9]* \([0-9]*\.[0-9]*\).*#\1#p'`"
 	echo " is older than the suggested one, $LT_1.$LT_2"
 	echo "Go on at your own risk. :-)"
 	echo
@@ -94,7 +102,7 @@ fi
 
 echo Configuring build environment for QGIS
 aclocal  \
-  && libtoolize --force --copy \
+  && $LIBTOOLIZE --force --copy \
   && autoheader --force -W all \
   && automake --add-missing --foreign --copy \
   && autoconf --force \
