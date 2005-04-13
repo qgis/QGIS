@@ -3741,8 +3741,8 @@ void QgisApp::showProgress(int theProgress, int theTotalSteps)
 
 void QgisApp::showExtents(QgsRect theExtents)
 {
-    // update the statusbar with the current extents
-    statusBar()->message(QString(tr("Extents: ")) + theExtents.stringRep(2));
+    // update the statusbar with the current extents.
+    statusBar()->message(QString(tr("Extents: ")) + theExtents.stringRep(true));
     // set the extents of the overview to match the mapcanvas
     mOverviewCanvas->setExtent(mMapCanvas->fullExtent());
     // Update the extent rectangle in the overview map

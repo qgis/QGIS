@@ -142,11 +142,22 @@ bool QgsRect::isEmpty()
 
 
 // Return a string representation of the rectangle with high precision
-QString QgsRect::stringRep() const
+QString QgsRect::stringRep(bool automaticPrecision) const
 {
-  QString tmp;
-  QString rep = tmp.sprintf("%16f %16f,%16f %16f", xmin, ymin, xmax, ymax);
-  return rep;
+  if (automaticPrecision)
+  {
+    int precision = 0;
+    if ( (width() < 1 || height() < 1) && (width() > 0 && height() > 0) )
+    {
+      precision = static_cast<int>( ceil( -1.0*log10(std::min(width(), height())) ) ) + 1;
+      // sanity check
+      if (precision > 20)
+	precision = 20;
+    }
+    return stringRep(precision);
+  }
+  else
+    return stringRep(16);
 }
 
 // overloaded version of above fn to allow precision to be set
