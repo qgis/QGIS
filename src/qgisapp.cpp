@@ -120,6 +120,10 @@
 
 #include <ogrsf_frmts.h>
 
+#ifdef Q_OS_MACX
+#include <ApplicationServices/ApplicationServices.h>
+#endif
+
 /* typedefs for plugins */
 typedef QgsMapLayerInterface *create_it();
 typedef QgisPlugin *create_ui(QgisApp * qgis, QgisIface * qI);
@@ -3394,6 +3398,18 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
     {
         url = "file://" + mAppDir + "/share/qgis/doc/" + url;
     }
+#ifdef Q_OS_MACX
+    /* Use Mac OS X Launch Services which uses the user's default browser
+     * and will just open a new window if that browser is already running.
+     * QProcess creates a new browser process for each invocation and expects a
+     * commandline application rather than a bundled application.
+     */
+    CFURLRef urlRef = CFURLCreateWithBytes(kCFAllocatorDefault,
+                                           reinterpret_cast<const UInt8*>(url.ascii()), url.length(),
+                                           kCFStringEncodingMacRoman, NULL);
+    OSStatus status = LSOpenCFURLRef(urlRef, NULL);
+    CFRelease(urlRef);
+#else
     // find a browser
     QSettings settings;
     QString browser = settings.readEntry("/qgis/browser");
@@ -3435,6 +3451,7 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
     /*  mHelpViewer = new QgsHelpViewer(this,"helpviewer",false);
        mHelpViewer->showContent(mAppDir +"/share/doc","index.html");
        mHelpViewer->show(); */
+#endif
 }
 
 /** Get a pointer to the currently selected map layer */
