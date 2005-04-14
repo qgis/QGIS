@@ -57,6 +57,12 @@ class QgsMapToPixel{
     * @param y y coordinate of point to be converted to map cooordinates
     * @return QgsPoint in map coordinates
     */
+
+    /* Transform device coordinates to map coordinates. Modifies the
+       given coordinates in place. Intended as a fast way to do the
+       transform. */ 
+    void transformInPlace(double& x, double& y);
+
     QgsPoint toMapCoordinates(int x, int y);
      /*! Tranform device coordinates to map (world)  coordinates
     * @param p Point to be converted to map cooordinates
@@ -134,6 +140,10 @@ inline void QgsMapToPixel::transform(QgsPoint* p)
   p->set(x,y);
 }
 
-
+inline void QgsMapToPixel::transformInPlace(double& x, double& y)
+{
+  x = (x - xMin) / mapUnitsPerPixel;
+  y = yMax - (y - yMin) / mapUnitsPerPixel;
+}
 
 #endif // QGSMAPTOPIXEL
