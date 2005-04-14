@@ -51,3 +51,39 @@ void QgsCustomProjectionDialogBase::cboProjectionFamily_highlighted( const QStri
 {
 
 }
+
+
+void QgsCustomProjectionDialogBase::pbnFirst_clicked()
+{
+
+}
+
+
+void QgsCustomProjectionDialogBase::pbnPrevious_clicked()
+{
+
+}
+
+
+void QgsCustomProjectionDialogBase::pbnNext_clicked()
+{
+
+}
+
+
+void QgsCustomProjectionDialogBase::pbnLast_clicked()
+{
+
+}
+
+
+void QgsCustomProjectionDialogBase::pbnNew_clicked()
+{
+
+}
+
+
+void QgsCustomProjectionDialogBase::pbnSave_clicked()
+{
+
+}

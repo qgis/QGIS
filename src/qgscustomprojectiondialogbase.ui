@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>480</height>
+            <height>336</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,7 +19,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QPushButton" row="6" column="5">
+        <widget class="QPushButton" row="7" column="5">
             <property name="name">
                 <cstring>pbnCancel</cstring>
             </property>
@@ -27,38 +27,12 @@
                 <string>Cancel</string>
             </property>
         </widget>
-        <widget class="QLabel" row="5" column="0">
-            <property name="name">
-                <cstring>textLabel4</cstring>
-            </property>
-            <property name="text">
-                <string>Expected 
-Parameters:</string>
-            </property>
-        </widget>
         <widget class="QComboBox" row="3" column="2" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>cboEllipsoid</cstring>
             </property>
         </widget>
-        <widget class="QTextEdit" row="5" column="2" rowspan="1" colspan="4">
-            <property name="name">
-                <cstring>txtExpectedParameters</cstring>
-            </property>
-            <property name="frameShadow">
-                <enum>Plain</enum>
-            </property>
-            <property name="margin">
-                <number>1</number>
-            </property>
-            <property name="midLineWidth">
-                <number>1</number>
-            </property>
-            <property name="textFormat">
-                <enum>LogText</enum>
-            </property>
-        </widget>
-        <spacer row="6" column="1" rowspan="1" colspan="2">
+        <spacer row="7" column="1" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>spacer1</cstring>
             </property>
@@ -80,7 +54,7 @@ Parameters:</string>
                 <cstring>leName</cstring>
             </property>
         </widget>
-        <widget class="QPushButton" row="6" column="3">
+        <widget class="QPushButton" row="7" column="3">
             <property name="name">
                 <cstring>pbnOK</cstring>
             </property>
@@ -101,7 +75,7 @@ Parameters:</string>
                 <string>Name:</string>
             </property>
         </widget>
-        <widget class="QPushButton" row="6" column="4">
+        <widget class="QPushButton" row="7" column="4">
             <property name="name">
                 <cstring>pbnApply</cstring>
             </property>
@@ -125,7 +99,7 @@ Parameters:</string>
                 <string>Projection Family:</string>
             </property>
         </widget>
-        <widget class="QPushButton" row="6" column="0">
+        <widget class="QPushButton" row="7" column="0">
             <property name="name">
                 <cstring>pbnHelp</cstring>
             </property>
@@ -159,6 +133,101 @@ Parameters:</string>
             <property name="name">
                 <cstring>leParameters</cstring>
             </property>
+        </widget>
+        <widget class="QTextEdit" row="5" column="2" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>txtExpectedParameters</cstring>
+            </property>
+            <property name="frameShadow">
+                <enum>Plain</enum>
+            </property>
+            <property name="margin">
+                <number>1</number>
+            </property>
+            <property name="midLineWidth">
+                <number>1</number>
+            </property>
+            <property name="textFormat">
+                <enum>LogText</enum>
+            </property>
+        </widget>
+        <widget class="QLabel" row="5" column="0">
+            <property name="name">
+                <cstring>textLabel4</cstring>
+            </property>
+            <property name="text">
+                <string>Expected 
+Parameters:</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="6" column="0" rowspan="1" colspan="6">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnFirst</cstring>
+                    </property>
+                    <property name="text">
+                        <string>|&lt;</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnPrevious</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&lt;</string>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>lblRecordNo</cstring>
+                    </property>
+                    <property name="text">
+                        <string>1 of 1</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignCenter</set>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnNext</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&gt;</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnLast</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&gt;|</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnNew</cstring>
+                    </property>
+                    <property name="text">
+                        <string>New</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pbnSave</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Save</string>
+                    </property>
+                </widget>
+            </hbox>
         </widget>
     </grid>
 </widget>
@@ -205,6 +274,42 @@ Parameters:</string>
         <receiver>QgsCustomProjectionDialogBase</receiver>
         <slot>cboProjectionFamily_highlighted(const QString&amp;)</slot>
     </connection>
+    <connection>
+        <sender>pbnFirst</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsCustomProjectionDialogBase</receiver>
+        <slot>pbnFirst_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbnPrevious</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsCustomProjectionDialogBase</receiver>
+        <slot>pbnPrevious_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbnNext</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsCustomProjectionDialogBase</receiver>
+        <slot>pbnNext_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbnLast</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsCustomProjectionDialogBase</receiver>
+        <slot>pbnLast_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbnNew</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsCustomProjectionDialogBase</receiver>
+        <slot>pbnNew_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbnSave</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsCustomProjectionDialogBase</receiver>
+        <slot>pbnSave_clicked()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgscustomprojectiondialogbase.ui.h</include>
@@ -217,6 +322,12 @@ Parameters:</string>
     <slot>cboProjectionFamily_textChanged( const QString &amp; )</slot>
     <slot>cboProjectionFamily_activated( const QString &amp; )</slot>
     <slot>cboProjectionFamily_highlighted( const QString &amp; )</slot>
+    <slot>pbnFirst_clicked()</slot>
+    <slot>pbnPrevious_clicked()</slot>
+    <slot>pbnNext_clicked()</slot>
+    <slot>pbnLast_clicked()</slot>
+    <slot>pbnNew_clicked()</slot>
+    <slot>pbnSave_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

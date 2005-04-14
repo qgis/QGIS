@@ -35,6 +35,29 @@ public slots:
     void pbnApply_clicked();
     void pbnCancel_clicked();
     void cboProjectionFamily_highlighted( const QString & );
+    //
+    // Database navigation controles
+    //
+    long getRecordCount();
+    void pbnFirst_clicked();
+    void pbnPrevious_clicked();
+    void pbnNext_clicked();
+    void pbnLast_clicked();
+    void pbnNew_clicked();
+    void pbnSave_clicked();
+
+    //
+    // Contol population
+    //
+    void getProjList();
+    void getEllipsoidList();
+    QString getProjectionFamilyName(QString theProjectionFamilyId);
+    QString getEllipsoidName(QString theEllipsoidId);
+private: 
+    QString mCurrentRecordId;
+    long mCurrentRecordNo;
+    long mRecordCount;
+    QString mQGisSettingsDir;
 };
 
 #endif
