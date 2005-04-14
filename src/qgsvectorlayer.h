@@ -344,6 +344,13 @@ private:                       // Private attributes
   //! Draws the layer labels using coordinate transformation
   void drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst);
 
+  // Draw the linestring as given in the WKB format. Returns a pointer
+  // to the byte after the end of the line string binary data stream
+  // (WKB).
+  unsigned char* drawLineString(unsigned char* WKBlinestring, QPainter* p,
+				QgsMapToPixel* mtp, 
+				bool projectionsEnabledFlag);
+
   // Draw the polygon as given in the WKB format. Returns a pointer to
   // the byte after the end of the polygon binary data stream (WKB).
   unsigned char* drawPolygon(unsigned char* WKBpolygon, QPainter* p, 
