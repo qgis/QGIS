@@ -616,8 +616,8 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 
     mDrawingCancelled=false; //pressing esc will change this to true
 
-    QTime t;
-    t.start();
+    //    QTime t;
+    //t.start();
 
     while((fet = dataProvider->getNextFeature(attributes)))
     {
@@ -655,7 +655,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
       }
     }
 
-    std::cerr << "Time to draw was " << t.elapsed() << '\n';
+    //std::cerr << "Time to draw was " << t.elapsed() << '\n';
 
     //also draw the not yet commited features
     for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
