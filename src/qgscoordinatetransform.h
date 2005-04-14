@@ -110,7 +110,11 @@ class QgsCoordinateTransform: public QObject
     * @param direction TransformDirection (defaults to FORWARD)
     * @return QgsPoint in Destination Coordinate System
      */
-   QgsPoint transform(double x, double y,TransformDirection direction=FORWARD) const ;
+   QgsPoint transform(const double x, const double y,TransformDirection direction=FORWARD) const ;
+
+   // Same as for the other transform() functions, but alters the x
+   // and y variables in place
+   void transformInPlace(double& x, double& y, TransformDirection direction = FORWARD) const;
 
     /*! Transform a QgsRect to the dest Coordinate system 
     * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,

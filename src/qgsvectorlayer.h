@@ -344,6 +344,10 @@ private:                       // Private attributes
   //! Draws the layer labels using coordinate transformation
   void drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst);
 
+  // Convenience function to transform the given point
+  void transformPoint(double& x, double& y, 
+		      QgsMapToPixel* mtp, bool projectionsEnabledFlag);
+
   // Draw the linestring as given in the WKB format. Returns a pointer
   // to the byte after the end of the line string binary data stream
   // (WKB).
@@ -426,5 +430,31 @@ private:                       // Private methods
   bool mModified;
 
 };
+
+
+// Convenience function to transform the given point
+inline void QgsVectorLayer::transformPoint(double& x, 
+					   double& y, 
+					   QgsMapToPixel* mtp,
+					   bool projectionsEnabledFlag)
+{
+  // transform the point
+  if (projectionsEnabledFlag)
+  {
+    // reproject the point to the map coordinate system
+    try 
+    {
+      mCoordinateTransform->transformInPlace(x, y);
+    }
+    catch (QgsCsException &e)
+    {
+      qDebug( "Transform error caught in %s line %d:\n%s", 
+	      __FILE__, __LINE__, e.what());
+    }
+  }
+  // transform from projected coordinate system to pixel 
+  // position on map canvas
+  mtp->transformInPlace(x, y);
+}
 
 #endif
