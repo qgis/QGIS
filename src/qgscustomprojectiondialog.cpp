@@ -41,11 +41,11 @@
 QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const char* name , WFlags fl  )
     : QgsCustomProjectionDialogBase( parent, "Projection Designer", fl )
 {
-  QString myQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
+  mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
   // first we look for ~/.qgis/user_projections.db
   // if it doesnt exist we copy it in from the global resources dir
   QFileInfo myFileInfo;
-  myFileInfo.setFile(myQGisSettingsDir+"user_projections.db");
+  myFileInfo.setFile(mQGisSettingsDir+"user_projections.db");
   if ( !myFileInfo.exists( ) )
   {
     // make sure the ~/.qgis dir exists first
@@ -73,11 +73,11 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
       return ;
     }
 
-    std::ofstream myOutputStream(QString(myQGisSettingsDir+"user_projections.db").latin1());
+    std::ofstream myOutputStream(QString(mQGisSettingsDir+"user_projections.db").latin1());
 
     if (! myOutputStream)
     {
-      std::cerr << "cannot open " << QString(myQGisSettingsDir+"user_projections.db").latin1()  << "  for output\n";
+      std::cerr << "cannot open " << QString(mQGisSettingsDir+"user_projections.db").latin1()  << "  for output\n";
       //XXX Do better error handling
       return ;
     }
@@ -89,6 +89,27 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
     }
 
   }
+
+  //
+  // Setup member vars
+  //
+  mCurrentRecordId="";
+  mCurrentRecordNo=0;
+
+  //
+  // Set up databound controls
+  //
+  getProjList();
+  getEllipsoidList();
+}
+
+QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
+{
+  
+}
+
+void QgsCustomProjectionDialog::getProjList ()
+{
   // 
   // Populate the projection combo
   // 
@@ -98,7 +119,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(myQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -119,8 +140,32 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
     }
   }
   sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+}
+
+void QgsCustomProjectionDialog::getEllipsoidList()
+{
+
+  // 
+  // Populate the ellipsoid combo
+  // 
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
-  mySql = "select * from tbl_ellipsoid order by name";
+  QString mySql = "select * from tbl_ellipsoid order by name";
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
@@ -134,12 +179,6 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
 }
-
-QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
-{
-}
-
-
 void QgsCustomProjectionDialog::pbnHelp_clicked()
 {
 
@@ -148,7 +187,7 @@ void QgsCustomProjectionDialog::pbnHelp_clicked()
 
 void QgsCustomProjectionDialog::pbnOK_clicked()
 {
-
+  
 }
 
 
@@ -164,6 +203,233 @@ void QgsCustomProjectionDialog::pbnCancel_clicked()
 }
 
 
+long QgsCustomProjectionDialog::getRecordCount()
+{
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  long          myRecordCount=0;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  QString mySql = "select count(*) from tbl_user_projection";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      QString myRecordCountString((char *)sqlite3_column_text(myPreparedStatement,0));
+      myRecordCount=myRecordCountString.toLong();
+  }
+  // close the sqlite3 statement
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+  return myRecordCount;
+
+}
+
+QString QgsCustomProjectionDialog::getProjectionFamilyName(QString theProjectionFamilyId)
+{
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  QString       myName;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  QString mySql = "select name from tbl_projection where acronym='" + theProjectionFamilyId + "'";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
+  }
+  // close the sqlite3 statement
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+  return myName;
+
+}
+QString QgsCustomProjectionDialog::getEllipsoidName(QString theEllipsoidId)
+{
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  QString       myName;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  QString mySql = "select name from tbl_ellipsoid where acronym='" + theEllipsoidId + "'";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
+  }
+  // close the sqlite3 statement
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+  return myName;
+
+}
+
+void QgsCustomProjectionDialog::pbnFirst_clicked()
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsCustomProjectionDialog::pbnFirst_clicked()" << std::endl;
+#endif
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+
+  QString mySql = "select * from tbl_user_projection order by description limit 1";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      leName->setText((char *)sqlite3_column_text(myPreparedStatement,1));
+      QString myProjectionFamilyId((char *)sqlite3_column_text(myPreparedStatement,2));
+      cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+      QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
+      cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+      leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
+  }
+  else
+  {
+#ifdef QGISDEBUG
+  std::cout << "pbnFirst query failed: " << mySql << std::endl;
+#endif
+    
+  }
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+}
+
+
+void QgsCustomProjectionDialog::pbnPrevious_clicked()
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsCustomProjectionDialog::pbnPrevious_clicked()" << std::endl;
+#endif
+
+}
+
+
+void QgsCustomProjectionDialog::pbnNext_clicked()
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsCustomProjectionDialog::pbnNext_clicked()" << std::endl;
+#endif
+
+}
+
+
+void QgsCustomProjectionDialog::pbnLast_clicked()
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsCustomProjectionDialog::pbnLast_clicked()" << std::endl;
+#endif
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+
+  QString mySql = "select * from tbl_user_projection order by description desc limit 1";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      leName->setText((char *)sqlite3_column_text(myPreparedStatement,1));
+      QString myProjectionFamilyId((char *)sqlite3_column_text(myPreparedStatement,2));
+      cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+      QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
+      cboEllipsoid->setCurrentText(getProjectionFamilyName(myEllipsoidId));
+      leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
+  }
+  else
+  {
+#ifdef QGISDEBUG
+  std::cout << "pbnLast query failed: " << mySql << std::endl;
+#endif
+    
+  }
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+
+}
+
+
+void QgsCustomProjectionDialog::pbnNew_clicked()
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsCustomProjectionDialog::pbnNew_clicked()" << std::endl;
+#endif
+
+}
+
+
+void QgsCustomProjectionDialog::pbnSave_clicked()
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsCustomProjectionDialog::pbnSave_clicked()" << std::endl;
+#endif
+
+}
+
+
+
 void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString & theText)
 {
 #ifdef QGISDEBUG
@@ -171,14 +437,13 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
 #endif
   //search the sqlite user projections db for the projection entry 
   //and display its parameters
-  QString myQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
   sqlite3      *myDatabase;
   char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(myQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
