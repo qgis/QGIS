@@ -466,16 +466,21 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     mProgressBar->setMaximumWidth(100);
     QWhatsThis::add(mProgressBar, tr("Progress bar that displays the status of rendering layers and other time-intensive operations"));
     statusBar()->addWidget(mProgressBar, 1,true);
+    QFont myFont( "Arial", 8 );
+    statusBar()->setFont(myFont);
     mScaleLabel = new QLabel(QString("Scale"),this);
+    mScaleLabel->setFont(myFont);
     mScaleLabel->setMinimumWidth(100);
     QWhatsThis::add(mScaleLabel, tr("Displays the current map scale"));
     statusBar()->addWidget(mScaleLabel, 0,true);
     mCoordsLabel = new QLabel(QString("Coordinates:"), this);
     mCoordsLabel->setMinimumWidth(200);
+    mCoordsLabel->setFont(myFont);
     QWhatsThis::add(mCoordsLabel, tr("Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved."));
     statusBar()->addWidget(mCoordsLabel, 0, true);
     mRenderSuppresionCBox = new QCheckBox(tr("Render"),this);
     mRenderSuppresionCBox->setChecked(true);
+    mRenderSuppresionCBox->setFont(myFont);
     QWhatsThis::add(mRenderSuppresionCBox, tr("When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering."));
     statusBar()->addWidget(mRenderSuppresionCBox,0,true);
 
