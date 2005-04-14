@@ -205,7 +205,7 @@ QgsPoint QgsCoordinateTransform::transform(const QgsPoint thePoint,TransformDire
 
 QgsPoint QgsCoordinateTransform::transform(const double theX, const double theY=0,TransformDirection direction) const
 {
-  transform(QgsPoint(theX, theY), direction);
+  return transform(QgsPoint(theX, theY), direction);
 }
 
 QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirection direction) const
