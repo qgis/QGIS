@@ -379,6 +379,82 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
   }
 }
 
+unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature, 
+					      QPainter* p,
+					      QgsMapToPixel* mtp, 
+					      bool projectionsEnabledFlag)
+{
+  // get number of points in the line
+  QgsPoint ptFrom, ptTo;
+  unsigned char *ptr = feature + 5;
+  unsigned int nPoints = *((int*)ptr);
+  ptr = feature + 9;
+  double *x, *y;
+
+#if defined(Q_WS_X11)
+  bool needToTrim = false;
+#endif
+
+  for (unsigned int idx = 0; idx < nPoints; idx++)
+  {
+    x = (double *) ptr;
+    ptr += sizeof(double);
+    y = (double *) ptr;
+    ptr += sizeof(double);
+    // transform the point
+    QgsPoint pt(*x, *y);
+    std::cerr << pt << '\n';
+    if (projectionsEnabledFlag)
+    {
+      // reproject the point to the map coordinate system
+      try 
+      {
+	ptTo=mCoordinateTransform->transform(pt);
+      }
+      catch (QgsCsException &e)
+      {
+	qDebug( "Transform error caught in %s line %d:\n%s", 
+		__FILE__, __LINE__, e.what());
+      }
+      // transform from projected coordinate system to pixel 
+      // position on map canvas
+      mtp->transform(&ptTo);
+    }
+    else
+    {
+      ptTo=mtp->transform(pt);
+    }
+#if defined(Q_WS_X11)
+    if (std::abs(ptTo.x()) > QgsClipper::maxX ||
+	std::abs(ptTo.y()) > QgsClipper::maxY)
+      needToTrim = true;
+#endif
+    if (idx == 0)
+      ptFrom = ptTo;
+    else
+    {
+#if defined(Q_WS_X11)
+      // Work around a +/- 32768 limitation on coordinates in X11
+      if (needToTrim)
+      {
+	if (QgsClipper::trimLine(ptFrom, ptTo))
+	  p->drawLine(static_cast<int>(ptFrom.x()),
+		      static_cast<int>(ptFrom.y()),
+		      static_cast<int>(ptTo.x()),
+		      static_cast<int>(ptTo.y()));
+      }
+      else
+#endif
+	p->drawLine(static_cast<int>(ptFrom.x()),
+		    static_cast<int>(ptFrom.y()),
+		    static_cast<int>(ptTo.x()),
+		    static_cast<int>(ptTo.y()));
+      ptFrom = ptTo;
+    }
+  }
+  return ptr;
+}
+
 unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature, 
 					   QPainter* p, 
 					   QgsMapToPixel* mtp, 
@@ -591,7 +667,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
         //copy the drawing buffer every updateThreshold elements
         if(0 == featureCount % updateThreshold)
         {
-          bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
+         bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
         }
       }
 
@@ -2368,141 +2444,20 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
     }
   case WKBLineString:
     {
-      // get number of points in the line
-      QgsPoint ptFrom, ptTo;
-      unsigned char *ptr = feature + 5;
-      unsigned int nPoints = *((int*)ptr);
-      ptr = feature + 1 + 2 * sizeof(int);
-      double *x, *y;
-
-      for (unsigned int idx = 0; idx < nPoints; idx++)
-      {
-        x = (double *) ptr;
-        ptr += sizeof(double);
-        y = (double *) ptr;
-        ptr += sizeof(double);
-        // transform the point
-        QgsPoint pt(*x, *y);
-        if (projectionsEnabledFlag)
-        {
-          // reproject the point to the map coordinate system
-          try 
-	  {
-	    ptTo=mCoordinateTransform->transform(pt);
-	  }
-	  catch (QgsCsException &e)
-	  {
-	    qDebug( "Transform error caught in %s line %d:\n%s", 
-		    __FILE__, __LINE__, e.what());
-	  }
-          // transform from projected coordinate system to pixel 
-	  // position on map canvas
-          theMapToPixelTransform->transform(&ptTo);
-        }
-        else
-        {
-          ptTo=theMapToPixelTransform->transform(pt);
-        }
-#if defined(Q_WS_X11)
-	if (std::abs(ptTo.x()) > QgsClipper::maxX ||
-	    std::abs(ptTo.y()) > QgsClipper::maxY)
-	  needToTrim = true;
-#endif
-	if (idx == 0)
-	  ptFrom = ptTo;
-	else
-	{
-#if defined(Q_WS_X11)
-	  // Work around a +/- 32768 limitation on coordinates in X11
-	  if (needToTrim)
-	  {
-	    if (QgsClipper::trimLine(ptFrom, ptTo))
-	      p->drawLine(static_cast<int>(ptFrom.x()),
-			  static_cast<int>(ptFrom.y()),
-			  static_cast<int>(ptTo.x()),
-			  static_cast<int>(ptTo.y()));
-	  }
-	  else
-#endif
-	    p->drawLine(static_cast<int>(ptFrom.x()),
-			static_cast<int>(ptFrom.y()),
-			static_cast<int>(ptTo.x()),
-			static_cast<int>(ptTo.y()));
-	  ptFrom = ptTo;
-	}
-      }
+      drawLineString(feature, p, theMapToPixelTransform,
+		     projectionsEnabledFlag);
       break;
     }
   case WKBMultiLineString:
     {
-      QgsPoint pt, ptFrom, ptTo;
-      unsigned int numLineStrings = *((int*)(feature + 5));
-      unsigned char *ptr = feature + 9;
-      double *x, *y;
+      unsigned char* ptr = feature + 5;
+      unsigned int numLineStrings = *((int*)ptr);
+      ptr = feature + 9;
 
-      for (unsigned int jdx = 0; jdx < numLineStrings; jdx++)
+      for (int jdx = 0; jdx < numLineStrings; jdx++)
       {
-        // each of these is a wbklinestring so must handle as such
-        ptr += 5; // skip type since we know it's 2
-        unsigned int nPoints = *((int*)ptr);
-
-        ptr += sizeof(int);
-        for (unsigned int idx = 0; idx < nPoints; idx++)
-        {
-          x = (double *) ptr;
-          ptr += sizeof(double);
-          y = (double *) ptr;
-          ptr += sizeof(double);
-          // transform the point
-          pt.set(*x, *y);
-          if (projectionsEnabledFlag)
-          {
-            //reproject the point to the map coordinate system
-	    try 
-            {
-              ptTo=mCoordinateTransform->transform(pt);
-            }
-	    catch (QgsCsException &e)
-            {
-              qDebug( "Transform error caught in %s line %d:\n%s", 
-                    __FILE__, __LINE__, e.what());
-            }
-            //transform from projected coordinate system to pixel 
-	    // position on map canvas
-            theMapToPixelTransform->transform(&ptTo);
-          }
-          else
-          {
-            ptTo=theMapToPixelTransform->transform(pt);
-          }
-#if defined(Q_WS_X11)
-	  if (std::abs(ptTo.x()) > QgsClipper::maxX ||
-	      std::abs(ptTo.y()) > QgsClipper::maxY)
-	    needToTrim = true;
-#endif
-	  if (idx == 0)
-	    ptFrom = ptTo;
-	  else
-	  {
-#if defined(Q_WS_X11)
-	    // Work around a +/- 32768 limitation on coordinates in X11
-	    if (needToTrim)
-	    {
-	      if (QgsClipper::trimLine(ptFrom, ptTo))
-		p->drawLine(static_cast<int>(ptFrom.x()),
-			    static_cast<int>(ptFrom.y()),
-			    static_cast<int>(ptTo.x()),
-			    static_cast<int>(ptTo.y()));
-	    }
-	    else
-#endif
-	      p->drawLine(static_cast<int>(ptFrom.x()),
-			  static_cast<int>(ptFrom.y()),
-			  static_cast<int>(ptTo.x()),
-			  static_cast<int>(ptTo.y()));
-	    ptFrom = ptTo;
-	  }
-        }
+	ptr = drawLineString(ptr, p, theMapToPixelTransform,
+			     projectionsEnabledFlag);
       }
       break;
     }
