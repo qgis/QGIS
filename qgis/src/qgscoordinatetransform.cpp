@@ -208,6 +208,26 @@ QgsPoint QgsCoordinateTransform::transform(const double theX, const double theY=
   return transform(QgsPoint(theX, theY), direction);
 }
 
+void QgsCoordinateTransform::transformInPlace(double& x, double& y, 
+		     TransformDirection direction) const
+{
+  if (mShortCircuit || !mInitialisedFlag) 
+    return;
+
+  // transform x
+  double z = 0.0;
+  try
+  {
+    transformCoords(1, x, y, z, direction );
+  }
+  catch(QgsCsException &cse)
+  {
+    //something bad happened....
+    // rethrow the exception
+    throw cse;
+  }
+}
+
 QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirection direction) const
 {
   if (mShortCircuit || !mInitialisedFlag) return theRect;
