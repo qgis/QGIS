@@ -2,6 +2,8 @@
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 QGIS Change Log
+2005-04-14 [timlinux] 0.6devel14
+** Status bar widgets show text in 8pt arial. Closes bug #1077217
 2005-04-13 [timlinux] 0.6devel13
 ** Show params on proj designer widget when a projection is sleected
 2005-04-12 [ges] 0.6.0devel12
