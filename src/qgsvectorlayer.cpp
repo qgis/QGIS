@@ -486,6 +486,20 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     if (needToTrim)
       QgsClipper::trimPolygon(*ring);
 #endif
+
+    /*
+#if defined(Q_WS_X11)
+    std::cerr << "Variable Q_WS_X11 is defined\n";
+#else
+    std::cerr << "Variable Q_WS_X11 is not defined\n";
+#endif
+      
+    for (int i = 0; i < ring->size(); ++i)
+      if (std::abs(ring->operator[](i).x()) > QgsClipper::maxX ||
+	  std::abs(ring->operator[](i).y()) > QgsClipper::maxY)
+	std::cerr << "Too large: " << ring->operator[](i) << '\n';
+    */
+
     // Don't bother if the ring has been trimmed out of
     // existence.
     if (ring->size() > 0)
