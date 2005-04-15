@@ -105,14 +105,20 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
                                QString baseName,
                                QString providerKey)
     : QgsMapLayer(VECTOR, baseName, vectorLayerPath),
-    providerKey(providerKey),
-    tabledisplay(0),
-    m_renderer(0),
-    m_propertiesDialog(0),
-    m_rendererDialog(0),
-    ir(0),                    // initialize the identify results pointer
-    mEditable(false),
-    mModified(false)
+      tabledisplay(0),
+      providerKey(providerKey),
+      m_renderer(0),
+      mLabel(0),
+      m_propertiesDialog(0),
+      m_rendererDialog(0),
+      myLib(0),
+      ir(0),                    // initialize the identify results pointer
+      updateThreshold(0),       // XXX better default value?
+      mMinimumScale(0),
+      mMaximumScale(0),
+      mScaleDependentRender(false),
+      mEditable(false),
+      mModified(false)
 {
 
   // if we're given a provider type, try to create and bind one to this layer
@@ -1790,6 +1796,14 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
   //crash
   // XXX this seems to be a dangerous implementation; should re-visit design
   QgsRenderer * renderer;
+
+  // XXX Kludge!
+
+  // if we don't have a coordinate transform, get one
+  if ( ! coordinateTransform() )
+  {
+      setCoordinateSystem();
+  }
 
   if (!singlenode.isNull())
   {
