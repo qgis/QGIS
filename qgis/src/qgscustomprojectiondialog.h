@@ -32,8 +32,6 @@ public:
 public slots:    
     void pbnHelp_clicked();
     void pbnOK_clicked();
-    void pbnApply_clicked();
-    void pbnCancel_clicked();
     void cboProjectionFamily_highlighted( const QString & );
     //
     // Database navigation controles
@@ -55,8 +53,8 @@ public slots:
     QString getEllipsoidName(QString theEllipsoidId);
 private: 
     QString mCurrentRecordId;
-    long mCurrentRecordNo;
-    long mRecordCount;
+    long mCurrentRecordLong;
+    long mRecordCountLong;
     QString mQGisSettingsDir;
 };
 

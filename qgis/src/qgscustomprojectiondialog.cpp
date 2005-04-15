@@ -94,13 +94,13 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
   // Setup member vars
   //
   mCurrentRecordId="";
-  mCurrentRecordNo=0;
 
   //
   // Set up databound controls
   //
   getProjList();
   getEllipsoidList();
+  mRecordCountLong=getRecordCount();
   pbnFirst_clicked();
 }
 
@@ -192,16 +192,6 @@ void QgsCustomProjectionDialog::pbnOK_clicked()
 }
 
 
-void QgsCustomProjectionDialog::pbnApply_clicked()
-{
-
-}
-
-
-void QgsCustomProjectionDialog::pbnCancel_clicked()
-{
-
-}
 
 
 long QgsCustomProjectionDialog::getRecordCount()
@@ -339,7 +329,8 @@ void QgsCustomProjectionDialog::pbnFirst_clicked()
       QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
       cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
-      lblRecordNo->setText(mCurrentRecordId);
+      mCurrentRecordLong=1; 
+      lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
   }
   else
   {
@@ -358,6 +349,10 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
 #ifdef QGISDEBUG
   std::cout << "QgsCustomProjectionDialog::pbnPrevious_clicked()" << std::endl;
 #endif
+  if (mCurrentRecordLong <= 1) 
+  {
+    return;
+  }
   sqlite3      *myDatabase;
   char         *myErrorMessage = 0;
   const char   *myTail;
@@ -373,7 +368,7 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
     assert(myResult == 0);
   }
 
-  QString mySql = "select * from tbl_user_projection where user_projection_id < '" + mCurrentRecordId + "' order by user_projection_id desc limit 1";
+  QString mySql = "select * from tbl_user_projection where user_projection_id < " + mCurrentRecordId + " order by user_projection_id desc limit 1";
 #ifdef QGISDEBUG
     std::cout << "Query to move previous:" << mySql << std::endl;
 #endif
@@ -389,7 +384,8 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
       QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
       cboEllipsoid->setCurrentText(getProjectionFamilyName(myEllipsoidId));
       leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
-      lblRecordNo->setText(mCurrentRecordId);
+      --mCurrentRecordLong;
+      lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
   }
   else
   {
@@ -409,6 +405,10 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
 #ifdef QGISDEBUG
   std::cout << "QgsCustomProjectionDialog::pbnNext_clicked()" << std::endl;
 #endif
+  if (mCurrentRecordLong >= mRecordCountLong)
+  {
+    return;
+  }
   sqlite3      *myDatabase;
   char         *myErrorMessage = 0;
   const char   *myTail;
@@ -424,7 +424,7 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
     assert(myResult == 0);
   }
 
-  QString mySql = "select * from tbl_user_projection where user_projection_id > '" + mCurrentRecordId + "' order by user_projection_id asc limit 1";
+  QString mySql = "select * from tbl_user_projection where user_projection_id > " + mCurrentRecordId + " order by user_projection_id asc limit 1";
 #ifdef QGISDEBUG
     std::cout << "Query to move next:" << mySql << std::endl;
 #endif
@@ -440,7 +440,8 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
       QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
       cboEllipsoid->setCurrentText(getProjectionFamilyName(myEllipsoidId));
       leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
-      lblRecordNo->setText(mCurrentRecordId);
+      ++mCurrentRecordLong;
+      lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
   }
   else
   {
@@ -492,7 +493,8 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
       QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
       cboEllipsoid->setCurrentText(getProjectionFamilyName(myEllipsoidId));
       leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
-      lblRecordNo->setText(mCurrentRecordId);
+      mCurrentRecordLong =mRecordCountLong;
+      lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
   }
   else
   {
