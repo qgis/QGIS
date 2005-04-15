@@ -322,18 +322,23 @@ void QgsCustomProjectionDialog::pbnFirst_clicked()
     assert(myResult == 0);
   }
 
-  QString mySql = "select * from tbl_user_projection order by description limit 1";
+  QString mySql = "select * from tbl_user_projection order by user_projection_id limit 1";
+#ifdef QGISDEBUG
+    std::cout << "Query to move first:" << mySql << std::endl;
+#endif
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      mCurrentRecordId = QString ((char *)sqlite3_column_text(myPreparedStatement,0));
       leName->setText((char *)sqlite3_column_text(myPreparedStatement,1));
       QString myProjectionFamilyId((char *)sqlite3_column_text(myPreparedStatement,2));
       cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
       QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
       cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
+      lblRecordNo->setText(mCurrentRecordId);
   }
   else
   {
@@ -352,6 +357,48 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
 #ifdef QGISDEBUG
   std::cout << "QgsCustomProjectionDialog::pbnPrevious_clicked()" << std::endl;
 #endif
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+
+  QString mySql = "select * from tbl_user_projection where user_projection_id < '" + mCurrentRecordId + "' order by user_projection_id desc limit 1";
+#ifdef QGISDEBUG
+    std::cout << "Query to move previous:" << mySql << std::endl;
+#endif
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      mCurrentRecordId = QString ((char *)sqlite3_column_text(myPreparedStatement,0));
+      leName->setText((char *)sqlite3_column_text(myPreparedStatement,1));
+      QString myProjectionFamilyId((char *)sqlite3_column_text(myPreparedStatement,2));
+      cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+      QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
+      cboEllipsoid->setCurrentText(getProjectionFamilyName(myEllipsoidId));
+      leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
+      lblRecordNo->setText(mCurrentRecordId);
+  }
+  else
+  {
+#ifdef QGISDEBUG
+  std::cout << "pbnPrevious query failed: " << mySql << std::endl;
+#endif
+    
+  }
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
 
 }
 
@@ -361,6 +408,49 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
 #ifdef QGISDEBUG
   std::cout << "QgsCustomProjectionDialog::pbnNext_clicked()" << std::endl;
 #endif
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+
+  QString mySql = "select * from tbl_user_projection where user_projection_id > '" + mCurrentRecordId + "' order by user_projection_id asc limit 1";
+#ifdef QGISDEBUG
+    std::cout << "Query to move next:" << mySql << std::endl;
+#endif
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      mCurrentRecordId = QString ((char *)sqlite3_column_text(myPreparedStatement,0));
+      leName->setText((char *)sqlite3_column_text(myPreparedStatement,1));
+      QString myProjectionFamilyId((char *)sqlite3_column_text(myPreparedStatement,2));
+      cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+      QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
+      cboEllipsoid->setCurrentText(getProjectionFamilyName(myEllipsoidId));
+      leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
+      lblRecordNo->setText(mCurrentRecordId);
+  }
+  else
+  {
+#ifdef QGISDEBUG
+  std::cout << "pbnNext query failed: " << mySql << std::endl;
+#endif
+    
+  }
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+
 
 }
 
@@ -385,18 +475,23 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
     assert(myResult == 0);
   }
 
-  QString mySql = "select * from tbl_user_projection order by description desc limit 1";
+  QString mySql = "select * from tbl_user_projection order by user_projection_id desc limit 1";
+#ifdef QGISDEBUG
+    std::cout << "Query to move last:" << mySql << std::endl;
+#endif
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      mCurrentRecordId = QString ((char *)sqlite3_column_text(myPreparedStatement,0));
       leName->setText((char *)sqlite3_column_text(myPreparedStatement,1));
       QString myProjectionFamilyId((char *)sqlite3_column_text(myPreparedStatement,2));
       cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
       QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
       cboEllipsoid->setCurrentText(getProjectionFamilyName(myEllipsoidId));
       leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
+      lblRecordNo->setText(mCurrentRecordId);
   }
   else
   {
