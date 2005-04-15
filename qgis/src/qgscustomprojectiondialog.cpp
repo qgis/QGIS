@@ -101,6 +101,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
   //
   getProjList();
   getEllipsoidList();
+  pbnFirst_clicked();
 }
 
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()

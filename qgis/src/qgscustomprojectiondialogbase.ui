@@ -19,50 +19,17 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QPushButton" row="7" column="5">
-            <property name="name">
-                <cstring>pbnCancel</cstring>
-            </property>
-            <property name="text">
-                <string>Cancel</string>
-            </property>
-        </widget>
-        <widget class="QComboBox" row="3" column="2" rowspan="1" colspan="4">
+        <widget class="QComboBox" row="3" column="2" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>cboEllipsoid</cstring>
             </property>
         </widget>
-        <spacer row="7" column="1" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>spacer1</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>189</width>
-                    <height>21</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLineEdit" row="1" column="2" rowspan="1" colspan="4">
+        <widget class="QLineEdit" row="1" column="2" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>leName</cstring>
             </property>
         </widget>
-        <widget class="QPushButton" row="7" column="3">
-            <property name="name">
-                <cstring>pbnOK</cstring>
-            </property>
-            <property name="text">
-                <string>OK</string>
-            </property>
-        </widget>
-        <widget class="QComboBox" row="2" column="2" rowspan="1" colspan="4">
+        <widget class="QComboBox" row="2" column="2" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>cboProjectionFamily</cstring>
             </property>
@@ -73,14 +40,6 @@
             </property>
             <property name="text">
                 <string>Name:</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="7" column="4">
-            <property name="name">
-                <cstring>pbnApply</cstring>
-            </property>
-            <property name="text">
-                <string>Apply</string>
             </property>
         </widget>
         <widget class="QLabel" row="3" column="0" rowspan="1" colspan="2">
@@ -107,7 +66,7 @@
                 <string>Help</string>
             </property>
         </widget>
-        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="6">
+        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>textLabel5</cstring>
             </property>
@@ -129,12 +88,12 @@
                 <string>Parameters:</string>
             </property>
         </widget>
-        <widget class="QLineEdit" row="4" column="2" rowspan="1" colspan="4">
+        <widget class="QLineEdit" row="4" column="2" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>leParameters</cstring>
             </property>
         </widget>
-        <widget class="QTextEdit" row="5" column="2" rowspan="1" colspan="4">
+        <widget class="QTextEdit" row="5" column="2" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>txtExpectedParameters</cstring>
             </property>
@@ -160,7 +119,7 @@
 Parameters:</string>
             </property>
         </widget>
-        <widget class="QLayoutWidget" row="6" column="0" rowspan="1" colspan="6">
+        <widget class="QLayoutWidget" row="6" column="0" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>layout2</cstring>
             </property>
@@ -229,21 +188,34 @@ Parameters:</string>
                 </widget>
             </hbox>
         </widget>
+        <widget class="QPushButton" row="7" column="3">
+            <property name="name">
+                <cstring>pbnOK</cstring>
+            </property>
+            <property name="text">
+                <string>OK</string>
+            </property>
+        </widget>
+        <spacer row="7" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>370</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
     </grid>
 </widget>
 <connections>
-    <connection>
-        <sender>pbnCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsCustomProjectionDialogBase</receiver>
-        <slot>pbnCancel_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>pbnApply</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsCustomProjectionDialogBase</receiver>
-        <slot>pbnApply_clicked()</slot>
-    </connection>
     <connection>
         <sender>pbnOK</sender>
         <signal>clicked()</signal>
