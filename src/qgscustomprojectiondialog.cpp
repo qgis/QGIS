@@ -33,6 +33,7 @@
 #include <qurloperator.h>
 #include <qcombobox.h>
 #include <qprogressdialog.h>
+#include <qpushbutton.h>
 
 //stdc++ includes
 #include <iostream>
@@ -228,7 +229,7 @@ long QgsCustomProjectionDialog::getRecordCount()
 
 }
 
-QString QgsCustomProjectionDialog::getProjectionFamilyName(QString theProjectionFamilyId)
+QString QgsCustomProjectionDialog::getProjectionFamilyName(QString theProjectionFamilyAcronym)
 {
   sqlite3      *myDatabase;
   char         *myErrorMessage = 0;
@@ -246,7 +247,7 @@ QString QgsCustomProjectionDialog::getProjectionFamilyName(QString theProjection
     assert(myResult == 0);
   }
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select name from tbl_projection where acronym='" + theProjectionFamilyId + "'";
+  QString mySql = "select name from tbl_projection where acronym='" + theProjectionFamilyAcronym + "'";
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
@@ -260,7 +261,7 @@ QString QgsCustomProjectionDialog::getProjectionFamilyName(QString theProjection
   return myName;
 
 }
-QString QgsCustomProjectionDialog::getEllipsoidName(QString theEllipsoidId)
+QString QgsCustomProjectionDialog::getEllipsoidName(QString theEllipsoidAcronym)
 {
   sqlite3      *myDatabase;
   char         *myErrorMessage = 0;
@@ -278,7 +279,71 @@ QString QgsCustomProjectionDialog::getEllipsoidName(QString theEllipsoidId)
     assert(myResult == 0);
   }
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select name from tbl_ellipsoid where acronym='" + theEllipsoidId + "'";
+  QString mySql = "select name from tbl_ellipsoid where acronym='" + theEllipsoidAcronym + "'";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
+  }
+  // close the sqlite3 statement
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+  return myName;
+
+}
+QString QgsCustomProjectionDialog::getProjectionFamilyAcronym(QString theProjectionFamilyName)
+{
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  QString       myName;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  QString mySql = "select acronym from tbl_projection where name='" + theProjectionFamilyName + "'";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
+  }
+  // close the sqlite3 statement
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+  return myName;
+
+}
+QString QgsCustomProjectionDialog::getEllipsoidAcronym(QString theEllipsoidName)
+{
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  QString       myName;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  QString mySql = "select acronym from tbl_ellipsoid where name='" + theEllipsoidName + "'";
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
@@ -341,6 +406,20 @@ void QgsCustomProjectionDialog::pbnFirst_clicked()
   }
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
+  
+  //enable nav buttons as appropriate
+  pbnFirst->setEnabled(false);
+  pbnPrevious->setEnabled(false);
+  if (mCurrentRecordLong==mRecordCountLong)
+  {
+    pbnNext->setEnabled(false);
+    pbnLast->setEnabled(false);
+  }
+  else
+  {
+    pbnNext->setEnabled(true);
+    pbnLast->setEnabled(true);
+  }
 }
 
 
@@ -382,7 +461,7 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
       QString myProjectionFamilyId((char *)sqlite3_column_text(myPreparedStatement,2));
       cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
       QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
-      cboEllipsoid->setCurrentText(getProjectionFamilyName(myEllipsoidId));
+      cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
       --mCurrentRecordLong;
       lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
@@ -396,6 +475,28 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
   }
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
+
+  //enable nav buttons as appropriate
+  if (mCurrentRecordLong<= 1)
+  {
+    pbnFirst->setEnabled(false);
+    pbnPrevious->setEnabled(false);
+  }
+  else
+  {
+    pbnFirst->setEnabled(true);
+    pbnPrevious->setEnabled(true);
+  }
+  if (mCurrentRecordLong==mRecordCountLong)
+  {
+    pbnNext->setEnabled(false);
+    pbnLast->setEnabled(false);
+  }
+  else
+  {
+    pbnNext->setEnabled(true);
+    pbnLast->setEnabled(true);
+  }
 
 }
 
@@ -438,7 +539,7 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
       QString myProjectionFamilyId((char *)sqlite3_column_text(myPreparedStatement,2));
       cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
       QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
-      cboEllipsoid->setCurrentText(getProjectionFamilyName(myEllipsoidId));
+      cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
       ++mCurrentRecordLong;
       lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
@@ -453,6 +554,27 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
 
+  //enable nav buttons as appropriate
+  if (mCurrentRecordLong==mRecordCountLong)
+  {
+    pbnNext->setEnabled(false);
+    pbnLast->setEnabled(false);
+  }
+  else
+  {
+    pbnNext->setEnabled(true);
+    pbnLast->setEnabled(true);
+  }
+  if (mRecordCountLong <= 1)
+  {
+    pbnFirst->setEnabled(false);
+    pbnPrevious->setEnabled(false);
+  }
+  else
+  {
+    pbnFirst->setEnabled(true);
+    pbnPrevious->setEnabled(true);
+  }
 
 }
 
@@ -491,7 +613,7 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
       QString myProjectionFamilyId((char *)sqlite3_column_text(myPreparedStatement,2));
       cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
       QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
-      cboEllipsoid->setCurrentText(getProjectionFamilyName(myEllipsoidId));
+      cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
       mCurrentRecordLong =mRecordCountLong;
       lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
@@ -505,7 +627,20 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
   }
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
-
+  
+  //enable nav buttons as appropriate
+  pbnNext->setEnabled(false);
+  pbnLast->setEnabled(false);
+  if (mRecordCountLong <= 1)
+  {
+    pbnFirst->setEnabled(false);
+    pbnPrevious->setEnabled(false);
+  }
+  else
+  {
+    pbnFirst->setEnabled(true);
+    pbnPrevious->setEnabled(true);
+  }
 }
 
 
