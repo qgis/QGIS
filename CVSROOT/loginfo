@@ -26,4 +26,4 @@
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 CVSROOT $CVSROOT/CVSROOT/syncmail %{sVv} gsherman@users.sourceforge.net
 DEFAULT $CVSROOT/CVSROOT/syncmail %{sVv} qgis-cvs-commits@lists.sourceforge.net
-
+ALL /usr/bin/perl $CVSROOT/CVSROOT/ciabot_cvs.pl %{,,,s} $USER

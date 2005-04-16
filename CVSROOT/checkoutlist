@@ -14,3 +14,5 @@
 syncmail -u
 # cvs acl
 avail
+# cia bot
+ciabot_cvs.pl
