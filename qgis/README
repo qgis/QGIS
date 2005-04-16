@@ -1,4 +1,4 @@
-README for QGIS version 0.6 'Simon'
+README for QGIS version 0.7 'Seamus'
 
 Quantum GIS (QGIS) is an Open Source Geographic Information System. The
 project was born in May of 2002 and was established as a project on
@@ -24,36 +24,7 @@ always have access to a GIS program that is free of cost and can be
 freely modified.
 
 This release adds:
-  * GEOS support in the OGR provider to refine selection of features
-    via identify. This improves over the previous method of feature
-    selection which used a simple MBR intersection check.
-  * PostGIS editing support in provider
-  * Vector dialog redesign to improve usability
-  * Improvement in project handling (loading and saving)
-  * Scale dependent rendering
-  * User option to load layers with out drawing them, thus allowing
-    you to set scale dependency, etc without waiting for the initial draw to
-    complete
-  * Interrupt drawing of features by hitting ESC
-  * Attribute actions - the ability to run an external program based
-    on the contents of an attribute field in a layer
-  * Create new vector layer (shapefile) for editing
-  * Windows installer
-  * Mac OSX binary
-  * New options in the graticule builder plugin
-  * Enhancements to the GPS plugin
-  * Man page
-  * Save delimited text as shapefile
-  * Improved Delimited Text plugin, including preview of text file
-  * Improved SPIT handling of PostgreSQL reserved words and shapefiles
-    with multiple geometry types
-  * Display SQL query used to create a PostGIS layer
-  * PostgreSQL query builder
-  * Ability to redefine the query used for PostgreSQL layers from the
-    layer properties dialog
-  * North arrow, scalebar, and copyright plugins save their state in
-    the project file
-  * Datasets with UTF8, Kanjii and CJK filenames now load properly
+  * Projection support
 
 Supported raster formats include:
   Grass
