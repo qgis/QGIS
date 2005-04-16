@@ -49,8 +49,10 @@ public slots:
     //
     void getProjList();
     void getEllipsoidList();
-    QString getProjectionFamilyName(QString theProjectionFamilyId);
-    QString getEllipsoidName(QString theEllipsoidId);
+    QString getProjectionFamilyName(QString theProjectionFamilyAcronym);
+    QString getEllipsoidName(QString theEllipsoidAcronym);
+    QString getProjectionFamilyAcronym(QString theProjectionFamilyName);
+    QString getEllipsoidAcronym(QString theEllipsoidName);
 private: 
     QString mCurrentRecordId;
     long mCurrentRecordLong;
