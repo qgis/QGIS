@@ -20,7 +20,6 @@ plugindir = ${pkglibdir}/designer
 plugin_LTLIBRARIES = qgisdesignerwidgets.la
 
 plugin_MOC = qgsprojectionselectorplugin.moc.cpp		
-	     
 
 
 
@@ -33,4 +32,4 @@ qgisdesignerwidgets_la_LIBADD =  $(QT_LDADD) ../widgets/projectionselector/libqg
 qgisdesignerwidgets_la_LDFLAGS = -avoid-version -module
 qgisdesignerwidgets_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../src/
 
-EXTRA_DIST = $(plugin_UIC) 
+#EXTRA_DIST = $(plugin_UIC) 
