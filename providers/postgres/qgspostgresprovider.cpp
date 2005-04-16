@@ -247,7 +247,11 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
           << fieldModifier << std::endl;
 #endif
         attributeFieldsIdMap[attnum.toInt()] = i;
-        attributeFields.push_back(QgsField(fieldName, fieldType, fieldSize.toInt(), fieldModifier));
+
+	if(fieldName!=geometryColumn)
+	{
+	    attributeFields.push_back(QgsField(fieldName, fieldType, fieldSize.toInt(), fieldModifier));
+	}
 
         // add to the select sql statement
         if(i > 0)
@@ -1525,7 +1529,6 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
       QMessageBox::information(0,"INSERT error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
       return false;
     }
-
     return true;
   }
   return false;
@@ -1533,7 +1536,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
 
 QString QgsPostgresProvider::getDefaultValue(const QString& attr, QgsFeature* f)
 {
-  return "NULL";
+    return "NULL";
 }
 
 bool QgsPostgresProvider::deleteFeature(int id)
