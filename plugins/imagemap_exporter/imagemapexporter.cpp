@@ -1,27 +1,3 @@
-/***************************************************************************
- *   Copyright (C) 2003 by Tim Sutton                                      *
- *   tim@linfiniti.com                                                     *
- *                                                                         *
- *   This is a plugin generated from the QGIS plugin template              *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- ***************************************************************************/
-#include "plugingui.h"
-
-//qt includes
-#include <qcombobox.h>
-#include <qfiledialog.h>
-#include <qimage.h>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-#include <qregexp.h>
-#include <qspinbox.h>
-#include <qtextstream.h>
-
-//standard includes
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -29,79 +5,44 @@
 #include <queue>
 #include <valarray>
 
-#include <qgsfeature.h>
-#include <qgsvectorlayer.h>
-#include <qgsmaptopixel.h>
+#include <qdir.h>
+#include <qfile.h>
+#include <qfileinfo.h>
+#include <qmessagebox.h>
+#include <qregexp.h>
+
+#include <qgsmapcanvas.h>
+#include <qgsmaplayer.h>
+#include <qgsmaplayerregistry.h>
+#include <qgsrasterlayer.h>
+#include "imagemapexporter.h"
 
 
-PluginGui::PluginGui() : PluginGuiBase()
-{
-  
-}
+bool ImageMapExporter::generateImageMap(QString& templateFile, 
+					QString& outputFile,
+					int radius, QString& format,
+					int urlIndex, int altIndex,
+					QgsVectorLayer* layer,
+					QgsMapCanvas* canvas,
+					QgsRasterLayer* raster) {
 
-PluginGui::PluginGui( QgisIface* iFace, QWidget* parent , const char* name , bool modal , WFlags fl  )
-  : PluginGuiBase( parent, name, modal, fl ), qgisIFace(iFace)
-{
-  // add the attribute fields to the URL and ALT comboboxes
-  layer = (QgsVectorLayer*)(qgisIFace->activeLayer());
-  cmbSelectALT->insertItem("- No field selected -");
-  for (int i = 0; i < layer->fields().size(); ++i) {
-    cmbSelectURL->insertItem(layer->fields()[i].name());
-    cmbSelectALT->insertItem(layer->fields()[i].name());
-  }
-  
-  // add the available image formats to the format combobox
-  for (int i = 0; i < QImageIO::outputFormats().count(); i++) {
-    cmbFormat->insertItem(QImageIO::outputFormats().at(i));
-    if (QString(QImageIO::outputFormats().at(i)).compare("PNG") == 0)
-      cmbFormat->setCurrentItem(i);
-  }
-}  
-
-
-PluginGui::~PluginGui()
-{
-}
-
-void PluginGui::pbnOK_clicked()
-{
-  // everything OK?
-  if (leSelectHTML->text() == "") {
-    QMessageBox::critical(this, "Error", "You must choose an output file.");
-    return;
-  }
-  if (leSelectTemplate->text() == "") {
-    QMessageBox::critical(this, "Error", "You must choose a template file.");
-    return;
-  }
-  
-  
   // load the template
-  QFile tmpl(leSelectTemplate->text());
-  if (!tmpl.open(IO_ReadOnly)) {
-    QMessageBox::critical(this, "Error", 
-			  "Could not load the template file!");
-    return;
-  }
+  QFile tmpl(templateFile);
+  if (!tmpl.open(IO_ReadOnly))
+    throw "Could not load the template file!";
   QTextStream tmplStream(&tmpl);
   QString tmplString = tmplStream.read();
   QRegExp regexp("\\[QIM-map\\]", false);
   int mapStart = regexp.search(tmplString);
-  if (mapStart == -1) {
-    QMessageBox::critical(this, "Error", 
-			  "The template file does not contain [QIM-map]!");
-    return;
-  }
+  if (mapStart == -1)
+    throw "The template file does not contain [QIM-map]!";
   int mapEnd = mapStart + regexp.matchedLength();
   
   // open the HTML file
-  QFile f(leSelectHTML->text());
+  QFile f(outputFile);
   if (!f.open(IO_WriteOnly)) {
-    QMessageBox::critical(this, "Error", 
-			  QString("Could not write to %1. "
-				  "Please select another file.")
-			  .arg(leSelectHTML->text()));
-    return;
+    throw "Could not write to the selected output file. "
+      "Please select another file.";
   }
   QTextStream file(&f);
   
@@ -110,20 +51,32 @@ void PluginGui::pbnOK_clicked()
   QString dir = fi.dir().path() + "/";
   QString basename = fi.fileName();
   basename.replace('.', "_");
-  QString imageFile = basename + "." + cmbFormat->currentText().lower();
-  qgisIFace->getMapCanvas()->saveAsImage(dir + imageFile, 0, 
-					 cmbFormat->currentText());
+  QString imageFile = basename + "." + format;
+  QgsRect oldExtent = canvas->extent();
+  if (!raster) {
+    canvas->saveAsImage(dir + imageFile, 0, format);
+  }
+  else {
+    QPixmap pix(raster->getRasterXDim(), raster->getRasterYDim());
+    pix.fill();
+    canvas->setExtent(raster->extent());
+    canvas->saveAsImage(dir + imageFile, &pix, format);
+  }
   
   // write the HTML code
   QgsMapToPixel transform;
-  transform.setParameters(qgisIFace->getMapCanvas()->mupp(),
-			  qgisIFace->getMapCanvas()->extent().xMin(),
-			  qgisIFace->getMapCanvas()->extent().yMin(),
-			  qgisIFace->getMapCanvas()->height());
+  if (raster) {
+    transform.setParameters(1, canvas->extent().xMin(),
+			    canvas->extent().yMin(), raster->getRasterYDim());
+  }
+  else {
+    transform.setParameters(canvas->mupp(), canvas->extent().xMin(),
+			    canvas->extent().yMin(), canvas->height());
+  }
   
   file<<tmplString.left(mapStart)
 
-      <<"<SCRIPT>"<<endl
+      <<"<SCRIPT type=\"text/javascript\">"<<endl
       <<"  function QIM_hideObj(objID) {"<<endl
       <<"    document.getElementById(objID).style.visibility = 'hidden';"<<endl
       <<"  }"<<endl
@@ -147,14 +100,11 @@ void PluginGui::pbnOK_clicked()
     
       <<"    <DIV class=\"QIM_imgdiv\">"<<endl
       <<"    <IMG id=\"QIM_img\" src=\""<<imageFile
-      <<"\" usemap=\"#qgismap\" border=\"0\">"<<endl;
-  QgsRect extentRect((qgisIFace->getMapCanvas()->extent()));
+      <<"\" usemap=\"#qgismap\" border=\"0\""
+      <<" alt=\"Clickable map\">"<<endl;
+  QgsRect extentRect((canvas->extent()));
   layer->select(&extentRect, false);
 
-  int urlIndex = cmbSelectURL->currentItem();
-  int altIndex = cmbSelectALT->currentItem() - 1;
-  int radius = sbSelectRadius->value();
-  
   // do different things for different geometry types
   switch (layer->vectorType()) {
   case QGis::Point: {
@@ -231,21 +181,21 @@ void PluginGui::pbnOK_clicked()
 	  ".html";
 	QFile cif(dir + ciName);
 	if (!cif.open(IO_WriteOnly)) {
-	  QMessageBox::critical(this, "Error", 
-				QString("Could not write the index file "
-					"%1!").arg(dir + ciName));
-	  return;
+	  //QMessageBox::critical(this, "Error", 
+	  //			QString("Could not write the index file "
+	  //				"%1!").arg(dir + ciName));
+	  throw "Could not write to an index file!";
 	}
 	QTextStream cIdx(&cif);
 	cIdx<<"<HTML>\n  <BODY>"<<endl;
-	writeClusterIndex(urls[i], alts[i], cIdx, i);
+	writeClusterIndex(urls[i], alts[i], cIdx, i, false);
 	cIdx<<"  </BODY>\n</HTML>"<<endl;
       }
     }
 
     for (int i = 0; i < n; ++i) {
       if (i == features[i].second && urls[features[i].second].size() > 1) {
-	writeClusterIndex(urls[i], alts[i], file, i);
+	writeClusterIndex(urls[i], alts[i], file, i, true);
       }
     }
       
@@ -274,13 +224,18 @@ void PluginGui::pbnOK_clicked()
 	       urls[features[i].second][0]);
       
       // add an ALT text
-      file<<"\" title=\"";
+      QString alttext;
       if (alts[features[i].second].size() > 1)
-	file<<alts[features[i].second].size()<<" links";
+	alttext = QString("%1 links").arg(alts[features[i].second].size());
       else if (altIndex != -1)
-	file<<(alts[features[i].second][0].isNull() ? "" : 
-	       alts[features[i].second][0]);
-      file<<"\">"<<endl;
+	alttext = (alts[features[i].second][0].isNull() ? "" : 
+		   alts[features[i].second][0].
+		   replace(QChar('&'), "&amp;").
+		   replace(QChar('"'), "&quot;").
+		   replace(QChar('<'), "&lt;").
+		   replace(QChar('>'), "&gt;"));
+      file<<"\" title=\""<<alttext<<"\"";
+      file<<" alt=\""<<alttext<<"\">";
     }
     
     break;
@@ -332,50 +287,19 @@ void PluginGui::pbnOK_clicked()
 
   }
   
+  layer->removeSelection();
+  canvas->setExtent(oldExtent);
+  canvas->refresh();
+  
   file<<"    </MAP>"<<endl    
       <<"    </DIV>"<<endl
       <<tmplString.mid(mapEnd);
   
-  done(1);
-} 
-
-void PluginGui::pbnCancel_clicked()
-{
- close(1);
+  return true;
 }
 
 
-void PluginGui::cmbSelectLayer_clicked()
-{
-  std::cerr<<"cmbSelectLayer_clicked"<<std::endl;
-}
-
-
-void PluginGui::pbnSelectHTML_clicked()
-{
-  QString filename = 
-    QFileDialog::getSaveFileName(".",
-				 "HTML files (*.html)",
-				 this,
-				 "Save file dialog"
-				 "Choose a filename to save under");
-  leSelectHTML->setText(filename);
-}
-
-
-void PluginGui::pbnSelectTemplate_clicked()
-{
-  QString filename = 
-    QFileDialog::getSaveFileName(".",
-				 "HTML files (*.html)",
-				 this,
-				 "Choose template dialog"
-				 "Choose a HTML to use as template");
-  leSelectTemplate->setText(filename);
-}
-
-
-bool PluginGui::polygonIsHole(const double* points, int nPoints)
+bool ImageMapExporter::polygonIsHole(const double* points, int nPoints)
 {
   /* This is how it works: Find the leftmost point, point[i]. Check if the ray
      from point[i] that goes through point[i+1] is above the ray from point[i]
@@ -407,15 +331,19 @@ bool PluginGui::polygonIsHole(const double* points, int nPoints)
 }
 
 
-void PluginGui::writeClusterIndex(const std::vector<QString>& urls,
-				  const std::vector<QString>& alts,
-				  QTextStream& stream, int clusterID) {
-  stream<<"<DIV style=\"visibility: hidden; position:absolute;\" class=\"QIM_clusterindex\" "
+void ImageMapExporter::writeClusterIndex(const std::vector<QString>& urls,
+					 const std::vector<QString>& alts,
+					 QTextStream& stream, int clusterID,
+					 bool popup) {
+  stream<<"<DIV style=\"visibility: "<<(popup == true ? "hidden" : "visible")
+	<<"; position:absolute;\" class=\"QIM_clusterindex\" "
 	<<"id=\"QIM_cidx_"<<clusterID<<"\">"<<endl
-	<<"  <DIV class=\"QIM_clusterindexheader\" align=\"right\">"<<endl
-	<<"    <A href=\"javascript:QIM_hideObj('QIM_cidx_"<<clusterID<<"')\""
-	<<">&nbsp;X&nbsp;</A>"<<endl
-	<<"  </DIV>"<<endl;
+	<<"  <DIV class=\"QIM_clusterindexheader\" align=\"right\">"<<endl;
+  if (popup == true) {
+    stream<<"    <A href=\"javascript:QIM_hideObj('QIM_cidx_"<<clusterID
+	  <<"')\">&nbsp;X&nbsp;</A>"<<endl;
+  }
+  stream<<"  </DIV>"<<endl;
   for (int j = 0; j < urls.size(); ++j) {
     stream<<"  <DIV class=\"QIM_clusterindexentry\">"<<endl
 	  <<"    <A href=\""<<(urls[j].isNull() ? "" : urls[j])

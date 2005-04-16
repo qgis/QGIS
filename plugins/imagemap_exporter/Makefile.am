@@ -28,10 +28,10 @@ pkglibdir = ${libdir}
 	$(UIC) -o $@ -impl $*.uic.h $<
 
 ## target plug-in 
-lib_LTLIBRARIES = libImageMapExporter.la
+lib_LTLIBRARIES = imagemapexporterplugin.la
 
 ## qt designer user-interface files
-plugin_UI = pluginguibase.ui
+plugin_UI = imexportpluginguibase.ui
 
 ## uic created headers
 plugin_UIHEADERS = $(plugin_UI:.ui=.uic.h)
@@ -43,21 +43,24 @@ plugin_UISOURCES = $(plugin_UI:.ui=.uic.cpp)
 plugin_UIMOC = $(plugin_UI:.ui=.moc.uic.cpp)
 
 ## MOC files
-plugin_MOC = plugin.moc.cpp plugingui.moc.cpp
+plugin_MOC = imexportplugin.moc.cpp imexportplugingui.moc.cpp
 
 
-libImageMapExporter_la_SOURCES = plugin.cpp \
-	plugin.h \
-	plugingui.cpp \
-	plugingui.h \
+imagemapexporterplugin_la_SOURCES = \
+	imagemapexporter.cpp \
+	imagemapexporter.h \
+	imexportplugin.cpp \
+	imexportplugin.h \
+	imexportplugingui.cpp \
+	imexportplugingui.h \
 	$(plugin_UISOURCES) \
 	$(plugin_UIHEADERS) \
 	$(plugin_UIMOC)
-	
-nodist_libImageMapExporter_la_SOURCES =	$(plugin_MOC)
 
-libImageMapExporter_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS)
-libImageMapExporter_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD)
+nodist_imagemapexporterplugin_la_SOURCES =	$(plugin_MOC)
+
+imagemapexporterplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS)
+imagemapexporterplugin_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD)
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)

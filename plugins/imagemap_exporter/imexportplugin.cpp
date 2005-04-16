@@ -1,5 +1,5 @@
 /***************************************************************************
-  plugin.cpp 
+  imexportplugin.cpp 
   Import tool for various worldmap analysis output files
 Functions:
 
@@ -25,7 +25,7 @@ email                : tim@linfiniti.com
 #include <qgisapp.h>
 #include <qgsmaplayer.h>
 #include <qgsrasterlayer.h>
-#include "plugin.h"
+#include "imexportplugin.h"
 
 
 #include <qtoolbar.h>
@@ -41,7 +41,7 @@ email                : tim@linfiniti.com
 #include <iostream>
 
 //the gui subclass
-#include "plugingui.h"
+#include "imexportplugingui.h"
 
 // xpm for creating the toolbar icon
 #include "icon.xpm"
@@ -71,14 +71,14 @@ static const QgisPlugin::PLUGINTYPE sType = QgisPlugin::UI;
  * @param theQGisApp - Pointer to the QGIS main window
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterface):
+IMExportPlugin::IMExportPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterface):
                  mQGisApp(theQGisApp), 
                  mQGisIface(theQgisInterface),
                  QgisPlugin(sName,sDescription,sVersion,sType)
 {
 }
 
-Plugin::~Plugin()
+IMExportPlugin::~IMExportPlugin()
 {
 
 }
@@ -87,7 +87,7 @@ Plugin::~Plugin()
 /*
  * Initialize the GUI interface for the plugin 
  */
-void Plugin::initGui()
+void IMExportPlugin::initGui()
 {
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(mQGisApp);
@@ -106,13 +106,13 @@ void Plugin::initGui()
 }
 
 //method defined in interface
-void Plugin::help()
+void IMExportPlugin::help()
 {
   //implement me!
 }
 
 // Slot called when the buffer menu item is activated
-void Plugin::run()
+void IMExportPlugin::run()
 {
   if (mQGisIface->activeLayer() == NULL ||
       mQGisIface->activeLayer()->type() != QgsMapLayer::VECTOR) {
@@ -121,7 +121,7 @@ void Plugin::run()
     return;
   }
   
-  PluginGui *myPluginGui=new PluginGui(mQGisIface, mQGisApp,"Image Map Exporter",true,0);
+  IMExportPluginGui *myPluginGui=new IMExportPluginGui(mQGisIface, mQGisApp,"Image Map Exporter",true,0);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
@@ -129,19 +129,19 @@ void Plugin::run()
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
 //layer
-void Plugin::drawRasterLayer(QString theQString)
+void IMExportPlugin::drawRasterLayer(QString theQString)
 {
   mQGisIface->addRasterLayer(theQString);
 }
 //!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating a layer
 ////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
+void IMExportPlugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
 {
  mQGisIface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
 }
 
 // Unload the plugin by cleaning up the GUI
-void Plugin::unload()
+void IMExportPlugin::unload()
 {
   // remove the GUI
   mMenuBarPointer->removeItem(mMenuId);
@@ -168,7 +168,7 @@ void Plugin::unload()
 // Class factory to return a new instance of the plugin class
 QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
-  return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new IMExportPlugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.

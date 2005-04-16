@@ -1,5 +1,5 @@
 /***************************************************************************
-                          plugin.h 
+                          imexportplugin.h 
  Functions:
                              -------------------
     begin                : Jan 21, 2004
@@ -17,19 +17,19 @@
  *                                                                         *
  ***************************************************************************/
  /*  $Id$ */
-#ifndef PLUGIN
-#define PLUGIN
+#ifndef IMEXPORTPLUGIN
+#define IMEXPORTPLUGIN
 #include <qgisplugin.h>
 #include <qwidget.h>
 
 #include <qgisapp.h>
 
 /**
-* \class Plugin
+* \class IMExportPlugin
 * \brief OpenModeller plugin for QGIS
 *
 */
-class Plugin:public QObject, public QgisPlugin
+class IMExportPlugin : public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       /** 
@@ -38,9 +38,9 @@ class Plugin:public QObject, public QgisPlugin
        * @param qgis Pointer to the QgisApp object
        * @param qI Pointer to the QgisIface object. 
        */
-      Plugin(QgisApp * , QgisIface * );
+  IMExportPlugin(QgisApp * , QgisIface * );
   //! Destructor
-  virtual ~ Plugin();
+  virtual ~ IMExportPlugin();
   public slots:
   //! init the gui
   virtual void initGui();

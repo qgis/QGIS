@@ -1,15 +1,15 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>PluginGuiBase</class>
+<class>IMExportPluginGuiBase</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>PluginGuiBase</cstring>
+        <cstring>IMExportPluginGuiBase</cstring>
     </property>
     <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>662</width>
-            <height>365</height>
+            <width>650</width>
+            <height>403</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -29,7 +29,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLabel" row="0" column="0" rowspan="2" colspan="1">
+        <widget class="QLabel" row="0" column="0" rowspan="3" colspan="1">
             <property name="name">
                 <cstring>pixmapLabel2</cstring>
             </property>
@@ -53,28 +53,11 @@
             <property name="scaledContents">
                 <bool>true</bool>
             </property>
-        </widget>
-        <widget class="Line" row="0" column="1" rowspan="2" colspan="1">
-            <property name="name">
-                <cstring>line1</cstring>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>2</width>
-                    <height>32767</height>
-                </size>
-            </property>
-            <property name="frameShape">
-                <enum>VLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
+            <property name="alignment">
+                <set>AlignTop</set>
             </property>
         </widget>
-        <widget class="QLayoutWidget" row="2" column="0" rowspan="1" colspan="4">
+        <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="5">
             <property name="name">
                 <cstring>layout1</cstring>
             </property>
@@ -117,31 +100,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QTextEdit" row="0" column="2" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>teInstructions</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>7</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>1</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="text">
-                <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:9pt;font-family:Nimbus Sans L"&gt;
-&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:12pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;If you have selected a point layer that has an URL in one of its attribute fields, this plugin can help you generate an HTML image map of the current view, where you can click on the points from that layer to get to their URLs.&lt;/p&gt;
-&lt;p&gt; You must select the attribute field that contains the URL, the name of the HTML output file, and the format of the image output file. You can also optionally select another attribute field that will be used for the &lt;span style="font-style:italic"&gt;alt&lt;/span&gt; description of the links.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</string>
-            </property>
-            <property name="wordWrap">
-                <enum>WidgetWidth</enum>
-            </property>
-        </widget>
-        <widget class="QGroupBox" row="1" column="3">
+        <widget class="QGroupBox" row="2" column="3" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>groupBox1</cstring>
             </property>
@@ -228,7 +187,59 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QGroupBox" row="1" column="2">
+        <widget class="QComboBox" row="1" column="4">
+            <property name="name">
+                <cstring>cmbUseRaster</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+        </widget>
+        <widget class="Line" row="0" column="1" rowspan="3" colspan="1">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>2</width>
+                    <height>32767</height>
+                </size>
+            </property>
+            <property name="frameShape">
+                <enum>VLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+        </widget>
+        <widget class="QTextEdit" row="0" column="2" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>teInstructions</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>1</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:9pt;font-family:Nimbus Sans L"&gt;
+&lt;p style="margin-top:16px"&gt;&lt;span style="font-size:12pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;If you have selected a point layer that has an URL in one of its attribute fields, this plugin can help you generate an HTML image map of the current view, where you can click on the points from that layer to get to their URLs.&lt;/p&gt;
+&lt;p&gt; You must select the attribute field that contains the URL, the name of the HTML output file, and the format of the image output file. You can also optionally select another attribute field that will be used for the &lt;span style="font-style:italic"&gt;alt&lt;/span&gt; description of the links.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</string>
+            </property>
+            <property name="wordWrap">
+                <enum>WidgetWidth</enum>
+            </property>
+        </widget>
+        <widget class="QGroupBox" row="2" column="2">
             <property name="name">
                 <cstring>groupBox1_2</cstring>
             </property>
@@ -273,6 +284,17 @@
                 </widget>
             </grid>
         </widget>
+        <widget class="QCheckBox" row="1" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>cbUseRaster</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="text">
+                <string>Use extent and resolution from raster:</string>
+            </property>
+        </widget>
     </grid>
 </widget>
 <images>
@@ -287,25 +309,25 @@
     <connection>
         <sender>pbnOK</sender>
         <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>IMExportPluginGuiBase</receiver>
         <slot>pbnOK_clicked()</slot>
     </connection>
     <connection>
         <sender>pbnCancel</sender>
         <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>IMExportPluginGuiBase</receiver>
         <slot>pbnCancel_clicked()</slot>
     </connection>
     <connection>
         <sender>pbnSelectHTML</sender>
         <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>IMExportPluginGuiBase</receiver>
         <slot>pbnSelectHTML_clicked()</slot>
     </connection>
     <connection>
         <sender>pbnSelectTemplate</sender>
         <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>IMExportPluginGuiBase</receiver>
         <slot>pbnSelectTemplate_clicked()</slot>
     </connection>
 </connections>
