@@ -42,6 +42,7 @@ QgsMapLayer::QgsMapLayer(int type,
                          QString source)
         : internalName(lyrname),
         ID(""),
+	mCoordinateTransform(NULL),
         layerType(type),
         dataSource(source),
         m_legendItem(0),
