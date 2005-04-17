@@ -649,6 +649,31 @@ void QgsCustomProjectionDialog::pbnNew_clicked()
 #ifdef QGISDEBUG
   std::cout << "QgsCustomProjectionDialog::pbnNew_clicked()" << std::endl;
 #endif
+  if (pbnNew->text()==tr("Abort")) 
+  {
+    //if we get here, user has aborted add record
+    pbnNew->setText(tr("New"));
+    //get back to the last used record before insert was pressed
+    mCurrentRecordLong=mLastRecordLong;
+    pbnNext_clicked();
+  }
+  else
+  {
+    //if we get here user has elected to add new record
+    pbnFirst->setEnabled(false);
+    pbnPrevious->setEnabled(false);
+    pbnNext->setEnabled(false);
+    pbnLast->setEnabled(false);
+    pbnNew->setText(tr("Abort"));
+    //clear the controls
+    leName->setText("");
+    leParameters->setText("");
+    cboProjectionFamily->setCurrentItem(0);
+    cboEllipsoid->setCurrentItem(0);
+    lblRecordNo->setText("* of " + QString::number(mRecordCountLong));
+    //remember the rec we are on in case the user aborts
+    mLastRecordLong=mCurrentRecordLong;
+  }
 
 }
 
@@ -658,7 +683,72 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
 #ifdef QGISDEBUG
   std::cout << "QgsCustomProjectionDialog::pbnSave_clicked()" << std::endl;
 #endif
+  //CREATE TABLE tbl_user_projection (
+  //user_projection_id integer primary key,
+  //description varchar(255) NOT NULL,
+  //projection_acronym varchar(20) NOT NULL default '',
+  //ellipsoid_acronym varchar(20) NOT NULL default '',
+  //parameters varchar(80) NOT NULL default ''
+  //);
+  
+  //get the acronym for preojection and ellipsoid
+  QString myProjectionAcronym = getProjectionFamilyAcronym(cboProjectionFamily->currentText());
+  QString myEllipsoidAcronym = getEllipsoidAcronym(cboEllipsoid->currentText());
+  QString myName = leName->text();
+  QString myParameters = leParameters->text();
+  QString mySql;
+  //insert a record if mode is enabled
+  if (pbnNew->text()==tr("Abort")) 
+  {
+    mySql="insert into tbl_user_projection (description,projection_acronym,ellipsoid_acronym,parameters) values ('" 
+         + myName + "','" + myProjectionAcronym  + "','" + myEllipsoidAcronym  + "','" + myParameters + "')";
+  }
+  else //user is updating an existing record
+  {
+    mySql="update tbl_user_projection set description='" + myName  
+        + "',projection_acronym='" + myProjectionAcronym 
+        + "',ellipsoid_acronym='" + myEllipsoidAcronym 
+        + "',parameters='" + myParameters + "' "
+        + "where user_projection_id='" + mCurrentRecordId + "'";
+  }
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+#ifdef QGISDEBUG
+    std::cout << "Update or insert sql \n" << mySql << std::endl;
+#endif
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  sqlite3_step(myPreparedStatement);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult != SQLITE_OK)
+  {
+#ifdef QGISDEBUG
+    std::cout << "Update or insert failed in custom projection dialog " << std::endl;
+#endif
+  }
+  //reinstate button if we were doing an insert
+  else if (pbnNew->text()==tr("Abort")) 
+  {
+    pbnNew->setText(tr("New"));
+    //get to the newly inserted record 
+    ++mRecordCountLong;
+    mCurrentRecordLong=mRecordCountLong-1;
+    pbnNext_clicked();
+  }
 
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
 }
 
 

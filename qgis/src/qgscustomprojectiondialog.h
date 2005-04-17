@@ -56,6 +56,9 @@ public slots:
 private: 
     QString mCurrentRecordId;
     long mCurrentRecordLong;
+    //the record previous to starting an insert operation
+    //so that we can return to it if the record insert is aborted
+    long mLastRecordLong;
     long mRecordCountLong;
     QString mQGisSettingsDir;
 };
