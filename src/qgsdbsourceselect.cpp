@@ -96,10 +96,19 @@ void QgsDbSourceSelect::deleteConnection()
     settings.removeEntry(key + "/database");
     settings.removeEntry(key + "/username");
     settings.removeEntry(key + "/password");
+    settings.removeEntry(key + "/port");
+    settings.removeEntry(key + "/save");
+    settings.removeEntry(key);
     //if(!success){
     //  QMessageBox::information(this,"Unable to Remove","Unable to remove the connection " + cmbConnections->currentText());
     //}
     cmbConnections->removeItem(cmbConnections->currentItem());  // populateConnectionList();
+  }
+  // Select the first connection in the list, checking to make sure there is
+  // at least one item to select
+  if(cmbConnections->count() > 0)
+  {
+    cmbConnections->setCurrentItem(0);
   }
 }
 

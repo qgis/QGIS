@@ -2,6 +2,9 @@
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 QGIS Change Log
+2005-04-16 [ges] 0.6.0devel16
+** Fixed bug 1177637 that prevented a PostgreSQL connection from being 
+   completely deleted
 2005-04-14 [timlinux] 0.6devel15
 ** Wired up move first and move last buttons on custom projection dialog
 2005-04-14 [timlinux] 0.6devel14
