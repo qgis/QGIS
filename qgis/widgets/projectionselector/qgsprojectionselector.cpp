@@ -29,6 +29,8 @@
 #include <qmessagebox.h>
 #include <qregexp.h>
 #include <qprogressdialog.h> 
+#include <qfileinfo.h>
+#include <qdir.h>
 
 //gdal and ogr includes
 // XXX DO WE NEED THESE?
@@ -47,9 +49,10 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name
 #if defined(Q_OS_MACX) || defined(WIN32)
   QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
-  srsDatabaseFileName = PKGDATAPATH;
-  srsDatabaseFileName += "/resources/srs.db";
+  mSrsDatabaseFileName = PKGDATAPATH;
+  mSrsDatabaseFileName += "/resources/srs.db";
   // Populate the projection list view
+  getUserProjList();
   getProjList();
 }
 
@@ -129,7 +132,7 @@ QString QgsProjectionSelector::getCurrentWKT()
     sqlite3 *db;
     char *zErrMsg = 0;
     int rc;
-    rc = sqlite3_open(srsDatabaseFileName, &db);
+    rc = sqlite3_open(mSrsDatabaseFileName, &db);
     if(rc) 
     {
       std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl; 
@@ -186,22 +189,92 @@ QString QgsProjectionSelector::getCurrentSRID()
     return NULL;
   }
 }
+void QgsProjectionSelector::getUserProjList()
+{
+#ifdef QGISDEBUG
+  std::cout << "Fetching user projection list..." << std::endl;
+#endif
+  // User defined coordinate system node
+  mUserProjList = new QListViewItem(lstCoordinateSystems,"User Defined Coordinate System");
+  //determine where the user proj database lives for this user. If none is found an empty
+  //now only will be shown
+  QString myQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
+  // first we look for ~/.qgis/user_projections.db
+  // if it doesnt exist we copy it in from the global resources dir
+  QFileInfo myFileInfo;
+  myFileInfo.setFile(myQGisSettingsDir+"user_projections.db");
+  //return straight away if the user has not created any custom projections
+  if ( !myFileInfo.exists( ) )
+  {
+#ifdef QGISDEBUG
+  std::cout << "User projection db not found...skipping" << std::endl;
+#endif
+    return;
+  }
+
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  //check the db is available
+  myResult = sqlite3_open(QString(myQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist. But we checked earlier for its existance
+    //     and aborted in that case. This is because we may be runnig from read only 
+    //     media such as live cd and dont want to force trying to create a db.
+    assert(myResult == 0);
+  }
+
+  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  QString mySql = "select description from tbl_user_projection order by description";
+#ifdef QGISDEBUG
+  std::cout << "User projection list sql" << mySql << std::endl;
+#endif
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+    QListViewItem *newItem;
+    while(sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+    {
+      newItem = new QListViewItem(mUserProjList, (char *)sqlite3_column_text(myPreparedStatement,0));
+    }
+  }
+  // close the sqlite3 statement
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+}   
 
 void QgsProjectionSelector::getProjList()
 {
   // Create the top-level nodes for the list view of projections
   //
   // Geographic coordinate system node
-  geoList = new QListViewItem(lstCoordinateSystems,"Geographic Coordinate System");
+  mGeoList = new QListViewItem(lstCoordinateSystems,"Geographic Coordinate System");
   // Projected coordinate system node
-  projList = new QListViewItem(lstCoordinateSystems,"Projected Coordinate System");
+  mProjList = new QListViewItem(lstCoordinateSystems,"Projected Coordinate System");
 
+  //bail out in case the projections db does not exist
+  //this is neccessary in case the pc is running linux with a 
+  //read only filesystem because otherwise sqlite will try 
+  //to create the db file on the fly
+  
+  QFileInfo myFileInfo;
+  myFileInfo.setFile(mSrsDatabaseFileName);
+  if ( !myFileInfo.exists( ) )
+  {
+    return;
+  }
 
   // open the database containing the spatial reference data
   sqlite3 *db;
   char *zErrMsg = 0;
   int rc;
-  rc = sqlite3_open(srsDatabaseFileName, &db);
+  rc = sqlite3_open(mSrsDatabaseFileName, &db);
   if(rc) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl; 
@@ -249,7 +322,7 @@ void QgsProjectionSelector::getProjList()
       {      
         // this is a geographic coordinate system
         // Add it to the tree
-        newItem = new QListViewItem(geoList, (char *)sqlite3_column_text(ppStmt,1));
+        newItem = new QListViewItem(mGeoList, (char *)sqlite3_column_text(ppStmt,1));
 
         // display the spatial reference id in the second column of the list view
         newItem->setText(1,(char *)sqlite3_column_text(ppStmt, 0));
@@ -265,7 +338,7 @@ void QgsProjectionSelector::getProjList()
         if(node == 0)
         {
           // the node doesn't exist -- create it
-          node = new QListViewItem(projList, (char*)sqlite3_column_text(ppStmt, 2));
+          node = new QListViewItem(mProjList, (char*)sqlite3_column_text(ppStmt, 2));
         }
 
         // add the item, setting the projection name in the first column of the list view
@@ -292,7 +365,7 @@ void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem)
     sqlite3 *db;
     char *zErrMsg = 0;
     int rc;
-    rc = sqlite3_open(srsDatabaseFileName, &db);
+    rc = sqlite3_open(mSrsDatabaseFileName, &db);
     if(rc) 
     {
       std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl; 
