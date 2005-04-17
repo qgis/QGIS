@@ -34,6 +34,7 @@
 #include <qcombobox.h>
 #include <qprogressdialog.h>
 #include <qpushbutton.h>
+#include <qmessagebox.h>
 
 //stdc++ includes
 #include <iostream>
@@ -186,10 +187,72 @@ void QgsCustomProjectionDialog::pbnHelp_clicked()
 
 }
 
-
-void QgsCustomProjectionDialog::pbnOK_clicked()
+void QgsCustomProjectionDialog::pbnDelete_clicked()
 {
-  
+
+  if (QMessageBox::Yes!=QMessageBox::question(
+        this,
+        tr("Delete Projection Definition?"),
+        tr("Deleting a projection definition is not reversable. Do you want to delete it?") ,
+        QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton ) )
+  {
+    return ;
+  }
+
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  QString       myName;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  QString mySql = "delete from tbl_user_projection where user_projection_id='" + mCurrentRecordId + "'";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+#ifdef QGISDEBUG
+    std::cout << "Query to delete current:" << mySql << std::endl;
+#endif
+  if(myResult == SQLITE_OK)
+  {
+    sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+  }
+  // close the sqlite3 statement
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+  //move to an appropriate rec now this one is gone
+  --mRecordCountLong;
+  if (mRecordCountLong < 1)
+  {
+    pbnNew_clicked();
+  }
+  else if (mCurrentRecordLong==1)
+  {
+    pbnFirst_clicked();
+  }
+  else if (mCurrentRecordLong>mRecordCountLong)
+  {
+    pbnLast_clicked();
+  }
+  else
+  {
+    mCurrentRecordLong=mCurrentRecordLong-2;
+    pbnNext_clicked();
+  }
+  return ;
+}
+
+void QgsCustomProjectionDialog::pbnClose_clicked()
+{
+ close(); 
 }
 
 
