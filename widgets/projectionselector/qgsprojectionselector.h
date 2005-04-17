@@ -30,7 +30,9 @@ Q_OBJECT
 public:
     QgsProjectionSelector( QWidget* parent , const char* name ,WFlags fl =0  );
     ~QgsProjectionSelector();
-  //! Populate the wkts map with projection names...
+  //! Populate the proj tree view with  user defined projection names...
+  void getUserProjList();
+  //! Populate the proj tree view with system projection names...
   void getProjList();
   
     
@@ -43,15 +45,16 @@ public slots:
 private:
 
   // List view nodes for the tree view of projections
+  //! User defined projections node
+  QListViewItem *mUserProjList;
   //! GEOGCS node
-  QListViewItem *geoList;
+  QListViewItem *mGeoList;
   //! PROJCS node
-  QListViewItem *projList;
+  QListViewItem *mProjList;
   //! Users custom coordinate system file
-  // XXX This has to change to a sqlite3 database installed in user home dir
-  QString customCsFile;
+  QString mCustomCsFile;
   //! File name of the sqlite3 database
-  QString srsDatabaseFileName;
+  QString mSrsDatabaseFileName;
 
   //private handler for when user selects a cs
   //it will cause wktSelected and sridSelected events to be spawned
