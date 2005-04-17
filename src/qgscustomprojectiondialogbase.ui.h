@@ -23,12 +23,6 @@ void QgsCustomProjectionDialogBase::pbnApply_clicked()
 }
 
 
-void QgsCustomProjectionDialogBase::pbnOK_clicked()
-{
-
-}
-
-
 void QgsCustomProjectionDialogBase::pbnHelp_clicked()
 {
 
@@ -84,6 +78,18 @@ void QgsCustomProjectionDialogBase::pbnNew_clicked()
 
 
 void QgsCustomProjectionDialogBase::pbnSave_clicked()
+{
+
+}
+
+
+void QgsCustomProjectionDialogBase::pbnClose_clicked()
+{
+
+}
+
+
+void QgsCustomProjectionDialogBase::pbnDelete_clicked()
 {
 
 }
