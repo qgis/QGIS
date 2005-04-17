@@ -31,7 +31,8 @@ public:
     bool makeDir(QDir &theQDir);
 public slots:    
     void pbnHelp_clicked();
-    void pbnOK_clicked();
+    void pbnClose_clicked();
+    void pbnDelete_clicked();
     void cboProjectionFamily_highlighted( const QString & );
     //
     // Database navigation controles
