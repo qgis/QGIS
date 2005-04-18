@@ -59,10 +59,10 @@ class QgsClipper
   // The limit is set to 30,000 instead of 32768 because that things
   // still go wrong.
 
-  static const double maxX = 30000;
-  static const double minX = -maxX;
-  static const double maxY = 30000;
-  static const double minY = -maxY;
+  static const double maxX =  30000;
+  static const double minX = -30000;
+  static const double maxY =  30000;
+  static const double minY = -30000;
 
   // Used when testing for equivalance to 0.0
   static const double SMALL_NUM = 1e-12;
