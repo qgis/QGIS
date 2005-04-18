@@ -321,3 +321,9 @@ void QgisAppBase::actionCustomProjection_activated()
 {
 
 }
+
+
+void QgisAppBase::actionShowBookmarks_activated()
+{
+
+}
