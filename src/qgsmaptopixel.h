@@ -19,6 +19,10 @@
 #define QGSMAPTOPIXEL
 
 #include "qgspoint.h"
+#include <vector>
+
+#include <cassert>
+
 class QgsPoint;
 class QPoint;
 
@@ -62,6 +66,12 @@ class QgsMapToPixel{
        given coordinates in place. Intended as a fast way to do the
        transform. */ 
     void transformInPlace(double& x, double& y);
+
+    /* Transform device coordinates to map coordinates. Modifies the
+       given coordinates in place. Intended as a fast way to do the
+       transform. */ 
+    void transformInPlace(std::vector<double>& x, 
+			  std::vector<double>& y);
 
     QgsPoint toMapCoordinates(int x, int y);
      /*! Tranform device coordinates to map (world)  coordinates
@@ -146,4 +156,11 @@ inline void QgsMapToPixel::transformInPlace(double& x, double& y)
   y = yMax - (y - yMin) / mapUnitsPerPixel;
 }
 
+inline void QgsMapToPixel::transformInPlace(std::vector<double>& x, 
+					    std::vector<double>& y)
+{
+  assert(x.size() == y.size());
+  for (int i = 0; i < x.size(); ++i)
+    transformInPlace(x[i], y[i]);
+}
 #endif // QGSMAPTOPIXEL

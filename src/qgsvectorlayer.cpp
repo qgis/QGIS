@@ -31,6 +31,7 @@
 #include <vector>
 #include <utility>
 #include <cassert>
+#include <limits>
 
 // for htonl
 #ifdef WIN32
@@ -391,55 +392,63 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
 					      QgsMapToPixel* mtp, 
 					      bool projectionsEnabledFlag)
 {
-  // get number of points in the line
-  QgsPoint ptFrom, ptTo;
   unsigned char *ptr = feature + 5;
   unsigned int nPoints = *((int*)ptr);
   ptr = feature + 9;
 
-#if defined(Q_WS_X11)
-  bool needToTrim = false;
-#endif
+  std::vector<double> x(nPoints);
+  std::vector<double> y(nPoints);
 
-  for (unsigned int idx = 0; idx < nPoints; idx++)
+  // Extract the points from the WKB format into the x and y vectors. 
+  for (unsigned int i = 0; i < nPoints; ++i)
   {
-    double x = *((double *) ptr);
+    x[i] = *((double *) ptr);
     ptr += sizeof(double);
-    double y = *((double *) ptr);
+    y[i] = *((double *) ptr);
     ptr += sizeof(double);
-
-    transformPoint(x, y, mtp, projectionsEnabledFlag);
-
-#if defined(Q_WS_X11)
-    if (std::abs(x) > QgsClipper::maxX ||
-	std::abs(y) > QgsClipper::maxY)
-      needToTrim = true;
-#endif
-    ptTo.set(x, y);
-
-    if (idx == 0)
-      ptFrom = ptTo;
-    else
-    {
-#if defined(Q_WS_X11)
-      // Work around a +/- 32768 limitation on coordinates in X11
-      if (needToTrim)
-      {
-	if (QgsClipper::trimLine(ptFrom, ptTo))
-	  p->drawLine(static_cast<int>(ptFrom.x()),
-		      static_cast<int>(ptFrom.y()),
-		      static_cast<int>(ptTo.x()),
-		      static_cast<int>(ptTo.y()));
-      }
-      else
-#endif
-	p->drawLine(static_cast<int>(ptFrom.x()),
-		    static_cast<int>(ptFrom.y()),
-		    static_cast<int>(ptTo.x()),
-		    static_cast<int>(ptTo.y()));
-      ptFrom = ptTo;
-    }
   }
+
+  // Transform the points into map coordinates (and reproject if
+  // necessary)
+  transformPoints(x, y, mtp, projectionsEnabledFlag);
+ 
+#if defined(Q_WS_X11)
+  // Work around a +/- 32768 limitation on coordinates in X11
+  bool needToTrim = false;
+
+  // Look through the x and y coordinates and see if there are any
+  // that need trimming. If one is found, there's no need to look at
+  // the rest of them so end the loop at that point. 
+  for (int i = 0; i < nPoints; ++i)
+    if (std::abs(x[i]) > QgsClipper::maxX ||
+	std::abs(y[i]) > QgsClipper::maxY)
+    {
+      needToTrim = true;
+      break;
+    }
+
+  if (needToTrim)
+  {
+    QgsClipper::trimFeature(x, y, true); // true = polyline
+    nPoints = x.size(); // trimming may change nPoints.
+  }
+
+#endif
+
+  // Cast points to int and put into the appropriate storage for the
+  // call to QPainter::drawFeature(). Apparently QT 4 will allow
+  // calls to drawPolyline with a QPointArray holding floats (or
+  // doubles?), so this loop may become unnecessary (but may still need
+  // the double* versions for the OGR coordinate transformation).
+  QPointArray pa(nPoints);
+  for (int i = 0; i < nPoints; ++i)
+    pa.setPoint(i, static_cast<int>(round(x[i])),
+		   static_cast<int>(round(y[i])));
+
+  // The default pen gives bevelled joins between segements of the
+  // polyline, which is good enough for the moment.
+  p->drawPolyline(pa);
+
   return ptr;
 }
 
@@ -448,6 +457,10 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
 					   QgsMapToPixel* mtp, 
 					   bool projectionsEnabledFlag)
 {
+  typedef std::pair<std::vector<double>, std::vector<double> > ringType;
+  typedef ringType* ringTypePtr;
+  typedef std::vector<ringTypePtr> ringsType;
+
   // get number of rings in the polygon
   unsigned int numRings = *((int*)(feature + 1 + sizeof(int)));
 
@@ -455,122 +468,193 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     return feature + 9;
 
   int total_points = 0;
-  std::vector< std::vector<QgsPoint>* > rings;
 
-  // set pointer to the first ring
+  // A vector containing a pointer to a pair of double vectors.The
+  // first vector in the pair contains the x coordinates, and the
+  // second the y coordinates.
+  ringsType rings;
+
+  // Set pointer to the first ring
   unsigned char* ptr = feature + 1 + 2 * sizeof(int); 
+
   for (unsigned int idx = 0; idx < numRings; idx++)
   {
-#if defined(Q_WS_X11)
-    bool needToTrim = false;
-#endif
-
-    // get number of points in the ring
     int nPoints = *((int*)ptr);
-    std::vector<QgsPoint>* ring = new std::vector<QgsPoint>(nPoints);
+    ringTypePtr ring = new ringType(std::vector<double>(nPoints),
+				    std::vector<double>(nPoints));
     ptr += 4;
 
+    // Extract the points from the WKB and store in a pair of
+    // vectors.
+    /*
+#ifdef QGISDEBUG
+    std::cerr << "Points for ring " << idx << " ("
+	      << nPoints << " points)\n";
+#endif
+    */
     for (unsigned int jdx = 0; jdx < nPoints; jdx++)
     {
-      // add points to a point array for drawing the polygon
-      double x = *((double *) ptr);
+      ring->first[jdx] = *((double *) ptr);
       ptr += sizeof(double);
-      double y = *((double *) ptr);
+      ring->second[jdx] = *((double *) ptr);
       ptr += sizeof(double);
-
-      transformPoint(x, y, mtp, projectionsEnabledFlag);
-
-#if defined(Q_WS_X11)
-      if (std::abs(x) > QgsClipper::maxX ||
-	  std::abs(y) > QgsClipper::maxY)
-	needToTrim = true;
+      /*
+#ifdef QGISDEBUG
+      std::cerr << jdx << ": " 
+		<< ring->first[jdx] << ", " << ring->second[jdx] << '\n';
 #endif
-      ring->operator[](jdx) = QgsPoint(x, y);
+      */
     }
+
+    // Transform the points into map coordinates (and reproject if
+    // necessary)
+    transformPoints(ring->first, ring->second, mtp, projectionsEnabledFlag);
 
 #if defined(Q_WS_X11)
     // Work around a +/- 32768 limitation on coordinates in X11
+    bool needToTrim = false;
+
+    // Look through the x and y coordinates and see if there are any
+    // that need trimming. If one is found, there's no need to look at
+    // the rest of them so end the loop at that point. 
+    for (int i = 0; i < nPoints; ++i)
+      if (std::abs(ring->first[i]) > QgsClipper::maxX ||
+	  std::abs(ring->second[i]) > QgsClipper::maxY)
+      {
+	needToTrim = true;
+	break;
+      }
+
     if (needToTrim)
-      QgsClipper::trimPolygon(*ring);
-#endif
+      QgsClipper::trimFeature(ring->first, ring->second, false);
 
     /*
-#if defined(Q_WS_X11)
-    std::cerr << "Variable Q_WS_X11 is defined\n";
-#else
-    std::cerr << "Variable Q_WS_X11 is not defined\n";
+#ifdef QGISDEBUG
+    if (needToTrim)
+    {
+      std::cerr << "Trimmed points (" << ring->first.size() << ")\n";
+      for (int i = 0; i < ring->first.size(); ++i)
+	std::cerr << i << ": " << ring->first[i] 
+		  << ", " << ring->second[i] << '\n';
+    }
 #endif
-      
-    for (int i = 0; i < ring->size(); ++i)
-      if (std::abs(ring->operator[](i).x()) > QgsClipper::maxX ||
-	  std::abs(ring->operator[](i).y()) > QgsClipper::maxY)
-	std::cerr << "Too large: " << ring->operator[](i) << '\n';
     */
 
-    // Don't bother if the ring has been trimmed out of
+#endif
+
+    // Don't bother keeping the ring if it has been trimmed out of
     // existence.
-    if (ring->size() > 0)
-      rings.push_back(ring);
-    total_points += ring->size();
-  }
-
-  int ii = 0;
-  QPoint outerRingPt;
-
-  // Stores the start positon of each ring (first) and the number
-  // of points in each ring (second).
-  std::vector<std::pair<unsigned int, unsigned int> > ringDetails;
-
-  // Need to copy the polygon vertices into a QPointArray for the
-  // QPainter::drawpolygon() call. The size is the sum of points in
-  // the polygon plus one extra point for each ring except for the
-  // first ring.
-  QPointArray *pa = new QPointArray(total_points + rings.size() - 1);
-
-  for (int i = 0; i < rings.size(); ++i)
-  {
-    // Store the start index of this ring, and the number of
-    // points in the ring.
-    ringDetails.push_back(std::make_pair(ii, rings[i]->size()));
-
-    // Transfer points to the QPointArray
-    std::vector<QgsPoint>::const_iterator j = rings[i]->begin();
-    for (; j != rings[i]->end(); ++j)
-      pa->setPoint(ii++, static_cast<int>(round(j->x())),
-		         static_cast<int>(round(j->y())));
-
-    // Store the last point of the first ring, and insert it at
-    // the end of all other rings. This makes all the other rings
-    // appear as holes in the first ring.
-    if (i == 0)
-    {
-      outerRingPt.setX(pa->point(ii-1).x());
-      outerRingPt.setY(pa->point(ii-1).y());
-    }
+    if (ring->first.size() == 0)
+      delete ring;
     else
-      pa->setPoint(ii++, outerRingPt);
-
-    delete rings[i];
+    {
+      rings.push_back(ring);
+      total_points += ring->first.size();
+    }
   }
   
-  // draw the polygon fill
-  QPen pen = p->pen(); // store current pen
-  p->setPen ( Qt::NoPen ); // no boundary
-  p->drawPolygon(*pa);
-  p->setPen ( pen );
+  // Now we draw the polygons
 
-  // draw the polygon outline. Draw each ring as a separate
-  // polygon to avoid the lines associated with the outerRingPt.
-  QBrush brush = p->brush();
-  p->setBrush ( Qt::NoBrush );
-  std::vector<std::pair<unsigned int, unsigned int> >::const_iterator
-    ri = ringDetails.begin();
-  for (; ri != ringDetails.end(); ++ri)
-    p->drawPolygon( *pa, FALSE, ri->first, ri->second);
+  // Only try to draw polygons if there is something to draw
+  if (total_points > 0)
+  {
+    int ii = 0;
+    QPoint outerRingPt;
 
-  p->setBrush ( brush );
+    // Stores the start index of each ring (first) and the number
+    // of points in each ring (second).
+    typedef std::vector<std::pair<unsigned int, unsigned int> > ringDetailType;
+    ringDetailType ringDetails;
 
-  delete pa;
+    // Need to copy the polygon vertices into a QPointArray for the
+    // QPainter::drawpolygon() call. The size is the sum of points in
+    // the polygon plus one extra point for each ring except for the
+    // first ring.
+    QPointArray pa(total_points + rings.size() - 1);
+
+    for (int i = 0; i < rings.size(); ++i)
+      {
+	// Store the pointer in a variable with a short name so as to make
+	// the following code easier to type and read.
+	ringTypePtr r = rings[i];
+
+	// Store the start index of this ring, and the number of
+	// points in the ring.
+	ringDetails.push_back(std::make_pair(ii, r->first.size()));
+
+	// Transfer points to the QPointArray
+	for (int j = 0; j != r->first.size(); ++j)
+	  pa.setPoint(ii++, static_cast<int>(round(r->first[j])),
+		            static_cast<int>(round(r->second[j])));
+
+	// Store the last point of the first ring, and insert it at
+	// the end of all other rings. This makes all the other rings
+	// appear as holes in the first ring.
+	if (i == 0)
+	{
+	  outerRingPt.setX(pa.point(ii-1).x());
+	  outerRingPt.setY(pa.point(ii-1).y());
+	}
+	else
+	  pa.setPoint(ii++, outerRingPt);
+
+	// Tidy up the pointed to pairs of vectors as we finish with them
+	delete rings[i];
+      }
+
+    /*
+#ifdef QGISDEBUG
+    std::cerr << "Pixel points are:\n";
+    for (int i = 0; i < pa.size(); ++i)
+      std::cerr << i << ": " << pa.point(i).x() << ", " 
+		<< pa.point(i).y() << '\n';
+    std::cerr << "Ring positions are:\n";
+    for (int i = 0; i < ringDetails.size(); ++i)
+      std::cerr << ringDetails[i].first << ", "
+		<< ringDetails[i].second << "\n";      
+#endif
+    */
+
+
+    /*
+    // A bit of code to aid in working out what values of
+    // QgsClipper::minX, etc cause the X11 zoom bug.
+    int largestX  = std::numeric_limits<int>::min();
+    int smallestX = std::numeric_limits<int>::max();
+    int largestY  = std::numeric_limits<int>::min();
+    int smallestY = std::numeric_limits<int>::max();
+
+    for (int i = 0; i < pa.size(); ++i)
+    {
+      largestX  = std::max(largestX,  pa.point(i).x());
+      smallestX = std::min(smallestX, pa.point(i).x());
+      largestY  = std::max(largestY,  pa.point(i).y());
+      smallestY = std::min(smallestY, pa.point(i).y());
+    }
+    std::cerr << "Largest  X coordinate was " << largestX  << '\n';
+    std::cerr << "Smallest X coordinate was " << smallestX << '\n';
+    std::cerr << "Largest  Y coordinate was " << largestY  << '\n';
+    std::cerr << "Smallest Y coordinate was " << smallestY << '\n';
+    */
+
+    // draw the polygon fill
+    QPen pen = p->pen(); // store current pen
+    p->setPen ( Qt::NoPen ); // no boundary
+    p->drawPolygon( pa );
+    p->setPen ( pen );
+
+    // draw the polygon outline. Draw each ring as a separate
+    // polygon to avoid the lines associated with the outerRingPt.
+    QBrush brush = p->brush();
+    p->setBrush ( Qt::NoBrush );
+
+    ringDetailType::const_iterator ri = ringDetails.begin();
+
+    for (; ri != ringDetails.end(); ++ri)
+      p->drawPolygon(pa, FALSE, ri->first, ri->second);
+
+    p->setBrush ( brush );
+  }
 
   return ptr;
 }
@@ -637,54 +721,67 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 
     mDrawingCancelled=false; //pressing esc will change this to true
 
-    //    QTime t;
-    //t.start();
+    /*
+    QTime t;
+    t.start();
+    */
 
-    while((fet = dataProvider->getNextFeature(attributes)))
+    try
     {
-      qApp->processEvents(); //so we can trap for esc press
-      if (mDrawingCancelled) return;
-      // If update threshold is greater than 0, check to see if
-      // the threshold has been exceeded
-      if(updateThreshold > 0)
+      while((fet = dataProvider->getNextFeature(attributes)))
       {
-        //copy the drawing buffer every updateThreshold elements
-        if(0 == featureCount % updateThreshold)
-        {
-         bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
-        }
-      }
+	qApp->processEvents(); //so we can trap for esc press
+	if (mDrawingCancelled) return;
+	// If update threshold is greater than 0, check to see if
+	// the threshold has been exceeded
+	if(updateThreshold > 0)
+	{
+	  //copy the drawing buffer every updateThreshold elements
+	  if(0 == featureCount % updateThreshold)
+	    bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
+	}
 
-      if (fet == 0)
-      {
+	if (fet == 0)
+	{
 #ifdef QGISDEBUG
-        std::cerr << "get next feature returned null\n";
+	  std::cerr << "get next feature returned null\n";
 #endif
-
+	}
+	else
+	{
+	  if (mDeleted.find(fet->featureId())==mDeleted.end())
+	  {
+	    bool sel=mSelected.find(fet->featureId()) != mSelected.end();
+	    m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
+				      sel, oversampling, widthScale );
+	    double scale = markerScaleFactor * symbolScale;
+	    drawFeature(p,fet,theMapToPixelTransform,&marker, scale, 
+			projectionsEnabledFlag);
+	    ++featureCount;
+	    delete fet;
+	  }
+	}
       }
-      else
+
+      // std::cerr << "Time to draw was " << t.elapsed() << '\n';
+
+      //also draw the not yet commited features
+      std::list<QgsFeature*>::iterator it = mAddedFeatures.begin();
+      for(; it != mAddedFeatures.end(); ++it)
       {
-        if(mDeleted.find(fet->featureId())==mDeleted.end())
-        {
-          bool sel=mSelected.find(fet->featureId()) != mSelected.end();
-          m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel, oversampling, widthScale );
-    double scale = markerScaleFactor * symbolScale;
-          drawFeature(p,fet,theMapToPixelTransform,&marker, scale, projectionsEnabledFlag);
-          ++featureCount;
-          delete fet;
-        }
+	bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
+	m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
+				  sel, oversampling, widthScale);
+	double scale = markerScaleFactor * symbolScale;
+	drawFeature(p,*it,theMapToPixelTransform,&marker,scale, 
+		    projectionsEnabledFlag);
       }
     }
-
-    //std::cerr << "Time to draw was " << t.elapsed() << '\n';
-
-    //also draw the not yet commited features
-    for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+    catch (QgsCsException &cse)
     {
-      bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
-      m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, sel, oversampling, widthScale);
-      double scale = markerScaleFactor * symbolScale;
-      drawFeature(p,*it,theMapToPixelTransform,&marker,scale, projectionsEnabledFlag);
+      QString msg("Failed to transform a point: ");
+      msg += cse.what();
+      qWarning(msg);
     }
 
 #ifdef QGISDEBUG
@@ -697,7 +794,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 #ifdef QGISDEBUG
     qWarning("Warning, QgsRenderer is null in QgsVectorLayer::draw()");
 #endif
-
   }
 }
 
