@@ -160,6 +160,7 @@ qgis_UIC =	qgisappbase.ui				\
 		qgsattributedialogbase.ui		\
 		qgsattributeactiondialogbase.ui		\
 		qgsattributetablebase.ui		\
+		qgsbookmarksbase.ui		\
 		qgscomposerbase.ui			\
 		qgscompositionbase.ui			\
 		qgscomposermapbase.ui			\
