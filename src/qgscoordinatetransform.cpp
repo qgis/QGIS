@@ -188,7 +188,7 @@ QgsPoint QgsCoordinateTransform::transform(const QgsPoint thePoint,TransformDire
   try
   {
 
-    transformCoords(1, x, y, z, direction );
+    transformCoords(1, &x, &y, &z, direction );
   }
   catch(QgsCsException &cse)
   {
@@ -216,16 +216,24 @@ void QgsCoordinateTransform::transformInPlace(double& x, double& y,
 
   // transform x
   double z = 0.0;
-  try
-  {
-    transformCoords(1, x, y, z, direction );
-  }
-  catch(QgsCsException &cse)
-  {
-    //something bad happened....
-    // rethrow the exception
-    throw cse;
-  }
+  transformCoords(1, &x, &y, &z, direction );
+}
+
+void QgsCoordinateTransform::transformInPlace(std::vector<double>& x, 
+					      std::vector<double>& y, 
+					      TransformDirection direction) const
+{
+  if (mShortCircuit || !mInitialisedFlag) 
+    return;
+
+  assert(x.size() == y.size());
+
+  // Apparently, if one has a std::vector, it is valid to use the
+  // address of the first element in the vector as a pointer to an
+  // array of the vectors data, and hence easily interface with code
+  // that wants C-style arrays.
+
+  transformCoords(x.size(), &x[0], &y[0], NULL, direction);
 }
 
 QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirection direction) const
@@ -253,8 +261,8 @@ QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirecti
   //                                    V 
   try{
     double z = 0.0;
-    transformCoords(1, x1, y1, z, direction);
-    transformCoords(1, x2, y2, z, direction);
+    transformCoords(1, &x1, &y1, &z, direction);
+    transformCoords(1, &x2, &y2, &z, direction);
 
   }
   catch(QgsCsException &cse)
@@ -282,18 +290,20 @@ QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirecti
   return QgsRect(x1, y1, x2 , y2);
 } 
 
-void QgsCoordinateTransform::transformCoords( const int& numPoints, double& x, double& y, double& z,TransformDirection direction) const
+void QgsCoordinateTransform::transformCoords( 
+		 const int& numPoints, double* x, double* y, double* z,
+		 TransformDirection direction) const
 {
   // use OGR to do the transform
   if(direction == INVERSE)
   {
     // transform from destination (map canvas/project) to layer CS
-    inverseTransform->Transform(numPoints, &x, &y);
+    inverseTransform->Transform(numPoints, x, y);
   }
   else
   {
     // transform from source layer CS to destination (map canvas/project) 
-    forwardTransform->Transform(numPoints, &x, &y);
+    forwardTransform->Transform(numPoints, x, y);
 
   }
 }
