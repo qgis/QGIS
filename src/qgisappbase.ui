@@ -75,6 +75,7 @@
         <action name="actionZoomToLayer"/>
         <separator/>
         <action name="actionShowBookmarks"/>
+        <action name="actionNewBookmark"/>
         <separator/>
         <action name="drawAction"/>
     </item>
@@ -1150,7 +1151,21 @@
             <string>Show geospatial bookmarks</string>
         </property>
         <property name="menuText">
-            <string>Geospatial bookmarks</string>
+            <string>Geospatial bookmarks...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>actionNewBookmark</cstring>
+        </property>
+        <property name="text">
+            <string>Create a new geospatial bookmark</string>
+        </property>
+        <property name="menuText">
+            <string>New geospatial bookmark...</string>
+        </property>
+        <property name="statusTip">
+            <string>Create a new geospatial bookmark for the current view</string>
         </property>
     </action>
 </actions>
@@ -1562,6 +1577,12 @@
         <receiver>QgisAppBase</receiver>
         <slot>actionShowBookmarks_activated()</slot>
     </connection>
+    <connection>
+        <sender>actionNewBookmark</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>actionNewBookmark_activated()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in implementation">iostream</include>
@@ -1621,6 +1642,7 @@
     <slot>measure()</slot>
     <slot>actionCustomProjection_activated()</slot>
     <slot>actionShowBookmarks_activated()</slot>
+    <slot>actionNewBookmark_activated()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

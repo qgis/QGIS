@@ -327,3 +327,9 @@ void QgisAppBase::actionShowBookmarks_activated()
 {
 
 }
+
+
+void QgisAppBase::actionNewBookmark_activated()
+{
+
+}
