@@ -975,12 +975,15 @@ static void openFilesRememberingFilter_(QString const &filterName,
 
     QString lastUsedDir = settings.readEntry("/qgis/UI/" + filterName + "Dir",
                           ".");
+
+    QString lastUsedEncoding = settings.readEntry("/qgis/UI/encoding");
+
 #ifdef QGISDEBUG
 
     std::cerr << "Opening vector file dialog with filters: " << filters << std::endl;
 #endif
 
-    QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog(lastUsedDir, filters, 0, QFileDialog::tr("open files dialog"));
+    QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog(lastUsedDir, filters, 0, QFileDialog::tr("open files dialog"), lastUsedEncoding);
 
     // allow for selection of more than one file
     openFileDialog->setMode(QFileDialog::ExistingFiles);
@@ -1001,6 +1004,7 @@ static void openFilesRememberingFilter_(QString const &filterName,
 
 
     settings.writeEntry("/qgis/UI/" + filterName + "Dir", openFileDialog->dirPath());
+    settings.writeEntry("/qgis/UI/encoding", openFileDialog->encoding());
 
     delete openFileDialog;
 }                               // openFilesRememberingFilter_

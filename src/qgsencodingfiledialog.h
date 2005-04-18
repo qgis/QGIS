@@ -25,7 +25,7 @@ class QgsEncodingFileDialog: public QFileDialog
 {
     Q_OBJECT
  public:
-    QgsEncodingFileDialog(const QString & dirName, const QString& filter, QWidget * parent, const char * name);
+  QgsEncodingFileDialog(const QString & dirName, const QString& filter, QWidget * parent, const char * name, const QString currentencoding=QTextCodec::codecForLocale()->name());
     ~QgsEncodingFileDialog();
     /**Returns a string describing the choosen encoding*/
     QString encoding() const;

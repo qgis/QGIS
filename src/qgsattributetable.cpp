@@ -497,34 +497,32 @@ void QgsAttributeTable::bringSelectedToTop()
 	selections.push_back(selection(i));
     }
 
-    QTableSelection sel;
+    QTableSelection sel;  
 
     for(std::list<QTableSelection>::iterator iter=selections.begin();iter!=selections.end();++iter)
     {
 	removeselection=true;
-	for(int j=iter->topRow();j<=iter->bottomRow();++j)
-	{	    
-	    while(isRowSelected(swaptorow))//selections are not necessary stored in ascending order
+	while(isRowSelected(swaptorow, true))//selections are not necessary stored in ascending order
 	    {
 		++swaptorow;
 	    }
-
+	
+	for(int j=iter->topRow();j<=iter->bottomRow();++j)
+	{   
 	    if(j>swaptorow)//selections are not necessary stored in ascending order
 	    {
-#ifdef QGISDEBUG
-		qWarning("swapping rows "+QString::number(j)+" and "+QString::number(swaptorow));
-#endif
 		swapRows(j,swaptorow);
 		selectRow(swaptorow);
+		++swaptorow;	
+		
 	    }
 	    else
 	    {
 		removeselection=false;//keep selection
 	    }
-	    ++swaptorow;
 	}
 	if(removeselection)
-	{
+	{	    
 	    removeSelection(*iter);
 	}
     }
