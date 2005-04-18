@@ -356,6 +356,8 @@ private slots:
     void killSplashScreen();
     //! Show the spatial bookmarks dialog
     void actionShowBookmarks_activated();
+    //! Create a new spatial bookmark
+    void actionNewBookmark_activated();
 
 public slots:
     void showProgress(int theProgress, int theTotalSteps);

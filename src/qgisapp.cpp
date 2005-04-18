@@ -3962,6 +3962,7 @@ void QgisApp::setTheme(QString themeName)
     actionOpenTable->setIconSet(QIconSet(QPixmap(iconPath + "/attribute_table.png")));
     actionMeasure->setIconSet(QIconSet(QPixmap(iconPath + "/measure.png")));
     actionShowBookmarks->setIconSet(QIconSet(QPixmap(iconPath + "/bookmarks.png")));
+    actionNewBookmark->setIconSet(QIconSet(QPixmap(iconPath + "/new_bookmark.png")));
 
 }
 void QgisApp::setupToolbarPopups(QString themeName)
@@ -4447,4 +4448,12 @@ void QgisApp::actionShowBookmarks_activated()
 {
   QgsBookmarksBase *bookmarks = new QgsBookmarksBase(this);
   bookmarks->show();
+}
+
+void QgisApp::actionNewBookmark_activated()
+{
+  // Get the name for the bookmark. Everything else we fetch from
+  // the mapcanvas
+
+  //QString bookmarkName = QMessageBox::
 }
