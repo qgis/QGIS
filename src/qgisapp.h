@@ -354,6 +354,8 @@ private slots:
     void setOverviewZOrder(QgsLegend * );
     //! Kills the splash screen
     void killSplashScreen();
+    //! Show the spatial bookmarks dialog
+    void actionShowBookmarks_activated();
 
 public slots:
     void showProgress(int theProgress, int theTotalSteps);

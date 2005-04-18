@@ -114,6 +114,7 @@
 #include "qgsprojectproperties.h"
 #include "qgsvectorfilewriter.h"
 #include "qgscomposer.h"
+#include "qgsbookmarksbase.uic.h"
 
 
 #include "xpm/qgis.xpm"
@@ -3960,6 +3961,8 @@ void QgisApp::setTheme(QString themeName)
     actionSelect->setIconSet(QIconSet(QPixmap(iconPath + "/select.png")));
     actionOpenTable->setIconSet(QIconSet(QPixmap(iconPath + "/attribute_table.png")));
     actionMeasure->setIconSet(QIconSet(QPixmap(iconPath + "/measure.png")));
+    actionShowBookmarks->setIconSet(QIconSet(QPixmap(iconPath + "/bookmarks.png")));
+
 }
 void QgisApp::setupToolbarPopups(QString themeName)
 {
@@ -4439,4 +4442,9 @@ void QgisApp::actionCustomProjection_activated()
 {
   QgsCustomProjectionDialog * myDialog = new QgsCustomProjectionDialog(this);
   myDialog->show();
+}
+void QgisApp::actionShowBookmarks_activated()
+{
+  QgsBookmarksBase *bookmarks = new QgsBookmarksBase(this);
+  bookmarks->show();
 }
