@@ -19,7 +19,7 @@
 #include <qtextcodec.h>
 
 
-QgsEncodingFileDialog::QgsEncodingFileDialog(const QString & dirName, const QString& filter, QWidget * parent, const char * name): QFileDialog(dirName, filter, parent, name)
+QgsEncodingFileDialog::QgsEncodingFileDialog(const QString & dirName, const QString& filter, QWidget * parent, const char * name, const QString currentencoding): QFileDialog(dirName, filter, parent, name)
 {
     mEncodingComboBox=new QComboBox(this);
     QLabel* l=new QLabel(tr("Encoding:"),this);
@@ -66,10 +66,14 @@ QgsEncodingFileDialog::QgsEncodingFileDialog(const QString & dirName, const QStr
     mEncodingComboBox->insertItem("CP1258"); 
     mEncodingComboBox->insertItem("Apple Roman"); 
     mEncodingComboBox->insertItem("TIS-620"); 
-    mEncodingComboBox->setCurrentText(QTextCodec::codecForLocale()->name());//make local encoding the default
-#ifdef QGISDEBUG
-    qWarning("name of locale is: "+QString(QTextCodec::codecForLocale()->name()));
-#endif
+    if(currentencoding.isNull()||currentencoding.isEmpty()||currentencoding=="\0")
+      {
+	mEncodingComboBox->setCurrentText(QString(QTextCodec::codecForLocale()->name()));
+      }
+    else
+      {
+	mEncodingComboBox->setCurrentText(currentencoding);
+      }
 }
 
 QgsEncodingFileDialog::~QgsEncodingFileDialog()
