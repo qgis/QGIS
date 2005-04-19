@@ -125,25 +125,29 @@ inline QgsMapToPixel::QgsMapToPixel(double mupp,
 inline QgsMapToPixel::~QgsMapToPixel()
 {
 }
+
 inline QgsPoint QgsMapToPixel::transform(double x, double y)
 {
-  return (transform(QgsPoint(x, y)));
+  transformInPlace(x,y);
+  return QgsPoint(x,y);
 }
 
 inline QgsPoint QgsMapToPixel::transform(const QgsPoint& p)
 {
-  // transform x
-  double dx = (p.x() - xMin) / mapUnitsPerPixel;
-  double dy = yMax - ((p.y() - yMin)) / mapUnitsPerPixel;
-  // double dy = (yMax - (p.y() - yMin))/mapUnitsPerPixel;
+  double dx = p.x();
+  double dy = p.y();
+  transformInPlace(dx, dy);
+
   //std::cerr << "Point to pixel...X : " << p.x() << "-->" << dx << ", Y: " << p.y() << " -->" << dy << std::endl;
   return QgsPoint(dx, dy);
 }
 
 inline void QgsMapToPixel::transform(QgsPoint* p)
 {   
-  double x = ((p->x()-xMin)/mapUnitsPerPixel);
-  double y = (yMax-((p->y() - yMin)) / mapUnitsPerPixel);
+  double x = p->x();
+  double y = p->y();
+  transformInPlace(x, y);
+
 #ifdef QGISDEBUG 
     //std::cerr << "Point to pixel...X : " << p->x() << "-->" << x << ", Y: " << p->y() << " -->" << y << std::endl;
 #endif     
