@@ -414,7 +414,6 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
  
 #if defined(Q_WS_X11)
   // Work around a +/- 32768 limitation on coordinates in X11
-  bool needToTrim = false;
 
   // Look through the x and y coordinates and see if there are any
   // that need trimming. If one is found, there's no need to look at
@@ -423,16 +422,10 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
     if (std::abs(x[i]) > QgsClipper::maxX ||
 	std::abs(y[i]) > QgsClipper::maxY)
     {
-      needToTrim = true;
+      QgsClipper::trimFeature(x, y, true); // true = polyline
+      nPoints = x.size(); // trimming may change nPoints.
       break;
     }
-
-  if (needToTrim)
-  {
-    QgsClipper::trimFeature(x, y, true); // true = polyline
-    nPoints = x.size(); // trimming may change nPoints.
-  }
-
 #endif
 
   // Cast points to int and put into the appropriate storage for the
@@ -512,7 +505,6 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
 
 #if defined(Q_WS_X11)
     // Work around a +/- 32768 limitation on coordinates in X11
-    bool needToTrim = false;
 
     // Look through the x and y coordinates and see if there are any
     // that need trimming. If one is found, there's no need to look at
@@ -521,24 +513,17 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
       if (std::abs(ring->first[i]) > QgsClipper::maxX ||
 	  std::abs(ring->second[i]) > QgsClipper::maxY)
       {
-	needToTrim = true;
-	break;
-      }
-
-    if (needToTrim)
-      QgsClipper::trimFeature(ring->first, ring->second, false);
-
+	QgsClipper::trimFeature(ring->first, ring->second, false);
     /*
 #ifdef QGISDEBUG
-    if (needToTrim)
-    {
-      std::cerr << "Trimmed points (" << ring->first.size() << ")\n";
-      for (int i = 0; i < ring->first.size(); ++i)
-	std::cerr << i << ": " << ring->first[i] 
-		  << ", " << ring->second[i] << '\n';
-    }
+        std::cerr << "Trimmed points (" << ring->first.size() << ")\n";
+        for (int i = 0; i < ring->first.size(); ++i)
+	  std::cerr << i << ": " << ring->first[i] 
+		    << ", " << ring->second[i] << '\n';
 #endif
     */
+	break;
+      }
 
 #endif
 
@@ -763,7 +748,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 	}
       }
 
-      // std::cerr << "Time to draw was " << t.elapsed() << '\n';
+      //std::cerr << "Time to draw was " << t.elapsed() << '\n';
 
       //also draw the not yet commited features
       std::list<QgsFeature*>::iterator it = mAddedFeatures.begin();
