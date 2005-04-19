@@ -119,16 +119,16 @@ inline void QgsClipper::trimFeature(std::vector<double>& x,
   std::vector<double> tmpY;
   trimFeatureToBoundary(x, y, tmpX, tmpY, Xmax, shapeOpen);
 
-  x.resize(0);
-  y.resize(0);
+  x.clear();
+  y.clear();
   trimFeatureToBoundary(tmpX, tmpY, x, y, Ymax, shapeOpen);
 
-  tmpX.resize(0);
-  tmpY.resize(0);
+  tmpX.clear();
+  tmpY.clear();
   trimFeatureToBoundary(x, y, tmpX, tmpY, Xmin, shapeOpen);
 
-  x.resize(0);
-  y.resize(0);
+  x.clear();
+  y.clear();
   trimFeatureToBoundary(tmpX, tmpY, x, y, Ymin, shapeOpen);
 }
 
