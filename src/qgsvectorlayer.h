@@ -95,7 +95,7 @@ const QString displayField() const { return fieldIndex; }
 
      @todo XXX should this return bool?  Throw exceptions?
   */
-  void setDataProvider( QString const & provider );
+  bool setDataProvider( QString const & provider );
   
   //! Setup the coordinate system tranformation for the layer
   void setCoordinateSystem();

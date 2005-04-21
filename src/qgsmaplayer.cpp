@@ -204,7 +204,8 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
 
     // set ID
     mnl = layer_node.namedItem("id");
-    if ( ! mnl.isNull() ) {
+    if ( ! mnl.isNull() ) 
+    {
         mne = mnl.toElement();
         if ( ! mne.isNull() && mne.text().length() > 10 ) { // should be at least 17 (yyyyMMddhhmmsszzz)
 	    ID = mne.text();
