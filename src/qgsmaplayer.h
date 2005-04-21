@@ -31,7 +31,10 @@
 #include <qgisapp.h>
 #include <qgssymbol.h>
 #include <qgsfield.h>
-#include "qgscoordinatetransform.h"
+
+#include <qgscoordinatetransform.h>
+
+
 class QgsFeature;
 class QPopupMenu;
 class QgsLegendItem;

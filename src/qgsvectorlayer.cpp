@@ -1823,11 +1823,14 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     providerKey = "ogr";
   }
 
-  setDataProvider( providerKey );
+  if ( ! setDataProvider( providerKey ) )
+  {
+      return false;
+  }
 
   //read provider encoding
   QDomNode encodingNode = layer_node.namedItem("encoding");
-  if(!encodingNode.isNull()&&dataProvider)
+  if( ! encodingNode.isNull() && dataProvider )
   {
       dataProvider->setEncoding(encodingNode.toElement().text());
   }
@@ -1939,7 +1942,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 
 
 
-void
+bool
 QgsVectorLayer:: setDataProvider( QString const & provider )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
@@ -1988,8 +1991,8 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 #endif
     create_it * classFactory = (create_it *) myLib->resolve("classFactory");
 
-    valid = false;            // assume the layer is invalid until we
-    // determine otherwise
+    valid = false;              // assume the layer is invalid until we
+                                // determine otherwise
     if (classFactory)
     {
 #ifdef QGISDEBUG
@@ -2061,13 +2064,24 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
           mLabel = new QgsLabel ( dataProvider->fields() );
           mLabelOn = false;
         }
+        else
+        {
+#ifdef QGISDEBUG
+            qDebug( "%s:%d invalid provider plugin %s", 
+                    __FILE__, __LINE__, dataSource.ascii() );
+            return false;
+#endif
+        }
       }
       else
       {
 #ifdef QGISDEBUG
-        std::cout << "Unable to instantiate the data provider plugin\n";
+        qDebug( "%s:%d Unable to instantiate the data provider plugin %s", 
+                __FILE__, __LINE__, dataSource.ascii() );
 #endif
         valid = false;
+
+        return false;
       }
     }
   }
@@ -2078,7 +2092,11 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
     std::cout << "Failed to load " << "../providers/libproviders.so" << "\n";
 #endif
 
+    return false;
+
   }
+
+  return true;
 
 } // QgsVectorLayer:: setDataProvider
 

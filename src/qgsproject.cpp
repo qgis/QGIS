@@ -839,14 +839,22 @@ static bool _getMapLayers(QDomDocument const &doc)
 
             return false;
         }
+
         // have the layer restore state that is stored in DOM node
-        mapLayer->readXML(node);
+        if ( mapLayer->readXML(node) )
+        {
+            mapLayer = QgsMapLayerRegistry::instance()->addMapLayer(mapLayer);
+        }
+        else
+        {
+            delete mapLayer;
 
-        mapLayer = QgsMapLayerRegistry::instance()->addMapLayer(mapLayer);
-
+            return false;
+        }
     }
 
     return true;
+
 } // _getMapLayers
 
 
@@ -973,8 +981,8 @@ bool QgsProject::read()
 
     if (!imp_->file.open(IO_ReadOnly))
     {
-        imp_->file.close();         // even though we got an error, let's make
-        // sure it's closed anyway
+        imp_->file.close();     // even though we got an error, let's make
+                                // sure it's closed anyway
 
         throw QgsIOException("Unable to open " + imp_->file.name());
 
@@ -993,15 +1001,15 @@ bool QgsProject::read()
         // errorMsg + " at line " + QString::number( line ) +
         // " column " + QString::number( column ) );
 
-        QString errorString = "Project file read error" +
-            errorMsg + " at line " + QString::number(line) + " column " +
+        QString errorString = QObject::tr("Project file read error") +
+            errorMsg + QObject::tr(" at line ") + QString::number(line) + QObject::tr(" column ") +
             QString::number(column);
 
         qDebug((const char *) errorString.utf8());
 
         imp_->file.close();
 
-        throw QgsException(errorString + " for file " + imp_->file.name());
+        throw QgsException(errorString + QObject::tr(" for file ") + imp_->file.name());
 
         return false;               // XXX superfluous because of exception
     }

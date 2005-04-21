@@ -49,8 +49,8 @@
 
 
 
-#define PIXMAP_WIDTH 200
-#define PIXMAP_HEIGHT 20
+const int PIXMAP_WIDTH = 200;
+const int PIXMAP_HEIGHT = 20;
 
 QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent ) 
     : QgsLabelDialogBase (parent),
@@ -60,10 +60,11 @@ QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent )
       mFont("Helvetica")
 {
 #ifdef QGISDEBUG
-//    std::cerr << "QgsLabelDialog::QgsLabelDialog()" << std::endl;
+    std::cerr << __FILE__ << ":" << __LINE__
+              << "QgsLabelDialog::QgsLabelDialog()\n";
 #endif
 
-    Q_CHECK_PTR( label );
+    Q_ASSERT( label );
 
     init();
 }
@@ -72,7 +73,8 @@ QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent )
 void QgsLabelDialog::init ( )
 {
 #ifdef QGISDEBUG
-  std::cerr << "QgsLabelDialog::init" << std::endl;
+    std::cerr << __FILE__ << ":" << __LINE__ 
+              << "QgsLabelDialog::init()\n";
 #endif
   QgsLabelAttributes * myLabelAttributes = mLabel->layerAttributes();
   //populate a string list with all the field names which will be used to set up the 
