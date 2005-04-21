@@ -23,229 +23,252 @@ QGIS_INC = $(HOME)/include/qgis
 INCLUDEPATH += $$QGIS_INC
 
 QGIS_FILES = 	qgisapp.o					\
+		qgisapp.moc.o					\
+		qgisappbase.moc.uic.o				\
+		qgisappbase.uic.o				\
 		qgisiface.o					\
+		qgisinterface.moc.o				\
 		qgisinterface.o					\
+		qgsabout.moc.uic.o				\
+		qgsabout.uic.o					\
 		qgsacetatelines.o				\
 		qgsacetateobject.o				\
 		qgsacetaterectangle.o				\
-                qgscomposer.moc.o \
-                qgscomposerbase.moc.uic.o \
-                qgscomposerbase.uic.o \
-                qgscomposer.o \
-                qgscompositionbase.moc.uic.o \
-                qgscompositionbase.uic.o \
-                qgscomposition.moc.o \
-                qgscomposition.o \
-                qgscomposerview.o \
-                qgscomposerview.moc.o \
-                qgscomposermap.moc.o \
-                qgscomposermapbase.moc.uic.o \
-                qgscomposermap.o \
-                qgscomposermapbase.uic.o \
-                qgscomposervectorlegend.moc.o \
-                qgscomposervectorlegendbase.moc.uic.o \
-                qgscomposervectorlegend.o \
-                qgscomposervectorlegendbase.uic.o \
-                qgscomposerlabel.moc.o \
-                qgscomposerlabelbase.moc.uic.o \
-                qgscomposerlabel.o \
-                qgscomposerlabelbase.uic.o \
-                qgscomposeritem.o \
-                qgsdelattrdialogbase.moc.uic.o  \
-                qgsdelattrdialog.moc.o \
-                qgsdelattrdialogbase.uic.o \
-                qgsdelattrdialog.o \
-                qgsattributetabledisplay.moc.o \
-                qgsrunprocess.moc.o \
-                qgsrunprocess.o \
-                qgsaddattrdialogbase.moc.uic.o \
-                qgsaddattrdialog.moc.o \
-                qgsaddattrdialogbase.uic.o \
-                qgsaddattrdialog.o \
-                qgsattributeaction.o				\
+		qgsattributeactiondialog.moc.o			\
 		qgsattributeactiondialog.o			\
+		qgsattributeactiondialogbase.moc.uic.o		\
+		qgsattributeactiondialogbase.uic.o		\
+		qgsattributedialog.moc.o			\
 		qgsattributedialog.o				\
+		qgsattributedialogbase.moc.uic.o		\
+		qgsattributedialogbase.uic.o			\
+		qgsattributetable.moc.o				\
 		qgsattributetable.o				\
+		qgsattributetablebase.moc.uic.o			\
+		qgsattributetablebase.uic.o			\
 		qgsattributetabledisplay.o			\
+		qgsbookmarksbase.moc.uic.o \
+		qgsbookmarksbase.uic.o \
 		qgscolortable.o					\
+		qgscomposerscalebarbase.moc.uic.o \
+		qgscomposerscalebarbase.uic.o \
+		qgscomposerscalebar.moc.o \
+		qgscomposerscalebar.o \
+		qgscontcoldialog.moc.o				\
 		qgscontcoldialog.o				\
+		qgscontcoldialogbase.moc.uic.o			\
+		qgscontcoldialogbase.uic.o			\
 		qgscontinuouscolrenderer.o			\
+		qgscoordinatetransform.moc.o			\
 		qgscoordinatetransform.o			\
-		qgsmaptopixel.o					\
 		qgscustomsymbol.o				\
+		qgscustomprojectiondialogbase.moc.uic.o \
+		qgscustomprojectiondialogbase.uic.o \
+		qgscustomprojectiondialog.moc.o \
+		qgscustomprojectiondialog.o \
 		qgsdatasource.o					\
+		qgsdbsourceselect.moc.o				\
+		qgsdbsourceselect.o				\
+		qgsdbsourceselectbase.moc.uic.o			\
+		qgsdbsourceselectbase.uic.o			\
+		qgsdlgvectorlayerproperties.moc.o		\
 		qgsdlgvectorlayerproperties.o			\
-		qgsfeatureattribute.o				\
+		qgsdlgvectorlayerpropertiesbase.moc.uic.o	\
+		qgsdlgvectorlayerpropertiesbase.uic.o		\
 		qgsfeature.o					\
+		qgsfeatureattribute.o				\
 		qgsfield.o					\
+		qgsgeomtypedialog.moc.o				\
 		qgsgeomtypedialog.o				\
-		qgsrenderer.o					\
+		qgsgeomtypedialogbase.moc.uic.o			\
+		qgsgeomtypedialogbase.uic.o			\
 		qgsgraduatedmarenderer.o			\
 		qgsgraduatedsymrenderer.o			\
+		qgsgramadialog.moc.o				\
 		qgsgramadialog.o				\
+		qgsgramadialogbase.moc.uic.o			\
+		qgsgramadialogbase.uic.o			\
+		qgsgramaextensionwidget.moc.o			\
 		qgsgramaextensionwidget.o			\
+		qgsgrasydialog.moc.o				\
 		qgsgrasydialog.o				\
+		qgsgrasydialogbase.moc.uic.o			\
+		qgsgrasydialogbase.uic.o			\
+		qgshelpviewer.moc.o				\
 		qgshelpviewer.o					\
-                qgsencodingfiledialog.moc.o  \
-                qgsencodingfiledialog.o \
-                qgsidentifyresults.o				\
-		qgslabelattributes.o				\
+		qgshelpviewerbase.moc.uic.o			\
+		qgshelpviewerbase.uic.o				\
+		qgsidentifyresults.moc.o			\
+		qgsidentifyresultsbase.moc.uic.o		\
+		qgsidentifyresultsbase.uic.o			\
 		qgslabel.o					\
+		qgslabelattributes.o				\
+		qgslabeldialog.moc.o				\
 		qgslabeldialog.o				\
+		qgslabeldialogbase.moc.uic.o			\
+		qgslabeldialogbase.uic.o			\
+		qgslegend.moc.o					\
 		qgslegend.o					\
+		qgslegenditem.moc.o				\
 		qgslegenditem.o					\
+		qgslegenditembase.moc.uic.o			\
+		qgslegenditembase.uic.o				\
 		qgsline.o					\
+		qgslinestyledialog.moc.o			\
 		qgslinestyledialog.o				\
+		qgslinestyledialogbase.moc.uic.o		\
+		qgslinestyledialogbase.uic.o			\
 		qgslinesymbol.o					\
+		qgsludialog.moc.o				\
 		qgsludialog.o					\
+		qgsludialogbase.moc.uic.o			\
+		qgsludialogbase.uic.o				\
+		qgsmapcanvas.moc.o				\
 		qgsmapcanvas.o					\
+		qgsmaplayer.moc.o				\
 		qgsmaplayer.o					\
+		qgsmaplayerinterface.moc.o			\
+		qgsmaplayerregistry.moc.o			\
 		qgsmaplayerregistry.o				\
+		qgsmapserverexport.moc.o			\
 		qgsmapserverexport.o				\
+		qgsmapserverexportbase.moc.uic.o		\
+		qgsmapserverexportbase.uic.o			\
+		qgsmaptopixel.o					\
+		qgsmarkercatalogue.o				\
+		qgsmarkerdialog.moc.o				\
 		qgsmarkerdialog.o				\
+		qgsmarkerdialogbase.moc.uic.o			\
+		qgsmarkerdialogbase.uic.o			\
 		qgsmarkersymbol.o				\
+		qgsmessageviewer.moc.uic.o			\
+		qgsmessageviewer.uic.o				\
+		qgsnewconnection.moc.o				\
+		qgsnewconnection.o				\
+		qgsnewconnectionbase.moc.uic.o			\
+		qgsnewconnectionbase.uic.o			\
+		qgsoptions.moc.o				\
 		qgsoptions.o					\
+		qgsoptionsbase.moc.uic.o			\
+		qgsoptionsbase.uic.o				\
+		qgspatterndialog.moc.o				\
 		qgspatterndialog.o				\
+		qgspatterndialogbase.moc.uic.o			\
+		qgspatterndialogbase.uic.o			\
+		qgspgquerybuilder.moc.o				\
+		qgspgquerybuilder.o				\
+		qgspgquerybuilderbase.uic.o			\
 		qgspluginitem.o					\
+		qgspluginmanager.moc.o				\
 		qgspluginmanager.o				\
+		qgspluginmanagerbase.moc.uic.o			\
+		qgspluginmanagerbase.uic.o			\
 		qgspluginmetadata.o				\
-                qgsmeasurebase.moc.uic.o \
-                qgsmeasurebase.uic.o \
-                qgsmeasure.moc.o \
-                qgsmeasure.o \
 		qgspluginregistry.o				\
 		qgspoint.o					\
 		qgspolygonsymbol.o				\
 		qgsproject.o					\
+		qgsprojectproperties.moc.o			\
 		qgsprojectproperties.o				\
+		qgsprojectpropertiesbase.moc.uic.o		\
+		qgsprojectpropertiesbase.uic.o			\
 		qgsprovidermetadata.o				\
 		qgsproviderregistry.o				\
 		qgsrangerenderitem.o				\
+		qgsrasterlayer.moc.o				\
 		qgsrasterlayer.o				\
+		qgsrasterlayerproperties.moc.o			\
 		qgsrasterlayerproperties.o			\
+		qgsrasterlayerpropertiesbase.moc.uic.o		\
+		qgsrasterlayerpropertiesbase.uic.o		\
 		qgsrect.o					\
+		qgsrenderer.o					\
 		qgsrenderitem.o					\
 		qgsscalecalculator.o				\
+		qgssimadialog.moc.o				\
 		qgssimadialog.o					\
+		qgssimadialogbase.moc.uic.o			\
+		qgssimadialogbase.uic.o				\
 		qgssimarenderer.o				\
 		qgssinglesymrenderer.o				\
+		qgssisydialog.moc.o				\
 		qgssisydialog.o					\
+		qgssisydialogbase.moc.uic.o			\
+		qgssisydialogbase.uic.o				\
 		qgssvgcache.o					\
 		qgssymbol.o					\
 		qgssymbologyutils.o				\
 		qgsuniquevalrenderer.o				\
-		qgsuvaldialog.o					\
-		qgsuvalmadialog.o				\
-		qgsuvalmarenderer.o				\
-		qgsvectordataprovider.o				\
-		qgsvectorfilewriter.o				\
-		qgsvectorlayer.o				\
-		splashscreen.o					\
-		qgisappbase.uic.o				\
-		qgsabout.uic.o					\
-		qgsattributedialogbase.uic.o			\
-		qgsattributeactiondialogbase.uic.o		\
-		qgsattributetablebase.uic.o			\
-		qgscontcoldialogbase.uic.o			\
-		qgsdlgvectorlayerpropertiesbase.uic.o		\
-		qgsgeomtypedialogbase.uic.o			\
-		qgsgramadialogbase.uic.o			\
-		qgsgrasydialogbase.uic.o			\
-		qgshelpviewerbase.uic.o				\
-		qgsidentifyresultsbase.uic.o			\
-		qgslabeldialogbase.uic.o			\
-		qgslegenditembase.uic.o				\
-		qgslinestyledialogbase.uic.o			\
-		qgsludialogbase.uic.o				\
-		qgsmapserverexportbase.uic.o			\
-		qgsmarkerdialogbase.uic.o			\
-		qgsmessageviewer.uic.o				\
-		qgsoptionsbase.uic.o				\
-		qgspatterndialogbase.uic.o			\
-		qgspluginmanagerbase.uic.o			\
-		qgsprojectpropertiesbase.uic.o			\
-		qgsrasterlayerpropertiesbase.uic.o		\
-		qgssimadialogbase.uic.o				\
-		qgssisydialogbase.uic.o				\
-		qgsuvaldialogbase.uic.o				\
-		qgsuvalmadialogbase.uic.o			\
-		qgsdbsourceselect.o				\
-		qgsdbsourceselect.moc.o				\
-		qgsnewconnection.o				\
-		qgsnewconnection.moc.o				\
-		qgspgquerybuilder.o				\
-		qgspgquerybuilder.moc.o				\
-		qgisapp.moc.o					\
-		qgisinterface.moc.o				\
-		qgsattributeactiondialog.moc.o			\
-		qgsattributedialog.moc.o			\
-		qgsattributetable.moc.o				\
-		qgscoordinatetransform.moc.o			\
-		qgscontcoldialog.moc.o				\
-		qgsdlgvectorlayerproperties.moc.o		\
-		qgsgeomtypedialog.moc.o				\
-		qgsgramadialog.moc.o				\
-		qgsgramaextensionwidget.moc.o			\
-		qgsgrasydialog.moc.o				\
-		qgshelpviewer.moc.o				\
-		qgsidentifyresults.moc.o			\
-		qgslabeldialog.moc.o				\
-		qgslegenditem.moc.o				\
-		qgslegend.moc.o					\
-		qgslinestyledialog.moc.o			\
-		qgsludialog.moc.o				\
-		qgsmapcanvas.moc.o				\
-		qgsmaplayerinterface.moc.o			\
-		qgsmaplayer.moc.o				\
-		qgsmaplayerregistry.moc.o			\
-		qgsmapserverexport.moc.o			\
-		qgsmarkerdialog.moc.o				\
-		qgsoptions.moc.o				\
-		qgspatterndialog.moc.o				\
-		qgspluginmanager.moc.o				\
-                qgsprojectproperty.o			        \
-		qgsprojectproperties.moc.o			\
-		qgsrasterlayer.moc.o				\
-		qgsrasterlayerproperties.moc.o			\
-		qgssimadialog.moc.o				\
-		qgssisydialog.moc.o				\
 		qgsuvaldialog.moc.o				\
-		qgsuvalmadialog.moc.o				\
-		qgsvectorlayer.moc.o				\
-		splashscreen.moc.o				\
-		qgisappbase.moc.uic.o				\
-		qgsabout.moc.uic.o				\
-		qgsattributedialogbase.moc.uic.o		\
-		qgsattributeactiondialogbase.moc.uic.o		\
-		qgsattributetablebase.moc.uic.o			\
-		qgscontcoldialogbase.moc.uic.o			\
-		qgsdlgvectorlayerpropertiesbase.moc.uic.o	\
-		qgsgeomtypedialogbase.moc.uic.o			\
-		qgsgramadialogbase.moc.uic.o			\
-		qgsgrasydialogbase.moc.uic.o			\
-		qgshelpviewerbase.moc.uic.o			\
-		qgsidentifyresultsbase.moc.uic.o		\
-		qgslabeldialogbase.moc.uic.o			\
-		qgslegenditembase.moc.uic.o			\
-		qgslinestyledialogbase.moc.uic.o		\
-		qgsludialogbase.moc.uic.o			\
-		qgsmapserverexportbase.moc.uic.o		\
-		qgsmarkerdialogbase.moc.uic.o			\
-		qgsmessageviewer.moc.uic.o			\
-		qgsoptionsbase.moc.uic.o			\
-		qgspatterndialogbase.moc.uic.o			\
-		qgspluginmanagerbase.moc.uic.o			\
-		qgsprojectpropertiesbase.moc.uic.o		\
-		qgsrasterlayerpropertiesbase.moc.uic.o		\
-		qgssimadialogbase.moc.uic.o			\
-		qgssisydialogbase.moc.uic.o			\
+		qgsuvaldialog.o					\
 		qgsuvaldialogbase.moc.uic.o			\
+		qgsuvaldialogbase.uic.o				\
+		qgsuvalmadialog.moc.o				\
+		qgsuvalmadialog.o				\
 		qgsuvalmadialogbase.moc.uic.o			\
-		qgsdbsourceselectbase.uic.o			\
-		qgsnewconnectionbase.uic.o			\
-		qgspgquerybuilderbase.uic.o			\
-		qgsdbsourceselectbase.moc.uic.o			\
-		qgsnewconnectionbase.moc.uic.o			\
+		qgsuvalmadialogbase.uic.o			\
+		qgsuvalmarenderer.o				\
+		qgsvectorfilewriter.o				\
+		qgsvectorlayer.moc.o				\
+		qgsvectorlayer.o				\
+		splashscreen.moc.o				\
+		splashscreen.o					\
+                qgsaddattrdialog.moc.o				\
+                qgsaddattrdialog.o				\
+                qgsaddattrdialogbase.moc.uic.o			\
+                qgsaddattrdialogbase.uic.o			\
+                qgsattributeaction.o				\
+                qgsattributetabledisplay.moc.o			\
+                qgscomposer.moc.o				\
+                qgscomposer.o					\
+                qgscomposerbase.moc.uic.o			\
+                qgscomposerbase.uic.o				\
+                qgscomposeritem.o				\
+                qgscomposerlabel.moc.o				\
+                qgscomposerlabel.o				\
+                qgscomposerlabelbase.moc.uic.o			\
+                qgscomposerlabelbase.uic.o			\
+                qgscomposermap.moc.o				\
+                qgscomposermap.o				\
+                qgscomposermapbase.moc.uic.o			\
+                qgscomposermapbase.uic.o			\
+                qgscomposervectorlegend.moc.o			\
+                qgscomposervectorlegend.o			\
+                qgscomposervectorlegendbase.moc.uic.o		\
+                qgscomposervectorlegendbase.uic.o		\
+                qgscomposerview.moc.o				\
+                qgscomposerview.o				\
+                qgscomposition.moc.o				\
+                qgscomposition.o				\
+                qgscompositionbase.moc.uic.o			\
+                qgscompositionbase.uic.o			\
+                qgsdataprovider.moc.o				\
+                qgsdelattrdialog.moc.o				\
+                qgsdelattrdialog.o				\
+                qgsdelattrdialogbase.moc.uic.o			\
+                qgsdelattrdialogbase.uic.o			\
+                qgsencodingfiledialog.moc.o			\
+                qgsencodingfiledialog.o				\
+                qgsidentifyresults.o				\
+                qgslayerprojectionselector.moc.o		\
+                qgslayerprojectionselector.o			\
+                qgslayerprojectionselectorbase.moc.uic.o	\
+                qgslayerprojectionselectorbase.uic.o		\
+                qgsmeasure.moc.o				\
+                qgsmeasure.o					\
+                qgsmeasurebase.moc.uic.o			\
+                qgsmeasurebase.uic.o				\
+                qgsprojectionselector.moc.o			\
+                qgsprojectionselector.o				\
+                qgsprojectionselectorbase.moc.uic.o		\
+                qgsprojectionselectorbase.uic.o			\
+                qgsprojectproperty.o				\
+                qgsrunprocess.moc.o				\
+                qgsrunprocess.o					\
+		qgsspatialreferences.o \
+		qgsspatialrefsys.o \
+                qgsvectordataprovider.moc.o			\
+                qgsvectordataprovider.o				\
 		qgspgquerybuilderbase.moc.uic.o	
 
 
@@ -255,7 +278,7 @@ QGIS_OBJS = $$join(QGIS_FILES," ../../src/qgis-"," ../../src/qgis-")
 
 DEFINES = QGISDEBUG
 
-LIBS += -lcppunit -dl $$QGIS_OBJS $$GDAL_LIBS
+LIBS += -lcppunit -dl $$QGIS_OBJS $$GDAL_LIBS -lsqlite3
 
 # Input
 HEADERS += projecttest.h
