@@ -259,14 +259,31 @@ void QgsSingleSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 
   QDomNode rinode = rnode.namedItem("renderitem");
 
+    Q_ASSERT( ! rinode.isNull() );
+
     QDomNode vnode = rinode.namedItem("value");
+
+    Q_ASSERT( ! rinode.isNull() );
+
     QDomElement velement = vnode.toElement();
     QString value = velement.text();
 
     QDomNode synode = rinode.namedItem("symbol");
-    sy->readXML ( synode );
+    
+    if ( synode.isNull() )
+    {
+        qDebug( "%s:%d in project file no symbol node in renderitem DOM" );
+        // XXX abort?
+    }
+    else
+    {
+        sy->readXML ( synode );
+    }
 
     QDomNode lnode = rinode.namedItem("label");
+
+    Q_ASSERT( ! rinode.isNull() );
+
     QDomElement lnodee = lnode.toElement();
     QString label = lnodee.text();
 
