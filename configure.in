@@ -168,7 +168,7 @@ AC_ARG_WITH(sqlite3dir,
                 [
                 AC_MSG_ERROR([*** Sqlite3 library not found.])
                 ])
-          AC_CHECK_HEADERS(/sqlite3.h,
+          AC_CHECK_HEADERS(sqlite3.h,
                 [SQLITE3_INC="-I$with_sqlite3dir/include"],
                 [
                 AC_MSG_ERROR([*** Sqlite3 headers not found.])
