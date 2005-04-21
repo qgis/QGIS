@@ -26,7 +26,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=6
 MICRO_VERSION=0
-EXTRA_VERSION=17
+EXTRA_VERSION=12
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
@@ -82,9 +82,8 @@ dnl ---------------------------------------------------------------------------
 dnl Qt check
 dnl ---------------------------------------------------------------------------
 AQ_CHECK_QT
-
-AM_CONDITIONAL([HAVE_QTMAC], [test x$QTDIR != x -a -f "$QTDIR/config.tests/mac/tst_mac_version"])
-
+AM_CONDITIONAL([HAVE_QTMAC], [test x$QTDIR != x -a -f "$QTDIR/config.tests/mac/tst_m
+                ac_version"])
 
 dnl ---------------------------------------------------------------------------
 dnl GDAL/OGR
@@ -98,6 +97,108 @@ AQ_CHECK_GEOS
 if test x"$ac_geos" = "xno"; then
   AC_MSG_ERROR("GEOS is required and was not found")
 fi
+
+dnl ---------------------------------------------------------------------------
+dnl PROJ
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_WITH(projdir,
+    AC_HELP_STRING([--with-projdir=DIR],
+      [ Proj4 installation directory, e.g. '--with-projdir=/usr/local']),
+    [
+    AC_MSG_CHECKING([for Proj4 library in $with_projdir])
+      if test -d "$with_projdir/lib"; then
+          LDFLAGS="$LDFLAGS -L$with_projdir/lib"
+    CPPFLAGS="$CPPFLAGS -I$with_projdir/include"
+    AC_MSG_RESULT(["$with_projdir exists"])
+    AC_CHECK_LIB(proj,pj_init, 
+      [
+      have_proj_lib=yes
+      PROJ_LIB="-L$with_projdir/lib -lproj"
+      ],
+      [
+      AC_MSG_ERROR([*** Proj4 library not found.])
+      ])
+    AC_CHECK_HEADERS(proj_api.h,
+      [PROJ_INC="-I$with_projdir/include"], 
+      [
+      AC_MSG_ERROR([*** Proj4 headers not found.])
+      ])
+    else
+      AC_MSG_ERROR([*** directory $with_projdir does not exist.])
+  fi
+    ],  
+    [
+    AC_CHECK_LIB(proj,pj_init,
+  [
+  have_proj_lib=yes
+  PROJ_LIB="-lproj"
+  ],
+  [
+  AC_MSG_ERROR([Proj4 is required and was not found.])
+  ])
+  
+    AC_CHECK_HEADERS(proj_api.h,[PROJ_INC=""],
+      [
+      AC_MSG_ERROR([*** Proj4 headers not found.])
+      ])
+    ]  
+    )
+
+AC_SUBST(PROJ_INC)
+AC_SUBST(PROJ_LIB)
+
+dnl ---------------------------------------------------------------------------
+dnl SQLITE
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_WITH(sqlite3dir,
+    AC_HELP_STRING([--with-sqlite3dir=DIR],
+        [ sqlite3 installation directory, e.g. '--with-sqlite3=/usr/local']),
+    [
+    AC_MSG_CHECKING([for Sqlite3 library in $with_sqlite3dir])
+        if test -d "$with_sqlite3dir/lib"; then
+          LDFLAGS="$LDFLAGS -L$with_sqlite3dir/lib"
+          CPPFLAGS="$CPPFLAGS -I$with_sqlite3dir/include"
+          AC_MSG_RESULT(["$with_sqlite3dir exists"])
+          AC_CHECK_LIB(sqlite3,sqlite3_libversion_number,
+                [
+                have_sqlite3_lib=yes
+                SQLITE3_LIB="-L$with_sqlite3dir/lib -lsqlite3"
+                ],
+                [
+                AC_MSG_ERROR([*** Sqlite3 library not found.])
+                ])
+          AC_CHECK_HEADERS(/sqlite3.h,
+                [SQLITE3_INC="-I$with_sqlite3dir/include"],
+                [
+                AC_MSG_ERROR([*** Sqlite3 headers not found.])
+                ])
+                else
+                AC_MSG_ERROR([*** directory $with_sqlite3dir does not exist.])
+        fi
+    ],
+    [
+    AC_CHECK_LIB(sqlite3,sqlite3_libversion_number,
+        [
+        have_sqlite3_lib=yes
+        SQLITE3_LIB="-lsqlite3"
+        ],
+        [
+        AC_MSG_ERROR([*** Sqlite3 library not found.])
+        ])
+
+    AC_CHECK_HEADERS(sqlite3.h,[SQLITE3_INC=""],
+        [
+        AC_MSG_ERROR([*** Sqlite3 headers not found.])
+        ])
+    ]
+    )
+
+AC_SUBST(SQLITE3_INC)
+AC_SUBST(SQLITE3_LIB)
+
+
 
 dnl ---------------------------------------------------------------------------
 dnl PostgreSQL
@@ -200,13 +301,13 @@ if test -n "$with_grass" -a x"$with_grass" != "xno"; then
     fi
 
     if test ! -f "$GISLIB"; then
-	AC_MSG_ERROR( [GRASS library not found] )
+  AC_MSG_ERROR( [GRASS library not found] )
     fi
     GRASS_LIB="-L$with_grass/${_lib} -lgrass_vect -lgrass_dig2 -lgrass_dbmiclient -lgrass_dbmibase -lgrass_shape -lgrass_dgl -lgrass_rtree -lgrass_gis -lgrass_datetime -lgrass_linkm -lgrass_form -lgrass_gproj"
 
     GISINC=`ls $with_grass/include/gis.h`
     if test ! -f "$GISINC"; then
-	AC_MSG_ERROR( [GRASS headers not found] )
+  AC_MSG_ERROR( [GRASS headers not found] )
     fi
 
     GRASS_BASE="$with_grass"
@@ -335,6 +436,8 @@ echo "PostgreSQL    : $ac_postgresql $postgresql_version_string"
 echo "GRASS         : $ac_grass"
 echo "SPIT          : $ac_spit"
 echo "GPS/GPX       : $have_expat_lib"
+echo "PROJ4         : $have_proj_lib"
+echo "SQLITE3       : $have_sqlite3_lib"
 echo ""
 echo "Debug         : $ac_debug"
 echo "Plugin dir    : ${libdir}/$PACKAGE"
