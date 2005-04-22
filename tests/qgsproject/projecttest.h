@@ -11,6 +11,7 @@ using namespace std;
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <qgsproject.h>
+#include <qgsexception.h>
 
 #include <qstring.h>
 
@@ -21,9 +22,6 @@ using namespace std;
 
    @todo XXX add tests for:
 
-   entryList()
-   removeEntry()
-   clearProperties()
    read()
    write()
 
@@ -212,7 +210,18 @@ class ProjectTest : public CppUnit::TestFixture
 
         QgsProject::instance()->clearProperties();
 
-        CPPUNIT_ASSERT( QgsProject::instance()->read() );
+        try
+        {
+            CPPUNIT_ASSERT( QgsProject::instance()->read() );
+        }
+        catch( QgsException & e )
+        {
+            // since we're not running the full application, this exception is
+            // expected, so we can safely ignore it
+
+            qDebug( "%s:%d caught expected exception %s", __FILE__, __LINE__, e.what() );
+
+        }
 
         bool status;
 
