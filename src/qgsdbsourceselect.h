@@ -68,6 +68,8 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     QString connInfo();
     //! Add the layer selected when user double-clicks the mouse
     void addLayer(QListBoxItem *item);
+    //! Return the name of the selected encoding (e.g. UTF-8, ISO-8859-1, etc.)
+    QString encoding();
     public slots:
       void setSql(QListViewItem *);
  private:

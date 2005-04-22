@@ -1382,6 +1382,12 @@ void QgisApp::addDatabaseLayer()
                 // create the layer
                 //qWarning("creating layer");
                 QgsVectorLayer *layer = new QgsVectorLayer(connInfo + " table=" + *it, *it, "postgres");
+		
+		if(layer->getDataProvider())
+		  {
+		    layer->getDataProvider()->setEncoding(dbs->encoding());
+		  }
+
                 if (layer->isValid())
                 {
                     // set initial visibility based on user preference
@@ -1434,8 +1440,11 @@ void QgisApp::addDatabaseLayer()
                 ++it;
             }
             statusBar()->message(mMapCanvas->extent().stringRep(2));
-
         }
+
+	QSettings settings;
+	settings.writeEntry("/qgis/UI/encoding", dbs->encoding());
+
         qApp->processEvents();
 
         mMapCanvas->freeze(false);

@@ -44,6 +44,62 @@ QgsDbSourceSelect::QgsDbSourceSelect(QgisApp * app, QWidget * parent, const char
   //disable the 'where clause' box for 0.4 release
   //  groupBox3->hide();
 
+  //insert the encoding types available in qt
+  mEncodingComboBox->insertItem("BIG5"); 
+  mEncodingComboBox->insertItem("BIG5-HKSCS"); 
+  mEncodingComboBox->insertItem("EUCJP"); 
+  mEncodingComboBox->insertItem("EUCKR"); 
+  mEncodingComboBox->insertItem("GB2312"); 
+  mEncodingComboBox->insertItem("GBK"); 
+  mEncodingComboBox->insertItem("GB18030"); 
+  mEncodingComboBox->insertItem("JIS7"); 
+  mEncodingComboBox->insertItem("SHIFT-JIS"); 
+  mEncodingComboBox->insertItem("TSCII"); 
+  mEncodingComboBox->insertItem("UTF-8"); 
+  mEncodingComboBox->insertItem("UTF-16"); 
+  mEncodingComboBox->insertItem("KOI8-R"); 
+  mEncodingComboBox->insertItem("KOI8-U"); 
+  mEncodingComboBox->insertItem("ISO8859-1"); 
+  mEncodingComboBox->insertItem("ISO8859-2");
+  mEncodingComboBox->insertItem("ISO8859-3"); 
+  mEncodingComboBox->insertItem("ISO8859-4"); 
+  mEncodingComboBox->insertItem("ISO8859-5"); 
+  mEncodingComboBox->insertItem("ISO8859-6");
+  mEncodingComboBox->insertItem("ISO8859-7"); 
+  mEncodingComboBox->insertItem("ISO8859-8"); 
+  mEncodingComboBox->insertItem("ISO8859-8-I"); 
+  mEncodingComboBox->insertItem("ISO8859-9"); 
+  mEncodingComboBox->insertItem("ISO8859-10"); 
+  mEncodingComboBox->insertItem("ISO8859-13"); 
+  mEncodingComboBox->insertItem("ISO8859-14"); 
+  mEncodingComboBox->insertItem("ISO8859-15"); 
+  mEncodingComboBox->insertItem("IBM 850"); 
+  mEncodingComboBox->insertItem("IBM 866"); 
+  mEncodingComboBox->insertItem("CP874"); 
+  mEncodingComboBox->insertItem("CP1250"); 
+  mEncodingComboBox->insertItem("CP1251"); 
+  mEncodingComboBox->insertItem("CP1252"); 
+  mEncodingComboBox->insertItem("CP1253"); 
+  mEncodingComboBox->insertItem("CP1254"); 
+  mEncodingComboBox->insertItem("CP1255"); 
+  mEncodingComboBox->insertItem("CP1256"); 
+  mEncodingComboBox->insertItem("CP1257"); 
+  mEncodingComboBox->insertItem("CP1258"); 
+  mEncodingComboBox->insertItem("Apple Roman"); 
+  mEncodingComboBox->insertItem("TIS-620"); 
+
+  //read the last encoding from the settings
+  //or use local as default
+  QSettings settings; 
+  QString lastUsedEncoding = settings.readEntry("/qgis/UI/encoding");
+  if(lastUsedEncoding.isNull()||lastUsedEncoding.isEmpty()||lastUsedEncoding=="\0")
+    {
+      mEncodingComboBox->setCurrentText(QString(QTextCodec::codecForLocale()->name()));
+    }
+  else
+    {
+      mEncodingComboBox->setCurrentText(lastUsedEncoding);
+    }
 }
 
 QgsDbSourceSelect::~QgsDbSourceSelect()
@@ -384,3 +440,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
   return ok;
 }
 
+QString QgsDbSourceSelect::encoding()
+{
+  return mEncodingComboBox->currentText();
+}

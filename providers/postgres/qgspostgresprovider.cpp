@@ -727,7 +727,7 @@ void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f){
     // results
     if(fld != geometryColumn){
       // Add the attribute to the feature
-      QString val = QString::fromUtf8(PQgetvalue(attr,0, i));
+      QString val = mEncoding->toUnicode(PQgetvalue(attr,0, i));
       f->addAttribute(fld, val);
     }
   }
@@ -755,7 +755,7 @@ void QgsPostgresProvider::getFeatureAttributes(int key,
     if(fld != geometryColumn)
     {
       // Add the attribute to the feature
-      QString val = QString::fromUtf8(PQgetvalue(attr,0, i));
+      QString val = mEncoding->toUnicode(PQgetvalue(attr,0, i));
       //qWarning(val);
       f->addAttribute(fld, val);
     }
