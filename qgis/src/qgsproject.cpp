@@ -802,10 +802,17 @@ static bool _getMapLayers(QDomDocument const &doc)
 
     // process the map layer nodes
 
-    if (0 == nl.count())          // if we have no layers to process, bail
+    if (0 == nl.count())        // if we have no layers to process, bail
     {
-        return false;
+        return true;            // Decided to return "true" since it's
+                                // possible for there to be a project with no
+                                // layers; but also, more imporantly, this
+                                // would cause the tests/qgsproject to fail
+                                // since the test suite doesn't currently
+                                // support test layers
     }
+
+    bool returnStatus = true;
 
     for (size_t i = 0; i < nl.count(); i++)
     {
@@ -836,7 +843,6 @@ static bool _getMapLayers(QDomDocument const &doc)
 #ifdef QGISDEBUG
             std::cerr << __FILE__ << " : " << __LINE__ << " unable to create layer\n";
 #endif
-
             return false;
         }
 
@@ -849,11 +855,13 @@ static bool _getMapLayers(QDomDocument const &doc)
         {
             delete mapLayer;
 
-            return false;
+            qDebug( "%s:%d unable to load %s layer", __FILE__, __LINE__, type.ascii() );
+
+            returnStatus = false; // flag that we had problems loading layers
         }
     }
 
-    return true;
+    return returnStatus;
 
 } // _getMapLayers
 
@@ -1027,6 +1035,14 @@ bool QgsProject::read()
 
     imp_->clear();
 
+    // now get any properties
+    _getProperties(*doc, imp_->properties_);
+
+    qDebug("%s:%d %d properties read", __FILE__, __LINE__,
+           imp_->properties_.count());
+
+    dump_(imp_->properties_);
+
     // first get the map layers
     if (!_getMapLayers(*doc))
     {
@@ -1038,7 +1054,7 @@ bool QgsProject::read()
         // doesn't *have* layers -- nor a GUI for that matter -- we'll just
         // leave in the whining and boldly stomp on.
 
-//         throw QgsException("Cannot get map layers from " + imp_->file.name());
+        throw QgsException("Cannot get map layers from " + imp_->file.name());
 
 //         return false;
     }
@@ -1053,13 +1069,15 @@ bool QgsProject::read()
 #endif
 
 
+#ifndef TESTQGSPROJECT
         // Since we could be executing this from the test harness which
         // doesn't *have* layers -- nor a GUI for that matter -- we'll just
         // leave in the whining and boldly stomp on.
 
-//         throw QgsException("Cannot get extents from " + imp_->file.name());
+         throw QgsException("Cannot get extents from " + imp_->file.name());
 
-//         return false;
+         // return false;
+#endif
     }
 
     // now restore the extent for the main canvas
@@ -1078,14 +1096,6 @@ bool QgsProject::read()
 
     // now set the map units; note, alters QgsProject::instance().
     _getMapUnits(*doc);
-
-    // now get any properties
-    _getProperties(*doc, imp_->properties_);
-
-    qDebug("%s:%d %d properties read", __FILE__, __LINE__,
-           imp_->properties_.count());
-
-    dump_(imp_->properties_);
 
 
     // can't be dirty since we're allegedly in pristine state
