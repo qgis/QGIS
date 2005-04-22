@@ -276,7 +276,7 @@ QGIS_FILES = 	qgisapp.o					\
 QGIS_OBJS = $$join(QGIS_FILES," ../../src/qgis-"," ../../src/qgis-")
 
 
-DEFINES = QGISDEBUG
+DEFINES = QGISDEBUG 
 
 LIBS += -lcppunit -dl $$QGIS_OBJS $$GDAL_LIBS -lsqlite3
 
