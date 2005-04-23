@@ -248,6 +248,11 @@ void QgsNorthArrowPlugin::unload()
   // remove the GUI
   menuBarPointer->removeItem(menuIdInt);
   qGisInterface->removeToolBarIcon(myQActionPointer);
+  // remove the northarrow from the canvas
+  disconnect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)),
+	     this, SLOT(renderNorthArrow(QPainter *)));
+  refreshCanvas();
+
   delete myQActionPointer;
 }
 
