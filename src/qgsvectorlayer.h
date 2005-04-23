@@ -443,8 +443,9 @@ inline void QgsVectorLayer::transformPoint(double& x,
              bool projectionsEnabledFlag)
 {
   // transform the point
-  if (projectionsEnabledFlag){
-    double z = 0.0;
+  if (projectionsEnabledFlag)
+  {
+    double z = 0;
     mCoordinateTransform->transformInPlace(x, y, z);
   }
 
@@ -459,9 +460,7 @@ inline void QgsVectorLayer::transformPoints(
 {
   // transform the point
   if (projectionsEnabledFlag)
-  {
     mCoordinateTransform->transformInPlace(x, y, z);
-  }
 
   // transform from projected coordinate system to pixel 
   // position on map canvas

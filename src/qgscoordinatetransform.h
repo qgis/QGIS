@@ -138,7 +138,7 @@ class QgsCoordinateTransform: public QObject
     * @param direction TransformDirection (defaults to FORWARD)
     * @return QgsRect in Destination Coordinate System
      */        
-   void transformCoords( const int &numPoint, double &x, double &y, double &z,TransformDirection direction=FORWARD) const;
+   void transformCoords( const int &numPoint, double *x, double *y, double *z,TransformDirection direction=FORWARD) const;
 
  public slots:
     /*! 

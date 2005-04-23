@@ -17,7 +17,6 @@
  /* $Id$ */
 #include <cassert>
 #include "qgscoordinatetransform.h"
-#include "qgsspatialreferences.h"
 
 QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceWKT, QString theDestWKT ) : QObject(),
   mSourceWKT(theSourceWKT), mDestWKT(theDestWKT)
@@ -223,7 +222,7 @@ QgsPoint QgsCoordinateTransform::transform(const QgsPoint thePoint,TransformDire
   try
   {
 
-    transformCoords(1, x, y, z, direction );
+    transformCoords(1, &x, &y, &z, direction );
   }
   catch(QgsCsException &cse)
   {
@@ -252,7 +251,7 @@ void QgsCoordinateTransform::transformInPlace(double& x, double& y, double& z,
   std::cout << "Using transform in place " << __FILE__ << " " << __LINE__ << std::endl; 
 #endif 
   // transform x
-  transformCoords(1, x, y, z, direction );
+  transformCoords(1, &x, &y, &z, direction );
 }
 
 void QgsCoordinateTransform::transformInPlace(std::vector<double>& x, 
@@ -269,7 +268,7 @@ void QgsCoordinateTransform::transformInPlace(std::vector<double>& x,
   // array of the vectors data, and hence easily interface with code
   // that wants C-style arrays.
 
-transformCoords(static_cast<const int&>(x.size()), x[0], y[0], x[0], direction);
+transformCoords(x.size(), &x[0], &y[0], &z[0], direction);
 }
 
 QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirection direction) const
@@ -297,8 +296,8 @@ QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirecti
   //                                    V 
   try{
     double z = 0.0;
-    transformCoords(1, x1, y1, z, direction);
-    transformCoords(1, x2, y2, z, direction);
+    transformCoords(1, &x1, &y1, &z, direction);
+    transformCoords(1, &x2, &y2, &z, direction);
 
   }
   catch(QgsCsException &cse)
@@ -348,7 +347,7 @@ void QgsCoordinateTransform::transformCoords(
  * XXX preserved for future use if we need it 
  */
 
-void QgsCoordinateTransform::transformCoords( const int& numPoints, double &x, double &y, double &z,TransformDirection direction) const
+void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, double *y, double *z,TransformDirection direction) const
 {
   assert(mProj4DestParms.length() > 0);
   assert(mProj4SrcParms.length() > 0);
@@ -364,9 +363,12 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double &x, d
   if((pj_is_latlong(mDestinationProjection) && (direction == INVERSE))
       || (pj_is_latlong(mSourceProjection) && (direction == FORWARD)))
   {
-    x *= DEG_TO_RAD;
-    y *= DEG_TO_RAD;
-    z *= DEG_TO_RAD;
+    for (int i = 0; i < numPoints; ++i)
+    {
+      x[i] *= DEG_TO_RAD;
+      y[i] *= DEG_TO_RAD;
+      z[i] *= DEG_TO_RAD;
+    }
 
   }
   int projResult;
@@ -376,7 +378,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double &x, d
     std::cout << "     numPoint: " << numPoints << std::endl; 
     std::cout << "     x       : " << x << std::endl; 
     std::cout << "     y       : " << y << std::endl; 
-    projResult = pj_transform(mDestinationProjection, mSourceProjection , numPoints, 0, &x, &y, &z);
+    projResult = pj_transform(mDestinationProjection, mSourceProjection , numPoints, 0, x, y, z);
     dir = "inverse";
   }
   else
@@ -389,7 +391,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double &x, d
  
    assert(mSourceProjection != 0);
    assert(mDestinationProjection !=0);
-    projResult = pj_transform(mSourceProjection, mDestinationProjection, numPoints, 0, &x, &y, &z);
+    projResult = pj_transform(mSourceProjection, mDestinationProjection, numPoints, 0, x, y, z);
     dir = "forward";
   }
 
@@ -408,9 +410,14 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double &x, d
   if((pj_is_latlong(mDestinationProjection) && (direction == FORWARD))
       || (pj_is_latlong(mSourceProjection) && (direction == INVERSE)))
   {
-    x *= RAD_TO_DEG;
-    y *= RAD_TO_DEG;
-    z *= RAD_TO_DEG;
+    for (int i = 0; i < numPoints; ++i)
+    {
+      x[i] *= RAD_TO_DEG;
+      y[i] *= RAD_TO_DEG;
+      z[i] *= RAD_TO_DEG;
+    }
   }
+#ifdef QGISDEBUG
   std::cout << "[[[[[[ Projected " << xorg << ", " << yorg << " to "  << x << ", " << y << " ]]]]]]"<< std::endl; 
+#endif
 }
