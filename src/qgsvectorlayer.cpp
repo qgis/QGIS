@@ -398,7 +398,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
 
   std::vector<double> x(nPoints);
   std::vector<double> y(nPoints);
-  std::vector<double> z(nPoints);
+  std::vector<double> z(nPoints, 0.0);
 
   // Extract the points from the WKB format into the x and y vectors. 
   for (unsigned int i = 0; i < nPoints; ++i)
@@ -407,7 +407,6 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
     ptr += sizeof(double);
     y[i] = *((double *) ptr);
     ptr += sizeof(double);
-    z[i] = 0.0;
   }
 
   // Transform the points into map coordinates (and reproject if
@@ -422,7 +421,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   // the rest of them so end the loop at that point. 
   for (int i = 0; i < nPoints; ++i)
     if (std::abs(x[i]) > QgsClipper::maxX ||
-  std::abs(y[i]) > QgsClipper::maxY)
+	std::abs(y[i]) > QgsClipper::maxY)
     {
       QgsClipper::trimFeature(x, y, true); // true = polyline
       nPoints = x.size(); // trimming may change nPoints.
@@ -480,7 +479,7 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     ptr += 4;
 
     // create a dummy vector for the z coordinate
-    std::vector<double> zVector(nPoints);
+    std::vector<double> zVector(nPoints, 0.0);
     // Extract the points from the WKB and store in a pair of
     // vectors.
     /*
@@ -495,7 +494,6 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
       ptr += sizeof(double);
       ring->second[jdx] = *((double *) ptr);
       ptr += sizeof(double);
-      zVector[jdx] = 0.0;
       /*
 #ifdef QGISDEBUG
       std::cerr << jdx << ": " 
@@ -594,7 +592,7 @@ std::cerr << i << ": " << ring->first[i]
   delete rings[i];
       }
 
-    /*
+    
 #ifdef QGISDEBUG
     std::cerr << "Pixel points are:\n";
     for (int i = 0; i < pa.size(); ++i)
@@ -603,11 +601,11 @@ std::cerr << i << ": " << ring->first[i]
     std::cerr << "Ring positions are:\n";
     for (int i = 0; i < ringDetails.size(); ++i)
       std::cerr << ringDetails[i].first << ", "
-    << ringDetails[i].second << "\n";      
+		<< ringDetails[i].second << "\n";      
+    std::cerr << "Outer ring point is " << outerRingPt.x()
+	      << ", " << outerRingPt.y() << '\n';
 #endif
-    */
-
-
+    
     /*
     // A bit of code to aid in working out what values of
     // QgsClipper::minX, etc cause the X11 zoom bug.
