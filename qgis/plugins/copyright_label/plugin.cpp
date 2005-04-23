@@ -219,6 +219,11 @@ void QgsCopyrightLabelPlugin::unload()
     // remove the GUI
     menuBarPointer->removeItem(menuIdInt);
     qGisInterface->removeToolBarIcon(myQActionPointer);
+    // remove the copyright from the canvas
+    disconnect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)),
+	       this, SLOT(renderLabel(QPainter *)));
+    refreshCanvas();
+
     delete myQActionPointer;
 }
 
