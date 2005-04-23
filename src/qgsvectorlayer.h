@@ -289,8 +289,8 @@ public slots:
      the changes are written to not commited features or redirected to
      the data provider*/
   bool commitAttributeChanges(const std::set<QString>& deleted,
-			      const std::map<QString,QString>& added,
-			      std::map<int,std::map<QString,QString> >& changed);
+            const std::map<QString,QString>& added,
+            std::map<int,std::map<QString,QString> >& changed);
 
   /** \brief Draws the layer using coordinate transformation
    *  \param widthScale line width scale
@@ -346,22 +346,23 @@ private:                       // Private attributes
 
   // Convenience function to transform the given point
   void transformPoint(double& x, double& y, 
-		      QgsMapToPixel* mtp, bool projectionsEnabledFlag);
+      QgsMapToPixel* mtp, bool projectionsEnabledFlag);
   
   void transformPoints(std::vector<double>& x, std::vector<double>& y,
-		       QgsMapToPixel* mtp, bool projectionsEnabledFlag);
+      std::vector<double>& z,
+      QgsMapToPixel* mtp, bool projectionsEnabledFlag);
 
   // Draw the linestring as given in the WKB format. Returns a pointer
   // to the byte after the end of the line string binary data stream
   // (WKB).
   unsigned char* drawLineString(unsigned char* WKBlinestring, QPainter* p,
-				QgsMapToPixel* mtp, 
-				bool projectionsEnabledFlag);
+      QgsMapToPixel* mtp, 
+      bool projectionsEnabledFlag);
 
   // Draw the polygon as given in the WKB format. Returns a pointer to
   // the byte after the end of the polygon binary data stream (WKB).
   unsigned char* drawPolygon(unsigned char* WKBpolygon, QPainter* p, 
-			     QgsMapToPixel* mtp, bool projectionsEnabledFlag);
+      QgsMapToPixel* mtp, bool projectionsEnabledFlag);
 
   /** tailor the right-click context menu with vector layer only stuff
 
@@ -437,13 +438,15 @@ private:                       // Private methods
 
 // Convenience function to transform the given point
 inline void QgsVectorLayer::transformPoint(double& x, 
-					   double& y, 
-					   QgsMapToPixel* mtp,
-					   bool projectionsEnabledFlag)
+             double& y, 
+             QgsMapToPixel* mtp,
+             bool projectionsEnabledFlag)
 {
   // transform the point
-  if (projectionsEnabledFlag)
-    mCoordinateTransform->transformInPlace(x, y);
+  if (projectionsEnabledFlag){
+    double z = 0.0;
+    mCoordinateTransform->transformInPlace(x, y, z);
+  }
 
   // transform from projected coordinate system to pixel 
   // position on map canvas
@@ -451,12 +454,14 @@ inline void QgsVectorLayer::transformPoint(double& x,
 }
 
 inline void QgsVectorLayer::transformPoints(
-		std::vector<double>& x, std::vector<double>& y,
-		QgsMapToPixel* mtp, bool projectionsEnabledFlag)
+    std::vector<double>& x, std::vector<double>& y, std::vector<double>& z,
+    QgsMapToPixel* mtp, bool projectionsEnabledFlag)
 {
   // transform the point
   if (projectionsEnabledFlag)
-    mCoordinateTransform->transformInPlace(x, y);
+  {
+    mCoordinateTransform->transformInPlace(x, y, z);
+  }
 
   // transform from projected coordinate system to pixel 
   // position on map canvas

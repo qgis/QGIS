@@ -116,10 +116,10 @@ class QgsCoordinateTransform: public QObject
    // Same as for the other transform() functions, but alters the x
    // and y variables in place. The second one works with good old-fashioned
    // C style arrays.
-   void transformInPlace(double& x, double& y, TransformDirection direction = FORWARD) const;
+   void transformInPlace(double& x, double& y, double &z, TransformDirection direction = FORWARD) const;
 
-   void transformInPlace(std::vector<double>& x, std::vector<double>& y, 
-			 TransformDirection direction = FORWARD) const;
+   void transformInPlace(std::vector<double>& x, std::vector<double>& y, std::vector<double>& z, 
+       TransformDirection direction = FORWARD) const;
 
     /*! Transform a QgsRect to the dest Coordinate system 
     * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
@@ -138,7 +138,7 @@ class QgsCoordinateTransform: public QObject
     * @param direction TransformDirection (defaults to FORWARD)
     * @return QgsRect in Destination Coordinate System
      */        
-   void transformCoords( const int &numPoint, double *x, double *y, double *z,TransformDirection direction=FORWARD) const;
+   void transformCoords( const int &numPoint, double &x, double &y, double &z,TransformDirection direction=FORWARD) const;
 
  public slots:
     /*! 

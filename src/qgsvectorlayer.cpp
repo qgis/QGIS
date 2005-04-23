@@ -388,9 +388,9 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
 }
 
 unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature, 
-					      QPainter* p,
-					      QgsMapToPixel* mtp, 
-					      bool projectionsEnabledFlag)
+                QPainter* p,
+                QgsMapToPixel* mtp, 
+                bool projectionsEnabledFlag)
 {
   unsigned char *ptr = feature + 5;
   unsigned int nPoints = *((int*)ptr);
@@ -398,6 +398,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
 
   std::vector<double> x(nPoints);
   std::vector<double> y(nPoints);
+  std::vector<double> z(nPoints);
 
   // Extract the points from the WKB format into the x and y vectors. 
   for (unsigned int i = 0; i < nPoints; ++i)
@@ -406,11 +407,12 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
     ptr += sizeof(double);
     y[i] = *((double *) ptr);
     ptr += sizeof(double);
+    z[i] = 0.0;
   }
 
   // Transform the points into map coordinates (and reproject if
   // necessary)
-  transformPoints(x, y, mtp, projectionsEnabledFlag);
+  transformPoints(x, y, z, mtp, projectionsEnabledFlag);
  
 #if defined(Q_WS_X11)
   // Work around a +/- 32768 limitation on coordinates in X11
@@ -420,7 +422,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   // the rest of them so end the loop at that point. 
   for (int i = 0; i < nPoints; ++i)
     if (std::abs(x[i]) > QgsClipper::maxX ||
-	std::abs(y[i]) > QgsClipper::maxY)
+  std::abs(y[i]) > QgsClipper::maxY)
     {
       QgsClipper::trimFeature(x, y, true); // true = polyline
       nPoints = x.size(); // trimming may change nPoints.
@@ -436,7 +438,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   QPointArray pa(nPoints);
   for (int i = 0; i < nPoints; ++i)
     pa.setPoint(i, static_cast<int>(round(x[i])),
-		   static_cast<int>(round(y[i])));
+       static_cast<int>(round(y[i])));
 
   // The default pen gives bevelled joins between segements of the
   // polyline, which is good enough for the moment.
@@ -446,9 +448,9 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
 }
 
 unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature, 
-					   QPainter* p, 
-					   QgsMapToPixel* mtp, 
-					   bool projectionsEnabledFlag)
+             QPainter* p, 
+             QgsMapToPixel* mtp, 
+             bool projectionsEnabledFlag)
 {
   typedef std::pair<std::vector<double>, std::vector<double> > ringType;
   typedef ringType* ringTypePtr;
@@ -474,15 +476,17 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
   {
     int nPoints = *((int*)ptr);
     ringTypePtr ring = new ringType(std::vector<double>(nPoints),
-				    std::vector<double>(nPoints));
+            std::vector<double>(nPoints));
     ptr += 4;
 
+    // create a dummy vector for the z coordinate
+    std::vector<double> zVector(nPoints);
     // Extract the points from the WKB and store in a pair of
     // vectors.
     /*
 #ifdef QGISDEBUG
     std::cerr << "Points for ring " << idx << " ("
-	      << nPoints << " points)\n";
+        << nPoints << " points)\n";
 #endif
     */
     for (unsigned int jdx = 0; jdx < nPoints; jdx++)
@@ -491,17 +495,17 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
       ptr += sizeof(double);
       ring->second[jdx] = *((double *) ptr);
       ptr += sizeof(double);
+      zVector[jdx] = 0.0;
       /*
 #ifdef QGISDEBUG
       std::cerr << jdx << ": " 
-		<< ring->first[jdx] << ", " << ring->second[jdx] << '\n';
+    << ring->first[jdx] << ", " << ring->second[jdx] << '\n';
 #endif
       */
     }
-
     // Transform the points into map coordinates (and reproject if
     // necessary)
-    transformPoints(ring->first, ring->second, mtp, projectionsEnabledFlag);
+    transformPoints(ring->first, ring->second, zVector, mtp, projectionsEnabledFlag);
 
 #if defined(Q_WS_X11)
     // Work around a +/- 32768 limitation on coordinates in X11
@@ -510,20 +514,23 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     // that need trimming. If one is found, there's no need to look at
     // the rest of them so end the loop at that point. 
     for (int i = 0; i < nPoints; ++i)
+    {
       if (std::abs(ring->first[i]) > QgsClipper::maxX ||
-	  std::abs(ring->second[i]) > QgsClipper::maxY)
+          std::abs(ring->second[i]) > QgsClipper::maxY)
       {
-	QgsClipper::trimFeature(ring->first, ring->second, false);
-    /*
+        QgsClipper::trimFeature(ring->first, ring->second, false);
+        /*
 #ifdef QGISDEBUG
-        std::cerr << "Trimmed points (" << ring->first.size() << ")\n";
-        for (int i = 0; i < ring->first.size(); ++i)
-	  std::cerr << i << ": " << ring->first[i] 
-		    << ", " << ring->second[i] << '\n';
+std::cerr << "Trimmed points (" << ring->first.size() << ")\n";
+for (int i = 0; i < ring->first.size(); ++i)
+std::cerr << i << ": " << ring->first[i] 
+<< ", " << ring->second[i] << '\n';
 #endif
-    */
-	break;
+*/
+        break;
       }
+      std::cout << "POLYGONTRANSFORM: " << ring->first[i] << ", " << ring->second[i] << std::endl; 
+    }
 
 #endif
 
@@ -559,32 +566,32 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
 
     for (int i = 0; i < rings.size(); ++i)
       {
-	// Store the pointer in a variable with a short name so as to make
-	// the following code easier to type and read.
-	ringTypePtr r = rings[i];
+  // Store the pointer in a variable with a short name so as to make
+  // the following code easier to type and read.
+  ringTypePtr r = rings[i];
 
-	// Store the start index of this ring, and the number of
-	// points in the ring.
-	ringDetails.push_back(std::make_pair(ii, r->first.size()));
+  // Store the start index of this ring, and the number of
+  // points in the ring.
+  ringDetails.push_back(std::make_pair(ii, r->first.size()));
 
-	// Transfer points to the QPointArray
-	for (int j = 0; j != r->first.size(); ++j)
-	  pa.setPoint(ii++, static_cast<int>(round(r->first[j])),
-		            static_cast<int>(round(r->second[j])));
+  // Transfer points to the QPointArray
+  for (int j = 0; j != r->first.size(); ++j)
+    pa.setPoint(ii++, static_cast<int>(round(r->first[j])),
+                static_cast<int>(round(r->second[j])));
 
-	// Store the last point of the first ring, and insert it at
-	// the end of all other rings. This makes all the other rings
-	// appear as holes in the first ring.
-	if (i == 0)
-	{
-	  outerRingPt.setX(pa.point(ii-1).x());
-	  outerRingPt.setY(pa.point(ii-1).y());
-	}
-	else
-	  pa.setPoint(ii++, outerRingPt);
+  // Store the last point of the first ring, and insert it at
+  // the end of all other rings. This makes all the other rings
+  // appear as holes in the first ring.
+  if (i == 0)
+  {
+    outerRingPt.setX(pa.point(ii-1).x());
+    outerRingPt.setY(pa.point(ii-1).y());
+  }
+  else
+    pa.setPoint(ii++, outerRingPt);
 
-	// Tidy up the pointed to pairs of vectors as we finish with them
-	delete rings[i];
+  // Tidy up the pointed to pairs of vectors as we finish with them
+  delete rings[i];
       }
 
     /*
@@ -592,11 +599,11 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     std::cerr << "Pixel points are:\n";
     for (int i = 0; i < pa.size(); ++i)
       std::cerr << i << ": " << pa.point(i).x() << ", " 
-		<< pa.point(i).y() << '\n';
+    << pa.point(i).y() << '\n';
     std::cerr << "Ring positions are:\n";
     for (int i = 0; i < ringDetails.size(); ++i)
       std::cerr << ringDetails[i].first << ", "
-		<< ringDetails[i].second << "\n";      
+    << ringDetails[i].second << "\n";      
 #endif
     */
 
@@ -715,37 +722,37 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     {
       while((fet = dataProvider->getNextFeature(attributes)))
       {
-	qApp->processEvents(); //so we can trap for esc press
-	if (mDrawingCancelled) return;
-	// If update threshold is greater than 0, check to see if
-	// the threshold has been exceeded
-	if(updateThreshold > 0)
-	{
-	  //copy the drawing buffer every updateThreshold elements
-	  if(0 == featureCount % updateThreshold)
-	    bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
-	}
+  qApp->processEvents(); //so we can trap for esc press
+  if (mDrawingCancelled) return;
+  // If update threshold is greater than 0, check to see if
+  // the threshold has been exceeded
+  if(updateThreshold > 0)
+  {
+    //copy the drawing buffer every updateThreshold elements
+    if(0 == featureCount % updateThreshold)
+      bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
+  }
 
-	if (fet == 0)
-	{
+  if (fet == 0)
+  {
 #ifdef QGISDEBUG
-	  std::cerr << "get next feature returned null\n";
+    std::cerr << "get next feature returned null\n";
 #endif
-	}
-	else
-	{
-	  if (mDeleted.find(fet->featureId())==mDeleted.end())
-	  {
-	    bool sel=mSelected.find(fet->featureId()) != mSelected.end();
-	    m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
-				      sel, oversampling, widthScale );
-	    double scale = markerScaleFactor * symbolScale;
-	    drawFeature(p,fet,theMapToPixelTransform,&marker, scale, 
-			projectionsEnabledFlag);
-	    ++featureCount;
-	    delete fet;
-	  }
-	}
+  }
+  else
+  {
+    if (mDeleted.find(fet->featureId())==mDeleted.end())
+    {
+      bool sel=mSelected.find(fet->featureId()) != mSelected.end();
+      m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
+              sel, oversampling, widthScale );
+      double scale = markerScaleFactor * symbolScale;
+      drawFeature(p,fet,theMapToPixelTransform,&marker, scale, 
+      projectionsEnabledFlag);
+      ++featureCount;
+      delete fet;
+    }
+  }
       }
 
       //std::cerr << "Time to draw was " << t.elapsed() << '\n';
@@ -754,12 +761,12 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
       std::list<QgsFeature*>::iterator it = mAddedFeatures.begin();
       for(; it != mAddedFeatures.end(); ++it)
       {
-	bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
-	m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
-				  sel, oversampling, widthScale);
-	double scale = markerScaleFactor * symbolScale;
-	drawFeature(p,*it,theMapToPixelTransform,&marker,scale, 
-		    projectionsEnabledFlag);
+  bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
+  m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
+          sel, oversampling, widthScale);
+  double scale = markerScaleFactor * symbolScale;
+  drawFeature(p,*it,theMapToPixelTransform,&marker,scale, 
+        projectionsEnabledFlag);
       }
     }
     catch (QgsCsException &cse)
@@ -1001,60 +1008,60 @@ void QgsVectorLayer::fillTable(QgsAttributeTable* t)
 {
     if(t&&dataProvider)
     {
-	int row = 0;
-	int id;
-	QgsFeature *fet;
+  int row = 0;
+  int id;
+  QgsFeature *fet;
 
-	// set up the column headers
-	QHeader *colHeader = t->horizontalHeader();
+  // set up the column headers
+  QHeader *colHeader = t->horizontalHeader();
   
-	std::vector < QgsField > fields = dataProvider->fields();
-	int numFields = fields.size();
-	t->setNumCols(numFields+1);
-	t->setNumRows(dataProvider->featureCount()+mAddedFeatures.size()-mDeleted.size());
-	colHeader->setLabel(0, "id");
-	for (int h = 1; h <= numFields; h++)
-	{
-	    colHeader->setLabel(h, fields[h - 1].name());
-	}
+  std::vector < QgsField > fields = dataProvider->fields();
+  int numFields = fields.size();
+  t->setNumCols(numFields+1);
+  t->setNumRows(dataProvider->featureCount()+mAddedFeatures.size()-mDeleted.size());
+  colHeader->setLabel(0, "id");
+  for (int h = 1; h <= numFields; h++)
+  {
+      colHeader->setLabel(h, fields[h - 1].name());
+  }
    
 
-	//go through the features and fill the values into the table
-	dataProvider->reset();
-	while ((fet = dataProvider->getNextFeature(true)))
-	{
-	    id=fet->featureId();
-	    if(mDeleted.find(id)==mDeleted.end())
-	    {
-		//id-field
-		t->setText(row, 0, QString::number(id));
-		t->insertFeatureId(fet->featureId(), row);  //insert the id into the search tree of qgsattributetable
-		std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
-		for (int i = 0; i < attr.size(); i++)
-		{
-		    // get the field values
-		    t->setText(row, i + 1, attr[i].fieldValue());
-		}
-		row++;
-	    }
-	    delete fet;
-	}
+  //go through the features and fill the values into the table
+  dataProvider->reset();
+  while ((fet = dataProvider->getNextFeature(true)))
+  {
+      id=fet->featureId();
+      if(mDeleted.find(id)==mDeleted.end())
+      {
+    //id-field
+    t->setText(row, 0, QString::number(id));
+    t->insertFeatureId(fet->featureId(), row);  //insert the id into the search tree of qgsattributetable
+    std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
+    for (int i = 0; i < attr.size(); i++)
+    {
+        // get the field values
+        t->setText(row, i + 1, attr[i].fieldValue());
+    }
+    row++;
+      }
+      delete fet;
+  }
 
-	//also consider the not commited features
-	for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-	{
-	    //id-field
-	    tabledisplay->table()->setText(row, 0, QString::number((*it)->featureId()));
-	    tabledisplay->table()->insertFeatureId((*it)->featureId(), row);  //insert the id into the search tree of qgsattributetable
-	    std::vector < QgsFeatureAttribute > attr = (*it)->attributeMap();
-	    for (int i = 0; i < attr.size(); i++)
-	    {
-		// get the field values
-		tabledisplay->table()->setText(row, i + 1, attr[i].fieldValue());
-	    }
-	    row++;
-	}
-	dataProvider->reset();
+  //also consider the not commited features
+  for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+  {
+      //id-field
+      tabledisplay->table()->setText(row, 0, QString::number((*it)->featureId()));
+      tabledisplay->table()->insertFeatureId((*it)->featureId(), row);  //insert the id into the search tree of qgsattributetable
+      std::vector < QgsFeatureAttribute > attr = (*it)->attributeMap();
+      for (int i = 0; i < attr.size(); i++)
+      {
+    // get the field values
+    tabledisplay->table()->setText(row, i + 1, attr[i].fieldValue());
+      }
+      row++;
+  }
+  dataProvider->reset();
     }
 }
 
@@ -1127,21 +1134,21 @@ void QgsVectorLayer::invertSelection()
     QApplication::setOverrideCursor(Qt::waitCursor);
     if (tabledisplay)
     {
-	QObject::disconnect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
-	QObject::disconnect(tabledisplay->table(), SIGNAL(selected(int)), this, SLOT(select(int))); //disconnecting because of performance reason
+  QObject::disconnect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
+  QObject::disconnect(tabledisplay->table(), SIGNAL(selected(int)), this, SLOT(select(int))); //disconnecting because of performance reason
     }
 
     //copy the ids of selected features to tmp
     std::list<int> tmp;
     for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
     {
-	tmp.push_back(*iter);
+  tmp.push_back(*iter);
     }
 
     removeSelection();
     if (tabledisplay)
     {
-	tabledisplay->table()->clearSelection();
+  tabledisplay->table()->clearSelection();
     }
 
     QgsFeature *fet;
@@ -1149,34 +1156,34 @@ void QgsVectorLayer::invertSelection()
 
     while (fet = dataProvider->getNextFeature(true))
     {
-	if(mDeleted.find(fet->featureId())==mDeleted.end())//don't select deleted features
-	{
-	    select(fet->featureId());
-	}
+  if(mDeleted.find(fet->featureId())==mDeleted.end())//don't select deleted features
+  {
+      select(fet->featureId());
+  }
     }
     
     for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
     {
-	select((*iter)->featureId());
+  select((*iter)->featureId());
     }
 
     for(std::list<int>::iterator iter=tmp.begin();iter!=tmp.end();++iter)
     {
-	mSelected.erase(*iter);
+  mSelected.erase(*iter);
     }
   
     if(tabledisplay)
     {
-	for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
-	{
-	    tabledisplay->table()->selectRowWithId(*iter);
-	}
+  for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
+  {
+      tabledisplay->table()->selectRowWithId(*iter);
+  }
     }
 
     if (tabledisplay)
     {
-	QObject::connect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
-	QObject::connect(tabledisplay->table(), SIGNAL(selected(int)), this, SLOT(select(int)));  //disconnecting because of performance reason
+  QObject::connect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
+  QObject::connect(tabledisplay->table(), SIGNAL(selected(int)), this, SLOT(select(int)));  //disconnecting because of performance reason
     }
     
     triggerRepaint();
@@ -1729,7 +1736,7 @@ void QgsVectorLayer::stopEditing()
         }
         else
         {
-	    dataProvider->updateExtents();
+      dataProvider->updateExtents();
           //hide and delete the table because it is not up to date any more
           if (tabledisplay)
           {
@@ -2412,16 +2419,19 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
     {
       double x = *((double *) (feature + 5));
       double y = *((double *) (feature + 5 + sizeof(double)));
-
+      // XXX get rid of following line
+      std::cout << "input " << x << ", " << y << std::endl; 
       transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
+      // XXX get rid of following line
+      std::cout << "output " << x << ", " << y << std::endl; 
 
       p->save();
       p->scale(markerScaleFactor,markerScaleFactor);
       p->drawPicture(static_cast<int>(x / markerScaleFactor 
-	             - marker->boundingRect().x() 
+               - marker->boundingRect().x() 
                      - marker->boundingRect().width() / 2),
                      static_cast<int>(y / markerScaleFactor 
-		     - marker->boundingRect().y() 
+         - marker->boundingRect().y() 
                      - marker->boundingRect().height() / 2),
                      *marker);
       p->restore();
@@ -2439,28 +2449,28 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 
       for (int i = 0; i < nPoints; ++i)
       {
-	ptr += 5;
-	double x = *((double *) ptr);
-	ptr += sizeof(double);
-	double y = *((double *) ptr);
-	ptr += sizeof(double);
+  ptr += 5;
+  double x = *((double *) ptr);
+  ptr += sizeof(double);
+  double y = *((double *) ptr);
+  ptr += sizeof(double);
 
-	transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
+  transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
 
 #if defined(Q_WS_X11)
-	// Work around a +/- 32768 limitation on coordinates in X11
-	if (std::abs(x) > QgsClipper::maxX ||
-	    std::abs(y) > QgsClipper::maxY)
-	  needToTrim = true;
-	else
+  // Work around a +/- 32768 limitation on coordinates in X11
+  if (std::abs(x) > QgsClipper::maxX ||
+      std::abs(y) > QgsClipper::maxY)
+    needToTrim = true;
+  else
 #endif
-	  p->drawPicture(static_cast<int>(x / markerScaleFactor 
-			   - marker->boundingRect().x() 
-			   - marker->boundingRect().width() / 2),
-			 static_cast<int>(y / markerScaleFactor 
-			   - marker->boundingRect().y() 
-			   - marker->boundingRect().height() / 2),
-			 *marker);
+    p->drawPicture(static_cast<int>(x / markerScaleFactor 
+         - marker->boundingRect().x() 
+         - marker->boundingRect().width() / 2),
+       static_cast<int>(y / markerScaleFactor 
+         - marker->boundingRect().y() 
+         - marker->boundingRect().height() / 2),
+       *marker);
       }
       p->restore();
 
@@ -2469,7 +2479,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
   case WKBLineString:
     {
       drawLineString(feature, p, theMapToPixelTransform,
-		     projectionsEnabledFlag);
+         projectionsEnabledFlag);
       break;
     }
   case WKBMultiLineString:
@@ -2480,15 +2490,15 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 
       for (int jdx = 0; jdx < numLineStrings; jdx++)
       {
-	ptr = drawLineString(ptr, p, theMapToPixelTransform,
-			     projectionsEnabledFlag);
+  ptr = drawLineString(ptr, p, theMapToPixelTransform,
+           projectionsEnabledFlag);
       }
       break;
     }
   case WKBPolygon:
     {
       drawPolygon(feature, p, theMapToPixelTransform,
-		  projectionsEnabledFlag);
+      projectionsEnabledFlag);
       break;
     }
   case WKBMultiPolygon:
@@ -2497,8 +2507,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       unsigned int numPolygons = *((int*)ptr);
       ptr = feature + 9;
       for (int kdx = 0; kdx < numPolygons; kdx++)
-	ptr = drawPolygon(ptr, p, theMapToPixelTransform, 
-			  projectionsEnabledFlag);
+  ptr = drawPolygon(ptr, p, theMapToPixelTransform, 
+        projectionsEnabledFlag);
       break;
     }
   default:
@@ -2587,20 +2597,20 @@ void QgsVectorLayer::setCoordinateSystem()
       }
       else ///qgis/projections/defaultBehaviour==useDefault
       {
-	  //default to geo / wgs84 for now 
-	  QString myGeoWKT =    "GEOGCS[\"WGS 84\", "
-	  "  DATUM[\"WGS_1984\", "
-	  "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-	  "      AUTHORITY[\"EPSG\",7030]], "
-	  "    TOWGS84[0,0,0,0,0,0,0], "
-	  "    AUTHORITY[\"EPSG\",6326]], "
-	  "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
-	  "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
-	  "  AXIS[\"Lat\",NORTH], "
-	  "  AXIS[\"Long\",EAST], "
-	  "  AUTHORITY[\"EPSG\",4326]]";
+    //default to geo / wgs84 for now 
+    QString myGeoWKT =    "GEOGCS[\"WGS 84\", "
+    "  DATUM[\"WGS_1984\", "
+    "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
+    "      AUTHORITY[\"EPSG\",7030]], "
+    "    TOWGS84[0,0,0,0,0,0,0], "
+    "    AUTHORITY[\"EPSG\",6326]], "
+    "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
+    "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
+    "  AXIS[\"Lat\",NORTH], "
+    "  AXIS[\"Long\",EAST], "
+    "  AUTHORITY[\"EPSG\",4326]]";
         mySourceWKT = mySettings.readEntry("/qgis/projections/defaultProjectionWKT",myGeoWKT);
-	
+  
       }
     }
 
