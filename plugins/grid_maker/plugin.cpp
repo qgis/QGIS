@@ -64,37 +64,38 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
+QgsGridMakerPlugin::QgsGridMakerPlugin(QgisApp * theQGisApp, 
+				       QgisIface * theQgisInterFace):
           qgisMainWindowPointer(theQGisApp), 
           qGisInterface(theQgisInterFace),
           QgisPlugin(name_,description_,version_,type_)
 {
 }
 
-Plugin::~Plugin()
+QgsGridMakerPlugin::~QgsGridMakerPlugin()
 {
 
 }
 
 /* Following functions return name, description, version, and type for the plugin */
-QString Plugin::name()
+QString QgsGridMakerPlugin::name()
 {
   return pluginNameQString;
 }
 
-QString Plugin::version()
+QString QgsGridMakerPlugin::version()
 {
   return pluginVersionQString;
 
 }
 
-QString Plugin::description()
+QString QgsGridMakerPlugin::description()
 {
   return pluginDescriptionQString;
 
 }
 
-int Plugin::type()
+int QgsGridMakerPlugin::type()
 {
   return QgisPlugin::UI;
 }
@@ -102,7 +103,7 @@ int Plugin::type()
 /*
  * Initialize the GUI interface for the plugin 
  */
-void Plugin::initGui()
+void QgsGridMakerPlugin::initGui()
 {
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
@@ -123,13 +124,13 @@ void Plugin::initGui()
 
 }
 //method defined in interface
-void Plugin::help()
+void QgsGridMakerPlugin::help()
 {
   //implement me!
 }
 
 // Slot called when the buffer menu item is activated
-void Plugin::run()
+void QgsGridMakerPlugin::run()
 {
   PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"Graticule Builder",true,0);
   //listen for when the layer has been made so we can draw it
@@ -139,19 +140,19 @@ void Plugin::run()
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
 //layer
-void Plugin::drawRasterLayer(QString theQString)
+void QgsGridMakerPlugin::drawRasterLayer(QString theQString)
 {
   qGisInterface->addRasterLayer(theQString);
 }
 //!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating a layer
 ////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
+void QgsGridMakerPlugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
 {
  qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
 }
 
 // Unload the plugin by cleaning up the GUI
-void Plugin::unload()
+void QgsGridMakerPlugin::unload()
 {
   // remove the GUI
   menuBarPointer->removeItem(menuIdInt);
@@ -166,7 +167,7 @@ void Plugin::unload()
 // Class factory to return a new instance of the plugin class
 QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
-  return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsGridMakerPlugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as

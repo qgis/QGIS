@@ -74,19 +74,20 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
+QgsCopyrightLabelPlugin::QgsCopyrightLabelPlugin(QgisApp * theQGisApp, 
+						 QgisIface * theQgisInterFace):
         qgisMainWindowPointer(theQGisApp),
         qGisInterface(theQgisInterFace),
         QgisPlugin(name_,description_,version_,type_)
 {}
 
-Plugin::~Plugin()
+QgsCopyrightLabelPlugin::~QgsCopyrightLabelPlugin()
 {}
 
 /*
  * Initialize the GUI interface for the plugin
  */
-void Plugin::initGui()
+void QgsCopyrightLabelPlugin::initGui()
 {
     // add a menu with 2 items
     QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
@@ -112,7 +113,7 @@ void Plugin::initGui()
     projectRead();
 }
 
-void Plugin::projectRead()
+void QgsCopyrightLabelPlugin::projectRead()
 {
 #ifdef QGISDEBUG
     std::cout << "+++++++++ Copyright plugin - project read slot called...." << std::endl;
@@ -128,13 +129,13 @@ void Plugin::projectRead()
     mLabelQColor = QColor(Qt::black);
 }
 //method defined in interface
-void Plugin::help()
+void QgsCopyrightLabelPlugin::help()
 {
     //implement me!
 }
 
 // Slot called when the buffer menu item is activated
-void Plugin::run()
+void QgsCopyrightLabelPlugin::run()
 {
     PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"Copyright Label",true,0);
     //listen for when the layer has been made so we can draw it
@@ -152,12 +153,12 @@ void Plugin::run()
     myPluginGui->show();
 }
 //! Refresh the map display using the mapcanvas exported via the plugin interface
-void Plugin::refreshCanvas()
+void QgsCopyrightLabelPlugin::refreshCanvas()
 {
     qGisInterface->getMapCanvas()->refresh();
 }
 
-void Plugin::renderLabel(QPainter * theQPainter)
+void QgsCopyrightLabelPlugin::renderLabel(QPainter * theQPainter)
 {
     //Large IF statement to enable/disable copyright label
     if (mEnable)
@@ -213,7 +214,7 @@ void Plugin::renderLabel(QPainter * theQPainter)
     }
 }
 // Unload the plugin by cleaning up the GUI
-void Plugin::unload()
+void QgsCopyrightLabelPlugin::unload()
 {
     // remove the GUI
     menuBarPointer->removeItem(menuIdInt);
@@ -223,7 +224,7 @@ void Plugin::unload()
 
 
 //! change the copyright font
-void Plugin::setFont(QFont theQFont)
+void QgsCopyrightLabelPlugin::setFont(QFont theQFont)
 {
     mQFont = theQFont;
     //save state to the project file.....
@@ -233,14 +234,14 @@ void Plugin::setFont(QFont theQFont)
     refreshCanvas();
 }
 //! change the copyright text
-void Plugin::setLabel(QString theLabelQString)
+void QgsCopyrightLabelPlugin::setLabel(QString theLabelQString)
 {
     mLabelQString = theLabelQString;
     QgsProject::instance()->writeEntry("CopyrightLabel","/Label", mLabelQString  );
     refreshCanvas();
 }
 //! change the copyright text colour
-void Plugin::setColor(QColor theQColor)
+void QgsCopyrightLabelPlugin::setColor(QColor theQColor)
 {
     mLabelQColor = theQColor;
     QgsProject::instance()->writeEntry("CopyrightLabel","/ColorRedPart", mLabelQColor.red());
@@ -250,7 +251,7 @@ void Plugin::setColor(QColor theQColor)
 }
 
 //! set placement of copyright label
-void Plugin::setPlacement(QString theQString)
+void QgsCopyrightLabelPlugin::setPlacement(QString theQString)
 {
     mPlacement = theQString;
     QgsProject::instance()->writeEntry("CopyrightLabel","/Placement", mPlacement);
@@ -258,7 +259,7 @@ void Plugin::setPlacement(QString theQString)
 }
 
 //! set whether copyright label is enabled
-void Plugin::setEnable(bool theBool)
+void QgsCopyrightLabelPlugin::setEnable(bool theBool)
 {
     mEnable = theBool;
     QgsProject::instance()->writeEntry("CopyrightLabel","/Enabled", mEnable );
@@ -277,7 +278,7 @@ void Plugin::setEnable(bool theBool)
 // Class factory to return a new instance of the plugin class
 QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
-    return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
+    return new QgsCopyrightLabelPlugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as

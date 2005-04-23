@@ -74,7 +74,7 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
+QgsNorthArrowPlugin::QgsNorthArrowPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
     qgisMainWindowPointer(theQGisApp),
     qGisInterface(theQgisInterFace),
     QgisPlugin(name_,description_,version_,type_)
@@ -83,14 +83,14 @@ Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
   mPlacement=tr("Bottom Left");
 }
 
-Plugin::~Plugin()
+QgsNorthArrowPlugin::~QgsNorthArrowPlugin()
 {
 }
 
-/*
+  /*
  * Initialize the GUI interface for the plugin
  */
-void Plugin::initGui()
+void QgsNorthArrowPlugin::initGui()
 {
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
@@ -116,7 +116,7 @@ void Plugin::initGui()
 
 }
 
-void Plugin::projectRead()
+void QgsNorthArrowPlugin::projectRead()
 {
 #ifdef QGISDEBUG
     std::cout << "+++++++++ north arrow plugin - project read slot called...." << std::endl;
@@ -129,13 +129,13 @@ void Plugin::projectRead()
 }
 
 //method defined in interface
-void Plugin::help()
+void QgsNorthArrowPlugin::help()
 {
   //implement me!
 }
 
 // Slot called when the buffer menu item is activated
-void Plugin::run()
+void QgsNorthArrowPlugin::run()
 {
   PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"North Arrow",true,0);
   //overides function byt the same name created in .ui
@@ -151,12 +151,12 @@ void Plugin::run()
 }
 
 //! Refresh the map display using the mapcanvas exported via the plugin interface
-void Plugin::refreshCanvas()
+void QgsNorthArrowPlugin::refreshCanvas()
 {
   qGisInterface->getMapCanvas()->refresh();
 }
 
-void Plugin::renderNorthArrow(QPainter * theQPainter)
+void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
 {
 #ifdef QGISDEBUG
       std::cout << "Rendering n-arrow"  << std::endl;
@@ -243,7 +243,7 @@ void Plugin::renderNorthArrow(QPainter * theQPainter)
 
 }
 // Unload the plugin by cleaning up the GUI
-void Plugin::unload()
+void QgsNorthArrowPlugin::unload()
 {
   // remove the GUI
   menuBarPointer->removeItem(menuIdInt);
@@ -252,7 +252,7 @@ void Plugin::unload()
 }
 
 
-void Plugin::rotationChanged(int theInt)
+void QgsNorthArrowPlugin::rotationChanged(int theInt)
 {
   mRotationInt = theInt;
   QgsProject::instance()->writeEntry("NorthArrow","/Rotation", mRotationInt  );
@@ -260,14 +260,14 @@ void Plugin::rotationChanged(int theInt)
 }
 
 //! set placement of north arrow
-void Plugin::setPlacement(QString theQString)
+void QgsNorthArrowPlugin::setPlacement(QString theQString)
 {
   mPlacement = theQString;
   QgsProject::instance()->writeEntry("NorthArrow","/Placement", mPlacement);
   refreshCanvas();
 }
 
-void Plugin::setEnabled(bool theBool)
+void QgsNorthArrowPlugin::setEnabled(bool theBool)
 {
   mEnable = theBool;
   QgsProject::instance()->writeEntry("NorthArrow","/Enabled", mEnable );
@@ -287,7 +287,7 @@ void Plugin::setEnabled(bool theBool)
 // Class factory to return a new instance of the plugin class
 QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
-  return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsNorthArrowPlugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as

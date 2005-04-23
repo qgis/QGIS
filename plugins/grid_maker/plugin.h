@@ -17,8 +17,8 @@
  *                                                                         *
  ***************************************************************************/
  /*  $Id$ */
-#ifndef PLUGIN
-#define PLUGIN
+#ifndef QGSGRIDMAKERPLUGIN
+#define QGSGRIDMAKERPLUGIN
 #include "../qgisplugin.h"
 #include <qwidget.h>
 #include <qgisapp.h>
@@ -28,7 +28,7 @@
 * \brief OpenModeller plugin for QGIS
 *
 */
-class Plugin:public QObject, public QgisPlugin
+class QgsGridMakerPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       /** 
@@ -37,7 +37,7 @@ class Plugin:public QObject, public QgisPlugin
        * @param qgis Pointer to the QgisApp object
        * @param qI Pointer to the QgisIface object. 
        */
-      Plugin(QgisApp * , QgisIface * );
+    QgsGridMakerPlugin(QgisApp * , QgisIface * );
   /**
    * Virtual function to return the name of the plugin. The name will be used when presenting a list 
    * of installable plugins to the user
@@ -56,7 +56,7 @@ class Plugin:public QObject, public QgisPlugin
    */
   virtual int type();
   //! Destructor
-  virtual ~ Plugin();
+  virtual ~ QgsGridMakerPlugin();
   public slots:
   //! init the gui
   virtual void initGui();
