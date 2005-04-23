@@ -18,7 +18,6 @@
 /* $Id$ */
 
 #include "qgsprojectproperties.h"
-#include "qgsspatialreferences.h"
 #include "qgscsexception.h"
 #include "qgsprojectionselector.h"
 
