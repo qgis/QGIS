@@ -37,8 +37,56 @@ class QgsSpatialRefSys
                 long theEpsg,
                 bool theGeoFlag);
 
-        // Accessors -----------------------------------
+        // Misc helper functions -----------------------
         
+        /*! Set up this srs by fetching the appropriate information from the 
+         * sqlite backend. First the system level read only srs.db will be checked
+         * and then the users ~/.qgis/qgis.db database will be checked for a match.
+         * @note Any members will be overwritten during this process.
+         * @param theSrid The postgis SRID for the desired spatial reference system.
+         */
+        void createFromSrid(long theSrid);
+        /*! Set up this srs using a WKT spatial ref sys definition. 
+         * The wkt will be converted to a proj4 string using OGR helper
+         * functions. After this the srs databasses will be searched for matches.
+         * First the system level read only srs.db will be checked
+         * and then the users ~/.qgis/qgis.db database will be checked for a match.
+         * @note Any members will be overwritten during this process.
+         * @note SRID and EPSG may be blank if no match can be found on srs db.
+         * @param theWkt The WKT for the desired spatial reference system.
+         */
+        void createFromWkt(QString theWkt);
+        /*! Set up this srs by fetching the appropriate information from the 
+         * sqlite backend. First the system level read only srs.db will be checked
+         * and then the users ~/.qgis/qgis.db database will be checked for a match.
+         * @note Any members will be overwritten during this process.
+         * @param theEpsg The EPSG for the desired spatial reference system.
+         */
+        void createFromEpsg(long theEpsg);
+        /*! Set up this srs by fetching the appropriate information from the 
+         * sqlite backend. Only the system level read only srs.db will be checked
+         * @note Any members will be overwritten during this process.
+         * @note only system db is checked because the users srs.db could
+         * have srsids that overlap with the system db.
+         * @param theSrsId The QGIS SrsId for the desired spatial reference system.
+         */
+        void createFromSystemSrsId (long theSrsId);
+        /*! Set up this srs by fetching the appropriate information from the 
+         * sqlite backend. Only the users srs.db will be checked
+         * @note Any members will be overwritten during this process.
+         * @note only users db is checked because the users srs.db could
+         * have srsids that overlap with the system db.
+         * @param theSrsId The QGIS SrsId for the desired spatial reference system.
+         */
+        void createFromUserSrsId (long theSrsId);
+        /*! Return this srs asa  a proj format string */
+        QString toProjString ();
+
+         
+        
+
+        // Accessors -----------------------------------
+
         /*! Get the SrsId
          *  @return  long theSrsId The internal sqlite3 srs.db primary key for this srs 
          */
@@ -117,20 +165,20 @@ class QgsSpatialRefSys
     private:
         //!The internal sqlite3 srs.db primary key for this srs 
         long    mSrsId;
-            //!A textual description of the srs.
-            QString mDescription;
-            //!The official proj4 acronym for the projection family
-            QString mProjectionAcronym ;
-            //!The official proj4 acronym for the ellipoid
-            QString mEllipsoidAcronym;
-            //!Proj4 format specifies (excluding proj and ellips) that define this srs.
-            QString mParameters ;
-            //!Whether this is a geographic or projected coordinate system
-            bool    mGeoFlag;
-            //!If available, the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
-            long    mSRID;
-            //!If available the ESPG identifier for this srs (defaults to 0)
-            long    mEpsg ;
+        //!A textual description of the srs.
+        QString mDescription;
+        //!The official proj4 acronym for the projection family
+        QString mProjectionAcronym ;
+        //!The official proj4 acronym for the ellipoid
+        QString mEllipsoidAcronym;
+        //!Proj4 format specifies (excluding proj and ellips) that define this srs.
+        QString mParameters ;
+        //!Whether this is a geographic or projected coordinate system
+        bool    mGeoFlag;
+        //!If available, the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
+        long    mSRID;
+        //!If available the ESPG identifier for this srs (defaults to 0)
+        long    mEpsg ;
 };
 
 

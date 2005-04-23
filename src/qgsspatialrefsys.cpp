@@ -12,6 +12,38 @@ QgsSpatialRefSys::QgsSpatialRefSys(long theSrsId,
 
 {
 }
+// Misc helper functions -----------------------
+
+void QgsSpatialRefSys::createFromSrid(long theSrid)
+{
+
+}
+
+void QgsSpatialRefSys::createFromWkt(QString theWkt)
+{
+
+}
+
+void QgsSpatialRefSys::createFromEpsg(long theEpsg)
+{
+
+}
+
+void QgsSpatialRefSys::createFromSystemSrsId (long theSrsId)
+{
+
+}
+
+
+void QgsSpatialRefSys::createFromUserSrsId (long theSrsId)
+{
+
+}
+
+QString QgsSpatialRefSys::toProjString ()
+{
+
+}
 // Accessors -----------------------------------
 
 /*! Get the SrsId

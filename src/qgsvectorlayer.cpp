@@ -527,7 +527,7 @@ std::cerr << i << ": " << ring->first[i]
 */
         break;
       }
-      std::cout << "POLYGONTRANSFORM: " << ring->first[i] << ", " << ring->second[i] << std::endl; 
+      //std::cout << "POLYGONTRANSFORM: " << ring->first[i] << ", " << ring->second[i] << std::endl; 
     }
 
 #endif
