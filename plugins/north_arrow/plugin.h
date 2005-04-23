@@ -17,8 +17,8 @@
  *                                                                         *
  ***************************************************************************/
  /*  $Id$ */
-#ifndef PLUGIN
-#define PLUGIN
+#ifndef QGSNORTHARROWPLUGIN
+#define QGSNORTHARROWPLUGIN
 #include "../qgisplugin.h"
 #include <qwidget.h>
 #include <qpainter.h>
@@ -31,7 +31,7 @@
 * \brief North Arrow plugin for QGIS
 *
 */
-class Plugin:public QObject, public QgisPlugin
+class QgsNorthArrowPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       /**
@@ -40,9 +40,9 @@ class Plugin:public QObject, public QgisPlugin
        * @param qgis Pointer to the QgisApp object
        * @param qI Pointer to the QgisIface object.
        */
-      Plugin(QgisApp * , QgisIface * );
+    QgsNorthArrowPlugin(QgisApp * , QgisIface * );
   //! Destructor
-  virtual ~ Plugin();
+  virtual ~QgsNorthArrowPlugin();
   public slots:
   //! init the gui
   virtual void initGui();

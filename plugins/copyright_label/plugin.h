@@ -17,8 +17,8 @@
  *                                                                         *
  ***************************************************************************/
  /*  $Id$ */
-#ifndef PLUGIN
-#define PLUGIN
+#ifndef QGSCOPYRIGHTLABELPLUGIN
+#define QGSCOPYRIGHTLABELPLUGIN
 #include "../qgisplugin.h"
 #include "../../src/qgisapp.h"
 #include <qwidget.h>
@@ -31,7 +31,7 @@
 * \brief OpenModeller plugin for QGIS
 *
 */
-class Plugin:public QObject, public QgisPlugin
+class QgsCopyrightLabelPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       /**
@@ -40,9 +40,9 @@ class Plugin:public QObject, public QgisPlugin
        * @param qgis Pointer to the QgisApp object
        * @param qI Pointer to the QgisIface object.
        */
-      Plugin(QgisApp * , QgisIface * );
+      QgsCopyrightLabelPlugin(QgisApp * , QgisIface * );
   //! Destructor
-  virtual ~ Plugin();
+  virtual ~ QgsCopyrightLabelPlugin();
   void writeEntry(QString theScope, QString theProperty, QVariant theValue);
   public slots:
   //! init the gui
