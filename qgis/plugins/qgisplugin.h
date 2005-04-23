@@ -49,7 +49,7 @@ class QgisPlugin
     */
     typedef enum PLUGINTYPE
         {
-            UI,                         /* user interface plug-in */
+            UI = 1,                         /* user interface plug-in */
             MAPLAYER                    /* map layer plug-in */
         };
 

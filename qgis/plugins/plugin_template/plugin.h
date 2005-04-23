@@ -34,8 +34,8 @@
  *   DON'T: separate variable names using underscores: my_variable_name (NO!)
  *
  * **************************************************************************/
-#ifndef PLUGIN
-#define PLUGIN
+#ifndef [pluginname]
+#define [pluginname]
 #include "../qgisplugin.h"
 #include <qwidget.h>
 
@@ -47,7 +47,7 @@
 * \brief [name] plugin for QGIS
 * [description]
 */
-class Plugin:public QObject, public QgisPlugin
+class [pluginname]:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       
@@ -63,9 +63,9 @@ class Plugin:public QObject, public QgisPlugin
   * @param Pointer to the QgisApp object
   * @param Pointer to the QgisIface object. 
    */
-  Plugin(QgisApp * , QgisIface * );
+  [pluginname](QgisApp * , QgisIface * );
   //! Destructor
-  virtual ~ Plugin();
+  virtual ~ [pluginname]();
 
 public slots:
   //! init the gui

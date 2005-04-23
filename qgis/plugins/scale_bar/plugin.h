@@ -19,8 +19,8 @@ email                : sbr00pwb@users.sourceforge.net
  *                                                                         *
  ***************************************************************************/
  /*  $Id$ */
-#ifndef PLUGIN
-#define PLUGIN
+#ifndef QGSCALEBARPLUGIN
+#define QGSCALEBARPLUGIN
 #include "../qgisplugin.h"
 #include <qwidget.h>
 #include <qpainter.h>
@@ -34,7 +34,7 @@ email                : sbr00pwb@users.sourceforge.net
 * \brief OpenModeller plugin for QGIS
 *
 */
-class Plugin:public QObject, public QgisPlugin
+class QgsScaleBarPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       /**
@@ -43,12 +43,12 @@ class Plugin:public QObject, public QgisPlugin
        * @param qgis Pointer to the QgisApp object
        * @param qI Pointer to the QgisIface object.
        */
-      Plugin(QgisApp * , QgisIface * );
+      QgsScaleBarPlugin(QgisApp * , QgisIface * );
 
 
 
   //! Destructor
-  virtual ~ Plugin();
+  virtual ~ QgsScaleBarPlugin();
   public slots:
   //! init the gui
   virtual void initGui();

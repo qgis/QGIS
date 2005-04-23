@@ -81,7 +81,7 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
+QgsScaleBarPlugin::QgsScaleBarPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
 qgisMainWindowPointer(theQGisApp),
     qGisInterface(theQgisInterFace),
 QgisPlugin(name_,description_,version_,type_)
@@ -93,7 +93,7 @@ QgisPlugin(name_,description_,version_,type_)
   mSnapping = true;
 }
 
-Plugin::~Plugin()
+QgsScaleBarPlugin::~QgsScaleBarPlugin()
 {
 
 }
@@ -101,7 +101,7 @@ Plugin::~Plugin()
 /*
  * Initialize the GUI interface for the plugin
  */
-void Plugin::initGui()
+void QgsScaleBarPlugin::initGui()
 {
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
@@ -124,7 +124,7 @@ void Plugin::initGui()
   qGisInterface->addToolBarIcon(myQActionPointer);
 }
 
-void Plugin::projectRead()
+void QgsScaleBarPlugin::projectRead()
 {
 #ifdef QGISDEBUG
     std::cout << "+++++++++ scalebar plugin - project read slot called...." << std::endl;
@@ -142,13 +142,13 @@ void Plugin::projectRead()
     mColour = QColor(myRedInt,myGreenInt,myBlueInt);
 }
 //method defined in interface
-void Plugin::help()
+void QgsScaleBarPlugin::help()
 {
   //implement me!
 }
 
 // Slot called when the  menu item is activated
-void Plugin::run()
+void QgsScaleBarPlugin::run()
 {
   PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"Scale Bar",true,0);
   myPluginGui->setPreferredSize(mPreferredSize);
@@ -178,7 +178,7 @@ void Plugin::run()
 }
 
 
-void Plugin::refreshCanvas()
+void QgsScaleBarPlugin::refreshCanvas()
 {
   qGisInterface->getMapCanvas()->refresh();
 }
@@ -186,7 +186,7 @@ void Plugin::refreshCanvas()
 
 
 // Actual drawing of Scale Bar
-void Plugin::renderScaleBar(QPainter * theQPainter)
+void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
 {
   int myBufferSize=1; //softcode this later
 
@@ -483,7 +483,7 @@ void Plugin::renderScaleBar(QPainter * theQPainter)
 
 
 // Unload the plugin by cleaning up the GUI
-void Plugin::unload()
+void QgsScaleBarPlugin::unload()
 {
   // remove the GUI
   menuBarPointer->removeItem(menuIdInt);
@@ -492,40 +492,40 @@ void Plugin::unload()
 }
 
 //! set placement of scale bar
-void Plugin::setPlacement(QString theQString)
+void QgsScaleBarPlugin::setPlacement(QString theQString)
 {
   mPlacement = theQString;
   QgsProject::instance()->writeEntry("ScaleBar","/Placement",mPlacement);
 }
 
 //! set preferred size of scale bar
-void Plugin::setPreferredSize(int thePreferredSize)
+void QgsScaleBarPlugin::setPreferredSize(int thePreferredSize)
 {
   mPreferredSize = thePreferredSize;
   QgsProject::instance()->writeEntry("ScaleBar","/PreferredSize",mPreferredSize);
 }
 
 //! set whether the scale bar length should snap to the closes A*10^B
-void Plugin::setSnapping(bool theSnapping)
+void QgsScaleBarPlugin::setSnapping(bool theSnapping)
 {
   mSnapping = theSnapping;
   QgsProject::instance()->writeEntry("ScaleBar","/Snapping",mSnapping);
 }
 
 //! set scale bar enable
-void Plugin::setEnabled(bool theBool)
+void QgsScaleBarPlugin::setEnabled(bool theBool)
 {
   mEnabled = theBool;
   QgsProject::instance()->writeEntry("ScaleBar","/Enabled",mEnabled);
 }
 //! set scale bar enable
-void Plugin::setStyle(QString theStyleQString)
+void QgsScaleBarPlugin::setStyle(QString theStyleQString)
 {
   mStyle = theStyleQString;
    QgsProject::instance()->writeEntry("ScaleBar","/Style",mStyle);
 }
 //! set the scale bar colour
-void Plugin::setColour(QColor theQColor)
+void QgsScaleBarPlugin::setColour(QColor theQColor)
 {
   mColour = theQColor;
   QgsProject::instance()->writeEntry("ScaleBar","/ColorRedPart", mColour.red());
@@ -542,7 +542,7 @@ void Plugin::setColour(QColor theQColor)
 // Class factory to return a new instance of the plugin class
 QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
-  return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsScaleBarPlugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as
