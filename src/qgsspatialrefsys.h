@@ -11,116 +11,145 @@
  */ 
 class QgsSpatialRefSys
 {
-  public:
-    //! Default constructor
+    public:
+        //! Default constructor
 
-QgsSpatialRefSys();
-/*!
- * Constructs a SRS object from the five component parts
- * @param srid Spatial reference id (SRID)
- * @param authName Name of the authority for the SRS
- * @param authSrid SRID of the SRS assigned by the authority
- * @param srtext Well known text (WKT) of the SRS
- * @param proj4text Proj4 parameter string
- */
-QgsSpatialRefSys(QString srid, QString authName, QString authSrid, QString srtext, QString proj4text, QString name);
-/*!
- * Get the SRID
- * @return SRID of the SRS
- */
-QString srid() const;
-/*!
- * Get the authority name
- * @return authority name of the SRS creator
- */
-QString authName() const;
-/*!
- * Get the SRID assigned by the SRS creator
- * @return SRID 
- */
-QString authSrid() const;
-/*!
- * Get the WKT of the SRS
- * @return Well known text of the SRS
- */
-QString srText() const;
-/*!
- * Get the proj4 parameter string  for the SRS
- * @return proj4 parameters
- */
-QString proj4Text() const;
-/*!
- * Get the short name of the projection
- * @return name including the projection system
- */
-QString name() const;
-/*!
- * Test to see if the SRS is geographic
- * @return true if geographic or false if the SRS is projected
- */
-bool isGeographic();
-/*!
- * Set the flag to indicate if the SRS is geographic
- * @param isGeo true if the SRS is geographic; false if its projected
- */
-void setGeographic(bool isGeo);
-/*!
- * Set the SRID
- * @param srid Spatial reference id to assign to the object
- */
-void setSrid(QString &srid);
-/*!
- * Set the authority name
- * @param authname Authority name
- */
-void setAuthName(QString &authname);
-/*!
- * Set the authority assigned SRID 
- * @param authsrid Authority assigned SRID
- */
-void setAuthSrid(QString &authsrid);
-/*!
- * Set the WKT
- * @param srtext Well known text of the SRS
- */
-void setSrText(QString &srtext);
-/*!
- * Set the Proj4 parameters
- * @param projtext Proj4 parameter string
- */
-void setProjText(QString &projtext);
-/*! 
- * Set the short name
- * @param shortname Short name of the SRS
- */
-void setName(QString &shortname);
-  private:
-//! SRID
-QString mSrid;
-//! Authority name
-QString mAuthName;
-//! Authority assigned SRID
-QString mAuthSrid;
-//! WKT for the SRS
-QString mSrtext;
-//! Proj4 paramters
-QString mProj4text;
-//! Short name
-QString mName;
-//! Flag to indicate if the SRS is geographic (unprojected)
-bool mGeographic;
+        QgsSpatialRefSys();
+
+        /*!
+         * Constructs a SRS object from the following component parts
+         *
+         * @param  long theSrsId The internal sqlite3 srs.db primary key for this srs 
+         * @param  QString the Description A textual description of the srs.
+         * @param  QString theProjectionAcronym The official proj4 acronym for the projection family
+         * @param  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
+         * @param  QString theParameters Proj4 format specifies (excluding proj and ellips) that define this srs.
+         * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
+         * @param  long theSRID If available, the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
+         * @param  long theEpsg If available the ESPG identifier for this srs (defaults to 0)
+         */
+        QgsSpatialRefSys(long theSrsId, 
+                QString theDescription, 
+                QString theProjectionAcronym, 
+                QString theEllipsoidAcronym, 
+                QString theParameters,
+                long theSRID,
+                long theEpsg,
+                bool theGeoFlag);
+
+        // Accessors -----------------------------------
+        
+        /*! Get the SrsId
+         *  @return  long theSrsId The internal sqlite3 srs.db primary key for this srs 
+         */
+        long srid();
+        /*! Get the Description
+         * @return  QString the Description A textual description of the srs.
+         */
+        QString description ();
+        /*! Get the Projection Acronym
+         * @return  QString theProjectionAcronym The official proj4 acronym for the projection family
+         */
+        QString projectionAcronym();
+        /*! Get the Ellipsoid Acronym
+         * @return  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
+         */
+        QString ellipsoid ();
+        /* Get the Proj Parameters. If proj and ellps keys are found in the parameters,
+         * they will be stripped out and the Projection and ellipsoid acronyms will be
+         * overridden with these.
+         * @return  QString theParameters Proj4 format specifies (excluding proj and ellips) that define this srs.
+         */
+        QString parameters ();
+        /*! Get this Geographic? flag
+         * @return  bool theGeoFlag Whether this is a geographic or projected coordinate system
+         */
+        bool geographicFlag ();
+
+        /*! Set the postgis srid for this srs
+         * @return  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
+         */
+        long postgisSrid ();
+        /*! Set the EPSG identifier for this srs
+         * @return  long theEpsg the ESPG identifier for this srs (defaults to 0)
+         */
+        long epsg ();
+
+        // Mutators -----------------------------------
+
+
+        /*! Set the SrsId
+         *  @param  long theSrsId The internal sqlite3 srs.db primary key for this srs 
+         */
+        void setSrid(long theSrid);
+        /*! Set the Description
+         * @param  QString the Description A textual description of the srs.
+         */
+        void setDescription (QString theDescription);
+        /*! Set the Projection Acronym
+         * @param  QString theProjectionAcronym The official proj4 acronym for the projection family
+         */
+        void setProjectionAcronym(QString theProjectionAcronym);
+        /*! Set the Ellipsoid Acronym
+         * @param  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
+         */
+        void setEllipsoid (QString theEllipsoidAcronym);
+        /* Set the Proj Parameters. If proj and ellps keys are found in the parameters,
+         * they will be stripped out and the Projection and ellipsoid acronyms will be
+         * overridden with these.
+         * @param  QString theParameters Proj4 format specifies (excluding proj and ellips) that define this srs.
+         */
+        void setParameters (QString theParameters);
+        /*! Set this Geographic? flag
+         * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
+         */
+        void setGeographicFlag (bool theGeoFlag);
+
+        /*! Set the postgis srid for this srs
+         * @param  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
+         */
+        void setPostgisSrid (long theSrid);
+        /*! Set the EPSG identifier for this srs
+         * @param  long theEpsg the ESPG identifier for this srs (defaults to 0)
+         */
+        void setEpsg (long theEpsg);
+
+    private:
+        //!The internal sqlite3 srs.db primary key for this srs 
+        long    mSrsId;
+            //!A textual description of the srs.
+            QString mDescription;
+            //!The official proj4 acronym for the projection family
+            QString mProjectionAcronym ;
+            //!The official proj4 acronym for the ellipoid
+            QString mEllipsoidAcronym;
+            //!Proj4 format specifies (excluding proj and ellips) that define this srs.
+            QString mParameters ;
+            //!Whether this is a geographic or projected coordinate system
+            bool    mGeoFlag;
+            //!If available, the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
+            long    mSRID;
+            //!If available the ESPG identifier for this srs (defaults to 0)
+            long    mEpsg ;
 };
+
+
 //! Output stream operator
 inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
 {
+    return os << "FIXME FIXME" << __FILE__ << ":" << __LINE__ << std::endl;
+    /*
     return os << r.srid() <<  "\t" << r.authName() << "\t" << r.authSrid()
       << "\t" << r.srText() << "\t" <<  r.proj4Text() << "\t" << r.name() << std::endl; 
+      */
 }
 //! Input stream operator
 inline std::istream& operator>> (std::istream& str, QgsSpatialRefSys& r)
 {
+  //std::cout << "FIXME FIXME" << __FILE__ << ":" << __LINE__ << std::endl;
   std::string s;
   str >> s;
+  /*
   QString srs = s.c_str();
   // split the string into the parts to created the object
   QStringList parts = QStringList::split(QRegExp("\t"),srs);
@@ -130,6 +159,8 @@ inline std::istream& operator>> (std::istream& str, QgsSpatialRefSys& r)
    r.setSrText(parts[3]);
    r.setProjText(parts[4]);
    r.setName(parts[5]);
+   */
   return str;
+  
 }  
 #endif // QGSSPATIALREFSYS_H
