@@ -3734,10 +3734,7 @@ void QgisApp::populateMenuMaps()
 }
 int QgisApp::addPluginMenu(QString menuText, QPopupMenu *menu)
 {
-    mPluginMenu->insertItem(menuText, menu);
-    // added cuz windows wants the return
-    // TODO - fix this up later
-    return 0;
+  return mPluginMenu->insertItem(menuText, menu);
 }
 
 int QgisApp::addPluginToolBarIcon (QAction * qAction)
