@@ -162,8 +162,8 @@ void QgsCoordinateTransform::initialise()
   mSourceProjection = pj_init_plus((const char *)mProj4SrcParms);
 
 #ifdef QGISDEBUG 
-  OGRErr sourceValid = mSourceOgrSpatialRef.Validate();
-  OGRErr destValid = mDestOgrSpatialRef.Validate();
+  //OGRErr sourceValid = mSourceOgrSpatialRef.Validate();
+  //OGRErr destValid = mDestOgrSpatialRef.Validate();
 #endif     
   // One last test to see if they SRS are the same, despite slightly different
   // WKT specs
@@ -352,9 +352,9 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   assert(mProj4DestParms.length() > 0);
   assert(mProj4SrcParms.length() > 0);
 #ifdef QGISDEBUG 
-  double xorg = x;
-  double yorg = y;
-  std::cout << "[[[[[[Number of points to transform: " << numPoints << "]]]]]]" << std::endl; 
+  //double xorg = x;
+  //double yorg = y;
+  //std::cout << "[[[[[[Number of points to transform: " << numPoints << "]]]]]]" << std::endl; 
 #endif 
   // use proj4 to do the transform   
   QString dir;  
@@ -418,6 +418,6 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
     }
   }
 #ifdef QGISDEBUG
-  std::cout << "[[[[[[ Projected " << xorg << ", " << yorg << " to "  << x << ", " << y << " ]]]]]]"<< std::endl; 
+// std::cout << "[[[[[[ Projected " << xorg << ", " << yorg << " to "  << x << ", " << y << " ]]]]]]"<< std::endl; 
 #endif
 }
