@@ -1,64 +1,138 @@
 #include "qgsspatialrefsys.h"
 QgsSpatialRefSys::QgsSpatialRefSys(){}
-QgsSpatialRefSys::QgsSpatialRefSys(QString srid, QString authName, QString authSrid, 
-    QString srtext, QString proj4Text, QString name):mSrid(srid), mAuthName(authName), mAuthSrid(authSrid), mSrtext(srtext), mProj4text(proj4Text), mName(name)
+
+QgsSpatialRefSys::QgsSpatialRefSys(long theSrsId, 
+        QString theDescription, 
+        QString theProjectionAcronym, 
+        QString theEllipsoidAcronym, 
+        QString theParameters,
+        long theSRID,
+        long theEpsg,
+        bool theGeoFlag)
+
 {
 }
-QString QgsSpatialRefSys::srid() const
+// Accessors -----------------------------------
+
+/*! Get the SrsId
+ *  @return  long theSrsId The internal sqlite3 srs.db primary key for this srs 
+ */
+long QgsSpatialRefSys::srid()
 {
-  return mSrid;
+  return mSRID;
+}
+/*! Get the Description
+ * @return  QString the Description A textual description of the srs.
+ */
+QString QgsSpatialRefSys::description ()
+{
+  return mDescription;
+}
+/*! Get the Projection Acronym
+ * @return  QString theProjectionAcronym The official proj4 acronym for the projection family
+ */
+QString QgsSpatialRefSys::projectionAcronym()
+{
+  return mProjectionAcronym;
+}
+/*! Get the Ellipsoid Acronym
+ * @return  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
+ */
+QString QgsSpatialRefSys::ellipsoid ()
+{
+  return mEllipsoidAcronym;
+}
+/* Get the Proj Parameters. If proj and ellps keys are found in the parameters,
+ * they will be stripped out and the Projection and ellipsoid acronyms will be
+ * overridden with these.
+ * @return  QString theParameters Proj4 format specifies (excluding proj and ellips) that define this srs.
+ */
+QString QgsSpatialRefSys::parameters ()
+{
+  return mParameters;
+}
+/*! Get this Geographic? flag
+ * @return  bool theGeoFlag Whether this is a geographic or projected coordinate system
+ */
+bool QgsSpatialRefSys::geographicFlag ()
+{
+  return mGeoFlag;
 }
 
-QString QgsSpatialRefSys::authName() const
+/*! Set the postgis srid for this srs
+ * @return  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
+ */
+long QgsSpatialRefSys::postgisSrid ()
 {
-  return mAuthName;
+  return mSRID ;
 }
-QString QgsSpatialRefSys::authSrid() const
+/*! Set the EPSG identifier for this srs
+ * @return  long theEpsg the ESPG identifier for this srs (defaults to 0)
+ */
+long QgsSpatialRefSys::epsg ()
 {
-  return mAuthSrid;
-}
-QString QgsSpatialRefSys::srText() const
-{
-  return mSrtext;
-}
-QString QgsSpatialRefSys::proj4Text() const
-{
-  return mProj4text;
-}
-QString QgsSpatialRefSys::name() const
-{
-  return mName;
+  return mEpsg;
 }
 
-void QgsSpatialRefSys::setSrid(QString& srid)
+// Mutators -----------------------------------
+
+
+/*! Set the SrsId
+ *  @param  long theSrsId The internal sqlite3 srs.db primary key for this srs 
+ */
+void QgsSpatialRefSys::setSrid(long theSrid)
 {
-  mSrid = srid;
+  mSRID=theSrid;
 }
-void QgsSpatialRefSys::setAuthName(QString &authname)
+/*! Set the Description
+ * @param  QString the Description A textual description of the srs.
+ */
+void QgsSpatialRefSys::setDescription (QString theDescription)
 {
-  mAuthName = authname;
+  mDescription = theDescription;
 }
-void QgsSpatialRefSys::setAuthSrid(QString &authsrid)
+/*! Set the Projection Acronym
+ * @param  QString theProjectionAcronym The official proj4 acronym for the projection family
+ */
+void QgsSpatialRefSys::setProjectionAcronym(QString theProjectionAcronym)
 {
-  mAuthSrid = authsrid;
+  mProjectionAcronym=theProjectionAcronym;
 }
-void QgsSpatialRefSys::setSrText(QString &srtext)
+/*! Set the Ellipsoid Acronym
+ * @param  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
+ */
+void QgsSpatialRefSys::setEllipsoid (QString theEllipsoidAcronym)
 {
-  mSrtext = srtext;
+  mEllipsoidAcronym=theEllipsoidAcronym;
 }
-void QgsSpatialRefSys::setProjText(QString &projtext)
+/* Set the Proj Parameters. If proj and ellps keys are found in the parameters,
+ * they will be stripped out and the Projection and ellipsoid acronyms will be
+ * overridden with these.
+ * @param  QString theParameters Proj4 format specifies (excluding proj and ellips) that define this srs.
+ */
+void QgsSpatialRefSys::setParameters (QString theParameters)
 {
-  mProj4text = projtext;
+  mParameters=theParameters;
 }
-void QgsSpatialRefSys::setName(QString &shortname)
+/*! Set this Geographic? flag
+ * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
+ */
+void QgsSpatialRefSys::setGeographicFlag (bool theGeoFlag)
 {
-  mName = shortname;
+  mGeoFlag=theGeoFlag;
 }
-bool QgsSpatialRefSys::isGeographic()
+
+/*! Set the postgis srid for this srs
+ * @param  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
+ */
+void QgsSpatialRefSys::setPostgisSrid (long theSrid)
 {
-  return mGeographic;
+  mSRID=theSrid;
 }
-void QgsSpatialRefSys::setGeographic(bool isGeogCS)
+/*! Set the EPSG identifier for this srs
+ * @param  long theEpsg the ESPG identifier for this srs (defaults to 0)
+ */
+void QgsSpatialRefSys::setEpsg (long theEpsg)
 {
-  mGeographic = isGeogCS;
+  mEpsg=theEpsg;
 }

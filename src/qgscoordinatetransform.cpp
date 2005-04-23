@@ -55,7 +55,17 @@ void QgsCoordinateTransform::initialise()
   // Later we will make this user configurable
   // SRID 4326 is geographic wgs84 - use the SRS singleton to fetch
   // the WKT for the coordinate system
-  QString defaultWkt = QgsSpatialReferences::instance()->getSrsBySrid("4326")->srText();
+  QString defaultWkt =  "GEOGCS[\"WGS 84\", "
+      "  DATUM[\"WGS_1984\", "
+      "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
+      "      AUTHORITY[\"EPSG\",7030]], "
+      "    TOWGS84[0,0,0,0,0,0,0], "
+      "    AUTHORITY[\"EPSG\",6326]], "
+      "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
+      "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
+      "  AXIS[\"Lat\",NORTH], "
+      "  AXIS[\"Long\",EAST], "
+      "  AUTHORITY[\"EPSG\",4326]]";
   //default input projection to geo wgs84  
   // XXX Warning - multiple return paths in this block!!
   if (mSourceWKT.isEmpty())
@@ -66,12 +76,12 @@ void QgsCoordinateTransform::initialise()
     mShortCircuit = true;
     return;
   }
-  
+
   if (mDestWKT.isEmpty())
   {
-   //No destination projection is set so we set the default output projection to
-   //be the same as input proj. This only happens on the first layer loaded
-   //whatever that may be...
+    //No destination projection is set so we set the default output projection to
+    //be the same as input proj. This only happens on the first layer loaded
+    //whatever that may be...
     mDestWKT = mSourceWKT;
   }  
 
@@ -93,16 +103,16 @@ void QgsCoordinateTransform::initialise()
   char *myDestCharArrayPointer = (char *)mDestWKT.ascii();
 
   /* Here are the possible OGR error codes :
-  typedef int OGRErr;
-  
-  #define OGRERR_NONE                0
-  #define OGRERR_NOT_ENOUGH_DATA     1    --> not enough data to deserialize 
-  #define OGRERR_NOT_ENOUGH_MEMORY   2
-  #define OGRERR_UNSUPPORTED_GEOMETRY_TYPE 3
-  #define OGRERR_UNSUPPORTED_OPERATION 4
-  #define OGRERR_CORRUPT_DATA        5
-  #define OGRERR_FAILURE             6
-  #define OGRERR_UNSUPPORTED_SRS     7 */
+     typedef int OGRErr;
+
+#define OGRERR_NONE                0
+#define OGRERR_NOT_ENOUGH_DATA     1    --> not enough data to deserialize 
+#define OGRERR_NOT_ENOUGH_MEMORY   2
+#define OGRERR_UNSUPPORTED_GEOMETRY_TYPE 3
+#define OGRERR_UNSUPPORTED_OPERATION 4
+#define OGRERR_CORRUPT_DATA        5
+#define OGRERR_FAILURE             6
+#define OGRERR_UNSUPPORTED_SRS     7 */
 
   OGRErr myInputResult = mSourceOgrSpatialRef.importFromWkt( & mySourceCharArrayPointer );
   if (myInputResult != OGRERR_NONE)
@@ -125,8 +135,8 @@ void QgsCoordinateTransform::initialise()
     std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
     return;
   }  
-    // always morph from esri as it doesn't hurt anything
-    mDestOgrSpatialRef.morphFromESRI();
+  // always morph from esri as it doesn't hurt anything
+  mDestOgrSpatialRef.morphFromESRI();
 #ifdef QGISDEBUG 
   OGRErr sourceValid = mSourceOgrSpatialRef.Validate();
   OGRErr destValid = mDestOgrSpatialRef.Validate();
@@ -145,7 +155,7 @@ void QgsCoordinateTransform::initialise()
   {
     std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
     std::cout << "The OGR Coordinate transformation for this layer could *** NOT *** be set "
-      << std::endl;
+        << std::endl;
     std::cout << "INPUT: " << std::endl << mSourceWKT << std::endl;
     std::cout << "OUTPUT: " << std::endl << mDestWKT  << std::endl;
     std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
@@ -158,14 +168,14 @@ void QgsCoordinateTransform::initialise()
     // create them each pass through when projecting points
     forwardTransform = OGRCreateCoordinateTransformation( &mSourceOgrSpatialRef, &mDestOgrSpatialRef);
     inverseTransform = OGRCreateCoordinateTransformation( &mDestOgrSpatialRef, &mSourceOgrSpatialRef );
-    
+
 
     std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
     std::cout << "The OGR Coordinate transformation for this layer was set to" << std::endl;
     std::cout << "INPUT: " << std::endl << mSourceWKT << std::endl;
-//    std::cout << "PROJ4: " << std::endl << mProj4SrcParms << std::endl;  
+    //    std::cout << "PROJ4: " << std::endl << mProj4SrcParms << std::endl;  
     std::cout << "OUTPUT: " << std::endl << mDestWKT  << std::endl;
- //   std::cout << "PROJ4: " << std::endl << mProj4DestParms << std::endl;  
+    //   std::cout << "PROJ4: " << std::endl << mProj4DestParms << std::endl;  
     std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
   }
 }
