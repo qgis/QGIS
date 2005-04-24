@@ -439,6 +439,13 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
     pa.setPoint(i, static_cast<int>(round(x[i])),
        static_cast<int>(round(y[i])));
 
+#ifdef QGISDEBUGVERBOSE
+  for (int i = 0; i < pa.size(); ++i)
+    std::cerr << pa.point(i).x() << ", " << pa.point(i).y()
+	      << '\n';
+  std::cerr << '\n';
+#endif
+
   // The default pen gives bevelled joins between segements of the
   // polyline, which is good enough for the moment.
   p->drawPolyline(pa);
