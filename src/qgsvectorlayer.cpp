@@ -593,7 +593,7 @@ std::cerr << i << ": " << ring->first[i]
       }
 
     
-#ifdef QGISDEBUG
+#ifdef QGISDEBUGVERBOSE
     std::cerr << "Pixel points are:\n";
     for (int i = 0; i < pa.size(); ++i)
       std::cerr << i << ": " << pa.point(i).x() << ", " 

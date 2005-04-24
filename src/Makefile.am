@@ -49,6 +49,7 @@ headers =	qgisapp.h					\
 		qgsattributedialog.h				\
 		qgsattributetabledisplay.h			\
 		qgsattributetable.h				\
+		qgsbookmarks.h			\
 		qgsclipper.h					\
 		qgscolortable.h					\
 		qgscomposer.h					\
@@ -233,6 +234,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsattributedialog.moc.cpp		\
 		qgsattributetabledisplay.moc.cpp		\
 		qgsattributetable.moc.cpp		\
+		qgsbookmarks.moc.cpp		\
 		qgscomposerlabel.moc.cpp		\
 		qgscomposermap.moc.cpp			\
 		qgscomposer.moc.cpp			\
@@ -299,6 +301,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsattributedialog.cpp		\
 		qgsattributetable.cpp		\
 		qgsattributetabledisplay.cpp	\
+		qgsbookmarks.cpp	\
 		qgsclipper.cpp			\
 		qgscolortable.cpp		\
 		qgscomposer.cpp			\
