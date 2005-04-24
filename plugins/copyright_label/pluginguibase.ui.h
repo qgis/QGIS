@@ -13,26 +13,26 @@
 #include <qfontdialog.h>
 #include <qfont.h>
 
-void PluginGuiBase::pbnOK_clicked()
+void QgsCopyrightLabelPluginGuiBase::pbnOK_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnCancel_clicked()
+void QgsCopyrightLabelPluginGuiBase::pbnCancel_clicked()
 {
 
 }
 
 
-void PluginGuiBase::btnFontColour_clicked()
+void QgsCopyrightLabelPluginGuiBase::btnFontColour_clicked()
 {
     QColor myQColor = QColorDialog::getColor();
     txtCopyrightText->setPaletteForegroundColor(myQColor);
 }
 
 
-void PluginGuiBase::btnFontFace_clicked()
+void QgsCopyrightLabelPluginGuiBase::btnFontFace_clicked()
 {
     bool ok;
     QFont myFont = QFontDialog::getFont(
@@ -49,19 +49,19 @@ void PluginGuiBase::btnFontFace_clicked()
 }
 
 
-void PluginGuiBase::cboxEnabled_toggled( bool )
+void QgsCopyrightLabelPluginGuiBase::cboxEnabled_toggled( bool )
 {
 
 }
 
 
-void PluginGuiBase::cboOrientation_textChanged( const QString & )
+void QgsCopyrightLabelPluginGuiBase::cboOrientation_textChanged( const QString & )
 {
 
 }
 
 
-void PluginGuiBase::cboPlacement_highlighted( const QString & )
+void QgsCopyrightLabelPluginGuiBase::cboPlacement_highlighted( const QString & )
 {
 
 }

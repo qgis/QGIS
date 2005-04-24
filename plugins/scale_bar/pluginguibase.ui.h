@@ -8,13 +8,13 @@
 *****************************************************************************/
 #include <qcolordialog.h> 
 
-void PluginGuiBase::pbnOK_clicked()
+void QgsScaleBarPluginGuiBase::pbnOK_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnCancel_clicked()
+void QgsScaleBarPluginGuiBase::pbnCancel_clicked()
 {
 
 }
@@ -27,55 +27,55 @@ void PluginGuiBase::pbnCancel_clicked()
 
 
 
-void PluginGuiBase::btnTopLeft_toggled( bool )
+void QgsScaleBarPluginGuiBase::btnTopLeft_toggled( bool )
 {
 
 }
 
 
-void PluginGuiBase::btnTopMiddle_toggled( bool )
+void QgsScaleBarPluginGuiBase::btnTopMiddle_toggled( bool )
 {
 
 }
 
 
-void PluginGuiBase::btnTopRight_toggled( bool )
+void QgsScaleBarPluginGuiBase::btnTopRight_toggled( bool )
 {
 
 }
 
 
-void PluginGuiBase::btnMiddleLeft_toggled( bool )
+void QgsScaleBarPluginGuiBase::btnMiddleLeft_toggled( bool )
 {
 
 }
 
 
-void PluginGuiBase::btnMiddleRight_toggled( bool )
+void QgsScaleBarPluginGuiBase::btnMiddleRight_toggled( bool )
 {
 
 }
 
 
-void PluginGuiBase::btnBottomLeft_toggled( bool )
+void QgsScaleBarPluginGuiBase::btnBottomLeft_toggled( bool )
 {
 
 }
 
 
-void PluginGuiBase::btnBottomMiddle_toggled( bool )
+void QgsScaleBarPluginGuiBase::btnBottomMiddle_toggled( bool )
 {
 
 }
 
 
-void PluginGuiBase::btnBottomRight_toggled( bool )
+void QgsScaleBarPluginGuiBase::btnBottomRight_toggled( bool )
 {
 
 }
 
 
-void PluginGuiBase::pbnChangeColour_clicked()
+void QgsScaleBarPluginGuiBase::pbnChangeColour_clicked()
 {
  frameColour->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
 }
