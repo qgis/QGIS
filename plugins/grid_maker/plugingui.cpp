@@ -21,20 +21,20 @@
 //standard includes
 #include <iostream>
 
-PluginGui::PluginGui() : PluginGuiBase()
+QgsGridMakerPluginGui::QgsGridMakerPluginGui() : QgsGridMakerPluginGuiBase()
 {
   
 }
-PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
-: PluginGuiBase( parent, name, modal, fl )
+QgsGridMakerPluginGui::QgsGridMakerPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+: QgsGridMakerPluginGuiBase( parent, name, modal, fl )
 {
    
 } 
-PluginGui::~PluginGui()
+QgsGridMakerPluginGui::~QgsGridMakerPluginGui()
 {
 }
 
-void PluginGui::pbnOK_clicked()
+void QgsGridMakerPluginGui::pbnOK_clicked()
 {
   //check input file exists
   //
@@ -72,7 +72,7 @@ void PluginGui::pbnOK_clicked()
 } 
 
 
-void PluginGui::pbnSelectOutputFile_clicked()
+void QgsGridMakerPluginGui::pbnSelectOutputFile_clicked()
 {
   std::cout << " Gps File Importer Gui::pbnSelectOutputFile_clicked() " << std::endl;
   QString myOutputFileNameQString = QFileDialog::getSaveFileName(
@@ -93,7 +93,7 @@ void PluginGui::pbnSelectOutputFile_clicked()
 }
 
 
-void PluginGui::pbnCancel_clicked()
+void QgsGridMakerPluginGui::pbnCancel_clicked()
 {
  close(1);
 }

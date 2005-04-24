@@ -31,12 +31,13 @@ QgsNorthArrowPluginGui::QgsNorthArrowPluginGui() : QgsNorthArrowPluginGuiBase()
   rotatePixmap(0);
 }
 
-    QgsNorthArrowPluginGui::QgsNorthArrowPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+QgsNorthArrowPluginGui::QgsNorthArrowPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
 : QgsNorthArrowPluginGuiBase( parent, name, modal, fl )
 {
   //temporary hack until this is implemented
   tabNorthArrowOptions->removePage( tabIcon );
 }  
+
 QgsNorthArrowPluginGui::~QgsNorthArrowPluginGui()
 {
 }

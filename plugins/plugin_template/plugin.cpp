@@ -111,7 +111,7 @@ void [pluginname]::help()
 // Slot called when the buffer menu item is activated
 void [pluginname]::run()
 {
-  PluginGui *myPluginGui=new PluginGui(mQGisApp,"[menuitemname]",true,0);
+  [pluginname]Gui *myPluginGui=new [pluginname]Gui(mQGisApp,"[menuitemname]",true,0);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));

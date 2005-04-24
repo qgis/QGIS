@@ -137,7 +137,7 @@ void QgsCopyrightLabelPlugin::help()
 // Slot called when the buffer menu item is activated
 void QgsCopyrightLabelPlugin::run()
 {
-    PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"Copyright Label",true,0);
+    QgsCopyrightLabelPluginGui *myPluginGui=new QgsCopyrightLabelPluginGui(qgisMainWindowPointer,"Copyright Label",true,0);
     //listen for when the layer has been made so we can draw it
     //connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
     //connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));

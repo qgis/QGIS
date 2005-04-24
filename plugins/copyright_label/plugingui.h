@@ -9,8 +9,8 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#ifndef PLUGINGUI_H
-#define PLUGINGUI_H
+#ifndef QGSCOPYRIGHTLABELPLUGINGUI_H
+#define QGSCOPYRIGHTLABELPLUGINGUI_H
 
 #include <pluginguibase.h>
 #include <qfont.h>
@@ -19,13 +19,13 @@
 /**
 @author Tim Sutton
 */
-class PluginGui : public PluginGuiBase
+class QgsCopyrightLabelPluginGui : public QgsCopyrightLabelPluginGuiBase
 {
 Q_OBJECT
 public:
-    PluginGui();
-    PluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~PluginGui();
+    QgsCopyrightLabelPluginGui();
+    QgsCopyrightLabelPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    ~QgsCopyrightLabelPluginGui();
     void pbnOK_clicked();
     void pbnCancel_clicked();    
     void setText(QString);

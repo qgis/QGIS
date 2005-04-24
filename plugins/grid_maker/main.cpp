@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
   tor.load(QString("qgis_") + QTextCodec::locale(), QString(PKGDATAPATH) + "/i18n");
   a.installTranslator(&tor);
   
-  PluginGui *myPluginGui=new PluginGui();
+  QgsGridMakerPluginGui *myPluginGui=new QgsGridMakerPluginGui();
   a.setMainWidget(myPluginGui);
   myPluginGui->show();
 

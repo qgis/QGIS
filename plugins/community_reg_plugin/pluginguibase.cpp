@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'pluginguibase.ui'
 **
-** Created: Wed Mar 16 23:39:35 2005
+** Created: Sun Apr 24 15:11:25 2005
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -21,12 +21,11 @@
 #include <qimage.h>
 #include <qpixmap.h>
 
-#include "pluginguibase.ui.h"
 static const unsigned char image0_data[] = { 
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
     0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10,
     0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0xf3, 0xff, 0x61, 0x00, 0x00, 0x02,
-    0x2c, 0x49, 0x44, 0x41, 0x54, 0x38, 0x8d, 0x95, 0x93, 0x4b, 0x48, 0x54,
+    0x2c, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x95, 0x93, 0x4b, 0x48, 0x54,
     0x51, 0x1c, 0xc6, 0x7f, 0xf7, 0x11, 0x96, 0xd3, 0x9d, 0x5b, 0xa6, 0x46,
     0x93, 0x4c, 0x36, 0x65, 0x64, 0x2d, 0x2c, 0x7a, 0x91, 0x99, 0x0d, 0x95,
     0x34, 0x09, 0x25, 0xf4, 0x58, 0x15, 0x08, 0xe2, 0xa3, 0x07, 0x46, 0x14,
@@ -72,8 +71,8 @@ static const unsigned char image0_data[] = {
     0xa9, 0xfb, 0xef, 0xdf, 0xb2, 0x90, 0x93, 0x99, 0x8c, 0x07, 0x33, 0xf8,
     0xfc, 0x41, 0xa7, 0x78, 0x47, 0x1a, 0xc0, 0xfc, 0xe4, 0x8c, 0x2f, 0xc1,
     0xe9, 0x54, 0x52, 0xe7, 0xed, 0x1b, 0xaf, 0x4a, 0x00, 0xd9, 0x05, 0xb0,
-    0xb9, 0xc0, 0xae, 0xfd, 0x09, 0xd8, 0xd9, 0xcc, 0x2e, 0xed, 0x29, 0x08,
-    0x32, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60,
+    0xb9, 0xc0, 0xae, 0xfd, 0x09, 0xd8, 0xd9, 0xcc, 0x2e, 0xf4, 0x1c, 0x3d,
+    0xb7, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60,
     0x82
 };
 
@@ -627,13 +626,13 @@ static const char* const image1_data[] = {
 
 
 /*
- *  Constructs a PluginGuiBase as a child of 'parent', with the
+ *  Constructs a QgsCommunityRegPluginGuiBase as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-PluginGuiBase::PluginGuiBase( QWidget* parent, const char* name, bool modal, WFlags fl )
+QgsCommunityRegPluginGuiBase::QgsCommunityRegPluginGuiBase( QWidget* parent, const char* name, bool modal, WFlags fl )
     : QDialog( parent, name, modal, fl ),
       image1( (const char **) image1_data )
 {
@@ -641,10 +640,10 @@ PluginGuiBase::PluginGuiBase( QWidget* parent, const char* name, bool modal, WFl
     img.loadFromData( image0_data, sizeof( image0_data ), "PNG" );
     image0 = img;
     if ( !name )
-	setName( "PluginGuiBase" );
+	setName( "QgsCommunityRegPluginGuiBase" );
     setPaletteBackgroundColor( QColor( 255, 255, 255 ) );
     setIcon( image0 );
-    PluginGuiBaseLayout = new QGridLayout( this, 1, 1, 11, 6, "PluginGuiBaseLayout"); 
+    QgsCommunityRegPluginGuiBaseLayout = new QGridLayout( this, 1, 1, 11, 6, "QgsCommunityRegPluginGuiBaseLayout"); 
 
     line1 = new QFrame( this, "line1" );
     line1->setMaximumSize( QSize( 2, 32767 ) );
@@ -652,7 +651,7 @@ PluginGuiBase::PluginGuiBase( QWidget* parent, const char* name, bool modal, WFl
     line1->setFrameShadow( QFrame::Sunken );
     line1->setFrameShape( QFrame::VLine );
 
-    PluginGuiBaseLayout->addMultiCellWidget( line1, 0, 3, 1, 1 );
+    QgsCommunityRegPluginGuiBaseLayout->addMultiCellWidget( line1, 0, 3, 1, 1 );
 
     layout73 = new QHBoxLayout( 0, 0, 6, "layout73"); 
     spacer2 = new QSpacerItem( 320, 21, QSizePolicy::Expanding, QSizePolicy::Minimum );
@@ -665,7 +664,7 @@ PluginGuiBase::PluginGuiBase( QWidget* parent, const char* name, bool modal, WFl
     pbnCancel = new QPushButton( this, "pbnCancel" );
     layout73->addWidget( pbnCancel );
 
-    PluginGuiBaseLayout->addMultiCellLayout( layout73, 4, 4, 0, 2 );
+    QgsCommunityRegPluginGuiBaseLayout->addMultiCellLayout( layout73, 4, 4, 0, 2 );
 
     txtHeading = new QLabel( this, "txtHeading" );
     txtHeading->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, txtHeading->sizePolicy().hasHeightForWidth() ) );
@@ -675,13 +674,13 @@ PluginGuiBase::PluginGuiBase( QWidget* parent, const char* name, bool modal, WFl
     txtHeading->setFont( txtHeading_font ); 
     txtHeading->setAlignment( int( QLabel::AlignCenter ) );
 
-    PluginGuiBaseLayout->addWidget( txtHeading, 0, 2 );
+    QgsCommunityRegPluginGuiBaseLayout->addWidget( txtHeading, 0, 2 );
 
     teInstructions_2 = new QTextEdit( this, "teInstructions_2" );
     teInstructions_2->setWordWrap( QTextEdit::WidgetWidth );
     teInstructions_2->setReadOnly( TRUE );
 
-    PluginGuiBaseLayout->addWidget( teInstructions_2, 1, 2 );
+    QgsCommunityRegPluginGuiBaseLayout->addWidget( teInstructions_2, 1, 2 );
 
     layout3 = new QGridLayout( 0, 1, 1, 0, 6, "layout3"); 
 
@@ -749,7 +748,7 @@ PluginGuiBase::PluginGuiBase( QWidget* parent, const char* name, bool modal, WFl
 
     layout3->addWidget( lePlaceDescription, 5, 1 );
 
-    PluginGuiBaseLayout->addMultiCellLayout( layout3, 2, 3, 2, 2 );
+    QgsCommunityRegPluginGuiBaseLayout->addMultiCellLayout( layout3, 2, 3, 2, 2 );
 
     pixmapLabel2 = new QLabel( this, "pixmapLabel2" );
     pixmapLabel2->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, pixmapLabel2->sizePolicy().hasHeightForWidth() ) );
@@ -757,11 +756,11 @@ PluginGuiBase::PluginGuiBase( QWidget* parent, const char* name, bool modal, WFl
     pixmapLabel2->setPixmap( image1 );
     pixmapLabel2->setScaledContents( TRUE );
 
-    PluginGuiBaseLayout->addMultiCellWidget( pixmapLabel2, 0, 2, 0, 0 );
+    QgsCommunityRegPluginGuiBaseLayout->addMultiCellWidget( pixmapLabel2, 0, 2, 0, 0 );
 
     pbnGetCoords = new QPushButton( this, "pbnGetCoords" );
 
-    PluginGuiBaseLayout->addWidget( pbnGetCoords, 3, 0 );
+    QgsCommunityRegPluginGuiBaseLayout->addWidget( pbnGetCoords, 3, 0 );
     languageChange();
     resize( QSize(702, 508).expandedTo(minimumSizeHint()) );
     clearWState( WState_Polished );
@@ -788,7 +787,7 @@ PluginGuiBase::PluginGuiBase( QWidget* parent, const char* name, bool modal, WFl
 /*
  *  Destroys the object and frees any allocated resources
  */
-PluginGuiBase::~PluginGuiBase()
+QgsCommunityRegPluginGuiBase::~QgsCommunityRegPluginGuiBase()
 {
     // no need to delete child widgets, Qt does it all for us
 }
@@ -797,7 +796,7 @@ PluginGuiBase::~PluginGuiBase()
  *  Sets the strings of the subwidgets using the current
  *  language.
  */
-void PluginGuiBase::languageChange()
+void QgsCommunityRegPluginGuiBase::languageChange()
 {
     setCaption( tr( "QGIS Plugin QGIS Community Registration Plugin" ) );
     pbnOK->setText( tr( "&OK" ) );
@@ -819,5 +818,20 @@ void PluginGuiBase::languageChange()
     textLabel2->setText( tr( "Image URL (50x50):" ) );
     textLabel3_2->setText( tr( "Latitude (dec. degrees):" ) );
     pbnGetCoords->setText( tr( "Get From Map" ) );
+}
+
+void QgsCommunityRegPluginGuiBase::pbnOK_clicked()
+{
+    qWarning( "QgsCommunityRegPluginGuiBase::pbnOK_clicked(): Not implemented yet" );
+}
+
+void QgsCommunityRegPluginGuiBase::pbnCancel_clicked()
+{
+    qWarning( "QgsCommunityRegPluginGuiBase::pbnCancel_clicked(): Not implemented yet" );
+}
+
+void QgsCommunityRegPluginGuiBase::pbnGetCoords_clicked()
+{
+    qWarning( "QgsCommunityRegPluginGuiBase::pbnGetCoords_clicked(): Not implemented yet" );
 }
 
