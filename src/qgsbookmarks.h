@@ -25,12 +25,15 @@ class QgsBookmarks : public QgsBookmarksBase{
 public:
  QgsBookmarks(QWidget *parent=0, const char *name=0);
  ~QgsBookmarks();
+public slots:
+ void deleteBookmark();
 
 private:
  bool makeDir(QDir &theQDir);
  void initialise();
  QString mUserDbPath;
  QString mQGisSettingsDir;
+
 
 };
 #endif // QGSBOOKMARKS_H

@@ -102,5 +102,29 @@
         </widget>
     </grid>
 </widget>
+<connections>
+    <connection>
+        <sender>btnClose</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsBookmarksBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>btnDelete</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsBookmarksBase</receiver>
+        <slot>deleteBookmark()</slot>
+    </connection>
+    <connection>
+        <sender>btnZoomTo</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsBookmarksBase</receiver>
+        <slot>zoomToBookmark()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>deleteBookmark()</slot>
+    <slot>zoomToBookmark()</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
