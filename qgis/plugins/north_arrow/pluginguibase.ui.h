@@ -10,13 +10,13 @@
 
 
 
-void PluginGuiBase::pbnOK_clicked()
+void QgsNorthArrowPluginGuiBase::pbnOK_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnCancel_clicked()
+void QgsNorthArrowPluginGuiBase::pbnCancel_clicked()
 {
 
 }
@@ -26,31 +26,31 @@ void PluginGuiBase::pbnCancel_clicked()
 
 
 
-void PluginGuiBase::sliderRotation_valueChanged( int )
+void QgsNorthArrowPluginGuiBase::sliderRotation_valueChanged( int )
 {
 
 }
 
 
-void PluginGuiBase::sliderRotation_sliderMoved( int )
+void QgsNorthArrowPluginGuiBase::sliderRotation_sliderMoved( int )
 {
 
 }
 
 
-void PluginGuiBase::spinSize_valueChanged( int )
+void QgsNorthArrowPluginGuiBase::spinSize_valueChanged( int )
 {
 
 }
 
 
-void PluginGuiBase::cboxShow_toggled( bool )
+void QgsNorthArrowPluginGuiBase::cboxShow_toggled( bool )
 {
 
 }
 
 
-void PluginGuiBase::cboPlacement_textChanged( const QString & )
+void QgsNorthArrowPluginGuiBase::cboPlacement_textChanged( const QString & )
 {
 
 }
