@@ -114,7 +114,7 @@
 #include "qgsprojectproperties.h"
 #include "qgsvectorfilewriter.h"
 #include "qgscomposer.h"
-#include "qgsbookmarksbase.uic.h"
+#include "qgsbookmarks.h"
 
 
 #include "xpm/qgis.xpm"
@@ -4456,7 +4456,7 @@ void QgisApp::actionCustomProjection_activated()
 }
 void QgisApp::actionShowBookmarks_activated()
 {
-  QgsBookmarksBase *bookmarks = new QgsBookmarksBase(this);
+  QgsBookmarks *bookmarks = new QgsBookmarks(this);
   bookmarks->show();
 }
 

@@ -374,21 +374,24 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   int projResult;
   if(direction == INVERSE)
   {
+    /*
     std::cout << "!!!! INVERSE PROJ4 TRANSFORM !!!!" << std::endl; 
     std::cout << "     numPoint: " << numPoints << std::endl; 
     std::cout << "     x       : " << x << std::endl; 
     std::cout << "     y       : " << y << std::endl; 
+    */
     projResult = pj_transform(mDestinationProjection, mSourceProjection , numPoints, 0, x, y, z);
     dir = "inverse";
   }
   else
   {
+    /*
    std::cout << "!!!! FORWARD PROJ4 TRANSFORM !!!!" << std::endl; 
    std::cout << "     numPoint: " << numPoints << std::endl; 
    std::cout << "     x       : " << x << std::endl; 
    std::cout << "     y       : " << y << std::endl; 
    std::cout << "     z       : " << z << std::endl; 
- 
+*/ 
    assert(mSourceProjection != 0);
    assert(mDestinationProjection !=0);
     projResult = pj_transform(mSourceProjection, mDestinationProjection, numPoints, 0, x, y, z);
