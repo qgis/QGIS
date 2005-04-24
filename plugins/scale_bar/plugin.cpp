@@ -150,7 +150,7 @@ void QgsScaleBarPlugin::help()
 // Slot called when the  menu item is activated
 void QgsScaleBarPlugin::run()
 {
-  PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"Scale Bar",true,0);
+  QgsScaleBarPluginGui *myPluginGui=new QgsScaleBarPluginGui(qgisMainWindowPointer,"Scale Bar",true,0);
   myPluginGui->setPreferredSize(mPreferredSize);
   myPluginGui->setSnapping(mSnapping);
   myPluginGui->setPlacement(mPlacement);

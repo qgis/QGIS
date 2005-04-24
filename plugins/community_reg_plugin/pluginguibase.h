@@ -1,14 +1,14 @@
 /****************************************************************************
 ** Form interface generated from reading ui file 'pluginguibase.ui'
 **
-** Created: Tue Mar 15 00:43:08 2005
+** Created: Sun Apr 24 15:11:25 2005
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!
 ****************************************************************************/
 
-#ifndef PLUGINGUIBASE_H
-#define PLUGINGUIBASE_H
+#ifndef QGSCOMMUNITYREGPLUGINGUIBASE_H
+#define QGSCOMMUNITYREGPLUGINGUIBASE_H
 
 #include <qvariant.h>
 #include <qpixmap.h>
@@ -24,13 +24,13 @@ class QLabel;
 class QTextEdit;
 class QLineEdit;
 
-class PluginGuiBase : public QDialog
+class QgsCommunityRegPluginGuiBase : public QDialog
 {
     Q_OBJECT
 
 public:
-    PluginGuiBase( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~PluginGuiBase();
+    QgsCommunityRegPluginGuiBase( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    ~QgsCommunityRegPluginGuiBase();
 
     QFrame* line1;
     QPushButton* pbnOK;
@@ -62,7 +62,7 @@ public slots:
     virtual void pbnGetCoords_clicked();
 
 protected:
-    QGridLayout* PluginGuiBaseLayout;
+    QGridLayout* QgsCommunityRegPluginGuiBaseLayout;
     QHBoxLayout* layout73;
     QSpacerItem* spacer2;
     QGridLayout* layout3;
@@ -76,4 +76,4 @@ private:
 
 };
 
-#endif // PLUGINGUIBASE_H
+#endif // QGSCOMMUNITYREGPLUGINGUIBASE_H
