@@ -24,25 +24,24 @@
 //standard includes
 #include <math.h>
 
-PluginGui::PluginGui() : PluginGuiBase()
+QgsNorthArrowPluginGui::QgsNorthArrowPluginGui() : QgsNorthArrowPluginGuiBase()
 {
-
   //temporary hack until this is implemented
   tabNorthArrowOptions->removePage( tabIcon );
   rotatePixmap(0);
 }
 
-    PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
-: PluginGuiBase( parent, name, modal, fl )
+    QgsNorthArrowPluginGui::QgsNorthArrowPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+: QgsNorthArrowPluginGuiBase( parent, name, modal, fl )
 {
   //temporary hack until this is implemented
   tabNorthArrowOptions->removePage( tabIcon );
 }  
-PluginGui::~PluginGui()
+QgsNorthArrowPluginGui::~QgsNorthArrowPluginGui()
 {
 }
 
-void PluginGui::pbnOK_clicked()
+void QgsNorthArrowPluginGui::pbnOK_clicked()
 {
   // Hide the dialog
   hide();
@@ -52,41 +51,41 @@ void PluginGui::pbnOK_clicked()
   emit enableNorthArrow(cboxShow->isChecked());
   done(1);
 }
-void PluginGui::pbnCancel_clicked()
+void QgsNorthArrowPluginGui::pbnCancel_clicked()
 {
   close(1);
 }
 
-void PluginGui::setRotation(int theInt)
+void QgsNorthArrowPluginGui::setRotation(int theInt)
 {
   rotatePixmap(theInt);
   sliderRotation->setValue(theInt);
 }
 
-void PluginGui::setPlacement(QString thePlacementQString)
+void QgsNorthArrowPluginGui::setPlacement(QString thePlacementQString)
 {
   cboPlacement->setCurrentText(tr(thePlacementQString));
 }
 
-void PluginGui::setEnabled(bool theBool)
+void QgsNorthArrowPluginGui::setEnabled(bool theBool)
 {
   cboxShow->setChecked(theBool);
 }
 
 
 //overides function byt the same name created in .ui
-void PluginGui::spinSize_valueChanged( int theInt)
+void QgsNorthArrowPluginGui::spinSize_valueChanged( int theInt)
 {
 
 }
 
 //overides function byt the same name created in .ui
-void PluginGui::sliderRotation_valueChanged( int theInt)
+void QgsNorthArrowPluginGui::sliderRotation_valueChanged( int theInt)
 {
   rotatePixmap(theInt);
 }
 
-void PluginGui::rotatePixmap(int theRotationInt)
+void QgsNorthArrowPluginGui::rotatePixmap(int theRotationInt)
 {
   QPixmap myQPixmap;
 #if defined(WIN32) || defined(Q_OS_MACX)
@@ -159,7 +158,7 @@ void PluginGui::rotatePixmap(int theRotationInt)
 // Called when the widget needs to be updated.
 //
 
-void PluginGui::paintEvent( QPaintEvent * thePaintEvent)
+void QgsNorthArrowPluginGui::paintEvent( QPaintEvent * thePaintEvent)
 {
   rotatePixmap(sliderRotation->value());
 }
@@ -168,7 +167,7 @@ void PluginGui::paintEvent( QPaintEvent * thePaintEvent)
 // Called when the widget has been resized.
 // 
 
-void PluginGui::resizeEvent( QResizeEvent * theResizeEvent)
+void QgsNorthArrowPluginGui::resizeEvent( QResizeEvent * theResizeEvent)
 {
   rotatePixmap(sliderRotation->value());  
 }
