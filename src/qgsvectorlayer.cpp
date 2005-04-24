@@ -1521,6 +1521,28 @@ void QgsVectorLayer::updateExtents()
     layerExtent.setXmax(dataProvider->extent()->xMax());
     layerExtent.setYmax(dataProvider->extent()->yMax());
   }
+
+  //todo: also consider the not commited features
+  for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+    {
+      QgsRect bb=(*iter)->boundingBox();
+      if(bb.xMin()<layerExtent.xMin())
+	{
+	  layerExtent.setXmin(bb.xMin());
+	}
+      if(bb.xMax()>layerExtent.xMax())
+	{
+	  layerExtent.setXmax(bb.xMax());
+	}
+      if(bb.yMin()<layerExtent.yMin())
+	{
+	  layerExtent.setYmin(bb.yMin());
+	}
+      if(bb.yMax()>layerExtent.yMax())
+	{
+	  layerExtent.setYmax(bb.yMax());
+	}
+    }
   
   // Send this (hopefully) up the chain to the map canvas
   emit recalculateExtents();
@@ -1617,6 +1639,8 @@ bool QgsVectorLayer::addFeature(QgsFeature* f)
       delete tabledisplay;
       tabledisplay=0;
     }
+
+    updateExtents();
 
     return true;
   }
@@ -2348,6 +2372,7 @@ bool QgsVectorLayer::rollBack()
       mSelected.erase(*it);
     }
   mDeleted.clear();
+  updateExtents();
   return true;
 }
 
