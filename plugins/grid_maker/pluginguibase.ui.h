@@ -9,31 +9,31 @@
 
 
 
-void PluginGuiBase::pbnOK_clicked()
+void QgsGridMakerPluginGuiBase::pbnOK_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnSelectInputFile_clicked()
+void QgsGridMakerPluginGuiBase::pbnSelectInputFile_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnSelectOutputFile_clicked()
+void QgsGridMakerPluginGuiBase::pbnSelectOutputFile_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnCancel_clicked()
+void QgsGridMakerPluginGuiBase::pbnCancel_clicked()
 {
 
 }
 
 
-void PluginGuiBase::leInputFile_textChanged( const QString & theQString)
+void QgsGridMakerPluginGuiBase::leInputFile_textChanged( const QString & theQString)
 {
   if (theQString != "") 
     {
@@ -46,7 +46,7 @@ void PluginGuiBase::leInputFile_textChanged( const QString & theQString)
 }
 
 
-void PluginGuiBase::leOutputShapeFile_textChanged( const QString & theQString )
+void QgsGridMakerPluginGuiBase::leOutputShapeFile_textChanged( const QString & theQString )
 {
   if (theQString != "") 
     {
