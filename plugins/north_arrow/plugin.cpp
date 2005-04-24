@@ -137,7 +137,7 @@ void QgsNorthArrowPlugin::help()
 // Slot called when the buffer menu item is activated
 void QgsNorthArrowPlugin::run()
 {
-  PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"North Arrow",true,0);
+  QgsNorthArrowPluginGui *myPluginGui = new QgsNorthArrowPluginGui(qgisMainWindowPointer,"North Arrow",true,0);
   //overides function byt the same name created in .ui
   myPluginGui->setRotation(mRotationInt);
   myPluginGui->setPlacement(mPlacement);
