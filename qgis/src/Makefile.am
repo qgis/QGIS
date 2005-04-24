@@ -50,6 +50,7 @@ headers =	qgisapp.h					\
 		qgsattributetabledisplay.h			\
 		qgsattributetable.h				\
 		qgsbookmarks.h			\
+		qgsbookmarkitem.h			\
 		qgsclipper.h					\
 		qgscolortable.h					\
 		qgscomposer.h					\
@@ -302,6 +303,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsattributetable.cpp		\
 		qgsattributetabledisplay.cpp	\
 		qgsbookmarks.cpp	\
+		qgsbookmarkitem.cpp	\
 		qgsclipper.cpp			\
 		qgscolortable.cpp		\
 		qgscomposer.cpp			\

@@ -115,6 +115,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgscomposer.h"
 #include "qgsbookmarks.h"
+#include "qgsbookmarkitem.h"
 
 
 #include "xpm/qgis.xpm"
@@ -4464,6 +4465,18 @@ void QgisApp::actionNewBookmark_activated()
 {
   // Get the name for the bookmark. Everything else we fetch from
   // the mapcanvas
-
-  //QString bookmarkName = QMessageBox::
+  
+  bool ok;
+  QString bookmarkName = QInputDialog::getText("New Bookmark", 
+      "Enter a name for the new bookmark:", QLineEdit::Normal,
+      QString::null, &ok, this);
+  if( ok && !bookmarkName.isEmpty())
+  {
+    // create the bookmark
+     QgsBookmarkItem *bmi = new QgsBookmarkItem(bookmarkName, 
+         QgsProject::instance()->title(), mMapCanvas->extent(), -1,
+         QDir::homeDirPath () + "/.qgis/qgis.db");
+     bmi->store();
+     delete bmi;
+  }
 }
