@@ -120,7 +120,15 @@ void QgsBookmarks::initialise()
       QString name  = (char*)sqlite3_column_text(ppStmt, 1);
 //        sqlite3_bind_parameter_index(ppStmt, "name"));
       std::cout << "Bookmark name: " << name << std::endl; 
-      new QListViewItem(lstBookmarks, name);
+      QListViewItem *lvi = new QListViewItem(lstBookmarks, name);
+      lvi->setText(1, (char*)sqlite3_column_text(ppStmt, 2)); 
+      // get the extents
+      QString xMin = (char*)sqlite3_column_text(ppStmt, 3);
+      QString yMin = (char*)sqlite3_column_text(ppStmt, 4);
+      QString xMax = (char*)sqlite3_column_text(ppStmt, 5);
+      QString yMax = (char*)sqlite3_column_text(ppStmt, 6);
+
+      lvi->setText(2, xMin + ", " + yMin + ", " + xMax + ", " + yMax); 
     }
   }
   else
@@ -165,6 +173,14 @@ bool QgsBookmarks::makeDir(QDir &theQDir)
           myBaseDir.path().latin1());
 
   return myBaseDir.mkdir(myTempFileInfo.fileName());
+}
+
+void QgsBookmarks::deleteBookmark()
+{
+  // get the current item
+  QListViewItem *lvi = lstBookmarks->currentItem();
+  lstBookmarks->takeItem(lvi);
+  
 }
 
 

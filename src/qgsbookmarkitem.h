@@ -45,8 +45,9 @@ private:
   //! SRID of the canvas coordinate system when the bookmark was created
   int mSrid;
   //! Full path to the user database
-  QString mDbPath;
+  QString mUserDbPath;
 
 };
 
 #endif // QGSBOOKMARKITEM_H
+
