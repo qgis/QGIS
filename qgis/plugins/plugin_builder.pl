@@ -71,7 +71,7 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
   # This is a brute force approach but its quick and dirty :)
   #
   # replace [pluginname] in template with the new plugin name
-  system("perl -pi -e 's/\\\[pluginname\\\]/$pluginName/g' $pluginDir/*.cpp $pluginDir/*.h $pluginDir/*.am");
+  system("perl -pi -e 's/\\\[pluginname\\\]/$pluginName/g' $pluginDir/*.cpp $pluginDir/*.h $pluginDir/*.am $pluginDir/*.ui");
   # replace [plugindescription] in template with the description
   system("perl -pi -e 's/\\\[plugindescription\\\]/$pluginDescription/g' $pluginDir/*.cpp $pluginDir/*.h $pluginDir/*.am");
   # replace [menuname] in the template with the menu name

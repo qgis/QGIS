@@ -9,21 +9,22 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#ifndef PLUGINGUI_H
-#define PLUGINGUI_H
+#ifndef QGSGRIDMAKERPLUGINGUI_H
+#define QGSGRIDMAKERPLUGINGUI_H
 
 #include <pluginguibase.h>
 
 /**
 @author Tim Sutton
 */
-class PluginGui : public PluginGuiBase
+class QgsGridMakerPluginGui : public QgsGridMakerPluginGuiBase
 {
   Q_OBJECT
     public:
-      PluginGui();
-      PluginGui( QWidget* parent , const char* name , bool modal , WFlags );
-      ~PluginGui();
+      QgsGridMakerPluginGui();
+      QgsGridMakerPluginGui( QWidget* parent , const char* name , 
+			     bool modal , WFlags );
+      ~QgsGridMakerPluginGui();
 
     private:
 

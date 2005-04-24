@@ -15,21 +15,21 @@
 
 //standard includes
 
-PluginGui::PluginGui() : PluginGuiBase()
+[pluginname]Gui::[pluginname]Gui() : [pluginname]GuiBase()
 {
   
 }
 
-PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
-: PluginGuiBase( parent, name, modal, fl )
+[pluginname]Gui::[pluginname]Gui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+: [pluginname]GuiBase( parent, name, modal, fl )
 {
    
 }  
-PluginGui::~PluginGui()
+[pluginname]Gui::~[pluginname]Gui()
 {
 }
 
-void PluginGui::pbnOK_clicked()
+void [pluginname]Gui::pbnOK_clicked()
 {
   //
   // If you have a produced a raster layer using your plugin, you can ask qgis to 
@@ -41,7 +41,7 @@ void PluginGui::pbnOK_clicked()
   //close the dialog
   done(1);
 } 
-void PluginGui::pbnCancel_clicked()
+void [pluginname]Gui::pbnCancel_clicked()
 {
  close(1);
 }

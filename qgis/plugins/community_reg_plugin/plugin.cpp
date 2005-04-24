@@ -111,7 +111,7 @@ void QgsCommunityRegPlugin::help()
 // Slot called when the buffer menu item is activated
 void QgsCommunityRegPlugin::run()
 {
-  PluginGui *myPluginGui=new PluginGui(mQGisApp,"Community Register",true,0);
+  QgsCommunityRegPluginGui *myPluginGui=new QgsCommunityRegPluginGui(mQGisApp,"Community Register",true,0);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));

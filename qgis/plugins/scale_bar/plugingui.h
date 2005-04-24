@@ -9,21 +9,21 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#ifndef PLUGINGUI_H
-#define PLUGINGUI_H
+#ifndef QGSSCALEBARPLUGINGUI_H
+#define QGSSCALEBARPLUGINGUI_H
 
 #include <pluginguibase.h>
 
 /**
 @author Peter Brewer
 */
-class PluginGui : public PluginGuiBase
+class QgsScaleBarPluginGui : public QgsScaleBarPluginGuiBase
 {
 Q_OBJECT;
 public:
-    PluginGui();
-    PluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~PluginGui();
+    QgsScaleBarPluginGui();
+    QgsScaleBarPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    ~QgsScaleBarPluginGui();
     void pbnOK_clicked();
     void pbnCancel_clicked();
     void setPlacement(QString);

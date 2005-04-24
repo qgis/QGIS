@@ -26,24 +26,24 @@
 
 //standard includes
 
-PluginGui::PluginGui() : PluginGuiBase()
+QgsCommunityRegPluginGui::QgsCommunityRegPluginGui() : QgsCommunityRegPluginGuiBase()
 {
 
 }
 
-    PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
-: PluginGuiBase( parent, name, modal, fl )
+    QgsCommunityRegPluginGui::QgsCommunityRegPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+: QgsCommunityRegPluginGuiBase( parent, name, modal, fl )
 {
   mConnection = new QHttp();
   connect(mConnection, SIGNAL(done(bool)), this, SLOT(registrationDone(bool)));
 }  
-PluginGui::~PluginGui()
+QgsCommunityRegPluginGui::~QgsCommunityRegPluginGui()
 {
   delete mConnection;
   delete mHttp;
 }
 
-void PluginGui::pbnOK_clicked()
+void QgsCommunityRegPluginGui::pbnOK_clicked()
 {
   QUrl myTargetUrl("http://community.qgis.org");
   QString myHost = myTargetUrl.host();
@@ -66,12 +66,12 @@ void PluginGui::pbnOK_clicked()
   mHttp->post("/qgis_users/index.php", *myByteArray);
   done(1);
 } 
-void PluginGui::pbnCancel_clicked()
+void QgsCommunityRegPluginGui::pbnCancel_clicked()
 {
   close(1);
 }
 
-void PluginGui::pbnGetCoords_clicked()
+void QgsCommunityRegPluginGui::pbnGetCoords_clicked()
 {
   std::cout << "Get coords clicked" << std::endl;
   QgsLocationCaptureWidget * myWidget = new QgsLocationCaptureWidget();
@@ -81,7 +81,7 @@ void PluginGui::pbnGetCoords_clicked()
 
 
 
-void PluginGui::submit()
+void QgsCommunityRegPluginGui::submit()
 {
   if (mConnection->state() == QHttp::HostLookup
           || mConnection->state() == QHttp::Connecting
@@ -141,7 +141,7 @@ void PluginGui::submit()
 
 }
 
-void PluginGui::submitDone( bool error )
+void QgsCommunityRegPluginGui::submitDone( bool error )
 {
   if (error) {
     QMessageBox::critical(this, "Error submiting",

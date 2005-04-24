@@ -9,13 +9,13 @@
 
 
 
-void PluginGuiBase::pbnOK_clicked()
+void [pluginname]GuiBase::pbnOK_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnCancel_clicked()
+void [pluginname]GuiBase::pbnCancel_clicked()
 {
 
 }

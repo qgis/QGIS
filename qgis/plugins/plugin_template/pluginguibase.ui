@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.1" stdsetdef="1">
-<class>PluginGuiBase</class>
+<class>[pluginname]GuiBase</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>PluginGuiBase</cstring>
+        <cstring>[pluginname]GuiBase</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -188,13 +188,13 @@
     <connection>
         <sender>pbnOK</sender>
         <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>[pluginname]GuiBase</receiver>
         <slot>pbnOK_clicked()</slot>
     </connection>
     <connection>
         <sender>pbnCancel</sender>
         <signal>clicked()</signal>
-        <receiver>PluginGuiBase</receiver>
+        <receiver>[pluginname]GuiBase</receiver>
         <slot>pbnCancel_clicked()</slot>
     </connection>
 </connections>

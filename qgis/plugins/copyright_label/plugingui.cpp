@@ -20,25 +20,25 @@
 
 //standard includes
 
-PluginGui::PluginGui() : PluginGuiBase()
+QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui() : QgsCopyrightLabelPluginGuiBase()
 {
   //programmatically hide orientation selection for now
   cboOrientation->hide();
   textLabel15->hide();
 }
 
-PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
-: PluginGuiBase( parent, name, modal, fl )
+QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+: QgsCopyrightLabelPluginGuiBase( parent, name, modal, fl )
 {
   //programmatically hide orientation selection for now
   cboOrientation->hide();
   textLabel15->hide();
 }  
-PluginGui::~PluginGui()
+QgsCopyrightLabelPluginGui::~QgsCopyrightLabelPluginGui()
 {
 }
 
-void PluginGui::pbnOK_clicked()
+void QgsCopyrightLabelPluginGui::pbnOK_clicked()
 {
   //hide the dialog before we send all our signals
   hide();
@@ -51,22 +51,22 @@ void PluginGui::pbnOK_clicked()
   
   done(1);
 } 
-void PluginGui::pbnCancel_clicked()
+void QgsCopyrightLabelPluginGui::pbnCancel_clicked()
 {
  close(1);
 }
 
-void PluginGui::setEnabled(bool theBool)
+void QgsCopyrightLabelPluginGui::setEnabled(bool theBool)
 {
   cboxEnabled->setChecked(theBool);
 }
 
-void PluginGui::setText(QString theTextQString)
+void QgsCopyrightLabelPluginGui::setText(QString theTextQString)
 {
   txtCopyrightText->setText(theTextQString);
 }
 
-void PluginGui::setPlacement(QString thePlacementQString)
+void QgsCopyrightLabelPluginGui::setPlacement(QString thePlacementQString)
 {
   cboPlacement->setCurrentText(tr(thePlacementQString));
 }
