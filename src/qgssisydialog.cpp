@@ -52,9 +52,16 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
 #ifdef QGISDEBUG
     qWarning("constructor QgsSiSyDialog called WITH a layer");
 #endif
+
     //
     //set point symbol combo box
     //
+
+    // If this layer doesn't have points, break out of the following
+    // two loops after the first iteration. This gives one point
+    // symbol in the dialog, etc so that other code can rely on such a
+    // fact, but avoids the long time required to load all of the
+    // available symbols when they are not needed.
 
     QStringList ml = QgsMarkerCatalogue::instance()->list();
     mMarkers.clear();
@@ -67,29 +74,35 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
     // Get maximum symbol width - this is probably slow
     for ( QStringList::iterator it = ml.begin(); it != ml.end(); ++it ) {
     
-	QPicture pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
-		                pen, brush, QgsSVGCache::instance().getOversampling() );
+      QPicture pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
+      	                pen, brush, QgsSVGCache::instance().getOversampling() );
 
-	QRect br = pic.boundingRect();
+      QRect br = pic.boundingRect();
 
-	if ( br.width() > maxwidth ) maxwidth = br.width();
+      if ( br.width() > maxwidth ) maxwidth = br.width();
+
+      if (layer->vectorType() != QGis::Point)
+	break;
     }
     
     for ( QStringList::iterator it = ml.begin(); it != ml.end(); ++it ) {
-	mMarkers.push_back ( *it );
+      mMarkers.push_back ( *it );
 
-	QPicture pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
-		                pen, brush, QgsSVGCache::instance().getOversampling() );
+      QPicture pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
+		      pen, brush, QgsSVGCache::instance().getOversampling() );
 
-	QRect br = pic.boundingRect();
+      QRect br = pic.boundingRect();
 
-	QPixmap pm( 10+maxwidth, 10+br.height() );
-	pm.fill(QColor(255,255,255));
-	QPainter p;
-	p.begin(&pm);
-        p.drawPicture ( 5-br.x()+(maxwidth-br.width())/2 , 5-br.y(), pic);
-	p.end();
-        mPointSymbolComboBox->insertItem ( pm );
+      QPixmap pm( 10+maxwidth, 10+br.height() );
+      pm.fill(QColor(255,255,255));
+      QPainter p;
+      p.begin(&pm);
+      p.drawPicture ( 5-br.x()+(maxwidth-br.width())/2 , 5-br.y(), pic);
+      p.end();
+      mPointSymbolComboBox->insertItem ( pm );
+
+      if (layer->vectorType() != QGis::Point)
+	break;
     }
 
     //
