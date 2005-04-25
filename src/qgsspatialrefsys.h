@@ -1,10 +1,23 @@
 #ifndef QGSSPATIALREFSYS_H
 #define QGSSPATIALREFSYS_H
+
+//Standard includes
 #include <ostream>
 #include <istream>
+
+//qt includes
 #include <qstring.h>
 #include <qstringlist.h>
 #include <qregexp.h>
+
+//qgis includes
+
+
+//gdal and ogr includes
+#include <ogr_api.h>
+#include <ogr_spatialref.h>
+#include <cpl_error.h>
+
 /*!
  * \class QgsSpatialRefSys
  * \brief Class for storing a spatial reference system (SRS)
@@ -15,6 +28,11 @@ class QgsSpatialRefSys
         //! Default constructor
 
         QgsSpatialRefSys();
+        /*! 
+         * Constructs a SRS object from a WKT string
+         * @param theWkt A String containing a valid Wkt def
+         */
+        QgsSpatialRefSys(QString theWkt);
 
         /*!
          * Constructs a SRS object from the following component parts
@@ -45,7 +63,7 @@ class QgsSpatialRefSys
          * @note Any members will be overwritten during this process.
          * @param theSrid The postgis SRID for the desired spatial reference system.
          */
-        void createFromSrid(long theSrid);
+        void createFromSrid(const long theSrid);
         /*! Set up this srs using a WKT spatial ref sys definition. 
          * The wkt will be converted to a proj4 string using OGR helper
          * functions. After this the srs databasses will be searched for matches.
@@ -55,14 +73,14 @@ class QgsSpatialRefSys
          * @note SRID and EPSG may be blank if no match can be found on srs db.
          * @param theWkt The WKT for the desired spatial reference system.
          */
-        void createFromWkt(QString theWkt);
+        void createFromWkt(const QString theWkt);
         /*! Set up this srs by fetching the appropriate information from the 
          * sqlite backend. First the system level read only srs.db will be checked
          * and then the users ~/.qgis/qgis.db database will be checked for a match.
          * @note Any members will be overwritten during this process.
          * @param theEpsg The EPSG for the desired spatial reference system.
          */
-        void createFromEpsg(long theEpsg);
+        void createFromEpsg(const long theEpsg);
         /*! Set up this srs by fetching the appropriate information from the 
          * sqlite backend. Only the system level read only srs.db will be checked
          * @note Any members will be overwritten during this process.
@@ -70,7 +88,7 @@ class QgsSpatialRefSys
          * have srsids that overlap with the system db.
          * @param theSrsId The QGIS SrsId for the desired spatial reference system.
          */
-        void createFromSystemSrsId (long theSrsId);
+        void createFromSystemSrsId (const long theSrsId);
         /*! Set up this srs by fetching the appropriate information from the 
          * sqlite backend. Only the users srs.db will be checked
          * @note Any members will be overwritten during this process.
@@ -78,11 +96,12 @@ class QgsSpatialRefSys
          * have srsids that overlap with the system db.
          * @param theSrsId The QGIS SrsId for the desired spatial reference system.
          */
-        void createFromUserSrsId (long theSrsId);
+        void createFromUserSrsId (const long theSrsId);
         /*! Return this srs asa  a proj format string */
-        QString toProjString ();
+        QString toProjString () const;
 
-         
+        /*! Find out whether this SRS is correctly initialised and useable */
+        bool isValid() const;
         
 
         // Accessors -----------------------------------
@@ -90,38 +109,38 @@ class QgsSpatialRefSys
         /*! Get the SrsId
          *  @return  long theSrsId The internal sqlite3 srs.db primary key for this srs 
          */
-        long srid();
+        long srid() const;
         /*! Get the Description
          * @return  QString the Description A textual description of the srs.
          */
-        QString description ();
+        QString description () const;
         /*! Get the Projection Acronym
          * @return  QString theProjectionAcronym The official proj4 acronym for the projection family
          */
-        QString projectionAcronym();
+        QString projectionAcronym() const;
         /*! Get the Ellipsoid Acronym
          * @return  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
          */
-        QString ellipsoid ();
+        QString ellipsoid () const;
         /* Get the Proj Parameters. If proj and ellps keys are found in the parameters,
          * they will be stripped out and the Projection and ellipsoid acronyms will be
          * overridden with these.
          * @return  QString theParameters Proj4 format specifies (excluding proj and ellips) that define this srs.
          */
-        QString parameters ();
+        QString parameters () const;
         /*! Get this Geographic? flag
          * @return  bool theGeoFlag Whether this is a geographic or projected coordinate system
          */
-        bool geographicFlag ();
+        bool geographicFlag () const;
 
         /*! Set the postgis srid for this srs
          * @return  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
          */
-        long postgisSrid ();
+        long postgisSrid () const;
         /*! Set the EPSG identifier for this srs
          * @return  long theEpsg the ESPG identifier for this srs (defaults to 0)
          */
-        long epsg ();
+        long epsg () const;
 
         // Mutators -----------------------------------
 
@@ -181,34 +200,38 @@ class QgsSpatialRefSys
         long    mEpsg ;
 };
 
-
+/*
 //! Output stream operator
 inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
 {
-    return os << "FIXME FIXME" << __FILE__ << ":" << __LINE__ << std::endl;
-    /*
-    return os << r.srid() <<  "\t" << r.authName() << "\t" << r.authSrid()
-      << "\t" << r.srText() << "\t" <<  r.proj4Text() << "\t" << r.name() << std::endl; 
-      */
+    return os << "\n"
+              << "Description : " << r.description().latin1() << "\n"
+              << "Projection  : " << r.projectionAcronym().latin1() << "\n"
+              << "Ellipsoid   : " << r.ellipsoid().latin1() << "\n"
+              << "Parameters  : " << r.parameters().latin1() << "\n"
+              << std::endl; 
+    
 }
+
 //! Input stream operator
 inline std::istream& operator>> (std::istream& str, QgsSpatialRefSys& r)
 {
   //std::cout << "FIXME FIXME" << __FILE__ << ":" << __LINE__ << std::endl;
   std::string s;
   str >> s;
-  /*
-  QString srs = s.c_str();
+  
+  //QString srs = s.c_str();
   // split the string into the parts to created the object
-  QStringList parts = QStringList::split(QRegExp("\t"),srs);
-   r.setSrid(parts[0]);
-   r.setAuthName(parts[1]);
-   r.setAuthSrid(parts[2]);
-   r.setSrText(parts[3]);
-   r.setProjText(parts[4]);
-   r.setName(parts[5]);
-   */
+  //QStringList parts = QStringList::split(QRegExp("\t"),srs);
+  // r.setSrid(parts[0]);
+  // r.setAuthName(parts[1]);
+  // r.setAuthSrid(parts[2]);
+  // r.setSrText(parts[3]);
+  // r.setProjText(parts[4]);
+  // r.setName(parts[5]);
+  //
   return str;
   
-}  
+} 
+*/
 #endif // QGSSPATIALREFSYS_H

@@ -25,11 +25,8 @@
 #include "qgspoint.h"
 #include "qgsrect.h"
 #include "qgscsexception.h"
+#include "qgsspatialrefsys.h"
 
-//gdal and ogr includes
-#include <ogr_api.h>
-#include <ogr_spatialref.h>
-#include <cpl_error.h>
 
 //non qt includes
 #include <iostream>
@@ -73,20 +70,20 @@ class QgsCoordinateTransform: public QObject
     };
     
     /*! 
-     * Set the source (layer) WKT
-     * @param theWKT WKT representation of the layer's coordinate system
+     * Set the source (layer) QgsSpatialRefSys
+     * @param theSRS QgsSpatialRefSys representation of the layer's coordinate system
      */
-    void setSourceWKT(QString theWKT);
+    void setSourceSRS(QgsSpatialRefSys * theSRS);
     /*!
-     * Get the WKT representation of the layer's coordinate system
-     * @return WKT of the layer's coordinate system
+     * Get the QgsSpatialRefSys representation of the layer's coordinate system
+     * @return QgsSpatialRefSys of the layer's coordinate system
      */
-    QString sourceWKT() const {return mSourceWKT;};
+    QgsSpatialRefSys * sourceSRS() const {return mSourceSRS;};
     /*! 
-     * Get the WKT representation of the map canvas coordinate system
-     * @return WKT of the map canvas coordinate system
+     * Get the QgsSpatialRefSys representation of the map canvas coordinate system
+     * @return QgsSpatialRefSys of the map canvas coordinate system
      */
-    QString destWKT() const {return mDestWKT;};    
+    QgsSpatialRefSys * destSRS() const {return mDestSRS;};    
   /*! 
    * Flag to indicate whether the coordinate systems have been initialised
    * @return true if initialised, otherwise false
@@ -142,12 +139,12 @@ class QgsCoordinateTransform: public QObject
 
  public slots:
     /*! 
-     * Mutator for dest WKT - This slot will usually be called if the
+     * Mutator for dest QgsSpatialRefSys - This slot will usually be called if the
      * project properties change and a different coordinate system is 
      * selected.
-     * @param WKT of the destination coordinate system
+     * @param theSRS of the destination coordinate system
      */
-    void setDestWKT(QString theWKT);    
+    void setDestSRS(QgsSpatialRefSys * theSRS);    
     
  private:
     //!initialise is used to actually create the Transformer instance
@@ -155,13 +152,13 @@ class QgsCoordinateTransform: public QObject
     //! flag to show whether the transform is properly initialised or not
     bool mInitialisedFlag;
     /*! 
-     * WKT of the source (layer) coordinate system 
+     * QgsSpatialRefSys of the source (layer) coordinate system 
      */
-    QString mSourceWKT;
+    QgsSpatialRefSys * mSourceSRS;
     /*! 
-     * WKT of the destination (map canvas) coordinate system 
+     * QgsSpatialRefSys of the destination (map canvas) coordinate system 
      */
-    QString mDestWKT;
+    QgsSpatialRefSys * mDestSRS;
     /** Dunno if we need this - XXX Delete if unused */
     bool mInputIsDegrees;
     /*! 
@@ -169,10 +166,10 @@ class QgsCoordinateTransform: public QObject
      * equal and not transformation needs to be done
      */
     bool mShortCircuit;
-    OGRSpatialReference mSourceOgrSpatialRef;
-    OGRSpatialReference mDestOgrSpatialRef;
-    OGRCoordinateTransformation *forwardTransform;
-    OGRCoordinateTransformation *inverseTransform;
+    
+    //XXX Delete these!
+    //OGRCoordinateTransformation *forwardTransform;
+    //OGRCoordinateTransformation *inverseTransform;
     /*!
      * Proj4 parameters for the source (layer) coordinate system
      */

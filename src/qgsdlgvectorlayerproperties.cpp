@@ -470,7 +470,7 @@ QString QgsDlgVectorLayerProperties::getMetadata()
   myMetadataQString += tr("Layer Spatial Reference System:");
   myMetadataQString += "</td></tr>";  
   myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += layer->coordinateTransform()->sourceWKT().replace(QRegExp("\"")," \"");                       
+  myMetadataQString += layer->coordinateTransform()->sourceSRS()->parameters().replace(QRegExp("\"")," \"");                       
   myMetadataQString += "</td></tr>";
 
   // 
@@ -480,7 +480,7 @@ QString QgsDlgVectorLayerProperties::getMetadata()
   myMetadataQString += tr("Project (Output) Spatial Reference System:");
   myMetadataQString += "</td></tr>";  
   myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += layer->coordinateTransform()->destWKT().replace(QRegExp("\"")," \"");                       
+  myMetadataQString += layer->coordinateTransform()->destSRS()->parameters().replace(QRegExp("\"")," \"");                       
   myMetadataQString += "</td></tr>";
   
       
