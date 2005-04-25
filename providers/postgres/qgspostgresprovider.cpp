@@ -248,10 +248,10 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
 #endif
         attributeFieldsIdMap[attnum.toInt()] = i;
 
-	if(fieldName!=geometryColumn)
-	{
-	    attributeFields.push_back(QgsField(fieldName, fieldType, fieldSize.toInt(), fieldModifier));
-	}
+        if(fieldName!=geometryColumn)
+        {
+          attributeFields.push_back(QgsField(fieldName, fieldType, fieldSize.toInt(), fieldModifier));
+        }
 
         // add to the select sql statement
         if(i > 0)
@@ -1536,7 +1536,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
 
 QString QgsPostgresProvider::getDefaultValue(const QString& attr, QgsFeature* f)
 {
-    return "NULL";
+  return "NULL";
 }
 
 bool QgsPostgresProvider::deleteFeature(int id)
@@ -2121,6 +2121,11 @@ bool QgsPostgresProvider::getGeometryDetails()
     << QGis::qgisFeatureTypes[geomType] << std::endl;
 #endif
   return valid;
+}
+
+int QgsPostgresProvider::getSrid()
+{
+  return srid.toInt();
 }
 
 
