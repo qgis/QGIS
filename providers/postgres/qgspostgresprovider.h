@@ -41,13 +41,13 @@ class OGRLayer;
 #include "qgspostgresextentthread.h"
 
 /**
-\class QgsPostgresProvider
-\brief Data provider for PostgreSQL/PostGIS layers.
- 
-This provider implements the
-interface defined in the QgsDataProvider class to provide access to spatial
-data residing in a PostgreSQL/PostGIS enabled database.
-*/
+  \class QgsPostgresProvider
+  \brief Data provider for PostgreSQL/PostGIS layers.
+
+  This provider implements the
+  interface defined in the QgsDataProvider class to provide access to spatial
+  data residing in a PostgreSQL/PostGIS enabled database.
+  */
 class QgsPostgresProvider:public QgsVectorDataProvider
 {
 
@@ -272,6 +272,8 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      * @parm srid SRID of the map canvas SRS
      */
     void setTargetSrid(int srid);
+
+    int getSrid();
 
 
 signals:
