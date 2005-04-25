@@ -107,7 +107,8 @@ void QgsSpatialRefSys::createFromUserSrsId (long theSrsId)
 
 QString QgsSpatialRefSys::toProjString () const
 {
-
+  //place holder for now....shoudl concatenate proj family, elliposid and parameters
+  return mParameters;
 }
 
 bool QgsSpatialRefSys::isValid() const
