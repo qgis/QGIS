@@ -340,7 +340,7 @@ protected slots:
 
 private:                       // Private attributes
   /** A simple helper method to find out if on the fly projections are enabled or not */
-  bool projectionsEnabled();
+  bool projectionsEnabled() const;
   //! Draws the layer labels using coordinate transformation
   void drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst);
 
@@ -351,6 +351,10 @@ private:                       // Private attributes
   void transformPoints(std::vector<double>& x, std::vector<double>& y,
       std::vector<double>& z,
       QgsMapToPixel* mtp, bool projectionsEnabledFlag);
+
+  // Inverse projects the given rectangle if coordinate transforms are
+  // in effect. Alters the given rectangle
+  QgsRect inverseProjectRect(const QgsRect& r) const;
 
   // Draw the linestring as given in the WKB format. Returns a pointer
   // to the byte after the end of the line string binary data stream
