@@ -89,6 +89,7 @@
 #endif
 #include "qgssvgcache.h"
 #include "qgslayerprojectionselector.h"
+#include "qgsspatialrefsys.h"
 //#include "wkbheader.h"
 
 #ifdef TESTPROVIDERLIB
@@ -207,6 +208,9 @@ int QgsVectorLayer::getProjectionSrid()
   //delegate to the provider
   if (valid)
   {
+#ifdef QGISDEBUG    
+    std::cout << "Getting srid from provider..." << std::endl;
+#endif
     return dataProvider->getSrid();
   }
   else
@@ -2638,6 +2642,9 @@ void QgsVectorLayer::setCoordinateSystem()
   //
   int srid = getProjectionSrid();
   QString mySourceWKT;
+#ifdef QGISDEBUG
+    std::cout << "srid for this layer is :" << srid << std::endl;
+#endif
   if(srid == 0)
   {
     mySourceWKT = getProjectionWKT();
@@ -2720,7 +2727,10 @@ void QgsVectorLayer::setCoordinateSystem()
     }
 
 
-    assert(!mySourceWKT.isEmpty());
+    if (srid==0)
+    {
+      assert(!mySourceWKT.isEmpty());
+    }
     //get the project projections WKT, defaulting to this layer's projection
     //if none exists....
     //First get the SRS for the default projection WGS 84
@@ -2800,7 +2810,14 @@ void QgsVectorLayer::setCoordinateSystem()
     //mainly used to convert the inverese projection of the map extents 
     //of the canvas when zzooming in etc. so that they match the coordinate 
     //system of this layer
-    mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT, myDestWKT);
+    if (0!=srid)
+    {
+      mCoordinateTransform = new QgsCoordinateTransform(srid, myDestWKT,QgsSpatialRefSys::POSTGIS_SRID);
+    }
+    else
+    {
+      mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT, myDestWKT);
+    }
 #ifdef QGISDEBUG
     std::cout << ">>>>>>>>>>>> Transform for layer created:" << std::endl;
     std::cout << ">>>>>>>>>>>> LayerCS:\n" << mCoordinateTransform->sourceSRS()->parameters() << std::endl;
