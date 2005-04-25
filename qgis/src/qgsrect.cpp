@@ -34,11 +34,7 @@ QgsRect::QgsRect(double newxmin, double newymin, double newxmax, double newymax)
 
 QgsRect::QgsRect(QgsPoint const & p1, QgsPoint const & p2)
 {
-  xmin = p1.x();
-  xmax = p2.x();
-  ymin = p1.y();
-  ymax = p2.y();
-  normalize();
+  set(p1, p2);
 }
 
 QgsRect::QgsRect(const QgsRect &r)
@@ -47,6 +43,15 @@ QgsRect::QgsRect(const QgsRect &r)
   ymin = r.yMin();
   xmax = r.xMax();
   ymax = r.yMax();
+}
+
+void QgsRect::set(const QgsPoint& p1, const QgsPoint& p2)
+{
+  xmin = p1.x();
+  xmax = p2.x();
+  ymin = p1.y();
+  ymax = p2.y();
+  normalize();
 }
 
 void QgsRect::normalize()
