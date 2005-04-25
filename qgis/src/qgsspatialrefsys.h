@@ -206,6 +206,9 @@ class QgsSpatialRefSys
         long    mSRID;
         //!If available the ESPG identifier for this srs (defaults to 0)
         long    mEpsg ;
+
+        //! Wehter this srs is properly defined and valid
+        bool isValidFlag;
 };
 
 /*
