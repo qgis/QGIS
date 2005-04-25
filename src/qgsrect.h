@@ -45,6 +45,9 @@ class QgsRect
     QgsRect(const QgsRect &other);
     //! Destructor
     ~QgsRect();
+    //! Set the rectangle from two QgsPoints. The rectangle is
+    //normalised after construction. 
+    void set(const QgsPoint& p1, const QgsPoint& p2);
     //! Set the minimum x value
     void setXmin(double x);
     //! Set the maximum x value
