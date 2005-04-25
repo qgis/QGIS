@@ -2652,6 +2652,9 @@ void QgsVectorLayer::setCoordinateSystem()
     //QString defaultWkt = QgsSpatialReferences::instance()->getSrsBySrid("4326")->srText();
     QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT","");
 
+
+
+    /* XXXX DONT THING WE NEED THIS HERE ANYMORE XXXXXXXXXXXX 
     // try again with a morph from esri
     // set up the spatial ref
     OGRSpatialReference myInputSpatialRefSys;
@@ -2663,6 +2666,7 @@ void QgsVectorLayer::setCoordinateSystem()
     OGRSpatialReference myOutputSpatialRefSys;
     pWkt = (char *) myDestWKT.ascii();
     myOutputSpatialRefSys.importFromWkt(&pWkt);
+    */
 
     //
     // Sort out what to do with this layer's coordinate system (CS). We have
@@ -2724,8 +2728,8 @@ void QgsVectorLayer::setCoordinateSystem()
     mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT, myDestWKT);
 #ifdef QGISDEBUG
     std::cout << ">>>>>>>>>>>> Transform for layer created:" << std::endl;
-    std::cout << ">>>>>>>>>>>> LayerCS:\n" << mySourceWKT << std::endl;
-    std::cout << ">>>>>>>>>>>> ProjectCS:\n" << myDestWKT << std::endl;
+    std::cout << ">>>>>>>>>>>> LayerCS:\n" << mCoordinateTransform->sourceSRS()->parameters() << std::endl;
+    std::cout << ">>>>>>>>>>>> ProjectCS:\n" << mCoordinateTransform->destSRS()->parameters() << std::endl;
     std::cout << ">>>>>>>>>>>> ----------------------------------------------------" << std::endl;
 #endif
   }
