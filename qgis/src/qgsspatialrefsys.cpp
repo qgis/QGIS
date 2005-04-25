@@ -1,6 +1,7 @@
 #include "qgsspatialrefsys.h"
 
 #include <iostream>
+#include <sqlite3.h>
 
 QgsSpatialRefSys::QgsSpatialRefSys(){}
 
@@ -20,6 +21,27 @@ QgsSpatialRefSys::QgsSpatialRefSys(long theSrsId,
 
 {
 }
+
+QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType)
+{
+  switch (theType)
+  {
+    case QGIS_SRSID:
+      createFromSystemSrsId(theId);
+      break;
+    case POSTGIS_SRID:
+      createFromSrid(theId);
+      break;
+    case EPSG:
+      createFromEpsg(theId);
+      break;
+    default:
+       //THIS IS BAD...THIS PART OF CODE SHOULD NEVER BE REACHED...
+       std::cout << "Unexpected case reached in " << __FILE__ << " : " << __LINE__ << std::endl;
+  }; 
+
+}
+
 // Misc helper functions -----------------------
 
 void QgsSpatialRefSys::createFromSrid(long theSrid)

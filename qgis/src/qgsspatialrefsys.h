@@ -55,6 +55,14 @@ class QgsSpatialRefSys
                 long theEpsg,
                 bool theGeoFlag);
 
+         enum SRS_TYPE {QGIS_SRSID,POSTGIS_SRID, EPSG};
+         /*! Use this constructor when you want to create a SRS object using 
+          *  a postgis SRID, an EPSG id or a QGIS SRS_ID.
+          * @param theId The ID no valid for the chosen coordinate system id type
+          * @param theType One of the types described in QgsSpatialRefSys::SRS_TYPE
+          */
+         QgsSpatialRefSys(const long theId, SRS_TYPE theType=POSTGIS_SRID);
+
         // Misc helper functions -----------------------
         
         /*! Set up this srs by fetching the appropriate information from the 
