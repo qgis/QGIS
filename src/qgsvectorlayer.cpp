@@ -1546,23 +1546,61 @@ long QgsVectorLayer::updateFeatureCount() const
 
 void QgsVectorLayer::updateExtents()
 {
-  if ( ! dataProvider )
-  {
-    std::cerr << __FILE__ << ":" << __LINE__
-    << " QgsVectorLayer::updateFeatureCount() invoked with null dataProvider\n";
-  }
+  if(dataProvider)
+    {
+      if(mDeleted.size()==0)
+	{
+	  // get the extent of the layer from the provider
+	  layerExtent.setXmin(dataProvider->extent()->xMin());
+	  layerExtent.setYmin(dataProvider->extent()->yMin());
+	  layerExtent.setXmax(dataProvider->extent()->xMax());
+	  layerExtent.setYmax(dataProvider->extent()->yMax());
+	}
+      else
+	{
+	  QgsFeature* fet=0;
+	  double xmin=DBL_MAX;
+	  double xmax=-DBL_MAX;
+	  double ymin=DBL_MAX;
+	  double ymax=-DBL_MAX;
+	  QgsRect bb;
+
+	  dataProvider->reset();
+	  while(fet=dataProvider->getNextFeature(false))
+	    {
+	      if(mDeleted.find(fet->featureId())==mDeleted.end())
+		{
+		  bb=fet->boundingBox();
+		  if(bb.xMin()<xmin)
+		    {
+		      xmin=bb.xMin();
+		    }
+		  if(bb.xMax()>xmax)
+		    {
+		      xmax=bb.xMax();
+		    }
+		  if(bb.yMin()<ymin)
+		    {
+		      ymin=bb.yMin();
+		    }
+		  if(bb.yMax()>ymax)
+		    {
+		      ymax=bb.yMax();
+		    }
+		}
+	      delete fet;
+	    }
+	  layerExtent.setXmin(xmin);
+	  layerExtent.setXmax(xmax);
+	  layerExtent.setYmin(ymin);
+	  layerExtent.setYmax(ymax);
+	}
+    }
   else
-  {
-#ifdef QGISDEBUG
-    qDebug("QgsVectorLayer: Getting current extents from the provider");
-    qDebug(dataProvider->extent()->stringRep());
-#endif
-    // get the extent of the layer from the provider
-    layerExtent.setXmin(dataProvider->extent()->xMin());
-    layerExtent.setYmin(dataProvider->extent()->yMin());
-    layerExtent.setXmax(dataProvider->extent()->xMax());
-    layerExtent.setYmax(dataProvider->extent()->yMax());
-  }
+    {
+      std::cerr << __FILE__ << ":" << __LINE__
+		    << " QgsVectorLayer::updateFeatureCount() invoked with null dataProvider\n";
+    }
 
   //todo: also consider the not commited features
   for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
@@ -1732,17 +1770,18 @@ bool QgsVectorLayer::deleteSelectedFeatures()
 
     if(mSelected.size()>0)
     {
-  mModified=true;
-  mSelected.clear();
-  triggerRepaint();
+      mModified=true;
+      mSelected.clear();
+      triggerRepaint();
+      updateExtents();
 
-  //hide and delete the table because it is not up to date any more
-  if (tabledisplay)
-  {
-      tabledisplay->close();
-      delete tabledisplay;
-      tabledisplay=0;
-  }
+      //hide and delete the table because it is not up to date any more
+      if (tabledisplay)
+	{
+	  tabledisplay->close();
+	  delete tabledisplay;
+	  tabledisplay=0;
+	}
 
     }
 
