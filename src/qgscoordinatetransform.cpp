@@ -30,12 +30,28 @@ QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceSRS, QString th
   initialise();
 }
 
+QgsCoordinateTransform::QgsCoordinateTransform(long theSourceSrid,  
+                        QString theDestWKT,
+                        QgsSpatialRefSys::SRS_TYPE theSourceSRSType)
+{
+
+  mSourceSRS= new QgsSpatialRefSys(theSourceSrid,theSourceSRSType);
+  mDestSRS = new QgsSpatialRefSys(theDestWKT);
+  // initialize the coordinate system data structures
+  //XXX Who spells initialize initialise?
+  //XXX A: Its the queen's english....
+  //XXX  : Long live the queen! Lets get on with the initialisation...
+  initialise();
+}
 
 QgsCoordinateTransform::~QgsCoordinateTransform()
 {
   // free the proj objects
   pj_free(mSourceProjection);
   pj_free(mDestinationProjection);
+  //delete member poitners
+  delete mDestSRS;
+  delete mSourceSRS;
 }
 
 void QgsCoordinateTransform::setSourceSRS(QgsSpatialRefSys * theSRS)

@@ -61,6 +61,16 @@ class QgsCoordinateTransform: public QObject
      * @param theSourceWKT WKT of the map canvas coordinate system
      */
     QgsCoordinateTransform(QString theSourceWKT, QString theDestWKT  );
+    /*!
+     * Constructs a QgsCoordinateTransform using a Spatial Reference Id
+     * of the layer and map canvas coordinate system as Wkt
+     * @param theSourceSrid Spatial Ref Id of the layer's coordinate system
+     * @param theSourceWKT WKT of the map canvas coordinate system
+     * @param theSourceSRSType On of the enum members defined in QgsSpatialRefSys::SRS_TYPE
+     */
+    QgsCoordinateTransform(long theSourceSrid,  
+                           QString theDestWKT,
+                           QgsSpatialRefSys::SRS_TYPE theSourceSRSType = QgsSpatialRefSys::POSTGIS_SRID  );
      //! destructor
     ~QgsCoordinateTransform();
     //! Enum used to indicate the direction (forward or inverse) of the transform
