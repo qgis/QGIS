@@ -1,3 +1,4 @@
+
 /***************************************************************************
                                qgsvectorlayer.cpp
   This class implements a generic means to display vector layers. The features
@@ -190,7 +191,7 @@ QgsVectorLayer::~QgsVectorLayer()
   }
 }
 
-bool QgsVectorLayer::projectionsEnabled()
+bool QgsVectorLayer::projectionsEnabled() const
 {
   if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
   {
@@ -350,7 +351,8 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
     // select the records in the extent. The provider sets a spatial filter
     // and sets up the selection set for retrieval
     dataProvider->reset();
-    dataProvider->select(viewExtent);
+    QgsRect r = inverseProjectRect(*viewExtent);
+    dataProvider->select(&r);
 
     //main render loop
     QgsFeature *fet;
@@ -385,6 +387,36 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
     qApp->processEvents();
 
   }
+}
+
+QgsRect QgsVectorLayer::inverseProjectRect(const QgsRect& r) const
+{
+  // Undo a coordinate transformation if one was in effect
+  if (projectionsEnabled())
+  { 
+    try
+    {
+      QgsPoint p1 = mCoordinateTransform->transform(r.xMin(), r.yMin(), 
+				QgsCoordinateTransform::INVERSE);
+      QgsPoint p2 = mCoordinateTransform->transform(r.xMax(), r.yMax(), 
+			        QgsCoordinateTransform::INVERSE);
+#ifdef QGISDEBUG
+      std::cerr << "Projections are enabled\n";
+      std::cerr << "Rectangle was: " << r.stringRep(true) << '\n';
+      QgsRect tt(p1, p2);
+      std::cerr << "Inverse transformed to: " << tt.stringRep(true) << '\n';
+#endif
+      return QgsRect(p1, p2);
+
+    }
+    catch (QgsCsException &e)
+    {
+      qDebug("Inverse transform error in %s line %d:\n%s",
+	     __FILE__, __LINE__, e.what());
+    }
+  }
+  else
+    return QgsRect(r);
 }
 
 unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature, 
@@ -816,7 +848,9 @@ QgsVectorLayer::endian_t QgsVectorLayer::endian()
 void QgsVectorLayer::identify(QgsRect * r)
 {
   QApplication::setOverrideCursor(Qt::WaitCursor);
-  dataProvider->select(r, true);
+
+  QgsRect pr = inverseProjectRect(*r);
+  dataProvider->select(&pr, true);
   int featureCount = 0;
   QgsFeature *fet;
   unsigned char *feature;
@@ -1095,7 +1129,8 @@ void QgsVectorLayer::select(QgsRect * rect, bool lock)
     }
   }
 
-  dataProvider->select(rect, true);
+  QgsRect r = inverseProjectRect(*rect);
+  dataProvider->select(&r, true);
 
   QgsFeature *fet;
 
@@ -2397,6 +2432,7 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   double minvertexdist;//the distance between 'point' and 'vertexFeature'
 
   QgsRect selectrect(point.x()-tolerance,point.y()-tolerance,point.x()+tolerance,point.y()+tolerance);
+  selectrect = inverseProjectRect(selectrect);
   dataProvider->reset();
   dataProvider->select(&selectrect);
   while ((fet = dataProvider->getNextFeature(false)))
