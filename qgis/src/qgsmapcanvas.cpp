@@ -945,6 +945,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 
       paint->end();
       mCanvasProperties->drawing = false;
+      delete paint;
     }
     mCanvasProperties->dirty = false;
     repaint();
