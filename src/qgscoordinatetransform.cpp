@@ -91,7 +91,7 @@ void QgsCoordinateTransform::initialise()
       "  AUTHORITY[\"EPSG\",4326]]";
   //default input projection to geo wgs84  
   // XXX Warning - multiple return paths in this block!!
-  if (mSourceSRS->isValid())
+  if (!mSourceSRS->isValid())
   {
     //mSourceSRS = defaultWkt;
     // Pass through with no projection since we have no idea what the layer
@@ -100,7 +100,7 @@ void QgsCoordinateTransform::initialise()
     return;
   }
 
-  if (mDestSRS->isValid())
+  if (!mDestSRS->isValid())
   {
     //No destination projection is set so we set the default output projection to
     //be the same as input proj. This only happens on the first layer loaded
@@ -122,11 +122,12 @@ void QgsCoordinateTransform::initialise()
     // Transform must take place
     mShortCircuit=false;
   }
-
+  mProj4DestParms=mDestSRS->toProjString().latin1();
+  mProj4SrcParms=mSourceSRS->toProjString().latin1();
  
  // init the projections (destination and source)
-  mDestinationProjection = pj_init_plus(mDestSRS->toProjString().latin1());
-  mSourceProjection = pj_init_plus(mSourceSRS->toProjString().latin1());
+  mDestinationProjection = pj_init_plus(mProj4DestParms);
+  mSourceProjection = pj_init_plus(mProj4SrcParms);
 
 #ifdef QGISDEBUG 
   //OGRErr sourceValid = mSourceOgrSpatialRef.Validate();
