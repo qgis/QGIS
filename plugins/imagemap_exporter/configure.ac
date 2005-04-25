@@ -4,7 +4,7 @@
 AC_PREREQ(2.57)
 AC_INIT(plugin.cpp)
 
-AC_CONFIG_SRCDIR([plugingui.h])
+AC_CONFIG_SRCDIR([imexportplugingui.h])
 
 AM_INIT_AUTOMAKE(qgis-imagemap-exporter, 0.0.1)
 
