@@ -28,3 +28,15 @@ void QgsAttributeTableBase::stopEditing()
 {
 
 }
+
+
+void QgsAttributeTableBase::invertSelection()
+{
+
+}
+
+
+void QgsAttributeTableBase::selectedToTop()
+{
+
+}

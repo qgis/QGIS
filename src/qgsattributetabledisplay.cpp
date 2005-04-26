@@ -30,24 +30,8 @@
 
 QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAttributeTableBase(), mLayer(layer)
 {
-  //insert editing popup
-  QMenuBar* mMenuBar = new QMenuBar(this, "mMenuBar");
-  mMenuBar->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, mMenuBar->sizePolicy().hasHeightForWidth() ) );
-  mMenuBar->setMinimumSize( QSize( 0, 40 ) );
-
-  QgsAttributeTableBaseLayout->addMultiCellWidget( mMenuBar, 0, 0, 0, 4 );
-
-  edit = new QPopupMenu(this);
-  QPopupMenu* selection = new QPopupMenu(this);
-
-  edit->insertItem(tr("&Add Attribute..."), this, SLOT(addAttribute()), CTRL+Key_A,0);
-  edit->insertItem(tr("&Delete Attributes..."), this, SLOT(deleteAttributes()), CTRL+Key_D,1);
-  selection->insertItem(tr("&Bring selection to top"), this, SLOT(selectedToTop()), CTRL+Key_T);
-  selection->insertItem(tr("&Invert selection"), this, SLOT(invertSelection()), CTRL+Key_I);
-  mMenuBar->insertItem(tr("&Edit"), edit);
-  mMenuBar->insertItem(tr("&Selection"),selection);
-  edit->setItemEnabled(0,false);
-  edit->setItemEnabled(1,false);
+  mAddAttributeButton->setEnabled(false);
+  mDeleteAttributeButton->setEnabled(false);
 
   btnStopEditing->setEnabled(false);
   int cap=layer->getDataProvider()->capabilities();
@@ -61,9 +45,6 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAtt
   {
     btnStartEditing->setEnabled(false);
   }
-
-  QObject::connect(btnStartEditing, SIGNAL(clicked()), this, SLOT(startEditing()));
-  QObject::connect(btnStopEditing, SIGNAL(clicked()), this, SLOT(stopEditing()));
 }
 
 QgsAttributeTableDisplay::~QgsAttributeTableDisplay()
@@ -107,18 +88,19 @@ void QgsAttributeTableDisplay::addAttribute()
 void QgsAttributeTableDisplay::startEditing()
 {
   QgsVectorDataProvider* provider=mLayer->getDataProvider();
-  bool editing=false;
+  bool editing=false; 
 
   if(provider)
   {
     if(provider->capabilities()&QgsVectorDataProvider::AddAttributes)
     {
-      edit->setItemEnabled(0,true);
+      mAddAttributeButton->setEnabled(true);
       editing=true;
     }
     if(provider->capabilities()&QgsVectorDataProvider::DeleteAttributes)
     {
-      edit->setItemEnabled(1,true); 
+      
+      mDeleteAttributeButton->setEnabled(true);
       editing=true;
     }
     if(provider->capabilities()&QgsVectorDataProvider::ChangeAttributeValues)
@@ -157,8 +139,10 @@ void QgsAttributeTableDisplay::stopEditing()
   btnStartEditing->setEnabled(true);
   btnStopEditing->setEnabled(false);
   btnClose->setEnabled(true); 
-  edit->setItemEnabled(0,false);
-  edit->setItemEnabled(1,false);
+  //edit->setItemEnabled(0,false);
+  //edit->setItemEnabled(1,false);
+  mAddAttributeButton->setEnabled(false);
+  mDeleteAttributeButton->setEnabled(false);
   table()->setReadOnly(true);
 }
 
