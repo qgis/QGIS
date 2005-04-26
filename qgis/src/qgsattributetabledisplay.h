@@ -43,7 +43,6 @@ class QgsAttributeTableDisplay:public QgsAttributeTableBase
     void setTitle(QString title);
   protected:
     QgsVectorLayer* mLayer;
-    QPopupMenu* edit;
 
     protected slots:
       void deleteAttributes();
