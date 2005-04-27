@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>511</width>
-            <height>162</height>
+            <height>175</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -155,7 +155,7 @@
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
-                    <hsizetype>7</hsizetype>
+                    <hsizetype>1</hsizetype>
                     <vsizetype>1</vsizetype>
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
