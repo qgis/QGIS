@@ -103,7 +103,7 @@ QgsScaleBarPlugin::~QgsScaleBarPlugin()
  */
 void QgsScaleBarPlugin::initGui()
 {
-  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Scale Bar");
+  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
   menuId = pluginMenu->insertItem(QIconSet(icon),"&ScaleBar", this, SLOT(run()));
 
   pluginMenu->setWhatsThis(menuId, "Creates a scale bar that is displayed on the map canvas");
@@ -483,7 +483,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
 void QgsScaleBarPlugin::unload()
 {
   // remove the GUI
-  qGisInterface->removePluginMenuItem("&Scale Bar",menuId);
+  qGisInterface->removePluginMenuItem("&Decorations",menuId);
   qGisInterface->removeToolBarIcon(myQActionPointer);
 
   // remove the northarrow from the canvas
