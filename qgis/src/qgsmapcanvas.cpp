@@ -1199,7 +1199,7 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
        ( mCanvasProperties->mapTool == QGis::ZoomIn || mCanvasProperties->mapTool == QGis::ZoomOut
    || mCanvasProperties->mapTool == QGis::Pan ) )
   {
-      emit stopZoom();
+      //emit stopZoom();
       return;
   }
   
@@ -1232,6 +1232,16 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 {
   if (!mUserInteractionAllowed)
     return;
+
+  // right button was pressed in zoom tool, return to previous non zoom tool
+  if ( e->button() == Qt::RightButton &&
+       ( mCanvasProperties->mapTool == QGis::ZoomIn || mCanvasProperties->mapTool == QGis::ZoomOut
+   || mCanvasProperties->mapTool == QGis::Pan ) )
+  {
+      emit stopZoom();
+      return;
+  }
+
   QPainter paint;
   QPen     pen(Qt::gray);
   QgsPoint ll, ur;
@@ -1630,11 +1640,20 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       {
         QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
 
-  if ( !mMeasure ) {
-      mMeasure = new QgsMeasure(this, topLevelWidget() );
-  }
-  mMeasure->addPoint(point);
-  mMeasure->show();
+        if(e->button()==Qt::RightButton) // restart
+	{
+	     if ( mMeasure ) {   
+		 mMeasure->restart();
+	     }
+	} 
+	else 
+	{
+	  if ( !mMeasure ) {
+	      mMeasure = new QgsMeasure(this, topLevelWidget() );
+	  }
+	  mMeasure->addPoint(point);
+	  mMeasure->show();
+	}
         break;
       }
     }
