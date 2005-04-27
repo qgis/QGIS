@@ -100,13 +100,11 @@ QgsGPSPlugin::~QgsGPSPlugin()
  */
 void QgsGPSPlugin::initGui()
 {
-  // add a menu with 2 items
-  QPopupMenu *pluginMenu = new QPopupMenu(mMainWindowPointer);
-  pluginMenu->insertItem(QIconSet(icon),"&Gps Tools", this, SLOT(run()));
-  int menuId = pluginMenu->insertItem("&Create new GPX layer", this, SLOT(createGPX()));
-  pluginMenu->setWhatsThis(menuId, "Creates a new GPX layer and displays it on the map canvas");
-  mMenuBarPointer = ((QMainWindow *) mMainWindowPointer)->menuBar();
-  mMenuId = mQGisInterface->addMenu("&Gps", pluginMenu);
+  QPopupMenu *pluginMenu = mQGisInterface->getPluginMenu("&Gps");
+  mMenuIdGPS = pluginMenu->insertItem(QIconSet(icon),"&Gps Tools", this, SLOT(run()));
+  mMenuIdGPX = pluginMenu->insertItem(QIconSet(icon),"&Create new GPX layer", this, SLOT(createGPX()));
+
+  pluginMenu->setWhatsThis(mMenuIdGPX, "Creates a new GPX layer and displays it on the map canvas");
 
   // add an action to the toolbar
   mQActionPointer = new QAction("Gps Tools", QIconSet(icon), "&Wmi",0, 
@@ -202,7 +200,8 @@ void QgsGPSPlugin::drawVectorLayer(QString thePathNameQString,
 void QgsGPSPlugin::unload()
 {
   // remove the GUI
-  mMenuBarPointer->removeItem(mMenuId);
+  mQGisInterface->removePluginMenuItem("&Gps",mMenuIdGPS);
+  mQGisInterface->removePluginMenuItem("&Gps",mMenuIdGPX);
   mQGisInterface->removeToolBarIcon(mQActionPointer);
   delete mQActionPointer;
 }

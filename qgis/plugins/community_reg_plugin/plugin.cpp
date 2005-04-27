@@ -87,10 +87,9 @@ QgsCommunityRegPlugin::~QgsCommunityRegPlugin()
  */
 void QgsCommunityRegPlugin::initGui()
 {
-  QPopupMenu *pluginMenu = new QPopupMenu(mQGisApp);
-  pluginMenu->insertItem(QIconSet(icon),"&Community Register", this, SLOT(run()));
-  mMenuBarPointer = ((QMainWindow *) mQGisApp)->menuBar();
-  mMenuId = mQGisIface->addMenu("&Community Register", pluginMenu);
+  QPopupMenu *pluginMenu = mQGisIface->getPluginMenu("&Community Register");
+  mMenuId = pluginMenu->insertItem(QIconSet(icon),"&Community Register", this, SLOT(run()));
+
   // Create the action for tool
   mQActionPointer = new QAction("Community Register", QIconSet(icon), "&icon",0, this, "run");
   // Connect the action to the run
@@ -122,7 +121,7 @@ void QgsCommunityRegPlugin::run()
 void QgsCommunityRegPlugin::unload()
 {
   // remove the GUI
-  mMenuBarPointer->removeItem(mMenuId);
+  mQGisIface->removePluginMenuItem("&Community Register",mMenuId);
   mQGisIface->removeToolBarIcon(mQActionPointer);
   delete mQActionPointer;
 }

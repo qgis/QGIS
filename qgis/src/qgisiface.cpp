@@ -100,6 +100,16 @@ int QgisIface::addMenu(QString menuText, QPopupMenu * menu)
   // add the menu to the master Plugins menu
   return qgis->addPluginMenu(menuText, menu);
 }
+QPopupMenu* QgisIface::getPluginMenu(QString menuName)
+{
+  return qgis->getPluginMenu(menuName);
+}
+
+void QgisIface::removePluginMenuItem(QString name, int menuId)
+{
+  qgis->removePluginMenuItem(name, menuId);
+}
+
 int QgisIface::addToolBarIcon(QAction * qAction)
 {
   // add the menu to the master Plugins menu

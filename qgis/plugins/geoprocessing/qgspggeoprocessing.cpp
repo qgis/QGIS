@@ -76,18 +76,12 @@ QgsPgGeoprocessing::~QgsPgGeoprocessing()
  */
 void QgsPgGeoprocessing::initGui()
 {
-  // add a menu with 2 items
-  QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindow);
+  QPopupMenu *pluginMenu = qI->getPluginMenu("&Geoprocessing");
+  menuId = pluginMenu->insertItem(QIconSet(icon_buffer),"&Buffer Features", this, SLOT(run()));
 
-  menuId = pluginMenu->insertItem(QIconSet(icon_buffer),"&Buffer Features", this, SLOT(buffer()));
   pluginMenu->setWhatsThis(menuId, "Create a buffer for a PostgreSQL layer. "
       "A new layer is created in the database with the buffered features.");
-  //  pluginMenu->insertItem("&Unload Geoprocessing Plugin", this, SLOT(unload()));
 
-  menu = ((QMainWindow *) qgisMainWindow)->menuBar();
-
-  //  menuId = menu->insertItem("&Geoprocessing", pluginMenu);
-  menuId = qI->addMenu("&Geoprocessing", pluginMenu);
   // Create the action for tool
   bufferAction = new QAction("Buffer features", QIconSet(icon_buffer), "&Buffer",
       0, this, "buffer");
@@ -414,7 +408,7 @@ bool QgsPgGeoprocessing::hasPROJ(PGconn *connection){
 void QgsPgGeoprocessing::unload()
 {
   // remove the GUI
-  menu->removeItem(menuId);
+  qI->removePluginMenuItem("&Geoprocessing",menuId);
   qI->removeToolBarIcon(bufferAction);
   delete bufferAction;
 }

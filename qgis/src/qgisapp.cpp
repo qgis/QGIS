@@ -3738,6 +3738,35 @@ int QgisApp::addPluginMenu(QString menuText, QPopupMenu *menu)
   return mPluginMenu->insertItem(menuText, menu);
 }
 
+QPopupMenu* QgisApp::getPluginMenu(QString menuName)
+{
+  for (int i = 0; i < mPluginMenu->count(); ++i)
+    if (mPluginMenu->text(mPluginMenu->idAt(i)) == menuName)
+    {
+      QMenuItem* item = mPluginMenu->findItem(mPluginMenu->idAt(i));
+      return item->popup();
+    }
+
+  // It doesn't exist, so create one
+  QPopupMenu* menu = new QPopupMenu(mPluginMenu);
+  mPluginMenu->insertItem(menuName, menu);
+  return menu;
+}
+
+void QgisApp::removePluginMenuItem(QString name, int menuId)
+{
+  for (int i = 0; i < mPluginMenu->count(); ++i)
+    if (mPluginMenu->text(mPluginMenu->idAt(i)) == name)
+    {
+      QMenuItem* item = mPluginMenu->findItem(mPluginMenu->idAt(i));
+      QPopupMenu* popup = item->popup();
+      popup->removeItem(menuId);
+      if (popup->count() == 0)
+	mPluginMenu->removeItem(mPluginMenu->idAt(i));
+      break;
+    }
+}
+
 int QgisApp::addPluginToolBarIcon (QAction * qAction)
 {
     qAction->addTo(mPluginToolBar);
