@@ -137,6 +137,9 @@ private:
     void restorePosition(void);
     
     void saveWindowLocation(void);
+
+    // Format N, S, E, W value
+    QString formatEdge ( double v );
 };
 
 #endif // QGSGRASSREGION_H
