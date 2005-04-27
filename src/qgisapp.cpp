@@ -3974,6 +3974,7 @@ void QgisApp::setTheme(QString themeName)
     actionMeasure->setIconSet(QIconSet(QPixmap(iconPath + "/measure.png")));
     actionShowBookmarks->setIconSet(QIconSet(QPixmap(iconPath + "/bookmarks.png")));
     actionNewBookmark->setIconSet(QIconSet(QPixmap(iconPath + "/new_bookmark.png")));
+    actionCustomProjection->setIconSet(QIconSet(QPixmap(iconPath + "/custom_projection.png")));
 
 }
 void QgisApp::setupToolbarPopups(QString themeName)
