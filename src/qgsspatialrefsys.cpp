@@ -85,7 +85,7 @@ void QgsSpatialRefSys::createFromSrid(long theSrid)
     is_geo integer NOT NULL);
   */
 
-  QString mySql = "select (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,s_geo) from tbl_srs where srs_id='" + QString::number(theSrid) + "'";
+  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where srs_id='" + QString::number(theSrid) + "'";
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
@@ -155,12 +155,139 @@ void QgsSpatialRefSys::createFromWkt(QString theWkt)
 
 void QgsSpatialRefSys::createFromEpsg(long theEpsg)
 {
+#ifdef QGISDEBUG
+  std::cout << " QgsSpatialRefSys::createFromEpsg" << std::endl;
+#endif
+// Get the package data path and set the full path name to the sqlite3 spatial reference
+// database.
+#if defined(Q_OS_MACX) || defined(WIN32)
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
+  QString myDatabaseFileName = PKGDATAPATH;
+  myDatabaseFileName += "/resources/srs.db";
 
+
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  //check the db is available
+  myResult = sqlite3_open(myDatabaseFileName.latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+
+  /*
+    srs_id INTEGER PRIMARY KEY,
+    description text NOT NULL,
+    projection_acronym text NOT NULL,
+    ellipsoid_acronym NOT NULL,
+    parameters text NOT NULL,
+    srid integer NOT NULL,
+    epsg integer NOT NULL,
+    is_geo integer NOT NULL);
+  */
+
+  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where epsg_id='" + QString::number(theEpsg) + "'";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      mSrsId = QString ((char *)sqlite3_column_text(myPreparedStatement,0)).toLong();
+      mDescription = QString ((char *)sqlite3_column_text(myPreparedStatement,1));
+      mProjectionAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,2));
+      mEllipsoidAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,3));
+      mParameters = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
+      mSRID = QString ((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
+      mEpsg = QString ((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
+      mGeoFlag = QString ((char *)sqlite3_column_text(myPreparedStatement,7));
+      isValidFlag==true;
+
+  }
+  else
+  {
+#ifdef QGISDEBUG
+    std::cout << " QgsSpatialRefSys::createFromEpsg failed :  " << mySql << std::endl;
+#endif
+    isValidFlag==false;
+  }
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
 }
+
 
 void QgsSpatialRefSys::createFromSystemSrsId (long theSrsId)
 {
+#ifdef QGISDEBUG
+  std::cout << " QgsSpatialRefSys::createFromSystemSrsId" << std::endl;
+#endif
+// Get the package data path and set the full path name to the sqlite3 spatial reference
+// database.
+#if defined(Q_OS_MACX) || defined(WIN32)
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
+  QString myDatabaseFileName = PKGDATAPATH;
+  myDatabaseFileName += "/resources/srs.db";
 
+
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  //check the db is available
+  myResult = sqlite3_open(myDatabaseFileName.latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+
+  /*
+    srs_id INTEGER PRIMARY KEY,
+    description text NOT NULL,
+    projection_acronym text NOT NULL,
+    ellipsoid_acronym NOT NULL,
+    parameters text NOT NULL,
+    srid integer NOT NULL,
+    epsg integer NOT NULL,
+    is_geo integer NOT NULL);
+  */
+
+  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where srs_id='" + QString::number(theSrsId) + "'";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      mSrsId = QString ((char *)sqlite3_column_text(myPreparedStatement,0)).toLong();
+      mDescription = QString ((char *)sqlite3_column_text(myPreparedStatement,1));
+      mProjectionAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,2));
+      mEllipsoidAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,3));
+      mParameters = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
+      mSRID = QString ((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
+      mEpsg = QString ((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
+      mGeoFlag = QString ((char *)sqlite3_column_text(myPreparedStatement,7));
+      isValidFlag==true;
+
+  }
+  else
+  {
+#ifdef QGISDEBUG
+    std::cout << " QgsSpatialRefSys::createFromSystemSrsId failed :  " << mySql << std::endl;
+#endif
+    isValidFlag==false;
+  }
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
 }
 
 
