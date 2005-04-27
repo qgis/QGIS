@@ -112,8 +112,18 @@ QgsGraMaExtensionWidget::QgsGraMaExtensionWidget(QWidget* parent, int classfield
         /*Set the default values of the lower and upper bounds according to the chosen mode */
 	if (mMode == QgsGraSyDialog::EQUAL_INTERVAL)
         {
-	    ltextfield->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * (i - 1), 'f', 2));
-	    utextfield->setText(QString::number(minimum + (maximum - minimum) / mNumberOfClasses * i, 'f', 2));
+	  double lower=minimum + (maximum - minimum) / mNumberOfClasses * (i - 1);
+	  double upper=minimum + (maximum - minimum) / mNumberOfClasses * i;
+	  if(i==1)
+	    {
+	      lower-=0.001;
+	    }
+	  if(i==mNumberOfClasses)
+	    {
+	      upper+=0.001;
+	    }
+	    ltextfield->setText(QString::number(lower, 'f', 3));
+	    utextfield->setText(QString::number(upper, 'f', 3));
         }
 
 	

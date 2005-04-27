@@ -234,16 +234,19 @@ void QgsDlgVectorLayerProperties::reset( void )
   spinMaximumScale->setValue(layer->maxScale());
 
   // symbology initialization
-  legendtypecombobox->insertItem(tr("Single Symbol"));
-  legendtypecombobox->insertItem(tr("Graduated Symbol"));
-  legendtypecombobox->insertItem(tr("Continuous Color"));
-  legendtypecombobox->insertItem(tr("Unique Value"));
-  if( layer->vectorType()==QGis::Point )
-  {
-    legendtypecombobox->insertItem(tr("Single Marker"));
-    legendtypecombobox->insertItem(tr("Graduated Marker"));
-    legendtypecombobox->insertItem(tr("Unique Value Marker"));
-  }
+  if(legendtypecombobox->count()==0)
+    {
+      legendtypecombobox->insertItem(tr("Single Symbol"));
+      legendtypecombobox->insertItem(tr("Graduated Symbol"));
+      legendtypecombobox->insertItem(tr("Continuous Color"));
+      legendtypecombobox->insertItem(tr("Unique Value"));
+      if( layer->vectorType()==QGis::Point )
+	{
+	  legendtypecombobox->insertItem(tr("Single Marker"));
+	  legendtypecombobox->insertItem(tr("Graduated Marker"));
+	  legendtypecombobox->insertItem(tr("Unique Value Marker"));
+	}
+    }
 
   QVBoxLayout *layout = new QVBoxLayout();
   labelDialog = new QgsLabelDialog ( layer->label(),labelOptionsFrame);
