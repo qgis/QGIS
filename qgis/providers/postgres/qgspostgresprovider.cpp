@@ -1603,6 +1603,7 @@ QString QgsPostgresProvider::postgisVersion(PGconn *connection){
 bool QgsPostgresProvider::addFeatures(std::list<QgsFeature*> const flist)
 {
   bool returnvalue=true;
+  PQexec(connection,"BEGIN");
   for(std::list<QgsFeature*>::const_iterator it=flist.begin();it!=flist.end();++it)
   {
     if(!addFeature(*it))
@@ -1610,12 +1611,15 @@ bool QgsPostgresProvider::addFeatures(std::list<QgsFeature*> const flist)
       returnvalue=false;
     }
   }
+  PQexec(connection,"COMMIT");
+  reset();
   return returnvalue;
 }
 
 bool QgsPostgresProvider::deleteFeatures(std::list<int> const & id)
 {
-  bool returnvalue=true; 
+  bool returnvalue=true;
+  PQexec(connection,"BEGIN");
   for(std::list<int>::const_iterator it=id.begin();it!=id.end();++it)
   {
     if(!deleteFeature(*it))
@@ -1623,6 +1627,8 @@ bool QgsPostgresProvider::deleteFeatures(std::list<int> const & id)
       returnvalue=false;
     }
   }
+  PQexec(connection,"COMMIT");
+  reset();
   return returnvalue;
 }
 
