@@ -423,6 +423,11 @@ protected:
 
     //! A QgsCoordinateTransform is used for on the fly reprojection of map layers
     QgsCoordinateTransform * mCoordinateTransform;    
+    /** The QgsSpatialRefSys that represents the spatial ref sys for this
+     * layer.
+     * @note it will also be used to set the sourceSRS in the above coord transform object
+     */
+    QgsSpatialRefSys * mSpatialRefSys;
 private:                       // Private attributes
 
     /// QgsMapLayer not copyable
