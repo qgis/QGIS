@@ -77,7 +77,7 @@ QgsPgGeoprocessing::~QgsPgGeoprocessing()
 void QgsPgGeoprocessing::initGui()
 {
   QPopupMenu *pluginMenu = qI->getPluginMenu("&Geoprocessing");
-  menuId = pluginMenu->insertItem(QIconSet(icon_buffer),"&Buffer Features", this, SLOT(run()));
+  menuId = pluginMenu->insertItem(QIconSet(icon_buffer),"&Buffer Features", this, SLOT(buffer()));
 
   pluginMenu->setWhatsThis(menuId, "Create a buffer for a PostgreSQL layer. "
       "A new layer is created in the database with the buffered features.");
