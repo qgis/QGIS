@@ -26,7 +26,6 @@ bin_PROGRAMS = spit
 	$(UIC) -o $@ -impl $*.h $<
 
 spit_MOC = qgsspit.moc.cpp \
-	qgsspitplugin.moc.cpp \
 	qgsconnectiondialog.moc.cpp \
 	qgsshapefile.moc.cpp \
 	qgsmessageviewer.moc.cpp \
@@ -36,6 +35,8 @@ spit_MOC = qgsspit.moc.cpp \
 	qgseditreservedwordsbase.moc.cpp \
 	qgseditreservedwordsdialog.moc.cpp \
 	qgsscangeometries.moc.cpp
+
+spitplugin_la_MOC = $(spit_MOC) qgsspitplugin.moc.cpp
 
 spit_UI = qgsconnectiondialogbase.h \
 	qgsconnectiondialogbase.cpp \
@@ -55,11 +56,8 @@ spit_UIC = qgsconnectiondialogbase.ui \
 	qgseditreservedwordsbase.ui \
 	qgsscangeometries.ui
 
-
-spitplugin_la_SOURCES =  qgsspit.cpp \
+common_sources =  qgsspit.cpp \
 	qgsspit.h \
-	qgsspitplugin.cpp \
-	qgsspitplugin.h \
 	qgsdbfbase.h \
 	qgsconnectiondialog.cpp \
 	qgsconnectiondialog.h \
@@ -71,9 +69,13 @@ spitplugin_la_SOURCES =  qgsspit.cpp \
 	qgseditreservedwordsdialog.cpp \
 	$(spit_UI)
 
-spit_SOURCES = $(spitplugin_la_SOURCES) ../../src/qgspgutil.cpp  main.cpp $(SPIT_UIC) $(spit_MOC)
+spitplugin_la_SOURCES =  $(common_sources) \
+	qgsspitplugin.cpp \
+	qgsspitplugin.h
 
-nodist_spitplugin_la_SOURCES = $(spit_MOC)
+spit_SOURCES = $(common_sources) ../../src/qgspgutil.cpp  main.cpp $(SPIT_UIC) $(spit_MOC)
+
+nodist_spitplugin_la_SOURCES = $(spitplugin_la_MOC)
 
 # UI dependencies			
 qgsconnectiondialogbase.cpp: qgsconnectiondialogbase.ui qgsconnectiondialogbase.h
@@ -83,7 +85,7 @@ qgsspitbase.h: qgsspitbase.ui
 qgsmessageviewerbase.cpp: qgsmessageviewerbase.h qgsmessageviewerbase.ui
 qgsmessageviewerbase.h: qgsmessageviewerbase.ui
 
-BUILT_SOURCES = $(spit_MOC) $(spit_UI)
+BUILT_SOURCES = $(spit_MOC) $(spit_UI) $() $(splitplugin_la_MOC)
 
 
 spitplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD) ../../src/libqgis.la
