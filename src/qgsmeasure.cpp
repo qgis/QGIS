@@ -39,13 +39,13 @@ QgsMeasure::QgsMeasure( QgsMapCanvas *mc, QWidget *parent, const char * name, WF
 
     mTable->setLeftMargin(0); // hide row labels
 
-    mTable->horizontalHeader()->setLabel( 0, tr("Total") );
-    mTable->horizontalHeader()->setLabel( 1, tr("Increment") );
-    mTable->horizontalHeader()->setLabel( 2, tr("Azimuth") );
+    mTable->horizontalHeader()->setLabel( 0, tr("Increment") );
+    mTable->horizontalHeader()->setLabel( 1, tr("Total") );
+    //mTable->horizontalHeader()->setLabel( 2, tr("Azimuth") );
 
     mTable->setColumnStretchable ( 0, true );
     mTable->setColumnStretchable ( 1, true );
-    mTable->setColumnStretchable ( 2, true );
+    //mTable->setColumnStretchable ( 2, true );
 
     connect ( mMapCanvas, SIGNAL(renderComplete(QPainter*)), this, SLOT(draw(QPainter*)) );
     restorePosition();
@@ -98,8 +98,8 @@ void QgsMeasure::addPoint(QgsPoint &point)
 	mTable->setNumRows ( mPoints.size()-1 );
 
 	int row = mPoints.size()-2;
-        mTable->setText ( row, 0, QString::number(mTotal) );
-        mTable->setText ( row, 1, QString::number(d) );
+        mTable->setText ( row, 0, QString::number(d) );
+        mTable->setText ( row, 1, QString::number(mTotal) );
 	
     }
 

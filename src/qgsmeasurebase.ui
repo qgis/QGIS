@@ -33,7 +33,7 @@
                 <number>0</number>
             </property>
             <property name="numCols">
-                <number>3</number>
+                <number>2</number>
             </property>
             <property name="showGrid">
                 <bool>true</bool>
