@@ -175,6 +175,16 @@ void QgsGrassRegion::changeWidth ( void ) {
     mPlugin->setRegionPen(pen);
 }
 
+QString QgsGrassRegion::formatEdge ( double v )
+{
+    // Not sure about formating 
+    if ( v > 999999 ) 
+    {
+	return  QString("%1").arg( v, 0, 'f', 0); // to avoid e format for large numbers
+    } 
+    return QString("%1").arg(v, 0, 'g');
+}
+
 void QgsGrassRegion::setGuiValues( bool north, bool south, bool east, bool west,
 	                           bool nsres, bool ewres, bool rows, bool cols )
 {
@@ -184,10 +194,10 @@ void QgsGrassRegion::setGuiValues( bool north, bool south, bool east, bool west,
     
     mUpdatingGui = true;
     
-    if ( north ) mNorth->setText ( QString("%1").arg(mWindow.north, 0, 'f') );
-    if ( south ) mSouth->setText ( QString("%1").arg(mWindow.south, 0, 'f') );
-    if ( east )  mEast->setText  ( QString("%1").arg(mWindow.east, 0, 'f') );
-    if ( west )  mWest->setText  ( QString("%1").arg(mWindow.west, 0, 'f') );
+    if ( north ) mNorth->setText ( QString("%1").arg(mWindow.north, 0, 'g', 15) );
+    if ( south ) mSouth->setText ( QString("%1").arg(mWindow.south, 0, 'g', 15) );
+    if ( east )  mEast->setText  ( QString("%1").arg(mWindow.east, 0, 'g', 15) );
+    if ( west )  mWest->setText  ( QString("%1").arg(mWindow.west, 0, 'g', 15) );
     if ( nsres ) mNSRes->setText ( QString("%1").arg(mWindow.ns_res,0,'g') );
     if ( ewres ) mEWRes->setText ( QString("%1").arg(mWindow.ew_res,0,'g') );
     if ( rows )  mRows->setText  ( QString("%1").arg(mWindow.rows) );
