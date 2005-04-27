@@ -75,7 +75,7 @@ QgsSpitPlugin::~QgsSpitPlugin()
 void QgsSpitPlugin::initGui()
 {
     QPopupMenu *pluginMenu = qI->getPluginMenu("&Spit");
-    menuId = pluginMenu->insertItem(QIconSet(spitIcon),"&Import Shapefiles to PostgreSQL", this, SLOT(run()));
+    menuId = pluginMenu->insertItem(QIconSet(spitIcon),"&Import Shapefiles to PostgreSQL", this, SLOT(spit()));
 
     pluginMenu->setWhatsThis(menuId,"Import shapefiles into a PostGIS-enabled PostgreSQL database. "
         "The schema and field names can be customized on import"); 
