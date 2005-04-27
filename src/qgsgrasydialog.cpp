@@ -128,7 +128,6 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
     }
     
     //do the necessary signal/slot connections
-    //QObject::connect(numberofclassesspinbox, SIGNAL(valueChanged(int)), this, SLOT(adjustNumberOfClasses()));
     QObject::connect(numberofclassesspinbox, SIGNAL(valueChanged(int)), this, SLOT(adjustClassification()));
     QObject::connect(classificationComboBox, SIGNAL(activated(int)), this, SLOT(adjustClassification()));
     QObject::connect(modeComboBox, SIGNAL(activated(int)), this, SLOT(adjustClassification()));
@@ -407,6 +406,14 @@ void QgsGraSyDialog::adjustClassification()
 	{
 	    double lower=minimum + (maximum - minimum) / numberofclassesspinbox->value() * i;
 	    double upper=minimum + (maximum - minimum) / numberofclassesspinbox->value() * (i+1);
+	    if(i==0)//make sure all feature attributes are between minimum and maximum value (round off problem)
+	      {
+		lower-=0.001;
+	      }
+	    if(i==numberofclassesspinbox->value()-1)
+	      {
+		upper+=0.001;
+	      }
 	    rritem->setValue(QString::number(lower,'f',3));
 	    rritem->setUpperValue(QString::number(upper,'f',3));
 	    listboxtext=QString::number(lower,'f',3)+" - " +QString::number(upper,'f',3);
