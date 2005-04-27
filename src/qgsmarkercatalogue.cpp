@@ -158,6 +158,7 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
     picpainter.setPen ( pen );
     picpainter.setBrush( brush);
 
+    QRect box;
     if ( name == "circle" ) 
     {
 	picpainter.drawEllipse(0, 0, size, size);
@@ -187,6 +188,7 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
 	
 	picpainter.drawLine(0, half, size-1+add, half); // horizontal
 	picpainter.drawLine(half, 0, half, size-1+add); // vertical
+	box.setRect ( 0, 0, size, size );
     }
     else if ( name == "cross2" ) 
     {
@@ -195,15 +197,17 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
 	
 	int add = 1;  // lw always > 0
 	
+	int addwidth = (int) ( 0.5 * lw ); // width correction, cca lw/2 * cos(45)
+	
 	picpainter.drawLine( 0, 0, size-1+add, size-1+add);
 	picpainter.drawLine( 0, size-1, size-1+add, 0-add);
-	
-	// Impossible because of scaling */
+
+        box.setRect ( -addwidth, -addwidth, size + 2*addwidth, size + 2*addwidth );	
     }
     picpainter.end();
 
     if ( name == "cross" || name == "cross2" ) {
-        picture.setBoundingRect ( QRect ( 0, 0, size, size ) ); 
+        picture.setBoundingRect ( box ); 
     }
 
     // If oversampling > 1 create pixmap 
