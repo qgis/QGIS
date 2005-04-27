@@ -72,15 +72,6 @@
         </widget>
     </vbox>
 </widget>
-<menubar>
-    <property name="name">
-        <cstring>menubar</cstring>
-    </property>
-    <item text="&amp;Mapset" name="fileMenu">
-        <action name="mapsetNewAction"/>
-        <action name="mapsetOpenAction"/>
-    </item>
-</menubar>
 <toolbars>
 </toolbars>
 <actions>
