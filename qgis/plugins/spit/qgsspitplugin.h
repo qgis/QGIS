@@ -72,8 +72,6 @@ class QgsSpitPlugin:public QObject, public QgisPlugin
     int menuId;
     //! Pointer to our toolbar
     QToolBar *toolBar;
-    //! Pointer to our menu
-    QMenuBar *menu;
     //! Pionter to QGIS main application object
     QgisApp *qgisMainWindow;
     //! Pointer to the QGIS interface object
