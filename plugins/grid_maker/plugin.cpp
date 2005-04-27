@@ -105,14 +105,11 @@ int QgsGridMakerPlugin::type()
  */
 void QgsGridMakerPlugin::initGui()
 {
-  // add a menu with 2 items
-  QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
+  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Graticules");
+  menuId = pluginMenu->insertItem(QIconSet(icon),"&GraticuleMaker", this, SLOT(run()));
 
-  int menuId = pluginMenu->insertItem(QIconSet(icon),"&GraticuleMaker", this, SLOT(run()));
   pluginMenu->setWhatsThis(menuId, "Creates a graticule (grid) and stores the result as a shapefile");
-  menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
-  menuIdInt = qGisInterface->addMenu("&Graticules", pluginMenu);
   // Create the action for tool
   myQActionPointer = new QAction("Graticule Creator", QIconSet(icon), "&Wmi",0, this, "run");
   myQActionPointer->setWhatsThis("Creates a graticule (grid) and stores the result as a shapefile");
@@ -155,7 +152,7 @@ void QgsGridMakerPlugin::drawVectorLayer(QString thePathNameQString, QString the
 void QgsGridMakerPlugin::unload()
 {
   // remove the GUI
-  menuBarPointer->removeItem(menuIdInt);
+  qGisInterface->removePluginMenuItem("&Graticules",menuId);
   qGisInterface->removeToolBarIcon(myQActionPointer);
   delete myQActionPointer;
 }

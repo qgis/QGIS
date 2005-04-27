@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'pluginguibase.ui'
 **
-** Created: Sun Apr 24 15:11:25 2005
+** Created: Wed Apr 27 14:43:25 2005
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -21,6 +21,7 @@
 #include <qimage.h>
 #include <qpixmap.h>
 
+#include "pluginguibase.ui.h"
 static const unsigned char image0_data[] = { 
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
     0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10,
@@ -818,20 +819,5 @@ void QgsCommunityRegPluginGuiBase::languageChange()
     textLabel2->setText( tr( "Image URL (50x50):" ) );
     textLabel3_2->setText( tr( "Latitude (dec. degrees):" ) );
     pbnGetCoords->setText( tr( "Get From Map" ) );
-}
-
-void QgsCommunityRegPluginGuiBase::pbnOK_clicked()
-{
-    qWarning( "QgsCommunityRegPluginGuiBase::pbnOK_clicked(): Not implemented yet" );
-}
-
-void QgsCommunityRegPluginGuiBase::pbnCancel_clicked()
-{
-    qWarning( "QgsCommunityRegPluginGuiBase::pbnCancel_clicked(): Not implemented yet" );
-}
-
-void QgsCommunityRegPluginGuiBase::pbnGetCoords_clicked()
-{
-    qWarning( "QgsCommunityRegPluginGuiBase::pbnGetCoords_clicked(): Not implemented yet" );
 }
 

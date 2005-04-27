@@ -85,9 +85,7 @@ class QgsCopyrightLabelPlugin:public QObject, public QgisPlugin
 
   int pluginType;
   //! Id of the plugin's menu. Used for unloading
-  int menuIdInt;
-  //! Pointer to our menu
-  QMenuBar *menuBarPointer;
+  int menuId;
   //! Pionter to QGIS main application object
   QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object

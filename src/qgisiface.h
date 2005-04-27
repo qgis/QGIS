@@ -60,6 +60,11 @@ class QgisIface : public QgisInterface{
         QString activeLayerSource();
         //! Add a menu to the main menu bar of the application, positioned to the left of Help
         int addMenu(QString menuText, QPopupMenu *menu);
+
+	QPopupMenu* getPluginMenu(QString menuName);
+
+	void removePluginMenuItem(QString name, int menuId);
+
         //! Add an icon to the plugins toolbar
         int addToolBarIcon(QAction *qAction);
         //! Remove an icon (action) from the plugin toolbar

@@ -92,14 +92,11 @@ QgsNorthArrowPlugin::~QgsNorthArrowPlugin()
  */
 void QgsNorthArrowPlugin::initGui()
 {
-  // add a menu with 2 items
-  QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
+  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
+  menuId = pluginMenu->insertItem(QIconSet(icon),"&NorthArrow", this, SLOT(run()));
 
-  int menuId = pluginMenu->insertItem(QIconSet(icon),"&NorthArrow", this, SLOT(run()));
   pluginMenu->setWhatsThis(menuId, "Creates a north arrow that is displayed on the map canvas");
-  menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
 
-  menuIdInt = qGisInterface->addMenu("&Decorations", pluginMenu);
   // Create the action for tool
   myQActionPointer = new QAction("North Arrow", QIconSet(icon), "&Wmi",0, this, "run");
   myQActionPointer->setWhatsThis("Creates a north arrow that is displayed on the map canvas");
@@ -246,7 +243,7 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
 void QgsNorthArrowPlugin::unload()
 {
   // remove the GUI
-  menuBarPointer->removeItem(menuIdInt);
+  qGisInterface->removePluginMenuItem("&Decorations",menuId);
   qGisInterface->removeToolBarIcon(myQActionPointer);
   // remove the northarrow from the canvas
   disconnect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)),
