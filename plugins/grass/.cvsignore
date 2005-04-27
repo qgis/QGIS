@@ -1,4 +1,8 @@
 .deps 
 Makefile
 Makefile.in
+*.moc.cpp
+.libs
+*base.h
+*base.cpp
 
