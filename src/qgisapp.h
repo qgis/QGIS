@@ -55,6 +55,8 @@ class QgsComposer;
 #include "qgsconfig.h"
 #include "qgsvectordataprovider.h"
 
+#include <map>
+
 static SplashScreen * gSplashScreen ;
 
 
@@ -280,6 +282,11 @@ private slots:
     void loadPlugin(QString name, QString description, QString mFullPath);
     //! Add a plugin menu to the main Plugins menu
     int addPluginMenu(QString menuText, QPopupMenu *menu);
+
+    QPopupMenu* getPluginMenu(QString menuName);
+
+    void removePluginMenuItem(QString name, int menuId);
+
     //! Add an icon to the plugin toolbar
     int addPluginToolBarIcon (QAction * qAction);
     //! Remove an icon from the plugin toolbar

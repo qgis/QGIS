@@ -107,8 +107,6 @@ private:
   int mMenuId;
   //! Pointer to our toolbar
   QToolBar *mToolBarPointer;
-  //! Pointer to our menu
-  QMenuBar *mMenuBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *mQGisApp;
   //! Pointer to the QGIS interface object

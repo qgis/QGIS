@@ -83,7 +83,7 @@ class QgsScaleBarPlugin:public QObject, public QgisPlugin
 
   int pluginType;
   //! Id of the plugin's menu. Used for unloading
-  int menuIdInt;
+  int menuId;
   //! Placement of the scale bar
   QString mPlacement;
   //! The size preferred size of the scale bar
@@ -99,8 +99,6 @@ class QgsScaleBarPlugin:public QObject, public QgisPlugin
 
   //! Pointer to our toolbar
   QToolBar *toolBarPointer;
-  //! Pointer to our menu
-  QMenuBar *menuBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object

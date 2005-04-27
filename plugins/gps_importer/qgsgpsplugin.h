@@ -81,10 +81,8 @@ private:
   void setupBabel();
 
   //! Id of the plugin's menu. Used for unloading
-  int mMenuId;
+  int mMenuIdGPS, mMenuIdGPX;
   //! Pointer to our menu
-  QMenuBar *mMenuBarPointer;
-  //! Pionter to QGIS main application object
   QgisApp *mMainWindowPointer;
   //! Pointer to the QGIS interface object
   QgisIface *mQGisInterface;

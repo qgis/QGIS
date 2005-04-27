@@ -76,11 +76,9 @@ class QgsNorthArrowPlugin:public QObject, public QgisPlugin
   // The placement string
   QString mPlacement;
   //! Id of the plugin's menu. Used for unloading
-  int menuIdInt;
+  int menuId;
   //! Pointer to our toolbar
   QToolBar *toolBarPointer;
-  //! Pointer to our menu
-  QMenuBar *menuBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object
