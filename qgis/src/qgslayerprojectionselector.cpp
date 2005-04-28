@@ -47,3 +47,9 @@ QString QgsLayerProjectionSelector::getCurrentWKT()
   //@NOTE dont use getSelectedWKT as that just returns the name part!
   return projectionSelector->getCurrentWKT();
 }
+
+long QgsLayerProjectionSelector::getCurrentSRID()
+{
+  //@NOTE dont use getSelectedWKT as that just returns the name part!
+  return projectionSelector->getCurrentSRID();
+}

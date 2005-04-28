@@ -41,7 +41,8 @@ public slots:
     QString getSelectedWKT();
     void setSelectedSRID(QString theSRID);
     QString getCurrentWKT();
-    QString getCurrentSRID();
+    long getCurrentSRID();
+
 private:
 
   // List view nodes for the tree view of projections

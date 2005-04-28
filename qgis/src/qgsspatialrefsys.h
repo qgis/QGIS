@@ -110,7 +110,13 @@ class QgsSpatialRefSys
 
         /*! Find out whether this SRS is correctly initialised and useable */
         bool isValid() const;
-        
+        /*! Perform some validation on this SRS. If the sts doesnt validate the
+         *  default behaviour settings for layers with unknown SRS will be 
+         * consulted and acted on accordingly. By hell or high water this
+         * method will do its best to make sure that this SRS is valid - even
+         * if that involves resorting to a hard coded default of geocs:wgs84.
+         */
+        void validate();
 
         // Accessors -----------------------------------
 
