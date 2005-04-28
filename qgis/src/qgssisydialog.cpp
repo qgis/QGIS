@@ -226,16 +226,26 @@ QgsSiSyDialog::~QgsSiSyDialog()
 
 void QgsSiSyDialog::selectOutlineColor()
 {
-    lblOutlineColor->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
+    QColor c = QColorDialog::getColor(lblOutlineColor->paletteBackgroundColor(),this);
+    
+    if ( c.isValid() ) {
+        lblOutlineColor->setPaletteBackgroundColor(c);
+        emit settingsChanged();
+    }
+    
     setActiveWindow();
-    emit settingsChanged();
 }
 
 void QgsSiSyDialog::selectFillColor()
 {
-    lblFillColor->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
+    QColor c = QColorDialog::getColor(lblFillColor->paletteBackgroundColor(),this);
+
+    if ( c.isValid() ) {
+        lblFillColor->setPaletteBackgroundColor(c);
+        emit settingsChanged();
+    }
+
     setActiveWindow();
-    emit settingsChanged();
 }
 
 void QgsSiSyDialog::apply( QgsSymbol *sy )
