@@ -99,14 +99,9 @@ int QgsWorldMapImporter::type()
 */
 void QgsWorldMapImporter::initGui()
 {
-    // add a menu with 2 items
-    QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
+    QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Biodiversity");
+    menuId = pluginMenu->insertItem(QIconSet(icon_wmi),"&WorldMap Results Importer", this, SLOT(run()));
 
-    pluginMenu->insertItem(QIconSet(icon_wmi),"&WorldMap Results Importer", this, SLOT(run()));
-
-    menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
-
-    menuIdInt = qGisInterface->addMenu("&Biodiversity", pluginMenu);
      // Create the action for tool
     QAction *myQActionPointer = new QAction("WorldMap Importer", QIconSet(icon_wmi), "&Wmi",0, this, "run");
     // Connect the action to the run
@@ -144,7 +139,7 @@ void QgsWorldMapImporter::run()
 void QgsWorldMapImporter::unload()
 {
     // remove the GUI
-    menuBarPointer->removeItem(menuIdInt);
+    qGisInterface->removePluginMenuItem("&Biodiversity",menuId);
     delete toolBarPointer;
 }
 /** 
