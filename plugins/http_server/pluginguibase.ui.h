@@ -9,49 +9,49 @@
 
 
 
-void PluginGuiBase::pbnOK_clicked()
+void QgsHttpServerPluginGuiBase::pbnOK_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnCancel_clicked()
+void QgsHttpServerPluginGuiBase::pbnCancel_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnProjectsDir_clicked()
+void QgsHttpServerPluginGuiBase::pbnProjectsDir_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnLayersDir_clicked()
+void QgsHttpServerPluginGuiBase::pbnLayersDir_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnCssFile_clicked()
+void QgsHttpServerPluginGuiBase::pbnCssFile_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnLogFile_clicked()
+void QgsHttpServerPluginGuiBase::pbnLogFile_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnApply_clicked()
+void QgsHttpServerPluginGuiBase::pbnApply_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnDefaultProject_clicked()
+void QgsHttpServerPluginGuiBase::pbnDefaultProject_clicked()
 {
 
 }

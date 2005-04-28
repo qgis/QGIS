@@ -17,8 +17,8 @@ email                : tim@linfiniti.com
  *                                                                         *
  ***************************************************************************/
 /*  $Id$ */
-#ifndef PLUGIN
-#define PLUGIN
+#ifndef QGSHTTPSERVERPLUGIN
+#define QGSHTTPSERVERPLUGIN
 #include <qwidget.h>
 
 #include <qgisplugin.h>
@@ -26,11 +26,11 @@ email                : tim@linfiniti.com
 // non qt includes
 #include "httpdaemon.h"
 /**
- * \class Plugin
+ * \class QgsHttpServerPlugin
  * \brief OpenModeller plugin for QGIS
  *
  */
-class Plugin:public QObject, public QgisPlugin
+class QgsHttpServerPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       /** 
@@ -39,9 +39,9 @@ class Plugin:public QObject, public QgisPlugin
        * @param qgis Pointer to the QgisApp object
        * @param qI Pointer to the QgisIface object. 
        */
-      Plugin(QgisApp * , QgisIface * );
+      QgsHttpServerPlugin(QgisApp * , QgisIface * );
   //! Destructor
-  virtual ~ Plugin();
+  virtual ~ QgsHttpServerPlugin();
 public slots:
   //! init the gui
   virtual void initGui();
@@ -107,8 +107,6 @@ private:
   int mMenuId;
   //! Pointer to our toolbar
   QToolBar *mToolBarPointer;
-  //! Pointer to our menu
-  QMenuBar *mMenuBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *mQGisApp;
   //! Pointer to the QGIS interface object

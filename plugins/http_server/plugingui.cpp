@@ -20,23 +20,23 @@
 #include <qsettings.h>
 //standard includes
 
-PluginGui::PluginGui() : PluginGuiBase()
+QgsHttpServerPluginGui::QgsHttpServerPluginGui() : QgsHttpServerPluginGuiBase()
 {
 
 }
 
-    PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
-: PluginGuiBase( parent, name, modal, fl )
+    QgsHttpServerPluginGui::QgsHttpServerPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+: QgsHttpServerPluginGuiBase( parent, name, modal, fl )
 {
   loadDefaults();
 }  
 
-PluginGui::~PluginGui()
+QgsHttpServerPluginGui::~QgsHttpServerPluginGui()
 {
   loadDefaults();
 }
 
-void PluginGui::pbnOK_clicked()
+void QgsHttpServerPluginGui::pbnOK_clicked()
 {
   saveDefaults();
   bool myFlag = cboxEnableServer->isChecked();
@@ -49,7 +49,7 @@ void PluginGui::pbnOK_clicked()
   //close the dialog
   done(1);
 } 
-void PluginGui::pbnApply_clicked()
+void QgsHttpServerPluginGui::pbnApply_clicked()
 {
   saveDefaults();
   bool myFlag = cboxEnableServer->isChecked();
@@ -57,49 +57,49 @@ void PluginGui::pbnApply_clicked()
   emit enabledChanged(myFlag);
   emit portChanged(myPortInt);
 }
-void PluginGui::pbnCancel_clicked()
+void QgsHttpServerPluginGui::pbnCancel_clicked()
 {
   close(1);
 }
 
-void PluginGui::newConnect(QString theMessage)
+void QgsHttpServerPluginGui::newConnect(QString theMessage)
 {
   teLogs->append( theMessage  );
 }
-void PluginGui::endConnect(QString theMessage)
+void QgsHttpServerPluginGui::endConnect(QString theMessage)
 {
   teLogs->append( theMessage);
 }
-void PluginGui::wroteToClient(QString theMessage)
+void QgsHttpServerPluginGui::wroteToClient(QString theMessage)
 {
   teLogs->append( theMessage );
 }
-void PluginGui::requestReceived(QString theString)
+void QgsHttpServerPluginGui::requestReceived(QString theString)
 {
   teDebug->append(theString);
 }
 
-void PluginGui::cboxEnableServer_toggled( bool )
+void QgsHttpServerPluginGui::cboxEnableServer_toggled( bool )
 {
 
 }
 
 
-void PluginGui::spinPort_valueChanged( int )
+void QgsHttpServerPluginGui::spinPort_valueChanged( int )
 {
 
 }
-void PluginGui::setPort(int thePortInt)
+void QgsHttpServerPluginGui::setPort(int thePortInt)
 {
   spinPort->setValue(thePortInt);
 }
-void PluginGui::setEnabled(bool theEnabledFlag)
+void QgsHttpServerPluginGui::setEnabled(bool theEnabledFlag)
 {
   cboxEnableServer->setChecked(theEnabledFlag);
 }
 
 
-void PluginGui::pbnProjectsDir_clicked()
+void QgsHttpServerPluginGui::pbnProjectsDir_clicked()
 {
   QFileDialog* myFileDialog = new QFileDialog( this, "Select Projects Dir", TRUE );
   myFileDialog->setMode( QFileDialog::DirectoryOnly );
@@ -109,7 +109,7 @@ void PluginGui::pbnProjectsDir_clicked()
   }
 }
 
-void PluginGui::pbnDefaultProject_clicked()
+void QgsHttpServerPluginGui::pbnDefaultProject_clicked()
 {
   QFileDialog* myFileDialog = new QFileDialog( this, "Select Default Project File", TRUE );
   myFileDialog->setMode( QFileDialog::ExistingFile);
@@ -120,7 +120,7 @@ void PluginGui::pbnDefaultProject_clicked()
   }
 }
 
-void PluginGui::pbnLayersDir_clicked()
+void QgsHttpServerPluginGui::pbnLayersDir_clicked()
 {
   QFileDialog* myFileDialog = new QFileDialog( this, "Select Layers Dir", TRUE );
   myFileDialog->setMode( QFileDialog::DirectoryOnly );
@@ -131,7 +131,7 @@ void PluginGui::pbnLayersDir_clicked()
 }
 
 
-void PluginGui::pbnCssFile_clicked()
+void QgsHttpServerPluginGui::pbnCssFile_clicked()
 {
   QFileDialog* myFileDialog = new QFileDialog( this, "Select Css File", TRUE );
   myFileDialog->setMode( QFileDialog::ExistingFile);
@@ -143,7 +143,7 @@ void PluginGui::pbnCssFile_clicked()
 }
 
 
-void PluginGui::pbnLogFile_clicked()
+void QgsHttpServerPluginGui::pbnLogFile_clicked()
 {
   QFileDialog* myFileDialog = new QFileDialog( this, "Select Log File", TRUE );
   myFileDialog->setMode( QFileDialog::AnyFile );
@@ -156,7 +156,7 @@ void PluginGui::pbnLogFile_clicked()
 }
 
 
-void PluginGui::saveDefaults()
+void QgsHttpServerPluginGui::saveDefaults()
 {
   QSettings myQSettings;  
   myQSettings.writeEntry("/qgis/http_server/serverName",leServerName->text());
@@ -168,7 +168,7 @@ void PluginGui::saveDefaults()
   myQSettings.writeEntry("/qgis/http_server/alwaysStartFlag",cboxAlwaysStart->isChecked());
 }
 
-void PluginGui::loadDefaults()
+void QgsHttpServerPluginGui::loadDefaults()
 {
   QSettings myQSettings;  
   QString myServerNameString = myQSettings.readEntry("/qgis/http_server/serverName");

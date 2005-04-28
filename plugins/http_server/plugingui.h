@@ -21,13 +21,13 @@
 /**
 @author Tim Sutton
 */
-class PluginGui : public PluginGuiBase
+class QgsHttpServerPluginGui : public QgsHttpServerPluginGuiBase
 {
 Q_OBJECT
 public:
-    PluginGui();
-    PluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~PluginGui();
+    QgsHttpServerPluginGui();
+    QgsHttpServerPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    ~QgsHttpServerPluginGui();
     void pbnOK_clicked();
     void pbnApply_clicked();
     void pbnCancel_clicked();
