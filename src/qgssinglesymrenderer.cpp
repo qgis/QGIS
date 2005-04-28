@@ -66,7 +66,7 @@ void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture*
 	    {
 		QPen pen=mItem->getSymbol()->pen();
 		pen.setWidth ( (int) (widthScale * pen.width()) );
-		p->setPen(mItem->getSymbol()->pen());
+		p->setPen(pen);
 		p->setBrush(mItem->getSymbol()->brush());
 	    }
 	    else
