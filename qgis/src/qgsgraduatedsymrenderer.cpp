@@ -97,7 +97,7 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPictu
 	    {
 		QPen pen=item->getSymbol()->pen();
 		pen.setWidth ( (int) (widthScale * pen.width()) );
-		p->setPen(item->getSymbol()->pen());
+		p->setPen(pen);
 		p->setBrush(item->getSymbol()->brush());
 	    }
 	    else
