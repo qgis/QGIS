@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(plugin.cpp)
+AC_INIT(imexportplugin.cpp)
 
 AC_CONFIG_SRCDIR([imexportplugingui.h])
 

@@ -89,20 +89,17 @@ IMExportPlugin::~IMExportPlugin()
  */
 void IMExportPlugin::initGui()
 {
-  // add a menu with 2 items
-  QPopupMenu *pluginMenu = new QPopupMenu(mQGisApp);
+  QPopupMenu *pluginMenu = mQGisIface->getPluginMenu("&Image Map Exporter");
+  mMenuId = pluginMenu->insertItem(QIconSet(icon),"&Image Map Exporter", this, SLOT(run()));
 
-  pluginMenu->insertItem(QIconSet(icon),"&Image Map Exporter", this, SLOT(run()));
-
-  mMenuBarPointer = ((QMainWindow *) mQGisApp)->menuBar();
-
-  mMenuId = mQGisIface->addMenu("&Image Map Exporter", pluginMenu);
   // Create the action for tool
   QAction *myQActionPointer = new QAction("Image Map Exporter", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the tool button
-  mQGisIface->addToolBarIcon(myQActionPointer);
+  mToolBarPointer = new QToolBar((QMainWindow *) mQGisApp, "Image Map Exporter");
+  mToolBarPointer->setLabel("ImageMap Importer");
+  myQActionPointer->addTo(mToolBarPointer);
 }
 
 //method defined in interface
@@ -144,7 +141,7 @@ void IMExportPlugin::drawVectorLayer(QString thePathNameQString, QString theBase
 void IMExportPlugin::unload()
 {
   // remove the GUI
-  mMenuBarPointer->removeItem(mMenuId);
+  mQGisIface->removePluginMenuItem("&Image Map Exporter",mMenuId);
   delete mToolBarPointer;
 }
 
