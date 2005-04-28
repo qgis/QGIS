@@ -10,5 +10,5 @@
 # Set software group
 # The package maintainer (.deb)
 
-checkinstall --exclude ~/.ccache/stats --default --pkgname=qgis-plugin-georeferencing -epkgversion=0.1.pre --pkggroup=GIS --maintainer=tim@linfiniti.com        
+checkinstall --exclude ~/.ccache/stats --default --pkgname=qgis-plugin-georeferencing -pkgversion=0.1.pre --pkggroup=GIS --maintainer=tim@linfiniti.com        
 
