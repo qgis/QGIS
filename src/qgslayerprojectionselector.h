@@ -41,6 +41,7 @@ class QgsLayerProjectionSelector :public QgsLayerProjectionSelectorBase{
  public slots:
       void pbnOK_clicked();
       QString getCurrentWKT();
+      long getCurrentSRID();
       void setSelectedWKT(QString theWKTName);
 };
 
