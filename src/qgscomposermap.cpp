@@ -125,32 +125,46 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
     int nlayers = mMapCanvas->layerCount();
 
     for ( int i = 0; i < nlayers; i++ ) {
-  QgsMapLayer *layer = mMapCanvas->getZpos(i);
+      QgsMapLayer *layer = mMapCanvas->getZpos(i);
 
-  if ( !layer->visible() ) continue;
+      if ( !layer->visible() ) continue;
 
-  if ( layer->type() == QgsMapLayer::VECTOR ) {
-      QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
+      if ( layer->type() == QgsMapLayer::VECTOR ) {
+	  QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
 
-      double widthScale = mWidthScale * mComposition->scale();
-      if ( plotStyle() == QgsComposition::Preview && mPreviewMode == Render ) {
-    widthScale *= mComposition->viewScale();
+	  double widthScale = mWidthScale * mComposition->scale();
+	  if ( plotStyle() == QgsComposition::Preview && mPreviewMode == Render ) {
+	widthScale *= mComposition->viewScale();
+	  }
+	  double symbolScale = mSymbolScale * mComposition->scale();
+	  vector->draw( painter, extent, transform, device, widthScale, symbolScale, 0 );
+
+      } else {
+	  layer->draw( painter, extent, transform, device );
       }
-      double symbolScale = mSymbolScale * mComposition->scale();
-      vector->draw( painter, extent, transform, device, widthScale, symbolScale, 0 );
+    }
+    
+    // Draw vector labels
+    for ( int i = 0; i < nlayers; i++ ) {
+      QgsMapLayer *layer = mMapCanvas->getZpos(i);
+	
+      if ( !layer->visible() ) continue;
+      
+      if ( layer->type() == QgsMapLayer::VECTOR ) {
+	  QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
 
-      if ( vector->labelOn() ) {
-          double fontScale = 25.4 * mFontScale * mComposition->scale() / 72;
-    if ( plotStyle() == QgsComposition::Postscript ) {
-        // I have no idea why 2.54 - it is an empirical value
-        fontScale = 2.54 * 72.0 / mComposition->resolution();
-    }
-    vector->drawLabels (  painter, extent, transform, device, fontScale );
+	  if ( vector->labelOn() ) {
+	      double fontScale = 25.4 * mFontScale * mComposition->scale() / 72;
+	      if ( plotStyle() == QgsComposition::Postscript ) {
+		  // I have no idea why 2.54 - it is an empirical value
+		  fontScale = 2.54 * 72.0 / mComposition->resolution();
+	      }
+	      vector->drawLabels (  painter, extent, transform, device, fontScale );
+	  }
+
       }
-  } else {
-      layer->draw( painter, extent, transform, device );
-  }
     }
+    
     mMapCanvas->freeze(false);
 }
 
