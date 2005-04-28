@@ -75,6 +75,7 @@ static const QgisPlugin::PLUGINTYPE sType = QgisPlugin::UI;
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
 QgsHttpServerPlugin::QgsHttpServerPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterface):
+                 mHttpDaemon(0), mEnabled(false),
                  mQGisApp(theQGisApp), 
                  mQGisIface(theQgisInterface),
                  QgisPlugin(sName,sDescription,sVersion,sType)
