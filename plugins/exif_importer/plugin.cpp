@@ -99,14 +99,14 @@ static const QgisPlugin::PLUGINTYPE sType = QgisPlugin::UI;
  * @param theQGisApp - Pointer to the QGIS main window
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterface):
+QgsExifImporterPlugin::QgsExifImporterPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterface):
                  mQGisApp(theQGisApp), 
                  mQGisIface(theQgisInterface),
                  QgisPlugin(sName,sDescription,sVersion,sType)
 {
 }
 
-Plugin::~Plugin()
+QgsExifImporterPlugin::~QgsExifImporterPlugin()
 {
 
 }
@@ -114,14 +114,13 @@ Plugin::~Plugin()
 /*
  * Initialize the GUI interface for the plugin 
  */
-void Plugin::initGui()
+void QgsExifImporterPlugin::initGui()
 {
-  QPopupMenu *pluginMenu = new QPopupMenu(mQGisApp);
-  pluginMenu->insertItem(QIconSet(icon),"&EXIF Importer", this, SLOT(run()));
-  mMenuBarPointer = ((QMainWindow *) mQGisApp)->menuBar();
-  mMenuId = mQGisIface->addMenu("&EXIF Importer", pluginMenu);
+  QPopupMenu *pluginMenu = mQGisIface->getPluginMenu("&Tools");
+  mMenuId = pluginMenu->insertItem(QIconSet(icon),"&EXIF Importer", this, SLOT(run()));
+
   // Create the action for tool
-  QAction *myQActionPointer = new QAction("EXIF Importer", QIconSet(icon), "&icon",0, this, "run");
+  myQActionPointer = new QAction("EXIF Importer", QIconSet(icon), "&icon",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the tool to the toolbar
@@ -129,15 +128,15 @@ void Plugin::initGui()
 }
 
 //method defined in interface
-void Plugin::help()
+void QgsExifImporterPlugin::help()
 {
   //implement me!
 }
 
 // Slot called when the buffer menu item is activated
-void Plugin::run()
+void QgsExifImporterPlugin::run()
 {
-  PluginGui *myPluginGui=new PluginGui(mQGisApp,"EXIF Importer",true,0);
+  QgsExifImporterPluginGui *myPluginGui=new QgsExifImporterPluginGui(mQGisApp,"EXIF Importer",true,0);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
@@ -145,11 +144,11 @@ void Plugin::run()
 }
 
 // Unload the plugin by cleaning up the GUI
-void Plugin::unload()
+void QgsExifImporterPlugin::unload()
 {
   // remove the GUI
-  mMenuBarPointer->removeItem(mMenuId);
-  delete mToolBarPointer;
+  mQGisIface->removePluginMenuItem("&Tools",mMenuId);
+  mQGisIface->removeToolBarIcon(myQActionPointer);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -166,7 +165,7 @@ void Plugin::unload()
 
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
 //layer
-void Plugin::drawRasterLayer(QString theQString)
+void QgsExifImporterPlugin::drawRasterLayer(QString theQString)
 {
   mQGisIface->addRasterLayer(theQString);
 }
@@ -174,7 +173,7 @@ void Plugin::drawRasterLayer(QString theQString)
 //!draw a vector layer in the qui - intended to respond to signal sent by 
 // dialog when it as finished creating a layer. It needs to be given 
 // vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
+void QgsExifImporterPlugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
 {
   mQGisIface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
 }
@@ -198,7 +197,7 @@ void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQStr
 // Class factory to return a new instance of the plugin class
 QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
-  return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsExifImporterPlugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.

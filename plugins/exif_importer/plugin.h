@@ -38,8 +38,8 @@
  *
  * **************************************************************************/
 
-#ifndef PLUGIN
-#define PLUGIN
+#ifndef QGSEXIFIMPORTERPLUGIN
+#define QGSEXITIMPORTERPLUGIN
 
 //
 //QGIS Includes
@@ -58,7 +58,7 @@
 * \brief [name] plugin for QGIS
 * [description]
 */
-class Plugin:public QObject, public QgisPlugin
+class QgsExifImporterPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       
@@ -74,9 +74,9 @@ class Plugin:public QObject, public QgisPlugin
   * @param Pointer to the QgisApp object
   * @param Pointer to the QgisIface object. 
    */
-  Plugin(QgisApp * , QgisIface * );
+  QgsExifImporterPlugin(QgisApp * , QgisIface * );
   //! Destructor
-  virtual ~ Plugin();
+  virtual ~ QgsExifImporterPlugin();
 
 public slots:
   //! init the gui
@@ -118,12 +118,12 @@ private:
   int mMenuId;
   //! Pointer to our toolbar
   QToolBar *mToolBarPointer;
-  //! Pointer to our menu
-  QMenuBar *mMenuBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *mQGisApp;
   //! Pointer to the QGIS interface object
   QgisIface *mQGisIface;
+  //! Pointer to the QAction object used in the menu and toolbar
+  QAction *myQActionPointer;
 
   ////////////////////////////////////////////////////////////////////
   //

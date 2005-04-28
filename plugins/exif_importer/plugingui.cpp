@@ -23,21 +23,21 @@
 #include <cstdio>
 
 
-PluginGui::PluginGui() : PluginGuiBase()
+QgsExifImporterPluginGui::QgsExifImporterPluginGui() : QgsExifImporterPluginGuiBase()
 {
   
 }
 
-PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
-: PluginGuiBase( parent, name, modal, fl )
+QgsExifImporterPluginGui::QgsExifImporterPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+: QgsExifImporterPluginGuiBase( parent, name, modal, fl )
 {
    
 }  
-PluginGui::~PluginGui()
+QgsExifImporterPluginGui::~QgsExifImporterPluginGui()
 {
 }
 
-void PluginGui::pbnOK_clicked()
+void QgsExifImporterPluginGui::pbnOK_clicked()
 {
   //
   // If you have a produced a raster layer using your plugin, you can ask qgis to 
@@ -85,13 +85,13 @@ void PluginGui::pbnOK_clicked()
   done(1);
 } 
 
-void PluginGui::pbnCancel_clicked()
+void QgsExifImporterPluginGui::pbnCancel_clicked()
 {
  close(1);
 }
 
 
-void PluginGui::pbnGPXInput_clicked() {
+void QgsExifImporterPluginGui::pbnGPXInput_clicked() {
   QString filename = 
     QFileDialog::getOpenFileName(".",
 				 "GPS eXchange files (*.gpx *.GPX)",
@@ -103,7 +103,7 @@ void PluginGui::pbnGPXInput_clicked() {
 }
 
 
-void PluginGui::pbnGPXOutput_clicked() {
+void QgsExifImporterPluginGui::pbnGPXOutput_clicked() {
   QString filename = 
     QFileDialog::getSaveFileName(".",
 				 "GPS eXchange files (*.gpx *.GPX)",
@@ -115,7 +115,7 @@ void PluginGui::pbnGPXOutput_clicked() {
 }
 
 
-void PluginGui::pbnPictures_clicked() {
+void QgsExifImporterPluginGui::pbnPictures_clicked() {
   QStringList tmpPics =
     QFileDialog::getOpenFileNames("EXIF JPEG files (*.jpg *.JPG)",
 				  ".",
@@ -135,7 +135,7 @@ void PluginGui::pbnPictures_clicked() {
 }
 
 
-void PluginGui::enableRelevantControls() {
+void QgsExifImporterPluginGui::enableRelevantControls() {
   if (pictures.size() == 0 || leGPXIn->text() == "" || 
       leGPXOut->text() == "" || 
       !(cbTracks->isChecked() || cbWaypoints->isChecked())) {
