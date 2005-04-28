@@ -178,11 +178,11 @@ QString QgsProjectionSelector::getCurrentWKT()
 
 }
 
-QString QgsProjectionSelector::getCurrentSRID()
+long QgsProjectionSelector::getCurrentSRID()
 {
   if(lstCoordinateSystems->currentItem()->text(1).length() > 0)
   {
-    return lstCoordinateSystems->currentItem()->text(1);
+    return lstCoordinateSystems->currentItem()->text(1).toLong();
   }
   else
   {
