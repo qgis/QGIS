@@ -99,14 +99,14 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  * @param theQGisApp - Pointer to the QGIS main window
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterface):
+QgsGeorefPlugin::QgsGeorefPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterface):
                  mQGisApp(theQGisApp), 
                  mQGisIface(theQgisInterface),
                  QgisPlugin(sName,sDescription,sPluginVersion,sPluginType)
 {
 }
 
-Plugin::~Plugin()
+QgsGeorefPlugin::~QgsGeorefPlugin()
 {
 
 }
@@ -114,13 +114,13 @@ Plugin::~Plugin()
 /*
  * Initialize the GUI interface for the plugin 
  */
-void Plugin::initGui()
+void QgsGeorefPlugin::initGui()
 {
   QIconSet iconset(qembed_findImage("icon"));
-  QPopupMenu *pluginMenu = new QPopupMenu(mQGisApp);
-  pluginMenu->insertItem(iconset,"&Georeferencer", this, SLOT(run()));
-  mMenuBarPointer = ((QMainWindow *) mQGisApp)->menuBar();
-  mMenuId = mQGisIface->addMenu("&Georeferencer", pluginMenu);
+
+  QPopupMenu *pluginMenu = mQGisIface->getPluginMenu("&Georeferencer");
+  mMenuId = pluginMenu->insertItem(QIconSet(iconset),"&Georeferencer", this, SLOT(run()));
+
   // Create the action for tool
   mQActionPointer = new QAction("Georeferencer", iconset, "&icon",0, this, "run");
   // Connect the action to the run
@@ -130,15 +130,15 @@ void Plugin::initGui()
 
 }
 //method defined in interface
-void Plugin::help()
+void QgsGeorefPlugin::help()
 {
   //implement me!
 }
 
 // Slot called when the buffer menu item is activated
-void Plugin::run()
+void QgsGeorefPlugin::run()
 {
-  PluginGui *myPluginGui=new PluginGui(mQGisApp,"Georeferencer",true,0);
+  QgsGeorefPluginGui *myPluginGui=new QgsGeorefPluginGui(mQGisApp,"Georeferencer",true,0);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
@@ -146,10 +146,10 @@ void Plugin::run()
 }
 
 // Unload the plugin by cleaning up the GUI
-void Plugin::unload()
+void QgsGeorefPlugin::unload()
 {
   // remove the GUI
-  mMenuBarPointer->removeItem(mMenuId);
+  mQGisIface->removePluginMenuItem("&Georeferencer",mMenuId);
   mQGisIface->removeToolBarIcon(mQActionPointer);
   delete mQActionPointer;
 }
@@ -168,7 +168,7 @@ void Plugin::unload()
 
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
 //layer
-void Plugin::drawRasterLayer(QString theQString)
+void QgsGeorefPlugin::drawRasterLayer(QString theQString)
 {
   mQGisIface->addRasterLayer(theQString);
 }
@@ -176,7 +176,7 @@ void Plugin::drawRasterLayer(QString theQString)
 //!draw a vector layer in the qui - intended to respond to signal sent by 
 // dialog when it as finished creating a layer. It needs to be given 
 // vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
+void QgsGeorefPlugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
 {
   mQGisIface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
 }
@@ -201,7 +201,7 @@ void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQStr
 // Class factory to return a new instance of the plugin class
 QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
-  return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsGeorefPlugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.

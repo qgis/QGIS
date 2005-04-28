@@ -23,36 +23,36 @@
 
 //standard includes
 
-PluginGui::PluginGui() : PluginGuiBase()
+QgsGeorefPluginGui::QgsGeorefPluginGui() : QgsGeorefPluginGuiBase()
 {
   
 }
 
-PluginGui::PluginGui(QWidget* parent, const char* name, bool modal, 
-		     WFlags fl) : PluginGuiBase(parent, name, modal, fl) {
+QgsGeorefPluginGui::QgsGeorefPluginGui(QWidget* parent, const char* name, bool modal, 
+		     WFlags fl) : QgsGeorefPluginGuiBase(parent, name, modal, fl) {
   connect(pbnEnterWorldCoords, SIGNAL(clicked()), 
 	  this, SLOT(openPointDialog()));
 }  
 
 
-PluginGui::~PluginGui()
+QgsGeorefPluginGui::~QgsGeorefPluginGui()
 {
 }
 
 
-void PluginGui::pbnOK_clicked()
+void QgsGeorefPluginGui::pbnOK_clicked()
 {
   done(1);
 } 
 
 
-void PluginGui::pbnCancel_clicked()
+void QgsGeorefPluginGui::pbnCancel_clicked()
 {
  close(1);
 }
 
 
-void PluginGui::pbnSelectRaster_clicked() {
+void QgsGeorefPluginGui::pbnSelectRaster_clicked() {
   QSettings settings;
   QString dir = settings.readEntry("/qgis/plugin/georef/rasterdirectory");
   if (dir.isEmpty())
@@ -67,7 +67,7 @@ void PluginGui::pbnSelectRaster_clicked() {
 }
 
 
-void PluginGui::openPointDialog() {
+void QgsGeorefPluginGui::openPointDialog() {
   
   // do we think that this is a valid raster?
   if (!QgsRasterLayer::isValidRasterFileName(leSelectRaster->text())) {
@@ -111,6 +111,6 @@ void PluginGui::openPointDialog() {
 }
 
 
-void PluginGui::loadLayer(QString str) {
+void QgsGeorefPluginGui::loadLayer(QString str) {
   emit drawRasterLayer(str);
 }

@@ -17,13 +17,13 @@
 /**
 @author Tim Sutton
 */
-class PluginGui : public PluginGuiBase
+class QgsGeorefPluginGui : public QgsGeorefPluginGuiBase
 {
 Q_OBJECT
 public:
-    PluginGui();
-    PluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~PluginGui();
+    QgsGeorefPluginGui();
+    QgsGeorefPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    ~QgsGeorefPluginGui();
     void pbnOK_clicked();
     void pbnCancel_clicked();
     void pbnSelectRaster_clicked();
