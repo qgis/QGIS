@@ -77,14 +77,9 @@ QgsLauncherPlugin::~QgsLauncherPlugin()
  */
 void QgsLauncherPlugin::initGui()
 {
-  // add a menu with 2 items
-  QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
+  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Launcher");
+  menuId = pluginMenu->insertItem(QIconSet(icon),"&Run...", this, SLOT(run()));
 
-  pluginMenu->insertItem(QIconSet(icon),"&Run...", this, SLOT(run()));
-
-  menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
-
-  menuIdInt = qGisInterface->addMenu("&Launcher", pluginMenu);
   // Create the action for tool
   QAction *myQActionPointer = new QAction("Run...", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
@@ -129,7 +124,7 @@ void QgsLauncherPlugin::drawVectorLayer(QString thePathNameQString, QString theB
 void QgsLauncherPlugin::unload()
 {
   // remove the GUI
-  menuBarPointer->removeItem(menuIdInt);
+  qGisInterface->removePluginMenuItem("&Launcher", menuId);
   delete toolBarPointer;
 }
 /** 
