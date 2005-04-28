@@ -12,7 +12,8 @@
 
 # Ganked from qgis/plugins/plugin_template/Makefile.am
 
-plugindir = ${pkglibdir}
+libdir    = ${prefix}/lib/qgis
+pkglibdir = ${libdir}
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -52,7 +53,7 @@ libQgsLauncherPlugin_la_SOURCES = qgslauncherplugin.cpp \
 	$(plugin_UISOURCES) \
 	$(plugin_UIHEADERS) \
 	$(plugin_UIMOC)
-	
+
 nodist_libQgsLauncherPlugin_la_SOURCES =	$(plugin_MOC)
 
 libQgsLauncherPlugin_la_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(GDAL_CFLAGS) $(QGIS_CXXFLAGS)
