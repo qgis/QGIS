@@ -124,7 +124,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
       mEditable(false),
       mModified(false)
 {
-
+  mCoordinateTransform = new QgsCoordinateTransform("", "");
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! providerKey.isEmpty() )
   {
@@ -1979,6 +1979,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
   // if we don't have a coordinate transform, get one
   if ( ! coordinateTransform() )
   {
+      mCoordinateTransform = new QgsCoordinateTransform("", "");
       setCoordinateSystem();
   }
 
@@ -2660,7 +2661,7 @@ void QgsVectorLayer::setCoordinateSystem()
         << std::endl;
 #endif
     QApplication::restoreOverrideCursor();
-    mCoordinateTransform = new QgsCoordinateTransform("", "");
+
     dataProvider->setWKT(QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT","WGS 84"));
     return;
   }
@@ -2699,7 +2700,7 @@ void QgsVectorLayer::setCoordinateSystem()
           std::cout << "------ Layer Projection Selection FAILED ----------" << std::endl;
 #endif
           QApplication::restoreOverrideCursor();
-          mCoordinateTransform = new QgsCoordinateTransform("", "");
+          
           return;
         }
       }

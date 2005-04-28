@@ -611,6 +611,7 @@ QgsRasterLayer::readFile( QString const & fileName )
 
   // Get the layer's projection info and set up the
   // QgsCoordinateTransform for this layer
+
   QString mySourceWKT = getProjectionWKT();
   //get the project projection, defaulting to this layer's projection
   //if none exists....
