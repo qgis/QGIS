@@ -268,12 +268,28 @@ public slots:
 private:
     //! Input type
     Type mType;
+
+    //! Vector type mask read from option defined by "typeoption" tag, used for QGIS layers in combo
+    //  + type mask defined in configuration fil
+    int mVectorTypeMask;    
+
+    //! Name of vector type option associated with this input
+    QString mVectorTypeOption;
+    
+    //! Name of vector layer option associated with this input
+    QString mVectorLayerOption;
     
     //! Combobox for QGIS layers
     QComboBox *mLayerComboBox;
 
     //! Vector of map@mapset in the combobox
     std::vector<QString> mMaps;
+    
+    //! Type of vector in the combobox
+    std::vector<QString> mVectorTypes;
+    
+    //! Layers of vector in the combobox
+    std::vector<QString> mVectorLayers;
 
     //! The imput map will be updated -> must be from current mapset
     bool mUpdate;
