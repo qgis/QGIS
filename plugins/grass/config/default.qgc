@@ -2,6 +2,16 @@
 <!DOCTYPE qgisgrass SYSTEM "http://mrcc.com/qgisgrass.dtd">
 <qgisgrass name="Default">
 <modules>
+	<section label="Vector overlay">
+		<grass name="v.overlay.or"/>
+		<grass name="v.overlay.and"/>
+		<grass name="v.overlay.not"/>
+		<grass name="v.overlay.xor"/>
+	</section>
+	<section label="Geomorphology">
+		<grass name="r.slope.aspect.slope"/>
+		<grass name="r.slope.aspect.aspect"/>
+	</section>
 	<section label="Convert a vector to raster">
 		<grass name="v.to.rast.constant"/>
 	</section>
