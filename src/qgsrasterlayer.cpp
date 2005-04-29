@@ -93,6 +93,8 @@ wish to see edbug messages printed to stdout.
 #include "qgsidentifyresults.h"
 #include "qgsattributeaction.h"
 
+#include "qgsspatialrefsys.h"
+
 #include <gdal_priv.h>
 
 //////////////////////////////////////////////////////////
@@ -620,6 +622,9 @@ QgsRasterLayer::readFile( QString const & fileName )
   //the inverese projection of the map extents of the canvas when zzooming in etc. so
   //that they match the coordinate system of this layer
   mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
+  //validate the source coordinate system!
+  mCoordinateTransform->sourceSRS()->validate();
+  
 
   //mark the layer as valid
   valid=TRUE;

@@ -6,6 +6,7 @@
 #include <sqlite3.h>
 #include <qsettings.h>
 #include <qapplication.h>
+#include <qregexp.h>
 
 #include <qgslayerprojectionselector.h>
 #include <qgsproject.h>
@@ -31,6 +32,10 @@ const long GEOSRID = 4318;
 const long GEOSRS_ID = 2581;
 /**  Magic number for a geographic coord sys in EPSG ID format */
 const long EPSGID = 4318;
+/** The length of teh string "+proj=" */
+const int PROJ_PREFIX_LEN = 6;
+/** The length of teh string "+ellps=" */
+const int ELLPS_PREFIX_LEN = 7;
 //--------------------------
 
 QgsSpatialRefSys::QgsSpatialRefSys(){}
@@ -44,7 +49,7 @@ QgsSpatialRefSys::QgsSpatialRefSys(long theSrsId,
                                    QString theDescription,
                                    QString theProjectionAcronym,
                                    QString theEllipsoidAcronym,
-                                   QString theParameters,
+                                   QString theProj4String,
                                    long theSRID,
                                    long theEpsg,
                                    bool theGeoFlag)
@@ -76,6 +81,9 @@ QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType)
 
 void QgsSpatialRefSys::validate()
 {
+#ifdef QGISDEBUG
+  std::cout << " QgsSpatialRefSys::validate" << std::endl;
+#endif
   //first of all use gdal to test if this is an ok srs already
   //if not we will prompt the user for and srs
   //then retest using gdal
@@ -96,7 +104,7 @@ void QgsSpatialRefSys::validate()
 
   //get the wkt into ogr
   //this is really ugly but we need to get a QString to a char**
-  char *mySourceCharArrayPointer = (char *)mParameters.latin1();
+  char *mySourceCharArrayPointer = (char *)mProj4String.latin1();
   //create the sr and populate it from a wkt proj definition
   OGRSpatialReference myOgrSpatialRef;
   OGRErr myInputResult = myOgrSpatialRef.importFromProj4(  mySourceCharArrayPointer );
@@ -134,12 +142,12 @@ void QgsSpatialRefSys::validate()
   else if (myDefaultProjectionOption=="useProject")
   {
     // XXX TODO: Change project to store selected CS as 'projectSRS' not 'selectedWKT'
-    mParameters = QgsProject::instance()->readEntry("SpatialRefSys","/projectSRS",GEOPROJ4);
+    mProj4String = QgsProject::instance()->readEntry("SpatialRefSys","/projectSRS",GEOPROJ4);
   }
   else ///qgis/projections/defaultBehaviour==useDefault
   {
     // XXX TODO: Change global settings to store default CS as 'defaultSRS' not 'defaultProjectionWKT'
-    mParameters = mySettings.readEntry("/qgis/projections/defaultSRS",GEOPROJ4);
+    mProj4String = mySettings.readEntry("/qgis/projections/defaultSRS",GEOPROJ4);
   }
 
   //
@@ -148,7 +156,7 @@ void QgsSpatialRefSys::validate()
   //
 
   //this is really ugly but we need to get a QString to a char**
-  char *mySourceCharArrayPointer2 = (char *)mParameters.latin1();
+  char *mySourceCharArrayPointer2 = (char *)mProj4String.latin1();
   //create the sr and populate it from a wkt proj definition
   myOgrSpatialRef;
   myInputResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
@@ -161,7 +169,7 @@ void QgsSpatialRefSys::validate()
   //default to proj 4..if all else fails we will use that for this srs
   else
   {
-    mParameters=GEOPROJ4;
+    mProj4String=GEOPROJ4;
   }
 
 }
@@ -216,7 +224,7 @@ void QgsSpatialRefSys::createFromSrid(long theSrid)
     mDescription = QString ((char *)sqlite3_column_text(myPreparedStatement,1));
     mProjectionAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,2));
     mEllipsoidAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,3));
-    mParameters = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
+    mProj4String = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
     mSRID = QString ((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
     mEpsg = QString ((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
     mGeoFlag = QString ((char *)sqlite3_column_text(myPreparedStatement,7));
@@ -271,7 +279,7 @@ void QgsSpatialRefSys::createFromWkt(QString theWkt)
   myOgrSpatialRef.exportToProj4(&proj4src);
 
   //XXX TODO split out projext and ellipsoid acronym from the parameters
-  mParameters=QString(proj4src);
+  mProj4String=QString(proj4src);
 }
 
 void QgsSpatialRefSys::createFromEpsg(long theEpsg)
@@ -324,7 +332,7 @@ void QgsSpatialRefSys::createFromEpsg(long theEpsg)
     mDescription = QString ((char *)sqlite3_column_text(myPreparedStatement,1));
     mProjectionAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,2));
     mEllipsoidAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,3));
-    mParameters = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
+    mProj4String = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
     mSRID = QString ((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
     mEpsg = QString ((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
     mGeoFlag = QString ((char *)sqlite3_column_text(myPreparedStatement,7));
@@ -393,7 +401,7 @@ void QgsSpatialRefSys::createFromSystemSrsId (long theSrsId)
     mDescription = QString ((char *)sqlite3_column_text(myPreparedStatement,1));
     mProjectionAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,2));
     mEllipsoidAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,3));
-    mParameters = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
+    mProj4String = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
     mSRID = QString ((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
     mEpsg = QString ((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
     mGeoFlag = QString ((char *)sqlite3_column_text(myPreparedStatement,7));
@@ -416,16 +424,11 @@ void QgsSpatialRefSys::createFromUserSrsId (long theSrsId)
 {
 }
 
-QString QgsSpatialRefSys::toProjString () const
-{
-  //place holder for now....shoudl concatenate proj family, elliposid and parameters
-  return mParameters;
-}
 
 bool QgsSpatialRefSys::isValid() const
 {
   //this is really ugly but we need to get a QString to a char**
-  char *mySourceCharArrayPointer = (char *)mParameters.latin1();
+  char *mySourceCharArrayPointer = (char *)mProj4String.latin1();
   //create the sr and populate it from a wkt proj definition
   OGRSpatialReference myOgrSpatialRef;
   OGRErr myResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
@@ -439,6 +442,10 @@ bool QgsSpatialRefSys::isValid() const
   {
     return false;
   }
+}
+
+void QgsSpatialRefSys::createFromProj4 (const QString theProjString)
+{
 }
 // Accessors -----------------------------------
 
@@ -466,18 +473,16 @@ QString QgsSpatialRefSys::projectionAcronym() const
 /*! Get the Ellipsoid Acronym
  * @return  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
  */
-QString QgsSpatialRefSys::ellipsoid () const
+QString QgsSpatialRefSys::ellipsoidAcronym () const
 {
   return mEllipsoidAcronym;
 }
-/* Get the Proj Parameters. If proj and ellps keys are found in the parameters,
- * they will be stripped out and the Projection and ellipsoid acronyms will be
- * overridden with these.
- * @return  QString theParameters Proj4 format specifies (excluding proj and ellips) that define this srs.
+/* Get the Proj Proj4String. 
+ * @return  QString theProj4String Proj4 format specifies that define this srs.
  */
-QString QgsSpatialRefSys::parameters () const
+QString QgsSpatialRefSys::proj4String() const
 {
-  return mParameters;
+  return mProj4String;
 }
 /*! Get this Geographic? flag
  * @return  bool theGeoFlag Whether this is a geographic or projected coordinate system
@@ -519,28 +524,47 @@ void QgsSpatialRefSys::setDescription (QString theDescription)
 {
   mDescription = theDescription;
 }
-/*! Set the Projection Acronym
- * @param  QString theProjectionAcronym The official proj4 acronym for the projection family
- */
-void QgsSpatialRefSys::setProjectionAcronym(QString theProjectionAcronym)
-{
-  mProjectionAcronym=theProjectionAcronym;
-}
-/*! Set the Ellipsoid Acronym
- * @param  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
- */
-void QgsSpatialRefSys::setEllipsoid (QString theEllipsoidAcronym)
-{
-  mEllipsoidAcronym=theEllipsoidAcronym;
-}
-/* Set the Proj Parameters. If proj and ellps keys are found in the parameters,
+/* Set the Proj Proj4String. If proj and ellps keys are found in the parameters,
  * they will be stripped out and the Projection and ellipsoid acronyms will be
  * overridden with these.
- * @param  QString theParameters Proj4 format specifies (excluding proj and ellips) that define this srs.
+ * @param  QString theProj4String Proj4 format specifies (excluding proj and ellips) that define this srs.
  */
-void QgsSpatialRefSys::setParameters (QString theParameters)
+void QgsSpatialRefSys::setProj4String (QString theProj4String)
 {
-  mParameters=theParameters;
+  //
+  // Example:
+  // +proj=tmerc +lat_0=0 +lon_0=-62 +k=0.999500 +x_0=400000 +y_0=0 
+  // +ellps=clrk80 +towgs84=-255,-15,71,0,0,0,0 +units=m +no_defs
+  // 
+
+  QRegExp myProjRegExp( "\+proj=[a-zA-Z]* " );    
+  int myStart= 0;
+  int myLength=0;
+  myStart = myProjRegExp.search(theProj4String, myStart);
+  if (myStart==-1)
+  {
+    std::cout << "QgsSpatialRefSys::createFromProj4 error proj string supplied has no +proj argument" << std::endl;
+  }
+  else
+  {
+    myLength = myProjRegExp.matchedLength();
+  }
+  mProjectionAcronym = theProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength);
+  
+  QRegExp myEllipseRegExp( "\+ellps=[a-zA-Z]* " );    
+  myStart= 0;
+  myLength=0;
+  myStart = myEllipseRegExp.search(theProj4String, myStart);
+  if (myStart==-1)
+  {
+    std::cout << "QgsSpatialRefSys::createFromProj4 error proj string supplied has no +ellps argument" << std::endl;
+  }
+  else
+  {
+    myLength = myEllipseRegExp.matchedLength();
+  }
+  mEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength);
+  
 }
 /*! Set this Geographic? flag
  * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
