@@ -54,6 +54,8 @@ class QgsCoordinateTransform: public QObject
 {
   Q_OBJECT
  public:
+    /*! Default constructor. Make sure you use initialised() manually if you use this one! */
+    QgsCoordinateTransform() ;
     /*!
      * Constructs a QgsCoordinateTransform using the Well Known Text representation
      * of the layer and map canvas coordinate systems
@@ -88,12 +90,12 @@ class QgsCoordinateTransform: public QObject
      * Get the QgsSpatialRefSys representation of the layer's coordinate system
      * @return QgsSpatialRefSys of the layer's coordinate system
      */
-    QgsSpatialRefSys * sourceSRS() const {return mSourceSRS;};
+    QgsSpatialRefSys * sourceSRS() ;
     /*! 
      * Get the QgsSpatialRefSys representation of the map canvas coordinate system
      * @return QgsSpatialRefSys of the map canvas coordinate system
      */
-    QgsSpatialRefSys * destSRS() const {return mDestSRS;};    
+    QgsSpatialRefSys * destSRS() ;    
   /*! 
    * Flag to indicate whether the coordinate systems have been initialised
    * @return true if initialised, otherwise false
@@ -155,10 +157,10 @@ class QgsCoordinateTransform: public QObject
      * @param theSRS of the destination coordinate system
      */
     void setDestSRS(QgsSpatialRefSys * theSRS);    
-    
- private:
     //!initialise is used to actually create the Transformer instance
     void initialise();
+    
+ private:
     //! flag to show whether the transform is properly initialised or not
     bool mInitialisedFlag;
     /*! 

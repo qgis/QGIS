@@ -124,7 +124,6 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
       mEditable(false),
       mModified(false)
 {
-  mCoordinateTransform = new QgsCoordinateTransform("", "");
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! providerKey.isEmpty() )
   {
@@ -2637,195 +2636,77 @@ void QgsVectorLayer::saveAsShapefile()
 }
 void QgsVectorLayer::setCoordinateSystem()
 {
+  //delete mCoordinateTransform;
+  mCoordinateTransform=new QgsCoordinateTransform();
+#ifdef QGISDEBUG
+    std::cout << "QgsVectorLayer::setCoordinateSystem ------------------------------------------------start" << std::endl;
+    std::cout << "QgsVectorLayer::setCoordinateSystem ----- Computing Coordinate System" << std::endl;
+#endif
   //
   // Get the layers project info and set up the QgsCoordinateTransform 
   // for this layer
   //
   int srid = getProjectionSrid();
-  QString mySourceWKT;
-#ifdef QGISDEBUG
-    std::cout << "srid for this layer is :" << srid << std::endl;
-#endif
+
   if(srid == 0)
   {
-    mySourceWKT = getProjectionWKT();
-  }
-
-  QSettings mySettings; 
-  // if the provider supports native transforms, just create a passthrough
-  // object 
-  if(dataProvider->supportsNativeTransform())
-  {
+    QString mySourceWKT(getProjectionWKT());
+    if (mySourceWKT==NULL)
+    {
+      mySourceWKT=QString("");
+    }
+    
 #ifdef QGISDEBUG
-    std::cout << "Provider supports native transform -- no projection of coordinates will occur" 
-        << std::endl;
+    std::cout << "QgsVectorLayer::setCoordinateSystem --- using wkt\n" << mySourceWKT << std::endl;
 #endif
-    QApplication::restoreOverrideCursor();
-
-    dataProvider->setWKT(QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT","WGS 84"));
-    return;
+    mCoordinateTransform->sourceSRS()->createFromWkt(mySourceWKT);
+    //mCoordinateTransform->sourceSRS()->createFromWkt(getProjectionWKT());
   }
   else
   {
-    // if the wkt does not exist, then we can not set the projection
-    // Pass this through unprojected 
-    // XXX Do we need to warn the user that this layer is unprojected?
-    // XXX Maybe a user option to choose if warning should be issued
-    if((srid == 0) && (mySourceWKT.isEmpty()))
-    {
-      //decide whether to use project default projection or to prompt for one
-      QString myDefaultProjectionOption = 
-        mySettings.readEntry("/qgis/projections/defaultBehaviour");
-      if (myDefaultProjectionOption=="prompt")
-      {
-        //@note qgsvectorlayer is not a descendent of QWidget so we cant pass
-        //it in the ctor of the layer projection selector
-        QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector();
-        QString srsWkt =  
-          QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT","WGS 84");
-        mySelector->setSelectedWKT(srsWkt);
-        if(mySelector->exec())
-        {
 #ifdef QGISDEBUG
-          std::cout << "------ Layer Projection Selection passed ----------" << std::endl;
+    std::cout << "QgsVectorLayer::setCoordinateSystem --- using srid " << srid << std::endl;
 #endif
-          mySourceWKT = mySelector->getCurrentWKT();  
-#ifdef QGISDEBUG
-          std::cout << "------ mySourceWKT ----------\n" << mySourceWKT << std::endl;
-#endif
-        }
-        else
-        {
-#ifdef QGISDEBUG
-          std::cout << "------ Layer Projection Selection FAILED ----------" << std::endl;
-#endif
-          QApplication::restoreOverrideCursor();
-          
-          return;
-        }
-      }
-      else if (myDefaultProjectionOption=="useProject")
-      {
-        mySourceWKT = QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT","WGS 84");
-      }
-      else ///qgis/projections/defaultBehaviour==useDefault
-      {
-    //default to geo / wgs84 for now 
-    QString myGeoWKT =    "GEOGCS[\"WGS 84\", "
-    "  DATUM[\"WGS_1984\", "
-    "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-    "      AUTHORITY[\"EPSG\",7030]], "
-    "    TOWGS84[0,0,0,0,0,0,0], "
-    "    AUTHORITY[\"EPSG\",6326]], "
-    "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
-    "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
-    "  AXIS[\"Lat\",NORTH], "
-    "  AXIS[\"Long\",EAST], "
-    "  AUTHORITY[\"EPSG\",4326]]";
-        mySourceWKT = mySettings.readEntry("/qgis/projections/defaultProjectionWKT",myGeoWKT);
-  
-      }
-    }
-
-
-    if (srid==0)
-    {
-      assert(!mySourceWKT.isEmpty());
-    }
-    //get the project projections WKT, defaulting to this layer's projection
-    //if none exists....
-    //First get the SRS for the default projection WGS 84
-    //QString defaultWkt = QgsSpatialReferences::instance()->getSrsBySrid("4326")->srText();
-    QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT","");
-
-
-
-    /* XXXX DONT THING WE NEED THIS HERE ANYMORE XXXXXXXXXXXX 
-    // try again with a morph from esri
-    // set up the spatial ref
-    OGRSpatialReference myInputSpatialRefSys;
-    char *pWkt = (char*)mySourceWKT.ascii();
-    myInputSpatialRefSys.importFromWkt(&pWkt);
-    myInputSpatialRefSys.morphFromESRI();
-
-    // set up the destination cs
-    OGRSpatialReference myOutputSpatialRefSys;
-    pWkt = (char *) myDestWKT.ascii();
-    myOutputSpatialRefSys.importFromWkt(&pWkt);
-    */
-
-    //
-    // Sort out what to do with this layer's coordinate system (CS). We have
-    // four possible scenarios:
-    // 1. Layer has no projection info and canvas is projected
-    //      = set layer to canvas CS XXX does the user need a warning here?
-    // 2. Layer has no projection info and canvas is unprojected
-    //      = leave both layer and canvas unprojected XXX is this appropriate?
-    // 3. Layer has projection info and canvas is unprojected
-    //      = set canvas to layer's CS
-    // 4. Layer has projection info and canvas is projected
-    //      = setup transform for layer to canvas CS
-#ifdef QGISDEBUG
-    std::cout << ">>>>>>>>>>>> ----------------------------------------------------" << std::endl;
-#endif
-    if(mySourceWKT.length() == 0)
-    {
-#ifdef QGISDEBUG
-      std::cout << ">>>>>>>>>>>> layer has no CS..." ;
-#endif
-      // layer has no CS
-      if(myDestWKT.length() > 0)
-      {
-#ifdef QGISDEBUG
-        std::cout << "set layer CS to project CS" << std::endl;
-#endif
-        // set layer CS to project CS
-        mySourceWKT = myDestWKT;
-      }
-      else
-      {
-        // leave layer with no CS
-#ifdef QGISDEBUG
-        std::cout << "project CS also undefined....leaving both empty" << std::endl;
-#endif
-      }
-    }
-    else
-    {
-      // layer has a CS
-#ifdef QGISDEBUG
-      std::cout << ">>>>>>>>>>>> layer HAS a CS...." << std::endl;
-#endif
-      if(myDestWKT.length() == 0)
-      {
-        // set project CS to layer CS
-#ifdef QGISDEBUG
-        std::cout << ">>>>>>>>>>>> project CS was undefined so its now set to layer CS" << std::endl;
-#endif
-        myDestWKT = mySourceWKT;
-        QgsProject::instance()->writeEntry("SpatialRefSys","/WKT", myDestWKT);
-      }
-    }
-
-    //set up the coordinate transform - in the case of raster this is 
-    //mainly used to convert the inverese projection of the map extents 
-    //of the canvas when zzooming in etc. so that they match the coordinate 
-    //system of this layer
-    if (0!=srid)
-    {
-      mCoordinateTransform = new QgsCoordinateTransform(srid, myDestWKT,QgsSpatialRefSys::POSTGIS_SRID);
-    }
-    else
-    {
-      mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT, myDestWKT);
-    }
-#ifdef QGISDEBUG
-    std::cout << ">>>>>>>>>>>> Transform for layer created:" << std::endl;
-    std::cout << ">>>>>>>>>>>> LayerCS:\n" << mCoordinateTransform->sourceSRS()->proj4String() << std::endl;
-    std::cout << ">>>>>>>>>>>> ProjectCS:\n" << mCoordinateTransform->destSRS()->proj4String() << std::endl;
-    std::cout << ">>>>>>>>>>>> ----------------------------------------------------" << std::endl;
-#endif
+      mCoordinateTransform->sourceSRS()->createFromSrid(srid);
   }
+  
+
+  QSettings mySettings; 
+  //get the project projections WKT, defaulting to this layer's projection
+  //if none exists....
+  //First get the SRS for the default projection WGS 84
+  //QString defaultWkt = QgsSpatialReferences::instance()->getSrsBySrid("4326")->srText();
+  QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT","Undefined");
+  assert (mCoordinateTransform->destSRS());
+  assert (mCoordinateTransform->sourceSRS());
+  //assert (QString::null != myDestWKT);
+  if ( QString::null == myDestWKT )
+  {
+    qDebug( "%s:%d myDestWKT is null", __FILE__, __LINE__ );
+  }
+  else
+  {
+    qDebug( "%s:%d myDestWKT is %s", __FILE__, __LINE__, myDestWKT.ascii() );
+  }
+
+  mCoordinateTransform->destSRS()->createFromWkt(myDestWKT);
+  //now validate both srs's
+  mCoordinateTransform->sourceSRS()->validate();
+  mCoordinateTransform->destSRS()->validate();  
+#ifdef QGISDEBUG
+    std::cout << "QgsVectorLayer::setCoordinateSystem --- source and dest SRS validated " << srid << std::endl;
+    std::cout << "src: " << mCoordinateTransform->sourceSRS()->proj4String() << std::endl;
+    std::cout << "dst: " <<  mCoordinateTransform->destSRS()->proj4String() << std::endl;
+#endif  
+  mCoordinateTransform->initialise();
+
+#ifdef QGISDEBUG
+  std::cout << "QgsVectorLayer::setCoordinateSystem Transform for layer created:" << std::endl;
+  std::cout << "QgsVectorLayer::setCoordinateSystem LayerCS:\n" << mCoordinateTransform->sourceSRS()->proj4String() << std::endl;
+  std::cout << "QgsVectorLayer::setCoordinateSystem ProjectCS:\n" << mCoordinateTransform->destSRS()->proj4String() << std::endl;
+  std::cout << "QgsVectorLayer::setCoordinateSystem -------------------------------------------------end" << std::endl;
+#endif
+  
 }
 
 bool QgsVectorLayer::commitAttributeChanges(const std::set<QString>& deleted,

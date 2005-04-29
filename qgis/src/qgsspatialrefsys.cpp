@@ -84,37 +84,41 @@ void QgsSpatialRefSys::validate()
 #ifdef QGISDEBUG
   std::cout << " QgsSpatialRefSys::validate" << std::endl;
 #endif
-  //first of all use gdal to test if this is an ok srs already
-  //if not we will prompt the user for and srs
-  //then retest using gdal
-  //if the retest fails we will then set  this srs to the GEOCS/WGS84 default
-
-
-  /* Here are the possible OGR error codes :
-     typedef int OGRErr;
-
-     #define OGRERR_NONE                0
-     #define OGRERR_NOT_ENOUGH_DATA     1    --> not enough data to deserialize
-     #define OGRERR_NOT_ENOUGH_MEMORY   2
-     #define OGRERR_UNSUPPORTED_GEOMETRY_TYPE 3
-     #define OGRERR_UNSUPPORTED_OPERATION 4
-     #define OGRERR_CORRUPT_DATA        5
-     #define OGRERR_FAILURE             6
-     #define OGRERR_UNSUPPORTED_SRS     7 */
-
-  //get the wkt into ogr
-  //this is really ugly but we need to get a QString to a char**
-  char *mySourceCharArrayPointer = (char *)mProj4String.latin1();
-  //create the sr and populate it from a wkt proj definition
-  OGRSpatialReference myOgrSpatialRef;
-  OGRErr myInputResult = myOgrSpatialRef.importFromProj4(  mySourceCharArrayPointer );
-  delete mySourceCharArrayPointer;
-  if (myInputResult==OGRERR_NONE)
+  //dont bother trying to do an initial test with gdal if 
+  //the proj4String is not even populated
+  if (QString::null!=mProj4String && !mProj4String.isEmpty())
   {
-    //srs is valid so nothing more to do...
-    return;
-  }
+    //first of all use gdal to test if this is an ok srs already
+    //if not we will prompt the user for and srs
+    //then retest using gdal
+    //if the retest fails we will then set  this srs to the GEOCS/WGS84 default
 
+
+    /* Here are the possible OGR error codes :
+       typedef int OGRErr;
+
+       #define OGRERR_NONE                0
+       #define OGRERR_NOT_ENOUGH_DATA     1    --> not enough data to deserialize
+       #define OGRERR_NOT_ENOUGH_MEMORY   2
+       #define OGRERR_UNSUPPORTED_GEOMETRY_TYPE 3
+       #define OGRERR_UNSUPPORTED_OPERATION 4
+       #define OGRERR_CORRUPT_DATA        5
+       #define OGRERR_FAILURE             6
+       #define OGRERR_UNSUPPORTED_SRS     7 */
+
+    //get the wkt into ogr
+    //this is really ugly but we need to get a QString to a char**
+    char *mySourceCharArrayPointer = (char *)mProj4String.latin1();
+    //create the sr and populate it from a wkt proj definition
+    OGRSpatialReference myOgrSpatialRef;
+    OGRErr myInputResult = myOgrSpatialRef.importFromProj4(  mySourceCharArrayPointer );
+    delete mySourceCharArrayPointer;
+    if (myInputResult==OGRERR_NONE)
+    {
+      //srs is valid so nothing more to do...
+      return;
+    }
+  }
   QSettings mySettings;
   QString myDefaultProjectionOption =
     mySettings.readEntry("/qgis/projections/defaultBehaviour");
@@ -156,11 +160,11 @@ void QgsSpatialRefSys::validate()
   //
 
   //this is really ugly but we need to get a QString to a char**
-  char *mySourceCharArrayPointer2 = (char *)mProj4String.latin1();
+  char *mySourceCharArrayPointer = (char *)mProj4String.latin1();
   //create the sr and populate it from a wkt proj definition
-  myOgrSpatialRef;
-  myInputResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
-  delete mySourceCharArrayPointer2;
+  OGRSpatialReference myOgrSpatialRef;
+  OGRErr myInputResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
+  delete mySourceCharArrayPointer;
   if (myInputResult==OGRERR_NONE)
   {
     //srs is valid so nothing more to do...
@@ -244,8 +248,16 @@ void QgsSpatialRefSys::createFromSrid(long theSrid)
 
 void QgsSpatialRefSys::createFromWkt(QString theWkt)
 {
+  if (!theWkt)
+  {
+    std::cout << "QgsSpatialRefSys::createFromWkt -- theWkt is uninitialised, operation failed" << std::endl;
+    return;
+  }
+#ifdef QGISDEBUG
+    std::cout << "QgsSpatialRefSys::createFromWkt(QString theWkt) using: \n" << theWkt << std::endl;
+#endif
   //this is really ugly but we need to get a QString to a char**
-  char *myCharArrayPointer = (char *)theWkt.ascii();
+  char *myCharArrayPointer = (char *)theWkt.latin1();
 
   /* Here are the possible OGR error codes :
      typedef int OGRErr;
@@ -265,6 +277,7 @@ void QgsSpatialRefSys::createFromWkt(QString theWkt)
   if (myInputResult != OGRERR_NONE)
   {
     std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
+    std::cout << "QgsSpatialRefSys::createFromWkt(QString theWkt) " << __FILE__ << __LINE__ << std::endl;
     std::cout << "This SRS could *** NOT *** be set from the supplied WKT " << std::endl;
     std::cout << "INPUT: " << std::endl << theWkt << std::endl;
     std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
