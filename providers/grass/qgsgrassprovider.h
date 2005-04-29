@@ -421,7 +421,8 @@ public:
   /** get data source uri (not implemented) */
   QgsDataSourceURI * getURI(){ return 0;};
   
-
+  /** Returns GRASS layer number */
+  int grassLayer();
 
 private:
   // Layer type (layerType)
