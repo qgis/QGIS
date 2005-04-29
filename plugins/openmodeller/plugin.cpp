@@ -59,14 +59,14 @@ static const QgisPlugin::PLUGINTYPE sType = QgisPlugin::UI;
  * @param theQGisApp - Pointer to the QGIS main window
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterface):
+QgsOpenModellerPlugin::QgsOpenModellerPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterface):
                  mQGisApp(theQGisApp), 
                  mQGisIface(theQgisInterface),
                  QgisPlugin(sName,sDescription,sVersion,sType)
 {
 }
 
-Plugin::~Plugin()
+QgsOpenModellerPlugin::~QgsOpenModellerPlugin()
 {
 
 }
@@ -75,18 +75,12 @@ Plugin::~Plugin()
 /*
  * Initialize the GUI interface for the plugin 
  */
-void Plugin::initGui()
+void QgsOpenModellerPlugin::initGui()
 {
-  // add a menu with 2 items
-  QPopupMenu *pluginMenu = new QPopupMenu(mQGisApp);
+  QPopupMenu *pluginMenu = mQGisIface->getPluginMenu("&Biodiversity");
+  mMenuId = pluginMenu->insertItem(QIconSet(icon_om),"&OpenModeller Wizard Plugin", this, SLOT(run()));
 
-  pluginMenu->insertItem(QIconSet(icon_om),"&openModeller Wizard Plugin", this, SLOT(run()));
-
-  mMenuBarPointer = ((QMainWindow *) mQGisApp)->menuBar();
-
-  mMenuId = mQGisIface->addMenu("&Biodiversity", pluginMenu);
-  // Create the action for tool
-  
+  // Create the action for tool  
   QAction *myQActionPointer = new QAction("openModeller Plugin", QIconSet(icon_om), "&Wmi",0, this, "run");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
@@ -100,13 +94,13 @@ void Plugin::initGui()
 }
 
 // Defined by interface
-void Plugin::help()
+void QgsOpenModellerPlugin::help()
 {
   //implement me
 }
 
 // Slot called when the buffer menu item is activated
-void Plugin::run()
+void QgsOpenModellerPlugin::run()
 {
   OpenModellerGui *myOpenModellerGui=new OpenModellerGui(mQGisApp,"openModeller Wizard",true,0);
   //listen for when the layer has been made so we can draw it
@@ -115,7 +109,7 @@ void Plugin::run()
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
 //layer
-void Plugin::drawRasterLayer(QString theQString)
+void QgsOpenModellerPlugin::drawRasterLayer(QString theQString)
 {
   QFileInfo myFileInfo(theQString);
   QString myDirNameQString = myFileInfo.dirPath();
@@ -126,10 +120,10 @@ void Plugin::drawRasterLayer(QString theQString)
   mQGisIface->addRasterLayer(layer, true);
 }
 // Unload the plugin by cleaning up the GUI
-void Plugin::unload()
+void QgsOpenModellerPlugin::unload()
 {
   // remove the GUI
-  mMenuBarPointer->removeItem(mMenuId);
+  mQGisIface->removePluginMenuItem("&Biodiversity",mMenuId);
   delete mToolBarPointer;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -152,7 +146,7 @@ void Plugin::unload()
 QGISEXTERN QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
   std::cout << " omgui classfactory called" << std::endl;
-  return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsOpenModellerPlugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.

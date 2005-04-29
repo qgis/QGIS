@@ -18,18 +18,18 @@
  *                                                                         *
  ***************************************************************************/
  /*  $Id$ */
-#ifndef PLUGIN
-#define PLUGIN
+#ifndef QGSOPENMODELLERPLUGIN
+#define QGSOPENMODELLERPLUGIN
 #include <qwidget.h>
 #include <qgisapp.h>
 #include <qgisplugin.h>
 
 /**
-* \class Plugin
+* \class QgsOpenModellerPlugin
 * \brief OpenModeller plugin for QGIS
 *
 */
-class Plugin:public QObject, public QgisPlugin
+class QgsOpenModellerPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       /** 
@@ -38,9 +38,9 @@ class Plugin:public QObject, public QgisPlugin
        * @param qgis Pointer to the QgisApp object
        * @param qI Pointer to the QgisIface object. 
        */
-      Plugin(QgisApp * , QgisIface * );
+      QgsOpenModellerPlugin(QgisApp * , QgisIface * );
   //! Destructor
-  virtual ~ Plugin();
+  virtual ~ QgsOpenModellerPlugin();
   public slots:
 
   virtual void initGui();
@@ -64,8 +64,6 @@ class Plugin:public QObject, public QgisPlugin
   int mMenuId;
   //! Pointer to our toolbar
   QToolBar *mToolBarPointer;
-  //! Pointer to our menu
-  QMenuBar *mMenuBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *mQGisApp;
   //! Pointer to the QGIS interface object
