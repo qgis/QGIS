@@ -41,7 +41,7 @@ class QgsSpatialRefSys
          * @param  QString the Description A textual description of the srs.
          * @param  QString theProjectionAcronym The official proj4 acronym for the projection family
          * @param  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
-         * @param  QString theParameters Proj4 format specifies (excluding proj and ellips) that define this srs.
+         * @param  QString theProj4String Proj4 format specifies (excluding proj and ellips) that define this srs.
          * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
          * @param  long theSRID If available, the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
          * @param  long theEpsg If available the ESPG identifier for this srs (defaults to 0)
@@ -50,7 +50,7 @@ class QgsSpatialRefSys
                 QString theDescription, 
                 QString theProjectionAcronym, 
                 QString theEllipsoidAcronym, 
-                QString theParameters,
+                QString theProj4String,
                 long theSRID,
                 long theEpsg,
                 bool theGeoFlag);
@@ -105,8 +105,16 @@ class QgsSpatialRefSys
          * @param theSrsId The QGIS SrsId for the desired spatial reference system.
          */
         void createFromUserSrsId (const long theSrsId);
-        /*! Return this srs asa  a proj format string */
-        QString toProjString () const;
+        /*! Set up this srs by passing it a proj4 style formatted string.
+         * The string will be parsed and the projection and ellipsoid
+         * members set and the remainder of the proj4 string will be stored
+         * in the parameters member. The reason for this is so that we
+         * can easily present the user with 'natural language' representation
+         * of the projection and ellipsoid by looking them up in the srs.bs sqlite 
+         * database.
+         * @param theProjString A proj4 format string
+         */
+        void createFromProj4 (const QString theProjString);
 
         /*! Find out whether this SRS is correctly initialised and useable */
         bool isValid() const;
@@ -135,13 +143,13 @@ class QgsSpatialRefSys
         /*! Get the Ellipsoid Acronym
          * @return  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
          */
-        QString ellipsoid () const;
-        /* Get the Proj Parameters. If proj and ellps keys are found in the parameters,
+        QString ellipsoidAcronym () const;
+        /* Get the Proj Proj4String. If proj and ellps keys are found in the parameters,
          * they will be stripped out and the Projection and ellipsoid acronyms will be
          * overridden with these.
-         * @return  QString theParameters Proj4 format specifies (excluding proj and ellips) that define this srs.
+         * @return  QString theProj4String Proj4 format specifies that define this srs.
          */
-        QString parameters () const;
+        QString proj4String() const;
         /*! Get this Geographic? flag
          * @return  bool theGeoFlag Whether this is a geographic or projected coordinate system
          */
@@ -167,20 +175,10 @@ class QgsSpatialRefSys
          * @param  QString the Description A textual description of the srs.
          */
         void setDescription (QString theDescription);
-        /*! Set the Projection Acronym
-         * @param  QString theProjectionAcronym The official proj4 acronym for the projection family
+        /* Set the Proj Proj4String. 
+         * @param  QString theProj4String Proj4 format specifies (excluding proj and ellips) that define this srs.
          */
-        void setProjectionAcronym(QString theProjectionAcronym);
-        /*! Set the Ellipsoid Acronym
-         * @param  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
-         */
-        void setEllipsoid (QString theEllipsoidAcronym);
-        /* Set the Proj Parameters. If proj and ellps keys are found in the parameters,
-         * they will be stripped out and the Projection and ellipsoid acronyms will be
-         * overridden with these.
-         * @param  QString theParameters Proj4 format specifies (excluding proj and ellips) that define this srs.
-         */
-        void setParameters (QString theParameters);
+        void setProj4String (QString theProj4String);
         /*! Set this Geographic? flag
          * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
          */
@@ -205,14 +203,13 @@ class QgsSpatialRefSys
         //!The official proj4 acronym for the ellipoid
         QString mEllipsoidAcronym;
         //!Proj4 format specifies (excluding proj and ellips) that define this srs.
-        QString mParameters ;
+        QString mProj4String ;
         //!Whether this is a geographic or projected coordinate system
         bool    mGeoFlag;
         //!If available, the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
         long    mSRID;
         //!If available the ESPG identifier for this srs (defaults to 0)
         long    mEpsg ;
-
         //! Wehter this srs is properly defined and valid
         bool isValidFlag;
 };
@@ -225,7 +222,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
               << "Description : " << r.description().latin1() << "\n"
               << "Projection  : " << r.projectionAcronym().latin1() << "\n"
               << "Ellipsoid   : " << r.ellipsoid().latin1() << "\n"
-              << "Parameters  : " << r.parameters().latin1() << "\n"
+              << "Proj4String  : " << r.parameters().latin1() << "\n"
               << std::endl; 
     
 }
