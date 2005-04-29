@@ -2679,15 +2679,7 @@ void QgsVectorLayer::setCoordinateSystem()
   QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT","Undefined");
   assert (mCoordinateTransform->destSRS());
   assert (mCoordinateTransform->sourceSRS());
-  //assert (QString::null != myDestWKT);
-  if ( QString::null == myDestWKT )
-  {
-    qDebug( "%s:%d myDestWKT is null", __FILE__, __LINE__ );
-  }
-  else
-  {
-    qDebug( "%s:%d myDestWKT is %s", __FILE__, __LINE__, myDestWKT.ascii() );
-  }
+  assert (QString::null != myDestWKT);
 
   mCoordinateTransform->destSRS()->createFromWkt(myDestWKT);
   //now validate both srs's
