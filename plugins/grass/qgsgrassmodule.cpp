@@ -377,6 +377,16 @@ void QgsGrassModule::run()
 		mProcess.addArgument( *it );
 	    }
 	}
+
+	/* WARNING - TODO: there was a bug in GRASS 6.0.0 / 6.1.CVS (< 2005-04-29):
+	 * db_start_driver set GISRC_MODE_MEMORY eviroment variable to 1 if 
+	 * G_get_gisrc_mode() == G_GISRC_MODE_MEMORY but the variable wasn't unset 
+	 * if  G_get_gisrc_mode() == G_GISRC_MODE_FILE. Because QGIS GRASS provider starts drivers in 
+	 * G_GISRC_MODE_MEMORY mode, the variable remains set in variable when a module is run
+	 * -> unset GISRC_MODE_MEMORY. Remove later once 6.1.x / 6.0.1 is widespread.
+	 */
+	putenv ( "GISRC_MODE_MEMORY" );  // unset
+	
 	mProcess.start( );
 	
 	std::cerr << "command" << command << std::endl;
@@ -657,9 +667,9 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module, QString key,
 	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
 	                                   QWidget * parent)
                     :QVGroupBox ( parent ), QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
-		     mUpdate(false)
+		     mUpdate(false), mVectorTypeOption(0), mVectorLayerOption(0)
 {
-    //setSizePolicy ( QSizePolicy::Preferred, QSizePolicy::Minimum );
+    mVectorTypeMask = GV_POINT | GV_LINE | GV_AREA;
 
     if ( mDescription.isEmpty() ) 
 	setTitle ( " Input " );
@@ -670,11 +680,102 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module, QString key,
     QDomElement promptElem = promptNode.toElement();
     QString element = promptElem.attribute("element"); 
 
-    if ( element == "vector" ) {
-       mType = Vector;	
-    } else if ( element == "cell" ) {
+    if ( element == "vector" ) 
+    {
+        mType = Vector;	
+
+	// Read type mask if "typeoption" is defined
+	QString opt = qdesc.attribute("typeoption");
+	if ( ! opt.isNull() ) {
+	
+	    QDomNode optNode = QgsGrassModule::nodeByKey ( gdesc, opt );
+
+	    if ( optNode.isNull() ) 
+	    {
+		QMessageBox::warning( 0, "Warning", "Cannot find typeoption " +  opt );
+	    } 
+	    else 
+	    {
+		mVectorTypeOption = opt;
+
+		QDomNode valuesNode = optNode.namedItem ( "values" );
+		if ( valuesNode.isNull() ) 
+		{
+		    QMessageBox::warning( 0, "Warning", "Cannot find values for typeoption " +  opt );
+		}
+		else
+		{
+		    mVectorTypeMask = 0; GV_POINT | GV_LINE | GV_AREA;
+		    
+		    QDomElement valuesElem = valuesNode.toElement();
+		    QDomNode valueNode = valuesElem.firstChild();
+	
+		    while( !valueNode.isNull() ) {
+			QDomElement valueElem = valueNode.toElement();
+
+			if( !valueElem.isNull() && valueElem.tagName() == "value" ) 
+			{
+			    QDomNode n = valueNode.namedItem ( "name" );
+			    if ( !n.isNull() ) {
+				QDomElement e = n.toElement();
+				QString val = e.text().stripWhiteSpace();
+		
+				if ( val == "point" ) {
+				    mVectorTypeMask |= GV_POINT;
+				} else if ( val == "line" ) {
+				    mVectorTypeMask |= GV_LINE;
+				} else if ( val == "area" ) {
+				    mVectorTypeMask |= GV_AREA;
+				}
+			    }
+			}
+			
+			valueNode = valueNode.nextSibling();
+		     }
+		}
+	    }
+	}
+
+	// Read type mask defined in configuration
+	opt = qdesc.attribute("typemask");
+	if ( ! opt.isNull() ) {
+	    int mask = 0;
+	    
+	    if ( opt.find("point") >= 0 ) {
+		mask |= GV_POINT;
+	    }
+	    if ( opt.find("line") >= 0 ) {
+		mask |= GV_LINE;
+	    }
+	    if ( opt.find("area") >= 0 ) {
+		mask |= GV_AREA;
+	    }
+	
+            mVectorTypeMask &= mask;
+	}
+
+	// Read "layeroption" is defined
+	opt = qdesc.attribute("layeroption");
+	if ( ! opt.isNull() ) {
+	
+	    QDomNode optNode = QgsGrassModule::nodeByKey ( gdesc, opt );
+
+	    if ( optNode.isNull() ) 
+	    {
+		QMessageBox::warning( 0, "Warning", "Cannot find layeroption " +  opt );
+	    } 
+	    else 
+	    {
+		mVectorLayerOption = opt;
+	    }
+	}
+    } 
+    else if ( element == "cell" ) 
+    {
        mType = Raster;
-    } else {
+    } 
+    else 
+    {
 	QMessageBox::warning( 0, "Warning", "GRASS element " + element + " not supported" );
     }
 
@@ -700,6 +801,8 @@ void QgsGrassModuleInput::updateQgisLayers()
     QString current = mLayerComboBox->currentText ();
     mLayerComboBox->clear();
     mMaps.resize(0);
+    mVectorTypes.resize(0);
+    mVectorLayers.resize(0);
 
     QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
 
@@ -713,6 +816,17 @@ void QgsGrassModuleInput::updateQgisLayers()
 
 	    //TODO dynamic_cast ?
 	    QgsGrassProvider *provider = (QgsGrassProvider *) vector->getDataProvider();
+
+	    // Check type mask
+	    int geomType = provider->geometryType();
+
+	    if ( (geomType == QGis::WKBPoint && !(mVectorTypeMask & GV_POINT) ) ||
+	         (geomType == QGis::WKBLineString && !(mVectorTypeMask & GV_LINE) ) ||
+	         (geomType == QGis::WKBPolygon && !(mVectorTypeMask & GV_AREA) )
+	       )
+	    {
+		continue;
+	    }
 
 	    // TODO add map() mapset() location() gisbase() to grass provider
 	    QString source = QDir::cleanDirPath ( provider->getDataSourceUri() );
@@ -743,6 +857,18 @@ void QgsGrassModuleInput::updateQgisLayers()
 	    mLayerComboBox->insertItem( layer->name() );
 	    if ( layer->name() == current ) mLayerComboBox->setCurrentText ( current );
 	    mMaps.push_back ( map + "@" + mapset );
+
+	    if ( geomType == QGis::WKBPoint ) {
+	        mVectorTypes.push_back ( "point" );
+	    } else if ( geomType == QGis::WKBLineString ) {
+	        mVectorTypes.push_back ( "line" );
+	    } else if ( geomType == QGis::WKBPolygon ) {
+	        mVectorTypes.push_back ( "area" );
+	    } else {
+	        mVectorTypes.push_back ( "unknown" );
+	    }
+
+	    mVectorLayers.push_back ( QString::number(provider->grassLayer()) );
 	} 
 	else if ( mType == Raster && layer->type() == QgsMapLayer::RASTER ) 
 	{
@@ -786,13 +912,27 @@ QStringList QgsGrassModuleInput::options()
 {
     QStringList list;
 
+    int current = mLayerComboBox->currentItem();
+
     QString opt(mKey + "=");
 
-    if ( mLayerComboBox->currentItem() <  mMaps.size() ) {
-	opt.append ( mMaps[mLayerComboBox->currentItem()] );
+    if ( current <  mMaps.size() ) {
+	opt.append ( mMaps[current] );
+    }
+    list.push_back( opt );
+
+    if ( !mVectorTypeOption.isNull() && current < mVectorTypes.size() ) 
+    {
+	opt = mVectorTypeOption + "=" + mVectorTypes[current] ;
+	list.push_back( opt );
+    }
+	
+    if ( !mVectorLayerOption.isNull() && current < mVectorLayers.size() ) 
+    {
+	opt = mVectorLayerOption + "=" + mVectorLayers[current] ;
+	list.push_back( opt );
     }
     
-    list.push_back( opt );
     return list;
 }
 
