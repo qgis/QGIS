@@ -110,7 +110,7 @@ void QgsCoordinateTransform::initialise()
   
   //XXX todo overload == operator for QgsSpatialRefSys
   //at the moment srs.parameters contains the whole proj def...soon it wont...
-  if (mSourceSRS->parameters() == mDestSRS->parameters())
+  if (mSourceSRS->proj4String() == mDestSRS->proj4String())
   {
     // If the source and destination projection are the same, set the short
     // circuit flag (no transform takes place)
@@ -122,8 +122,8 @@ void QgsCoordinateTransform::initialise()
     // Transform must take place
     mShortCircuit=false;
   }
-  mProj4DestParms=mDestSRS->toProjString().latin1();
-  mProj4SrcParms=mSourceSRS->toProjString().latin1();
+  mProj4DestParms=mDestSRS->proj4String().latin1();
+  mProj4SrcParms=mSourceSRS->proj4String().latin1();
  
  // init the projections (destination and source)
   mDestinationProjection = pj_init_plus(mProj4DestParms);

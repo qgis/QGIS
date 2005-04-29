@@ -2821,8 +2821,8 @@ void QgsVectorLayer::setCoordinateSystem()
     }
 #ifdef QGISDEBUG
     std::cout << ">>>>>>>>>>>> Transform for layer created:" << std::endl;
-    std::cout << ">>>>>>>>>>>> LayerCS:\n" << mCoordinateTransform->sourceSRS()->parameters() << std::endl;
-    std::cout << ">>>>>>>>>>>> ProjectCS:\n" << mCoordinateTransform->destSRS()->parameters() << std::endl;
+    std::cout << ">>>>>>>>>>>> LayerCS:\n" << mCoordinateTransform->sourceSRS()->proj4String() << std::endl;
+    std::cout << ">>>>>>>>>>>> ProjectCS:\n" << mCoordinateTransform->destSRS()->proj4String() << std::endl;
     std::cout << ">>>>>>>>>>>> ----------------------------------------------------" << std::endl;
 #endif
   }
