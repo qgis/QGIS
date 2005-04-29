@@ -1257,6 +1257,11 @@ QString QgsGrassProvider::getProjectionWKT(void)
     return WKT;
 }
 
+int QgsGrassProvider::grassLayer()
+{
+	return mLayerField;
+}
+
 //-----------------------------------------  Edit -------------------------------------------------------
 
 bool QgsGrassProvider::isGrassEditable ( void )
