@@ -18,6 +18,13 @@
 #include <cassert>
 #include "qgscoordinatetransform.h"
 
+QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject()
+  
+{
+  mSourceSRS= new QgsSpatialRefSys();
+  mDestSRS = new QgsSpatialRefSys();
+}
+
 QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceSRS, QString theDestSRS ) : QObject()
   
 {
@@ -32,7 +39,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceSRS, QString th
 
 QgsCoordinateTransform::QgsCoordinateTransform(long theSourceSrid,  
                         QString theDestWKT,
-                        QgsSpatialRefSys::SRS_TYPE theSourceSRSType)
+                        QgsSpatialRefSys::SRS_TYPE theSourceSRSType): QObject()
 {
 
   mSourceSRS= new QgsSpatialRefSys(theSourceSrid,theSourceSRSType);
@@ -53,6 +60,31 @@ QgsCoordinateTransform::~QgsCoordinateTransform()
   delete mDestSRS;
   delete mSourceSRS;
 }
+
+QgsSpatialRefSys * QgsCoordinateTransform::sourceSRS() 
+{
+  if (mSourceSRS)  
+  {
+    return mSourceSRS;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+QgsSpatialRefSys * QgsCoordinateTransform::destSRS() 
+{
+  if (mDestSRS)  
+  {
+    return mDestSRS;
+  }
+  else
+  {
+    return 0;
+  }
+}
+    
 
 void QgsCoordinateTransform::setSourceSRS(QgsSpatialRefSys * theSRS)
 {

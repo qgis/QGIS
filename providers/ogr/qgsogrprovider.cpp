@@ -153,9 +153,15 @@ QgsOgrProvider::~QgsOgrProvider()
 }
 QString QgsOgrProvider::getProjectionWKT()
 { 
+#ifdef QGISDEBUG 
+    std::cerr << "QgsOgrProvider::getProjectionWKT()" << std::endl; 
+#endif 
   OGRSpatialReference * mySpatialRefSys = ogrLayer->GetSpatialRef();
   if (mySpatialRefSys == NULL)
   {
+#ifdef QGISDEBUG 
+    std::cerr << "QgsOgrProvider::getProjectionWKT() --- no wkt found..returning null" << std::endl; 
+#endif 
     return NULL;
   }
   else
