@@ -104,24 +104,7 @@ void QgsCoordinateTransform::initialise()
 {
   
   mInitialisedFlag=false; //guilty until proven innocent...
-  // Default to geo / wgs84 for now .... 
-  // XXX Later we will make this user configurable
-  //
-  // XXX Do we need this singleton anymore?
-  // SRID 4326 is geographic wgs84 - use the SRS singleton to fetch
-  // the WKT for the coordinate system
-  QString defaultWkt =  "GEOGCS[\"WGS 84\", "
-      "  DATUM[\"WGS_1984\", "
-      "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-      "      AUTHORITY[\"EPSG\",7030]], "
-      "    TOWGS84[0,0,0,0,0,0,0], "
-      "    AUTHORITY[\"EPSG\",6326]], "
-      "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
-      "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
-      "  AXIS[\"Lat\",NORTH], "
-      "  AXIS[\"Long\",EAST], "
-      "  AUTHORITY[\"EPSG\",4326]]";
-  //default input projection to geo wgs84  
+
   // XXX Warning - multiple return paths in this block!!
   if (!mSourceSRS->isValid())
   {
@@ -137,7 +120,7 @@ void QgsCoordinateTransform::initialise()
     //No destination projection is set so we set the default output projection to
     //be the same as input proj. This only happens on the first layer loaded
     //whatever that may be...
-    mDestSRS = mSourceSRS;
+    mDestSRS->createFromProj4(mSourceSRS->proj4String());
   }  
   
   //XXX todo overload == operator for QgsSpatialRefSys
@@ -154,64 +137,28 @@ void QgsCoordinateTransform::initialise()
     // Transform must take place
     mShortCircuit=false;
   }
-  mProj4DestParms=mDestSRS->proj4String().latin1();
-  mProj4SrcParms=mSourceSRS->proj4String().latin1();
+  mProj4DestParms=mDestSRS->proj4String();
+  mProj4SrcParms=mSourceSRS->proj4String();
+
+#ifdef QGISDEBUG 
+  std::cout << "mDestSRS->proj4String() : " << mDestSRS->proj4String() << std::endl;
+  std::cout << "mSourceSRS->proj4String() : " << mDestSRS->proj4String() << std::endl;  
+#endif     
  
  // init the projections (destination and source)
   mDestinationProjection = pj_init_plus(mProj4DestParms);
   mSourceProjection = pj_init_plus(mProj4SrcParms);
 
-#ifdef QGISDEBUG 
-  //OGRErr sourceValid = mSourceOgrSpatialRef.Validate();
-  //OGRErr destValid = mDestOgrSpatialRef.Validate();
-#endif     
-  // One last test to see if they SRS are the same, despite slightly different
-  // WKT specs
-  // XXX This doesn't seem to work very well -- which means we are going to be
-  // XXX attempting to transform coordinates that are in the same SRS. 
-  // XXX What to do? What to do?....
+  mInitialisedFlag = true;
 
-  /* XXXXXXXXXXXXXXXXXXXXXXXXX
-     THIS LOGIC WILL ALL BE MOVED INTO QGSSPARTIALREFSYS BY OVERLOADING THE ==
-     OPERATOR. IT WILL INITIALLY TRY TO USE OGR TEST BELOW 
-     AND THE IMPLEMENT ITS OWN LOGIC IF THE OGR
-     TEST FAILS BASED ON COMPARISON OF PROJ4 PARAMETERS
-   
-  if( mSourceOgrSpatialRef.IsSame(&mDestOgrSpatialRef))
-  {
-    mShortCircuit = true;
-  }
-  // Validate the spaital reference systems  
-  if ( (mSourceOgrSpatialRef.Validate() != OGRERR_NONE)  || (mDestOgrSpatialRef.Validate() != OGRERR_NONE))
-  {
-    std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
-    std::cout << "The OGR Coordinate transformation for this layer could *** NOT *** be set "
-        << std::endl;
-    std::cout << "INPUT: " << std::endl << mSourceSRS << std::endl;
-    std::cout << "OUTPUT: " << std::endl << mDestSRS  << std::endl;
-    std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
-    return;
-  }
-  else
-  {
-  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */ 
-    mInitialisedFlag = true;
-    // Create the coordinate transform objects so we don't have to 
-    // create them each pass through when projecting points
-    //forwardTransform = OGRCreateCoordinateTransformation( &mSourceOgrSpatialRef, &mDestOgrSpatialRef);
-    //inverseTransform = OGRCreateCoordinateTransformation( &mDestOgrSpatialRef, &mSourceOgrSpatialRef );
+  std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
+  std::cout << "The OGR Coordinate transformation for this layer was set to" << std::endl;
+  //std::cout << "INPUT: " << std::endl << mSourceSRS << std::endl;
+  //    std::cout << "PROJ4: " << std::endl << mProj4SrcParms << std::endl;  
+  //std::cout << "OUTPUT: " << std::endl << mDestSRS  << std::endl;
+  //   std::cout << "PROJ4: " << std::endl << mProj4DestParms << std::endl;  
+  std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
 
-
-    std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
-    std::cout << "The OGR Coordinate transformation for this layer was set to" << std::endl;
-    //std::cout << "INPUT: " << std::endl << mSourceSRS << std::endl;
-    //    std::cout << "PROJ4: " << std::endl << mProj4SrcParms << std::endl;  
-    //std::cout << "OUTPUT: " << std::endl << mDestSRS  << std::endl;
-    //   std::cout << "PROJ4: " << std::endl << mProj4DestParms << std::endl;  
-    std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
-   /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  }
-   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx */
 }
 
 //
