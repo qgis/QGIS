@@ -17,13 +17,13 @@
 /**
 @author Tim Sutton
 */
-class PluginGui : public PluginGuiBase
+class [pluginname]Gui : public [pluginname]GuiBase
 {
 Q_OBJECT
 public:
-    PluginGui();
-    PluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~PluginGui();
+    [pluginname]Gui();
+    [pluginname]Gui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    ~[pluginname]Gui();
     void pbnOK_clicked();
     void pbnCancel_clicked();
 

@@ -9,13 +9,13 @@
 
 
 
-void PluginGuiBase::pbnOK_clicked()
+void QgsE002shpPluginGuiBase::pbnOK_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnCancel_clicked()
+void QgsE002shpPluginGuiBase::pbnCancel_clicked()
 {
 
 }

@@ -9,8 +9,8 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#ifndef PLUGINGUI_H
-#define PLUGINGUI_H
+#ifndef QGSFISHINGSPOTSPLUGINGUI_H
+#define QGSFISHINGSPOTSPLUGINGUI_H
 
 #include <pluginguibase.uic.h>
 //
@@ -50,13 +50,13 @@ struct FishingSpot
 /** \brief  A vector type for storing multiple typedefs.*/
 typedef QValueVector<FishingSpot> FishingSpotsVector;
 
-class PluginGui : public PluginGuiBase
+class QgsFishingSpotsPluginGui : public QgsFishingSpotsPluginGuiBase
 {
 Q_OBJECT
 public:
-    PluginGui();
-    PluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~PluginGui();
+    QgsFishingSpotsPluginGui();
+    QgsFishingSpotsPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    ~QgsFishingSpotsPluginGui();
     void pbnOK_clicked();
     void pbnCancel_clicked();
     void check();

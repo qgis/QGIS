@@ -60,14 +60,14 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-Plugin::Plugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
+QgsFishingSpotsPlugin::QgsFishingSpotsPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
           qgisMainWindowPointer(theQGisApp), 
           qGisInterface(theQgisInterFace),
           QgisPlugin(name_,description_,version_,type_)
 {
 }
 
-Plugin::~Plugin()
+QgsFishingSpotsPlugin::~QgsFishingSpotsPlugin()
 {
 
 }
@@ -75,7 +75,7 @@ Plugin::~Plugin()
 /*
  * Initialize the GUI interface for the plugin 
  */
-void Plugin::initGui()
+void QgsFishingSpotsPlugin::initGui()
 {
   // add a menu with 2 items
   QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
@@ -98,15 +98,15 @@ void Plugin::initGui()
 
 }
 //method defined in interface
-void Plugin::help()
+void QgsFishingSpotsPlugin::help()
 {
   //implement me!
 }
 
 // Slot called when the buffer menu item is activated
-void Plugin::run()
+void QgsFishingSpotsPlugin::run()
 {
-  PluginGui *myPluginGui=new PluginGui(qgisMainWindowPointer,"Fishing Spots",true,0);
+  QgsFishingSpotsPluginGui *myPluginGui=new QgsFishingSpotsPluginGui(qgisMainWindowPointer,"Fishing Spots",true,0);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
@@ -114,19 +114,19 @@ void Plugin::run()
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
 //layer
-void Plugin::drawRasterLayer(QString theQString)
+void QgsFishingSpotsPlugin::drawRasterLayer(QString theQString)
 {
   qGisInterface->addRasterLayer(theQString);
 }
 //!draw a vector layer in the qui - intended to respond to signal sent by diolog when it as finished creating a layer
 ////needs to be given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void Plugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
+void QgsFishingSpotsPlugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
 {
  qGisInterface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
 }
 
 // Unload the plugin by cleaning up the GUI
-void Plugin::unload()
+void QgsFishingSpotsPlugin::unload()
 {
   // remove the GUI
   menuBarPointer->removeItem(menuIdInt);
@@ -140,7 +140,7 @@ void Plugin::unload()
 // Class factory to return a new instance of the plugin class
 extern "C" QgisPlugin * classFactory(QgisApp * theQGisAppPointer, QgisIface * theQgisInterfacePointer)
 {
-  return new Plugin(theQGisAppPointer, theQgisInterfacePointer);
+  return new QgsFishingSpotsPlugin(theQGisAppPointer, theQgisInterfacePointer);
 }
 
 // Return the name of the plugin - note that we do not user class members as

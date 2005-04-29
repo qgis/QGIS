@@ -15,21 +15,21 @@
 
 //standard includes
 
-PluginGui::PluginGui() : PluginGuiBase()
+QgsE002shpPluginGui::QgsE002shpPluginGui() : QgsE002shpPluginGuiBase()
 {
   
 }
 
-PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
-: PluginGuiBase( parent, name, modal, fl )
+QgsE002shpPluginGui::QgsE002shpPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+: QgsE002shpPluginGuiBase( parent, name, modal, fl )
 {
    
 }  
-PluginGui::~PluginGui()
+QgsE002shpPluginGui::~QgsE002shpPluginGui()
 {
 }
 
-void PluginGui::pbnOK_clicked()
+void QgsE002shpPluginGui::pbnOK_clicked()
 {
   //
   // If you have a produced a raster layer using your plugin, you can ask qgis to 
@@ -42,7 +42,7 @@ void PluginGui::pbnOK_clicked()
   done(1);
 } 
 
-void PluginGui::pbnCancel_clicked()
+void QgsE002shpPluginGui::pbnCancel_clicked()
 {
  close(1);
 }

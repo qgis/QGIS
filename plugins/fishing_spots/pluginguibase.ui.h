@@ -11,25 +11,25 @@
 
 
 
-void PluginGuiBase::pbnCancel_clicked()
+void QgsFishingSpotsPluginGuiBase::pbnCancel_clicked()
 {
 
 }
 
 
-void PluginGuiBase::pbnSelectFileName_clicked()
+void QgsFishingSpotsPluginGuiBase::pbnSelectFileName_clicked()
 {
 
 }
 
 
-void PluginGuiBase::leOutputFileName_textChanged( const QString & )
+void QgsFishingSpotsPluginGuiBase::leOutputFileName_textChanged( const QString & )
 {
 
 }
 
 
-void PluginGuiBase::pbnOK_clicked()
+void QgsFishingSpotsPluginGuiBase::pbnOK_clicked()
 {
 
 }

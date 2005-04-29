@@ -17,8 +17,8 @@
  *                                                                         *
  ***************************************************************************/
  /*  $Id$ */
-#ifndef PLUGIN
-#define PLUGIN
+#ifndef QGSFISHINGSPOTSPLUGIN
+#define QGSFISHINGSPOTSPLUGIN
 #include <qgisplugin.h>
 #include <qwidget.h>
 
@@ -29,7 +29,7 @@
 * \brief OpenModeller plugin for QGIS
 *
 */
-class Plugin:public QObject, public QgisPlugin
+class QgsFishingSpotsPlugin:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       /** 
@@ -38,9 +38,9 @@ class Plugin:public QObject, public QgisPlugin
        * @param qgis Pointer to the QgisApp object
        * @param qI Pointer to the QgisIface object. 
        */
-      Plugin(QgisApp * , QgisIface * );
+      QgsFishingSpotsPlugin(QgisApp * , QgisIface * );
   //! Destructor
-  virtual ~ Plugin();
+  virtual ~ QgsFishingSpotsPlugin();
   public slots:
   //! init the gui
   virtual void initGui();

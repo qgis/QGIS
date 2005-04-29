@@ -38,8 +38,8 @@
  *
  * **************************************************************************/
 
-#ifndef PLUGIN
-#define PLUGIN
+#ifndef QGSCDPWIZARDPLUGIN
+#define QGSCDPWIZARDPLUGIN
 
 //
 //QGIS Includes
@@ -54,11 +54,11 @@
 
 
 /**
-* \class Plugin
+* \class QgsCdpWizard
 * \brief [name] plugin for QGIS
 * [description]
 */
-class Plugin:public QObject, public QgisPlugin
+class QgsCdpWizard:public QObject, public QgisPlugin
 {
   Q_OBJECT public:
       
@@ -74,9 +74,9 @@ class Plugin:public QObject, public QgisPlugin
   * @param theQGisApp - Pointer to the QgisApp object
   * @param theQGisIface -  to the QgisIface object. 
    */
-  Plugin(QgisApp * theQGisApp, QgisIface * theQGisIface);
+  QgsCdpWizard(QgisApp * theQGisApp, QgisIface * theQGisIface);
   //! Destructor
-  virtual ~ Plugin();
+  virtual ~ QgsCdpWizard();
 
 public slots:
   //! init the gui
@@ -118,8 +118,6 @@ private:
   int mMenuId;
   //! Pointer to our toolbar
   QToolBar *mToolBarPointer;
-  //! Pointer to our menu
-  QMenuBar *mMenuBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *mQGisApp;
   //! Pointer to the QGIS interface object

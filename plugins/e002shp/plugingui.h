@@ -9,21 +9,21 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#ifndef PLUGINGUI_H
-#define PLUGINGUI_H
+#ifndef QGSE002SHPPLUGINGUI_H
+#define QGSE002SHPPLUGINGUI_H
 
 #include <pluginguibase.uic.h>
 
 /**
 @author Tim Sutton
 */
-class PluginGui : public PluginGuiBase
+class QgsE002shpPluginGui : public QgsE002shpPluginGuiBase
 {
 Q_OBJECT
 public:
-    PluginGui();
-    PluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~PluginGui();
+    QgsE002shpPluginGui();
+    QgsE002shpPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    ~QgsE002shpPluginGui();
     void pbnOK_clicked();
     void pbnCancel_clicked();
 

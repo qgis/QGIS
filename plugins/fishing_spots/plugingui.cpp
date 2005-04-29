@@ -28,7 +28,7 @@
 //shapefile making stuff
 #include "shapefilemaker.h"
 /** Alternate constructor for use when this plugin is going to be an app main widget. */
-PluginGui::PluginGui() : PluginGuiBase()
+QgsFishingSpotsPluginGui::QgsFishingSpotsPluginGui() : QgsFishingSpotsPluginGuiBase()
 {
   
   //Comment out the next line if you are debuggin stuff
@@ -36,19 +36,19 @@ PluginGui::PluginGui() : PluginGuiBase()
   //tabMain->removePage(tabRegex);
 }
 
-PluginGui::PluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
-: PluginGuiBase( parent, name, modal, fl )
+QgsFishingSpotsPluginGui::QgsFishingSpotsPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+: QgsFishingSpotsPluginGuiBase( parent, name, modal, fl )
 {
    
   //Comment out the next line if you are debuggin stuff
   tabMain->hide();
   //tabMain->removePage(tabRegex);
 }  
-PluginGui::~PluginGui()
+QgsFishingSpotsPluginGui::~QgsFishingSpotsPluginGui()
 {
 }
 
-void PluginGui::pbnOK_clicked()
+void QgsFishingSpotsPluginGui::pbnOK_clicked()
 {
   
   if (leOutputFileName->text()=="") 
@@ -73,7 +73,7 @@ void PluginGui::pbnOK_clicked()
   
 } 
 
-void PluginGui::pbnCancel_clicked()
+void QgsFishingSpotsPluginGui::pbnCancel_clicked()
 {
  close(1);
 }
@@ -84,7 +84,7 @@ void PluginGui::pbnCancel_clicked()
 //
 
 
-void PluginGui::check()
+void QgsFishingSpotsPluginGui::check()
 {
   
   connect(&mQhttp, SIGNAL(stateChanged(int)), 
@@ -112,7 +112,7 @@ void PluginGui::check()
   //QTimer::singleShot( mTimeOutInt * 1000, this, SLOT(slotTimeOut()) );
 }
 
-void PluginGui::slotRequestFinished(int id, bool error)
+void QgsFishingSpotsPluginGui::slotRequestFinished(int id, bool error)
 {
   std::cerr << "slotRequestFinished: " << id << std::endl;
   if(error)
@@ -132,14 +132,14 @@ void PluginGui::slotRequestFinished(int id, bool error)
     }
 }
 
-void PluginGui::slotResponseHeaderReceived(const QHttpResponseHeader& resp)
+void QgsFishingSpotsPluginGui::slotResponseHeaderReceived(const QHttpResponseHeader& resp)
 {
   std::cerr << "slotResponseHeaderReceived " << std::endl;
   std::cerr << resp.toString() << std::endl;
   mQHttpResponseHeader = resp;
 }
 
-void PluginGui::slotTimeOut()
+void QgsFishingSpotsPluginGui::slotTimeOut()
 {
   std::cerr << "slotTimeout " << std::endl;
   if(mQhttp.state() == QHttp::Connecting) 
@@ -153,7 +153,7 @@ void PluginGui::slotTimeOut()
     }
 }
 
-void PluginGui::slotStateChanged(int state) 
+void QgsFishingSpotsPluginGui::slotStateChanged(int state) 
 {
   std::cerr << "slotStateChanged " << std::endl;
   std::cerr << "Current id: " << mQhttp.currentId() << std::endl;
@@ -173,7 +173,7 @@ void PluginGui::slotStateChanged(int state)
 
 }
 
-void PluginGui::requestHeadFinished(int id)
+void QgsFishingSpotsPluginGui::requestHeadFinished(int id)
 {
   std::cerr << "requestHeadFinished: " << id << std::endl;
 
@@ -203,7 +203,7 @@ void PluginGui::requestHeadFinished(int id)
 // This is run once the web page has been retrieved.
 //
 
-void PluginGui::requestGetFinished(int id)
+void QgsFishingSpotsPluginGui::requestGetFinished(int id)
 {
   std::cerr << "************************************* " << std::endl;
   std::cerr << "requestGetFinished: " << id << std::endl;
@@ -375,7 +375,7 @@ void PluginGui::requestGetFinished(int id)
   finish();
 }
 
-void PluginGui::finish()
+void QgsFishingSpotsPluginGui::finish()
 {
   std::cerr << "finish: " <<  std::endl;
 /*
@@ -392,7 +392,7 @@ void PluginGui::finish()
 
 
 
-void PluginGui::createShapefile(QString theShapefileName)
+void QgsFishingSpotsPluginGui::createShapefile(QString theShapefileName)
 {
 
   ShapefileMaker * myShapefileMaker = new ShapefileMaker(theShapefileName);
@@ -409,7 +409,7 @@ void PluginGui::createShapefile(QString theShapefileName)
   emit drawVectorLayer(myFileInfo.dirPath(),myFileInfo.baseName(),QString("ogr"));
 }
 
-void PluginGui::pbnSelectFileName_clicked()
+void QgsFishingSpotsPluginGui::pbnSelectFileName_clicked()
 {
   std::cout << " Gps File Importer Gui::pbnSelectOutputFile_clicked() " << std::endl;
   QString myOutputFileNameQString = QFileDialog::getSaveFileName(
