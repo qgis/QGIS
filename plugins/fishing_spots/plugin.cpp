@@ -77,14 +77,9 @@ QgsFishingSpotsPlugin::~QgsFishingSpotsPlugin()
  */
 void QgsFishingSpotsPlugin::initGui()
 {
-  // add a menu with 2 items
-  QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
+  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Tools");
+  menuId = pluginMenu->insertItem(QIconSet(icon),"&Fishing Spots", this, SLOT(run()));
 
-  pluginMenu->insertItem(QIconSet(icon),"&Fishing Spots", this, SLOT(run()));
-
-  menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
-
-  menuIdInt = qGisInterface->addMenu("&Tools", pluginMenu);
   // Create the action for tool
   QAction *myQActionPointer = new QAction("Fishing Spots", QIconSet(icon), "&Wmi",0, this, "run");
   // Connect the action to the run
@@ -129,7 +124,7 @@ void QgsFishingSpotsPlugin::drawVectorLayer(QString thePathNameQString, QString 
 void QgsFishingSpotsPlugin::unload()
 {
   // remove the GUI
-  menuBarPointer->removeItem(menuIdInt);
+  qGisInterface->removePluginMenuItem("&Tools",menuId);
   delete toolBarPointer;
 }
 /** 
