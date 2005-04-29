@@ -112,7 +112,7 @@ void QgsSpatialRefSys::validate()
     //create the sr and populate it from a wkt proj definition
     OGRSpatialReference myOgrSpatialRef;
     OGRErr myInputResult = myOgrSpatialRef.importFromProj4(  mySourceCharArrayPointer );
-    delete mySourceCharArrayPointer;
+
     if (myInputResult==OGRERR_NONE)
     {
       //srs is valid so nothing more to do...
@@ -164,7 +164,7 @@ void QgsSpatialRefSys::validate()
   //create the sr and populate it from a wkt proj definition
   OGRSpatialReference myOgrSpatialRef;
   OGRErr myInputResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
-  delete mySourceCharArrayPointer;
+
   if (myInputResult==OGRERR_NONE)
   {
     //srs is valid so nothing more to do...
