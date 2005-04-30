@@ -313,7 +313,9 @@ void QgsProjectionSelector::getProjList()
   sqlite3_finalize(ppStmt);
 
   // Set up the query to retreive the projection information needed to populate the list
-  sql = "select description,srs_id,is_geo, projection_acronym,parameters from tbl_srs order by description";
+  //note I am giving the full field names for clarity here and in case someown 
+  //changes the underlying view TS
+  sql = "select description,srs_id,is_geo, name,parameters from vw_srs";
 #ifdef QGISDEBUG
   std::cout << "SQL for projection list:\n" << sql << std::endl;
 #endif
