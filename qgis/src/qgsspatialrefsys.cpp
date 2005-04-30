@@ -445,7 +445,6 @@ bool QgsSpatialRefSys::isValid() const
   //create the sr and populate it from a wkt proj definition
   OGRSpatialReference myOgrSpatialRef;
   OGRErr myResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
-  delete mySourceCharArrayPointer;
   if (myResult==OGRERR_NONE)
   {
     //srs is valid so nothing more to do...
@@ -457,8 +456,42 @@ bool QgsSpatialRefSys::isValid() const
   }
 }
 
-void QgsSpatialRefSys::createFromProj4 (const QString theProjString)
+void QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
 {
+  //
+  // Example:
+  // +proj=tmerc +lat_0=0 +lon_0=-62 +k=0.999500 +x_0=400000 +y_0=0 
+  // +ellps=clrk80 +towgs84=-255,-15,71,0,0,0,0 +units=m +no_defs
+  // 
+
+  QRegExp myProjRegExp( "\+proj=[a-zA-Z]* " );    
+  int myStart= 0;
+  int myLength=0;
+  myStart = myProjRegExp.search(theProj4String, myStart);
+  if (myStart==-1)
+  {
+    std::cout << "QgsSpatialRefSys::createFromProj4 error proj string supplied has no +proj argument" << std::endl;
+  }
+  else
+  {
+    myLength = myProjRegExp.matchedLength();
+  }
+  mProjectionAcronym = theProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength);
+  
+  QRegExp myEllipseRegExp( "\+ellps=[a-zA-Z]* " );    
+  myStart= 0;
+  myLength=0;
+  myStart = myEllipseRegExp.search(theProj4String, myStart);
+  if (myStart==-1)
+  {
+    std::cout << "QgsSpatialRefSys::createFromProj4 error proj string supplied has no +ellps argument" << std::endl;
+  }
+  else
+  {
+    myLength = myEllipseRegExp.matchedLength();
+  }
+  mEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength);
+  
 }
 // Accessors -----------------------------------
 
@@ -537,47 +570,10 @@ void QgsSpatialRefSys::setDescription (QString theDescription)
 {
   mDescription = theDescription;
 }
-/* Set the Proj Proj4String. If proj and ellps keys are found in the parameters,
- * they will be stripped out and the Projection and ellipsoid acronyms will be
- * overridden with these.
- * @param  QString theProj4String Proj4 format specifies (excluding proj and ellips) that define this srs.
- */
+
 void QgsSpatialRefSys::setProj4String (QString theProj4String)
 {
-  //
-  // Example:
-  // +proj=tmerc +lat_0=0 +lon_0=-62 +k=0.999500 +x_0=400000 +y_0=0 
-  // +ellps=clrk80 +towgs84=-255,-15,71,0,0,0,0 +units=m +no_defs
-  // 
-
-  QRegExp myProjRegExp( "\+proj=[a-zA-Z]* " );    
-  int myStart= 0;
-  int myLength=0;
-  myStart = myProjRegExp.search(theProj4String, myStart);
-  if (myStart==-1)
-  {
-    std::cout << "QgsSpatialRefSys::createFromProj4 error proj string supplied has no +proj argument" << std::endl;
-  }
-  else
-  {
-    myLength = myProjRegExp.matchedLength();
-  }
-  mProjectionAcronym = theProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength);
-  
-  QRegExp myEllipseRegExp( "\+ellps=[a-zA-Z]* " );    
-  myStart= 0;
-  myLength=0;
-  myStart = myEllipseRegExp.search(theProj4String, myStart);
-  if (myStart==-1)
-  {
-    std::cout << "QgsSpatialRefSys::createFromProj4 error proj string supplied has no +ellps argument" << std::endl;
-  }
-  else
-  {
-    myLength = myEllipseRegExp.matchedLength();
-  }
-  mEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength);
-  
+  mProj4String = theProj4String;
 }
 /*! Set this Geographic? flag
  * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
