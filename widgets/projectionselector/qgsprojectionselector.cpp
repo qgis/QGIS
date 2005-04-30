@@ -31,6 +31,7 @@
 #include <qprogressdialog.h> 
 #include <qfileinfo.h>
 #include <qdir.h>
+#include <qtextstream.h>
 
 //gdal and ogr includes
 // XXX DO WE NEED THESE?
@@ -352,11 +353,11 @@ void QgsProjectionSelector::getProjList()
         QListViewItem *node;
         // Fine the node for this type and add the projection to it
         // If the node doesn't exist, create it
-        node = lstCoordinateSystems->findItem(QString((char*)sqlite3_column_text(ppStmt, 4)),0);
+        node = lstCoordinateSystems->findItem(QString((char*)sqlite3_column_text(ppStmt, 3)),0);
         if(node == 0)
         {
           // the node doesn't exist -- create it
-          node = new QListViewItem(mProjList, (char*)sqlite3_column_text(ppStmt, 4));
+          node = new QListViewItem(mProjList, (char*)sqlite3_column_text(ppStmt, 3));
         }
 
         // add the item, setting the projection name in the first column of the list view
@@ -364,8 +365,10 @@ void QgsProjectionSelector::getProjList()
         // set the srs_id in the second column on the list view
         newItem->setText(1,(char *)sqlite3_column_text(ppStmt, 1));
       }
-      updateProjAndEllipsoidAcronyms(QString((char *)sqlite3_column_text(ppStmt, 1)).toLong(), 
-                                     QString((char *)sqlite3_column_text(ppStmt, 4)))  ;
+      //Only enable thse lines temporarily if you want to generate a script
+      //to update proj an ellipoid fields in the srs.db
+      //updateProjAndEllipsoidAcronyms(QString((char *)sqlite3_column_text(ppStmt, 1)).toLong(), 
+      //                               QString((char *)sqlite3_column_text(ppStmt, 4)))  ;
     }
     // update the progress bar to 100% -- just for eye candy purposes (some people hate to
     // see a progress dialog end at 99%)
@@ -377,47 +380,74 @@ void QgsProjectionSelector::getProjList()
   sqlite3_close(db);
 }   
 
-
+//this is a little helper function to populate the (well give you a sql script to populate)
+//the projection_acronym and ellipsoid_acronym fields in the srs.db backend
+//To cause it to be run, uncomment or add the line:
+//      updateProjAndEllipsoidAcronyms(QString((char *)sqlite3_column_text(ppStmt, 1)).toLong(), 
+//                                     QString((char *)sqlite3_column_text(ppStmt, 4)))  ;
+//to the above method. NOTE it will cause a huge slow down in population of the proj selector dialog so 
+//remember to disable it again!
 void QgsProjectionSelector::updateProjAndEllipsoidAcronyms(int theSrsid,QString theProj4String)
 {
 
   const int PROJ_PREFIX_LEN = 5;
   const int ELLPS_PREFIX_LEN = 6;
 
+
+  //temporary hack
+  QFile myFile( "/tmp/srs_updates.sql" );
+  myFile.open(  IO_WriteOnly | IO_Append );
+  QTextStream myStream( &myFile );
+
+    
+        
+     
+
+
   QRegExp myProjRegExp( "proj=[a-zA-Z]* " );    
   int myStart= 0;
   int myLength=0;
   myStart = myProjRegExp.search(theProj4String, myStart);
+  QString myProjectionAcronym;  
   if (myStart==-1)
   {
-    //std::cout << "proj string supplied has no +proj argument" << std::endl;
+    std::cout << "proj string supplied has no +proj argument" << std::endl;
+    myProjectionAcronym = "";
   }
   else
   {
     myLength = myProjRegExp.matchedLength();
+    myProjectionAcronym = theProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength-(PROJ_PREFIX_LEN+1));//+1 for space
   }
-  QString myProjectionAcronym = theProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength);
   
-  QRegExp myEllipseRegExp( "ellps=[a-zA-Z]* " );    
+  
+  QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\-]* " );    
   myStart= 0;
   myLength=0;
   myStart = myEllipseRegExp.search(theProj4String, myStart);
+  QString myEllipsoidAcronym;
   if (myStart==-1)
   {
-    //std::cout << "proj string supplied has no +ellps argument" << std::endl;
+    std::cout << "proj string supplied has no +ellps argument" << std::endl;
+    myEllipsoidAcronym="";
   }
   else
   {
     myLength = myEllipseRegExp.matchedLength();
+    myEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength-(ELLPS_PREFIX_LEN+1));
   }
-  QString myEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength);
 
 
   //now create the update statement
   QString mySql = "update tbl_srs set projection_acronym='" + myProjectionAcronym + 
                   "', ellipsoid_acronym='" + myEllipsoidAcronym + "' where " +
-                  "srs_id=" + QString::number(theSrsid);
-  //std::cout << mySql << std::endl;
+                  "srs_id=" + QString::number(theSrsid)+";";
+
+
+  //tmporary hack
+  myStream << mySql << "\n";
+  myFile.close();
+  //std::cout 
 
 }
 
@@ -441,8 +471,11 @@ void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem)
     const char *pzTail;
     sqlite3_stmt *ppStmt;
     char *pzErrmsg;
-    QString sql = "select parameters from tbl_srs where srid = ";
+    QString sql = "select parameters from tbl_srs where srs_id = ";
     sql += theItem->text(1);
+#ifdef QGISDEBUG
+    std::cout << "Selection sql : " << sql << std::endl;
+#endif
 
     rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
     // XXX Need to free memory from the error msg if one is set
