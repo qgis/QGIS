@@ -99,6 +99,18 @@ void QgsCoordinateTransform::setDestSRS(QgsSpatialRefSys * theSRS)
   mDestSRS = theSRS;
   initialise();
 }
+
+
+void QgsCoordinateTransform::setDestSRSID (long theSRSID)
+{
+  //!todo Add some logic here to determine if the srsid is a system or user one
+#ifdef QGISDEBUG
+  std::cout << "QgsCoordinateTransform::setDestSRSID slot called" << std::endl;
+#endif  
+  mDestSRS->createFromSystemSrsId(theSRSID);
+  initialise();
+}
+
 // XXX This whole function is full of multiple return statements!!!
 void QgsCoordinateTransform::initialise()
 {
