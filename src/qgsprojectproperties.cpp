@@ -94,9 +94,9 @@
   {
     QgsMapLayer * myMapLayer = myMapIterator->second;
     connect(this,
-        SIGNAL(setDestWKT(QString)),
+        SIGNAL(setDestSRSID(long)),
         myMapLayer->coordinateTransform(),
-        SLOT(setDestWKT(QString)));   
+        SLOT(setDestSRSID(long)));   
   }
 
     
@@ -209,14 +209,14 @@ void QgsProjectProperties::apply()
   // selected that has an srid. This prevents error if the user
   // selects a top-level node rather than an actual coordinate
   // system
-  QString myWkt = projectionSelector->getCurrentWKT();
-  if (myWkt)
+  long mySRSID = projectionSelector->getCurrentSRSID();
+  if (mySRSID)
   {
-    emit setDestWKT(myWkt); 
+    emit setDestSRSID(mySRSID); 
     // write the projection's wkt to the project settings rather
-    QgsProject::instance()->writeEntry("SpatialRefSys","/WKT",myWkt);
+    QgsProject::instance()->writeEntry("SpatialRefSys","/SRSID",(int)mySRSID);
     // write the currently selected projections name to project settings
-    QgsProject::instance()->writeEntry("SpatialRefSys","/selectedWKT",projectionSelector->getSelectedWKT());
+    QgsProject::instance()->writeEntry("SpatialRefSys","/selectedSRID",projectionSelector->getSelectedName());
     // set the mouse display precision method and the
     // number of decimal places for the manual option
     // Note. Qt 3.2.3 and greater have a function selectedId() that

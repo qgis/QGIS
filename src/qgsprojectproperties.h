@@ -79,10 +79,10 @@ public slots:
   
 signals:
   /*! This signal is used to notify all coordinateTransform objects to update
-   * their dest wkt because the project output projection system is changed 
-   * @param SPATIAL_REF_SYS structure containing the parameters for the destination CS
+   * their dest SRSID because the project output projection system is changed 
+   * @param srsid srs.db tbl_srs pkey value of the newly assigned srs
    */
-  void setDestWKT(QString);   
+  void setDestSRSID(long theSRSID);   
   //! Signal used to inform listeners that the mouse display precision may have changed
   void displayPrecisionChanged();
   //! let listening canvases know to refresh

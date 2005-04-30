@@ -86,6 +86,11 @@ class QgsCoordinateTransform: public QObject
      * @param theSRS QgsSpatialRefSys representation of the layer's coordinate system
      */
     void setSourceSRS(QgsSpatialRefSys * theSRS);
+    /*! 
+     * Mutator for dest QgsSpatialRefSys 
+     * @param theSRS of the destination coordinate system
+     */
+    void setDestSRS(QgsSpatialRefSys * theSRS);    
     /*!
      * Get the QgsSpatialRefSys representation of the layer's coordinate system
      * @return QgsSpatialRefSys of the layer's coordinate system
@@ -150,13 +155,16 @@ class QgsCoordinateTransform: public QObject
    void transformCoords( const int &numPoint, double *x, double *y, double *z,TransformDirection direction=FORWARD) const;
 
  public slots:
-    /*! 
-     * Mutator for dest QgsSpatialRefSys - This slot will usually be called if the
-     * project properties change and a different coordinate system is 
-     * selected.
-     * @param theSRS of the destination coordinate system
-     */
-    void setDestSRS(QgsSpatialRefSys * theSRS);    
+    /*! Change the destination coordinate system by passing it a qgis srsid
+    * A QGIS srsid is a unique key value to an entry on the tbl_srs in the
+    * srs.db sqlite database.
+    * @note This slot will usually be called if the
+    * project properties change and a different coordinate system is 
+    * selected. 
+    * @note This coord transform will be reinitialised when this slot is called
+    * to check if short circuiting is needed or not etc.
+    * @param theSRSID -  A long representing the srsid of the srs to be used */
+    void setDestSRSID (long theSRSID);
     //!initialise is used to actually create the Transformer instance
     void initialise();
     
