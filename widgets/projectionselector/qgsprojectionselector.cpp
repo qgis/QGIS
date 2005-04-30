@@ -96,7 +96,7 @@ void QgsProjectionSelector::setSelectedSRID(QString theSRID)
 }
 
 //note this line just returns the projection name!
-QString QgsProjectionSelector::getSelectedWKT()
+QString QgsProjectionSelector::getSelectedName()
 {
   // return the selected wkt name from the list view
   QListViewItem *lvi = lstCoordinateSystems->currentItem();
@@ -144,7 +144,7 @@ QString QgsProjectionSelector::getCurrentWKT()
     const char *pzTail;
     sqlite3_stmt *ppStmt;
     char *pzErrmsg;
-    QString sql = "select srtext from spatial_ref_sys where srid = ";
+    QString sql = "select srtext from tbl_srs where srsid = ";
     sql += lvi->text(1);
 
 #ifdef QGISDEBUG
@@ -178,6 +178,8 @@ QString QgsProjectionSelector::getCurrentWKT()
 
 }
 
+//XXXXXX NOTE THIS NEEDS TO BE CHANGED TO LOOKUP FROM 
+// XXXXXXX THS SQLITE BACKEND!
 long QgsProjectionSelector::getCurrentSRID()
 {
   if(lstCoordinateSystems->currentItem()->text(1).length() > 0)
@@ -189,6 +191,19 @@ long QgsProjectionSelector::getCurrentSRID()
     return NULL;
   }
 }
+
+long QgsProjectionSelector::getCurrentSRSID()
+{
+  if(lstCoordinateSystems->currentItem()->text(1).length() > 0)
+  {
+    return lstCoordinateSystems->currentItem()->text(1).toLong();
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
 void QgsProjectionSelector::getUserProjList()
 {
 #ifdef QGISDEBUG
@@ -229,7 +244,7 @@ void QgsProjectionSelector::getUserProjList()
     assert(myResult == 0);
   }
 
-  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  // Set up the query to retreive the projection information needed to populate the list
   QString mySql = "select description from tbl_user_projection order by description";
 #ifdef QGISDEBUG
   std::cout << "User projection list sql" << mySql << std::endl;
@@ -287,7 +302,7 @@ void QgsProjectionSelector::getProjList()
   sqlite3_stmt *ppStmt;
   char *pzErrmsg;
   // get total count of records in the projection table
-  QString sql = "select count(*) from srs_name";
+  QString sql = "select count(*) from tbl_srs";
 
   rc = sqlite3_prepare(db, sql, sql.length(), &ppStmt, &pzTail);
   assert(rc == SQLITE_OK);
@@ -297,7 +312,10 @@ void QgsProjectionSelector::getProjList()
   sqlite3_finalize(ppStmt);
 
   // Set up the query to retreive the projection information needed to populate the list
-  sql = "select * from srs_name order by name";
+  sql = "select description,srs_id,is_geo, projection_acronym,parameters from tbl_srs order by description";
+#ifdef QGISDEBUG
+  std::cout << "SQL for projection list:\n" << sql << std::endl;
+#endif
   rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
   // XXX Need to free memory from the error msg if one is set
   if(rc == SQLITE_OK)
@@ -317,15 +335,15 @@ void QgsProjectionSelector::getProjList()
         myProgressBar.setProgress(myProgress++);
       }
       // check to see if the srs is geographic
-      int isGeo = sqlite3_column_int(ppStmt, 3);
+      int isGeo = sqlite3_column_int(ppStmt, 2);
       if(isGeo)
       {      
         // this is a geographic coordinate system
         // Add it to the tree
-        newItem = new QListViewItem(mGeoList, (char *)sqlite3_column_text(ppStmt,1));
+        newItem = new QListViewItem(mGeoList, (char *)sqlite3_column_text(ppStmt,0));
 
-        // display the spatial reference id in the second column of the list view
-        newItem->setText(1,(char *)sqlite3_column_text(ppStmt, 0));
+        // display the qgis srs_id in the second column of the list view
+        newItem->setText(1,(char *)sqlite3_column_text(ppStmt, 1));
       }
       else
       {
@@ -334,18 +352,20 @@ void QgsProjectionSelector::getProjList()
         QListViewItem *node;
         // Fine the node for this type and add the projection to it
         // If the node doesn't exist, create it
-        node = lstCoordinateSystems->findItem(QString((char*)sqlite3_column_text(ppStmt, 2)),0);
+        node = lstCoordinateSystems->findItem(QString((char*)sqlite3_column_text(ppStmt, 4)),0);
         if(node == 0)
         {
           // the node doesn't exist -- create it
-          node = new QListViewItem(mProjList, (char*)sqlite3_column_text(ppStmt, 2));
+          node = new QListViewItem(mProjList, (char*)sqlite3_column_text(ppStmt, 4));
         }
 
         // add the item, setting the projection name in the first column of the list view
-        newItem = new QListViewItem(node, (char *)sqlite3_column_text(ppStmt,1));
-        // set the srid in the second column on the list view
-        newItem->setText(1,(char *)sqlite3_column_text(ppStmt, 0));
+        newItem = new QListViewItem(node, (char *)sqlite3_column_text(ppStmt,0));
+        // set the srs_id in the second column on the list view
+        newItem->setText(1,(char *)sqlite3_column_text(ppStmt, 1));
       }
+      updateProjAndEllipsoidAcronyms(QString((char *)sqlite3_column_text(ppStmt, 1)).toLong(), 
+                                     QString((char *)sqlite3_column_text(ppStmt, 4)))  ;
     }
     // update the progress bar to 100% -- just for eye candy purposes (some people hate to
     // see a progress dialog end at 99%)
@@ -356,6 +376,50 @@ void QgsProjectionSelector::getProjList()
   // close the database
   sqlite3_close(db);
 }   
+
+
+void QgsProjectionSelector::updateProjAndEllipsoidAcronyms(int theSrsid,QString theProj4String)
+{
+
+  const int PROJ_PREFIX_LEN = 5;
+  const int ELLPS_PREFIX_LEN = 6;
+
+  QRegExp myProjRegExp( "proj=[a-zA-Z]* " );    
+  int myStart= 0;
+  int myLength=0;
+  myStart = myProjRegExp.search(theProj4String, myStart);
+  if (myStart==-1)
+  {
+    //std::cout << "proj string supplied has no +proj argument" << std::endl;
+  }
+  else
+  {
+    myLength = myProjRegExp.matchedLength();
+  }
+  QString myProjectionAcronym = theProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength);
+  
+  QRegExp myEllipseRegExp( "ellps=[a-zA-Z]* " );    
+  myStart= 0;
+  myLength=0;
+  myStart = myEllipseRegExp.search(theProj4String, myStart);
+  if (myStart==-1)
+  {
+    //std::cout << "proj string supplied has no +ellps argument" << std::endl;
+  }
+  else
+  {
+    myLength = myEllipseRegExp.matchedLength();
+  }
+  QString myEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength);
+
+
+  //now create the update statement
+  QString mySql = "update tbl_srs set projection_acronym='" + myProjectionAcronym + 
+                  "', ellipsoid_acronym='" + myEllipsoidAcronym + "' where " +
+                  "srs_id=" + QString::number(theSrsid);
+  //std::cout << mySql << std::endl;
+
+}
 
 // New coordinate system selected from the list
 void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem)
@@ -377,17 +441,17 @@ void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem)
     const char *pzTail;
     sqlite3_stmt *ppStmt;
     char *pzErrmsg;
-    QString sql = "select srtext from spatial_ref_sys where srid = ";
+    QString sql = "select parameters from tbl_srs where srid = ";
     sql += theItem->text(1);
 
     rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
     // XXX Need to free memory from the error msg if one is set
-    QString wkt;
+    QString myProjString;
     if(rc == SQLITE_OK)
     {
       if(sqlite3_step(ppStmt) == SQLITE_ROW)
       {
-        wkt = (char*)sqlite3_column_text(ppStmt, 0);
+        myProjString = (char*)sqlite3_column_text(ppStmt, 0);
       }
     }
     // close the statement
@@ -396,16 +460,16 @@ void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem)
     sqlite3_close(db);
 #ifdef QGISDEBUG
     std::cout << "Item selected : " << theItem->text(0) << std::endl;
-    std::cout << "Item selected full wkt : " << wkt << std::endl;
+    std::cout << "Item selected full string : " << myProjString << std::endl;
 #endif
-    assert(wkt.length() > 0);
+    assert(myProjString.length() > 0);
     // reformat the wkt to improve the display in the textedit
     // box
-    wkt = wkt.replace(",", ", ");
-    teProjection->setText(wkt);
+    myProjString = myProjString.replace(",", ", ");
+    teProjection->setText(myProjString);
     // let anybody who's listening know about the change
     // XXX Is this appropriate here if the dialog is cancelled??
-    emit wktSelected(wkt);
+    emit wktSelected(myProjString);
 
   }
 }

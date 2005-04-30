@@ -34,14 +34,15 @@ public:
   void getUserProjList();
   //! Populate the proj tree view with system projection names...
   void getProjList();
-  
+  void updateProjAndEllipsoidAcronyms(int theSrsid,QString theProj4String);
     
 public slots:
     void setSelectedWKT(QString theWKT);
-    QString getSelectedWKT();
+    QString getSelectedName();
     void setSelectedSRID(QString theSRID);
     QString getCurrentWKT();
-    long getCurrentSRID();
+    long getCurrentSRID(); //posgis style projection identifier
+    long getCurrentSRSID();//qgis projection identfier
 
 private:
 
