@@ -77,9 +77,11 @@
   // set the default wkt to WGS 84
 //  QString defaultWkt = QgsSpatialReferences::instance()->getSrsBySrid(defaultWktKey)->srText();
   // the /selectedWKT entry stores the wkt entry selected in the list of projections
-  QString srsWkt =  QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT","WGS 84");
+  /** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
+  const long GEOSRS_ID = 2581;
+  long mySRSID =  QgsProject::instance()->readNumEntry("SpatialRefSys","/selectedSRSID",GEOSRS_ID);
 
-  projectionSelector->setSelectedWKT(srsWkt);
+  projectionSelector->setSelectedSRSID(mySRSID);
   
   
   // 
@@ -213,10 +215,10 @@ void QgsProjectProperties::apply()
   if (mySRSID)
   {
     emit setDestSRSID(mySRSID); 
-    // write the projection's wkt to the project settings rather
-    QgsProject::instance()->writeEntry("SpatialRefSys","/SRSID",(int)mySRSID);
-    // write the currently selected projections name to project settings
-    QgsProject::instance()->writeEntry("SpatialRefSys","/selectedSRID",projectionSelector->getSelectedName());
+    // write the projection's _id_ to the project settings rather
+    QgsProject::instance()->writeEntry("SpatialRefSys","/selectedSRSID",(int)mySRSID);
+    // write the currently selected projections _name_ to project settings
+    QgsProject::instance()->writeEntry("SpatialRefSys","/selectedSRSName",projectionSelector->getSelectedName());
     // set the mouse display precision method and the
     // number of decimal places for the manual option
     // Note. Qt 3.2.3 and greater have a function selectedId() that

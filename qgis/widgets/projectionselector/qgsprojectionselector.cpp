@@ -60,17 +60,17 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name
 QgsProjectionSelector::~QgsProjectionSelector()
 {
 }
-void QgsProjectionSelector::setSelectedWKT(QString theWKT)
+void QgsProjectionSelector::setSelectedSRSName(QString theSRSNAme)
 {
   //get the srid given the wkt so we can pick the correct list item
 #ifdef QGISDEBUG
-  std::cout << "QgsProjectionSelector::setSelectedWKT called with \n" << theWKT << std::endl;
+  std::cout << "QgsProjectionSelector::setSelectedSRSName called with \n" << theSRSNAme << std::endl;
 #endif
   //now delegate off to the rest of the work
   QListViewItemIterator myIterator (lstCoordinateSystems);
   while (myIterator.current()) 
   {
-    if (myIterator.current()->text(0)==theWKT)
+    if (myIterator.current()->text(0)==theSRSNAme)
     {
       lstCoordinateSystems->setCurrentItem(myIterator.current());
       lstCoordinateSystems->ensureItemVisible(myIterator.current());
@@ -80,12 +80,13 @@ void QgsProjectionSelector::setSelectedWKT(QString theWKT)
   }
 }
 
-void QgsProjectionSelector::setSelectedSRID(QString theSRID)
+void QgsProjectionSelector::setSelectedSRSID(long theSRSID)
 {
+  QString mySRSIDString=QString::number(theSRSID);
   QListViewItemIterator myIterator (lstCoordinateSystems);
   while (myIterator.current()) 
   {
-    if (myIterator.current()->text(1)==theSRID)
+    if (myIterator.current()->text(1)==mySRSIDString)
     {
       lstCoordinateSystems->setCurrentItem(myIterator.current());
       lstCoordinateSystems->ensureItemVisible(myIterator.current());
@@ -111,7 +112,7 @@ QString QgsProjectionSelector::getSelectedName()
   }
 }
 // Returns the whole wkt for the selected projection node
-QString QgsProjectionSelector::getCurrentWKT()
+QString QgsProjectionSelector::getCurrentProj4String()
 {
   // Only return the projection if there is a node in the tree
   // selected that has an srid. This prevents error if the user
@@ -145,7 +146,7 @@ QString QgsProjectionSelector::getCurrentWKT()
     const char *pzTail;
     sqlite3_stmt *ppStmt;
     char *pzErrmsg;
-    QString sql = "select srtext from tbl_srs where srsid = ";
+    QString sql = "select srtext from tbl_srs where srs_id = ";
     sql += lvi->text(1);
 
 #ifdef QGISDEBUG

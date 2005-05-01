@@ -37,10 +37,10 @@ public:
   void updateProjAndEllipsoidAcronyms(int theSrsid,QString theProj4String);
     
 public slots:
-    void setSelectedWKT(QString theWKT);
+    void setSelectedSRSName(QString theSRSName);
     QString getSelectedName();
-    void setSelectedSRID(QString theSRID);
-    QString getCurrentWKT();
+    void setSelectedSRSID(long theSRSID);
+    QString getCurrentProj4String();
     long getCurrentSRID(); //posgis style projection identifier
     long getCurrentSRSID();//qgis projection identfier
 
