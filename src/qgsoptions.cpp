@@ -68,8 +68,9 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name) : QgsOptionsBase(paren
   {
     radUseGlobalProjection->setChecked(true);
   }
-  mGlobalWKT = settings.readEntry("/qgis/projections/defaultProjectionWKT");
-  txtGlobalWKT->setText(mGlobalWKT);
+  mGlobalSRSID = settings.readNumEntry("/qgis/projections/defaultProjectionSRSID");
+  //! @todo changes this control name in gui to txtGlobalProjString
+  txtGlobalWKT->setText(QString::number(mGlobalSRSID));
 }
 //! Destructor
 QgsOptions::~QgsOptions(){}
@@ -119,7 +120,7 @@ void QgsOptions::saveOptions()
     //
     settings.writeEntry("/qgis/projections/defaultBehaviour", "useGlobal");
   }
-  settings.writeEntry("/qgis/projections/defaultProjectionWKT",mGlobalWKT);
+  settings.writeEntry("/qgis/projections/defaultProjectionWKT",(int)mGlobalSRSID);
 
   //all done
   accept();
@@ -168,16 +169,17 @@ void QgsOptions::pbnSelectProjection_clicked()
 {
   QSettings settings;
   QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector();
-  mySelector->setSelectedWKT(mGlobalWKT);
+  mySelector->setSelectedSRSID(mGlobalSRSID);
   if(mySelector->exec())
   {
 #ifdef QGISDEBUG
     std::cout << "------ Global Default Projection Selection Set ----------" << std::endl;
 #endif
-    mGlobalWKT = mySelector->getCurrentWKT();  
-    txtGlobalWKT->setText(mGlobalWKT);
+    mGlobalSRSID = mySelector->getCurrentSRSID();  
+    //! @todo changes this control name in gui to txtGlobalProjString
+    txtGlobalWKT->setText(mySelector->getCurrentProj4String());
 #ifdef QGISDEBUG
-    std::cout << "------ Global Default Projection now set to ----------\n" << mGlobalWKT << std::endl;
+    std::cout << "------ Global Default Projection now set to ----------\n" << mGlobalSRSID << std::endl;
 #endif
   }
   else

@@ -129,13 +129,13 @@ void QgsSpatialRefSys::validate()
 
     QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector();
     // XXX TODO: Change project to store selected CS as 'projectSRS' not 'selectedWKT'
-    QString myDefaultSRS =
-      QgsProject::instance()->readEntry("SpatialRefSys","/selectedWKT",GEOPROJ4);
-    mySelector->setSelectedWKT(myDefaultSRS);
+    long myDefaultSRS =
+      QgsProject::instance()->readNumEntry("SpatialRefSys","/selectedSRS",GEOSRS_ID);
+    mySelector->setSelectedSRSID(myDefaultSRS);
     if(mySelector->exec())
     {
-      //XXX TODO change this to use SRS_ID (qgis codes)
-      createFromSrid(mySelector->getCurrentSRID());
+      //XXX TODO handle user defined projections too
+      createFromSystemSrsId(mySelector->getCurrentSRSID());
     }
     else
     {

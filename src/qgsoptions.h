@@ -67,7 +67,7 @@ class QgsOptions :public QgsOptionsBase{
     //! Pointer to our parent
     QWidget *qparent;
     //!Global default projection used for new layers added that have no projection
-    QString mGlobalWKT;
+    long mGlobalSRSID;
 };
 
 #endif // #ifndef QGSOPTIONS_H

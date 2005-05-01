@@ -45,6 +45,8 @@ class QgsSpatialRefSys
          * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
          * @param  long theSRID If available, the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
          * @param  long theEpsg If available the ESPG identifier for this srs (defaults to 0)
+         *
+         * @note THIS CTOR WILL PROABBLY BE REMOVED!!!!!!!!!!!!!!!!
          */
         QgsSpatialRefSys(long theSrsId, 
                 QString theDescription, 
