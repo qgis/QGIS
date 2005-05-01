@@ -1,0 +1,444 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>QgsPointDialogBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsPointDialogBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>531</width>
+            <height>416</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Georeferencer</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel" row="2" column="0">
+            <property name="name">
+                <cstring>textLabel2</cstring>
+            </property>
+            <property name="text">
+                <string>Transform type:</string>
+            </property>
+        </widget>
+        <widget class="QComboBox" row="2" column="1" rowspan="1" colspan="3">
+            <item>
+                <property name="text">
+                    <string>Linear</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Helmert</string>
+                </property>
+            </item>
+            <property name="name">
+                <cstring>cmbTransformType</cstring>
+            </property>
+        </widget>
+        <widget class="QFrame" row="0" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>frame4</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>0</number>
+                </property>
+                <widget class="QToolButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>tbnZoomIn</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image0</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Zoom in</string>
+                    </property>
+                </widget>
+                <widget class="QToolButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>tbnZoomOut</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image1</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Zoom out</string>
+                    </property>
+                </widget>
+                <widget class="QToolButton" row="0" column="2">
+                    <property name="name">
+                        <cstring>tbnZoomToLayer</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="toggleButton">
+                        <bool>false</bool>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image2</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Zoom to the raster extents</string>
+                    </property>
+                </widget>
+                <widget class="QToolButton" row="0" column="3">
+                    <property name="name">
+                        <cstring>tbnPan</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image3</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Pan</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QFrame" row="0" column="3" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>frame5</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>0</number>
+                </property>
+                <widget class="QToolButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>tbnAddPoint</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image4</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Add points</string>
+                    </property>
+                </widget>
+                <widget class="QToolButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>tbnDeletePoint</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="toggleButton">
+                        <bool>true</bool>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image5</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Delete points</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <spacer row="0" column="5" rowspan="1" colspan="5">
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>300</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QPushButton" row="4" column="8" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>pbnGenerateAndLoad</cstring>
+            </property>
+            <property name="text">
+                <string>Generate world file and load layer</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="7">
+            <property name="name">
+                <cstring>pbnGenerateWorldFile</cstring>
+            </property>
+            <property name="text">
+                <string>Generate world file</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="4" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>pbnCancel</cstring>
+            </property>
+            <property name="text">
+                <string>Cancel</string>
+            </property>
+        </widget>
+        <spacer row="4" column="2" rowspan="1" colspan="5">
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>150</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLabel" row="3" column="4" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>World file:</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="2" column="6" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>leSelectModifiedRaster</cstring>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="3" column="6" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>leSelectWorldFile</cstring>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="3" column="9">
+            <property name="name">
+                <cstring>pbnSelectWorldFile</cstring>
+            </property>
+            <property name="text">
+                <string>...</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="9">
+            <property name="name">
+                <cstring>pbnSelectModifiedRaster</cstring>
+            </property>
+            <property name="text">
+                <string>...</string>
+            </property>
+        </widget>
+        <widget class="QFrame" row="1" column="0" rowspan="1" colspan="10">
+            <property name="name">
+                <cstring>canvasFrame</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+        </widget>
+        <widget class="QLabel" row="2" column="4" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>textLabel1_2</cstring>
+            </property>
+            <property name="text">
+                <string>Modified raster:</string>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<images>
+    <image name="image0">
+        <data format="PNG" length="1065">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000003f049444154388d8d945f6c53551cc73fe7dcdbaeb7b75dcb5ac6d60e2c913fa20b748b92057890f8607c1096f080a2d12e98a80f44c79b890e349a9898650a2fb808ede2838b260cc498a046d0448601c9900842862c0bd6d191ac08bdedbd6b7b7c5837471c57bec9793827399fdfeff7cdf71ca19462568383c713528a3d7915e8bc8319b6651d51f937fe6a6144af3a03dbb73ff921f729310b4ea78fa62689f4dd5a94086b9108a1a040d7054a815356787259ea73574670ecae9d3bb78edc1778fffec154cebb343dbda28dc6a8c4f0093c1e0180e328fc7e812625b7f325aae77ecaab5b536dbb763d33e606d67cbe4422af47869cd51dbe784c63715427daa0110a68d47905e5aac22e29bc759268c443c50cf9eefc3196dcd0d13ae00696b66dbf565ab22a1c5924690869344524f1a0246e0aa61dc5f2b8877058c3f0098484d8ca28de96f8e37bf71e48ba82a71cbdd3176fc6300401bf20e4113402cd40598159558443928690a43e20f17b052d8faec4b24a2fba81f50266a2c990783c02a9810678805c49110c484c5d302d400724a080d8b2462cabe4dab16e7b43787490126edcac30355561cc90683e419329f109f03303d66ae00a502cda6e5cf4caed9b486d2656a180c4e7154860895fd220e1366000de796007b0aca22b581627ae8d398e42d7207ba3825552783c024742be06f431d3b5592b92bb7a9d62b1e49a655998cc1e99b8f83b00a65fe09461baf618b59a057a0d3e0bfef6f36f28166df7b8394ef9ed2b5f1dce5b45457d50a2ebae13327a799c5fcf5e64f9f296bc2bf8c4894ff2562edb35dc9fa66055099a02c14cd42a40b9b64ac085cbe3f4bed74f32b99afa7ad33515737fc5e6cd2f7586e22de98ee7b6855b373d42c02f30e48c053ee0fbc1e3fcf0e54992eb56138b2d46dd1a65d9f58f28159dcc53fbfeecba27b8060f037bea1ba39dc186504293022960ecb7d193c0c0c68ded23b66d87c332975e650d25d627834c5d1be5d25f46e6d983d9bbe0a25aad02609e9673150a1d550120845870cc8f77c4a6b6edde19360321acf387b97aee12e7c68dcc2b9ffd0b97f32f1c5bd103c36eced50a17e91e1e3a4adda230feb55b79b07d0dad312bf5fe96587a0e6c9e966a7eb700669f5466dfdd67f3b57b289b397376b2eb8b0ff6511769c4bf760b6b1e7b88f50f14526f3cd19c0610c629d4b1153dffb9fcf4a7ef60ed560b7b51d3eb9b9a53c9b6c6f40b6f7563dfcc629d3fca991f2f716cc4cc60f4a28c5e94710af55dae47cded7b514a29fe6f75b52f491d78799daa4c669475e15d357ea85dbdba61a99285eeaa287457efea6ca1b37be9d02f1399e19f27bafadfeca36c3470f06b3093cfcf4bc53c4f67a1f74ac5424ab535a50d43a6f48777706da274e41fc43c9db6a2d824f60000000049454e44ae426082</data>
+    </image>
+    <image name="image1">
+        <data format="PNG" length="1003">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000003b249444154388dadd44f4c1c6518c7f1effbceecb2b37fd8855de8b28bcd12db122dea52ff146d0ff6443c68498c696b135dacc653a398d878d0b61a4d4d0cf14f0f360d66205e888702d64bdb68ab494b0cc68046b00d0a6990c282619132bb33b0bc1e589a369649353ec97b9bf733cf3cf37b5fa19462adbabbcfa4a41447722ad8729d40c49665c4e45ff8571607f515a76bcf9ee68fb8c3126bb069f66566887e385f918a68d128e19040d7054a81b3acf0642729cf5e19c4b15b0f1cd83d7847f0f1e3dd99acf72e73695323d53189e113783c0200c751f8fd024d4a167205567ebc9853f3738d070fee1d7783359f2f95cae9d11ea7bec9974c6854c57462951ae1a0469957b0bca2b00b0a6f992416f5500c847dd77f1f4f3fd6d4d0e5064bdbb65f296cd8128956482ac31af1a824199224038225475197f4108968183e819090d81cc35b9b7cfce8d113695778ced15b7cc91a0c4310f40bc21e413550032c2b08ac282261496558521e94f8bd82da8736635985e7dd607d91402a6e483c1e81d440033c40b6a0080525015db024400724a080c4c66a2cabe0dab16e7bc378749012a6678bcccd151937249a4f100f487c02fcacc25a092e02f9bcede6a217176691da6aacc24189cf2b90c006bfa452c2026000de9b6007b0acbc2b2cf35363e38ea3d035989c2e6215141e8fc091902b813e56bb0e945e92fd6d827cbee09a65b93833d93b35fc2b0001bfc05986a5d261d44a23d04bf81a7cee8bb3e4f3b67bdc1c67f9ed2b5f9dca5979457948a2ebae5fc8e8e5abfcf4c3307575b53957f8fcf98e9c959d6ced3f69b268ad100a0804ab512b02cba555007ebe7c95f6f74e924ed7535e1e704dc58dbb62d7ae175bc2c95ab369ffd391869d5b09fa05865c1d810ff8a6fb0cdf7e7981f403f5241255a8f951364e7c4c21ef743ef1c91fadebc2253c021c29af8eb5842ac3294d0aa480f15f462f005d3b766c1bb46d3b129159738bd5937a241d626e6c94916b46e7becf266fc59552ff7a9dd857333733f0a6b2463e50b3dd8faaef0f45d4a77b6bcc9b9f91eebfeaf6b598a7adbfa78fb28a08fefb7773f7b67b68485899f79f4a983746615c42dd76773f58af29b11e7eb8b926b3f5be2af399436dd87f4e630df53274718473c3fece635f5f6b15c625d4e94d87ffb1f1c9cfdf7185015edd59934937569bcfbdd5863d3b8935d4c7c077239c1e0c740aa37d9d8e71ef78ad5e78309ed9fe70dc7ce9dd36eca90966074e71ac63e6d654fcd7ca34c6334ddbe3e6fed75fa6fd8d0e16ab9bff1fb8849b862133fabdcf323655e8fd1b371992f6dc9bd8990000000049454e44ae426082</data>
+    </image>
+    <image name="image2">
+        <data format="PNG" length="1186">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000046949444154388da5945b6c544518c77f73ce59b667cf5ee8f6be254529f4ea0583411f542e5144128d4a4c5b1f3091582ac1071eb4fa6008d104d0a40f3484b62aa831a11b221025c4077111ef01ac90b5b4e552d896d26e8b6ccb5eba67f7ecf8b052845234fa4f263393ccfcbecb7cf309fea63d7bbe2a5314f17a443a5745313c49c54ebe328123130b6a19b3b3be7e651bff52e2fa62d7ae030da3e4bd1b7116cd53bd5edc4e81a609a404332db18d0d336bf014a343bd9866e28ed06ddbb6090d60fbf63d0de7cdfcd6d4fc07c8774de2cd35b0d9b2364d53e2700894b20aa2e565cc3fede3b92716e1721977624bb165cbeeb2985e14306b97784a7d2a9e9c645e618141221625959244ae59984989c35071ea82c8d055060e1de04ccfcfb725fafd7e841068c964b271f2ae0a4f41ae82d7a3926728943815125270e9d22495792a237f58249c4ed21ae457fa88841ee454610d6d1b564e01ebda032c39bc736aaf5d35b555aed212745de07408dc1a1400b1b4c5450976dd81c71da3408d1235dc68027c0be7b1f1e5c629e066d98b7fdd325678e74e8195184699a12bd86c02450515d08088a540d16cd0341c5e27860a2589097285c5825c3b63ee3ceada03006c1295d4b50778f6f1876e789c9ce5c1a681a2c0c898c5682acd15af453c25c9f708720498f1043a59a33216c302ae54d54c41ece7fa489657dc946bc5ba3686a266cbca6d28785c2aaa4d50a82be42a10050a65060760370c84ee2207b01d3bc666d93b63592889e1fe90694a341586462c1293129b2648db34e2e9248e5412ec3958861b818a4d119c1f1ec73d7a99aaa62636cb5e12696b3a38363a7468b8bb0700c321302d4849c85869329a1d69b393d16661071c400ef0ed9747695bfe0200554d4dec6d598f7fdd3200a2d168166c9ae9f7fb0eee1b8f27246e9782a6ce181d00fd670709fe7802b5fa468e7bdadae869cbfef68181812cf8c8918fc6e3e1a1d77eead84d2c9ec1e91008c092600169b27312e83e3bc88e964fb96ff142de6bd908c09a37dad9242aa78c54575703d987e6c285ae33f97a71f0e2f193cb7366e7e5faee2e016982a6a1fc75e1ebfddfb0ef932fa8ad29a7b4b410a5b210b1e8320e3d4351d77142a110aaaab27af56aeaebeb6f342180a54bd77a7c3e3d52386701e1c83819bb8e22a0f74a9489b2b9a8be12342bcddaaecf99a37d4fc5c33e22a17e7e0815f1d6c7c700e8e8e8201c0edf0c06686e6e965bb76ea5aeae6ec63c3f9908f058f3ab78749d78f020174ef5a1d6be42776a2e814080cecece6c77bb9dfc7eff8ce09ea3fb391b686145632336ed197ce65e2e75efa6ef9c8fcefd27a6397b5df2d6915f56255d0573a43acb2185101290b5c539f283f5d5327c7abb0c1f7f470e7ef6883cbcc13df6e6f2e256c8b6855b35cde258a867daa1df8727099ebcdaa0edf8b075cddb1b49ea4f71bf6262a64f374cc48bf987aabdb37e198806bd690646fa82ab163fbd02c528c129c27cd73579efff0203fc763916ccb3b2f07b963cca8e9dbf42f9f3d3c3feaf7a696151abae2b0d5acd8bf40f4f1efa13f848b35971dcd6260000000049454e44ae426082</data>
+    </image>
+    <image name="image3">
+        <data format="PNG" length="934">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000036d49444154388db5956d689b5514c77f4f93e2c4e2a46e3418d9076bb3d1178dfbd0e1a4719b7d5999593726b8525637b443614c61d40f06d61ae2fcd0229b9d1d2ac2b01323ced2b54c06dd10fba1b47563c176e24b6953b5dd96be99a5797bf2dce7f82138d8b2d4a1f4c0fd72ef3dbffb3f8773ced516420bac84e5ac087525c1d66c07e168581a1b1b514a515d5dcdf4f4345f9f3b8f96934399e3097acef668ff093c3939c94c5ca83df026c78eec471313dfe96e0acb3672a4fe454a9ca562b1587869cf1e8ebe7334e3916553b1347f931db5db69f9a09364324964ea670a6df9ec6a3cc8931b9fe5ad0fbbe8387992f9f0bcdc37d859ead4ac7a0cdfa1fd54eddc4dcd0e378629e8266c282e6675ae46ddd6cd3ce3aac4eff733f1fb84dc1718a0bfbf9fc9c0309d278eb3f7d5d7295c5f8c32014b2e633f0678c0a2313b354ed7b90b9497972faff872e0b2749cea90e12bc3625b63d3dadbdb190d5ce5e98a4a9edb5689685058ea6467e34182c12037fefc83f74e9dc634cdec602d5793fafa7a3efdb29bbaba3a16238be270383011920a0c13942928815daf1d6675819d81d171ae8d8d5254547407f88eaa0806833cb2ae8876ffb778f6d5e1f57a514ab1eac1871049c37513924ad015acb25830f2d6d2d3f519adadadd9c100d77ffb09c7da3c0e7b5a191cb98288d0b0a5126b8e464c090943482821a120692a267efd8589c0109b369dc80eb65aad24e35106bfbb88bba60a574505314330015d099194b064083143584a09a13874b5b550f3c236f21fced7b282ed0576cde572496f6f1f9bb754a269600ac4551a1449097143882921ae60617e8ef11f06f86a68f0eec033abc2ebf5d27fb68bbe8161a6a38a05dd6421995e613d0d8fa6d279be70dc43e1bac7b1adb1fd7be795ac2fd11af6beccbbafb8b93438c2cd98492821cc25845bbab064802eb0b438cbd5de2f686e6ece509b918a7facedfd360d909e8e633cfad137a44c30efba73ed620f050505b86bddf71c46593bafa1a181a9d111666fcc6098eaf6be692a6e856618f27f4c53535336f7e55b3a1e5ee4f343bb4944c2b7f7129130feb7f7110bcfe3f3f9f0b4783206108096ed6b0a8c05a4aa663b6f9cf91e9ba32cad5619a4127100f478944b9d3e027d6708cd8432d291751e3b4b9ddad6e75df2c9812a1edbf0543a82c85fe873d7b1dbed00e4e5e5d1dddd7d4fffac8affaffd0defcf9abaa3661ed60000000049454e44ae426082</data>
+    </image>
+    <image name="image4">
+        <data format="PNG" length="287">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000000e649444154388db5d4318e83301085e19f28450ec00db80065bae5683e0f15450e30e98c44b1155568a839c0766f0b48a24449009b4c618d3dd6578d1e6c540e24909c938136430d2433d9d47f053550128b16c08f19e7a2b8bd1b100c7f420985e75017022f41816415bc14bd1d5ba38be1b5e82238049d8543d18f700cfa76108bbe1c0a40525dd7fc1d8f4128c0ee19ed2e1701a469cac1fb20f401d698a6645946d7750cc330a2cead4601f64f775dd1beef69db96aaaaf85d89de35094918c87bafb22c95e7b9880dec0630901bb7414c5b1153493335a731f9b1888c7ea866fe4b50fd036254a77a6cb411ba0000000049454e44ae426082</data>
+    </image>
+    <image name="image5">
+        <data format="PNG" length="188">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000008349444154388dd5d4490e80200c05d0e2fd0fd59b7d1726041a289d8cb1091bd3ff1844897e592002880066bc033b7130f7dcb1c18acb8cb951c3dd0bb10422bb3b06c3a806a4d12d5e81aab811bd523347aaf42880e7a297be3c80d047d5759bd071643f902d8cf53fc0846b680a8fc22bdcbdeaed190a7c7cdee40432d8dadcf379ddcbcdba9c53d0f2ce0000000049454e44ae426082</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>pbnGenerateWorldFile</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>pbnGenerateWorldFile_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbnGenerateAndLoad</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>pbnGenerateAndLoad_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbnCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>pbnCancel_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbnSelectWorldFile</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>pbnSelectWorldFile_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>tbnZoomIn</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>tbnZoomIn_changed(int)</slot>
+    </connection>
+    <connection>
+        <sender>tbnZoomOut</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>tbnZoomOut_changed(int)</slot>
+    </connection>
+    <connection>
+        <sender>tbnZoomToLayer</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>tbnZoomToLayer_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>tbnAddPoint</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>tbnAddPoint_changed(int)</slot>
+    </connection>
+    <connection>
+        <sender>tbnDeletePoint</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>tbnDeletePoint_changed(int)</slot>
+    </connection>
+    <connection>
+        <sender>tbnPan</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>tbnPan_changed(int)</slot>
+    </connection>
+    <connection>
+        <sender>pbnSelectModifiedRaster</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>pbnSelectModifiedRaster_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>cmbTransformType</sender>
+        <signal>activated(int)</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>enableRelevantControls()</slot>
+    </connection>
+    <connection>
+        <sender>leSelectModifiedRaster</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>enableRelevantControls()</slot>
+    </connection>
+    <connection>
+        <sender>leSelectWorldFile</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>QgsPointDialogBase</receiver>
+        <slot>enableRelevantControls()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>pbnGenerateWorldFile_clicked()</slot>
+    <slot>pbnGenerateAndLoad_clicked()</slot>
+    <slot>pbnCancel_clicked()</slot>
+    <slot>pbnSelectWorldFile_clicked()</slot>
+    <slot>tbnZoomIn_changed(int)</slot>
+    <slot>tbnZoomOut_changed(int)</slot>
+    <slot>tbnZoomToLayer_clicked()</slot>
+    <slot>tbnPan_changed(int)</slot>
+    <slot>tbnAddPoint_changed(int)</slot>
+    <slot>tbnDeletePoint_changed(int)</slot>
+    <slot>pbnSelectModifiedRaster_clicked()</slot>
+    <slot>enableRelevantControls()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
