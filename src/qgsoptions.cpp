@@ -120,7 +120,7 @@ void QgsOptions::saveOptions()
     //
     settings.writeEntry("/qgis/projections/defaultBehaviour", "useGlobal");
   }
-  settings.writeEntry("/qgis/projections/defaultProjectionWKT",(int)mGlobalSRSID);
+  settings.writeEntry("/qgis/projections/defaultProjectionSRSID",(int)mGlobalSRSID);
 
   //all done
   accept();
