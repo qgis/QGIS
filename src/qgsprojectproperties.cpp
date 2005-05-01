@@ -78,7 +78,7 @@
 //  QString defaultWkt = QgsSpatialReferences::instance()->getSrsBySrid(defaultWktKey)->srText();
   // the /selectedWKT entry stores the wkt entry selected in the list of projections
   /** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
-  const long GEOSRS_ID = 2581;
+  const long GEOSRS_ID = 2585;
   long mySRSID =  QgsProject::instance()->readNumEntry("SpatialRefSys","/selectedSRSID",GEOSRS_ID);
 
   projectionSelector->setSelectedSRSID(mySRSID);
