@@ -27,11 +27,11 @@ const  QString GEOWKT =
 /** PROJ4 string that represents a geographic coord sys */
 const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +no_defs";
 /** Magic number for a geographic coord sys in POSTGIS SRID */
-const long GEOSRID = 4318;
+const long GEOSRID = 4326;
 /** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
-const long GEOSRS_ID = 2581;
+const long GEOSRS_ID = 2585;
 /**  Magic number for a geographic coord sys in EPSG ID format */
-const long EPSGID = 4318;
+const long EPSGID = 4326;
 /** The length of teh string "+proj=" */
 const int PROJ_PREFIX_LEN = 6;
 /** The length of teh string "+ellps=" */
