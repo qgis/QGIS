@@ -37,19 +37,22 @@ void QgsLayerProjectionSelector::pbnOK_clicked()
  accept();
 }
 
-void QgsLayerProjectionSelector::setSelectedWKT(QString theWKTName)
+void QgsLayerProjectionSelector::setSelectedSRSName(QString theName)
 {
-  projectionSelector->setSelectedWKT(theWKTName);
+  projectionSelector->setSelectedSRSName(theName);
 }
-
-QString QgsLayerProjectionSelector::getCurrentWKT()
+void QgsLayerProjectionSelector::setSelectedSRSID(long theID)
+{
+  projectionSelector->setSelectedSRSID(theID);
+}
+QString QgsLayerProjectionSelector::getCurrentProj4String()
 {
   //@NOTE dont use getSelectedWKT as that just returns the name part!
-  return projectionSelector->getCurrentWKT();
+  return projectionSelector->getCurrentProj4String();
 }
 
-long QgsLayerProjectionSelector::getCurrentSRID()
+long QgsLayerProjectionSelector::getCurrentSRSID()
 {
   //@NOTE dont use getSelectedWKT as that just returns the name part!
-  return projectionSelector->getCurrentSRID();
+  return projectionSelector->getCurrentSRSID();
 }
