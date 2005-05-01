@@ -2401,42 +2401,37 @@ bool QgsVectorLayer::commitChanges()
     qWarning("in QgsVectorLayer::commitChanges");
 #endif
     bool returnvalue=true;
-    std::list<QgsFeature*> addedlist;
-    for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-    {
-      addedlist.push_back(*it);
-    }
-    if(!dataProvider->addFeatures(addedlist))
-    {
-      returnvalue=false;
-    }
-    for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-    {
-      delete *it;
-    }
-    mAddedFeatures.clear();
 
-    if( mChangedAttributes.size() > 0 ) {
-        if ( !dataProvider->changeAttributeValues ( mChangedAttributes ) ) {
-          QMessageBox::warning(0,"Warning","Could change attributes");
-  }
-  mChangedAttributes.clear();
-    }
-
-    if(mDeleted.size()>0)
-    {
-      std::list<int> deletelist;
-      for(std::set<int>::iterator it=mDeleted.begin();it!=mDeleted.end();++it)
+  if(mDeleted.size()>0)
+      {
+        std::list<int> deletelist;
+        for(std::set<int>::iterator it=mDeleted.begin();it!=mDeleted.end();++it)
+          {
+            deletelist.push_back(*it);
+            mSelected.erase(*it);//just in case the feature is still selected
+          }
+        if(!dataProvider->deleteFeatures(deletelist))
         {
-          deletelist.push_back(*it);
-          mSelected.erase(*it);//just in case the feature is still selected
+          returnvalue=false;
         }
-      if(!dataProvider->deleteFeatures(deletelist))
+      }	
+
+      std::list<QgsFeature*> addedlist;
+      for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+      {
+        addedlist.push_back(*it);
+      }
+      if(!dataProvider->addFeatures(addedlist))
       {
         returnvalue=false;
       }
-    }
-    return returnvalue;
+      for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+      {
+        delete *it;
+      }
+      mAddedFeatures.clear();
+
+      return returnvalue;
   }
   else
   {
