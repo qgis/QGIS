@@ -311,6 +311,9 @@ void QgsProjectionSelector::getProjList()
   sqlite3_step(ppStmt);
   // Set the max for the progress dialog to the number of entries in the srs_name table
   int myEntriesCount = sqlite3_column_int(ppStmt, 0);
+#ifdef QGISDEBUG
+  std::cout << "Projection entries found in srs.db: " << myEntriesCount << std::endl;
+#endif
   sqlite3_finalize(ppStmt);
 
   // Set up the query to retreive the projection information needed to populate the list
@@ -324,6 +327,10 @@ void QgsProjectionSelector::getProjList()
   // XXX Need to free memory from the error msg if one is set
   if(rc == SQLITE_OK)
   {
+#ifdef QGISDEBUG
+  std::cout << "SQL for projection list executed ok..."  << std::endl;
+#endif
+
     QListViewItem *newItem;
     // set up the progress dialog
     int myProgress = 1;
