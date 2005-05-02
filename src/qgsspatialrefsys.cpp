@@ -186,35 +186,15 @@ void QgsSpatialRefSys::createFromSrid(long theSrid)
 #ifdef QGISDEBUG
   std::cout << " QgsSpatialRefSys::createFromSrid" << std::endl;
 #endif
- 
-  QString myDatabaseFileName;
-  
-  //
-  // Determine if this is a user projection or a system on
-  // user projection defs all have srs_id >= 100000
-  //
-  if (theSrid >= USER_PROJECTION_START_ID)
-  {
-    myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
-    QFileInfo myFileInfo;
-    myFileInfo.setFile(myDatabaseFileName);
-    if ( !myFileInfo.exists( ) )
-    {
-      isValidFlag==false;
-      std::cout << " QgsSpatialRefSys::createFromSrid failed :  users qgis.db not found" << std::endl;
-      return;
-    }
-  }
-  else //must be  a system projection then
-  {
-    // Get the package data path and set the full path name to the sqlite3 spatial reference
-    // database.
+
+
+  // Get the package data path and set the full path name to the sqlite3 spatial reference
+  // database.
 #if defined(Q_OS_MACX) || defined(WIN32)
-    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
-    myDatabaseFileName = PKGDATAPATH;
-    myDatabaseFileName += "/resources/srs.db";
-  }
+  QString myDatabaseFileName = PKGDATAPATH;
+  myDatabaseFileName += "/resources/srs.db";
 
 
   sqlite3      *myDatabase;
@@ -393,14 +373,34 @@ void QgsSpatialRefSys::createFromSrsId (long theSrsId)
 {
 #ifdef QGISDEBUG
   std::cout << " QgsSpatialRefSys::createFromSrsId" << std::endl;
-#endif
-  // Get the package data path and set the full path name to the sqlite3 spatial reference
-  // database.
+#endif 
+  QString myDatabaseFileName;
+  //
+  // Determine if this is a user projection or a system on
+  // user projection defs all have srs_id >= 100000
+  //
+  if (theSrsId>= USER_PROJECTION_START_ID)
+  {
+    myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+    QFileInfo myFileInfo;
+    myFileInfo.setFile(myDatabaseFileName);
+    if ( !myFileInfo.exists( ) )
+    {
+      isValidFlag==false;
+      std::cout << " QgsSpatialRefSys::createFromSrid failed :  users qgis.db not found" << std::endl;
+      return;
+    }
+  }
+  else //must be  a system projection then
+  {
+    // Get the package data path and set the full path name to the sqlite3 spatial reference
+    // database.
 #if defined(Q_OS_MACX) || defined(WIN32)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
-  QString myDatabaseFileName = PKGDATAPATH;
-  myDatabaseFileName += "/resources/srs.db";
+    myDatabaseFileName = PKGDATAPATH;
+    myDatabaseFileName += "/resources/srs.db";
+  }
 
 
   sqlite3      *myDatabase;
