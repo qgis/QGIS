@@ -41,6 +41,9 @@
 
 // set the default coordinate system
 static const char* defaultWktKey = "4326";
+/** Magick number that determins whether a projection srsid is a system (srs.db)
+ *  or user (~/.qgis.qgis.db) defined projection. */
+const int USER_PROJECTION_START_ID=100000;
 
 QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name , WFlags fl  )
   : QgsProjectionSelectorBase( parent, "Projection Selector", fl )
@@ -462,14 +465,39 @@ void QgsProjectionSelector::updateProjAndEllipsoidAcronyms(int theSrsid,QString 
 }
 
 // New coordinate system selected from the list
-void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem)
+void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem )
 {
+
+  QString myDatabaseFileName;
+  QString mySrsId = theItem->text(1);
+  
+  //
+  // Determine if this is a user projection or a system on
+  // user projection defs all have srs_id >= 100000
+  //
+  if (mySrsId.toLong() >= USER_PROJECTION_START_ID)
+  {
+    myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+    QFileInfo myFileInfo;
+    myFileInfo.setFile(myDatabaseFileName);
+    if ( !myFileInfo.exists( ) ) //its unlikely that this condition will ever be reached 
+    {
+      std::cout << " QgsProjectionSelector::coordinateSystemSelected :  users qgis.db not found" << std::endl;
+      return;
+    }
+  }
+  else //must be  a system projection then
+  {
+    myDatabaseFileName =  mSrsDatabaseFileName;
+  }
+
+
   if(theItem->text(1).length() > 0)
   {
     sqlite3 *db;
     char *zErrMsg = 0;
     int rc;
-    rc = sqlite3_open(mSrsDatabaseFileName, &db);
+    rc = sqlite3_open(myDatabaseFileName, &db);
     if(rc) 
     {
       std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl; 
@@ -482,7 +510,7 @@ void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem)
     sqlite3_stmt *ppStmt;
     char *pzErrmsg;
     QString sql = "select parameters from tbl_srs where srs_id = ";
-    sql += theItem->text(1);
+    sql += mySrsId;
 #ifdef QGISDEBUG
     std::cout << "Selection sql : " << sql << std::endl;
 #endif
