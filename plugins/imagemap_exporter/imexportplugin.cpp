@@ -92,14 +92,11 @@ void IMExportPlugin::initGui()
   QPopupMenu *pluginMenu = mQGisIface->getPluginMenu("&Image Map Exporter");
   mMenuId = pluginMenu->insertItem(QIconSet(icon),"&Image Map Exporter", this, SLOT(run()));
 
-  // Create the action for tool
-  QAction *myQActionPointer = new QAction("Image Map Exporter", QIconSet(icon), "&Wmi",0, this, "run");
-  // Connect the action to the run
+  // Create the action for the tool
+  QAction *myQActionPointer = new QAction("Image Map Exporter", QIconSet(icon),
+					  "&Wmi",0, this, "run");
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
-  // Add the tool button
-  mToolBarPointer = new QToolBar((QMainWindow *) mQGisApp, "Image Map Exporter");
-  mToolBarPointer->setLabel("ImageMap Importer");
-  myQActionPointer->addTo(mToolBarPointer);
+  mQGisIface->addToolBarIcon(myQActionPointer);
 }
 
 //method defined in interface
