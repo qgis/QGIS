@@ -223,7 +223,7 @@ void QgsSpatialRefSys::createFromSrid(long theSrid)
     is_geo integer NOT NULL);
   */
 
-  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where srs_id='" + QString::number(theSrid) + "'";
+  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where srid='" + QString::number(theSrid) + "'";
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
