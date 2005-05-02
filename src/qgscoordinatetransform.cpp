@@ -107,7 +107,7 @@ void QgsCoordinateTransform::setDestSRSID (long theSRSID)
 #ifdef QGISDEBUG
   std::cout << "QgsCoordinateTransform::setDestSRSID slot called" << std::endl;
 #endif  
-  mDestSRS->createFromSystemSrsId(theSRSID);
+  mDestSRS->createFromSrsId(theSRSID);
   initialise();
 }
 
