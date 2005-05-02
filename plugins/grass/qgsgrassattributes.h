@@ -20,9 +20,27 @@
 
 #include "../../src/qgsidentifyresults.h"
 
+class QTable;
+
 class QgsGrassProvider;
 class QgsGrassEdit;
 #include "qgsgrassattributesbase.h"
+
+class QgsGrassAttributesKeyPress : public QObject
+{
+    Q_OBJECT;
+
+public:
+    QgsGrassAttributesKeyPress ( QTable *tab );
+    ~QgsGrassAttributesKeyPress ();
+
+protected:
+    bool eventFilter( QObject *o, QEvent *e );
+
+private:
+    QTable *mTable;
+};
+
 
 /*! \class QgsGrassAttributes
  *  \brief GRASS attributes.
