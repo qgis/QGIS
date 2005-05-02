@@ -222,7 +222,7 @@ void QgsProjectionSelector::getUserProjList()
   // first we look for ~/.qgis/user_projections.db
   // if it doesnt exist we copy it in from the global resources dir
   QFileInfo myFileInfo;
-  myFileInfo.setFile(myQGisSettingsDir+"user_projections.db");
+  myFileInfo.setFile(myQGisSettingsDir+"qgis.db");
   //return straight away if the user has not created any custom projections
   if ( !myFileInfo.exists( ) )
   {
@@ -238,7 +238,7 @@ void QgsProjectionSelector::getUserProjList()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(myQGisSettingsDir+"user_projections.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(myQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -250,7 +250,7 @@ void QgsProjectionSelector::getUserProjList()
   }
 
   // Set up the query to retreive the projection information needed to populate the list
-  QString mySql = "select description from tbl_user_projection order by description";
+  QString mySql = "select description,srs_id,is_geo, name,parameters from vw_srs";
 #ifdef QGISDEBUG
   std::cout << "User projection list sql" << mySql << std::endl;
 #endif
@@ -262,6 +262,8 @@ void QgsProjectionSelector::getUserProjList()
     while(sqlite3_step(myPreparedStatement) == SQLITE_ROW)
     {
       newItem = new QListViewItem(mUserProjList, (char *)sqlite3_column_text(myPreparedStatement,0));
+      // display the qgis srs_id in the second column of the list view
+      newItem->setText(1,(char *)sqlite3_column_text(myPreparedStatement, 1));
     }
   }
   // close the sqlite3 statement
