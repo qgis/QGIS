@@ -92,21 +92,14 @@ class QgsSpatialRefSys
          */
         void createFromEpsg(const long theEpsg);
         /*! Set up this srs by fetching the appropriate information from the 
-         * sqlite backend. Only the system level read only srs.db will be checked
+         * sqlite backend. If the srsid is < 100000, only the system srs.db 
+         * will be checked. If the srsid > 100000 the srs will be retrieved from 
+         * the ~/.qgis/qgis.db
          * @note Any members will be overwritten during this process.
-         * @note only system db is checked because the users srs.db could
-         * have srsids that overlap with the system db.
          * @param theSrsId The QGIS SrsId for the desired spatial reference system.
          */
-        void createFromSystemSrsId (const long theSrsId);
-        /*! Set up this srs by fetching the appropriate information from the 
-         * sqlite backend. Only the users srs.db will be checked
-         * @note Any members will be overwritten during this process.
-         * @note only users db is checked because the users srs.db could
-         * have srsids that overlap with the system db.
-         * @param theSrsId The QGIS SrsId for the desired spatial reference system.
-         */
-        void createFromUserSrsId (const long theSrsId);
+        void createFromSrsId (const long theSrsId);
+
         /*! Set up this srs by passing it a proj4 style formatted string.
          * The string will be parsed and the projection and ellipsoid
          * members set and the remainder of the proj4 string will be stored

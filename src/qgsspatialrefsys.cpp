@@ -7,6 +7,8 @@
 #include <qsettings.h>
 #include <qapplication.h>
 #include <qregexp.h>
+#include <qfileinfo.h>
+#include <qdir.h>
 
 #include <qgslayerprojectionselector.h>
 #include <qgsproject.h>
@@ -36,6 +38,9 @@ const long EPSGID = 4326;
 const int PROJ_PREFIX_LEN = 6;
 /** The length of teh string "+ellps=" */
 const int ELLPS_PREFIX_LEN = 7;
+/** Magick number that determins whether a projection srsid is a system (srs.db)
+ *  or user (~/.qgis.qgis.db) defined projection. */
+const int USER_PROJECTION_START_ID=100000;
 //--------------------------
 
 QgsSpatialRefSys::QgsSpatialRefSys(){}
@@ -61,7 +66,7 @@ QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType)
   switch (theType)
   {
   case QGIS_SRSID:
-    createFromSystemSrsId(theId);
+    createFromSrsId(theId);
     break;
   case POSTGIS_SRID:
     createFromSrid(theId);
@@ -128,14 +133,12 @@ void QgsSpatialRefSys::validate()
     //it in the ctor of the layer projection selector
 
     QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector();
-    // XXX TODO: Change project to store selected CS as 'projectSRS' not 'selectedWKT'
     long myDefaultSRS =
       QgsProject::instance()->readNumEntry("SpatialRefSys","/selectedSRS",GEOSRS_ID);
     mySelector->setSelectedSRSID(myDefaultSRS);
     if(mySelector->exec())
     {
-      //XXX TODO handle user defined projections too
-      createFromSystemSrsId(mySelector->getCurrentSRSID());
+      createFromSrsId(mySelector->getCurrentSRSID());
     }
     else
     {
@@ -183,13 +186,35 @@ void QgsSpatialRefSys::createFromSrid(long theSrid)
 #ifdef QGISDEBUG
   std::cout << " QgsSpatialRefSys::createFromSrid" << std::endl;
 #endif
-  // Get the package data path and set the full path name to the sqlite3 spatial reference
-  // database.
+ 
+  QString myDatabaseFileName;
+  
+  //
+  // Determine if this is a user projection or a system on
+  // user projection defs all have srs_id >= 100000
+  //
+  if (theSrid >= USER_PROJECTION_START_ID)
+  {
+    myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+    QFileInfo myFileInfo;
+    myFileInfo.setFile(myDatabaseFileName);
+    if ( !myFileInfo.exists( ) )
+    {
+      isValidFlag==false;
+      std::cout << " QgsSpatialRefSys::createFromSrid failed :  users qgis.db not found" << std::endl;
+      return;
+    }
+  }
+  else //must be  a system projection then
+  {
+    // Get the package data path and set the full path name to the sqlite3 spatial reference
+    // database.
 #if defined(Q_OS_MACX) || defined(WIN32)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
-  QString myDatabaseFileName = PKGDATAPATH;
-  myDatabaseFileName += "/resources/srs.db";
+    myDatabaseFileName = PKGDATAPATH;
+    myDatabaseFileName += "/resources/srs.db";
+  }
 
 
   sqlite3      *myDatabase;
@@ -364,10 +389,10 @@ void QgsSpatialRefSys::createFromEpsg(long theEpsg)
 }
 
 
-void QgsSpatialRefSys::createFromSystemSrsId (long theSrsId)
+void QgsSpatialRefSys::createFromSrsId (long theSrsId)
 {
 #ifdef QGISDEBUG
-  std::cout << " QgsSpatialRefSys::createFromSystemSrsId" << std::endl;
+  std::cout << " QgsSpatialRefSys::createFromSrsId" << std::endl;
 #endif
   // Get the package data path and set the full path name to the sqlite3 spatial reference
   // database.
@@ -424,7 +449,7 @@ void QgsSpatialRefSys::createFromSystemSrsId (long theSrsId)
   else
   {
 #ifdef QGISDEBUG
-    std::cout << " QgsSpatialRefSys::createFromSystemSrsId failed :  " << mySql << std::endl;
+    std::cout << " QgsSpatialRefSys::createFromSrsId failed :  " << mySql << std::endl;
 #endif
     isValidFlag==false;
   }
@@ -433,9 +458,7 @@ void QgsSpatialRefSys::createFromSystemSrsId (long theSrsId)
 }
 
 
-void QgsSpatialRefSys::createFromUserSrsId (long theSrsId)
-{
-}
+
 
 
 bool QgsSpatialRefSys::isValid() const
