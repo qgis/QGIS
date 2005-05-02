@@ -36,6 +36,7 @@
 #include <qtabwidget.h>
 #include <qtable.h>
 #include <qsettings.h>
+#include <qevent.h>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsmapcanvas.h"
@@ -54,6 +55,30 @@ extern "C" {
 #include "../../providers/grass/qgsgrassprovider.h"
 #include "qgsgrassedit.h"
 #include "qgsgrassattributes.h"
+
+QgsGrassAttributesKeyPress::QgsGrassAttributesKeyPress ( QTable *tab )
+{
+    mTable = tab;
+}
+
+QgsGrassAttributesKeyPress::~QgsGrassAttributesKeyPress () {};
+
+bool QgsGrassAttributesKeyPress::eventFilter( QObject *o, QEvent *e )
+{
+    if ( e->type() == QEvent::KeyPress ) 
+    {
+	QKeyEvent *k = (QKeyEvent *)e;
+        
+	if ( k->key() == Qt::Key_Tab ) {
+	    if ( mTable->currentRow() < mTable->numRows()-1 ) 
+	    {
+		mTable->setCurrentCell( mTable->currentRow()+1, mTable->currentColumn() );
+	    }
+	    return TRUE; // eat event
+	}
+    }
+    return FALSE; // standard event processing
+}
 
 QgsGrassAttributes::QgsGrassAttributes ( QgsGrassEdit *edit, QgsGrassProvider *provider, int line, 
         QWidget * parent, const char * name, WFlags f ) :QgsGrassAttributesBase ( parent, name, f)
@@ -133,6 +158,11 @@ int QgsGrassAttributes::addTab ( const QString & label )
 
     tabCats->addTab ( tb, label );
 
+    // Move down with Tab, unfortunately it does not work if the cell is edited
+    // TODO: catch Tab also if the cell is edited
+    QgsGrassAttributesKeyPress *ef = new QgsGrassAttributesKeyPress ( tb );
+    tb->installEventFilter( ef );
+
     return ( tabCats->count() - 1 );
 }
 
@@ -210,34 +240,41 @@ void QgsGrassAttributes::updateAttributes ( )
     QTable *tb = (QTable *) tabCats->currentPage();
 
     if ( tb->numRows() > 2 ) {
-  QString sql;
-  
-  for ( int i = 2; i < tb->numRows(); i++ ) {
-      if ( i > 2 ) sql.append (", ");
+
+      // Stop editing (trick)
+      tb->setColumnReadOnly ( 1, TRUE );
+      tb->setColumnReadOnly ( 1, FALSE );
+      tb->setRowReadOnly ( 0, TRUE );
+      tb->setRowReadOnly ( 1, TRUE );
       
-      if ( tb->text(i, 2) == "int" || tb->text(i, 2) == "double" ) {
-          sql.append ( tb->text(i, 0) + " = " + tb->text(i, 1) );
-      } else {
-    QString val = tb->text(i, 1);
-    val.replace("'","''");
-          sql.append ( tb->text(i, 0) + " = '" + tb->text(i, 1) + "'" );
+      QString sql;
+      
+      for ( int i = 2; i < tb->numRows(); i++ ) {
+	  if ( i > 2 ) sql.append (", ");
+	  
+	  if ( tb->text(i, 2) == "int" || tb->text(i, 2) == "double" ) {
+	      sql.append ( tb->text(i, 0) + " = " + tb->text(i, 1) );
+	  } else {
+	      QString val = tb->text(i, 1);
+	      val.replace("'","''");
+	      sql.append ( tb->text(i, 0) + " = '" + tb->text(i, 1) + "'" );
+	  }
       }
-  }
 
-  #ifdef QGISDEBUG
-  std::cerr << "sql: " << sql << std::endl;
-  #endif
+      #ifdef QGISDEBUG
+      std::cerr << "sql: " << sql << std::endl;
+      #endif
 
-  QString *error = mProvider->updateAttributes ( tb->text(0,1).toInt(), tb->text(1,1).toInt(), sql );
+      QString *error = mProvider->updateAttributes ( tb->text(0,1).toInt(), tb->text(1,1).toInt(), sql );
 
-  if ( !error->isEmpty() ) {
-      QMessageBox::warning( 0, "Warning", *error );
-      resultLabel->setText ( "ERROR" );
-  } else {
-      resultLabel->setText ( "OK" );
-  }
+      if ( !error->isEmpty() ) {
+	  QMessageBox::warning( 0, "Warning", *error );
+	  resultLabel->setText ( "ERROR" );
+      } else {
+	  resultLabel->setText ( "OK" );
+      }
 
-  delete error;
+      delete error;
     }
 }
 
