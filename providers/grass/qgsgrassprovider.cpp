@@ -701,6 +701,7 @@ int QgsGrassProvider::openLayer(QString gisdbase, QString location, QString maps
     GLAYER layer;
     layer.valid = false;
     layer.field = field; 
+    layer.nUsers = 1; 
 
     // Open map
     layer.mapId = openMap ( gisdbase, location, mapset, mapName );
@@ -949,7 +950,7 @@ void QgsGrassProvider::loadAttributes ( GLAYER &layer )
 void QgsGrassProvider::closeLayer( int layerId )
 {
     #ifdef QGISDEBUG
-    std::cerr << "Close layer " << layerId << std::endl;
+    std::cerr << "Close layer " << layerId << " nUsers = " << mLayers[layerId].nUsers << std::endl;
     #endif
 
     // TODO: not tested because delete is never used for providers
@@ -966,6 +967,9 @@ void QgsGrassProvider::closeLayer( int layerId )
 	mLayers[layerId].fields.resize(0);
 	
 	// Attributes
+        #ifdef QGISDEBUG
+        std::cerr << "Delete attribute values" << std::endl;
+        #endif
 	for ( int i = 0; i < mLayers[layerId].nAttributes; i++ ) {
 	    free ( mLayers[layerId].attributes[i].values );
 	}
@@ -991,7 +995,7 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
 
     // Check if this map is already opened
     for ( int i = 0; i <  mMaps.size(); i++) {
-	if ( mMaps[i].path == tmpPath ) 
+	if ( mMaps[i].valid && mMaps[i].path == tmpPath ) 
 	{
 	    // the map is already opened, return map id
             #ifdef QGISDEBUG
@@ -1110,7 +1114,7 @@ void QgsGrassProvider::updateMap ( int mapId )
 void QgsGrassProvider::closeMap( int mapId )
 {
     #ifdef QGISDEBUG
-    std::cerr << "Close map " << mapId << std::endl;
+    std::cerr << "Close map " << mapId << " nUsers = " << mMaps[mapId].nUsers << std::endl;
     #endif
 
     // TODO: not tested because delete is never used for providers
