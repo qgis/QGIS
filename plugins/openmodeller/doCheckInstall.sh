@@ -10,5 +10,10 @@
 # Set software group
 # The package maintainer (.deb)
 
-checkinstall --default -R --pkgname=openmodeller-gui --pkgversion=0.2.1pre --pkggroup=GIS --maintainer=tim@linfiniti.com        
+checkinstall --default --pkgname=openmodeller-gui --pkgversion=0.2.1pre --pkggroup=GIS --maintainer=tim@linfiniti.com        
+
+#
+# Write rpm even if on debian (-R)
+#
+#checkinstall --default -R --pkgname=openmodeller-gui --pkgversion=0.2.1pre --pkggroup=GIS --maintainer=tim@linfiniti.com        
 
