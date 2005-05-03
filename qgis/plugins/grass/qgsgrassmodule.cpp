@@ -845,10 +845,11 @@ void QgsGrassModuleInput::updateQgisLayers()
 	    QString mapset = split.last();
 	    split.pop_back(); // mapset
 	    
-	    QString loc = sep + split.join ( QChar(sep) );
+	    QDir locDir ( sep + split.join ( QChar(sep) ) ) ;
+	    QString loc = locDir.canonicalPath();
 
-	    QString curloc = QDir::cleanDirPath ( QgsGrass::getDefaultGisdbase() + sep 
-		             + QgsGrass::getDefaultLocation() );
+	    QDir curlocDir ( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );
+	    QString curloc = curlocDir.canonicalPath();
             
 	    if ( loc != curloc ) continue;
 
@@ -891,10 +892,11 @@ void QgsGrassModuleInput::updateQgisLayers()
 	    QString mapset = split.last();
 	    split.pop_back(); // mapset
 	    
-	    QString loc = sep + split.join ( QChar(sep) );
+	    QDir locDir ( sep + split.join ( QChar(sep) ) ) ;
+	    QString loc = locDir.canonicalPath();
 
-	    QString curloc = QDir::cleanDirPath ( QgsGrass::getDefaultGisdbase() + sep 
-		             + QgsGrass::getDefaultLocation() );
+	    QDir curlocDir ( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );
+	    QString curloc = curlocDir.canonicalPath();
             
 	    if ( loc != curloc ) continue;
 
