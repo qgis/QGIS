@@ -245,6 +245,10 @@ void QgsComposer::print(void)
   mPrinter->setResolution ( mComposition->resolution() );
 
   if ( mPrinter->setup(this) ) {
+    // TODO: mPrinter->setup() moves the composer under Qgisapp, get it to foreground somehow
+    //       raise() for now, is it something better?
+    raise ();
+    
     // WARNING: If QCanvasView recieves repaint signal during the printing
     // (e.g. covered by QPrinter::setup dialog) it breaks somehow drawing of QCanvas items 
     // (for example not all features in the map are drawn.
@@ -347,7 +351,7 @@ void QgsComposer::print(void)
         found = false;
 
         //Example:
-        //0 4008 translate 1 -1 scale/defM matrix CM d } d
+        //0 4008 translate 1 -1 scale/defM ...
         QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale/defM matrix CM d \\} d" );
 
         while ( !f.atEnd() ) {
@@ -391,45 +395,47 @@ void QgsComposer::print(void)
           QMessageBox::warning(this,"Error in Print", "Cannot find translate");
         }
         f.close();
-    }
+      }
 #endif
-  } else { 
-    bool print = true;
+    } else {  // print to printer
+	bool print = true;
 
-    // Check size 
-    QPaintDeviceMetrics pm(mPrinter);
+	// Check size 
+	QPaintDeviceMetrics pm(mPrinter);
 
-    std::cout << "Paper: " << pm.widthMM() << " x " << pm.heightMM() << std::endl;
-    if ( mComposition->paperWidth() != pm.widthMM() || 
-        mComposition->paperHeight() != pm.heightMM() )
-    {
-      int answer = QMessageBox::warning ( 0, "Paper does not match", 
-          "The selected paper size does not match the composition size",
-          QMessageBox::Ok,  QMessageBox::Abort );
+	std::cout << "Paper: " << pm.widthMM() << " x " << pm.heightMM() << std::endl;
+	if ( mComposition->paperWidth() != pm.widthMM() || 
+	    mComposition->paperHeight() != pm.heightMM() )
+	{
+	  int answer = QMessageBox::warning ( 0, "Paper does not match", 
+	      "The selected paper size does not match the composition size",
+	      QMessageBox::Ok,  QMessageBox::Abort );
 
-      if ( answer == QMessageBox::Abort )
-        print = false;
+	  if ( answer == QMessageBox::Abort )
+	    print = false;
 
-    }
+	}
 
-    if ( print ) {
-      std::cout << "Printing ... " << std::endl;
-      QPainter p(mPrinter);
-      p.scale ( scale, scale); 
-      mComposition->canvas()->drawArea ( QRect(0,0, 
-            (int) (mComposition->paperWidth() * mComposition->scale()),
-            (int) (mComposition->paperHeight() * mComposition->scale()) ), 
-          &p, FALSE );
-      p.end();
-      std::cout << "... printing finished" << std::endl;
-    }
+	if ( print ) {
+	  std::cout << "Printing ... " << std::endl;
+	  QPainter p(mPrinter);
+	  p.scale ( scale, scale); 
+	  mComposition->canvas()->drawArea ( QRect(0,0, 
+		(int) (mComposition->paperWidth() * mComposition->scale()),
+		(int) (mComposition->paperHeight() * mComposition->scale()) ), 
+	      &p, FALSE );
+	  p.end();
+	  std::cout << "... printing finished" << std::endl;
+	}
+      }
+
+      mComposition->setPlotStyle ( QgsComposition::Preview );
+      mView->setCanvas(mComposition->canvas());
+  } 
+  else 
+  {
+      raise ();
   }
-
-  mComposition->setPlotStyle ( QgsComposition::Preview );
-  mView->setCanvas(mComposition->canvas());
-}
-
-// TODO: mPrinter->setup() moves the composer under Qgisapp, get it to foreground somehow
 }
 
 void QgsComposer::image(void)
@@ -454,6 +460,8 @@ void QgsComposer::image(void)
         + " requires " 
         + QString::number(memuse) + " MB of memory", 
         QMessageBox::Ok,  QMessageBox::Abort );
+  
+    raise ();
     if ( answer == QMessageBox::Abort ) return;
   }
 
@@ -514,7 +522,11 @@ void QgsComposer::image(void)
 
   //prompt the user for a filename
   QString myOutputFileNameQString; // = myQFileDialog->getSaveFileName(); //delete this
-  if (myQFileDialog->exec() != QDialog::Accepted) return;
+
+  int result = myQFileDialog->exec();
+  raise ();
+  
+  if ( result != QDialog::Accepted) return;
 
   myOutputFileNameQString = myQFileDialog->selectedFile();
   QString myFilterString = myQFileDialog->selectedFilter();
@@ -568,7 +580,10 @@ void QgsComposer::svg(void)
   myQFileDialog->setSelection ( myLastUsedFile );
   myQFileDialog->setMode(QFileDialog::AnyFile);
 
-  if (myQFileDialog->exec() != QDialog::Accepted) return;
+  int result = myQFileDialog->exec();
+  raise ();
+  
+  if ( result != QDialog::Accepted) return;
   QString myOutputFileNameQString = myQFileDialog->selectedFile();
 
   if ( myOutputFileNameQString == "" ) return;
