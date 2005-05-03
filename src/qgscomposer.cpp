@@ -248,6 +248,12 @@ void QgsComposer::print(void)
     // TODO: mPrinter->setup() moves the composer under Qgisapp, get it to foreground somehow
     //       raise() for now, is it something better?
     raise ();
+
+    // TODO: Qt does not add pagesize to output file, it can cause problems if ps2pdf is used 
+    // or if default page on printer is different.
+    // We should add somewhere in output file:
+    // << /PageSize [ %d %d ] >> setpagedevice
+    // %d %d is width and height in points
     
     // WARNING: If QCanvasView recieves repaint signal during the printing
     // (e.g. covered by QPrinter::setup dialog) it breaks somehow drawing of QCanvas items 
@@ -283,7 +289,8 @@ void QgsComposer::print(void)
       mComposition->canvas()->drawArea ( QRect(0,0, 
             (int) (mComposition->paperWidth() * mComposition->scale()),
             (int) (mComposition->paperHeight() * mComposition->scale()) ), 
-          &p, FALSE );
+            &p, FALSE );
+
       p.end();
 
 #ifdef Q_WS_X11
