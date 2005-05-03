@@ -139,8 +139,29 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
 	  double symbolScale = mSymbolScale * mComposition->scale();
 	  vector->draw( painter, extent, transform, device, widthScale, symbolScale, 0 );
 
-      } else {
-	  layer->draw( painter, extent, transform, device );
+      } else { 
+	  // raster
+          if ( plotStyle() == QgsComposition::Postscript ) {
+	      // we have to rescale the raster to get requested resolution
+	      
+	      // calculate relation between composition point size and requested resolution (in mm)
+	      double multip = (1. / mComposition->scale()) / (25.4 / mComposition->resolution()) ;
+	      
+	      double sc = mExtent.width() / (multip*QCanvasRectangle::width());
+	      
+	      QgsMapToPixel trans ( sc, multip*QCanvasRectangle::height(), mExtent.yMin(), mExtent.xMin() );
+	      
+              painter->save();
+	      painter->scale( 1./multip, 1./multip);
+
+	      layer->draw( painter, extent, &trans, device );
+              
+	      painter->restore();
+	  } 
+	  else 
+	  {
+	      layer->draw( painter, extent, transform, device );
+	  }
       }
     }
     
@@ -252,26 +273,26 @@ void QgsComposerMap::draw ( QPainter & painter )
     {
         std::cout << "render" << std::endl;
   
-  double scale = mExtent.width() / QCanvasRectangle::width();
-  QgsMapToPixel transform(scale, QCanvasRectangle::height(), mExtent.yMin(), mExtent.xMin() );
-  
-  painter.save();
-  painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
-     
-  // Note: CoordDevice doesn't work well
-  painter.setClipRect ( 0, 0, QCanvasRectangle::width(), QCanvasRectangle::height(), QPainter::CoordPainter );
-  
-  draw( &painter, &mExtent, &transform, painter.device() );
-  painter.restore();
+      double scale = mExtent.width() / QCanvasRectangle::width();
+      QgsMapToPixel transform(scale, QCanvasRectangle::height(), mExtent.yMin(), mExtent.xMin() );
+      
+      painter.save();
+      painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
+	 
+      // Note: CoordDevice doesn't work well
+      painter.setClipRect ( 0, 0, QCanvasRectangle::width(), QCanvasRectangle::height(), QPainter::CoordPainter );
+      
+      draw( &painter, &mExtent, &transform, painter.device() );
+      painter.restore();
     } 
 
     // Draw frame around
     if ( mFrame ) {
-  painter.setPen( QPen(QColor(0,0,0), 1) );
-  painter.setBrush( Qt::NoBrush );
-        painter.save();
-  painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
-  painter.drawRect ( 0, 0, QCanvasRectangle::width()+1, QCanvasRectangle::height()+1 ); // is it right?
+      painter.setPen( QPen(QColor(0,0,0), 1) );
+      painter.setBrush( Qt::NoBrush );
+	    painter.save();
+      painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
+      painter.drawRect ( 0, 0, QCanvasRectangle::width()+1, QCanvasRectangle::height()+1 ); // is it right?
         painter.restore();
     }
 
