@@ -141,7 +141,7 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
 
       } else { 
 	  // raster
-          if ( plotStyle() == QgsComposition::Postscript ) {
+          if ( plotStyle() == QgsComposition::Print || plotStyle() == QgsComposition::Postscript ) {
 	      // we have to rescale the raster to get requested resolution
 	      
 	      // calculate relation between composition point size and requested resolution (in mm)
