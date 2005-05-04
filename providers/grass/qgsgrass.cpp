@@ -40,6 +40,9 @@ void QgsGrass::init( void ) {
         // Set error function
         G_set_error_routine ( &error_routine );
 
+	// Set program name
+	G_set_program_name ("QGIS");
+
 	initialized = 1;
     }
 }
