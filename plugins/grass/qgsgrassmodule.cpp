@@ -787,7 +787,12 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module, QString key,
     mLayerComboBox = new QComboBox ( this );
 
     // Of course, activated(int) is not enough, but there is no signal BEFORE the cobo is opened
-    connect ( mLayerComboBox, SIGNAL( activated(int) ), this, SLOT(updateQgisLayers()) );
+    //connect ( mLayerComboBox, SIGNAL( activated(int) ), this, SLOT(updateQgisLayers()) );
+    
+    // Connect to canvas 
+    QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+    connect ( canvas, SIGNAL(addedLayer(QgsMapLayer *)), this, SLOT(updateQgisLayers()) );
+    connect ( canvas, SIGNAL(removedLayer(QString)), this, SLOT(updateQgisLayers()) );
     
     // Fill in QGIS layers 
     updateQgisLayers();
