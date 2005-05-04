@@ -1328,13 +1328,35 @@ bool QgsGrassProvider::startEdit ( void )
 
     // TODO: Catch error 
      
+    QgsGrass::resetError();
     int level = Vect_open_update ( map->map, (char *) map->mapName.ascii(), (char *) map->mapset.ascii() );
-
     if (  level < 2 ) { 
-	std::cerr << "Cannot open vector for update on level 2." << std::endl;
-	// TODO reopen vector for reading
+	if ( QgsGrass::getError() == QgsGrass::FATAL ) {
+	    std::cerr << "Cannot open GRASS vector for update: " << QgsGrass::getErrorMessage() << std::endl;
+	} else {
+	    std::cerr << "Cannot open GRASS vector for update on level 2." << std::endl;
+	}
+	
+	// reopen vector for reading
+	QgsGrass::resetError();
+	Vect_set_open_level (2);
+        level = Vect_open_old ( map->map, (char *) map->mapName.ascii(), (char *) map->mapset.ascii() );
+    
+	if ( level < 2 ) {
+	    if ( QgsGrass::getError() == QgsGrass::FATAL ) {
+		std::cerr << "Cannot reopen GRASS vector: " << QgsGrass::getErrorMessage() << std::endl;
+	    } else {
+		std::cerr << "Cannot reopen GRASS vector on level 2." << std::endl;
+	    }
+	} else {
+	    map->valid = true;
+	}
+	
 	return false;
     }
+
+    // Write history
+    Vect_hist_command ( map->map );
 
     #ifdef QGISDEBUG
     std::cerr << "Vector successfully reopened for update." << std::endl;
