@@ -2755,11 +2755,18 @@ void QgisApp::zoomToLayerExtent()
     // get the selected item
     QListViewItem *li = mMapLegend->currentItem();
     QgsMapLayer *layer = ((QgsLegendItem *) li)->layer();
-    // the layer extent has to be transformed to the map canvas
+    // Check if the layer extent has to be transformed to the map canvas
     // coordinate system 
-    QgsCoordinateTransform *ct = layer->coordinateTransform();
-    QgsRect transformedExtent = ct->transform(layer->extent());
-    mMapCanvas->setExtent(transformedExtent);
+    if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
+    {
+      QgsCoordinateTransform *ct = layer->coordinateTransform();
+      QgsRect transformedExtent = ct->transform(layer->extent());
+      mMapCanvas->setExtent(transformedExtent);
+    }
+    else
+    {
+      mMapCanvas->setExtent(layer->extent());
+    }
     mMapCanvas->clear();
     mMapCanvas->render();
 

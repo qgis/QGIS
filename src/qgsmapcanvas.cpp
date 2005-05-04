@@ -862,10 +862,25 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                   qDebug( "Transform error caught in %s line %d:\n%s", 
         __FILE__, __LINE__, e.what());
                 }
-                ml->draw(paint,
+
+                //
+                // Now do the call to the layer that actually does
+                // the rendering work!
+                //
+                if (projectionsEnabled())
+                {
+                  ml->draw(paint,
                          &myProjectedRect,
                          mCanvasProperties->coordXForm,
                          this);
+                }
+                else
+                {
+                  ml->draw(paint,
+                         &mCanvasProperties->currentExtent,
+                         mCanvasProperties->coordXForm,
+                         this);
+                }
               }
 #ifdef QGISDEBUG
               else
