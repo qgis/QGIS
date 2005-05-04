@@ -100,6 +100,9 @@ public slots:
     void changeFont ( void );
 
     void textChanged ( void );
+
+    // Box settings changed
+    void boxChanged ( void );
     
 private:
     // Pointer to composition
@@ -121,6 +124,12 @@ private:
 
     // Current bounding box
     QRect mBoundingRect; 
+
+    // Draw box around the label
+    bool mBox;
+
+    // Box buffer
+    int mBoxBuffer;
 };
 
 #endif
