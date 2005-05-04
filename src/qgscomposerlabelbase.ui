@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>215</width>
-            <height>112</height>
+            <height>151</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -56,6 +56,14 @@
                 <string>Font</string>
             </property>
         </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>mBoxCheckBox</cstring>
+            </property>
+            <property name="text">
+                <string>Box</string>
+            </property>
+        </widget>
         <spacer>
             <property name="name">
                 <cstring>spacer1</cstring>
@@ -68,8 +76,8 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>11</width>
-                    <height>26</height>
+                    <width>16</width>
+                    <height>23</height>
                 </size>
             </property>
         </spacer>
@@ -88,10 +96,17 @@
         <receiver>QgsComposerLabelBase</receiver>
         <slot>textChanged()</slot>
     </connection>
+    <connection>
+        <sender>mBoxCheckBox</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsComposerLabelBase</receiver>
+        <slot>boxChanged()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>changeFont()</slot>
     <slot>textChanged()</slot>
+    <slot>boxChanged()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

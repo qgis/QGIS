@@ -35,6 +35,7 @@
 #include <qfontdialog.h>
 #include <qpen.h>
 #include <qrect.h>
+#include <qcheckbox.h>
 
 #include "qgsrect.h"
 #include "qgsmaptopixel.h"
@@ -48,7 +49,7 @@
 
 QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id, 
 	                                            int x, int y, QString text, int fontSize )
-    : QCanvasPolygonalItem(0)
+    : QCanvasPolygonalItem(0), mBox(false)
 {
     std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
 
@@ -60,6 +61,7 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id,
 
     // Font and pen 
     mFont.setPointSize ( fontSize );
+    mPen.setWidth (1);
 
     QCanvasPolygonalItem::setX(x);
     QCanvasPolygonalItem::setY(y);
@@ -117,45 +119,73 @@ void QgsComposerLabel::draw ( QPainter & painter )
     std::cout << "QgsComposerLabel::render" << std::endl;
 
     float size =  25.4 * mComposition->scale() * mFont.pointSizeFloat() / 72;
+    mBoxBuffer = (int) ( size / 10 * mComposition->scale() );
 
     QFont font ( mFont );
     font.setPointSizeFloat ( size );
+    QFontMetrics metrics ( font );
 
-    // Fonts for rendering
-    
-    // I have no idea why 2.54 - it is an empirical value 
-    if ( plotStyle() == QgsComposition::Postscript ) {
-	size = 2.54 * 72.0 * mFont.pointSizeFloat() / mComposition->resolution();
-    }
-
-    font.setPointSizeFloat ( size );
-    
     // Not sure about Style Strategy, QFont::PreferMatch ?
-    font.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias ) );
+    //font.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias ) );
 
     painter.setPen ( mPen );
     painter.setFont ( font );
     
     int x = (int) QCanvasPolygonalItem::x();
     int y = (int) QCanvasPolygonalItem::y();
+    
+    int w = metrics.width ( mText );
+    int h = metrics.height() ;
 
-    QRect r = boundingRect();
+    QRect r ( (int)(x - w/2), (int) (y - h/2), w, h );
     
-    /*
-    QBrush brush ( QColor(255,255,255) );
-    painter.setBrush ( brush );
-    painter.drawRect ( r );
-    */
+    if ( mBox ) {
+	// I don't know why, but the box seems to be too short -> add 1 * mBoxBuffer to width
+	QRect br ( (int)(r.x()-1.5*mBoxBuffer), r.y()-mBoxBuffer, (int)(r.width()+3*mBoxBuffer), r.height()+2*mBoxBuffer );
+	QBrush brush ( QColor(255,255,255) );
+	painter.setBrush ( brush );
+	painter.drawRect ( br );
+    }
     
-    painter.drawText ( r, Qt::AlignCenter|Qt::SingleLine , mText );
-    //painter.drawText ( r.x(), (int)(r.y()+r.height()), mText );
+    // The width is not sufficient in postscript
+    QRect tr = r;
+    tr.setWidth ( r.width() );
+
+    if ( plotStyle() == QgsComposition::Postscript ) {
+	// TODO: For output to Postscript the font must be scaled. But how?  
+	//       The factor is an empirical value.
+	//       In any case, each font scales in in different way even if painter.scale()
+	//       is used instead of font size!!! -> Postscript is never exactly the same as 
+	//       in preview.
+	double factor = 2.45;
+	
+	double pssize = factor * 72.0 * mFont.pointSizeFloat() / mComposition->resolution();
+	double psscale = pssize/size;
+	
+	painter.save();
+	//painter.translate(x-w/2,(int)(y+metrics.height()/2-metrics.descent()));
+	painter.translate(x,y);
+
+	painter.scale ( psscale, psscale );
+    
+	/// rect can be too small in PS -> add buf
+	int buf = metrics.width ( "x" );
+	QRect psr ( (int)( -1.*(w+2*buf)/2/psscale), (int) (-1.*h/2/psscale),(int)(1.*(w+2*buf)/psscale), (int)(1.*h/psscale) );
+
+        //painter.drawText ( 0, 0, mText );	
+	painter.drawText ( psr, Qt::AlignCenter|Qt::SingleLine , mText );
+	
+	painter.restore();
+    } else {
+	//painter.drawText ( tr, Qt::AlignCenter|Qt::SingleLine , mText );
+	painter.drawText ( x-w/2,(int)(y+metrics.height()/2-metrics.descent()), mText );
+    } 
 
     // Show selected / Highlight
     if ( mSelected && plotStyle() == QgsComposition::Preview ) {
         painter.setPen( mComposition->selectionPen() );
         painter.setBrush( mComposition->selectionBrush() );
 	int s = mComposition->selectionBoxSize();
-	QRect r = boundingRect();
 	
 	painter.drawRect ( r.x(), r.y(), s, s );
 	painter.drawRect ( r.x()+r.width()-s, r.y(), s, s );
@@ -181,6 +211,20 @@ void QgsComposerLabel::changeFont ( void )
     writeSettings();
 }
 
+void QgsComposerLabel::boxChanged ()
+{
+    QRect r = boundingRect();
+    
+    mBox = mBoxCheckBox->isChecked();
+
+    QCanvasPolygonalItem::invalidate();
+    QCanvasPolygonalItem::canvas()->setChanged(r);
+    QCanvasPolygonalItem::update();
+    QCanvasPolygonalItem::canvas()->update();
+
+    writeSettings();
+}
+
 QRect QgsComposerLabel::boundingRect ( void ) const
 {
     // Recalculate sizes according to current font size
@@ -196,12 +240,15 @@ QRect QgsComposerLabel::boundingRect ( void ) const
     int y = (int) QCanvasPolygonalItem::y();
     int w = metrics.width ( mText );
     int h = metrics.height() ;
-
     
-    // make the buffer bigger because the output in Postscript can be different
-    int buf = (int) (size / 20 * mComposition->scale()); 
+    int buf = 0;
+    int width;
     
-    QRect r ( (int)(x - w/2 - buf), (int) (y - h/2), w+2*buf, h );
+    if ( mBox ) {
+	buf = (int) ( size / 10 * mComposition->scale() + 2 ); // 2 is for line width
+    }
+    
+    QRect r ( (int)(x - w/2 - 1.5*buf), (int) (y - h/2 - buf), (int)(w+3*buf), h+2*buf );
 
     return r;
 }
@@ -223,6 +270,7 @@ QPointArray QgsComposerLabel::areaPoints() const
 void QgsComposerLabel::setOptions ( void )
 { 
     mTextLineEdit->setText ( mText );
+    mBoxCheckBox->setChecked ( mBox );
     
 }
 
@@ -272,6 +320,8 @@ bool QgsComposerLabel::writeSettings ( void )
     QgsProject::instance()->writeEntry( "Compositions", path+"font/weight", mFont.weight() );
     QgsProject::instance()->writeEntry( "Compositions", path+"font/underline", mFont.underline() );
     QgsProject::instance()->writeEntry( "Compositions", path+"font/strikeout", mFont.strikeOut() );
+
+    QgsProject::instance()->writeEntry( "Compositions", path+"box", mBox );
     
     return true; 
 }
@@ -296,6 +346,8 @@ bool QgsComposerLabel::readSettings ( void )
     mFont.setWeight(  QgsProject::instance()->readNumEntry("Compositions", path+"font/weight", (int)QFont::Normal, &ok) );
     mFont.setUnderline(  QgsProject::instance()->readBoolEntry("Compositions", path+"font/underline", false, &ok) );
     mFont.setStrikeOut(  QgsProject::instance()->readBoolEntry("Compositions", path+"font/strikeout", false, &ok) );
+
+    mBox = QgsProject::instance()->readBoolEntry("Compositions", path+"box", false, &ok);
 
     QCanvasPolygonalItem::update();
 
