@@ -448,23 +448,20 @@ void QgsComposer::print(void)
 void QgsComposer::image(void)
 {
   // Image size 
-  int oversample = 4;
   int width = (int) (mComposition->resolution() * mComposition->paperWidth() / 25.4); 
   int height = (int) (mComposition->resolution() * mComposition->paperHeight() / 25.4); 
 
-  int memuse = 2 * oversample * width * oversample * height * 3 / 1000000;  // pixmap + image
+  int memuse = width * height * 3 / 1000000;  // pixmap + image
 #ifdef QGISDEBUG
   std::cout << "Image " << width << " x " << height << std::endl;
   std::cout << "memuse = " << memuse << std::endl;
-
 #endif
 
-  if ( memuse > 500 ) { // cca 4500 x 4500
+  if ( memuse > 200 ) { // cca 4500 x 4500
     int answer = QMessageBox::warning ( 0, "Big image", 
         "To create image " + QString::number(width) + " x " 
         + QString::number(height) 
-        + " with oversampling " + QString::number(oversample)
-        + " requires " 
+        + " requires circa " 
         + QString::number(memuse) + " MB of memory", 
         QMessageBox::Ok,  QMessageBox::Abort );
   
@@ -547,12 +544,12 @@ void QgsComposer::image(void)
 
   if ( myOutputFileNameQString == "" ) return;
 
-  double scale = (double) (oversample * mComposition->resolution() / 25.4 / mComposition->scale());
+  double scale = (double) (mComposition->resolution() / 25.4 / mComposition->scale());
 
   mView->setCanvas(0);
   mComposition->setPlotStyle ( QgsComposition::Print );
 
-  QPixmap pixmap ( oversample * width, oversample * height );
+  QPixmap pixmap ( width, height );
   pixmap.fill ( QColor(255,255,255) ) ;
   QPainter p(&pixmap);
   p.scale ( scale, scale); 
@@ -564,13 +561,6 @@ void QgsComposer::image(void)
 
   mComposition->setPlotStyle ( QgsComposition::Preview );
   mView->setCanvas(mComposition->canvas());
-
-  if ( oversample > 1 ) {
-    QImage img = pixmap.convertToImage();
-
-    img = img.smoothScale ( width, height );
-    pixmap.convertFromImage ( img );
-  }
 
   pixmap.save ( myOutputFileNameQString, myFilterMap[myFilterString] );
 }
