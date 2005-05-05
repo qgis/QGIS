@@ -1649,49 +1649,70 @@ static
 void
 findMissingFile_( QDomNode & layerNode )
 {
+    // Prepend that file name to the valid file format filter list since it
+    // makes it easier for the user to not only find the original file, but to
+    // perhaps find a similar file.
+
+    QFileInfo originalDataSource( dataSource_(layerNode) );
+
+    QString memoryQualifier;    // to differentiate between last raster and
+                                // vector directories
+
+    QString fileFilters;        // file dialog fliter strings
+
     switch( dataType_( layerNode ) )
     {
         case IS_VECTOR:
         {
-            // Prepend that file name to the valid vector file format filter
-            // list since it makes it easier for the user to not only find the
-            // original file, but to perhaps find a similar file.
-
-            QFileInfo originalDataSource( dataSource_(layerNode) );
-
-
-            QString fileFilters;
-
             buildSupportedVectorFileFilter_(fileFilters);
 
-            fileFilters = originalDataSource.fileName() + ";;" + fileFilters;
-
-            QStringList selectedFiles;
-            QString enc;
-            QString title = QObject::trUtf8("Open an OGR Supported Vector Layer");
-            openFilesRememberingFilter_("lastVectorFileFilter", 
-                                        fileFilters, 
-                                        selectedFiles, 
-                                        enc,
-                                        title);
-            if (selectedFiles.isEmpty())
-            {
-                return;
-            }
-            else
-            {
-                setDataSource_( layerNode, selectedFiles.first() );
-                if ( ! QgsProject::instance()->read( layerNode ) )
-                {
-                    qDebug( "%s:%d unable to re-read layer", __FILE__, __LINE__ );
-                }
-            }
+            memoryQualifier = "lastVectorFileFilter";
 
             break;
         }
         case IS_RASTER:
+        {
+            QgsRasterLayer::buildSupportedRasterFileFilter(fileFilters);
+
+            memoryQualifier = "lastRasterFileFilter";
+
             break;
+        }
+        default:
+            qDebug( "%s:%d unable to determine data type", __FILE__, __LINE__ );
+            return;
     }
+
+    // Prepend the original data source base name to make it easier to pick it
+    // out from a list of other files; however the appropriate filter strings
+    // for the file type will also be added in case the file name itself has
+    // changed, too.
+
+    fileFilters = originalDataSource.fileName() + ";;" + fileFilters;
+
+    QStringList selectedFiles;
+    QString     enc;
+    QString     title( QObject::trUtf8("Open an OGR Supported Layer") );
+
+    openFilesRememberingFilter_(memoryQualifier,
+                                fileFilters, 
+                                selectedFiles, 
+                                enc,
+                                title);
+
+    if (selectedFiles.isEmpty())
+    {
+        return;
+    }
+    else
+    {
+        setDataSource_( layerNode, selectedFiles.first() );
+        if ( ! QgsProject::instance()->read( layerNode ) )
+        {
+            qDebug( "%s:%d unable to re-read layer", __FILE__, __LINE__ );
+        }
+    }
+
 } // findMissingFile_
 
 
