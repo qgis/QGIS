@@ -1072,33 +1072,58 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
     QgsColorTable *myColorTable=rasterLayer->colorTable(1);
 #ifdef QGISDEBUG
     std::cout << "Making paletted image histogram....computing band stats" << std::endl;
+    std::cout << "myLastBinWithData = " << myLastBinWithData << std::endl;
 #endif
 
     RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(1);
     for (int myBin = 0; myBin < myLastBinWithData; myBin++)
     {
       double myBinValue = myRasterBandStats.histogramVector->at(myBin);
+#ifdef QGISDEBUG
+      std::cout << "myBin = " << myBin << " myBinValue = " << myBinValue << std::endl;
+#endif
       //NOTE: Int division is 0 if the numerator is smaller than the denominator.
       //hence the casts
       int myX = static_cast<int>((((double)myGraphImageWidth)/((double)myLastBinWithData))*myBin);
       //height varies according to freq. and scaled to greatet value in all layers
       int myY=0;
-      if (myBinValue==0)
+      if (myYAxisMax!=0)
       {  
         myY=static_cast<int>(((double)myBinValue/(double)myYAxisMax)*myGraphImageHeight);
       }
-      //determin which color to draw the bar
-      int c1, c2, c3;
-      bool found = myColorTable->color ( myBinValue, &c1, &c2, &c3 );
-      if ( !found ) continue;
+      
       //see wehter to draw something each loop or to save up drawing for after iteration
       if (myGraphType==BAR_CHART)
       {
+	//determin which color to draw the bar
+	int c1, c2, c3;
+	// Take middle of the interval for color
+	// TODO: this is not precise
+	double myInterval = (myXAxisMax - myXAxisMin) / myLastBinWithData;
+	double myMiddle = myXAxisMin + myBin * myInterval + myInterval/2;
+
+#ifdef QGISDEBUG
+	std::cout << "myMiddle = " << myMiddle << std::endl;
+#endif
+	
+	bool found = myColorTable->color ( myMiddle, &c1, &c2, &c3 );
+	if ( !found ) {
+	    std::cout << "Color not found" << std::endl;
+	    c1 = c2 = c3 = 180; // grey
+	}
+	  
+#ifdef QGISDEBUG
+	std::cout << "c1 = " << c1 << " c2 = " << c2 << " c3 = " << c3 << std::endl;
+#endif
+	  
         //draw the bar
-        QBrush myBrush(QColor(c1,c2,c3));
+        //QBrush myBrush(QColor(c1,c2,c3));
+	myPainter.setBrush(QColor(c1,c2,c3));
         myPainter.setPen(QColor(c1,c2,c3));
 #ifdef QGISDEBUG
-        //  std::cout << "myPainter.fillRect(QRect(" << myX << "," << myY << "," << myBarWidth << "," <<myY << ") , myBrush );" << std::endl;
+        std::cout << "myX = " << myX << " myY = " << myY << std::endl;
+        std::cout << "rect: " << myX+myYGutterWidth << ", " << myImageHeight-(myY+myXGutterHeight)
+	          << ", " << myBarWidth << ", " << myY << std::endl;
 #endif
         myPainter.drawRect(myX+myYGutterWidth,myImageHeight-(myY+myXGutterHeight),myBarWidth,myY);
       }
