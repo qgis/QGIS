@@ -2236,6 +2236,8 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
             continue; // NULL
           }
 
+	  // This was nonsense, we have to get real values we dont care about colors, I believe
+	  /*
           //get the nth element from the current row
           if (myColorInterpretation == "Palette") // dont translate this its a gdal string
           {
@@ -2261,6 +2263,9 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
               break;
             }
           }
+	  */
+
+	  std::cout << "QgsRasterLayerProperties::pbnHistRefresh_clicked" << std::endl;
 
           //only use this element if we have a non null element
           if (myFirstIterationFlag)
@@ -4029,7 +4034,8 @@ void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool
     *          void *      pProgressData
     *          ) 
     */
-    myGdalBand->GetHistogram( myRasterBandStats.minValDouble-0.5, myRasterBandStats.maxValDouble-.5, theBinCountInt, myHistogramArray ,theIgnoreOutOfRangeFlag ,theHistogramEstimatedFlag , GDALDummyProgress, NULL );
+    double myInterval = (myRasterBandStats.maxValDouble-myRasterBandStats.minValDouble)/theBinCountInt;
+    myGdalBand->GetHistogram( myRasterBandStats.minValDouble-0.1*myInterval, myRasterBandStats.maxValDouble+0.1*myInterval, theBinCountInt, myHistogramArray ,theIgnoreOutOfRangeFlag ,theHistogramEstimatedFlag , GDALDummyProgress, NULL );
 
     for (int myBin = 0; myBin <theBinCountInt; myBin++)
     {
