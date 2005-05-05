@@ -42,6 +42,7 @@
 #include <qmessagebox.h>
 #include <qpainter.h>
 #include <qprogressbar.h>
+#include <qpushbutton.h>
 #include <qpixmap.h>
 #include <qpoint.h>
 #include <qpopupmenu.h>
@@ -463,7 +464,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // Add a panel to the status bar for the scale, coords and progress
     // And also rendering suppression checkbox
     //
-
+#if defined(WIN32) || defined(Q_OS_MACX)
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
     mProgressBar = new QProgressBar(100,this);
     mProgressBar->setMaximumWidth(100);
     QWhatsThis::add(mProgressBar, tr("Progress bar that displays the status of rendering layers and other time-intensive operations"));
@@ -475,23 +478,32 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     mScaleLabel->setMinimumWidth(100);
     QWhatsThis::add(mScaleLabel, tr("Displays the current map scale"));
     statusBar()->addWidget(mScaleLabel, 0,true);
+    //coords status bar widget
     mCoordsLabel = new QLabel(QString("Coordinates:"), this);
     mCoordsLabel->setMinimumWidth(200);
     mCoordsLabel->setFont(myFont);
     QWhatsThis::add(mCoordsLabel, tr("Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved."));
     statusBar()->addWidget(mCoordsLabel, 0, true);
+    //render suppression status bar widget
     mRenderSuppresionCBox = new QCheckBox(tr("Render"),this);
     mRenderSuppresionCBox->setChecked(true);
     mRenderSuppresionCBox->setFont(myFont);
     QWhatsThis::add(mRenderSuppresionCBox, tr("When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering."));
     statusBar()->addWidget(mRenderSuppresionCBox,0,true);
-
     connect(mRenderSuppresionCBox, SIGNAL(toggled(bool )),
             mMapCanvas, SLOT(setRenderFlag(bool)));
     connect(mRenderSuppresionCBox, SIGNAL(toggled(bool )),
             mOverviewCanvas, SLOT(setRenderFlag(bool)));
-
-
+    //on the fly projection status bar icon
+    mOnTheFlyProjectionStatusButton = new QPushButton(this);
+    mOnTheFlyProjectionStatusButton->setMaximumWidth(20);
+    QPixmap myProjPixmap;
+    myProjPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection_disabled.png"));
+    mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
+    QWhatsThis::add(mOnTheFlyProjectionStatusButton, tr("This icon shows whether on the fly projection is enabled or not. CLick the icon to bring up the project properties dialog to alter this behaviour."));
+    connect(mOnTheFlyProjectionStatusButton, SIGNAL(clicked()),
+            this, SLOT(projectProperties()));//bring up the project props dialog when clicked
+    statusBar()->addWidget(mOnTheFlyProjectionStatusButton,0,true);
     //
     // Create the plugin registry and load plugins
     //
@@ -3783,6 +3795,25 @@ void QgisApp::removePluginToolBarIcon(QAction *qAction)
 {
     qAction->removeFrom(mPluginToolBar);
 }
+
+void QgisApp::projectionsEnabled(bool theFlag)
+{
+#if defined(WIN32) || defined(Q_OS_MACX)
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
+  if (theFlag)
+  {
+    QPixmap myProjPixmap;
+    myProjPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection.png"));
+    mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
+  }
+  else
+  {
+    QPixmap myProjPixmap;
+    myProjPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection_disabled.png"));
+    mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
+  }
+}
 // slot to update the progress bar in the status bar
 void QgisApp::showProgress(int theProgress, int theTotalSteps)
 {
@@ -3908,6 +3939,9 @@ void QgisApp::projectProperties()
   // changing things in the project properties dialog box
   connect(pp, SIGNAL(displayPrecisionChanged()), this, 
       SLOT(updateMouseCoordinatePrecision()));
+  //listen to changes in on the fly projection state
+  connect(pp, SIGNAL(projectionEnabled(bool)), this, 
+      SLOT(projectionsEnabled(bool)));
   QApplication::restoreOverrideCursor();
   //pass any refresg signals off to canvases
   connect (pp,SIGNAL(refresh()), mMapCanvas, SLOT(refresh()));

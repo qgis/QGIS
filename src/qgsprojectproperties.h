@@ -87,6 +87,8 @@ signals:
   void displayPrecisionChanged();
   //! let listening canvases know to refresh
   void refresh();
+  //! notification of when on the fly projections are enabled / disabled
+  void projectionEnabled(bool);
 private:
 
 };
