@@ -752,45 +752,50 @@ static QgsMapCanvas * _findMapCanvas(QString const &canonicalMapCanvasName)
 /**
    Read map layers from project file
 
+   
+   @returns pair of < bool, list<QDomNode> >; bool is true if function worked;
+            else is false.  list contains nodes corresponding to layers that couldn't
+            be loaded
+
    @note XML of form:
 
    <maplayer type="vector" visible="1" showInOverviewFlag="0">
-   <layername>Hydrop</layername>
-   <datasource>/data/usgs/city_shp/hydrop.shp</datasource>
-   <zorder>0</zorder>
-   <provider>ogr</provider>
-   <singlesymbol>
-   <renderitem>
-   <value>blabla</value>
-   <symbol>
-   <outlinecolor red="85" green="0" blue="255" />
-   <outlinestyle>SolidLine</outlinestyle>
-   <outlinewidth>1</outlinewidth>
-   <fillcolor red="0" green="170" blue="255" />
-   <fillpattern>SolidPattern</fillpattern>
-   </symbol>
-   <label>blabla</label>
-   </renderitem>
-   </singlesymbol>
-   <label>0</label>
-   <labelattributes>
-   <label text="Label" field="" />
-   <family name="Sans Serif" field="" />
-   <size value="12" units="pt" field="" />
-   <bold on="0" field="" />
-   <italic on="0" field="" />
-   <underline on="0" field="" />
-   <color red="0" green="0" blue="0" field="" />
-   <x field="" />
-   <y field="" />
-   <offset  units="pt" x="0" xfield="" y="0" yfield="" />
-   <angle value="0" field="" />
-   <alignment value="center" field="" />
-   </labelattributes>
+      <layername>Hydrop</layername>
+      <datasource>/data/usgs/city_shp/hydrop.shp</datasource>
+      <zorder>0</zorder>
+      <provider>ogr</provider>
+      <singlesymbol>
+         <renderitem>
+            <value>blabla</value>
+            <symbol>
+               <outlinecolor red="85" green="0" blue="255" />
+               <outlinestyle>SolidLine</outlinestyle>
+               <outlinewidth>1</outlinewidth>
+               <fillcolor red="0" green="170" blue="255" />
+               <fillpattern>SolidPattern</fillpattern>
+            </symbol>
+            <label>blabla</label>
+         </renderitem>
+      </singlesymbol>
+      <label>0</label>
+      <labelattributes>
+         <label text="Label" field="" />
+         <family name="Sans Serif" field="" />
+         <size value="12" units="pt" field="" />
+         <bold on="0" field="" />
+         <italic on="0" field="" />
+         <underline on="0" field="" />
+         <color red="0" green="0" blue="0" field="" />
+         <x field="" />
+         <y field="" />
+         <offset  units="pt" x="0" xfield="" y="0" yfield="" />
+         <angle value="0" field="" />
+         <alignment value="center" field="" />
+      </labelattributes>
    </maplayer>
 
 */
-static bool _getMapLayers(QDomDocument const &doc)
+static pair< bool, list<QDomNode> > _getMapLayers(QDomDocument const &doc)
 {
     // Layer order is implicit in the order they are stored in the project file
 
@@ -800,11 +805,16 @@ static bool _getMapLayers(QDomDocument const &doc)
 
     QString wk;
 
+    list<QDomNode> brokenNodes; // a list of DOM nodes corresponding to layers
+                                // that we were unable to load; this could be
+                                // because the layers were removed or
+                                // re-located after the project was last saved
+
     // process the map layer nodes
 
     if (0 == nl.count())        // if we have no layers to process, bail
     {
-        return true;            // Decided to return "true" since it's
+        return make_pair(true, brokenNodes); // Decided to return "true" since it's
                                 // possible for there to be a project with no
                                 // layers; but also, more imporantly, this
                                 // would cause the tests/qgsproject to fail
@@ -843,7 +853,7 @@ static bool _getMapLayers(QDomDocument const &doc)
 #ifdef QGISDEBUG
             std::cerr << __FILE__ << " : " << __LINE__ << " unable to create layer\n";
 #endif
-            return false;
+            return make_pair(false, brokenNodes);
         }
 
         // have the layer restore state that is stored in DOM node
@@ -858,10 +868,12 @@ static bool _getMapLayers(QDomDocument const &doc)
             qDebug( "%s:%d unable to load %s layer", __FILE__, __LINE__, type.ascii() );
 
             returnStatus = false; // flag that we had problems loading layers
+
+            brokenNodes.push_back( node );
         }
     }
 
-    return returnStatus;
+    return make_pair(returnStatus, brokenNodes);
 
 } // _getMapLayers
 
@@ -1043,23 +1055,16 @@ bool QgsProject::read()
 
     dump_(imp_->properties_);
 
-    // first get the map layers
-    if (!_getMapLayers(*doc))
-    {
-#ifdef QGISDEBUG
-        qDebug("Unable to get map layers from project file.");
-#endif
-
-        // Since we could be executing this from the test harness which
-        // doesn't *have* layers -- nor a GUI for that matter -- we'll just
-        // leave in the whining and boldly stomp on.
-
-        throw QgsException("Cannot get map layers from " + imp_->file.name());
-
-//         return false;
-    }
 
     // restore the canvas' area of interest
+
+    // now get project title
+    _getTitle(*doc, imp_->title);
+
+#ifdef QGISDEBUG
+    qDebug("Project title: " + imp_->title);
+#endif
+
     QgsRect savedExtent;
 
     if (!_getExtents(*doc, savedExtent))
@@ -1068,8 +1073,6 @@ bool QgsProject::read()
         qDebug("Unable to get extents from project file.");
 #endif
 
-
-#ifndef TESTQGSPROJECT
         // Since we could be executing this from the test harness which
         // doesn't *have* layers -- nor a GUI for that matter -- we'll just
         // leave in the whining and boldly stomp on.
@@ -1077,7 +1080,6 @@ bool QgsProject::read()
          throw QgsException("Cannot get extents from " + imp_->file.name());
 
          // return false;
-#endif
     }
 
     // now restore the extent for the main canvas
@@ -1087,16 +1089,33 @@ bool QgsProject::read()
     QgsRect mapCanvasFullExtent = _getFullExtent("theMapCanvas");
     _setCanvasExtent("theOverviewCanvas", mapCanvasFullExtent);
 
-    // now get project title
-    _getTitle(*doc, imp_->title);
-
-#ifdef QGISDEBUG
-    qDebug("Project title: " + imp_->title);
-#endif
 
     // now set the map units; note, alters QgsProject::instance().
     _getMapUnits(*doc);
 
+
+    // get the map layers
+    pair< bool, list<QDomNode> > getMapLayersResults =  _getMapLayers(*doc);
+
+    if ( ! getMapLayersResults.first )
+    {
+#ifdef QGISDEBUG
+        qDebug("Unable to get map layers from project file.");
+#endif
+
+        if ( ! getMapLayersResults.second.empty() )
+        {
+            qDebug( "%s:%d there are %d broken layers", __FILE__, __LINE__, getMapLayersResults.second.size() );
+        }
+
+        // Since we could be executing this from the test harness which
+        // doesn't *have* layers -- nor a GUI for that matter -- we'll just
+        // leave in the whining and boldly stomp on.
+
+        throw QgsProjectBadLayerException( getMapLayersResults.second );
+
+//         return false;
+    }
 
     // can't be dirty since we're allegedly in pristine state
     dirty(false);
@@ -1104,6 +1123,58 @@ bool QgsProject::read()
     return true;
 
 } // QgsProject::read
+
+
+
+
+
+bool
+QgsProject::read( QDomNode & layerNode )
+{
+    QString type = layerNode.toElement().attribute("type");
+
+    QgsMapLayer *mapLayer;
+
+    if (type == "vector")
+    {
+        mapLayer = new QgsVectorLayer;
+    } 
+    else if (type == "raster")
+    {
+        mapLayer = new QgsRasterLayer;
+    }
+    else
+    {
+#ifdef QGISDEBUG
+        std::cerr << __FILE__ << " : " << __LINE__ << " bad layer type\n";
+#endif
+        return false;
+    }
+
+    if (!mapLayer)
+    {
+#ifdef QGISDEBUG
+        std::cerr << __FILE__ << " : " << __LINE__ << " unable to create layer\n";
+#endif
+        return false;
+    }
+
+    // have the layer restore state that is stored in DOM node
+    if ( mapLayer->readXML(layerNode) )
+    {
+        mapLayer = QgsMapLayerRegistry::instance()->addMapLayer(mapLayer);
+    }
+    else
+    {
+        delete mapLayer;
+
+        qDebug( "%s:%d unable to load %s layer", __FILE__, __LINE__, type.ascii() );
+
+        return false;
+    }
+
+    return  true;
+} // QgsProject::read( QDomNode & layerNode )
 
 
 

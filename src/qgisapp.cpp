@@ -22,6 +22,17 @@
 #include <dlfcn.h>
 #endif
 
+#include <iostream>
+#include <iomanip>
+#include <memory>
+#include <vector>
+#include <list>
+#include <algorithm>
+
+using namespace std;
+
+#include <cmath>
+
 #include <qevent.h>
 #include <qaction.h>
 #include <qapplication.h>
@@ -68,12 +79,6 @@
 #include <qtimer.h>
 #include <qcheckbox.h>
 
-#include <iostream>
-#include <iomanip>
-#include <memory>
-#include <vector>
-
-#include <cmath>
 
 #include "qgsencodingfiledialog.h"
 #include "qgsrect.h"
@@ -268,6 +273,8 @@ static char *identify_cursor[] = {
                                      "############.a.#",
                                      "#############.##"
                                  };
+
+
 
 
 /** set the application title bar text
@@ -817,7 +824,7 @@ static QString createFileFilter_(QString const &longName, QString const &glob)
 static void buildSupportedVectorFileFilter_(QString & fileFilters)
 {
 
-    static QString myFileFilters = "";
+    static QString myFileFilters;
 
     // if we've already built the supported vector string, just return what
     // we've already built
@@ -976,11 +983,11 @@ static void openFilesRememberingFilter_(QString const &filterName,
   QString const &filters, QStringList & selectedFiles, QString& enc, QString &title)
 {
 
-    bool haveLastUsedFilter = false;  // by default, there is no last
-    // used filter
+    bool haveLastUsedFilter = false; // by default, there is no last
+                                // used filter
 
-    QSettings settings;           // where we keep last used filter in
-    // persistant state
+    QSettings settings;         // where we keep last used filter in
+                                // persistant state
 
     QString lastUsedFilter = settings.readEntry("/qgis/UI/" + filterName,
                              QString::null,
@@ -1010,7 +1017,7 @@ static void openFilesRememberingFilter_(QString const &filterName,
     if (openFileDialog->exec() == QDialog::Accepted)
     {
         selectedFiles = openFileDialog->selectedFiles();
-  enc = openFileDialog->encoding();
+        enc = openFileDialog->encoding();
     }
 
     settings.writeEntry("/qgis/UI/" + filterName, openFileDialog->selectedFilter());
@@ -1040,6 +1047,7 @@ void QgisApp::addLayer()
 
     //qDebug( "vector file filters: " + fileFilters );
 
+    // XXX pOgr is subsequently never used; so why do we do this?
     QString pOgr = mProviderRegistry->library("ogr");
 
     if (pOgr.isEmpty())
@@ -1060,21 +1068,21 @@ void QgisApp::addLayer()
         std::cerr << "Vector file filters: " << fileFilters << std::endl;
 #endif
 
-  QString enc;
-  QString title = tr("Open an OGR Supported Vector Layer");
+        QString enc;
+        QString title = tr("Open an OGR Supported Vector Layer");
         openFilesRememberingFilter_("lastVectorFileFilter", fileFilters, selectedFiles, enc,
-          title);
+                                    title);
         if (selectedFiles.isEmpty())
         {
             // no files were selected, so just bail
             mMapCanvas->freeze(false);
-
+            
             return;
         }
 
         addLayer(selectedFiles, enc);
     }
-}                               // QgisApp::addLayer()
+} // QgisApp::addLayer()
 
 
 
@@ -1471,10 +1479,293 @@ void QgisApp::addDatabaseLayer()
     }
 }
 #endif
+
+
+
+
+/// file data representation
+enum dataType { IS_VECTOR, IS_RASTER, IS_BOGUS };
+
+
+
+/** returns data type associated with the given QgsProject file DOM node
+
+  The DOM node should represent the state associated with a specific layer.
+ */
+static
+dataType
+dataType_( QDomNode & layerNode )
+{
+    QString type = layerNode.toElement().attribute( "type" );
+
+    if ( QString::null == type )
+    {
+        qDebug( "%s:%d cannot find ``type'' attribute", __FILE__, __LINE__ );
+
+        return IS_BOGUS;
+    }
+
+    if ( "raster" == type )
+    {
+        qDebug( "%s:%d is a raster", __FILE__, __LINE__ );
+
+        return IS_RASTER;
+    }
+    else if ( "vector" == type )
+    {
+        qDebug( "%s:%d is a vector", __FILE__, __LINE__ );
+
+        return IS_VECTOR;
+    }
+
+    qDebug( "%s:%d is unknown type %s", __FILE__, __LINE__, type.ascii() );
+
+    return IS_BOGUS;
+} // dataType_( QDomNode & layerNode )
+
+
+/** return the data source for the given layer
+
+  The QDomNode is a QgsProject DOM node corresponding to a map layer state.
+
+  Essentially dumps <datasource> tag.
+
+*/
+static
+QString
+dataSource_( QDomNode & layerNode )
+{
+    QDomNode dataSourceNode = layerNode.namedItem( "datasource" );
+
+    if ( dataSourceNode.isNull() )
+    {
+        qDebug( "%s:%d cannot find datasource node", __FILE__, __LINE__ );
+
+        return QString::null;
+    }
+
+    return dataSourceNode.toElement().text();
+
+} // dataSource_( QDomNode & layerNode )
+
+
+
+/// the three flavors for data
+typedef enum { IS_FILE, IS_DATABASE, IS_URL, IS_UNKNOWN } providerType;
+
+
+/** return the physical storage type associated with the given layer
+
+  The QDomNode is a QgsProject DOM node corresponding to a map layer state.
+
+  If the <provider> is "ogr", then it's a file type.
+
+  However, if the layer is a raster, then there won't be a <provider> tag.  It
+  will always have an associated file.
+
+  If the layer doesn't fall into either of the previous two categories, then
+  it's either a database or URL.  If the <datasource> tag has "url=", then
+  it's URL based.  If the <datasource> tag has "dbname=">, then the layer data
+  is in a database.
+
+*/
+static
+providerType
+providerType_( QDomNode & layerNode )
+{
+    // XXX but what about rasters that can be URLs?  _Can_ they be URLs?
+
+    switch( dataType_( layerNode ) )
+    {
+        case IS_VECTOR:
+        {
+            QString dataSource = dataSource_( layerNode );
+
+#ifdef QGISDEBUG
+            qDebug( "%s:%d datasource is %s", __FILE__, __LINE__, dataSource.ascii() );
+#endif
+            if ( dataSource.contains("host=") )
+            {
+                return IS_URL;
+            }
+            else if ( dataSource.contains("dbname=") )
+            {
+                return IS_DATABASE;
+            }
+
+            // be default, then, this should be a file based layer data source
+            // XXX is this a reasonable assumption?
+
+            return IS_FILE;            // XXX you were here
+        }
+
+        case IS_RASTER:         // rasters are currently only accessed as
+                                // physical files
+            return IS_FILE;
+
+        default:
+            qDebug( "%s:%d unknown ``type'' attribute", __FILE__, __LINE__ );
+    }
+
+    return IS_UNKNOWN;
+
+} // providerType_
+
+
+
+/** set the <datasource> to the new value
+ */
+static
+void
+setDataSource_( QDomNode & layerNode, QString const & dataSource )
+{
+    QDomNode dataSourceNode = layerNode.namedItem("datasource");
+    QDomElement dataSourceElement = dataSourceNode.toElement();
+    QDomText dataSourceText = dataSourceElement.firstChild().toText();
+
+
+#ifdef QGISDEBUG
+    QString originalDataSource = dataSourceText.data();
+
+    qDebug( "%s:%d datasource changed from %s", __FILE__, __LINE__, originalDataSource.ascii() );
+#endif
+
+    dataSourceText.setData( dataSource );
+
+#ifdef QGISDEBUG
+    QString newDataSource = dataSourceText.data();
+
+    qDebug( "%s:%d to %s", __FILE__, __LINE__, newDataSource.ascii() );
+#endif
+} // setDataSource_
+
+
+
+
+/**
+   
+*/
+static
+void
+findMissingFile_( QDomNode & layerNode )
+{
+    switch( dataType_( layerNode ) )
+    {
+        case IS_VECTOR:
+        {
+            // Prepend that file name to the valid vector file format filter
+            // list since it makes it easier for the user to not only find the
+            // original file, but to perhaps find a similar file.
+
+            QFileInfo originalDataSource( dataSource_(layerNode) );
+
+
+            QString fileFilters;
+
+            buildSupportedVectorFileFilter_(fileFilters);
+
+            fileFilters = originalDataSource.fileName() + ";;" + fileFilters;
+
+            QStringList selectedFiles;
+            QString enc;
+            QString title = QObject::trUtf8("Open an OGR Supported Vector Layer");
+            openFilesRememberingFilter_("lastVectorFileFilter", 
+                                        fileFilters, 
+                                        selectedFiles, 
+                                        enc,
+                                        title);
+            if (selectedFiles.isEmpty())
+            {
+                return;
+            }
+            else
+            {
+                setDataSource_( layerNode, selectedFiles.first() );
+                if ( ! QgsProject::instance()->read( layerNode ) )
+                {
+                    qDebug( "%s:%d unable to re-read layer", __FILE__, __LINE__ );
+                }
+            }
+
+            break;
+        }
+        case IS_RASTER:
+            break;
+    }
+} // findMissingFile_
+
+
+
+
+/** find relocated data source for the given layer
+
+  This QDom object represents a QgsProject node that maps to a specific layer.
+
+  @param layerNode QDom node containing layer project information
+
+  @note Yes, we want a _copy_ of layerNode since we will be making possible
+        changes to it, such as setting the data source path.
+
+  @todo
+
+  XXX Only implemented for file based layers.  It will need to be extended for
+  XXX other data source types such as databases.
+
+*/
+static
+void
+findLayer_( QDomNode const & constLayerNode )
+{
+    // XXX actually we could possibly get away with a copy of the node
+    QDomNode & layerNode = const_cast<QDomNode&>(constLayerNode);
+
+
+    switch ( providerType_(layerNode) )
+    {
+        case IS_FILE:
+            qDebug( "%s:%d layer is file based", __FILE__, __LINE__ );
+            findMissingFile_( layerNode );
+            break;
+        case IS_DATABASE:
+            qDebug( "%s:%d layer is database based", __FILE__, __LINE__ );
+            break;
+        case IS_URL:
+            qDebug( "%s:%d layer is URL based", __FILE__, __LINE__ );
+            break;
+        case IS_UNKNOWN:
+            qDebug( "%s:%d layer has an unkown type", __FILE__, __LINE__ );
+            break;
+    }
+
+} // findLayer_
+
+
+
+
+/** find relocated data sources for given layers
+
+  These QDom objects represent QgsProject nodes that map to specific layers.
+
+*/
+static
+void
+findLayers_( list<QDomNode> const & layerNodes )
+{
+    for_each( layerNodes.begin(), layerNodes.end(), findLayer_ );
+} // findLayers_
+
+
+
+
+
+
+
 void QgisApp::fileExit()
 {
     QApplication::exit();
 }
+
+
 
 void QgisApp::fileNew()
 {
@@ -1726,11 +2017,20 @@ void QgisApp::fileOpen()
                 saveRecentProjectPath(fullPath, settings);
             }
         }
+        catch ( QgsProjectBadLayerException & e )
+        {
+            QMessageBox::critical(this, 
+                                  tr("QGIS Project Read Error"), 
+                                  tr("") + "\n" + e.what() );
+            qDebug( "%s:%d %d bad layers found", __FILE__, __LINE__, e.layers().size() );
+
+        }
         catch ( std::exception & e )
         {
             QMessageBox::critical(this, 
                                   tr("QGIS Project Read Error"), 
                                   tr("") + "\n" + e.what() );
+            qDebug( "%s:%d BAD LAYERS FOUND", __FILE__, __LINE__ );
         }
     }
 
@@ -1756,9 +2056,9 @@ bool QgisApp::addProject(QString projectFile)
         {
             setTitleBarText_( *this );
 
-            emit projectRead();       // let plug-ins know that we've read in a new
-            // project so that they can check any project
-            // specific plug-in state
+            emit projectRead(); // let plug-ins know that we've read in a new
+                                // project so that they can check any project
+                                // specific plug-in state
             
             // add this to the list of recently used project files
             QSettings settings;
@@ -1769,9 +2069,31 @@ bool QgisApp::addProject(QString projectFile)
             return false;
         }
     }
+    catch ( QgsProjectBadLayerException & e )
+    {
+        qDebug( "%s:%d %d bad layers found", __FILE__, __LINE__, e.layers().size() );
+
+        if ( QMessageBox::Yes == QMessageBox::critical( this, 
+                                                        tr("QGIS Project Read Error"), 
+                                                        tr("") + "\n" + e.what() + "\n" +
+                                                        tr("Try to find missing layers?"),
+                                                        QMessageBox::Yes | QMessageBox::Default, 
+                                                        QMessageBox::No  | QMessageBox::Escape ) )
+        {
+            qDebug( "%s:%d want to find missing layers is true", __FILE__, __LINE__ );
+
+            // attempt to find the new locations for missing layers
+            findLayers_( e.layers() );
+        }
+
+    }
     catch ( std::exception & e )
     {
-        QMessageBox::critical( 0x0, "Unable to open project", e.what(), QMessageBox::Ok, QMessageBox::NoButton );
+        qDebug( "%s:%d BAD LAYERS FOUND", __FILE__, __LINE__ );
+
+        QMessageBox::critical( 0x0, 
+                               "Unable to open project", e.what(), QMessageBox::Ok, 
+                               QMessageBox::NoButton );
 
         return false;
     }
