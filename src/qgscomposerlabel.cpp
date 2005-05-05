@@ -139,12 +139,13 @@ void QgsComposerLabel::draw ( QPainter & painter )
 
     QRect r ( (int)(x - w/2), (int) (y - h/2), w, h );
     
+    QRect boxRect;
     if ( mBox ) {
 	// I don't know why, but the box seems to be too short -> add 1 * mBoxBuffer to width
-	QRect br ( (int)(r.x()-1.5*mBoxBuffer), r.y()-mBoxBuffer, (int)(r.width()+3*mBoxBuffer), r.height()+2*mBoxBuffer );
+	boxRect.setRect ( (int)(r.x()-1.5*mBoxBuffer), r.y()-mBoxBuffer, (int)(r.width()+3*mBoxBuffer), r.height()+2*mBoxBuffer );
 	QBrush brush ( QColor(255,255,255) );
 	painter.setBrush ( brush );
-	painter.drawRect ( br );
+	painter.drawRect ( boxRect );
     }
     
     // The width is not sufficient in postscript
@@ -183,14 +184,20 @@ void QgsComposerLabel::draw ( QPainter & painter )
 
     // Show selected / Highlight
     if ( mSelected && plotStyle() == QgsComposition::Preview ) {
+	QRect hr;
+	if ( mBox ) {
+	    hr = boxRect;
+	} else {
+	    hr = r;
+	}
         painter.setPen( mComposition->selectionPen() );
         painter.setBrush( mComposition->selectionBrush() );
 	int s = mComposition->selectionBoxSize();
 	
-	painter.drawRect ( r.x(), r.y(), s, s );
-	painter.drawRect ( r.x()+r.width()-s, r.y(), s, s );
-	painter.drawRect ( r.x()+r.width()-s, r.y()+r.height()-s, s, s );
-	painter.drawRect ( r.x(), r.y()+r.height()-s, s, s );
+	painter.drawRect ( hr.x(), hr.y(), s, s );
+	painter.drawRect ( hr.x()+hr.width()-s, hr.y(), s, s );
+	painter.drawRect ( hr.x()+hr.width()-s, hr.y()+hr.height()-s, s, s );
+	painter.drawRect ( hr.x(), hr.y()+hr.height()-s, s, s );
     }
 }
 
