@@ -488,6 +488,7 @@ libqgis_la_SOURCES =						\
 		qgscustomprojectiondialogbase.uic.cpp		\
 		qgscustomprojectiondialog.moc.cpp 		\
 		qgsdataprovider.moc.cpp				\
+		qgsexception.cpp				\
 		qgsfeature.cpp					\
 		qgsfeatureattribute.cpp				\
 		qgsfield.cpp					\

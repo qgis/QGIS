@@ -32,6 +32,7 @@
 
 
 class QFileInfo;
+class QDomNode;
 
 
 /** Reads and writes project states.
@@ -143,6 +144,22 @@ public:
     bool read( QFileInfo const & file );
     bool read( );
     //@}
+
+
+    /** read the layer described in the associated DOM node
+
+        @param layerNode   represents a QgsProject DOM node that maps to a specific layer.
+
+        QgsProject raises an exception when one of the QgsProject::read()
+        implementations fails.  Since the read()s are invoked from qgisapp,
+        then qgisapp handles the exception.  It prompts the user for the new
+        location of the data, if any.  If there is a new location, the DOM
+        node associated with the layer has its <datasource> tag corrected.
+        Then that node is passed to this member function to be re-opened.
+
+     */
+    bool read( QDomNode & layerNode );
+
 
     /** write project file
 

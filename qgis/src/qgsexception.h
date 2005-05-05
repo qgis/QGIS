@@ -20,7 +20,9 @@
 
 #include <exception>
 #include <string>
+#include <list>
 
+#include <qdom.h> 
 #include <qstring.h>
 
 /**
@@ -32,14 +34,14 @@ public:
 
     QgsException( std::string const & what )
         : what_( what )
-        {}
+    {}
 
     QgsException( QString const & what )
         : what_( (const char *)what )
-        {}
+    {}
 
     virtual ~QgsException() throw()
-        {}
+    {}
 
     const char* what() const throw()
     {
@@ -72,5 +74,43 @@ public:
         {}
 
 }; // class QgsIOException
+
+
+
+/** for files missing from layers while reading project files
+
+*/
+class QgsProjectBadLayerException : public QgsException
+{
+public:
+
+    QgsProjectBadLayerException( std::list<QDomNode> const & layers )
+        : QgsException(std::string(msg_)),
+          mBrokenLayers( layers )
+    {}
+    
+    ~QgsProjectBadLayerException() throw()
+    {}
+    
+    std::list<QDomNode> const & layers() const
+    {
+        return mBrokenLayers;
+    }
+
+private:
+
+    /** QDomNodes representing the state of a layer that couldn't be loaded
+
+    The layer data was either relocated or deleted.  The DOM node also
+    contains ancillary data such as line widths and the like.
+
+     */
+    std::list<QDomNode> mBrokenLayers;
+
+    static const char * msg_;
+
+}; // class QgsProjectBadLayerException
+
+
 
 #endif
