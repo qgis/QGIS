@@ -218,13 +218,15 @@ QRect QgsComposerScalebar::render ( QPainter *p )
     font.setPointSizeFloat ( size );
     QFontMetrics metrics ( font );
     
-    // Fonts for rendering
+    // TODO: For output to Postscript the font must be scaled. But how?
+    //       The factor is an empirical value.
+    //       In any case, each font scales in in different way even if painter.scale()
+    //       is used instead of font size!!! -> Postscript is never exactly the same as
+    //       in preview.
+    double factor = 2.45;
 
-    // I have no idea why 2.54 - it is an empirical value
-    if ( plotStyle() == QgsComposition::Postscript ) {
-	size = 2.54 * 72.0 * mFont.pointSizeFloat() / mComposition->resolution();
-    }
-    font.setPointSizeFloat ( size );
+    double pssize = factor * 72.0 * mFont.pointSizeFloat() / mComposition->resolution();
+    double psscale = pssize/size;
 
     // Not sure about Style Strategy, QFont::PreferMatch?
     font.setStyleStrategy ( (QFont::StyleStrategy) (QFont::PreferOutline | QFont::PreferAntialias) );
@@ -289,11 +291,18 @@ QRect QgsComposerScalebar::render ( QPainter *p )
 		xmax = (int) barLx + width - shift + w; 
 	    }
 	    
-	    int x = barLx+i*segwidth;
+	    int x = barLx+i*segwidth-shift;
+	    int y = cy-ticksize-offset-metrics.descent();
 
-	    QRect r ( (int)x-shift, cy-ticksize-offset-h, w, h) ;
-	    
-	    painter->drawText( r, Qt::AlignCenter|Qt::SingleLine, txt );
+            if ( plotStyle() == QgsComposition::Postscript ) {
+		painter->save();
+		painter->translate(x,y);
+		painter->scale ( psscale, psscale );
+		painter->drawText( 0, 0, txt );
+		painter->restore();
+	    } else {
+	        painter->drawText( x, y, txt );
+	    }
 	}
 	
 	ymin = cy - ticksize - offset - h;
