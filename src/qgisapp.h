@@ -45,6 +45,7 @@ class QgsRasterLayer;
 class QCheckBox;
 class QEvent;
 class QgsComposer;
+class QPushButton;
 #ifdef WIN32
 #include "qgisappbase.h"
 #else
@@ -373,6 +374,7 @@ public slots:
     void setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag);
     void drawExtentRectangle(QPainter *);
     void updateMouseCoordinatePrecision();
+    void projectionsEnabled(bool theFlag);
     void debugHook();
     void stopZoom();
 
@@ -424,6 +426,8 @@ private:
     QProgressBar * mProgressBar;
     //! Widget used to suppress rendering
     QCheckBox * mRenderSuppresionCBox;
+    //! Widget in status bar used to show status of on the fly projection
+    QPushButton * mOnTheFlyProjectionStatusButton;
     //! Popup menu
     QPopupMenu * mPopupMenu;
     //! Top level plugin menu
