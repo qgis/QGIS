@@ -202,10 +202,12 @@ void QgsProjectProperties::apply()
   if (cbxProjectionEnabled->isChecked())
   {
     QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectionsEnabled",1);
+    emit projectionEnabled(true);
   }
   else
   {
     QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectionsEnabled",0);
+    emit projectionEnabled(false);
   }
   // Only change the projection if there is a node in the tree
   // selected that has an srid. This prevents error if the user
