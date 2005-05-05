@@ -184,10 +184,10 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
     QPainter *painter;
     QPixmap *pixmap;
     if ( p ) {
-  painter = p;
+  	painter = p;
     } else {
-  pixmap = new QPixmap(1,1);
-  painter = new QPainter( pixmap );
+  	pixmap = new QPixmap(1,1);
+  	painter = new QPainter( pixmap );
     }
 
     std::cout << "mComposition->scale() = " << mComposition->scale() << std::endl;
@@ -214,11 +214,20 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
     // Fonts for rendering
     
     // I have no idea why 2.54 - it is an empirical value
-    if ( plotStyle() == QgsComposition::Postscript) {
-  titleSize = 2.54 * 72.0 * mTitleFont.pointSizeFloat() / mComposition->resolution();
-  sectionSize = 2.54 * 72.0 * mSectionFont.pointSizeFloat() / mComposition->resolution();
-  size = 2.54 * 72.0 * mFont.pointSizeFloat() / mComposition->resolution();
-    }
+    // TODO: For output to Postscript the font must be scaled. But how?
+    //       The factor is an empirical value.
+    //       In any case, each font scales in in different way even if painter.scale()
+    //       is used instead of font size!!! -> Postscript is never exactly the same as
+    //       in preview.
+    double psFontFactor = 2.45;
+
+    double psTitleSize = psFontFactor * 72.0 * mTitleFont.pointSizeFloat() / mComposition->resolution();
+    double psSectionSize = psFontFactor * 72.0 * mSectionFont.pointSizeFloat() / mComposition->resolution();
+    double psSize = psFontFactor * 72.0 * mFont.pointSizeFloat() / mComposition->resolution();
+
+    double psTitleFontScale = psTitleSize / titleSize; 
+    double psSectionFontScale = psSectionSize / sectionSize;
+    double psFontScale = psSize / size;
     
     titleFont.setPointSizeFloat ( titleSize );
     sectionFont.setPointSizeFloat ( sectionSize );
@@ -235,223 +244,250 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
     y = mMargin + titleMetrics.height();
     painter->setPen ( mPen );
     painter->setFont ( titleFont );
-    painter->drawText( (int) (2*mMargin), y, mTitle );
-    int width = 2 * mMargin + titleMetrics.width ( mTitle ); 
+
+    if ( plotStyle() == QgsComposition::Postscript) {
+	painter->save();
+	painter->translate ( (int) (2*mMargin), y );
+	painter->scale ( psTitleFontScale, psTitleFontScale );
+        painter->drawText( 0, 0, mTitle );
+        painter->restore();
+    } else {
+        painter->drawText( (int) (2*mMargin), y, mTitle );
+    }
+
+    int width = 4 * mMargin + titleMetrics.width ( mTitle ); 
     int height = mMargin + mSymbolSpace + titleMetrics.height(); // mSymbolSpace?
     
     // Layers
     QgsComposerMap *map = mComposition->map ( mMap );
     if ( map ) {
-  std::map<int,int> doneGroups;
-  
-  int nlayers = mMapCanvas->layerCount();
-  for ( int i = nlayers - 1; i >= 0; i-- ) {
-      QgsMapLayer *layer = mMapCanvas->getZpos(i);
-      if ( !layer->visible() ) continue;
-      if ( layer->type() != QgsMapLayer::VECTOR ) continue;
-
-      QString layerId = layer->getLayerID();
-      if( ! layerOn(layerId) ) continue;
-        
-      int group = layerGroup ( layerId );
-      if ( group > 0 ) { 
-    //std::map<int,int>::iterator it= doneGroups.find();
-          if ( doneGroups.find(group) != doneGroups.end() ) {
-        continue; 
-    } else {
-        doneGroups.insert(std::make_pair(group,1));
-    }
-      }
-
-      /* Make list of all layers in the group and count section items */
-      std::vector<int> groupLayers; // vector of layers
-      std::vector<int> itemHeights; // maximum item sizes
-      std::vector<QString> itemLabels; // item labels
-      int sectionItemsCount = 0;
-      QString sectionTitle;
-
-      for ( int j = nlayers - 1; j >= 0; j-- ) {
-    QgsMapLayer *layer2 = mMapCanvas->getZpos(j);
-    if ( !layer2->visible() ) continue;
-    if ( layer2->type() != QgsMapLayer::VECTOR ) continue;
+      std::map<int,int> doneGroups;
       
-    QString layerId2 = layer2->getLayerID();;
-          if( ! layerOn(layerId2) ) continue;
-    
-    int group2 = layerGroup ( layerId2 );
-    
-    QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer2);
-    QgsRenderer *renderer = vector->renderer();
+      int nlayers = mMapCanvas->layerCount();
+      for ( int i = nlayers - 1; i >= 0; i-- ) {
+	  QgsMapLayer *layer = mMapCanvas->getZpos(i);
+	  if ( !layer->visible() ) continue;
+	  if ( layer->type() != QgsMapLayer::VECTOR ) continue;
 
-    // QgsContinuousColRenderer is not supported yet
-    // QgsSiMaRenderer, QgsGraduatedMaRenderer, QgsUValMaRenderer no more
-    if ( typeid (*renderer) == typeid(QgsContinuousColRenderer) ||
-         typeid (*renderer) == typeid(QgsSiMaRenderer) ||
-         typeid (*renderer) == typeid(QgsGraduatedMaRenderer) ||
-         typeid (*renderer) == typeid(QgsUValMaRenderer) )
-    { 
-        continue;
-    }
+	  QString layerId = layer->getLayerID();
+	  if( ! layerOn(layerId) ) continue;
+	    
+	  int group = layerGroup ( layerId );
+	  if ( group > 0 ) { 
+	    //std::map<int,int>::iterator it= doneGroups.find();
+	    if ( doneGroups.find(group) != doneGroups.end() ) {
+		continue; 
+	    } else {
+		doneGroups.insert(std::make_pair(group,1));
+	    }
+	  }
 
-    if ( (group > 0 && group2 == group) || ( group == 0 && j == i )  ) {
-        groupLayers.push_back(j);
+	  /* Make list of all layers in the group and count section items */
+	  std::vector<int> groupLayers; // vector of layers
+	  std::vector<int> itemHeights; // maximum item sizes
+	  std::vector<QString> itemLabels; // item labels
+	  int sectionItemsCount = 0;
+	  QString sectionTitle;
 
-        std::list<QgsRenderItem*> items = renderer->items();
+	  for ( int j = nlayers - 1; j >= 0; j-- ) {
+	    QgsMapLayer *layer2 = mMapCanvas->getZpos(j);
+	    if ( !layer2->visible() ) continue;
+	    if ( layer2->type() != QgsMapLayer::VECTOR ) continue;
+	      
+	    QString layerId2 = layer2->getLayerID();;
+		  if( ! layerOn(layerId2) ) continue;
+	    
+	    int group2 = layerGroup ( layerId2 );
+	    
+	    QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer2);
+	    QgsRenderer *renderer = vector->renderer();
 
-        if ( sectionTitle.length() == 0 ) {
-           sectionTitle = layer2->name();
-        }        
-          
-        if ( items.size() > sectionItemsCount ) {
-      sectionItemsCount = items.size();
-            itemHeights.resize(sectionItemsCount);
-            itemLabels.resize(sectionItemsCount); 
-        }
+	    // QgsContinuousColRenderer is not supported yet
+	    // QgsSiMaRenderer, QgsGraduatedMaRenderer, QgsUValMaRenderer no more
+	    if ( typeid (*renderer) == typeid(QgsContinuousColRenderer) ||
+		 typeid (*renderer) == typeid(QgsSiMaRenderer) ||
+		 typeid (*renderer) == typeid(QgsGraduatedMaRenderer) ||
+		 typeid (*renderer) == typeid(QgsUValMaRenderer) )
+	    { 
+		continue;
+	    }
 
-        double widthScale = map->widthScale() * mComposition->scale();
-        if ( plotStyle() == QgsComposition::Preview && mPreviewMode == Render ) {
-      widthScale *= mComposition->viewScale();
-        }
-        
-        double scale = map->symbolScale() * mComposition->scale();
+	    if ( (group > 0 && group2 == group) || ( group == 0 && j == i )  ) {
+		groupLayers.push_back(j);
 
-        int icnt = 0;
-        for ( std::list<QgsRenderItem*>::iterator it = items.begin(); it != items.end(); ++it ) {
-        
-      QgsRenderItem *ri = (*it);
-            QgsSymbol *sym = ri->getSymbol();
-      
-      // height
-      if ( itemHeights[icnt] < mSymbolHeight ) { // init first
-          itemHeights[icnt] = mSymbolHeight;
+		std::list<QgsRenderItem*> items = renderer->items();
+
+		if ( sectionTitle.length() == 0 ) {
+		   sectionTitle = layer2->name();
+		}        
+		  
+		if ( items.size() > sectionItemsCount ) {
+	      sectionItemsCount = items.size();
+		    itemHeights.resize(sectionItemsCount);
+		    itemLabels.resize(sectionItemsCount); 
+		}
+
+		double widthScale = map->widthScale() * mComposition->scale();
+		if ( plotStyle() == QgsComposition::Preview && mPreviewMode == Render ) {
+	      widthScale *= mComposition->viewScale();
+		}
+		
+		double scale = map->symbolScale() * mComposition->scale();
+
+		int icnt = 0;
+		for ( std::list<QgsRenderItem*>::iterator it = items.begin(); it != items.end(); ++it ) {
+		
+	      QgsRenderItem *ri = (*it);
+		    QgsSymbol *sym = ri->getSymbol();
+	      
+	      // height
+	      if ( itemHeights[icnt] < mSymbolHeight ) { // init first
+		  itemHeights[icnt] = mSymbolHeight;
+	      }
+	      QPicture pic = sym->getPointSymbolAsPicture(0,widthScale);
+	      QRect br = pic.boundingRect();
+
+	      int h = (int) ( scale * br.height() );
+	      if ( h > itemHeights[icnt] ) {
+		  itemHeights[icnt] = h;
+	      }
+
+	      if ( itemLabels[icnt].length() == 0 ) {
+		  if ( ri->label().length() > 0 ) {
+		itemLabels[icnt] = ri->label();
+		  } else {
+		itemLabels[icnt] = ri->value();
+		  }
+	      }
+		  
+	      icnt++;
+		}
+	    }
+	  }
+		//std::cout << "group size = " << groupLayers.size() << std::endl;
+		//std::cout << "sectionItemsCount = " << sectionItemsCount << std::endl;
+
+	  // Section title 
+	  if ( sectionItemsCount > 1 ) {
+	    height += mSymbolSpace;
+
+	    x = (int) ( 2*mMargin );
+	    y = (int) ( height + sectionMetrics.height() );
+	    painter->setPen ( mPen );
+	    painter->setFont ( sectionFont );
+
+	    if ( plotStyle() == QgsComposition::Postscript) {
+		painter->save();
+		painter->translate ( x, y );
+		painter->scale ( psSectionFontScale, psSectionFontScale );
+		painter->drawText( 0, 0, sectionTitle );
+		painter->restore();
+	    } else {
+		painter->drawText( x, y, sectionTitle );
+	    }
+
+	    int w = 3*mMargin + sectionMetrics.width( sectionTitle );
+	    if ( w > width ) width = w;
+	    height += sectionMetrics.height();
+	    height += (int) (0.7*mSymbolSpace);
+	  }
+
+	  // Draw all layers in group 
+	  int groupStartHeight = height;
+	  for ( int j = groupLayers.size()-1; j >= 0; j-- ) {
+	std::cout << "layer = " << groupLayers[j] << std::endl;
+
+	int localHeight = groupStartHeight;
+	
+	layer = mMapCanvas->getZpos(groupLayers[j]);
+	QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
+	QgsRenderer *renderer = vector->renderer();
+	
+	// Symbol
+	std::list<QgsRenderItem*> items = renderer->items();
+	
+	int icnt = 0;
+	for ( std::list<QgsRenderItem*>::iterator it = items.begin(); it != items.end(); ++it ) {
+	    localHeight += mSymbolSpace;
+
+	    int symbolHeight = itemHeights[icnt];
+
+	    QgsRenderItem *ri = (*it);
+
+	    QgsSymbol *sym = ri->getSymbol();
+	    
+	    QPen pen = sym->pen();
+	    double widthScale = map->widthScale() * mComposition->scale();
+	    if ( plotStyle() == QgsComposition::Preview && mPreviewMode == Render ) {
+	  widthScale *= mComposition->viewScale();
+	    }
+	    pen.setWidth ( (int)  ( widthScale * pen.width() ) );
+	    painter->setPen ( pen );
+	    painter->setBrush ( sym->brush() );
+	    
+	    if ( vector->vectorType() == QGis::Point ) {
+	  double scale = map->symbolScale() * mComposition->scale();
+
+	  // Get the picture of appropriate size directly from catalogue
+	  QPicture pic = sym->getPointSymbolAsPicture(0,widthScale);
+	      
+	  QRect br = pic.boundingRect();
+	
+	  painter->save();
+	  painter->scale(scale,scale);
+	  painter->drawPicture ( static_cast<int>( (1.*mMargin+mSymbolWidth/2)/scale-br.x()-1.*br.width()/2),
+		     static_cast<int>( (1.*localHeight+symbolHeight/2)/scale-br.y()-1.*br.height()/2),
+		     pic );
+	  painter->restore();
+
+	    } else if ( vector->vectorType() == QGis::Line ) {
+	  painter->drawLine ( mMargin, localHeight+mSymbolHeight/2, 
+		  mMargin+mSymbolWidth, localHeight+mSymbolHeight/2 );
+	    } else if ( vector->vectorType() == QGis::Polygon ) {
+	  painter->drawRect ( mMargin, localHeight, mSymbolWidth, mSymbolHeight );
+	    }
+
+	    // Label 
+	    painter->setPen ( mPen );
+	    painter->setFont ( font );
+	    QString lab;
+	    if ( sectionItemsCount == 1 ) {
+	  lab = sectionTitle;
+	    } else { 
+	  lab = itemLabels[icnt];
+	    }
+	    
+	    // drawText (x, y w, h, ...) was cutting last letter (the box was tto small)
+	    QRect br = metrics.boundingRect ( lab );
+	    x = (int) ( 2*mMargin + mSymbolWidth );
+	    y = (int) ( localHeight + symbolHeight/2 + ( metrics.height()/2 - metrics.descent()) );
+
+	    if ( plotStyle() == QgsComposition::Postscript) {
+		painter->save();
+		painter->translate ( x, y );
+		painter->scale ( psFontScale, psFontScale );
+		painter->drawText( 0, 0, lab );
+		painter->restore();
+	    } else {
+		painter->drawText( x, y, lab );
+	    }
+
+	    int w = 3*mMargin + mSymbolWidth + metrics.width(lab);
+	    if ( w > width ) width = w;
+
+	    localHeight += symbolHeight;
+	    icnt++;
+	}
+	  }
+	  /* add height of section items */
+	  height = groupStartHeight;
+	  for ( int j = 0; j < itemHeights.size(); j++ ) {
+	height += mSymbolSpace + itemHeights[j];
+	  }
+	  if ( sectionItemsCount > 1 ) { // add more space to separate section from next item
+	      height += mSymbolSpace;
+	  } 
       }
-      QPicture pic = sym->getPointSymbolAsPicture(0,widthScale);
-      QRect br = pic.boundingRect();
-
-      int h = (int) ( scale * br.height() );
-      if ( h > itemHeights[icnt] ) {
-          itemHeights[icnt] = h;
-      }
-
-      if ( itemLabels[icnt].length() == 0 ) {
-          if ( ri->label().length() > 0 ) {
-        itemLabels[icnt] = ri->label();
-          } else {
-        itemLabels[icnt] = ri->value();
-          }
-      }
-          
-      icnt++;
-        }
-    }
-      }
-            //std::cout << "group size = " << groupLayers.size() << std::endl;
-            //std::cout << "sectionItemsCount = " << sectionItemsCount << std::endl;
-
-      // Section title 
-      if ( sectionItemsCount > 1 ) {
-    height += mSymbolSpace;
-
-    x = (int) ( 2*mMargin );
-    y = (int) ( height + sectionMetrics.height() );
-    painter->setPen ( mPen );
-    painter->setFont ( sectionFont );
-    painter->drawText( x, y, sectionTitle );  
-
-    int w = 3*mMargin + sectionMetrics.width( sectionTitle );
-    if ( w > width ) width = w;
-    height += sectionMetrics.height();
-    height += (int) (0.7*mSymbolSpace);
-      }
-
-      // Draw all layers in group 
-      int groupStartHeight = height;
-      for ( int j = groupLayers.size()-1; j >= 0; j-- ) {
-    std::cout << "layer = " << groupLayers[j] << std::endl;
-
-    int localHeight = groupStartHeight;
-    
-    layer = mMapCanvas->getZpos(groupLayers[j]);
-    QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
-    QgsRenderer *renderer = vector->renderer();
-    
-    // Symbol
-    std::list<QgsRenderItem*> items = renderer->items();
-    
-    int icnt = 0;
-    for ( std::list<QgsRenderItem*>::iterator it = items.begin(); it != items.end(); ++it ) {
-        localHeight += mSymbolSpace;
-
-        int symbolHeight = itemHeights[icnt];
-
-        QgsRenderItem *ri = (*it);
-
-        QgsSymbol *sym = ri->getSymbol();
-        
-        QPen pen = sym->pen();
-        double widthScale = map->widthScale() * mComposition->scale();
-        if ( plotStyle() == QgsComposition::Preview && mPreviewMode == Render ) {
-      widthScale *= mComposition->viewScale();
-        }
-        pen.setWidth ( (int)  ( widthScale * pen.width() ) );
-        painter->setPen ( pen );
-        painter->setBrush ( sym->brush() );
-        
-        if ( vector->vectorType() == QGis::Point ) {
-      double scale = map->symbolScale() * mComposition->scale();
-
-      // Get the picture of appropriate size directly from catalogue
-      QPicture pic = sym->getPointSymbolAsPicture(0,widthScale);
-          
-      QRect br = pic.boundingRect();
-    
-      painter->save();
-      painter->scale(scale,scale);
-      painter->drawPicture ( static_cast<int>( (1.*mMargin+mSymbolWidth/2)/scale-br.x()-1.*br.width()/2),
-                 static_cast<int>( (1.*localHeight+symbolHeight/2)/scale-br.y()-1.*br.height()/2),
-                 pic );
-      painter->restore();
-
-        } else if ( vector->vectorType() == QGis::Line ) {
-      painter->drawLine ( mMargin, localHeight+mSymbolHeight/2, 
-              mMargin+mSymbolWidth, localHeight+mSymbolHeight/2 );
-        } else if ( vector->vectorType() == QGis::Polygon ) {
-      painter->drawRect ( mMargin, localHeight, mSymbolWidth, mSymbolHeight );
-        }
-
-        // Label 
-        painter->setPen ( mPen );
-        painter->setFont ( font );
-        QString lab;
-        if ( sectionItemsCount == 1 ) {
-      lab = sectionTitle;
-        } else { 
-      lab = itemLabels[icnt];
-        }
-        
-        // drawText (x, y w, h, ...) was cutting last letter (the box was tto small)
-        QRect br = metrics.boundingRect ( lab );
-        x = (int) ( 2*mMargin + mSymbolWidth );
-        y = (int) ( localHeight + symbolHeight/2 + ( metrics.height()/2 - metrics.descent()) );
-
-        painter->drawText( x, y, lab ); 
-
-        int w = 3*mMargin + mSymbolWidth + metrics.width(lab);
-        if ( w > width ) width = w;
-
-        localHeight += symbolHeight;
-        icnt++;
-    }
-      }
-      /* add height of section items */
-      height = groupStartHeight;
-      for ( int j = 0; j < itemHeights.size(); j++ ) {
-    height += mSymbolSpace + itemHeights[j];
-      }
-      if ( sectionItemsCount > 1 ) { // add more space to separate section from next item
-          height += mSymbolSpace;
-      } 
-  }
     }
 
     height += mMargin;
@@ -459,8 +495,8 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
     QCanvasRectangle::setSize (  width, height );
     
     if ( !p ) {
-  delete painter;
-  delete pixmap;
+      delete painter;
+      delete pixmap;
     }
 
     return QRect ( 0, 0, width, height);
