@@ -2236,37 +2236,6 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
             continue; // NULL
           }
 
-	  // This was nonsense, we have to get real values we dont care about colors, I believe
-	  /*
-          //get the nth element from the current row
-          if (myColorInterpretation == "Palette") // dont translate this its a gdal string
-          {
-            //this is a palette layer so red / green / blue 'layers are 'virtual'
-            //in that we need to obtain the palette entry and then get the r,g or g
-            //component from that palette entry
-
-            int c1, c2, c3;
-            bool found = myColorTable->color ( myDouble, &c1, &c2, &c3 );
-            if ( !found ) continue;
-
-            //check for alternate color mappings
-            switch (theBandNoInt)
-            {
-            case 1:
-              myDouble = c1;
-              break;
-            case 2:
-              myDouble = c2;
-              break;
-            case 3:
-              myDouble = c3;
-              break;
-            }
-          }
-	  */
-
-	  std::cout << "QgsRasterLayerProperties::pbnHistRefresh_clicked" << std::endl;
-
           //only use this element if we have a non null element
           if (myFirstIterationFlag)
           {
