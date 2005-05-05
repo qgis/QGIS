@@ -219,7 +219,7 @@ void QgsProjectionSelector::getUserProjList()
   //determine where the user proj database lives for this user. If none is found an empty
   //now only will be shown
   QString myQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
-  // first we look for ~/.qgis/user_projections.db
+  // first we look for ~/.qgis/qgis.db
   // if it doesnt exist we copy it in from the global resources dir
   QFileInfo myFileInfo;
   myFileInfo.setFile(myQGisSettingsDir+"qgis.db");
@@ -227,7 +227,7 @@ void QgsProjectionSelector::getUserProjList()
   if ( !myFileInfo.exists( ) )
   {
 #ifdef QGISDEBUG
-  std::cout << "User projection db not found...skipping" << std::endl;
+  std::cout << "Users qgis.db not found...skipping" << std::endl;
 #endif
     return;
   }
