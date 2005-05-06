@@ -31,6 +31,7 @@ email                : sherman at mrcc.com
 #include <cpl_error.h>
 #include "ogr_api.h"//only for a test
 
+#include <qfile.h>
 #include <qmessagebox.h>
 #include <qmap.h>
 
@@ -78,7 +79,9 @@ QgsOgrProvider::QgsOgrProvider(QString uri): QgsVectorDataProvider(), dataSource
     std::cerr << "Data source is valid" << std::endl;
 #endif
     valid = true;
+
     ogrLayer = ogrDataSource->GetLayer(0);
+
     // get the extent_ (envelope) of the layer
 #ifdef QGISDEBUG
     std::cerr << "Starting get extent\n";
@@ -121,6 +124,8 @@ QgsOgrProvider::QgsOgrProvider(QString uri): QgsVectorDataProvider(), dataSource
 #endif
     valid = false;
   }
+
+  //createSpatialIndex();
 
   //resize the cache matrix
   minmaxcache=new double*[fieldCount()];
@@ -571,8 +576,9 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
   //TODO   about it. If setting the filter fails, all records will be returned
   if (result == OGRERR_NONE) 
   {
-    std::cerr << "Setting spatial filter using " << wktExtent    << std::endl;
-    ogrLayer->SetSpatialFilter(filter);
+    std::cerr << "Setting spatial filter using " << wktExtent   << std::endl;
+    //ogrLayer->SetSpatialFilter(filter);
+    ogrLayer->SetSpatialFilterRect(rect->xMin(), rect->yMin(), rect->xMax(), rect->yMax());
     std::cerr << "Feature count: " << ogrLayer->GetFeatureCount() << std::endl;
   }else{
 #ifdef QGISDEBUG    
@@ -1068,6 +1074,28 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
   ogrLayer->SyncToDisk();
 
   return true;
+}
+
+bool QgsOgrProvider::createSpatialIndex()
+{
+    //experimental, try to create a spatial index
+    QString filename=dataSourceUri.section('/',-1,-1);//todo: find out the filename from the uri
+    QString layername=filename.section('.',0,0);
+    QString sql="CREATE SPATIAL INDEX ON "+layername;
+    ogrDataSource->ExecuteSQL (sql.ascii(), ogrLayer->GetSpatialFilter(),"");
+    //todo: find out, if the .qix file is there
+    QString indexname=dataSourceUri;
+    indexname.truncate(dataSourceUri.length()-filename.length());
+    indexname=indexname+layername+".qix";
+    QFile indexfile(indexname);
+    if(indexfile.exists())
+    {
+	return true;
+    }
+    else
+    {
+	return false;
+    }
 }
 
 int QgsOgrProvider::capabilities() const
