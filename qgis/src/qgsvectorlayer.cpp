@@ -789,6 +789,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
       double scale = markerScaleFactor * symbolScale;
       drawFeature(p,fet,theMapToPixelTransform,&marker, scale, 
       projectionsEnabledFlag);
+      //test for geos performance
+      //geos::Geometry* g=fet->geosGeometry();
+      //delete g;
       ++featureCount;
       delete fet;
     }

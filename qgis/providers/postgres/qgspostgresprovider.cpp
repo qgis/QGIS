@@ -322,6 +322,27 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       } */
   //  tabledisplay=0;
 
+  //set client encoding to unicode because QString uses UTF-8 anyway
+#ifdef QGISDEBUG
+  qWarning("setting client encoding to UNICODE");
+#endif
+  int errcode=PQsetClientEncoding(connection, "UNICODE");
+ 
+#ifdef QGISDEBUG
+  if(errcode==0)
+  {
+      qWarning("encoding successfully set");
+  }
+  else if(errcode==-1)
+  {
+      qWarning("error in setting encoding");
+  }
+  else
+  {
+      qWarning("undefined return value from encoding setting");
+  }
+#endif
+
   //fill type names into lists
   mNumericalTypes.push_back("double precision");
   mNumericalTypes.push_back("int4");
@@ -727,7 +748,8 @@ void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f){
     // results
     if(fld != geometryColumn){
       // Add the attribute to the feature
-      QString val = mEncoding->toUnicode(PQgetvalue(attr,0, i));
+      //QString val = mEncoding->toUnicode(PQgetvalue(attr,0, i));
+	QString val = QString::fromUtf8 (PQgetvalue(attr,0, i));
       f->addAttribute(fld, val);
     }
   }
@@ -755,7 +777,8 @@ void QgsPostgresProvider::getFeatureAttributes(int key,
     if(fld != geometryColumn)
     {
       // Add the attribute to the feature
-      QString val = mEncoding->toUnicode(PQgetvalue(attr,0, i));
+      //QString val = mEncoding->toUnicode(PQgetvalue(attr,0, i));
+	QString val = QString::fromUtf8(PQgetvalue(attr,0, i));
       //qWarning(val);
       f->addAttribute(fld, val);
     }

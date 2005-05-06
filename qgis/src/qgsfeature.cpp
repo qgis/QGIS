@@ -905,7 +905,7 @@ geos::Geometry* QgsFeature::geosGeometry() const
     }
 
 #ifdef QGISDEBUG
-    qWarning("In QgsFeature::geosGeometry()");
+    //qWarning("In QgsFeature::geosGeometry()");
 #endif
 	
     double *x;
@@ -951,7 +951,7 @@ geos::Geometry* QgsFeature::geosGeometry() const
 	case QGis::WKBLineString:
 	{
 #ifdef QGISDEBUG
-    qWarning("Linestring found");
+	    //qWarning("Linestring found");
 #endif
 	    geos::DefaultCoordinateSequence* sequence=new geos::DefaultCoordinateSequence();
 	    ptr = geometry + 5;
@@ -964,7 +964,7 @@ geos::Geometry* QgsFeature::geosGeometry() const
 		y = (double *) ptr;
 		ptr += sizeof(double);
 #ifdef QGISDEBUG
-			qWarning("adding coordinate pair "+QString::number(*x)+"//"+QString::number(*y));
+		//qWarning("adding coordinate pair "+QString::number(*x)+"//"+QString::number(*y));
 #endif
 		sequence->add(geos::Coordinate(*x,*y));
 	    }
@@ -998,7 +998,7 @@ geos::Geometry* QgsFeature::geosGeometry() const
 	case QGis::WKBPolygon: 
 	{
 #ifdef QGISDEBUG
-    qWarning("Polygon found");
+	    //qWarning("Polygon found");
 #endif
 	    // get number of rings in the polygon
 	    numRings = (int *) (geometry + 1 + sizeof(int));
@@ -1010,7 +1010,7 @@ geos::Geometry* QgsFeature::geosGeometry() const
 	    for (idx = 0; idx < *numRings; idx++)
 	    {
 #ifdef QGISDEBUG
-    qWarning("Ring nr: "+QString::number(idx));
+		//qWarning("Ring nr: "+QString::number(idx));
 #endif		
 		geos::DefaultCoordinateSequence* sequence=new geos::DefaultCoordinateSequence();
 		// get number of points in the ring
@@ -1041,7 +1041,7 @@ geos::Geometry* QgsFeature::geosGeometry() const
 	case QGis::WKBMultiPolygon:
 	{
 #ifdef QGISDEBUG
-	    qWarning("Multipolygon found");
+	    //qWarning("Multipolygon found");
 #endif
 	    std::vector<geos::Geometry *> *polygons=new std::vector<geos::Geometry *>;
 	    // get the number of polygons

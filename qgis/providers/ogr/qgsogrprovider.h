@@ -154,6 +154,10 @@ class QgsOgrProvider:public QgsVectorDataProvider
         return 0;
     }
 
+    /**Tries to create a .qix index file for faster access if only a subset of the features is required
+     @return true in case of success*/
+    bool createSpatialIndex();
+
     /**Returns a bitmask containing the supported capabilities*/
     int capabilities() const;
 
