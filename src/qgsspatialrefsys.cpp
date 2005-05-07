@@ -12,35 +12,7 @@
 
 #include <qgslayerprojectionselector.h>
 #include <qgsproject.h>
-
-/** WKT string that represents a geographic coord sys */
-const  QString GEOWKT =
-  "GEOGCS[\"WGS 84\", "
-  "  DATUM[\"WGS_1984\", "
-  "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-  "      AUTHORITY[\"EPSG\",7030]], "
-  "    TOWGS84[0,0,0,0,0,0,0], "
-  "    AUTHORITY[\"EPSG\",6326]], "
-  "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
-  "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
-  "  AXIS[\"Lat\",NORTH], "
-  "  AXIS[\"Long\",EAST], "
-  "  AUTHORITY[\"EPSG\",4326]]";
-/** PROJ4 string that represents a geographic coord sys */
-const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +no_defs";
-/** Magic number for a geographic coord sys in POSTGIS SRID */
-const long GEOSRID = 4326;
-/** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
-const long GEOSRS_ID = 2585;
-/**  Magic number for a geographic coord sys in EPSG ID format */
-const long EPSGID = 4326;
-/** The length of teh string "+proj=" */
-const int PROJ_PREFIX_LEN = 6;
-/** The length of teh string "+ellps=" */
-const int ELLPS_PREFIX_LEN = 7;
-/** Magick number that determins whether a projection srsid is a system (srs.db)
- *  or user (~/.qgis.qgis.db) defined projection. */
-const int USER_PROJECTION_START_ID=100000;
+#include <qgis.h> //const vals declared here
 //--------------------------
 
 QgsSpatialRefSys::QgsSpatialRefSys(){}
