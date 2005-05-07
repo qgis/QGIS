@@ -33,7 +33,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QListView" row="0" column="0" rowspan="1" colspan="4">
+                <widget class="QListView" row="0" column="0">
                     <column>
                         <property name="text">
                             <string>Coordinate Systems</string>
@@ -66,14 +66,14 @@
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget class="QTextEdit" row="1" column="0" rowspan="2" colspan="1">
+                <widget class="QTextEdit" row="1" column="0">
                     <property name="name">
                         <cstring>teProjection</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
                             <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
+                            <vsizetype>7</vsizetype>
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
                         </sizepolicy>
@@ -88,47 +88,67 @@
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="1" column="2">
+                <widget class="QButtonGroup" row="2" column="0">
                     <property name="name">
-                        <cstring>leSRID</cstring>
+                        <cstring>buttonGroup2_2</cstring>
                     </property>
-                </widget>
-                <widget class="QPushButton" row="1" column="3">
-                    <property name="name">
-                        <cstring>pbnFindSRID</cstring>
+                    <property name="title">
+                        <string>Search</string>
                     </property>
-                    <property name="text">
-                        <string>Find</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="1">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Postgis SRID:</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="2" column="2">
-                    <property name="name">
-                        <cstring>leEPSG</cstring>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="2" column="3">
-                    <property name="name">
-                        <cstring>pbnFindEPSG</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Find</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="1">
-                    <property name="name">
-                        <cstring>textLabel1_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>EPSG ID:</string>
-                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLineEdit" row="0" column="3">
+                            <property name="name">
+                                <cstring>leSearch</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton" row="0" column="4">
+                            <property name="name">
+                                <cstring>pbnFind</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Find</string>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton" row="0" column="0">
+                            <property name="name">
+                                <cstring>radSRID</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Postgis SRID</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton" row="0" column="1">
+                            <property name="name">
+                                <cstring>radEPSGID</cstring>
+                            </property>
+                            <property name="text">
+                                <string>EPSG ID</string>
+                            </property>
+                        </widget>
+                        <spacer row="0" column="2">
+                            <property name="name">
+                                <cstring>spacer1</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>81</width>
+                                    <height>21</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </grid>
                 </widget>
             </grid>
         </widget>
@@ -147,16 +167,10 @@
         <slot>coordinateSystemSelected(QListViewItem*)</slot>
     </connection>
     <connection>
-        <sender>pbnFindSRID</sender>
+        <sender>pbnFind</sender>
         <signal>clicked()</signal>
         <receiver>QgsProjectionSelectorBase</receiver>
-        <slot>pbnFindSRID_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>pbnFindEPSG</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsProjectionSelectorBase</receiver>
-        <slot>pbnFindEPSG_clicked()</slot>
+        <slot>pbnFind_clicked()</slot>
     </connection>
 </connections>
 <includes>
@@ -165,8 +179,7 @@
 <slots>
     <slot>projectionChanged( const QString &amp; )</slot>
     <slot>coordinateSystemSelected( QListViewItem * )</slot>
-    <slot>pbnFindSRID_clicked()</slot>
-    <slot>pbnFindEPSG_clicked()</slot>
+    <slot>pbnFind_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
