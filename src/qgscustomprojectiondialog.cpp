@@ -214,7 +214,7 @@ void QgsCustomProjectionDialog::pbnDelete_clicked()
     assert(myResult == 0);
   }
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
-  QString mySql = "delete from tbl_user_projection where user_projection_id='" + mCurrentRecordId + "'";
+  QString mySql = "delete from tbl_srs where srs_id='" + mCurrentRecordId + "'";
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
 #ifdef QGISDEBUG
@@ -275,7 +275,7 @@ long QgsCustomProjectionDialog::getRecordCount()
     assert(myResult == 0);
   }
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select count(*) from tbl_user_projection";
+  QString mySql = "select count(*) from tbl_srs";
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
@@ -440,7 +440,7 @@ void QgsCustomProjectionDialog::pbnFirst_clicked()
     assert(myResult == 0);
   }
 
-  QString mySql = "select * from tbl_user_projection order by user_projection_id limit 1";
+  QString mySql = "select * from tbl_srs order by srs_id limit 1";
 #ifdef QGISDEBUG
     std::cout << "Query to move first:" << mySql << std::endl;
 #endif
@@ -509,7 +509,7 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
     assert(myResult == 0);
   }
 
-  QString mySql = "select * from tbl_user_projection where user_projection_id < " + mCurrentRecordId + " order by user_projection_id desc limit 1";
+  QString mySql = "select * from tbl_srs where srs_id < " + mCurrentRecordId + " order by srs_id desc limit 1";
 #ifdef QGISDEBUG
     std::cout << "Query to move previous:" << mySql << std::endl;
 #endif
@@ -587,7 +587,7 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
     assert(myResult == 0);
   }
 
-  QString mySql = "select * from tbl_user_projection where user_projection_id > " + mCurrentRecordId + " order by user_projection_id asc limit 1";
+  QString mySql = "select * from tbl_srs where srs_id > " + mCurrentRecordId + " order by srs_id asc limit 1";
 #ifdef QGISDEBUG
     std::cout << "Query to move next:" << mySql << std::endl;
 #endif
@@ -661,7 +661,7 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
     assert(myResult == 0);
   }
 
-  QString mySql = "select * from tbl_user_projection order by user_projection_id desc limit 1";
+  QString mySql = "select * from tbl_srs order by srs_id desc limit 1";
 #ifdef QGISDEBUG
     std::cout << "Query to move last:" << mySql << std::endl;
 #endif
@@ -745,8 +745,8 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
 #ifdef QGISDEBUG
   std::cout << "QgsCustomProjectionDialog::pbnSave_clicked()" << std::endl;
 #endif
-  //CREATE TABLE tbl_user_projection (
-  //user_projection_id integer primary key,
+  //CREATE TABLE tbl_srs (
+  //srs_id integer primary key,
   //description varchar(255) NOT NULL,
   //projection_acronym varchar(20) NOT NULL default '',
   //ellipsoid_acronym varchar(20) NOT NULL default '',
@@ -762,16 +762,20 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   //insert a record if mode is enabled
   if (pbnNew->text()==tr("Abort")) 
   {
-    mySql="insert into tbl_user_projection (description,projection_acronym,ellipsoid_acronym,parameters) values ('" 
-         + myName + "','" + myProjectionAcronym  + "','" + myEllipsoidAcronym  + "','" + myParameters + "')";
+    mySql="insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ('" 
+         + myName + "','" + myProjectionAcronym  
+         + "','" + myEllipsoidAcronym  + "','" + myParameters 
+         + "',0)"; // <-- is_geo shamelessly hard coded for now
   }
   else //user is updating an existing record
   {
-    mySql="update tbl_user_projection set description='" + myName  
+    mySql="update tbl_srs set description='" + myName  
         + "',projection_acronym='" + myProjectionAcronym 
         + "',ellipsoid_acronym='" + myEllipsoidAcronym 
         + "',parameters='" + myParameters + "' "
-        + "where user_projection_id='" + mCurrentRecordId + "'";
+        + "where srs_id='" + mCurrentRecordId + "'"
+        + "is_geo=0" // <--shamelessly hard coded for now
+        ;
   }
   sqlite3      *myDatabase;
   char         *myErrorMessage = 0;
