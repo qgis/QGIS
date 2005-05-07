@@ -19,6 +19,7 @@
 //qgis includes
 #include "qgscsexception.h"
 #include "qgsconfig.h"
+#include <qgis.h> //magick numbers here
 
 //qt includes
 #include <qapplication.h>
@@ -40,11 +41,6 @@
 #include <ogr_spatialref.h>
 #include <cpl_error.h>
 
-// set the default coordinate system
-static const char* defaultWktKey = "4326";
-/** Magick number that determins whether a projection srsid is a system (srs.db)
- *  or user (~/.qgis.qgis.db) defined projection. */
-const int USER_PROJECTION_START_ID=100000;
 
 QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name , WFlags fl  )
   : QgsProjectionSelectorBase( parent, "Projection Selector", fl )
@@ -405,9 +401,6 @@ void QgsProjectionSelector::getProjList()
 //remember to disable it again!
 void QgsProjectionSelector::updateProjAndEllipsoidAcronyms(int theSrsid,QString theProj4String)
 {
-
-  const int PROJ_PREFIX_LEN = 5;
-  const int ELLPS_PREFIX_LEN = 6;
 
 
   //temporary hack

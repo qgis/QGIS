@@ -55,6 +55,8 @@ public slots:
     QString getProjectionFamilyAcronym(QString theProjectionFamilyName);
     QString getEllipsoidAcronym(QString theEllipsoidName);
 private: 
+    void setCombosUsingParameters();
+        
     QString mCurrentRecordId;
     long mCurrentRecordLong;
     //the record previous to starting an insert operation

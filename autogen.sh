@@ -101,10 +101,10 @@ if [ "$LT_ERROR" = "1" ]; then
 fi
 
 echo Configuring build environment for QGIS
-aclocal \
+aclocal-1.8 \
   && $LIBTOOLIZE --force --copy \
   && autoheader --force -W all \
-  && automake --add-missing --foreign --copy \
+  && automake-1.8 --add-missing --foreign --copy \
   && autoconf --force \
   && echo Now running configure to configure QGIS \
   && ./configure $@
