@@ -18,6 +18,7 @@
 #include <fstream>
 
 //qgis includes
+#include "qgis.h" //<--magick numbers
 #include "qgscsexception.h"
 #include "qgsconfig.h"
 
@@ -35,6 +36,7 @@
 #include <qprogressdialog.h>
 #include <qpushbutton.h>
 #include <qmessagebox.h>
+#include <qregexp.h>
 
 //stdc++ includes
 #include <cstdlib>
@@ -44,8 +46,6 @@ extern "C"{
 #include <proj_api.h>
 }
 
-//the srs_id that signifies the start of the users custom projections
-const long FIRST_USER_REC_NO=10000;
 
 QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const char* name , WFlags fl  )
     : QgsCustomProjectionDialogBase( parent, "Projection Designer", fl )
@@ -793,7 +793,7 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
     if (getRecordCount() == 0)
     {
       mySql=QString("insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) ") 
-        + " values ("+ QString::number(FIRST_USER_REC_NO) + ",'" 
+        + " values ("+ QString::number(USER_PROJECTION_START_ID) + ",'" 
         + myName + "','" + myProjectionAcronym  
         + "','" + myEllipsoidAcronym  + "','" + myParameters 
         + "',0)"; // <-- is_geo shamelessly hard coded for now
@@ -929,4 +929,69 @@ bool QgsCustomProjectionDialog::makeDir(QDir &theQDir)
           myBaseDir.path().latin1());
 
   return myBaseDir.mkdir(myTempFileInfo.fileName());
+}
+
+
+
+void QgsCustomProjectionDialog::setCombosUsingParameters()
+{
+
+  QString theProj4String ="FooBar";
+  int theSrsid =0;
+
+  //temporary hack
+  QFile myFile( "/tmp/srs_updates.sql" );
+  myFile.open(  IO_WriteOnly | IO_Append );
+  QTextStream myStream( &myFile );
+
+    
+        
+     
+
+
+  QRegExp myProjRegExp( "proj=[a-zA-Z]* " );    
+  int myStart= 0;
+  int myLength=0;
+  myStart = myProjRegExp.search(theProj4String, myStart);
+  QString myProjectionAcronym;  
+  if (myStart==-1)
+  {
+    std::cout << "proj string supplied has no +proj argument" << std::endl;
+    myProjectionAcronym = "";
+  }
+  else
+  {
+    myLength = myProjRegExp.matchedLength();
+    myProjectionAcronym = theProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength-(PROJ_PREFIX_LEN+1));//+1 for space
+  }
+  
+  
+  QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\-]* " );    
+  myStart= 0;
+  myLength=0;
+  myStart = myEllipseRegExp.search(theProj4String, myStart);
+  QString myEllipsoidAcronym;
+  if (myStart==-1)
+  {
+    std::cout << "proj string supplied has no +ellps argument" << std::endl;
+    myEllipsoidAcronym="";
+  }
+  else
+  {
+    myLength = myEllipseRegExp.matchedLength();
+    myEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength-(ELLPS_PREFIX_LEN+1));
+  }
+
+
+  //now create the update statement
+  QString mySql = "update tbl_srs set projection_acronym='" + myProjectionAcronym + 
+                  "', ellipsoid_acronym='" + myEllipsoidAcronym + "' where " +
+                  "srs_id=" + QString::number(theSrsid)+";";
+
+
+  //tmporary hack
+  myStream << mySql << "\n";
+  myFile.close();
+  //std::cout 
+
 }
