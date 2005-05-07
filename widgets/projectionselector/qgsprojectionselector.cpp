@@ -33,7 +33,7 @@
 #include <qdir.h>
 #include <qtextstream.h>
 #include <qstring.h>
-
+#include <qradiobutton.h>
 //gdal and ogr includes
 // XXX DO WE NEED THESE?
 #include <ogr_api.h>
@@ -548,11 +548,11 @@ void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem )
   }
 }
 
-void QgsProjectionSelector::pbnFindSRID_clicked()
+void QgsProjectionSelector::pbnFind_clicked()
 {
 
 #ifdef QGISDEBUG
-  std::cout << "pbnFindSRID_clicked..." << std::endl;
+  std::cout << "pbnFind..." << std::endl;
 #endif
 
 
@@ -574,9 +574,17 @@ void QgsProjectionSelector::pbnFindSRID_clicked()
   }
 
   // Set up the query to retreive the projection information needed to populate the list
-  QString mySql = "select srs_id from tbl_srs where srid=" + leSRID->text();
+  QString mySql;
+  if (radSRID->isChecked())
+  {
+    mySql= "select srs_id from tbl_srs where srid=" + leSearch->text();
+  }
+  else
+  {
+    mySql= "select srs_id from tbl_srs where epsg=" + leSearch->text();
+  }
 #ifdef QGISDEBUG
-  std::cout << "SRID Search sql" << mySql << std::endl;
+  std::cout << " Search sql" << mySql << std::endl;
 #endif
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -593,44 +601,3 @@ void QgsProjectionSelector::pbnFindSRID_clicked()
 }
 
 
-void QgsProjectionSelector::pbnFindEPSG_clicked()
-{
-#ifdef QGISDEBUG
-  std::cout << "pbnFindEPSG_clicked..." << std::endl;
-#endif
-
-
-  sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  //check the db is available
-  myResult = sqlite3_open(mSrsDatabaseFileName, &myDatabase);
-  if(myResult) 
-  {
-    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
-    // XXX This will likely never happen since on open, sqlite creates the 
-    //     database if it does not exist. But we checked earlier for its existance
-    //     and aborted in that case. This is because we may be runnig from read only 
-    //     media such as live cd and dont want to force trying to create a db.
-    assert(myResult == 0);
-  }
-
-  // Set up the query to retreive the projection information needed to populate the list
-  QString mySql = "select srs_id from tbl_srs where epsg=" + leEPSG->text();
-#ifdef QGISDEBUG
-  std::cout << "SRID Search sql" << mySql << std::endl;
-#endif
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
-  // XXX Need to free memory from the error msg if one is set
-  if(myResult == SQLITE_OK)
-  {
-    sqlite3_step(myPreparedStatement);
-    QString mySrsId ((char *)sqlite3_column_text(myPreparedStatement, 0));
-    setSelectedSRSID(mySrsId.toLong());
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize(myPreparedStatement);
-  sqlite3_close(myDatabase);
-}

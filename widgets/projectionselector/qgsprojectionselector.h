@@ -43,8 +43,7 @@ public slots:
     QString getCurrentProj4String();
     long getCurrentSRID(); //posgis style projection identifier
     long getCurrentSRSID();//qgis projection identfier
-    void pbnFindSRID_clicked();
-    void pbnFindEPSG_clicked();
+    void pbnFind_clicked();
 
 private:
 

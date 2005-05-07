@@ -24,13 +24,7 @@ void QgsProjectionSelectorBase::coordinateSystemSelected( QListViewItem * )
 }
 
 
-void QgsProjectionSelectorBase::pbnFindSRID_clicked()
-{
-
-}
-
-
-void QgsProjectionSelectorBase::pbnFindEPSG_clicked()
+void QgsProjectionSelectorBase::pbnFind_clicked()
 {
 
 }
