@@ -39,6 +39,14 @@
 //stdc++ includes
 #include <cstdlib>
 
+//proj4 includes
+extern "C"{
+#include <proj_api.h>
+}
+
+//the srs_id that signifies the start of the users custom projections
+const long FIRST_USER_REC_NO=10000;
+
 QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const char* name , WFlags fl  )
     : QgsCustomProjectionDialogBase( parent, "Projection Designer", fl )
 {
@@ -745,6 +753,22 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
 #ifdef QGISDEBUG
   std::cout << "QgsCustomProjectionDialog::pbnSave_clicked()" << std::endl;
 #endif
+  //
+  // First we mush check the prj def is valid!
+  //
+
+  projPJ myProj = pj_init_plus( leParameters->text().latin1() );
+
+  if ( myProj == NULL ) 
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("This proj4 projection definition is not valid. Please correct before pressing save.") );
+    pj_free(myProj);
+    return;
+    
+  }
+  pj_free(myProj);
+  
   //CREATE TABLE tbl_srs (
   //srs_id integer primary key,
   //description varchar(255) NOT NULL,
@@ -752,7 +776,7 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   //ellipsoid_acronym varchar(20) NOT NULL default '',
   //parameters varchar(80) NOT NULL default ''
   //);
-  
+
   //get the acronym for preojection and ellipsoid
   QString myProjectionAcronym = getProjectionFamilyAcronym(cboProjectionFamily->currentText());
   QString myEllipsoidAcronym = getEllipsoidAcronym(cboEllipsoid->currentText());
@@ -762,10 +786,26 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   //insert a record if mode is enabled
   if (pbnNew->text()==tr("Abort")) 
   {
-    mySql="insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ('" 
-         + myName + "','" + myProjectionAcronym  
-         + "','" + myEllipsoidAcronym  + "','" + myParameters 
-         + "',0)"; // <-- is_geo shamelessly hard coded for now
+    //if this is the first record we need to ensure that its srs_id is 10000. For 
+    //any rec after that sqlite3 will take care of the autonumering
+    //this was done to support sqlite 3.0 as it does not yet support
+    //the autoinc related system tables.
+    if (getRecordCount() == 0)
+    {
+      mySql=QString("insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) ") 
+        + " values ("+ QString::number(FIRST_USER_REC_NO) + ",'" 
+        + myName + "','" + myProjectionAcronym  
+        + "','" + myEllipsoidAcronym  + "','" + myParameters 
+        + "',0)"; // <-- is_geo shamelessly hard coded for now
+    }
+    else
+    {
+      mySql="insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ('" 
+        + myName + "','" + myProjectionAcronym  
+        + "','" + myEllipsoidAcronym  + "','" + myParameters 
+        + "',0)"; // <-- is_geo shamelessly hard coded for now
+
+    }
   }
   else //user is updating an existing record
   {
@@ -792,7 +832,7 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
     assert(myResult == 0);
   }
 #ifdef QGISDEBUG
-    std::cout << "Update or insert sql \n" << mySql << std::endl;
+  std::cout << "Update or insert sql \n" << mySql << std::endl;
 #endif
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   sqlite3_step(myPreparedStatement);
