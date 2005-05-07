@@ -78,6 +78,7 @@ using namespace std;
 #include <qtoolbutton.h>
 #include <qtimer.h>
 #include <qcheckbox.h>
+#include <qtooltip.h>
 
 
 #include "qgsencodingfiledialog.h"
@@ -496,6 +497,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     mRenderSuppresionCBox->setChecked(true);
     mRenderSuppresionCBox->setFont(myFont);
     QWhatsThis::add(mRenderSuppresionCBox, tr("When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering."));
+    QToolTip::add( mRenderSuppresionCBox, tr("Toggle map rendering") );
     statusBar()->addWidget(mRenderSuppresionCBox,0,true);
     connect(mRenderSuppresionCBox, SIGNAL(toggled(bool )),
             mMapCanvas, SLOT(setRenderFlag(bool)));
@@ -508,6 +510,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     myProjPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection_disabled.png"));
     mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
     QWhatsThis::add(mOnTheFlyProjectionStatusButton, tr("This icon shows whether on the fly projection is enabled or not. CLick the icon to bring up the project properties dialog to alter this behaviour."));
+    QToolTip::add( mOnTheFlyProjectionStatusButton, tr("Projection status - Click to open projection dialog"));
     connect(mOnTheFlyProjectionStatusButton, SIGNAL(clicked()),
             this, SLOT(projectProperties()));//bring up the project props dialog when clicked
     statusBar()->addWidget(mOnTheFlyProjectionStatusButton,0,true);
