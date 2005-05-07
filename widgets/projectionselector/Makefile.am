@@ -15,16 +15,17 @@ if !HAVE_QTMAC
 PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
 endif
 
-
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui
+%.moc.uic.cpp: %.uic.h
+	$(MOC) -o $@ $<
+
+%.uic.h: %.ui 
 	$(UIC) -o $@ $<
 
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
-
+%.uic.cpp: %.ui
+	$(UIC) -o $@ -impl $*.uic.h $<
 
 # name of the qgis library widget
 plugin_LTLIBRARIES = libqgsprojectionselector.la
