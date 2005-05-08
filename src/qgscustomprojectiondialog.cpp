@@ -830,8 +830,8 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
         + "',projection_acronym='" + myProjectionAcronym 
         + "',ellipsoid_acronym='" + myEllipsoidAcronym 
         + "',parameters='" + myParameters + "' "
-        + "where srs_id='" + mCurrentRecordId + "'"
-        + "is_geo=0" // <--shamelessly hard coded for now
+        + ",is_geo=0" // <--shamelessly hard coded for now
+        + " where srs_id='" + mCurrentRecordId + "'"
         ;
   }
   sqlite3      *myDatabase;
