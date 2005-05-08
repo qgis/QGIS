@@ -754,7 +754,23 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   std::cout << "QgsCustomProjectionDialog::pbnSave_clicked()" << std::endl;
 #endif
   //
-  // First we mush check the prj def is valid!
+  // Now make sure the combos are set correclty
+  // This applies when parameters DO have proj and ellps
+  //
+  
+  setCombosUsingParameters();
+ 
+  //
+  // Now make sure parameters have proj and ellipse from combos
+  // This applies when user has NOT entered proj and ellips
+  // and wants us to do it for them from the combos
+  //
+  
+  checkParametersHaveProj();
+  checkParametersHaveEllipse();
+  
+  //
+  // We must check the prj def is valid!
   //
 
   projPJ myProj = pj_init_plus( leParameters->text().latin1() );
@@ -769,11 +785,6 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   }
   pj_free(myProj);
 
-  //
-  // Now make sure the combos are set correclty
-  //
-  
-  setCombosUsingParameters();
   
   //CREATE TABLE tbl_srs (
   //srs_id integer primary key,
@@ -938,25 +949,61 @@ bool QgsCustomProjectionDialog::makeDir(QDir &theQDir)
 }
 
 
+void QgsCustomProjectionDialog::checkParametersHaveProj()
+{
+
+  std::cout << "QgsCustomProjectionDialog::checkParametersHaveProj()" << std::endl;
+  QString myProj4String = leParameters->text();
+  QRegExp myProjRegExp( "proj=[a-zA-Z]* " );    
+  int myStart= 0;
+  myStart = myProjRegExp.search(myProj4String, myStart);
+  QString myProjection;  
+  if (myStart==-1)
+  {
+    std::cout << "proj string supplied has no +proj argument adding from combo" << std::endl;
+    myProjection=cboProjectionFamily->currentText();
+    leParameters->setText("+proj=" + getProjectionFamilyAcronym(myProjection) + " " + leParameters->text());
+  }
+}
+
+void QgsCustomProjectionDialog::checkParametersHaveEllipse()
+{
+
+  std::cout << "QgsCustomProjectionDialog::checkParametersHaveEllipse()" << std::endl;
+  QString myProj4String = leParameters->text();
+  QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\-]* " );    
+  int myStart= 0;
+  myStart = myEllipseRegExp.search(myProj4String, myStart);
+  QString myEllipsoid;
+  if (myStart==-1)
+  {
+    std::cout << "proj string supplied has no +ellps argument adding from combo" << std::endl;
+    myEllipsoid=cboEllipsoid->currentText();
+    leParameters->setText("+ellps=" + getEllipsoidAcronym(myEllipsoid) + " " + leParameters->text());
+  }
+}
 
 void QgsCustomProjectionDialog::setCombosUsingParameters()
 {
 
   QString myProj4String = leParameters->text();
+  std::cout << "QgsCustomProjectionDialog::setCombosUsingParameters \n" << myProj4String << std::endl;
   QRegExp myProjRegExp( "proj=[a-zA-Z]* " );    
   int myStart= 0;
   int myLength=0;
   myStart = myProjRegExp.search(myProj4String, myStart);
-  QString myProjectionAcronym;  
   if (myStart==-1)
   {
-    std::cout << "proj string supplied has no +proj argument" << std::endl;
-    myProjectionAcronym = "";
+    std::cout << "proj string supplied has no +proj argument combo will not be changed" << std::endl;
   }
   else
   {
     myLength = myProjRegExp.matchedLength();
+    QString myProjectionAcronym;  
     myProjectionAcronym = myProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength-(PROJ_PREFIX_LEN+1));//+1 for space
+    //now update the combos
+    std::cout << "Prj acronym" << myProjectionAcronym << std::endl;
+    cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionAcronym));
   }
   
   
@@ -964,25 +1011,21 @@ void QgsCustomProjectionDialog::setCombosUsingParameters()
   myStart= 0;
   myLength=0;
   myStart = myEllipseRegExp.search(myProj4String, myStart);
-  QString myEllipsoidAcronym;
   if (myStart==-1)
   {
-    std::cout << "proj string supplied has no +ellps argument" << std::endl;
-    myEllipsoidAcronym="";
+    std::cout << "proj string supplied has no +ellps argument combo will not be changed" << std::endl;
   }
   else
   {
     myLength = myEllipseRegExp.matchedLength();
+    QString myEllipsoidAcronym;
     myEllipsoidAcronym = myProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength-(ELLPS_PREFIX_LEN+1));
+    //now update the combos
+    std::cout << "Ellps acronym" << myEllipsoidAcronym << std::endl;
+    cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidAcronym));
   }
 
 
-  //now update the combos
-  std::cout << "QgsCustomProjectionDialog::setCombosUsingParameters \n" << myProj4String << std::endl;
-  std::cout << "Prj acronym" << myProjectionAcronym << std::endl;
-  std::cout << "Ellps acronym" << myEllipsoidAcronym << std::endl;
-  cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionAcronym));
-  cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidAcronym));
   
   
 
