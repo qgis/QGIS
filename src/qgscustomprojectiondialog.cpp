@@ -768,6 +768,12 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
     
   }
   pj_free(myProj);
+
+  //
+  // Now make sure the combos are set correclty
+  //
+  
+  setCombosUsingParameters();
   
   //CREATE TABLE tbl_srs (
   //srs_id integer primary key,
@@ -936,23 +942,11 @@ bool QgsCustomProjectionDialog::makeDir(QDir &theQDir)
 void QgsCustomProjectionDialog::setCombosUsingParameters()
 {
 
-  QString theProj4String ="FooBar";
-  int theSrsid =0;
-
-  //temporary hack
-  QFile myFile( "/tmp/srs_updates.sql" );
-  myFile.open(  IO_WriteOnly | IO_Append );
-  QTextStream myStream( &myFile );
-
-    
-        
-     
-
-
+  QString myProj4String = leParameters->text();
   QRegExp myProjRegExp( "proj=[a-zA-Z]* " );    
   int myStart= 0;
   int myLength=0;
-  myStart = myProjRegExp.search(theProj4String, myStart);
+  myStart = myProjRegExp.search(myProj4String, myStart);
   QString myProjectionAcronym;  
   if (myStart==-1)
   {
@@ -962,14 +956,14 @@ void QgsCustomProjectionDialog::setCombosUsingParameters()
   else
   {
     myLength = myProjRegExp.matchedLength();
-    myProjectionAcronym = theProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength-(PROJ_PREFIX_LEN+1));//+1 for space
+    myProjectionAcronym = myProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength-(PROJ_PREFIX_LEN+1));//+1 for space
   }
   
   
   QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\-]* " );    
   myStart= 0;
   myLength=0;
-  myStart = myEllipseRegExp.search(theProj4String, myStart);
+  myStart = myEllipseRegExp.search(myProj4String, myStart);
   QString myEllipsoidAcronym;
   if (myStart==-1)
   {
@@ -979,19 +973,19 @@ void QgsCustomProjectionDialog::setCombosUsingParameters()
   else
   {
     myLength = myEllipseRegExp.matchedLength();
-    myEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength-(ELLPS_PREFIX_LEN+1));
+    myEllipsoidAcronym = myProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength-(ELLPS_PREFIX_LEN+1));
   }
 
 
-  //now create the update statement
-  QString mySql = "update tbl_srs set projection_acronym='" + myProjectionAcronym + 
-                  "', ellipsoid_acronym='" + myEllipsoidAcronym + "' where " +
-                  "srs_id=" + QString::number(theSrsid)+";";
+  //now update the combos
+  std::cout << "QgsCustomProjectionDialog::setCombosUsingParameters \n" << myProj4String << std::endl;
+  std::cout << "Prj acronym" << myProjectionAcronym << std::endl;
+  std::cout << "Ellps acronym" << myEllipsoidAcronym << std::endl;
+  cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionAcronym));
+  cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidAcronym));
+  
+  
 
 
-  //tmporary hack
-  myStream << mySql << "\n";
-  myFile.close();
-  //std::cout 
 
 }
