@@ -60,6 +60,9 @@ private:
      * match. If they dont, the combos are changed appropriately 
      */
     void setCombosUsingParameters();
+    void checkParametersHaveProj();
+    void checkParametersHaveEllipse();
+    
         
     QString mCurrentRecordId;
     long mCurrentRecordLong;
