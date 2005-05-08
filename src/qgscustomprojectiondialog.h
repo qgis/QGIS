@@ -55,6 +55,10 @@ public slots:
     QString getProjectionFamilyAcronym(QString theProjectionFamilyName);
     QString getEllipsoidAcronym(QString theEllipsoidName);
 private: 
+    /*! This is a helper function to parse the proj parameters string
+     * and make sure that the combos for projection and ellipsoid
+     * match. If they dont, the combos are changed appropriately 
+     */
     void setCombosUsingParameters();
         
     QString mCurrentRecordId;
