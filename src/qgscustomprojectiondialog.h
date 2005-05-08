@@ -71,6 +71,8 @@ private:
     long mLastRecordLong;
     long mRecordCountLong;
     QString mQGisSettingsDir;
+    const QString stringSQLSafe(const QString theSQL);
+
 };
 
 #endif
