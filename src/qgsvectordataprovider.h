@@ -43,7 +43,8 @@ class QgsVectorDataProvider : public QgsDataProvider
         ChangeAttributeValues = 1 << 2,
         AddAttributes = 1 << 3,
         DeleteAttributes = 1 << 4,
-        SaveAsShapefile = 1 << 5
+        SaveAsShapefile = 1 << 5,
+	CreateSpatialIndex = 1 << 6
       };
 
       QgsVectorDataProvider();
@@ -174,6 +175,9 @@ class QgsVectorDataProvider : public QgsDataProvider
       {
         // NOP by default
       }
+
+      /**Creates a spatial index on the datasource (if supported by the provider type). Returns true in case of success*/
+      virtual bool createSpatialIndex();
 
       /**Returns a bitmask containing the supported capabilities*/
       virtual int capabilities() const {return QgsVectorDataProvider::NoCapabilities;}
