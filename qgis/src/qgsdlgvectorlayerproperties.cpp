@@ -74,8 +74,8 @@ QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, Q
 bufferRenderer(layer->
                renderer())
 {
-
   reset();
+  pbnOK->setFocus();
 }
 
 QgsDlgVectorLayerProperties::~QgsDlgVectorLayerProperties()
