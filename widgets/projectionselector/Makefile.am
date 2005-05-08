@@ -18,14 +18,13 @@ endif
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.moc.uic.cpp: %.uic.h
-	$(MOC) -o $@ $<
-
-%.uic.h: %.ui 
+%.h: %.ui
 	$(UIC) -o $@ $<
 
-%.uic.cpp: %.ui
-	$(UIC) -o $@ -impl $*.uic.h $<
+%.cpp: %.ui
+	$(UIC) -o $@ -impl $*.h $<
+
+
 
 # name of the qgis library widget
 plugin_LTLIBRARIES = libqgsprojectionselector.la
