@@ -54,6 +54,11 @@ QString QgsVectorDataProvider::getDefaultValue(const QString& attr,
   return "";
 }
 
+bool QgsVectorDataProvider::createSpatialIndex()
+{
+    return false;
+}
+
 void QgsVectorDataProvider::setEncoding(const QString& e)
 {
     QTextCodec* ncodec=QTextCodec::codecForName(e);
