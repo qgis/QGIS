@@ -40,6 +40,7 @@
 
 //stdc++ includes
 #include <cstdlib>
+#include <string.h>
 
 //proj4 includes
 extern "C"{
@@ -811,25 +812,24 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
     {
       mySql=QString("insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) ") 
         + " values ("+ QString::number(USER_PROJECTION_START_ID) + ",'" 
-        + myName + "','" + myProjectionAcronym  
-        + "','" + myEllipsoidAcronym  + "','" + myParameters 
+        + stringSQLSafe(myName) + "','" + myProjectionAcronym  
+        + "','" + myEllipsoidAcronym  + "','" + stringSQLSafe(myParameters)
         + "',0)"; // <-- is_geo shamelessly hard coded for now
     }
     else
     {
       mySql="insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ('" 
-        + myName + "','" + myProjectionAcronym  
-        + "','" + myEllipsoidAcronym  + "','" + myParameters 
+        + stringSQLSafe(myName) + "','" + myProjectionAcronym  
+        + "','" + myEllipsoidAcronym  + "','" + stringSQLSafe(myParameters )
         + "',0)"; // <-- is_geo shamelessly hard coded for now
-
     }
   }
   else //user is updating an existing record
   {
-    mySql="update tbl_srs set description='" + myName  
+    mySql="update tbl_srs set description='" + stringSQLSafe(myName)  
         + "',projection_acronym='" + myProjectionAcronym 
         + "',ellipsoid_acronym='" + myEllipsoidAcronym 
-        + "',parameters='" + myParameters + "' "
+        + "',parameters='" + stringSQLSafe(myParameters) + "' "
         + ",is_geo=0" // <--shamelessly hard coded for now
         + " where srs_id='" + mCurrentRecordId + "'"
         ;
@@ -1024,11 +1024,40 @@ void QgsCustomProjectionDialog::setCombosUsingParameters()
     std::cout << "Ellps acronym" << myEllipsoidAcronym << std::endl;
     cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidAcronym));
   }
-
-
-  
-  
-
-
-
 }
+
+  /*!
+ * \brief Make the string safe for use in SQL statements.
+ *  This involves escaping single quotes, double quotes, backslashes,
+ *  and optionally, percentage symbols.  Percentage symbols are used
+ *  as wildcards sometimes and so when using the string as part of the
+ *  LIKE phrase of a select statement, should be escaped.
+ * \arg const QString in The input string to make safe.
+ * \return The string made safe for SQL statements.
+ */
+const QString QgsCustomProjectionDialog::stringSQLSafe(const QString theSQL)
+{
+
+    QString myRetval;
+    std::string myString(theSQL.latin1());
+    for (std::string::const_iterator it = myString.begin(); it != myString.end(); it++) {
+        if (*it == '\"') {
+            myRetval += "\\\"";
+        } else if (*it == '\'') {
+            myRetval += "\\'";
+        } else if (*it == '\\') {
+            myRetval += "\\\\";
+        } else if (*it == '%')  {
+            myRetval += "\\%";
+        } else {
+            myRetval += *it;
+        }
+    }
+
+    return myRetval;
+}
+  
+
+
+
+
