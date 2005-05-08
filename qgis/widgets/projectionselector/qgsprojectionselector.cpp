@@ -127,49 +127,70 @@ QString QgsProjectionSelector::getCurrentProj4String()
     std::cout << lvi->text(1) << std::endl; 
     if(lvi->text(1).length() > 0)
     {
-    // set up the database
-    // XXX We could probabaly hold the database open for the life of this object, 
-    // assuming that it will never be used anywhere else. Given the low overhead,
-    // opening it each time seems to be a reasonable approach at this time.
-    sqlite3 *db;
-    char *zErrMsg = 0;
-    int rc;
-    rc = sqlite3_open(mSrsDatabaseFileName, &db);
-    if(rc) 
-    {
-      std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl; 
-      // XXX This will likely never happen since on open, sqlite creates the 
-      //     database if it does not exist.
-      assert(rc == 0);
-    }
-    // prepare the sql statement
-    const char *pzTail;
-    sqlite3_stmt *ppStmt;
-    char *pzErrmsg;
-    QString sql = "select srtext from tbl_srs where srs_id = ";
-    sql += lvi->text(1);
+      QString myDatabaseFileName;
+      //
+      // Determine if this is a user projection or a system on
+      // user projection defs all have srs_id >= 100000
+      //
+      if (lvi->text(1).toLong() >= USER_PROJECTION_START_ID)
+      {
+        myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+        QFileInfo myFileInfo;
+        myFileInfo.setFile(myDatabaseFileName);
+        if ( !myFileInfo.exists( ) )
+        {
+          std::cout << " QgsSpatialRefSys::createFromSrid failed :  users qgis.db not found" << std::endl;
+          return NULL;
+        }
+      }
+      else //must be  a system projection then
+      {
+        myDatabaseFileName=mSrsDatabaseFileName;
+      }
+      //
+      // set up the database
+      // XXX We could probabaly hold the database open for the life of this object, 
+      // assuming that it will never be used anywhere else. Given the low overhead,
+      // opening it each time seems to be a reasonable approach at this time.
+      sqlite3 *db;
+      char *zErrMsg = 0;
+      int rc;
+      rc = sqlite3_open(myDatabaseFileName, &db);
+      if(rc) 
+      {
+        std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl; 
+        // XXX This will likely never happen since on open, sqlite creates the 
+        //     database if it does not exist.
+        assert(rc == 0);
+      }
+      // prepare the sql statement
+      const char *pzTail;
+      sqlite3_stmt *ppStmt;
+      char *pzErrmsg;
+      QString sql = "select srtext from tbl_srs where srs_id = ";
+      sql += lvi->text(1);
 
 #ifdef QGISDEBUG
-    std::cout << "Finding selected wkt using : " <<  sql << std::endl;
+      std::cout << "Finding selected wkt using : " <<  sql << std::endl;
 #endif
-    rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
-    // XXX Need to free memory from the error msg if one is set
-    QString wkt;
-    if(rc == SQLITE_OK)
-    {
-      // get the first row of the result set
-      if(sqlite3_step(ppStmt) == SQLITE_ROW)
+      rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+      // XXX Need to free memory from the error msg if one is set
+      QString wkt;
+      if(rc == SQLITE_OK)
       {
-        // get the wkt 
-        wkt = (char*)sqlite3_column_text(ppStmt, 0);
+        // get the first row of the result set
+        if(sqlite3_step(ppStmt) == SQLITE_ROW)
+        {
+          // get the wkt 
+          wkt = (char*)sqlite3_column_text(ppStmt, 0);
+        }
       }
-    }
-    // close the statement
-    sqlite3_finalize(ppStmt);
-    // close the database
-    sqlite3_close(db);
-    // return the srs wkt
-    return wkt;
+      // close the statement
+      sqlite3_finalize(ppStmt);
+      // close the database
+      sqlite3_close(db);
+      // return the srs wkt
+      return wkt;
     }
   }
   else
@@ -180,18 +201,93 @@ QString QgsProjectionSelector::getCurrentProj4String()
 
 }
 
-//XXXXXX NOTE THIS NEEDS TO BE CHANGED TO LOOKUP FROM 
-// XXXXXXX THS SQLITE BACKEND!
 long QgsProjectionSelector::getCurrentSRID()
 {
-  if(lstCoordinateSystems->currentItem()->text(1).length() > 0)
+  // Only return the projection if there is a node in the tree
+  // selected that has an srid. This prevents error if the user
+  // selects a top-level node rather than an actual coordinate
+  // system
+  //
+  // Get the selected node
+  QListViewItem *lvi = lstCoordinateSystems->currentItem();
+  if(lvi)
   {
-    return lstCoordinateSystems->currentItem()->text(1).toLong();
+    // Make sure the selected node is a srs and not a top-level projection node
+    std::cout << lvi->text(1) << std::endl; 
+    if(lvi->text(1).length() > 0)
+    {
+      QString myDatabaseFileName;
+      //
+      // Determine if this is a user projection or a system on
+      // user projection defs all have srs_id >= 100000
+      //
+      if (lvi->text(1).toLong() >= USER_PROJECTION_START_ID)
+      {
+        myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+        QFileInfo myFileInfo;
+        myFileInfo.setFile(myDatabaseFileName);
+        if ( !myFileInfo.exists( ) )
+        {
+          std::cout << " QgsSpatialRefSys::createFromSrid failed :  users qgis.db not found" << std::endl;
+          return NULL;
+        }
+      }
+      else //must be  a system projection then
+      {
+        myDatabaseFileName=mSrsDatabaseFileName;
+      }
+      //
+      // set up the database
+      // XXX We could probabaly hold the database open for the life of this object, 
+      // assuming that it will never be used anywhere else. Given the low overhead,
+      // opening it each time seems to be a reasonable approach at this time.
+      sqlite3 *db;
+      char *zErrMsg = 0;
+      int rc;
+      rc = sqlite3_open(myDatabaseFileName, &db);
+      if(rc) 
+      {
+        std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl; 
+        // XXX This will likely never happen since on open, sqlite creates the 
+        //     database if it does not exist.
+        assert(rc == 0);
+      }
+      // prepare the sql statement
+      const char *pzTail;
+      sqlite3_stmt *ppStmt;
+      char *pzErrmsg;
+      QString sql = "select srid from tbl_srs where srs_id = ";
+      sql += lvi->text(1);
+
+#ifdef QGISDEBUG
+      std::cout << "Finding selected srid using : " <<  sql << std::endl;
+#endif
+      rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+      // XXX Need to free memory from the error msg if one is set
+      QString mySrid;
+      if(rc == SQLITE_OK)
+      {
+        // get the first row of the result set
+        if(sqlite3_step(ppStmt) == SQLITE_ROW)
+        {
+          // get the wkt 
+          mySrid = (char*)sqlite3_column_text(ppStmt, 0);
+        }
+      }
+      // close the statement
+      sqlite3_finalize(ppStmt);
+      // close the database
+      sqlite3_close(db);
+      // return the srs wkt
+      return mySrid.toLong();
+    }
   }
   else
   {
+    // No node is selected, return null
     return NULL;
   }
+
 }
 
 long QgsProjectionSelector::getCurrentSRSID()
@@ -467,6 +563,8 @@ void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem )
   QString myDatabaseFileName;
   QString mySrsId = theItem->text(1);
   
+  std::cout << " QgsProjectionSelector::coordinateSystemSelected :  mySrsId = " << mySrsId << std::endl;
+  std::cout << " QgsProjectionSelector::coordinateSystemSelected :  USER_PROJECTION_START_ID = " << USER_PROJECTION_START_ID << std::endl;
   //
   // Determine if this is a user projection or a system on
   // user projection defs all have srs_id >= 100000
@@ -486,6 +584,7 @@ void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem )
   {
     myDatabaseFileName =  mSrsDatabaseFileName;
   }
+  std::cout << "QgsProjectionSelector::coordinateSystemSelected db = " << myDatabaseFileName << std::endl;
 
 
   if(theItem->text(1).length() > 0)
