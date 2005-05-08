@@ -1101,7 +1101,8 @@ bool QgsOgrProvider::createSpatialIndex()
 int QgsOgrProvider::capabilities() const
 {
     return (QgsVectorDataProvider::AddFeatures
-	    | QgsVectorDataProvider::ChangeAttributeValues);
+	    | QgsVectorDataProvider::ChangeAttributeValues
+	    | QgsVectorDataProvider::CreateSpatialIndex);
 }
 
 /**
