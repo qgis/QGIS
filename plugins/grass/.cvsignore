@@ -5,4 +5,5 @@ Makefile.in
 .libs
 *base.h
 *base.cpp
-
+*.lo
+*.la
