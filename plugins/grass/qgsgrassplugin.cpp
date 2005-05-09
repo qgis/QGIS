@@ -120,7 +120,6 @@ int QgsGrassPlugin::type()
  */
 void QgsGrassPlugin::initGui()
 {
-  menuBarPointer = 0;
   toolBarPointer = 0;
   mTools = 0;
 
@@ -183,29 +182,32 @@ void QgsGrassPlugin::initGui()
 
   mCanvas = qGisInterface->getMapCanvas();
 
-  QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindowPointer);
+  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&GRASS");
 
-  int menuId = pluginMenu->insertItem(QIconSet(icon_add_vector),"Add Grass &Vector", this,
+  int id = pluginMenu->insertItem(QIconSet(icon_add_vector),"Add Grass &Vector", this,
       SLOT(addVector()));
-  pluginMenu->setWhatsThis(menuId, "Add a GRASS vector layer to the map canvas.");
-  menuId = pluginMenu->insertItem(QIconSet(icon_add_raster),"Add Grass &Raster", this, SLOT(addRaster()));
-  pluginMenu->setWhatsThis(menuId, "Add a GRASS raster layer to the map canvas.");
+  pluginMenu->setWhatsThis(id, "Add a GRASS vector layer to the map canvas.");
+  menuId.push_back(id);
 
-  menuId = pluginMenu->insertItem(QIconSet(icon_grass_tools),"GRASS &Tools", this, SLOT(openTools()));
-  pluginMenu->setWhatsThis(menuId, "Open GRASS tools.");
+  id = pluginMenu->insertItem(QIconSet(icon_add_raster),"Add Grass &Raster", this, SLOT(addRaster()));
+  pluginMenu->setWhatsThis(id, "Add a GRASS raster layer to the map canvas.");
+  menuId.push_back(id);
 
-  menuId = pluginMenu->insertItem(QIconSet(icon_grass_region),"Display Current Grass Region", this, SLOT(switchRegion(bool)));
-  pluginMenu->setWhatsThis(menuId, "Display Current Grass Region");
-  menuId = pluginMenu->insertItem(QIconSet(icon_grass_region_edit),"Edit Current Grass Region", this, SLOT(changeRegion()));
-  pluginMenu->setWhatsThis(menuId, "Edit Current Grass Region");
+  id = pluginMenu->insertItem(QIconSet(icon_grass_tools),"GRASS &Tools", this, SLOT(openTools()));
+  pluginMenu->setWhatsThis(id, "Open GRASS tools.");
+  menuId.push_back(id);
 
+  id = pluginMenu->insertItem(QIconSet(icon_grass_region),"Display Current Grass Region", this, SLOT(switchRegion(bool)));
+  pluginMenu->setWhatsThis(id, "Display Current Grass Region");
+  menuId.push_back(id);
 
-  menuId = pluginMenu->insertItem(QIconSet(icon_grass_edit),"&Edit Grass Vector", this, SLOT(edit()));
-  pluginMenu->setWhatsThis(menuId, "Edit a GRASS vector layer");
+  id = pluginMenu->insertItem(QIconSet(icon_grass_region_edit),"Edit Current Grass Region", this, SLOT(changeRegion()));
+  pluginMenu->setWhatsThis(id, "Edit Current Grass Region");
+  menuId.push_back(id);
 
-  menuBarPointer = ((QMainWindow *) qgisMainWindowPointer)->menuBar();
-
-  menuIdInt = qGisInterface->addMenu("&GRASS", pluginMenu);
+  id = pluginMenu->insertItem(QIconSet(icon_grass_edit),"&Edit Grass Vector", this, SLOT(edit()));
+  pluginMenu->setWhatsThis(id, "Edit a GRASS vector layer");
+  menuId.push_back(id);
 
   // Create the action for tool
   QAction *addVectorAction = new QAction("Add GRASS vector layer", QIconSet(icon_add_vector), 
@@ -561,8 +563,8 @@ void QgsGrassPlugin::setRegionPen(QPen & pen)
 void QgsGrassPlugin::unload()
 {
   // remove the GUI
-  if ( menuBarPointer )
-    menuBarPointer->removeItem(menuIdInt);
+  for (int i = 0; i < menuId.size(); ++i)
+    qGisInterface->removePluginMenuItem("&GRASS", menuId[i]);
 
   if ( toolBarPointer )
     delete toolBarPointer;
