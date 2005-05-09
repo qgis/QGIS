@@ -11,6 +11,6 @@ echo Creating qmake project file
 # force the output name to be qgis_qm.pro
 /usr/bin/qmake -project -o qgis_qm.pro
 echo Creating qm files
-/usr/bin/lrelease -verbose qgis_qm.pro
+lrelease -verbose qgis_qm.pro
 echo Removing qmake project file
 rm qgis_qm.pro
