@@ -1111,7 +1111,7 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
     // create the layer
 
     QgsVectorLayer *layer = new QgsVectorLayer(vectorFile.filePath(),
-                            vectorFile.baseName(),
+                            vectorFile.baseName(TRUE),
                             "ogr");
     Q_CHECK_PTR( layer );
 
@@ -1183,7 +1183,7 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
     }
     else
     {
-        QString msg = vectorFile.baseName() + " ";
+        QString msg = vectorFile.baseName(TRUE) + " ";
         msg += tr("is not a valid or recognized data source");
         QMessageBox::critical(this, tr("Invalid Data Source"), msg);
 
@@ -1243,7 +1243,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
                 ++it )
         {
             QFileInfo fi(*it);
-            QString base = fi.baseName();
+            QString base = fi.baseName(TRUE);
 
 
             // create the layer
@@ -4727,7 +4727,7 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile, bool guiWarning)
     // XXX ya know QgsRasterLayer can snip out the basename on its own;
     // XXX why do we have to pass it in for it?
     QgsRasterLayer *layer =
-        new QgsRasterLayer(rasterFile.filePath(), rasterFile.baseName());
+        new QgsRasterLayer(rasterFile.filePath(), rasterFile.baseName(TRUE));
 
     if (!addRasterLayer(layer))
     {
@@ -4736,7 +4736,7 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile, bool guiWarning)
         if(guiWarning)
         {
           // don't show the gui warning (probably because we are loading from command line)
-          QString msg(rasterFile.baseName()
+          QString msg(rasterFile.baseName(TRUE)
               + " is not a valid or recognized raster data source");
           QMessageBox::critical(this, "Invalid Data Source", msg);
         }
@@ -4784,7 +4784,7 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList, bool gui
             QFileInfo myFileInfo(*myIterator);
             // get the directory the .adf file was in
             QString myDirNameQString = myFileInfo.dirPath();
-            QString myBaseNameQString = myFileInfo.baseName();
+            QString myBaseNameQString = myFileInfo.baseName(TRUE);
             //only allow one copy of a ai grid file to be loaded at a
             //time to prevent the user selecting all adfs in 1 dir which
             //actually represent 1 coverage,
