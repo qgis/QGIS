@@ -49,6 +49,24 @@
                     </widget>
                 </vbox>
             </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Manual</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QTextBrowser">
+                        <property name="name">
+                            <cstring>mManualTextBrowser</cstring>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
         </widget>
         <widget class="QProgressBar">
             <property name="name">
