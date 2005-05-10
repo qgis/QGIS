@@ -125,12 +125,12 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     // Read GRASS module description
     QString gisBase = getenv("GISBASE"); // TODO read from QgsGrassPlugin
     mXName = qDocElem.attribute("module");
-    mXPath = gisBase + "/bin/" + mXName;
+    //mXPath = gisBase + "/bin/" + mXName;
     QProcess *process = new QProcess( this );
-    process->addArgument( mXPath );
+    process->addArgument( mXName );
     process->addArgument( "--interface-description" );
     if ( !process->start() ) {
-	QMessageBox::warning( 0, "Warning", "Cannot start module " + mXPath );
+	QMessageBox::warning( 0, "Warning", "Cannot start module " + mXName );
 	return;
     }
     while ( process->isRunning () ) { // TODO: check time, if it is not running too long
@@ -140,7 +140,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
 
     QDomDocument gDoc ( "task" );
     if ( !gDoc.setContent( (QByteArray)gDescArray, &err, &line, &column ) ) {
-	QString errmsg = "Cannot read module description (" + mXPath + "):\n" + err + "\nat line "
+	QString errmsg = "Cannot read module description (" + mXName + "):\n" + err + "\nat line "
 	                 + QString::number(line) + " column " + QString::number(column);
 	std::cerr << errmsg << std::endl;
 	QMessageBox::warning( 0, "Warning", errmsg );
@@ -209,6 +209,13 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     QSpacerItem *si = new QSpacerItem ( 10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding );
     layout->addItem ( si );
 
+    // Create manual if available
+    QString manPath = gisBase + "/docs/html/" + mXName + ".html";
+    QFile manFile ( manPath );
+    if ( manFile.exists() ) {
+	mManualTextBrowser->setSource ( manPath );
+    }
+    
     connect ( &mProcess, SIGNAL(readyReadStdout()), this, SLOT(readStdout()));
     connect ( &mProcess, SIGNAL(readyReadStderr()), this, SLOT(readStderr()));
     connect ( &mProcess, SIGNAL(launchFinished()), this, SLOT(finished()));
@@ -365,7 +372,7 @@ void QgsGrassModule::run()
 	if ( mProcess.isRunning() ) {
 	}
 	mProcess.clearArguments();
-	mProcess.addArgument( mXPath );
+	mProcess.addArgument( mXName );
 	command = mXName;
 
 	for ( int i = 0; i < mItems.size(); i++ ) {
@@ -522,7 +529,14 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
     
     if ( mHidden ) hide();
 
-    setTitle ( " " + mDescription + " " );
+    QString tit;
+    if ( mDescription.length() > 40 ) {
+	tit = mDescription.left(40) + " ...";
+    } else {
+	tit = mDescription;
+    }
+	    
+    setTitle ( " " + tit + " " );
 	
     // String without options 
     if ( !mHidden ) 
@@ -671,10 +685,18 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module, QString key,
 {
     mVectorTypeMask = GV_POINT | GV_LINE | GV_AREA;
 
-    if ( mDescription.isEmpty() ) 
-	setTitle ( " Input " );
-    else
-	setTitle ( " " + mDescription + " " );
+    QString tit;
+    if ( mDescription.isEmpty() ) {
+	tit = "Input";
+    } else {
+	if ( mDescription.length() > 40 ) {
+	    tit = mDescription.left(40) + " ...";
+	} else {
+	    tit = mDescription;
+	}
+    }
+	    
+    setTitle ( " " + tit + " " );
 
     QDomNode promptNode = gnode.namedItem ( "gisprompt" );
     QDomElement promptElem = promptNode.toElement();
