@@ -327,27 +327,41 @@ QPixmap QgsGrassModule::pixmap ( QString path, int height )
 
     if ( width <= 0 ) width = height; //should not happen
     
-    int swidth = 20; // sign
-    if ( pixmaps.size() > 1 ) width += swidth; // ->
-    if ( pixmaps.size() > 2 ) width += swidth; // +
+    int plusWidth = 8; // +
+    int arrowWidth = 9; // ->
+    int buffer = 10; // buffer around a sign
+    if ( pixmaps.size() > 1 ) width += arrowWidth + 2 * buffer; // ->
+    if ( pixmaps.size() > 2 ) width += plusWidth + 2 * buffer; // +
 
     QPixmap pixmap ( width, height );
     pixmap.fill(QColor(255,255,255));
     QPainter painter ( &pixmap );
+
+    QPen pen(QColor(180,180,180),3);
+    painter.setPen(pen);
+
+    QBrush brush(QColor(180,180,180));
+    painter.setBrush(brush);
     
     int pos = 0;
     for ( int i = 0; i < pixmaps.size(); i++ ) {
 	if ( i == 1 && pixmaps.size() == 3 ) { // +
-	    painter.drawLine ( (int)pos+swidth/2-3, (int)height/2, (int)pos+swidth/2+3, (int)height/2 );
-	    painter.drawLine ( (int)pos+swidth/2, (int)height/2-3, (int)pos+swidth/2, (int)height/2+3 );
-	    pos += swidth;
+	    pos += buffer;
+	    painter.drawLine ( pos, height/2, pos+plusWidth+1, height/2 );
+	    painter.drawLine ( pos+plusWidth/2, height/2-plusWidth/2, pos+plusWidth/2, height/2+plusWidth/2+1 );
+	    pos += buffer + plusWidth;
 	}
 	if ( (i == 1 && pixmaps.size() == 2) || (i == 2 && pixmaps.size() == 3)  ) { // ->
-	    painter.setPen ( QColor(0,0,0) );
-	    painter.drawLine ( pos+3, (int)height/2, pos+swidth-3, (int)height/2 );
-	    painter.drawLine ( (int)pos+swidth/2, (int)height/2-3, pos+swidth-2, (int)height/2 );
-	    painter.drawLine ( (int)pos+swidth/2, (int)height/2+3, pos+swidth-2, (int)height/2 );
-	    pos += swidth;
+	    pos += buffer;
+	    painter.drawLine ( pos, height/2, pos+arrowWidth, height/2 );
+
+	    QPointArray pa(3);
+	    pa.setPoint(0, pos+arrowWidth/2+1, height/2-arrowWidth/4);
+	    pa.setPoint(1, pos+arrowWidth, height/2 );
+	    pa.setPoint(2, pos+arrowWidth/2+1, height/2+arrowWidth/4);
+	    painter.drawPolygon ( pa );
+	    
+	    pos += buffer + arrowWidth;
 	}
 	painter.drawPixmap ( pos,0, pixmaps[i] );
 	pos += pixmaps[i].width();
