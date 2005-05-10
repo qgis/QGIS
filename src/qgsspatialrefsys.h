@@ -32,7 +32,7 @@ class QgsSpatialRefSys
          * Constructs a SRS object from a WKT string
          * @param theWkt A String containing a valid Wkt def
          */
-        QgsSpatialRefSys(QString theWkt);
+        explicit QgsSpatialRefSys(QString theWkt);
 
         /*!
          * Constructs a SRS object from the following component parts
@@ -209,19 +209,20 @@ class QgsSpatialRefSys
         bool isValidFlag;
 };
 
-/*
+
 //! Output stream operator
 inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
 {
-    return os << "\n"
-              << "Description : " << r.description().latin1() << "\n"
-              << "Projection  : " << r.projectionAcronym().latin1() << "\n"
-              << "Ellipsoid   : " << r.ellipsoid().latin1() << "\n"
-              << "Proj4String  : " << r.parameters().latin1() << "\n"
-              << std::endl; 
-    
+  return os << "\n"
+	    << "Description : " << r.description().latin1() << "\n"
+	    << "Projection  : " << r.projectionAcronym().latin1() << "\n"
+	    << "Ellipsoid   : " << r.ellipsoidAcronym().latin1() << "\n"
+	    << "Proj4String  : " << r.proj4String().latin1() << "\n"
+	    << std::endl; 
 }
 
+
+/*
 //! Input stream operator
 inline std::istream& operator>> (std::istream& str, QgsSpatialRefSys& r)
 {
