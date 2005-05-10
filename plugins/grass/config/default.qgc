@@ -8,6 +8,10 @@
 		<grass name="v.overlay.not"/>
 		<grass name="v.overlay.xor"/>
 	</section>
+	<section label="Extract features from vector">
+		<grass name="v.select.overlap"/>
+		<grass name="v.extract.where"/>
+	</section>
 	<section label="Geomorphology">
 		<grass name="r.slope.aspect.slope"/>
 		<grass name="r.slope.aspect.aspect"/>
