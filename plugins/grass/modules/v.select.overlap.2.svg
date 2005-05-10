@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docbase="/home/pinuz/gis/qgis-cvs/qgis/plugins/grass/modules"
+   sodipodi:docname="v.select.2.svg"
+   inkscape:version="0.41"
+   sodipodi:version="0.32"
+   id="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/v.overlay.and.2"
+   height="250"
+   y="0"
+   x="0"
+   width="250">
+  <metadata
+     id="metadata19">
+    <rdf:RDF
+       id="RDF21">
+      <cc:Work
+         id="Work23"
+         rdf:about="">
+        <dc:format
+           id="format25">image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage"
+           id="type27" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs17">
+    <clipPath
+       id="clip1">
+      <rect
+         id="rect8"
+         height="245"
+         y="0"
+         x="0"
+         width="245" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     inkscape:current-layer="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/v.overlay.and.2"
+     inkscape:window-y="58"
+     inkscape:window-x="26"
+     inkscape:zoom="1.0587862"
+     inkscape:cx="128.98520"
+     inkscape:cy="129.30344"
+     inkscape:window-height="539"
+     inkscape:window-width="640"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <rect
+     id="rect3"
+     style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);"
+     height="250"
+     y="0"
+     x="0"
+     width="250" />
+  <path
+     sodipodi:nodetypes="ccccc"
+     id="path1296"
+     d="M 248.08262,244.32614 L 126.91444,245.77176 L 192.89700,179.86017 L 235.58879,158.95835 L 248.08262,244.32614 z "
+     style="stroke-dasharray:none;stroke-opacity:1.0000000;stroke-dashoffset:0.0000000;stroke-miterlimit:4.0000000;stroke-linejoin:round;stroke-linecap:round;stroke-width:1.2500000;stroke:#4b4b4b;fill-rule:nonzero;fill-opacity:1.0000000;fill:#ff3b4b" />
+  <path
+     sodipodi:nodetypes="ccccc"
+     id="path1298"
+     d="M 192.40590,180.04876 L 127.40557,245.58317 L 138.01379,185.15627 L 187.67556,126.63888 L 192.40590,180.04876 z "
+     style="stroke-dasharray:none;stroke-opacity:1.0000000;stroke-dashoffset:0.0000000;stroke-miterlimit:4.0000000;stroke-linejoin:round;stroke-linecap:round;stroke-width:1.2500000;stroke:#4b4b4b;fill-rule:nonzero;fill-opacity:1.0000000;fill:#ff3b4b" />
+  <path
+     sodipodi:nodetypes="cccccc"
+     id="path1300"
+     d="M 235.09767,159.14695 L 192.78306,181.03099 L 187.07051,127.99831 L 141.72286,100.89253 L 203.79212,77.621591 L 235.09767,159.14695 z "
+     style="stroke-dasharray:none;stroke-opacity:1.0000000;stroke-dashoffset:0.0000000;stroke-miterlimit:4.0000000;stroke-linejoin:round;stroke-linecap:round;stroke-width:1.2500000;stroke:#4b4b4b;fill-rule:nonzero;fill-opacity:1.0000000;fill:#ff3b4b" />
+  <path
+     sodipodi:nodetypes="ccccc"
+     id="path1302"
+     d="M 186.69333,127.01607 L 139.97826,184.40192 L 63.552810,143.87093 L 143.49873,99.647055 L 186.69333,127.01607 z "
+     style="stroke-dasharray:none;stroke-opacity:1.0000000;stroke-dashoffset:0.0000000;stroke-miterlimit:4.0000000;stroke-linejoin:round;stroke-linecap:round;stroke-width:1.2500000;stroke:#4b4b4b;fill-rule:nonzero;fill-opacity:1.0000000;fill:#ff3b4b" />
+</svg>

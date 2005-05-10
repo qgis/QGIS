@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="250"
+   x="0"
+   y="0"
+   height="250"
+   id="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/v.overlay.and.2"
+   sodipodi:version="0.32"
+   inkscape:version="0.41"
+   sodipodi:docname="v.select.3.svg"
+   sodipodi:docbase="/home/pinuz/gis/qgis-cvs/qgis/plugins/grass/modules">
+  <metadata
+     id="metadata19">
+    <rdf:RDF
+       id="RDF21">
+      <cc:Work
+         rdf:about=""
+         id="Work23">
+        <dc:format
+           id="format25">image/svg+xml</dc:format>
+        <dc:type
+           id="type27"
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs17">
+    <clipPath
+       id="clip1">
+      <rect
+         width="245"
+         x="0"
+         y="0"
+         height="245"
+         id="rect8" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="539"
+     inkscape:cy="134.74346"
+     inkscape:cx="128.98520"
+     inkscape:zoom="1.0587862"
+     inkscape:window-x="26"
+     inkscape:window-y="58"
+     inkscape:current-layer="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/v.overlay.and.2" />
+  <rect
+     width="250"
+     x="0"
+     y="0"
+     height="250"
+     style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);"
+     id="rect3" />
+  <path
+     style="fill:#2bd844;fill-opacity:1.0000000;fill-rule:nonzero;stroke:#4b4b4b;stroke-width:2.7850337;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000"
+     d="M 48.504912,140.82081 L 112.68673,103.99517 L 169.50342,169.22915 L 79.017580,181.85509 L 48.504912,140.82081 z "
+     id="path1356"
+     sodipodi:nodetypes="ccccc" />
+</svg>
