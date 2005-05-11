@@ -202,6 +202,7 @@ void QgsProjectProperties::apply()
   if (cbxProjectionEnabled->isChecked())
   {
     QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectionsEnabled",1);
+
     emit projectionEnabled(true);
   }
   else
@@ -221,19 +222,6 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->writeEntry("SpatialRefSys","/selectedSRSID",(int)mySRSID);
     // write the currently selected projections _name_ to project settings
     QgsProject::instance()->writeEntry("SpatialRefSys","/selectedSRSName",projectionSelector->getSelectedName());
-    // set the mouse display precision method and the
-    // number of decimal places for the manual option
-    // Note. Qt 3.2.3 and greater have a function selectedId() that
-    // can be used instead of the two part technique here
-    if (btnGrpPrecision->id(btnGrpPrecision->selected()) == 0)
-      QgsProject::instance()->writeEntry("PositionPrecision","/Automatic", true);
-    else
-      QgsProject::instance()->writeEntry("PositionPrecision","/Automatic", false);
-    QgsProject::instance()->writeEntry("PositionPrecision","/DecimalPlaces", spinBoxDP->value());
-    // Announce that we may have a new display precision setting
-    emit displayPrecisionChanged();
-
-        
   }
 
   // set the mouse display precision method and the
