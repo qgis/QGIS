@@ -100,12 +100,6 @@
         myMapLayer->coordinateTransform(),
         SLOT(setDestSRSID(long)));   
   }
-
-    
-    setMapUnits(myUnit);
-    title(QgsProject::instance()->title());
-    
-    
     
   // get the manner in which the number of decimal places in the mouse
   // position display is set (manual or automatic)
