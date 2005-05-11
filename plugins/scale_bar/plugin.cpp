@@ -21,11 +21,7 @@ email                : sbr00pwb@users.sourceforge.net
 /*  $Id$ */
 
 // includes
-#ifdef WIN32
 #include <cmath>
-#else
-#include <math.h>
-#endif
 
 #include <qgisapp.h>
 #include <qgsmaplayer.h>
@@ -226,6 +222,8 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     };
     myActualSize = myScaleBarWidth * myMuppDouble;
 
+    // Work out the exponent for the number - e.g, 1234 will give 3,
+    // and .001234 will give -3
     double myPowerOf10 = floor(log10(myActualSize));
 
     // snap to integer < 10 times power of 10
@@ -241,18 +239,37 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     QString myScaleBarUnitLabel;
     switch (myMapUnits)
     {
-        case 0: myScaleBarUnitLabel=tr(" metres"); break;
-        case 1: myScaleBarUnitLabel=tr(" feet"); break;
-        case 2: myScaleBarUnitLabel=tr(" degrees"); break;
-        default: std::cout << "Error: not picked up map units - actual value = " << myMapUnits << std::endl;
+    case 0: 
+      if (myActualSize > 1000.0)
+      {
+	myScaleBarUnitLabel=tr(" km");
+	myActualSize = myActualSize/1000;
+      }
+      else if (myActualSize < 1.0)
+      {
+	myScaleBarUnitLabel=tr(" mm");
+	myActualSize = myActualSize*1000;
+      }
+      else
+	myScaleBarUnitLabel=tr(" m"); 
+      break;
+    case 1:
+      if (myActualSize == 1.0)
+	myScaleBarUnitLabel=tr(" foot"); 
+      else
+	myScaleBarUnitLabel=tr(" feet"); 
+      break;
+    case 2:
+      if (myActualSize == 1.0)
+	myScaleBarUnitLabel=tr(" degree"); 
+      else
+	myScaleBarUnitLabel=tr(" degrees"); 
+      break;
+    default: 
+      std::cout << "Error: not picked up map units - actual value = " 
+		<< myMapUnits << std::endl;
     };
-    //use km if units are larget and scale bar width is larger then 1000
-    if (myMapUnits==0 && myActualSize > 1000)
-    {
-      myScaleBarUnitLabel=tr(" km");
-      myActualSize = myActualSize/1000;
 
-    }
     //Set font and calculate width of unit label
     int myFontSize = 10; //we use this later for buffering
     QFont myFont( "helvetica", myFontSize );
