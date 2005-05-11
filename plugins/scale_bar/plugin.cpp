@@ -215,8 +215,8 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     //If scale bar is very small reset to 1/4 of the canvas wide
     if (myScaleBarWidth < 30)
     {
-      myScaleBarWidth = myMuppDouble * (myCanvasWidth/4);
-      myActualSize = myScaleBarWidth * myMuppDouble;
+      myScaleBarWidth = myCanvasWidth / 4; // pixels
+      myActualSize = myScaleBarWidth * myMuppDouble; // map units
     };
 
     //if scale bar is more than half the canvas wide keep halving until not
@@ -226,18 +226,13 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     };
     myActualSize = myScaleBarWidth * myMuppDouble;
 
-    // snap to integer < 10 times power of 10
-    if (mSnapping) {
-      int myPowerOf10 = int(pow(10.0, int(log(myActualSize) / log(10.0))));
-#ifdef WIN32
-      // I know this is tacky -- but I'm trying to get this ready
-      // for release
-      // TODO Make this actually round up/down as appropriate
+    double myPowerOf10 = floor(log10(myActualSize));
 
-      //myActualSize = ceil(myActualSize / myPowerOf10) * myPowerOf10;
-#else
-      myActualSize = round(myActualSize / myPowerOf10) * myPowerOf10;
-#endif
+    // snap to integer < 10 times power of 10
+    if (mSnapping) 
+    {
+      double scaler = pow(10.0, myPowerOf10);
+      myActualSize = round(myActualSize / scaler) * scaler;
       myScaleBarWidth = myActualSize / myMuppDouble;
     }
 
