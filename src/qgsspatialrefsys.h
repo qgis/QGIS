@@ -11,7 +11,7 @@
 #include <qregexp.h>
 
 //qgis includes
-
+#include <qgis.h>
 
 //gdal and ogr includes
 #include <ogr_api.h>
@@ -149,6 +149,10 @@ class QgsSpatialRefSys
          * @return  bool theGeoFlag Whether this is a geographic or projected coordinate system
          */
         bool geographicFlag () const;
+        /*! Get the units that the projection is in
+         * @return QGis::units that gives the units for the coordinate system
+         */
+        QGis::units mapUnits() const;
 
         /*! Set the postgis srid for this srs
          * @return  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
@@ -201,12 +205,17 @@ class QgsSpatialRefSys
         QString mProj4String ;
         //!Whether this is a geographic or projected coordinate system
         bool    mGeoFlag;
+        //! The map units
+        QGis::units mMapUnits;
         //!If available, the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
         long    mSRID;
         //!If available the ESPG identifier for this srs (defaults to 0)
         long    mEpsg ;
         //! Wehter this srs is properly defined and valid
         bool isValidFlag;
+
+        //! Work out the projection units and set the appropriate local variable
+        void setMapUnits();
 };
 
 
