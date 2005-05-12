@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>685</width>
-            <height>602</height>
+            <width>522</width>
+            <height>600</height>
         </rect>
     </property>
     <property name="minimumSize">
@@ -200,6 +200,61 @@
                             <string>Layer source</string>
                         </property>
                     </widget>
+                    <widget class="QLabel" row="1" column="0">
+                        <property name="name">
+                            <cstring>textLabel3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Display name</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="0" column="1" rowspan="1" colspan="3">
+                        <property name="name">
+                            <cstring>lblSource</cstring>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>32767</width>
+                                <height>22</height>
+                            </size>
+                        </property>
+                        <property name="frameShape">
+                            <enum>StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                            <enum>Sunken</enum>
+                        </property>
+                        <property name="text">
+                            <string>TextLabel2</string>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit" row="1" column="1">
+                        <property name="name">
+                            <cstring>txtDisplayName</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="1" column="2">
+                        <property name="name">
+                            <cstring>textLabel2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Display field</string>
+                        </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Display field for the Identify Results dialog box</string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>This sets the display field for the Identify Results dialog box</string>
+                        </property>
+                    </widget>
+                    <widget class="QComboBox" row="1" column="3">
+                        <property name="name">
+                            <cstring>displayFieldComboBox</cstring>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>Use this control to set which field is placed at the top level of the Identify Results dialog box.</string>
+                        </property>
+                    </widget>
                     <widget class="QGroupBox" row="2" column="0" rowspan="1" colspan="4">
                         <property name="name">
                             <cstring>groupBox3</cstring>
@@ -265,62 +320,7 @@
                             </widget>
                         </grid>
                     </widget>
-                    <widget class="QLabel" row="1" column="0">
-                        <property name="name">
-                            <cstring>textLabel3</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Display name</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="0" column="1" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>lblSource</cstring>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>32767</width>
-                                <height>22</height>
-                            </size>
-                        </property>
-                        <property name="frameShape">
-                            <enum>StyledPanel</enum>
-                        </property>
-                        <property name="frameShadow">
-                            <enum>Sunken</enum>
-                        </property>
-                        <property name="text">
-                            <string>TextLabel2</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit" row="1" column="1">
-                        <property name="name">
-                            <cstring>txtDisplayName</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="1" column="2">
-                        <property name="name">
-                            <cstring>textLabel2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Display field</string>
-                        </property>
-                        <property name="toolTip" stdset="0">
-                            <string>Display field for the Identify Results dialog box</string>
-                        </property>
-                        <property name="whatsThis" stdset="0">
-                            <string>This sets the display field for the Identify Results dialog box</string>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="1" column="3">
-                        <property name="name">
-                            <cstring>displayFieldComboBox</cstring>
-                        </property>
-                        <property name="whatsThis" stdset="0">
-                            <string>Use this control to set which field is placed at the top level of the Identify Results dialog box.</string>
-                        </property>
-                    </widget>
-                    <widget class="QGroupBox" row="3" column="0" rowspan="1" colspan="4">
+                    <widget class="QGroupBox" row="4" column="0" rowspan="1" colspan="4">
                         <property name="name">
                             <cstring>grpSubset</cstring>
                         </property>
@@ -330,44 +330,112 @@
                         <property name="title">
                             <string>Subset:</string>
                         </property>
-                        <grid>
+                        <widget class="QPushButton">
                             <property name="name">
-                                <cstring>unnamed</cstring>
+                                <cstring>pbnQueryBuilder</cstring>
                             </property>
-                            <widget class="QTextEdit" row="0" column="0" rowspan="1" colspan="2">
-                                <property name="name">
-                                    <cstring>txtSubsetSQL</cstring>
-                                </property>
-                                <property name="enabled">
-                                    <bool>false</bool>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton" row="1" column="1">
-                                <property name="name">
-                                    <cstring>pbnQueryBuilder</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Query Builder</string>
-                                </property>
-                            </widget>
-                            <spacer row="1" column="0">
-                                <property name="name">
-                                    <cstring>spacer43</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>181</width>
-                                        <height>21</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </grid>
+                            <property name="geometry">
+                                <rect>
+                                    <x>497</x>
+                                    <y>292</y>
+                                    <width>129</width>
+                                    <height>28</height>
+                                </rect>
+                            </property>
+                            <property name="text">
+                                <string>Query Builder</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer43</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>480</width>
+                                    <height>21</height>
+                                </size>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>11</x>
+                                    <y>295</y>
+                                    <width>480</width>
+                                    <height>21</height>
+                                </rect>
+                            </property>
+                        </spacer>
+                        <widget class="QTextEdit">
+                            <property name="name">
+                                <cstring>txtSubsetSQL</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>11</x>
+                                    <y>36</y>
+                                    <width>615</width>
+                                    <height>250</height>
+                                </rect>
+                            </property>
+                        </widget>
+                    </widget>
+                    <widget class="QGroupBox" row="3" column="0" rowspan="1" colspan="4">
+                        <property name="name">
+                            <cstring>indexGroupBox</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>0</width>
+                                <height>60</height>
+                            </size>
+                        </property>
+                        <property name="title">
+                            <string>Spatial Index</string>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>indexLabel</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>10</x>
+                                    <y>20</y>
+                                    <width>170</width>
+                                    <height>31</height>
+                                </rect>
+                            </property>
+                            <property name="text">
+                                <string>Create Spatial Index</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>indexPushButton</cstring>
+                            </property>
+                            <property name="geometry">
+                                <rect>
+                                    <x>190</x>
+                                    <y>20</y>
+                                    <width>61</width>
+                                    <height>31</height>
+                                </rect>
+                            </property>
+                            <property name="text">
+                                <string>OK</string>
+                            </property>
+                        </widget>
                     </widget>
                 </grid>
             </widget>
@@ -509,6 +577,12 @@
         <receiver>QgsDlgVectorLayerPropertiesBase</receiver>
         <slot>pbnQueryBuilder_clicked()</slot>
     </connection>
+    <connection>
+        <sender>indexPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsDlgVectorLayerPropertiesBase</receiver>
+        <slot>pbnIndex_clicked()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsdlgvectorlayerpropertiesbase.ui.h</include>
@@ -520,6 +594,7 @@
     <slot>btnHelp_clicked()</slot>
     <slot>pbnCancel_pressed()</slot>
     <slot>pbnQueryBuilder_clicked()</slot>
+    <slot>pbnIndex_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

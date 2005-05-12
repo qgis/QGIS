@@ -42,3 +42,9 @@ void QgsDlgVectorLayerPropertiesBase::pbnQueryBuilder_clicked()
 {
 
 }
+
+
+void QgsDlgVectorLayerPropertiesBase::pbnIndex_clicked()
+{
+
+}

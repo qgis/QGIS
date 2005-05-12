@@ -125,8 +125,6 @@ QgsOgrProvider::QgsOgrProvider(QString uri): QgsVectorDataProvider(), dataSource
     valid = false;
   }
 
-  //createSpatialIndex();
-
   //resize the cache matrix
   minmaxcache=new double*[fieldCount()];
   for(int i=0;i<fieldCount();i++)
