@@ -62,6 +62,10 @@ double QgsScaleCalculator::calculate(QgsRect &mapExtent, int canvasWidth)
       conversionFactor = 39.3700787;
       delta = calculateGeographicDistance(mapExtent);
       break;
+    case QgsScaleCalculator::NMILE:
+      // factor to convert nautical miles to inches
+      conversionFactor = 72913.3857524 ;
+      delta = mapExtent.xMax() - mapExtent.xMin();
     default:
       assert("bad map units");
       break; 
