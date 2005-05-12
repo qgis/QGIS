@@ -220,15 +220,7 @@ void QgsProjectProperties::apply()
     if (isProjected())
     {
       QgsSpatialRefSys srs(mySRSID, QgsSpatialRefSys::QGIS_SRSID);
-
-      if (srs.geographicFlag())
-        QgsProject::instance()->mapUnits(QGis::DEGREES);
-      else
-      {
-        // Need to get the actual units from srs insted of setting it
-        // to metres.
-        QgsProject::instance()->mapUnits(QGis::METERS);
-      }
+      QgsProject::instance()->mapUnits(srs.mapUnits());
     }
   }
 

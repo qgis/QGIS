@@ -1,6 +1,6 @@
 #include "qgsspatialrefsys.h"
 
-
+#define QGISDEBUG
 #include <cassert>
 #include <iostream>
 #include <sqlite3.h>
@@ -15,9 +15,9 @@
 #include <qgis.h> //const vals declared here
 //--------------------------
 
-QgsSpatialRefSys::QgsSpatialRefSys(){}
+QgsSpatialRefSys::QgsSpatialRefSys() : mMapUnits(QGis::METERS) {}
 
-QgsSpatialRefSys::QgsSpatialRefSys(QString theWkt)
+QgsSpatialRefSys::QgsSpatialRefSys(QString theWkt) : mMapUnits(QGis::METERS) 
 {
   createFromWkt(theWkt);
 }
@@ -30,10 +30,10 @@ QgsSpatialRefSys::QgsSpatialRefSys(long theSrsId,
                                    long theSRID,
                                    long theEpsg,
                                    bool theGeoFlag)
-
+  : mMapUnits(QGis::METERS)
 {}
 
-QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType)
+QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType) : mMapUnits(QGis::METERS) 
 {
   switch (theType)
   {
@@ -208,7 +208,9 @@ void QgsSpatialRefSys::createFromSrid(long theSrid)
     mProj4String = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
     mSRID = QString ((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
     mEpsg = QString ((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
-    mGeoFlag = QString ((char *)sqlite3_column_text(myPreparedStatement,7));
+    int geo = QString ((char *)sqlite3_column_text(myPreparedStatement,7)).toInt();
+    mGeoFlag = (geo == 0 ? false : true);
+    setMapUnits();
     isValidFlag==true;
 
   }
@@ -270,6 +272,31 @@ void QgsSpatialRefSys::createFromWkt(QString theWkt)
 
   //XXX TODO split out projext and ellipsoid acronym from the parameters
   mProj4String=QString(proj4src);
+
+  char *unitName;
+  if (myOgrSpatialRef.IsProjected())
+  {
+    myOgrSpatialRef.GetLinearUnits(&unitName);
+    QString unit(unitName);
+
+#ifdef QGISDEBUG
+    std::cerr << "Projection has linear units of " << unit << '\n';
+#endif
+
+    if (unit == "Meters")
+      mMapUnits = QGis::METERS;
+  }
+  else
+  {
+    myOgrSpatialRef.GetAngularUnits(&unitName);
+    QString unit(unitName);
+    if (unit == "degrees")
+      mMapUnits = QGis::DEGREES;
+
+#ifdef QGISDEBUG
+    std::cerr << "Projection has angular units of " << unit << '\n';
+#endif
+  }
 }
 
 void QgsSpatialRefSys::createFromEpsg(long theEpsg)
@@ -325,7 +352,9 @@ void QgsSpatialRefSys::createFromEpsg(long theEpsg)
     mProj4String = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
     mSRID = QString ((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
     mEpsg = QString ((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
-    mGeoFlag = QString ((char *)sqlite3_column_text(myPreparedStatement,7));
+    int geo = QString ((char *)sqlite3_column_text(myPreparedStatement,7)).toInt();
+    mGeoFlag = (geo == 0 ? false : true);
+    setMapUnits();
     isValidFlag==true;
 
   }
@@ -414,9 +443,10 @@ void QgsSpatialRefSys::createFromSrsId (long theSrsId)
     mProj4String = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
     mSRID = QString ((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
     mEpsg = QString ((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
-    mGeoFlag = QString ((char *)sqlite3_column_text(myPreparedStatement,7));
+    int geo = QString ((char *)sqlite3_column_text(myPreparedStatement,7)).toInt();
+    mGeoFlag = (geo == 0 ? false : true);
+    setMapUnits();
     isValidFlag==true;
-
   }
   else
   {
@@ -459,7 +489,7 @@ void QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
   // +ellps=clrk80 +towgs84=-255,-15,71,0,0,0,0 +units=m +no_defs
   // 
 
-  QRegExp myProjRegExp( "\+proj=[a-zA-Z]* " );    
+  QRegExp myProjRegExp( "\\+proj=[a-zA-Z]* " );    
   int myStart= 0;
   int myLength=0;
   myStart = myProjRegExp.search(theProj4String, myStart);
@@ -473,7 +503,7 @@ void QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
   }
   mProjectionAcronym = theProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength);
   
-  QRegExp myEllipseRegExp( "\+ellps=[a-zA-Z]* " );    
+  QRegExp myEllipseRegExp( "\\+ellps=[a-zA-Z]* " );    
   myStart= 0;
   myLength=0;
   myStart = myEllipseRegExp.search(theProj4String, myStart);
@@ -486,7 +516,7 @@ void QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
     myLength = myEllipseRegExp.matchedLength();
   }
   mEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength);
-  
+  setMapUnits();
 }
 // Accessors -----------------------------------
 
@@ -531,6 +561,13 @@ QString QgsSpatialRefSys::proj4String() const
 bool QgsSpatialRefSys::geographicFlag () const
 {
   return mGeoFlag;
+}
+/*! Get the units that the projection is in
+ * @return QGis::units
+ */
+QGis::units QgsSpatialRefSys::mapUnits() const
+{
+  return mMapUnits;
 }
 
 /*! Set the postgis srid for this srs
@@ -591,4 +628,49 @@ void QgsSpatialRefSys::setPostgisSrid (long theSrid)
 void QgsSpatialRefSys::setEpsg (long theEpsg)
 {
   mEpsg=theEpsg;
+}
+/*! Work out the projection units and set the appropriate local variable
+ *
+ */
+void QgsSpatialRefSys::setMapUnits()
+{
+  // Need to to extract the units from the mProj4String variable. If
+  // the coordinate system is geographic it seems that the answer is
+  // always degrees, and if it is not geographic, we need to search
+  // mProj4String for a +units= section and interpret that.
+
+#ifdef QGISEBUG
+  std::cerr << "Proj4 string is: " << mProj4String << '\n';
+  if (geographicFlag())
+    std::cerr << " and is geographic\n";
+  else
+    std::cerr << " and is projected\n";
+#endif
+
+  // Default units.
+  mMapUnits = QGis::METERS;
+
+  if (geographicFlag())
+    mMapUnits = QGis::DEGREES;
+  else
+  {
+    if (mProj4String.isEmpty())
+      qWarning("No proj4 projection string. Can't determine units (defaulting to m).");
+    else
+    {
+      const int fieldLength = 7; // length of '+units='
+      QRegExp unitPattern("\\+units=\\S+");
+      int pos = unitPattern.search(mProj4String);
+      if (pos != -1)
+      {
+        QString unit = mProj4String.mid(pos + fieldLength, unitPattern.matchedLength()-fieldLength);
+        if (unit == "m")
+          mMapUnits = QGis::METERS;
+        else
+          qWarning("Unknown projection unit (defaulting to m): " + unit);
+      }
+      else
+        qWarning("Unable to determine units for the output projection. Defaulting to m.");
+    }
+  }
 }
