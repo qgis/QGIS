@@ -789,9 +789,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
       double scale = markerScaleFactor * symbolScale;
       drawFeature(p,fet,theMapToPixelTransform,&marker, scale, 
       projectionsEnabledFlag);
-      //test for geos performance
-      //geos::Geometry* g=fet->geosGeometry();
-      //delete g;
       ++featureCount;
       delete fet;
     }
@@ -1031,7 +1028,7 @@ void QgsVectorLayer::table()
 
     for (std::set<int>::iterator it = mSelected.begin(); it != mSelected.end(); ++it)
       {
-        tabledisplay->table()->selectRowWithId(*it);
+        tabledisplay->table()->selectRowWithId(*it);//todo: avoid that the table gets repainted during each selection
 #ifdef QGISDEBUG
         qWarning("selecting row with id " + QString::number(*it));
 #endif
@@ -1180,9 +1177,11 @@ void QgsVectorLayer::invertSelection()
     QApplication::setOverrideCursor(Qt::waitCursor);
     if (tabledisplay)
     {
-  QObject::disconnect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
-  QObject::disconnect(tabledisplay->table(), SIGNAL(selected(int)), this, SLOT(select(int))); //disconnecting because of performance reason
+	QObject::disconnect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
+	QObject::disconnect(tabledisplay->table(), SIGNAL(selected(int)), this, SLOT(select(int))); //disconnecting because of performance reason
+	tabledisplay->table()->hide();
     }
+    
 
     //copy the ids of selected features to tmp
     std::list<int> tmp;
@@ -1222,14 +1221,15 @@ void QgsVectorLayer::invertSelection()
     {
   for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
   {
-      tabledisplay->table()->selectRowWithId(*iter);
+      tabledisplay->table()->selectRowWithId(*iter);//todo: avoid that the table gets repainted during each selection
   }
     }
 
     if (tabledisplay)
     {
-  QObject::connect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
-  QObject::connect(tabledisplay->table(), SIGNAL(selected(int)), this, SLOT(select(int)));  //disconnecting because of performance reason
+	QObject::connect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
+	QObject::connect(tabledisplay->table(), SIGNAL(selected(int)), this, SLOT(select(int)));  //disconnecting because of performance reason
+	tabledisplay->table()->show();
     }
     
     triggerRepaint();
