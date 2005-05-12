@@ -30,12 +30,13 @@
 
 #include <om_occurrences.hh>  // List of occurrences.
 #include <om_log.hh>
-#include <list.cpp>           // Template.
+
+#include <vector>
+using std::vector;
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 
 // Win32 defines
 #ifdef WIN32
@@ -62,10 +63,10 @@
 /*******************/
 /*** Constructor ***/
 
-OccurrencesFile::OccurrencesFile( char *file_name,
-				  char *coord_system )
+OccurrencesFile::OccurrencesFile( const char *file_name,
+				  const char *coord_system )
 {
-  _coord_system = coord_system;
+  _coord_system = (char *) coord_system;
   addOccurrences( file_name );
 }
 
@@ -75,23 +76,19 @@ OccurrencesFile::OccurrencesFile( char *file_name,
 
 OccurrencesFile::~OccurrencesFile()
 {
-  // Empty the occurrences list.
-  Occurrences *sp;
-  for ( f_sp.head(); sp = f_sp.get(); f_sp.next() )
-    delete( sp );
 }
 
 
 /**********************/
 /*** add Ocurrences ***/
 int
-OccurrencesFile::addOccurrences( char *file_name )
+OccurrencesFile::addOccurrences( const char *file_name )
 {
   // Opens the input file.
   FILE *file = fopen( file_name, "r" );
   if ( ! file )
     {
-      g_log.warn( "Can't open file %s.", file_name );
+      g_log.warn( "Can't open file %s.\n", file_name );
       return 0;
     }
 
@@ -140,15 +137,29 @@ OccurrencesFile::addOccurrences( char *file_name )
 
 /**************/
 /*** remove ***/
-Occurrences *
-OccurrencesFile::remove( char *name )
+OccurrencesPtr
+OccurrencesFile::remove( const char *name )
 {
-  Occurrences *sp;
-  for ( f_sp.head(); sp = f_sp.get(); f_sp.next() )
-    if ( ! strcasecmp( name, sp->name() ) )
-      return f_sp.remove();
+  // If name is not specified,
+  // remove the last entry, and return it.
+  if ( ! name ) {
+    OccurrencesPtr last = f_sp.back();
+    f_sp.pop_back();
+    return last;
+  }
 
-  return 0; 
+  LstOccurrences::iterator ocs = f_sp.begin();
+  LstOccurrences::iterator fin = f_sp.end();
+  while ( ocs != fin ) {
+    OccurrencesPtr sp = *ocs;
+    if ( ! strcasecmp( name, sp->name() ) ) {
+      f_sp.erase( ocs );
+      return sp;
+    }
+    ++ocs;
+  }
+
+  return OccurrencesPtr(); 
 }
 
 
@@ -159,9 +170,12 @@ OccurrencesFile::printOccurrences( char *msg )
 {
   printf( "%s", msg );
 
-  Occurrences *sp;
-  for ( f_sp.head(); sp = f_sp.get(); f_sp.next() )
-    sp->print( "\n****************" );
+  LstOccurrences::const_iterator ocs = f_sp.begin();
+  LstOccurrences::const_iterator fin = f_sp.end();
+  while ( ocs != fin ) {
+    (*ocs)->print( "\n****************" );
+    ++ocs;
+  }
 }
 
 
@@ -173,27 +187,29 @@ OccurrencesFile::insertOcurrence( char *name, Coord lg, Coord lt,
 				  int num_attributes,
 				  Scalar *attributes )
 {
-  Occurrences *sp;
-
   // If an occurrences group with the same name already exists, 
   // just add another occurrence to it.
-  for ( f_sp.head(); sp = f_sp.get(); f_sp.next() )
+
+  // We search backwards because new Occurrences are pushed
+  // onto the back, so most likely, the Occurrences we are looking
+  // for is at the back.
+  LstOccurrences::const_reverse_iterator ocs = f_sp.rbegin();
+  LstOccurrences::const_reverse_iterator fin = f_sp.rend();
+  while ( ocs != fin ) {
+    OccurrencesPtr const & sp = *ocs;
     if ( ! strcasecmp( sp->name(), name ) )
       {
-        sp->insert( lg, lt, error, abundance, num_attributes,
-		    attributes );
+        sp->createOccurrence( lg, lt, error, abundance, num_attributes, attributes );
         return 0;
       }
+    ++ocs;
+  }
 
   // If the occurrences group does not exist, create it.
   //
-  // Obs: the new group is included at the beginning of the list
-  // because other occurrences from the same group are often in
-  // the same portion of the file. Therefore we get better
-  // performance.
-  f_sp.insertFirst( sp = new Occurrences( name, _coord_system ) );
-  sp->insert( lg, lt, error, abundance, num_attributes,
-	      attributes );
+  OccurrencesImpl *spi = new OccurrencesImpl( name, _coord_system );
+  spi->createOccurrence( lg, lt, error, abundance, num_attributes, attributes );
+  f_sp.push_back( spi );
 
   return 1;
 }
