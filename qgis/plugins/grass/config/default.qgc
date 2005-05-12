@@ -8,6 +8,10 @@
 		<grass name="v.overlay.not"/>
 		<grass name="v.overlay.xor"/>
 	</section>
+	<section label="Buffer">
+		<grass name="v.buffer"/>
+		<grass name="r.buffer"/>
+	</section>
 	<section label="Extract features from vector">
 		<grass name="v.select.overlap"/>
 		<grass name="v.extract.where"/>
