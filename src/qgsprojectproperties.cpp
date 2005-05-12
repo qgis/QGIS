@@ -56,10 +56,7 @@
   QgsProjectProperties::QgsProjectProperties(QWidget *parent, const char *name)
 : QgsProjectPropertiesBase(parent, name)
 {
-  //    out with the old
-  //    QgsProject::instance()->mapUnits( QgsScaleCalculator::METERS );
-  //    in with the new...
-  QgsScaleCalculator::units myUnit = QgsProject::instance()->mapUnits();
+  QGis::units myUnit = QgsProject::instance()->mapUnits();
   setMapUnits(myUnit);
   title(QgsProject::instance()->title());
 
@@ -140,7 +137,7 @@ QgsProjectProperties::~QgsProjectProperties()
 {}
 
 // return the map units
-QgsScaleCalculator::units QgsProjectProperties::mapUnits() const
+QGis::units QgsProjectProperties::mapUnits() const
 {
   return QgsProject::instance()->mapUnits();
 }
@@ -150,12 +147,12 @@ void QgsProjectProperties::mapUnitChange(int unit)
 {
   /*
      QgsProject::instance()->mapUnits(
-     static_cast<QgsScaleCalculator::units>(unit));
+     static_cast<QGis::units>(unit));
      */
 }
 
 
-void QgsProjectProperties::setMapUnits(QgsScaleCalculator::units unit)
+void QgsProjectProperties::setMapUnits(QGis::units unit)
 {
   // select the button
   btnGrpMapUnits->setButton(static_cast<int>(unit));
@@ -180,11 +177,13 @@ void QgsProjectProperties::title( QString const & title )
 //when user clicks apply button
 void QgsProjectProperties::apply()
 {
-    // Set the map units
-    // Note. Qt 3.2.3 and greater have a function selectedId() that
-    // can be used instead of the two part technique here
-    QgsProject::instance()->mapUnits(
-       static_cast<QgsScaleCalculator::units>(btnGrpMapUnits->id(btnGrpMapUnits->selected())));
+  // Set the map units
+  // Note. Qt 3.2.3 and greater have a function selectedId() that
+  // can be used instead of the two part technique here
+  int mapUnitId = btnGrpMapUnits->id(btnGrpMapUnits->selected());
+
+  QGis::units mapUnit = static_cast<QGis::units>(mapUnitId);
+  QgsProject::instance()->mapUnits(mapUnit);
 
   // Set the project title
   QgsProject::instance()->title( title() );
@@ -216,6 +215,21 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->writeEntry("SpatialRefSys","/selectedSRSID",(int)mySRSID);
     // write the currently selected projections _name_ to project settings
     QgsProject::instance()->writeEntry("SpatialRefSys","/selectedSRSName",projectionSelector->getSelectedName());
+
+    // Set the map units to the projected coordinates if we are projecting
+    if (isProjected())
+    {
+      QgsSpatialRefSys srs(mySRSID, QgsSpatialRefSys::QGIS_SRSID);
+
+      if (srs.geographicFlag())
+        QgsProject::instance()->mapUnits(QGis::DEGREES);
+      else
+      {
+        // Need to get the actual units from srs insted of setting it
+        // to metres.
+        QgsProject::instance()->mapUnits(QGis::METERS);
+      }
+    }
   }
 
   // set the mouse display precision method and the

@@ -40,9 +40,7 @@
 #include <qgspoint.h>
 #endif
 
-#ifndef QGSSCALECALCULATOR_H
-#include <qgsscalecalculator.h>
-#endif
+#include <qgis.h>
 
 class QRect;
 class QColor;
@@ -160,10 +158,10 @@ class QgsMapCanvas : public QWidget
     std::list < QString > const & zOrders() const;
     std::list < QString >       & zOrders();
     //! Set map units (needed by project properties dialog)
-    void setMapUnits(QgsScaleCalculator::units mapUnits);
+    void setMapUnits(QGis::units mapUnits);
     //! Get the current canvas map units
 
-    QgsScaleCalculator::units mapUnits() const;
+    QGis::units mapUnits() const;
 
     //! Get the current coordinate transform
     QgsMapToPixel * getCoordinateTransform();

@@ -93,6 +93,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmeasure.h"
+#include <qgsscalecalculator.h>
+
 
 
 /**
@@ -167,17 +169,17 @@ public:
     scaleCalculator->setDpi(mDpi);
 
     // set default map units
-    mMapUnits = QgsScaleCalculator::METERS;
+    mMapUnits = QGis::METERS;
     scaleCalculator->setMapUnits(mMapUnits);
   }
 
-  void setMapUnits(QgsScaleCalculator::units u)
+  void setMapUnits(QGis::units u)
   {
     mMapUnits = u;
     scaleCalculator->setMapUnits(mMapUnits);
   }
 
-  QgsScaleCalculator::units mapUnits()
+  QGis::units mapUnits()
   {
     return mMapUnits;
   }
@@ -277,7 +279,7 @@ public:
   int mDpi;
 
   //! Map units for the data on the canvas
-  QgsScaleCalculator::units mMapUnits;
+  QGis::units mMapUnits;
 
   //! Map scale of the canvas at its current zool level
   double mScale;
@@ -2074,7 +2076,7 @@ double QgsMapCanvas::mupp() const
 } // mupp
 
 
-void QgsMapCanvas::setMapUnits(QgsScaleCalculator::units u)
+void QgsMapCanvas::setMapUnits(QGis::units u)
 {
 #ifdef QGISDEBUG
   std::cerr << "Setting map units to " << static_cast<int>(u) << std::endl;
@@ -2084,7 +2086,7 @@ void QgsMapCanvas::setMapUnits(QgsScaleCalculator::units u)
 }
 
 
-QgsScaleCalculator::units QgsMapCanvas::mapUnits() const
+QGis::units QgsMapCanvas::mapUnits() const
 {
   return mCanvasProperties->mapUnits();
 }
