@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Raster buffer" module="r.buffer">
+	<option key="input"/>
+	<option key="units"/>
+	<option key="distances"/>
+	<option key="output" />
+</qgisgrassmodule>
