@@ -76,6 +76,14 @@ bufferRenderer(layer->
 {
   reset();
   pbnOK->setFocus();
+  if(layer->getDataProvider())//enable spatial index button group if supported by provider
+  {
+      int capabilities=layer->getDataProvider()->capabilities();
+      if(capabilities&QgsVectorDataProvider::CreateSpatialIndex)
+      {
+	  indexGroupBox->setEnabled(true);
+      }
+  }
 }
 
 QgsDlgVectorLayerProperties::~QgsDlgVectorLayerProperties()
@@ -411,6 +419,25 @@ void QgsDlgVectorLayerProperties::pbnQueryBuilder_clicked()
   // delete the query builder object
   delete pqb;
 #endif
+}
+
+void QgsDlgVectorLayerProperties::pbnIndex_clicked()
+{
+    QgsVectorDataProvider* pr=layer->getDataProvider();
+    if(pr)
+    {
+	setCursor(Qt::WaitCursor);
+	bool errval=pr->createSpatialIndex();
+	setCursor(Qt::ArrowCursor);
+	if(errval)
+	{
+	    QMessageBox::information(this, tr("Spatial Index"), tr("Creation of spatial index successfull"),QMessageBox::Ok);
+	}
+	else
+	{
+	   QMessageBox::information(this, tr("Spatial Index"), tr("Creation of spatial index failed"),QMessageBox::Ok); 
+	}
+    }
 }
 
 QString QgsDlgVectorLayerProperties::getMetadata()
