@@ -68,6 +68,7 @@
 OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
   : OpenModellerGuiBase( parent, name, modal, fl )
 {
+  AlgorithmFactory::searchDefaultDirs();
   mOpenModeller = new OpenModeller();
   getAlgorithmList();
   mParametersScrollView = new QScrollView(frameParameters);
@@ -107,8 +108,8 @@ void OpenModellerGui::getAlgorithmList()
 
   // Find out which model algorithm is to be used.
   std::cerr << "-------------- openModeller plugin :  Reading algorithm list..." << std::endl;
-  AlgMetadata **myAlgorithmMetadataArray = mOpenModeller->availableAlgorithms();
-  AlgMetadata *myAlgorithmMetadata;
+  const AlgMetadata **myAlgorithmMetadataArray = mOpenModeller->availableAlgorithms();
+  const AlgMetadata *myAlgorithmMetadata;
   //loop through the algorithm names adding to the algs combo
   while ( myAlgorithmMetadata = *myAlgorithmMetadataArray++ )
   {
@@ -124,8 +125,8 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
   std::cout <<"getParameterList called" << std::endl;
 
   // Find out which model algorithm is to be used.
-  AlgMetadata **myAlgorithmsMetadataArray = mOpenModeller->availableAlgorithms();
-  AlgMetadata *myAlgorithmMetadata;
+  const AlgMetadata **myAlgorithmsMetadataArray = mOpenModeller->availableAlgorithms();
+  const AlgMetadata *myAlgorithmMetadata;
   std::cerr << "-------------- openModeller plugin :  Reading algorithm list..." << std::endl;
 
   //find out how many params and clear maps
@@ -223,7 +224,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             //set spinbox details and write to map
 	    if (!myParameter->has_min==0) 
 	      {
-	        mySpinBox->setMinValue(myParameter->min);
+	        mySpinBox->setMinValue((int)myParameter->min);
 	      }
 	    else
 	      {
@@ -231,7 +232,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
 	      }        
             if (!myParameter->has_max==0) 
 	      {
-	        mySpinBox->setMaxValue(myParameter->max);
+	        mySpinBox->setMaxValue((int)myParameter->max);
 	      }
 	    else
 	      {
@@ -655,26 +656,35 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   mOpenModeller->setModelCallback( mapCallback, creationProgressBar);
   mOpenModeller->setMapCallback( mapCallback, projectionProgressBar);
 
-  if ( ! mOpenModeller->run() )
-  {
-    QMessageBox::warning( this,
-            "openModeller Wizard Error","Error running model!",
-            mOpenModeller->error()
-            );
-    return;
-  }
+  // om library version < 0.3
+  //if ( ! mOpenModeller->run() )
+  //{
+  //  QMessageBox::warning( this,
+  //          "openModeller Wizard Error","Error running model!",
+  //          mOpenModeller->error()
+  //          );
+  //  return;
+  //}
+
+  myRequestFile.makeModel( mOpenModeller );
 
   // Prepare the output map
+
+  // om library version 0.1.x:
   //if ( ! mOpenModeller->createMap( mOpenModeller->getEnvironment() ) )
+  // om library version 0.2.x:
   //when projecting model into a different dataset there should be no parameter passed
-  if ( ! mOpenModeller->createMap( ) )
-  {
-    QMessageBox::warning( this,
-            "openModeller Wizard Error","Error projecting model!",
-            mOpenModeller->error()
-            );
-    return;
-  }
+  //if ( ! mOpenModeller->createMap( ) )
+  //{
+  //  QMessageBox::warning( this,
+  //          "openModeller Wizard Error","Error projecting model!",
+  //          mOpenModeller->error()
+  //          );
+  //  return;
+  //}
+
+  myRequestFile.makeProjection( mOpenModeller );
+
   std::cout << "Map creation complete - creating image an dfiring signals" << std::endl;
   //save a nice looking png of the image to disk
   createModelImage(outputFileNameQString);
@@ -739,7 +749,10 @@ void OpenModellerGui::makeConfigFile()
     {          
       myQTextStream << tr("Output map = ") << *myIterator << "\n";
     }
-              
+    
+    myQTextStream << tr("# Output model name (serialized model)\n");
+    myQTextStream << tr("Output model = ") << outputFileNameQString << ".xml\n";
+    
     myQTextStream << tr("# Output file name (should end in .tif)\n");
     myQTextStream << tr("Output file = ") << outputFileNameQString << ".tif\n";
     myQTextStream << tr("# Scale algorithm output (originally between 0 and 1) by this factor.\n");
@@ -1085,8 +1098,8 @@ void OpenModellerGui::leLocalitiesFileName_returnPressed()
 
 void OpenModellerGui::cboModelAlgorithm_highlighted( const QString &theModelAlgorithm )
 {
-  AlgMetadata **myAlgorithmsMetadataArray = mOpenModeller->availableAlgorithms();
-  AlgMetadata *myAlgorithmMetadata;
+  const AlgMetadata **myAlgorithmsMetadataArray = mOpenModeller->availableAlgorithms();
+  const AlgMetadata *myAlgorithmMetadata;
 
   while ( myAlgorithmMetadata = *myAlgorithmsMetadataArray++ )
   {
@@ -1144,7 +1157,7 @@ void OpenModellerGui::mapCallback( float progress, void *extra_param )
 {
   QProgressBar *myProgressBar = (QProgressBar *) extra_param;
   //std::cout << "OMGUI : Map creation progress : " << ( 100 * progress ) << std::endl;
-  myProgressBar->setProgress(100 * progress);
+  myProgressBar->setProgress(100 * (int)progress);
   //process events so gui doesnt block...
   qApp->processEvents();
 }
