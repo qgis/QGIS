@@ -78,16 +78,16 @@ public:
 
     /**
      * Gets the currently select map units
-     * @return int which matches a value in the units enum in QgsScaleCalculator::units
+     * @return int which matches a value in the units enum in QGis::units
      */
-    QgsScaleCalculator::units mapUnits() const;
+    QGis::units mapUnits() const;
 
 
     /**
      * Set the map units
      * @param new units type
      */
-    void mapUnits(QgsScaleCalculator::units u);
+    void mapUnits(QGis::units u);
 
 
     /**

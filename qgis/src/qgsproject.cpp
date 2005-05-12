@@ -334,12 +334,12 @@ QgsProject * QgsProject::theProject_;
      bool dirty;
 
      /// map units for current project
-     QgsScaleCalculator::units mapUnits;
+     QGis::units mapUnits;
 
      Imp()
          : title(""), 
            dirty(false), 
-           mapUnits(QgsScaleCalculator::METERS)
+           mapUnits(QGis::METERS)
      {                             // top property node is the root
                                    // "properties" that contains all plug-in
                                    // and extra property keys and values
@@ -354,7 +354,7 @@ QgsProject * QgsProject::theProject_;
          std::cout << "Clearing project properties Impl->clear();" << std::endl;
  #endif
          properties_.clearKeys();
-         mapUnits = QgsScaleCalculator::METERS;
+         mapUnits = QGis::METERS;
          title = "";
 
          // reset some default project properties
@@ -415,19 +415,19 @@ QgsProject * QgsProject::theProject_;
  } // QgsProject::title() const
 
 
- QgsScaleCalculator::units QgsProject::mapUnits() const
+ QGis::units QgsProject::mapUnits() const
  {
      return imp_->mapUnits;
- } // QgsScaleCalculator::units QgsProject::mapUnits() const
+ } // QGis::units QgsProject::mapUnits() const
 
 
 
- void QgsProject::mapUnits(QgsScaleCalculator::units u)
+ void QgsProject::mapUnits(QGis::units u)
  {
      imp_->mapUnits = u;
 
      dirty(true);
- } // void QgsProject::mapUnits(QgsScaleCalculator::units u)
+ } // void QgsProject::mapUnits(QGis::units u)
 
 
  bool QgsProject::dirty() const
@@ -646,13 +646,13 @@ static bool _getMapUnits(QDomDocument const &doc)
 
     if ("meters" == element.text())
     {
-        QgsProject::instance()->mapUnits(QgsScaleCalculator::METERS);
+        QgsProject::instance()->mapUnits(QGis::METERS);
     } else if ("feet" == element.text())
     {
-        QgsProject::instance()->mapUnits(QgsScaleCalculator::FEET);
+        QgsProject::instance()->mapUnits(QGis::FEET);
     } else if ("degrees" == element.text())
     {
-        QgsProject::instance()->mapUnits(QgsScaleCalculator::DEGREES);
+        QgsProject::instance()->mapUnits(QGis::DEGREES);
     } else
     {
         std::
@@ -1232,13 +1232,13 @@ bool QgsProject::write()
 
     switch (instance()->imp_->mapUnits)
     {
-        case QgsScaleCalculator::METERS:
+        case QGis::METERS:
             unitsString = "meters";
             break;
-        case QgsScaleCalculator::FEET:
+        case QGis::FEET:
             unitsString = "feet";
             break;
-        case QgsScaleCalculator::DEGREES:
+        case QGis::DEGREES:
             unitsString = "degrees";
             break;
         default:

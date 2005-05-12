@@ -96,6 +96,14 @@ namespace QGis
     "WKBMultiPolygon" 
   };
 
+  //! map units that qgis supports
+  typedef enum 
+  {
+    METERS,
+    FEET,
+    DEGREES
+  } units;
+
   //! User defined event types
   enum UserEvent
   {

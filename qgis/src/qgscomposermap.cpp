@@ -31,6 +31,7 @@
 #include <qlabel.h>
 #include <qcheckbox.h>
 
+#include "qgis.h"
 #include "qgsproject.h"
 #include "qgsrect.h"
 #include "qgsmaptopixel.h"
@@ -39,7 +40,6 @@
 #include "qgsvectorlayer.h"
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
-#include "qgsscalecalculator.h"
 
 QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int y, int width, int height )
     : QCanvasRectangle(x,y,width,height,0)
@@ -355,13 +355,13 @@ double QgsComposerMap::scaleFromUserScale ( double us )
     double s;
     
     switch ( QgsProject::instance()->mapUnits() ) {
-  case QgsScaleCalculator::METERS :
+  case QGis::METERS :
       s = 1000. * mComposition->scale() / us;
       break;
-  case QgsScaleCalculator::FEET :
+  case QGis::FEET :
       s = 304.8 * mComposition->scale() / us;
       break;
-  case QgsScaleCalculator::DEGREES :
+  case QGis::DEGREES :
       s = mComposition->scale() / us;
       break;
     }
@@ -373,13 +373,13 @@ double QgsComposerMap::userScaleFromScale ( double s )
     double us;
     
     switch ( QgsProject::instance()->mapUnits() ) {
-  case QgsScaleCalculator::METERS :
+  case QGis::METERS :
       us = 1000. * mComposition->scale() / s; 
       break;
-  case QgsScaleCalculator::FEET :
+  case QGis::FEET :
       us = 304.8 * mComposition->scale() / s; 
       break;
-  case QgsScaleCalculator::DEGREES :
+  case QGis::DEGREES :
       us = mComposition->scale() / s;
       break;
     }
@@ -514,11 +514,11 @@ void QgsComposerMap::setOptions ( void )
     
     // Scale
     switch ( QgsProject::instance()->mapUnits() ) {
-  case QgsScaleCalculator::METERS :
-  case QgsScaleCalculator::FEET :
+  case QGis::METERS :
+  case QGis::FEET :
             mScaleLineEdit->setText ( QString("%1").arg((int)mUserScale) );
       break;
-  case QgsScaleCalculator::DEGREES :
+  case QGis::DEGREES :
             mScaleLineEdit->setText ( QString("%1").arg(mUserScale,0,'f') );
       break;
     }
