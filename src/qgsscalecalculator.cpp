@@ -23,7 +23,7 @@
 #include "qgsrect.h"
 #include "qgsscalecalculator.h"
 
-QgsScaleCalculator::QgsScaleCalculator(int dpi, QgsScaleCalculator::units mapUnits) 
+QgsScaleCalculator::QgsScaleCalculator(int dpi, QGis::units mapUnits) 
 : mDpi(dpi), mMapUnits(mapUnits)
 {}
 
@@ -35,7 +35,7 @@ void QgsScaleCalculator::setDpi(int dpi)
   mDpi = dpi;
 }
 
-void QgsScaleCalculator::setMapUnits(units mapUnits)
+void QgsScaleCalculator::setMapUnits(QGis::units mapUnits)
 {
   mMapUnits = mapUnits;
 }
@@ -48,24 +48,20 @@ double QgsScaleCalculator::calculate(QgsRect &mapExtent, int canvasWidth)
   // users display, and the canvas width
   switch(mMapUnits)
   {
-    case QgsScaleCalculator::METERS:
+    case QGis::METERS:
       // convert meters to inches
       conversionFactor = 39.3700787;
       delta = mapExtent.xMax() - mapExtent.xMin();
       break;
-    case QgsScaleCalculator::FEET:
+    case QGis::FEET:
       conversionFactor = 12.0;
       delta = mapExtent.xMax() - mapExtent.xMin();
       break;
-    case QgsScaleCalculator::DEGREES:
+    case QGis::DEGREES:
       // degrees require conversion to meters first
       conversionFactor = 39.3700787;
       delta = calculateGeographicDistance(mapExtent);
       break;
-    case QgsScaleCalculator::NMILE:
-      // factor to convert nautical miles to inches
-      conversionFactor = 72913.3857524 ;
-      delta = mapExtent.xMax() - mapExtent.xMin();
     default:
       assert("bad map units");
       break; 

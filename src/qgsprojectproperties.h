@@ -44,12 +44,12 @@ public:
 
   /*! Gets the currently select map units
    */
-  QgsScaleCalculator::units mapUnits() const;
+  QGis::units mapUnits() const;
 
   /*!
    * Set the map units
    */
-  void setMapUnits(QgsScaleCalculator::units);
+  void setMapUnits(QGis::units);
 
   /*!
      Every project has a title
@@ -65,7 +65,7 @@ public slots:
   /*! 
    * Slot called when a new button (unit) is selected
    * @param int specifying which button was selected. The button ids match the enum
-   * values in QgsScaleCalculator::units
+   * values in QGis::units
    */
   void mapUnitChange(int);
   /*!

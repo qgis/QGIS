@@ -20,6 +20,8 @@
 #ifndef QGSSCALECALCULATOR_H
 #define QGSSCALECALCULATOR_H
 
+#include <qgis.h>
+
 class QString;
 class QgsRect;
 
@@ -33,25 +35,13 @@ class QgsScaleCalculator
   public:
 
     /**
-     * Enum for defining map units
-     */
-    typedef enum
-    {
-        METERS,
-        FEET,
-        DEGREES,
-        NMILE
-    } units;
-
-
-    /**
      * Constructor
      * @param dpi Monitor resolution in dots per inch
      * @param mapUnits Units of the data on the map. Must match a value from the
-     * QgsScaleCalculator::units enum (METERS, FEET, DEGREES)
+     * QGis::units enum (METERS, FEET, DEGREES)
      */
     QgsScaleCalculator(int dpi = 0, 
-                       units mapUnits = METERS);
+                       QGis::units mapUnits = QGis::METERS);
 
     //! Destructor
     ~QgsScaleCalculator();
@@ -66,7 +56,7 @@ class QgsScaleCalculator
      * Set the map units
      * @param mapUnits Units of the data on the map. Must match a value from the
      */
-    void setMapUnits(QgsScaleCalculator::units mapUnits);
+    void setMapUnits(QGis::units mapUnits);
 
     /**
      * Calculate the scale
@@ -90,7 +80,7 @@ class QgsScaleCalculator
     int mDpi;
 
     //! map unit member
-    units mMapUnits;
+    QGis::units mMapUnits;
 };
 
 #endif // #ifndef QGSSCALECALCULATOR_H
