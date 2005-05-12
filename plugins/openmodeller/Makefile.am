@@ -33,16 +33,16 @@ lib_LTLIBRARIES = libopenmodellerplugin.la
 bin_PROGRAMS = omgui
 
 ## qt designer user-interface files
-plugin_UI = openmodellerguibase.ui omguimainbase.ui layerselectorbase.ui
+UI = openmodellerguibase.ui omguimainbase.ui layerselectorbase.ui
 
 ## uic created headers
-plugin_UIHEADERS = $(plugin_UI:.ui=.uic.h)
+UIHEADERS = $(UI:.ui=.uic.h)
 
 ## uic created source files
-plugin_UISOURCES = $(plugin_UI:.ui=.uic.cpp)
+UISOURCES = $(UI:.ui=.uic.cpp)
 
 ## uic created MOC files
-plugin_UIMOC = $(plugin_UI:.ui=.moc.uic.cpp)
+UIMOC = $(UI:.ui=.moc.uic.cpp)
 
 ## MOC files
 plugin_MOC = plugin.moc.cpp openmodellergui.moc.cpp layerselector.moc.cpp
@@ -57,16 +57,17 @@ libopenmodellerplugin_la_SOURCES = plugin.cpp \
 	imagewriter.cpp \
 	layerselector.cpp \
 	layerselector.h \
-	$(plugin_UISOURCES) \
-	$(plugin_UIHEADERS) \
-	$(plugin_UIMOC)
-	
-nodist_libopenmodellerplugin_la_SOURCES =	$(plugin_MOC)
+	$(UISOURCES) \
+	$(UIHEADERS) \
+	$(UIMOC)
+
+nodist_libopenmodellerplugin_la_SOURCES = $(plugin_MOC)
 
 libopenmodellerplugin_la_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS) $(OM_CXXFLAGS) -DQGISDATAPATH=\"$(QGISDATAPATH)\"
 libopenmodellerplugin_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) $(GDAL_LDADD) $(OM_LDADD)
 
-BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
+BUILT_SOURCES = $(UIHEADERS) $(UISOURCES) $(UIMOC) $(plugin_MOC)
+
 ##
 ##  For standalone executable
 ##
@@ -80,9 +81,9 @@ omgui_SOURCES = 	main.cpp \
 			layerselector.h \
 			occurrences_file.cpp \
 			imagewriter.cpp \
-			$(plugin_UISOURCES) \
-			$(plugin_UIHEADERS) \
-			$(plugin_UIMOC)
+			$(UISOURCES) \
+			$(UIHEADERS) \
+			$(UIMOC)
 
 nodist_omgui_SOURCES = openmodellergui.moc.cpp omguimain.moc.cpp layerselector.moc.cpp
 
@@ -94,5 +95,5 @@ CLEANFILES = $(BUILT_SOURCES)
 coordinatedir = $(QGISDATAPATH)
 coordinate_DATA = wkt_defs.txt
 
-EXTRA_DIST = $(plugin_UI) $(coordinate_DATA) icon_om.xpm
+EXTRA_DIST = $(UI) $(coordinate_DATA) icon_om.xpm
 
