@@ -39,7 +39,8 @@ class QgsScaleCalculator
     {
         METERS,
         FEET,
-        DEGREES
+        DEGREES,
+        NMILE
     } units;
 
 

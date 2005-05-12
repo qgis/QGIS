@@ -265,6 +265,12 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
       else
 	myScaleBarUnitLabel=tr(" degrees"); 
       break;
+    case 3:
+      if (myActualSize == 1.0)
+	myScaleBarUnitLabel=tr(" n.mile");
+      else
+	myScaleBarUnitLabel=tr(" n.miles");
+      break;
     default: 
       std::cout << "Error: not picked up map units - actual value = " 
 		<< myMapUnits << std::endl;
