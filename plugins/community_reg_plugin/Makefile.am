@@ -61,4 +61,3 @@ communityregplugin_la_LDFLAGS = -avoid-version -module
 communityregplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm
-

@@ -64,9 +64,7 @@ plugin_UIC = qgsgrassselectbase.ui \
 	     qgsgrasseditbase.ui \
 	     qgsgrasseditbase.ui.h \
 	     qgsgrasstoolsbase.ui \
-	     qgsgrasstoolsbase.ui.h \
 	     qgsgrassmodulebase.ui \
-	     qgsgrassmodulebase.ui.h \
 	     qgsgrassattributesbase.ui \
 	     qgsgrassattributesbase.ui.h \
 	     qgsgrassregionbase.ui 
@@ -113,4 +111,10 @@ grassplugin_la_LIBADD = $(QT_LDADD) ../../providers/grass/libqgisgrass.la $(GRAS
 grassplugin_la_LDFLAGS = -avoid-version -module
 grassplugin_la_CXXFLAGS = $(PREFIX) $(CXXFLAGS) -I$(GRASS_INC) $(DEFS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I$(PG_INC)  $(GDAL_CFLAGS) $(GEOS_CFLAGS)
 
-EXTRA_DIST = $(plugin_UIC) add_vector.xpm add_raster.xpm grass_edit.xpm grass_region.xpm grass_region_edit.xpm
+EXTRA_DIST = $(plugin_UIC) \
+	add_vector.xpm \
+	add_raster.xpm \
+	grass_edit.xpm \
+	grass_region.xpm \
+	grass_region_edit.xpm \
+	grass_tools.xpm
