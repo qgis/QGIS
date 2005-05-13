@@ -284,8 +284,6 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		$(WIDGETPATH)/projectionselector/qgsprojectionselector.moc.cpp \
 		qgscustomprojectiondialog.moc.cpp
 
-#		qgsvectorsymbologywidget.moc.cpp	
-
 qgis_SOURCES =	main.cpp			\
 		qgisapp.cpp			\
 		qgisiface.cpp			\
@@ -393,8 +391,6 @@ qgis_SOURCES =	main.cpp			\
 		splashscreen.cpp \
 		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp \
 		qgscustomprojectiondialog.cpp
-
-#		qgsvectorsymbologywidget.cpp	
 
 postgresHEADERS = qgsdbsourceselect.h		\
 		  qgsnewconnection.h		\
@@ -574,9 +570,6 @@ EXTRA_DIST = $(postgresHEADERS) \
 		xpm/*.png \
 		xpm/*.xpm \
 		xpm/16x16/mapserver.xpm \
-		xpm/16x16/camera.png \
-		qgsvectorsymbologywidget.h \
-		qgsvectorsymbologywidgetbase.ui \
-		qgsvectorsymbologywidgetbase.ui.h
+		xpm/16x16/camera.png 
 		
 noinst_HEADERS = qgsdatasourceuri.h
