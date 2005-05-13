@@ -52,6 +52,7 @@
 #include <qlistview.h>
 #include <qlibrary.h>
 #include <qpicture.h>
+#include <qprogressdialog.h>
 #include <qsettings.h>
 #include <qwidget.h>
 #include <qwidgetlist.h>
@@ -1179,7 +1180,7 @@ void QgsVectorLayer::invertSelection()
     {
 	QObject::disconnect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
 	QObject::disconnect(tabledisplay->table(), SIGNAL(selected(int)), this, SLOT(select(int))); //disconnecting because of performance reason
-	tabledisplay->table()->hide();
+	tabledisplay->hide();
     }
     
 
@@ -1219,17 +1220,29 @@ void QgsVectorLayer::invertSelection()
   
     if(tabledisplay)
     {
-  for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
-  {
-      tabledisplay->table()->selectRowWithId(*iter);//todo: avoid that the table gets repainted during each selection
-  }
+	//todo: show progress dialog
+	QProgressDialog progress( "Invert Selection...", "Abort", mSelected.size(), 0, "progress", TRUE );
+	int i=0;
+	for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
+	{
+	    ++i;
+	    progress.setProgress(i);
+	    qApp->processEvents();
+	    if(progress.wasCanceled())
+	    {
+		//deselect the remaining features if action was canceled
+		mSelected.erase(iter,--mSelected.end());
+		break;
+	    }
+	    tabledisplay->table()->selectRowWithId(*iter);//todo: avoid that the table gets repainted during each selection
+	}
     }
 
     if (tabledisplay)
     {
 	QObject::connect(tabledisplay->table(), SIGNAL(selectionChanged()), tabledisplay->table(), SLOT(handleChangedSelections()));
 	QObject::connect(tabledisplay->table(), SIGNAL(selected(int)), this, SLOT(select(int)));  //disconnecting because of performance reason
-	tabledisplay->table()->show();
+	tabledisplay->show();
     }
     
     triggerRepaint();
