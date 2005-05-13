@@ -636,4 +636,45 @@ Do you Yahoo!?
 Yahoo! Mail - You care about security. So do we.
 http://promotions.yahoo.com/new_mail
 
+////////////////////////////////////////////////////////////////
+  From:     morb@ozemail.com.au
+  Subject:  Re: QGIS Exception to the GPL
+  Date:   May 12, 2005 9:47:41 PM AKDT
+  To:     sherman@mrcc.com
+
+Dear Gary,
+
+I, Brendan Morley, agree with this exception.
+
+
+Thanks,
+Brendan
+
+
+On Thu, 12 May 2005 21:45:33 -0800, Gary Sherman wrote:
+
+You have been identified as a member of the QGIS Development team.  
+Please reply to this message indicating that you are in agreement  
+with the exception to the GPL as stated below. Include the full text  
+of this message in your reply.
+
+
+  "In addition, as a special exception, the QGIS Development Team gives
+   permission to link the code of this program with the Qt library,
+   including but not limited to the following versions (both free and
+   commercial): Qt/Non-commerical Windows, Qt/Windows, Qt/X11, Qt/Mac,
+   and Qt/Embedded (or with modified versions of Qt that use the same
+   license as Qt), and distribute linked combinations including the  
+two.
+   You must obey the GNU General Public License in all respects for all
+   of the code used other than Qt. If you modify this file, you may
+   extend this exception to your version of the file, but you are not
+   obligated to do so. If you do not wish to do so, delete this  
+exception
+   statement from your version."
+
+
+
+
+
 
