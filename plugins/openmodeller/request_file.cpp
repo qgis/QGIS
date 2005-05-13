@@ -138,6 +138,9 @@ RequestFile::setProjection( OpenModeller *om, FileParser &fp )
       _outputFormat = MapFormat( format.c_str() );
     }
 
+  // hard coded for now: 8-bit grey tiffs
+  _outputFormat.setFormat( MapFormat::GreyTiff );
+
   // Categorical environmental maps and the number of these maps.
   _cat = fp.getAll( "Categorical output map" );
 
