@@ -198,7 +198,7 @@ void QgsCustomProjectionDialog::pbnHelp_clicked()
 void QgsCustomProjectionDialog::pbnDelete_clicked()
 {
 
-  if (QMessageBox::Yes!=QMessageBox::question(
+  if (QMessageBox::Yes!=QMessageBox::warning(
         this,
         tr("Delete Projection Definition?"),
         tr("Deleting a projection definition is not reversable. Do you want to delete it?") ,
