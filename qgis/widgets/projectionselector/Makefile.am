@@ -36,7 +36,9 @@ plugin_MOC = qgsprojectionselector.moc.cpp		\
 plugin_UI = qgsprojectionselectorbase.h \
 	    qgsprojectionselectorbase.cpp 
 
-plugin_UIC = qgsprojectionselectorbase.ui
+plugin_UIC = qgsprojectionselectorbase.ui \
+    qgsprojectionselectorbase.ui.h \
+	qgsprojectionselectorbase.uic.h
 
 libqgsprojectionselector_la_SOURCES =  qgsprojectionselector.cpp	\
 			         $(plugin_UI)			\
@@ -50,4 +52,4 @@ libqgsprojectionselector_la_LIBADD =  ../../src/libqgis.la $(LDADD) $(QT_LDADD) 
 libqgsprojectionselector_la_LDFLAGS = -avoid-version 
 libqgsprojectionselector_la_CXXFLAGS = $(PKGDATAPATH) $(CXXFLAGS) $(GDAL_CFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src/
 
-EXTRA_DIST = $(plugin_UIC) 
+EXTRA_DIST = $(plugin_UIC)

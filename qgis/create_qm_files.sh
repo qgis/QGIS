@@ -9,7 +9,7 @@
 # create_qm_files.sh,v 1.4 2004/07/14 18:16:00 gsherman Exp
 echo Creating qmake project file
 # force the output name to be qgis_qm.pro
-/usr/bin/qmake -project -o qgis_qm.pro
+qmake -project -o qgis_qm.pro
 echo Creating qm files
 lrelease -verbose qgis_qm.pro
 echo Removing qmake project file
