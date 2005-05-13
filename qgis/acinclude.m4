@@ -229,7 +229,7 @@ case "${host}" in
       QT_IS_STATIC=`ls $QTDIR/lib/libqt*.a 2> /dev/null`
       if test "x$QT_IS_STATIC" = x; then
         QT_IS_STATIC="no"
-        AC_MSG_ERROR([*** Couldn't find any Qt libraries])
+        AC_MSG_ERROR([*** Couldn't find any Qt libraries in $QTDIR/${_lib}])
       else
         QT_IS_STATIC="yes"
       fi
@@ -263,7 +263,7 @@ case "${host}" in
       QT_IS_STATIC=`ls $QTDIR/${_lib}/libqt*.a 2> /dev/null`
       if test "x$QT_IS_STATIC" = x; then
         QT_IS_STATIC="no"
-        AC_MSG_ERROR([*** Couldn't find any Qt libraries $QTDIR/${_lib}])
+        AC_MSG_ERROR([*** Couldn't find any Qt libraries in $QTDIR/${_lib}])
       else
         QT_IS_STATIC="yes"
       fi
