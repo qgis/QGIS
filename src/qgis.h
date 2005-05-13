@@ -101,7 +101,8 @@ namespace QGis
   {
     METERS,
     FEET,
-    DEGREES
+    DEGREES,
+    UNKNOWN
   } units;
 
   //! User defined event types

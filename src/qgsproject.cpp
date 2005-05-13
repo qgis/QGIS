@@ -653,6 +653,9 @@ static bool _getMapUnits(QDomDocument const &doc)
     } else if ("degrees" == element.text())
     {
         QgsProject::instance()->mapUnits(QGis::DEGREES);
+    } else if ("unknown" == element.text())
+    {
+        QgsProject::instance()->mapUnits(QGis::UNKNOWN);
     } else
     {
         std::
@@ -1241,6 +1244,7 @@ bool QgsProject::write()
         case QGis::DEGREES:
             unitsString = "degrees";
             break;
+        case QGis::UNKNOWN:
         default:
             unitsString = "unknown";
             break;
