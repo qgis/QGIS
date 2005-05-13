@@ -494,6 +494,8 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
     {
       //--std::cout <<"Couldn't get the feature geometry in binary form" << std::endl;
     }
+    
+    PQclear(queryResult);
   }
   else
   {
@@ -573,6 +575,8 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist)
     {
       //--std::cout <<"Couldn't get the feature geometry in binary form" << std::endl;
     }
+    
+    PQclear(queryResult);
   }
   else 
   {
