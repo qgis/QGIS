@@ -11,7 +11,6 @@
 
 void QgsLabelDialogBase::init ()
 {
-    std::cout << "Label Dialog Base Created!" << std::endl;   
     
 }
 
