@@ -1,6 +1,7 @@
 #include "qgsspatialrefsys.h"
 
 #include <cassert>
+#include <cmath>
 #include <iostream>
 #include <sqlite3.h>
 #include <qsettings.h>
@@ -647,29 +648,57 @@ void QgsSpatialRefSys::setMapUnits()
 #endif
 
   // Default units.
-  mMapUnits = QGis::METERS;
+  mMapUnits = QGis::UNKNOWN;
 
   if (geographicFlag())
     mMapUnits = QGis::DEGREES;
   else
   {
     if (mProj4String.isEmpty())
-      qWarning("No proj4 projection string. Can't determine units (defaulting to m).");
+      qWarning("No proj4 projection string. Can't determine units.");
     else
     {
-      const int fieldLength = 7; // length of '+units='
+      // Look for a units statement
+      static const int fieldLength = 7; // length of '+units='
       QRegExp unitPattern("\\+units=\\S+");
       int pos = unitPattern.search(mProj4String);
       if (pos != -1)
       {
-        QString unit = mProj4String.mid(pos + fieldLength, unitPattern.matchedLength()-fieldLength);
+        QString unit = mProj4String.mid(pos + fieldLength, 
+                            unitPattern.matchedLength()-fieldLength);
         if (unit == "m")
           mMapUnits = QGis::METERS;
+        else if (unit == "us-ft" || unit == "ft" || unit == "ind-ft")
+          mMapUnits = QGis::FEET;
         else
-          qWarning("Unknown projection unit (defaulting to m): " + unit);
+          qWarning("Unknown projection unit: " + unit);
       }
       else
-        qWarning("Unable to determine units for the output projection. Defaulting to m.");
+      {
+        // There may be a to_meter statement from which the units
+        // could be deduced.
+        static const int fieldLength = 10; // length of '+to_meter='
+        QRegExp meterPattern("\\+to_meter=\\S+");
+        int pos = meterPattern.search(mProj4String);
+        if (pos != -1)
+        {
+          static const double mPerFeet = 0.3048;
+          static const double smallValue = 1e-5;
+
+          QString tmp = mProj4String.mid(pos + fieldLength, 
+                               meterPattern.matchedLength()-fieldLength);
+          double conversion = tmp.toDouble();
+          if (std::abs(conversion - 1.0) < smallValue)
+            mMapUnits = QGis::METERS;
+          else if (std::abs(conversion - mPerFeet) < smallValue)
+            mMapUnits = QGis::FEET;
+          else
+            qWarning("Unknown to_meter conversion factor(" + 
+                     tmp + "). Units not set.");
+        }
+        else
+          qWarning("Unable to determine units for the output projection.");
+      }
     }
   }
 }
