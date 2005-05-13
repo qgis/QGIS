@@ -43,7 +43,7 @@ public:
     /** Returns picture of the marker
      * \param fullName full name, e.g. hard:circle, svg:/home/usr1/marker1.svg
      */
-    QPicture marker ( QString fullName, int size, QPen pen, QBrush brush, int oversampling = 1 );
+    QPicture marker ( QString fullName, int size, QPen pen, QBrush brush, int oversampling = 1, bool qtBug = true );
 
 private:
 
@@ -56,7 +56,7 @@ private:
     QStringList mList;
 
     /** Hard coded */
-    QPicture hardMarker ( QString name, int size, QPen pen, QBrush brush, int oversampling = 1 );
+    QPicture hardMarker ( QString name, int size, QPen pen, QBrush brush, int oversampling = 1, bool qtBug = true );
 
     /** Hard coded */
     QPicture svgMarker ( QString name, int size, int oversampling = 1 );
