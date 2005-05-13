@@ -9,6 +9,7 @@
 #include <qregexp.h>
 #include <qfileinfo.h>
 #include <qdir.h>
+#include <projects.h>
 
 #include <qgslayerprojectionselector.h>
 #include <qgsproject.h>
@@ -647,6 +648,17 @@ void QgsSpatialRefSys::setMapUnits()
     std::cerr << " and is projected\n";
 #endif
 
+  // This code will list all of the linear units that proj4 knows
+  // about. A future enhancement will be for qgis to support all of
+  // these, and allow conversion between them. This code is here as a
+  // reminder to support these other units.
+  /*
+  for (int i = 0; pj_units[i].name != (char*)0; ++i)
+    std::cerr << pj_units[i].id << ", "
+              << pj_units[i].to_meter << ", "
+              << pj_units[i].name << '\n';
+  */
+
   // Default units.
   mMapUnits = QGis::UNKNOWN;
 
@@ -671,7 +683,7 @@ void QgsSpatialRefSys::setMapUnits()
         else if (unit == "us-ft" || unit == "ft" || unit == "ind-ft")
           mMapUnits = QGis::FEET;
         else
-          qWarning("Unknown projection unit: " + unit);
+          qWarning("Unsupported projection unit: " + unit);
       }
       else
       {
@@ -693,8 +705,8 @@ void QgsSpatialRefSys::setMapUnits()
           else if (std::abs(conversion - mPerFeet) < smallValue)
             mMapUnits = QGis::FEET;
           else
-            qWarning("Unknown to_meter conversion factor(" + 
-                     tmp + "). Units not set.");
+            qWarning("Unsupported to_meter conversion factor(" + 
+                     tmp + ").");
         }
         else
           qWarning("Unable to determine units for the output projection.");
