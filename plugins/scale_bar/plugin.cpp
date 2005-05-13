@@ -188,8 +188,10 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
   int myCanvasHeight = myMetrics.height();
   int myCanvasWidth = myMetrics.width();
 
-  //Get map units per pixel
-  double myMuppDouble=qGisInterface->getMapCanvas()->mupp();
+  //Get map units per pixel. This can be negative at times (to do with
+  //projections) and that just confuses the rest of the code in this
+  //function, so force to a positive number.
+  double myMuppDouble = std::abs(qGisInterface->getMapCanvas()->mupp());
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
   int myLayerCount=qGisInterface->getMapCanvas()->layerCount();
@@ -235,11 +237,11 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     }
 
     //Get type of map units and set scale bar unit label text
-    int myMapUnits=qGisInterface->getMapCanvas()->mapUnits();
+    QGis::units myMapUnits=qGisInterface->getMapCanvas()->mapUnits();
     QString myScaleBarUnitLabel;
     switch (myMapUnits)
     {
-    case 0: 
+    case QGis::METERS: 
       if (myActualSize > 1000.0)
       {
 	myScaleBarUnitLabel=tr(" km");
@@ -253,24 +255,20 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
       else
 	myScaleBarUnitLabel=tr(" m"); 
       break;
-    case 1:
+    case QGis::FEET:
       if (myActualSize == 1.0)
 	myScaleBarUnitLabel=tr(" foot"); 
       else
 	myScaleBarUnitLabel=tr(" feet"); 
       break;
-    case 2:
+    case QGis::DEGREES:
       if (myActualSize == 1.0)
 	myScaleBarUnitLabel=tr(" degree"); 
       else
 	myScaleBarUnitLabel=tr(" degrees"); 
       break;
-    case 3:
-      if (myActualSize == 1.0)
-	myScaleBarUnitLabel=tr(" n.mile");
-      else
-	myScaleBarUnitLabel=tr(" n.miles");
-      break;
+    case QGis::UNKNOWN:
+      myScaleBarUnitLabel=tr(" unknown");
     default: 
       std::cout << "Error: not picked up map units - actual value = " 
 		<< myMapUnits << std::endl;
