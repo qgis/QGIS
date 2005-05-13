@@ -230,14 +230,14 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor )
 
     
     mPointSymbolPicture2 = QgsMarkerCatalogue::instance()->marker ( mPointSymbolName, mPointSize,
-	                        pen, mBrush, 1 );
+	                        pen, mBrush, 1, false );
 
     QBrush brush = mBrush;
     brush.setColor ( selectionColor ); 
     pen.setColor ( selectionColor ); 
 
     mPointSymbolPictureSelected2 = QgsMarkerCatalogue::instance()->marker ( 
-	               mPointSymbolName, mPointSize, pen, brush, 1 );
+	               mPointSymbolName, mPointSize, pen, brush, 1, false );
 
     mSelectionColor2 = selectionColor;
     
