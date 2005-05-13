@@ -220,7 +220,10 @@ void QgsProjectProperties::apply()
     if (isProjected())
     {
       QgsSpatialRefSys srs(mySRSID, QgsSpatialRefSys::QGIS_SRSID);
-      QgsProject::instance()->mapUnits(srs.mapUnits());
+      // If we couldn't get the map units, default to the value in the
+      // projectproperties dialog box (set above)
+      if (srs.mapUnits() != QGis::UNKNOWN)
+        QgsProject::instance()->mapUnits(srs.mapUnits());
     }
   }
 
