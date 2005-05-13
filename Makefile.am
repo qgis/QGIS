@@ -36,9 +36,9 @@ pkginclude_HEADERS = qgsconfig.h
 
 UIcheck:
 	@UIS=`find . -name *.ui` && \
-	if [ `grep "UI version" $$UIS | sed -e '/3.1/d' | wc -l` -ne 0 ]; then \
+	if [ `grep "UI version" $$UIS | sed -e '/3.1/d' -e '/3.3/d' | wc -l` -ne 0 ]; then \
 		echo -e "\nWrong UI version:"; \
-		grep "UI version" $$UIS | sed -e '/3.1/d' -e 's/:.*version="\([0-9\.]*\)".*/ is version \1/g'; \
+		grep "UI version" $$UIS | sed -e '/3.1/d' -e '/3.3/d' -e 's/:.*version="\([0-9\.]*\)".*/ is version \1/g'; \
 		echo; \
 		exit 1; \
 	fi

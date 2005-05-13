@@ -151,7 +151,6 @@ headers =	qgisapp.h					\
 		qgsfillstylewidget.h				\
 		splashscreen.h				
 
-#		qgsvectorsymbologywidget.h			
 
 ## qt designer files for all the GUI stuff
 
@@ -199,8 +198,6 @@ qgis_UIC =	qgisappbase.ui				\
 		qgspointstylewidgetbase.ui		\
 		qgsfillstylewidgetbase.ui		\
 		qgslinestylewidgetbase.ui
-
-#		qgsvectorsymbologywidgetbase.ui		
 
 ## all the ui files generate a corresponding header file
 qgis_UIHEADERS = $(qgis_UIC:.ui=.uic.h)
@@ -559,11 +556,27 @@ libqgis_la_LDFLAGS = -version-info $(INTERFACE_VERSION) $(QT_LDADD) $(GDAL_LDADD
 libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) -I../widgets/projectionselector/
 
 ## for installing headers in $(includedir)/qgis
-pkginclude_HEADERS = $(headers) $(qgis_UIHEADERS) $(qgis_UIH) $(postgresHEADERS) $(postgresUIH)
+pkginclude_HEADERS = $(headers) \
+		$(qgis_UIHEADERS) \
+		$(qgis_UIH) \
+		$(postgresHEADERS) \
+		$(postgresUIH)
+
 pkginclude_dir = $(includedir)/qgis
 
 
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(postgresHEADERS) $(postgresSOURCES) $(postgresUIC) $(qgis_UIC) $(qgis_UIH) $(postgresUIH) xpm/*.png xpm/*.xpm xpm/16x16/mapserver.xpm xpm/16x16/camera.png 
+EXTRA_DIST = $(postgresHEADERS) \
+		$(postgresSOURCES) \
+		$(postgresUIC) \
+		$(qgis_UIC) \
+		xpm/*.png \
+		xpm/*.xpm \
+		xpm/16x16/mapserver.xpm \
+		xpm/16x16/camera.png \
+		qgsvectorsymbologywidget.h \
+		qgsvectorsymbologywidgetbase.ui \
+		qgsvectorsymbologywidgetbase.ui.h
+		
 noinst_HEADERS = qgsdatasourceuri.h

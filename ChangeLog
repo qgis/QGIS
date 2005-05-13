@@ -2,13 +2,16 @@
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 QGIS Change Log
-	2005-04-17 [mcoletti] 0.6devel18
-	First whack at implementing compensation for opening project files
-	with stale data source paths.
+
+2005-05-13 [didge] 0.6devel19
+** Tweaked makefile stuff and prepared for a release
+2005-04-17 [mcoletti] 0.6devel18
+** First whack at implementing compensation for opening project files
+   with stale data source paths.
 2005-04-17 [timlinux] 0.6devel17
-Custom Projection dialog. Various bugfixes plus delete, insert and update of new
-records possible. User projections now whow in projection selector but are
-still not useable
+** Custom Projection dialog. Various bugfixes plus delete, insert and update of new
+   records possible. User projections now whow in projection selector but are
+   still not useable
 2005-04-16 [ges] 0.6.0devel16
 ** Fixed bug 1177637 that prevented a PostgreSQL connection from being 
    completely deleted
