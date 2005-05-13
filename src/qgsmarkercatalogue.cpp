@@ -88,13 +88,13 @@ QgsMarkerCatalogue *QgsMarkerCatalogue::instance()
     return QgsMarkerCatalogue::mMarkerCatalogue;
 }
 
-QPicture QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrush brush, int oversampling )
+QPicture QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrush brush, int oversampling, bool qtBug )
 {
     //std::cerr << "QgsMarkerCatalogue::marker" << std::endl;
     QPicture picture;
     
     if ( fullName.left(5) == "hard:" ) {
-        return hardMarker ( fullName.mid(5), size, pen, brush, oversampling ); 
+        return hardMarker ( fullName.mid(5), size, pen, brush, oversampling, qtBug ); 
     } else if ( fullName.left(4) == "svg:" ) {
         return svgMarker ( fullName.mid(4), size, oversampling ); 
     }
@@ -136,7 +136,7 @@ QPicture QgsMarkerCatalogue::svgMarker ( QString name, int s, int oversampling )
     return picture;
 }
 
-QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush brush, int oversampling )
+QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush brush, int oversampling, bool qtBug )
 {
     // Size of polygon symbols is calculated so that the area is equal to circle with 
     // diameter mPointSize
@@ -184,7 +184,12 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
     //  -> reset boundingRect for cross, cross2
     else if ( name == "cross" ) 
     {
-	int add = 1;  // lw always > 0
+	int add;
+	if ( qtBug ) {
+	    add = 1;  // lw always > 0
+	} else {
+	    add = 0;
+	}
 	
 	picpainter.drawLine(0, half, size-1+add, half); // horizontal
 	picpainter.drawLine(half, 0, half, size-1+add); // vertical
@@ -195,7 +200,12 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
 	half = (int) floor( s/2/sqrt(2));
 	size = 2*half + 1;
 	
-	int add = 1;  // lw always > 0
+	int add;
+	if ( qtBug ) {
+	    add = 1;  // lw always > 0
+	} else {
+	    add = 0;
+	}
 	
 	int addwidth = (int) ( 0.5 * lw ); // width correction, cca lw/2 * cos(45)
 	
