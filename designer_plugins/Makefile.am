@@ -15,7 +15,7 @@ plugindir = ${pkglibdir}/designer
 
 
 %.moc.cpp: %.h
-	»       $(MOC) -o $@ $<
+		$(MOC) -o $@ $<
 
 # name of the designer plugin
 plugin_LTLIBRARIES = qgisdesignerwidgets.la
