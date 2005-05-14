@@ -25,6 +25,7 @@
 #include <qstring.h>
 #include <qdir.h>
 #include <qlistview.h>
+#include <qapplication.h>
 
 #include "qgsbookmarks.h"
 
