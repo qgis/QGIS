@@ -11,6 +11,8 @@
 # $Id$
 
 
+if HAVE_GSL
+
 
 plugindir    = ${prefix}/lib/qgis
 
@@ -74,3 +76,4 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = $(plugin_UI) zoom_in.xpm zoom_out.xpm pan.xpm add_point.xpm
 
 
+endif
