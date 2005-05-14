@@ -10,7 +10,6 @@
 #
 # $Id$
 
-if HAVE_GSL
 
 
 plugindir    = ${prefix}/lib/qgis
@@ -66,8 +65,8 @@ georefplugin_la_SOURCES = plugin.cpp \
 
 nodist_georefplugin_la_SOURCES = $(plugin_MOC) $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC)
 
-georefplugin_la_CXXFLAGS = -I../../src $(GDAL_CFLAGS) $(GSL_CFLAGS)
-georefplugin_la_LDFLAGS = -avoid-version -module ../../src/libqgis.la $(GDAL_LDADD) $(GSL_LIBS)
+georefplugin_la_CXXFLAGS = -I../ -I../../src $(GDAL_CFLAGS) $(GSL_CFLAGS) $(QT_CXXFLAGS)
+georefplugin_la_LDFLAGS = -avoid-version -module ../../src/libqgis.la $(GDAL_LDADD) $(GSL_LIBS) $(QT_LDADD)
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)
@@ -75,4 +74,3 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = $(plugin_UI) zoom_in.xpm zoom_out.xpm pan.xpm add_point.xpm
 
 
-endif
