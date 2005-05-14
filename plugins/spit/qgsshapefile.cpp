@@ -228,7 +228,9 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
   connect(pro, SIGNAL(cancelled()), this, SLOT(cancelImport()));
   import_cancelled = false;
   bool result = true;
-
+  // Mangle the table name to make it PG compliant by replacing spaces with 
+  // underscores
+  table_name = table_name.replace(" ","_");
   QString query = "CREATE TABLE "+schema+"."+table_name+"(gid int4 PRIMARY KEY, ";
   for(int n=0; n<column_names.size() && result; n++){
     if(!column_names[n][0].isLetter())

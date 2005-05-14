@@ -150,7 +150,7 @@ void QgsSpit::addFile()
   QSettings settings;
 
   QStringList files = QFileDialog::getOpenFileNames(
-                        "Shapefiles (*.shp)", settings.readEntry( "/Qgis/spit/last_directory" ), this, "add file dialog", "Add Shapefiles" );
+                        "Shapefiles (*.shp)|All files (*.*)", settings.readEntry( "/Qgis/spit/last_directory" ), this, "add file dialog", "Add Shapefiles" );
   if ( files.size() > 0 )
   {
     // Save the directory for future use
