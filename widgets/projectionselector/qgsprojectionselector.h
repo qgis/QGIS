@@ -64,7 +64,6 @@ private:
   void coordinateSystemSelected(QListViewItem*);
   
 signals:
-    void wktSelected(QString theWKT);
     void sridSelected(QString theSRID);
     //! Refresh any listening canvases
     void refresh();
