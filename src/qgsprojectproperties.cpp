@@ -76,7 +76,7 @@
   // the /selectedWKT entry stores the wkt entry selected in the list of projections
   /** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
   const long GEOSRS_ID = 2585;
-  long mySRSID =  QgsProject::instance()->readNumEntry("SpatialRefSys","/selectedSRSID",GEOSRS_ID);
+  long mySRSID =  QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
 
   projectionSelector->setSelectedSRSID(mySRSID);
   
@@ -212,10 +212,11 @@ void QgsProjectProperties::apply()
   {
     emit setDestSRSID(mySRSID); 
     // write the projection's _id_ to the project settings rather
-    QgsProject::instance()->writeEntry("SpatialRefSys","/selectedSRSID",(int)mySRSID);
+    QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSID",(int)mySRSID);
     // write the currently selected projections _name_ to project settings
-    QgsProject::instance()->writeEntry("SpatialRefSys","/selectedSRSName",projectionSelector->getSelectedName());
-
+    QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSName",projectionSelector->getSelectedName());
+    // write the currently selected projections _proj string_ to project settings
+    QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSProj4String",projectionSelector->getCurrentProj4String());
     // Set the map units to the projected coordinates if we are projecting
     if (isProjected())
     {
