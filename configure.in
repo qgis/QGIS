@@ -416,6 +416,7 @@ AC_CONFIG_FILES([
   plugins/delimited_text/Makefile
   plugins/example/Makefile
   plugins/geoprocessing/Makefile
+  plugins/georeferencer/Makefile
   plugins/gps_importer/Makefile
   plugins/grid_maker/Makefile
   plugins/grass/Makefile
