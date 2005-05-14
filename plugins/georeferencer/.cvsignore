@@ -1,0 +1,10 @@
+.deps
+.libs
+Makefile
+Makefile.in
+*.la
+*.lo
+*.moc.cpp
+*.uic.cpp
+*.uic.h
+
