@@ -21,6 +21,7 @@ SUBDIRS = $(GEOPROCESSING) \
 		$(GRASS) \
 		$(COMMUNITY) \
 		delimited_text \
+		georeferencer \
 		gps_importer \
 		grid_maker \
 		north_arrow \
