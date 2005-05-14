@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsScaleBarPluginGuiBase</class>
 <widget class="QDialog">
     <property name="name">
