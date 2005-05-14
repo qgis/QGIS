@@ -1,4 +1,4 @@
-# Copyright (C) 2003 Gary Sherman <sherman at mrcc.com>
+# Copyright (C) 2005 Gary Sherman <sherman at mrcc.com>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -10,10 +10,10 @@
 #
 # $Id$
 
-AM_CXXFLAGS := $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CFLAGS) $(GDAL_CFLAGS) $(QGIS_CFLAGS) $(GSL_CFLAGS)
+if HAVE_GSL
+
 
 plugindir    = ${prefix}/lib/qgis
-pkgplguindir = ${plugindir}
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -66,8 +66,8 @@ georefplugin_la_SOURCES = plugin.cpp \
 
 nodist_georefplugin_la_SOURCES = $(plugin_MOC) $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC)
 
-georefplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(QGIS_CXXFLAGS) $(GDAL_CFLAGS) $(GSL_CFLAGS)
-georefplugin_la_LDFLAGS = -avoid-version -module $(QGIS_LDADD) $(QT_LDADD) $(GDAL_LDADD) $(GSL_LIBS)
+georefplugin_la_CXXFLAGS = -I../../src $(GDAL_CFLAGS) $(GSL_CFLAGS)
+georefplugin_la_LDFLAGS = -avoid-version -module ../../src/libqgis.la $(GDAL_LDADD) $(GSL_LIBS)
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)
@@ -75,6 +75,4 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = $(plugin_UI) zoom_in.xpm zoom_out.xpm pan.xpm add_point.xpm
 
 
-
-
-
+endif
