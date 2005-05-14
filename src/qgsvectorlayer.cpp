@@ -91,6 +91,7 @@
 #include "qgssvgcache.h"
 #include "qgslayerprojectionselector.h"
 #include "qgsspatialrefsys.h"
+#include "qgis.h" //for globals
 //#include "wkbheader.h"
 
 #ifdef TESTPROVIDERLIB
@@ -2687,12 +2688,12 @@ void QgsVectorLayer::setCoordinateSystem()
   //if none exists....
   //First get the SRS for the default projection WGS 84
   //QString defaultWkt = QgsSpatialReferences::instance()->getSrsBySrid("4326")->srText();
-  QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT","Undefined");
+  int myDestSRSID = QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
+  mCoordinateTransform->destSRS()->createFromSrsId(myDestSRSID);
   assert (mCoordinateTransform->destSRS());
   assert (mCoordinateTransform->sourceSRS());
-  assert (QString::null != myDestWKT);
+  assert (0 != myDestSRSID);
 
-  mCoordinateTransform->destSRS()->createFromWkt(myDestWKT);
   //now validate both srs's
   mCoordinateTransform->sourceSRS()->validate();
   mCoordinateTransform->destSRS()->validate();  
