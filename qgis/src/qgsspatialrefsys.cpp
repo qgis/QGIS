@@ -14,6 +14,14 @@
 #include <qgslayerprojectionselector.h>
 #include <qgsproject.h>
 #include <qgis.h> //const vals declared here
+
+
+//gdal and ogr includes (needed for == operator)
+#include <ogr_api.h>
+#include <ogr_spatialref.h>
+#include <cpl_error.h>
+
+
 //--------------------------
 
 QgsSpatialRefSys::QgsSpatialRefSys() : mMapUnits(QGis::METERS) {}
@@ -718,6 +726,49 @@ void QgsSpatialRefSys::setMapUnits()
 bool QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs)
 {
    qWarning("QgsSpatialRefSys::operator== called ");
+
+
+
+
+
+
+
+
+
+  /* Here are the possible OGR error codes :
+     typedef int OGRErr;
+
+     #define OGRERR_NONE                0
+     #define OGRERR_NOT_ENOUGH_DATA     1    --> not enough data to deserialize
+     #define OGRERR_NOT_ENOUGH_MEMORY   2
+     #define OGRERR_UNSUPPORTED_GEOMETRY_TYPE 3
+     #define OGRERR_UNSUPPORTED_OPERATION 4
+     #define OGRERR_CORRUPT_DATA        5
+     #define OGRERR_FAILURE             6
+     #define OGRERR_UNSUPPORTED_SRS     7 */
+
+  //get the wkt into ogr
+  //this is really ugly but we need to get a QString to a char**
+  const char *myCharArrayPointer1 = (char *)mProj4String.latin1();
+  const char *myCharArrayPointer2 = (char *)theSrs.mProj4String.latin1();
+  //create the sr and populate it from a wkt proj definition
+  OGRSpatialReference myOgrSpatialRef1;
+  OGRSpatialReference myOgrSpatialRef2;
+  OGRErr myInputResult1 = myOgrSpatialRef1.importFromProj4(  myCharArrayPointer1 );
+  OGRErr myInputResult2 = myOgrSpatialRef2.importFromProj4(  myCharArrayPointer2 );
+
+
+  //find out the units:
+  char *myUnitsArrayPointer1;
+  char *myUnitsArrayPointer2;
+  OGRErr myUnitsValid1 = myOgrSpatialRef1.GetLinearUnits(&myUnitsArrayPointer1 );
+  OGRErr myUnitsValid2 = myOgrSpatialRef2.GetLinearUnits(&myUnitsArrayPointer2 );
+  QString myUnitsString1(myUnitsArrayPointer1);
+  QString myUnitsString2(myUnitsArrayPointer2);
+  //free(myUnitsArrayPointer1);
+  //free(myUnitsArrayPointer2);
+
+
    //placeholder to be replaced with ogr tests
    return (proj4String() == theSrs.proj4String());
 }
