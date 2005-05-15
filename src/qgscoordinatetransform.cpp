@@ -14,19 +14,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 #include <cassert>
 #include "qgscoordinatetransform.h"
 
 QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject()
-  
+
 {
   mSourceSRS= new QgsSpatialRefSys();
   mDestSRS = new QgsSpatialRefSys();
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceSRS, QString theDestSRS ) : QObject()
-  
+
 {
   mSourceSRS= new QgsSpatialRefSys(theSourceSRS);
   mDestSRS = new QgsSpatialRefSys(theDestSRS);
@@ -37,9 +37,9 @@ QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceSRS, QString th
   initialise();
 }
 
-QgsCoordinateTransform::QgsCoordinateTransform(long theSourceSrid,  
-                        QString theDestWKT,
-                        QgsSpatialRefSys::SRS_TYPE theSourceSRSType): QObject()
+QgsCoordinateTransform::QgsCoordinateTransform(long theSourceSrid,
+    QString theDestWKT,
+    QgsSpatialRefSys::SRS_TYPE theSourceSRSType): QObject()
 {
 
   mSourceSRS= new QgsSpatialRefSys(theSourceSrid,theSourceSRSType);
@@ -61,9 +61,9 @@ QgsCoordinateTransform::~QgsCoordinateTransform()
   delete mSourceSRS;
 }
 
-QgsSpatialRefSys * QgsCoordinateTransform::sourceSRS() 
+QgsSpatialRefSys * QgsCoordinateTransform::sourceSRS()
 {
-  if (mSourceSRS)  
+  if (mSourceSRS)
   {
     return mSourceSRS;
   }
@@ -73,9 +73,9 @@ QgsSpatialRefSys * QgsCoordinateTransform::sourceSRS()
   }
 }
 
-QgsSpatialRefSys * QgsCoordinateTransform::destSRS() 
+QgsSpatialRefSys * QgsCoordinateTransform::destSRS()
 {
-  if (mDestSRS)  
+  if (mDestSRS)
   {
     return mDestSRS;
   }
@@ -84,7 +84,7 @@ QgsSpatialRefSys * QgsCoordinateTransform::destSRS()
     return 0;
   }
 }
-    
+
 
 void QgsCoordinateTransform::setSourceSRS(QgsSpatialRefSys * theSRS)
 {
@@ -106,7 +106,7 @@ void QgsCoordinateTransform::setDestSRSID (long theSRSID)
   //!todo Add some logic here to determine if the srsid is a system or user one
 #ifdef QGISDEBUG
   std::cout << "QgsCoordinateTransform::setDestSRSID slot called" << std::endl;
-#endif  
+#endif
   mDestSRS->createFromSrsId(theSRSID);
   initialise();
 }
@@ -114,7 +114,7 @@ void QgsCoordinateTransform::setDestSRSID (long theSRSID)
 // XXX This whole function is full of multiple return statements!!!
 void QgsCoordinateTransform::initialise()
 {
-  
+
   mInitialisedFlag=false; //guilty until proven innocent...
 
   // XXX Warning - multiple return paths in this block!!
@@ -133,11 +133,12 @@ void QgsCoordinateTransform::initialise()
     //be the same as input proj. This only happens on the first layer loaded
     //whatever that may be...
     mDestSRS->createFromProj4(mSourceSRS->proj4String());
-  }  
-  
+  }
+
   //XXX todo overload == operator for QgsSpatialRefSys
   //at the moment srs.parameters contains the whole proj def...soon it wont...
-  if (mSourceSRS->proj4String() == mDestSRS->proj4String())
+  //if (mSourceSRS->proj4String() == mDestSRS->proj4String())
+  if ((*mSourceSRS) == (*mDestSRS))
   {
     // If the source and destination projection are the same, set the short
     // circuit flag (no transform takes place)
@@ -152,25 +153,40 @@ void QgsCoordinateTransform::initialise()
   mProj4DestParms=mDestSRS->proj4String();
   mProj4SrcParms=mSourceSRS->proj4String();
 
-#ifdef QGISDEBUG 
-  std::cout << "mDestSRS->proj4String() : " << mDestSRS->proj4String() << std::endl;
-  std::cout << "mSourceSRS->proj4String() : " << mDestSRS->proj4String() << std::endl;  
-#endif     
- 
- // init the projections (destination and source)
+
+  // init the projections (destination and source)
   mDestinationProjection = pj_init_plus(mProj4DestParms);
   mSourceProjection = pj_init_plus(mProj4SrcParms);
 
   mInitialisedFlag = true;
+  if ( mDestinationProjection == NULL )
+  {
+    mInitialisedFlag = false;
+  }
+  if ( mSourceProjection == NULL )
+  {
+    mInitialisedFlag = false;
+  }
 
-  std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
-  std::cout << "The OGR Coordinate transformation for this layer was set to" << std::endl;
-  // note overloaded << operator on qgsspatialrefsys cant be used on pointers -
-  // so we dereference them like this (*mSourceSRS) (Thanks Lars for pointing that out)
-  std::cout << "INPUT: " << std::endl << (*mSourceSRS) << std::endl;
-  std::cout << "OUTPUT: " << std::endl << (*mDestSRS)  << std::endl;
-  std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
+  if (mInitialisedFlag)
+  {
 
+    std::cout << "------------------------------------------------------------"<< std::endl;
+    std::cout << "QgsCoordinateTransform::initialise()" << std::endl;
+    std::cout << "The OGR Coordinate transformation for this layer was set to" << std::endl;
+    // note overloaded << operator on qgsspatialrefsys cant be used on pointers -
+    // so we dereference them like this (*mSourceSRS) (Thanks Lars for pointing that out)
+    std::cout << "INPUT: " << std::endl << (*mSourceSRS) << std::endl;
+    std::cout << "OUTPUT: " << std::endl << (*mDestSRS)  << std::endl;
+    std::cout << "------------------------------------------------------------" << std::endl;
+  }
+  else
+  {
+    std::cout << "------------------------------------------------------------"<< std::endl;
+    std::cout << "QgsCoordinateTransform::initialise()" << std::endl;
+    std::cout << "The OGR Coordinate transformation FAILED TO INITIALISE!" << std::endl;
+    std::cout << "------------------------------------------------------------"<< std::endl;
+  }
 }
 
 //
@@ -185,7 +201,7 @@ QgsPoint QgsCoordinateTransform::transform(const QgsPoint thePoint,TransformDire
 {
   if (mShortCircuit || !mInitialisedFlag) return thePoint;
   // transform x
-  double x = thePoint.x(); 
+  double x = thePoint.x();
   double y = thePoint.y();
   double z = 0.0;
   try
@@ -199,11 +215,11 @@ QgsPoint QgsCoordinateTransform::transform(const QgsPoint thePoint,TransformDire
     // rethrow the exception
     throw cse;
   }
-#ifdef QGISDEBUG 
+#ifdef QGISDEBUG
   //std::cout << "Point projection...X : " << thePoint.x() << "-->" << x << ", Y: " << thePoint.y() << " -->" << y << std::endl;
-#endif        
+#endif
   return QgsPoint(x, y);
-} 
+}
 
 
 QgsPoint QgsCoordinateTransform::transform(const double theX, const double theY=0,TransformDirection direction) const
@@ -212,22 +228,22 @@ QgsPoint QgsCoordinateTransform::transform(const double theX, const double theY=
 }
 
 void QgsCoordinateTransform::transformInPlace(double& x, double& y, double& z,
-         TransformDirection direction) const
+    TransformDirection direction) const
 {
-  if (mShortCircuit || !mInitialisedFlag) 
+  if (mShortCircuit || !mInitialisedFlag)
     return;
-#ifdef QGISDEBUG 
-  std::cout << "Using transform in place " << __FILE__ << " " << __LINE__ << std::endl; 
-#endif 
+#ifdef QGISDEBUG
+  std::cout << "Using transform in place " << __FILE__ << " " << __LINE__ << std::endl;
+#endif
   // transform x
   transformCoords(1, &x, &y, &z, direction );
 }
 
-void QgsCoordinateTransform::transformInPlace(std::vector<double>& x, 
-                std::vector<double>& y, std::vector<double>& z,  
-                TransformDirection direction) const
+void QgsCoordinateTransform::transformInPlace(std::vector<double>& x,
+    std::vector<double>& y, std::vector<double>& z,
+    TransformDirection direction) const
 {
-  if (mShortCircuit || !mInitialisedFlag) 
+  if (mShortCircuit || !mInitialisedFlag)
     return;
 
   assert(x.size() == y.size());
@@ -237,33 +253,34 @@ void QgsCoordinateTransform::transformInPlace(std::vector<double>& x,
   // array of the vectors data, and hence easily interface with code
   // that wants C-style arrays.
 
-transformCoords(x.size(), &x[0], &y[0], &z[0], direction);
+  transformCoords(x.size(), &x[0], &y[0], &z[0], direction);
 }
 
 QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirection direction) const
 {
   if (mShortCircuit || !mInitialisedFlag) return theRect;
   // transform x
-  double x1 = theRect.xMin(); 
+  double x1 = theRect.xMin();
   double y1 = theRect.yMin();
-  double x2 = theRect.xMax(); 
+  double x2 = theRect.xMax();
   double y2 = theRect.yMax();
 
-#ifdef QGISDEBUG   
+#ifdef QGISDEBUG
 
   std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
   std::cout << "Rect  projection..." << std::endl;
   //std::cout << "INPUT: " << std::endl << mSourceSRS << std::endl;
-  //std::cout << "PROJ4: " << std::endl << mProj4SrcParms << std::endl;  
+  //std::cout << "PROJ4: " << std::endl << mProj4SrcParms << std::endl;
   //std::cout << "OUTPUT: " << std::endl << mDestSRS  << std::endl;
-  //std::cout << "PROJ4: " << std::endl << mProj4DestParms << std::endl;  
+  //std::cout << "PROJ4: " << std::endl << mProj4DestParms << std::endl;
   std::cout << "INPUT RECT: " << std::endl << x1 << "," << y1 << ":" << x2 << "," << y2 << std::endl;
   std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
-#endif    
+#endif
   // Number of points to reproject------+
-  //                                    | 
-  //                                    V 
-  try{
+  //                                    |
+  //                                    V
+  try
+  {
     double z = 0.0;
     transformCoords(1, &x1, &y1, &z, direction);
     transformCoords(1, &x2, &y2, &z, direction);
@@ -275,24 +292,24 @@ QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirecti
     throw cse;
   }
 
-#ifdef QGISDEBUG 
-  std::cout << "Rect projection..." 
-    << "Xmin : " 
-    << theRect.xMin() 
-    << "-->" << x1 
-    << ", Ymin: " 
-    << theRect.yMin() 
-    << " -->" << y1
-    << "Xmax : " 
-    << theRect.xMax() 
-    << "-->" << x2 
-    << ", Ymax: " 
-    << theRect.yMax() 
-    << " -->" << y2         
-    << std::endl;
+#ifdef QGISDEBUG
+  std::cout << "Rect projection..."
+  << "Xmin : "
+  << theRect.xMin()
+  << "-->" << x1
+  << ", Ymin: "
+  << theRect.yMin()
+  << " -->" << y1
+  << "Xmax : "
+  << theRect.xMax()
+  << "-->" << x2
+  << ", Ymax: "
+  << theRect.yMax()
+  << " -->" << y2
+  << std::endl;
 #endif
   return QgsRect(x1, y1, x2 , y2);
-} 
+}
 /*
 void QgsCoordinateTransform::transformCoords( 
      const int& numPoints, double* x, double* y, double* z,
@@ -308,11 +325,11 @@ void QgsCoordinateTransform::transformCoords(
   {
     // transform from source layer CS to destination (map canvas/project) 
     forwardTransform->Transform(numPoints, x, y);
-
+ 
   }
 }
 */
-/* XXX THIS IS BASED ON DIRECT USE OF PROJ4 
+/* XXX THIS IS BASED ON DIRECT USE OF PROJ4
  * XXX preserved for future use if we need it 
  */
 
@@ -320,13 +337,13 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
 {
   assert(mProj4DestParms.length() > 0);
   assert(mProj4SrcParms.length() > 0);
-#ifdef QGISDEBUG 
+#ifdef QGISDEBUG
   //double xorg = x;
   //double yorg = y;
-  //std::cout << "[[[[[[Number of points to transform: " << numPoints << "]]]]]]" << std::endl; 
-#endif 
-  // use proj4 to do the transform   
-  QString dir;  
+  //std::cout << "[[[[[[Number of points to transform: " << numPoints << "]]]]]]" << std::endl;
+#endif
+  // use proj4 to do the transform
+  QString dir;
   // if the source/destination projection is lat/long, convert the points to radians
   // prior to transforming
   if((pj_is_latlong(mDestinationProjection) && (direction == INVERSE))
@@ -355,26 +372,26 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   else
   {
     /*
-   std::cout << "!!!! FORWARD PROJ4 TRANSFORM !!!!" << std::endl; 
-   std::cout << "     numPoint: " << numPoints << std::endl; 
-   std::cout << "     x       : " << x << std::endl; 
-   std::cout << "     y       : " << y << std::endl; 
-   std::cout << "     z       : " << z << std::endl; 
-*/ 
-   assert(mSourceProjection != 0);
-   assert(mDestinationProjection !=0);
+    std::cout << "!!!! FORWARD PROJ4 TRANSFORM !!!!" << std::endl; 
+    std::cout << "     numPoint: " << numPoints << std::endl; 
+    std::cout << "     x       : " << x << std::endl; 
+    std::cout << "     y       : " << y << std::endl; 
+    std::cout << "     z       : " << z << std::endl; 
+    */
+    assert(mSourceProjection != 0);
+    assert(mDestinationProjection !=0);
     projResult = pj_transform(mSourceProjection, mDestinationProjection, numPoints, 0, x, y, z);
     dir = "forward";
   }
 
-  if (projResult != 0) 
+  if (projResult != 0)
   {
     //something bad happened....
     QString msg;
     QTextOStream pjErr(&msg);
 
     pjErr << tr("Failed") << " " << dir << " " << tr("transform of") << x << ", " <<  y
-      << pj_strerrno(projResult) << "\n";
+    << pj_strerrno(projResult) << "\n";
     throw  QgsCsException(msg);
   }
   // if the result is lat/long, convert the results from radians back
@@ -390,6 +407,6 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
     }
   }
 #ifdef QGISDEBUG
-// std::cout << "[[[[[[ Projected " << xorg << ", " << yorg << " to "  << x << ", " << y << " ]]]]]]"<< std::endl; 
+  // std::cout << "[[[[[[ Projected " << xorg << ", " << yorg << " to "  << x << ", " << y << " ]]]]]]"<< std::endl;
 #endif
 }
