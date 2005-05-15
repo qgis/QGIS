@@ -222,12 +222,46 @@ class QgsSpatialRefSys
 //! Output stream operator
 inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
 {
-  return os << "\n"
-	    << "Description : " << r.description().latin1() << "\n"
-	    << "Projection  : " << r.projectionAcronym().latin1() << "\n"
-	    << "Ellipsoid   : " << r.ellipsoidAcronym().latin1() << "\n"
-	    << "Proj4String  : " << r.proj4String().latin1() << "\n"
-	    << std::endl; 
+  QString mySummary ("\nSpatial Reference System:");
+  mySummary += "\n\tDescription : ";
+  if (r.description()) 
+  {
+    mySummary += r.description().latin1();
+  }
+  else
+  {
+    mySummary += "Undefined" ;
+  }
+  mySummary += "\n\tProjection  : " ;
+  if (r.projectionAcronym()) 
+  {
+  r.projectionAcronym().latin1();
+  }
+  else
+  {
+    mySummary += "Undefined" ;
+  }
+
+  mySummary += "\n\tEllipsoid   : "; 
+  if (r.ellipsoidAcronym()) 
+  {
+    mySummary += r.ellipsoidAcronym().latin1();
+  }
+  else
+  {
+    mySummary += "Undefined" ;
+  }
+
+  mySummary += "\n\tProj4String  : " ;
+  if (r.proj4String()) 
+  {
+    mySummary += r.proj4String().latin1();
+  }
+  else
+  {
+    mySummary += "Undefined" ;
+  }
+  return os << mySummary << std::endl;
 }
 
 

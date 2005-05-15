@@ -165,10 +165,10 @@ void QgsCoordinateTransform::initialise()
 
   std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
   std::cout << "The OGR Coordinate transformation for this layer was set to" << std::endl;
-  //std::cout << "INPUT: " << std::endl << mSourceSRS << std::endl;
-  //    std::cout << "PROJ4: " << std::endl << mProj4SrcParms << std::endl;  
-  //std::cout << "OUTPUT: " << std::endl << mDestSRS  << std::endl;
-  //   std::cout << "PROJ4: " << std::endl << mProj4DestParms << std::endl;  
+  // note overloaded << operator on qgsspatialrefsys cant be used on pointers -
+  // so we dereference them like this (*mSourceSRS) (Thanks Lars for pointing that out)
+  std::cout << "INPUT: " << std::endl << (*mSourceSRS) << std::endl;
+  std::cout << "OUTPUT: " << std::endl << (*mDestSRS)  << std::endl;
   std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
 
 }
