@@ -1001,19 +1001,26 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   //the contents of the rasterViewPort will change
   RasterViewPort *myRasterViewPort = new RasterViewPort();
 
+  
   // calculate raster pixel offsets from origin to clipped rect
   // we're only interested in positive offsets where the origin of the raster
   // is northwest of the origin of the view
-  myRasterViewPort->rectXOffsetInt = static_cast < int >((theViewExtent->xMin() - layerExtent.xMin()) / fabs(adfGeoTransform[1]));
-  if (myRasterViewPort->rectXOffsetInt < 0 )
+  myRasterViewPort->rectXOffsetFloat = (theViewExtent->xMin() - layerExtent.xMin()) / fabs(adfGeoTransform[1]);
+  myRasterViewPort->rectYOffsetFloat = (layerExtent.yMax() - theViewExtent->yMax()) / fabs(adfGeoTransform[5]);
+  
+  if (myRasterViewPort->rectXOffsetFloat < 0 )
   {
-    myRasterViewPort->rectXOffsetInt = 0;
+    myRasterViewPort->rectXOffsetFloat = 0;
   }
-  myRasterViewPort->rectYOffsetInt = static_cast < int >((layerExtent.yMax() - theViewExtent->yMax()) / fabs(adfGeoTransform[5]));
-  if (myRasterViewPort->rectYOffsetInt < 0)
+
+  if (myRasterViewPort->rectYOffsetFloat < 0 )
   {
-    myRasterViewPort->rectYOffsetInt = 0;
+    myRasterViewPort->rectYOffsetFloat = 0;
   }
+  
+  myRasterViewPort->rectXOffsetInt = static_cast < int >(myRasterViewPort->rectXOffsetFloat);
+  myRasterViewPort->rectYOffsetInt = static_cast < int >(myRasterViewPort->rectYOffsetFloat);
+
 
   // get dimensions of clipped raster image in raster pixel space/ RasterIO will do the scaling for us.
   // So for example, if the user is zoomed in a long way, there may only be e.g. 5x5 pixels retrieved from
@@ -1027,6 +1034,12 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
     abs(static_cast < int >(myRasterViewPort->clippedXMaxDouble - myRasterViewPort->clippedXMinDouble));
   myRasterViewPort->clippedHeightInt =
     abs(static_cast < int >(myRasterViewPort->clippedYMaxDouble - myRasterViewPort->clippedYMinDouble));
+  
+  // Add one to the raster dimensions to guard against the integer truncation
+  // effects of static_cast<int>
+  myRasterViewPort->clippedWidthInt++;
+  myRasterViewPort->clippedHeightInt++;
+  
   // make sure we don't exceed size of raster
   if (myRasterViewPort->clippedWidthInt > rasterXDimInt)
   {
@@ -1041,16 +1054,55 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   myRasterViewPort->topLeftPoint = theQgsMapToPixel->transform(myRasterExtent.xMin(), myRasterExtent.yMax());
   myRasterViewPort->bottomRightPoint = theQgsMapToPixel->transform(myRasterExtent.xMax(), myRasterExtent.yMin());
 
-  myRasterViewPort->drawableAreaXDimInt = static_cast<int>(myRasterViewPort->bottomRightPoint.x()) - static_cast<int>(myRasterViewPort->topLeftPoint.x());
-  myRasterViewPort->drawableAreaYDimInt = static_cast<int>(myRasterViewPort->bottomRightPoint.y()) - static_cast<int>(myRasterViewPort->topLeftPoint.y());
+  myRasterViewPort->drawableAreaXDimInt = 
+    static_cast<int>( myRasterViewPort->clippedWidthInt  
+                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                    * fabs(adfGeoTransform[1]) );
+                    
+  myRasterViewPort->drawableAreaYDimInt = 
+    static_cast<int>( myRasterViewPort->clippedHeightInt 
+                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                    * fabs(adfGeoTransform[5]) );
 
-  draw(theQPainter,myRasterViewPort);
+#ifdef QGISDEBUG
+    std::cout << "QgsRasterLayer::draw: mapUnitsPerPixel      = " << theQgsMapToPixel->mapUnitsPerPixel() << std::endl; 
+    
+    std::cout << "QgsRasterLayer::draw: rectXOffsetFloat      = " << myRasterViewPort->rectXOffsetFloat << std::endl; 
+    std::cout << "QgsRasterLayer::draw: rectXOffsetInt        = " << myRasterViewPort->rectXOffsetInt << std::endl; 
+    std::cout << "QgsRasterLayer::draw: rectYOffsetFloat      = " << myRasterViewPort->rectYOffsetFloat << std::endl; 
+    std::cout << "QgsRasterLayer::draw: rectYOffsetInt        = " << myRasterViewPort->rectYOffsetInt << std::endl; 
+
+    std::cout << "QgsRasterLayer::draw: myRasterExtent.xMin() = " << myRasterExtent.xMin() << std::endl; 
+    std::cout << "QgsRasterLayer::draw: myRasterExtent.xMax() = " << myRasterExtent.xMax() << std::endl; 
+    std::cout << "QgsRasterLayer::draw: myRasterExtent.yMin() = " << myRasterExtent.yMin() << std::endl; 
+    std::cout << "QgsRasterLayer::draw: myRasterExtent.yMax() = " << myRasterExtent.yMax() << std::endl; 
+    
+    std::cout << "QgsRasterLayer::draw: topLeftPoint.x()      = " << myRasterViewPort->topLeftPoint.x() << std::endl; 
+    std::cout << "QgsRasterLayer::draw: bottomRightPoint.x()  = " << myRasterViewPort->bottomRightPoint.x() << std::endl; 
+    std::cout << "QgsRasterLayer::draw: topLeftPoint.y()      = " << myRasterViewPort->topLeftPoint.y() << std::endl; 
+    std::cout << "QgsRasterLayer::draw: bottomRightPoint.y()  = " << myRasterViewPort->bottomRightPoint.y() << std::endl; 
+       
+    std::cout << "QgsRasterLayer::draw: clippedXMinDouble     = " << myRasterViewPort->clippedXMinDouble << std::endl; 
+    std::cout << "QgsRasterLayer::draw: clippedXMaxDouble     = " << myRasterViewPort->clippedXMaxDouble << std::endl; 
+    std::cout << "QgsRasterLayer::draw: clippedYMinDouble     = " << myRasterViewPort->clippedYMinDouble << std::endl; 
+    std::cout << "QgsRasterLayer::draw: clippedYMaxDouble     = " << myRasterViewPort->clippedYMaxDouble << std::endl; 
+    
+    std::cout << "QgsRasterLayer::draw: clippedWidthInt       = " << myRasterViewPort->clippedWidthInt << std::endl; 
+    std::cout << "QgsRasterLayer::draw: clippedHeightInt      = " << myRasterViewPort->clippedHeightInt << std::endl; 
+    std::cout << "QgsRasterLayer::draw: drawableAreaXDimInt   = " << myRasterViewPort->drawableAreaXDimInt << std::endl; 
+    std::cout << "QgsRasterLayer::draw: drawableAreaYDimInt   = " << myRasterViewPort->drawableAreaYDimInt << std::endl; 
+#endif
+
+  draw(theQPainter, myRasterViewPort, theQgsMapToPixel);
   delete myRasterViewPort;
 }
 
-void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterViewPort)
+void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterViewPort,
+                           QgsMapToPixel * theQgsMapToPixel)
 {
+#ifdef QGISDEBUG
   std::cerr << "QgsRasterLayer::draw" << std::endl;
+#endif
   //
   //
   // The goal here is to make as many decisions as possible early on (outside of the rendering loop)
@@ -1068,7 +1120,8 @@ void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterView
     }
     else
     {
-      drawSingleBandGray(theQPainter, myRasterViewPort, getRasterBandNumber(grayBandNameQString));
+      drawSingleBandGray(theQPainter, myRasterViewPort, 
+                         theQgsMapToPixel, getRasterBandNumber(grayBandNameQString));
       break;
     }
     // a "Gray" or "Undefined" layer drawn using a pseudocolor algorithm
@@ -1080,7 +1133,8 @@ void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterView
     }
     else
     {
-      drawSingleBandPseudoColor(theQPainter, myRasterViewPort, getRasterBandNumber(grayBandNameQString));
+      drawSingleBandPseudoColor(theQPainter, myRasterViewPort, 
+                                theQgsMapToPixel, getRasterBandNumber(grayBandNameQString));
       break;
     }
     // a "Palette" layer drawn in gray scale (using only one of the color components)
@@ -1097,7 +1151,8 @@ void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterView
 #endif
 
       int myBandNoInt = 1;
-      drawPalettedSingleBandGray(theQPainter, myRasterViewPort, myBandNoInt, grayBandNameQString);
+      drawPalettedSingleBandGray(theQPainter, myRasterViewPort, 
+                                 theQgsMapToPixel, myBandNoInt, grayBandNameQString);
 
       break;
     }
@@ -1112,12 +1167,14 @@ void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterView
     {
 
       int myBandNoInt = 1;
-      drawPalettedSingleBandPseudoColor(theQPainter, myRasterViewPort, myBandNoInt, grayBandNameQString);
+      drawPalettedSingleBandPseudoColor(theQPainter, myRasterViewPort,
+                                        theQgsMapToPixel, myBandNoInt, grayBandNameQString);
       break;
     }
     //a "Palette" image where the bands contains 24bit color info and 8 bits is pulled out per color
   case PALETTED_MULTI_BAND_COLOR:
-    drawPalettedMultiBandColor(theQPainter, myRasterViewPort, 1);
+    drawPalettedMultiBandColor(theQPainter, myRasterViewPort,
+                               theQgsMapToPixel, 1);
     break;
     // a layer containing 2 or more bands, but using only one band to produce a grayscale image
   case MULTI_BAND_SINGLE_BAND_GRAY:
@@ -1138,7 +1195,8 @@ void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterView
     {
 
       //get the band number for the mapped gray band
-      drawMultiBandSingleBandGray(theQPainter, myRasterViewPort, getRasterBandNumber(grayBandNameQString));
+      drawMultiBandSingleBandGray(theQPainter, myRasterViewPort,
+                                  theQgsMapToPixel, getRasterBandNumber(grayBandNameQString));
       break;
     }
     //a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
@@ -1151,13 +1209,15 @@ void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterView
     else
     {
 
-      drawMultiBandSingleBandPseudoColor(theQPainter, myRasterViewPort, getRasterBandNumber(grayBandNameQString));
+      drawMultiBandSingleBandPseudoColor(theQPainter, myRasterViewPort,
+                                         theQgsMapToPixel, getRasterBandNumber(grayBandNameQString));
       break;
     }
     //a layer containing 2 or more bands, mapped to the three RGBcolors.
     //In the case of a multiband with only two bands, one band will have to be mapped to more than one color
   case MULTI_BAND_COLOR:
-    drawMultiBandColor(theQPainter, myRasterViewPort);
+    drawMultiBandColor(theQPainter, myRasterViewPort,
+                       theQgsMapToPixel);
     break;
 
   default:
@@ -1174,7 +1234,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterView
 }                               //end of draw method
 
 
-void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort, int theBandNoInt)
+void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsRasterLayer::drawSingleBandGray called for layer " << theBandNoInt << std::endl;
@@ -1214,15 +1274,44 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort *
   //render any inline filters
   filterLayer(&myQImage);
 
-  //part of the experimental transaparency support
+  // Set up the initial offset into the myQImage we want to copy to the map canvas
+  // This is useful when the source image pixels are larger than the screen image.
+  int paintXoffset = 0;
+  int paintYoffset = 0;
+  
+  if (theQgsMapToPixel)
+  {
+    paintXoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectXOffsetFloat - 
+                                      theRasterViewPort->rectXOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[1])
+                                   ); 
+
+    paintYoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectYOffsetFloat - 
+                                      theRasterViewPort->rectYOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[5])
+                                   ); 
+  }                                   
+
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer - painting image to canvas at " 
+            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+#endif
+  
+  //part of the experimental transparency support
   theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
                          static_cast<int>(theRasterViewPort->topLeftPoint.y()),
-                         myQImage);
+                         myQImage,
+                         paintXoffset,
+                         paintYoffset);
 
 } // QgsRasterLayer::drawSingleBandGray
 
 
-void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort, int theBandNoInt)
+void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawSingleBandPseudoColor called" << std::endl;
@@ -1398,10 +1487,41 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
 
   //render any inline filters
   filterLayer(&myQImage);
-  //draw with the experimental transaparency support
+
+  // Set up the initial offset into the myQImage we want to copy to the map canvas
+  // This is useful when the source image pixels are larger than the screen image.
+  int paintXoffset = 0;
+  int paintYoffset = 0;
+  
+  if (theQgsMapToPixel)
+  {
+    paintXoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectXOffsetFloat - 
+                                      theRasterViewPort->rectXOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[1])
+                                   ); 
+
+    paintYoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectYOffsetFloat - 
+                                      theRasterViewPort->rectYOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[5])
+                                   ); 
+  }                                   
+
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer - painting image to canvas at " 
+            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+#endif
+  
+  //part of the experimental transparency support
   theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
                          static_cast<int>(theRasterViewPort->topLeftPoint.y()),
-                         myQImage);
+                         myQImage,
+                         paintXoffset,
+                         paintYoffset);
+
 }
 
 /**
@@ -1410,7 +1530,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
 * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
 * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
 */
-void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort, int theBandNoInt)
+void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedSingleBandColor called" << std::endl;
@@ -1450,10 +1570,41 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterV
   }
   //render any inline filters
   filterLayer(&myQImage);
-  //part of the experimental transaparency support
+  
+  // Set up the initial offset into the myQImage we want to copy to the map canvas
+  // This is useful when the source image pixels are larger than the screen image.
+  int paintXoffset = 0;
+  int paintYoffset = 0;
+  
+  if (theQgsMapToPixel)
+  {
+    paintXoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectXOffsetFloat - 
+                                      theRasterViewPort->rectXOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[1])
+                                   ); 
+
+    paintYoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectYOffsetFloat - 
+                                      theRasterViewPort->rectYOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[5])
+                                   ); 
+  }                                   
+
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer - painting image to canvas at " 
+            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+#endif
+  
+  //part of the experimental transparency support
   theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
                          static_cast<int>(theRasterViewPort->topLeftPoint.y()),
-                         myQImage);
+                         myQImage,
+                         paintXoffset,
+                         paintYoffset);
+  
   CPLFree(myGdalScanData);
 }
 
@@ -1465,8 +1616,9 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterV
 * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
 * @param theColorQString - QString containing either 'Red' 'Green' or 'Blue' indicating which part of the rgb triplet will be used to render gray.
 */
-void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
-    RasterViewPort * theRasterViewPort, int theBandNoInt, QString theColorQString)
+void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort,
+                                                QgsMapToPixel * theQgsMapToPixel, int theBandNoInt,
+                                                QString theColorQString)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedSingleBandGray called" << std::endl;
@@ -1523,10 +1675,40 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
   //render any inline filters
   filterLayer(&myQImage);
 
-  //part of the experimental transaparency support
+  // Set up the initial offset into the myQImage we want to copy to the map canvas
+  // This is useful when the source image pixels are larger than the screen image.
+  int paintXoffset = 0;
+  int paintYoffset = 0;
+  
+  if (theQgsMapToPixel)
+  {
+    paintXoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectXOffsetFloat - 
+                                      theRasterViewPort->rectXOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[1])
+                                   ); 
+
+    paintYoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectYOffsetFloat - 
+                                      theRasterViewPort->rectYOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[5])
+                                   ); 
+  }                                   
+
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer - painting image to canvas at " 
+            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+#endif
+  
+  //part of the experimental transparency support
   theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
                          static_cast<int>(theRasterViewPort->topLeftPoint.y()),
-                         myQImage);
+                         myQImage,
+                         paintXoffset,
+                         paintYoffset);
+
 }
 
 
@@ -1537,8 +1719,9 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter,
 * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
 * @param theColorQString - QString containing either 'Red' 'Green' or 'Blue' indicating which part of the rgb triplet will be used to render gray.
 */
-void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
-    RasterViewPort * theRasterViewPort, int theBandNoInt, QString theColorQString)
+void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,
+                                                       QgsMapToPixel * theQgsMapToPixel, int theBandNoInt,
+                                                       QString theColorQString)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedSingleBandPseudoColor called" << std::endl;
@@ -1731,10 +1914,41 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
 
   //render any inline filters
   filterLayer(&myQImage);
-  //part of the experimental transaparency support
+
+  // Set up the initial offset into the myQImage we want to copy to the map canvas
+  // This is useful when the source image pixels are larger than the screen image.
+  int paintXoffset = 0;
+  int paintYoffset = 0;
+  
+  if (theQgsMapToPixel)
+  {
+    paintXoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectXOffsetFloat - 
+                                      theRasterViewPort->rectXOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[1])
+                                   ); 
+
+    paintYoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectYOffsetFloat - 
+                                      theRasterViewPort->rectYOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[5])
+                                   ); 
+  }                                   
+
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer - painting image to canvas at " 
+            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+#endif
+  
+  //part of the experimental transparency support
   theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
                          static_cast<int>(theRasterViewPort->topLeftPoint.y()),
-                         myQImage);
+                         myQImage,
+                         paintXoffset,
+                         paintYoffset);
+  
 }
 
 /**
@@ -1743,7 +1957,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
 * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
 * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
 */
-void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort, int theBandNoInt)
+void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedMultiBandColor called" << std::endl;
@@ -1810,29 +2024,57 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
   }
   //render any inline filters
   filterLayer(&myQImage);
-  //part of the experimental transaparency support
+
+  // Set up the initial offset into the myQImage we want to copy to the map canvas
+  // This is useful when the source image pixels are larger than the screen image.
+  int paintXoffset = 0;
+  int paintYoffset = 0;
+  
+  if (theQgsMapToPixel)
+  {
+    paintXoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectXOffsetFloat - 
+                                      theRasterViewPort->rectXOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[1])
+                                   ); 
+
+    paintYoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectYOffsetFloat - 
+                                      theRasterViewPort->rectYOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[5])
+                                   ); 
+  }                                   
+
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer - painting image to canvas at " 
+            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+#endif
+  
+  //part of the experimental transparency support
   theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
                          static_cast<int>(theRasterViewPort->topLeftPoint.y()),
-                         myQImage );
-
+                         myQImage,
+                         paintXoffset,
+                         paintYoffset);
+  
   CPLFree(myGdalScanData);
-  //                         myQImage);
-  //>>>>>>> 1.98.2.9
 }
 
-void QgsRasterLayer::drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort, int theBandNoInt)
+void QgsRasterLayer::drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
   //delegate to drawSingleBandGray!
-  drawSingleBandGray(theQPainter, theRasterViewPort, theBandNoInt);
+  drawSingleBandGray(theQPainter, theRasterViewPort, theQgsMapToPixel, theBandNoInt);
 }
 
-void QgsRasterLayer::drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort, int theBandNoInt)
+void QgsRasterLayer::drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
   //delegate to drawSinglePseudocolor!
-  drawSingleBandPseudoColor(theQPainter, theRasterViewPort, theBandNoInt);
+  drawSingleBandPseudoColor(theQPainter, theRasterViewPort, theQgsMapToPixel, theBandNoInt);
 }
 
-void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort)
+void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawMultiBandColor called" << std::endl;
@@ -1896,10 +2138,40 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
 
   //render any inline filters
   filterLayer(&myQImage);
-  //part of the experimental transaparency support
+  
+  // Set up the initial offset into the myQImage we want to copy to the map canvas
+  // This is useful when the source image pixels are larger than the screen image.
+  int paintXoffset = 0;
+  int paintYoffset = 0;
+  
+  if (theQgsMapToPixel)
+  {
+    paintXoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectXOffsetFloat - 
+                                      theRasterViewPort->rectXOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[1])
+                                   ); 
+
+    paintYoffset = static_cast<int>( 
+                                     (theRasterViewPort->rectYOffsetFloat - 
+                                      theRasterViewPort->rectYOffsetInt)
+                                    / theQgsMapToPixel->mapUnitsPerPixel() 
+                                    * fabs(adfGeoTransform[5])
+                                   ); 
+  }                                   
+
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer - painting image to canvas at " 
+            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+#endif
+  
+  //part of the experimental transparency support
   theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
                          static_cast<int>(theRasterViewPort->topLeftPoint.y()),
-                         myQImage);
+                         myQImage,
+                         paintXoffset,
+                         paintYoffset);
 
   //free the scanline memory
   CPLFree(myGdalRedData);

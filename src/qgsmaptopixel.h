@@ -85,6 +85,10 @@ class QgsMapToPixel{
     * @param mupp Map units per pixel
     */
     void setMapUnitsPerPixel(double mupp);
+    
+    //! Return current map units per pixel
+    double mapUnitsPerPixel();
+
     //! Set maximum y value
     void setYmax(double ymax);
     //! Set minimum y value
@@ -102,7 +106,7 @@ class QgsMapToPixel{
     QString showParameters();
 
  private:
-    double mapUnitsPerPixel;
+    double mMapUnitsPerPixel;
     double yMax;
     double yMin;
     double xMin;
@@ -114,7 +118,7 @@ inline QgsMapToPixel::QgsMapToPixel(double mupp,
 				    double ymax,
 				    double ymin, 
 				    double xmin)
-  : mapUnitsPerPixel(mupp), 
+  : mMapUnitsPerPixel(mupp), 
      yMax(ymax), 
      yMin(ymin), 
      xMin(xmin),
@@ -156,8 +160,8 @@ inline void QgsMapToPixel::transform(QgsPoint* p)
 
 inline void QgsMapToPixel::transformInPlace(double& x, double& y)
 {
-  x = (x - xMin) / mapUnitsPerPixel;
-  y = yMax - (y - yMin) / mapUnitsPerPixel;
+  x = (x - xMin) / mMapUnitsPerPixel;
+  y = yMax - (y - yMin) / mMapUnitsPerPixel;
 }
 
 inline void QgsMapToPixel::transformInPlace(std::vector<double>& x, 
