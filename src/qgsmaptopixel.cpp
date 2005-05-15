@@ -22,8 +22,8 @@
 
 QgsPoint QgsMapToPixel::toMapPoint(int x, int y)
 {
-  double mx = x * mapUnitsPerPixel + xMin;
-  double my = -1 * ((y - yMax) * mapUnitsPerPixel - yMin);
+  double mx = x * mMapUnitsPerPixel + xMin;
+  double my = -1 * ((y - yMax) * mMapUnitsPerPixel - yMin);
   return QgsPoint(mx, my);
 }
 
@@ -40,7 +40,12 @@ QgsPoint QgsMapToPixel::toMapCoordinates(int x, int y)
 
 void QgsMapToPixel::setMapUnitsPerPixel(double mupp)
 {
-  mapUnitsPerPixel = mupp;
+  mMapUnitsPerPixel = mupp;
+}
+
+double QgsMapToPixel::mapUnitsPerPixel()
+{
+  return mMapUnitsPerPixel;
 }
 
 void QgsMapToPixel::setYmax(double ymax)
@@ -60,7 +65,7 @@ void QgsMapToPixel::setXmin(double xmin)
 
 void QgsMapToPixel::setParameters(double mupp, double xmin, double ymin, double ymax)
 {
-  mapUnitsPerPixel = mupp;
+  mMapUnitsPerPixel = mupp;
   xMin = xmin;
   yMin = ymin;
   yMax = ymax;
@@ -70,7 +75,7 @@ void QgsMapToPixel::setParameters(double mupp, double xmin, double ymin, double 
 QString QgsMapToPixel::showParameters()
 {
   QString rep;
-  QTextOStream(&rep) << "Map units/pixel: " << mapUnitsPerPixel
+  QTextOStream(&rep) << "Map units/pixel: " << mMapUnitsPerPixel
     << " X minimum: " << xMin << " Y minimum: " << yMin << " Y maximum: " << yMax;
   return rep;
 

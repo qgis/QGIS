@@ -243,11 +243,13 @@ typedef QValueVector<RasterBandStats> RasterStatsVector;
  */
 struct RasterViewPort
 {
-    /** \brief  The offset from the left hand edge of the raster for the rectangle that will be drawn to screen.
-     * TODO Check this explanation is correc!*/
+    /** \brief  The offset (in source raster pixel coordinates) from the left hand edge of the source raster for the rectangle that will be drawn to screen. */
+    float rectXOffsetFloat;
+    /** \brief  The offset (in source raster pixel coordinates) from the top edge of the source raster for the rectangle that will be drawn to screen. */
+    float rectYOffsetFloat;
+    /** \brief  The offset (in source raster pixel coordinates) from the left hand edge of the source raster for the rectangle that will be drawn to screen - truncated to an integer. */
     int rectXOffsetInt;
-    /** \brief  The offset from the bottom edge of the raster for the rectangle that will be drawn to screen.
-     * TODO Check this explanation is correc!*/
+    /** \brief  The offset (in source raster pixel coordinates) from the top edge of the source raster for the rectangle that will be drawn to screen - truncated to an integer. */
     int rectYOffsetInt;
     /** \brief Lower left X dimension of clipped raster image in raster pixel space.
      *  RasterIO will do the scaling for us, so for example, if the user is zoomed in a long way, there may only 
@@ -374,10 +376,12 @@ public:
      QPixmap getPaletteAsPixmap();
      
     /** \brief This is called when the view on the rasterlayer needs to be refreshed (redrawn).  */
-    void draw(QPainter * theQPainter, QgsRect * theViewExtent, QgsMapToPixel * theQgsMapToPixel, QPaintDevice* dst);
+    void draw(QPainter * theQPainter, QgsRect * theViewExtent, 
+              QgsMapToPixel * theQgsMapToPixel, QPaintDevice* dst);
 
     /** \brief This is an overloaded version of the above function that is called by both draw above and drawThumbnail */
-    void draw (QPainter * theQPainter, RasterViewPort * myRasterViewPort);
+    void draw(QPainter * theQPainter, RasterViewPort * myRasterViewPort,
+              QgsMapToPixel * theQgsMapToPixel = 0);
     
     //
     // Accessors for image height and width
@@ -865,10 +869,16 @@ private:
     //
 
     /** \brief Drawing routine for single band grayscale image.  */
-    void drawSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort,int theBandNoInt);
+    void drawSingleBandGray(QPainter * theQPainter, 
+                            RasterViewPort * theRasterViewPort,
+                            QgsMapToPixel * theQgsMapToPixel,
+                            int theBandNoInt);
 
     /** \brief Drawing routine for single band grayscale image, rendered in pseudocolor.  */
-    void drawSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,int theBandNoInt);
+    void drawSingleBandPseudoColor(QPainter * theQPainter, 
+                                   RasterViewPort * theRasterViewPort,
+                                   QgsMapToPixel * theQgsMapToPixel,
+                                   int theBandNoInt);
 
 
     //
@@ -877,25 +887,29 @@ private:
     
     /** \brief Drawing routine for paletted image, rendered as a single band image in color.  */
     void drawPalettedSingleBandColor(QPainter * theQPainter,
-                                RasterViewPort * theRasterViewPort,
-                                int theBandNoInt);
+                                     RasterViewPort * theRasterViewPort,
+                                     QgsMapToPixel * theQgsMapToPixel,
+                                     int theBandNoInt);
     
     /** \brief Drawing routine for paletted image, rendered as a single band image in grayscale.  */
     void drawPalettedSingleBandGray(QPainter * theQPainter,
-                                RasterViewPort * theRasterViewPort,
-                                int theBandNoInt,
-                                QString theColorQString);
+                                    RasterViewPort * theRasterViewPort,
+                                    QgsMapToPixel * theQgsMapToPixel,
+                                    int theBandNoInt,
+                                    QString theColorQString);
 
     /** \brief Drawing routine for paletted image, rendered as a single band image in pseudocolor.  */
     void drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
-                                RasterViewPort * theRasterViewPort,
-                                int theBandNoInt,
-                                QString theColorQString);
+                                           RasterViewPort * theRasterViewPort,
+                                           QgsMapToPixel * theQgsMapToPixel,
+                                           int theBandNoInt,
+                                           QString theColorQString);
 
     /** \brief Drawing routine for paletted multiband image.  */
     void drawPalettedMultiBandColor(QPainter * theQPainter,
-                                RasterViewPort * theRasterViewPort,
-                                int theBandNoInt);
+                                    RasterViewPort * theRasterViewPort,
+                                    QgsMapToPixel * theQgsMapToPixel,                                
+                                    int theBandNoInt);
 
     //
     // Multiband Layers
@@ -903,17 +917,21 @@ private:
     
     /** \brief Drawing routine for multiband image, rendered as a single band image in grayscale.  */
     void drawMultiBandSingleBandGray(QPainter * theQPainter,
-                                RasterViewPort * theRasterViewPort, 
-                                int theBandNoInt);
+                                     RasterViewPort * theRasterViewPort, 
+                                     QgsMapToPixel * theQgsMapToPixel,
+                                     int theBandNoInt);
 
     /** \brief Drawing routine for multiband image, rendered as a single band image in pseudocolor.  */
     void drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, 
-                                RasterViewPort * theRasterViewPort, 
-                                int theBandNoInt);
+                                            RasterViewPort * theRasterViewPort, 
+                                            QgsMapToPixel * theQgsMapToPixel,
+                                            int theBandNoInt);
 
     /** \brief Drawing routine for multiband image  */
-    void drawMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort);
-
+    void drawMultiBandColor(QPainter * theQPainter, 
+                            RasterViewPort * theRasterViewPort,
+                            QgsMapToPixel * theQgsMapToPixel);
+                                            
     /** \brief Read color table from GDAL raster band */
     void readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *theColorTable );
 
