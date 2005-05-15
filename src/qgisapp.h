@@ -375,7 +375,7 @@ public slots:
     void drawExtentRectangle(QPainter *);
     void updateMouseCoordinatePrecision();
     void projectionsEnabled(bool theFlag);
-    void debugHook();
+//    void debugHook();
     void stopZoom();
 
 signals:
