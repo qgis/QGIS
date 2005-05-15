@@ -714,3 +714,10 @@ void QgsSpatialRefSys::setMapUnits()
     }
   }
 }
+
+bool QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs)
+{
+   qWarning("QgsSpatialRefSys::operator== called ");
+   //placeholder to be replaced with ogr tests
+   return (proj4String() == theSrs.proj4String());
+}
