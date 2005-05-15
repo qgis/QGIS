@@ -2697,19 +2697,10 @@ void QgsVectorLayer::setCoordinateSystem()
   //now validate both srs's
   mCoordinateTransform->sourceSRS()->validate();
   mCoordinateTransform->destSRS()->validate();  
-#ifdef QGISDEBUG
-    std::cout << "QgsVectorLayer::setCoordinateSystem --- source and dest SRS validated " << srid << std::endl;
-    std::cout << "src: " << mCoordinateTransform->sourceSRS()->proj4String() << std::endl;
-    std::cout << "dst: " <<  mCoordinateTransform->destSRS()->proj4String() << std::endl;
-#endif  
+  //validate the transform - you should do this any time one of the SRS's changes
   mCoordinateTransform->initialise();
 
-#ifdef QGISDEBUG
-  std::cout << "QgsVectorLayer::setCoordinateSystem Transform for layer created:" << std::endl;
-  std::cout << "QgsVectorLayer::setCoordinateSystem LayerCS:\n" << mCoordinateTransform->sourceSRS()->proj4String() << std::endl;
-  std::cout << "QgsVectorLayer::setCoordinateSystem ProjectCS:\n" << mCoordinateTransform->destSRS()->proj4String() << std::endl;
-  std::cout << "QgsVectorLayer::setCoordinateSystem -------------------------------------------------end" << std::endl;
-#endif
+
   
 }
 

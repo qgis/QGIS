@@ -191,6 +191,12 @@ class QgsSpatialRefSys
          * @param  long theEpsg the ESPG identifier for this srs (defaults to 0)
          */
         void setEpsg (long theEpsg);
+        /*! Overloaded == operator used to compare to SRS's.
+         *  Internally it will use OGR isSameSRS() or isSameGeoSRS() methods as appropriate.
+         *  Additionally logic may also be applied if the result from the OGR methods
+         *  is inconclusive.
+         */
+         bool operator==(const QgsSpatialRefSys &theSrs);
 
     private:
         //!The internal sqlite3 srs.db primary key for this srs 
