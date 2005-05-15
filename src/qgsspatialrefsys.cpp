@@ -727,13 +727,7 @@ bool QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs)
 {
    qWarning("QgsSpatialRefSys::operator== called ");
 
-
-
-
-
-
-
-
+   bool myMatchFlag = true; //innocent until proven guilty
 
   /* Here are the possible OGR error codes :
      typedef int OGRErr;
@@ -751,24 +745,49 @@ bool QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs)
   //this is really ugly but we need to get a QString to a char**
   const char *myCharArrayPointer1 = (char *)mProj4String.latin1();
   const char *myCharArrayPointer2 = (char *)theSrs.mProj4String.latin1();
+  //note that the proj strings above do not neccessarily need to be exactly the
+  //same for the projections they define to be equivalent, which is why I dont just
+  //compare the proj parameter strings and return the result
+
+  
   //create the sr and populate it from a wkt proj definition
   OGRSpatialReference myOgrSpatialRef1;
   OGRSpatialReference myOgrSpatialRef2;
   OGRErr myInputResult1 = myOgrSpatialRef1.importFromProj4(  myCharArrayPointer1 );
   OGRErr myInputResult2 = myOgrSpatialRef2.importFromProj4(  myCharArrayPointer2 );
 
+  if (myOgrSpatialRef1.IsGeographic())
+  {
+    qWarning("QgsSpatialRefSys::operator== srs1 is geographic ");
+    myMatchFlag = myOgrSpatialRef1.IsSameGeogCS(&myOgrSpatialRef2);
+  }
+  else
+  {
+    qWarning("QgsSpatialRefSys::operator== srs1 is not geographic ");
+    myMatchFlag = myOgrSpatialRef1.IsSame(&myOgrSpatialRef2);
+  }
 
   //find out the units:
-  char *myUnitsArrayPointer1;
-  char *myUnitsArrayPointer2;
+  /* Not needed anymore here - keeping here as a note because I am gonna use it elsewhere
+  const char *myUnitsArrayPointer1;
+  const char *myUnitsArrayPointer2;
   OGRErr myUnitsValid1 = myOgrSpatialRef1.GetLinearUnits(&myUnitsArrayPointer1 );
   OGRErr myUnitsValid2 = myOgrSpatialRef2.GetLinearUnits(&myUnitsArrayPointer2 );
   QString myUnitsString1(myUnitsArrayPointer1);
   QString myUnitsString2(myUnitsArrayPointer2);
-  //free(myUnitsArrayPointer1);
-  //free(myUnitsArrayPointer2);
+  */
+
+
 
 
    //placeholder to be replaced with ogr tests
-   return (proj4String() == theSrs.proj4String());
+   if (myMatchFlag)
+   {
+     qWarning("QgsSpatialRefSys::operator== result: srs's are equal ");
+   }
+   else
+   {
+     qWarning("QgsSpatialRefSys::operator== result: srs's are not equal ");
+   }
+   return myMatchFlag;
 }
