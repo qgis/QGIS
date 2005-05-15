@@ -20,6 +20,8 @@
 #include "qgsbookmarksbase.uic.h"
 class QString;
 class QDir;
+class QWidget;
+class sqlite3;
 class QgsBookmarks : public QgsBookmarksBase{
   Q_OBJECT
 public:
@@ -27,12 +29,15 @@ public:
  ~QgsBookmarks();
 public slots:
  void deleteBookmark();
+ int connect();
 
 private:
+ QWidget *mParent;
  bool makeDir(QDir &theQDir);
  void initialise();
  QString mUserDbPath;
  QString mQGisSettingsDir;
+ sqlite3 *db;
 
 
 };

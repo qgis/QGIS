@@ -4861,12 +4861,14 @@ void QgisApp::keyPressEvent ( QKeyEvent * e )
     emit keyPressed (e);
 }
 // Debug hook - used to output diagnostic messages when evoked (usually from the menu)
+/* Temporarily disabled...
 void QgisApp::debugHook()
 {
   std::cout << "Hello from debug hook" << std::endl; 
   // show the map canvas extent
   std::cout << mMapCanvas->extent() << std::endl; 
 }
+*/
 void QgisApp::actionCustomProjection_activated()
 {
   QgsCustomProjectionDialog * myDialog = new QgsCustomProjectionDialog(this);

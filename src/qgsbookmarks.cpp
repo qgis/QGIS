@@ -30,6 +30,7 @@
 #include "qgsbookmarks.h"
 
 QgsBookmarks::QgsBookmarks(QWidget *parent, const char *name)
+  : mParent(parent)
 {
   // make sure the users database for bookmarks exists
   mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
@@ -93,57 +94,49 @@ QgsBookmarks::~QgsBookmarks()
 // Initialise the bookmark tree from the database
 void QgsBookmarks::initialise()
 {
-  sqlite3 *db;
-  char *zErrMsg = 0;
-  int rc;
-  rc = sqlite3_open(mUserDbPath, &db);
-  if(rc)
-  {
-    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
-
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    assert(rc == 0);
-  }
-  // prepare the sql statement
-  const char *pzTail;
-  sqlite3_stmt *ppStmt;
-  char *pzErrmsg;
-  QString sql = "select * from tbl_bookmarks";
-
-  rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
-  // XXX Need to free memory from the error msg if one is set
+  int rc = connect();
   if(rc == SQLITE_OK)
   {
-    // get the first row of the result set
-    while(sqlite3_step(ppStmt) == SQLITE_ROW)
+    // prepare the sql statement
+    const char *pzTail;
+    sqlite3_stmt *ppStmt;
+    char *pzErrmsg;
+    QString sql = "select * from tbl_bookmarks";
+
+    rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+    // XXX Need to free memory from the error msg if one is set
+    if(rc == SQLITE_OK)
     {
-      QString name  = (char*)sqlite3_column_text(ppStmt, 1);
-//        sqlite3_bind_parameter_index(ppStmt, "name"));
-      std::cout << "Bookmark name: " << name << std::endl; 
-      QListViewItem *lvi = new QListViewItem(lstBookmarks, name);
-      lvi->setText(1, (char*)sqlite3_column_text(ppStmt, 2)); 
-      // get the extents
-      QString xMin = (char*)sqlite3_column_text(ppStmt, 3);
-      QString yMin = (char*)sqlite3_column_text(ppStmt, 4);
-      QString xMax = (char*)sqlite3_column_text(ppStmt, 5);
-      QString yMax = (char*)sqlite3_column_text(ppStmt, 6);
+      // get the first row of the result set
+      while(sqlite3_step(ppStmt) == SQLITE_ROW)
+      {
+        QString name  = (char*)sqlite3_column_text(ppStmt, 1);
+        //        sqlite3_bind_parameter_index(ppStmt, "name"));
+        std::cout << "Bookmark name: " << name << std::endl; 
+        QListViewItem *lvi = new QListViewItem(lstBookmarks, name);
+        lvi->setText(1, (char*)sqlite3_column_text(ppStmt, 2)); 
+        // get the extents
+        QString xMin = (char*)sqlite3_column_text(ppStmt, 3);
+        QString yMin = (char*)sqlite3_column_text(ppStmt, 4);
+        QString xMax = (char*)sqlite3_column_text(ppStmt, 5);
+        QString yMax = (char*)sqlite3_column_text(ppStmt, 6);
 
-      lvi->setText(2, xMin + ", " + yMin + ", " + xMax + ", " + yMax); 
+        lvi->setText(2, xMin + ", " + yMin + ", " + xMax + ", " + yMax); 
+        lvi->setText(3, (char*)sqlite3_column_text(ppStmt, 0));
+      }
     }
-  }
-  else
-  {
-    // XXX query failed -- warn the user some how
-    std::cout << "Failed to get bookmarks: " << sqlite3_errmsg(db) << std::endl; 
-  }
-  // close the statement
-  sqlite3_finalize(ppStmt);
-  // close the database
-  sqlite3_close(db);
-  // return the srs wkt
+    else
+    {
+      // XXX query failed -- warn the user some how
+      std::cout << "Failed to get bookmarks: " << sqlite3_errmsg(db) << std::endl; 
+    }
+    // close the statement
+    sqlite3_finalize(ppStmt);
+    // close the database
+    sqlite3_close(db);
+    // return the srs wkt
 
-
+  }
 }
 
 // A recursive function to make a directory and its ancestors
@@ -180,8 +173,55 @@ void QgsBookmarks::deleteBookmark()
 {
   // get the current item
   QListViewItem *lvi = lstBookmarks->currentItem();
+  // remove it from the listview
   lstBookmarks->takeItem(lvi);
-  
+  // delete it from the database
+  int rc = connect();
+  if(rc == SQLITE_OK)
+  {
+    sqlite3_stmt *ppStmt;
+    const char *pzTail;
+    // build the sql statement
+    QString sql = "delete from tbl_bookmarks where bookmark_id = " + lvi->text(3);
+    rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+    if(rc == SQLITE_OK)
+    {
+      rc = sqlite3_step(ppStmt);
+      if(rc != SQLITE_OK)
+      {
+        // XXX Provide popup message on failure?
+        std::cout << "Failed to delete " << lvi->text(0) 
+          << " bookmark from the database" << std::endl; 
+      }
+      else
+      {
+        // XXX Provide popup message on failure?
+        std::cout << "Failed to delete " << lvi->text(0) 
+          << " bookmark from the database" << std::endl; 
+      }
+    }
+
+    // close the statement
+    sqlite3_finalize(ppStmt);
+    // close the database
+    sqlite3_close(db);
+  }
 }
 
+int QgsBookmarks::connect()
+{
+
+  char *zErrMsg = 0;
+  int rc;
+  rc = sqlite3_open(mUserDbPath, &db);
+  if(rc)
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
+
+    // XXX This will likely never happen since on open, sqlite creates the
+    //     database if it does not exist.
+    assert(rc == 0);
+  }
+  return rc;
+}
 

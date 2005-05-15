@@ -1560,12 +1560,6 @@
         <slot>measure()</slot>
     </connection>
     <connection>
-        <sender>actionDebugHook</sender>
-        <signal>activated()</signal>
-        <receiver>QgisAppBase</receiver>
-        <slot>debugHook()</slot>
-    </connection>
-    <connection>
         <sender>actionCustomProjection</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
@@ -1638,7 +1632,6 @@
     <slot>deleteSelected()</slot>
     <slot>zoomToLayer()</slot>
     <slot>zoomToLayerExtent()</slot>
-    <slot>debugHook()</slot>
     <slot>measure()</slot>
     <slot>actionCustomProjection_activated()</slot>
     <slot>actionShowBookmarks_activated()</slot>
