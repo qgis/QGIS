@@ -24,9 +24,9 @@
 
 //--------------------------
 
-QgsSpatialRefSys::QgsSpatialRefSys() : mMapUnits(QGis::METERS) {}
+QgsSpatialRefSys::QgsSpatialRefSys() : mMapUnits(QGis::UNKNOWN) {}
 
-QgsSpatialRefSys::QgsSpatialRefSys(QString theWkt) : mMapUnits(QGis::METERS) 
+QgsSpatialRefSys::QgsSpatialRefSys(QString theWkt) : mMapUnits(QGis::UNKNOWN) 
 {
   createFromWkt(theWkt);
 }
@@ -39,10 +39,10 @@ QgsSpatialRefSys::QgsSpatialRefSys(long theSrsId,
                                    long theSRID,
                                    long theEpsg,
                                    bool theGeoFlag)
-  : mMapUnits(QGis::METERS)
+  : mMapUnits(QGis::UNKNOWN)
 {}
 
-QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType) : mMapUnits(QGis::METERS) 
+QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType) : mMapUnits(QGis::UNKNOWN) 
 {
   switch (theType)
   {
@@ -282,30 +282,7 @@ void QgsSpatialRefSys::createFromWkt(QString theWkt)
   //XXX TODO split out projext and ellipsoid acronym from the parameters
   mProj4String=QString(proj4src);
 
-  char *unitName;
-  if (myOgrSpatialRef.IsProjected())
-  {
-    myOgrSpatialRef.GetLinearUnits(&unitName);
-    QString unit(unitName);
-
-#ifdef QGISDEBUG
-    std::cerr << "Projection has linear units of " << unit << '\n';
-#endif
-
-    if (unit == "Meters")
-      mMapUnits = QGis::METERS;
-  }
-  else
-  {
-    myOgrSpatialRef.GetAngularUnits(&unitName);
-    QString unit(unitName);
-    if (unit == "degrees")
-      mMapUnits = QGis::DEGREES;
-
-#ifdef QGISDEBUG
-    std::cerr << "Projection has angular units of " << unit << '\n';
-#endif
-  }
+  setMapUnits();
 }
 
 void QgsSpatialRefSys::createFromEpsg(long theEpsg)
@@ -641,85 +618,55 @@ void QgsSpatialRefSys::setEpsg (long theEpsg)
 /*! Work out the projection units and set the appropriate local variable
  *
  */
+#define QGISDEBUG
 void QgsSpatialRefSys::setMapUnits()
 {
-  // Need to to extract the units from the mProj4String variable. If
-  // the coordinate system is geographic it seems that the answer is
-  // always degrees, and if it is not geographic, we need to search
-  // mProj4String for a +units= section and interpret that.
+  if (mProj4String.isEmpty())
+  {
+    qWarning(QObject::tr("No proj4 projection string. Unable to set map units."));
+    mMapUnits = QGis::UNKNOWN;
+    return;
+  }
 
-#ifdef QGISEBUG
-  std::cerr << "Proj4 string is: " << mProj4String << '\n';
-  if (geographicFlag())
-    std::cerr << " and is geographic\n";
-  else
-    std::cerr << " and is projected\n";
+  char *unitName;
+  OGRSpatialReference myOgrSpatialRef;
+  myOgrSpatialRef.importFromProj4(mProj4String);
+
+  std::cerr << mProj4String << '\n';
+  
+  if (myOgrSpatialRef.IsProjected())
+  {
+    myOgrSpatialRef.GetLinearUnits(&unitName);
+    QString unit(unitName);
+
+#ifdef QGISDEBUG
+    std::cerr << "Projection has linear units of " << unit << '\n';
 #endif
 
-  // This code will list all of the linear units that proj4 knows
-  // about. A future enhancement will be for qgis to support all of
-  // these, and allow conversion between them. This code is here as a
-  // reminder to support these other units.
-  /*
-  for (int i = 0; pj_units[i].name != (char*)0; ++i)
-    std::cerr << pj_units[i].id << ", "
-              << pj_units[i].to_meter << ", "
-              << pj_units[i].name << '\n';
-  */
-
-  // Default units.
-  mMapUnits = QGis::UNKNOWN;
-
-  if (geographicFlag())
-    mMapUnits = QGis::DEGREES;
-  else
-  {
-    if (mProj4String.isEmpty())
-      qWarning("No proj4 projection string. Can't determine units.");
+    if (unit == "Meter")
+      mMapUnits = QGis::METERS;
+    else if (unit == "Feet")
+      mMapUnits = QGis::FEET;
     else
     {
-      // Look for a units statement
-      static const int fieldLength = 7; // length of '+units='
-      QRegExp unitPattern("\\+units=\\S+");
-      int pos = unitPattern.search(mProj4String);
-      if (pos != -1)
-      {
-        QString unit = mProj4String.mid(pos + fieldLength, 
-                            unitPattern.matchedLength()-fieldLength);
-        if (unit == "m")
-          mMapUnits = QGis::METERS;
-        else if (unit == "us-ft" || unit == "ft" || unit == "ind-ft")
-          mMapUnits = QGis::FEET;
-        else
-          qWarning("Unsupported projection unit: " + unit);
-      }
-      else
-      {
-        // There may be a to_meter statement from which the units
-        // could be deduced.
-        static const int fieldLength = 10; // length of '+to_meter='
-        QRegExp meterPattern("\\+to_meter=\\S+");
-        int pos = meterPattern.search(mProj4String);
-        if (pos != -1)
-        {
-          static const double mPerFeet = 0.3048;
-          static const double smallValue = 1e-5;
-
-          QString tmp = mProj4String.mid(pos + fieldLength, 
-                               meterPattern.matchedLength()-fieldLength);
-          double conversion = tmp.toDouble();
-          if (std::abs(conversion - 1.0) < smallValue)
-            mMapUnits = QGis::METERS;
-          else if (std::abs(conversion - mPerFeet) < smallValue)
-            mMapUnits = QGis::FEET;
-          else
-            qWarning("Unsupported to_meter conversion factor(" + 
-                     tmp + ").");
-        }
-        else
-          qWarning("Unable to determine units for the output projection.");
-      }
+      qWarning(QObject::tr("Unsupported map units of ") + unit);
+      mMapUnits = QGis::UNKNOWN;
     }
+  }
+  else
+  {
+    myOgrSpatialRef.GetAngularUnits(&unitName);
+    QString unit(unitName);
+    if (unit == "degree")
+      mMapUnits = QGis::DEGREES;
+    else
+    {
+      qWarning(QObject::tr("Unsupported map units of ") + unit);
+      mMapUnits = QGis::UNKNOWN;
+    }
+#ifdef QGISDEBUG
+    std::cerr << "Projection has angular units of " << unit << '\n';
+#endif
   }
 }
 
