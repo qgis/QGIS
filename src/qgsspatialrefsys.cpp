@@ -618,7 +618,6 @@ void QgsSpatialRefSys::setEpsg (long theEpsg)
 /*! Work out the projection units and set the appropriate local variable
  *
  */
-#define QGISDEBUG
 void QgsSpatialRefSys::setMapUnits()
 {
   if (mProj4String.isEmpty())
@@ -632,12 +631,25 @@ void QgsSpatialRefSys::setMapUnits()
   OGRSpatialReference myOgrSpatialRef;
   myOgrSpatialRef.importFromProj4(mProj4String);
 
-  std::cerr << mProj4String << '\n';
-  
+  // Of interest to us is that this call adds in a unit parameter if
+  // one doesn't already exist.
+  myOgrSpatialRef.Fixup();
+
   if (myOgrSpatialRef.IsProjected())
   {
-    myOgrSpatialRef.GetLinearUnits(&unitName);
+    double toMeter = myOgrSpatialRef.GetLinearUnits(&unitName);
     QString unit(unitName);
+
+    // If the units parameter was created during the Fixup() call
+    // above, the name of the units is likely to be 'unknown'. Try to
+    // do better than that ... (but perhaps ogr should be enhanced to
+    // do this instead?).
+
+    static const double feetToMeter = 0.3048;
+    static const double smallNum = 1e-3;
+
+    if (std::abs(toMeter - feetToMeter) < smallNum)
+      unit = "Foot";
 
 #ifdef QGISDEBUG
     std::cerr << "Projection has linear units of " << unit << '\n';
@@ -645,7 +657,7 @@ void QgsSpatialRefSys::setMapUnits()
 
     if (unit == "Meter")
       mMapUnits = QGis::METERS;
-    else if (unit == "Feet")
+    else if (unit == "Foot")
       mMapUnits = QGis::FEET;
     else
     {
