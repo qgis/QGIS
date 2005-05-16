@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsBookmarksBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>344</width>
-            <height>254</height>
+            <height>257</height>
         </rect>
     </property>
     <property name="caption">
@@ -51,6 +51,17 @@
                 </property>
                 <property name="resizable">
                     <bool>true</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Id</string>
+                </property>
+                <property name="clickable">
+                    <bool>false</bool>
+                </property>
+                <property name="resizable">
+                    <bool>false</bool>
                 </property>
             </column>
             <property name="name">
