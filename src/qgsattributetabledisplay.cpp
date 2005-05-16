@@ -114,9 +114,6 @@ void QgsAttributeTableDisplay::startEditing()
       btnStartEditing->setEnabled(false);
       btnStopEditing->setEnabled(true);
       btnClose->setEnabled(false);
-      hide();
-      //setModal(true);
-      exec();
     }
   }
 }
@@ -142,9 +139,6 @@ void QgsAttributeTableDisplay::stopEditing()
   btnStartEditing->setEnabled(true);
   btnStopEditing->setEnabled(false);
   btnClose->setEnabled(true);
-  hide();
-  //setModal(false);
-  show();
   mAddAttributeButton->setEnabled(false);
   mDeleteAttributeButton->setEnabled(false);
   table()->setReadOnly(true);
