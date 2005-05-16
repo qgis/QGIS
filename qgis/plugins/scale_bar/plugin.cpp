@@ -247,10 +247,15 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
 	myScaleBarUnitLabel=tr(" km");
 	myActualSize = myActualSize/1000;
       }
-      else if (myActualSize < 1.0)
+      else if (myActualSize < 0.01)
       {
 	myScaleBarUnitLabel=tr(" mm");
 	myActualSize = myActualSize*1000;
+      }
+      else if (myActualSize < 0.1)
+      {
+        myScaleBarUnitLabel=tr(" cm");
+        myActualSize = myActualSize*100;
       }
       else
 	myScaleBarUnitLabel=tr(" m"); 
