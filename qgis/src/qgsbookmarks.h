@@ -29,6 +29,7 @@ public:
  ~QgsBookmarks();
 public slots:
  void deleteBookmark();
+ void zoomToBookmark();
  int connect();
 
 private:

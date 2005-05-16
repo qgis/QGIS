@@ -111,9 +111,6 @@
         <separator/>
         <action name="actionHelpAbout"/>
     </item>
-    <item text="Debug" name="Debug">
-        <action name="actionDebugHook"/>
-    </item>
 </menubar>
 <toolbars>
     <toolbar dock="2">
