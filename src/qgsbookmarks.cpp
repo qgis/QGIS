@@ -26,8 +26,13 @@
 #include <qdir.h>
 #include <qlistview.h>
 #include <qapplication.h>
+#include <qmessagebox.h>
 
 #include "qgsbookmarks.h"
+#include "qgisapp.h"
+#include "qgsrect.h"
+#include "qgisiface.h"
+#include "qgsmapcanvas.h"
 
 QgsBookmarks::QgsBookmarks(QWidget *parent, const char *name)
   : mParent(parent)
@@ -114,14 +119,16 @@ void QgsBookmarks::initialise()
         //        sqlite3_bind_parameter_index(ppStmt, "name"));
         std::cout << "Bookmark name: " << name << std::endl; 
         QListViewItem *lvi = new QListViewItem(lstBookmarks, name);
+        // set the project name
         lvi->setText(1, (char*)sqlite3_column_text(ppStmt, 2)); 
         // get the extents
         QString xMin = (char*)sqlite3_column_text(ppStmt, 3);
         QString yMin = (char*)sqlite3_column_text(ppStmt, 4);
         QString xMax = (char*)sqlite3_column_text(ppStmt, 5);
         QString yMax = (char*)sqlite3_column_text(ppStmt, 6);
-
+        // set the extents
         lvi->setText(2, xMin + ", " + yMin + ", " + xMax + ", " + yMax); 
+        // set the id
         lvi->setText(3, (char*)sqlite3_column_text(ppStmt, 0));
       }
     }
@@ -173,31 +180,88 @@ void QgsBookmarks::deleteBookmark()
 {
   // get the current item
   QListViewItem *lvi = lstBookmarks->currentItem();
-  // remove it from the listview
-  lstBookmarks->takeItem(lvi);
-  // delete it from the database
+  if(lvi)
+  {
+    // make sure the user really wants to delete this bookmark
+    if(QMessageBox::Yes == QMessageBox::information(this,"Really Delete?",
+          "Are you sure you want to delete the " + lvi->text(0) +
+          " bookmark?", 
+          QMessageBox::Yes, 
+          QMessageBox::No, 
+          QMessageBox::NoButton
+          ))
+    {
+      // remove it from the listview
+      lstBookmarks->takeItem(lvi);
+      // delete it from the database
+      int rc = connect();
+      if(rc == SQLITE_OK)
+      {
+        sqlite3_stmt *ppStmt;
+        const char *pzTail;
+        // build the sql statement
+        QString sql = "delete from tbl_bookmarks where bookmark_id = " + lvi->text(3);
+        rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+        if(rc == SQLITE_OK)
+        {
+          rc = sqlite3_step(ppStmt);
+          if(rc != SQLITE_OK)
+          {
+            // XXX Provide popup message on failure?
+            std::cout << "Failed to delete " << lvi->text(0) 
+              << " bookmark from the database" << std::endl; 
+          }
+          else
+          {
+            // XXX Provide popup message on failure?
+            std::cout << "Failed to delete " << lvi->text(0) 
+              << " bookmark from the database" << std::endl; 
+          }
+        }
+
+        // close the statement
+        sqlite3_finalize(ppStmt);
+        // close the database
+        sqlite3_close(db);
+      }
+    }
+  }
+}
+
+void QgsBookmarks::zoomToBookmark()
+{
+	// Need to fetch the extent for the selected bookmark and then redraw
+	// the map
+  // get the current item
+  QListViewItem *lvi = lstBookmarks->currentItem();
+  // get the extent from the database
   int rc = connect();
   if(rc == SQLITE_OK)
   {
     sqlite3_stmt *ppStmt;
     const char *pzTail;
     // build the sql statement
-    QString sql = "delete from tbl_bookmarks where bookmark_id = " + lvi->text(3);
+    QString sql = "select xmin, ymin, xmax, ymax from tbl_bookmarks where bookmark_id = " + lvi->text(3);
     rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
     if(rc == SQLITE_OK)
     {
-      rc = sqlite3_step(ppStmt);
-      if(rc != SQLITE_OK)
-      {
-        // XXX Provide popup message on failure?
-        std::cout << "Failed to delete " << lvi->text(0) 
-          << " bookmark from the database" << std::endl; 
-      }
-      else
-      {
-        // XXX Provide popup message on failure?
-        std::cout << "Failed to delete " << lvi->text(0) 
-          << " bookmark from the database" << std::endl; 
+      if(sqlite3_step(ppStmt) == SQLITE_ROW){
+        // get the extents from the resultset
+        QString xmin  = (char*)sqlite3_column_text(ppStmt, 0);
+        QString ymin  = (char*)sqlite3_column_text(ppStmt, 1);
+        QString xmax  = (char*)sqlite3_column_text(ppStmt, 2);
+        QString ymax  = (char*)sqlite3_column_text(ppStmt, 3);
+        // set the extent to the bookmark
+        dynamic_cast<QgisApp*>(mParent)->setExtent(QgsRect(xmin.toDouble(),
+              ymin.toDouble(),
+              xmax.toDouble(),
+              ymax.toDouble()));
+        // redraw the map
+        QgisIface *iface = dynamic_cast<QgisApp*>(mParent)->getInterface();
+        QgsMapCanvas *canvas = iface->getMapCanvas();
+        canvas->refresh();
+
+
       }
     }
 
@@ -206,6 +270,7 @@ void QgsBookmarks::deleteBookmark()
     // close the database
     sqlite3_close(db);
   }
+  
 }
 
 int QgsBookmarks::connect()
