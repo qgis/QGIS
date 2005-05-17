@@ -3,6 +3,8 @@
 Version 0.6 'Simon' .... development version
 QGIS Change Log
 
+2005-04-17 [timlinux] 0.6devel23
+** Numerous fixes and clean ups to projection handling
 2005-05-15 [morb_au] 0.6devel21
 ** Fixed a memory leak in the postgres provider when retrieving features
 ** Raster layers now align to the map canvas with subpixel source accuracy

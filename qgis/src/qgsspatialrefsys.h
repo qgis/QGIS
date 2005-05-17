@@ -9,6 +9,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 #include <qregexp.h>
+#include <qmap.h>
 
 //qgis includes
 #include <qgis.h>
@@ -73,7 +74,7 @@ class QgsSpatialRefSys
          * @note Any members will be overwritten during this process.
          * @param theSrid The postgis SRID for the desired spatial reference system.
          */
-        void createFromSrid(const long theSrid);
+        bool createFromSrid(const long theSrid);
         /*! Set up this srs using a WKT spatial ref sys definition. 
          * The wkt will be converted to a proj4 string using OGR helper
          * functions. After this the srs databasses will be searched for matches.
@@ -82,23 +83,26 @@ class QgsSpatialRefSys
          * @note Any members will be overwritten during this process.
          * @note SRID and EPSG may be blank if no match can be found on srs db.
          * @param theWkt The WKT for the desired spatial reference system.
+         * @return bool TRUE if sucess else false
          */
-        void createFromWkt(const QString theWkt);
+        bool createFromWkt(const QString theWkt);
         /*! Set up this srs by fetching the appropriate information from the 
          * sqlite backend. First the system level read only srs.db will be checked
          * and then the users ~/.qgis/qgis.db database will be checked for a match.
          * @note Any members will be overwritten during this process.
          * @param theEpsg The EPSG for the desired spatial reference system.
+         * @return bool TRUE if sucess else false
          */
-        void createFromEpsg(const long theEpsg);
+        bool createFromEpsg(const long theEpsg);
         /*! Set up this srs by fetching the appropriate information from the 
          * sqlite backend. If the srsid is < 100000, only the system srs.db 
          * will be checked. If the srsid > 100000 the srs will be retrieved from 
          * the ~/.qgis/qgis.db
          * @note Any members will be overwritten during this process.
          * @param theSrsId The QGIS SrsId for the desired spatial reference system.
+         * @return bool TRUE if sucess else false
          */
-        void createFromSrsId (const long theSrsId);
+        bool createFromSrsId (const long theSrsId);
 
         /*! Set up this srs by passing it a proj4 style formatted string.
          * The string will be parsed and the projection and ellipsoid
@@ -106,10 +110,30 @@ class QgsSpatialRefSys
          * in the parameters member. The reason for this is so that we
          * can easily present the user with 'natural language' representation
          * of the projection and ellipsoid by looking them up in the srs.bs sqlite 
-         * database.
+         * database. Also having the ellpse and proj elements stripped out
+         * is hepful to speed up globbing queries (see below).
+         * 
+         * We try to match the proj string to and srsid using the following logic: 
+         *
+         * - perform a whole text search on srs name (if not null). The srs name will 
+         *   have been set if this method has been delegated to from createFromWkt.
+         * - if the above does not match perform a whole text search on proj4 string (if not null)
+         * - if none of the above match convert the proj4 string to an OGR SRS
+         *   then check if its a geocs or a proj cs (using ogr isGeographic)
+         *   then sequentially walk through the database (first users qgis.db srs tbl then
+         *   system srs.db tbl), converting each entry into an ogr srs and using isSame
+         *   or isSameGeocs (essentially calling the == overloaded operator). We'll try to 
+         *   be smart about this and first parse out the proj and ellpse strings and only 
+         *   check for a match in entities that have the same ellps and proj entries so 
+         *   that it doesnt munch yer cpu so much.
+         *
+         * @note If the srs was not matched, we will create a new entry on the users tbl_srs 
+         *    for this srs.
+         *
          * @param theProjString A proj4 format string
+         * @return bool TRUE if sucess else false
          */
-        void createFromProj4 (const QString theProjString);
+        bool createFromProj4 (const QString theProjString);
 
         /*! Find out whether this SRS is correctly initialised and useable */
         bool isValid() const;
@@ -118,14 +142,31 @@ class QgsSpatialRefSys
          * consulted and acted on accordingly. By hell or high water this
          * method will do its best to make sure that this SRS is valid - even
          * if that involves resorting to a hard coded default of geocs:wgs84.
+         *
+         * @note It is not usually neccessary to use this function, unless you
+         * are trying to force theis srs to be valid.
          */
         void validate();
+         
+        /*! A string based associative array used for passing records around */
+        typedef QMap<QString, QString> RecordMap;
+        /*! Get a record from the srs.db or qgis.db backends, given an sql statment.
+         * @note only handles queries that return a single record.
+         * @note it will first try the system srs.db then the users qgis.db!
+         * @param QString The sql query to execute
+         * @return QMap An associative array of field name <-> value pairs
+         */
+         RecordMap getRecord(QString theSql);
 
         // Accessors -----------------------------------
 
-        /*! Get the SrsId
+         /*! Get the SrsId - if possible
          *  @return  long theSrsId The internal sqlite3 srs.db primary key for this srs 
          */
+        long srsid() const;
+        /*! Get the Postgis SRID - if possible.
+        *  @return  long theSRID The internal postgis SRID for this SRS
+        */
         long srid() const;
         /*! Get the Description
          * @return  QString the Description A textual description of the srs.
