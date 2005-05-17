@@ -26,7 +26,7 @@
 
 QgsSpatialRefSys::QgsSpatialRefSys() : mMapUnits(QGis::UNKNOWN) {}
 
-QgsSpatialRefSys::QgsSpatialRefSys(QString theWkt) : mMapUnits(QGis::UNKNOWN) 
+QgsSpatialRefSys::QgsSpatialRefSys(QString theWkt) : mMapUnits(QGis::UNKNOWN)
 {
   createFromWkt(theWkt);
 }
@@ -39,10 +39,10 @@ QgsSpatialRefSys::QgsSpatialRefSys(long theSrsId,
                                    long theSRID,
                                    long theEpsg,
                                    bool theGeoFlag)
-  : mMapUnits(QGis::UNKNOWN)
+    : mMapUnits(QGis::UNKNOWN)
 {}
 
-QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType) : mMapUnits(QGis::UNKNOWN) 
+QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType) : mMapUnits(QGis::UNKNOWN)
 {
   switch (theType)
   {
@@ -70,7 +70,7 @@ void QgsSpatialRefSys::validate()
 #ifdef QGISDEBUG
   std::cout << " QgsSpatialRefSys::validate" << std::endl;
 #endif
-  //dont bother trying to do an initial test with gdal if 
+  //dont bother trying to do an initial test with gdal if
   //the proj4String is not even populated
   if (QString::null!=mProj4String && !mProj4String.isEmpty())
   {
@@ -162,7 +162,7 @@ void QgsSpatialRefSys::validate()
 
 }
 
-void QgsSpatialRefSys::createFromSrid(long theSrid)
+bool QgsSpatialRefSys::createFromSrid(long theSrid)
 {
 #ifdef QGISDEBUG
   std::cout << " QgsSpatialRefSys::createFromSrid" << std::endl;
@@ -232,17 +232,19 @@ void QgsSpatialRefSys::createFromSrid(long theSrid)
   }
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
+  return isValidFlag;
 }
 
-void QgsSpatialRefSys::createFromWkt(QString theWkt)
+bool QgsSpatialRefSys::createFromWkt(QString theWkt)
 {
   if (!theWkt)
   {
     std::cout << "QgsSpatialRefSys::createFromWkt -- theWkt is uninitialised, operation failed" << std::endl;
-    return;
+    isValidFlag==false;
+    return false;
   }
 #ifdef QGISDEBUG
-    std::cout << "QgsSpatialRefSys::createFromWkt(QString theWkt) using: \n" << theWkt << std::endl;
+  std::cout << "QgsSpatialRefSys::createFromWkt(QString theWkt) using: \n" << theWkt << std::endl;
 #endif
   //this is really ugly but we need to get a QString to a char**
   char *myCharArrayPointer = (char *)theWkt.latin1();
@@ -269,7 +271,8 @@ void QgsSpatialRefSys::createFromWkt(QString theWkt)
     std::cout << "This SRS could *** NOT *** be set from the supplied WKT " << std::endl;
     std::cout << "INPUT: " << std::endl << theWkt << std::endl;
     std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
-    return;
+    isValidFlag==false;
+    return false;
   }
 
 
@@ -279,13 +282,15 @@ void QgsSpatialRefSys::createFromWkt(QString theWkt)
   char *proj4src;
   myOgrSpatialRef.exportToProj4(&proj4src);
 
-  //XXX TODO split out projext and ellipsoid acronym from the parameters
-  mProj4String=QString(proj4src);
-
-  setMapUnits();
+  //now that we have the proj4string, delegate to createFromProj4String so
+  // that we can try to fill in the remaining class members...
+  //create from Proj wil set the isValidFalg
+  createFromProj4(QString(proj4src));
+  return isValidFlag;
+  //setMapunits will be called by createfromproj above
 }
 
-void QgsSpatialRefSys::createFromEpsg(long theEpsg)
+bool QgsSpatialRefSys::createFromEpsg(long theEpsg)
 {
 #ifdef QGISDEBUG
   std::cout << " QgsSpatialRefSys::createFromEpsg" << std::endl;
@@ -353,14 +358,15 @@ void QgsSpatialRefSys::createFromEpsg(long theEpsg)
   }
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
+  return isValidFlag;
 }
 
 
-void QgsSpatialRefSys::createFromSrsId (long theSrsId)
+bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
 {
 #ifdef QGISDEBUG
   std::cout << " QgsSpatialRefSys::createFromSrsId" << std::endl;
-#endif 
+#endif
   QString myDatabaseFileName;
   //
   // Determine if this is a user projection or a system on
@@ -375,7 +381,7 @@ void QgsSpatialRefSys::createFromSrsId (long theSrsId)
     {
       isValidFlag==false;
       std::cout << " QgsSpatialRefSys::createFromSrid failed :  users qgis.db not found" << std::endl;
-      return;
+      return isValidFlag;
     }
   }
   else //must be  a system projection then
@@ -443,6 +449,7 @@ void QgsSpatialRefSys::createFromSrsId (long theSrsId)
   }
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
+  return isValidFlag;
 }
 
 
@@ -467,51 +474,201 @@ bool QgsSpatialRefSys::isValid() const
   }
 }
 
-void QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
+bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
 {
   //
   // Example:
-  // +proj=tmerc +lat_0=0 +lon_0=-62 +k=0.999500 +x_0=400000 +y_0=0 
+  // +proj=tmerc +lat_0=0 +lon_0=-62 +k=0.999500 +x_0=400000 +y_0=0
   // +ellps=clrk80 +towgs84=-255,-15,71,0,0,0,0 +units=m +no_defs
-  // 
+  //
 
-  QRegExp myProjRegExp( "\\+proj=[a-zA-Z]* " );    
+  QRegExp myProjRegExp( "\\+proj=[a-zA-Z]* " );
   int myStart= 0;
   int myLength=0;
   myStart = myProjRegExp.search(theProj4String, myStart);
   if (myStart==-1)
   {
     std::cout << "QgsSpatialRefSys::createFromProj4 error proj string supplied has no +proj argument" << std::endl;
+    isValidFlag=false;
+    return isValidFlag;
   }
   else
   {
     myLength = myProjRegExp.matchedLength();
   }
   mProjectionAcronym = theProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength);
-  
-  QRegExp myEllipseRegExp( "\\+ellps=[a-zA-Z]* " );    
+
+  QRegExp myEllipseRegExp( "\\+ellps=[a-zA-Z]* " );
   myStart= 0;
   myLength=0;
   myStart = myEllipseRegExp.search(theProj4String, myStart);
   if (myStart==-1)
   {
     std::cout << "QgsSpatialRefSys::createFromProj4 error proj string supplied has no +ellps argument" << std::endl;
+    isValidFlag=false;
+    return isValidFlag;
   }
   else
   {
     myLength = myEllipseRegExp.matchedLength();
   }
   mEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength);
-  setMapUnits();
-}
-// Accessors -----------------------------------
 
+  
+
+  /*
+  * We try to match the proj string to and srsid using the following logic: 
+  *
+  * - perform a whole text search on srs name (if not null). The srs name will 
+  *   have been set if this method has been delegated to from createFromWkt.
+  */
+  getRecord("select * from tbl_srs where where parameters='" + mProj4String + "'");
+  /*
+  * - if the above does not match perform a whole text search on proj4 string (if not null)
+  */
+
+  /*
+  * - if none of the above match convert the proj4 string to an OGR SRS
+  *   then check if its a geocs or a proj cs (using ogr isGeographic)
+  *   then sequentially walk through the database (first users qgis.db srs tbl then
+  *   system srs.db tbl), converting each entry into an ogr srs and using isSame
+  *   or isSameGeocs (essentially calling the == overloaded operator). We'll try to 
+  *   be smart about this and first parse out the proj and ellpse strings and only 
+  *   check for a match in entities that have the same ellps and proj entries so 
+  *   that it doesnt munch yer cpu so much.
+  */
+
+  setMapUnits();
+  isValidFlag=true;
+  return isValidFlag;
+}
+
+QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
+{
+
+  QString myDatabaseFileName;
+  QgsSpatialRefSys::RecordMap myMap;
+  QString myFieldName;
+  QString myFieldValue;
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  
+#ifdef QGISDEBUG
+  std::cout << " QgsSpatialRefSys::getRecord...running query:\n"<< theSql << "\n" << std::endl;
+  std::cout << " QgsSpatialRefSys::getRecord...trying system srs.db" << std::endl;
+#endif
+  // Get the package data path and set the full path name to the sqlite3 spatial reference
+  // database.
+#if defined(Q_OS_MACX) || defined(WIN32)
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
+  myDatabaseFileName = PKGDATAPATH;
+  myDatabaseFileName += "/resources/srs.db";
+
+
+  //check the db is available
+  myResult = sqlite3_open(myDatabaseFileName.latin1(), &myDatabase);
+  if(myResult)
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
+    // XXX This will likely never happen since on open, sqlite creates the
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+
+
+  myResult = sqlite3_prepare(myDatabase, (const char *)theSql, theSql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+    sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+    int myColumnCount = sqlite3_column_count(myPreparedStatement);
+    //loop through each column in the record adding its field name and vvalue to the map
+    for (int myColNo=0;myColNo < myColumnCount;myColNo++)
+    {
+      myFieldName = QString ((char *)sqlite3_column_name(myPreparedStatement,myColNo));
+      myFieldValue = QString ((char *)sqlite3_column_text(myPreparedStatement,myColNo));
+      myMap[myFieldName]=myFieldValue;
+    }
+  }
+  else
+  {
+#ifdef QGISDEBUG
+    std::cout << " QgsSpatialRefSys::getRecord...trying system users.db" << std::endl;
+#endif
+    sqlite3_finalize(myPreparedStatement);
+    sqlite3_close(myDatabase);
+
+    myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+    QFileInfo myFileInfo;
+    myFileInfo.setFile(myDatabaseFileName);
+    if ( !myFileInfo.exists( ) )
+    {
+      std::cout << " QgsSpatialRefSys::getRecord failed :  users qgis.db not found" << std::endl;
+      return myMap;
+    }
+
+    //check the db is available
+    myResult = sqlite3_open(myDatabaseFileName.latin1(), &myDatabase);
+    if(myResult)
+    {
+      std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
+      // XXX This will likely never happen since on open, sqlite creates the
+      //     database if it does not exist.
+      assert(myResult == 0);
+    }
+
+   
+    myResult = sqlite3_prepare(myDatabase, (const char *)theSql, theSql.length(), &myPreparedStatement, &myTail);
+    // XXX Need to free memory from the error msg if one is set
+    if(myResult == SQLITE_OK)
+    {
+
+      sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+      int myColumnCount = sqlite3_column_count(myPreparedStatement);
+      //loop through each column in the record adding its field name and vvalue to the map
+      for (int myColNo=0;myColNo < myColumnCount;myColNo++)
+      {
+        myFieldName = QString ((char *)sqlite3_column_name(myPreparedStatement,myColNo));
+        myFieldValue = QString ((char *)sqlite3_column_text(myPreparedStatement,myColNo));
+        myMap[myFieldName]=myFieldValue;
+      }
+    }
+    else
+    {
+#ifdef QGISDEBUG
+      std::cout << " QgsSpatialRefSys::getRecord failed :  " << theSql << std::endl;
+#endif
+
+    }
+  }
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+  return myMap;
+
+
+
+}
+
+// Accessors -----------------------------------
 /*! Get the SrsId
  *  @return  long theSrsId The internal sqlite3 srs.db primary key for this srs 
  */
+long QgsSpatialRefSys::srsid() const
+{
+  return mSrsId;
+}
+/*! Get the Postgis SRID - if possible
+ *  @return  long theSRID The internal postgis SRID for this SRS
+ */
 long QgsSpatialRefSys::srid() const
 {
+
   return mSRID;
+
 }
 /*! Get the Description
  * @return  QString the Description A textual description of the srs.
@@ -534,7 +691,7 @@ QString QgsSpatialRefSys::ellipsoidAcronym () const
 {
   return mEllipsoidAcronym;
 }
-/* Get the Proj Proj4String. 
+/* Get the Proj Proj4String.
  * @return  QString theProj4String Proj4 format specifies that define this srs.
  */
 QString QgsSpatialRefSys::proj4String() const
@@ -679,14 +836,16 @@ void QgsSpatialRefSys::setMapUnits()
 #ifdef QGISDEBUG
     std::cerr << "Projection has angular units of " << unit << '\n';
 #endif
+
   }
 }
 
+
 bool QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs)
 {
-   qWarning("QgsSpatialRefSys::operator== called ");
+  qWarning("QgsSpatialRefSys::operator== called ");
 
-   bool myMatchFlag = true; //innocent until proven guilty
+  bool myMatchFlag = true; //innocent until proven guilty
 
   /* Here are the possible OGR error codes :
      typedef int OGRErr;
@@ -708,7 +867,7 @@ bool QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs)
   //same for the projections they define to be equivalent, which is why I dont just
   //compare the proj parameter strings and return the result
 
-  
+
   //create the sr and populate it from a wkt proj definition
   OGRSpatialReference myOgrSpatialRef1;
   OGRSpatialReference myOgrSpatialRef2;
@@ -739,14 +898,14 @@ bool QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs)
 
 
 
-   //placeholder to be replaced with ogr tests
-   if (myMatchFlag)
-   {
-     qWarning("QgsSpatialRefSys::operator== result: srs's are equal ");
-   }
-   else
-   {
-     qWarning("QgsSpatialRefSys::operator== result: srs's are not equal ");
-   }
-   return myMatchFlag;
+  //placeholder to be replaced with ogr tests
+  if (myMatchFlag)
+  {
+    qWarning("QgsSpatialRefSys::operator== result: srs's are equal ");
+  }
+  else
+  {
+    qWarning("QgsSpatialRefSys::operator== result: srs's are not equal ");
+  }
+  return myMatchFlag;
 }
