@@ -509,7 +509,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     QPixmap myProjPixmap;
     myProjPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection_disabled.png"));
     mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
-    QWhatsThis::add(mOnTheFlyProjectionStatusButton, tr("This icon shows whether on the fly projection is enabled or not. CLick the icon to bring up the project properties dialog to alter this behaviour."));
+    QWhatsThis::add(mOnTheFlyProjectionStatusButton, tr("This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour."));
     QToolTip::add( mOnTheFlyProjectionStatusButton, tr("Projection status - Click to open projection dialog"));
     connect(mOnTheFlyProjectionStatusButton, SIGNAL(clicked()),
             this, SLOT(projectProperties()));//bring up the project props dialog when clicked
@@ -4897,5 +4897,7 @@ void QgisApp::actionNewBookmark_activated()
          QDir::homeDirPath () + "/.qgis/qgis.db");
      bmi->store();
      delete bmi;
+     // emit a signal to indicate that the bookmark was added
+     emit bookmarkAdded();
   }
 }

@@ -407,6 +407,9 @@ signals:
     */
     void newProject();
 
+    /** emitted when a new bookmark is added 
+     */
+    void bookmarkAdded();
 private:
 
     /// QgisApp aren't copyable

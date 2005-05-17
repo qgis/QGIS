@@ -89,6 +89,9 @@ QgsBookmarks::QgsBookmarks(QWidget *parent, const char *name)
   }
   // Note proper queens english on next line
   initialise();
+
+  // connect the slot up to catch when a new bookmark is added
+  connect(mParent, SIGNAL(bookmarkAdded()), this, SLOT(refreshBookmarks()));
 }
 
 // Destructor
@@ -96,10 +99,15 @@ QgsBookmarks::~QgsBookmarks()
 {
 }
 
+void QgsBookmarks::refreshBookmarks()
+{
+  lstBookmarks->clear();
+  initialise();
+}
 // Initialise the bookmark tree from the database
 void QgsBookmarks::initialise()
 {
-  int rc = connect();
+  int rc = connectDb();
   if(rc == SQLITE_OK)
   {
     // prepare the sql statement
@@ -194,7 +202,7 @@ void QgsBookmarks::deleteBookmark()
       // remove it from the listview
       lstBookmarks->takeItem(lvi);
       // delete it from the database
-      int rc = connect();
+      int rc = connectDb();
       if(rc == SQLITE_OK)
       {
         sqlite3_stmt *ppStmt;
@@ -235,7 +243,7 @@ void QgsBookmarks::zoomToBookmark()
   // get the current item
   QListViewItem *lvi = lstBookmarks->currentItem();
   // get the extent from the database
-  int rc = connect();
+  int rc = connectDb();
   if(rc == SQLITE_OK)
   {
     sqlite3_stmt *ppStmt;
@@ -257,9 +265,7 @@ void QgsBookmarks::zoomToBookmark()
               xmax.toDouble(),
               ymax.toDouble()));
         // redraw the map
-        QgisIface *iface = dynamic_cast<QgisApp*>(mParent)->getInterface();
-        QgsMapCanvas *canvas = iface->getMapCanvas();
-        canvas->refresh();
+        dynamic_cast<QgisApp*>(mParent)->getInterface()->getMapCanvas()->refresh();
 
 
       }
@@ -273,7 +279,7 @@ void QgsBookmarks::zoomToBookmark()
   
 }
 
-int QgsBookmarks::connect()
+int QgsBookmarks::connectDb()
 {
 
   char *zErrMsg = 0;

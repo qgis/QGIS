@@ -30,7 +30,8 @@ public:
 public slots:
  void deleteBookmark();
  void zoomToBookmark();
- int connect();
+ int connectDb();
+ void refreshBookmarks();
 
 private:
  QWidget *mParent;
