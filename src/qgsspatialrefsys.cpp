@@ -482,7 +482,8 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
   // +ellps=clrk80 +towgs84=-255,-15,71,0,0,0,0 +units=m +no_defs
   //
 
-  QRegExp myProjRegExp( "\\+proj=[a-zA-Z]* " );
+
+  QRegExp myProjRegExp( "\\+proj=\\S+" );
   int myStart= 0;
   int myLength=0;
   myStart = myProjRegExp.search(theProj4String, myStart);
@@ -496,9 +497,10 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
   {
     myLength = myProjRegExp.matchedLength();
   }
-  mProjectionAcronym = theProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength);
 
-  QRegExp myEllipseRegExp( "\\+ellps=[a-zA-Z]* " );
+  mProjectionAcronym = theProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength-PROJ_PREFIX_LEN);
+
+  QRegExp myEllipseRegExp( "\\+ellps=\\S+" );
   myStart= 0;
   myLength=0;
   myStart = myEllipseRegExp.search(theProj4String, myStart);
@@ -512,9 +514,9 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
   {
     myLength = myEllipseRegExp.matchedLength();
   }
-  mEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength);
+  mEllipsoidAcronym = theProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength-ELLPS_PREFIX_LEN);
 
-  
+  mProj4String = theProj4String;  
 
   /*
   * We try to match the proj string to and srsid using the following logic: 
