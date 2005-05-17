@@ -282,7 +282,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
   mySummary += "\n\tProjection  : " ;
   if (r.projectionAcronym()) 
   {
-  r.projectionAcronym().latin1();
+    mySummary += r.projectionAcronym().latin1();
   }
   else
   {

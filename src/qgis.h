@@ -140,9 +140,9 @@ namespace QGis
   /**  Magic number for a geographic coord sys in EPSG ID format */
   const long EPSGID = 4326;
   /** The length of teh string "+proj=" */
-  const int PROJ_PREFIX_LEN = 5;
+  const int PROJ_PREFIX_LEN = 6;
   /** The length of teh string "+ellps=" */
-  const int ELLPS_PREFIX_LEN = 6;
+  const int ELLPS_PREFIX_LEN = 7;
   /** Magick number that determins whether a projection srsid is a system (srs.db)
    *  or user (~/.qgis.qgis.db) defined projection. */
   const int USER_PROJECTION_START_ID=100000;
