@@ -111,11 +111,21 @@ void OpenModellerGui::getAlgorithmList()
   const AlgMetadata **myAlgorithmMetadataArray = mOpenModeller->availableAlgorithms();
   const AlgMetadata *myAlgorithmMetadata;
   //loop through the algorithm names adding to the algs combo
+  QStringList alglist;
   while ( myAlgorithmMetadata = *myAlgorithmMetadataArray++ )
   {
     std::cerr << "Found Algorithm: " << myAlgorithmMetadata->id << std::endl;
-    cboModelAlgorithm->insertItem(myAlgorithmMetadata->id);
-  }     
+    //cboModelAlgorithm->insertItem(myAlgorithmMetadata->name);
+    alglist.append(myAlgorithmMetadata->name);
+  }
+
+  alglist.sort();
+
+  for ( QStringList::Iterator it = alglist.begin(); it != alglist.end(); ++it ) 
+  {
+        cboModelAlgorithm->insertItem(*it);
+  }
+
   return ;
 
 }
@@ -352,7 +362,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   if (thePageNameQString==tr("Step 2 of 9")) //we do this after leaving the file selection page
   {
     settings.writeEntry("/openmodeller/modelName",cboModelAlgorithm->currentText());
-    getParameterList(cboModelAlgorithm->currentText());
+    getParameterList(txtAlgorithm->text());
 
     getProjList();
     std::cout <<"Proj list built"<<std::endl;
@@ -795,8 +805,8 @@ void OpenModellerGui::accept()
 {
   QApplication::setOverrideCursor(Qt::WaitCursor);
   QSettings myQSettings;
-  std::cout << "cboModelAlgorithm .. current text : " << cboModelAlgorithm->currentText().ascii() << std::endl;
-  modelNameQString=cboModelAlgorithm->currentText();
+  std::cout << "txtAlgorithm .. current text : " << txtAlgorithm->text().ascii() << std::endl;
+  modelNameQString=txtAlgorithm->text();
 
   //
   // set the well known text coordinate string for the coordinate system that the point data are stored in
@@ -1103,10 +1113,10 @@ void OpenModellerGui::cboModelAlgorithm_highlighted( const QString &theModelAlgo
 
   while ( myAlgorithmMetadata = *myAlgorithmsMetadataArray++ )
   {
-    QString myAlgorithmNameQString=myAlgorithmMetadata->id;
+    QString myAlgorithmNameQString=myAlgorithmMetadata->name;
     if (myAlgorithmNameQString==theModelAlgorithm)
     {
-      txtAlgorithm->setText(myAlgorithmMetadata->name);
+      txtAlgorithm->setText(myAlgorithmMetadata->id);
       txtVersion->setText(myAlgorithmMetadata->version);
       txtAuthor->setText(myAlgorithmMetadata->author);
       txtAlgorithmDescription->setText(myAlgorithmMetadata->description);
