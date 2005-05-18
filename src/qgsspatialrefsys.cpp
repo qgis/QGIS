@@ -476,6 +476,7 @@ bool QgsSpatialRefSys::isValid() const
 
 bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
 {
+  mProj4String=theProj4String;
   //
   // Example:
   // +proj=tmerc +lat_0=0 +lon_0=-62 +k=0.999500 +x_0=400000 +y_0=0
