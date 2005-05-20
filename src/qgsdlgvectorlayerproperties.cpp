@@ -34,7 +34,7 @@
 #include <qgroupbox.h>
 #include <qwhatsthis.h>
 #include <qregexp.h>
-
+#include <qtabwidget.h>
 
 #include "qgis.h"
 #include "qgsrect.h"
@@ -74,6 +74,19 @@ QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, Q
 bufferRenderer(layer->
                renderer())
 {
+  // Create the Label dialog tab
+  QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
+  labelDialog = new QgsLabelDialog ( layer->label(), labelOptionsFrame);
+  layout->addWidget( labelDialog );
+
+  // Create the Actions dialog tab
+  QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
+  QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
+  std::vector<QgsField> fields = dp->fields();
+  actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields, 
+                                                actionOptionsFrame );
+  actionLayout->addWidget( actionDialog );
+
   reset();
   pbnOK->setFocus();
   if(layer->getDataProvider())//enable spatial index button group if supported by provider
@@ -255,16 +268,6 @@ void QgsDlgVectorLayerProperties::reset( void )
 	  legendtypecombobox->insertItem(tr("Unique Value Marker"));
 	}
     }
-
-  QVBoxLayout *layout = new QVBoxLayout();
-  labelDialog = new QgsLabelDialog ( layer->label(),labelOptionsFrame);
-  layout->addWidget( labelDialog );
-
-  QGridLayout *actionLayout = new QGridLayout();
-  std::vector<QgsField> fields = dp->fields();
-  actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields,
-          actionOptionsFrame );
-  actionLayout->addWidget( actionDialog,0,0 );
 
   QObject::connect(legendtypecombobox, SIGNAL(activated(const QString &)), this, SLOT(alterLayerDialog(const QString &)));
 
