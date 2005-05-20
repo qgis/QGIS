@@ -39,9 +39,10 @@ Q_OBJECT
 public:
     OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  );
     ~OpenModellerGui();
+
     
-  //! This method is a callback function passed to oM to keep track of preogres of mapProjection
-  static void mapCallback( float progress, void *extra_param );
+  //! Callback function passed to oM to keep track of model creation and map projection progress
+  static void progressBarCallback( float progress, void *extra_param );
   
     
   void getAlgorithmList();
