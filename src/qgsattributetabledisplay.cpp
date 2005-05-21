@@ -114,6 +114,12 @@ void QgsAttributeTableDisplay::startEditing()
       btnStartEditing->setEnabled(false);
       btnStopEditing->setEnabled(true);
       btnClose->setEnabled(false);
+      //make the dialog modal when in editable
+      //otherwise map editing and table editing
+      //may disturb each other
+      hide();
+      setModal(true);
+      show();
     }
   }
 }
@@ -142,6 +148,10 @@ void QgsAttributeTableDisplay::stopEditing()
   mAddAttributeButton->setEnabled(false);
   mDeleteAttributeButton->setEnabled(false);
   table()->setReadOnly(true);
+  //make this dialog modeless again
+  hide();
+  setModal(false);
+  show();
 }
 
 void QgsAttributeTableDisplay::selectedToTop()

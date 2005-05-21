@@ -350,6 +350,21 @@ private:
        @todo XXX shouldn't this be in mCanvasProperties?
     */
     std::list<QgsPoint> mCaptureList;
+    
+    /**Stores the last position of the mouse cursor when digitising*/
+    QgsPoint mDigitMovePoint;
+
+    /**Stores, if mCaptureList is used for line editing
+     this is needed for the editing rubber band*/
+    bool mLineEditing;
+
+    /**Stores, if mCaptureList is used for polygon editing
+     this is needed for the editing rubber band*/
+    bool mPolygonEditing;
+
+    /**Draws a line from the last point of mCaptureList (if last is true, else from the first point)
+       to mDigitMovePoint using Qt::XorROP. The settings for QPen are read from the QgsProject singleton*/
+    void drawLineToDigitisingCursor(QPainter* paint, bool last = true);
 
     //! Overridden mouse move event
     void mouseMoveEvent(QMouseEvent * e);
