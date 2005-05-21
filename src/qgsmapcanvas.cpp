@@ -569,19 +569,21 @@ void QgsMapCanvas::removeAcetateObject(const QString& key)
   }
 }
 
-void QgsMapCanvas::removeEditingAcetates()
+void QgsMapCanvas::removeDigitizingLines(bool norepaint)
 {
-  for(std::map<QString,QgsAcetateObject*>::iterator it=mCanvasProperties->acetateObjects.begin();
-      it!=mCanvasProperties->acetateObjects.end();++it)
-  {
-    if(it->first.contains("_##digit##ac")>0)
+    bool rpaint = false;
+    if(!norepaint)
     {
-      QgsAcetateObject* toremove=it->second;
-      mCanvasProperties->acetateObjects.erase(it->first);
-      delete toremove;
+	rpaint = (mCaptureList.size()>0) ? true : false;
     }
-  }
-  mCaptureList.clear();
+    mCaptureList.clear();
+    mLineEditing=false;
+    mPolygonEditing=false;
+    if(rpaint)
+    {
+	setDirty(true);
+	render();
+    }
 }
 
 QgsMapLayer *QgsMapCanvas::getZpos(int idx)

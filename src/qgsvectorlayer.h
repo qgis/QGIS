@@ -113,6 +113,14 @@ const QString displayField() const { return fieldIndex; }
 
   QgsAttributeAction* actions() { return &mActions; }
 
+ signals:
+  /**This signal is emitted when the layer leaves editing mode.
+     The purpose is to tell QgsMapCanvas to remove the lines of
+     (unfinished) features
+  @param norepaint true: there is no repaint at all. False: QgsMapCanvas
+  decides, if a repaint is necessary or not*/
+  void editingStopped(bool norepaint);
+
 public slots:
 
   void inOverview( bool );

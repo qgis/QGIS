@@ -1101,6 +1101,8 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
                             "ogr");
     Q_CHECK_PTR( layer );
 
+    QObject::connect(layer, SIGNAL(editingStopped(bool)), mMapCanvas, SLOT(removeDigitizingLines(bool)));
+
     if ( ! layer )
     {
         mMapCanvas->freeze(false);
@@ -1235,6 +1237,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
             // create the layer
 
             QgsVectorLayer *layer = new QgsVectorLayer(*it, base, "ogr");
+	    QObject::connect(layer, SIGNAL(editingStopped(bool)), mMapCanvas, SLOT(removeDigitizingLines(bool)));
 
             Q_CHECK_PTR( layer );
             // set the visibility based on user preference for newly added
@@ -1392,6 +1395,7 @@ void QgisApp::addDatabaseLayer()
                 // create the layer
                 //qWarning("creating layer");
                 QgsVectorLayer *layer = new QgsVectorLayer(connInfo + " table=" + *it, *it, "postgres");
+		QObject::connect(layer, SIGNAL(editingStopped(bool)), mMapCanvas, SLOT(removeDigitizingLines(bool)));
 		
 		if(layer->getDataProvider())
 		  {
@@ -3074,7 +3078,7 @@ void QgisApp::removeLayer()
     mMapCanvas->freeze(false);
 
     //remove remaining digitising acetates
-    mMapCanvas->removeEditingAcetates();
+    mMapCanvas->removeDigitizingLines();
 
     // draw the map
     mMapCanvas->clear();
@@ -3211,7 +3215,7 @@ void QgisApp::currentLayerChanged(QListViewItem * lvi)
 
   //let the mapcanvas know that the current layer changed
   //so any remaining digitizing acetates can be removed
-  mMapCanvas->removeEditingAcetates();
+	mMapCanvas->removeDigitizingLines();
 
         // notify the project we've made a change
         QgsProject::instance()->dirty(true);
@@ -3882,6 +3886,7 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
 #endif
 
         layer = new QgsVectorLayer(vectorLayerPath, baseName, providerKey);
+	QObject::connect(layer, SIGNAL(editingStopped(bool)), mMapCanvas, SLOT(removeDigitizingLines(bool)));
 
         if( layer && layer->isValid() )
         {
