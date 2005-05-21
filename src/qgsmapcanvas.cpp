@@ -324,7 +324,8 @@ QgsMapCanvas::QgsMapCanvas()
 QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
     : QWidget(parent, name),
     mCanvasProperties( new CanvasProperties(width(), height()) ),
-    mUserInteractionAllowed(true) // by default we allow a user to interact with the canvas
+    mUserInteractionAllowed(true), // by default we allow a user to interact with the canvas
+      mLineEditing(false), mPolygonEditing(false)
 {
   // by default, the canvas is rendered
   mRenderFlag = true;
@@ -942,7 +943,6 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       std::cout << "Done rendering map labels...emitting renderComplete(paint)\n";
 #endif
 
-      emit renderComplete(paint);
       // draw the acetate layer
       std::map <QString, QgsAcetateObject *>::iterator 
   ai = mCanvasProperties->acetateObjects.begin();
@@ -956,9 +956,43 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         ai++;
       }
 
+      //draw mCaptureList with color and width stored in QgsProject
+      QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),
+            QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),
+            QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
+      paint->setPen(QPen(digitcolor,QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",1),Qt::SolidLine));
+      
+      std::list<QgsPoint>::iterator it=mCaptureList.begin();
+      QgsPoint previous=mCanvasProperties->coordXForm->transform(it->x(), it->y());
+      QgsPoint current;
+      for(std::list<QgsPoint>::iterator it=++mCaptureList.begin();it!=mCaptureList.end();++it)
+      {
+	  current=mCanvasProperties->coordXForm->transform(it->x(), it->y());
+	  paint->drawLine(static_cast<int>(previous.x()), static_cast<int>(previous.y()), static_cast<int>(current.x()),\
+			 static_cast<int>(current.y()));
+	  previous=mCanvasProperties->coordXForm->transform(it->x(), it->y());
+      }
+      
+//and also the connection to mDigitMovePoint
+      if((mLineEditing || mPolygonEditing) && mCaptureList.size()>0)
+      {
+	  paint->setRasterOp(Qt::XorROP);
+	  QgsPoint digitpoint=mCanvasProperties->coordXForm->transform(mDigitMovePoint.x(), mDigitMovePoint.y());
+	  paint->drawLine(static_cast<int>(current.x()), static_cast<int>(current.y()), static_cast<int>(digitpoint.x()),\
+					  static_cast<int>(digitpoint.y()));
+	  if(mPolygonEditing && mCaptureList.size()>1)
+	  {
+	      QgsPoint first=mCanvasProperties->coordXForm->transform(*(mCaptureList.begin()));
+	      paint->drawLine(static_cast<int>(first.x()), static_cast<int>(first.y()), static_cast<int>(digitpoint.x()),\
+					  static_cast<int>(digitpoint.y()));
+	  }
+      }
+
+				      
+
       // notify any listeners that rendering is complete
       //note that pmCanvas is not draw to gui yet
-      //emit renderComplete(paint);
+      emit renderComplete(paint);
 
       paint->end();
       mCanvasProperties->drawing = false;
@@ -1546,12 +1580,22 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       return;
     }
   
+  //clear the line to the location of the digitising cursor
+  if(mCaptureList.size()>0)
+  {
+      QPainter paint(mCanvasProperties->pmCanvas);
+      drawLineToDigitisingCursor(&paint);
+  }
+  mDigitMovePoint.setX(e->x());
+  mDigitMovePoint.setY(e->y());
+  mDigitMovePoint=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+
   QgsPoint digitisedpoint=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
   vlayer->snapPoint(digitisedpoint,QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0));
   mCaptureList.push_back(digitisedpoint);
   if(mCaptureList.size()>1)
     {
-      QPainter paint(this);
+      QPainter paint(mCanvasProperties->pmCanvas);
       QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),
             QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),
             QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
@@ -1563,16 +1607,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
       QgsPoint endpoint = mCanvasProperties->coordXForm->transform(digitisedpoint.x(),digitisedpoint.y());
       paint.drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),
-         static_cast<int>(endpoint.x()),static_cast<int>(endpoint.y()));
-      //draw it to an acetate layer
-      QgsLine digitline(*it,digitisedpoint);
-      QgsAcetateLines* acetate=new QgsAcetateLines();
-      acetate->add(digitline);
-      addAcetateObject(vlayer->name()+"_##digit##ac"+QString::number(mCaptureList.size()),acetate);
-#ifdef QGISDEBUG
-      qWarning("adding "+vlayer->name()+"_##digit##ac"+QString::number(mCaptureList.size()));
-#endif
-      
+      static_cast<int>(endpoint.x()),static_cast<int>(endpoint.y()));
+      repaint();
     }
   if(e->button()==Qt::RightButton)
     {
@@ -1645,7 +1681,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       }
       
       //delete the acetate objects and the elements of mCaptureList
-      removeEditingAcetates();
+      mCaptureList.clear();
       refresh();
       
     }
@@ -1676,8 +1712,6 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     }
   }
 } // mouseReleaseEvent
-
-
 
 void QgsMapCanvas::resizeEvent(QResizeEvent * e)
 {
@@ -1718,6 +1752,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 {
   if (!mUserInteractionAllowed)
     return;
+
   // XXX magic numbers BAD -- 513?
   if (e->state() == Qt::LeftButton || e->state() == 513)
   {
@@ -1748,7 +1783,6 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
       paint.drawRect(mCanvasProperties->zoomBox);
       paint.end();
       break;
-
     case QGis::Pan:
       // show the pmCanvas as the user drags the mouse
       mCanvasProperties->dragging = true;
@@ -1779,7 +1813,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
       break;
 
     }
-  } 
+  }
   else if ( mCanvasProperties->mapTool == QGis::Measure ) 
   {
       if ( mMeasure ) {
@@ -1788,13 +1822,62 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
       }
   }
 
+  //draw a line to the cursor position in line/polygon editing mode
+  if ( mCanvasProperties->mapTool == QGis::CaptureLine || mCanvasProperties->mapTool == QGis::CapturePolygon )
+  {
+	      if(mCaptureList.size()>0)
+	      {
+		  QPainter paint(mCanvasProperties->pmCanvas);
+		  QPainter paint2(this);
+
+		  drawLineToDigitisingCursor(&paint);
+		  drawLineToDigitisingCursor(&paint2);
+		  if(mCanvasProperties->mapTool == QGis::CapturePolygon && mCaptureList.size()>1)
+		  {
+		      drawLineToDigitisingCursor(&paint, false);
+		      drawLineToDigitisingCursor(&paint2, false);
+		  }
+		  QgsPoint digitmovepoint(e->pos().x(), e->pos().y());
+		  mDigitMovePoint=mCanvasProperties->coordXForm->toMapCoordinates(e->pos().x(), e->pos().y());
+
+		  drawLineToDigitisingCursor(&paint);
+		  drawLineToDigitisingCursor(&paint2);
+		  if(mCanvasProperties->mapTool == QGis::CapturePolygon && mCaptureList.size()>1)
+		  {
+		      drawLineToDigitisingCursor(&paint, false);
+		      drawLineToDigitisingCursor(&paint2, false);
+		  }
+	      }
+  }
+
   // show x y on status bar
   QPoint xy = e->pos();
   QgsPoint coord = mCanvasProperties->coordXForm->toMapCoordinates(xy);
   emit xyCoordinates(coord);
-
 } // mouseMoveEvent
 
+void QgsMapCanvas::drawLineToDigitisingCursor(QPainter* paint, bool last)
+{
+   QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),\
+			    QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),\
+			    QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
+   paint->setPen(QPen(digitcolor,QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",1),Qt::SolidLine));
+   paint->setRasterOp(Qt::XorROP);
+   std::list<QgsPoint>::iterator it;
+   if(last)
+   {
+       it=mCaptureList.end();
+       --it;
+   }
+   else
+   {
+       it=mCaptureList.begin();
+   }
+   QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
+   QgsPoint digitpoint = mCanvasProperties->coordXForm->transform(mDigitMovePoint.x(), mDigitMovePoint.y());
+   paint->drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),\
+		  static_cast<int>(digitpoint.x()), static_cast<int>(digitpoint.y()));
+}
 
 /** Sets the map tool currently being used on the canvas */
 void QgsMapCanvas::setMapTool(int tool)
@@ -1802,6 +1885,21 @@ void QgsMapCanvas::setMapTool(int tool)
     mCanvasProperties->mapTool = tool;
     if ( tool == QGis::EmitPoint ) {
   setCursor ( Qt::CrossCursor );
+    }
+    if(tool == QGis::CapturePoint)
+    {
+	mLineEditing=false;
+	mPolygonEditing=false;
+    }
+    else if (tool == QGis::CaptureLine)
+    {
+	mLineEditing=true;
+	mPolygonEditing=false;
+    }
+    else if (tool == QGis::CapturePolygon)
+    {
+	mLineEditing=false;
+	mPolygonEditing=true;
     }
 } // setMapTool
 

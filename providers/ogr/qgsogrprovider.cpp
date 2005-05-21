@@ -577,7 +577,6 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
     std::cerr << "Setting spatial filter using " << wktExtent   << std::endl;
     ogrLayer->SetSpatialFilter(filter);
     //ogrLayer->SetSpatialFilterRect(rect->xMin(), rect->yMin(), rect->xMax(), rect->yMax());
-    std::cerr << "Feature count: " << ogrLayer->GetFeatureCount() << std::endl;
   }else{
 #ifdef QGISDEBUG    
     std::cerr << "Setting spatial filter failed!" << std::endl;
