@@ -659,48 +659,34 @@ void QgisApp::about()
     watsNew += QGis::qgisVersion;
     watsNew += "<h3>New features</h3>";
     watsNew += "<ul><li>"
-               + tr("GEOS support in the OGR provider to refine selection of features via identify. This improves over the previous method of feature selection which used a simple MBR intersection check.")
-               + "<li>"
-               + tr("PostGIS editing support in provider")
-               + "<li>"
-               + tr("Vector dialog redesign to improve usability")
-               + "<li>"
-               + tr("Improvement in project handling (loading and saving)")
-               + "<li>"
-               + tr("Scale dependent rendering")
-               + "<li>"
-               + tr("User option to load layers with out drawing them, thus allowing you to set scale dependency, etc without waiting for the initial draw to complete")
-               + "<li>"
-               + tr("Attribute actions - the ability to run an external program based on the contents of an attribute field in a layer")
-               + "<li>"
-               + tr("Create new vector layer (shapefile) for editing")
-               + "<li>"
-               + tr("Windows installer")
-               + "<li>"
-               + tr("Mac OSX binary")
-               + "<li>"
-               + tr("New options in the graticule builder plugin")
-               + "<li>"
-               + tr("Enhancements to the GPS plugin")
-               + "<li>"
-               + tr("Man page")
-               + "<li>"
-               + tr("Save delimited text as shapefile")
-               + "<li>"
-               + tr("Improved Delimited Text plugin, including preview of text file")
-               + "<li>"
-               + tr("Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types")
-               + "<li>"
-               + tr("Display SQL query used to create a PostGIS layer")
-               + "<li>"
-               + tr("PostgreSQL query builder")
-               + "<li>"
-               + tr("Ability to redefine the query used for PostgreSQL layers from the layer properties dialog")
-               + "<li>"
-               + tr("North arrow, scalebar, and copyright plugins save their state in the project file")
-               + "<li>"
-               + tr("Datasets with UTF8, Kanjii and CJK filenames now load properly")
-               + "</ul></body></html>";
+      + tr("On the fly projection support to automatically project layers from different coordinate systems")
+      + "<li>"
+      + tr("Map Composer for creating map layouts")
+      + "<li>"
+      + tr("Toolbox for running GRASS tools from QGIS. The toolbox can be easily customized to add additional tools")
+      + "<li>"
+      + tr("Handling of spatially enabled tables and views in PostgreSQL has been greatly improved. QGIS can now load any table in the database that contains a geometry column")
+      + "<li>"
+      + tr("PostgreSQL views containing a geometry column can be viewed in QGIS")
+      + "<li>"
+      + tr("Raster graphing tool to produce a histogram for a raster layer")
+      + "<li>"
+      + tr("Raster query using the identify tool allows you to get the pixel values from a raster by making it the active layer and clicking on the point of interest")  
+      + "<li>"
+      + tr("User preferences provides customizable settings for the digitizing line width, color, and selection color")  
+      + "<li>"
+      + tr("New symbols for use with point layers are available from the layer properties dialog") 
+      + "<li>"
+      + tr("Spatial bookmarks allow you to create and manage bookmarks for an area on the map. Bookmarks are persistent and global; meaning they are available for all projects")
+      + "<li>"
+      + tr("Measure tool allows you to measure distances on the map with both segment length and total length displayed as you click")
+      + "<li>"
+      + tr("GPX loading times and memory consumption for large GPX (GPS) files has been drastically reduced")  
+      + "<li>"
+      + tr("Many enhancements to the digitizing tools have been made, including the ability to capture data straight into PostgreSQL/PostGIS, and improvements to the definition of attribute tables for newly created layers")
+      + "<li>"
+      + tr("The Raster Georeferencer plugin can be used to generate a world file for a raster. The plugin allows you to define known control points in the raster coordinate system. Once enough control points are defined, the world file can be generated and the raster properly displayed in QGIS or other GIS applications")
+      + "</ul></body></html>";
 
 
     abt->setWhatsNew(watsNew);
