@@ -512,7 +512,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     QWhatsThis::add(mOnTheFlyProjectionStatusButton, tr("This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour."));
     QToolTip::add( mOnTheFlyProjectionStatusButton, tr("Projection status - Click to open projection dialog"));
     connect(mOnTheFlyProjectionStatusButton, SIGNAL(clicked()),
-            this, SLOT(projectProperties()));//bring up the project props dialog when clicked
+            this, SLOT(projectPropertiesProjections()));//bring up the project props dialog when clicked
     statusBar()->addWidget(mOnTheFlyProjectionStatusButton,0,true);
     //
     // Create the plugin registry and load plugins
@@ -4272,6 +4272,14 @@ void QgisApp::showStatusMessage(QString theMessage)
     statusBar()->message(theMessage);
 }
 
+void QgisApp::projectPropertiesProjections()
+{
+  // Driver to display the project props dialog and switch to the
+  // projections tab
+  mShowProjectionTab = true;
+  projectProperties();
+}
+
 void QgisApp::projectProperties()
 {
   /* Display the property sheet for the Project */
@@ -4280,6 +4288,12 @@ void QgisApp::projectProperties()
   // system QMap
   QApplication::setOverrideCursor(Qt::WaitCursor);
   QgsProjectProperties *pp = new QgsProjectProperties(this);
+  // if called from the status bar, show the projection tab
+  if(mShowProjectionTab)
+  {
+    pp->showProjectionsTab();
+    mShowProjectionTab = false;
+  }
   qApp->processEvents();
   // Be told if the mouse display precision may have changed by the user
   // changing things in the project properties dialog box
@@ -4310,7 +4324,6 @@ void QgisApp::projectProperties()
   // Set the window title. No way to do a comparison like for the map
   // units above, so redo it everytime.
   setTitleBarText_( *this );
-
   // delete the property sheet object
   delete pp;
 } // QgisApp::projectProperties

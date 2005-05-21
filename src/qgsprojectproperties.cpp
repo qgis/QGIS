@@ -47,6 +47,7 @@
 #include <qlistview.h>
 #include <qprogressdialog.h> 
 #include <qapplication.h>
+#include <qtabwidget.h>
 
 //stdc++ includes
 #include <iostream>
@@ -273,4 +274,9 @@ void QgsProjectProperties::accept()
 bool QgsProjectProperties::isProjected()
 {
   return cbxProjectionEnabled->isChecked();
+}
+
+void QgsProjectProperties::showProjectionsTab()
+{
+  tabWidget2->setCurrentPage(1);
 }

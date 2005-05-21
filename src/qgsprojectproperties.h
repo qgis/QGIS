@@ -76,6 +76,10 @@ public slots:
    * Slot called when ok button pressed (inherits from gui base)
    */
   void accept();
+  /*!
+   * Slot to show the projections tab when the dialog is opened
+   */
+  void showProjectionsTab();
   
 signals:
   /*! This signal is used to notify all coordinateTransform objects to update
