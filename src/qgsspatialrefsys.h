@@ -147,6 +147,19 @@ class QgsSpatialRefSys
          * are trying to force theis srs to be valid.
          */
         void validate();
+
+        /*! This is a globbing function to try to find a record in the database
+         *  that matches a SRS defined only by a proj4string. The goal is to 
+         *  learn what the tbl_srs.srs_id value is for the SRS. Internally 
+         *  the source SRS is converted to and OGR srs object using the proj4string
+         *  and then every record in the database that matches projection and ellipsoid
+         *  will be converted to an OGR srs in turn and compared to the source SRS.
+         *  There are some gotchas with using ogr isSame() srs comparison, but
+         *  its more effective than using straight string comparison of proj4params.
+         *  @note The ellipsoid and projection acronyms must be set as well as the proj4string!
+         *  @return lomg the SrsId of the matched SRS
+         */
+        long findMatchingProj();
          
         /*! A string based associative array used for passing records around */
         typedef QMap<QString, QString> RecordMap;
@@ -157,7 +170,17 @@ class QgsSpatialRefSys
          * @return QMap An associative array of field name <-> value pairs
          */
          RecordMap getRecord(QString theSql);
-
+        /*! Overloaded == operator used to compare to SRS's.
+         *  Internally it will delegate to the equals method described below
+         */
+         bool operator==(const QgsSpatialRefSys &theSrs);
+        /*! Overloaded == operator used to compare to SRS's.
+         *  Internally it will use OGR isSameSRS() or isSameGeoSRS() methods as appropriate.
+         *  Additionally logic may also be applied if the result from the OGR methods
+         *  is inconclusive.
+         */
+         bool equals(const char *theProj4CharArray);
+         bool operator==(const char* abc) { return true;};
         // Accessors -----------------------------------
 
          /*! Get the SrsId - if possible
@@ -232,12 +255,6 @@ class QgsSpatialRefSys
          * @param  long theEpsg the ESPG identifier for this srs (defaults to 0)
          */
         void setEpsg (long theEpsg);
-        /*! Overloaded == operator used to compare to SRS's.
-         *  Internally it will use OGR isSameSRS() or isSameGeoSRS() methods as appropriate.
-         *  Additionally logic may also be applied if the result from the OGR methods
-         *  is inconclusive.
-         */
-         bool operator==(const QgsSpatialRefSys &theSrs);
 
     private:
         //!The internal sqlite3 srs.db primary key for this srs 
@@ -259,7 +276,7 @@ class QgsSpatialRefSys
         //!If available the ESPG identifier for this srs (defaults to 0)
         long    mEpsg ;
         //! Wehter this srs is properly defined and valid
-        bool isValidFlag;
+        bool mIsValidFlag;
 
         //! Work out the projection units and set the appropriate local variable
         void setMapUnits();
