@@ -529,7 +529,7 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
   * as its quicker than methods below..
   */
   long mySrsId = 0;
-  QgsSpatialRefSys::RecordMap myRecord = getRecord("select * from tbl_srs where where description='" + mDescription + "'");
+  QgsSpatialRefSys::RecordMap myRecord = getRecord("select * from tbl_srs where where description='" + mDescription.stripWhiteSpace () + "'");
   if (!myRecord.empty())
   {
     mySrsId=myRecord["srs_id"].toLong();
@@ -545,7 +545,7 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
     * - if the above does not match perform a whole text search on proj4 string (if not null)
     */
     std::cout << "QgsSpatialRefSys::createFromProj4 wholetext match on name failed, trying proj4string match" << std::endl;
-    myRecord = getRecord("select * from tbl_srs where where parameters='" + mProj4String + "'");
+    myRecord = getRecord("select * from tbl_srs where where parameters='" + mProj4String.stripWhiteSpace () + "'");
     if (!myRecord.empty())
     {
       mySrsId=myRecord["srs_id"].toLong();
@@ -945,7 +945,7 @@ long QgsSpatialRefSys::findMatchingProj()
       QString myProj4String = (char *)sqlite3_column_text(myPreparedStatement, 1);
       if (this->equals(myProj4String))
       {
-        std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND srsid: " << mySrsId << std::endl;
+        std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in srs.db srsid: " << mySrsId << std::endl;
         // close the sqlite3 statement
         sqlite3_finalize(myPreparedStatement);
         sqlite3_close(myDatabase);
@@ -957,12 +957,55 @@ long QgsSpatialRefSys::findMatchingProj()
       }
     }
   }
-  std::cout << "QgsSpatialRefSys::findMatchingProj -------> no match found!" << std::endl;
+  std::cout << "QgsSpatialRefSys::findMatchingProj -------> no match found in srs.db, trying user db now!" << std::endl;
+  // close the sqlite3 statement
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+  //
+  // Try the users db now
+  //
+
+  myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+  //check the db is available
+  myResult = sqlite3_open(myDatabaseFileName.latin1(), &myDatabase);
+  if(myResult)
+  {
+    std::cout <<  "QgsSpatialRefSys::findMatchingProj Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
+    // XXX This will likely never happen since on open, sqlite creates the
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+
+    while(sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+    {
+      QString mySrsId = (char *)sqlite3_column_text(myPreparedStatement,0);
+      QString myProj4String = (char *)sqlite3_column_text(myPreparedStatement, 1);
+      if (this->equals(myProj4String))
+      {
+        std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in user qgis.db srsid: " << mySrsId << std::endl;
+        // close the sqlite3 statement
+        sqlite3_finalize(myPreparedStatement);
+        sqlite3_close(myDatabase);
+        return mySrsId.toLong();
+      }
+      else
+      {
+        std::cout << " Not matched : " << myProj4String << std::endl;
+      }
+    }
+  }
+  std::cout << "QgsSpatialRefSys::findMatchingProj -------> no match found in user db" << std::endl;
+
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
   return 0;
-  //XXX TODO Add on users db search here!
+
 }
 
 bool QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs)
