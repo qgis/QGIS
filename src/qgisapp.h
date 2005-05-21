@@ -357,6 +357,8 @@ private slots:
     void socketError(int e);
     //! Set project properties, including map untis
     void projectProperties();
+    //! Open project properties dialog and show the projections tab
+    void projectPropertiesProjections();
     /*  void urlData(); */
     /** Used to (re)set the zordering of the overview map*/
     void setOverviewZOrder(QgsLegend * );
@@ -495,6 +497,8 @@ private:
     bool mMousePrecisionAutomatic;
     //! The number of decimal places to use if not automatic
     unsigned int mMousePrecisionDecimalPlaces;
+    //! Flag to indicate how the project properties dialog was summoned
+    bool mShowProjectionTab;
     
 };
 
