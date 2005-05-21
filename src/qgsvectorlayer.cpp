@@ -1885,7 +1885,12 @@ void QgsVectorLayer::stopEditing()
           tabledisplay=0;
         }
       }
+      emit editingStopped(true);
       triggerRepaint();
+    }
+    else
+    {
+	emit editingStopped(false);
     }
     mEditable=false;
     mModified=false;

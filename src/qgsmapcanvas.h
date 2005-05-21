@@ -224,9 +224,11 @@ public slots:
      /**Removes an acetate object from the collection and deletes the object*/
      void removeAcetateObject(const QString& key);
 
-     /**Removes the acetate layers created for digitising (all the layers with
-      a "_##digit##ac" in their name*/
-     void removeEditingAcetates();
+     /**Removes all entries of mCapturePoints and sets mLineEditing and mPolygonEditing
+	to false (removes the digitising lines from the screen)
+     @param norepaint true: there is no repaint at all. False: QgsMapCanvas
+  decides, if a repaint is necessary or not*/
+     void removeDigitizingLines(bool norepaint=false);
 
     //! The painter device parameter is optional - if ommitted it will default
     // to the pmCanvas (ie the gui map display). The idea is that you can pass
