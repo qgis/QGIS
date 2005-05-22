@@ -33,7 +33,7 @@ class SplashScreen : public QWidget
 public:
   SplashScreen();
 
-  void setStatus( const QString &message, int alignment = AlignLeft, const QColor &color = black );
+  void setStatus( const QString &message, int alignment = AlignLeft, const QColor &color = Qt::white );
   void finish( QWidget *mainWin );
   void repaint();
 
