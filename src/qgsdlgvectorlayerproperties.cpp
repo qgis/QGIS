@@ -100,6 +100,7 @@ bufferRenderer(layer->
 	  indexGroupBox->setEnabled(true);
       }
   }
+  leSpatialRefSys->setText(layer->coordinateTransform()->sourceSRS().proj4String());
 }
 
 QgsDlgVectorLayerProperties::~QgsDlgVectorLayerProperties()
@@ -598,5 +599,5 @@ void QgsDlgVectorLayerProperties::pbnChangeSpatialRefSys_clicked()
       QApplication::restoreOverrideCursor();
     }
     delete mySelector;
-
+    leSpatialRefSys->setText(layer->coordinateTransform()->sourceSRS().proj4String());
 }
