@@ -25,8 +25,8 @@
 #if defined(WIN32) || defined(Q_OS_MACX)
 QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
-#define STATUS_TEXT_X 10
-#define STATUS_TEXT_Y 10
+#define STATUS_TEXT_X 90
+#define STATUS_TEXT_Y 30
 SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash)
 {
   //set up masking
@@ -47,14 +47,15 @@ SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash)
   move(scr.center() - rect().center());
 
   QPainter painter(&splashImage);
-  painter.setPen(Qt::red);
-  QFont myQFont("arial", 16, QFont::Bold);
+  painter.setPen(Qt::black);
+  QFont myQFont("arial", 18, QFont::Bold);
   painter.setFont(myQFont);
 
-  QString myCaption = tr("Quantum GIS - ");
-  myCaption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
+  QString myCaption = tr("Version ");
+  // myCaption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
+  myCaption += QString("%1").arg(QGis::qgisVersion);
 
-  painter.drawText(STATUS_TEXT_X, 25, myCaption);
+  painter.drawText(150, 240, myCaption);
   repaint();
 
   show();
@@ -88,7 +89,7 @@ void SplashScreen::setStatus(const QString & message, int alignment, const QColo
   QPixmap textPix = splashImage;
   QPainter painter(&textPix, this);
   painter.setPen(color);
-  QFont myQFont("arial", 12, QFont::Bold);
+  QFont myQFont("arial", 10, QFont::Bold);
   painter.setFont(myQFont);
   painter.drawText(STATUS_TEXT_X, textPix.height() - STATUS_TEXT_Y, message);
   setErasePixmap(textPix);
