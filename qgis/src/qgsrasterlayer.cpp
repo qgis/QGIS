@@ -623,7 +623,7 @@ QgsRasterLayer::readFile( QString const & fileName )
   //that they match the coordinate system of this layer
   mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
   //validate the source coordinate system!
-  mCoordinateTransform->sourceSRS()->validate();
+  mCoordinateTransform->sourceSRS().validate();
   
 
   //mark the layer as valid

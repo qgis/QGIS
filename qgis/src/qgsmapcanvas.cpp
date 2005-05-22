@@ -216,6 +216,11 @@ public:
   //std::auto_ptr<QgsMapToPixel> coordXForm;
   QgsMapToPixel * coordXForm;
 
+  /** The output spatial reference system that was used most
+      recently. Obtained from a layer on this canvas
+  */
+  QgsSpatialRefSys previousOutputSRS;
+
   /**
    * \brief Currently selected map tool.
    * @see QGis::MapTools enum for valid values
@@ -496,6 +501,13 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
     }
   }
 
+  if (mCanvasProperties->layers.size() == 0)
+  {
+    // Adding the first layer. Set the previousOutputSRS to the output
+    // SRS for the layer.
+    mCanvasProperties->previousOutputSRS = lyr->coordinateTransform()->destSRS();
+  }
+
   mCanvasProperties->layers[lyr->getLayerID()] = lyr;
 
   // update extent if warranted
@@ -636,14 +648,55 @@ void QgsMapCanvas::refresh()
   render();
 } // refresh
 
-
-
 // The painter device parameter is optional - if ommitted it will default
 // to the pmCanvas (ie the gui map display). The idea is that you can pass
 // an alternative device such as one that will be used for printing or
 // saving a map view as an image file.
 void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 {
+  // If this is the first time that we are rendering since the output
+  // projection has changed, transform the current extent from the old
+  // output projection to the new output projection. This gets done
+  // whether projections are enabled or not.
+  /*
+  if (layerCount() > 0)
+  {
+    std::map<QString, QgsMapLayer*>::const_iterator 
+     i = mCanvasProperties->layers.begin();
+
+    QgsSpatialRefSys currentOutputSRS(coordinateTransform().destSRS());
+
+    std::cerr << "The current output SRS is: " << currentOutputSRS;
+    std::cerr << "The previous output SRS is: " << mCanvasProperties->previousOutputSRS;
+
+    if (!(mCanvasProperties->previousOutputSRS == currentOutputSRS))
+    {
+      std::cerr << "They are different, so the map extent is being reprojected\n";
+
+      QgsCoordinateTransform transform;
+      std::cerr<<__FILE__<<__LINE__<<std::endl;
+
+      transform.setSourceSRS(mCanvasProperties->previousOutputSRS);
+      std::cerr<<__FILE__<<__LINE__<<std::endl;
+
+      transform.setDestSRS(currentOutputSRS);
+      std::cerr<<__FILE__<<__LINE__<<std::endl;
+
+      mCanvasProperties->currentExtent = 
+        transform.transform(mCanvasProperties->currentExtent);
+        std::cerr<<__FILE__<<__LINE__<<std::endl;
+
+      // Same here re an operator= for an SRS
+      mCanvasProperties->previousOutputSRS = currentOutputSRS;
+
+      std::cerr << "The previous output SRS has now been set to: " 
+                << mCanvasProperties->previousOutputSRS;
+      std::cerr <<__FILE__<<__LINE__<<std::endl;
+    }
+    else
+      std::cerr << "They are the same, so the map extent stays as is\n";
+  }
+  */
   // Don't allow zooms where the current extent is so small that it
   // can't be accurately represented using a double (which is what
   // currentExtent uses). Excluding 0 avoids a divide by zero and an
