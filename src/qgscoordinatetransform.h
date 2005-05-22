@@ -85,22 +85,22 @@ class QgsCoordinateTransform: public QObject
      * Set the source (layer) QgsSpatialRefSys
      * @param theSRS QgsSpatialRefSys representation of the layer's coordinate system
      */
-    void setSourceSRS(QgsSpatialRefSys * theSRS);
+    void setSourceSRS(const QgsSpatialRefSys& theSRS);
     /*! 
      * Mutator for dest QgsSpatialRefSys 
      * @param theSRS of the destination coordinate system
      */
-    void setDestSRS(QgsSpatialRefSys * theSRS);    
+    void setDestSRS(const QgsSpatialRefSys& theSRS);    
     /*!
      * Get the QgsSpatialRefSys representation of the layer's coordinate system
      * @return QgsSpatialRefSys of the layer's coordinate system
      */
-    QgsSpatialRefSys * sourceSRS() ;
+    QgsSpatialRefSys& sourceSRS() { return mSourceSRS; }
     /*! 
      * Get the QgsSpatialRefSys representation of the map canvas coordinate system
      * @return QgsSpatialRefSys of the map canvas coordinate system
      */
-    QgsSpatialRefSys * destSRS() ;    
+    QgsSpatialRefSys& destSRS() { return mDestSRS; }
   /*! 
    * Flag to indicate whether the coordinate systems have been initialised
    * @return true if initialised, otherwise false
@@ -174,11 +174,11 @@ class QgsCoordinateTransform: public QObject
     /*! 
      * QgsSpatialRefSys of the source (layer) coordinate system 
      */
-    QgsSpatialRefSys * mSourceSRS;
+    QgsSpatialRefSys mSourceSRS;
     /*! 
      * QgsSpatialRefSys of the destination (map canvas) coordinate system 
      */
-    QgsSpatialRefSys * mDestSRS;
+    QgsSpatialRefSys mDestSRS;
     /** Dunno if we need this - XXX Delete if unused */
     bool mInputIsDegrees;
     /*! 

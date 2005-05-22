@@ -21,15 +21,13 @@
 QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject()
 
 {
-  mSourceSRS= new QgsSpatialRefSys();
-  mDestSRS = new QgsSpatialRefSys();
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceSRS, QString theDestSRS ) : QObject()
 
 {
-  mSourceSRS= new QgsSpatialRefSys(theSourceSRS);
-  mDestSRS = new QgsSpatialRefSys(theDestSRS);
+  mSourceSRS.createFromWkt(theSourceSRS);
+  mDestSRS.createFromWkt(theDestSRS);
   // initialize the coordinate system data structures
   //XXX Who spells initialize initialise?
   //XXX A: Its the queen's english....
@@ -42,8 +40,8 @@ QgsCoordinateTransform::QgsCoordinateTransform(long theSourceSrid,
     QgsSpatialRefSys::SRS_TYPE theSourceSRSType): QObject()
 {
 
-  mSourceSRS= new QgsSpatialRefSys(theSourceSrid,theSourceSRSType);
-  mDestSRS = new QgsSpatialRefSys(theDestWKT);
+  mSourceSRS.createFromId(theSourceSrid, theSourceSRSType);
+  mDestSRS.createFromWkt(theDestWKT);
   // initialize the coordinate system data structures
   //XXX Who spells initialize initialise?
   //XXX A: Its the queen's english....
@@ -56,42 +54,14 @@ QgsCoordinateTransform::~QgsCoordinateTransform()
   // free the proj objects
   pj_free(mSourceProjection);
   pj_free(mDestinationProjection);
-  //delete member poitners
-  delete mDestSRS;
-  delete mSourceSRS;
 }
 
-QgsSpatialRefSys * QgsCoordinateTransform::sourceSRS()
-{
-  if (mSourceSRS)
-  {
-    return mSourceSRS;
-  }
-  else
-  {
-    return 0;
-  }
-}
-
-QgsSpatialRefSys * QgsCoordinateTransform::destSRS()
-{
-  if (mDestSRS)
-  {
-    return mDestSRS;
-  }
-  else
-  {
-    return 0;
-  }
-}
-
-
-void QgsCoordinateTransform::setSourceSRS(QgsSpatialRefSys * theSRS)
+void QgsCoordinateTransform::setSourceSRS(const QgsSpatialRefSys& theSRS)
 {
   mSourceSRS = theSRS;
   initialise();
 }
-void QgsCoordinateTransform::setDestSRS(QgsSpatialRefSys * theSRS)
+void QgsCoordinateTransform::setDestSRS(const QgsSpatialRefSys& theSRS)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsCoordinateTransform::setDestSRS called" << std::endl;
@@ -107,7 +77,7 @@ void QgsCoordinateTransform::setDestSRSID (long theSRSID)
 #ifdef QGISDEBUG
   std::cout << "QgsCoordinateTransform::setDestSRSID slot called" << std::endl;
 #endif
-  mDestSRS->createFromSrsId(theSRSID);
+  mDestSRS.createFromSrsId(theSRSID);
   initialise();
 }
 
@@ -118,7 +88,7 @@ void QgsCoordinateTransform::initialise()
   mInitialisedFlag=false; //guilty until proven innocent...
 
   // XXX Warning - multiple return paths in this block!!
-  if (!mSourceSRS->isValid())
+  if (!mSourceSRS.isValid())
   {
     //mSourceSRS = defaultWkt;
     // Pass through with no projection since we have no idea what the layer
@@ -127,18 +97,18 @@ void QgsCoordinateTransform::initialise()
     return;
   }
 
-  if (!mDestSRS->isValid())
+  if (!mDestSRS.isValid())
   {
     //No destination projection is set so we set the default output projection to
     //be the same as input proj. This only happens on the first layer loaded
     //whatever that may be...
-    mDestSRS->createFromProj4(mSourceSRS->proj4String());
+    mDestSRS.createFromProj4(mSourceSRS.proj4String());
   }
 
   //XXX todo overload == operator for QgsSpatialRefSys
   //at the moment srs.parameters contains the whole proj def...soon it wont...
   //if (mSourceSRS->proj4String() == mDestSRS->proj4String())
-  if ((*mSourceSRS) == (*mDestSRS))
+  if (mSourceSRS == mDestSRS)
   {
     // If the source and destination projection are the same, set the short
     // circuit flag (no transform takes place)
@@ -150,8 +120,8 @@ void QgsCoordinateTransform::initialise()
     // Transform must take place
     mShortCircuit=false;
   }
-  mProj4DestParms=mDestSRS->proj4String();
-  mProj4SrcParms=mSourceSRS->proj4String();
+  mProj4DestParms=mDestSRS.proj4String();
+  mProj4SrcParms=mSourceSRS.proj4String();
 
 
   // init the projections (destination and source)
@@ -176,8 +146,8 @@ void QgsCoordinateTransform::initialise()
     std::cout << "The OGR Coordinate transformation for this layer was set to" << std::endl;
     // note overloaded << operator on qgsspatialrefsys cant be used on pointers -
     // so we dereference them like this (*mSourceSRS) (Thanks Lars for pointing that out)
-    std::cout << "INPUT: " << std::endl << (*mSourceSRS) << std::endl;
-    std::cout << "OUTPUT: " << std::endl << (*mDestSRS)  << std::endl;
+    std::cout << "INPUT: " << std::endl << mSourceSRS << std::endl;
+    std::cout << "OUTPUT: " << std::endl << mDestSRS  << std::endl;
     std::cout << "------------------------------------------------------------" << std::endl;
   }
   else

@@ -261,7 +261,9 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry("Gui","/SelectionColorBluePart",myColour.blue()); 
   QgsRenderer::mSelectionColor=myColour;
 
+  std::cerr << __FILE__<<__LINE__<<'\n';
   emit refresh();
+  std::cerr << __FILE__<<__LINE__<<'\n';
 }
 
 //when user clicks ok

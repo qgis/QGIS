@@ -44,6 +44,11 @@ QgsSpatialRefSys::QgsSpatialRefSys(long theSrsId,
 
 QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType) : mMapUnits(QGis::UNKNOWN)
 {
+  createFromId(theId, theType);
+}
+
+void QgsSpatialRefSys::createFromId(const long theId, SRS_TYPE theType)
+{
   switch (theType)
   {
   case QGIS_SRSID:
@@ -60,6 +65,25 @@ QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType) : mMapUni
     std::cout << "Unexpected case reached in " << __FILE__ << " : " << __LINE__ << std::endl;
   };
 
+}
+
+// Assignment operator
+QgsSpatialRefSys& QgsSpatialRefSys::operator=(const QgsSpatialRefSys& srs)
+{
+  if (&srs != this)
+  {
+    mSrsId = srs.mSrsId;
+    mDescription = srs.mDescription;
+    mProjectionAcronym = srs.mProjectionAcronym;
+    mEllipsoidAcronym = srs.mEllipsoidAcronym;
+    mProj4String = srs.mProj4String;
+    mGeoFlag = srs.mGeoFlag;
+    mMapUnits = srs.mMapUnits;
+    mSRID = srs.mSRID;
+    mEpsg = srs.mEpsg;
+    mIsValidFlag = srs.mIsValidFlag;
+  }
+  return *this;
 }
 
 // Misc helper functions -----------------------

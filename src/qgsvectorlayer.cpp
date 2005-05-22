@@ -2677,7 +2677,7 @@ void QgsVectorLayer::setCoordinateSystem()
 #ifdef QGISDEBUG
     std::cout << "QgsVectorLayer::setCoordinateSystem --- using wkt\n" << mySourceWKT << std::endl;
 #endif
-    mCoordinateTransform->sourceSRS()->createFromWkt(mySourceWKT);
+    mCoordinateTransform->sourceSRS().createFromWkt(mySourceWKT);
     //mCoordinateTransform->sourceSRS()->createFromWkt(getProjectionWKT());
   }
   else
@@ -2685,7 +2685,7 @@ void QgsVectorLayer::setCoordinateSystem()
 #ifdef QGISDEBUG
     std::cout << "QgsVectorLayer::setCoordinateSystem --- using srid " << srid << std::endl;
 #endif
-      mCoordinateTransform->sourceSRS()->createFromSrid(srid);
+      mCoordinateTransform->sourceSRS().createFromSrid(srid);
   }
   
 
@@ -2694,16 +2694,28 @@ void QgsVectorLayer::setCoordinateSystem()
   //if none exists....
   //First get the SRS for the default projection WGS 84
   //QString defaultWkt = QgsSpatialReferences::instance()->getSrsBySrid("4326")->srText();
-  int myDestSRSID = QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
-  mCoordinateTransform->destSRS()->createFromSrsId(myDestSRSID);
-  assert (mCoordinateTransform->destSRS());
-  assert (mCoordinateTransform->sourceSRS());
-  assert (0 != myDestSRSID);
+
+
+  // if not enabled, don't set the output projection, which will then
+  // get set to the same as the input projection in the initialise()
+  // call below.
+  if (projectionsEnabled())
+  {
+    int myDestSRSID = QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
+    mCoordinateTransform->destSRS().createFromSrsId(myDestSRSID);
+    assert (0 != myDestSRSID);
+  }
+  else
+  {
+    mCoordinateTransform->destSRS().createFromProj4(
+           mCoordinateTransform->sourceSRS().proj4String());
+  }
 
   //now validate both srs's
-  mCoordinateTransform->sourceSRS()->validate();
-  mCoordinateTransform->destSRS()->validate();  
+  mCoordinateTransform->sourceSRS().validate();
+  mCoordinateTransform->destSRS().validate();  
   //validate the transform - you should do this any time one of the SRS's changes
+
   mCoordinateTransform->initialise();
 
 

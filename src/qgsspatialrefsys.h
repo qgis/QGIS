@@ -66,7 +66,12 @@ class QgsSpatialRefSys
           */
          QgsSpatialRefSys(const long theId, SRS_TYPE theType=POSTGIS_SRID);
 
+         // Assignment operator
+         QgsSpatialRefSys& operator=(const QgsSpatialRefSys& srs);
+
         // Misc helper functions -----------------------
+
+         void createFromId(const long theId, SRS_TYPE theType=POSTGIS_SRID);
         
         /*! Set up this srs by fetching the appropriate information from the 
          * sqlite backend. First the system level read only srs.db will be checked
