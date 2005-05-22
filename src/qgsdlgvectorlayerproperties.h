@@ -73,7 +73,7 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   void btnHelp_clicked();
   void pbnQueryBuilder_clicked();
   void pbnIndex_clicked();
-
+  void pbnChangeSpatialRefSys_clicked();
 
   protected:
   QgsVectorLayer *layer;
