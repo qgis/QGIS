@@ -1,3 +1,4 @@
+% vim: set textwidth=78 autoindent:
 \chapter{Getting Started}
 
 This chapter gives you a quick overview of running QGIS and examining data available on the QGIS web page.
@@ -5,18 +6,27 @@ This chapter gives you a quick overview of running QGIS and examining data avail
 
 \section{Installation}
 \index{installation}
-Installation of QGIS is documented in Appendix \ref{install_guide}. The Installation Guide is distributed with the QGIS source code and is also available at \url{http://qgis.org}. Under Windows and Mac OSX, QGIS is available as a standard installer package for these platforms.
+Installation of QGIS is documented in Appendix \ref{install_guide}. The
+Installation Guide is distributed with the QGIS source code and is also
+available at \url{http://qgis.org}. Under Windows and Mac OSX, QGIS is
+available as a standard installer package for these platforms. Packages for
+many flavors of Linux are also available. 
 
 
 \section{Sample Data}
-\index{data!sample}
-If you do not have any GIS data handy, you can obtain a dataset for Alaska from the QGIS web site at \url{http://qgis.org}. The Alaska data set will be used as the basis for many of the examples and screenshots provided in this document.
+\index{data!sample} If you do not have any GIS data handy, you can obtain a
+dataset for Alaska from the QGIS web site at \url{http://qgis.org}. The Alaska
+data set will be used as the basis for many of the examples and screenshots
+provided in this document.
 
 
 \section{Starting QGIS}
 
-Assuming that QGIS is installed in the PATH, you can start QGIS by
-typing: \textbf{qgis}  at a command prompt or by double clicking on the QGIS application link (or shortcut) on the desktop. Under MS Windows, start QGIS using the Start menu shortcut, and under Mac OSX, double click the icon in your applications folder.
+Assuming that QGIS is installed in the PATH, you can start QGIS by typing:
+\textbf{qgis}  at a command prompt or by double clicking on the QGIS
+application link (or shortcut) on the desktop. Under MS Windows, start QGIS
+using the Start menu shortcut, and under Mac OSX, double click the icon in
+your Applications folder.
 %\begin{figure}
 %\caption{QGIS Main Window}
 %\end{figure} 
@@ -26,7 +36,7 @@ list of the options, enter \texttt{qgis ---help} on the command line. The usage
 statement for QGIS is:
 \small
 \begin{verbatim}
-Usage: /home/gsherman/qgis06_rc/bin/qgis [options] [FILES]
+Usage: /home/gsherman/qgis07_rc/bin/qgis [options] [FILES]
   options:
         [--snapshot filename]   emit snapshot of loaded datasets to given file
         [--lang language]       use language for interface text
@@ -54,17 +64,19 @@ load on startup using the following command:
 \end{Tip}
 
 \section{The QGIS Main Window}\index{main window}
-When QGIS starts, you are presented with the main window as shown below.
+When QGIS starts, you are presented with the main window as shown below (the
+numbers 1 through 6 in blue ovals refer to the six major areas of the
+interface as discussed below):
 
 \begin{figure}[h]
    \begin{center}
    \caption{Main window}\label{fig:startup}
-   \includegraphics[scale=.5]{qgis_user_guide_images/startup}
+   \includegraphics[scale=.7]{qgis_user_guide_images/startup}
 \end{center}  
    
 \end{figure}
 \textsc{Note - Your window decorations (title bar, etc.) may appear different depending on your operating system and window manager}
-The QGIS main window is divided into five areas:
+The QGIS main window is divided into six areas:
 \begin{compactenum}
 \item The menu bar
 \item The tool bar
@@ -77,13 +89,13 @@ The QGIS main window is divided into five areas:
 These six components of the QGIS interface are described in more detail in the following sections
 \subsection{The QGIS menu bar}
 \index{menus}
-The menu bar provides access to various QGIS features using a standard windows
+The menu bar provides access to various QGIS features using a standard 
 heirachical menu. The top-level menus and a summary of some of the functions provided are:
 \begin{compactitem}
 \item File (project open, save, export image, properties)
-\item Layer (add, show, hide layers)
 \item View (zoom, refresh)
-\item Tools (plugin manager, preferences)
+\item Layer (add, show, hide layers)
+\item Settings (plugin manager, preferences)
 \item Plugins (menus added by plugins as they are loaded)
 \item Help (documentation and web links)
 \end{compactitem}
@@ -94,7 +106,11 @@ heirachical menu. The top-level menus and a summary of some of the functions pro
 The toolbars provide access to most of the same functions as the menus, plus
 additional tools for interacting with the map. Each toolbar item has popup
 help available. Hold your mouse over the item and a short description of the
-tool's purpose will be displayed. %See Appendix \ref{app_toolbar} for complete
+tool's purpose will be displayed. You can also use the \textit{Whats This?}
+tool (the arrow with a question mark next to it) to get more information about
+the tools and other components of the QGIS interface. To use it, click on the
+\textit{Whats This?} button and then click on the item of interest to display
+the information. %See Appendix \ref{app_toolbar} for complete
 %descriptions and illustrations of the various toolbars.  
 
 \subsection{The QGIS map legend}
@@ -111,19 +127,26 @@ its properties.}
 
 Each legend entry can show the following mini icons:
 
-\includegraphics[scale=1]{qgis_user_guide_images/pyramid} This is a raster layer that has pyramids built for it to improve rendering efficiency (see Section \ref{raster_pyramids}).\\
-\includegraphics[scale=1]{qgis_user_guide_images/no_pyramid} This is a raster that has no pyramid layers (see Section \ref{raster_pyramids}).\\
-\includegraphics[scale=1]{qgis_user_guide_images/inoverview} This layer is shown in the overview map area as well as in the main map window.\\
-\includegraphics[scale=1]{qgis_user_guide_images/editable} This is a vector layer that is currently enabled for editing.\\
+\includegraphics[scale=1]{qgis_user_guide_images/pyramid} This is a raster
+layer that has pyramids built for it to improve rendering efficiency (see
+Section \ref{raster_pyramids}).\\
+\includegraphics[scale=1]{qgis_user_guide_images/no_pyramid} This is a raster
+that has no pyramid layers (see Section \ref{raster_pyramids}).\\
+\includegraphics[scale=1]{qgis_user_guide_images/inoverview} This layer is
+shown in the overview map area as well as in the main map window.\\
+\includegraphics[scale=1]{qgis_user_guide_images/editable} This is a vector
+layer that is currently enabled for editing.\\
+
 \subsection{The QGIS map view}
 \index{map!view}
 This is the 'business end' of QGIS - maps are displayed in this area! The map
 displayed in this window will depend on the vector and raster layers you have
-chosen to load (see sections that follow for more info on this). The map view
-can be panned (shifting to focus of the map display to another region), zoomed
-in and out, and supports various other actions as described in the toolbar
-description above.  The map view and the legend are tightly bound to each
-other - the maps in view reflect changes you make in the legend area.  
+chosen to load (see sections that follow for more info on how to load layers).
+The map view can be panned (shifting the focus of the map display to another
+region) and zoomed in and out. Various other operations can be performed on
+the map as described in the toolbar description above.  The map view and the
+legend are tightly bound to each other - the maps in view reflect changes you
+make in the legend area.  
 \begin{Tip}\caption{\textsc{Zooming the Map with the Mouse
 Wheel}}\index{zoom!mouse wheel}
 \qgistip{You can use the mouse wheel to zoom in and out on the map. Place the mouse cursor inside the map area and roll it forward (away from you) to zoom in and backwards (towards you) to zoom out.
@@ -131,14 +154,31 @@ Wheel}}\index{zoom!mouse wheel}
 \end{Tip}
 \subsection{The QGIS map overview}
 \index{map!overview}
-The map overview area provides a full extent view of layers added to it. Within the view is a rectangle showing the current map extent. This allows you to quickly determine which area of the map you are currently viewing. Note that labels are not rendered to the map overview even if the layers in the map overview have been set up for labelling.
+The map overview area provides a full extent view of layers added to it.
+Within the view is a rectangle showing the current map extent. This allows you
+to quickly determine which area of the map you are currently viewing. Note
+that labels are not rendered to the map overview even if the layers in the map
+overview have been set up for labelling. You can add a single layer to the
+overview by right-clicking on it in the legend and choosing \textit{Toggle in
+Overview}. You can also add or remove all layers to the overview using the
+\textit{Add to Overview tool} on the toolbar.
 
 \subsection{The QGIS map status bar} 
-The status bar shows you your current position in map coordinate (e.g. meters
-or decimal degress) as the mouse pointer is moved accross the map view. The status bar also shows the view extents of the map view as you pand and zoom in and out. A progress bar in the status bar shows progress of rendering as each layer is drawn to the map view. In some cases such as the gathering of statistics in raster layers, the progress bar will be used to show the status of lengthy operations. At the end of the status bar is a small checkbox which can be used to temporarily prevent layers being rendered to the map view )see Section \ref{subsec:redraw_events} below.
+The status bar shows you your current position in map coordinates (e.g. meters
+or decimal degress) as the mouse pointer is moved accross the map view. The
+status bar also shows the view extents of the map view as you pan and zoom in
+and out. A progress bar in the status bar shows progress of rendering as each
+layer is drawn to the map view. In some cases, such as the gathering of
+statistics in raster layers, the progress bar will be used to show the status
+of lengthy operations. On the right side of the status bar is a small checkbox which
+can be used to temporarily prevent layers being rendered to the map view )see
+Section \ref{subsec:redraw_events} below. At the far right of the status bar
+is a projector icon. Clicking on this opens the projection properies for the
+current project.
 
 \section{Rendering}\label{subsec:redraw_events}\index{rendering}
-By default, QGIS renders all visible layers whenever the map canvas must be refreshed. The events that trigger a refresh of the map canvas include:
+By default, QGIS renders all visible layers whenever the map canvas must be
+refreshed. The events that trigger a refresh of the map canvas include:
 \begin{compactitem}
 \item Adding a layer
 \item Panning or zooming
@@ -155,7 +195,7 @@ properties dialog by double-clicking on the layer in the legend. On the
 the \textit{Use scale dependent rendering} checkbox.
 
 You can determine the scale values by first zooming to the level you want to use
-an noting the scale value in the QGIS status bar.\index{scale}
+and noting the scale value in the QGIS status bar.\index{scale}
 \subsection{Controlling Map Rendering}
 Map rendering can be controlled in the following ways:
 \begin{compactenum}
@@ -194,10 +234,10 @@ during drawing}
 You can set an option to update the map display as features are drawn. By
 default, QGIS does not display any features for a layer until the entire layer
 has been rendered. To update the display as features are read from the
-datastore, choose \textit{Preferences} from the
-\textit{Settings} menu and click on the \textit{Rendering} tab. Set the feature
-count to an appropriate value to update the display during rendering. Setting a
-value of 0 disables update during drawing (this is the default). Setting a value
-too low will result in poor performance as the map canvas is continually updated
-during the reading of the features. A suggested value to start with is 500. 
+datastore, choose \textit{Preferences} from the \textit{Settings} menu and
+click on the \textit{Rendering} tab. Set the feature count to an appropriate
+value to update the display during rendering. Setting a value of 0 disables
+update during drawing (this is the default). Setting a value too low will
+result in poor performance as the map canvas is continually updated during the
+reading of the features. A suggested value to start with is 500. 
 

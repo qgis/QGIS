@@ -12,7 +12,8 @@ functions.
 
 \section{Shapefiles}\index{shapefile}
 Shapefile support is provided by a library of functions (OGR
-\url{http://www.remotesensing.org/gdal/ogr})\index{ogr}. See Appendix \ref{appdx_ogr} for a list of supported formats.
+\url{http://www.remotesensing.org/gdal/ogr})\index{ogr}. See Appendix
+\ref{appdx_ogr} for a list of supported formats.
 
 A shapefile actually consists of a minimum of three
 files:\index{shapefile!format}
@@ -29,6 +30,7 @@ shapefile, start QGIS and click on the \textit{Add a vector layer} toolbar bar
 button\index{shapefile!loading}. This same tool can be used to load any of the formats supported by the OGR library.
 
 Clicking on the tool brings up a standard open file dialog (Figure \ref{fig:openshapefile}) which allows you to navigate the file system and load a shapefile (or other supported data source). 
+You can also select the Encoding type for the shapefile if desired.
 \begin{figure}[h]
    \begin{center}
    \caption{Open OGR Data Source Dialog}\label{fig:openshapefile}\smallskip
@@ -36,12 +38,12 @@ Clicking on the tool brings up a standard open file dialog (Figure \ref{fig:open
 \end{center}  
    
 \end{figure}
-Selecting a shapefile from the list and clicking Ok loads it into QGIS. Figure \ref{fig:loadedshapefile}
-shows QGIS after loading the country.shp file.
+Selecting a shapefile from the list and clicking Ok loads it into QGIS. Figure
+\ref{fig:loadedshapefile} shows QGIS after loading the country.shp file.
 \begin{figure}[h]
    \begin{center}
    \caption{QGIS with the countries Shapefile Loaded}\label{fig:loadedshapefile}\smallskip
-   \includegraphics[scale=.6]{qgis_user_guide_images/shapefileloaded}
+   \includegraphics[scale=.7]{qgis_user_guide_images/shapefileloaded}
 \end{center}  
    
 \end{figure}
