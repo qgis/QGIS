@@ -21,6 +21,7 @@
 #include "splashscreen.h"
 #include "qfont.h"
 #include "qgis.h"
+#include "qbitmap.h"
 #if defined(WIN32) || defined(Q_OS_MACX)
 QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
@@ -28,9 +29,20 @@ QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #define STATUS_TEXT_Y 10
 SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash)
 {
-  splashImage.load(QString(PKGDATAPATH) + QString("/images/splash/splash.png"));
-  setErasePixmap(splashImage);
+  //set up masking
+  splashImage.load(QString(PKGDATAPATH) + QString("/images/splash/splash.png"), 0, Qt::ThresholdDither |   Qt::AvoidDither );
   resize(splashImage.size());
+  //
+  // NOTES! the mask must be a 1 BIT IMAGE or it wont work!
+  //
+  QPixmap myMaskPixmap( 564, 300, -1, QPixmap::BestOptim );  
+  myMaskPixmap.load( QString(PKGDATAPATH) + QString("/images/splash/splash_mask.png"), 0, Qt::ThresholdDither |   Qt::ThresholdAlphaDither | Qt::AvoidDither );
+  setBackgroundPixmap(splashImage);
+  setMask( myMaskPixmap.createHeuristicMask() );
+
+
+  setErasePixmap(splashImage);
+  
   QRect scr = QApplication::desktop()->screenGeometry();
   move(scr.center() - rect().center());
 
