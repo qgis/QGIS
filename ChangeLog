@@ -3,6 +3,10 @@
 Version 0.6 'Simon' .... development version
 QGIS Change Log
 
+2005-04-17 [timlinux] 0.6devel25
+** More updates to qgsspatialrefsys. Changed splash to be a masked widget &
+added the xcf masters for the splash. Splash still needs some minor
+updating relating to text placement.
 2005-04-17 [timlinux] 0.6devel24
 ** Added logic for reverse mapping a wkt or proj4string to an srsid - not
 very well tested at this stage but works for me with my test dataset

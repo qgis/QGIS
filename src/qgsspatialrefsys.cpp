@@ -1083,3 +1083,10 @@ bool QgsSpatialRefSys::equals(const char *theProj4CharArray)
   }
   return myMatchFlag;
 }
+
+OGRSpatialReference QgsSpatialRefSys::toOgrSrs()
+{
+  OGRSpatialReference myOgrSpatialRef1;
+  OGRErr myInputResult1 = myOgrSpatialRef1.importFromProj4((char *)mProj4String.latin1());
+  return myOgrSpatialRef1;
+}

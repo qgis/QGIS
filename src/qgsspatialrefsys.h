@@ -180,7 +180,12 @@ class QgsSpatialRefSys
          *  is inconclusive.
          */
          bool equals(const char *theProj4CharArray);
-         bool operator==(const char* abc) { return true;};
+         /*! A helper to get an ogr representation of this srs
+          * @return OGRSpatialReference
+          */
+         OGRSpatialReference toOgrSrs();
+
+
         // Accessors -----------------------------------
 
          /*! Get the SrsId - if possible
