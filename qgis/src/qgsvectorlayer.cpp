@@ -89,7 +89,6 @@
 #include "qgsclipper.h"
 #endif
 #include "qgssvgcache.h"
-#include "qgslayerprojectionselector.h"
 #include "qgsspatialrefsys.h"
 #include "qgis.h" //for globals
 //#include "wkbheader.h"

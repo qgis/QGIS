@@ -48,3 +48,9 @@ void QgsDlgVectorLayerPropertiesBase::pbnIndex_clicked()
 {
 
 }
+
+
+void QgsDlgVectorLayerPropertiesBase::pbnChangeSpatialRefSys_clicked()
+{
+
+}
