@@ -69,6 +69,9 @@
 #ifdef HAVE_POSTGRESQL
 #include "qgspgquerybuilder.h"
 #endif
+#include "qgslayerprojectionselector.h"
+#include <qapplication.h>
+
 
 QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, QWidget * parent, const char *name, bool modal):QgsDlgVectorLayerPropertiesBase(parent, name, modal), layer(lyr), rendererDirty(false), bufferDialog(layer->rendererDialog()),
 bufferRenderer(layer->
@@ -573,5 +576,27 @@ QString QgsDlgVectorLayerProperties::getMetadata()
   myMetadataQString += "</table>";
   myMetadataQString += "</body></html>";
   return myMetadataQString;
+
+}
+void QgsDlgVectorLayerProperties::pbnChangeSpatialRefSys_clicked()
+{
+    
+
+    QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector();
+    long myDefaultSRS =layer->coordinateTransform()->sourceSRS().srsid();
+    if (myDefaultSRS==0)
+    {
+      myDefaultSRS=QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
+    }
+    mySelector->setSelectedSRSID(myDefaultSRS);
+    if(mySelector->exec())
+    {
+      layer->coordinateTransform()->sourceSRS().createFromSrsId(mySelector->getCurrentSRSID());
+    }
+    else
+    {
+      QApplication::restoreOverrideCursor();
+    }
+    delete mySelector;
 
 }
