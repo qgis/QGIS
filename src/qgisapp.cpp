@@ -686,6 +686,8 @@ void QgisApp::about()
       + tr("Many enhancements to the digitizing tools have been made, including the ability to capture data straight into PostgreSQL/PostGIS, and improvements to the definition of attribute tables for newly created layers")
       + "<li>"
       + tr("The Raster Georeferencer plugin can be used to generate a world file for a raster. The plugin allows you to define known control points in the raster coordinate system. Once enough control points are defined, the world file can be generated and the raster properly displayed in QGIS or other GIS applications")
+      + "<li>"
+      + tr("Improvements to the Mapserver export tool")
       + "</ul></body></html>";
 
 
