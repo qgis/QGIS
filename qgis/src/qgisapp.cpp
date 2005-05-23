@@ -4890,20 +4890,28 @@ void QgisApp::actionNewBookmark_activated()
 {
   // Get the name for the bookmark. Everything else we fetch from
   // the mapcanvas
-  
+
   bool ok;
   QString bookmarkName = QInputDialog::getText("New Bookmark", 
       "Enter a name for the new bookmark:", QLineEdit::Normal,
       QString::null, &ok, this);
   if( ok && !bookmarkName.isEmpty())
   {
-    // create the bookmark
-     QgsBookmarkItem *bmi = new QgsBookmarkItem(bookmarkName, 
-         QgsProject::instance()->title(), mMapCanvas->extent(), -1,
-         QDir::homeDirPath () + "/.qgis/qgis.db");
-     bmi->store();
-     delete bmi;
-     // emit a signal to indicate that the bookmark was added
-     emit bookmarkAdded();
+    // Make sure the database exists
+    if(QgsBookmarks::createDatabase())
+    {
+      // create the bookmark
+      QgsBookmarkItem *bmi = new QgsBookmarkItem(bookmarkName, 
+          QgsProject::instance()->title(), mMapCanvas->extent(), -1,
+          QDir::homeDirPath () + "/.qgis/qgis.db");
+      bmi->store();
+      delete bmi;
+      // emit a signal to indicate that the bookmark was added
+      emit bookmarkAdded();
+    }
+    else
+    {
+      QMessageBox::warning(this,"Error", "Unable to create the bookmark. Your user database may be missing or corrupted");
+    }
   }
-}
+}      

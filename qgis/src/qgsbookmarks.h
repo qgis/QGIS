@@ -27,6 +27,7 @@ class QgsBookmarks : public QgsBookmarksBase{
 public:
  QgsBookmarks(QWidget *parent=0, const char *name=0);
  ~QgsBookmarks();
+ static bool createDatabase();
 public slots:
  void deleteBookmark();
  void zoomToBookmark();
@@ -35,7 +36,7 @@ public slots:
 
 private:
  QWidget *mParent;
- bool makeDir(QDir &theQDir);
+ static bool makeDir(QDir &theQDir);
  void initialise();
  QString mUserDbPath;
  QString mQGisSettingsDir;
