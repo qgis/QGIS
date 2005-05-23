@@ -2701,9 +2701,9 @@ void QgsVectorLayer::setCoordinateSystem()
   //QString defaultWkt = QgsSpatialReferences::instance()->getSrsBySrid("4326")->srText();
 
 
-  // if not enabled, don't set the output projection, which will then
-  // get set to the same as the input projection in the initialise()
-  // call below.
+  // if projections are not enabled, set the output projection to be
+  // the same as the input projection, otherwise set the output to the
+  // project srs
   QSettings mySettings; 
   if (projectionsEnabled())
   {
