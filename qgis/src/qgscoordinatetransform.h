@@ -56,6 +56,10 @@ class QgsCoordinateTransform: public QObject
  public:
     /*! Default constructor. Make sure you use initialised() manually if you use this one! */
     QgsCoordinateTransform() ;
+
+  QgsCoordinateTransform(const QgsSpatialRefSys& source, 
+                         const QgsSpatialRefSys& dest);
+
     /*!
      * Constructs a QgsCoordinateTransform using the Well Known Text representation
      * of the layer and map canvas coordinate systems

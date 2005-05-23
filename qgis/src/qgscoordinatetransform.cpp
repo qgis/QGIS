@@ -23,6 +23,15 @@ QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject()
 {
 }
 
+QgsCoordinateTransform::QgsCoordinateTransform(const QgsSpatialRefSys& source, 
+                                               const QgsSpatialRefSys& dest)
+{
+  mSourceSRS = source;
+  mDestSRS = dest;
+  initialise();
+}
+
+
 QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceSRS, QString theDestSRS ) : QObject()
 
 {
@@ -122,8 +131,6 @@ void QgsCoordinateTransform::initialise()
   }
   mProj4DestParms=mDestSRS.proj4String();
   mProj4SrcParms=mSourceSRS.proj4String();
-
-
   // init the projections (destination and source)
   mDestinationProjection = pj_init_plus(mProj4DestParms);
   mSourceProjection = pj_init_plus(mProj4SrcParms);
