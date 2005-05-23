@@ -2687,8 +2687,14 @@ void QgsVectorLayer::setCoordinateSystem()
       mCoordinateTransform->sourceSRS().createFromSrid(srid);
   }
   
-
-  QSettings mySettings; 
+  //QgsSpatialRefSys provides a mechanism for FORCE a srs to be valid
+  //which is inolves falling back to system, project or user selected
+  //defaults if the srs is not properly intialised.
+  //we only nee to do that if the srs is not alreay valid
+  if (!mCoordinateTransform->sourceSRS().isValid())
+  {
+    mCoordinateTransform->sourceSRS().validate();
+  }
   //get the project projections WKT, defaulting to this layer's projection
   //if none exists....
   //First get the SRS for the default projection WGS 84
@@ -2698,6 +2704,7 @@ void QgsVectorLayer::setCoordinateSystem()
   // if not enabled, don't set the output projection, which will then
   // get set to the same as the input projection in the initialise()
   // call below.
+  QSettings mySettings; 
   if (projectionsEnabled())
   {
     int myDestSRSID = QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
@@ -2709,11 +2716,13 @@ void QgsVectorLayer::setCoordinateSystem()
     mCoordinateTransform->destSRS().createFromProj4(
            mCoordinateTransform->sourceSRS().proj4String());
   }
+  if (!mCoordinateTransform->destSRS().isValid())
+  {
+    mCoordinateTransform->destSRS().validate();  
+  }
 
-  //now validate both srs's
-  mCoordinateTransform->sourceSRS().validate();
-  mCoordinateTransform->destSRS().validate();  
-  //validate the transform - you should do this any time one of the SRS's changes
+  
+  //initialise the transform - you should do this any time one of the SRS's changes
 
   mCoordinateTransform->initialise();
 
