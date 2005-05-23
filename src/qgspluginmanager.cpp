@@ -30,7 +30,7 @@
 #include "qgspluginregistry.h"
 
 
-#define TESTLIB
+//#define TESTLIB
 #ifdef TESTLIB
 #ifndef WIN32
 #include <dlfcn.h>
