@@ -46,6 +46,7 @@ email                : tim@linfiniti.com
 //non qt includes
 #include <iostream>
 #include <cmath>
+#include <cassert>
 
 //the gui subclass
 #include "plugingui.h"
@@ -184,8 +185,8 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
       // could move this call to somewhere else so that it is only
       // called when the projection or map extent changes
       calculateNorthDirection();
-      const double PI = 3.14159265358979323846;
-      double myRadiansDouble = (PI/180) * mRotationInt;
+
+      double myRadiansDouble = mRotationInt * PI / 180.0;
       int xShift = static_cast<int>((
                                       (centerXDouble * cos(myRadiansDouble)) +
                                       (centerYDouble * sin(myRadiansDouble))
@@ -291,22 +292,22 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
       // Grab an SRS from any layer
       QgsMapLayer& mapLayer = *(mapCanvas.getZpos(0));
       QgsSpatialRefSys& outputSRS = mapLayer.coordinateTransform()->destSRS();
-      QgsSpatialRefSys ourSRS;
 
-      // Use a geographic SRS to get lat/long to work out direction
-      ourSRS.createFromProj4("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
-
-      if (outputSRS.isValid() && !outputSRS.geographicFlag() && ourSRS.isValid())
+      if (outputSRS.isValid() && !outputSRS.geographicFlag())
       {
+        // Use a geographic SRS to get lat/long to work out direction
+        QgsSpatialRefSys ourSRS;
+        ourSRS.createFromProj4("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
+        assert(ourSRS.isValid());
+
         QgsCoordinateTransform transform(outputSRS, ourSRS);
 
         QgsRect extent = mapCanvas.fullExtent();
         QgsPoint p1(extent.center());
-        // A point a bit above p1.
+        // A point a bit above p1. XXX assumes that y increases up!!
+        // May need to involve the maptopixel transform if this proves
+        // to be a problem.
         QgsPoint p2(p1.x(), p1.y() + extent.height() * 0.25); 
-
-        static const double PI = 3.14159;
-        static const double DEG2RAD = PI/180.0; 
 
         // project p1 and p2 to geographic coords
         try
@@ -331,36 +332,36 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
         double angle = 0.0;
 
         // convert to radians for the equations below
-        p1.multiply(DEG2RAD);
-        p2.multiply(DEG2RAD);
+        p1.multiply(PI/180.0);
+        p2.multiply(PI/180.0);
 
         double y = sin(p2.x() - p1.x()) * cos(p2.x());
         double x = cos(p1.y()) * sin(p2.y()) - 
           sin(p1.y()) * cos(p2.y()) * cos(p2.x()-p1.x());
 
-        if (y > 0.0)
+        if (y > TOL)
         {
-          if (x > 0.0) 
+          if (x > TOL) 
             angle = atan(y/x);
-          else if (x < 0.0) 
+          else if (x < TOL) 
             angle = PI - atan(-y/x);
           else
-            angle = PI * 0.5;
+            angle = 0.5 * PI;
         }
-        else if (y < 0.0)
+        else if (y < TOL)
         {
-          if (x > 0.0)
+          if (x > TOL)
             angle = -atan(-y/x);
-          else if (x < 0)
+          else if (x < TOL)
             angle = atan(y/x) - PI;
           else
             angle = 1.5 * PI;
         }
         else
         {
-          if (x > 0.0)
+          if (x > TOL)
             angle = 0.0;
-          else if (x < 0.0)
+          else if (x < TOL)
             angle = PI;
           else
           {
@@ -370,7 +371,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
         }
         // And set the angle of the north arrow. Perhaps do something
         // different if goodDirn = false.
-        mRotationInt = 360 - static_cast<int>(round(angle/DEG2RAD));
+        mRotationInt = static_cast<int>(round(2*PI - angle*180.0/PI));
       }
     }
   return goodDirn;
