@@ -2545,11 +2545,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
     {
       double x = *((double *) (feature + 5));
       double y = *((double *) (feature + 5 + sizeof(double)));
-      // XXX get rid of following line
-      std::cout << "input " << x << ", " << y << std::endl; 
       transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
-      // XXX get rid of following line
-      std::cout << "output " << x << ", " << y << std::endl; 
 
       p->save();
       p->scale(markerScaleFactor,markerScaleFactor);
