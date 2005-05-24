@@ -146,13 +146,16 @@ void QgsBookmarks::deleteBookmark()
   if(lvi)
   {
     // make sure the user really wants to delete this bookmark
-    if(QMessageBox::Yes == QMessageBox::information(this,"Really Delete?",
+    /*if(QMessageBox::Yes == QMessageBox::information(this,"Really Delete?",
           "Are you sure you want to delete the " + lvi->text(0) +
           " bookmark?", 
           QMessageBox::Yes, 
           QMessageBox::No, 
           QMessageBox::NoButton
-          ))
+          ))*/
+    if(0 == QMessageBox::information(this,"Really Delete?",
+          "Are you sure you want to delete the " + lvi->text(0) +
+          " bookmark?", tr("&Yes"), tr("&No"), QString::null, 0, 1))  
     {
       // remove it from the listview
       lstBookmarks->takeItem(lvi);
