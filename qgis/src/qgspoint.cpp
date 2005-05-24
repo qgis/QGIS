@@ -22,6 +22,11 @@
 #include <qtextstream.h>
 
 
+QgsPoint::QgsPoint(const QgsPoint& p)
+{
+  m_x = p.x();
+  m_y = p.y();
+}
 
 QString QgsPoint::stringRep() const
 {

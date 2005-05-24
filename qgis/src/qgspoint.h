@@ -32,6 +32,9 @@ class QgsPoint
   QgsPoint()
   {}
     
+  /*! Create a point from another point */
+  QgsPoint(const QgsPoint& p);
+
   /*! Create a point from x,y coordinates
    * @param x x coordinate
    * @param y y coordinate
