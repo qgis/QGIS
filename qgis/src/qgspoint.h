@@ -106,8 +106,11 @@ class QgsPoint
   //! Inequality operator
   bool operator!=(const QgsPoint &other);
     
-  /// Assignment
+  //! Assignment
   QgsPoint & operator=(const QgsPoint &other);
+
+  //! Multiply x and y by the given value
+  void multiply(const double& scalar);
   
  private:
 

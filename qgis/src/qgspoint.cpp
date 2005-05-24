@@ -82,3 +82,9 @@ QgsPoint & QgsPoint::operator=(const QgsPoint & other)
 
   return *this;
 }
+
+void QgsPoint::multiply(const double& scalar)
+{
+  m_x *= scalar;
+  m_y *= scalar;
+}
