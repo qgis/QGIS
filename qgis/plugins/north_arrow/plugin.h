@@ -64,6 +64,11 @@ class QgsNorthArrowPlugin:public QObject, public QgisPlugin
   void setPlacement(QString);
   //! enable or disable north arrow
   void setEnabled(bool);
+  //! try to calculate the direction for the north arrow. Sets the
+  // private class rotation variable. If unable to calculate the
+  // direction, the function returns false and leaves the rotation
+  // variable as is.
+  bool calculateNorthDirection();
 
     private:
 

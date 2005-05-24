@@ -45,7 +45,7 @@ email                : tim@linfiniti.com
 
 //non qt includes
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 //the gui subclass
 #include "plugingui.h"
@@ -180,6 +180,10 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
       //           properly about its center
       //(x cos a + y sin a - x, -x sin a + y cos a - y)
       //
+
+      // could move this call to somewhere else so that it is only
+      // called when the projection or map extent changes
+      calculateNorthDirection();
       const double PI = 3.14159265358979323846;
       double myRadiansDouble = (PI/180) * mRotationInt;
       int xShift = static_cast<int>((
@@ -276,6 +280,101 @@ void QgsNorthArrowPlugin::setEnabled(bool theBool)
   refreshCanvas();
 }
 
+bool QgsNorthArrowPlugin::calculateNorthDirection()
+{
+  QgsMapCanvas& mapCanvas = *(qGisInterface->getMapCanvas());
+
+  bool goodDirn = false;
+
+  if (mapCanvas.layerCount() > 0 && mapCanvas.projectionsEnabled())
+    {
+      // Grab an SRS from any layer
+      QgsMapLayer& mapLayer = *(mapCanvas.getZpos(0));
+      QgsSpatialRefSys& outputSRS = mapLayer.coordinateTransform()->destSRS();
+      QgsSpatialRefSys ourSRS;
+
+      // Use a geographic SRS to get lat/long to work out direction
+      ourSRS.createFromProj4("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
+
+      if (outputSRS.isValid() && !outputSRS.geographicFlag() && ourSRS.isValid())
+      {
+        QgsCoordinateTransform transform(outputSRS, ourSRS);
+
+        QgsRect extent = mapCanvas.fullExtent();
+        QgsPoint p1(extent.center());
+        // A point a bit above p1.
+        QgsPoint p2(p1.x(), p1.y() + extent.height() * 0.25); 
+
+        static const double PI = 3.14159;
+        static const double DEG2RAD = PI/180.0; 
+
+        // project p1 and p2 to geographic coords
+        try
+        {        
+          p1 = transform.transform(p1);
+          p2 = transform.transform(p2);
+        }
+        catch (QgsException &e)
+        {
+          // just give up
+          return false;
+        }
+
+        // Work out the value of the initial heading one takes to go
+        // from point p1 to point p2. The north direction is then that
+        // many degrees anti-clockwise or vertical.
+
+        // Take some care to not divide by zero, etc, and ensure that we
+        // get sensible results for all possible values for p1 and p2.
+
+        goodDirn = true;
+        double angle = 0.0;
+
+        // convert to radians for the equations below
+        p1.multiply(DEG2RAD);
+        p2.multiply(DEG2RAD);
+
+        double y = sin(p2.x() - p1.x()) * cos(p2.x());
+        double x = cos(p1.y()) * sin(p2.y()) - 
+          sin(p1.y()) * cos(p2.y()) * cos(p2.x()-p1.x());
+
+        if (y > 0.0)
+        {
+          if (x > 0.0) 
+            angle = atan(y/x);
+          else if (x < 0.0) 
+            angle = PI - atan(-y/x);
+          else
+            angle = PI * 0.5;
+        }
+        else if (y < 0.0)
+        {
+          if (x > 0.0)
+            angle = -atan(-y/x);
+          else if (x < 0)
+            angle = atan(y/x) - PI;
+          else
+            angle = 1.5 * PI;
+        }
+        else
+        {
+          if (x > 0.0)
+            angle = 0.0;
+          else if (x < 0.0)
+            angle = PI;
+          else
+          {
+            angle = 0.0; // p1 = p2
+            goodDirn = false;
+          }
+        }
+        // And set the angle of the north arrow. Perhaps do something
+        // different if goodDirn = false.
+        mRotationInt = 360 - static_cast<int>(round(angle/DEG2RAD));
+      }
+    }
+  return goodDirn;
+}
 
 
 
