@@ -373,15 +373,15 @@ void QgsRasterLayerProperties::apply()
     }
 
   }
-
-
+  
+  rasterLayer->setLayerName(leDisplayName->text());
+  
   //update the legend pixmap
   pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
   pixmapLegend->setScaledContents(true);
   pixmapLegend->repaint(false);
   rasterLayer->updateItemPixmap();
-
-  rasterLayer->setLayerName(leDisplayName->text());
+  
   //see if the user would like debug overlays
   if (cboxShowDebugInfo->isChecked()
           == true)
