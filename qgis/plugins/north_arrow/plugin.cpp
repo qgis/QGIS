@@ -335,9 +335,11 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
       p1.multiply(PI/180.0);
       p2.multiply(PI/180.0);
 
-      double y = sin(p2.x() - p1.x()) * cos(p2.x());
+      double y = sin(p2.x() - p1.x()) * cos(p2.y());
       double x = cos(p1.y()) * sin(p2.y()) - 
 	sin(p1.y()) * cos(p2.y()) * cos(p2.x()-p1.x());
+
+      std::cerr << x << " " << y << '\n';
 
       if (y > TOL)
       {
@@ -372,6 +374,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
       // And set the angle of the north arrow. Perhaps do something
       // different if goodDirn = false.
       mRotationInt = static_cast<int>(round(2*PI - angle*180.0/PI));
+      std::cerr << angle *180/PI << '\n';
     }
     else
     {
