@@ -373,6 +373,12 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
       // different if goodDirn = false.
       mRotationInt = static_cast<int>(round(2*PI - angle*180.0/PI));
     }
+    else
+    {
+      // For geographic SRS and for when there are no layers, set the
+      // direction back to the default
+      mRotationInt = 0;
+    }
   }
   return goodDirn;
 }
