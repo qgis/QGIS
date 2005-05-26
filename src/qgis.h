@@ -159,4 +159,24 @@ namespace QGis
     QString proj4text; // Proj4 parameter string 
   } SPATIAL_REF_SYS; 
   */
+
+
+/** debugging convenience function
+
+  Wrapper round qDebug() that's only embedded if QGISDEBUG set, thus
+  elminating large blocks of #ifdef/#endif text.  Also uses GNU g++
+  __FUNCTION__ extension if that compiler used.
+
+*/
+#ifdef QGISDEBUG
+#ifdef __GNUG__
+#define QgsDebug(str) qDebug("%s:%d %s, %s", __FILE__, __LINE__, __FUNCTION__, str)
+#else
+#define QgsDebug(str) qDebug("%s:%d %s", __FILE__, __LINE__, str)
+#endif
+#else
+#define QgsDebug(str)
+#endif
+
+
 #endif
