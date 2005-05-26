@@ -2153,6 +2153,8 @@ void QgisApp::fileSave()
         {
           fullPath += ".qgs";
         }
+        // XXX We should check to see if the file exists before just blasting
+        //     it into oblivion...
 
         QgsProject::instance()->filename( fullPath );
     }
