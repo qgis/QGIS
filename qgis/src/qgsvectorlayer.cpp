@@ -1848,7 +1848,6 @@ void QgsVectorLayer::stopEditing()
     if(mModified)
     {
       //commit or roll back?
-      //int commit=QMessageBox::information(0,tr("Stop editing"),tr("Do you want to save the changes?"),QMessageBox::Yes,QMessageBox::No,QMessageBox::NoButton);
 	int commit=QMessageBox::information(0,tr("Stop editing"),tr("Do you want to save the changes?"),tr("&Yes"),tr("&No"),QString::null,0,1);	
 	
       if(commit==0)

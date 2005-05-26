@@ -146,16 +146,9 @@ void QgsBookmarks::deleteBookmark()
   if(lvi)
   {
     // make sure the user really wants to delete this bookmark
-    /*if(QMessageBox::Yes == QMessageBox::information(this,"Really Delete?",
-          "Are you sure you want to delete the " + lvi->text(0) +
-          " bookmark?", 
-          QMessageBox::Yes, 
-          QMessageBox::No, 
-          QMessageBox::NoButton
-          ))*/
-    if(0 == QMessageBox::information(this,"Really Delete?",
-          "Are you sure you want to delete the " + lvi->text(0) +
-          " bookmark?", tr("&Yes"), tr("&No"), QString::null, 0, 1))  
+    if(0 == QMessageBox::information(this,tr("Really Delete?"),
+          tr("Are you sure you want to delete the " + lvi->text(0) +
+          " bookmark?"), tr("&Yes"), tr("&No"), QString::null, 0, 1))  
     {
       // remove it from the listview
       lstBookmarks->takeItem(lvi);
@@ -200,6 +193,10 @@ void QgsBookmarks::zoomToBookmark()
 	// the map
   // get the current item
   QListViewItem *lvi = lstBookmarks->currentItem();
+  if(!lvi)
+  {
+      return;
+  }
   // get the extent from the database
   int rc = connectDb();
   if(rc == SQLITE_OK)

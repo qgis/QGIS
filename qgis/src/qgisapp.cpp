@@ -1927,7 +1927,6 @@ void QgisApp::newVectorLayer()
             QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
             return;
         }
-        //writer.createField("dummy", OFTReal, 1, 1);
     }
     else if(geometrytype == QGis::WKBLineString)
     {
@@ -1937,7 +1936,6 @@ void QgisApp::newVectorLayer()
             QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
             return;
         }
-        //writer.createField("dummy", OFTReal, 1, 1);
     }
     else if(geometrytype == QGis::WKBPolygon)
     {
@@ -1947,7 +1945,6 @@ void QgisApp::newVectorLayer()
             QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
             return;
         }
-        //writer.createField("dummy", OFTReal, 1, 1);
     }
     else
     {
@@ -1962,15 +1959,15 @@ void QgisApp::newVectorLayer()
     {
 	for(std::list<std::pair<QString, QString> >::iterator it=attributes.begin();it!=attributes.end();++it)
 	{
-	    if(it->second=="OFTReal")
+	    if(it->second=="Real")
 	    {
 		writer->createField(it->first, OFTReal, 10, 3);
 	    }
-	    else if(it->second=="OFTInteger")
+	    else if(it->second=="Integer")
 	    {
 		writer->createField(it->first, OFTInteger, 10, 3);
 	    }
-	    else if(it->second=="OFTString")
+	    else if(it->second=="String")
 	    {
 		writer->createField(it->first, OFTString, 40, 1);
 	    }
