@@ -103,7 +103,7 @@ void LayerSelector::pbnOK_clicked()
       }
       else
       {        
-        selectedLayersList+=(myIterator.current()->parent()->text(0) + myIterator.current()->text(0));
+        selectedLayersList+=(myIterator.current()->parent()->text(0) + "/" +myIterator.current()->text(0));
       }
     }
     ++myIterator;
