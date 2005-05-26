@@ -1583,15 +1583,16 @@ providerType_( QDomNode & layerNode )
             {
                 return IS_URL;
             }
+#ifdef HAVE_POSTGRESQL
             else if ( dataSource.contains("dbname=") )
             {
                 return IS_DATABASE;
             }
-
+#endif
             // be default, then, this should be a file based layer data source
             // XXX is this a reasonable assumption?
 
-            return IS_FILE;            // XXX you were here
+            return IS_FILE;
         }
 
         case IS_RASTER:         // rasters are currently only accessed as
@@ -1719,9 +1720,6 @@ findMissingFile_( QDomNode & layerNode )
 
   @param layerNode QDom node containing layer project information
 
-  @note Yes, we want a _copy_ of layerNode since we will be making possible
-        changes to it, such as setting the data source path.
-
   @todo
 
   XXX Only implemented for file based layers.  It will need to be extended for
@@ -1735,24 +1733,25 @@ findLayer_( QDomNode const & constLayerNode )
     // XXX actually we could possibly get away with a copy of the node
     QDomNode & layerNode = const_cast<QDomNode&>(constLayerNode);
 
-
     switch ( providerType_(layerNode) )
     {
         case IS_FILE:
             qDebug( "%s:%d layer is file based", __FILE__, __LINE__ );
             findMissingFile_( layerNode );
             break;
+
         case IS_DATABASE:
             qDebug( "%s:%d layer is database based", __FILE__, __LINE__ );
             break;
+
         case IS_URL:
             qDebug( "%s:%d layer is URL based", __FILE__, __LINE__ );
             break;
+
         case IS_UNKNOWN:
             qDebug( "%s:%d layer has an unkown type", __FILE__, __LINE__ );
             break;
     }
-
 } // findLayer_
 
 
@@ -2123,38 +2122,58 @@ void QgisApp::fileSave()
 {
     // if we don't have a filename, then obviously we need to get one; note
     // that the project file name is reset to null in fileNew()
-    QString fullPath;
-    bool isNewProject = FALSE;
+    QFileInfo fullPath;
+
+    // we need to remember if this is a new project so that we know to later
+    // update the "last project dir" settings; we know it's a new project if
+    // the current project file name is empty
+    bool isNewProject = false;
+
     if ( QgsProject::instance()->filename().isNull() )
     {
-        isNewProject = TRUE;
+        isNewProject = true;
         
         // Retrieve last used project dir from persistent settings
         QSettings settings;
         QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
         
-        QFileDialog * saveFileDialog = new QFileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0, 
-                                                        QFileDialog::tr("Choose a QGIS project file"));
+        std::auto_ptr<QFileDialog> saveFileDialog( new QFileDialog(lastUsedDir, 
+                                                                   QObject::tr("QGis files (*.qgs)"), 
+                                                                   0,
+                                                                   QFileDialog::tr("Choose a QGIS project file")) );
+
         saveFileDialog->setMode(QFileDialog::AnyFile);
         
         if (saveFileDialog->exec() == QDialog::Accepted)
         {
             fullPath = saveFileDialog->selectedFile();
-        } else {
+        } else 
+        {
             // if they didn't select anything, just return
-            delete saveFileDialog;
             return;
         }
         
-        delete saveFileDialog;
-        
         // make sure we have the .qgs extension in the file name
-        if(fullPath.find(QRegExp("\\.qgs$")) == -1)
+        if( "qgs" != fullPath.extension(false) )
         {
-          fullPath += ".qgs";
+          fullPath.setFile( fullPath.filePath() + ".qgs" );
         }
 
-        QgsProject::instance()->filename( fullPath );
+        // if the file already exists
+        if ( fullPath.exists() &&
+             QMessageBox::question( // yes, hacked from Qt example
+                 this,
+                 tr("Overwrite Project?"),
+                 tr("A project named %1 exists."
+                    "Do you want to overwrite it?")
+                 .arg( fullPath.fileName() ),
+                 tr("&Yes"), tr("&No"),
+                 QString::null, 0, 1 ) )
+        {
+            return;
+        }
+
+        QgsProject::instance()->filename( fullPath.filePath() );
     }
 
     try
@@ -2167,7 +2186,7 @@ void QgisApp::fileSave()
             {
                 // add this to the list of recently used project files
                 QSettings settings;
-                saveRecentProjectPath(fullPath, settings);
+                saveRecentProjectPath(fullPath.filePath(), settings);
             }
         }
         else
