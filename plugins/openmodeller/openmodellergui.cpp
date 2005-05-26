@@ -767,7 +767,6 @@ void OpenModellerGui::makeConfigFile()
     myQTextStream << tr("Output file = ") << outputFileNameQString << ".tif\n";
     myQTextStream << tr("# Scale algorithm output (originally between 0 and 1) by this factor.\n");
     //NOTE I am hard coding the output scaling variable for now!
-    myQTextStream << tr("Scale = 240.0\n");                
     myQTextStream << tr("\n\n##\n");                 
     myQTextStream << tr("## Model Type and Extra Model Parameters\n");
     myQTextStream << tr("##\n\n");         
