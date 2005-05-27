@@ -74,7 +74,7 @@ class QgsNorthArrowPlugin:public QObject, public QgisPlugin
 
   static const double PI = 3.14159265358979323846;
   //  static const double DEG2RAD = 0.0174532925199433;
-  static const double TOL = 1e-6;
+  static const double TOL = 1e-8;
 
   // The amount of rotation for the north arrow
   int mRotationInt;

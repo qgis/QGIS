@@ -302,7 +302,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
 
       QgsCoordinateTransform transform(outputSRS, ourSRS);
 
-      QgsRect extent = mapCanvas.fullExtent();
+      QgsRect extent = mapCanvas.extent();
       QgsPoint p1(extent.center());
       // A point a bit above p1. XXX assumes that y increases up!!
       // May need to involve the maptopixel transform if this proves
@@ -337,22 +337,22 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
 
       double y = sin(p2.x() - p1.x()) * cos(p2.y());
       double x = cos(p1.y()) * sin(p2.y()) - 
-	sin(p1.y()) * cos(p2.y()) * cos(p2.x()-p1.x());
+	         sin(p1.y()) * cos(p2.y()) * cos(p2.x()-p1.x());
 
-      if (y > TOL)
+      if (y > 0.0)
       {
 	if (x > TOL) 
 	  angle = atan(y/x);
-	else if (x < TOL) 
+	else if (x < -TOL) 
 	  angle = PI - atan(-y/x);
 	else
 	  angle = 0.5 * PI;
       }
-      else if (y < TOL)
+      else if (y < 0.0)
       {
 	if (x > TOL)
 	  angle = -atan(-y/x);
-	else if (x < TOL)
+	else if (x < -TOL)
 	  angle = atan(y/x) - PI;
 	else
 	  angle = 1.5 * PI;
@@ -361,7 +361,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
       {
 	if (x > TOL)
 	  angle = 0.0;
-	else if (x < TOL)
+	else if (x < -TOL)
 	  angle = PI;
 	else
         {
@@ -371,7 +371,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
       }
       // And set the angle of the north arrow. Perhaps do something
       // different if goodDirn = false.
-      mRotationInt = static_cast<int>(round(2*PI - angle*180.0/PI));
+      mRotationInt = static_cast<int>(round(fmod(360.0-angle*180.0/PI, 360.0)));
     }
     else
     {
