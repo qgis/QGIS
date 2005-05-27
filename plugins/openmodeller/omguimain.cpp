@@ -21,6 +21,8 @@
 #include <qwidget.h>
 #include <qlayout.h>
 #include <qframe.h>
+//om includes
+#include <openmodeller/om.hh>
 OmGuiMain::OmGuiMain()
   : OmGuiMainBase()
 {
@@ -34,6 +36,13 @@ OmGuiMain::OmGuiMain()
   mPictureWidget = new QLabel(myVBox);
   myScrollView->setResizePolicy(QScrollView::AutoOneFit);
   //show();
+  //
+  // Note this function searches for om plugins - and should only 
+  // ever be run once in the life of the qgis session (the om 
+  // plugin registry is a singleton), so we do it here
+  // rather than in the ctor of the plugin.
+  //
+  AlgorithmFactory::searchDefaultDirs();
   runWizard();
 }
 

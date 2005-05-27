@@ -68,7 +68,6 @@
 OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
   : OpenModellerGuiBase( parent, name, modal, fl )
 {
-  AlgorithmFactory::searchDefaultDirs();
   mOpenModeller = new OpenModeller();
   getAlgorithmList();
   mParametersScrollView = new QScrollView(frameParameters);

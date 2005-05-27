@@ -37,7 +37,7 @@ email                : tim@linfiniti.com
 //non qt includes
 #include <iostream>
 #include <openmodellergui.h>
-
+#include <openmodeller/om.hh>
 // xpm for creating the toolbar icon
 #include "icon_om.xpm"
 // 
@@ -90,6 +90,13 @@ void QgsOpenModellerPlugin::initGui()
   // Add the zoom previous tool to the toolbar
   myQActionPointer->addTo(mToolBarPointer);
 
+  //
+  // Note this function searches for om plugins - and should only 
+  // ever be run once in the life of the qgis session (the om 
+  // plugin registry is a singleton), so we do it here
+  // rather than in the ctor of the plugin.
+  //
+  AlgorithmFactory::searchDefaultDirs();
 
 }
 
