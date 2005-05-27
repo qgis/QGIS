@@ -64,6 +64,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <climits>
+#include <stdexcept>
 
 OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
   : OpenModellerGuiBase( parent, name, modal, fl )
@@ -651,58 +652,73 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
 void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
 {
 
-  RequestFile myRequestFile;
-  int myResult = myRequestFile.configure( mOpenModeller, strdup(theParametersFileNameQString));
-
-  if ( myResult < 0 )
+  try 
   {
-    //notify user of eror here!
-    QMessageBox::warning( this,"openModeller Wizard Error","Error reading request file!");
-    return;
+    RequestFile myRequestFile;
+    int myResult = myRequestFile.configure( mOpenModeller, strdup(theParametersFileNameQString));
+
+    if ( myResult < 0 )
+    {
+      //notify user of eror here!
+      QMessageBox::warning( this,"openModeller Wizard Error","Error reading request file!");
+      return;
+    }
+
+    //tell oM to use our locally made callback fn
+    mOpenModeller->setModelCallback( progressBarCallback, creationProgressBar );
+    mOpenModeller->setMapCallback( progressBarCallback, projectionProgressBar );
+
+    // om library version < 0.3
+    //if ( ! mOpenModeller->run() )
+    //{
+    //  QMessageBox::warning( this,
+    //          "openModeller Wizard Error","Error running model!",
+    //          mOpenModeller->error()
+    //          );
+    //  return;
+    //}
+
+    myRequestFile.makeModel( mOpenModeller );
+
+    // Prepare the output map
+
+    // om library version 0.1.x:
+    //if ( ! mOpenModeller->createMap( mOpenModeller->getEnvironment() ) )
+    // om library version 0.2.x:
+    //when projecting model into a different dataset there should be no parameter passed
+    //if ( ! mOpenModeller->createMap( ) )
+    //{
+    //  QMessageBox::warning( this,
+    //          "openModeller Wizard Error","Error projecting model!",
+    //          mOpenModeller->error()
+    //          );
+    //  return;
+    //}
+
+    myRequestFile.makeProjection( mOpenModeller );
+
+    std::cout << "Map creation complete - creating image an dfiring signals" << std::endl;
+    //save a nice looking png of the image to disk
+    createModelImage(outputFileNameQString);
+    //used by omgui standalone
+    std::cout << "emittin drawModelImage" << std::endl;
+    emit drawModelImage(outputFileNameQString+".png");
+    //if all went ok, send notification to the parent app that we are finished (qgis plugin mode)
+    std::cout << "emittin drawRasterLayer" << std::endl;
+    emit drawRasterLayer(outputFileNameQString+QString(".tif"));
+
   }
-
-  //tell oM to use our locally made callback fn
-  mOpenModeller->setModelCallback( progressBarCallback, creationProgressBar );
-  mOpenModeller->setMapCallback( progressBarCallback, projectionProgressBar );
-
-  // om library version < 0.3
-  //if ( ! mOpenModeller->run() )
-  //{
-  //  QMessageBox::warning( this,
-  //          "openModeller Wizard Error","Error running model!",
-  //          mOpenModeller->error()
-  //          );
-  //  return;
-  //}
-
-  myRequestFile.makeModel( mOpenModeller );
-
-  // Prepare the output map
-
-  // om library version 0.1.x:
-  //if ( ! mOpenModeller->createMap( mOpenModeller->getEnvironment() ) )
-  // om library version 0.2.x:
-  //when projecting model into a different dataset there should be no parameter passed
-  //if ( ! mOpenModeller->createMap( ) )
-  //{
-  //  QMessageBox::warning( this,
-  //          "openModeller Wizard Error","Error projecting model!",
-  //          mOpenModeller->error()
-  //          );
-  //  return;
-  //}
-
-  myRequestFile.makeProjection( mOpenModeller );
-
-  std::cout << "Map creation complete - creating image an dfiring signals" << std::endl;
-  //save a nice looking png of the image to disk
-  createModelImage(outputFileNameQString);
-  //used by omgui standalone
-  std::cout << "emittin drawModelImage" << std::endl;
-  emit drawModelImage(outputFileNameQString+".png");
-  //if all went ok, send notification to the parent app that we are finished (qgis plugin mode)
-  std::cout << "emittin drawRasterLayer" << std::endl;
-  emit drawRasterLayer(outputFileNameQString+QString(".tif"));
+  catch( std::exception& e ) 
+  {
+    QMessageBox::critical( 0, "OpenModeller GUI",
+            QString("An internal error occurred.\n ") +
+             e.what() +
+            "\n\nModel aborted." );
+  }
+  catch (...)
+  {
+    //do nothing
+  }
   done(1);
 }
 void OpenModellerGui::makeConfigFile()
