@@ -677,9 +677,24 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 #endif
 
       QgsCoordinateTransform transform(mCanvasProperties->previousOutputSRS, currentOutputSRS);
-
-      mCanvasProperties->currentExtent = 
-        transform.transform(mCanvasProperties->currentExtent);
+      
+      try
+      {
+        mCanvasProperties->currentExtent = 
+          transform.transform(mCanvasProperties->currentExtent);
+      }
+      catch(QgsCsException &cse)
+      {
+        qWarning(tr("Error when projecting the view extent, you may need to manually zoom to the region of interest."));
+#ifdef QGISDEBUG
+        std::cerr << "Attempted to transform the view extent from\n"
+                  << mCanvasProperties->previousOutputSRS 
+                  << "\nto\n" << currentOutputSRS;
+        std::cerr << "The view extent was: " 
+                  << mCanvasProperties->currentExtent
+                  << '\n';
+#endif
+      }
 
       mCanvasProperties->previousOutputSRS = currentOutputSRS;
     }
