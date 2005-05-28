@@ -64,6 +64,8 @@ class QgsNorthArrowPlugin:public QObject, public QgisPlugin
   void setPlacement(QString);
   //! enable or disable north arrow
   void setEnabled(bool);
+  //! enable or disable the automatic setting of the arrow direction
+  void setAutomatic(bool);
   //! try to calculate the direction for the north arrow. Sets the
   // private class rotation variable. If unable to calculate the
   // direction, the function returns false and leaves the rotation
@@ -81,6 +83,8 @@ class QgsNorthArrowPlugin:public QObject, public QgisPlugin
   int pluginType;
   // enable or disable north arrow
   bool mEnable;
+  //! enable or disable the automatic setting of the arrow direction
+  bool mAutomatic;
   // The placement string
   QString mPlacement;
   //! Id of the plugin's menu. Used for unloading

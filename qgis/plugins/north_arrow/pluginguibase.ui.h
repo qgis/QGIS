@@ -54,3 +54,5 @@ void QgsNorthArrowPluginGuiBase::cboPlacement_textChanged( const QString & )
 {
 
 }
+
+

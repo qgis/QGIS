@@ -81,6 +81,7 @@ QgsNorthArrowPlugin::QgsNorthArrowPlugin(QgisApp * theQGisApp, QgisIface * theQg
     QgisPlugin(name_,description_,version_,type_)
 {
   mRotationInt=0;
+  mAutomatic=true;
   mPlacement=tr("Bottom Left");
 }
 
@@ -124,6 +125,7 @@ void QgsNorthArrowPlugin::projectRead()
     mRotationInt = QgsProject::instance()->readNumEntry("NorthArrow","/Rotation",0);
     mPlacement = QgsProject::instance()->readEntry("NorthArrow","/Placement","Bottom Left");
     mEnable = QgsProject::instance()->readBoolEntry("NorthArrow","/Enabled",true);
+    mAutomatic = QgsProject::instance()->readBoolEntry("NorthArrow","/Automatic",true);
 }
 
 //method defined in interface
@@ -140,12 +142,15 @@ void QgsNorthArrowPlugin::run()
   myPluginGui->setRotation(mRotationInt);
   myPluginGui->setPlacement(mPlacement);
   myPluginGui->setEnabled(mEnable);
+  myPluginGui->setAutomatic(mAutomatic);
+
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(rotationChanged(int)), this, SLOT(rotationChanged(int)));
   connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
+  connect(myPluginGui, SIGNAL(enableAutomatic(bool)), this, SLOT(setAutomatic(bool)));
   connect(myPluginGui, SIGNAL(enableNorthArrow(bool)), this, SLOT(setEnabled(bool)));
+  connect(myPluginGui, SIGNAL(needToRefresh()), this, SLOT(refreshCanvas()));
   myPluginGui->show();
-
 }
 
 //! Refresh the map display using the mapcanvas exported via the plugin interface
@@ -184,7 +189,8 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
 
       // could move this call to somewhere else so that it is only
       // called when the projection or map extent changes
-      calculateNorthDirection();
+      if (mAutomatic)
+        calculateNorthDirection();
 
       double myRadiansDouble = mRotationInt * PI / 180.0;
       int xShift = static_cast<int>((
@@ -263,7 +269,6 @@ void QgsNorthArrowPlugin::rotationChanged(int theInt)
 {
   mRotationInt = theInt;
   QgsProject::instance()->writeEntry("NorthArrow","/Rotation", mRotationInt  );
-  refreshCanvas();
 }
 
 //! set placement of north arrow
@@ -271,14 +276,20 @@ void QgsNorthArrowPlugin::setPlacement(QString theQString)
 {
   mPlacement = theQString;
   QgsProject::instance()->writeEntry("NorthArrow","/Placement", mPlacement);
-  refreshCanvas();
 }
 
 void QgsNorthArrowPlugin::setEnabled(bool theBool)
 {
   mEnable = theBool;
   QgsProject::instance()->writeEntry("NorthArrow","/Enabled", mEnable );
-  refreshCanvas();
+}
+
+void QgsNorthArrowPlugin::setAutomatic(bool theBool)
+{
+  mAutomatic = theBool;
+  QgsProject::instance()->writeEntry("NorthArrow","/Automatic", mAutomatic );
+  if (mAutomatic)
+    calculateNorthDirection();
 }
 
 bool QgsNorthArrowPlugin::calculateNorthDirection()
@@ -287,11 +298,13 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
 
   bool goodDirn = false;
 
-  if (mapCanvas.layerCount() > 0 && mapCanvas.projectionsEnabled())
+  if (mapCanvas.layerCount() > 0)
   {
     // Grab an SRS from any layer
     QgsMapLayer& mapLayer = *(mapCanvas.getZpos(0));
     QgsSpatialRefSys& outputSRS = mapLayer.coordinateTransform()->destSRS();
+
+    bool yy = outputSRS.geographicFlag();
 
     if (outputSRS.isValid() && !outputSRS.geographicFlag())
     {
