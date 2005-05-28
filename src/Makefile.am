@@ -121,6 +121,7 @@ headers =	qgisapp.h					\
 		qgsprovidermetadata.h				\
 		qgsproviderregistry.h				\
 		qgsrangerenderitem.h				\
+		qgsrasterdataprovider.h				\
 		qgsrasterlayer.h				\
 		qgsrasterlayerproperties.h			\
 		qgsrect.h					\
@@ -273,6 +274,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgspluginmanager.moc.cpp		\
 		qgspointstylewidget.moc.cpp 		\
 		qgsprojectproperties.moc.cpp		\
+		qgsrasterdataprovider.moc.cpp		\
 		qgsrasterlayer.moc.cpp			\
 		qgsrasterlayerproperties.moc.cpp	\
 		qgsrunprocess.moc.cpp			\
@@ -370,6 +372,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsprovidermetadata.cpp		\
 		qgsproviderregistry.cpp		\
 		qgsrangerenderitem.cpp		\
+		qgsrasterdataprovider.cpp	\
 		qgsrasterlayer.cpp		\
 		qgsrasterlayerproperties.cpp	\
 		qgsrect.cpp			\
