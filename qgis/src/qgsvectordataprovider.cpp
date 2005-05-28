@@ -54,6 +54,11 @@ QString QgsVectorDataProvider::getDefaultValue(const QString& attr,
   return "";
 }
 
+bool QgsVectorDataProvider::changeGeometryValues(std::map<int, QgsGeometry> & geometry_map)
+{
+  return false;
+}
+
 bool QgsVectorDataProvider::createSpatialIndex()
 {
     return false;
