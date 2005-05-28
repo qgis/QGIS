@@ -190,6 +190,16 @@ QgsVectorLayer::~QgsVectorLayer()
   {
       delete ir;
   }
+  
+  // Destroy and cached geometries and clear the references to them
+  for (std::map<int, QgsGeometry*>::iterator it  = mCachedGeometries.begin(); 
+                                              it != mCachedGeometries.end();
+                                            ++it )
+  {
+    delete (*it).second;
+  }
+  mCachedGeometries.clear();
+
 }
 
 bool QgsVectorLayer::projectionsEnabled() const
@@ -726,6 +736,16 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     qWarning("Selecting features based on view extent");
 #endif
     dataProvider->reset();
+    
+    // Destroy and cached geometries and clear the references to them
+    for (std::map<int, QgsGeometry*>::iterator it  = mCachedGeometries.begin(); 
+                                               it != mCachedGeometries.end();
+                                             ++it )
+    {
+      delete (*it).second;
+    }
+    mCachedGeometries.clear();
+    
     dataProvider->select(viewExtent);
     int featureCount = 0;
     //  QgsFeature *ftest = dataProvider->getFirstFeature();
@@ -785,21 +805,46 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 #ifdef QGISDEBUG
     std::cerr << "get next feature returned null\n";
 #endif
-  }
-  else
-  {
-    if (mDeleted.find(fet->featureId())==mDeleted.end())
-    {
-      bool sel=mSelected.find(fet->featureId()) != mSelected.end();
-      m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
-              sel, oversampling, widthScale );
-      double scale = markerScaleFactor * symbolScale;
-      drawFeature(p,fet,theMapToPixelTransform,&marker, scale, 
-      projectionsEnabledFlag);
-      ++featureCount;
-      delete fet;
-    }
-  }
+	}
+	else
+	{
+          // Cache this for the use of (e.g.) modifying the feature's geometry.
+          mCachedGeometries[fet->featureId()] = fet->geometryAndOwnership();
+          
+	  if (mDeleted.find(fet->featureId())==mDeleted.end())
+	  {
+            // not deleted.
+            
+            // check to see if the feature has an uncommitted modification.
+            // if so, substitute the modified geometry
+ 
+//TODO             
+          
+            if (mChangedGeometries.find(fet->featureId()) != mChangedGeometries.end())
+            {
+#ifdef QGISDEBUG
+	  std::cerr << "Found modified geometry for " << fet->featureId() << std::endl;
+#endif
+              // substitute the modified geometry for the committed version
+              fet->setGeometry( mChangedGeometries[ fet->featureId() ] );
+            }
+            
+	    bool sel=mSelected.find(fet->featureId()) != mSelected.end();
+	    m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
+				      sel, oversampling, widthScale );
+	    
+            double scale = markerScaleFactor * symbolScale;
+	    drawFeature(p,fet,theMapToPixelTransform,&marker, scale, 
+			projectionsEnabledFlag);
+	    
+      //test for geos performance
+      //geos::Geometry* g=fet->geosGeometry();
+      //delete g;
+            ++featureCount;
+	    delete fet;
+	  }
+	}
+
       }
 
       //std::cerr << "Time to draw was " << t.elapsed() << '\n';
@@ -1402,8 +1447,10 @@ void QgsVectorLayer::initContextMenu_(QgisApp * app)
   if((cap&QgsVectorDataProvider::AddFeatures)
      ||(cap&QgsVectorDataProvider::DeleteFeatures))
   {
-    popMenu->insertItem(tr("Start editing"),this,SLOT(startEditing()));
-    popMenu->insertItem(tr("Stop editing"),this,SLOT(stopEditing()));
+    popMenu->setCheckable(TRUE);
+  
+    mToggleEditingPopupItem = popMenu->insertItem(tr("Allow Editing"),this,SLOT(toggleEditing()));
+    
   }
 
   // XXX Can we ask the provider if it wants to add things to the context menu?
@@ -1443,7 +1490,7 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
   {
     if (mSelected.find(fet->featureId()) != mSelected.end())
     {
-  r=fet->boundingBox();
+  r=fet->geometry()->boundingBox();
   if(r.xMin()<xmin)
   {
       xmin=r.xMin();
@@ -1468,7 +1515,7 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
   {
       if(mSelected.find((*iter)->featureId())!=mSelected.end())
       {
-    r=(*iter)->boundingBox();
+    r=(*iter)->geometry()->boundingBox();
     if(r.xMin()<xmin)
     {
         xmin=r.xMin();
@@ -1753,6 +1800,40 @@ bool QgsVectorLayer::addFeature(QgsFeature* f)
 }
 
 
+bool QgsVectorLayer::insertVertexBefore(double x, double y, int atFeatureId,
+                                        QgsGeometryVertexIndex beforeVertex)
+{
+
+#ifdef QGISDEBUG
+  std::cout << "QgsVectorLayer::insertVertexBefore: entered with featureId " << atFeatureId << "." << std::endl;
+#endif
+
+  if (dataProvider)
+  {
+
+    if ( mChangedGeometries.find(atFeatureId) == mChangedGeometries.end() )
+    {
+      // first time this geometry has changed since last commit
+
+      mChangedGeometries[atFeatureId] = *(mCachedGeometries[atFeatureId]);
+    }  
+      
+    mChangedGeometries[atFeatureId].insertVertexBefore(x, y, beforeVertex);
+
+    mModified=true;
+
+    // TODO - refresh map here?
+
+#ifdef QGISDEBUG
+// TODO
+#endif
+        
+    return true;
+  }
+  return false;
+}
+
+
 QString QgsVectorLayer::getDefaultValue(const QString& attr,
                                         QgsFeature* f)
 {
@@ -1828,22 +1909,36 @@ bool QgsVectorLayer::labelOn ( void )
   return mLabelOn;
 }
 
+void QgsVectorLayer::toggleEditing()
+{
+  if ( popMenu->isItemChecked(mToggleEditingPopupItem) )
+  {
+    stopEditing();
+  }
+  else
+  {
+    startEditing();
+  }  
+}
+
+
 void QgsVectorLayer::startEditing()
 {
   if(dataProvider)
   {
-      if(!(dataProvider->capabilities()&QgsVectorDataProvider::AddFeatures))
-      {
-    QMessageBox::information(0,"Start editing failed","Provider cannot be opened for editing",QMessageBox::Ok);
-      }
-      else
-      {
-    mEditable=true;
-    if(isValid())
+    if(!(dataProvider->capabilities()&QgsVectorDataProvider::AddFeatures))
     {
-        updateItemPixmap();
+      QMessageBox::information(0,"Start editing failed","Provider cannot be opened for editing",QMessageBox::Ok);
     }
+    else
+    {
+      mEditable=true;
+      if(isValid())
+      {
+        updateItemPixmap();
+        popMenu->setItemChecked(mToggleEditingPopupItem, TRUE);
       }
+    }
   }
 }
 
@@ -1854,9 +1949,8 @@ void QgsVectorLayer::stopEditing()
     if(mModified)
     {
       //commit or roll back?
-      int commit=QMessageBox::information(0,"Stop editing",\
-      "Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
-		
+      int commit=QMessageBox::information(0,"Stop editing",
+        "Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
       if(commit==QMessageBox::Yes)
       {
         if(!commitChanges())
@@ -1902,6 +1996,7 @@ void QgsVectorLayer::stopEditing()
     if(isValid())
     {
       updateItemPixmap();
+      popMenu->setItemChecked(mToggleEditingPopupItem, FALSE);
     }
   }
 }
@@ -2084,8 +2179,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 
 
 
-bool
-QgsVectorLayer:: setDataProvider( QString const & provider )
+bool QgsVectorLayer::setDataProvider( QString const & provider )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -2429,11 +2523,49 @@ bool QgsVectorLayer::commitChanges()
     qWarning("in QgsVectorLayer::commitChanges");
 #endif
     bool returnvalue=true;
+    
+    // Commit new features
+    std::list<QgsFeature*> addedlist;
+    for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+    {
+      addedlist.push_back(*it);
+    }
+    if(!dataProvider->addFeatures(addedlist))
+    {
+      returnvalue=false;
+    }
+    for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+    {
+      delete *it;
+    }
+    mAddedFeatures.clear();
 
-  if(mDeleted.size()>0)
-      {
-        std::list<int> deletelist;
-        for(std::set<int>::iterator it=mDeleted.begin();it!=mDeleted.end();++it)
+    // Commit changed attributes
+    if( mChangedAttributes.size() > 0 ) 
+    {
+        if ( !dataProvider->changeAttributeValues ( mChangedAttributes ) ) 
+        {
+          QMessageBox::warning(0,"Warning","Could not change attributes");
+        }
+        mChangedAttributes.clear();
+    }
+
+    // Commit changed geometries
+    if( mChangedGeometries.size() > 0 ) 
+    {
+        if ( !dataProvider->changeGeometryValues ( mChangedGeometries ) ) 
+        {
+          QMessageBox::warning(0,"Warning","Could not change geometries");
+        }
+        mChangedGeometries.clear();
+    }
+    
+    
+    // Commit deleted features
+    if(mDeleted.size()>0)
+    {
+      std::list<int> deletelist;
+      for(std::set<int>::iterator it=mDeleted.begin();it!=mDeleted.end();++it)
           {
             deletelist.push_back(*it);
             mSelected.erase(*it);//just in case the feature is still selected
@@ -2442,24 +2574,9 @@ bool QgsVectorLayer::commitChanges()
         {
           returnvalue=false;
         }
-      }	
-
-      std::list<QgsFeature*> addedlist;
-      for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-      {
-        addedlist.push_back(*it);
-      }
-      if(!dataProvider->addFeatures(addedlist))
-      {
-        returnvalue=false;
-      }
-      for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-      {
-        delete *it;
-      }
-      mAddedFeatures.clear();
-
-      return returnvalue;
+    }
+      
+    return returnvalue;
   }
   else
   {
@@ -2475,6 +2592,7 @@ bool QgsVectorLayer::rollBack()
     mSelected.erase((*it)->featureId());
   }
   mAddedFeatures.clear();
+  
   for(std::set<int>::iterator it=mDeleted.begin();it!=mDeleted.end();++it)
     {
       mSelected.erase(*it);
@@ -2483,6 +2601,82 @@ bool QgsVectorLayer::rollBack()
   updateExtents();
   return true;
 }
+
+
+std::vector<QgsFeature>* QgsVectorLayer::selectedFeatures()
+{
+  //TODO: Maybe make this a bit more heap-friendly (i.e. see where we can use references instead of copies)
+  std::vector<QgsFeature>* features = new std::vector<QgsFeature>;
+
+  for (std::set<int>::iterator it  = mSelected.begin();
+                               it != mSelected.end();
+                             ++it)
+  {
+    // Check this selected item against the committed or changed features
+    if ( mCachedGeometries.find(*it) != mCachedGeometries.end() )
+    {
+      QgsFeature* f = new QgsFeature();
+      int row = 0;  //TODO: Get rid of this
+      
+      // TODO: If dataProvider...
+      dataProvider->getFeatureAttributes(*it, row, f);
+      
+      f->setGeometry(*mCachedGeometries[*it]);
+
+      // TODO: Mutate with uncommitted attributes / geometry
+      
+      // TODO: Retrieve details from provider
+/*      features.push_back(
+                         QgsFeature(mCachedFeatures[*it],
+                                    mChangedAttributes,
+                                    mChangedGeometries)
+                        );*/
+
+      features->push_back(*f);
+                             
+    }
+
+    // Check this selected item against the uncommitted added features
+    for (std::list<QgsFeature*>::iterator iter  = mAddedFeatures.begin();
+                                          iter != mAddedFeatures.end();
+                                        ++iter)
+    {
+      if ( (*it) == (*iter)->featureId() )
+      {
+        features->push_back( **iter );
+        break;
+      }
+    }
+    
+  }
+
+  return features;
+}
+
+bool QgsVectorLayer::addFeatures(std::vector<QgsFeature>* features, bool makeSelected)
+{
+  if (makeSelected)
+  {
+    mSelected.clear();
+  }
+  
+  for (std::vector<QgsFeature>::iterator iter  = features->begin();
+                                         iter != features->end();
+                                       ++iter)
+  {
+    // TODO: Tidy these next two lines up
+  
+    QgsFeature f = (*iter);
+    addFeature(&f);
+  
+    if (makeSelected)
+    {
+      mSelected.insert(iter->featureId());
+    }
+  }
+  
+}
+
 
 bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
 {
@@ -2527,6 +2721,153 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   point.setX(mindistx);
   point.setY(mindisty);
 }
+
+
+bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point, 
+                                            QgsGeometryVertexIndex& beforeVertex,
+                                            int& snappedFeatureId,
+                                            QgsGeometry& snappedGeometry,
+                                            double tolerance)
+{
+  QgsGeometryVertexIndex beforeVertexTemp;
+
+  QgsPoint origPoint;
+  
+/*
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapSegmentWithContext: Entering."
+                << "." << std::endl;
+#endif
+  
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapSegmentWithContext: Tolerance: " << tolerance << ", dataProvider = '" << dataProvider
+                << "'." << std::endl;
+#endif
+*/  
+  // Sanity checking
+  if ( tolerance<=0 || 
+      !dataProvider)
+  {
+    return false;
+  }
+  
+  QgsFeature* feature;
+  QgsPoint minDistSegPoint;  // the closest point on the segment
+  double testSqrDist;        // the squared distance between 'point' and 'snappedFeature'
+  
+  double minSqrDist  = tolerance*tolerance; //current minimum distance
+
+  QgsRect selectrect(point.x()-tolerance, point.y()-tolerance,
+                     point.x()+tolerance, point.y()+tolerance);
+                     
+  dataProvider->reset();
+  dataProvider->select(&selectrect);
+
+  origPoint = point;
+  
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapSegmentWithContext:  Checking committed features."
+                << "." << std::endl;
+#endif
+  
+  // Go through the committed features
+  while ((feature = dataProvider->getNextFeature(false)))
+  {
+    
+    
+    minDistSegPoint = feature->geometry()->closestSegmentWithContext(origPoint, 
+                                                                     beforeVertexTemp,
+                                                                     testSqrDist);
+
+    if (testSqrDist < minSqrDist)
+    {
+      point = minDistSegPoint;
+      minSqrDist = testSqrDist;
+      
+      beforeVertex      = beforeVertexTemp;
+      snappedFeatureId  = feature->featureId();
+      snappedGeometry   = *(feature->geometry());
+
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapSegmentWithContext: minSqrDist reduced to: " << minSqrDist
+//                << " and beforeVertex " << beforeVertex
+                << "." << std::endl;
+#endif
+  
+    }
+  }
+
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapSegmentWithContext:  Checking changed features."
+                << "." << std::endl;
+#endif
+  
+  // Also go through the changed features
+  for (std::map<int, QgsGeometry>::iterator iter  = mChangedGeometries.begin();
+                                            iter != mChangedGeometries.end();
+                                          ++iter)
+  {                                          
+    minDistSegPoint = (*iter).second.closestSegmentWithContext(origPoint, 
+                                                               beforeVertexTemp,
+                                                               testSqrDist);
+    
+    if (testSqrDist < minSqrDist)
+    {
+      point = minDistSegPoint;
+      minSqrDist = testSqrDist;
+      
+      beforeVertex      = beforeVertexTemp;
+      snappedFeatureId  = (*iter).first;
+      snappedGeometry   = (*iter).second;
+    }
+  }
+
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapSegmentWithContext: Finishing"
+                << " with feature ID " << snappedFeatureId
+                //                << " and beforeVertex " << beforeVertex
+                << "." << std::endl;
+#endif
+ 
+    
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapSegmentWithContext:  Checking new features."
+                << "." << std::endl;
+#endif
+  
+  // Also go through the new features
+  for (std::list<QgsFeature*>::iterator iter  = mAddedFeatures.begin();
+                                        iter != mAddedFeatures.end();
+                                      ++iter)
+  {
+    minDistSegPoint = (*iter)->geometry()->closestSegmentWithContext(origPoint, 
+                                                                     beforeVertexTemp,
+                                                                     testSqrDist);
+    
+    if (testSqrDist < minSqrDist)
+    {
+      point = minDistSegPoint;
+      minSqrDist = testSqrDist;
+      
+      beforeVertex      = beforeVertexTemp;
+      snappedFeatureId  =   (*iter)->featureId();
+      snappedGeometry   = *((*iter)->geometry());
+    }
+  }
+
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapSegmentWithContext: Finishing"
+                << " with feature " << snappedFeatureId
+//                << " and beforeVertex " << beforeVertex
+                << "." << std::endl;
+#endif
+  
+  
+    
+  return TRUE;
+  
+}
+
 
 void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * theMapToPixelTransform, 
              QPicture* marker, double markerScaleFactor, bool projectionsEnabledFlag)
@@ -2650,6 +2991,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
     break;
   }
 }
+
+
 
 void QgsVectorLayer::saveAsShapefile()
 {

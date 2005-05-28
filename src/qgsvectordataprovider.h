@@ -16,6 +16,8 @@
 #ifndef QGSVECTORDATAPROVIDER_H
 #define QGSVECTORDATAPROVIDER_H
 
+class QgsGeometry;
+
 //Qt includes
 #include <set>
 #include <map>
@@ -173,6 +175,14 @@ class QgsVectorDataProvider : public QgsDataProvider
       virtual QString getDefaultValue(const QString & attr, QgsFeature* f);
 
       /**
+       Changes geometries of existing features
+       @param geometry_map   A std::map containing the feature IDs to change the geometries of. 
+                             the second map parameter being the new geometries themselves
+       @return               true in case of success and false in case of failure
+     */
+    virtual bool changeGeometryValues(std::map<int, QgsGeometry> & geometry_map);
+
+    /**
        * Identify features within the search radius specified by rect
        * @param rect Bounding rectangle of search radius
        * @return std::vector containing QgsFeature objects that intersect rect
