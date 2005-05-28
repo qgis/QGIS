@@ -54,7 +54,8 @@
 #else
 #define QGISEXTERN extern "C"
 #endif
-QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
+QgsPostgresProvider::QgsPostgresProvider(QString uri)
+          : dataSourceUri(uri)
 {
   // assume this is a valid layer until we determine otherwise
   valid = true;
@@ -1539,7 +1540,24 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
     for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)
     {
       QString fieldname=it->fieldName();
-      if(fieldname!=geometryColumn)
+      
+      //TODO: Check if field exists in this layer
+      // (Sometimes features will have fields that are not part of this layer since
+      // they have been pasted from other layers with a different field map)
+      bool fieldInLayer = FALSE;
+      
+      for (std::vector<QgsField>::iterator iter  = attributeFields.begin();
+                                           iter != attributeFields.end();
+                                         ++iter)
+      {
+        if ( iter->name() == it->fieldName() )
+        {
+          fieldInLayer = TRUE;
+          break;
+        }
+      }                                         
+      
+      if ( (fieldname != geometryColumn) && (fieldInLayer) )
       {
         insert+=",";
         insert+=fieldname;
@@ -1564,7 +1582,25 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
     //add the field values to the insert statement
     for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)
     {
-      if(it->fieldName()!=geometryColumn)
+      QString fieldname=it->fieldName();
+      
+      //TODO: Check if field exists in this layer
+      // (Sometimes features will have fields that are not part of this layer since
+      // they have been pasted from other layers with a different field map)
+      bool fieldInLayer = FALSE;
+      
+      for (std::vector<QgsField>::iterator iter  = attributeFields.begin();
+                                           iter != attributeFields.end();
+                                         ++iter)
+      {
+        if ( iter->name() == it->fieldName() )
+        {
+          fieldInLayer = TRUE;
+          break;
+        }
+      }                                         
+      
+      if ( (fieldname != geometryColumn) && (fieldInLayer) )
       {
         QString fieldvalue=it->fieldValue();
         bool charactertype=false;
@@ -1832,6 +1868,246 @@ bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QS
   reset();
   return returnvalue;
 }
+
+bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geometry_map)
+{
+#ifdef QGISDEBUG
+      std::cerr << "QgsPostgresProvider::changeGeometryValues: entering."
+                << std::endl;
+#endif
+  
+  bool returnvalue=true; 
+  
+  PQexec(connection,"BEGIN");
+
+  for(std::map<int, QgsGeometry>::const_iterator iter  = geometry_map.begin();
+                                                 iter != geometry_map.end();
+                                               ++iter)
+  {
+
+#ifdef QGISDEBUG
+      std::cerr << "QgsPostgresProvider::changeGeometryValues: iterating..."
+                << std::endl;
+#endif
+    
+    if (iter->second.wkbBuffer())
+    {
+#ifdef QGISDEBUG
+      std::cerr << "QgsPostgresProvider::changeGeometryValues: iterating over feature id "
+                << iter->first
+                << std::endl;
+#endif
+    
+      QString sql = "UPDATE \"" + tableName + "\" SET " + 
+                    geometryColumn + "=";
+                    
+      sql += "GeomFromWKB('";
+
+      //add the wkb geometry to the insert statement
+      unsigned char* geom = iter->second.wkbBuffer();
+      
+      for (int i=0; i < iter->second.wkbSize(); ++i)
+      {
+        QString hex=QString::number( (int)geom[i], 16 ).upper();
+        if(hex.length()==1)
+        {
+          hex="0"+hex;
+        }
+        sql += hex;
+      }
+      sql += "',"+srid+")";
+      
+      sql += " WHERE " + 
+             primaryKey + "=" + QString::number( iter->first );
+
+#ifdef QGISDEBUG
+      std::cerr << "QgsPostgresProvider::changeGeometryValues: Updating with '"
+                << sql
+                << "'."
+                << std::endl;
+#endif
+    
+      // send sql statement and do error handling
+      // TODO: Make all error handling like this one
+      PGresult* result=PQexec(connection, (const char *)(sql.utf8()));
+      if (result==0)
+      {
+        QMessageBox::critical(0, "PostGIS error", 
+                                 "An error occured contacting the PostGIS server",
+                                 QMessageBox::Ok,
+                                 QMessageBox::NoButton);
+        return false;
+      }
+      ExecStatusType message=PQresultStatus(result);
+      if(message==PGRES_FATAL_ERROR)
+      {
+        QMessageBox::information(0, "PostGIS error", 
+                                 QString(PQresultErrorMessage(result)),
+                                 QMessageBox::Ok,
+                                 QMessageBox::NoButton);
+        return false;
+      }
+                       
+    } // if (*iter)
+
+/*  
+  
+    if(f)
+  {
+    QString insert("INSERT INTO \"");
+    insert+=tableName;
+    insert+="\" (";
+
+    //add the name of the geometry column to the insert statement
+    insert+=geometryColumn;//first the geometry
+
+    //add the names of the other fields to the insert
+    std::vector<QgsFeatureAttribute> attributevec=f->attributeMap();
+    for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)
+    {
+      QString fieldname=it->fieldName();
+      if(fieldname!=geometryColumn)
+      {
+        insert+=",";
+        insert+=fieldname;
+      }
+    }
+
+    insert+=") VALUES (GeomFromWKB('";
+
+    //add the wkb geometry to the insert statement
+    unsigned char* geom=f->getGeometry();
+    for(int i=0;i<f->getGeometrySize();++i)
+    {
+      QString hex=QString::number((int)geom[i],16).upper();
+      if(hex.length()==1)
+      {
+        hex="0"+hex;
+      }
+      insert+=hex;
+    }
+    insert+="',"+srid+")";
+
+    //add the field values to the insert statement
+    for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)
+    {
+      if(it->fieldName()!=geometryColumn)
+      {
+        QString fieldvalue=it->fieldValue();
+        bool charactertype=false;
+        insert+=",";
+
+        //add quotes if the field is a characted type
+        if(fieldvalue!="NULL")
+        {
+          for(std::vector<QgsField>::iterator iter=attributeFields.begin();iter!=attributeFields.end();++iter)
+          {
+            if(iter->name()==it->fieldName())
+            {
+              if(iter->type().contains("char",false)>0||iter->type()=="text")
+              {
+                charactertype=true;
+              }
+            }
+          }
+        }
+
+        if(charactertype)
+        {
+          insert+="'";
+        }
+        insert+=fieldvalue;
+        if(charactertype)
+        {
+          insert+="'";
+        }
+      }
+    }
+
+    insert+=")";
+#ifdef QGISDEBUG
+    qWarning("insert statement is: "+insert);
+#endif
+
+    //send INSERT statement and do error handling
+    PGresult* result=PQexec(connection, (const char *)(insert.utf8()));
+    if(result==0)
+    {
+      QMessageBox::information(0,"INSERT error","An error occured during feature insertion",QMessageBox::Ok);
+      return false;
+    }
+    ExecStatusType message=PQresultStatus(result);
+    if(message==PGRES_FATAL_ERROR)
+    {
+      QMessageBox::information(0,"INSERT error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+      return false;
+    }
+    return true;
+  }
+  return false;
+
+  
+  
+  
+  
+  
+  
+  
+  
+    for(std::map<QString,QString>::const_iterator siter=(*iter).second.begin();siter!=(*iter).second.end();++siter)
+    {
+      QString value=(*siter).second;
+
+      //find out, if value contains letters and quote if yes
+      bool text=false;
+      for(int i=0;i<value.length();++i)
+      {
+        if(value[i].isLetter())
+        {
+          text=true;
+        }
+      }
+      if(text)
+      {
+        value.prepend("'");
+        value.append("'");
+      }
+
+      QString sql="UPDATE \""+tableName+"\" SET "+(*siter).first+"="+value+" WHERE " +primaryKey+"="+QString::number((*iter).first);
+#ifdef QGISDEBUG
+      qWarning(sql);
+#endif
+
+      //send sql statement and do error handling
+      PGresult* result=PQexec(connection, (const char *)(sql.utf8()));
+      if(result==0)
+      {
+        returnvalue=false;
+        ExecStatusType message=PQresultStatus(result);
+        if(message==PGRES_FATAL_ERROR)
+        {
+          QMessageBox::information(0,"UPDATE error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
+        }
+      }
+    }
+  }
+*/
+  } // for each feature
+  
+  PQexec(connection,"COMMIT");
+  
+  // TODO: Reset Geometry dirty if commit was OK
+  
+  reset();
+  
+#ifdef QGISDEBUG
+      std::cerr << "QgsPostgresProvider::changeGeometryValues: exiting."
+                << std::endl;
+#endif
+  
+  return returnvalue;
+}
+
 
 bool QgsPostgresProvider::supportsSaveAsShapefile() const
 {

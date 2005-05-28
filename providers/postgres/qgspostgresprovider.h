@@ -246,6 +246,14 @@ class QgsPostgresProvider:public QgsVectorDataProvider
       @return true in case of success and false in case of failure*/
     bool changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map);
 
+    /** 
+       Changes geometries of existing features
+       @param geometry_map   A std::map containing the feature IDs to change the geometries of. 
+                             the second map parameter being the new geometries themselves
+       @return               true in case of success and false in case of failure
+     */
+    bool changeGeometryValues(std::map<int, QgsGeometry> & geometry_map);
+
     //! Flag to indicate if the provider can export to shapefile
     bool supportsSaveAsShapefile() const;
 

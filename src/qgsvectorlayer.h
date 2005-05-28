@@ -25,22 +25,28 @@ class QLibrary;
 class QgsMapToPixel;
 class OGRLayer;
 class OGRDataSource;
+
+class QgisApp;
+
 class QgsData;
 class QgsRenderer;
 class QgsLegendItem;
 class QgsDlgVectorLayerProperties;
-class QgisApp;
+class QgsGeometry;
 class QgsIdentifyResults;
 class QgsLabel;
 
 #include <map>
 #include <vector>
 
-#include "qgsmaplayer.h"
 #include "qvaluevector.h"
-#include "qgsattributetabledisplay.h"
-#include "qgsvectordataprovider.h"
+
+#include "qgsmaplayer.h"
 #include "qgsattributeaction.h"
+#include "qgsattributetabledisplay.h"
+#include "qgsgeometry.h"
+#include "qgsgeometryvertexindex.h"
+#include "qgsvectordataprovider.h"
 
 /*! \class QgsVectorLayer
  * \brief Vector layer backed by a data source provider
@@ -113,14 +119,26 @@ const QString displayField() const { return fieldIndex; }
 
   QgsAttributeAction* actions() { return &mActions; }
 
- signals:
+  /**
+      Get a copy of the user-selected features
+   */  
+  virtual std::vector<QgsFeature>* selectedFeatures();
+
+  /**
+      Insert a copy of the given features into the layer
+   */
+  bool addFeatures(std::vector<QgsFeature>* features, bool makeSelected = TRUE);
+
+  
+signals:
   /**This signal is emitted when the layer leaves editing mode.
      The purpose is to tell QgsMapCanvas to remove the lines of
      (unfinished) features
   @param norepaint true: there is no repaint at all. False: QgsMapCanvas
   decides, if a repaint is necessary or not*/
   void editingStopped(bool norepaint);
-
+  
+  
 public slots:
 
   void inOverview( bool );
@@ -246,6 +264,14 @@ public slots:
   /**Adds a feature
    @return true in case of success and false in case of error*/
   bool addFeature(QgsFeature* f);
+  
+  
+  /** Insert a new vertex before the given vertex number,
+   *  in the given ring, item (first number is index 0), and feature
+   *  Not meaningful for Point geometries
+   */
+  bool insertVertexBefore(double x, double y, int atFeatureId,
+                          QgsGeometryVertexIndex beforeVertex);
 
   /**Deletes the selected features
      @return true in case of success and false otherwise*/
@@ -287,11 +313,25 @@ public slots:
   virtual void saveAsShapefile();
 
   /**Snaps a point to the closest vertex if there is one within the snapping tolerance (mSnappingTolerance)
-     @param point the point which is set to the position of a vertex if there is one within the snapping tolerance.
+     @param point       The point which is set to the position of a vertex if there is one within the snapping tolerance.
      If there is no point within this tolerance, point is left unchanged.
-     @param tolerance the snapping tolerance
-     @return true if the position of point has been changed and false else*/
+     @param tolerance   The snapping tolerance
+     @return true if the position of point has been changed, and false otherwise */
   bool snapPoint(QgsPoint& point, double tolerance);
+
+  /**Snaps a point to the closest line segment if there is one within the snapping tolerance (mSnappingTolerance)
+     @param beforeVertex      Set to a value where the snapped-to segment is before this vertex index
+     @param snappedFeatureId  Set to the feature ID that where the snapped-to segment belongs to.
+     @param tolerance         The snapping tolerance
+     @return true if the position of the points have been changed, and false otherwise (or not implemented by the provider) 
+     
+     TODO: Handle returning multiple lineFeatures if they are coincident
+   */
+  bool snapSegmentWithContext(QgsPoint& point, 
+                              QgsGeometryVertexIndex& beforeVertex,
+                              int& snappedFeatureId, 
+                              QgsGeometry& snappedGeometry,
+                              double tolerance);
 
   /**Commits edited attributes. Depending on the feature id,
      the changes are written to not commited features or redirected to
@@ -316,13 +356,30 @@ public slots:
 protected:
   /**Pointer to the table display object if there is one, else a pointer to 0*/
   QgsAttributeTableDisplay * tabledisplay;
-  /**Vector holding the information which features are activated*/
+  
+  /** cache of the committed geometries retrieved for the current display */
+  std::map<int, QgsGeometry*> mCachedGeometries;
+  
+  /** Set holding the feature IDs that are activated */
   std::set<int> mSelected;
+  
+  /** Set holding the feature IDs that are in "set A" for a future geometry algebra operation
+      TODO: BM: Do something useful with this.
+   */
+  std::set<int> mSubjected;
+  
+  /** Deleted feature IDs which are not commited */
   std::set<int> mDeleted;
-  /**Features which are not commited*/
+  
+  /** New features which are not commited */
   std::list<QgsFeature*> mAddedFeatures;
-  /**Changed attributes which are not commited  */
+  
+  /** Changed attributes which are not commited */
   std::map<int,std::map<QString,QString> > mChangedAttributes;
+  
+  /** Changed geometries which are not commited. */
+  std::map<int, QgsGeometry> mChangedGeometries;
+  
   /**Renderer object which holds the information about how to display the features*/
   QgsRenderer *m_renderer;
   /**Label */
@@ -340,8 +397,13 @@ protected:
   /**Discards the edits*/
   bool rollBack();
 
+
+ 
 protected slots:
+  void toggleEditing();
+  
   void startEditing();
+  
   void stopEditing();
 
   void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPicture* marker, double markerScaleFactor, bool projectionsEnabledFlag );
@@ -440,10 +502,14 @@ private:                       // Private methods
   // Identify Results dialog box
   QgsAttributeAction mActions;
 
-  /**Flag indicating wheter the layer is in editing mode or not*/
+  /**Flag indicating whether the layer is in editing mode or not*/
   bool mEditable;
-  /**Flag indicating wheter the layer has been modified since the last commit*/
+  
+  /**Flag indicating whether the layer has been modified since the last commit*/
   bool mModified;
+  
+  /** Position in popup menu that the "Editing" toggle item is placed. */
+  int mToggleEditingPopupItem;
 
 };
 
