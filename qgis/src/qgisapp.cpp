@@ -2330,6 +2330,58 @@ void QgisApp::openProject(int pathIndex)
     }
 } // QgisApp::openProject
 
+/**
+  Open the specified project file; prompt to save previous project if necessary.
+  Used to process a commandline argument or OpenDocument AppleEvent.
+*/
+void QgisApp::openProject(const QString & fileName)
+{
+    // possibly save any pending work before opening a different project
+    int answer = saveDirty();
+
+    if (answer != QMessageBox::Cancel)
+    {
+        try
+        {
+            if ( ! addProject(fileName) )
+            {
+#ifdef QGISDEBUG
+                std::cerr << "unable to load project " << fileName << "\n";
+#endif
+            }
+        }
+        catch ( QgsIOException & io_exception )
+        {
+            QMessageBox::critical( 0x0, 
+                                   "QGIS: Unable to load project", 
+                                   "Unable to load project " + fileName );
+        }
+    }
+}
+
+/**
+  Open a raster or vector file; ignore other files.
+  Used to process a commandline argument or OpenDocument AppleEvent.
+  @returns true if the file is successfully opened
+*/
+bool QgisApp::openLayer(const QString & fileName)
+{
+    QFileInfo fileInfo(fileName);
+    // try to load it as raster
+    bool ok = addRasterLayer(fileInfo, false);
+    if (!ok)
+    {
+        // nope - try to load it as a shape/ogr
+        ok = addLayer(fileInfo);
+        // we have no idea what this file is...
+        if (!ok)
+        {
+            std::cout << "Unable to load " << fileName << std::endl;
+        }
+    }
+}
+
+
 /*
 void QgisApp::filePrint()
 {

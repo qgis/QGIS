@@ -145,6 +145,18 @@ public:
 
     //! Remove all layers from the map and legend - reimplements same method from qgisappbase
     void removeAllLayers();
+
+    /** Open a raster or vector file; ignore other files.
+    Used to process a commandline argument or OpenDocument AppleEvent.
+    @returns true if the file is successfully opened
+    */
+    bool openLayer(const QString & fileName);
+
+    /** Open the specified project file; prompt to save previous project if necessary.
+    Used to process a commandline argument or OpenDocument AppleEvent.
+    */
+    void openProject(const QString & fileName);
+
     /** opens a qgis project file
     @returns false if unable to open the project
 
