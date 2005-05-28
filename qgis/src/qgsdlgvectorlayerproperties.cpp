@@ -262,14 +262,20 @@ void QgsDlgVectorLayerProperties::reset( void )
   if(legendtypecombobox->count()==0)
     {
       legendtypecombobox->insertItem(tr("Single Symbol"));
-      legendtypecombobox->insertItem(tr("Graduated Symbol"));
-      legendtypecombobox->insertItem(tr("Continuous Color"));
-      legendtypecombobox->insertItem(tr("Unique Value"));
+      if(myFields.size()>0)
+      {
+	  legendtypecombobox->insertItem(tr("Graduated Symbol"));
+	  legendtypecombobox->insertItem(tr("Continuous Color"));
+	  legendtypecombobox->insertItem(tr("Unique Value"));
+      }
       if( layer->vectorType()==QGis::Point )
 	{
 	  legendtypecombobox->insertItem(tr("Single Marker"));
-	  legendtypecombobox->insertItem(tr("Graduated Marker"));
-	  legendtypecombobox->insertItem(tr("Unique Value Marker"));
+	  if(myFields.size()>0)
+	  {
+	      legendtypecombobox->insertItem(tr("Graduated Marker"));
+	      legendtypecombobox->insertItem(tr("Unique Value Marker"));
+	  }
 	}
     }
 
