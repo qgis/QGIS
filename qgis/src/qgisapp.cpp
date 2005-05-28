@@ -1778,6 +1778,7 @@ findLayers_( list<QDomNode> const & layerNodes )
 
 void QgisApp::fileExit()
 {
+    removeAllLayers();
     QApplication::exit();
 }
 

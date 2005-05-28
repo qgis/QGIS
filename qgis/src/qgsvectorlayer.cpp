@@ -159,7 +159,7 @@ QgsVectorLayer::~QgsVectorLayer()
 
   if(isEditable())
   {
-    stopEditing();
+      stopEditing();
   }
 
   if (tabledisplay)
