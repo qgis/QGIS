@@ -413,8 +413,7 @@ QgsDelimitedTextProvider::getNextFeature_( QgsFeature & feature,
            s << y;
 
 
-           // XXX Umm, does the feature own the wkbPoint now?
-           feature.setGeometry( geometry, sizeof(wkbPoint) );
+           feature.setGeometryAndOwnership( geometry, sizeof(wkbPoint) );
 
            // ensure that the buffer doesn't delete the data on us
            buffer.resetRawData( (const char*)geometry, sizeof(wkbPoint) );

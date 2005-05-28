@@ -17,14 +17,16 @@ email                : sherman at mrcc.com
 #ifndef QGSFEATURE_H
 #define QGSFEATURE_H
 
-#include <geos.h>
+//#include <geos.h>
 #include <qstring.h>
 #include <map>
 #include <vector>
 
-#include "qgsfeatureattribute.h"
 #include "qgis.h"
-#include "qgspoint.h"
+
+#include "qgsfeatureattribute.h"
+#include "qgsgeometry.h"
+//#include "qgspoint.h"
 
 class QgsRect;
 
@@ -41,9 +43,20 @@ class QgsFeature {
     QgsFeature();
     QgsFeature(int id, QString const & typeName = "" );
 
+    /** create a copy of this feature in its uncommitted state.
+        To do this, you also pass in a reference to the feature's
+        layer's uncommitted attribute and geometry changes.
+        The resulting feature will have those changes applied.
+        
+        This is useful in the cut/copy routine, where you'd
+        want a copy of the "current" feature, not the on-disk feature.
+     */
+    QgsFeature( QgsFeature const & rhs,
+                std::map<int,std::map<QString,QString> > & changedAttributes,
+                std::map<int, QgsGeometry> & changedGeometries );
 
     /** copy ctor needed due to internal pointer */
-    QgsFeature( QgsFeature const & );
+    QgsFeature( QgsFeature const & rhs );
 
     /** assignment operator needed due to internal pointer */
     QgsFeature & operator=( QgsFeature const & rhs );
@@ -51,6 +64,7 @@ class QgsFeature {
     //! Destructor
     ~QgsFeature();
 
+    
     /**
      * Get the feature id for this feature
      * @return Feature id
@@ -109,31 +123,118 @@ class QgsFeature {
      * Set the validity of the feature.
      */
     void setValid(bool validity);
+    
+    /**
+     * Return the dirty state of this feature.
+     * Dirty is set if (e.g.) the feature's geometry has been modified in-memory.
+     */
+    bool isDirty() const;
 
+    /** 
+     * Reset the dirtiness of the feature.  (i.e. make clean)
+     * You would normally do this after it's saved to permanent storage (e.g. disk, an ACID-compliant database)
+     */
+    void resetDirty();
+    
+    /**
+     * Get the geometry object associated with this feature
+     */
+    QgsGeometry * geometry();
+    
+    /**
+     * Get the geometry object associated with this feature
+     * The caller assumes responsibility for the QgsGeometry*'s destruction.
+     */
+    QgsGeometry * geometryAndOwnership();
+    
+    /** gets the most recent in-memory version of the geometry (deprecated function in favour of geometry()) */
     unsigned char * getGeometry() const;
+
+//     /** gets only the committed version of the geometry */
+//     unsigned char * getCommittedGeometry() const;
+//     
+//     /** gets the most recent in-memory version of the geometry only
+//         if it has been modified since committed (isDirty() == TRUE) */
+//     unsigned char * getModifiedGeometry() const;
 
     size_t getGeometrySize() const;
 
+/*    size_t getCommittedGeometrySize() const;
+
+    size_t getModifiedGeometrySize() const;*/
+    
     QString const& wellKnownText() const; 
 
-    /** Set WKB geometry*/
-    void setGeometry(unsigned char * geometry, size_t length);
+    /** Set this feature's geometry from another QgsGeometry object (deep copy)
+     */
+    void setGeometry(QgsGeometry& geom);
+    
+    /** 
+     * Set this feature's geometry from WKB
+     *
+     * This feature assumes responsibility for destroying geom.
+     */
+    void setGeometryAndOwnership(unsigned char * geom, size_t length);
+    
+    /** Set bulk-modified WKB geometry 
+        \note   this function assumes the Geometry is not committed. 
+     */
+/*    void setModifiedGeometry(unsigned char * geom, size_t length);*/
+    
+    /** Insert a new vertex before the given vertex number,
+     *  ring and item (first number is index 0)
+     *  Not meaningful for Point geometries
+     */
+//     bool insertVertexBefore(double x, double y, int beforeVertex = 0, int atRing = 0, int atItem = 0);
 
+    /** Moves the vertex at the given position number,
+     *  ring and item (first number is index 0)
+     *  to the given coordinates
+     */
+/*    bool moveVertexAt(double x, double y, int atVertex = 0, int atRing = 0, int atItem = 0);*/
+    
+    /**
+     *  Modifies x and y to indicate the location of
+     *  the vertex at the given position number,
+     *  ring and item (first number is index 0)
+     *  to the given coordinates
+     */
+/*    bool vertexAt(double &x, double &y, int atVertex = 0, int atRing = 0, int atItem = 0) const;*/
+    
     /**Shows a popup dialog to change attribute values
      @return true if dialog is accepted, false if rejected*/
     bool attributeDialog();
 
-    /**Test for intersection with a rectangle (uses GEOS)*/
-    bool intersects(QgsRect* r) const;
+//     /**Test for intersection with a rectangle (uses GEOS)*/
+//     bool intersects(QgsRect* r) const;
 
     /**Returns the Vertex closest to a given point*/
-    QgsPoint closestVertex(const QgsPoint& point) const;
+//     QgsPoint closestVertex(const QgsPoint& point) const;
 
-    /**Returns the bounding box of this feature*/
-    QgsRect boundingBox() const;
+    /** Returns the line segment closest to the given point in beforeVertex, atRing and atItem
+        Returns the SQUARE of the closest distance in minDist.
+        Returns the closest point on the line segment to the given point
+        
+                
+        TODO: point handling
+        TODO: const correctness
+     */
+//    QgsPoint closestSegment(QgsPoint& point, 
+//                            QgsPoint& segStart, QgsPoint& segStop,
+//                            double& minSqrDist);
 
-    /**Creates a geos geometry from this features geometry. Note, that the returned object needs to be deleted*/
-    geos::Geometry* geosGeometry() const;
+//     QgsPoint QgsFeature::closestSegmentWithContext(QgsPoint& point, 
+//                                                    int& beforeVertex, int& atRing, int& atItem,
+//                                                    double& minSqrDist);
+//                             
+//                             
+     /**Returns the bounding box of this feature*/
+     QgsRect boundingBox() const;
+// 
+     /** Creates a geos geometry from this features geometry. Note, that the returned object needs to be deleted.
+         @note  This function is deprecated - use geometry()->geosGeometry() instead.
+      */
+     geos::Geometry* geosGeometry() const;
 
   private:
 
@@ -150,23 +251,48 @@ class QgsFeature {
 
        This is usually set by a call to OGRGeometry::exportToWkb()
      */
-    unsigned char * geometry;
+    QgsGeometry* mGeometry;
+    
+    /** Indicator if the mGeometry is owned by this QgsFeature.
+        If so, this QgsFeature takes responsibility for the mGeometry's destruction.
+     */ 
+    bool mOwnsGeometry;   
 
-    /** size of geometry */
-    size_t geometrySize;
+//     /** pointer to modified (dirty / uncommitted) geometry in binary WKB format
+//         This is only valid if isDirty().
+//      */
+//     unsigned char * modifiedGeometry;
+//     
+//     /** size of geometry */
+//     size_t geometrySize;
+// 
+//     /** size of modified geometry */
+//     size_t modifiedGeometrySize;
 
     //! Flag to indicate if this feature is valid
     bool mValid;
 
+    //! Flag to indicate if this feature is dirty (e.g. geometry has been modified in-memory)
+    bool mDirty;
+
     /// feature type name
     QString mTypeName;
 
-    /**WKT representation of the geometry*/
-    mutable QString mWKT;
-
-    /**Exports the current WKB to mWKT
-     @return true in case of success and false else*/
-    bool exportToWKT() const;
+//     /**WKT representation of the geometry*/
+//     mutable QString mWKT;
+// 
+//     /**Exports the current WKB to mWKT
+//      @return true in case of success and false else*/
+//     bool exportToWKT(unsigned char * geom) const;
+//     bool exportToWKT() const;
+// 
+//     /** Squared distance from point to the given line segment 
+//      *  TODO: Perhaps move this to QgsPoint
+//      */
+//     double distanceSquaredPointToSegment(QgsPoint& point,
+//                                          double *x1, double *y1,
+//                                          double *x2, double *y2,
+//                                          QgsPoint& minDistPoint);
 
 }; // class QgsFeature
 

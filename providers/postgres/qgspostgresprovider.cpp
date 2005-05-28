@@ -488,7 +488,7 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
       //int wkbType = *((int *) (feature + 1));
       //std::cout << "WKBtype is: " << wkbType << std::endl;
 #endif
-      f->setGeometry(feature, returnedLength + 1);
+      f->setGeometryAndOwnership(feature, returnedLength + 1);
     }
     else
     {
@@ -568,7 +568,7 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist)
       //int wkbType = *((int *) (feature + 1));
       //std::cout << "WKBtype is: " << wkbType << std::endl;
 #endif
-      f->setGeometry(feature, returnedLength + 1);
+      f->setGeometryAndOwnership(feature, returnedLength + 1);
 
     }
     else

@@ -78,6 +78,8 @@ headers =	qgisapp.h					\
 		qgsfeatureattribute.h				\
 		qgsfeature.h					\
 		qgsfield.h					\
+		qgsgeometry.h					\
+		qgsgeometryvertexindex.h			\
 		qgsgeomtypedialog.h				\
 		qgsgraduatedmarenderer.h			\
 		qgsgraduatedsymrenderer.h			\
@@ -321,6 +323,8 @@ qgis_SOURCES =	main.cpp			\
 		qgsfeature.cpp			\
 		qgsfield.cpp			\
 		qgsfillstylewidget.cpp		\
+		qgsgeometry.cpp			\
+		qgsgeometryvertexindex.cpp	\
 		qgsgeomtypedialog.cpp		\
 		qgsgraduatedmarenderer.cpp	\
 		qgsgraduatedsymrenderer.cpp	\
@@ -489,6 +493,8 @@ libqgis_la_SOURCES =						\
 		qgsfillstylewidget.moc.cpp			\
 		qgsfillstylewidgetbase.moc.uic.cpp		\
 		qgsfillstylewidgetbase.uic.cpp			\
+		qgsgeometry.cpp					\
+		qgsgeometryvertexindex.cpp			\
 		qgsgraduatedmarenderer.cpp			\
 		qgsgraduatedsymrenderer.cpp			\
 		qgslabel.cpp					\
