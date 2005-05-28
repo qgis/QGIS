@@ -248,7 +248,7 @@ QgsFeature * QgsOgrProvider::getFirstFeature(bool fetchAttributes)
     }
 
     size_t geometry_size = feat->GetGeometryRef()->WkbSize();
-    f->setGeometry(getGeometryPointer(feat), geometry_size);
+    f->setGeometryAndOwnership(getGeometryPointer(feat), geometry_size);
 
     if(fetchAttributes)
     {
@@ -284,7 +284,7 @@ bool QgsOgrProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
       unsigned char *feature = new unsigned char[geom->WkbSize()];
       geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
       f.setFeatureId(fet->GetFID());
-      f.setGeometry(feature, geom->WkbSize());
+      f.setGeometryAndOwnership(feature, geom->WkbSize());
 
       OGRFeatureDefn * featureDefinition = fet->GetDefnRef();
       QString featureTypeName =   
@@ -347,7 +347,7 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
 	   QString featureTypeName =   featureDefinition ? QString(featureDefinition->GetName()) : QString("");
 
 	   f = new QgsFeature(fet->GetFID(), featureTypeName);
-	   f->setGeometry(feature, geom->WkbSize());
+	   f->setGeometryAndOwnership(feature, geom->WkbSize());
 	   if(fetchAttributes)
 	   {
 	       getFeatureAttributes(fet, f);
@@ -448,7 +448,7 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
         featureDefinition ? QString(featureDefinition->GetName()) : QString("");
 
       f = new QgsFeature(fet->GetFID(), featureTypeName);
-      f->setGeometry(feature, geom->WkbSize());
+      f->setGeometryAndOwnership(feature, geom->WkbSize());
 
       if(fetchAttributes){
         getFeatureAttributes(fet, f);
@@ -511,7 +511,7 @@ QgsFeature *QgsOgrProvider::getNextFeature(std::list<int> const& attlist)
         featureDefinition ? QString(featureDefinition->GetName()) : QString("");
 
       f = new QgsFeature(fet->GetFID(), featureTypeName);
-      f->setGeometry(feature, geom->WkbSize());
+      f->setGeometryAndOwnership(feature, geom->WkbSize());
       for(std::list<int>::const_iterator it=attlist.begin();it!=attlist.end();++it)
       {
         getFeatureAttribute(fet,f,*it);
@@ -1187,7 +1187,7 @@ QGISEXTERN bool createEmptyDataSource(const QString& uri,const QString& format, 
     OGRPoint* p=new OGRPoint();
     p->setX(700000);
     p->setY(300000);
-    feature->SetGeometry(p);
+    feature->setGeometryAndOwnership(p);
     if(layer->CreateFeature(feature)!=OGRERR_NONE)
     {
     qWarning("errrrrrrrrrror!");

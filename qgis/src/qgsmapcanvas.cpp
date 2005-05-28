@@ -1591,7 +1591,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     memcpy(&wkb[1],&wkbtype, sizeof(int));
     memcpy(&wkb[5], &x, sizeof(double));
     memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
-    f->setGeometry(&wkb[0],size);
+    f->setGeometryAndOwnership(&wkb[0],size);
 
     //add the fields to the QgsFeature
     std::vector<QgsField> fields=vlayer->fields();
@@ -1721,7 +1721,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     y=it->y();
     memcpy(&wkb[position],&y,sizeof(double));
         }
-      f->setGeometry(&wkb[0],size);
+      f->setGeometryAndOwnership(&wkb[0],size);
       
       //add the fields to the QgsFeature
       std::vector<QgsField> fields=vlayer->fields();

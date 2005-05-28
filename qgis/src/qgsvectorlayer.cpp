@@ -1154,7 +1154,7 @@ void QgsVectorLayer::select(QgsRect * rect, bool lock)
   //also test the not commited features
   for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
   {
-    if((*it)->intersects(rect))
+    if((*it)->geometry()->intersects(rect))
     {
       select((*it)->featureId());
       if (tabledisplay)
@@ -2497,7 +2497,7 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   dataProvider->select(&selectrect);
   while ((fet = dataProvider->getNextFeature(false)))
   {
-    vertexFeature=fet->closestVertex(point);
+    vertexFeature=fet->geometry()->closestVertex(point);
     minvertexdist=vertexFeature.sqrDist(point.x(),point.y());
     if(minvertexdist<mindist)
     {
@@ -2509,7 +2509,7 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   //also go through the not commited features
   for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
   {
-      vertexFeature=(*iter)->closestVertex(point);
+      vertexFeature=(*iter)->geometry()->closestVertex(point);
       minvertexdist=vertexFeature.sqrDist(point.x(),point.y());
       if(minvertexdist<mindist)
       {
