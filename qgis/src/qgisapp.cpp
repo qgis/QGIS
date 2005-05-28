@@ -2046,6 +2046,19 @@ void QgisApp::fileOpen()
             qDebug( "%s:%d BAD LAYERS FOUND", __FILE__, __LINE__ );
         }
     }
+    //loop through all layers in the layers registry and connect up 
+   // keybindings for the escape key
+  std::map<QString, QgsMapLayer *> myMapLayers 
+    = QgsMapLayerRegistry::instance()->mapLayers();
+  std::map<QString, QgsMapLayer *>::iterator myMapIterator;
+  for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator )
+  {
+    QgsMapLayer * myMapLayer = myMapIterator->second;
+    QObject::connect(this,
+                         SIGNAL(keyPressed(QKeyEvent *)),
+                         myMapLayer,
+                         SLOT(keyPressed(QKeyEvent* )));
+    }
 
 } // QgisApp::fileOpen
 

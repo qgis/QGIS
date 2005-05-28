@@ -740,28 +740,56 @@ long QgsSpatialRefSys::srid() const
  */
 QString QgsSpatialRefSys::description () const
 {
-  return mDescription;
+  if (!mDescription)
+  {
+    return "";
+  }
+  else
+  {
+    return mDescription;
+  }
 }
 /*! Get the Projection Acronym
  * @return  QString theProjectionAcronym The official proj4 acronym for the projection family
  */
 QString QgsSpatialRefSys::projectionAcronym() const
 {
-  return mProjectionAcronym;
+  if (!mProjectionAcronym)
+  {
+    return "";
+  }
+  else
+  {
+    return mProjectionAcronym;
+  }
 }
 /*! Get the Ellipsoid Acronym
  * @return  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
  */
 QString QgsSpatialRefSys::ellipsoidAcronym () const
 {
-  return mEllipsoidAcronym;
+  if (!mEllipsoidAcronym)
+  {
+    return "";
+  }
+  else
+  {
+    return mEllipsoidAcronym;
+  }
 }
 /* Get the Proj Proj4String.
  * @return  QString theProj4String Proj4 format specifies that define this srs.
  */
 QString QgsSpatialRefSys::proj4String() const
 {
-  return mProj4String;
+  if (!mProj4String)
+  {
+    return "";
+  }
+  else
+  {
+    return mProj4String;
+  }
 }
 /*! Get this Geographic? flag
  * @return  bool theGeoFlag Whether this is a geographic or projected coordinate system

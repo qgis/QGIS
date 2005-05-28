@@ -61,8 +61,14 @@ QgsCoordinateTransform::QgsCoordinateTransform(long theSourceSrid,
 QgsCoordinateTransform::~QgsCoordinateTransform()
 {
   // free the proj objects
-  pj_free(mSourceProjection);
-  pj_free(mDestinationProjection);
+  if (mSourceProjection!=0) 
+  {
+    pj_free(mSourceProjection);
+  }
+  if (mDestinationProjection!=0)
+  {
+    pj_free(mDestinationProjection);
+  }
 }
 
 void QgsCoordinateTransform::setSourceSRS(const QgsSpatialRefSys& theSRS)

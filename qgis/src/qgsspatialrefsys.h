@@ -203,20 +203,24 @@ class QgsSpatialRefSys
         long srid() const;
         /*! Get the Description
          * @return  QString the Description A textual description of the srs.
+         * @note A zero length string will be returned if the description is uninitialised
          */
         QString description () const;
         /*! Get the Projection Acronym
          * @return  QString theProjectionAcronym The official proj4 acronym for the projection family
+         * @note A zero length string will be returned if the projectionAcronym is uninitialised
          */
         QString projectionAcronym() const;
         /*! Get the Ellipsoid Acronym
          * @return  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
+         * @note A zero length string will be returned if the ellipsoidAcronym is uninitialised
          */
         QString ellipsoidAcronym () const;
-        /* Get the Proj Proj4String. If proj and ellps keys are found in the parameters,
+        /** Get the Proj Proj4String. If proj and ellps keys are found in the parameters,
          * they will be stripped out and the Projection and ellipsoid acronyms will be
          * overridden with these.
          * @return  QString theProj4String Proj4 format specifies that define this srs.
+         * @note A zero length string will be returned if the proj4String is uninitialised
          */
         QString proj4String() const;
         /*! Get this Geographic? flag
