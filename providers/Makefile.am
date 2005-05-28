@@ -6,4 +6,4 @@ if HAVE_GRASS
 GRASS = grass
 endif
 
-SUBDIRS = ogr $(POSTGRESQL) $(GRASS) delimitedtext gpx
+SUBDIRS = ogr $(POSTGRESQL) $(GRASS) delimitedtext gpx wms
