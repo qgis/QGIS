@@ -1,0 +1,376 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>QgsServerSourceSelectBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsServerSourceSelectBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>548</width>
+            <height>448</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Add Layer(s) from a Server</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <widget class="QGroupBox">
+        <property name="name">
+            <cstring>GroupBox1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>11</y>
+                <width>525</width>
+                <height>93</height>
+            </rect>
+        </property>
+        <property name="title">
+            <string>Server Connections</string>
+        </property>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>11</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <widget class="QComboBox" row="0" column="0">
+                <property name="name">
+                    <cstring>cmbConnections</cstring>
+                </property>
+            </widget>
+            <widget class="QLayoutWidget" row="1" column="0">
+                <property name="name">
+                    <cstring>layout6</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>btnConnect</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Connect</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>btnNew</cstring>
+                        </property>
+                        <property name="text">
+                            <string>New</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>btnEdit</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Edit</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton">
+                        <property name="name">
+                            <cstring>btnDelete</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Delete</string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+        </grid>
+    </widget>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>layout6</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>407</y>
+                <width>525</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <hbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>btnHelp</cstring>
+                </property>
+                <property name="enabled">
+                    <bool>false</bool>
+                </property>
+                <property name="text">
+                    <string>Help</string>
+                </property>
+                <property name="accel">
+                    <string>F1</string>
+                </property>
+                <property name="autoDefault">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>spacer5</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>141</width>
+                        <height>21</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>btnAdd</cstring>
+                </property>
+                <property name="text">
+                    <string>Add</string>
+                </property>
+                <property name="accel">
+                    <string></string>
+                </property>
+                <property name="autoDefault">
+                    <bool>true</bool>
+                </property>
+                <property name="default">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>btnCancel</cstring>
+                </property>
+                <property name="text">
+                    <string>Close</string>
+                </property>
+                <property name="accel">
+                    <string></string>
+                </property>
+                <property name="autoDefault">
+                    <bool>true</bool>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+    <widget class="QGroupBox">
+        <property name="name">
+            <cstring>groupBox2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>11</x>
+                <y>161</y>
+                <width>525</width>
+                <height>240</height>
+            </rect>
+        </property>
+        <property name="title">
+            <string>Layers:</string>
+        </property>
+        <widget class="QListView">
+            <column>
+                <property name="text">
+                    <string>Type</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Name</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <property name="name">
+                <cstring>lstLayers</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>11</x>
+                    <y>22</y>
+                    <width>503</width>
+                    <height>258</height>
+                </rect>
+            </property>
+            <property name="selectionMode">
+                <enum>Multi</enum>
+            </property>
+            <property name="allColumnsShowFocus">
+                <bool>true</bool>
+            </property>
+        </widget>
+    </widget>
+    <widget class="QButtonGroup">
+        <property name="name">
+            <cstring>buttonGroup1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>110</y>
+                <width>440</width>
+                <height>51</height>
+            </rect>
+        </property>
+        <property name="title">
+            <string>Image Encoding</string>
+        </property>
+        <spacer>
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>191</width>
+                    <height>21</height>
+                </size>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>230</x>
+                    <y>20</y>
+                    <width>191</width>
+                    <height>21</height>
+                </rect>
+            </property>
+        </spacer>
+        <widget class="QRadioButton">
+            <property name="name">
+                <cstring>radioButton1</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>20</y>
+                    <width>91</width>
+                    <height>21</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>PNG</string>
+            </property>
+        </widget>
+        <widget class="QRadioButton">
+            <property name="name">
+                <cstring>radioButton2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>130</x>
+                    <y>20</y>
+                    <width>91</width>
+                    <height>21</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>JPEG</string>
+            </property>
+        </widget>
+    </widget>
+</widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="12398">789cb598596f22499786effb57943aee5aa3f8d81232359a0b2f18afd878c58ce6e2c492186356638c19cd7f9fc83cef89aefecaed2e7757c9854a0fb19cfd4404fffaed4bffe2eccb6ffffae57945ab91fd621f68f9e537f73299bcfdf7fffcd7fffef26b23fd52fc6bd5bed47efd8f5f7eedadbed82fddd9d41760070154a552ab542a05530fdc605629380513d8326bacafcbfa2158d6df81b15e6fc1b27ec2dcc07a7d0c96f52db0ac6f83b19ef69813590ff94982f5b7e00ce34bb0036f989b5570178cf57a0196f53958d68f995b584f186fc9fa37b0ac3f02cbfa57e654d657c1b2fe092cebd760ac3753e60ceb55bfe454e2e92cb85149cbf933b0c4f3397239eedfc0163c6296783aac9778e60a8cf939eb9b4abc88fd978abfe98259fceb0fc162df1918f373cd2cfe35982ffeb2902ffea25d30d6bb9d82ab15b1cf18b0e8fbcc2cf96b0691cb71b70563bdbd0763bd72cc92af7a1f0cfb7d8739e6e72158e23f67167fb84b66b1573f328bbdea062cf12fe3554deb952a8f1b7083991ec0126f0f96fa3b8f5cdaa32bcc0dd84f3b60b1ef4198f77790d790fc61fd8b70b07f9a60892fe64bbd990958f29dfd9b4abd502532ebf70296f826cc21ff399e657dd7627c699f39e66f8f59ecd33330fce1ab9179dc334b3fb19a59f4b5c42cf5a9203f03fb52ff5a566fd4983370cafe3397c23cae4ec096594f991b952aebf30c6e30fb07b0f4c713611eb7a5fc7a35ec9f95f2e6cc8d0ab3cac0e80ffa000cf9aaec37f5285fbd82219f6ac2d8ef1a0cf9fe4ab85e2df75f314b3d280b4e589e75ccad04f95cf68346d097d7e72b30ecd11db0857c19b7f592f309739240fe1ed8c13f9659f2c75d811df297f7a74630b8e40d38e5fdddae30c60f2253b9ff040c7fba9530eba37261ac3f8d5caef78fcc49c6f3fd4018f38f9953d48735ccd19eb29e925a03f995af85597fbdcb9c483e24c22cdf358493f2f2e0fa60c4cb548431ff5198e7db1c9c21ff46c22cdf58619eef7b6089cf9b30ecaf09b3fd39f66f5699ad0723dea6f46742a29fdf80c57f87c22c5fdf811deb4b4a98e79b3d619eafae2297fb9b2a73b38a7c2530e4d39259fabb3d00c35e057945432bfdd964ce500fa6ecffcd9ac8a7f3c8e5fe5a3137abe81f5561d6c71d0ac39e6d645eef84b1bf8f5c8ee70be1268f5f82c5df67c288c78930f247f647fcf5a930f45944667f1d83110f87f92dd867fbcc29fca3cbfc6a52dc2f1166fdfd8e30ebafda91d97e024bbcd791cb71b527ccf69897c83cbe2fccfbbbe7c8bc7f8fb98578f85761f8ab1a99ed1f0ba39e2e22737fe930a7f0475eead3aacb79a27798930aebe3d7cc629f1d31b7aaac9fc5780bf1242d0c7fdc0b63bf3a58e269c18ee3e1dbcc29ec35e5fdb7651a8d56bdf4cf8059e2eb4f99c51fa603467cfc8530af574f608957268c7894fe08d7a1b4654afbc6cc29fca98e22f3fe7d70827aba02a37fd1bd30e2ef22f3fc1bb0f4abb930ebe7f698b32aef67dbcc5445bf9b311b423e97f6a6269e172c3ff8272dedf7dbc8a57d39af3769c2fef12d30ce0fd5033b8e979a0a23bf779933c48bbac2acbfc7fc0cf9900f2373bede08a31f42ff2cc3f9a7c188b72de393355a55c4e7099cb03dee42386b947c06ced87e35604e515ff68139433eda9530eb4b7561d4e71b18f99a1b61d8fb1499f74f84d11f47cc84fee34bff65b6e5585f1a44b6e578ce1cfa3bc71bf3b384eda73730e2658fc18817b1bf2c49fe5c0be3bc190ba31e5270c2f2dc5018f64cc1c4e366238cf3bd298cf383984d13f7bb723f6ab41cc74b5d32a755d8bf8dccf6df0b5339aefb60c4d3de3267a81fb3cb1cf4e1fbc235d8a31e536653c3fda52e8cf5c3c87c7e607fd3447eec8161af2ff385acbc3f7d2a8cf3a2c12cfdd71018e79b7910e6f9b9670ef6717eb784d9fe7c0e76ccea919912b62777cc628fed09a39fb03facf5884739df34e43d6d7accd23fdd082ce75387394d905f47cc59c2f1724b30e2e34f98633eadc1e8579ec09efd4987cc51ff2dd8f37cdb1446bc14b3ade13ea485917f0b7013fda4bcaf1917fb6b9559eeef76238cfc9c3093f4cba930f2f1168cfe494e18f61b30f477e7c238ffeacc06faf92518fe313b60b1b7cb1cece1fc9d83516fba0546bebb036607ff782d8c7a28fb954d52f4673f638efd7b2c8cf3ea9299aa384f314ec8077dcd2cf1a35b61f4db57668b7ea01361c4ff0a8cfc3491910f7366b1c77861dc078e84313f0337f1be3916463e0d2373fc4b7f5b97e13e654fc1b8dff84564963701a3dffb7361bc4ff69943bfe5fe710326ee77a60f46fe3bd63fc41bf1db305b82fe5361e89b0a239ed047fc978f989df4b33118feb690e7b09fce84211ffb39e9175d61c40bfe09c8effb6761d43becf7f0af2bcf2317f209fd63c54cd20f0f986d0def859630d79fbf630ef166fdcfc0a8170207f9cc4d30e45306863fe94e18f57903167b595f2ff7535d6396fb823961b6c86f350337b9fe5d1d2ce7e31318f1f5ac9f8ff9d8658efa633f8f71730e967c6883d15fd436328f3f30e7d8cf95ef6fdf0cf729debfcd6c457e4d98ebdb9e83e53c6d80d1bfec21b3d49f5981e5bc7c0423bf5c0bec39be06ec519f740d96fef7ca2cfa9b1c0c7dfd71648e57f99ef05e7ecfa039b343bff4d7c21c1f730b46ffa4c7c89cff8ad923df5c1e99f73b1386bdfb60d12761cea5bf97fd2a6f5282f3e68a59f2d7de8125ff9430fbcb3e337bf4b7fc4118f7e913b0c83f10c6f9f10886bd6a01863c5565ce9be85f2c2fcfe47e73c32cf727bfc76c111f5b678efdf90e2cf9b58cccf9900ac33fb7c2786f5e82a53ebb91797d0decf17bfd5818f56385517fc7c238afd93fb9d49b7a88ccfdb0298c7ef80a967c8d0cfde691d99f4361c4eb5118f7ed7d61f43b12c6f9d0068bfd279159bf8630f2d347e67a5c0aa35f213ed22fcc7364ce47d94ffafb9a39f68fa7c86cdf4818fead45e6fb402a8cfa32c2c8d7042cf9b188ccfb9f0be3f7e59dc86c8f064bffdf44e6f8f485e19f2c32e76f4318e75164c4630aceb17f2732eb27f6e6d0ef2d32dfcf2e8471bfb791f9bce80ae33e5f11b6aee0deeae7fefd68195a69fab932b4d156bb9f27437b9deba17ef876e4c7c8d023fda8c7fa494ff4f467c8d0333d0ffb8ff5422f838ce71f2d43aff44bd87b1d3eaf7aa3dff456effc58197a57efe97ddd0efa6fcabfc28e831fef2bddd187fa28ec7f54da71ac4ffea90c4dfa347c46fc3fbe3bd3ddd28661f83bd6e7ff4446d8f942f7f4a5bed2d7fa46dfea3bdd0fdfdd8768bf06096d3d08d1d8eacadf9511f4aeea9aaeeb864e7453b774aa339d2aad54994f1b3d54a48cb2ca29aff2bf23a3d0570dd5831aa94735564f6aa2a66aa6e66aa19621a78a384cd4b35aa917b556af6af3791985ffd59bdaaa1db5abf6d4be6aab03d55187ea481d874817b168072b4ed4a91ef556eaecf3fdaab4a1abced585eaa94b75f5fb88ba5637c14f47ea56dda9beba2f24bcfff7b10c4d6aa02aaaaa6aaaae1a2af97a4c35432cba7aa95a2a5519e96ff5ff3e19a488c8a80bb2145e9fff263f0ffd6943390de98146f448e3bf23438fe8892634a519cd69fc473d6911ac28aae258a5b40c739e69f567defa50469f5e684dafb4a137dafe41c20eed16b1a0bd60e83eb5e9803a7448479f95a1898ee9844e838e67d4a5afea579fd245f05457ddea2df5e892aec29c6bdda09bf763f2818c11ddaa87b0fa8efa744f83afaca8842854cb9c4da946756a5012e635a9a50e3f6d471a3c90196d9409fde9f7ef432472bd51b73434c6d8e2b726ea983c7c86e69d53f0231966641e4334a6666c9ebe8ea6999869c8d923d5323333d77db330cb30af639ecdcabc7c52c63ae83735afe1b3f9ddcfc1833977283d306faa13e66dcd4e118f306fd7ec7d361e66dfb48b889b03d389df1da2cf4e546a8e0afb828ce3905785bd27e6f47332cc99e98695e7e173617a2ca1aced706e879c4dcd257b30ccbb0a9e2aecbd36379fb6e3b6d4efcef4cd7df94d3ff8695dc4424fccc0e0a43055532be356370d937c52069966d0af4589494d56b0d55659b2c6dae27728b9abd9dc0ecbb875ec837db7d23fb243a33eeca31ddb273bb1533b530b3bb70bbbb4cf7665cb2cb26b352ae2665fede6ebbefc3d32c2ea37532bfc6cb776c7ee86cf9eddb76d7b603bf6d01ee9863db6e186604fed5998d3b5e7f6e2b3755ef8dff654cd5eda2b7b6d6fecadbdb37d7b6f07b662abb666ebb661133ab2c1a3457d50d7b6deef8a7fd1dbb50db56e33b570da2947ce50cf59956b72ce79ba73b91b52df151e4dddc83dbebfcb5f9c51233573635a9bb17b72133775333b5027ba5fca0fd2dd9cfaa61efe5fb8a57be6ef3f2ba3b7722bf7e2d6eed56d4cdbbdb9addb71bb18d973fb347521daeec075d4fedf3d078b98b84377e48e83bf0fdc893b756722239cefe7a50d5d776e1277f1e77bfcf5bdc4f5dca5bb72d761b71b3572b7eecef5ddbd1bb88aabba9a3d7375b3768d8f76f88e7bc9a6a86d97b8a66bb9d4655e7be589ac37defae247c1dc0f3fd6f2e3f3dc3f84ce51de3e74db8ffca31ffb273ff1533ff373bff04bffec57fec5af79be7ff51bfd4e57fcb0ce5fc2fedc9f429ff56f7eab12dafa1dbfabae684b372e0bf148fc9edf2feac2b7fd41a897c1f7cbf01d7f58de0187e1d45e16675ec8d93fe868abfe48d57cc8067fe24fcd993ff35d7feedf89fdfb327ccf5fea899be9010df52474dba19bf96f7a91bf36b5d00716a6ed6ffcadbf0b71eafbfb4fd831f057be622b66eeabc5cb42ddf9da3773eabee113550b67e0da37dddcb77cfab978c49db2d03af67295bf5363b9c96db86bbf851bfd45ee72ffef77c9ef9511aacd8517cc36ffe65d514a19e60ff9287fccc786fc3befcdef95a1fbf9939be593f747ed493ecd67f93c5ffcd9faef7b47e5cbfc39ffcb59ff4c4690f292af7fb68c7ff2f7ebfffde72fff0f8d1b0adf</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>btnCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsServerSourceSelectBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>btnConnect</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsServerSourceSelectBase</receiver>
+        <slot>serverConnect()</slot>
+    </connection>
+    <connection>
+        <sender>btnAdd</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsServerSourceSelectBase</receiver>
+        <slot>addLayers()</slot>
+    </connection>
+    <connection>
+        <sender>btnNew</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsServerSourceSelectBase</receiver>
+        <slot>addNewConnection()</slot>
+    </connection>
+    <connection>
+        <sender>btnEdit</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsServerSourceSelectBase</receiver>
+        <slot>editConnection()</slot>
+    </connection>
+    <connection>
+        <sender>btnDelete</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsServerSourceSelectBase</receiver>
+        <slot>deleteConnection()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>cmbConnections</tabstop>
+    <tabstop>btnConnect</tabstop>
+    <tabstop>btnNew</tabstop>
+    <tabstop>btnEdit</tabstop>
+    <tabstop>btnAdd</tabstop>
+    <tabstop>btnCancel</tabstop>
+    <tabstop>btnHelp</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">qgsserversourceselectbase.ui.h</include>
+</includes>
+<slots>
+    <slot>init()</slot>
+    <slot>serverConnect()</slot>
+    <slot>addLayers()</slot>
+    <slot>addNewConnection()</slot>
+    <slot>editConnection()</slot>
+    <slot>deleteConnection()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
