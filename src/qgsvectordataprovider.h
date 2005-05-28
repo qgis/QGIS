@@ -83,9 +83,12 @@ class QgsVectorDataProvider : public QgsDataProvider
 
       /**Get the next feature resulting from a select operation.
        *@param attlist a list containing the indexes of the attribute fields to copy
-       *@param getnotcommited flag indicating if not commited features should be returned
+     * @param featureQueueSize   a hint to the provider as to how many features are likely to be retrieved in a batch
        */
-      virtual QgsFeature * getNextFeature(std::list<int> const & attlist) = 0;
+//    virtual QgsFeature* getNextFeature(std::list<int> const & attlist) = 0;
+    
+    virtual QgsFeature* getNextFeature(std::list<int> const & attlist, int featureQueueSize = 1) {};
+//    virtual QgsFeature * getNextFeature(std::list<int> const & attlist, ) = 0;
 
       /**
        * Get the next feature using new method
@@ -108,6 +111,12 @@ class QgsVectorDataProvider : public QgsDataProvider
       virtual long featureCount() const = 0;
 
       /**
+     * Get the attributes associated with a feature
+     * TODO: Get rid of "row" and set up provider-internal caching instead
+     */
+    virtual void getFeatureAttributes(int oid, int& row, QgsFeature *f) {};
+    
+    /**
        * Number of attribute fields for a feature in the layer
        */
       virtual int fieldCount() const = 0;
