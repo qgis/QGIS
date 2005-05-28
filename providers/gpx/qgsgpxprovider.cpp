@@ -212,7 +212,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	geo[1] = 1;
 	std::memcpy(geo+5, &wpt->lon, sizeof(double));
 	std::memcpy(geo+13, &wpt->lat, sizeof(double));
-	feature->setGeometry((unsigned char *)geo, sizeof(wkbPoint));
+	feature->setGeometryAndOwnership((unsigned char *)geo, sizeof(wkbPoint));
 	feature->setValid(true);
 	
 	// add attributes if they are wanted
@@ -281,7 +281,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	  std::memcpy(geo + 9 + 16 * i, &rte->points[i].lon, sizeof(double));
 	  std::memcpy(geo + 9 + 16 * i + 8, &rte->points[i].lat, sizeof(double));
 	}
-	feature->setGeometry((unsigned char *)geo, 9 + 16 * nPoints);
+	feature->setGeometryAndOwnership((unsigned char *)geo, 9 + 16 * nPoints);
 	feature->setValid(true);
 	
 	// add attributes if they are wanted
@@ -341,7 +341,7 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	  std::memcpy(geo + 9 + 16 * i, &trk->segments[0].points[i].lon, sizeof(double));
 	  std::memcpy(geo + 9 + 16 * i + 8, &trk->segments[0].points[i].lat, sizeof(double));
 	}
-	feature->setGeometry((unsigned char *)geo, 9 + 16 * nPoints);
+	feature->setGeometryAndOwnership((unsigned char *)geo, 9 + 16 * nPoints);
 	feature->setValid(true);
 	
 	// add attributes if they are wanted
