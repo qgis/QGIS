@@ -413,6 +413,7 @@ AC_CONFIG_FILES([
   providers/delimitedtext/Makefile
   providers/grass/Makefile
   providers/gpx/Makefile
+  providers/wms/Makefile
   plugins/Makefile
   plugins/community_reg_plugin/Makefile
   plugins/copyright_label/Makefile
