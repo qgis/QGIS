@@ -414,6 +414,8 @@ bool QgsPostgresProvider::getNextFeature(QgsFeature &feature, bool fetchAttribut
 QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 {
   QgsFeature *f = 0;
+  
+  int row = 0;  // TODO: Make this useful
 
   if (valid){
     QString fetch = "fetch forward 1 from qgisf";
@@ -430,7 +432,7 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 
     // get the value of the primary key based on type
 
-    int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
+    int oid = *(int *)PQgetvalue(queryResult, row, PQfnumber(queryResult,primaryKey));
 #ifdef QGISDEBUG
     // std::cerr << "OID from database: " << oid << std::endl; 
 #endif
@@ -474,15 +476,15 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 #endif
     f = new QgsFeature(*noid);
     if (fetchAttributes)
-      getFeatureAttributes(*noid, f);
+      getFeatureAttributes(*noid, row, f);
 
-    int returnedLength = PQgetlength(queryResult,0, PQfnumber(queryResult,"qgs_feature_geometry"));
+    int returnedLength = PQgetlength(queryResult, row, PQfnumber(queryResult,"qgs_feature_geometry"));
     //--std::cerr << __FILE__ << ":" << __LINE__ << " Returned length is " << returnedLength << std::endl;
     if(returnedLength > 0)
     {
       unsigned char *feature = new unsigned char[returnedLength + 1];
       memset(feature, '\0', returnedLength + 1);
-      memcpy(feature, PQgetvalue(queryResult,0,PQfnumber(queryResult,"qgs_feature_geometry")), returnedLength);
+      memcpy(feature, PQgetvalue(queryResult, row, PQfnumber(queryResult,"qgs_feature_geometry")), returnedLength);
 #ifdef QGISDEBUG
       // a bit verbose
       //int wkbType = *((int *) (feature + 1));
@@ -504,84 +506,134 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
   return f;
 }
 
-QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist)
+// // TODO: Remove completely (see morb_au)
+// QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist)
+// {
+//   return getNextFeature(attlist, 1);
+// }
+
+QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist, int featureQueueSize)
 {
   QgsFeature *f = 0;
   if (valid)
   {
-    QString fetch = "fetch forward 1 from qgisf";
-    queryResult = PQexec(connection, (const char *)fetch);
-    if(PQntuples(queryResult) == 0)
+  
+    // Top up our queue if it is empty
+    if (mFeatureQueue.empty())
     {
-#ifdef QGISDEBUG
-      std::cerr << "Feature is null\n";
-#endif  
-      PQexec(connection, "end work");
-      ready = false;
-      return 0;
-    }
-    int *noid;
-    int oid = *(int *)PQgetvalue(queryResult,0,PQfnumber(queryResult,primaryKey));
-#ifdef QGISDEBUG 
-    //  std::cerr << "Primary key type is " << primaryKeyType << std::endl; 
-#endif  
-    // We don't support primary keys that are not int4 so if
-    // the key is int8 we use the oid as the id instead.
-    // TODO Throw a warning to let the user know that the layer
-    // is not using a primary key and that performance will suffer
-    if(primaryKeyType == "int8")
-    {
-      noid = &oid;
-    }
-    else
-    {
-      if(swapEndian)
-      {
-        // XXX I'm assuming swapping from big-endian, or network, byte order to little endian
-#ifdef QGISDEBUG
-        //XXX TOO MUCH OUTPUT!!!    qWarning("swapping endian for oid");
-#endif 
-        // convert oid to opposite endian
-        // XXX "Opposite?"  Umm, that's not enough information.
-        oid = ntohl(oid);
-        noid = &oid;
-      }
-      else
-      {
-        noid = &oid;
-      }   
-    }
-
-    f = new QgsFeature(*noid);    
-    if(!attlist.empty())
-    {
-      getFeatureAttributes(*noid, f, attlist);
-    } 
-    int returnedLength = PQgetlength(queryResult,0, PQfnumber(queryResult,"qgs_feature_geometry")); 
-    if(returnedLength > 0)
-    {
-      unsigned char *feature = new unsigned char[returnedLength + 1];
-      memset(feature, '\0', returnedLength + 1);
-      memcpy(feature, PQgetvalue(queryResult,0,PQfnumber(queryResult,"qgs_feature_geometry")), returnedLength); 
-#ifdef QGISDEBUG
-      // Too verbose
-      //int wkbType = *((int *) (feature + 1));
-      //std::cout << "WKBtype is: " << wkbType << std::endl;
-#endif
-      f->setGeometryAndOwnership(feature, returnedLength + 1);
-
-    }
-    else
-    {
-      //--std::cout <<"Couldn't get the feature geometry in binary form" << std::endl;
-    }
     
-    PQclear(queryResult);
+      if (featureQueueSize < 1)
+      {
+        featureQueueSize = 1;
+      }
+
+      QString fetch = QString("fetch forward %1 from qgisf")
+                         .arg(featureQueueSize);
+                         
+      queryResult = PQexec(connection, (const char *)fetch);
+      
+      int rows = PQntuples(queryResult);
+      
+      if (rows == 0)
+      {
+  #ifdef QGISDEBUG
+        std::cerr << "End of features.\n";
+  #endif  
+        PQexec(connection, "end work");
+        ready = false;
+        return 0;
+      }
+      int *noid;
+      
+      for (int row = 0; row < rows; row++)
+      {
+        int oid = *(int *)PQgetvalue(queryResult, row, PQfnumber(queryResult,primaryKey));
+    #ifdef QGISDEBUG 
+        //  std::cerr << "Primary key type is " << primaryKeyType << std::endl; 
+    #endif  
+        // We don't support primary keys that are not int4 so if
+        // the key is int8 we use the oid as the id instead.
+        // TODO Throw a warning to let the user know that the layer
+        // is not using a primary key and that performance will suffer
+        if(primaryKeyType == "int8")
+        {
+          noid = &oid;
+        }
+        else
+        {
+          if(swapEndian)
+          {
+            // XXX I'm assuming swapping from big-endian, or network, byte order to little endian
+    #ifdef QGISDEBUG
+            //XXX TOO MUCH OUTPUT!!!    qWarning("swapping endian for oid");
+    #endif 
+            // convert oid to opposite endian
+            // XXX "Opposite?"  Umm, that's not enough information.
+            oid = ntohl(oid);
+            noid = &oid;
+          }
+          else
+          {
+            noid = &oid;
+          }   
+        }
+    
+        f = new QgsFeature(*noid);    
+        if(!attlist.empty())
+        {
+          getFeatureAttributes(*noid, row, f, attlist);
+        } 
+        int returnedLength = PQgetlength(queryResult, row, PQfnumber(queryResult,"qgs_feature_geometry")); 
+        if(returnedLength > 0)
+        {
+          unsigned char *feature = new unsigned char[returnedLength + 1];
+          memset(feature, '\0', returnedLength + 1);
+          memcpy(feature, PQgetvalue(queryResult, row, PQfnumber(queryResult,"qgs_feature_geometry")), returnedLength); 
+    #ifdef QGISDEBUG
+          // Too verbose
+          //int wkbType = *((int *) (feature + 1));
+          //std::cout << "WKBtype is: " << wkbType << std::endl;
+    #endif
+          f->setGeometryAndOwnership(feature, returnedLength + 1);
+    
+        }
+        else
+        {
+          //--std::cout <<"Couldn't get the feature geometry in binary form" << std::endl;
+        }
+
+#ifdef QGISDEBUG
+      std::cout << "QgsPostgresProvider::getNextFeature: pushing " << f->featureId() << std::endl; 
+#endif
+  
+        mFeatureQueue.push(f);
+        
+      } // for each row in queue
+      
+#ifdef QGISDEBUG
+//      std::cout << "QgsPostgresProvider::getNextFeature: retrieved batch of features." << std::endl; 
+#endif
+
+            
+      PQclear(queryResult);
+      
+    } // if new queue is required
+    
+    // Now return the next feature from the queue
+    
+    f = mFeatureQueue.front();
+    mFeatureQueue.pop();
+    
   }
   else 
   {
     //--std::cout << "Read attempt on an invalid postgresql data source\n";
   }
+  
+#ifdef QGISDEBUG
+//      std::cout << "QgsPostgresProvider::getNextFeature: returning " << f->featureId() << std::endl; 
+#endif
+
   return f;   
 }
 
@@ -645,6 +697,9 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
   }
   PQexec(connection,"begin work");
   PQexec(connection, (const char *)(declare.utf8()));
+  
+  // TODO - see if this deallocates member features
+  mFeatureQueue.empty();
 }
 
 /**
@@ -737,7 +792,7 @@ int QgsPostgresProvider::fieldCount() const
 /**
  * Fetch attributes for a selected feature
  */
-void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f){
+void QgsPostgresProvider::getFeatureAttributes(int key, int &row, QgsFeature *f) {
 
   QString sql = QString("select * from %1 where %2 = %3").arg(tableName).arg(primaryKey).arg(key);
 
@@ -753,14 +808,14 @@ void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f){
     if(fld != geometryColumn){
       // Add the attribute to the feature
       //QString val = mEncoding->toUnicode(PQgetvalue(attr,0, i));
-	QString val = QString::fromUtf8 (PQgetvalue(attr,0, i));
+	QString val = QString::fromUtf8 (PQgetvalue(attr, row, i));
       f->addAttribute(fld, val);
     }
   }
 } 
 
 /**Fetch attributes with indices contained in attlist*/
-void QgsPostgresProvider::getFeatureAttributes(int key, 
+void QgsPostgresProvider::getFeatureAttributes(int key, int &row,
     QgsFeature *f, 
     std::list<int> const & attlist)
 {
@@ -782,7 +837,7 @@ void QgsPostgresProvider::getFeatureAttributes(int key,
     {
       // Add the attribute to the feature
       //QString val = mEncoding->toUnicode(PQgetvalue(attr,0, i));
-	QString val = QString::fromUtf8(PQgetvalue(attr,0, i));
+	QString val = QString::fromUtf8(PQgetvalue(attr, row, i));
       //qWarning(val);
       f->addAttribute(fld, val);
     }
@@ -816,6 +871,10 @@ void QgsPostgresProvider::reset()
   PQexec(connection,"begin work");
   PQexec(connection, (const char *)(declare.utf8()));
   //--std::cout << "Error: " << PQerrorMessage(connection) << std::endl;
+  
+  // TODO - see if this deallocates member features
+  mFeatureQueue.empty();
+
   ready = true;
 }
 /* QString QgsPostgresProvider::getFieldTypeName(PGconn * pd, int oid)
@@ -1511,7 +1570,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
         bool charactertype=false;
         insert+=",";
 
-        //add quotes if the field is a characted type
+        //add quotes if the field is a character type
         if(fieldvalue!="NULL")
         {
           for(std::vector<QgsField>::iterator iter=attributeFields.begin();iter!=attributeFields.end();++iter)

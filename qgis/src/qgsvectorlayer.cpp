@@ -761,8 +761,14 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 
     try
     {
-      while((fet = dataProvider->getNextFeature(attributes)))
+      while (fet = dataProvider->getNextFeature(attributes, updateThreshold))
+//      while((fet = dataProvider->getNextFeature(attributes)))
       {
+      
+#ifdef QGISDEBUG
+//      std::cout << "QgsVectorLayer::draw: got " << fet->featureId() << std::endl; 
+#endif
+      
   qApp->processEvents(); //so we can trap for esc press
   if (mDrawingCancelled) return;
   // If update threshold is greater than 0, check to see if

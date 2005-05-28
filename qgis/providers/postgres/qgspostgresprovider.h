@@ -26,15 +26,19 @@ extern "C"
 #include "../../src/qgsvectordataprovider.h"
 #include "../../src/qgsrect.h"
 #include <list>
+#include <queue>
 #include <fstream>
 #include <qstring.h>
 #include <qobject.h>
 //#include <qmutex.h>
 
-class QgsFeature;
-class QgsField;
 class OGRDataSource;
 class OGRLayer;
+
+class QgsFeature;
+class QgsField;
+class QgsGeometry;
+
 #include "qgsdatasourceuri.h"
 
 #include "qgspostgrescountthread.h"
@@ -83,10 +87,12 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     bool getNextFeature(QgsFeature &feature, bool fetchAttributes=0);
 
     /**Get the next feature resulting from a select operation.
-     *@param attlist a list containing the indexes of the attribute fields to copy
-     *@param getnotcommited flag indicating if not commited features should be returned
+     * @param attlist            a list containing the indexes of the attribute fields to copy
+     * @param featureQueueSize   a hint to the provider as to how many features are likely to be retrieved in a batch
      */
-    QgsFeature* getNextFeature(std::list<int> const & attlist);
+//    QgsFeature* getNextFeature(std::list<int> const & attlist);
+    QgsFeature* getNextFeature(std::list<int> const & attlist, int featureQueueSize = 1);
+    
     /** Get the feature type. This corresponds to
      * WKBPoint,
      * WKBLineString,
@@ -169,10 +175,10 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     /**
      * Get the attributes associated with a feature
      */
-    void getFeatureAttributes(int oid, QgsFeature *f);
+    void getFeatureAttributes(int oid, int& row, QgsFeature *f);
 
     /**Get the attributes with indices contained in attlist*/
-    void getFeatureAttributes(int oid, QgsFeature *f, std::list<int> const& attlist);
+    void getFeatureAttributes(int oid, int& row, QgsFeature *f, std::list<int> const& attlist);
 
     /**  * Get the name of the primary key for the layer
     */
@@ -381,6 +387,12 @@ signals:
      */
     long numberFeatures;
 
+    /**
+     * Feature queue that GetNextFeature will retrieve from 
+     * before the next fetch from PostgreSQL
+     */
+    std::queue<QgsFeature*> mFeatureQueue; 
+        
     /**
      * Flag indicating whether data from binary cursors must undergo an
      * endian conversion prior to use
