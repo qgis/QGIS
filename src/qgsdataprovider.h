@@ -29,6 +29,7 @@
 
 #include <qobject.h>
 #include <qstring.h>
+#include <qstringlist.h>
 
 class QgsRect;
 class QgsFeature;
@@ -184,6 +185,37 @@ class QgsDataProvider : public QObject {
       {
         return QString::null;
       }
+      
+      /**
+       * Sub-layers handled by this provider, in order from bottom to top
+       *
+       * Sub-layers are used when the provider's source can combine layers
+       * it knows about in some way before it hands them off to the provider.
+       */
+      virtual QStringList subLayers()
+      {
+        return QStringList();  // Empty
+      }
+    
+    
+      /**
+       * Reorder the list of layer names to be rendered by this provider
+       * (in order from bottom to top)
+       * \note   layers must have been previously added.
+       */
+      virtual void setLayerOrder(QStringList layers)
+      {
+        // NOOP
+      }
+    
+      /**
+       * Set the visibility of the given sublayer name
+       */
+      virtual void setSubLayerVisibility(QString name, bool vis)
+      {
+        // NOOP
+      }
+
 
 signals:
 
