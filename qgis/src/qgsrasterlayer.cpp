@@ -2968,14 +2968,44 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::getLegendQPixmap called (" << getDrawingStyleAsQString() << ")" << std::endl;
 #endif
+
+
+  QPixmap myLegendQPixmap;      //will be initialised once we know what drawing style is active
+  QPainter myQPainter;
+
+  
+  if (providerKey)
+  {
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer::getLegendQPixmap called with provider Key (" << providerKey << ")" << std::endl;
+#endif
+    
+    myLegendQPixmap = QPixmap(3, 1);
+    myQPainter.begin(&myLegendQPixmap);
+    //draw legend red part
+    myQPainter.setPen(QPen(QColor(255,   0,   0, QColor::Rgb), 0));
+    myQPainter.drawPoint(0, 0);
+    //draw legend green part
+    myQPainter.setPen(QPen(QColor(  0, 255,   0, QColor::Rgb), 0));
+    myQPainter.drawPoint(1, 0);
+    //draw legend blue part
+    myQPainter.setPen(QPen(QColor(  0,   0, 255, QColor::Rgb), 0));
+    myQPainter.drawPoint(2, 0);
+
+  }
+  else
+  { 
+    // Legacy GDAL (non-provider)
+  
   //
   // Get the adjusted matrix stats
   //
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(1);
   double noDataDouble = myGdalBand->GetNoDataValue();
   QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
-  QPixmap myLegendQPixmap;      //will be initialised once we know what drawing style is active
-  QPainter myQPainter;
+    
+    
+    
   //
   // Create the legend pixmap - note it is generated on the preadjusted stats
   //
@@ -3132,7 +3162,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
     myQPainter.setPen(QPen(QColor(127, 160, 224, QColor::Rgb), 0));
     myQPainter.drawPoint(2, 0);
   }
-
+  }
 
   myQPainter.end();
 

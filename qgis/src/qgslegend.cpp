@@ -21,6 +21,7 @@
 
 #include <qcursor.h>
 #include <qstring.h>
+#include <qstringlist.h>
 #include <qpainter.h>
 #include <qlabel.h>
 #include <qvbox.h>
@@ -46,8 +47,13 @@ const int AUTOSCROLL_MARGIN = 16;
    set movingItem pointer to 0 to prevent SuSE 9.0 crash
 */
 QgsLegend::QgsLegend(QWidget * parent, const char *name, QgisApp * qgis_app )
-    : QListView(parent, name), mousePressed(false), movingItem(0), mQgisApp(qgis_app)
+    : QListView(parent, name), 
+      mousePressed(false), 
+      movingItem(0), 
+      mQgisApp(qgis_app)
 {
+    setRootIsDecorated(TRUE);  // Allows the use of sublayers in the legend
+    
     connect( this, SIGNAL(selectionChanged(QListViewItem *)), 
              this, SLOT(updateLegendItem(QListViewItem *)) );
 }
@@ -203,6 +209,10 @@ void QgsLegend::addLayer(QgsMapLayer * layer)
 {
   // XXX check for duplicates first?
 
+#ifdef QGISDEBUG
+  std::cout << "QgsLegend::addLayer:  Entering." << std::endl;
+#endif
+
   Q_CHECK_PTR(layer);
 
   if (!layer)
@@ -218,6 +228,34 @@ void QgsLegend::addLayer(QgsMapLayer * layer)
 
   // done in QgsLegendItem ctor legend_item->setPixmap( 0, *layer->legendPixmap() );
 
+  // TODO: Set Legend children if this layer has sublayers (e.g. for WMS)
+  QStringList childLayers = layer->subLayers();
+
+#ifdef QGISDEBUG
+  std::cout << "QgsLegend::addLayer:  About to add sublayers." << std::endl;
+#endif
+  
+  for ( QStringList::Iterator sublayer  = childLayers.begin(); 
+                              sublayer != childLayers.end(); 
+                            ++sublayer )
+  {
+#ifdef QGISDEBUG
+    std::cout << "QgsLegend::addLayer:  Adding sublayer." << std::endl;
+#endif
+
+
+
+// TODO: QgsLegendItem for sublayers
+    QString sublayername = *sublayer;
+ 
+    new QgsLegendItem(sublayername, legend_item, mQgisApp->actionInOverview);
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsLegend::addLayer:  Ended adding sublayers." << std::endl;
+#endif
+  
+  
   // XXX we could probably make map layers ignorant of corresponding legend
   // XXX item through use of signals/slots
   layer->setLegendItem(legend_item);
@@ -239,6 +277,11 @@ void QgsLegend::addLayer(QgsMapLayer * layer)
       emit currentChanged(firstChild());
     }
 
+#ifdef QGISDEBUG
+  std::cout << "QgsLegend::addLayer:  Exiting." << std::endl;
+#endif
+
+    
 }                               // QgsLegend::addLayer
 
 
@@ -400,8 +443,14 @@ void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
         }
 
       // move item in list if we're dragging over another item
+      
+      // TODO: Check that if depth > 0, the parent is the same provider source as the movingitem parent
       QListViewItem *item = itemAt(p);
-      if (item && (item != movingItem))
+      if (
+          (item) && 
+          (item != movingItem) &&
+          (item->depth() == movingItem->depth())
+         )
         {
           // find if we're over the top or bottom half of the item
           QRect rect = itemRect(item);
