@@ -85,6 +85,21 @@ wish to see edbug messages printed to stdout.
 #include <qwidget.h>
 #include <qwidgetlist.h>
 
+
+/*
+ * 
+ * New includes that will convert this class to a data provider interface
+ * (B Morley)
+ *
+ */ 
+ 
+#include <qlibrary.h>
+
+/*
+ * END
+ */
+
+
 #include "qgsrect.h"
 #include "qgisapp.h"
 #include "qgscolortable.h"
@@ -94,6 +109,20 @@ wish to see edbug messages printed to stdout.
 #include "qgsattributeaction.h"
 
 #include "qgsspatialrefsys.h"
+
+/*
+ * 
+ * New includes that will convert this class to a data provider interface
+ * (B Morley)
+ *
+ */ 
+
+#include "qgsproviderregistry.h"
+
+/*
+ * END
+ */
+ 
 
 #include <gdal_priv.h>
 
@@ -424,7 +453,8 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     showDebugOverlayFlag(false),
     mLayerProperties(0x0),
     mTransparencySlider(0x0),
-    mIdentifyResults(0)
+    mIdentifyResults(0),
+    dataProvider(0)
 {
   // we need to do the tr() stuff outside of the loop becauses tr() is a time
   // consuming operation nd we dont want to do it in the loop!
@@ -461,7 +491,11 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
 
 QgsRasterLayer::~QgsRasterLayer()
 {
-  GDALClose(gdalDataset);
+
+  if (!(providerKey))
+  {
+    GDALClose(gdalDataset);
+  }  
 }
 
 
@@ -883,7 +917,7 @@ bool QgsRasterLayer::hasBand(QString theBandName)
 void QgsRasterLayer::drawThumbnail(QPixmap * theQPixmap)
 {
   theQPixmap->fill(); //defaults to white
-  RasterViewPort *myRasterViewPort = new RasterViewPort();
+  QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
   myRasterViewPort->rectXOffsetInt = 0;
   myRasterViewPort->rectYOffsetInt = 0;
   myRasterViewPort->clippedXMinDouble = 0;
@@ -978,13 +1012,35 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
                           QgsMapToPixel * theQgsMapToPixel,
                           QPaintDevice* dst)
 {
+
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer::draw(4 arguments): entered." << std::endl;
+#endif
+
   //Dont waste time drawing if transparency is at 0 (completely transparent)
   if (transparencyLevelInt == 0)
     return;
 
-  // Check timestamp
-  if ( !update() ) return;
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer::draw(4 arguments): checking timestamp." << std::endl;
+#endif
 
+/* TODO: Re-enable this for providers    
+  // Check timestamp
+  if ( !providerKey )
+  {
+
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer::draw(4 arguments): checking timestamp with no providerKey." << std::endl;
+#endif
+    
+    if ( !update() )
+    {
+      return;
+    }
+  }    
+*/
+  
   // clip raster extent to view extent
   QgsRect myRasterExtent = theViewExtent->intersect(&layerExtent);
   if (myRasterExtent.isEmpty())
@@ -992,14 +1048,22 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
     // nothing to do
     return;
   }
+  
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer::draw(4 arguments): myRasterExtent is '" << myRasterExtent << "'." << std::endl;
+#endif
+
+
+
+  
   //
-  // The first thing we do is set up the RasterViewPort. This struct stores all the settings
+  // The first thing we do is set up the QgsRasterViewPort. This struct stores all the settings
   // relating to the size (in pixels and coordinate system units) of the raster part that is
   // in view in the map window. It also stores the origin.
   //
   //this is not a class level member because every time the user pans or zooms
   //the contents of the rasterViewPort will change
-  RasterViewPort *myRasterViewPort = new RasterViewPort();
+  QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
 
   
   // calculate raster pixel offsets from origin to clipped rect
@@ -1092,12 +1156,87 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
     std::cout << "QgsRasterLayer::draw: drawableAreaXDimInt   = " << myRasterViewPort->drawableAreaXDimInt << std::endl; 
     std::cout << "QgsRasterLayer::draw: drawableAreaYDimInt   = " << myRasterViewPort->drawableAreaYDimInt << std::endl; 
 #endif
+  
+  // /\/\/\ - added to handle zoomed-in rasters
 
-  draw(theQPainter, myRasterViewPort, theQgsMapToPixel);
+  
+    // Provider mode: See if a provider key is specified, and if so use the provider instead
+  
+#ifdef QGISDEBUG
+    std::cout << "QgsRasterLayer::draw: Checking for provider key." << std::endl; 
+#endif
+  
+  if (providerKey)
+  {
+#ifdef QGISDEBUG
+    std::cout << "QgsRasterLayer::draw: Wanting a '" << providerKey << "' provider to draw this." << std::endl; 
+#endif
+
+  emit setStatus(QString("Retrieving using ")+providerKey);
+    
+    QImage* image = 
+      dataProvider->draw(
+                         myRasterExtent, 
+                         myRasterViewPort->drawableAreaXDimInt,
+                         myRasterViewPort->drawableAreaYDimInt
+                        );
+
+#ifdef QGISDEBUG
+    std::cout << "QgsRasterLayer::draw: Done dataProvider->draw." << std::endl; 
+#endif
+
+
+#ifdef QGISDEBUG
+    std::cout << "QgsRasterLayer::draw: image stats: "
+              << "depth = " << image->depth() << ", "
+              << "bytes = " << image->numBytes() << ", "
+              << "width = " << image->width() << ", "
+              << "height = " << image->height()
+              << "." << std::endl; 
+ 
+
+#endif
+
+
+#ifdef QGISDEBUG
+    std::cout << "QgsRasterLayer::draw: Want to theQPainter->drawImage with "
+              << "origin x = " << myRasterViewPort->topLeftPoint.x() 
+              << " (" << static_cast<int>(myRasterViewPort->topLeftPoint.x()) << "), "
+              << "origin y = " << myRasterViewPort->topLeftPoint.y()
+              << " (" << static_cast<int>(myRasterViewPort->topLeftPoint.y()) << ")"
+              << "." << std::endl; 
+#endif
+  
+
+                          
+    theQPainter->drawImage(static_cast<int>(myRasterViewPort->topLeftPoint.x()),
+                           static_cast<int>(myRasterViewPort->topLeftPoint.y()),
+                           *image);
+
+  }
+  else
+  {
+    // Otherwise use the old-fashioned GDAL direct-drawing style
+    // TODO: Move into its own GDAL provider.
+
+    // \/\/\/ - commented-out to handle zoomed-in rasters
+//    draw(theQPainter,myRasterViewPort);
+    // /\/\/\ - commented-out to handle zoomed-in rasters
+    // \/\/\/ - added to handle zoomed-in rasters
+    draw(theQPainter, myRasterViewPort, theQgsMapToPixel);
+    // /\/\/\ - added to handle zoomed-in rasters
+    
+  }
+  
   delete myRasterViewPort;
+
+#ifdef QGISDEBUG
+    std::cout << "QgsRasterLayer::draw: exiting." << std::endl; 
+#endif
+
 }
 
-void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterViewPort,
+void QgsRasterLayer::draw (QPainter * theQPainter, QgsRasterViewPort * myRasterViewPort,
                            QgsMapToPixel * theQgsMapToPixel)
 {
 #ifdef QGISDEBUG
@@ -1109,6 +1248,8 @@ void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterView
   // so that we can maximise performance of the rendering process. So now we check which drawing
   // procedure to use :
   //
+  
+  
   switch (drawingStyle)
   {
     // a "Gray" or "Undefined" layer drawn as a range of gray colors
@@ -1120,7 +1261,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterView
     }
     else
     {
-      drawSingleBandGray(theQPainter, myRasterViewPort, 
+      drawSingleBandGray(theQPainter, myRasterViewPort,
                          theQgsMapToPixel, getRasterBandNumber(grayBandNameQString));
       break;
     }
@@ -1234,7 +1375,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterView
 }                               //end of draw method
 
 
-void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,                                                                             QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsRasterLayer::drawSingleBandGray called for layer " << theBandNoInt << std::endl;
@@ -1311,7 +1452,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort *
 } // QgsRasterLayer::drawSingleBandGray
 
 
-void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,                                                                             QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawSingleBandPseudoColor called" << std::endl;
@@ -1530,7 +1671,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
 * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
 * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
 */
-void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort, 
+                                                 QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedSingleBandColor called" << std::endl;
@@ -1616,7 +1758,7 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterV
 * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
 * @param theColorQString - QString containing either 'Red' 'Green' or 'Blue' indicating which part of the rgb triplet will be used to render gray.
 */
-void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort,
+void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort, 
                                                 QgsMapToPixel * theQgsMapToPixel, int theBandNoInt,
                                                 QString theColorQString)
 {
@@ -1719,8 +1861,8 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, RasterVi
 * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
 * @param theColorQString - QString containing either 'Red' 'Green' or 'Blue' indicating which part of the rgb triplet will be used to render gray.
 */
-void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,
-                                                       QgsMapToPixel * theQgsMapToPixel, int theBandNoInt,
+void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
+                                                       QgsMapToPixel * theQgsMapToPixel, int theBandNoInt, 
                                                        QString theColorQString)
 {
 #ifdef QGISDEBUG
@@ -1957,7 +2099,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, R
 * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
 * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
 */
-void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort, 
+                                                QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedMultiBandColor called" << std::endl;
@@ -2062,19 +2205,22 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
   CPLFree(myGdalScanData);
 }
 
-void QgsRasterLayer::drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawMultiBandSingleBandGray(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort, 
+                                                 QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
   //delegate to drawSingleBandGray!
   drawSingleBandGray(theQPainter, theRasterViewPort, theQgsMapToPixel, theBandNoInt);
 }
 
-void QgsRasterLayer::drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort, 
+                                                        QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
   //delegate to drawSinglePseudocolor!
   drawSingleBandPseudoColor(theQPainter, theRasterViewPort, theQgsMapToPixel, theBandNoInt);
 }
 
-void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel)
+void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
+                                        QgsMapToPixel * theQgsMapToPixel)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawMultiBandColor called" << std::endl;
@@ -2139,6 +2285,20 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
   //render any inline filters
   filterLayer(&myQImage);
   
+#ifdef QGISDEBUG
+    QPixmap* pm = dynamic_cast<QPixmap*>(theQPainter->device());
+   
+    std::cout << "QgsRasterLayer::drawMultiBandColor: theQPainter stats: "
+              << "width = " << pm->width() << ", "
+              << "height = " << pm->height()
+              << "." << std::endl; 
+
+    pm->save("/tmp/qgis-rasterlayer-drawmultibandcolor-test-a.png", "PNG");
+
+#endif
+  
+  // \/\/\/ - added to handle zoomed-in rasters
+  
   // Set up the initial offset into the myQImage we want to copy to the map canvas
   // This is useful when the source image pixels are larger than the screen image.
   int paintXoffset = 0;
@@ -2173,11 +2333,20 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
                          paintXoffset,
                          paintYoffset);
 
+#ifdef QGISDEBUG
+    std::cout << "QgsRasterLayer::drawMultiBandColor: theQPainter->drawImage." << std::endl; 
+    
+    pm->save("/tmp/qgis-rasterlayer-drawmultibandcolor-test-b.png", "PNG");
+
+#endif
+                         
   //free the scanline memory
   CPLFree(myGdalRedData);
   CPLFree(myGdalGreenData);
   CPLFree(myGdalBlueData);
 }
+
+
 
 /**
 * Call any inline filters
@@ -2192,7 +2361,7 @@ void QgsRasterLayer::filterLayer(QImage * theQImage)
 Print some debug info to the qpainter
 */
 
-void QgsRasterLayer::showDebugOverlay(QPainter * theQPainter, RasterViewPort * theRasterViewPort)
+void QgsRasterLayer::showDebugOverlay(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort)
 {
 
 
@@ -2328,30 +2497,30 @@ That this is a cpu intensive and slow task!
 */
 const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 {
-  //check if we have received a valid band number
+  // check if we have received a valid band number
   if ((gdalDataset->GetRasterCount() < theBandNoInt) && rasterLayerType != PALETTE)
   {
-    //invalid band id, return nothing
+    // invalid band id, return nothing
     RasterBandStats myNullReturnStats;
     return myNullReturnStats;
   }
   if (rasterLayerType == PALETTE && (theBandNoInt > 3))
   {
-    //invalid band id, return nothing
+    // invalid band id, return nothing
     RasterBandStats myNullReturnStats;
     return myNullReturnStats;
   }
-  //check if we have previously gathered stats for this band...
+  // check if we have previously gathered stats for this band...
 
   RasterBandStats myRasterBandStats = rasterStatsVector[theBandNoInt - 1];
   myRasterBandStats.bandNoInt = theBandNoInt;
 
-  //dont bother with this if we already have stats
+  // don't bother with this if we already have stats
   if (myRasterBandStats.statsGatheredFlag)
   {
     return myRasterBandStats;
   }
-  //onyl print message if we are actually gathering the stats
+  // only print message if we are actually gathering the stats
   emit setStatus(QString("Retrieving stats for ")+layerName);
   qApp->processEvents();
 #ifdef QGISDEBUG
@@ -2968,7 +3137,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
   myQPainter.end();
 
 
-  //see if the caller wants the name of the layer in the pixmap (used for legend bar
+  // see if the caller wants the name of the layer in the pixmap (used for legend bar)
   if (theWithNameFlag)
   {
     QFont myQFont("arial", 10, QFont::Normal);
@@ -3032,6 +3201,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
   return myLegendQPixmap;
 
 }                               //end of getLegendQPixmap function
+
 
 QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCountInt=3)
 {
@@ -3270,6 +3440,60 @@ QPixmap *QgsRasterLayer::legendPixmap()
   //m_legendPixmap=getDetailedLegendQPixmap();
   return &m_legendPixmap;
 }
+
+
+// Useful for Provider mode
+
+QStringList QgsRasterLayer::subLayers()
+{
+  
+  if (dataProvider)
+  {
+    return dataProvider->subLayers();
+  }
+  else
+  {
+    return QStringList();   // Empty
+  }
+
+}
+
+
+// Useful for Provider mode
+
+void QgsRasterLayer::setLayerOrder(QStringList layers)
+{
+
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer::setLayerOrder: Entered." << std::endl;
+#endif
+
+
+  if (dataProvider)
+  {
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer::setLayerOrder: About to dataProvider->setLayerOrder(layers)." << std::endl;
+#endif
+    dataProvider->setLayerOrder(layers);
+  }
+
+}
+
+// Useful for Provider mode
+
+void QgsRasterLayer::setSubLayerVisibility(QString name, bool vis)
+{
+  
+  if (dataProvider)
+  {
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer::setSubLayerVisibility: About to dataProvider->setSubLayerVisibility(name, vis)." << std::endl;
+#endif
+    dataProvider->setSubLayerVisibility(name, vis);
+  }
+
+}
+
 
 /** Accessor for the superclass popmenu var*/
 QPopupMenu *QgsRasterLayer::contextMenu()
@@ -3883,7 +4107,7 @@ QgsColorTable *QgsRasterLayer::colorTable ( int theBandNoInt )
 }
 
 
-void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, RasterViewPort *viewPort )
+void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, QgsRasterViewPort *viewPort )
 {
   GDALDataType type = gdalBand->GetRasterDataType();
   int size = GDALGetDataTypeSize ( type ) / 8;
@@ -3899,7 +4123,7 @@ void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, RasterViewPort *viewP
                                       viewPort->drawableAreaXDimInt,
                                       viewPort->drawableAreaYDimInt,
                                       type, 0, 0 );
-
+                                      
   return data;
 }
 
@@ -4291,3 +4515,235 @@ void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool
   std::cout << ">>>>>>>>>>> Histogram vector now contains " <<  myRasterBandStats.histogramVector->size() << " elements" << std::endl;
 #endif
 }
+
+
+/*
+ * 
+ * New functions that will convert this class to a data provider interface
+ * (B Morley)
+ *
+ */ 
+ 
+ 
+ 
+QgsRasterLayer::QgsRasterLayer(
+                               int dummy,
+                               QString rasterLayerPath,
+                               QString baseName,
+                               QString providerKey,
+                               QStringList layers
+                               )
+    : QgsMapLayer(RASTER, baseName, rasterLayerPath),
+    providerKey(providerKey),
+    mEditable(false),
+    mModified(false),
+    invertHistogramFlag(false),
+    stdDevsToPlotDouble(0),
+    transparencyLevelInt(255), // 0 is completely transparent
+    showDebugOverlayFlag(false),
+    mLayerProperties(0x0),
+    mTransparencySlider(0x0),
+    mIdentifyResults(0),
+    dataProvider(0)
+{
+
+#ifdef QGISDEBUG
+      std::cout << "QgsRasterLayer::QgsRasterLayer(4 arguments): starting." <<
+                  " with layer list of " << layers.join(", ") <<
+                  std::endl;
+#endif
+
+  // if we're given a provider type, try to create and bind one to this layer
+  if ( ! providerKey.isEmpty() )
+  {
+    setDataProvider( providerKey, layers );
+  }
+
+  // Default for the popup menu
+  // TODO: popMenu = 0;
+
+  // Get the update threshold from user settings. We
+  // do this only on construction to avoid the penality of
+  // fetching this each time the layer is drawn. If the user
+  // changes the threshold from the preferences dialog, it will
+  // have no effect on existing layers
+  // TODO: QSettings settings;
+  // updateThreshold = settings.readNumEntry("qgis/map/updateThreshold", 1000);
+  
+  
+  // TODO: Connect signals from the dataprovider to the qgisapp
+  
+  // Do a passthrough for the status bar text
+  connect(
+          dataProvider, SIGNAL(setStatus        (QString)),
+          this,           SLOT(showStatusMessage(QString))
+         );
+  
+
+
+#ifdef QGISDEBUG
+      std::cout << "QgsRasterLayer::QgsRasterLayer(4 arguments): exiting." << std::endl;
+#endif
+  
+  emit setStatus("QgsRasterLayer created");
+} // QgsRasterLayer ctor
+
+
+ 
+// typedef for the QgsDataProvider class factory
+typedef QgsDataProvider * create_it(const char * uri);
+ 
+
+/** Copied from QgsVectorLayer::setDataProvider 
+ *  TODO: Make it work in the raster environment
+ */
+void QgsRasterLayer::setDataProvider( QString const & provider, QStringList layers )
+{
+  // XXX should I check for and possibly delete any pre-existing providers?
+  // XXX How often will that scenario occur?
+
+  providerKey = provider;     // XXX is this necessary?  Usually already set
+  // XXX when execution gets here.
+
+  // load the plugin
+  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
+  QString ogrlib = pReg->library(provider);
+
+  //QString ogrlib = libDir + "/libpostgresprovider.so";
+
+  const char *cOgrLib = (const char *) ogrlib;
+
+#ifdef TESTPROVIDERLIB
+  // test code to help debug provider loading problems
+  //  void *handle = dlopen(cOgrLib, RTLD_LAZY);
+  void *handle = dlopen(cOgrLib, RTLD_LAZY | RTLD_GLOBAL);
+  if (!handle)
+  {
+    std::cout << "Error in dlopen: " << dlerror() << std::endl;
+
+  }
+  else
+  {
+    std::cout << "dlopen suceeded" << std::endl;
+    dlclose(handle);
+  }
+
+#endif
+
+  // load the data provider
+  myLib = new QLibrary((const char *) ogrlib);
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer::setDataProvider: Library name is " << myLib->library() << std::endl;
+#endif
+  bool loaded = myLib->load();
+
+  if (loaded)
+  {
+#ifdef QGISDEBUG
+    std::cout << "QgsRasterLayer::setDataProvider: Loaded data provider library" << std::endl;
+    std::cout << "QgsRasterLayer::setDataProvider: Attempting to resolve the classFactory function" << std::endl;
+#endif
+    create_it * classFactory = (create_it *) myLib->resolve("classFactory");
+
+    valid = false;            // assume the layer is invalid until we
+    // determine otherwise
+    if (classFactory)
+    {
+#ifdef QGISDEBUG
+      std::cout << "QgsRasterLayer::setDataProvider: Getting pointer to a dataProvider object from the library\n";
+#endif
+      //XXX - This was a dynamic cast but that kills the Windows
+      //      version big-time with an abnormal termination error
+      dataProvider = (QgsRasterDataProvider*)(classFactory((const
+                                              char*)(dataSource.utf8())));
+
+      if (dataProvider)
+      {
+#ifdef QGISDEBUG
+        std::cout << "QgsRasterLayer::setDataProvider: Instantiated the data provider plugin" <<
+                  " with layer list of " << layers.join(", ") << std::endl;
+#endif
+        if (dataProvider->isValid())
+        {
+          valid = true;
+          
+          dataProvider->addLayers(layers);
+          
+          // get the extent
+          QgsRect *mbr = dataProvider->extent();
+
+          // show the extent
+          QString s = mbr->stringRep();
+#ifdef QGISDEBUG
+          std::cout << "QgsRasterLayer::setDataProvider: Extent of layer: " << s << std::endl;
+#endif
+          // store the extent
+          layerExtent.setXmax(mbr->xMax());
+          layerExtent.setXmin(mbr->xMin());
+          layerExtent.setYmax(mbr->yMax());
+          layerExtent.setYmin(mbr->yMin());
+
+          // upper case the first letter of the layer name
+          layerName = layerName.left(1).upper() + layerName.mid(1);
+#ifdef QGISDEBUG
+          std::cout << "QgsRasterLayer::setDataProvider: layerName: " << layerName << std::endl;
+#endif
+
+
+          //
+          // Get the layers project info and set up the QgsCoordinateTransform for this layer
+          //
+          QString mySourceWKT = getProjectionWKT();
+          //get the project projection, defaulting to this layer's projection
+          //if none exists....
+#ifdef QGISDEBUG
+          std::cout << "QgsRasterLayer::setDataProvider: mySourceWKT: " << mySourceWKT << std::endl;
+#endif
+          QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT",mySourceWKT);
+          //set up the coordinat transform - in the case of raster this is mainly used to convert
+          //the inverese projection of the map extents of the canvas when zzooming in etc. so
+          //that they match the coordinate system of this layer
+#ifdef QGISDEBUG
+          std::cout << "QgsRasterLayer::setDataProvider: mySourceWKT: " << myDestWKT << std::endl;
+#endif
+          mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
+        }
+      }
+      else
+      {
+#ifdef QGISDEBUG
+        std::cout << "QgsRasterLayer::setDataProvider: Unable to instantiate the data provider plugin\n";
+#endif
+        valid = false;
+      }
+    }
+  }
+  else
+  {
+    valid = false;
+#ifdef QGISDEBUG
+    std::cout << "QgsRasterLayer::setDataProvider: Failed to load " << "../providers/libproviders.so" << "\n";
+#endif
+
+  }
+  
+#ifdef QGISDEBUG
+    std::cout << "QgsRasterLayer::setDataProvider: exiting." << "\n";
+#endif
+
+} // QgsRasterLayer::setDataProvider
+
+
+void QgsRasterLayer::showStatusMessage(QString theMessage)
+{
+#ifdef QGISDEBUG
+//  std::cout << "QgsRasterLayer::showStatusMessage: entered with '" << theMessage << "'." << std::endl;
+#endif
+    // Pass-through
+    // TODO: See if we can connect signal-to-signal.  This is a kludge according to the Qt doc.
+    emit setStatus(theMessage);
+}
+
+
+
+// ENDS
