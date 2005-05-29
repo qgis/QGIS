@@ -84,6 +84,7 @@
 #include "qgslabelattributes.h"
 #include "qgslabel.h"
 #include "qgscoordinatetransform.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsattributedialog.h"
 #ifdef Q_WS_X11
 #include "qgsclipper.h"
@@ -2695,21 +2696,22 @@ void QgsVectorLayer::setCoordinateSystem()
   //First get the SRS for the default projection WGS 84
   //QString defaultWkt = QgsSpatialReferences::instance()->getSrsBySrid("4326")->srText();
 
-
-  // if projections are not enabled, set the output projection to be
+  // if no other layers exist, set the output projection to be
   // the same as the input projection, otherwise set the output to the
   // project srs
-  QSettings mySettings; 
-  if (projectionsEnabled())
+  
+#ifdef QGISDEBUG
+    std::cout << "Layer registry has " << QgsMapLayerRegistry::instance()->count() << " layers " << std::endl;
+#endif     
+  if (QgsMapLayerRegistry::instance()->count() ==0)
   {
-    int myDestSRSID = QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
-    mCoordinateTransform->destSRS().createFromSrsId(myDestSRSID);
-    assert (0 != myDestSRSID);
-  }
-  else
-  {
-    mCoordinateTransform->destSRS().createFromProj4(
+     mCoordinateTransform->destSRS().createFromProj4(
            mCoordinateTransform->sourceSRS().proj4String());
+  }
+  else 
+  {
+      mCoordinateTransform->destSRS().createFromSrsId(
+        QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",0));
   }
   if (!mCoordinateTransform->destSRS().isValid())
   {

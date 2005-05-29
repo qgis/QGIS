@@ -93,7 +93,7 @@ wish to see edbug messages printed to stdout.
 #include "qgsproject.h"
 #include "qgsidentifyresults.h"
 #include "qgsattributeaction.h"
-
+#include "qgsmaplayerregistry.h"
 #include "qgsspatialrefsys.h"
 
 #include <gdal_priv.h>
@@ -527,20 +527,21 @@ QgsRasterLayer::readFile( QString const & fileName )
   //set up the coordinat transform - in the case of raster this is mainly used to convert
   //the inverese projection of the map extents of the canvas when zzooming in etc. so
   //that they match the coordinate system of this layer
-  // if projections are not enabled, set the output projection to be
+  // if no other layers exist, set the output projection to be
   // the same as the input projection, otherwise set the output to the
   // project srs
-  QSettings mySettings; 
-  if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
+#ifdef QGISDEBUG
+    std::cout << "Layer registry has " << QgsMapLayerRegistry::instance()->count() << " layers " << std::endl;
+#endif     
+  if (QgsMapLayerRegistry::instance()->count() ==0)
   {
-    int myDestSRSID = QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
-    mCoordinateTransform->destSRS().createFromSrsId(myDestSRSID);
-    assert (0 != myDestSRSID);
-  }
-  else
-  {
-    mCoordinateTransform->destSRS().createFromProj4(
+     mCoordinateTransform->destSRS().createFromProj4(
            mCoordinateTransform->sourceSRS().proj4String());
+  }
+  else 
+  {
+      mCoordinateTransform->destSRS().createFromSrsId(
+        QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",0));
   }
   if (!mCoordinateTransform->destSRS().isValid())
   {
