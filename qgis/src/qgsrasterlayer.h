@@ -171,10 +171,41 @@ The [type] part of the variable should be the type class of the variable written
 #include <qvaluevector.h> 
 #include <qslider.h>
 #include <qdatetime.h>
+
+
+/*
+ * 
+ * New includes that will convert this class to a data provider interface
+ * (B Morley)
+ *
+ */ 
+ 
+#include <qlibrary.h>
+
+/*
+ * END
+ */
+
+ 
 #include "qgspoint.h"
 #include "qgsmaplayer.h"
 #include "qgscolortable.h"
 #include "qgsrasterlayer.h"
+
+
+/*
+ * 
+ * New includes that will convert this class to a data provider interface
+ * (B Morley)
+ *
+ */ 
+ 
+#include "qgsrasterdataprovider.h"
+
+/*
+ * END
+ */
+
 
 #include <gdal_priv.h>
 //
@@ -238,56 +269,6 @@ struct RasterBandStats
  * band populated, any additional stats are calculated on a need to know basis.*/
 typedef QValueVector<RasterBandStats> RasterStatsVector;
 
-/** \brief The RasterViewPort describes the area of the raster layer that will be
- * rendered during a draw operation.
- */
-struct RasterViewPort
-{
-    /** \brief  The offset (in source raster pixel coordinates) from the left hand edge of the source raster for the rectangle that will be drawn to screen. */
-    float rectXOffsetFloat;
-    /** \brief  The offset (in source raster pixel coordinates) from the top edge of the source raster for the rectangle that will be drawn to screen. */
-    float rectYOffsetFloat;
-    /** \brief  The offset (in source raster pixel coordinates) from the left hand edge of the source raster for the rectangle that will be drawn to screen - truncated to an integer. */
-    int rectXOffsetInt;
-    /** \brief  The offset (in source raster pixel coordinates) from the top edge of the source raster for the rectangle that will be drawn to screen - truncated to an integer. */
-    int rectYOffsetInt;
-    /** \brief Lower left X dimension of clipped raster image in raster pixel space.
-     *  RasterIO will do the scaling for us, so for example, if the user is zoomed in a long way, there may only 
-     *  be e.g. 5x5 pixels retrieved from the raw raster data, but rasterio will seamlessly scale the up to 
-     *  whatever the screen coordinates are (e.g. a 600x800 display window) */
-    double clippedXMinDouble;
-    /** \brief Top Right X dimension of clipped raster image in raster pixel space.
-     *  RasterIO will do the scaling for us, so for example, if the user is zoomed in a long way, there may only 
-     *  be e.g. 5x5 pixels retrieved from the raw raster data, but rasterio will seamlessly scale the up to 
-     *  whatever the screen coordinates are (e.g. a 600x800 display window) */
-    double clippedXMaxDouble;
-    /** \brief Lower left Y dimension of clipped raster image in raster pixel space.
-     *  RasterIO will do the scaling for us, so for example, if the user is zoomed in a long way, there may only 
-     *  be e.g. 5x5 pixels retrieved from the raw raster data, but rasterio will seamlessly scale the up to 
-     *  whatever the screen coordinates are (e.g. a 600x800 display window) */
-    double clippedYMinDouble;
-    /** \brief Top Right X dimension of clipped raster image in raster pixel space.
-     *  RasterIO will do the scaling for us, so for example, if the user is zoomed in a long way, there may only 
-     *  be e.g. 5x5 pixels retrieved from the raw raster data, but rasterio will seamlessly scale the up to 
-     *  whatever the screen coordinates are (e.g. a 600x800 display window) */
-    double clippedYMaxDouble;
-    /** \brief  Distance in pixels from clippedXMinDouble to clippedXMaxDouble. */
-    int clippedWidthInt;
-    /** \brief Distance in pixels from clippedYMinDouble to clippedYMaxDouble  */
-    int clippedHeightInt;
-    /** \brief Coordinate (in geographic coordinate system) of top left corner of the part of the raster that 
-     * is to be rendered.*/
-    QgsPoint topLeftPoint;
-    /** \brief Coordinate (in geographic coordinate system) of bottom right corner of the part of the raster that 
-     * is to be rendered.*/
-    QgsPoint bottomRightPoint;
-    /** \brief Distance in map units from left edge to right edge for the part of the raster that 
-     * is to be rendered.*/
-    int drawableAreaXDimInt;
-    /** \brief Distance in map units from bottom edge to top edge for the part of the raster that 
-     * is to be rendered.*/
-    int drawableAreaYDimInt;
-};
 
 /** \brief This struct is used to store pyramid info for the raster layer. */
 struct RasterPyramid
@@ -380,7 +361,7 @@ public:
               QgsMapToPixel * theQgsMapToPixel, QPaintDevice* dst);
 
     /** \brief This is an overloaded version of the above function that is called by both draw above and drawThumbnail */
-    void draw(QPainter * theQPainter, RasterViewPort * myRasterViewPort,
+    void draw(QPainter * theQPainter, QgsRasterViewPort * myRasterViewPort,
               QgsMapToPixel * theQgsMapToPixel = 0);
     
     //
@@ -768,6 +749,28 @@ public:
      * @param int theLabelCountInt Number of vertical labels to display (defaults to 3)
      * */
     QPixmap getDetailedLegendQPixmap(int theLabelCount);
+    
+    /**
+     * Returns the sublayers of this layer
+     *
+     * (Useful for providers that manage their own layers, such as WMS)
+     *
+     */
+    QStringList subLayers();
+    
+    /**
+     * Reorders the *previously selected* sublayers of this layer from bottom to top
+     *
+     * (Useful for providers that manage their own layers, such as WMS)
+     *
+     */
+    virtual void setLayerOrder(QStringList layers);
+    
+    /**
+     * Set the visibility of the given sublayer name
+     */
+    virtual void setSubLayerVisibility(QString name, bool vis);
+
     /** tailor the right-click context menu with raster layer only stuff 
 
       @note called by QgsMapLayer::initContextMenu();
@@ -862,7 +865,7 @@ private:
     // Private methods
     //
     /** \brief Paint debug information onto the output image.  */
-    void showDebugOverlay(QPainter * theQPainter, RasterViewPort * theRasterViewPort);
+    void showDebugOverlay(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort);
 
     //
     // Grayscale Imagery
@@ -870,13 +873,13 @@ private:
 
     /** \brief Drawing routine for single band grayscale image.  */
     void drawSingleBandGray(QPainter * theQPainter, 
-                            RasterViewPort * theRasterViewPort,
+                            QgsRasterViewPort * theRasterViewPort,
                             QgsMapToPixel * theQgsMapToPixel,
                             int theBandNoInt);
 
     /** \brief Drawing routine for single band grayscale image, rendered in pseudocolor.  */
     void drawSingleBandPseudoColor(QPainter * theQPainter, 
-                                   RasterViewPort * theRasterViewPort,
+                                   QgsRasterViewPort * theRasterViewPort,
                                    QgsMapToPixel * theQgsMapToPixel,
                                    int theBandNoInt);
 
@@ -887,27 +890,27 @@ private:
     
     /** \brief Drawing routine for paletted image, rendered as a single band image in color.  */
     void drawPalettedSingleBandColor(QPainter * theQPainter,
-                                     RasterViewPort * theRasterViewPort,
+                                     QgsRasterViewPort * theRasterViewPort,
                                      QgsMapToPixel * theQgsMapToPixel,
                                      int theBandNoInt);
     
     /** \brief Drawing routine for paletted image, rendered as a single band image in grayscale.  */
     void drawPalettedSingleBandGray(QPainter * theQPainter,
-                                    RasterViewPort * theRasterViewPort,
+                                    QgsRasterViewPort * theRasterViewPort,
                                     QgsMapToPixel * theQgsMapToPixel,
                                     int theBandNoInt,
                                     QString theColorQString);
 
     /** \brief Drawing routine for paletted image, rendered as a single band image in pseudocolor.  */
     void drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
-                                           RasterViewPort * theRasterViewPort,
+                                           QgsRasterViewPort * theRasterViewPort,
                                            QgsMapToPixel * theQgsMapToPixel,
                                            int theBandNoInt,
                                            QString theColorQString);
 
     /** \brief Drawing routine for paletted multiband image.  */
     void drawPalettedMultiBandColor(QPainter * theQPainter,
-                                    RasterViewPort * theRasterViewPort,
+                                    QgsRasterViewPort * theRasterViewPort,
                                     QgsMapToPixel * theQgsMapToPixel,                                
                                     int theBandNoInt);
 
@@ -917,21 +920,21 @@ private:
     
     /** \brief Drawing routine for multiband image, rendered as a single band image in grayscale.  */
     void drawMultiBandSingleBandGray(QPainter * theQPainter,
-                                     RasterViewPort * theRasterViewPort, 
+                                     QgsRasterViewPort * theRasterViewPort, 
                                      QgsMapToPixel * theQgsMapToPixel,
                                      int theBandNoInt);
 
     /** \brief Drawing routine for multiband image, rendered as a single band image in pseudocolor.  */
     void drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, 
-                                            RasterViewPort * theRasterViewPort, 
+                                            QgsRasterViewPort * theRasterViewPort, 
                                             QgsMapToPixel * theQgsMapToPixel,
                                             int theBandNoInt);
 
     /** \brief Drawing routine for multiband image  */
     void drawMultiBandColor(QPainter * theQPainter, 
-                            RasterViewPort * theRasterViewPort,
+                            QgsRasterViewPort * theRasterViewPort,
                             QgsMapToPixel * theQgsMapToPixel);
-                                            
+
     /** \brief Read color table from GDAL raster band */
     void readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *theColorTable );
 
@@ -939,7 +942,7 @@ private:
      *         as raster band. The memory must be released later!
      *  \return pointer to the memory
      */
-    void *readData ( GDALRasterBand *gdalBand, RasterViewPort *viewPort );
+    void *readData ( GDALRasterBand *gdalBand, QgsRasterViewPort *viewPort );
 
     /** \brief Read a raster value on given position from memory block created by readData() 
      *  \param index index in memory block
@@ -1037,6 +1040,47 @@ private:
     
     //! Pointer to the identify results dialog
     QgsIdentifyResults *mIdentifyResults;
+    
+/*
+ * 
+ * New functions that will convert this class to a data provider interface
+ * (B Morley)
+ *
+ */ 
+ 
+public:
+ 
+  //! Constructor in provider mode
+  // TODO Rename into a general constructor when the old raster interface is retired
+  // \param  dummy  is just there to distinguish this function signature from the old non-provider one.
+  QgsRasterLayer(int dummy, QString baseName = 0, QString path = 0, 
+                            QString providerLib = 0, QStringList layers = 0);
+  
+  void setDataProvider( QString const & provider, QStringList layers );
+  
+  
+public slots:
+  
+  void showStatusMessage(QString theMessage);
+  
+   
+private:
+
+  //! Data provider key
+  QString providerKey;
+  
+  //! pointer for loading the provider library
+  QLibrary *myLib;
+
+  //! Pointer to data provider derived from the abastract base class QgsDataProvider
+  QgsRasterDataProvider *dataProvider;
+
+  /**Flag indicating wheter the layer is in editing mode or not*/
+  bool mEditable;
+  
+  /**Flag indicating wheter the layer has been modified since the last commit*/
+  bool mModified;
+
 
     //! Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;
