@@ -50,7 +50,11 @@ QgsShapeFile::QgsShapeFile(QString name){
 }
 
 QgsShapeFile::~QgsShapeFile(){
-  delete ogrLayer;
+  if(ogrDataSource != 0)
+  {
+    // don't delete the layer if the datasource is bad -- (causes crash)
+    delete ogrLayer;
+  }
   delete ogrDataSource;
   delete filename;
   delete geom_type;
