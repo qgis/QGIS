@@ -19,6 +19,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <cassert>
 
 #include <qtextstream.h>
 #include <qstringlist.h>
@@ -192,9 +193,32 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       QApplication::setOverrideCursor(Qt::waitCursor);
     }
     //--std::cout << "Connection to the database was successful\n";
-    // set the schema
 
-    PQexec(pd,(const char *)QString("set search_path = '%1','public'").arg(mSchema));
+    // get the current schema search path
+    PGresult *spath = PQexec(pd, "show search_path");
+    QString searchPath = PQgetvalue(spath, 0, 0);
+    // split out the search paths
+    QStringList searchPaths = QStringList::split(",", searchPath);
+    // build the new path
+    searchPath = "";
+    for ( QStringList::Iterator it = searchPaths.begin(); it != searchPaths.end(); ++it ) {
+        searchPath += "'" + *it + "',";
+    }
+    // append the schema for this layer if its not already in there
+    if(searchPath.find("'" + mSchema + "'") == -1)
+    {
+      searchPath += "'" + mSchema + "'";
+    }
+    else
+    {
+      // strip the trailing comma
+      searchPath = searchPath.left(searchPath.length() -1);
+    }
+    
+    PQclear(spath);
+
+    // set the schema search path 
+    PQexec(pd,(const char *)QString("set search_path = " + searchPath));
 
     if (getGeometryDetails()) // gets srid and geometry type
     {
