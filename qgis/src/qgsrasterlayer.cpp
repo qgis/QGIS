@@ -537,6 +537,13 @@ QgsRasterLayer::readFile( QString const & fileName )
   {
      mCoordinateTransform->destSRS().createFromProj4(
            mCoordinateTransform->sourceSRS().proj4String());
+    //first layer added will set the default project level projection
+    //TODO remove cast if poss!
+    int mySrsId = static_cast<int>(mCoordinateTransform->sourceSRS().srsid());
+    if (mySrsId)
+    {
+      QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSID",mySrsId);
+    }
   }
   else 
   {
