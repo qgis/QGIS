@@ -479,7 +479,10 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     mProgressBar->setMaximumWidth(100);
     QWhatsThis::add(mProgressBar, tr("Progress bar that displays the status of rendering layers and other time-intensive operations"));
     statusBar()->addWidget(mProgressBar, 1,true);
-    QFont myFont( "Arial", 8 );
+    // Bumped the font up one point size since 8 was too 
+    // small on some platforms. A point size of 9 still provides
+    // plenty of display space on 1024x768 resolutions
+    QFont myFont( "Arial", 9 );
     statusBar()->setFont(myFont);
     mScaleLabel = new QLabel(QString("Scale"),this);
     mScaleLabel->setFont(myFont);
@@ -503,12 +506,15 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
             mMapCanvas, SLOT(setRenderFlag(bool)));
     connect(mRenderSuppresionCBox, SIGNAL(toggled(bool )),
             mOverviewCanvas, SLOT(setRenderFlag(bool)));
-    //on the fly projection status bar icon
-    mOnTheFlyProjectionStatusButton = new QPushButton(this);
+    // On the fly projection status bar icon
+    // Changed this to a tool button since a QPushButton is
+    // sculpted on OS X and the icon is never displayed [gsherman]
+    mOnTheFlyProjectionStatusButton = new QToolButton(this);
     mOnTheFlyProjectionStatusButton->setMaximumWidth(20);
     QPixmap myProjPixmap;
     myProjPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection_disabled.png"));
     mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
+    assert(!myProjPixmap.isNull());
     QWhatsThis::add(mOnTheFlyProjectionStatusButton, tr("This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour."));
     QToolTip::add( mOnTheFlyProjectionStatusButton, tr("Projection status - Click to open projection dialog"));
     connect(mOnTheFlyProjectionStatusButton, SIGNAL(clicked()),
