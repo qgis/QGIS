@@ -22,6 +22,7 @@
 #define QGSLEGENDITEM_H
 
 #include <qlistview.h>
+#include <qstring.h>
 
 class QAction;
 
@@ -41,7 +42,7 @@ class QgsLegendItem : public QCheckListItem
 {
 public:
 
-    /*! Constructor
+    /*! Constructor for top-level legend items
      * @param lyr Map layer this legend item represents
      * @param parent The parent listview
      * @param actionInOverview QgisApp's actionInOverview
@@ -50,6 +51,18 @@ public:
                   QListView * parent = 0, 
                   QAction * actionInOverview = 0);
 
+    /*! Constructor for child legend items
+     *
+     * @note  This version would be used to add sub-layers, such as in the WMS provider.
+     *
+     * @param lyr Map layer this legend item represents
+     * @param parent The parent QgsLegendItem
+     * @param actionInOverview QgisApp's actionInOverview
+     */
+    QgsLegendItem(QString name = QString::null, 
+                  QgsLegendItem * parent = 0, 
+                  QAction * actionInOverview = 0);
+    
     //! Destructor
     virtual ~QgsLegendItem();
 
@@ -62,7 +75,7 @@ public:
     /*! Responds to changes in the layer state (eg. visible vs non visible)
      *@param v True if layer is visible
      */
-    void stateChange(bool v);
+    void stateChange(ToggleState v);
 
     /*! Gets the layer associated with this legend item
      * @return Pointer to the layer

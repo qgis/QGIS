@@ -151,6 +151,36 @@ public:
     virtual QPopupMenu *contextMenu() = 0;
 
     /**
+     * Returns the sublayers of this layer
+     *
+     * (Useful for providers that manage their own layers, such as WMS)
+     *
+     */
+    virtual QStringList subLayers()
+    {
+      return QStringList();  // Empty
+    }
+    
+    /**
+     * Reorders the *previously selected* sublayers of this layer from bottom to top
+     *
+     * (Useful for providers that manage their own layers, such as WMS)
+     *
+     */
+    virtual void setLayerOrder(QStringList layers)
+    {
+      // NOOP
+    }
+    
+    /**
+     * Set the visibility of the given sublayer name
+     */
+    virtual void setSubLayerVisibility(QString name, bool vis)
+    {
+      // NOOP
+    }
+
+    /**
     * Get the first feature resulting from a select operation
     * @return QgsFeature
     */
