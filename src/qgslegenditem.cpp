@@ -26,8 +26,10 @@
 #include "qgsproject.h"
 
 
+// Construct a top-level QgsLegendItem
+
 QgsLegendItem::QgsLegendItem(QgsMapLayer * lyr, QListView * parent, QAction * actionInOverview)
-    : QCheckListItem(parent, "", QCheckListItem::CheckBox), 
+    : QCheckListItem(parent, lyr->name(), QCheckListItem::CheckBox), 
       m_layer(lyr),
       layerName( lyr->name() ),
       mActionInOverview( actionInOverview )
@@ -36,6 +38,30 @@ QgsLegendItem::QgsLegendItem(QgsMapLayer * lyr, QListView * parent, QAction * ac
     // even if it was off (due to activate() triggering update)
   setOn(lyr->visible());
   setPixmap( 0, *lyr->legendPixmap() );
+}
+
+
+// Construct a QgsLegendItem that is a child of another QgsLegendItem
+
+QgsLegendItem::QgsLegendItem(QString name, QgsLegendItem * parent, QAction * actionInOverview)
+    : QCheckListItem( parent, 
+                      name, QCheckListItem::CheckBox), 
+//    : QCheckListItem( (QCheckListItem*) parent, 
+//                      "", QCheckListItem::CheckBox), 
+      m_layer( parent->layer() ),
+      layerName( name ),
+      mActionInOverview( actionInOverview )
+{
+  //TODO: Make setOn more useful
+  setOn( TRUE );
+  
+#ifdef QGISDEBUG
+  std::cout << "QgsLegendItem::QgsLegendItem(subitem):  Adding '" << name << "'." << std::endl;
+#endif
+  
+  
+  //TODO: Pixmap (if appropriate for WMS sublayers?)
+  //setPixmap( 0, *lyr->legendPixmap() );
 }
 
 
@@ -65,12 +91,57 @@ void QgsLegendItem::setLayerName(const QString & _newVal)
 //   displayName = _newVal;
 // }
 
-void QgsLegendItem::stateChange(bool vis)
+void QgsLegendItem::stateChange(ToggleState vis)
 {
-  m_layer->setVisible(vis);
+#ifdef QGISDEBUG
+  std::cout << "QgsLegendItem::stateChange: setting visibility to '" << vis << "'." << std::endl;
+#endif
 
+
+  if (0 == depth())
+  {
+#ifdef QGISDEBUG
+  std::cout << "QgsLegendItem::stateChange: depth is 0." << std::endl;
+#endif
+    if (On == vis)
+    {
+      m_layer->setVisible(TRUE);
+    }
+    else
+    {
+      m_layer->setVisible(FALSE);
+    }  
+  }
+  else if (1 == depth())
+  {
+#ifdef QGISDEBUG
+  std::cout << "QgsLegendItem::stateChange: depth is 1." << std::endl;
+#endif
+    // Sublayer, e.g. for WMS
+    if (On == vis)
+    {
+      m_layer->setSubLayerVisibility( layerName, TRUE );
+    }
+    else
+    {
+      m_layer->setSubLayerVisibility( layerName, FALSE );
+    }  
+  }
+  else
+  {
+#ifdef QGISDEBUG
+  std::cout << "QgsLegendItem::stateChange: depth is other than 0 or 1." << std::endl;
+#endif
+    // undefined
+  }
+ 
   // notify the project we've made a change
   QgsProject::instance()->dirty(true);
+
+#ifdef QGISDEBUG
+  std::cout << "QgsLegendItem::stateChange: exiting." << std::endl;
+#endif
+
 }
 
 QgsMapLayer *QgsLegendItem::layer()
