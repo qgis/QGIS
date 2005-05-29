@@ -444,7 +444,7 @@ private:
     //! Widget used to suppress rendering
     QCheckBox * mRenderSuppresionCBox;
     //! Widget in status bar used to show status of on the fly projection
-    QPushButton * mOnTheFlyProjectionStatusButton;
+    QToolButton * mOnTheFlyProjectionStatusButton;
     //! Popup menu
     QPopupMenu * mPopupMenu;
     //! Top level plugin menu
