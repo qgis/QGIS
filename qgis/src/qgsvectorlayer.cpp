@@ -2000,7 +2000,6 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
   // if we don't have a coordinate transform, get one
   if ( ! coordinateTransform() )
   {
-      mCoordinateTransform = new QgsCoordinateTransform("", "");
       setCoordinateSystem();
   }
 
