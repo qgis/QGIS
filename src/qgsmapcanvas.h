@@ -396,7 +396,8 @@ private:
     //! Updates the z order for layers on the map
     void updateZpos();
 
-
+    //! Zooms to a given center and scale 
+    void zoomByScale(int x, int y, double scaleFactor);
 
     //! detrmines whether the user can interact with the canvas using a mouse
     //(useful for locking the overview canvas)
@@ -414,6 +415,11 @@ private:
 
     //! Measure tool
     QgsMeasure *mMeasure;
+    
+    //! Scale factor multiple for default zoom in/out
+    // TODO Make this customisable by the user
+    static const double scaleDefaultMultiple = 2.0;
+    
 }; // class QgsMapCanvas
 
 #endif
