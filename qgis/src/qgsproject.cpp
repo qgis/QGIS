@@ -1068,6 +1068,12 @@ bool QgsProject::read()
     qDebug("Project title: " + imp_->title);
 #endif
 
+    // now set the map units; note, alters QgsProject::instance().
+    _getMapUnits(*doc);
+
+    // get the map layers
+    pair< bool, list<QDomNode> > getMapLayersResults =  _getMapLayers(*doc);
+
     QgsRect savedExtent;
 
     if (!_getExtents(*doc, savedExtent))
@@ -1091,14 +1097,6 @@ bool QgsProject::read()
     // ensure that overview map canvas is set to *entire* extent
     QgsRect mapCanvasFullExtent = _getFullExtent("theMapCanvas");
     _setCanvasExtent("theOverviewCanvas", mapCanvasFullExtent);
-
-
-    // now set the map units; note, alters QgsProject::instance().
-    _getMapUnits(*doc);
-
-
-    // get the map layers
-    pair< bool, list<QDomNode> > getMapLayersResults =  _getMapLayers(*doc);
 
     if ( ! getMapLayersResults.first )
     {
