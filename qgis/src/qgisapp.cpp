@@ -93,6 +93,8 @@ using namespace std;
 #include "qgsgeomtypedialog.h"
 #include "qgscustomprojectiondialog.h"
 
+#include "qgsserversourceselect.h"
+
 #ifdef HAVE_POSTGRESQL
 #include "qgsdbsourceselect.h"
 #endif
@@ -323,7 +325,8 @@ setTitleBarText_( QWidget & qgisApp )
 
 QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
         : QgisAppBase(parent, name, fl),
-        myHideSplashFlag(false)
+          myHideSplashFlag(false),
+          mMapTool(QGis::NoTool)
 {
     //
     // Splash screen global is declared in qgisapp.h header
@@ -1474,6 +1477,45 @@ void QgisApp::addDatabaseLayer()
     }
 }
 #endif
+
+
+void QgisApp::addWmsLayer()
+{
+    // check to see if we have a WMS provider available
+    // QString pOgr = mProviderRegistry->library("WMS");
+
+    //if ( ! pOgr.isNull() )
+    if (1)
+    {
+
+        // Fudge for now
+
+#ifdef QGISDEBUG
+  std::cout << "QgisApp::addWmsLayer: about to addRasterLayer" << std::endl;
+#endif
+
+
+        QgsServerSourceSelect *wmss = new QgsServerSourceSelect(this);
+
+        mMapCanvas->freeze();
+
+        if (wmss->exec())
+        {
+          
+          addRasterLayer(wmss->connInfo(), 
+                         wmss->connName(), 
+                         "wms", 
+                         wmss->selectedLayers() );
+                         
+        }                 
+    
+    }
+    else
+    {
+        QMessageBox::critical(this, tr("No WMS Provider"), tr("No OGC Web Map Service data provider was found in the QGIS lib directory"));
+
+    }
+}
 
 
 
@@ -2895,6 +2937,104 @@ void QgisApp::select()
     actionSelect->setOn(true);
 }
 
+
+// TODO - select a real cursor
+void QgisApp::addVertex()
+{
+
+#ifdef QGISDEBUG
+  std::cout << "QgisApp::addVertex." << std::endl;
+#endif
+
+   {
+        // set current map tool to select
+        mMapCanvas->setMapTool(QGis::AddVertex);
+        QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
+        delete mMapCursor;
+        mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
+        mMapCanvas->setCursor(*mMapCursor);
+    }
+}
+
+// TODO - select a real cursor
+void QgisApp::moveVertex()
+{
+
+#ifdef QGISDEBUG
+  std::cout << "QgisApp::moveVertex." << std::endl;
+//  std::cout << "QgsWmsProvider::dataReceived: received '" << data << "'."<< std::endl;
+#endif
+    
+    {
+        // set current map tool to select
+        mMapCanvas->setMapTool(QGis::MoveVertex);
+        QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
+        delete mMapCursor;
+        mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
+        mMapCanvas->setCursor(*mMapCursor);
+    }
+}
+
+
+void QgisApp::editCut()
+{
+  if (activeLayer())
+  {
+    // Test for feature support in this layer
+    QgsVectorLayer* activeVectorLayer = dynamic_cast<QgsVectorLayer*>(activeLayer());
+    
+    if (activeVectorLayer != 0)
+    {
+
+      clipboard()->replaceWithCopyOf( *(activeVectorLayer->selectedFeatures()) );
+      activeVectorLayer->deleteSelectedFeatures();
+    }  
+  }  
+}
+
+
+void QgisApp::editCopy()
+{
+#ifdef QGISDEBUG
+        std::cerr << "QgisApp::editCopy: entered."
+                  << std::endl;
+#endif
+  if (activeLayer())
+  {
+#ifdef QGISDEBUG
+        std::cerr << "QgisApp::editCopy: has active layer, feature type " << activeLayer()->featureType() << "."
+                  << std::endl;
+#endif
+    // Test for feature support in this layer
+    QgsVectorLayer* activeVectorLayer = dynamic_cast<QgsVectorLayer*>(activeLayer());
+    
+    if (activeVectorLayer != 0)
+    {
+#ifdef QGISDEBUG
+        std::cerr << "QgisApp::editCopy: has active vector layer."
+                  << std::endl;
+#endif
+      clipboard()->replaceWithCopyOf( *(activeVectorLayer->selectedFeatures()) );
+   }  
+  }  
+}
+
+
+void QgisApp::editPaste()
+{
+  if (activeLayer())
+  {
+    // Test for feature support in this layer
+    QgsVectorLayer* activeVectorLayer = dynamic_cast<QgsVectorLayer*>(activeLayer());
+    
+    if (activeVectorLayer != 0)
+    {
+      activeVectorLayer->addFeatures( &(clipboard()->copyOf()) );
+    }  
+  }  
+}
+
+
 void QgisApp::drawPoint(double x, double y)
 {
     QPainter paint;
@@ -4300,6 +4440,10 @@ void QgisApp::updateMouseCoordinatePrecision()
 
 void QgisApp::showStatusMessage(QString theMessage)
 {
+#ifdef QGISDEBUG
+//  std::cout << "QgisApp::showStatusMessage: entered with '" << theMessage << "'." << std::endl;
+#endif
+    
     statusBar()->message(theMessage);
 }
 
@@ -4494,6 +4638,11 @@ void QgisApp::setupToolbarPopups(QString themeName)
     tbtnCaptureTools->setPopupDelay(0);
 }
 
+
+QgsClipboard * QgisApp::clipboard()
+{
+  return &mInternalClipboard;
+}
 
 void QgisApp::setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag)
 {
@@ -4796,6 +4945,114 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile, bool guiWarning)
     }
 
 } // QgisApp::addRasterLayer
+
+
+
+/** Add a raster layer directly without prompting user for location
+The caller must provide information compatible with the provider plugin
+using the rasterLayerPath and baseName. The provider can use these
+parameters in any way necessary to initialize the layer. The baseName
+parameter is used in the Map Legend so it should be formed in a meaningful
+way.
+
+\note   Copied from the equivalent addVectorLayer function in this file
+TODO    Make it work for rasters specifically.
+*/
+void QgisApp::addRasterLayer(QString rasterLayerPath, QString baseName, QString providerKey, QStringList layers)
+{
+
+#ifdef QGISDEBUG
+  std::cout << "QgisApp::addRasterLayer: about to get library for " << providerKey << std::endl;
+#endif
+
+    // check to see if the appropriate provider is available
+    QString providerName;
+
+    QString pProvider = mProviderRegistry->library(providerKey);
+
+    if ( ! pProvider.isNull() )
+    {
+        mMapCanvas->freeze();
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        // create the layer
+        QgsRasterLayer *layer;
+        /* Eliminate the need to instantiate the layer based on provider type.
+           The caller is responsible for cobbling together the needed information to
+           open the layer
+           */
+#ifdef QGISDEBUG
+
+        std::cout << "QgisApp::addRasterLayer: Creating new raster layer using " <<
+        rasterLayerPath << " with baseName of " << baseName <<
+        " and layer list of " << layers.join(", ") <<
+        " and providerKey of " << providerKey << std::endl;
+#endif
+
+        // TODO: Remove the 0 when the raster layer becomes a full provider gateway.
+        layer = new QgsRasterLayer(0, rasterLayerPath, baseName, providerKey, layers);
+
+#ifdef QGISDEBUG
+  std::cout << "QgisApp::addRasterLayer: Constructed new layer." << std::endl;
+#endif
+        
+        if( layer && layer->isValid() )
+        {
+            // Register this layer with the layers registry
+            QgsMapLayerRegistry::instance()->addMapLayer(layer);
+            // init the context menu so it can connect to slots in main app
+            // now taken care of in legend layer->initContextMenu(this);
+
+            // connect up any request the raster may make to update the app progress
+            QObject::connect(layer,
+                             SIGNAL(setProgress(int,int)),
+                             this,
+                             SLOT(showProgress(int,int)));
+            // connect up any request the raster may make to update the statusbar message
+            QObject::connect(layer,
+                             SIGNAL(setStatus(QString)),
+                             this,
+                             SLOT(showStatusMessage(QString)));
+            
+            // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
+#ifdef QGISDEBUG
+  std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
+#endif
+            QObject::connect(this,
+                             SIGNAL(keyPressed(QKeyEvent * )),
+                             layer,
+                             SLOT(keyPressed(QKeyEvent* )));
+
+
+            //add hooks for letting layer know canvas needs to recalc the layer extents
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mMapCanvas,
+                             SLOT(recalculateExtents()));
+
+            QObject::connect(layer,
+                             SIGNAL(recalculateExtents()),
+                             mOverviewCanvas,
+                             SLOT(recalculateExtents()));
+
+
+            QgsProject::instance()->dirty(false); // XXX this might be redundant
+
+            statusBar()->message(mMapCanvas->extent().stringRep(2));
+
+        }
+        else
+        {
+            QMessageBox::critical(this,"Layer is not valid",
+                                  "The layer is not a valid layer and can not be added to the map");
+        }
+        qApp->processEvents();
+        mMapCanvas->freeze(false);
+        mMapCanvas->render();
+        QApplication::restoreOverrideCursor();
+    }
+
+} // QgisApp::addRasterLayer
+
 
 
 //create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)

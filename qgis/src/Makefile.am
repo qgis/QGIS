@@ -51,6 +51,7 @@ headers =	qgisapp.h					\
 		qgsattributetable.h				\
 		qgsbookmarks.h			\
 		qgsbookmarkitem.h			\
+		qgsclipboard.h					\
 		qgsclipper.h					\
 		qgscolortable.h					\
 		qgscomposer.h					\
@@ -105,6 +106,7 @@ headers =	qgisapp.h					\
 		qgsmarkerdialog.h				\
 		qgsmarkersymbol.h				\
 		qgsmeasure.h					\
+		qgsnewhttpconnection.h				\
 		qgsoptions.h					\
 		qgspatterndialog.h				\
 		qgspluginitem.h					\
@@ -129,6 +131,7 @@ headers =	qgisapp.h					\
 		qgsrenderitem.h					\
 		qgsrunprocess.h					\
 		qgsscalecalculator.h				\
+		qgsserversourceselect.h				\
 		qgssimadialog.h					\
 		qgssimarenderer.h				\
 		qgssinglesymrenderer.h				\
@@ -186,11 +189,13 @@ qgis_UIC =	qgisappbase.ui				\
 		qgsmarkerdialogbase.ui			\
 		qgsmessageviewer.ui			\
 		qgsmeasurebase.ui			\
+		qgsnewhttpconnectionbase.ui		\
 		qgsoptionsbase.ui			\
 		qgspatterndialogbase.ui			\
 		qgspluginmanagerbase.ui			\
 		qgsprojectpropertiesbase.ui		\
 		qgsrasterlayerpropertiesbase.ui		\
+		qgsserversourceselectbase.ui		\
 		qgssimadialogbase.ui			\
 		qgssisydialogbase.ui			\
 		qgsuvaldialogbase.ui			\
@@ -217,6 +222,7 @@ qgis_UIH =	qgisappbase.ui.h			\
 		qgsmessageviewer.ui.h			\
 		qgsoptionsbase.ui.h			\
 		qgsrasterlayerpropertiesbase.ui.h	\
+		qgsserversourceselectbase.ui.h		\
 		qgslabeldialogbase.ui.h			\
 		qgslayerprojectionselectorbase.ui.h \
 		qgsprojectpropertiesbase.ui.h	\
@@ -269,6 +275,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsmapserverexport.moc.cpp		\
 		qgsmarkerdialog.moc.cpp			\
 		qgsmeasure.moc.cpp			\
+		qgsnewhttpconnection.moc.cpp		\
 		qgsoptions.moc.cpp			\
 		qgspatterndialog.moc.cpp		\
 		qgspluginmanager.moc.cpp		\
@@ -278,6 +285,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsrasterlayer.moc.cpp			\
 		qgsrasterlayerproperties.moc.cpp	\
 		qgsrunprocess.moc.cpp			\
+		qgsserversourceselect.moc.cpp		\
 		qgssimadialog.moc.cpp			\
 		qgssisydialog.moc.cpp			\
 		qgsuvaldialog.moc.cpp			\
@@ -303,6 +311,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsattributetabledisplay.cpp	\
 		qgsbookmarks.cpp	\
 		qgsbookmarkitem.cpp	\
+		qgsclipboard.cpp		\
 		qgsclipper.cpp			\
 		qgscolortable.cpp		\
 		qgscomposer.cpp			\
@@ -355,6 +364,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsmarkerdialog.cpp		\
 		qgsmarkersymbol.cpp		\
 		qgsmeasure.cpp			\
+		qgsnewhttpconnection.cpp	\
 		qgsoptions.cpp			\
 		qgspatterndialog.cpp		\
 		qgspluginitem.cpp		\
@@ -380,6 +390,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsrenderitem.cpp		\
 		qgsrunprocess.cpp		\
 		qgsscalecalculator.cpp		\
+		qgsserversourceselect.cpp	\
 		qgssimadialog.cpp		\
 		qgssimarenderer.cpp		\
 		qgssinglesymrenderer.cpp	\

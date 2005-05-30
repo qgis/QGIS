@@ -55,6 +55,7 @@ class QPushButton;
 #include "splashscreen.h"
 #include "qgsconfig.h"
 #include "qgsvectordataprovider.h"
+#include "qgsclipboard.h"
 
 #include <map>
 
@@ -126,6 +127,13 @@ public:
     */
     bool addRasterLayer(QStringList const & theLayerQStringList, bool guiWarning=true);
 
+    
+    /** Open a raster layer using the Raster Data Provider.
+     *  Note this is included to support WMS layers only at this stage,
+     *  GDAL layer support via a Provider is not yet implemented.
+     */        
+    void addRasterLayer(QString rasterLayerPath, QString baseName, QString providerKey, QStringList layers);
+
 
     /** open a raster layer for the given file
 
@@ -167,6 +175,9 @@ public:
     void setTheme(QString themeName="default");
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups(QString themeName);
+    
+    //! Returns a pointer to the internal clipboard
+    QgsClipboard * clipboard();
 
 private:
 
@@ -174,7 +185,7 @@ private:
     void addLayer();
     //! Add a raster layer to the map (will prompt user for filename using dlg
     void addRasterLayer();
-    //! Add a raster layer to the map (passed in as a ptr). It waont force a refresh unless you explicitly
+    //! Add a raster layer to the map (passed in as a ptr). It won't force a refresh unless you explicitly
     //use the force redraw flag.
     //
     bool addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedrawFlag=false);
@@ -187,6 +198,9 @@ private:
     //! Add a databaselayer to the map
     void addDatabaseLayer();
 #endif
+
+    //! Add a WMS layer to the map
+    void addWmsLayer();
 
     //! Exit Qgis
     void fileExit();
@@ -235,6 +249,16 @@ private:
     void capturePolygon();
     //! activates the selection tool
     void select();
+    //! activates the add node tool
+    void addVertex();
+    //! activates the move node tool
+    void moveVertex();
+    //! cuts selected features on the active layer to the clipboard
+    void editCut();
+    //! copies selected features on the active layer to the clipboard
+    void editCopy();
+    //! copies features on the clipboard to the active layer
+    void editPaste();
     //! check to see if file is dirty and if so, prompt the user th save it
     int saveDirty();
 
@@ -497,6 +521,10 @@ private:
     bool mMousePrecisionAutomatic;
     //! The number of decimal places to use if not automatic
     unsigned int mMousePrecisionDecimalPlaces;
+
+    /** QGIS-internal vector feature clipboard */
+    QgsClipboard mInternalClipboard;
+    
     //! Flag to indicate how the project properties dialog was summoned
     bool mShowProjectionTab;
     
