@@ -81,6 +81,10 @@ void QgsGridMakerPluginGui::pbnSelectOutputFile_clicked()
           this,
           "save file dialog"
           "Choose a filename to save under" );
+
+  if (myOutputFileNameQString.right(4) != ".shp")
+    myOutputFileNameQString += ".shp";
+
   leOutputShapeFile->setText(myOutputFileNameQString);
   if ( leOutputShapeFile->text()==""  )
   {
