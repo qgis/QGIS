@@ -19,7 +19,11 @@
  
 #ifndef QGSPROVIDERREGISTRY_H
 #define QGSPROVIDERREGISTRY_H
+
 #include <map>
+
+#include "qgsdataprovider.h"
+
 class QgsProviderMetadata;
 class QString;
 
@@ -31,6 +35,10 @@ public:
  QString pluginList(bool asHtml=false);
  QString libDirectory();
  void setLibDirectory(QString path);
+ 
+ QgsDataProvider* getProvider( QString const & providerKey, 
+                               QString const & dataSource );
+
 protected:
  QgsProviderRegistry(const char *pluginPath);
 private:

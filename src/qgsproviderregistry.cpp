@@ -165,3 +165,104 @@ QString QgsProviderRegistry::libDirectory()
 {
   return libDir;
 }
+
+// typedef for the QgsDataProvider class factory
+typedef QgsDataProvider * create_it(const char * uri);
+ 
+
+
+/** Copied from QgsVectorLayer::setDataProvider 
+ *  TODO: Make it work in the generic environment
+ *
+ *  TODO: Is this class really the best place to put a data provider loader?
+ *        It seems more sensible to provide the code in one place rather than
+ *        in qgsrasterlayer, qgsvectorlayer, serversourceselect, etc.
+ */
+QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey, 
+                                                   QString const & dataSource )
+{
+  // XXX should I check for and possibly delete any pre-existing providers?
+  // XXX How often will that scenario occur?
+
+  // load the plugin
+  QString lib = library(providerKey);
+
+#ifdef TESTPROVIDERLIB
+  const char *cLib = (const char *) lib;
+
+  // test code to help debug provider loading problems
+  //  void *handle = dlopen(cLib, RTLD_LAZY);
+  void *handle = dlopen(cOgrLib, RTLD_LAZY | RTLD_GLOBAL);
+  if (!handle)
+  {
+    std::cout << "Error in dlopen: " << dlerror() << std::endl;
+
+  }
+  else
+  {
+    std::cout << "dlopen suceeded" << std::endl;
+    dlclose(handle);
+  }
+
+#endif
+
+  // load the data provider
+  QLibrary* myLib = new QLibrary((const char *) lib);
+#ifdef QGISDEBUG
+  std::cout << "QgsProviderRegistry::getRasterProvider: Library name is " << myLib->library() << std::endl;
+#endif
+  bool loaded = myLib->load();
+
+  if (loaded)
+  {
+#ifdef QGISDEBUG
+    std::cout << "QgsProviderRegistry::getProvider: Loaded data provider library" << std::endl;
+    std::cout << "QgsProviderRegistry::getProvider: Attempting to resolve the classFactory function" << std::endl;
+#endif
+    create_it * classFactory = (create_it *) myLib->resolve("classFactory");
+
+    if (classFactory)
+    {
+#ifdef QGISDEBUG
+      std::cout << "QgsProviderRegistry::getProvider: Getting pointer to a dataProvider object from the library\n";
+#endif
+      //XXX - This was a dynamic cast but that kills the Windows
+      //      version big-time with an abnormal termination error
+      QgsDataProvider* dataProvider = (QgsDataProvider*)
+                                      (classFactory((const char*)(dataSource.utf8())));
+
+      if (dataProvider)
+      {
+#ifdef QGISDEBUG
+        std::cout << "QgsProviderRegistry::getProvider: Instantiated the data provider plugin\n";
+#endif
+        if (dataProvider->isValid())
+        {
+          return dataProvider;
+        }
+      }
+      else
+      {
+#ifdef QGISDEBUG
+        std::cout << "QgsProviderRegistry::getProvider: Unable to instantiate the data provider plugin\n";
+#endif
+        return 0;
+      }
+    }
+  }
+  else
+  {
+    return 0;
+#ifdef QGISDEBUG
+    std::cout << "QgsProviderRegistry::getProvider: Failed to load " << "../providers/libproviders.so" << "\n";
+#endif
+
+  }
+  
+#ifdef QGISDEBUG
+    std::cout << "QgsProviderRegistry::getProvider: exiting." << "\n";
+#endif
+
+  
+
+} // QgsProviderRegistry::setDataProvider
