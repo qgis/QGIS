@@ -47,6 +47,7 @@ namespace QGis
   // Maptool enumeration
   enum MapTools
   {
+    NoTool,
     ZoomIn,
     ZoomOut,
     Pan,
@@ -58,7 +59,9 @@ namespace QGis
     CaptureLine,
     CapturePolygon,
     EmitPoint,
-    Measure
+    Measure,
+    AddVertex,
+    MoveVertex
   };
   //! Used for symbology operations
   // Featuure types
