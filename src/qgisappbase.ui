@@ -68,6 +68,14 @@
         <action name="actionCheckQgisVersion"/>
         <action name="actionFileExit"/>
     </item>
+    <item text="Edit" name="popupMenuEdit">
+        <action name="actionEditCut"/>
+        <action name="actionEditCopy"/>
+        <action name="actionEditPaste"/>
+        <separator/>
+        <action name="actionAddVertex"/>
+        <action name="actionMoveVertex"/>
+    </item>
     <item text="&amp;View" name="unnamed">
         <action name="actionZoomFullExtent"/>
         <action name="actionZoomToSelected"/>
@@ -83,6 +91,7 @@
         <action name="actionAddNonDbLayer"/>
         <action name="actionAddRasterLayer"/>
         <action name="actionAddLayer"/>
+        <action name="actionAddWmsLayer"/>
         <action name="actionRemoveLayer"/>
         <action name="actionNewVectorLayer"/>
         <action name="actionInOverview"/>
@@ -1085,6 +1094,28 @@
         <property name="usesDropDown">
             <bool>false</bool>
         </property>
+        <action>
+            <property name="name">
+                <cstring>actionAddVertex</cstring>
+            </property>
+            <property name="text">
+                <string>Add Vertex</string>
+            </property>
+            <property name="menuText">
+                <string>Add Vertex</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>actionMoveVertex</cstring>
+            </property>
+            <property name="text">
+                <string>Move Vertex</string>
+            </property>
+            <property name="menuText">
+                <string>Move Vertex</string>
+            </property>
+        </action>
     </actiongroup>
     <action>
         <property name="name">
@@ -1120,6 +1151,17 @@
         </property>
         <property name="menuText">
             <string>New Vectorlayer</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>actionAddWmsLayer</cstring>
+        </property>
+        <property name="text">
+            <string>Add a WMS Layer</string>
+        </property>
+        <property name="menuText">
+            <string>Add a WMS Layer</string>
         </property>
     </action>
     <action>
@@ -1173,6 +1215,48 @@
         </property>
         <property name="statusTip">
             <string>Create a new geospatial bookmark for the current view</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>actionEditCopy</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image41</iconset>
+        </property>
+        <property name="text">
+            <string>Copy</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+C</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>actionEditPaste</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image42</iconset>
+        </property>
+        <property name="text">
+            <string>Paste</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+V</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>actionEditCut</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image43</iconset>
+        </property>
+        <property name="text">
+            <string>Cut</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+X</string>
         </property>
     </action>
 </actions>
@@ -1299,6 +1383,15 @@
     </image>
     <image name="image40">
         <data format="XPM.GZ" length="706">789cad90b10ac2301086f73cc5d16c456cec2082f8088aa3200e77178b0e55d03a88f8eee692d6a6da41a15f33e4bf2f5c73c952d8ac979066ea5a617564e0035e20b5b7b2bc6f778b874af21cdc9ac22419a9640c0cabf3692f7bedf6da3866462237917d248968e4936825b2298a605162e1f16d7bf9dd688d43195d837f98d0cd31d4ddea563da6253614131b621b60b6849121a984ba88d6902f0a41bc0df9e3a11bc5937e8bda50f3835604d3b96e67528ce99bf4e30d9e73f50264179ca2</data>
+    </image>
+    <image name="image41">
+        <data format="XPM.GZ" length="1247">789c6dd24b6fda401405e03dbfc2c23b54113018dbaaba00f22209a8cb485117f3b86308d8040c31a4ea7fef9d631bc5327359f0e90873eec04dc779fd3d773a37adec200e2be5a8a5d83b1d7d4c92f3db9f5f7f5b6dcf73f835f49c7efb47abdd7594b3d8a664df0b7eef462a527264f961c98ab4b0fc04f9686979044991d696aea5eef118cb47d0d31ef52cdfc1811e10bef401f4b54f43cb2d18e8807ccb6730d421a1c601145a5060f9044a2d29b49c814a2b8a2c5f40d2442879b6a41e8fb29c837d1e745e80431eac3f067d1eac9082231a19ac7002030a0ade822185061b111851643ccb2928489881a5012549837d5720df5dc10ce463b0fe1a34640cd69f589a1e0fd64fc03e0fd6df831e0fd6cfc1010f78070e79f00b6ad0e7c16d7c81231edcc6120c79701b0a8c78c07b50f0e0726250f1801b50f3803b103b584a10077f39b73ca2fbed148994526932b5e892c4cb9571dfc5b544ad8de0d34c362a31e9f6e34ab28bf7d9e1f8792591716e6a1dab64a7f4e95ceb5826bbcd57968e6b1dabcfa84936bdad752c93cd5db236d35ac732b9cfabe4d2b14c749ef0e3aa8e0f8fee25c9f793f56a5a759c3d3d57499c974f2b3a9e5f666522ca53751ccfcf65529daa63ba682645c7d378de488a8ed792a263da4cca8ecdcf886fa7dbfef7b3f51fbfcd3f27</data>
+    </image>
+    <image name="image42">
+        <data format="XPM.GZ" length="2952">789c759647731b471085effc1528f68de51a61f34eb97c60ce24408a4176f93091398351e5ffee46bf010880129f2edfee9b9eeed9b70b7d5be89cf6763b0bdfe69e066670e13aeedc3c7616fcf3cdcdfb3ffffef5736e3ecf3bfc2fcbea4e3effc7dc7c7fd0719dbdbbdb3004753e097602e884811a5beabc14fe3ee64acc67c2bef1ba1176c2a109ba155e1a725bb645db155e14aef84a266c84f9cf804958b73af1abb069eb16f507c2b66d5ad4bf4b6c8d8ca5aec78c7e4f87acbb559dcbfed417ce2a9d17c2bb890de6a175e1bcce722dbc98b8cc9df0a370515739cee7327153603e2d5cd66d817e72e1aa3685f4a3a270a31b23f59417e6818d17be17d64da831df95b069622dfd28f4ebb4b3b5f0dfc2bec90ab03c1fd334a6c0fabd21dbac2d0a2bbc256c5b5f60bfe721bbd2951efd6f0ad7ba5ba0bfd5c47589fb723eae754513855b616ec81be10761d7ea1cbc02d665017e4fdca03e5d809df3d21f9d0b07173cfadb19b2efb2643f92fa3ef779403f3f840b5f04c90bc9f9f9ca5701e7dd08734003f22afb796e2fc77e1f60df069c9f3c4faf7591ee4bbebdf12648fe48faf7d6db20e74b6fc2cebb80bc1c0987d665c8d71ad887807a92e7d065617e992f642cccfb225cb050af275cb290b763e14a6719e65d05b3f03c6ae13ad411793f10e6bc65a887fafc82e2be92feb9ddba465e1fc78c7eb7c1a18dd84ff214b4f6789f14eaeba0a3ac27c95730c144ccbf216c4d91238f87e06023decf656167748efe4fc1c1a5fbf2fd08ded629dfb7e0e0d37c92df30dc0ecf6700b6296f14c12144bcdf4fc2d13525f29181438c529fa47eecdaaa40de6e129b12f36f8259d84fbe373173fc0a095f250e259e670566212ff27d8cb9b525f6b3897d897a06ecb212fd53625ba29f0066e1792ae1c29715ceeb0eccc2f7a2102ebda9f03e3f8143d162fd3e9885f713f3562c7c6ffb63c6faae70ed638dfd56c02ccc2bf98f6da86af84fc02cfcb8603f1d6c83f3ef8159c8b7e4231a16f220f98b36761bd493fc47c7c27dc957f42136a8bf068efc01162e13fbe497bcf1e3d6985f7d24762df2ee1387e4c779cb1f7e364752349699b86a3f35e9574e791592a23afbea865f9dab0b75a9aed435fb6e926ed59dbae7ab17bff03fa847f5a406ea59bd4ce859bdf2d537be3beb7f571fac45764c6b89af2eab952ffe55b5c65ae715d35ae7ab1b6af38b7f4b6dcf686746bb53fe3db53fa39d744a3dd55707eaf073057edfd4d18c46fe6375a24ec5ff032bf0fba8ba33faf4f754c6fedd24f87355cc68e42fd95fb1bf568d6ac77e9d424064c8922337f29357c71428d2199dd3c5c84f977445d77443b7238deb734774a70ee99e1e3033febf414f34a0e74fc1cfd5f97ce8855ee98ddee963ec5fa4255a9ed4d0cfee925628aa9a5679c51abd8dfdebb431add44f8f36b9f72ddae6153bf43af6efd2deb4c45fd23e9f0d9f266df11ebd097f9f0ea625fd1cf2a4c9cf33f00e63ff773aa2e34949fdfed09f3a9af22b4b27743a29a97fc727bfc9f54fa59f29ff17ed0ccffd77fdfcc2bffb1bd9f9fffe9cfb1fd383ad38</data>
+    </image>
+    <image name="image43">
+        <data format="XPM.GZ" length="3986">789c9596d95264370c86ef798aaed1dd54ca73f6735ca95cb00e3b343ba47221dbc7ec7bb3a6f2ee71ebf7744c66924e3014fd2159967fcb325f3e0f8eb637069fbfcc3c8e78746e07f68c1f069fddd3f5f5dbafbffdf2fbcca7a21884efbc6b07c5a79f663e291ad8c1e6ed4d3f06ea1350550a4b291ca4f096003fa6969dd47292421a9a52379506e0bd149653b7b5d4b29bc26b1adaa773ae53a8d339b3a9e53c054ea38d52d069800feb1ca696db744e2a226da5735275682e853437fa90ce53ba8e4960f821511780eaa66e5a234b95c2a636ad17de1f73d3377d07ffbb31b779ed6ad833e1b2715d25bc291cbe742dfe5658b75ab762cf857debb595ccc6c95097576dce621f82bb5c3b997f2b5cb44e4b41f296705d19f87319d9c6f98be0aee64ce6d7c25cf9e87f2a6c2a974b3e7c2cdcd7459cbf0bee7aee84c70543bad425439f55e14a578cfc65ffbaadeb5cf6cbeb91750e7f70a73b837c243fad6b033b6f0b73f0977ce83ef237fb57615bdb186f4eb8d7bd81de0fc25e7b83f5c7a54f9c35599cff225c35458cdf442eb15f3260dd748dc49b07736560af849bdae7d07f1fdce4b9accf0bc2ba69637e723e6cd818d4c795b0656b65ff2cf99bac7139f4bb8adcc7f37912ce9b32c3fc67b0c96d2976d9af29823fe617c275f0977a510e6c6a8bfd1413c6fe6f841b53d4329f64bfa60df9c8fe6817dc9688afce843bd3592d76a91fc36d930bab66c2c807f9860562fe727ec61a6ba1cfc584115fee9371c6457e9f30ea1ff9f70d6738cf4570dbc5fa5d19b3cd5a8dfa5323701858df0b97b67468e847c275eb72e865c1b676d057eea76d1a9b49fdd301b8cba3bfd48b6d6deb507f97c2da6a277a93d4b3e5b642be4aee97355d81f9f428ecba06f9ab1bb0750ef586f57d6772b4be27b0f50efb1f3f07e4b2d6435f967ee3cac0129fdfc05d1ff5b99b30f4dd068781f87bc2a19d39894724dcea0cebb3e8e338cc47ffc37aac750e7d37c08e7bdc07d1c399e09f8bbff40b67755fa0feaf857bed62bf91fee6bcf33df496fae8336da35eef60ce0bdc3f255c7217cf63051c06e2c97decab30a0170bd79cc7fc5be126c497f3a6373073013e146e4d817c49fa71df75a1a5089f0b3373cc1ff18c29a02f49bdf7ce64c88ffbc855cc57fa51ef7bef516f72bf7cd61519d613fd7c6e6aacaf96c161a0be67272cf9b0d4b32f3a9b89de3c04eb3ac3f98b7e3e74efb85f05b65d81fd483ff13517b17e5623c77e42d7609715b8ff72bf7d63e27952271c1e14dc3fda8bcce80fb40e0ef391aff4a7f0f8c5f350f7e030a09f9c9f67dd237fda07db32ea29f5e68db6f13c22bba6c07e97842d77b15fdc808d8bf948bd78e7ea02ef05d6ef837c78ef7af0f880c42ef7dffba027f65b466ec17c1859473e077316f922b2cea00fcedb1b1fdf8f7970581ff7e518ecca02768acc51afee1be33ed049648bfdd072641fedd984251e5d81fb2a9eff51e426ce7f9d30ea5547d6d17f2db229d0af5ec06139f497d3c81efa0d47c391a2ef062ba36cfa97b1dfbff83bd52bff3ffc8d3a5567133a571753fc2f83ff55fc7cad6ed4ed14ff3b75af1ee4d3a31a85b94f53fc9fd58b7a0dbfdfd47bf09e557353fce7d5825a544beaab5a562b6a55ad4df15f571b6a536d05df6d35543b53f5d90dd9cfa9bda0e9be3af8073d0fd5913a5627f2395379d0b450a5aa7ea87fad1ad5aa4ee960226232ea922c39ea7f745ee4e994cee89c2ee892ae82f19a6ee896eefef2fe9bff3d3dd0238575e8899ec31a2ff44a6ff44eb361ccfdc07f9e166871fc575aa2afb44c2bb44a6bb44e1be16793b6bef3dfa621ed88ff2eedd13e1dd0211d85714c279451fe9d7f4125555453432d75aa09ffae2aa6f02498f07f5e7808d97ff4e7533ea392cff9822ff92a68457ccd377c3b8ecb777ccf0f7ff37fe4113ff133bff02b76c76ffcceb3f2698ee77961daf9f2222ff1d7f07b99577895d7a6faaff3066ff2166ff390777877aaff1eeff3011f8671c4c7ffe13e129f7078c3b9e092ab89ff1f3fcffc09a5779d03</data>
     </image>
 </images>
 <connections>
@@ -1567,6 +1660,24 @@
         <slot>measure()</slot>
     </connection>
     <connection>
+        <sender>actionAddWmsLayer</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>addWmsLayer()</slot>
+    </connection>
+    <connection>
+        <sender>actionAddVertex</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>addVertex()</slot>
+    </connection>
+    <connection>
+        <sender>actionMoveVertex</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>moveVertex()</slot>
+    </connection>
+    <connection>
         <sender>actionCustomProjection</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
@@ -1583,6 +1694,24 @@
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
         <slot>actionNewBookmark_activated()</slot>
+    </connection>
+    <connection>
+        <sender>actionEditCut</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>editCut()</slot>
+    </connection>
+    <connection>
+        <sender>actionEditCopy</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>editCopy()</slot>
+    </connection>
+    <connection>
+        <sender>actionEditPaste</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>editPaste()</slot>
     </connection>
 </connections>
 <includes>
@@ -1617,6 +1746,7 @@
     <slot>select()</slot>
     <slot>exportMapServer()</slot>
     <slot>addRasterLayer()</slot>
+    <slot>addWmsLayer()</slot>
     <slot>helpContents()</slot>
     <slot>helpQgisSourceForge()</slot>
     <slot>helpQgisHomePage()</slot>
@@ -1640,9 +1770,14 @@
     <slot>zoomToLayer()</slot>
     <slot>zoomToLayerExtent()</slot>
     <slot>measure()</slot>
+    <slot>addVertex()</slot>
+    <slot>moveVertex()</slot>
     <slot>actionCustomProjection_activated()</slot>
     <slot>actionShowBookmarks_activated()</slot>
     <slot>actionNewBookmark_activated()</slot>
+    <slot>editCut()</slot>
+    <slot>editCopy()</slot>
+    <slot>editPaste()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

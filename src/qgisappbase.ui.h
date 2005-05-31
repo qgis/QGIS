@@ -161,6 +161,12 @@ void QgisAppBase::addRasterLayer()
 }
 
 
+void QgisAppBase::addWmsLayer()
+{
+
+}
+
+
 void QgisAppBase::helpContents()
 {
 
@@ -303,10 +309,25 @@ void QgisAppBase::zoomToLayerExtent()
 }
 
 
-
-
-
 void QgisAppBase::measure()
+{
+
+}
+
+/*
+void QgisAppBase::debugHook()
+{
+
+}
+*/
+
+void QgisAppBase::addVertex()
+{
+
+}
+
+
+void QgisAppBase::moveVertex()
 {
 
 }
@@ -325,6 +346,24 @@ void QgisAppBase::actionShowBookmarks_activated()
 
 
 void QgisAppBase::actionNewBookmark_activated()
+{
+
+}
+
+
+void QgisAppBase::editCut()
+{
+
+}
+
+
+void QgisAppBase::editCopy()
+{
+
+}
+
+
+void QgisAppBase::editPaste()
 {
 
 }
