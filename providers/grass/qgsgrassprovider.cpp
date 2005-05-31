@@ -442,7 +442,7 @@ QgsFeature* QgsGrassProvider::getNextFeature(std::list<int> const& attlist)
 	}
     }
 
-    f->setGeometry(wkb, wkbsize);
+    f->setGeometryAndOwnership(wkb, wkbsize);
 
     setFeatureAttributes( mLayerId, cat, f, attlist );  
     
