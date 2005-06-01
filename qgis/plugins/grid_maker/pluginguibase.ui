@@ -157,6 +157,9 @@
                     <property name="name">
                         <cstring>leOriginLatitude</cstring>
                     </property>
+                    <property name="inputMask">
+                        <string>#000.00000; </string>
+                    </property>
                 </widget>
                 <widget class="QLabel" row="0" column="0">
                     <property name="name">
@@ -169,6 +172,9 @@
                 <widget class="QLineEdit" row="0" column="3">
                     <property name="name">
                         <cstring>leOriginLongitude</cstring>
+                    </property>
+                    <property name="inputMask">
+                        <string>#000.00000; </string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="0" column="2">
@@ -196,6 +202,9 @@
                     <property name="name">
                         <cstring>leEndPointLatitude</cstring>
                     </property>
+                    <property name="inputMask">
+                        <string>#000.00000; </string>
+                    </property>
                 </widget>
                 <widget class="QLabel" row="0" column="0">
                     <property name="name">
@@ -208,6 +217,9 @@
                 <widget class="QLineEdit" row="0" column="3">
                     <property name="name">
                         <cstring>leEndPointLongitude</cstring>
+                    </property>
+                    <property name="inputMask">
+                        <string>#000.00000; </string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="0" column="2">
@@ -277,10 +289,16 @@
                     <property name="name">
                         <cstring>leLatitudeInterval</cstring>
                     </property>
+                    <property name="inputMask">
+                        <string>#000.00000; </string>
+                    </property>
                 </widget>
                 <widget class="QLineEdit" row="0" column="3">
                     <property name="name">
                         <cstring>leLongitudeInterval</cstring>
+                    </property>
+                    <property name="inputMask">
+                        <string>#000.00000; </string>
                     </property>
                 </widget>
             </grid>

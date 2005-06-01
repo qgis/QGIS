@@ -6,6 +6,7 @@
 #include <fstream>
 #include <qfileinfo.h>
 #include <qstringlist.h>
+#include <qgis.h>
 GraticuleCreator::GraticuleCreator(QString theOutputFileName, 
                                    double theXIntervalDouble, 
                                    double theYIntervalDouble,
@@ -99,7 +100,7 @@ void  GraticuleCreator::writeProjectionFile(QString theFileName )
   std::ofstream of(theFileName);
   if(!of.fail())
   {
-    of << "GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]]" 
+    of << GEOWKT
       << std::endl; 
     of.close();
 
