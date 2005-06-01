@@ -675,6 +675,22 @@ QgsRasterLayer::readFile( QString const & fileName )
 
 } // QgsRasterLayer::readFile
 
+QString QgsRasterLayer::getProjectionWKT() 
+{ 
+   QString myWKTString;
+   QgsSpatialRefSys mySRS;   
+   myWKTString=QString (gdalDataset->GetProjectionRef());
+   mySRS.createFromWkt(myWKTString);
+   if (!mySRS.isValid())
+   {
+      //try to get the gcp srs from the raster layer if available
+      myWKTString=QString(gdalDataset->GetGCPProjection());
+    }
+    
+   
+   return myWKTString;
+}
+
 void QgsRasterLayer::closeDataset()
 {
   if ( !valid  ) return;
