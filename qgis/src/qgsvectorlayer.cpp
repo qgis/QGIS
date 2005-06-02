@@ -2057,7 +2057,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     setLabelOn(true);
   }
 
-#if QGISDEBUG
+#ifdef QGISDEBUG
   std::cout << "Testing if qgsvectorlayer can call label readXML routine" << std::endl;
 #endif
 
@@ -2065,7 +2065,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 
   if(!labelattributesnode.isNull())
   {
-#if QGISDEBUG
+#ifdef QGISDEBUG
     std::cout << "qgsvectorlayer calling label readXML routine" << std::endl;
 #endif
     mLabel->readXML(labelattributesnode);
