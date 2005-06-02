@@ -68,6 +68,10 @@ static const char * const description_ = "This plugin displays a north arrow ove
 static const char * const version_ = "Version 0.1";
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 
+const double QgsNorthArrowPlugin::PI = 3.14159265358979323846;
+//  const double QgsNorthArrowPlugin::DEG2RAD = 0.0174532925199433;
+const double QgsNorthArrowPlugin::TOL = 1e-8;
+
 
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
