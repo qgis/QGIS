@@ -482,6 +482,9 @@ bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
 
 bool QgsSpatialRefSys::isValid() const
 {
+  if (!mProj4String.isEmpty())
+    return false;
+
   //this is really ugly but we need to get a QString to a char**
   char *mySourceCharArrayPointer = (char *)mProj4String.latin1();
   //create the sr and populate it from a wkt proj definition
