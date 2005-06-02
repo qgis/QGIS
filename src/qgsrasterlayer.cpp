@@ -666,6 +666,22 @@ QgsRasterLayer::readFile( QString const & fileName )
 
 } // QgsRasterLayer::readFile
 
+QString QgsRasterLayer::getProjectionWKT() 
+{ 
+   QString myWKTString;
+   QgsSpatialRefSys mySRS;   
+   myWKTString=QString (gdalDataset->GetProjectionRef());
+   mySRS.createFromWkt(myWKTString);
+   if (!mySRS.isValid())
+   {
+      //try to get the gcp srs from the raster layer if available
+      myWKTString=QString(gdalDataset->GetGCPProjection());
+    }
+    
+   
+   return myWKTString;
+}
+
 void QgsRasterLayer::closeDataset()
 {
   if ( !valid  ) return;
@@ -4723,20 +4739,24 @@ void QgsRasterLayer::setDataProvider( QString const & provider, QStringList laye
           //
           // Get the layers project info and set up the QgsCoordinateTransform for this layer
           //
-          QString mySourceWKT = getProjectionWKT();
-          //get the project projection, defaulting to this layer's projection
-          //if none exists....
+          
+          // get the project projection
+          // TODO: defaulting to this layer's projection if none exists....
+          QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT","");
+          
+          // set up the coordinate transform - in the case of raster this is mainly used to convert
+          // the inverese projection of the map extents of the canvas when zooming in etc. so
+          // that they match the coordinate system of this layer
 #ifdef QGISDEBUG
-          std::cout << "QgsRasterLayer::setDataProvider: mySourceWKT: " << mySourceWKT << std::endl;
+          std::cout << "QgsRasterLayer::setDataProvider: myDestWKT: " << myDestWKT << std::endl;
 #endif
-          QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT",mySourceWKT);
-          //set up the coordinat transform - in the case of raster this is mainly used to convert
-          //the inverese projection of the map extents of the canvas when zzooming in etc. so
-          //that they match the coordinate system of this layer
-#ifdef QGISDEBUG
-          std::cout << "QgsRasterLayer::setDataProvider: mySourceWKT: " << myDestWKT << std::endl;
-#endif
-          mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
+          
+          // Hard-code the source coordinate reference for now
+          // TODO: Make WMS projection-aware.    
+          mCoordinateTransform = new QgsCoordinateTransform(4326,  
+                                                            myDestWKT,
+                                                            QgsSpatialRefSys::EPSG);
+        
         }
       }
       else
