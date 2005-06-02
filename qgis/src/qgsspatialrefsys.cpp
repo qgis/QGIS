@@ -482,7 +482,7 @@ bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
 
 bool QgsSpatialRefSys::isValid() const
 {
-  if (!mProj4String.isEmpty())
+  if (mProj4String.isEmpty())
     return false;
 
   //this is really ugly but we need to get a QString to a char**
