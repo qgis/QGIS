@@ -1187,7 +1187,7 @@ bool QgsPostgresProvider::uniqueData(QString tableName, QString colName)
 
   PGresult* unique = PQexec(connection, (const char*) sql);
   if (PQntuples(unique) == 1)
-    if (PQgetvalue(unique, 0, 0) == "t")
+    if (strncmp(PQgetvalue(unique, 0, 0),"t", 1) == 0)
       isUnique = true;
 
   PQclear(unique);
