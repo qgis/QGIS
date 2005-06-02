@@ -348,7 +348,7 @@ public:
     void identify(QgsRect *);
 
     /** \brief Query gdal to find out the WKT projection string for this layer. This implements the virtual method of the same name defined in QgsMapLayer*/
-    QString getProjectionWKT() { return QString (gdalDataset->GetProjectionRef());};
+    QString getProjectionWKT();
 
     /** \brief Draws a thumbnail of the rasterlayer into the supplied pixmap pointer */
      void drawThumbnail(QPixmap * theQPixmap);
