@@ -127,7 +127,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="QPushButton" row="0" column="3">
+        <widget class="QToolButton" row="0" column="3">
             <property name="name">
                 <cstring>mDeleteAttributeButton</cstring>
             </property>
@@ -144,7 +144,7 @@
                 <string>Delete attribute</string>
             </property>
         </widget>
-        <widget class="QPushButton" row="0" column="2">
+        <widget class="QToolButton" row="0" column="2">
             <property name="name">
                 <cstring>mAddAttributeButton</cstring>
             </property>
@@ -161,7 +161,7 @@
                 <string>New attribute</string>
             </property>
         </widget>
-        <widget class="QPushButton" row="0" column="1">
+        <widget class="QToolButton" row="0" column="1">
             <property name="name">
                 <cstring>mInvertSelectionButton</cstring>
             </property>
@@ -178,7 +178,7 @@
                 <string>Invert selection</string>
             </property>
         </widget>
-        <widget class="QPushButton" row="0" column="0">
+        <widget class="QToolButton" row="0" column="0">
             <property name="name">
                 <cstring>mSelectedToTopButton</cstring>
             </property>

@@ -27,6 +27,7 @@
 #include <qmessagebox.h>
 #include <qpopupmenu.h>
 #include <qpushbutton.h> 
+#include <qtoolbutton.h> 
 
 QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAttributeTableBase(), mLayer(layer)
 {
