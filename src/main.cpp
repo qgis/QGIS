@@ -54,6 +54,7 @@ void usage( std::string const & appName )
       << "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n"
       << "\t[--lang language]\tuse language for interface text\n"
       << "\t[--project projectfile]\tload the given QGIS project\n"
+      << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
       << "\t[--help]\t\tthis text\n\n"
       << "  FILES:\n"  
       << "    Files specified on the command line can include rasters,\n"  
@@ -98,6 +99,9 @@ int main(int argc, char *argv[])
   // This behaviour will cause QGIS to autoload a project
   QString myProjectFileName="";
 
+  // This behaviour will set initial extent of map canvas
+  QString myInitialExtent="";
+
   // This behaviour will allow you to force the use of a translation file
   // which is useful for testing
   QString myTranslationFileName="";
@@ -125,13 +129,14 @@ int main(int argc, char *argv[])
     {"snapshot", required_argument, 0, 's'},
     {"lang",     required_argument, 0, 'l'},
     {"project",  required_argument, 0, 'p'},
+    {"extent",   required_argument, 0, 'e'},
     {0, 0, 0, 0}
     };
 
     /* getopt_long stores the option index here. */
     int option_index = 0;
 
-    optionChar = getopt_long (argc, argv, "slp",
+    optionChar = getopt_long (argc, argv, "slpe",
         long_options, &option_index);
 
     /* Detect the end of the options. */
@@ -162,6 +167,10 @@ int main(int argc, char *argv[])
       myProjectFileName = optarg;
       break;
 
+    case 'e':
+      myInitialExtent = optarg;
+      break;
+      
     case 'h':
     case '?':
       usage( argv[0] );
@@ -364,7 +373,48 @@ int main(int argc, char *argv[])
   }
 
 
+  /////////////////////////////////////////////////////////////////////
+  // Set initial extent if requested
+  /////////////////////////////////////////////////////////////////////
+  if ( ! myInitialExtent.isEmpty() )
+  {
+    double coords[4];
+    int pos, posOld = 0;
+    bool ok;
 
+    // XXX is it necessary to switch to "C" locale?
+    
+    // parse values from string
+    // extent is defined by string "xmin,ymin,xmax,ymax"
+    for (int i = 0; i < 3; i++)
+    {
+      // find comma and get coordinate
+      pos = myInitialExtent.find(',', posOld);
+      if (pos == -1) {
+        ok = false; break;
+      }
+
+      coords[i] = QString( myInitialExtent.mid(posOld, pos - posOld) ).toDouble(&ok);
+      if (!ok)
+        break;
+      
+      posOld = pos+1;
+    }
+  
+    // parse last coordinate
+    if (ok)
+      coords[3] = QString( myInitialExtent.mid(posOld) ).toDouble(&ok);
+    
+    if (!ok)
+       std::cout << "Error while parsing initial extent!" << std::endl;
+    else
+    {
+       // set extent from parsed values
+       QgsRect rect(coords[0],coords[1],coords[2],coords[3]);
+       qgis->getMapCanvas()->setExtent(rect);
+    }
+  }
+ 
   /////////////////////////////////////////////////////////////////////
   // Take a snapshot of the map view then exit if snapshot mode requested
   /////////////////////////////////////////////////////////////////////
