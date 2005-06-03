@@ -599,6 +599,7 @@ void QgsDlgVectorLayerProperties::pbnChangeSpatialRefSys_clicked()
     if(mySelector->exec())
     {
       layer->coordinateTransform()->sourceSRS().createFromSrsId(mySelector->getCurrentSRSID());
+      layer->coordinateTransform()->initialise();
     }
     else
     {
