@@ -66,6 +66,8 @@ wish to see edbug messages printed to stdout.
 #include <limits>
 #include <iostream>
 
+#include <limits.h>
+
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qpainter.h>
@@ -454,8 +456,19 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     mLayerProperties(0x0),
     mTransparencySlider(0x0),
     mIdentifyResults(0),
-    dataProvider(0)
+    dataProvider(0),
+    rasterXDimInt(INT_MAX),
+    rasterYDimInt(INT_MAX)
+
 {
+  // Initialise the affine transform matrix
+  adfGeoTransform[0] =  0;
+  adfGeoTransform[1] =  1;
+  adfGeoTransform[2] =  0;
+  adfGeoTransform[3] =  0;
+  adfGeoTransform[4] =  0;
+  adfGeoTransform[5] = -1;
+
   // we need to do the tr() stuff outside of the loop becauses tr() is a time
   // consuming operation nd we dont want to do it in the loop!
 
@@ -4590,7 +4603,10 @@ QgsRasterLayer::QgsRasterLayer(
     mLayerProperties(0x0),
     mTransparencySlider(0x0),
     mIdentifyResults(0),
-    dataProvider(0)
+    dataProvider(0),
+    rasterXDimInt(INT_MAX),
+    rasterYDimInt(INT_MAX)
+
 {
 
 #ifdef QGISDEBUG
@@ -4598,6 +4614,14 @@ QgsRasterLayer::QgsRasterLayer(
                   " with layer list of " << layers.join(", ") <<
                   std::endl;
 #endif
+
+  // Initialise the affine transform matrix
+  adfGeoTransform[0] =  0;
+  adfGeoTransform[1] =  1;
+  adfGeoTransform[2] =  0;
+  adfGeoTransform[3] =  0;
+  adfGeoTransform[4] =  0;
+  adfGeoTransform[5] = -1;
 
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! providerKey.isEmpty() )
