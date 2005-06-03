@@ -31,6 +31,7 @@
 #include "qgsfield.h"
 #include "qgsrect.h"
 #include "qgsmaptopixel.h"
+#include "qgscoordinatetransform.h"
 
 #include "qgslabelattributes.h"
 #include "qgslabeldialog.h"
@@ -83,6 +84,8 @@ QString QgsLabel::fieldValue ( int attr, QgsFeature *feature )
 }
 
 void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
+                            const QgsCoordinateTransform& coordTransform,
+                            bool doCoordTransform,
                             QgsMapToPixel *transform, QPaintDevice* device,
                             QgsFeature *feature, bool selected, QgsLabelAttributes *classAttributes,
        			    double sizeScale )
@@ -97,7 +100,7 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
     QString text;
     double scale, x1, x2;
 
-    /* Clac scale (not nice) */
+    /* Calc scale (not nice) */
     QgsPoint point;
     point = transform->transform ( 0, 0 );
     x1 = point.x();
@@ -202,6 +205,11 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
         point.setY ( value.toDouble() );
     }
 
+    // Convert point to projected units
+    if (doCoordTransform)
+      point = coordTransform.transform(point);
+
+    // and then to canvas units
     transform->transform(&point);
     x = point.x();
     y = point.y();

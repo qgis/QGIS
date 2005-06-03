@@ -344,6 +344,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
 
   if ( /*1 == 1 */ m_renderer && mLabelOn)
   {
+    bool projectionsEnabledFlag = projectionsEnabled();
     std::list<int> attributes=m_renderer->classificationAttributes();
     // Add fields required for labels
     mLabel->addRequiredFields ( &attributes );
@@ -359,32 +360,41 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
     QgsRect r = inverseProjectRect(*viewExtent);
     dataProvider->select(&r);
 
-    //main render loop
-    QgsFeature *fet;
-
-    while((fet = dataProvider->getNextFeature(attributes)))
+    try
     {
-      // Render label
-      if ( fet != 0 )
-      {
-        if(mDeleted.find(fet->featureId())==mDeleted.end())//don't render labels of deleted features
+      //main render loop
+      QgsFeature *fet;
+
+      while((fet = dataProvider->getNextFeature(attributes)))
         {
-          bool sel=mSelected.find(fet->featureId()) != mSelected.end();
-          mLabel->renderLabel ( p, viewExtent, theMapToPixelTransform, dst, fet, sel, 0, scale);
+          // Render label
+          if ( fet != 0 )
+            {
+              if(mDeleted.find(fet->featureId())==mDeleted.end())//don't render labels of deleted features
+                {
+                  bool sel=mSelected.find(fet->featureId()) != mSelected.end();
+                  mLabel->renderLabel ( p, viewExtent, *mCoordinateTransform, 
+                                        projectionsEnabledFlag,
+                                        theMapToPixelTransform, dst, fet, sel, 0, scale);
+                }
+            }
+          delete fet;
+          featureCount++;
         }
-      }
-      delete fet;
-      featureCount++;
-    }
 
-    //render labels of not-commited features
-    for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+      //render labels of not-commited features
+      for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+        {
+          bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
+          mLabel->renderLabel ( p, viewExtent, *mCoordinateTransform, projectionsEnabledFlag,
+                                theMapToPixelTransform, dst, *it, sel, 0, scale);
+        }
+    }
+    catch (QgsCsException &e)
     {
-      bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
-      mLabel->renderLabel ( p, viewExtent, theMapToPixelTransform, dst, *it, sel, 0, scale);
+      qDebug("Error projecting label locations, caught in %s, line %d:\n%s",
+	     __FILE__, __LINE__, e.what());
     }
-
-
 
 #ifdef QGISDEBUG
     std::cerr << "Total features processed is " << featureCount << std::endl;
