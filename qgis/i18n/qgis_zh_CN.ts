@@ -3,62 +3,62 @@
     <name>Plugin</name>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished">右下</translation>
+        <translation>右下</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished">左下</translation>
+        <translation>左下</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished">左上</translation>
+        <translation>左上</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished">右上</translation>
+        <translation>右上</translation>
     </message>
     <message>
         <source> metres</source>
-        <translation type="unfinished">米</translation>
+        <translation>米</translation>
     </message>
     <message>
         <source> feet</source>
-        <translation type="unfinished">英尺</translation>
+        <translation>英尺</translation>
     </message>
     <message>
         <source> degrees</source>
-        <translation type="unfinished">度</translation>
+        <translation>度</translation>
     </message>
     <message>
         <source>Tick Down</source>
-        <translation type="unfinished"></translation>
+        <translation>开口向下</translation>
     </message>
     <message>
         <source>Tick Up</source>
-        <translation type="unfinished"></translation>
+        <translation>开口向上</translation>
     </message>
     <message>
         <source>Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>条状</translation>
     </message>
     <message>
         <source>Box</source>
-        <translation type="unfinished"></translation>
+        <translation>矩形框</translation>
     </message>
     <message>
         <source> metres/km</source>
-        <translation type="unfinished"></translation>
+        <translation>米/千米</translation>
     </message>
     <message>
         <source> km</source>
-        <translation type="unfinished"></translation>
+        <translation>千米</translation>
     </message>
 </context>
 <context>
     <name>PluginGuiBase</name>
     <message>
         <source>Copyright Label Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>版权标签插件</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
@@ -67,71 +67,76 @@
 &lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;在底部显示您的版权标签。该插件支持基本的html标记来格式化标签。例如：&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;粗体&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;斜体&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message encoding="UTF-8">
         <source>© QGIS 2004</source>
-        <translation type="unfinished"></translation>
+        <translation>© QGIS 2004</translation>
     </message>
     <message>
         <source>Placement</source>
-        <translation type="unfinished"></translation>
+        <translation>位置</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished"></translation>
+        <translation>左下</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished"></translation>
+        <translation>左上</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation>右下</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation>右上</translation>
     </message>
     <message>
         <source>Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">方位</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>水平</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直</translation>
     </message>
     <message>
         <source>Enable Copyright Label</source>
-        <translation type="unfinished"></translation>
+        <translation>显示版权标签</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>确定(&amp;O)</translation>
     </message>
     <message>
         <source>Alt+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+O</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>取消(&amp;C)</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>QGIS Plugin Template</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS插件模板</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
@@ -143,51 +148,51 @@
     </message>
     <message>
         <source>Graticule Builder</source>
-        <translation type="unfinished"></translation>
+        <translation>网格构造器</translation>
     </message>
     <message>
         <source>Latitude Interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>纬度间距:</translation>
     </message>
     <message>
         <source>Longitude Interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>经度间距:</translation>
     </message>
     <message>
         <source>North Arrow Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>指北针插件</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation type="unfinished">属性</translation>
+        <translation>属性</translation>
     </message>
     <message>
         <source>Angle</source>
-        <translation type="unfinished"></translation>
+        <translation>角度</translation>
     </message>
     <message>
         <source>Enable North Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>显示指北针</translation>
     </message>
     <message>
         <source>Placement on screen</source>
-        <translation type="unfinished"></translation>
+        <translation>屏幕位置</translation>
     </message>
     <message>
         <source>Preview of north arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>预览指北针</translation>
     </message>
     <message>
         <source>Icon</source>
-        <translation type="unfinished"></translation>
+        <translation>图标</translation>
     </message>
     <message>
         <source>New Item</source>
-        <translation type="unfinished"></translation>
+        <translation>新项目</translation>
     </message>
     <message>
         <source>Plugin Template</source>
-        <translation type="unfinished"></translation>
+        <translation>插件模板</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -197,11 +202,17 @@
 &lt;p&gt;2004&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;该插件使用QGIS内部的插件模板生成。请根据您的需要作相应的修改。&lt;/p&gt;
+&lt;p&gt;Tim Sutton&lt;/p&gt;
+&lt;p&gt;2004&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>Scale Bar Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>比例尺插件</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -209,19 +220,23 @@
 &lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>Size of bar:</source>
-        <translation type="unfinished"></translation>
+        <translation>比例尺的大小:</translation>
     </message>
     <message>
         <source>Select Colour</source>
-        <translation type="unfinished"></translation>
+        <translation>选择颜色</translation>
     </message>
     <message>
         <source>Placement:</source>
-        <translation type="unfinished"></translation>
+        <translation>位置:</translation>
     </message>
     <message>
         <source>Tick Down</source>
@@ -241,19 +256,19 @@
     </message>
     <message>
         <source>Select the style of the scale bar</source>
-        <translation type="unfinished"></translation>
+        <translation>选择比例尺样式</translation>
     </message>
     <message>
         <source>Colour of bar:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">比例尺的颜色:</translation>
     </message>
     <message>
         <source>Scale bar style:</source>
-        <translation type="unfinished"></translation>
+        <translation>比例尺的样式:</translation>
     </message>
     <message>
         <source>Enable scale bar</source>
-        <translation type="unfinished"></translation>
+        <translation>显示比例尺</translation>
     </message>
     <message>
         <source>Automatically snap to round number on resize</source>
@@ -261,313 +276,313 @@
     </message>
     <message>
         <source>Origin (Lower Left)</source>
-        <translation type="unfinished"></translation>
+        <translation>起点(左下角点)</translation>
     </message>
     <message>
         <source>Latitude:</source>
-        <translation type="unfinished"></translation>
+        <translation>纬度:</translation>
     </message>
     <message>
         <source>Longitude:</source>
-        <translation type="unfinished"></translation>
+        <translation>经度:</translation>
     </message>
     <message>
         <source>End point (Upper Right)</source>
-        <translation type="unfinished"></translation>
+        <translation>终点(右上角点)</translation>
     </message>
     <message>
         <source>Output (Shape) File</source>
-        <translation type="unfinished"></translation>
+        <translation>输出文件(Shape)</translation>
     </message>
     <message>
         <source>Graticule Size (units in degrees)</source>
-        <translation type="unfinished"></translation>
+        <translation>网格大小(单位：度)</translation>
     </message>
 </context>
 <context>
     <name>QFileDialog</name>
     <message>
         <source>open files dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>打开文件对话框</translation>
     </message>
     <message>
         <source>Save file dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>保存文件对话框</translation>
     </message>
     <message>
         <source>Open an OGR Supported Data Source</source>
-        <translation type="unfinished"></translation>
+        <translation>打开一个OGR支持的数据源</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>QGis files (*.qgs)</source>
-        <translation type="unfinished"></translation>
+        <translation>QGis文件(*.qgs)</translation>
     </message>
     <message>
         <source>Choose a QGIS project file to open</source>
-        <translation type="unfinished"></translation>
+        <translation>选择一个要打开的QGIS项目文件</translation>
     </message>
     <message>
         <source>No Data Provider Plugins</source>
         <comment>No QGIS data provider plugins found in:</comment>
-        <translation type="unfinished"></translation>
+        <translation>没有数据供应者插件</translation>
     </message>
     <message>
         <source>No vector layers can be loaded. Check your QGIS installation</source>
-        <translation type="unfinished"></translation>
+        <translation>没有矢量图层能够加载。请检查您的QGIS安装</translation>
     </message>
     <message>
         <source>No Data Providers</source>
-        <translation type="unfinished"></translation>
+        <translation>没有数据供应者</translation>
     </message>
     <message>
         <source>No data provider plugins are available. No vector layers can be loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>没有有效的数据供应者插件。不能加载矢量图层</translation>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
-        <translation type="unfinished"></translation>
+        <translation>选择一个QGIS项目文件</translation>
     </message>
 </context>
 <context>
     <name>QgisApp</name>
     <message>
         <source>Loading QGIS...</source>
-        <translation type="unfinished"></translation>
+        <translation>启动QGIS...</translation>
     </message>
     <message>
         <source>Setting up QGIS gui...</source>
-        <translation type="unfinished"></translation>
+        <translation>设置QGIS的界面...</translation>
     </message>
     <message>
         <source>Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>图层</translation>
     </message>
     <message>
         <source>Quantum GIS - </source>
-        <translation type="unfinished">Quantum GIS</translation>
+        <translation>Quantum GIS</translation>
     </message>
     <message>
         <source>Loading plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation>加载插件...</translation>
     </message>
     <message>
         <source>Version </source>
-        <translation type="unfinished"></translation>
+        <translation>版本 </translation>
     </message>
     <message>
         <source> with PostgreSQL support</source>
-        <translation type="unfinished"></translation>
+        <translation>支持PostgreSQL</translation>
     </message>
     <message>
         <source> (no PostgreSQL support)</source>
-        <translation type="unfinished"></translation>
+        <translation>(不支持PostgreSQL)</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>版本</translation>
     </message>
     <message>
         <source>Available Data Provider Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>有效的数据供应者插件</translation>
     </message>
     <message>
         <source>No OGR Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>没有OGR供应者</translation>
     </message>
     <message>
         <source>No OGR data provider was found in the QGIS lib directory</source>
-        <translation type="unfinished"></translation>
+        <translation>在QGIS lib目录下未发现OGR数据供应者</translation>
     </message>
     <message>
         <source>is not a valid or recognized data source</source>
-        <translation type="unfinished"></translation>
+        <translation>不是有效或可识别的数据源</translation>
     </message>
     <message>
         <source>Invalid Data Source</source>
-        <translation type="unfinished"></translation>
+        <translation>无效的数据源</translation>
     </message>
     <message>
         <source>Invalid Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>无效的图层</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1是一个无效的图层，无法加载。</translation>
     </message>
     <message>
         <source>No PostgreSQL Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>没有PostgreSQL供应者</translation>
     </message>
     <message>
         <source>No PostgreSQL data provider was found in the QGIS lib directory</source>
-        <translation type="unfinished"></translation>
+        <translation>在QGIS lib目录下未发现PostgreSQL数据供应者</translation>
     </message>
     <message>
         <source>Saved map to:</source>
-        <translation type="unfinished"></translation>
+        <translation>地图保存为:</translation>
     </message>
     <message>
         <source>Choose a filename to save the map image as</source>
-        <translation type="unfinished"></translation>
+        <translation>选择一个地图影像保存的名称</translation>
     </message>
     <message>
         <source>Saved map image to</source>
-        <translation type="unfinished"></translation>
+        <translation>地图影像保存为</translation>
     </message>
     <message>
         <source>No Layer Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>没有选中图层</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a layer in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation>要打开图层的属性表，必须在图例中选择一个图层</translation>
     </message>
     <message>
         <source>Error Loading Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>加载插件出错</translation>
     </message>
     <message>
         <source>There was an error loading %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>加载%1时出现错误.</translation>
     </message>
     <message>
         <source>No MapLayer Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>没有MapLayer插件</translation>
     </message>
     <message>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation type="unfinished"></translation>
+        <translation>在../plugins/maplayer下没有MapLayer插件</translation>
     </message>
     <message>
         <source>No Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>没有插件</translation>
     </message>
     <message>
         <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-        <translation type="unfinished"></translation>
+        <translation>在../plugins中未发现任何插件。要测试插件，请从src目录启动qgis</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>名称</translation>
     </message>
     <message>
         <source>Plugin %1 is named %2</source>
-        <translation type="unfinished"></translation>
+        <translation>插件%1命名为%2</translation>
     </message>
     <message>
         <source>Plugin Information</source>
-        <translation type="unfinished"></translation>
+        <translation>插件信息</translation>
     </message>
     <message>
         <source>QGis loaded the following plugin:</source>
-        <translation type="unfinished"></translation>
+        <translation>QGis加载了下面的插件:</translation>
     </message>
     <message>
         <source>Name: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>名称：%1</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>版本：%1</translation>
     </message>
     <message>
         <source>Description: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>描述：%1</translation>
     </message>
     <message>
         <source>Unable to Load Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>无法加载插件</translation>
     </message>
     <message>
         <source>QGIS was unable to load the plugin from: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS无法从%1加载插件</translation>
     </message>
     <message>
         <source>There is a new version of QGIS available</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS有新版本</translation>
     </message>
     <message>
         <source>You are running a development version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>您正在使用QGIS的开发版本</translation>
     </message>
     <message>
         <source>You are running the current version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>您正在使用QGIS的当前版本</translation>
     </message>
     <message>
         <source>Would you like more information?</source>
-        <translation type="unfinished"></translation>
+        <translation>您想了解更多的信息吗?</translation>
     </message>
     <message>
         <source>QGIS Version Information</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS版本信息</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>是</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>否</translation>
     </message>
     <message>
         <source>QGIS - Changes in CVS Since Last Release</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS - 在CVS中有新的变化</translation>
     </message>
     <message>
         <source>Unable to get current version information from server</source>
-        <translation type="unfinished"></translation>
+        <translation>无法从服务器得到当前版本的信息</translation>
     </message>
     <message>
         <source>Connection refused - server may be down</source>
-        <translation type="unfinished"></translation>
+        <translation>连接被拒绝 - 服务器可能出现故障</translation>
     </message>
     <message>
         <source>QGIS server was not found</source>
-        <translation type="unfinished"></translation>
+        <translation>未找到QGIS服务器</translation>
     </message>
     <message>
         <source>Error reading from server</source>
-        <translation type="unfinished"></translation>
+        <translation>读取服务器错误</translation>
     </message>
     <message>
         <source>Unable to connect to the QGIS Version server</source>
-        <translation type="unfinished"></translation>
+        <translation>无法连接到QGIS的版本服务器</translation>
     </message>
     <message>
         <source>Extents: </source>
-        <translation type="unfinished"></translation>
+        <translation>范围:</translation>
     </message>
     <message>
         <source>Problem deleting features</source>
-        <translation type="unfinished"></translation>
+        <translation>删除要素出错</translation>
     </message>
     <message>
         <source>A problem occured during deletion of features</source>
-        <translation type="unfinished"></translation>
+        <translation>删除要素时发生错误</translation>
     </message>
     <message>
         <source>No Vector Layer Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>未选中矢量图层</translation>
     </message>
     <message>
         <source>Deleting features only works on vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>删除要素只对矢量图层有效</translation>
     </message>
     <message>
         <source>To delete features, you must select a vector layer in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation>要删除要素，必须在图例中选择一个矢量图层</translation>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS is licensed under the GNU General Public License</translation>
     </message>
     <message>
         <source>http://www.gnu.org/licenses</source>
-        <translation type="unfinished"></translation>
+        <translation>http://www.gnu.org/licenses</translation>
     </message>
     <message>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
@@ -583,7 +598,7 @@
     </message>
     <message>
         <source>&amp;Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>插件(&amp;P)</translation>
     </message>
     <message>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
@@ -611,7 +626,7 @@
     </message>
     <message>
         <source>QGIS Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS就绪</translation>
     </message>
     <message>
         <source>GEOS support in the OGR provider to refine selection of features via identify. This improves over the previous method of feature selection which used a simple MBR intersection check.</source>
@@ -647,11 +662,11 @@
     </message>
     <message>
         <source>Windows installer</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows安装程序</translation>
     </message>
     <message>
         <source>Mac OSX binary</source>
-        <translation type="unfinished"></translation>
+        <translation>Mac OSX 二进制程序</translation>
     </message>
     <message>
         <source>New options in the graticule builder plugin</source>
@@ -663,7 +678,7 @@
     </message>
     <message>
         <source>Man page</source>
-        <translation type="unfinished"></translation>
+        <translation>Man page</translation>
     </message>
     <message>
         <source>Save delimited text as shapefile</source>
@@ -699,19 +714,19 @@
     </message>
     <message>
         <source>QGis files (*.qgs)</source>
-        <translation type="unfinished"></translation>
+        <translation>QGis文件(*.qgs)</translation>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
-        <translation type="unfinished"></translation>
+        <translation>选择一个QGIS项目文件</translation>
     </message>
     <message>
         <source>Unable to save project</source>
-        <translation type="unfinished"></translation>
+        <translation>无法保存项目</translation>
     </message>
     <message>
         <source>Unable to save project to </source>
-        <translation type="unfinished"></translation>
+        <translation>无法将项目保存为</translation>
     </message>
 </context>
 <context>
@@ -770,7 +785,7 @@
     </message>
     <message>
         <source>Open a previously saved QGIS project file. The layers (raster and vector) stored in the project file will be loaded and displayed on the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>打开先前存储的QGIS项目文件。项目文件中存储的图层(栅格和矢量)会被加载并显示在地图上</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
@@ -798,7 +813,7 @@
     </message>
     <message>
         <source>Add a PostgreSQL layer to the map. This requires a properly configured and running PostgreSQL database and the PostGIS extensions.</source>
-        <translation type="unfinished"></translation>
+        <translation>添加一个PostgreSQL图层到地图上。这需要一个正确配置并运行良好的PostgreSQL数据库，以及PostGIS扩展。</translation>
     </message>
     <message>
         <source>Refresh </source>
@@ -810,11 +825,11 @@
     </message>
     <message>
         <source>Refresh the map by clearing the map canvas and redrawing all visible layers</source>
-        <translation type="unfinished"></translation>
+        <translation>通过清除地图显示区并重绘所有可见图层来刷新地图</translation>
     </message>
     <message>
         <source>Zoom to full extent</source>
-        <translation type="unfinished"></translation>
+        <translation>全幅显示</translation>
     </message>
     <message>
         <source>Zoom to &amp;full extent</source>
@@ -822,7 +837,7 @@
     </message>
     <message>
         <source>Zoom to the full extent of all layers on the map. This brings everything on the map into full view</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放到所有图层的全幅范围。这将使地图上的所有内容都显示在视图范围之内</translation>
     </message>
     <message>
         <source>Map Navigation Tools</source>
@@ -838,11 +853,11 @@
     </message>
     <message>
         <source>Zoom in on the map. Drag the mouse (hold down the left button) to draw a rectangle around the area you want to zoom to, then release the mouse.</source>
-        <translation type="unfinished"></translation>
+        <translation>放大地图。在您想要放大的区域周围拖动鼠标(按下左键)拉一个矩形框，然后释放鼠标。</translation>
     </message>
     <message>
         <source>Pan</source>
-        <translation type="unfinished"></translation>
+        <translation>移动</translation>
     </message>
     <message>
         <source>&amp;Pan</source>
@@ -850,7 +865,7 @@
     </message>
     <message>
         <source>Pan the map view by dragging the mouse (hold down the left button). The area displayed will change after the mouse is released.</source>
-        <translation type="unfinished"></translation>
+        <translation>通过拖动鼠标(按下左键)来移动地图视图。释放鼠标后显示区域会改变。</translation>
     </message>
     <message>
         <source>Zoom out</source>
@@ -910,7 +925,7 @@
     </message>
     <message>
         <source>Display the About QGIS dialog. About QGIS contains information about the current version, contributors, and available data provider plugins.</source>
-        <translation type="unfinished"></translation>
+        <translation>显示QGIS的关于对话框。关于对话框包含了当前版本的信息、贡献者以及有效的数据供应者插件。</translation>
     </message>
     <message>
         <source>Test button</source>
@@ -934,7 +949,7 @@
     </message>
     <message>
         <source>Attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>属性表</translation>
     </message>
     <message>
         <source>&amp;Attribute table</source>
@@ -970,15 +985,15 @@
     </message>
     <message>
         <source>Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>首选项</translation>
     </message>
     <message>
         <source>&amp;Preferences</source>
-        <translation>偏好设定(&amp;P)</translation>
+        <translation>首选项(&amp;P)</translation>
     </message>
     <message>
         <source>QGIS User Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS用户的偏好设定</translation>
     </message>
     <message>
         <source>Open the options dialog to set QGIS preferences like web browser and identify search radius.</source>
@@ -1034,7 +1049,7 @@
     </message>
     <message>
         <source>Plugin Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>插件管理</translation>
     </message>
     <message>
         <source>Plugin &amp;Manager</source>
@@ -1046,7 +1061,7 @@
     </message>
     <message>
         <source>Check QGIS Version</source>
-        <translation type="unfinished"></translation>
+        <translation>检查QGIS版本</translation>
     </message>
     <message>
         <source>Check QGIS &amp;Version</source>
@@ -1062,7 +1077,7 @@
     </message>
     <message>
         <source>Export As &amp;Mapserver file</source>
-        <translation>导出为&amp;Mapserver格式</translation>
+        <translation>导出为Mapserver格式(&amp;M)</translation>
     </message>
     <message>
         <source>Creates a Mapserver file (.map) from the current QGIS view. The .map file can be used to create a Mapserver project.</source>
@@ -1074,7 +1089,7 @@
     </message>
     <message>
         <source>Add a Raster Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>添加栅格图层</translation>
     </message>
     <message>
         <source>Add a &amp;Raster Layer</source>
@@ -1094,11 +1109,11 @@
     </message>
     <message>
         <source>QGIS Help (HTML)</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS帮助(HTML)</translation>
     </message>
     <message>
         <source>Open the QGIS Help Contents in a web browser</source>
-        <translation type="unfinished"></translation>
+        <translation>在浏览器中打开QGIS帮助文件</translation>
     </message>
     <message>
         <source>QGIS Home Page</source>
@@ -1110,7 +1125,7 @@
     </message>
     <message>
         <source>QGIS SourceForge Page</source>
-        <translation type="unfinished">QGIS SourceForge主页</translation>
+        <translation>QGIS SourceForge主页</translation>
     </message>
     <message>
         <source>Open the QGIS SourceForge project page in a web browser</source>
@@ -1198,47 +1213,47 @@
     </message>
     <message>
         <source>Add All To Overview</source>
-        <translation>全部图层加入缩略图</translation>
+        <translation>全部图层加入鹰眼图</translation>
     </message>
     <message>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <source>V</source>
-        <translation type="unfinished"></translation>
+        <translation>V</translation>
     </message>
     <message>
         <source>R</source>
-        <translation type="unfinished"></translation>
+        <translation>R</translation>
     </message>
     <message>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <source>Remove All From Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>移除鹰眼图内所有的图层</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>Show All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>显示所有图层</translation>
     </message>
     <message>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
     </message>
     <message>
         <source>Hide All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>隐藏所有图层</translation>
     </message>
     <message>
         <source>H</source>
-        <translation type="unfinished"></translation>
+        <translation>H</translation>
     </message>
     <message>
         <source>Capture Line</source>
@@ -1266,62 +1281,62 @@
     </message>
     <message>
         <source>Plugins Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>插件工具栏</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>设置(&amp;S)</translation>
     </message>
     <message>
         <source>&amp;Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>导出为影像(&amp;E)</translation>
     </message>
     <message>
         <source>P&amp;roject Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>项目属性(&amp;r)</translation>
     </message>
     <message>
         <source>Remove Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>移除图层</translation>
     </message>
     <message>
         <source>Toggle In Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>关联到鹰眼图中</translation>
     </message>
     <message>
         <source>New Vectorlayer</source>
-        <translation type="unfinished"></translation>
+        <translation>新的矢量图层</translation>
     </message>
 </context>
 <context>
     <name>QgsAbout</name>
     <message>
         <source>About Quantum GIS</source>
-        <translation type="unfinished"></translation>
+        <translation>关于Quantum GIS</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>确定</translation>
     </message>
     <message>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>关于</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>版本</translation>
     </message>
     <message>
         <source>What&apos;s New</source>
-        <translation type="unfinished"></translation>
+        <translation>新特性</translation>
     </message>
     <message>
         <source>Contributors</source>
-        <translation type="unfinished"></translation>
+        <translation>贡献者</translation>
     </message>
     <message>
         <source>&lt;h2&gt;QGIS Contributors&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;QGIS贡献者&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>Plugins</source>
@@ -1329,24 +1344,25 @@
     </message>
     <message>
         <source>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
 &lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
+&lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</translation>
     </message>
     <message>
         <source>QGIS Home Page</source>
-        <translation type="unfinished">QGIS主页</translation>
+        <translation>QGIS主页</translation>
     </message>
     <message>
         <source>Subscribe to the QGIS-User mailing list</source>
-        <translation type="unfinished"></translation>
+        <translation>订阅QGIS-User邮件列表</translation>
     </message>
     <message>
         <source>Providers</source>
-        <translation type="unfinished"></translation>
+        <translation>供应者</translation>
     </message>
 </context>
 <context>
@@ -1456,15 +1472,15 @@
     <name>QgsAttributeDialogBase</name>
     <message>
         <source>Enter Attribute Values</source>
-        <translation type="unfinished"></translation>
+        <translation>输入属性值</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>确定</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
@@ -2296,7 +2312,12 @@
 &lt;p&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;GPX is the &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt;, which is used to store information about waypoints, routes, and tracks.&lt;/p&gt;
+&lt;p&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
     <message>
         <source>File:</source>
@@ -3167,15 +3188,15 @@ Factor</source>
     <name>QgsMapLayer</name>
     <message>
         <source>&amp;Zoom to extent of selected layer</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放至选中的图层(&amp;Z)</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>移除(&amp;R)</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
-        <translation type="unfinished">属性(&amp;P)</translation>
+        <translation>属性(&amp;P)</translation>
     </message>
 </context>
 <context>
@@ -4503,67 +4524,67 @@ identifying features without zooming in very close.<byte value="xd"/>
     <name>QgsSpitBase</name>
     <message>
         <source>SPIT - Shapefile to PostGIS Import Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>SPIT - Shapefile to PostGIS的导入工具</translation>
     </message>
     <message>
         <source>Shapefile to PostGIS Import Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefile to PostGIS的导入工具</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>帮助</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>导入</translation>
     </message>
     <message>
         <source>Import the defined shapefiles to PostGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>将选定的shapefile导入到PostGIS中</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>关闭</translation>
     </message>
     <message>
         <source>Shapefile List</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefile文件列表</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>添加</translation>
     </message>
     <message>
         <source>Add a shapefile to the list of files to be imported</source>
-        <translation type="unfinished"></translation>
+        <translation>向将要导入的文件列表中添加一个shapefile</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>移除</translation>
     </message>
     <message>
         <source>Remove the selected shapefile from the import list</source>
-        <translation type="unfinished"></translation>
+        <translation>从导入列表中移除选定的shapefile</translation>
     </message>
     <message>
         <source>Remove All</source>
-        <translation type="unfinished"></translation>
+        <translation>全部移除</translation>
     </message>
     <message>
         <source>Remove all the shapefiles from the import list</source>
-        <translation type="unfinished"></translation>
+        <translation>移除导入列表中所有的shapefile</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type="unfinished"></translation>
+        <translation>文件名称</translation>
     </message>
     <message>
         <source>Feature Class</source>
-        <translation type="unfinished"></translation>
+        <translation>要素类</translation>
     </message>
     <message>
         <source>Features</source>
-        <translation type="unfinished"></translation>
+        <translation>要素</translation>
     </message>
     <message>
         <source>DB Relation Name</source>
@@ -4634,53 +4655,53 @@ identifying features without zooming in very close.<byte value="xd"/>
     <name>QgsUValDialogBase</name>
     <message>
         <source>Form1</source>
-        <translation type="unfinished"></translation>
+        <translation>窗体1</translation>
     </message>
     <message>
         <source>Classification Field:</source>
-        <translation type="unfinished"></translation>
+        <translation>分类字段:</translation>
     </message>
     <message>
         <source>New Item</source>
-        <translation type="unfinished"></translation>
+        <translation>新项目</translation>
     </message>
 </context>
 <context>
     <name>QgsUValMaDialogBase</name>
     <message>
         <source>Form1</source>
-        <translation type="unfinished"></translation>
+        <translation>窗体1</translation>
     </message>
     <message>
         <source>Classification Field:</source>
-        <translation type="unfinished"></translation>
+        <translation>分类字段:</translation>
     </message>
     <message>
         <source>New Item</source>
-        <translation type="unfinished"></translation>
+        <translation>新项目</translation>
     </message>
 </context>
 <context>
     <name>QgsVectorLayer</name>
     <message>
         <source>No features found</source>
-        <translation type="unfinished"></translation>
+        <translation>未发现要素</translation>
     </message>
     <message>
         <source>No features were found in the active layer at the point you clicked</source>
-        <translation type="unfinished"></translation>
+        <translation>在当前激活图层的鼠标点击位置上未发现要素</translation>
     </message>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished"></translation>
+        <translation>属性表</translation>
     </message>
     <message>
         <source>&lt;center&gt;&lt;b&gt;Vector Layer&lt;/b&gt;&lt;/center&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;center&gt;&lt;b&gt;矢量图层&lt;/b&gt;&lt;/center&gt;</translation>
     </message>
     <message>
         <source>&amp;Open attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>打开属性表(&amp;O)</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
@@ -4688,70 +4709,70 @@ identifying features without zooming in very close.<byte value="xd"/>
     </message>
     <message>
         <source>Start editing</source>
-        <translation type="unfinished"></translation>
+        <translation>开始编辑</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished"></translation>
+        <translation>结束编辑</translation>
     </message>
     <message>
         <source>Save as shapefile...</source>
-        <translation type="unfinished"></translation>
+        <translation>存储为shapefile...</translation>
     </message>
     <message>
         <source>Provider does not support deletion</source>
-        <translation type="unfinished"></translation>
+        <translation>供应者不支持删除</translation>
     </message>
     <message>
         <source>Data provider does not support deleting features</source>
-        <translation type="unfinished"></translation>
+        <translation>数据供应者不支持删除要素</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished"></translation>
+        <translation>图层不可编辑</translation>
     </message>
     <message>
         <source>The current layer is not editable. Choose &apos;start editing&apos; in the legend item right click menu</source>
-        <translation type="unfinished"></translation>
+        <translation>当前图层不可编辑。在相应的图例条目上右键单击，选择“开始编辑”</translation>
     </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
     <message>
         <source>Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>图层属性</translation>
     </message>
     <message>
         <source>Legend type:</source>
-        <translation type="unfinished"></translation>
+        <translation>图例类型:</translation>
     </message>
     <message>
         <source>Layer source</source>
-        <translation type="unfinished"></translation>
+        <translation>图层的数据源</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>帮助</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation>F1</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>设置</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>确定</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>TextLabel2</source>
-        <translation type="unfinished"></translation>
+        <translation>文本标签2</translation>
     </message>
 </context>
 <context>
