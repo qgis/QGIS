@@ -767,6 +767,9 @@
         <property name="visible">
             <bool>true</bool>
         </property>
+        <property name="accel">
+            <string>Ctrl+M</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -1218,6 +1221,9 @@
         </property>
         <property name="statusTip">
             <string>Create a new geospatial bookmark for the current view</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+B</string>
         </property>
         <property name="whatsThis">
             <string>Create a new geospatial bookmark for the current view extent.</string>
