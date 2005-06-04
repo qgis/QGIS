@@ -24,6 +24,9 @@
 #include <getopt.h>
 #endif
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <qapplication.h>
 #include <qfont.h>
 #include <qfile.h>
@@ -79,9 +82,50 @@ bool bundleclicked(int argc, char *argv[])
 }
 
 
+/* 
+ * Hook into the qWarning/qFatal mechanism so that we can channel messages
+ * from libpng to the user.
+ *
+ * Some JPL WMS images tend to overload the libpng 1.2.2 implementation
+ * somehow (especially when zoomed in)
+ * and it would be useful for the user to know why their picture turned up blank
+ *
+ * Based on qInstallMsgHandler example code in the Qt documentation.
+ *
+ */
+void myMessageOutput( QtMsgType type, const char *msg )
+{
+  switch ( type ) {
+    case QtDebugMsg:
+      fprintf( stderr, "Debug: %s\n", msg );
+      break;
+    case QtWarningMsg:
+      fprintf( stderr, "Warning: %s\n", msg );
+      
+      // TODO: Verify this code in action.
+      if ( 0 == strncmp(msg, "libpng error:", 13) )
+      {
+        // Let the user know
+        QMessageBox::warning( 0, "libpng Error",
+          msg,
+          QMessageBox::Ok,
+          QMessageBox::NoButton);
+      }
+      
+      break;
+    case QtFatalMsg:
+      fprintf( stderr, "Fatal: %s\n", msg );
+      abort();                    // deliberately core dump
+  }
+}
+
+
 int main(int argc, char *argv[])
 {
-  
+
+  // Set up the custom qWarning/qDebug custom handler
+  qInstallMsgHandler( myMessageOutput );
+
   /////////////////////////////////////////////////////////////////
   // Command line options 'behaviour' flag setup
   ////////////////////////////////////////////////////////////////
