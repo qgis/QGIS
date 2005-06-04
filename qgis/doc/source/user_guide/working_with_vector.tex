@@ -220,7 +220,7 @@ import a shapefile with reserved words as field names will likely fail.}
 Dialog}\label{sec:vectorprops}\index{vector layers!properties dialog}
 The vector properties dialog provides information about a layer, symbology
 settings, and labeling options. If your vector layer has been loaded from a
-PostgreSQL / Postgis datastore, you can also alter the underlying SQL for the
+PostgreSQL / PostGIS datastore, you can also alter the underlying SQL for the
 layer - either by hand editing the SQL on the \textit{General} tab, or by invoking the
 query builder dialog on the \textit{General} tab. To access the properties dialog,
 double-click on a layer in the legend or right-click on the layer and select
@@ -294,7 +294,7 @@ field.  The special characters \%\% \index{\%\%}will be replaced by the value of
 the field that was selected from the identify results or attribute table (see
 Using Actions below).  Double quote marks can be used to group text into a
 single argument to the program, script or command. Double quotes will be ignored
-if preceeded by a backslash.  
+if proceeded by a backslash.  
 
 Two example actions are shown below:\index{actions!examples}
 \begin{compactenum}
@@ -307,7 +307,7 @@ from our vector layer. Note that the application or script called by the action
 must be in the path or you must provided the full path. To be sure, we could
 rewrite the first example as: \texttt{/opt/kde3/bin/konqueror
 http://www.google.com/search?q=\%nam}. This will ensure that the konqueror
-application will be executed when the action is envoked.
+application will be executed when the action is invoked.
 
 The second example uses the \%\% notation which does not rely on a particular
 field for its value. When the action is invoked, the \%\% will be replaced by
@@ -326,9 +326,9 @@ field value in the \textit{Identify Results} dialog or the
 
 Here is another example that pulls data out of a vector layer and inserts it
 into a file using bash and the `echo' command (so it will only work on Gnu/Linux
-and perhaps Mac OSX). The layer in question has fields for a species name
+and perhaps Mac OS X). The layer in question has fields for a species name
 (taxon\_name), latitude (lat) and longitude (long). I would like to be able to
-make a spatial selection of a localites and export these field values to a text
+make a spatial selection of a localities and export these field values to a text
 file for the selected record (shown in yellow in the QGIS map area). Here is the
 action to achieve this:
 
@@ -336,7 +336,7 @@ action to achieve this:
 	bash -c "echo \"%taxon_name %lat %long\" >> /tmp/species_localities.txt"
 \end{verbatim} 
 
-After selecting a few localties and running the action on each one, opening the output file will show something like this:
+After selecting a few localities and running the action on each one, opening the output file will show something like this:
 
 \begin{verbatim}
 	Acacia mearnsii -34.0800000000 150.0800000000
@@ -365,7 +365,7 @@ see a small \includegraphics[scale=1]{qgis_user_guide_images/editable} icon to
 remind you.\index{editing!icon}
 
 Now that the layer is editable, you can use the \textit{Capture Points} icon (or
-similiar icon for line and polygon layers) on the toolbar to put the qgis cursor
+similar icon for line and polygon layers) on the toolbar to put the QGIS cursor
 into digitising mode. If you are capturing a point feature simply use the pan
 and zoom tools to navigate to the area of interest, then click the
 \textit{Capture Points} tool and click on the map area to create the  
@@ -375,7 +375,7 @@ new city in the Antarctic.
 
 \begin{figure}[h]
    \begin{center}
-   \caption{Vector Digitizing Atributes Capture Dialog}\label{fig:vector_digitising}\smallskip
+   \caption{Vector Digitizing Attributes Capture Dialog}\label{fig:vector_digitising}\smallskip
    \includegraphics[scale=.5]{qgis_user_guide_images/digitising_attributes}
 \end{center}  
 \end{figure}
@@ -407,7 +407,7 @@ does not yet support creation of 2.5D features (i.e. features with X,Y,Z
 coordinates) or measure features. At this time, only shapefiles can be
 created. In a future version of QGIS, creation of any OGR or PostgreSQL layer type will be supported.
 
-Having selected the layer type, you will be prompted for the filename for your
+Having selected the layer type, you will be prompted for the file name for your
 new layer. QGIS will automatically add a .shp extension to the name you specify.
 Once the layer has been created, you edit it in the same way as described in
 Section \ref{sec:edit_existing_layer} above. When the shapefile is created,
