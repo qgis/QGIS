@@ -47,6 +47,7 @@ namespace QGis
   // Maptool enumeration
   enum MapTools
   {
+    NoTool,
     ZoomIn,
     ZoomOut,
     Pan,
