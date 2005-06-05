@@ -114,14 +114,36 @@ void QgsServerSourceSelect::serverConnect()
   QSettings settings;
 
   QString key = "/Qgis/connections-wms/" + cmbConnections->currentText();
-  QString connString = settings.readEntry(key + "/url");
+  
+  QStringList connStringParts;
+  QString part;
+  
+  connStringParts += settings.readEntry(key + "/url");
+  
+  // Add the proxy host and port if any are defined.
+  if ( ! ( (part = settings.readEntry(key + "/proxyhost")).isEmpty() ) )
+  {
+#ifdef QGISDEBUG
+  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyhost - '" << part << "'." << std::endl;
+#endif
+    connStringParts += part;
+  
+    if ( ! ( (part = settings.readEntry(key + "/proxyport")).isEmpty() ) )
+    {
+#ifdef QGISDEBUG
+  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyport - '" << part << "'." << std::endl;
+#endif
+      connStringParts += part;
+    }
+  }  
+
+  m_connName = cmbConnections->currentText();
+  m_connInfo = connStringParts.join(" ");  // url ( + " " + proxyhost + " " + proxyport)
 
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: Connection info: " << connString << std::endl;
+  std::cout << "QgsServerSourceSelect::serverConnect: Connection info: '" << m_connInfo << "'." << std::endl;
 #endif
     
-  m_connName = cmbConnections->currentText();
-  m_connInfo = connString;  //host + " " + database + " " + username + " " + password;
     
   // TODO: Create and bind to data provider
   
@@ -129,7 +151,7 @@ void QgsServerSourceSelect::serverConnect()
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
   
   QgsWmsProvider* wmsProvider = 
-    (QgsWmsProvider*) pReg->getProvider( "wms", connString );
+    (QgsWmsProvider*) pReg->getProvider( "wms", m_connInfo );
   
   std::vector<QgsWmsLayerProperty> layers;
    

@@ -33,8 +33,10 @@ QgsNewHttpConnection::QgsNewHttpConnection(QString connName)
       QSettings settings;
 
       QString key = "/Qgis/connections-wms/" + connName;
-      txtUrl->setText(settings.readEntry(key + "/url"));
-      txtName->setText(connName);
+      txtName->setText     (connName);
+      txtUrl->setText      (settings.readEntry(key + "/url"));
+      txtProxyHost->setText(settings.readEntry(key + "/proxyhost"));
+      txtProxyPort->setText(settings.readEntry(key + "/proxyport"));
     }
 
   QWidget::setTabOrder(txtName, txtUrl);
@@ -64,6 +66,8 @@ void QgsNewHttpConnection::saveConnection()
   
   baseKey += txtName->text();
   settings.writeEntry(baseKey + "/url", txtUrl->text());
+  settings.writeEntry(baseKey + "/proxyhost", txtProxyHost->text());
+  settings.writeEntry(baseKey + "/proxyport", txtProxyPort->text());
   
   accept();
 }

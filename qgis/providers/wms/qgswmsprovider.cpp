@@ -43,6 +43,8 @@
 
 QgsWmsProvider::QgsWmsProvider(QString uri)
   : httpuri(uri),
+    httpproxyhost(0),
+    httpproxyport(80),
     httpcapabilitiesresponse(0)
 {
 #ifdef QGISDEBUG
@@ -206,8 +208,35 @@ QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight
   QString height;
   height = height.setNum(pixelHeight);
 
-  QString drawuri(httpuri);
-
+  // Split proxy from the provider-encoded uri  
+  //   ( url ( + " " + proxyhost + " " + proxyport) )
+  
+  QStringList drawuriparts = QStringList::split(" ", httpuri, TRUE);
+  
+  QString drawuri = drawuriparts.front();
+  drawuriparts.pop_front();
+  
+  if (drawuriparts.count())
+  {
+    httpproxyhost = drawuriparts.front();
+    drawuriparts.pop_front();
+    
+    if (drawuriparts.count())
+    {
+      bool * ushortConversionOK;
+      httpproxyport = drawuriparts.front().toUShort(ushortConversionOK);
+      drawuriparts.pop_front();
+      
+      if (!(*ushortConversionOK))
+      {
+        httpproxyport = 80;  // standard HTTP port
+      }
+    }
+    else
+    {
+      httpproxyport = 80;  // standard HTTP port
+    }
+  }    
   
   // Calculate active layers that are also visible.
 
@@ -252,7 +281,7 @@ QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight
   emit setStatus( QString("Test from QgsWmsProvider") );
 
   
-  QgsHttpTransaction http(drawuri);
+  QgsHttpTransaction http(drawuri, httpproxyhost, httpproxyport);
   
   
   // Do a passthrough for the status bar text
@@ -296,7 +325,19 @@ QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight
   //bool success = i.loadFromData(imagesource);
   i = new QImage(imagesource);
 
+#ifdef QGISDEBUG
+  // Get what we can support
+  
+  QStringList list = i->inputFormatList();
+  QStringList::Iterator it = list.begin();
+  while( it != list.end() )
+  {
+    std::cout << "QgsWmsProvider::addLayers: can support input of '" << *it << "'." << std::endl;
+    ++it;
+  }
+#endif
 
+  
   
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::draw: Exiting." << std::endl;
@@ -338,7 +379,7 @@ void QgsWmsProvider::retrieveServerCapabilities()
   
     QString uri = httpuri + "SERVICE=WMS&REQUEST=GetCapabilities";
 
-    QgsHttpTransaction http(uri);
+    QgsHttpTransaction http(uri, httpproxyhost, httpproxyport);
 
     httpcapabilitiesresponse = http.getSynchronously();
 
@@ -365,7 +406,7 @@ void QgsWmsProvider::downloadCapabilitiesURI(QString uri)
   std::cout << "QgsWmsProvider::downloadCapabilitiesURI: Entered with '" << uri << "'" << std::endl;
 #endif
 
-  QgsHttpTransaction http(uri);
+  QgsHttpTransaction http(uri, httpproxyhost, httpproxyport);
 
   httpcapabilitiesresponse = http.getSynchronously();
 
@@ -403,7 +444,7 @@ Example URL (works!)
   std::cout << "QgsWmsProvider::drawTest: Entered with '" << uri << "'" << std::endl;
 #endif
   
-  QgsHttpTransaction http(uri);
+  QgsHttpTransaction http(uri, httpproxyhost, httpproxyport);
 
   http.getSynchronously();
 
