@@ -48,6 +48,9 @@ class QgsRect
     //! Set the rectangle from two QgsPoints. The rectangle is
     //normalised after construction. 
     void set(const QgsPoint& p1, const QgsPoint& p2);
+    //! Set the rectangle from four points. The rectangle is
+    //  normalised after construction. 
+    void set(double xmin, double ymin, double xmax, double ymax);
     //! Set the minimum x value
     void setXmin(double x);
     //! Set the maximum x value
