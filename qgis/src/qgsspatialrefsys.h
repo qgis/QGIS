@@ -10,6 +10,8 @@
 #include <qstringlist.h>
 #include <qregexp.h>
 #include <qmap.h>
+class QDomNode;
+class QDomDocument;
 
 //qgis includes
 #include <qgis.h>
@@ -190,6 +192,27 @@ class QgsSpatialRefSys
           */
          OGRSpatialReference toOgrSrs();
 
+         /*! Restores state from the given DOM node.
+         * @param theNode The node from which state will be restored
+         * @return bool True on success, False on failure
+         */
+          bool readXML_( QDomNode & theNode );
+        /*! Stores state to the given DOM node in the given document.
+         * Below is an example of the generated tag.
+         *  <spatialrefsys>
+         *      <proj4>+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs </proj4>
+         *       <srsid>2585</srsid>
+         *       <srid>4326</srid>
+         *       <epsg>4326</epsg>
+         *       <description>WGS 84</description>
+         *       <projectionacronym>longlat</projectionacronym>
+         *       <ellipsoidacronym>WGS84</ellipsoidacronym>
+         *   </spatialrefsys>
+         * @param theNode The node in which state will be restored
+         * @param theDom The document in which state will be stored
+         * @return bool True on success, False on failure
+         */
+          bool writeXML_( QDomNode & theNode, QDomDocument & theDoc );
 
         // Accessors -----------------------------------
 

@@ -18,6 +18,9 @@
 #include <cassert>
 #include "qgscoordinatetransform.h"
 
+//qt includes
+#include <qdom.h>
+
 QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject()
 
 {
@@ -392,4 +395,16 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
 #ifdef QGISDEBUG
   // std::cout << "[[[[[[ Projected " << xorg << ", " << yorg << " to "  << x << ", " << y << " ]]]]]]"<< std::endl;
 #endif
+}
+
+bool QgsCoordinateTransform::readXML_( QDomNode & theNode )
+{
+
+}
+
+bool QgsCoordinateTransform::writeXML_( QDomNode & theNode, QDomDocument & theDoc )
+{
+  //add projection node
+  QDomElement srsField  = theDoc.createElement( "coordinatetransform" );
+
 }

@@ -26,7 +26,8 @@
 #include "qgsrect.h"
 #include "qgscsexception.h"
 #include "qgsspatialrefsys.h"
-
+class QDomNode;
+class QDomDocument;
 
 //non qt includes
 #include <iostream>
@@ -175,7 +176,18 @@ class QgsCoordinateTransform: public QObject
     void setDestSRSID (long theSRSID);
     //!initialise is used to actually create the Transformer instance
     void initialise();
-    
+
+    /*! Restores state from the given DOM node.
+    * @param theNode The node from which state will be restored
+    * @return bool True on success, False on failure
+    */
+    bool readXML_( QDomNode & theNode );
+    /*! Stores state to the given DOM node in the given document
+    * @param theNode The node in which state will be restored
+    * @param theDom The document in which state will be stored
+    * @return bool True on success, False on failure
+    */
+    bool writeXML_( QDomNode & theNode, QDomDocument & theDoc );
  private:
     //! flag to show whether the transform is properly initialised or not
     bool mInitialisedFlag;

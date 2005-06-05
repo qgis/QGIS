@@ -2279,6 +2279,9 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
   encoding.appendChild( encodingText );
   layer_node.appendChild( encoding );
 
+  //write the projection 
+  mCoordinateTransform->sourceSRS().writeXML_(layer_node,document);
+
   // add the display field
 
   QDomElement dField  = document.createElement( "displayfield" );

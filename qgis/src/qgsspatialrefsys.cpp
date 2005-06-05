@@ -10,6 +10,7 @@
 #include <qfileinfo.h>
 #include <qdir.h>
 #include <projects.h>
+#include <qdom.h>
 
 #include <qgslayerprojectionselector.h>
 #include <qgsproject.h>
@@ -1144,4 +1145,45 @@ OGRSpatialReference QgsSpatialRefSys::toOgrSrs()
   OGRSpatialReference myOgrSpatialRef1;
   OGRErr myInputResult1 = myOgrSpatialRef1.importFromProj4((char *)mProj4String.latin1());
   return myOgrSpatialRef1;
+}
+
+bool QgsSpatialRefSys::readXML_( QDomNode & theNode )
+{
+
+}
+
+bool QgsSpatialRefSys::writeXML_( QDomNode & theNode, QDomDocument & theDoc )
+{
+  QDomElement myLayerNode = theNode.toElement();
+  QDomElement mySrsElement  = theDoc.createElement( "spatialrefsys" );
+  
+  QDomElement myProj4Element  = theDoc.createElement( "proj4" );
+  myProj4Element.appendChild(theDoc.createTextNode( proj4String()));
+  mySrsElement.appendChild(myProj4Element);
+  
+  QDomElement mySrsIdElement  = theDoc.createElement( "srsid" );
+  mySrsIdElement.appendChild(theDoc.createTextNode( QString::number(srsid())));
+  mySrsElement.appendChild(mySrsIdElement);
+
+  QDomElement mySridElement  = theDoc.createElement( "srid" );
+  mySridElement.appendChild(theDoc.createTextNode( QString::number(srid())));
+  mySrsElement.appendChild(mySridElement);
+
+  QDomElement myEpsgElement  = theDoc.createElement( "epsg" );
+  myEpsgElement.appendChild(theDoc.createTextNode( QString::number(epsg())));
+  mySrsElement.appendChild(myEpsgElement);
+
+  QDomElement myDescriptionElement  = theDoc.createElement( "description" );
+  myDescriptionElement.appendChild(theDoc.createTextNode( description()));
+  mySrsElement.appendChild(myDescriptionElement);
+
+  QDomElement myProjectionAcronymElement  = theDoc.createElement( "projectionacronym" );
+  myProjectionAcronymElement.appendChild(theDoc.createTextNode( projectionAcronym()));
+  mySrsElement.appendChild(myProjectionAcronymElement);
+
+  QDomElement myEllipsoidAcronymElement  = theDoc.createElement( "ellipsoidacronym" );
+  myEllipsoidAcronymElement.appendChild(theDoc.createTextNode( ellipsoidAcronym()));
+  mySrsElement.appendChild(myEllipsoidAcronymElement);
+
+  myLayerNode.appendChild( mySrsElement );
 }
