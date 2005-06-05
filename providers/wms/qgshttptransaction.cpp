@@ -28,8 +28,10 @@
 #include <qurl.h>
 
 
-QgsHttpTransaction::QgsHttpTransaction(QString uri)
+QgsHttpTransaction::QgsHttpTransaction(QString uri, QString proxyHost, Q_UINT16 proxyPort)
   : httpurl(uri),
+    httphost(proxyHost),
+    httpport(proxyPort),
     httpresponsecontenttype(0)
 {
 #ifdef QGISDEBUG
@@ -72,8 +74,13 @@ QByteArray QgsHttpTransaction::getSynchronously(int redirections)
 #endif
 
   QUrl qurl(httpurl);
-  httphost = qurl.host();
-  http = new QHttp( httphost );
+  
+  if (!httphost)
+  {
+    // No proxy was specified - connect directly to host in URI
+    httphost = qurl.host();
+  }  
+  http = new QHttp( httphost, httpport );
 
 #ifdef QGISDEBUG
 //  std::cout << "QgsHttpTransaction::getSynchronously: qurl.host() is '" << qurl.host() << "'." << std::endl;
@@ -136,7 +143,7 @@ QByteArray QgsHttpTransaction::getSynchronously(int redirections)
                httpredirecturl << "'." << std::endl;
 #endif
 
-    QgsHttpTransaction httprecurse(httpredirecturl);
+    QgsHttpTransaction httprecurse(httpredirecturl, httphost, httpport);
     
     // Do a passthrough for the status bar text
     connect(

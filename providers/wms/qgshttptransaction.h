@@ -46,7 +46,7 @@ public:
   /**
   * Constructor.
   */
-  QgsHttpTransaction( QString uri );
+  QgsHttpTransaction( QString uri, QString proxyHost = 0, Q_UINT16 proxyPort = 80 );
 
   //! Destructor
   virtual ~QgsHttpTransaction();
@@ -122,6 +122,11 @@ private:
    * The host being used for this transaction
    */
   QString httphost;
+
+  /**
+   * The port being used for this transaction
+   */
+  Q_UINT16 httpport;
   
   /**
    * If not empty, indicates that the QHttp is a redirect
