@@ -915,14 +915,42 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                 // XXX this works as long as the canvas extents are in the canvas 
                 // XXX coordinate system -- which is not working at present
                 //
-                QgsRect myProjectedRect;
+                bool splitExtent = false;
+                QgsRect myProjectedRect1, myProjectedRect2;
                 try
                 {
                   std::cout << "Getting extent of canvas in layers CS. Canvas is " << mCanvasProperties->currentExtent.stringRep() << std::endl; 
-                  myProjectedRect =
+                  myProjectedRect1 =
                     ml->coordinateTransform()->transform(
-                      mCanvasProperties->currentExtent,  QgsCoordinateTransform::INVERSE);
+                                     mCanvasProperties->currentExtent, 
+                                     QgsCoordinateTransform::INVERSE);
 
+                  // Split the extent into two if the source SRS is
+                  // geographic and the extent crosses the split in
+                  // geographic coordinates (usually +/- 180 degrees,
+                  // and is assumed to be so here), and draw each
+                  // extent separately.
+                  static const double splitCoord = 180.0;
+                  if (ml->coordinateTransform()->sourceSRS().geographicFlag())
+                  {
+                    // Note ll = lower left point
+                    // and ur = upper right point
+                    QgsRect cExtent = mCanvasProperties->currentExtent;
+                    QgsPoint ll = ml->coordinateTransform()->transform(
+                              cExtent.xMin(), cExtent.yMin(), 
+                              QgsCoordinateTransform::INVERSE);
+
+                    QgsPoint ur = ml->coordinateTransform()->transform(
+                              cExtent.xMax(), cExtent.yMax(), 
+                              QgsCoordinateTransform::INVERSE);
+
+                    if (ll.x() > ur.x())
+                    {
+                      myProjectedRect1.set(ll, QgsPoint(splitCoord, ur.y()));
+                      myProjectedRect2.set(QgsPoint(-splitCoord, ll.y()), ur);
+                      splitExtent = true;
+                    }
+                  }
                 }
                 catch (QgsCsException &e)
                 {
@@ -936,10 +964,12 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                 //
                 if (projectionsEnabled())
                 {
-                  ml->draw(paint,
-                         &myProjectedRect,
-                         mCanvasProperties->coordXForm,
-                         this);
+                  ml->draw(paint, &myProjectedRect1,
+                           mCanvasProperties->coordXForm, this);
+
+                  if (splitExtent)
+                    ml->draw(paint, &myProjectedRect2,
+                             mCanvasProperties->coordXForm, this);
                 }
                 else
                 {
