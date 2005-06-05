@@ -266,9 +266,12 @@ class QgsSpatialRefSys
 
         // Mutators -----------------------------------
 
-
-        /*! Set the SrsId
+        /*! Set the QGIS  SrsId
          *  @param  long theSrsId The internal sqlite3 srs.db primary key for this srs 
+         */
+        void setSrsId(long theSrsId);
+        /*! Set the postgis srid
+         *  @param  long theSrsId The postgis spatial_ref_sys key for this srs 
          */
         void setSrid(long theSrid);
         /*! Set the Description
@@ -283,16 +286,18 @@ class QgsSpatialRefSys
          * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
          */
         void setGeographicFlag (bool theGeoFlag);
-
-        /*! Set the postgis srid for this srs
-         * @param  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
-         */
-        void setPostgisSrid (long theSrid);
         /*! Set the EPSG identifier for this srs
          * @param  long theEpsg the ESPG identifier for this srs (defaults to 0)
          */
         void setEpsg (long theEpsg);
-
+        /*! Set the projection acronym
+         * @param QString the acronym (must be a valid proj4 projection acronym)
+         */
+        void setProjectionAcronym(QString theProjectionAcronym);
+        /*! Set the ellipsoid acronym
+         * @param QString the acronym (must be a valid proj4 ellipsoid acronym)
+         */
+        void setEllipsoidAcronym(QString theEllipsoidAcronym);
     private:
         //!The internal sqlite3 srs.db primary key for this srs 
         long    mSrsId;

@@ -1988,6 +1988,8 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     setDisplayField(e.text());
   }
 
+
+
   // create and bind a renderer to this layer
 
   QDomNode singlenode = layer_node.namedItem("singlesymbol");
@@ -2278,9 +2280,6 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
   QDomText encodingText = document.createTextNode(dataProvider->encoding());
   encoding.appendChild( encodingText );
   layer_node.appendChild( encoding );
-
-  //write the projection 
-  mCoordinateTransform->sourceSRS().writeXML_(layer_node,document);
 
   // add the display field
 

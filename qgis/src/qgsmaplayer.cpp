@@ -219,6 +219,13 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
 
     const char * layerNameStr = mne.text(); // debugger probe
 
+    //read srs
+    QDomNode srsNode = layer_node.namedItem("spatialrefsys");
+    if( ! srsNode.isNull()  )
+    {
+       mCoordinateTransform->readXML_(layer_node);
+    }
+
     // now let the children grab what they need from the DOM node.
     return readXML_( layer_node );
 
@@ -297,6 +304,9 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
     // zorder
     // This is no longer stored in the project file. It is superflous since the layers
     // are written and read in the proper order.
+
+    //write the projection 
+    mCoordinateTransform->writeXML_(maplayer,document);
 
     // now append layer node to map layer node
 

@@ -399,12 +399,25 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
 
 bool QgsCoordinateTransform::readXML_( QDomNode & theNode )
 {
-
+  QDomNode myNode = theNode.namedItem("sourcesrs");
+  mSourceSRS.readXML_(myNode);
+  mDestSRS.readXML_(myNode);
 }
 
 bool QgsCoordinateTransform::writeXML_( QDomNode & theNode, QDomDocument & theDoc )
 {
-  //add projection node
-  QDomElement srsField  = theDoc.createElement( "coordinatetransform" );
+  
+  QDomElement myNodeElement = theNode.toElement();
+  QDomElement myTransformElement  = theDoc.createElement( "coordinatetransform" );
+  
+  QDomElement mySourceElement  = theDoc.createElement( "sourcesrs" );
+  mSourceSRS.writeXML_(mySourceElement, theDoc);
+  myTransformElement.appendChild(mySourceElement);
+  
+  QDomElement myDestElement  = theDoc.createElement( "destinationsrs" );
+  mDestSRS.writeXML_(myDestElement, theDoc);
+  myTransformElement.appendChild(myDestElement);
+  
+  myNodeElement.appendChild(myTransformElement);
 
 }

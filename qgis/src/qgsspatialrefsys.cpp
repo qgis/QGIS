@@ -828,46 +828,37 @@ long QgsSpatialRefSys::epsg () const
 // Mutators -----------------------------------
 
 
-/*! Set the SrsId
- *  @param  long theSrsId The internal sqlite3 srs.db primary key for this srs 
- */
+void QgsSpatialRefSys::setSrsId(long theSrsId)
+{
+  mSrsId = theSrsId;
+}
 void QgsSpatialRefSys::setSrid(long theSrid)
 {
   mSRID=theSrid;
 }
-/*! Set the Description
- * @param  QString the Description A textual description of the srs.
- */
 void QgsSpatialRefSys::setDescription (QString theDescription)
 {
   mDescription = theDescription;
 }
-
 void QgsSpatialRefSys::setProj4String (QString theProj4String)
 {
   mProj4String = theProj4String;
 }
-/*! Set this Geographic? flag
- * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
- */
 void QgsSpatialRefSys::setGeographicFlag (bool theGeoFlag)
 {
   mGeoFlag=theGeoFlag;
 }
-
-/*! Set the postgis srid for this srs
- * @param  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
- */
-void QgsSpatialRefSys::setPostgisSrid (long theSrid)
-{
-  mSRID=theSrid;
-}
-/*! Set the EPSG identifier for this srs
- * @param  long theEpsg the ESPG identifier for this srs (defaults to 0)
- */
 void QgsSpatialRefSys::setEpsg (long theEpsg)
 {
   mEpsg=theEpsg;
+}
+void  QgsSpatialRefSys::setProjectionAcronym(QString theProjectionAcronym)
+{
+  mProjectionAcronym=theProjectionAcronym;
+}
+void  QgsSpatialRefSys::setEllipsoidAcronym(QString theEllipsoidAcronym)
+{
+  mEllipsoidAcronym=theEllipsoidAcronym;
 }
 /*! Work out the projection units and set the appropriate local variable
  *
@@ -1149,6 +1140,41 @@ OGRSpatialReference QgsSpatialRefSys::toOgrSrs()
 
 bool QgsSpatialRefSys::readXML_( QDomNode & theNode )
 {
+     QDomNode myNode = theNode.namedItem("proj4");
+     QDomElement myElement = myNode.toElement();
+     setProj4String(myElement.text());
+
+     myNode = theNode.namedItem("srsid");
+     myElement = myNode.toElement();
+     setSrsId(myElement.text().toLong());
+
+     myNode = theNode.namedItem("srid");
+     myElement = myNode.toElement();
+     setSrid(myElement.text().toLong());
+
+     myNode = theNode.namedItem("epsg");
+     myElement = myNode.toElement();
+     setEpsg(myElement.text().toLong());
+
+     myNode = theNode.namedItem("description");
+     myElement = myNode.toElement();
+     setDescription(myElement.text());
+
+     myNode = theNode.namedItem("projectionacronym");
+     myElement = myNode.toElement();
+     setProjectionAcronym(myElement.text());
+
+     myNode = theNode.namedItem("ellipsoidacronym");
+     myElement = myNode.toElement();
+     setEllipsoidAcronym(myElement.text());
+ 
+     //make sure the map units have been set
+
+     setMapUnits();
+
+     //@TODO this srs needs to be validated!!!
+      
+
 
 }
 
