@@ -82,7 +82,9 @@ public:
   /**
   * Constructor for the provider. 
   *
-  * \param   uri   Address of the WMS server.
+  * \param   uri   HTTP URL of the Web Server, optionally followed by a space then the proxy host name,
+  *                another space, and the proxy host port.  If no proxy is declared then we will
+  *                contact the host directly.
   *
   */
   QgsWmsProvider(QString uri = 0);
@@ -231,6 +233,12 @@ private:
   
   //! Data source URI of the WMS for this layer
   QString httpuri;
+
+  //! HTTP proxy host name for the WMS for this layer
+  QString httpproxyhost;
+
+  //! HTTP proxy port number for the WMS for this layer
+  Q_UINT16 httpproxyport;
 
   /**
    * Flag indicating if the layer data source is a valid WMS layer
