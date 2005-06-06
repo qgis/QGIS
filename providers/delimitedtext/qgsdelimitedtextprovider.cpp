@@ -479,7 +479,7 @@ QgsFeature * QgsDelimitedTextProvider::getNextFeature(bool fetchAttributes)
 
 
 
-QgsFeature * QgsDelimitedTextProvider::getNextFeature(std::list<int> const & desiredAttributes )
+QgsFeature * QgsDelimitedTextProvider::getNextFeature(std::list<int> const & desiredAttributes, int featureQueueSize)
 {
     QgsFeature * f = new QgsFeature;
 

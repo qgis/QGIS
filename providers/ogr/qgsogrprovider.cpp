@@ -472,7 +472,7 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
 }*/
 
 
-QgsFeature *QgsOgrProvider::getNextFeature(std::list<int> const& attlist)
+QgsFeature *QgsOgrProvider::getNextFeature(std::list<int> const& attlist, int featureQueueSize)
 {
   QgsFeature *f = 0; 
   if(valid)

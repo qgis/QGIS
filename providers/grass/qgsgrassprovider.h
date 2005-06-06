@@ -123,7 +123,7 @@ public:
    */
   QgsFeature * getNextFeature(bool fetchAttributes=false);
   bool getNextFeature(QgsFeature &feature, bool fetchAttributes=false);
-  QgsFeature* getNextFeature(std::list<int> const & attlist);
+  QgsFeature* getNextFeature(std::list<int> const & attlist, int featureQueueSize = 1);
 	
   /** 
    * Get the feature type as defined in WKBTYPE (qgis.h). 
