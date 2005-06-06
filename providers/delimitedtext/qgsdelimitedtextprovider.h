@@ -119,7 +119,7 @@ public:
     The search will be limited to the search region if one is active.
 
   */
-  QgsFeature *getNextFeature( std::list<int> const & desiredAttributes );
+  QgsFeature *getNextFeature(std::list<int> const & desiredAttributes, int featureQueueSize = 1);
 
 
   /** Get the feature type. This corresponds to 

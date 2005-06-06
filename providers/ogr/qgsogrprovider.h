@@ -54,7 +54,7 @@ class QgsOgrProvider:public QgsVectorDataProvider
     *@param attlist a list containing the indexes of the attribute fields to copy
     *@param getnotcommited flag indicating if not commited features should be returned
     */
-    QgsFeature *getNextFeature(std::list<int> const& attlist);
+    QgsFeature *getNextFeature(std::list<int> const& attlist, int featureQueueSize = 1);
     /** 
      * Get the next feature resutling from a select operation
      * @return True if the feature was read. This does not indicate

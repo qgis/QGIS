@@ -89,8 +89,7 @@ class QgsVectorDataProvider : public QgsDataProvider
        */
 //    virtual QgsFeature* getNextFeature(std::list<int> const & attlist) = 0;
     
-    virtual QgsFeature* getNextFeature(std::list<int> const & attlist, int featureQueueSize = 1) {};
-//    virtual QgsFeature * getNextFeature(std::list<int> const & attlist, ) = 0;
+      virtual QgsFeature* getNextFeature(std::list<int> const & attlist, int featureQueueSize = 1) { return 0; };
 
       /**
        * Get the next feature using new method

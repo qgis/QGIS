@@ -332,7 +332,7 @@ QgsFeature *QgsGrassProvider::getNextFeature(bool fetchAttributes)
     return ( getNextFeature(attlist) );
 }
 
-QgsFeature* QgsGrassProvider::getNextFeature(std::list<int> const& attlist)
+QgsFeature* QgsGrassProvider::getNextFeature(std::list<int> const& attlist, int featureQueueSize)
 {
     int cat, type, id, idx;
     unsigned char *wkb;
