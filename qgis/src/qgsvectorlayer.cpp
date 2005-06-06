@@ -193,17 +193,6 @@ QgsVectorLayer::~QgsVectorLayer()
   }
 }
 
-bool QgsVectorLayer::projectionsEnabled() const
-{
-  if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
 int QgsVectorLayer::getProjectionSrid()
 {
   //delegate to the provider
@@ -357,8 +346,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
     // select the records in the extent. The provider sets a spatial filter
     // and sets up the selection set for retrieval
     dataProvider->reset();
-    QgsRect r = inverseProjectRect(*viewExtent);
-    dataProvider->select(&r);
+    dataProvider->select(viewExtent);
 
     try
     {

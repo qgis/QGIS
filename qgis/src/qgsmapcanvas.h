@@ -413,6 +413,7 @@ private:
 
     //! Measure tool
     QgsMeasure *mMeasure;
+
 }; // class QgsMapCanvas
 
 #endif

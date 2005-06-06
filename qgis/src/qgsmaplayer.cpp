@@ -30,6 +30,7 @@
 #include <qevent.h>
 
 #include "qgsrect.h"
+#include "qgsproject.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
@@ -561,4 +562,65 @@ QgsCoordinateTransform * QgsMapLayer::coordinateTransform()
 #endif
   
  return mCoordinateTransform;
+}
+
+bool QgsMapLayer::projectionsEnabled() const
+{
+  if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool QgsMapLayer::projectExtent(QgsRect& extent, QgsRect& r2)
+{
+  bool split = false;
+
+  if (projectionsEnabled())
+  {
+    try
+    {
+#ifdef QGISDEBUG
+      std::cerr << "Getting extent of canvas in layers CS. Canvas is " 
+                << extent << '\n'; 
+#endif
+      // Split the extent into two if the source SRS is
+      // geographic and the extent crosses the split in
+      // geographic coordinates (usually +/- 180 degrees,
+      // and is assumed to be so here), and draw each
+      // extent separately.
+      static const double splitCoord = 180.0;
+      if (mCoordinateTransform->sourceSRS().geographicFlag())
+      {
+        // Note: ll = lower left point
+        //   and ur = upper right point
+        QgsPoint ll = mCoordinateTransform->transform(
+                          extent.xMin(), extent.yMin(), 
+                          QgsCoordinateTransform::INVERSE);
+
+        QgsPoint ur = mCoordinateTransform->transform(
+                          extent.xMax(), extent.yMax(), 
+                          QgsCoordinateTransform::INVERSE);
+
+        if (ll.x() > ur.x())
+        {
+          extent.set(ll, QgsPoint(splitCoord, ur.y()));
+          r2.set(QgsPoint(-splitCoord, ll.y()), ur);
+          split = true;
+        }
+        else
+          extent.set(ll, ur);
+      }
+    }
+    catch (QgsCsException &e)
+      {
+        qDebug( "Transform error caught in %s line %d:\n%s", 
+                __FILE__, __LINE__, e.what());
+      }
+  }
+  return split;
 }

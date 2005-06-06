@@ -905,79 +905,20 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 
             if (ml->visible())
             {
-              if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale 
-       && ml->maxScale() > mCanvasProperties->mScale)
+              if ((ml->scaleBasedVisibility() && 
+                   ml->minScale() < mCanvasProperties->mScale 
+                   && ml->maxScale() > mCanvasProperties->mScale)
                   || (!ml->scaleBasedVisibility()))
               {
-                //we need to find out the extent of the canvas in the layer's
-                //native coordinate system :. inverseProjection of the extent
-                //must be done....
-                // XXX this works as long as the canvas extents are in the canvas 
-                // XXX coordinate system -- which is not working at present
-                //
-                bool splitExtent = false;
-                QgsRect myProjectedRect1, myProjectedRect2;
-                try
-                {
-                  std::cout << "Getting extent of canvas in layers CS. Canvas is " << mCanvasProperties->currentExtent.stringRep() << std::endl; 
-                  myProjectedRect1 =
-                    ml->coordinateTransform()->transform(
-                                     mCanvasProperties->currentExtent, 
-                                     QgsCoordinateTransform::INVERSE);
-
-                  // Split the extent into two if the source SRS is
-                  // geographic and the extent crosses the split in
-                  // geographic coordinates (usually +/- 180 degrees,
-                  // and is assumed to be so here), and draw each
-                  // extent separately.
-                  static const double splitCoord = 180.0;
-                  if (ml->coordinateTransform()->sourceSRS().geographicFlag())
-                  {
-                    // Note ll = lower left point
-                    // and ur = upper right point
-                    QgsRect cExtent = mCanvasProperties->currentExtent;
-                    QgsPoint ll = ml->coordinateTransform()->transform(
-                              cExtent.xMin(), cExtent.yMin(), 
-                              QgsCoordinateTransform::INVERSE);
-
-                    QgsPoint ur = ml->coordinateTransform()->transform(
-                              cExtent.xMax(), cExtent.yMax(), 
-                              QgsCoordinateTransform::INVERSE);
-
-                    if (ll.x() > ur.x())
-                    {
-                      myProjectedRect1.set(ll, QgsPoint(splitCoord, ur.y()));
-                      myProjectedRect2.set(QgsPoint(-splitCoord, ll.y()), ur);
-                      splitExtent = true;
-                    }
-                  }
-                }
-                catch (QgsCsException &e)
-                {
-                  qDebug( "Transform error caught in %s line %d:\n%s", 
-        __FILE__, __LINE__, e.what());
-                }
-
+                QgsRect r1 = mCanvasProperties->currentExtent, r2;
+                bool split = ml->projectExtent(r1, r2);
                 //
                 // Now do the call to the layer that actually does
                 // the rendering work!
                 //
-                if (projectionsEnabled())
-                {
-                  ml->draw(paint, &myProjectedRect1,
-                           mCanvasProperties->coordXForm, this);
-
-                  if (splitExtent)
-                    ml->draw(paint, &myProjectedRect2,
-                             mCanvasProperties->coordXForm, this);
-                }
-                else
-                {
-                  ml->draw(paint,
-                         &mCanvasProperties->currentExtent,
-                         mCanvasProperties->coordXForm,
-                         this);
-                }
+                ml->draw(paint, &r1, mCanvasProperties->coordXForm, this);
+                if (split)
+                  ml->draw(paint, &r2,mCanvasProperties->coordXForm, this);
               }
 #ifdef QGISDEBUG
               else
@@ -1015,14 +956,19 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
               {
                 //only make labels if the layer is visible
                 //after scale dep viewing settings are checked
-                if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale 
-         && ml->maxScale() > mCanvasProperties->mScale)
+                if ((ml->scaleBasedVisibility() && 
+                     ml->minScale() < mCanvasProperties->mScale 
+                     && ml->maxScale() > mCanvasProperties->mScale)
                     || (!ml->scaleBasedVisibility()))
                 {
-                  ml->drawLabels(paint,
-                                 &mCanvasProperties->currentExtent,
-                                 mCanvasProperties->coordXForm,
+                  QgsRect r1 = mCanvasProperties->currentExtent, r2;
+                  bool split = ml->projectExtent(r1, r2);
+
+                  ml->drawLabels(paint, &r1, mCanvasProperties->coordXForm, 
                                  this);
+                  if (split)
+                    ml->drawLabels(paint, &r2, mCanvasProperties->coordXForm, 
+                                   this);
                 }
               }
               li++;

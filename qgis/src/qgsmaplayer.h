@@ -272,7 +272,17 @@ public:
 
     /** Accessor for the coordinate transformation object */
     QgsCoordinateTransform * coordinateTransform();
+
+    /** A simple helper method to find out if on the fly projections 
+        are enabled or not */
+    bool projectionsEnabled() const;
     
+    // Convenience function to project an extent into the layer source
+    // SRS, but also split it into two extents if it crosses
+    // the +/- 180 degree line. Modifies the given extent to be in the
+    // source SRS coordinates, and if it was split, returns true, and
+    // also sets the contents of the r2 parameter
+    bool projectExtent(QgsRect& extent, QgsRect& r2);
 
 public  slots:
 
