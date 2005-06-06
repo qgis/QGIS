@@ -179,7 +179,7 @@ QgsFeature *QgsGPXProvider::getNextFeature(bool fetchAttributes) {
 }
 
 
-QgsFeature * QgsGPXProvider::getNextFeature(std::list<int> const & attlist) {
+QgsFeature * QgsGPXProvider::getNextFeature(std::list<int> const & attlist, int featureQueueSize) {
   QgsFeature* feature = new QgsFeature(-1);
   bool success = getNextFeature(feature, attlist);
   if (success)
