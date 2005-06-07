@@ -56,6 +56,8 @@ class QgsUniqueValRenderer: public QgsRenderer
     std::map<QString,QgsRenderItem*>& items();
     /**Return symbology items*/
     const std::list<QgsRenderItem*> items() const;
+    /**Return symbology items*/
+    const std::list<QgsSymbol*> symbols() const {}
  protected:
     /**Field index used for classification*/
     int mClassificationField;

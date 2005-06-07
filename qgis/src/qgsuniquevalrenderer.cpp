@@ -48,6 +48,7 @@ QgsUniqueValRenderer::~QgsUniqueValRenderer()
 
 void QgsUniqueValRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr)
 {
+#if 0
     mVectorType = layer->vectorType();
     QgsUValDialog *dialog = new QgsUValDialog(layer);
 
@@ -59,6 +60,7 @@ void QgsUniqueValRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVect
         {
 	    layer->setRendererDialog(dialog);
         }
+#endif //0
 }
     
 void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, 
@@ -112,6 +114,7 @@ void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pi
 
 void QgsUniqueValRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
+#if 0
     mVectorType = vl.vectorType();
     QDomNode classnode = rnode.namedItem("classificationfield");
     int classificationfield = classnode.toElement().text().toInt();
@@ -153,6 +156,7 @@ void QgsUniqueValRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     properties->setLegendType("Unique Value");
 
     uvaldialog->apply();
+#endif
 }
 
 void QgsUniqueValRenderer::clearValues()

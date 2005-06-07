@@ -29,6 +29,7 @@
 
 void QgsSiMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr)
 {
+#if 0
     bool toproperties = false;    //if false: rendererDialog is associated with the vector layer and image is rendered, true: rendererDialog is associated with buffer dialog of vector layer properties and no image is rendered
     if (pr)
     {
@@ -59,6 +60,7 @@ void QgsSiMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLay
 	    layer->setRendererDialog(dialog);
 	}
     }
+#endif //0
 }
 
 void QgsSiMaRenderer::renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, 
@@ -86,6 +88,7 @@ void QgsSiMaRenderer::renderFeature(QPainter* p, QgsFeature* f, QPicture* pic,
 
 void QgsSiMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
+#if 0
     QgsMarkerSymbol* msy = new QgsMarkerSymbol();
     QPen pen;
     QBrush brush;
@@ -164,6 +167,7 @@ void QgsSiMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     properties->setLegendType("Single Marker");
 
     smdialog->apply();
+#endif //0
 }
 
 void QgsSiMaRenderer::writeXML(std::ostream& xml)

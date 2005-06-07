@@ -21,6 +21,7 @@
 
 #include <iostream>
 
+#include "qgis.h"
 #include <qbrush.h>
 #include <qpen.h>
 #include <qpixmap.h>
@@ -29,13 +30,17 @@
 
 class QString;
 
-/**Encapsulates settings for drawing*/
+/**Encapsulates settings for drawing (QPen, QBrush, Point symbol) and classification
+ (lower value, upper value)*/
 class QgsSymbol{
 
  public:
     /**Constructor*/
-    QgsSymbol();
+    QgsSymbol(QGis::VectorType t, QString lvalue="", QString uvalue="", QString label="");
     /**Constructor*/
+    QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString label, QColor c);
+    /**old constructors*/
+    QgsSymbol();
     QgsSymbol(QColor c);
     /**Sets the brush*/
     virtual void setBrush(QBrush b);
@@ -62,6 +67,12 @@ class QgsSymbol{
     virtual void setLineStyle(Qt::PenStyle s);
     /**Set the fill (brush) style*/
     virtual void setFillStyle(Qt::BrushStyle s);
+    virtual void setLowerValue(QString value);
+    virtual QString lowerValue() const;
+    virtual void setUpperValue(QString value);
+    virtual QString upperValue() const;
+    virtual void setLabel(QString label);
+    virtual QString label() const;
 
     /**Set point symbol from name*/
     virtual void setNamedPointSymbol(QString name);
@@ -94,6 +105,14 @@ class QgsSymbol{
      @ return true in case of success*/
     virtual bool readXML( QDomNode & symbol );
  protected:
+    /**Lower value for classification*/
+    QString mLowerValue;
+    /**Upper value for classification*/
+    QString mUpperValue;
+    QString mLabel;
+    /**Vector type (point, line, polygon)*/
+    QGis::VectorType mType;
+
     QPen mPen;
     QBrush mBrush;
     /* Point symbol name */
@@ -156,6 +175,36 @@ inline void QgsSymbol::setPen(QPen p)
 inline QPen& QgsSymbol::pen()
 {
     return mPen;
+}
+
+inline void QgsSymbol::setLowerValue(QString value)
+{
+    mLowerValue=value;
+}
+
+inline QString QgsSymbol::lowerValue() const
+{
+    return mLowerValue;
+}
+
+inline void QgsSymbol::setUpperValue(QString value)
+{
+    mUpperValue=value;
+}
+
+inline QString QgsSymbol::upperValue() const
+{
+    return mUpperValue;
+}
+
+inline void QgsSymbol::setLabel(QString label)
+{
+    mLabel=label;
+}
+
+inline QString QgsSymbol::label() const
+{
+    return mLabel;
 }
 
 #endif // QGSSYMBOL_H

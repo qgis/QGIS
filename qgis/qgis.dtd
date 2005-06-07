@@ -44,7 +44,11 @@
   --
   -->
 
-<!ELEMENT symbol (outlinecolor,outlinestyle,outlinewidth,fillcolor,fillpattern) >
+<!ELEMENT symbol (lowervalue, uppervalue, label,
+outlinecolor,outlinestyle,outlinewidth,fillcolor,fillpattern) >
+<!ELEMENT lowervalue (#PCDATA) >
+<!ELEMENT uppervalue (#PCDATA) >
+<!ELEMENT label (#PCDATA) >
 <!ELEMENT outlinecolor EMPTY >
 <!ELEMENT outlinestyle (#PCDATA) >
 <!ELEMENT outlinewidth (#PCDATA) >
@@ -63,41 +67,21 @@
 	blue CDATA #REQUIRED
 	>
 
-<!ELEMENT
-markersymbol(svgpath,scalefactor,outlinecolor,outlinestyle,outlinewidth,fillcolor,fillpattern)
->
-<!ELEMENT svgpath (#PCDATA) >
-<!ELEMENT scalefactor (#PCDATA) >
-
-<!--
-  --  renderitem and rangerenderitem
-  --
-  -->
-
-<!ELEMENT renderitem (value,(symbol | markersymbol),label) >
-<!ELEMENT value (#PCDATA) >
-<!ELEMENT label (#PCDATA) >
-
-<!ELEMENT rangerenderitem (lowervalue,uppervalue,(symbol | markersymbol),label) >
-<!ELEMENT lowervalue (#PCDATA) >
-<!ELEMENT uppervalue (#PCDATA) >
-
 <!--
   --  elements to store the settings of the different symbology types
   --
   -->
 
-<!ELEMENT singlesymbol (renderitem) >
+<!ELEMENT singlesymbol (symbol) >
 <!ELEMENT singlemarker (renderitem) >
-<!ELEMENT graduatedsymbol (classificationfield,rangerenderitem+) >
+<!ELEMENT graduatedsymbol (classificationfield,symbol+) >
 <!ELEMENT graduatedmarker (classificationfield,rangerenderitem+) >
 <!ELEMENT uniquevalue (classificationfield,renderitem+) >
 <!ELEMENT uniquevaluemarker (classificationfield,renderitem+) >
 <!ELEMENT classificationfield (#PCDATA) >
-<!ELEMENT continuoussymbol (classificationfield,lowestitem,highestitem) >
-<!ELEMENT lowestitem (renderitem) >
-<!ELEMENT highestitem (renderitem) >
-
+<!ELEMENT continuoussymbol (classificationfield,lowestsymbol,highestsymbol) >
+<!ELEMENT lowestsymbol (symbol) >
+<!ELEMENT highestsymbol (symbol) >
 
 <!--
   --  Raster Layer Properties

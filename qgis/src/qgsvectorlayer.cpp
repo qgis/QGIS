@@ -115,7 +115,6 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
       m_renderer(0),
       mLabel(0),
       m_propertiesDialog(0),
-      m_rendererDialog(0),
       myLib(0),
       ir(0),                    // initialize the identify results pointer
       updateThreshold(0),       // XXX better default value?
@@ -170,10 +169,6 @@ QgsVectorLayer::~QgsVectorLayer()
   if (m_renderer)
   {
     delete m_renderer;
-  }
-  if (m_rendererDialog)
-  {
-    delete m_rendererDialog;
   }
   if (m_propertiesDialog)
   {
@@ -1334,8 +1329,8 @@ void QgsVectorLayer::showLayerProperties()
   // Set wait cursor while the property dialog is created
   // and initialized
   qApp->setOverrideCursor(QCursor(Qt::WaitCursor));
-  if (! m_propertiesDialog)
-  {
+
+  
 #ifdef QGISDEBUG
     std::cerr << "Creating new QgsDlgVectorLayerProperties object\n";
 #endif
@@ -1346,32 +1341,27 @@ void QgsVectorLayer::showLayerProperties()
     std::cerr << "Setting display field in prop dialog\n";
 #endif
     m_propertiesDialog->setDisplayField(displayField());
-  }
+  
 #ifdef QGISDEBUG
-  std::cerr << "Resetting prop dialog\n";
+    std::cerr << "Resetting prop dialog\n";
 #endif
-  m_propertiesDialog->reset();
+    m_propertiesDialog->reset();
 #ifdef QGISDEBUG
-  std::cerr << "Raising prop dialog\n";
+    std::cerr << "Raising prop dialog\n";
 #endif
-  m_propertiesDialog->raise();
+    m_propertiesDialog->raise();
 #ifdef QGISDEBUG
-  std::cerr << "Showing prop dialog\n";
+    std::cerr << "Showing prop dialog\n";
 #endif
-  m_propertiesDialog->show();
-  // restore normal cursor
-  qApp->restoreOverrideCursor();
-} // QgsVectorLayer::showLayerProperties()
+    m_propertiesDialog->show();
+    // restore normal cursor
+    qApp->restoreOverrideCursor();
+}
 
 
 QgsRenderer *QgsVectorLayer::renderer()
 {
   return m_renderer;
-}
-
-QDialog *QgsVectorLayer::rendererDialog()
-{
-  return m_rendererDialog;
 }
 
 void QgsVectorLayer::setRenderer(QgsRenderer * r)
@@ -1384,18 +1374,6 @@ void QgsVectorLayer::setRenderer(QgsRenderer * r)
     }
 
     m_renderer = r;
-  }
-}
-
-void QgsVectorLayer::setRendererDialog(QDialog * dialog)
-{
-  if (dialog != m_rendererDialog)
-  {
-    if (m_rendererDialog)
-    {
-      delete m_rendererDialog;
-    }
-    m_rendererDialog = dialog;
   }
 }
 
@@ -1539,15 +1517,14 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
 
 void QgsVectorLayer::setLayerProperties(QgsDlgVectorLayerProperties * properties)
 {
-  if (m_propertiesDialog)
-  {
-    delete m_propertiesDialog;
-  }
-
-  m_propertiesDialog = properties;
+    m_propertiesDialog = properties;
   // Make sure that the UI gets the correct display
   // field value
-  m_propertiesDialog->setDisplayField(displayField());
+  
+  if(m_propertiesDialog)
+  {
+      m_propertiesDialog->setDisplayField(displayField());
+  }
 }
 
 
@@ -2098,6 +2075,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 
   // XXX Kludge!
 
+
   // if we don't have a coordinate transform, get one
   if ( ! coordinateTransform() )
   {
@@ -2107,37 +2085,31 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 
   if (!singlenode.isNull())
   {
-    // renderer.reset( new QgsSingleSymRenderer );
-    renderer = new QgsSingleSymRenderer;
+    renderer = new QgsSingleSymRenderer(vectorType());
     renderer->readXML(singlenode, *this);
   }
   else if (!graduatednode.isNull())
   {
-    //renderer.reset( new QgsGraduatedSymRenderer );
-    renderer = new QgsGraduatedSymRenderer;
+    renderer = new QgsGraduatedSymRenderer(vectorType());
     renderer->readXML(graduatednode, *this);
   }
   else if (!continuousnode.isNull())
   {
-    //renderer.reset( new QgsContinuousColRenderer );
-    renderer = new QgsContinuousColRenderer;
+    renderer = new QgsContinuousColRenderer(vectorType());
     renderer->readXML(continuousnode, *this);
   }
   else if (!singlemarkernode.isNull())
   {
-    //renderer.reset( new QgsSiMaRenderer );
     renderer = new QgsSiMaRenderer;
     renderer->readXML(singlemarkernode, *this);
   }
   else if (!graduatedmarkernode.isNull())
   {
-    //renderer.reset( new QgsGraduatedMaRenderer );
     renderer = new QgsGraduatedMaRenderer;
     renderer->readXML(graduatedmarkernode, *this);
   }
   else if (!uniquevaluenode.isNull())
   {
-    //renderer.reset( new QgsUniqueValRenderer );
     renderer = new QgsUniqueValRenderer;
     renderer->readXML(uniquevaluenode, *this);
   }
@@ -2146,6 +2118,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     renderer = new QgsUValMaRenderer;
     renderer->readXML(uniquemarkernode, *this);
   }
+
 
   // Test if labeling is on or off
   QDomElement element = labelnode.toElement();

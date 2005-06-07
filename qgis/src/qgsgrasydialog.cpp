@@ -81,20 +81,11 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
     //restore the correct settings
     QgsGraduatedSymRenderer *renderer;
     
-    //initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
-    if (mVectorLayer->propertiesDialog())
-    {
-	renderer = dynamic_cast < QgsGraduatedSymRenderer * >(layer->propertiesDialog()->getBufferRenderer());
-    } 
-    else
-    {
-	renderer = dynamic_cast < QgsGraduatedSymRenderer * >(layer->renderer());
-    }
-
-
+    renderer = dynamic_cast < QgsGraduatedSymRenderer * >(layer->renderer());
+    
     if (renderer)
     {
-	std::list < QgsRangeRenderItem * >list = renderer->items();
+	std::list < QgsSymbol * >list = renderer->symbols();
 	
 	//display the classification field
 	QString classfield="";
@@ -111,17 +102,16 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
 	QGis::VectorType m_type = mVectorLayer->vectorType();
 	numberofclassesspinbox->setValue(list.size());
 	//fill the items of the renderer into mValues
-	for(std::list<QgsRangeRenderItem*>::iterator it=list.begin();it!=list.end();++it)
+	for(std::list<QgsSymbol*>::iterator it=list.begin();it!=list.end();++it)
 	{
-		QgsRangeRenderItem* item=(*it);
-		QString classbreak=item->value()+" - "+item->upper_value();
-		QgsSymbol* sym=new QgsSymbol();
-		QgsRangeRenderItem* rritem=new QgsRangeRenderItem(sym,item->value(),item->upper_value(),item->label());
-		sym->setPen(item->getSymbol()->pen());
-		sym->setBrush(item->getSymbol()->brush());
-		sym->setNamedPointSymbol(item->getSymbol()->pointSymbolName());
-		sym->setPointSize(item->getSymbol()->pointSize());
-		mEntries.insert(std::make_pair(classbreak,rritem));
+	    //todo: make an assignment operator and a copy constructor for QgsSymbol
+		QString classbreak=(*it)->lowerValue()+" - "+(*it)->upperValue();
+		QgsSymbol* sym=new QgsSymbol(mVectorLayer->vectorType(), (*it)->lowerValue(), (*it)->upperValue(), (*it)->label());
+		sym->setPen((*it)->pen());
+		sym->setBrush((*it)->brush());
+		sym->setNamedPointSymbol((*it)->pointSymbolName());
+		sym->setPointSize((*it)->pointSize());
+		mEntries.insert(std::make_pair(classbreak,sym));
 		mClassBreakBox->insertItem(classbreak);
 	}
 	
@@ -178,109 +168,109 @@ void QgsGraSyDialog::apply()
         }
 
 	//font tor the legend text
-	QFont f("arial", 10, QFont::Normal);
-	QFontMetrics fm(f);
+	//QFont f("arial", 10, QFont::Normal);
+	//QFontMetrics fm(f);
 	
 	//spaces
-	int topspace = 5;
-	int bottomspace = 5;
-	int leftspace = 10;       //space between left side of the pixmap and the text/graphics
-	int rightspace = 5;       //space between text/graphics and right side of the pixmap
-	int wordspace = 5;        //space between graphics/word
-	int symbolheight = 15;    //height of an area where a symbol is painted
-	int symbolwidth = 15;     //width of an area where a symbol is painted
-	int lowerupperwidth; //widht of the broadest lower-upper pair
-	int rowspace = 5;         //spaces between rows of symbols
-	int rowheight = (fm.height() > symbolheight) ? fm.height() : symbolheight;  //height of a row in the symbology part
+	//int topspace = 5;
+	//int bottomspace = 5;
+	//int leftspace = 10;       //space between left side of the pixmap and the text/graphics
+	//int rightspace = 5;       //space between text/graphics and right side of the pixmap
+	//int wordspace = 5;        //space between graphics/word
+	//int symbolheight = 15;    //height of an area where a symbol is painted
+	//int symbolwidth = 15;     //width of an area where a symbol is painted
+	//int lowerupperwidth; //widht of the broadest lower-upper pair
+	//int rowspace = 5;         //spaces between rows of symbols
+	//int rowheight = (fm.height() > symbolheight) ? fm.height() : symbolheight;  //height of a row in the symbology part
 
 	//find out the width of the widest label and of the broadest lower-upper pair
-	int labelwidth=0;
-	lowerupperwidth=0;
+	//int labelwidth=0;
+	//lowerupperwidth=0;
 
-	for(std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
-	{
-	    int currentlabelwidth=fm.width(it->second->label());
-	    if(currentlabelwidth>labelwidth)
-            {
-		labelwidth=currentlabelwidth;
-            }
-	    int currentluwidth=fm.width(it->second->value())+fm.width(" - ")+fm.width(it->second->upper_value());
-	    if(currentluwidth>lowerupperwidth)
-	    {
+	//for(std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
+	//{
+	//  int currentlabelwidth=fm.width(it->second->label());
+	//  if(currentlabelwidth>labelwidth)
+	//  {
+	//	labelwidth=currentlabelwidth;
+	//  }
+	//  int currentluwidth=fm.width(it->second->value())+fm.width(" - ")+fm.width(it->second->upper_value());
+	//  if(currentluwidth>lowerupperwidth)
+	//  {
 		//widestlu = string2;
-		lowerupperwidth=currentluwidth;
-	    }
-	}
+	//	lowerupperwidth=currentluwidth;
+	//  }
+	//}
 	
 	//create the pixmap for the render item
-	QPixmap *pix = mVectorLayer->legendPixmap();
-	QString name;
-	if (mVectorLayer->propertiesDialog())
-        {
-	    name = mVectorLayer->propertiesDialog()->displayName();
-	} 
-	else
-        {
-	    name = "";
-        }
+	//QPixmap *pix = mVectorLayer->legendPixmap();
+	//QString name;
+	//if (mVectorLayer->propertiesDialog())
+        //{
+	//  name = mVectorLayer->propertiesDialog()->displayName();
+	//} 
+	//else
+        //{
+	//    name = "";
+        //}
 	//query the name and the maximum upper value to estimate the necessary width of the pixmap
-	int pixwidth = leftspace + rightspace + symbolwidth + 2 * wordspace + labelwidth + lowerupperwidth; //width of the pixmap with symbol and values
+	//int pixwidth = leftspace + rightspace + symbolwidth + 2 * wordspace + labelwidth + lowerupperwidth; //width of the pixmap with symbol and values
 	//consider 240 pixel for labels
-	int namewidth = leftspace + fm.width(name) + rightspace;
-	int width = (pixwidth > namewidth) ? pixwidth : namewidth;
-	pix->resize(width, topspace + 2 * fm.height() + bottomspace + (rowheight + rowspace) * numberofclassesspinbox->value());
-	pix->fill();
-	QPainter p(pix);
-	p.setFont(f);
+	//int namewidth = leftspace + fm.width(name) + rightspace;
+	//int width = (pixwidth > namewidth) ? pixwidth : namewidth;
+	//pix->resize(width, topspace + 2 * fm.height() + bottomspace + (rowheight + rowspace) * numberofclassesspinbox->value());
+	//pix->fill();
+	//QPainter p(pix);
+	//p.setFont(f);
 	//draw the layer name and the name of the classification field into the pixmap
-	p.drawText(leftspace, topspace + fm.height(), name);
-	p.drawText(leftspace, topspace + 2 * fm.height(), classificationComboBox->currentText());
+	//p.drawText(leftspace, topspace + fm.height(), name);
+	//p.drawText(leftspace, topspace + 2 * fm.height(), classificationComboBox->currentText());
 	
 	QgsGraduatedSymRenderer *renderer = dynamic_cast < QgsGraduatedSymRenderer * >(mVectorLayer->renderer());
 	
 	if (!renderer)
         {
-	    qWarning("Warning, typecast failed in QgsGraSyDialog::apply()");
-	    return;
+	    renderer=new QgsGraduatedSymRenderer(mVectorLayer->vectorType());
+	    mVectorLayer->setRenderer(renderer);
         }
 	
-	renderer->removeItems();
+	renderer->removeSymbols();
 	
-	int offset = topspace + 2 * fm.height();
-	int rowincrement = rowheight + rowspace;
-	int i=0;
+	//int offset = topspace + 2 * fm.height();
+	//int rowincrement = rowheight + rowspace;
+	//int i=0;
 
 	for (int item=0;item<mClassBreakBox->count();++item)
         {
 	    QString classbreak=mClassBreakBox->text(item);
-	    std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.find(classbreak);
+	    std::map<QString,QgsSymbol*>::iterator it=mEntries.find(classbreak);
 	    if(it==mEntries.end())
 	    {
 		continue;
 	    }
 	
-	    QgsSymbol* sy = new QgsSymbol();
+	    QString lower_bound=it->second->lowerValue();
+	    QString upper_bound=it->second->upperValue();
+	    QString label=it->second->label();
+
+	    QgsSymbol* sy = new QgsSymbol(mVectorLayer->vectorType(), lower_bound, upper_bound, label);
 	    
-	    sy->setColor(it->second->getSymbol()->pen().color());
-	    sy->setLineStyle(it->second->getSymbol()->pen().style());
-	    sy->setLineWidth(it->second->getSymbol()->pen().width());
+	    sy->setColor(it->second->pen().color());
+	    sy->setLineStyle(it->second->pen().style());
+	    sy->setLineWidth(it->second->pen().width());
 	    
 	    if (mVectorLayer->vectorType() == QGis::Point)
 	    {
-		sy->setNamedPointSymbol(it->second->getSymbol()->pointSymbolName());
-		sy->setPointSize(it->second->getSymbol()->pointSize());
+		sy->setNamedPointSymbol(it->second->pointSymbolName());
+		sy->setPointSize(it->second->pointSize());
 	     
 	    }
 	    
 	    if (mVectorLayer->vectorType() != QGis::Line)
             {
-		sy->setFillColor(it->second->getSymbol()->brush().color());
-		sy->setFillStyle(it->second->getSymbol()->brush().style());
+		sy->setFillColor(it->second->brush().color());
+		sy->setFillStyle(it->second->brush().style());
             }
-
-	    QString lower_bound = it->second->value();
-	    QString upper_bound = it->second->upper_value();
-	    QString label = it->second->label();
 	    
 	    //test, if lower_bound is numeric or not (making a subclass of QString would be the proper solution)
 	    bool lbcontainsletter = false;
@@ -303,33 +293,36 @@ void QgsGraSyDialog::apply()
             }
 	    if (lbcontainsletter == false && ubcontainsletter == false && lower_bound.length() > 0 && upper_bound.length() > 0) //only add the item if the value bounds do not contain letters and are not null strings
             {
-		QgsRangeRenderItem *item = new QgsRangeRenderItem(sy, lower_bound, upper_bound, label);
-		renderer->addItem(item);
+		renderer->addSymbol(sy);
 		//add the symbol to the picture
 
-		QString legendstring = lower_bound + " - " + upper_bound;
-		p.setPen(sy->pen());
-		p.setBrush(sy->brush());
-		if (mVectorLayer->vectorType() == QGis::Polygon)
-                {
-		    p.drawRect(leftspace, offset + rowincrement * i + (rowheight - symbolheight), symbolwidth, symbolheight); //implement different painting for lines and points here
-		} 
-		else if (mVectorLayer->vectorType() == QGis::Line)
-                {
-		    p.drawLine(leftspace, offset + rowincrement * i + (rowheight - symbolheight), leftspace + symbolwidth,
-                             offset + rowincrement * i + rowheight);
-		} 
-		else if (mVectorLayer->vectorType() == QGis::Point)
-                {
+		//QString legendstring = lower_bound + " - " + upper_bound;
+		//p.setPen(sy->pen());
+		//p.setBrush(sy->brush());
+		//if (mVectorLayer->vectorType() == QGis::Polygon)
+                //{
+		//p.drawRect(leftspace, offset + rowincrement * i + (rowheight - symbolheight), symbolwidth, symbolheight); //implement different painting for lines and points here
+		//} 
+		//else if (mVectorLayer->vectorType() == QGis::Line)
+                //{
+		//    p.drawLine(leftspace, offset + rowincrement * i + (rowheight - symbolheight), leftspace + symbolwidth,
+                //             offset + rowincrement * i + rowheight);
+		//} 
+		//else if (mVectorLayer->vectorType() == QGis::Point)
+                //{
 		    //p.drawRect(leftspace + symbolwidth / 2, offset + (int) (rowincrement * (i + 0.5)), 5, 5);
-		    QPixmap pm = sy->getPointSymbolAsPixmap();
-		    p.drawPixmap ( (int) (leftspace+symbolwidth/2-pm.width()/2), (int) (offset+rowincrement*(i+0.5)-pm.height()/2), pm );
-                }
-		p.setPen(Qt::black);
-		p.drawText(leftspace + symbolwidth + wordspace, offset + rowincrement * i + rowheight, legendstring);
-		p.drawText(pixwidth - labelwidth - rightspace, offset + rowincrement * i + rowheight, label);
+		//  QPixmap pm = sy->getPointSymbolAsPixmap();
+		//  p.drawPixmap ( (int) (leftspace+symbolwidth/2-pm.width()/2), (int) (offset+rowincrement*(i+0.5)-pm.height()/2), pm );
+                //}
+		//p.setPen(Qt::black);
+		//p.drawText(leftspace + symbolwidth + wordspace, offset + rowincrement * i + rowheight, legendstring);
+		//p.drawText(pixwidth - labelwidth - rightspace, offset + rowincrement * i + rowheight, label);
 	    }
-	    ++i;
+	    else
+	    {
+		delete sy;
+	    }
+	    //++i;
         }
 	
 	std::map<QString,int>::iterator iter=mFieldMap.find(classificationComboBox->currentText());
@@ -338,13 +331,12 @@ void QgsGraSyDialog::apply()
 	   renderer->setClassificationField(iter->second); 
 	}
 	
-	mVectorLayer->updateItemPixmap();
+	//mVectorLayer->updateItemPixmap();
 
-	if (mVectorLayer->propertiesDialog())
-        {
-	    mVectorLayer->propertiesDialog()->setRendererDirty(false);
-        }
-	mVectorLayer->triggerRepaint();
+	//if (mVectorLayer->propertiesDialog())
+        //{
+	//    mVectorLayer->propertiesDialog()->setRendererDirty(false);
+        //}
 }
 
 void QgsGraSyDialog::adjustClassification()
@@ -355,7 +347,7 @@ void QgsGraSyDialog::adjustClassification()
     double minimum, maximum;
     
     //delete all previous entries
-    for(std::map<QString, QgsRangeRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
+    for(std::map<QString, QgsSymbol*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
     {
 	delete it->second;
     }
@@ -391,9 +383,8 @@ void QgsGraSyDialog::adjustClassification()
     QString listboxtext;
     for(int i=0;i<numberofclassesspinbox->value();++i)
     {
-	QgsRangeRenderItem* rritem = new QgsRangeRenderItem();
-	QgsSymbol* symbol = new QgsSymbol();
-	rritem->setLabel("");
+	QgsSymbol* symbol = new QgsSymbol(m_type);
+	symbol->setLabel("");
 	QPen pen;
 	QBrush brush;
 
@@ -414,8 +405,8 @@ void QgsGraSyDialog::adjustClassification()
 	      {
 		upper+=0.001;
 	      }
-	    rritem->setValue(QString::number(lower,'f',3));
-	    rritem->setUpperValue(QString::number(upper,'f',3));
+	    symbol->setLowerValue(QString::number(lower,'f',3));
+	    symbol->setUpperValue(QString::number(upper,'f',3));
 	    listboxtext=QString::number(lower,'f',3)+" - " +QString::number(upper,'f',3);
 	    mClassBreakBox->insertItem(listboxtext);
 	}
@@ -450,9 +441,8 @@ void QgsGraSyDialog::adjustClassification()
 	    brush.setStyle(Qt::SolidPattern);
 	    symbol->setPen(pen);
 	    symbol->setBrush(brush);
-	    rritem->setSymbol(symbol);
        
-	mEntries.insert(std::make_pair(listboxtext,rritem));
+	mEntries.insert(std::make_pair(listboxtext,symbol));
     }
     mClassBreakBox->setCurrentItem(0);
 }
@@ -464,11 +454,11 @@ void QgsGraSyDialog::changeCurrentValue()
     if(item)
     {
 	QString value=item->text();
-	std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.find(value);
+	std::map<QString,QgsSymbol*>::iterator it=mEntries.find(value);
 	if(it!=mEntries.end())
 	{
-	    sydialog.set(it->second->getSymbol() );
-	    sydialog.setLabel(it->second->label());
+	    sydialog.set((*it).second);
+	    sydialog.setLabel((*it).second->label());
 	}
     }
     sydialog.blockSignals(false);
@@ -480,11 +470,11 @@ void QgsGraSyDialog::applySymbologyChanges()
     if(item)
     {
 	QString value=item->text();
-	std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.find(value);
+	std::map<QString,QgsSymbol*>::iterator it=mEntries.find(value);
 	if(it!=mEntries.end())
 	{
-	    sydialog.apply( it->second->getSymbol() );
-	    it->second->setLabel(sydialog.label());
+	    sydialog.apply((*it).second);
+	    it->second->setLabel((*it).second->label());
 	}
     }
 }
@@ -492,29 +482,29 @@ void QgsGraSyDialog::applySymbologyChanges()
 void QgsGraSyDialog::changeClass(QListBoxItem* item)
 {
     QString currenttext=item->text();
-    QgsRangeRenderItem* rritem=0;
-    std::map<QString,QgsRangeRenderItem*>::iterator iter=mEntries.find(currenttext);
+    QgsSymbol* symbol=0;
+    std::map<QString,QgsSymbol*>::iterator iter=mEntries.find(currenttext);
     if(iter!=mEntries.end())
     {
-	rritem=iter->second;
+	symbol=iter->second;
     }
     QgsLUDialog dialog;
     
-    if(rritem)
+    if(symbol)
     {
-	dialog.setLowerValue(rritem->value());
-	dialog.setUpperValue(rritem->upper_value());
+	dialog.setLowerValue(symbol->lowerValue());
+	dialog.setUpperValue(symbol->upperValue());
     }
 
     if(dialog.exec()==QDialog::Accepted)
     {
-	if(rritem)
+	if(symbol)
 	{
 	    mEntries.erase(currenttext);
-	    rritem->setValue(dialog.lowerValue());
-	    rritem->setUpperValue(dialog.upperValue());
+	    symbol->setLowerValue(dialog.lowerValue());
+	    symbol->setUpperValue(dialog.upperValue());
 	    QString newclass=dialog.lowerValue()+"-"+dialog.upperValue();
-	    mEntries.insert(std::make_pair(newclass,rritem));
+	    mEntries.insert(std::make_pair(newclass,symbol));
 	    int index=mClassBreakBox->index(item);
 	    QObject::disconnect(mClassBreakBox, SIGNAL(selectionChanged()), this, SLOT(changeCurrentValue()));
 	    mClassBreakBox->removeItem(index);

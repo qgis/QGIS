@@ -37,6 +37,7 @@ class QColor;
 #include <qcolor.h>
 
 class QgsRenderItem;
+class QgsSymbol;
 
 /**Abstract base class for renderers. A renderer holds all the information necessary to draw the contents of a vector layer to a map canvas. The vector layer then passes each feature to paint to the renderer*/
 class QgsRenderer
@@ -44,10 +45,6 @@ class QgsRenderer
  public:
     /** Default ctor sets up selection colour from project properties */
     QgsRenderer();
-    /**Sets the initial symbology configuration for a layer. Besides of applying default symbology settings, an instance of the corresponding renderer dialog is created and associated with the layer (or with the property dialog, if pr is not 0). Finally, a pixmap for the legend is drawn (or, if pr is not 0, it is stored in the property dialog, until the settings are applied).
-     @param layer the vector layer associated with the renderer
-     @param pr the property dialog. This is only needed if the renderer is created from the property dialog and not yet associated with the vector layer, otherwise 0*/
-    virtual void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0)=0;
     /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter
      @param p the painter storing brush and pen
      @param f a pointer to the feature to be rendered
@@ -72,11 +69,12 @@ class QgsRenderer
     /** Set up the selection color by reading approriate values from project props */
     void initialiseSelectionColor();
     /**Return symbology items*/
-    virtual const std::list<QgsRenderItem*> items() const=0;
+    virtual const std::list<QgsSymbol*> symbols() const=0;
     /**Color to draw selected features - static so we can change it in proj props and automatically 
        all renderers are updated*/
     static QColor mSelectionColor;
     /**Layer type*/
+ protected:
     QGis::VectorType mVectorType;
     
 };

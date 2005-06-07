@@ -315,14 +315,14 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	    if ( (group > 0 && group2 == group) || ( group == 0 && j == i )  ) {
 		groupLayers.push_back(j);
 
-		std::list<QgsRenderItem*> items = renderer->items();
+		std::list<QgsSymbol*> symbols = renderer->symbols();
 
 		if ( sectionTitle.length() == 0 ) {
 		   sectionTitle = layer2->name();
 		}        
 		  
-		if ( items.size() > sectionItemsCount ) {
-	      sectionItemsCount = items.size();
+		if ( symbols.size() > sectionItemsCount ) {
+	      sectionItemsCount = symbols.size();
 		    itemHeights.resize(sectionItemsCount);
 		    itemLabels.resize(sectionItemsCount); 
 		}
@@ -335,10 +335,9 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 		double scale = map->symbolScale() * mComposition->scale();
 
 		int icnt = 0;
-		for ( std::list<QgsRenderItem*>::iterator it = items.begin(); it != items.end(); ++it ) {
+		for ( std::list<QgsSymbol*>::iterator it = symbols.begin(); it != symbols.end(); ++it ) {
 		
-	      QgsRenderItem *ri = (*it);
-		    QgsSymbol *sym = ri->getSymbol();
+		    QgsSymbol* sym = (*it);
 	      
 	      // height
 	      if ( itemHeights[icnt] < mSymbolHeight ) { // init first
@@ -353,10 +352,10 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	      }
 
 	      if ( itemLabels[icnt].length() == 0 ) {
-		  if ( ri->label().length() > 0 ) {
-		itemLabels[icnt] = ri->label();
+		  if ( sym->label().length() > 0 ) {
+		itemLabels[icnt] = sym->label();
 		  } else {
-		itemLabels[icnt] = ri->value();
+		itemLabels[icnt] = sym->lowerValue();
 		  }
 	      }
 		  
@@ -404,17 +403,14 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	QgsRenderer *renderer = vector->renderer();
 	
 	// Symbol
-	std::list<QgsRenderItem*> items = renderer->items();
-	
+	std::list<QgsSymbol*> symbols = renderer->symbols();
+
 	int icnt = 0;
-	for ( std::list<QgsRenderItem*>::iterator it = items.begin(); it != items.end(); ++it ) {
+	for ( std::list<QgsSymbol*>::iterator it = symbols.begin(); it != symbols.end(); ++it ) {
 	    localHeight += mSymbolSpace;
 
 	    int symbolHeight = itemHeights[icnt];
-
-	    QgsRenderItem *ri = (*it);
-
-	    QgsSymbol *sym = ri->getSymbol();
+	    QgsSymbol* sym = (*it);
 	    
 	    QPen pen = sym->pen();
 	    double widthScale = map->widthScale() * mComposition->scale();
