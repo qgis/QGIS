@@ -21,8 +21,9 @@
 
 #include "qgsrenderer.h"
 #include "qgsrenderitem.h"
+#include "qgssymbol.h"
 #include "qgspoint.h"
-#include "qpainter.h"
+#include <qpainter.h>
 #include "qgsmaptopixel.h"
 #include "qgsdlgvectorlayerproperties.h"
 class QgsFeature;
@@ -31,18 +32,14 @@ class QgsFeature;
 class QgsSingleSymRenderer: public QgsRenderer
 {
  public:
-    QgsSingleSymRenderer();
+    QgsSingleSymRenderer(QGis::VectorType type);
     virtual ~QgsSingleSymRenderer();
-    /**Replaces the current mItem by ri*/
-    void addItem(QgsRenderItem* ri);
-    /**Returns a pointer to mItem*/
-    QgsRenderItem* item();
+    /**Replaces the current mSymbol by sy*/
+    void addSymbol(QgsSymbol* sy);
+    /*Returns a pointer to mSymbol*/
+    QgsSymbol* symbol();
     /**Renders an OGRFeature*/
     void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.);
-    /**Sets the initial symbology configuration for a layer. Besides of applying default symbology settings, an instance of the corresponding renderer dialog is created and associated with the layer (or with the property dialog, if pr is not 0). Finally, a pixmap for the legend is drawn (or, if pr is not 0, it is stored in the property dialog, until the settings are applied).
-       @param layer the vector layer associated with the renderer
-       @param pr the property dialog. This is only needed if the renderer is created from the property dialog and not yet associated with the vector layer, otherwise 0*/
-    virtual void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
      @param vl the vector layer which will be associated with the renderer*/
@@ -58,17 +55,20 @@ class QgsSingleSymRenderer: public QgsRenderer
     virtual std::list<int> classificationAttributes();
     /**Returns the renderers name*/
     virtual QString name();
-    /**Return symbology items*/
-    const std::list<QgsRenderItem*> items() const;
+    /**Returns a list containing mSymbol*/
+    const std::list<QgsSymbol*> symbols() const;
  protected:
-    QgsRenderItem* mItem;
+    /**Object containing symbology information*/
+    QgsSymbol* mSymbol;
 };
 
-inline QgsRenderItem* QgsSingleSymRenderer::item()
+inline QgsSymbol* QgsSingleSymRenderer::symbol()
 {
-    return mItem;
+    return mSymbol;
 }
+
 inline bool QgsSingleSymRenderer::needsAttributes(){
   return false;
 }
+
 #endif

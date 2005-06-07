@@ -33,6 +33,37 @@
 #include <qrect.h>
 #include <qpointarray.h>
 
+QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString label)
+    : mType(t),
+      mLowerValue(lvalue),
+      mUpperValue(uvalue),
+      mLabel(label),
+      mPointSymbolName( "hard:circle" ),
+      mPointSize( 6 ),
+      mCacheUpToDate( false ),
+      mCacheUpToDate2( false ),
+      mPointSymbolPixmap(1,1),
+      mOversampling(1),
+      mWidthScale(1.0)
+{}
+
+
+QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString label, QColor c)
+    : mType(t),
+      mLowerValue(lvalue),
+      mUpperValue(uvalue),
+      mLabel(label),
+      mPen( c ),
+      mBrush( c ),
+      mPointSymbolName( "hard:circle" ),
+      mPointSize( 6 ),
+      mCacheUpToDate( false ),
+      mCacheUpToDate2( false ),
+      mPointSymbolPixmap(1,1),
+      mOversampling(1),
+      mWidthScale(1.0)
+{}
+
 QgsSymbol::QgsSymbol()
     : mPointSymbolName( "hard:circle" ),
       mPointSize( 6 ),
@@ -251,6 +282,21 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document )
     QDomElement symbol=document.createElement("symbol");
     item.appendChild(symbol);
 
+    QDomElement lowervalue=document.createElement("lowervalue");
+    QDomText lowervaluetxt=document.createTextNode(mLowerValue);
+    symbol.appendChild(lowervalue);
+    lowervalue.appendChild(lowervaluetxt);
+
+    QDomElement uppervalue=document.createElement("uppervalue");
+    QDomText uppervaluetxt=document.createTextNode(mUpperValue);
+    symbol.appendChild(uppervalue);
+    uppervalue.appendChild(uppervaluetxt);
+
+    QDomElement label=document.createElement("label");
+    QDomText labeltxt=document.createTextNode(mLabel);
+    symbol.appendChild(label);
+    label.appendChild(labeltxt);
+
     QDomElement pointsymbol=document.createElement("pointsymbol");
     QDomText pointsymboltxt=document.createTextNode(pointSymbolName());
     symbol.appendChild(pointsymbol);
@@ -291,6 +337,28 @@ bool QgsSymbol::readXML( QDomNode & synode )
     // Legacy project file formats didn't have support for pointsymbol nor
     // pointsize DOM elements.  Therefore we should check whether these
     // actually exist.
+
+    QDomNode lvalnode = synode.namedItem("lowervalue");
+    if( ! lvalnode.isNull() )
+    {
+	QDomElement lvalelement = lvalnode.toElement();
+	mLowerValue=lvalelement.text();
+    }
+
+    QDomNode uvalnode = synode.namedItem("uppervalue");
+    if( ! uvalnode.isNull() )
+    {
+	QDomElement uvalelement = uvalnode.toElement();
+	mUpperValue=uvalelement.text();
+    }
+
+    QDomNode labelnode = synode.namedItem("label");
+    if( ! labelnode.isNull() )
+    {
+	QDomElement labelelement = labelnode.toElement();
+	mLabel=labelelement.text();
+    }
+
     QDomNode psymbnode = synode.namedItem("pointsymbol");
 
     if ( ! psymbnode.isNull() )

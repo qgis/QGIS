@@ -1130,7 +1130,7 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
         // XXX QgsProject::read() (If layers added via that.)
 
         //add single symbol renderer as default
-        QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();
+        QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());
 
         Q_CHECK_PTR( renderer );
 
@@ -1146,7 +1146,7 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
         }
 
         layer->setRenderer(renderer);
-        renderer->initializeSymbology(layer);
+
         // not necessary since registry will add to canvas mMapCanvas->addLayer(layer);
         // XXX some day will not necessary since connect up a request from
         // the raster layer to show in overview map
@@ -1269,7 +1269,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
                 // XXX now taken care of in legend layer->initContextMenu(this);
 
                 //add single symbol renderer as default
-                QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();
+                QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());
 
                 Q_CHECK_PTR( renderer );
 
@@ -1283,7 +1283,6 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
                 }
 
                 layer->setRenderer(renderer);
-                renderer->initializeSymbology(layer);
 
                 // map canvas and overview canvas already know about this layer
                 // when it is added to map registry
@@ -1419,9 +1418,8 @@ void QgisApp::addDatabaseLayer()
                     // XXX now taken care of in legend layer->initContextMenu(this);
 
                     // give it a random color
-                    QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();  // add single symbol renderer as default
+                    QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());  // add single symbol renderer as default
                     layer->setRenderer(renderer);
-                    renderer->initializeSymbology(layer);
                     // add it to the mapcanvas collection
                     // mMapCanvas->addLayer(layer);
                     //connect up a request from the raster layer to show in overview map
@@ -4076,9 +4074,8 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
             // now taken care of in legend layer->initContextMenu(this);
 
             // give it a random color
-            QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();  //add single symbol renderer as default
+            QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());  //add single symbol renderer as default
             layer->setRenderer(renderer);
-            renderer->initializeSymbology(layer);
             // add it to the mapcanvas collection
             // mMapCanvas->addLayer(layer); No longer necessary since adding to registry will add to canvas
 

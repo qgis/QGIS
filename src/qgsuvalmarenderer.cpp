@@ -47,6 +47,7 @@ QgsUValMaRenderer::~QgsUValMaRenderer()
 
 void QgsUValMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr)
 {
+#if 0
     QgsUValMaDialog *dialog = new QgsUValMaDialog(layer);
 
 	if (pr)
@@ -57,6 +58,7 @@ void QgsUValMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorL
         {
 	    layer->setRendererDialog(dialog);
         }
+#endif //0
 }
     
 void QgsUValMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, 
@@ -102,6 +104,7 @@ void QgsUValMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic,
 
 void QgsUValMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
+#if 0
     QDomNode classnode = rnode.namedItem("classificationfield");
     int classificationfield = classnode.toElement().text().toInt();
     this->setClassificationField(classificationfield);
@@ -146,6 +149,7 @@ void QgsUValMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     properties->setLegendType("Unique Value Marker");
 
     uvalmadialog->apply();
+#endif //0
 }
 
 void QgsUValMaRenderer::writeXML(std::ostream& xml)

@@ -26,30 +26,35 @@
 #include <qdom.h>
 #include <qpixmap.h>
 #include <qpicture.h>
-//XXX Inlining this destructor kills build on WIN32 - sorry
-QgsGraduatedSymRenderer::~QgsGraduatedSymRenderer()
-{
-    //free the memory first
-    /*for (std::list < QgsRangeRenderItem * >::iterator it = mItems.begin(); it != mItems.end(); ++it)
-    {
-	delete *it;
-    }
 
-    //and remove the pointers then
-    mItems.clear();*/
-    removeItems();
+
+QgsGraduatedSymRenderer::QgsGraduatedSymRenderer(QGis::VectorType type)
+{
+    mVectorType=type;
+    //call superclass method to set up selection colour
+    initialiseSelectionColor();
 }
 
-void QgsGraduatedSymRenderer::removeItems()
+QgsGraduatedSymRenderer::~QgsGraduatedSymRenderer()
+{
+ 
+}
+
+const std::list<QgsSymbol*> QgsGraduatedSymRenderer::symbols() const
+{
+    return mSymbols;
+}
+
+void QgsGraduatedSymRenderer::removeSymbols()
 {
     //free the memory first
-    for (std::list < QgsRangeRenderItem * >::iterator it = mItems.begin(); it != mItems.end(); ++it)
+    for (std::list < QgsSymbol * >::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it)
     {
 	delete *it;
     }
 
     //and remove the pointers then
-    mItems.clear();
+    mSymbols.clear();
 }
 
 void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, 
@@ -57,20 +62,19 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPictu
 {
     //first find out the value for the classification attribute
     std::vector < QgsFeatureAttribute > vec = f->attributeMap();
-    //double value = vec[mClassificationField].fieldValue().toDouble();
     double value = vec[0].fieldValue().toDouble();
 
-    std::list < QgsRangeRenderItem * >::iterator it;
-    //first find the first render item which contains the feature
-    for (it = mItems.begin(); it != mItems.end(); ++it)
+    std::list < QgsSymbol* >::iterator it;
+    //find the first render item which contains the feature
+    for (it = mSymbols.begin(); it != mSymbols.end(); ++it)
     {
-	if (value >= (*it)->value().toDouble() && value <= (*it)->upper_value().toDouble())
+	if (value >= (*it)->lowerValue().toDouble() && value <= (*it)->upperValue().toDouble())
         {
 	    break;
         }
     }
     
-    if (it == mItems.end())      //value is contained in no item
+    if (it == mSymbols.end())      //value is contained in no item
     {
 	std::cout << "Warning, value is contained in no class" << std::endl << std::flush;
 	return;
@@ -78,16 +82,13 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPictu
     else
     {
 	//set the qpen and qpainter to the right values
-	
-	QgsRenderItem *item = *it;
-
 	// Point 
-	if ( pic && mVectorType == QGis::Point ) {
-	    *pic = item->getSymbol()->getPointSymbolAsPicture( oversampling, widthScale,
+	if ( pic && mVectorType == QGis::Point ) 
+	{
+	    *pic = (*it)->getPointSymbolAsPicture( oversampling, widthScale,
 		                                             selected, mSelectionColor );
 	    
 	    if ( scalefactor ) *scalefactor = 1;
-
 	} 
 
         // Line, polygon
@@ -95,55 +96,22 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPictu
 	{
 	    if( !selected ) 
 	    {
-		QPen pen=item->getSymbol()->pen();
+		QPen pen=(*it)->pen();
 		pen.setWidth ( (int) (widthScale * pen.width()) );
 		p->setPen(pen);
-		p->setBrush(item->getSymbol()->brush());
+		p->setBrush((*it)->brush());
 	    }
 	    else
 	    {
-		QPen pen=item->getSymbol()->pen();
+		QPen pen=(*it)->pen();
 		pen.setColor(mSelectionColor);
 		pen.setWidth ( (int) (widthScale * pen.width()) );
-		QBrush brush=item->getSymbol()->brush();
+		QBrush brush=(*it)->brush();
 		brush.setColor(mSelectionColor);
 		p->setPen(pen);
 		p->setBrush(brush);
 	    }
 	}
-    }
-}
-
-void QgsGraduatedSymRenderer::initializeSymbology(QgsVectorLayer * layer, QgsDlgVectorLayerProperties * pr)
-{
-    bool toproperties = false;    //if false: rendererDialog is associated with the vector layer and image is rendered, true: rendererDialog is associated with buffer dialog of vector layer properties and no image is rendered
-    if (pr)
-    {
-	toproperties = true;
-    }
-
-    setClassificationField(0);    //the classification field does not matter
-    
-    if (layer)
-    {
-        mVectorType = layer->vectorType();
-	
-	QgsGraSyDialog *dialog = new QgsGraSyDialog(layer);
-
-	if (toproperties)
-        {
-	    pr->setBufferDialog(dialog);
-	} 
-	else
-        {
-	    layer->setRendererDialog(dialog);
-	    QgsLegendItem *item;
-	    layer->updateItemPixmap();
-        }
-    } 
-    else
-    {
-	qWarning("Warning, layer is null in QgsGraduatedSymRenderer::initializeSymbology(..)");
     }
 }
 
@@ -155,43 +123,17 @@ void QgsGraduatedSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
    
     this->setClassificationField(classificationfield);
 
-    QDomNode rangerendernode = rnode.namedItem("rangerenderitem");
-    while (!rangerendernode.isNull())
+    QDomNode symbolnode = rnode.namedItem("symbol");
+    while (!symbolnode.isNull())
     {
 	QgsSymbol* sy = new QgsSymbol();
-	QPen pen;
-	QBrush brush;
+	sy->readXML ( symbolnode );
+	this->addSymbol(sy);
 
-	QDomNode lvnode = rangerendernode.namedItem("lowervalue");
-	QString lowervalue = lvnode.toElement().text();
-
-	QDomNode uvnode = rangerendernode.namedItem("uppervalue");
-	QString uppervalue = uvnode.toElement().text();
-
-	QDomNode synode = rangerendernode.namedItem("symbol");
-
-	sy->readXML ( synode );
-
-	QDomElement labelelement = rangerendernode.namedItem("label").toElement();
-	QString label = labelelement.text();
-
-	//create a renderitem and add it to the renderer
-
-	QgsRangeRenderItem *ri = new QgsRangeRenderItem(sy, lowervalue, uppervalue, label);
-	this->addItem(ri);
-
-	rangerendernode = rangerendernode.nextSibling();
+	symbolnode = symbolnode.nextSibling();
     }
 
     vl.setRenderer(this);
-    QgsGraSyDialog *gdialog = new QgsGraSyDialog(&vl);
-    vl.setRendererDialog(gdialog);
-
-    QgsDlgVectorLayerProperties *properties = new QgsDlgVectorLayerProperties(&vl);
-    vl.setLayerProperties(properties);
-    properties->setLegendType("Graduated Symbol");
-
-    gdialog->apply();
 }
 
 std::list<int> QgsGraduatedSymRenderer::classificationAttributes()
@@ -215,7 +157,7 @@ bool QgsGraduatedSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & do
     QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
     classificationfield.appendChild(classificationfieldtxt);
     graduatedsymbol.appendChild(classificationfield);
-    for(std::list<QgsRangeRenderItem*>::iterator it=mItems.begin();it!=mItems.end();++it)
+    for(std::list<QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
     {
 	if(!(*it)->writeXML(graduatedsymbol,document))
 	{
@@ -223,14 +165,4 @@ bool QgsGraduatedSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & do
 	}
     }
     return returnval;
-}
-
-const std::list<QgsRenderItem*> QgsGraduatedSymRenderer::items() const
-{
-    std::list<QgsRenderItem*> list;
-    for(std::list<QgsRangeRenderItem*>::const_iterator iter=mItems.begin();iter!=mItems.end();++iter)
-    {
-	list.push_back(*iter);
-    }
-    return list;
 }

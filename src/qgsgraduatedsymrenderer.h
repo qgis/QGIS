@@ -34,15 +34,17 @@
 class QgsGraduatedSymRenderer: public QgsRenderer
 {
  public:
-    QgsGraduatedSymRenderer();
+    QgsGraduatedSymRenderer(QGis::VectorType type);
     virtual ~QgsGraduatedSymRenderer();
     /**Adds a new item
-    \param ri a pointer to the QgsRangeRenderItem to be inserted. It has to be created using the new operator and is automatically destroyed when 'removeItems' is called or when the instance is destroyed*/
-    void addItem(QgsRangeRenderItem* ri);
+    \param sy a pointer to the QgsSymbol to be inserted. It has to be created using the new operator and is automatically destroyed when 'removeItems' is called or when this object is destroyed*/
+    void addSymbol(QgsSymbol* sy);
     /**Returns the number of the classification field*/
     int classificationField() const;
     /**Removes all items*/
     void removeItems();
+    /**Removes all symbols*/
+    void removeSymbols();
     /**Renders an OGRFeature
      \param p a painter (usually the one from the current map canvas)
      \param f a pointer to a feature to render
@@ -51,12 +53,6 @@ class QgsGraduatedSymRenderer: public QgsRenderer
     /**Sets the number of the classicifation field
     \param field the number of the field to classify*/
     void setClassificationField(int field);
-    /**Sets the initial symbology configuration for a layer. Besides of applying default symbology settings, an instance of the corresponding renderer dialog is created and associated with the layer (or with the property dialog, if pr is not 0). Finally, a pixmap for the legend is drawn (or, if pr is not 0, it is stored in the property dialog, until the settings are applied).
-       @param layer the vector layer associated with the renderer
-       @param pr the property dialog. This is only needed if the renderer is created from the property dialog and not yet associated with the vector layer, otherwise 0*/
-    void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
-    /**Returns the list with the render items*/
-    std::list<QgsRangeRenderItem*>& items(); 
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
      @param vl the vector layer which will be associated with the renderer*/
@@ -70,25 +66,19 @@ class QgsGraduatedSymRenderer: public QgsRenderer
     virtual std::list<int> classificationAttributes();
     /**Returns the renderers name*/
     QString name();
-    /**Return symbology items*/
-    const std::list<QgsRenderItem*> items() const;
+    /**Returns the symbols of the items*/
+    const std::list<QgsSymbol*> symbols() const;
  protected:
     /**Name of the classification field (it must be a numerical field)*/
     int mClassificationField;
-    /**List holding the render items for the individual classes*/
-    std::list<QgsRangeRenderItem*> mItems;
+    /**List holding the symbols for the individual classes*/
+    std::list<QgsSymbol*> mSymbols;
     
 };
 
-inline QgsGraduatedSymRenderer::QgsGraduatedSymRenderer()
+inline void QgsGraduatedSymRenderer::addSymbol(QgsSymbol* sy)
 {
-  //call superclass method to set up selection colour
-  initialiseSelectionColor();
-}
-
-inline void QgsGraduatedSymRenderer::addItem(QgsRangeRenderItem* ri)
-{
-    mItems.push_back(ri); 
+    mSymbols.push_back(sy);
 }
 
 inline int QgsGraduatedSymRenderer::classificationField() const
@@ -99,11 +89,6 @@ inline int QgsGraduatedSymRenderer::classificationField() const
 inline void QgsGraduatedSymRenderer::setClassificationField(int field)
 {
     mClassificationField=field;
-}
-
-inline std::list<QgsRangeRenderItem*>& QgsGraduatedSymRenderer::items()
-{
-    return mItems;
 }
 
 inline bool QgsGraduatedSymRenderer::needsAttributes()

@@ -47,7 +47,7 @@ QgsSiSyDialog::QgsSiSyDialog():QgsSiSyDialogBase(), mVectorLayer(0)
 #endif
 }
 
-QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVectorLayer(layer)
+QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer): QgsSiSyDialogBase(), mVectorLayer(layer)
 {
 #ifdef QGISDEBUG
     qWarning("constructor QgsSiSyDialog called WITH a layer");
@@ -135,37 +135,15 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
     nopen->setPixmap(QgsSymbologyUtils::char2PatternPixmap("NoBrush"));
 
 
-    if (layer)
+    if (mVectorLayer)
     {
-        QgsSingleSymRenderer *renderer;
-
-        //initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
-        if (mVectorLayer->propertiesDialog())
-        {
-            renderer = dynamic_cast < QgsSingleSymRenderer * >(layer->propertiesDialog()->getBufferRenderer());
-        }
-        else
-        {
-            renderer = dynamic_cast < QgsSingleSymRenderer * >(layer->renderer());
-        }
+        QgsSingleSymRenderer *renderer=dynamic_cast<QgsSingleSymRenderer*>(mVectorLayer->renderer());
 
         if (renderer)
         {
-#ifdef QGISDEBUG
-            qWarning("Setting up renderer");
-#endif
-            // get the renderer item first
-            QgsRenderItem *ri = renderer->item();
-            //if(ri)
-
 	    // Set 
-	    set ( renderer->item()->getSymbol() );
-	    
-        }
-        else
-        {
-            qWarning("%s:%d Warning, typecast failed", __FILE__, __LINE__);
-        }
+	    set ( renderer->symbol());
+	}
 
         if (mVectorLayer && mVectorLayer->vectorType() == QGis::Line)
         {
@@ -179,42 +157,45 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer):QgsSiSyDialogBase(), mVecto
             mGroupPoint->setEnabled(false);
 
         }
-        //do the signal/slot connections
-        QObject::connect(btnOutlineColor, SIGNAL(clicked()), this, SLOT(selectOutlineColor()));
-        //QObject::connect(stylebutton, SIGNAL(clicked()), this, SLOT(selectOutlineStyle()));
-        QObject::connect(btnFillColor, SIGNAL(clicked()), this, SLOT(selectFillColor()));
-        QObject::connect(outlinewidthspinbox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
-        QObject::connect(mLabelEdit, SIGNAL(textChanged(const QString&)), this, SLOT(resendSettingsChanged()));
-        QObject::connect(mPointSymbolComboBox, SIGNAL(activated(int)), this, SLOT(resendSettingsChanged()));
-        QObject::connect(mPointSizeSpinBox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
-
-	//connect fill style and line style buttons
-	QObject::connect(pbnLineSolid, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(pbnLineDot, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(pbnLineDashDot, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(pbnLineDash, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(pbnLineDashDotDot, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(pbnLineNoPen, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(solid, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(fdiag, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(dense4, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(horizontal, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(bdiag, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(diagcross, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(dense5, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(vertical, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(dense1, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(dense3, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(dense6, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(cross, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(dense2, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(dense7, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
-	QObject::connect(nopen, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+       
     }
     else
     {
         qWarning("Warning, layer is a null pointer in QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer)");
     }
+
+     //do the signal/slot connections
+    QObject::connect(btnOutlineColor, SIGNAL(clicked()), this, SLOT(selectOutlineColor()));
+    //QObject::connect(stylebutton, SIGNAL(clicked()), this, SLOT(selectOutlineStyle()));
+    QObject::connect(btnFillColor, SIGNAL(clicked()), this, SLOT(selectFillColor()));
+    QObject::connect(outlinewidthspinbox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
+    QObject::connect(mLabelEdit, SIGNAL(textChanged(const QString&)), this, SLOT(resendSettingsChanged()));
+    QObject::connect(mPointSymbolComboBox, SIGNAL(activated(int)), this, SLOT(resendSettingsChanged()));
+    QObject::connect(mPointSizeSpinBox, SIGNAL(valueChanged(int)), this, SLOT(resendSettingsChanged()));
+
+    //connect fill style and line style buttons
+    QObject::connect(pbnLineSolid, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(pbnLineDot, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(pbnLineDashDot, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(pbnLineDash, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(pbnLineDashDotDot, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(pbnLineNoPen, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(solid, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(fdiag, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(dense4, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(horizontal, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(bdiag, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(diagcross, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(dense5, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(vertical, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(dense1, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(dense3, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(dense6, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(cross, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(dense2, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(dense7, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+    QObject::connect(nopen, SIGNAL(clicked()), this, SLOT(resendSettingsChanged()));
+
 }
 
 QgsSiSyDialog::~QgsSiSyDialog()
@@ -346,27 +327,23 @@ void QgsSiSyDialog::apply( QgsSymbol *sy )
 
 void QgsSiSyDialog::apply()
 {
-    QgsSymbol* sy = new QgsSymbol();
+    QgsSymbol* sy = new QgsSymbol(mVectorLayer->vectorType());
     apply(sy);
-
-    QgsRenderItem* ri = new QgsRenderItem(sy, "blabla", "blabla");
 
     QgsSingleSymRenderer *renderer = dynamic_cast < QgsSingleSymRenderer * >(mVectorLayer->renderer());
 
-    if (renderer)
+    if (!renderer)
     {
-        renderer->addItem(ri);
+        renderer=new QgsSingleSymRenderer(mVectorLayer->vectorType());
+	mVectorLayer->setRenderer(renderer);
     }
-    else
-    {
-        qWarning("typecast failed in QgsSiSyDialog::apply()");
-        return;
-    }
+
+    renderer->addSymbol(sy);
 
     //add a pixmap to the legend item
 
     //font tor the legend text
-    QFont f("arial", 10, QFont::Normal);
+    /*QFont f("arial", 10, QFont::Normal);
     QFontMetrics fm(f);
 
     QPixmap *pix = mVectorLayer->legendPixmap();
@@ -413,9 +390,8 @@ void QgsSiSyDialog::apply()
     if (mVectorLayer->propertiesDialog())
     {
         mVectorLayer->propertiesDialog()->setRendererDirty(false);
-    }
+	}*/
     //repaint the map canvas
-    mVectorLayer->triggerRepaint();
 }
 
 void QgsSiSyDialog::set ( QgsSymbol *sy ) 

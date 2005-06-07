@@ -50,6 +50,8 @@ class QgsSiMaRenderer: public QgsRenderer
     QString name();
     /**Return symbology items*/
     const std::list<QgsRenderItem*> items() const;
+    /**Return symbology items*/
+    const std::list<QgsSymbol*> symbols() const {}
  protected:
     QgsRenderItem* mItem;
 };
