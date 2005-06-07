@@ -58,7 +58,7 @@ class QgsGraSyDialog: public QgsGraSyDialogBase
      /**Stores the names and numbers of the fields with numeric values*/
      std::map<QString,int> mFieldMap;
      /**Stores the classes*/
-     std::map<QString,QgsRangeRenderItem*> mEntries;
+     std::map<QString,QgsSymbol*> mEntries;
      /**Dialog which shows the settings of the activated class*/
      QgsSiSyDialog sydialog;
      int mClassificationField;

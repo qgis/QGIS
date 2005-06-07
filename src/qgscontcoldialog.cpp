@@ -78,34 +78,24 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer)
     
     //restore the correct colors for minimum and maximum values
     
-    QgsContinuousColRenderer *renderer;
-    
-    if (mVectorLayer->propertiesDialog())
-    {
-	renderer = dynamic_cast < QgsContinuousColRenderer * >(layer->propertiesDialog()->getBufferRenderer());
-    } 
-    else
-    {
-	renderer = dynamic_cast < QgsContinuousColRenderer * >(layer->renderer());
-    }
-
-    classificationComboBox->setCurrentItem(renderer->classificationField());
+    QgsContinuousColRenderer *renderer = dynamic_cast < QgsContinuousColRenderer * >(layer->renderer());;
     
     if (renderer)
     {
-	QgsRenderItem *minitem = renderer->minimumItem();
-	QgsRenderItem *maxitem = renderer->maximumItem();
+	classificationComboBox->setCurrentItem(renderer->classificationField());
+	QgsSymbol* minsymbol = renderer->minimumSymbol();
+	QgsSymbol* maxsymbol = renderer->maximumSymbol();
 	if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
         {
-	    lblMinValue->setPaletteBackgroundColor(minitem->getSymbol()->pen().color());
-	    lblMaxValue->setPaletteBackgroundColor(maxitem->getSymbol()->pen().color());
+	    lblMinValue->setPaletteBackgroundColor(minsymbol->pen().color());
+	    lblMaxValue->setPaletteBackgroundColor(maxsymbol->pen().color());
 	} 
 	else
         {
-	    lblMinValue->setPaletteBackgroundColor(minitem->getSymbol()->brush().color());
-	    lblMaxValue->setPaletteBackgroundColor(maxitem->getSymbol()->brush().color());
+	    lblMinValue->setPaletteBackgroundColor(minsymbol->brush().color());
+	    lblMaxValue->setPaletteBackgroundColor(maxsymbol->brush().color());
         }
-	outlinewidthspinbox->setValue(minitem->getSymbol()->pen().width());
+	outlinewidthspinbox->setValue(minsymbol->pen().width());
 	outlinewidthspinbox->setMinValue(1);
     }
 }
@@ -150,7 +140,7 @@ void QgsContColDialog::apply()
 
 
     //create the render items for minimum and maximum value
-    QgsSymbol* minsymbol = new QgsSymbol();
+    QgsSymbol* minsymbol = new QgsSymbol(mVectorLayer->vectorType(), QString::number(minimum, 'f'), "", "");
     if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
     {
 	minsymbol->setPen(QPen(lblMinValue->paletteBackgroundColor(),outlinewidthspinbox->value()));
@@ -160,10 +150,8 @@ void QgsContColDialog::apply()
 	minsymbol->setBrush(QBrush(lblMinValue->paletteBackgroundColor()));
 	minsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
     }
-    QgsRenderItem *minimumitem = new QgsRenderItem(minsymbol, QString::number(minimum, 'f'), " ");
     
-    
-    QgsSymbol* maxsymbol = new QgsSymbol();
+    QgsSymbol* maxsymbol = new QgsSymbol(mVectorLayer->vectorType(), QString::number(maximum, 'f'), "", "");
     if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
     {
 	maxsymbol->setPen(QPen(lblMaxValue->paletteBackgroundColor(),outlinewidthspinbox->value()));
@@ -173,94 +161,76 @@ void QgsContColDialog::apply()
 	maxsymbol->setBrush(QBrush(lblMaxValue->paletteBackgroundColor()));
 	maxsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
     }
-    QgsRenderItem *maximumitem = new QgsRenderItem(maxsymbol, QString::number(maximum, 'f'), " ");
     
     //set the render items to the buffer renderer of the property dialog (if there is one)
-    QgsContinuousColRenderer *renderer;
-    if (mVectorLayer->propertiesDialog())
+    QgsContinuousColRenderer *renderer = dynamic_cast < QgsContinuousColRenderer * >(mVectorLayer->propertiesDialog()->getBufferRenderer());
+    
+    if(!renderer)
     {
-	renderer = dynamic_cast < QgsContinuousColRenderer * >(mVectorLayer->propertiesDialog()->getBufferRenderer());
-    } 
-    else
-    {
-	renderer = dynamic_cast < QgsContinuousColRenderer * >(mVectorLayer->renderer());
+	renderer = new QgsContinuousColRenderer(mVectorLayer->vectorType());
+	mVectorLayer->setRenderer(renderer);
     }
     
-    if (renderer)
-    {
-	renderer->setMinimumItem(minimumitem);
-	renderer->setMaximumItem(maximumitem);
-	renderer->setClassificationField(classfield);
-    } 
-    else
-    {
-	qWarning("Warning, typecast failed in QgsContColDialog::apply()");
-	return;
-    }
+    renderer->setMinimumSymbol(minsymbol);
+    renderer->setMaximumSymbol(maxsymbol);
+    renderer->setClassificationField(classfield);
     
     //add a pixmap to the legend item
     
     //font tor the legend text
-    QFont f("arial", 10, QFont::Normal);
-    QFontMetrics fm(f);
+    //QFont f("arial", 10, QFont::Normal);
+    //QFontMetrics fm(f);
     
     //spaces in pixel
-    int topspace = 5;             //space between top of pixmap and first row
-    int leftspace = 10;           //space between left side and text/graphics
-    int rightspace = 5;           //space betwee text/graphics and right side
-    int bottomspace = 5;          //space between last row and bottom of the pixmap
-    int gradientwidth = 40;       //widht of the gradient
-    int gradientheight = 100;     //height of the gradient
-    int wordspace = 10;           //space between graphics/word
+    //int topspace = 5;             //space between top of pixmap and first row
+    //int leftspace = 10;           //space between left side and text/graphics
+    //int rightspace = 5;           //space betwee text/graphics and right side
+    //int bottomspace = 5;          //space between last row and bottom of the pixmap
+    //int gradientwidth = 40;       //widht of the gradient
+    //int gradientheight = 100;     //height of the gradient
+    //int wordspace = 10;           //space between graphics/word
     
     //add a pixmap to the QgsLegendItem
-    QPixmap *pix = mVectorLayer->legendPixmap();
+    //QPixmap *pix = mVectorLayer->legendPixmap();
     //use the name and the maximum value to estimate the necessary width of the pixmap
-    QString name;
-    if (mVectorLayer->propertiesDialog())
-    {
-	name = mVectorLayer->propertiesDialog()->displayName();
-    } 
-    else
-    {
-	name = "";
-    }
-    int namewidth = fm.width(name);
-    int numberlength = gradientwidth + wordspace + fm.width(QString::number(maximum, 'f', 2));
-    int pixwidth = (numberlength > namewidth) ? numberlength : namewidth;
-    pix->resize(leftspace + pixwidth + rightspace, topspace + 2 * fm.height() + gradientheight + bottomspace);
-    pix->fill();
-    QPainter p(pix);
+    //QString name;
+    //if (mVectorLayer->propertiesDialog())
+    //{
+//	name = mVectorLayer->propertiesDialog()->displayName();
+    //} 
+    //else
+    //{
+    //name = "";
+    //}
+    //int namewidth = fm.width(name);
+    //int numberlength = gradientwidth + wordspace + fm.width(QString::number(maximum, 'f', 2));
+    //int pixwidth = (numberlength > namewidth) ? numberlength : namewidth;
+    //pix->resize(leftspace + pixwidth + rightspace, topspace + 2 * fm.height() + gradientheight + bottomspace);
+    //pix->fill();
+    //QPainter p(pix);
     
-    p.setPen(QPen(QColor(0, 0, 0), 1));
-    p.setFont(f);
+    //p.setPen(QPen(QColor(0, 0, 0), 1));
+    //p.setFont(f);
     //draw the layer name and the name of the classification field into the pixmap
-    p.drawText(leftspace, topspace + fm.height(), name);
-    p.drawText(leftspace, topspace + fm.height() * 2, classificationComboBox->currentText());
+    //p.drawText(leftspace, topspace + fm.height(), name);
+    //p.drawText(leftspace, topspace + fm.height() * 2, classificationComboBox->currentText());
     
-    int rangeoffset = topspace + fm.height() * 2;
+    //int rangeoffset = topspace + fm.height() * 2;
     
     //draw the color range line by line
-    for (int i = 0; i < gradientheight; i++)
-    {
-	p.setPen(QColor(lblMinValue->paletteBackgroundColor().red() + (lblMaxValue->paletteBackgroundColor().red() - lblMinValue->paletteBackgroundColor().red()) / gradientheight * i, lblMinValue->paletteBackgroundColor().green() + (lblMaxValue->paletteBackgroundColor().green() - lblMinValue->paletteBackgroundColor().green()) / gradientheight * i, lblMinValue->paletteBackgroundColor().blue() + (lblMaxValue->paletteBackgroundColor().blue() - lblMinValue->paletteBackgroundColor().blue()) / gradientheight * i)); //use the appropriate color
-	p.drawLine(leftspace, rangeoffset + i, leftspace + gradientwidth, rangeoffset + i);
-    }
+    //for (int i = 0; i < gradientheight; i++)
+    //{
+    //p.setPen(QColor(lblMinValue->paletteBackgroundColor().red() + (lblMaxValue->paletteBackgroundColor().red() - lblMinValue->paletteBackgroundColor().red()) / gradientheight * i, lblMinValue->paletteBackgroundColor().green() + (lblMaxValue->paletteBackgroundColor().green() - lblMinValue->paletteBackgroundColor().green()) / gradientheight * i, lblMinValue->paletteBackgroundColor().blue() + (lblMaxValue->paletteBackgroundColor().blue() - lblMinValue->paletteBackgroundColor().blue()) / gradientheight * i)); //use the appropriate color
+    //p.drawLine(leftspace, rangeoffset + i, leftspace + gradientwidth, rangeoffset + i);
+    //}
     
     //draw the minimum and maximum values beside the color range
-    p.setPen(QPen(QColor(0, 0, 0)));
-    p.setFont(f);
-    p.drawText(leftspace + gradientwidth + wordspace, rangeoffset + fm.height(), QString::number(minimum, 'f', 2));
-    p.drawText(leftspace + gradientwidth + wordspace, rangeoffset + gradientheight, QString::number(maximum, 'f', 2));
+    //p.setPen(QPen(QColor(0, 0, 0)));
+    //p.setFont(f);
+    //p.drawText(leftspace + gradientwidth + wordspace, rangeoffset + fm.height(), QString::number(minimum, 'f', 2));
+    //p.drawText(leftspace + gradientwidth + wordspace, rangeoffset + gradientheight, QString::number(maximum, 'f', 2));
     
-    mVectorLayer->updateItemPixmap();
-    
-    if (mVectorLayer->propertiesDialog())
-    {
-	mVectorLayer->propertiesDialog()->setRendererDirty(false);
-    }
-    
-    mVectorLayer->triggerRepaint();
+    //mVectorLayer->updateItemPixmap();
 }
 
 void QgsContColDialog::selectMinimumColor()

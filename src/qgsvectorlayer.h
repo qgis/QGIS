@@ -152,12 +152,8 @@ public slots:
   virtual void showLayerProperties();
   /**Returns a pointer to the renderer*/
   QgsRenderer *renderer();
-  /**Returns a pointer to the renderer dialog*/
-  QDialog *rendererDialog();
   /**Sets the renderer. If a renderer is already present, it is deleted*/
   void setRenderer(QgsRenderer * r);
-  /**Sets the renderer dialog. If a renderer dialog is already present, it is deleted*/
-  void setRendererDialog(QDialog * dialog);
   /**Sets m_propertiesDialog*/
   void setLayerProperties(QgsDlgVectorLayerProperties * properties);
   /**Returns point, line or polygon*/
@@ -388,8 +384,6 @@ protected:
   bool mLabelOn;
   /**Dialog to set the properties*/
   QgsDlgVectorLayerProperties *m_propertiesDialog;
-  /**Widget to set the symbology properties*/
-  QDialog *m_rendererDialog;
   /**Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature)*/
   int findFreeId();
   /**Writes the changes to disk*/

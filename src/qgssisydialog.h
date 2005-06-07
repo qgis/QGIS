@@ -29,7 +29,7 @@
 #endif
 
 class QString;
-
+class QgsSingleSymRenderer;
 class QgsSymbol;
 class QgsVectorLayer;
 

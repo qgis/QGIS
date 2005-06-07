@@ -50,6 +50,7 @@ void QgsGraduatedMaRenderer::removeItems()
 
 void QgsGraduatedMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr)
 {
+#if 0
     bool toproperties = false;    //if false: rendererDialog is associated with the vector layer and image is rendered, true: rendererDialog is associated with buffer dialog of vector layer properties and no image is rendered
     if (pr)
     {
@@ -80,6 +81,7 @@ void QgsGraduatedMaRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVe
     {
 	qWarning("Warning, layer is null in QgsGraduatedMaRenderer::initializeSymbology(..)");
     }
+#endif //0
 }
     
 void QgsGraduatedMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, 
@@ -142,6 +144,7 @@ void QgsGraduatedMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* 
 
 void QgsGraduatedMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
+#if 0
     QDomNode classnode = rnode.namedItem("classificationfield");
     int classificationfield = classnode.toElement().text().toInt();
     this->setClassificationField(classificationfield);
@@ -236,10 +239,12 @@ void QgsGraduatedMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     properties->setLegendType("Graduated Marker");
 
     gdialog->apply();
+#endif //0
 }
 
 void QgsGraduatedMaRenderer::writeXML(std::ostream& xml)
 {
+#if 0
     xml << "\t\t<graduatedmarker>\n";
     xml << "\t\t\t<classificationfield>" + QString::number(this->classificationField()) +
 	"</classificationfield>\n";
@@ -268,6 +273,7 @@ void QgsGraduatedMaRenderer::writeXML(std::ostream& xml)
 	xml << "\t\t\t</rangerenderitem>\n";
     }
     xml << "\t\t</graduatedmarker>\n";
+#endif //0
 }
 
 std::list<int> QgsGraduatedMaRenderer::classificationAttributes()

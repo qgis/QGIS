@@ -40,10 +40,9 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   void setLegendType(QString type);
   /**Returns the display name entered in the dialog*/
   QString displayName();
+  void setRendererDirty(bool){}
   /**Sets the attribute that is used in the Identify Results dialog box*/
   void setDisplayField(QString name);
-  /**Sets the rendererDirty flag*/
-  void setRendererDirty(bool enabled=true);
   /**Returns a pointer to the bufferDialog*/
   QDialog* getBufferDialog();
   /**Sets the buffer dialog*/
@@ -77,28 +76,28 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
 
   protected:
   QgsVectorLayer *layer;
-  /**Flag indicating that the render type has changed compared to the vector layer (true)*/
-  bool rendererDirty;
-  /**Renderer dialog which is shown. If apply is pressed, it assigned to the vector layer*/
-  QDialog* bufferDialog;
+  /**Renderer dialog which is shown*/
+  QDialog* mRendererDialog;
   /**Buffer renderer, which is assigned to the vector layer when apply is pressed*/
-  QgsRenderer* bufferRenderer;
+  //QgsRenderer* bufferRenderer;
   /**Label dialog. If apply is pressed, options are applied to vector's QgsLabel */
   QgsLabelDialog* labelDialog;
   /**Actions dialog. If apply is pressed, the actions are stored for later use */
   QgsAttributeActionDialog* actionDialog;
   /**Buffer pixmap which takes the picture of renderers before they are assigned to the vector layer*/
-  QPixmap bufferPixmap;
+  //QPixmap bufferPixmap;
 };
+
 
 inline void QgsDlgVectorLayerProperties::setBufferDialog(QDialog* dialog)
 {
-    bufferDialog=dialog;
+    //bufferDialog=dialog;
 }
 
 inline QPixmap* QgsDlgVectorLayerProperties::getBufferPixmap()
 {
-    return &bufferPixmap;
+    //return &bufferPixmap;
+    return 0;
 }
 
 inline QString QgsDlgVectorLayerProperties::displayName()

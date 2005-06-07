@@ -58,6 +58,8 @@ class QgsGraduatedMaRenderer: public QgsRenderer
     QString name();
     /**Return symbology items*/
     const std::list<QgsRenderItem*> items() const;
+    /**Return symbology items*/
+    const std::list<QgsSymbol*> symbols() const {}
  protected:
     /**Name of the classification field (it must be a numerical field)*/
     int mClassificationField;
