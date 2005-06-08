@@ -372,9 +372,11 @@ bool QgsCoordinateTransform::readXML( QDomNode & theNode )
 #ifdef QGISDEBUG
   std::cout << "Reading Coordinate Transform from xml ------------------------!" << std::endl;
 #endif
-  QDomNode mySrcNode = theNode.namedItem("sourcesrs");
+  QDomNode mySrcNodeParent = theNode.namedItem("sourcesrs");
+  QDomNode mySrcNode = mySrcNodeParent.namedItem("spatialrefsys");
   mSourceSRS.readXML(mySrcNode);
-  QDomNode myDestNode = theNode.namedItem("sourcesrs");
+  QDomNode myDestNodeParent = theNode.namedItem("destinationsrs");
+  QDomNode myDestNode = myDestNodeParent.namedItem("spatialrefsys");
   mDestSRS.readXML(myDestNode);
   initialise();
 }
