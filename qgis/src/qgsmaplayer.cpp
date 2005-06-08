@@ -221,10 +221,11 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     const char * layerNameStr = mne.text(); // debugger probe
 
     //read srs
-    QDomNode srsNode = layer_node.namedItem("spatialrefsys");
+    QDomNode srsNode = layer_node.namedItem("coordinatetransform");
     if( ! srsNode.isNull()  )
     {
-       mCoordinateTransform->readXML_(layer_node);
+       mCoordinateTransform=new QgsCoordinateTransform();
+       mCoordinateTransform->readXML(srsNode);
     }
 
     // now let the children grab what they need from the DOM node.
@@ -307,7 +308,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
     // are written and read in the proper order.
 
     //write the projection 
-    mCoordinateTransform->writeXML_(maplayer,document);
+    mCoordinateTransform->writeXML(maplayer,document);
 
     // now append layer node to map layer node
 

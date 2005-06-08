@@ -1998,10 +1998,17 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
   // XXX Kludge!
 
   // if we don't have a coordinate transform, get one
-  if ( ! coordinateTransform() )
-  {
-      setCoordinateSystem();
-  }
+
+  //
+  // Im commenting this out - if the layer was serialied in a 
+  //  >=0.7 project it should have been validated and have all
+  // coord xform info
+  //
+
+  //if ( ! coordinateTransform() )
+  //{
+  //    setCoordinateSystem();
+  //}
 
   if (!singlenode.isNull())
   {

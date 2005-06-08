@@ -138,11 +138,10 @@ void QgsCoordinateTransform::initialise()
     // Transform must take place
     mShortCircuit=false;
   }
-  mProj4DestParms=mDestSRS.proj4String();
-  mProj4SrcParms=mSourceSRS.proj4String();
+
   // init the projections (destination and source)
-  mDestinationProjection = pj_init_plus(mProj4DestParms);
-  mSourceProjection = pj_init_plus(mProj4SrcParms);
+  mDestinationProjection = pj_init_plus(mDestSRS.proj4String());
+  mSourceProjection = pj_init_plus(mSourceSRS.proj4String());
 
   mInitialisedFlag = true;
   if ( mDestinationProjection == NULL )
@@ -219,7 +218,7 @@ void QgsCoordinateTransform::transformInPlace(double& x, double& y, double& z,
   if (mShortCircuit || !mInitialisedFlag)
     return;
 #ifdef QGISDEBUG
-  std::cout << "Using transform in place " << __FILE__ << " " << __LINE__ << std::endl;
+  //std::cout << "Using transform in place " << __FILE__ << " " << __LINE__ << std::endl;
 #endif
   // transform x
   transformCoords(1, &x, &y, &z, direction );
@@ -252,15 +251,7 @@ QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirecti
   double y2 = theRect.yMax();
 
 #ifdef QGISDEBUG
-
-  std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
-  std::cout << "Rect  projection..." << std::endl;
-  //std::cout << "INPUT: " << std::endl << mSourceSRS << std::endl;
-  //std::cout << "PROJ4: " << std::endl << mProj4SrcParms << std::endl;
-  //std::cout << "OUTPUT: " << std::endl << mDestSRS  << std::endl;
-  //std::cout << "PROJ4: " << std::endl << mProj4DestParms << std::endl;
-  std::cout << "INPUT RECT: " << std::endl << x1 << "," << y1 << ":" << x2 << "," << y2 << std::endl;
-  std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
+  std::cout << this;
 #endif
   // Number of points to reproject------+
   //                                    |
@@ -296,33 +287,12 @@ QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirecti
 #endif
   return QgsRect(x1, y1, x2 , y2);
 }
-/*
-void QgsCoordinateTransform::transformCoords( 
-     const int& numPoints, double* x, double* y, double* z,
-     TransformDirection direction) const
-{
-  // use OGR to do the transform
-  if(direction == INVERSE)
-  {
-    // transform from destination (map canvas/project) to layer CS
-    inverseTransform->Transform(numPoints, x, y);
-  }
-  else
-  {
-    // transform from source layer CS to destination (map canvas/project) 
-    forwardTransform->Transform(numPoints, x, y);
- 
-  }
-}
-*/
-/* XXX THIS IS BASED ON DIRECT USE OF PROJ4
- * XXX preserved for future use if we need it 
- */
+
 
 void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, double *y, double *z,TransformDirection direction) const
 {
-  assert(mProj4DestParms.length() > 0);
-  assert(mProj4SrcParms.length() > 0);
+  assert(mSourceSRS.isValid());
+  assert(mDestSRS.isValid());
 #ifdef QGISDEBUG
   //double xorg = x;
   //double yorg = y;
@@ -397,25 +367,30 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
 #endif
 }
 
-bool QgsCoordinateTransform::readXML_( QDomNode & theNode )
+bool QgsCoordinateTransform::readXML( QDomNode & theNode )
 {
-  QDomNode myNode = theNode.namedItem("sourcesrs");
-  mSourceSRS.readXML_(myNode);
-  mDestSRS.readXML_(myNode);
+#ifdef QGISDEBUG
+  std::cout << "Reading Coordinate Transform from xml ------------------------!" << std::endl;
+#endif
+  QDomNode mySrcNode = theNode.namedItem("sourcesrs");
+  mSourceSRS.readXML(mySrcNode);
+  QDomNode myDestNode = theNode.namedItem("sourcesrs");
+  mDestSRS.readXML(myDestNode);
+  initialise();
 }
 
-bool QgsCoordinateTransform::writeXML_( QDomNode & theNode, QDomDocument & theDoc )
+bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc )
 {
   
   QDomElement myNodeElement = theNode.toElement();
   QDomElement myTransformElement  = theDoc.createElement( "coordinatetransform" );
   
   QDomElement mySourceElement  = theDoc.createElement( "sourcesrs" );
-  mSourceSRS.writeXML_(mySourceElement, theDoc);
+  mSourceSRS.writeXML(mySourceElement, theDoc);
   myTransformElement.appendChild(mySourceElement);
   
   QDomElement myDestElement  = theDoc.createElement( "destinationsrs" );
-  mDestSRS.writeXML_(myDestElement, theDoc);
+  mDestSRS.writeXML(myDestElement, theDoc);
   myTransformElement.appendChild(myDestElement);
   
   myNodeElement.appendChild(myTransformElement);

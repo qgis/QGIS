@@ -1138,8 +1138,11 @@ OGRSpatialReference QgsSpatialRefSys::toOgrSrs()
   return myOgrSpatialRef1;
 }
 
-bool QgsSpatialRefSys::readXML_( QDomNode & theNode )
+bool QgsSpatialRefSys::readXML( QDomNode & theNode )
 {
+#ifdef QGISDEBUG
+  std::cout << "Reading Spatial Ref Sys from xml ------------------------!" << std::endl;
+#endif
      QDomNode myNode = theNode.namedItem("proj4");
      QDomElement myElement = myNode.toElement();
      setProj4String(myElement.text());
@@ -1173,12 +1176,13 @@ bool QgsSpatialRefSys::readXML_( QDomNode & theNode )
      setMapUnits();
 
      //@TODO this srs needs to be validated!!!
+     mIsValidFlag=true;//shamelessly hard coded for now
       
 
 
 }
 
-bool QgsSpatialRefSys::writeXML_( QDomNode & theNode, QDomDocument & theDoc )
+bool QgsSpatialRefSys::writeXML( QDomNode & theNode, QDomDocument & theDoc )
 {
   QDomElement myLayerNode = theNode.toElement();
   QDomElement mySrsElement  = theDoc.createElement( "spatialrefsys" );

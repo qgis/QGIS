@@ -1129,8 +1129,7 @@ bool QgsProject::read()
 
 
 
-bool
-QgsProject::read( QDomNode & layerNode )
+bool QgsProject::read( QDomNode & layerNode )
 {
     QString type = layerNode.toElement().attribute("type");
 

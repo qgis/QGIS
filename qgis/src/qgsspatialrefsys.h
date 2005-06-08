@@ -196,7 +196,7 @@ class QgsSpatialRefSys
          * @param theNode The node from which state will be restored
          * @return bool True on success, False on failure
          */
-          bool readXML_( QDomNode & theNode );
+          bool readXML( QDomNode & theNode );
         /*! Stores state to the given DOM node in the given document.
          * Below is an example of the generated tag.
          *  <spatialrefsys>
@@ -212,7 +212,7 @@ class QgsSpatialRefSys
          * @param theDom The document in which state will be stored
          * @return bool True on success, False on failure
          */
-          bool writeXML_( QDomNode & theNode, QDomDocument & theDoc );
+          bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
 
         // Accessors -----------------------------------
 
@@ -328,8 +328,8 @@ class QgsSpatialRefSys
 //! Output stream operator
 inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
 {
-  QString mySummary ("\nSpatial Reference System:");
-  mySummary += "\n\tDescription : ";
+  QString mySummary ("\n\tSpatial Reference System:");
+  mySummary += "\n\t\tDescription : ";
   if (r.description()) 
   {
     mySummary += r.description().latin1();
@@ -338,7 +338,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
   {
     mySummary += "Undefined" ;
   }
-  mySummary += "\n\tProjection  : " ;
+  mySummary += "\n\t\tProjection  : " ;
   if (r.projectionAcronym()) 
   {
     mySummary += r.projectionAcronym().latin1();
@@ -348,7 +348,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
     mySummary += "Undefined" ;
   }
 
-  mySummary += "\n\tEllipsoid   : "; 
+  mySummary += "\n\t\tEllipsoid   : "; 
   if (r.ellipsoidAcronym()) 
   {
     mySummary += r.ellipsoidAcronym().latin1();
@@ -358,7 +358,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
     mySummary += "Undefined" ;
   }
 
-  mySummary += "\n\tProj4String  : " ;
+  mySummary += "\n\t\tProj4String  : " ;
   if (r.proj4String()) 
   {
     mySummary += r.proj4String().latin1();
