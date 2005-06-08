@@ -45,17 +45,12 @@
 //
 //openmodeller includes
 #ifdef WIN32
-  #include <om_control.hh>
   #include <om.hh>
-  #include <om_alg_parameter.hh>
-  #include <request_file.hh>
 #else
-  #include <openmodeller/om_control.hh>
   #include <openmodeller/om.hh>
   //gdal includes
   #include "gdal_priv.h"
 #endif
-  #include <om_alg_parameter.hh>
   #include <request_file.hh>
 
 
