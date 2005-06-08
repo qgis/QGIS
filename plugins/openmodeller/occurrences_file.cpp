@@ -29,7 +29,6 @@
 #include "occurrences_file.hh"
 
 #include <om_occurrences.hh>  // List of occurrences.
-#include <om_log.hh>
 
 #include <vector>
 using std::vector;
