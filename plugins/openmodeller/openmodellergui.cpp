@@ -70,7 +70,9 @@ OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool moda
   : OpenModellerGuiBase( parent, name, modal, fl )
 {
   mOpenModeller = new OpenModeller();
+
   getAlgorithmList();
+
   mParametersScrollView = new QScrollView(frameParameters);
   mParametersVBox = new QVBox (mParametersScrollView->viewport());
   mParametersScrollView->addChild(mParametersVBox);
@@ -86,7 +88,6 @@ OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool moda
   std::cout << "Creating top level widget to place in scroll view" << std::endl;
   //LayoutWidget within the scroll view
   mLayoutWidget=new QWidget();
-  
   
   //temporarily make a layout
   //mLayout = new QGridLayout(mParametersFrame,1,2);
@@ -126,7 +127,7 @@ void OpenModellerGui::getAlgorithmList()
         cboModelAlgorithm->insertItem(*it);
   }
 
-  return ;
+  return;
 
 }
 
@@ -346,6 +347,13 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   QSettings settings;
   if (thePageNameQString==tr("Step 1 of 9")) //we do this when arriving at the mode selection page
   {
+    if ( cboModelAlgorithm->count() == 0 )
+    {
+      QMessageBox::critical(0,"openModeller Wizard Error","Could not find any algorithm!\n Please check your installation/configuration and try again.");
+      setNextEnabled(currentPage(),false);
+      return;
+    }
+
     //select the last model used by getting the name from qsettings
     QString myModelName = settings.readEntry("/openmodeller/modelName");
 
