@@ -28,10 +28,13 @@ The technical specification for the shapefile format can be found at\\
 \subsection{Loading a Shapefile}
 \parpic[l]{\includegraphics{qgis_user_guide_images/addshapefile}}To load a
 shapefile, start QGIS and click on the \textit{Add a vector layer} toolbar bar
-button\index{shapefile!loading}. This same tool can be used to load any of the formats supported by the OGR library.
+button\index{shapefile!loading}. This same tool can be used to load any of the
+formats supported by the OGR library.
 
-Clicking on the tool brings up a standard open file dialog (Figure \ref{fig:openshapefile}) which allows you to navigate the file system and load a shapefile (or other supported data source). 
-You can also select the Encoding type for the shapefile if desired.
+Clicking on the tool brings up a standard open file dialog (Figure
+\ref{fig:openshapefile}) which allows you to navigate the file system and load
+a shapefile (or other supported data source).  You can also select the
+Encoding type for the shapefile if desired.
 \begin{figure}[h]
    \begin{center}
    \caption{Open OGR Data Source Dialog}\label{fig:openshapefile}\smallskip
@@ -52,7 +55,26 @@ Selecting a shapefile from the list and clicking Ok loads it into QGIS. Figure
 \qgistip{When you add a layer to the map, it is assigned a random color. When adding more than one layer at a time, different colors are assigned to each. }
 \end{Tip}
 
-Once loaded, you can zoom around the shapefile using the map navigation tools. To change the symbology of a layer, open the layer properties dialog by double clicking on the layer name or by right-clicking on the name in the legend and choosing \textsl{Properties} from the popup menu. See Section \ref{sec:symbology} for more information on setting symbology of vector layers.
+Once loaded, you can zoom around the shapefile using the map navigation tools.
+To change the symbology of a layer, open the layer properties dialog by double
+clicking on the layer name or by right-clicking on the name in the legend and
+choosing \textsl{Properties} from the popup menu. See Section
+\ref{sec:symbology} for more information on setting symbology of vector
+layers.  
+\subsubsection{Improving Performance}
+To improve the performance of drawing a shapefile, you can create a spatial
+index. A \index{spatial index!shapefiles} spatial index will improve the draw speed when
+zooming and panning.  
+
+Use these steps to create the index:
+\begin{compactenum}
+\item Load a shapefile
+\item Open the \textit{Layer Properties} dialog by double-clicking on the shapefile
+name in the legend or by right-clicking and choosing \textit{Properties} from
+the popup menu.
+\item Click the \textit{Create} button on the Spatial Index panel
+\end{compactenum}
+
 \subsection{Loading a MapInfo Layer}
 To load a MapInfo layer, click on the \textit{Add a vector layer}
 toolbar bar button and change the file type filter to \textit{MapInfo (*.mif
@@ -71,7 +93,11 @@ one of the following files (if present in your coverage)
 \end{compactenum}
 
 \section{PostGIS Layers}\index{PostGIS!layers}
-PostGIS layers are stored in a PostgreSQL database. The advantage of PostGIS is the spatial indexing, filtering, and query capability. Using PostGIS, vector functions such as select and identify work more accurately than with OGR layers in QGIS.
+PostGIS layers are stored in a PostgreSQL database. The advantage of PostGIS
+is the spatial indexing, filtering, and query capability. Using PostGIS,
+vector functions such as select and identify work more accurately than with
+OGR layers in QGIS.
+
 To use PostGIS layers you must:\index{PostgreSQL!loading layers}
 \begin{compactenum}
 \item Create a stored connection in QGIS to the PostgreSQL database (if one is
@@ -81,6 +107,7 @@ not already defined)\index{PostgreSQL!connection}
 \item Optionally provide a SQL \textit{where} clause to define which features to load from the layer
 \item Load the layer
 \end{compactenum}
+
 \subsection{Creating a Stored Connection}\index{PostgreSQL!connection}
 \parpic[l]{\includegraphics{qgis_user_guide_images/addpostgis}}The first time
 you use a PostGIS data source, you must create a connection to the PostgreSQL
@@ -90,6 +117,7 @@ displayed. To access the connection manager\index{PostgreSQL!connection
 manager}, click on the \textsl{New} button to
 display the \textsl{Create a New PostGIS Connection} dialog. The parameters
 required for a connection are shown in Table \ref{tab:postgis_connection_parms}.
+
 \begin{table}[h]\index{PostgreSQL!connection parameters}
 \centering
 \caption{PostGIS Connection Parameters}\label{tab:postgis_connection_parms}\medskip
@@ -226,6 +254,43 @@ prior to import and change any that are reserved words (or change any other
 field names as desired). Attempting to
 import a shapefile with reserved words as field names will likely fail.}
 \end{Tip} 
+\subsection{Improving Performance}
+Retrieving features from a PostgreSQL database can be time consuming,
+especially over a network. You can improve the drawing performance of
+PostgreSQL layers by ensuring that a \index{spatial index!PostGIS} spatial index
+exists on each layer in the database. PostGIS supports creation of a
+\index{spatial index!GiST} GiST.
+(Generalized Search Tree) index to speed up spatial searches of the data.
+
+The syntax\footnote{GiST index information is taken from the PostGIS
+documentation available at http://postgis.refractions.net} for creating a GiST index is:
+\begin{verbatim}
+    CREATE INDEX [indexname] ON [tablename] 
+      USING GIST ( [geometryfield] GIST_GEOMETRY_OPS );
+\end{verbatim}
+Note that for large tables, creating the index can take a long time. Once the
+index is created, you should perform a \textit{VACUUM ANALYZE}. See the
+PostGIS documentation for more information.
+
+The following is an example of creating a GiST index:
+\begin{verbatim}
+    gsherman@madison:~/current$ psql gis_data
+    Welcome to psql 8.0.0, the PostgreSQL interactive terminal.
+
+    Type:  \copyright for distribution terms
+           \h for help with SQL commands
+           \? for help with psql commands
+           \g or terminate with semicolon to execute query
+           \q to quit
+
+    gis_data=# CREATE INDEX sidx_alaska_lakes ON alaska_lakes
+    gis_data-# USING GIST (the_geom GIST_GEOMETRY_OPS);
+    CREATE INDEX
+    gis_data=# VACUUM ANALYZE alaska_lakes;
+    VACUUM
+    gis_data=# \q
+    gsherman@madison:~/current$
+\end{verbatim}
 \section{The Vector Properties
 Dialog}\label{sec:vectorprops}\index{vector layers!properties dialog} The
 vector properties dialog provides information about a layer, symbology
