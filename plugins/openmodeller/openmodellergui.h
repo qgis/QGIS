@@ -27,8 +27,7 @@
   #include <openmodellerguibase.uic.h>
   #include <openmodeller/om.hh>
 #endif
-
-
+#include "qlogcallback.h"
 
 /**
 @author Tim Sutton
@@ -117,7 +116,7 @@ private:
     void getProjList();
     void createModelImage(QString theBaseName);
     bool checkLayersMatch();
-    
+    QLogCallback * logCallBack;
 signals:
    void drawModelImage(QString);
    void drawRasterLayer(QString);

@@ -41,17 +41,18 @@
 #include <qpushbutton.h>
 #include <imagewriter.h>
 #include <qpixmap.h>
+#include <qtextstream.h>
 
 //
 //openmodeller includes
 #ifdef WIN32
-  #include <om.hh>
+#include <om.hh>
 #else
-  #include <openmodeller/om.hh>
-  //gdal includes
-  #include "gdal_priv.h"
+#include <openmodeller/om.hh>
+//gdal includes
+#include "gdal_priv.h"
 #endif
-  #include <request_file.hh>
+#include <request_file.hh>
 
 
 //standard includes
@@ -61,19 +62,30 @@
 #include <climits>
 #include <stdexcept>
 
-OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
-  : OpenModellerGuiBase( parent, name, modal, fl )
+/**
+ * A global variable needed to set up the call back for loggin from openmodeller
+ */
+QTextStream* output;
+
+    OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+: OpenModellerGuiBase( parent, name, modal, fl )
 {
   mOpenModeller = new OpenModeller();
 
   getAlgorithmList();
 
+  // set up loggin callback
+  output = new QTextStream();
+  logCallBack = new QLogCallback( *output );
+  logCallBack->setTextBrowser(txtbLogs);
+  g_log.setCallback(logCallBack );
+  
   mParametersScrollView = new QScrollView(frameParameters);
   mParametersVBox = new QVBox (mParametersScrollView->viewport());
   mParametersScrollView->addChild(mParametersVBox);
   mParametersFrame = new QFrame(mParametersVBox);
-  
-    //Scroll view within the frame
+
+  //Scroll view within the frame
   mScrollView = new QScrollView(frameParameters);
   //mScrollView->setGeometry();   
   std::cout << "Creating scrollview layout" << std::endl;
@@ -83,18 +95,21 @@ OpenModellerGui::OpenModellerGui( QWidget* parent , const char* name , bool moda
   std::cout << "Creating top level widget to place in scroll view" << std::endl;
   //LayoutWidget within the scroll view
   mLayoutWidget=new QWidget();
-  
+
   //temporarily make a layout
   //mLayout = new QGridLayout(mParametersFrame,1,2);
   mLayout = new QGridLayout(frameParameters,1,2);
 
 }
 
- 
+
 
 OpenModellerGui::~OpenModellerGui()
 {
   delete mLayout;
+  // clean up the loggin stuff
+  g_log.setCallback( 0 );
+  delete output;
   // DO ME!!
   //if (mMap!=NULL) delete mMap;
 }
@@ -119,7 +134,7 @@ void OpenModellerGui::getAlgorithmList()
 
   for ( QStringList::Iterator it = alglist.begin(); it != alglist.end(); ++it ) 
   {
-        cboModelAlgorithm->insertItem(*it);
+    cboModelAlgorithm->insertItem(*it);
   }
 
   return;
@@ -164,17 +179,17 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
     std::cout << "mLayout exists so deleting" << std::endl;
     delete mLayout;
   }
-  
-   
+
+
 
   //mLayoutWidget->setGeometry();
   std::cout << "Adding a layout scroll view's top level widget" << std::endl;
   //GridLayout within the LayoutWidget
   mLayout = new QGridLayout(mLayoutWidget, myRowCountInt+1,3); 
   mLayout->setColSpacing(1,10);
-  
 
-  
+
+
 
   //reinitialise the metadataarray 
   myAlgorithmsMetadataArray = mOpenModeller->availableAlgorithms();
@@ -197,14 +212,14 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
       if (myParameterCountInt==0)
       {
         //Algorithms with NO parameters
-	
-	//Set label and button for algorithms with no parameters
+
+        //Set label and button for algorithms with no parameters
         lblParameters->setText("No user definable parameters available");
         pbnDefaultParameters->setEnabled(false);
       }
       else
         //Algorithms WITH parameters
-      
+
       {
         //Set label and button for algorithms with parameters
         lblParameters->setText("Algorithm specific parameters");
@@ -228,22 +243,22 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             QLabel * myLabel = new QLabel (mLayoutWidget, ("lbl"+QString(myParameter->id)));
 
             //set spinbox details and write to map
-	    if (!myParameter->has_min==0) 
-	      {
-	        mySpinBox->setMinValue((int)myParameter->min);
-	      }
-	    else
-	      {
-		mySpinBox->setMinValue(INT_MIN);
-	      }        
+            if (!myParameter->has_min==0) 
+            {
+              mySpinBox->setMinValue((int)myParameter->min);
+            }
+            else
+            {
+              mySpinBox->setMinValue(INT_MIN);
+            }        
             if (!myParameter->has_max==0) 
-	      {
-	        mySpinBox->setMaxValue((int)myParameter->max);
-	      }
-	    else
-	      {
-		mySpinBox->setMaxValue(INT_MAX);
-	      }
+            {
+              mySpinBox->setMaxValue((int)myParameter->max);
+            }
+            else
+            {
+              mySpinBox->setMaxValue(INT_MAX);
+            }
 
             //Set value to previous otherwise to default
             QString myPreviousValue = settings.readEntry("/openmodeller/"+cboModelAlgorithm->currentText()+"/"+myParameter->id);
@@ -265,12 +280,12 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             //add label and control to form
             mLayout->addWidget(myLabel, i, 0);
             mLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Expanding,QSizePolicy::Expanding),i,1);
-	        mLayout->addWidget(mySpinBox, i, 2);
+            mLayout->addWidget(mySpinBox, i, 2);
             //mLayout->setRowSpacing(i,30);
-	    
-	    
-	    
-	    
+
+
+
+
             //
             // Add the widget to the map
             //
@@ -282,7 +297,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
           else if (myParameterType.compare("Real") || myParameterType.compare("Double"))
           {
             std::cout << QString (myParameter->id).ascii() << " parameter is " << myParameterType.ascii() 
-                      << " type" << std::endl;
+                << " type" << std::endl;
 
             //Create components
             QString myControlName = QString("le"+QString(myParameter->id));
@@ -309,7 +324,7 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             //add label and control to form
             mLayout->addWidget(myLabel, i,0);
             mLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Expanding,QSizePolicy::Expanding),i,1);
-	        mLayout->addWidget(myLineEdit,i,2);
+            mLayout->addWidget(myLineEdit,i,2);
             //mLayout->setRowSpacing(i,30);
             myLineEdit->show();
 
@@ -320,10 +335,10 @@ void OpenModellerGui::getParameterList( QString theAlgorithmNameQString )
             mDefaultParametersMap[myControlName]=QString(myParameter->typical);
             mLabelsMap[myParameter->name] = myLabel;
           }
-        
-	}
-	mScrollView->addChild(mLayoutWidget,0,0);	
-	mScrollView->setResizePolicy(QScrollView::AutoOneFit);	
+
+        }
+        mScrollView->addChild(mLayoutWidget,0,0);	
+        mScrollView->setResizePolicy(QScrollView::AutoOneFit);	
       }     
       //Exit loop because we have found the correct algorithm
       break;      
@@ -403,8 +418,8 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   }
   if (thePageNameQString==tr("Step 4 of 9")) 
   {  
-  //MODEL CREATION LAYERSET
-  
+    //MODEL CREATION LAYERSET
+
     const QString myFileNameQString =  settings.readEntry("/openmodeller/layerNames");
     //tokenise the setting list (its separated by ^e)
     const QString mySeparatorQString = "^e";
@@ -442,8 +457,8 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   }
   if (thePageNameQString==tr("Step 5 of 9"))
   {
-  //MODEL PROJECTION LAYERSET
-  
+    //MODEL PROJECTION LAYERSET
+
     const QString myProjFileNameQString =  settings.readEntry("/openmodeller/projectionLayerNames");
     //tokenise the setting list (its separated by ^e)
     const QString myProjSeparatorQString = "^e";
@@ -460,9 +475,9 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
         if (myProjFileNameQString!=myProjLastFileNameQString)
         {
           lstProjLayers->insertItem(myProjFileNameQString);
-	      //also add the layer to the mask combo
+          //also add the layer to the mask combo
           cboOutputMaskLayer->insertItem(myProjFileNameQString);
-     	  cboOutputFormatLayer->insertItem(myProjFileNameQString);
+          cboOutputFormatLayer->insertItem(myProjFileNameQString);
         }
         myProjLastFileNameQString=*myProjIterator;
         ++myProjIterator;
@@ -479,8 +494,8 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     {
       setNextEnabled(currentPage(),false);
     }
-  
-  
+
+
   }
   if (thePageNameQString==tr("Step 6 of 9"))
   {
@@ -490,77 +505,77 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     QString myOutputMask = settings.readEntry("/openmodeller/outputMaskFile");
     QString myOutputFormat = settings.readEntry("/openmodeller/outputFormatFile");
     bool  myFlag = false;
-	int i=0;
-	if (!myInputMask.isEmpty())
+    int i=0;
+    if (!myInputMask.isEmpty())
     {
-	  //loop through combo entries and check there is not already one for
-	  //the prefferred one - not that setDupliactesAllowed is only applicable to 
-	  //editable combo boxes
-	  for (i=0; i <= cboInputMaskLayer->count(); i++)
-	  {
+      //loop through combo entries and check there is not already one for
+      //the prefferred one - not that setDupliactesAllowed is only applicable to 
+      //editable combo boxes
+      for (i=0; i <= cboInputMaskLayer->count(); i++)
+      {
         cboInputMaskLayer->setCurrentItem(i);
-		
-		if (cboInputMaskLayer->currentText().compare(myInputMask))
-		{
-			myFlag=true;
-			break;
-		}
-	  }
-	  if (!myFlag)
-	  {
+
+        if (cboInputMaskLayer->currentText().compare(myInputMask))
+        {
+          myFlag=true;
+          break;
+        }
+      }
+      if (!myFlag)
+      {
         cboInputMaskLayer->insertItem(myInputMask);
         cboInputMaskLayer->setCurrentItem(cboInputMaskLayer->count());
-	  }
+      }
     }
     if (!myOutputMask.isEmpty())
     {
-	  //loop through combo entries and check there is not already one for
-	  //the prefferred one - not that setDupliactesAllowed is only applicable to 
-	  //editable combo boxes
-	  myFlag = false;
-	  for (i=0; i <= cboInputMaskLayer->count(); i++)
-	  {
+      //loop through combo entries and check there is not already one for
+      //the prefferred one - not that setDupliactesAllowed is only applicable to 
+      //editable combo boxes
+      myFlag = false;
+      for (i=0; i <= cboInputMaskLayer->count(); i++)
+      {
         cboOutputMaskLayer->setCurrentItem(i);
-		if (cboOutputMaskLayer->currentText().compare(myOutputMask))
-		{
-			myFlag=true;
-			break;
-		}
-	  }
-	  if (!myFlag)
-	  {
+        if (cboOutputMaskLayer->currentText().compare(myOutputMask))
+        {
+          myFlag=true;
+          break;
+        }
+      }
+      if (!myFlag)
+      {
         cboOutputMaskLayer->insertItem(myOutputMask);
         cboOutputMaskLayer->setCurrentItem(cboOutputMaskLayer->count());
-	  }
+      }
     }
     if (!myOutputFormat.isEmpty())
     {
-	  //loop through combo entries and check there is not already one for
-	  //the prefferred one - not that setDupliactesAllowed is only applicable to 
-	  //editable combo boxes
-	  myFlag = false;
-	  for ( i=0; i <= cboOutputFormatLayer->count(); i++)
-	  {
+      //loop through combo entries and check there is not already one for
+      //the prefferred one - not that setDupliactesAllowed is only applicable to 
+      //editable combo boxes
+      myFlag = false;
+      for ( i=0; i <= cboOutputFormatLayer->count(); i++)
+      {
         cboOutputFormatLayer->setCurrentItem(i);
-		if (cboOutputFormatLayer->currentText().compare(myOutputMask))
-		{
-			myFlag=true;
-			break;
-		}
-	  }
-	  if (!myFlag)
-	  {
+        if (cboOutputFormatLayer->currentText().compare(myOutputMask))
+        {
+          myFlag=true;
+          break;
+        }
+      }
+      if (!myFlag)
+      {
         cboOutputFormatLayer->insertItem(myOutputFormat);
         cboOutputFormatLayer->setCurrentItem(cboOutputFormatLayer->count());
-	  }
+      }
     }
   }
 
   if (thePageNameQString==tr("Step 8 of 9")) 
   {  
-    
-	//persist values for masks and output format  
-	settings.writeEntry("/openmodeller/inputMaskFile",cboInputMaskLayer->currentText());
+
+    //persist values for masks and output format  
+    settings.writeEntry("/openmodeller/inputMaskFile",cboInputMaskLayer->currentText());
     settings.writeEntry("/openmodeller/outputMaskFile",cboOutputMaskLayer->currentText());
     settings.writeEntry("/openmodeller/outputFormatFile",cboOutputFormatLayer->currentText());
     //
@@ -715,7 +730,7 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   {
     QMessageBox::critical( 0, "OpenModeller GUI",
             QString("An internal error occurred.\n ") +
-             e.what() +
+            e.what() +
             "\n\nModel aborted." );
   }
   catch (...)
@@ -770,17 +785,17 @@ void OpenModellerGui::makeConfigFile()
     myQTextStream << tr("\n\n##\n");                                    
     myQTextStream << tr("## Model Output Settings\n");
     myQTextStream << tr("##\n\n");   
-     
+
     myQTextStream << tr("## Map projection layers)\n");     
     // Iterate through the items in the projection layers list
     for ( QStringList::Iterator myIterator = projLayerNamesQStringList.begin(); myIterator != projLayerNamesQStringList.end(); ++myIterator)
     {          
       myQTextStream << tr("Output map = ") << *myIterator << "\n";
     }
-    
+
     myQTextStream << tr("# Output model name (serialized model)\n");
     myQTextStream << tr("Output model = ") << outputFileNameQString << ".xml\n";
-    
+
     myQTextStream << tr("# Output file name (should end in .tif)\n");
     myQTextStream << tr("Output file = ") << outputFileNameQString << ".tif\n";
     myQTextStream << tr("# Scale algorithm output (originally between 0 and 1) by this factor.\n");
@@ -848,8 +863,8 @@ void OpenModellerGui::accept()
     projLayerNamesQStringList.append(myItem->text());      
   }
   myQSettings.writeEntry("/openmodeller/projectionLayerNames",projLayerNamesQStringList);  
-  
-  
+
+
   maskNameQString=cboInputMaskLayer->currentText();
   outputMaskNameQString=cboOutputMaskLayer->currentText();
   outputFormatQString=cboOutputFormatLayer->currentText();
@@ -860,8 +875,8 @@ void OpenModellerGui::accept()
   QApplication::restoreOverrideCursor();
   //close the dialog
   //done(1);
-  
-  
+
+
 }
 
 void OpenModellerGui::cboModelAlgorithm_activated(  const QString &theAlgorithmQString)
@@ -911,7 +926,7 @@ void OpenModellerGui::pbnRemoveLayerFile_clicked()
     setNextEnabled(currentPage(),false);
   }
 
-lblInputLayerCount->setText("("+QString::number(lstLayers->count())+")");  
+  lblInputLayerCount->setText("("+QString::number(lstLayers->count())+")");  
 }
 
 
@@ -932,17 +947,17 @@ void OpenModellerGui::pbnSelectLayerFile_clicked()
     QString myLastFileNameQString="";
     while( myIterator!= myQStringList.end() ) 
     {
-		QString myString = *myIterator;
-		//make sure this layer is not already in the list
-		if (!lstLayers->findItem(myString, Qt::ExactMatch))
-		{
-    	  lstLayers->insertItem( myString ,0 );
-		  cboInputMaskLayer->insertItem(myString);
-		}
-		++myIterator;
-	}
+      QString myString = *myIterator;
+      //make sure this layer is not already in the list
+      if (!lstLayers->findItem(myString, Qt::ExactMatch))
+      {
+        lstLayers->insertItem( myString ,0 );
+        cboInputMaskLayer->insertItem(myString);
+      }
+      ++myIterator;
+    }
 
-    
+
 
     lblInputLayerCount->setText("("+QString::number(lstLayers->count())+")");
     if (lstLayers->count() > 0) 
@@ -995,7 +1010,7 @@ void OpenModellerGui::getProjList()
   QString theFileNameQString = QGISDATAPATH;
   theFileNameQString += "/wkt_defs.txt";
 #endif
-  
+
   QFile myQFile( theFileNameQString );
   if ( myQFile.open( IO_ReadOnly ) ) 
   {
@@ -1228,22 +1243,22 @@ void OpenModellerGui::pbnSelectLayerFileProj_clicked()
   if(myLayerSelector->exec())
   {
     std::cout << "LayerSelector ok pressed" << std::endl;
-    
-	myQStringList=myLayerSelector->getSelectedLayers();
-	QStringList::Iterator myIterator= myQStringList.begin();
+
+    myQStringList=myLayerSelector->getSelectedLayers();
+    QStringList::Iterator myIterator= myQStringList.begin();
     while( myIterator!= myQStringList.end() ) 
     {
-		//make sure this layer is not already in the list
-		QString myString = *myIterator;
-		if (!lstProjLayers->findItem(myString, Qt::ExactMatch))
-		{
-		  lstProjLayers->insertItem( myString ,0 );
-          cboOutputMaskLayer->insertItem(myString);
-          cboOutputFormatLayer->insertItem(myString);		 
-		}
-		++myIterator;
-	}
-    
+      //make sure this layer is not already in the list
+      QString myString = *myIterator;
+      if (!lstProjLayers->findItem(myString, Qt::ExactMatch))
+      {
+        lstProjLayers->insertItem( myString ,0 );
+        cboOutputMaskLayer->insertItem(myString);
+        cboOutputFormatLayer->insertItem(myString);		 
+      }
+      ++myIterator;
+    }
+
 
 
 
@@ -1286,28 +1301,28 @@ void OpenModellerGui::pbnRemoveLayerFileProj_clicked()
   {
     setNextEnabled(currentPage(),false);
   }
-lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
+  lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
 
   if ((lstProjLayers->count() > 0) && (checkLayersMatch()))
   {
-      setNextEnabled(currentPage(),true);
+    setNextEnabled(currentPage(),true);
   }  
   else 
   {
-      setNextEnabled(currentPage(),false);
+    setNextEnabled(currentPage(),false);
   }
 
 }
 
 void OpenModellerGui::createModelImage(QString theBaseName)
 {
-    //convert the completed variable layer to an image file
+  //convert the completed variable layer to an image file
   ImageWriter myImageWriter;
   QString myImageFileNameString = theBaseName+".png";
   //convert tif generated by om to pseudocolor png
   myImageWriter.writeImage(theBaseName+".tif",myImageFileNameString);
   std::cout << "Model image written to : " << myImageFileNameString << std::endl;
-  
+
 }
 
 bool OpenModellerGui::checkLayersMatch()
@@ -1326,18 +1341,18 @@ bool OpenModellerGui::checkLayersMatch()
 
 void OpenModellerGui::pbnCopyLayers_clicked()
 {
-lstProjLayers->clear();
-for ( unsigned int i = 0; i < lstLayers->count(); i++ )
-{
-	QListBoxItem *item = lstLayers->item( i );
-	lstProjLayers->insertItem(item->text());
-	cboOutputMaskLayer->insertItem(item->text());
-        cboOutputFormatLayer->insertItem(item->text());
-}
-          
-//enable the user to carry on to the next page...
-lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
-setNextEnabled(currentPage(),true);
+  lstProjLayers->clear();
+  for ( unsigned int i = 0; i < lstLayers->count(); i++ )
+  {
+    QListBoxItem *item = lstLayers->item( i );
+    lstProjLayers->insertItem(item->text());
+    cboOutputMaskLayer->insertItem(item->text());
+    cboOutputFormatLayer->insertItem(item->text());
+  }
+
+  //enable the user to carry on to the next page...
+  lblOutputLayerCount->setText("("+QString::number(lstProjLayers->count())+")");
+  setNextEnabled(currentPage(),true);
 
 
 
@@ -1359,12 +1374,12 @@ void OpenModellerGui::pbnOtherInputMask_clicked()
           );  
   std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
   if (myFileNameQString==NULL || myFileNameQString=="") return;
- 
+
   //Check selected file is a valid gdal file with projection info
   if (!LayerSelector::isValidGdalFile(myFileNameQString))
   {
-	QMessageBox::warning(this,"Error opening file!","The specified layer is invalid.\n Please check and try again.");
-	return;
+    QMessageBox::warning(this,"Error opening file!","The specified layer is invalid.\n Please check and try again.");
+    return;
   }
   else if (LayerSelector::isValidGdalProj(myFileNameQString))
   {
@@ -1375,7 +1390,7 @@ void OpenModellerGui::pbnOtherInputMask_clicked()
   settings.writeEntry("/openmodeller/otherInputMaskFile", myFileNameQString );
   cboInputMaskLayer->insertItem(myFileNameQString);
   cboInputMaskLayer->setCurrentItem(cboInputMaskLayer->count()-1);
-  
+
 } 
 
 void OpenModellerGui::pbnOtherOutputMask_clicked()
@@ -1393,12 +1408,12 @@ void OpenModellerGui::pbnOtherOutputMask_clicked()
           );  
   std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
   if (myFileNameQString==NULL || myFileNameQString=="") return;
- 
+
   //Check selected file is a valid gdal file with projection info  
   if (!LayerSelector::isValidGdalFile(myFileNameQString))
   {
-	QMessageBox::warning(this,"Error opening file!","The specified layer is invalid.\n Please check and try again.");
-	return;
+    QMessageBox::warning(this,"Error opening file!","The specified layer is invalid.\n Please check and try again.");
+    return;
   }
   else if (LayerSelector::isValidGdalProj(myFileNameQString))
   {
@@ -1428,12 +1443,12 @@ void OpenModellerGui::pbnOtherOutputFormat_clicked()
           );  
   std::cout << "Selected filetype filter is : " << myFileTypeQString.ascii() << std::endl;
   if (myFileNameQString==NULL || myFileNameQString=="") return;
-  
+
   //Check selected file is a valid gdal file with projection info  
   if (!LayerSelector::isValidGdalFile(myFileNameQString))
   {
-	QMessageBox::warning(this,"Error opening file!","The specified layer is invalid.\n Please check and try again.");
-	return;
+    QMessageBox::warning(this,"Error opening file!","The specified layer is invalid.\n Please check and try again.");
+    return;
   }
   else if (LayerSelector::isValidGdalProj(myFileNameQString))
   {
@@ -1444,8 +1459,9 @@ void OpenModellerGui::pbnOtherOutputFormat_clicked()
   QSettings settings;
 
   settings.writeEntry("/openmodeller/otherOutputFormatLayer", myFileNameQString );
- 
+
   cboOutputFormatLayer->insertItem(myFileNameQString);
   cboOutputFormatLayer->setCurrentItem(cboOutputFormatLayer->count()-1);
 
 } 
+
