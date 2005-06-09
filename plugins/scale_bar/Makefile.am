@@ -47,7 +47,7 @@ BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 libScaleBarplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la
 libScaleBarplugin_la_LDFLAGS = -avoid-version -module
-libScaleBarplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
+libScaleBarplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src
 
 EXTRA_DIST = $(plugin_UIC) \
 	icon.xpm \

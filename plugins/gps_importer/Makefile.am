@@ -63,7 +63,7 @@ BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 gpsimporterplugin_la_LIBADD = $(QT_LDADD)  $(GDAL_LDADD) ../../src/libqgis.la
 gpsimporterplugin_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
-gpsimporterplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
+gpsimporterplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src
 gpsimporterplugin_la_LDFLAGS = -avoid-version -module 
 
 
