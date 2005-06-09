@@ -67,7 +67,7 @@ georefplugin_la_SOURCES = plugin.cpp \
 
 nodist_georefplugin_la_SOURCES = $(plugin_MOC) $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC)
 
-georefplugin_la_CXXFLAGS = -I../ -I../../src $(GDAL_CFLAGS) $(GSL_CFLAGS) $(QT_CXXFLAGS)
+georefplugin_la_CXXFLAGS = -I../ -I../../src $(GDAL_CFLAGS) $(GSL_CFLAGS) $(QT_CXXFLAGS) $(GEOS_CFLAGS)
 georefplugin_la_LDFLAGS = -avoid-version -module ../../src/libqgis.la $(GDAL_LDADD) $(GSL_LIBS) $(QT_LDADD)
 
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
