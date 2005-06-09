@@ -23,6 +23,11 @@
 #include <qwidget.h>
 #include <qgisapp.h>
 #include <qgisplugin.h>
+#ifdef WIN32
+  #include "omguireportbase.h"
+#else
+  #include "omguireportbase.uic.h"
+#endif
 
 /**
 * \class QgsOpenModellerPlugin
@@ -48,6 +53,8 @@ class QgsOpenModellerPlugin:public QObject, public QgisPlugin
   void run();
   //!draw a raster layer in the qui
   void drawRasterLayer(QString);
+  //! Log emitted from wizard when modek is done
+  void modelDone(QString);
   //! unload the plugin
   void unload();
   //! show the help document
@@ -74,7 +81,8 @@ class QgsOpenModellerPlugin:public QObject, public QgisPlugin
   // ADD YOUR OWN MEMBER DECLARATIONS AFTER THIS POINT.....
   //
   ////////////////////////////////////////////////////////////////////
-
+  OmGuiReportBase *  mReport;
+  
 };
 
 #endif

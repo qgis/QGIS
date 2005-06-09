@@ -17,6 +17,7 @@ class QLogCallback : public Log::LogCallback {
         void operator()(Log::Level level, const std::string& msg ) 
         {
           textBrowser->append(msg.c_str());
+          textBrowser->scrollToBottom ();
           //std::cout << msg.c_str();
         }
 

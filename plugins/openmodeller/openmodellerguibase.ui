@@ -1855,13 +1855,6 @@ If you would like to specify any special parameters for the algorithm you have s
                 </property>
                 <property name="text">
                     <string>&lt;h3&gt;Run Model:&lt;/h3&gt;
-
-
-
-
-
-
-
 &lt;p&gt;Press the finish button to run the model. The results will be displayed in the main application window on completion, and saved to disk using the output filename prefix you have selected.&lt;/p&gt;</string>
                 </property>
             </widget>

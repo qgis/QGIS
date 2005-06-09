@@ -79,6 +79,7 @@ QTextStream* output;
   logCallBack = new QLogCallback( *output );
   logCallBack->setTextBrowser(txtbLogs);
   g_log.setCallback(logCallBack );
+  g_log.setLevel( Log::Debug );
   
   mParametersScrollView = new QScrollView(frameParameters);
   mParametersVBox = new QVBox (mParametersScrollView->viewport());
@@ -670,6 +671,11 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
 void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
 {
 
+  txtbLogs->clear();
+  txtbLogs->setPointSize ( 12 );
+  txtbLogs->setBold(false);
+  txtbLogs->append("Model Starting");
+  txtbLogs->append("<p>");
   try 
   {
     RequestFile myRequestFile;
@@ -736,6 +742,16 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   catch (...)
   {
     //do nothing
+  }
+  emit modelDone( txtbLogs->text());
+  //write teh logs to a file too
+  QFile myQFile( outputFileNameQString+".html");
+  std::cout << "Config file name: " << outputFileNameQString.ascii() << std::endl;
+  if ( myQFile.open( IO_WriteOnly ) ) 
+  {
+    QTextStream myQTextStream( &myQFile );
+    myQTextStream << txtbLogs->text();
+    myQFile.close();
   }
   done(1);
 }

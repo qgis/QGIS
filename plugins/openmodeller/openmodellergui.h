@@ -120,6 +120,7 @@ private:
 signals:
    void drawModelImage(QString);
    void drawRasterLayer(QString);
+   void modelDone(QString);
 };
 
 #endif

@@ -64,11 +64,12 @@ QgsOpenModellerPlugin::QgsOpenModellerPlugin(QgisApp * theQGisApp, QgisIface * t
                  mQGisIface(theQgisInterface),
                  QgisPlugin(sName,sDescription,sVersion,sType)
 {
+  mReport = new OmGuiReportBase(theQGisApp);
 }
 
 QgsOpenModellerPlugin::~QgsOpenModellerPlugin()
 {
-
+  delete mReport; 
 }
 
 
@@ -112,6 +113,7 @@ void QgsOpenModellerPlugin::run()
   OpenModellerGui *myOpenModellerGui=new OpenModellerGui(mQGisApp,"openModeller Wizard",true,0);
   //listen for when the layer has been made so we can draw it
   connect(myOpenModellerGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
+  connect(myOpenModellerGui, SIGNAL(modelDone(QString)), this, SLOT(modelDone(QString)));
   myOpenModellerGui->show();
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
@@ -125,6 +127,13 @@ void QgsOpenModellerPlugin::drawRasterLayer(QString theQString)
   layer->setColorRampingType(QgsRasterLayer::BLUE_GREEN_RED);
   layer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR);
   mQGisIface->addRasterLayer(layer, true);
+}
+void QgsOpenModellerPlugin::modelDone(QString theText)
+{
+  // remove the GUI
+  mReport->txtbLog->setText(theText);
+  mReport->show();
+  //std::cout << theText << std::endl;
 }
 // Unload the plugin by cleaning up the GUI
 void QgsOpenModellerPlugin::unload()

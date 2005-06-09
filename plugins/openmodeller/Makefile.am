@@ -33,7 +33,7 @@ lib_LTLIBRARIES = libopenmodellerplugin.la
 bin_PROGRAMS = omgui
 
 ## qt designer user-interface files
-UI = openmodellerguibase.ui omguimainbase.ui layerselectorbase.ui
+UI = openmodellerguibase.ui omguimainbase.ui layerselectorbase.ui omguireportbase.ui
 
 ## uic created headers
 UIHEADERS = $(UI:.ui=.uic.h)
