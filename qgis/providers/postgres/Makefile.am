@@ -34,6 +34,6 @@ BUILT_SOURCES = $(postgresprovider_MOC)
                                 
 postgresprovider_la_LIBADD = $(QT_LDADD) $(PG_LIB) $(GEOS_LDADD)
 postgresprovider_la_LDFLAGS = -avoid-version -module
-postgresprovider_la_CXXFLAGS = $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS)
+postgresprovider_la_CXXFLAGS = $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(GDAL_CFLAGS)
 
 CLEANFILES = $(BUILT_SOURCES)

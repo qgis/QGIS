@@ -47,7 +47,7 @@ BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 copyrightlabelplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/libqgis.la
 copyrightlabelplugin_la_LDFLAGS = -avoid-version -module
-copyrightlabelplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src
+copyrightlabelplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GEOS_CFLAGS) -I../../src
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm \
 	pluginguibase.ui.h
