@@ -2110,7 +2110,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
   }
   else if (!uniquevaluenode.isNull())
   {
-    renderer = new QgsUniqueValRenderer;
+    renderer = new QgsUniqueValRenderer(vectorType());
     renderer->readXML(uniquevaluenode, *this);
   }
   else if(!uniquemarkernode.isNull())

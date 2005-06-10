@@ -124,6 +124,10 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & dialogString)
     {
 	mRendererDialog = new QgsContColDialog(layer);
     }
+    else if(dialogString == tr("Unique Value"))
+    {
+	mRendererDialog = new QgsUValDialog(layer);
+    }
     widgetStackRenderers->addWidget(mRendererDialog);
     widgetStackRenderers->raiseWidget(mRendererDialog);
        
@@ -275,8 +279,8 @@ void QgsDlgVectorLayerProperties::reset( void )
       legendtypecombobox->insertItem(tr("Single Symbol"));
       legendtypecombobox->insertItem(tr("Graduated Symbol"));
       legendtypecombobox->insertItem(tr("Continuous Color"));
-      /*legendtypecombobox->insertItem(tr("Unique Value"));
-      if( layer->vectorType()==QGis::Point )
+      legendtypecombobox->insertItem(tr("Unique Value"));
+	/*if( layer->vectorType()==QGis::Point )
 	{
 	  legendtypecombobox->insertItem(tr("Single Marker"));
 	  legendtypecombobox->insertItem(tr("Graduated Marker"));
@@ -299,6 +303,10 @@ void QgsDlgVectorLayerProperties::reset( void )
   else if(rtype=="Continuous Color")
   {
       mRendererDialog=new QgsContColDialog(layer);
+  }
+  else if(rtype == "Unique Value")
+  {
+      mRendererDialog=new QgsUValDialog(layer);
   }
   
   if(mRendererDialog)
@@ -370,9 +378,9 @@ void QgsDlgVectorLayerProperties::pbnApply_clicked()
   QgsSiSyDialog *sdialog = dynamic_cast < QgsSiSyDialog * >(widgetStackRenderers->visibleWidget());
   QgsGraSyDialog *gdialog = dynamic_cast < QgsGraSyDialog * >(widgetStackRenderers->visibleWidget());
   QgsContColDialog *cdialog = dynamic_cast < QgsContColDialog * >(widgetStackRenderers->visibleWidget());
+  QgsUValDialog* udialog = dynamic_cast< QgsUValDialog * >(widgetStackRenderers->visibleWidget()); 
   /*QgsSiMaDialog* smdialog = dynamic_cast < QgsSiMaDialog * >(layer->rendererDialog());
   QgsGraMaDialog* gmdialog = dynamic_cast< QgsGraMaDialog * >(layer->rendererDialog());
-  QgsUValDialog* udialog = dynamic_cast< QgsUValDialog * > (layer->rendererDialog());
   QgsUValMaDialog* umdialog = dynamic_cast< QgsUValMaDialog * > (layer->rendererDialog());*/
 
   if (sdialog)
@@ -387,6 +395,11 @@ void QgsDlgVectorLayerProperties::pbnApply_clicked()
     {
       cdialog->apply();
     }
+  else if(udialog)
+  {
+      udialog->apply();
+  }
+
   /*else if(smdialog)
   {
       smdialog->apply();
@@ -394,10 +407,6 @@ void QgsDlgVectorLayerProperties::pbnApply_clicked()
   else if(gmdialog)
   {
       gmdialog->apply();
-  }
-  else if(udialog)
-  {
-      udialog->apply();
   }
   else if(umdialog)
   {

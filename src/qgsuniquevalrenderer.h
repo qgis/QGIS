@@ -22,14 +22,13 @@
 #include <qcolor.h>
 #include <map>
 
-class QgsRenderItem;
+class QgsSymbol;
 
 class QgsUniqueValRenderer: public QgsRenderer
 {
  public:
-    QgsUniqueValRenderer();
+    QgsUniqueValRenderer(QGis::VectorType type);
     virtual ~QgsUniqueValRenderer();
-    void initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr=0);
     void renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.);
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
@@ -45,44 +44,25 @@ class QgsUniqueValRenderer: public QgsRenderer
     /**Returns the renderers name*/
     QString name();
     /**Inserts an entry into mEntries. The render items have to be created with the new operator and are automatically destroyed if not needed anymore*/
-    void insertValue(QString name, QgsRenderItem* item);
+    void insertValue(QString name, QgsSymbol* symbol);
     /**Removes all entries from mEntries*/
     void clearValues();
     /**Sets the Field index used for classification*/
     void setClassificationField(int field);
     /**Returns the index of the classification field*/
     int classificationField();
-    /**Returns the values*/
-    std::map<QString,QgsRenderItem*>& items();
     /**Return symbology items*/
-    const std::list<QgsRenderItem*> items() const;
-    /**Return symbology items*/
-    const std::list<QgsSymbol*> symbols() const {}
+    const std::list<QgsSymbol*> symbols() const;
  protected:
     /**Field index used for classification*/
     int mClassificationField;
-    /**Entries for the unique values*/
-    std::map<QString,QgsRenderItem*> mEntries;
+    /**Symbols for the unique values*/
+    std::map<QString, QgsSymbol*> mSymbols;
 };
 
 inline bool QgsUniqueValRenderer::needsAttributes()
 {
     return true;
-}
-
-inline void QgsUniqueValRenderer::insertValue(QString name, QgsRenderItem* item)
-{
-    mEntries.insert(std::make_pair(name,item));
-}
-
-inline void QgsUniqueValRenderer::setClassificationField(int field)
-{
-    mClassificationField=field;
-}
-
-inline int QgsUniqueValRenderer::classificationField()
-{
-    return mClassificationField;
 }
 
 #endif
