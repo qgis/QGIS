@@ -26,6 +26,7 @@
 OmGuiMain::OmGuiMain()
   : OmGuiMainBase()
 {
+  mReport = new OmGuiReportBase(this);
   //set up a scrollviewdesigner
   QGridLayout *myLayout = new QGridLayout(frameImage,1,1);
   QScrollView *myScrollView = new QScrollView(frameImage);
@@ -59,6 +60,7 @@ void OmGuiMain::runWizard()
 {
   OpenModellerGui * myOpenModellerGui = new OpenModellerGui(this,"openModeller Wizard",true,0);
   connect(myOpenModellerGui, SIGNAL(drawModelImage(QString)), this, SLOT(drawModelImage(QString)));
+  connect(myOpenModellerGui, SIGNAL(modelDone(QString)), this, SLOT(modelDone(QString)));
 
   myOpenModellerGui->exec();
   show();
@@ -168,3 +170,10 @@ void OmGuiMain::saveMapAsImage()
 
 } 
 
+void OmGuiMain::modelDone(QString theText)
+{
+  // remove the GUI
+  mReport->txtbLog->setText(theText);
+  mReport->show();
+  //std::cout << theText << std::endl;
+}
