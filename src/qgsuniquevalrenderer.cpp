@@ -18,10 +18,10 @@
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgsuniquevalrenderer.h"
 #include "qgsuvaldialog.h"
-#include "qgsrenderitem.h"
 #include "qgsfeatureattribute.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
+#include "qgssymbol.h"
 #include "qgssymbologyutils.h"
 #include "qgsuvaldialog.h"
 #include "qgssvgcache.h"
@@ -31,36 +31,46 @@
 #include <qpicture.h>
 #include <vector>
 
-QgsUniqueValRenderer::QgsUniqueValRenderer(): mClassificationField(0)
+QgsUniqueValRenderer::QgsUniqueValRenderer(QGis::VectorType type): mClassificationField(0)
 {
-  //call superclass method to set up selection colour
-  initialiseSelectionColor();
+    mVectorType = type;
+
+//call superclass method to set up selection colour
+    initialiseSelectionColor();
 
 }
 
 QgsUniqueValRenderer::~QgsUniqueValRenderer()
 {
-    for(std::map<QString,QgsRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
+    for(std::map<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
     {
 	delete it->second;
     }
 }
 
-void QgsUniqueValRenderer::initializeSymbology(QgsVectorLayer* layer, QgsDlgVectorLayerProperties* pr)
+const std::list<QgsSymbol*> QgsUniqueValRenderer::symbols() const
 {
-#if 0
-    mVectorType = layer->vectorType();
-    QgsUValDialog *dialog = new QgsUValDialog(layer);
+    std::list <QgsSymbol*> symbollist;
+    for(std::map<QString, QgsSymbol*>::const_iterator it = mSymbols.begin(); it!=mSymbols.end(); ++it)
+    {
+	symbollist.push_back(it->second);
+    }
+    return symbollist;
+}
 
-	if (pr)
-        {
-	    pr->setBufferDialog(dialog);
-	} 
-	else
-        {
-	    layer->setRendererDialog(dialog);
-        }
-#endif //0
+void QgsUniqueValRenderer::insertValue(QString name, QgsSymbol* symbol)
+{
+    mSymbols.insert(std::make_pair(name, symbol));
+}
+
+void QgsUniqueValRenderer::setClassificationField(int field)
+{
+    mClassificationField=field;
+}
+
+int QgsUniqueValRenderer::classificationField()
+{
+    return mClassificationField;
 }
     
 void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, 
@@ -68,14 +78,14 @@ void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pi
 {
     std::vector < QgsFeatureAttribute > vec = f->attributeMap();
     QString value = vec[0].fieldValue();
-    std::map<QString,QgsRenderItem*>::iterator it=mEntries.find(value);
-    if(it!=mEntries.end())
+    std::map<QString,QgsSymbol*>::iterator it=mSymbols.find(value);
+    if(it!=mSymbols.end())
     {
-	QgsRenderItem *item = it->second;
+	QgsSymbol* symbol = it->second;
 
 	// Point 
 	if ( pic && mVectorType == QGis::Point ) {
-	    *pic = item->getSymbol()->getPointSymbolAsPicture( oversampling, widthScale,
+	    *pic = symbol->getPointSymbolAsPicture( oversampling, widthScale,
 		                                             selected, mSelectionColor );
 	    
 	    if ( scalefactor ) *scalefactor = 1;
@@ -86,17 +96,17 @@ void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pi
 	{
 	    if( !selected ) 
 	    {
-		QPen pen=item->getSymbol()->pen();
+		QPen pen=symbol->pen();
 		pen.setWidth ( (int) (widthScale * pen.width()) );
 		p->setPen(pen);
-		p->setBrush(item->getSymbol()->brush());
+		p->setBrush(symbol->brush());
 	    }
 	    else
 	    {
-		QPen pen=item->getSymbol()->pen();
+		QPen pen=symbol->pen();
 		pen.setWidth ( (int) (widthScale * pen.width()) );
 		pen.setColor(mSelectionColor);
-		QBrush brush=item->getSymbol()->brush();
+		QBrush brush=symbol->brush();
 		brush.setColor(mSelectionColor);
 		p->setPen(pen);
 		p->setBrush(brush);
@@ -114,58 +124,30 @@ void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pi
 
 void QgsUniqueValRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
-#if 0
     mVectorType = vl.vectorType();
     QDomNode classnode = rnode.namedItem("classificationfield");
     int classificationfield = classnode.toElement().text().toInt();
     this->setClassificationField(classificationfield);
 
-    QDomNode renderitemnode = rnode.namedItem("renderitem");
-    while (!renderitemnode.isNull())
+    QDomNode symbolnode = rnode.namedItem("symbol");
+    while (!symbolnode.isNull())
     {
-	QDomNode valuenode = renderitemnode.namedItem("value");
-	QString value = valuenode.toElement().text();
-#ifdef QGISDEBUG
-	qWarning("readXML, value is "+value);
-#endif
 	QgsSymbol* msy = new QgsSymbol();
-	QPen pen;
-	QBrush brush;
-	
-	QDomNode synode = renderitemnode.namedItem("symbol");
-
-	msy->readXML ( synode );
-
-	QDomElement labelelement = renderitemnode.namedItem("label").toElement();
-	QString label = labelelement.text();
-
-	//create a renderitem and add it to the renderer
-
-	QgsRenderItem *ri = new QgsRenderItem(msy, value, label);
-	this->insertValue(value,ri);
-
-	renderitemnode = renderitemnode.nextSibling();
+	msy->readXML ( symbolnode );
+	this->insertValue(msy->lowerValue(),msy);
+	symbolnode = symbolnode.nextSibling();
     }
 
     vl.setRenderer(this);
-    QgsUValDialog *uvaldialog = new QgsUValDialog(&vl);
-    vl.setRendererDialog(uvaldialog);
-
-    QgsDlgVectorLayerProperties *properties = new QgsDlgVectorLayerProperties(&vl);
-    vl.setLayerProperties(properties);
-    properties->setLegendType("Unique Value");
-
-    uvaldialog->apply();
-#endif
 }
 
 void QgsUniqueValRenderer::clearValues()
 {
-    for(std::map<QString,QgsRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
+    for(std::map<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
     {
 	delete it->second;
     }
-    mEntries.clear();
+    mSymbols.clear();
 }
 
 QString QgsUniqueValRenderer::name()
@@ -180,11 +162,6 @@ std::list<int> QgsUniqueValRenderer::classificationAttributes()
     return list;
 }
 
-std::map<QString,QgsRenderItem*>& QgsUniqueValRenderer::items()
-{
-    return mEntries;
-}
-
 bool QgsUniqueValRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
 {
     bool returnval=true;
@@ -194,7 +171,7 @@ bool QgsUniqueValRenderer::writeXML( QDomNode & layer_node, QDomDocument & docum
     QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
     classificationfield.appendChild(classificationfieldtxt);
     uniquevalue.appendChild(classificationfield);
-    for(std::map<QString,QgsRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
+    for(std::map<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
     {
 	if(!(it->second)->writeXML(uniquevalue,document))
 	{
@@ -202,14 +179,4 @@ bool QgsUniqueValRenderer::writeXML( QDomNode & layer_node, QDomDocument & docum
 	}
     }
     return returnval;
-}
-
-const std::list<QgsRenderItem*> QgsUniqueValRenderer::items() const
-{
-    std::list<QgsRenderItem*> list;
-    for(std::map<QString,QgsRenderItem*>::const_iterator iter=mEntries.begin();iter!=mEntries.end();++iter)
-    {
-	list.push_back(iter->second);
-    }
-    return list;
 }

@@ -42,7 +42,7 @@ class QgsUValDialog: public QgsUValDialogBase
     /**Pointer to the associated vector layer*/
     QgsVectorLayer* mVectorLayer;
     /**Set to store the already entered values*/
-    std::map<QString,QgsRenderItem*> mValues;
+    std::map<QString,QgsSymbol*> mValues;
     QgsSiSyDialog sydialog;
     /**Value for which symbology settings are displayed*/
     QString currentValue;
