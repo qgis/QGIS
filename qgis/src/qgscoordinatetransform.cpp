@@ -346,8 +346,10 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
     QString msg;
     QTextOStream pjErr(&msg);
 
-    pjErr << tr("Failed") << " " << dir << " " << tr("transform of") << x << ", " <<  y
-    << pj_strerrno(projResult) << "\n";
+    pjErr << tr("Failed") << " " << dir << " " << tr("transform of") << '\n';
+    for (int i = 0; i < numPoints; ++i)
+      pjErr << "(" << x[i] << ", " << y[i] << ")\n";
+    pjErr << "with error: " << pj_strerrno(projResult) << '\n';
     throw  QgsCsException(msg);
   }
   // if the result is lat/long, convert the results from radians back
