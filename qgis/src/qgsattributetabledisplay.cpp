@@ -167,3 +167,14 @@ void QgsAttributeTableDisplay::invertSelection()
     mLayer->invertSelection();
   }
 }
+
+void QgsAttributeTableDisplay::removeSelection()
+{
+    mLayer->removeSelection();
+    table()->clearSelection();
+    mLayer->triggerRepaint();
+}
+
+
+
+

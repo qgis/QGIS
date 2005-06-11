@@ -51,6 +51,7 @@ class QgsAttributeTableDisplay:public QgsAttributeTableBase
     void stopEditing();
     void selectedToTop();
     void invertSelection();
+    void removeSelection();
 };
 
 #endif
