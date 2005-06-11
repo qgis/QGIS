@@ -11,20 +11,24 @@
     <absoluteprojectpath>false</absoluteprojectpath>
     <description></description>
     <secondaryLanguages/>
+    <versioncontrol></versioncontrol>
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>src/cdp_wizard</activetarget>
+      <activetarget>cdpwizard</activetarget>
       <useconfiguration>default</useconfiguration>
     </general>
     <run>
-      <mainprogram>/home/aps02ts/bin/cdpwizard</mainprogram>
-      <directoryradio>custom</directoryradio>
+      <mainprogram></mainprogram>
+      <directoryradio>build</directoryradio>
       <customdirectory>/home/aps02ts/bin/</customdirectory>
       <programargs></programargs>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
+      <runarguments>
+        <cdpwizard></cdpwizard>
+      </runarguments>
     </run>
     <configurations>
       <optimized>
@@ -41,11 +45,12 @@
         <cxxcompiler>GppOptions</cxxcompiler>
         <f77compiler>G77Options</f77compiler>
         <cxxflags>-O0 -g3</cxxflags>
+        <envvars/>
       </debug>
       <default>
         <envvars/>
-        <configargs>--prefix=$HOME --enable-debug</configargs>
-        <builddir></builddir>
+        <configargs>--enable-debug</configargs>
+        <builddir>/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard</builddir>
         <topsourcedir></topsourcedir>
         <cppflags></cppflags>
         <ldflags></ldflags>
@@ -65,6 +70,11 @@
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
       </envvars>
+      <abortonerror>true</abortonerror>
+      <numberofjobs>1</numberofjobs>
+      <dontact>false</dontact>
+      <makebin></makebin>
+      <prio>0</prio>
     </make>
   </kdevautoproject>
   <kdevdebugger>
@@ -158,15 +168,21 @@
       <argumentsHintDelay>400</argumentsHintDelay>
       <headerCompletionDelay>250</headerCompletionDelay>
     </codecompletion>
-    <references>
-      <pcs>Qt</pcs>
-    </references>
+    <references/>
+    <creategettersetter>
+      <prefixGet></prefixGet>
+      <prefixSet>set</prefixSet>
+      <prefixVariable>m_,_</prefixVariable>
+      <parameterName>theValue</parameterName>
+      <inlineGet>true</inlineGet>
+      <inlineSet>true</inlineSet>
+    </creategettersetter>
   </kdevcppsupport>
   <kdevdocumentation>
     <projectdoc>
       <docsystem></docsystem>
       <docurl></docurl>
-      <usermanualurl></usermanualurl>
+      <usermanualurl>/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/html/main.html</usermanualurl>
     </projectdoc>
   </kdevdocumentation>
   <kdevcvsservice>
