@@ -349,7 +349,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
     pjErr << tr("Failed") << " " << dir << " " << tr("transform of") << '\n';
     for (int i = 0; i < numPoints; ++i)
       pjErr << "(" << x[i] << ", " << y[i] << ")\n";
-    pjErr << "with error: " << pj_strerrno(projResult) << '\n';
+    pjErr << tr("with error: ") << pj_strerrno(projResult) << '\n';
     throw  QgsCsException(msg);
   }
   // if the result is lat/long, convert the results from radians back
