@@ -2067,6 +2067,10 @@ void QgisApp::fileOpen()
                          SLOT(keyPressed(QKeyEvent* )));
     }
 
+  //set the projections enabled icon in the status bar
+  int myProjectionEnabledFlag =
+         QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
+  projectionsEnabled(myProjectionEnabledFlag);
 } // QgisApp::fileOpen
 
 
