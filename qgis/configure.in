@@ -21,11 +21,15 @@ AC_CONFIG_HEADERS(qgsconfig.h)
  
 dnl ---------------------------------------------------------------------------
 dnl version number
+dnl Note the convention here is to name development versions with a base
+dnl name of the last release, the word "devel",  and an EXTRA_VERSION 
+dnl number. This means that development work on 0.8 will be versioned as
+dnl 0.7devel1, 0.7devel2, etc.
 dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
-MINOR_VERSION=6
+MINOR_VERSION=7
 MICRO_VERSION=0
-EXTRA_VERSION=26
+EXTRA_VERSION=1
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
