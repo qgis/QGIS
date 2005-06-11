@@ -762,37 +762,37 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     {
       while((fet = dataProvider->getNextFeature(attributes)))
       {
-  qApp->processEvents(); //so we can trap for esc press
-  if (mDrawingCancelled) return;
-  // If update threshold is greater than 0, check to see if
-  // the threshold has been exceeded
-  if(updateThreshold > 0)
-  {
-    //copy the drawing buffer every updateThreshold elements
-    if(0 == featureCount % updateThreshold)
-      bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
-  }
+        qApp->processEvents(); //so we can trap for esc press
+        if (mDrawingCancelled) return;
+        // If update threshold is greater than 0, check to see if
+        // the threshold has been exceeded
+        if(updateThreshold > 0)
+        {
+          //copy the drawing buffer every updateThreshold elements
+          if(0 == featureCount % updateThreshold)
+            bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
+        }
 
-  if (fet == 0)
-  {
+        if (fet == 0)
+        {
 #ifdef QGISDEBUG
-    std::cerr << "get next feature returned null\n";
+          std::cerr << "get next feature returned null\n";
 #endif
-  }
-  else
-  {
-    if (mDeleted.find(fet->featureId())==mDeleted.end())
-    {
-      bool sel=mSelected.find(fet->featureId()) != mSelected.end();
-      m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
-              sel, oversampling, widthScale );
-      double scale = markerScaleFactor * symbolScale;
-      drawFeature(p,fet,theMapToPixelTransform,&marker, scale, 
-      projectionsEnabledFlag);
-      ++featureCount;
-      delete fet;
-    }
-  }
+        }
+        else
+        {
+          if (mDeleted.find(fet->featureId())==mDeleted.end())
+          {
+            bool sel=mSelected.find(fet->featureId()) != mSelected.end();
+            m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
+                                      sel, oversampling, widthScale );
+            double scale = markerScaleFactor * symbolScale;
+            drawFeature(p,fet,theMapToPixelTransform,&marker, scale, 
+                        projectionsEnabledFlag);
+            ++featureCount;
+            delete fet;
+          }
+        }
       }
 
       //std::cerr << "Time to draw was " << t.elapsed() << '\n';
@@ -801,12 +801,12 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
       std::list<QgsFeature*>::iterator it = mAddedFeatures.begin();
       for(; it != mAddedFeatures.end(); ++it)
       {
-  bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
-  m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
-          sel, oversampling, widthScale);
-  double scale = markerScaleFactor * symbolScale;
-  drawFeature(p,*it,theMapToPixelTransform,&marker,scale, 
-        projectionsEnabledFlag);
+        bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
+        m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
+                                  sel, oversampling, widthScale);
+        double scale = markerScaleFactor * symbolScale;
+        drawFeature(p,*it,theMapToPixelTransform,&marker,scale, 
+                    projectionsEnabledFlag);
       }
     }
     catch (QgsCsException &cse)
