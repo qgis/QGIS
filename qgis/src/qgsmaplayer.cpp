@@ -616,6 +616,12 @@ bool QgsMapLayer::projectExtent(QgsRect& extent, QgsRect& r2)
         else
           extent.set(ll, ur);
       }
+      else
+      {
+        // Just do the requested transform
+        extent = mCoordinateTransform->transform(extent,
+                             QgsCoordinateTransform::INVERSE);
+      }
     }
     catch (QgsCsException &e)
       {
