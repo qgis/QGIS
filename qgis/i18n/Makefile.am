@@ -32,7 +32,7 @@ i18n_SOURCES = \
 	qgis_pl_PL.ts \
 	qgis_pt_BR.ts \
 	qgis_ru.ts \
-	qgis_se.ts \
+	qgis_sv.ts \
 	qgis_pl_PL.ts \
 	qgis_zh_CN.ts
 
