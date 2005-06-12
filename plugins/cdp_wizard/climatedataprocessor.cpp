@@ -440,45 +440,41 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
     {
         //we have a separate file for each months data - the
         //assumption we make then is that the user selected the first file
-        //e.g. file_01.asc and that the remaining files are numbered sequentially
+        //e.g. file_00.asc and that the remaining files are numbered sequentially
         std::cout << "initialiseFileGroup - files in series!" << std::endl;
         //create a file group from this file
         std::cout << "initialiseFileGroup - theFileNameString = " << theFileNameString << std::endl;
         //need to add some error handling here...
 
+       QFileInfo myFileInfo(theFileNameString);
+       QString myPath = myFileInfo.dirPath();
+       QString myExtension = myFileInfo.extension(TRUE); //include all dotted extensions e.g. tar.gz
+       QString myFileName = myFileInfo.baseName(FALSE);//exclude all dotted extentsions e.g. will return 'file' from 'file.tar.gz'
+       //! @note the assumption is implicit here that the first file in a file series ends in 00 !!!! 
+       QString myFileNameBase = myFileName.left(myFileName.length()-2);//e.g. 'somefile00' becomes 'somefile'
 
-        for (int myInt=1; myInt < 12; myInt++)
+        for (int myInt=0; myInt < 11; myInt++)
         {
+            QString myCurrentFileName = myPath+QDir::separator ()+myFileNameBase;
 
-            char myNumberPartChar[10];
-            //get a string showing the FileName part we want to replace
-            //I know this is really crappy code, but it works. it late
-            //and I am too lazy to write it better :-)
-            if (myInt < 11)
+            if (myInt < 10)
             {
-                int myFileNoInt = myInt;
-                sprintf(myNumberPartChar, "0%i.",myFileNoInt);
+                myCurrentFileName+=QString("0")+QString::number(myInt);
             }
-            else if(myInt<100)
+            else
             {
-                int myFileNoInt = myInt;
-                sprintf(myNumberPartChar, "%i.",myFileNoInt);
+                myCurrentFileName+=QString::number(myInt);
             }
-            QString myNumberPartString(myNumberPartChar);
-
-            QString myCurrentFileNameString = theFileNameString;
-            int myPosInt = myCurrentFileNameString.findRev(myNumberPartString);
-            myPosInt = myPosInt - 2; //big time kludge here :-)
-            myCurrentFileNameString.replace(myPosInt,sizeof(myNumberPartString)-1,myNumberPartString);
-            std::cout << "initialiseFileGroup - opening file : " << myCurrentFileNameString << std::endl;
+            myCurrentFileName+="."+myExtension;
+            std::cout << "initialiseFileGroup - opening file : " << myCurrentFileName << std::endl;
             FileReader *myFileReader = new FileReader();
-            myFileReader->openFile(myCurrentFileNameString);
+            myFileReader->openFile(myCurrentFileName);
             myFileReader->setFileType(inputFileType);
             //myFileReader->setFileName( myCurrentFileNameString.c_str() );
             myFileReader->getBlockMarkers();
 
             myFileReader->moveToDataStart();
-            std::cout << "initialiseFileGroup - *** Adding " << myCurrentFileNameString
+            std::cout << "initialiseFileGroup - *** Adding " << myCurrentFileName
             << " to file group *********************" << std::endl;
             myFileGroup->addFileReader(myFileReader,myInt);
 

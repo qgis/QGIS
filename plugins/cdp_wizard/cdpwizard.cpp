@@ -246,6 +246,7 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
 
     if (thePageNameQString==tr("File type and variables")) //we do this after leaving the file selection page
     {
+
         //#ifdef QGISDEBUG
         std::cout << "Leaving file selection page" << std::endl;
         //#endif
@@ -566,11 +567,12 @@ void CDPWizard::checkInputFilenames()
 void CDPWizard::promptForFileName(QLineEdit * theLineEdit, QString theShortName, QString theLongName)
 {
     QSettings myQSettings;
-    QString myWorkDirString = myQSettings.readEntry("/cdpwizard/DefaultDirectories/" + theShortName + "Dir",QDir::homeDirPath());
+    QString myWorkDirString = myQSettings.readEntry("/qgis/cdpwizard/DefaultDirectories/" + theShortName + "Dir",QDir::homeDirPath());
     QString myFileNameQString = QFileDialog::getOpenFileName (myWorkDirString,"*.asc;*.grd",0,"Select " + theLongName ,"Select " + theLongName);
     theLineEdit->setText(myFileNameQString);
     QFileInfo myFileInfo(myFileNameQString);
-    myQSettings.writeEntry("/cdpwizard/DefaultDirectories/" + theShortName + "Dir",myFileInfo.dirPath());
+    myQSettings.writeEntry("/qgis/cdpwizard/DefaultDirectories/" + theShortName + "Dir",myFileInfo.dirPath());
+    checkInputFilenames();
 }
 
 void CDPWizard::pbtnMeanTemp_clicked()
@@ -578,7 +580,6 @@ void CDPWizard::pbtnMeanTemp_clicked()
     QString myShortName = "MeanTemp";
     QString myLongName = tr("Mean Temperature");
     promptForFileName (leMeanTemp,myShortName,myLongName);
-    checkInputFilenames();
 }
 
 
@@ -587,7 +588,6 @@ void CDPWizard::pbtnMinTemp_clicked()
     QString myShortName = "MinTemp";
     QString myLongName = tr("Min Temperature");
     promptForFileName (leMinTemp,myShortName,myLongName);
-    checkInputFilenames();
 }
 
 
@@ -596,7 +596,6 @@ void CDPWizard::pbtnMaxTemp_clicked()
     QString myShortName = "MaxTemp";
     QString myLongName = tr("Max Temperature");
     promptForFileName (leMaxTemp,myShortName,myLongName);
-    checkInputFilenames();
 }
 
 
@@ -605,7 +604,6 @@ void CDPWizard::pbtnDiurnalTemp_clicked()
     QString myShortName = "DiurnalTemp";
     QString myLongName = tr("Diurnal Temperature");
     promptForFileName (leDiurnalTemp,myShortName,myLongName);
-    checkInputFilenames();
 }
 
 
@@ -614,7 +612,6 @@ void CDPWizard::pbtnMeanPrecipitation_clicked()
     QString myShortName = "MeanPrecip";
     QString myLongName = tr("Mean Precipitation");
     promptForFileName (leMeanPrecipitation,myShortName,myLongName);
-    checkInputFilenames();
 }
 
 
@@ -623,7 +620,6 @@ void CDPWizard::pbtnFrostDays_clicked()
     QString myShortName = "FrostDays";
     QString myLongName = tr("Frost Days");
     promptForFileName (leFrostDays,myShortName,myLongName);
-    checkInputFilenames();
 }
 
 
@@ -632,14 +628,12 @@ void CDPWizard::pbtnTotalSolarRad_clicked()
     QString myShortName = "TotalSolarRadiation";
     QString myLongName = tr("TotalSolarRadiation");
     promptForFileName (leTotalSolarRadiation,myShortName,myLongName);
-    checkInputFilenames();
 }
 
 void CDPWizard::pbtnOutputPath_clicked()
 {
-    QString myShortName = "OutputPath";
-    QString myLongName = tr("Ouput Path");
-    promptForFileName (leOutputPath,myShortName,myLongName);
+  QString myFileNameQString = QFileDialog::getExistingDirectory(QString::null,0, QString("Select ouput directory"), QString("Select output directory"), true, true);
+  leOutputPath->setText(myFileNameQString);
 }
 
 

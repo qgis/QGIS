@@ -9,7 +9,7 @@
     <ignoreparts/>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
+    <description/>
     <secondaryLanguages/>
     <versioncontrol/>
   </general>
@@ -19,10 +19,10 @@
       <useconfiguration>default</useconfiguration>
     </general>
     <run>
-      <mainprogram></mainprogram>
-      <directoryradio>executable</directoryradio>
-      <customdirectory>/home/aps02ts/bin/</customdirectory>
-      <programargs></programargs>
+      <mainprogram>/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard</mainprogram>
+      <directoryradio>custom</directoryradio>
+      <customdirectory>/home/aps02ts/</customdirectory>
+      <programargs/>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
@@ -49,7 +49,7 @@
       </debug>
       <default>
         <envvars/>
-        <configargs>--enable-debug</configargs>
+        <configargs>--enable-debug=full</configargs>
         <builddir>/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard</builddir>
         <topsourcedir/>
         <cppflags/>
@@ -80,11 +80,11 @@
   <kdevdebugger>
     <general>
       <dbgshell>libtool</dbgshell>
-      <programargs></programargs>
-      <gdbpath></gdbpath>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <programargs/>
+      <gdbpath/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -170,7 +170,7 @@
     </codecompletion>
     <references/>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
