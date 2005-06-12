@@ -566,11 +566,14 @@ void QgsProjectionSelector::updateProjAndEllipsoidAcronyms(int theSrsid,QString 
 // New coordinate system selected from the list
 void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem )
 {
-      QString myProjString = getCurrentProj4String();
-      if (myProjString)
-      {
-        teProjection->setText(myProjString);
-      }
+  QString myDescription = tr("QGIS SRSID: ") + QString::number(getCurrentSRSID()) +"\n";
+  myDescription        += tr("PostGIS SRID: ") + QString::number(getCurrentSRID()) +"\n";
+  QString myProjString = getCurrentProj4String();
+  if (myProjString)
+  {
+    myDescription+=(myProjString);
+  }
+    teProjection->setText(myDescription);
 }
 
 void QgsProjectionSelector::pbnFind_clicked()
