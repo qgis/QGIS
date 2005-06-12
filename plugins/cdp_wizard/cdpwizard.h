@@ -277,9 +277,13 @@ private:
     */
     QTime startTime;
 
-    /**This checks whether any of the file input list boxes
-     *are full and if not disables the next button
-     */
+    /** A helper function for prompt for a file anem. It rememebers
+    * the last used dir for this particular variable and defaults to that dir.
+    * @param QLineEdit A pointer to the  line edit that will receive the selected file name
+    * @param QString the Short Name (used in qsettings, use no spaces!)
+    * @param QString the Long name for this var that will be show to user in dialogs etc.
+    */
+    void promptForFileName(QLineEdit * theLineEdit, QString theShortName, QString theLongName);
 
 public slots: // Public slots
 

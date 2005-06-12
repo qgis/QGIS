@@ -1,28 +1,37 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="3" >
+ <DocsAndViews NumberOfDocuments="4" >
   <Doc0 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp" >
-   <View0 line="428" Type="Source" />
+   <View0 line="429" Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///usr/include/qt3/qshared.h" >
    <View0 line="49" Type="Source" />
   </Doc1>
   <Doc2 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/climatedataprocessor.cpp" >
-   <View0 line="328" Type="Source" />
+   <View0 line="436" Type="Source" />
   </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///usr/include/qt3/qstring.h" >
+   <View0 line="847" Type="Source" />
+  </Doc3>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
    <breakpointList>
-    <breakpoint0 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp:385" type="1" condition="" enabled="1" />
-    <breakpoint1 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filewriter.cpp:80" type="1" condition="" enabled="1" />
-    <breakpoint2 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp:429" type="1" condition="" enabled="1" />
-    <breakpoint3 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/climatedataprocessor.cpp:369" type="1" condition="" enabled="1" />
+    <breakpoint0 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filewriter.cpp:80" type="1" condition="" enabled="1" />
+    <breakpoint1 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/climatedataprocessor.cpp:369" type="1" condition="" enabled="1" />
+    <breakpoint2 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/climatedataprocessor.cpp:437" type="1" condition="" enabled="1" />
+    <breakpoint3 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp:430" type="1" condition="" enabled="1" />
+    <breakpoint4 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp:386" type="1" condition="" enabled="1" />
+    <breakpoint5 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp:568" type="1" condition="" enabled="1" />
    </breakpointList>
   </kdevdebugger>
   <kdevbookmarks>
-   <bookmarks/>
+   <bookmarks>
+    <bookmark url="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp" >
+     <mark line="572" />
+    </bookmark>
+   </bookmarks>
   </kdevbookmarks>
   <kdevvalgrind>
    <executable path="" params="" />

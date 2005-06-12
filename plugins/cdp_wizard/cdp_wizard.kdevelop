@@ -11,7 +11,7 @@
     <absoluteprojectpath>false</absoluteprojectpath>
     <description></description>
     <secondaryLanguages/>
-    <versioncontrol></versioncontrol>
+    <versioncontrol/>
   </general>
   <kdevautoproject>
     <general>
@@ -20,14 +20,14 @@
     </general>
     <run>
       <mainprogram></mainprogram>
-      <directoryradio>build</directoryradio>
+      <directoryradio>executable</directoryradio>
       <customdirectory>/home/aps02ts/bin/</customdirectory>
       <programargs></programargs>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
       <runarguments>
-        <cdpwizard></cdpwizard>
+        <cdpwizard/>
       </runarguments>
     </run>
     <configurations>
@@ -51,18 +51,18 @@
         <envvars/>
         <configargs>--enable-debug</configargs>
         <builddir>/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard</builddir>
-        <topsourcedir></topsourcedir>
-        <cppflags></cppflags>
-        <ldflags></ldflags>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpgf77options</f77compiler>
-        <ccompilerbinary></ccompilerbinary>
-        <cxxcompilerbinary></cxxcompilerbinary>
-        <f77compilerbinary></f77compilerbinary>
-        <cflags></cflags>
-        <cxxflags></cxxflags>
-        <f77flags></f77flags>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <cxxflags/>
+        <f77flags/>
       </default>
     </configurations>
     <make>
@@ -73,7 +73,7 @@
       <abortonerror>true</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <prio>0</prio>
     </make>
   </kdevautoproject>
@@ -180,8 +180,8 @@
   </kdevcppsupport>
   <kdevdocumentation>
     <projectdoc>
-      <docsystem></docsystem>
-      <docurl></docurl>
+      <docsystem/>
+      <docurl/>
       <usermanualurl>/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/html/main.html</usermanualurl>
     </projectdoc>
   </kdevdocumentation>
