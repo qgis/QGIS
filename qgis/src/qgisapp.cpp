@@ -1792,37 +1792,41 @@ void QgisApp::fileExit()
 
 void QgisApp::fileNew()
 {
-    int answer = saveDirty();
+  int answer = saveDirty();
 
-    if (answer != QMessageBox::Cancel)
-    {
-        mMapCanvas->freeze(true);
-        mOverviewCanvas->freeze(true);
-        QgsMapLayerRegistry::instance()->removeAllMapLayers();
-        mMapCanvas->clear();
-        mOverviewCanvas->clear();
+  if (answer != QMessageBox::Cancel)
+  {
+    mMapCanvas->freeze(true);
+    mOverviewCanvas->freeze(true);
+    QgsMapLayerRegistry::instance()->removeAllMapLayers();
+    mMapCanvas->clear();
+    mOverviewCanvas->clear();
 
 
-        QgsProject::instance()->title( QString::null );
-        QgsProject::instance()->filename( QString::null );
+    QgsProject::instance()->title( QString::null );
+    QgsProject::instance()->filename( QString::null );
 
 #ifdef QGISDEBUG
-        std::cout << "Clearing project properties" << std::endl;
+    std::cout << "Clearing project properties" << std::endl;
 #endif
-        QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
-        QgsProject::instance()->dirty(false);
+    QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
+    QgsProject::instance()->dirty(false);
 
-        setTitleBarText_( *this );
+    setTitleBarText_( *this );
 #ifdef QGISDEBUG
-        std::cout << "emiting new project signal" << std::endl ;
+    std::cout << "emiting new project signal" << std::endl ;
 #endif
-        //note by Tim: I did some casual egrepping and this signal doesnt actually
-        //seem to be connected to anything....why is it here? Just for future needs?
-        emit newProject();
+    //note by Tim: I did some casual egrepping and this signal doesnt actually
+    //seem to be connected to anything....why is it here? Just for future needs?
+    emit newProject();
 
-        mMapCanvas->freeze(false);
-        mOverviewCanvas->freeze(false);
-    }
+    mMapCanvas->freeze(false);
+    mOverviewCanvas->freeze(false);
+  }
+  //set the projections enabled icon in the status bar
+  int myProjectionEnabledFlag =
+      QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
+  projectionsEnabled(myProjectionEnabledFlag);
 } // fileNew()
 
 
@@ -2330,14 +2334,19 @@ void QgisApp::updateRecentProjectPaths()
 // path at the given index in mRecentProjectPaths
 void QgisApp::openProject(int pathIndex)
 {
-    // possibly save any pending work before opening a different project
-    int answer = saveDirty();
+  // possibly save any pending work before opening a different project
+  int answer = saveDirty();
 
-    if (answer != QMessageBox::Cancel)
-    {
-        QStringList::Iterator it = mRecentProjectPaths.at(pathIndex);
-        addProject((*it));
-    }
+  if (answer != QMessageBox::Cancel)
+  {
+    QStringList::Iterator it = mRecentProjectPaths.at(pathIndex);
+    addProject((*it));
+  }
+  //set the projections enabled icon in the status bar
+  int myProjectionEnabledFlag =
+      QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
+  projectionsEnabled(myProjectionEnabledFlag);
+
 } // QgisApp::openProject
 
 /**
