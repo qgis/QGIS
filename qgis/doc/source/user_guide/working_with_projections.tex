@@ -18,6 +18,17 @@ Note that the identifiers used in QGIS do not correspond to the EPSG or
 PostGIS spatial reference identifiers. The EPSG and PostGIS identifiers are
 present in the database and can be used to specify a projection in QGIS.
 
+In order to use OTF projection, your data must contain information about its
+coordinate system. For PostGIS layers QGIS uses the spatial reference
+identifier that was specified when the layer was created. For data supported
+by OGR, QGIS relies on the presence of a format specific means of specifying
+the coordinate system. In the case of shapefiles, this means a file containing
+the Well Known Text (WKT) specification of the the coordinate system. The
+projection file has the same base name as the shapefile and a prj extension.
+For example, a shapefile named lakes.shp would have a corresponding projection
+file named lakes.prj.
+
+
 %\section{Requirements}
 %QGIS uses the Proj4 to provide projection support. 
 \section{Getting Started}
@@ -33,7 +44,7 @@ statusbar
 \begin{Tip}
  \caption{\textsc{Project Properties Dialog}}
 \qgistip{
-If you open the project properties dialog from the Settings menu, you must
+If you open the \textit{Project Properties} dialog from the Settings menu, you must
 click on the \textit{Projection} tab to view the projection settings. Opening
 the dialog from the projector icon will automatically bring the
 \textit{Projection} tab to the front.
@@ -65,7 +76,18 @@ you can use the search feature to find it. Enter the identifier and click on
 
 \end{compactenum}
 \subsection{Specifying a Projection}
+QGIS automatically sets the map projection to the coordinate system of the first
+layer loaded. One way to specify the map projection is to first load a layer
+with the projection you want for the entire map. Then open the \textit{Project Properties} 
+dialog and click on the \textit{Enable on the fly projection} checkbox. You
+can now close the \textit{Project Properties} dialog and add additional layers
+to the map. 
 
+If you have already added layers and want to enable OTF projection, open the 
+\textit{Project Properties} dialog and find the projection or geographic
+coordinate system you want to use in the list of projections. Alternatively
+you can use the search feature as described in the previous section.
 
 \section{Custom Projections}
-
+If QGIS doesn't have the projection you need, you can define a custom
+projection. 
