@@ -4,8 +4,7 @@
 #include <qmap.h>
 #include <qtextstream.h>
 
-//other includes
-#include <gdal_priv.h>
+
 
 FileReader::FileReader()
 {

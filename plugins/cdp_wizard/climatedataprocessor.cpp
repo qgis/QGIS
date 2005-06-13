@@ -472,7 +472,6 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
             myFileReader->setFileType(inputFileType);
             //myFileReader->setFileName( myCurrentFileNameString.c_str() );
             myFileReader->getBlockMarkers();
-
             myFileReader->moveToDataStart();
             std::cout << "initialiseFileGroup - *** Adding " << myCurrentFileName
             << " to file group *********************" << std::endl;
@@ -990,7 +989,9 @@ bool ClimateDataProcessor::run()
     std::cout << "ClimateDataProcessor run() method called.\n " << std::endl;
     std::cout << "Go and have a cup of tea cause this may take a while!" << std::endl;
     std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-
+    
+    //create a data processor to do the low level processing
+    DataProcessor *myDataProcessor = new DataProcessor();
     int myOffsetInt = jobStartYearInt - fileStartYearInt;
     int myNumberOfIterationsInt = (jobEndYearInt - jobStartYearInt) +1;
     //work out how many variables we are going to calculate
@@ -1060,6 +1061,7 @@ bool ClimateDataProcessor::run()
     //check nothing fishy is going on
     if (myNumberOfCells ==  0)
     {
+        delete myDataProcessor;
         return false;
     }
 
@@ -1138,7 +1140,7 @@ bool ClimateDataProcessor::run()
                 }
 
                 //replace any spaces with underscores in the name
-                myFileNameString = myFileNameString.replace( QRegExp(" "), "_");                 
+                myFileNameString = myFileNameString.replace( QRegExp(" "), "_");
                 //set the extension
                 myFileNameString =  outputFilePathString + myFileNameString + "_" + myYearChar +".asc";
                 FileWriter * myFileWriter = new FileWriter(myFileNameString,outputFileType);
@@ -1191,11 +1193,10 @@ bool ClimateDataProcessor::run()
         }
 
 
-
-
         // cycle through each FileGroup, fetching the element array from it and running any user
         // selected calculations, then writing the outputs to its associated filewriter in
         // myFileWriterMap
+
 
         if (meanTempFileGroup && meanTempFileNameString !="" &&
                 availableCalculationsMap["Mean temperature"])
@@ -1204,8 +1205,7 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run - Mean temperature requested" << std::endl;
             //move to start of the current data matrix
             meanTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
+
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature"];
             //get the filewriter from out of the struct
@@ -1231,6 +1231,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 myXCountInt++;
@@ -1251,8 +1252,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Annual mean diurnal temperature range requested" << std::endl;
             //move to start of the current data matrix
             diurnalTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual mean diurnal temperature range"];
             //get the filewriter from out of the struct
@@ -1269,6 +1268,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1283,8 +1283,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Annual mean number of frost days requested" << std::endl;
             //move to start of the current data matrix
             frostDaysFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual mean number of frost days"];
             //get the filewriter from out of the struct
@@ -1302,6 +1300,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1316,8 +1315,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Annual mean total incident solar radiation requested" << std::endl;
             //move to start of the current data matrix
             totalSolarRadFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual mean total incident solar radiation"];
             //get the filewriter from out of the struct
@@ -1334,6 +1331,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1353,8 +1351,6 @@ bool ClimateDataProcessor::run()
             //move to start of the current data matrix
             minTempFileGroup->moveToDataStart();
             maxTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual temperature range"];
             //get the filewriter from out of the struct
@@ -1372,6 +1368,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1386,8 +1383,6 @@ bool ClimateDataProcessor::run()
             emit variableStart("Highest temperature in warmest month");
             std::cout << "ClimateDataProcessor::run - Highest temperature in warmest month requested" << std::endl;
             maxTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Highest temperature in warmest month"];
             //get the filewriter from out of the struct
@@ -1404,6 +1399,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1418,8 +1414,6 @@ bool ClimateDataProcessor::run()
             emit variableStart("Lowest temperature in coolest month");
             std::cout << "ClimateDataProcessor::run - Lowest temperature in coolest month requested" << std::endl;
             minTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Lowest temperature in coolest month"];
             //get the filewriter from out of the struct
@@ -1436,6 +1430,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1450,8 +1445,6 @@ bool ClimateDataProcessor::run()
             emit variableStart("Mean daily precipitation");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation"];
             //get the filewriter from out of the struct
@@ -1468,6 +1461,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1482,8 +1476,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in coolest month" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
             minTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in coolest month"];
             //get the filewriter from out of the struct
@@ -1502,6 +1494,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1516,8 +1509,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in coolest month" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
             minTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in coolest quarter"];
             //get the filewriter from out of the struct
@@ -1536,6 +1527,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1548,8 +1540,6 @@ bool ClimateDataProcessor::run()
             emit variableStart("Mean daily precipitation in driest month");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in driest month" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in driest month"];
             //get the filewriter from out of the struct
@@ -1566,6 +1556,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1578,9 +1569,6 @@ bool ClimateDataProcessor::run()
             emit variableStart("Mean daily precipitation in driest quarter");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in driest quarter" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
-
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in driest quarter"];
             //get the filewriter from out of the struct
@@ -1597,6 +1585,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1613,8 +1602,6 @@ bool ClimateDataProcessor::run()
             //move to the start of data blocks
             meanPrecipFileGroup->moveToDataStart();
             maxTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in warmest month"];
             //get the filewriter from out of the struct
@@ -1633,6 +1620,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1647,8 +1635,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in warmest quarter" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
             maxTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in warmest quarter"];
             //get the filewriter from out of the struct
@@ -1667,6 +1653,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1679,8 +1666,6 @@ bool ClimateDataProcessor::run()
             emit variableStart("Mean daily precipitation in wettest month");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in wettest month" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in wettest month"];
             //get the filewriter from out of the struct
@@ -1697,6 +1682,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1709,8 +1695,6 @@ bool ClimateDataProcessor::run()
             emit variableStart("Mean daily precipitation in wettest quarter");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in wettest quarter" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in wettest quarter"];
             //get the filewriter from out of the struct
@@ -1727,6 +1711,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1742,8 +1727,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Mean diurnal temperature range in coolest month" << std::endl;
             diurnalTempFileGroup->moveToDataStart();
             meanTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean diurnal temperature range in coolest month"];
             //get the filewriter from out of the struct
@@ -1762,6 +1745,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1776,8 +1760,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Mean diurnal temperature range in warmest month" << std::endl;
             diurnalTempFileGroup->moveToDataStart();
             meanTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean diurnal temperature range in warmest month"];
             //get the filewriter from out of the struct
@@ -1796,6 +1778,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1810,8 +1793,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Mean precipitation in frost free months" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
             frostDaysFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean precipitation in frost free months"];
             //get the filewriter from out of the struct
@@ -1829,6 +1810,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1843,8 +1825,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Mean temperature in coolest month" << std::endl;
 
             meanTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in coolest month"];
             //get the filewriter from out of the struct
@@ -1861,6 +1841,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1873,8 +1854,6 @@ bool ClimateDataProcessor::run()
             emit variableStart("Mean temperature in coolest quarter");
             std::cout << "ClimateDataProcessor::run Mean temperature in coolest quarter" << std::endl;
             meanTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in coolest quarter"];
             //get the filewriter from out of the struct
@@ -1891,6 +1870,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1905,8 +1885,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Mean temperature in frost free months" << std::endl;
             meanTempFileGroup->moveToDataStart();
             frostDaysFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in frost free months"];
             //get the filewriter from out of the struct
@@ -1924,6 +1902,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1935,11 +1914,7 @@ bool ClimateDataProcessor::run()
         {
             emit variableStart("Mean temperature in warmest month");
             std::cout << "ClimateDataProcessor::run Mean temperature in warmest month" << std::endl;
-
-
             meanTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in warmest month"];
             //get the filewriter from out of the struct
@@ -1956,6 +1931,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1968,8 +1944,6 @@ bool ClimateDataProcessor::run()
             emit variableStart("Mean temperature in warmest quarter");
             std::cout << "ClimateDataProcessor::run Mean temperature in warmest quarter" << std::endl;
             meanTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in warmest quarter"];
             //get the filewriter from out of the struct
@@ -1987,6 +1961,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -1999,8 +1974,6 @@ bool ClimateDataProcessor::run()
             emit variableStart("Mean wind speed");
             std::cout << "ClimateDataProcessor::run Mean wind speed" << std::endl;
             windSpeedFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean wind speed"];
             //get the filewriter from out of the struct
@@ -2017,6 +1990,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -2029,8 +2003,6 @@ bool ClimateDataProcessor::run()
             emit variableStart("Number of months with minimum temperature above freezing");
             std::cout << "ClimateDataProcessor::run Number of months with minimum temperature above freezing" << std::endl;
             minTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Number of months with minimum temperature above freezing"];
             //get the filewriter from out of the struct
@@ -2047,6 +2019,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -2061,8 +2034,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Radiation in coolest month" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in coolest month"];
             //get the filewriter from out of the struct
@@ -2081,6 +2052,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -2095,8 +2067,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Radiation in coolest quarter" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in coolest quarter"];
             //get the filewriter from out of the struct
@@ -2115,6 +2085,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -2129,8 +2100,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Radiation in warmest month" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in warmest month"];
             //get the filewriter from out of the struct
@@ -2149,6 +2118,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -2163,8 +2133,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Radiation in warmest quarter" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in warmest quarter"];
             //get the filewriter from out of the struct
@@ -2184,6 +2152,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -2198,8 +2167,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Radiation in driest month" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanPrecipFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in driest month"];
             //get the filewriter from out of the struct
@@ -2218,6 +2185,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -2232,8 +2200,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Radiation in driest quarter" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanPrecipFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in driest quarter"];
             //get the filewriter from out of the struct
@@ -2252,6 +2218,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -2267,8 +2234,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Radiation in wettest month" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanPrecipFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in wettest month"];
             //get the filewriter from out of the struct
@@ -2287,6 +2252,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -2301,8 +2267,6 @@ bool ClimateDataProcessor::run()
             std::cout << "ClimateDataProcessor::run Radiation in wettest quarter" << std::endl;
             totalSolarRadFileGroup->moveToDataStart();
             meanPrecipFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in wettest quarter"];
             //get the filewriter from out of the struct
@@ -2321,6 +2285,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -2333,8 +2298,6 @@ bool ClimateDataProcessor::run()
             emit variableStart("Standard deviation of mean precipitation");
             std::cout << "ClimateDataProcessor::run Standard deviation of mean precipitation" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Standard deviation of mean precipitation"];
             //get the filewriter from out of the struct
@@ -2351,6 +2314,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -2363,8 +2327,6 @@ bool ClimateDataProcessor::run()
             emit variableStart("Standard deviation of mean temperature");
             std::cout << "ClimateDataProcessor::run Standard deviation of mean temperature" << std::endl;
             meanTempFileGroup->moveToDataStart();
-            //create a data processor to do the low level processing
-            DataProcessor *myDataProcessor = new DataProcessor();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Standard deviation of mean temperature"];
             //get the filewriter from out of the struct
@@ -2381,6 +2343,7 @@ bool ClimateDataProcessor::run()
                 if (!myResultFlag)
                 {
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+                    delete myDataProcessor;
                     return false;
                 }
                 emit cellDone(myFloat);
@@ -2390,6 +2353,7 @@ bool ClimateDataProcessor::run()
         emit yearDone();
     }//This is the END OF MAIN OUTER LOOP:
     //presume all went ok - need to add better error checking later
+    delete myDataProcessor;
     return true;
 }
 

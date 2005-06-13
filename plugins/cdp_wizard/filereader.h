@@ -8,6 +8,9 @@
 #include <qvaluevector.h>
 #include <qmap.h>
 
+//other includes
+#include <gdal_priv.h>
+
 /** This class will handle opening a file containing a climate matrix and iterating through the file in a columnwise / rowwise manner.
  **/
 class FileReader
@@ -251,7 +254,8 @@ public:
   /** Move the internal file pointer to the start of the file header. */
    bool moveToHeader();
   /** Move the internal file pointer to the start of the file header. */
-   bool moveToDataStart();
+   bool moveToDataStart();  
+
   /**
   * Use the header info for a given file type to determine the
   * begining of the data block(s) and position the
@@ -313,6 +317,10 @@ private:
   QFile *filePointer;
   /** The text stream that will be used to pull data from the file */
   QTextStream * textStream;
+  /** \brief Pointer to the gdaldataset.  */
+  GDALDataset * gdalDataset;
+  /** \brief Values for mapping pixel to world coordinates.  */
+  double adfGeoTransform[6];
 
 
   /** Number of header lines per month data block (applicable to files containing multiple months in a single file only. */
