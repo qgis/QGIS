@@ -105,7 +105,7 @@ cdpwizard_SOURCES = 	main.cpp \
 
 nodist_cdpwizard_SOURCES = cdpwizard.moc.cpp climatedataprocessor.moc.cpp
 
-cdpwizard_LDADD = $(QT_LDADD) $(GDAL_LDADD) -lgsl -lgslcblas
+cdpwizard_LDADD = -lgdal $(QT_LDADD) $(GDAL_LDADD) -lgsl -lgslcblas
 cdpwizard_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GSL_FLAGS)
 
 

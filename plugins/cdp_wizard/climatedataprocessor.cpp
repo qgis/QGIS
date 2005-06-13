@@ -45,7 +45,7 @@ ClimateDataProcessor::ClimateDataProcessor() : QObject()
     fileStartYearInt=0;
     jobStartYearInt=0;
     jobEndYearInt=0;
-    inputFileType=FileReader::ARCINFO_GRID;
+    inputFileType=FileReader::GDAL;
 
 
 }
@@ -71,25 +71,17 @@ bool ClimateDataProcessor::makeInputFileTypeMap()
     FileReader::FileTypeEnum myEnum;
     inputFileTypeMap.clear();
     // Copied from FileReader header file:
-    //enum FileTypeEnum { CRES,  ARCINFO_GRID , HADLEY_SRES , HADLEY_IS92 ,  IPCC_OBSERVED ,
+    //enum FileTypeEnum { GDAL, HADLEY_SRES , HADLEY_IS92 ,  IPCC_OBSERVED ,
     //                                    VALDES ,  ECHAM4 ,  CSIRO_MK2 ,  NCAR_CSM_PCM , GFDL_R30 , CGCM2 ,
     //                                    CCSR_AGCM_OGCM };
 
-    //declare the key value
-    myString=QString("CRES African climate data");
-    //convert it to upper case
-    myString=myString.upper();
-    //set its associated enum
-    myEnum=FileReader::CRES;
-    //add it to the associative array
-    inputFileTypeMap[myString]=myEnum;
 
     //declare the key value
-    myString=QString("ESRI & ASCII raster");
+    myString=QString("GDAL Supported Raster");
     //convert it to upper case
     myString=myString.upper();
     //set its associated enum
-    myEnum=FileReader::ARCINFO_GRID;
+    myEnum=FileReader::GDAL;
     //add it to the associative array
     inputFileTypeMap[myString]=myEnum;
 
@@ -192,8 +184,16 @@ bool ClimateDataProcessor::makeOutputFileTypeMap()
     FileWriter::FileTypeEnum myEnum;
     outputFileTypeMap.clear();
     // Copied from FileWriter header file:
-    //enum FileFormatEnum { CSM_MATLAB , CSM_OCTAVE ,  GARP ,  ESRI_ASCII ,  PLAIN };
+    //enum FileFormatEnum { GDAL_TIFF, CSM_MATLAB , CSM_OCTAVE ,  GARP ,  ESRI_ASCII ,  PLAIN };
 
+    //declare the key value
+    myString=QString("GDAL Tiff Image");
+    //convert it to upper case
+    myString=myString.upper();
+    //set its associated enum
+    myEnum=FileWriter::ESRI_ASCII;
+    //add it to the associative array
+    outputFileTypeMap[myString]=myEnum;
 
     //declare the key value
     myString=QString("Matlab");

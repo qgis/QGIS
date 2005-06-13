@@ -21,8 +21,7 @@ public:
   /**
   * This enum defines the different types of files that can be read in.
   */
-  enum FileTypeEnum { CRES,
-                      ARCINFO_GRID,
+  enum FileTypeEnum { 
                       HADLEY_SRES,
                       HADLEY_IS92,
                       IPCC_OBSERVED,
@@ -32,7 +31,8 @@ public:
                       NCAR_CSM_PCM,
                       GFDL_R30,
                       CGCM2,
-                      CCSR_AGCM_OGCM };
+                      CCSR_AGCM_OGCM,
+                      GDAL };
 
 
   //

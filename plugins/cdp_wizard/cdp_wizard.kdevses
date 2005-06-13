@@ -1,32 +1,41 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="3" >
+ <DocsAndViews NumberOfDocuments="7" >
   <Doc0 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp" >
-   <View0 line="634" Type="Source" />
+   <View0 Type="Source" />
   </Doc0>
   <Doc1 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/climatedataprocessor.cpp" >
-   <View0 line="429" Type="Source" />
+   <View0 line="83" Type="Source" />
   </Doc1>
   <Doc2 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.h" >
    <View0 line="286" Type="Source" />
   </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filewriter.cpp" >
+   <View0 line="71" Type="Source" />
+  </Doc3>
+  <Doc4 NumberOfViews="1" URL="file:///usr/include/qt3/qstring.h" >
+   <View0 line="663" Type="Source" />
+  </Doc4>
+  <Doc5 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filereader.h" >
+   <View0 line="34" Type="Source" />
+  </Doc5>
+  <Doc6 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filereader.cpp" >
+   <View0 line="828" Type="Source" />
+  </Doc6>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
    <breakpointList>
-    <breakpoint0 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filewriter.cpp:80" type="1" condition="" enabled="1" />
-    <breakpoint1 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/climatedataprocessor.cpp:369" type="1" condition="" enabled="1" />
-    <breakpoint2 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp:431" type="1" condition="" enabled="1" />
-    <breakpoint3 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp:387" type="1" condition="" enabled="1" />
-    <breakpoint4 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/climatedataprocessor.cpp:437" type="1" condition="" enabled="1" />
+    <breakpoint0 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/climatedataprocessor.cpp:369" type="1" condition="" enabled="1" />
+    <breakpoint1 location="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/climatedataprocessor.cpp:437" type="1" condition="" enabled="1" />
    </breakpointList>
   </kdevdebugger>
   <kdevbookmarks>
    <bookmarks/>
   </kdevbookmarks>
   <kdevvalgrind>
-   <executable path="/home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard" params="" />
+   <executable path="" params="" />
    <valgrind path="valgrind" params="--tool=memcheck --tool=memcheck --tool=memcheck --leak-check=yes" />
    <calltree path="calltree" params="" />
    <kcachegrind path="/usr/bin/kcachegrind" />

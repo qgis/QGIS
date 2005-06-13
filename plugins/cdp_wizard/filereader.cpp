@@ -4,6 +4,9 @@
 #include <qmap.h>
 #include <qtextstream.h>
 
+//other includes
+#include <gdal_priv.h>
+
 FileReader::FileReader()
 {
   taskProgressInt=0;
@@ -326,10 +329,11 @@ bool FileReader::setFileType( const FileTypeEnum theNewVal)
 
     //Set ArcInfo ASCII grid and CRES member variables
 
-    else if ((fileType == ARCINFO_GRID) || (fileType == CRES))
+    else if (fileType == GDAL)
 
     {
-      /* Typical Header:
+
+    /* Typical Header:
          ncols         241
          nrows         207
          xllcorner     -795282.26306056
@@ -822,7 +826,7 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
   }
 
   //if the datafile is a an arc/info grid file, there is only one data block
-  if (fileType==ARCINFO_GRID || fileType==CRES)
+  if (fileType==GDAL)
   {
     for (int i=1; i <= headerLinesInt; i++)
     {

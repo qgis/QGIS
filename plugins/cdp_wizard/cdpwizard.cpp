@@ -54,8 +54,7 @@ bool CDPWizard::initialise()
     //
     // Populate the file types combo
     //
-    cboFileType->insertItem(tr("CRES African climate data"));
-    cboFileType->insertItem(tr("ESRI & ASCII raster"));
+    cboFileType->insertItem(tr("GDAL Supported Raster"));
     cboFileType->insertItem(tr("Hadley Centre HadCM3 SRES Scenario"));
     cboFileType->insertItem(tr("Hadley Centre HadCM3 IS92a Scenario"));
     cboFileType->insertItem(tr("IPCC Observed Climatology"));
@@ -120,10 +119,10 @@ bool CDPWizard::initialise()
     std::cout << "Adding items into the output filetype combo box" << endl;
 #endif
 
-    cboOutputFormat->insertItem(tr("Matlab"));
-    cboOutputFormat->insertItem(tr("ESRI ASCII Grid"));
+    cboOutputFormat->insertItem(tr("GDAL Tiff Image"));
+    cboOutputFormat->insertItem(tr("Arc/Info Ascii Grid"));
     cboOutputFormat->insertItem(tr("Plain matrix with no header"));
-
+    cboOutputFormat->insertItem(tr("Matlab"));
     //
     // Create a climate data processor instance - this is the thing that does all
     // the hard work!
@@ -213,7 +212,8 @@ void CDPWizard::cboFileType_activated( const QString &myQString )
     std::cout << "cboFileType text changed" << std::endl;
 #endif
 
-    if (myQString==tr("CRES African climate data") || myQString==tr("University of Reading Palaeoclimate data") || myQString==tr("ESRI & ASCII raster"))
+    if (myQString==tr("University of Reading Palaeoclimate data") || 
+        myQString==tr("GDAL Supported Raster"))
     {
         //show the user some instructions about how the files must be on disk
         lblFileSeriesNote->show();
