@@ -468,8 +468,7 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
             myCurrentFileName+="."+myExtension;
             std::cout << "initialiseFileGroup - opening file : " << myCurrentFileName << std::endl;
             FileReader *myFileReader = new FileReader();
-            myFileReader->openFile(myCurrentFileName);
-            myFileReader->setFileType(inputFileType);
+            myFileReader->openFile(myCurrentFileName,inputFileType);            
             //myFileReader->setFileName( myCurrentFileNameString.c_str() );
             myFileReader->getBlockMarkers();
             myFileReader->moveToDataStart();
@@ -491,20 +490,14 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
         //need to add some error handling here...
         //create a separate filereader object so we can get the blockmarkers
         FileReader *myFileReader = new FileReader();
-        if ( !myFileReader->openFile(theFileNameString))
+        if ( !myFileReader->openFile(theFileNameString,inputFileType))
         {
             QMessageBox::critical( 0, "CDP Wizard",
                                    QString("The file you have selected could not be opened:\n\n" + theFileNameString +
                                            "\n\n Halting climate data proceesing." ));
             return false;
         }
-        if ( !myFileReader->setFileType(inputFileType))
-        {
-            QMessageBox::critical( 0, "CDP Wizard",
-                                   QString("The file type could not be set for:\n\n" + theFileNameString +
-                                           "\n\n Halting climate data proceesing." ));
-            return false;
-        }
+
         //when we open the first filereader in the group, we find
         //the block markers which will then be  assicgned to all other
         //filereaders we open as the filereaders all use the same file
@@ -532,8 +525,7 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
         for (int myInt=myCurrentBlockInt; myInt < myEndBlockInt; ++myInt)
         {
             FileReader *myFileReader2 = new FileReader();
-            myFileReader2->openFile(theFileNameString);
-            myFileReader2->setFileType(inputFileType);
+            myFileReader2->openFile(theFileNameString,inputFileType);            
             myFileReader2->setBlockMarkers(myDataBlockMarkersVector);
             myFileReader2->setStartMonth(myInt);
             myFileGroup->addFileReader(myFileReader2,myInt);

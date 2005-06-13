@@ -11,13 +11,13 @@ FileReader::FileReader()
   taskProgressInt=0;
 }
 
-FileReader::FileReader(QString theFileNameString)
+FileReader::FileReader(QString theFileNameString,const FileTypeEnum theFileType)
 {
 #ifdef QGISDEBUG
   std::cout << "FileReader::FileReader(QString theFileNameString)" << std::endl;
 #endif
 
-  openFile(theFileNameString);
+  openFile(theFileNameString,theFileType);
   taskProgressInt=0;
 }
 
@@ -27,7 +27,7 @@ FileReader::~FileReader()
   delete filePointer;
 }
 
-bool FileReader::openFile(const QString theFileNameQString)
+bool FileReader::openFile(const QString theFileNameQString,const FileTypeEnum theFileType)
 {
   filenameString=theFileNameQString;
   filePointer = new QFile ( theFileNameQString );
@@ -44,6 +44,7 @@ bool FileReader::openFile(const QString theFileNameQString)
   currentColLong=1;
   currentRowLong=1;
   currentElementLong=0;
+  setFileType(theFileType);
   return true;
 }
 
@@ -332,14 +333,14 @@ bool FileReader::setFileType( const FileTypeEnum theNewVal)
 
     {
 
-    /* Typical Header:
-         ncols         241
-         nrows         207
-         xllcorner     -795282.26306056
-         yllcorner     -3846910.6343577
-         cellsize      7128.3696735486
-         NODATA_value  -9999
-         */
+      /* Typical Header:
+           ncols         241
+           nrows         207
+           xllcorner     -795282.26306056
+           yllcorner     -3846910.6343577
+           cellsize      7128.3696735486
+           NODATA_value  -9999
+           */
 
 #ifdef QGISDEBUG
       std::cout << "FileReader::setFileType() - setting file type to ARCINFO_GRID / CRES" << std::endl;
@@ -941,7 +942,7 @@ QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
 
     std::cout << "Task Progress: " << ( static_cast<float>(myFileOffsetLong) / myFileSizeLong) * 100 << std::endl;
     std::cout << "Position " << myFileOffsetLong << "/" << myFileSizeLong << " ("
-        << taskProgressInt << ") : ";
+    << taskProgressInt << ") : ";
     for (int i=1;i<(taskProgressInt/10);i++)
     {
       std::cout << "*";

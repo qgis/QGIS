@@ -44,8 +44,8 @@ public:
 
   /** Default constructor */
   FileReader();
-  /** Constructor taking the name of the file to open. */
-  FileReader(QString theFileNameString);
+  /** Constructor taking the name of the file to open and its file type. */
+  FileReader(QString theFileNameString,const FileTypeEnum theFileType);
   /** Destructor  */
    ~FileReader();
   /**
@@ -59,9 +59,10 @@ public:
   * and any header info will be skipped. This is an overloaded version of openFile to take a
   * QString argument rather than a QString .
   * @param theFileNameString - QString with the filename (including full path) to open.
+  * @param theFileType - 
   * @return bool - flag indicating success or failure
   */
-   bool openFile(const QString theFileNameString);
+   bool openFile(const QString theFileNameString,const FileTypeEnum theFileType);
 
   /**
   * Mutator of QFile * filePointer.

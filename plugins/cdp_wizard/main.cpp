@@ -61,8 +61,7 @@ int produceAverages(int argc, char *argv[])
         myDebugModeFlag = 1;
     else
         myDebugModeFlag=0;
-    FileReader *myFileReader = new FileReader(myInputFileName);
-    myFileReader->setFileType(FileReader::HADLEY_SRES);
+    FileReader *myFileReader = new FileReader(myInputFileName,FileReader::HADLEY_SRES);
     QValueVector <QFile::Offset>  myDataBlockMarkersVector =
         myFileReader->getBlockMarkers();
     int myNumberOfBlocksInt = myDataBlockMarkersVector.size();
@@ -89,8 +88,8 @@ int produceAverages(int argc, char *argv[])
         for (myInt=myCurrentMonthInt; myInt <= myNumberOfYearsInt; myInt=myInt+12)
         {
             FileReader *myFileReader2 = new FileReader();
-            myFileReader2->openFile(myInputFileName.c_str());
-            myFileReader2->setFileType(FileReader::HADLEY_SRES);
+            myFileReader2->openFile(myInputFileName.c_str(),FileReader::HADLEY_SRES);
+            
             myFileReader2->setBlockMarkers(myDataBlockMarkersVector);
             myFileReader2->setStartMonth(myInt);
             myFileGroup->addFileReader(myFileReader2,myInt);
