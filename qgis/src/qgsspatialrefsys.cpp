@@ -1171,6 +1171,16 @@ bool QgsSpatialRefSys::readXML( QDomNode & theNode )
      myElement = myNode.toElement();
      setEllipsoidAcronym(myElement.text());
  
+     myNode = theNode.namedItem("geographicflag");
+     myElement = myNode.toElement();
+     if (myElement.text().compare("true"))
+     {
+       setGeographicFlag(true);
+     }
+     else
+     {
+       setGeographicFlag(false);
+     }
      //make sure the map units have been set
 
      setMapUnits();
@@ -1214,6 +1224,16 @@ bool QgsSpatialRefSys::writeXML( QDomNode & theNode, QDomDocument & theDoc )
   QDomElement myEllipsoidAcronymElement  = theDoc.createElement( "ellipsoidacronym" );
   myEllipsoidAcronymElement.appendChild(theDoc.createTextNode( ellipsoidAcronym()));
   mySrsElement.appendChild(myEllipsoidAcronymElement);
+
+  QDomElement myGeographicFlagElement  = theDoc.createElement( "geographicflag" );
+  QString myGeoFlagText = "false";
+  if (geographicFlag())
+  {
+    myGeoFlagText="true";
+  }
+    
+  myGeographicFlagElement.appendChild(theDoc.createTextNode( myGeoFlagText ));
+  mySrsElement.appendChild(myGeographicFlagElement);
 
   myLayerNode.appendChild( mySrsElement );
 }
