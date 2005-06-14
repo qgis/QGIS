@@ -57,9 +57,9 @@ class QgsGeometry {
     
     /** 
        Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
-       This class will take ownership of the buffer
+       This class will take ownership of the buffer.
     */
-    void setFromWkb(unsigned char * wkb, size_t length);
+    void setWkbAndOwnership(unsigned char * wkb, size_t length);
     
     /** 
        Returns the buffer containing this geometry in WKB format.
@@ -115,6 +115,8 @@ class QgsGeometry {
     /**Creates a geos geometry from this features geometry. Note, that the returned object needs to be deleted*/
     geos::Geometry* geosGeometry() const;
 
+    /** Converts from the GEOS geometry back to the native WKB geometry.  (Experimental) */
+    void fromGeosGeometry();
 
 
 
@@ -132,7 +134,20 @@ class QgsGeometry {
         
     /** cached WKT version of this geometry */
     mutable QString mWkt;
+    
+    /** cached GEOS version of this geometry */
+    mutable geos::Geometry* mGeos;
 
+        
+    /** If the geometry has been set since the last conversion to WKB **/
+    mutable bool mDirtyWkb;
+
+    /** If the geometry has been set since the last conversion to WKT **/
+    mutable bool mDirtyWkt;
+    
+    /** If the geometry has been set  since the last conversion to GEOS **/
+    mutable bool mDirtyGeos;
+    
     
     /** Squared distance from point to the given line segment 
      *  TODO: Perhaps move this to QgsPoint
