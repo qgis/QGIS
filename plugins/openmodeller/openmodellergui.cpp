@@ -721,14 +721,29 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
 
     myRequestFile.makeProjection( mOpenModeller );
 
-    std::cout << "Map creation complete - creating image an dfiring signals" << std::endl;
+    // Confusion matrix
+    std::cout << "Map creation complete - calculating confusion matrix" << std::endl;
+    ConfusionMatrix * matrix = mOpenModeller->getConfusionMatrix();
+
+    AreaStats * stats = mOpenModeller->getActualAreaStats();
+
+    g_log( "\nModel statistics\n" );
+    g_log( "Accuracy:          %7.2f\%\n", matrix->getAccuracy() * 100 );
+    g_log( "Omission error:    %7.2f\%\n", matrix->getOmissionError() * 100 );
+    //g_log( "Commission error:  %7.2f\%\n", matrix.getCommissionError() * 100 );
+    g_log( "Percentage of cells predicted present: %7.2f\%\n", 
+           stats->getAreaPredictedPresent() / (double) stats->getTotalArea() * 100 );
+    g_log( "Total number of cells: %d\n", stats->getTotalArea() );
+    g_log( "\nDone.\n" );
+
+    std::cout << "creating image an dfiring signals" << std::endl;
     //save a nice looking png of the image to disk
     createModelImage(outputFileNameQString);
     //used by omgui standalone
-    std::cout << "emittin drawModelImage" << std::endl;
+    std::cout << "emitting drawModelImage" << std::endl;
     emit drawModelImage(outputFileNameQString+".png");
     //if all went ok, send notification to the parent app that we are finished (qgis plugin mode)
-    std::cout << "emittin drawRasterLayer" << std::endl;
+    std::cout << "emitting drawRasterLayer" << std::endl;
     emit drawRasterLayer(outputFileNameQString+QString(".tif"));
 
   }
@@ -778,7 +793,7 @@ void OpenModellerGui::makeConfigFile()
     myQTextStream << tr("## Localities Data Configuration Options...\n");
     myQTextStream << tr("##\n\n");
     myQTextStream << tr("# Full path and file name of the file containing localities data.\n");        
-    myQTextStream << tr("Species file = ") << localitiesFileNameQString << "\n";
+    myQTextStream << tr("Species file = ") << localitiesFileNameQString << "\n\n";
     myQTextStream << tr("# The taxon in the localities file to be modelled.\n");
     myQTextStream << tr("# (Defaults to the first taxon found.)\n");
     myQTextStream << tr("Species = ") << taxonNameQString << "\n";
@@ -790,14 +805,9 @@ void OpenModellerGui::makeConfigFile()
     {          
       myQTextStream << tr("Map = ") << *myIterator << "\n";
     }
+    myQTextStream << tr("\n\n##\n"); 
     myQTextStream << tr("# A layer that specifies the region of interest for model building\n");      
     myQTextStream << tr("Mask = ") << maskNameQString << "\n";
-    myQTextStream << tr("\n\n##\n");
-    myQTextStream << tr("# A layer that specifies the region of interest for model projection\n");      
-    myQTextStream << tr("Output Mask = ") << outputMaskNameQString << "\n";
-    myQTextStream << tr("\n\n##\n"); 
-    myQTextStream << tr("# A layer that specifies the region of interest for model projection\n");      
-    myQTextStream << tr("Output Format = ") << outputFormatQString << "\n";
     myQTextStream << tr("\n\n##\n");                                    
     myQTextStream << tr("## Model Output Settings\n");
     myQTextStream << tr("##\n\n");   
@@ -808,14 +818,20 @@ void OpenModellerGui::makeConfigFile()
     {          
       myQTextStream << tr("Output map = ") << *myIterator << "\n";
     }
+    myQTextStream << tr("\n\n##\n");
+    myQTextStream << tr("# A layer that specifies the region of interest for model projection\n");      
+    myQTextStream << tr("Output Mask = ") << outputMaskNameQString << "\n";
 
+    myQTextStream << tr("\n\n##\n");
     myQTextStream << tr("# Output model name (serialized model)\n");
     myQTextStream << tr("Output model = ") << outputFileNameQString << ".xml\n";
 
+    myQTextStream << tr("\n\n##\n");
     myQTextStream << tr("# Output file name (should end in .tif)\n");
     myQTextStream << tr("Output file = ") << outputFileNameQString << ".tif\n";
-    myQTextStream << tr("# Scale algorithm output (originally between 0 and 1) by this factor.\n");
-    //NOTE I am hard coding the output scaling variable for now!
+    myQTextStream << tr("\n\n##\n"); 
+    myQTextStream << tr("# A layer that specifies the format (cell size and coordinate system) for the generated map\n");      
+    myQTextStream << tr("Output Format = ") << outputFormatQString << "\n";
     myQTextStream << tr("\n\n##\n");                 
     myQTextStream << tr("## Model Type and Extra Model Parameters\n");
     myQTextStream << tr("##\n\n");         
