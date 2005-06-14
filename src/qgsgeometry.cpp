@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsgeometry.h - Geometry (stored as Open Geospatial Consortium WKB)
+  qgsgeometry.cpp - Geometry (stored as Open Geospatial Consortium WKB)
   -------------------------------------------------------------------
 Date                 : 02 May 2005
 Copyright            : (C) 2005 by Brendan Morley
@@ -21,7 +21,13 @@ email                : morb at ozemail dot com dot au
 
 QgsGeometry::QgsGeometry()
   : mGeometry(0),
-    mGeometrySize(0)
+    mGeometrySize(0),
+    mWkt(0),
+    mGeos(0),
+    
+    mDirtyGeos(FALSE),
+    mDirtyWkb(FALSE),
+    mDirtyWkt(FALSE)
 {
   // NOOP
 }    
@@ -29,13 +35,30 @@ QgsGeometry::QgsGeometry()
 
 QgsGeometry::QgsGeometry( QgsGeometry const & rhs )
     : mGeometry(0),
-      mGeometrySize( rhs.mGeometrySize )
+      mGeometrySize( rhs.mGeometrySize ),
+      mWkt( rhs.mWkt ),
+      
+      mDirtyGeos( rhs.mDirtyGeos ),
+      mDirtyWkb( rhs.mDirtyWkb ),
+      mDirtyWkt( rhs.mDirtyWkt )
 {      
+  
+  
   if ( mGeometrySize && rhs.mGeometry )
   {
     mGeometry = new unsigned char[mGeometrySize];
     memcpy( mGeometry, rhs.mGeometry, mGeometrySize );
   }
+
+  // deep-copy the GEOS Geometry if appropriate
+  if (rhs.mGeos)
+  {  
+    mGeos = rhs.mGeos->clone();
+  }
+  else
+  {
+    mGeos = 0;
+  }    
 }
 
 
@@ -53,7 +76,22 @@ QgsGeometry & QgsGeometry::operator=( QgsGeometry const & rhs )
       mGeometry = 0;
   }
   
-  mGeometrySize = rhs.mGeometrySize;
+  mGeometrySize    = rhs.mGeometrySize;
+  mWkt             = rhs.mWkt;
+
+  // deep-copy the GEOS Geometry if appropriate
+  if (rhs.mGeos)
+  {  
+    mGeos = rhs.mGeos->clone();
+  }
+  else
+  {
+    mGeos = 0;
+  }    
+
+  mDirtyGeos = rhs.mDirtyGeos;
+  mDirtyWkb  = rhs.mDirtyWkb;
+  mDirtyWkt  = rhs.mDirtyWkt;
 
   if ( mGeometrySize && rhs.mGeometry )
   {
@@ -70,12 +108,17 @@ QgsGeometry::~QgsGeometry()
 {
   if (mGeometry)
   {
-      delete [] mGeometry;
+    delete [] mGeometry;
+  }
+  
+  if (mGeos)
+  {
+    delete mGeos;
   }
 }
 
 
-void QgsGeometry::setFromWkb(unsigned char * wkb, size_t length)
+void QgsGeometry::setWkbAndOwnership(unsigned char * wkb, size_t length)
 {
   // delete any existing WKB geometry before assigning new one
   if ( mGeometry )
@@ -83,8 +126,15 @@ void QgsGeometry::setFromWkb(unsigned char * wkb, size_t length)
     delete [] mGeometry;
   }
 
+  // TODO: What about ownership?
+  
   mGeometry = wkb;
   mGeometrySize = length;
+
+  mDirtyWkb   = FALSE;  
+  mDirtyGeos  = TRUE;
+  mDirtyWkt   = TRUE;
+
 }
     
 unsigned char * QgsGeometry::wkbBuffer() const
@@ -100,9 +150,19 @@ size_t QgsGeometry::wkbSize() const
 
 QString const& QgsGeometry::wkt() const
 {
-  if (!mWkt)
+  if (mDirtyWkt)
   {
-    exportToWkt();
+    // see which geometry representation to convert from
+    if (mDirtyGeos)
+    {
+      // convert from WKB
+      exportToWkt();
+    }
+    else
+    {
+      // TODO
+    }
+  
   }
 
   return mWkt;
@@ -400,7 +460,7 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
 #endif
                                 
                 // set new geomtry to this object
-                setFromWkb(newWKB, mGeometrySize + 16);
+                setWkbAndOwnership(newWKB, mGeometrySize + 16);
       
                 break;
             }
@@ -1171,13 +1231,30 @@ bool QgsGeometry::exportToWkt(unsigned char * geom) const
 
 bool QgsGeometry::exportToWkt() const
 {
-  return exportToWkt( mGeometry );
+  if (mDirtyWkt)
+  {
+    return (mDirtyWkt = exportToWkt( mGeometry ));
+  }
+  else
+  {
+    // Already have a fresh copy of Wkt available.
+    return TRUE;
+  }  
 }
 
 
 
 geos::Geometry* QgsGeometry::geosGeometry() const
 {
+
+    if (!mDirtyGeos)
+    {
+      // No need to convert again
+      return mGeos;
+      
+      // TODO: make mGeos useful - assign to it and clear mDirty before we return out of this function
+    }
+
     if(!mGeometry)
     {
 	return 0;
@@ -1201,7 +1278,9 @@ geos::Geometry* QgsGeometry::geosGeometry() const
     QPointArray *pa;
     int wkbtype;
 
+    // TODO: Make this a static member - save generating for every geometry
     geos::GeometryFactory* geometryFactory = new geos::GeometryFactory();
+    
     wkbtype=(int) mGeometry[1];
     switch(wkbtype)
     {
@@ -1209,6 +1288,8 @@ geos::Geometry* QgsGeometry::geosGeometry() const
 	{
 	   x = (double *) (mGeometry + 5);
 	   y = (double *) (mGeometry + 5 + sizeof(double));
+           
+           mDirtyGeos = FALSE;
 	   return geometryFactory->createPoint(geos::Coordinate(*x,*y));
 	}
 	case QGis::WKBMultiPoint:
@@ -1380,6 +1461,17 @@ geos::Geometry* QgsGeometry::geosGeometry() const
 	    return 0;
     }
     
+}
+
+
+void QgsGeometry::fromGeosGeometry()
+// TODO: Make this work
+{
+  if(!mGeometry)
+  {
+//    return 0;
+  }
+
 }
 
 
