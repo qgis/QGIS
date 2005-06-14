@@ -61,12 +61,12 @@ public:
    */
   int configure( OpenModeller *om, char *request_file );
 
-  int occurrencesSet() { return _occurrences_set; }
-  int environmentSet() { return _environment_set; }
-  int projectionSet()  { return _projection_set; }
-  int algorithmSet()   { return _algorithm_set; }
+  int occurrencesSet() { return _occurrencesSet; }
+  int environmentSet() { return _environmentSet; }
+  int projectionSet()  { return _projectionSet; }
+  int algorithmSet()   { return _algorithmSet; }
 
-  OccurrencesPtr getOccurrences() { return _occurrences; }
+  OccurrencesPtr getOccurrences();
 
   void makeModel( OpenModeller *om );
   void makeProjection( OpenModeller *om );
@@ -97,19 +97,21 @@ private:
   std::string extractParameter( std::string const name, 
 				std::vector<std::string> vet );
 
-  int _occurrences_set;
-  int _environment_set;
-  int _projection_set;
-  int _algorithm_set;
+  int _occurrencesSet;
+  int _environmentSet;
+  int _projectionSet;
+  int _algorithmSet;
 
   OccurrencesPtr _occurrences;
 
   bool _nonNativeProjection;
-  std::vector<std::string> _cat;
-  std::vector<std::string> _map;
-  std::string _mask;
-  std::string _model_file;
-  std::string _projection_file;
+  std::vector<std::string> _projectionCategoricalMap;
+  std::vector<std::string> _projectionMap;
+  std::string _inputMask;
+  std::string _outputMask;
+  std::string _inputModelFile;
+  std::string _outputModelFile;
+  std::string _projectionFile;
 
   MapFormat _outputFormat;
 

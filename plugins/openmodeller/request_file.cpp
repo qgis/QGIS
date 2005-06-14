@@ -30,9 +30,8 @@
 #include "file_parser.hh"
 #include "occurrences_file.hh"
 
-#include <om_sampler.hh>
-
 #include <om.hh>
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -42,16 +41,18 @@
 /************************ Request File ************************/
 
 RequestFile::RequestFile() :
-  _occurrences_set(0),
-  _environment_set(0),
-  _projection_set(0),
+  _occurrencesSet(0),
+  _environmentSet(0),
+  _projectionSet(0),
   _occurrences(),
   _nonNativeProjection( false ),
-  _cat(),
-  _map(),
-  _mask(),
-  _model_file(),
-  _projection_file(),
+  _projectionCategoricalMap(),
+  _projectionMap(),
+  _inputMask(),
+  _outputMask(),
+  _inputModelFile(),
+  _outputModelFile(),
+  _projectionFile(),
   _outputFormat()
 { 
 }
@@ -67,16 +68,18 @@ RequestFile::configure( OpenModeller *om, char *request_file )
 {
   FileParser fp( request_file );
 
-  _occurrences_set = setOccurrences( om, fp );
-  _environment_set = setEnvironment( om, fp );
-  _projection_set  = setProjection ( om, fp );
-  _algorithm_set   = setAlgorithm  ( om, fp );
+  _inputModelFile = fp.get( "Input model" );
 
-  _model_file = fp.get( "Output model" );
+  _occurrencesSet = setOccurrences( om, fp );
+  _environmentSet = setEnvironment( om, fp );
+  _projectionSet  = setProjection ( om, fp );
+  _algorithmSet   = setAlgorithm  ( om, fp );
+
+  _outputModelFile = fp.get( "Output model" );
 
   // Returns ZERO if all was set correctly.
-  return 4 - _occurrences_set - _environment_set -
-    _projection_set - _algorithm_set;
+  return 4 - _occurrencesSet - _environmentSet -
+    _projectionSet - _algorithmSet;
 }
 
 
@@ -95,6 +98,34 @@ RequestFile::setOccurrences( OpenModeller *om, FileParser &fp )
   // Get the name of the taxon being modelled!
   std::string oc_name = fp.get( "Species" );
 
+  // If user provided a serialized model
+  if ( ! _inputModelFile.empty() ) {
+
+    // Warn if unnecessary parameters were specified 
+    if ( ! oc_cs.empty() )
+      g_log.warn( "'WKT coord system' will be ignored since 'Input model' has been specified...\n" );
+
+    if ( ! oc_file.empty() )
+      g_log.warn( "'Species file' will be ignored since 'Input model' has been specified...\n" );
+
+    if ( ! oc_name.empty() )
+      g_log.warn( "'Species' will be ignored since 'Input model' has been specified...\n" );
+
+    return 1;
+  }
+
+  // When a model needs to be created, 'WKT coord system' and 
+  // 'Species file' are mandatory parameters
+  if ( oc_cs.empty() ) {
+    g_log.error( 0, "'WKT coord system' was not specified!\n" );
+    return 0;
+  }
+
+  if ( oc_file.empty() ) {
+    g_log.error( 0, "'Species file' was not specified!\n" );
+    return 0;
+  }
+
   _occurrences = readOccurrences( oc_file, oc_name, oc_cs );
 
   // Populate the occurences list from the localities file
@@ -108,12 +139,43 @@ int
 RequestFile::setEnvironment( OpenModeller *om, FileParser &fp )
 {
   // Mask to select the desired species occurrence points
-  std::string mask = fp.get( "Mask" );
+  _inputMask = fp.get( "Mask" );
 
   // Initiate the environment with all maps.
   std::vector<std::string> cat = fp.getAll( "Categorical map" );
   std::vector<std::string> map = fp.getAll( "Map" );
-  om->setEnvironment( cat, map, mask );
+
+  // If user provided a serialized model
+  if ( ! _inputModelFile.empty() ) {
+
+    // Warn if unnecessary parameters were specified 
+    if ( ! _inputMask.empty() )
+      g_log.warn( "'Mask' will be ignored since 'Input model' has been specified...\n" );
+
+    if ( cat.size() > 0 )
+      g_log.warn( "'Categorical map' will be ignored since 'Input model' has been specified...\n" );
+
+    if ( map.size() > 0 )
+      g_log.warn( "'Map' will be ignored since 'Input model' has been specified...\n" );
+
+    return 1;
+  }
+
+  // When a model needs to be created, there should be at least one input map
+  if ( ! (cat.size() + map.size()) ) {
+
+    g_log.error( 0, "At least one 'Map' or 'Categorical map' needs to be specified!\n" );
+    return 0;
+  }
+
+  // Mask is also mandatory
+  if ( _inputMask.empty() ) {
+    g_log.error( 0, "'Mask' was not specified!\n" );
+    return 0;
+  }
+
+  // Set input environment
+  om->setEnvironment( cat, map, _inputMask );
 
   return 1;
 }
@@ -125,48 +187,78 @@ int
 RequestFile::setProjection( OpenModeller *om, FileParser &fp )
 {
 
-  _projection_file = fp.get( "Output file" );
-  if ( _projection_file.empty() )
-    {
-      g_log( "The 'Output file' file name was not specified!\n" );
+  _projectionFile = fp.get( "Output file" );
+
+  if ( _projectionFile.empty() ) {
+
+    g_log.error( 0, "'Output file' was not specified!\n" );
+    return 0;
+  }
+
+  // Categorical environmental maps and the number of these maps.
+  _projectionCategoricalMap = fp.getAll( "Categorical output map" );
+
+  // Continuous environmental maps and the number of these maps.
+  _projectionMap = fp.getAll( "Output Map" );
+
+  // If user provided a serialized model
+  if ( _inputModelFile.empty() ) {
+
+    // note: should we accept native projections using environment from serialized models?
+    _nonNativeProjection = true;
+
+    // So, assume that in this case projection maps are mandatory.
+    if ( ! (_projectionCategoricalMap.size() + _projectionMap.size()) ) {
+
+      g_log.error( 0, "At least one 'Output map' or 'Categorical output map' needs to be specified!\n" );
       return 0;
     }
+  }
+  else {
 
-  std::string format = fp.get( "Output format" );
-  if ( ! format.empty() )
-    {
-      _outputFormat = MapFormat( format.c_str() );
+    // It is ok to not set the projection.
+    if ( ! (_projectionCategoricalMap.size() + _projectionMap.size()) ) {
+
+      g_log("Projection not set: using training Environment for projection\n");
+      _nonNativeProjection = false;
     }
+    else {
+
+      _nonNativeProjection = true;
+    }
+  }
+
+  // Get the output mask
+  _outputMask = fp.get( "Output mask" );
+
+  if ( _nonNativeProjection && _outputMask.empty() ) {
+
+    g_log.error( 0, "'Output mask' was not specified!\n" );
+    return 0;
+  }
+
+  // Template header to be used by the generated map
+  std::string format = fp.get( "Output format" );
+
+  if ( ! format.empty() ) {
+
+    _outputFormat = MapFormat( format.c_str() );
+  }
 
   // hard coded for now: 8-bit grey tiffs
   _outputFormat.setFormat( MapFormat::GreyTiff );
 
-  // Categorical environmental maps and the number of these maps.
-  _cat = fp.getAll( "Categorical output map" );
+  // Overwrite output extent with values from mask
+  const std::string maskFile = ( _nonNativeProjection ) ? _outputMask.c_str() : _inputMask.c_str();
 
-  // Continuous environmental maps and the number of these maps.
-  _map = fp.getAll( "Output Map" );
+  Raster mask( maskFile );
 
-  // It is ok to not set the projection.
-  if ( ! (_cat.size() + _map.size()) )
-    {
-      g_log("Projection not set: using training Environment for projection\n");
-      _nonNativeProjection = false;
-      return 1;
-    }
+  Header h = mask.header();
 
-  _nonNativeProjection = true;
-
-  // Get the details for the output Map
-  _mask = fp.get( "Output mask" );
-  if ( _mask.empty() )
-    {
-      g_log( "The 'Output mask' file name was not specified!\n" );
-      return 0;
-    }
-
-  // Make sure the basic variables have been defined in the
-  // parameter file...
+  _outputFormat.setXMin( h.xmin );
+  _outputFormat.setYMin( h.ymin );
+  _outputFormat.setXMax( h.xmax );
+  _outputFormat.setYMax( h.ymax );
 
   return 1;
 
@@ -182,6 +274,15 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
   AlgMetadata const *metadata;
   std::string alg_id = fp.get( "Algorithm" );
 
+  // If user provided a serialized model
+  if ( ! _inputModelFile.empty() ) {
+    // Warn if unnecessary parameters were specified 
+    if ( ! alg_id.empty() )
+      g_log.warn( "'Algorithm' will be ignored since 'Input model' has been specified...\n" );
+
+    return 1;
+  }
+
   // Note: console tries to get an algorithm from user input
   // if it was not specified in the request file.
   if ( alg_id.empty() )
@@ -190,11 +291,14 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
   // Try to use the algorithm specified in the request file.
   // If it cannot be used, return 0.
   try {
+
     // An exception here means that the algorithm wasn't found.
     metadata = om->algorithmMetadata( alg_id.c_str() );
   }
   catch (...) {
-    g_log( "Algorithm '%s' specified in the request file was not found\n", alg_id.c_str() );
+
+    g_log.error( 0, "Algorithm '%s' specified in the request file was not found\n", 
+                 alg_id.c_str() );
     return 0;
   }
 
@@ -215,7 +319,7 @@ RequestFile::setAlgorithm( OpenModeller *om, FileParser &fp )
   int resp = om->setAlgorithm( metadata->id, nparam, param );
 
   if ( resp == 0 )
-    g_log.error( 1, "Resp from setAlg was zero\n" );
+    g_log.error( 0, "Could not set the algorithm to be used\n" );
 
   delete[] param;
 
@@ -235,6 +339,18 @@ RequestFile::readOccurrences( std::string file, std::string name,
 }
 
 
+/************************/
+/*** get Occurrences ***/
+OccurrencesPtr
+RequestFile::getOccurrences( )
+{
+  if ( ! _occurrences )
+    g_log.error( 0, "Could not read occurrences from request file. Make sure 'Species file' has been specified.\n" );
+
+  return _occurrences;
+}
+
+
 /***********************/
 /*** read Parameters ***/
 int
@@ -246,23 +362,23 @@ RequestFile::readParameters( AlgParameter *result,
   AlgParamMetadata *end   = param + metadata->nparam;
 
   // For each algorithm parameter metadata...
-  for ( ; param < end; param++, result++ )
-    {
-      // The resulting name is equal the name set in
-      // algorithm's metadata.
-      result->setId( param->id );
+  for ( ; param < end; param++, result++ ) {
 
-      // Read the resulting value from str_param.
-      std::string value = extractParameter( result->id(), str_param );
+    // The resulting name is equal the name set in
+    // algorithm's metadata.
+    result->setId( param->id );
 
-      // If the parameter is not referenced in the file, set it
-      // with the default value extracted from the parameter
-      // metadata.
-      if ( value.empty() )
-        value = param->typical;
+    // Read the resulting value from str_param.
+    std::string value = extractParameter( result->id(), str_param );
 
-      result->setValue( value.c_str() );
-    }
+    // If the parameter is not referenced in the file, set it
+    // with the default value extracted from the parameter
+    // metadata.
+    if ( value.empty() )
+      value = param->typical;
+
+    result->setValue( value.c_str() );
+  }
 
   return metadata->nparam;
 }
@@ -279,9 +395,11 @@ RequestFile::extractParameter( std::string const name,
   std::vector<std::string>::iterator end = vet.end();
 
   while ( it != end ) {
+
     if ( name == (*it).substr(0, length) ) {
       return (*it).substr( length );
     }
+
     ++it;
   }
 
@@ -294,16 +412,31 @@ RequestFile::extractParameter( std::string const name,
 void
 RequestFile::makeModel( OpenModeller *om )
 {
+  // If user provided a serialized model, just load it
+  if ( ! _inputModelFile.empty() ) {
+
+    char* file_name = new char [_inputModelFile.size() + 1];
+    strcpy( file_name, _inputModelFile.c_str() );
+
+    ConfigurationPtr conf = Configuration::readXml( file_name );
+      
+    om->setConfiguration( conf );
+
+    delete[] file_name;
+
+    return;
+  }
+
   // Build model
   if ( ! om->createModel() ) {
     g_log.error( 1, "Error during model creation: %s\n", om->error() );
   }
 
   // Serialize model, if requested
-  if ( ! _model_file.empty() ) {
+  if ( _inputModelFile.empty() && ! _outputModelFile.empty() ) {
 
-    char* file_name = new char [_model_file.size() + 1];
-    strcpy( file_name, _model_file.c_str() );
+    char* file_name = new char [_outputModelFile.size() + 1];
+    strcpy( file_name, _outputModelFile.c_str() );
 
     ConfigurationPtr cfg = om->getConfiguration();
     Configuration::writeXml( cfg, file_name );
@@ -318,17 +451,17 @@ RequestFile::makeModel( OpenModeller *om )
 void
 RequestFile::makeProjection( OpenModeller *om )
 {
-  if ( _projection_set == 0 )
+  if ( _projectionSet == 0 )
     g_log.error( 1, "Error during projection: Request not properly initialized\n" );
 
   if ( !_nonNativeProjection ) {
 
-    om->createMap( _projection_file.c_str(), _outputFormat );
+    om->createMap( _projectionFile.c_str(), _outputFormat );
   }
   else {
 
-    EnvironmentPtr env = createEnvironment( _cat, _map, _mask );
+    EnvironmentPtr env = createEnvironment( _projectionCategoricalMap, _projectionMap, _outputMask );
 
-    om->createMap( env, _projection_file.c_str(), _outputFormat );
+    om->createMap( env, _projectionFile.c_str(), _outputFormat );
   }
 }

@@ -141,7 +141,7 @@ OccurrencesFile::remove( const char *name )
 {
   // If name is not specified,
   // remove the last entry, and return it.
-  if ( ! name ) {
+  if ( ! name || *name == '\0' ) {
     OccurrencesPtr last = f_sp.back();
     f_sp.pop_back();
     return last;
