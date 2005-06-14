@@ -1,28 +1,25 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="7" >
-  <Doc0 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp" >
+ <DocsAndViews NumberOfDocuments="6" >
+  <Doc0 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/climatedataprocessor.cpp" >
    <View0 Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/climatedataprocessor.cpp" >
-   <View0 line="83" Type="Source" />
-  </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.h" >
-   <View0 line="286" Type="Source" />
-  </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filewriter.cpp" >
+  <Doc1 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filewriter.cpp" >
    <View0 line="71" Type="Source" />
+  </Doc1>
+  <Doc2 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filereader.h" >
+   <View0 line="64" Type="Source" />
+  </Doc2>
+  <Doc3 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filereader.cpp" >
+   <View0 line="33" Type="Source" />
   </Doc3>
-  <Doc4 NumberOfViews="1" URL="file:///usr/include/qt3/qstring.h" >
-   <View0 line="663" Type="Source" />
+  <Doc4 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/plugin.h" >
+   <View0 line="60" Type="Source" />
   </Doc4>
-  <Doc5 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filereader.h" >
-   <View0 line="34" Type="Source" />
+  <Doc5 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/main.cpp" >
+   <View0 line="91" Type="Source" />
   </Doc5>
-  <Doc6 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filereader.cpp" >
-   <View0 line="828" Type="Source" />
-  </Doc6>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>

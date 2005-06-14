@@ -3,8 +3,9 @@
 //qt includes
 #include <qmap.h>
 #include <qtextstream.h>
-
-
+#include <qstringlist.h>
+#include <qglobal.h>
+#include <qregexp.h>
 
 FileReader::FileReader()
 {
@@ -29,18 +30,26 @@ FileReader::~FileReader()
 
 bool FileReader::openFile(const QString theFileNameQString,const FileTypeEnum theFileType)
 {
-  filenameString=theFileNameQString;
-  filePointer = new QFile ( theFileNameQString );
-  if ( !filePointer->open( IO_ReadOnly | IO_Translate) )
+  //if gdal is being used we have a comlpetely different behaviour
+  //as we dont open the file directly but rather use a gda dataset
+  if (theFileType==GDAL)
+  {}
+  else //use our own file access mechanism
   {
-    std::cerr << "Cannot open file : " << theFileNameQString << std::endl;
-    return false;
-  }
+
+    filenameString=theFileNameQString;
+    filePointer = new QFile ( theFileNameQString );
+    if ( !filePointer->open( IO_ReadOnly | IO_Translate) )
+    {
+      std::cerr << "Cannot open file : " << theFileNameQString << std::endl;
+      return false;
+    }
 #ifdef QGISDEBUG
-  std::cout << "Opened file : " << theFileNameQString << " successfully." << std::endl;
+    std::cout << "Opened file : " << theFileNameQString << " successfully." << std::endl;
 #endif
-  // now open the text stream on the filereader
-  textStream = new QTextStream(filePointer);
+    // now open the text stream on the filereader
+    textStream = new QTextStream(filePointer);
+  }
   currentColLong=1;
   currentRowLong=1;
   currentElementLong=0;
@@ -1018,4 +1027,145 @@ void FileReader::printFirstCellInEachBlock()
     std::cout << "Offset " <<  myOffset << " -> Element Value " << myElementDouble << std::endl;
     myIterator++;
   }
+}
+
+
+FileReader::GdalDriverMap FileReader::getGdalDriverMap()
+{
+  GdalDriverMap myGdalDriverMap;
+  // This code was taken largely from qgis qgsrasterlayer.cpp
+  GDALAllRegister();
+  GDALDriverManager *myGdalDriverManager = GetGDALDriverManager();
+
+  if (!myGdalDriverManager)
+  {
+    std::cerr << "unable to get GDALDriverManager\n" << std::endl;
+    return myGdalDriverMap;                   // XXX good place to throw exception if we
+  }                           // XXX decide to do exceptions
+
+  // then iterate through all of the supported drivers, adding the
+  // corresponding file filter
+
+  GDALDriver *myGdalDriver;           // current driver
+
+  char **myGdalDriverMetadata;        // driver metadata strings
+
+  QString myGdalDriverLongName("");   // long name for the given driver
+  QString myGdalDriverExtension("");  // file name extension for given driver
+  QString myGdalDriverDescription;    // QString wrapper of GDAL driver description
+  QStringList metadataTokens;   // essentially the metadata string delimited by '='
+  QString catchallFilter;       // for Any file(*.*), but also for those
+  // drivers with no specific file
+  // filter
+
+  // Grind through all the drivers and their respective metadata.
+  // We'll add a file filter for those drivers that have a file
+  // extension defined for them; the others, welll, even though
+  // theoreticaly we can open those files because there exists a
+  // driver for them, the user will have to use the "All Files" to
+  // open datasets with no explicitly defined file name extension.
+  // Note that file name extension strings are of the form
+  // "DMD_EXTENSION=.*".  We'll also store the long name of the
+  // driver, which will be found in DMD_LONGNAME, which will have the
+  // same form.
+  for (int i = 0; i < myGdalDriverManager->GetDriverCount(); ++i)
+  {
+    myGdalDriver = myGdalDriverManager->GetDriver(i);
+    Q_CHECK_PTR(myGdalDriver);
+    if (!myGdalDriver)
+    {
+      qWarning("unable to get driver %d", i);
+      continue;
+    }
+
+
+    //add this driver to the map
+    // std::cerr << "got driver string " << myGdalDriver->GetDescription() << "\n";
+
+    myGdalDriverMetadata = myGdalDriver->GetMetadata();
+
+    // presumably we know we've run out of metadta if either the
+    // address is 0, or the first character is null
+    while (myGdalDriverMetadata && '\0' != myGdalDriverMetadata[0])
+    {
+      metadataTokens = QStringList::split("=", *myGdalDriverMetadata);
+      // std::cerr << "\t" << *myGdalDriverMetadata << "\n";
+
+      // XXX add check for malformed metadataTokens
+
+      // Note that it's oddly possible for there to be a
+      // DMD_EXTENSION with no corresponding defined extension
+      // string; so we check that there're more than two tokens.
+
+      if (metadataTokens.count() > 1)
+      {
+        std::cout << "Listing GDAL Metadata tokens: "  << std::endl;
+        for (int i = 0; i < metadataTokens.count() ; i++)
+        {
+          std::cout << "GDAL Metadata token: " << metadataTokens[i] << std::endl;
+        }
+        if ("DMD_EXTENSION" == metadataTokens[0])
+        {
+          myGdalDriverExtension = metadataTokens[1];
+          std::cout << "Extension found: " << myGdalDriverExtension << std::endl;
+
+        }
+        else if ("DMD_LONGNAME" == metadataTokens[0])
+        {
+          myGdalDriverLongName = metadataTokens[1];
+
+          // remove any superfluous (.*) strings at the end as
+          // they'll confuse QFileDialog::getOpenFileNames()
+
+          myGdalDriverLongName.remove(QRegExp("\\(.*\\)$"));
+        }
+      }
+      // if we have both the file name extension and the long name,
+      // then we've all the information we need for the current
+      // driver; therefore emit a file filter string and move to
+      // the next driver
+      if (!(myGdalDriverExtension.isEmpty() || myGdalDriverLongName.isEmpty()))
+      {
+        myGdalDriverMap[myGdalDriverLongName]=myGdalDriverExtension;
+        break;            // ... to next driver, if any.
+      }
+
+      ++myGdalDriverMetadata;
+
+    }                       // each metadata item
+    if (myGdalDriverExtension.isEmpty() && !myGdalDriverLongName.isEmpty())
+    {
+      // Then what we have here is a driver with no corresponding
+      // file extension; e.g., GRASS.  In which case we append the
+      // string to the "catch-all" which will match all file types.
+      // (I.e., "*.*") We use the driver description intead of the
+      // long time to prevent the catch-all line from getting too
+      // large.
+
+      // ... OTOH, there are some drivers with missing
+      // DMD_EXTENSION; so let's check for them here and handle
+      // them appropriately
+
+      // USGS DEMs use "*.dem"
+      if (myGdalDriverDescription.startsWith("USGSDEM"))
+      {
+        myGdalDriverMap[myGdalDriverLongName]="dem";
+      }
+      else if (myGdalDriverDescription.startsWith("DTED"))
+      {
+        // DTED use "*.dt0"
+        myGdalDriverMap[myGdalDriverLongName]="dt0";
+      }
+      else if (myGdalDriverDescription.startsWith("MrSID"))
+      {
+        // MrSID use "*.sid"
+        myGdalDriverMap[myGdalDriverLongName]="sid";
+      }
+      else
+      {
+        myGdalDriverMap["All other types"]="*";
+      }
+    }
+  }
+  return myGdalDriverMap;
 }

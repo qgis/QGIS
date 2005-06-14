@@ -32,6 +32,7 @@ email                : t.sutton@reading.ac.uk
 #include <qfileinfo.h> 
 #include <qdir.h>
 #include <qfileinfo.h>
+#include <qmap.h>
 
 CDPWizard::CDPWizard( QWidget* parent , const char* name , bool modal , WFlags fl  )
         : CDPWizardBase( parent, name, modal, fl )
@@ -568,7 +569,23 @@ void CDPWizard::promptForFileName(QLineEdit * theLineEdit, QString theShortName,
 {
     QSettings myQSettings;
     QString myWorkDirString = myQSettings.readEntry("/qgis/cdpwizard/DefaultDirectories/" + theShortName + "Dir",QDir::homeDirPath());
-    QString myFileNameQString = QFileDialog::getOpenFileName (myWorkDirString,"*.asc;*.grd",0,"Select " + theLongName ,"Select " + theLongName);
+
+    QString myFilterList = "";
+    FileReader::GdalDriverMap::Iterator myIterator;
+    FileReader::GdalDriverMap myMap = FileReader::getGdalDriverMap();
+    for ( myIterator = myMap.begin(); myIterator != myMap.end(); ++myIterator ) 
+    {
+            if (!myFilterList.isEmpty())
+            {
+              myFilterList+=";;"; //note! two semicolons must be used!
+            }
+            myFilterList+= myIterator.key().latin1();
+            myFilterList+= "(*.";
+            myFilterList+= myIterator.data().latin1();
+            myFilterList+= ")";
+     }
+    std::cout << "Filter List: " << myFilterList << std::endl;
+    QString myFileNameQString = QFileDialog::getOpenFileName (myWorkDirString,myFilterList,0,"Select " + theLongName ,"Select " + theLongName);
     theLineEdit->setText(myFileNameQString);
     QFileInfo myFileInfo(myFileNameQString);
     myQSettings.writeEntry("/qgis/cdpwizard/DefaultDirectories/" + theShortName + "Dir",myFileInfo.dirPath());

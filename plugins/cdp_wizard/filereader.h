@@ -287,6 +287,20 @@ public:
   * @return void - No return.
   */
   void printFirstCellInEachBlock();
+
+ /** Typedef to hold a list of supported gdal drivers 
+ *   @see getGdalDriverMap()
+ */
+ typedef QMap<QString, QString> GdalDriverMap;
+
+  /** A helper function that returns a map of the supported gdal raster files
+  *   that can be read (see filewriter for a similar function that provides a list 
+  *   of types that can be written to).
+  * @return GdalDriverMap An associative array where the key is the text description
+  *               of the driver, and the value is the extension pattern e.g. .tif
+  */
+  static GdalDriverMap getGdalDriverMap();
+
 private:
   //
   //   Private attributes
@@ -320,7 +334,7 @@ private:
   QTextStream * textStream;
   /** \brief Pointer to the gdaldataset.  */
   GDALDataset * gdalDataset;
-  /** \brief Values for mapping pixel to world coordinates.  */
+  /** \brief The gdal transform object (descibes origin, pixel size etc)  */
   double adfGeoTransform[6];
 
 
