@@ -98,8 +98,16 @@ QgsFeature::QgsFeature( QgsFeature const & rhs,
   if ( changedGeometries.find(mFid) == changedGeometries.end() )
   {
     // copy geometry purely from rhs feature
-    mGeometry     = rhs.mGeometry;
-    mOwnsGeometry = rhs.mOwnsGeometry;
+    if ( rhs.mGeometry )
+    {
+      mGeometry = new QgsGeometry( *(rhs.mGeometry) );
+      mOwnsGeometry = TRUE;
+    }
+    else
+    {
+      mGeometry = 0;
+      mOwnsGeometry = FALSE;
+    }
   }
   else
   {
@@ -111,35 +119,55 @@ QgsFeature::QgsFeature( QgsFeature const & rhs,
 }                        
 
 
-QgsFeature::QgsFeature( QgsFeature const & feature )
-    : mFid( feature.mFid ), 
-      mDirty( feature.mDirty ),
-      attributes( feature.attributes ),
-      fieldNames( feature.fieldNames ),
-      mValid( feature.mValid ),
-      mGeometry( feature.mGeometry ),
-      mOwnsGeometry( feature.mOwnsGeometry ),
-      mTypeName( feature.mTypeName )
+QgsFeature::QgsFeature( QgsFeature const & rhs )
+    : mFid( rhs.mFid ), 
+      mDirty( rhs.mDirty ),
+      attributes( rhs.attributes ),
+      fieldNames( rhs.fieldNames ),
+      mValid( rhs.mValid ),
+      mTypeName( rhs.mTypeName )
 {
-  // NOOP
+
+  // copy embedded geometry
+  if ( rhs.mGeometry )
+  {
+    mGeometry = new QgsGeometry( *(rhs.mGeometry) );
+    mOwnsGeometry = TRUE;
+  }
+  else
+  {
+    mGeometry = 0;
+    mOwnsGeometry = FALSE;
+  }
+
 }
 
 
-QgsFeature & QgsFeature::operator=( QgsFeature const & feature )
+QgsFeature & QgsFeature::operator=( QgsFeature const & rhs )
 {
-    if ( &feature == this )
-    { return *this; }
+  if ( &rhs == this )
+  { return *this; }
 
-    mFid =  feature.mFid ; 
-    mDirty =  feature.mDirty ; 
-    attributes =  feature.attributes ;
-    fieldNames =  feature.fieldNames ;
-    mValid =  feature.mValid ;
-    mGeometry = feature.mGeometry;
-    mOwnsGeometry = feature.mOwnsGeometry;
-    mTypeName = feature.mTypeName;
+  mFid =  rhs.mFid ; 
+  mDirty =  rhs.mDirty ; 
+  attributes =  rhs.attributes ;
+  fieldNames =  rhs.fieldNames ;
+  mValid =  rhs.mValid ;
+  mTypeName = rhs.mTypeName;
 
-    return *this;
+  // copy embedded geometry
+  if ( rhs.mGeometry )
+  {
+    mGeometry = new QgsGeometry( *(rhs.mGeometry) );
+    mOwnsGeometry = TRUE;
+  }
+  else
+  {
+    mGeometry = 0;
+    mOwnsGeometry = FALSE;
+  }
+    
+  return *this;
 } // QgsFeature::operator=( QgsFeature const & rhs )
 
 
@@ -228,8 +256,9 @@ QgsGeometry * QgsFeature::geometry()
 
 QgsGeometry * QgsFeature::geometryAndOwnership()
 {
-  return mGeometry;
   mOwnsGeometry = FALSE;
+  
+  return mGeometry;
 }
 
 
@@ -381,8 +410,8 @@ void QgsFeature::setGeometryAndOwnership(unsigned char *geom, size_t length)
   }
   
   mGeometry = new QgsGeometry();
-  mGeometry->setFromWkb(geom, length);
-  // mOwnsGeometry does not change.
+  mGeometry->setWkbAndOwnership(geom, length);
+  mOwnsGeometry = TRUE;
 
 }
 
