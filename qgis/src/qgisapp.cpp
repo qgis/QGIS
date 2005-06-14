@@ -511,6 +511,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // sculpted on OS X and the icon is never displayed [gsherman]
     mOnTheFlyProjectionStatusButton = new QToolButton(this);
     mOnTheFlyProjectionStatusButton->setMaximumWidth(20);
+    // Maintain uniform widget height in status bar by setting button height same as labels
+    // For Qt/Mac 3.3, the default toolbutton height is 30 and labels were expanding to match
+    mOnTheFlyProjectionStatusButton->setMaximumHeight(mScaleLabel->height());
     QPixmap myProjPixmap;
     myProjPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection_disabled.png"));
     mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
