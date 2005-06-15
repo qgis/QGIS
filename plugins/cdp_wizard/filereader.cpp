@@ -30,14 +30,24 @@ FileReader::~FileReader()
 
 bool FileReader::openFile(const QString theFileNameQString,const FileTypeEnum theFileType)
 {
+  filenameString=theFileNameQString;
   //if gdal is being used we have a comlpetely different behaviour
   //as we dont open the file directly but rather use a gda dataset
   if (theFileType==GDAL)
-  {}
+  {
+    GDALAllRegister();
+    gdalDataset = (GDALDataset *) GDALOpen( theFileNameQString, GA_ReadOnly );
+    if( gdalDataset == NULL )
+    {
+      std::cerr << "Cannot open file : " << theFileNameQString << std::endl;
+      return false;
+    }
+
+  }
   else //use our own file access mechanism
   {
 
-    filenameString=theFileNameQString;
+
     filePointer = new QFile ( theFileNameQString );
     if ( !filePointer->open( IO_ReadOnly | IO_Translate) )
     {
@@ -59,7 +69,14 @@ bool FileReader::openFile(const QString theFileNameQString,const FileTypeEnum th
 
 bool FileReader::closeFile()
 {
-  filePointer->close();
+  if (fileType==GDAL)
+  {
+    delete gdalDataset;
+  }
+  else
+  {
+    filePointer->close();
+  }
   return true;
 }
 
@@ -75,8 +92,22 @@ float FileReader::getElement()
   //see if it is ok to get another element
   if (!endOfMatrixFlag)
   {
-    //read a float from the file - this will advance the file pointer
-    *textStream >> myElementFloat;
+    if (fileType==GDAL)
+    {
+      //get the cell value for current col and row
+      GDALRasterBand * myGdalBand = gdalDataset->GetRasterBand(1);
+      GDALDataType myType = myGdalBand->GetRasterDataType();
+      int mySize = GDALGetDataTypeSize ( myType ) / 8;
+      void *myData = CPLMalloc ( mySize );
+      CPLErr err = myGdalBand->RasterIO ( GF_Read, currentColLong, currentRowLong, 1, 1, myData, 1, 1, myType, 0, 0 );
+      myElementFloat = readValue ( myData, myType, 0 );
+      free (myData);
+    }
+    else
+    {
+      //read a float from the file - this will advance the file pointer
+      *textStream >> myElementFloat;
+    }
     currentElementLong++;
 
     //check if we have now run to the end of the matrix
@@ -113,6 +144,41 @@ float FileReader::getElement()
   //std::cout << "Col " << currentColLong << " Row " << currentRowLong << " value : " << myElementFloat << std::endl ;
   return myElementFloat;
 }
+
+double FileReader::readValue ( void *theData, GDALDataType theType, int theIndex )
+{
+  double myVal;
+
+  switch ( theType )
+  {
+  case GDT_Byte:
+    return (double) ((GByte *)theData)[theIndex];
+    break;
+  case GDT_UInt16:
+    return (double) ((GUInt16 *)theData)[theIndex];
+    break;
+  case GDT_Int16:
+    return (double) ((GInt16 *)theData)[theIndex];
+    break;
+  case GDT_UInt32:
+    return (double) ((GUInt32 *)theData)[theIndex];
+    break;
+  case GDT_Int32:
+    return (double) ((GInt32 *)theData)[theIndex];
+    break;
+  case GDT_Float32:
+    return (double) ((float *)theData)[theIndex];
+    break;
+  case GDT_Float64:
+    myVal = ((double *)theData)[theIndex];
+    return (double) ((double *)theData)[theIndex];
+    break;
+  default:
+    qWarning("Data type %d is not supported", theType);
+  }
+  return 0.0;
+}
+
 
 const long FileReader::getXDim()
 {
@@ -734,10 +800,14 @@ bool FileReader::moveToHeader()
 
 bool FileReader::moveToDataStart()
 {
+
   try
   {
-    filePointer->at(dataStartOffset);
-    headerOffset=filePointer->at();
+    if (!fileType==GDAL)
+    {
+      filePointer->at(dataStartOffset);
+      headerOffset=filePointer->at();
+    }
     currentElementLong=0;
     currentColLong = 0;
     currentRowLong=1;
@@ -753,6 +823,11 @@ bool FileReader::moveToDataStart()
 
 QValueVector <QFile::Offset> FileReader::getBlockMarkers(bool forceFlag)
 {
+  if (fileType==GDAL)
+  {
+    dataBlockMarkersVector.clear();
+    return dataBlockMarkersVector;
+  }
   //
   // Set up some vars
   //

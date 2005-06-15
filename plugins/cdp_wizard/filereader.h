@@ -336,7 +336,8 @@ private:
   GDALDataset * gdalDataset;
   /** \brief The gdal transform object (descibes origin, pixel size etc)  */
   double adfGeoTransform[6];
-
+  /** A helper method to retrieve a value from a gdal scanline */
+  double readValue ( void *theData, GDALDataType theType, int theIndex );
 
   /** Number of header lines per month data block (applicable to files containing multiple months in a single file only. */
   int monthHeaderLinesInt;
