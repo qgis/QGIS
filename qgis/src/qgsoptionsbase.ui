@@ -539,7 +539,12 @@ identifying features without zooming in very close.
                         </item>
                         <item>
                             <property name="text">
-                                <string>firebird</string>
+                                <string>firefox</string>
+                            </property>
+                        </item>
+                        <item>
+                            <property name="text">
+                                <string>mozilla-firefox</string>
                             </property>
                         </item>
                         <item>
