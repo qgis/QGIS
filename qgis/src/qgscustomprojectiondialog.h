@@ -30,6 +30,7 @@ public:
     //a recursive function to make a directory and its ancestors
     bool makeDir(QDir &theQDir);
 public slots:    
+    void pbnCalculate_clicked();
     void pbnHelp_clicked();
     void pbnClose_clicked();
     void pbnDelete_clicked();

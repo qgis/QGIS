@@ -874,6 +874,83 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   sqlite3_close(myDatabase);
 }
 
+void QgsCustomProjectionDialog::pbnCalculate_clicked()
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsCustomProjectionDialog::pbnCalculate_clicked()" << std::endl;
+#endif
+
+
+  //
+  // We must check the prj def is valid!
+  //
+
+  projPJ myProj = pj_init_plus( leTestParameters->text().latin1() );
+
+  std::cout << "My proj: " << leTestParameters->text().latin1() << std::endl;
+
+  if ( myProj == NULL ) 
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("This proj4 projection definition is not valid.") );
+    projectedX->setText("");
+    projectedY->setText("");
+    pj_free(myProj);
+    return;
+    
+  }
+  // Get the WGS84 coordinates
+  bool okN, okE;
+  double northing = northWGS84->text().toDouble(&okN) * DEG_TO_RAD;  
+  double easthing = eastWGS84->text().toDouble(&okE)  * DEG_TO_RAD;  
+
+  if ( !okN || !okE )
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("Northing and Easthing must be in decimal form.") );
+    projectedX->setText("");
+    projectedY->setText("");
+    pj_free(myProj);
+    return;    
+  }  
+
+  projPJ wgs84Proj = pj_init_plus( GEOPROJ4 ); //defined in qgis.h
+
+  if ( wgs84Proj == NULL ) 
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("Internal Error (source projection invalid?") );
+    projectedX->setText("");
+    projectedY->setText("");
+    pj_free(myProj);
+    return;
+  }
+
+  double z = 0.0;
+
+  int projResult = pj_transform(wgs84Proj, myProj, 1, 0, &northing, &easthing, &z);
+  if ( projResult != 0 )
+  {
+    projectedX->setText("Error");
+    projectedY->setText("Error");
+    std::cout << pj_strerrno(projResult) << std::endl;
+  }
+  else 
+  {
+    QString tmp;
+
+    tmp = tmp.setNum(northing, 'f', 4);
+    projectedX->setText(tmp);
+    tmp = tmp.setNum(easthing, 'f', 4);
+    projectedY->setText(tmp);
+  }
+
+  //
+  pj_free(myProj);
+  pj_free(wgs84Proj);
+
+}
+
 
 
 void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString & theText)
@@ -1000,9 +1077,9 @@ void QgsCustomProjectionDialog::setCombosUsingParameters()
   {
     myLength = myProjRegExp.matchedLength();
     QString myProjectionAcronym;  
-    myProjectionAcronym = myProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength-(PROJ_PREFIX_LEN+1));//+1 for space
+    myProjectionAcronym = myProj4String.mid(myStart+(PROJ_PREFIX_LEN-1),myLength-(PROJ_PREFIX_LEN));//+1 for space
     //now update the combos
-    std::cout << "Prj acronym" << myProjectionAcronym << std::endl;
+    std::cout << "Prj acronym: " << myProjectionAcronym << std::endl;
     cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionAcronym));
   }
   
@@ -1019,9 +1096,9 @@ void QgsCustomProjectionDialog::setCombosUsingParameters()
   {
     myLength = myEllipseRegExp.matchedLength();
     QString myEllipsoidAcronym;
-    myEllipsoidAcronym = myProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength-(ELLPS_PREFIX_LEN+1));
+    myEllipsoidAcronym = myProj4String.mid(myStart+(ELLPS_PREFIX_LEN-1),myLength-(ELLPS_PREFIX_LEN));
     //now update the combos
-    std::cout << "Ellps acronym" << myEllipsoidAcronym << std::endl;
+    std::cout << "Ellps acronym: " << myEllipsoidAcronym << std::endl;
     cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidAcronym));
   }
 }

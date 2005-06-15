@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsCustomProjectionDialogBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,196 +8,365 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>600</width>
-            <height>336</height>
+            <width>627</width>
+            <height>431</height>
         </rect>
     </property>
     <property name="caption">
-        <string>Form1</string>
+        <string>Custom Projection Definition</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
     </property>
     <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QComboBox" row="3" column="1">
+        <widget class="QTabWidget" row="0" column="0">
             <property name="name">
-                <cstring>cboEllipsoid</cstring>
+                <cstring>tabWidget2</cstring>
             </property>
-        </widget>
-        <widget class="QLineEdit" row="1" column="1">
-            <property name="name">
-                <cstring>leName</cstring>
-            </property>
-        </widget>
-        <widget class="QComboBox" row="2" column="1">
-            <property name="name">
-                <cstring>cboProjectionFamily</cstring>
-            </property>
-        </widget>
-        <widget class="QLabel" row="1" column="0">
-            <property name="name">
-                <cstring>textLabel1</cstring>
-            </property>
-            <property name="text">
-                <string>Name:</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="3" column="0">
-            <property name="name">
-                <cstring>textLabel3</cstring>
-            </property>
-            <property name="text">
-                <string>Ellipsoid:</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="2" column="0">
-            <property name="name">
-                <cstring>textLabel2</cstring>
-            </property>
-            <property name="text">
-                <string>Projection Family:</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>textLabel5</cstring>
-            </property>
-            <property name="font">
-                <font>
-                    <pointsize>18</pointsize>
-                    <bold>1</bold>
-                </font>
-            </property>
-            <property name="text">
-                <string>Custom Projection Definition</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="4" column="0">
-            <property name="name">
-                <cstring>textLabel3_2</cstring>
-            </property>
-            <property name="text">
-                <string>Parameters:</string>
-            </property>
-        </widget>
-        <widget class="QLineEdit" row="4" column="1">
-            <property name="name">
-                <cstring>leParameters</cstring>
-            </property>
-        </widget>
-        <widget class="QTextEdit" row="5" column="1">
-            <property name="name">
-                <cstring>txtExpectedParameters</cstring>
-            </property>
-            <property name="frameShadow">
-                <enum>Plain</enum>
-            </property>
-            <property name="margin">
-                <number>1</number>
-            </property>
-            <property name="midLineWidth">
-                <number>1</number>
-            </property>
-            <property name="textFormat">
-                <enum>LogText</enum>
-            </property>
-        </widget>
-        <widget class="QLabel" row="5" column="0">
-            <property name="name">
-                <cstring>textLabel4</cstring>
-            </property>
-            <property name="text">
-                <string>Expected 
-Parameters:</string>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="6" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>layout2</cstring>
-            </property>
-            <hbox>
+            <widget class="QWidget">
                 <property name="name">
-                    <cstring>unnamed</cstring>
+                    <cstring>tab</cstring>
                 </property>
-                <widget class="QPushButton">
+                <attribute name="title">
+                    <string>Define</string>
+                </attribute>
+                <grid>
                     <property name="name">
-                        <cstring>pbnFirst</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <property name="text">
-                        <string>|&lt;</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
+                    <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>textLabel5</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <pointsize>18</pointsize>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="text">
+                            <string>Custom Projection Definition</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="1" column="0">
+                        <property name="name">
+                            <cstring>textLabel1</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Name:</string>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit" row="1" column="1">
+                        <property name="name">
+                            <cstring>leName</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QComboBox" row="2" column="1">
+                        <property name="name">
+                            <cstring>cboProjectionFamily</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="2" column="0">
+                        <property name="name">
+                            <cstring>textLabel2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Projection Family:</string>
+                        </property>
+                    </widget>
+                    <widget class="QComboBox" row="3" column="1">
+                        <property name="name">
+                            <cstring>cboEllipsoid</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="3" column="0">
+                        <property name="name">
+                            <cstring>textLabel3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Ellipsoid:</string>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit" row="4" column="1">
+                        <property name="name">
+                            <cstring>leParameters</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="4" column="0">
+                        <property name="name">
+                            <cstring>textLabel3_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Parameters:</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="5" column="0">
+                        <property name="name">
+                            <cstring>textLabel4</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Expected 
+Parameters:</string>
+                        </property>
+                    </widget>
+                    <widget class="QTextEdit" row="5" column="1">
+                        <property name="name">
+                            <cstring>txtExpectedParameters</cstring>
+                        </property>
+                        <property name="frameShadow">
+                            <enum>Plain</enum>
+                        </property>
+                        <property name="margin">
+                            <number>1</number>
+                        </property>
+                        <property name="midLineWidth">
+                            <number>1</number>
+                        </property>
+                        <property name="textFormat">
+                            <enum>LogText</enum>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget" row="6" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>layout2</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>pbnFirst</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>|&lt;</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>pbnPrevious</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&lt;</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>lblRecordNo</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>1 of 1</string>
+                                </property>
+                                <property name="alignment">
+                                    <set>AlignCenter</set>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>pbnNext</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&gt;</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>pbnLast</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&gt;|</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>pbnNew</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>New</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>pbnSave</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Save</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>pbnDelete</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Delete</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>pbnClose</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Close</string>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Test</string>
+                </attribute>
+                <grid>
                     <property name="name">
-                        <cstring>pbnPrevious</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <property name="text">
-                        <string>&lt;</string>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>lblRecordNo</cstring>
-                    </property>
-                    <property name="text">
-                        <string>1 of 1</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignCenter</set>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>pbnNext</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&gt;</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>pbnLast</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&gt;|</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>pbnNew</cstring>
-                    </property>
-                    <property name="text">
-                        <string>New</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>pbnSave</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Save</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>pbnDelete</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Delete</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>pbnClose</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Close</string>
-                    </property>
-                </widget>
-            </hbox>
+                    <widget class="QLabel" row="0" column="0" rowspan="1" colspan="4">
+                        <property name="name">
+                            <cstring>textLabel1_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Transform from WGS84 to the chosen projection</string>
+                        </property>
+                    </widget>
+                    <widget class="QPushButton" row="6" column="0" rowspan="1" colspan="4">
+                        <property name="name">
+                            <cstring>pbnCalculate</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Calculate</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="3" column="3">
+                        <property name="name">
+                            <cstring>textLabel2_3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Projected Corrdinate System</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="4" column="3">
+                        <property name="name">
+                            <cstring>projectedX</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>true</bool>
+                        </property>
+                        <property name="frameShape">
+                            <enum>Box</enum>
+                        </property>
+                        <property name="text">
+                            <string></string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="3" column="2">
+                        <property name="name">
+                            <cstring>textLabel1_3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Geographic / WGS84</string>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit" row="4" column="2">
+                        <property name="name">
+                            <cstring>northWGS84</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="4" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>textLabel2_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>North:</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="5" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>textLabel2_2_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>East:</string>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit" row="5" column="2">
+                        <property name="name">
+                            <cstring>eastWGS84</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="5" column="3">
+                        <property name="name">
+                            <cstring>projectedY</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>true</bool>
+                        </property>
+                        <property name="frameShape">
+                            <enum>Box</enum>
+                        </property>
+                        <property name="margin">
+                            <number>1</number>
+                        </property>
+                        <property name="text">
+                            <string></string>
+                        </property>
+                    </widget>
+                    <spacer row="3" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>spacer1</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>41</width>
+                                <height>21</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QTextBrowser" row="1" column="0" rowspan="1" colspan="4">
+                        <property name="name">
+                            <cstring>textBrowser1</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are know (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="2" column="0">
+                        <property name="name">
+                            <cstring>textLabel3_2_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Parameters:</string>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="3">
+                        <property name="name">
+                            <cstring>leTestParameters</cstring>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
         </widget>
     </grid>
 </widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="2574">789c6d95594f1c3910c7dff914a3d45bb4aab4edf6a5d53ee424102040eeacf6c1ddb6812440c2118ed57ef7f5fccb93d59260a499dfb85c5dc7dfd50fee2fdeef6e2fee3f583bbf481747f3623e4c678bfbf9f2f8f8e6cfbffef87bed9e728be5bfd60b7defb7b57b7b178b79b1737a5296c0070d68c0df92e96b67ddd9808df29d2fc1a3eef6fcb8b3ea3c751ebbfd3bb06d0b0fe76bb033dd1faf83bd728381fdbeb029fdfc5370b4a6f31e38d9557cef3ba7eeef143cd97e9e8fc1b39d0705be1276ab7cd73bafe27dd6d9f5f36f3aaffccfe0ec57f99e808beff171ed6c3b53e755fd2ec0b52d0ffe2eeca76eaf8543cf8fdf2e590d21743e072ba58700de120eb1efe7ce2b7fa9f3dcb974ce9d515fe57d1946c483e7aba0d2308177c0b171853de255a99d873dab256ba5fd207a7a0df63a29a9f713706cf1ccf0f71c9cac53520fe8474fba28e8836ec1c52865711efa31de1b25cf7b01cea352091c845d52888f3e804bdbcf605eb2556ed6b0a7cf6063a386de3882c794b4d8433f36fa414b3dd04f9b5cd4a807a37fb63aab23f85167a7d10fba128e463bec6f2fd98d61ecfba8979bbc96e731f4e6aacf5aeaf772c95ef960a43ebbe0eceb887ad0477009ce08a39f618cc1e03c6d806d2846f435fd60d10bee73702119c917fd093e788b7c6800e7e88cd417f50c354683feb15d728cc918a937f418a7d42e10f6bf80cbe446d18f704d71947a42cf694cd14a7ea84fb293eaf96d8243aafd3cea3ba9298f526f076e82b192cf59e7d0fddd742ea3f4fb15d84cf328f1a39e939dac13ff987f539dad157d61becd364f56f4887935fb6c8519f3669eb2eff6f03f97dc1c803f816b565ef6717ff2908b153d407f5967ebe43e40cfd964efa49e9857792cdaa27fbcd9d948be04ffd996b133e6510ec559c917f73fc7123ae33ee6a9a4ce273f58f48c799be732757e08ae255bd127f45686323839ffadb371c887b63a172bf91c8155a956f488fe145387ce9887652ca317bd8cc26d5ff2c7bc2ab6b61702f6373a6b27f3e4101c4b4cb2efc173f54efa85795d6ab55eeca1e7366ebd13fd401fd55413255ef8ab638dd22f42fed555e7a5fe781f565f7d92feee759e659f705f6ba821cafd45fe35b60b23f312f3ae4e750aa2bfdbce39881e50cfda0413b2bc9c7fb59838f1b4fcf66b1b9e3973e1ca073fdbf0211ff127fecc5ff8984ff8f4671bfecadff88ccff9822ff93b5ff1f55d1bbee15b7ec88ff8801ff3137ecacf78fd279be7bcc19bfca2d954dee26ddee197ffb7e15ddee37d7ec5aff90dbfe577fcbed1873b361f79808d62dda2353c36b2776c1cfbf6eb0e078ec44494789fa63b360734b75f3315aa74408774449fe8f3dd98e90b1dd3099dd257fa4667eddb39f59aac6ce892bed3155dd30dddd2c366f3881e37df4ffeb3a1a7f4acad757a4e1bb4492f688bb669875ed2eeffe369a7f6681f9fafe8755b6fe82dbdbbdb0b7acfd7f8fc401f692045fa17fd3a20b3fa26abc7fccfef6bff02117d47e4</data>
+    </image>
+</images>
 <connections>
     <connection>
         <sender>cboProjectionFamily</sender>
@@ -265,6 +434,12 @@ Parameters:</string>
         <receiver>QgsCustomProjectionDialogBase</receiver>
         <slot>pbnDelete_clicked()</slot>
     </connection>
+    <connection>
+        <sender>pbnCalculate</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsCustomProjectionDialogBase</receiver>
+        <slot>pbnCalculate_clicked()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgscustomprojectiondialogbase.ui.h</include>
@@ -284,6 +459,7 @@ Parameters:</string>
     <slot>pbnSave_clicked()</slot>
     <slot>pbnClose_clicked()</slot>
     <slot>pbnDelete_clicked()</slot>
+    <slot>pbnCalculate_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
