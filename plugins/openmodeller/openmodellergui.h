@@ -47,7 +47,9 @@ public:
   void getAlgorithmList();
   void getParameterList( QString theAlgorithmNameQString );
   void parseAndRun(QString theParametersFileNameQString);
+  QString makeConfigReport();
   void makeConfigFile();
+  
   
   //
   // The following methods reimplement methods by the same name of the parent class
