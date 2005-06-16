@@ -101,6 +101,7 @@ float FileReader::getElement()
       void *myData = CPLMalloc ( mySize );
       CPLErr err = myGdalBand->RasterIO ( GF_Read, currentColLong, currentRowLong, 1, 1, myData, 1, 1, myType, 0, 0 );
       myElementFloat = readValue ( myData, myType, 0 );
+      //std::cout << "Gdal Driver retrieved : " << myElementFloat << " at " << currentColLong <<" , " << currentRowLong << " ... from... "<<  filenameString << std::endl;
       free (myData);
     }
     else
@@ -246,261 +247,112 @@ const FileReader::FileTypeEnum FileReader::getFileType()
 bool FileReader::setFileType( const FileTypeEnum theNewVal)
 {
 
-
-
-#ifdef QGISDEBUG
-
-  std::cout << "FileReader::setFileType() -  called with fileType: " << theNewVal << std::endl;
-
-#endif
-
   try
-
   {
     fileType = theNewVal;
     std::cout << "FileReader::setFileType() -  fileType set to : " << fileType << std::endl;
-
     //Set Hadley member variables
     if ((fileType == HADLEY_SRES) || (fileType == HADLEY_IS92))
     {
       xDimLong = 96;
       yDimLong = 73;
-
       columnsPerRowLong = 6;
-
       headerLinesInt = 0;
-
       monthHeaderLinesInt = 1;
-
     }
-
     //Set IPCC observed member variables
-
     else if (fileType == IPCC_OBSERVED)
-
     {
-
       xDimLong = 720;
-
       yDimLong = 360;
-
       columnsPerRowLong = 720;
-
       headerLinesInt = 2;
-
       monthHeaderLinesInt = 0;
-
     }
-
     //Set ECHAM4 member variables
-
     else if (fileType == ECHAM4)
-
     {
-
       xDimLong = 128;
-
       yDimLong = 64;
-
       columnsPerRowLong = 6;
-
       headerLinesInt = 0;
-
       monthHeaderLinesInt = 1;
-
     }
-
     //Set CCCma member variables
-
     else if (fileType == CGCM2)
-
     {
-
       xDimLong = 96;
-
       yDimLong = 48;
-
       columnsPerRowLong = 6;
-
       headerLinesInt = 0;
-
       monthHeaderLinesInt = 1;
-
     }
-
-
-
     //Set CSIRO_Mk2 member variables
-
     else if (fileType == CSIRO_MK2)
-
     {
-
       xDimLong = 64;
-
       yDimLong = 56;
-
       columnsPerRowLong = 6;
-
       headerLinesInt = 0;
-
       monthHeaderLinesInt = 1;
-
     }
-
     //Set NCAR member variables
-
     else if (fileType == NCAR_CSM_PCM)
-
     {
-
       xDimLong = 128;
-
       yDimLong = 64;
-
       columnsPerRowLong = 6;
-
       headerLinesInt = 0;
-
       monthHeaderLinesInt = 1;
-
     }
-
     //Set GFDL member variables
-
     else if (fileType == GFDL_R30)
-
     {
-
       xDimLong = 96;
-
       yDimLong = 80;
-
       columnsPerRowLong = 6;
-
       headerLinesInt = 0;
-
       monthHeaderLinesInt = 1;
-
     }
-
     //Set CCSRC member variables
-
     else if (fileType == CCSR_AGCM_OGCM)
-
     {
-
       xDimLong = 64;
-
       yDimLong = 32;
-
       columnsPerRowLong = 6;
-
       headerLinesInt = 0;
-
       monthHeaderLinesInt = 1;
-
     }
-
-    //Set ArcInfo ASCII grid and CRES member variables
-
+    //use gdal to determine header info
     else if (fileType == GDAL)
-
     {
-
-      /* Typical Header:
-           ncols         241
-           nrows         207
-           xllcorner     -795282.26306056
-           yllcorner     -3846910.6343577
-           cellsize      7128.3696735486
-           NODATA_value  -9999
-           */
-
-#ifdef QGISDEBUG
-      std::cout << "FileReader::setFileType() - setting file type to ARCINFO_GRID / CRES" << std::endl;
-#endif
-      headerLinesInt = 6;
-      monthHeaderLinesInt = 0;
-      if (filePointer==0)
+      if (!gdalDataset)
       {
-        return false;
+        std::cout << "Error : Cant set file type before the file has been opened! " << std::endl;
       }
-      //Just testing remove this later! vvvvvvvvv
-      //fseek(filePointer,0,SEEK_END);
-      //long myFileSizeLong = ftell(filePointer);
-      //rewind(filePointer);
-      //Just testing remove this later!  ^^^^^^^^^^
-      float myFloat;
-      QString myString;
-      //bit of hoop jumping here
-      //fgetpos (filePointer, headerOffset);
-
-#ifdef QGISDEBUG
-      std::cout << "FileReader::setFileType()- creating properties QMap" << std::endl;
-#endif
-      /*Create the QMap (associative array) to store the header key value pairs.
-       * Doing it this way means that we dont need to worry about the order of the header
-       * fields in the file */
-      QMap <QString, float > myHeaderMap;
-      for (int i=0; i <6;i++)
-      {
-        //read a float from the file - this will advance the file pointer
-        *textStream >> myString;
-        //fscanf (filePointer, "%s", myString);
-        myString=myString.upper();   //make sure all keys are in upper case!
-        *textStream >> myFloat;
-        //fscanf (filePointer, "%f", &myFloat);
-        myHeaderMap[myString]=myFloat;
-      }
-      //print the QMap contents to stdout using an iterator
-      QMap<QString, float>::const_iterator myIterator;
-      for (myIterator=myHeaderMap.begin(); myIterator != myHeaderMap.end(); myIterator++)
-      {
-        std::cout << "FileReader::setFileType() retrieved values : " << myIterator.key().latin1() << " --- " << myIterator.data() << std::endl;
-      }
-      //good, now we can assign the member vars their value
-      //next four are not currently implemented used:
-      //cellSizeFloat = myHeaderMap["CELLSIZE"];
-      //lowerLeftXFloat = myHeaderMap["XLLCORNER"];
-      //lowerLeftYFloat = myHeaderMap["YLLCORNER"];
-      // noDataValueFloat = myHeaderMap["NODATA_VALUE"];
-      //this may cause problems if the arcinfo data structure does not match the file structure!
-      xDimLong  = static_cast<long>(myHeaderMap["NCOLS"]);            //note implicit cast from float to long int
-      yDimLong = static_cast<long>(myHeaderMap["NROWS"]);            //note implicit cast from float to long int
-      //set the start of data block pointer
-      //fgetpos (filePointer,dataStartOffset); //erk this causes a crash
+      xDimLong = gdalDataset->GetRasterXSize();
+      yDimLong = gdalDataset->GetRasterYSize();
+      columnsPerRowLong = 0; //not used
+      headerLinesInt = 0;//not used
+      monthHeaderLinesInt = 0;//not  used
     }
     //Set Valdes member variables
     else if (fileType == VALDES)
     {
-
       /* class user will need to specify rows and cols */
-
       //xDimLong = frmCDPWizard.txtSpecifyNumCol;
-
       //yDimLong = frmCDPWizard.txtSpecifyNumRow;
-
       //columnsPerRowLong = frmCDPWizard.txtSpecifyNumDataCols;
-
       headerLinesInt = 0;
-
       monthHeaderLinesInt = 0;
-
     }//end of filetype handling
-
     return true;
-
   }
 
   catch (...)
-
   {
-
     return false;
-
   }
-
 }
 
 
