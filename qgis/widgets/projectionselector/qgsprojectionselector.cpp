@@ -589,6 +589,30 @@ void QgsProjectionSelector::pbnFind_clicked()
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
+  QString mySearchString(stringSQLSafe(leSearch->text()));
+  // Set up the query to retreive the projection information needed to populate the list
+  QString mySql;
+  if (radSRID->isChecked())
+  {
+    mySql= "select srs_id from tbl_srs where srid=" + mySearchString;
+  }
+  else if (radEPSGID->isChecked())
+  {
+    mySql= "select srs_id from tbl_srs where epsg=" + mySearchString;
+  }
+  else if (radName->isChecked()) //name search
+  {
+    mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'";
+  }
+  else //qgis srsid
+  {
+    //no need to try too look up srsid in db as user has already entered it!
+    setSelectedSRSID(mySearchString.toLong());
+    return;
+  }
+#ifdef QGISDEBUG
+  std::cout << " Search sql" << mySql << std::endl;
+#endif
   //check the db is available
   myResult = sqlite3_open(mSrsDatabaseFileName, &myDatabase);
   if(myResult)
@@ -600,20 +624,6 @@ void QgsProjectionSelector::pbnFind_clicked()
     //     media such as live cd and dont want to force trying to create a db.
     assert(myResult == 0);
   }
-
-  // Set up the query to retreive the projection information needed to populate the list
-  QString mySql;
-  if (radSRID->isChecked())
-  {
-    mySql= "select srs_id from tbl_srs where srid=" + leSearch->text();
-  }
-  else
-  {
-    mySql= "select srs_id from tbl_srs where epsg=" + leSearch->text();
-  }
-#ifdef QGISDEBUG
-  std::cout << " Search sql" << mySql << std::endl;
-#endif
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
@@ -625,7 +635,35 @@ void QgsProjectionSelector::pbnFind_clicked()
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
-
 }
 
+  /*!
+ * \brief Make the string safe for use in SQL statements.
+ *  This involves escaping single quotes, double quotes, backslashes,
+ *  and optionally, percentage symbols.  Percentage symbols are used
+ *  as wildcards sometimes and so when using the string as part of the
+ *  LIKE phrase of a select statement, should be escaped.
+ * \arg const QString in The input string to make safe.
+ * \return The string made safe for SQL statements.
+ */
+const QString QgsProjectionSelector::stringSQLSafe(const QString theSQL)
+{
 
+    QString myRetval;
+    std::string myString(theSQL.latin1());
+    for (std::string::const_iterator it = myString.begin(); it != myString.end(); it++) {
+        if (*it == '\"') {
+            myRetval += "\\\"";
+        } else if (*it == '\'') {
+            myRetval += "\\'";
+        } else if (*it == '\\') {
+            myRetval += "\\\\";
+        } else if (*it == '%')  {
+            myRetval += "\\%";
+        } else {
+            myRetval += *it;
+        }
+    }
+
+    return myRetval;
+}
