@@ -726,14 +726,14 @@ bool  ClimateDataProcessor::makeAvailableCalculationsMap()
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileNameString != "" && minTempFileNameString != "" )
+    if (meanPrecipFileNameString != "" && meanTempFileNameString != "" )
     {
         //declare the key value
         myString=QString("Mean daily precipitation in coolest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileNameString != "" && minTempFileNameString != "" )
+    if (meanPrecipFileNameString != "" && meanTempFileNameString != "" )
     {
         //declare the key value
         myString=QString("Mean daily precipitation in coolest quarter");
@@ -754,14 +754,14 @@ bool  ClimateDataProcessor::makeAvailableCalculationsMap()
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileNameString != ""  &&  maxTempFileNameString != ""  )
+    if (meanPrecipFileNameString != ""  &&  meanTempFileNameString != ""  )
     {
         //declare the key value
         myString=QString("Mean daily precipitation in warmest month");
         //add it to the associative array
         availableCalculationsMap[myString]=myBool;
     }
-    if (meanPrecipFileNameString != ""  && maxTempFileNameString != ""  )
+    if (meanPrecipFileNameString != ""  && meanTempFileNameString != ""  )
     {
         //declare the key value
         myString=QString("Mean daily precipitation in warmest quarter");
@@ -1503,13 +1503,13 @@ bool ClimateDataProcessor::run()
             emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if ( meanPrecipFileGroup &&  minTempFileGroup
-                && meanPrecipFileNameString != "" && minTempFileNameString != ""
+                && meanPrecipFileNameString != "" && meanTempFileNameString != ""
                 && availableCalculationsMap["Mean daily precipitation in coolest month"])
         {
             emit variableStart("Mean daily precipitation in coolest month");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in coolest month" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
-            minTempFileGroup->moveToDataStart();
+            meanTempFileGroup->moveToDataStart();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in coolest month"];
             //get the filewriter from out of the struct
@@ -1520,7 +1520,7 @@ bool ClimateDataProcessor::run()
                 QValueVector<float> myFloatVector,myFloatVector2;
                 //get the next element from the file group
                 myFloatVector = meanPrecipFileGroup->getElementVector();
-                myFloatVector2 = minTempFileGroup->getElementVector();
+                myFloatVector2 = meanTempFileGroup->getElementVector();
                 //we are using mean over year summary
                 int myBlockInt = myDataProcessor->monthWithLowestValue(myFloatVector2);
                 float myFloat  = myDataProcessor->valueGivenMonth(myFloatVector,myBlockInt);
@@ -1542,13 +1542,13 @@ bool ClimateDataProcessor::run()
             emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanPrecipFileGroup &&  minTempFileGroup && meanPrecipFileNameString != ""
-                && minTempFileNameString != ""
+                && meanTempFileNameString != ""
                 && availableCalculationsMap["Mean daily precipitation in coolest quarter"])
         {
             emit variableStart("Mean daily precipitation in coolest quarter");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in coolest month" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
-            minTempFileGroup->moveToDataStart();
+            meanTempFileGroup->moveToDataStart();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in coolest quarter"];
             //get the filewriter from out of the struct
@@ -1559,7 +1559,7 @@ bool ClimateDataProcessor::run()
                 QValueVector<float> myFloatVector,myFloatVector2;
                 //get the next element from the file group
                 myFloatVector = meanPrecipFileGroup->getElementVector();
-                myFloatVector2 = minTempFileGroup->getElementVector();
+                myFloatVector2 = meanTempFileGroup->getElementVector();
                 //we are using mean over year summary
                 int myBlockInt = myDataProcessor->firstMonthOfLowestQ(myFloatVector2);
                 float myFloat  = myDataProcessor->meanOverQuarter(myFloatVector,myBlockInt);
@@ -1651,15 +1651,15 @@ bool ClimateDataProcessor::run()
             emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""
-                && maxTempFileGroup
-                && maxTempFileNameString != ""
+                && meanTempFileGroup
+                && meanTempFileNameString != ""
                 && availableCalculationsMap["Mean daily precipitation in warmest month"])
         {
             emit variableStart("Mean daily precipitation in warmest month");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in warmest month" << std::endl;
             //move to the start of data blocks
             meanPrecipFileGroup->moveToDataStart();
-            maxTempFileGroup->moveToDataStart();
+            meanTempFileGroup->moveToDataStart();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in warmest month"];
             //get the filewriter from out of the struct
@@ -1670,7 +1670,7 @@ bool ClimateDataProcessor::run()
                 QValueVector<float> myFloatVector,myFloatVector2;
                 //get the next element from the file group
                 myFloatVector = meanPrecipFileGroup->getElementVector();
-                myFloatVector2 = minTempFileGroup->getElementVector();
+                myFloatVector2 = meanTempFileGroup->getElementVector();
                 //we are using mean over year summary
                 int myBlockInt = myDataProcessor->monthWithHighestValue(myFloatVector2);
                 float myFloat  = myDataProcessor->valueGivenMonth(myFloatVector,myBlockInt);
@@ -1692,13 +1692,13 @@ bool ClimateDataProcessor::run()
             emit variableDone(myFileWriterStruct.structFullFileName);
         }
         if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""
-                && maxTempFileGroup &&  maxTempFileNameString != ""
+                && meanTempFileGroup &&  meanTempFileNameString != ""
                 &&availableCalculationsMap["Mean daily precipitation in warmest quarter"])
         {
             emit variableStart("Mean daily precipitation in warmest quarter");
             std::cout << "ClimateDataProcessor::run Mean daily precipitation in warmest quarter" << std::endl;
             meanPrecipFileGroup->moveToDataStart();
-            maxTempFileGroup->moveToDataStart();
+            meanTempFileGroup->moveToDataStart();
             //get the struct containing the filewriter pointer and full file name from the writer map
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in warmest quarter"];
             //get the filewriter from out of the struct
@@ -1709,7 +1709,7 @@ bool ClimateDataProcessor::run()
                 QValueVector<float> myFloatVector,myFloatVector2;
                 //get the next element from the file group
                 myFloatVector = meanPrecipFileGroup->getElementVector();
-                myFloatVector2 = maxTempFileGroup->getElementVector();
+                myFloatVector2 = meanTempFileGroup->getElementVector();
                 //we are using mean over year summary
                 int myCurrentBlockOfWarmestQuarterInt = myDataProcessor->firstMonthOfHighestQ(myFloatVector2);
                 float myFloat = myDataProcessor->meanOverQuarter(myFloatVector,myCurrentBlockOfWarmestQuarterInt);

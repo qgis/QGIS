@@ -549,6 +549,7 @@ void CDPWizard::accept()
     //LOGIC REQUIRED TO CHECK THE USER IS ON THE LAST PAGE
     //Save default settings
     saveDefaults();
+    done(1);
 
 }
 
