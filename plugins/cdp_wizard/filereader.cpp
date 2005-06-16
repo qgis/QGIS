@@ -99,7 +99,8 @@ float FileReader::getElement()
       GDALDataType myType = myGdalBand->GetRasterDataType();
       int mySize = GDALGetDataTypeSize ( myType ) / 8;
       void *myData = CPLMalloc ( mySize );
-      CPLErr err = myGdalBand->RasterIO ( GF_Read, currentColLong, currentRowLong, 1, 1, myData, 1, 1, myType, 0, 0 );
+      //-1 in row is to cater for different offset system used by non gdal readers
+      CPLErr err = myGdalBand->RasterIO ( GF_Read, currentColLong, currentRowLong-1, 1, 1, myData, 1, 1, myType, 0, 0 );
       myElementFloat = readValue ( myData, myType, 0 );
       //std::cout << "Gdal Driver retrieved : " << myElementFloat << " at " << currentColLong <<" , " << currentRowLong << " ... from... "<<  filenameString << std::endl;
       free (myData);
