@@ -1227,7 +1227,7 @@ bool ClimateDataProcessor::run()
                     return false;
                 }
                 myXCountInt++;
-                if (myXCountInt==myXDimInt)
+                if (myXCountInt%myXDimInt==0)
                 {
                     myFileWriter->writeString("\n");
                 }
@@ -1248,6 +1248,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual mean diurnal temperature range"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!diurnalTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -1262,6 +1263,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -1279,6 +1285,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual mean number of frost days"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!frostDaysFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -1294,6 +1301,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -1311,6 +1323,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual mean total incident solar radiation"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -1325,6 +1338,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -1347,6 +1365,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual temperature range"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!minTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector, myFloatVector2;
@@ -1362,6 +1381,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -1379,6 +1403,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Highest temperature in warmest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!maxTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -1393,6 +1418,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -1410,6 +1440,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Lowest temperature in coolest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!minTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -1424,6 +1455,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -1441,6 +1477,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanPrecipFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -1455,6 +1492,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -1472,6 +1514,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in coolest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanPrecipFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -1489,6 +1532,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -1505,6 +1553,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in coolest quarter"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanPrecipFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -1522,6 +1571,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -1536,6 +1590,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in driest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanPrecipFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -1551,6 +1606,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -1565,6 +1625,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in driest quarter"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanPrecipFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -1579,6 +1640,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -1598,6 +1664,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in warmest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanPrecipFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -1615,6 +1682,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -1631,6 +1703,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in warmest quarter"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanPrecipFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -1648,6 +1721,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -1662,6 +1740,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in wettest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanPrecipFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -1677,6 +1756,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -1691,6 +1775,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in wettest quarter"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanPrecipFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float > myFloatVector;
@@ -1705,6 +1790,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -1723,6 +1813,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean diurnal temperature range in coolest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!diurnalTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -1739,6 +1830,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -1756,6 +1852,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean diurnal temperature range in warmest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!diurnalTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -1773,6 +1870,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -1789,6 +1891,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean precipitation in frost free months"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanPrecipFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -1804,6 +1907,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -1821,6 +1929,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in coolest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -1836,6 +1945,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -1850,6 +1964,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in coolest quarter"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -1864,6 +1979,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -1881,6 +2001,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in frost free months"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -1897,6 +2018,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -1911,6 +2037,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in warmest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -1926,6 +2053,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -1940,7 +2072,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in warmest quarter"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-
+            int myXCountInt=0;
             while (!meanTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -1956,6 +2088,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -1970,6 +2107,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean wind speed"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!windSpeedFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -1985,6 +2123,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -1999,6 +2142,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Number of months with minimum temperature above freezing"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!minTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -2013,6 +2157,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -2030,6 +2179,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in coolest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -2047,6 +2197,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -2063,6 +2218,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in coolest quarter"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -2080,6 +2236,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -2096,6 +2257,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in warmest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -2113,6 +2275,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -2129,6 +2296,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in warmest quarter"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
             {
 
@@ -2147,6 +2315,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -2163,6 +2336,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in driest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -2180,6 +2354,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -2196,6 +2375,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in driest quarter"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -2212,6 +2392,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
@@ -2230,6 +2415,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in wettest month"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -2247,6 +2433,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -2263,6 +2454,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in wettest quarter"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector,myFloatVector2;
@@ -2280,6 +2472,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -2294,6 +2491,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Standard deviation of mean precipitation"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanPrecipFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -2309,6 +2507,11 @@ bool ClimateDataProcessor::run()
                     delete myDataProcessor;
                     return false;
                 }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
+                }
                 emit cellDone(myFloat);
             }
             emit variableDone(myFileWriterStruct.structFullFileName);
@@ -2323,6 +2526,7 @@ bool ClimateDataProcessor::run()
             FileWriterStruct myFileWriterStruct = myFileWriterMap["Standard deviation of mean temperature"];
             //get the filewriter from out of the struct
             FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+            int myXCountInt=0;
             while (!meanTempFileGroup->getEndOfMatrixFlag())
             {
                 QValueVector<float> myFloatVector;
@@ -2337,6 +2541,11 @@ bool ClimateDataProcessor::run()
                     std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
                     delete myDataProcessor;
                     return false;
+                }
+                myXCountInt++;
+                if (myXCountInt%myXDimInt==0)
+                {
+                    myFileWriter->writeString("\n");
                 }
                 emit cellDone(myFloat);
             }
