@@ -101,14 +101,33 @@ float FileReader::getElement()
       void *myData = CPLMalloc ( mySize );
       //-1 in row is to cater for different offset system used by non gdal readers
       CPLErr err = myGdalBand->RasterIO ( GF_Read, currentColLong, currentRowLong, 1, 1, myData, 1, 1, myType, 0, 0 );
+ // CPLErr myResultCPLerr = myGdalBand->RasterIO(GF_Read, 0, 0, myXDimInt, myYDimInt, myGdalScanData, myXDimInt, myYDimInt, GDT_Float32, 0, 0 );
       myElementFloat = readValue ( myData, myType, 0 );
       //std::cout << "Gdal Driver retrieved : " << myElementFloat << " at " << currentColLong <<" , " << currentRowLong << " ... from... "<<  filenameString << std::endl;
       free (myData);
+      if ((currentColLong ) == xDimLong-1)
+      {
+        currentColLong=0;
+        currentRowLong++;
+      }
+      else
+      {
+        currentColLong++;
+      }
     }
     else
     {
       //read a float from the file - this will advance the file pointer
       *textStream >> myElementFloat;
+      if ((currentColLong ) == xDimLong)
+      {
+        currentColLong=1;
+        currentRowLong++;
+      }
+      else
+      {
+        currentColLong++;
+      }
     }
     currentElementLong++;
 
@@ -134,15 +153,7 @@ float FileReader::getElement()
     std::cout << " XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << std::endl;
   }
   //increment the column and row counter and wrap them if needed
-  if ((currentColLong ) == xDimLong)
-  {
-    currentColLong=1;
-    currentRowLong++;
-  }
-  else
-  {
-    currentColLong++;
-  }
+
   //std::cout << "Col " << currentColLong << " Row " << currentRowLong << " value : " << myElementFloat << std::endl ;
   return myElementFloat;
 }
@@ -653,17 +664,22 @@ bool FileReader::moveToHeader()
 
 bool FileReader::moveToDataStart()
 {
-
   try
   {
     if (!fileType==GDAL)
     {
+      std::cout << "Moving to start of Non GDAL dataset" << std::endl;
       filePointer->at(dataStartOffset);
       headerOffset=filePointer->at();
+      currentRowLong=1;
+    }
+    else
+    {
+      std::cout << "Moving to start of ** GDAL ** dataset" << std::endl;
+      currentRowLong=0;
     }
     currentElementLong=0;
     currentColLong = 0;
-    currentRowLong=1;
     endOfMatrixFlag=false;
     return true;
   }

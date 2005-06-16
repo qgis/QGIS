@@ -54,7 +54,7 @@ void MeridianSwitcher::doSwitch(QString theInputFileString, QString theOutputFil
       QString ("cellsize      ") + 
       QString::number (360/static_cast<float>(myXDimInt)) +
       QString ("\n")+
-      QString ("nodata_value  -9999\n");                    
+      QString ("nodata_value  -9999.0\n");                    
       *myTextStream << myHeaderString;
 
   GDALRasterBand  *myGdalBand = gdalDataset->GetRasterBand( 1 );

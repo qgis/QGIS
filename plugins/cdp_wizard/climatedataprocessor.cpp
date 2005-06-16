@@ -1161,7 +1161,7 @@ bool ClimateDataProcessor::run()
 		    QString ("cellsize      ") + 
 		    QString::number (360/static_cast<float>(myXDimInt)) +
 		    QString ("\n")+
-		    QString ("nodata_value  -9999\n");
+		    QString ("nodata_value  -9999.0\n");
                   myFileWriter->writeString(myHeaderString);
 		  // Formerly this was fixed to the following
 		  //QString myHeaderString=
