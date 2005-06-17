@@ -1,0 +1,1 @@
+openModeller plugin is a gui frontend to the openModeller species distribution modelling library. It provides a wizard interface to selecting a model algorithm, dependent and independent variable data and invoking the model. See http://openmodeller.sf.net for more details about the openModeller project.
