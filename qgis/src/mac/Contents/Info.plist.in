@@ -174,5 +174,18 @@
 			</array>
 		</dict>
 	</array>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>de</string>
+		<string>fr</string>
+		<string>it</string>
+		<string>nl</string>
+		<string>pl_PL</string>
+		<string>pt_BR</string>
+		<string>ru</string>
+		<string>sv</string>
+		<string>zh_CN</string>
+	</array>
 </dict>
 </plist>
