@@ -29,7 +29,7 @@ EXTRA_VERSION=1
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
-   VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}rc${EXTRA_VERSION}
+   VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}pre${EXTRA_VERSION}
 fi
 
 dnl ---------------------------------------------------------------------------
@@ -418,6 +418,7 @@ AC_CONFIG_FILES([
   src/resources/Makefile
   src/themes/Makefile
   src/themes/default/Makefile
+  src/themes/nkids/Makefile
   src/mac/Makefile
   src/mac/Contents/Makefile
   src/mac/Contents/Resources/Makefile

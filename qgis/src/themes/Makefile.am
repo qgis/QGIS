@@ -10,4 +10,4 @@
 #
 # $Id$
 
-SUBDIRS =  default
+SUBDIRS =  default nkids
