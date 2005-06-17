@@ -139,7 +139,7 @@ void ImageWriter::writeImage(QString theInputFileString, QString theOutputFileSt
 	BandStats * myAdjustedBandStats = new BandStats();
 	calculateStats(myAdjustedBandStats, gdalDataset);
 
-	myAdjustedBandStats->noDataDouble=0;//hard coding for now
+	myAdjustedBandStats->noDataDouble=255;//hard coding for now
 	//to histogram stretch to a given number of std deviations
 	//see if we are using histogram stretch using stddev and plot only within the selected number of deviations if we are
 	//cout << "stdDevsToPlotDouble: " << cboStdDev->currentText() << " converted to " << stdDevsToPlotDouble << endl;
