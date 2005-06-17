@@ -1,0 +1,12 @@
+Climate data processor wizard is a plugin for QGIS (http://qgis.org). Is can also run as a standalone application. The purpose of the climate data processing wizard is to produce climate variable aggregates for use in tools such as openModeller (see http://openmodeller.sf.net). For example, given a set of monthly mean temp and a monthly mean precipitation datasets, you can produce aggregate datasets such as:
+
+- mean precipiation in coolest month
+- mean precipitation in warmest quarter
+
+Many different aggregates can be produced in this way (around 36 at last count). The original idea for this application belongs to Dr Peter Brewer, who implemented a similar tool in visual basic. This plugin aims to be a) a  lot faster, b) integrate with QGIS and c) provide a more flexible & cross platform application architecture. The plugin can read in a number of specialised climatology formats such as Hadley models, and can also read in any GDAL (http://gdal.org) supported raster formats,
+
+One of the main goals of this tool is to remove the effects of seasonal offsets between hemispheres (where seasons in the southern hemisphere are shifted 6 months away from seasons in northern hemisphere). Not removing these effects often produces undesireable model results.
+
+This plugin is licensed under the GPL.
+
+(c) Tim Sutton (tim@linfiniti.com) and Peter Brewer (p.w.brewer@reading.ac.uk) 2003
