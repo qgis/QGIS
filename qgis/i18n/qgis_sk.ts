@@ -1,64 +1,87 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name>MapCoordsDialogBase</name>
+    <message>
+        <source>Enter map coordinates</source>
+        <translation>Vložte mapové súradnice</translation>
+    </message>
+    <message>
+        <source>X:</source>
+        <translation>X:</translation>
+    </message>
+    <message>
+        <source>Y:</source>
+        <translation>Y:</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Zrušiť</translation>
+    </message>
+</context>
+<context>
     <name>Plugin</name>
     <message>
         <source>Bottom Right</source>
-        <translation>Vpravo dole</translation>
+        <translation type="obsolete">Vpravo dole</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation>Vľavo dole</translation>
+        <translation type="obsolete">Vľavo dole</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation>Vľavo hore</translation>
+        <translation type="obsolete">Vľavo hore</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation>Vpravo hore</translation>
+        <translation type="obsolete">Vpravo hore</translation>
     </message>
     <message>
         <source> metres/km</source>
-        <translation>metre/kilometer</translation>
+        <translation type="obsolete">metre/kilometer</translation>
     </message>
     <message>
         <source> feet</source>
-        <translation>stopy</translation>
+        <translation type="obsolete">stopy</translation>
     </message>
     <message>
         <source> degrees</source>
-        <translation>stupne</translation>
+        <translation type="obsolete">stupne</translation>
     </message>
     <message>
         <source> metres</source>
-        <translation>metre</translation>
+        <translation type="obsolete">metre</translation>
     </message>
     <message>
         <source> km</source>
-        <translation>km</translation>
+        <translation type="obsolete">km</translation>
     </message>
     <message>
         <source>Tick Down</source>
-        <translation>Zobáčik dole</translation>
+        <translation type="obsolete">Zobáčik dole</translation>
     </message>
     <message>
         <source>Tick Up</source>
-        <translation>Zobáčik hore</translation>
+        <translation type="obsolete">Zobáčik hore</translation>
     </message>
     <message>
         <source>Bar</source>
-        <translation type="unfinished">Čiara</translation>
+        <translation type="obsolete">Čiara</translation>
     </message>
     <message>
         <source>Box</source>
-        <translation type="unfinished">Rámik</translation>
+        <translation type="obsolete">Rámik</translation>
     </message>
 </context>
 <context>
     <name>PluginGuiBase</name>
     <message>
         <source>QGIS Plugin Template</source>
-        <translation>QGIS šablóna zásuvného modulu</translation>
+        <translation type="obsolete">QGIS šablóna zásuvného modulu</translation>
     </message>
     <message>
         <source>Input File:</source>
@@ -78,7 +101,7 @@
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>OK</source>
@@ -86,7 +109,7 @@
     </message>
     <message>
         <source>Graticule Builder</source>
-        <translation>Tvorba siete zemepisných súradníc</translation>
+        <translation type="obsolete">Tvorba siete zemepisných súradníc</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
@@ -94,58 +117,58 @@
 &lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Tento zásuvný modul vám pomôže vytvoriť súbor shapefile so zemepisnou sieťou, ktorú je možné použiť vo vašom qgis mapovom prehliadači.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Latitude Interval:</source>
-        <translation>Interval medzi rovnobežkami: </translation>
+        <translation type="obsolete">Interval medzi rovnobežkami: </translation>
     </message>
     <message>
         <source>Longitude Interval:</source>
-        <translation>Interval medzi poludníkmi:</translation>
+        <translation type="obsolete">Interval medzi poludníkmi:</translation>
     </message>
     <message>
         <source>Copyright Label Plugin</source>
-        <translation>Zásuvný modul na tvorbu ozančenia copyrightu</translation>
+        <translation type="obsolete">Zásuvný modul na tvorbu ozančenia copyrightu</translation>
     </message>
     <message>
         <source>Placement</source>
-        <translation>Umiestnenie</translation>
+        <translation type="obsolete">Umiestnenie</translation>
     </message>
     <message>
         <source>Bottom Left</source>
-        <translation>Vľavo dole</translation>
+        <translation type="obsolete">Vľavo dole</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation>Vľavo hore</translation>
+        <translation type="obsolete">Vľavo hore</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation>Vpravo dole</translation>
+        <translation type="obsolete">Vpravo dole</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation>Vpravo hore</translation>
+        <translation type="obsolete">Vpravo hore</translation>
     </message>
     <message>
         <source>Orientation</source>
-        <translation>Orintácia</translation>
+        <translation type="obsolete">Orintácia</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation>Vodorovne</translation>
+        <translation type="obsolete">Vodorovne</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation>Zvisle</translation>
+        <translation type="obsolete">Zvisle</translation>
     </message>
     <message>
         <source>Enable Copyright Label</source>
-        <translation>Zapnúť označenie copyrightu</translation>
+        <translation type="obsolete">Zapnúť označenie copyrightu</translation>
     </message>
     <message>
         <source>GPS Tools</source>
@@ -188,35 +211,35 @@
     </message>
     <message>
         <source>North Arrow Plugin</source>
-        <translation>Zásuvný modul na tvorbu smerovej ružice</translation>
+        <translation type="obsolete">Zásuvný modul na tvorbu smerovej ružice</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation>Vlastnosti</translation>
+        <translation type="obsolete">Vlastnosti</translation>
     </message>
     <message>
         <source>Angle</source>
-        <translation>Uhol</translation>
+        <translation type="obsolete">Uhol</translation>
     </message>
     <message>
         <source>Placement on screen</source>
-        <translation>Umiestnenie na obrazovke</translation>
+        <translation type="obsolete">Umiestnenie na obrazovke</translation>
     </message>
     <message>
         <source>Preview of north arrow</source>
-        <translation>Náhľad na smerovú ružicu</translation>
+        <translation type="obsolete">Náhľad na smerovú ružicu</translation>
     </message>
     <message>
         <source>Icon</source>
-        <translation>Ikona</translation>
+        <translation type="obsolete">Ikona</translation>
     </message>
     <message>
         <source>New Item</source>
-        <translation>Nová položka</translation>
+        <translation type="obsolete">Nová položka</translation>
     </message>
     <message>
         <source>Plugin Template</source>
-        <translation>Šablóna zásuvného modulu</translation>
+        <translation type="obsolete">Šablóna zásuvného modulu</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -226,7 +249,7 @@
 &lt;p&gt;2004&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Beschreibung&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Tento zásuvný modul bol vygenerovaný s použitím vnútornej šablóny Qgis zásuvného modulu. Prosím upraviť podľa svojich potrieb.&lt;/p&gt;
 &lt;p&gt;Tim Sutton&lt;/p&gt;
@@ -240,7 +263,7 @@
 &lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Vloženie vášho copyrightu. Tento zásuvný modul podporuje pri formátovaní základné značky jazyka HTML. Napríklad:&lt;/p&gt;
 &lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Text tučným písmom&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Kurzíva&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
@@ -249,23 +272,23 @@
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation>&amp;OK</translation>
+        <translation type="obsolete">&amp;OK</translation>
     </message>
     <message>
         <source>Alt+O</source>
-        <translation>Alt+O</translation>
+        <translation type="obsolete">Alt+O</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>&amp;Zrušiť</translation>
+        <translation type="obsolete">&amp;Zrušiť</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation>Alt+C</translation>
+        <translation type="obsolete">Alt+C</translation>
     </message>
     <message>
         <source>Enable North Arrow</source>
-        <translation>Zapnúť smerovú ružicu</translation>
+        <translation type="obsolete">Zapnúť smerovú ružicu</translation>
     </message>
     <message>
         <source>Import other file</source>
@@ -367,7 +390,7 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     </message>
     <message>
         <source>Scale Bar Plugin</source>
-        <translation>Grafická mierka</translation>
+        <translation type="obsolete">Grafická mierka</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -375,7 +398,7 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
 &lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Tento zásuvný modul vykreslí na mape grafickú mierku. Prosím nezabúdajte, že tu nastavovaná veľkost je veľkosť uprednostňovaná, no môže byť nahradená inou v závislosti od nastavenia veľkosti zoomu. Veľkosť je posudzovaná vzhľadom na mapové jednotky nastavené vo Vlastnostiach projektu.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -383,51 +406,51 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     </message>
     <message>
         <source>Size of bar:</source>
-        <translation>Veľkosť grafickej mierky:</translation>
+        <translation type="obsolete">Veľkosť grafickej mierky:</translation>
     </message>
     <message>
         <source>Select Colour</source>
-        <translation>Vybrať farbu</translation>
+        <translation type="obsolete">Vybrať farbu</translation>
     </message>
     <message>
         <source>Placement:</source>
-        <translation>Umiestnenie:</translation>
+        <translation type="obsolete">Umiestnenie:</translation>
     </message>
     <message>
         <source>Tick Down</source>
-        <translation>Zobáčik dole</translation>
+        <translation type="obsolete">Zobáčik dole</translation>
     </message>
     <message>
         <source>Tick Up</source>
-        <translation>Zobáčik hore</translation>
+        <translation type="obsolete">Zobáčik hore</translation>
     </message>
     <message>
         <source>Box</source>
-        <translation>Box</translation>
+        <translation type="obsolete">Box</translation>
     </message>
     <message>
         <source>Bar</source>
-        <translation>Panel</translation>
+        <translation type="obsolete">Panel</translation>
     </message>
     <message>
         <source>Select the style of the scale bar</source>
-        <translation>Vybrať štýl grafickej mierky</translation>
+        <translation type="obsolete">Vybrať štýl grafickej mierky</translation>
     </message>
     <message>
         <source>Colour of bar:</source>
-        <translation>Farba grafickej mierky:</translation>
+        <translation type="obsolete">Farba grafickej mierky:</translation>
     </message>
     <message>
         <source>Scale bar style:</source>
-        <translation>Vzhľad grafickej mierky:</translation>
+        <translation type="obsolete">Vzhľad grafickej mierky:</translation>
     </message>
     <message>
         <source>Enable scale bar</source>
-        <translation>Zapnúť grafickú mierku</translation>
+        <translation type="obsolete">Zapnúť grafickú mierku</translation>
     </message>
     <message>
         <source>Automatically snap to round number on resize</source>
-        <translation>Pri zmene veľkosti automaticky skočiť na okrúhle číslo</translation>
+        <translation type="obsolete">Pri zmene veľkosti automaticky skočiť na okrúhle číslo</translation>
     </message>
     <message>
         <source>Load GPX file</source>
@@ -448,39 +471,39 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     </message>
     <message encoding="UTF-8">
         <source>© QGIS 2004</source>
-        <translation>© QGIS 2004</translation>
+        <translation type="obsolete">© QGIS 2004</translation>
     </message>
     <message>
         <source>Origin (Lower Left)</source>
-        <translation>Počiatok (ľavý dolný)</translation>
+        <translation type="obsolete">Počiatok (ľavý dolný)</translation>
     </message>
     <message>
         <source>Latitude:</source>
-        <translation>Geogr. dĺžka:</translation>
+        <translation type="obsolete">Geogr. dĺžka:</translation>
     </message>
     <message>
         <source>Longitude:</source>
-        <translation>Geogr. šírka:</translation>
+        <translation type="obsolete">Geogr. šírka:</translation>
     </message>
     <message>
         <source>End point (Upper Right)</source>
-        <translation>Koncový bod (pravý horný)</translation>
+        <translation type="obsolete">Koncový bod (pravý horný)</translation>
     </message>
     <message>
         <source>Output (Shape) File</source>
-        <translation>Výstupný (Shape) súbor</translation>
+        <translation type="obsolete">Výstupný (Shape) súbor</translation>
     </message>
     <message>
         <source>Graticule Size (units in degrees)</source>
-        <translation>Veľkosť siete (jednotky v stupňoch)</translation>
+        <translation type="obsolete">Veľkosť siete (jednotky v stupňoch)</translation>
     </message>
     <message>
         <source>QGIS Plugin QGIS Community Registration Plugin</source>
-        <translation>QGIS zásuvný modul na registráciu do spoločenstva QGIS používateľov</translation>
+        <translation type="obsolete">QGIS zásuvný modul na registráciu do spoločenstva QGIS používateľov</translation>
     </message>
     <message>
         <source>qgis.community.org</source>
-        <translation>qgis.community.org</translation>
+        <translation type="obsolete">qgis.community.org</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -488,46 +511,46 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
 &lt;p&gt;This plugin will register you on the community.qgis.org users map.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Tento zásuvný modul vás zaregistruje na mape používateľov na community.qgis.org.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Home URL:</source>
-        <translation>Domovské URL:</translation>
+        <translation type="obsolete">Domovské URL:</translation>
     </message>
     <message>
         <source>Email:</source>
-        <translation>Email:</translation>
+        <translation type="obsolete">Email:</translation>
     </message>
     <message>
         <source>Place Description:</source>
-        <translation>Popis miesta:</translation>
+        <translation type="obsolete">Popis miesta:</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation>Meno:</translation>
+        <translation type="obsolete">Meno:</translation>
     </message>
     <message>
         <source>Longitude (dec. degrees):</source>
-        <translation>Zemepisná dĺžka (v stupňoch):</translation>
+        <translation type="obsolete">Zemepisná dĺžka (v stupňoch):</translation>
     </message>
     <message>
         <source>Country:</source>
-        <translation>Krajina:</translation>
+        <translation type="obsolete">Krajina:</translation>
     </message>
     <message>
         <source>Image URL (50x50):</source>
-        <translation>URL adresa obrázoku (50x50):</translation>
+        <translation type="obsolete">URL adresa obrázoku (50x50):</translation>
     </message>
     <message>
         <source>Latitude (dec. degrees):</source>
-        <translation>Zemepisná šírka (v stupňoch):</translation>
+        <translation type="obsolete">Zemepisná šírka (v stupňoch):</translation>
     </message>
     <message>
         <source>Get From Map</source>
-        <translation>Získať z mapy</translation>
+        <translation type="obsolete">Získať z mapy</translation>
     </message>
 </context>
 <context>
@@ -631,7 +654,7 @@ Qgis requires that the view have a column that can be
 used as a unique key. It should be derived from a column
 of type int4 and be either a primary key or have
 a unique constraint on it (an indexed column wilngive better performance).</source>
-        <translation type="unfinished">Tento pohľad nemá žiadny stĺpec vhodný pre jedinečný kľúč.
+        <translation type="obsolete">Tento pohľad nemá žiadny stĺpec vhodný pre jedinečný kľúč.
 
 Qgis vyžaduje, aby pohľad mal stĺpec, ktorý môže byť použitý 
 ako jedninečný kľúč. Mal by byť odvodený z typu int4 a byť 
@@ -640,15 +663,59 @@ buď primárny kľúč alebo mať unique constraint on it
     </message>
     <message>
         <source>No primary key column in table</source>
-        <translation type="unfinished">Žiadny primárny kľúč v tabuľke</translation>
+        <translation>Žiadny primárny kľúč v tabuľke</translation>
     </message>
     <message>
         <source>The table has a primary key that is composed of 
 more than one column. Qgis does not currently 
 support this.</source>
-        <translation type="unfinished">Tabuľka maá primárny kľúč, ktorý pozostáva
+        <translation>Tabuľka má primárny kľúč, ktorý pozostáva
 z viac než jedného stĺpca. Qgis túto vlastnosť 
 v súčastnosti nepodporuje.</translation>
+    </message>
+    <message>
+        <source>Open an OGR Supported Layer</source>
+        <translation>Otvoriť vrstvu podporovanú knižnicou OGR</translation>
+    </message>
+    <message>
+        <source>Project file read error</source>
+        <translation>Chyba pri čítaní súboru projektu</translation>
+    </message>
+    <message>
+        <source> at line </source>
+        <translation> v riadku </translation>
+    </message>
+    <message>
+        <source> column </source>
+        <translation> stĺpec </translation>
+    </message>
+    <message>
+        <source> for file </source>
+        <translation> pre súbor </translation>
+    </message>
+    <message>
+        <source>No proj4 projection string. Unable to set map units.</source>
+        <translation>Žiaden reťazec zobrazenia proj4. Nie je možné nastaviť mapové jednotky.</translation>
+    </message>
+    <message>
+        <source>Unsupported map units of </source>
+        <translation>Nepodporované mapové jednotky </translation>
+    </message>
+    <message>
+        <source>The view has no column suitable for use as a unique key.
+
+Qgis requires that the view has a column that can be
+used as a unique key. It should be derived from a column
+of type int4 and be either a primary key or have
+a unique constraint on it (an indexed column will
+give better performance).</source>
+        <translation type="unfinished">Tento pohľad nemá žiadny stĺpec vhodný ako jedinečný kľúč.
+
+Qgis vyžaduje aby pohľad mal stĺpec, ktorý je možno použiť
+ako primárny kľúč. Môže byť odvodený zo stĺpca
+z typu int4 byť buď primárnym kľúčom alebo mať 
+unique constraint on it (indexovaný stĺpec dáva
+lepší výkon).</translation>
     </message>
 </context>
 <context>
@@ -867,7 +934,7 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Extents: </source>
-        <translation>Rozsah:</translation>
+        <translation>Rozsah: </translation>
     </message>
     <message>
         <source>Web Page: http://qgis.org</source>
@@ -919,55 +986,55 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>GEOS support in the OGR provider to refine selection of features via identify. This improves over the previous method of feature selection which used a simple MBR intersection check.</source>
-        <translation>Podpora GEOS v OGR pre identifikáciu objektov cez ich výber. To zdokonaľuje predchádzajúcu metódu výberu, ktorou bola jednoduchá MBR kontrola prieniku.</translation>
+        <translation type="obsolete">Podpora GEOS v OGR pre identifikáciu objektov cez ich výber. To zdokonaľuje predchádzajúcu metódu výberu, ktorou bola jednoduchá MBR kontrola prieniku.</translation>
     </message>
     <message>
         <source>PostGIS editing support in provider</source>
-        <translation>Podpora editácie PostGIS</translation>
+        <translation type="obsolete">Podpora editácie PostGIS</translation>
     </message>
     <message>
         <source>Vector dialog redesign to improve usability</source>
-        <translation>Dialóg Vektorovej vrstvy upravený pre ľepšiu použiteľnosť</translation>
+        <translation type="obsolete">Dialóg Vektorovej vrstvy upravený pre ľepšiu použiteľnosť</translation>
     </message>
     <message>
         <source>Improvement in project handling (loading and saving)</source>
-        <translation>Zdokonalenie v obsluhe projektov (nahrávanie a ukladanie)</translation>
+        <translation type="obsolete">Zdokonalenie v obsluhe projektov (nahrávanie a ukladanie)</translation>
     </message>
     <message>
         <source>Scale dependent rendering</source>
-        <translation>Vykresľovanie v yávislosti od mierky</translation>
+        <translation type="obsolete">Vykresľovanie v yávislosti od mierky</translation>
     </message>
     <message>
         <source>User option to load layers with out drawing them, thus allowing you to set scale dependency, etc without waiting for the initial draw to complete</source>
-        <translation>Uživateľská voľba nahrať vrstvy bez ich vykreslenia, to dovolí nastaviť mierkovú závisloť, atď bez čakania kým sa skončí prvotné vykresľovanie</translation>
+        <translation type="obsolete">Uživateľská voľba nahrať vrstvy bez ich vykreslenia, to dovolí nastaviť mierkovú závisloť, atď bez čakania kým sa skončí prvotné vykresľovanie</translation>
     </message>
     <message>
         <source>Attribute actions - the ability to run an external program based on the contents of an attribute field in a layer</source>
-        <translation>Akcie atribútov - schopnosť spúšťať externý program na základe obsahu atribútového poľa vo vrstve</translation>
+        <translation type="obsolete">Akcie atribútov - schopnosť spúšťať externý program na základe obsahu atribútového poľa vo vrstve</translation>
     </message>
     <message>
         <source>Create new vector layer (shapefile) for editing</source>
-        <translation>Vytvárať novú upravovateľnú vektorovú vrstvu (shapefile)</translation>
+        <translation type="obsolete">Vytvárať novú upravovateľnú vektorovú vrstvu (shapefile)</translation>
     </message>
     <message>
         <source>Windows installer</source>
-        <translation>Inštalačný program pre Windows</translation>
+        <translation type="obsolete">Inštalačný program pre Windows</translation>
     </message>
     <message>
         <source>Mac OSX binary</source>
-        <translation>Binárna verzia pre Mac OSX</translation>
+        <translation type="obsolete">Binárna verzia pre Mac OSX</translation>
     </message>
     <message>
         <source>New options in the graticule builder plugin</source>
-        <translation>Nové voľby v zásuvnom module na tvorbu siete zemepisných súradníc</translation>
+        <translation type="obsolete">Nové voľby v zásuvnom module na tvorbu siete zemepisných súradníc</translation>
     </message>
     <message>
         <source>Enhancements to the GPS plugin</source>
-        <translation>Rozšírenie možností v yásuvnom module GPS</translation>
+        <translation type="obsolete">Rozšírenie možností v yásuvnom module GPS</translation>
     </message>
     <message>
         <source>Man page</source>
-        <translation>Manuálová stránka</translation>
+        <translation type="obsolete">Manuálová stránka</translation>
     </message>
     <message>
         <source>QGis files (*.qgs)</source>
@@ -991,11 +1058,11 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
-        <translation type="unfinished">Mapový náhľad. Táto oblasť môže byť použitá na zobrazenie polohy mapy, kde sa ukazuje práve zobrazený výrez z mapy. Práve zobrazovaný výrez je znázornený červeným obdĺžnikom. Do mapového náhľadu je možné pridať ktorúkoľvek vrstvu.</translation>
+        <translation>Mapový prehľad. Toto plátno môže byť použité na zobrazenie polohy mapy, kde sa ukazuje práve vyobrazený výrez z mapy. Aktuálne zobrazovaný rozsah je znázornený červeným obdĺžnikom. Do mapového prehľadu je možné pridať ktorúkoľvek vrstvu.</translation>
     </message>
     <message>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-        <translation type="unfinished">Mapové plátno. Toto je oblasť kde budú zobrazené vektorové a rastrové vrstvy pridané do mapy</translation>
+        <translation>Mapové plátno. Toto je oblasť, kde sa zobrazujú vektorové a rastrové vrstvy pridané do mapy</translation>
     </message>
     <message>
         <source>&amp;Plugins</source>
@@ -1011,43 +1078,43 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved.</source>
-        <translation type="unfinished">Ukazuje mapové súradnice aktuálnej pozície kurzora. Pri pohybe myši je údaj plynule aktualizovaný.</translation>
+        <translation>Ukazuje mapové súradnice aktuálnej pozície kurzora. Pri pohybe myši je údaj plynule aktualizovaný.</translation>
     </message>
     <message>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
-        <translation type="unfinished">Pokiaľ je políčko zaškrtnuté mapové vrstvy sú vykresľované v náväznosti na príkazy mapovej navigácie a iné udalosti. Ak nie je zaškrtnuté nie uskutočňované žiadne vykresľovanie. To dovoľuje pridať množstvo vrstiev a upraviť ich symboliku skôr než budú vykreslené.</translation>
+        <translation>Pokiaľ je políčko zaškrtnuté mapové vrstvy sú vykresľované v náväznosti na príkazy mapovej navigácie a iné udalosti. Ak nie je zaškrtnuté, nič sa nevykreľuje. To vám dovoľuje pridať veľké množstvo vrstiev a upraviť ich symboliku predtým než budú vykreslené.</translation>
     </message>
     <message>
         <source>Save delimited text as shapefile</source>
-        <translation type="unfinished">Uložiť oddelený text ako shapefile súbor</translation>
+        <translation type="obsolete">Uložiť oddelený text ako shapefile súbor</translation>
     </message>
     <message>
         <source>Improved Delimited Text plugin, including preview of text file</source>
-        <translation type="unfinished">Zdokonalený zásuvný modul na spracovanie súboru s oddeleným textom, vrátane náhľadu na textový súbor</translation>
+        <translation type="obsolete">Zdokonalený zásuvný modul na spracovanie súboru s oddeleným textom, vrátane náhľadu na textový súbor</translation>
     </message>
     <message>
         <source>Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types</source>
-        <translation type="unfinished">Zdokonalená obsluha SPIT z PostgreSQL rezervovanými slovami a shapefile súbormi s multiple geometrickými typmi</translation>
+        <translation type="obsolete">Zdokonalená obsluha SPIT z PostgreSQL rezervovanými slovami a shapefile súbormi s multiple geometrickými typmi</translation>
     </message>
     <message>
         <source>Display SQL query used to create a PostGIS layer</source>
-        <translation type="unfinished">Zobrazí SQL dopyt použitý na vytvorenie PostGIS vrstvy</translation>
+        <translation type="obsolete">Zobrazí SQL dopyt použitý na vytvorenie PostGIS vrstvy</translation>
     </message>
     <message>
         <source>PostgreSQL query builder</source>
-        <translation type="unfinished">PostgreSQL tvorba dopytov</translation>
+        <translation type="obsolete">PostgreSQL tvorba dopytov</translation>
     </message>
     <message>
         <source>Ability to redefine the query used for PostgreSQL layers from the layer properties dialog</source>
-        <translation type="unfinished">Schopnosť predefinovať požiadavku (dopyt) pre PostgreSQL vrstvy z dialógového okna Vlastnosti vrstvy</translation>
+        <translation type="obsolete">Schopnosť predefinovať požiadavku (dopyt) pre PostgreSQL vrstvy z dialógového okna Vlastnosti vrstvy</translation>
     </message>
     <message>
         <source>North arrow, scalebar, and copyright plugins save their state in the project file</source>
-        <translation>Zásuvné moduly Smerová ružica, Grafická mierka a Nástroj na zápis copyrightu ukladajú svoj stav do súboru projektu</translation>
+        <translation type="obsolete">Zásuvné moduly Smerová ružica, Grafická mierka a Nástroj na zápis copyrightu ukladajú svoj stav do súboru projektu</translation>
     </message>
     <message>
         <source>Datasets with UTF8, Kanjii and CJK filenames now load properly</source>
-        <translation>Údajové sady s názvami súborov v UTF8, Kanji a CJK sú odteraz načítavané správne</translation>
+        <translation type="obsolete">Údajové sady s názvami súborov v UTF8, Kanji a CJK sú odteraz načítavané správne</translation>
     </message>
     <message>
         <source>Open an OGR Supported Vector Layer</source>
@@ -1064,6 +1131,102 @@ v súčastnosti nepodporuje.</translation>
     <message>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Otvoriť rastrový zdroj údajov podporovaný knižnicou GDAL</translation>
+    </message>
+    <message>
+        <source>Toggle map rendering</source>
+        <translation>Prepínač vykresľovania mapy</translation>
+    </message>
+    <message>
+        <source>This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
+        <translation>Táto ikona ukazuje, či je zapnuté kartografické zobrazovanie &quot;za jazdy&quot;. Kliknutím na ikonu sa otvorí dialóg vlastnosti projektu, kde je možné zmeniť nastavenie správania sa projekcií.</translation>
+    </message>
+    <message>
+        <source>Projection status - Click to open projection dialog</source>
+        <translation>Stav kartografického zobrazenia - kliknutím sa otvorí menu mapových zobrazení</translation>
+    </message>
+    <message>
+        <source>On the fly projection support to automatically project layers from different coordinate systems</source>
+        <translation>Podpora zobrazenie za jazdy slúži na automatické zobrazenie vrstiev z rôznych súradnicových systémov</translation>
+    </message>
+    <message>
+        <source>Map Composer for creating map layouts</source>
+        <translation>Skladateľ máp na tvorbu mapových výstupov</translation>
+    </message>
+    <message>
+        <source>Toolbox for running GRASS tools from QGIS. The toolbox can be easily customized to add additional tools</source>
+        <translation>Panel nástrojov na spúštanie nástrojov GRASS-u z QGIS-u. Tento panel je možné ľahko prispôsobiť a pridať ďalšie nástroje</translation>
+    </message>
+    <message>
+        <source>Handling of spatially enabled tables and views in PostgreSQL has been greatly improved. QGIS can now load any table in the database that contains a geometry column</source>
+        <translation>Obsluha priestorvo orientovaných tabuliek a pohľadov v PosgreSQL bola značne zdokonalená. QGIS teraz dokáže nahrať z dastabázy ľubovoľnú tabuľku, ktorá obsahuje stĺpec s geometriou</translation>
+    </message>
+    <message>
+        <source>PostgreSQL views containing a geometry column can be viewed in QGIS</source>
+        <translation>V QGIS-e sa dajú prezerať zobrazenia PostgreSQL, ktoré obsahujú stĺpec s geometriou</translation>
+    </message>
+    <message>
+        <source>Raster graphing tool to produce a histogram for a raster layer</source>
+        <translation type="unfinished">Nástroj na tvorbu grafu dokáže vytvoriť pre rastrovú vrstvu slĺpcový graf</translation>
+    </message>
+    <message>
+        <source>Raster query using the identify tool allows you to get the pixel values from a raster by making it the active layer and clicking on the point of interest</source>
+        <translation>S použitím nástroja identifikácie v prípade, že je daný raster aktívnou vrstvou, je možné kliknutím na záujmovú oblasť získať hodnoty jednotlivých pixlov</translation>
+    </message>
+    <message>
+        <source>User preferences provides customizable settings for the digitizing line width, color, and selection color</source>
+        <translation>Používateľské vlastnosti umožňujú prispôsobiť nastavenie pre hrúbku a farbu digitalizačnej čiary a farbu výberu</translation>
+    </message>
+    <message>
+        <source>New symbols for use with point layers are available from the layer properties dialog</source>
+        <translation>Nové symboly na použitie s vrstvou bodov sú dostupné z dialógu vlastnosti vrstvy</translation>
+    </message>
+    <message>
+        <source>Spatial bookmarks allow you to create and manage bookmarks for an area on the map. Bookmarks are persistent and global; meaning they are available for all projects</source>
+        <translation>Priestorové záložky dovoľujú vytvoriť a spravovať záložky pre oblasti mapy. Záložky sú trvalé a globálne, čo znamená, že sú prístupné pre všetky projekty</translation>
+    </message>
+    <message>
+        <source>Measure tool allows you to measure distances on the map with both segment length and total length displayed as you click</source>
+        <translation>Nástroj na meranie umožňuje zmerať vzdialenosti na mape, pričom sa počas klikania zobrazuje ako čiastková tak i celková vzdialenosť</translation>
+    </message>
+    <message>
+        <source>GPX loading times and memory consumption for large GPX (GPS) files has been drastically reduced</source>
+        <translation>Časy a spotreba pamäte potrebná na nahratie GPX (GPS) súborov sa priam drasticky zmenšila</translation>
+    </message>
+    <message>
+        <source>Many enhancements to the digitizing tools have been made, including the ability to capture data straight into PostgreSQL/PostGIS, and improvements to the definition of attribute tables for newly created layers</source>
+        <translation>Prišlo k viacerým rozšíreniam digitalizačných nástrojov vrátane schopnosti získané údaje vkladať priamo do PostgreSQL/PostGIS a zlepšenie definovania atribútov tabuliek pre novovytvorené vrstvy</translation>
+    </message>
+    <message>
+        <source>The Raster Georeferencer plugin can be used to generate a world file for a raster. The plugin allows you to define known control points in the raster coordinate system. Once enough control points are defined, the world file can be generated and the raster properly displayed in QGIS or other GIS applications</source>
+        <translation>Zásuvný modul na georeferencovnie rastrov sa dá použiť na vytvorenie world súborov pre rastre. Tento zásuvný modul dovoľuje určiť známe kontrolné body v súranicovom sytéme rastra. Keď je určený dostatočný počet bodov, je následne vygenerovaný world súbor vďaka ktorému je rastrový súbor v QGIS-e alebo inom GIS-e zobrazovaný správne</translation>
+    </message>
+    <message>
+        <source>Improvements to the Mapserver export tool</source>
+        <translation>Zdokonalený nástroj na export pre Mapsever</translation>
+    </message>
+    <message>
+        <source>Try to find missing layers?</source>
+        <translation>Pokúsiť sa nájsť chýbajúce vrstvy?</translation>
+    </message>
+    <message>
+        <source>Overwrite Project?</source>
+        <translation type="obsolete">Prepísať projekt?</translation>
+    </message>
+    <message>
+        <source>A project named %1 exists.Do you want to overwrite it?</source>
+        <translation type="obsolete">Projekt s názvom %1 existuje. Chcete ho prepísať?</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation type="obsolete">&amp;Áno</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation type="obsolete">&amp;Nie</translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation>Mierka</translation>
     </message>
 </context>
 <context>
@@ -1394,7 +1557,7 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>&amp;View</source>
-        <translation>&amp;Zobrazenie</translation>
+        <translation>Pohľa&amp;d</translation>
     </message>
     <message>
         <source>&amp;Plugins</source>
@@ -1530,7 +1693,7 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Properties for the selected layer</source>
-        <translation>Vlastnosti označenej vrstvy</translation>
+        <translation type="obsolete">Vlastnosti označenej vrstvy</translation>
     </message>
     <message>
         <source>Zoom to layer</source>
@@ -1658,7 +1821,7 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation>Ladenie</translation>
+        <translation type="obsolete">Ladenie</translation>
     </message>
     <message>
         <source>DebugHook</source>
@@ -1671,6 +1834,106 @@ v súčastnosti nepodporuje.</translation>
     <message>
         <source>Custom Projections</source>
         <translation>Vlastné zobrazenia</translation>
+    </message>
+    <message>
+        <source>Bookmarks Toolbar</source>
+        <translation>Panel Záložky</translation>
+    </message>
+    <message>
+        <source>Show geospatial bookmarks</source>
+        <translation>Ukázať geopriestorové záložky</translation>
+    </message>
+    <message>
+        <source>Geospatial bookmarks...</source>
+        <translation>Geopriestorové záložky...</translation>
+    </message>
+    <message>
+        <source>Create a new geospatial bookmark</source>
+        <translation>Vytvoriť novú geopriestorovú záložku</translation>
+    </message>
+    <message>
+        <source>New geospatial bookmark...</source>
+        <translation>Nová geopriestorová záložka...</translation>
+    </message>
+    <message>
+        <source>Create a new geospatial bookmark for the current view</source>
+        <translation>Vytvoriť novú geopriestorovú záložku pre aktuálny pohľad</translation>
+    </message>
+    <message>
+        <source>Capture (digitise) a point on the current layer. The layer must be in edit mode.</source>
+        <translation>Získať (digitalizovať) bod na aktuálnej vrstve. Vrstva musí byť upravovateľná.</translation>
+    </message>
+    <message>
+        <source>Capture (digitise) a line on the current layer. The layer must be in edit mode.</source>
+        <translation>Získať (digitalizovať) líniu na aktuálnej vrstve. Vrstva musí byť upravovateľná.</translation>
+    </message>
+    <message>
+        <source>Capture (digitise) a polygon on the current layer. The layer must be in edit mode.</source>
+        <translation>Získať (digitalizovať) polygón na aktuálnej vrstve. Vrstva musí byť upravovateľná.</translation>
+    </message>
+    <message>
+        <source>Measure distances on the map canvas.</source>
+        <translation>Merať vzdialenosti na mapovom plátne.</translation>
+    </message>
+    <message>
+        <source>Ctrl+M</source>
+        <translation>Ctrl+M</translation>
+    </message>
+    <message>
+        <source>Properties for the selected layer, including rendering and projection settings.</source>
+        <translation>Vlastnosti pre vybranú vrstvu, vrátane vykresľovania a nastavenia zobrazenia.</translation>
+    </message>
+    <message>
+        <source>Zoom to the extent of the active layer</source>
+        <translation>Zoom na veľkosť aktívnej vrstvy</translation>
+    </message>
+    <message>
+        <source>Open the Map Composer to create and print a map using the current layers and settings.</source>
+        <translation>Otvorí Skladateľa máp slúžiaceho na tvorbu a a tlač máp s použitím súčasných vrstiev a nastavení.</translation>
+    </message>
+    <message>
+        <source>Add all layers to the overview map.</source>
+        <translation>Pridá do mapového prehľadu všetky vrstvy.</translation>
+    </message>
+    <message>
+        <source>Remove all layers to the overview map.</source>
+        <translation>Odobere z mapového prehľadu všetky vrstvy.</translation>
+    </message>
+    <message>
+        <source>Toggle the visibility of all layers to on and redraw the map.</source>
+        <translation>Zapne viditeľnosť všetkých vrstiev a prekreslí mapu.</translation>
+    </message>
+    <message>
+        <source>Toggle the visibility of all layers to off and clear the map.</source>
+        <translation>Vypne viditeľnosť všetkých vrstiev a vyčistí mapu.</translation>
+    </message>
+    <message>
+        <source>Remove the active layer from the map.</source>
+        <translation>Odobreie z mapy aktívnu vrstvu.</translation>
+    </message>
+    <message>
+        <source>Add or remove the active layer to the Overview map.</source>
+        <translation>Pridá alebo odoberie aktívnu vrstvu z Mapového prehľadu.</translation>
+    </message>
+    <message>
+        <source>Create a new vector layer (shapefile) for editing.</source>
+        <translation>Vytvorí novú upravovateľnú vektorovú vrstvu (shape súbor).</translation>
+    </message>
+    <message>
+        <source>Create or manage custom projection definitions.</source>
+        <translation>Vytvorí novú, alebo spravauje existujúce definície vlastných kartografických zobrazení.</translation>
+    </message>
+    <message>
+        <source>Show the spatial bookmarks dialog and zoom to a bookmark or delete unwanted bookmarks.</source>
+        <translation>Ukáže dialóg pristorových záložiek a upraví pohľad podľa záložky alebo vymaže nechcené záložky.</translation>
+    </message>
+    <message>
+        <source>Ctrl+B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a new geospatial bookmark for the current view extent.</source>
+        <translation>Vytvorí novú geopriestorovú záložku pre rozsah aktuálneho pohľadu.</translation>
     </message>
 </context>
 <context>
@@ -1879,15 +2142,15 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Enter the action command here</source>
-        <translation type="unfinished">Sem vložte príkaz akcie</translation>
+        <translation>Sem vložte príkaz akcie</translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished">Prechádzať</translation>
+        <translation>Prechádzať</translation>
     </message>
     <message>
         <source>Browse for action commands</source>
-        <translation type="unfinished">Prechádzať po príkazoch akcií</translation>
+        <translation>Prechádzať po príkazoch akcií</translation>
     </message>
     <message>
         <source>Insert action</source>
@@ -1911,15 +2174,15 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Inserts the selected field into the action, prepended with a %</source>
-        <translation type="unfinished">Vložiť vybrané pole do akcie, predchádzané s %</translation>
+        <translation>Vložiť vybrané pole do akcie, predchádzané s %</translation>
     </message>
     <message>
         <source>The valid attribute names for this layer</source>
-        <translation type="unfinished">Správne mená atribútov pre túto vrstvu</translation>
+        <translation>Správne mená atribútov pre túto vrstvu</translation>
     </message>
     <message>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
-        <translation type="unfinished">Zoznam obsahuje všetky akcie ktoré boli definované pre aktuálnu vrstvu. Akcie možno pridať vložením detailov do controlov dole a následným stlačením tlačítka Vložiť akcie. Akcie je možné upraviť priamo tu dvojkliknutím na danú položku.</translation>
+        <translation type="unfinished">Zoznam obsahuje všetky akcie, ktoré boli definované pre aktuálnu vrstvu. Akcie možno pridať vložením detailov do controlov dole a následným stlačením tlačítka Vložiť akcie. Akcie je možné upraviť priamo tu dvojkliknutím na danú položku.</translation>
     </message>
     <message>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
@@ -1972,60 +2235,236 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Zatvoriť</translation>
+        <translation type="obsolete">Zatvoriť</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">Ukončiť úpravy</translation>
+        <translation>Ukončiť úpravy</translation>
     </message>
     <message>
         <source>Start editing</source>
         <translation>Začať upravovať</translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation>&amp;Zatvoriť</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete attribute</source>
+        <translation>Zmazať atribút</translation>
+    </message>
+    <message>
+        <source>Ctrl+N</source>
+        <translation>Ctrl+N</translation>
+    </message>
+    <message>
+        <source>New attribute</source>
+        <translation>Nový atribút</translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation>Ctrl+S</translation>
+    </message>
+    <message>
+        <source>Invert selection</source>
+        <translation>Invertovať výber</translation>
+    </message>
+    <message>
+        <source>Ctrl+T</source>
+        <translation>Ctrl+T</translation>
+    </message>
+    <message>
+        <source>Move selected to top</source>
+        <translation>Presunúť výber navrch</translation>
     </message>
 </context>
 <context>
     <name>QgsAttributeTableDisplay</name>
     <message>
         <source>&amp;Add Attribute...</source>
-        <translation>&amp;Pridať atribút...</translation>
+        <translation type="obsolete">&amp;Pridať atribút...</translation>
     </message>
     <message>
         <source>&amp;Delete Attributes...</source>
-        <translation>&amp;Zmazať atribúty...</translation>
+        <translation type="obsolete">&amp;Zmazať atribúty...</translation>
     </message>
     <message>
         <source>&amp;Bring selection to top</source>
-        <translation>&amp;Výber preniesť hore</translation>
+        <translation type="obsolete">&amp;Výber preniesť hore</translation>
     </message>
     <message>
         <source>&amp;Invert selection</source>
-        <translation>&amp;Invertovať výber</translation>
+        <translation type="obsolete">&amp;Invertovať výber</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation>&amp;Upraviť</translation>
+        <translation type="obsolete">&amp;Upraviť</translation>
     </message>
     <message>
         <source>&amp;Selection</source>
-        <translation>Vý&amp;ber</translation>
+        <translation type="obsolete">Vý&amp;ber</translation>
+    </message>
+</context>
+<context>
+    <name>QgsBookmarks</name>
+    <message>
+        <source>Really Delete?</source>
+        <translation>Skutočne zmazať?</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation>&amp;Áno</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation>&amp;Nie</translation>
+    </message>
+</context>
+<context>
+    <name>QgsBookmarksBase</name>
+    <message>
+        <source>Geospatial Bookmarks</source>
+        <translation>Geopriestorové záložky</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>Meno</translation>
+    </message>
+    <message>
+        <source>Project</source>
+        <translation>Projekt</translation>
+    </message>
+    <message>
+        <source>Extent</source>
+        <translation>Rozsah</translation>
+    </message>
+    <message>
+        <source>Id</source>
+        <translation>Id</translation>
+    </message>
+    <message>
+        <source>Zoom To</source>
+        <translation>Zoom na</translation>
+    </message>
+    <message>
+        <source>Zoom to the currently selected bookmark</source>
+        <translation>Zoom na práve vybratú záložku</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Vymazať</translation>
+    </message>
+    <message>
+        <source>Delete the currently selected bookmark</source>
+        <translation>Vymazať vybranú záložku</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Zatvoriť</translation>
+    </message>
+    <message>
+        <source>Close the dialog</source>
+        <translation>Zatvoriť dialóg</translation>
+    </message>
+</context>
+<context>
+    <name>QgsCommunityRegPluginGuiBase</name>
+    <message>
+        <source>QGIS Plugin QGIS Community Registration Plugin</source>
+        <translation>QGIS zásuvný modul na registráciu do spoločenstva QGIS používateľov</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation>Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Zrušiť</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation>Alt+Z</translation>
+    </message>
+    <message>
+        <source>qgis.community.org</source>
+        <translation>qgis.community.org</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin will register you on the community.qgis.org users map.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Tento zásuvný modul vás zaregistruje na mape používateľov na community.qgis.org.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Home URL:</source>
+        <translation>Domovské URL:</translation>
+    </message>
+    <message>
+        <source>Email:</source>
+        <translation>Email:</translation>
+    </message>
+    <message>
+        <source>Place Description:</source>
+        <translation>Popis miesta:</translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation>Meno:</translation>
+    </message>
+    <message>
+        <source>Longitude (dec. degrees):</source>
+        <translation>Zemepisná dĺžka (v stupňoch):</translation>
+    </message>
+    <message>
+        <source>Country:</source>
+        <translation>Krajina:</translation>
+    </message>
+    <message>
+        <source>Image URL (50x50):</source>
+        <translation>URL adresa obrázku (50x50):</translation>
+    </message>
+    <message>
+        <source>Latitude (dec. degrees):</source>
+        <translation>Zemepisná šírka (v stupňoch):</translation>
+    </message>
+    <message>
+        <source>Get From Map</source>
+        <translation>Získať z mapy</translation>
     </message>
 </context>
 <context>
     <name>QgsComposer</name>
     <message>
         <source>Choose a filename to save the map image as</source>
-        <translation type="unfinished">Vyberte meno súboru do ktorého sa má uložiť mapa ako obrázok</translation>
+        <translation>Vyberte meno súboru do ktorého sa má uložiť mapa ako obrázok</translation>
     </message>
     <message>
         <source>Choose a filename to save the map as</source>
-        <translation type="unfinished">Vyberte meno súboru do ktorého sa má uložiť obrázok ako</translation>
+        <translation>Vyberte meno súboru do ktorého sa má uložiť mapa ako</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerBase</name>
     <message>
         <source>Map Composer</source>
-        <translation type="unfinished">Skladateľ máp</translation>
+        <translation>Skladateľ máp</translation>
     </message>
     <message>
         <source>General</source>
@@ -2041,7 +2480,7 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>&amp;File</source>
-        <translation>&amp;Súbor</translation>
+        <translation type="obsolete">&amp;Súbor</translation>
     </message>
     <message>
         <source>Toolbar_2</source>
@@ -2097,7 +2536,7 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Add new label</source>
-        <translation>Pridať nový popisok</translation>
+        <translation>Pridať nový popis</translation>
     </message>
     <message>
         <source>Add new vect legend</source>
@@ -2128,11 +2567,15 @@ v súčastnosti nepodporuje.</translation>
     <name>QgsComposerLabelBase</name>
     <message>
         <source>Label Options</source>
-        <translation>Možnosti popisky</translation>
+        <translation>Možnosti popisu</translation>
     </message>
     <message>
         <source>Font</source>
         <translation>Písmo</translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation type="unfinished">Rám</translation>
     </message>
 </context>
 <context>
@@ -2143,11 +2586,11 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Extent (calculate scale)</source>
-        <translation type="unfinished">Rozsah (vypočíta mierku)</translation>
+        <translation>Rozsah (vypočíta mierku)</translation>
     </message>
     <message>
         <source>Scale (calculate extent)</source>
-        <translation type="unfinished">Mierka (vypočíta rozsah)</translation>
+        <translation>Mierka (vypočíta rozsah)</translation>
     </message>
 </context>
 <context>
@@ -2182,11 +2625,11 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Set Extent</source>
-        <translation type="unfinished">Nastaviť rozsah</translation>
+        <translation>Nastaviť rozsah</translation>
     </message>
     <message>
         <source>Set map extent to current extent in QGIS map canvas</source>
-        <translation type="unfinished">Nastaviť rozsah mapy podľa aktuálneho rozsahu na QGIS mapovom plátne</translation>
+        <translation>Nastaviť rozsah mapy podľa aktuálneho rozsahu na mapovom plátne QGIS</translation>
     </message>
     <message>
         <source>Line width scale</source>
@@ -2194,11 +2637,11 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Width of one unit in millimeters</source>
-        <translation type="unfinished">Hrúbka jednotky je v milimetroch</translation>
+        <translation>Hrúbka jednotky je v milimetroch</translation>
     </message>
     <message>
         <source>Symbol scale</source>
-        <translation type="unfinished">Mierka symbolov</translation>
+        <translation>Mierka symbolov</translation>
     </message>
     <message>
         <source>Font size scale</source>
@@ -2214,7 +2657,7 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Set</source>
-        <translation type="unfinished">Sada</translation>
+        <translation>Súprava</translation>
     </message>
 </context>
 <context>
@@ -2237,7 +2680,7 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Unit label</source>
-        <translation>Popiska jednotky</translation>
+        <translation>Značka jednotky</translation>
     </message>
     <message>
         <source>Map</source>
@@ -2362,11 +2805,11 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Portrait</source>
-        <translation type="unfinished">Portrét</translation>
+        <translation>Na výšku</translation>
     </message>
     <message>
         <source>Landscape</source>
-        <translation type="unfinished">Krajinka</translation>
+        <translation>Na šírku</translation>
     </message>
 </context>
 <context>
@@ -2499,6 +2942,136 @@ v súčastnosti nepodporuje.</translation>
     </message>
 </context>
 <context>
+    <name>QgsCoordinateTransform</name>
+    <message>
+        <source>Failed</source>
+        <translation>Zlyhalo</translation>
+    </message>
+    <message>
+        <source>transform of</source>
+        <translation>transformácia</translation>
+    </message>
+</context>
+<context>
+    <name>QgsCopyrightLabelPlugin</name>
+    <message>
+        <source>Bottom Left</source>
+        <translation>Vľavo dole</translation>
+    </message>
+    <message>
+        <source>Top Left</source>
+        <translation>Vľavo hore</translation>
+    </message>
+    <message>
+        <source>Top Right</source>
+        <translation>Vpravo hore</translation>
+    </message>
+</context>
+<context>
+    <name>QgsCopyrightLabelPluginGuiBase</name>
+    <message>
+        <source>Copyright Label Plugin</source>
+        <translation>Zásuvný modul na tvorbu ozančenia copyrightu</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label.  For example:&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Do pola dolu vložte text vášho copyrightu. Tento zásuvný modul podporuje pri formátovaní základné značky jazyka HTML. Napríklad:&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Text tučným písmom&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Kurzíva&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message encoding="UTF-8">
+        <source>© QGIS 2004</source>
+        <translation>© QGIS 2004</translation>
+    </message>
+    <message>
+        <source>Placement</source>
+        <translation>Umiestnenie</translation>
+    </message>
+    <message>
+        <source>Bottom Left</source>
+        <translation>Vľavo dole</translation>
+    </message>
+    <message>
+        <source>Top Left</source>
+        <translation>Vľavo hore</translation>
+    </message>
+    <message>
+        <source>Bottom Right</source>
+        <translation>Vpravo dole</translation>
+    </message>
+    <message>
+        <source>Top Right</source>
+        <translation>Vpravo hore</translation>
+    </message>
+    <message>
+        <source>Orientation</source>
+        <translation>Orientácia</translation>
+    </message>
+    <message>
+        <source>Horizontal</source>
+        <translation>Vodorovne</translation>
+    </message>
+    <message>
+        <source>Vertical</source>
+        <translation>Zvisle</translation>
+    </message>
+    <message>
+        <source>Enable Copyright Label</source>
+        <translation>Zapnúť označenie copyrightu</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation>Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Zrušiť</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation>Alt+Z</translation>
+    </message>
+</context>
+<context>
+    <name>QgsCustomProjectionDialog</name>
+    <message>
+        <source>Delete Projection Definition?</source>
+        <translation>Vymazať definíciu zobrazenia?</translation>
+    </message>
+    <message>
+        <source>Deleting a projection definition is not reversable. Do you want to delete it?</source>
+        <translation>Vymazanie definície zobrazenia sa nedá vrátiť späť. Naozaj si želáte vymazať ju?</translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation>Prerušiť</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation>Nové</translation>
+    </message>
+    <message>
+        <source>QGIS Custom Projection</source>
+        <translation>QGIS vlastné zobrazenia</translation>
+    </message>
+    <message>
+        <source>This proj4 projection definition is not valid. Please correct before pressing save.</source>
+        <translation>Táto definícia zobrazenia proj4 nie je správna. Prosím opravte ju skôr, než stlačíte tlačítko Uložiť.</translation>
+    </message>
+</context>
+<context>
     <name>QgsCustomProjectionDialogBase</name>
     <message>
         <source>Form1</source>
@@ -2506,7 +3079,7 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished">Meno:</translation>
+        <translation>Meno:</translation>
     </message>
     <message>
         <source>Ellipsoid:</source>
@@ -2518,7 +3091,7 @@ v súčastnosti nepodporuje.</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Pomocník</translation>
+        <translation type="obsolete">Pomocník</translation>
     </message>
     <message>
         <source>Custom Projection Definition</source>
@@ -2531,16 +3104,16 @@ v súčastnosti nepodporuje.</translation>
     <message>
         <source>Expected 
 Parameters:</source>
-        <translation type="unfinished">Očakávané
+        <translation>Očakávané
 parametre:</translation>
     </message>
     <message>
         <source>|&lt;</source>
-        <translation type="unfinished">|&lt;</translation>
+        <translation>|&lt;</translation>
     </message>
     <message>
         <source>&lt;</source>
-        <translation type="unfinished">&lt;</translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <source>1 of 1</source>
@@ -2548,11 +3121,11 @@ parametre:</translation>
     </message>
     <message>
         <source>&gt;</source>
-        <translation type="unfinished">&gt;</translation>
+        <translation>&gt;</translation>
     </message>
     <message>
         <source>&gt;|</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;|</translation>
     </message>
     <message>
         <source>New</source>
@@ -2564,7 +3137,15 @@ parametre:</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Vymazať</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Zatvoriť</translation>
     </message>
 </context>
 <context>
@@ -2694,6 +3275,10 @@ zlyhalo. Databáza zahlásila:
         <source>Sql</source>
         <translation>Sql</translation>
     </message>
+    <message>
+        <source>Encoding:</source>
+        <translation>Kódovanie:</translation>
+    </message>
 </context>
 <context>
     <name>QgsDelAttrDialogBase</name>
@@ -2761,15 +3346,15 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Parse the header row and update the X and Y field lists</source>
-        <translation type="unfinished">Skontrolovať riadok s hlavičkou a zaktualizovať zoznam  polí X a Y</translation>
+        <translation>Skontrolovať riadok s hlavičkou a zaktualizovať zoznam  polí X a Y</translation>
     </message>
     <message>
         <source>Parse the header row of the input file and refresh the fields in the X and Y field drop-down lists. Use this button to refresh the field lists if you change the delimiter after selecting the delimited text file.</source>
-        <translation type="unfinished">Preskúma hlavičkový riadok vstupného súboru a obnoví polia X a Y v rozbaľovacom menu. Použite toto tlačítko na obnovenie zoznamu polí pokiaľ ste zmenili ynak oddeľovača po vybratí súboru s oddeleným textom.</translation>
+        <translation>Preskúma hlavičkový riadok vstupného súboru a obnoví polia X a Y v rozbaľovacom menu. Použite toto tlačítko na obnovenie zoznamu polí pokiaľ ste po vybratí súboru s oddeleným textom zmenili znak oddeľovača .</translation>
     </message>
     <message>
         <source>Creates a layer using the specified parameters and adds it to the map. The dialog remains open to allow adding of additional layers.</source>
-        <translation type="unfinished">Vytvorí vrstvu s použitím špecifikovaných parametrov a pridá ju do mapy. Dialóg ostáva otvorený abz mohli byť pridané ďalšie vrstvy.</translation>
+        <translation>Vytvorí vrstvu s použitím špecifikovaných parametrov a pridá ju do mapy. Dialóg zostáva otvorený, aby sa mohli pridať ďalšie vrstvy.</translation>
     </message>
     <message>
         <source>Close the dialog</source>
@@ -2777,7 +3362,7 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Close the dialog without adding anything to the map.</source>
-        <translation type="unfinished">Zatvoriť dialóg bez pridania čohokoľvek do mapy.</translation>
+        <translation>Zatvoriť dialóg bez pridania čohokoľvek do mapy.</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</source>
@@ -2801,7 +3386,7 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation type="unfinished">Meno poľa obsahujúceho y-ové hodnoty. Vyberte pole zo zoznamu. Zoznam je generovaný na základe preskúmania hlavičkového riadku súboru s oddeleným textom.</translation>
+        <translation>Meno poľa obsahujúceho y-ové hodnoty. Vyberte pole zo zoznamu. Zoznam je generovaný na základe preskúmania hlavičkového riadku súboru s oddeleným textom.</translation>
     </message>
     <message>
         <source>Layer name</source>
@@ -2809,7 +3394,7 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Name to display in the map legend</source>
-        <translation type="unfinished">Meno, ktoré sa objaví v mapovej legende</translation>
+        <translation>Meno, ktoré sa objaví v mapovej legende</translation>
     </message>
     <message>
         <source>Name displayed in the map legend</source>
@@ -2825,11 +3410,11 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Delimiter to use when splitting fields in the delimited text file. The delimiter can be 1 or more characters in length.</source>
-        <translation type="unfinished">Oddeľovač používaný na oddelnie jednotlivých polí v textovom súbore s oddeleným textom. Oddeľovač sa môže skladať z  1 alebo viac znakov.</translation>
+        <translation>Oddeľovač používaný na oddelnie jednotlivých polí v textovom súbore s oddeleným textom. Oddeľovač sa môže skladať z jedného alebo viac znakov.</translation>
     </message>
     <message>
         <source>Delimited Text Layer</source>
-        <translation type="unfinished">Vrstva z oddeleného textu</translation>
+        <translation>Vrstva z oddeleného textu</translation>
     </message>
     <message>
         <source>Delimited text file</source>
@@ -2853,7 +3438,7 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</source>
-        <translation type="unfinished">Toto tlačítko použite na nájdenie miesta, kde sa nachádza súbor s oddeleným textom. Toto tlačítko nebude prístupné, pokiaľ nebude vyplnené políčko &lt;i&gt;Oddeľovač&lt;/i&gt;. Potom, čo bude vbratý súbor, budú naplnené aj rozbaľovacie menu s X a Y políčkami zo súboru s oddeleným textom.</translation>
+        <translation>Toto tlačítko použite na nájdenie miesta, kde sa nachádza súbor s oddeleným textom. Toto tlačítko nebude prístupné, pokiaľ nebude vyplnené políčko &lt;i&gt;Oddeľovač&lt;/i&gt;. Potom, čo bude vybratý súbor, budú zo súboru s oddeleným textom naplnené aj rozbaľovacie menu s políčkami X a Y.</translation>
     </message>
     <message>
         <source>Add layer using the delimiter, file, and x/y fields specified</source>
@@ -2869,7 +3454,7 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>&amp;Parse</source>
-        <translation type="unfinished">&amp;Skontrolovať</translation>
+        <translation>&amp;Skontrolovať</translation>
     </message>
     <message>
         <source>Alt+P</source>
@@ -2945,19 +3530,19 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Buffer Settings:</source>
-        <translation type="unfinished">Nastavenie buffera:</translation>
+        <translation>Nastavenie buffera (okolia):</translation>
     </message>
     <message>
         <source>Buffer distance in map units:</source>
-        <translation type="unfinished">Veľkosť buffera v mapových jednotkách:</translation>
+        <translation>Veľkosť buffera (okolia) v mapových jednotkách:</translation>
     </message>
     <message>
         <source>Table name for the buffered layer:</source>
-        <translation type="unfinished">Meno tabuľky pre vrstvu s bufferom:</translation>
+        <translation>Meno tabuľky pre vrstvu s bufferom (okolím):</translation>
     </message>
     <message>
         <source>Create unique object id</source>
-        <translation type="unfinished">Vytvoriť objekt s jedinečným id</translation>
+        <translation>Vytvoriť objekt s jedinečným id</translation>
     </message>
     <message>
         <source>public</source>
@@ -2981,11 +3566,11 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Add the buffered layer to the map?</source>
-        <translation type="unfinished">Pridať do mapy vrstvu s bufferom?</translation>
+        <translation>Pridať do mapy vrstvu s bufferom (okolím)?</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Buffer the features in layer: &lt;/h2&gt;</source>
-        <translation type="unfinished">&lt;h2&gt;Okolu objektov vo vrstve vytvoriť buffer: &lt;/h2&gt;</translation>
+        <translation>&lt;h2&gt;Vytvoriť okolo objektov vo vrstve buffer (okolia): &lt;/h2&gt;</translation>
     </message>
 </context>
 <context>
@@ -3024,43 +3609,43 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
-        <translation type="unfinished">Týmto tlačítkom sa otvorí PosgreSQL tvorba dopytov a dovolí vytvoriť podskupinu objektov ktoré sa zobrazia na mapovom plátne na rozdiel od všetkých objektov vrstvy</translation>
+        <translation>Týmto tlačítkom sa otvorí PosgreSQL tvorba dopytov a dovolí vytvoriť podskupinu objektov, ktoré sa zobrazia na mapovom plátne na rozdiel od všetkých objektov vrstvy</translation>
     </message>
     <message>
         <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
-        <translation type="unfinished">Dopyt použití na obmedyenie objektov vo vrstve sa ukáže tu. Toto je podporované v súčasnosti len pre PosgreSQL vrstvy. Na vstúpenie alebo úpravu dopytu, kliknite na talčítko Tvorca dopytov</translation>
+        <translation>Tu sa zobrazuje dopyt použitý na vymedzenie objektov vo vrstve. V súčasnosti su dopyty podporované len pre vrstvy PosgreSQL. Na zadanie, alebo úpravu dopytu, kliknite na talčítko Tvorba dopytov</translation>
     </message>
     <message>
         <source>In order for QGIS to support SVG markers under Windows, we need to build QGIS</source>
-        <translation type="unfinished">Na to aby QGIS podporoval SVG značky pod Windowsom, je potrebná kompilácia QGIS</translation>
+        <translation>Na to aby QGIS podporoval SVG značky pod Windowsom, je potrebná kompilácia QGIS-u</translation>
     </message>
     <message>
         <source> using the commercial version of Qt. As this project is developed by volunteers</source>
-        <translation type="unfinished"> s použitím komerčnej verzie Qt. Keďže projekt je vyvýjaný dobrovoľníkmi</translation>
+        <translation> s použitím komerčnej verzie Qt. Keďže projekt je vyvíjaný dobrovoľníkmi</translation>
     </message>
     <message>
         <source> donating their time, we don&apos;t have the financial resources to purchase Qt</source>
-        <translation type="unfinished"> obetujúcimi svoj čas, nie sú finančné zdroje na zakúpenie Qt</translation>
+        <translation> obetujúcimi svoj čas, nie sú tu finančné zdroje na zakúpenie </translation>
     </message>
     <message>
         <source> commercial.  If you would like to help us, please visit the QGIS sourceforge</source>
-        <translation type="unfinished"> komerčnej verzie.  Ak by ste nám chceli pomôcť, prosím navštívte QGIS sourceforge</translation>
+        <translation> komerčnej verzie Qt.  Ak by ste nám chceli pomôcť, prosím navštívte domovskú stránku</translation>
     </message>
     <message>
         <source> home page to make a donation</source>
-        <translation type="unfinished"> domovskú stránku a darujte príspevok</translation>
+        <translation> QGIS na sourceforge a darujte príspevok</translation>
     </message>
     <message>
         <source>No SVG Support</source>
-        <translation type="unfinished">Bez podpory SVG</translation>
+        <translation>Bez podpory SVG</translation>
     </message>
     <message>
         <source>General:</source>
-        <translation type="unfinished">Všeobecné:</translation>
+        <translation>Všeobecné:</translation>
     </message>
     <message>
         <source>Geometry type of the features in this layer : </source>
-        <translation type="unfinished">Geometrický typ objektov v tejto vrstve: </translation>
+        <translation>Geometrický typ objektov v tejto vrstve: </translation>
     </message>
     <message>
         <source>The number of features in this layer : </source>
@@ -3068,51 +3653,63 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Extents:</source>
-        <translation type="unfinished">Rozsah:</translation>
+        <translation>Rozsah:</translation>
     </message>
     <message>
         <source>In layer spatial reference system units : </source>
-        <translation type="unfinished">Jednotky referenčného priestorového systému vrstvy: </translation>
+        <translation>Jednotky referenčného priestorového systému vrstvy: </translation>
     </message>
     <message>
         <source>xMin,yMin </source>
-        <translation type="unfinished">xMin,yMin </translation>
+        <translation>xMin,yMin </translation>
     </message>
     <message>
         <source> : xMax,yMax </source>
-        <translation type="unfinished"> : xMax,yMax </translation>
+        <translation> : xMax,yMax </translation>
     </message>
     <message>
         <source>In project spatial reference system units : </source>
-        <translation type="unfinished">Jednotky priestorového referenčného systému projektu: </translation>
+        <translation>Jednotky priestorového referenčného systému projektu: </translation>
     </message>
     <message>
         <source>Layer Spatial Reference System:</source>
-        <translation type="unfinished">Priestorový referenčný systém:</translation>
+        <translation>Priestorový referenčný systém:</translation>
     </message>
     <message>
         <source>Project (Output) Spatial Reference System:</source>
-        <translation type="unfinished">Referenčný súradnicový systém projektu (výstupný)</translation>
+        <translation>Referenčný súradnicový systém projektu (výstupný):</translation>
     </message>
     <message>
         <source>Attribute field info:</source>
-        <translation type="unfinished">Informácia o atribútovom poli:</translation>
+        <translation>Informácia o atribútovom poli:</translation>
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished">Pole</translation>
+        <translation>Pole</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">Dĺžka</translation>
+        <translation>Dĺžka</translation>
     </message>
     <message>
         <source>Precision</source>
-        <translation type="unfinished">Presnosť</translation>
+        <translation>Presnosť</translation>
+    </message>
+    <message>
+        <source>Spatial Index</source>
+        <translation type="unfinished">Priestorový index</translation>
+    </message>
+    <message>
+        <source>Creation of spatial index successfull</source>
+        <translation>Vytvorenie priestorového indexu bolo úspešné</translation>
+    </message>
+    <message>
+        <source>Creation of spatial index failed</source>
+        <translation>Vytvorenie priestorového indexu zlyhalo</translation>
     </message>
 </context>
 <context>
@@ -3143,7 +3740,7 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>TextLabel2</source>
-        <translation>TextBeschriftung2</translation>
+        <translation>TextovyPopis2</translation>
     </message>
     <message>
         <source>Fields</source>
@@ -3211,11 +3808,11 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Labels</source>
-        <translation>Popisky</translation>
+        <translation>Popisy</translation>
     </message>
     <message>
         <source>Display labels</source>
-        <translation>Zobraziť popisky</translation>
+        <translation>Zobraziť popisy</translation>
     </message>
     <message>
         <source>Help</source>
@@ -3231,7 +3828,7 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Symbology</source>
-        <translation type="unfinished">Symbolika</translation>
+        <translation>Symbolika</translation>
     </message>
     <message>
         <source>Visibility</source>
@@ -3263,7 +3860,7 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Display field for the Identify Results dialog box</source>
-        <translation type="unfinished">Zobraziť pole pre dialógové okno Výsledok identifikácie</translation>
+        <translation>Zobraziť pole pre dialógové okno Výsledok identifikácie</translation>
     </message>
     <message>
         <source>This sets the display field for the Identify Results dialog box</source>
@@ -3283,34 +3880,54 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Metadata</source>
-        <translation type="unfinished">Metadáta</translation>
+        <translation>Metadáta</translation>
     </message>
     <message>
         <source>Actions</source>
         <translation>Akcie</translation>
+    </message>
+    <message>
+        <source>Spatial Reference System</source>
+        <translation>Priestorový referenčný systém</translation>
+    </message>
+    <message>
+        <source>Change</source>
+        <translation>Zmena</translation>
+    </message>
+    <message>
+        <source>Spatial Index</source>
+        <translation>Priestorový index</translation>
+    </message>
+    <message>
+        <source>Create Spatial Index</source>
+        <translation>Vytvoriť priestorový index</translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation>Vytvoriť</translation>
     </message>
 </context>
 <context>
     <name>QgsEditReservedWordsBase</name>
     <message>
         <source>Edit Reserved Words</source>
-        <translation type="unfinished">Upraviť rezervované slová</translation>
+        <translation>Upraviť rezervované slová</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation type="unfinished">Stav</translation>
+        <translation>Stav</translation>
     </message>
     <message>
         <source>Column name</source>
-        <translation type="unfinished">Meno stĺca</translation>
+        <translation>Názov stĺca</translation>
     </message>
     <message>
         <source>Index</source>
-        <translation type="unfinished">Index</translation>
+        <translation>Index</translation>
     </message>
     <message>
         <source>This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used. You may also change any column name if desired.</source>
-        <translation type="unfinished">Tento shape súbor obsahuje rezervované slová. To sa môže dotknúť importu do PostSQL. Upravte názvy stĺpcov tak aby žiaden neobsahoval rezervované slová uvedené napravo. Je možné tiež zmeniť lobovoľné meno stĺpca ak je to želané.</translation>
+        <translation>Tento shape súbor obsahuje rezervované slová. To sa môže dotknúť importu do PostSQL. Upravte názvy stĺpcov tak, aby žiaden neobsahoval rezervované slová uvedené napravo. Je možné tiež zmeniť ľubovoľné meno stĺpca pokiaľ si to želáte.</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -3442,7 +4059,7 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Waypoint upload:</source>
-        <translation type="unfinished">Naharávanie cestných bodov:</translation>
+        <translation type="unfinished">Nahrávanie cestných bodov:</translation>
     </message>
     <message>
         <source>Route download:</source>
@@ -3458,7 +4075,7 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>The command that is used to upload tracks to the device</source>
-        <translation type="unfinished">Príkaz ktorý sa používa na nahratie stôp do zariadenia</translation>
+        <translation type="unfinished">Príkaz, ktorý sa používa na nahratie stôp do zariadenia</translation>
     </message>
     <message>
         <source>Track upload:</source>
@@ -3734,6 +4351,72 @@ je možné upravovať zariadenia (ich nastavenia)
     </message>
 </context>
 <context>
+    <name>QgsGeorefPluginGuiBase</name>
+    <message>
+        <source>Georeferencer</source>
+        <translation type="unfinished">Geoprerencer</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Zatvoriť</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <source>Raster file:</source>
+        <translation>Rastrový súbor:</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:13pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:13pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Tento zásuvný dokáže vygenerovať world súbory pre rastre. Stačí vybrať body a určiť ich skutočné world súradnice, a modul vypočítal parametre world súboru. Viac súradníc umožňuje dosiahnuť lepšie výsledky.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>Enter world coordinates</source>
+        <translation>Vložte world súradnice</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGeorefWarpOptionsDialogBase</name>
+    <message>
+        <source>Warp options</source>
+        <translation type="unfinished">Voľby zakrivenia</translation>
+    </message>
+    <message>
+        <source>Resampling method:</source>
+        <translation>Prevzorkovacia metóda:</translation>
+    </message>
+    <message>
+        <source>Nearest neighbour</source>
+        <translation>Najbližší sused</translation>
+    </message>
+    <message>
+        <source>Linear</source>
+        <translation>Lineárna</translation>
+    </message>
+    <message>
+        <source>Cubic</source>
+        <translation>Kubická</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Use 0 for transparency when needed</source>
+        <translation>Ak bude treba, použiť 0 pre priehľadnosť</translation>
+    </message>
+</context>
+<context>
     <name>QgsGraMaDialogBase</name>
     <message>
         <source>graduated Marker</source>
@@ -3764,7 +4447,7 @@ je možné upravovať zariadenia (ich nastavenia)
     </message>
     <message>
         <source>Label</source>
-        <translation>Popiska</translation>
+        <translation>Popis</translation>
     </message>
     <message>
         <source>Image</source>
@@ -3823,7 +4506,7 @@ Factor</source>
     </message>
     <message>
         <source>Add new category using settings in GRASS Edit toolbox</source>
-        <translation type="unfinished">Pridať novú kategóriu, použitím nastavení v GRASS Edit toolbox</translation>
+        <translation>Pridať novú kategóriu s použitím nastavení v nástrojovom paneli GRASS Úpravy</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -3831,7 +4514,7 @@ Factor</source>
     </message>
     <message>
         <source>Delete selected category</source>
-        <translation type="unfinished">Vymazať vybratú kategóriu</translation>
+        <translation>Vymazať vybranú kategóriu</translation>
     </message>
 </context>
 <context>
@@ -3854,19 +4537,19 @@ Factor</source>
     </message>
     <message>
         <source>Select line segment</source>
-        <translation type="unfinished">Vybrať líniový segment</translation>
+        <translation>Vybrať líniový segment</translation>
     </message>
     <message>
         <source>Select position on line</source>
-        <translation type="unfinished">Vybrať polohu na línii</translation>
+        <translation>Vybrať polohu na línii</translation>
     </message>
     <message>
         <source>Select element</source>
-        <translation type="unfinished">Vybrať element</translation>
+        <translation>Vybrať element</translation>
     </message>
     <message>
         <source>Undo last point</source>
-        <translation type="unfinished">Posledný bod späť</translation>
+        <translation>Posledný bod späť</translation>
     </message>
     <message>
         <source>Close line</source>
@@ -3882,15 +4565,15 @@ Factor</source>
     </message>
     <message>
         <source>New location</source>
-        <translation type="unfinished">Nová Location</translation>
+        <translation>Nová lokalita (location)</translation>
     </message>
     <message>
         <source>Select new position</source>
-        <translation type="unfinished">Vybrať novú polohu</translation>
+        <translation>Vybrať novú polohu</translation>
     </message>
     <message>
         <source>New vertex position</source>
-        <translation type="unfinished">Nová poloha uzla</translation>
+        <translation>Nová poloha uzla</translation>
     </message>
     <message>
         <source>Release</source>
@@ -3898,7 +4581,7 @@ Factor</source>
     </message>
     <message>
         <source>Delete vertex</source>
-        <translation type="unfinished">Vymazať uzol</translation>
+        <translation>Vymazať uzol</translation>
     </message>
     <message>
         <source>Release vertex</source>
@@ -3906,7 +4589,7 @@ Factor</source>
     </message>
     <message>
         <source>Split the line</source>
-        <translation type="unfinished">Rozdeliť líniu</translation>
+        <translation>Rozdeliť líniu</translation>
     </message>
     <message>
         <source>Release the line</source>
@@ -3926,7 +4609,7 @@ Factor</source>
     </message>
     <message>
         <source>Rigth: </source>
-        <translation type="unfinished">Vpravo: </translation>
+        <translation>Vpravo: </translation>
     </message>
 </context>
 <context>
@@ -4117,6 +4800,10 @@ Factor</source>
         <source>Close</source>
         <translation>Zatvoriť</translation>
     </message>
+    <message>
+        <source>Manual</source>
+        <translation>Ručne</translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassPlugin</name>
@@ -4243,11 +4930,11 @@ Factor</source>
     </message>
     <message>
         <source>&amp;Mapset</source>
-        <translation type="unfinished">&amp;Mapset</translation>
+        <translation type="obsolete">&amp;Mapset</translation>
     </message>
     <message>
         <source>New Mapset</source>
-        <translation type="unfinished">Nový Mapset</translation>
+        <translation>Nová mapová súprava (Mapset)</translation>
     </message>
     <message>
         <source>&amp;New</source>
@@ -4259,7 +4946,7 @@ Factor</source>
     </message>
     <message>
         <source>Open Mapset</source>
-        <translation type="unfinished">Otvoriť Mapset</translation>
+        <translation>Otvoriť mapovú súpravu (Mapset)</translation>
     </message>
     <message>
         <source>&amp;Open...</source>
@@ -4268,6 +4955,98 @@ Factor</source>
     <message>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGridMakerPluginGuiBase</name>
+    <message>
+        <source>QGIS Plugin Template</source>
+        <translation>QGIS šablóna zásuvného modulu</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation>Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Zrušiť</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation>Alt+Z</translation>
+    </message>
+    <message>
+        <source>Graticule Builder</source>
+        <translation>Tvorba siete zemepisných súradníc</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Tento zásuvný modul vám pomôže vytvoriť súbor shapefile so zemepisnou sieťou, ktorú je možné použiť vo vašom qgis mapovom prehliadači.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Origin (Lower Left)</source>
+        <translation>Počiatok (ľavý dolný)</translation>
+    </message>
+    <message>
+        <source>Latitude:</source>
+        <translation>Geogr. dĺžka:</translation>
+    </message>
+    <message>
+        <source>Longitude:</source>
+        <translation>Geogr. šírka:</translation>
+    </message>
+    <message>
+        <source>End point (Upper Right)</source>
+        <translation>Koncový bod (pravý horný)</translation>
+    </message>
+    <message>
+        <source>Output (Shape) File</source>
+        <translation>Výstupný (Shape) súbor</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <source>Graticule Size (units in degrees)</source>
+        <translation>Veľkosť siete (jednotky v stupňoch)</translation>
+    </message>
+    <message>
+        <source>Latitude Interval:</source>
+        <translation>Interval medzi rovnobežkami: </translation>
+    </message>
+    <message>
+        <source>Longitude Interval:</source>
+        <translation>Interval medzi poludníkmi:</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
+&lt;p&gt;Please enter all units in decimal degrees&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;(new line)
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;(new line)
+&lt;p&gt;Tento zásuvný modul vám pomôže zostrojiť shape súbor so zemepisnou sieťou, ktorým možno prekryť Váš mapy vo vašom mapový prehliadči QGIS.&lt;/p&gt;
+&lt;p&gt;Prosím všetky hodnoty zadávajte v desiatkových stupňoch&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>#000.00000; </source>
+        <translation>#000.00000; </translation>
     </message>
 </context>
 <context>
@@ -4387,11 +5166,11 @@ Factor</source>
     </message>
     <message>
         <source>Field containing label:</source>
-        <translation>Pole obsahujúce popisky:</translation>
+        <translation>Pole obsahujúce popisy:</translation>
     </message>
     <message>
         <source>Default label:</source>
-        <translation>Štandardný text popisky:</translation>
+        <translation>Štandardný text popisu:</translation>
     </message>
     <message>
         <source>Preview:</source>
@@ -4455,7 +5234,7 @@ Factor</source>
     </message>
     <message>
         <source>Buffer Labels?</source>
-        <translation>Okolie popisiek?</translation>
+        <translation>Okolie popisu?</translation>
     </message>
     <message>
         <source>Size:</source>
@@ -4519,7 +5298,7 @@ Factor</source>
     </message>
     <message>
         <source>Use best judgement when labels collide</source>
-        <translation type="unfinished">Keď popisky kolidujú, použiť najlepšie rozhodnutie</translation>
+        <translation type="unfinished">Keď popisy kolidujú, použiť najlepšie rozhodnutie</translation>
     </message>
     <message>
         <source>Data Defined Style</source>
@@ -4575,14 +5354,14 @@ Factor</source>
     </message>
     <message>
         <source>Advanced Data Defined Style</source>
-        <translation type="unfinished">Zložitejší údajmi definovaný štýl</translation>
+        <translation>Zložitejší údajmi definovaný štýl</translation>
     </message>
 </context>
 <context>
     <name>QgsLayerProjectionSelectorBase</name>
     <message>
         <source>Layer Projection Selector</source>
-        <translation type="unfinished">Vybratie zobrazenia vrstvy</translation>
+        <translation>Výber zobrazenia vrstvy</translation>
     </message>
     <message>
         <source>OK</source>
@@ -4594,7 +5373,7 @@ Factor</source>
 &lt;p&gt;This layer appears to have no projection specification. By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Definuje (kartografické) zobrazenie tejto vrstvy:&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Vyzerá to tak, že pre aktuálnu vrstvu nie je špecifikované žiadne zobrazenie. Štandardne bude teraz nastavené zobrazenie vrstvy podľa nastavenia projektu, avšak je možné teraz vybrať iné zobrazenie v zozname dole.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -4693,7 +5472,7 @@ Factor</source>
     </message>
     <message>
         <source>Capture Pos</source>
-        <translation type="unfinished">Sledovat (uchytit) posiciu</translation>
+        <translation type="unfinished">Sledovat (uchytit) poziciu</translation>
     </message>
     <message>
         <source>OK</source>
@@ -4721,6 +5500,10 @@ Factor</source>
     <message>
         <source>To identify features, you must choose an layer active by clicking on its name in the legend</source>
         <translation>Um Eigenschaften zu identifizieren, muß eine Ebene, durch anklicken des Namens in der Legende, aktiviert werden</translation>
+    </message>
+    <message>
+        <source>Error when projecting the view extent, you may need to manually zoom to the region of interest.</source>
+        <translation type="unfinished">Chyba pri zobrazovaní rozsahu pohľadu, môžete potrebovať ručne zmeniť pohľad na oblasť Vášho záujmu</translation>
     </message>
 </context>
 <context>
@@ -4916,7 +5699,7 @@ Factor</source>
     </message>
     <message>
         <source>Azimuth</source>
-        <translation>Azimut</translation>
+        <translation type="obsolete">Azimut</translation>
     </message>
 </context>
 <context>
@@ -5046,6 +5829,135 @@ Rozšírené informácie o chybe:
     <message>
         <source>5432</source>
         <translation>5432</translation>
+    </message>
+</context>
+<context>
+    <name>QgsNewHttpConnectionBase</name>
+    <message>
+        <source>OK</source>
+        <translation type="obsolete">OK</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="obsolete">Zrušiť</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="obsolete">Pomocník</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation type="obsolete">F1</translation>
+    </message>
+    <message>
+        <source>Connection Information</source>
+        <translation type="obsolete">Informácie o spojení</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="obsolete">Názov</translation>
+    </message>
+    <message>
+        <source>URL</source>
+        <translation type="obsolete">URL</translation>
+    </message>
+    <message>
+        <source>Name of the new connection</source>
+        <translation type="obsolete">Názov nového spojenia</translation>
+    </message>
+</context>
+<context>
+    <name>QgsNorthArrowPlugin</name>
+    <message>
+        <source>Bottom Left</source>
+        <translation>Vľavo dole</translation>
+    </message>
+    <message>
+        <source>Top Right</source>
+        <translation>Vpravo hore</translation>
+    </message>
+    <message>
+        <source>Bottom Right</source>
+        <translation>Vpravo dole</translation>
+    </message>
+</context>
+<context>
+    <name>QgsNorthArrowPluginGuiBase</name>
+    <message>
+        <source>North Arrow Plugin</source>
+        <translation>Zásuvný modul na tvorbu smerovej ružice</translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation>Vlastnosti</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation>Uhol</translation>
+    </message>
+    <message>
+        <source>Enable North Arrow</source>
+        <translation>Zapnúť smerovú ružicu</translation>
+    </message>
+    <message>
+        <source>Top Left</source>
+        <translation>Vľavo hore</translation>
+    </message>
+    <message>
+        <source>Top Right</source>
+        <translation>Vpravo hore</translation>
+    </message>
+    <message>
+        <source>Bottom Left</source>
+        <translation>Vľavo dole</translation>
+    </message>
+    <message>
+        <source>Bottom Right</source>
+        <translation>Vpravo dole</translation>
+    </message>
+    <message>
+        <source>Placement on screen</source>
+        <translation>Umiestnenie na obrazovke</translation>
+    </message>
+    <message>
+        <source>Preview of north arrow</source>
+        <translation>Náhľad na smerovú ružicu</translation>
+    </message>
+    <message>
+        <source>Placement</source>
+        <translation>Umiestnenie</translation>
+    </message>
+    <message>
+        <source>Icon</source>
+        <translation>Ikona</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <source>New Item</source>
+        <translation>Nová položka</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation>Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Zrušiť</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation>Alt+Z</translation>
+    </message>
+    <message>
+        <source>Set direction automatically</source>
+        <translation>Nastaviť smer automaticky</translation>
     </message>
 </context>
 <context>
@@ -5183,7 +6095,7 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
     </message>
     <message>
         <source>SVG oversampling factor</source>
-        <translation type="unfinished">Faktor prevzorkovania SVG</translation>
+        <translation>Faktor prevzorkovania SVG</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note: &lt;/b&gt;A higher value gives smoother SVG symbols, but can slow down rendering</source>
@@ -5199,7 +6111,7 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
     </message>
     <message>
         <source>New layers added to the map are not displayed</source>
-        <translation>Nové vektory pridané do mapy nie sú zobrezované</translation>
+        <translation>Nové vrstvy pridané do mapy nie sú zobrazované</translation>
     </message>
     <message>
         <source>&lt;html&gt;<byte value="xd"/><byte value="xd"/>
@@ -5224,7 +6136,7 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
 By default QGIS uses a value of 5. Increase the value if you have trouble<byte value="xd"/>
 identifying features without zooming in very close.<byte value="xd"/>
 &lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;
+        <translation>&lt;html&gt;
 &lt;b&gt;Poznámka:&lt;/b&gt; Zadajte hodnotu v tisícoch. Polomer hľadania je počítaný ako:&lt;br&gt;
 &amp;nbsp;&amp;nbsp;&lt;i&gt;(Širka mapového okna) * ( Hodnota/1000.0)&lt;/i&gt;
 &lt;br&gt;
@@ -5233,27 +6145,27 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
     </message>
     <message>
         <source>Projection</source>
-        <translation type="unfinished">Zobrazenie</translation>
+        <translation>Zobrazenie</translation>
     </message>
     <message>
         <source>Select Global Default ...</source>
-        <translation type="unfinished">Vybrať všeobecný štandard ...</translation>
+        <translation>Vybrať všeobecný štandard ...</translation>
     </message>
     <message>
         <source>When layer is loaded that has no projection information:</source>
-        <translation type="unfinished">Keď je nahrávaná vrstva bez informácie o zobrazení:</translation>
+        <translation>Keď je nahrávaná vrstva bez informácie o zobrazení:</translation>
     </message>
     <message>
         <source>Prompt for projection.</source>
-        <translation type="unfinished">Spýtať sa na zobazenie.</translation>
+        <translation>Spýtať sa na zobazenie.</translation>
     </message>
     <message>
         <source>Project wide default projection will be used.</source>
-        <translation type="unfinished">Bude použité zobrazenie štandardné.</translation>
+        <translation type="unfinished">Bude použité zobrazenie najviac štandardné.</translation>
     </message>
     <message>
         <source>Global default projection displayed below will be used.</source>
-        <translation type="unfinished">Bude použité všeobecne štandardné zobrazenie dole.</translation>
+        <translation type="unfinished">Bude použité všeobecne štandardné zobrazenie uvedené dolu.</translation>
     </message>
 </context>
 <context>
@@ -5330,7 +6242,7 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
     </message>
     <message>
         <source>The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature.</source>
-        <translation type="unfinished">Výsledkom Vami špecifikovaného dopytu sú nulové (žiadne) záznamy. PostgreSQL vrstvy musia však mať aspoň jeden feature.
+        <translation>Výsledkom Vami špecifikovaného dopytu sú nulové (žiadne) záznamy. PostgreSQL vrstvy však musia mať aspoň jeden objekt.
 </translation>
     </message>
 </context>
@@ -5358,7 +6270,7 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
     </message>
     <message>
         <source>SQL where clause</source>
-        <translation type="unfinished">SQL where klauzula</translation>
+        <translation>SQL where klauzula</translation>
     </message>
     <message>
         <source>Operators</source>
@@ -5370,11 +6282,11 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
     </message>
     <message>
         <source>IN</source>
-        <translation type="unfinished">JE V</translation>
+        <translation>JE V</translation>
     </message>
     <message>
         <source>NOT IN</source>
-        <translation type="unfinished">NIE JE V</translation>
+        <translation>NIE JE V</translation>
     </message>
     <message>
         <source>&lt;</source>
@@ -5402,23 +6314,23 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
     </message>
     <message>
         <source>LIKE</source>
-        <translation type="unfinished">AKO</translation>
+        <translation>AKO</translation>
     </message>
     <message>
         <source>AND</source>
-        <translation type="unfinished">A</translation>
+        <translation>A</translation>
     </message>
     <message>
         <source>ILIKE</source>
-        <translation type="unfinished">NIE AKO</translation>
+        <translation>NIE AKO</translation>
     </message>
     <message>
         <source>OR</source>
-        <translation type="unfinished">ALEBO</translation>
+        <translation>ALEBO</translation>
     </message>
     <message>
         <source>NOT</source>
-        <translation type="unfinished">NIE JE</translation>
+        <translation>NIE JE</translation>
     </message>
     <message>
         <source>Values</source>
@@ -5532,6 +6444,73 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
     </message>
 </context>
 <context>
+    <name>QgsPointDialogBase</name>
+    <message>
+        <source>Georeferencer</source>
+        <translation>Georeferencer</translation>
+    </message>
+    <message>
+        <source>Transform type:</source>
+        <translation>Typ transformácie:</translation>
+    </message>
+    <message>
+        <source>Linear</source>
+        <translation>Lineárna</translation>
+    </message>
+    <message>
+        <source>Helmert</source>
+        <translation type="unfinished">Helmertova</translation>
+    </message>
+    <message>
+        <source>Zoom in</source>
+        <translation>Zoom (+)</translation>
+    </message>
+    <message>
+        <source>Zoom out</source>
+        <translation>Zoom (-)</translation>
+    </message>
+    <message>
+        <source>Zoom to the raster extents</source>
+        <translation>Zoom na rozsah rastra</translation>
+    </message>
+    <message>
+        <source>Pan</source>
+        <translation>Posun</translation>
+    </message>
+    <message>
+        <source>Add points</source>
+        <translation>Pridať body</translation>
+    </message>
+    <message>
+        <source>Delete points</source>
+        <translation>Vymazať body</translation>
+    </message>
+    <message>
+        <source>Generate world file and load layer</source>
+        <translation>Vygenerovať world súbor a nahrať vrstvu</translation>
+    </message>
+    <message>
+        <source>Generate world file</source>
+        <translation>Vygenerovať world súbor</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Zrušiť</translation>
+    </message>
+    <message>
+        <source>World file:</source>
+        <translation>World súbor:</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <source>Modified raster:</source>
+        <translation>Pozmenený raster:</translation>
+    </message>
+</context>
+<context>
     <name>QgsPointStyleWidgetBase</name>
     <message>
         <source>Form3</source>
@@ -5550,17 +6529,19 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
     <name>QgsPostgresProvider</name>
     <message>
         <source>Unable to access relation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nie je možné pristúpiť k relácii</translation>
     </message>
     <message>
         <source>Unable to access the </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nemožno pristúpiť k </translation>
     </message>
     <message>
         <source> relation.
 The error message from the database was:
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> relácii.
+Chybové hlásenie z databázy bolo:
+</translation>
     </message>
     <message>
         <source>No GEOS Support!</source>
@@ -5662,11 +6643,11 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Automatically sets the number of decimal places in the mouse position display</source>
-        <translation type="unfinished">Automaticky nastaví počet počet desatinných miest v zobrazovaní polohy myši (kurzora)</translation>
+        <translation>Automaticky nastaví počet počet desatinných miest v zobrazovaní polohy myši (kurzora)</translation>
     </message>
     <message>
         <source>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</source>
-        <translation type="unfinished">Počet desatinných miest, ktoré sú použité pri zobrazovaní polohy myši je automaticky nastavený tak aby posun myši o jeden pixel spôsobil zmenu v zobrazovanej polohy </translation>
+        <translation>Počet desatinných miest, ktoré sú použité pri zobrazovaní polohy myši je automaticky nastavený tak, aby posun myši o jeden pixel spôsobil zmenu v zobrazovanej polohe </translation>
     </message>
     <message>
         <source>Manual</source>
@@ -5674,11 +6655,11 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Sets the number of decimal places to use for the mouse position display</source>
-        <translation type="unfinished">Nastaví počet desatinných miest použitých pri zobrazovaní polohy myši</translation>
+        <translation>Nastaví počet desatinných miest použitých pri zobrazovaní polohy myši</translation>
     </message>
     <message>
         <source>The number of decimal places for the manual option</source>
-        <translation type="unfinished">Počet desatinných miest pre ručnú voľbu</translation>
+        <translation>Počet desatinných miest pre ručnú voľbu</translation>
     </message>
     <message>
         <source>decimal places</source>
@@ -5690,23 +6671,23 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Line Colour:</source>
-        <translation type="unfinished">Farba línie:</translation>
+        <translation>Farba línie:</translation>
     </message>
     <message>
         <source>Line Width:</source>
-        <translation type="unfinished">Hrúbka línie:</translation>
+        <translation>Hrúbka línie:</translation>
     </message>
     <message>
         <source>Snapping Tolerance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerancia zameriavania:</translation>
     </message>
     <message>
         <source>Projection</source>
-        <translation type="unfinished">Zobrazenie</translation>
+        <translation>Zobrazenie</translation>
     </message>
     <message>
         <source>Enable on the fly projection</source>
-        <translation type="unfinished">Povoliť zobrazenie &quot;za jazdy&quot;</translation>
+        <translation>Povoliť zobrazenie &quot;za jazdy&quot;</translation>
     </message>
     <message>
         <source>Coordinate Systems</source>
@@ -5714,26 +6695,42 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Všeobecné</translation>
+        <translation>Všeobecné</translation>
     </message>
 </context>
 <context>
     <name>QgsProjectionSelectorBase</name>
     <message>
         <source>Projection Selector</source>
-        <translation type="unfinished">Výber zobrazenia</translation>
+        <translation>Výber zobrazenia</translation>
     </message>
     <message>
         <source>Projection</source>
-        <translation type="unfinished">Zobrazenie</translation>
+        <translation>Zobrazenie</translation>
     </message>
     <message>
         <source>Coordinate Systems</source>
-        <translation type="unfinished">Súradnicové systémy</translation>
+        <translation>Súradnicové systémy</translation>
     </message>
     <message>
         <source>Spatial Reference Id</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Id priestorového referenčného systému</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>Hľadať</translation>
+    </message>
+    <message>
+        <source>Find</source>
+        <translation>Nájsť</translation>
+    </message>
+    <message>
+        <source>Postgis SRID</source>
+        <translation>Postgis SRID</translation>
+    </message>
+    <message>
+        <source>EPSG ID</source>
+        <translation>EPSG ID</translation>
     </message>
 </context>
 <context>
@@ -5772,7 +6769,7 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source> Bands: </source>
-        <translation type="unfinished"> Kanály: </translation>
+        <translation>Kanály: </translation>
     </message>
     <message>
         <source>Projection: </source>
@@ -5840,15 +6837,15 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Min Val</source>
-        <translation type="unfinished">Minimálna hodnota</translation>
+        <translation>Minimálna hodnota</translation>
     </message>
     <message>
         <source>Max Val</source>
-        <translation type="unfinished">Maximálna hodnota</translation>
+        <translation>Maximálna hodnota</translation>
     </message>
     <message>
         <source>Range</source>
-        <translation type="unfinished">Rozpätie (valencia)</translation>
+        <translation>Rozpätie (valencia)</translation>
     </message>
     <message>
         <source>Mean</source>
@@ -5957,19 +6954,19 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Layer Spatial Reference System: </source>
-        <translation type="unfinished">Referenčný priestorový systém vrstvy: </translation>
+        <translation>Referenčný priestorový systém vrstvy: </translation>
     </message>
     <message>
         <source>Project Spatial Reference System: </source>
-        <translation type="unfinished">Referenčný priestorový systém projektu: </translation>
+        <translation>Referenčný priestorový systém projektu: </translation>
     </message>
     <message>
         <source>out of extent</source>
-        <translation type="unfinished">mimo rozsahu</translation>
+        <translation>mimo rozsahu</translation>
     </message>
     <message>
         <source>null (no data)</source>
-        <translation type="unfinished">null (žiadne údaje)</translation>
+        <translation>null (žiadne údaje)</translation>
     </message>
 </context>
 <context>
@@ -6012,7 +7009,7 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Palette</source>
-        <translation type="unfinished">Paleta</translation>
+        <translation>Paleta</translation>
     </message>
 </context>
 <context>
@@ -6071,7 +7068,7 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Symbology</source>
-        <translation type="unfinished">Symbolika</translation>
+        <translation>Symbolika</translation>
     </message>
     <message>
         <source>Appearance</source>
@@ -6314,15 +7311,15 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished">Voľby</translation>
+        <translation>Voľby</translation>
     </message>
     <message>
         <source>Out Of Range OK?</source>
-        <translation type="unfinished">Mimo rozsah, OK?</translation>
+        <translation>Mimo rozsah, OK?</translation>
     </message>
     <message>
         <source>Allow Approximation</source>
-        <translation type="unfinished">Dovoliť aproximáciu (odhad)</translation>
+        <translation>Dovoliť aproximáciu (odhad)</translation>
     </message>
     <message>
         <source>Chart Type</source>
@@ -6338,7 +7335,7 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>X Range:</source>
-        <translation type="unfinished">X rozsah:</translation>
+        <translation>X rozsah:</translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -6365,6 +7362,180 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
 </context>
 <context>
+    <name>QgsScaleBarPlugin</name>
+    <message>
+        <source> metres/km</source>
+        <translation type="unfinished"> metre/kilometer</translation>
+    </message>
+    <message>
+        <source> feet</source>
+        <translation>stopy</translation>
+    </message>
+    <message>
+        <source> degrees</source>
+        <translation>stupne</translation>
+    </message>
+    <message>
+        <source> km</source>
+        <translation>km</translation>
+    </message>
+    <message>
+        <source> mm</source>
+        <translation> mm</translation>
+    </message>
+    <message>
+        <source> cm</source>
+        <translation> cm</translation>
+    </message>
+    <message>
+        <source> m</source>
+        <translation> m</translation>
+    </message>
+    <message>
+        <source> foot</source>
+        <translation> stopa</translation>
+    </message>
+    <message>
+        <source> degree</source>
+        <translation> stupeň</translation>
+    </message>
+    <message>
+        <source> unknown</source>
+        <translation> neznáma</translation>
+    </message>
+    <message>
+        <source>Top Left</source>
+        <translation>Vľavo hore</translation>
+    </message>
+    <message>
+        <source>Bottom Left</source>
+        <translation>Vľavo dole</translation>
+    </message>
+    <message>
+        <source>Top Right</source>
+        <translation>Vpravo hore</translation>
+    </message>
+    <message>
+        <source>Bottom Right</source>
+        <translation>Vpravo dole</translation>
+    </message>
+    <message>
+        <source>Tick Down</source>
+        <translation>Zobáčik dole</translation>
+    </message>
+    <message>
+        <source>Tick Up</source>
+        <translation>Zobáčik hore</translation>
+    </message>
+    <message>
+        <source>Bar</source>
+        <translation type="unfinished">Lišta</translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation type="unfinished">Rám</translation>
+    </message>
+</context>
+<context>
+    <name>QgsScaleBarPluginGuiBase</name>
+    <message>
+        <source>Scale Bar Plugin</source>
+        <translation>Grafická mierka</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation>Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Zrušiť</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Tento zásuvný modul vykreslí na mape grafickú mierku. Prosím nezabúdajte, že tu nastavovaná veľkost je veľkosť uprednostňovaná, no môže byť nahradená inou v závislosti od nastavenia veľkosti zoomu. Veľkosť je posudzovaná vzhľadom na mapové jednotky nastavené vo Vlastnostiach projektu.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>Top Left</source>
+        <translation>Vľavo hore</translation>
+    </message>
+    <message>
+        <source>Top Right</source>
+        <translation>Vpravo hore</translation>
+    </message>
+    <message>
+        <source>Bottom Left</source>
+        <translation>Vľavo dole</translation>
+    </message>
+    <message>
+        <source>Bottom Right</source>
+        <translation>Vpravo dole</translation>
+    </message>
+    <message>
+        <source>Size of bar:</source>
+        <translation>Veľkosť grafickej mierky:</translation>
+    </message>
+    <message>
+        <source>Select Colour</source>
+        <translation>Vybrať farbu</translation>
+    </message>
+    <message>
+        <source>Placement:</source>
+        <translation>Umiestnenie:</translation>
+    </message>
+    <message>
+        <source>Tick Down</source>
+        <translation>Zobáčik dole</translation>
+    </message>
+    <message>
+        <source>Tick Up</source>
+        <translation>Zobáčik hore</translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation type="unfinished">Rám</translation>
+    </message>
+    <message>
+        <source>Bar</source>
+        <translation type="unfinished">Lišta</translation>
+    </message>
+    <message>
+        <source>Select the style of the scale bar</source>
+        <translation>Vybrať vzhľad grafickej mierky</translation>
+    </message>
+    <message>
+        <source>Colour of bar:</source>
+        <translation>Farba grafickej mierky:</translation>
+    </message>
+    <message>
+        <source>Scale bar style:</source>
+        <translation>Vzhľad grafickej mierky:</translation>
+    </message>
+    <message>
+        <source>Enable scale bar</source>
+        <translation>Zapnúť grafickú mierku</translation>
+    </message>
+    <message>
+        <source>Automatically snap to round number on resize</source>
+        <translation>Pri zmene veľkosti automaticky skočiť na okrúhle číslo</translation>
+    </message>
+</context>
+<context>
     <name>QgsScanGeometries</name>
     <message>
         <source>Scanning Geometries</source>
@@ -6373,6 +7544,68 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     <message>
         <source>textLabel1</source>
         <translation type="unfinished">textLabel1</translation>
+    </message>
+</context>
+<context>
+    <name>QgsServerSourceSelect</name>
+    <message>
+        <source>Are you sure you want to remove the </source>
+        <translation type="obsolete">Ste si istý, že chcete odstrániť</translation>
+    </message>
+    <message>
+        <source> connection and all associated settings?</source>
+        <translation type="obsolete">spojenie a všetky pričlenené nastavenia?</translation>
+    </message>
+    <message>
+        <source>Confirm Delete</source>
+        <translation type="obsolete">Potvrdiť vymazanie</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation type="obsolete">Áno</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="obsolete">Nie</translation>
+    </message>
+    <message>
+        <source>Select Layer</source>
+        <translation type="obsolete">Vybrať vrstvu</translation>
+    </message>
+</context>
+<context>
+    <name>QgsServerSourceSelectBase</name>
+    <message>
+        <source>Connect</source>
+        <translation type="obsolete">Spojiť</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="obsolete">Upraviť</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="obsolete">Vymazať</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="obsolete">Pomocník</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation type="obsolete">F1</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="obsolete">Pridať</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="obsolete">Zatvoriť</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="obsolete">Typ</translation>
     </message>
 </context>
 <context>
@@ -6470,7 +7703,7 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Vyčistiť:</translation>
+        <translation>Vyčistiť</translation>
     </message>
     <message>
         <source>Fill Patterns:</source>
@@ -6482,7 +7715,7 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Symbol</source>
-        <translation type="unfinished">Symbol</translation>
+        <translation>Symbol</translation>
     </message>
     <message>
         <source>Size</source>
@@ -6493,15 +7726,15 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     <name>QgsSpit</name>
     <message>
         <source>Are you sure you want to remove the [</source>
-        <translation type="unfinished">Naozaj chcete odstrániť [</translation>
+        <translation>Naozaj chcete odstrániť [</translation>
     </message>
     <message>
         <source>] connection and all associated settings?</source>
-        <translation type="unfinished">] spojenie a všetky k nemu priradené nastavenia?</translation>
+        <translation>] spojenie a všetky k nemu priradené nastavenia?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Potvrdiť vymazanie</translation>
+        <translation>Potvrdiť vymazanie</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -6513,13 +7746,15 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source> - Edit Column Names</source>
-        <translation type="unfinished"> - Upraviť mená stĺpcov</translation>
+        <translation> - Upraviť mená stĺpcov</translation>
     </message>
     <message>
         <source>The following Shapefile(s) could not be loaded:
 
 </source>
-        <translation type="unfinished">Nasledujúci/e Shape súbor(y) nie je možné nahrať:</translation>
+        <translation type="unfinished">Nasledujúci/e Shape súbor(y) nie je možné nahrať:
+
+</translation>
     </message>
     <message>
         <source>REASON: File cannot be opened</source>
@@ -6539,23 +7774,23 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>[New ...] - create a new connection</source>
-        <translation type="unfinished">[Nové ...] - vytvoriť nové spojenie</translation>
+        <translation>[Nové ...] - vytvoriť nové spojenie</translation>
     </message>
     <message>
         <source>[Edit ...] - edit the currently selected connection</source>
-        <translation type="unfinished">[Upraviť ...] - upraviť práve vybraté spojenie</translation>
+        <translation>[Upraviť ...] - upraviť práve vybraté spojenie</translation>
     </message>
     <message>
         <source>[Remove] - remove the currently selected connection</source>
-        <translation type="unfinished">[Odstrániť] - odstráni práve vybraté spojenie</translation>
+        <translation>[Odstrániť] - odstráni práve vybraté spojenie</translation>
     </message>
     <message>
         <source>-you need to select a connection that works (connects properly) in order to import files</source>
-        <translation type="unfinished"></translation>
+        <translation>-aby bol možný import súborov je potrebné vybrať fungujúce spojenie (pripojiť sa správne)</translation>
     </message>
     <message>
         <source>-when changing connections Global Schema also changes accordingly</source>
-        <translation type="unfinished"></translation>
+        <translation>-keď sa menia spojenia Global Schema sa mení vzhľadom na ne</translation>
     </message>
     <message>
         <source>Shapefile List:</source>
@@ -6563,68 +7798,70 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>[Add ...] - open a File dialog and browse to the desired file(s) to import</source>
-        <translation type="unfinished"></translation>
+        <translation>[Pridať ...] - otvorí Dialóg so súbormi a je možné prechádzať a vybrať požadovaný/é súbor(y) na import</translation>
     </message>
     <message>
         <source>[Remove] - remove the currently selected file(s) from the list</source>
-        <translation type="unfinished"></translation>
+        <translation>[Odobrať] - odoberie zo zoznamu vybraný/é súbory</translation>
     </message>
     <message>
         <source>[Remove All] - remove all the files in the list</source>
-        <translation type="unfinished"></translation>
+        <translation>[Odobrať všetko] - zo zoznamu odoberie všetky súbory</translation>
     </message>
     <message>
         <source>[SRID] - Reference ID for the shapefiles to be imported</source>
-        <translation type="unfinished"></translation>
+        <translation>[SRID] - Referenčné ID pre importované shape súbory</translation>
     </message>
     <message>
         <source>[Use Default (SRID)] - set SRID to -1</source>
-        <translation type="unfinished"></translation>
+        <translation>[Použiť predvolené (SRID)] - nastaví SRID na -1</translation>
     </message>
     <message>
         <source>[Geometry Column Name] - name of the geometry column in the database</source>
-        <translation type="unfinished"></translation>
+        <translation>[Meno stĺpca s geometriou] - meno stĺpca s geometriou v databáze</translation>
     </message>
     <message>
         <source>[Use Default (Geometry Column Name)] - set column name to &apos;the_geom&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>[Použiť predvolené (Meno stĺpca s geometriou)] - nastaví meno stĺpca na &apos;the_geom&apos;</translation>
     </message>
     <message>
         <source>[Glogal Schema] - set the schema for all files to be imported into</source>
-        <translation type="unfinished"></translation>
+        <translation>[Globálna schéma] - nastaví schému do ktorej budú importované všetky súbory</translation>
     </message>
     <message>
         <source>[Import] - import the current shapefiles in the list</source>
-        <translation type="unfinished"></translation>
+        <translation>[Import] - naimportuje súbory z aktuálneho zoznamu</translation>
     </message>
     <message>
         <source>[Quit] - quit the program
 </source>
-        <translation type="unfinished"></translation>
+        <translation>[Koniec] - ukončí program
+
+</translation>
     </message>
     <message>
         <source>[Help] - display this help dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>[Pomocník] - zobrazí tento pomocný text</translation>
     </message>
     <message>
         <source>Import Shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Importovať shape súbory</translation>
     </message>
     <message>
         <source>You need to specify a Connection first</source>
-        <translation type="unfinished"></translation>
+        <translation>Najprv je potrebné vybrať Spojenie</translation>
     </message>
     <message>
         <source>Connection failed - Check settings and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Spojenie zlyhalo - skontrolujte nastavenia a skúste znova</translation>
     </message>
     <message>
         <source>You need to add shapefiles to the list first</source>
-        <translation type="unfinished"></translation>
+        <translation>Je potrebné najskôr pridať do zoznamu shape súbory</translation>
     </message>
     <message>
         <source>Importing files</source>
-        <translation type="unfinished"></translation>
+        <translation>Importujú sa súbory</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -6636,63 +7873,63 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Problem inserting features from file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pri vkladaní objektov zo súboru nastal problém :</translation>
     </message>
     <message>
         <source>Invalid table name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesprávny názov tabuľky.</translation>
     </message>
     <message>
         <source>No fields detected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nenašli sa žiadne polia.</translation>
     </message>
     <message>
         <source>The following fields are duplicates:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nasledujúce polia sú zdvojené:</translation>
     </message>
     <message>
         <source>Import Shapefiles - Relation Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Import shape súborov - Relácia existuje</translation>
     </message>
     <message>
         <source>The Shapefile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Shape súbor:</translation>
     </message>
     <message>
         <source>will use [</source>
-        <translation type="unfinished"></translation>
+        <translation>použije [</translation>
     </message>
     <message>
         <source>] relation for its data,</source>
-        <translation type="unfinished"></translation>
+        <translation>] reláciu pre svoje údaje,</translation>
     </message>
     <message>
         <source>which already exists and possibly contains data.</source>
-        <translation type="unfinished"></translation>
+        <translation>ktoré už existujú a pravdepodobne obsahujú údaje.</translation>
     </message>
     <message>
         <source>To avoid data loss change the &quot;DB Relation Name&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Aby bolo možné sa vyhnúť strate údajov, je potrebné zmeniť &quot;DB relation Name&quot;</translation>
     </message>
     <message>
         <source>for this Shapefile in the main dialog file list.</source>
-        <translation type="unfinished"></translation>
+        <translation>pre tento Shape súbor v hlavnom dialógu zoznamu súborov.</translation>
     </message>
     <message>
         <source>Do you want to overwrite the [</source>
-        <translation type="unfinished"></translation>
+        <translation>Chete prepísať [</translation>
     </message>
     <message>
         <source>] relation?</source>
-        <translation type="unfinished"></translation>
+        <translation>] reláciu?</translation>
     </message>
     <message>
         <source>Relation Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Relácia existuje</translation>
     </message>
     <message>
         <source>Use the table below to edit column names. Make sure that none of the columns are named using a PostgreSQL reserved word</source>
-        <translation type="unfinished"></translation>
+        <translation>Použite tabuľku dole na úpravu názvov stĺpcov. Uistite sa, že názov žiadneho stĺpeca neobsahuje PostgreSQL rezervované slovo</translation>
     </message>
 </context>
 <context>
@@ -6743,7 +7980,7 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Geometry Column Name</source>
-        <translation type="unfinished">Meno stĺpca s geometriou</translation>
+        <translation>Meno stĺpca s geometriou</translation>
     </message>
     <message>
         <source>SRID</source>
@@ -6795,7 +8032,7 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Use Default Geometry Column Name</source>
-        <translation type="unfinished">Použiť štandardné meno stĺpca s geometriou</translation>
+        <translation>Použiť štandardné meno stĺpca s geometriou</translation>
     </message>
     <message>
         <source>Set the geometry column name to the default value</source>
@@ -6926,6 +8163,18 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
         <source>action</source>
         <translation type="unfinished">akcia</translation>
     </message>
+    <message>
+        <source>Do you want to save the changes?</source>
+        <translation>Prajete si uložiť zmeny?</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation>&amp;Áno</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation>&amp;Nie</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerProperties</name>
@@ -6989,50 +8238,103 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished">Popiska</translation>
+        <translation>Popis</translation>
     </message>
     <message>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <source>Max</source>
-        <translation type="unfinished">Max</translation>
+        <translation>Max</translation>
     </message>
     <message>
         <source>Rivers</source>
-        <translation type="unfinished">Rieky</translation>
+        <translation>Rieky</translation>
     </message>
     <message>
         <source>1000</source>
-        <translation type="unfinished">1000</translation>
+        <translation>1000</translation>
     </message>
     <message>
         <source>10000</source>
-        <translation type="unfinished">10000</translation>
+        <translation>10000</translation>
     </message>
     <message>
         <source>Symbol Classes:</source>
-        <translation type="unfinished">Triedy symbolov:</translation>
+        <translation>Triedy symbolov:</translation>
     </message>
     <message>
         <source>Count:</source>
-        <translation type="unfinished">Počet:</translation>
+        <translation>Počet:</translation>
     </message>
     <message>
         <source>Mode:</source>
-        <translation type="unfinished">Mód:</translation>
+        <translation>Mód:</translation>
     </message>
     <message>
         <source>Field:</source>
-        <translation type="unfinished">Pole:</translation>
+        <translation>Pole:</translation>
     </message>
 </context>
 <context>
     <name>SplashScreen</name>
     <message>
         <source>Quantum GIS - </source>
-        <translation>Quantum GIS -</translation>
+        <translation type="obsolete">Quantum GIS -</translation>
+    </message>
+    <message>
+        <source>Version </source>
+        <translation>Verzia </translation>
+    </message>
+</context>
+<context>
+    <name>[pluginname]GuiBase</name>
+    <message>
+        <source>QGIS Plugin Template</source>
+        <translation>QGIS šablóna zásuvného modulu</translation>
+    </message>
+    <message>
+        <source>Plugin Template</source>
+        <translation>Šablóna zásuvného modulu</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin was generated using QGIS internal plugin template. Please modify it according to your needs.&lt;/p&gt;
+&lt;p&gt;Tim Sutton&lt;/p&gt;
+&lt;p&gt;2004&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Tento zásuvný modul bol vygenerovaný s použitím vnútornej šablóny Qgis zásuvného modulu. Prosím upraviť podľa svojich potrieb.&lt;/p&gt;
+&lt;p&gt;Tim Sutton&lt;/p&gt;
+&lt;p&gt;2004&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation>Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Zrušiť</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation>Alt+Z</translation>
+    </message>
+</context>
+<context>
+    <name>pluginname</name>
+    <message>
+        <source>Replace this with a short description of the what the plugin does</source>
+        <translation>Zameňte tento text s opisom činnosti daného zásuvného modulu</translation>
     </message>
 </context>
 </TS>
