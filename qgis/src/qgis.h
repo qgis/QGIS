@@ -117,7 +117,8 @@ namespace QGis
     //! The row count has been calculated by a provider of a layer
     ProviderCountCalcEvent
   };
-
+  
+  const int DEFAULT_IDENTIFY_RADIUS=5;
 }
   /** WKT string that represents a geographic coord sys */
   const  QString GEOWKT =
@@ -149,17 +150,6 @@ namespace QGis
   const int USER_PROJECTION_START_ID=100000;
 
 
-
-  //! Structure for storing a spatial_ref_sys item
-  /* THIS IS DEFUNCT NOW!
-  typedef struct{
-    QString srid; // spatial reference id (ala PostGIS)
-    QString auth_name; // name of the author for this SRS
-    QString auth_srid; // srid used by the author
-    QString srtext; // WKT of the coordinate system
-    QString proj4text; // Proj4 parameter string 
-  } SPATIAL_REF_SYS; 
-  */
 
 /** debugging convenience function
 

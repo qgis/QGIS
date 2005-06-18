@@ -2134,7 +2134,7 @@ double QgsMapCanvas::calculateSearchRadiusValue()
 {
   QSettings settings;
 
-  int identifyValue = settings.readNumEntry("/qgis/map/identifyRadius", 5);
+  int identifyValue = settings.readNumEntry("/qgis/map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS);
 
   return(identifyValue/1000.0);
 
