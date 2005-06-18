@@ -2211,8 +2211,8 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 #ifdef QGISDEBUG
             qDebug( "%s:%d invalid provider plugin %s", 
                     __FILE__, __LINE__, dataSource.ascii() );
-            return false;
 #endif
+            return false;
         }
       }
       else
