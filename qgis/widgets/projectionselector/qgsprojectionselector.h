@@ -69,10 +69,14 @@ class QgsProjectionSelector: public QgsProjectionSelectorBase
       //! File name of the sqlite3 database
       QString mSrsDatabaseFileName;
 
-      //private handler for when user selects a cs
-      //it will cause wktSelected and sridSelected events to be spawned
+      /**private handler for when user selects a cs
+       *it will cause wktSelected and sridSelected events to be spawned
+       */
       void coordinateSystemSelected(QListViewItem*);
-
+      /** 
+       * Utility method used in conjunction with name based searching tool 
+       */
+      long getLargestSRSIDMatch(QString theSql);
 signals:
       void sridSelected(QString theSRID);
       //! Refresh any listening canvases

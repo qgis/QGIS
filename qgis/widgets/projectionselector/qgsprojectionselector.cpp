@@ -511,11 +511,6 @@ void QgsProjectionSelector::updateProjAndEllipsoidAcronyms(int theSrsid,QString 
   myFile.open(  IO_WriteOnly | IO_Append );
   QTextStream myStream( &myFile );
 
-
-
-
-
-
   QRegExp myProjRegExp( "proj=[a-zA-Z]* " );
   int myStart= 0;
   int myLength=0;
@@ -573,7 +568,7 @@ void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem )
   {
     myDescription+=(myProjString);
   }
-    teProjection->setText(myDescription);
+  teProjection->setText(myDescription);
 }
 
 void QgsProjectionSelector::pbnFind_clicked()
@@ -583,12 +578,6 @@ void QgsProjectionSelector::pbnFind_clicked()
   std::cout << "pbnFind..." << std::endl;
 #endif
 
-
-  sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
   QString mySearchString(stringSQLSafe(leSearch->text()));
   // Set up the query to retreive the projection information needed to populate the list
   QString mySql;
@@ -602,7 +591,25 @@ void QgsProjectionSelector::pbnFind_clicked()
   }
   else if (radName->isChecked()) //name search
   {
-    mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'";
+    //we need to find what the largest srsid matching our query so we know whether to
+    //loop backto the beginning
+    mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'" +
+           " order by srs_id desc limit 1";
+    long myLargestSrsId = getLargestSRSIDMatch(mySql);
+    //a name search is ambiguous, so we find the first srsid after the current seelcted srsid
+    // each time the find button is pressed. This means we can loop through all matches.
+    if (myLargestSrsId <= getCurrentSRSID())
+    {
+      //roll search around to the beginning
+      mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'" +
+             " order by srs_id limit 1";
+    }
+    else
+    {
+      // search ahead of the current postion
+      mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'" +
+             " and srs_id > " + QString::number(getCurrentSRSID()) + " order by srs_id limit 1";
+    }
   }
   else //qgis srsid
   {
@@ -613,6 +620,16 @@ void QgsProjectionSelector::pbnFind_clicked()
 #ifdef QGISDEBUG
   std::cout << " Search sql" << mySql << std::endl;
 #endif
+
+  //
+  // Now perform the actual search
+  //
+
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
   //check the db is available
   myResult = sqlite3_open(mSrsDatabaseFileName, &myDatabase);
   if(myResult)
@@ -624,6 +641,7 @@ void QgsProjectionSelector::pbnFind_clicked()
     //     media such as live cd and dont want to force trying to create a db.
     assert(myResult == 0);
   }
+
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
@@ -631,39 +649,148 @@ void QgsProjectionSelector::pbnFind_clicked()
     sqlite3_step(myPreparedStatement);
     QString mySrsId((char *)sqlite3_column_text(myPreparedStatement, 0));
     setSelectedSRSID(mySrsId.toLong());
+    // close the sqlite3 statement
+    sqlite3_finalize(myPreparedStatement);
+    sqlite3_close(myDatabase);
   }
-  // close the sqlite3 statement
-  sqlite3_finalize(myPreparedStatement);
-  sqlite3_close(myDatabase);
+  else //search the users db
+  {
+    QString myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+    QFileInfo myFileInfo;
+    myFileInfo.setFile(myDatabaseFileName);
+    if ( !myFileInfo.exists( ) ) //its not critical if this happens
+    {
+      return ;
+    }
+    myResult = sqlite3_open(myDatabaseFileName, &myDatabase);
+    if(myResult)
+    {
+      std::cout <<  "Can't open * user * database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
+      //no need for assert because user db may not have been created yet
+      return;
+    }
+
+    myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+    // XXX Need to free memory from the error msg if one is set
+    if(myResult == SQLITE_OK)
+    {
+      sqlite3_step(myPreparedStatement);
+      QString mySrsId((char *)sqlite3_column_text(myPreparedStatement, 0));
+      setSelectedSRSID(mySrsId.toLong());
+      // close the sqlite3 statement
+      sqlite3_finalize(myPreparedStatement);
+      sqlite3_close(myDatabase);
+    }
+  }
 }
 
-  /*!
- * \brief Make the string safe for use in SQL statements.
- *  This involves escaping single quotes, double quotes, backslashes,
- *  and optionally, percentage symbols.  Percentage symbols are used
- *  as wildcards sometimes and so when using the string as part of the
- *  LIKE phrase of a select statement, should be escaped.
- * \arg const QString in The input string to make safe.
- * \return The string made safe for SQL statements.
- */
+long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
+{
+  long mySrsId =0;
+  //
+  // Now perform the actual search
+  //
+
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+
+  // first we search the users db as any srsid there will be definition be greater than in sys db
+
+  //check the db is available
+  QString myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+  QFileInfo myFileInfo;
+  myFileInfo.setFile(myDatabaseFileName);
+  if ( myFileInfo.exists( ) ) //only bother trying to open if the file exists
+  {
+    myResult = sqlite3_open(mSrsDatabaseFileName, &myDatabase);
+    if(myResult)
+    {
+      std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
+      // XXX This will likely never happen since on open, sqlite creates the
+      //     database if it does not exist. But we checked earlier for its existance
+      //     and aborted in that case. This is because we may be runnig from read only
+      //     media such as live cd and dont want to force trying to create a db.
+
+    }
+    else
+    {
+      myResult = sqlite3_prepare(myDatabase, (const char *)theSql, theSql.length(), &myPreparedStatement, &myTail);
+      // XXX Need to free memory from the error msg if one is set
+      if(myResult == SQLITE_OK)
+      {
+        sqlite3_step(myPreparedStatement);
+        QString mySrsIdString((char *)sqlite3_column_text(myPreparedStatement, 0));
+        mySrsId = mySrsIdString.toLong();
+        // close the sqlite3 statement
+        sqlite3_finalize(myPreparedStatement);
+        sqlite3_close(myDatabase);
+        return mySrsId;
+      }
+    }
+  }
+  //only bother looking in srs.db if it wasnt found above
+
+  myResult = sqlite3_open(mSrsDatabaseFileName, &myDatabase);
+  if(myResult)
+  {
+    std::cout <<  "Can't open * user * database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
+    //no need for assert because user db may not have been created yet
+    return 0;
+  }
+
+  myResult = sqlite3_prepare(myDatabase, (const char *)theSql, theSql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+    sqlite3_step(myPreparedStatement);
+    QString mySrsIdString((char *)sqlite3_column_text(myPreparedStatement, 0));
+    mySrsId =  mySrsIdString.toLong();
+    // close the sqlite3 statement
+    sqlite3_finalize(myPreparedStatement);
+    sqlite3_close(myDatabase);
+  }
+  return mySrsId;
+}
+/*!
+* \brief Make the string safe for use in SQL statements.
+*  This involves escaping single quotes, double quotes, backslashes,
+*  and optionally, percentage symbols.  Percentage symbols are used
+*  as wildcards sometimes and so when using the string as part of the
+*  LIKE phrase of a select statement, should be escaped.
+* \arg const QString in The input string to make safe.
+* \return The string made safe for SQL statements.
+*/
 const QString QgsProjectionSelector::stringSQLSafe(const QString theSQL)
 {
 
-    QString myRetval;
-    std::string myString(theSQL.latin1());
-    for (std::string::const_iterator it = myString.begin(); it != myString.end(); it++) {
-        if (*it == '\"') {
-            myRetval += "\\\"";
-        } else if (*it == '\'') {
-            myRetval += "\\'";
-        } else if (*it == '\\') {
-            myRetval += "\\\\";
-        } else if (*it == '%')  {
-            myRetval += "\\%";
-        } else {
-            myRetval += *it;
-        }
+  QString myRetval;
+  std::string myString(theSQL.latin1());
+  for (std::string::const_iterator it = myString.begin(); it != myString.end(); it++)
+  {
+    if (*it == '\"')
+    {
+      myRetval += "\\\"";
     }
+    else if (*it == '\'')
+    {
+      myRetval += "\\'";
+    }
+    else if (*it == '\\')
+    {
+      myRetval += "\\\\";
+    }
+    else if (*it == '%')
+    {
+      myRetval += "\\%";
+    }
+    else
+    {
+      myRetval += *it;
+    }
+  }
 
-    return myRetval;
+  return myRetval;
 }
