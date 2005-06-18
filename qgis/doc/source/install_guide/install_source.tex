@@ -1,15 +1,18 @@
 
 \section{Introduction}\label{label_introduction}
-This document briefly describes how to build QGIS 0.6 (\textit{`Simon'}) from the source distribution. These instructions are for Linux/Unix and other POSIX systems which have the required build environment.
+This document briefly describes how to build QGIS 0.7 (\textit{`Seamus'}) from the source distribution. These instructions are for Linux/Unix and other POSIX systems which have the required build environment.
 
 The latest version of this document can always be found at \url{http://qgis.org/docs/install.html}.
 %\textsc{NOTE - All of the required packages for SuSE 9.1 are available at }\url{ftp://ftp.lingis.org}
 \subsection{Installing Windows Version}
-Installing the Windows version of QGIS is simply a matter of running the user friendly setup wizard. See the README.WIN32 file for additional information regarding the Windows version of QGIS. At version 0.6, the GRASS plugin is not available in Windows.
-\subsection{Installing Mac OSX Version}
+Installing the Windows version of QGIS is simply a matter of running the user friendly setup wizard. See the README.WIN32 file for additional information regarding the Windows version of QGIS. At version 0.7, the GRASS plugin is not available in Windows.
+
+\textbf{NOTE - At 0.7pre1, there is no Windows version available.}
+
+\subsection{Installing Mac OS X Version}
 To install the compressed disk image containing the OSX version of QGIS,
 double-click to expand and mount the image, then drag QGIS application to your
-hard drive. The OSX version does not include GRASS support.
+hard drive. If you want to build from source on Mac OS X, see \url{http://wiki.qgis.org/qgiswiki/BuildingOnMacOsX}.
 
 %This document does not contain instructions for building the GRASS plugins. Information on building the GRASS plugin with raster and vector support can be found in the \textit{Building QGIS with GRASS Support} document, available at \url{http://community.qgis.org/grass_plugin}. 
 
@@ -17,6 +20,7 @@ hard drive. The OSX version does not include GRASS support.
 The remainder of this document deals with compiling and installing QGIS from the
 source code. Specifically this applies to Linux/Unix systems.
 
+At 0.7, there are two new requirements: SQLite and Proj4. These must be built and installed prior to configuring QGIS.
 
 QGIS can be installed with three levels of support for data stores:
 \begin{enumerate}
@@ -190,10 +194,24 @@ The \textbf{better way} to install PostGIS is to carefully follow the instructio
 
 \section{GRASS}
 If you want QGIS to support GRASS vector and raster layers, you must build GRASS prior to proceeding. 
-Follow the directions on the GRASS website carefully to build version 5.7. Additional information and the build instructions can be found at \url{http://grass.itc.it}.
+Follow the directions on the GRASS website carefully to build version 6.0.x. Additional information and the build instructions can be found at \url{http://grass.itc.it}.
  
 The GRASS software is available for download at \url{http://grass.itc.it/download.html}.
-
+\section{Proj4}
+Proj4 provides the functions needed for on the fly projection of map layers in version 0.7. To build and install Proj4, download the latest version from \url{http://proj.maptools.org}, untar the distribution and:
+\begin{verbatim}
+  ./configure
+  make
+  make install
+\end{verbatim}
+\section{SQLite}
+Sqlite is used to manage the projections database and store persistent data such as spatial bookmarks. Download the latest (3.x) version of SQLite from \url{http://www.sqlite.org/}. Untar the distribution and:
+\begin{verbatim}
+  ./configure
+  make
+  make install
+\end{verbatim}
+Note - SQLite 3.x is included on Mac OS X 10.4.
 \section{GDAL/OGR}
   The GDAL and OGR libraries provide support for raster and vector data formats. QGIS makes use of both of these libraries (which come bundled in one distribution).
 
@@ -333,7 +351,7 @@ The GRASS software is available for download at \url{http://grass.itc.it/downloa
 \subsubsection{GRASS}
 To build QGIS with GRASS support you must specify the full path to the installed GRASS binary package:
 \begin{verbatim}
-    ./configure --with-grass=/usr/local/grass-5.7.0
+    ./configure --with-grass=/usr/local/grass-6.0.0
 \end{verbatim}
 This assumes that GRASS is installed in the default location. Change the path to match the location of your GRASS installation.
   \subsubsection{Example Use of Configure}
@@ -342,7 +360,7 @@ This assumes that GRASS is installed in the default location. Change the path to
     ./configure --prefix=/usr/local/qgis \
     --with-gdal=/usr/local/gdal/bin/gdal-config \
     --with-pg=/usr/local/psql/bin/pg_config \
-    --with-grass=/usr/local/grass-5.7.0
+    --with-grass=/usr/local/grass-6.0.0
   \end{verbatim}
   This will configure QGIS to use GDAL, GRASS, and PostgreSQL. QGIS will be
   installed in /usr/local/qgis.
