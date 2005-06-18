@@ -1282,7 +1282,7 @@ bool QgsProject::write()
     // now wrap it up and ship it to the project file
     doc->normalize();             // XXX I'm not entirely sure what this does
 
-    QString xml = doc->toString(4); // write to string with indentation of four characters
+    //QString xml = doc->toString(4); // write to string with indentation of four characters
                                 // (yes, four is arbitrary)
 
     // const char * xmlString = xml; // debugger probe point
@@ -1290,8 +1290,8 @@ bool QgsProject::write()
 
     QTextStream projectFileStream(&imp_->file);
 
-    projectFileStream << xml << endl;
-
+    //projectFileStream << xml << endl;
+    doc->save(projectFileStream, 4);  // save as utf-8
     imp_->file.close();
 
 

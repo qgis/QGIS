@@ -2355,7 +2355,7 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 #endif
     const char * s = rawXML.c_str(); // debugger probe
   // Use the const char * form of the xml to make non-stl qt happy
-    if ( ! labelDOM.setContent( QString(s), &errorMsg, &errorLine, &errorColumn ) )
+    if ( ! labelDOM.setContent( QString::fromUtf8(s), &errorMsg, &errorLine, &errorColumn ) )
     {
       qDebug( "XML import error at line %d column %d " + errorMsg, errorLine, errorColumn );
 
