@@ -10,61 +10,105 @@
   </td>
   <td valign="center">
     <span class="header">Quantum GIS Documentation</span><br>
-    <span class="subheader">Version 0.6 <i>Simon</i></span>
+    <span class="subheader">Version 0.7 Prerelease 1 <i>Seamus</i></span><br>
+    <span class="warning">This is a prerelease version. Some features may not function as anticipated and you may encounter bugs.</span><br>
+    <span class="warning">Please read this entire document.</span>
   </td>
 </tr>
 </table>
+<!-- comment out the links so you'll read the whole thing - we hope
 <a href="install.pdf" class="bar">Installation Guide</a>&nbsp;&nbsp;
 <a href="userguide.pdf" class="bar">User Guide</a><br>
+-->
 <!-- This documentation describes the Quantum GIS (QGIS) application. More
 information on QGIS is available on the web page at http://qgis.org. -->
-<h2>Whats new in Version 0.6</h2> 
+<h2>Whats new in Version 0.7</h2> 
 <table>
   <tr>
     <td valign="top" width="50%">
   <ul class="small">
-  <li> GEOS support to improve the method of feature
-  <li> PostGIS editing support in provider
-  <li> Vector dialog redesign to improve usability
-  <li> Improvement in project handling (loading and saving)
-  <li> Scale dependent rendering
-  <li> User option to load layers with out drawing them, thus allowing
-    you to set scale dependency, etc without waiting for the initial draw to
-    complete
-  <li> Interrupt drawing of features by hitting ESC
-  <li> Attribute actions - the ability to run an external program based
-    on the contents of an attribute field in a layer
-  <li> Create new vector layer (shapefile) for editing
-  <li> Windows installer
-  <li> Mac OSX binary
+    <li>    On the fly projection support to automatically project layers from different coordinate systems
+    <li>    Map Composer for creating map layouts
+    <li>    Toolbox for running GRASS tools from QGIS. The toolbox can be easily customized to add additional tools
+    <li>    Handling of spatially enabled tables and views in PostgreSQL has been greatly improved. QGIS can now load any table in the database that contains a geometry column
+    <li>    PostgreSQL views containing a geometry column can be viewed in QGIS
+    <li>    Raster graphing tool to produce a histogram for a raster layer
+    <li>    Raster query using the identify tool allows you to get the pixel values from a raster by making it the active layer and clicking on the point of interest
+    <li>    User preferences provides customizable settings for the digitizing line width, color, and selection color
+    <li>    New symbols for use with point layers are available from the layer properties dialog
 </ul>
 <td valign="top" width="50%">
  <ul class="small">
-  <li> New options in the graticule builder plugin
-  <li> Enhancements to the GPS plugin
-  <li> Man page
-  <li> Save delimited text as shapefile
-  <li> Improved Delimited Text plugin, including preview of text file
-  <li> Improved SPIT handling of PostgreSQL reserved words and shapefiles
-    with multiple geometry types
-  <li> Display SQL query used to create a PostGIS layer
-  <li> PostgreSQL query builder
-  <li> Ability to redefine the query used for PostgreSQL layers from the
-    layer properties dialog
-  <li> North arrow, scalebar, and copyright plugins save their state in
-    the project file
-  <li> Datasets with UTF8, Kanjii and CJK filenames now load properly
+    <li>    Spatial bookmarks allow you to create and manage bookmarks for an area on the map. Bookmarks are persistent and global; meaning they are available for all projects
+    <li>    Measure tool allows you to measure distances on the map with both segment length and total length displayed as you click
+    <li>    GPX loading times and memory consumption for large GPX (GPS) files has been drastically reduced
+    <li>    Many enhancements to the digitizing tools have been made, including the ability to capture data straight into PostgreSQL/PostGIS, and improvements to the definition of attribute tables for newly created layers
+    <li>    The Raster Georeferencer plugin can be used to generate a world file for a raster. The plugin allows you to define known control points in the raster coordinate system. Once enough control points are defined, the world file can be generated and the raster properly displayed in QGIS or other GIS applications
+    <li>    Improvements to the Mapserver export tool
 </ul>
+
   </td>
 </tr>
 </table>
-      <dl><dt><span class="subheader">Installation Guide
+<dl><dt><span class="subheader">New Requirements
+    <ul class="normal">
+      <li><a href="http://www.sqlite.org/">SQLite</a> version 3 is now required. Sqlite is used to manage the projections database and store persistent data such as spatial bookmarks.
+    <li>The <a href="http://expat.sourceforge.net/">Expat XML Parser</a> is required for the GPS plugin. This vastly improves the speed and memory management when loading GPX files.
+    <li>The raster georeferencer plugin requires the <a href="http://www.gnu.org/software/gsl/">GNU Scientfic Library</a> (GSL).
+    </ul>
+    <span class="normal">
+    GSL and Expat are optional and required only if you want to use the georeferencer or GPS plugins respectively. SQLite is always required.
+  </span>
+  </dl>
+<dl><dt><span class="subheader">Known Issues in this Release
+    <dd>
+    General
+    <ul class="normal">
+    <li>Project files from previous version os QGIS will likely not work. This is due to changes related to on the fly projection.
+    <li>Internationalization (translation) files are incomplete
+    <li>Documentation updates are not complete
+  </ul>
+
+    </dd>
+    <dd>
+    OS X Specific
+    <ul class="normal">
+      <li>On Tiger (OS X 10.4), button animation only works with Qt 3.3.5 snapshot. Previous versions of OS X are not affected.
+      <li>Some dialogs have cosmetic issues with buttons
+    </ul>
+    </dd>
+    <dd>
+    Windows
+    <ul class="normal">
+      <li>There is no Windows version of this release. A Windows version will be provided in the next prerelease.
+    </ul>
+    </dd>
+    </dt>
+  </dl>
+  <dl><dt><span class="subheader">Reporting Bugs
+      <dd>
+      If think you have found a bug, please consider reporting it to the development team. The steps to report a bug are:
+      <ol class="normal">
+        <li>Go to the Bug Tracker at <a href="https://sourceforge.net/tracker/?group_id=55820&atid=478378">https://sourceforge.net/tracker/?group_id=55820&atid=478378</a>
+        <li>If you have a Sourceforge user id, login
+        <li>Under the Group heading, change the choice to Version 0.7
+        <li>Click on the Browse button. This will give you a list of open bugs for Version 0.7
+        <li>Review the list to make sure your bug has not already been submitted. If it has, review the submission and see if there is anything you can add to the bug report to aid the developers
+        <li>If your bug has not been reported, click on Submit New
+        <li>Change the Group to Version 0.7
+        <li>Enter a summary and a detailed description
+        <li>Submit the bug
+      </ol>
+      <span class="warning">Note - If you don't login or don't provide an email address your bug report will be of little value since we have no way of contacting you for further information and/or clarification.</span>
+      </dd>
+      </dt>
+      <dl><dt><span class="subheader">Installation Guide (Not complete for 0.7)
           <dd>How to build and install QGIS. The guide is available in both 
           <a href="install.pdf">pdf</a> and 
           <a href="install_guide/index.html">HTML</a> format.</dd>
         </dt>
       </dl> 
-      <dl><dt><span class="subheader">User Guide
+      <dl><dt><span class="subheader">User Guide (Not complete for 0.7)
           <dd>A brief guide to using QGIS. The User Guide is available in 
           <a href="userguide.pdf">pdf</a> format.</dd>
           </dt>
