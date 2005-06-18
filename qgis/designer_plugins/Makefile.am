@@ -25,7 +25,7 @@ plugin_MOC = qgsprojectionselectorplugin.moc.cpp
 
 
 qgisdesignerwidgets_la_SOURCES =  qgsprojectionselectorplugin.cpp\
-»       »       »                $(plugin_MOC)
+																	$(plugin_MOC)
 BUILT_SOURCES = $(plugin_MOC)
 
 #projectionselector_la_LIBADD =  ../src/libqgis.la $(QT_LDADD)
