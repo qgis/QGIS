@@ -22,10 +22,12 @@ plugin_LTLIBRARIES = qgisdesignerwidgets.la
 
 plugin_MOC = qgsprojectionselectorplugin.moc.cpp
 
-
+headers = qgsdesignerwidgets.h \
+					qgsprojectionselectorplugin.h
 
 qgisdesignerwidgets_la_SOURCES =  qgsprojectionselectorplugin.cpp\
-																	$(plugin_MOC)
+																	$(plugin_MOC) \
+																	$(headers)
 BUILT_SOURCES = $(plugin_MOC)
 
 #projectionselector_la_LIBADD =  ../src/libqgis.la $(QT_LDADD)
