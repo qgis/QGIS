@@ -68,7 +68,7 @@ public:
    *  the caller assumes responsibility fot destroying the contents
    *  when it's done with it.
    */
-  std::vector<QgsFeature> copyOf();
+  std::vector<QgsFeature*>* copyOf();
   
   /*
    *  Clears the internal clipboard.
@@ -83,7 +83,10 @@ public:
     
 private:
 
-    /** QGIS-internal vector feature clipboard */
+    /** QGIS-internal vector feature clipboard.
+        Stored as values not pointers as each clipboard operation
+        involves a deep copy anyway.
+     */
     std::vector<QgsFeature> mFeatureClipboard;
 
 };

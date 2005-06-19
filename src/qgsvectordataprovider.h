@@ -46,7 +46,8 @@ class QgsVectorDataProvider : public QgsDataProvider
         AddAttributes = 1 << 3,
         DeleteAttributes = 1 << 4,
         SaveAsShapefile = 1 << 5,
-	CreateSpatialIndex = 1 << 6
+        CreateSpatialIndex = 1 << 6,
+        SelectAtId = 1 << 7
       };
 
       QgsVectorDataProvider();
@@ -71,6 +72,16 @@ class QgsVectorDataProvider : public QgsDataProvider
       {
         return -1;
       }
+      
+      /** 
+       * Gets the feature at the given feature ID.
+       * @return  QgsFeature
+       */
+      virtual QgsFeature * getFeatureAtId(int featureId)
+      {
+        return 0;
+      };
+      
       /** 
        * Get the first feature resulting from a select operation
        * @return QgsFeature

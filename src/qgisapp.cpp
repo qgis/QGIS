@@ -3027,7 +3027,8 @@ void QgisApp::editPaste()
     
     if (activeVectorLayer != 0)
     {
-      activeVectorLayer->addFeatures( &(clipboard()->copyOf()) );
+//      activeVectorLayer->addFeatures( &(clipboard()->copyOf()) );
+      activeVectorLayer->addFeatures( clipboard()->copyOf() );
     }  
   }  
 }

@@ -199,6 +199,11 @@ int QgsFeature::featureId() const
  */
 const std::vector < QgsFeatureAttribute > &QgsFeature::attributeMap()
 {
+#ifdef QGISDEBUG
+      std::cout << "QgsFeature::attributeMap: Returning attributes"
+                << "." << std::endl;
+#endif
+  
   return attributes;
 }
 
@@ -392,6 +397,7 @@ void QgsFeature::setGeometry(QgsGeometry& geom)
   if ( (mOwnsGeometry) && (mGeometry) )
   {
     delete mGeometry;
+    mGeometry = 0;
   }
   
   mGeometry = new QgsGeometry(geom);
@@ -407,6 +413,7 @@ void QgsFeature::setGeometryAndOwnership(unsigned char *geom, size_t length)
   if ( (mOwnsGeometry) && (mGeometry) )
   {
     delete mGeometry;
+    mGeometry = 0;
   }
   
   mGeometry = new QgsGeometry();

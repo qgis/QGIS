@@ -1,4 +1,3 @@
-
 /***************************************************************************
                                qgsvectorlayer.cpp
   This class implements a generic means to display vector layers. The features
@@ -188,8 +187,8 @@ QgsVectorLayer::~QgsVectorLayer()
   
   // Destroy and cached geometries and clear the references to them
   for (std::map<int, QgsGeometry*>::iterator it  = mCachedGeometries.begin(); 
-                                              it != mCachedGeometries.end();
-                                            ++it )
+                                             it != mCachedGeometries.end();
+                                           ++it )
   {
     delete (*it).second;
   }
@@ -382,7 +381,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
     }
 
     //render labels of not-commited features
-    for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+    for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
     {
       bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
       mLabel->renderLabel ( p, viewExtent, theMapToPixelTransform, dst, *it, sel, 0, scale);
@@ -732,13 +731,28 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 #endif
     dataProvider->reset();
     
-    // Destroy and cached geometries and clear the references to them
+    // Destroy all cached geometries and clear the references to them
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::draw: Destroying all cached geometries"
+                << "." << std::endl;
+#endif
+    
+    // TODO: This area has suspect memory management
     for (std::map<int, QgsGeometry*>::iterator it  = mCachedGeometries.begin(); 
                                                it != mCachedGeometries.end();
                                              ++it )
     {
+#ifdef QGISDEBUG
+//      std::cout << "QgsVectorLayer::draw: deleting cached geometry ID "
+//                << (*it).first
+//                << "." << std::endl;
+#endif
       delete (*it).second;
     }
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::draw: Clearing all cached geometries"
+                << "." << std::endl;
+#endif
     mCachedGeometries.clear();
     
     dataProvider->select(viewExtent);
@@ -845,7 +859,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
       //std::cerr << "Time to draw was " << t.elapsed() << '\n';
 
       //also draw the not yet commited features
-      std::list<QgsFeature*>::iterator it = mAddedFeatures.begin();
+      std::vector<QgsFeature*>::iterator it = mAddedFeatures.begin();
       for(; it != mAddedFeatures.end(); ++it)
       {
   bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
@@ -1137,7 +1151,7 @@ void QgsVectorLayer::fillTable(QgsAttributeTable* t)
   }
 
   //also consider the not commited features
-  for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+  for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
   {
       //id-field
       tabledisplay->table()->setText(row, 0, QString::number((*it)->featureId()));
@@ -1198,7 +1212,7 @@ void QgsVectorLayer::select(QgsRect * rect, bool lock)
   }
 
   //also test the not commited features
-  for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+  for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
   {
     if((*it)->geometry()->intersects(rect))
     {
@@ -1254,7 +1268,7 @@ void QgsVectorLayer::invertSelection()
   }
     }
     
-    for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+    for(std::vector<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
     {
   select((*iter)->featureId());
     }
@@ -1489,7 +1503,7 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
       delete fet;
   }
   //also go through the not commited features
-  for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+  for(std::vector<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
   {
       if(mSelected.find((*iter)->featureId())!=mSelected.end())
       {
@@ -1652,7 +1666,7 @@ void QgsVectorLayer::updateExtents()
     }
 
   //todo: also consider the not commited features
-  for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+  for(std::vector<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
     {
       QgsRect bb=(*iter)->boundingBox();
       if(bb.xMin()<layerExtent.xMin())
@@ -1735,15 +1749,31 @@ std::vector<QgsField> const& QgsVectorLayer::fields() const
 } // QgsVectorLayer::fields()
 
 
-bool QgsVectorLayer::addFeature(QgsFeature* f)
+bool QgsVectorLayer::addFeature(QgsFeature* f, bool alsoUpdateExtent)
 {
+  static int addedIdLowWaterMark = 0;
+
   if(dataProvider)
   {
+    if(!(dataProvider->capabilities() & QgsVectorDataProvider::AddFeatures))
+    {
+      QMessageBox::information(0, tr("Layer cannot be added to"), 
+                                  tr("The data provider for this layer does not support the addition of features."));
+      return false;
+    }
+
+    if(!isEditable())
+    {
+      QMessageBox::information(0, tr("Layer not editable"), 
+                                  tr("The current layer is not editable. Choose 'Allow editing' in the legend item right click menu."));
+      return false;
+    }
+    
     //set the endian properly
     int end=endian();
     memcpy(f->getGeometry(),&end,1);
 
-    //assign a temporary id to the feature
+/*    //assign a temporary id to the feature
     int tempid;
     if(mAddedFeatures.size()==0)
     {
@@ -1756,8 +1786,16 @@ bool QgsVectorLayer::addFeature(QgsFeature* f)
     }
 #ifdef QGISDEBUG
     qWarning("assigned feature id "+QString::number(tempid));
+#endif*/
+    
+    //assign a temporary id to the feature (use negative numbers)
+    addedIdLowWaterMark--;
+    
+#ifdef QGISDEBUG
+    qWarning("assigned feature id "+QString::number(addedIdLowWaterMark));
 #endif
-    f->setFeatureId(tempid);
+    
+    f->setFeatureId(addedIdLowWaterMark);
     mAddedFeatures.push_back(f);
     mModified=true;
 
@@ -1769,7 +1807,10 @@ bool QgsVectorLayer::addFeature(QgsFeature* f)
       tabledisplay=0;
     }
 
-    updateExtents();
+    if (alsoUpdateExtent)
+    {
+      updateExtents();
+    }  
 
     return true;
   }
@@ -1819,27 +1860,32 @@ QString QgsVectorLayer::getDefaultValue(const QString& attr,
 
 bool QgsVectorLayer::deleteSelectedFeatures()
 {
-    if(!(dataProvider->capabilities()&QgsVectorDataProvider::DeleteFeatures))
+    if(!(dataProvider->capabilities() & QgsVectorDataProvider::DeleteFeatures))
     {
-  QMessageBox::information(0, tr("Provider does not support deletion"), tr("Data provider does not support deleting features"));
-  return false;
+      QMessageBox::information(0, tr("Provider does not support deletion"), 
+                                  tr("Data provider does not support deleting features"));
+      return false;
     }
 
     if(!isEditable())
     {
-  QMessageBox::information(0, tr("Layer not editable"), tr("The current layer is not editable. Choose 'start editing' in the legend item right click menu"));
-  return false;
+      QMessageBox::information(0, tr("Layer not editable"), 
+                                  tr("The current layer is not editable. Choose 'Allow editing' in the legend item right click menu"));
+      return false;
     }
 
     for(std::set<int>::iterator it=mSelected.begin();it!=mSelected.end();++it)
     {
       bool notcommitedfeature=false;
       //first test, if the feature with this id is a not-commited feature
-      for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+      for(std::vector<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
       {
         if((*it)==(*iter)->featureId())
         {
+          // Delete the feature itself before deleting the reference to it.
+          delete *iter;
           mAddedFeatures.erase(iter);
+          
           notcommitedfeature=true;
           break;
         }
@@ -1854,7 +1900,8 @@ bool QgsVectorLayer::deleteSelectedFeatures()
     if(mSelected.size()>0)
     {
       mModified=true;
-      mSelected.clear();
+/*      mSelected.clear();*/
+      removeSelection();
       triggerRepaint();
       updateExtents();
 
@@ -2465,6 +2512,10 @@ int QgsVectorLayer::findFreeId()
   {
     dataProvider->reset();
     QgsFeature *fet;
+    
+    //TODO: Is there an easier way of doing this other than iteration?
+    //TODO: Also, what about race conditions between this code and a competing mapping client?
+    //TODO: Maybe push this to the data provider?
     while ((fet = dataProvider->getNextFeature(true)))
     {
       fid=fet->featureId();
@@ -2497,22 +2548,44 @@ bool QgsVectorLayer::commitChanges()
 #endif
     bool returnvalue=true;
     
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::commitChanges: Committing new features"
+                << "." << std::endl;
+
+    for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+    {
+      std::cout << "QgsVectorLayer::commitChanges: Got: " << (*it)->geometry()->wkt()
+                << "." << std::endl;
+    }
+
+#endif
+    
     // Commit new features
     std::list<QgsFeature*> addedlist;
-    for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+    for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
     {
       addedlist.push_back(*it);
     }
+    
     if(!dataProvider->addFeatures(addedlist))
+    // TODO: Make the Provider accept a pointer to vector instead of a list - more memory efficient
+//    if ( !(dataProvider->addFeatures(mAddedFeatures)) )
     {
       returnvalue=false;
     }
-    for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+   
+    // Delete the features themselves before deleting the references to them.
+    for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
     {
       delete *it;
     }
     mAddedFeatures.clear();
-
+    
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::commitChanges: Committing changed attributes"
+                << "." << std::endl;
+#endif
+    
     // Commit changed attributes
     if( mChangedAttributes.size() > 0 ) 
     {
@@ -2523,6 +2596,10 @@ bool QgsVectorLayer::commitChanges()
         mChangedAttributes.clear();
     }
 
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::commitChanges: Committing changed geometries"
+                << "." << std::endl;
+#endif
     // Commit changed geometries
     if( mChangedGeometries.size() > 0 ) 
     {
@@ -2532,7 +2609,12 @@ bool QgsVectorLayer::commitChanges()
         }
         mChangedGeometries.clear();
     }
-    
+
+        
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::commitChanges: Committing deleted features"
+                << "." << std::endl;
+#endif
     
     // Commit deleted features
     if(mDeleted.size()>0)
@@ -2559,18 +2641,19 @@ bool QgsVectorLayer::commitChanges()
 
 bool QgsVectorLayer::rollBack()
 {
-  for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+  // TODO: Roll back changed features
+  
+  // Roll back added features
+  // Delete the features themselves before deleting the references to them.
+  for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
   {
     delete *it;
-    mSelected.erase((*it)->featureId());
   }
   mAddedFeatures.clear();
   
-  for(std::set<int>::iterator it=mDeleted.begin();it!=mDeleted.end();++it)
-    {
-      mSelected.erase(*it);
-    }
+  // Roll back deleted features
   mDeleted.clear();
+  
   updateExtents();
   return true;
 }
@@ -2578,6 +2661,16 @@ bool QgsVectorLayer::rollBack()
 
 std::vector<QgsFeature>* QgsVectorLayer::selectedFeatures()
 {
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::selectedFeatures: entering"
+                << "." << std::endl;
+#endif
+
+  if (!dataProvider)
+  {
+    return 0;
+  }
+
   //TODO: Maybe make this a bit more heap-friendly (i.e. see where we can use references instead of copies)
   std::vector<QgsFeature>* features = new std::vector<QgsFeature>;
 
@@ -2588,14 +2681,24 @@ std::vector<QgsFeature>* QgsVectorLayer::selectedFeatures()
     // Check this selected item against the committed or changed features
     if ( mCachedGeometries.find(*it) != mCachedGeometries.end() )
     {
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::selectedFeatures: found a cached geometry: " 
+                << std::endl;
+#endif
+      
       QgsFeature* f = new QgsFeature();
       int row = 0;  //TODO: Get rid of this
       
-      // TODO: If dataProvider...
       dataProvider->getFeatureAttributes(*it, row, f);
       
+      // TODO: Should deep-copy here
       f->setGeometry(*mCachedGeometries[*it]);
 
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::selectedFeatures: '" << f->geometry()->wkt() << "'"
+                << "." << std::endl;
+#endif
+      
       // TODO: Mutate with uncommitted attributes / geometry
       
       // TODO: Retrieve details from provider
@@ -2606,48 +2709,88 @@ std::vector<QgsFeature>* QgsVectorLayer::selectedFeatures()
                         );*/
 
       features->push_back(*f);
-                             
+
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::selectedFeatures: added to feature vector"
+                << "." << std::endl;
+#endif
+                                   
     }
 
     // Check this selected item against the uncommitted added features
-    for (std::list<QgsFeature*>::iterator iter  = mAddedFeatures.begin();
+    for (std::vector<QgsFeature*>::iterator iter  = mAddedFeatures.begin();
                                           iter != mAddedFeatures.end();
                                         ++iter)
     {
       if ( (*it) == (*iter)->featureId() )
       {
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::selectedFeatures: found an added geometry: " 
+                << std::endl;
+#endif
         features->push_back( **iter );
         break;
       }
     }
     
-  }
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::selectedFeatures: finished with feature ID " << (*it)
+                << "." << std::endl;
+#endif
+  
+  } // for each selected
+
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::selectedFeatures: exiting"
+                << "." << std::endl;
+#endif
 
   return features;
 }
 
-bool QgsVectorLayer::addFeatures(std::vector<QgsFeature>* features, bool makeSelected)
+bool QgsVectorLayer::addFeatures(std::vector<QgsFeature*>* features, bool makeSelected)
 {
-  if (makeSelected)
-  {
-    mSelected.clear();
-  }
-  
-  for (std::vector<QgsFeature>::iterator iter  = features->begin();
-                                         iter != features->end();
-                                       ++iter)
-  {
-    // TODO: Tidy these next two lines up
-  
-    QgsFeature f = (*iter);
-    addFeature(&f);
-  
+  if (dataProvider)
+  {  
+    if(!(dataProvider->capabilities() & QgsVectorDataProvider::AddFeatures))
+    {
+      QMessageBox::information(0, tr("Layer cannot be added to"), 
+                                  tr("The data provider for this layer does not support the addition of features."));
+      return false;
+    }
+
+    if(!isEditable())
+    {
+      QMessageBox::information(0, tr("Layer not editable"), 
+                                  tr("The current layer is not editable. Choose 'Allow editing' in the legend item right click menu."));
+      return false;
+    }
+    
+
     if (makeSelected)
     {
-      mSelected.insert(iter->featureId());
+      mSelected.clear();
     }
-  }
-  
+    
+    for (std::vector<QgsFeature*>::iterator iter  = features->begin();
+                                            iter != features->end();
+                                          ++iter)
+    {
+      // TODO: Tidy these next two lines up
+    
+//      QgsFeature f = (*iter);
+//      addFeature(&f, FALSE);
+
+      addFeature(*iter);
+    
+      if (makeSelected)
+      {
+        mSelected.insert((*iter)->featureId());
+      }
+    }
+    
+    updateExtents();
+  }  
 }
 
 
@@ -2680,7 +2823,7 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
     }
   }
   //also go through the not commited features
-  for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+  for(std::vector<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
   {
       vertexFeature=(*iter)->geometry()->closestVertex(point);
       minvertexdist=vertexFeature.sqrDist(point.x(),point.y());
@@ -2809,7 +2952,7 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
 #endif
   
   // Also go through the new features
-  for (std::list<QgsFeature*>::iterator iter  = mAddedFeatures.begin();
+  for (std::vector<QgsFeature*>::iterator iter  = mAddedFeatures.begin();
                                         iter != mAddedFeatures.end();
                                       ++iter)
   {
@@ -3054,7 +3197,7 @@ bool QgsVectorLayer::commitAttributeChanges(const std::set<QString>& deleted,
   if(dataProvider->capabilities()&QgsVectorDataProvider::DeleteAttributes)
   {
       //delete attributes in all not commited features
-      for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+      for(std::vector<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
       {
     for(std::set<QString>::const_iterator it=deleted.begin();it!=deleted.end();++it)
     {
@@ -3071,7 +3214,7 @@ bool QgsVectorLayer::commitAttributeChanges(const std::set<QString>& deleted,
   if(dataProvider->capabilities()&QgsVectorDataProvider::AddAttributes)
   {
       //add attributes in all not commited features
-      for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+      for(std::vector<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
       {
     for(std::map<QString,QString>::const_iterator it=added.begin();it!=added.end();++it)
     {
@@ -3088,7 +3231,7 @@ bool QgsVectorLayer::commitAttributeChanges(const std::set<QString>& deleted,
   if(dataProvider->capabilities()&QgsVectorDataProvider::ChangeAttributeValues)
   {
       //change values of the not commited features
-      for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
+      for(std::vector<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
       {
     std::map<int,std::map<QString,QString> >::iterator it=changed.find((*iter)->featureId());
     if(it!=changed.end())
