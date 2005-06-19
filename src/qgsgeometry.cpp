@@ -106,6 +106,10 @@ QgsGeometry & QgsGeometry::operator=( QgsGeometry const & rhs )
 //! Destructor
 QgsGeometry::~QgsGeometry()
 {
+#ifdef QGISDEBUG
+//      std::cout << "QgsGeometry::~QgsGeometry: deleting with mGeometry " << mGeometry << " and mGeos " << mGeos
+//                << "." << std::endl;
+#endif
   if (mGeometry)
   {
     delete [] mGeometry;
@@ -124,6 +128,7 @@ void QgsGeometry::setWkbAndOwnership(unsigned char * wkb, size_t length)
   if ( mGeometry )
   {
     delete [] mGeometry;
+    mGeometry = 0;
   }
 
   // TODO: What about ownership?
@@ -1010,10 +1015,10 @@ bool QgsGeometry::exportToWkt(unsigned char * geom) const
 	    {
 		mWkt+="POINT(";
 		x = (double *) (geom + 5);
-		mWkt+=QString::number(*x,'f',3);
+		mWkt+=QString::number(*x,'f',6);
 		mWkt+=" ";
 		y = (double *) (geom + 5 + sizeof(double));
-		mWkt+=QString::number(*y,'f',3);
+		mWkt+=QString::number(*y,'f',6);
 		mWkt+=")";
 		break;
 	    }
@@ -1035,11 +1040,11 @@ bool QgsGeometry::exportToWkt(unsigned char * geom) const
 			mWkt+=", ";
 		    }
 		    x = (double *) ptr;
-		    mWkt+=QString::number(*x,'f',3);
+		    mWkt+=QString::number(*x,'f',6);
 		    mWkt+=" ";
 		    ptr += sizeof(double);
 		    y = (double *) ptr;
-		    mWkt+=QString::number(*y,'f',3);
+		    mWkt+=QString::number(*y,'f',6);
 		    ptr += sizeof(double);
 		}
 		mWkt+=")";
@@ -1082,11 +1087,11 @@ bool QgsGeometry::exportToWkt(unsigned char * geom) const
 			    mWkt+=",";
 			}
 			x = (double *) ptr;
-			mWkt+=QString::number(*x,'f',3);
+			mWkt+=QString::number(*x,'f',6);
 			mWkt+=" ";
 			ptr += sizeof(double);
 			y = (double *) ptr;
-			mWkt+=QString::number(*y,'f',3);
+			mWkt+=QString::number(*y,'f',6);
 			ptr += sizeof(double);
 		    }
 		    mWkt+=")";
@@ -1112,11 +1117,11 @@ bool QgsGeometry::exportToWkt(unsigned char * geom) const
 			mWkt+=", ";
 		    }
 		    x = (double *) (ptr);
-		    mWkt+=QString::number(*x,'f',3);
+		    mWkt+=QString::number(*x,'f',6);
 		    mWkt+=" ";
 		    ptr+=sizeof(double);
 		    y= (double *) (ptr);
-		    mWkt+=QString::number(*y,'f',3);
+		    mWkt+=QString::number(*y,'f',6);
 		    ptr+=sizeof(double);
 		}
 		mWkt+=")";
@@ -1149,11 +1154,11 @@ bool QgsGeometry::exportToWkt(unsigned char * geom) const
 			    mWkt+=", ";
 			}
 			x = (double *) ptr;
-			mWkt+=QString::number(*x,'f',3);
+			mWkt+=QString::number(*x,'f',6);
 			ptr += sizeof(double);
 			mWkt+=" ";
 			y = (double *) ptr;
-			mWkt+=QString::number(*y,'f',3);
+			mWkt+=QString::number(*y,'f',6);
 			ptr += sizeof(double);
 		    }
 		    mWkt+=")";
@@ -1194,11 +1199,11 @@ bool QgsGeometry::exportToWkt(unsigned char * geom) const
 			for (jdx = 0; jdx < *nPoints; jdx++)
 			{
 			    x = (double *) ptr;
-			    mWkt+=QString::number(*x,'f',3);
+			    mWkt+=QString::number(*x,'f',6);
 			    ptr += sizeof(double);
 			    mWkt+=" ";
 			    y = (double *) ptr;
-			    mWkt+=QString::number(*y,'f',3);
+			    mWkt+=QString::number(*y,'f',6);
 			    ptr += sizeof(double);
 			}
 			mWkt+=")";

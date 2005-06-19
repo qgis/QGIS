@@ -127,7 +127,7 @@ const QString displayField() const { return fieldIndex; }
   /**
       Insert a copy of the given features into the layer
    */
-  bool addFeatures(std::vector<QgsFeature>* features, bool makeSelected = TRUE);
+  bool addFeatures(std::vector<QgsFeature*>* features, bool makeSelected = TRUE);
 
   
 signals:
@@ -257,9 +257,11 @@ public slots:
   */
   virtual std::vector<QgsField> const & fields() const;
 
-  /**Adds a feature
-   @return true in case of success and false in case of error*/
-  bool addFeature(QgsFeature* f);
+  /** Adds a feature
+      @param lastFeatureInBatch  If True, will also go to the effort of e.g. updating the extents.
+      @return                    Irue in case of success and False in case of error
+   */
+  bool addFeature(QgsFeature* f, bool alsoUpdateExtent = TRUE);
   
   
   /** Insert a new vertex before the given vertex number,
@@ -368,7 +370,7 @@ protected:
   std::set<int> mDeleted;
   
   /** New features which are not commited */
-  std::list<QgsFeature*> mAddedFeatures;
+  std::vector<QgsFeature*> mAddedFeatures;
   
   /** Changed attributes which are not commited */
   std::map<int,std::map<QString,QString> > mChangedAttributes;

@@ -20,6 +20,11 @@
 #include <fstream>
 #include <iostream>
 
+#include <qapplication.h>
+#include <qstring.h>
+#include <qstringlist.h>
+#include <qclipboard.h>
+
 #include "qgsclipboard.h"
 
 
@@ -35,15 +40,42 @@ QgsClipboard::~QgsClipboard()
 void QgsClipboard::replaceWithCopyOf( std::vector<QgsFeature> features )
 {
 
+  // Replace the QGis clipboard.
   mFeatureClipboard = features;
 #ifdef QGISDEBUG
-        std::cerr << "QgsClipboard::replaceWith: replaced clipboard."
+        std::cerr << "QgsClipboard::replaceWith: replaced QGis clipboard."
+                  << std::endl;
+#endif
+
+  // Replace the system clipboard.
+  // TODO: Add attributes as well.
+  
+  QStringList textLines;
+  
+  for (std::vector<QgsFeature>::iterator it  = features.begin();
+                                         it != features.end();
+                                       ++it)
+  {
+    textLines += it->geometry()->wkt();
+  }
+  
+  QString textCopy = textLines.join("\n");
+
+  QClipboard *cb = QApplication::clipboard();
+
+  // Copy text into the clipboard
+  cb->setText(textCopy, QClipboard::Clipboard);
+  
+#ifdef QGISDEBUG
+        std::cerr << "QgsClipboard::replaceWith: replaced system clipboard with: "
+                  << textCopy
+                  << "."
                   << std::endl;
 #endif
 
 }
 
-std::vector<QgsFeature> QgsClipboard::copyOf()
+std::vector<QgsFeature*>* QgsClipboard::copyOf()
 {
 
 #ifdef QGISDEBUG
@@ -51,7 +83,20 @@ std::vector<QgsFeature> QgsClipboard::copyOf()
                   << std::endl;
 #endif
   
-  return mFeatureClipboard;
+  std::vector<QgsFeature*>* featuresCopy = new std::vector<QgsFeature*>;
+
+  //TODO: Slurp from the system clipboard as well.
+
+  for (std::vector<QgsFeature>::iterator it  = mFeatureClipboard.begin();
+                                         it != mFeatureClipboard.end();
+                                       ++it)
+  {
+    featuresCopy->push_back( new QgsFeature(*it) );
+  }
+  
+  return featuresCopy;
+    
+//  return mFeatureClipboard;
   
 }
 

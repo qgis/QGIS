@@ -175,7 +175,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     /**
      * Get the attributes associated with a feature
      */
-    void getFeatureAttributes(int oid, int& row, QgsFeature *f);
+    virtual void getFeatureAttributes(int oid, int& row, QgsFeature *f);
 
     /**Get the attributes with indices contained in attlist*/
     void getFeatureAttributes(int oid, int& row, QgsFeature *f, std::list<int> const& attlist);

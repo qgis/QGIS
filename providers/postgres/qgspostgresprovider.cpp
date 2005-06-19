@@ -604,7 +604,7 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist, 
         }
 
 #ifdef QGISDEBUG
-      std::cout << "QgsPostgresProvider::getNextFeature: pushing " << f->featureId() << std::endl; 
+//      std::cout << "QgsPostgresProvider::getNextFeature: pushing " << f->featureId() << std::endl; 
 #endif
   
         mFeatureQueue.push(f);
@@ -1526,6 +1526,11 @@ bool QgsPostgresProvider::isValid(){
 
 bool QgsPostgresProvider::addFeature(QgsFeature* f)
 {
+#ifdef QGISDEBUG
+      std::cout << "QgsPostgresProvider::addFeature: Entering."
+                << "." << std::endl;
+#endif
+  
   if(f)
   {
     QString insert("INSERT INTO \"");
@@ -1535,12 +1540,31 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
     //add the name of the geometry column to the insert statement
     insert+=geometryColumn;//first the geometry
 
+#ifdef QGISDEBUG
+      std::cout << "QgsPostgresProvider::addFeature: Constructing insert SQL, currently at: " << insert
+                << "." << std::endl;
+#endif
+  
+    
+    
     //add the names of the other fields to the insert
     std::vector<QgsFeatureAttribute> attributevec=f->attributeMap();
+    
+#ifdef QGISDEBUG
+      std::cout << "QgsPostgresProvider::addFeature: Got attribute map"
+                << "." << std::endl;
+#endif
+    
     for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)
     {
       QString fieldname=it->fieldName();
-      
+
+#ifdef QGISDEBUG
+      std::cout << "QgsPostgresProvider::addFeature: Checking field against: " << fieldname
+                << "." << std::endl;
+#endif
+
+            
       //TODO: Check if field exists in this layer
       // (Sometimes features will have fields that are not part of this layer since
       // they have been pasted from other layers with a different field map)
@@ -1583,6 +1607,10 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
     for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)
     {
       QString fieldname=it->fieldName();
+#ifdef QGISDEBUG
+      std::cout << "QgsPostgresProvider::addFeature: Checking field name " << fieldname
+                << "." << std::endl;
+#endif
       
       //TODO: Check if field exists in this layer
       // (Sometimes features will have fields that are not part of this layer since
@@ -1606,14 +1634,25 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
         bool charactertype=false;
         insert+=",";
 
-        //add quotes if the field is a character type
+#ifdef QGISDEBUG
+      std::cout << "QgsPostgresProvider::addFeature: Field is in layer with value " << fieldvalue
+                << "." << std::endl;
+#endif
+        
+        //add quotes if the field is a character or date type
         if(fieldvalue!="NULL")
         {
           for(std::vector<QgsField>::iterator iter=attributeFields.begin();iter!=attributeFields.end();++iter)
           {
             if(iter->name()==it->fieldName())
             {
-              if(iter->type().contains("char",false)>0||iter->type()=="text")
+              if (
+                  iter->type().contains("char",false) > 0 || 
+                  iter->type() == "text"                  ||
+                  iter->type() == "date"                  ||
+                  iter->type() == "interval"              ||
+                  iter->type().contains("time",false) > 0      // includes time and timestamp
+                 )
               {
                 charactertype=true;
               }
@@ -1651,8 +1690,19 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
       QMessageBox::information(0,"INSERT error",QString(PQresultErrorMessage(result)),QMessageBox::Ok);
       return false;
     }
+    
+#ifdef QGISDEBUG
+      std::cout << "QgsPostgresProvider::addFeature: Exiting with true."
+                << "." << std::endl;
+#endif
     return true;
   }
+  
+#ifdef QGISDEBUG
+      std::cout << "QgsPostgresProvider::addFeature: Exiting with false."
+                << "." << std::endl;
+#endif
+  
   return false;
 }
 
