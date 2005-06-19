@@ -74,6 +74,7 @@ headers =	qgisapp.h					\
 		qgscomposerview.h				\
 		qgscomposition.h				\
 		qgscontcoldialog.h				\
+		qgscontexthelp.h 	\
 		qgscontinuouscolrenderer.h			\
 		qgscoordinatetransform.h			\
 		qgsencodingfiledialog.h				\
@@ -179,6 +180,7 @@ qgis_UIC =	qgisappbase.ui				\
 		qgscomposerlabelbase.ui		     	\
 		qgscomposerscalebarbase.ui		\
 		qgscontcoldialogbase.ui			\
+		qgscontexthelpbase.ui \
 		qgsdelattrdialogbase.ui			\
 		qgsdlgvectorlayerpropertiesbase.ui	\
 		qgsgeomtypedialogbase.ui		\
@@ -252,6 +254,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgscomposerview.moc.cpp			\
 		qgscomposition.moc.cpp			\
 		qgscontcoldialog.moc.cpp		\
+		qgscontexthelp.moc.cpp \
 		qgscoordinatetransform.moc.cpp		\
 		qgsdataprovider.moc.cpp		\
 		qgsdelattrdialog.moc.cpp			\
@@ -321,6 +324,7 @@ qgis_SOURCES =	main.cpp			\
 		qgscomposerview.cpp		\
 		qgscomposition.cpp		\
 		qgscontcoldialog.cpp		\
+		qgscontexthelp.cpp \
 		qgscontinuouscolrenderer.cpp	\
 		qgscoordinatetransform.cpp	\
 		qgscustomsymbol.cpp		\
@@ -484,6 +488,9 @@ libqgis_la_SOURCES =						\
 		qgscomposition.moc.cpp				\
 		qgscompositionbase.moc.uic.cpp			\
 		qgscompositionbase.uic.cpp			\
+		qgscontexthelp.cpp \
+		qgscontexthelpbase.moc.uic.cpp \
+		qgscontexthelpbase.uic.cpp \
 		qgscontinuouscolrenderer.cpp			\
 		qgscoordinatetransform.cpp			\
 		qgscoordinatetransform.moc.cpp			\

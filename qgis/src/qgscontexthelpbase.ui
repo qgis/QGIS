@@ -1,5 +1,5 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>qgscontexthelpbase</class>
+<class>QgsContextHelpBase</class>
 <widget class="QDialog">
     <property name="name">
         <cstring>qgscontexthelpbase</cstring>
