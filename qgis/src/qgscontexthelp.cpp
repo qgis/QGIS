@@ -22,6 +22,7 @@
 #include <qtextbrowser.h>
 #include <sqlite3.h>
 #include "qgscontexthelp.h"
+#include <cassert>
 QgsContextHelp::QgsContextHelp(QString &contextId, QWidget *parent, const char *name)
   : QgsContextHelpBase(parent, name)
 {

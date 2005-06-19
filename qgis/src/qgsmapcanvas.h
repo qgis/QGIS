@@ -367,6 +367,12 @@ private:
        to mDigitMovePoint using Qt::XorROP. The settings for QPen are read from the QgsProject singleton*/
     void drawLineToDigitisingCursor(QPainter* paint, bool last = true);
 
+    //! Overridden key press event
+    void keyPressEvent(QKeyEvent * e);
+
+    //! Overridden key release event
+    void keyReleaseEvent(QKeyEvent * e);
+
     //! Overridden mouse move event
     void mouseMoveEvent(QMouseEvent * e);
 
@@ -395,7 +401,11 @@ private:
     //! Updates the z order for layers on the map
     void updateZpos();
 
+    //! Ends pan action and redraws the canvas.
+    void panActionEnd(QPoint releasePoint);
 
+    //! Called when mouse is moving and pan is activated
+    void panAction(QMouseEvent * event);
 
     //! detrmines whether the user can interact with the canvas using a mouse
     //(useful for locking the overview canvas)

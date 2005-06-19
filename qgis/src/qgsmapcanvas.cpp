@@ -118,6 +118,7 @@ public:
       pmCanvas( 0x0 ),
       bgColor( Qt::white ),
       dragging( false ),
+      panSelectorDown( false ),
       drawing( false ),
       frozen( false ),
       dirty( true ),
@@ -142,6 +143,7 @@ public:
       pmCanvas( 0x0 ),
       bgColor( Qt::white ),
       dragging( false ),
+      panSelectorDown( false ),
       drawing( false ),
       frozen( false ),
       dirty( true ),
@@ -240,6 +242,9 @@ public:
   //! Beginning point of a rubber band box
   QPoint boxStartPoint;
 
+  //! Last seen point of the mouse
+  QPoint mouseLastXY;
+
   //! Pixmap used for restoring the canvas.
   /** @note using QGuardedPtr causes sefault for some reason -- XXX trying again */
   //QGuardedPtr<QPixmap> pmCanvas;
@@ -251,6 +256,9 @@ public:
 
   //! Flag to indicate a map canvas drag operation is taking place
   bool dragging;
+
+  //! Flag to indicate the pan selector key is held down by user
+  bool panSelectorDown;
 
   //! Vector containing the inital color for a layer
   std::vector < QColor > initialColor;
@@ -1278,11 +1286,148 @@ void QgsMapCanvas::zoomToSelected()
   }
 } // zoomToSelected
 
+void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
+{
 
+#ifdef QGISDEBUG
+  qDebug("keyPress event at line %d in %s",  __LINE__, __FILE__);
+#endif
+  
+  if (!mUserInteractionAllowed || mCanvasProperties->mouseButtonDown
+      || mCanvasProperties->panSelectorDown)
+    return;
+
+  QPainter paint;
+  QPen     pen(Qt::gray);
+  QgsPoint ll, ur;
+
+  if (! mCanvasProperties->mouseButtonDown )
+  {
+    // Don't want to interfer with mouse events
+
+    double dx = fabs((mCanvasProperties->currentExtent.xMax()- mCanvasProperties->currentExtent.xMin()) / 4);
+    double dy = fabs((mCanvasProperties->currentExtent.yMax()- mCanvasProperties->currentExtent.yMin()) / 4);
+
+    switch ( e->key() ) 
+    {
+    case Qt::Key_Left:
+#ifdef QGISDEBUG
+	    std::cout << "Pan left" << std::endl;
+#endif
+
+	    mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+
+	    mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() - dx);
+	    mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() - dx);
+	    
+	    clear();
+	    render();
+	    emit extentsChanged(mCanvasProperties->currentExtent);
+	    break;
+
+    case Qt::Key_Right:
+#ifdef QGISDEBUG
+	    std::cout << "Pan right" << std::endl;
+#endif
+
+	    mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+
+	    mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() + dx);
+	    mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() + dx);
+
+	    clear();
+	    render();
+	    emit extentsChanged(mCanvasProperties->currentExtent);
+	    break;
+
+    case Qt::Key_Up:
+#ifdef QGISDEBUG
+	    std::cout << "Pan up" << std::endl;
+#endif
+
+	    mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+
+	    mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() + dy);
+	    mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() + dy);
+
+	    clear();
+	    render();
+	    emit extentsChanged(mCanvasProperties->currentExtent);
+	    break;
+
+    case Qt::Key_Down:
+#ifdef QGISDEBUG
+	    std::cout << "Pan down" << std::endl;
+#endif
+	    mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+
+	    mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() - dy);
+	    mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() - dy);
+
+	    clear();
+	    render();
+	    emit extentsChanged(mCanvasProperties->currentExtent);
+	    break;
+
+    case Qt::Key_Space:
+#ifdef QGISDEBUG
+	    std::cout << "Pressing pan selector" << std::endl;
+#endif
+	    //mCanvasProperties->dragging = true;
+	    if ( ! e->isAutoRepeat() )
+	    {
+	      mCanvasProperties->panSelectorDown = true;
+	      mCanvasProperties->boxStartPoint = mCanvasProperties->mouseLastXY;
+	    }
+	    break;
+
+    default:
+	    // Pass it on
+	    e->ignore();
+#ifdef QGISDEBUG
+	    qDebug("Ignoring key (%d)", e->key());
+#endif
+	      
+
+    }
+  }
+} //keyPressEvent()
+
+void QgsMapCanvas::keyReleaseEvent(QKeyEvent * e)
+{
+
+#ifdef QGISDEBUG
+  qDebug("keyRelease event at line %d in %s",  __LINE__, __FILE__);
+#endif
+  
+  if (!mUserInteractionAllowed)
+    return;
+  switch( e->key() )
+  {
+    case Qt::Key_Space:
+      if ( !e->isAutoRepeat() && mCanvasProperties->panSelectorDown)
+      {
+#ifdef QGISDEBUG
+	std::cout << "Releaseing pan selector" << std::endl;
+#endif
+      // mCanvasProperties->dragging = false;
+	mCanvasProperties->panSelectorDown = false;
+	panActionEnd(mCanvasProperties->mouseLastXY);
+      }
+      break;
+
+    default:
+      // Pass it on
+      e->ignore();
+#ifdef QGISDEBUG
+      qDebug("Ignoring key release (%d)", e->key());
+#endif
+  }
+} //keyReleaseEvent()
 
 void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 {
-  if (!mUserInteractionAllowed)
+  if (!mUserInteractionAllowed || mCanvasProperties->panSelectorDown)
     return;
 
   // right button was pressed in zoom tool, return to previous non zoom tool
@@ -1321,7 +1466,10 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 
 void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 {
-  if (!mUserInteractionAllowed)
+
+  mCanvasProperties->mouseButtonDown = false;
+
+  if (!mUserInteractionAllowed || mCanvasProperties->panSelectorDown)
     return;
 
   // right button was pressed in zoom tool, return to previous non zoom tool
@@ -1423,44 +1571,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       break;
 
     case QGis::Pan:
-      {
-        // use start and end box points to calculate the extent
-        QgsPoint start = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->boxStartPoint);
-        QgsPoint end = mCanvasProperties->coordXForm->toMapCoordinates(e->pos());
-
-        double dx = fabs(end.x() - start.x());
-        double dy = fabs(end.y() - start.y());
-
-        // modify the extent
-        mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
-
-        if (end.x() < start.x())
-        {
-          mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() + dx);
-          mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() + dx);
-        }
-        else
-        {
-          mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() - dx);
-          mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() - dx);
-        }
-
-        if (end.y() < start.y())
-        {
-          mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() + dy);
-          mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() + dy);
-
-        }
-        else
-        {
-          mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() - dy);
-          mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() - dy);
-
-        }
-        clear();
-        render();
-        emit extentsChanged(mCanvasProperties->currentExtent);
-      }
+      panActionEnd(e->pos());
       break;
       
     case QGis::Select:
@@ -1793,8 +1904,14 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
   if (!mUserInteractionAllowed)
     return;
 
+  mCanvasProperties->mouseLastXY = e->pos();
+
+  if (mCanvasProperties->panSelectorDown)
+  {
+    panAction(e);
+  }
+  else if (e->state() == Qt::LeftButton || e->state() == 513)
   // XXX magic numbers BAD -- 513?
-  if (e->state() == Qt::LeftButton || e->state() == 513)
   {
     int dx, dy;
     QPainter paint;
@@ -1826,30 +1943,8 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
     case QGis::Pan:
       // show the pmCanvas as the user drags the mouse
       mCanvasProperties->dragging = true;
-      // bitBlt the pixmap on the screen, offset by the
-      // change in mouse coordinates
-      dx = e->pos().x() - mCanvasProperties->boxStartPoint.x();
-      dy = e->pos().y() - mCanvasProperties->boxStartPoint.y();
+      panAction(e);
 
-      //erase only the necessary parts to avoid flickering
-      if (dx > 0)
-      {
-        erase(0, 0, dx, height());
-      }
-      else
-      {
-        erase(width() + dx, 0, -dx, height());
-      }
-      if (dy > 0)
-      {
-        erase(0, 0, width(), dy);
-      }
-      else
-      {
-        erase(0, height() + dy, width(), -dy);
-      }
-
-      bitBlt(this, dx, dy, mCanvasProperties->pmCanvas);
       break;
 
     }
@@ -1858,7 +1953,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
   {
       if ( mMeasure ) {
         QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->pos().x(), e->pos().y());
-  mMeasure->mouseMove(point);
+	mMeasure->mouseMove(point);
       }
   }
 
@@ -2355,3 +2450,72 @@ int QgsMapCanvas::mapTool()
 {
   return mCanvasProperties->mapTool;
 }
+
+void QgsMapCanvas::panActionEnd(QPoint releasePoint)
+{
+  // use start and end box points to calculate the extent
+  QgsPoint start = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->boxStartPoint);
+  QgsPoint end = mCanvasProperties->coordXForm->toMapCoordinates(releasePoint);
+  
+  double dx = fabs(end.x() - start.x());
+  double dy = fabs(end.y() - start.y());
+  
+  // modify the extent
+  mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+  
+  if (end.x() < start.x())
+  {
+    mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() + dx);
+    mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() + dx);
+  }
+  else
+  {
+    mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() - dx);
+    mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() - dx);
+  }
+  
+  if (end.y() < start.y())
+  {
+    mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() + dy);
+    mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() + dy);
+    
+  }
+  else
+  {
+    mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() - dy);
+    mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() - dy);
+    
+  }
+  clear();
+  render();
+  emit extentsChanged(mCanvasProperties->currentExtent);
+}
+
+void QgsMapCanvas::panAction(QMouseEvent * e)
+{
+
+  // bitBlt the pixmap on the screen, offset by the
+  // change in mouse coordinates
+  double dx = e->pos().x() - mCanvasProperties->boxStartPoint.x();
+  double dy = e->pos().y() - mCanvasProperties->boxStartPoint.y();
+  
+  //erase only the necessary parts to avoid flickering
+  if (dx > 0)
+  {
+    erase(0, 0, dx, height());
+  }
+  else
+  {
+    erase(width() + dx, 0, -dx, height());
+  }
+  if (dy > 0)
+  {
+    erase(0, 0, width(), dy);
+  }
+  else
+  {
+    erase(0, height() + dy, width(), -dy);
+  }
+  
+  bitBlt(this, dx, dy, mCanvasProperties->pmCanvas);
+}    

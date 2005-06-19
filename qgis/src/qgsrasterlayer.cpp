@@ -3700,6 +3700,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
   // Iterate through the Raster Layer Pyramid Vector, building any pyramid
   // marked as exists in eaxh RasterPyramid struct.
   //
+  CPLErr myError; //in case anything fails
   int myCountInt=1;
   int myTotalInt=theRasterPyramidList.count();
   RasterPyramidList::iterator myRasterPyramidIterator;
@@ -3726,48 +3727,53 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
       * pfnProgress : a function to call to report progress, or NULL.
       * pProgressData : application data to pass to the progress function.
       */
-#ifdef QGISDEBUG
       //build the pyramid and show progress to console
-      if(theResamplingMethod==tr("Average Magphase"))
+      try 
       {
-        gdalDataset->BuildOverviews( "MODE", 1, myOverviewLevelsIntArray, 0, NULL,
-                                     GDALTermProgress, NULL );
-      }
-      else if(theResamplingMethod==tr("Average"))
 
-      {
-        gdalDataset->BuildOverviews( "AVERAGE", 1, myOverviewLevelsIntArray, 0, NULL,
-                                     GDALTermProgress, NULL );
-      }
-      else // fall back to nearest neighbor
-      {
-        gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
-                                     GDALTermProgress, NULL );
-      }
-#else
-      //build the pyramid and show progress to console
-      if(theResamplingMethod==tr("Average Magphase"))
-      {
-        gdalDataset->BuildOverviews( "MODE", 1, myOverviewLevelsIntArray, 0, NULL,
+        //build the pyramid and show progress to console
+        if(theResamplingMethod==tr("Average Magphase"))
+        {
+           myError = gdalDataset->BuildOverviews( "MODE", 1, myOverviewLevelsIntArray, 0, NULL,
                                      GDALDummyProgress, NULL );
-      }
-      else if(theResamplingMethod==tr("Average"))
+        }
+        else if(theResamplingMethod==tr("Average"))
 
-      {
-        gdalDataset->BuildOverviews( "AVERAGE", 1, myOverviewLevelsIntArray, 0, NULL,
+        {
+          myError = gdalDataset->BuildOverviews( "AVERAGE", 1, myOverviewLevelsIntArray, 0, NULL,
                                      GDALDummyProgress, NULL );
-      }
-      else // fall back to nearest neighbor
-      {
-        gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
+        }
+        else // fall back to nearest neighbor
+        {
+          myError = gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
                                      GDALDummyProgress, NULL );
+        }
+        if (myError != CE_None)
+        {
+           //something bad happenend
+           //QString myString = QString (CPLGetLastError());
+           QMessageBox myMessageBox( tr("Building pyramids failed."),
+                              "Building pyramid overviews is only supported on certain types of raster.",
+                              QMessageBox::Warning,
+                              QMessageBox::Ok,
+                              QMessageBox::NoButton,
+                              QMessageBox::NoButton );
+            myMessageBox.exec();
+            delete gdalDataset;
+            gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_ReadOnly);
+            emit setProgress(0,0);
+            QApplication::restoreOverrideCursor();
+            return;
+        }
+        myCountInt++;
+        //make sure the raster knows it has pyramids
+        hasPyramidsFlag=true;
       }
-#endif
-      myCountInt++;
-      //make sure the raster knows it has pyramids
-      hasPyramidsFlag=true;
+      catch (CPLErr)
+      {
+         std::cout << "Pyramid overview building failed!" << std::endl;
+      }
     }
-
   }
   std::cout << "Pyramid overviews built" << std::endl;
   //close the gdal dataset and reopen it in read only mode
