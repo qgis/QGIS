@@ -583,6 +583,9 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
     assert(result==OGRERR_NONE);
 #endif
   }
+  
+  delete filter;
+  
 } // QgsOgrProvider::select
 
 
@@ -638,6 +641,8 @@ unsigned char * QgsOgrProvider::getGeometryPointer(OGRFeature *fet){
 // TODO - make this function return the real extent_
 QgsRect *QgsOgrProvider::extent()
 {
+  // TODO: Find out where this new QgsRect is being lost (as reported by valgrind)
+
   return new QgsRect(extent_->MinX, extent_->MinY, extent_->MaxX, extent_->MaxY);
 }
 
