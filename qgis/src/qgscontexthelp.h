@@ -20,12 +20,26 @@
 #define QGSCONTEXTHELP_H
 #include "qgscontexthelpbase.uic.h"
 class QString;
+class sqlite3;
+/*!
+ * \class QgsContextHelp
+ * \brief Provides a context based help browser for a dialog.
+ *
+ * The help text is stored in SQLite and accessed by a context identifier
+ * unique to each dialog.
+ */
 class QgsContextHelp : public QgsContextHelpBase{
 Q_OBJECT
   public:
+  //! Constructor
   QgsContextHelp(QString &contextId, QWidget *parent, const char *name);
+  //! Destructor
   ~QgsContextHelp();
   public slots:
+    //! Slot called when a link is clicked
     void linkClicked ( const QString &link );
+  private:
+  int connectDb(QString &);
+  sqlite3 *db;
 };
 #endif //QGSCONTEXTHELP_H
