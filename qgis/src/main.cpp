@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
 
   // This behaviour will allow you to force the use of a translation file
   // which is useful for testing
-  QString myTranslationFileName="";
+  QString myTranslationCode="";
 
 #ifndef WIN32
   if ( !bundleclicked(argc, argv) )
@@ -229,7 +229,7 @@ int main(int argc, char *argv[])
       break;
 
     case 'l':
-      myTranslationFileName = optarg;
+      myTranslationCode = optarg;
       break;
 
     case 'p':
@@ -336,25 +336,35 @@ int main(int argc, char *argv[])
   QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
 
-  QTranslator tor(0);
-
-  // For WIN32, get the locale
-  if (myTranslationFileName!="")
+  QString i18nPath = QString(PKGDATAPATH) + "/i18n";
+  if (myTranslationCode.isEmpty())
   {
-    QString translation = "qgis_" + myTranslationFileName;
-    tor.load(translation, QString(PKGDATAPATH) + "/i18n");
-  } 
-  else
-  {
+    myTranslationCode = QTextCodec::locale();
+  }
 #ifdef QGISDEBUG
-    std::cout << "Setting translation to " 
-      << PKGDATAPATH << "/i18n/qgis_" << QTextCodec::locale() << std::endl; 
+  std::cout << "Setting translation to "
+    << i18nPath << "/qgis_" << myTranslationCode << std::endl;
 #endif
-    tor.load(QString("qgis_") + QTextCodec::locale(), QString(PKGDATAPATH) + "/i18n");
+
+  /* Translation file for Qt.
+   * The strings from the QMenuBar context section are used by Qt/Mac to shift
+   * the About, Preferences and Quit items to the Mac Application menu.
+   * These items must be translated identically in both qt_ and qgis_ files.
+   */
+  QTranslator qttor(0);
+  if (qttor.load(QString("qt_") + myTranslationCode, i18nPath))
+  {
+    a.installTranslator(&qttor);
   }
 
-  //tor.load("qgis_go", "." );
-  a.installTranslator(&tor);
+  /* Translation file for QGIS.
+   */
+  QTranslator qgistor(0);
+  if (qgistor.load(QString("qgis_") + myTranslationCode, i18nPath))
+  {
+    a.installTranslator(&qgistor);
+  }
+
   /* uncomment the following line, if you want a Windows 95 look */
   //a.setStyle("Windows");
 
