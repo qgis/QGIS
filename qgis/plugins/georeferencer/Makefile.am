@@ -11,10 +11,13 @@
 # $Id$
 
 
-if HAVE_GSL
-
+## qt designer user-interface files
+plugin_UI = pluginguibase.ui qgspointdialogbase.ui mapcoordsdialogbase.ui qgsgeorefwarpoptionsdialogbase.ui
 
 plugindir    = ${prefix}/lib/qgis
+
+
+if HAVE_GSL
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -30,9 +33,6 @@ plugindir    = ${prefix}/lib/qgis
 
 ## target plug-in 
 plugin_LTLIBRARIES = georefplugin.la
-
-## qt designer user-interface files
-plugin_UI = pluginguibase.ui qgspointdialogbase.ui mapcoordsdialogbase.ui qgsgeorefwarpoptionsdialogbase.ui
 
 ## uic created headers
 plugin_UIHEADERS = $(plugin_UI:.ui=.uic.h)
@@ -70,10 +70,12 @@ nodist_georefplugin_la_SOURCES = $(plugin_MOC) $(plugin_UIHEADERS) $(plugin_UISO
 georefplugin_la_CXXFLAGS = -I../ -I../../src $(GDAL_CFLAGS) $(GSL_CFLAGS) $(QT_CXXFLAGS) $(GEOS_CFLAGS)
 georefplugin_la_LDFLAGS = -avoid-version -module ../../src/libqgis.la $(GDAL_LDADD) $(GSL_LIBS) $(QT_LDADD)
 
+endif
+
+
 BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_UIMOC) $(plugin_MOC)
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = $(plugin_UI) zoom_in.xpm zoom_out.xpm pan.xpm add_point.xpm
 
 
-endif
