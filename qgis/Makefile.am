@@ -43,7 +43,7 @@ UIcheck:
 		exit 1; \
 	fi
 
-release: UIcheck distdir
+release: distdir
 	-chmod -R a+r $(distdir)
 	GZIP=$(GZIP_ENV) $(AMTAR)$(TAR) chozf $(distdir).tar.gz $(distdir)
 	rm -f $(distdir)/qgis.spec
@@ -51,3 +51,11 @@ release: UIcheck distdir
 			> $(distdir)/qgis.spec
 	BZIP2=$(BZIP2_ENV) $(AMTAR)$(TAR) --bzip2 -chof $(distdir).tar.bz2 $(distdir)
 	-rm -rf $(distdir)
+	
+dist-hook:
+	rm -rf $(distdir)/doc/source
+	rm $(distdir)/src/*.uic.h
+	rm $(distdir)/src/*.uic.cpp
+	rm -rf `find $(distdir) -name CVS`
+	rm $(distdir)/widgets/projectionselector/*.uic.h
+
