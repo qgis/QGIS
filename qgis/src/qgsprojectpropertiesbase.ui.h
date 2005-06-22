@@ -34,5 +34,8 @@ void QgsProjectPropertiesBase::pbnDigitisedLineColour_clicked()
      QColorDialog::getColor(pbnDigitisedLineColour->paletteBackgroundColor(),this));
 }
 
+void QgsProjectPropertiesBase::pbnHelp_clicked()
+{
+}
 
 

@@ -32,13 +32,15 @@ class QgsContextHelp : public QgsContextHelpBase{
 Q_OBJECT
   public:
   //! Constructor
-  QgsContextHelp(QString &contextId, QWidget *parent, const char *name);
+  QgsContextHelp(QString &contextId, QWidget *parent=0, const char *name=0, bool modal=false, WFlags f=0);
+  QgsContextHelp(const char *contextId, QWidget *parent=0, const char *name=0, bool modal=false, WFlags f=0);
   //! Destructor
   ~QgsContextHelp();
   public slots:
     //! Slot called when a link is clicked
     void linkClicked ( const QString &link );
   private:
+  void initialize(QString &);
   int connectDb(QString &);
   sqlite3 *db;
 };

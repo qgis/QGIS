@@ -546,6 +546,7 @@ void QgsMapLayer::keyPressed ( QKeyEvent * e )
 {
   if (e->key()==Qt::Key_Escape) mDrawingCancelled = true;
   std::cout << e->ascii() << " pressed in maplayer !" << std::endl;
+  e->ignore();
 }
 
     /** Accessor for the coordinate transformation object */

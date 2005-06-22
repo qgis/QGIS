@@ -20,31 +20,53 @@
 #include <qstring.h>
 #include <qdir.h>
 #include <qtextbrowser.h>
+#include <qapplication.h>
 #include <sqlite3.h>
 #include "qgscontexthelp.h"
 #include <cassert>
-QgsContextHelp::QgsContextHelp(QString &contextId, QWidget *parent, const char *name)
-  : QgsContextHelpBase(parent, name)
+QgsContextHelp::QgsContextHelp(const char *_contextId, QWidget *parent, const char *name, bool modal, WFlags f)
+  : QgsContextHelpBase(parent, name, modal, f)
 {
-  // get the help content from the database and display the document
-  //
-  QString qgisSettingsDir = QDir::homeDirPath () + "/.qgis/";
-  QString userDbPath = qgisSettingsDir + "qgis_help.db";
-  int rc = connectDb(userDbPath);
+  QString contextId = _contextId;
+  initialize(contextId);
+}
+QgsContextHelp::QgsContextHelp(QString &contextId, QWidget *parent, const char *name, bool modal, WFlags f)
+  : QgsContextHelpBase(parent, name, modal, f)
+{
+  initialize(contextId);
+}
+void QgsContextHelp::initialize(QString &contextId)
+{
+   // Get the package data path and set the full path name to 
+   // the sqlite3 spatial reference database.
+      #if defined(Q_OS_MACX) || defined(WIN32)
+        QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+      #endif  
+      QString helpDatabaseFileName = PKGDATAPATH;
+      helpDatabaseFileName += "/resources/qgis_help.db";
+      std::cout << "Opening " << helpDatabaseFileName << std::endl; 
+   
+  int rc = connectDb(helpDatabaseFileName);
   if(rc == SQLITE_OK)
   {
     sqlite3_stmt *ppStmt;
     const char *pzTail;
     // build the sql statement
-    QString sql = "select help_text from tbl_help where context_id = " + contextId;
+    QString sql = "select content from tbl_help where context_id = " + contextId;
+    std::cout << "SQL: " << sql << std::endl; 
     rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
     if(rc == SQLITE_OK)
     {
       if(sqlite3_step(ppStmt) == SQLITE_ROW){
         // there should only be one row returned
         // Set the browser text to the record from the database
+        std::cout << "Got help content: " << (char *)sqlite3_column_text(ppStmt,0) << std::endl; 
         txtBrowser->setText((char*)sqlite3_column_text(ppStmt, 0));
       }
+    }
+    else
+    {
+      std::cout << "Failed to execute the sql statement" << std::endl; 
     }
     // close the statement
     sqlite3_finalize(ppStmt);

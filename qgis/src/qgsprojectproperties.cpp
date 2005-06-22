@@ -20,6 +20,7 @@
 #include "qgsprojectproperties.h"
 #include "qgscsexception.h"
 #include "qgsprojectionselector.h"
+#include "qgscontexthelp.h"
 
 //qgis includes
 #include "qgsconfig.h"
@@ -52,6 +53,7 @@
 //stdc++ includes
 #include <iostream>
 #include <cstdlib>
+static const char *context_id = "2699";
 // set the default coordinate system
 //XXX this is not needed? : static const char* defaultWktKey = "Lat/Long - WGS 84";
   QgsProjectProperties::QgsProjectProperties(QWidget *parent, const char *name)
@@ -277,4 +279,11 @@ bool QgsProjectProperties::isProjected()
 void QgsProjectProperties::showProjectionsTab()
 {
   tabWidget2->setCurrentPage(1);
+}
+void QgsProjectProperties::pbnHelp_clicked()
+{
+  QgsContextHelp *help = new QgsContextHelp(QString(context_id), 
+      this, false,Qt::WType_Popup);
+  help->setModal(false);
+  help->show();
 }

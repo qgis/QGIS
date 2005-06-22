@@ -4952,6 +4952,8 @@ void QgisApp::keyPressEvent ( QKeyEvent * e )
 {
     std::cout << e->ascii() << " (keypress recevied)" << std::endl;
     emit keyPressed (e);
+    e->ignore();
+    
 }
 // Debug hook - used to output diagnostic messages when evoked (usually from the menu)
 /* Temporarily disabled...

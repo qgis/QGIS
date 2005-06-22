@@ -348,7 +348,16 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
 
     pjErr << tr("Failed") << " " << dir << " " << tr("transform of") << '\n';
     for (int i = 0; i < numPoints; ++i)
-      pjErr << "(" << x[i] << ", " << y[i] << ")\n";
+    {
+      if(direction == FORWARD)
+      {
+        pjErr << "(" << x[i] << ", " << y[i] << ")\n";
+      }
+      else
+      {
+        pjErr << "(" << x[i] * RAD_TO_DEG << ", " << y[i] * RAD_TO_DEG << ")\n";
+      }
+    }
     pjErr << tr("with error: ") << pj_strerrno(projResult) << '\n';
     throw  QgsCsException(msg);
   }
