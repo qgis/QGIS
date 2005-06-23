@@ -98,6 +98,9 @@
 #include <qgsscalecalculator.h>
 
 
+// But the static members must be initialised outside the class! (or GCC 4 dies)
+const double QgsMapCanvas::scaleDefaultMultiple = 2.0;
+
 
 /**
  

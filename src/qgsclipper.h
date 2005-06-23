@@ -59,13 +59,13 @@ class QgsClipper
   // The limit is set to 30,000 instead of 32768 because that things
   // still go wrong.
 
-  static const double maxX =  30000;
-  static const double minX = -30000;
-  static const double maxY =  30000;
-  static const double minY = -30000;
+  static const double maxX;
+  static const double minX;
+  static const double maxY;
+  static const double minY;
 
   // Used when testing for equivalance to 0.0
-  static const double SMALL_NUM = 1e-12;
+  static const double SMALL_NUM;
 
   // A handy way to refer to the four boundaries
   enum boundary {Xmax, Xmin, Ymax, Ymin};
