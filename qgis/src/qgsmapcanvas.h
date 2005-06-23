@@ -415,11 +415,11 @@ private:
 
     //! Measure tool
     QgsMeasure *mMeasure;
-    
+
     //! Scale factor multiple for default zoom in/out
     // TODO Make this customisable by the user
-    static const double scaleDefaultMultiple = 2.0;
-    
+    static const double scaleDefaultMultiple;
+
 }; // class QgsMapCanvas
 
 #endif
