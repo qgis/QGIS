@@ -387,9 +387,9 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
     mWpt = Waypoint();
     for (int i = 0; attr[2*i] != NULL; ++i) {
       if (!std::strcmp(attr[2*i], "lat"))
-  mWpt.lat = QString(attr[2*i+1]).toDouble();
+  mWpt.lat = mCLocale.toDouble(attr[2*i+1]);
       else if (!std::strcmp(attr[2*i], "lon"))
-  mWpt.lon = QString(attr[2*i+1]).toDouble();
+  mWpt.lon = mCLocale.toDouble(attr[2*i+1]);
     }
     mObj = &mWpt;
   }
@@ -513,9 +513,9 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
       mRtept = Routepoint();
       for (int i = 0; attr[2*i] != NULL; ++i) {
   if (!std::strcmp(attr[2*i], "lat"))
-    mRtept.lat = QString(attr[2*i+1]).toDouble();
+    mRtept.lat = mCLocale.toDouble(attr[2*i+1]);
   else if (!std::strcmp(attr[2*i], "lon"))
-    mRtept.lon = QString(attr[2*i+1]).toDouble();
+    mRtept.lon = mCLocale.toDouble(attr[2*i+1]);
       }
       parseModes.push(ParsingRoutepoint);
     }
@@ -537,9 +537,9 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
       mTrkpt = Trackpoint();
       for (int i = 0; attr[2*i] != NULL; ++i) {
   if (!std::strcmp(attr[2*i], "lat"))
-    mTrkpt.lat = QString(attr[2*i+1]).toDouble();
+    mTrkpt.lat = mCLocale.toDouble(attr[2*i+1]);
   else if (!std::strcmp(attr[2*i], "lon"))
-    mTrkpt.lon = QString(attr[2*i+1]).toDouble();
+    mTrkpt.lon = mCLocale.toDouble(attr[2*i+1]);
       }
       parseModes.push(ParsingTrackpoint);
     }
@@ -594,11 +594,11 @@ bool GPXHandler::endElement(const std::string& qName) {
     mTrk.yMax = (mTrk.yMax > mTrkpt.lat ? mTrk.yMax : mTrkpt.lat);
   }
   else if (parseModes.top() == ParsingDouble) {
-    *mDouble = QString(mCharBuffer).toDouble();
+    *mDouble = mCLocale.toDouble(mCharBuffer);
     mCharBuffer = "";
   }
   else if (parseModes.top() == ParsingInt) {
-    *mInt = QString(mCharBuffer).toInt();
+    *mInt = mCLocale.toInt(mCharBuffer);
     mCharBuffer = "";
   }
   else if (parseModes.top() == ParsingString) {

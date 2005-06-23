@@ -27,6 +27,7 @@
 #include <vector>
 
 #include <expat.h>
+#include <qlocale.h>
 #include <qstring.h>
 #include <qtextstream.h>
 
@@ -242,7 +243,7 @@ class GPSData {
 class GPXHandler {
 public:
   
-  GPXHandler(GPSData& data) : mData(data) { }
+  GPXHandler(GPSData& data) : mData(data), mCLocale(QLocale::C) { }
   
   /** This function is called when expat encounters a new start element in 
       the XML stream. */
@@ -299,6 +300,7 @@ private:
   double* mDouble;
   int* mInt;
   QString mCharBuffer;
+  QLocale mCLocale;
 };
 
 
