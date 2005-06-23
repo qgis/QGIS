@@ -71,7 +71,7 @@ QgsMapLayer::QgsMapLayer(int type,
 
     mInOverviewPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/inoverview.png"));
     mEditablePixmap.load(QString(PKGDATAPATH) + QString("/images/icons/editable.png"));
-
+    mProjectionErrorPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection_problem.png"));
     //mActionInOverview = new QAction( "in Overview", "Ctrl+O", this );
 
     //set some generous  defaults for scale based visibility
@@ -423,6 +423,24 @@ void QgsMapLayer::updateItemPixmap()
     }
 }
 
+void QgsMapLayer::invalidTransformInput()
+{
+#ifdef QGISDEBUG
+  std::cout << " QgsMapLayer::invalidTransformInput() called" << std::endl;
+#endif
+    if (m_legendItem)             // XXX should we know about our legend?
+    {
+        QPixmap pix=*(this->legendPixmap());
+        if(mShowInOverview)
+        {
+            //add overview glasses to the pixmap
+            QPainter p(&pix);
+            p.drawPixmap(60,0,mProjectionErrorPixmap);
+        }
+        ((QCheckListItem *) m_legendItem)->setPixmap(0,pix);
+    }
+}
+
 void QgsMapLayer::updateOverviewPopupItem()
 {
     if (mShowInOverviewItemId != 0)
@@ -640,48 +658,59 @@ QgsRect QgsMapLayer::calcProjectedBoundingBox(QgsRect& extent)
   // extent. This seems to be a sufficient number to get a good
   // approximation to the bounding box.
   static const double numPoints = 10.0;
+  double xmin = std::numeric_limits<double>::max();
+  double xmax = std::numeric_limits<double>::min();
+  double ymin = std::numeric_limits<double>::max();
+  double ymax = std::numeric_limits<double>::min();
 
   std::vector<QgsPoint> left, right, top, bottom;
   QgsPoint pt;
   // Populate the vectors
 
-  for (int i = 0; i < numPoints; ++i)
+  try
   {
-    // the left and right boundary
-    pt.setX(extent.xMin());
-    pt.setY(extent.yMin() + extent.height()
-            / numPoints * static_cast<double>(i));
-    left.push_back(mCoordinateTransform->transform(pt, 
-                   QgsCoordinateTransform::INVERSE));
-    pt.setX(extent.xMax());
-    right.push_back(mCoordinateTransform->transform(pt, 
-                    QgsCoordinateTransform::INVERSE));
+    for (int i = 0; i < numPoints; ++i)
+    {
+      // the left and right boundary
+      pt.setX(extent.xMin());
+      pt.setY(extent.yMin() + extent.height()
+	      / numPoints * static_cast<double>(i));
+      left.push_back(mCoordinateTransform->transform(pt, 
+						     QgsCoordinateTransform::INVERSE));
+      pt.setX(extent.xMax());
+      right.push_back(mCoordinateTransform->transform(pt, 
+						      QgsCoordinateTransform::INVERSE));
 
-    // the top and bottom boundary
-    pt.setY(extent.yMin());
-    pt.setX(extent.xMin() + extent.width() 
-            / numPoints * static_cast<double>(i));
-    bottom.push_back(mCoordinateTransform->transform(pt,
-                     QgsCoordinateTransform::INVERSE));
-    pt.setY(extent.yMax());
-    top.push_back(mCoordinateTransform->transform(pt,
-                  QgsCoordinateTransform::INVERSE));
-  }
+      // the top and bottom boundary
+      pt.setY(extent.yMin());
+      pt.setX(extent.xMin() + extent.width() 
+	      / numPoints * static_cast<double>(i));
+      bottom.push_back(mCoordinateTransform->transform(pt,
+						       QgsCoordinateTransform::INVERSE));
+      pt.setY(extent.yMax());
+      top.push_back(mCoordinateTransform->transform(pt,
+						    QgsCoordinateTransform::INVERSE));
+    }
 
-  // Calculate the bounding box and use that for the extent
+    // Calculate the bounding box and use that for the extent
         
-  double xmin = std::numeric_limits<double>::max();
-  double xmax = std::numeric_limits<double>::min();
-  double ymin = std::numeric_limits<double>::max();
-  double ymax = std::numeric_limits<double>::min();
-  for (int i = 0; i < top.size(); ++i)
-  {
-    xmin = std::min(xmin, left[i].x());
-    xmax = std::max(xmax, right[i].x());
-    ymin = std::min(ymin, bottom[i].y());
-    ymax = std::max(ymax, top[i].y());
+    for (int i = 0; i < top.size(); ++i)
+    {
+      xmin = std::min(xmin, left[i].x());
+      xmax = std::max(xmax, right[i].x());
+      ymin = std::min(ymin, bottom[i].y());
+      ymax = std::max(ymax, top[i].y());
+    }
   }
-
+  catch(QgsCsException &cse)
+  {
+#ifdef QGISDEBUG
+    std::cout << "Caught transform error in QgsMapLayer::calcProjectedBoundingBox(). "
+	      << "Setting inverse bounding box to (0,0); (10,10)" << std::endl;
+#endif	
+    xmin = ymin = 0;
+    xmax = ymax = 10;
+  }
   QgsRect bb_extent;
   bb_extent.set(xmin, ymin, xmax, ymax);
 

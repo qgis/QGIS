@@ -285,6 +285,9 @@ public:
     bool projectExtent(QgsRect& extent, QgsRect& r2);
 
 public  slots:
+   //! event handler for when a coordinate transofrm fails due to bad vertex error
+   virtual void invalidTransformInput();
+
 
     //! keyPress event so we can check if cancel was pressed
     void keyPressed ( QKeyEvent * e );
@@ -395,7 +398,9 @@ protected:
 
     /**Pixmap used in the legend item*/
     QPixmap m_legendPixmap;
-    //
+
+    /** Pixmap to show a bogus vertex was encoutnered in this layer (applies to vector layers only) */
+   QPixmap mProjectionErrorPixmap;
     //! A little pixmap to show if this layer is represented in overview or now
     QPixmap mInOverviewPixmap;
 

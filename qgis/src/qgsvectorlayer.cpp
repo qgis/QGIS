@@ -2657,6 +2657,9 @@ void QgsVectorLayer::setCoordinateSystem()
 {
   //delete mCoordinateTransform;
   mCoordinateTransform=new QgsCoordinateTransform();
+  //slot is defined inthe maplayer superclass
+  connect(mCoordinateTransform, SIGNAL(invalidTransformInput()), this, SLOT(invalidTransformInput()));
+   
 #ifdef QGISDEBUG
     std::cout << "QgsVectorLayer::setCoordinateSystem ------------------------------------------------start" << std::endl;
     std::cout << "QgsVectorLayer::setCoordinateSystem ----- Computing Coordinate System" << std::endl;

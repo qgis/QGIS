@@ -528,8 +528,20 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
     // system as the map canvas prior to updating the canvas extents
     if(projectionsEnabled())
     {
-      QgsRect tRect = lyr->coordinateTransform()->transform(lyr->extent());
-      mCanvasProperties->fullExtent = tRect;
+      try
+      {
+	QgsRect tRect = lyr->coordinateTransform()->transform(lyr->extent());
+	mCanvasProperties->fullExtent = tRect;
+      }
+      catch(QgsCsException &cse)
+      {
+#ifdef QGISDEBUG
+	std::cout << "Caught transform error in QgsMapCanvas::addLayer(). "
+		  << "Setting extents to untransformed extents" << std::endl;
+#endif	
+	mCanvasProperties->fullExtent = lyr->extent();
+	mCanvasProperties->fullExtent.scale(1.1);
+      }
     }
     else
     {
@@ -544,7 +556,17 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
     if(projectionsEnabled())
     {
       // project the layer extent and pass it off to update the full extent
-      updateFullExtent(lyr->coordinateTransform()->transform(lyr->extent()));
+      try 
+      {
+	updateFullExtent(lyr->coordinateTransform()->transform(lyr->extent()));
+      }
+      catch(QgsCsException &cse)
+      {
+#ifdef QGISDEBUG
+	std::cout << "Caught transform error in QgsMapCanvas::addLayer(). "
+		  << "Ignoring this layer in map extents calculation." << std::endl;
+#endif	
+      }
     }
     else
     {

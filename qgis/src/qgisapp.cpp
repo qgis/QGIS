@@ -3197,8 +3197,18 @@ void QgisApp::zoomToLayerExtent()
     if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
     {
       QgsCoordinateTransform *ct = layer->coordinateTransform();
-      QgsRect transformedExtent = ct->transform(layer->extent());
-      mMapCanvas->setExtent(transformedExtent);
+      try {
+	QgsRect transformedExtent = ct->transform(layer->extent());
+	mMapCanvas->setExtent(transformedExtent);
+      }
+      catch(QgsCsException &cse)
+      {
+#ifdef QGISDEBUG
+	std::cout << "Caught transform error in zoomToLayerExtent(). "
+		  << "Setting untransformed extents." << std::endl;
+#endif	
+	mMapCanvas->setExtent(layer->extent());
+      }
     }
     else
     {

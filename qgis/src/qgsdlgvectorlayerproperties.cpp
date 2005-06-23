@@ -493,18 +493,36 @@ QString QgsDlgVectorLayerProperties::getMetadata()
                        QString::number(myExtent.yMax());
   myMetadataQString += "</td></tr>";
   //extents in project cs
-  QgsRect myProjectedExtent = layer->coordinateTransform()->transform(layer->extent());
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += tr("In project spatial reference system units : ") + 
-                       tr("xMin,yMin ") + 
-                       QString::number(myProjectedExtent.xMin()) + 
-                       "," + 
-                       QString::number( myProjectedExtent.yMin()) +
-                       tr(" : xMax,yMax ") + 
-                       QString::number(myProjectedExtent.xMax()) + 
-                       "," + 
-                       QString::number(myProjectedExtent.yMax());
-  myMetadataQString += "</td></tr>";
+  try
+  {
+    QgsRect myProjectedExtent = layer->coordinateTransform()->transform(layer->extent());
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += tr("In project spatial reference system units : ") + 
+                         tr("xMin,yMin ") + 
+                         QString::number(myProjectedExtent.xMin()) + 
+                         "," + 
+                         QString::number( myProjectedExtent.yMin()) +
+                         tr(" : xMax,yMax ") + 
+                         QString::number(myProjectedExtent.xMax()) + 
+                         "," + 
+                         QString::number(myProjectedExtent.yMax());
+    myMetadataQString += "</td></tr>";
+  }
+  catch(QgsCsException &cse)
+  {
+#ifdef QGISDEBUG
+    std::cout << "Caught transform error in QgsDlgVectorLayerProperties::getMetadata(). "
+	      << "Returning text '(invalid)'" << std::endl;
+#endif	
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += tr("In project spatial reference system units : ");
+    myMetadataQString += " (Invalid transformation of layer extents) ";
+    myMetadataQString += "</td></tr>";
+
+  }
+
+
+
 
   // 
   // Display layer spatial ref system

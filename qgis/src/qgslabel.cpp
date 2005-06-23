@@ -207,8 +207,20 @@ void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
 
     // Convert point to projected units
     if (doCoordTransform)
-      point = coordTransform.transform(point);
-
+    {
+      try
+      {
+	point = (const_cast<QgsCoordinateTransform&>(coordTransform)).transform(point);
+      }
+      catch(QgsCsException &cse)
+      {
+#ifdef QGISDEBUG
+	std::cout << "Caught transform error in QgsLabel::renderLabel(). "
+		  << "Skipping rendering this label" << std::endl;
+#endif	
+	return;
+      }
+    }
     // and then to canvas units
     transform->transform(&point);
     x = point.x();

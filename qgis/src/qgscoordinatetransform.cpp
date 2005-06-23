@@ -182,24 +182,16 @@ void QgsCoordinateTransform::initialise()
 //
 
 
-QgsPoint QgsCoordinateTransform::transform(const QgsPoint thePoint,TransformDirection direction) const
+QgsPoint QgsCoordinateTransform::transform(const QgsPoint thePoint,TransformDirection direction)
 {
   if (mShortCircuit || !mInitialisedFlag) return thePoint;
   // transform x
   double x = thePoint.x();
   double y = thePoint.y();
   double z = 0.0;
-  try
-  {
+  
+  transformCoords(1, &x, &y, &z, direction );
 
-    transformCoords(1, &x, &y, &z, direction );
-  }
-  catch(QgsCsException &cse)
-  {
-    //something bad happened....
-    // rethrow the exception
-    throw cse;
-  }
 #ifdef QGISDEBUG
   //std::cout << "Point projection...X : " << thePoint.x() << "-->" << x << ", Y: " << thePoint.y() << " -->" << y << std::endl;
 #endif
@@ -207,13 +199,13 @@ QgsPoint QgsCoordinateTransform::transform(const QgsPoint thePoint,TransformDire
 }
 
 
-QgsPoint QgsCoordinateTransform::transform(const double theX, const double theY=0,TransformDirection direction) const
+QgsPoint QgsCoordinateTransform::transform(const double theX, const double theY=0,TransformDirection direction)
 {
   return transform(QgsPoint(theX, theY), direction);
 }
 
 void QgsCoordinateTransform::transformInPlace(double& x, double& y, double& z,
-    TransformDirection direction) const
+    TransformDirection direction)
 {
   if (mShortCircuit || !mInitialisedFlag)
     return;
@@ -226,7 +218,7 @@ void QgsCoordinateTransform::transformInPlace(double& x, double& y, double& z,
 
 void QgsCoordinateTransform::transformInPlace(std::vector<double>& x,
     std::vector<double>& y, std::vector<double>& z,
-    TransformDirection direction) const
+    TransformDirection direction)
 {
   if (mShortCircuit || !mInitialisedFlag)
     return;
@@ -241,7 +233,7 @@ void QgsCoordinateTransform::transformInPlace(std::vector<double>& x,
   transformCoords(x.size(), &x[0], &y[0], &z[0], direction);
 }
 
-QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirection direction) const
+QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirection direction)
 {
   if (mShortCircuit || !mInitialisedFlag) return theRect;
   // transform x
@@ -261,7 +253,6 @@ QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirecti
     double z = 0.0;
     transformCoords(1, &x1, &y1, &z, direction);
     transformCoords(1, &x2, &y2, &z, direction);
-
   }
   catch(QgsCsException &cse)
   {
@@ -289,7 +280,7 @@ QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirecti
 }
 
 
-void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, double *y, double *z,TransformDirection direction) const
+void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, double *y, double *z,TransformDirection direction)
 {
   assert(mSourceSRS.isValid());
   assert(mDestSRS.isValid());
@@ -358,7 +349,12 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
         pjErr << "(" << x[i] * RAD_TO_DEG << ", " << y[i] * RAD_TO_DEG << ")\n";
       }
     }
+
     pjErr << tr("with error: ") << pj_strerrno(projResult) << '\n';
+#ifdef QGISDEBUG
+  std::cout << "Projection failed emitting invalid transform signal: \n" << msg << std::endl;
+#endif
+    emit invalidTransformInput();
     throw  QgsCsException(msg);
   }
   // if the result is lat/long, convert the results from radians back
