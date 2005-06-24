@@ -230,8 +230,16 @@ void QgsComposer::print(void)
     //mPrinter = new QPrinter ( QPrinter::HighResolution );
     //mPrinter = new QPrinter ( QPrinter::ScreenResolution );
     mPrinter->setFullPage ( true );
+#ifndef Q_OS_MACX
+    // For Qt/Mac 3, don't set outputToFile to true before calling setup 
+    // because it wiil suppress the Print dialog and output to file without
+    // giving the user a chance to select a printer instead.
+    // The Mac Print dialog provides an option to create a pdf which is
+    // intended to be invisible to the application. If an eps is desired,
+    // a custom Mac Print dialog is needed.
     mPrinter->setOutputToFile (true ) ;
     mPrinter->setOutputFileName ( QDir::convertSeparators ( QDir::home().path() + "/" + "qgis.eps") );
+#endif
 
     if ( mComposition->paperOrientation() == QgsComposition::Portrait ) {
       mPrinter->setOrientation ( QPrinter::Portrait );
