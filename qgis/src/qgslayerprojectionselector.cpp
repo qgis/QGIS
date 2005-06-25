@@ -23,7 +23,8 @@
  * \class QgsLayerProjectionSelector - Set user layerprojectionselector and preferences
  * Constructor
  */
-QgsLayerProjectionSelector::QgsLayerProjectionSelector() 
+QgsLayerProjectionSelector::QgsLayerProjectionSelector(QWidget *parent, 
+    const char * name) : QgsLayerProjectionSelectorBase(parent, name)
 {
 
  qApp->restoreOverrideCursor();

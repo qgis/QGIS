@@ -607,7 +607,7 @@ void QgsDlgVectorLayerProperties::pbnChangeSpatialRefSys_clicked()
 {
     
 
-    QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector();
+    QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector(this);
     long myDefaultSRS =layer->coordinateTransform()->sourceSRS().srsid();
     if (myDefaultSRS==0)
     {
