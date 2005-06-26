@@ -367,3 +367,9 @@ void QgisAppBase::editPaste()
 {
 
 }
+
+
+void QgisAppBase::deleteVertex()
+{
+
+}
