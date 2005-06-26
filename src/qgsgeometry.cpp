@@ -19,6 +19,11 @@ email                : morb at ozemail dot com dot au
 #include "qgis.h"
 #include "qgsgeometry.h"
 
+
+// Set up static GEOS geometry factory
+geos::GeometryFactory* QgsGeometry::geosGeometryFactory = new geos::GeometryFactory();
+
+
 QgsGeometry::QgsGeometry()
   : mGeometry(0),
     mGeometrySize(0),
@@ -136,7 +141,7 @@ void QgsGeometry::setWkbAndOwnership(unsigned char * wkb, size_t length)
   mGeometry = wkb;
   mGeometrySize = length;
 
-  mDirtyWkb   = FALSE;  
+  mDirtyWkb   = FALSE;
   mDirtyGeos  = TRUE;
   mDirtyWkt   = TRUE;
 
@@ -144,6 +149,20 @@ void QgsGeometry::setWkbAndOwnership(unsigned char * wkb, size_t length)
     
 unsigned char * QgsGeometry::wkbBuffer() const
 {
+  if (mDirtyWkb)
+  {
+    // see which geometry representation to convert from
+    if (mDirtyWkt)
+    {
+      // convert from GEOS
+      exportGeosToWkb();
+    }
+    else
+    {
+      // TODO
+    }
+  }
+
   return mGeometry;
 }
     
@@ -167,12 +186,33 @@ QString const& QgsGeometry::wkt() const
     {
       // TODO
     }
-  
   }
 
   return mWkt;
 }
 
+void QgsGeometry::setGeos(geos::Geometry* geos)
+{
+  // TODO - make this more heap-friendly
+
+  if (mGeos)
+  {
+    delete mGeos;
+    mGeos = 0;
+  }
+
+  mGeos = geos;
+
+#ifdef QGISDEBUG
+  std::cout << "QgsGeometry::setGeos: setting Geos = '" << mGeos->toString() << "'." << std::endl;
+#endif
+
+
+  mDirtyWkb   = TRUE;
+  mDirtyGeos  = FALSE;
+  mDirtyWkt   = TRUE;
+
+}
 
 QgsPoint QgsGeometry::closestVertex(const QgsPoint& point) const
 {
@@ -340,6 +380,103 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
                 << "." << std::endl;
 #endif
 
+  // New GEOS manipulations
+  exportWkbToGeos();
+
+  if (mGeos)
+  {
+    switch (mGeos->getGeometryTypeId())
+    {
+      case geos::GEOS_POINT:                 // a point
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_POINT
+  
+      case geos::GEOS_LINESTRING:            // a linestring
+      {
+        // TODO
+
+        // Get the embedded GEOS Coordinate Sequence
+        geos::LineString* geosls = static_cast<geos::LineString*>(mGeos);
+        const geos::CoordinateSequence* old_sequence = geosls->getCoordinatesRO();
+        int numPoints = old_sequence->getSize();
+
+        // Copy to the new sequence, including the new vertex
+        geos::DefaultCoordinateSequence* new_sequence = new geos::DefaultCoordinateSequence();
+
+        bool inserted = FALSE;
+        for (int i = 0; i < numPoints; i++)
+        {
+          // Do we insert the new vertex here?
+          if (beforeVertex.back() == i)
+          {
+            new_sequence->add( geos::Coordinate(x, y) );
+            inserted = TRUE; 
+          }
+
+          new_sequence->add( old_sequence->getAt(i) );
+        }
+
+        if (!inserted)
+        {
+          // The beforeVertex is greater than the actual number of vertices
+          // in the geometry - tack it on the end.
+          new_sequence->add( geos::Coordinate(x, y) );
+        }
+
+        // Put in the new GEOS geometry
+        setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(new_sequence) ) );
+
+
+        return TRUE;
+
+        break;
+      } // case geos::GEOS_LINESTRING
+  
+      case geos::GEOS_LINEARRING:            // a linear ring (linestring with 1st point == last point)
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_LINEARRING
+  
+      case geos::GEOS_POLYGON:               // a polygon
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_POLYGON
+  
+      case geos::GEOS_MULTIPOINT:            // a collection of points
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_MULTIPOINT
+  
+      case geos::GEOS_MULTILINESTRING:       // a collection of linestrings
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_MULTILINESTRING
+  
+      case geos::GEOS_MULTIPOLYGON:          // a collection of polygons
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_MULTIPOLYGON
+  
+      case geos::GEOS_GEOMETRYCOLLECTION:    // a collection of heterogeneus geometries
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_GEOMETRYCOLLECTION
+  
+    } // switch (mGeos->getGeometryTypeId())
+
+  } // if (mGeos)
+
+  return FALSE;
+
+  // Old WKB manipulations
 
     if (mGeometry)
     {
@@ -351,9 +488,9 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
         {
             case QGis::WKBPoint:
             {
-                // Meaningless
-                return FALSE;
-                break;
+              // Meaningless
+              return FALSE;
+              break;
             }
             case QGis::WKBLineString:
             {
@@ -466,7 +603,7 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
                                 
                 // set new geomtry to this object
                 setWkbAndOwnership(newWKB, mGeometrySize + 16);
-      
+
                 break;
             }
             case QGis::WKBPolygon:
@@ -526,6 +663,188 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
 bool QgsGeometry::moveVertexAt(double x, double y, 
                                QgsGeometryVertexIndex atVertex)
 {
+
+#ifdef QGISDEBUG
+      std::cout << "QgsGeometry::moveVertexAt: Entered with "
+         << "x " << x << ", y " << y 
+//         << "beforeVertex " << beforeVertex << ", atRing " << atRing << ", atItem"
+//         << " " << atItem            
+                << "." << std::endl;
+#endif
+
+  // New GEOS manipulations
+  exportWkbToGeos();
+
+  if (mGeos)
+  {
+    switch (mGeos->getGeometryTypeId())
+    {
+      case geos::GEOS_POINT:                 // a point
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_POINT
+  
+      case geos::GEOS_LINESTRING:            // a linestring
+      {
+        // TODO: Test.
+
+        // Get the embedded GEOS Coordinate Sequence
+        geos::LineString* geosls = static_cast<geos::LineString*>(mGeos);
+        const geos::CoordinateSequence* sequence = geosls->getCoordinatesRO();
+
+        if (atVertex.back() < sequence->getSize())
+        {
+          // Asked to move a vertex Id that's not in range
+          return FALSE;
+        }
+
+        // We can edit this sequence in-place
+//TODO:        sequence->setAt( geos::Coordinate(x, y), atVertex.back() );
+
+        mDirtyWkb   = TRUE;
+        mDirtyGeos  = FALSE;
+        mDirtyWkt   = TRUE;
+
+        return TRUE;
+
+        break;
+      } // case geos::GEOS_LINESTRING
+  
+      case geos::GEOS_LINEARRING:            // a linear ring (linestring with 1st point == last point)
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_LINEARRING
+  
+      case geos::GEOS_POLYGON:               // a polygon
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_POLYGON
+  
+      case geos::GEOS_MULTIPOINT:            // a collection of points
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_MULTIPOINT
+  
+      case geos::GEOS_MULTILINESTRING:       // a collection of linestrings
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_MULTILINESTRING
+  
+      case geos::GEOS_MULTIPOLYGON:          // a collection of polygons
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_MULTIPOLYGON
+  
+      case geos::GEOS_GEOMETRYCOLLECTION:    // a collection of heterogeneus geometries
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_GEOMETRYCOLLECTION
+  
+    } // switch (mGeos->getGeometryTypeId())
+
+  } // if (mGeos)
+
+  return FALSE;
+
+}
+
+
+bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
+{
+
+#ifdef QGISDEBUG
+      std::cout << "QgsGeometry::deleteVertexAt: Entered"
+                << "." << std::endl;
+#endif
+
+  // New GEOS manipulations
+  exportWkbToGeos();
+
+  if (mGeos)
+  {
+    switch (mGeos->getGeometryTypeId())
+    {
+      case geos::GEOS_POINT:                 // a point
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_POINT
+  
+      case geos::GEOS_LINESTRING:            // a linestring
+      {
+        // TODO
+
+        // Get the embedded GEOS Coordinate Sequence
+        geos::LineString* geosls = static_cast<geos::LineString*>(mGeos);
+        const geos::CoordinateSequence* sequence = geosls->getCoordinatesRO();
+
+        if (atVertex.back() < sequence->getSize())
+        {
+          // Asked to move a vertex Id that's not in range
+          return FALSE;
+        }
+
+        // We can edit this sequence in-place
+// TODO        sequence->deleteAt( atVertex.back() );
+
+        mDirtyWkb   = TRUE;
+        mDirtyGeos  = FALSE;
+        mDirtyWkt   = TRUE;
+
+        return TRUE;
+
+        break;
+      } // case geos::GEOS_LINESTRING
+  
+      case geos::GEOS_LINEARRING:            // a linear ring (linestring with 1st point == last point)
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_LINEARRING
+  
+      case geos::GEOS_POLYGON:               // a polygon
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_POLYGON
+  
+      case geos::GEOS_MULTIPOINT:            // a collection of points
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_MULTIPOINT
+  
+      case geos::GEOS_MULTILINESTRING:       // a collection of linestrings
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_MULTILINESTRING
+  
+      case geos::GEOS_MULTIPOLYGON:          // a collection of polygons
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_MULTIPOLYGON
+  
+      case geos::GEOS_GEOMETRYCOLLECTION:    // a collection of heterogeneus geometries
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_GEOMETRYCOLLECTION
+  
+    } // switch (mGeos->getGeometryTypeId())
+
+  } // if (mGeos)
+
+  return FALSE;
+
 }
 
 
@@ -1002,6 +1321,10 @@ bool QgsGeometry::intersects(QgsRect* r) const
 
 bool QgsGeometry::exportToWkt(unsigned char * geom) const
 {
+#ifdef QGISDEBUG
+  std::cout << "QgsGeometry::exportToWkt: entered." << std::endl;
+#endif
+
     if(geom)
     {
 	int wkbType;
@@ -1266,9 +1589,9 @@ geos::Geometry* QgsGeometry::geosGeometry() const
     }
 
 #ifdef QGISDEBUG
-    qWarning("In QgsGeometry::geosGeometry()");
+  std::cout << "QgsGeometry::geosGeometry: entered." << std::endl;
 #endif
-	
+
     double *x;
     double *y;
     int *nPoints;
@@ -1283,8 +1606,8 @@ geos::Geometry* QgsGeometry::geosGeometry() const
     QPointArray *pa;
     int wkbtype;
 
-    // TODO: Make this a static member - save generating for every geometry
-    geos::GeometryFactory* geometryFactory = new geos::GeometryFactory();
+//    // TODO: Make this a static member - save generating for every geometry
+//    geos::GeometryFactory* geometryFactory = new geos::GeometryFactory();
     
     wkbtype=(int) mGeometry[1];
     switch(wkbtype)
@@ -1295,7 +1618,7 @@ geos::Geometry* QgsGeometry::geosGeometry() const
 	   y = (double *) (mGeometry + 5 + sizeof(double));
            
            mDirtyGeos = FALSE;
-	   return geometryFactory->createPoint(geos::Coordinate(*x,*y));
+	   return geosGeometryFactory->createPoint(geos::Coordinate(*x,*y));
 	}
 	case QGis::WKBMultiPoint:
 	{
@@ -1309,14 +1632,14 @@ geos::Geometry* QgsGeometry::geosGeometry() const
 		ptr += sizeof(double);
 		y = (double *) ptr;
 		ptr += sizeof(double);
-		points->push_back(geometryFactory->createPoint(geos::Coordinate(*x,*y)));
+		points->push_back(geosGeometryFactory->createPoint(geos::Coordinate(*x,*y)));
 	    }
-	    return geometryFactory->createMultiPoint(points);
+	    return geosGeometryFactory->createMultiPoint(points);
 	}
 	case QGis::WKBLineString:
 	{
 #ifdef QGISDEBUG
-    qWarning("Linestring found");
+    qWarning("QgsGeometry::geosGeometry: Linestring found");
 #endif
 	    geos::DefaultCoordinateSequence* sequence=new geos::DefaultCoordinateSequence();
 	    ptr = mGeometry + 5;
@@ -1329,11 +1652,11 @@ geos::Geometry* QgsGeometry::geosGeometry() const
 		y = (double *) ptr;
 		ptr += sizeof(double);
 #ifdef QGISDEBUG
-			qWarning("adding coordinate pair "+QString::number(*x)+"//"+QString::number(*y));
+		qWarning("QgsGeometry::geosGeometry: adding coordinate pair "+QString::number(*x)+"//"+QString::number(*y));
 #endif
 		sequence->add(geos::Coordinate(*x,*y));
 	    }
-	    return geometryFactory->createLineString(sequence); 
+	    return geosGeometryFactory->createLineString(sequence); 
 	}
 	case QGis::WKBMultiLineString:
 	{
@@ -1356,9 +1679,9 @@ geos::Geometry* QgsGeometry::geosGeometry() const
 		    ptr += sizeof(double);
 		    sequence->add(geos::Coordinate(*x,*y));
 		}
-		lines->push_back(geometryFactory->createLineString(sequence));
+		lines->push_back(geosGeometryFactory->createLineString(sequence));
 	    }
-	    return geometryFactory->createMultiLineString(lines);
+	    return geosGeometryFactory->createMultiLineString(lines);
 	}
 	case QGis::WKBPolygon: 
 	{
@@ -1390,7 +1713,7 @@ geos::Geometry* QgsGeometry::geosGeometry() const
 		    ptr += sizeof(double);
 		    sequence->add(geos::Coordinate(*x,*y));
 		}
-		geos::LinearRing* ring=geometryFactory->createLinearRing(sequence);
+		geos::LinearRing* ring=geosGeometryFactory->createLinearRing(sequence);
 		if(idx==0)
 		{
 		    outer=ring;
@@ -1400,7 +1723,7 @@ geos::Geometry* QgsGeometry::geosGeometry() const
 		    inner->push_back(ring);
 		}
 	    }
-	    return geometryFactory->createPolygon(outer,inner);
+	    return geosGeometryFactory->createPolygon(outer,inner);
 	}
 	
 	case QGis::WKBMultiPolygon:
@@ -1447,7 +1770,7 @@ geos::Geometry* QgsGeometry::geosGeometry() const
 #endif
 			sequence->add(geos::Coordinate(*x,*y));
 		    }
-		    geos::LinearRing* ring=geometryFactory->createLinearRing(sequence);
+		    geos::LinearRing* ring=geosGeometryFactory->createLinearRing(sequence);
 		    if(idx==0)
 		    {
 			outer=ring;
@@ -1458,9 +1781,9 @@ geos::Geometry* QgsGeometry::geosGeometry() const
 		    }
 		}
 	    
-		polygons->push_back(geometryFactory->createPolygon(outer,inner));
+		polygons->push_back(geosGeometryFactory->createPolygon(outer,inner));
 	    }
-	    return (geometryFactory->createMultiPolygon(polygons));
+	    return (geosGeometryFactory->createMultiPolygon(polygons));
 	}
 	default:
 	    return 0;
@@ -1468,15 +1791,168 @@ geos::Geometry* QgsGeometry::geosGeometry() const
     
 }
 
+bool QgsGeometry::exportWkbToGeos() const
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsGeometry::exportWkbToGeos: entered." << std::endl;
+#endif
 
-void QgsGeometry::fromGeosGeometry()
+  if (mDirtyGeos)
+  {
+    // TODO: Clean up the nomenclature a bit
+    mGeos = geosGeometry();
+    mDirtyGeos = FALSE;
+    return mDirtyGeos;
+  }
+  else
+  {
+    // Already have a fresh copy of Geos available.
+    return TRUE;
+  }
+}
+
+
+bool QgsGeometry::exportGeosToWkb() const
 // TODO: Make this work
 {
-  if(!mGeometry)
+#ifdef QGISDEBUG
+  std::cout << "QgsGeometry::exportGeosToWkb: entered." << std::endl;
+#endif
+
+  if (!mDirtyWkb)
   {
-//    return 0;
+    // No need to convert again
+    return TRUE;
   }
 
+  // clear the WKB, ready to replace with the new one
+  if (mGeometry)
+  {
+    delete [] mGeometry;
+    mGeometry = 0;
+  }
+
+  if (!mGeos)
+  {
+    // GEOS is null, therefore WKB is null.
+    return TRUE;
+  }
+
+  // set up byteOrder
+  char byteOrder = 1;   // TODO
+
+#ifdef QGISDEBUG
+  std::cout << "QgsGeometry::exportGeosToWkb: Testing mGeos->getGeometryTypeId() = '"
+            << mGeos->getGeometryTypeId() << "'." << std::endl;
+#endif
+
+  switch (mGeos->getGeometryTypeId())
+  {
+    case geos::GEOS_POINT:                 // a point
+    {
+      // TODO
+      break;
+    } // case geos::GEOS_POINT
+
+    case geos::GEOS_LINESTRING:            // a linestring
+    {
+#ifdef QGISDEBUG
+  std::cout << "QgsGeometry::exportGeosToWkb: Got a geos::GEOS_LINESTRING." << std::endl;
+#endif
+
+      // TODO
+      int numPoints = mGeos->getNumPoints();
+
+      // allocate some space for the WKB
+      mGeometrySize = 1 +   // sizeof(byte)
+                      4 +   // sizeof(uint32)
+                      4 +   // sizeof(uint32)
+                   ( (sizeof(double) +
+                      sizeof(double)) * numPoints );
+
+      mGeometry = new unsigned char[mGeometrySize];
+
+      unsigned char* ptr = mGeometry;
+
+      // assign byteOrder
+      memcpy(ptr, &byteOrder, 1);
+      ptr += 1;
+
+      // assign wkbType
+      int wkbType = QGis::WKBLineString;
+      memcpy(ptr, &wkbType, 4);
+      ptr += 4;
+
+      // assign numPoints
+      memcpy(ptr, &numPoints, 4);
+      ptr += 4;
+
+      geos::LineString* geosls = static_cast<geos::LineString*>(mGeos);
+      const geos::CoordinateSequence* sequence = geosls->getCoordinatesRO();
+
+      // assign points
+      for (int n = 0; n < numPoints; n++)
+      {
+#ifdef QGISDEBUG
+  std::cout << "QgsGeometry::exportGeosToWkb: Adding " 
+            << sequence->getAt(n).x << ", " 
+            << sequence->getAt(n).y << "." << std::endl;
+#endif
+        // assign x
+        memcpy(ptr, &(sequence->getAt(n).x), sizeof(double));
+        ptr += sizeof(double);
+
+        // assign y
+        memcpy(ptr, &(sequence->getAt(n).y), sizeof(double));
+        ptr += sizeof(double);
+      }
+
+      mDirtyWkb = FALSE;
+
+      // TODO: Deal with endian-ness
+
+      break;
+    } // case geos::GEOS_LINESTRING
+
+    case geos::GEOS_LINEARRING:            // a linear ring (linestring with 1st point == last point)
+    {
+      // TODO
+      break;
+    } // case geos::GEOS_LINEARRING
+
+    case geos::GEOS_POLYGON:               // a polygon
+    {
+      // TODO
+      break;
+    } // case geos::GEOS_POLYGON
+
+    case geos::GEOS_MULTIPOINT:            // a collection of points
+    {
+      // TODO
+      break;
+    } // case geos::GEOS_MULTIPOINT
+
+    case geos::GEOS_MULTILINESTRING:       // a collection of linestrings
+    {
+      // TODO
+      break;
+    } // case geos::GEOS_MULTILINESTRING
+
+    case geos::GEOS_MULTIPOLYGON:          // a collection of polygons
+    {
+      // TODO
+      break;
+    } // case geos::GEOS_MULTIPOLYGON
+
+    case geos::GEOS_GEOMETRYCOLLECTION:    // a collection of heterogeneus geometries
+    {
+      // TODO
+      break;
+    } // case geos::GEOS_GEOMETRYCOLLECTION
+
+  } // switch (mGeos->getGeometryTypeId())
+
+  return FALSE;
 }
 
 

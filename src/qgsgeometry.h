@@ -76,7 +76,12 @@ class QgsGeometry {
        Returns the QString containing this geometry in WKT format.
     */
     QString const& wkt() const; 
-    
+
+    /**
+       Set the geometry, feeding in a geometry in GEOS format.
+    */
+    void setGeos(geos::Geometry* geos);
+
     /**
        Returns the vertex closest to the given point
     */
@@ -84,7 +89,9 @@ class QgsGeometry {
     
     /** Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)
-     *  Not meaningful for Point geometries
+     *  If the actual vertex/ring/item numbers are less
+     *  than requested, the vertex is appended instead of inserted.
+     *  @note  Not meaningful for Point geometries.
      */
     bool insertVertexBefore(double x, double y, QgsGeometryVertexIndex beforeVertex);
 
@@ -93,6 +100,11 @@ class QgsGeometry {
      *  to the given coordinates
      */
     bool moveVertexAt(double x, double y, QgsGeometryVertexIndex atVertex);
+    
+    /** Deletes the vertex at the given position number,
+     *  ring and item (first number is index 0)
+     */
+    bool deleteVertexAt(QgsGeometryVertexIndex atVertex);
     
     /**
      *  Modifies x and y to indicate the location of
@@ -115,39 +127,47 @@ class QgsGeometry {
     /**Creates a geos geometry from this features geometry. Note, that the returned object needs to be deleted*/
     geos::Geometry* geosGeometry() const;
 
-    /** Converts from the GEOS geometry back to the native WKB geometry.  (Experimental) */
-    void fromGeosGeometry();
-
 
 
   private:
 
+    // Private static members
+
+    static geos::GeometryFactory* geosGeometryFactory;
+
+
+    // Private variables
+
+    // All of these are mutable since there may be on-the-fly
+    // conversions between WKB, GEOS and WKT;
+    // However the intent is the const functions do not
+    // semantically change the value that this object represents.
+
     /** pointer to geometry in binary WKB format
         This is the class' native implementation
      */
-    unsigned char * mGeometry;
+    mutable unsigned char * mGeometry;
 
-    
     /** size of geometry */
-    size_t mGeometrySize;
+    mutable size_t mGeometrySize;
 
-        
     /** cached WKT version of this geometry */
     mutable QString mWkt;
-    
+
     /** cached GEOS version of this geometry */
     mutable geos::Geometry* mGeos;
 
-        
     /** If the geometry has been set since the last conversion to WKB **/
     mutable bool mDirtyWkb;
 
     /** If the geometry has been set since the last conversion to WKT **/
     mutable bool mDirtyWkt;
-    
+
     /** If the geometry has been set  since the last conversion to GEOS **/
     mutable bool mDirtyGeos;
-    
+
+
+    // Private functions
     
     /** Squared distance from point to the given line segment 
      *  TODO: Perhaps move this to QgsPoint
@@ -161,6 +181,16 @@ class QgsGeometry {
      @return true in case of success and false else*/
     bool exportToWkt(unsigned char * geom) const;
     bool exportToWkt() const;
+
+    /** Converts from the WKB geometry to the GEOS geometry.  (Experimental) 
+        @return   true in case of success and false else
+     */
+    bool exportWkbToGeos() const;
+
+    /** Converts from the GEOS geometry to the WKB geometry.  (Experimental) 
+        @return   true in case of success and false else
+     */
+    bool exportGeosToWkb() const;
 
 
 }; // class QgsGeometry

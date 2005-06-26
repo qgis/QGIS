@@ -249,10 +249,12 @@ private:
     void capturePolygon();
     //! activates the selection tool
     void select();
-    //! activates the add node tool
+    //! activates the add vertex tool
     void addVertex();
-    //! activates the move node tool
+    //! activates the move vertex tool
     void moveVertex();
+    //! activates the delete vertex tool
+    void deleteVertex();
     //! cuts selected features on the active layer to the clipboard
     void editCut();
     //! copies selected features on the active layer to the clipboard

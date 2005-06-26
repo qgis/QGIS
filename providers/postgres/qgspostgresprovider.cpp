@@ -1936,7 +1936,7 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
   {
 
 #ifdef QGISDEBUG
-      std::cerr << "QgsPostgresProvider::changeGeometryValues: iterating..."
+      std::cerr << "QgsPostgresProvider::changeGeometryValues: iterating over the map of changed geometries..."
                 << std::endl;
 #endif
     
@@ -1983,7 +1983,7 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
       if (result==0)
       {
         QMessageBox::critical(0, "PostGIS error", 
-                                 "An error occured contacting the PostGIS server",
+                                 "An error occured contacting the PostgreSQL databse",
                                  QMessageBox::Ok,
                                  QMessageBox::NoButton);
         return false;
@@ -1992,7 +1992,8 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
       if(message==PGRES_FATAL_ERROR)
       {
         QMessageBox::information(0, "PostGIS error", 
-                                 QString(PQresultErrorMessage(result)),
+                                 "The PostgreSQL databse returned: "
+                                   + QString(PQresultErrorMessage(result)),
                                  QMessageBox::Ok,
                                  QMessageBox::NoButton);
         return false;

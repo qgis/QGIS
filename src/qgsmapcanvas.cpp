@@ -1444,17 +1444,21 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
   #endif
           
       // TODO: Find nearest segment of the selected line, move that node to the mouse location
-      vlayer->snapSegmentWithContext(
-                                     point, 
-                                     beforeVertex,
-                                     atFeatureId, 
-                                     atGeometry,
-                                     QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0)
-                                    );
+      if (!vlayer->snapSegmentWithContext(
+                                          point,
+                                          beforeVertex,
+                                          atFeatureId,
+                                          atGeometry,
+                                          QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0)
+                                         )
+         )
+      {
+        QMessageBox::warning(0, "Error", "Could not snap segment. Have you set the tolerance?",
+                             QMessageBox::Ok, QMessageBox::NoButton);
+      }
+      else
+      {
 
-std::cout << "QgsMapCanvas::mousePressEvent: Test." << std::endl;
-                                    
-                                    
 #ifdef QGISDEBUG
       std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex: Snapped to segment fid " 
                 << atFeatureId 
@@ -1462,57 +1466,57 @@ std::cout << "QgsMapCanvas::mousePressEvent: Test." << std::endl;
                 << "." << std::endl;
 #endif
 
-      // Save where we snapped to
-      mCanvasProperties->snappedBeforeVertex = beforeVertex;
-      mCanvasProperties->snappedAtFeatureId  = atFeatureId;
-      mCanvasProperties->snappedAtGeometry   = atGeometry;
-      
-      // Get the endpoint of the snapped-to segment
-      atGeometry.vertexAt(x2, y2, beforeVertex);
-      
-      // Get the startpoint of the snapped-to segment
-      beforeVertex.decrement_back();
-      atGeometry.vertexAt(x1, y1, beforeVertex);
+        // Save where we snapped to
+        mCanvasProperties->snappedBeforeVertex = beforeVertex;
+        mCanvasProperties->snappedAtFeatureId  = atFeatureId;
+        mCanvasProperties->snappedAtGeometry   = atGeometry;
+        
+        // Get the endpoint of the snapped-to segment
+        atGeometry.vertexAt(x2, y2, beforeVertex);
+        
+        // Get the startpoint of the snapped-to segment
+        beforeVertex.decrement_back();
+        atGeometry.vertexAt(x1, y1, beforeVertex);
+  
+                                            
+  #ifdef QGISDEBUG
+        std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex: Snapped to segment "
+                  << x1 << ", " << y1 << "; "
+                  << x2 << ", " << y2
+                  << "." << std::endl;
+  #endif
+        
+        // Convert to canvas screen coordinates for rubber band
+        mCanvasProperties->coordXForm->transformInPlace(x1, y1);
+        mCanvasProperties->rubberStartPoint.setX( static_cast<int>( round(x1) ) );
+        mCanvasProperties->rubberStartPoint.setY( static_cast<int>( round(y1) ) );
+        
+        mCanvasProperties->rubberMidPoint = e->pos();
+        
+        mCanvasProperties->coordXForm->transformInPlace(x2, y2);
+        mCanvasProperties->rubberStopPoint.setX( static_cast<int>( round(x2) ) );
+        mCanvasProperties->rubberStopPoint.setY( static_cast<int>( round(y2) ) );
+  
+        
+  #ifdef QGISDEBUG
+        std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex: Transformed to widget "
+                  << x1 << ", " << y1 << "; "
+                  << x2 << ", " << y2
+                  << "." << std::endl;
+  #endif
+                                    
+        
+        // Draw initial rubber band
+        paint.begin(this);
+        paint.setPen(pen);
+        paint.setRasterOp(Qt::XorROP);
+        
+        paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
+        paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
+        
+        paint.end();
+      } // if snapSegmentWithContext
 
-                                          
-#ifdef QGISDEBUG
-      std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex: Snapped to segment "
-                << x1 << ", " << y1 << "; "
-                << x2 << ", " << y2
-                << "." << std::endl;
-#endif
-      
-      // Convert to canvas screen coordinates for rubber band
-      mCanvasProperties->coordXForm->transformInPlace(x1, y1);
-      mCanvasProperties->rubberStartPoint.setX( static_cast<int>( round(x1) ) );
-      mCanvasProperties->rubberStartPoint.setY( static_cast<int>( round(y1) ) );
-      
-      mCanvasProperties->rubberMidPoint = e->pos();
-      
-      mCanvasProperties->coordXForm->transformInPlace(x2, y2);
-      mCanvasProperties->rubberStopPoint.setX( static_cast<int>( round(x2) ) );
-      mCanvasProperties->rubberStopPoint.setY( static_cast<int>( round(y2) ) );
-
-      
-#ifdef QGISDEBUG
-      std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex: Transformed to widget "
-                << x1 << ", " << y1 << "; "
-                << x2 << ", " << y2
-                << "." << std::endl;
-#endif
-                                   
-      
-      // Draw initial rubber band
-      paint.begin(this);
-      paint.setPen(pen);
-      paint.setRasterOp(Qt::XorROP);
-      
-      paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
-      paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
-      
-      paint.end();
-            
-     
       break;
     }  
     case QGis::MoveVertex:

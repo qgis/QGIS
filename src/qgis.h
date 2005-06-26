@@ -61,7 +61,8 @@ namespace QGis
     EmitPoint,
     Measure,
     AddVertex,
-    MoveVertex
+    MoveVertex,
+    DeleteVertex
   };
   //! Used for symbology operations
   // Featuure types

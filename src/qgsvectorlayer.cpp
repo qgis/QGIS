@@ -1834,8 +1834,11 @@ bool QgsVectorLayer::insertVertexBefore(double x, double y, int atFeatureId,
       // first time this geometry has changed since last commit
 
       mChangedGeometries[atFeatureId] = *(mCachedGeometries[atFeatureId]);
-    }  
-      
+#ifdef QGISDEBUG
+  std::cout << "QgsVectorLayer::insertVertexBefore: first uncommitted change for this geometry." << std::endl;
+#endif
+    }
+
     mChangedGeometries[atFeatureId].insertVertexBefore(x, y, beforeVertex);
 
     mModified=true;
@@ -2605,7 +2608,7 @@ bool QgsVectorLayer::commitChanges()
     {
         if ( !dataProvider->changeGeometryValues ( mChangedGeometries ) ) 
         {
-          QMessageBox::warning(0,"Warning","Could not change geometries");
+          QMessageBox::warning(0,"Error","Could not commit changes to geometries");
         }
         mChangedGeometries.clear();
     }
@@ -2849,7 +2852,6 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
 
   QgsPoint origPoint;
   
-/*
 #ifdef QGISDEBUG
       std::cout << "QgsVectorLayer::snapSegmentWithContext: Entering."
                 << "." << std::endl;
@@ -2859,11 +2861,15 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
       std::cout << "QgsVectorLayer::snapSegmentWithContext: Tolerance: " << tolerance << ", dataProvider = '" << dataProvider
                 << "'." << std::endl;
 #endif
-*/  
+  
   // Sanity checking
   if ( tolerance<=0 || 
       !dataProvider)
   {
+    // set some default values before we bail
+    beforeVertex = QgsGeometryVertexIndex();
+    snappedFeatureId = INT_MIN;
+    snappedGeometry = QgsGeometry();
     return false;
   }
   
