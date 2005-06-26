@@ -2960,12 +2960,30 @@ void QgisApp::moveVertex()
 
 #ifdef QGISDEBUG
   std::cout << "QgisApp::moveVertex." << std::endl;
-//  std::cout << "QgsWmsProvider::dataReceived: received '" << data << "'."<< std::endl;
 #endif
     
     {
         // set current map tool to select
         mMapCanvas->setMapTool(QGis::MoveVertex);
+        QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
+        delete mMapCursor;
+        mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
+        mMapCanvas->setCursor(*mMapCursor);
+    }
+}
+
+
+// TODO - select a real cursor
+void QgisApp::deleteVertex()
+{
+
+#ifdef QGISDEBUG
+  std::cout << "QgisApp::deleteVertex." << std::endl;
+#endif
+    
+    {
+        // set current map tool to select
+        mMapCanvas->setMapTool(QGis::DeleteVertex);
         QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
         delete mMapCursor;
         mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
