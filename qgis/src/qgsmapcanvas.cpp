@@ -514,7 +514,15 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
   {
     // Adding the first layer. Set the previousOutputSRS to the output
     // SRS for the layer.
-    mCanvasProperties->previousOutputSRS = lyr->coordinateTransform()->destSRS();
+
+      if ( ! lyr->coordinateTransform() )
+      {
+          QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
+      }
+      else
+      {
+          mCanvasProperties->previousOutputSRS = lyr->coordinateTransform()->destSRS();
+      }
   }
 
   mCanvasProperties->layers[lyr->getLayerID()] = lyr;
@@ -530,8 +538,15 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
     {
       try
       {
-	QgsRect tRect = lyr->coordinateTransform()->transform(lyr->extent());
-	mCanvasProperties->fullExtent = tRect;
+          if ( ! lyr->coordinateTransform() )
+          {
+              QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
+          }
+          else
+          {
+              QgsRect tRect = lyr->coordinateTransform()->transform(lyr->extent());
+              mCanvasProperties->fullExtent = tRect;
+          }
       }
       catch(QgsCsException &cse)
       {
@@ -558,7 +573,14 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
       // project the layer extent and pass it off to update the full extent
       try 
       {
-	updateFullExtent(lyr->coordinateTransform()->transform(lyr->extent()));
+          if ( ! lyr->coordinateTransform() )
+          {
+              QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
+          }
+          else
+          {
+              updateFullExtent(lyr->coordinateTransform()->transform(lyr->extent()));
+          }
       }
       catch(QgsCsException &cse)
       {
@@ -694,6 +716,15 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
     // Get a map layer. Any layer should do, so just grab the first one.
     std::map<QString, QgsMapLayer*>::const_iterator 
      i = mCanvasProperties->layers.begin();
+
+    if ( ! i->second->coordinateTransform() )
+    {
+        QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
+
+        return;                 // XXX KLUDGY HACK, but necessary to underscore problem
+                                // XXX with layers NOT HAVING DEFAULT COORDINATE TRANSFORMS
+    }
+
 
     const QgsSpatialRefSys& currentOutputSRS = 
       i->second->coordinateTransform()->destSRS();
@@ -1274,6 +1305,11 @@ void QgsMapCanvas::zoomToSelected()
     {
       try
       {      
+        if ( ! lyr->coordinateTransform() )
+        {
+            throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+        }
+
         rect = lyr->coordinateTransform()->transform(lyr->bBoxOfSelected());
       }
       catch (QgsCsException &e)
@@ -2439,6 +2475,11 @@ void QgsMapCanvas::recalculateExtents()
     std::cout << "Input extent: " << lyr->extent().stringRep() << std::endl;
     try
     {
+      if ( ! lyr->coordinateTransform() )
+      {
+          throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+      }
+
       std::cout << "Transformed extent" << lyr->coordinateTransform()->transform(lyr->extent(), QgsCoordinateTransform::FORWARD) << std::endl;
     }
     catch (QgsCsException &e)
@@ -2453,7 +2494,12 @@ void QgsMapCanvas::recalculateExtents()
     {
       try
       {
-        updateFullExtent(lyr->coordinateTransform()->transform(lyr->extent()));
+          if ( ! lyr->coordinateTransform() )
+          {
+              throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+          }
+
+          updateFullExtent(lyr->coordinateTransform()->transform(lyr->extent()));
       }
       catch (QgsCsException &e)
       {
