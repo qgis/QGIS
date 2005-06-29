@@ -559,6 +559,7 @@ bool QgsGPXProvider::addFeatures(std::list<QgsFeature*> flist) {
   if (!file.open(IO_WriteOnly))
     return false;
   QTextStream ostr(&file);
+  ostr.precision(10);
   data->writeXML(ostr);
   return true;
 }
@@ -726,6 +727,7 @@ bool QgsGPXProvider::deleteFeatures(std::list<int> const & id) {
   if (!file.open(IO_WriteOnly))
     return false;
   QTextStream ostr(&file);
+  ostr.precision(10);
   data->writeXML(ostr);
   return true;
 }
@@ -767,6 +769,7 @@ bool QgsGPXProvider::changeAttributeValues(std::map<int,std::map<QString,QString
   if (!file.open(IO_WriteOnly))
     return false;
   QTextStream ostr(&file);
+  ostr.precision(10);
   data->writeXML(ostr);
   return true;
 }
