@@ -10,7 +10,7 @@
           copyright            : (C) 2003 by Gary E.Sherman
           email                : sherman at mrcc.com
  
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -446,7 +446,26 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
 
   // Transform the points into map coordinates (and reproject if
   // necessary)
+
+  double oldx = x[0];
+  double oldy = y[0];
+
+#ifdef QGISDEBUG 
+    std::cout <<"...WKBLineString start at (" << oldx << ", " << oldy << ")" <<std::endl;
+#endif
+
+  try
+  {
   transformPoints(x, y, z, mtp, projectionsEnabledFlag);
+  }
+  catch (QgsCsException &cse)
+  {
+    std::cout << "Illegal transformation of line starting at (" << oldx <<
+      "," << oldy << ") caught. Ignoring (Multi-)Linestring." << std::endl;
+  
+    return ptr;
+  }
+
  
 #if defined(Q_WS_X11)
   // Work around a +/- 32768 limitation on coordinates in X11
@@ -525,10 +544,10 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     // Extract the points from the WKB and store in a pair of
     // vectors.
     /*
-#ifdef QGISDEBUG
+      #ifdef QGISDEBUG
     std::cerr << "Points for ring " << idx << " ("
         << nPoints << " points)\n";
-#endif
+      #endif
     */
     for (unsigned int jdx = 0; jdx < nPoints; jdx++)
     {
@@ -537,15 +556,32 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
       ring->second[jdx] = *((double *) ptr);
       ptr += sizeof(double);
       /*
-#ifdef QGISDEBUG
+        #ifdef QGISDEBUG
       std::cerr << jdx << ": " 
     << ring->first[jdx] << ", " << ring->second[jdx] << '\n';
-#endif
+        #endif
       */
     }
     // Transform the points into map coordinates (and reproject if
     // necessary)
+    double oldx = ring->first[0];
+    double oldy = ring->second[0];
+
+#ifdef QGISDEBUG 
+    std::cout <<"...WKBLineString start at (" << oldx << ", " << oldy << ")" <<std::endl;
+#endif
+
+    try
+    {
     transformPoints(ring->first, ring->second, zVector, mtp, projectionsEnabledFlag);
+    }
+    catch (QgsCsException &cse)
+    {
+      std::cout << "Illegal transformation of polygon starting at (" << oldx <<
+        "," << oldy << ") caught. Ignoring (Multi-)Polygon." << std::endl;
+  
+      return ptr;
+    }
 
 #if defined(Q_WS_X11)
     // Work around a +/- 32768 limitation on coordinates in X11
@@ -560,13 +596,13 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
       {
         QgsClipper::trimFeature(ring->first, ring->second, false);
         /*
-#ifdef QGISDEBUG
-std::cerr << "Trimmed points (" << ring->first.size() << ")\n";
-for (int i = 0; i < ring->first.size(); ++i)
-std::cerr << i << ": " << ring->first[i] 
-<< ", " << ring->second[i] << '\n';
-#endif
-*/
+          #ifdef QGISDEBUG
+          std::cerr << "Trimmed points (" << ring->first.size() << ")\n";
+          for (int i = 0; i < ring->first.size(); ++i)
+          std::cerr << i << ": " << ring->first[i] 
+          << ", " << ring->second[i] << '\n';
+          #endif
+        */
         break;
       }
       //std::cout << "POLYGONTRANSFORM: " << ring->first[i] << ", " << ring->second[i] << std::endl; 
@@ -935,9 +971,9 @@ void QgsVectorLayer::identify(QgsRect * r)
         std::vector < QgsFeatureAttribute > attr = (*it)->attributeMap();
         for (int i = 0; i < attr.size(); i++)
         {
-#ifdef QGISDEBUG
+      #ifdef QGISDEBUG
       std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
-#endif
+      #endif
       if (attr[i].fieldName().lower() == fieldIndex)
       {
           featureNode->setText(1, attr[i].fieldValue());
@@ -2545,14 +2581,32 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
   unsigned int wkbType;
   memcpy(&wkbType, (feature+1), sizeof(wkbType));
 
+#ifdef QGISDEBUG
+  std::cout <<"Entering drawFeature()" << std::endl;
+#endif
+
   switch (wkbType)
   {
   case WKBPoint:
     {
       double x = *((double *) (feature + 5));
       double y = *((double *) (feature + 5 + sizeof(double)));
-      transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
 
+#ifdef QGISDEBUG 
+    std::cout <<"...WKBPoint (" << x << ", " << y << ")" <<std::endl;
+#endif
+
+    try
+    {
+      transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
+    }
+    catch (QgsCsException &cse)
+    {
+      std::cout << "Illegal transformation of (" << x <<
+        "," << y << ") caught. Ignoring point." << std::endl;
+
+      break;
+    }
       p->save();
       p->scale(markerScaleFactor,markerScaleFactor);
       p->drawPicture(static_cast<int>(x / markerScaleFactor 
@@ -2583,7 +2637,21 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
   double y = *((double *) ptr);
   ptr += sizeof(double);
 
+#ifdef QGISDEBUG 
+    std::cout <<"...WKBMultiPoint (" << x << ", " << y << ")" <<std::endl;
+#endif
+
+      try
+      {
   transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
+      }
+      catch (QgsCsException &cse)
+      {
+        std::cout << "Illegal transformation of (" << x <<
+        "," << y << ") caught. Ignoring multipoint." << std::endl;
+        
+        continue;
+      }
 
 #if defined(Q_WS_X11)
   // Work around a +/- 32768 limitation on coordinates in X11
