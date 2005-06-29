@@ -407,6 +407,11 @@ private:
     //! Called when mouse is moving and pan is activated
     void panAction(QMouseEvent * event);
 
+    //! Helper function to inverse project a point if projections
+    // are enabled. Failsafe, returns the sent point if anything fails.
+    // @whenmsg is a part fo the error message.
+
+    QgsPoint maybeInversePoint(QgsPoint point, const char whenmsg[]);
     //! detrmines whether the user can interact with the canvas using a mouse
     //(useful for locking the overview canvas)
     bool mUserInteractionAllowed;

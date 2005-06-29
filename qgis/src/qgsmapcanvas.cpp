@@ -1740,8 +1740,10 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     int size=5+2*sizeof(double);
     unsigned char *wkb = new unsigned char[size];
     int wkbtype=QGis::WKBPoint;
-    double x=idPoint.x();
-    double y=idPoint.y();
+          QgsPoint savePoint = maybeInversePoint(idPoint, "adding point");
+          double x = savePoint.x();
+          double y = savePoint.y();
+
     memcpy(&wkb[1],&wkbtype, sizeof(int));
     memcpy(&wkb[5], &x, sizeof(double));
     memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
@@ -1837,10 +1839,13 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     double x,y;
     for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
       {
-        x=it->x();
+            QgsPoint savePoint = maybeInversePoint(*it, "adding line");
+            x = savePoint.x();
+            y = savePoint.y();
+
         memcpy(&wkb[position],&x,sizeof(double));
         position+=sizeof(double);
-        y=it->y();
+
         memcpy(&wkb[position],&y,sizeof(double));
         position+=sizeof(double);
       }
@@ -1860,19 +1865,25 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     std::list<QgsPoint>::iterator it;
     for(it=mCaptureList.begin();it!=mCaptureList.end();++it)
       {
-        x=it->x();
+            QgsPoint savePoint = maybeInversePoint(*it, "adding poylgon");
+            x = savePoint.x();
+            y = savePoint.y();
+
         memcpy(&wkb[position],&x,sizeof(double));
         position+=sizeof(double);
-        y=it->y();
+
         memcpy(&wkb[position],&y,sizeof(double));
         position+=sizeof(double);
       }
     //close the polygon
     it=mCaptureList.begin();
-    x=it->x();
+          QgsPoint savePoint = maybeInversePoint(*it, "closing polygon");
+          x = savePoint.x();
+          y = savePoint.y();
+
     memcpy(&wkb[position],&x,sizeof(double));
     position+=sizeof(double);
-    y=it->y();
+
     memcpy(&wkb[position],&y,sizeof(double));
         }
       f->setGeometry(&wkb[0],size);
@@ -2587,3 +2598,30 @@ void QgsMapCanvas::panAction(QMouseEvent * e)
   
   bitBlt(this, dx, dy, mCanvasProperties->pmCanvas);
 }    
+
+QgsPoint QgsMapCanvas::maybeInversePoint(QgsPoint point, const char whenmsg[])
+{
+  QgsVectorLayer* vlayer=
+    dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+  QgsPoint transformedPoint;
+
+  if( projectionsEnabled() )
+  {
+    // Do reverse transformation before saving. If possible!
+    try
+    {
+      transformedPoint = vlayer->coordinateTransform()->transform(point, QgsCoordinateTransform::INVERSE);
+    }
+    catch(QgsCsException &cse)
+    {
+      //#ifdef QGISDEBUG
+      std::cout << "Caught transform error when " << whenmsg <<"." 
+                << "Setting untransformed values." << std::endl;
+      //#endif	
+      // Transformation failed,. Bail out with original rectangle.
+      return point;
+    }
+    return transformedPoint;
+  }
+  return point;
+}
