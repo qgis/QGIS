@@ -14,7 +14,7 @@ email                : morb at ozemail dot com dot au
  ***************************************************************************/
 /* $Id$ */
 
-#include <cfloat>
+#include <limits>
 
 #include "qgis.h"
 #include "qgsgeometry.h"
@@ -219,7 +219,8 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point) const
     if(mGeometry)
     {
 	int wkbType;
-	double actdist=DBL_MAX;
+	double actdist = std::numeric_limits<double>::max();
+
 	double x,y;
 	double *tempx,*tempy;
 	memcpy(&wkbType, (mGeometry+1), sizeof(int));
@@ -366,9 +367,47 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point) const
 }
 
 
+bool QgsGeometry::insertVertexBefore(double x, double y,
+                                     int beforeVertex,
+                                     const geos::CoordinateSequence*  old_sequence,
+                                           geos::CoordinateSequence** new_sequence)
+
+{
+  // Bounds checking
+  if (beforeVertex < 0)
+  {
+    (*new_sequence) = 0;
+    return FALSE;
+  }
+
+  int numPoints = old_sequence->getSize();
+
+  // Copy to the new sequence, including the new vertex
+  (*new_sequence) = new geos::DefaultCoordinateSequence();
+
+  bool inserted = FALSE;
+  for (int i = 0; i < numPoints; i++)
+  {
+    // Do we insert the new vertex here?
+    if (beforeVertex == i)
+    {
+      (*new_sequence)->add( geos::Coordinate(x, y) );
+      inserted = TRUE;
+    }
+    (*new_sequence)->add( old_sequence->getAt(i) );
+  }
+
+  if (!inserted)
+  {
+    // The beforeVertex is greater than the actual number of vertices
+    // in the geometry - append it.
+    (*new_sequence)->add( geos::Coordinate(x, y) );
+  }
+
+}
 
 
-bool QgsGeometry::insertVertexBefore(double x, double y, 
+bool QgsGeometry::insertVertexBefore(double x, double y,
                                      QgsGeometryVertexIndex beforeVertex)
 {
 
@@ -380,7 +419,8 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
                 << "." << std::endl;
 #endif
 
-  // New GEOS manipulations
+  // Do just-in-time conversion to GEOS
+  // TODO: This should be more of a "import to GEOS" since GEOS will be the home geometry.
   exportWkbToGeos();
 
   if (mGeos)
@@ -389,57 +429,37 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
     {
       case geos::GEOS_POINT:                 // a point
       {
-        // TODO
-        break;
+        // Cannot insert a vertex to a point!
+        return FALSE;
+
       } // case geos::GEOS_POINT
-  
+
       case geos::GEOS_LINESTRING:            // a linestring
       {
-        // TODO
-
         // Get the embedded GEOS Coordinate Sequence
         geos::LineString* geosls = static_cast<geos::LineString*>(mGeos);
         const geos::CoordinateSequence* old_sequence = geosls->getCoordinatesRO();
-        int numPoints = old_sequence->getSize();
+              geos::CoordinateSequence* new_sequence;
 
-        // Copy to the new sequence, including the new vertex
-        geos::DefaultCoordinateSequence* new_sequence = new geos::DefaultCoordinateSequence();
-
-        bool inserted = FALSE;
-        for (int i = 0; i < numPoints; i++)
+        if ( insertVertexBefore(x, y, beforeVertex.back(), old_sequence, (&new_sequence) ) )
         {
-          // Do we insert the new vertex here?
-          if (beforeVertex.back() == i)
-          {
-            new_sequence->add( geos::Coordinate(x, y) );
-            inserted = TRUE; 
-          }
-
-          new_sequence->add( old_sequence->getAt(i) );
+          // Put in the new GEOS geometry
+          setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(new_sequence) ) );
+          return TRUE;
+        }
+        else
+        {
+          return FALSE;
         }
 
-        if (!inserted)
-        {
-          // The beforeVertex is greater than the actual number of vertices
-          // in the geometry - tack it on the end.
-          new_sequence->add( geos::Coordinate(x, y) );
-        }
-
-        // Put in the new GEOS geometry
-        setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(new_sequence) ) );
-
-
-        return TRUE;
-
-        break;
       } // case geos::GEOS_LINESTRING
-  
+
       case geos::GEOS_LINEARRING:            // a linear ring (linestring with 1st point == last point)
       {
         // TODO
         break;
       } // case geos::GEOS_LINEARRING
-  
+
       case geos::GEOS_POLYGON:               // a polygon
       {
         // TODO
@@ -476,186 +496,42 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
 
   return FALSE;
 
-  // Old WKB manipulations
 
-    if (mGeometry)
+}
+
+
+bool QgsGeometry::moveVertexAt(double x, double y,
+                               int atVertex,
+                               const geos::CoordinateSequence*  old_sequence,
+                                     geos::CoordinateSequence** new_sequence)
+{
+  int numPoints = old_sequence->getSize();
+
+  // Bounds checking
+  if (
+      (atVertex <  0)         ||
+      (atVertex >= numPoints)
+     )
+  {
+    (*new_sequence) = 0;
+    return FALSE;
+  }
+
+  // Copy to the new sequence, including the moved vertex
+  (*new_sequence) = new geos::DefaultCoordinateSequence();
+
+  for (int i = 0; i < numPoints; i++)
+  {
+    // Do we move the vertex here?
+    if (atVertex == i)
     {
-        int wkbType;
-//        double *x,*y;
-
-        memcpy(&wkbType, (mGeometry+1), sizeof(int));
-        switch (wkbType)
-        {
-            case QGis::WKBPoint:
-            {
-              // Meaningless
-              return FALSE;
-              break;
-            }
-            case QGis::WKBLineString:
-            {
-                unsigned char *ptr;
-                int *nPoints;
-                int idx;
-
-#ifdef QGISDEBUG
-      std::cout << "QgsGeometry::insertVertexBefore: in QGis::WKBLineString." << std::endl;
-#endif
-                
-                // get number of points in the line
-                ptr = mGeometry + 5;     // now at geometry.numPoints
-                nPoints = (int *) ptr;
-
-                
-#ifdef QGISDEBUG
-      std::cout << "QgsGeometry::insertVertexBefore: old number of points is "
-                << (*nPoints)
-                << "." << std::endl;
-#endif
-                                
-                // silently adjust any overflow "beforeVertex" values to mean
-                // "append to end of string"
-                if (*nPoints < beforeVertex.back())
-                {
-                  beforeVertex.assign_back(*nPoints); // beforeVertex is 0 based, *nPoints is 1 based
-                }
-                      
-                // create new geometry expanded by 2 doubles
-                unsigned char *newWKB = new unsigned char[mGeometrySize + 16];
-                memset(newWKB, '\0', mGeometrySize + 16);  // just in case
-                
-#ifdef QGISDEBUG
-      std::cout << "QgsGeometry::insertVertexBefore: newWKB at " << newWKB << "." << std::endl;
-#endif
-                
-
-#ifdef QGISDEBUG
-      std::cout << "QgsGeometry::insertVertexBefore: done initial newWKB of "
-                << (mGeometrySize + 16)
-                << " bytes." << std::endl;
-#endif
-                                
-                // copy section before splice
-                memcpy(newWKB, mGeometry, 9 + (16 * beforeVertex.back()) );
-
-#ifdef QGISDEBUG
-      std::cout << "QgsGeometry::insertVertexBefore: done pre memcpy of "
-                << (9 + (16 * beforeVertex.back()))
-                << " bytes." << std::endl;
-#endif
-#ifdef QGISDEBUG
-      exportToWkt(newWKB);
-      std::cout << "QgsGeometry::insertVertexBefore: newWKB: " << mWkt << "." << std::endl;
-#endif
-
-                // adjust number of points
-                (*nPoints)++;
-                ptr = newWKB + 5;  // now at newWKB.numPoints
-                memcpy(ptr, nPoints, 4);
-
-#ifdef QGISDEBUG
-      std::cout << "QgsGeometry::insertVertexBefore: new number of points is "
-                << (*nPoints)
-                << "." << std::endl;
-#endif
-                                
-                
-                // copy vertex to be spliced
-                ptr += 4;   // now at newWKB.points[]
-#ifdef QGISDEBUG
-     std::cout << "QgsGeometry::insertVertexBefore: ptr at " << ptr << "." << std::endl;
-#endif
-                ptr += (16 * beforeVertex.back()); 
-#ifdef QGISDEBUG
-     std::cout << "QgsGeometry::insertVertexBefore: going to add x " << x << "." << std::endl;
-     std::cout << "QgsGeometry::insertVertexBefore: ptr at " << ptr << ", going to add x " << x << "." << std::endl;
-#endif
-                memcpy(ptr, &x, 8);
-                ptr += 8;
-#ifdef QGISDEBUG
-     std::cout << "QgsGeometry::insertVertexBefore: going to add y " << y << "." << std::endl;
-     std::cout << "QgsGeometry::insertVertexBefore: ptr at " << ptr << ", going to add y " << y << "." << std::endl;
-#endif
-                memcpy(ptr, &y, 8);
-                ptr += 8;
-
-                
-#ifdef QGISDEBUG
-      exportToWkt(newWKB);
-      std::cout << "QgsGeometry::insertVertexBefore: newWKB: " << mWkt << "." << std::endl;
-#endif
-
-                                
-                // copy section after splice
-                memcpy(ptr, mGeometry + 9 + (16 * beforeVertex.back()), (16 * (*nPoints - beforeVertex.back())) );
-
-                
-#ifdef QGISDEBUG
-      std::cout << "QgsGeometry::insertVertexBefore: done post memcpy of "
-                << (16 * (*nPoints - beforeVertex.back()))
-                << " bytes." << std::endl;
-#endif
-
-#ifdef QGISDEBUG
-      exportToWkt(newWKB);
-      std::cout << "QgsGeometry::insertVertexBefore: newWKB: " << mWkt << "." << std::endl;
-#endif
-                                
-                // set new geomtry to this object
-                setWkbAndOwnership(newWKB, mGeometrySize + 16);
-
-                break;
-            }
-            case QGis::WKBPolygon:
-            {
-                // TODO
-                return false;
-                break;
-            }
-            case QGis::WKBMultiPoint:
-            {
-                // TODO
-                return false;
-                break;
-            }
-
-            case QGis::WKBMultiLineString:
-            {
-                // TODO
-                return false;
-                break;
-            }
-
-            case QGis::WKBMultiPolygon:
-            {
-                 // TODO
-                return false;
-                break;
-             }
-            default:
-#ifdef QGISDEBUG
-                qWarning("error: mGeometry type not recognized in QgsGeometry::insertVertexBefore");
-#endif
-                return false;
-                break;
-        }
-
-#ifdef QGISDEBUG
-      std::cout << "QgsGeometry::insertVertexBefore: Exiting successfully." << std::endl;
-#endif
-        
-        return true;
-        
+      (*new_sequence)->add( geos::Coordinate(x, y) );
     }
     else
     {
-#ifdef QGISDEBUG
-        qWarning("error: no geometry pointer in QgsGeometry::insertVertexBefore");
-#endif
-        return false;
+      (*new_sequence)->add( old_sequence->getAt(i) );
     }
-    
-
+  }
 
 }
 
@@ -672,7 +548,8 @@ bool QgsGeometry::moveVertexAt(double x, double y,
                 << "." << std::endl;
 #endif
 
-  // New GEOS manipulations
+  // Do just-in-time conversion to GEOS
+  // TODO: This should be more of a "import to GEOS" since GEOS will be the home geometry.
   exportWkbToGeos();
 
   if (mGeos)
@@ -681,36 +558,31 @@ bool QgsGeometry::moveVertexAt(double x, double y,
     {
       case geos::GEOS_POINT:                 // a point
       {
-        // TODO
-        break;
+        // Cannot move an arbitrary vertex to a point!
+        return FALSE;
+
       } // case geos::GEOS_POINT
-  
+
       case geos::GEOS_LINESTRING:            // a linestring
       {
-        // TODO: Test.
-
         // Get the embedded GEOS Coordinate Sequence
         geos::LineString* geosls = static_cast<geos::LineString*>(mGeos);
-        const geos::CoordinateSequence* sequence = geosls->getCoordinatesRO();
+        const geos::CoordinateSequence* old_sequence = geosls->getCoordinatesRO();
+              geos::CoordinateSequence* new_sequence;
 
-        if (atVertex.back() < sequence->getSize())
+        if ( moveVertexAt(x, y, atVertex.back(), old_sequence, (&new_sequence) ) )
         {
-          // Asked to move a vertex Id that's not in range
+          // Put in the new GEOS geometry
+          setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(new_sequence) ) );
+          return TRUE;
+        }
+        else
+        {
           return FALSE;
         }
 
-        // We can edit this sequence in-place
-//TODO:        sequence->setAt( geos::Coordinate(x, y), atVertex.back() );
-
-        mDirtyWkb   = TRUE;
-        mDirtyGeos  = FALSE;
-        mDirtyWkt   = TRUE;
-
-        return TRUE;
-
-        break;
       } // case geos::GEOS_LINESTRING
-  
+
       case geos::GEOS_LINEARRING:            // a linear ring (linestring with 1st point == last point)
       {
         // TODO
@@ -756,6 +628,38 @@ bool QgsGeometry::moveVertexAt(double x, double y,
 }
 
 
+bool QgsGeometry::deleteVertexAt(int atVertex,
+                                 const geos::CoordinateSequence*  old_sequence,
+                                       geos::CoordinateSequence** new_sequence)
+{
+  int numPoints = old_sequence->getSize();
+
+  // Bounds checking
+  if (
+      (atVertex <  0)         ||
+      (atVertex >= numPoints) ||
+      (numPoints <= 2)            // guard against collapsing to a point
+     )
+  {
+    (*new_sequence) = 0;
+    return FALSE;
+  }
+
+  // Copy to the new sequence, excepting the deleted vertex
+  (*new_sequence) = new geos::DefaultCoordinateSequence();
+
+  for (int i = 0; i < numPoints; i++)
+  {
+    // Do we delete (omit) the vertex here?
+    if (atVertex != i)
+    {
+      (*new_sequence)->add( old_sequence->getAt(i) );
+    }
+  }
+
+}
+
+
 bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
 {
 
@@ -764,7 +668,8 @@ bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
                 << "." << std::endl;
 #endif
 
-  // New GEOS manipulations
+  // Do just-in-time conversion to GEOS
+  // TODO: This should be more of a "import to GEOS" since GEOS will be the home geometry.
   exportWkbToGeos();
 
   if (mGeos)
@@ -773,34 +678,29 @@ bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
     {
       case geos::GEOS_POINT:                 // a point
       {
-        // TODO
-        break;
+        // Cannot delete an arbitrary vertex of a point!
+        return FALSE;
+
       } // case geos::GEOS_POINT
-  
+
       case geos::GEOS_LINESTRING:            // a linestring
       {
-        // TODO
-
-        // Get the embedded GEOS Coordinate Sequence
+         // Get the embedded GEOS Coordinate Sequence
         geos::LineString* geosls = static_cast<geos::LineString*>(mGeos);
-        const geos::CoordinateSequence* sequence = geosls->getCoordinatesRO();
+        const geos::CoordinateSequence* old_sequence = geosls->getCoordinatesRO();
+              geos::CoordinateSequence* new_sequence;
 
-        if (atVertex.back() < sequence->getSize())
+        if ( deleteVertexAt(atVertex.back(), old_sequence, (&new_sequence) ) )
         {
-          // Asked to move a vertex Id that's not in range
+          // Put in the new GEOS geometry
+          setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(new_sequence) ) );
+          return TRUE;
+        }
+        else
+        {
           return FALSE;
         }
 
-        // We can edit this sequence in-place
-// TODO        sequence->deleteAt( atVertex.back() );
-
-        mDirtyWkb   = TRUE;
-        mDirtyGeos  = FALSE;
-        mDirtyWkt   = TRUE;
-
-        return TRUE;
-
-        break;
       } // case geos::GEOS_LINESTRING
   
       case geos::GEOS_LINEARRING:            // a linear ring (linestring with 1st point == last point)
@@ -885,13 +785,15 @@ bool QgsGeometry::vertexAt(double &x, double &y,
       std::cout << "QgsGeometry::vertexAt: Number of points in WKBLineString is " << *nPoints
                 << "." << std::endl;
 #endif
-                                
-                // silently adjust any overflow "atVertex" values to mean
-                // "append to end of string"
+                // return error if underflow
+                if (0 > atVertex.back())
+                {
+                  return FALSE;
+                }
+                // return error if overflow
                 if (*nPoints <= atVertex.back())
                 {
-                  atVertex.assign_back(*nPoints);
-                  atVertex.decrement_back();  // atVertex is 0 based, *nPoints is 1 based
+                  return FALSE;
                 }
 
                 // copy the vertex coordinates                      
@@ -960,12 +862,117 @@ bool QgsGeometry::vertexAt(double &x, double &y,
 }
 
 
-QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point, 
-                                    QgsGeometryVertexIndex& beforeVertex,
-                                    double& minSqrDist)
-//QgsPoint QgsGeometry::closestSegment(QgsPoint& point, 
-//                                    QgsPoint& segStart, QgsPoint& segStop,
-//                                    double& minSqrDist)
+QgsPoint QgsGeometry::closestVertexWithContext(QgsPoint& point,
+                                               QgsGeometryVertexIndex& atVertex,
+                                               double& sqrDist)
+// TODO
+{
+
+#ifdef QGISDEBUG
+      std::cout << "QgsGeometry::closestVertexWithContext: Entered"
+                << "." << std::endl;
+#endif
+
+  QgsPoint minDistPoint;
+
+  // Initialise some stuff
+  atVertex.clear();
+  sqrDist   = std::numeric_limits<double>::max();
+  int closestVertexIndex = 0;
+
+  // set up the GEOS geometry
+  exportWkbToGeos();
+
+  if (mGeos)
+  {
+    switch (mGeos->getGeometryTypeId())
+    {
+      case geos::GEOS_POINT:                 // a point
+      {
+        atVertex.push_back(closestVertexIndex);
+
+        minDistPoint = QgsPoint(
+                                 mGeos->getCoordinate()->x,
+                                 mGeos->getCoordinate()->y
+                               );
+
+        break;
+      } // case geos::GEOS_POINT
+
+      case geos::GEOS_LINESTRING:            // a linestring
+      {
+        int numPoints = mGeos->getNumPoints();
+
+        geos::LineString* geosls = static_cast<geos::LineString*>(mGeos);
+        const geos::CoordinateSequence* sequence = geosls->getCoordinatesRO();
+
+        // go through points
+        for (int n = 0; n < numPoints; n++)
+        {
+          double testDist = point.sqrDist(
+                                           sequence->getAt(n).x,
+                                           sequence->getAt(n).y
+                                         );
+
+          if (testDist < sqrDist)
+          {
+            closestVertexIndex = n;
+            sqrDist = testDist;
+          }
+        }
+
+        atVertex.push_back(closestVertexIndex);
+
+        break;
+      } // case geos::GEOS_LINESTRING
+  
+      case geos::GEOS_LINEARRING:            // a linear ring (linestring with 1st point == last point)
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_LINEARRING
+  
+      case geos::GEOS_POLYGON:               // a polygon
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_POLYGON
+  
+      case geos::GEOS_MULTIPOINT:            // a collection of points
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_MULTIPOINT
+  
+      case geos::GEOS_MULTILINESTRING:       // a collection of linestrings
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_MULTILINESTRING
+  
+      case geos::GEOS_MULTIPOLYGON:          // a collection of polygons
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_MULTIPOLYGON
+  
+      case geos::GEOS_GEOMETRYCOLLECTION:    // a collection of heterogeneus geometries
+      {
+        // TODO
+        break;
+      } // case geos::GEOS_GEOMETRYCOLLECTION
+    }
+
+  } // if (mGeos)
+
+  return minDistPoint;
+
+}
+
+
+QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
+                                                QgsGeometryVertexIndex& beforeVertex,
+                                                double& sqrDist)
 {
 
 #ifdef QGISDEBUG
@@ -975,16 +982,17 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 
   QgsPoint minDistPoint;
 
-    int wkbType;
-    double x,y;
-    double *thisx,*thisy;
-    double *prevx,*prevy;
-    double testdist;
+  int wkbType;
+  double x,y;
+  double *thisx,*thisy;
+  double *prevx,*prevy;
+  double testdist;
   
   // Initialise some stuff
   beforeVertex.clear();
-  minSqrDist   = DBL_MAX;
+  sqrDist   = std::numeric_limits<double>::max();
 
+// TODO: Convert this to a GEOS comparison not a WKB comparison.
   if (mGeometry)
   {
 //    int wkbType;
@@ -1002,6 +1010,7 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
       return QgsPoint(0,0);
      
     case QGis::WKBLineString:
+      int closestSegmentIndex = 0;
       unsigned char* ptr = mGeometry + 5;
       int* npoints = (int*) ptr;
       ptr += sizeof(int);
@@ -1019,30 +1028,31 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
         
         if (index > 0)
         {
-          if ( 
-               ( 
+          if (
+               (
                  testdist = distanceSquaredPointToSegment(point,
                                                           prevx, prevy,
                                                           thisx, thisy,
-                                                          minDistPoint)
-               )                                           
-               < minSqrDist )                              
+                                                          minDistPoint)  // TODO: save minDistPoint into something meaningful.
+               )
+               < sqrDist )
           {
 #ifdef QGISDEBUG
 //      std::cout << "QgsGeometry::closestSegment: testDist "
-//                << testdist << ", minSqrDist"
-//                << minSqrDist
+//                << testdist << ", sqrDist"
+//                << sqrDist
 //                << "." << std::endl;
 #endif
-            
-            beforeVertex.push_back(index);
-            
-            minSqrDist = testdist;
+            closestSegmentIndex = index;
+            sqrDist = testdist;
           }
         }
         
         ptr += sizeof(double);
       }
+
+      beforeVertex.push_back(closestSegmentIndex);
+
       break;
 
       // TODO: Other geometry types
@@ -1053,23 +1063,23 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 
 #ifdef QGISDEBUG
       std::cout << "QgsGeometry::closestSegment: Exiting with beforeVertex "
-//                << beforeVertex << ", minSqrDist from "
+//                << beforeVertex << ", sqrDist from "
                 << point.stringRep() << " is "
-                << minSqrDist
+                << sqrDist
                 << "." << std::endl;
 #endif
       
-  return minDistPoint;
+  return minDistPoint;  // TODO: Is this meaningful?
 
 }                 
 
 
 QgsRect QgsGeometry::boundingBox() const
 {
-    double xmin=DBL_MAX;
-    double ymin=DBL_MAX;
-    double xmax=-DBL_MAX;
-    double ymax=-DBL_MAX;
+    double xmin =  std::numeric_limits<double>::max();
+    double ymin =  std::numeric_limits<double>::max();
+    double xmax = -std::numeric_limits<double>::max();
+    double ymax = -std::numeric_limits<double>::max();
 
     double *x;
     double *y;
@@ -1954,6 +1964,7 @@ bool QgsGeometry::exportGeosToWkb() const
 
   return FALSE;
 }
+
 
 
 

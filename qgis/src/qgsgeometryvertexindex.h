@@ -57,8 +57,11 @@ class QgsGeometryVertexIndex {
     /** Resets the index */
     void clear();
 
+    /** Increments the last (rightmost) element of the index */
+    void increment_back();
+
     /** Decrements the last (rightmost) element of the index */
-    int decrement_back();
+    void decrement_back();
 
     /** assign i to the last (rightmost) element of the index */
     void assign_back(int& i);

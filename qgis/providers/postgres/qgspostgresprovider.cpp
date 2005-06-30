@@ -2167,11 +2167,14 @@ bool QgsPostgresProvider::supportsSaveAsShapefile() const
 
 int QgsPostgresProvider::capabilities() const
 {
-  return ( QgsVectorDataProvider::AddFeatures | 
-      QgsVectorDataProvider::DeleteFeatures |
-      QgsVectorDataProvider::ChangeAttributeValues |
-      QgsVectorDataProvider::AddAttributes |
-      QgsVectorDataProvider::DeleteAttributes );
+  return (
+           QgsVectorDataProvider::AddFeatures |
+           QgsVectorDataProvider::DeleteFeatures |
+           QgsVectorDataProvider::ChangeAttributeValues |
+           QgsVectorDataProvider::AddAttributes |
+           QgsVectorDataProvider::DeleteAttributes |
+           QgsVectorDataProvider::ChangeGeometries
+         );
 }
 
 void QgsPostgresProvider::setSubsetString(QString theSQL)
