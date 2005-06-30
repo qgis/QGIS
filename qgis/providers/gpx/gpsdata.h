@@ -27,7 +27,9 @@
 #include <vector>
 
 #include <expat.h>
+#include <qdatetime.h>
 #include <qlocale.h>
+#include <qregexp.h>
 #include <qstring.h>
 #include <qtextstream.h>
 
@@ -54,6 +56,7 @@ class GPSPoint : public GPSObject {
   virtual void writeXML(QTextStream& stream);
   double lat, lon, ele;
   QString sym;
+  QDateTime time;
 };
 
 
@@ -282,6 +285,7 @@ private:
     ParsingDouble,
     ParsingInt,
     ParsingString,
+    ParsingTimestamp,
     ParsingUnknown
   };
   
@@ -297,10 +301,14 @@ private:
   Trackpoint mTrkpt;
   GPSObject* mObj;
   QString* mString;
+  QDateTime* mTime;
   double* mDouble;
   int* mInt;
   QString mCharBuffer;
   QLocale mCLocale;
+
+  static QRegExp mTimezoneRegex;
+
 };
 
 

@@ -19,6 +19,7 @@
 #include <stdexcept>
 
 #include <qfile.h>
+#include <qdatetime.h>
 
 #include "gpsdata.h"
 
@@ -61,6 +62,8 @@ void GPSPoint::writeXML(QTextStream& stream) {
     stream<<"<ele>"<<ele<<"</ele>\n";
   if (!sym.isEmpty())
     stream<<"<sym>"<<xmlify(sym)<<"</sym>\n";
+  if (time.isValid())
+    stream<<"<time>"<<time.toString(Qt::ISODate)<<"Z</time>\n";
 }
 
 
@@ -387,9 +390,9 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
     mWpt = Waypoint();
     for (int i = 0; attr[2*i] != NULL; ++i) {
       if (!std::strcmp(attr[2*i], "lat"))
-  mWpt.lat = mCLocale.toDouble(attr[2*i+1]);
+	mWpt.lat = mCLocale.toDouble(attr[2*i+1]);
       else if (!std::strcmp(attr[2*i], "lon"))
-  mWpt.lon = mCLocale.toDouble(attr[2*i+1]);
+	mWpt.lon = mCLocale.toDouble(attr[2*i+1]);
     }
     mObj = &mWpt;
   }
@@ -407,8 +410,8 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
   // common properties
   else if (!std::strcmp(qName, "name")) {
     if (parseModes.top() == ParsingWaypoint ||
-  parseModes.top() == ParsingRoute ||
-  parseModes.top() == ParsingTrack) {
+	parseModes.top() == ParsingRoute ||
+	parseModes.top() == ParsingTrack) {
       mString = &mObj->name;
       mCharBuffer = "";
       parseModes.push(ParsingString);
@@ -418,8 +421,8 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
   }
   else if (!std::strcmp(qName, "cmt")) {
     if (parseModes.top() == ParsingWaypoint ||
-  parseModes.top() == ParsingRoute ||
-  parseModes.top() == ParsingTrack) {
+	parseModes.top() == ParsingRoute ||
+	parseModes.top() == ParsingTrack) {
       mString = &mObj->cmt;
       mCharBuffer = "";
       parseModes.push(ParsingString);
@@ -429,8 +432,8 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
   }
   else if (!std::strcmp(qName, "desc")) {
     if (parseModes.top() == ParsingWaypoint ||
-  parseModes.top() == ParsingRoute ||
-  parseModes.top() == ParsingTrack) {
+	parseModes.top() == ParsingRoute ||
+	parseModes.top() == ParsingTrack) {
       mString = &mObj->desc;
       mCharBuffer = "";
       parseModes.push(ParsingString);
@@ -440,8 +443,8 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
   }
   else if (!std::strcmp(qName, "src")) {
     if (parseModes.top() == ParsingWaypoint ||
-  parseModes.top() == ParsingRoute ||
-  parseModes.top() == ParsingTrack) {
+	parseModes.top() == ParsingRoute ||
+	parseModes.top() == ParsingTrack) {
       mString = &mObj->src;
       mCharBuffer = "";
       parseModes.push(ParsingString);
@@ -451,8 +454,8 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
   }
   else if (!std::strcmp(qName, "url")) {
     if (parseModes.top() == ParsingWaypoint ||
-  parseModes.top() == ParsingRoute ||
-  parseModes.top() == ParsingTrack) {
+	parseModes.top() == ParsingRoute ||
+	parseModes.top() == ParsingTrack) {
       mString = &mObj->url;
       mCharBuffer = "";
       parseModes.push(ParsingString);
@@ -462,8 +465,8 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
   }
   else if (!std::strcmp(qName, "urlname")) {
     if (parseModes.top() == ParsingWaypoint ||
-  parseModes.top() == ParsingRoute ||
-  parseModes.top() == ParsingTrack) {
+	parseModes.top() == ParsingRoute ||
+	parseModes.top() == ParsingTrack) {
       mString = &mObj->urlname;
       mCharBuffer = "";
       parseModes.push(ParsingString);
@@ -472,12 +475,29 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
       parseModes.push(ParsingUnknown);
   }
     
-  // waypoint-specific attributes
+  // point-specific attributes
   else if (!std::strcmp(qName, "ele")) {
-    if (parseModes.top() == ParsingWaypoint) {
-      mDouble = &mWpt.ele;
+    if (parseModes.top() == ParsingWaypoint ||
+	parseModes.top() == ParsingTrackpoint) {
+      if (parseModes.top() == ParsingWaypoint)
+	mDouble = &mWpt.ele;
+      else if (parseModes.top() == ParsingTrackpoint)
+	mDouble = &mTrkpt.ele;
       mCharBuffer = "";
       parseModes.push(ParsingDouble);
+    }
+    else
+      parseModes.push(ParsingUnknown);
+  }
+  else if (!std::strcmp(qName, "time")) {
+    if (parseModes.top() == ParsingWaypoint ||
+	parseModes.top() == ParsingTrackpoint) {
+      if (parseModes.top() == ParsingWaypoint)
+	mTime = &mWpt.time;
+      else if (parseModes.top() == ParsingTrackpoint)
+	mTime = &mTrkpt.time;
+      mCharBuffer = "";
+      parseModes.push(ParsingTimestamp);
     }
     else
       parseModes.push(ParsingUnknown);
@@ -605,8 +625,30 @@ bool GPXHandler::endElement(const std::string& qName) {
     *mString = mCharBuffer;
     mCharBuffer = "";
   }
+  else if (parseModes.top() == ParsingTimestamp) {
+    *mTime = QDateTime();
+    if (mTimezoneRegex.exactMatch(mCharBuffer))
+      *mTime = QDateTime::fromString(mTimezoneRegex.cap(1), Qt::ISODate);
+    if (mTime->isValid()) {
+      QString zone = mTimezoneRegex.cap(2);
+      if (zone != "Z") {
+	int sign = (zone[0] == '+' ? 1 : -1);
+	zone = zone.right(zone.length() - 1);
+	int n = zone.find(':');
+	int h = zone.left(n).toInt();
+	int m = zone.right(zone.length() - n - 1).toInt();
+	*mTime = mTime->addSecs(sign * (h * 3600 + m * 60));
+      }
+    }
+    else {
+      std::cerr<<"Found invalid date in GPX file: "<<mCharBuffer<<std::endl;
+    }
+    mCharBuffer = "";
+  }
   parseModes.pop();
   
   return true;
 }
-  
+
+
+QRegExp GPXHandler::mTimezoneRegex("(.*)(Z|(?:\\+|-)\\d+:\\d+)");  
