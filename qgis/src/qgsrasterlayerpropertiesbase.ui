@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsRasterLayerPropertiesBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -416,7 +416,7 @@
                                     </sizepolicy>
                                 </property>
                                 <property name="text">
-                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Bitstream Vera Sans"&gt;
+                                    <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
 &lt;p style="margin-top:14px"&gt;&lt;span style="font-weight:600"&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </string>
@@ -440,7 +440,7 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="2">
+                    <widget class="QLayoutWidget" row="4" column="0" rowspan="1" colspan="2">
                         <property name="name">
                             <cstring>layout2</cstring>
                         </property>
@@ -716,6 +716,44 @@
                         <property name="name">
                             <cstring>leDisplayName</cstring>
                         </property>
+                    </widget>
+                    <widget class="QGroupBox" row="3" column="0" rowspan="1" colspan="2">
+                        <property name="name">
+                            <cstring>indexGroupBox_2</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>true</bool>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>0</width>
+                                <height>60</height>
+                            </size>
+                        </property>
+                        <property name="title">
+                            <string>Spatial Reference System</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QPushButton" row="0" column="1">
+                                <property name="name">
+                                    <cstring>pbnChangeSpatialRefSys</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Change</string>
+                                </property>
+                            </widget>
+                            <widget class="QLineEdit" row="0" column="0">
+                                <property name="name">
+                                    <cstring>leSpatialRefSys</cstring>
+                                </property>
+                                <property name="readOnly">
+                                    <bool>true</bool>
+                                </property>
+                            </widget>
+                        </grid>
                     </widget>
                 </grid>
             </widget>
@@ -1110,7 +1148,7 @@
                             </sizepolicy>
                         </property>
                         <property name="text">
-                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Bitstream Vera Sans"&gt;
+                            <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Arial"&gt;
 &lt;p style="margin-top:18px"&gt;&lt;span style="font-size:22pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
 &lt;p&gt;&lt;span style="color:#ff0000"&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
@@ -1326,7 +1364,7 @@
 </widget>
 <images>
     <image name="image0">
-        <data format="XPM.GZ" length="2878">789c6d55cb521d390cddf315b7a25d6a4a69b7dbaf9a9a45c893100810122053b370b76dde90f04880a9f9f7e93e32a9dc9ee1b2b8e74a96649d23f9d9d3c5fed6c6e2e9b395eb9b78733c2c86a378b5789a6ecfcfeffffceb8fbf579e28bb98fe3bb5689ffcb6f264fb66312c362f2ff204786b04d4e06fc2743ec36f80bbb6625e9fd971de3bef4c98703c5eb6f3eb7a5e557f3d3bbf0d1c8caef8c7ecbc99e15733fc79c2bde98ded811f96ed314d58e74ea9047c3ab39f006be56afeb3597dc30c235edff6adf1c87734e11c728862ef66f57d9d618997dc633fdccc6e11afc98d8db0bf9f709bb55206b899b00a2a3605fe84f3d9d5fa19f666b0b1e2c359fce7132ebae83000f7959faedadf013b651b8d7cabf57c5bfb1581cdf88198a29c8fa6e6a3b7c0c5f5150bff65fc38c4ff86fcaeb888fbf0ed844db1a615fda09fca8ff7133e6f80956a1be9b7473f54eb1ae897ee261c4a0c5d07fb17d85d1b95423ce9b7d58ffcb61376c9954ef243af259410a49fdbb59fa6fac39ebbdc39e9cf279c57ce6bb1bfa87c696b81515faffba193fe424f21f7b6c37d6803f96cb14efaf101fa4ca33e856fe0515e59a1bfa4e0ef8b0f72df9dcaafadf559e14be7ca1ff49dda64ace487be87929493fe24e9a77fe407fd36ca0e2df2c78cfb656fb5e8cd547e2bfff41dfeda8456f401fd79eba3c67c71acf1875a0ff45bfad27ba9e765e5dbb6c2e7fd323f8cf9f1231d5afc83e8c73fea0f7ab6bd6b5be4a322fdb351813fc23ef0c6678dfed2de84a38fa5f6ff02fdf1d91ae937f468a20dadd84f7f9e97fad690afb8d4cabe94fd3898a1117d21bf4fc16a89077db4d15825fdc27c8410b596faf6915f2767456fd8af6d18f990fb5e227e6f2a9ff471996fbeabf8711f5d416f653006fcd29af437e8167a8ce027763118f1c7fc9be09a56f480f3651488977e72d5ffe33ec63c45d32b99175aaffb2f77b82f5f57ec253e63beb4735a493dd8d7a18fb6137b99cd17ce97ae84aa4fe85d35ded7fbae56fd248ffbf05edd1f83cc0f6d22bfea5327fb03f5e7528c033f9cab1e53cdb75bfbf7b8efa0e7c1a4dec8bcc13f0fc55960be58ee07efd478a162ec3be55c6ea47ebc5f2a8ef9e4fed0abe96214bd32f8b49def44ff84f7c177c16b996fecdfc12523f530decba14f4ef8e503e09c46c281719fd4a46c64ff609e52975b23fb65b3622def1561df2693bb8aa1b714b2aff380794b7d8e153ffcc4b28f45bf43ee2bc6fe4b252723fa39a8fb301be899b0bfb3cac5c8fd30ff5997a6e228fb75c4321fd857d994f10142fc8d8a5b2b7ce2bd1c9f1367c1f7f6cdff7d9838723f7dfb7f1f1e3871e6c287fff5e1233ee6133ee5333ee70bbee4af731ffec6577ccd377ccbdff907dff13d3f2cfbf0735ee517fc925ff16b7ec36f798ddff1facce73d6ff0267fe02ddee61dfec8bbfc89b77ef5e1cfbcc7fb7cc05fb861c52deb11756c967c2c3bf8780ec44414799f7a1a7ef5a14479f4d9a542877444c77432fa9cd2d992cf395d8cbf5ed257fa4657744d37744bdfe9c772cd7447f7f440cf69955ed0cbf1db2b7a2d969f71ded05b5aa377b44eef6963f4d9a40f6ce8977bd136edd047daa54ff499f6689f0ee80b35a4a85d8aa3a92343961fc891a7402172a418e75cc43ee2ae31c51c4b3c8c47f178ee43e7f1a47a1fd3593c952e8f3efffcbef22fa916821c</data>
+        <data format="XPM.GZ" length="2574">789c6d95594f1c3910c7dff914a3d45bb4aab4edf6a5d53ee424102040eeacf6c1ddb6812440c2118ed57ef7f5fccb93d59260a499dfb85c5dc7dfd50fee2fdeef6e2fee3f583bbf481747f3623e4c678bfbf9f2f8f8e6cfbffef87bed9e728be5bfd60b7defb7b57b7b178b79b1737a5296c0070d68c0df92e96b67ddd9808df29d2fc1a3eef6fcb8b3ea3c751ebbfd3bb06d0b0fe76bb033dd1faf83bd728381fdbeb029fdfc5370b4a6f31e38d9557cef3ba7eeef143cd97e9e8fc1b39d0705be1276ab7cd73bafe27dd6d9f5f36f3aaffccfe0ec57f99e808beff171ed6c3b53e755fd2ec0b52d0ffe2eeca76eaf8543cf8fdf2e590d21743e072ba58700de120eb1efe7ce2b7fa9f3dcb974ce9d515fe57d1946c483e7aba0d2308177c0b171853de255a99d873dab256ba5fd207a7a0df63a29a9f713706cf1ccf0f71c9cac53520fe8474fba28e8836ec1c52865711efa31de1b25cf7b01cea352091c845d52888f3e804bdbcf605eb2556ed6b0a7cf6063a386de3882c794b4d8433f36fa414b3dd04f9b5cd4a807a37fb63aab23f85167a7d10fba128e463bec6f2fd98d61ecfba8979bbc96e731f4e6aacf5aeaf772c95ef960a43ebbe0eceb887ad0477009ce08a39f618cc1e03c6d806d2846f435fd60d10bee73702119c917fd093e788b7c6800e7e88cd417f50c354683feb15d728cc918a937f418a7d42e10f6bf80cbe446d18f704d71947a42cf694cd14a7ea84fb293eaf96d8243aafd3cea3ba9298f526f076e82b192cf59e7d0fddd742ea3f4fb15d84cf328f1a39e939dac13ff987f539dad157d61becd364f56f4887935fb6c8519f3669eb2eff6f03f97dc1c803f816b565ef6717ff2908b153d407f5967ebe43e40cfd964efa49e9857792cdaa27fbcd9d948be04ffd996b133e6510ec559c917f73fc7123ae33ee6a9a4ce273f58f48c799be732757e08ae255bd127f45686323839ffadb371c887b63a172bf91c8155a956f488fe145387ce9887652ca317bd8cc26d5ff2c7bc2ab6b61702f6373a6b27f3e4101c4b4cb2efc173f54efa85795d6ab55eeca1e7366ebd13fd401fd55413255ef8ab638dd22f42fed555e7a5fe781f565f7d92feee759e659f705f6ba821cafd45fe35b60b23f312f3ae4e750aa2bfdbce39881e50cfda0413b2bc9c7fb59838f1b4fcf66b1b9e3973e1ca073fdbf0211ff127fecc5ff8984ff8f4671bfecadff88ccff9822ff93b5ff1f55d1bbee15b7ec88ff8801ff3137ecacf78fd279be7bcc19bfca2d954dee26ddee197ffb7e15ddee37d7ec5aff90dbfe577fcbed1873b361f79808d62dda2353c36b2776c1cfbf6eb0e078ec44494789fa63b360734b75f3315aa74408774449fe8f3dd98e90b1dd3099dd257fa4667eddb39f59aac6ce892bed3155dd30dddd2c366f3881e37df4ffeb3a1a7f4acad757a4e1bb4492f688bb669875ed2eeffe369a7f6681f9fafe8755b6fe82dbdbbdb0b7acfd7f8fc401f692045fa17fd3a20b3fa26abc7fccfef6bff02117d47e4</data>
     </image>
 </images>
 <connections>
@@ -1498,6 +1536,12 @@
         <receiver>QgsRasterLayerPropertiesBase</receiver>
         <slot>pbnHistRefresh_clicked()</slot>
     </connection>
+    <connection>
+        <sender>pbnChangeSpatialRefSys</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsRasterLayerPropertiesBase</receiver>
+        <slot>pbnChangeSpatialRefSys_clicked()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsrasterlayerpropertiesbase.ui.h</include>
@@ -1518,6 +1562,7 @@
     <slot>sliderTransparency_sliderMoved( int )</slot>
     <slot>buttonBuildPyramids_clicked()</slot>
     <slot>pbnHistRefresh_clicked()</slot>
+    <slot>pbnChangeSpatialRefSys_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
