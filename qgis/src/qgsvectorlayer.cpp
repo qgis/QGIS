@@ -451,7 +451,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   double oldy = y[0];
 
 #ifdef QGISDEBUG 
-    std::cout <<"...WKBLineString start at (" << oldx << ", " << oldy << ")" <<std::endl;
+    //std::cout <<"...WKBLineString start at (" << oldx << ", " << oldy << ")" <<std::endl;
 #endif
 
   try
@@ -2582,7 +2582,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
   memcpy(&wkbType, (feature+1), sizeof(wkbType));
 
 #ifdef QGISDEBUG
-  std::cout <<"Entering drawFeature()" << std::endl;
+//std::cout <<"Entering drawFeature()" << std::endl;
 #endif
 
   switch (wkbType)
@@ -2593,7 +2593,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       double y = *((double *) (feature + 5 + sizeof(double)));
 
 #ifdef QGISDEBUG 
-    std::cout <<"...WKBPoint (" << x << ", " << y << ")" <<std::endl;
+//    std::cout <<"...WKBPoint (" << x << ", " << y << ")" <<std::endl;
 #endif
 
     try
