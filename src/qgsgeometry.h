@@ -86,38 +86,72 @@ class QgsGeometry {
        Returns the vertex closest to the given point
     */
     QgsPoint closestVertex(const QgsPoint& point) const;
-    
+
     /** Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)
-     *  If the actual vertex/ring/item numbers are less
-     *  than requested, the vertex is appended instead of inserted.
-     *  @note  Not meaningful for Point geometries.
+     *  If the requested vertex number (beforeVertex.back()) is greater
+     *  than the last actual vertex on the requested ring and item,
+     *  it is assumed that the vertex is to be appended instead of inserted.
+     *  Returns FALSE if atVertex does not correspond to a valid vertex
+     *  on this geometry (including if this geometry is a Point).
+     *  It is up to the caller to distinguish between
+     *  these error conditions.  (Or maybe we add another method to this
+     *  object to help make the distinction?)
      */
     bool insertVertexBefore(double x, double y, QgsGeometryVertexIndex beforeVertex);
 
     /** Moves the vertex at the given position number,
      *  ring and item (first number is index 0)
-     *  to the given coordinates
+     *  to the given coordinates.
+     *  Returns FALSE if atVertex does not correspond to a valid vertex
+     *  on this geometry (including if this geometry is a Point).
+     *  It is up to the caller to distinguish between
+     *  these error conditions.  (Or maybe we add another method to this
+     *  object to help make the distinction?)
      */
     bool moveVertexAt(double x, double y, QgsGeometryVertexIndex atVertex);
-    
+
     /** Deletes the vertex at the given position number,
      *  ring and item (first number is index 0)
+     *  Returns FALSE if atVertex does not correspond to a valid vertex
+     *  on this geometry (including if this geometry is a Point),
+     *  or if the number of remaining verticies in the linestring
+     *  would be less than two.
+     *  It is up to the caller to distinguish between
+     *  these error conditions.  (Or maybe we add another method to this
+     *  object to help make the distinction?)
      */
     bool deleteVertexAt(QgsGeometryVertexIndex atVertex);
-    
+
     /**
      *  Modifies x and y to indicate the location of
      *  the vertex at the given position number,
      *  ring and item (first number is index 0)
      *  to the given coordinates
+     *
+     *  Returns TRUE if atVertex is a valid position on
+     *  the geometry, otherwise FALSE.
+     *
+     *  If FALSE, x and y are not modified.
      */
     bool vertexAt(double &x, double &y, QgsGeometryVertexIndex atVertex) const;
-    
-    QgsPoint closestSegmentWithContext(QgsPoint& point, 
+
+    /**
+        Returns, in atVertex, the closest vertex in this geometry to the given point.
+        The squared cartesian distance is also returned in sqrDist.
+     */
+    QgsPoint closestVertexWithContext(QgsPoint& point,
+                                      QgsGeometryVertexIndex& atVertex,
+                                      double& sqrDist);
+
+    /**
+        Returns, in beforeVertex, the closest segment in this geometry to the given point.
+        The squared cartesian distance is also returned in sqrDist.
+     */
+    QgsPoint closestSegmentWithContext(QgsPoint& point,
                                        QgsGeometryVertexIndex& beforeVertex,
-                                       double& minSqrDist);
-                            
+                                       double& sqrDist);
+
     /**Returns the bounding box of this feature*/
     QgsRect boundingBox() const;
 
@@ -168,7 +202,7 @@ class QgsGeometry {
 
 
     // Private functions
-    
+
     /** Squared distance from point to the given line segment 
      *  TODO: Perhaps move this to QgsPoint
      */
@@ -176,7 +210,7 @@ class QgsGeometry {
                                          double *x1, double *y1,
                                          double *x2, double *y2,
                                          QgsPoint& minDistPoint);
-                                         
+
     /**Exports the current WKB to mWkt
      @return true in case of success and false else*/
     bool exportToWkt(unsigned char * geom) const;
@@ -191,6 +225,50 @@ class QgsGeometry {
         @return   true in case of success and false else
      */
     bool exportGeosToWkb() const;
+
+
+
+    /** Insert a new vertex before the given vertex index (first number is index 0)
+     *  in the given GEOS Coordinate Sequence.
+     *  If the requested vertex number is greater
+     *  than the last actual vertex,
+     *  it is assumed that the vertex is to be appended instead of inserted.
+     *  @param old_sequence   The sequence to update (The caller remains the owner).
+     *  @param new_sequence   The updated sequence (The caller becomes the owner if the function returns TRUE).
+     *  Returns FALSE if beforeVertex does not correspond to a valid vertex number
+     *  on the Coordinate Sequence.
+     */
+    bool insertVertexBefore(double x, double y,
+                            int beforeVertex,
+                            const geos::CoordinateSequence*  old_sequence,
+                                  geos::CoordinateSequence** new_sequence);
+
+    /** Moves the vertex at the given vertex index (first number is index 0)
+     *  in the given GEOS Coordinate Sequence.
+     *  @param old_sequence   The sequence to update (The caller remains the owner).
+     *  @param new_sequence   The updated sequence (The caller becomes the owner if the function returns TRUE).
+     *  Returns FALSE if atVertex does not correspond to a valid vertex number
+     *  on the Coordinate Sequence.
+     */
+    bool moveVertexAt(double x, double y,
+                      int atVertex,
+                      const geos::CoordinateSequence*  old_sequence,
+                            geos::CoordinateSequence** new_sequence);
+
+    /** Removes the vertex at the given vertex index (first number is index 0)
+     *  in the given GEOS Coordinate Sequence.
+     *  @param old_sequence   The sequence to update (The caller remains the owner).
+     *  @param new_sequence   The updated sequence (The caller becomes the owner if the function returns TRUE).
+     *  Returns FALSE if atVertex does not correspond to a valid vertex number
+     *  on the Coordinate Sequence, or if the number of remaining verticies
+     *  would be less than two.
+     *  It is up to the caller to distinguish between
+     *  these error conditions.  (Or maybe we add another method to this
+     *  object to help make the distinction?)
+     */
+    bool deleteVertexAt(int atVertex,
+                        const geos::CoordinateSequence*  old_sequence,
+                              geos::CoordinateSequence** new_sequence);
 
 
 }; // class QgsGeometry

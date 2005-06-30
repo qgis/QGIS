@@ -47,7 +47,8 @@ class QgsVectorDataProvider : public QgsDataProvider
         DeleteAttributes = 1 << 4,
         SaveAsShapefile = 1 << 5,
         CreateSpatialIndex = 1 << 6,
-        SelectAtId = 1 << 7
+        SelectAtId = 1 << 7,
+        ChangeGeometries = 1 << 8
       };
 
       QgsVectorDataProvider();

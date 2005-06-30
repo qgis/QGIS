@@ -271,6 +271,19 @@ public slots:
   bool insertVertexBefore(double x, double y, int atFeatureId,
                           QgsGeometryVertexIndex beforeVertex);
 
+  /** Moves the vertex at the given position number,
+   *  ring and item (first number is index 0), and feature
+   *  to the given coordinates
+   */
+  bool moveVertexAt(double x, double y, int atFeatureId,
+                    QgsGeometryVertexIndex atVertex);
+
+  /** Deletes the vertex at the given position number,
+   *  ring and item (first number is index 0), and feature
+   */
+  bool deleteVertexAt(int atFeatureId,
+                      QgsGeometryVertexIndex atVertex);
+
   /**Deletes the selected features
      @return true in case of success and false otherwise*/
   bool deleteSelectedFeatures();
@@ -310,22 +323,38 @@ public slots:
   //! Save as shapefile
   virtual void saveAsShapefile();
 
-  /**Snaps a point to the closest vertex if there is one within the snapping tolerance (mSnappingTolerance)
+  /**Snaps a point to the closest vertex if there is one within the snapping tolerance
      @param point       The point which is set to the position of a vertex if there is one within the snapping tolerance.
      If there is no point within this tolerance, point is left unchanged.
      @param tolerance   The snapping tolerance
      @return true if the position of point has been changed, and false otherwise */
   bool snapPoint(QgsPoint& point, double tolerance);
 
+  /**Snaps a point to the closest vertex if there is one within the snapping tolerance
+     @param atVertex          Set to a vertex index of the snapped-to vertex
+     @param snappedFeatureId  Set to the feature ID that where the snapped-to vertex belongs to.
+     @param snappedGeometry   Set to the geometry that the snapped-to vertex belongs to.
+     @param tolerance         The snapping tolerance
+     @return true if the position of the points have been changed, and false otherwise (or not implemented by the provider) 
+     
+     TODO: Handle returning multiple verticies if they are coincident
+   */
+  bool snapVertexWithContext(QgsPoint& point,
+                             QgsGeometryVertexIndex& atVertex,
+                             int& snappedFeatureId,
+                             QgsGeometry& snappedGeometry,
+                             double tolerance);
+
   /**Snaps a point to the closest line segment if there is one within the snapping tolerance (mSnappingTolerance)
      @param beforeVertex      Set to a value where the snapped-to segment is before this vertex index
      @param snappedFeatureId  Set to the feature ID that where the snapped-to segment belongs to.
+     @param snappedGeometry   Set to the geometry that the snapped-to segment belongs to.
      @param tolerance         The snapping tolerance
      @return true if the position of the points have been changed, and false otherwise (or not implemented by the provider) 
      
      TODO: Handle returning multiple lineFeatures if they are coincident
    */
-  bool snapSegmentWithContext(QgsPoint& point, 
+  bool snapSegmentWithContext(QgsPoint& point,
                               QgsGeometryVertexIndex& beforeVertex,
                               int& snappedFeatureId, 
                               QgsGeometry& snappedGeometry,

@@ -53,7 +53,13 @@ void QgsGeometryVertexIndex::clear()
   mIndex.clear();
 }
 
-int QgsGeometryVertexIndex::decrement_back()
+void QgsGeometryVertexIndex::increment_back()
+{
+  int& n = mIndex.back();
+  n++;
+}
+
+void QgsGeometryVertexIndex::decrement_back()
 {
   int& n = mIndex.back();
   n--;
