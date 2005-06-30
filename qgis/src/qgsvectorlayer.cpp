@@ -568,7 +568,7 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     double oldy = ring->second[0];
 
 #ifdef QGISDEBUG 
-    std::cout <<"...WKBLineString start at (" << oldx << ", " << oldy << ")" <<std::endl;
+    //std::cout <<"...WKBLineString start at (" << oldx << ", " << oldy << ")" <<std::endl;
 #endif
 
     try
