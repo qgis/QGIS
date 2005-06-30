@@ -3696,6 +3696,22 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
   //close the gdal dataset and reopen it in read / write mode
   delete gdalDataset;
   gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_Update);
+  
+  // if the dataset couldn't be opened in read / write mode, tell the user
+  if (!gdalDataset) {
+    emit setProgress(0,0);
+    QApplication::restoreOverrideCursor();
+    QMessageBox myMessageBox( tr("Building pyramids failed."),
+			      "Building pyramid overviews is only supported on certain types of raster.",
+			      QMessageBox::Warning,
+			      QMessageBox::Ok,
+			      QMessageBox::NoButton,
+			      QMessageBox::NoButton );
+    myMessageBox.exec();
+    gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_ReadOnly);
+    return;
+  }
+
   //
   // Iterate through the Raster Layer Pyramid Vector, building any pyramid
   // marked as exists in eaxh RasterPyramid struct.
