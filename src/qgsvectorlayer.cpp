@@ -1855,6 +1855,83 @@ bool QgsVectorLayer::insertVertexBefore(double x, double y, int atFeatureId,
 }
 
 
+bool QgsVectorLayer::moveVertexAt(double x, double y, int atFeatureId,
+                                  QgsGeometryVertexIndex atVertex)
+{
+//TODO
+
+#ifdef QGISDEBUG
+  std::cout << "QgsVectorLayer::moveVertexAt: entered with featureId " << atFeatureId << "." << std::endl;
+#endif
+
+  if (dataProvider)
+  {
+
+    if ( mChangedGeometries.find(atFeatureId) == mChangedGeometries.end() )
+    {
+      // first time this geometry has changed since last commit
+
+      mChangedGeometries[atFeatureId] = *(mCachedGeometries[atFeatureId]);
+#ifdef QGISDEBUG
+  std::cout << "QgsVectorLayer::moveVertexAt: first uncommitted change for this geometry." << std::endl;
+#endif
+    }
+
+    mChangedGeometries[atFeatureId].moveVertexAt(x, y, atVertex);
+
+    mModified=true;
+
+    // TODO - refresh map here?
+
+#ifdef QGISDEBUG
+// TODO
+#endif
+        
+    return true;
+  }
+  return false;
+}
+
+
+bool QgsVectorLayer::deleteVertexAt(int atFeatureId,
+                                    QgsGeometryVertexIndex atVertex)
+{
+//TODO
+
+#ifdef QGISDEBUG
+  std::cout << "QgsVectorLayer::deleteVertexAt: entered with featureId " << atFeatureId << "." << std::endl;
+#endif
+
+  if (dataProvider)
+  {
+
+    if ( mChangedGeometries.find(atFeatureId) == mChangedGeometries.end() )
+    {
+      // first time this geometry has changed since last commit
+
+      mChangedGeometries[atFeatureId] = *(mCachedGeometries[atFeatureId]);
+#ifdef QGISDEBUG
+  std::cout << "QgsVectorLayer::deleteVertexAt: first uncommitted change for this geometry." << std::endl;
+#endif
+    }
+
+    // TODO: Hanlde if we delete the only remaining meaningful vertex of a geometry
+    mChangedGeometries[atFeatureId].deleteVertexAt(atVertex);
+
+    mModified=true;
+
+    // TODO - refresh map here?
+
+#ifdef QGISDEBUG
+// TODO
+#endif
+        
+    return true;
+  }
+  return false;
+}
+
+
 QString QgsVectorLayer::getDefaultValue(const QString& attr,
                                         QgsFeature* f)
 {
@@ -2842,7 +2919,146 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
 }
 
 
-bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point, 
+bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point,
+                                           QgsGeometryVertexIndex& atVertex,
+                                           int& snappedFeatureId,
+                                           QgsGeometry& snappedGeometry,
+                                           double tolerance)
+{
+  QgsGeometryVertexIndex atVertexTemp;
+
+  QgsPoint origPoint = point;
+
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapVertexWithContext: Entering."
+                << "." << std::endl;
+#endif
+
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapVertexWithContext: Tolerance: " << tolerance << ", dataProvider = '" << dataProvider
+                << "'." << std::endl;
+#endif
+
+  // Sanity checking
+  if ( tolerance<=0 ||
+      !dataProvider)
+  {
+    // set some default values before we bail
+    atVertex = QgsGeometryVertexIndex();
+    snappedFeatureId = std::numeric_limits<int>::min();
+    snappedGeometry = QgsGeometry();
+    return FALSE;
+  }
+
+  QgsFeature* feature;
+  QgsPoint minDistSegPoint;  // the closest point on the segment
+  double testSqrDist;        // the squared distance between 'point' and 'snappedFeature'
+
+  double minSqrDist  = tolerance*tolerance; //current minimum distance
+
+  QgsRect selectrect(point.x()-tolerance, point.y()-tolerance,
+                     point.x()+tolerance, point.y()+tolerance);
+
+  dataProvider->reset();
+  dataProvider->select(&selectrect);
+
+  origPoint = point;
+
+  // Go through the committed features
+  while ((feature = dataProvider->getNextFeature(false)))
+  {
+    minDistSegPoint = feature->geometry()->closestVertexWithContext(origPoint,
+                                                                    atVertexTemp,
+                                                                    testSqrDist);
+
+    if (testSqrDist < minSqrDist)
+    {
+      point = minDistSegPoint;
+      minSqrDist = testSqrDist;
+
+      atVertex          = atVertexTemp;
+      snappedFeatureId  = feature->featureId();
+      snappedGeometry   = *(feature->geometry());
+
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapVertexWithContext: minSqrDist reduced to: " << minSqrDist
+//                << " and beforeVertex " << beforeVertex
+                << "." << std::endl;
+#endif
+
+    }
+  }
+
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapVertexWithContext:  Checking changed features."
+                << "." << std::endl;
+#endif
+  
+  // Also go through the changed features
+  for (std::map<int, QgsGeometry>::iterator iter  = mChangedGeometries.begin();
+                                            iter != mChangedGeometries.end();
+                                          ++iter)
+  {
+    minDistSegPoint = (*iter).second.closestVertexWithContext(origPoint, 
+                                                              atVertexTemp,
+                                                              testSqrDist);
+
+    if (testSqrDist < minSqrDist)
+    {
+      point = minDistSegPoint;
+      minSqrDist = testSqrDist;
+
+      atVertex          = atVertexTemp;
+      snappedFeatureId  = (*iter).first;
+      snappedGeometry   = (*iter).second;
+    }
+  }
+
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapVertexWithContext: Finishing"
+                << " with feature ID " << snappedFeatureId
+                //                << " and beforeVertex " << beforeVertex
+                << "." << std::endl;
+#endif
+ 
+    
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapVertexWithContext:  Checking new features."
+                << "." << std::endl;
+#endif
+  
+  // Also go through the new features
+  for (std::vector<QgsFeature*>::iterator iter  = mAddedFeatures.begin();
+                                          iter != mAddedFeatures.end();
+                                        ++iter)
+  {
+    minDistSegPoint = (*iter)->geometry()->closestVertexWithContext(origPoint,
+                                                                    atVertexTemp,
+                                                                    testSqrDist);
+    
+    if (testSqrDist < minSqrDist)
+    {
+      point = minDistSegPoint;
+      minSqrDist = testSqrDist;
+      
+      atVertex      = atVertexTemp;
+      snappedFeatureId  =   (*iter)->featureId();
+      snappedGeometry   = *((*iter)->geometry());
+    }
+  }
+
+#ifdef QGISDEBUG
+      std::cout << "QgsVectorLayer::snapVertexWithContext: Finishing"
+                << " with feature " << snappedFeatureId
+//                << " and beforeVertex " << beforeVertex
+                << "." << std::endl;
+#endif
+
+  return TRUE;
+}
+
+
+bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
                                             QgsGeometryVertexIndex& beforeVertex,
                                             int& snappedFeatureId,
                                             QgsGeometry& snappedGeometry,
@@ -2850,7 +3066,7 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
 {
   QgsGeometryVertexIndex beforeVertexTemp;
 
-  QgsPoint origPoint;
+  QgsPoint origPoint = point;
   
 #ifdef QGISDEBUG
       std::cout << "QgsVectorLayer::snapSegmentWithContext: Entering."
@@ -2868,9 +3084,9 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
   {
     // set some default values before we bail
     beforeVertex = QgsGeometryVertexIndex();
-    snappedFeatureId = INT_MIN;
+    snappedFeatureId = std::numeric_limits<int>::min();
     snappedGeometry = QgsGeometry();
-    return false;
+    return FALSE;
   }
   
   QgsFeature* feature;
@@ -2885,8 +3101,6 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
   dataProvider->reset();
   dataProvider->select(&selectrect);
 
-  origPoint = point;
-  
 #ifdef QGISDEBUG
       std::cout << "QgsVectorLayer::snapSegmentWithContext:  Checking committed features."
                 << "." << std::endl;

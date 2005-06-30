@@ -246,15 +246,24 @@ public:
   //! Beginning point of a rubber band
   QPoint rubberStartPoint;
 
+  //! Is the beginning point of a rubber band valid?  (If not, this segment of the rubber band will not be drawn)
+  bool rubberStartPointIsValid;
+
   //! Mid point of a rubber band
   QPoint rubberMidPoint;
-  
+
   //! End point of a rubber band
   QPoint rubberStopPoint;
-  
-  //! The snapped-to segment before this vertex number
+
+  //! Is the end point of a rubber band valid?  (If not, this segment of the rubber band will not be drawn)
+  bool rubberStopPointIsValid;
+
+  //! The snapped-to segment before this vertex number (identifying the vertex that is being moved)
+  QgsGeometryVertexIndex snappedAtVertex;
+
+  //! The snapped-to segment before this vertex number (identifying the segment that a new vertex is being added to)
   QgsGeometryVertexIndex snappedBeforeVertex;
-  
+
   //! The snapped-to feature ID
   int snappedAtFeatureId;
 
@@ -1518,19 +1527,220 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
       } // if snapSegmentWithContext
 
       break;
-    }  
+    }
+
     case QGis::MoveVertex:
-    
-  //    QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-  
+    {
   #ifdef QGISDEBUG
     std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex." << std::endl;
   #endif
-          
+
       // TODO: Find nearest node of the selected line, move that node to the mouse location
-          
+
+      // Find the closest line segment to the mouse position
+      // Then set up the rubber band to its endpoints
+
+      QgsGeometryVertexIndex atVertex;
+      int atFeatureId;
+      QgsGeometry atGeometry;
+      double x1, y1;
+      double x2, y2;
+
+      QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+
+      QgsVectorLayer* vlayer =
+        dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+
+  #ifdef QGISDEBUG
+    std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex." << std::endl;
+  #endif
+
+      // TODO: Find nearest segment of the selected line, move that node to the mouse location
+      if (!vlayer->snapVertexWithContext(
+                                         point,
+                                         atVertex,
+                                         atFeatureId,
+                                         atGeometry,
+                                         QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0)
+                                        )
+         )
+      {
+        QMessageBox::warning(0, "Error", "Could not snap vertex. Have you set the tolerance?",
+                             QMessageBox::Ok, QMessageBox::NoButton);
+      }
+      else
+      {
+
+#ifdef QGISDEBUG
+      std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex: Snapped to segment fid " 
+                << atFeatureId 
+//                << " and beforeVertex " << beforeVertex
+                << "." << std::endl;
+#endif
+
+        // Save where we snapped to
+        mCanvasProperties->snappedAtVertex     = atVertex;
+        mCanvasProperties->snappedAtFeatureId  = atFeatureId;
+        mCanvasProperties->snappedAtGeometry   = atGeometry;
+
+        // Get the startpoint of the rubber band, as the previous vertex to the snapped-to one.
+        atVertex.decrement_back();
+        mCanvasProperties->rubberStartPointIsValid = atGeometry.vertexAt(x1, y1, atVertex);
+
+        // Get the endpoint of the rubber band, as the following vertex to the snapped-to one.
+        atVertex.increment_back();
+        atVertex.increment_back();
+        mCanvasProperties->rubberStopPointIsValid = atGeometry.vertexAt(x2, y2, atVertex);
+
+
+  #ifdef QGISDEBUG
+        std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex: Snapped to vertex "
+                  << "(valid = " << mCanvasProperties->rubberStartPointIsValid << ") " << x1 << ", " << y1 << "; "
+                  << "(valid = " << mCanvasProperties->rubberStopPointIsValid  << ") " << x2 << ", " << y2
+                  << "." << std::endl;
+  #endif
+
+        // Convert to canvas screen coordinates for rubber band
+        if (mCanvasProperties->rubberStartPointIsValid)
+        {
+          mCanvasProperties->coordXForm->transformInPlace(x1, y1);
+          mCanvasProperties->rubberStartPoint.setX( static_cast<int>( round(x1) ) );
+          mCanvasProperties->rubberStartPoint.setY( static_cast<int>( round(y1) ) );
+        }
+
+        mCanvasProperties->rubberMidPoint = e->pos();
+
+        if (mCanvasProperties->rubberStopPointIsValid)
+        {
+          mCanvasProperties->coordXForm->transformInPlace(x2, y2);
+          mCanvasProperties->rubberStopPoint.setX( static_cast<int>( round(x2) ) );
+          mCanvasProperties->rubberStopPoint.setY( static_cast<int>( round(y2) ) );
+        }
+
+  #ifdef QGISDEBUG
+        std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex: Transformed to widget "
+                  << x1 << ", " << y1 << "; "
+                  << x2 << ", " << y2
+                  << "." << std::endl;
+  #endif
+
+        // Draw initial rubber band
+        paint.begin(this);
+        paint.setPen(pen);
+        paint.setRasterOp(Qt::XorROP);
+
+        if (mCanvasProperties->rubberStartPointIsValid)
+        {
+          paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
+        }
+        if (mCanvasProperties->rubberStopPointIsValid)
+        {
+          paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
+        }
+
+        paint.end();
+      } // if snapVertexWithContext
+
+
       break;
-      
+    }
+
+    case QGis::DeleteVertex:
+    {
+  #ifdef QGISDEBUG
+    std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex." << std::endl;
+  #endif
+
+      // TODO: Find nearest node of the selected line, show a big X symbol
+
+      QgsGeometryVertexIndex atVertex;
+      int atFeatureId;
+      QgsGeometry atGeometry;
+      double x1, y1;
+
+      QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+
+      QgsVectorLayer* vlayer =
+        dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+
+  #ifdef QGISDEBUG
+    std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex." << std::endl;
+  #endif
+
+      // TODO: Find nearest segment of the selected line, move that node to the mouse location
+      if (!vlayer->snapVertexWithContext(
+                                         point,
+                                         atVertex,
+                                         atFeatureId,
+                                         atGeometry,
+                                         QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0)
+                                        )
+      // TODO: What if there is no snapped vertex?
+         )
+      {
+        QMessageBox::warning(0, "Error", "Could not snap vertex. Have you set the tolerance?",
+                             QMessageBox::Ok, QMessageBox::NoButton);
+      }
+      else
+      {
+
+#ifdef QGISDEBUG
+      std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex: Snapped to segment fid " 
+                << atFeatureId 
+//                << " and beforeVertex " << beforeVertex
+                << "." << std::endl;
+#endif
+
+        // Save where we snapped to
+        mCanvasProperties->snappedAtVertex     = atVertex;
+        mCanvasProperties->snappedAtFeatureId  = atFeatureId;
+        mCanvasProperties->snappedAtGeometry   = atGeometry;
+
+        // Get the point of the snapped-to vertex
+        atGeometry.vertexAt(x1, y1, atVertex);
+
+  #ifdef QGISDEBUG
+        std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex: Snapped to vertex "
+                  << x1 << ", " << y1
+                  << "." << std::endl;
+  #endif
+
+        // Convert to canvas screen coordinates
+        mCanvasProperties->coordXForm->transformInPlace(x1, y1);
+        mCanvasProperties->rubberMidPoint.setX( static_cast<int>( round(x1) ) );
+        mCanvasProperties->rubberMidPoint.setY( static_cast<int>( round(y1) ) );
+
+  #ifdef QGISDEBUG
+        std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex: Transformed to widget "
+                  << x1 << ", " << y1
+                  << "." << std::endl;
+  #endif
+
+        // Draw X symbol - people can feel free to pretty this up if they like
+        paint.begin(this);
+        paint.setPen(pen);
+        paint.setRasterOp(Qt::XorROP);
+
+        // TODO: Make the following a static member or something
+        int crossSize = 10;
+
+        paint.drawLine( mCanvasProperties->rubberMidPoint.x() - crossSize,
+                        mCanvasProperties->rubberMidPoint.y() - crossSize,
+                        mCanvasProperties->rubberMidPoint.x() + crossSize,
+                        mCanvasProperties->rubberMidPoint.y() + crossSize  );
+
+        paint.drawLine( mCanvasProperties->rubberMidPoint.x() - crossSize,
+                        mCanvasProperties->rubberMidPoint.y() + crossSize,
+                        mCanvasProperties->rubberMidPoint.x() + crossSize,
+                        mCanvasProperties->rubberMidPoint.y() - crossSize  );
+
+        paint.end();
+      } // if snapVertexWithContext
+
+
+      break;
+    }
+
     case QGis::EmitPoint: 
     {
       QgsPoint  idPoint = mCanvasProperties->coordXForm->
@@ -2043,8 +2253,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       if (vlayer)
       {
 
-        //only do the rest for provider with feature addition support
-        if (vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures)
+        // only do the rest for provider with geometry modification support
+        // TODO: Move this test earlier into the workflow, maybe by triggering just after the user selects "Add Vertex" or even by graying out the menu option.
+        if (vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries)
         {
           if ( !vlayer->isEditable() )
           {
@@ -2063,7 +2274,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 #ifdef QGISDEBUG
   std::cout << "QgsMapCanvas::mouseReleaseEvent: Completed vlayer->insertVertexBefore." << std::endl;
 #endif
-        }  
+        }
       }
        
       // TODO: Redraw?  
@@ -2072,17 +2283,113 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     
     case QGis::MoveVertex:
     {
-      QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-
 #ifdef QGISDEBUG
   std::cout << "QgsMapCanvas::mouseReleaseEvent: QGis::MoveVertex." << std::endl;
 #endif
-      
-      // TODO: Find nearest node of the selected line, move that node to the mouse location
-      
+      QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+
+      QgsVectorLayer* vlayer =
+        dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+
+      // Undraw rubber band
+      paint.begin(this);
+      paint.setPen(pen);
+      paint.setRasterOp(Qt::XorROP);
+
+      // XOR-out the old line
+      paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
+      paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
+      paint.end();
+
+
+      // Move the vertex
+
+#ifdef QGISDEBUG
+  std::cout << "QgsMapCanvas::mouseReleaseEvent: About to vlayer->moveVertexAt." << std::endl;
+#endif
+
+      if (vlayer)
+      {
+        // TODO: Move this test earlier into the workflow, maybe by triggering just after the user selects "Move Vertex" or even by graying out the menu option.
+        if (vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries)
+        {
+          if ( !vlayer->isEditable() )
+          {
+            QMessageBox::information(0,"Layer not editable",
+              "Cannot edit the vector layer. Use 'Start editing' in the legend item menu",
+              QMessageBox::Ok);
+            break;
+          }
+
+          vlayer->moveVertexAt(
+            point.x(), point.y(),
+            mCanvasProperties->snappedAtFeatureId,
+            mCanvasProperties->snappedAtVertex);
+
+#ifdef QGISDEBUG
+  std::cout << "QgsMapCanvas::mouseReleaseEvent: Completed vlayer->moveVertexAt." << std::endl;
+#endif
+        }
+      }
+      // TODO: Redraw?  
+
       break;
     }  
-    
+
+    case QGis::DeleteVertex:
+    {
+#ifdef QGISDEBUG
+  std::cout << "QgsMapCanvas::mouseReleaseEvent: QGis::DeleteVertex." << std::endl;
+#endif
+      QgsVectorLayer* vlayer =
+        dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+
+      // Undraw X symbol - people can feel free to pretty this up if they like
+      paint.begin(this);
+      paint.setPen(pen);
+      paint.setRasterOp(Qt::XorROP);
+
+      // TODO: Make the following a static member or something
+      int crossSize = 10;
+
+      paint.drawLine( mCanvasProperties->rubberMidPoint.x() - crossSize,
+                      mCanvasProperties->rubberMidPoint.y() - crossSize,
+                      mCanvasProperties->rubberMidPoint.x() + crossSize,
+                      mCanvasProperties->rubberMidPoint.y() + crossSize  );
+
+      paint.drawLine( mCanvasProperties->rubberMidPoint.x() - crossSize,
+                      mCanvasProperties->rubberMidPoint.y() + crossSize,
+                      mCanvasProperties->rubberMidPoint.x() + crossSize,
+                      mCanvasProperties->rubberMidPoint.y() - crossSize  );
+
+      paint.end();
+
+      if (vlayer)
+      {
+        // TODO: Move this test earlier into the workflow, maybe by triggering just after the user selects "Delete Vertex" or even by graying out the menu option.
+        if (vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries)
+        {
+          if ( !vlayer->isEditable() )
+          {
+            QMessageBox::information(0,"Layer not editable",
+              "Cannot edit the vector layer. Use 'Start editing' in the legend item menu",
+              QMessageBox::Ok);
+            break;
+          }
+
+          vlayer->deleteVertexAt(
+            mCanvasProperties->snappedAtFeatureId,
+            mCanvasProperties->snappedAtVertex);
+
+#ifdef QGISDEBUG
+  std::cout << "QgsMapCanvas::mouseReleaseEvent: Completed vlayer->deleteVertexAt." << std::endl;
+#endif
+        }
+      }
+      // TODO: Redraw?  
+
+      break;
+    }
 
     case QGis::Measure:
     {
