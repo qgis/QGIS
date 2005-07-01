@@ -162,7 +162,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
 
     // Check that we can read from the table (i.e., we have
     // select permission).
-    QString sql = "select * from \"" + tableName + "\" limit 1";
+    QString sql = "select * from " + mSchema + "." + tableName + " limit 1";
     PGresult* testAccess = PQexec(pd, (const char*)sql);
     if (PQresultStatus(testAccess) != PGRES_TUPLES_OK)
     {
@@ -170,7 +170,8 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       QMessageBox::warning(0, tr("Unable to access relation"),
           tr("Unable to access the ") + tableName + 
           tr(" relation.\nThe error message from the database was:\n") +
-          PQresultErrorMessage(testAccess) + ".\n");
+          PQresultErrorMessage(testAccess) + ".\n" + 
+          "SQL: " + sql);
       QApplication::setOverrideCursor(Qt::waitCursor);
       PQclear(testAccess);
       valid = false;
