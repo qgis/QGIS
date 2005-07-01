@@ -196,6 +196,24 @@ QgsVectorLayer::~QgsVectorLayer()
 
 }
 
+QString QgsVectorLayer::storageType() const
+{
+  if (dataProvider)
+  {
+    return dataProvider->storageType();
+  }
+}
+
+
+QString QgsVectorLayer::capabilitiesString() const
+{
+  if (dataProvider)
+  {
+    return dataProvider->capabilitiesString();
+  }
+}
+
+
 bool QgsVectorLayer::projectionsEnabled() const
 {
   if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)

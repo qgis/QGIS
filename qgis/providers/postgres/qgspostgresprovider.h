@@ -69,6 +69,11 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     //! Destructor
     virtual ~ QgsPostgresProvider();
 
+    /**
+      *   Returns the permanent storage type for this layer as a friendly name.
+      */
+    QString storageType();
+
     /** Used to ask the layer for its projection as a WKT string. Implements
      * virtual method of same name in QgsDataProvider. */
     QString getProjectionWKT()  {return QString("Not implemented yet");} ;
