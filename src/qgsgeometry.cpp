@@ -403,7 +403,7 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
     // in the geometry - append it.
     (*new_sequence)->add( geos::Coordinate(x, y) );
   }
-
+// TODO: Check that the sequence is still simple, e.g. with geos::Geometry->isSimple()
 }
 
 
@@ -532,7 +532,7 @@ bool QgsGeometry::moveVertexAt(double x, double y,
       (*new_sequence)->add( old_sequence->getAt(i) );
     }
   }
-
+// TODO: Check that the sequence is still simple, e.g. with geos::Geometry->isSimple()
 }
 
 
@@ -657,6 +657,7 @@ bool QgsGeometry::deleteVertexAt(int atVertex,
     }
   }
 
+  // TODO: Check that the sequence is still simple, e.g. with geos::Geometry->isSimple()
 }
 
 

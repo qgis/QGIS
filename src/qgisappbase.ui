@@ -329,6 +329,9 @@
         <property name="whatsThis">
             <string>Refresh the map by clearing the map canvas and redrawing all visible layers</string>
         </property>
+        <property name="accel">
+            <string>Ctrl+R</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -1099,6 +1102,9 @@
             <property name="name">
                 <cstring>actionAddVertex</cstring>
             </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
             <property name="text">
                 <string>Add Vertex</string>
             </property>
@@ -1110,6 +1116,9 @@
             <property name="name">
                 <cstring>actionMoveVertex</cstring>
             </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
             <property name="text">
                 <string>Move Vertex</string>
             </property>
@@ -1120,6 +1129,9 @@
         <action>
             <property name="name">
                 <cstring>actionDeleteVertex</cstring>
+            </property>
+            <property name="toggleAction">
+                <bool>true</bool>
             </property>
             <property name="text">
                 <string>Delete Vertex</string>
