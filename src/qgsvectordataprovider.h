@@ -37,23 +37,30 @@ class QgsVectorDataProvider : public QgsDataProvider
 
     public:
 
+      // If you add to this, please also add to capabilitiesString()
       enum Capability
       {
-        NoCapabilities = 0,
-        AddFeatures = 1,
-        DeleteFeatures = 1 << 1,
-        ChangeAttributeValues = 1 << 2,
-        AddAttributes = 1 << 3,
-        DeleteAttributes = 1 << 4,
-        SaveAsShapefile = 1 << 5,
-        CreateSpatialIndex = 1 << 6,
-        SelectAtId = 1 << 7,
-        ChangeGeometries = 1 << 8
+        NoCapabilities =              0,
+        AddFeatures =                 1,
+        DeleteFeatures =        1 <<  1,
+        ChangeAttributeValues = 1 <<  2,
+        AddAttributes =         1 <<  3,    // TODO: what is this exactly?
+        DeleteAttributes =      1 <<  4,
+        SaveAsShapefile =       1 <<  5,
+        CreateSpatialIndex =    1 <<  6,
+        SelectAtId =            1 <<  7,
+        ChangeGeometries =      1 <<  8
       };
 
       QgsVectorDataProvider();
 
       virtual ~QgsVectorDataProvider() {};
+
+      /**
+       *   Returns the permanent storage type for this layer as a friendly name.
+       */
+      virtual QString storageType() { return "Generic vector file"; };
+
       /**
        * Select features based on a bounding rectangle. Features can be retrieved 
        * with calls to getFirstFeature and getNextFeature. Request for features 
@@ -209,8 +216,17 @@ class QgsVectorDataProvider : public QgsDataProvider
       /**Creates a spatial index on the datasource (if supported by the provider type). Returns true in case of success*/
       virtual bool createSpatialIndex();
 
-      /**Returns a bitmask containing the supported capabilities*/
+      /** Returns a bitmask containing the supported capabilities
+          Note, some capabilities may change depending on whether
+          a spatial filter is active on this provider, so it may
+          be prudent to check this value per intended operation.
+       */
       virtual int capabilities() const {return QgsVectorDataProvider::NoCapabilities;}
+
+      /**
+       *  Returns the above in friendly format.
+       */
+      QString capabilitiesString() const;
 
       const std::list<QString>& nonNumericalTypes(){return mNonNumericalTypes;}
       const std::list<QString>& numericalTypes(){return mNumericalTypes;}

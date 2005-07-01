@@ -258,6 +258,13 @@ QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
   delete[]mMinMaxCache;
 }
 
+
+QString QgsDelimitedTextProvider::storageType()
+{
+  return "Delimited text file";
+}
+
+
 /**
  * Get the first feature resutling from a select operation
  * @return QgsFeature

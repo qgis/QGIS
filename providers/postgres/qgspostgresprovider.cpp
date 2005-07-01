@@ -380,6 +380,11 @@ QgsPostgresProvider::~QgsPostgresProvider()
   //pLog.flush();
 }
 
+QString QgsPostgresProvider::storageType()
+{
+  return "PostgreSQL database with PostGIS extension";
+}
+
 //TODO - we may not need this function - consider removing it from
 //       the dataprovider.h interface
 /**

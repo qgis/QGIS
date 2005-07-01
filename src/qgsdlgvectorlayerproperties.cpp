@@ -462,6 +462,7 @@ void QgsDlgVectorLayerProperties::pbnIndex_clicked()
 	}
 	else
 	{
+           // TODO: Remind the user to use OGR >= 1.2.6 and Shapefile
 	   QMessageBox::information(this, tr("Spatial Index"), tr("Creation of spatial index failed"),QMessageBox::Ok); 
 	}
     }
@@ -477,6 +478,11 @@ QString QgsDlgVectorLayerProperties::getMetadata()
   myMetadataQString += "<tr><td bgcolor=\"gray\">";
   myMetadataQString += tr("General:");
   myMetadataQString += "</td></tr>";
+  //storage type
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += tr("Storage type of this layer : ") + 
+                       layer->storageType();
+  myMetadataQString += "</td></tr>";
   //geom type
   myMetadataQString += "<tr><td bgcolor=\"white\">";
   myMetadataQString += tr("Geometry type of the features in this layer : ") + 
@@ -486,6 +492,11 @@ QString QgsDlgVectorLayerProperties::getMetadata()
   myMetadataQString += "<tr><td bgcolor=\"white\">";
   myMetadataQString += tr("The number of features in this layer : ") + 
                        QString::number(layer->featureCount());
+  myMetadataQString += "</td></tr>";
+  //capabilities
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += tr("Editing capabilities of this layer : ") + 
+                       layer->capabilitiesString();
   myMetadataQString += "</td></tr>";
 
   //-------------

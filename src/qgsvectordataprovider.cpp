@@ -90,3 +90,98 @@ QString QgsVectorDataProvider::encoding() const
 	return "";
     }
 }
+
+QString QgsVectorDataProvider::capabilitiesString() const
+{
+  QStringList abilitiesList;
+
+  int abilities = capabilities();
+
+  if (abilities & QgsVectorDataProvider::AddFeatures)
+  {
+    abilitiesList += "Add Features";
+#ifdef QGISDEBUG
+        std::cerr << "QgsVectorDataProvider::capabilitiesString "
+          << "Add Features" << std::endl;
+#endif
+
+  }
+
+  if (abilities & QgsVectorDataProvider::DeleteFeatures)
+  {
+    abilitiesList += "Delete Features";
+#ifdef QGISDEBUG
+        std::cerr << "QgsVectorDataProvider::capabilitiesString "
+          << "Delete Features" << std::endl;
+#endif
+  }
+
+  if (abilities & QgsVectorDataProvider::ChangeAttributeValues)
+  {
+    abilitiesList += "Change Attribute Values";
+#ifdef QGISDEBUG
+        std::cerr << "QgsVectorDataProvider::capabilitiesString "
+          << "Change Attribute Values" << std::endl;
+#endif
+  }
+
+  if (abilities & QgsVectorDataProvider::AddAttributes)
+  {
+    abilitiesList += "Add Attributes";
+#ifdef QGISDEBUG
+        std::cerr << "QgsVectorDataProvider::capabilitiesString "
+          << "Add Attributes" << std::endl;
+#endif
+  }
+
+  if (abilities & QgsVectorDataProvider::DeleteAttributes)
+  {
+    abilitiesList += "Delete Attributes";
+#ifdef QGISDEBUG
+        std::cerr << "QgsVectorDataProvider::capabilitiesString "
+          << "Delete Attributes" << std::endl;
+#endif
+  }
+
+  if (abilities & QgsVectorDataProvider::SaveAsShapefile)
+  {
+    abilitiesList += "Save As Shapefile";
+#ifdef QGISDEBUG
+        std::cerr << "QgsVectorDataProvider::capabilitiesString "
+          << "Save As Shapefile" << std::endl;
+#endif
+  }
+
+  if (abilities & QgsVectorDataProvider::CreateSpatialIndex)
+  {
+    // TODO: Tighten up this test.  See QgsOgrProvider for details.
+    abilitiesList += "Create Spatial Index";
+#ifdef QGISDEBUG
+        std::cerr << "QgsVectorDataProvider::capabilitiesString "
+          << "Create Spatial Index" << std::endl;
+#endif
+  }
+
+  if (abilities & QgsVectorDataProvider::SelectAtId)
+  {
+    // Not really meaningful to the user.
+    // abilitiesList = "Select at ID";
+#ifdef QGISDEBUG
+        std::cerr << "QgsVectorDataProvider::capabilitiesString "
+          << "Select at ID" << std::endl;
+#endif
+  }
+
+  if (abilities & QgsVectorDataProvider::ChangeGeometries)
+  {
+    abilitiesList += "Change Geometries";
+#ifdef QGISDEBUG
+        std::cerr << "QgsVectorDataProvider::capabilitiesString "
+          << "Change Geometries" << std::endl;
+#endif
+  }
+
+  return abilitiesList.join(", ");
+
+}
+

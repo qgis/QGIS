@@ -122,6 +122,12 @@ QgsGPXProvider::~QgsGPXProvider() {
 }
 
 
+QString QgsGPXProvider::storageType()
+{
+  return "GPS eXchange file";
+}
+
+
 QString QgsGPXProvider::getProjectionWKT() {
   return 
     "GEOGCS[\"WGS 84\", "
