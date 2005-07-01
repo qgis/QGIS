@@ -3394,8 +3394,9 @@ void QgsRasterLayer::setTransparency(int theInt)
   //delegate rest to transparency slider
   if ( mTransparencySlider )
   {
-    mTransparencySlider->setValue(255-theInt);
+    mTransparencySlider->setValue(255-theInt);    
   }
+  transparencyLevelInt=255-theInt;
 } //  QgsRasterLayer::setTransparency(int theInt)
 
 
@@ -4062,6 +4063,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   snode = mnl.namedItem("redBandNameQString");
   myElement = snode.toElement();
   setRedBandName(myElement.text());
+
   snode = mnl.namedItem("greenBandNameQString");
   myElement = snode.toElement();
   setGreenBandName(myElement.text());
