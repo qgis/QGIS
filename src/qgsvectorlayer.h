@@ -64,6 +64,16 @@ public:
   //! Destructor
   virtual ~QgsVectorLayer();
 
+  /**
+   *   Returns the permanent storage type for this layer as a friendly name.
+   */
+  QString storageType() const;
+
+  /**
+   *   Capabilities for this layer in a friendly format.
+   */
+  QString capabilitiesString() const;
+
   //! Identify feature found within the search rectangle
   void identify(QgsRect *);
 

@@ -49,6 +49,11 @@ public:
 
   virtual ~ QgsDelimitedTextProvider();
 
+  /**
+    *   Returns the permanent storage type for this layer as a friendly name.
+    */
+  QString storageType();
+
   /** get the first feature
 
     mFile should be open with the file pointer at the record of the next

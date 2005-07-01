@@ -20,6 +20,7 @@ email                : sherman at mrcc.com
 #include <geos.h>
 
 #include <ogr_spatialref.h>
+#include <ogrsf_frmts.h>
 
 class QgsFeature;
 class QgsField;
@@ -38,6 +39,12 @@ class QgsOgrProvider:public QgsVectorDataProvider
   public:
     QgsOgrProvider(QString uri = 0);
     virtual ~ QgsOgrProvider();
+
+    /**
+      *   Returns the permanent storage type for this layer as a friendly name.
+      */
+    QString storageType();
+
     /** Used to ask the layer for its projection as a WKT string. Implements virtual method of same name in      QgsDataProvider. */
     QString getProjectionWKT()  ;    
     /**
@@ -158,7 +165,12 @@ class QgsOgrProvider:public QgsVectorDataProvider
      @return true in case of success*/
     bool createSpatialIndex();
 
-    /**Returns a bitmask containing the supported capabilities*/
+    /** Returns a bitmask containing the supported capabilities
+        Note, some capabilities may change depending on whether
+        a spatial filter is active on this provider, so it may
+        be prudent to check this value per intended operation.
+        See the OGRLayer::TestCapability API for details.
+      */
     int capabilities() const;
 
   private:
@@ -168,6 +180,13 @@ class QgsOgrProvider:public QgsVectorDataProvider
     OGRDataSource *ogrDataSource;
     OGREnvelope *extent_;
     OGRLayer *ogrLayer;
+
+    // OGR Driver that was actually used to open the layer
+    OGRSFDriver *ogrDriver;
+
+    // Friendly name of the OGR Driver that was actually used to open the layer
+    QString ogrDriverName;
+
     bool valid;
     //! Flag to indicate that spatial intersect should be used in selecting features
     bool mUseIntersect;

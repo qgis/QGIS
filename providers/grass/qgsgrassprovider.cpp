@@ -264,6 +264,13 @@ QgsGrassProvider::~QgsGrassProvider()
     closeLayer ( mLayerId );
 }
 
+
+QString QgsGrassProvider::storageType()
+{
+  return "GRASS (Geographic Resources Analysis and Support System) file";
+}
+
+
 /**
 * Get the first feature resutling from a select operation
 * @return QgsFeature

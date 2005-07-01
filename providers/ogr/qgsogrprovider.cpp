@@ -55,7 +55,10 @@ email                : sherman at mrcc.com
 #else
 #define QGISEXTERN extern "C"
 #endif
-QgsOgrProvider::QgsOgrProvider(QString uri): QgsVectorDataProvider(), dataSourceUri(uri), minmaxcachedirty(true)
+QgsOgrProvider::QgsOgrProvider(QString uri)
+   : QgsVectorDataProvider(),
+     dataSourceUri(uri),
+     minmaxcachedirty(true)
 {
   OGRRegisterAll();
 
@@ -66,19 +69,24 @@ QgsOgrProvider::QgsOgrProvider(QString uri): QgsVectorDataProvider(), dataSource
   std::cerr << "Data source uri is " << uri << std::endl;
 #endif
   // try to open for update
-  ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.local8Bit(),TRUE);
+  ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.local8Bit(), TRUE, &ogrDriver);
   if(ogrDataSource == NULL)
   {
     // try to open read-only
-    ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.local8Bit(),FALSE);
+    ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.local8Bit(),FALSE, &ogrDriver);
+
     //TODO Need to set a flag or something to indicate that the layer
     //TODO is in read-only mode, otherwise edit ops will fail
+    // TODO: capabilities() should now reflect this; need to test.
   }
   if (ogrDataSource != NULL) {
 #ifdef QGISDEBUG
     std::cerr << "Data source is valid" << std::endl;
+    std::cerr << "OGR Driver was " << ogrDriver->GetName() << std::endl;
 #endif
     valid = true;
+
+    ogrDriverName = ogrDriver->GetName();
 
     ogrLayer = ogrDataSource->GetLayer(0);
 
@@ -194,6 +202,13 @@ QString QgsOgrProvider::getProjectionWKT()
     OGRFree(pszWKT);  
     return myWKTString;
   }
+}
+
+
+QString QgsOgrProvider::storageType()
+{
+  // Delegate to the driver loaded in by OGR
+  return ogrDriverName;
 }
 
 
@@ -1102,9 +1117,89 @@ bool QgsOgrProvider::createSpatialIndex()
 
 int QgsOgrProvider::capabilities() const
 {
+  int ability = NoCapabilities;
+
+  // collect abilities reported by OGR
+  if (ogrLayer)
+  {
+    if (ogrLayer->TestCapability(OLCRandomRead))    
+    // TRUE if the GetFeature() method works for this layer.
+    {
+      // TODO: Perhaps influence if QGIS caches into memory (vs read from disk every time) based on this setting.
+    }
+
+    if (ogrLayer->TestCapability(OLCSequentialWrite))
+    // TRUE if the CreateFeature() method works for this layer.
+    {
+      ability |= QgsVectorDataProvider::AddFeatures;
+    }
+
+    if (ogrLayer->TestCapability(OLCRandomWrite))
+    // TRUE if the SetFeature() method is operational on this layer.
+    {
+      ability |= QgsVectorDataProvider::ChangeAttributeValues;
+
+      // TODO According to http://shapelib.maptools.org/ (Shapefile C Library V1.2)
+      // TODO "You can't modify the vertices of existing structures".
+      // TODO Need to work out versions of shapelib vs versions of GDAL/OGR
+      // TODO And test appropriately.
+      ability |= QgsVectorDataProvider::ChangeGeometries;
+    }
+
+    if (ogrLayer->TestCapability(OLCFastSpatialFilter))
+    // TRUE if this layer implements spatial filtering efficiently.
+    // Layers that effectively read all features, and test them with the 
+    // OGRFeature intersection methods should return FALSE.
+    // This can be used as a clue by the application whether it should build
+    // and maintain it's own spatial index for features in this layer.
+    {
+      // TODO: Perhaps use as a clue by QGIS whether it should build and maintain it's own spatial index for features in this layer.
+    }
+
+    if (ogrLayer->TestCapability(OLCFastFeatureCount))
+    // TRUE if this layer can return a feature count
+    // (via OGRLayer::GetFeatureCount()) efficiently ... ie. without counting
+    // the features. In some cases this will return TRUE until a spatial
+    // filter is installed after which it will return FALSE.
+    {
+      // TODO: Perhaps use as a clue by QGIS whether it should spawn a thread to count features.
+    }
+
+    if (ogrLayer->TestCapability(OLCFastGetExtent))
+    // TRUE if this layer can return its data extent 
+    // (via OGRLayer::GetExtent()) efficiently ... ie. without scanning
+    // all the features. In some cases this will return TRUE until a
+    // spatial filter is installed after which it will return FALSE.
+    {
+      // TODO: Perhaps use as a clue by QGIS whether it should spawn a thread to calculate extent.
+    }
+
+    if (ogrLayer->TestCapability(OLCFastSetNextByIndex))
+    // TRUE if this layer can perform the SetNextByIndex() call efficiently.
+    {
+      // No use required for this QGIS release.
+    }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsOgrProvider::capabilities: GDAL Version Num is 'GDAL_VERSION_NUM'." << std::endl;
+#endif
+
+    if (1)
+    {
+      // Ideally this should test for Shapefile type and GDAL >= 1.2.6
+      // In reality, createSpatialIndex() looks after itself.
+      ability |= QgsVectorDataProvider::CreateSpatialIndex;
+    }
+
+  }
+
+  return ability;
+
+/*
     return (QgsVectorDataProvider::AddFeatures
 	    | QgsVectorDataProvider::ChangeAttributeValues
 	    | QgsVectorDataProvider::CreateSpatialIndex);
+*/
 }
 
 /**
@@ -1126,7 +1221,7 @@ QGISEXTERN QString providerKey()
  */
 QGISEXTERN QString description()
 {
-  return QString("OGR data provider (shapefile and other formats)");
+  return QString("OGR data provider");
 } 
 /**
  * Required isProvider function. Used to determine if this shared library
