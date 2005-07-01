@@ -836,7 +836,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 	else
 	{
           // Cache this for the use of (e.g.) modifying the feature's geometry.
-          mCachedGeometries[fet->featureId()] = fet->geometryAndOwnership();
+//          mCachedGeometries[fet->featureId()] = fet->geometryAndOwnership();
           
 	  if (mDeleted.find(fet->featureId())==mDeleted.end())
 	  {
@@ -845,17 +845,21 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
             // check to see if the feature has an uncommitted modification.
             // if so, substitute the modified geometry
  
-//TODO             
-          
+//#ifdef QGISDEBUG
+//	  std::cerr << "QgsVectorLayer::draw: Looking for modified geometry for " << fet->featureId() << std::endl;
+//#endif
             if (mChangedGeometries.find(fet->featureId()) != mChangedGeometries.end())
             {
 #ifdef QGISDEBUG
-	  std::cerr << "Found modified geometry for " << fet->featureId() << std::endl;
+	  std::cerr << "QgsVectorLayer::draw: Found modified geometry for " << fet->featureId() << std::endl;
 #endif
               // substitute the modified geometry for the committed version
               fet->setGeometry( mChangedGeometries[ fet->featureId() ] );
             }
-            
+
+            // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
+            mCachedGeometries[fet->featureId()] = fet->geometryAndOwnership();
+
 	    bool sel=mSelected.find(fet->featureId()) != mSelected.end();
 	    m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
 				      sel, oversampling, widthScale );
@@ -2985,6 +2989,15 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point,
   // Go through the committed features
   while ((feature = dataProvider->getNextFeature(false)))
   {
+    if (mChangedGeometries.find(feature->featureId()) != mChangedGeometries.end())
+    {
+#ifdef QGISDEBUG
+  std::cerr << "QgsVectorLayer::snapSegmentWithContext: Found modified geometry for " << feature->featureId() << std::endl;
+#endif
+      // substitute the modified geometry for the committed version
+      feature->setGeometry( mChangedGeometries[ feature->featureId() ] );
+    }
+
     minDistSegPoint = feature->geometry()->closestVertexWithContext(origPoint,
                                                                     atVertexTemp,
                                                                     testSqrDist);
@@ -3007,39 +3020,7 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point,
     }
   }
 
-#ifdef QGISDEBUG
-      std::cout << "QgsVectorLayer::snapVertexWithContext:  Checking changed features."
-                << "." << std::endl;
-#endif
-  
-  // Also go through the changed features
-  for (std::map<int, QgsGeometry>::iterator iter  = mChangedGeometries.begin();
-                                            iter != mChangedGeometries.end();
-                                          ++iter)
-  {
-    minDistSegPoint = (*iter).second.closestVertexWithContext(origPoint, 
-                                                              atVertexTemp,
-                                                              testSqrDist);
 
-    if (testSqrDist < minSqrDist)
-    {
-      point = minDistSegPoint;
-      minSqrDist = testSqrDist;
-
-      atVertex          = atVertexTemp;
-      snappedFeatureId  = (*iter).first;
-      snappedGeometry   = (*iter).second;
-    }
-  }
-
-#ifdef QGISDEBUG
-      std::cout << "QgsVectorLayer::snapVertexWithContext: Finishing"
-                << " with feature ID " << snappedFeatureId
-                //                << " and beforeVertex " << beforeVertex
-                << "." << std::endl;
-#endif
- 
-    
 #ifdef QGISDEBUG
       std::cout << "QgsVectorLayer::snapVertexWithContext:  Checking new features."
                 << "." << std::endl;
@@ -3097,7 +3078,7 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
 #endif
   
   // Sanity checking
-  if ( tolerance<=0 || 
+  if ( tolerance<=0 ||
       !dataProvider)
   {
     // set some default values before we bail
@@ -3127,8 +3108,16 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
   // Go through the committed features
   while ((feature = dataProvider->getNextFeature(false)))
   {
-    
-    
+
+    if (mChangedGeometries.find(feature->featureId()) != mChangedGeometries.end())
+    {
+#ifdef QGISDEBUG
+  std::cerr << "QgsVectorLayer::snapSegmentWithContext: Found modified geometry for " << feature->featureId() << std::endl;
+#endif
+      // substitute the modified geometry for the committed version
+      feature->setGeometry( mChangedGeometries[ feature->featureId() ] );
+    }
+
     minDistSegPoint = feature->geometry()->closestSegmentWithContext(origPoint, 
                                                                      beforeVertexTemp,
                                                                      testSqrDist);
@@ -3151,39 +3140,7 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
     }
   }
 
-#ifdef QGISDEBUG
-      std::cout << "QgsVectorLayer::snapSegmentWithContext:  Checking changed features."
-                << "." << std::endl;
-#endif
-  
-  // Also go through the changed features
-  for (std::map<int, QgsGeometry>::iterator iter  = mChangedGeometries.begin();
-                                            iter != mChangedGeometries.end();
-                                          ++iter)
-  {                                          
-    minDistSegPoint = (*iter).second.closestSegmentWithContext(origPoint, 
-                                                               beforeVertexTemp,
-                                                               testSqrDist);
-    
-    if (testSqrDist < minSqrDist)
-    {
-      point = minDistSegPoint;
-      minSqrDist = testSqrDist;
-      
-      beforeVertex      = beforeVertexTemp;
-      snappedFeatureId  = (*iter).first;
-      snappedGeometry   = (*iter).second;
-    }
-  }
 
-#ifdef QGISDEBUG
-      std::cout << "QgsVectorLayer::snapSegmentWithContext: Finishing"
-                << " with feature ID " << snappedFeatureId
-                //                << " and beforeVertex " << beforeVertex
-                << "." << std::endl;
-#endif
- 
-    
 #ifdef QGISDEBUG
       std::cout << "QgsVectorLayer::snapSegmentWithContext:  Checking new features."
                 << "." << std::endl;
