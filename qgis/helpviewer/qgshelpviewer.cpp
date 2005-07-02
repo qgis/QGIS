@@ -25,11 +25,10 @@ void QgsHelpViewer::fileExit()
 void QgsHelpViewer::loadContext(const QString &contextId)
 {
   if(contextId != QString::null)
-#if defined(WIN32) || defined(Q_OS_MACX)
-    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
   {
+#ifdef QGISDEBUG
     std::cout << "Attempting to open " << PKGDATAPATH << "/resources/qgis_help.db" << std::endl; 
+#endif
     // connect to the datbase
     int rc = connectDb(QString(PKGDATAPATH) + "/resources/qgis_help.db");
     // get the help content and title from the database
@@ -41,7 +40,9 @@ void QgsHelpViewer::loadContext(const QString &contextId)
       // build the sql statement
       QString sql = "select content,title from tbl_help where context_id = " 
         + contextId;
-      //     std::cout << "SQL: " << sql << std::endl; 
+#ifdef QGISDEBUG
+      std::cout << "SQL: " << sql << std::endl; 
+#endif
       rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
       if(rc == SQLITE_OK)
       {
@@ -55,8 +56,8 @@ void QgsHelpViewer::loadContext(const QString &contextId)
       else
       {
         QMessageBox::critical(this, "Error", 
-          tr("Failed to get the help text from the database") + QString(":\n   ")
-          + sqlite3_errmsg(db));  
+            tr("Failed to get the help text from the database") + QString(":\n   ")
+            + sqlite3_errmsg(db));  
       }
       // close the statement
       sqlite3_finalize(ppStmt);
