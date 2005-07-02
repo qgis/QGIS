@@ -282,8 +282,6 @@ void QgsProjectProperties::showProjectionsTab()
 }
 void QgsProjectProperties::pbnHelp_clicked()
 {
-  QgsContextHelp *help = new QgsContextHelp(QString(context_id), 
-      this, false,Qt::WType_Popup);
-  help->setModal(false);
-  help->show();
+  std::cout << "running help" << std::endl; 
+  QgsContextHelp::run(QString(context_id));
 }
