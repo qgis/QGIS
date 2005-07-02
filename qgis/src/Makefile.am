@@ -180,7 +180,6 @@ qgis_UIC =	qgisappbase.ui				\
 		qgscomposerlabelbase.ui		     	\
 		qgscomposerscalebarbase.ui		\
 		qgscontcoldialogbase.ui			\
-		qgscontexthelpbase.ui \
 		qgsdelattrdialogbase.ui			\
 		qgsdlgvectorlayerpropertiesbase.ui	\
 		qgsgeomtypedialogbase.ui		\
@@ -254,7 +253,6 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgscomposerview.moc.cpp			\
 		qgscomposition.moc.cpp			\
 		qgscontcoldialog.moc.cpp		\
-		qgscontexthelp.moc.cpp \
 		qgscoordinatetransform.moc.cpp		\
 		qgsdataprovider.moc.cpp		\
 		qgsdelattrdialog.moc.cpp			\
@@ -489,8 +487,6 @@ libqgis_la_SOURCES =						\
 		qgscompositionbase.moc.uic.cpp			\
 		qgscompositionbase.uic.cpp			\
 		qgscontexthelp.cpp \
-		qgscontexthelpbase.moc.uic.cpp \
-		qgscontexthelpbase.uic.cpp \
 		qgscontinuouscolrenderer.cpp			\
 		qgscoordinatetransform.cpp			\
 		qgscoordinatetransform.moc.cpp			\
