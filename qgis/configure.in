@@ -25,7 +25,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=7
 MICRO_VERSION=0
-EXTRA_VERSION=1.1
+EXTRA_VERSION=1.2
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
@@ -459,6 +459,7 @@ AC_CONFIG_FILES([
   widgets/projectionselector/Makefile
   designer_plugins/Makefile
   i18n/Makefile
+  helpviewer/Makefile
   qgis.spec
 ])
 

@@ -2,6 +2,9 @@
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 QGIS Change Log
+2005-07-02 [gsherman] 0.7pre1.2
+** Added standalone help viewer to eliminate modal problems
+
 2005-05-23 [gsherman 0.7rc1
 ** Fixed bookmarks bug related to non-existent user database. The
    database is now properly created if it doesn't exist.
