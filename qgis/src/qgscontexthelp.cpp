@@ -32,12 +32,20 @@ void QgsContextHelp::run(QString contextId)
 {
   // Assume minimum Qt 3.2 version and use the API to get the path
   // path to the help viewer
-      QString helpPath = qApp->applicationDirPath() + "/qgis_help";
+      QString helpPath = qApp->applicationDirPath(); 
+#ifdef Q_OS_MACX
+      helpPath += "/bin";
+#endif
+      helpPath += "/qgis_help";
+#ifdef QGISDEBUG
       std::cout << "Help path is " << helpPath << std::endl; 
+#endif
       QProcess *proc = new QProcess();
       proc->addArgument(helpPath);
       proc->addArgument(contextId);
+#ifdef QGISDEBUG
       std::cout << "Starting help process with context " << contextId << std::endl; 
+#endif
       proc->start();
 }
 QgsContextHelp::~QgsContextHelp()
