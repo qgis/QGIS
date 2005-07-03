@@ -20,21 +20,21 @@
 class QgsGridMakerPluginGui : public QgsGridMakerPluginGuiBase
 {
   Q_OBJECT
-    public:
-      QgsGridMakerPluginGui();
-      QgsGridMakerPluginGui( QWidget* parent , const char* name , 
-			     bool modal , WFlags );
-      ~QgsGridMakerPluginGui();
+public:
+  QgsGridMakerPluginGui();
+  QgsGridMakerPluginGui( QWidget* parent , const char* name ,
+                         bool modal , WFlags );
+  ~QgsGridMakerPluginGui();
 
-    private:
+private:
 
-      void pbnSelectOutputFile_clicked();
-      void pbnCancel_clicked();
-      void pbnOK_clicked();
+  void pbnSelectOutputFile_clicked();
+  void pbnCancel_clicked();
+  void pbnOK_clicked();
 
 signals:
-      void drawRasterLayer(QString);
-      void drawVectorLayer(QString,QString,QString);
+  void drawRasterLayer(QString);
+  void drawVectorLayer(QString,QString,QString);
 };
 
 #endif

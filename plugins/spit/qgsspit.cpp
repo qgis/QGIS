@@ -29,6 +29,7 @@
 #include <qprogressdialog.h>
 #include <qmemarray.h>
 #include <qapplication.h>
+#include <qregexp.h>
 #include <qfile.h>
 #include <qsettings.h>
 #include <qpixmap.h>
@@ -200,7 +201,9 @@ void QgsSpit::addFile()
           tblShapefiles->setText( row, ColFILENAME, name );
           tblShapefiles->setText( row, ColFEATURECLASS, featureClass );
           tblShapefiles->setText( row, ColFEATURECOUNT, QString( "%1" ).arg( file->getFeatureCount() ) );
-          tblShapefiles->setText( row, ColDBRELATIONNAME, file->getTable() );
+          // Sanitize the relation name to make it pg friendly
+          QString relName = file->getTable().replace(QRegExp("\\s"), "_");
+          tblShapefiles->setText( row, ColDBRELATIONNAME, relName );
           QComboTableItem* schema = new QComboTableItem( tblShapefiles, schema_list );
           schema->setCurrentItem( cmbSchema->currentText() );
           tblShapefiles->setItem( row, ColDBSCHEMA, schema );

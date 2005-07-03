@@ -33,6 +33,7 @@ class QgsMapCanvas;
 class QgsLabelAttributes;
 class QgsRect;
 class QgsMapToPixel;
+class QgsCoordinateTransform;
 
 /** Render class to display labels */
 class QgsLabel
@@ -73,6 +74,8 @@ public:
      *  \param sizeScale global scale factor for size in pixels, labels in map units are not scaled
      */
     void renderLabel ( QPainter* painter, QgsRect* viewExtent, 
+                       const QgsCoordinateTransform& coordTransform,
+                       bool doCoordTransform,
 	               QgsMapToPixel *transform, QPaintDevice *device,
 		       QgsFeature *feature, bool selected, QgsLabelAttributes *classAttributes=0, double sizeScale = 1.);
     

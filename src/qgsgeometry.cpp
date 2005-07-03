@@ -1099,8 +1099,9 @@ QgsRect QgsGeometry::boundingBox() const
 
     if(mGeometry)
     {
-	wkbType=(int) mGeometry[1];
-	switch (wkbType)
+      // consider endian when fetching feature type
+      wkbType = (mGeometry[0] == 1) ? mGeometry[1] : mGeometry[4];
+      switch (wkbType)
       {
       case QGis::WKBPoint:
         x = (double *) (mGeometry + 5);

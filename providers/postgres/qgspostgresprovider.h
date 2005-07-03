@@ -423,7 +423,9 @@ signals:
 
     typedef std::map<QString, std::pair<QString, QString> > tableCols;
 
-    QString chooseViewColumn(const tableCols& cols);
+    QString chooseViewColumn(const tableCols& cols, QString tableName);
+
+    bool uniqueData(QString tableName, QString colName);
 
     void findTableColumns(QString selectCmd, tableCols& cols);
     void findColumns(QString selectCmd, tableCols& cols);

@@ -19,6 +19,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <cassert>
 
 #include <qtextstream.h>
 #include <qstringlist.h>
@@ -193,9 +194,32 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri)
       QApplication::setOverrideCursor(Qt::waitCursor);
     }
     //--std::cout << "Connection to the database was successful\n";
-    // set the schema
 
-    PQexec(pd,(const char *)QString("set search_path = '%1','public'").arg(mSchema));
+    // get the current schema search path
+    PGresult *spath = PQexec(pd, "show search_path");
+    QString searchPath = PQgetvalue(spath, 0, 0);
+    // split out the search paths
+    QStringList searchPaths = QStringList::split(",", searchPath);
+    // build the new path
+    searchPath = "";
+    for ( QStringList::Iterator it = searchPaths.begin(); it != searchPaths.end(); ++it ) {
+        searchPath += "'" + *it + "',";
+    }
+    // append the schema for this layer if its not already in there
+    if(searchPath.find("'" + mSchema + "'") == -1)
+    {
+      searchPath += "'" + mSchema + "'";
+    }
+    else
+    {
+      // strip the trailing comma
+      searchPath = searchPath.left(searchPath.length() -1);
+    }
+    
+    PQclear(spath);
+
+    // set the schema search path 
+    PQexec(pd,(const char *)QString("set search_path = " + searchPath));
 
     if (getGeometryDetails()) // gets srid and geometry type
     {
@@ -1009,7 +1033,7 @@ QString QgsPostgresProvider::getPrimaryKey()
       // int4 type)
       tableCols cols;
       findColumns(tableName, cols);
-      primaryKey = chooseViewColumn(cols);
+      primaryKey = chooseViewColumn(cols, tableName);
 
       if (primaryKey.isEmpty())
       {
@@ -1018,10 +1042,10 @@ QString QgsPostgresProvider::getPrimaryKey()
         QMessageBox::warning(0, QObject::tr("No suitable key column in view"),
             QObject::tr("The view has no column suitable for use as a "
               "unique key.\n\n"
-              "Qgis requires that the view have a column that can be\n"
+              "Qgis requires that the view has a column that can be\n"
               "used as a unique key. It should be derived from a column\n"
               "of type int4 and be either a primary key or have\n"
-              "a unique constraint on it (an indexed column wiln"
+              "a unique constraint on it (an indexed column will\n"
               "give better performance)."));
         QApplication::setOverrideCursor(Qt::waitCursor);
       }
@@ -1078,7 +1102,8 @@ QString QgsPostgresProvider::getPrimaryKey()
 // choose one. Prefers column with an index on them, but will
 // otherwise choose something suitable.
 
-QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
+QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols,
+                                              QString tableName)
 {
   // For each relation name and column name need to see if it
   // has unique constraints on it, or is a primary key (if not,
@@ -1147,11 +1172,14 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
   // pick the first one. If there are none we return an empty string. 
   if (suitable.size() == 1)
   {
-    key = suitable.begin()->first;
+    if (uniqueData(tableName, suitable.begin()->first))
+    {
+      key = suitable.begin()->first;
 #ifdef QGISDEBUG
-    std::cerr << "Picked column " << key
-      << " as it is the only one that was suitable.\n";
+      std::cerr << "Picked column " << key
+                << " as it is the only one that was suitable.\n";
 #endif
+    }
   }
   else if (suitable.size() > 1)
   {
@@ -1168,7 +1196,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
         i->second.second + "')";
       PGresult* result = PQexec(connection, (const char*)sql);
 
-      if (PQntuples(result) > 0)
+      if (PQntuples(result) > 0 && uniqueData(tableName, i->first))
       { // Got one. Use it.
         key = i->first;
 #ifdef QGISDEBUG
@@ -1186,7 +1214,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
       // exists). This is legacy support and could be removed in
       // future. 
       i = suitable.find("oid");
-      if (i != suitable.end())
+      if (i != suitable.end() && uniqueData(tableName, i->first))
       {
         key = i->first;
 #ifdef QGISDEBUG
@@ -1196,7 +1224,8 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
           << " columns with indices to choose from\n.";
 #endif
       }
-      else // else choose the first one in the container
+      // else choose the first one in the container
+      else if (uniqueData(tableName, suitable.begin()->first))
       {
         key = suitable.begin()->first;
 #ifdef QGISDEBUG
@@ -1210,6 +1239,25 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
   }
 
   return key;
+}
+
+bool QgsPostgresProvider::uniqueData(QString tableName, QString colName)
+{
+  // Check to see if the given column contains unique data
+
+  bool isUnique = false;
+
+  QString sql = "select count(distinct " + colName + ") = count(" +
+    colName + ") from \"" + tableName + "\"";
+
+  PGresult* unique = PQexec(connection, (const char*) sql);
+  if (PQntuples(unique) == 1)
+    if (strncmp(PQgetvalue(unique, 0, 0),"t", 1) == 0)
+      isUnique = true;
+
+  PQclear(unique);
+
+  return isUnique;
 }
 
 // Given a relation name, will return in the cols variable the

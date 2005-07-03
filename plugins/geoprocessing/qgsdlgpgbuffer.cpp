@@ -22,6 +22,7 @@
 #include <qlabel.h>
 #include <qcheckbox.h>
 #include <qcombobox.h>
+#include <qvalidator.h>
 #include "qgsdlgpgbuffer.h"
 #include <qspinbox.h>
 #include "../../src/qgisiface.h"
@@ -29,6 +30,9 @@
 QgsDlgPgBuffer::QgsDlgPgBuffer( QgisIface * _qI, QWidget * parent, const char *name)
 :QgsDlgPgBufferBase(parent, name),qI(_qI)
 {
+  // set the validator
+  distanceValidator = new QDoubleValidator(0, 9e9, 6, this);
+  txtBufferDistance->setValidator(distanceValidator);
 }
 
 QgsDlgPgBuffer::~QgsDlgPgBuffer()
@@ -41,7 +45,7 @@ void QgsDlgPgBuffer::setBufferLabel(QString & lbl)
 
 QString QgsDlgPgBuffer::bufferDistance()
 {
-    return QString::number(spinBufferDistance->value());
+    return txtBufferDistance->text();
 }
 
 QString QgsDlgPgBuffer::bufferLayerName()

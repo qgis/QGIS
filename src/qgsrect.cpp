@@ -54,6 +54,15 @@ void QgsRect::set(const QgsPoint& p1, const QgsPoint& p2)
   normalize();
 }
 
+void QgsRect::set(double xmin_, double ymin_, double xmax_, double ymax_)
+{
+  xmin = xmin_;
+  ymin = ymin_;
+  xmax = xmax_;
+  ymax = ymax_;
+  normalize();
+}
+
 void QgsRect::normalize()
 {
   double temp;

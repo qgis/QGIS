@@ -211,6 +211,7 @@ class QgsVectorDataProvider : public QgsDataProvider
       virtual bool saveAsShapefile()
       {
         // NOP by default
+        return false;
       }
 
       /**Creates a spatial index on the datasource (if supported by the provider type). Returns true in case of success*/

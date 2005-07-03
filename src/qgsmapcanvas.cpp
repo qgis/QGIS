@@ -17,6 +17,7 @@
 /* $Id$ */
 
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 
 #include <iosfwd>
 #include <cmath>
@@ -741,47 +742,55 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 {
   // If this is the first time that we are rendering since the output
   // projection has changed, transform the current extent from the old
-  // output projection to the new output projection. This gets done
-  // whether projections are enabled or not.
-  /*
+  // output projection to the new output projection.
+
   if (layerCount() > 0)
   {
+    // Get a map layer. Any layer should do, so just grab the first one.
     std::map<QString, QgsMapLayer*>::const_iterator 
      i = mCanvasProperties->layers.begin();
 
-    QgsSpatialRefSys currentOutputSRS(coordinateTransform().destSRS());
-
-    std::cerr << "The current output SRS is: " << currentOutputSRS;
-    std::cerr << "The previous output SRS is: " << mCanvasProperties->previousOutputSRS;
+    const QgsSpatialRefSys& currentOutputSRS = 
+      i->second->coordinateTransform()->destSRS();
 
     if (!(mCanvasProperties->previousOutputSRS == currentOutputSRS))
     {
-      std::cerr << "They are different, so the map extent is being reprojected\n";
+#ifdef QGISDEBUG
+      std::cerr << "The previous output projection is different to the "
+                << "current output projection, so the map extents are "
+                << "begin reprojected.\n";
+#endif
 
-      QgsCoordinateTransform transform;
-      std::cerr<<__FILE__<<__LINE__<<std::endl;
+      QgsCoordinateTransform transform(mCanvasProperties->previousOutputSRS, currentOutputSRS);
+      
+      try
+      {
+        mCanvasProperties->currentExtent = 
+          transform.transform(mCanvasProperties->currentExtent);
+      }
+      catch(QgsCsException &cse)
+      {
+        qWarning(tr("Error when projecting the view extent, you may need to manually zoom to the region of interest."));
+#ifdef QGISDEBUG
+        std::cerr << "Attempted to transform the view extent from\n"
+                  << mCanvasProperties->previousOutputSRS 
+                  << "\nto\n" << currentOutputSRS;
+        std::cerr << "The view extent was: " 
+                  << mCanvasProperties->currentExtent
+                  << '\n';
+#endif
+      }
 
-      transform.setSourceSRS(mCanvasProperties->previousOutputSRS);
-      std::cerr<<__FILE__<<__LINE__<<std::endl;
-
-      transform.setDestSRS(currentOutputSRS);
-      std::cerr<<__FILE__<<__LINE__<<std::endl;
-
-      mCanvasProperties->currentExtent = 
-        transform.transform(mCanvasProperties->currentExtent);
-        std::cerr<<__FILE__<<__LINE__<<std::endl;
-
-      // Same here re an operator= for an SRS
       mCanvasProperties->previousOutputSRS = currentOutputSRS;
-
-      std::cerr << "The previous output SRS has now been set to: " 
-                << mCanvasProperties->previousOutputSRS;
-      std::cerr <<__FILE__<<__LINE__<<std::endl;
     }
+#ifdef QGISDEBUG
     else
-      std::cerr << "They are the same, so the map extent stays as is\n";
+      std::cerr << "The previous output projection is the same as the "
+                << "current output projection, so the map extents are "
+                << "not begin reprojected.\n";
+#endif
   }
-  */
+
   // Don't allow zooms where the current extent is so small that it
   // can't be accurately represented using a double (which is what
   // currentExtent uses). Excluding 0 avoids a divide by zero and an
@@ -993,53 +1002,20 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 
             if (ml->visible())
             {
-              if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale 
-       && ml->maxScale() > mCanvasProperties->mScale)
+              if ((ml->scaleBasedVisibility() && 
+                   ml->minScale() < mCanvasProperties->mScale 
+                   && ml->maxScale() > mCanvasProperties->mScale)
                   || (!ml->scaleBasedVisibility()))
               {
-                //we need to find out the extent of the canvas in the layer's
-                //native coordinate system :. inverseProjection of the extent
-                //must be done....
-                // XXX this works as long as the canvas extents are in the canvas 
-                // XXX coordinate system -- which is not working at present
-                //
-                QgsRect myProjectedRect;
-                try
-                {
-                  std::cout << "Getting extent of canvas in layers CS. Canvas is " << mCanvasProperties->currentExtent.stringRep() << std::endl; 
-                  myProjectedRect =
-                    ml->coordinateTransform()->transform(
-                      mCanvasProperties->currentExtent,  QgsCoordinateTransform::INVERSE);
-
-                }
-                catch (QgsCsException &e)
-                {
-                  qDebug( "Transform error caught in %s line %d:\n%s", 
-        __FILE__, __LINE__, e.what());
-                }
-
-#ifdef QGISDEBUG
-  std::cout << "QgsMapCanvas::render: about to draw map layer." << std::endl;
-#endif
-                
+                QgsRect r1 = mCanvasProperties->currentExtent, r2;
+                bool split = ml->projectExtent(r1, r2);
                 //
                 // Now do the call to the layer that actually does
                 // the rendering work!
                 //
-                if (projectionsEnabled())
-                {
-                  ml->draw(paint,
-                         &myProjectedRect,
-                         mCanvasProperties->coordXForm,
-                         this);
-                }
-                else
-                {
-                  ml->draw(paint,
-                         &mCanvasProperties->currentExtent,
-                         mCanvasProperties->coordXForm,
-                         this);
-                }
+                ml->draw(paint, &r1, mCanvasProperties->coordXForm, this);
+                if (split)
+                  ml->draw(paint, &r2,mCanvasProperties->coordXForm, this);
               }
 #ifdef QGISDEBUG
               else
@@ -1077,14 +1053,19 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
               {
                 //only make labels if the layer is visible
                 //after scale dep viewing settings are checked
-                if ((ml->scaleBasedVisibility() && ml->minScale() < mCanvasProperties->mScale 
-         && ml->maxScale() > mCanvasProperties->mScale)
+                if ((ml->scaleBasedVisibility() && 
+                     ml->minScale() < mCanvasProperties->mScale 
+                     && ml->maxScale() > mCanvasProperties->mScale)
                     || (!ml->scaleBasedVisibility()))
                 {
-                  ml->drawLabels(paint,
-                                 &mCanvasProperties->currentExtent,
-                                 mCanvasProperties->coordXForm,
+                  QgsRect r1 = mCanvasProperties->currentExtent, r2;
+                  bool split = ml->projectExtent(r1, r2);
+
+                  ml->drawLabels(paint, &r1, mCanvasProperties->coordXForm, 
                                  this);
+                  if (split)
+                    ml->drawLabels(paint, &r2, mCanvasProperties->coordXForm, 
+                                   this);
                 }
               }
               li++;

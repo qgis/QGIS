@@ -22,6 +22,11 @@
 #include <qtextstream.h>
 
 
+QgsPoint::QgsPoint(const QgsPoint& p)
+{
+  m_x = p.x();
+  m_y = p.y();
+}
 
 QString QgsPoint::stringRep() const
 {
@@ -76,4 +81,10 @@ QgsPoint & QgsPoint::operator=(const QgsPoint & other)
     }
 
   return *this;
+}
+
+void QgsPoint::multiply(const double& scalar)
+{
+  m_x *= scalar;
+  m_y *= scalar;
 }
