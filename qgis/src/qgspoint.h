@@ -32,6 +32,9 @@ class QgsPoint
   QgsPoint()
   {}
     
+  /*! Create a point from another point */
+  QgsPoint(const QgsPoint& p);
+
   /*! Create a point from x,y coordinates
    * @param x x coordinate
    * @param y y coordinate
@@ -103,8 +106,11 @@ class QgsPoint
   //! Inequality operator
   bool operator!=(const QgsPoint &other);
     
-  /// Assignment
+  //! Assignment
   QgsPoint & operator=(const QgsPoint &other);
+
+  //! Multiply x and y by the given value
+  void multiply(const double& scalar);
   
  private:
 

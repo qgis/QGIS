@@ -246,6 +246,8 @@ void QgsPgGeoprocessing::buffer()
               std::cerr << sql << std::endl;
 #endif
               PGresult *geoCol = PQexec(conn, (const char *) sql);
+
+            if (PQresultStatus(geoCol) == PGRES_COMMAND_OK) {
               PQclear(geoCol);
               // drop the check constraint based on geometry type
               sql = QString("alter table %1.%2 drop constraint \"$2\"")
@@ -333,6 +335,14 @@ void QgsPgGeoprocessing::buffer()
                  "postgres"); 
 
               }
+            }
+            else
+            {
+              QMessageBox::critical(0, "Unable to add geometry column",
+                  QString("Unable to add geometry column to the output table %1-%2")
+                  .arg(bb->bufferLayerName()).arg(PQerrorMessage(conn)));
+
+            }
             } else {
               QMessageBox::critical(0, "Unable to create table",
                   QString("Failed to create the output table %1").arg(bb->bufferLayerName()));

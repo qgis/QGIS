@@ -39,54 +39,9 @@ QgsBookmarks::QgsBookmarks(QWidget *parent, const char *name)
 {
   // make sure the users database for bookmarks exists
   mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
-  // first we look for ~/.qgis/qgis.db
-  // if it doesnt exist we copy it in from the global resources dir
-  QFileInfo myFileInfo;
   mUserDbPath = mQGisSettingsDir + "qgis.db";
-  myFileInfo.setFile(mUserDbPath);
-  if ( !myFileInfo.exists( ) )
-  {
-    // make sure the ~/.qgis dir exists first
-    QDir myUserQGisDir;
-    QString myPath = QDir::homeDirPath();
-    myPath += "/.qgis";
-    myUserQGisDir.setPath(myPath);
-    //now make sure the users .qgis dir exists 
-    makeDir(myUserQGisDir);
-    // Get the package data path and set the full path name to the sqlite3 spatial reference
-    // database.
-#if defined(Q_OS_MACX) || defined(WIN32)
-    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-    QString myMasterDatabaseFileName = PKGDATAPATH;
-    myMasterDatabaseFileName += "/resources/qgis.db";
-    //now copy the master file into the users .qgis dir
-    std::ifstream myInputStream(myMasterDatabaseFileName.latin1() );
-
-    if (! myInputStream)
-    {
-      std::cerr << "unable to open input file: "
-        << myMasterDatabaseFileName << " --bailing out! \n";
-      //XXX Do better error handling
-      return ;
-    }
-
-    std::ofstream myOutputStream(QString(mQGisSettingsDir+"qgis.db").latin1());
-
-    if (! myOutputStream)
-    {
-      std::cerr << "cannot open " << QString(mQGisSettingsDir+"qgis.db").latin1()  << "  for output\n";
-      //XXX Do better error handling
-      return ;
-    }
-
-    char myChar;
-    while (myInputStream.get(myChar))
-    {
-      myOutputStream.put(myChar);
-    }
-
-  }
+  // create the database (if it exists - no problem)
+  createDatabase(); 
   // Note proper queens english on next line
   initialise();
 
@@ -191,13 +146,9 @@ void QgsBookmarks::deleteBookmark()
   if(lvi)
   {
     // make sure the user really wants to delete this bookmark
-    if(QMessageBox::Yes == QMessageBox::information(this,"Really Delete?",
-          "Are you sure you want to delete the " + lvi->text(0) +
-          " bookmark?", 
-          QMessageBox::Yes, 
-          QMessageBox::No, 
-          QMessageBox::NoButton
-          ))
+    if(0 == QMessageBox::information(this,tr("Really Delete?"),
+          tr("Are you sure you want to delete the " + lvi->text(0) +
+          " bookmark?"), tr("&Yes"), tr("&No"), QString::null, 0, 1))  
     {
       // remove it from the listview
       lstBookmarks->takeItem(lvi);
@@ -242,6 +193,10 @@ void QgsBookmarks::zoomToBookmark()
 	// the map
   // get the current item
   QListViewItem *lvi = lstBookmarks->currentItem();
+  if(!lvi)
+  {
+      return;
+  }
   // get the extent from the database
   int rc = connectDb();
   if(rc == SQLITE_OK)
@@ -295,4 +250,62 @@ int QgsBookmarks::connectDb()
   }
   return rc;
 }
+bool QgsBookmarks::createDatabase()
+{
+  // make sure the users database for bookmarks exists
+  QString qgisSettingsDir = QDir::homeDirPath () + "/.qgis/";
+  // first we look for ~/.qgis/qgis.db
+  // if it doesnt exist we copy it in from the global resources dir
+  QFileInfo myFileInfo;
+  myFileInfo.setFile(qgisSettingsDir + "qgis.db");
+  if ( !myFileInfo.exists( ) )
+  {
+#ifdef QGISDEBUG 
+    std::cout << "The qgis.db does not exist in $HOME/.qgis" << std::endl; 
+#endif 
+    // make sure the ~/.qgis dir exists first
+    QDir myUserQGisDir;
+    QString myPath = QDir::homeDirPath();
+    myPath += "/.qgis";
+    myUserQGisDir.setPath(myPath);
+#ifdef QGISDEBUG 
+    std::cout << "Using " << myPath << " as path for qgis.db" << std::endl; 
+#endif 
+    //now make sure the users .qgis dir exists 
+    makeDir(myUserQGisDir);
+    // Get the package data path and set the full path name to the sqlite3 spatial reference
+    // database.
+#if defined(Q_OS_MACX) || defined(WIN32)
+    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
+    QString myMasterDatabaseFileName = PKGDATAPATH;
+    myMasterDatabaseFileName += "/resources/qgis.db";
+    //now copy the master file into the users .qgis dir
+    std::ifstream myInputStream(myMasterDatabaseFileName.latin1() );
 
+    if (! myInputStream)
+    {
+      std::cerr << "unable to open input file: "
+        << myMasterDatabaseFileName << " --bailing out! \n";
+      //XXX Do better error handling
+      return false;
+    }
+
+    std::ofstream myOutputStream(QString(qgisSettingsDir+"qgis.db").latin1());
+
+    if (! myOutputStream)
+    {
+      std::cerr << "cannot open " << QString(qgisSettingsDir+"qgis.db").latin1()  << "  for output\n";
+      //XXX Do better error handling
+      return false;
+    }
+
+    char myChar;
+    while (myInputStream.get(myChar))
+    {
+      myOutputStream.put(myChar);
+    }
+
+  }
+  return true;
+}

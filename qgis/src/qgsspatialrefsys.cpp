@@ -10,6 +10,7 @@
 #include <qfileinfo.h>
 #include <qdir.h>
 #include <projects.h>
+#include <qdom.h>
 
 #include <qgslayerprojectionselector.h>
 #include <qgsproject.h>
@@ -482,6 +483,9 @@ bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
 
 bool QgsSpatialRefSys::isValid() const
 {
+  if (mProj4String.isEmpty())
+    return false;
+
   //this is really ugly but we need to get a QString to a char**
   char *mySourceCharArrayPointer = (char *)mProj4String.latin1();
   //create the sr and populate it from a wkt proj definition
@@ -740,28 +744,56 @@ long QgsSpatialRefSys::srid() const
  */
 QString QgsSpatialRefSys::description () const
 {
-  return mDescription;
+  if (!mDescription)
+  {
+    return "";
+  }
+  else
+  {
+    return mDescription;
+  }
 }
 /*! Get the Projection Acronym
  * @return  QString theProjectionAcronym The official proj4 acronym for the projection family
  */
 QString QgsSpatialRefSys::projectionAcronym() const
 {
-  return mProjectionAcronym;
+  if (!mProjectionAcronym)
+  {
+    return "";
+  }
+  else
+  {
+    return mProjectionAcronym;
+  }
 }
 /*! Get the Ellipsoid Acronym
  * @return  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
  */
 QString QgsSpatialRefSys::ellipsoidAcronym () const
 {
-  return mEllipsoidAcronym;
+  if (!mEllipsoidAcronym)
+  {
+    return "";
+  }
+  else
+  {
+    return mEllipsoidAcronym;
+  }
 }
 /* Get the Proj Proj4String.
  * @return  QString theProj4String Proj4 format specifies that define this srs.
  */
 QString QgsSpatialRefSys::proj4String() const
 {
-  return mProj4String;
+  if (!mProj4String)
+  {
+    return "";
+  }
+  else
+  {
+    return mProj4String;
+  }
 }
 /*! Get this Geographic? flag
  * @return  bool theGeoFlag Whether this is a geographic or projected coordinate system
@@ -796,46 +828,37 @@ long QgsSpatialRefSys::epsg () const
 // Mutators -----------------------------------
 
 
-/*! Set the SrsId
- *  @param  long theSrsId The internal sqlite3 srs.db primary key for this srs 
- */
+void QgsSpatialRefSys::setSrsId(long theSrsId)
+{
+  mSrsId = theSrsId;
+}
 void QgsSpatialRefSys::setSrid(long theSrid)
 {
   mSRID=theSrid;
 }
-/*! Set the Description
- * @param  QString the Description A textual description of the srs.
- */
 void QgsSpatialRefSys::setDescription (QString theDescription)
 {
   mDescription = theDescription;
 }
-
 void QgsSpatialRefSys::setProj4String (QString theProj4String)
 {
   mProj4String = theProj4String;
 }
-/*! Set this Geographic? flag
- * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
- */
 void QgsSpatialRefSys::setGeographicFlag (bool theGeoFlag)
 {
   mGeoFlag=theGeoFlag;
 }
-
-/*! Set the postgis srid for this srs
- * @param  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
- */
-void QgsSpatialRefSys::setPostgisSrid (long theSrid)
-{
-  mSRID=theSrid;
-}
-/*! Set the EPSG identifier for this srs
- * @param  long theEpsg the ESPG identifier for this srs (defaults to 0)
- */
 void QgsSpatialRefSys::setEpsg (long theEpsg)
 {
   mEpsg=theEpsg;
+}
+void  QgsSpatialRefSys::setProjectionAcronym(QString theProjectionAcronym)
+{
+  mProjectionAcronym=theProjectionAcronym;
+}
+void  QgsSpatialRefSys::setEllipsoidAcronym(QString theEllipsoidAcronym)
+{
+  mEllipsoidAcronym=theEllipsoidAcronym;
 }
 /*! Work out the projection units and set the appropriate local variable
  *
@@ -1113,4 +1136,104 @@ OGRSpatialReference QgsSpatialRefSys::toOgrSrs()
   OGRSpatialReference myOgrSpatialRef1;
   OGRErr myInputResult1 = myOgrSpatialRef1.importFromProj4((char *)mProj4String.latin1());
   return myOgrSpatialRef1;
+}
+
+bool QgsSpatialRefSys::readXML( QDomNode & theNode )
+{
+#ifdef QGISDEBUG
+  std::cout << "Reading Spatial Ref Sys from xml ------------------------!" << std::endl;
+#endif
+     QDomNode myNode = theNode.namedItem("proj4");
+     QDomElement myElement = myNode.toElement();
+     setProj4String(myElement.text());
+
+     myNode = theNode.namedItem("srsid");
+     myElement = myNode.toElement();
+     setSrsId(myElement.text().toLong());
+
+     myNode = theNode.namedItem("srid");
+     myElement = myNode.toElement();
+     setSrid(myElement.text().toLong());
+
+     myNode = theNode.namedItem("epsg");
+     myElement = myNode.toElement();
+     setEpsg(myElement.text().toLong());
+
+     myNode = theNode.namedItem("description");
+     myElement = myNode.toElement();
+     setDescription(myElement.text());
+
+     myNode = theNode.namedItem("projectionacronym");
+     myElement = myNode.toElement();
+     setProjectionAcronym(myElement.text());
+
+     myNode = theNode.namedItem("ellipsoidacronym");
+     myElement = myNode.toElement();
+     setEllipsoidAcronym(myElement.text());
+ 
+     myNode = theNode.namedItem("geographicflag");
+     myElement = myNode.toElement();
+     if (myElement.text().compare("true"))
+     {
+       setGeographicFlag(true);
+     }
+     else
+     {
+       setGeographicFlag(false);
+     }
+     //make sure the map units have been set
+
+     setMapUnits();
+
+     //@TODO this srs needs to be validated!!!
+     mIsValidFlag=true;//shamelessly hard coded for now
+      
+
+
+}
+
+bool QgsSpatialRefSys::writeXML( QDomNode & theNode, QDomDocument & theDoc )
+{
+  QDomElement myLayerNode = theNode.toElement();
+  QDomElement mySrsElement  = theDoc.createElement( "spatialrefsys" );
+  
+  QDomElement myProj4Element  = theDoc.createElement( "proj4" );
+  myProj4Element.appendChild(theDoc.createTextNode( proj4String()));
+  mySrsElement.appendChild(myProj4Element);
+  
+  QDomElement mySrsIdElement  = theDoc.createElement( "srsid" );
+  mySrsIdElement.appendChild(theDoc.createTextNode( QString::number(srsid())));
+  mySrsElement.appendChild(mySrsIdElement);
+
+  QDomElement mySridElement  = theDoc.createElement( "srid" );
+  mySridElement.appendChild(theDoc.createTextNode( QString::number(srid())));
+  mySrsElement.appendChild(mySridElement);
+
+  QDomElement myEpsgElement  = theDoc.createElement( "epsg" );
+  myEpsgElement.appendChild(theDoc.createTextNode( QString::number(epsg())));
+  mySrsElement.appendChild(myEpsgElement);
+
+  QDomElement myDescriptionElement  = theDoc.createElement( "description" );
+  myDescriptionElement.appendChild(theDoc.createTextNode( description()));
+  mySrsElement.appendChild(myDescriptionElement);
+
+  QDomElement myProjectionAcronymElement  = theDoc.createElement( "projectionacronym" );
+  myProjectionAcronymElement.appendChild(theDoc.createTextNode( projectionAcronym()));
+  mySrsElement.appendChild(myProjectionAcronymElement);
+
+  QDomElement myEllipsoidAcronymElement  = theDoc.createElement( "ellipsoidacronym" );
+  myEllipsoidAcronymElement.appendChild(theDoc.createTextNode( ellipsoidAcronym()));
+  mySrsElement.appendChild(myEllipsoidAcronymElement);
+
+  QDomElement myGeographicFlagElement  = theDoc.createElement( "geographicflag" );
+  QString myGeoFlagText = "false";
+  if (geographicFlag())
+  {
+    myGeoFlagText="true";
+  }
+    
+  myGeographicFlagElement.appendChild(theDoc.createTextNode( myGeoFlagText ));
+  mySrsElement.appendChild(myGeographicFlagElement);
+
+  myLayerNode.appendChild( mySrsElement );
 }

@@ -83,6 +83,7 @@
 #include "qgslabelattributes.h"
 #include "qgslabel.h"
 #include "qgscoordinatetransform.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsattributedialog.h"
 #ifdef Q_WS_X11
 #include "qgsclipper.h"
@@ -213,18 +214,6 @@ QString QgsVectorLayer::capabilitiesString() const
   }
 }
 
-
-bool QgsVectorLayer::projectionsEnabled() const
-{
-  if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
 int QgsVectorLayer::getProjectionSrid()
 {
   //delegate to the provider
@@ -365,6 +354,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
 
   if ( /*1 == 1 */ m_renderer && mLabelOn)
   {
+    bool projectionsEnabledFlag = projectionsEnabled();
     std::list<int> attributes=m_renderer->classificationAttributes();
     // Add fields required for labels
     mLabel->addRequiredFields ( &attributes );
@@ -377,35 +367,43 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
     // select the records in the extent. The provider sets a spatial filter
     // and sets up the selection set for retrieval
     dataProvider->reset();
-    QgsRect r = inverseProjectRect(*viewExtent);
-    dataProvider->select(&r);
+    dataProvider->select(viewExtent);
 
-    //main render loop
-    QgsFeature *fet;
-
-    while((fet = dataProvider->getNextFeature(attributes)))
+    try
     {
-      // Render label
-      if ( fet != 0 )
-      {
-        if(mDeleted.find(fet->featureId())==mDeleted.end())//don't render labels of deleted features
+      //main render loop
+      QgsFeature *fet;
+
+      while((fet = dataProvider->getNextFeature(attributes)))
         {
-          bool sel=mSelected.find(fet->featureId()) != mSelected.end();
-          mLabel->renderLabel ( p, viewExtent, theMapToPixelTransform, dst, fet, sel, 0, scale);
+          // Render label
+          if ( fet != 0 )
+            {
+              if(mDeleted.find(fet->featureId())==mDeleted.end())//don't render labels of deleted features
+                {
+                  bool sel=mSelected.find(fet->featureId()) != mSelected.end();
+                  mLabel->renderLabel ( p, viewExtent, *mCoordinateTransform, 
+                                        projectionsEnabledFlag,
+                                        theMapToPixelTransform, dst, fet, sel, 0, scale);
+                }
+            }
+          delete fet;
+          featureCount++;
         }
-      }
-      delete fet;
-      featureCount++;
-    }
 
-    //render labels of not-commited features
-    for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+      //render labels of not-commited features
+      for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+        {
+          bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
+          mLabel->renderLabel ( p, viewExtent, *mCoordinateTransform, projectionsEnabledFlag,
+                                theMapToPixelTransform, dst, *it, sel, 0, scale);
+        }
+    }
+    catch (QgsCsException &e)
     {
-      bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
-      mLabel->renderLabel ( p, viewExtent, theMapToPixelTransform, dst, *it, sel, 0, scale);
+      qDebug("Error projecting label locations, caught in %s, line %d:\n%s",
+	     __FILE__, __LINE__, e.what());
     }
-
-
 
 #ifdef QGISDEBUG
     std::cerr << "Total features processed is " << featureCount << std::endl;
@@ -2075,9 +2073,9 @@ void QgsVectorLayer::stopEditing()
     if(mModified)
     {
       //commit or roll back?
-      int commit=QMessageBox::information(0,"Stop editing",
-        "Do you want to save the changes?",QMessageBox::Yes,QMessageBox::No);
-      if(commit==QMessageBox::Yes)
+	int commit=QMessageBox::information(0,tr("Stop editing"),tr("Do you want to save the changes?"),tr("&Yes"),tr("&No"),QString::null,0,1);	
+	
+      if(commit==0)
       {
         if(!commitChanges())
         {
@@ -2095,7 +2093,7 @@ void QgsVectorLayer::stopEditing()
           }
         }
       }
-      else if(commit==QMessageBox::No)
+      else if(commit==1)
       {
         if(!rollBack())
         {
@@ -2281,7 +2279,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     setLabelOn(true);
   }
 
-#if QGISDEBUG
+#ifdef QGISDEBUG
   std::cout << "Testing if qgsvectorlayer can call label readXML routine" << std::endl;
 #endif
 
@@ -2289,7 +2287,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 
   if(!labelattributesnode.isNull())
   {
-#if QGISDEBUG
+#ifdef QGISDEBUG
     std::cout << "qgsvectorlayer calling label readXML routine" << std::endl;
 #endif
     mLabel->readXML(labelattributesnode);
@@ -3203,11 +3201,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
     {
       double x = *((double *) (feature + 5));
       double y = *((double *) (feature + 5 + sizeof(double)));
-      // XXX get rid of following line
-      std::cout << "input " << x << ", " << y << std::endl; 
       transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
-      // XXX get rid of following line
-      std::cout << "output " << x << ", " << y << std::endl; 
 
       p->save();
       p->scale(markerScaleFactor,markerScaleFactor);
@@ -3347,33 +3341,50 @@ void QgsVectorLayer::setCoordinateSystem()
       mCoordinateTransform->sourceSRS().createFromSrid(srid);
   }
   
-
-  QSettings mySettings; 
+  //QgsSpatialRefSys provides a mechanism for FORCE a srs to be valid
+  //which is inolves falling back to system, project or user selected
+  //defaults if the srs is not properly intialised.
+  //we only nee to do that if the srs is not alreay valid
+  if (!mCoordinateTransform->sourceSRS().isValid())
+  {
+    mCoordinateTransform->sourceSRS().validate();
+  }
   //get the project projections WKT, defaulting to this layer's projection
   //if none exists....
   //First get the SRS for the default projection WGS 84
   //QString defaultWkt = QgsSpatialReferences::instance()->getSrsBySrid("4326")->srText();
 
-
-  // if not enabled, don't set the output projection, which will then
-  // get set to the same as the input projection in the initialise()
-  // call below.
-  if (projectionsEnabled())
+  // if no other layers exist, set the output projection to be
+  // the same as the input projection, otherwise set the output to the
+  // project srs
+  
+#ifdef QGISDEBUG
+    std::cout << "Layer registry has " << QgsMapLayerRegistry::instance()->count() << " layers " << std::endl;
+#endif     
+  if (QgsMapLayerRegistry::instance()->count() ==0)
   {
-    int myDestSRSID = QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
-    mCoordinateTransform->destSRS().createFromSrsId(myDestSRSID);
-    assert (0 != myDestSRSID);
-  }
-  else
-  {
-    mCoordinateTransform->destSRS().createFromProj4(
+     mCoordinateTransform->destSRS().createFromProj4(
            mCoordinateTransform->sourceSRS().proj4String());
+    //first layer added will set the default project level projection
+    //TODO remove cast if poss!
+    int mySrsId = static_cast<int>(mCoordinateTransform->sourceSRS().srsid());
+    if (mySrsId)
+    {
+      QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSID",mySrsId);
+    }
+  }
+  else 
+  {
+      mCoordinateTransform->destSRS().createFromSrsId(
+        QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",0));
+  }
+  if (!mCoordinateTransform->destSRS().isValid())
+  {
+    mCoordinateTransform->destSRS().validate();  
   }
 
-  //now validate both srs's
-  mCoordinateTransform->sourceSRS().validate();
-  mCoordinateTransform->destSRS().validate();  
-  //validate the transform - you should do this any time one of the SRS's changes
+  
+  //initialise the transform - you should do this any time one of the SRS's changes
 
   mCoordinateTransform->initialise();
 

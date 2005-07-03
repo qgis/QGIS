@@ -482,7 +482,10 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     mProgressBar->setMaximumWidth(100);
     QWhatsThis::add(mProgressBar, tr("Progress bar that displays the status of rendering layers and other time-intensive operations"));
     statusBar()->addWidget(mProgressBar, 1,true);
-    QFont myFont( "Arial", 8 );
+    // Bumped the font up one point size since 8 was too 
+    // small on some platforms. A point size of 9 still provides
+    // plenty of display space on 1024x768 resolutions
+    QFont myFont( "Arial", 9 );
     statusBar()->setFont(myFont);
     mScaleLabel = new QLabel(QString("Scale"),this);
     mScaleLabel->setFont(myFont);
@@ -506,12 +509,18 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
             mMapCanvas, SLOT(setRenderFlag(bool)));
     connect(mRenderSuppresionCBox, SIGNAL(toggled(bool )),
             mOverviewCanvas, SLOT(setRenderFlag(bool)));
-    //on the fly projection status bar icon
-    mOnTheFlyProjectionStatusButton = new QPushButton(this);
+    // On the fly projection status bar icon
+    // Changed this to a tool button since a QPushButton is
+    // sculpted on OS X and the icon is never displayed [gsherman]
+    mOnTheFlyProjectionStatusButton = new QToolButton(this);
     mOnTheFlyProjectionStatusButton->setMaximumWidth(20);
+    // Maintain uniform widget height in status bar by setting button height same as labels
+    // For Qt/Mac 3.3, the default toolbutton height is 30 and labels were expanding to match
+    mOnTheFlyProjectionStatusButton->setMaximumHeight(mScaleLabel->height());
     QPixmap myProjPixmap;
     myProjPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection_disabled.png"));
     mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
+    assert(!myProjPixmap.isNull());
     QWhatsThis::add(mOnTheFlyProjectionStatusButton, tr("This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour."));
     QToolTip::add( mOnTheFlyProjectionStatusButton, tr("Projection status - Click to open projection dialog"));
     connect(mOnTheFlyProjectionStatusButton, SIGNAL(clicked()),
@@ -1817,6 +1826,7 @@ findLayers_( list<QDomNode> const & layerNodes )
 
 void QgisApp::fileExit()
 {
+    removeAllLayers();
     QApplication::exit();
 }
 
@@ -1824,37 +1834,41 @@ void QgisApp::fileExit()
 
 void QgisApp::fileNew()
 {
-    int answer = saveDirty();
+  int answer = saveDirty();
 
-    if (answer != QMessageBox::Cancel)
-    {
-        mMapCanvas->freeze(true);
-        mOverviewCanvas->freeze(true);
-        QgsMapLayerRegistry::instance()->removeAllMapLayers();
-        mMapCanvas->clear();
-        mOverviewCanvas->clear();
+  if (answer != QMessageBox::Cancel)
+  {
+    mMapCanvas->freeze(true);
+    mOverviewCanvas->freeze(true);
+    QgsMapLayerRegistry::instance()->removeAllMapLayers();
+    mMapCanvas->clear();
+    mOverviewCanvas->clear();
 
 
-        QgsProject::instance()->title( QString::null );
-        QgsProject::instance()->filename( QString::null );
+    QgsProject::instance()->title( QString::null );
+    QgsProject::instance()->filename( QString::null );
 
 #ifdef QGISDEBUG
-        std::cout << "Clearing project properties" << std::endl;
+    std::cout << "Clearing project properties" << std::endl;
 #endif
-        QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
-        QgsProject::instance()->dirty(false);
+    QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
+    QgsProject::instance()->dirty(false);
 
-        setTitleBarText_( *this );
+    setTitleBarText_( *this );
 #ifdef QGISDEBUG
-        std::cout << "emiting new project signal" << std::endl ;
+    std::cout << "emiting new project signal" << std::endl ;
 #endif
-        //note by Tim: I did some casual egrepping and this signal doesnt actually
-        //seem to be connected to anything....why is it here? Just for future needs?
-        emit newProject();
+    //note by Tim: I did some casual egrepping and this signal doesnt actually
+    //seem to be connected to anything....why is it here? Just for future needs?
+    emit newProject();
 
-        mMapCanvas->freeze(false);
-        mOverviewCanvas->freeze(false);
-    }
+    mMapCanvas->freeze(false);
+    mOverviewCanvas->freeze(false);
+  }
+  //set the projections enabled icon in the status bar
+  int myProjectionEnabledFlag =
+      QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
+  projectionsEnabled(myProjectionEnabledFlag);
 } // fileNew()
 
 
@@ -1966,7 +1980,6 @@ void QgisApp::newVectorLayer()
             QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
             return;
         }
-        //writer.createField("dummy", OFTReal, 1, 1);
     }
     else if(geometrytype == QGis::WKBLineString)
     {
@@ -1976,7 +1989,6 @@ void QgisApp::newVectorLayer()
             QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
             return;
         }
-        //writer.createField("dummy", OFTReal, 1, 1);
     }
     else if(geometrytype == QGis::WKBPolygon)
     {
@@ -1986,7 +1998,6 @@ void QgisApp::newVectorLayer()
             QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
             return;
         }
-        //writer.createField("dummy", OFTReal, 1, 1);
     }
     else
     {
@@ -2001,15 +2012,15 @@ void QgisApp::newVectorLayer()
     {
 	for(std::list<std::pair<QString, QString> >::iterator it=attributes.begin();it!=attributes.end();++it)
 	{
-	    if(it->second=="OFTReal")
+	    if(it->second=="Real")
 	    {
 		writer->createField(it->first, OFTReal, 10, 3);
 	    }
-	    else if(it->second=="OFTInteger")
+	    else if(it->second=="Integer")
 	    {
 		writer->createField(it->first, OFTInteger, 10, 3);
 	    }
-	    else if(it->second=="OFTString")
+	    else if(it->second=="String")
 	    {
 		writer->createField(it->first, OFTString, 40, 1);
 	    }
@@ -2088,7 +2099,24 @@ void QgisApp::fileOpen()
             qDebug( "%s:%d BAD LAYERS FOUND", __FILE__, __LINE__ );
         }
     }
+    //loop through all layers in the layers registry and connect up 
+   // keybindings for the escape key
+  std::map<QString, QgsMapLayer *> myMapLayers 
+    = QgsMapLayerRegistry::instance()->mapLayers();
+  std::map<QString, QgsMapLayer *>::iterator myMapIterator;
+  for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator )
+  {
+    QgsMapLayer * myMapLayer = myMapIterator->second;
+    QObject::connect(this,
+                         SIGNAL(keyPressed(QKeyEvent *)),
+                         myMapLayer,
+                         SLOT(keyPressed(QKeyEvent* )));
+    }
 
+  //set the projections enabled icon in the status bar
+  int myProjectionEnabledFlag =
+         QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
+  projectionsEnabled(myProjectionEnabledFlag);
 } // QgisApp::fileOpen
 
 
@@ -2212,6 +2240,8 @@ void QgisApp::fileSave()
         {
             return;
         }
+        // XXX We should check to see if the file exists before just blasting
+        //     it into oblivion...
 
         QgsProject::instance()->filename( fullPath.filePath() );
     }
@@ -2385,15 +2415,72 @@ void QgisApp::updateRecentProjectPaths()
 // path at the given index in mRecentProjectPaths
 void QgisApp::openProject(int pathIndex)
 {
+  // possibly save any pending work before opening a different project
+  int answer = saveDirty();
+
+  if (answer != QMessageBox::Cancel)
+  {
+    QStringList::Iterator it = mRecentProjectPaths.at(pathIndex);
+    addProject((*it));
+  }
+  //set the projections enabled icon in the status bar
+  int myProjectionEnabledFlag =
+      QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
+  projectionsEnabled(myProjectionEnabledFlag);
+
+} // QgisApp::openProject
+
+/**
+  Open the specified project file; prompt to save previous project if necessary.
+  Used to process a commandline argument or OpenDocument AppleEvent.
+*/
+void QgisApp::openProject(const QString & fileName)
+{
     // possibly save any pending work before opening a different project
     int answer = saveDirty();
 
     if (answer != QMessageBox::Cancel)
     {
-        QStringList::Iterator it = mRecentProjectPaths.at(pathIndex);
-        addProject((*it));
+        try
+        {
+            if ( ! addProject(fileName) )
+            {
+#ifdef QGISDEBUG
+                std::cerr << "unable to load project " << fileName << "\n";
+#endif
+            }
+        }
+        catch ( QgsIOException & io_exception )
+        {
+            QMessageBox::critical( 0x0, 
+                                   "QGIS: Unable to load project", 
+                                   "Unable to load project " + fileName );
+        }
     }
-} // QgisApp::openProject
+}
+
+/**
+  Open a raster or vector file; ignore other files.
+  Used to process a commandline argument or OpenDocument AppleEvent.
+  @returns true if the file is successfully opened
+*/
+bool QgisApp::openLayer(const QString & fileName)
+{
+    QFileInfo fileInfo(fileName);
+    // try to load it as raster
+    bool ok = addRasterLayer(fileInfo, false);
+    if (!ok)
+    {
+        // nope - try to load it as a shape/ogr
+        ok = addLayer(fileInfo);
+        // we have no idea what this file is...
+        if (!ok)
+        {
+            std::cout << "Unable to load " << fileName << std::endl;
+        }
+    }
+}
+
 
 /*
 void QgisApp::filePrint()
@@ -5201,20 +5288,28 @@ void QgisApp::actionNewBookmark_activated()
 {
   // Get the name for the bookmark. Everything else we fetch from
   // the mapcanvas
-  
+
   bool ok;
   QString bookmarkName = QInputDialog::getText("New Bookmark", 
       "Enter a name for the new bookmark:", QLineEdit::Normal,
       QString::null, &ok, this);
   if( ok && !bookmarkName.isEmpty())
   {
-    // create the bookmark
-     QgsBookmarkItem *bmi = new QgsBookmarkItem(bookmarkName, 
-         QgsProject::instance()->title(), mMapCanvas->extent(), -1,
-         QDir::homeDirPath () + "/.qgis/qgis.db");
-     bmi->store();
-     delete bmi;
-     // emit a signal to indicate that the bookmark was added
-     emit bookmarkAdded();
+    // Make sure the database exists
+    if(QgsBookmarks::createDatabase())
+    {
+      // create the bookmark
+      QgsBookmarkItem *bmi = new QgsBookmarkItem(bookmarkName, 
+          QgsProject::instance()->title(), mMapCanvas->extent(), -1,
+          QDir::homeDirPath () + "/.qgis/qgis.db");
+      bmi->store();
+      delete bmi;
+      // emit a signal to indicate that the bookmark was added
+      emit bookmarkAdded();
+    }
+    else
+    {
+      QMessageBox::warning(this,"Error", "Unable to create the bookmark. Your user database may be missing or corrupted");
+    }
   }
-}
+}      

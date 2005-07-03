@@ -22,6 +22,7 @@
 #define QGSDLGPGBUFFER_H
 #include "qgsdlgpgbufferbase.h"
 class QgisIface;
+class QDoubleValidator;
 class QgsDlgPgBuffer:public QgsDlgPgBufferBase
 {
   Q_OBJECT public:
@@ -60,5 +61,7 @@ class QgsDlgPgBuffer:public QgsDlgPgBufferBase
     private:
       //! Pointer to the QGIS interface object
     QgisIface *qI;
+    //! Input validator for the buffer distance
+    QDoubleValidator *distanceValidator;
 };
 #endif // QGSDLGPGBUFFER_H

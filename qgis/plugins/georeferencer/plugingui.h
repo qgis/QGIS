@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2003 by Tim Sutton                                      *
- *   tim@linfiniti.com                                                     *
+ *   Copyright (C) 2005 by Lars Luthman
+ *   larsl@users.sourceforge.net
  *                                                                         *
  *   This is a plugin generated from the QGIS plugin template              *
  *                                                                         *
@@ -37,6 +37,9 @@ private:
 signals:
    void drawRasterLayer(QString);
    void drawVectorLayer(QString,QString,QString);
+   
+   QString mProjBehaviour, mProjectSRS;
+   int mProjectSRSID;
 };
 
 #endif

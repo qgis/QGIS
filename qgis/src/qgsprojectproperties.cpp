@@ -214,8 +214,6 @@ void QgsProjectProperties::apply()
     emit setDestSRSID(mySRSID); 
     // write the projection's _id_ to the project settings rather
     QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSID",(int)mySRSID);
-    // write the currently selected projections _name_ to project settings
-    QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSName",projectionSelector->getSelectedName());
     // write the currently selected projections _proj string_ to project settings
     std::cout << "SpatialRefSys/ProjectSRSProj4String: " <<  projectionSelector->getCurrentProj4String() << std::endl;
     QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSProj4String",projectionSelector->getCurrentProj4String());
@@ -261,9 +259,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry("Gui","/SelectionColorBluePart",myColour.blue()); 
   QgsRenderer::mSelectionColor=myColour;
 
-  std::cerr << __FILE__<<__LINE__<<'\n';
   emit refresh();
-  std::cerr << __FILE__<<__LINE__<<'\n';
 }
 
 //when user clicks ok

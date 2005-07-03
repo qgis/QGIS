@@ -30,9 +30,12 @@
 #include "qgspluginregistry.h"
 
 
-//#define TESTLIB
+#define TESTLIB
 #ifdef TESTLIB
-#ifndef WIN32
+// This doesn't work on WIN32 and causes problems with plugins
+// on OS X (the code doesn't cause a problem but including dlfcn.h
+// renders plugins unloadable)
+#if !defined(WIN32) && !defined(Q_OS_MACX) 
 #include <dlfcn.h>
 #endif
 #endif
@@ -84,8 +87,14 @@ sharedLibExtension = "*.so*";
       for (unsigned i = 0; i < pluginDir.count(); i++)
         {
 #ifdef TESTLIB
-#ifndef WIN32
+          // This doesn't work on WIN32 and causes problems with plugins
+          // on OS X (the code doesn't cause a problem but including dlfcn.h
+          // renders plugins unloadable)
+#if !defined(WIN32) && !defined(Q_OS_MACX)
           // test code to help debug loading problems
+          // This doesn't work on WIN32 and causes problems with plugins
+          // on OS X (the code doesn't cause a problem but including dlfcn.h
+          // renders plugins unloadable)
           QString lib = QString("%1/%2").arg(txtPluginDir->text()).arg(pluginDir[i]);
 //          void *handle = dlopen((const char *) lib, RTLD_LAZY);
           void *handle = dlopen((const char *) lib, RTLD_LAZY | RTLD_GLOBAL);
@@ -98,7 +107,7 @@ sharedLibExtension = "*.so*";
               std::cout << "dlopen suceeded" << std::endl;
               dlclose(handle);
             }
-#endif //#ifndef WIN32
+#endif //#ifndef WIN32 && Q_OS_MACX
 #endif //#ifdef TESTLIB
 
 

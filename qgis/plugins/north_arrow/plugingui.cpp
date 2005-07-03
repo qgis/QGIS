@@ -48,8 +48,11 @@ void QgsNorthArrowPluginGui::pbnOK_clicked()
   hide();
   //close the dialog
   emit rotationChanged(sliderRotation->value());
+  emit enableAutomatic(cboxAutomatic->isChecked());
   emit changePlacement(cboPlacement->currentText());
   emit enableNorthArrow(cboxShow->isChecked());
+  emit needToRefresh();
+
   done(1);
 }
 void QgsNorthArrowPluginGui::pbnCancel_clicked()
@@ -71,6 +74,16 @@ void QgsNorthArrowPluginGui::setPlacement(QString thePlacementQString)
 void QgsNorthArrowPluginGui::setEnabled(bool theBool)
 {
   cboxShow->setChecked(theBool);
+}
+
+void QgsNorthArrowPluginGui::setAutomatic(bool theBool)
+{
+  cboxAutomatic->setChecked(theBool);
+}
+
+void QgsNorthArrowPluginGui::setAutomaticDisabled()
+{
+  cboxAutomatic->setEnabled(false);
 }
 
 

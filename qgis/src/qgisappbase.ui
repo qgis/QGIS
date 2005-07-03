@@ -508,6 +508,9 @@
             <property name="menuText">
                 <string>Capture Point</string>
             </property>
+            <property name="whatsThis">
+              <string>Capture (digitise) a point on the current layer. The layer must be in edit mode.</string> 
+            </property>
         </action>
         <action>
             <property name="name">
@@ -522,6 +525,9 @@
             <property name="menuText">
                 <string>Capture Line</string>
             </property>
+            <property name="whatsThis">
+              <string>Capture (digitise) a line on the current layer. The layer must be in edit mode.</string> 
+            </property>
         </action>
         <action>
             <property name="name">
@@ -535,6 +541,9 @@
             </property>
             <property name="menuText">
                 <string>Capture Polygon</string>
+            </property>
+            <property name="whatsThis">
+              <string>Capture (digitise) a polygon on the current layer. The layer must be in edit mode.</string> 
             </property>
         </action>
         <action>
@@ -552,6 +561,9 @@
             </property>
             <property name="menuText">
                 <string>Measure</string>
+            </property>
+            <property name="whatsThis">
+              <string>Measure distances on the map canvas.</string>
             </property>
         </action>
     </actiongroup>
@@ -768,6 +780,9 @@
         <property name="visible">
             <bool>true</bool>
         </property>
+        <property name="accel">
+            <string>Ctrl+M</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -962,7 +977,7 @@
             <string>&amp;Properties</string>
         </property>
         <property name="toolTip">
-            <string>Properties for the selected layer</string>
+            <string>Properties for the selected layer, including rendering and projection settings.</string>
         </property>
     </action>
     <action>
@@ -981,6 +996,9 @@
         <property name="menuText">
             <string>Zoom to &amp;layer</string>
         </property>
+        <property name="whatsThis">
+          <string>Zoom to the extent of the active layer</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -997,6 +1015,9 @@
         </property>
         <property name="accel">
             <string>Ctrl+P</string>
+        </property>
+        <property name="whatsThis">
+          <string>Open the Map Composer to create and print a map using the current layers and settings.</string>
         </property>
     </action>
     <action>
@@ -1017,6 +1038,9 @@
         </property>
         <property name="accel">
             <string>+</string>
+        </property>
+        <property name="whatsThis">
+          <string>Add all layers to the overview map.</string>
         </property>
     </action>
     <action>
@@ -1041,6 +1065,9 @@
         <property name="accel">
             <string>-</string>
         </property>
+        <property name="whatsThis">
+          <string>Remove all layers to the overview map.</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -1060,6 +1087,9 @@
         </property>
         <property name="accel">
             <string>S</string>
+        </property>
+        <property name="whatsThis">
+          <string>Toggle the visibility of all layers to on and redraw the map.</string>
         </property>
     </action>
     <action>
@@ -1083,6 +1113,9 @@
         </property>
         <property name="accel">
             <string>H</string>
+        </property>
+        <property name="whatsThis">
+          <string>Toggle the visibility of all layers to off and clear the map.</string>
         </property>
     </action>
     <actiongroup>
@@ -1148,6 +1181,9 @@
         <property name="menuText">
             <string>Remove Layer</string>
         </property>
+        <property name="whatsThis">
+          <string>Remove the active layer from the map.</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -1162,6 +1198,9 @@
         <property name="menuText">
             <string>Toggle In Overview</string>
         </property>
+        <property name="whatsThis">
+            <string>Add or remove the active layer to the Overview map.</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -1172,6 +1211,9 @@
         </property>
         <property name="menuText">
             <string>New Vectorlayer</string>
+        </property>
+        <property name="whatsThis">
+          <string>Create a new vector layer (shapefile) for editing.</string>
         </property>
     </action>
     <action>
@@ -1209,6 +1251,9 @@
         <property name="menuText">
             <string>Custom Projections</string>
         </property>
+        <property name="whatsThis">
+          <string>Create or manage custom projection definitions.</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -1223,6 +1268,9 @@
         <property name="menuText">
             <string>Geospatial bookmarks...</string>
         </property>
+        <property name="whatsThis">
+          <string>Show the spatial bookmarks dialog and zoom to a bookmark or delete unwanted bookmarks.</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -1236,6 +1284,12 @@
         </property>
         <property name="statusTip">
             <string>Create a new geospatial bookmark for the current view</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+B</string>
+        </property>
+        <property name="whatsThis">
+            <string>Create a new geospatial bookmark for the current view extent.</string>
         </property>
     </action>
     <action>

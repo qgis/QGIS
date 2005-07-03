@@ -45,7 +45,8 @@ email                : tim@linfiniti.com
 
 //non qt includes
 #include <iostream>
-#include <math.h>
+#include <cmath>
+#include <cassert>
 
 //the gui subclass
 #include "plugingui.h"
@@ -67,6 +68,10 @@ static const char * const description_ = "This plugin displays a north arrow ove
 static const char * const version_ = "Version 0.1";
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 
+const double QgsNorthArrowPlugin::PI = 3.14159265358979323846;
+//  const double QgsNorthArrowPlugin::DEG2RAD = 0.0174532925199433;
+const double QgsNorthArrowPlugin::TOL = 1e-8;
+
 
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
@@ -80,6 +85,7 @@ QgsNorthArrowPlugin::QgsNorthArrowPlugin(QgisApp * theQGisApp, QgisIface * theQg
     QgisPlugin(name_,description_,version_,type_)
 {
   mRotationInt=0;
+  mAutomatic=true;
   mPlacement=tr("Bottom Left");
 }
 
@@ -123,6 +129,7 @@ void QgsNorthArrowPlugin::projectRead()
     mRotationInt = QgsProject::instance()->readNumEntry("NorthArrow","/Rotation",0);
     mPlacement = QgsProject::instance()->readEntry("NorthArrow","/Placement","Bottom Left");
     mEnable = QgsProject::instance()->readBoolEntry("NorthArrow","/Enabled",true);
+    mAutomatic = QgsProject::instance()->readBoolEntry("NorthArrow","/Automatic",true);
 }
 
 //method defined in interface
@@ -139,12 +146,15 @@ void QgsNorthArrowPlugin::run()
   myPluginGui->setRotation(mRotationInt);
   myPluginGui->setPlacement(mPlacement);
   myPluginGui->setEnabled(mEnable);
+  myPluginGui->setAutomatic(mAutomatic);
+
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(rotationChanged(int)), this, SLOT(rotationChanged(int)));
   connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
+  connect(myPluginGui, SIGNAL(enableAutomatic(bool)), this, SLOT(setAutomatic(bool)));
   connect(myPluginGui, SIGNAL(enableNorthArrow(bool)), this, SLOT(setEnabled(bool)));
+  connect(myPluginGui, SIGNAL(needToRefresh()), this, SLOT(refreshCanvas()));
   myPluginGui->show();
-
 }
 
 //! Refresh the map display using the mapcanvas exported via the plugin interface
@@ -180,8 +190,13 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
       //           properly about its center
       //(x cos a + y sin a - x, -x sin a + y cos a - y)
       //
-      const double PI = 3.14159265358979323846;
-      double myRadiansDouble = (PI/180) * mRotationInt;
+
+      // could move this call to somewhere else so that it is only
+      // called when the projection or map extent changes
+      if (mAutomatic)
+        calculateNorthDirection();
+
+      double myRadiansDouble = mRotationInt * PI / 180.0;
       int xShift = static_cast<int>((
                                       (centerXDouble * cos(myRadiansDouble)) +
                                       (centerYDouble * sin(myRadiansDouble))
@@ -258,7 +273,6 @@ void QgsNorthArrowPlugin::rotationChanged(int theInt)
 {
   mRotationInt = theInt;
   QgsProject::instance()->writeEntry("NorthArrow","/Rotation", mRotationInt  );
-  refreshCanvas();
 }
 
 //! set placement of north arrow
@@ -266,16 +280,125 @@ void QgsNorthArrowPlugin::setPlacement(QString theQString)
 {
   mPlacement = theQString;
   QgsProject::instance()->writeEntry("NorthArrow","/Placement", mPlacement);
-  refreshCanvas();
 }
 
 void QgsNorthArrowPlugin::setEnabled(bool theBool)
 {
   mEnable = theBool;
   QgsProject::instance()->writeEntry("NorthArrow","/Enabled", mEnable );
-  refreshCanvas();
 }
 
+void QgsNorthArrowPlugin::setAutomatic(bool theBool)
+{
+  mAutomatic = theBool;
+  QgsProject::instance()->writeEntry("NorthArrow","/Automatic", mAutomatic );
+  if (mAutomatic)
+    calculateNorthDirection();
+}
+
+bool QgsNorthArrowPlugin::calculateNorthDirection()
+{
+  QgsMapCanvas& mapCanvas = *(qGisInterface->getMapCanvas());
+
+  bool goodDirn = false;
+
+  if (mapCanvas.layerCount() > 0)
+  {
+    // Grab an SRS from any layer
+    QgsMapLayer& mapLayer = *(mapCanvas.getZpos(0));
+    QgsSpatialRefSys& outputSRS = mapLayer.coordinateTransform()->destSRS();
+
+    bool yy = outputSRS.geographicFlag();
+
+    if (outputSRS.isValid() && !outputSRS.geographicFlag())
+    {
+      // Use a geographic SRS to get lat/long to work out direction
+      QgsSpatialRefSys ourSRS;
+      ourSRS.createFromProj4("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
+      assert(ourSRS.isValid());
+
+      QgsCoordinateTransform transform(outputSRS, ourSRS);
+
+      QgsRect extent = mapCanvas.extent();
+      QgsPoint p1(extent.center());
+      // A point a bit above p1. XXX assumes that y increases up!!
+      // May need to involve the maptopixel transform if this proves
+      // to be a problem.
+      QgsPoint p2(p1.x(), p1.y() + extent.height() * 0.25); 
+
+      // project p1 and p2 to geographic coords
+      try
+      {        
+	p1 = transform.transform(p1);
+	p2 = transform.transform(p2);
+      }
+      catch (QgsException &e)
+      {
+	// just give up
+	return false;
+      }
+
+      // Work out the value of the initial heading one takes to go
+      // from point p1 to point p2. The north direction is then that
+      // many degrees anti-clockwise or vertical.
+
+      // Take some care to not divide by zero, etc, and ensure that we
+      // get sensible results for all possible values for p1 and p2.
+
+      goodDirn = true;
+      double angle = 0.0;
+
+      // convert to radians for the equations below
+      p1.multiply(PI/180.0);
+      p2.multiply(PI/180.0);
+
+      double y = sin(p2.x() - p1.x()) * cos(p2.y());
+      double x = cos(p1.y()) * sin(p2.y()) - 
+	         sin(p1.y()) * cos(p2.y()) * cos(p2.x()-p1.x());
+
+      if (y > 0.0)
+      {
+	if (x > TOL) 
+	  angle = atan(y/x);
+	else if (x < -TOL) 
+	  angle = PI - atan(-y/x);
+	else
+	  angle = 0.5 * PI;
+      }
+      else if (y < 0.0)
+      {
+	if (x > TOL)
+	  angle = -atan(-y/x);
+	else if (x < -TOL)
+	  angle = atan(y/x) - PI;
+	else
+	  angle = 1.5 * PI;
+      }
+      else
+      {
+	if (x > TOL)
+	  angle = 0.0;
+	else if (x < -TOL)
+	  angle = PI;
+	else
+        {
+	  angle = 0.0; // p1 = p2
+	  goodDirn = false;
+	}
+      }
+      // And set the angle of the north arrow. Perhaps do something
+      // different if goodDirn = false.
+      mRotationInt = static_cast<int>(round(fmod(360.0-angle*180.0/PI, 360.0)));
+    }
+    else
+    {
+      // For geographic SRS and for when there are no layers, set the
+      // direction back to the default
+      mRotationInt = 0;
+    }
+  }
+  return goodDirn;
+}
 
 
 

@@ -26,7 +26,8 @@
 #include "qgsrect.h"
 #include "qgscsexception.h"
 #include "qgsspatialrefsys.h"
-
+class QDomNode;
+class QDomDocument;
 
 //non qt includes
 #include <iostream>
@@ -56,6 +57,14 @@ class QgsCoordinateTransform: public QObject
  public:
     /*! Default constructor. Make sure you use initialised() manually if you use this one! */
     QgsCoordinateTransform() ;
+
+  /* Constructs a QgsCoordinateTransform using QgsSpatialRefSys objects.
+   * @param theSource SRS of the layer's coordinate system
+   * @param theDest SRS of the map canvas coordinate system
+   */
+  QgsCoordinateTransform(const QgsSpatialRefSys& theSource, 
+                         const QgsSpatialRefSys& theDest);
+
     /*!
      * Constructs a QgsCoordinateTransform using the Well Known Text representation
      * of the layer and map canvas coordinate systems
@@ -101,13 +110,6 @@ class QgsCoordinateTransform: public QObject
      * @return QgsSpatialRefSys of the map canvas coordinate system
      */
     QgsSpatialRefSys& destSRS() { return mDestSRS; }
-  /*! 
-   * Flag to indicate whether the coordinate systems have been initialised
-   * @return true if initialised, otherwise false
-   */
-   bool isInitialised() {return mInitialisedFlag;};
-   
-       
     /*! Transform the point from Source Coordinate System to Destination Coordinate System
     * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
     * otherwise points are transformed from map canvas CS to layerCS.
@@ -116,7 +118,6 @@ class QgsCoordinateTransform: public QObject
     * @return QgsPoint in Destination Coordinate System
      */    
    QgsPoint transform(const QgsPoint p,TransformDirection direction=FORWARD) const;
-    
     /*! Transform the point specified by x,y from Source Coordinate System to Destination Coordinate System
     * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
     * otherwise points are transformed from map canvas CS to layerCS.
@@ -153,7 +154,15 @@ class QgsCoordinateTransform: public QObject
     * @return QgsRect in Destination Coordinate System
      */        
    void transformCoords( const int &numPoint, double *x, double *y, double *z,TransformDirection direction=FORWARD) const;
-
+  /*! 
+   * Flag to indicate whether the coordinate systems have been initialised
+   * @return true if initialised, otherwise false
+   */
+   bool isInitialised() {return mInitialisedFlag;};
+   /*! See if the transform short circuits because src and dest are equivalent
+    * @return bool True if it short circuits
+    */
+    bool isShortCircuited() {return mShortCircuit;};
  public slots:
     /*! Change the destination coordinate system by passing it a qgis srsid
     * A QGIS srsid is a unique key value to an entry on the tbl_srs in the
@@ -167,9 +176,28 @@ class QgsCoordinateTransform: public QObject
     void setDestSRSID (long theSRSID);
     //!initialise is used to actually create the Transformer instance
     void initialise();
-    
+
+    /*! Restores state from the given DOM node.
+    * @param theNode The node from which state will be restored
+    * @return bool True on success, False on failure
+    */
+    bool readXML( QDomNode & theNode );
+    /*! Stores state to the given DOM node in the given document
+    * @param theNode The node in which state will be restored
+    * @param theDom The document in which state will be stored
+    * @return bool True on success, False on failure
+    */
+    bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
  private:
-    //! flag to show whether the transform is properly initialised or not
+
+    /*! 
+     * Flag to indicate that the source and destination coordinate systems are
+     * equal and not transformation needs to be done
+     */
+    bool mShortCircuit;
+    /*!
+     * flag to show whether the transform is properly initialised or not
+     */
     bool mInitialisedFlag;
     /*! 
      * QgsSpatialRefSys of the source (layer) coordinate system 
@@ -179,25 +207,6 @@ class QgsCoordinateTransform: public QObject
      * QgsSpatialRefSys of the destination (map canvas) coordinate system 
      */
     QgsSpatialRefSys mDestSRS;
-    /** Dunno if we need this - XXX Delete if unused */
-    bool mInputIsDegrees;
-    /*! 
-     * Flag to indicate that the source and destination coordinate systems are
-     * equal and not transformation needs to be done
-     */
-    bool mShortCircuit;
-    
-    //XXX Delete these!
-    //OGRCoordinateTransformation *forwardTransform;
-    //OGRCoordinateTransformation *inverseTransform;
-    /*!
-     * Proj4 parameters for the source (layer) coordinate system
-     */
-    QString mProj4SrcParms;
-    /*!
-     * Proj4 parameters for the destination (map canvas) coordinate system
-     */
-    QString mProj4DestParms;
     /*!
      * Proj4 data structure of the source projection (layer coordinate system)
      */
@@ -207,6 +216,54 @@ class QgsCoordinateTransform: public QObject
      */
     projPJ mDestinationProjection;
 };
+
+//! Output stream operator
+inline std::ostream& operator << (std::ostream& os, const QgsCoordinateTransform &r)
+{
+  QString mySummary ("\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:");
+  mySummary += "\n\tInitialised? : ";
+/*
+  if (r.isInitialised()) 
+  {
+    mySummary += "Yes";
+  }
+  else
+  {
+    mySummary += "No" ;
+  }
+  mySummary += "\n\tShort Circuit?  : " ;
+  if (r.isShortCircuited()) 
+  {
+    mySummary += "Yes";
+  }
+  else
+  {
+    mySummary += "No" ;
+  }
+
+  mySummary += "\n\tSource Spatial Ref Sys  : "; 
+  if (r.sourceSRS()) 
+  {
+    mySummary << r.sourceSRS();
+  }
+  else
+  {
+    mySummary += "Undefined" ;
+  }
+
+  mySummary += "\n\tDest Spatial Ref Sys  : " ;
+  if (r.destSRS()) 
+  {
+    mySummary << r.destSRS();
+  }
+  else
+  {
+    mySummary += "Undefined" ;
+  }
+*/
+  mySummary+=("\nCoordinate Transform def ends \n%%%%%%%%%%%%%%%%%%%%%%%%\n");
+  return os << mySummary << std::endl;
+}
 
 
 #endif // QGSCOORDINATETRANSFORM_H
