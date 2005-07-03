@@ -2,7 +2,9 @@
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 QGIS Change Log
-2005-05-23 [gsherman 0.7rc1
+2005-07-03 [morb_au] 0.7.devel2
+** Merged changes in the 0.7 release candidate branch (as at "Release-0_7-candidate-pre1") back into the trunk.
+2005-05-23 [gsherman] 0.7rc1
 ** Fixed bookmarks bug related to non-existent user database. The
    database is now properly created if it doesn't exist.
 2005-04-12 [timlinux] 0.6devel26
