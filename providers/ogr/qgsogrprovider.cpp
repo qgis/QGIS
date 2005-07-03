@@ -1148,19 +1148,26 @@ int QgsOgrProvider::capabilities() const
   // collect abilities reported by OGR
   if (ogrLayer)
   {
-    if (ogrLayer->TestCapability(OLCRandomRead))    
+    // Whilst the OGR documentation (e.g. at
+    // http://www.gdal.org/ogr/classOGRLayer.html#a17) states "The capability
+    // codes that can be tested are represented as strings, but #defined
+    // constants exists to ensure correct spelling", we always use strings
+    // here.  This is because older versions of OGR don't always have all
+    // the #defines we want to test for here.
+
+    if (ogrLayer->TestCapability("RandomRead"))
     // TRUE if the GetFeature() method works for this layer.
     {
       // TODO: Perhaps influence if QGIS caches into memory (vs read from disk every time) based on this setting.
     }
 
-    if (ogrLayer->TestCapability(OLCSequentialWrite))
+    if (ogrLayer->TestCapability("SequentialWrite"))
     // TRUE if the CreateFeature() method works for this layer.
     {
       ability |= QgsVectorDataProvider::AddFeatures;
     }
 
-    if (ogrLayer->TestCapability(OLCRandomWrite))
+    if (ogrLayer->TestCapability("RandomWrite"))
     // TRUE if the SetFeature() method is operational on this layer.
     {
       ability |= QgsVectorDataProvider::ChangeAttributeValues;
@@ -1169,10 +1176,12 @@ int QgsOgrProvider::capabilities() const
       // TODO "You can't modify the vertices of existing structures".
       // TODO Need to work out versions of shapelib vs versions of GDAL/OGR
       // TODO And test appropriately.
-      ability |= QgsVectorDataProvider::ChangeGeometries;
+
+      // This provider can't change geometries yet anyway (cf. Postgres provider)
+      // ability |= QgsVectorDataProvider::ChangeGeometries;
     }
 
-    if (ogrLayer->TestCapability(OLCFastSpatialFilter))
+    if (ogrLayer->TestCapability("FastSpatialFilter"))
     // TRUE if this layer implements spatial filtering efficiently.
     // Layers that effectively read all features, and test them with the 
     // OGRFeature intersection methods should return FALSE.
@@ -1182,7 +1191,7 @@ int QgsOgrProvider::capabilities() const
       // TODO: Perhaps use as a clue by QGIS whether it should build and maintain it's own spatial index for features in this layer.
     }
 
-    if (ogrLayer->TestCapability(OLCFastFeatureCount))
+    if (ogrLayer->TestCapability("FastFeatureCount"))
     // TRUE if this layer can return a feature count
     // (via OGRLayer::GetFeatureCount()) efficiently ... ie. without counting
     // the features. In some cases this will return TRUE until a spatial
@@ -1191,7 +1200,7 @@ int QgsOgrProvider::capabilities() const
       // TODO: Perhaps use as a clue by QGIS whether it should spawn a thread to count features.
     }
 
-    if (ogrLayer->TestCapability(OLCFastGetExtent))
+    if (ogrLayer->TestCapability("FastGetExtent"))
     // TRUE if this layer can return its data extent 
     // (via OGRLayer::GetExtent()) efficiently ... ie. without scanning
     // all the features. In some cases this will return TRUE until a
@@ -1200,7 +1209,7 @@ int QgsOgrProvider::capabilities() const
       // TODO: Perhaps use as a clue by QGIS whether it should spawn a thread to calculate extent.
     }
 
-    if (ogrLayer->TestCapability(OLCFastSetNextByIndex))
+    if (ogrLayer->TestCapability("FastSetNextByIndex"))
     // TRUE if this layer can perform the SetNextByIndex() call efficiently.
     {
       // No use required for this QGIS release.
