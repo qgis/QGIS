@@ -71,7 +71,7 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name) : QgsOptionsBase(paren
   {
     radUseGlobalProjection->setChecked(true);
   }
-  mGlobalSRSID = settings.readNumEntry("/qgis/projections/defaultProjectionSRSID");
+  mGlobalSRSID = settings.readNumEntry("/qgis/projections/defaultProjectionSRSID",GEOSRS_ID);
   //! @todo changes this control name in gui to txtGlobalProjString
   txtGlobalWKT->setText(QString::number(mGlobalSRSID));
 }
