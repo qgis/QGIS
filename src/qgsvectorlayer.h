@@ -444,8 +444,7 @@ protected slots:
   void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPicture* marker, double markerScaleFactor, bool projectionsEnabledFlag );
 
 private:                       // Private attributes
-  /** A simple helper method to find out if on the fly projections are enabled or not */
-  bool projectionsEnabled() const;
+
   //! Draws the layer labels using coordinate transformation
   void drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst);
 

@@ -10,6 +10,8 @@
 #include <qstringlist.h>
 #include <qregexp.h>
 #include <qmap.h>
+class QDomNode;
+class QDomDocument;
 
 //qgis includes
 #include <qgis.h>
@@ -190,6 +192,27 @@ class QgsSpatialRefSys
           */
          OGRSpatialReference toOgrSrs();
 
+         /*! Restores state from the given DOM node.
+         * @param theNode The node from which state will be restored
+         * @return bool True on success, False on failure
+         */
+          bool readXML( QDomNode & theNode );
+        /*! Stores state to the given DOM node in the given document.
+         * Below is an example of the generated tag.
+         *  <spatialrefsys>
+         *      <proj4>+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs </proj4>
+         *       <srsid>2585</srsid>
+         *       <srid>4326</srid>
+         *       <epsg>4326</epsg>
+         *       <description>WGS 84</description>
+         *       <projectionacronym>longlat</projectionacronym>
+         *       <ellipsoidacronym>WGS84</ellipsoidacronym>
+         *   </spatialrefsys>
+         * @param theNode The node in which state will be restored
+         * @param theDom The document in which state will be stored
+         * @return bool True on success, False on failure
+         */
+          bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
 
         // Accessors -----------------------------------
 
@@ -203,20 +226,24 @@ class QgsSpatialRefSys
         long srid() const;
         /*! Get the Description
          * @return  QString the Description A textual description of the srs.
+         * @note A zero length string will be returned if the description is uninitialised
          */
         QString description () const;
         /*! Get the Projection Acronym
          * @return  QString theProjectionAcronym The official proj4 acronym for the projection family
+         * @note A zero length string will be returned if the projectionAcronym is uninitialised
          */
         QString projectionAcronym() const;
         /*! Get the Ellipsoid Acronym
          * @return  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
+         * @note A zero length string will be returned if the ellipsoidAcronym is uninitialised
          */
         QString ellipsoidAcronym () const;
-        /* Get the Proj Proj4String. If proj and ellps keys are found in the parameters,
+        /** Get the Proj Proj4String. If proj and ellps keys are found in the parameters,
          * they will be stripped out and the Projection and ellipsoid acronyms will be
          * overridden with these.
          * @return  QString theProj4String Proj4 format specifies that define this srs.
+         * @note A zero length string will be returned if the proj4String is uninitialised
          */
         QString proj4String() const;
         /*! Get this Geographic? flag
@@ -239,9 +266,12 @@ class QgsSpatialRefSys
 
         // Mutators -----------------------------------
 
-
-        /*! Set the SrsId
+        /*! Set the QGIS  SrsId
          *  @param  long theSrsId The internal sqlite3 srs.db primary key for this srs 
+         */
+        void setSrsId(long theSrsId);
+        /*! Set the postgis srid
+         *  @param  long theSrsId The postgis spatial_ref_sys key for this srs 
          */
         void setSrid(long theSrid);
         /*! Set the Description
@@ -256,16 +286,18 @@ class QgsSpatialRefSys
          * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
          */
         void setGeographicFlag (bool theGeoFlag);
-
-        /*! Set the postgis srid for this srs
-         * @param  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
-         */
-        void setPostgisSrid (long theSrid);
         /*! Set the EPSG identifier for this srs
          * @param  long theEpsg the ESPG identifier for this srs (defaults to 0)
          */
         void setEpsg (long theEpsg);
-
+        /*! Set the projection acronym
+         * @param QString the acronym (must be a valid proj4 projection acronym)
+         */
+        void setProjectionAcronym(QString theProjectionAcronym);
+        /*! Set the ellipsoid acronym
+         * @param QString the acronym (must be a valid proj4 ellipsoid acronym)
+         */
+        void setEllipsoidAcronym(QString theEllipsoidAcronym);
     private:
         //!The internal sqlite3 srs.db primary key for this srs 
         long    mSrsId;
@@ -296,8 +328,8 @@ class QgsSpatialRefSys
 //! Output stream operator
 inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
 {
-  QString mySummary ("\nSpatial Reference System:");
-  mySummary += "\n\tDescription : ";
+  QString mySummary ("\n\tSpatial Reference System:");
+  mySummary += "\n\t\tDescription : ";
   if (r.description()) 
   {
     mySummary += r.description().latin1();
@@ -306,7 +338,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
   {
     mySummary += "Undefined" ;
   }
-  mySummary += "\n\tProjection  : " ;
+  mySummary += "\n\t\tProjection  : " ;
   if (r.projectionAcronym()) 
   {
     mySummary += r.projectionAcronym().latin1();
@@ -316,7 +348,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
     mySummary += "Undefined" ;
   }
 
-  mySummary += "\n\tEllipsoid   : "; 
+  mySummary += "\n\t\tEllipsoid   : "; 
   if (r.ellipsoidAcronym()) 
   {
     mySummary += r.ellipsoidAcronym().latin1();
@@ -326,7 +358,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
     mySummary += "Undefined" ;
   }
 
-  mySummary += "\n\tProj4String  : " ;
+  mySummary += "\n\t\tProj4String  : " ;
   if (r.proj4String()) 
   {
     mySummary += r.proj4String().latin1();

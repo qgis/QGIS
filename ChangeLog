@@ -2,7 +2,9 @@
 ------------------------------------------------------------------------------
 Version 0.6 'Simon' .... development version
 QGIS Change Log
-
+2005-05-23 [gsherman 0.7rc1
+** Fixed bookmarks bug related to non-existent user database. The
+   database is now properly created if it doesn't exist.
 2005-04-12 [timlinux] 0.6devel26
 ** Added option to vector props dlg to let user change projection
 2005-04-21 [timlinux] 0.6devel25

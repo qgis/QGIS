@@ -8,7 +8,11 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = svg images themes resources
+if HAVE_QTMAC
+MAC = mac
+endif
+
+SUBDIRS = svg images themes resources $(MAC)
 
 if !HAVE_QTMAC
 PREFIX=-DPREFIX=\"$(prefix)\"
@@ -30,7 +34,14 @@ WIDGETPATH=../widgets
 
 
 ## main app
+if HAVE_QTMAC
+# Qt/Mac binary must be in MacOS directory within bundle, not in bin subdirectory
+# (configure ensures that prefix ends in qgis.app/Contents/MacOS)
+macbindir = $(exec_prefix)
+macbin_PROGRAMS = qgis
+else
 bin_PROGRAMS = qgis
+endif
 
 ## ancillary library for plug-ins
 lib_LTLIBRARIES = libqgis.la

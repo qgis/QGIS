@@ -30,6 +30,13 @@
 #include "qgsscangeometries.h"
 #include "../../src/qgis.h"
 
+// for htonl
+#ifdef WIN32
+#include <winsock.h>
+#else
+#include <netinet/in.h>
+#endif    
+
 
 QgsShapeFile::QgsShapeFile(QString name){
   filename = name;
@@ -50,7 +57,11 @@ QgsShapeFile::QgsShapeFile(QString name){
 }
 
 QgsShapeFile::~QgsShapeFile(){
-  delete ogrLayer;
+  if(ogrDataSource != 0)
+  {
+    // don't delete the layer if the datasource is bad -- (causes crash)
+    delete ogrLayer;
+  }
   delete ogrDataSource;
   delete filename;
   delete geom_type;
@@ -152,6 +163,16 @@ QString QgsShapeFile::getFeatureClass(){
       // read header
       DbaseHeader dbh;
       dbf.read((char *)&dbh, sizeof(dbh));
+      // Check byte order
+      if(htonl(1) == 1) 
+      {
+        /* DbaseHeader is stored in little-endian format.
+         * The num_recs, size_hdr and size_rec fields must be byte-swapped when read
+         * on a big-endian processor. Currently only size_hdr is used.
+         */
+        unsigned char *byte = reinterpret_cast<unsigned char *>(&dbh.size_hdr);
+        unsigned char t = *byte; *byte = *(byte+1); *(byte+1) = t;
+      }
 
       Fda fda;
       QString str_type = "varchar(";
@@ -236,15 +257,24 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
     if(!column_names[n][0].isLetter())
       result = false;
     char * esc_str = new char[column_names[n].length()*2+1];
+    std::cerr << "Escaping " << column_names[n] << " to ";
     PQescapeString(esc_str, (const char *)column_names[n].lower(), column_names[n].length());
+    std::cerr << esc_str << std::endl; 
     query += esc_str;
+    std::cerr << query << std::endl; 
     query += " ";
+    std::cerr << query << std::endl; 
     query += column_types[n];
+    std::cerr << query << std::endl; 
     if(n<column_names.size()-1)
+    {
       query += ", ";
+      std::cerr << query << std::endl; 
+    }
     delete[] esc_str;
   }
   query += " )";
+      std::cerr << query << std::endl; 
 
   PGresult *res = PQexec(conn, (const char *)query);
   qWarning(query);

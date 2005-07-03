@@ -85,7 +85,18 @@ dnl ---------------------------------------------------------------------------
 dnl Qt check
 dnl ---------------------------------------------------------------------------
 AQ_CHECK_QT
-AM_CONDITIONAL([HAVE_QTMAC], [test x$QTDIR != x -a -f "$QTDIR/config.tests/mac/tst_mac_version"])
+
+dnl ---------------------------------------------------------------------------
+dnl Qt/Mac check (install everything into application bundle)
+dnl ---------------------------------------------------------------------------
+if test x$QTDIR != x -a -f "$QTDIR/config.tests/mac/tst_mac_version"; then
+  have_qtmac=yes
+  bundle_suffix=$PACKAGE.app/Contents/MacOS
+  if test `expr "$prefix" : ".*$bundle_suffix$"` -eq 0; then
+    prefix="$prefix/$bundle_suffix"
+  fi
+fi
+AM_CONDITIONAL([HAVE_QTMAC], [test "$have_qtmac" = "yes"])
 
 dnl ---------------------------------------------------------------------------
 dnl GDAL/OGR
@@ -411,6 +422,9 @@ AC_CONFIG_FILES([
   src/resources/Makefile
   src/themes/Makefile
   src/themes/default/Makefile
+  src/mac/Makefile
+  src/mac/Contents/Makefile
+  src/mac/Contents/Resources/Makefile
   providers/Makefile 
   providers/ogr/Makefile
   providers/postgres/Makefile
@@ -472,7 +486,11 @@ echo ""
 echo "Debug         : $ac_debug"
 echo "Plugin dir    : ${libdir}/$PACKAGE"
 echo ""
-echo "The binary will be installed in $prefix/bin"
+if test "$have_qtmac" = "yes"; then
+  echo "The binary will be installed in $prefix"
+else
+  echo "The binary will be installed in $prefix/bin"
+fi
 echo ""
 echo "The build is using Qt in $QTDIR"
 echo "------------------------------------------"

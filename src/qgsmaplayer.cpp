@@ -18,6 +18,8 @@
 
 #include <cfloat>
 #include <iostream>
+#include <limits>
+#include <cmath>
 
 #include <qapplication.h>
 #include <qdatetime.h>
@@ -30,6 +32,7 @@
 #include <qevent.h>
 
 #include "qgsrect.h"
+#include "qgsproject.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
@@ -219,6 +222,14 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
 
     const char * layerNameStr = mne.text(); // debugger probe
 
+    //read srs
+    QDomNode srsNode = layer_node.namedItem("coordinatetransform");
+    if( ! srsNode.isNull()  )
+    {
+       mCoordinateTransform=new QgsCoordinateTransform();
+       mCoordinateTransform->readXML(srsNode);
+    }
+
     // now let the children grab what they need from the DOM node.
     return readXML_( layer_node );
 
@@ -297,6 +308,9 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
     // zorder
     // This is no longer stored in the project file. It is superflous since the layers
     // are written and read in the proper order.
+
+    //write the projection 
+    mCoordinateTransform->writeXML(maplayer,document);
 
     // now append layer node to map layer node
 
@@ -551,4 +565,124 @@ QgsCoordinateTransform * QgsMapLayer::coordinateTransform()
 #endif
   
  return mCoordinateTransform;
+}
+
+bool QgsMapLayer::projectionsEnabled() const
+{
+  if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool QgsMapLayer::projectExtent(QgsRect& extent, QgsRect& r2)
+{
+  bool split = false;
+
+  if (projectionsEnabled())
+  {
+    try
+    {
+#ifdef QGISDEBUG
+      std::cerr << "Getting extent of canvas in layers CS. Canvas is " 
+                << extent << '\n'; 
+#endif
+      // Split the extent into two if the source SRS is
+      // geographic and the extent crosses the split in
+      // geographic coordinates (usually +/- 180 degrees,
+      // and is assumed to be so here), and draw each
+      // extent separately.
+      static const double splitCoord = 180.0;
+
+      if (mCoordinateTransform->sourceSRS().geographicFlag())
+      {
+        // Note: ll = lower left point
+        //   and ur = upper right point
+        QgsPoint ll = mCoordinateTransform->transform(
+                          extent.xMin(), extent.yMin(), 
+                          QgsCoordinateTransform::INVERSE);
+
+        QgsPoint ur = mCoordinateTransform->transform(
+                          extent.xMax(), extent.yMax(), 
+                          QgsCoordinateTransform::INVERSE);
+
+        if (ll.x() > ur.x())
+        {
+          extent.set(ll, QgsPoint(splitCoord, ur.y()));
+          r2.set(QgsPoint(-splitCoord, ll.y()), ur);
+          split = true;
+        }
+        else // no need to split
+          extent = calcProjectedBoundingBox(extent);
+      }
+      else // can't cross 180
+        extent = calcProjectedBoundingBox(extent);
+    }
+    catch (QgsCsException &e)
+      {
+        qDebug( "Transform error caught in %s line %d:\n%s", 
+                __FILE__, __LINE__, e.what());
+      }
+  }
+  return split;
+}
+
+QgsRect QgsMapLayer::calcProjectedBoundingBox(QgsRect& extent)
+{
+  // Calculate the bounding box of the canvas extent when
+  // inverse projected to the source SRS. This is done by
+  // looking at 10 points on each edge of the rectangular canvas
+  // extent. This seems to be a sufficient number to get a good
+  // approximation to the bounding box.
+  static const double numPoints = 10.0;
+
+  std::vector<QgsPoint> left, right, top, bottom;
+  QgsPoint pt;
+  // Populate the vectors
+
+  for (int i = 0; i < numPoints; ++i)
+  {
+    // the left and right boundary
+    pt.setX(extent.xMin());
+    pt.setY(extent.yMin() + extent.height()
+            / numPoints * static_cast<double>(i));
+    left.push_back(mCoordinateTransform->transform(pt, 
+                   QgsCoordinateTransform::INVERSE));
+    pt.setX(extent.xMax());
+    right.push_back(mCoordinateTransform->transform(pt, 
+                    QgsCoordinateTransform::INVERSE));
+
+    // the top and bottom boundary
+    pt.setY(extent.yMin());
+    pt.setX(extent.xMin() + extent.width() 
+            / numPoints * static_cast<double>(i));
+    bottom.push_back(mCoordinateTransform->transform(pt,
+                     QgsCoordinateTransform::INVERSE));
+    pt.setY(extent.yMax());
+    top.push_back(mCoordinateTransform->transform(pt,
+                  QgsCoordinateTransform::INVERSE));
+  }
+
+  // Calculate the bounding box and use that for the extent
+        
+  double xmin = std::numeric_limits<double>::max();
+  double xmax = std::numeric_limits<double>::min();
+  double ymin = std::numeric_limits<double>::max();
+  double ymax = std::numeric_limits<double>::min();
+  for (int i = 0; i < top.size(); ++i)
+  {
+    xmin = std::min(xmin, left[i].x());
+    xmax = std::max(xmax, right[i].x());
+    ymin = std::min(ymin, bottom[i].y());
+    ymax = std::max(ymax, top[i].y());
+  }
+
+  QgsRect bb_extent;
+  bb_extent.set(xmin, ymin, xmax, ymax);
+
+  return bb_extent;
 }

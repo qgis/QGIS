@@ -278,6 +278,8 @@ public slots:
      */
     void recalculateExtents();
 
+    /** A simple helper method to find out if on the fly projections are enabled or not */
+    bool projectionsEnabled();
 
 signals:
     /** Let the owner know how far we are with render operations */
@@ -323,9 +325,6 @@ signals:
     void stopZoom();
 
 private:
-    /** A simple helper method to find out if on the fly projections are enabled or not */
-    bool projectionsEnabled();
-    
     /// this class is non-copyable
     /**
        @note

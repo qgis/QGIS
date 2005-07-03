@@ -1,9 +1,12 @@
 #include "graticulecreator.h"
 #include <stdio.h>
+#include <cassert>
 #include <qtextstream.h>
 #include <iostream>
+#include <fstream>
 #include <qfileinfo.h>
 #include <qstringlist.h>
+#include <qgis.h>
 GraticuleCreator::GraticuleCreator(QString theOutputFileName, 
                                    double theXIntervalDouble, 
                                    double theYIntervalDouble,
@@ -15,11 +18,12 @@ GraticuleCreator::GraticuleCreator(QString theOutputFileName,
 {
     std::cout << "GraticuleCreator constructor called with " << theOutputFileName
     << " for output file and " << theXIntervalDouble << "," << theYIntervalDouble << " for x,y interval " << std::endl;
-    DBFHandle myDbfHandle;		/* handle for dBase file */
-    SHPHandle myShapeHandle;		/* handle for shape files .shx and .shp */
+    DBFHandle myDbfHandle;    /* handle for dBase file */
+    SHPHandle myShapeHandle;    /* handle for shape files .shx and .shp */
     /* Open and prepare output files */
     myDbfHandle = createDbf(theOutputFileName);
     myShapeHandle = createShapeFile(theOutputFileName);
+    writeProjectionFile(theOutputFileName);
     //test the write point routine....
     //generatePoints(theInputFileName,myDbfHandle,myShapeHandle);
     generateGraticule(myDbfHandle,
@@ -89,6 +93,19 @@ void GraticuleCreator::writeDbfRecord (DBFHandle theDbfHandle, int theRecordIdIn
     //DBFWriteStringAttribute(theDbfHandle, theRecordIdInt, 1, theLabel);
 }
 
+void  GraticuleCreator::writeProjectionFile(QString theFileName )
+{
+  // Write a WGS 84 projection file for the shapefile
+  theFileName = theFileName.replace(".shp",".prj");
+  std::ofstream of(theFileName);
+  if(!of.fail())
+  {
+    of << GEOWKT
+      << std::endl; 
+    of.close();
+
+  }
+}
 void GraticuleCreator::writePoint(SHPHandle theShapeHandle, int theRecordInt, double theXDouble, double theYDouble )
 {
     SHPObject * myShapeObject;
@@ -188,6 +205,8 @@ void GraticuleCreator::generateGraticule(DBFHandle theDbfHandle,
   
   delete myXArrayDouble;
   delete myYArrayDouble;
+  // write a proj file for the graticule
+  
 }
 
 /* read from fp and generate point shapefile to theDbfHandle/theShapeHandle */

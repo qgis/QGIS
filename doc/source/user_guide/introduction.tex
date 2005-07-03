@@ -1,87 +1,120 @@
+% vim: set textwidth=78 autoindent:
+\chapter{Introduction To GIS}
 
-\chapter{Introduction}
+A Geographical Information System (GIS) is a collection of software that
+allows you to create, visualise, query and analyse geospatial data. Geospatial
+data refers to information about the geographic location of an entity. This
+often involves the use of a geographic coordinate, like a latitude or
+longitude value. Spatial data is another commonly used term, as are:
+geographic data, GIS data, map data, location data, coordinate data and
+spatial geometry data.
 
-Welcome to the wonderful world of Geographical Information Systems (GIS)!
-Quantum GIS (QGIS) is an Open Source Geographic Information System. The project
-was born in May of 2002 and was established as a project on SourceForge in June
-of the same year. We've worked hard to make GIS software (which is traditionaly
-expensive commerical software) a viable prospect for anyone with basic access
-to a Personal Computer. QGIS currently runs on most Unix platforms, Window, and
-OS X. QGIS is developed using the Qt toolkit (\url{http://www.trolltech.com})
-and C++. This means that QGIS feels snappy to use and has a pleasing, easy to
-use graphical user interface. 
+Applications using geospatial data perform a variety of functions. Map
+production is the most easily understood function of geospatial applications.
+Mapping programs take geospatial data and render it in a form that is
+viewable, usually on a computer screen or printed page. Applications can
+present static maps (a simple image) or dynamic maps that are customised by
+the person viewing the map through a desktop program or a web page.
 
-QGIS aims to be an easy to use GIS, providing common functions and features.
-The initial goal was to provide a GIS data viewer. QGIS has reached that point
-in its evolution and is being used by many for their daily GIS data viewing
-needs. QGIS supports a number of raster and vector data formats, with new
-support easily added using the plugin architecture (see Appendix
-\ref{appdx_data_formats} for a full list of currenly supported data formats).
-QGIS is released under the GNU Public License (GPL). Devloping QGIS under this
-license means that you can (if you want to) inspect and modify the source code
-and guarantees that you, our happy user will always have access to a GIS
-program that is free of cost and can be freely modified. You should have
-received a full copy of the license with your copy of QGIS, and is also
-available as Appendix \ref{gpl_appendix}.  
-\begin{quote}
-\begin{center}
-\textbf{Note:} The latest version of this document can always be found at \newline
-http://qgis.sourceforge.net/docs/userguide.html 
-\end{center}
-\end{quote}
-
-\section{Major Features}
-
-QGIS has many common GIS features and functions. The major features
-are listed below. 
+Many people mistakenly assume that geospatial applications just produce maps,
+but geospatial data analysis is another primary function of geospatial
+applications. Some typical types of analysis include computing:
 
 \begin{compactenum}
-\item Support for spatially enabled PostgreSQL tables using PostGIS 
-\item Support for ESRI shapefiles and other vector formats support by the
-OGR library, including MapInfo files 
-\item GRASS integration, including view, edit, and analysis
-\item On the fly projection of vector layers
-\item Map composer
-\item Identify features 
-\item Display attribute table 
-\item Select features 
-\item Label features
-\item Persistent selections 
-\item Save and restore projects
-\item Support for raster formats supported by the GDAL library 
-\item Change vector symbology (single, graduated, unique value, and continuous) 
-\item SVG markers symbology (single, unique value, and graduated) 
-\item Display raster data such as digital elevation models, aerial photography
-or landsat imagery 
-\item Change raster symbology (grayscale, pseudocolor and multiband RGB) 
-\item Export to Mapserver map file 
-\item Digitizing support
-\item Map overview
-\item Plugins 
+\item distances between geographic locations
+\item the amount of area (e.g., square metres) within a certain geographic region
+\item what geographic features overlap other features
+\item the amount of overlap between features
+\item the number of locations within a certain distance of another
+\item and so on...
 \end{compactenum}
 
+These may seem simplistic, but can be applied in all sorts of ways across many
+disciplines. The results of analysis may be shown on a map, but are often
+tabulated into a report to support management decisions.
 
-\section{Whats New in 0.7}
-Version 0.7 brings several important features, including projection support, a map composer, and better integration with GRASS. The major new features in this release include:
+The recent phenomena of location-based services promises to introduce all
+sorts of other features, but many will be based on a combination of maps and
+analysis. For example, you have a cell phone that tracks your geographic
+location. If you have the right software, your phone can tell you what kind of
+restaurants are within walking distance. While this is a novel application of
+geospatial technology, it is essentially doing geospatial data analysis and
+listing the results for you.
+
+\section{Why is all this so new?}
+Well, it's not. There are many new hardware devices that are enabling mobile
+geospatial services. Many open source geospatial applications are also
+available, but the existence of geospatially focused hardware and software is
+nothing new. Global positioning system (GPS) receivers are becoming
+commonplace, but have been used in various industries for more than a decade.
+Likewise, desktop mapping and analysis tools have also been a major commercial
+market, primarily focused on industries such as natural resource management.
+
+What is new, is how the latest hardware and software is being applied and who
+is applying it. Traditional users of mapping and analysis tools were highly
+trained GIS Analysts or digital mapping technicians trained to use CAD-like
+tools. Now, the processing capabilities of home PC's and open source software
+packages have enabled an army of hobbyists, professionals, web developers,
+etc. to interact with geospatial data. The learning curve has come down. The
+costs have come down. The amount of geospatial technology saturation has
+increased.
+
+How is geospatial data stored?
+In a nutshell, there are two types of geospatial data in widespread use today.
+This is in additional to traditional tabular data that is also widely used by
+geospatial applications.
+
+\subsection{Raster Data}
+One type of geospatial data is called raster data or simply "a raster". The
+most easily recognised form of raster data is digital satellite imagery or air
+photos. Elevation shading or digital elevation models are also typically
+represented as raster data. Any type of map feature can be represented as
+raster data, but there are limitations.
+
+A raster is a regular grid made up of cells, or in the case of imagery,
+pixels. They have a fixed number of rows and columns. Each cell has a numeric
+value and has a certain geographic size (e.g. 30x30 metres in size).
+
+Multiple overlapping rasters are used to represent images using more than one
+colour value (i.e. one raster for each set of red, green and blue values is
+combined to create a colour image). Satellite imagery also represents data in
+multiple "bands". Each band is essentially a separate, spatially overlapping
+raster where each band holds values of certain wavelengths of light. As you
+can imagine, a large raster takes up more file space. A raster with smaller
+cells can provide more detail, but takes up more file space. The trick is
+finding the right balance between cell size for storage purposes and cell size
+for analytical or mapping purposes.
+
+\subsection{Vector Data}
+Vector data is also used in geospatial applications. If you stayed awake
+during trigonometry and coordinate geometry classes, you will already be
+familiar with some of the qualities of vector data. In its simplest sense,
+vectors are a way of describing a location by using a set of coordinates. Each
+coordinate refers to a geographic location using a system of x and y values.
+
+This can be thought of in reference to a Cartesian plane - you know, the
+diagrams from school that showed an x and y-axis. You might have used them to
+chart declining retirement savings or increasing compound mortgage interest,
+but the concepts are essential to geospatial data analysis and mapping.
+
+There are various ways of representing these geographic coordinates depending
+on your purpose. This is a whole area of study for another day - map
+projections.
+
+Vector data takes on three forms, each progressively more complex and building
+on the former.  
 \begin{compactenum}
-  \item On the fly projection for reprojecting layers in different coordinate systems
-  \item Map Composer for creating print layouts
-  \item Toolbox for running GRASS tools from QGIS
-  \item Raster graphing tool to produce a histogram for a raster layer.
-  \item Raster query using the identify tool to get the pixel
-  values from a raster 
-  \item New customizable settings for the digitizing line width, color, and selection color  
-  \item New symbols for use with point layers are available from the layer properties dialog 
-  \item Spatial bookmarks allow you to create and manage bookmarks for an area on the map
-  \item Measure tool to measure distances on the map with both
-  segment length and total length displayed as you click
-  \item GPX loading times and memory consumption for large GPX (GPS) files
-  has been drastically reduced.  
-  \item Digitizing enhancements, including the ability to capture data straight
-  into PostgreSQL/PostGIS, and improvements to the definition of attribute tables
-  for newly created layers.
-  \item Raster Georeferencing plugin can be used
-  to generate a world file for a raster by defining known
-  control points in the raster coordinate system.
+\item Points - A single coordinate (x y) represents the discrete geographic location
+\item Lines - Multiple coordinates (x1 y1, x2 y2, x3 y4, ... xn yn) strung
+together in a certain order. Like drawing a line from Point (x1 y1) to Point
+(x2 y2) and so on. These parts between each point are considered line
+segments. They have a length and the line can be said to have a direction
+based on the order of the points. Technically, a line is a single pair of
+coordinates connected together; whereas, a line string is multiple lines
+connected together.  
+\item Polygons - When lines are strung together by more
+than two points, with the last point being at the same location as the first,
+we call this a polygon. A triangle, circle, rectangle, etc. are all polygons.
+The key feature of polygons is that there is a fixed area within them.
 \end{compactenum}
 

@@ -23,6 +23,8 @@ class GraticuleCreator
         SHPHandle GraticuleCreator::createShapeFile(QString theFileName ); 
         void writeDbfRecord (DBFHandle theDbfHandle, int theRecordIdInt, QString theLabel) ;
         void writePoint(SHPHandle theShapeHandle, int theRecordInt, double theXDouble, double y ); 
+        //! Writes a WGS 84 .prj file for the generated grid
+        void writeProjectionFile(QString theFileName);
         static void writeLine(SHPHandle theShapeHandle, 
                 int theRecordInt, 
                 int theCoordinateCountInt, 
