@@ -72,6 +72,7 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     QString encoding();
     public slots:
       void setSql(QListViewItem *);
+      void showHelp();
  private:
 
     typedef std::pair<QString, QString> geomPair;
@@ -85,6 +86,7 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     //! Pointer to the qgis application mainwindow
     QgisApp *qgisApp;
     PGconn *pd;
+    static const int context_id = 1244423922;
 };
 
 

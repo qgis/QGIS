@@ -53,7 +53,6 @@
 //stdc++ includes
 #include <iostream>
 #include <cstdlib>
-static const char *context_id = "2699";
 // set the default coordinate system
 //XXX this is not needed? : static const char* defaultWktKey = "Lat/Long - WGS 84";
   QgsProjectProperties::QgsProjectProperties(QWidget *parent, const char *name)
@@ -283,5 +282,5 @@ void QgsProjectProperties::showProjectionsTab()
 void QgsProjectProperties::pbnHelp_clicked()
 {
   std::cout << "running help" << std::endl; 
-  QgsContextHelp::run(QString(context_id));
+  QgsContextHelp::run(context_id);
 }

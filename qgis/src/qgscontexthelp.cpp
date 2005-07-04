@@ -23,12 +23,11 @@
 #include <qapplication.h>
 #include "qgscontexthelp.h"
 #include <cassert>
-QgsContextHelp::QgsContextHelp(QString &_contextId)
+QgsContextHelp::QgsContextHelp(int contextId)
 {
-  QString contextId = _contextId;
   run(contextId);
 }
-void QgsContextHelp::run(QString contextId)
+void QgsContextHelp::run(int contextId)
 {
   // Assume minimum Qt 3.2 version and use the API to get the path
   // path to the help viewer
@@ -42,7 +41,8 @@ void QgsContextHelp::run(QString contextId)
 #endif
       QProcess *proc = new QProcess();
       proc->addArgument(helpPath);
-      proc->addArgument(contextId);
+      QString id;
+      proc->addArgument(id.setNum(contextId));
 #ifdef QGISDEBUG
       std::cout << "Starting help process with context " << contextId << std::endl; 
 #endif

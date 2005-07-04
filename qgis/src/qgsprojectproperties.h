@@ -99,6 +99,5 @@ signals:
   //! notification of when on the fly projections are enabled / disabled
   void projectionEnabled(bool);
 private:
-static const int contextId = 2699;
-
+static const int context_id = 1173513647;
 };

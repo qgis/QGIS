@@ -34,6 +34,7 @@ email                : sherman at mrcc.com
 #include "qgsnewconnection.h"
 #include "qgspgquerybuilder.h"
 #include "qgisapp.h"
+#include "qgscontexthelp.h"
 QgsDbSourceSelect::QgsDbSourceSelect(QgisApp * app, QWidget * parent, const char *name):QgsDbSourceSelectBase(parent, name),
                                                                                         qgisApp(app)
 {
@@ -443,4 +444,8 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
 QString QgsDbSourceSelect::encoding()
 {
   return mEncodingComboBox->currentText();
+}
+void QgsDbSourceSelect::showHelp()
+{
+	QgsContextHelp::run(context_id);
 }

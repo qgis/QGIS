@@ -44,3 +44,7 @@ void QgsDbSourceSelectBase::setSql( QListViewItem * )
 {
 
 }
+
+void QgsDbSourceSelectBase::showHelp()
+{
+}

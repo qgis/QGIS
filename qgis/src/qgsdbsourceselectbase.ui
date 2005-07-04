@@ -167,7 +167,7 @@
                         <cstring>btnHelp</cstring>
                     </property>
                     <property name="enabled">
-                        <bool>false</bool>
+                        <bool>true</bool>
                     </property>
                     <property name="text">
                         <string>Help</string>
@@ -292,6 +292,12 @@
         <receiver>QgsDbSourceSelectBase</receiver>
         <slot>setSql(QListViewItem*)</slot>
     </connection>
+    <connection>
+    	<sender>btnHelp</sender>
+	<signal>clicked()</signal>
+	<receiver>QgsDbSourceSelectBase</receiver>
+	<slot>showHelp()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>cmbConnections</tabstop>
@@ -313,6 +319,7 @@
     <slot>editConnection()</slot>
     <slot>deleteConnection()</slot>
     <slot>setSql(QListViewItem*)</slot>
+    <slot>showHelp()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

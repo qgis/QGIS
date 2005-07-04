@@ -31,9 +31,9 @@ class QString;
 class QgsContextHelp {
 public:
   //! Constructor
-  QgsContextHelp(QString &contextId);
+  QgsContextHelp(int contextId);
   //! Destructor
   ~QgsContextHelp();
-  static void run(QString contextId);
+  static void run(int contextId);
 };
 #endif //QGSCONTEXTHELP_H
