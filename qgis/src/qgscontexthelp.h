@@ -19,7 +19,6 @@
 /* $Id$ */
 #ifndef QGSCONTEXTHELP_H
 #define QGSCONTEXTHELP_H
-#include "qgscontexthelpbase.uic.h"
 class QString;
 /*!
  * \class QgsContextHelp
