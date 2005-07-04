@@ -28,7 +28,7 @@
 
 #include "occurrences_file.hh"
 
-#include <om_occurrences.hh>  // List of occurrences.
+#include <openmodeller/Occurrences.hh>  // List of occurrences.
 
 #include <vector>
 using std::vector;

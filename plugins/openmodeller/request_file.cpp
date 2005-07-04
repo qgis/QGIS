@@ -30,7 +30,7 @@
 #include "file_parser.hh"
 #include "occurrences_file.hh"
 
-#include <om.hh>
+#include <openmodeller/om.hh>
 
 #include <stdlib.h>
 #include <string.h>

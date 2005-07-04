@@ -1,6 +1,6 @@
 #ifndef QLOGCALLBACK_H
 #define QLOGCALLBACK_H
-#include <om_log.hh>
+#include <openmodeller/Log.hh>
 #include <string>
 #include <qtextstream.h>
 #include <qtextbrowser.h>

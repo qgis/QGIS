@@ -55,6 +55,7 @@ libopenmodellerplugin_la_SOURCES = plugin.cpp \
 	openmodellergui.h \
 	request_file.cpp \
 	occurrences_file.cpp \
+	file_parser.cpp \
 	imagewriter.cpp \
 	layerselector.cpp \
 	layerselector.h \
@@ -79,6 +80,7 @@ omgui_SOURCES = 	main.cpp \
 			openmodellergui.cpp \
 			openmodellergui.h \
 			request_file.cpp \
+			file_parser.cpp \
 			layerselector.cpp \
 			layerselector.h \
 			occurrences_file.cpp \

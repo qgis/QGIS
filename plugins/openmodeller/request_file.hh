@@ -30,10 +30,10 @@
 #ifndef _REQUEST_FILEHH_
 #define _REQUEST_FILEHH_
 
-#include  <om_algorithm_metadata.hh>
+#include  <openmodeller/AlgMetadata.hh>
 
-#include <om_occurrences.hh>
-#include <map_format.hh>
+#include <openmodeller/Occurrences.hh>
+#include <openmodeller/MapFormat.hh>
 
 #include <string>
 #include <vector>

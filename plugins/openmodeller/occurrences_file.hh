@@ -29,9 +29,9 @@
 #ifndef _OCCURRENCES_FILEHH_
 #define _OCCURRENCES_FILEHH_
 
-#include <om_defs.hh>
+#include <openmodeller/om_defs.hh>
 
-#include <om_occurrences.hh>
+#include <openmodeller/Occurrences.hh>
 
 #include <vector>
 
