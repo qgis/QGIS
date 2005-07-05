@@ -49,3 +49,11 @@ qgis_help_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) 
 
 #EXTRA_DIST = $(qgis_help_UIC) icon.xpm
 
+# Qt/Mac app needs to be inside a bundle to function correctly
+MACBINDIR = $(bindir)/qgis_help.app/Contents/MacOS
+
+install-exec-hook:
+if HAVE_QTMAC
+	$(mkinstalldirs) $(MACBINDIR)
+	mv $(bindir)/qgis_help $(MACBINDIR)
+endif

@@ -33,7 +33,7 @@ void QgsContextHelp::run(int contextId)
   // path to the help viewer
       QString helpPath = qApp->applicationDirPath(); 
 #ifdef Q_OS_MACX
-      helpPath += "/bin";
+      helpPath += "/bin/qgis_help.app/Contents/MacOS";
 #endif
       helpPath += "/qgis_help";
 #ifdef QGISDEBUG
