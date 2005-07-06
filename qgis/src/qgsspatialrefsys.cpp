@@ -1009,9 +1009,8 @@ long QgsSpatialRefSys::findMatchingProj()
   if(myResult)
   {
     std::cout <<  "QgsSpatialRefSys::findMatchingProj Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    assert(myResult == 0);
+    std::cout <<  "This is a non critical error" << std::endl;
+    return 0;
   }
 
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
