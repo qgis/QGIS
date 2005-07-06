@@ -73,7 +73,8 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name) : QgsOptionsBase(paren
   }
   mGlobalSRSID = settings.readNumEntry("/qgis/projections/defaultProjectionSRSID",GEOSRS_ID);
   //! @todo changes this control name in gui to txtGlobalProjString
-  txtGlobalWKT->setText(QString::number(mGlobalSRSID));
+ QString myProjString = QgsSpatialRefSys::getProj4FromSrsId(mGlobalSRSID);
+  txtGlobalWKT->setText(myProjString);
 }
 //! Destructor
 QgsOptions::~QgsOptions(){}

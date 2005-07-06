@@ -1246,9 +1246,15 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
 {
 
       QString myDatabaseFileName;
+      QString myProjString;
+      QString mySql = "select parameters from tbl_srs where srs_id = ";
+      mySql += QString::number(theSrsId);
 
-      std::cout << " QgsSpatialRefSys::getProj4FromSrsId :  mySrsId = " << theSrsId << std::endl;
-      std::cout << " QgsSpatialRefSys::getProj4FromSrsId :  USER_PROJECTION_START_ID = " << USER_PROJECTION_START_ID << std::endl;
+#ifdef QGISDEBUG
+      std::cout << "QgsSpatialRefSys::getProj4FromSrsId :  mySrsId = " << theSrsId << std::endl;
+      std::cout << "QgsSpatialRefSys::getProj4FromSrsId :  USER_PROJECTION_START_ID = " << USER_PROJECTION_START_ID << std::endl;
+      std::cout << "QgsSpatialRefSys::getProj4FromSrsId :Selection sql : " << mySql << std::endl;
+#endif
       //
       // Determine if this is a user projection or a system on
       // user projection defs all have srs_id >= 100000
@@ -1287,15 +1293,11 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
       const char *pzTail;
       sqlite3_stmt *ppStmt;
       char *pzErrmsg;
-      QString sql = "select parameters from tbl_srs where srs_id = ";
-      sql += theSrsId;
-#ifdef QGISDEBUG
-      std::cout << "Selection sql : " << sql << std::endl;
-#endif
 
-      rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+
+      rc = sqlite3_prepare(db, (const char *)mySql, mySql.length(), &ppStmt, &pzTail);
       // XXX Need to free memory from the error msg if one is set
-      QString myProjString;
+
       if(rc == SQLITE_OK)
       {
         if(sqlite3_step(ppStmt) == SQLITE_ROW)
