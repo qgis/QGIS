@@ -257,10 +257,14 @@ void QgsAttributeActionDialog::rowSelected(int row, int col, int button,
   // populate the edit section of the dialog so that they can change
   // the row if desired.
 
-  actionName->setText(attributeActionTable->text(row, 0));
-  actionAction->setText(attributeActionTable->text(row, 1));
   QCheckTableItem* cp = (QCheckTableItem*) (attributeActionTable->item(row, 2));
-  captureCB->setChecked(cp->isChecked());
+  if ( cp )
+  {
+    // Only if a populated row was selected
+    actionName->setText(attributeActionTable->text(row, 0));
+    actionAction->setText(attributeActionTable->text(row, 1));
+    captureCB->setChecked(cp->isChecked());
+  }
 }
 
 QString QgsAttributeActionDialog::uniqueName(QString name)
