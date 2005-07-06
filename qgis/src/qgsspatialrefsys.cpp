@@ -983,7 +983,7 @@ long QgsSpatialRefSys::findMatchingProj()
       QString myProj4String = (char *)sqlite3_column_text(myPreparedStatement, 1);
       if (this->equals(myProj4String))
       {
-        std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in srs.db srsid: " << mySrsId << std::endl;
+        //std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in srs.db srsid: " << mySrsId << std::endl;
         // close the sqlite3 statement
         sqlite3_finalize(myPreparedStatement);
         sqlite3_close(myDatabase);
@@ -991,7 +991,7 @@ long QgsSpatialRefSys::findMatchingProj()
       }
       else
       {
-        std::cout << " Not matched : " << myProj4String << std::endl;
+        //std::cout << " Not matched : " << myProj4String << std::endl;
       }
     }
   }
@@ -1025,7 +1025,7 @@ long QgsSpatialRefSys::findMatchingProj()
       QString myProj4String = (char *)sqlite3_column_text(myPreparedStatement, 1);
       if (this->equals(myProj4String))
       {
-        std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in user qgis.db srsid: " << mySrsId << std::endl;
+        //std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in user qgis.db srsid: " << mySrsId << std::endl;
         // close the sqlite3 statement
         sqlite3_finalize(myPreparedStatement);
         sqlite3_close(myDatabase);
@@ -1033,7 +1033,7 @@ long QgsSpatialRefSys::findMatchingProj()
       }
       else
       {
-        std::cout << " Not matched : " << myProj4String << std::endl;
+        //std::cout << " Not matched : " << myProj4String << std::endl;
       }
     }
   }
@@ -1048,7 +1048,7 @@ long QgsSpatialRefSys::findMatchingProj()
 
 bool QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs)
 {
-  qWarning("QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs) called ");
+  //qWarning("QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs) called ");
   //simply delegate to the overloaded == operator  below...
   return this->equals((char *)theSrs.mProj4String.latin1());
 
@@ -1056,7 +1056,7 @@ bool QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs)
 
 bool QgsSpatialRefSys::equals(const char *theProj4CharArray)
 {
-  qWarning("QgsSpatialRefSys::operator==(const char *theProj4CharArray) called ");
+  //qWarning("QgsSpatialRefSys::operator==(const char *theProj4CharArray) called ");
   bool myMatchFlag = false; //guilty until proven innocent
 
   /* Here are the possible OGR error codes :
@@ -1088,15 +1088,15 @@ bool QgsSpatialRefSys::equals(const char *theProj4CharArray)
 
   if (myOgrSpatialRef1.IsGeographic() && myOgrSpatialRef2.IsGeographic())
   {
-    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are geographic ");
+//    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are geographic ");
     myMatchFlag = myOgrSpatialRef1.IsSameGeogCS(&myOgrSpatialRef2);
   }
   else if (myOgrSpatialRef1.IsProjected() && myOgrSpatialRef2.IsProjected())
   {
-    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are projected ");
+//    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are projected ");
     myMatchFlag = myOgrSpatialRef1.IsSame(&myOgrSpatialRef2);
   } else {
-    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are different types ");
+//    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are different types ");
     myMatchFlag = false;
   }
 
@@ -1116,11 +1116,11 @@ bool QgsSpatialRefSys::equals(const char *theProj4CharArray)
   //placeholder to be replaced with ogr tests
   if (myMatchFlag)
   {
-    qWarning("QgsSpatialRefSys::operator== result: srs's are equal ");
+//    qWarning("QgsSpatialRefSys::operator== result: srs's are equal ");
   }
   else
   {
-    qWarning("QgsSpatialRefSys::operator== result: srs's are not equal ");
+//    qWarning("QgsSpatialRefSys::operator== result: srs's are not equal ");
   }
   return myMatchFlag;
 }
@@ -1231,4 +1231,83 @@ bool QgsSpatialRefSys::writeXML( QDomNode & theNode, QDomDocument & theDoc )
   mySrsElement.appendChild(myGeographicFlagElement);
 
   myLayerNode.appendChild( mySrsElement );
+}
+
+
+
+//
+// Static helper methods below this point only please!
+//
+
+
+// Returns the whole proj4 string for the selected srsid
+//this is a static method!
+QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
+{
+
+      QString myDatabaseFileName;
+
+      std::cout << " QgsSpatialRefSys::getProj4FromSrsId :  mySrsId = " << theSrsId << std::endl;
+      std::cout << " QgsSpatialRefSys::getProj4FromSrsId :  USER_PROJECTION_START_ID = " << USER_PROJECTION_START_ID << std::endl;
+      //
+      // Determine if this is a user projection or a system on
+      // user projection defs all have srs_id >= 100000
+      //
+      if (theSrsId >= USER_PROJECTION_START_ID)
+      {
+        myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+        QFileInfo myFileInfo;
+        myFileInfo.setFile(myDatabaseFileName);
+        if ( !myFileInfo.exists( ) ) //its unlikely that this condition will ever be reached
+        {
+          std::cout << " QgsSpatialRefSys::getProj4FromSrsId :  users qgis.db not found" << std::endl;
+          return NULL;
+        }
+      }
+      else //must be  a system projection then
+      {
+        myDatabaseFileName = PKGDATAPATH;
+        myDatabaseFileName += "/resources/srs.db";
+      }
+      std::cout << "QgsSpatialRefSys::getProj4FromSrsId db = " << myDatabaseFileName << std::endl;
+
+
+      sqlite3 *db;
+      char *zErrMsg = 0;
+      int rc;
+      rc = sqlite3_open(myDatabaseFileName, &db);
+      if(rc)
+      {
+        std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
+        // XXX This will likely never happen since on open, sqlite creates the
+        //     database if it does not exist.
+        assert(rc == 0);
+      }
+      // prepare the sql statement
+      const char *pzTail;
+      sqlite3_stmt *ppStmt;
+      char *pzErrmsg;
+      QString sql = "select parameters from tbl_srs where srs_id = ";
+      sql += theSrsId;
+#ifdef QGISDEBUG
+      std::cout << "Selection sql : " << sql << std::endl;
+#endif
+
+      rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+      // XXX Need to free memory from the error msg if one is set
+      QString myProjString;
+      if(rc == SQLITE_OK)
+      {
+        if(sqlite3_step(ppStmt) == SQLITE_ROW)
+        {
+          myProjString = (char*)sqlite3_column_text(ppStmt, 0);
+        }
+      }
+      // close the statement
+      sqlite3_finalize(ppStmt);
+      // close the database
+      sqlite3_close(db);
+
+      //assert(myProjString.length() > 0);
+      return myProjString;
 }

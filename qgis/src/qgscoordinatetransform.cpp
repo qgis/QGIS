@@ -204,35 +204,6 @@ QgsPoint QgsCoordinateTransform::transform(const double theX, const double theY=
   return transform(QgsPoint(theX, theY), direction);
 }
 
-void QgsCoordinateTransform::transformInPlace(double& x, double& y, double& z,
-    TransformDirection direction)
-{
-  if (mShortCircuit || !mInitialisedFlag)
-    return;
-#ifdef QGISDEBUG
-  //std::cout << "Using transform in place " << __FILE__ << " " << __LINE__ << std::endl;
-#endif
-  // transform x
-  transformCoords(1, &x, &y, &z, direction );
-}
-
-void QgsCoordinateTransform::transformInPlace(std::vector<double>& x,
-    std::vector<double>& y, std::vector<double>& z,
-    TransformDirection direction)
-{
-  if (mShortCircuit || !mInitialisedFlag)
-    return;
-
-  assert(x.size() == y.size());
-
-  // Apparently, if one has a std::vector, it is valid to use the
-  // address of the first element in the vector as a pointer to an
-  // array of the vectors data, and hence easily interface with code
-  // that wants C-style arrays.
-
-  transformCoords(x.size(), &x[0], &y[0], &z[0], direction);
-}
-
 QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirection direction)
 {
   if (mShortCircuit || !mInitialisedFlag) return theRect;
@@ -279,6 +250,101 @@ QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirecti
   return QgsRect(x1, y1, x2 , y2);
 }
 
+void QgsCoordinateTransform::transformInPlace(double& x, double& y, double& z,
+    TransformDirection direction)
+{
+  if (mShortCircuit || !mInitialisedFlag)
+    return;
+#ifdef QGISDEBUG
+  //std::cout << "Using transform in place " << __FILE__ << " " << __LINE__ << std::endl;
+#endif
+  // transform x
+  transformCoords(1, &x, &y, &z, direction );
+}
+
+void QgsCoordinateTransform::transformInPlace(std::vector<double>& x,
+    std::vector<double>& y, std::vector<double>& z,
+    TransformDirection direction)
+{
+  if (mShortCircuit || !mInitialisedFlag)
+    return;
+
+  assert(x.size() == y.size());
+
+  // Apparently, if one has a std::vector, it is valid to use the
+  // address of the first element in the vector as a pointer to an
+  // array of the vectors data, and hence easily interface with code
+  // that wants C-style arrays.
+
+  transformCoords(x.size(), &x[0], &y[0], &z[0], direction);
+}
+
+
+QgsRect QgsCoordinateTransform::transformBoundingBox(const QgsRect rect, TransformDirection direction)
+{
+  // Calculate the bounding box of a QgsRect in the source SRS
+  // when projected to the destination SRS (or the inverse).
+  // This is done by looking at a number of points spread evenly
+  // across the rectangle
+
+  if (mShortCircuit || !mInitialisedFlag)
+    return rect;
+
+  static const int numP = 8;
+
+  QgsRect bb_rect;
+  bb_rect.setMinimal();
+
+  // We're interfacing with C-style vectors in the
+  // end, so let's do C-style vectors here too.
+  
+  double x[numP * numP];
+  double y[numP * numP];
+  double z[numP * numP];
+  
+  std::cout << "Entering transformBoundingBox..." << std::endl;
+
+  // Populate the vectors
+
+  double dx = rect.width()  / (double)(numP - 1);
+  double dy = rect.height() / (double)(numP - 1);
+
+  double pointY = rect.yMin();
+
+  for (int i = 0; i < numP ; i++)
+  {
+
+    // Start at right edge
+    double pointX = rect.xMin();
+
+    for (int j = 0; j < numP; j++)
+    {
+      x[(i*numP) + j] = pointX;
+      y[(i*numP) + j] = pointY;
+      // and the height...
+      z[(i*numP) + j] = 0.0;
+//      std::cout << "BBox coord: (" << x[(i*numP) + j] << ", " << y[(i*numP) + j]
+//                << ")" << std::endl;
+      pointX += dx; 
+    }
+    pointY += dy;
+  }
+
+  // Do transformation. Any exception generated must
+  // be handled in above layers.
+  transformCoords(numP * numP, x, y, z, direction);
+
+  // Calculate the bounding box and use that for the extent
+        
+  for (int i = 0; i < numP * numP; i++)
+  {
+    bb_rect.combineExtentWith(x[i], y[i]);
+  }
+
+  std::cout << "Projected extent: " << (bb_rect.stringRep()) << std::endl;
+
+  return bb_rect;
+}
 
 void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, double *y, double *z,TransformDirection direction)
 {
@@ -405,3 +471,4 @@ bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc
   myNodeElement.appendChild(myTransformElement);
 
 }
+

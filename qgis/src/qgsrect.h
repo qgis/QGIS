@@ -59,6 +59,9 @@ class QgsRect
     void setYmin(double y);
     //! Set the maximum y value
     void setYmax(double y);
+    //! Set a rectangle so that min corner is at max
+    // and max corner is at min. It is NOT normalized.
+    void setMinimal();
     //! Get the x maximum value (right side of rectangle)
     double xMax() const;
     //! Get the x maximum value (right side of rectangle)
@@ -83,6 +86,8 @@ class QgsRect
     QgsRect intersect(QgsRect *rect);
     //! expand the rectangle so that covers both the original rectangle and the given rectangle
     void combineExtentWith(QgsRect *rect);
+    //! expand the rectangle so that covers both the original rectangle and the given point
+    void combineExtentWith(double x, double y);
     //! test if rectangle is empty
     bool isEmpty();
     //! returns string representation in WKT form

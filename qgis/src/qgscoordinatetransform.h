@@ -128,6 +128,18 @@ class QgsCoordinateTransform: public QObject
      */
    QgsPoint transform(const double x, const double y,TransformDirection direction=FORWARD);
 
+    /*! Transform a QgsRect to the dest Coordinate system 
+    * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
+    * otherwise points are transformed from map canvas CS to layerCS.
+    * It assumes that rect is a bounding box, and creates a bounding box
+    * in the proejcted CS, so that all points in source rectangle is within
+    * returned rectangle.
+    * @param QgsRect rect to transform
+    * @param direction TransformDirection (defaults to FORWARD)
+    * @return QgsRect in Destination Coordinate System
+     */        
+   QgsRect transformBoundingBox(const QgsRect theRect,TransformDirection direction=FORWARD);
+
    // Same as for the other transform() functions, but alters the x
    // and y variables in place. The second one works with good old-fashioned
    // C style arrays.

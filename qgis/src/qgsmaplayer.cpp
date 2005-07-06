@@ -128,9 +128,12 @@ const QgsRect QgsMapLayer::extent()
 QgsRect QgsMapLayer::calculateExtent()
 {
     //just to prevent any crashes
-    QgsRect rect(DBL_MAX, DBL_MAX, DBL_MIN, DBL_MIN);
+    QgsRect rect;
+    
+    rect.setMinimal();
     return rect;
 }
+
 void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
 {
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
@@ -636,83 +639,18 @@ bool QgsMapLayer::projectExtent(QgsRect& extent, QgsRect& r2)
           split = true;
         }
         else // no need to split
-          extent = calcProjectedBoundingBox(extent);
+          extent = mCoordinateTransform->transformBoundingBox(extent, QgsCoordinateTransform::INVERSE);
       }
       else // can't cross 180
-        extent = calcProjectedBoundingBox(extent);
+        extent = mCoordinateTransform->transformBoundingBox(extent, QgsCoordinateTransform::INVERSE);
     }
     catch (QgsCsException &e)
       {
         qDebug( "Transform error caught in %s line %d:\n%s", 
                 __FILE__, __LINE__, e.what());
+        extent = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
+        r2     = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
       }
   }
   return split;
-}
-
-QgsRect QgsMapLayer::calcProjectedBoundingBox(QgsRect& extent)
-{
-  // Calculate the bounding box of the canvas extent when
-  // inverse projected to the source SRS. This is done by
-  // looking at 10 points on each edge of the rectangular canvas
-  // extent. This seems to be a sufficient number to get a good
-  // approximation to the bounding box.
-  static const double numPoints = 10.0;
-  double xmin = std::numeric_limits<double>::max();
-  double xmax = std::numeric_limits<double>::min();
-  double ymin = std::numeric_limits<double>::max();
-  double ymax = std::numeric_limits<double>::min();
-
-  std::vector<QgsPoint> left, right, top, bottom;
-  QgsPoint pt;
-  // Populate the vectors
-
-  try
-  {
-    for (int i = 0; i < numPoints; ++i)
-    {
-      // the left and right boundary
-      pt.setX(extent.xMin());
-      pt.setY(extent.yMin() + extent.height()
-	      / numPoints * static_cast<double>(i));
-      left.push_back(mCoordinateTransform->transform(pt, 
-						     QgsCoordinateTransform::INVERSE));
-      pt.setX(extent.xMax());
-      right.push_back(mCoordinateTransform->transform(pt, 
-						      QgsCoordinateTransform::INVERSE));
-
-      // the top and bottom boundary
-      pt.setY(extent.yMin());
-      pt.setX(extent.xMin() + extent.width() 
-	      / numPoints * static_cast<double>(i));
-      bottom.push_back(mCoordinateTransform->transform(pt,
-						       QgsCoordinateTransform::INVERSE));
-      pt.setY(extent.yMax());
-      top.push_back(mCoordinateTransform->transform(pt,
-						    QgsCoordinateTransform::INVERSE));
-    }
-
-    // Calculate the bounding box and use that for the extent
-        
-    for (int i = 0; i < top.size(); ++i)
-    {
-      xmin = std::min(xmin, left[i].x());
-      xmax = std::max(xmax, right[i].x());
-      ymin = std::min(ymin, bottom[i].y());
-      ymax = std::max(ymax, top[i].y());
-    }
-  }
-  catch(QgsCsException &cse)
-  {
-#ifdef QGISDEBUG
-    std::cout << "Caught transform error in QgsMapLayer::calcProjectedBoundingBox(). "
-	      << "Setting inverse bounding box to (0,0); (10,10)" << std::endl;
-#endif	
-    xmin = ymin = 0;
-    xmax = ymax = 10;
-  }
-  QgsRect bb_extent;
-  bb_extent.set(xmin, ymin, xmax, ymax);
-
-  return bb_extent;
 }

@@ -541,7 +541,7 @@ QgsPoint QgsFeature::closestVertex(const QgsPoint& point) const
     if(geometry)
     {
 	int wkbType;
-	double actdist=DBL_MAX;
+    double actdist = std::numeric_limits<double>::max();
 	double x,y;
 	double *tempx,*tempy;
 	memcpy(&wkbType, (geometry+1), sizeof(int));
@@ -689,10 +689,6 @@ QgsPoint QgsFeature::closestVertex(const QgsPoint& point) const
 
 QgsRect QgsFeature::boundingBox() const
 {
-    double xmin=DBL_MAX;
-    double ymin=DBL_MAX;
-    double xmax=-DBL_MAX;
-    double ymax=-DBL_MAX;
 
     double *x;
     double *y;
@@ -708,10 +704,12 @@ QgsRect QgsFeature::boundingBox() const
     QPointArray *pa;
     int wkbType;
     unsigned char *feature;
+    QgsRect r;
 
     feature = this->getGeometry();
     if(feature)
     {
+      r.setMinimal();
       // consider endian when fetching feature type
       wkbType = (feature[0] == 1) ? feature[1] : feature[4];
       switch (wkbType)
@@ -719,22 +717,7 @@ QgsRect QgsFeature::boundingBox() const
         case QGis::WKBPoint:
           x = (double *) (feature + 5);
           y = (double *) (feature + 5 + sizeof(double));
-          if (*x < xmin)
-          {
-            xmin=*x;
-          }
-          if (*x > xmax)
-          {
-            xmax=*x;
-          }
-          if (*y < ymin)
-          {
-            ymin=*y;
-          }
-          if (*y > ymax)
-          {
-            ymax=*y;
-          }
+      r.combineExtentWith(*x, *y);
           break;
 
         case QGis::WKBLineString:
@@ -748,22 +731,7 @@ QgsRect QgsFeature::boundingBox() const
             ptr += sizeof(double);
             y = (double *) ptr;
             ptr += sizeof(double);
-            if (*x < xmin)
-            {
-              xmin=*x;
-            }
-            if (*x > xmax)
-            {
-              xmax=*x;
-            }
-            if (*y < ymin)
-            {
-              ymin=*y;
-            }
-            if (*y > ymax)
-            {
-              ymax=*y;
-            }
+        r.combineExtentWith(*x, *y);
           }
           break;
 
@@ -783,22 +751,7 @@ QgsRect QgsFeature::boundingBox() const
               ptr += sizeof(double);
               y = (double *) ptr;
               ptr += sizeof(double);
-              if (*x < xmin)
-              {
-                xmin=*x;
-              }
-              if (*x > xmax)
-              {
-                xmax=*x;
-              }
-              if (*y < ymin)
-              {
-                ymin=*y;
-              }
-              if (*y > ymax)
-              {
-                ymax=*y;
-              }
+          r.combineExtentWith(*x, *y);
             }
           }
           break;
@@ -819,22 +772,7 @@ QgsRect QgsFeature::boundingBox() const
               ptr += sizeof(double);
               y = (double *) ptr;
               ptr += sizeof(double);
-              if (*x < xmin)
-              {
-                xmin=*x;
-              }
-              if (*x > xmax)
-              {
-                xmax=*x;
-              }
-              if (*y < ymin)
-              {
-                ymin=*y;
-              }
-              if (*y > ymax)
-              {
-                ymax=*y;
-              }
+          r.combineExtentWith(*x, *y);
             }
           }
           break;
@@ -862,22 +800,7 @@ QgsRect QgsFeature::boundingBox() const
                 ptr += sizeof(double);
                 y = (double *) ptr;
                 ptr += sizeof(double);
-                if (*x < xmin)
-                {
-                  xmin=*x;
-                }
-                if (*x > xmax)
-                {
-                  xmax=*x;
-                }
-                if (*y < ymin)
-                {
-                  ymin=*y;
-                }
-                if (*y > ymax)
-                {
-                  ymax=*y;
-                }
+            r.combineExtentWith(*x, *y);
               }
             }
           }
@@ -890,7 +813,7 @@ QgsRect QgsFeature::boundingBox() const
           break;
 
       }
-      return QgsRect(xmin,ymin,xmax,ymax);
+    return r;
     }
     else
     {

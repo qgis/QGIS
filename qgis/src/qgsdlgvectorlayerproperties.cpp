@@ -518,7 +518,7 @@ QString QgsDlgVectorLayerProperties::getMetadata()
         throw QgsCsException( string("unable to get layer coordinate transform object") );
     }
 
-    QgsRect myProjectedExtent = coordinateTransform->transform(layer->extent());
+    QgsRect myProjectedExtent = coordinateTransform->transformBoundingBox(layer->extent());
     myMetadataQString += "<tr><td bgcolor=\"white\">";
     myMetadataQString += tr("In project spatial reference system units : ") + 
                          tr("xMin,yMin ") + 

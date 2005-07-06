@@ -687,9 +687,9 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     /*
     // A bit of code to aid in working out what values of
     // QgsClipper::minX, etc cause the X11 zoom bug.
-    int largestX  = std::numeric_limits<int>::min();
+    int largestX  = -std::numeric_limits<int>::max();
     int smallestX = std::numeric_limits<int>::max();
-    int largestY  = std::numeric_limits<int>::min();
+    int largestY  = -std::numeric_limits<int>::max();
     int smallestY = std::numeric_limits<int>::max();
 
     for (int i = 0; i < pa.size(); ++i)
@@ -1460,35 +1460,17 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
   return QgsRect(0,0,0,0);
     }
 
-  double xmin=DBL_MAX;
-  double ymin=DBL_MAX;
-  double xmax=-DBL_MAX;
-  double ymax=-DBL_MAX;
-  QgsRect r;
+  QgsRect r, retval;
   QgsFeature* fet;
   dataProvider->reset();
 
+  retval.setMinimal();
   while ((fet = dataProvider->getNextFeature(false)))
   {
     if (mSelected.find(fet->featureId()) != mSelected.end())
     {
   r=fet->boundingBox();
-  if(r.xMin()<xmin)
-  {
-      xmin=r.xMin();
-  }
-  if(r.yMin()<ymin)
-  {
-      ymin=r.yMin();
-  }
-  if(r.xMax()>xmax)
-  {
-      xmax=r.xMax();
-  }
-  if(r.yMax()>ymax)
-  {
-      ymax=r.yMax();
-  }
+      retval.combineExtentWith(&r);
     }
       delete fet;
   }
@@ -1498,25 +1480,10 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
       if(mSelected.find((*iter)->featureId())!=mSelected.end())
       {
     r=(*iter)->boundingBox();
-    if(r.xMin()<xmin)
-    {
-        xmin=r.xMin();
-    }
-    if(r.yMin()<ymin)
-    {
-        ymin=r.yMin();
-    }
-    if(r.xMax()>xmax)
-    {
-        xmax=r.xMax();
-    }
-    if(r.yMax()>ymax)
-    {
-        ymax=r.yMax();
-    }
+      retval.combineExtentWith(&r);
       }
   }
-  return QgsRect(xmin,ymin,xmax,ymax);
+  return retval;
 }
 
 void QgsVectorLayer::setLayerProperties(QgsDlgVectorLayerProperties * properties)
@@ -1613,41 +1580,19 @@ void QgsVectorLayer::updateExtents()
       else
 	{
 	  QgsFeature* fet=0;
-	  double xmin=DBL_MAX;
-	  double xmax=-DBL_MAX;
-	  double ymin=DBL_MAX;
-	  double ymax=-DBL_MAX;
 	  QgsRect bb;
 
+          layerExtent.setMinimal();
 	  dataProvider->reset();
 	  while(fet=dataProvider->getNextFeature(false))
 	    {
 	      if(mDeleted.find(fet->featureId())==mDeleted.end())
 		{
 		  bb=fet->boundingBox();
-		  if(bb.xMin()<xmin)
-		    {
-		      xmin=bb.xMin();
-		    }
-		  if(bb.xMax()>xmax)
-		    {
-		      xmax=bb.xMax();
-		    }
-		  if(bb.yMin()<ymin)
-		    {
-		      ymin=bb.yMin();
-		    }
-		  if(bb.yMax()>ymax)
-		    {
-		      ymax=bb.yMax();
-		    }
+                  layerExtent.combineExtentWith(&bb);
 		}
 	      delete fet;
 	    }
-	  layerExtent.setXmin(xmin);
-	  layerExtent.setXmax(xmax);
-	  layerExtent.setYmin(ymin);
-	  layerExtent.setYmax(ymax);
 	}
     }
   else
@@ -1660,22 +1605,8 @@ void QgsVectorLayer::updateExtents()
   for(std::list<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
     {
       QgsRect bb=(*iter)->boundingBox();
-      if(bb.xMin()<layerExtent.xMin())
-	{
-	  layerExtent.setXmin(bb.xMin());
-	}
-      if(bb.xMax()>layerExtent.xMax())
-	{
-	  layerExtent.setXmax(bb.xMax());
-	}
-      if(bb.yMin()<layerExtent.yMin())
-	{
-	  layerExtent.setYmin(bb.yMin());
-	}
-      if(bb.yMax()>layerExtent.yMax())
-	{
-	  layerExtent.setYmax(bb.yMax());
-	}
+      layerExtent.combineExtentWith(&bb);
+
     }
   
   // Send this (hopefully) up the chain to the map canvas

@@ -3194,12 +3194,18 @@ void QgisApp::zoomToLayerExtent()
     QgsMapLayer *layer = ((QgsLegendItem *) li)->layer();
     // Check if the layer extent has to be transformed to the map canvas
     // coordinate system 
+#ifdef QGISDEBUG
+    std::cout << "Layer extent is : " << (layer->extent()).stringRep() << std::endl;
+#endif
     if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
     {
       QgsCoordinateTransform *ct = layer->coordinateTransform();
       try {
-	QgsRect transformedExtent = ct->transform(layer->extent());
+	QgsRect transformedExtent = ct->transformBoundingBox(layer->extent());
 	mMapCanvas->setExtent(transformedExtent);
+#ifdef QGISDEBUG
+        std::cout << "Canvas extent is : " << transformedExtent.stringRep() << std::endl;
+#endif
       }
       catch(QgsCsException &cse)
       {

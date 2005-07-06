@@ -214,6 +214,12 @@ class QgsSpatialRefSys
          */
           bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
 
+         /** A static helper function to find out the proj4 string for a srsid
+           * @param int theSrsId The srsid used for the lookup
+           * @return QString The proj4 string
+         */
+         static QString getProj4FromSrsId(const int theSrsId);
+
         // Accessors -----------------------------------
 
          /*! Get the SrsId - if possible

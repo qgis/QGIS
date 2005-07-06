@@ -544,7 +544,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
           }
           else
           {
-              QgsRect tRect = lyr->coordinateTransform()->transform(lyr->extent());
+              QgsRect tRect = lyr->coordinateTransform()->transformBoundingBox(lyr->extent());
               mCanvasProperties->fullExtent = tRect;
           }
       }
@@ -579,7 +579,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
           }
           else
           {
-              updateFullExtent(lyr->coordinateTransform()->transform(lyr->extent()));
+              updateFullExtent(lyr->coordinateTransform()->transformBoundingBox(lyr->extent()));
           }
       }
       catch(QgsCsException &cse)
@@ -742,7 +742,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       try
       {
         mCanvasProperties->currentExtent = 
-          transform.transform(mCanvasProperties->currentExtent);
+          transform.transformBoundingBox(mCanvasProperties->currentExtent);
       }
       catch(QgsCsException &cse)
       {
@@ -954,7 +954,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
             try
             {
               std::cout << "Transformed extent" 
-      << ml->coordinateTransform()->transform(ml->extent()).stringRep() 
+      << ml->coordinateTransform()->transformBoundingBox(ml->extent()).stringRep() 
       << std::endl;
             }
             catch (QgsCsException &e)
@@ -1310,7 +1310,7 @@ void QgsMapCanvas::zoomToSelected()
             throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
         }
 
-        rect = lyr->coordinateTransform()->transform(lyr->bBoxOfSelected());
+        rect = lyr->coordinateTransform()->transformBoundingBox(lyr->bBoxOfSelected());
       }
       catch (QgsCsException &e)
       {
@@ -2468,10 +2468,7 @@ void QgsMapCanvas::recalculateExtents()
 
   // reset the map canvas extent since the extent may now be smaller
   // We can't use a constructor since QgsRect normalizes the rectangle upon construction
-  mCanvasProperties->fullExtent.setXmin(9999999999.0);
-  mCanvasProperties->fullExtent.setYmin(999999999.0);
-  mCanvasProperties->fullExtent.setXmax(-999999999.0);
-  mCanvasProperties->fullExtent.setYmax(-999999999.0);
+  mCanvasProperties->fullExtent.setMinimal();;
   // get the map layer register collection
   QgsMapLayerRegistry *reg = QgsMapLayerRegistry::instance();
   std::map<QString, QgsMapLayer*>layers = reg->mapLayers();
@@ -2491,7 +2488,7 @@ void QgsMapCanvas::recalculateExtents()
           throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
       }
 
-      std::cout << "Transformed extent" << lyr->coordinateTransform()->transform(lyr->extent(), QgsCoordinateTransform::FORWARD) << std::endl;
+      std::cout << "Transformed extent" << lyr->coordinateTransform()->transformBoundingBox(lyr->extent(), QgsCoordinateTransform::FORWARD) << std::endl;
     }
     catch (QgsCsException &e)
     {
@@ -2510,7 +2507,7 @@ void QgsMapCanvas::recalculateExtents()
               throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
           }
 
-          updateFullExtent(lyr->coordinateTransform()->transform(lyr->extent()));
+          updateFullExtent(lyr->coordinateTransform()->transformBoundingBox(lyr->extent()));
       }
       catch (QgsCsException &e)
       {

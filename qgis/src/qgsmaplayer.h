@@ -465,10 +465,6 @@ private:                       // Private attributes
     */
     void connectNotify( const char * signal );
 
-    // Calculates the bounding box of the given extent in the inverse
-    // projected spatial reference system.
-    QgsRect calcProjectedBoundingBox(QgsRect& extent);
-
     /** Minimum scale at which this layer should be displayed */
     float mMinScale;
     /** Maximum scale at which this layer should be displayed */
