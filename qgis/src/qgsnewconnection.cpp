@@ -21,6 +21,7 @@
 #include <qcheckbox.h>
 #include <qmessagebox.h>
 #include "qgsnewconnection.h"
+#include "qgscontexthelp.h"
 extern "C"
 {
 #include <libpq-fe.h>
@@ -112,7 +113,10 @@ void QgsNewConnection::saveConnection()
     }
   accept();
 }
-
+void QgsNewConnection::helpInfo()
+{
+  QgsContextHelp::run(context_id);
+}
 /* void QgsNewConnection::saveConnection()
 {
 	QSettings settings;
