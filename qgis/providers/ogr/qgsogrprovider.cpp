@@ -946,9 +946,9 @@ bool QgsOgrProvider::addFeature(QgsFeature* f)
       }
       else if(fdef->GetFieldDefn(i)->GetType()==OFTString)
       {
-	  feature->SetField(i,s.ascii());
+	  feature->SetField(i,mEncoding->fromUnicode(s));
 #ifdef QGISDEBUG
-        qWarning("OFTString, attribute value: "+QString(s.ascii()));
+        qWarning("OFTString, attribute value: "+QString(mEncoding->fromUnicode(s)));
 #endif
       }
       else
@@ -1079,7 +1079,7 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
 		        of->SetField ( f, value.toDouble() );
 			break;
 		    case OFTString:
-		        of->SetField ( f, value.ascii() );
+		        of->SetField ( f, mEncoding->fromUnicode(value) );
 			break;
 		    default:
                         QMessageBox::warning (0, "Warning", "Unknown field type, cannot change attribute" );

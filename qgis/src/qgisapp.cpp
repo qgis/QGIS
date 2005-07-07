@@ -1875,12 +1875,56 @@ void QgisApp::newVectorLayer()
     std::list<std::pair<QString, QString> > attributes;
     geomDialog.attributes(attributes);
 
-    QString filename=QFileDialog::getSaveFileName();
-    if(filename.isNull())
+    bool haveLastUsedFilter = false; // by default, there is no last
+                                // used filter
+    QString enc;
+    QString filename;
+
+    QSettings settings;         // where we keep last used filter in
+                                // persistant state
+
+    QString lastUsedFilter = settings.readEntry("/qgis/UI/lastVectorFileFilter",
+                             QString::null,
+                             &haveLastUsedFilter);
+
+    QString lastUsedDir = settings.readEntry("/qgis/UI/lastVectorFileFilterDir",
+                          ".");
+
+    QString lastUsedEncoding = settings.readEntry("/qgis/UI/encoding");
+
+#ifdef QGISDEBUG
+
+    std::cerr << "Saving vector file dialog without filters: " << std::endl;
+#endif
+
+    QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog(lastUsedDir, "", 0, QFileDialog::tr("save new vector files dialog"), lastUsedEncoding);
+
+    // allow for selection of more than one file
+    openFileDialog->setMode(QFileDialog::AnyFile);
+    openFileDialog->setCaption(tr("Save As"));
+
+    if (haveLastUsedFilter)       // set the filter to the last one used
     {
-        //file dialog rejected
-        return;
+        openFileDialog->setSelectedFilter(lastUsedFilter);
     }
+
+    if (openFileDialog->exec() != QDialog::Accepted)
+    {
+      delete openFileDialog;
+      return;
+    }
+
+    filename = openFileDialog->selectedFile();
+    enc = openFileDialog->encoding();
+
+    settings.writeEntry("/qgis/UI//lastVectorFileFilter", openFileDialog->selectedFilter());
+
+    settings.writeEntry("/qgis/UI//lastVectorFileFilterDir", openFileDialog->dirPath());
+    settings.writeEntry("/qgis/UI/encoding", openFileDialog->encoding());
+
+    delete openFileDialog;
+
+
     // check to see if user specified the extension. if not, add it...
     if(filename.find(QRegExp("\\.shp$")) == -1)
     {
@@ -1990,8 +2034,9 @@ void QgisApp::newVectorLayer()
     delete writer;
 
     //then add the layer to the view
-    QFileInfo fileinfo(filename);
-    addLayer(fileinfo);
+    QStringList filelist;
+    filelist.append(filename);
+    addLayer(filelist, enc);
     return;
 }
 
