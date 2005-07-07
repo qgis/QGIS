@@ -3426,7 +3426,7 @@ void QgsRasterLayer::setTransparency(int theInt)
   {
     mTransparencySlider->setValue(255-theInt);    
   }
-  transparencyLevelInt=255-theInt;
+  transparencyLevelInt=theInt;
 } //  QgsRasterLayer::setTransparency(int theInt)
 
 
