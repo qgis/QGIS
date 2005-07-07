@@ -482,7 +482,7 @@ QgsRasterLayer::readFile( QString const & fileName )
   }
 
   // Store timestamp
-  mLastModified = lastModified ( fileName.local8Bit() );
+  mLastModified = lastModified ( fileName );
 
   //check f this file has pyramids
   GDALRasterBandH myGDALBand = GDALGetRasterBand( gdalDataset, 1 ); //just use the first band
