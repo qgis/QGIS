@@ -3380,7 +3380,7 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
   popMenu->insertItem(myTransparencyLabel);
 
   // XXX why GUI element here?
-  mTransparencySlider = new QSlider(0,255,5,0,QSlider::Horizontal,popMenu);
+  mTransparencySlider = new QSlider(0,255,5,255-transparencyLevelInt,QSlider::Horizontal,popMenu);
   mTransparencySlider->setTickmarks(QSlider::Both);
   mTransparencySlider->setTickInterval(25);
   mTransparencySlider->setTracking(false); //stop slider emmitting a signal until mouse released
