@@ -273,6 +273,8 @@ private:
     void editCopy();
     //! copies features on the clipboard to the active layer
     void editPaste();
+    //! shows the paste-transformations dialog
+    void pasteTransformations();
     //! check to see if file is dirty and if so, prompt the user th save it
     int saveDirty();
 

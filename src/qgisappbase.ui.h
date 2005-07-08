@@ -373,3 +373,9 @@ void QgisAppBase::deleteVertex()
 {
 
 }
+
+
+void QgisAppBase::pasteTransformations()
+{
+
+}
