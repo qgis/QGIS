@@ -73,6 +73,8 @@
         <action name="actionEditCopy"/>
         <action name="actionEditPaste"/>
         <separator/>
+        <action name="actionPasteTransformations"/>
+        <separator/>
         <action name="actionAddVertex"/>
         <action name="actionMoveVertex"/>
         <action name="actionDeleteVertex"/>
@@ -1334,6 +1336,20 @@
             <string>Ctrl+X</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>actionPasteTransformations</cstring>
+        </property>
+        <property name="text">
+            <string>Paste Transformations</string>
+        </property>
+        <property name="menuText">
+            <string>Paste Transformations</string>
+        </property>
+        <property name="toolTip">
+            <string>Paste Transformations</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -1794,6 +1810,12 @@
         <receiver>QgisAppBase</receiver>
         <slot>deleteVertex()</slot>
     </connection>
+    <connection>
+        <sender>actionPasteTransformations</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>pasteTransformations()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in implementation">iostream</include>
@@ -1860,6 +1882,7 @@
     <slot>editCopy()</slot>
     <slot>editPaste()</slot>
     <slot>deleteVertex()</slot>
+    <slot>pasteTransformations()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
