@@ -33,6 +33,7 @@ public slots:
  void zoomToBookmark();
  int connectDb();
  void refreshBookmarks();
+ void showHelp();
 
 private:
  QWidget *mParent;
@@ -41,7 +42,7 @@ private:
  QString mUserDbPath;
  QString mQGisSettingsDir;
  sqlite3 *db;
-
+ static const int context_id = 85340544;
 
 };
 #endif // QGSBOOKMARKS_H

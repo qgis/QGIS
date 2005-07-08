@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>344</width>
-            <height>257</height>
+            <height>260</height>
         </rect>
     </property>
     <property name="caption">
@@ -70,7 +70,7 @@
         </widget>
         <widget class="QLayoutWidget" row="0" column="1">
             <property name="name">
-                <cstring>layout2</cstring>
+                <cstring>layout3</cstring>
             </property>
             <vbox>
                 <property name="name">
@@ -109,6 +109,34 @@
                         <string>Close the dialog</string>
                     </property>
                 </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnHelp</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Help</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Close the dialog</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>100</height>
+                        </size>
+                    </property>
+                </spacer>
             </vbox>
         </widget>
     </grid>
@@ -132,10 +160,17 @@
         <receiver>QgsBookmarksBase</receiver>
         <slot>zoomToBookmark()</slot>
     </connection>
+    <connection>
+        <sender>btnHelp</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsBookmarksBase</receiver>
+        <slot>showHelp()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>deleteBookmark()</slot>
     <slot>zoomToBookmark()</slot>
+    <slot>showHelp()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

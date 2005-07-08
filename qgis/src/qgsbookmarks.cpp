@@ -33,6 +33,7 @@
 #include "qgsrect.h"
 #include "qgisiface.h"
 #include "qgsmapcanvas.h"
+#include "qgscontexthelp.h"
 
 QgsBookmarks::QgsBookmarks(QWidget *parent, const char *name)
   : mParent(parent)
@@ -308,4 +309,9 @@ bool QgsBookmarks::createDatabase()
 
   }
   return true;
+}
+
+void QgsBookmarks::showHelp()
+{
+  QgsContextHelp::run(context_id);
 }
