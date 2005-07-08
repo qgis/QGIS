@@ -119,6 +119,7 @@ headers =	qgisapp.h					\
 		qgsmeasure.h					\
 		qgsnewhttpconnection.h				\
 		qgsoptions.h					\
+		qgspastetransformations.h			\
 		qgspatterndialog.h				\
 		qgspluginitem.h					\
 		qgspluginmanager.h				\
@@ -202,6 +203,7 @@ qgis_UIC =	qgisappbase.ui				\
 		qgsmeasurebase.ui			\
 		qgsnewhttpconnectionbase.ui		\
 		qgsoptionsbase.ui			\
+		qgspastetransformationsbase.ui		\
 		qgspatterndialogbase.ui			\
 		qgspluginmanagerbase.ui			\
 		qgsprojectpropertiesbase.ui		\
@@ -288,6 +290,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsmeasure.moc.cpp			\
 		qgsnewhttpconnection.moc.cpp		\
 		qgsoptions.moc.cpp			\
+		qgspastetransformations.moc.cpp		\
 		qgspatterndialog.moc.cpp		\
 		qgspluginmanager.moc.cpp		\
 		qgspointstylewidget.moc.cpp 		\
@@ -377,6 +380,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsmeasure.cpp			\
 		qgsnewhttpconnection.cpp	\
 		qgsoptions.cpp			\
+		qgspastetransformations.cpp	\
 		qgspatterndialog.cpp		\
 		qgspluginitem.cpp		\
 		qgspluginmanager.cpp		\

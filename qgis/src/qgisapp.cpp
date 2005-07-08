@@ -94,6 +94,7 @@ using namespace std;
 #include "qgscustomprojectiondialog.h"
 
 #include "qgsserversourceselect.h"
+#include "qgspastetransformations.h"
 
 #ifdef HAVE_POSTGRESQL
 #include "qgsdbsourceselect.h"
@@ -3136,6 +3137,20 @@ void QgisApp::editPaste()
       activeVectorLayer->addFeatures( clipboard()->copyOf() );
     }  
   }  
+}
+
+
+void QgisApp::pasteTransformations()
+{
+  QgsPasteTransformations *pt = new QgsPasteTransformations();
+
+  mMapCanvas->freeze();
+
+  if (pt->exec())
+  {
+    // TODO: Save the new trnasformations state
+    pt->saveState();
+  }
 }
 
 
