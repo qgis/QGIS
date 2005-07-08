@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>344</width>
-            <height>260</height>
+            <height>263</height>
         </rect>
     </property>
     <property name="caption">
@@ -166,11 +166,18 @@
         <receiver>QgsBookmarksBase</receiver>
         <slot>showHelp()</slot>
     </connection>
+    <connection>
+        <sender>lstBookmarks</sender>
+        <signal>doubleClicked(QListViewItem*)</signal>
+        <receiver>QgsBookmarksBase</receiver>
+        <slot>zoomViaDoubleClick(QListViewItem*)</slot>
+    </connection>
 </connections>
 <slots>
     <slot>deleteBookmark()</slot>
     <slot>zoomToBookmark()</slot>
     <slot>showHelp()</slot>
+    <slot>zoomViaDoubleClick(QListViewItem*)</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -188,6 +188,10 @@ void QgsBookmarks::deleteBookmark()
   }
 }
 
+void QgsBookmarks::zoomViaDoubleClick(QListViewItem *lvi)
+{
+  zoomToBookmark();
+}
 void QgsBookmarks::zoomToBookmark()
 {
 	// Need to fetch the extent for the selected bookmark and then redraw

@@ -21,6 +21,7 @@
 class QString;
 class QDir;
 class QWidget;
+class QListViewItem;
 class sqlite3;
 class QgsBookmarks : public QgsBookmarksBase{
   Q_OBJECT
@@ -31,6 +32,7 @@ public:
 public slots:
  void deleteBookmark();
  void zoomToBookmark();
+ void zoomViaDoubleClick(QListViewItem *);
  int connectDb();
  void refreshBookmarks();
  void showHelp();
