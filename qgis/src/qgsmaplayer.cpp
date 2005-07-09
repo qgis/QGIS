@@ -225,6 +225,8 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
 
     const char * layerNameStr = mne.text(); // debugger probe
 
+
+
     //read srs
     QDomNode srsNode = layer_node.namedItem("coordinatetransform");
     if( ! srsNode.isNull()  )

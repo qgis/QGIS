@@ -64,11 +64,11 @@ QgsCoordinateTransform::QgsCoordinateTransform(long theSourceSrid,
 QgsCoordinateTransform::~QgsCoordinateTransform()
 {
   // free the proj objects
-  if (mSourceProjection!=0) 
+  if (mSourceProjection) 
   {
     pj_free(mSourceProjection);
   }
-  if (mDestinationProjection!=0)
+  if (mDestinationProjection)
   {
     pj_free(mDestinationProjection);
   }

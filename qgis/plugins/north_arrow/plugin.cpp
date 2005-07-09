@@ -306,8 +306,14 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
   {
     // Grab an SRS from any layer
     QgsMapLayer& mapLayer = *(mapCanvas.getZpos(0));
+    if (! mapLayer.coordinateTransform() )
+    {
+       return 0;
+    }
     QgsSpatialRefSys& outputSRS = mapLayer.coordinateTransform()->destSRS();
-
+  
+    
+    
     bool yy = outputSRS.geographicFlag();
 
     if (outputSRS.isValid() && !outputSRS.geographicFlag())
