@@ -72,28 +72,28 @@ void QgsBookmarks::initialise()
     char *pzErrmsg;
     QString sql = "select * from tbl_bookmarks";
 
-    rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+    rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
     // XXX Need to free memory from the error msg if one is set
     if(rc == SQLITE_OK)
     {
       // get the first row of the result set
       while(sqlite3_step(ppStmt) == SQLITE_ROW)
       {
-        QString name  = (char*)sqlite3_column_text(ppStmt, 1);
+        QString name = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 1));
         //        sqlite3_bind_parameter_index(ppStmt, "name"));
-        std::cout << "Bookmark name: " << name << std::endl; 
+        std::cout << "Bookmark name: " << name.local8Bit() << std::endl; 
         QListViewItem *lvi = new QListViewItem(lstBookmarks, name);
         // set the project name
-        lvi->setText(1, (char*)sqlite3_column_text(ppStmt, 2)); 
+        lvi->setText(1, QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 2))); 
         // get the extents
-        QString xMin = (char*)sqlite3_column_text(ppStmt, 3);
-        QString yMin = (char*)sqlite3_column_text(ppStmt, 4);
-        QString xMax = (char*)sqlite3_column_text(ppStmt, 5);
-        QString yMax = (char*)sqlite3_column_text(ppStmt, 6);
+        QString xMin = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 3));
+        QString yMin = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 4));
+        QString xMax = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 5));
+        QString yMax = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 6));
         // set the extents
         lvi->setText(2, xMin + ", " + yMin + ", " + xMax + ", " + yMax); 
         // set the id
-        lvi->setText(3, (char*)sqlite3_column_text(ppStmt, 0));
+        lvi->setText(3, QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 0)));
       }
     }
     else
@@ -134,8 +134,8 @@ bool QgsBookmarks::makeDir(QDir &theQDir)
   }
 
   qDebug("attempting to create directory %s in %s", 
-          (const char *)myTempFileInfo.fileName(),
-          myBaseDir.path().latin1());
+          (const char *)myTempFileInfo.fileName().local8Bit(),
+          (const char *)myBaseDir.path().local8Bit());
 
   return myBaseDir.mkdir(myTempFileInfo.fileName());
 }
@@ -148,8 +148,8 @@ void QgsBookmarks::deleteBookmark()
   {
     // make sure the user really wants to delete this bookmark
     if(0 == QMessageBox::information(this,tr("Really Delete?"),
-          tr("Are you sure you want to delete the " + lvi->text(0) +
-          " bookmark?"), tr("&Yes"), tr("&No"), QString::null, 0, 1))  
+          tr("Are you sure you want to delete the ") + lvi->text(0) +
+          tr(" bookmark?"), tr("&Yes"), tr("&No"), QString::null, 0, 1))  
     {
       // remove it from the listview
       lstBookmarks->takeItem(lvi);
@@ -161,20 +161,20 @@ void QgsBookmarks::deleteBookmark()
         const char *pzTail;
         // build the sql statement
         QString sql = "delete from tbl_bookmarks where bookmark_id = " + lvi->text(3);
-        rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+        rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
         if(rc == SQLITE_OK)
         {
           rc = sqlite3_step(ppStmt);
           if(rc != SQLITE_OK)
           {
             // XXX Provide popup message on failure?
-            std::cout << "Failed to delete " << lvi->text(0) 
+            std::cout << "Failed to delete " << lvi->text(0).local8Bit() 
               << " bookmark from the database" << std::endl; 
           }
           else
           {
             // XXX Provide popup message on failure?
-            std::cout << "Failed to delete " << lvi->text(0) 
+            std::cout << "Failed to delete " << lvi->text(0).local8Bit() 
               << " bookmark from the database" << std::endl; 
           }
         }
@@ -210,15 +210,15 @@ void QgsBookmarks::zoomToBookmark()
     const char *pzTail;
     // build the sql statement
     QString sql = "select xmin, ymin, xmax, ymax from tbl_bookmarks where bookmark_id = " + lvi->text(3);
-    rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+    rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
     if(rc == SQLITE_OK)
     {
       if(sqlite3_step(ppStmt) == SQLITE_ROW){
         // get the extents from the resultset
-        QString xmin  = (char*)sqlite3_column_text(ppStmt, 0);
-        QString ymin  = (char*)sqlite3_column_text(ppStmt, 1);
-        QString xmax  = (char*)sqlite3_column_text(ppStmt, 2);
-        QString ymax  = (char*)sqlite3_column_text(ppStmt, 3);
+        QString xmin  = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 0));
+        QString ymin  = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 1));
+        QString xmax  = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 2));
+        QString ymax  = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 3));
         // set the extent to the bookmark
         dynamic_cast<QgisApp*>(mParent)->setExtent(QgsRect(xmin.toDouble(),
               ymin.toDouble(),
@@ -244,7 +244,7 @@ int QgsBookmarks::connectDb()
 
   char *zErrMsg = 0;
   int rc;
-  rc = sqlite3_open(mUserDbPath, &db);
+  rc = sqlite3_open(mUserDbPath.local8Bit(), &db);
   if(rc)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
@@ -274,7 +274,7 @@ bool QgsBookmarks::createDatabase()
     myPath += "/.qgis";
     myUserQGisDir.setPath(myPath);
 #ifdef QGISDEBUG 
-    std::cout << "Using " << myPath << " as path for qgis.db" << std::endl; 
+    std::cout << "Using " << myPath.local8Bit() << " as path for qgis.db" << std::endl; 
 #endif 
     //now make sure the users .qgis dir exists 
     makeDir(myUserQGisDir);
@@ -286,21 +286,21 @@ bool QgsBookmarks::createDatabase()
     QString myMasterDatabaseFileName = PKGDATAPATH;
     myMasterDatabaseFileName += "/resources/qgis.db";
     //now copy the master file into the users .qgis dir
-    std::ifstream myInputStream(myMasterDatabaseFileName.latin1() );
+    std::ifstream myInputStream(myMasterDatabaseFileName.local8Bit() );
 
     if (! myInputStream)
     {
       std::cerr << "unable to open input file: "
-        << myMasterDatabaseFileName << " --bailing out! \n";
+        << myMasterDatabaseFileName.local8Bit() << " --bailing out! \n";
       //XXX Do better error handling
       return false;
     }
 
-    std::ofstream myOutputStream(QString(qgisSettingsDir+"qgis.db").latin1());
+    std::ofstream myOutputStream(QString(qgisSettingsDir+"qgis.db").local8Bit());
 
     if (! myOutputStream)
     {
-      std::cerr << "cannot open " << QString(qgisSettingsDir+"qgis.db").latin1()  << "  for output\n";
+      std::cerr << "cannot open " << QString(qgisSettingsDir+"qgis.db").local8Bit()  << "  for output\n";
       //XXX Do better error handling
       return false;
     }

@@ -40,7 +40,7 @@ QgsRunProcess::QgsRunProcess(const QStringList& args,
   QString whole_cmd;
   for (int i = 0; i < args.count(); ++i)
     whole_cmd += "[" + args[i] + "] ";
-  qDebug("Running command: %s\n", whole_cmd.ascii());
+  qDebug("Running command: %s\n", (const char *)whole_cmd.local8Bit());
 
   mProcess = new QProcess;
   mProcess->setArguments(args);

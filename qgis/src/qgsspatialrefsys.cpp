@@ -38,7 +38,7 @@ QgsSpatialRefSys::QgsSpatialRefSys(long theSrsId,
                                    QString theEllipsoidAcronym,
                                    QString theProj4String,
                                    long theSRID,
-                                   long theEpsg,
+                                   long theEpsg, 
                                    bool theGeoFlag)
     : mMapUnits(QGis::UNKNOWN)
 {}
@@ -119,10 +119,10 @@ void QgsSpatialRefSys::validate()
 
     //get the wkt into ogr
     //this is really ugly but we need to get a QString to a char**
-    char *mySourceCharArrayPointer = (char *)mProj4String.latin1();
+    const char *mySourceCharArrayPointer = mProj4String.latin1();
     //create the sr and populate it from a wkt proj definition
     OGRSpatialReference myOgrSpatialRef;
-    OGRErr myInputResult = myOgrSpatialRef.importFromProj4(  mySourceCharArrayPointer );
+    OGRErr myInputResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
 
     if (myInputResult==OGRERR_NONE)
     {
@@ -170,7 +170,7 @@ void QgsSpatialRefSys::validate()
   //
 
   //this is really ugly but we need to get a QString to a char**
-  char *mySourceCharArrayPointer = (char *)mProj4String.latin1();
+  const char *mySourceCharArrayPointer = mProj4String.latin1();
   //create the sr and populate it from a wkt proj definition
   OGRSpatialReference myOgrSpatialRef;
   OGRErr myInputResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
@@ -206,7 +206,7 @@ bool QgsSpatialRefSys::createFromSrid(long theSrid)
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.latin1(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -227,18 +227,18 @@ bool QgsSpatialRefSys::createFromSrid(long theSrid)
   */
 
   QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where srid='" + QString::number(theSrid) + "'";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK && sqlite3_step(myPreparedStatement) == SQLITE_ROW)
   {
-    mSrsId = QString ((char *)sqlite3_column_text(myPreparedStatement,0)).toLong();
-    mDescription = QString ((char *)sqlite3_column_text(myPreparedStatement,1));
-    mProjectionAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,2));
-    mEllipsoidAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,3));
-    mProj4String = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
-    mSRID = QString ((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
-    mEpsg = QString ((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
-    int geo = QString ((char *)sqlite3_column_text(myPreparedStatement,7)).toInt();
+    mSrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0)).toLong();
+    mDescription = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1));
+    mProjectionAcronym = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+    mEllipsoidAcronym = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+    mProj4String = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4));
+    mSRID = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
+    mEpsg = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
+    int geo = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,7)).toInt();
     mGeoFlag = (geo == 0 ? false : true);
     setMapUnits();
     mIsValidFlag = true;
@@ -247,7 +247,7 @@ bool QgsSpatialRefSys::createFromSrid(long theSrid)
   else
   {
 #ifdef QGISDEBUG
-    std::cout << " QgsSpatialRefSys::createFromSrid failed :  " << mySql << std::endl;
+    std::cout << " QgsSpatialRefSys::createFromSrid failed :  " << mySql.local8Bit() << std::endl;
 #endif
     mIsValidFlag = false;
   }
@@ -265,11 +265,11 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
     return false;
   }
 #ifdef QGISDEBUG
-  std::cout << "QgsSpatialRefSys::createFromWkt(QString theWkt) using: \n" << theWkt << std::endl;
+  std::cout << "QgsSpatialRefSys::createFromWkt(QString theWkt) using: \n" << theWkt.local8Bit() << std::endl;
 #endif
   //this is really ugly but we need to get a QString to a char**
-  char *myCharArrayPointer = (char *)theWkt.latin1();
-
+  const char *myCharArrayPointer = theWkt.latin1(); //Why doesn't it work with local8Bit()?
+  char *pWkt = (char *)myCharArrayPointer;
   /* Here are the possible OGR error codes :
      typedef int OGRErr;
      #define OGRERR_NONE                0
@@ -284,13 +284,13 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
 
   OGRSpatialReference myOgrSpatialRef;
 
-  OGRErr myInputResult = myOgrSpatialRef.importFromWkt( & myCharArrayPointer );
+  OGRErr myInputResult = myOgrSpatialRef.importFromWkt( &pWkt );
   if (myInputResult != OGRERR_NONE)
   {
     std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
     std::cout << "QgsSpatialRefSys::createFromWkt(QString theWkt) " << __FILE__ << __LINE__ << std::endl;
     std::cout << "This SRS could *** NOT *** be set from the supplied WKT " << std::endl;
-    std::cout << "INPUT: " << std::endl << theWkt << std::endl;
+    std::cout << "INPUT: " << std::endl << theWkt.local8Bit() << std::endl;
     std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
     mIsValidFlag = false;
     return false;
@@ -331,7 +331,7 @@ bool QgsSpatialRefSys::createFromEpsg(long theEpsg)
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.latin1(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -352,18 +352,18 @@ bool QgsSpatialRefSys::createFromEpsg(long theEpsg)
   */
 
   QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where epsg_id='" + QString::number(theEpsg) + "'";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK && sqlite3_step(myPreparedStatement) == SQLITE_ROW)
   {
-    mSrsId = QString ((char *)sqlite3_column_text(myPreparedStatement,0)).toLong();
-    mDescription = QString ((char *)sqlite3_column_text(myPreparedStatement,1));
-    mProjectionAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,2));
-    mEllipsoidAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,3));
-    mProj4String = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
-    mSRID = QString ((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
-    mEpsg = QString ((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
-    int geo = QString ((char *)sqlite3_column_text(myPreparedStatement,7)).toInt();
+    mSrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0)).toLong();
+    mDescription = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1));
+    mProjectionAcronym = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+    mEllipsoidAcronym = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+    mProj4String = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4));
+    mSRID = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
+    mEpsg = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
+    int geo = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,7)).toInt();
     mGeoFlag = (geo == 0 ? false : true);
     setMapUnits();
     mIsValidFlag = true;
@@ -372,7 +372,7 @@ bool QgsSpatialRefSys::createFromEpsg(long theEpsg)
   else
   {
 #ifdef QGISDEBUG
-    std::cout << " QgsSpatialRefSys::createFromEpsg failed :  " << mySql << std::endl;
+    std::cout << " QgsSpatialRefSys::createFromEpsg failed :  " << mySql.local8Bit() << std::endl;
 #endif
     mIsValidFlag = false;
   }
@@ -422,7 +422,7 @@ bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.latin1(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -443,18 +443,18 @@ bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
   */
 
   QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where srs_id='" + QString::number(theSrsId) + "'";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK && sqlite3_step(myPreparedStatement) == SQLITE_ROW)
   {
-    mSrsId = QString ((char *)sqlite3_column_text(myPreparedStatement,0)).toLong();
-    mDescription = QString ((char *)sqlite3_column_text(myPreparedStatement,1));
-    mProjectionAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,2));
-    mEllipsoidAcronym = QString ((char *)sqlite3_column_text(myPreparedStatement,3));
-    mProj4String = QString ((char *)sqlite3_column_text(myPreparedStatement,4));
-    mSRID = QString ((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
-    mEpsg = QString ((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
-    int geo = QString ((char *)sqlite3_column_text(myPreparedStatement,7)).toInt();
+    mSrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0)).toLong();
+    mDescription = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1));
+    mProjectionAcronym = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+    mEllipsoidAcronym = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+    mProj4String = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4));
+    mSRID = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,5)).toLong();
+    mEpsg = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
+    int geo = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,7)).toInt();
     mGeoFlag = (geo == 0 ? false : true);
     setMapUnits();
     mIsValidFlag = true;
@@ -462,7 +462,7 @@ bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
   else
   {
 #ifdef QGISDEBUG
-    std::cout << " QgsSpatialRefSys::createFromSrsId failed :  " << mySql << std::endl;
+    std::cout << " QgsSpatialRefSys::createFromSrsId failed :  " << mySql.local8Bit() << std::endl;
 #endif
     mIsValidFlag = false;
   }
@@ -481,7 +481,7 @@ bool QgsSpatialRefSys::isValid() const
     return false;
 
   //this is really ugly but we need to get a QString to a char**
-  char *mySourceCharArrayPointer = (char *)mProj4String.latin1();
+  const char *mySourceCharArrayPointer = mProj4String.latin1();
   //create the sr and populate it from a wkt proj definition
   OGRSpatialReference myOgrSpatialRef;
   OGRErr myResult = myOgrSpatialRef.importFromProj4( mySourceCharArrayPointer );
@@ -614,7 +614,7 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
   int           myResult;
 
 #ifdef QGISDEBUG
-  std::cout << " QgsSpatialRefSys::getRecord...running query:\n"<< theSql << "\n" << std::endl;
+  std::cout << " QgsSpatialRefSys::getRecord...running query:\n"<< theSql.local8Bit() << "\n" << std::endl;
   std::cout << " QgsSpatialRefSys::getRecord...trying system srs.db" << std::endl;
 #endif
   // Get the package data path and set the full path name to the sqlite3 spatial reference
@@ -627,7 +627,7 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
 
 
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.latin1(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -637,7 +637,7 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
   }
 
 
-  myResult = sqlite3_prepare(myDatabase, (const char *)theSql, theSql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, theSql.utf8(), theSql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK && sqlite3_step(myPreparedStatement) == SQLITE_ROW)
   {
@@ -645,8 +645,8 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
     //loop through each column in the record adding its field name and vvalue to the map
     for (int myColNo=0;myColNo < myColumnCount;myColNo++)
     {
-      myFieldName = QString ((char *)sqlite3_column_name(myPreparedStatement,myColNo));
-      myFieldValue = QString ((char *)sqlite3_column_text(myPreparedStatement,myColNo));
+      myFieldName = QString::fromUtf8((char *)sqlite3_column_name(myPreparedStatement,myColNo));
+      myFieldValue = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,myColNo));
       myMap[myFieldName]=myFieldValue;
     }
   }
@@ -668,7 +668,7 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
     }
 
     //check the db is available
-    myResult = sqlite3_open(myDatabaseFileName.latin1(), &myDatabase);
+    myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
     if(myResult)
     {
       std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -678,7 +678,7 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
     }
 
 
-    myResult = sqlite3_prepare(myDatabase, (const char *)theSql, theSql.length(), &myPreparedStatement, &myTail);
+    myResult = sqlite3_prepare(myDatabase, theSql.utf8(), theSql.length(), &myPreparedStatement, &myTail);
     // XXX Need to free memory from the error msg if one is set
     if(myResult == SQLITE_OK && sqlite3_step(myPreparedStatement) == SQLITE_ROW)
     {
@@ -686,15 +686,15 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
       //loop through each column in the record adding its field name and vvalue to the map
       for (int myColNo=0;myColNo < myColumnCount;myColNo++)
       {
-        myFieldName = QString ((char *)sqlite3_column_name(myPreparedStatement,myColNo));
-        myFieldValue = QString ((char *)sqlite3_column_text(myPreparedStatement,myColNo));
+        myFieldName = QString::fromUtf8((char *)sqlite3_column_name(myPreparedStatement,myColNo));
+        myFieldValue = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,myColNo));
         myMap[myFieldName]=myFieldValue;
       }
     }
     else
     {
 #ifdef QGISDEBUG
-      std::cout << " QgsSpatialRefSys::getRecord failed :  " << theSql << std::endl;
+      std::cout << " QgsSpatialRefSys::getRecord failed :  " << theSql.local8Bit() << std::endl;
 #endif
 
     }
@@ -703,11 +703,11 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
   sqlite3_close(myDatabase);
 
 #ifdef QGISDEBUG
-         std::cout << " QgsSpatialRefSys::getRecord retrieved:  " << theSql << std::endl;
+         std::cout << " QgsSpatialRefSys::getRecord retrieved:  " << theSql.local8Bit() << std::endl;
         RecordMap::Iterator it;
         for ( it = myMap.begin(); it != myMap.end(); ++it )
        {
-            std::cout << it.key().latin1() << " => " <<  it.data().latin1() << std::endl;
+            std::cout << it.key().local8Bit() << " => " <<  it.data().local8Bit() << std::endl;
         }
 #endif
 
@@ -862,14 +862,14 @@ void QgsSpatialRefSys::setMapUnits()
 {
   if (mProj4String.isEmpty())
   {
-    qWarning(QObject::tr("No proj4 projection string. Unable to set map units."));
+    qWarning(QObject::tr("No proj4 projection string. Unable to set map units.").local8Bit());
     mMapUnits = QGis::UNKNOWN;
     return;
   }
 
   char *unitName;
   OGRSpatialReference myOgrSpatialRef;
-  myOgrSpatialRef.importFromProj4(mProj4String);
+  myOgrSpatialRef.importFromProj4(mProj4String.latin1());
 
   // Of interest to us is that this call adds in a unit parameter if
   // one doesn't already exist.
@@ -892,7 +892,7 @@ void QgsSpatialRefSys::setMapUnits()
       unit = "Foot";
 
 #ifdef QGISDEBUG
-    std::cerr << "Projection has linear units of " << unit << '\n';
+    std::cerr << "Projection has linear units of " << unit.local8Bit() << '\n';
 #endif
 
     if (unit == "Meter")
@@ -901,7 +901,7 @@ void QgsSpatialRefSys::setMapUnits()
       mMapUnits = QGis::FEET;
     else
     {
-      qWarning(QObject::tr("Unsupported map units of ") + unit);
+      qWarning((QObject::tr("Unsupported map units of ") + unit).local8Bit());
       mMapUnits = QGis::UNKNOWN;
     }
   }
@@ -913,11 +913,11 @@ void QgsSpatialRefSys::setMapUnits()
       mMapUnits = QGis::DEGREES;
     else
     {
-      qWarning(QObject::tr("Unsupported map units of ") + unit);
+      qWarning((QObject::tr("Unsupported map units of ") + unit).local8Bit());
       mMapUnits = QGis::UNKNOWN;
     }
 #ifdef QGISDEBUG
-    std::cerr << "Projection has angular units of " << unit << '\n';
+    std::cerr << "Projection has angular units of " << unit.local8Bit() << '\n';
 #endif
 
   }
@@ -954,7 +954,7 @@ long QgsSpatialRefSys::findMatchingProj()
   QString mySql = QString ("select srs_id,parameters from tbl_srs where projection_acronym='" +
                            mProjectionAcronym + "' and ellipsoid_acronym='" + mEllipsoidAcronym + "'");
 #ifdef QGISDEBUG
- // std::cout << "QgsSpatialRefSys::findMatchingProj list sql\n" << mySql << std::endl;
+ // std::cout << "QgsSpatialRefSys::findMatchingProj list sql\n" << mySql.local8Bit() << std::endl;
  // std::cout << " QgsSpatialRefSys::findMatchingProj...trying system srs.db" << std::endl;
 #endif
   // Get the package data path and set the full path name to the sqlite3 spatial reference
@@ -967,7 +967,7 @@ long QgsSpatialRefSys::findMatchingProj()
 
 
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.latin1(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "QgsSpatialRefSys::findMatchingProj Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -976,18 +976,18 @@ long QgsSpatialRefSys::findMatchingProj()
     assert(myResult == 0);
   }
 
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
 
     while(sqlite3_step(myPreparedStatement) == SQLITE_ROW)
     {
-      QString mySrsId = (char *)sqlite3_column_text(myPreparedStatement,0);
-      QString myProj4String = (char *)sqlite3_column_text(myPreparedStatement, 1);
+      QString mySrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+      QString myProj4String = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 1));
       if (this->equals(myProj4String))
       {
-        std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in srs.db srsid: " << mySrsId << std::endl;
+        std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in srs.db srsid: " << mySrsId.local8Bit() << std::endl;
         // close the sqlite3 statement
         sqlite3_finalize(myPreparedStatement);
         sqlite3_close(myDatabase);
@@ -1009,7 +1009,7 @@ long QgsSpatialRefSys::findMatchingProj()
 
   myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.latin1(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "QgsSpatialRefSys::findMatchingProj Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -1017,18 +1017,18 @@ long QgsSpatialRefSys::findMatchingProj()
     return 0;
   }
 
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
 
     while(sqlite3_step(myPreparedStatement) == SQLITE_ROW)
     {
-      QString mySrsId = (char *)sqlite3_column_text(myPreparedStatement,0);
-      QString myProj4String = (char *)sqlite3_column_text(myPreparedStatement, 1);
+      QString mySrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+      QString myProj4String = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 1));
       if (this->equals(myProj4String))
       {
-        std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in user qgis.db srsid: " << mySrsId << std::endl;
+        std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in user qgis.db srsid: " << mySrsId.local8Bit() << std::endl;
         // close the sqlite3 statement
         sqlite3_finalize(myPreparedStatement);
         sqlite3_close(myDatabase);
@@ -1053,11 +1053,11 @@ bool QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs)
 {
   //qWarning("QgsSpatialRefSys::operator==(const QgsSpatialRefSys &theSrs) called ");
   //simply delegate to the overloaded == operator  below...
-  return this->equals((char *)theSrs.mProj4String.latin1());
+  return this->equals(theSrs.mProj4String);
 
 }
 
-bool QgsSpatialRefSys::equals(const char *theProj4CharArray)
+bool QgsSpatialRefSys::equals(QString theProj4CharArray)
 {
   //qWarning("QgsSpatialRefSys::operator==(const char *theProj4CharArray) called ");
   bool myMatchFlag = false; //guilty until proven innocent
@@ -1076,7 +1076,7 @@ bool QgsSpatialRefSys::equals(const char *theProj4CharArray)
 
   //get the wkt into ogr
   //this is really ugly but we need to get a QString to a char**
-  const char *myCharArrayPointer1 = (char *)mProj4String.latin1();
+  const char *myCharArrayPointer1 = mProj4String.latin1();
 
   //note that the proj strings above do not neccessarily need to be exactly the
   //same for the projections they define to be equivalent, which is why I dont just
@@ -1087,7 +1087,7 @@ bool QgsSpatialRefSys::equals(const char *theProj4CharArray)
   OGRSpatialReference myOgrSpatialRef1;
   OGRSpatialReference myOgrSpatialRef2;
   OGRErr myInputResult1 = myOgrSpatialRef1.importFromProj4(  myCharArrayPointer1 );
-  OGRErr myInputResult2 = myOgrSpatialRef2.importFromProj4(  theProj4CharArray );
+  OGRErr myInputResult2 = myOgrSpatialRef2.importFromProj4(  theProj4CharArray.latin1() );
 
   if (myOgrSpatialRef1.IsGeographic() && myOgrSpatialRef2.IsGeographic())
   {
@@ -1131,7 +1131,7 @@ bool QgsSpatialRefSys::equals(const char *theProj4CharArray)
 OGRSpatialReference QgsSpatialRefSys::toOgrSrs()
 {
   OGRSpatialReference myOgrSpatialRef1;
-  OGRErr myInputResult1 = myOgrSpatialRef1.importFromProj4((char *)mProj4String.latin1());
+  OGRErr myInputResult1 = myOgrSpatialRef1.importFromProj4(mProj4String.latin1());
   return myOgrSpatialRef1;
 }
 
@@ -1256,7 +1256,7 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
 #ifdef QGISDEBUG
       std::cout << "QgsSpatialRefSys::getProj4FromSrsId :  mySrsId = " << theSrsId << std::endl;
       std::cout << "QgsSpatialRefSys::getProj4FromSrsId :  USER_PROJECTION_START_ID = " << USER_PROJECTION_START_ID << std::endl;
-      std::cout << "QgsSpatialRefSys::getProj4FromSrsId :Selection sql : " << mySql << std::endl;
+      std::cout << "QgsSpatialRefSys::getProj4FromSrsId :Selection sql : " << mySql.local8Bit() << std::endl;
 #endif
       //
       // Determine if this is a user projection or a system on
@@ -1278,13 +1278,13 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
         myDatabaseFileName = PKGDATAPATH;
         myDatabaseFileName += "/resources/srs.db";
       }
-      std::cout << "QgsSpatialRefSys::getProj4FromSrsId db = " << myDatabaseFileName << std::endl;
+      std::cout << "QgsSpatialRefSys::getProj4FromSrsId db = " << myDatabaseFileName.local8Bit() << std::endl;
 
 
       sqlite3 *db;
       char *zErrMsg = 0;
       int rc;
-      rc = sqlite3_open(myDatabaseFileName, &db);
+      rc = sqlite3_open(myDatabaseFileName.local8Bit(), &db);
       if(rc)
       {
         std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
@@ -1298,14 +1298,14 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
       char *pzErrmsg;
 
 
-      rc = sqlite3_prepare(db, (const char *)mySql, mySql.length(), &ppStmt, &pzTail);
+      rc = sqlite3_prepare(db, mySql.utf8(), mySql.length(), &ppStmt, &pzTail);
       // XXX Need to free memory from the error msg if one is set
 
       if(rc == SQLITE_OK)
       {
         if(sqlite3_step(ppStmt) == SQLITE_ROW)
         {
-          myProjString = (char*)sqlite3_column_text(ppStmt, 0);
+          myProjString = QString::fromUtf8((char*)sqlite3_column_text(ppStmt, 0));
         }
       }
       // close the statement

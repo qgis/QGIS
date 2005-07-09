@@ -142,8 +142,8 @@ void QgsCoordinateTransform::initialise()
   }
 
   // init the projections (destination and source)
-  mDestinationProjection = pj_init_plus(mDestSRS.proj4String());
-  mSourceProjection = pj_init_plus(mSourceSRS.proj4String());
+  mDestinationProjection = pj_init_plus(mDestSRS.proj4String().local8Bit());
+  mSourceProjection = pj_init_plus(mSourceSRS.proj4String().local8Bit());
 
   mInitialisedFlag = true;
   if ( mDestinationProjection == NULL )
@@ -343,7 +343,7 @@ QgsRect QgsCoordinateTransform::transformBoundingBox(const QgsRect rect, Transfo
     bb_rect.combineExtentWith(x[i], y[i]);
   }
 
-  std::cout << "Projected extent: " << (bb_rect.stringRep()) << std::endl;
+  std::cout << "Projected extent: " << (bb_rect.stringRep()).local8Bit() << std::endl;
 
   return bb_rect;
 }
@@ -420,7 +420,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
 
     pjErr << tr("with error: ") << pj_strerrno(projResult) << '\n';
 #ifdef QGISDEBUG
-  std::cout << "Projection failed emitting invalid transform signal: \n" << msg << std::endl;
+  std::cout << "Projection failed emitting invalid transform signal: \n" << msg.local8Bit() << std::endl;
 #endif
     emit invalidTransformInput();
     throw  QgsCsException(msg);

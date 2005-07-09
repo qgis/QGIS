@@ -182,7 +182,7 @@ const char * const ident =
       QString myQString = *myIterator;
 #ifdef QGISDEBUG
 
-      std::cout << "Inserting : " << myQString << std::endl;
+      std::cout << "Inserting : " << myQString.local8Bit() << std::endl;
 #endif
 
       cboGray->insertItem(myQString);
@@ -323,8 +323,8 @@ void QgsRasterLayerProperties::apply()
 #endif
 #ifdef QGISDEBUG
 
-        std::cout << "Combo value : " << cboGray->currentText() << " GrayBand Mapping : " << rasterLayer->
-            getGrayBandName() << std::endl;
+        std::cout << "Combo value : " << cboGray->currentText().local8Bit() << " GrayBand Mapping : " << rasterLayer->
+            getGrayBandName().local8Bit() << std::endl;
 #endif
 
         rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY);
@@ -347,8 +347,8 @@ void QgsRasterLayerProperties::apply()
       {
 #ifdef QGISDEBUG
         std::cout << "Setting Raster Drawing Style to :: MULTI_BAND_SINGLE_BAND_GRAY" << std::endl;
-        std::cout << "Combo value : " << cboGray->currentText() << " GrayBand Mapping : " << rasterLayer->
-            getGrayBandName() << std::endl;
+        std::cout << "Combo value : " << cboGray->currentText().local8Bit() << " GrayBand Mapping : " << rasterLayer->
+            getGrayBandName().local8Bit() << std::endl;
 #endif
 
         rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY);

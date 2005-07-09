@@ -343,7 +343,7 @@ int main(int argc, char *argv[])
   }
 #ifdef QGISDEBUG
   std::cout << "Setting translation to "
-    << i18nPath << "/qgis_" << myTranslationCode << std::endl;
+    << i18nPath.local8Bit() << "/qgis_" << myTranslationCode.local8Bit() << std::endl;
 #endif
 
   /* Translation file for Qt.
@@ -413,7 +413,7 @@ int main(int argc, char *argv[])
 
 
 #ifdef QGISDEBUG
-    std::cout << "Trying to load file : " << *myIterator << std::endl;
+    std::cout << "Trying to load file : " << (*myIterator).local8Bit() << std::endl;
 #endif
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files

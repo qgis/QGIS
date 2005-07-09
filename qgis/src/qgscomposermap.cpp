@@ -47,7 +47,7 @@ QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int
     mComposition = composition;
     mId = id;
     mMapCanvas = mComposition->mapCanvas();
-    mName.sprintf ( tr("Map %d"), mId );
+    mName = QString(tr("Map %1").arg(mId));
 
     init();
     recalculate();
@@ -65,7 +65,7 @@ QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id )
     mComposition = composition;
     mId = id;
     mMapCanvas = mComposition->mapCanvas();
-    mName.sprintf ( tr("Map %d"), mId );
+    mName = QString(tr("Map %1").arg(mId));
 
     init();
     readSettings();
@@ -224,7 +224,7 @@ void QgsComposerMap::cache ( void )
     // WARNING: ymax in QgsMapToPixel is device height!!!
     QgsMapToPixel transform(scale, h, mCacheExtent.yMin(), mCacheExtent.xMin() );
 
-    std::cout << "transform = " << transform.showParameters() << std::endl;
+    std::cout << "transform = " << transform.showParameters().local8Bit() << std::endl;
     
     mCachePixmap.fill(QColor(255,255,255));
 
@@ -481,9 +481,9 @@ void QgsComposerMap::recalculate ( void )
 
     }
 
-    std::cout << "mUserExtent = " << mUserExtent.stringRep() << std::endl;
+    std::cout << "mUserExtent = " << mUserExtent.stringRep().local8Bit() << std::endl;
     std::cout << "mScale = " << mScale << std::endl;
-    std::cout << "mExtent = " << mExtent.stringRep() << std::endl;
+    std::cout << "mExtent = " << mExtent.stringRep().local8Bit() << std::endl;
 
     setOptions();
     mCacheUpdated = false;

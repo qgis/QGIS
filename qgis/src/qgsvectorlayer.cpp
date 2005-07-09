@@ -264,7 +264,7 @@ void QgsVectorLayer::setDisplayField(QString fldName)
 
       QString fldName = fields[j].name();
 #ifdef QGISDEBUG
-      std::cerr << "Checking field " << fldName << " of " << fields.size() << " total" << std::endl;
+      std::cerr << "Checking field " << fldName.local8Bit() << " of " << fields.size() << " total" << std::endl;
 #endif
       // Check the fields and keep the first one that matches.
       // We assume that the user has organized the data with the
@@ -405,9 +405,9 @@ QgsRect QgsVectorLayer::inverseProjectRect(const QgsRect& r) const
 			        QgsCoordinateTransform::INVERSE);
 #ifdef QGISDEBUG
       std::cerr << "Projections are enabled\n";
-      std::cerr << "Rectangle was: " << r.stringRep(true) << '\n';
+      std::cerr << "Rectangle was: " << r.stringRep(true).local8Bit() << '\n';
       QgsRect tt(p1, p2);
-      std::cerr << "Inverse transformed to: " << tt.stringRep(true) << '\n';
+      std::cerr << "Inverse transformed to: " << tt.stringRep(true).local8Bit() << '\n';
 #endif
       return QgsRect(p1, p2);
 
@@ -849,7 +849,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     {
       QString msg("Failed to transform a point: ");
       msg += cse.what();
-      qWarning(msg);
+      qWarning(msg.local8Bit());
     }
 
 #ifdef QGISDEBUG
@@ -931,7 +931,7 @@ void QgsVectorLayer::identify(QgsRect * r)
   for (int i = 0; i < attr.size(); i++)
   {
 #ifdef QGISDEBUG
-    std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
+    std::cout << attr[i].fieldName().local8Bit() << " == " << fieldIndex.local8Bit() << std::endl;
 #endif
     if (attr[i].fieldName().lower() == fieldIndex)
     {
@@ -1066,7 +1066,7 @@ void QgsVectorLayer::table()
       {
         tabledisplay->table()->selectRowWithId(*it);//todo: avoid that the table gets repainted during each selection
 #ifdef QGISDEBUG
-        qWarning("selecting row with id " + QString::number(*it));
+        qWarning(("selecting row with id " + QString::number(*it)).local8Bit());
 #endif
 
       }
@@ -1691,7 +1691,7 @@ bool QgsVectorLayer::addFeature(QgsFeature* f)
       tempid=(*rit)->featureId()+1;
     }
 #ifdef QGISDEBUG
-    qWarning("assigned feature id "+QString::number(tempid));
+    qWarning(("assigned feature id "+QString::number(tempid)).local8Bit());
 #endif
     f->setFeatureId(tempid);
     mAddedFeatures.push_back(f);
@@ -1889,7 +1889,7 @@ int QgsVectorLayer::maximumScale()
 bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 {
 #ifdef QGISDEBUG
-  std::cerr << "Datasource in QgsVectorLayer::readXML_: " << dataSource << std::endl;
+  std::cerr << "Datasource in QgsVectorLayer::readXML_: " << dataSource.local8Bit() << std::endl;
 #endif
   // process the attribute actions
   mActions.readXML(layer_node);
@@ -2066,7 +2066,7 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 
   //QString ogrlib = libDir + "/libpostgresprovider.so";
 
-  const char *cOgrLib = (const char *) ogrlib;
+  const char *cOgrLib = ogrlib.local8Bit();
 
 #ifdef TESTPROVIDERLIB
   // test code to help debug provider loading problems
@@ -2086,9 +2086,9 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 #endif
 
   // load the data provider
-  myLib = new QLibrary((const char *) ogrlib);
+  myLib = new QLibrary(ogrlib);
 #ifdef QGISDEBUG
-  std::cout << "Library name is " << myLib->library() << std::endl;
+  std::cout << "Library name is " << myLib->library().local8Bit() << std::endl;
 #endif
   bool loaded = myLib->load();
 
@@ -2137,7 +2137,7 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
           // show the extent
           QString s = mbr->stringRep();
 #ifdef QGISDEBUG
-          std::cout << "Extent of layer: " << s << std::endl;
+          std::cout << "Extent of layer: " << s.local8Bit() << std::endl;
 #endif
           // store the extent
           layerExtent.setXmax(mbr->xMax());
@@ -2155,13 +2155,13 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
           if (providerKey == "postgres")
           {
 #ifdef QGISDEBUG
-            std::cout << "Beautifying layer name " << layerName << std::endl;
+            std::cout << "Beautifying layer name " << layerName.local8Bit() << std::endl;
 #endif
             // adjust the display name for postgres layers
             layerName = layerName.mid(layerName.find(".") + 1);
             layerName = layerName.left(layerName.find("("));
 #ifdef QGISDEBUG
-            std::cout << "Beautified name is " << layerName << std::endl;
+            std::cout << "Beautified name is " << layerName.local8Bit() << std::endl;
 #endif
 
           }
@@ -2177,7 +2177,7 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
         {
 #ifdef QGISDEBUG
             qDebug( "%s:%d invalid provider plugin %s", 
-                    __FILE__, __LINE__, dataSource.ascii() );
+                    __FILE__, __LINE__, (const char *)dataSource.local8Bit() );
 #endif
             return false;
         }
@@ -2186,7 +2186,7 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
       {
 #ifdef QGISDEBUG
         qDebug( "%s:%d Unable to instantiate the data provider plugin %s", 
-                __FILE__, __LINE__, dataSource.ascii() );
+                __FILE__, __LINE__, (const char *)dataSource.local8Bit() );
 #endif
         valid = false;
 
@@ -2221,7 +2221,7 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
 
   if ( mapLayerNode.isNull() || ("maplayer" != mapLayerNode.nodeName()) )
   {
-    const char * nn = mapLayerNode.nodeName(); // debugger probe
+    const char * nn = mapLayerNode.nodeName().local8Bit(); // debugger probe
 
     qDebug( "QgsVectorLayer::writeXML() can't find <maplayer>" );
 
@@ -2324,7 +2324,7 @@ QgsVectorLayer:: setDataProvider( QString const & provider )
   // Use the const char * form of the xml to make non-stl qt happy
     if ( ! labelDOM.setContent( QString::fromUtf8(s), &errorMsg, &errorLine, &errorColumn ) )
     {
-      qDebug( "XML import error at line %d column %d " + errorMsg, errorLine, errorColumn );
+      qDebug( ("XML import error at line %d column %d " + errorMsg).local8Bit(), errorLine, errorColumn );
 
       return false;
     }
@@ -2375,7 +2375,7 @@ int QgsVectorLayer::findFreeId()
       delete fet;
     }
 #ifdef QGISDEBUG
-    qWarning("freeid is: "+QString::number(freeid+1));
+    qWarning(("freeid is: "+QString::number(freeid+1)).local8Bit());
 #endif
     return freeid+1;
   }
@@ -2678,7 +2678,7 @@ void QgsVectorLayer::setCoordinateSystem()
     }
     
 #ifdef QGISDEBUG
-    std::cout << "QgsVectorLayer::setCoordinateSystem --- using wkt\n" << mySourceWKT << std::endl;
+    std::cout << "QgsVectorLayer::setCoordinateSystem --- using wkt\n" << mySourceWKT.local8Bit() << std::endl;
 #endif
     mCoordinateTransform->sourceSRS().createFromWkt(mySourceWKT);
     //mCoordinateTransform->sourceSRS()->createFromWkt(getProjectionWKT());

@@ -452,7 +452,7 @@ void QgsMapCanvas::showInOverview( QgsMapLayer * maplayer, bool visible )
 void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 {
 #ifdef QGISDEBUG
-  std::cout << name() << " is adding " << lyr->name() << std::endl;
+  std::cout << name() << " is adding " << lyr->name().local8Bit() << std::endl;
 #endif
 
   Q_CHECK_PTR( lyr );
@@ -496,7 +496,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
     if ( ! lyr->showInOverviewStatus() )
     {
 #ifdef QGISDEBUG
-      qDebug( lyr->name() + " not in overview, so skipping in addLayer()" );
+      qDebug((lyr->name() + " not in overview, so skipping in addLayer()").local8Bit() );
 #endif
 
       return;               // doesn't want to be in overview, so don't add
@@ -504,7 +504,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
     else
     {
 #ifdef QGISDEBUG
-      qDebug( lyr->name() + " in overview, invoking addLayer()" );
+      qDebug(( lyr->name() + " in overview, invoking addLayer()").local8Bit() );
 #endif
 
     }
@@ -746,7 +746,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       }
       catch(QgsCsException &cse)
       {
-        qWarning(tr("Error when projecting the view extent, you may need to manually zoom to the region of interest."));
+        qWarning(tr("Error when projecting the view extent, you may need to manually zoom to the region of interest.").local8Bit());
 #ifdef QGISDEBUG
         std::cerr << "Attempted to transform the view extent from\n"
                   << mCanvasProperties->previousOutputSRS 
@@ -809,7 +809,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
   std::cout << ".............................." << std::endl;
   std::cout << "...........Rendering.........." << std::endl;
   std::cout << ".............................." << std::endl;
-  std::cout << name() << " canvas is " << msg << std::endl;
+  std::cout << name() << " canvas is " << msg.local8Bit() << std::endl;
 #endif
 
   int myHeight=0;
@@ -944,17 +944,17 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
           {
             //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
 #ifdef QGISDEBUG
-            std::cout << "QgsMapCanvas::render: Rendering layer " << ml->name() << '\n'
+            std::cout << "QgsMapCanvas::render: Rendering layer " << ml->name().local8Bit() << '\n'
           << "Layer minscale " << ml->minScale() 
           << ", maxscale " << ml->maxScale() << '\n' 
           << ". Scale dep. visibility enabled? " 
           << ml->scaleBasedVisibility() << '\n'
-          << "Input extent: " << ml->extent().stringRep() 
+          << "Input extent: " << ml->extent().stringRep().local8Bit() 
           << std::endl;
             try
             {
               std::cout << "Transformed extent" 
-      << ml->coordinateTransform()->transformBoundingBox(ml->extent()).stringRep() 
+      << ml->coordinateTransform()->transformBoundingBox(ml->extent()).stringRep().local8Bit() 
       << std::endl;
             }
             catch (QgsCsException &e)
@@ -1126,7 +1126,7 @@ void QgsMapCanvas::currentScale(int thePrecision)
   std::cout << "------------------------------------------ " << std::endl;
 
   std::cout << "Current extent is " 
-      << mCanvasProperties->currentExtent.stringRep() << std::endl;
+      << mCanvasProperties->currentExtent.stringRep().local8Bit() << std::endl;
   std::cout << "MuppX is: " << muppX << "\n"
       << "MuppY is: " << muppY << std::endl;
   std::cout << "Canvas width: " << width() 
@@ -1201,11 +1201,11 @@ void QgsMapCanvas::saveAsImage(QString theFileName, QPixmap * theQPixmap, QStrin
   if (theQPixmap != NULL)
   {
     render(theQPixmap);
-    theQPixmap->save(theFileName,theFormat);
+    theQPixmap->save(theFileName,theFormat.local8Bit());
   }
   else //use the map view
   {
-    mCanvasProperties->pmCanvas->save(theFileName,theFormat);
+    mCanvasProperties->pmCanvas->save(theFileName,theFormat.local8Bit());
   }
 } // saveAsImage
 
@@ -2333,7 +2333,7 @@ void QgsMapCanvas::setZOrder(std::list <QString> theZOrder)
     if (ml)
     {
 #ifdef QGISDEBUG
-      std::cout << "Adding  " << ml->name() << " to zOrder" << std::endl;
+      std::cout << "Adding  " << ml->name().local8Bit() << " to zOrder" << std::endl;
 #endif
 
       mCanvasProperties->zOrder.push_back(ml->getLayerID());
@@ -2341,7 +2341,7 @@ void QgsMapCanvas::setZOrder(std::list <QString> theZOrder)
     else
     {
 #ifdef QGISDEBUG
-      std::cout << "Cant add  " << ml->name() << " to zOrder (it isnt in layers array)" << std::endl;
+      std::cout << "Cant add  " << ml->name().local8Bit() << " to zOrder (it isnt in layers array)" << std::endl;
 #endif
 
     }
@@ -2479,8 +2479,8 @@ void QgsMapCanvas::recalculateExtents()
   {
     QgsMapLayer * lyr = dynamic_cast<QgsMapLayer *>(mit->second);
 #ifdef QGISDEBUG
-    std::cout << "Updating extent using " << lyr->name() << std::endl;
-    std::cout << "Input extent: " << lyr->extent().stringRep() << std::endl;
+    std::cout << "Updating extent using " << lyr->name().local8Bit() << std::endl;
+    std::cout << "Input extent: " << lyr->extent().stringRep().local8Bit() << std::endl;
     try
     {
       if ( ! lyr->coordinateTransform() )
@@ -2578,22 +2578,22 @@ void QgsMapCanvas::panAction(QMouseEvent * e)
   //erase only the necessary parts to avoid flickering
   if (dx > 0)
   {
-    erase(0, 0, dx, height());
+    erase(0, 0, (int)dx, height());
   }
   else
   {
-    erase(width() + dx, 0, -dx, height());
+    erase(width() + (int)dx, 0, -(int)dx, height());
   }
   if (dy > 0)
   {
-    erase(0, 0, width(), dy);
+    erase(0, 0, width(), (int)dy);
   }
   else
   {
-    erase(0, height() + dy, width(), -dy);
+    erase(0, height() + (int)dy, width(), -(int)dy);
   }
   
-  bitBlt(this, dx, dy, mCanvasProperties->pmCanvas);
+  bitBlt(this, (int)dx, (int)dy, mCanvasProperties->pmCanvas);
 }    
 
 QgsPoint QgsMapCanvas::maybeInversePoint(QgsPoint point, const char whenmsg[])

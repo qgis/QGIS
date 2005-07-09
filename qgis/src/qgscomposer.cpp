@@ -342,13 +342,13 @@ void QgsComposer::print(void)
             QString es;
             es.fill(' ', size-1 );
             f.flush();
-            if ( f.writeBlock ( es.ascii(), size-1 ) < size-1 ) {
+            if ( f.writeBlock ( es.local8Bit(), size-1 ) < size-1 ) {
               QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
             }
             f.flush();
             f.at(offset);
             f.flush();
-            if ( f.writeBlock ( s.ascii(), s.length() ) <  s.length()-1 ) {
+            if ( f.writeBlock ( s.local8Bit(), s.length() ) <  s.length()-1 ) {
               QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
             }
             f.flush();
@@ -382,7 +382,7 @@ void QgsComposer::print(void)
           int trans;
 
           trans = (int) ( 72 * mComposition->paperHeight() / 25.4 );
-          s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, rx.cap(1).ascii() );
+          s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, (const char *)rx.cap(1).local8Bit() );
 
           if ( s.length() > size ) {
             QMessageBox::warning(this,"Error in Print", "Cannot format translate");
@@ -394,13 +394,13 @@ void QgsComposer::print(void)
               QString es;
               es.fill(' ', size-1 );
               f.flush();
-              if ( f.writeBlock ( es.ascii(), size-1 ) < size-1 ) {
+              if ( f.writeBlock ( es.local8Bit(), size-1 ) < size-1 ) {
                 QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
               }
               f.flush();
               f.at(offset);
               f.flush();
-              if ( f.writeBlock ( s.ascii(), s.length() ) <  s.length()-1 ) {
+              if ( f.writeBlock ( s.local8Bit(), s.length() ) <  s.length()-1 ) {
                 QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
               }
               f.flush();
@@ -510,7 +510,7 @@ void QgsComposer::image(void)
   FilterMap::Iterator myIterator;
   for ( myIterator = myFilterMap.begin(); myIterator != myFilterMap.end(); ++myIterator )
   {
-    std::cout << myIterator.key() << "  :  " << myIterator.data() << std::endl;
+    std::cout << myIterator.key().local8Bit() << "  :  " << myIterator.data().local8Bit() << std::endl;
   }
 #endif
 
@@ -520,10 +520,10 @@ void QgsComposer::image(void)
         "",
         myFilters,
         0,
-        QFileDialog::tr("Save file dialog"),
-        tr("Choose a filename to save the map image as")
+        "Save mapcomposer file dialog"
         )
       );
+  myQFileDialog->setCaption(tr("Choose a filename to save the map image as"));
   myQFileDialog->setSelection ( myLastUsedFile );
 
   // allow for selection of more than one file
@@ -543,8 +543,8 @@ void QgsComposer::image(void)
   myOutputFileNameQString = myQFileDialog->selectedFile();
   QString myFilterString = myQFileDialog->selectedFilter();
 #ifdef QGISDEBUG
-  std::cout << "Selected filter: " << myFilterString << std::endl;
-  std::cout << "Image type: " << myFilterMap[myFilterString] << std::endl;
+  std::cout << "Selected filter: " << myFilterString.local8Bit() << std::endl;
+  std::cout << "Image type: " << myFilterMap[myFilterString].local8Bit() << std::endl;
 #endif
 
   myQSettings.writeEntry("/qgis/UI/lastSaveAsImageFormat" , myFilterMap[myFilterString] );
@@ -570,7 +570,7 @@ void QgsComposer::image(void)
   mComposition->setPlotStyle ( QgsComposition::Preview );
   mView->setCanvas(mComposition->canvas());
 
-  pixmap.save ( myOutputFileNameQString, myFilterMap[myFilterString] );
+  pixmap.save ( myOutputFileNameQString, myFilterMap[myFilterString].local8Bit() );
 }
 
 void QgsComposer::svg(void)
@@ -579,8 +579,9 @@ void QgsComposer::svg(void)
   QString myLastUsedFile = myQSettings.readEntry("/qgis/UI/lastSaveAsSvgFile","qgis.svg");
 
   QFileDialog *myQFileDialog = new QFileDialog( "", "SVG Format (*.svg *SVG)", 0,
-      QFileDialog::tr("Save file dialog"),
-      tr("Choose a filename to save the map as") );
+                                                "Save svg file dialog");
+  
+  myQFileDialog->setCaption(tr("Choose a filename to save the map as"));
 
   myQFileDialog->setSelection ( myLastUsedFile );
   myQFileDialog->setMode(QFileDialog::AnyFile);
@@ -719,7 +720,7 @@ void QgsComposer::projectRead(void)
 
   bool found = false;
   for ( QStringList::iterator it = l.begin(); it != l.end(); ++it ) {
-    std::cout << "key: " << (*it).ascii() << std::endl;
+    std::cout << "key: " << (*it).local8Bit() << std::endl;
     if ( (*it).compare ( "composition_1" ) == 0 ) {
       found = true;
       break;

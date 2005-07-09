@@ -829,7 +829,7 @@ void QgsComposerVectorLegend::groupLayers ( void )
     QString id;
     while ( it.current() ) {
         if ( it.current()->isSelected() ) {
-      std::cout << "selected: " << it.current()->text(0) << " " << it.current()->text(2) << std::endl;
+      std::cout << "selected: " << it.current()->text(0).local8Bit() << " " << it.current()->text(2).local8Bit() << std::endl;
 
       id = it.current()->text(2);
       setLayerGroup ( id, mNextLayerGroup );
@@ -847,7 +847,7 @@ void QgsComposerVectorLegend::groupLayers ( void )
     std::cout << "Groups:" << std::endl;
 
     for ( std::map<QString,int>::iterator it3 = mLayersGroups.begin(); it3 != mLayersGroups.end(); ++it3 ) {
-  std::cout << "layer: " << it3->first << " group: " << it3->second << std::endl;
+            std::cout << "layer: " << (it3->first).local8Bit() << " group: " << it3->second << std::endl;
     }
     
     mNextLayerGroup++;
@@ -901,7 +901,7 @@ bool QgsComposerVectorLegend::writeSettings ( void )
     if ( !layer->visible() ) continue;
 
     QString id = layer->getLayerID();
-                path.sprintf("/composition_%d/vectorlegend_%d/layers/layer_%s/", mComposition->id(), mId, id.ascii() ); 
+                path.sprintf("/composition_%d/vectorlegend_%d/layers/layer_%s/", mComposition->id(), mId, (const char *)id.local8Bit() ); 
     QgsProject::instance()->writeEntry( "Compositions", path+"on", layerOn(id) );
     QgsProject::instance()->writeEntry( "Compositions", path+"group", layerGroup(id) );
       }
@@ -945,7 +945,7 @@ bool QgsComposerVectorLegend::readSettings ( void )
 
   QString id = (*it).right( (*it).length() - (idx+1) );
   
-  path.sprintf("/composition_%d/vectorlegend_%d/layers/layer_%s/", mComposition->id(), mId, id.ascii() );
+  path.sprintf("/composition_%d/vectorlegend_%d/layers/layer_%s/", mComposition->id(), mId, (const char *)id.local8Bit() );
   bool on = QgsProject::instance()->readBoolEntry("Compositions", path+"on", true, &ok);
   int group = QgsProject::instance()->readNumEntry("Compositions", path+"group", 0, &ok);
   setLayerOn ( id , on );

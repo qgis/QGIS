@@ -72,7 +72,7 @@ void QgsUValMaRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic,
     std::vector < QgsFeatureAttribute > vec = f->attributeMap();
     QString value = vec[0].fieldValue();
 #ifdef QGISDEBUG
-    qWarning("Wert: "+value);
+    qWarning(("Wert: "+value).local8Bit());
 #endif
     std::map<QString,QgsRenderItem*>::iterator it=mEntries.find(value);
     if(it!=mEntries.end())
@@ -112,7 +112,7 @@ void QgsUValMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 	QDomNode valuenode = renderitemnode.namedItem("value");
 	QString value = valuenode.toElement().text();
 #ifdef QGISDEBUG
-	qWarning("readXML, value is "+value);
+	qWarning(("readXML, value is "+value).local8Bit());
 #endif
 	QgsMarkerSymbol* msy = new QgsMarkerSymbol();
 	QDomNode synode = renderitemnode.namedItem("markersymbol");
@@ -123,7 +123,7 @@ void QgsUValMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 	QDomNode scalenode = synode.namedItem("scalefactor");
 	scalefactor = scalenode.toElement().text();
 #ifdef QGISDEBUG
-	qWarning("scalefactor is: "+scalefactor);
+	qWarning(("scalefactor is: "+scalefactor).local8Bit());
 #endif
 
 
@@ -150,17 +150,18 @@ void QgsUValMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 
 void QgsUValMaRenderer::writeXML(std::ostream& xml)
 {
+        // Always use utf8 for XML?
     xml << "\t\t<uniquevaluemarker>\n";
-    xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()) +
+    xml << "\t\t\t<classificationfield>" << QString::number(this->classificationField()).utf8() +
 	"</classificationfield>\n";
     for(std::map<QString,QgsRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
     {
 	xml << "\t\t\t<renderitem>\n";
-	xml << "\t\t\t\t<value>" << it->first << "</value>\n";
+	xml << "\t\t\t\t<value>" << it->first.utf8() << "</value>\n";
 	xml << "\t\t\t\t<markersymbol>\n";
 	QgsMarkerSymbol *symbol = 
 	  dynamic_cast<QgsMarkerSymbol*>((it->second)->getSymbol());
-	xml << "\t\t\t\t\t<svgpath>" << symbol->picture() << "</svgpath>\n";
+	xml << "\t\t\t\t\t<svgpath>" << symbol->picture().utf8() << "</svgpath>\n";
 	xml << "\t\t\t\t\t<scalefactor>" << symbol->scaleFactor() 
 	    << "</scalefactor>\n";
 	xml << "\t\t\t\t</markersymbol>\n";

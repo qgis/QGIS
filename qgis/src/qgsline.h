@@ -117,7 +117,7 @@ inline bool operator==(const QgsLine &l1, const QgsLine &l2)
 //! Stream operator for writing the line
 inline std::ostream& operator << (std::ostream& os, const QgsLine &l)
 {
-   os << l.stringRep();
+   os << l.stringRep().local8Bit();
    return os;
 }
 

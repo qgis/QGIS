@@ -215,7 +215,7 @@ QgsRenderer *QgsDlgVectorLayerProperties::getBufferRenderer()
 
 void QgsDlgVectorLayerProperties::setLegendType(QString type)
 {
-  legendtypecombobox->setCurrentText(tr(type));
+  legendtypecombobox->setCurrentText(type);
 }
 
 void QgsDlgVectorLayerProperties::setDisplayField(QString name)
@@ -266,8 +266,8 @@ void QgsDlgVectorLayerProperties::reset( void )
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked(layer->scaleBasedVisibility());
-  spinMinimumScale->setValue(layer->minScale());
-  spinMaximumScale->setValue(layer->maxScale());
+  spinMinimumScale->setValue((int)layer->minScale());
+  spinMaximumScale->setValue((int)layer->maxScale());
 
   // symbology initialization
   if(legendtypecombobox->count()==0)
@@ -335,7 +335,7 @@ void QgsDlgVectorLayerProperties::pbnOK_clicked()
       //restore the right name in the combobox
       if(bufferRenderer)
       {
-          legendtypecombobox->setCurrentText(tr(bufferRenderer->name()));
+          legendtypecombobox->setCurrentText(bufferRenderer->name());
       }
     }
   //reject();

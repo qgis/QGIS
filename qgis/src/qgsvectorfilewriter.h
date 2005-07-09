@@ -32,8 +32,8 @@
 class QgsVectorFileWriter
 {
     public:
-        QgsVectorFileWriter(QString theOutputFileName, QgsVectorLayer * theVectorLayer);
-        QgsVectorFileWriter(QString theOutputFileName, OGRwkbGeometryType theGeometryType);
+  QgsVectorFileWriter(QString theOutputFileName, QString fileEncoding, QgsVectorLayer * theVectorLayer);
+        QgsVectorFileWriter(QString theOutputFileName, QString fileEncoding, OGRwkbGeometryType theGeometryType);
         ~QgsVectorFileWriter() ;
 	/**Writes a point to the file*/
         bool writePoint(QgsPoint * thePoint);
@@ -58,6 +58,8 @@ class QgsVectorFileWriter
         QString mOutputFileName;
         //! file type to be written to
         QString mOutputFormat;
+        //! Encodionf for the layer attributes and other properties.
+        QTextCodec *mEncoding;
         //! Ogr handle to the output datasource
         OGRDataSourceH mDataSourceHandle;
         //! Ogr handle to the spatial layer (e.g. .shp) parrt of the datasource

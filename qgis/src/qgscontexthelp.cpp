@@ -37,7 +37,7 @@ void QgsContextHelp::run(int contextId)
 #endif
       helpPath += "/qgis_help";
 #ifdef QGISDEBUG
-      std::cout << "Help path is " << helpPath << std::endl; 
+      std::cout << "Help path is " << helpPath.local8Bit() << std::endl; 
 #endif
       QProcess *proc = new QProcess();
       proc->addArgument(helpPath);

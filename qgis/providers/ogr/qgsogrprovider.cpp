@@ -63,7 +63,7 @@ QgsOgrProvider::QgsOgrProvider(QString uri): QgsVectorDataProvider(), dataSource
   mSelectionRectangle = 0;
   // make connection to the data source
 #ifdef QGISDEBUG
-  std::cerr << "Data source uri is " << uri << std::endl;
+  std::cerr << "Data source uri is " << uri.local8Bit() << std::endl;
 #endif
   // try to open for update
   ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.local8Bit(),TRUE);
@@ -106,8 +106,8 @@ QgsOgrProvider::QgsOgrProvider(QString uri): QgsVectorDataProvider(), dataSource
       {
         OGRFieldDefn *fldDef = fdef->GetFieldDefn(i);
         attributeFields.push_back(QgsField(
-              fldDef->GetNameRef(), 
-              fldDef->GetFieldTypeName(fldDef->GetType()),
+              mEncoding->toUnicode(fldDef->GetNameRef()), 
+              mEncoding->toUnicode(fldDef->GetFieldTypeName(fldDef->GetType())),
               fldDef->GetWidth(),
               fldDef->GetPrecision()));
       }
@@ -172,12 +172,12 @@ QString QgsOgrProvider::getProjectionWKT()
     // if appropriate, morph the projection from ESRI form
     QString fileName = ogrDataSource->GetName();
 #ifdef QGISDEBUG 
-    std::cerr << "Data source file name is : " << fileName << std::endl; 
+    std::cerr << "Data source file name is : " << fileName.local8Bit() << std::endl; 
 #endif 
     if(fileName.contains(".shp"))
     {
 #ifdef QGISDEBUG 
-      std::cerr << "Morphing " << fileName << " WKT from ESRI" << std::endl; 
+      std::cerr << "Morphing " << fileName.local8Bit() << " WKT from ESRI" << std::endl; 
 #endif 
       // morph it
       mySpatialRefSys->morphFromESRI();
@@ -579,7 +579,8 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
   OGRGeometry *filter = 0;
   filter = new OGRPolygon();
   QString wktExtent = QString("POLYGON ((%1))").arg(rect->asPolygon());
-  const char *wktText = (const char *)wktExtent;
+  const char *wktText = (const char *)wktExtent.ascii(); //Why does this not work with local8Bit()?
+  char *pWkt = (char *)wktText;
 
   if(useIntersect)
   {
@@ -587,25 +588,25 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
     // an identify and display attributes
     //    delete mSelectionRectangle;
     mSelectionRectangle = new OGRPolygon();
-    mSelectionRectangle->importFromWkt((char **)&wktText);
+    mSelectionRectangle->importFromWkt(&pWkt);
   }
 
   // reset the extent for the ogr filter
-  wktExtent = QString("POLYGON ((%1))").arg(rect->asPolygon());
-  wktText = (const char *)wktExtent;
-
-  OGRErr result = ((OGRPolygon *) filter)->importFromWkt((char **)&wktText);
+  //wktExtent = QString("POLYGON ((%1))").arg(rect->asPolygon());
+  //wktText = (const char *)wktExtent.latin1();
+  pWkt = (char *)wktText;
+  OGRErr result = ((OGRPolygon *) filter)->importFromWkt(&pWkt);
   //TODO - detect an error in setting the filter and figure out what to
   //TODO   about it. If setting the filter fails, all records will be returned
   if (result == OGRERR_NONE) 
   {
-    std::cerr << "Setting spatial filter using " << wktExtent   << std::endl;
+    std::cerr << "Setting spatial filter using " << wktExtent.local8Bit()   << std::endl;
     ogrLayer->SetSpatialFilter(filter);
     //ogrLayer->SetSpatialFilterRect(rect->xMin(), rect->yMin(), rect->xMax(), rect->yMax());
   }else{
 #ifdef QGISDEBUG    
-    std::cerr << "Setting spatial filter failed!" << std::endl;
-    assert(result==OGRERR_NONE);
+    std::cerr << "Setting spatial filter failed with error code : " << result << std::endl;
+    //assert(result==OGRERR_NONE);
 #endif
   }
 } // QgsOgrProvider::select
@@ -701,7 +702,7 @@ void QgsOgrProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature * f, in
     return;
   }
 
-  QString fld = fldDef->GetNameRef();
+  QString fld = mEncoding->toUnicode(fldDef->GetNameRef());
   QCString cstr(ogrFet->GetFieldAsString(attindex));
   f->addAttribute(fld, mEncoding->toUnicode(cstr));
 }
@@ -926,7 +927,7 @@ bool QgsOgrProvider::addFeature(QgsFeature* f)
   {
     QString s=(f->attributeMap())[i].fieldValue();
 #ifdef QGISDEBUG
-    qWarning("adding attribute: "+s);
+    qWarning("%s%s", "adding attribute: ", (const char *)s.local8Bit());
 #endif
     if(!s.isEmpty())
     {
@@ -934,21 +935,21 @@ bool QgsOgrProvider::addFeature(QgsFeature* f)
       {
         feature->SetField(i,s.toInt());
 #ifdef QGISDEBUG
-        qWarning("OFTInteger, attribute value: "+s.toInt());
+        qWarning("%s%d", "OFTInteger, attribute value: ", s.toInt());
 #endif
       }
       else if(fdef->GetFieldDefn(i)->GetType()==OFTReal)
       {
         feature->SetField(i,s.toDouble());
 #ifdef QGISDEBUG
-        qWarning("OFTReal, attribute value: "+QString::number(s.toDouble(),'f',3));
+        qWarning("%s%f", "OFTReal, attribute value: ", s.toDouble());
 #endif
       }
       else if(fdef->GetFieldDefn(i)->GetType()==OFTString)
       {
 	  feature->SetField(i,mEncoding->fromUnicode(s));
 #ifdef QGISDEBUG
-        qWarning("OFTString, attribute value: "+QString(mEncoding->fromUnicode(s)));
+        qWarning("%s%s", "OFTString, attribute value: ", (const char *)s.local8Bit());
 #endif
       }
       else
@@ -994,7 +995,7 @@ bool QgsOgrProvider::addAttributes(std::map<QString,QString> const & name)
     {
 	if(iter->second=="OFTInteger")
 	{
-	    OGRFieldDefn fielddefn(iter->first,OFTInteger);
+	    OGRFieldDefn fielddefn(mEncoding->fromUnicode((iter->first)),OFTInteger);
 	    if(ogrLayer->CreateField(&fielddefn)!=OGRERR_NONE)
 	    {
 #ifdef QGISDEBUG
@@ -1005,7 +1006,7 @@ bool QgsOgrProvider::addAttributes(std::map<QString,QString> const & name)
 	}
 	else if(iter->second=="OFTReal")
 	{
-	    OGRFieldDefn fielddefn(iter->first,OFTReal);
+	    OGRFieldDefn fielddefn(mEncoding->fromUnicode(iter->first),OFTReal);
 	    if(ogrLayer->CreateField(&fielddefn)!=OGRERR_NONE)
 	    {
 #ifdef QGISDEBUG
@@ -1016,7 +1017,7 @@ bool QgsOgrProvider::addAttributes(std::map<QString,QString> const & name)
 	}
 	else if(iter->second=="OFTString")
 	{
-	    OGRFieldDefn fielddefn(iter->first,OFTString);
+	    OGRFieldDefn fielddefn(mEncoding->fromUnicode(iter->first),OFTString);
 	    if(ogrLayer->CreateField(&fielddefn)!=OGRERR_NONE)
 	    {
 #ifdef QGISDEBUG
@@ -1065,11 +1066,11 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
 	for ( int f = 0; f < fc; f++ ) {
 	    OGRFieldDefn *fd = of->GetFieldDefnRef ( f );
 	    
-	    if ( name.compare( fd->GetNameRef() ) == 0 ) {
+	    if ( name.compare( mEncoding->toUnicode(fd->GetNameRef()) ) == 0 ) {
 		OGRFieldType type = fd->GetType();
 
 #ifdef QGISDEBUG
-		std::cerr << "set field " << f << " : " << name << " to " << value << std::endl;
+		std::cerr << "set field " << f << " : " << name.local8Bit() << " to " << value.local8Bit() << std::endl;
 #endif
 		switch ( type ) {
 		    case OFTInteger:
@@ -1175,19 +1176,19 @@ QGISEXTERN bool createEmptyDataSource(const QString& uri,const QString& format, 
   {
     return false;
   }
-  OGRSFDriver* driver = driverregist->GetDriverByName(mOutputFormat);
+  OGRSFDriver* driver = driverregist->GetDriverByName(mOutputFormat.local8Bit());
   if(driver==0)
   {
     return false;
   }
-  OGRDataSource* datasource = driver->CreateDataSource(mOutputFileName,NULL);
+  OGRDataSource* datasource = driver->CreateDataSource(mOutputFileName.local8Bit(),NULL);
   if(datasource==0)
   {
     return false;
   }
 
   OGRSpatialReference reference;
-  OGRLayer* layer = datasource->CreateLayer(outname.latin1(),&reference,geomtype,NULL);
+  OGRLayer* layer = datasource->CreateLayer(outname.local8Bit(),&reference,geomtype,NULL);
   if(layer==0)
   {
     return false;
@@ -1204,7 +1205,7 @@ QGISEXTERN bool createEmptyDataSource(const QString& uri,const QString& format, 
 
   int count=layer->GetLayerDefn()->GetFieldCount();
 #ifdef QGISDEBUG
-  qWarning("Field count is: "+QString::number(count));
+  qWarning("Field count is: "+QString::number(count).local8Bit());
 #endif
   //just for a test: create a dummy featureO
   /*OGRFeatureDefn* fdef=layer->GetLayerDefn();
@@ -1235,7 +1236,7 @@ QGISEXTERN bool createEmptyDataSource(const QString& uri,const QString& format, 
     return false;
     }
 
-    OGRDataSourceH mDataSourceHandle = OGR_Dr_CreateDataSource( myDriverHandle, mOutputFileName, NULL );
+    OGRDataSourceH mDataSourceHandle = OGR_Dr_CreateDataSource( myDriverHandle, mOutputFileName.local8Bit(), NULL );
     if( mDataSourceHandle == NULL )
     {
     std::cout << "Datasource handle is null! " << std::endl;

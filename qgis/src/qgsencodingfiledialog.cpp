@@ -19,7 +19,7 @@
 #include <qtextcodec.h>
 
 
-QgsEncodingFileDialog::QgsEncodingFileDialog(const QString & dirName, const QString& filter, QWidget * parent, const char * name, const QString currentencoding): QFileDialog(dirName, filter, parent, name)
+QgsEncodingFileDialog::QgsEncodingFileDialog(const QString & dirName, const QString& filter, QWidget * parent, const QString name, const QString currentencoding): QFileDialog(dirName, filter, parent, name.local8Bit())
 {
     mEncodingComboBox=new QComboBox(this);
     QLabel* l=new QLabel(tr("Encoding:"),this);

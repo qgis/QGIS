@@ -186,7 +186,7 @@ class QgsSpatialRefSys
          *  Additionally logic may also be applied if the result from the OGR methods
          *  is inconclusive.
          */
-         bool equals(const char *theProj4CharArray);
+         bool equals(QString theProj4String);
          /*! A helper to get an ogr representation of this srs
           * @return OGRSpatialReference
           */
@@ -336,18 +336,18 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
 {
   QString mySummary ("\n\tSpatial Reference System:");
   mySummary += "\n\t\tDescription : ";
-  if (r.description()) 
+  if (!r.description().isNull()) 
   {
-    mySummary += r.description().latin1();
+    mySummary += r.description();
   }
   else
   {
     mySummary += "Undefined" ;
   }
   mySummary += "\n\t\tProjection  : " ;
-  if (r.projectionAcronym()) 
+  if (!r.projectionAcronym().isNull()) 
   {
-    mySummary += r.projectionAcronym().latin1();
+    mySummary += r.projectionAcronym();
   }
   else
   {
@@ -355,9 +355,9 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
   }
 
   mySummary += "\n\t\tEllipsoid   : "; 
-  if (r.ellipsoidAcronym()) 
+  if (!r.ellipsoidAcronym().isNull()) 
   {
-    mySummary += r.ellipsoidAcronym().latin1();
+    mySummary += r.ellipsoidAcronym();
   }
   else
   {
@@ -365,15 +365,16 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
   }
 
   mySummary += "\n\t\tProj4String  : " ;
-  if (r.proj4String()) 
+  if (!r.proj4String().isNull()) 
   {
-    mySummary += r.proj4String().latin1();
+    mySummary += r.proj4String();
   }
   else
   {
     mySummary += "Undefined" ;
   }
-  return os << mySummary << std::endl;
+  // Using streams we need to use local 8 Bit
+  return os << mySummary.local8Bit() << std::endl;
 }
 
 

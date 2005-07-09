@@ -321,7 +321,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
   // can't forget the default case
   theFileFiltersString += catchallFilter + "All other files (*)";
 #ifdef QGISDEBUG
-  std::cout << "Raster filter list built: " << theFileFiltersString << std::endl;
+  std::cout << "Raster filter list built: " << theFileFiltersString.local8Bit() << std::endl;
 #endif
 }                               // buildSupportedRasterFileFilter_()
 
@@ -513,7 +513,7 @@ QgsRasterLayer::readFile( QString const & fileName )
   QString mySourceWKT = getProjectionWKT();
 #ifdef QGISDEBUG
     std::cout << "--------------------------------------------------------------------------------------" << std::endl;
-    std::cout << "QgsRasterLayer::readFile --- using wkt\n" << mySourceWKT << std::endl;
+    std::cout << "QgsRasterLayer::readFile --- using wkt\n" << mySourceWKT.local8Bit() << std::endl;
    std::cout << "--------------------------------------------------------------------------------------" << std::endl;
 #endif
     mCoordinateTransform->sourceSRS().createFromWkt(mySourceWKT);
@@ -725,7 +725,7 @@ bool QgsRasterLayer::update()
 QDateTime QgsRasterLayer::lastModified ( QString name )
 {
 #ifdef QGISDEBUG
-  std::cerr << "QgsRasterLayer::lastModified: " << name << std::endl;
+  std::cerr << "QgsRasterLayer::lastModified: " << name.local8Bit() << std::endl;
 #endif
   QDateTime t;
 
@@ -786,7 +786,7 @@ QDateTime QgsRasterLayer::lastModified ( QString name )
     }
   }
 #ifdef QGISDEBUG
-  std::cerr << "last modified = " << t.toString() << std::endl;
+  std::cerr << "last modified = " << t.toString().local8Bit() << std::endl;
 #endif
 
   return t;
@@ -910,7 +910,7 @@ muliband layers may have more than one "Undefined" band!
 bool QgsRasterLayer::hasBand(QString theBandName)
 {
 #ifdef QGISDEBUG
-  std::cout << "Looking for band : " << theBandName << std::endl;
+  std::cout << "Looking for band : " << theBandName.local8Bit() << std::endl;
 #endif
 
   for (int i = 1; i <= gdalDataset->GetRasterCount(); i++)
@@ -926,13 +926,13 @@ bool QgsRasterLayer::hasBand(QString theBandName)
     {
 #ifdef QGISDEBUG
       std::cout << "band : " << i << std::endl;
-      std::cout << "Found band : " << theBandName << std::endl;
+      std::cout << "Found band : " << theBandName.local8Bit() << std::endl;
 #endif
 
       return true;
     }
 #ifdef QGISDEBUG
-    std::cout << "Found unmatched band : " << i << " " << myColorQString << std::endl;
+    std::cout << "Found unmatched band : " << i << " " << myColorQString.local8Bit() << std::endl;
 #endif
 
   }
@@ -1247,7 +1247,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterView
     if (grayBandNameQString == tr("Not Set"))
     {
 #ifdef QGISDEBUG
-      std::cout << "MULTI_BAND_SINGLE_BAND_GRAY Not Set detected..." << grayBandNameQString << std::endl;
+      std::cout << "MULTI_BAND_SINGLE_BAND_GRAY Not Set detected..." << grayBandNameQString.local8Bit() << std::endl;
 #endif
 
       break;
@@ -2343,20 +2343,20 @@ const int QgsRasterLayer::getRasterBandNumber(QString theBandNameQString)
     RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
 #ifdef QGISDEBUG
 
-    std::cout << "myRasterBandStats.bandName: " << myRasterBandStats.bandName << "  :: theBandNameQString: " << theBandNameQString << std::endl;
+    std::cout << "myRasterBandStats.bandName: " << myRasterBandStats.bandName.local8Bit() << "  :: theBandNameQString: " << theBandNameQString.local8Bit() << std::endl;
 #endif
 
     if (myRasterBandStats.bandName == theBandNameQString)
     {
 #ifdef QGISDEBUG
-      std::cerr << "********** band " << myRasterBandStats.bandNoInt << " was found in getRasterBandNumber " << theBandNameQString << std::endl;
+      std::cerr << "********** band " << myRasterBandStats.bandNoInt << " was found in getRasterBandNumber " << theBandNameQString.local8Bit() << std::endl;
 #endif
 
       return myRasterBandStats.bandNoInt;
     }
   }
 #ifdef QGISDEBUG
-  std::cerr << "********** no band was found in getRasterBandNumber " << theBandNameQString << std::endl;
+  std::cerr << "********** no band was found in getRasterBandNumber " << theBandNameQString.local8Bit() << std::endl;
 #endif
 
   return 0;                     //no band was found
@@ -2741,7 +2741,7 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 void QgsRasterLayer::setRedBandName(QString theBandNameQString)
 {
 #ifdef QGISDEBUG
-  std::cout << "setRedBandName :  " << theBandNameQString << std::endl;
+  std::cout << "setRedBandName :  " << theBandNameQString.local8Bit() << std::endl;
 #endif
   //check if the band is unset
   if (theBandNameQString == tr("Not Set"))
@@ -2886,7 +2886,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap()
 QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer::getLegendQPixmap called (" << getDrawingStyleAsQString() << ")" << std::endl;
+  std::cout << "QgsRasterLayer::getLegendQPixmap called (" << getDrawingStyleAsQString().local8Bit() << ")" << std::endl;
 #endif
   //
   // Get the adjusted matrix stats
@@ -3726,7 +3726,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
   GDALAllRegister();
   //close the gdal dataset and reopen it in read / write mode
   delete gdalDataset;
-  gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_Update);
+  gdalDataset = (GDALDataset *) GDALOpen(dataSource.local8Bit(), GA_Update);
   
   // if the dataset couldn't be opened in read / write mode, tell the user
   if (!gdalDataset) {
@@ -3739,7 +3739,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
 			      QMessageBox::NoButton,
 			      QMessageBox::NoButton );
     myMessageBox.exec();
-    gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_ReadOnly);
+    gdalDataset = (GDALDataset *) GDALOpen(dataSource.local8Bit(), GA_ReadOnly);
     return;
   }
 
@@ -3807,7 +3807,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
                               QMessageBox::NoButton );
             myMessageBox.exec();
             delete gdalDataset;
-            gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_ReadOnly);
+            gdalDataset = (GDALDataset *) GDALOpen(dataSource.local8Bit(), GA_ReadOnly);
             emit setProgress(0,0);
             QApplication::restoreOverrideCursor();
             return;
@@ -3825,7 +3825,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
   std::cout << "Pyramid overviews built" << std::endl;
   //close the gdal dataset and reopen it in read only mode
   delete gdalDataset;
-  gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_ReadOnly);
+  gdalDataset = (GDALDataset *) GDALOpen(dataSource.local8Bit(), GA_ReadOnly);
   emit setProgress(0,0);
   QApplication::restoreOverrideCursor();
 }
@@ -3940,7 +3940,7 @@ void QgsRasterLayer::readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *t
       double min, max;
       int min_c1, min_c2, min_c3, max_c1, max_c2, max_c3;
 
-      if ( sscanf((char*)metadataTokens[1].ascii(),"%lf %lf %d %d %d %d %d %d",
+      if ( sscanf(metadataTokens[1].local8Bit(), "%lf %lf %d %d %d %d %d %d",
                   &min, &max, &min_c1, &min_c2, &min_c3, &max_c1, &max_c2, &max_c3) != 8 )
       {
         continue;
@@ -4120,14 +4120,14 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   myElement = snode.toElement();
   setGrayBandName(myElement.text());
 
-  const char * sourceNameStr = source(); // debugger probe
+  const char * sourceNameStr = source().local8Bit(); // debugger probe
 
   if ( ! readFile( source() ) )   // Data source name set in
     // QgsMapLayer::readXML()
   {
     std::cerr << __FILE__ << ":" << __LINE__
     << " unable to read from raster file "
-    << source() << "\n";
+    << source().local8Bit() << "\n";
 
     return false;
   }
@@ -4147,7 +4147,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
   if ( mapLayerNode.isNull() || ("maplayer" != mapLayerNode.nodeName()) )
   {
-    const char * nn = mapLayerNode.nodeName(); // debugger probe
+    const char * nn = mapLayerNode.nodeName().local8Bit(); // debugger probe
 
     qDebug( "QgsRasterLayer::writeXML() can't find <maplayer>" );
 

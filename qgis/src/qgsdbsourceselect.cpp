@@ -225,13 +225,13 @@ void QgsDbSourceSelect::dbConnect()
   }
   connString += " password=" + password;
 #ifdef QGISDEBUG
-  std::cout << "Connection info: " << connString << std::endl;
+  std::cout << "Connection info: " << connString.local8Bit() << std::endl;
 #endif
   if (makeConnection)
   {
     m_connInfo = connString;  //host + " " + database + " " + username + " " + password;
     //qDebug(m_connInfo);
-    pd = PQconnectdb((const char *) m_connInfo);
+    pd = PQconnectdb(m_connInfo.local8Bit());
     //  std::cout << pd->ErrorMessage();
     if (PQstatus(pd) == CONNECTION_OK)
     {
@@ -267,7 +267,7 @@ void QgsDbSourceSelect::dbConnect()
     }
     else
     {
-      qDebug("Unknown geometry type of " + iter->second);
+      qDebug(("Unknown geometry type of " + iter->second).local8Bit());
     }
   }
       }
@@ -336,7 +336,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
   // where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
   sql += " order by f_table_name";
   //qDebug("Fetching tables using: " + sql);
-  PGresult *result = PQexec(pg, (const char *) sql);
+  PGresult *result = PQexec(pg, sql.local8Bit());
   if (result)
   {
     QString msg;
@@ -351,7 +351,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
       QString tableName = PQgetvalue(result, idx, PQfnumber(result, "f_table_name"));
       sql = "select oid from pg_class where relname = '" + tableName + "'";
 
-      PGresult* exists = PQexec(pg, (const char*)sql);
+      PGresult* exists = PQexec(pg, sql.local8Bit());
       if (PQntuples(exists) == 1)
   {
     QString v = "";
@@ -391,7 +391,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     "and cast(pg_class.relname as character varying) not in "
     "(select f_table_name from geometry_columns)";
   
-  result = PQexec(pg, (const char *) sql);
+  result = PQexec(pg, sql.local8Bit());
 
   for (int i = 0; i < PQntuples(result); i++)
   {
@@ -415,12 +415,12 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
       column + "), current_schema() from \"" + table + 
       "\" where " + column + " is not null limit 1";
 
-    PGresult* gresult = PQexec(pg, (const char*) query);
+    PGresult* gresult = PQexec(pg, query.local8Bit());
     if (PQresultStatus(gresult) != PGRES_TUPLES_OK)
     {
-      qDebug(tr("Access to relation ") + table + tr(" using sql;\n") + sql +
+      qDebug((tr("Access to relation ") + table + tr(" using sql;\n") + sql +
        tr("\nhas failed. The database said:\n") +
-       PQresultErrorMessage(gresult));
+       PQresultErrorMessage(gresult)).local8Bit());
     }
     else
     {

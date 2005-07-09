@@ -29,7 +29,7 @@ void QgsAbout::init()
 
   QFile file(appPath + "/doc/AUTHORS" );
 #ifdef QGISDEBUG
-  printf ("Readng authors file " + file.name() + ".............................................\n");
+  printf (("Reading authors file " + file.name() + ".............................................\n").local8Bit());
 #endif
   if ( file.open( IO_ReadOnly ) ) {
     QTextStream stream( &file );
@@ -41,7 +41,7 @@ void QgsAbout::init()
       //ignore the line if it starts with a hash....
       if (line.left(1)=="#") continue;
 #ifdef QGISDEBUG 
-      printf( "Contributor: %3d: %s\n", i++, line.latin1() );
+      printf( "Contributor: %3d: %s\n", i++, (const char *)line.local8Bit() );
 #endif 
       QStringList myTokens = QStringList::split("\t",line);
       //printf ("Added contributor name to listbox: %s ",myTokens[0]);
@@ -51,7 +51,7 @@ void QgsAbout::init()
       QString authorName = myTokens[0].replace(" ","_");
 
       QString myString =QString(appPath + "/images/developers/") + authorName + QString(".jpg");
-      printf ("Loading mug: %s\n", myString.ascii()); 
+      printf ("Loading mug: %s\n", myString.local8Bit()); 
       QPixmap *pixmap = new QPixmap(myString);
       mugs[myTokens[0]] = *pixmap;
       */
@@ -91,11 +91,11 @@ void QgsAbout::showAuthorPic( QListBoxItem * theItem)
   QString myString = listBox1->currentText();
   myString = myString.replace(" ","_");
 #ifdef QGISDEBUG 
-  printf ("Loading mug: %s", myString.ascii()); 
+  printf ("Loading mug: %s", (const char *)myString.local8Bit()); 
 #endif 
   myString =QString(appPath + "/images/developers/") + myString + QString(".jpg");
 #ifdef QGISDEBUG 
-  printf ("Loading mug: %s\n", myString.ascii()); 
+  printf ("Loading mug: %s\n", (const char *)myString.local8Bit()); 
 #endif 
   QPixmap *pixmap = new QPixmap(myString);
   pixAuthorMug->setPixmap(*pixmap);

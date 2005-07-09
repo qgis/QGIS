@@ -766,16 +766,16 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
         shapefileName += ".shp";
       }
       OGRDataSource *poDS;
-      // create the data source
-      poDS = poDriver->CreateDataSource((const char *) shapefileName, NULL);
+      // create the data source, use local8Bit() for filename
+      poDS = poDriver->CreateDataSource((const char *) shapefileName.local8Bit(), NULL);
       if (poDS != NULL)
       {
         std::cerr << "created datasource" << std::endl;
-        // datasource created, now create the output layer
+        // datasource created, now create the output layer, use utf8() for now.
         OGRLayer *poLayer;
         poLayer =
-          poDS->CreateLayer((const char *) shapefileName.
-                            left(shapefileName.find(".shp")), NULL,
+          poDS->CreateLayer((const char *) (shapefileName.
+                            left(shapefileName.find(".shp"))).utf8(), NULL,
                             static_cast < OGRwkbGeometryType > (1), NULL);
         if (poLayer != NULL)
         {

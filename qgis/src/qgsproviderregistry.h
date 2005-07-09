@@ -26,13 +26,13 @@ class QString;
 class QgsProviderRegistry
 {
 public:
- static QgsProviderRegistry* instance(const char *pluginPath=0);
+ static QgsProviderRegistry* instance(QString pluginPath=QString::null);
  QString library(QString providerKey);
  QString pluginList(bool asHtml=false);
  QString libDirectory();
  void setLibDirectory(QString path);
 protected:
- QgsProviderRegistry(const char *pluginPath);
+ QgsProviderRegistry(QString pluginPath);
 private:
  static QgsProviderRegistry* _instance;
  std::map<QString,QgsProviderMetadata*> provider;

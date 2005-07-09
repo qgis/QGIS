@@ -71,8 +71,8 @@ QgsProject * QgsProject::theProject_;
  static 
  QStringList makeKeyTokens_(QString const &scope, QString const &key)
  {
-     const char * scope_str = scope.ascii(); // debugger probes
-     const char * key_str   = key.ascii();
+     const char * scope_str = scope.local8Bit(); // debugger probes
+     const char * key_str   = key.local8Bit();
 
      QStringList keyTokens = scope;
      keyTokens += QStringList::split('/', key);
@@ -107,8 +107,8 @@ QgsProject * QgsProject::theProject_;
      while ( ! keySequence.isEmpty() )
      {
          // debugger probes
-         const char * currentPropertyName = currentProperty->name().ascii();
-         const char * keySequenceFirst    = keySequence.first().ascii();
+         const char * currentPropertyName = currentProperty->name().local8Bit();
+         const char * keySequenceFirst    = keySequence.first().local8Bit();
 
          // if the current head of the sequence list matches the property name,
          // then traverse down the property hierarchy
@@ -132,7 +132,7 @@ QgsProject * QgsProject::theProject_;
              }
              else if ( nextProperty = currentProperty->find( keySequence.first() ) )
              {
-                 keySequenceFirst    = keySequence.first().ascii();
+                 keySequenceFirst    = keySequence.first().local8Bit();
 
                  if ( nextProperty->isKey() )
                  {
@@ -189,8 +189,8 @@ QgsProject * QgsProject::theProject_;
      while ( ! keySequence.isEmpty() )
      {
          // debugger probes
-         const char * currentPropertyName = currentProperty->name().ascii();
-         const char * keySeqeunceFirst    = keySequence.first().ascii();
+         const char * currentPropertyName = currentProperty->name().local8Bit();
+         const char * keySeqeunceFirst    = keySequence.first().local8Bit();
 
          // if the current head of the sequence list matches the property name,
          // then traverse down the property hierarchy
@@ -265,8 +265,8 @@ QgsProject * QgsProject::theProject_;
      while ( ! keySequence.isEmpty() )
      {
          // debugger probes
-         const char * currentPropertyName = currentProperty->name().ascii();
-         const char * keySequenceFirst    = keySequence.first().ascii();
+         const char * currentPropertyName = currentProperty->name().local8Bit();
+         const char * keySequenceFirst    = keySequence.first().local8Bit();
 
          // if the current head of the sequence list matches the property name,
          // then traverse down the property hierarchy
@@ -290,7 +290,7 @@ QgsProject * QgsProject::theProject_;
              }
              else if ( nextProperty = currentProperty->find( keySequence.first() ) )
              {
-                 keySequenceFirst    = keySequence.first().ascii();
+                 keySequenceFirst    = keySequence.first().local8Bit();
 
                  previousQgsPropertyKey = currentProperty;
                  currentProperty = dynamic_cast<QgsPropertyKey*>(nextProperty);
@@ -660,7 +660,7 @@ static bool _getMapUnits(QDomDocument const &doc)
     {
         std::
             cerr << __FILE__ << ":" << __LINE__ << " unknown map unit type " <<
-            element.text() << "\n";
+            element.text().local8Bit() << "\n";
         false;
     }
 
@@ -728,7 +728,7 @@ static QgsMapCanvas * _findMapCanvas(QString const &canonicalMapCanvasName)
     {                             // for each top level widget...
         ++it;
         theMapCanvas =
-            dynamic_cast <QgsMapCanvas *>(w->child(canonicalMapCanvasName, 0, true));
+            dynamic_cast <QgsMapCanvas *>(w->child(canonicalMapCanvasName.local8Bit(), 0, true));
 
         if (theMapCanvas)
         {
@@ -743,7 +743,7 @@ static QgsMapCanvas * _findMapCanvas(QString const &canonicalMapCanvasName)
         return theMapCanvas;
     } else
     {
-        qDebug("Unable to find canvas widget " + canonicalMapCanvasName);
+        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).local8Bit());
 
         return 0x0;                 // XXX some sort of error value? Exception?
     }
@@ -838,7 +838,7 @@ static pair< bool, list<QDomNode> > _getMapLayers(QDomDocument const &doc)
         QgsMapLayer *mapLayer;
 #ifdef QGISDEBUG
 
-        std::cerr << "type is " << type << std::endl;
+        std::cerr << "type is " << type.local8Bit() << std::endl;
 #endif
 
         if (type == "vector")
@@ -868,7 +868,7 @@ static pair< bool, list<QDomNode> > _getMapLayers(QDomDocument const &doc)
         {
             delete mapLayer;
 
-            qDebug( "%s:%d unable to load %s layer", __FILE__, __LINE__, type.ascii() );
+            qDebug( "%s:%d unable to load %s layer", __FILE__, __LINE__, (const char *)type.local8Bit() );
 
             returnStatus = false; // flag that we had problems loading layers
 
@@ -897,7 +897,7 @@ static void _setCanvasExtent(QString const &canonicalMapCanvasName,
 
     if (!theMapCanvas)
     {
-        qDebug("Unable to find canvas widget " + canonicalMapCanvasName);
+        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).local8Bit());
 
         return;                     // XXX some sort of error value? Exception?
     }
@@ -933,7 +933,7 @@ static QgsRect _getFullExtent(QString const &canonicalMapCanvasName)
 
     if (!theMapCanvas)
     {
-        qDebug("Unable to find canvas widget " + canonicalMapCanvasName);
+        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).local8Bit());
 
         return QgsRect();           // XXX some sort of error value? Exception?
     }
@@ -968,7 +968,7 @@ static QgsRect _getExtent(QString const &canonicalMapCanvasName)
 
     if (!theMapCanvas)
     {
-        qDebug("Unable to find canvas widget " + canonicalMapCanvasName);
+        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).local8Bit());
 
         return QgsRect();           // XXX some sort of error value? Exception?
     }
@@ -1041,7 +1041,7 @@ bool QgsProject::read()
 
 
 #ifdef QGISDEBUG
-    qWarning("opened document " + imp_->file.name());
+    qWarning(("opened document " + imp_->file.name()).local8Bit());
 #endif
 
     // before we start loading everything, let's clear out the current set of
@@ -1065,7 +1065,7 @@ bool QgsProject::read()
     _getTitle(*doc, imp_->title);
 
 #ifdef QGISDEBUG
-    qDebug("Project title: " + imp_->title);
+    qDebug(("Project title: " + imp_->title).local8Bit());
 #endif
 
     // now set the map units; note, alters QgsProject::instance().
@@ -1168,7 +1168,7 @@ bool QgsProject::read( QDomNode & layerNode )
     {
         delete mapLayer;
 
-        qDebug( "%s:%d unable to load %s layer", __FILE__, __LINE__, type.ascii() );
+        qDebug( "%s:%d unable to load %s layer", __FILE__, __LINE__, (const char *)type.local8Bit() );
 
         return false;
     }
@@ -1526,8 +1526,8 @@ bool QgsProject::removeEntry(QString const &scope, const QString & key)
 
 QStringList QgsProject::entryList(QString const &scope, QString const &key) const
 {
-    const char * scope_str = scope.ascii();
-    const char * key_str   = key.ascii();
+    const char * scope_str = scope.local8Bit();
+    const char * key_str   = key.local8Bit();
 
     QgsProperty * foundProperty = findKey_( scope, key, imp_->properties_ );
 
@@ -1548,8 +1548,8 @@ QStringList QgsProject::entryList(QString const &scope, QString const &key) cons
 QStringList 
 QgsProject::subkeyList(QString const &scope, QString const &key) const
 {
-    const char * scope_str = scope.ascii();
-    const char * key_str   = key.ascii();
+    const char * scope_str = scope.local8Bit();
+    const char * key_str   = key.local8Bit();
 
     QgsProperty * foundProperty = findKey_( scope, key, imp_->properties_ );
 

@@ -571,7 +571,7 @@ void QgsLabel::readXML( const QDomNode& node )
     std::cout << "QgsLabel::readXML() called for layer label properties \n" << std::endl;
 #endif
 
-    qDebug( "%s:%d QgsLabel::readXML() got node %s", __FILE__, __LINE__, node.nodeName().ascii() );
+    qDebug( "%s:%d QgsLabel::readXML() got node %s", __FILE__, __LINE__, (const char *)node.nodeName().local8Bit() );
 
     QDomNode scratchNode;       // DOM node re-used to get current QgsLabel attribute
     QDomElement el;
@@ -835,11 +835,11 @@ void QgsLabel::writeXML(std::ostream& xml)
 
     if ( mLabelAttributes->familyIsSet() && ! mLabelAttributes->family().isNull() && mLabelField[Family].isNull())
     {
-        xml << "\t\t\t<family name=\"" << mLabelAttributes->family() << "\" field=\"" << (const char*)(mLabelField[Family].utf8()) << "\" />\n";
+        xml << "\t\t\t<family name=\"" << mLabelAttributes->family().utf8() << "\" field=\"" << (const char*)(mLabelField[Family].utf8()) << "\" />\n";
     }
     else if ( mLabelAttributes->familyIsSet() && ! mLabelAttributes->family().isNull() )
     {
-        xml << "\t\t\t<family name=\"" << mLabelAttributes->family() << "\" field=\"\" />\n";
+        xml << "\t\t\t<family name=\"" << mLabelAttributes->family().utf8() << "\" field=\"\" />\n";
     }
     else
     {
@@ -850,12 +850,12 @@ void QgsLabel::writeXML(std::ostream& xml)
     if ( mLabelAttributes->sizeIsSet() && !mLabelField[Size].isEmpty())
     {
         xml << "\t\t\t<size value=\"" << mLabelAttributes->size() << "\" units=\""
-            << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->sizeType()) << "\" field=\"" << (const char*)(mLabelField[Size].utf8()) << "\" />\n";
+            << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->sizeType()).utf8() << "\" field=\"" << (const char*)(mLabelField[Size].utf8()) << "\" />\n";
     }
     else if ( mLabelAttributes->sizeIsSet() )
     {
         xml << "\t\t\t<size value=\"" << mLabelAttributes->size() << "\" units=\""
-            << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->sizeType()) << "\" field=\"\" />\n";
+            << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->sizeType()).utf8() << "\" field=\"\" />\n";
     }
     else
     {
@@ -944,7 +944,7 @@ void QgsLabel::writeXML(std::ostream& xml)
     // offset
     if ( mLabelAttributes->offsetIsSet() )
     {
-        xml << "\t\t\t<offset  units=\"" << QgsLabelAttributes::unitsName(mLabelAttributes->offsetType())
+            xml << "\t\t\t<offset  units=\"" << QgsLabelAttributes::unitsName(mLabelAttributes->offsetType()).utf8()
             << "\" x=\"" << mLabelAttributes->xOffset() << "\" xfield=\"" << (const char*)(mLabelField[XOffset].utf8())
             << "\" y=\"" << mLabelAttributes->yOffset() << "\" yfield=\"" << (const char*)(mLabelField[YOffset].utf8())
             << "\" />\n";
@@ -967,7 +967,7 @@ void QgsLabel::writeXML(std::ostream& xml)
     // alignment
     if ( mLabelAttributes->alignmentIsSet() )
     {
-        xml << "\t\t\t<alignment value=\"" << QgsLabelAttributes::alignmentName(mLabelAttributes->alignment())
+      xml << "\t\t\t<alignment value=\"" << QgsLabelAttributes::alignmentName(mLabelAttributes->alignment()).utf8()
             << "\" field=\"" << (const char*)(mLabelField[Alignment].utf8()) << "\" />\n";
     }
 
@@ -992,12 +992,12 @@ void QgsLabel::writeXML(std::ostream& xml)
     if ( mLabelAttributes->bufferSizeIsSet() && ! mLabelField[BufferSize].isNull() )
     {
         xml << "\t\t\t<buffersize value=\"" << mLabelAttributes->bufferSize() << "\" units=\""
-            << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->bufferSizeType()) << "\" field=\"" << (const char*)(mLabelField[BufferSize].utf8()) << "\" />\n";
+            << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->bufferSizeType()).utf8() << "\" field=\"" << (const char*)(mLabelField[BufferSize].utf8()) << "\" />\n";
     }
     else if ( mLabelAttributes->bufferSizeIsSet() )
     {
         xml << "\t\t\t<buffersize value=\"" << mLabelAttributes->bufferSize() << "\" units=\""
-            << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->bufferSizeType()) << "\" field=\"" << "\" />\n";
+            << (const char *)QgsLabelAttributes::unitsName(mLabelAttributes->bufferSizeType()).utf8() << "\" field=\"" << "\" />\n";
     }
     else
     {

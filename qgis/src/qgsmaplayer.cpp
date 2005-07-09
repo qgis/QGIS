@@ -202,7 +202,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     QDomElement mne = mnl.toElement();
     dataSource = mne.text();
 
-    const char * dataSourceStr = dataSource; // debugger probe
+    const char * dataSourceStr = dataSource.local8Bit(); // debugger probe
 
     // the internal name is just the data source basename
     QFileInfo dataSourceFileInfo( dataSource );
@@ -223,7 +223,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     mne = mnl.toElement();
     setLayerName( mne.text() );
 
-    const char * layerNameStr = mne.text(); // debugger probe
+    const char * layerNameStr = mne.text().local8Bit(); // debugger probe
 
 
 
@@ -568,7 +568,7 @@ void QgsMapLayer::initContextMenu(QgisApp * app)
 void QgsMapLayer::keyPressed ( QKeyEvent * e )
 {
   if (e->key()==Qt::Key_Escape) mDrawingCancelled = true;
-  std::cout << e->ascii() << " pressed in maplayer !" << std::endl;
+  std::cout << e->text().local8Bit() << " pressed in maplayer !" << std::endl;
   e->ignore();
 }
 
