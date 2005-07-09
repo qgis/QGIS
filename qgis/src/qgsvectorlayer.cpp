@@ -456,7 +456,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
 
   try
   {
-  transformPoints(x, y, z, mtp, projectionsEnabledFlag);
+    transformPoints(x, y, z, mtp, projectionsEnabledFlag);
   }
   catch (QgsCsException &cse)
   {
@@ -573,7 +573,7 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
 
     try
     {
-    transformPoints(ring->first, ring->second, zVector, mtp, projectionsEnabledFlag);
+      transformPoints(ring->first, ring->second, zVector, mtp, projectionsEnabledFlag);
     }
     catch (QgsCsException &cse)
     {
@@ -641,34 +641,34 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     QPointArray pa(total_points + rings.size() - 1);
 
     for (int i = 0; i < rings.size(); ++i)
+    {
+      // Store the pointer in a variable with a short name so as to make
+      // the following code easier to type and read.
+      ringTypePtr r = rings[i];
+
+      // Store the start index of this ring, and the number of
+      // points in the ring.
+      ringDetails.push_back(std::make_pair(ii, r->first.size()));
+
+      // Transfer points to the QPointArray
+      for (int j = 0; j != r->first.size(); ++j)
+        pa.setPoint(ii++, static_cast<int>(round(r->first[j])),
+                    static_cast<int>(round(r->second[j])));
+
+      // Store the last point of the first ring, and insert it at
+      // the end of all other rings. This makes all the other rings
+      // appear as holes in the first ring.
+      if (i == 0)
       {
-  // Store the pointer in a variable with a short name so as to make
-  // the following code easier to type and read.
-  ringTypePtr r = rings[i];
-
-  // Store the start index of this ring, and the number of
-  // points in the ring.
-  ringDetails.push_back(std::make_pair(ii, r->first.size()));
-
-  // Transfer points to the QPointArray
-  for (int j = 0; j != r->first.size(); ++j)
-    pa.setPoint(ii++, static_cast<int>(round(r->first[j])),
-                static_cast<int>(round(r->second[j])));
-
-  // Store the last point of the first ring, and insert it at
-  // the end of all other rings. This makes all the other rings
-  // appear as holes in the first ring.
-  if (i == 0)
-  {
-    outerRingPt.setX(pa.point(ii-1).x());
-    outerRingPt.setY(pa.point(ii-1).y());
-  }
-  else
-    pa.setPoint(ii++, outerRingPt);
-
-  // Tidy up the pointed to pairs of vectors as we finish with them
-  delete rings[i];
+        outerRingPt.setX(pa.point(ii-1).x());
+        outerRingPt.setY(pa.point(ii-1).y());
       }
+      else
+        pa.setPoint(ii++, outerRingPt);
+
+      // Tidy up the pointed to pairs of vectors as we finish with them
+      delete rings[i];
+    }
 
     
 #ifdef QGISDEBUGVERBOSE
@@ -2519,12 +2519,12 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
   switch (wkbType)
   {
   case WKBPoint:
-    {
-      double x = *((double *) (feature + 5));
-      double y = *((double *) (feature + 5 + sizeof(double)));
+  {
+    double x = *((double *) (feature + 5));
+    double y = *((double *) (feature + 5 + sizeof(double)));
 
 #ifdef QGISDEBUG 
-//    std::cout <<"...WKBPoint (" << x << ", " << y << ")" <<std::endl;
+//  std::cout <<"...WKBPoint (" << x << ", " << y << ")" <<std::endl;
 #endif
 
     try
@@ -2538,43 +2538,43 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 
       break;
     }
-      p->save();
-      p->scale(markerScaleFactor,markerScaleFactor);
-      p->drawPicture(static_cast<int>(x / markerScaleFactor 
-               - marker->boundingRect().x() 
+    p->save();
+    p->scale(markerScaleFactor,markerScaleFactor);
+    p->drawPicture(static_cast<int>(x / markerScaleFactor 
+                     - marker->boundingRect().x() 
                      - marker->boundingRect().width() / 2),
                      static_cast<int>(y / markerScaleFactor 
-         - marker->boundingRect().y() 
+                     - marker->boundingRect().y() 
                      - marker->boundingRect().height() / 2),
                      *marker);
-      p->restore();
+    p->restore();
 
-      break;
-    }
+    break;
+  }
   case WKBMultiPoint:
+  {
+    unsigned char *ptr = feature + 5;
+    unsigned int nPoints = *((int*)ptr);
+    ptr += 4;
+
+    p->save();
+    p->scale(markerScaleFactor, markerScaleFactor);
+
+    for (int i = 0; i < nPoints; ++i)
     {
-      unsigned char *ptr = feature + 5;
-      unsigned int nPoints = *((int*)ptr);
-      ptr += 4;
-
-      p->save();
-      p->scale(markerScaleFactor, markerScaleFactor);
-
-      for (int i = 0; i < nPoints; ++i)
-      {
-  ptr += 5;
-  double x = *((double *) ptr);
-  ptr += sizeof(double);
-  double y = *((double *) ptr);
-  ptr += sizeof(double);
+      ptr += 5;
+      double x = *((double *) ptr);
+      ptr += sizeof(double);
+      double y = *((double *) ptr);
+      ptr += sizeof(double);
 
 #ifdef QGISDEBUG 
-    std::cout <<"...WKBMultiPoint (" << x << ", " << y << ")" <<std::endl;
+      std::cout <<"...WKBMultiPoint (" << x << ", " << y << ")" <<std::endl;
 #endif
 
       try
       {
-  transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
+        transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
       }
       catch (QgsCsException &cse)
       {
@@ -2585,15 +2585,15 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       }
 
 #if defined(Q_WS_X11)
-  // Work around a +/- 32768 limitation on coordinates in X11
-  if (std::abs(x) > QgsClipper::maxX ||
-      std::abs(y) > QgsClipper::maxY)
-    needToTrim = true;
-  else
+      // Work around a +/- 32768 limitation on coordinates in X11
+      if (std::abs(x) > QgsClipper::maxX ||
+          std::abs(y) > QgsClipper::maxY)
+        needToTrim = true;
+      else
 #endif
-    p->drawPicture(static_cast<int>(x / markerScaleFactor 
-         - marker->boundingRect().x() 
-         - marker->boundingRect().width() / 2),
+        p->drawPicture(static_cast<int>(x / markerScaleFactor 
+           - marker->boundingRect().x() 
+           - marker->boundingRect().width() / 2),
        static_cast<int>(y / markerScaleFactor 
          - marker->boundingRect().y() 
          - marker->boundingRect().height() / 2),
@@ -2602,42 +2602,42 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       p->restore();
 
       break;
-    }
+  }
   case WKBLineString:
-    {
-      drawLineString(feature, p, theMapToPixelTransform,
-         projectionsEnabledFlag);
-      break;
-    }
+  {
+    drawLineString(feature, p, theMapToPixelTransform,
+                   projectionsEnabledFlag);
+    break;
+  }
   case WKBMultiLineString:
-    {
-      unsigned char* ptr = feature + 5;
-      unsigned int numLineStrings = *((int*)ptr);
-      ptr = feature + 9;
+  {
+    unsigned char* ptr = feature + 5;
+    unsigned int numLineStrings = *((int*)ptr);
+    ptr = feature + 9;
 
-      for (int jdx = 0; jdx < numLineStrings; jdx++)
-      {
-  ptr = drawLineString(ptr, p, theMapToPixelTransform,
-           projectionsEnabledFlag);
-      }
-      break;
+    for (int jdx = 0; jdx < numLineStrings; jdx++)
+    {
+      ptr = drawLineString(ptr, p, theMapToPixelTransform,
+                           projectionsEnabledFlag);
     }
+    break;
+  }
   case WKBPolygon:
-    {
-      drawPolygon(feature, p, theMapToPixelTransform,
-      projectionsEnabledFlag);
-      break;
-    }
+  {
+    drawPolygon(feature, p, theMapToPixelTransform,
+                projectionsEnabledFlag);
+    break;
+  }
   case WKBMultiPolygon:
-    {
-      unsigned char *ptr = feature + 5;
-      unsigned int numPolygons = *((int*)ptr);
-      ptr = feature + 9;
-      for (int kdx = 0; kdx < numPolygons; kdx++)
-  ptr = drawPolygon(ptr, p, theMapToPixelTransform, 
-        projectionsEnabledFlag);
-      break;
-    }
+  {
+    unsigned char *ptr = feature + 5;
+    unsigned int numPolygons = *((int*)ptr);
+    ptr = feature + 9;
+    for (int kdx = 0; kdx < numPolygons; kdx++)
+      ptr = drawPolygon(ptr, p, theMapToPixelTransform, 
+                        projectionsEnabledFlag);
+    break;
+  }
   default:
 #ifdef QGISDEBUG
     std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
