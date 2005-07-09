@@ -772,6 +772,8 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   
   //
   // We must check the prj def is valid!
+  // NOTE :  the test below may be bogus as the processes abpve emsired there
+ // is always at least a projection and ellpsoid - which proj will parse as acceptible
   //
 
   projPJ myProj = pj_init_plus( leParameters->text().latin1() );
@@ -1048,7 +1050,7 @@ void QgsCustomProjectionDialog::checkParametersHaveEllipse()
 
   std::cout << "QgsCustomProjectionDialog::checkParametersHaveEllipse()" << std::endl;
   QString myProj4String = leParameters->text();
-  QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\-]* " );    
+  QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\\-]* " );    
   int myStart= 0;
   myStart = myEllipseRegExp.search(myProj4String, myStart);
   QString myEllipsoid;
