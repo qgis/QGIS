@@ -104,6 +104,8 @@ void QgsCoordinateTransform::initialise()
 {
 
   mInitialisedFlag=false; //guilty until proven innocent...
+  mSourceProjection = NULL;
+  mDestinationProjection = NULL;
 
   // XXX Warning - multiple return paths in this block!!
   if (!mSourceSRS.isValid())
