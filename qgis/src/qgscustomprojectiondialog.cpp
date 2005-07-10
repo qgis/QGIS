@@ -596,6 +596,7 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
     assert(myResult == 0);
   }
 
+
   QString mySql = "select * from tbl_srs where srs_id > " + mCurrentRecordId + " order by srs_id asc limit 1";
 #ifdef QGISDEBUG
     std::cout << "Query to move next:" << mySql.local8Bit() << std::endl;
@@ -869,7 +870,7 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
     //get to the newly inserted record 
     ++mRecordCountLong;
     mCurrentRecordLong=mRecordCountLong-1;
-    pbnNext_clicked();
+    pbnLast_clicked();
   }
 
   sqlite3_finalize(myPreparedStatement);
@@ -1050,7 +1051,7 @@ void QgsCustomProjectionDialog::checkParametersHaveEllipse()
 
   std::cout << "QgsCustomProjectionDialog::checkParametersHaveEllipse()" << std::endl;
   QString myProj4String = leParameters->text();
-  QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\\-]* " );    
+  QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\\-_]* " );    
   int myStart= 0;
   myStart = myEllipseRegExp.search(myProj4String, myStart);
   QString myEllipsoid;
