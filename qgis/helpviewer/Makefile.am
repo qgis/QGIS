@@ -27,7 +27,8 @@ PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
 
 
 
-qgis_help_MOC = qgshelpviewer.moc.cpp \
+qgis_help_MOC = qgshelpserver.moc.cpp \
+								qgshelpviewer.moc.cpp \
 								qgshelpviewerbase.moc.cpp
 
 qgis_help_UI = qgshelpviewerbase.h \
@@ -36,6 +37,8 @@ qgis_help_UI = qgshelpviewerbase.h \
 qgis_help_UIC = qgshelpviewerbase.ui
 
 qgis_help_SOURCES = main.cpp \
+									qgshelpserver.h \
+									qgshelpserver.cpp \
 									qgshelpviewer.h \
 									qgshelpviewer.cpp \
 				       $(qgis_help_UI)			\

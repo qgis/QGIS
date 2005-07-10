@@ -15,8 +15,12 @@ QgsHelpViewer::QgsHelpViewer(const QString &contextId, QWidget *parent,
 QgsHelpViewer::~QgsHelpViewer()
 {
 }
-    void QgsHelpViewer::setContext(const QString &contextId)
+void QgsHelpViewer::setContext(const QString &contextId)
 {
+  setWindowState(windowState() & ~WindowMinimized);
+  raise();
+  setActiveWindow();
+  loadContext(contextId);
 }
 void QgsHelpViewer::fileExit()
 {

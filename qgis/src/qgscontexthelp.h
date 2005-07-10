@@ -19,20 +19,37 @@
 /* $Id$ */
 #ifndef QGSCONTEXTHELP_H
 #define QGSCONTEXTHELP_H
-class QString;
+#include <qobject.h>
+class QProcess;
+class QSocket;
 /*!
  * \class QgsContextHelp
  * \brief Provides a context based help browser for a dialog.
  *
  * The help text is stored in SQLite and accessed by a context identifier
- * unique to each dialog. This class invokes the help viewer using QProcess
+ * unique to each dialog. This is a singleton class which invokes the help
+ * viewer using QProcess. The viewer will be reused as long as it is open.
+ * The viewer will be terminated if open when the main application quits.
  */
-class QgsContextHelp {
+class QgsContextHelp : public QObject {
+  Q_OBJECT
 public:
+  static void run(int contextId);
+
+private slots:
+  void readPort();
+  void processExited();
+
+private:
   //! Constructor
   QgsContextHelp(int contextId);
   //! Destructor
   ~QgsContextHelp();
-  static void run(int contextId);
+
+  void showContext(int contextId);
+
+  static QgsContextHelp *gContextHelp; // Singleton instance
+  QProcess *mProcess;
+  QSocket *mSocket;
 };
 #endif //QGSCONTEXTHELP_H

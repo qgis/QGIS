@@ -9,11 +9,11 @@ class QgsHelpViewer : public QgsHelpViewerBase
   public:
     QgsHelpViewer(const QString &contextId=QString::null, QWidget *parent=0, const char *name=0);
     ~QgsHelpViewer();
-    void setContext(const QString &contextId);
-    void loadContext(const QString &contextId);
 public slots:
+    void setContext(const QString &contextId);
     void fileExit();
 private:
+    void loadContext(const QString &contextId);
   int connectDb(const QString &helpDbPath);
  sqlite3 *db;
 };
