@@ -1275,6 +1275,9 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
       }
       else //must be  a system projection then
       {
+#if defined(Q_OS_MACX) || defined(WIN32)
+        QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
         myDatabaseFileName = PKGDATAPATH;
         myDatabaseFileName += "/resources/srs.db";
       }
