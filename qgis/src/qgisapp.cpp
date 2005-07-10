@@ -2208,7 +2208,7 @@ void QgisApp::fileSave()
         QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
         
         QFileDialog * saveFileDialog = new QFileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0,
-                                                       "asve project file");
+                                                       "save project file");
         saveFileDialog->setCaption(tr("Choose a QGIS project file"));
         saveFileDialog->setMode(QFileDialog::AnyFile);
         
@@ -3934,8 +3934,8 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
      * commandline application rather than a bundled application.
      */
     CFURLRef urlRef = CFURLCreateWithBytes(kCFAllocatorDefault,
-                                           reinterpret_cast<const UInt8*>(url.local8Bit()), url.length(),
-                                           kCFStringEncodingMacRoman, NULL);
+                                           reinterpret_cast<const UInt8*>(url.utf8().data()), url.length(),
+                                           kCFStringEncodingUTF8, NULL);
     OSStatus status = LSOpenCFURLRef(urlRef, NULL);
     CFRelease(urlRef);
 #else
