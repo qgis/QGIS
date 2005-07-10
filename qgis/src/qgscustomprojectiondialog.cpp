@@ -719,15 +719,29 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
 void QgsCustomProjectionDialog::pbnNew_clicked()
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsCustomProjectionDialog::pbnNew_clicked()" << std::endl;
+  if (pbnNew->text()==tr("Abort")) 
+  {
+    std::cout << "QgsCustomProjectionDialog::pbnNew_clicked() - abort requested" << std::endl;
+  }
+  else
+  {
+   std::cout << "QgsCustomProjectionDialog::pbnNew_clicked() - new requested" << std::endl;
+  }
 #endif
   if (pbnNew->text()==tr("Abort")) 
   {
     //if we get here, user has aborted add record
     pbnNew->setText(tr("New"));
     //get back to the last used record before insert was pressed
-    mCurrentRecordLong=mLastRecordLong;
-    pbnNext_clicked();
+   if (mCurrentRecordId.isEmpty())
+   {
+      pbnFirst_clicked();
+    }
+    else
+    {
+      mCurrentRecordLong=mLastRecordLong;
+      pbnNext_clicked();
+    }
   }
   else
   {
@@ -745,6 +759,7 @@ void QgsCustomProjectionDialog::pbnNew_clicked()
     lblRecordNo->setText("* of " + QString::number(mRecordCountLong));
     //remember the rec we are on in case the user aborts
     mLastRecordLong=mCurrentRecordLong;
+    mCurrentRecordId="";
   }
 
 }
