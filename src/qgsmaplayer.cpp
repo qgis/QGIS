@@ -353,7 +353,7 @@ void QgsMapLayer::setVisible(bool vis)
   if (m_visible != vis)
   {
     if (m_legendItem != 0)
-      m_legendItem->setOn(vis);
+	//m_legendItem->setOn(vis);//todo: fix this for the new legend
     m_visible = vis;
     emit visibilityChanged();
   }
