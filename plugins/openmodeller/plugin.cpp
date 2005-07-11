@@ -78,8 +78,18 @@ QgsOpenModellerPlugin::~QgsOpenModellerPlugin()
  */
 void QgsOpenModellerPlugin::initGui()
 {
+#ifdef WIN32
+  // add a menu with 2 items (following QGIS 0.6 object model)
+  QPopupMenu *pluginMenu = new QPopupMenu(mQGisApp);
+  pluginMenu->insertItem(QIconSet(icon_om),"&openModeller Wizard Plugin", this, SLOT(run()));
+  mMenuBarPointer = ((QMainWindow *) mQGisApp)->menuBar();
+  mMenuId = mQGisIface->addMenu("&Biodiversity", pluginMenu);
+#else
+
+  // New way of adding menu (following QGIS 0.7 object model)
   QPopupMenu *pluginMenu = mQGisIface->getPluginMenu("&Biodiversity");
   mMenuId = pluginMenu->insertItem(QIconSet(icon_om),"&OpenModeller Wizard Plugin", this, SLOT(run()));
+#endif
 
   // Create the action for tool  
   QAction *myQActionPointer = new QAction("openModeller Plugin", QIconSet(icon_om), "&Wmi",0, this, "run");
@@ -138,9 +148,15 @@ void QgsOpenModellerPlugin::modelDone(QString theText)
 // Unload the plugin by cleaning up the GUI
 void QgsOpenModellerPlugin::unload()
 {
+#ifdef WIN32
+  // remove the GUI: the old (QGIS 0.6.0) way
+  mMenuBarPointer->removeItem(mMenuId);
+  delete mToolBarPointer;
+#else
   // remove the GUI
   mQGisIface->removePluginMenuItem("&Biodiversity",mMenuId);
   delete mToolBarPointer;
+#endif
 }
 //////////////////////////////////////////////////////////////////////////
 //

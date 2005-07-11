@@ -2,17 +2,17 @@
 # Qmake project file for QGIS plugin
 # This file is used by qmake to generate the Makefiles for building
 # the QGIS copyright plugin on Windows
-# $Id$
-####################################################################
+# $Id$#
+###################################################################
 
 TEMPLATE = app
 
 # config for standalone mode
-CONFIG += qt rtti thread release
-#CONFIG += qt rtti thread debug console
+#CONFIG += qt rtti thread release
+CONFIG += qt rtti thread debug console
 
-# place release temp build objects somewhere else to avoid conflict with debug build
-OBJECTS_DIR = build\tmp
+# place debug temp build objects somewhere else to avoid conflict with release build
+OBJECTS_DIR = build_debug\tmp
 
 # for icon file under windows
 # see http://www.qiliang.net/qt/appicon.html
@@ -23,7 +23,7 @@ RC_FILE = omguistandalone.rc
 DEFINES+=WIN32
 DEFINES+=_WINDOWS
 DEFINES+=CORE_DLL_IMPORT 
-
+DEFINES+=_DEBUG
 
 #inc path for standalone app:
 INCLUDEPATH += . 
@@ -47,16 +47,15 @@ contains( CONFIG, debug ) {
 
 #used by both plugin and exe
 HEADERS += list.hh \
-           occurrences_file.hh \
-           openmodellergui.h \
            openmodellerguibase.ui.h \
+           openmodellergui.h \
            omguimain.h \
            omguimainbase.ui.h \
            imagewriter.h \
            layerselector.h \
            request_file.hh \
            file_parser.hh
-
+           
 INTERFACES += openmodellerguibase.ui omguimainbase.ui layerselectorbase.ui omguireportbase.ui
 
 SOURCES += main.cpp \ 
@@ -83,34 +82,34 @@ SOURCES += main.cpp \
 # -------------------------------------------
 # check for GDAL include and lib files
 # -------------------------------------------
-!exists( $$(GDAL)\include\gdal.h ) {
-  message( "Could not find GDAL include files." )
-  message( "Check whether the GDAL environment variable is set correctly. ")
-  message( "Current value: GDAL=$$(GDAL)" )
+!exists( $$(GDAL)\include\gdal.h ) {  
+  message( "Could not find GDAL include files." )  
+  message( "Check whether the GDAL environment variable is set correctly. ")  
+  message( "Current value: GDAL=$$(GDAL)" )  
   error  ( "GDAL include files are missing." )
 }
-
-!exists( $$(GDAL)\lib\gdal_i.lib ) {
-  message( "Could not find GDAL library file." )
-  message( "Check whether the GDAL environment variable is set correctly. ")
-  message( "Current value: GDAL=$$(GDAL)" )
+    
+!exists( $$(GDAL)\lib\gdal_i.lib ) {  
+  message( "Could not find GDAL library file." )  
+  message( "Check whether the GDAL environment variable is set correctly. ")  
+  message( "Current value: GDAL=$$(GDAL)" )  
   error  ( "GDAL library file is missing." )
 }
-
+    
 # -------------------------------------------
 # check for OM include and lib files
 # -------------------------------------------
-!exists( $$(OM_HOME)\src\openmodeller\OpenModeller.hh ) {
-  message( "Could not find OpenModeller include files." )
-  message( "Check whether the OM_HOME env. variable is set correctly. ")
-  message( "Current value: OM_HOME=$$(OM_HOME)" )
+!exists( $$(OM_HOME)\src\openmodeller\OpenModeller.hh ) {  
+  message( "Could not find OpenModeller include files." )  
+  message( "Check whether the OM_HOME env. variable is set correctly. ")  
+  message( "Current value: OM_HOME=$$(OM_HOME)" )  
   error  ( "OpenModeller include files are missing." )
 }
 
-!exists( $$(OM_HOME)\windows\vc7\build\libopenmodeller.lib ) {
-  message( "Could not find OpenModeller library file." )
-  message( "Check whether the OM_HOME env. variable is set correctly. ")
-  message( "Current value: OM_HOME=$$(OM_HOME)" )
+!exists( $$(OM_HOME)\windows\vc7\build_debug\libopenmodeller_debug.lib ) {  
+  message( "Could not find OpenModeller library file." )  
+  message( "Check whether the OM_HOME env. variable is set correctly. ")  
+  message( "Current value: OM_HOME=$$(OM_HOME)" )  
   error  ( "OpenModeller library file is missing." )
 }
 # -------------------------------------------

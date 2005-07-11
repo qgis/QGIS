@@ -71,6 +71,10 @@ class QgsOpenModellerPlugin:public QObject, public QgisPlugin
   int mMenuId;
   //! Pointer to our toolbar
   QToolBar *mToolBarPointer;
+#ifdef WIN32
+  //! Pointer to our menu
+  QMenuBar *mMenuBarPointer;
+#endif
   //! Pionter to QGIS main application object
   QgisApp *mQGisApp;
   //! Pointer to the QGIS interface object
