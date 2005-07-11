@@ -85,6 +85,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslegend.h"
+#include "qgslegendlayerfile.h"
 #include "qgslegenditem.h"
 #include "qgsline.h"
 #include "qgslinesymbol.h"
@@ -653,6 +654,24 @@ QgsMapLayer *QgsMapCanvas::getZpos(int idx)
 
 void QgsMapCanvas::setZOrderFromLegend(QgsLegend * lv)
 {
+    mCanvasProperties->zOrder.clear();
+    QListViewItemIterator it(lv);
+
+    while (it.current())
+    {
+	QgsLegendItem *li = (QgsLegendItem *) it.current();
+	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
+	if(llf)
+	{
+	    QgsMapLayer *lyr = llf->layer();
+	    mCanvasProperties->zOrder.push_front(lyr->getLayerID());
+	}
+	++it;
+    }
+
+  refresh();
+
+    #if 0 //todo: fix this later for the new legend
   mCanvasProperties->zOrder.clear();
   QListViewItemIterator it(lv);
 
@@ -716,6 +735,8 @@ void QgsMapCanvas::setZOrderFromLegend(QgsLegend * lv)
 #ifdef QGISDEBUG
   std::cout << "QgsMapCanvas::setZOrderFromLegend: refresh()ed." << std::endl;
 #endif
+
+#endif //0
 
 } // setZOrderFromLegend
 

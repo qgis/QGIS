@@ -88,6 +88,7 @@ using namespace std;
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
 #include "qgslegend.h"
+#include "qgslegendlayerfile.h"
 #include "qgsproject.h"
 #include "qgsmapserverexport.h"
 #include "qgsgeomtypedialog.h"
@@ -368,7 +369,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     QSplitter *canvasLegendSplit = new QSplitter(frameMain);
     QGridLayout *legendOverviewLayout = new QGridLayout(canvasLegendSplit, 1, 2, 4, 6, "canvasLegendLayout");
     QSplitter *legendOverviewSplit = new QSplitter(Qt::Vertical,canvasLegendSplit);
-    mMapLegend = new QgsLegend(legendOverviewSplit, "theMapLegend", this);
+    mMapLegend = new QgsLegend(this,legendOverviewSplit, "theMapLegend");
     mMapLegend->addColumn(tr("Layers"));
     mMapLegend->setSorting(-1);
     QWhatsThis::add(mMapLegend, tr("Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties."));
@@ -2921,17 +2922,21 @@ void QgisApp::attributeTable()
     QListViewItem *li = mMapLegend->currentItem();
     if (li)
     {
-        QgsMapLayer *layer = ((QgsLegendItem *) li)->layer();
-        if (layer)
-        {
-            layer->table();
+	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
+	if(llf)
+	{
+	    QgsMapLayer *layer = llf->layer();
+	    if (layer)
+	    {
+		layer->table();
 
-        }
-        else
-        {
-            QMessageBox::information(this, tr("No Layer Selected"),
+	    }
+	}
+    }
+    else
+    {
+	QMessageBox::information(this, tr("No Layer Selected"),
                                      tr("To open an attribute table, you must select a layer in the legend"));
-        }
     }
 }
 
@@ -2944,7 +2949,9 @@ void QgisApp::deleteSelected()
     QListViewItem *li = mMapLegend->currentItem();
     if (li)
     {
-        QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(((QgsLegendItem *) li)->layer());
+        //QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(((QgsLegendItem *) li)->layer());
+	//todo: add a new mechanism that works with the new legend
+	QgsVectorLayer* vlayer = 0;
         if(vlayer)
         {
             if(!vlayer->deleteSelectedFeatures())
@@ -3209,13 +3216,18 @@ void QgisApp::layerProperties(QListViewItem * lvi)
     QgsMapLayer *layer;
     if (lvi)
     {
-        layer = ((QgsLegendItem *) lvi)->layer();
+	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
+	if(llf)
+	{
+	    layer = llf->layer();
+	}
     }
     else
     {
         // get the selected item
         QListViewItem *li = mMapLegend->currentItem();
-        layer = ((QgsLegendItem *) li)->layer();
+	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
+        layer = llf->layer();
     }
 
 
@@ -3243,6 +3255,10 @@ void QgisApp::layerProperties(QListViewItem * lvi)
     {
         layer->showLayerProperties();
     }
+
+
+
+
 
     //TODO Fix this area below and above
     //this is a very hacky way to force the legend entry to refresh - the call above does ne happen for some reason
@@ -3344,10 +3360,13 @@ void QgisApp::inOverview( bool in_overview )
   //       This is just a hack...
   if(lvi)
   {
-    QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();
-    
-    layer->inOverview( in_overview );
-    mOverviewCanvas->render();
+      QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
+      if(llf)
+      {
+	  QgsMapLayer *layer = llf->layer();
+	  layer->inOverview( in_overview );
+	  mOverviewCanvas->render();
+      }
   }
 } // QgisApp::inOverview(bool)
 
@@ -3364,24 +3383,28 @@ void QgisApp::removeLayer()
   QListViewItem *lvi = mMapLegend->currentItem();
   if(lvi)
   {
-    QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();
-    //call the registry to unregister the layer. It will in turn
-    //fire a qt signal to notify any objects using that layer that they should
-    //remove it immediately
-    QgsMapLayerRegistry::instance()->removeMapLayer(layer->getLayerID());
-    mOverviewCanvas->freeze(false);
-    // draw the map
-    mOverviewCanvas->zoomFullExtent();
-    mOverviewCanvas->clear();
-    mOverviewCanvas->render();
-    mMapCanvas->freeze(false);
+    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
+    if(lvi)
+    {
+	QgsMapLayer *layer = llf->layer();
+	//call the registry to unregister the layer. It will in turn
+	//fire a qt signal to notify any objects using that layer that they should
+	//remove it immediately
+	QgsMapLayerRegistry::instance()->removeMapLayer(layer->getLayerID());
+	mOverviewCanvas->freeze(false);
+	// draw the map
+	mOverviewCanvas->zoomFullExtent();
+	mOverviewCanvas->clear();
+	mOverviewCanvas->render();
+	mMapCanvas->freeze(false);
 
-    //remove remaining digitising acetates
-    mMapCanvas->removeDigitizingLines();
+	//remove remaining digitising acetates
+	mMapCanvas->removeDigitizingLines();
 
-    // draw the map
-    mMapCanvas->clear();
-    mMapCanvas->render();
+	// draw the map
+	mMapCanvas->clear();
+	mMapCanvas->render();
+    }
   }
 }
 
@@ -3401,24 +3424,28 @@ void QgisApp::zoomToLayerExtent()
   {
     // get the selected item
     QListViewItem *li = mMapLegend->currentItem();
-    QgsMapLayer *layer = ((QgsLegendItem *) li)->layer();
-    // Check if the layer extent has to be transformed to the map canvas
-    // coordinate system 
-    if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
+    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
+    if(llf)
     {
-      QgsCoordinateTransform *ct = layer->coordinateTransform();
-      QgsRect transformedExtent = ct->transform(layer->extent());
-      mMapCanvas->setExtent(transformedExtent);
-    }
-    else
-    {
-      mMapCanvas->setExtent(layer->extent());
-    }
-    mMapCanvas->clear();
-    mMapCanvas->render();
+	QgsMapLayer *layer = llf->layer();
+	// Check if the layer extent has to be transformed to the map canvas
+	// coordinate system 
+	if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
+	{
+	    QgsCoordinateTransform *ct = layer->coordinateTransform();
+	    QgsRect transformedExtent = ct->transform(layer->extent());
+	    mMapCanvas->setExtent(transformedExtent);
+	}
+	else
+	{
+	    mMapCanvas->setExtent(layer->extent());
+	}
+	mMapCanvas->clear();
+	mMapCanvas->render();
 
-    // notify the project we've made a change
-    QgsProject::instance()->dirty(true);
+	// notify the project we've made a change
+	QgsProject::instance()->dirty(true);
+    }
   }
 }
 
@@ -3427,12 +3454,16 @@ void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
     if (!mMapCanvas->isDrawing()&&lvi)
     {
         // get the context menu from the layer and display it
-        QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();
-        QPopupMenu *mPopupMenu = layer->contextMenu();
-        if (mPopupMenu)
-        {
-            mPopupMenu->exec(pt);
-        }
+	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
+	if(llf)
+	{
+	    QgsMapLayer *layer = llf->layer();
+	    QPopupMenu *mPopupMenu = layer->contextMenu();
+	    if (mPopupMenu)
+	    {
+		mPopupMenu->exec(pt);
+	    }
+	}
     }
 }
 
@@ -3448,76 +3479,85 @@ void QgisApp::currentLayerChanged(QListViewItem * lvi)
   toolPopupCapture->setItemEnabled(2,FALSE);
   toolPopupCapture->setItemEnabled(3,FALSE);
 
-        QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();
-        if (layer->type() == QgsMapLayer::RASTER)
-        {
-            //actionIdentify->setEnabled(FALSE);
-            actionSelect->setEnabled(FALSE);
-            actionOpenTable->setEnabled(FALSE);
-            // if one of these map tools is selected, set cursor to default
-            if (mMapTool == QGis::Identify || mMapTool == QGis::Select || mMapTool == QGis::Table)
-            {
-                delete mMapCursor;
-                mMapCursor = new QCursor();
-                mMapCanvas->setCursor(*mMapCursor);
-            }
-        }
-        else
-        {
-            //vector layer editing buttons
-            QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(((QgsLegendItem *) lvi)->layer());
-            if(vlayer)
-            {
-    QgsVectorDataProvider* provider=vlayer->getDataProvider();
-    if(provider)
-    {
-        int cap=vlayer->getDataProvider()->capabilities();
-        if(cap&QgsVectorDataProvider::DeleteFeatures)
-        {
-      toolPopupCapture->setItemEnabled(3,TRUE);
-        }
-        if(cap&QgsVectorDataProvider::AddFeatures)
-        {
-      if(vlayer->vectorType()==QGis::Point)
-      {
-          toolPopupCapture->setItemEnabled(0,TRUE);
-      }
-      else if(vlayer->vectorType()==QGis::Line)
-      {
-          toolPopupCapture->setItemEnabled(1,TRUE);
-      }
-      else if(vlayer->vectorType()==QGis::Polygon)
-      {
-          toolPopupCapture->setItemEnabled(2,TRUE);
-      }
-        }
-    }
-      }
+        
+	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
+	if(llf)
+	{
+	    QgsMapLayer *layer = llf->layer();
+	    if (layer->type() == QgsMapLayer::RASTER)
+	    {
+		//actionIdentify->setEnabled(FALSE);
+		actionSelect->setEnabled(FALSE);
+		actionOpenTable->setEnabled(FALSE);
+		// if one of these map tools is selected, set cursor to default
+		if (mMapTool == QGis::Identify || mMapTool == QGis::Select || mMapTool == QGis::Table)
+		{
+		    delete mMapCursor;
+		    mMapCursor = new QCursor();
+		    mMapCanvas->setCursor(*mMapCursor);
+		}
+	    }
+	    else
+	    {
+		//vector layer editing buttons
+		QgsMapLayer* mlayer=llf->layer();
+		if(mlayer)
+		{
+		    QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mlayer);
+		    if(vlayer)
+		    {
+			QgsVectorDataProvider* provider=vlayer->getDataProvider();
+			if(provider)
+			{
+			    int cap=vlayer->getDataProvider()->capabilities();
+			    if(cap&QgsVectorDataProvider::DeleteFeatures)
+			    {
+				toolPopupCapture->setItemEnabled(3,TRUE);
+			    }
+			    if(cap&QgsVectorDataProvider::AddFeatures)
+			    {
+				if(vlayer->vectorType()==QGis::Point)
+				{
+				    toolPopupCapture->setItemEnabled(0,TRUE);
+				}
+				else if(vlayer->vectorType()==QGis::Line)
+				{
+				    toolPopupCapture->setItemEnabled(1,TRUE);
+				}
+				else if(vlayer->vectorType()==QGis::Polygon)
+				{
+				    toolPopupCapture->setItemEnabled(2,TRUE);
+				}
+			    }
+			}
+		    }
 
-            actionIdentify->setEnabled(TRUE);
-            actionSelect->setEnabled(TRUE);
-            actionOpenTable->setEnabled(TRUE);
-            // if one of these map tools is selected, make sure appropriate cursor gets set
-            switch (mMapTool)
-            {
-            case QGis::Identify:
-                identify();
-                break;
-            case QGis::Select:
-                select();
-                break;
-            case QGis::Table:
-                attributeTable();
-                break;
-            }
-        }
+		    actionIdentify->setEnabled(TRUE);
+		    actionSelect->setEnabled(TRUE);
+		    actionOpenTable->setEnabled(TRUE);
+		    // if one of these map tools is selected, make sure appropriate cursor gets set
+		    switch (mMapTool)
+		    {
+			case QGis::Identify:
+			    identify();
+			    break;
+			case QGis::Select:
+			    select();
+			    break;
+			case QGis::Table:
+			    attributeTable();
+			    break;
+		    }
+		}
 
-  //let the mapcanvas know that the current layer changed
-  //so any remaining digitizing acetates can be removed
-	mMapCanvas->removeDigitizingLines();
+	    //let the mapcanvas know that the current layer changed
+	    //so any remaining digitizing acetates can be removed
+		mMapCanvas->removeDigitizingLines();
 
-        // notify the project we've made a change
-        QgsProject::instance()->dirty(true);
+		// notify the project we've made a change
+		QgsProject::instance()->dirty(true);
+	    }
+	}
     }
 } // QgisApp::currentLayerChanged
 
@@ -4135,7 +4175,11 @@ QgsMapLayer *QgisApp::activeLayer()
     QgsMapLayer *layer = 0;
     if (lvi)
     {
-        layer = ((QgsLegendItem *) lvi)->layer();
+	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
+	if(llf)
+	{
+	    layer = llf->layer();
+	}
     }
     return layer;
 }
@@ -4147,7 +4191,11 @@ QString QgisApp::activeLayerSource()
     QgsMapLayer *layer = 0;
     if (lvi)
     {
-        layer = ((QgsLegendItem *) lvi)->layer();
+	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
+	if(llf)
+	{
+	    layer = llf->layer();
+	}
         source = layer->source();
     }
     return source;
@@ -4807,17 +4855,19 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
     while (it.current())
     {
         QgsLegendItem *li = (QgsLegendItem *) it.current();
-        QgsMapLayer *lyr = li->layer();
-        QString myLayerId = lyr->getLayerID();
-        mOverviewCanvas->remove
-        (myLayerId);
+	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
+	if(llf)
+	{
+	    QgsMapLayer *lyr = llf->layer();
+	    QString myLayerId = lyr->getLayerID();
+	    mOverviewCanvas->remove
+		(myLayerId);
 #ifdef QGISDEBUG
-
-        std::cout << " Removed layer " << myLayerId << " from overview map" << std::endl;
+	    std::cout << " Removed layer " << myLayerId << " from overview map" << std::endl;
 #endif
-
-        myOverviewLayerVector.push_back(myLayerId);
-        ++it;
+	    myOverviewLayerVector.push_back(myLayerId);
+	}
+	    ++it;
     }
     std::vector<QString>::reverse_iterator myIterator=myOverviewLayerVector.rbegin();
     while (myIterator != myOverviewLayerVector.rend())
