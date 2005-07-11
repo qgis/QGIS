@@ -12,7 +12,7 @@ if HAVE_QTMAC
 MAC = mac
 endif
 
-SUBDIRS = svg images themes resources $(MAC)
+SUBDIRS = legend svg images themes resources $(MAC)
 
 if !HAVE_QTMAC
 PREFIX=-DPREFIX=\"$(prefix)\"
@@ -103,8 +103,6 @@ headers =	qgisapp.h					\
 		qgslabelattributes.h				\
 		qgslabeldialog.h				\
 		qgslabel.h					\
-		qgslegend.h					\
-		qgslegenditem.h					\
 		qgsline.h					\
 		qgslinestyledialog.h				\
 		qgslinesymbol.h					\
@@ -194,7 +192,6 @@ qgis_UIC =	qgisappbase.ui				\
 		qgshelpviewerbase.ui			\
 		qgsidentifyresultsbase.ui		\
 		qgslabeldialogbase.ui			\
-		qgslegenditembase.ui			\
 		qgslinestyledialogbase.ui		\
 		qgsludialogbase.ui			\
 		qgsmapserverexportbase.ui		\
@@ -277,7 +274,6 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsidentifyresults.moc.cpp		\
 		qgslabeldialog.moc.cpp			\
 		qgslayerprojectionselector.moc.cpp \
-		qgslegend.moc.cpp			\
 		qgslinestyledialog.moc.cpp		\
 		qgslinestylewidget.moc.cpp		\
 		qgsludialog.moc.cpp			\
@@ -362,8 +358,6 @@ qgis_SOURCES =	main.cpp			\
 		qgslabel.cpp			\
 		qgslabeldialog.cpp		\
 		qgslayerprojectionselector.cpp \
-		qgslegend.cpp		\
-		qgslegenditem.cpp		\
 		qgsline.cpp			\
 		qgslinestyledialog.cpp		\
 		qgslinestylewidget.cpp		\
@@ -461,13 +455,13 @@ BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) \
 					$(postgresMOC) $(postgresUIMOC) $(postgresUIHEADERS) $(postgresUISOURCES)
 
 
-qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) -lproj -lsqlite3 libqgis.la
+qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) -lproj -lsqlite3 libqgis.la legend/libqgis_legend.la
 if HAVE_QTMAC
 qgis_LDFLAGS = -framework ApplicationServices
 else
 qgis_LDFLAGS = -rdynamic
 endif
-qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) -I../widgets/projectionselector/
+qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) -I../widgets/projectionselector/ -I./legend/
 
 libqgis_la_SOURCES =						\
 		qgisapp.cpp					\
@@ -527,10 +521,6 @@ libqgis_la_SOURCES =						\
 		qgsgraduatedmarenderer.cpp			\
 		qgsgraduatedsymrenderer.cpp			\
 		qgslabel.cpp					\
-		qgslegend.cpp					\
-		qgslegend.moc.cpp				\
-		qgslegenditem.cpp				\
-		qgslegenditem.moc.cpp				\
 		qgslinestylewidget.cpp				\
 		qgslinestylewidget.moc.cpp			\
 		qgslinestylewidgetbase.moc.uic.cpp		\
@@ -584,7 +574,7 @@ endif
 libqgis_la_LIBFLAGS = $(QT_LDADD) $(GEOS_LDADD) $(GDAL_LDADD)
 libqgis_la_LDFLAGS = -version-info $(INTERFACE_VERSION) $(QT_LDADD) $(GDAL_LDADD) -lsqlite3
 
-libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) -I../widgets/projectionselector/
+libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) -I../widgets/projectionselector/ -I./legend/
 
 ## for installing headers in $(includedir)/qgis
 pkginclude_HEADERS = $(headers) \
