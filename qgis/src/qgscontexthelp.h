@@ -22,14 +22,23 @@
 #include <qobject.h>
 class QProcess;
 class QSocket;
+#ifdef Q_OS_MACX
+#define QGSCONTEXTHELP_REUSE 1
+#endif
 /*!
  * \class QgsContextHelp
  * \brief Provides a context based help browser for a dialog.
  *
  * The help text is stored in SQLite and accessed by a context identifier
  * unique to each dialog. This is a singleton class which invokes the help
- * viewer using QProcess. The viewer will be reused as long as it is open.
+ * viewer using QProcess and ensures that only one viewer is open.
  * The viewer will be terminated if open when the main application quits.
+ *
+ * If the compile-time flag QGSCONTEXTHELP_REUSE is defined, the help viewer
+ * will be reused if it is still open. If this flag is not set, the viewer
+ * process will be terminated if open and restarted; this makes it the top
+ * window for window managers such as Linux/GNOME which will make a window
+ * active but not bring it to the top if raised programatically.
  */
 class QgsContextHelp : public QObject {
   Q_OBJECT
@@ -46,10 +55,17 @@ private:
   //! Destructor
   ~QgsContextHelp();
 
+  QProcess *start(int contextId);
   void showContext(int contextId);
 
   static QgsContextHelp *gContextHelp; // Singleton instance
   QProcess *mProcess;
+#ifdef QGSCONTEXTHELP_REUSE
+  // Communications socket when reusing existing process
   QSocket *mSocket;
+#else
+  // Replacement process when terminating and restarting
+  QProcess *mNextProcess;
+#endif
 };
 #endif //QGSCONTEXTHELP_H
