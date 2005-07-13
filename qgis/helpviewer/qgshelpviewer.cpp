@@ -30,8 +30,16 @@ void QgsHelpViewer::loadContext(const QString &contextId)
 {
   if(contextId != QString::null)
   {
-    // connect to the datbase
-    int rc = connectDb(QString(PKGDATAPATH) + "/resources/qgis_help.db");
+    // connect to the database
+    QString helpDbPath =
+#ifdef Q_OS_MACX
+      // remove bin/qgis_help.app/Contents/MacOS to get to share/qgis
+      qApp->applicationDirPath() + "/../../../../share/qgis" +
+#else
+      QString(PKGDATAPATH) +
+#endif
+      "/resources/qgis_help.db";
+    int rc = connectDb(helpDbPath);
     // get the help content and title from the database
 
     if(rc == SQLITE_OK)
