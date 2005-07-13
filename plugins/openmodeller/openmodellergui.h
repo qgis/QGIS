@@ -117,7 +117,11 @@ private:
     QGridLayout *mScrollViewLayout;
     QWidget *mLayoutWidget;
     void getProjList();
+    //convert the image from tif to pseudocolor png (keeps original size)
     void createModelImage(QString theBaseName);
+    // Create a smaller version of the image for the html report
+    QString createResizedImage(QString theBaseName);
+
     bool checkLayersMatch();
     QLogCallback * logCallBack;
 signals:
