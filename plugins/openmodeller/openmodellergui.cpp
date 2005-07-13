@@ -370,8 +370,12 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     {
       //select first algorithm in list
       cboModelAlgorithm->setCurrentItem(0);
-	  myModelName = cboModelAlgorithm->currentText();
-	}
+      myModelName = cboModelAlgorithm->currentText();
+    }
+    else
+    {
+      cboModelAlgorithm->setCurrentText(tr(myModelName));
+    }
 	
     cboModelAlgorithm_highlighted(tr(myModelName));
   }
