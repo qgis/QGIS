@@ -172,6 +172,8 @@ void OmGuiMain::saveMapAsImage()
 
 void OmGuiMain::modelDone(QString theText)
 {
+  // clean up the loggin stuff
+  g_log.setCallback( 0 );
   // remove the GUI
   mReport->txtbLog->setText(theText);
   mReport->show();

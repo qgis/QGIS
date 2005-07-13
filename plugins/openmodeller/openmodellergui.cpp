@@ -108,8 +108,6 @@ QTextStream* output;
 OpenModellerGui::~OpenModellerGui()
 {
   delete mLayout;
-  // clean up the loggin stuff
-  g_log.setCallback( 0 );
   delete output;
   // DO ME!!
   //if (mMap!=NULL) delete mMap;
@@ -370,13 +368,12 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
 
     if (myModelName=="")
     {
-      //do nothing
-    }
-    else
-    {
-      cboModelAlgorithm->setCurrentText(tr(myModelName));      
-    }
-
+      //select first algorithm in list
+      cboModelAlgorithm->setCurrentItem(0);
+	  myModelName = cboModelAlgorithm->currentText();
+	}
+	
+    cboModelAlgorithm_highlighted(tr(myModelName));
   }
   if (thePageNameQString==tr("Step 2 of 9")) //we do this after leaving the file selection page
   {
@@ -894,6 +891,14 @@ void OpenModellerGui::makeConfigFile()
 //
 // What follow are the overridden methods from the base form...
 //
+/** The reject method overrides the qtwizard method of the same name and clean up resources when cancel button is pressed*/
+void OpenModellerGui::reject()
+{
+	// break link between log callback and UI component
+    g_log.setCallback( 0 );
+	QWizard::reject();
+}
+
 /** The accept method overrides the qtwizard method of the same name and is run when the finish button is pressed */
 void OpenModellerGui::accept()
 {

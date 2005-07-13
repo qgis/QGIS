@@ -66,6 +66,7 @@ public:
   void pbnSelectLocalitiesFile_clicked();
   void leLocalitiesFileName_returnPressed();
   void accept();
+  void reject();
   void cboModelAlgorithm_highlighted( const QString &theModelAlgorithm );
   void leOutputFileName_textChanged( const QString &theOutputFileName);
   void leOutputDirectory_textChanged( const QString &theOutputDirectory);

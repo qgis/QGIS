@@ -38,7 +38,7 @@ LIBS += $(GDAL)\lib\gdal_i.lib
 contains( CONFIG, debug ) {
 	DESTDIR = build_debug
     LIBS += $(OM_HOME)\windows\vc7\build_debug\libopenmodeller_debug.lib   
-    TARGET = omgui_debug
+    TARGET = omgui_debug_exe
 } else {  
 	DESTDIR = build
     LIBS += $(OM_HOME)\windows\vc7\build\libopenmodeller.lib   
