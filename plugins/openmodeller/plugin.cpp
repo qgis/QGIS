@@ -50,7 +50,7 @@ email                : tim@linfiniti.com
 static const char * const sIdent = "$Id$";
 static const char * const sName = "openModeller Wizard";
 static const char * const sDescription = "Plugin to run openModeller in QGIS.";
-static const char * const sVersion = "Version 0.1";
+static const char * const sVersion = "Version 0.3.1";
 static const QgisPlugin::PLUGINTYPE sType = QgisPlugin::UI;
 
 /**
