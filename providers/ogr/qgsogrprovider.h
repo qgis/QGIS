@@ -173,6 +173,8 @@ class QgsOgrProvider:public QgsVectorDataProvider
       */
     int capabilities() const;
 
+    void setEncoding(const QString& e);
+
   private:
     unsigned char *getGeometryPointer(OGRFeature * fet);
     std::vector < QgsField > attributeFields;

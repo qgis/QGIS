@@ -74,6 +74,7 @@ headers =	qgisapp.h					\
 		qgscomposerscalebar.h				\
 		qgscomposerview.h				\
 		qgscomposition.h				\
+		qgscontexthelp.h				\
 		qgscontcoldialog.h				\
 		qgscontinuouscolrenderer.h			\
 		qgscoordinatetransform.h			\
@@ -260,6 +261,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgscomposerview.moc.cpp			\
 		qgscomposition.moc.cpp			\
 		qgscontcoldialog.moc.cpp		\
+		qgscontexthelp.moc.cpp			\
 		qgscoordinatetransform.moc.cpp		\
 		qgsdataprovider.moc.cpp		\
 		qgsdelattrdialog.moc.cpp			\
@@ -333,6 +335,7 @@ qgis_SOURCES =	main.cpp			\
 		qgscomposerview.cpp		\
 		qgscomposition.cpp		\
 		qgscontcoldialog.cpp		\
+		qgscontexthelp.cpp		\
 		qgscontinuouscolrenderer.cpp	\
 		qgscoordinatetransform.cpp	\
 		qgscustomsymbol.cpp		\

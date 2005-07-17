@@ -162,6 +162,29 @@ QgsOgrProvider::~QgsOgrProvider()
   delete geometryFactory;
   delete wktReader;
 }
+
+void QgsOgrProvider::setEncoding(const QString& e)
+{
+    QgsVectorDataProvider::setEncoding(e);
+
+    //the attribute fields need to be read again when the encoding changes
+    attributeFields.clear();
+    OGRFeatureDefn* fdef = ogrLayer->GetLayerDefn();
+    if(fdef)
+    {
+      geomType = fdef->GetGeomType();
+      for(int i=0;i<fdef->GetFieldCount();++i)
+      {
+        OGRFieldDefn *fldDef = fdef->GetFieldDefn(i);
+        attributeFields.push_back(QgsField(
+              mEncoding->toUnicode(fldDef->GetNameRef()), 
+              mEncoding->toUnicode(fldDef->GetFieldTypeName(fldDef->GetType())),
+              fldDef->GetWidth(),
+              fldDef->GetPrecision()));
+      }
+    }
+}
+
 QString QgsOgrProvider::getProjectionWKT()
 { 
 #ifdef QGISDEBUG 
