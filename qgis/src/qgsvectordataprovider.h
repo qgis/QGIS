@@ -232,7 +232,7 @@ class QgsVectorDataProvider : public QgsDataProvider
       const std::list<QString>& nonNumericalTypes(){return mNonNumericalTypes;}
       const std::list<QString>& numericalTypes(){return mNumericalTypes;}
 
-      void setEncoding(const QString& e);
+      virtual void setEncoding(const QString& e);
       QString encoding() const;
 
       /*! Indicates if the provider does its own coordinate transforms
