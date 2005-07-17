@@ -235,12 +235,20 @@ void QgsContColDialog::apply()
 
 void QgsContColDialog::selectMinimumColor()
 {
-    lblMinValue->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
+    QColor mincolor = QColorDialog::getColor(QColor(black), this);
+    if(mincolor.isValid())
+    {
+	lblMinValue->setPaletteBackgroundColor(mincolor);
+    }
     setActiveWindow();
 }
 
 void QgsContColDialog::selectMaximumColor()
 {
-    lblMaxValue->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
+    QColor maxcolor = QColorDialog::getColor(QColor(black), this);
+    if(maxcolor.isValid())
+    {
+	lblMaxValue->setPaletteBackgroundColor(maxcolor);
+    }
     setActiveWindow();
 }

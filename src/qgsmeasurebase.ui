@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>QgsMeasureBase</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,9 +8,15 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>306</width>
-            <height>314</height>
+            <width>251</width>
+            <height>272</height>
         </rect>
+    </property>
+    <property name="baseSize">
+        <size>
+            <width>150</width>
+            <height>200</height>
+        </size>
     </property>
     <property name="caption">
         <string>Measure</string>
@@ -21,6 +27,9 @@
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>4</number>
         </property>
         <widget class="QTable">
             <property name="name">
@@ -46,6 +55,12 @@
             <property name="name">
                 <cstring>frame4</cstring>
             </property>
+            <property name="minimumSize">
+                <size>
+                    <width>150</width>
+                    <height>0</height>
+                </size>
+            </property>
             <property name="frameShape">
                 <enum>StyledPanel</enum>
             </property>
@@ -59,6 +74,17 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
+                <property name="margin">
+                    <number>4</number>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnHelp</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Help</string>
+                    </property>
+                </widget>
                 <spacer>
                     <property name="name">
                         <cstring>spacer4</cstring>
@@ -71,7 +97,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>31</width>
+                            <width>60</width>
                             <height>26</height>
                         </size>
                     </property>
@@ -84,23 +110,6 @@
                         <string>New</string>
                     </property>
                 </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>31</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>mCloseButton</cstring>
@@ -109,30 +118,13 @@
                         <string>Close</string>
                     </property>
                 </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer3</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>41</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
             </hbox>
         </widget>
     </vbox>
 </widget>
 <images>
     <image name="image0">
-        <data format="XPM.GZ" length="646">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232325200210543251d2e253d856405bffcbc54105b19c856b6300041b01456302a43898c32988d4ac26530105406130c1aff6095a9b5e60200fd577259</data>
+        <data format="PNG" length="119">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000003e49444154388d633c76ec18032d00134d4c1d3578d4e0518387adc1bb76edfa8f4d01b9e2585d4c0d4b1861c5262e4de40037373746c6d1f278d4600c00006497215be56a073a0000000049454e44ae426082</data>
     </image>
 </images>
 <connections>
@@ -148,10 +140,17 @@
         <receiver>QgsMeasureBase</receiver>
         <slot>restart()</slot>
     </connection>
+    <connection>
+        <sender>btnHelp</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsMeasureBase</receiver>
+        <slot>showHelp()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>close()</slot>
     <slot>restart()</slot>
+    <slot>showHelp()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
