@@ -99,17 +99,19 @@ QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
   // set the selection rectangle to null
   mSelectionRectangle = 0;
   
-  // parse the file
-  data = GPSData::getData(mFileName);
-  if (data == 0)
-    return;
-  mValid = true;
-  
   // resize the cache matrix
   mMinMaxCache=new double*[attributeFields.size()];
   for(int i=0;i<attributeFields.size();i++) {
     mMinMaxCache[i]=new double[2];
   }
+
+  // parse the file
+  data = GPSData::getData(mFileName);
+  if (data == 0) {
+    return;
+  }
+
+  mValid = true;
 }
 
 
