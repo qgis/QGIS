@@ -309,6 +309,10 @@ GPSData* GPSData::getData(const QString& filename) {
   // if the data isn't there already, try to load it
   if (dataObjects.find(filename) == dataObjects.end()) {
     QFile file(filename);
+    if (!file.open(IO_ReadOnly)) {
+      qWarning("Couldn't open the data source: " + filename);
+      return 0;
+    }
     GPSData* data = new GPSData;
     std::cerr<<"Loading file "<<filename<<std::endl;
     GPXHandler handler(*data);
@@ -321,7 +325,6 @@ GPSData* GPSData::getData(const QString& filename) {
     XML_SetCharacterDataHandler(p, GPXHandler::chars);
     long int bufsize = 10*1024*1024;
     char* buffer = new char[bufsize];
-    file.open(IO_ReadOnly);
     int atEnd = 0;
     while (!file.atEnd()) {
       long int readBytes = file.readBlock(buffer, bufsize);
