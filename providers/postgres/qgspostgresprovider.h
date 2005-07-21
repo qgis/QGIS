@@ -188,6 +188,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     /**  * Get the name of the primary key for the layer
     */
     QString getPrimaryKey();
+
     /**
      * Get the field information for the layer
      * @return vector of QgsField objects
@@ -199,11 +200,11 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      */
     void reset();
 
-    /**Returns the minimum value of an attributs
+    /**Returns the minimum value of an attribute
       @param position the number of the attribute*/
     QString minValue(int position);
 
-    /**Returns the maximum value of an attributs
+    /**Returns the maximum value of an attribute
       @param position the number of the attribute*/
     QString maxValue(int position);
 
@@ -447,8 +448,16 @@ signals:
     //! PROJ4 capability
     bool projAvailable;
 
-    /**Writes a single feature*/
-    bool addFeature(QgsFeature* f);
+    /**Returns the maximum value of the primary key attribute
+       @note  You should run this inside of a PostgreSQL transaction
+              so that you can safely increment the value returned for
+              use in newly added features.
+      */
+    int maxPrimaryKeyValue();
+
+    /** Writes a single feature 
+        @param primaryKeyHighWater   is the recommended value of the primary key for this new feature. */
+    bool addFeature(QgsFeature* f, int primaryKeyHighWater);
 
     /**Deletes a feature*/
     bool deleteFeature(int id);

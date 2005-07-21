@@ -827,7 +827,7 @@ void QgsPostgresProvider::getFeatureAttributes(int key, int &row, QgsFeature *f)
   QString sql = QString("select * from %1 where %2 = %3").arg(tableName).arg(primaryKey).arg(key);
 
 #ifdef QGISDEBUG
-  //  std::cerr << "getFeatureAttributes using: " << sql << std::endl; 
+  std::cerr << "QgsPostgresProvider::getFeatureAttributes using: " << sql << std::endl; 
 #endif
   PGresult *attr = PQexec(connection, (const char *)(sql.utf8()));
 
@@ -1573,11 +1573,28 @@ QString QgsPostgresProvider::maxValue(int position){
   return maxValue;
 }
 
+
+int QgsPostgresProvider::maxPrimaryKeyValue()
+{
+  QString sql;
+
+  sql = QString("select max(%1) from \"%2\"")
+           .arg(primaryKey)
+           .arg(tableName);
+
+  PGresult *rmax = PQexec(connection,(const char *)(sql.utf8()));
+  QString maxValue = PQgetvalue(rmax,0,0);
+  PQclear(rmax);
+
+  return maxValue.toInt();
+}
+
+
 bool QgsPostgresProvider::isValid(){
   return valid;
 }
 
-bool QgsPostgresProvider::addFeature(QgsFeature* f)
+bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
 {
 #ifdef QGISDEBUG
       std::cout << "QgsPostgresProvider::addFeature: Entering."
@@ -1590,8 +1607,12 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
     insert+=tableName;
     insert+="\" (";
 
-    //add the name of the geometry column to the insert statement
-    insert+=geometryColumn;//first the geometry
+    // add the name of the geometry column to the insert statement
+    insert += geometryColumn;
+
+    // add the name of the primary key column to the insert statement
+    insert += ",";
+    insert += primaryKey;
 
 #ifdef QGISDEBUG
       std::cout << "QgsPostgresProvider::addFeature: Constructing insert SQL, currently at: " << insert
@@ -1634,7 +1655,11 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
         }
       }                                         
       
-      if ( (fieldname != geometryColumn) && (fieldInLayer) )
+      if (
+           (fieldname != geometryColumn) &&
+           (fieldname != primaryKey) &&
+           (fieldInLayer)
+         )
       {
         insert+=",";
         insert+=fieldname;
@@ -1655,6 +1680,10 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
       insert+=hex;
     }
     insert+="',"+srid+")";
+
+    //add the primary key value to the insert statement
+    insert += ",";
+    insert += QString::number(primaryKeyHighWater);
 
     //add the field values to the insert statement
     for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)
@@ -1681,9 +1710,13 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
         }
       }                                         
       
-      if ( (fieldname != geometryColumn) && (fieldInLayer) )
+      if (
+           (fieldname != geometryColumn) &&
+           (fieldname != primaryKey) &&
+           (fieldInLayer)
+         )
       {
-        QString fieldvalue=it->fieldValue();
+        QString fieldvalue = it->fieldValue();
         bool charactertype=false;
         insert+=",";
 
@@ -1829,11 +1862,16 @@ bool QgsPostgresProvider::addFeatures(std::list<QgsFeature*> const flist)
 {
   bool returnvalue=true;
   PQexec(connection,"BEGIN");
+
+  int primaryKeyHighWater = maxPrimaryKeyValue();
+
   for(std::list<QgsFeature*>::const_iterator it=flist.begin();it!=flist.end();++it)
   {
-    if(!addFeature(*it))
+    primaryKeyHighWater++;
+    if(!addFeature(*it, primaryKeyHighWater))
     {
       returnvalue=false;
+      // TODO: exit loop here?
     }
   }
   PQexec(connection,"COMMIT");
