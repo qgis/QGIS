@@ -23,7 +23,7 @@ grassprovider_la_SOURCES = provider.cpp \
 
 grassprovider_la_LIBADD = $(QT_LDADD) libqgisgrass.la
 grassprovider_la_LDFLAGS = -avoid-version -module
-grassprovider_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(GRASS_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS)
+grassprovider_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(GRASS_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(GDAL_CFLAGS)
 
 libqgisgrass_la_SOURCES = qgsgrassprovider.cpp \
 			qgsgrassprovider.h \
@@ -37,7 +37,7 @@ libqgisgrass_la_SOURCES = qgsgrassprovider.cpp \
 
 libqgisgrass_la_LIBADD = $(QT_LDADD) $(GRASS_LIB)
 libqgisgrass_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
-libqgisgrass_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(GRASS_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS)
+libqgisgrass_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(GRASS_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(GDAL_CFLAGS)
 if HAVE_POSTGRESQL
 libqgisgrass_la_CXXFLAGS += -I$(PG_INC)
 endif
