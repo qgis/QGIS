@@ -243,12 +243,30 @@ void QgsFeature::changeAttributeValue(const QString& name, const QString& newval
     } 
 }
 
+void QgsFeature::changeAttributeName(const QString& name, const QString& newname)
+{
+   // TODO: This was added for Paste Transformations, but as this is called per transfer,
+   // per feature pasted, this can get inefficient.  It may be worth calculating once per
+   // paste action and caching for each subsequent feature in that paste action.
+   for(std::vector<QgsFeatureAttribute>::iterator iter=attributes.begin();iter!=attributes.end();++iter)
+    {
+	if(iter->fieldName()==name)
+	{
+	    iter->setFieldName(newname);
+	    break;
+	}
+    } 
+}
+
 /**
  * Get the fields for this feature
  * @return A std::map containing field position (index) and field name
  */
 const std::map < int, QString > &QgsFeature::fields()
 {
+#ifdef QGISDEBUG
+       std::cout << "QgsFeature::fields: Returning fieldNames." << std::endl;
+#endif
   return fieldNames;
 }
 

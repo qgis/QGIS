@@ -8,17 +8,9 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>614</width>
-            <height>222</height>
+            <width>564</width>
+            <height>426</height>
         </rect>
-    </property>
-    <property name="sizePolicy">
-        <sizepolicy>
-            <hsizetype>5</hsizetype>
-            <vsizetype>5</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
     </property>
     <property name="caption">
         <string>Paste Transformations</string>
@@ -29,255 +21,176 @@
     <property name="sizeGripEnabled">
         <bool>true</bool>
     </property>
-    <widget class="QLayoutWidget">
+    <vbox>
         <property name="name">
-            <cstring>layout5</cstring>
+            <cstring>unnamed</cstring>
         </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>20</y>
-                <width>583</width>
-                <height>173</height>
-            </rect>
-        </property>
-        <vbox>
+        <widget class="QLabel">
             <property name="name">
-                <cstring>unnamed</cstring>
+                <cstring>textLabel1_2</cstring>
             </property>
-            <widget class="QLabel">
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>&lt;b&gt;Note: This function is not useful yet!&lt;/b&gt;</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>transferLayout</cstring>
+            </property>
+            <grid>
                 <property name="name">
-                    <cstring>textLabel1_2</cstring>
+                    <cstring>unnamed</cstring>
                 </property>
-                <property name="text">
-                    <string>&lt;b&gt;Note: This function is not useful yet!&lt;/b&gt;</string>
-                </property>
-            </widget>
-            <widget class="QLayoutWidget">
-                <property name="name">
-                    <cstring>layout4</cstring>
-                </property>
-                <grid>
+                <widget class="QLabel" row="0" column="0">
                     <property name="name">
-                        <cstring>unnamed</cstring>
+                        <cstring>textLabel3</cstring>
                     </property>
-                    <widget class="QLabel" row="3" column="0">
-                        <property name="name">
-                            <cstring>textLabel3_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>transfer</string>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="3" column="3">
-                        <property name="name">
-                            <cstring>comboBox4_2</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="3" column="5">
-                        <item>
-                            <property name="text">
-                                <string>copying</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>multiplying</string>
-                            </property>
-                        </item>
-                        <property name="name">
-                            <cstring>comboBox5_2</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit" row="3" column="7">
-                        <property name="name">
-                            <cstring>lineEdit1</cstring>
-                        </property>
-                        <property name="text">
-                            <string>20</string>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="2" column="3">
-                        <property name="name">
-                            <cstring>comboBox4</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="2" column="1">
-                        <property name="name">
-                            <cstring>comboBox3</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="0" column="1">
-                        <property name="name">
-                            <cstring>textLabel1</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Source Layer</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="2" column="2">
-                        <property name="name">
-                            <cstring>textLabel4</cstring>
-                        </property>
-                        <property name="text">
-                            <string>to</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="3" column="6">
-                        <property name="name">
-                            <cstring>textLabel6</cstring>
-                        </property>
-                        <property name="text">
-                            <string>by</string>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="2" column="5">
-                        <item>
-                            <property name="text">
-                                <string>copying</string>
-                            </property>
-                        </item>
-                        <property name="name">
-                            <cstring>comboBox5</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="1" column="3">
-                        <property name="name">
-                            <cstring>destinationLayerComboBox</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="2" column="4">
-                        <property name="name">
-                            <cstring>textLabel5</cstring>
-                        </property>
-                        <property name="text">
-                            <string>by</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="0" column="3">
-                        <property name="name">
-                            <cstring>textLabel2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Destination Layer</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="3" column="4">
-                        <property name="name">
-                            <cstring>textLabel5_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>by</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="3" column="2">
-                        <property name="name">
-                            <cstring>textLabel4_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>to</string>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="1" column="1">
-                        <property name="name">
-                            <cstring>originLayerComboBox</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="2" column="0">
-                        <property name="name">
-                            <cstring>textLabel3</cstring>
-                        </property>
-                        <property name="text">
-                            <string>transfer</string>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="3" column="1">
-                        <property name="name">
-                            <cstring>comboBox3_2</cstring>
-                        </property>
-                    </widget>
-                </grid>
-            </widget>
-            <widget class="QLayoutWidget">
-                <property name="name">
-                    <cstring>Layout1</cstring>
-                </property>
-                <hbox>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Source</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="1" column="1">
                     <property name="name">
-                        <cstring>unnamed</cstring>
+                        <cstring>destinationLayerComboBox</cstring>
                     </property>
-                    <property name="margin">
-                        <number>0</number>
+                </widget>
+                <widget class="QLabel" row="0" column="1">
+                    <property name="name">
+                        <cstring>textLabel4</cstring>
                     </property>
-                    <property name="spacing">
-                        <number>6</number>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
                     </property>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>buttonHelp</cstring>
-                        </property>
-                        <property name="text">
-                            <string>&amp;Help</string>
-                        </property>
-                        <property name="accel">
-                            <string>F1</string>
-                        </property>
-                        <property name="autoDefault">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                    <spacer>
-                        <property name="name">
-                            <cstring>Horizontal Spacing2</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>20</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>buttonOk</cstring>
-                        </property>
-                        <property name="text">
-                            <string>&amp;OK</string>
-                        </property>
-                        <property name="accel">
-                            <string></string>
-                        </property>
-                        <property name="autoDefault">
-                            <bool>true</bool>
-                        </property>
-                        <property name="default">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>buttonCancel</cstring>
-                        </property>
-                        <property name="text">
-                            <string>&amp;Cancel</string>
-                        </property>
-                        <property name="accel">
-                            <string></string>
-                        </property>
-                        <property name="autoDefault">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                </hbox>
-            </widget>
-        </vbox>
-    </widget>
+                    <property name="text">
+                        <string>Destination</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="1" column="0">
+                    <property name="name">
+                        <cstring>sourceLayerComboBox</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>251</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout5</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonHelp</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Help</string>
+                    </property>
+                    <property name="accel">
+                        <string>F1</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Horizontal Spacing2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>40</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>newTransferPushButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Add New Transfer</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonOk</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;OK</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
 </widget>
 <connections>
     <connection>
@@ -292,6 +205,23 @@
         <receiver>QgsPasteTransformationsBase</receiver>
         <slot>reject()</slot>
     </connection>
+    <connection>
+        <sender>sourceLayerComboBox</sender>
+        <signal>activated(const QString&amp;)</signal>
+        <receiver>QgsPasteTransformationsBase</receiver>
+        <slot>sourceChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>destinationLayerComboBox</sender>
+        <signal>activated(const QString&amp;)</signal>
+        <receiver>QgsPasteTransformationsBase</receiver>
+        <slot>destinationChanged(const QString&amp;)</slot>
+    </connection>
 </connections>
+<slots>
+    <slot>addNewTransfer(const QString&amp;, const QString&amp;)</slot>
+    <slot>sourceChanged(const QString&amp;)</slot>
+    <slot>destinationChanged(const QString&amp;)</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
