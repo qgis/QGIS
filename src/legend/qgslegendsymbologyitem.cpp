@@ -25,7 +25,6 @@ QgsLegendSymbologyItem::QgsLegendSymbologyItem(QListViewItem * theItem,QString t
   mType = LEGEND_SYMBOL_ITEM;
 }
 
-
 QgsLegendSymbologyItem::~QgsLegendSymbologyItem()
 {
 }

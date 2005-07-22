@@ -36,6 +36,7 @@
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
+#include "qgslegendlayerfile.h"
 
 
 
@@ -45,15 +46,17 @@ QgsMapLayer::QgsMapLayer(int type,
                          QString source)
         : internalName(lyrname),
         ID(""),
-	mCoordinateTransform(NULL),
-        layerType(type),
-        dataSource(source),
-        m_legendItem(0),
-        m_visible(true),
-        mShowInOverview(false),
-        mShowInOverviewItemId(0),
-        valid(true) // assume the layer is valid (data source exists and can be
-        // used) until we learn otherwise
+	  mCoordinateTransform(NULL),
+	  mLegendSymbologyGroupParent(0),
+	  mLegendLayerFile(0),
+	  layerType(type),
+	  dataSource(source),
+	  m_legendItem(0),
+	  m_visible(true),
+	  mShowInOverview(false),
+	  mShowInOverviewItemId(0),
+	  valid(true) // assume the layer is valid (data source exists and can be
+    // used) until we learn otherwise
 
 {
     // Set the display name = internal name
@@ -352,10 +355,9 @@ void QgsMapLayer::setVisible(bool vis)
 {
   if (m_visible != vis)
   {
-    if (m_legendItem != 0)
-	//m_legendItem->setOn(vis);//todo: fix this for the new legend
-    m_visible = vis;
-    emit visibilityChanged();
+      m_visible = vis;
+      mLegendLayerFile->toggleCheckBox(vis);
+      emit visibilityChanged();  
   }
 }
 
@@ -404,9 +406,9 @@ void QgsMapLayer::inOverview( bool b )
 
 void QgsMapLayer::updateItemPixmap()
 {
-    if (m_legendItem)             // XXX should we know about our legend?
+    if (mLegendLayerFile)
     {
-        QPixmap pix=*(this->legendPixmap());
+        QPixmap pix=mLegendLayerFile->getOriginalPixmap();
         if(mShowInOverview)
         {
             //add overview glasses to the pixmap
@@ -419,7 +421,7 @@ void QgsMapLayer::updateItemPixmap()
             QPainter p(&pix);
             p.drawPixmap(30,0,mEditablePixmap);
         }
-        ((QCheckListItem *) m_legendItem)->setPixmap(0,pix);
+	mLegendLayerFile->setLegendPixmap(pix);
     }
 }
 
@@ -462,48 +464,6 @@ QPopupMenu *QgsMapLayer::contextMenu()
 {
     return 0;
 }
-
-
-QgsFeature * QgsMapLayer::getFirstFeature(bool fetchAttributes) const
-{
-    return 0x0;                 // by default return NULL
-} // QgsMapLayer::getFirstFeature
-
-
-QgsFeature * QgsMapLayer::getNextFeature(bool fetchAttributes) const
-{
-    return 0x0;                 // by default return NULL
-} // QgsMapLayer::getNextFeature
-
-
-bool QgsMapLayer::getNextFeature(QgsFeature &feature, bool fetchAttributes) const
-{
-    return false;
-} // QgsMapLayer::getNextFeature
-
-
-long QgsMapLayer::featureCount() const
-{
-    return 0;
-} // QgsMapLayer::featureCount
-
-
-
-int QgsMapLayer::fieldCount() const
-{
-    return 0;
-} // QgsMapLayer::fieldCount
-
-
-
-std::vector<QgsField> const & QgsMapLayer::fields() const
-{
-    static std::vector<QgsField> bogus; // bogus empty container
-
-    return bogus;
-} // QgsMapLayer::fields()
-
-
 
 void QgsMapLayer::connectNotify( const char * signal )
 {

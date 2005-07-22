@@ -195,8 +195,8 @@ void QgsPasteTransformations::layerChanged(const QString& layerName, std::vector
           << std::endl;
 #endif
 
-  std::vector<QgsField> layerFields = 
-    (mMapNameLookup[ layerName ])->fields();
+	std::vector<QgsField> layerFields =
+	(mMapNameLookup[ layerName ])->fields();
 
   fields->clear();
 

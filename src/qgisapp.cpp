@@ -420,10 +420,6 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     connect(mMapCanvas, SIGNAL(removedLayer(QString)), mMapLegend, SLOT(removeLayer(QString)));
     connect(mMapCanvas, SIGNAL(removedAll()), mMapLegend, SLOT(removeAll()));
     connect(mMapCanvas, SIGNAL(stopZoom()), this, SLOT(stopZoom()));
-
-    connect(mMapLegend, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(layerProperties(QListViewItem *)));
-    connect(mMapLegend, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
-            this, SLOT(rightClickLegendMenu(QListViewItem *, const QPoint &, int)));
     connect(mMapLegend, SIGNAL(zOrderChanged(QgsLegend *)), mMapCanvas, SLOT(setZOrderFromLegend(QgsLegend *)));
     connect(mMapLegend, SIGNAL(zOrderChanged(QgsLegend *)), this, SLOT(setOverviewZOrder(QgsLegend *)));
     connect(mMapLegend, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(currentLayerChanged(QListViewItem *)));
@@ -1130,8 +1126,6 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
 
     if (layer->isValid())
     {
-        // Register this layer with the layers registry
-        QgsMapLayerRegistry::instance()->addMapLayer(layer);
         // init the context menu so it can connect to slots
         // in main app
         // XXX move to legend::addLayer() layer->initContextMenu(this);
@@ -1157,6 +1151,11 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
         }
 
         layer->setRenderer(renderer);
+
+	// Register this layer with the layers registry
+        QgsMapLayerRegistry::instance()->addMapLayer(layer);
+	layer->refreshLegend();
+	
 
         // not necessary since registry will add to canvas mMapCanvas->addLayer(layer);
         // XXX some day will not necessary since connect up a request from
@@ -1271,9 +1270,8 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
 
             if (layer->isValid())
             {
-    layer->getDataProvider()->setEncoding(enc);
-                //Register the layer with the layer registry
-                QgsMapLayerRegistry::instance()->addMapLayer(layer);
+		//todo: find a solution to apply the encoding also to the attribute headers*/
+		layer->getDataProvider()->setEncoding(enc);
                 // init the context menu so it can connect to slots
                 // in main app
 
@@ -1294,6 +1292,10 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
                 }
 
                 layer->setRenderer(renderer);
+
+		// Register this layer with the layers registry
+		QgsMapLayerRegistry::instance()->addMapLayer(layer);
+		layer->refreshLegend();
 
                 // map canvas and overview canvas already know about this layer
                 // when it is added to map registry
@@ -1422,15 +1424,14 @@ void QgisApp::addDatabaseLayer()
                     // set initial visibility based on user preference
                     layer->setVisible(mAddedLayersHidden);
 
-                    // register this layer with the central layers registry
-                    QgsMapLayerRegistry::instance()->addMapLayer(layer);
-
-                    // init the context menu so it can connect to slots in main app
-                    // XXX now taken care of in legend layer->initContextMenu(this);
-
                     // give it a random color
                     QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());  // add single symbol renderer as default
                     layer->setRenderer(renderer);
+
+		    // register this layer with the central layers registry
+                    QgsMapLayerRegistry::instance()->addMapLayer(layer);
+		    layer->refreshLegend();
+
                     // add it to the mapcanvas collection
                     // mMapCanvas->addLayer(layer);
                     //connect up a request from the raster layer to show in overview map
@@ -3202,104 +3203,6 @@ void QgisApp::testButton()
 
 }
 
-void QgisApp::layerProperties()
-{
-    layerProperties(mMapLegend->currentItem());
-}
-
-void QgisApp::layerProperties(QListViewItem * lvi)
-{
-    QgsMapLayer *layer;
-    if (lvi)
-    {
-	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
-	if(llf)
-	{
-	    layer = llf->layer();
-	}
-    }
-    else
-    {
-        // get the selected item
-        QListViewItem *li = mMapLegend->currentItem();
-	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
-        layer = llf->layer();
-    }
-
-
-
-    QString currentName = layer->name();
-    //test if we have a raster or vector layer and show the appropriate dialog
-    if (layer->type() == QgsMapLayer::RASTER)
-    {
-        QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties(layer);
-        // The signals to change the raster layer properties will only be emitted
-        // when the user clicks ok or apply
-        //connect(rlp, SIGNAL(setTransparency(unsigned int)), SLOT(layer(slot_setTransparency(unsigned int))));
-        if (rlp->exec())
-        {
-            //this code will be called it the user selects ok
-            mMapCanvas->setDirty(true);
-            mMapCanvas->refresh();
-            mMapCanvas->render();
-            // mMapLegend->update(); XXX WHY CALL UPDATE HERE?
-            delete rlp;
-            qApp->processEvents();
-        }
-    }
-    else
-    {
-        layer->showLayerProperties();
-    }
-
-
-
-
-
-    //TODO Fix this area below and above
-    //this is a very hacky way to force the legend entry to refresh - the call above does ne happen for some reason
-    //mMapCanvas->render();
-    //mMapLegend->update();
-
-
-    /* else if ((layer->type()==QgsMapLayer::VECTOR) || (layer->type()==QgsMapLayer::DATABASE))
-       {
-       QgsLayerProperties *lp = new QgsLayerProperties(layer);
-       if (lp->exec()) {
-    // update the symbol
-    layer->setSymbol(lp->getSymbol());
-    mMapCanvas->freeze();
-    layer->setlayerName(lp->displayName());
-    if (currentName != lp->displayName())
-    mMapLegend->update();
-    delete lp;
-    qApp->processEvents();
-
-    // apply changes
-    mMapCanvas->freeze(false);
-    mMapCanvas->setDirty(true);
-    mMapCanvas->render();
-    }
-    }
-    else if (layer->type()==QgsMapLayer::DATABASE)
-    {
-    //do me!
-    QMessageBox::information( this, "QGis",
-    "Properties box not yet implemented for database layer");
-    }
-    else
-    {
-    QMessageBox::information( this, "QGis",
-    "Unknown Layer Type");
-    }
-
-    */
-
-
-
-    //  layer->showLayerProperties();
-}
-
 void QgisApp::menubar_highlighted( int i )
 {
     // used to save us from re-enabling layer menu items every single time the
@@ -3443,24 +3346,6 @@ void QgisApp::zoomToLayerExtent()
 	QgsProject::instance()->dirty(true);
     }
   }
-}
-
-void QgisApp::rightClickLegendMenu(QListViewItem * lvi, const QPoint & pt, int)
-{
-    if (!mMapCanvas->isDrawing()&&lvi)
-    {
-        // get the context menu from the layer and display it
-	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
-	if(llf)
-	{
-	    QgsMapLayer *layer = llf->layer();
-	    QPopupMenu *mPopupMenu = layer->contextMenu();
-	    if (mPopupMenu)
-	    {
-		mPopupMenu->exec(pt);
-	    }
-	}
-    }
 }
 
 void QgisApp::currentLayerChanged(QListViewItem * lvi)
@@ -5261,6 +5146,7 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList, bool gui
             layer->setVisible(mAddedLayersHidden);
 
             addRasterLayer(layer);
+	    layer->refreshLegend();
 
             //only allow one copy of a ai grid file to be loaded at a
             //time to prevent the user selecting all adfs in 1 dir which

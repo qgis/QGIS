@@ -17,20 +17,38 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+#include "qgslegend.h"
 #include "qgslegendlayerfile.h"
-#include "qpixmap.h"
+#include "qgsmaplayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayerproperties.h"
+#include <qapplication.h>
+#include <qcheckbox.h>
+#include <qpixmap.h>
+#include <qobject.h>
+#include <qpopupmenu.h>
 
 QgsLegendLayerFile::QgsLegendLayerFile(QListViewItem * theLegendItem, QString theString, QgsMapLayer* theLayer)
     : QgsLegendItem(theLegendItem, theString), mLayer(theLayer)
 {
   mType = LEGEND_LAYER_FILE;
-  QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/file.png"));
-  setPixmap(0,myPixmap);
+  
+  //visibility check box
+  mVisibilityCheckBox = new QCheckBox(listView());
+  ((QgsLegend*)(listView()))->registerCheckBox(this, mVisibilityCheckBox);
+  mVisibilityCheckBox->setChecked(true);
+  mVisibilityCheckBox->hide();
+  QObject::connect(mVisibilityCheckBox, SIGNAL(toggled(bool)), mLayer, SLOT(setVisible(bool)));
+
+  setPixmap(0, getOriginalPixmap());
 }
 
 
 QgsLegendLayerFile::~QgsLegendLayerFile()
 {
+    //unregistering of the checkbox is done by QgsLegend
+    delete mVisibilityCheckBox;
 }
 
 bool QgsLegendLayerFile::accept(LEGEND_ITEM_TYPE type)
@@ -38,6 +56,59 @@ bool QgsLegendLayerFile::accept(LEGEND_ITEM_TYPE type)
   return false;
 }
 
+void QgsLegendLayerFile::handleDoubleClickEvent()
+{
+#ifdef QGISDEBUG
+    qWarning("In QgsLegendLayerFile::handleDoubleClickEvent");
+#endif
+    if (mLayer->type() == QgsMapLayer::RASTER)
+    {
+        QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties(mLayer);
+        // The signals to change the raster layer properties will only be emitted
+        // when the user clicks ok or apply
+        if (rlp->exec())
+        {
+            //this code will be called it the user selects ok
+            //mMapCanvas->setDirty(true);
+            //mMapCanvas->refresh();
+            //mMapCanvas->render();
+            // mMapLegend->update(); XXX WHY CALL UPDATE HERE?
+            delete rlp;
+            qApp->processEvents();
+        }
+    }
+    else //vector
+    {
+        mLayer->showLayerProperties();
+    }
+}
 
+void QgsLegendLayerFile::handleRightClickEvent(const QPoint& position)
+{
+#ifdef QGISDEBUG
+    qWarning("In QgsLegendLayerFile::handleRightClickEvent");
+#endif
+    //if (!mMapCanvas->isDrawing()&&lvi) //todo: test if QgsMapCanvas::isDrawing
+    QPopupMenu *mPopupMenu = mLayer->contextMenu();
+    if (mPopupMenu)
+    {
+	mPopupMenu->exec(position);
+    }
+}
 
+QPixmap QgsLegendLayerFile::getOriginalPixmap() const
+{
+    QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/file.png"));
+    return myPixmap;
+}
+
+void QgsLegendLayerFile::setLegendPixmap(const QPixmap& pix)
+{
+    setPixmap(0, pix);
+}
+
+void QgsLegendLayerFile::toggleCheckBox(bool state)
+{
+    mVisibilityCheckBox->setChecked(state);
+}
 

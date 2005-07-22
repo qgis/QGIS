@@ -21,9 +21,11 @@
 #define QGSLEGEND_H
 
 #include "qgisapp.h"
+#include <map>
 #include <qlistview.h>
 #include <qpopupmenu.h>
 
+class QCheckBox;
 class QgsMapLayer;
 class QgsMapCanvas;
 
@@ -98,11 +100,18 @@ class QgsLegend : public QListView
   /*!Returns the current layer or 0 if the current item is not a QgsLegendLayerFile*/
   QgsMapLayer* currentLayer();
 
+  /**Adds a checkbox and its item to mCheckBoxes*/
+  void registerCheckBox(QListViewItem* item, QCheckBox* cbox);
+
+  /**Removes a checkbox from mCheckBoxes. Does not delete the objects*/
+  void unregisterCheckBox(QListViewItem* item);
+
 public slots:
 
     /*!Adds a new layer group with the maplayer to the canvas*/
     void addLayer( QgsMapLayer * layer );
-    void setMapCanvas(QgsMapCanvas * canvas){}
+
+    void setMapCanvas(QgsMapCanvas * canvas){mMapCanvas = canvas;}
 
 
  void updateLegendItem( QListViewItem * li );
@@ -163,6 +172,15 @@ protected:
    */  
   void contentsMouseReleaseEvent(QMouseEvent * e);
 
+  private slots:
+
+  /**Calls 'handleDoubleClickEvent' on the item*/
+  void distributeDoubleClickEvent(QListViewItem* item);
+  /**Calls 'handleRightClickEvent' on the item*/
+  void distributeRightClickEvent(QListViewItem* item, const QPoint& position);
+  /**Moves all the checkboxes stored in mCheckBoxes to the right places. Needs to
+   be called every time the geometry of the treeview is changed*/
+  void placeCheckBoxes();
 
 private:
 
@@ -212,6 +230,19 @@ private:
    * A QPopupMenu that will be displayed when the right mouse button is clicked.
    */
   QPopupMenu * mPopupMenu;
+
+  /**Pointer to the main canvas. Used for requiring repaints in case of legend changes*/
+  QgsMapCanvas* mMapCanvas;
+
+  /**QgsLegendItem is derived from QListViewItem, not QCheckBoxItem. So there must be a mechanism to allow
+   QgsLegendLayerFiles to have checkboxes without deriving from QCheckBoxItem. The solution is that QgsLegend
+  manages the positioning of the checkboxes if the geometry of the treeview is changed. New checkboxes can be
+  registered together with their QListViewItem using registerCheckBox() and unregistered using unregisterCheckBox().
+  QgsLegend then takes care of the positioning of the checkboxes*/
+  std::map<QListViewItem*, QCheckBox*> mCheckBoxes;
+
+  /**Moves a checkbox to a position next to its listview*/
+  void placeCheckBox(QListViewItem* litem, QCheckBox* cbox);
 
 signals:
   void zOrderChanged(QgsLegend * lv);

@@ -27,10 +27,12 @@ libqgis_legend_la_SOURCES =	qgslegendgroup.cpp \
 				qgslegenditem.cpp \
 				qgslegendlayer.cpp \
 				qgslegendlayerfile.cpp \
+				qgslegendlayerfilegroup.cpp \
 				qgslegendpropertygroup.cpp \
 				qgslegendpropertyitem.cpp \
 				qgslegendsymbologygroup.cpp \
-				qgslegendsymbologyitem.cpp
+				qgslegendsymbologyitem.cpp \
+				qgslegendvectorsymbologyitem.cpp
 
 libqgis_legend_la_LIBFLAGS = $(QT_LDADD)
 

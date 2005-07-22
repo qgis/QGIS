@@ -28,6 +28,7 @@
 #include <qpicture.h>
 #include <qdom.h>
 
+class QListViewItem;
 class QString;
 
 /**Encapsulates settings for drawing (QPen, QBrush, Point symbol) and classification
@@ -84,11 +85,15 @@ class QgsSymbol{
     virtual int pointSize() const;
     //! Destructor
     virtual ~QgsSymbol();
-    //! Get a little icon / image representation of this symbol
-    virtual QPixmap getSymbolAsPixmap(int xDim, int yDim);
 
     //! Get a little icon / image representation of point symbol with current settings
     virtual QPixmap getPointSymbolAsPixmap(int oversampling = 1);
+
+    //! Get a little icon for the legend
+    virtual QPixmap getLineSymbolAsPixmap();
+
+    //! Get a little icon for the legend
+    virtual QPixmap getPolygonSymbolAsPixmap();
     
     /** Get QPicture representation of point symbol with current settings
       * \param oversampling oversampling factor
@@ -104,6 +109,9 @@ class QgsSymbol{
     /**Reads the contents of the symbol from a configuration file
      @ return true in case of success*/
     virtual bool readXML( QDomNode & symbol );
+    /**Creates an item for the legend with a pixmap and text as a subitem for 'parent'*/
+    void createLegendItem(QListViewItem* parent);
+
  protected:
     /**Lower value for classification*/
     QString mLowerValue;

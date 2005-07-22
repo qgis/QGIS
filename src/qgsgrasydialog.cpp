@@ -166,65 +166,6 @@ void QgsGraSyDialog::apply()
         {
 	    return;
         }
-
-	//font tor the legend text
-	//QFont f("arial", 10, QFont::Normal);
-	//QFontMetrics fm(f);
-	
-	//spaces
-	//int topspace = 5;
-	//int bottomspace = 5;
-	//int leftspace = 10;       //space between left side of the pixmap and the text/graphics
-	//int rightspace = 5;       //space between text/graphics and right side of the pixmap
-	//int wordspace = 5;        //space between graphics/word
-	//int symbolheight = 15;    //height of an area where a symbol is painted
-	//int symbolwidth = 15;     //width of an area where a symbol is painted
-	//int lowerupperwidth; //widht of the broadest lower-upper pair
-	//int rowspace = 5;         //spaces between rows of symbols
-	//int rowheight = (fm.height() > symbolheight) ? fm.height() : symbolheight;  //height of a row in the symbology part
-
-	//find out the width of the widest label and of the broadest lower-upper pair
-	//int labelwidth=0;
-	//lowerupperwidth=0;
-
-	//for(std::map<QString,QgsRangeRenderItem*>::iterator it=mEntries.begin();it!=mEntries.end();++it)
-	//{
-	//  int currentlabelwidth=fm.width(it->second->label());
-	//  if(currentlabelwidth>labelwidth)
-	//  {
-	//	labelwidth=currentlabelwidth;
-	//  }
-	//  int currentluwidth=fm.width(it->second->value())+fm.width(" - ")+fm.width(it->second->upper_value());
-	//  if(currentluwidth>lowerupperwidth)
-	//  {
-		//widestlu = string2;
-	//	lowerupperwidth=currentluwidth;
-	//  }
-	//}
-	
-	//create the pixmap for the render item
-	//QPixmap *pix = mVectorLayer->legendPixmap();
-	//QString name;
-	//if (mVectorLayer->propertiesDialog())
-        //{
-	//  name = mVectorLayer->propertiesDialog()->displayName();
-	//} 
-	//else
-        //{
-	//    name = "";
-        //}
-	//query the name and the maximum upper value to estimate the necessary width of the pixmap
-	//int pixwidth = leftspace + rightspace + symbolwidth + 2 * wordspace + labelwidth + lowerupperwidth; //width of the pixmap with symbol and values
-	//consider 240 pixel for labels
-	//int namewidth = leftspace + fm.width(name) + rightspace;
-	//int width = (pixwidth > namewidth) ? pixwidth : namewidth;
-	//pix->resize(width, topspace + 2 * fm.height() + bottomspace + (rowheight + rowspace) * numberofclassesspinbox->value());
-	//pix->fill();
-	//QPainter p(pix);
-	//p.setFont(f);
-	//draw the layer name and the name of the classification field into the pixmap
-	//p.drawText(leftspace, topspace + fm.height(), name);
-	//p.drawText(leftspace, topspace + 2 * fm.height(), classificationComboBox->currentText());
 	
 	QgsGraduatedSymRenderer *renderer = dynamic_cast < QgsGraduatedSymRenderer * >(mVectorLayer->renderer());
 	
@@ -235,10 +176,6 @@ void QgsGraSyDialog::apply()
         }
 	
 	renderer->removeSymbols();
-	
-	//int offset = topspace + 2 * fm.height();
-	//int rowincrement = rowheight + rowspace;
-	//int i=0;
 
 	for (int item=0;item<mClassBreakBox->count();++item)
         {
@@ -294,29 +231,6 @@ void QgsGraSyDialog::apply()
 	    if (lbcontainsletter == false && ubcontainsletter == false && lower_bound.length() > 0 && upper_bound.length() > 0) //only add the item if the value bounds do not contain letters and are not null strings
             {
 		renderer->addSymbol(sy);
-		//add the symbol to the picture
-
-		//QString legendstring = lower_bound + " - " + upper_bound;
-		//p.setPen(sy->pen());
-		//p.setBrush(sy->brush());
-		//if (mVectorLayer->vectorType() == QGis::Polygon)
-                //{
-		//p.drawRect(leftspace, offset + rowincrement * i + (rowheight - symbolheight), symbolwidth, symbolheight); //implement different painting for lines and points here
-		//} 
-		//else if (mVectorLayer->vectorType() == QGis::Line)
-                //{
-		//    p.drawLine(leftspace, offset + rowincrement * i + (rowheight - symbolheight), leftspace + symbolwidth,
-                //             offset + rowincrement * i + rowheight);
-		//} 
-		//else if (mVectorLayer->vectorType() == QGis::Point)
-                //{
-		    //p.drawRect(leftspace + symbolwidth / 2, offset + (int) (rowincrement * (i + 0.5)), 5, 5);
-		//  QPixmap pm = sy->getPointSymbolAsPixmap();
-		//  p.drawPixmap ( (int) (leftspace+symbolwidth/2-pm.width()/2), (int) (offset+rowincrement*(i+0.5)-pm.height()/2), pm );
-                //}
-		//p.setPen(Qt::black);
-		//p.drawText(leftspace + symbolwidth + wordspace, offset + rowincrement * i + rowheight, legendstring);
-		//p.drawText(pixwidth - labelwidth - rightspace, offset + rowincrement * i + rowheight, label);
 	    }
 	    else
 	    {
@@ -330,13 +244,7 @@ void QgsGraSyDialog::apply()
 	{
 	   renderer->setClassificationField(iter->second); 
 	}
-	
-	//mVectorLayer->updateItemPixmap();
-
-	//if (mVectorLayer->propertiesDialog())
-        //{
-	//    mVectorLayer->propertiesDialog()->setRendererDirty(false);
-        //}
+	mVectorLayer->refreshLegend();
 }
 
 void QgsGraSyDialog::adjustClassification()

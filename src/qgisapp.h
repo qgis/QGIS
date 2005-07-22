@@ -299,12 +299,6 @@ private slots:
     void showCapturePointCoordinate(QgsPoint &);
     //! Slot to show current map scale;
     void showScale(QString theScale);
-    //! Show layer properties for the selected layer
-    void layerProperties(QListViewItem *);
-    //! Show layer properties for selected layer (called by right-click menu)
-    void layerProperties();
-    //! Show the right-click menu for the legend
-    void rightClickLegendMenu(QListViewItem *, const QPoint &, int);
     //! Disable/enable toolbar buttons as appropriate for selected layer
     void currentLayerChanged(QListViewItem *);
     //! Remove a layer from the map and legend
