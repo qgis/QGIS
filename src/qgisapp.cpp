@@ -3153,11 +3153,7 @@ void QgisApp::pasteTransformations()
 
   mMapCanvas->freeze();
 
-  if (pt->exec())
-  {
-    // TODO: Save the new trnasformations state
-    pt->saveState();
-  }
+  pt->exec();
 }
 
 

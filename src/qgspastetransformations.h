@@ -23,6 +23,11 @@
 #else
 #include "qgspastetransformationsbase.uic.h"
 #endif
+
+#include <qstring.h>
+
+#include "qgsmaplayer.h"
+
 /*! 
  * \brief Dialog to allow the user to set up how source fields are transformed to destination fields in copy/paste operations
  */
@@ -36,8 +41,51 @@ class QgsPasteTransformations : public QgsPasteTransformationsBase
     //! Destructor
     ~QgsPasteTransformations();
 
-    //! Saves the state of the paste transformations
-    void saveState();
+    /**
+       Returns the destination field in destinationLayerName that
+       should be chosen for pastes from sourceLayerName & sourceFieldName.
+
+       Returns the sourceFieldName if there is no saved preference.
+
+       @note  This non-GUI function is a bonus for this class.  OO purists may insist that this function should be in its own class.  If so, let them separate it.
+     */
+    QString pasteTo(const QString& sourceLayerName,
+                    const QString& destinationLayerName,
+                    const QString& sourceFieldName);
+
+
+  public slots:
+    virtual void accept();
+
+    virtual void addNewTransfer();
+
+    virtual void sourceChanged(const QString& layerName);
+
+    virtual void destinationChanged(const QString& layerName);
+
+
+  private:
+
+    void addTransfer(const QString& sourceLayerName      = QString::null,
+                     const QString& destinationLayerName = QString::null);
+
+    //! Common subfunction to sourceChanged() and destinationChanged()
+    void layerChanged(const QString& layerName, std::vector<QString>* fields);
+
+    void QgsPasteTransformations::restoreTransfers(const QString& sourceSelectedFieldName,
+                                                   const QString& destinationSelectedFieldName);
+
+
+    std::map<QString, QgsMapLayer*> mMapNameLookup;
+
+    std::vector<QString> mSourceFields;
+
+    std::vector<QString> mDestinationFields;
+
+    std::vector<QComboBox*> mSourceTransfers;
+
+    std::vector<QComboBox*> mDestinationTransfers;
+
 };
 
 #endif //  QGSPASTETRANSFORMATIONS_H
