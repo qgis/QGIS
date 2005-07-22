@@ -106,6 +106,11 @@ class QgsFeature {
        @param newval new value*/
     void changeAttributeValue(const QString& name, const QString& newval);
 
+    /**Changes an existing attribute name.  The value is unchanged.
+       @param name attribute name
+       @param newname new name*/
+    void changeAttributeName(const QString& name, const QString& newname);
+
     /**
      * Get the fields for this feature
      * @return A std::map containing field position (index) and field name

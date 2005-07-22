@@ -48,7 +48,6 @@ void QgsClipboard::replaceWithCopyOf( std::vector<QgsFeature> features )
 #endif
 
   // Replace the system clipboard.
-  // TODO: Add attributes as well.
   
   QStringList textLines;
   
@@ -56,7 +55,30 @@ void QgsClipboard::replaceWithCopyOf( std::vector<QgsFeature> features )
                                          it != features.end();
                                        ++it)
   {
-    textLines += it->geometry()->wkt();
+    QStringList textFields;
+
+    // TODO: Set up Paste Transformations to specify the order in which fields are added.
+
+    textFields += it->geometry()->wkt();
+
+    std::vector<QgsFeatureAttribute> attributes = it->attributeMap();
+
+#ifdef QGISDEBUG
+       std::cout << "QgsClipboard::replaceWithCopyOf: about to traverse fields." << std::endl;
+#endif
+    for (std::vector<QgsFeatureAttribute>::iterator it2  = attributes.begin();
+                                                    it2 != attributes.end();
+                                                  ++it2)
+    {
+#ifdef QGISDEBUG
+       std::cout << "QgsClipboard::replaceWithCopyOf: inspecting field '"
+                 << (it2->fieldName())
+                 << "'." << std::endl;
+#endif
+      textFields += it2->fieldValue();
+    }
+
+    textLines += textFields.join(",");
   }
   
   QString textCopy = textLines.join("\n");

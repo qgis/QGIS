@@ -1814,7 +1814,30 @@ bool QgsVectorLayer::addFeature(QgsFeature* f, bool alsoUpdateExtent)
 #ifdef QGISDEBUG
     qWarning("assigned feature id "+QString::number(addedIdLowWaterMark));
 #endif
-    
+
+    // Change the fields on the feature to suit the destination
+    // in the paste transformation transfer.
+    // TODO: Could be done more efficiently for large pastes
+    std::map<int, QString> fields = f->fields();
+
+#ifdef QGISDEBUG
+       std::cout << "QgsVectorLayer::addFeature: about to traverse fields." << std::endl;
+#endif
+    for (std::map<int, QString>::iterator it  = fields.begin();
+                                          it != fields.end();
+                                        ++it)
+    {
+#ifdef QGISDEBUG
+       std::cout << "QgsVectorLayer::addFeature: inspecting field '"
+                 << (it->second)
+                 << "'." << std::endl;
+#endif
+
+    }
+
+    // Force a feature ID (to keep other functions in QGIS happy,
+    // providers will use their own new feature ID when we commit the new feature)
+    // and add to the known added features.
     f->setFeatureId(addedIdLowWaterMark);
     mAddedFeatures.push_back(f);
     mModified=true;
@@ -2406,7 +2429,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 #endif
             // adjust the display name for postgres layers
             layerName = layerName.mid(layerName.find(".") + 1);
-            layerName = layerName.left(layerName.find("("));
+            layerName = layerName.left(layerName.find("(") - 1);   // Take one away, to avoid a trailing space
 #ifdef QGISDEBUG
             std::cout << "Beautified name is " << layerName << std::endl;
 #endif
