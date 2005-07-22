@@ -281,7 +281,7 @@ public:
     /**Refresh the symbology part of the legend. Specific implementations have to be provided by subclasses*/
     virtual void refreshLegend() = 0;
 
-    virtual std::vector < QgsField > const &fields() const {}
+    virtual std::vector < QgsField > const &fields() const;
 
 public  slots:
 
