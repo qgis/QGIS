@@ -465,6 +465,13 @@ QPopupMenu *QgsMapLayer::contextMenu()
     return 0;
 }
 
+std::vector<QgsField> const & QgsMapLayer::fields() const
+{
+    static std::vector<QgsField> bogus; // bogus empty container
+
+    return bogus;
+} // QgsMapLayer::fields()
+
 void QgsMapLayer::connectNotify( const char * signal )
 {
 #ifdef QGISDEBUG
