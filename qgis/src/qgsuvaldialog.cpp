@@ -119,41 +119,6 @@ QgsUValDialog::~QgsUValDialog()
 
 void QgsUValDialog::apply()
 {
-    //font tor the legend text
-    //QFont f("arial", 10, QFont::Normal);
-    //QFontMetrics fm(f);
-
-    //int symbolheight = 15;    //height of an area where a symbol is painted
-    //int symbolwidth = 15;     //width of an area where a symbol is painted
-    //int rowheight = (fm.height() > symbolheight) ? fm.height() : symbolheight;  //height of a row in the symbology part
-    //int topspace = 5;
-    //int bottomspace = 5;
-    //int leftspace = 5;
-    //int rightspace = 5;
-    //int rowspace = 5;
-    //int wordspace = 5;        //space between graphics/word
-    //int widestvalue = 0;
-    //int valuewidth;
-
-    //find out the width of the widest label and of the broadest value string
-    //int maxlabelwidth=0;
-    //int maxvaluewidth=0;
-
-    //for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
-    //{
-    //int currentlabelwidth=fm.width(it->second->label());
-    //if(currentlabelwidth>maxlabelwidth)
-    //{
-    //    maxlabelwidth=currentlabelwidth;
-    //}
-    //int currentvwidth=fm.width(it->second->value());
-    //if(currentvwidth>maxvaluewidth)
-    //{
-	    //widestlu = string2;
-    //    maxvaluewidth=currentvwidth;
-    //}
-    //}
-
     QgsUniqueValRenderer *renderer = dynamic_cast < QgsUniqueValRenderer * >(mVectorLayer->renderer());
 
     if(!renderer)
@@ -176,91 +141,11 @@ void QgsUValDialog::apply()
 	newsymbol->setNamedPointSymbol(symbol->pointSymbolName());
 	newsymbol->setPointSize(symbol->pointSize());
 	renderer->insertValue(it->first,newsymbol);
-	//find out the width of the string
-	//valuewidth=fm.width(it->first);
-	//if(valuewidth>widestvalue)
-	//{
-	//  widestvalue=valuewidth;
-	//}
     }
-	renderer->setClassificationField(mClassificationComboBox->currentItem());
 
-    //render the legend item
-    //QPixmap *pix = mVectorLayer->legendPixmap();
-    //QString name;
-    //QString field=mClassificationComboBox->currentText();
-    //int fieldwidth=fm.width(field);
-    //if(fieldwidth>widestvalue)
-    //{
-	//widestvalue=fieldwidth;
-	//}
-	//if (mVectorLayer->propertiesDialog())
-	//{
-	//name = mVectorLayer->propertiesDialog()->displayName();
-	//} 
-	//else
-	//{
-	//name = "";
-	//}
-	//int namewidth=fm.width(name);
-	//int pixwidth;
-	//if(namewidth>widestvalue)
-	//{
-	//if(namewidth>(symbolwidth+wordspace+widestvalue+maxlabelwidth))
-	//{
-	//pixwidth = leftspace+wordspace+namewidth+rightspace;
-	//}
-	//else
-	//{
-	//  pixwidth = leftspace+2*wordspace+symbolwidth+maxlabelwidth+widestvalue+rightspace; 
-	//}
-	//}
-	//else
-	//{
-	//pixwidth = leftspace+2*wordspace+symbolwidth+widestvalue+maxlabelwidth+rightspace;
-	//}
-   
-	//int pixheight = topspace+2*fm.height()+rowspace+(rowheight+rowspace)*mValues.size()+bottomspace;
+    renderer->setClassificationField(mClassificationComboBox->currentItem());
     
-	//pix->resize(pixwidth,pixheight);
-	//pix->fill();
-	//QPainter p(pix);
-	//p.setFont(f);
-    
-    //draw the layer name and the name of the classification field into the pixmap
-    //p.drawText(leftspace, topspace + fm.height(), name);
-    //p.drawText(leftspace, topspace + 2 * fm.height(), field);
-    //int intermheight=topspace+2*fm.height()+rowspace;
-    //int row=0;
-
-    //for(std::map<QString,QgsRenderItem*>::iterator it=mValues.begin();it!=mValues.end();++it)
-    //{
-	//QgsSymbol* sym=it->second->getSymbol();
-	//p.setPen(sym->pen());
-	//p.setBrush(sym->brush());
-
-	//if (mVectorLayer->vectorType() == QGis::Polygon)
-	//{
-	//  p.drawRect(leftspace,intermheight+row*(rowheight+rowspace)+rowheight-symbolheight,symbolwidth,symbolheight); 
-	//}
-	//else if (mVectorLayer->vectorType() == QGis::Line)
-	//{
-	//p.drawLine(leftspace,intermheight+row*(rowheight+rowspace)+rowheight-symbolheight,leftspace+symbolwidth,intermheight+row*(rowheight+rowspace)+rowheight);
-	//}
-	//else if (mVectorLayer->vectorType() == QGis::Point)
-	//{
-	   // p.drawRect(leftspace + symbolwidth / 2, intermheight + (int) ((rowheight+rowspace) * (row + 0.5)),5,5);
-	//QPixmap pm = sym->getPointSymbolAsPixmap();
-	//p.drawPixmap ( (int) (leftspace+symbolwidth/2-pm.width()/2), (int) (intermheight+(rowheight+rowspace)*(row+0.5)-pm.height()/2), pm );
-	//}
-	//p.setPen(Qt::black);
-	//p.drawText(leftspace+symbolwidth+wordspace, intermheight+row*(rowheight+rowspace)+rowheight, it->first);
-	//p.drawText(leftspace+symbolwidth+2*wordspace+widestvalue, intermheight+row*(rowheight+rowspace)+rowheight, it->second->label());
-	//++row;
-	//}
-    
-	//mVectorLayer->updateItemPixmap();
-	//mVectorLayer->triggerRepaint();
+    mVectorLayer->refreshLegend();
 }
 
 void QgsUValDialog::changeClassificationAttribute(int nr)

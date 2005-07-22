@@ -139,6 +139,9 @@ const QString displayField() const { return fieldIndex; }
    */
   bool addFeatures(std::vector<QgsFeature*>* features, bool makeSelected = TRUE);
 
+  /**Fill the pixmaps and labels of the renderers into the treeview legend*/
+  void refreshLegend();
+
   
 signals:
   /**This signal is emitted when the layer leaves editing mode.

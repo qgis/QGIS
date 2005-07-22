@@ -28,11 +28,10 @@
 class QgsLegendSymbologyItem : public QgsLegendItem
 {
 public:
-    QgsLegendSymbologyItem(QListViewItem * theItem,QString theString);
+    QgsLegendSymbologyItem(QListViewItem* theItem, QString theString);
     ~QgsLegendSymbologyItem();
     bool isLeafNode() {return true;}
     bool accept(LEGEND_ITEM_TYPE type);
-
 };
 
 #endif

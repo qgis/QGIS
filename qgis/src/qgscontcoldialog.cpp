@@ -174,63 +174,8 @@ void QgsContColDialog::apply()
     renderer->setMinimumSymbol(minsymbol);
     renderer->setMaximumSymbol(maxsymbol);
     renderer->setClassificationField(classfield);
-    
-    //add a pixmap to the legend item
-    
-    //font tor the legend text
-    //QFont f("arial", 10, QFont::Normal);
-    //QFontMetrics fm(f);
-    
-    //spaces in pixel
-    //int topspace = 5;             //space between top of pixmap and first row
-    //int leftspace = 10;           //space between left side and text/graphics
-    //int rightspace = 5;           //space betwee text/graphics and right side
-    //int bottomspace = 5;          //space between last row and bottom of the pixmap
-    //int gradientwidth = 40;       //widht of the gradient
-    //int gradientheight = 100;     //height of the gradient
-    //int wordspace = 10;           //space between graphics/word
-    
-    //add a pixmap to the QgsLegendItem
-    //QPixmap *pix = mVectorLayer->legendPixmap();
-    //use the name and the maximum value to estimate the necessary width of the pixmap
-    //QString name;
-    //if (mVectorLayer->propertiesDialog())
-    //{
-//	name = mVectorLayer->propertiesDialog()->displayName();
-    //} 
-    //else
-    //{
-    //name = "";
-    //}
-    //int namewidth = fm.width(name);
-    //int numberlength = gradientwidth + wordspace + fm.width(QString::number(maximum, 'f', 2));
-    //int pixwidth = (numberlength > namewidth) ? numberlength : namewidth;
-    //pix->resize(leftspace + pixwidth + rightspace, topspace + 2 * fm.height() + gradientheight + bottomspace);
-    //pix->fill();
-    //QPainter p(pix);
-    
-    //p.setPen(QPen(QColor(0, 0, 0), 1));
-    //p.setFont(f);
-    //draw the layer name and the name of the classification field into the pixmap
-    //p.drawText(leftspace, topspace + fm.height(), name);
-    //p.drawText(leftspace, topspace + fm.height() * 2, classificationComboBox->currentText());
-    
-    //int rangeoffset = topspace + fm.height() * 2;
-    
-    //draw the color range line by line
-    //for (int i = 0; i < gradientheight; i++)
-    //{
-    //p.setPen(QColor(lblMinValue->paletteBackgroundColor().red() + (lblMaxValue->paletteBackgroundColor().red() - lblMinValue->paletteBackgroundColor().red()) / gradientheight * i, lblMinValue->paletteBackgroundColor().green() + (lblMaxValue->paletteBackgroundColor().green() - lblMinValue->paletteBackgroundColor().green()) / gradientheight * i, lblMinValue->paletteBackgroundColor().blue() + (lblMaxValue->paletteBackgroundColor().blue() - lblMinValue->paletteBackgroundColor().blue()) / gradientheight * i)); //use the appropriate color
-    //p.drawLine(leftspace, rangeoffset + i, leftspace + gradientwidth, rangeoffset + i);
-    //}
-    
-    //draw the minimum and maximum values beside the color range
-    //p.setPen(QPen(QColor(0, 0, 0)));
-    //p.setFont(f);
-    //p.drawText(leftspace + gradientwidth + wordspace, rangeoffset + fm.height(), QString::number(minimum, 'f', 2));
-    //p.drawText(leftspace + gradientwidth + wordspace, rangeoffset + gradientheight, QString::number(maximum, 'f', 2));
-    
-    //mVectorLayer->updateItemPixmap();
+
+    mVectorLayer->refreshLegend();
 }
 
 void QgsContColDialog::selectMinimumColor()

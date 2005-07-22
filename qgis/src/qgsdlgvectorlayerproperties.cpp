@@ -405,19 +405,6 @@ void QgsDlgVectorLayerProperties::pbnApply_clicked()
   {
       udialog->apply();
   }
-
-  /*else if(smdialog)
-  {
-      smdialog->apply();
-  }
-  else if(gmdialog)
-  {
-      gmdialog->apply();
-  }
-  else if(umdialog)
-  {
-      umdialog->apply();
-      }*/
   
   layer->triggerRepaint();
 

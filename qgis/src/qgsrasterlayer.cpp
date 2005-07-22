@@ -59,6 +59,7 @@ When compiling you can make sure DEBUG is defined by including -DDEBUG in the gc
 wish to see edbug messages printed to stdout.
  
 */
+#include "qgslegendsymbologyitem.h"
 #include "qgsrasterlayer.h"
 
 #include <cstdio>
@@ -3085,9 +3086,9 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
 
 
   QPixmap myLegendQPixmap;      //will be initialised once we know what drawing style is active
-  QPainter myQPainter;
+  QPainter myQPainter; 
+ 
 
-  
   if (providerKey)
   {
 #ifdef QGISDEBUG
@@ -3146,7 +3147,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
     }
   }                           //end of gray check
   else if (drawingStyle == MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR ||
-           drawingStyle == PALETTED_SINGLE_BAND_PSEUDO_COLOR || drawingStyle == SINGLE_BAND_PSEUDO_COLOR)
+	   drawingStyle == PALETTED_SINGLE_BAND_PSEUDO_COLOR || drawingStyle == SINGLE_BAND_PSEUDO_COLOR)
   {
 
     //set up the three class breaks for pseudocolour mapping
@@ -4907,6 +4908,20 @@ void QgsRasterLayer::showStatusMessage(QString theMessage)
     // Pass-through
     // TODO: See if we can connect signal-to-signal.  This is a kludge according to the Qt doc.
     emit setStatus(theMessage);
+}
+
+void QgsRasterLayer::refreshLegend()
+{
+    if(mLegendSymbologyGroupParent)
+    {
+	//first remove the existing child item (currently there is always one for rasterlayers)
+	QListViewItem* tmp;
+	QListViewItem* myChild = mLegendSymbologyGroupParent->firstChild();
+	delete myChild;
+
+	QgsLegendSymbologyItem* item = new QgsLegendSymbologyItem(mLegendSymbologyGroupParent, "");
+	item->setPixmap(0, getLegendQPixmap(true));
+    }
 }
 
 

@@ -38,6 +38,7 @@
 class QgsFeature;
 class QPopupMenu;
 class QgsLegendItem;
+class QgsLegendLayerFile;
 class QDomNode;
 class QDomDocument;
 class QEvent;
@@ -180,47 +181,6 @@ public:
       // NOOP
     }
 
-    /**
-    * Get the first feature resulting from a select operation
-    * @return QgsFeature
-    */
-    virtual QgsFeature *getFirstFeature(bool fetchAttributes = false) const;
-
-    /**
-    * Get the next feature resulting from a select operation
-    * @return QgsFeature
-    */
-    virtual QgsFeature *getNextFeature(bool fetchAttributes = false) const;
-
-    /**
-     * Get the next feature using new method
-     * TODO - make this pure virtual once it works and change existing providers
-     *        to use this method of fetching features
-     */
-    virtual bool getNextFeature(QgsFeature & feature, bool fetchAttributes = false) const;
-
-    /**
-     * Number of features in the layer
-     * @return long containing number of features
-     */
-    virtual long featureCount() const;
-
-    /**
-      Number of attribute fields for a feature in the layer
-      @note
-
-      Redundant since fields().size() gives same information.
-
-     */
-    virtual int fieldCount() const;
-
-    /**
-      Return a list of field names for this layer
-     @return vector of field names
-    */
-    virtual std::vector < QgsField > const &fields() const;
-
-
     //! Layers enum defining the types of layers that can be added to a map
     enum LAYERS
     {
@@ -257,6 +217,8 @@ public:
 
     /**Sets the pointer to the legend item*/
     void setLegendItem(QgsLegendItem * li);
+
+    void setLegendLayerFile(QgsLegendLayerFile* llf) {mLegendLayerFile = llf;}
 
     /**True if the layer can be edited*/
     virtual bool isEditable() const =0;
@@ -313,6 +275,13 @@ public:
     // source SRS coordinates, and if it was split, returns true, and
     // also sets the contents of the r2 parameter
     bool projectExtent(QgsRect& extent, QgsRect& r2);
+
+    void setLegendSymbologyGroupParent(QListViewItem* item) {mLegendSymbologyGroupParent = item;}
+
+    /**Refresh the symbology part of the legend. Specific implementations have to be provided by subclasses*/
+    virtual void refreshLegend() = 0;
+
+    virtual std::vector < QgsField > const &fields() const {}
 
 public  slots:
 
@@ -462,7 +431,15 @@ protected:
     bool mDrawingCancelled;
 
     //! A QgsCoordinateTransform is used for on the fly reprojection of map layers
-    QgsCoordinateTransform * mCoordinateTransform;    
+    QgsCoordinateTransform * mCoordinateTransform; 
+
+    /**Pointer to the symbology group item of the legend. This pointer is used if refreshLegend() 
+       is called by a subclass*/
+    QListViewItem* mLegendSymbologyGroupParent;
+
+    /**Pointer to the legend layer file of the legend. It is used to modify the pixmap with overview
+     glasses, editing or pyramid symbols*/
+    QgsLegendLayerFile* mLegendLayerFile;
 
 private:                       // Private attributes
 

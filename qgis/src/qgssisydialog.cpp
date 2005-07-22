@@ -323,6 +323,9 @@ void QgsSiSyDialog::apply( QgsSymbol *sy )
     {
         sy->setFillStyle(Qt::NoBrush);
     }
+
+    //apply the label
+    sy->setLabel(mLabelEdit->text());
 }
 
 void QgsSiSyDialog::apply()
@@ -339,59 +342,7 @@ void QgsSiSyDialog::apply()
     }
 
     renderer->addSymbol(sy);
-
-    //add a pixmap to the legend item
-
-    //font tor the legend text
-    /*QFont f("arial", 10, QFont::Normal);
-    QFontMetrics fm(f);
-
-    QPixmap *pix = mVectorLayer->legendPixmap();
-
-    QString name;
-    if (mVectorLayer->propertiesDialog())
-    {
-        name = mVectorLayer->propertiesDialog()->displayName();
-    }
-    else
-    {
-        name = "";
-    }
-
-    int width = 40 + fm.width(name);
-    int height = (fm.height() + 10 > 35) ? fm.height() + 10 : 35;
-    pix->resize(width, height);
-    pix->fill();
-
-    QPainter p(pix);
-    p.setPen(sy->pen());
-    p.setBrush(sy->brush());
-    //paint differently in case of point, lines, polygones
-    switch (mVectorLayer->vectorType())
-    {
-    case QGis::Polygon:
-        p.drawRect(10, pix->height() - 25, 20, 15);
-        break;
-    case QGis::Line:
-        p.drawLine(10, pix->height() - 25, 25, pix->height() - 10);
-        break;
-    case QGis::Point:
-        //p.drawRect(20, pix->height() - 17, 5, 5);
-	QPixmap pm = sy->getPointSymbolAsPixmap();
-	p.drawPixmap ( (int) (17-pm.width()/2), (int) ((pix->height()-pm.height())/2), pm );
-    }
-
-    p.setPen(Qt::black);
-    p.setFont(f);
-    p.drawText(35, pix->height() - 10, name);
-
-    mVectorLayer->updateItemPixmap();
-
-    if (mVectorLayer->propertiesDialog())
-    {
-        mVectorLayer->propertiesDialog()->setRendererDirty(false);
-	}*/
-    //repaint the map canvas
+    mVectorLayer->refreshLegend();
 }
 
 void QgsSiSyDialog::set ( QgsSymbol *sy ) 

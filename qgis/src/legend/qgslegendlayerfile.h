@@ -22,6 +22,7 @@
 
 #include <qgslegenditem.h>
 
+class QCheckBox;
 class QgsMapLayer;
 
 /**
@@ -35,9 +36,20 @@ public:
     bool isLeafNode() {return true;}
     bool accept(LEGEND_ITEM_TYPE type);
     QgsMapLayer* layer(){return mLayer;}
+    /**Opens the layer properties dialog*/
+    void handleDoubleClickEvent();
+    /**Shows the right click menu of mLayer*/
+    void handleRightClickEvent(const QPoint& position);
+    /**Returns the pixmap containing the file symbol.
+     This method is used by QgsMapLayer to paint additional
+    information (overview, editable, pyramides) to the pixmap*/
+    QPixmap getOriginalPixmap() const;
+    void setLegendPixmap(const QPixmap& pix);
+    /**Sets mVisibilityCheckBox to on/off*/
+    void toggleCheckBox(bool state);
  protected:
     QgsMapLayer* mLayer;
-
+    QCheckBox* mVisibilityCheckBox;
 };
 
 #endif

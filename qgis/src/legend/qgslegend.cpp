@@ -16,9 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include <map>
 
-
+#include <qcheckbox.h>
 #include <qcursor.h>
 #include <qstring.h>
 #include <qpainter.h>
@@ -36,6 +35,7 @@
 #include "qgslegendpropertygroup.h"
 #include "qgslegendsymbologygroup.h"
 #include "qgslegendlayerfile.h"
+#include "qgslegendlayerfilegroup.h"
 #include "qgsmaplayer.h"
 #include <iostream>
 
@@ -49,10 +49,19 @@ const int AUTOSCROLL_MARGIN = 16;
    set mItemBeingMoved pointer to 0 to prevent SuSE 9.0 crash
 */
 QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
-    : QListView(parent, name), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0)
+    : QListView(parent, name), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0)
 {
   connect( this, SIGNAL(selectionChanged(QListViewItem *)),
            this, SLOT(updateLegendItem(QListViewItem *)) );
+
+  connect( this, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
+	   this, SLOT(distributeRightClickEvent(QListViewItem*, const QPoint&)));
+
+  connect( this, SIGNAL(doubleClicked(QListViewItem *, const QPoint &, int)),
+	   this, SLOT(distributeDoubleClickEvent(QListViewItem*)));
+
+  connect( this, SIGNAL(expanded(QListViewItem*)), this, SLOT(placeCheckBoxes()));
+  connect( this, SIGNAL(collapsed(QListViewItem*)), this, SLOT(placeCheckBoxes()));
 
   mPopupMenu = new QPopupMenu(this);
   mPopupMenu->insertItem("&Add Group", this, SLOT(addGroup()));
@@ -108,12 +117,24 @@ void QgsLegend::removeLayer(QString layer_key)
 	    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
 	    if(llf)
 	    {
-#ifdef QGISDEBUG
-		qWarning("comparing layer strings " + llf->layer()->getLayerID() +" and " + layer_key);
-#endif
 		if (llf->layer()&&llf->layer()->getLayerID() == layer_key)
 		{
-		    delete llf;
+		    if(llf->parent()->childCount() < 2)
+		    {
+			//unregister listview/checkbox pair
+			//deleting is done by the destructor of QgsLegendLayerFile
+			unregisterCheckBox(llf);
+			delete llf->parent()->parent()->parent();
+			placeCheckBoxes();
+		    }
+		    else
+		    {
+			//unregister listview/checkbox pair
+			//deleting is done by the destructor of QgsLegendLayerFile
+			unregisterCheckBox(llf);
+			delete llf;
+			placeCheckBoxes();
+		    }
 		    break;
 		}
 	    }
@@ -139,7 +160,8 @@ void QgsLegend::contentsMousePressEvent(QMouseEvent * e)
 
   else if (e->button() == RightButton)
   {
-    //add special behaviours for context menu etc if we want!
+    //add special behaviours for context menu etc if we want! XXXnot needed anymore. distributeRightClickEvent()
+      //calls the handler routines of the individual QgsLegendItem subclasses
     //QPoint p(e->pos());
     //QPoint p(contentsToViewport(e->pos()));
     //QListViewItem *i = itemAt(p);
@@ -154,7 +176,6 @@ void QgsLegend::contentsMousePressEvent(QMouseEvent * e)
   QListView::contentsMousePressEvent(e);
 
 }                               // contentsMousePressEvent
-
 
 
 void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
@@ -327,6 +348,27 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
 
 }
 
+void QgsLegend::distributeDoubleClickEvent(QListViewItem* item)
+{
+    QgsLegendItem* li = dynamic_cast<QgsLegendItem*>(item);
+    if(li)
+    {
+	li->handleDoubleClickEvent();
+    }
+}
+
+void QgsLegend::distributeRightClickEvent(QListViewItem* item, const QPoint& position)
+{
+    if(!mMapCanvas->isDrawing())
+    {
+	QgsLegendItem* li = dynamic_cast<QgsLegendItem*>(item);
+	if(li)
+	{
+	    li->handleRightClickEvent(position);
+	}
+    }
+}
+
 int QgsLegend::getItemPos(QListViewItem * item)
 {
   QListViewItemIterator it(this);
@@ -361,18 +403,34 @@ void QgsLegend::showContextMenu(QListViewItem * lvi, const QPoint & pt)
 void QgsLegend::addLayer( QgsMapLayer * layer )
 {
     QgsLegendGroup * lgroup = new QgsLegendGroup(this,QString("Layer Group"));
-    QgsLegendLayer * llayer = new QgsLegendLayer(lgroup,QString("LegendLayer"));
-    QgsLegendPropertyGroup * lpgroup = new QgsLegendPropertyGroup(llayer,QString("Properties Group"));
-    QgsLegendSymbologyGroup * lsgroup = new QgsLegendSymbologyGroup(llayer,QString("Symbology Group"));
-    QgsLegendLayerFile * llfile = new QgsLegendLayerFile(llayer,layer->name(), layer);
+    lgroup->setRenameEnabled(0, true);
+    QgsLegendLayer * llayer = new QgsLegendLayer(lgroup,QString(layer->name()));
+    llayer->setRenameEnabled(0, true);
+    QgsLegendPropertyGroup * lpgroup = new QgsLegendPropertyGroup(llayer,QString("Properties"));
+    QgsLegendSymbologyGroup * lsgroup = new QgsLegendSymbologyGroup(llayer,QString("Symbology"));
+    QgsLegendLayerFileGroup * llfgroup = new QgsLegendLayerFileGroup(llayer,QString("Files"));
+    layer->setLegendSymbologyGroupParent(lsgroup);
+    QString sourcename = layer->source();
+    if(sourcename.startsWith("host", false))
+    {
+	//this layer is a database layer
+	//modify source string such that password is not visible
+	sourcename = layer->name();
+    }
+    else
+    {
+	//modify source name such that only the file is visible
+	sourcename = layer->source().section('/',-1,-1);
+    }
+    QgsLegendLayerFile * llfile = new QgsLegendLayerFile(llfgroup, sourcename, layer);
+    layer->setLegendLayerFile(llfile);
     layer->initContextMenu(mApp);
 
     lgroup->setOpen(true);
-    llayer->setOpen(true);
-    lpgroup->setOpen(true);
-    lsgroup->setOpen(true);
-    lsgroup->setOpen(true);
-    
+    llayer->setOpen(false);
+    lpgroup->setOpen(false);
+    lsgroup->setOpen(false); 
+    llfgroup->setOpen(false);
 }
 
 QgsMapLayer* QgsLegend::currentLayer()
@@ -393,5 +451,39 @@ QgsMapLayer* QgsLegend::currentLayer()
     else
     {
 	return 0;
+    }
+}
+
+void QgsLegend::registerCheckBox(QListViewItem* item, QCheckBox* cbox)
+{
+    mCheckBoxes.insert(std::make_pair(item, cbox) );
+    placeCheckBox(item, cbox);
+}
+
+void QgsLegend::unregisterCheckBox(QListViewItem* item)
+{
+    mCheckBoxes.erase(item);
+}
+
+void QgsLegend::placeCheckBoxes()
+{
+    for(std::map<QListViewItem*, QCheckBox*>::iterator it = mCheckBoxes.begin(); it!=mCheckBoxes.end(); ++it)
+    {
+	placeCheckBox(it->first, it->second);
+    }
+}
+
+void QgsLegend::placeCheckBox(QListViewItem* litem, QCheckBox* cbox)
+{
+    QRect itempos = itemRect(litem);
+    if(itempos.isValid())//rectangle is not valid if the item is not visible
+    { 
+	int yoffset = viewport()->geometry().top();
+	cbox->setGeometry(3*treeStepSize()-14, itempos.top()+5+yoffset, 14, 14);
+	cbox->show();
+    }
+    else
+    {
+	cbox->hide();
     }
 }

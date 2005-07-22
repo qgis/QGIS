@@ -42,6 +42,7 @@
 
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qlistview.h>
 #include <qpainter.h>
 #include <qpointarray.h>
 #include <qstring.h>
@@ -67,6 +68,7 @@
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgslegenditem.h"
+#include "qgslegendvectorsymbologyitem.h"
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgsrenderer.h"
 #include "qgssinglesymrenderer.h"
@@ -1335,16 +1337,8 @@ void QgsVectorLayer::removeSelection()
 }
 
 void QgsVectorLayer::triggerRepaint()
-{
-#ifdef QGISDEBUG
-    std::cerr << "QgsVectorLayer: triggerRepaint called" << std::endl;
-#endif
-  
+{ 
   emit repaintRequested();
-
-#ifdef QGISDEBUG
-    std::cerr << "QgsVectorLayer: repaintRequested emitted" << std::endl;
-#endif
 }
 
 void QgsVectorLayer::invalidateTableDisplay()
@@ -2268,27 +2262,11 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     renderer = new QgsContinuousColRenderer(vectorType());
     renderer->readXML(continuousnode, *this);
   }
-  else if (!singlemarkernode.isNull())
-  {
-    renderer = new QgsSiMaRenderer;
-    renderer->readXML(singlemarkernode, *this);
-  }
-  else if (!graduatedmarkernode.isNull())
-  {
-    renderer = new QgsGraduatedMaRenderer;
-    renderer->readXML(graduatedmarkernode, *this);
-  }
   else if (!uniquevaluenode.isNull())
   {
     renderer = new QgsUniqueValRenderer(vectorType());
     renderer->readXML(uniquevaluenode, *this);
   }
-  else if(!uniquemarkernode.isNull())
-  {
-    renderer = new QgsUValMaRenderer;
-    renderer->readXML(uniquemarkernode, *this);
-  }
-
 
   // Test if labeling is on or off
   QDomElement element = labelnode.toElement();
@@ -2914,6 +2892,47 @@ bool QgsVectorLayer::addFeatures(std::vector<QgsFeature*>* features, bool makeSe
     
     updateExtents();
   }  
+}
+
+void QgsVectorLayer::refreshLegend()
+{
+    if(mLegendSymbologyGroupParent)
+    {
+	//first remove the existing child items
+	QListViewItem* tmp;
+	QListViewItem* myChild = mLegendSymbologyGroupParent->firstChild();
+
+        while( myChild ) 
+	{
+            tmp=myChild;
+            myChild = myChild->nextSibling();
+	    delete tmp;
+        }
+
+	//add the new items
+	if(m_renderer)
+	{
+	    //create an list view item for each renderer item
+	    //they have to be added in reverse order to the QListView
+	    const std::list<QgsSymbol*> sym = m_renderer->symbols();
+	    for(std::list<QgsSymbol*>::const_reverse_iterator it = sym.rbegin(); it!= sym.rend(); ++it)
+	    {
+		(*it)->createLegendItem(mLegendSymbologyGroupParent);
+	    }
+
+	    //create an item for each classification field (currently only one for all renderers)
+	    if(m_renderer->needsAttributes())
+	    {
+		std::list<int> classfieldlist = m_renderer->classificationAttributes();
+		for(std::list<int>::reverse_iterator it = classfieldlist.rbegin(); it!=classfieldlist.rend(); ++it)
+		{
+		    const QgsField theField = (dataProvider->fields())[*it];
+		    QString classfieldname = theField.name();
+		    QgsLegendVectorSymbologyItem* item = new QgsLegendVectorSymbologyItem(mLegendSymbologyGroupParent, classfieldname);
+		}
+	    }
+	}
+    }
 }
 
 

@@ -29,6 +29,7 @@ class QColor;
 
 #include <fstream>
 #include <list>
+#include <qlistview.h>
 #include <qstring.h>
 #include <qdom.h>
 
