@@ -19,7 +19,8 @@
  ***************************************************************************/
 #include "qgslegenditem.h"
 #include <qpixmap.h>
-#include <iostream.h>
+#include <iostream>
+
 QgsLegendItem::QgsLegendItem(QListViewItem * theItem ,QString theName)
  : QListViewItem(theItem,theName)
 {

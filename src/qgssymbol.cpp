@@ -19,6 +19,7 @@
 #include <cmath>
 #include <iostream>
 
+#include "qgslegendvectorsymbologyitem.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
 #include "qgssvgcache.h"
@@ -162,18 +163,6 @@ int QgsSymbol::pointSize() const
     return mPointSize;
 }
 
-QPixmap  QgsSymbol::getSymbolAsPixmap(int xDim, int yDim)
-{
-        QPixmap myQPixmap(xDim,yDim);
-        QPainter myQPainter;
-        myQPainter.begin(&myQPixmap);
-        myQPainter.setBrush(mBrush);
-        myQPainter.setPen(mPen);
-        myQPainter.drawRect(0, 0, xDim, yDim);
-        myQPainter.end();
-        return myQPixmap;
-}
-
 QPixmap QgsSymbol::getPointSymbolAsPixmap( int oversampling )
 {
     if ( !mCacheUpToDate || oversampling != mOversampling ) 
@@ -181,6 +170,27 @@ QPixmap QgsSymbol::getPointSymbolAsPixmap( int oversampling )
 	cache( oversampling, mSelectionColor );
     }
     return mPointSymbolPixmap;
+}
+
+QPixmap QgsSymbol::getLineSymbolAsPixmap()
+{
+    QPixmap pix(15, 15);
+    pix.fill();
+    QPainter p(&pix);
+    p.setPen(mPen);
+    p.drawLine(0, 0, 15, 15);
+    return pix; //this is ok because of qts sharing mechanism
+}
+
+QPixmap QgsSymbol::getPolygonSymbolAsPixmap()
+{
+   QPixmap pix(15, 15);
+   pix.fill();
+   QPainter p(&pix);
+   p.setPen(mPen);
+   p.setBrush(mBrush);
+   p.drawRect(0, 0, 15, 15);
+    return pix; //this is ok because of qts sharing mechanism 
 }
 
 QPicture QgsSymbol::getPointSymbolAsPicture( int oversampling, double widthScale,
@@ -402,4 +412,42 @@ bool QgsSymbol::readXML( QDomNode & synode )
     setFillStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));
 
     return true;
+}
+
+void QgsSymbol::createLegendItem(QListViewItem* parent)
+{
+    QgsLegendVectorSymbologyItem* item = new QgsLegendVectorSymbologyItem(parent, "");
+    item->addSymbol(this);
+
+    QPixmap pix; /*todo: insert content to QPixmap*/
+    if(mType == QGis::Point)
+    {
+	pix = getPointSymbolAsPixmap();
+    }
+    else if(mType == QGis::Line)
+    {
+	pix = getLineSymbolAsPixmap();
+    }
+    else //polygon
+    {
+	pix = getPolygonSymbolAsPixmap();
+    }
+
+    item->setPixmap(0, pix);
+    QString values;
+    if(!mLowerValue.isEmpty())
+    {
+	values += mLowerValue;
+    }
+    if(!mUpperValue.isEmpty())
+    {
+	values += " - ";
+	values += mUpperValue;
+    }
+    if(!mLabel.isEmpty())
+    {
+	values += " ";
+	values += mLabel;
+    }
+    item->setText(0, values);
 }

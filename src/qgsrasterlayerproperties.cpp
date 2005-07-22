@@ -408,6 +408,7 @@ void QgsRasterLayerProperties::apply()
   rasterLayer->drawThumbnail(&myQPixmap);
   pixmapThumbnail->setPixmap(myQPixmap);
   //make sure the layer is redrawn
+  rasterLayer->refreshLegend();
   rasterLayer->triggerRepaint();
 }
 

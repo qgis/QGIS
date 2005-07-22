@@ -38,7 +38,7 @@ class QgsLegendItem : public QListViewItem
 
 
 public:
-    QgsLegendItem(QListViewItem * ,QString);
+    QgsLegendItem(QListViewItem*, QString);
     QgsLegendItem (QListView *,QString);
     ~QgsLegendItem();
    enum LEGEND_ITEM_TYPE 
@@ -49,12 +49,16 @@ public:
      LEGEND_PROPERTY_ITEM,
      LEGEND_SYMBOL_GROUP,
      LEGEND_SYMBOL_ITEM,
+     LEGEND_VECTOR_SYMBOL_ITEM,
      LEGEND_LAYER_FILE
    } ;
     virtual bool isLeafNode()=0;
     virtual const LEGEND_ITEM_TYPE type(){return mType;}
     virtual void addItem(QgsLegendItem*){}
     virtual bool accept(LEGEND_ITEM_TYPE type)=0;
+    /**Specifies the items reaction to a double click*/
+    virtual void handleDoubleClickEvent(){}
+    virtual void handleRightClickEvent(const QPoint& position) {}
     void print(QgsLegendItem * theItem);
 protected:
    bool mLeafNodeFlag;

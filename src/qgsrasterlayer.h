@@ -797,6 +797,10 @@ public:
     
     /** Return time stamp for given file name */
     static QDateTime lastModified ( QString name );
+
+    /**Refresh the symbology part of the legend
+     by adding a child item to mLegendSymbologyGroupParent*/
+    void refreshLegend();
     
 public slots:    
 
