@@ -776,6 +776,22 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   std::cout << "QgsCustomProjectionDialog::pbnSave_clicked()" << std::endl;
 #endif
  
+  QString myName = leName->text();
+  QString myParameters = leParameters->text();
+  if (myName.isEmpty())
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("This proj4 projection definition is not valid. Please give the projection a name before pressing save.") );
+    return;
+  }
+  if (myParameters.isEmpty())
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("This proj4 projection definition is not valid. Please add the parameters before pressing save.") );
+    return;
+  }
+
+  
   //
   // Now make sure parameters have proj and ellipse 
   //
@@ -816,6 +832,9 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   }
   pj_free(myProj);
 
+
+  /** TODO Check the projection is not a duplicate ! */
+
   
   //CREATE TABLE tbl_srs (
   //srs_id integer primary key,
@@ -825,9 +844,6 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   //parameters varchar(80) NOT NULL default ''
   //);
 
-  //get the acronym for preojection and ellipsoid
-  QString myName = leName->text();
-  QString myParameters = leParameters->text();
   QString mySql;
   //insert a record if mode is enabled
   if (pbnNew->text()==tr("Abort")) 
