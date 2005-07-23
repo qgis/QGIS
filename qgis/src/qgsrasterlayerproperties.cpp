@@ -174,6 +174,7 @@ const char * const ident =
       myBandNameQStringList.append(myRasterBandNameQString);
     }
 
+    lstHistogramLabels->setSelected(lstHistogramLabels->item( 0 ),true);
 
     for (QStringList::Iterator myIterator = myBandNameQStringList.begin(); 
             myIterator != myBandNameQStringList.end(); 
