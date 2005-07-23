@@ -108,8 +108,10 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
   //
   // Set up databound controls
   //
-  getProjList();
-  getEllipsoidList();
+
+  // deprecated methods
+  //getProjList();
+  //getEllipsoidList();
   mRecordCountLong=getRecordCount();
   pbnFirst_clicked();
 }
@@ -118,7 +120,9 @@ QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
 {
   
 }
-
+/*
+ * These two methods will be deprecated
+ * 
 void QgsCustomProjectionDialog::getProjList ()
 {
   // 
@@ -190,6 +194,7 @@ void QgsCustomProjectionDialog::getEllipsoidList()
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
 }
+*/
 void QgsCustomProjectionDialog::pbnHelp_clicked()
 {
 
@@ -460,10 +465,10 @@ void QgsCustomProjectionDialog::pbnFirst_clicked()
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
       mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
       leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
-      QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-      cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-      cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
       mCurrentRecordLong=1; 
       lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
@@ -529,10 +534,10 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
       mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
       leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
-      QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-      cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-      cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4))),
       --mCurrentRecordLong;
       lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
@@ -608,11 +613,11 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
       mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
       leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
-      QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-      cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-      cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
+      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+      //leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
       ++mCurrentRecordLong;
       lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
   }
@@ -682,10 +687,10 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
       mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
       leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
-      QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-      cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-      cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
       mCurrentRecordLong =mRecordCountLong;
       lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
@@ -754,8 +759,8 @@ void QgsCustomProjectionDialog::pbnNew_clicked()
     //clear the controls
     leName->setText("");
     leParameters->setText("");
-    cboProjectionFamily->setCurrentItem(0);
-    cboEllipsoid->setCurrentItem(0);
+    //cboProjectionFamily->setCurrentItem(0);
+    //cboEllipsoid->setCurrentItem(0);
     lblRecordNo->setText("* of " + QString::number(mRecordCountLong));
     //remember the rec we are on in case the user aborts
     mLastRecordLong=mCurrentRecordLong;
@@ -770,26 +775,33 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
 #ifdef QGISDEBUG
   std::cout << "QgsCustomProjectionDialog::pbnSave_clicked()" << std::endl;
 #endif
-  //
-  // Now make sure the combos are set correclty
-  // This applies when parameters DO have proj and ellps
-  //
-  
-  setCombosUsingParameters();
  
   //
-  // Now make sure parameters have proj and ellipse from combos
-  // This applies when user has NOT entered proj and ellips
-  // and wants us to do it for them from the combos
+  // Now make sure parameters have proj and ellipse 
   //
   
-  checkParametersHaveProj();
-  checkParametersHaveEllipse();
+  QString myProjectionAcronym  =  getProjFromParameters();
+  QString myEllipsoidAcronym   =  getEllipseFromParameters();
+  
+  if ( myProjectionAcronym == NULL ) 
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("This proj4 projection definition is not valid. Please add a proj= clause before pressing save.") );
+    return;
+  }
+  
+  if ( myEllipsoidAcronym == NULL ) 
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.") );
+    return;
+  }
+  
   
   //
   // We must check the prj def is valid!
   // NOTE :  the test below may be bogus as the processes abpve emsired there
- // is always at least a projection and ellpsoid - which proj will parse as acceptible
+  // is always at least a projection and ellpsoid - which proj will parse as acceptible
   //
 
   projPJ myProj = pj_init_plus( leParameters->text().local8Bit() );
@@ -814,8 +826,6 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   //);
 
   //get the acronym for preojection and ellipsoid
-  QString myProjectionAcronym = getProjectionFamilyAcronym(cboProjectionFamily->currentText());
-  QString myEllipsoidAcronym = getEllipsoidAcronym(cboEllipsoid->currentText());
   QString myName = leName->text();
   QString myParameters = leParameters->text();
   QString mySql;
@@ -970,7 +980,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 }
 
 
-
+/* This is deprecated - to be deleted
 void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString & theText)
 {
 #ifdef QGISDEBUG
@@ -1014,7 +1024,7 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
 }
-
+*/
 
 //a recursive function to make a directory and its ancestors
 bool QgsCustomProjectionDialog::makeDir(QDir &theQDir)
@@ -1044,80 +1054,43 @@ bool QgsCustomProjectionDialog::makeDir(QDir &theQDir)
 }
 
 
-void QgsCustomProjectionDialog::checkParametersHaveProj()
+QString QgsCustomProjectionDialog::getProjFromParameters()
 {
-
-  std::cout << "QgsCustomProjectionDialog::checkParametersHaveProj()" << std::endl;
+  std::cout << "QgsCustomProjectionDialog::getProjFromParameters()" << std::endl;
   QString myProj4String = leParameters->text();
-  QRegExp myProjRegExp( "proj=[a-zA-Z]* " );    
+  QRegExp myProjRegExp( "\\+proj=[a-zA-Z]*" );    
   int myStart= 0;
   myStart = myProjRegExp.search(myProj4String, myStart);
-  QString myProjection;  
   if (myStart==-1)
   {
-    std::cout << "proj string supplied has no +proj argument adding from combo" << std::endl;
-    myProjection=cboProjectionFamily->currentText();
-    leParameters->setText("+proj=" + getProjectionFamilyAcronym(myProjection) + " " + leParameters->text());
-  }
-}
-
-void QgsCustomProjectionDialog::checkParametersHaveEllipse()
-{
-
-  std::cout << "QgsCustomProjectionDialog::checkParametersHaveEllipse()" << std::endl;
-  QString myProj4String = leParameters->text();
-  QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\\-_]* " );    
-  int myStart= 0;
-  myStart = myEllipseRegExp.search(myProj4String, myStart);
-  QString myEllipsoid;
-  if (myStart==-1)
-  {
-    std::cout << "proj string supplied has no +ellps argument adding from combo" << std::endl;
-    myEllipsoid=cboEllipsoid->currentText();
-    leParameters->setText("+ellps=" + getEllipsoidAcronym(myEllipsoid) + " " + leParameters->text());
-  }
-}
-
-void QgsCustomProjectionDialog::setCombosUsingParameters()
-{
-
-  QString myProj4String = leParameters->text();
-  std::cout << "QgsCustomProjectionDialog::setCombosUsingParameters \n" << myProj4String.local8Bit() << std::endl;
-  QRegExp myProjRegExp( "proj=[a-zA-Z]* " );    
-  int myStart= 0;
-  int myLength=0;
-  myStart = myProjRegExp.search(myProj4String, myStart);
-  if (myStart==-1)
-  {
-    std::cout << "proj string supplied has no +proj argument combo will not be changed" << std::endl;
+    qDebug ("proj string supplied has no +proj argument!");
+    return NULL;
   }
   else
   {
-    myLength = myProjRegExp.matchedLength();
-    QString myProjectionAcronym;  
-    myProjectionAcronym = myProj4String.mid(myStart+(PROJ_PREFIX_LEN-1),myLength-(PROJ_PREFIX_LEN));//+1 for space
-    //now update the combos
-    std::cout << "Prj acronym: " << myProjectionAcronym.local8Bit() << std::endl;
-    cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionAcronym));
+    int myLength = myProjRegExp.matchedLength();
+    QString myProjectionAcronym = myProj4String.mid(myStart+(PROJ_PREFIX_LEN),myLength-(PROJ_PREFIX_LEN));//+1 for space
+    return myProjectionAcronym;
   }
-  
-  
-  QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\\-]* " );    
-  myStart= 0;
-  myLength=0;
+}
+
+QString QgsCustomProjectionDialog::getEllipseFromParameters()
+{
+  std::cout << "QgsCustomProjectionDialog::getEllipseFromParameters()" << std::endl;
+  QString myProj4String = leParameters->text();
+  QRegExp myEllipseRegExp( "\\+ellps=[a-zA-Z0-9\\-_]*" );    
+  int myStart= 0;
   myStart = myEllipseRegExp.search(myProj4String, myStart);
   if (myStart==-1)
   {
-    std::cout << "proj string supplied has no +ellps argument combo will not be changed" << std::endl;
+    std::cout << "proj string supplied has no +ellps!" << std::endl;
+    return NULL;
   }
-  else
+  else //match was found
   {
-    myLength = myEllipseRegExp.matchedLength();
-    QString myEllipsoidAcronym;
-    myEllipsoidAcronym = myProj4String.mid(myStart+(ELLPS_PREFIX_LEN-1),myLength-(ELLPS_PREFIX_LEN));
-    //now update the combos
-    std::cout << "Ellps acronym: " << myEllipsoidAcronym.local8Bit() << std::endl;
-    cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidAcronym));
+    int myLength = myEllipseRegExp.matchedLength();
+    QString myEllipsoidAcronym = myProj4String.mid(myStart+(ELLPS_PREFIX_LEN),myLength-(ELLPS_PREFIX_LEN));
+    return myEllipsoidAcronym;
   }
 }
 
