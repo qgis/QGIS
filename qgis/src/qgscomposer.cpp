@@ -49,6 +49,8 @@
 #include "qgscomposeritem.h"
 #include "qgscomposermap.h"
 
+#include "qgsexception.h"
+
 #include <iostream>
 
 QgsComposer::QgsComposer( QgisApp *qgis): QgsComposerBase()
@@ -278,100 +280,50 @@ void QgsComposer::print(void)
 
     mComposition->setPlotStyle ( QgsComposition::Postscript );
 
-    if ( mPrinter->outputToFile() ) {
-      std::cout << "Print to file" << std::endl;
+    if ( mPrinter->outputToFile() ) 
+    {
+      try 
+      {
+        std::cout << "Print to file" << std::endl;
 
 #ifdef Q_WS_X11
-      // NOTE: On UNIX setPageSize after setup() works, but setOrientation does not
-      //   -> the BoundingBox must follow the orientation 
+        // NOTE: On UNIX setPageSize after setup() works, but setOrientation does not
+        //   -> the BoundingBox must follow the orientation 
 
-      QPrinter::PageSize psize = mPrinter->pageSize();
-      // B0 ( 1000x1414mm = 2835x4008pt ) is the biggest defined in Qt, a map can be bigger 
-      // but probably not bigger than 9999x9999pt = 3527x3527mm 
-      mPrinter->setPageSize ( QPrinter::B0 );
+        QPrinter::PageSize psize = mPrinter->pageSize();
+        // B0 ( 1000x1414mm = 2835x4008pt ) is the biggest defined in Qt, a map can be bigger 
+        // but probably not bigger than 9999x9999pt = 3527x3527mm 
+        mPrinter->setPageSize ( QPrinter::B0 );
 #endif
 
-      QPainter p(mPrinter);
-      p.scale ( scale, scale); 
+        QPainter p(mPrinter);
+        p.scale ( scale, scale); 
 
-      mComposition->canvas()->drawArea ( QRect(0,0, 
-            (int) (mComposition->paperWidth() * mComposition->scale()),
-            (int) (mComposition->paperHeight() * mComposition->scale()) ), 
-            &p, FALSE );
+        mComposition->canvas()->drawArea ( QRect(0,0, 
+                    (int) (mComposition->paperWidth() * mComposition->scale()),
+                    (int) (mComposition->paperHeight() * mComposition->scale()) ), 
+                &p, FALSE );
 
-      p.end();
+        p.end();
 
 #ifdef Q_WS_X11
-      // reset the page
-      mPrinter->setPageSize ( psize );
+        // reset the page
+        mPrinter->setPageSize ( psize );
 
-      QFile f(mPrinter->outputFileName());
+        QFile f(mPrinter->outputFileName());
 
-      // Overwrite the bounding box
-      f.open( IO_ReadWrite );
-      Q_LONG offset = 0;
-      Q_LONG size;
-      bool found = false;
-      QString s;
-      while ( !f.atEnd() ) {
-        size = f.readLine ( s, 100 );
-        if ( s.find ("%%BoundingBox:") == 0 ) {
-          found = true;
-          break;
+        // Overwrite the bounding box
+        if (!f.open( IO_ReadWrite )) 
+        {
+          throw QgsIOException(tr("Couldn't open " + f.name() + tr(" for read/write")));
         }
-        offset += size;
-      }
-
-      if ( found ) {
-        int w,h;
-
-        w = (int) ( 72 * mComposition->paperWidth() / 25.4 );
-        h = (int) ( 72 * mComposition->paperHeight() / 25.4 );
-        if ( mPrinter->orientation() == QPrinter::Landscape ) { 
-          int tmp = w; w = h; h = tmp;
-        }
-        s.sprintf( "%%%%BoundingBox: 0 0 %d %d", w, h );
-
-        if ( s.length() > size ) {
-          QMessageBox::warning(this,"Error in Print", "Cannot format BoundingBox");
-        } else {
-          if ( ! f.at(offset) ) {
-            QMessageBox::warning(this,"Error in Print", "Cannot seek");
-          } else {
-            /* Write spaces (for case the size > s.length() ) */
-            QString es;
-            es.fill(' ', size-1 );
-            f.flush();
-            if ( f.writeBlock ( es.local8Bit(), size-1 ) < size-1 ) {
-              QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
-            }
-            f.flush();
-            f.at(offset);
-            f.flush();
-            if ( f.writeBlock ( s.local8Bit(), s.length() ) <  s.length()-1 ) {
-              QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
-            }
-            f.flush();
-          }
-        }
-      } else {
-        QMessageBox::warning(this,"Error in Print", "Cannot find BoundingBox");
-      }
-      f.close();
-
-      // Overwrite translate
-      if ( mPrinter->orientation() == QPrinter::Portrait ) { 
-        f.open( IO_ReadWrite );
-        offset = 0;
-        found = false;
-
-        //Example:
-        //0 4008 translate 1 -1 scale/defM ...
-        QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale/defM matrix CM d \\} d" );
-
+        Q_LONG offset = 0;
+        Q_LONG size;
+        bool found = false;
+        QString s;
         while ( !f.atEnd() ) {
           size = f.readLine ( s, 100 );
-          if ( rx.search( s ) != -1 ) {
+          if ( s.find ("%%BoundingBox:") == 0 ) {
             found = true;
             break;
           }
@@ -379,13 +331,17 @@ void QgsComposer::print(void)
         }
 
         if ( found ) {
-          int trans;
+          int w,h;
 
-          trans = (int) ( 72 * mComposition->paperHeight() / 25.4 );
-          s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, (const char *)rx.cap(1).local8Bit() );
+          w = (int) ( 72 * mComposition->paperWidth() / 25.4 );
+          h = (int) ( 72 * mComposition->paperHeight() / 25.4 );
+          if ( mPrinter->orientation() == QPrinter::Landscape ) { 
+            int tmp = w; w = h; h = tmp;
+          }
+          s.sprintf( "%%%%BoundingBox: 0 0 %d %d", w, h );
 
           if ( s.length() > size ) {
-            QMessageBox::warning(this,"Error in Print", "Cannot format translate");
+            QMessageBox::warning(this,"Error in Print", "Cannot format BoundingBox");
           } else {
             if ( ! f.at(offset) ) {
               QMessageBox::warning(this,"Error in Print", "Cannot seek");
@@ -395,21 +351,80 @@ void QgsComposer::print(void)
               es.fill(' ', size-1 );
               f.flush();
               if ( f.writeBlock ( es.local8Bit(), size-1 ) < size-1 ) {
-                QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
+                QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
               }
               f.flush();
               f.at(offset);
               f.flush();
               if ( f.writeBlock ( s.local8Bit(), s.length() ) <  s.length()-1 ) {
-                QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
+                QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
               }
               f.flush();
             }
           }
         } else {
-          QMessageBox::warning(this,"Error in Print", "Cannot find translate");
+          QMessageBox::warning(this,"Error in Print", "Cannot find BoundingBox");
         }
         f.close();
+
+        // Overwrite translate
+        if ( mPrinter->orientation() == QPrinter::Portrait ) { 
+          if (!f.open( IO_ReadWrite )) {
+            throw QgsIOException(tr("Couldn't open " + f.name() + tr(" for read/write")));
+          }
+          offset = 0;
+          found = false;
+
+          //Example:
+          //0 4008 translate 1 -1 scale/defM ...
+          QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale/defM matrix CM d \\} d" );
+
+          while ( !f.atEnd() ) {
+            size = f.readLine ( s, 100 );
+            if ( rx.search( s ) != -1 ) {
+              found = true;
+              break;
+            }
+            offset += size;
+          }
+
+          if ( found ) {
+            int trans;
+
+            trans = (int) ( 72 * mComposition->paperHeight() / 25.4 );
+            s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, (const char *)rx.cap(1).local8Bit() );
+
+            if ( s.length() > size ) {
+              QMessageBox::warning(this,"Error in Print", "Cannot format translate");
+            } else {
+              if ( ! f.at(offset) ) {
+                QMessageBox::warning(this,"Error in Print", "Cannot seek");
+              } else {
+                /* Write spaces (for case the size > s.length() ) */
+                QString es;
+                es.fill(' ', size-1 );
+                f.flush();
+                if ( f.writeBlock ( es.local8Bit(), size-1 ) < size-1 ) {
+                  QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
+                }
+                f.flush();
+                f.at(offset);
+                f.flush();
+                if ( f.writeBlock ( s.local8Bit(), s.length() ) <  s.length()-1 ) {
+                  QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
+                }
+                f.flush();
+              }
+            }
+          } else {
+            QMessageBox::warning(this,"Error in Print", "Cannot find translate");
+          }
+          f.close();
+        }
+      } 
+      catch (QgsIOException e) 
+      {
+        QMessageBox::warning(this,"File IO Error", e.what());
       }
 #endif
     } else {  // print to printer
