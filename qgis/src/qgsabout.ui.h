@@ -5,9 +5,13 @@
 ** update this file, preserving your code. Create an init() slot in place of
 ** a constructor, and a destroy() slot in place of a destructor.
 *****************************************************************************/
+#ifdef Q_OS_MACX
+#include <ApplicationServices/ApplicationServices.h>
+#else
 #include <qsettings.h>
 #include <qprocess.h>
 #include <qinputdialog.h>
+#endif
 #include <qfile.h>
 #include <qstringlist.h>
 #include <qtextstream.h>
@@ -117,6 +121,18 @@ void QgsAbout::qgisHomePage()
 }
 void QgsAbout::openUrl(QString url)
 {
+#ifdef Q_OS_MACX
+    /* Use Mac OS X Launch Services which uses the user's default browser
+     * and will just open a new window if that browser is already running.
+     * QProcess creates a new browser process for each invocation and expects a
+     * commandline application rather than a bundled application.
+     */
+    CFURLRef urlRef = CFURLCreateWithBytes(kCFAllocatorDefault,
+                                           reinterpret_cast<const UInt8*>(url.utf8().data()), url.length(),
+                                           kCFStringEncodingUTF8, NULL);
+    OSStatus status = LSOpenCFURLRef(urlRef, NULL);
+    CFRelease(urlRef);
+#else
   QSettings settings;
   QString browser = settings.readEntry("/qgis/browser");
   if (browser.length() == 0)
@@ -149,6 +165,7 @@ void QgsAbout::openUrl(QString url)
     helpProcess->addArgument(url);
     helpProcess->start();
   }
+#endif
   /*  mHelpViewer = new QgsHelpViewer(this,"helpviewer",false);
       mHelpViewer->showContent(mAppDir +"/share/doc","index.html");
       mHelpViewer->show(); */
