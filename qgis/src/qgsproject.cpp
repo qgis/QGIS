@@ -1225,6 +1225,7 @@ bool QgsProject::write()
 
   QDomElement qgisNode = doc->createElement("qgis");
   qgisNode.setAttribute("projectname", title());
+  qgisNode.setAttribute("version",QString("%1").arg(QGis::qgisVersion) );
 
   doc->appendChild(qgisNode);
 
