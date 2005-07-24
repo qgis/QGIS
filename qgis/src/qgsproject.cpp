@@ -41,7 +41,7 @@ using namespace std;
 #include <qdict.h>
 #include <qmessagebox.h>
 #include <qwidgetlist.h>
-
+#include <qobject.h>
 
 
 
@@ -1191,27 +1191,27 @@ bool QgsProject::write()
   // if we have problems creating or otherwise writing to the project file,
   // let's find out up front before we go through all the hand-waving
   // necessary to create all the DOM objects
-  QFileInfo myFileInfo(imp_->file.name());
-  if (!myFileInfo.isWritable())
-  {
-    // even though we got an error, let's make
-    // sure it's closed anyway
-    imp_->file.close();         
-    throw QgsIOException(imp_->file.name() + " is not writeable."
-            + "Please adjust permissions (if possible) and try again.");
-    // XXX raise exception? Ok now superfluous
-    return false;               
-   
-  }
   if (!imp_->file.open(IO_WriteOnly | IO_Translate | IO_Truncate))
   {
     imp_->file.close();         // even though we got an error, let's make
     // sure it's closed anyway
 
-    throw QgsIOException("Unable to open " + imp_->file.name());
+    throw QgsIOException(QObject::tr("Unable to save to file ") + imp_->file.name());
 
     return false;               // XXX raise exception? Ok now superfluous
     // XXX because of exception.
+  }
+  QFileInfo myFileInfo(imp_->file);
+  if (!myFileInfo.isWritable())
+  {
+    // even though we got an error, let's make
+    // sure it's closed anyway
+    imp_->file.close();         
+    throw QgsIOException(imp_->file.name() + QObject::tr(QString(" is not writeable.")
+            + QString("Please adjust permissions (if possible) and try again.")));
+    // XXX raise exception? Ok now superfluous
+    return false;               
+   
   }
 
   QDomImplementation DOMImplementation;
