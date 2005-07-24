@@ -174,7 +174,14 @@ const char * const ident =
       myBandNameQStringList.append(myRasterBandNameQString);
     }
 
-    lstHistogramLabels->setSelected(lstHistogramLabels->item( 0 ),true);
+    //select all histogram layers list items by default
+    for (int myIteratorInt = 1;
+          myIteratorInt <= myBandCountInt;
+          ++myIteratorInt)
+    {
+      QListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
+      lstHistogramLabels->setSelected( myItem,true);
+    }
 
     for (QStringList::Iterator myIterator = myBandNameQStringList.begin(); 
             myIterator != myBandNameQStringList.end(); 
