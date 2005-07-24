@@ -1188,116 +1188,128 @@ bool QgsProject::write(QFileInfo const &file)
 
 bool QgsProject::write()
 {
-    // if we have problems creating or otherwise writing to the project file,
-    // let's find out up front before we go through all the hand-waving
-    // necessary to create all the DOM objects
-    if (!imp_->file.open(IO_WriteOnly | IO_Translate | IO_Truncate))
-    {
-        imp_->file.close();         // even though we got an error, let's make
-        // sure it's closed anyway
+  // if we have problems creating or otherwise writing to the project file,
+  // let's find out up front before we go through all the hand-waving
+  // necessary to create all the DOM objects
+  QFileInfo myFileInfo(imp_->file.name());
+  if (!myFileInfo.isWritable())
+  {
+    // even though we got an error, let's make
+    // sure it's closed anyway
+    imp_->file.close();         
+    throw QgsIOException(imp_->file.name() + " is not writeable."
+            + "Please adjust permissions (if possible) and try again.");
+    // XXX raise exception? Ok now superfluous
+    return false;               
+   
+  }
+  if (!imp_->file.open(IO_WriteOnly | IO_Translate | IO_Truncate))
+  {
+    imp_->file.close();         // even though we got an error, let's make
+    // sure it's closed anyway
 
-        throw QgsIOException("Unable to open " + imp_->file.name());
+    throw QgsIOException("Unable to open " + imp_->file.name());
 
-        return false;               // XXX raise exception? Ok now superfluous
-        // XXX because of exception.
-    }
+    return false;               // XXX raise exception? Ok now superfluous
+    // XXX because of exception.
+  }
 
-    QDomImplementation DOMImplementation;
+  QDomImplementation DOMImplementation;
 
-    QDomDocumentType documentType =
-        DOMImplementation.createDocumentType("qgis", "http://mrcc.com/qgis.dtd",
-                                             "SYSTEM");
-    std::auto_ptr < QDomDocument > doc =
-        std::auto_ptr < QDomDocument > (new QDomDocument(documentType));
-
-
-    QDomElement qgisNode = doc->createElement("qgis");
-    qgisNode.setAttribute("projectname", title());
-
-    doc->appendChild(qgisNode);
-
-    // title
-    QDomElement titleNode = doc->createElement("title");
-    qgisNode.appendChild(titleNode);
-
-    QDomText titleText = doc->createTextNode(title());  // XXX why have title TWICE?
-    titleNode.appendChild(titleText);
-
-    // units
-
-    QDomElement unitsNode = doc->createElement("units");
-    qgisNode.appendChild(unitsNode);
-
-    QString unitsString;
-
-    switch (instance()->imp_->mapUnits)
-    {
-        case QGis::METERS:
-            unitsString = "meters";
-            break;
-        case QGis::FEET:
-            unitsString = "feet";
-            break;
-        case QGis::DEGREES:
-            unitsString = "degrees";
-            break;
-        case QGis::UNKNOWN:
-        default:
-            unitsString = "unknown";
-            break;
-    }
-
-    QDomText unitsText = doc->createTextNode(unitsString);
-    unitsNode.appendChild(unitsText);
-
-    // extents and layers info are written by the map canvas
-    // find the canonical map canvas
-    QgsMapCanvas *theMapCanvas = _findMapCanvas("theMapCanvas");
-
-    if (!theMapCanvas)
-    {
-        qDebug("Unable to find canvas widget theMapCanvas");
-
-        // return false;               // XXX some sort of error value? Exception?
-
-        // Actually this might be run from the test harness, and therefore
-        // there won't be a GUI, so no map canvas.   Just blithely continue on.
-    }
-    else
-    {
-        theMapCanvas->writeXML(qgisNode, *doc);
-    }
-    // now add the optional extra properties
-
-    dump_(imp_->properties_);
-
-    qDebug("there are %d property scopes", imp_->properties_.count());
-
-    if (!imp_->properties_.isEmpty()) // only worry about properties if we
-                                      // actually have any properties
-    {
-        imp_->properties_.writeXML( "properties", qgisNode, *doc );
-    } 
-
-    // now wrap it up and ship it to the project file
-    doc->normalize();             // XXX I'm not entirely sure what this does
-
-    //QString xml = doc->toString(4); // write to string with indentation of four characters
-                                // (yes, four is arbitrary)
-
-    // const char * xmlString = xml; // debugger probe point
-    // qDebug( "project file output:\n\n" + xml );
-
-    QTextStream projectFileStream(&imp_->file);
-
-    //projectFileStream << xml << endl;
-    doc->save(projectFileStream, 4);  // save as utf-8
-    imp_->file.close();
+  QDomDocumentType documentType =
+      DOMImplementation.createDocumentType("qgis", "http://mrcc.com/qgis.dtd",
+              "SYSTEM");
+  std::auto_ptr < QDomDocument > doc =
+      std::auto_ptr < QDomDocument > (new QDomDocument(documentType));
 
 
-    dirty(false);                 // reset to pristine state
+  QDomElement qgisNode = doc->createElement("qgis");
+  qgisNode.setAttribute("projectname", title());
 
-    return true;
+  doc->appendChild(qgisNode);
+
+  // title
+  QDomElement titleNode = doc->createElement("title");
+  qgisNode.appendChild(titleNode);
+
+  QDomText titleText = doc->createTextNode(title());  // XXX why have title TWICE?
+  titleNode.appendChild(titleText);
+
+  // units
+
+  QDomElement unitsNode = doc->createElement("units");
+  qgisNode.appendChild(unitsNode);
+
+  QString unitsString;
+
+  switch (instance()->imp_->mapUnits)
+  {
+      case QGis::METERS:
+          unitsString = "meters";
+          break;
+      case QGis::FEET:
+          unitsString = "feet";
+          break;
+      case QGis::DEGREES:
+          unitsString = "degrees";
+          break;
+      case QGis::UNKNOWN:
+      default:
+          unitsString = "unknown";
+          break;
+  }
+
+  QDomText unitsText = doc->createTextNode(unitsString);
+  unitsNode.appendChild(unitsText);
+
+  // extents and layers info are written by the map canvas
+  // find the canonical map canvas
+  QgsMapCanvas *theMapCanvas = _findMapCanvas("theMapCanvas");
+
+  if (!theMapCanvas)
+  {
+    qDebug("Unable to find canvas widget theMapCanvas");
+
+    // return false;               // XXX some sort of error value? Exception?
+
+    // Actually this might be run from the test harness, and therefore
+    // there won't be a GUI, so no map canvas.   Just blithely continue on.
+  }
+  else
+  {
+    theMapCanvas->writeXML(qgisNode, *doc);
+  }
+  // now add the optional extra properties
+
+  dump_(imp_->properties_);
+
+  qDebug("there are %d property scopes", imp_->properties_.count());
+
+  if (!imp_->properties_.isEmpty()) // only worry about properties if we
+    // actually have any properties
+  {
+    imp_->properties_.writeXML( "properties", qgisNode, *doc );
+  } 
+
+  // now wrap it up and ship it to the project file
+  doc->normalize();             // XXX I'm not entirely sure what this does
+
+  //QString xml = doc->toString(4); // write to string with indentation of four characters
+  // (yes, four is arbitrary)
+
+  // const char * xmlString = xml; // debugger probe point
+  // qDebug( "project file output:\n\n" + xml );
+
+  QTextStream projectFileStream(&imp_->file);
+
+  //projectFileStream << xml << endl;
+  doc->save(projectFileStream, 4);  // save as utf-8
+  imp_->file.close();
+
+
+  dirty(false);                 // reset to pristine state
+
+  return true;
 } // QgsProject::write
 
 
