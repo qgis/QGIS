@@ -1189,9 +1189,9 @@ Use the ellipsis [...] button below to select an appropriate file. If the locali
                 <property name="text">
                     <string>&lt;h3&gt;Mask and Format Layers:&lt;/h3&gt;
 
-&lt;p&gt;Select the files that will be used to mask areas from the model building and projection.  The masks defined areas that are not desired in the model building and projection phases (perhaps areas of sea or areas outside the country or state of interest).  You can use the '...' button to select a layer other than the ones you have previously defined.&lt;/p&gt;
+&lt;p&gt;Select the files that will be used to mask areas from the model building and projection.  Masks are used to define the regions of interest in the model building and projection phases.  Areas outside the masks will not be used in creating or projecting the model.  You can use the '...' button to select a layer other than the ones you have previously defined.&lt;/p&gt;
 &lt;p&gt;
-The third box allows you to pick a layer that matches the desired cell size and extent for the model projection.  This is typically the input environmental layer with the highest resolution.
+The third box allows you to pick a layer that matches the desired cell size, projection and coordinate system for the model projection.  This is typically the input environmental layer with the highest resolution.
 &lt;/p&gt;</string>
                 </property>
             </widget>
@@ -1222,7 +1222,7 @@ The third box allows you to pick a layer that matches the desired cell size and 
                             </size>
                         </property>
                         <property name="text">
-                            <string>&lt;b&gt;Layer to mask model building:&lt;/b&gt;</string>
+                            <string>&lt;b&gt;Layer to mask model building (defines region of interest for the input data):&lt;/b&gt;</string>
                         </property>
                     </widget>
                     <widget class="QLayoutWidget" row="3" column="0">
@@ -1295,7 +1295,7 @@ The third box allows you to pick a layer that matches the desired cell size and 
                             </size>
                         </property>
                         <property name="text">
-                            <string>&lt;b&gt;Layer to mask model projection:&lt;/b&gt;</string>
+                            <string>&lt;b&gt;Layer to mask model projection (defines output extent):&lt;/b&gt;</string>
                         </property>
                     </widget>
                     <widget class="QLayoutWidget" row="1" column="0">
@@ -1368,7 +1368,7 @@ The third box allows you to pick a layer that matches the desired cell size and 
                             </size>
                         </property>
                         <property name="text">
-                            <string>&lt;b&gt;Layer to define output cell size and extent:&lt;/b&gt;</string>
+                            <string>&lt;b&gt;Layer to define output cell size, projection and coordinate system:&lt;/b&gt;</string>
                         </property>
                     </widget>
                     <widget class="QLayoutWidget" row="5" column="0">
