@@ -3733,7 +3733,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
     emit setProgress(0,0);
     QApplication::restoreOverrideCursor();
     QMessageBox myMessageBox( tr("Building pyramids failed."),
-			      "Building pyramid overviews is only supported on certain types of raster.",
+			      tr("The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again."),
 			      QMessageBox::Warning,
 			      QMessageBox::Ok,
 			      QMessageBox::NoButton,
@@ -3795,12 +3795,12 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
           myError = gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
                                      GDALDummyProgress, NULL );
         }
-        if (myError != CE_None)
+        if (myError == CE_Failure || CPLGetLastErrorNo()==CPLE_NotSupported  )
         {
            //something bad happenend
            //QString myString = QString (CPLGetLastError());
            QMessageBox myMessageBox( tr("Building pyramids failed."),
-                              "Building pyramid overviews is only supported on certain types of raster.",
+                              tr("Building pyramid overviews is not supported on this type of raster."),
                               QMessageBox::Warning,
                               QMessageBox::Ok,
                               QMessageBox::NoButton,
