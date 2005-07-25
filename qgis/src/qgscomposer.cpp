@@ -421,12 +421,12 @@ void QgsComposer::print(void)
           }
           f.close();
         }
+#endif
       } 
       catch (QgsIOException e) 
       {
         QMessageBox::warning(this,"File IO Error", e.what());
       }
-#endif
     } else {  // print to printer
 	bool print = true;
 
