@@ -51,7 +51,6 @@ QgsMapLayer::QgsMapLayer(int type,
 	  mLegendLayerFile(0),
 	  layerType(type),
 	  dataSource(source),
-	  m_legendItem(0),
 	  m_visible(true),
 	  mShowInOverview(false),
 	  mShowInOverviewItemId(0),
@@ -443,21 +442,6 @@ const int &QgsMapLayer::featureType()
 void QgsMapLayer::setFeatureType(const int &_newVal)
 {
     geometryType = _newVal;
-}
-
-QPixmap *QgsMapLayer::legendPixmap()
-{
-    return &m_legendPixmap;
-}
-
-QgsLegendItem *QgsMapLayer::legendItem()
-{
-    return m_legendItem;
-}
-
-void QgsMapLayer::setLegendItem(QgsLegendItem * li)
-{
-    m_legendItem = li;
 }
 
 QPopupMenu *QgsMapLayer::contextMenu()

@@ -740,10 +740,7 @@ public:
     /** \brief Get a legend image for this layer.  */
     QPixmap getLegendQPixmap();
     /** \brief  Overloaded version of above function that can print layer name onto legend. */
-    QPixmap getLegendQPixmap(bool);
-    /** \brief Similar to above but returns a pointer. Implemented for qgsmaplayer interface. 
-     * Always overlays legend name!*/
-    QPixmap * legendPixmap(); 
+    QPixmap getLegendQPixmap(bool); 
     
     /** \brief Use this method when you want an annotated legend suitable for print output etc. 
      * @param int theLabelCountInt Number of vertical labels to display (defaults to 3)

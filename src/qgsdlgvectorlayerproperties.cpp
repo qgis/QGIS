@@ -46,22 +46,15 @@
 #endif
 #include "qgsvectorlayer.h"
 #include "qgssinglesymrenderer.h"
-#include "qgsgraduatedmarenderer.h"
 #include "qgsgraduatedsymrenderer.h"
 #include "qgscontinuouscolrenderer.h"
 #include "qgsuniquevalrenderer.h"
-#include "qgsuvalmarenderer.h"
-#include "qgssimarenderer.h"
-#include "qgssimadialog.h"
 #include "qgslegenditem.h"
 #include "qgssisydialog.h"
-#include "qgsgramadialog.h"
 #include "qgsgrasydialog.h"
 #include "qgscontcoldialog.h"
 #include "qgsuvaldialog.h"
-#include "qgsuvalmadialog.h"
 #include "qobjectlist.h"
-#include "qgsgramadialog.h"
 #include "qgslabelattributes.h"
 #include "qgslabel.h"
 #include "qgslabeldialog.h"
@@ -385,9 +378,6 @@ void QgsDlgVectorLayerProperties::pbnApply_clicked()
   QgsGraSyDialog *gdialog = dynamic_cast < QgsGraSyDialog * >(widgetStackRenderers->visibleWidget());
   QgsContColDialog *cdialog = dynamic_cast < QgsContColDialog * >(widgetStackRenderers->visibleWidget());
   QgsUValDialog* udialog = dynamic_cast< QgsUValDialog * >(widgetStackRenderers->visibleWidget()); 
-  /*QgsSiMaDialog* smdialog = dynamic_cast < QgsSiMaDialog * >(layer->rendererDialog());
-  QgsGraMaDialog* gmdialog = dynamic_cast< QgsGraMaDialog * >(layer->rendererDialog());
-  QgsUValMaDialog* umdialog = dynamic_cast< QgsUValMaDialog * > (layer->rendererDialog());*/
 
   if (sdialog)
     {

@@ -59,12 +59,9 @@
 #include "qgsrangerenderitem.h"
 
 #include "qgscontinuouscolrenderer.h"
-#include "qgsgraduatedmarenderer.h"
 #include "qgsgraduatedsymrenderer.h"
-#include "qgssimarenderer.h"
 #include "qgssinglesymrenderer.h"
 #include "qgsuniquevalrenderer.h"
-#include "qgsuvalmarenderer.h"
 #include "qgssvgcache.h"
 #include "qgsmarkercatalogue.h"
 
@@ -304,10 +301,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 
 	    // QgsContinuousColRenderer is not supported yet
 	    // QgsSiMaRenderer, QgsGraduatedMaRenderer, QgsUValMaRenderer no more
-	    if ( typeid (*renderer) == typeid(QgsContinuousColRenderer) ||
-		 typeid (*renderer) == typeid(QgsSiMaRenderer) ||
-		 typeid (*renderer) == typeid(QgsGraduatedMaRenderer) ||
-		 typeid (*renderer) == typeid(QgsUValMaRenderer) )
+	    if ( typeid (*renderer) == typeid(QgsContinuousColRenderer) )
 	    { 
 		continue;
 	    }
