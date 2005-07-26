@@ -3799,6 +3799,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
         {
            //something bad happenend
            //QString myString = QString (CPLGetLastError());
+           QApplication::restoreOverrideCursor();
            QMessageBox myMessageBox( tr("Building pyramids failed."),
                               tr("Building pyramid overviews is not supported on this type of raster."),
                               QMessageBox::Warning,
@@ -3809,7 +3810,6 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
             delete gdalDataset;
             gdalDataset = (GDALDataset *) GDALOpen(dataSource.local8Bit(), GA_ReadOnly);
             emit setProgress(0,0);
-            QApplication::restoreOverrideCursor();
             return;
         }
         myCountInt++;
