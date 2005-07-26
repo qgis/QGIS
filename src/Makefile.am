@@ -94,10 +94,7 @@ headers =	qgisapp.h					\
 		qgsgeometry.h					\
 		qgsgeometryvertexindex.h			\
 		qgsgeomtypedialog.h				\
-		qgsgraduatedmarenderer.h			\
 		qgsgraduatedsymrenderer.h			\
-		qgsgramadialog.h				\
-		qgsgramaextensionwidget.h			\
 		qgsgrasydialog.h				\
 		qgshelpviewer.h					\
 		qgsidentifyresults.h				\
@@ -143,8 +140,6 @@ headers =	qgisapp.h					\
 		qgsrunprocess.h					\
 		qgsscalecalculator.h				\
 		qgsserversourceselect.h				\
-		qgssimadialog.h					\
-		qgssimarenderer.h				\
 		qgssinglesymrenderer.h				\
 		qgssisydialog.h					\
 		qgsspatialrefsys.h	\
@@ -154,8 +149,6 @@ headers =	qgisapp.h					\
 		qgssymbologyutils.h				\
 		qgsuniquevalrenderer.h				\
 		qgsuvaldialog.h					\
-		qgsuvalmadialog.h				\
-		qgsuvalmarenderer.h				\
 		qgsvectordataprovider.h				\
 		qgsvectorfilewriter.h				\
 		qgsvectorlayer.h				\
@@ -188,7 +181,6 @@ qgis_UIC =	qgisappbase.ui				\
 		qgsdelattrdialogbase.ui			\
 		qgsdlgvectorlayerpropertiesbase.ui	\
 		qgsgeomtypedialogbase.ui		\
-		qgsgramadialogbase.ui			\
 		qgsgrasydialogbase.ui			\
 		qgshelpviewerbase.ui			\
 		qgsidentifyresultsbase.ui		\
@@ -207,13 +199,11 @@ qgis_UIC =	qgisappbase.ui				\
 		qgsprojectpropertiesbase.ui		\
 		qgsrasterlayerpropertiesbase.ui		\
 		qgsserversourceselectbase.ui		\
-		qgssimadialogbase.ui			\
 		qgssisydialogbase.ui			\
 		qgsuvaldialogbase.ui			\
 		qgslayerprojectionselectorbase.ui \
 		$(WIDGETPATH)/projectionselector/qgsprojectionselectorbase.ui \
 		qgscustomprojectiondialogbase.ui \
-		qgsuvalmadialogbase.ui			\
 		qgspointstylewidgetbase.ui		\
 		qgsfillstylewidgetbase.ui		\
 		qgslinestylewidgetbase.ui
@@ -269,8 +259,6 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsencodingfiledialog.moc.cpp		\
 		qgsfillstylewidget.moc.cpp		\
 		qgsgeomtypedialog.moc.cpp		\
-		qgsgramadialog.moc.cpp			\
-		qgsgramaextensionwidget.moc.cpp		\
 		qgsgrasydialog.moc.cpp			\
 		qgshelpviewer.moc.cpp			\
 		qgsidentifyresults.moc.cpp		\
@@ -298,10 +286,8 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsrasterlayerproperties.moc.cpp	\
 		qgsrunprocess.moc.cpp			\
 		qgsserversourceselect.moc.cpp		\
-		qgssimadialog.moc.cpp			\
 		qgssisydialog.moc.cpp			\
 		qgsuvaldialog.moc.cpp			\
-		qgsuvalmadialog.moc.cpp			\
 		qgsvectordataprovider.moc.cpp		\
 		qgsvectorlayer.moc.cpp			\
 		splashscreen.moc.cpp		\
@@ -350,10 +336,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsgeometry.cpp			\
 		qgsgeometryvertexindex.cpp	\
 		qgsgeomtypedialog.cpp		\
-		qgsgraduatedmarenderer.cpp	\
 		qgsgraduatedsymrenderer.cpp	\
-		qgsgramadialog.cpp		\
-		qgsgramaextensionwidget.cpp	\
 		qgsgrasydialog.cpp		\
 		qgshelpviewer.cpp		\
 		qgsidentifyresults.cpp		\
@@ -403,8 +386,6 @@ qgis_SOURCES =	main.cpp			\
 		qgsrunprocess.cpp		\
 		qgsscalecalculator.cpp		\
 		qgsserversourceselect.cpp	\
-		qgssimadialog.cpp		\
-		qgssimarenderer.cpp		\
 		qgssinglesymrenderer.cpp	\
 		qgssisydialog.cpp		\
 		qgsspatialrefsys.cpp	\
@@ -413,8 +394,6 @@ qgis_SOURCES =	main.cpp			\
 		qgssymbologyutils.cpp		\
 		qgsuniquevalrenderer.cpp	\
 		qgsuvaldialog.cpp		\
-		qgsuvalmadialog.cpp		\
-		qgsuvalmarenderer.cpp		\
 		qgsvectordataprovider.cpp	\
 		qgsvectorfilewriter.cpp		\
 		qgsvectorlayer.cpp		\
@@ -521,7 +500,6 @@ libqgis_la_SOURCES =						\
 		qgsfillstylewidgetbase.uic.cpp			\
 		qgsgeometry.cpp					\
 		qgsgeometryvertexindex.cpp			\
-		qgsgraduatedmarenderer.cpp			\
 		qgsgraduatedsymrenderer.cpp			\
 		qgslabel.cpp					\
 		qgslinestylewidget.cpp				\
@@ -556,12 +534,10 @@ libqgis_la_SOURCES =						\
 		qgsrunprocess.cpp				\
 		qgsrunprocess.moc.cpp				\
 		qgsscalecalculator.cpp				\
-		qgssimarenderer.cpp				\
 		qgssinglesymrenderer.cpp			\
 		qgsspatialrefsys.cpp				\
 		qgssymbol.cpp					\
 		qgsuniquevalrenderer.cpp			\
-		qgsuvalmarenderer.cpp				\
 		qgsvectordataprovider.cpp			\
 		qgsvectordataprovider.moc.cpp			\
 		qgsvectorfilewriter.cpp				\

@@ -3578,15 +3578,6 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCountInt=3)
 
 }//end of getDetailedLegend
 
-//similar to above but returns a pointer. Implemented for qgsmaplayer interface
-QPixmap *QgsRasterLayer::legendPixmap()
-{
-  m_legendPixmap=getLegendQPixmap(true);
-  //m_legendPixmap=getDetailedLegendQPixmap();
-  return &m_legendPixmap;
-}
-
-
 // Useful for Provider mode
 
 QStringList QgsRasterLayer::subLayers()
