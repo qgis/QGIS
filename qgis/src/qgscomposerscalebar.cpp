@@ -59,12 +59,9 @@
 #include "qgsrangerenderitem.h"
 
 #include "qgscontinuouscolrenderer.h"
-#include "qgsgraduatedmarenderer.h"
 #include "qgsgraduatedsymrenderer.h"
-#include "qgssimarenderer.h"
 #include "qgssinglesymrenderer.h"
 #include "qgsuniquevalrenderer.h"
-#include "qgsuvalmarenderer.h"
 #include "qgssvgcache.h"
 
 QgsComposerScalebar::QgsComposerScalebar ( QgsComposition *composition, int id, 

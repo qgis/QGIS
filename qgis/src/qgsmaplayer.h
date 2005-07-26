@@ -192,9 +192,6 @@ public:
     /**Shows the properties dialog for the map layer*/
     virtual void showLayerProperties() = 0;
 
-    /**Returns a pointer to the legend pixmap*/
-    virtual QPixmap *legendPixmap();
-
     /**
         All inherited layers must be able to display a conext menu if requested
 
@@ -211,12 +208,6 @@ public:
     {
         // NOP; children can optionally over-ride
     }
-
-    /**Returns a pointer to the legend item*/
-    QgsLegendItem *legendItem();
-
-    /**Sets the pointer to the legend item*/
-    void setLegendItem(QgsLegendItem * li);
 
     void setLegendLayerFile(QgsLegendLayerFile* llf) {mLegendLayerFile = llf;}
 
@@ -389,12 +380,6 @@ protected:
     //! Geometry type as defined in enum WKBTYPE (qgis.h)
     int geometryType;
 
-    /**Pointer to the legend item for this layer*/
-    QgsLegendItem *m_legendItem;
-
-    /**Pixmap used in the legend item*/
-    QPixmap m_legendPixmap;
-    //
     //! A little pixmap to show if this layer is represented in overview or now
     QPixmap mInOverviewPixmap;
 

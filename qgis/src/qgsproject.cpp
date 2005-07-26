@@ -29,8 +29,6 @@ using namespace std;
 #include "qgssinglesymrenderer.h"
 #include "qgsgraduatedsymrenderer.h"
 #include "qgscontinuouscolrenderer.h"
-#include "qgssimarenderer.h"
-#include "qgsgraduatedmarenderer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsexception.h"
 #include "qgsprojectproperty.h"
