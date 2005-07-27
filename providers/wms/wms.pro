@@ -12,5 +12,7 @@ LIBS += ..\..\src\libqgis.lib \
 CONFIG += qt dll thread
 DLLDESTDIR= ..\..\win_build\lib\qgis
 # Input
-HEADERS += qgswmsprovider.h
-SOURCES += qgswmsprovider.cpp
+HEADERS += qgshttptransaction.h \
+	qgswmsprovider.h
+SOURCES += qgshttptransaction.cpp \
+	qgswmsprovider.cpp
