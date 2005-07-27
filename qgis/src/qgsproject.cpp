@@ -350,9 +350,8 @@ QgsProject * QgsProject::theProject_;
       */ 
      void clear()
      {
- #ifdef QGISDEBUG
-         std::cout << "Clearing project properties Impl->clear();" << std::endl;
- #endif
+         QgsDebug( "Clearing project properties Impl->clear();" );
+
          properties_.clearKeys();
          mapUnits = QGis::METERS;
          title = "";
@@ -683,6 +682,8 @@ static void _getTitle(QDomDocument const &doc, QString & title)
 {
     QDomNodeList nl = doc.elementsByTagName("title");
 
+    title = "";                 // by default the title will be empty
+
     if (!nl.count())
     {
         qDebug("%s : %d %s", __FILE__, __LINE__, " unable to find title element\n");
@@ -711,6 +712,27 @@ static void _getTitle(QDomDocument const &doc, QString & title)
 
 } // _getTitle
 
+
+/** return the version string found in the given DOM document
+
+   @returns the version string or an empty string if none found
+ */
+static QString _getVersion(QDomDocument const &doc)
+{
+    QDomNodeList nl = doc.elementsByTagName("qgis");
+
+    if (!nl.count())
+    {
+        QgsDebug(" unable to find qgis element in project file");
+        return "";
+    }
+    
+    QDomNode qgisNode = nl.item(0);  // there should only be one, so zeroth element ok
+
+    QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
+
+    return qgisElement.attribute("version");
+} // _getVersion
 
 
 /**
@@ -1064,6 +1086,20 @@ bool QgsProject::read()
     // now get project title
     _getTitle(*doc, imp_->title);
 
+    // get project version string, if any
+    QString fileVersion = _getVersion(*doc);
+
+    if ( fileVersion.isNull() )
+    {
+        QgsDebug( "project file has no version string" );
+    }
+    else
+    {
+        QgsDebug( QString("project file has version " + fileVersion).ascii() );
+    }
+
+    // XXX some day insert version checking
+
 #ifdef QGISDEBUG
     qDebug(("Project title: " + imp_->title).local8Bit());
 #endif
@@ -1225,7 +1261,7 @@ bool QgsProject::write()
 
   QDomElement qgisNode = doc->createElement("qgis");
   qgisNode.setAttribute("projectname", title());
-  qgisNode.setAttribute("version",QString("%1").arg(QGis::qgisVersion) );
+  qgisNode.setAttribute("version", QString("%1").arg(QGis::qgisVersion));
 
   doc->appendChild(qgisNode);
 
