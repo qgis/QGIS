@@ -28,7 +28,6 @@
 #include <qpicture.h>
 #include <qdom.h>
 
-class QListViewItem;
 class QString;
 
 /**Encapsulates settings for drawing (QPen, QBrush, Point symbol) and classification
@@ -109,8 +108,8 @@ class QgsSymbol{
     /**Reads the contents of the symbol from a configuration file
      @ return true in case of success*/
     virtual bool readXML( QDomNode & symbol );
-    /**Creates an item for the legend with a pixmap and text as a subitem for 'parent'*/
-    void createLegendItem(QListViewItem* parent);
+    /**Returns if this symbol is point/ line or polygon*/
+    QGis::VectorType type() {return mType;}
 
  protected:
     /**Lower value for classification*/

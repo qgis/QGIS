@@ -40,6 +40,32 @@ QgsUniqueValRenderer::QgsUniqueValRenderer(QGis::VectorType type): mClassificati
 
 }
 
+QgsUniqueValRenderer::QgsUniqueValRenderer(const QgsUniqueValRenderer& other)
+{
+    mVectorType = other.mVectorType;
+    mClassificationField = other.mClassificationField;
+    for(std::map<QString, QgsSymbol*>::iterator it=mSymbols.begin(); it!=mSymbols.end(); ++it)
+    {
+	QgsSymbol* s = new QgsSymbol(*(it->second));
+	insertValue(it->first, s);
+    }
+}
+
+QgsUniqueValRenderer& QgsUniqueValRenderer::operator=(const QgsUniqueValRenderer& other)
+{
+    if(this != &other)
+    {
+	mVectorType = other.mVectorType;
+	mClassificationField = other.mClassificationField;
+	clearValues();
+	for(std::map<QString, QgsSymbol*>::iterator it=mSymbols.begin(); it!=mSymbols.end(); ++it)
+	{
+	    QgsSymbol* s = new QgsSymbol(*(it->second));
+	    insertValue(it->first, s);
+	}
+    }
+}
+
 QgsUniqueValRenderer::~QgsUniqueValRenderer()
 {
     for(std::map<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
@@ -150,19 +176,19 @@ void QgsUniqueValRenderer::clearValues()
     mSymbols.clear();
 }
 
-QString QgsUniqueValRenderer::name()
+QString QgsUniqueValRenderer::name() const
 {
     return "Unique Value";
 }
 
-std::list<int> QgsUniqueValRenderer::classificationAttributes()
+std::list<int> QgsUniqueValRenderer::classificationAttributes() const
 {
     std::list<int> list;
     list.push_back(mClassificationField);
     return list;
 }
 
-bool QgsUniqueValRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
+bool QgsUniqueValRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
 {
     bool returnval=true;
     QDomElement uniquevalue=document.createElement("uniquevalue");
@@ -171,7 +197,7 @@ bool QgsUniqueValRenderer::writeXML( QDomNode & layer_node, QDomDocument & docum
     QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
     classificationfield.appendChild(classificationfieldtxt);
     uniquevalue.appendChild(classificationfield);
-    for(std::map<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
+    for(std::map<QString,QgsSymbol*>::const_iterator it=mSymbols.begin();it!=mSymbols.end();++it)
     {
 	if(!(it->second)->writeXML(uniquevalue,document))
 	{
@@ -179,4 +205,10 @@ bool QgsUniqueValRenderer::writeXML( QDomNode & layer_node, QDomDocument & docum
 	}
     }
     return returnval;
+}
+
+QgsRenderer* QgsUniqueValRenderer::clone() const
+{
+    QgsUniqueValRenderer* r = new QgsUniqueValRenderer(*this);
+    return r;
 }

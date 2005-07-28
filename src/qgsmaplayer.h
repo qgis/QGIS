@@ -272,6 +272,12 @@ public:
     /**Refresh the symbology part of the legend. Specific implementations have to be provided by subclasses*/
     virtual void refreshLegend() = 0;
 
+    /**Copies the symbology settings from another layer. Returns true in case of success*/
+    virtual bool copySymbologySettings(const QgsMapLayer& other) = 0;
+
+    /**Returns true if this layer can be in the same symbology group with another layer*/
+    virtual bool isSymbologyCompatible(const QgsMapLayer& other) const = 0;
+
     virtual std::vector < QgsField > const &fields() const;
 
 public  slots:

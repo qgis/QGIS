@@ -798,7 +798,12 @@ public:
     /**Refresh the symbology part of the legend
      by adding a child item to mLegendSymbologyGroupParent*/
     void refreshLegend();
-    
+
+    /**Copies the symbology settings from another layer. Returns true in case of success*/
+    bool copySymbologySettings(const QgsMapLayer& other) {return false;} //todo
+
+    bool isSymbologyCompatible(const QgsMapLayer& other) const {return false;} //todo
+
 public slots:    
 
     /** sets whether this is in overview or not */

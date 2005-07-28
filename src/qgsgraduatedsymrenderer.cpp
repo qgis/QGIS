@@ -35,6 +35,32 @@ QgsGraduatedSymRenderer::QgsGraduatedSymRenderer(QGis::VectorType type)
     initialiseSelectionColor();
 }
 
+QgsGraduatedSymRenderer::QgsGraduatedSymRenderer(const QgsGraduatedSymRenderer& other)
+{
+    mVectorType = other.mVectorType;
+    mClassificationField = other.mClassificationField;
+    const std::list<QgsSymbol*> s = other.symbols();
+    for(std::list<QgsSymbol*>::const_iterator it=s.begin(); it!=s.end(); ++it)
+    {
+	addSymbol(new QgsSymbol(**it));
+    }
+}
+
+QgsGraduatedSymRenderer& QgsGraduatedSymRenderer::operator=(const QgsGraduatedSymRenderer& other)
+{
+    if(this != &other)
+    {
+	mVectorType = other.mVectorType; 
+	mClassificationField = other.mClassificationField;
+	removeSymbols();
+	const std::list<QgsSymbol*> s = other.symbols();
+	for(std::list<QgsSymbol*>::const_iterator it=s.begin(); it!=s.end(); ++it)
+	{
+	    addSymbol(new QgsSymbol(**it));
+	}
+    }
+}
+
 QgsGraduatedSymRenderer::~QgsGraduatedSymRenderer()
 {
  
@@ -136,19 +162,19 @@ void QgsGraduatedSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     vl.setRenderer(this);
 }
 
-std::list<int> QgsGraduatedSymRenderer::classificationAttributes()
+std::list<int> QgsGraduatedSymRenderer::classificationAttributes() const
 {
     std::list<int> list;
     list.push_back(mClassificationField);
     return list;
 }
 
-QString QgsGraduatedSymRenderer::name()
+QString QgsGraduatedSymRenderer::name() const
 {
     return "Graduated Symbol";
 }
 
-bool QgsGraduatedSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
+bool QgsGraduatedSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
 {
     bool returnval=true;
     QDomElement graduatedsymbol=document.createElement("graduatedsymbol");
@@ -157,7 +183,7 @@ bool QgsGraduatedSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & do
     QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
     classificationfield.appendChild(classificationfieldtxt);
     graduatedsymbol.appendChild(classificationfield);
-    for(std::list<QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
+    for(std::list<QgsSymbol*>::const_iterator it=mSymbols.begin();it!=mSymbols.end();++it)
     {
 	if(!(*it)->writeXML(graduatedsymbol,document))
 	{
@@ -165,4 +191,10 @@ bool QgsGraduatedSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & do
 	}
     }
     return returnval;
+}
+
+QgsRenderer* QgsGraduatedSymRenderer::clone() const
+{
+    QgsGraduatedSymRenderer* r = new QgsGraduatedSymRenderer(*this);
+    return r;
 }
