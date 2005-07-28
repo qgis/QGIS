@@ -1402,7 +1402,7 @@ void QgsVectorLayer::setRenderer(QgsRenderer * r)
   }
 }
 
-QGis::VectorType QgsVectorLayer::vectorType()
+QGis::VectorType QgsVectorLayer::vectorType() const
 {
   if (dataProvider)
   {
@@ -2518,7 +2518,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
   // renderer specific settings
 
-  QgsRenderer * myRenderer;
+  const QgsRenderer * myRenderer;
   if( myRenderer = renderer())
   {
     myRenderer->writeXML(layer_node, document);
@@ -2893,45 +2893,88 @@ bool QgsVectorLayer::addFeatures(std::vector<QgsFeature*>* features, bool makeSe
 
 void QgsVectorLayer::refreshLegend()
 {
-    if(mLegendSymbologyGroupParent)
+    if(mLegendSymbologyGroupParent && m_renderer)
     {
-	//first remove the existing child items
-	QListViewItem* tmp;
-	QListViewItem* myChild = mLegendSymbologyGroupParent->firstChild();
+	m_renderer->refreshLegend(mLegendSymbologyGroupParent);
+    }
 
-        while( myChild ) 
+    //create an item for each classification field (currently only one for all renderers)
+    if(m_renderer)
+    {
+	if(m_renderer->needsAttributes())
 	{
-            tmp=myChild;
-            myChild = myChild->nextSibling();
-	    delete tmp;
-        }
-
-	//add the new items
-	if(m_renderer)
-	{
-	    //create an list view item for each renderer item
-	    //they have to be added in reverse order to the QListView
-	    const std::list<QgsSymbol*> sym = m_renderer->symbols();
-	    for(std::list<QgsSymbol*>::const_reverse_iterator it = sym.rbegin(); it!= sym.rend(); ++it)
+	    std::list<int> classfieldlist = m_renderer->classificationAttributes();
+	    for(std::list<int>::reverse_iterator it = classfieldlist.rbegin(); it!=classfieldlist.rend(); ++it)
 	    {
-		(*it)->createLegendItem(mLegendSymbologyGroupParent);
-	    }
-
-	    //create an item for each classification field (currently only one for all renderers)
-	    if(m_renderer->needsAttributes())
-	    {
-		std::list<int> classfieldlist = m_renderer->classificationAttributes();
-		for(std::list<int>::reverse_iterator it = classfieldlist.rbegin(); it!=classfieldlist.rend(); ++it)
-		{
-		    const QgsField theField = (dataProvider->fields())[*it];
-		    QString classfieldname = theField.name();
-		    QgsLegendVectorSymbologyItem* item = new QgsLegendVectorSymbologyItem(mLegendSymbologyGroupParent, classfieldname);
-		}
+		const QgsField theField = (dataProvider->fields())[*it];
+		QString classfieldname = theField.name();
+		QgsLegendVectorSymbologyItem* item = new QgsLegendVectorSymbologyItem(mLegendSymbologyGroupParent, classfieldname);
 	    }
 	}
     }
 }
 
+bool QgsVectorLayer::copySymbologySettings(const QgsMapLayer& other)
+{
+    const QgsVectorLayer* vl = dynamic_cast<const QgsVectorLayer*>(&other);
+    if(!vl)
+    {
+	return false;
+    }
+    delete m_renderer;
+    QgsRenderer* r = vl->m_renderer;
+    if(r)
+    {
+	m_renderer = r->clone();
+	return true;
+    }
+    else
+    {
+	return false;
+    }
+}
+
+bool QgsVectorLayer::isSymbologyCompatible(const QgsMapLayer& other) const
+{
+   const QgsVectorLayer* vl = dynamic_cast<const QgsVectorLayer*>(&other);
+    if(!vl)
+    {
+	return false;
+    }
+    
+    //vector type must be the same
+    if(vectorType() != vl->vectorType())
+    {
+	return false;
+    }
+    //attributes must be the same
+    if(dataProvider && vl->dataProvider)
+    {
+	const std::vector<QgsField> fields1 = dataProvider->fields();
+	const std::vector<QgsField> fields2 = vl->dataProvider->fields();
+	
+	if(fields1.size() != fields2.size())
+	{
+	    return false;
+	}
+
+        //compare if equal
+	std::vector<QgsField>::const_iterator it1;
+	std::vector<QgsField>::const_iterator it2;
+	for(it1 = fields1.begin(), it2 = fields2.begin(); (it1 != fields1.end())&&(it2 != fields2.end()); ++it1, ++it2)
+	{
+	    if( *it1 != *it2)
+	    {
+		return false;
+	    }
+	}
+	return true;
+    }
+    else
+    {
+	return false;
+    }
+}
 
 bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
 {

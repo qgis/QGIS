@@ -297,7 +297,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	    int group2 = layerGroup ( layerId2 );
 	    
 	    QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer2);
-	    QgsRenderer *renderer = vector->renderer();
+	    const QgsRenderer *renderer = vector->renderer();
 
 	    // QgsContinuousColRenderer is not supported yet
 	    // QgsSiMaRenderer, QgsGraduatedMaRenderer, QgsUValMaRenderer no more
@@ -394,7 +394,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	
 	layer = mMapCanvas->getZpos(groupLayers[j]);
 	QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer);
-	QgsRenderer *renderer = vector->renderer();
+	const QgsRenderer *renderer = vector->renderer();
 	
 	// Symbol
 	std::list<QgsSymbol*> symbols = renderer->symbols();

@@ -32,6 +32,27 @@ QgsContinuousColRenderer::QgsContinuousColRenderer(QGis::VectorType type): mMini
     initialiseSelectionColor();
 }
 
+QgsContinuousColRenderer::QgsContinuousColRenderer(const QgsContinuousColRenderer& other)
+{
+    mVectorType = other.mVectorType;
+    mClassificationField = other.mClassificationField;
+    mMinimumSymbol = new QgsSymbol(*other.mMinimumSymbol);
+    mMaximumSymbol = new QgsSymbol(*other.mMaximumSymbol);
+}
+
+QgsContinuousColRenderer& QgsContinuousColRenderer::operator=(const QgsContinuousColRenderer& other)
+{
+    if(this != &other)
+    {
+	mVectorType = other.mVectorType;
+	mClassificationField = other.mClassificationField;
+	delete mMinimumSymbol;
+	delete mMaximumSymbol;
+	mMinimumSymbol = new QgsSymbol(*other.mMinimumSymbol);
+	mMaximumSymbol = new QgsSymbol(*other.mMaximumSymbol);
+    }
+}
+
 QgsContinuousColRenderer::~QgsContinuousColRenderer()
 {
   delete mMinimumSymbol;
@@ -169,19 +190,19 @@ void QgsContinuousColRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl
     vl.setRenderer(this);
 }
 
-std::list<int> QgsContinuousColRenderer::classificationAttributes()
+std::list<int> QgsContinuousColRenderer::classificationAttributes() const
 {
     std::list<int> list;
     list.push_back(mClassificationField);
     return list;
 }
 
-QString QgsContinuousColRenderer::name()
+QString QgsContinuousColRenderer::name() const
 {
     return "Continuous Color";
 }
 
-bool QgsContinuousColRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
+bool QgsContinuousColRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
 {
     bool returnval=true;
     QDomElement continuoussymbol=document.createElement("continuoussymbol");
@@ -210,4 +231,10 @@ const std::list<QgsSymbol*> QgsContinuousColRenderer::symbols() const
     list.push_back(mMinimumSymbol);
     list.push_back(mMaximumSymbol);
     return list;
+}
+
+QgsRenderer* QgsContinuousColRenderer::clone() const
+{
+    QgsContinuousColRenderer* r = new QgsContinuousColRenderer(*this);
+    return r;
 }

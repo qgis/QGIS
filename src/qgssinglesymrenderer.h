@@ -33,6 +33,8 @@ class QgsSingleSymRenderer: public QgsRenderer
 {
  public:
     QgsSingleSymRenderer(QGis::VectorType type);
+    QgsSingleSymRenderer(const QgsSingleSymRenderer& other);
+    QgsSingleSymRenderer& operator=(const QgsSingleSymRenderer& other);
     virtual ~QgsSingleSymRenderer();
     /**Replaces the current mSymbol by sy*/
     void addSymbol(QgsSymbol* sy);
@@ -48,15 +50,17 @@ class QgsSingleSymRenderer: public QgsRenderer
     /*virtual void writeXML(std::ostream& xml);*/
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document );
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document ) const;
     /**Returns false, no attributes neede for single symbol*/
-    bool needsAttributes();
+    bool needsAttributes() const;
     /**Returns an empty list, since no classification attributes are used*/
-    virtual std::list<int> classificationAttributes();
+    virtual std::list<int> classificationAttributes() const;
     /**Returns the renderers name*/
-    virtual QString name();
+    virtual QString name() const;
     /**Returns a list containing mSymbol*/
     const std::list<QgsSymbol*> symbols() const;
+    /**Returns a deep copy of this renderer*/
+    QgsRenderer* clone() const;
  protected:
     /**Object containing symbology information*/
     QgsSymbol* mSymbol;
@@ -67,7 +71,8 @@ inline QgsSymbol* QgsSingleSymRenderer::symbol()
     return mSymbol;
 }
 
-inline bool QgsSingleSymRenderer::needsAttributes(){
+inline bool QgsSingleSymRenderer::needsAttributes() const
+{
   return false;
 }
 

@@ -58,6 +58,22 @@ QgsSingleSymRenderer::QgsSingleSymRenderer(QGis::VectorType type)
     mSymbol=sy;
 }
 
+QgsSingleSymRenderer::QgsSingleSymRenderer(const QgsSingleSymRenderer& other)
+{
+    mVectorType = other.mVectorType;
+    mSymbol = new QgsSymbol(*other.mSymbol);
+}
+
+QgsSingleSymRenderer& QgsSingleSymRenderer::operator=(const QgsSingleSymRenderer& other)
+{
+    if(this!=&other)
+    {
+	mVectorType = other.mVectorType;
+	delete mSymbol;
+	mSymbol = new QgsSymbol(*other.mSymbol);
+    }
+}
+
 QgsSingleSymRenderer::~QgsSingleSymRenderer()
 {
     delete mSymbol;
@@ -125,7 +141,7 @@ void QgsSingleSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     vl.setRenderer(this);
 }
 
-bool QgsSingleSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & document )
+bool QgsSingleSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
 {
   bool returnval=false;
   QDomElement singlesymbol=document.createElement("singlesymbol");
@@ -138,13 +154,13 @@ bool QgsSingleSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & docum
 }
 
 
-std::list<int> QgsSingleSymRenderer::classificationAttributes()
+std::list<int> QgsSingleSymRenderer::classificationAttributes() const
 {
   std::list<int> list;
   return list;//return an empty list
 }
 
-QString QgsSingleSymRenderer::name()
+QString QgsSingleSymRenderer::name() const
 {
   return "Single Symbol";
 }
@@ -156,3 +172,8 @@ const std::list<QgsSymbol*> QgsSingleSymRenderer::symbols() const
     return list;
 }
 
+QgsRenderer* QgsSingleSymRenderer::clone() const
+{
+    QgsSingleSymRenderer* r = new QgsSingleSymRenderer(*this);
+    return r;
+}

@@ -36,6 +36,17 @@ QgsField::~QgsField()
 {
 }
 
+bool QgsField::operator==(const QgsField other) const
+{
+    return ((mName == other.mName) && (mType == other.mType)
+	    && (mLength == other.mLength) && (mPrecision == other.mPrecision));
+}
+
+bool QgsField::operator!=(const QgsField other) const
+{
+    return !(*this == other);
+}
+
 QString const & QgsField::name() const
 {
   return mName;

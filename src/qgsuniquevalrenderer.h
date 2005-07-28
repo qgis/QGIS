@@ -28,6 +28,8 @@ class QgsUniqueValRenderer: public QgsRenderer
 {
  public:
     QgsUniqueValRenderer(QGis::VectorType type);
+    QgsUniqueValRenderer(const QgsUniqueValRenderer& other);
+    QgsUniqueValRenderer& operator=(const QgsUniqueValRenderer& other);
     virtual ~QgsUniqueValRenderer();
     void renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.);
     /**Reads the renderer configuration from an XML file
@@ -36,13 +38,13 @@ class QgsUniqueValRenderer: public QgsRenderer
     void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document );
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document ) const;
     /** Returns true, if attribute values are used by the renderer and false otherwise*/
-    bool needsAttributes();
+    bool needsAttributes() const;
     /**Returns a list with indexes of classification attributes*/
-    std::list<int> classificationAttributes();
+    std::list<int> classificationAttributes() const;
     /**Returns the renderers name*/
-    QString name();
+    QString name() const;
     /**Inserts an entry into mEntries. The render items have to be created with the new operator and are automatically destroyed if not needed anymore*/
     void insertValue(QString name, QgsSymbol* symbol);
     /**Removes all entries from mEntries*/
@@ -53,6 +55,7 @@ class QgsUniqueValRenderer: public QgsRenderer
     int classificationField();
     /**Return symbology items*/
     const std::list<QgsSymbol*> symbols() const;
+    QgsRenderer* clone() const;
  protected:
     /**Field index used for classification*/
     int mClassificationField;
@@ -60,7 +63,7 @@ class QgsUniqueValRenderer: public QgsRenderer
     std::map<QString, QgsSymbol*> mSymbols;
 };
 
-inline bool QgsUniqueValRenderer::needsAttributes()
+inline bool QgsUniqueValRenderer::needsAttributes() const
 {
     return true;
 }
