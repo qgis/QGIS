@@ -33,6 +33,8 @@ class QgsContinuousColRenderer: public QgsRenderer
 {
  public:
     QgsContinuousColRenderer(QGis::VectorType type);
+    QgsContinuousColRenderer(const QgsContinuousColRenderer& other);
+    QgsContinuousColRenderer& operator=(const QgsContinuousColRenderer& other);
     virtual ~QgsContinuousColRenderer();
     /**Renders the feature using the minimum and maximum value of the classification field*/
     void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.);
@@ -54,15 +56,16 @@ class QgsContinuousColRenderer: public QgsRenderer
     virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document );
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document ) const;
     /** Returns true*/
-    bool needsAttributes();
+    bool needsAttributes() const;
     /**Returns a list with the index of the classification attribute*/
-    virtual std::list<int> classificationAttributes();
+    virtual std::list<int> classificationAttributes() const;
     /**Returns the renderers name*/
-    QString name();
+    QString name() const;
     /**Return symbology items*/
     const std::list<QgsSymbol*> symbols() const;
+    QgsRenderer* clone() const;
  protected:
     /**Number of the classification field (it must be a numerical field)*/
     int mClassificationField;
@@ -92,7 +95,7 @@ inline QgsSymbol* QgsContinuousColRenderer::maximumSymbol()
     return mMaximumSymbol;
 }
 
-inline bool QgsContinuousColRenderer::needsAttributes()
+inline bool QgsContinuousColRenderer::needsAttributes() const
 {
   return true;
 }

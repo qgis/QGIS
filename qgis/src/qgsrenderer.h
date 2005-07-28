@@ -60,22 +60,28 @@ class QgsRenderer
     // virtual void writeXML(std::ostream& xml)=0;
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document )=0;
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document ) const=0;
     /** Returns true, if attribute values are used by the renderer and false otherwise*/
-    virtual bool needsAttributes()=0;
+    virtual bool needsAttributes() const=0;
     /**Returns a list with indexes of classification attributes*/
-    virtual std::list<int> classificationAttributes()=0;
+    virtual std::list<int> classificationAttributes() const=0;
     /**Returns the renderers name*/
-    virtual QString name()=0;    
+    virtual QString name() const=0;    
     /** Set up the selection color by reading approriate values from project props */
     void initialiseSelectionColor();
     /**Return symbology items*/
     virtual const std::list<QgsSymbol*> symbols() const=0;
+    /**Deletes the child items of the legendparent and add new ones according to the 
+     QgsSymbols contained in this renderer*/
+    virtual void refreshLegend(QListViewItem* legendparent) const;
+    /**Returns a copy of the renderer (a deep copy on the heap)*/
+    virtual QgsRenderer* clone() const=0;
     /**Color to draw selected features - static so we can change it in proj props and automatically 
        all renderers are updated*/
     static QColor mSelectionColor;
-    /**Layer type*/
+   
  protected:
+    /**Layer type*/
     QGis::VectorType mVectorType;
     
 };

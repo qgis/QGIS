@@ -35,14 +35,14 @@ class QgsGraduatedSymRenderer: public QgsRenderer
 {
  public:
     QgsGraduatedSymRenderer(QGis::VectorType type);
+    QgsGraduatedSymRenderer(const QgsGraduatedSymRenderer& other);
+    QgsGraduatedSymRenderer& operator=(const QgsGraduatedSymRenderer& other);
     virtual ~QgsGraduatedSymRenderer();
     /**Adds a new item
     \param sy a pointer to the QgsSymbol to be inserted. It has to be created using the new operator and is automatically destroyed when 'removeItems' is called or when this object is destroyed*/
     void addSymbol(QgsSymbol* sy);
     /**Returns the number of the classification field*/
     int classificationField() const;
-    /**Removes all items*/
-    void removeItems();
     /**Removes all symbols*/
     void removeSymbols();
     /**Renders an OGRFeature
@@ -59,15 +59,16 @@ class QgsGraduatedSymRenderer: public QgsRenderer
     virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document );
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document ) const;
     /** Returns true*/
-    bool needsAttributes();
+    bool needsAttributes() const;
     /**Returns a list with the index to the classification field*/
-    virtual std::list<int> classificationAttributes();
+    virtual std::list<int> classificationAttributes() const;
     /**Returns the renderers name*/
-    QString name();
+    QString name() const;
     /**Returns the symbols of the items*/
     const std::list<QgsSymbol*> symbols() const;
+    QgsRenderer* clone() const;
  protected:
     /**Name of the classification field (it must be a numerical field)*/
     int mClassificationField;
@@ -91,7 +92,7 @@ inline void QgsGraduatedSymRenderer::setClassificationField(int field)
     mClassificationField=field;
 }
 
-inline bool QgsGraduatedSymRenderer::needsAttributes()
+inline bool QgsGraduatedSymRenderer::needsAttributes() const
 {
     return true;
 }

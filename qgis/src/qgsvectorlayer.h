@@ -142,7 +142,12 @@ const QString displayField() const { return fieldIndex; }
   /**Fill the pixmaps and labels of the renderers into the treeview legend*/
   void refreshLegend();
 
-  
+  /**Copies the symbology settings from another layer. Returns true in case of success*/
+  bool copySymbologySettings(const QgsMapLayer& other);
+
+  /**Returns true if this layer can be in the same symbology group with another layer*/
+  bool isSymbologyCompatible(const QgsMapLayer& other) const;
+
 signals:
   /**This signal is emitted when the layer leaves editing mode.
      The purpose is to tell QgsMapCanvas to remove the lines of
@@ -170,7 +175,7 @@ public slots:
   /**Sets m_propertiesDialog*/
   void setLayerProperties(QgsDlgVectorLayerProperties * properties);
   /**Returns point, line or polygon*/
-  QGis::VectorType vectorType();
+  QGis::VectorType vectorType() const;
   /**Returns a pointer to the properties dialog*/
   QgsDlgVectorLayerProperties *propertiesDialog();
   /** Return the context menu for the layer */

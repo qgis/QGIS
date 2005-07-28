@@ -44,6 +44,9 @@ public:
   //! Destructor
    ~QgsField();
 
+   bool operator==(const QgsField other) const;
+   bool operator!=(const QgsField other) const;
+
   //! Gets the name of the field
   QString const & name() const;
 

@@ -19,7 +19,6 @@
 #include <cmath>
 #include <iostream>
 
-#include "qgslegendvectorsymbologyitem.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
 #include "qgssvgcache.h"
@@ -412,42 +411,4 @@ bool QgsSymbol::readXML( QDomNode & synode )
     setFillStyle(QgsSymbologyUtils::qString2BrushStyle(fillpelement.text()));
 
     return true;
-}
-
-void QgsSymbol::createLegendItem(QListViewItem* parent)
-{
-    QgsLegendVectorSymbologyItem* item = new QgsLegendVectorSymbologyItem(parent, "");
-    item->addSymbol(this);
-
-    QPixmap pix; /*todo: insert content to QPixmap*/
-    if(mType == QGis::Point)
-    {
-	pix = getPointSymbolAsPixmap();
-    }
-    else if(mType == QGis::Line)
-    {
-	pix = getLineSymbolAsPixmap();
-    }
-    else //polygon
-    {
-	pix = getPolygonSymbolAsPixmap();
-    }
-
-    item->setPixmap(0, pix);
-    QString values;
-    if(!mLowerValue.isEmpty())
-    {
-	values += mLowerValue;
-    }
-    if(!mUpperValue.isEmpty())
-    {
-	values += " - ";
-	values += mUpperValue;
-    }
-    if(!mLabel.isEmpty())
-    {
-	values += " ";
-	values += mLabel;
-    }
-    item->setText(0, values);
 }
