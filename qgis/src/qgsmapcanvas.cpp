@@ -180,6 +180,7 @@ public:
   {
     mMapUnits = u;
     scaleCalculator->setMapUnits(mMapUnits);
+    QgsProject::instance()->mapUnits(u);
   }
 
   QGis::units mapUnits()
@@ -522,6 +523,9 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
       else
       {
           mCanvasProperties->previousOutputSRS = lyr->coordinateTransform()->destSRS();
+          // While we're here, set the default map units to those
+          // of the destSRS().
+          setMapUnits(lyr->coordinateTransform()->destSRS().mapUnits());
       }
   }
 

@@ -153,6 +153,9 @@ void QgsProjectProperties::mapUnitChange(int unit)
 void QgsProjectProperties::setMapUnits(QGis::units unit)
 {
   // select the button
+  if (unit == QGis::UNKNOWN)
+    unit = QGis::METERS;
+
   btnGrpMapUnits->setButton(static_cast<int>(unit));
   QgsProject::instance()->mapUnits(unit);
 }
