@@ -116,7 +116,10 @@ const QString displayField() const { return fieldIndex; }
   //! Setup the coordinate system tranformation for the layer
   void setCoordinateSystem();
 
-  QgsVectorDataProvider * getDataProvider();
+  QgsVectorDataProvider* getDataProvider();
+
+  /**Sets the textencoding of the data provider*/
+  void setProviderEncoding(const QString& encoding);
 
   /** \brief Query data provider to find out the WKT projection string for this layer. This implements the virtual method of the same name defined in QgsMapLayer*/
   QString getProjectionWKT();
@@ -169,7 +172,7 @@ public slots:
   /**Shows the properties dialog*/
   virtual void showLayerProperties();
   /**Returns a pointer to the renderer*/
-  QgsRenderer *renderer();
+  const QgsRenderer* renderer() const;
   /**Sets the renderer. If a renderer is already present, it is deleted*/
   void setRenderer(QgsRenderer * r);
   /**Sets m_propertiesDialog*/

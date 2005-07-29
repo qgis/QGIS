@@ -1343,9 +1343,17 @@ void QgsVectorLayer::invalidateTableDisplay()
   tabledisplay = 0;
 }
 
-QgsVectorDataProvider * QgsVectorLayer::getDataProvider()
+QgsVectorDataProvider* QgsVectorLayer::getDataProvider()
 {
   return dataProvider;
+}
+
+void QgsVectorLayer::setProviderEncoding(const QString& encoding)
+{
+    if(dataProvider)
+    {
+	dataProvider->setEncoding(encoding);
+    }
 }
 
 
@@ -1384,7 +1392,7 @@ void QgsVectorLayer::showLayerProperties()
 }
 
 
-QgsRenderer *QgsVectorLayer::renderer()
+const QgsRenderer* QgsVectorLayer::renderer() const
 {
   return m_renderer;
 }
@@ -1393,12 +1401,8 @@ void QgsVectorLayer::setRenderer(QgsRenderer * r)
 {
   if (r != m_renderer)
   {
-    if (m_renderer)           //delete any previous renderer
-    {
       delete m_renderer;
-    }
-
-    m_renderer = r;
+      m_renderer = r;
   }
 }
 

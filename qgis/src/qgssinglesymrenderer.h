@@ -39,7 +39,7 @@ class QgsSingleSymRenderer: public QgsRenderer
     /**Replaces the current mSymbol by sy*/
     void addSymbol(QgsSymbol* sy);
     /*Returns a pointer to mSymbol*/
-    QgsSymbol* symbol();
+    const QgsSymbol* symbol() const;
     /**Renders an OGRFeature*/
     void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.);
     /**Reads the renderer configuration from an XML file
@@ -66,7 +66,7 @@ class QgsSingleSymRenderer: public QgsRenderer
     QgsSymbol* mSymbol;
 };
 
-inline QgsSymbol* QgsSingleSymRenderer::symbol()
+inline const QgsSymbol* QgsSingleSymRenderer::symbol() const
 {
     return mSymbol;
 }

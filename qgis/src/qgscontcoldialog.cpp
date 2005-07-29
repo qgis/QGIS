@@ -78,13 +78,13 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer)
     
     //restore the correct colors for minimum and maximum values
     
-    QgsContinuousColRenderer *renderer = dynamic_cast < QgsContinuousColRenderer * >(layer->renderer());;
+    const QgsContinuousColRenderer* renderer = dynamic_cast < const QgsContinuousColRenderer * >(layer->renderer());;
     
     if (renderer)
     {
 	classificationComboBox->setCurrentItem(renderer->classificationField());
-	QgsSymbol* minsymbol = renderer->minimumSymbol();
-	QgsSymbol* maxsymbol = renderer->maximumSymbol();
+	const QgsSymbol* minsymbol = renderer->minimumSymbol();
+	const QgsSymbol* maxsymbol = renderer->maximumSymbol();
 	if (mVectorLayer->vectorType() == QGis::Line || mVectorLayer->vectorType() == QGis::Point)
         {
 	    lblMinValue->setPaletteBackgroundColor(minsymbol->pen().color());

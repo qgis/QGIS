@@ -58,7 +58,7 @@ protected:
     QgsVectorLayer* mVectorLayer;
 public slots:
     /* set from QgsSymbol */
-    void set(QgsSymbol *sy);
+    void set(const QgsSymbol *sy);
     /**applies the changes to the vector layer*/
     void apply();
     /**applies the changes to the QgsSymbol */

@@ -79,9 +79,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
     modeComboBox->insertItem("Equal Interval");
     
     //restore the correct settings
-    QgsGraduatedSymRenderer *renderer;
-    
-    renderer = dynamic_cast < QgsGraduatedSymRenderer * >(layer->renderer());
+    const QgsGraduatedSymRenderer* renderer = dynamic_cast < const QgsGraduatedSymRenderer * >(layer->renderer());
     
     if (renderer)
     {
@@ -167,15 +165,7 @@ void QgsGraSyDialog::apply()
 	    return;
         }
 	
-	QgsGraduatedSymRenderer *renderer = dynamic_cast < QgsGraduatedSymRenderer * >(mVectorLayer->renderer());
-	
-	if (!renderer)
-        {
-	    renderer=new QgsGraduatedSymRenderer(mVectorLayer->vectorType());
-	    mVectorLayer->setRenderer(renderer);
-        }
-	
-	renderer->removeSymbols();
+	QgsGraduatedSymRenderer* renderer = new QgsGraduatedSymRenderer(mVectorLayer->vectorType());
 
 	for (int item=0;item<mClassBreakBox->count();++item)
         {
@@ -244,6 +234,7 @@ void QgsGraSyDialog::apply()
 	{
 	   renderer->setClassificationField(iter->second); 
 	}
+	mVectorLayer->setRenderer(renderer);
 	mVectorLayer->refreshLegend();
 }
 

@@ -1270,8 +1270,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
 
             if (layer->isValid())
             {
-		//todo: find a solution to apply the encoding also to the attribute headers*/
-		layer->getDataProvider()->setEncoding(enc);
+		layer->setProviderEncoding(enc);
                 // init the context menu so it can connect to slots
                 // in main app
 
@@ -1416,7 +1415,7 @@ void QgisApp::addDatabaseLayer()
 		
 		if(layer->getDataProvider())
 		  {
-		    layer->getDataProvider()->setEncoding(dbs->encoding());
+		    layer->setProviderEncoding(dbs->encoding());
 		  }
 
                 if (layer->isValid())
@@ -3387,7 +3386,7 @@ void QgisApp::currentLayerChanged(QListViewItem * lvi)
 		    QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mlayer);
 		    if(vlayer)
 		    {
-			QgsVectorDataProvider* provider=vlayer->getDataProvider();
+			const QgsVectorDataProvider* provider=vlayer->getDataProvider();
 			if(provider)
 			{
 			    int cap=vlayer->getDataProvider()->capabilities();
