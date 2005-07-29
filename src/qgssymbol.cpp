@@ -285,7 +285,7 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor )
     mCacheUpToDate2 = true;
 }
 
-bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document )
+bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document ) const
 {
     bool returnval=false;
     QDomElement symbol=document.createElement("symbol");

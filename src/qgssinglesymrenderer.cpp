@@ -46,13 +46,13 @@ QgsSingleSymRenderer::QgsSingleSymRenderer(QGis::VectorType type)
 
     if (type == QGis::Line)
     {
-	sy->pen().setColor(QColor(red, green, blue));
+	sy->setColor(QColor(red, green, blue));
     } 
     else
     {
 	sy->setFillColor(QColor(red, green, blue));
 	sy->setFillStyle(Qt::SolidPattern);
-	sy->pen().setColor(QColor(0, 0, 0));
+	sy->setColor(QColor(0, 0, 0));
     }
     sy->setLineWidth(1);
     mSymbol=sy;
