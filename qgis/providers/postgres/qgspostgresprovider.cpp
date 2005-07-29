@@ -162,7 +162,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
 
     // Check that we can read from the table (i.e., we have
     // select permission).
-    QString sql = "select * from " + mSchema + "." + tableName + " limit 1";
+    QString sql = "select * from \"" + mSchema + "\".\"" + tableName + "\" limit 1";
     PGresult* testAccess = PQexec(pd, (const char*)sql);
     if (PQresultStatus(testAccess) != PGRES_TUPLES_OK)
     {
@@ -291,7 +291,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
 
       // set the primary key
       getPrimaryKey();
-      selectSQL += " from " + tableName;
+      selectSQL += " from \"" + tableName + "\"";
       //--std::cout << "selectSQL: " << (const char *)selectSQL << std::endl;
 
       // Kick off the long running threads
@@ -329,7 +329,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
     }
 
     // reset tableName to include schema
-    schemaTableName += mSchema + "." + tableName;
+    schemaTableName += "\"" + mSchema + "\".\"" + tableName + "\"";
 
     ready = false; // not ready to read yet cuz the cursor hasn't been created
 
@@ -764,7 +764,7 @@ int QgsPostgresProvider::fieldCount() const
  */
 void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f){
 
-  QString sql = QString("select * from %1 where %2 = %3").arg(tableName).arg(primaryKey).arg(key);
+  QString sql = QString("select * from \"%1\" where %2 = %3").arg(tableName).arg(primaryKey).arg(key);
 
 #ifdef QGISDEBUG
   //  std::cerr << "getFeatureAttributes using: " << sql << std::endl; 
