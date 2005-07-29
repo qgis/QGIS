@@ -64,11 +64,7 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
     mSymbolWidgetStack->addWidget(&sydialog);
     mSymbolWidgetStack->raiseWidget(&sydialog);
 
-    //restore settings if unique value renderer was read from a project file
-    QgsUniqueValRenderer *renderer;
-    //initial settings, use the buffer of the propertiesDialog if possible. If this is not possible, use the renderer of the vectorlayer directly
-
-    renderer = dynamic_cast < QgsUniqueValRenderer * >(mVectorLayer->renderer());
+    const QgsUniqueValRenderer* renderer = dynamic_cast < const QgsUniqueValRenderer * >(mVectorLayer->renderer());
     
     if (renderer)
     {
@@ -77,7 +73,7 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
 	int classattr=*iter;
 	mClassificationComboBox->setCurrentItem(classattr);
 	
-	if(renderer->symbols().size()==0)
+	if(renderer->symbols().size()>0)
 	{
 	    changeClassificationAttribute(classattr);
 	}
@@ -98,8 +94,11 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QgsUValDialogBase(), mVectorLa
 	    mClassBreakBox->insertItem(symbolvalue);
 	}
     }
+    else
+    {
+	changeClassificationAttribute(0);	
+    }
     mClassBreakBox->setCurrentItem(0);
-    changeClassificationAttribute(0);
 }
 
 QgsUValDialog::~QgsUValDialog()
@@ -119,16 +118,9 @@ QgsUValDialog::~QgsUValDialog()
 
 void QgsUValDialog::apply()
 {
-    QgsUniqueValRenderer *renderer = dynamic_cast < QgsUniqueValRenderer * >(mVectorLayer->renderer());
-
-    if(!renderer)
-    {
-	renderer = new QgsUniqueValRenderer(mVectorLayer->vectorType());
-	mVectorLayer->setRenderer(renderer);
-    }
+    QgsUniqueValRenderer *renderer = new QgsUniqueValRenderer(mVectorLayer->vectorType());
 
     //go through mValues and add the entries to the renderer
-    renderer->clearValues();
     for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
     {
 	QgsSymbol* symbol=it->second;
@@ -144,7 +136,7 @@ void QgsUValDialog::apply()
     }
 
     renderer->setClassificationField(mClassificationComboBox->currentItem());
-    
+    mVectorLayer->setRenderer(renderer);
     mVectorLayer->refreshLegend();
 }
 

@@ -47,9 +47,9 @@ class QgsContinuousColRenderer: public QgsRenderer
     /**Sets the symbol for the maximum value. The symbol has to be created using the new operator and is automatically deleted when inserting a new symbol or when the instance is destroyed*/
     void setMaximumSymbol(QgsSymbol* sy);
     /**Returns the symbol for the minimum value*/
-    QgsSymbol* minimumSymbol();
+    const QgsSymbol* minimumSymbol() const;
     /**Returns the symbol for the maximum value*/
-    QgsSymbol* maximumSymbol();
+    const QgsSymbol* maximumSymbol() const;
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
      @param vl the vector layer which will be associated with the renderer*/
@@ -85,12 +85,12 @@ inline void QgsContinuousColRenderer::setClassificationField(int id)
     mClassificationField=id;
 }
 
-inline QgsSymbol* QgsContinuousColRenderer::minimumSymbol()
+inline const QgsSymbol* QgsContinuousColRenderer::minimumSymbol() const
 {
     return mMinimumSymbol;
 }
 
-inline QgsSymbol* QgsContinuousColRenderer::maximumSymbol()
+inline const QgsSymbol* QgsContinuousColRenderer::maximumSymbol() const
 {
     return mMaximumSymbol;
 }

@@ -137,7 +137,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer): QgsSiSyDialogBase(), mVect
 
     if (mVectorLayer)
     {
-        QgsSingleSymRenderer *renderer=dynamic_cast<QgsSingleSymRenderer*>(mVectorLayer->renderer());
+        const QgsSingleSymRenderer *renderer=dynamic_cast<const QgsSingleSymRenderer*>(mVectorLayer->renderer());
 
         if (renderer)
         {
@@ -232,9 +232,9 @@ void QgsSiSyDialog::selectFillColor()
 void QgsSiSyDialog::apply( QgsSymbol *sy )
 {
     //query the values of the widgets and set the symbology of the vector layer
-    sy->brush().setColor(lblFillColor->paletteBackgroundColor());
-    sy->pen().setWidth(outlinewidthspinbox->value());
-    sy->pen().setColor(lblOutlineColor->paletteBackgroundColor());
+    sy->setFillColor(lblFillColor->paletteBackgroundColor());
+    sy->setLineWidth(outlinewidthspinbox->value());
+    sy->setColor(lblOutlineColor->paletteBackgroundColor());
 
     //
     // Apply point symbol
@@ -333,19 +333,13 @@ void QgsSiSyDialog::apply()
     QgsSymbol* sy = new QgsSymbol(mVectorLayer->vectorType());
     apply(sy);
 
-    QgsSingleSymRenderer *renderer = dynamic_cast < QgsSingleSymRenderer * >(mVectorLayer->renderer());
-
-    if (!renderer)
-    {
-        renderer=new QgsSingleSymRenderer(mVectorLayer->vectorType());
-	mVectorLayer->setRenderer(renderer);
-    }
-
+    QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(mVectorLayer->vectorType());
     renderer->addSymbol(sy);
+    mVectorLayer->setRenderer(renderer);
     mVectorLayer->refreshLegend();
 }
 
-void QgsSiSyDialog::set ( QgsSymbol *sy ) 
+void QgsSiSyDialog::set ( const QgsSymbol *sy ) 
 {
 	// Set point symbol
         for ( int i = 0; i < mMarkers.size(); i++ ) {

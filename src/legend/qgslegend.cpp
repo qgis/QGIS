@@ -62,6 +62,7 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
 
   connect( this, SIGNAL(expanded(QListViewItem*)), this, SLOT(placeCheckBoxes()));
   connect( this, SIGNAL(collapsed(QListViewItem*)), this, SLOT(placeCheckBoxes()));
+  connect( this, SIGNAL(verticalSliderReleased()), this, SLOT(placeCheckBoxes()));
 
   mPopupMenu = new QPopupMenu(this);
   mPopupMenu->insertItem("&Add Group", this, SLOT(addGroup()));

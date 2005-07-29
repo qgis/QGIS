@@ -45,7 +45,7 @@ class QgsSymbol{
     /**Sets the brush*/
     virtual void setBrush(QBrush b);
     /**Gets a reference to m_brush, Don't use the brush to change color/style */
-    virtual QBrush& brush();
+    virtual const QBrush& brush() const;
     /**Set the color*/
     virtual void setColor(QColor c);
     /**Get the current color*/
@@ -61,7 +61,7 @@ class QgsSymbol{
     /**Sets the pen*/
     virtual void setPen(QPen p);
     /**Gets a reference to m_pen. Don't use the pen to change color/style  */
-    virtual QPen& pen();
+    virtual const QPen& pen() const;
 
     /**Set the line (pen) style*/
     virtual void setLineStyle(Qt::PenStyle s);
@@ -104,12 +104,12 @@ class QgsSymbol{
 
     /**Writes the contents of the symbol to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & item, QDomDocument & document );
+    virtual bool writeXML( QDomNode & item, QDomDocument & document ) const;
     /**Reads the contents of the symbol from a configuration file
      @ return true in case of success*/
     virtual bool readXML( QDomNode & symbol );
     /**Returns if this symbol is point/ line or polygon*/
-    QGis::VectorType type() {return mType;}
+    QGis::VectorType type() const {return mType;}
 
  protected:
     /**Lower value for classification*/
@@ -169,7 +169,7 @@ inline void QgsSymbol::setBrush(QBrush b)
     mBrush=b;
 }
 
-inline QBrush& QgsSymbol::brush()
+inline const QBrush& QgsSymbol::brush() const
 {
     return mBrush;
 }
@@ -179,7 +179,7 @@ inline void QgsSymbol::setPen(QPen p)
     mPen=p;
 }
 
-inline QPen& QgsSymbol::pen()
+inline const QPen& QgsSymbol::pen() const
 {
     return mPen;
 }
