@@ -301,3 +301,102 @@ void QgsPgQueryBuilder::accept()
     }
   }
 }
+
+void QgsPgQueryBuilder::insEqual()
+{
+  txtSQL->insert(" = ");
+}
+
+void QgsPgQueryBuilder::insLt()
+{
+  txtSQL->insert(" < ");
+}
+
+void QgsPgQueryBuilder::insGt()
+{
+  txtSQL->insert(" > ");
+}
+
+void QgsPgQueryBuilder::insPct()
+{
+  txtSQL->insert(" % ");
+}
+
+void QgsPgQueryBuilder::insIn()
+{
+  txtSQL->insert(" IN ");
+}
+
+void QgsPgQueryBuilder::insNotIn()
+{
+  txtSQL->insert(" NOT IN ");
+}
+
+void QgsPgQueryBuilder::insLike()
+{
+  txtSQL->insert(" LIKE ");
+}
+
+QString QgsPgQueryBuilder::sql()
+{
+  return txtSQL->text();
+}
+
+void QgsPgQueryBuilder::setSql( QString sqlStatement)
+{
+  txtSQL->setText(sqlStatement);
+}
+
+void QgsPgQueryBuilder::fieldDoubleClick( QListBoxItem *item )
+{
+  txtSQL->insert(item->text());
+}
+
+void QgsPgQueryBuilder::valueDoubleClick( QListBoxItem *item )
+{
+  txtSQL->insert(item->text());
+}
+
+void QgsPgQueryBuilder::insLessThanEqual()
+{
+  txtSQL->insert(" <= ");
+}
+
+void QgsPgQueryBuilder::insGreaterThanEqual()
+{
+  txtSQL->insert(" >= ");
+}
+
+void QgsPgQueryBuilder::insNotEqual()
+{
+  txtSQL->insert(" != ");
+}
+
+void QgsPgQueryBuilder::insAnd()
+{
+  txtSQL->insert(" AND ");
+}
+
+void QgsPgQueryBuilder::insNot()
+{
+  txtSQL->insert(" NOT ");
+}
+
+void QgsPgQueryBuilder::insOr()
+{
+  txtSQL->insert(" OR ");
+}
+
+void QgsPgQueryBuilder::clearSQL()
+{
+  txtSQL->clear();
+}
+
+void QgsPgQueryBuilder::insIlike()
+{
+  txtSQL->insert(" ILIKE ");
+}
+void QgsPgQueryBuilder::setDatasourceDescription(QString uri)
+{
+  lblDataUri->setText(uri);
+}
