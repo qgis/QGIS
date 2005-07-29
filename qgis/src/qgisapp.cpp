@@ -1407,11 +1407,6 @@ void QgisApp::addDatabaseLayer()
                 //qWarning("creating layer");
                 QgsVectorLayer *layer = new QgsVectorLayer(connInfo + " table=" + *it, *it, "postgres");
 		QObject::connect(layer, SIGNAL(editingStopped(bool)), mMapCanvas, SLOT(removeDigitizingLines(bool)));
-		
-		if(layer->getDataProvider())
-		  {
-		    layer->getDataProvider()->setEncoding(dbs->encoding());
-		  }
 
                 if (layer->isValid())
                 {
@@ -1467,11 +1462,7 @@ void QgisApp::addDatabaseLayer()
             statusBar()->message(mMapCanvas->extent().stringRep(2));
         }
 
-	QSettings settings;
-	settings.writeEntry("/qgis/UI/encoding", dbs->encoding());
-
         qApp->processEvents();
-
         mMapCanvas->freeze(false);
         mMapCanvas->render();
         QApplication::restoreOverrideCursor();
