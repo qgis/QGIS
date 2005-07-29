@@ -420,7 +420,7 @@ postgresUIC     = qgsdbsourceselectbase.ui		\
 		  qgsnewconnectionbase.ui		\
 		  qgspgquerybuilderbase.ui	
 
-postgresUIH     = 
+postgresUIH     = qgspgquerybuilderbase.ui.h
 postgresLIBSOURCES = qgspgutil.cpp
 
 if HAVE_POSTGRESQL
