@@ -39,7 +39,7 @@ class QgsRasterLayerProperties : public QgsRasterLayerPropertiesBase
         /** \brief Constructor
          * @param ml Map layer for which properties will be displayed
          */
-        QgsRasterLayerProperties(QgsMapLayer *lyr);
+        QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *parent=0, const char *name=0, bool modal=true);
         /** \brief Destructor */
         ~QgsRasterLayerProperties();
         /** \brief Applies the settings made in the dialog without closing the box */

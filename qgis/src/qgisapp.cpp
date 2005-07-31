@@ -5022,13 +5022,24 @@ void QgisApp::debugHook()
 */
 void QgisApp::actionCustomProjection_activated()
 {
-  QgsCustomProjectionDialog * myDialog = new QgsCustomProjectionDialog(this);
+  // Create an instance of the Custom Projection Designer modeless dialog.
+  // Autodelete the dialog when closing since a pointer is not retained.
+  QgsCustomProjectionDialog * myDialog = new QgsCustomProjectionDialog(this,
+    "Projection Designer", WDestructiveClose);
   myDialog->show();
 }
 void QgisApp::actionShowBookmarks_activated()
 {
-  QgsBookmarks *bookmarks = new QgsBookmarks(this);
+  // Create or show the single instance of the Bookmarks modeless dialog.
+  // Closing a QWidget only hides it so it can be shown again later.
+  static QgsBookmarks *bookmarks = NULL;
+  if (bookmarks == NULL)
+  {
+    bookmarks = new QgsBookmarks(this);
+  }
   bookmarks->show();
+  bookmarks->raise();
+  bookmarks->setActiveWindow();
 }
 
 void QgisApp::actionNewBookmark_activated()

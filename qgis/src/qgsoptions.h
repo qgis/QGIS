@@ -35,8 +35,9 @@ class QgsOptions :public QgsOptionsBase{
      * Constructor
      * @param parent Parent widget (usually a QgisApp)
      * @param name name for the widget
+     * @param modal true for modal dialog
      */
-    QgsOptions(QWidget *parent=0, const char *name=0);
+    QgsOptions(QWidget *parent=0, const char *name=0, bool modal=true);
     //! Destructor
     ~QgsOptions();
     /**
