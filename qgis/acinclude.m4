@@ -149,53 +149,95 @@ AC_MSG_RESULT([$QTDIR])
 # Change backslashes in QTDIR to forward slashes to prevent escaping
 # problems later on in the build process, mainly for Cygwin build
 # environment using MSVC as the compiler
+# (include/Qt is used on Qt4)
 # TODO: Use sed instead of perl
 QTDIR=`echo $QTDIR | perl -p -e 's/\\\\/\\//g'`
 
 # Check for QT includedir 
 if test -f $QTDIR/include/qt/qglobal.h; then
   QTINC=$QTDIR/include/qt
+  QTVERTEST=$QTDIR/include/qt
 elif test -f $QTDIR/include/qt3/qglobal.h; then
   QTINC=$QTDIR/include/qt3
+  QTVERTEST=$QTDIR/include/qt3
+elif test -f $QTDIR/include/Qt/qglobal.h; then
+  QTINC=$QTDIR/include
+  QTVERTEST=$QTDIR/include/Qt
 else
   QTINC=$QTDIR/include
+  QTVERTEST=$QTDIR/include
 fi
 
 # Figure out which version of Qt we are using
 AC_MSG_CHECKING([Qt version])
-QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTINC/qglobal.h | perl -p -e 's/\D//g'`
+QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTVERTEST/qglobal.h | perl -p -e 's/\D//g'`
 case "${QT_VER}" in
+  40*)
+    QT_MAJOR="4"
+    QT4_3SUPPORTINC=$QTDIR/include/Qt3Support
+    QT4_COREINC=$QTDIR/include/QtCore
+    QT4_DESIGNERINC=$QTDIR/include/QtDesigner
+    QT4_GUIINC=$QTDIR/include/QtGui
+    QT4_NETWORKINC=$QTDIR/include/QtNetwork
+    QT4_OPENGLINC=$QTDIR/include/QtOpenGL
+    QT4_SQLINC=$QTDIR/include/QtSql
+    QT4_XMLINC=$QTDIR/include/QtXml
+    QT4_DEFAULTINC=$QTDIR/mkspecs/default
+    ;;
   33*)
     QT_MAJOR="3"
     ;;
-  32*)
-    QT_MAJOR="3"
-    ;;
-  31*)
-    QT_MAJOR="3"
-    ;;
+#  32*)
+#    QT_MAJOR="3"
+#    ;;
+#  31*)
+#    QT_MAJOR="3"
+#    ;;
   *)
-    AC_MSG_ERROR([*** Qt version 3.1.x or higher is required])
+    AC_MSG_ERROR([*** Qt version 3.3.x or higher is required])
     ;;
 esac
 AC_MSG_RESULT([$QT_VER ($QT_MAJOR)])
 
-# Check that moc is in path
-AC_CHECK_PROG(MOC, moc, moc)
-if test x$MOC = x ; then
-  AC_MSG_ERROR([*** moc must be in path])
+if test $QT_MAJOR = "3" ; then
+  # Check that moc is in path
+  AC_CHECK_PROG(MOC, moc, moc)
+  if test x$MOC = x ; then
+    AC_MSG_ERROR([*** moc must be in path])
+  fi
+  # uic is the Qt user interface compiler
+  AC_CHECK_PROG(UIC, uic, uic)
+  if test x$UIC = x ; then
+    AC_MSG_ERROR([*** uic must be in path])
+  fi
 fi
-# uic is the Qt user interface compiler
-AC_CHECK_PROG(UIC, uic, uic)
-if test x$UIC = x ; then
-  AC_MSG_ERROR([*** uic must be in path])
+
+if test $QT_MAJOR = "4" ; then
+  # Hard code things for the moment
+
+  # Check that moc is in path
+  AC_CHECK_PROG(MOC, moc, $QTDIR/bin/moc, , $QTDIR/bin)
+  if test x$MOC = x ; then
+    AC_MSG_ERROR([*** moc must be in path])
+  fi
+  # uic3 is the Qt user interface compiler in Qt3 legacy mode
+  AC_CHECK_PROG(UIC, uic3, $QTDIR/bin/uic3, , $QTDIR/bin)
+  if test x$UIC = x ; then
+    AC_MSG_ERROR([*** uic3 must be in path])
+  fi
 fi
+
 # qembed is the Qt data embedding utility.
 # It is located in $QTDIR/tools/qembed, and must be compiled and installed
 # manually, we'll let it slide if it isn't present
-AC_CHECK_PROG(QEMBED, qembed, qembed)
+### AC_CHECK_PROG(QEMBED, qembed, qembed)
 # Calculate Qt include path
+if test $QT_MAJOR = "3" ; then
 QT_CXXFLAGS="-I$QTINC"
+fi
+if test $QT_MAJOR = "4" ; then
+QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QTINC"
+fi
 QT_IS_EMBEDDED="no"
 # On unix, figure out if we're doing a static or dynamic link
 
@@ -258,9 +300,9 @@ case "${host}" in
     ;;
   *)
     # determin static or dynamic -- prefer dynamic
-    QT_IS_DYNAMIC=`ls $QTDIR/${_lib}/libqt*.so 2> /dev/null`
+    QT_IS_DYNAMIC=`ls $QTDIR/${_lib}/libqt*.so $QTDIR/${_lib}/libQtCore.so 2> /dev/null`
     if test "x$QT_IS_DYNAMIC" = x;  then
-      QT_IS_STATIC=`ls $QTDIR/${_lib}/libqt*.a 2> /dev/null`
+      QT_IS_STATIC=`ls $QTDIR/${_lib}/libqt*.a $QTDIR/${_lib}/libQtCore.a 2> /dev/null`
       if test "x$QT_IS_STATIC" = x; then
         QT_IS_STATIC="no"
         AC_MSG_ERROR([*** Couldn't find any Qt libraries in $QTDIR/${_lib}])
@@ -288,6 +330,9 @@ case "${host}" in
       QT_LIB="-lqte-mt"
       QT_IS_MT="yes"
       QT_IS_EMBEDDED="yes"
+    elif test "x`ls $QTDIR/${_lib}/libQtCore.* 2> /dev/null`" != x ; then
+      QT_LIB="-lqt"
+      QT_IS_MT="yes"
     fi
     ;;
 esac
