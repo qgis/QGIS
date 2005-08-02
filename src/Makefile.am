@@ -29,9 +29,10 @@ WIDGETPATH=../widgets
 %.uic.h: %.ui 
 	$(UIC) -o $@ $<
 
+if !NO_UIC_IMPLEMENTATIONS
 %.uic.cpp: %.ui
 	$(UIC) -o $@ -impl $*.uic.h $<
-
+endif
 
 ## main app
 if HAVE_QTMAC
@@ -211,8 +212,10 @@ qgis_UIC =	qgisappbase.ui				\
 ## all the ui files generate a corresponding header file
 qgis_UIHEADERS = $(qgis_UIC:.ui=.uic.h)
 
+if !NO_UIC_IMPLEMENTATIONS
 ## similarly all the ui files generate a corresponding implementation file
 qgis_UISOURCES = $(qgis_UIC:.ui=.uic.cpp)
+endif
 
 ## these are optional ancillary user-defined qtdesigner-based headers
 qgis_UIH =	qgisappbase.ui.h			\
@@ -420,7 +423,9 @@ postgresLIBSOURCES = qgspgutil.cpp
 
 if HAVE_POSTGRESQL
 postgresUIHEADERS = $(postgresUIC:.ui=.uic.h)
+if !NO_UIC_IMPLEMENTATIONS
 postgresUISOURCES = $(postgresUIC:.ui=.uic.cpp)
+endif
 postgresUIMOC     = $(postgresUIC:.ui=.moc.uic.cpp)
 
 postgresMOC       = $(postgresHEADERS:.h=.moc.cpp)
@@ -449,7 +454,6 @@ libqgis_la_SOURCES =						\
 		qgisapp.cpp					\
 		qgisapp.moc.cpp					\
 		qgisappbase.moc.uic.cpp				\
-		qgisappbase.uic.cpp				\
 		qgsacetateobject.cpp				\
 		qgsacetaterectangle.cpp				\
 		qgsattributeaction.cpp				\
@@ -458,36 +462,29 @@ libqgis_la_SOURCES =						\
 		qgscomposer.cpp					\
 		qgscomposer.moc.cpp				\
 		qgscomposerbase.moc.uic.cpp			\
-		qgscomposerbase.uic.cpp				\
 		qgscomposeritem.cpp				\
 		qgscomposerlabel.cpp				\
 		qgscomposerlabel.moc.cpp			\
 		qgscomposerlabelbase.moc.uic.cpp		\
-		qgscomposerlabelbase.uic.cpp			\
 		qgscomposermap.cpp				\
 		qgscomposermap.moc.cpp				\
 		qgscomposermapbase.moc.uic.cpp			\
-		qgscomposermapbase.uic.cpp			\
 		qgscomposerscalebar.cpp				\
 		qgscomposerscalebar.moc.cpp			\
 		qgscomposerscalebarbase.moc.uic.cpp		\
-		qgscomposerscalebarbase.uic.cpp			\
 		qgscomposervectorlegend.cpp			\
 		qgscomposervectorlegend.moc.cpp			\
 		qgscomposervectorlegendbase.moc.uic.cpp		\
-		qgscomposervectorlegendbase.uic.cpp		\
 		qgscomposerview.cpp				\
 		qgscomposerview.moc.cpp				\
 		qgscomposition.cpp				\
 		qgscomposition.moc.cpp				\
 		qgscompositionbase.moc.uic.cpp			\
-		qgscompositionbase.uic.cpp			\
 		qgscontinuouscolrenderer.cpp			\
 		qgscoordinatetransform.cpp			\
 		qgscoordinatetransform.moc.cpp			\
 		qgscustomprojectiondialog.cpp			\
 		qgscustomprojectiondialogbase.moc.uic.cpp	\
-		qgscustomprojectiondialogbase.uic.cpp		\
 		qgscustomprojectiondialog.moc.cpp 		\
 		qgsdataprovider.moc.cpp				\
 		qgsexception.cpp				\
@@ -497,7 +494,6 @@ libqgis_la_SOURCES =						\
 		qgsfillstylewidget.cpp				\
 		qgsfillstylewidget.moc.cpp			\
 		qgsfillstylewidgetbase.moc.uic.cpp		\
-		qgsfillstylewidgetbase.uic.cpp			\
 		qgsgeometry.cpp					\
 		qgsgeometryvertexindex.cpp			\
 		qgsgraduatedsymrenderer.cpp			\
@@ -505,7 +501,6 @@ libqgis_la_SOURCES =						\
 		qgslinestylewidget.cpp				\
 		qgslinestylewidget.moc.cpp			\
 		qgslinestylewidgetbase.moc.uic.cpp		\
-		qgslinestylewidgetbase.uic.cpp			\
 		qgsmapcanvas.cpp				\
 		qgsmapcanvas.moc.cpp				\
 		qgsmaplayer.cpp					\
@@ -520,7 +515,6 @@ libqgis_la_SOURCES =						\
 		qgspointstylewidget.cpp				\
 		qgspointstylewidget.moc.cpp			\
 		qgspointstylewidgetbase.moc.uic.cpp		\
-		qgspointstylewidgetbase.uic.cpp			\
 		qgsprojectproperty.cpp				\
 		qgsprovidercountcalcevent.cpp			\
 		qgsproviderextentcalcevent.cpp			\
@@ -544,6 +538,20 @@ libqgis_la_SOURCES =						\
 		qgsvectorlayer.cpp				\
 		qgsvectorlayer.moc.cpp
 
+if !NO_UIC_IMPLEMENTATIONS
+libqgis_la_SOURCES +=						\
+		qgisappbase.uic.cpp				\
+		qgscomposerbase.uic.cpp				\
+		qgscomposerlabelbase.uic.cpp			\
+		qgscomposermapbase.uic.cpp			\
+		qgscomposerscalebarbase.uic.cpp			\
+		qgscomposervectorlegendbase.uic.cpp		\
+		qgscompositionbase.uic.cpp			\
+		qgscustomprojectiondialogbase.uic.cpp		\
+		qgsfillstylewidgetbase.uic.cpp			\
+		qgslinestylewidgetbase.uic.cpp			\
+		qgspointstylewidgetbase.uic.cpp
+endif
 
 if HAVE_POSTGRESQL
 libqgis_la_SOURCES += $(postgresLIBSOURCES)

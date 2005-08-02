@@ -86,6 +86,8 @@ dnl Qt check
 dnl ---------------------------------------------------------------------------
 AQ_CHECK_QT
 
+AM_CONDITIONAL([NO_UIC_IMPLEMENTATIONS], [test "$QT_MAJOR" = "4"])
+
 dnl ---------------------------------------------------------------------------
 dnl Qt/Mac check (install everything into application bundle)
 dnl ---------------------------------------------------------------------------
