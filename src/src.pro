@@ -1,120 +1,3 @@
-TEMPLATE	= app
-LANGUAGE	= C++
-
-CONFIG	+= qt thread rtti debug console
-
-LIBS	+= $(GDAL)\lib\gdal_i.lib $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib $(GEOS)\lib\geos.lib
-
-DEFINES	+= QGISDEBUG
-
-INCLUDEPATH	+= . $(GDAL)\include $(POSTGRESQL)\src\interfaces\libpq $(POSTGRESQL)\src\include $(GEOS)\include
-
-HEADERS	+= qgscolortable.h
-
-SOURCES	+= main.cpp \
-	qgisapp.cpp \
-	qgisiface.cpp \
-	qgisinterface.cpp \
-	qgsattributeaction.cpp \
-	qgsattributeactiondialog.cpp \
-	qgsattributedialog.cpp \
-	qgsattributetable.cpp \
-	qgsattributetabledisplay.cpp \
-	qgscontcoldialog.cpp \
-	qgscontinuouscolrenderer.cpp \
-	qgscoordinatetransform.cpp \
-	qgscustomsymbol.cpp \
-	qgsdatasource.cpp \
-	qgsdbsourceselect.cpp \
-	qgsdlgvectorlayerproperties.cpp \
-	qgsfeature.cpp \
-	qgsfeatureattribute.cpp \
-	qgsfield.cpp \
-	qgsgraduatedmarenderer.cpp \
-	qgsgraduatedsymrenderer.cpp \
-	qgsgramadialog.cpp \
-	qgsgramaextensionwidget.cpp \
-	qgsgrasydialog.cpp \
-	qgshelpviewer.cpp \
-	qgsidentifyresults.cpp \
-	qgslegend.cpp \
-	qgslegenditem.cpp \
-	qgslinestyledialog.cpp \
-	qgslinesymbol.cpp \
-	qgsmapcanvas.cpp \
-	qgsmaplayer.cpp \
-	qgsmaplayerregistry.cpp \
-	qgsmapserverexport.cpp \
-	qgsmarkerdialog.cpp \
-	qgsmarkersymbol.cpp \
-	qgsnewconnection.cpp \
-	qgsoptions.cpp \
-	qgspatterndialog.cpp \
-	qgspgquerybuilder.cpp \
-	qgspluginitem.cpp \
-	qgspluginmanager.cpp \
-	qgspluginmetadata.cpp \
-	qgspluginregistry.cpp \
-	qgspoint.cpp \
-	qgspolygonsymbol.cpp \
-	qgsproject.cpp \
-	qgsprojectproperties.cpp \
-	qgsprovidermetadata.cpp \
-	qgsproviderregistry.cpp \
-	qgsrangerenderitem.cpp \
-	qgsrasterlayer.cpp \
-	qgsrasterlayerproperties.cpp \
-	qgsrect.cpp \
-	qgsrenderitem.cpp \
-	qgsscalecalculator.cpp \
-	qgssimadialog.cpp \
-	qgssimarenderer.cpp \
-	qgssinglesymrenderer.cpp \
-	qgssisydialog.cpp \
-	qgssymbol.cpp \
-	qgssymbologyutils.cpp \
-	qgsvectorlayer.cpp \
-	qgssvgcache.cpp \
-	splashscreen.cpp \
-	qgsacetateobject.cpp \
-	qgslabeldialog.cpp \
-	qgslabel.cpp \
-	qgslabelattributes.cpp \
-	qgsacetaterectangle.cpp \
-	qgsuvaldialog.cpp \
-	qgsludialog.cpp \
-	qgsuniquevalrenderer.cpp \
-	qgsuvalmadialog.cpp \
-	qgsuvalmarenderer.cpp \
-	qgsvectorfilewriter.cpp \
-	qgsgeomtypedialog.cpp
-
-FORMS	= qgisappbase.ui \
-	qgsabout.ui \
-	qgsattributetablebase.ui \
-	qgsattributeactiondialogbase.ui \
-	qgsattributedialogbase.ui \
-	qgscontcoldialogbase.ui \
-	qgsdbsourceselectbase.ui \
-	qgsdlgvectorlayerpropertiesbase.ui \
-	qgsgramadialogbase.ui \
-	qgsgrasydialogbase.ui \
-	qgshelpviewerbase.ui \
-	qgsidentifyresultsbase.ui \
-	qgslegenditembase.ui \
-	qgslinestyledialogbase.ui \
-	qgsmapserverexportbase.ui \
-	qgsmarkerdialogbase.ui \
-	qgsmessageviewer.ui \
-	qgsnewconnectionbase.ui \
-	qgsoptionsbase.ui \
-	qgspatterndialogbase.ui \
-	qgspgquerybuilderbase.ui \
-	qgspluginmanagerbase.ui \
-	qgsprojectpropertiesbase.ui \
-	qgsrasterlayerpropertiesbase.ui \
-	qgslabeldialogbase.ui
-
 ######################################################################
 # Qmake project file for QGIS src directory
 # This file is used by qmake to generate the Makefile for building
@@ -144,13 +27,33 @@ FORMS	= qgisappbase.ui \
 # The headers/lib can be downloaded from http://qgis.org/win32_geos.zip   #
 ###########################################################################
 
+TEMPLATE	= app
+LANGUAGE	= C++
+
+CONFIG	+= qt thread rtti debug console
+
+LIBS	+= $(GDAL)\lib\gdal_i.lib $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib $(GEOS)\lib\geos.lib
+
+DEFINES	+= QGISDEBUG
+
+INCLUDEPATH	+= . $(GDAL)\include $(POSTGRESQL)\src\interfaces\libpq $(POSTGRESQL)\src\include $(GEOS)\include
+
 TARGET = qgis
-DEFINES+= QGISDEBUG
 DESTDIR = ../win_build
-#CONFIG += qt thread rtti console
 RC_FILE = qgis_win32.rc
+
 # Input
-HEADERS += qgis.h \
+HEADERS +=  legend/qgslegend.h \
+            legend/qgslegendgroup.h \
+            legend/qgslegenditem.h \
+            legend/qgslegendlayer.h \
+            legend/qgslegendlayerfile.h \
+            legend/qgslegendpropertygroup.h \
+            legend/qgslegendpropertyitem.h \
+            legend/qgslegendsymbologygroup.h \
+            legend/qgslegendsymbologyitem.h \
+            legend/qgslegendvectorsymbologyitem.h \
+            qgis.h \
             qgisapp.h \
             qgisappbase.ui.h \
             qgisiface.h \
@@ -162,7 +65,7 @@ HEADERS += qgis.h \
             qgsattributetablebase.ui.h \
             qgsattributetabledisplay.h \
             qgsattributedialog.h \
-            qgsconfig.h \
+            qgscolortable.h \
             qgscontcoldialog.h \
             qgscontinuouscolrenderer.h \
             qgscoordinatetransform.h \
@@ -175,16 +78,12 @@ HEADERS += qgis.h \
             qgsfeature.h \
             qgsfeatureattribute.h \
             qgsfield.h \
-            qgsgraduatedmarenderer.h \
+            qgsgeomtypedialog.h \
             qgsgraduatedsymrenderer.h \
-            qgsgramadialog.h \
-            qgsgramaextensionwidget.h \
             qgsgrasydialog.h \
             qgshelpviewer.h \
             qgshelpviewerbase.ui.h \
             qgsidentifyresults.h \
-            qgslegend.h \
-            qgslegenditem.h \
             qgslinestyledialog.h \
             qgslinesymbol.h \
             qgsmapcanvas.h \
@@ -220,8 +119,6 @@ HEADERS += qgis.h \
             qgsrenderer.h \
             qgsrenderitem.h \
             qgsscalecalculator.h \
-            qgssimadialog.h \
-            qgssimarenderer.h \
             qgssinglesymrenderer.h \
             qgssisydialog.h \
             qgssymbol.h \
@@ -230,7 +127,6 @@ HEADERS += qgis.h \
             qgsvectordataprovider.h \
             qgsvectorlayer.h \
             qgssvgcache.h \
-            splashscreen.h \
             qgsacetateobject.h \
             qgslabel.h \
             qgslabelattributes.h \
@@ -239,11 +135,10 @@ HEADERS += qgis.h \
             qgsuvaldialog.h \
             qgsludialog.h \
             qgsuniquevalrenderer.h \
-            qgsuvalmadialog.h \
-            qgsuvalmarenderer.h \
-            qgscolortable.h \
             qgsvectorfilewriter.h \
-            qgsgeomtINTERFACES += qgisappbase.ui \
+            splashscreen.h
+
+INTERFACES += qgisappbase.ui \
             qgsabout.ui \
             qgsattributetablebase.ui \
             qgsattributeactiondialogbase.ui \
@@ -273,7 +168,19 @@ HEADERS += qgis.h \
             qgsludialogbase.ui \
             qgsuvaldialogbase.ui \
             qgsuvalmadialogbase.ui \
-            qgsgeomtypediSOURCES += main.cpp \
+            qgsgeomtypedialog.ui
+
+SOURCES +=  legend/qgslegend.cpp \
+            legend/qgslegendgroup.cpp \
+            legend/qgslegenditem.cpp \
+            legend/qgslegendlayer.cpp \
+            legend/qgslegendlayerfile.cpp \
+            legend/qgslegendpropertygroup.cpp \
+            legend/qgslegendpropertyitem.cpp \
+            legend/qgslegendsymbologygroup.cpp \
+            legend/qgslegendsymbologyitem.cpp \
+            legend/qgslegendvectorsymbologyitem.cpp \
+            main.cpp \
             qgisapp.cpp \
             qgisiface.cpp \
             qgisinterface.cpp \
@@ -282,6 +189,7 @@ HEADERS += qgis.h \
             qgsattributedialog.cpp \
             qgsattributetable.cpp \
             qgsattributetabledisplay.cpp \
+            qgscolortable.h \
             qgscontcoldialog.cpp \
             qgscontinuouscolrenderer.cpp \
             qgscoordinatetransform.cpp \
@@ -292,15 +200,11 @@ HEADERS += qgis.h \
             qgsfeature.cpp \
             qgsfeatureattribute.cpp \
             qgsfield.cpp \
-            qgsgraduatedmarenderer.cpp \
+            qgsgeomtypedialog.cpp \
             qgsgraduatedsymrenderer.cpp \
-            qgsgramadialog.cpp \
-            qgsgramaextensionwidget.cpp \
             qgsgrasydialog.cpp \
             qgshelpviewer.cpp \
             qgsidentifyresults.cpp \
-            qgslegend.cpp \
-            qgslegenditem.cpp \
             qgslinestyledialog.cpp \
             qgslinesymbol.cpp \
             qgsmapcanvas.cpp \
@@ -329,15 +233,12 @@ HEADERS += qgis.h \
             qgsrect.cpp \
             qgsrenderitem.cpp \
             qgsscalecalculator.cpp \
-            qgssimadialog.cpp \
-            qgssimarenderer.cpp \
             qgssinglesymrenderer.cpp \
             qgssisydialog.cpp \
             qgssymbol.cpp \
             qgssymbologyutils.cpp \
             qgsvectorlayer.cpp \
             qgssvgcache.cpp \
-            splashscreen.cpp \
             qgsacetateobject.cpp \
             qgslabeldialog.cpp \
             qgslabel.cpp \
@@ -346,9 +247,29 @@ HEADERS += qgis.h \
             qgsuvaldialog.cpp \
             qgsludialog.cpp \
             qgsuniquevalrenderer.cpp \
-            qgsuvalmadialog.cpp \
-            qgsuvalmarenderer.cpp \
-            qgscolortable.h \
             qgsvectorfilewriter.cpp \
-            qgsgeomtypedialog.cpp
+            splashscreen.cpp
 
+FORMS	= qgisappbase.ui \
+	qgsabout.ui \
+	qgsattributetablebase.ui \
+	qgsattributeactiondialogbase.ui \
+	qgsattributedialogbase.ui \
+	qgscontcoldialogbase.ui \
+	qgsdbsourceselectbase.ui \
+	qgsdlgvectorlayerpropertiesbase.ui \
+	qgsgrasydialogbase.ui \
+	qgshelpviewerbase.ui \
+	qgsidentifyresultsbase.ui \
+	qgslabeldialogbase.ui \
+	qgslinestyledialogbase.ui \
+	qgsmapserverexportbase.ui \
+	qgsmarkerdialogbase.ui \
+	qgsmessageviewer.ui \
+	qgsnewconnectionbase.ui \
+	qgsoptionsbase.ui \
+	qgspatterndialogbase.ui \
+	qgspgquerybuilderbase.ui \
+	qgspluginmanagerbase.ui \
+	qgsprojectpropertiesbase.ui \
+	qgsrasterlayerpropertiesbase.ui
