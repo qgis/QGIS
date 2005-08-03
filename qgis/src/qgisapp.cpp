@@ -2188,54 +2188,86 @@ void QgisApp::fileSave()
 {
     // if we don't have a filename, then obviously we need to get one; note
     // that the project file name is reset to null in fileNew()
-    QString fullPath;
-    bool isNewProject = FALSE;
+    QFileInfo fullPath;
+    bool isNewProject = false;
+
     if ( QgsProject::instance()->filename().isNull() )
     {
-        isNewProject = TRUE;
+        isNewProject = true;
         
         // Retrieve last used project dir from persistent settings
         QSettings settings;
         QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
         
-        QFileDialog * saveFileDialog = new QFileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0,
-                                                       "save project file");
+        auto_ptr<QFileDialog> saveFileDialog( new QFileDialog(lastUsedDir, 
+                                                              QObject::tr("QGis files (*.qgs)"), 
+                                                              0,
+                                                              "save project file") );
+
         saveFileDialog->setCaption(tr("Choose a QGIS project file"));
         saveFileDialog->setMode(QFileDialog::AnyFile);
         
         if (saveFileDialog->exec() == QDialog::Accepted)
         {
-            fullPath = saveFileDialog->selectedFile();
+            fullPath.setFile( saveFileDialog->selectedFile() );
         } else {
             // if they didn't select anything, just return
-            delete saveFileDialog;
+            // delete saveFileDialog; auto_ptr auto destroys
             return;
         }
         
-        delete saveFileDialog;
+        // delete saveFileDialog; // auto_ptr auto destroys
         
         // make sure we have the .qgs extension in the file name
-        if(fullPath.find(QRegExp("\\.qgs$")) == -1)
+        if( "qgs" != fullPath.extension( false ) )
         {
-          fullPath += ".qgs";
+            QString newFilePath = fullPath.filePath() + ".qgs";
+#ifdef QGISDEBUG
+            const char* filePathStr = newFilePath.ascii(); // debugger probe
+#endif
+            fullPath.setFile( newFilePath );
         }
-        // XXX We should check to see if the file exists before just blasting
-        //     it into oblivion...
 
-        QgsProject::instance()->filename( fullPath );
+        //  Check to see if the file exists before just blasting it into
+        //  oblivion; abort saving the project if the user does not want to
+        //  over-write an existing file.
+
+        if ( fullPath.exists() )
+        {
+            if ( QMessageBox::No == QMessageBox::warning( 0x0, 
+                                                          tr("Project file exists."),
+                                                          tr("The given project file exists.  Do you wish to over-write it with a new one?"),
+                                                          QMessageBox::Yes | QMessageBox::Default,
+                                                          QMessageBox::No  | QMessageBox::Escape,
+                                                          QMessageBox::NoButton ) )
+            {
+                return;         // abort saving the file since the user
+                                // doesn't want to over-write
+            }
+                                                           
+        }
+        else
+        {
+            QgsDebug( " project file does not already exist" );
+        }
+
+#ifdef QGISDEBUG
+        const char* filePathStr = fullPath.filePath().ascii(); // debugger probe
+#endif
+        QgsProject::instance()->filename( fullPath.filePath() );
     }
 
     try
     {
         if ( QgsProject::instance()->write() )
         {
-            statusBar()->message(tr("Saved map to:") + " " + QgsProject::instance()->filename() );
+            statusBar()->message(tr("Saved project to:") + " " + QgsProject::instance()->filename() );
             
             if (isNewProject)
             {
                 // add this to the list of recently used project files
                 QSettings settings;
-                saveRecentProjectPath(fullPath, settings);
+                saveRecentProjectPath(fullPath.filePath(), settings);
             }
         }
         else
@@ -2265,39 +2297,72 @@ void QgisApp::fileSaveAs()
     QSettings settings;
     QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
     
-    QFileDialog * saveFileDialog = new QFileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0,
-                                                   "save project file as");
+    auto_ptr<QFileDialog> saveFileDialog( new QFileDialog(lastUsedDir, 
+                                                          QObject::tr("QGis files (*.qgs)"), 
+                                                          0,
+                                                          "save project file as"));
+
     saveFileDialog->setCaption(tr("Choose a QGIS project file"));
     saveFileDialog->setMode(QFileDialog::AnyFile);
     
-    QString fullPath;
+    QFileInfo fullPath;
+
     if (saveFileDialog->exec() == QDialog::Accepted)
     {
-        fullPath = saveFileDialog->selectedFile();
-    } else {
+        fullPath.setFile( saveFileDialog->selectedFile() );
+    } else
+    {
         // if they didn't select anything, just return
-        delete saveFileDialog;
+        // delete saveFileDialog; auto_ptr auto deletes
         return;
     }
     
     // Persist last used project dir
     settings.writeEntry("/qgis/UI/lastProjectDir", saveFileDialog->dirPath());
     
-    delete saveFileDialog;
+    // delete saveFileDialog; auto_ptr auto deletes
     
-    // make sure the .qgs extension is included in the path name. if not, add it...
-    if (fullPath.find(QRegExp("\\.qgs$")) == -1)
+    // make sure we have the .qgs extension in the file name
+    if( "qgs" != fullPath.extension( false ) )
     {
-      fullPath += ".qgs";
+        QString newFilePath = fullPath.filePath() + ".qgs";
+#ifdef QGISDEBUG
+        const char* filePathStr = newFilePath.ascii(); // debugger probe
+#endif
+        fullPath.setFile( newFilePath );
     }
 
-    QgsProject::instance()->filename( fullPath );
+
+    //  Check to see if the file exists before just blasting it into
+    //  oblivion; abort saving the project if the user does not want to
+    //  over-write an existing file.
+
+    if ( fullPath.exists() )
+    {
+        if ( QMessageBox::No == QMessageBox::warning( 0x0, 
+                                                      tr("Project file exists."),
+                                                      tr("The given project file exists.  Do you wish to over-write it with a new one?"),
+                                                      QMessageBox::Yes | QMessageBox::Default,
+                                                      QMessageBox::No  | QMessageBox::Escape,
+                                                      QMessageBox::NoButton ) )
+        {
+            return;             // abort saving the file since the user
+                                // doesn't want to over-write
+        }
+    }
+    else
+    {
+        QgsDebug( " project file does not already exist" );
+    }
+
+
+    QgsProject::instance()->filename( fullPath.filePath() );
 
     if ( QgsProject::instance()->write() )
     {
-        statusBar()->message(tr("Saved map to:") + " " + QgsProject::instance()->filename() );
+        statusBar()->message(tr("Saved project to:") + " " + QgsProject::instance()->filename() );
         // add this to the list of recently used project files
-        saveRecentProjectPath(fullPath, settings);
+        saveRecentProjectPath(fullPath.filePath(), settings);
     }
     else
     {
@@ -2306,6 +2371,8 @@ void QgisApp::fileSaveAs()
                               tr("Unable to save project to ") + QgsProject::instance()->filename() );
     }
 } // QgisApp::fileSaveAs
+
+
 
 
 // add this file to the recently opened/saved projects list
