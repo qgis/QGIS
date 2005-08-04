@@ -133,7 +133,7 @@ inline bool operator==(const QgsPoint &p1, const QgsPoint &p2)
 
 inline std::ostream& operator << (std::ostream& os, const QgsPoint &p)
 {
-   os << p.stringRep();
+   os << p.stringRep().ascii();
    return os;
 }
 
