@@ -330,7 +330,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
 {
   QString mySummary ("\n\tSpatial Reference System:");
   mySummary += "\n\t\tDescription : ";
-  if (r.description()) 
+  if (!r.description().isEmpty()) 
   {
     mySummary += r.description().latin1();
   }
@@ -339,7 +339,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
     mySummary += "Undefined" ;
   }
   mySummary += "\n\t\tProjection  : " ;
-  if (r.projectionAcronym()) 
+  if (!r.projectionAcronym().isEmpty()) 
   {
     mySummary += r.projectionAcronym().latin1();
   }
@@ -349,7 +349,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
   }
 
   mySummary += "\n\t\tEllipsoid   : "; 
-  if (r.ellipsoidAcronym()) 
+  if (!r.ellipsoidAcronym().isEmpty()) 
   {
     mySummary += r.ellipsoidAcronym().latin1();
   }
@@ -359,7 +359,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
   }
 
   mySummary += "\n\t\tProj4String  : " ;
-  if (r.proj4String()) 
+  if (!r.proj4String().isEmpty()) 
   {
     mySummary += r.proj4String().latin1();
   }
@@ -367,7 +367,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
   {
     mySummary += "Undefined" ;
   }
-  return os << mySummary << std::endl;
+  return os << mySummary.ascii() << std::endl;
 }
 
 
