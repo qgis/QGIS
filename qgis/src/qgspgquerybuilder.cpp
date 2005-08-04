@@ -282,23 +282,31 @@ void QgsPgQueryBuilder::setConnection(PGconn *con)
 
 void QgsPgQueryBuilder::accept()
 {
-  // test the query to see if it will result in a valid layer
-  long numRecs = countRecords(txtSQL->text());
-  if(numRecs == -1)
+  // if user hits Ok and there is no query, skip the validation
+  if(txtSQL->text().stripWhiteSpace().length() > 0)
   {
-    //error in query - show the problem
-    QMessageBox::warning(this,"Error in Query", mPgErrorMessage);
-  }
-  else
-  {
-    if(numRecs == 0)
+    // test the query to see if it will result in a valid layer
+    long numRecs = countRecords(txtSQL->text());
+    if(numRecs == -1)
     {
-      QMessageBox::warning(this, tr("No Records"), tr("The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature."));
+      //error in query - show the problem
+      QMessageBox::warning(this,"Error in Query", mPgErrorMessage);
     }
     else
     {
-      QgsPgQueryBuilderBase::accept();
+      if(numRecs == 0)
+      {
+        QMessageBox::warning(this, tr("No Records"), tr("The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature."));
+      }
+      else
+      {
+        QgsPgQueryBuilderBase::accept();
+      }
     }
+  }
+  else
+  {
+    QgsPgQueryBuilderBase::accept();
   }
 }
 
