@@ -394,7 +394,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
       }
       // And set the angle of the north arrow. Perhaps do something
       // different if goodDirn = false.
-      mRotationInt = static_cast<int>(round(fmod(360.0-angle*180.0/PI, 360.0)));
+      mRotationInt = static_cast<int>(floor(fmod(360.0-angle*180.0/PI, 360.0) +0.5));
     }
     else
     {

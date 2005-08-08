@@ -2507,6 +2507,9 @@ bool QgisApp::openLayer(const QString & fileName)
             std::cout << "Unable to load " << fileName.local8Bit() << std::endl;
         }
     }
+#ifdef WIN32
+	return true;
+#endif
 }
 
 
@@ -5073,7 +5076,10 @@ void QgisApp::killSplashScreen()
 
 void QgisApp::keyPressEvent ( QKeyEvent * e )
 {
-    std::cout << e->text().local8Bit() << " (keypress recevied)" << std::endl;
+	// The following statment causes a crash on WIN32 and should be 
+	// enclosed in an #ifdef QGISDEBUG if its really necessary. Its
+	// commented out for now. [gsherman]
+	//    std::cout << e->text().local8Bit() << " (keypress recevied)" << std::endl;
     emit keyPressed (e);
     e->ignore();
     

@@ -14,8 +14,11 @@
 
 #include <qdir.h>
 #include <qnetworkprotocol.h> 
+#ifdef WIN32
+#include <qgscustomprojectiondialogbase.h>
+#else
 #include <qgscustomprojectiondialogbase.uic.h>
-
+#endif
 /**
 The custom projection widget is used to define the projection family, ellipsoid and paremters needed by proj4 to assemble a customised projection definition. The resulting projection will be store in an sqlite backend.
 

@@ -191,8 +191,16 @@ QgsPoint QgsCoordinateTransform::transform(const QgsPoint thePoint,TransformDire
   double x = thePoint.x();
   double y = thePoint.y();
   double z = 0.0;
-  
-  transformCoords(1, &x, &y, &z, direction );
+  try
+  { 
+    transformCoords(1, &x, &y, &z, direction );
+  }
+  catch(QgsException &e)
+  {
+    // rethrow the exception
+    std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
+    throw e;
+  }
 
 #ifdef QGISDEBUG
   //std::cout << "Point projection...X : " << thePoint.x() << "-->" << x << ", Y: " << thePoint.y() << " -->" << y << std::endl;
@@ -203,7 +211,16 @@ QgsPoint QgsCoordinateTransform::transform(const QgsPoint thePoint,TransformDire
 
 QgsPoint QgsCoordinateTransform::transform(const double theX, const double theY=0,TransformDirection direction)
 {
-  return transform(QgsPoint(theX, theY), direction);
+  try
+  {
+    return transform(QgsPoint(theX, theY), direction);
+  }
+  catch(QgsException &e)
+  {
+    // rethrow the exception
+    std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
+    throw e;
+  }
 }
 
 QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirection direction)
@@ -230,6 +247,7 @@ QgsRect QgsCoordinateTransform::transform(const QgsRect theRect,TransformDirecti
   catch(QgsCsException &cse)
   {
     // rethrow the exception
+    std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
     throw cse;
   }
 
@@ -261,7 +279,16 @@ void QgsCoordinateTransform::transformInPlace(double& x, double& y, double& z,
   //std::cout << "Using transform in place " << __FILE__ << " " << __LINE__ << std::endl;
 #endif
   // transform x
-  transformCoords(1, &x, &y, &z, direction );
+  try
+  {
+    transformCoords(1, &x, &y, &z, direction );
+  }
+  catch (QgsCsException &e)
+  {
+    // rethrow the exception
+    std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
+    throw e;
+  }
 }
 
 void QgsCoordinateTransform::transformInPlace(std::vector<double>& x,
@@ -278,7 +305,16 @@ void QgsCoordinateTransform::transformInPlace(std::vector<double>& x,
   // array of the vectors data, and hence easily interface with code
   // that wants C-style arrays.
 
-  transformCoords(x.size(), &x[0], &y[0], &z[0], direction);
+  try
+  {
+    transformCoords(x.size(), &x[0], &y[0], &z[0], direction);
+  }
+  catch(QgsException &e)
+  {
+    // rethrow the exception
+    std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
+    throw e;
+  }
 }
 
 
@@ -303,9 +339,9 @@ QgsRect QgsCoordinateTransform::transformBoundingBox(const QgsRect rect, Transfo
   double x[numP * numP];
   double y[numP * numP];
   double z[numP * numP];
-  
+#ifdef QGISDEBUG   
   std::cout << "Entering transformBoundingBox..." << std::endl;
-
+#endif 
   // Populate the vectors
 
   double dx = rect.width()  / (double)(numP - 1);
@@ -334,7 +370,16 @@ QgsRect QgsCoordinateTransform::transformBoundingBox(const QgsRect rect, Transfo
 
   // Do transformation. Any exception generated must
   // be handled in above layers.
-  transformCoords(numP * numP, x, y, z, direction);
+  try
+  {
+    transformCoords(numP * numP, x, y, z, direction);
+  }
+  catch(QgsException &e)
+  {
+    // rethrow the exception
+    std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
+    throw e;
+  }
 
   // Calculate the bounding box and use that for the extent
         
@@ -342,9 +387,9 @@ QgsRect QgsCoordinateTransform::transformBoundingBox(const QgsRect rect, Transfo
   {
     bb_rect.combineExtentWith(x[i], y[i]);
   }
-
+#ifdef QGISDEBUG 
   std::cout << "Projected extent: " << (bb_rect.stringRep()).local8Bit() << std::endl;
-
+#endif 
   return bb_rect;
 }
 
@@ -423,6 +468,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   std::cout << "Projection failed emitting invalid transform signal: \n" << msg.local8Bit() << std::endl;
 #endif
     emit invalidTransformInput();
+    std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
     throw  QgsCsException(msg);
   }
   // if the result is lat/long, convert the results from radians back
@@ -454,6 +500,9 @@ bool QgsCoordinateTransform::readXML( QDomNode & theNode )
   QDomNode myDestNode = myDestNodeParent.namedItem("spatialrefsys");
   mDestSRS.readXML(myDestNode);
   initialise();
+#ifdef WIN32
+  return true;
+#endif
 }
 
 bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc )
@@ -471,6 +520,8 @@ bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc
   myTransformElement.appendChild(myDestElement);
   
   myNodeElement.appendChild(myTransformElement);
-
+#ifdef WIN32
+  return true;
+#endif
 }
 

@@ -19,7 +19,9 @@ email                : sherman at mrcc.com
 #include "qgsrect.h"
 #include <iostream>
 #include <cfloat>
-
+#ifdef WIN32
+#include <limits>
+#endif
 #include <cstring>
 
 /** \class QgsFeature

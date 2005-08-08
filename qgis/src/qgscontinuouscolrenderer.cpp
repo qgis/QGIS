@@ -439,7 +439,9 @@ bool QgsContinuousColRenderer::writeXML( QDomNode & layer_node, QDomDocument & d
     {
 	mMaximumItem->writeXML(highestitem,document);
     }
-    
+#ifdef WIN32
+	return true;
+#endif
 }
 
 const std::list<QgsRenderItem*> QgsContinuousColRenderer::items() const

@@ -864,7 +864,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       muppY = mCanvasProperties->currentExtent.height() / myHeight;
       muppX = mCanvasProperties->currentExtent.width() / myWidth;
       mCanvasProperties->m_mupp = muppY > muppX ? muppY : muppX;
-      
+
       // calculate the actual extent of the mapCanvas
       double dxmin, dxmax, dymin, dymax, whitespace;
 
@@ -873,7 +873,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         dymin = mCanvasProperties->currentExtent.yMin();
         dymax = mCanvasProperties->currentExtent.yMax();
         whitespace = ((myWidth * mCanvasProperties->m_mupp) - 
-          mCanvasProperties->currentExtent.width()) / 2;
+            mCanvasProperties->currentExtent.width()) / 2;
         dxmin = mCanvasProperties->currentExtent.xMin() - whitespace;
         dxmax = mCanvasProperties->currentExtent.xMax() + whitespace;
       }
@@ -882,7 +882,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         dxmin = mCanvasProperties->currentExtent.xMin();
         dxmax = mCanvasProperties->currentExtent.xMax();
         whitespace = ((myHeight * mCanvasProperties->m_mupp) - 
-          mCanvasProperties->currentExtent.height()) / 2;
+            mCanvasProperties->currentExtent.height()) / 2;
         dymin = mCanvasProperties->currentExtent.yMin() - whitespace;
         dymax = mCanvasProperties->currentExtent.yMax() + whitespace;
       }
@@ -894,22 +894,22 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       // the mupp if we're rendering to an alternative device (it uses the
       // widget size in its calculations).
       if (!theQPaintDevice)
-  currentScale(0);
+        currentScale(0);
 
 #ifdef QGISDEBUG
 
       std::cout
-      << "Paint device width : " << myWidth << std::endl
-      << "Paint device height : " << myHeight << std::endl
-      << "Canvas current extent height : " << mCanvasProperties->currentExtent.height()  << std::endl
-      << "Canvas current extent width : " << mCanvasProperties->currentExtent.width()  << std::endl
-      << "muppY: " << muppY << std::endl
-      << "muppX: " << muppX << std::endl
-      << "dxmin: " << dxmin << std::endl
-      << "dxmax: " << dxmax << std::endl
-      << "dymin: " << dymin << std::endl
-      << "dymax: " << dymax << std::endl
-      << "whitespace: " << whitespace << std::endl;
+        << "Paint device width : " << myWidth << std::endl
+        << "Paint device height : " << myHeight << std::endl
+        << "Canvas current extent height : " << mCanvasProperties->currentExtent.height()  << std::endl
+        << "Canvas current extent width : " << mCanvasProperties->currentExtent.width()  << std::endl
+        << "muppY: " << muppY << std::endl
+        << "muppX: " << muppX << std::endl
+        << "dxmin: " << dxmin << std::endl
+        << "dxmax: " << dxmax << std::endl
+        << "dymin: " << dymin << std::endl
+        << "dymax: " << dymax << std::endl
+        << "whitespace: " << whitespace << std::endl;
 #endif
 
       mCanvasProperties->coordXForm->setParameters(mCanvasProperties->m_mupp, dxmin, dymin, myHeight);
@@ -949,30 +949,30 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
             //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
 #ifdef QGISDEBUG
             std::cout << "QgsMapCanvas::render: Rendering layer " << ml->name().local8Bit() << '\n'
-          << "Layer minscale " << ml->minScale() 
-          << ", maxscale " << ml->maxScale() << '\n' 
-          << ". Scale dep. visibility enabled? " 
-          << ml->scaleBasedVisibility() << '\n'
-          << "Input extent: " << ml->extent().stringRep().local8Bit() 
-          << std::endl;
+              << "Layer minscale " << ml->minScale() 
+              << ", maxscale " << ml->maxScale() << '\n' 
+              << ". Scale dep. visibility enabled? " 
+              << ml->scaleBasedVisibility() << '\n'
+              << "Input extent: " << ml->extent().stringRep().local8Bit() 
+              << std::endl;
             try
             {
               std::cout << "Transformed extent" 
-      << ml->coordinateTransform()->transformBoundingBox(ml->extent()).stringRep().local8Bit() 
-      << std::endl;
+                << ml->coordinateTransform()->transformBoundingBox(ml->extent()).stringRep().local8Bit() 
+                << std::endl;
             }
             catch (QgsCsException &e)
             {
               qDebug( "Transform error caught in %s line %d:\n%s", 
-          __FILE__, __LINE__, e.what());
+                  __FILE__, __LINE__, e.what());
             }
 #endif
 
             if (ml->visible())
             {
               if ((ml->scaleBasedVisibility() && 
-                   ml->minScale() < mCanvasProperties->mScale 
-                   && ml->maxScale() > mCanvasProperties->mScale)
+                    ml->minScale() < mCanvasProperties->mScale 
+                    && ml->maxScale() > mCanvasProperties->mScale)
                   || (!ml->scaleBasedVisibility()))
               {
                 QgsRect r1 = mCanvasProperties->currentExtent, r2;
@@ -989,7 +989,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
               else
               {
                 std::cout << "Layer not rendered because it is not within "
-        << "the defined visibility scale range" << std::endl;
+                  << "the defined visibility scale range" << std::endl;
               }
 #endif
 
@@ -1022,18 +1022,18 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                 //only make labels if the layer is visible
                 //after scale dep viewing settings are checked
                 if ((ml->scaleBasedVisibility() && 
-                     ml->minScale() < mCanvasProperties->mScale 
-                     && ml->maxScale() > mCanvasProperties->mScale)
+                      ml->minScale() < mCanvasProperties->mScale 
+                      && ml->maxScale() > mCanvasProperties->mScale)
                     || (!ml->scaleBasedVisibility()))
                 {
                   QgsRect r1 = mCanvasProperties->currentExtent, r2;
                   bool split = ml->projectExtent(r1, r2);
 
                   ml->drawLabels(paint, &r1, mCanvasProperties->coordXForm, 
-                                 this);
+                      this);
                   if (split)
                     ml->drawLabels(paint, &r2, mCanvasProperties->coordXForm, 
-                                   this);
+                        this);
                 }
               }
               li++;
@@ -1050,49 +1050,79 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 
       // draw the acetate layer
       std::map <QString, QgsAcetateObject *>::iterator 
-  ai = mCanvasProperties->acetateObjects.begin();
+        ai = mCanvasProperties->acetateObjects.begin();
       while(ai != mCanvasProperties->acetateObjects.end())
       {
         QgsAcetateObject *acObj = ai->second;
         if(acObj)
         {
+          try
+          {
+
           acObj->draw(paint, mCanvasProperties->coordXForm);
+          }
+          catch(QgsException &e)
+          {
+            std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
+          }
         }
         ai++;
       }
 
       //draw mCaptureList with color and width stored in QgsProject
       QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),
-            QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),
-            QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
+          QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),
+          QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
       paint->setPen(QPen(digitcolor,QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",1),Qt::SolidLine));
-      
-      std::list<QgsPoint>::iterator it=mCaptureList.begin();
-      QgsPoint previous=mCanvasProperties->coordXForm->transform(it->x(), it->y());
-      QgsPoint current;
-      for(std::list<QgsPoint>::iterator it=++mCaptureList.begin();it!=mCaptureList.end();++it)
+      if(mCaptureList.size() > 0)
       {
-	  current=mCanvasProperties->coordXForm->transform(it->x(), it->y());
-	  paint->drawLine(static_cast<int>(previous.x()), static_cast<int>(previous.y()), static_cast<int>(current.x()),\
-			 static_cast<int>(current.y()));
-	  previous=mCanvasProperties->coordXForm->transform(it->x(), it->y());
-      }
-      
-//and also the connection to mDigitMovePoint
-      if((mLineEditing || mPolygonEditing) && mCaptureList.size()>0)
-      {
-	  paint->setRasterOp(Qt::XorROP);
-	  QgsPoint digitpoint=mCanvasProperties->coordXForm->transform(mDigitMovePoint.x(), mDigitMovePoint.y());
-	  paint->drawLine(static_cast<int>(current.x()), static_cast<int>(current.y()), static_cast<int>(digitpoint.x()),\
-					  static_cast<int>(digitpoint.y()));
-	  if(mPolygonEditing && mCaptureList.size()>1)
-	  {
-	      QgsPoint first=mCanvasProperties->coordXForm->transform(*(mCaptureList.begin()));
-	      paint->drawLine(static_cast<int>(first.x()), static_cast<int>(first.y()), static_cast<int>(digitpoint.x()),\
-					  static_cast<int>(digitpoint.y()));
-	  }
-      }
 
+        std::list<QgsPoint>::iterator it=mCaptureList.begin();
+        QgsPoint current;
+        try
+        {
+          QgsPoint previous=mCanvasProperties->coordXForm->transform(it->x(), it->y());
+          for(std::list<QgsPoint>::iterator it=++mCaptureList.begin();it!=mCaptureList.end();++it)
+          {
+            current=mCanvasProperties->coordXForm->transform(it->x(), it->y());
+            paint->drawLine(static_cast<int>(previous.x()), static_cast<int>(previous.y()), static_cast<int>(current.x()),\
+                static_cast<int>(current.y()));
+            previous=mCanvasProperties->coordXForm->transform(it->x(), it->y());
+          }
+        }
+        catch(QgsException &e)
+        {
+          // ignore this exception at present
+          std::cout << "QgsException: " << __FILE__ << __LINE__ << std::endl; 
+        }
+
+
+        //and also the connection to mDigitMovePoint
+        if((mLineEditing || mPolygonEditing) && mCaptureList.size()>0)
+        {
+          paint->setRasterOp(Qt::XorROP);
+          try
+          {
+            QgsPoint digitpoint=mCanvasProperties->coordXForm->transform(mDigitMovePoint.x(), mDigitMovePoint.y());
+            paint->drawLine(static_cast<int>(current.x()), static_cast<int>(current.y()), static_cast<int>(digitpoint.x()),\
+                static_cast<int>(digitpoint.y()));
+            if(mPolygonEditing && mCaptureList.size()>1)
+            {
+              QgsPoint first=mCanvasProperties->coordXForm->transform(*(mCaptureList.begin()));
+              paint->drawLine(static_cast<int>(first.x()), static_cast<int>(first.y()), static_cast<int>(digitpoint.x()),\
+                  static_cast<int>(digitpoint.y()));
+            }
+          }
+
+
+          catch(QgsException &e)
+          {
+            // ignore this for now
+            // we need this to keep windows from wanted to send
+            // a bug report to Bill
+          }
+        }
+      }
 				      
 
       // notify any listeners that rendering is complete
@@ -1311,6 +1341,9 @@ void QgsMapCanvas::zoomToSelected()
       {      
         if ( ! lyr->coordinateTransform() )
         {
+#ifdef QGISDEBUG 
+            std::cout << "Throwing exception "<< __FILE__ << __LINE__ << std::endl; 
+#endif
             throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
         }
 
@@ -1694,7 +1727,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
           // create the search rectangle
           double searchRadius = extent().width() * calculateSearchRadiusValue();
-          QgsRect * search = new QgsRect;
+          QgsRect * search = new QgsRect();
           // convert screen coordinates to map coordinates
           QgsPoint idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
           search->setXmin(idPoint.x() - searchRadius);
@@ -1818,11 +1851,20 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       std::list<QgsPoint>::iterator it=mCaptureList.end();
       --it;
       --it;
-      
+    try
+	{
       QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
       QgsPoint endpoint = mCanvasProperties->coordXForm->transform(digitisedpoint.x(),digitisedpoint.y());
-      paint.drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),
+	
+	
+	paint.drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),
       static_cast<int>(endpoint.x()),static_cast<int>(endpoint.y()));
+	}
+	catch(QgsException &e)
+	{
+		// ignore this 
+		// we need it to keep windows quiet
+	}
       repaint();
     }
   if(e->button()==Qt::RightButton)
@@ -2489,10 +2531,15 @@ void QgsMapCanvas::recalculateExtents()
     {
       if ( ! lyr->coordinateTransform() )
       {
-          throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+#ifdef QGISDEBUG 
+        std::cout << "Throwing exception "<< __FILE__ << __LINE__ << std::endl; 
+#endif 
+        throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
       }
 
-      std::cout << "Transformed extent" << lyr->coordinateTransform()->transformBoundingBox(lyr->extent(), QgsCoordinateTransform::FORWARD) << std::endl;
+      std::cout << "Transformed extent" << 
+        lyr->coordinateTransform()->transformBoundingBox(lyr->extent(), 
+            QgsCoordinateTransform::FORWARD) << std::endl;
     }
     catch (QgsCsException &e)
     {
@@ -2506,12 +2553,15 @@ void QgsMapCanvas::recalculateExtents()
     {
       try
       {
-          if ( ! lyr->coordinateTransform() )
-          {
-              throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
-          }
+        if ( ! lyr->coordinateTransform() )
+        {
+#ifdef QGISDEBUG 
+          std::cout << "Throwing exception "<< __FILE__ << __LINE__ << std::endl; 
+#endif 
+          throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+        }
 
-          updateFullExtent(lyr->coordinateTransform()->transformBoundingBox(lyr->extent()));
+        updateFullExtent(lyr->coordinateTransform()->transformBoundingBox(lyr->extent()));
       }
       catch (QgsCsException &e)
       {

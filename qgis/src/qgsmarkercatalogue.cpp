@@ -144,7 +144,7 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
     QPicture picture;
     
     // Size for circle
-    int half = (int)floor(s/2); // number of points from center
+    int half = (int)floor(s/2.0); // number of points from center
     int size = 2*half + 1;  // must be odd
     double area = 3.14 * (size/2.) * (size/2.);
 
@@ -153,7 +153,7 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
     picpainter.begin(&picture);
     
     // Also width must be odd otherwise there are discrepancies visible in canvas!
-    int lw = (int)(2*floor(pen.width()/2)+1); // -> lw > 0
+    int lw = (int)(2*floor((double)pen.width()/2)+1); // -> lw > 0
     pen.setWidth(lw);
     picpainter.setPen ( pen );
     picpainter.setBrush( brush);
@@ -197,7 +197,7 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
     }
     else if ( name == "cross2" ) 
     {
-	half = (int) floor( s/2/sqrt(2));
+	half = (int) floor( s/2/sqrt(2.0));
 	size = 2*half + 1;
 	
 	int add;

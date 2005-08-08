@@ -19,7 +19,9 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
-
+#ifdef WIN32
+#include <limits>
+#endif
 #include <qstring.h>
 #include <qtextstream.h> 
 
@@ -65,7 +67,7 @@ void QgsRect::set(double xmin_, double ymin_, double xmax_, double ymax_)
 
 void QgsRect::normalize()
 {
-  double temp;
+ 
   if (xmin > xmax)
   {
       std::swap(xmin, xmax);

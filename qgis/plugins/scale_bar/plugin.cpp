@@ -232,7 +232,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     if (mSnapping) 
     {
       double scaler = pow(10.0, myPowerOf10);
-      myActualSize = round(myActualSize / scaler) * scaler;
+      myActualSize = floor((myActualSize / scaler) + 0.5) * scaler;
       myScaleBarWidth = myActualSize / myMuppDouble;
     }
 

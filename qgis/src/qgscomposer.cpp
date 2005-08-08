@@ -777,13 +777,17 @@ void QgsComposer::newProject(void)
 
 bool QgsComposer::writeSettings ( void )
 {
-
+#ifdef WIN32
+	return true;
+#endif
 }
 
 bool QgsComposer::readSettings ( void )
 {
   bool ok;
-
+#ifdef WIN32
+  return true;
+#endif
 }
 
 bool QgsComposer::writeXML( QDomNode & node, QDomDocument & doc )

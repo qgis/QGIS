@@ -17,7 +17,11 @@
  /* $Id$ */
 #ifndef QGSBOOKMARKS_H
 #define QGSBOOKMARKS_H
+#ifdef WIN32
+#include "qgsbookmarksbase.h"
+#else
 #include "qgsbookmarksbase.uic.h"
+#endif
 class QString;
 class QDir;
 class QWidget;

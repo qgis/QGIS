@@ -568,7 +568,10 @@ void QgsMapLayer::initContextMenu(QgisApp * app)
 void QgsMapLayer::keyPressed ( QKeyEvent * e )
 {
   if (e->key()==Qt::Key_Escape) mDrawingCancelled = true;
-  std::cout << e->text().local8Bit() << " pressed in maplayer !" << std::endl;
+// The following statment causes a crash on WIN32 and should be 
+// enclosed in an #ifdef QGISDEBUG if its really necessary. Its
+// commented out for now. [gsherman]
+//  std::cout << e->text().local8Bit() << " pressed in maplayer !" << std::endl;
   e->ignore();
 }
 

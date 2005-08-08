@@ -490,9 +490,14 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   // the double* versions for the OGR coordinate transformation).
   QPointArray pa(nPoints);
   for (int i = 0; i < nPoints; ++i)
+#ifdef WIN32
+	   // vc++ doesn't have a round function so we fake it
+	 pa.setPoint(i, static_cast<int>(floor(x[i] + 0.5)),
+       static_cast<int>(floor(y[i] + 0.5)));
+#else
     pa.setPoint(i, static_cast<int>(round(x[i])),
        static_cast<int>(round(y[i])));
-
+#endif
 #ifdef QGISDEBUGVERBOSE
   for (int i = 0; i < pa.size(); ++i)
     std::cerr << pa.point(i).x() << ", " << pa.point(i).y()
@@ -652,9 +657,14 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
 
       // Transfer points to the QPointArray
       for (int j = 0; j != r->first.size(); ++j)
+#ifdef WIN32
+		  // vc++ doesn't have a round function so we fake it
+		  pa.setPoint(ii++, static_cast<int>(floor(r->first[j] + 0.5)),
+                    static_cast<int>(floor(r->second[j] + 0.5)));
+#else
         pa.setPoint(ii++, static_cast<int>(round(r->first[j])),
                     static_cast<int>(round(r->second[j])));
-
+#endif
       // Store the last point of the first ring, and insert it at
       // the end of all other rings. This makes all the other rings
       // appear as holes in the first ring.

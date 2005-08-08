@@ -88,7 +88,7 @@ wish to see edbug messages printed to stdout.
 
 #include "qgsrect.h"
 #include "qgisapp.h"
-#include "qgscolortable.h"
+//#include "qgscolortable.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsproject.h"
 #include "qgsidentifyresults.h"
@@ -982,8 +982,8 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
 #ifdef QGISDEBUG
       std::cout << "....found GCI_PaletteIndex" << std::endl;
 #endif
-      double myMinDouble = myColorTable->min();
-      double myMaxDouble = myColorTable->max();
+      double myMinDouble = myColorTable->rmin();
+      double myMaxDouble = myColorTable->rmax();
 
 #ifdef QGISDEBUG
       std::cout << "myMinDouble = " << myMinDouble << " myMaxDouble = " << myMaxDouble << std::endl;
@@ -1599,7 +1599,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
 * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
 * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
 */
-void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,
+	QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedSingleBandColor called" << std::endl;
@@ -2038,7 +2039,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, R
 * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
 * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
 */
-void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,
+	QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedMultiBandColor called" << std::endl;
@@ -2147,13 +2149,15 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
   CPLFree(myGdalScanData);
 }
 
-void QgsRasterLayer::drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort,
+	QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
   //delegate to drawSingleBandGray!
   drawSingleBandGray(theQPainter, theRasterViewPort, theQgsMapToPixel, theBandNoInt);
 }
 
-void QgsRasterLayer::drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,
+	QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
   //delegate to drawSinglePseudocolor!
   drawSingleBandPseudoColor(theQPainter, theRasterViewPort, theQgsMapToPixel, theBandNoInt);
@@ -2274,7 +2278,7 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
 void QgsRasterLayer::filterLayer(QImage * theQImage)
 {
   //do stuff here....
-  return;
+  //return;
 }
 
 /**
@@ -4379,7 +4383,7 @@ void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool
     myRasterBandStats.histogramVector->clear();
     myRasterBandStats.histogramEstimatedFlag=theHistogramEstimatedFlag;
     myRasterBandStats.histogramOutOfRangeFlag=theIgnoreOutOfRangeFlag;
-    int myHistogramArray[theBinCountInt];
+    int *myHistogramArray = new int[theBinCountInt];
 
 
     /*
