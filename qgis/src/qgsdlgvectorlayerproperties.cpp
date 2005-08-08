@@ -479,9 +479,26 @@ QString QgsDlgVectorLayerProperties::getMetadata()
   myMetadataQString += "</td></tr>";
   //geom type
   myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += tr("Geometry type of the features in this layer : ") + 
-                       QGis::qgisVectorGeometryType[layer->vectorType()];
-  myMetadataQString += "</td></tr>";
+
+  QGis::VectorType vectorType = layer->vectorType();
+
+  if ( vectorType < 0 || vectorType > QGis::Polygon )
+  {
+      QgsDebug( "Invalid vector type" );
+  }
+  else
+  {
+      QString vectorTypeString( QGis::qgisVectorGeometryType[layer->vectorType()] );
+
+#ifdef QGISDEBUG
+      const char* vectorTypeProbe = vectorTypeString.ascii(); // debugger probe point
+#endif
+
+      myMetadataQString += tr("Geometry type of the features in this layer : ") + 
+          vectorTypeString;
+      myMetadataQString += "</td></tr>";
+  }
+
   //feature count
   myMetadataQString += "<tr><td bgcolor=\"white\">";
   myMetadataQString += tr("The number of features in this layer : ") + 
