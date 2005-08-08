@@ -4,7 +4,10 @@
 
 TEMPLATE = lib
 INCLUDEPATH += . \
-        $(GEOS)\include
+        $(GEOS)\include \
+        $(WINSDK)\Include \
+        $(FWTOOLS)\include \
+        ..\..\src
 LIBS += ..\..\src\libqgis.lib \
         $(GEOS)\lib\geos.lib
 
