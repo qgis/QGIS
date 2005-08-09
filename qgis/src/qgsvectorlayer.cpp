@@ -905,107 +905,113 @@ void QgsVectorLayer::identify(QgsRect * r)
   unsigned char *feature;
 
   if ( !isEditable() ) {
-      // display features falling within the search radius
-      if( !ir )
-      {
-    // TODO it is necessary to pass topLevelWidget()as parent, but there is no QWidget available 
+    // display features falling within the search radius
+    if( !ir )
+    {
+      // It is necessary to pass topLevelWidget()as parent, but there is no QWidget available.
+      //
+      // Win32 doesn't like this approach to creating the window and seems
+      // to work fine without it [gsherman]
+      QWidget *top = 0;
+#ifndef WIN32
 
-    QWidgetList *list = QApplication::topLevelWidgets ();
-    QWidgetListIt it( *list ); 
-          QWidget *w;
-          QWidget *top = 0;
-          while ( (w=it.current()) != 0 ) {
+      QWidgetList *list = QApplication::topLevelWidgets ();
+      QWidgetListIt it( *list ); 
+      QWidget *w;
+
+      while ( (w=it.current()) != 0 ) {
         ++it;
         if ( typeid(*w) == typeid(QgisApp) ) {
-      top = w;
-      break;
+          top = w;
+          break;
         }
-    }
-    delete list;     
-    ir = new QgsIdentifyResults(mActions, top);
-          
-    // restore the identify window position and show it
-    ir->restorePosition();
-      } else {
-          ir->clear();
-    ir->setActions ( mActions );
       }
-
-      while ((fet = dataProvider->getNextFeature(true)))
-      {
-  featureCount++;
-
-  QListViewItem *featureNode = ir->addNode("foo");
-  featureNode->setText(0, fieldIndex);
-  std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
-  for (int i = 0; i < attr.size(); i++)
-  {
-#ifdef QGISDEBUG
-    std::cout << attr[i].fieldName().local8Bit() << " == " << fieldIndex.local8Bit() << std::endl;
+      delete list;     
 #endif
-    if (attr[i].fieldName().lower() == fieldIndex)
-    {
-      featureNode->setText(1, attr[i].fieldValue());
+      ir = new QgsIdentifyResults(mActions, top);
+
+      // restore the identify window position and show it
+      ir->restorePosition();
+    } else {
+      ir->clear();
+      ir->setActions ( mActions );
     }
-    ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
-  }
 
-  // Add actions 
-  
-  QgsAttributeAction::aIter iter = mActions.begin();
-  for (int i = 0; iter != mActions.end(); ++iter, ++i)
-  {
-      ir->addAction( featureNode, i, tr("action"), iter->name() );
-  }
-  
-  delete fet;
-      }
-
-#ifdef QGISDEBUG
-      std::cout << "Feature count on identify: " << featureCount << std::endl;
-#endif
-
-      //also test the not commited features //todo: eliminate copy past code
-      /*for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-      {
-    if((*it)->intersects(r))
+    while ((fet = dataProvider->getNextFeature(true)))
     {
-        featureCount++;
-        if (featureCount == 1)
-        {
-      ir = new QgsIdentifyResults(mActions);
-        }
+      featureCount++;
 
-        QListViewItem *featureNode = ir->addNode("foo");
-        featureNode->setText(0, fieldIndex);
-        std::vector < QgsFeatureAttribute > attr = (*it)->attributeMap();
-        for (int i = 0; i < attr.size(); i++)
-        {
-      #ifdef QGISDEBUG
-      std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
-      #endif
-      if (attr[i].fieldName().lower() == fieldIndex)
+      QListViewItem *featureNode = ir->addNode("foo");
+      featureNode->setText(0, fieldIndex);
+      std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
+      for (int i = 0; i < attr.size(); i++)
       {
+#ifdef QGISDEBUG
+        std::cout << attr[i].fieldName().local8Bit() << " == " << fieldIndex.local8Bit() << std::endl;
+#endif
+        if (attr[i].fieldName().lower() == fieldIndex)
+        {
           featureNode->setText(1, attr[i].fieldValue());
+        }
+        ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
       }
-      ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
-        } 
-    }
-    }*/
 
-      ir->setTitle(name());
-      if (featureCount == 1)
-    ir->showAllAttributes();
-      
-      if (featureCount == 0)
+      // Add actions 
+
+      QgsAttributeAction::aIter iter = mActions.begin();
+      for (int i = 0; iter != mActions.end(); ++iter, ++i)
       {
-    //QMessageBox::information(0, tr("No features found"), tr("No features were found in the active layer at the point you clicked"));
-
-    ir->setTitle(name() + " - " + tr("No features found") );
-    ir->setMessage ( tr("No features found"), tr("No features were found in the active layer at the point you clicked") );
+        ir->addAction( featureNode, i, tr("action"), iter->name() );
       }
-      ir->show();
-  } 
+
+      delete fet;
+    }
+
+#ifdef QGISDEBUG
+    std::cout << "Feature count on identify: " << featureCount << std::endl;
+#endif
+
+    //also test the not commited features //todo: eliminate copy past code
+    /*for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
+      {
+      if((*it)->intersects(r))
+      {
+      featureCount++;
+      if (featureCount == 1)
+      {
+      ir = new QgsIdentifyResults(mActions);
+      }
+
+      QListViewItem *featureNode = ir->addNode("foo");
+      featureNode->setText(0, fieldIndex);
+      std::vector < QgsFeatureAttribute > attr = (*it)->attributeMap();
+      for (int i = 0; i < attr.size(); i++)
+      {
+#ifdef QGISDEBUG
+std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
+#endif
+if (attr[i].fieldName().lower() == fieldIndex)
+{
+featureNode->setText(1, attr[i].fieldValue());
+}
+ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
+} 
+}
+}*/
+
+    ir->setTitle(name());
+if (featureCount == 1)
+  ir->showAllAttributes();
+
+if (featureCount == 0)
+{
+  //QMessageBox::information(0, tr("No features found"), tr("No features were found in the active layer at the point you clicked"));
+
+  ir->setTitle(name() + " - " + tr("No features found") );
+  ir->setMessage ( tr("No features found"), tr("No features were found in the active layer at the point you clicked") );
+}
+ir->show();
+} 
   else { // Edit attributes 
       // TODO: what to do if more features were selected? - nearest?
       if ( (fet = dataProvider->getNextFeature(true)) ) {
