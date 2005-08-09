@@ -872,8 +872,10 @@ void QgsGrassProvider::loadAttributes ( GLAYER &layer )
 			// Check cat value
 			dbColumn *column = db_get_table_column (databaseTable, layer.keyColumn);
 			dbValue *value = db_get_column_value(column);
+			
+			if ( db_test_value_isnull(value) ) continue;
 			layer.attributes[layer.nAttributes].cat = db_get_value_int (value);
-			if ( layer.attributes[layer.nAttributes].cat < 1 ) continue; 
+			if ( layer.attributes[layer.nAttributes].cat < 0 ) continue; 
 
 			layer.attributes[layer.nAttributes].values = (char **) malloc ( layer.nColumns * sizeof(char*) );
 
