@@ -1128,6 +1128,9 @@ bool QgsOgrProvider::createSpatialIndex()
     QString filename=dataSourceUri.section('/',-1,-1);//todo: find out the filename from the uri
     QString layername=filename.section('.',0,0);
     QString sql="CREATE SPATIAL INDEX ON "+layername;
+#ifdef QGISDEBUG
+  qDebug("Creating spatial index using: " + sql);
+#endif
     ogrDataSource->ExecuteSQL (sql.ascii(), ogrLayer->GetSpatialFilter(),"");
     //todo: find out, if the .qix file is there
     QString indexname=dataSourceUri;
