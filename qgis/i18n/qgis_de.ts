@@ -609,7 +609,7 @@ nicht installierz ist, wo es QGIS finden kann, funktioniert dieses Werkzeug nich
     </message>
     <message>
         <source>Save file dialog</source>
-        <translation>DateispeichernDialog</translation>
+        <translation type="obsolete">DateispeichernDialog</translation>
     </message>
     <message>
         <source>Open an OGR Supported Data Source</source>
@@ -617,11 +617,15 @@ nicht installierz ist, wo es QGIS finden kann, funktioniert dieses Werkzeug nich
     </message>
     <message>
         <source>Choose a QGIS project file to open</source>
-        <translation>QGIS Projektdatei zum öffnen wählen</translation>
+        <translation type="obsolete">QGIS Projektdatei zum öffnen wählen</translation>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
-        <translation>QGIS Projektdatei wählen</translation>
+        <translation type="obsolete">QGIS Projektdatei wählen</translation>
+    </message>
+    <message>
+        <source>save new vector files dialog</source>
+        <translation>Dialog zum öffnen einer neuen Vektorebene speichern</translation>
     </message>
 </context>
 <context>
@@ -749,6 +753,10 @@ support this.</source>
 aus mehreren Spalten zusammengesetzt ist. Qgis
 unterstützt dies im Moment nicht.</translation>
     </message>
+    <message>
+        <source>Unable to save to file </source>
+        <translation>Datei kann nicht gespeichert werden</translation>
+    </message>
 </context>
 <context>
     <name>QgisApp</name>
@@ -826,7 +834,7 @@ unterstützt dies im Moment nicht.</translation>
     </message>
     <message>
         <source>Saved map to:</source>
-        <translation>Karte gespeichert als:</translation>
+        <translation type="obsolete">Karte gespeichert als:</translation>
     </message>
     <message>
         <source>No Layer Selected</source>
@@ -1154,7 +1162,7 @@ unterstützt dies im Moment nicht.</translation>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
-        <translation type="obsolete">Wähle eine QGIS Projektdatei</translation>
+        <translation>Eine QGIS Projektdatei wählen</translation>
     </message>
     <message>
         <source>Unable to save project</source>
@@ -1255,6 +1263,44 @@ unterstützt dies im Moment nicht.</translation>
     <message>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Öffnen einer GDAL Rasterdatenquelle</translation>
+    </message>
+    <message>
+        <source>Save As</source>
+        <translation>Speichern als</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file to open</source>
+        <translation>QGIS Projektdatei zum öffnen wählen</translation>
+    </message>
+    <message>
+        <source>Project file exists.</source>
+        <translation>Projektdatei existiert bereits.</translation>
+    </message>
+    <message>
+        <source>The given project file exists.  Do you wish to over-write it with a new one?</source>
+        <translation>Diese Projektdatei existiert bereits. Soll sie überschrieben werden?</translation>
+    </message>
+    <message>
+        <source>Saved project to:</source>
+        <translation>Projekt wurde gespeichert in:</translation>
+    </message>
+    <message>
+        <source>QGIS Browser Selection</source>
+        <translation>QGIS Browserauswahl</translation>
+    </message>
+    <message>
+        <source>Enter the name of a web browser to use (eg. konqueror).
+</source>
+        <translation>Geben Sie den Namen eines Webbrowsers ein (z.B. Konqueror).</translation>
+    </message>
+    <message>
+        <source>Enter the full path if the browser is not in your PATH.
+</source>
+        <translation>Geben sie den vollen Namen ein, wenn der Browser nicht im PAT ist.</translation>
+    </message>
+    <message>
+        <source>You can change this option later by selecting Preferences from the Settings menu.</source>
+        <translation>Diese Option kann später unter &apos;Einstellungen&apos;  -&gt; &apos;Einstellungen&apos; geändert werden.</translation>
     </message>
 </context>
 <context>
@@ -2338,6 +2384,14 @@ unterstützt dies im Moment nicht.</translation>
         <source>&amp;No</source>
         <translation>&amp;Nein</translation>
     </message>
+    <message>
+        <source>Are you sure you want to delete the </source>
+        <translation></translation>
+    </message>
+    <message>
+        <source> bookmark?</source>
+        <translation>Soll das Lesezeichen wirklich gelöscht werden?</translation>
+    </message>
 </context>
 <context>
     <name>QgsBookmarksBase</name>
@@ -2384,6 +2438,10 @@ unterstützt dies im Moment nicht.</translation>
     <message>
         <source>Close the dialog</source>
         <translation>Dialog schliessen</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
 </context>
 <context>
@@ -2470,6 +2528,10 @@ unterstützt dies im Moment nicht.</translation>
         <source>Choose a filename to save the map as</source>
         <translation>Einen Dateinahmen zum Speichern der Karte wählen</translation>
     </message>
+    <message>
+        <source> for read/write</source>
+        <translation>um zu lesen/ schreiben</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerBase</name>
@@ -2535,7 +2597,7 @@ unterstützt dies im Moment nicht.</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation>Aktion</translation>
+        <translation type="obsolete">Aktion</translation>
     </message>
     <message>
         <source>Add new map</source>
@@ -2569,6 +2631,18 @@ unterstützt dies im Moment nicht.</translation>
         <source>Refresh view</source>
         <translation>Aktualisiere Ansicht</translation>
     </message>
+    <message>
+        <source>Zoom to full extent</source>
+        <translation>Auf volles Ausmaß vergrößern</translation>
+    </message>
+    <message>
+        <source>Zoom in</source>
+        <translation>Hineinzoomen</translation>
+    </message>
+    <message>
+        <source>Zoom out</source>
+        <translation>Herauszoomen</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerLabelBase</name>
@@ -2589,7 +2663,7 @@ unterstützt dies im Moment nicht.</translation>
     <name>QgsComposerMap</name>
     <message>
         <source>Map %d</source>
-        <translation>Karte %d</translation>
+        <translation type="obsolete">Karte %d</translation>
     </message>
     <message>
         <source>Extent (calculate scale)</source>
@@ -2598,6 +2672,10 @@ unterstützt dies im Moment nicht.</translation>
     <message>
         <source>Scale (calculate extent)</source>
         <translation>Massstab (Ausdenungsberechnung)</translation>
+    </message>
+    <message>
+        <source>Map %1</source>
+        <translation>Karte %1</translation>
     </message>
 </context>
 <context>
@@ -2851,6 +2929,13 @@ unterstützt dies im Moment nicht.</translation>
     </message>
 </context>
 <context>
+    <name>QgsConnectionDialog</name>
+    <message>
+        <source>SPIT - Help</source>
+        <translation>SPIT - Hilfe</translation>
+    </message>
+</context>
+<context>
     <name>QgsConnectionDialogBase</name>
     <message>
         <source>Connection Properties</source>
@@ -3081,12 +3166,40 @@ unterstützt dies im Moment nicht.</translation>
         <source>This proj4 projection definition is not valid. Please correct before pressing save.</source>
         <translation>Diese proj4 Definition ist ungültig. Bitte vor dem speichern korrigieren.</translation>
     </message>
+    <message>
+        <source>This proj4 projection definition is not valid. Please give the projection a name before pressing save.</source>
+        <translation>Diese proj4 Projektionsdefinition ist ungültig. Bitte Sie einen Projektionsnamen an, bevor &apos;speichern&apos; gedrückt wird.</translation>
+    </message>
+    <message>
+        <source>This proj4 projection definition is not valid. Please add the parameters before pressing save.</source>
+        <translation>Diese proj4 Projektionsdefinition ist ungültig. Bitte geben sie Parameter an, bevor &apos;speichern&apos; gedrückt wird.</translation>
+    </message>
+    <message>
+        <source>This proj4 projection definition is not valid. Please add a proj= clause before pressing save.</source>
+        <translation>Diese proj4 Projektionsdefinition ist ungültig. Bitte fügen sie einen proj= Ausdruck hinzu, bevor &apos;speichern&apos; gedrückt wird. </translation>
+    </message>
+    <message>
+        <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
+        <translation>Diese proj4 Ellipsoiddefinition ist ungültig. Bitte fügen Sie einen proj= Ausdruck hinzu, bevor &apos;speichern&apos; gedrückt wird. </translation>
+    </message>
+    <message>
+        <source>This proj4 projection definition is not valid.</source>
+        <translation>Diese proj4 Projektionsdefinition ist ungültig.</translation>
+    </message>
+    <message>
+        <source>Northing and Easthing must be in decimal form.</source>
+        <translation>Northing und Easthing muss in dezimaler Form sein.</translation>
+    </message>
+    <message>
+        <source>Internal Error (source projection invalid?</source>
+        <translation>Interner Fehler (Ausgangsprojektion ungültig?</translation>
+    </message>
 </context>
 <context>
     <name>QgsCustomProjectionDialogBase</name>
     <message>
         <source>Form1</source>
-        <translation>Formular1</translation>
+        <translation type="obsolete">Formular1</translation>
     </message>
     <message>
         <source>Name:</source>
@@ -3094,11 +3207,11 @@ unterstützt dies im Moment nicht.</translation>
     </message>
     <message>
         <source>Ellipsoid:</source>
-        <translation>Ellipsoid:</translation>
+        <translation type="obsolete">Ellipsoid:</translation>
     </message>
     <message>
         <source>Projection Family:</source>
-        <translation>Projektionsfamilie:</translation>
+        <translation type="obsolete">Projektionsfamilie:</translation>
     </message>
     <message>
         <source>Custom Projection Definition</source>
@@ -3111,7 +3224,7 @@ unterstützt dies im Moment nicht.</translation>
     <message>
         <source>Expected 
 Parameters:</source>
-        <translation>Erwartete
+        <translation type="obsolete">Erwartete
 Parameter:</translation>
     </message>
     <message>
@@ -3149,6 +3262,46 @@ Parameter:</translation>
     <message>
         <source>Close</source>
         <translation>Schliessen</translation>
+    </message>
+    <message>
+        <source>Define</source>
+        <translation>Definieren</translation>
+    </message>
+    <message>
+        <source>You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.</source>
+        <translation>Es können hier eigene, angepasste Projektionen definiert werden. Die Definition muss im proj4 Format für räumliche Referenzsysteme erfolgen.</translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation>Testen</translation>
+    </message>
+    <message>
+        <source>Transform from WGS84 to the chosen projection</source>
+        <translation>Von WGS84 zur ausgewählten Projektion transformieren</translation>
+    </message>
+    <message>
+        <source>Calculate</source>
+        <translation>Berechnen</translation>
+    </message>
+    <message>
+        <source>Projected Corrdinate System</source>
+        <translation>Projeziertes Koordinatensystem</translation>
+    </message>
+    <message>
+        <source>Geographic / WGS84</source>
+        <translation>Geographisch/ WGS84</translation>
+    </message>
+    <message>
+        <source>North:</source>
+        <translation>Nord:</translation>
+    </message>
+    <message>
+        <source>East:</source>
+        <translation>Ost:</translation>
+    </message>
+    <message>
+        <source>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.</source>
+        <translation>Benutzen Sie die untenstehenden Textfelder, um die erstellte Projektionsdefinition zu testen. Geben Sie eine Koordinate ein, von der das projezierte Resultat bekannt ist (z.B. durch Ablesen von einer Karte). Drücken Sie dann den &apos;berechnen&apos; Knopf, um zu sehen, ob die Projektionsdefinition stimmt.</translation>
     </message>
 </context>
 <context>
@@ -3289,7 +3442,7 @@ has failed. The database said:
     </message>
     <message>
         <source>Encoding:</source>
-        <translation>Kodierung:</translation>
+        <translation type="obsolete">Kodierung:</translation>
     </message>
 </context>
 <context>
@@ -3531,6 +3684,13 @@ has failed. The database said:
 &lt;p&gt;Wähle ein Textfile, welches x- und y-Koordinaten enthält, die als Punktebene dargestellt werden sollen. Dieses Plugin macht daraus eine QGIS Vektorebene! &lt;/p&gt;(new line)
 &lt;p&gt;Benutze die &apos;Ebenenname&apos; Box, um einen Namen für die neue Ebene einzugeben. Benutze die &apos;Trennzeichen&apos; Box um die Art des Trennzeichens zu wählen (z.B. Leerzeichen, Komma oder Tabulator). Diese Box akzeptiert reguläre Ausdrücke. So kann z. B. \t für Tabulator eingegeben werden. Nach der Eingabe des Trennzeichens kann der &apos;durchsuchen&apos; Knopf gedrückt werden. Danach können die Kolonnen, welche die x- und y-Werte enthalten, angegeben werden.&lt;/p&gt;(new line)
 &lt;/body&gt;&lt;/html&gt;(new line)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDelimitedTextProvider</name>
+    <message>
+        <source>Save layer as...</source>
+        <translation>Ebene speichern als...</translation>
     </message>
 </context>
 <context>
@@ -4105,35 +4265,35 @@ has failed. The database said:
     </message>
     <message>
         <source>Track download:</source>
-        <translation type="unfinished"></translation>
+        <translation>Spur herunterladen:</translation>
     </message>
     <message>
         <source>The command that is used to upload tracks to the device</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Kommando, welches gebraucht wird, um eine Spur auf das Gerät hochzuladen</translation>
     </message>
     <message>
         <source>Track upload:</source>
-        <translation type="unfinished"></translation>
+        <translation>Spur hinaufladen:</translation>
     </message>
     <message>
         <source>The command that is used to download tracks from the device</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Kommando, um Spuren vom Gerät herunterzuladen</translation>
     </message>
     <message>
         <source>The command that is used to upload routes to the device</source>
-        <translation>Das Kommando, welches zum hinaufladen von Routen zum Gerät gebraucht wird</translation>
+        <translation>Das Kommando zum Hinaufladen von Routen zum Gerät</translation>
     </message>
     <message>
         <source>The command that is used to download routes from the device</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Kommando, um eine Route vom Gerät herunterzuladen</translation>
     </message>
     <message>
         <source>The command that is used to upload waypoints to the device</source>
-        <translation>Das Kommando, welches zum heraufladen von Wegpunkten zum Gerät gebraucht wird</translation>
+        <translation>Das Kommando, zum Heraufladen von Wegpunkten zum Gerät</translation>
     </message>
     <message>
         <source>The command that is used to download waypoints from the device</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Kommando, um Wegpunkte vom Gerät herunterzuladen</translation>
     </message>
 </context>
 <context>
@@ -4404,47 +4564,50 @@ um die Daten zu übertragen. Wenn GPSBabel nicht an einem Ort, an welchem QGIS e
         <translation>Rasterdatei:</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:13pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+        <source>Enter world coordinates</source>
+        <translation>Weltkoordinaten eingeben</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:helvetica&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:15pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter world coordinates</source>
-        <translation>Weltkoordinaten eingeben</translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:helvetica&quot;&gt;(new line)
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:15pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;(new line)
+&lt;p&gt;Dieses Plugin generiert world files für Raster. Es können Punkte auf dem Raster selektiert, von denen die Weltkoordinaten bekannt sind. Das Plugin berechnet dann die world file Parameter. Je mehr Koordinaten angegeben werden desto besser wird das Resultat.&lt;/p&gt;(new line)
+&lt;/body&gt;&lt;/html&gt;(new line)</translation>
     </message>
 </context>
 <context>
     <name>QgsGeorefWarpOptionsDialogBase</name>
     <message>
         <source>Warp options</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzerrungsoptionen</translation>
     </message>
     <message>
         <source>Resampling method:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stichprobenmethode:</translation>
     </message>
     <message>
         <source>Nearest neighbour</source>
-        <translation type="unfinished"></translation>
+        <translation>Nächster Nachbar</translation>
     </message>
     <message>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Linear</translation>
     </message>
     <message>
         <source>Cubic</source>
-        <translation type="unfinished"></translation>
+        <translation>Kubisch</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Use 0 for transparency when needed</source>
-        <translation type="unfinished"></translation>
+        <translation>0 für Transparanz verwenden falls benötigt</translation>
     </message>
 </context>
 <context>
@@ -5112,6 +5275,25 @@ Muster</translation>
     <message>
         <source>Longitude Interval:</source>
         <translation>Längengradinterval:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsHelpViewer</name>
+    <message>
+        <source>Quantum GIS Help - </source>
+        <translation>Quantum GIS Hilfe -</translation>
+    </message>
+    <message>
+        <source>Failed to get the help text from the database</source>
+        <translation>Der Hilfetext konnte nicht aus der Datenbank geholt werden</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
+    <message>
+        <source>The QGIS help database is not installed</source>
+        <translation>Die QGIS Hilfedatenbank ist nicht installiert</translation>
     </message>
 </context>
 <context>
@@ -5838,6 +6020,10 @@ Muster</translation>
         <source>Close</source>
         <translation>Schliessen</translation>
     </message>
+    <message>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
 </context>
 <context>
     <name>QgsMessageViewer</name>
@@ -6062,7 +6248,7 @@ Ausführliche Fehlerinformation:</translation>
     </message>
     <message>
         <source>firebird</source>
-        <translation>firefox</translation>
+        <translation type="obsolete">firefox</translation>
     </message>
     <message>
         <source>galeon</source>
@@ -6276,6 +6462,14 @@ Identifiziere Objekte, ohne zu nahe heranzuzoomen.(carriage return)(new line)
     <message>
         <source>Global default projection displayed below will be used.</source>
         <translation>Untenstehende Standardprojektion wird benutzt. </translation>
+    </message>
+    <message>
+        <source>firefox</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>mozilla-firefox</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -6835,6 +7029,14 @@ Bitte PostGIS mit GEOSunterstützung installieren (http://geos.refractions.net)<
         <source>EPSG ID</source>
         <translation></translation>
     </message>
+    <message>
+        <source>QGIS SRSID</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>Name</translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayer</name>
@@ -7068,6 +7270,18 @@ Bitte PostGIS mit GEOSunterstützung installieren (http://geos.refractions.net)<
     <message>
         <source>null (no data)</source>
         <translation>Null (keine Daten)</translation>
+    </message>
+    <message>
+        <source>Building pyramids failed.</source>
+        <translation>Erstellung von Pyramiden fehlgeschlagen.</translation>
+    </message>
+    <message>
+        <source>The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.</source>
+        <translation>Die Datei ist nicht beschreibbar. Einige Formate können nur gelesen werden aber nicht beschrieben. Sie können auch versuchen, die Zugriffsrechte zu überprüfen und es erneut zu probieren.</translation>
+    </message>
+    <message>
+        <source>Building pyramid overviews is not supported on this type of raster.</source>
+        <translation>Für diese Art von Raster können keine Pyramiden erstellt werden. </translation>
     </message>
 </context>
 <context>
@@ -7318,7 +7532,7 @@ Bitte PostGIS mit GEOSunterstützung installieren (http://geos.refractions.net)<
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notizen&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -7429,19 +7643,12 @@ Bitte PostGIS mit GEOSunterstützung installieren (http://geos.refractions.net)<
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
-&lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
 &lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;(new line)
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;(new line)
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;(new line)
 &lt;p&gt;Rasterebenen mit einer hohen Auflösung können die Navigation in QGIS verlangsamen. Indem Kopien mit einer geringeren Auflösung (pyramids) angelegt werden, kann die Leistung bedeutend verbessert werden,  da QGIS die Auflösung wählt,  welche am besten für die jeweilige Zoomstufe geeignet ist. Damit Pyramides erstellt werden können, muss Schreibzugriff im Verzeichnis der Originaldaten gewährleistet sein. &lt;/p&gt;(new line)
 &lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Es ist zu beachten, dass die Erstellung von Pyramides die Originaldaten verändern kann und nicht rückgängig gemacht werden kann.&lt;/span&gt;&lt;/p&gt;(new line)
@@ -7482,6 +7689,29 @@ Bitte PostGIS mit GEOSunterstützung installieren (http://geos.refractions.net)<
     <message>
         <source>Refresh</source>
         <translation>Erneuern</translation>
+    </message>
+    <message>
+        <source>Spatial Reference System</source>
+        <translation>Räumliches Referenzsystem</translation>
+    </message>
+    <message>
+        <source>Change</source>
+        <translation>Wechseln</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;(new line)
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;(new line)
+&lt;p&gt;Rasterebenen mit hoher Auflösung können die Navigation in QGIS verlangsamen. Durch die Erstellung von Kopien mit niedriger Auflösung (Pyramiden) kann die Leistung erheblich gesteigert werden, da QGIS die am besten geeignete Auflösung abhängig vom Zoomlevel auswählt. Um Pyramiden zu erstellen, müssen Sie Schreibrecht auf dem Verzeichnis haben, in welchem die Originaldaten gespeichert sind. &lt;/p&gt;(new line)
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Bitte beachten Sie, dass die Erstellung von Pyramiden  die Originaldaten ändern kann und dieÄnderungen nicht rückgängig gemacht werden können .&lt;/span&gt;&lt;/p&gt;(new line)
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Bitte beacten Sie, dass die Erstellung von Pyramiden die Bilddatei beschädigen kann - machen Sie immer zuerst ein Backup!&lt;/span&gt;&lt;/p&gt;(new line)
+&lt;/body&gt;&lt;/html&gt;(new line)</translation>
     </message>
 </context>
 <context>
@@ -8006,6 +8236,14 @@ Bitte PostGIS mit GEOSunterstützung installieren (http://geos.refractions.net)<
     <message>
         <source>Use the table below to edit column names. Make sure that none of the columns are named using a PostgreSQL reserved word</source>
         <translation>Die Tabelle unten können die Spaltennamen editiert werden. Es sollte sichergestellt sein, dass keine der Spalte ein in PostgreSQL reserviertes Wort verwendet</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
+    <message>
+        <source>HelpMessage</source>
+        <translation>Hilfemeldung</translation>
     </message>
 </context>
 <context>

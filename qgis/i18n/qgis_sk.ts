@@ -561,7 +561,7 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     </message>
     <message>
         <source>Save file dialog</source>
-        <translation>Dialóg ukladania súborov</translation>
+        <translation type="obsolete">Dialóg ukladania súborov</translation>
     </message>
     <message>
         <source>Open an OGR Supported Data Source</source>
@@ -569,11 +569,15 @@ GPSBabel nemáte nainštalovaný na mieste, kde ho môže QGIS nájsť.  &lt;/p&
     </message>
     <message>
         <source>Choose a QGIS project file to open</source>
-        <translation>Vyberte súbor QGIS projektu, ktorý chcete otvoriť</translation>
+        <translation type="obsolete">Vyberte súbor QGIS projektu, ktorý chcete otvoriť</translation>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
-        <translation>Vyberte súbor QGIS projektu</translation>
+        <translation type="obsolete">Vyberte súbor QGIS projektu</translation>
+    </message>
+    <message>
+        <source>save new vector files dialog</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -717,6 +721,10 @@ z typu int4 byť buď primárnym kľúčom alebo mať
 unique constraint on it (indexovaný stĺpec dáva
 lepší výkon).</translation>
     </message>
+    <message>
+        <source>Unable to save to file </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisApp</name>
@@ -782,7 +790,7 @@ lepší výkon).</translation>
     </message>
     <message>
         <source>Saved map to:</source>
-        <translation>Uložiť mapu do:</translation>
+        <translation type="obsolete">Uložiť mapu do:</translation>
     </message>
     <message>
         <source>No Layer Selected</source>
@@ -1042,7 +1050,7 @@ lepší výkon).</translation>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
-        <translation type="obsolete">Vyberte súbor QGIS projektu</translation>
+        <translation type="unfinished">Vyberte súbor QGIS projektu</translation>
     </message>
     <message>
         <source>Unable to save project</source>
@@ -1226,7 +1234,45 @@ lepší výkon).</translation>
     </message>
     <message>
         <source>Scale</source>
-        <translation>Mierka</translation>
+        <translation type="obsolete">Mierka</translation>
+    </message>
+    <message>
+        <source>Save As</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file to open</source>
+        <translation type="unfinished">Vyberte súbor QGIS projektu, ktorý chcete otvoriť</translation>
+    </message>
+    <message>
+        <source>Project file exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The given project file exists.  Do you wish to over-write it with a new one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saved project to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Browser Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the name of a web browser to use (eg. konqueror).
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the full path if the browser is not in your PATH.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You can change this option later by selecting Preferences from the Settings menu.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2285,6 +2331,10 @@ lepší výkon).</translation>
         <source>Move selected to top</source>
         <translation>Presunúť výber navrch</translation>
     </message>
+    <message>
+        <source>Remove selection</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableDisplay</name>
@@ -2326,6 +2376,14 @@ lepší výkon).</translation>
     <message>
         <source>&amp;No</source>
         <translation>&amp;Nie</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete the </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> bookmark?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2373,6 +2431,10 @@ lepší výkon).</translation>
     <message>
         <source>Close the dialog</source>
         <translation>Zatvoriť dialóg</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Pomocník</translation>
     </message>
 </context>
 <context>
@@ -2459,6 +2521,10 @@ lepší výkon).</translation>
         <source>Choose a filename to save the map as</source>
         <translation>Vyberte meno súboru do ktorého sa má uložiť mapa ako</translation>
     </message>
+    <message>
+        <source> for read/write</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerBase</name>
@@ -2528,7 +2594,7 @@ lepší výkon).</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation>Akcia</translation>
+        <translation type="obsolete">Akcia</translation>
     </message>
     <message>
         <source>Add new map</source>
@@ -2562,6 +2628,18 @@ lepší výkon).</translation>
         <source>Refresh view</source>
         <translation>Obnoviť pohľad</translation>
     </message>
+    <message>
+        <source>Zoom to full extent</source>
+        <translation type="unfinished">Zoom na plnú veľkosť</translation>
+    </message>
+    <message>
+        <source>Zoom in</source>
+        <translation type="unfinished">Zoom (+)</translation>
+    </message>
+    <message>
+        <source>Zoom out</source>
+        <translation type="unfinished">Zoom (-)</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerLabelBase</name>
@@ -2582,7 +2660,7 @@ lepší výkon).</translation>
     <name>QgsComposerMap</name>
     <message>
         <source>Map %d</source>
-        <translation>Mapa %d</translation>
+        <translation type="obsolete">Mapa %d</translation>
     </message>
     <message>
         <source>Extent (calculate scale)</source>
@@ -2591,6 +2669,10 @@ lepší výkon).</translation>
     <message>
         <source>Scale (calculate extent)</source>
         <translation>Mierka (vypočíta rozsah)</translation>
+    </message>
+    <message>
+        <source>Map %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2848,6 +2930,13 @@ lepší výkon).</translation>
     </message>
 </context>
 <context>
+    <name>QgsConnectionDialog</name>
+    <message>
+        <source>SPIT - Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsConnectionDialogBase</name>
     <message>
         <source>Connection Information</source>
@@ -2950,6 +3039,10 @@ lepší výkon).</translation>
     <message>
         <source>transform of</source>
         <translation>transformácia</translation>
+    </message>
+    <message>
+        <source>with error: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3070,12 +3163,40 @@ lepší výkon).</translation>
         <source>This proj4 projection definition is not valid. Please correct before pressing save.</source>
         <translation>Táto definícia zobrazenia proj4 nie je správna. Prosím opravte ju skôr, než stlačíte tlačítko Uložiť.</translation>
     </message>
+    <message>
+        <source>This proj4 projection definition is not valid. Please give the projection a name before pressing save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This proj4 projection definition is not valid. Please add the parameters before pressing save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This proj4 projection definition is not valid. Please add a proj= clause before pressing save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This proj4 projection definition is not valid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Northing and Easthing must be in decimal form.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Internal Error (source projection invalid?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsCustomProjectionDialogBase</name>
     <message>
         <source>Form1</source>
-        <translation type="unfinished">Formular1</translation>
+        <translation type="obsolete">Formular1</translation>
     </message>
     <message>
         <source>Name:</source>
@@ -3083,11 +3204,11 @@ lepší výkon).</translation>
     </message>
     <message>
         <source>Ellipsoid:</source>
-        <translation>Elipsoid:</translation>
+        <translation type="obsolete">Elipsoid:</translation>
     </message>
     <message>
         <source>Projection Family:</source>
-        <translation>Rodina zobrazení:</translation>
+        <translation type="obsolete">Rodina zobrazení:</translation>
     </message>
     <message>
         <source>Help</source>
@@ -3104,7 +3225,7 @@ lepší výkon).</translation>
     <message>
         <source>Expected 
 Parameters:</source>
-        <translation>Očakávané
+        <translation type="obsolete">Očakávané
 parametre:</translation>
     </message>
     <message>
@@ -3146,6 +3267,46 @@ parametre:</translation>
     <message>
         <source>Close</source>
         <translation>Zatvoriť</translation>
+    </message>
+    <message>
+        <source>Define</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation type="unfinished">Skúška</translation>
+    </message>
+    <message>
+        <source>Transform from WGS84 to the chosen projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculate</source>
+        <translation type="unfinished">Vypočítať</translation>
+    </message>
+    <message>
+        <source>Projected Corrdinate System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geographic / WGS84</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>North:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>East:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3277,7 +3438,7 @@ zlyhalo. Databáza zahlásila:
     </message>
     <message>
         <source>Encoding:</source>
-        <translation>Kódovanie:</translation>
+        <translation type="obsolete">Kódovanie:</translation>
     </message>
 </context>
 <context>
@@ -3504,6 +3665,13 @@ zlyhalo. Databáza zahlásila:
 &lt;p&gt;Vyberte súbor s oddelným textom obsahujúcim x-ové a y-ové súradnice, ktorý chcete použiť ako vrstvu bodov a tento zásuvný modul sa o zvyšok postará! &lt;/p&gt;
 &lt;p&gt;Použite políčko s menom vrstvy na určenie mena novej vrstvy v legende. Políčkom Oddeľovač určíte oddeľovač použitý vo vašom súbore (napr. medzera, čiarka alebo tabulátor). Nezabudnite, že toto políčko akceptuje regulárne výrazy, takže je treba použiť \t pre tabulátor a pod. Po vybratí oddeľovača, kliknite na tlačítko Preskúmať a vyberte stĺpce obsahujúce x-ové a a y-ové hodnoty vrstvy.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDelimitedTextProvider</name>
+    <message>
+        <source>Save layer as...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4374,7 +4542,7 @@ je možné upravovať zariadenia (ich nastavenia)
 &lt;p&gt;This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:13pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Tento zásuvný dokáže vygenerovať world súbory pre rastre. Stačí vybrať body a určiť ich skutočné world súradnice, a modul vypočítal parametre world súboru. Viac súradníc umožňuje dosiahnuť lepšie výsledky.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -4383,6 +4551,14 @@ je možné upravovať zariadenia (ich nastavenia)
     <message>
         <source>Enter world coordinates</source>
         <translation>Vložte world súradnice</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:helvetica&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:15pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5047,6 +5223,25 @@ Factor</source>
     <message>
         <source>#000.00000; </source>
         <translation>#000.00000; </translation>
+    </message>
+</context>
+<context>
+    <name>QgsHelpViewer</name>
+    <message>
+        <source>Quantum GIS Help - </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to get the help text from the database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The QGIS help database is not installed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5716,6 +5911,10 @@ Factor</source>
         <source>Close</source>
         <translation>Zatvoriť</translation>
     </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Pomocník</translation>
+    </message>
 </context>
 <context>
     <name>QgsMessageViewer</name>
@@ -5972,7 +6171,7 @@ Rozšírené informácie o chybe:
     </message>
     <message>
         <source>firebird</source>
-        <translation>firefox</translation>
+        <translation type="obsolete">firefox</translation>
     </message>
     <message>
         <source>galeon</source>
@@ -6166,6 +6365,14 @@ QGIS používa štandardne hodnotu 5. Zvýšte hodnotu pokiaľ máte problém id
     <message>
         <source>Global default projection displayed below will be used.</source>
         <translation type="unfinished">Bude použité všeobecne štandardné zobrazenie uvedené dolu.</translation>
+    </message>
+    <message>
+        <source>firefox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>mozilla-firefox</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6699,6 +6906,17 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     </message>
 </context>
 <context>
+    <name>QgsProjectionSelector</name>
+    <message>
+        <source>QGIS SRSID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostGIS SRID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsProjectionSelectorBase</name>
     <message>
         <source>Projection Selector</source>
@@ -6731,6 +6949,14 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     <message>
         <source>EPSG ID</source>
         <translation>EPSG ID</translation>
+    </message>
+    <message>
+        <source>QGIS SRSID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6968,6 +7194,18 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
         <source>null (no data)</source>
         <translation>null (žiadne údaje)</translation>
     </message>
+    <message>
+        <source>Building pyramids failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Building pyramid overviews is not supported on this type of raster.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayerProperties</name>
@@ -7187,7 +7425,7 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notizen&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -7288,7 +7526,7 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
 &lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Poznámky&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -7299,7 +7537,7 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
 &lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;Popis&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Rastrové súbory s vysokým rozlíšením môžo spomaliť navigáciu v QGIS. Vytvorením kópií s nižším rozlíšením (pyramíd) sa môže podstatne zvýšiť výkon pričom QGIS QGIS vybera vždy najvhodnejšie rozlíšenie v závislosti od miery zväčšenia (zoomu). Na vytvorenie pyramíd je treba mať práva na zápis do adresára, kde sú uložené pôvodné údaje. &lt;/p&gt;
 &lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Treba mať na pamäti že raz vytvorenie pyramíd môže nahradiť pôvodné údaje a takto už raz vytvorené ich nie je možné odstrániť.&lt;/span&gt;&lt;/p&gt;
@@ -7340,6 +7578,24 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     <message>
         <source>Refresh</source>
         <translation>Obnoviť</translation>
+    </message>
+    <message>
+        <source>Spatial Reference System</source>
+        <translation type="unfinished">Priestorový referenčný systém</translation>
+    </message>
+    <message>
+        <source>Change</source>
+        <translation type="unfinished">Zmena</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7930,6 +8186,14 @@ Prosím nainštalujte PostGIS s podporou GEOSu (http://geos.refractions.net)</tr
     <message>
         <source>Use the table below to edit column names. Make sure that none of the columns are named using a PostgreSQL reserved word</source>
         <translation>Použite tabuľku dole na úpravu názvov stĺpcov. Uistite sa, že názov žiadneho stĺpeca neobsahuje PostgreSQL rezervované slovo</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HelpMessage</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
