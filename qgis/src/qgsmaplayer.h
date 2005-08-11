@@ -37,8 +37,8 @@
 
 class QgsFeature;
 class QPopupMenu;
-class QgsLegendItem;
 class QgsLegendLayerFile;
+class QgsLegendSymbologyGroup;
 class QDomNode;
 class QDomDocument;
 class QEvent;
@@ -267,7 +267,7 @@ public:
     // also sets the contents of the r2 parameter
     bool projectExtent(QgsRect& extent, QgsRect& r2);
 
-    void setLegendSymbologyGroupParent(QListViewItem* item) {mLegendSymbologyGroupParent = item;}
+    void setLegendSymbologyGroupParent(QgsLegendSymbologyGroup* item) {mLegendSymbologyGroupParent = item;}
 
     /**Refresh the symbology part of the legend. Specific implementations have to be provided by subclasses*/
     virtual void refreshLegend() = 0;
@@ -426,7 +426,7 @@ protected:
 
     /**Pointer to the symbology group item of the legend. This pointer is used if refreshLegend() 
        is called by a subclass*/
-    QListViewItem* mLegendSymbologyGroupParent;
+    QgsLegendSymbologyGroup* mLegendSymbologyGroupParent;
 
     /**Pointer to the legend layer file of the legend. It is used to modify the pixmap with overview
      glasses, editing or pyramid symbols*/

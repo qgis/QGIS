@@ -39,7 +39,7 @@ public:
     ~QgsLegendLayer();
 
     bool isLeafNode();
-    bool accept(LEGEND_ITEM_TYPE type);
+    bool accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type);
 
 };
 

@@ -43,14 +43,36 @@ bool QgsLegendGroup::isLeafNode()
   return mLeafNodeFlag;
 }
 
-bool QgsLegendGroup::accept(LEGEND_ITEM_TYPE type)
+bool QgsLegendGroup::accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)
 {
-  if( type == LEGEND_LAYER || type == LEGEND_GROUP)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+    if( dt == QgsLegendItem::REORDER)
+    {
+	if ( type == LEGEND_GROUP )
+	{
+	    return true;
+	}
+	else
+	{
+	    return false;
+	}
+    }
+    else if( dt == QgsLegendItem::INSERT)
+    {
+	if( type == LEGEND_LAYER )
+	{
+	    return true;
+	}
+	else
+	{
+	    return false;
+	}
+    }
+}
+
+bool QgsLegendGroup::insert(QgsLegendItem* theItem)
+{
+    if(theItem->type() == LEGEND_LAYER)
+    {
+	insertItem(theItem);
+    }
 }

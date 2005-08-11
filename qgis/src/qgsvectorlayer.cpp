@@ -69,6 +69,7 @@
 #include "qgsfield.h"
 #include "qgslegenditem.h"
 #include "qgslegendvectorsymbologyitem.h"
+#include "qgslegendsymbologygroup.h"
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgsrenderer.h"
 #include "qgssinglesymrenderer.h"
@@ -2915,6 +2916,11 @@ void QgsVectorLayer::refreshLegend()
 		QgsLegendVectorSymbologyItem* item = new QgsLegendVectorSymbologyItem(mLegendSymbologyGroupParent, classfieldname);
 	    }
 	}
+    }
+    if(mLegendSymbologyGroupParent)
+    {
+        //copy the symbology changes for the other layers in the same symbology group
+	mLegendSymbologyGroupParent->updateLayerSymbologySettings(this);
     }
 }
 

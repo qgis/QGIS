@@ -17,7 +17,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "qgslegendlayerfile.h"
+#include "qgslegendlayerfilegroup.h"
 #include "qgslegendsymbologygroup.h"
+#include "qgsmaplayer.h"
 #include <qpixmap.h>
 
 QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(QListViewItem * theItem, QString theString)
@@ -32,17 +35,9 @@ QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(QListViewItem * theItem, QStrin
 QgsLegendSymbologyGroup::~QgsLegendSymbologyGroup()
 {}
 
-bool QgsLegendSymbologyGroup::accept(LEGEND_ITEM_TYPE type)
+bool QgsLegendSymbologyGroup::accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)
 {
-  if( type == LEGEND_SYMBOL_ITEM)
-  {
-    return true;
-  }
-  else
-  {
     return false;
-  }
-
 }
 /** Overloads cmpare function of QListViewItem
   * @note The symbology group must always be the second in the list
@@ -58,4 +53,45 @@ int QgsLegendSymbologyGroup::compare (QListViewItem * i,int col, bool ascending)
   {
     return -1;
   }
+}
+
+void QgsLegendSymbologyGroup::updateLayerSymbologySettings(const QgsMapLayer* thelayer)
+{
+    //find the legend layer group node
+    QListViewItem* parent = this->parent();
+    if(!parent)
+    {
+	return;
+    }
+    QListViewItem* sibling = 0;
+    QgsLegendLayerFileGroup* group = 0;
+    for(sibling = parent->firstChild(); sibling != 0; sibling = sibling->nextSibling())
+    {
+	group = dynamic_cast<QgsLegendLayerFileGroup*>(sibling);
+	if(group)
+	{
+	    break;
+	}
+    }
+
+    if(!group)
+    {
+	return;
+    }
+
+    //go through all the entries and apply QgsMapLayer::copySymbologySettings
+    QgsLegendLayerFile* f = 0;
+    QgsMapLayer* mylayer = 0;
+    for(sibling = group->firstChild(); sibling != 0; sibling = sibling->nextSibling())
+    {
+	f = dynamic_cast<QgsLegendLayerFile*>(sibling);
+	if( f && (f->layer() != thelayer))
+	{
+	    mylayer = f->layer();
+	    if(mylayer)
+	    {
+		mylayer->copySymbologySettings(*thelayer);
+	    }
+	}
+    }
 }

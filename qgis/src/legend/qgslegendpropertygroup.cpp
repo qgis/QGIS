@@ -35,15 +35,8 @@ QgsLegendPropertyGroup::~QgsLegendPropertyGroup()
 
 }
 
-bool QgsLegendPropertyGroup::accept(LEGEND_ITEM_TYPE type)
+bool QgsLegendPropertyGroup::accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)
 {
-  if( type == LEGEND_PROPERTY_ITEM)
-  {
-    return true;
-  }
-  else
-  {
     return false;
-  }
 }
 
