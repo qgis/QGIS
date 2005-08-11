@@ -19,6 +19,7 @@
 
 #include <qcheckbox.h>
 #include <qcursor.h>
+#include <qheader.h>
 #include <qstring.h>
 #include <qpainter.h>
 #include <qlabel.h>
@@ -29,7 +30,6 @@
 #include <qapplication.h>
 
 #include "qgslegend.h"
-#include "qgslegenditem.h"
 #include "qgslegendgroup.h"
 #include "qgslegendlayer.h"
 #include "qgslegendpropertygroup.h"
@@ -49,7 +49,7 @@ const int AUTOSCROLL_MARGIN = 16;
    set mItemBeingMoved pointer to 0 to prevent SuSE 9.0 crash
 */
 QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
-    : QListView(parent, name), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0)
+    : QListView(parent, name), mApp(app), mMouseDragType(QgsLegendItem::NO_DRAG), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0)
 {
   connect( this, SIGNAL(selectionChanged(QListViewItem *)),
            this, SLOT(updateLegendItem(QListViewItem *)) );
@@ -62,7 +62,7 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
 
   connect( this, SIGNAL(expanded(QListViewItem*)), this, SLOT(placeCheckBoxes()));
   connect( this, SIGNAL(collapsed(QListViewItem*)), this, SLOT(placeCheckBoxes()));
-  connect( this, SIGNAL(verticalSliderReleased()), this, SLOT(placeCheckBoxes()));
+  connect( this, SIGNAL(contentsMoving(int, int)), this, SLOT(placeCheckBoxes()));
 
   mPopupMenu = new QPopupMenu(this);
   mPopupMenu->insertItem("&Add Group", this, SLOT(addGroup()));
@@ -120,22 +120,11 @@ void QgsLegend::removeLayer(QString layer_key)
 	    {
 		if (llf->layer()&&llf->layer()->getLayerID() == layer_key)
 		{
-		    if(llf->parent()->childCount() < 2)
-		    {
-			//unregister listview/checkbox pair
-			//deleting is done by the destructor of QgsLegendLayerFile
-			unregisterCheckBox(llf);
-			delete llf->parent()->parent()->parent();
-			placeCheckBoxes();
-		    }
-		    else
-		    {
-			//unregister listview/checkbox pair
-			//deleting is done by the destructor of QgsLegendLayerFile
-			unregisterCheckBox(llf);
-			delete llf;
-			placeCheckBoxes();
-		    }
+		    //unregister listview/checkbox pair
+		    //deleting is done by the destructor of QgsLegendLayerFile
+		    unregisterCheckBox(llf);
+		    delete llf;
+		    placeCheckBoxes();
 		    break;
 		}
 	    }
@@ -145,7 +134,7 @@ void QgsLegend::removeLayer(QString layer_key)
 
 void QgsLegend::contentsMousePressEvent(QMouseEvent * e)
 {
-  if (e->button() == LeftButton)
+  if (e->button() == Qt::LeftButton || e->button() == Qt::MidButton)
   {
     QPoint p(contentsToViewport(e->pos()));
     QListViewItem *i = itemAt(p);
@@ -155,25 +144,23 @@ void QgsLegend::contentsMousePressEvent(QMouseEvent * e)
         dynamic_cast<QgsLegendItem*>(i)->type();
       std::cout << myTpe << std::endl;
       mLastPressPos = e->pos();
-      mMousePressedFlag = TRUE;
+      
+      if( e->button() == Qt::LeftButton )
+      {
+	  mMouseDragType = QgsLegendItem::REORDER;
+      }
+      else if( e->button() == Qt::MidButton )
+      {
+	  mMouseDragType = QgsLegendItem::INSERT;
+      }
+      else
+      {
+	  mMouseDragType = QgsLegendItem::NO_DRAG;
+      }
     }
   }
 
-  else if (e->button() == RightButton)
-  {
-    //add special behaviours for context menu etc if we want! XXXnot needed anymore. distributeRightClickEvent()
-      //calls the handler routines of the individual QgsLegendItem subclasses
-    //QPoint p(e->pos());
-    //QPoint p(contentsToViewport(e->pos()));
-    //QListViewItem *i = itemAt(p);
-    //showContextMenu(i,p);
-    //if (i)
-    //{
-      //mLastPressPos = e->pos();
-      //mMousePressedFlag = TRUE;
-      //}
-  }
-
+  mMousePressedFlag = true;
   QListView::contentsMousePressEvent(e);
 
 }                               // contentsMousePressEvent
@@ -181,35 +168,38 @@ void QgsLegend::contentsMousePressEvent(QMouseEvent * e)
 
 void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
 {
-  if (mMousePressedFlag)
-  {
-    mMousePressedFlag = FALSE;
-    // remember item we've pressed as the one being moved
-    // and where it was originally
-    QListViewItem *item = itemAt(contentsToViewport(mLastPressPos));
-    if (item)
+    if(mMousePressedFlag)
     {
-      mItemBeingMoved = item;
-      mItemBeingMovedOrigPos = getItemPos(mItemBeingMoved);
-      setCursor(SizeVerCursor);
+	//set the flag back such that the else if(mItemBeingMoved)
+	//code part is passed during the next mouse moves
+	mMousePressedFlag = false;
+
+	// remember item we've pressed as the one being moved
+	// and where it was originally
+	QListViewItem *item = itemAt(contentsToViewport(mLastPressPos));
+	if (item)
+	{
+	    mItemBeingMoved = item;
+	    mItemBeingMovedOrigPos = getItemPos(mItemBeingMoved);
+	    setCursor(SizeVerCursor);
+	}
     }
-  }
-  else if (mItemBeingMoved)
-  {
-    // scroll list if we're near the edge of the viewport
-    // code lifted from the poa project: http://poa.berlios.de/
-    QPoint p(contentsToViewport(e->pos()));
-    mLastPressPos=p;
-    if (p.y() < AUTOSCROLL_MARGIN)
-    {
-      // scroll up
-      scrollBy(0, -(AUTOSCROLL_MARGIN - p.y()));
-    }
-    else if (p.y() > visibleHeight() - AUTOSCROLL_MARGIN)
-    {
-      // scroll down
-      scrollBy(0, (p.y() - (visibleHeight() - AUTOSCROLL_MARGIN)));
-    }
+    else if (mItemBeingMoved)
+    { 
+	// scroll list if we're near the edge of the viewport
+	// code lifted from the poa project: http://poa.berlios.de/
+	QPoint p(contentsToViewport(e->pos()));
+	mLastPressPos=p;
+	if (p.y() < AUTOSCROLL_MARGIN)
+	{
+	    // scroll up
+	    scrollBy(0, -(AUTOSCROLL_MARGIN - p.y()));
+	}
+	else if (p.y() > visibleHeight() - AUTOSCROLL_MARGIN)
+	{
+	    // scroll down
+	    scrollBy(0, (p.y() - (visibleHeight() - AUTOSCROLL_MARGIN)));
+	}
 
 
     // change the cursor appropriate to if drop is allowed
@@ -220,7 +210,7 @@ void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
     if (item && (item != mItemBeingMoved))
     {
 
-      if(dest->accept(origin->type()))
+      if(dest->accept(mMouseDragType, origin->type()))
       {
         std::cout << "accept" << std::endl << std::flush;
 
@@ -245,21 +235,62 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
 {
   setCursor(QCursor(Qt::ArrowCursor));
   QListView::contentsMouseReleaseEvent(e);
-  if (e->button() == LeftButton)
-  {
 
-    if (mItemBeingMoved)
-    {
+  if (mItemBeingMoved)
+  {
       QListViewItem *item = itemAt(mLastPressPos);
       QListViewItem *destItem = itemAt(e->pos());
-
+      
       QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>(mItemBeingMoved);
       QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>(destItem);
 
       if (dest && origin && (origin != dest))
       {
-        //  && (origin->parent() != dest->parent()) if you remove this below you can drop groups in other groups
-        if(dest->accept(origin->type()) && (origin->parent() != dest->parent()))
+	  if( mMouseDragType == QgsLegendItem::INSERT )
+	  {
+	      if(dest->accept(mMouseDragType, origin->type()))
+	      {
+		  dest->insert(origin);
+		  placeCheckBoxes();
+	      }
+	  }
+	  else if( mMouseDragType == QgsLegendItem::REORDER)
+	  {
+	      if(dest->accept(mMouseDragType, origin->type()))
+	      {
+		  //find out, if mouse is over the top or the bottom of the item
+		  QRect rect = itemRect(dest);
+		  int height = rect.height();
+		  int top = rect.top();
+		  int mid = top + (height / 2);
+		  if (e->y() < mid) //bottom
+		  {
+		      if (mItemBeingMoved->nextSibling() != destItem)
+		      {
+			  if(origin->parent() != dest->parent())
+			  {
+			      dest->parent()->insertItem(origin);
+			      mItemBeingMoved->moveItem(destItem);
+			      destItem->moveItem(mItemBeingMoved);
+			  }
+			  else
+			  {
+			      destItem->moveItem(mItemBeingMoved);
+			  }
+		      }
+		  }
+		  else //top
+		  {
+		     if (mItemBeingMoved != destItem->nextSibling())
+		     {
+			 mItemBeingMoved->moveItem(destItem);
+		     } 
+		  }
+		  placeCheckBoxes();
+	      }
+	  }
+	
+	  /*if(dest->accept(mMousePressedFlag, origin->type()) && (origin->parent() != dest->parent()))
         {
           std::cout << "accept" << std::endl << std::flush;
           std::cout << "About to drop onto this node " << std::endl;
@@ -313,38 +344,14 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
           std::cout << "About to reject drop onto this node " << std::endl;
           dest->print(dest);
           std::cout << "rejeict" << std::endl << std::flush;
-        }
+	  }*/
 
 	emit zOrderChanged(this);
-
-        // find if we're over the top or bottom half of the item
-        /*QRect rect = itemRect(item);
-        int height = rect.height();
-        int top = rect.top();
-        int mid = top + (height / 2);
-        if (e->y() < mid)
-        {
-          // move item we're over now to after one in motion
-          // unless it's already there
-          if (mItemBeingMoved->nextSibling() != item)
-          {
-            item->moveItem(mItemBeingMoved);
-          }
-        }
-        else
-        {
-          // move item in motion to after one we're over now
-          // unless it's already there
-          if (mItemBeingMoved != item->nextSibling())
-          {
-            mItemBeingMoved->moveItem(item);
-          }
-        }*/
       }
-    }
   }
 
-  mMousePressedFlag = FALSE;
+  mMouseDragType = QgsLegendItem::NO_DRAG;
+  mMousePressedFlag = false;
   mItemBeingMoved = NULL;
 
 }
@@ -480,8 +487,24 @@ void QgsLegend::placeCheckBox(QListViewItem* litem, QCheckBox* cbox)
     if(itempos.isValid())//rectangle is not valid if the item is not visible
     { 
 	int yoffset = viewport()->geometry().top();
-	cbox->setGeometry(3*treeStepSize()-14, itempos.top()+5+yoffset, 14, 14);
-	cbox->show();
+	int headersheight = header()->height();
+	int ypos = itempos.top()+5+yoffset;
+#ifdef QGISDEBUG
+	qWarning("yoffset: "+QString::number(yoffset));
+	qWarning("headersheight: "+QString::number(headersheight));
+	qWarning("ypos: "+QString::number(ypos));
+	qWarning("itemtext: "+litem->text(0));
+#endif
+	//test, if item intersects the header
+	if(ypos < headersheight)
+	{
+	    cbox->hide();
+	}
+	else
+	{
+	    cbox->setGeometry(3*treeStepSize()-14, ypos, 14, 14);
+	    cbox->show();
+	}
     }
     else
     {

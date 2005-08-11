@@ -34,7 +34,7 @@ QgsLegendPropertyItem::~QgsLegendPropertyItem()
   mType=LEGEND_PROPERTY_ITEM;
 }
 
-bool QgsLegendPropertyItem::accept(LEGEND_ITEM_TYPE type)
+bool QgsLegendPropertyItem::accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)
 {
   return false;
 }

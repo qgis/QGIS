@@ -22,6 +22,8 @@
 
 #include <qgslegenditem.h>
 
+class QgsMapLayer;
+
 /**
 @author Tim Sutton
 */
@@ -31,11 +33,15 @@ public:
   QgsLegendSymbologyGroup(QListViewItem * theItem, QString theString);
   ~QgsLegendSymbologyGroup();
   bool isLeafNode() {return false;}
-  bool accept(LEGEND_ITEM_TYPE type);
+  bool accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type);
   /** Overloads cmpare function of QListViewItem
     * @note The symbology group must always be the second in the list
     */
-  int compare (QListViewItem * i,int col, bool ascending) ;
+  int compare (QListViewItem * i,int col, bool ascending);
+  /**Copies the symbology settings of the layer to all maplayers in the QgsLegendLayerFileGroup.
+   This method should be called whenever a layer in this group changes it symbology settings
+  (normally from QgsMapLayer::refreshLegend)*/
+  void updateLayerSymbologySettings(const QgsMapLayer* thelayer);
 };
 
 #endif

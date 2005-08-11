@@ -41,6 +41,7 @@ public:
     QgsLegendItem(QListViewItem*, QString);
     QgsLegendItem (QListView *,QString);
     ~QgsLegendItem();
+
    enum LEGEND_ITEM_TYPE 
    {
      LEGEND_GROUP,
@@ -50,15 +51,27 @@ public:
      LEGEND_SYMBOL_GROUP,
      LEGEND_SYMBOL_ITEM,
      LEGEND_VECTOR_SYMBOL_ITEM,
+     LEGEND_LAYER_FILE_GROUP,
      LEGEND_LAYER_FILE
    } ;
+
+   enum DRAG_TYPE
+       {
+	   REORDER, //change order of items (drag with left mouse button)
+	   INSERT, //insert an item into another one (drag with middle mouse button)
+	   NO_DRAG //move without mouse button pressed
+       };
+
     virtual bool isLeafNode()=0;
     virtual const LEGEND_ITEM_TYPE type(){return mType;}
     virtual void addItem(QgsLegendItem*){}
-    virtual bool accept(LEGEND_ITEM_TYPE type)=0;
+    virtual bool accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)=0;
     /**Specifies the items reaction to a double click*/
     virtual void handleDoubleClickEvent(){}
     virtual void handleRightClickEvent(const QPoint& position) {}
+    /**Subclasses which allow insertion of other items may implement this method. Returns true in case 
+     of success and false if theItem cannot be inserted*/
+    virtual bool insert(QgsLegendItem* theItem) {return false;}
     void print(QgsLegendItem * theItem);
 protected:
    bool mLeafNodeFlag;

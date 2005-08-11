@@ -47,31 +47,22 @@ bool QgsLegendLayer::isLeafNode()
   return false;
 }
 
-bool QgsLegendLayer::accept(LEGEND_ITEM_TYPE type)
+bool QgsLegendLayer::accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)
 {
-  if(type==LEGEND_PROPERTY_GROUP || type == LEGEND_SYMBOL_GROUP || type==LEGEND_LAYER_FILE)
-  {
-    QListViewItem * myItem = this->firstChild();
-    if (myItem==0)
+    if ( dt == QgsLegendItem::INSERT)
     {
-      return true;
+	return false;
     }
-    do
+    else if ( dt == QgsLegendItem::REORDER)
     {
-      LEGEND_ITEM_TYPE curtype = dynamic_cast<QgsLegendItem *>(myItem)->type();
-      std::cout << myItem->text(0) << " - " << curtype << " = " << this->text(0) << " - " << type << "\n";
-      if (curtype == type)
-      {
-        return false;
-      }
+	if ( type == LEGEND_LAYER)
+	{
+	    return true;
+	}
+	else
+	{
+	    return false;
+	}
     }
-    while ((myItem = myItem->nextSibling()) != 0);
-
-
-    return true;
-  }
-  else
-  {
     return false;
-  }
 }

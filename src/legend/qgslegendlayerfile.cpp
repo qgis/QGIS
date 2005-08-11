@@ -51,7 +51,7 @@ QgsLegendLayerFile::~QgsLegendLayerFile()
     delete mVisibilityCheckBox;
 }
 
-bool QgsLegendLayerFile::accept(LEGEND_ITEM_TYPE type)
+bool QgsLegendLayerFile::accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)
 {
   return false;
 }

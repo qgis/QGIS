@@ -35,8 +35,8 @@
 #include "qgsproject.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
-#include "qgslegenditem.h"
 #include "qgslegendlayerfile.h"
+#include "qgslegendsymbologygroup.h"
 
 
 

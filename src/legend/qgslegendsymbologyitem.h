@@ -31,7 +31,7 @@ public:
     QgsLegendSymbologyItem(QListViewItem* theItem, QString theString);
     ~QgsLegendSymbologyItem();
     bool isLeafNode() {return true;}
-    bool accept(LEGEND_ITEM_TYPE type);
+    bool accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type);
 };
 
 #endif
