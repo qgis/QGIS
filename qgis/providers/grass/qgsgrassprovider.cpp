@@ -1711,6 +1711,7 @@ std::vector<QgsField> *QgsGrassProvider::columns ( int field )
     #ifdef QGISDEBUG
     std::cerr << "Field info found -> open database" << std::endl;
     #endif
+    QgsGrass::setMapset ( mGisdbase, mLocation, mMapset ); 
     dbDriver *driver = db_start_driver_open_database ( fi->driver, fi->database );
 
     if ( driver == NULL ) {
@@ -1782,6 +1783,7 @@ std::vector<QgsFeatureAttribute> *QgsGrassProvider::attributes ( int field, int 
     #ifdef QGISDEBUG
     std::cerr << "Field info found -> open database" << std::endl;
     #endif
+    QgsGrass::setMapset ( mGisdbase, mLocation, mMapset ); 
     dbDriver *driver = db_start_driver_open_database ( fi->driver, fi->database );
 
     if ( driver == NULL ) {
@@ -1867,6 +1869,7 @@ QString *QgsGrassProvider::updateAttributes ( int field, int cat, const QString 
     #ifdef QGISDEBUG
     std::cerr << "Field info found -> open database" << std::endl;
     #endif
+    QgsGrass::setMapset ( mGisdbase, mLocation, mMapset ); 
     dbDriver *driver = db_start_driver_open_database ( fi->driver, fi->database );
 
     if ( driver == NULL ) {
@@ -1975,6 +1978,7 @@ QString *QgsGrassProvider::createTable ( int field, const QString &key, const QS
         fi = Vect_default_field_info ( mMap, field, NULL, GV_MTABLE );
     }
     
+    QgsGrass::setMapset ( mGisdbase, mLocation, mMapset ); 
     dbDriver *driver = db_start_driver_open_database ( fi->driver, fi->database );
 
     if ( driver == NULL ) {
@@ -2042,6 +2046,7 @@ QString *QgsGrassProvider::addColumn ( int field, const QString &column )
     #ifdef QGISDEBUG
     std::cerr << "Field info found -> open database" << std::endl;
     #endif
+    QgsGrass::setMapset ( mGisdbase, mLocation, mMapset ); 
     dbDriver *driver = db_start_driver_open_database ( fi->driver, fi->database );
 
     if ( driver == NULL ) {
@@ -2099,6 +2104,7 @@ QString *QgsGrassProvider::insertAttributes ( int field, int cat )
     #ifdef QGISDEBUG
     std::cerr << "Field info found -> open database" << std::endl;
     #endif
+    QgsGrass::setMapset ( mGisdbase, mLocation, mMapset ); 
     dbDriver *driver = db_start_driver_open_database ( fi->driver, fi->database );
 
     if ( driver == NULL ) {
