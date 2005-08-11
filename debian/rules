@@ -6,6 +6,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+include /usr/share/dpatch/dpatch.make
 
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
@@ -27,12 +28,12 @@ endif
 config.status: configure
 	dh_testdir
 	# Add here commands to configure the package.
-	CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --with-qtdir=/usr/share/qt3 --enable-spit --with-postgresql --disable-debug
+	CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --with-qtdir=/usr/share/qt3 --enable-spit --with-postgresql --with-grass=/usr/lib/grass --disable-debug
 
 
-build: build-stamp
+build: patch build-stamp
 
-build-stamp:  config.status
+build-stamp: config.status
 	dh_testdir
 
 	# Add here commands to compile the package.
@@ -41,10 +42,13 @@ build-stamp:  config.status
 
 	touch build-stamp
 
-clean:
+clean: clean-patched unpatch
+clean-patched:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp 
+	rm -f i18n/*.qm
+	rm -rf debian/tmp
 
 	# Add here commands to clean up after the build process.
 	-$(MAKE) distclean
@@ -65,12 +69,11 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/qgis.
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/qgis
+	# Add here commands to install the package into debian/tmp.
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 	
 	# Install menu pixmap
-	install -o root -g root -m 644 debian/qgis-icon.xpm $(CURDIR)/debian/qgis/usr/share/pixmaps
-
+	install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon.xpm $(CURDIR)/debian/qgis/usr/share/pixmaps
 
 
 # Build architecture-independent files here.
@@ -84,7 +87,7 @@ binary-arch: build install
 	dh_installchangelogs ChangeLog
 	dh_installdocs
 	dh_installexamples
-#	dh_install
+	dh_install --sourcedir=debian/tmp
 	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate
@@ -94,14 +97,15 @@ binary-arch: build install
 #	dh_installinit
 #	dh_installcron
 #	dh_installinfo
-	dh_installman debian/qgis.1
+	dh_installman -pqgis debian/gridmaker.1
+	dh_installman -pqgis-dev debian/qgis-config.1
 	dh_link
 	dh_strip
-	dh_compress
+	dh_compress --exclude=pdf
 	dh_fixperms
 #	dh_perl
 #	dh_python
-#	dh_makeshlibs
+	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol
@@ -109,4 +113,4 @@ binary-arch: build install
 	dh_builddeb
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install 
+.PHONY: build clean binary-indep binary-arch binary install

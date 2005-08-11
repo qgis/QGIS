@@ -1,3 +1,10 @@
 # Automatically added by dh_installmenu
-if [ "$1" = "configure" ] && [ -x /usr/bin/update-menus ]; then update-menus ; fi
+if [ "$1" = "configure" ] && [ -x "`which update-menus 2>/dev/null`" ]; then
+	update-menus
+fi
+# End automatically added section
+# Automatically added by dh_makeshlibs
+if [ "$1" = "configure" ]; then
+	ldconfig
+fi
 # End automatically added section

@@ -1,0 +1,44 @@
+.TH qgis-config 1 "August 2004" "qgis-config" "User Commands"
+.SH NAME
+qgis-config \- returns information about installed qgis libraries and binaries 
+.SH SYNOPSIS
+.PP
+.B qgis-config
+[OPTIONS]
+.SH DESCRIPTION
+.PP
+The \fIqgis-config\fP shell script is designed to retrieve the
+configuration information about the libraries and binaries dealing with
+QGIS 
+
+.SH OPTIONS
+.TP
+\fB\-\-cflags\fR
+print the prefix used by qgis
+.TP
+\fB\-\-bindir\fR
+print destination of executable(s)
+.TP
+\fB\-\-cflags\fR
+print the compiler flags that are necessary to compile a
+plug-inshow location of C++ header files
+.TP
+\fB\-\-libs\fR
+print the linker flags that are necessary to link a plug-in
+.TP
+\fB\-\-plugindir\fR
+print the path where the plugins are installed
+.TP
+\fB\-\-major_version\fR
+print major version of qgis
+.TP
+\fB\-\-minor_version\fR
+print minor version of qgis
+.TP
+\fB\-\-micro_version\fR
+print micro version of qgis
+.TP
+\fB\-\-extra_version\fR
+print extra version of qgis
+\fB\-\-help\fR
+show help, then exit
