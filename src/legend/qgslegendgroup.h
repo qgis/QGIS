@@ -34,9 +34,9 @@ public:
     QgsLegendGroup(QListView *,QString);
     ~QgsLegendGroup();
 
-    bool accept(LEGEND_ITEM_TYPE type);
+    bool accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type);
     bool isLeafNode();
-
+    bool insert(QgsLegendItem* theItem);
 };
 
 #endif

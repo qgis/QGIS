@@ -59,6 +59,7 @@ When compiling you can make sure DEBUG is defined by including -DDEBUG in the gc
 wish to see edbug messages printed to stdout.
  
 */
+#include "qgslegendsymbologygroup.h"
 #include "qgslegendsymbologyitem.h"
 #include "qgsrasterlayer.h"
 
@@ -4912,6 +4913,8 @@ void QgsRasterLayer::refreshLegend()
 
 	QgsLegendSymbologyItem* item = new QgsLegendSymbologyItem(mLegendSymbologyGroupParent, "");
 	item->setPixmap(0, getLegendQPixmap(true));
+	//copy the symbology changes for the other layers in the same symbology group
+	mLegendSymbologyGroupParent->updateLayerSymbologySettings(this);
     }
 }
 

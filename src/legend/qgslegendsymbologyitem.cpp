@@ -29,7 +29,7 @@ QgsLegendSymbologyItem::~QgsLegendSymbologyItem()
 {
 }
 
-bool QgsLegendSymbologyItem::accept(LEGEND_ITEM_TYPE type)
+bool QgsLegendSymbologyItem::accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)
 {
   return false;
 }
