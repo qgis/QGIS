@@ -710,6 +710,13 @@ QgsRect *QgsOgrProvider::extent()
   return new QgsRect(extent_->MinX, extent_->MinY, extent_->MaxX, extent_->MaxY);
 }
 
+
+size_t QgsOgrProvider::layerCount() const
+{
+    return ogrDataSource->GetLayerCount();
+} // QgsOgrProvider::layerCount()
+
+
 /** 
  * Return the feature type
  */

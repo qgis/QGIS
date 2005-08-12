@@ -169,8 +169,17 @@ public:
   {
       return 0;
   }
+
+  /** return the number of layers for the current data source
+
+  @note 
+
+  Should this be subLayerCount() instead?
+  */
+  size_t layerCount() const;
+
   
- private:
+private:
   
   /** Internal function used by the other getNextFeature() functions. */
   bool getNextFeature(QgsFeature* feature, std::list<int> const & attlist);

@@ -2165,3 +2165,11 @@ int QgsGrassProvider::cidxGetMaxCat( int idx )
     return ( cat );
 }
     
+
+
+size_t QgsGrassProvider::layerCount() const
+{
+    return 1;                   // XXX how to find how many layers?
+} // QgsGrassProvider::layerCount()
+
+

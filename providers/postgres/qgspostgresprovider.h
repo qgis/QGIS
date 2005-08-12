@@ -110,6 +110,17 @@ class QgsPostgresProvider:public QgsVectorDataProvider
 
     int geometryType() const;
 
+
+    /** return the number of layers for the current data source
+
+    @note 
+
+    Should this be subLayerCount() instead?
+    */
+    size_t layerCount() const;
+
+
+
     /**
      * Get the number of features in the layer
      */
