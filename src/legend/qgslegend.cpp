@@ -158,11 +158,9 @@ void QgsLegend::contentsMousePressEvent(QMouseEvent * e)
 	  mMouseDragType = QgsLegendItem::NO_DRAG;
       }
     }
+    mMousePressedFlag = true;
   }
-
-  mMousePressedFlag = true;
   QListView::contentsMousePressEvent(e);
-
 }                               // contentsMousePressEvent
 
 
@@ -216,12 +214,12 @@ void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
 
         setCursor( QCursor(Qt::PointingHandCursor) );
       }
-      else if((origin->type() == dest->type()) && (origin->type() == QgsLegendItem::LEGEND_LAYER || origin->type() == QgsLegendItem::LEGEND_GROUP))
-      {
-        std::cout << "switch" << std::endl << std::flush;
+      //else if((origin->type() == dest->type()) && (origin->type() == QgsLegendItem::LEGEND_LAYER || origin->type() == QgsLegendItem::LEGEND_GROUP))
+      //{
+      //std::cout << "switch" << std::endl << std::flush;
 
-        setCursor( QCursor(Qt::PointingHandCursor) );
-      }
+      //setCursor( QCursor(Qt::PointingHandCursor) );
+      //}
       else
       {
         std::cout << "rejeict" << std::endl << std::flush;
