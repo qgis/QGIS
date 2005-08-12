@@ -198,6 +198,15 @@ class QgsDataProvider : public QObject {
       }
     
     
+      /** return the number of layers for the current data source
+
+          @note 
+
+         Should this be subLayerCount() instead?
+      */
+      virtual size_t layerCount() const = 0;
+
+
       /**
        * Reorder the list of layer names to be rendered by this provider
        * (in order from bottom to top)
