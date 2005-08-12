@@ -102,6 +102,15 @@ public:
    */
   void addLayers(QStringList layers);
 
+
+  /** return the number of layers for the current data source
+
+    @note 
+
+    Should this be subLayerCount() instead?
+  */
+  size_t layerCount() const;
+
   /**
    * Reorder the list of WMS layer names to be rendered by this server
    * (in order from bottom to top)

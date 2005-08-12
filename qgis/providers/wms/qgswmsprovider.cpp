@@ -118,6 +118,17 @@ std::vector<QgsWmsLayerProperty> QgsWmsProvider::supportedLayers()
 }
 
 
+
+
+
+size_t QgsWmsProvider::layerCount() const
+{
+    return 1;                   // XXX properly return actual number of layers
+} // QgsWmsProvider::layerCount()
+
+
+
+
 void QgsWmsProvider::addLayers(QStringList layers)
 {
 #ifdef QGISDEBUG

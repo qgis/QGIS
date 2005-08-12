@@ -943,6 +943,14 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
 }
 
 
+
+size_t QgsDelimitedTextProvider::layerCount() const
+{
+    return 1;                   // XXX How to calculate the layers?
+} // QgsOgrProvider::layerCount()
+
+
+
 int *QgsDelimitedTextProvider::getFieldLengths()
 {
   // this function parses the entire data file and calculates the
