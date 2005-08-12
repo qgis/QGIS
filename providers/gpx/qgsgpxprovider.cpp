@@ -824,6 +824,13 @@ void QgsGPXProvider::changeAttributeValues(GPSObject& obj,
 }
 
 
+size_t QgsGPXProvider::layerCount() const
+{
+    return 1;                   // XXX need to calculate actual number of layers
+} // QgsGPXProvider::layerCount()
+
+
+
 QString QgsGPXProvider::getDefaultValue(const QString& attr, QgsFeature* f) {
   if (attr == "source")
     return "Digitized in QGIS";

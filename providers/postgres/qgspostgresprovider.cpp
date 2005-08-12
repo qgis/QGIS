@@ -2643,6 +2643,14 @@ int QgsPostgresProvider::getSrid()
 
 
 
+size_t QgsPostgresProvider::layerCount() const
+{
+    return 1;                   // XXX need to return actual number of layers
+} // QgsPostgresProvider::layerCount()
+
+
+
+
 /**
  * Class factory to return a pointer to a newly created 
  * QgsPostgresProvider object
