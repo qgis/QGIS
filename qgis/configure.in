@@ -490,5 +490,6 @@ else
 fi
 echo ""
 echo "The build is using Qt in $QTDIR"
+echo "Linking with $QT_LIBS"
 echo "------------------------------------------"
 echo "Configure finished, type 'make' to build."
