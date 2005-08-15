@@ -555,7 +555,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
 
 #ifdef QGISDEBUG
 
-    std::cout << "Plugins are installed in " << plib.ascii() << std::endl;
+    std::cout << "Plugins are installed in " << plib.local8Bit() << std::endl;
 #endif
 
     // load any plugins that were running in the last session
@@ -569,7 +569,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // set the provider plugin path
 #ifdef QGISDEBUG
 
-    std::cout << "Setting plugin lib dir to " << plib.ascii() << std::endl;
+    std::cout << "Setting plugin lib dir to " << plib.local8Bit() << std::endl;
 #endif
 
     //
@@ -721,7 +721,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
   QSettings mySettings;
   #ifdef QGISDEBUG
   
-  std::cerr << " -------------------- Restoring plugins from last session " << thePluginDirString.ascii() << std::endl;
+  std::cerr << " -------------------- Restoring plugins from last session " << thePluginDirString.local8Bit() << std::endl;
   #endif
   // check all libs in the current plugin directory and get name and descriptions
   #ifdef WIN32
@@ -744,7 +744,7 @@ QDir myPluginDir(thePluginDirString, "*.so*", QDir::Name | QDir::IgnoreCase, QDi
       QString myFullPath = thePluginDirString + "/" + myPluginDir[i];
       #ifdef QGISDEBUG
       
-      std::cerr << "Examining " << myFullPath.ascii() << std::endl;
+      std::cerr << "Examining " << myFullPath.local8Bit() << std::endl;
       #endif
       
       QLibrary *myLib = new QLibrary(myFullPath);
@@ -752,7 +752,7 @@ QDir myPluginDir(thePluginDirString, "*.so*", QDir::Name | QDir::IgnoreCase, QDi
       if (loaded)
       {
         //purposely leaving this one to stdout!
-        std::cout << "Loaded " << myLib->library().ascii() << std::endl;
+        std::cout << "Loaded " << myLib->library().local8Bit() << std::endl;
         name_t * myName =(name_t *) myLib->resolve("name");
         description_t *  myDescription = (description_t *)  myLib->resolve("description");
         version_t *  myVersion =  (version_t *) myLib->resolve("version");
@@ -766,7 +766,7 @@ QDir myPluginDir(thePluginDirString, "*.so*", QDir::Name | QDir::IgnoreCase, QDi
           if (mySettings.readBoolEntry("/qgis/Plugins/" + myEntryName))
           {
             #ifdef QGISDEBUG
-            std::cerr << " -------------------- loading " << myEntryName.ascii() << std::endl;
+            std::cerr << " -------------------- loading " << myEntryName.local8Bit() << std::endl;
             #endif
             
             loadPlugin(myName(), myDescription(), myFullPath);
@@ -775,14 +775,14 @@ QDir myPluginDir(thePluginDirString, "*.so*", QDir::Name | QDir::IgnoreCase, QDi
         else
         {
           #ifdef QGISDEBUG
-          std::cerr << "Failed to get name, description, or type for " << myLib->library().ascii() << std::endl;
+          std::cerr << "Failed to get name, description, or type for " << myLib->library().local8Bit() << std::endl;
           #endif
           
         }
       }
       else
       {
-        std::cerr << "Failed to load " << myLib->library().ascii() << std::endl;
+        std::cerr << "Failed to load " << myLib->library().local8Bit() << std::endl;
       }
     }
   }
@@ -945,7 +945,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
     }                           // each loaded GDAL driver
 
-    std::cout << myFileFilters.ascii() << std::endl;
+    std::cout << myFileFilters.local8Bit() << std::endl;
 
     // can't forget the default case
 
@@ -1001,7 +1001,7 @@ static void openFilesRememberingFilter_(QString const &filterName,
 
 #ifdef QGISDEBUG
 
-    std::cerr << "Opening vector file dialog with filters: " << filters.ascii() << std::endl;
+    std::cerr << "Opening vector file dialog with filters: " << filters.local8Bit() << std::endl;
 #endif
 
     QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog(lastUsedDir, filters, 0, QFileDialog::tr("open files dialog"), lastUsedEncoding);
@@ -1066,7 +1066,7 @@ void QgisApp::addLayer()
         QStringList selectedFiles;
 #ifdef QGISDEBUG
 
-        std::cerr << "Vector file filters: " << fileFilters.ascii() << std::endl;
+        std::cerr << "Vector file filters: " << fileFilters.local8Bit() << std::endl;
 #endif
 
         QString enc;
@@ -1460,7 +1460,7 @@ void QgisApp::addDatabaseLayer()
                 }
                 else
                 {
-                    std::cerr << (*it).ascii() << " is an invalid layer - not loaded" << std::endl;
+                    std::cerr << (*it).local8Bit() << " is an invalid layer - not loaded" << std::endl;
                     QMessageBox::critical(this, tr("Invalid Layer"), tr("%1 is an invalid layer and cannot be loaded.").arg(*it));
                     delete layer;
                 }
@@ -2448,7 +2448,7 @@ void QgisApp::openProject(const QString & fileName)
             if ( ! addProject(fileName) )
             {
 #ifdef QGISDEBUG
-                std::cerr << "unable to load project " << fileName.ascii() << "\n";
+                std::cerr << "unable to load project " << fileName.local8Bit() << "\n";
 #endif
             }
         }
@@ -2478,7 +2478,7 @@ bool QgisApp::openLayer(const QString & fileName)
         // we have no idea what this file is...
         if (!ok)
         {
-            std::cout << "Unable to load " << fileName.ascii() << std::endl;
+            std::cout << "Unable to load " << fileName.local8Bit() << std::endl;
         }
     }
 }
@@ -2556,7 +2556,7 @@ void QgisApp::saveMapAsImage()
     FilterMap::Iterator myIterator;
     for ( myIterator = myFilterMap.begin(); myIterator != myFilterMap.end(); ++myIterator )
     {
-        std::cout << myIterator.key().ascii() << "  :  " << myIterator.data().ascii() << std::endl;
+        std::cout << myIterator.key().local8Bit() << "  :  " << myIterator.data().local8Bit() << std::endl;
     }
 
 #endif
@@ -2592,8 +2592,8 @@ void QgisApp::saveMapAsImage()
     QString myFilterString = myQFileDialog->selectedFilter()+";;";
 #ifdef QGISDEBUG
 
-    std::cout << "Selected filter: " << myFilterString.ascii() << std::endl;
-    std::cout << "Image type to be passed to mapcanvas: " << myFilterMap[myFilterString].ascii() << std::endl;
+    std::cout << "Selected filter: " << myFilterString.local8Bit() << std::endl;
+    std::cout << "Image type to be passed to mapcanvas: " << myFilterMap[myFilterString].local8Bit() << std::endl;
 #endif
 
     myQSettings.writeEntry("/qgis/UI/lastSaveAsImageFilter" , myFilterString);
@@ -3480,7 +3480,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
         QLibrary *myLib = new QLibrary(theFullPathName);
 #ifdef QGISDEBUG
 
-        std::cerr << "Library name is " << myLib->library().ascii() << std::endl;
+        std::cerr << "Library name is " << myLib->library().local8Bit() << std::endl;
 #endif
 
         bool loaded = myLib->load();
@@ -3522,7 +3522,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
                     else
                     {
                         //#ifdef QGISDEBUG
-                        std::cerr << "Unable to find the class factory for " << theFullPathName.ascii() << std::endl;
+                        std::cerr << "Unable to find the class factory for " << theFullPathName.local8Bit() << std::endl;
                         //#endif
                     }
 
@@ -3555,7 +3555,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
                     else
                     {
                         //#ifdef QGISDEBUG
-                        std::cerr << "Unable to find the class factory for " << theFullPathName.ascii() << std::endl;
+                        std::cerr << "Unable to find the class factory for " << theFullPathName.local8Bit() << std::endl;
                         //#endif
                     }
                 }
@@ -3563,7 +3563,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
             default:
                 // type is unknown
                 //#ifdef QGISDEBUG
-                std::cerr << "Plugin " << theFullPathName.ascii() << " did not return a valid type and cannot be loaded" << std::endl;
+                std::cerr << "Plugin " << theFullPathName.local8Bit() << " did not return a valid type and cannot be loaded" << std::endl;
                 //#endif
                 break;
             }
@@ -3576,7 +3576,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
         else
         {
             //#ifdef QGISDEBUG
-            std::cerr << "Failed to load " << theFullPathName.ascii() << "\n";
+            std::cerr << "Failed to load " << theFullPathName.local8Bit() << "\n";
             //#endif
         }
     }
@@ -3595,7 +3595,7 @@ void QgisApp::testMapLayerPlugins()
         for (unsigned i = 0; i < mlpDir.count(); i++)
         {
 #ifdef QGISDEBUG
-            std::cout << "Getting information for plugin: " << mlpDir[i].ascii() << std::endl;
+            std::cout << "Getting information for plugin: " << mlpDir[i].local8Bit() << std::endl;
             std::cout << "Attempting to load the plugin using dlopen\n";
 #endif
             //          void *handle = dlopen("../plugins/maplayer/" + mlpDir[i], RTLD_LAZY);
@@ -3619,7 +3619,7 @@ void QgisApp::testMapLayerPlugins()
             QLibrary *myLib = new QLibrary("../plugins/maplayer/" + mlpDir[i]);
 #ifdef QGISDEBUG
 
-            std::cout << "Library name is " << myLib->library().ascii() << std::endl;
+            std::cout << "Library name is " << myLib->library().local8Bit() << std::endl;
 #endif
 
             bool loaded = myLib->load();
@@ -3665,7 +3665,7 @@ void QgisApp::testMapLayerPlugins()
             else
             {
 #ifdef QGISDEBUG
-                std::cout << "Failed to load " << mlpDir[i].ascii() << "\n";
+                std::cout << "Failed to load " << mlpDir[i].local8Bit() << "\n";
 #endif
 
             }
@@ -3695,13 +3695,13 @@ void QgisApp::testPluginFunctions()
             for (unsigned i = 0; i < pluginDir.count(); i++)
             {
 #ifdef QGISDEBUG
-                std::cout << "Getting information for plugin: " << pluginDir[i].ascii() << std::endl;
+                std::cout << "Getting information for plugin: " << pluginDir[i].local8Bit() << std::endl;
 #endif
 
                 QLibrary *myLib = new QLibrary("../plugins/" + pluginDir[i]); //"/home/gsherman/development/qgis/plugins/" + pluginDir[i]);
 #ifdef QGISDEBUG
 
-                std::cout << "Library name is " << myLib->library().ascii() << std::endl;
+                std::cout << "Library name is " << myLib->library().local8Bit() << std::endl;
 #endif
                 //QLibrary myLib("../plugins/" + pluginDir[i]);
 #ifdef QGISDEBUG
@@ -3747,9 +3747,9 @@ void QgisApp::testPluginFunctions()
 #ifdef QGISDEBUG
 
                         std::cout << "Displaying name, version, and description\n";
-                        std::cout << "Plugin name: " << pl->name().ascii() << std::endl;
-                        std::cout << "Plugin version: " << pl->version().ascii() << std::endl;
-                        std::cout << "Plugin description: " << pl->description().ascii() << std::endl;
+                        std::cout << "Plugin name: " << pl->name().local8Bit() << std::endl;
+                        std::cout << "Plugin version: " << pl->version().local8Bit() << std::endl;
+                        std::cout << "Plugin description: " << pl->description().local8Bit() << std::endl;
 #endif
 
                         QMessageBox::information(this, tr("Plugin Information"), tr("QGis loaded the following plugin:") +
@@ -3999,7 +3999,7 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
      * commandline application rather than a bundled application.
      */
     CFURLRef urlRef = CFURLCreateWithBytes(kCFAllocatorDefault,
-                                           reinterpret_cast<const UInt8*>(url.ascii()), url.length(),
+                                           reinterpret_cast<const UInt8*>(url.local8Bit()), url.length(),
                                            kCFStringEncodingMacRoman, NULL);
     OSStatus status = LSOpenCFURLRef(urlRef, NULL);
     CFRelease(urlRef);
@@ -4108,8 +4108,8 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
 #ifdef QGISDEBUG
 
         std::cout << "Creating new vector layer using " <<
-        vectorLayerPath.ascii() << " with baseName of " << baseName.ascii() <<
-        " and providerKey of " << providerKey.ascii() << std::endl;
+        vectorLayerPath.local8Bit() << " with baseName of " << baseName.local8Bit() <<
+        " and providerKey of " << providerKey.local8Bit() << std::endl;
 #endif
 
         layer = new QgsVectorLayer(vectorLayerPath, baseName, providerKey);
@@ -4309,7 +4309,7 @@ void QgisApp::populateMenuMaps()
     do
     {
         menuId = menubar->idAt(idx++);
-        std::cout << "Menu id " << menuId << " is " << menubar->text(menuId).ascii() << std::endl;
+        std::cout << "Menu id " << menuId << " is " << menubar->text(menuId).local8Bit() << std::endl;
         mMenuMapByName[menubar->text(menuId)] = menuId;
         mMenuMapById[menuId] = menubar->text(menuId);
     }
@@ -4697,7 +4697,7 @@ void QgisApp::setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag)
         mOverviewCanvas->addLayer(QgsMapLayerRegistry::instance()->mapLayer(theLayerId));
 #ifdef QGISDEBUG
 
-        std::cout << " Added layer " << theLayerId.ascii() << " to overview map" << std::endl;
+        std::cout << " Added layer " << theLayerId.local8Bit() << " to overview map" << std::endl;
 #endif
 
     }
@@ -4707,7 +4707,7 @@ void QgisApp::setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag)
         (theLayerId);
 #ifdef QGISDEBUG
 
-        std::cout << " Removed layer " << theLayerId.ascii() << " from overview map" << std::endl;
+        std::cout << " Removed layer " << theLayerId.local8Bit() << " from overview map" << std::endl;
 #endif
 
     }
@@ -4743,7 +4743,7 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
 	    mOverviewCanvas->remove
 		(myLayerId);
 #ifdef QGISDEBUG
-	    std::cout << " Removed layer " << myLayerId.ascii() << " from overview map" << std::endl;
+	    std::cout << " Removed layer " << myLayerId.local8Bit() << " from overview map" << std::endl;
 #endif
 	    myOverviewLayerVector.push_back(myLayerId);
 	}
@@ -4758,7 +4758,7 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
             mOverviewCanvas->addLayer(lyr);
 #ifdef QGISDEBUG
 
-            std::cout << " Added layer " << (*myIterator).ascii() << " to overview map" << std::endl;
+            std::cout << " Added layer " << (*myIterator).local8Bit() << " to overview map" << std::endl;
 #endif
 
         }
@@ -4789,7 +4789,7 @@ void QgisApp::setZOrder (std::list<QString> theZOrder)
 void QgisApp::showCapturePointCoordinate(QgsPoint & theQgsPoint)
 {
 #ifdef QGISDEBUG
-    std::cout << "Capture point (clicked on map) at position " << theQgsPoint.stringRep(2).ascii() << std::endl;
+    std::cout << "Capture point (clicked on map) at position " << theQgsPoint.stringRep(2).local8Bit() << std::endl;
 #endif
 
     QClipboard *myClipboard = QApplication::clipboard();
@@ -5010,7 +5010,7 @@ void QgisApp::addRasterLayer(QString rasterLayerPath, QString baseName, QString 
 {
 
 #ifdef QGISDEBUG
-  std::cout << "QgisApp::addRasterLayer: about to get library for " << providerKey.ascii() << std::endl;
+  std::cout << "QgisApp::addRasterLayer: about to get library for " << providerKey.local8Bit() << std::endl;
 #endif
 
     // check to see if the appropriate provider is available
@@ -5031,9 +5031,9 @@ void QgisApp::addRasterLayer(QString rasterLayerPath, QString baseName, QString 
 #ifdef QGISDEBUG
 
         std::cout << "QgisApp::addRasterLayer: Creating new raster layer using " <<
-        rasterLayerPath.ascii() << " with baseName of " << baseName.ascii() <<
-        " and layer list of " << layers.join(", ").ascii() <<
-        " and providerKey of " << providerKey.ascii() << std::endl;
+        rasterLayerPath.local8Bit() << " with baseName of " << baseName.local8Bit() <<
+        " and layer list of " << layers.join(", ").local8Bit() <<
+        " and providerKey of " << providerKey.local8Bit() << std::endl;
 #endif
 
         // TODO: Remove the 0 when the raster layer becomes a full provider gateway.
