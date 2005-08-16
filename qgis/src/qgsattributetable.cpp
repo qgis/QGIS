@@ -237,16 +237,15 @@ void QgsAttributeTable::qsort(int lower, int upper, int col, bool ascending, boo
   if (upper > lower)
     {
       //chose a random element (this avoids n^2 worst case)
-      int element = int (rand() / RAND_MAX * (upper - lower) + lower);
-
+      int element = int ( (double)rand() / (double)RAND_MAX * (upper - lower) + lower);
       swapRows(element, upper);
       v = text(upper, col);
       i = lower - 1;
       j = upper;
       for (;;)
-        {
-          while (compareItems(text(++i, col), v, ascending, alphanumeric) == -1);
-          while (compareItems(text(--j, col), v, ascending, alphanumeric) == 1 && j > 0); //make sure that j does not get negative
+      {
+	  while (compareItems(text(++i, col), v, ascending, alphanumeric) == -1);
+	  while (compareItems(text(--j, col), v, ascending, alphanumeric) == 1 && j > 0); //make sure that j does not get negative
           if (i >= j)
             {
               break;
