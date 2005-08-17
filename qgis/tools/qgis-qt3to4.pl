@@ -26,13 +26,28 @@
 
 sub RunQt3to4
 {
-  my($filename) = @_;
+  my($directory, $direntry) = @_;
 
-  my($cmd) = "/usr/local/Trolltech/Qt-4.0.0/bin/qt3to4 $filename";
+  if (-f ($directory.$direntry.".portinglog.txt"))
+  {
+    print "$directory$direntry was already processed by qt3to4.\n";
+    return;
+  }
 
+  # Copy old version for backup purposes
+  my($cmd) = "cp $directory$direntry $directory$direntry.qt3.old";
   print "About to run '$cmd'\n";
+  `$cmd`;
 
-#  `$cmd`;
+  my($cmd) = "/usr/local/Trolltech/Qt-4.0.0/bin/qt3to4 -alwaysOverwrite $directory$direntry";
+  print "About to run '$cmd'\n";
+  `$cmd`;
+
+  $cmd = "mv portinglog.txt ".$directory.$direntry.".portinglog.txt";
+  print "About to run '$cmd'\n";
+  `$cmd`;
+
+
 }
 
 sub Qt3to4File
@@ -42,7 +57,7 @@ sub Qt3to4File
   print "Doing custom conversions to '$filename' ...\n";
 
   open(CPP, $filename) || die "Can't open file $filename: $!";
-  open(CPPQT4, ">$filename.new") || die "Can't create file $filename.new: $!";
+  my($cppqt4) = "";
 
   while (<CPP>)
   {
@@ -101,11 +116,14 @@ sub Qt3to4File
     $line =~ s/public QCanvasView/public Q3CanvasView/g;
 
 
-    print CPPQT4 $line;
-  }
+    $cppqt4 .= $line;
 
-  close(CPPQT4);
+  }
   close(CPP);
+
+  open(CPPQT4, ">$filename") || die "Can't create file $filename: $!";
+  print CPPQT4 $cppqt4;
+  close(CPPQT4);
 }
 
 sub Qt3to4UicFile
@@ -135,6 +153,11 @@ sub Qt3to4UicFile
   }
   close(UIC);
 
+  # Rename old version for backup purposes
+  my($cmd) = "mv $filename $filename.qt3.old";
+  print "About to run '$cmd'\n";
+  `$cmd`;
+
   open(UICQT4, ">$filename") || die "Can't overwrite file $filename: $!";
   print UICQT4 $uicqt4;
   close(UICQT4);
@@ -144,10 +167,10 @@ sub Qt3to4UicFile
 
 sub ProcessQt3to4
 {
-  my($filename) = @_;
+  my($directory, $direntry) = @_;
 
-  &RunQt3to4($filename);
-  &Qt3to4File($filename);
+  &RunQt3to4($directory, $direntry);
+  &Qt3to4File($directory.$direntry);
 }
 
 sub ProcessQt3to4Uic
@@ -209,13 +232,13 @@ sub ParseDirectory
         if ($direntry =~ /.*\.cpp$/)    # ends with ".cpp"
         {
           print "  Found a .cpp file.\n";
-          &ProcessQt3to4($directory.$direntry);
+          &ProcessQt3to4($directory, $direntry);
         }
 
         if ($direntry =~ /.*\.h$/)    # ends with ".h"
         {
-          print "  Found a .h file.\n";
-          &ProcessQt3to4($directory.$direntry);
+          print "  Found an .h file.\n";
+          &ProcessQt3to4($directory, $direntry);
         }
 
       }
@@ -223,6 +246,8 @@ sub ParseDirectory
   }
 
 }
+
+print "Starting $0...\n";
 
 if ($ARGV[0] eq "-uic")
 {
@@ -234,6 +259,8 @@ else
   # .cpp and .h bulk-conversion mode
   &ParseDirectory($ARGV[0]);
 }
+
+print "$0 complete.\n";
 
 #
 # ENDS
