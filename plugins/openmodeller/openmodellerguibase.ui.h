@@ -150,3 +150,9 @@ void OpenModellerGuiBase::pbnOtherOutputFormat_clicked()
 {
 
 }
+
+
+void OpenModellerGuiBase::lstTaxa_selectionChanged()
+{
+
+}

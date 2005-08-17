@@ -380,7 +380,7 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
 	
     cboModelAlgorithm_highlighted(tr(myModelName));
   }
-  if (thePageNameQString==tr("Step 2 of 9")) //we do this after leaving the file selection page
+  if (thePageNameQString==tr("Step 2 of 9")) 
   {
     settings.writeEntry("/openmodeller/modelName",cboModelAlgorithm->currentText());
     getParameterList(txtAlgorithm->text());
@@ -401,12 +401,12 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     std::cout << "step 2 ready" << std::endl;
 
   }
-  if (thePageNameQString==tr("Step 3 of 9")) //we do this after leaving the file selection page
+  if (thePageNameQString==tr("Step 3 of 9")) 
   {
     setNextEnabled(currentPage(),false);
     settings.writeEntry("/openmodeller/coordSystem",cboCoordinateSystem->currentText());        
 
-    if (leLocalitiesFileName->text() !="")
+    if ((leLocalitiesFileName->text() !="")&&(countSelectedSpecies()>0))
     {
       setNextEnabled(currentPage(),true);
     }
@@ -422,6 +422,9 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   if (thePageNameQString==tr("Step 4 of 9")) 
   {  
     //MODEL CREATION LAYERSET
+
+    //write locality selections to qsettings
+   settings.writeEntry("/openmodeller/localitiesFileName",leLocalitiesFileName->text());
 
     const QString myFileNameQString =  settings.readEntry("/openmodeller/layerNames");
     //tokenise the setting list (its separated by ^e)
@@ -635,6 +638,9 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   else if (thePageNameQString==tr("Step 9 of 9"))
   {
 
+    creationProgressBar->setProgress(-1);
+    projectionProgressBar->setProgress(-1);
+
     QSettings myQSettings;
 
     //pull all the form data into local class vars.
@@ -672,7 +678,8 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
   @see pbnRun method which is run when model inputs have been obtained via the wizard. */
 void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
 {
-
+  creationProgressBar->setProgress(-1);
+  projectionProgressBar->setProgress(-1);
   txtbLogs->clear();
   txtbLogs->setPointSize ( 12 );
   txtbLogs->setBold(false);
@@ -700,9 +707,9 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
     myRequestFile.makeModel( mOpenModeller );
     myRequestFile.makeProjection( mOpenModeller );
     //save a nice looking png of the image to disk
-    createModelImage(outputFileNameQString);
+    createModelImage(outputFileNameQString + "-" + taxonNameQString);
     // and a smaller version for this report
-    QString mySmallImage = createResizedImage(outputFileNameQString);
+    QString mySmallImage = createResizedImage(outputFileNameQString + "-" + taxonNameQString);
     txtbLogs->append("<img src=\""+mySmallImage+"\">");
     // Confusion matrix
     std::cout << "Map creation complete - calculating confusion matrix" << std::endl;
@@ -721,10 +728,10 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
     std::cout << "creating image and firing signals" << std::endl;
     //used by omgui standalone
     std::cout << "emitting drawModelImage" << std::endl;
-    emit drawModelImage(outputFileNameQString+".png");
+    emit drawModelImage(outputFileNameQString + "-" + taxonNameQString+".png");
     //if all went ok, send notification to the parent app that we are finished (qgis plugin mode)
     std::cout << "emitting drawRasterLayer" << std::endl;
-    emit drawRasterLayer(outputFileNameQString+QString(".tif"));
+    emit drawRasterLayer(outputFileNameQString +QString("-") + taxonNameQString+QString(".tif"));
 
   }
   catch( std::exception& e ) 
@@ -741,7 +748,7 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
   txtbLogs->append(makeConfigReport());
   emit modelDone( txtbLogs->text());
   //write teh logs to a file too
-  QFile myQFile( outputFileNameQString+".html");
+  QFile myQFile( outputFileNameQString + "-" + taxonNameQString+".html");
   std::cout << "Config file name: " << outputFileNameQString.ascii() << std::endl;
   if ( myQFile.open( IO_WriteOnly ) ) 
   {
@@ -749,8 +756,10 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
     myQTextStream << txtbLogs->text();
     myQFile.close();
   }
-  done(1);
+ // done(1);
 }
+
+
 QString OpenModellerGui::makeConfigReport()
 {
   QString myString="";
@@ -783,10 +792,10 @@ QString OpenModellerGui::makeConfigReport()
   myString+= "<p>" + outputMaskNameQString + "</p>\n";
 
   myString+= tr("<p><b>Output model name (serialized model)</b></p>\n");
-  myString+= "<p>" + outputFileNameQString + ".xml</p>\n";
+  myString+= "<p>" + outputFileNameQString + "-" + taxonNameQString + ".xml</p>\n";
 
   myString+= tr("<p><b>Output file name</b></p>\n");
-  myString+= "<p>" + outputFileNameQString + ".tif</p>\n";
+  myString+= "<p>" + outputFileNameQString + "-" + taxonNameQString + ".tif</p>\n";
   myString+= tr("<p><b>The layer that specifies the format (cell size and coordinate system) for the generated map</b></p>\n");      
   myString+= "<p>" + outputFormatQString + "</p>\n";
   myString+= tr("<h2> Model Type and Extra Model Parameters</h2>\n");
@@ -806,7 +815,7 @@ QString OpenModellerGui::makeConfigReport()
 
 void OpenModellerGui::makeConfigFile()
 {
-  QFile myQFile( outputFileNameQString+".cfg");
+  QFile myQFile( outputFileNameQString +"-" + taxonNameQString + ".cfg");
   std::cout << "Config file name: " << outputFileNameQString.ascii() << std::endl;
   if ( myQFile.open( IO_WriteOnly ) ) {
     QTextStream myQTextStream( &myQFile );
@@ -858,11 +867,11 @@ void OpenModellerGui::makeConfigFile()
 
     myQTextStream << tr("\n\n##\n");
     myQTextStream << tr("# Output model name (serialized model)\n");
-    myQTextStream << tr("Output model = ") << outputFileNameQString << ".xml\n";
+    myQTextStream << tr("Output model = ") << outputFileNameQString + "-" + taxonNameQString << ".xml\n";
 
     myQTextStream << tr("\n\n##\n");
     myQTextStream << tr("# Output file name (should end in .tif)\n");
-    myQTextStream << tr("Output file = ") << outputFileNameQString << ".tif\n";
+    myQTextStream << tr("Output file = ") << outputFileNameQString + "-" + taxonNameQString << ".tif\n";
     myQTextStream << tr("\n\n##\n"); 
     myQTextStream << tr("# A layer that specifies the format (cell size and coordinate system) for the generated map\n");      
     myQTextStream << tr("Output Format = ") << outputFormatQString << "\n";
@@ -942,9 +951,20 @@ void OpenModellerGui::accept()
   maskNameQString=cboInputMaskLayer->currentText();
   outputMaskNameQString=cboOutputMaskLayer->currentText();
   outputFormatQString=cboOutputFormatLayer->currentText();
-  taxonNameQString=cboTaxon->currentText();
-  makeConfigFile();
-  parseAndRun(outputFileNameQString+".cfg");
+
+  // Loop through all species selected in list, building config files and running them..  
+  for ( unsigned int mySpeciesInt = 0; mySpeciesInt < lstTaxa->count(); mySpeciesInt++ )
+  {
+    QListBoxItem *mySpeciesItem = lstTaxa->item( mySpeciesInt );
+    if (lstTaxa->isSelected (mySpeciesInt))
+    {
+        taxonNameQString=lstTaxa->text(mySpeciesInt);
+        makeConfigFile();
+        parseAndRun(outputFileNameQString +"-" + taxonNameQString + ".cfg");
+	QString myOutputThumbnail = outputFileNameQString +"-" + taxonNameQString + ".png";
+	pixModelOutputImage->setPixmap(QPixmap (myOutputThumbnail));
+    }
+  }
 
   QApplication::restoreOverrideCursor();
   //close the dialog
@@ -1046,6 +1066,7 @@ void OpenModellerGui::pbnSelectLayerFile_clicked()
 }
 
 
+
 void OpenModellerGui::pbnSelectLocalitiesFile_clicked()
 {
   QSettings settings;
@@ -1067,7 +1088,35 @@ void OpenModellerGui::pbnSelectLocalitiesFile_clicked()
   //store directory where localities file is for next time
   settings.writeEntry("/openmodeller/localitiesFileDirectory", myFileNameQString );
 
+  //select all taxa 
+  lstTaxa->selectAll(true);
+
 } //end of pbnSelectLocalitiesFile_clicked
+
+void OpenModellerGui::lstTaxa_selectionChanged()
+{
+  if (countSelectedSpecies()<1)
+  {
+     setNextEnabled(currentPage(),false);
+  }
+  else
+  {
+   setNextEnabled(currentPage(),true);
+  }
+}
+
+int OpenModellerGui::countSelectedSpecies()
+{
+  int myCount = 0;
+  for ( unsigned int myInt = 0; myInt < lstTaxa->count(); myInt++ )
+  {
+    if (lstTaxa->isSelected (myInt))
+    {
+	myCount++;
+    }
+  }
+ return myCount;
+}
 
 void OpenModellerGui::getProjList()
 {
@@ -1145,7 +1194,7 @@ void OpenModellerGui::setSpeciesList(QString theFileNameQString)
   if ( myQFile.open( IO_ReadOnly ) ) 
   {
     //clear the existing entries in the taxon combo first
-    cboTaxon->clear();     
+    lstTaxa->clear();     
     //now we parse the loc file, checking each line for its taxon
     QTextStream myQTextStream( &myQFile );
     QString myCurrentLineQString;
@@ -1176,7 +1225,7 @@ void OpenModellerGui::setSpeciesList(QString theFileNameQString)
       QString myCurrentTaxon=*myIterator;
       if (myCurrentTaxon!=myLastTaxon)
       {
-        cboTaxon->insertItem(myCurrentTaxon);
+        lstTaxa->insertItem(myCurrentTaxon);
       }
       myLastTaxon=*myIterator;
       ++myIterator;
@@ -1191,7 +1240,14 @@ void OpenModellerGui::setSpeciesList(QString theFileNameQString)
   leLocalitiesFileName->setText(theFileNameQString);
   localitiesFileNameQString = theFileNameQString;
   //enable the user to carry on to the next page...
-  setNextEnabled(currentPage(),true);
+  if (countSelectedSpecies()>0)
+  {
+      setNextEnabled(currentPage(),true);
+   }
+   else
+   {
+      setNextEnabled(currentPage(),false);
+    }
 } //end of setSpeciesList
 
 void OpenModellerGui::leLocalitiesFileName_textChanged( const QString &theFileNameQString )

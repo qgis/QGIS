@@ -49,6 +49,7 @@ public:
   void parseAndRun(QString theParametersFileNameQString);
   QString makeConfigReport();
   void makeConfigFile();
+  int countSelectedSpecies();
   
   
   //
@@ -81,6 +82,7 @@ public:
   void pbnOtherInputMask_clicked();
   void pbnOtherOutputMask_clicked();
   void pbnOtherOutputFormat_clicked();
+  void lstTaxa_selectionChanged();
     
 private:
     OpenModeller * mOpenModeller;
@@ -96,6 +98,8 @@ private:
     QString outputFileNameQString;
     QString outputFormatQString;
     bool useTheseSettingsAgainFlag;
+
+
     typedef QMap<QString, QWidget *> ParametersMap;
     //setup QMap object and layout for the frame into which the controls will go
     ParametersMap mMap;
