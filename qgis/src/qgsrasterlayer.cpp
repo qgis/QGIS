@@ -3710,8 +3710,9 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
 {
   emit setProgress(0,0);
   //first test if the file is writeable
-  QFile myQFile(dataSource);
-  if (!myQFile.open(IO_WriteOnly| IO_Append))
+  QFileInfo myQFile(dataSource);
+  
+  if (!myQFile.isWritable())
   {
 
     QMessageBox myMessageBox( tr("Write access denied"),
@@ -3724,7 +3725,6 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
 
     return;
   }
-  myQFile.close();
   // let the user know we're going to possibly be taking a while
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   GDALAllRegister();
