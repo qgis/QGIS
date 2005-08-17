@@ -220,7 +220,7 @@ long QgsProjectionSelector::getCurrentSRID()
   if(lvi)
   {
     // Make sure the selected node is a srs and not a top-level projection node
-    std::cout << lvi->text(1).local8Bit() << std::endl;
+    //TODO - blast this outta here: std::cout << lvi->text(1).local8Bit() << std::endl;
     if(lvi->text(1).length() > 0)
     {
       QString myDatabaseFileName;
@@ -765,32 +765,10 @@ long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
 */
 const QString QgsProjectionSelector::stringSQLSafe(const QString theSQL)
 {
-
-  QString myRetval;
-  std::string myString(theSQL.latin1());
-  for (std::string::const_iterator it = myString.begin(); it != myString.end(); it++)
-  {
-    if (*it == '\"')
-    {
-      myRetval += "\\\"";
-    }
-    else if (*it == '\'')
-    {
-      myRetval += "\\'";
-    }
-    else if (*it == '\\')
-    {
-      myRetval += "\\\\";
-    }
-    else if (*it == '%')
-    {
-      myRetval += "\\%";
-    }
-    else
-    {
-      myRetval += *it;
-    }
-  }
-
-  return myRetval;
-}
+	QString myRetval = theSQL;
+	myRetval.replace("\\","\\\\");
+	myRetval.replace('\"',"\\\"");
+	myRetval.replace("\'","\\'");
+	myRetval.replace("%","\\%");
+	return myRetval;
+ }
