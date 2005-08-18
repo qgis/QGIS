@@ -42,7 +42,7 @@
 #include <cpl_error.h>
 
 
-QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name , WFlags fl  )
+QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name , Qt::WFlags fl  )
     : QgsProjectionSelectorBase( parent, "Projection Selector", fl )
 {
   // Get the package data path and set the full path name to the sqlite3 spatial reference
