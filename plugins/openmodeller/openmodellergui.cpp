@@ -43,6 +43,8 @@
 #include <qpixmap.h>
 #include <qimage.h>
 #include <qtextstream.h>
+#include <qradiobutton.h>
+#include <qgroupbox.h>
 
 //
 //openmodeller includes
@@ -406,25 +408,88 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     setNextEnabled(currentPage(),false);
     settings.writeEntry("/openmodeller/coordSystem",cboCoordinateSystem->currentText());        
 
-    if ((leLocalitiesFileName->text() !="")&&(countSelectedSpecies()>0))
-    {
-      setNextEnabled(currentPage(),true);
+ 
+
+   //Set the correct group of widgets to view
+   QString myLocalitiesType = settings.readEntry("/openmodeller/localitiesType");
+   if (myLocalitiesType == "single")
+   {
+      grpMultipleFiles->hide();
+      grpSingleFile->show();
+      radSingleFile->setChecked(true);
+
+	// Check if localities file field contains something and that there are some selected species
+	if ((leLocalitiesFileName->text() !="")&&(countSelectedSpecies()>0))
+	{
+		setNextEnabled(currentPage(),true);
+	}
+	else
+	{
+	// otherwise try and read from qsettings
+		QString myFileName = settings.readEntry("/openmodeller/localitiesFileName");
+		if (!myFileName.isEmpty())
+		{
+			setSpeciesList(myFileName);
+		} 
+	}
+   }
+   else if (myLocalitiesType == "multiple")
+   {
+      grpMultipleFiles->show();
+      grpSingleFile->hide();
+      radMultipleFiles->setChecked(true);
+	
+	//Try and read from qsettings
+	const QString myLocFileQString =  settings.readEntry("/openmodeller/multipleLocFiles");
+        //tokenise the setting list (its separated by ^e)
+        const QString mySeparatorQString = "^e";
+        QStringList myLocFileNameQStringList =  QStringList::split (mySeparatorQString, myLocFileQString, false ); 
+        //only try to restore the list of files used in the last session if the list is empty
+        if (myLocFileNameQStringList.size() > 0 && lstLocalitiesFiles->count()==0)
+	{
+		//loop through the layer names
+		QStringList::Iterator myLocIterator= myLocFileNameQStringList.begin();
+		QString myLastLocFileNameQString="";
+		while( myLocIterator!= myLocFileNameQStringList.end() ) 
+		{
+			QString myLocFileNameQString=*myLocIterator;
+			if (myLocFileNameQString!=myLastLocFileNameQString)
+			{
+				lstLocalitiesFiles->insertItem(myLocFileNameQString);
+			}
+			myLastLocFileNameQString=*myLocIterator;
+			++myLocIterator;
+		} 
+		setNextEnabled(currentPage(),true);
+	}
     }
     else
     {
-      QString myFileName = settings.readEntry("/openmodeller/localitiesFileName");
-      if (!myFileName.isEmpty())
-      {
-        setSpeciesList(myFileName);
-      } 
+       grpMultipleFiles->hide();
+       grpSingleFile->show();
+       radSingleFile->setChecked(true);
     }
+
+
   }
+
+
   if (thePageNameQString==tr("Step 4 of 9")) 
   {  
     //MODEL CREATION LAYERSET
 
     //write locality selections to qsettings
    settings.writeEntry("/openmodeller/localitiesFileName",leLocalitiesFileName->text());
+   if (radSingleFile->isOn())
+   {
+      settings.writeEntry("/openmodeller/localitiesType","single");
+   }
+   else if (radMultipleFiles->isOn())
+   {
+      settings.writeEntry("/openmodeller/localitiesType","multiple");
+    }
+
+
 
     const QString myFileNameQString =  settings.readEntry("/openmodeller/layerNames");
     //tokenise the setting list (its separated by ^e)
@@ -952,24 +1017,54 @@ void OpenModellerGui::accept()
   outputMaskNameQString=cboOutputMaskLayer->currentText();
   outputFormatQString=cboOutputFormatLayer->currentText();
 
-  // Loop through all species selected in list, building config files and running them..  
-  for ( unsigned int mySpeciesInt = 0; mySpeciesInt < lstTaxa->count(); mySpeciesInt++ )
-  {
-    QListBoxItem *mySpeciesItem = lstTaxa->item( mySpeciesInt );
-    if (lstTaxa->isSelected (mySpeciesInt))
-    {
-        taxonNameQString=lstTaxa->text(mySpeciesInt);
-        makeConfigFile();
-        parseAndRun(outputFileNameQString +"-" + taxonNameQString + ".cfg");
-	QString myOutputThumbnail = outputFileNameQString +"-" + taxonNameQString + ".png";
-	pixModelOutputImage->setPixmap(QPixmap (myOutputThumbnail));
-    }
-  }
+QString myLocalitiesType = myQSettings.readEntry("/openmodeller/localitiesType");
 
-  QApplication::restoreOverrideCursor();
-  //close the dialog
-  //done(1);
+std::cout << "The localities data is in the form of " << myLocalitiesType << " file(s)" << std::endl;
 
+
+if (myLocalitiesType == "single")
+{
+	// Loop through all species selected in list, building config files and running them..  
+	for ( unsigned int mySpeciesInt = 0; mySpeciesInt < lstTaxa->count(); mySpeciesInt++ )
+	{
+		QListBoxItem *mySpeciesItem = lstTaxa->item( mySpeciesInt );
+		if (lstTaxa->isSelected (mySpeciesInt))
+		{
+			taxonNameQString=lstTaxa->text(mySpeciesInt);
+			makeConfigFile();
+			parseAndRun(outputFileNameQString +"-" + taxonNameQString + ".cfg");
+			QString myOutputThumbnail = outputFileNameQString +"-" + taxonNameQString + ".png";
+			pixModelOutputImage->setPixmap(QPixmap (myOutputThumbnail));
+		}
+	}
+}
+else if (myLocalitiesType == "multiple")
+{
+	// Loop through all files in list, building config fiels and running them...
+	//Set the taxon to nothing - oM defaults to first taxon it finds in localities file
+	;
+	for ( unsigned int myFileInt = 0; myFileInt < lstLocalitiesFiles->count(); myFileInt++ )
+	{
+		// Read the first taxon name from file
+		taxonNameQString= getTaxonFromLocFile(lstLocalitiesFiles->text( myFileInt ));
+		QListBoxItem *mySpeciesItem = lstLocalitiesFiles->item( myFileInt );
+		localitiesFileNameQString = lstLocalitiesFiles->text(myFileInt);
+		makeConfigFile();
+		parseAndRun(outputFileNameQString +"-" + taxonNameQString + ".cfg");
+		QString myOutputThumbnail = outputFileNameQString +"-" + taxonNameQString + ".png";
+		pixModelOutputImage->setPixmap(QPixmap (myOutputThumbnail));
+	}
+
+}
+else
+{
+	std::cout << "Erk - shouldn't be here!" << std::endl;
+}
+  
+
+QApplication::restoreOverrideCursor();
+//close the dialog
+done(1);
 
 }
 
@@ -1091,7 +1186,7 @@ void OpenModellerGui::pbnSelectLocalitiesFile_clicked()
   //select all taxa 
   lstTaxa->selectAll(true);
 
-} //end of pbnSelectLocalitiesFile_clicked
+}
 
 void OpenModellerGui::lstTaxa_selectionChanged()
 {
@@ -1103,6 +1198,110 @@ void OpenModellerGui::lstTaxa_selectionChanged()
   {
    setNextEnabled(currentPage(),true);
   }
+
+  lblTaxaCount->setText("("+QString::number(countSelectedSpecies())+")");
+}
+
+void OpenModellerGui::pbnAllSpecies_clicked()
+{
+   lstTaxa->clearSelection();
+   lstTaxa->invertSelection();
+}
+
+void OpenModellerGui::radMultipleFiles_toggled( bool theBool)
+{
+std::cout << "changing to multiple file view" << std::endl;
+if (lstLocalitiesFiles->count()<1)
+{
+	setNextEnabled(currentPage(),false);
+}
+else
+{
+	setNextEnabled(currentPage(),true);  
+}
+
+}
+
+
+void OpenModellerGui::radSingleFile_toggled( bool theBool)
+{
+std::cout << "changing to single file view" << std::endl;
+if (countSelectedSpecies()<1)
+{
+	setNextEnabled(currentPage(),false);
+}
+else
+{
+	setNextEnabled(currentPage(),true);
+}
+
+}
+
+
+void OpenModellerGui::pbnRemoveLocalitiesFiles_clicked()
+{
+  int myFileCount = lstLocalitiesFiles->count();
+
+  for ( unsigned int myInt = 0; myInt < myFileCount; myInt++ )
+  {
+    QListBoxItem *myItem = lstLocalitiesFiles->item( myInt );
+    // if the item is selected...
+    if ( myItem->isSelected() )
+    {
+      //remove the item if it is selected
+      lstLocalitiesFiles->removeItem(myInt);
+      myInt--;
+      myFileCount--;
+    }
+  }
+  //if user has removed last list entry, disable next button
+  if ( lstLocalitiesFiles->count()==0)
+  {
+    setNextEnabled(currentPage(),false);
+  }
+  lblFileCount->setText("("+QString::number(lstLocalitiesFiles->count())+")");
+
+  if (lstLocalitiesFiles->count() > 0) 
+  {
+    setNextEnabled(currentPage(),true);
+  }  
+  else 
+  {
+    setNextEnabled(currentPage(),false);
+  }
+}
+
+void OpenModellerGui::pbnSelectMultipleLocalitiesFiles_clicked()
+{
+  //Open file dialog box
+  QSettings settings;
+  QString myFileTypeQString;
+  QString myTextFileFilterString="Text File (*.txt)";
+  QStringList myFileNameQStringList = QFileDialog::getOpenFileNames(
+          myTextFileFilterString,  //filters to select
+          settings.readEntry("/openmodeller/localitiesFileDirectory"), //initial dir
+          this , //parent dialog
+          "open files dialog" , //QFileDialog qt object name
+          "Select localities text file(s)"  //caption
+          );  
+
+   // Iterate through QStringList and add to list box
+    QStringList list = myFileNameQStringList;
+    QStringList::Iterator it = list.begin();
+    while( it != list.end() ) 
+    {
+       lstLocalitiesFiles->insertItem(*it);
+       ++it;
+    }
+
+//show how many files you have
+lblFileCount->setText("("+QString::number(lstLocalitiesFiles->count())+")");
+
+if (lstLocalitiesFiles->count()>0)
+{
+    setNextEnabled(currentPage(),true);
+}
+
 }
 
 int OpenModellerGui::countSelectedSpecies()
@@ -1178,6 +1377,48 @@ void OpenModellerGui::getProjList()
       cboCoordinateSystem->insertItem(myIterator.key());
     }
   }   
+
+}
+
+QString OpenModellerGui::getTaxonFromLocFile(QString theFileNameQString)
+{
+  // Code snarffled from setSpeciesList...
+  //first build a regex to match text at the beginning of the line
+  QRegExp myQRegExp( "^[^#][ a-zA-Z]*" ); //seconf caret means 'not'
+  QStringList myTaxonQStringList;;
+  QFile myQFile( theFileNameQString );
+  if ( myQFile.open( IO_ReadOnly ) ) 
+  {
+    //clear the existing entries in the taxon combo first
+    lstTaxa->clear();     
+    //now we parse the loc file, checking each line for its taxon
+    QTextStream myQTextStream( &myQFile );
+    QString myCurrentLineQString;
+    while ( !myQTextStream.atEnd() ) 
+    {
+      myCurrentLineQString = myQTextStream.readLine(); // line of text excluding '\n'
+      myQRegExp.search(myCurrentLineQString);
+      QStringList myMatchesQStringList = myQRegExp.capturedTexts();
+      QStringList::Iterator myIterator = myMatchesQStringList.begin();
+      QString myTaxonQString=*myIterator;
+      myTaxonQString=myTaxonQString.stripWhiteSpace();
+      if (myTaxonQString != "")
+      {
+        //make sure there are only single spaces separating words.
+        myTaxonQString=myTaxonQString.replace( QRegExp(" {2,}"), " " );
+        myTaxonQStringList.append(myTaxonQString);
+      }
+    }
+    myQFile.close();
+
+   return myTaxonQStringList[0];
+  }
+  else
+  {
+    QMessageBox::warning( this,QString("openModeller Wizard Error"),QString("The localities file is not readable. Check you have the neccessary file permissions and try again."));      
+    return "";
+  }   
+
 
 }
 

@@ -156,3 +156,50 @@ void OpenModellerGuiBase::lstTaxa_selectionChanged()
 {
 
 }
+
+
+void OpenModellerGuiBase::pbnAllSpecies_clicked()
+{
+
+}
+
+
+void OpenModellerGuiBase::pbnRemoveLocalitiesFiles_clicked()
+{
+
+}
+
+
+
+
+
+void OpenModellerGuiBase::pbnSelectMultipleLocalitiesFiles_clicked()
+{
+
+}
+
+
+void OpenModellerGuiBase::lstTaxa_selectionChanged( QListBoxItem * )
+{
+
+}
+
+
+void OpenModellerGuiBase::lstTaxa_rightButtonClicked( QListBoxItem *, const QPoint & )
+{
+
+}
+
+
+
+
+void OpenModellerGuiBase::radMultipleFiles_toggled( bool )
+{
+
+}
+
+
+void OpenModellerGuiBase::radSingleFile_toggled( bool )
+{
+
+}

@@ -61,6 +61,7 @@ public:
   void formSelected(const QString &thePageNameQString);
   void leLocalitiesFileName_textChanged( const QString &theFileNameQString );
   void setSpeciesList(QString theFileNameQSting);
+  QString getTaxonFromLocFile(QString theFileNameQString);
   void pbnSelectOutputDirectory_clicked();
   void pbnRemoveLayerFile_clicked();
   void pbnSelectLayerFile_clicked();
@@ -82,8 +83,13 @@ public:
   void pbnOtherInputMask_clicked();
   void pbnOtherOutputMask_clicked();
   void pbnOtherOutputFormat_clicked();
+  void pbnAllSpecies_clicked();
+  void pbnRemoveLocalitiesFiles_clicked();
+  void pbnSelectMultipleLocalitiesFiles_clicked();
   void lstTaxa_selectionChanged();
-    
+  void radMultipleFiles_toggled( bool theBool);
+  void radSingleFile_toggled( bool theBool);
+
 private:
     OpenModeller * mOpenModeller;
     QString modelNameQString;
