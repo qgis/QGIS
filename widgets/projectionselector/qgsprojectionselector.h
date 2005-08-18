@@ -28,7 +28,7 @@ class QgsProjectionSelector: public QgsProjectionSelectorBase
 {
 Q_OBJECT
 public:
-    QgsProjectionSelector( QWidget* parent , const char* name ,WFlags fl =0  );
+    QgsProjectionSelector(QWidget* parent, const char* name = 0, Qt::WFlags fl=0);
     ~QgsProjectionSelector();
   //! Populate the proj tree view with  user defined projection names...
   void getUserProjList();

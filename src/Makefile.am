@@ -26,8 +26,16 @@ WIDGETPATH=../widgets
 %.moc.uic.cpp: %.uic.h
 	$(MOC) -o $@ $<
 
+if HAVE_QT3
 %.uic.h: %.ui 
 	$(UIC) -o $@ $<
+endif
+
+if HAVE_QT4
+%.uic.h: %.ui 
+	$(UIC) -o $@ $<
+	../tools/qgis-qt3to4.pl -uic $@
+endif
 
 if !NO_UIC_IMPLEMENTATIONS
 %.uic.cpp: %.ui
