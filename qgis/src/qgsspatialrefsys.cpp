@@ -1095,15 +1095,18 @@ bool QgsSpatialRefSys::equals(const char *theProj4CharArray)
   OGRErr myInputResult1 = myOgrSpatialRef1.importFromProj4(  myCharArrayPointer1 );
   OGRErr myInputResult2 = myOgrSpatialRef2.importFromProj4(  theProj4CharArray );
 
-  if (myOgrSpatialRef1.IsGeographic())
+  if (myOgrSpatialRef1.IsGeographic() && myOgrSpatialRef2.IsGeographic())
   {
-    qWarning("QgsSpatialRefSys::operator== srs1 is geographic ");
+    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are geographic ");
     myMatchFlag = myOgrSpatialRef1.IsSameGeogCS(&myOgrSpatialRef2);
   }
-  else
+  else if (myOgrSpatialRef1.IsProjected() && myOgrSpatialRef2.IsProjected())
   {
-    qWarning("QgsSpatialRefSys::operator== srs1 is not geographic ");
+    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are projected ");
     myMatchFlag = myOgrSpatialRef1.IsSame(&myOgrSpatialRef2);
+  } else {
+    qWarning("QgsSpatialRefSys::operator== srs1 and srs2 are different types ");
+    myMatchFlag = false;
   }
 
   //find out the units:
