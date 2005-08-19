@@ -13,6 +13,8 @@
  ***************************************************************************/
 #include "openmodellergui.h"
 #include "layerselector.h"
+#include "omggdal.h"
+
 //qt includes
 #include <qlineedit.h>
 #include <qstring.h>
@@ -792,6 +794,11 @@ void OpenModellerGui::parseAndRun(QString theParametersFileNameQString)
     // and a smaller version for this report
     QString mySmallImage = createResizedImage(outputFileNameQString + "-" + taxonNameQString);
     txtbLogs->append("<img src=\""+mySmallImage+"\">");
+
+    //Create ascii grid file
+    QString myAsciiFilename = OmgGdal::Gdal2Ascii(outputFileNameQString + "-" + taxonNameQString+".tif");
+    txtbLogs->append( "Converted output to ESRII ASCII grid file\n" );
+
     // Confusion matrix
     std::cout << "Map creation complete - calculating confusion matrix" << std::endl;
     ConfusionMatrix * matrix = mOpenModeller->getConfusionMatrix();

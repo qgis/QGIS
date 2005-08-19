@@ -10,7 +10,7 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>581</height>
+            <height>566</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -1904,7 +1904,7 @@ If you would like to specify any special parameters for the algorithm you have s
 
 &lt;p&gt;This page allows you to specify the stem of the output file names and where they should be saved.&lt;/p&gt;
 
-&lt;p&gt;A total of six files are written by openModeller:
+&lt;p&gt;A total of seven files are written by openModeller:
 &lt;ul&gt;
 &lt;li&gt;&lt;i&gt;filenameprefix-mytaxon.cfg&lt;/i&gt;
 &lt;br&gt;Parameters file containing all the information required to run a model&lt;/li&gt;
@@ -1918,6 +1918,8 @@ If you would like to specify any special parameters for the algorithm you have s
 &lt;br&gt;Thumbnail image of output&lt;/li&gt;
 &lt;li&gt;&lt;i&gt;filenameprefix-mytaxon.xml&lt;/i&gt;
 &lt;br&gt;Serialised model definition in XML&lt;/li&gt;
+&lt;li&gt;&lt;i&gt;filenameprefix-mytaxon.asc&lt;/i&gt;
+&lt;br&gt;ESRI ASCII grid file of model output&lt;/li&gt;
 &lt;/ul&gt;
 
 where &lt;i&gt;filenameprefix&lt;/i&gt; is specified below and &lt;i&gt;mytaxon&lt;/i&gt; is read from your input localities file(s). &lt;/p&gt;</string>
