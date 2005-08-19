@@ -16,25 +16,30 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
-#include <qstring.h>
+
 #include "qgsprovidermetadata.h"
 
-QgsProviderMetadata::QgsProviderMetadata(QString _key, QString _description, QString _library):key_(_key), description_(_description),
-library_(_library)
-{
-}
 
-QString QgsProviderMetadata::key()
+
+QgsProviderMetadata::QgsProviderMetadata(QString const & _key, 
+                                         QString const & _description, 
+                                         QString const & _library)
+    : key_(_key), 
+      description_(_description), 
+      library_(_library)
+{}
+
+QString const & QgsProviderMetadata::key() const
 {
   return key_;
 }
 
-QString QgsProviderMetadata::description()
+QString const & QgsProviderMetadata::description() const
 {
   return description_;
 }
 
-QString QgsProviderMetadata::library()
+QString const & QgsProviderMetadata::library() const
 {
   return library_;
 }

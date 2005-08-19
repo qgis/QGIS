@@ -19,18 +19,58 @@
  
 #ifndef QGSPROVIDERMETADATA_H
 #define QGSPROVIDERMETADATA_H
-#include <map>
+
+
+#include <qstring.h>
+
+
+/** holds data provider key, description, and associated shared library file information
+
+   The metadata class is used in a lazy load implementation in
+   QgsProviderRegistry.  To save memory, data providers are only actually
+   loaded via QLibrary calls if they're to be used.  (Though they're all
+   iteratively loaded once to get their metadata information, and then
+   unloaded when the QgsProviderRegistry is created.)  QgsProviderMetadata
+   supplies enough information to be able to later load the associated shared
+   library object.
+
+ */
 class QgsProviderMetadata
 {
 public:
- QgsProviderMetadata(QString _key, QString _description, QString _library);
- QString key();
- QString description();
- QString library();
+
+    QgsProviderMetadata(QString const & _key, QString const & _description, QString const & _library);
+
+    /** this returns the unique key associated with the provider
+
+        This key string is used for the associative container in QgsProviderRegistry
+    */
+    QString const & key() const;
+
+    /** this returns descriptive text for the provider
+
+        This is used to provide a descriptive list of available data providers.
+    */
+    QString const & description() const;
+
+    /** this returns the library file name
+
+        This is used to QLibrary calls to load the data provider.
+    */
+    QString const & library() const;
+
 private:
- QString key_;
- QString description_;
- QString library_;
-};
+    
+    /// unique key for data provider
+    QString key_;
+
+    /// associated terse description
+    QString description_;
+
+    /// file path
+    QString library_;
+
+}; // class QgsProviderMetadata
+
 #endif //QGSPROVIDERMETADATA_H
 
