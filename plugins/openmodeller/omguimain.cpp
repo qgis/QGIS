@@ -26,7 +26,6 @@
 OmGuiMain::OmGuiMain()
   : OmGuiMainBase()
 {
-  mReport = new OmGuiReportBase(this);
   //set up a scrollviewdesigner
   QGridLayout *myLayout = new QGridLayout(frameImage,1,1);
   QScrollView *myScrollView = new QScrollView(frameImage);
@@ -175,7 +174,5 @@ void OmGuiMain::modelDone(QString theText)
   // clean up the loggin stuff
   g_log.setCallback( 0 );
   // remove the GUI
-  mReport->txtbLog->setText(theText);
-  mReport->show();
-  //std::cout << theText << std::endl;
+  txtbLog->setText(theText);
 }

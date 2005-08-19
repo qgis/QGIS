@@ -16,10 +16,8 @@
 #include <qstring.h>
 
 #ifdef WIN32
-  #include "omguireportbase.h"
   #include <omguimainbase.h>
 #else
-  #include "omguireportbase.uic.h"
   #include <omguimainbase.uic.h>
 #endif
 
@@ -43,7 +41,6 @@ class OmGuiMain :public OmGuiMainBase
 
     private:
       QLabel * mPictureWidget;
-      OmGuiReportBase *  mReport;
 };
 
 #endif

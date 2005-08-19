@@ -471,6 +471,22 @@ void OpenModellerGui::formSelected(const QString &thePageNameQString)
     }
 
 
+    //Check whether to enable next button if user has been jumping around between pages
+   if (radSingleFile->isOn())
+   {
+	if (countSelectedSpecies()>0)
+	{
+		setNextEnabled(currentPage(),true);
+	}
+   }
+   else 
+   {
+	if (lstLocalitiesFiles->count()>0)
+	{
+		setNextEnabled(currentPage(),true);
+	}
+   }
+
   }
 
 
