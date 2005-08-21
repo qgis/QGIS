@@ -35,9 +35,9 @@ QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(QListViewItem * theItem, QStrin
 QgsLegendSymbologyGroup::~QgsLegendSymbologyGroup()
 {}
 
-bool QgsLegendSymbologyGroup::accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)
+QgsLegendItem::DRAG_ACTION QgsLegendSymbologyGroup::accept(LEGEND_ITEM_TYPE type)
 {
-    return false;
+    return NO_ACTION;
 }
 /** Overloads cmpare function of QListViewItem
   * @note The symbology group must always be the second in the list

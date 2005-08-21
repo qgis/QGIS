@@ -47,22 +47,14 @@ bool QgsLegendLayer::isLeafNode()
   return false;
 }
 
-bool QgsLegendLayer::accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)
+QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(LEGEND_ITEM_TYPE type)
 {
-    if ( dt == QgsLegendItem::INSERT)
+    if ( type == LEGEND_LAYER)
     {
-	return false;
+	return REORDER;
     }
-    else if ( dt == QgsLegendItem::REORDER)
+    else
     {
-	if ( type == LEGEND_LAYER)
-	{
-	    return true;
-	}
-	else
-	{
-	    return false;
-	}
+	return NO_ACTION;
     }
-    return false;
 }
