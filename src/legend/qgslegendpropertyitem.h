@@ -36,7 +36,7 @@ public:
   ~QgsLegendPropertyItem();
 
   bool isLeafNode() {return mLeafNodeFlag;}
-  bool accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type);
+  DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
 };
 
 #endif

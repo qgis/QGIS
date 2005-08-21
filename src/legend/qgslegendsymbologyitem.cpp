@@ -29,9 +29,9 @@ QgsLegendSymbologyItem::~QgsLegendSymbologyItem()
 {
 }
 
-bool QgsLegendSymbologyItem::accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)
+QgsLegendItem::DRAG_ACTION QgsLegendSymbologyItem::accept(LEGEND_ITEM_TYPE type)
 {
-  return false;
+  return NO_ACTION;
 }
 
 

@@ -25,32 +25,12 @@ QgsLegendLayerFileGroup::QgsLegendLayerFileGroup(QListViewItem* theItem, QString
     mType = LEGEND_LAYER_FILE_GROUP;
 }
 
-bool QgsLegendLayerFileGroup::accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)
+QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept(LEGEND_ITEM_TYPE type)
 {
-#ifdef QGISDEBUG
-    qWarning("in QgsLegendLayerFileGroup::accept");
-#endif
-    if ( dt == QgsLegendItem::INSERT)
+    if ( type == LEGEND_LAYER_FILE )
     {
-#ifdef QGISDEBUG
-	qWarning("QgsLegendLayerFileGroup: insert");
-#endif
-	if ( type == LEGEND_LAYER_FILE )
-	{
-#ifdef QGISDEBUG
-	    qWarning("QgsLegendLayerFileGroup: accept QgsLegendLayerFile");
-#endif
-	    return true; //there should be a way to already test, if the layers are symbology compatible
-	}
+	    return INSERT; //there should be a way to already test, if the layers are symbology compatible
     }
-    else if ( dt == QgsLegendItem::REORDER)
-    {
-#ifdef QGISDEBUG
-	qWarning("reorder, returning false");
-#endif
-	return false;
-    }
-    return false;
 }
 
 bool QgsLegendLayerFileGroup::insert(QgsLegendItem* theItem)

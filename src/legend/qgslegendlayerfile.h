@@ -34,7 +34,7 @@ public:
     QgsLegendLayerFile(QListViewItem * theLegendItem, QString theString, QgsMapLayer* theLayer);
     ~QgsLegendLayerFile();
     bool isLeafNode() {return true;}
-    bool accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type);
+    DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
     QgsMapLayer* layer(){return mLayer;}
     /**Opens the layer properties dialog*/
     void handleDoubleClickEvent();

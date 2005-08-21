@@ -35,8 +35,8 @@ QgsLegendPropertyGroup::~QgsLegendPropertyGroup()
 
 }
 
-bool QgsLegendPropertyGroup::accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)
+QgsLegendItem::DRAG_ACTION QgsLegendPropertyGroup::accept(LEGEND_ITEM_TYPE type)
 {
-    return false;
+    return NO_ACTION;
 }
 

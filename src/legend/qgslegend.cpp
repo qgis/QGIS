@@ -49,7 +49,7 @@ const int AUTOSCROLL_MARGIN = 16;
    set mItemBeingMoved pointer to 0 to prevent SuSE 9.0 crash
 */
 QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
-    : QListView(parent, name), mApp(app), mMouseDragType(QgsLegendItem::NO_DRAG), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0)
+    : QListView(parent, name), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0)
 {
   connect( this, SIGNAL(selectionChanged(QListViewItem *)),
            this, SLOT(updateLegendItem(QListViewItem *)) );
@@ -138,26 +138,7 @@ void QgsLegend::contentsMousePressEvent(QMouseEvent * e)
   {
     QPoint p(contentsToViewport(e->pos()));
     QListViewItem *i = itemAt(p);
-    if (i)
-    {
-      QgsLegendItem::LEGEND_ITEM_TYPE myTpe =
-        dynamic_cast<QgsLegendItem*>(i)->type();
-      std::cout << myTpe << std::endl;
-      mLastPressPos = e->pos();
-      
-      if( e->button() == Qt::LeftButton )
-      {
-	  mMouseDragType = QgsLegendItem::REORDER;
-      }
-      else if( e->button() == Qt::MidButton )
-      {
-	  mMouseDragType = QgsLegendItem::INSERT;
-      }
-      else
-      {
-	  mMouseDragType = QgsLegendItem::NO_DRAG;
-      }
-    }
+    mLastPressPos = e->pos();
     mMousePressedFlag = true;
   }
   QListView::contentsMousePressEvent(e);
@@ -200,34 +181,31 @@ void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
 	}
 
 
-    // change the cursor appropriate to if drop is allowed
-    QListViewItem *item = itemAt(p);
-    QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>(mItemBeingMoved);
-    QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>(item);
+	// change the cursor appropriate to if drop is allowed
+	QListViewItem *item = itemAt(p);
+	QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>(mItemBeingMoved);
+	QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>(item);
 
-    if (item && (item != mItemBeingMoved))
-    {
+	if (item && (item != mItemBeingMoved))
+	{
 
-      if(dest->accept(mMouseDragType, origin->type()))
-      {
-        std::cout << "accept" << std::endl << std::flush;
-
-        setCursor( QCursor(Qt::PointingHandCursor) );
-      }
-      //else if((origin->type() == dest->type()) && (origin->type() == QgsLegendItem::LEGEND_LAYER || origin->type() == QgsLegendItem::LEGEND_GROUP))
-      //{
-      //std::cout << "switch" << std::endl << std::flush;
-
-      //setCursor( QCursor(Qt::PointingHandCursor) );
-      //}
-      else
-      {
-        std::cout << "rejeict" << std::endl << std::flush;
-        setCursor( QCursor(Qt::ForbiddenCursor) );
-      }
+	    QgsLegendItem::DRAG_ACTION action = dest->accept(origin->type());
+	    if(action == QgsLegendItem::REORDER)
+	    {
+		setCursor( QCursor(Qt::SizeVerCursor) );
+	    }
+	    else if(action == QgsLegendItem::INSERT)
+	    {
+		setCursor( QCursor(Qt::PointingHandCursor) );
+	    }
+	    else
+	    {
+		setCursor( QCursor(Qt::ForbiddenCursor) );
+	    }
+	}     
     }
-  }
 }
+
 
 void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
 {
@@ -242,50 +220,47 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
       QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>(mItemBeingMoved);
       QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>(destItem);
 
+      QgsLegendItem::DRAG_ACTION daction= dest->accept(origin->type());
+
       if (dest && origin && (origin != dest))
       {
-	  if( mMouseDragType == QgsLegendItem::INSERT )
+	  if( daction == QgsLegendItem::INSERT )
 	  {
-	      if(dest->accept(mMouseDragType, origin->type()))
-	      {
-		  dest->insert(origin);
-		  placeCheckBoxes();
-	      }
+	      dest->insert(origin);
+	      placeCheckBoxes();
 	  }
-	  else if( mMouseDragType == QgsLegendItem::REORDER)
+	  else if( daction == QgsLegendItem::REORDER)
 	  {
-	      if(dest->accept(mMouseDragType, origin->type()))
+	      //find out, if mouse is over the top or the bottom of the item
+	      QRect rect = itemRect(dest);
+	      int height = rect.height();
+	      int top = rect.top();
+	      int mid = top + (height / 2);
+	      if (e->y() < mid) //bottom
 	      {
-		  //find out, if mouse is over the top or the bottom of the item
-		  QRect rect = itemRect(dest);
-		  int height = rect.height();
-		  int top = rect.top();
-		  int mid = top + (height / 2);
-		  if (e->y() < mid) //bottom
+		  if (mItemBeingMoved->nextSibling() != destItem)
 		  {
-		      if (mItemBeingMoved->nextSibling() != destItem)
+		      if(origin->parent() != dest->parent())
 		      {
-			  if(origin->parent() != dest->parent())
-			  {
-			      dest->parent()->insertItem(origin);
-			      mItemBeingMoved->moveItem(destItem);
-			      destItem->moveItem(mItemBeingMoved);
-			  }
-			  else
-			  {
-			      destItem->moveItem(mItemBeingMoved);
-			  }
+			  dest->parent()->insertItem(origin);
+			  mItemBeingMoved->moveItem(destItem);
+			  destItem->moveItem(mItemBeingMoved);
+		      }
+		      else
+		      {
+			  destItem->moveItem(mItemBeingMoved);
 		      }
 		  }
-		  else //top
-		  {
-		     if (mItemBeingMoved != destItem->nextSibling())
-		     {
-			 mItemBeingMoved->moveItem(destItem);
-		     } 
-		  }
-		  placeCheckBoxes();
 	      }
+	      else //top
+	      {
+		  if (mItemBeingMoved != destItem->nextSibling())
+		  {
+		      mItemBeingMoved->moveItem(destItem);
+		  } 
+	      }
+	      updateContents();
+	      placeCheckBoxes();
 	  }
 	
 	  /*if(dest->accept(mMousePressedFlag, origin->type()) && (origin->parent() != dest->parent()))
@@ -347,11 +322,8 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
 	emit zOrderChanged(this);
       }
   }
-
-  mMouseDragType = QgsLegendItem::NO_DRAG;
   mMousePressedFlag = false;
   mItemBeingMoved = NULL;
-
 }
 
 void QgsLegend::distributeDoubleClickEvent(QListViewItem* item)
@@ -487,7 +459,7 @@ void QgsLegend::placeCheckBox(QListViewItem* litem, QCheckBox* cbox)
 	int yoffset = viewport()->geometry().top();
 	int headersheight = header()->height();
 	int ypos = itempos.top()+5+yoffset;
-#ifdef QGISDEBUG
+# ifdef QGISDEBUG
 	qWarning("yoffset: "+QString::number(yoffset));
 	qWarning("headersheight: "+QString::number(headersheight));
 	qWarning("ypos: "+QString::number(ypos));
