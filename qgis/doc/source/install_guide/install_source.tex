@@ -8,6 +8,13 @@ environment.
 Installing on Windows and Mac OS X is a simple process as described
 below.
 
+You don't have to build all the QGIS dependencies from source. If your
+platform provides packages at an acceptable version for the needed
+dependencies, you can install them prior to building QGIS. Make sure you
+also install the "development" package (if separate from the main package)
+for each dependency. QGIS needs the header files from these packages in
+order to build. 
+
 The latest version of this document can always be found at
 \url{http://qgis.org/docs/install.html}.
 %\textsc{NOTE - All of the required packages for SuSE 9.1 are available at
@@ -17,7 +24,7 @@ Installing the Windows version of QGIS is simply a matter of running the
 user friendly setup wizard. See the README.WIN32 file for additional
 information regarding the Windows version of QGIS. At version 0.7, the GRASS
 plugin is not available in Windows. Work on including the plugin in the next
-version of QGIS is underway.
+version of QGIS is under way.
 
 
 \subsection{Installing Mac OS X Version}
@@ -262,7 +269,9 @@ Note - SQLite 3.x is included on Mac OS X 10.4.
   \begin{verbatim}
     ./configure --with-grass=<full path to grass install>
   \end{verbatim}
-  Depending on the GDAL version you are building, it may be necessary to specify --without-ogdi when running configure if you don't have the OGDI libary avaiable on your system.
+  Depending on the GDAL version you are building, it may be necessary to
+  specify --without-ogdi when running configure if you don't have the OGDI
+  library available on your system.
 
   \item Build and install GDAL:
   \begin{verbatim}
