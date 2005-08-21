@@ -1,18 +1,33 @@
-
+% vim:textwidth=76:autoindent
 \section{Introduction}\label{label_introduction}
-This document briefly describes how to build QGIS 0.7 (\textit{`Seamus'}) from the source distribution. These instructions are for Linux/Unix and other POSIX systems which have the required build environment.
+The majority of this document is devoted to describing how to build QGIS 0.7
+(\textit{`Seamus'}) from the source distribution. These instructions are for
+Linux/Unix and other POSIX systems which have the required build
+environment.
 
-The latest version of this document can always be found at \url{http://qgis.org/docs/install.html}.
-%\textsc{NOTE - All of the required packages for SuSE 9.1 are available at }\url{ftp://ftp.lingis.org}
+Installing on Windows and Mac OS X is a simple process as described
+below.
+
+The latest version of this document can always be found at
+\url{http://qgis.org/docs/install.html}.
+%\textsc{NOTE - All of the required packages for SuSE 9.1 are available at
+%}\url{ftp://ftp.lingis.org}
 \subsection{Installing Windows Version}
-Installing the Windows version of QGIS is simply a matter of running the user friendly setup wizard. See the README.WIN32 file for additional information regarding the Windows version of QGIS. At version 0.7, the GRASS plugin is not available in Windows.
+Installing the Windows version of QGIS is simply a matter of running the
+user friendly setup wizard. See the README.WIN32 file for additional
+information regarding the Windows version of QGIS. At version 0.7, the GRASS
+plugin is not available in Windows. Work on including the plugin in the next
+version of QGIS is underway.
 
-\textbf{NOTE - At 0.7pre1, there is no Windows version available.}
 
 \subsection{Installing Mac OS X Version}
 To install the compressed disk image containing the OSX version of QGIS,
-double-click to expand and mount the image, then drag QGIS application to your
-hard drive. If you want to build from source on Mac OS X, see \url{http://wiki.qgis.org/qgiswiki/BuildingOnMacOsX}.
+double-click to expand and mount the image, then drag QGIS application to
+your hard drive. If you want to build from source on Mac OS X, see
+\url{http://wiki.qgis.org/qgiswiki/BuildingOnMacOsX}. Installing the
+compressed disk image is the easiest method and gives you the full
+functionality of QGIS and all plugins, including GRASS. See the README file
+included on the disk image for additional instructions.
 
 %This document does not contain instructions for building the GRASS plugins. Information on building the GRASS plugin with raster and vector support can be found in the \textit{Building QGIS with GRASS Support} document, available at \url{http://community.qgis.org/grass_plugin}. 
 
@@ -29,13 +44,16 @@ QGIS can be installed with three levels of support for data stores:
 \item GRASS raster and vector support
 \end{enumerate} 
 
-Basic support uses the GDAL/OGR libraries and supports many raster and vector formats. For more information on the available formats, see \url{http://www.remotesensing.org:16080/gdal/formats\_list.html} and \url{http://www.remotesensing.org:16080/gdal/ogr/ogr\_formats.html}.
+Basic support uses the GDAL/OGR libraries and supports many raster and
+vector formats. For more information on the available formats, see
+\url{http://gdal.maptools.org/formats_list.html} and
+\url{http://gdal.maptools.org/ogr/ogr_formats.html}.
 
 PostgreSQL/PostGIS support allows you to store spatial data in a PostgreSQL database. GRASS support provides access to GRASS mapsets. 
 
-\textbf{Note:} - If you plan to build QGIS with GRASS support, version 1.2.3 or higher of GDAL must be used. 
+\textbf{Note:} - If you plan to build QGIS with GRASS support, version 1.2.6 or higher of GDAL must be used. 
   
-Each of the requirements are discussed below. Note that the information given below is abstracted from the installation documentation for each of the libraries. See the install information for each library to get detailed instructions. In the documentation below, the file names and versions used are examples.
+Each of the requirements is discussed below. Note that the information given below is abstracted from the installation documentation for each of the libraries. See the install information for each library to get detailed instructions. In the documentation below, the file names and versions used are examples.
 
 
 If you are building QGIS without PostgreSQL or GRASS support, skip to the section on Installing GDAL/OGR. 
@@ -47,19 +65,21 @@ the \textit{Download} section on \url{http://qgis.org} for the latest informatio
 
 Packages for most of the software/libraries discussed below can be found for almost all Linux distributions. While it is possible to mix compiling from source and installing packages to meet the requirements for QGIS, sometimes this becomes tricky. Following the steps below will generally ensure a successful installation. If you are using SuSE 9.1, the LinGIS distribution \url{ftp://ftp.lingis.org} is a good choice for installing QGIS and its dependencies.
 
+For information on installing dependencies and building QGIS on FreeBSD, see
+\textit{Building QGIS on FreeBSD} on \url{http://community.qgis.org}.
 
   \section{PostgreSQL}
-  QGIS uses the latest features of PostgreSQL. For this reason, version 7.4.x or higher is recommended with QGIS version 0.5. If you choose to add PostgreSQL, you must also install PostGIS and the GEOS library (see below). 
+  QGIS uses the latest features of PostgreSQL. For this reason, version 8.0.x or higher is recommended with QGIS version 0.7. If you choose to add PostgreSQL, you must also install PostGIS (see below). 
   \begin{enumerate}
   \item Download PostgreSQL source from www.postgresql.org 
   \item Extract the source 
   \begin{verbatim}
-  tar -xzf postgresql-7.4.1.tar.gz
+  tar -xzf postgresql-8.0.1.tar.gz
   \end{verbatim}
 
   \item Change to the source directory 
   \begin{verbatim}
-  cd postgresql-7.4.1
+  cd postgresql-8.0.1
   \end{verbatim}
 
   \item Configure PostgreSQL:
@@ -129,7 +149,7 @@ Packages for most of the software/libraries discussed below can be found for alm
   select version();
   version
   -------------------------------------------------------------------------------------
-  PostgreSQL 7.4.1 on i686-pc-linux-gnu, compiled by GCC gcc (GCC) 3.3.1 (SuSE Linux)
+  PostgreSQL 8.0.1 on i686-pc-linux-gnu, compiled by GCC gcc (GCC) 3.3.1 (SuSE Linux)
 (1 row)
 
   \q
@@ -173,20 +193,20 @@ Packages for most of the software/libraries discussed below can be found for alm
   \begin{enumerate}
   \item Download PostGIS source from \url{http://postgis.refractions.net} 
 
-  \item Untar PostGIS into the contrib subdirectory of the postgresql build directory. The contrib subdirectory is located in the directory created in step 3 of the PostgreSQL installation process.
+  \item Untar PostGIS into the contrib subdirectory of the PostgreSQL build directory. The contrib subdirectory is located in the directory created in step 3 of the PostgreSQL installation process.
   \item Change to the postgis subdirectory
   \item Edit the Makefile to enable GEOS support (see the note above)
 \item PostGIS provides a manual in the doc/html subdirectory that explains the build process (see the Installation section)
   \item The quick and dirty steps to install PostGIS are:
   \begin{verbatim}
    cd contrib
-   gunzip postgis-0.8.0.tar.gz 
-   tar xvf postgis-0.8.0.tar 
-   cd postgis-0.8.0 
+   gunzip postgis-1.0.2.tar.gz 
+   tar xvf postgis-1.0.2.tar 
+   cd postgis-1.0.2 
    make 
    make install 
    createlang plpgsql yourtestdatabase 
-   psql -d yourtestdatabase -f postgis.sql 
+   psql -d yourtestdatabase -f lwpostgis.sql 
    psql -d yourtestdatabase -f spatial_ref_sys.sql 
   \end{verbatim}
   \end{enumerate}
@@ -219,7 +239,10 @@ Note - SQLite 3.x is included on Mac OS X 10.4.
   
   To install GDAL/OGR from source:
   \begin{enumerate}
-  \item Download the GDAL distribution from \url{http://www.remotesensing.org/gdal}. You should use version 1.1.9 or higher. Versions prior to 1.1.9 contained a bug that caused problems when a null feature was encountered. If you want to build vector support for GRASS, you must use GDAL 1.2.3.
+  \item Download the GDAL distribution from
+  \url{http://www.remotesensing.org/gdal}. You should use the latest
+  version of GDAL if possible. The minimum recommended version for use
+  with QGIS is 1.2.6. 
 
   \item Untar the distribution 
   \begin{verbatim}
@@ -269,7 +292,7 @@ Note - SQLite 3.x is included on Mac OS X 10.4.
   If you've had problems during the installation, refer to this manual, where the whole process is described with some more detail: \url{http://www.remotesensing.org/gdal/gdal\_building.html} 
 
   \section{Qt}
-  Qt 3.1.2 or higher is required in order to compile QGIS. You may already have Qt on your system. If so, check to see if you have version 3.1.2 or later. You can check the Qt version using the find command:
+  Qt 3.2.1 or higher is required in order to compile QGIS. You may already have Qt on your system. If so, check to see if you have version 3.2.1 or later. You can check the Qt version using the find command:
   \begin{verbatim}
   find ./ -name qglobal.h 2>/dev/null | xargs grep QT_VERSION_STR
   \end{verbatim}
@@ -297,6 +320,8 @@ Note - SQLite 3.x is included on Mac OS X 10.4.
 
   \item Complete the installation per the instructions provided in the Qt documentation (see step 3)
   \end{enumerate}
+NOTE - QGIS will not compile under Qt 4.0.x. The best choice for compiling
+QGIS is Qt 3.3.x.
 
  \section{Building QGIS}
   
@@ -375,7 +400,7 @@ This assumes that GRASS is installed in the default location. Change the path to
     make
     make install
   \end{verbatim}
-NOTE - As of version 0.1, you can no longer run QGIS from the src directory. You must do a make install and start QGIS from the installed location. In the case of the example above, the QGIS binary resides in the bin subdirectory of the directory specified with the prefix option (/usr/local/qgis/bin).
+NOTE - You must do a \textit{make install} and start QGIS from the installed location. In the case of the example above, the QGIS binary resides in the bin subdirectory of the directory specified with the prefix option (/usr/local/qgis/bin).
 
 For information on using QGIS see the QGIS User Guide.
 
