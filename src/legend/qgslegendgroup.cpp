@@ -43,29 +43,19 @@ bool QgsLegendGroup::isLeafNode()
   return mLeafNodeFlag;
 }
 
-bool QgsLegendGroup::accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)
+QgsLegendItem::DRAG_ACTION QgsLegendGroup::accept(LEGEND_ITEM_TYPE type)
 {
-    if( dt == QgsLegendItem::REORDER)
+    if ( type == LEGEND_GROUP )
     {
-	if ( type == LEGEND_GROUP )
-	{
-	    return true;
-	}
-	else
-	{
-	    return false;
-	}
+	return REORDER;
     }
-    else if( dt == QgsLegendItem::INSERT)
+    if( type == LEGEND_LAYER )
     {
-	if( type == LEGEND_LAYER )
-	{
-	    return true;
-	}
-	else
-	{
-	    return false;
-	}
+	return INSERT;
+    }
+    else
+    {
+	return NO_ACTION;
     }
 }
 

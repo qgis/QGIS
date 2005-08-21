@@ -55,17 +55,20 @@ public:
      LEGEND_LAYER_FILE
    } ;
 
-   enum DRAG_TYPE
+   /**Describes the action that will be done if the mouse button will be released after a drag*/
+   enum DRAG_ACTION
        {
 	   REORDER, //change order of items (drag with left mouse button)
 	   INSERT, //insert an item into another one (drag with middle mouse button)
-	   NO_DRAG //move without mouse button pressed
+	   NO_ACTION //move without mouse button pressed
        };
 
     virtual bool isLeafNode()=0;
     virtual const LEGEND_ITEM_TYPE type(){return mType;}
     virtual void addItem(QgsLegendItem*){}
-    virtual bool accept(DRAG_TYPE dt, LEGEND_ITEM_TYPE type)=0;
+    /**Returns the type of action that will be done if a drag, originating at a certain
+     item type, will be released at this item*/
+    virtual DRAG_ACTION accept(LEGEND_ITEM_TYPE type)=0;
     /**Specifies the items reaction to a double click*/
     virtual void handleDoubleClickEvent(){}
     virtual void handleRightClickEvent(const QPoint& position) {}

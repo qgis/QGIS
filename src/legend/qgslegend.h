@@ -206,14 +206,6 @@ private:
    */
   QPoint mLastPressPos;
 
-  /*!
-   * Describes the type of drag action. NO_DRAG means the mouse button was not pressed,
-   * INSERT means there is a drag with the middle mouse button pressed and REORDER describes
-   * a drag with the left mouse button pressed
-   */
-  //bool mMousePressedFlag;
-  QgsLegendItem::DRAG_TYPE mMouseDragType;
-
   /**True if the mouse is pressed*/
   bool mMousePressedFlag;
 
