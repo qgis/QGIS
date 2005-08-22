@@ -17,7 +17,9 @@ QgsHelpViewer::~QgsHelpViewer()
 }
 void QgsHelpViewer::setContext(const QString &contextId)
 {
+#ifndef WIN32
   setWindowState(windowState() & ~WindowMinimized);
+#endif
   raise();
   setActiveWindow();
   loadContext(contextId);
@@ -35,6 +37,8 @@ void QgsHelpViewer::loadContext(const QString &contextId)
 #ifdef Q_OS_MACX
       // remove bin/qgis_help.app/Contents/MacOS to get to share/qgis
       qApp->applicationDirPath() + "/../../../../share/qgis" +
+#elif WIN32
+      qApp->applicationDirPath() + "/share/qgis"
 #else
       QString(PKGDATAPATH) +
 #endif
