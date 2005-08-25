@@ -17,14 +17,21 @@
  ***************************************************************************/
  /* $Id$ */
 
+#include "qgsproviderregistry.h"
+
 #include <iostream>
+
+using namespace std;
+
 #include <qmessagebox.h>
 #include <qstring.h>
 #include <qdir.h>
 #include <qlibrary.h>
 #include <qapplication.h>
+
+#include "qgsdataprovider.h"
 #include "qgsprovidermetadata.h"
-#include "qgsproviderregistry.h"
+
 // typedefs for provider plugin functions of interest
 typedef QString providerkey_t();
 typedef QString description_t();
@@ -59,7 +66,7 @@ QString libDir = baseDir + "/lib"; */
   QDir pluginDir(libDir, "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
 #endif
 #ifdef QGISDEBUG
-  std::cerr << "Checking " << libDir << " for provider plugins" << std::endl;
+  cerr << "Checking " << libDir << " for provider plugins" << endl;
 #endif
   if (pluginDir.count() == 0)
     {
@@ -77,7 +84,7 @@ QString libDir = baseDir + "/lib"; */
           if (loaded)
             {
 #ifdef QGISDEBUG		    
-              std::cout << "Checking  " << myLib->library() << std::endl;
+              cout << "Checking  " << myLib->library() << endl;
 #endif
               // get the description and the key for the provider plugin
 
@@ -97,13 +104,13 @@ QString libDir = baseDir + "/lib"; */
                           // add this provider to the provider map
                           provider[pKey()] = new QgsProviderMetadata(pKey(), pDesc(), myLib->library());
 #ifdef QGISDEBUG
-                          std::cout << "Loaded " << pDesc() << std::endl;
+                          cout << "Loaded " << pDesc() << endl;
 #endif
                       } else
                         {
-                          std::cout << myLib->
+                          cout << myLib->
                             library() << " Unable to find one of the required provider functions:\n\tproviderKey() or description()" <<
-                            std::endl;
+                            endl;
                         }
                     }
                 }
@@ -112,62 +119,93 @@ QString libDir = baseDir + "/lib"; */
         }
     }
 }
-QString QgsProviderRegistry::library(QString providerKey)
+
+
+
+/** convenience function for finding any existing data providers that match "providerKey"
+
+  Necessary because [] map operator will create a QgsProviderMetadata
+  instance.  Also you cannot use the map [] operator in const members for that
+  very reason.  So there needs to be a convenient way to find a data provider
+  without accidentally adding a null meta data item to the metadata map.
+*/
+static
+QgsProviderMetadata * findMetadata_( std::map<QString,QgsProviderMetadata*> const & metaData,
+                                     QString const & providerKey )
 {
-  QString retval;
-  QgsProviderMetadata *md = provider[providerKey];
-  if (md)
+    std::map<QString,QgsProviderMetadata*>::const_iterator i = 
+        metaData.find( providerKey );
+
+    if ( i != metaData.end() )
     {
-      retval = md->library();
+        return i->second;
     }
-  return retval;
+
+    return 0x0;
+} // findMetadata_
+
+
+QString QgsProviderRegistry::library(QString const & providerKey) const
+{
+    QgsProviderMetadata * md = findMetadata_( provider, providerKey );
+
+    if (md)
+    {
+        return md->library();
+    }
+
+    return QString();
 }
 
-QString QgsProviderRegistry::pluginList(bool asHTML)
+
+QString QgsProviderRegistry::pluginList(bool asHTML) const
 {
-  std::map < QString, QgsProviderMetadata * >::iterator it = provider.begin();
+  map < QString, QgsProviderMetadata * >::const_iterator it = provider.begin();
   QString list;
-  if (provider.size() == 0)
-    {
+
+  if ( provider.empty() )
+  {
       list = QObject::tr("No data provider plugins are available. No vector layers can be loaded");
-  } else
-    {
+  } 
+  else
+  {
       if (asHTML)
-        {
+      {
           list += "<ol>";
-        }
+      }
       while (it != provider.end())
-        {
+      {
           QgsProviderMetadata *mp = (*it).second;
           if (asHTML)
-            {
+          {
               list += "<li>" + mp->description() + "<br>";
           } else
-            {
+          {
               list += mp->description() + "\n";
-            }
+          }
           it++;
-        }
+      }
       if (asHTML)
-        {
+      {
           list += "</ol>";
-        }
-    }
+      }
+  }
+
   return list;
 }
 
-void QgsProviderRegistry::setLibDirectory(QString path)
+void QgsProviderRegistry::setLibDirectory(QString const & path)
 {
   libDir = path;
 }
 
-QString QgsProviderRegistry::libDirectory()
+QString const & QgsProviderRegistry::libDirectory() const
 {
   return libDir;
 }
 
 // typedef for the QgsDataProvider class factory
-typedef QgsDataProvider * create_it(const char * uri);
+typedef QgsDataProvider * classFactoryFunction_t( const QString * );
  
 
 
@@ -184,6 +222,11 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
 
+#ifdef QGISDEBUG
+    const char * providerStr = providerKey.ascii(); // debugger probe
+    const char * dataSourceStr = dataSource.ascii(); // ditto
+#endif
+
   // load the plugin
   QString lib = library(providerKey);
 
@@ -195,12 +238,12 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
   void *handle = dlopen(cOgrLib, RTLD_LAZY | RTLD_GLOBAL);
   if (!handle)
   {
-    std::cout << "Error in dlopen: " << dlerror() << std::endl;
+    cout << "Error in dlopen: " << dlerror() << endl;
 
   }
   else
   {
-    std::cout << "dlopen suceeded" << std::endl;
+    cout << "dlopen suceeded" << endl;
     dlclose(handle);
   }
 
@@ -209,32 +252,36 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
   // load the data provider
   QLibrary* myLib = new QLibrary((const char *) lib);
 #ifdef QGISDEBUG
-  std::cout << "QgsProviderRegistry::getRasterProvider: Library name is " << myLib->library() << std::endl;
+  cout << "QgsProviderRegistry::getProvider: Library name is " << myLib->library() << endl;
 #endif
   bool loaded = myLib->load();
 
   if (loaded)
   {
 #ifdef QGISDEBUG
-    std::cout << "QgsProviderRegistry::getProvider: Loaded data provider library" << std::endl;
-    std::cout << "QgsProviderRegistry::getProvider: Attempting to resolve the classFactory function" << std::endl;
+    cout << "QgsProviderRegistry::getProvider: Loaded data provider library" << endl;
+    cout << "QgsProviderRegistry::getProvider: Attempting to resolve the classFactory function" << endl;
 #endif
-    create_it * classFactory = (create_it *) myLib->resolve("classFactory");
+    classFactoryFunction_t * classFactory = (classFactoryFunction_t *) myLib->resolve("classFactory");
 
     if (classFactory)
     {
 #ifdef QGISDEBUG
-      std::cout << "QgsProviderRegistry::getProvider: Getting pointer to a dataProvider object from the library\n";
+      cout << "QgsProviderRegistry::getProvider: Getting pointer to a dataProvider object from the library\n";
 #endif
       //XXX - This was a dynamic cast but that kills the Windows
       //      version big-time with an abnormal termination error
-      QgsDataProvider* dataProvider = (QgsDataProvider*)
-                                      (classFactory((const char*)(dataSource.utf8())));
+//       QgsDataProvider* dataProvider = (QgsDataProvider*)
+//                                       (classFactory((const char*)(dataSource.utf8())));
+
+      QgsDataProvider * dataProvider = (*classFactory)(&dataSource);
 
       if (dataProvider)
       {
 #ifdef QGISDEBUG
-        std::cout << "QgsProviderRegistry::getProvider: Instantiated the data provider plugin\n";
+        cout << "QgsProviderRegistry::getProvider: Instantiated the data provider plugin\n";
+        cout << "provider name: " << dataProvider->name() << "\n";
+        cout << "provider description: " << dataProvider->description() << "\n";
 #endif
         if (dataProvider->isValid())
         {
@@ -244,7 +291,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
       else
       {
 #ifdef QGISDEBUG
-        std::cout << "QgsProviderRegistry::getProvider: Unable to instantiate the data provider plugin\n";
+        cout << "QgsProviderRegistry::getProvider: Unable to instantiate the data provider plugin\n";
 #endif
         return 0;
       }
@@ -252,15 +299,14 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
   }
   else
   {
-    return 0;
 #ifdef QGISDEBUG
-    std::cout << "QgsProviderRegistry::getProvider: Failed to load " << "../providers/libproviders.so" << "\n";
+    cout << "QgsProviderRegistry::getProvider: Failed to load " << "../providers/libproviders.so" << "\n";
 #endif
-
+    return 0;
   }
   
 #ifdef QGISDEBUG
-    std::cout << "QgsProviderRegistry::getProvider: exiting." << "\n";
+    cout << "QgsProviderRegistry::getProvider: exiting." << "\n";
 #endif
 
   
