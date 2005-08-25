@@ -2308,79 +2308,32 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   // XXX How often will that scenario occur?
 
   providerKey = provider;     // XXX is this necessary?  Usually already set
-  // XXX when execution gets here.
+                              // XXX when execution gets here.
 
-  // load the plugin
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QString ogrlib = pReg->library(provider);
+  //XXX - This was a dynamic cast but that kills the Windows
+  //      version big-time with an abnormal termination error
+  dataProvider = 
+    (QgsVectorDataProvider*)(QgsProviderRegistry::instance()->getProvider(provider,dataSource));
 
-  //QString ogrlib = libDir + "/libpostgresprovider.so";
-
-  const char *cOgrLib = (const char *) ogrlib;
-
-#ifdef TESTPROVIDERLIB
-  // test code to help debug provider loading problems
-  //  void *handle = dlopen(cOgrLib, RTLD_LAZY);
-  void *handle = dlopen(cOgrLib, RTLD_LAZY | RTLD_GLOBAL);
-  if (!handle)
+  if (dataProvider)
   {
-    std::cout << "Error in dlopen: " << dlerror() << std::endl;
-
-  }
-  else
-  {
-    std::cout << "dlopen suceeded" << std::endl;
-    dlclose(handle);
-  }
-
-#endif
-
-  // load the data provider
-  myLib = new QLibrary((const char *) ogrlib);
-#ifdef QGISDEBUG
-  std::cout << "Library name is " << myLib->library() << std::endl;
-#endif
-  bool loaded = myLib->load();
-
-  if (loaded)
-  {
-#ifdef QGISDEBUG
-    std::cout << "Loaded data provider library" << std::endl;
-    std::cout << "Attempting to resolve the classFactory function" << std::endl;
-#endif
-    create_it * classFactory = (create_it *) myLib->resolve("classFactory");
-
-    valid = false;              // assume the layer is invalid until we
-                                // determine otherwise
-    if (classFactory)
-    {
-#ifdef QGISDEBUG
-      std::cout << "Getting pointer to a dataProvider object from the library\n";
-#endif
-      //XXX - This was a dynamic cast but that kills the Windows
-      //      version big-time with an abnormal termination error
-      dataProvider = (QgsVectorDataProvider*)(classFactory(&dataSource));
-
-      if (dataProvider)
+      QgsDebug( "Instantiated the data provider plugin" );
+    
+      if (dataProvider->isValid())
       {
-#ifdef QGISDEBUG
-        std::cout << "Instantiated the data provider plugin\n";
-#endif
-        if (dataProvider->isValid())
-        {
           valid = true;
-          
+    
           // TODO: Check if the provider has the capability to send fullExtentCalculated
           connect(dataProvider, SIGNAL( fullExtentCalculated() ), 
                   this,           SLOT( updateExtents() ) 
-                 );
+              );
 
           // Connect the repaintRequested chain from the data provider to this map layer
           // in the hope that the map canvas will notice       
           connect(dataProvider, SIGNAL( repaintRequested() ), 
                   this,           SLOT( triggerRepaint() ) 
-                 );
-          
+              );
+    
           // get the extent
           QgsRect *mbr = dataProvider->extent();
 
@@ -2405,13 +2358,13 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
           if (providerKey == "postgres")
           {
 #ifdef QGISDEBUG
-            std::cout << "Beautifying layer name " << layerName << std::endl;
+              std::cout << "Beautifying layer name " << layerName << std::endl;
 #endif
-            // adjust the display name for postgres layers
-            layerName = layerName.mid(layerName.find(".") + 1);
-            layerName = layerName.left(layerName.find("(") - 1);   // Take one away, to avoid a trailing space
+              // adjust the display name for postgres layers
+              layerName = layerName.mid(layerName.find(".") + 1);
+              layerName = layerName.left(layerName.find("(") - 1);   // Take one away, to avoid a trailing space
 #ifdef QGISDEBUG
-            std::cout << "Beautified name is " << layerName << std::endl;
+              std::cout << "Beautified name is " << layerName << std::endl;
 #endif
 
           }
@@ -2422,37 +2375,19 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
           // label
           mLabel = new QgsLabel ( dataProvider->fields() );
           mLabelOn = false;
-        }
-        else
-        {
-#ifdef QGISDEBUG
-            qDebug( "%s:%d invalid provider plugin %s", 
-                    __FILE__, __LINE__, dataSource.ascii() );
-            return false;
-#endif
-        }
       }
       else
       {
 #ifdef QGISDEBUG
-        qDebug( "%s:%d Unable to instantiate the data provider plugin %s", 
-                __FILE__, __LINE__, dataSource.ascii() );
+          qDebug( "%s:%d invalid provider plugin %s", 
+                  __FILE__, __LINE__, dataSource.ascii() );
+          return false;
 #endif
-        valid = false;
-
-        return false;
       }
-    }
   }
   else
   {
-    valid = false;
-#ifdef QGISDEBUG
-    std::cout << "Failed to load " << "../providers/libproviders.so" << "\n";
-#endif
-
-    return false;
-
+      QgsDebug( " unable to get data provider" );
   }
 
   return true;
