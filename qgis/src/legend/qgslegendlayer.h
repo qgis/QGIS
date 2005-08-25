@@ -20,10 +20,12 @@
 #ifndef QGSLEGENDLAYER_H
 #define QGSLEGENDLAYER_H
 
+#include <qobject.h>
 #include <qgslegenditem.h>
 
 class QgsLegendLayer;
 class QgsLegendPropertyGroup;
+class QgsMapLayer;
 class QListView;
 
 /**
@@ -31,16 +33,20 @@ Container for layer, including layer file(s), symbology class breaks and propert
 
 @author Tim Sutton
 */
-class QgsLegendLayer : public QgsLegendItem
+class QgsLegendLayer : public QgsLegendItem, public QObject //for signal/ slot
 {
 public:
     QgsLegendLayer(QListViewItem * ,QString);
     QgsLegendLayer(QListView * ,QString);
     ~QgsLegendLayer();
-
     bool isLeafNode();
     QgsLegendItem::DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
-
+    void handleRightClickEvent(const QPoint& position);
+    /**Returns the map layer associated with the first QgsLegendLayerFile or 0 if
+     there is no QgsLegendLayerFile*/
+    QgsMapLayer* firstMapLayer();
+    /**Returns the map layers associated with the QgsLegendLayerFiles*/
+    std::list<QgsMapLayer*> mapLayers();
 };
 
 #endif
