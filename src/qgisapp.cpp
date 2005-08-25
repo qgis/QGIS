@@ -88,6 +88,7 @@ using namespace std;
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
 #include "qgslegend.h"
+#include "qgslegendlayer.h"
 #include "qgslegendlayerfile.h"
 #include "qgsproject.h"
 #include "qgsmapserverexport.h"
@@ -2923,6 +2924,7 @@ void QgisApp::attributeTable()
     if (li)
     {
 	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
+	QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(li);
 	if(llf)
 	{
 	    QgsMapLayer *layer = llf->layer();
@@ -2930,6 +2932,14 @@ void QgisApp::attributeTable()
 	    {
 		layer->table();
 
+	    }
+	}
+	else if(ll) //if the current item is a legendlayer, take the first legend layer file
+	{
+	    QgsMapLayer* layer = ll->firstMapLayer();
+	    if(layer)
+	    {
+		layer->table();
 	    }
 	}
     }

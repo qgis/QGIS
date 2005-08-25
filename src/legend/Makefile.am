@@ -19,7 +19,7 @@ noinst_LTLIBRARIES = libqgis_legend.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-qgis_MOC = qgslegend.moc.cpp
+qgis_MOC = 	qgslegend.moc.cpp
 
 libqgis_legend_la_SOURCES =	qgslegendgroup.cpp \
 				qgslegend.cpp \

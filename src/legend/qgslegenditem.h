@@ -35,8 +35,6 @@ This is an abstract base class that all qgis legen items inerit from
 */
 class QgsLegendItem : public QListViewItem
 {
-
-
 public:
     QgsLegendItem(QListViewItem*, QString);
     QgsLegendItem (QListView *,QString);
@@ -69,9 +67,6 @@ public:
     /**Returns the type of action that will be done if a drag, originating at a certain
      item type, will be released at this item*/
     virtual DRAG_ACTION accept(LEGEND_ITEM_TYPE type)=0;
-    /**Specifies the items reaction to a double click*/
-    virtual void handleDoubleClickEvent(){}
-    virtual void handleRightClickEvent(const QPoint& position) {}
     /**Subclasses which allow insertion of other items may implement this method. Returns true in case 
      of success and false if theItem cannot be inserted*/
     virtual bool insert(QgsLegendItem* theItem) {return false;}
