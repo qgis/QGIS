@@ -36,10 +36,6 @@ public:
     bool isLeafNode() {return true;}
     DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
     QgsMapLayer* layer(){return mLayer;}
-    /**Opens the layer properties dialog*/
-    void handleDoubleClickEvent();
-    /**Shows the right click menu of mLayer*/
-    void handleRightClickEvent(const QPoint& position);
     /**Returns the pixmap containing the file symbol.
      This method is used by QgsMapLayer to paint additional
     information (overview, editable, pyramides) to the pixmap*/

@@ -56,46 +56,6 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFile::accept(LEGEND_ITEM_TYPE type)
   return NO_ACTION;
 }
 
-void QgsLegendLayerFile::handleDoubleClickEvent()
-{
-#ifdef QGISDEBUG
-    qWarning("In QgsLegendLayerFile::handleDoubleClickEvent");
-#endif
-    if (mLayer->type() == QgsMapLayer::RASTER)
-    {
-        QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties(mLayer);
-        // The signals to change the raster layer properties will only be emitted
-        // when the user clicks ok or apply
-        if (rlp->exec())
-        {
-            //this code will be called it the user selects ok
-            //mMapCanvas->setDirty(true);
-            //mMapCanvas->refresh();
-            //mMapCanvas->render();
-            // mMapLegend->update(); XXX WHY CALL UPDATE HERE?
-            delete rlp;
-            qApp->processEvents();
-        }
-    }
-    else //vector
-    {
-        mLayer->showLayerProperties();
-    }
-}
-
-void QgsLegendLayerFile::handleRightClickEvent(const QPoint& position)
-{
-#ifdef QGISDEBUG
-    qWarning("In QgsLegendLayerFile::handleRightClickEvent");
-#endif
-    //if (!mMapCanvas->isDrawing()&&lvi) //todo: test if QgsMapCanvas::isDrawing
-    QPopupMenu *mPopupMenu = mLayer->contextMenu();
-    if (mPopupMenu)
-    {
-	mPopupMenu->exec(position);
-    }
-}
-
 QPixmap QgsLegendLayerFile::getOriginalPixmap() const
 {
     QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/file.png"));

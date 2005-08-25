@@ -37,6 +37,8 @@
 #include "qgslegendlayerfile.h"
 #include "qgslegendlayerfilegroup.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsrasterlayerproperties.h"
 #include <iostream>
 
 static const char *const ident_ = "$Id$";
@@ -55,10 +57,10 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
            this, SLOT(updateLegendItem(QListViewItem *)) );
 
   connect( this, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
-	   this, SLOT(distributeRightClickEvent(QListViewItem*, const QPoint&)));
+	   this, SLOT(handleRightClickEvent(QListViewItem*, const QPoint&)));
 
   connect( this, SIGNAL(doubleClicked(QListViewItem *, const QPoint &, int)),
-	   this, SLOT(distributeDoubleClickEvent(QListViewItem*)));
+	   this, SLOT(handleDoubleClickEvent(QListViewItem*)));
 
   connect( this, SIGNAL(expanded(QListViewItem*)), this, SLOT(placeCheckBoxes()));
   connect( this, SIGNAL(collapsed(QListViewItem*)), this, SLOT(placeCheckBoxes()));
@@ -326,23 +328,68 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
   mItemBeingMoved = NULL;
 }
 
-void QgsLegend::distributeDoubleClickEvent(QListViewItem* item)
+void QgsLegend::handleDoubleClickEvent(QListViewItem* item)
 {
     QgsLegendItem* li = dynamic_cast<QgsLegendItem*>(item);
     if(li)
     {
-	li->handleDoubleClickEvent();
+	if(li->type() == QgsLegendItem::LEGEND_LAYER_FILE)
+	{
+	    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
+	    if(llf)
+	    {
+		QgsMapLayer* ml = llf->layer();
+		if (ml && ml->type() == QgsMapLayer::RASTER)
+		{
+		    QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties(ml);
+		    if (rlp->exec())
+		    {
+			delete rlp;
+			qApp->processEvents();
+		    }
+		}
+		else if(ml) //vector
+		{
+		    ml->showLayerProperties();
+		}
+	    } 
+	}
     }
 }
 
-void QgsLegend::distributeRightClickEvent(QListViewItem* item, const QPoint& position)
+void QgsLegend::handleRightClickEvent(QListViewItem* item, const QPoint& position)
 {
     if(!mMapCanvas->isDrawing())
     {
 	QgsLegendItem* li = dynamic_cast<QgsLegendItem*>(item);
 	if(li)
 	{
-	    li->handleRightClickEvent(position);
+	    if(li->type() == QgsLegendItem::LEGEND_LAYER_FILE)
+	    {
+		QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
+		if(llf)
+		{
+		   QgsMapLayer* ml = llf->layer();
+		   if(ml)
+		   {
+		       QPopupMenu *mPopupMenu = ml->contextMenu();
+		       if (mPopupMenu)
+		       {
+			   mPopupMenu->exec(position);
+		       }
+		   }
+		}
+	    }
+	    else if(li->type() == QgsLegendItem::LEGEND_LAYER)
+	    {
+		//todo: show a right click menu with remove, toggle in overview and layer properties
+		//connect to the private slots legendLayerRemove(), legendLayerToggleInOverview(), legendLayerShowProperties()
+		QPopupMenu pm;
+		pm.insertItem(tr("&ToggleInOverview"), this, SLOT(legendLayerToggleInOverview()));
+		pm.insertItem(tr("&Remove"), this, SLOT(legendLayerRemove()));
+		pm.insertItem(tr("&Properties"), this, SLOT(legendLayerShowProperties()));
+		pm.exec(position);
+	    }
 	}
     }
 }
@@ -380,9 +427,9 @@ void QgsLegend::showContextMenu(QListViewItem * lvi, const QPoint & pt)
 
 void QgsLegend::addLayer( QgsMapLayer * layer )
 {
-    QgsLegendGroup * lgroup = new QgsLegendGroup(this,QString("Layer Group"));
-    lgroup->setRenameEnabled(0, true);
-    QgsLegendLayer * llayer = new QgsLegendLayer(lgroup,QString(layer->name()));
+    //QgsLegendGroup * lgroup = new QgsLegendGroup(this,QString("Layer Group"));
+    //lgroup->setRenameEnabled(0, true);
+    QgsLegendLayer * llayer = new QgsLegendLayer(/*lgroup*/this,QString(layer->name()));
     llayer->setRenameEnabled(0, true);
     QgsLegendPropertyGroup * lpgroup = new QgsLegendPropertyGroup(llayer,QString("Properties"));
     QgsLegendSymbologyGroup * lsgroup = new QgsLegendSymbologyGroup(llayer,QString("Symbology"));
@@ -404,11 +451,13 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
     layer->setLegendLayerFile(llfile);
     layer->initContextMenu(mApp);
 
-    lgroup->setOpen(true);
+    /*lgroup->setOpen(true);*/
     llayer->setOpen(false);
     lpgroup->setOpen(false);
     lsgroup->setOpen(false); 
     llfgroup->setOpen(false);
+    updateContents();
+    placeCheckBoxes();
 }
 
 QgsMapLayer* QgsLegend::currentLayer()
@@ -472,7 +521,7 @@ void QgsLegend::placeCheckBox(QListViewItem* litem, QCheckBox* cbox)
 	}
 	else
 	{
-	    cbox->setGeometry(3*treeStepSize()-14, ypos, 14, 14);
+	    cbox->setGeometry(/*3*/2*treeStepSize()-14, ypos, 14, 14);
 	    cbox->show();
 	}
     }
@@ -480,4 +529,57 @@ void QgsLegend::placeCheckBox(QListViewItem* litem, QCheckBox* cbox)
     {
 	cbox->hide();
     }
+}
+
+void QgsLegend::legendLayerRemove()
+{
+    //remove all layers of the current legendLayer
+   QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(currentItem());
+   if(!ll)
+   {
+       return;
+   }
+   std::list<QgsMapLayer*> maplayers = ll->mapLayers();
+
+   for(std::list<QgsMapLayer*>::iterator it = maplayers.begin(); it!=maplayers.end(); ++it)
+   {
+       //remove the layer
+       QgsMapLayerRegistry::instance()->removeMapLayer((*it)->getLayerID());
+   }
+
+   if(maplayers.size()>0)
+   {
+       mMapCanvas->removeDigitizingLines();
+       mMapCanvas->clear();
+       mMapCanvas->render();
+   }
+   delete ll;
+   placeCheckBoxes();
+}
+
+void QgsLegend::legendLayerToggleInOverview()
+{
+#ifdef QGISDEBUG
+    qWarning("This message comes from within QgsLegend::legendLayerToggleInOverview()");
+#endif
+}
+
+void QgsLegend::legendLayerShowProperties()
+{
+   QgsLegendItem* citem=dynamic_cast<QgsLegendItem*>(currentItem());
+    if(!citem)
+    {
+	return;
+    }
+    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(citem);
+    if(!ll)
+    {
+	return;
+    }
+    QgsMapLayer* ml = ll->firstMapLayer(); 
+    if(!ml)
+    {
+	return;
+    }
+    ml->showLayerProperties();
 }

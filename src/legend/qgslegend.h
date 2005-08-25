@@ -176,12 +176,18 @@ protected:
   private slots:
 
   /**Calls 'handleDoubleClickEvent' on the item*/
-  void distributeDoubleClickEvent(QListViewItem* item);
+  void handleDoubleClickEvent(QListViewItem* item);
   /**Calls 'handleRightClickEvent' on the item*/
-  void distributeRightClickEvent(QListViewItem* item, const QPoint& position);
+  void handleRightClickEvent(QListViewItem* item, const QPoint& position);
   /**Moves all the checkboxes stored in mCheckBoxes to the right places. Needs to
    be called every time the geometry of the treeview is changed*/
   void placeCheckBoxes();
+  /**Removes legend layer files and the legend layer containing them*/
+  void legendLayerRemove();
+  /**Toggles all the legend layer files of a legend layer in overview*/
+  void legendLayerToggleInOverview();
+  /**Shows the property dialog of the first legend layer file in a legend layer*/
+  void legendLayerShowProperties();
 
 private:
 

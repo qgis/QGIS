@@ -18,25 +18,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "qgslegendlayer.h"
+#include "qgslegendlayerfile.h"
+#include "qgsmaplayer.h"
 #include <qlistview.h>
 #include <qpixmap.h>
+#include <qpopupmenu.h>
 #include <iostream>
 
 QgsLegendLayer::QgsLegendLayer(QListViewItem * parent,QString name)
-    : QgsLegendItem(parent, name)
+    : QObject(), QgsLegendItem(parent, name)
 {
-  mType=LEGEND_LAYER;
-  QPixmap myPixmap("/home/marco/sourcen/treeview/layer.png");
-  setPixmap(0,myPixmap);
+    mType=LEGEND_LAYER;
+    QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/layer.png"));
+    setPixmap(0,myPixmap);
 }
 
-QgsLegendLayer::QgsLegendLayer(QListView * parent,QString name)
-    : QgsLegendItem(parent, name)
+QgsLegendLayer::QgsLegendLayer(QListView* parent, QString name): QObject(), QgsLegendItem(parent, name)
 {
-  mType=LEGEND_LAYER;
-  QPixmap myPixmap("/home/marco/sourcen/treeview/layer.png");
-  setPixmap(0,myPixmap);
+    mType=LEGEND_LAYER;
+    QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/layer.png"));
+    setPixmap(0,myPixmap);
 }
+
 QgsLegendLayer::~QgsLegendLayer()
 {
   mType=LEGEND_LAYER;
@@ -57,4 +60,63 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(LEGEND_ITEM_TYPE type)
     {
 	return NO_ACTION;
     }
+}
+
+void QgsLegendLayer::handleRightClickEvent(const QPoint& position)
+{
+    /*QgsMapLayer* ml = firstMapLayer();
+    if(ml)
+    {
+	QPopupMenu *mPopupMenu = ml->contextMenu();
+	if (mPopupMenu)
+	{
+	    mPopupMenu->exec(position);
+	}
+	}*/
+}
+
+QgsMapLayer* QgsLegendLayer::firstMapLayer()
+{
+    QListViewItem* llfgroup = firstChild(); //the legend layer file group
+    if(!llfgroup)
+    {
+	return 0;
+    }
+    QListViewItem* llf = llfgroup->firstChild();
+    if(!llf)
+    {
+	return 0;
+    }
+    QgsLegendLayerFile* legendlayerfile = dynamic_cast<QgsLegendLayerFile*>(llf);
+    if (legendlayerfile)
+    {
+	return legendlayerfile->layer();
+    }
+    else
+    {
+	return 0;
+    }
+}
+
+std::list<QgsMapLayer*> QgsLegendLayer::mapLayers()
+{
+    std::list<QgsMapLayer*> list;
+    QListViewItem* llfgroup = firstChild(); //the legend layer file group
+    if(!llfgroup)
+    {
+	return list;
+    }
+    QListViewItem* llf = llfgroup->firstChild();
+    QgsLegendLayerFile* legendlayerfile = 0;
+    do
+    {
+	legendlayerfile = dynamic_cast<QgsLegendLayerFile*>(llf);
+	if(legendlayerfile)
+	{
+	    list.push_back(legendlayerfile->layer());
+	}
+    }
+    while(llf = llf->nextSibling());
+
+    return list;
 }
