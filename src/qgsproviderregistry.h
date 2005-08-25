@@ -22,30 +22,49 @@
 
 #include <map>
 
-#include "qgsdataprovider.h"
+#include <qstring.h>
 
+class QgsDataProvider;
 class QgsProviderMetadata;
-class QString;
 
+/** canonical manager of data providers
+
+  This is a Singleton class that manages data provider access.
+*/
 class QgsProviderRegistry
 {
 public:
- static QgsProviderRegistry* instance(const char *pluginPath=0);
- QString library(QString providerKey);
- QString pluginList(bool asHtml=false);
- QString libDirectory();
- void setLibDirectory(QString path);
- 
- QgsDataProvider* getProvider( QString const & providerKey, 
-                               QString const & dataSource );
 
-protected:
- QgsProviderRegistry(const char *pluginPath);
+    /** means of accessing canonical single instance
+     */
+    static QgsProviderRegistry* instance(const char *pluginPath = 0);
+
+    QString library(QString const & providerKey) const;
+
+    QString pluginList(bool asHtml = false) const;
+
+    QString const & libDirectory() const;
+
+    void setLibDirectory(QString const & path);
+ 
+    QgsDataProvider* getProvider( QString const & providerKey, 
+                                  QString const & dataSource );
+
 private:
- static QgsProviderRegistry* _instance;
- std::map<QString,QgsProviderMetadata*> provider;
- //! directory provider plugins are installed in
- QString libDir;
-};
+
+    /** ctor private since instance() creates it */
+    QgsProviderRegistry(const char *pluginPath);
+
+    /// pointer to canonical Singleton object
+    static QgsProviderRegistry* _instance;
+
+    /// associative container of provider metadata handles
+    std::map<QString,QgsProviderMetadata*> provider;
+
+    /// directory provider plugins are installed in
+    QString libDir;
+
+}; // class QgsProviderRegistry
+
 #endif //QGSPROVIDERREGISTRY_H
 
