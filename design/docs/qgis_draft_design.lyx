@@ -7205,4 +7205,183 @@ If the classFactory method is resolved successfully, QGIS calls the method,
 Once the plugin instance is created, the plugin can do any initialization
  required, including adding menus and toolbars to the using the QgisInterface
  pointer.
+\layout Subsection
+
+Data Providers
+\layout Standard
+
+Data providers are a special kind of plug-in.
+ qgis uses data providers to implement geospatial data I/O for specific
+ formats.
+ The notion is that support for additional geospatial formats can easily
+ added by merely creating a data provider plug-in that supports a given
+ format.
+ Moreover it should be possible to have multiple support for the same format;
+ that is, have more than one data provider available to load a given geospatial
+ data type.
+ Figure 
+\begin_inset LatexCommand \ref{cap:DataProvider}
+
+\end_inset 
+
+ depicts the data provider class hierarchy.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed true
+
+\layout Standard
+
+
+\begin_inset Graphics
+	filename dataprovider.eps
+	width 100col%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{cap:DataProvider}
+
+\end_inset 
+
+Data provider class hierarchy
+\end_inset 
+
+
+\layout Standard
+
+Note that currently there is no 
+\family typewriter 
+QgsRasterDataProvider
+\family default 
+ sub-hierarchy, though that will change in a subsequent design refactoring.
+ Currently 
+\family typewriter 
+QgsRasterLayer
+\family default 
+ manages its own data I/O directly through GDAL library calls.
+\layout Standard
+
+The data provider plug-ins use a different loading method than for the general
+ qgis plug-ins.
+ 
+\layout Standard
+
+All data provider plug-in information is managed by the 
+\family typewriter 
+QgsProviderRegistry
+\family default 
+ Singleton object.
+ When initially created it searches the plug-in path for all data provider
+ plug-ins.
+ It does this by visiting each dynamic object in the path (
+\family typewriter 
+.DLL
+\family default 
+ in Windows, and 
+\family typewriter 
+.so
+\family default 
+ in *nix environments); if the dynamic loader is able to resolve the symbol
+ 
+\family typewriter 
+isProvider
+\family default 
+, then the currently loaded dynamic object is indeed a data provider.
+ In that case, a 
+\family typewriter 
+QgsProviderMetadata
+\family default 
+ object is created which stores a provider name, description, and full file
+ name; this information is loaded from the dynamic object via calls to its
+ 
+\family typewriter 
+providerKey()
+\family default 
+, 
+\family typewriter 
+description()
+\family default 
+ and 
+\family typewriter 
+library()
+\family default 
+ functions, respectively.
+ The 
+\family typewriter 
+QgsProviderRegistry
+\family default 
+ Singleton keeps an internal associative container of these 
+\family typewriter 
+QgsProviderMetadata
+\family default 
+ objects keyed by the string returned from the providerKey() call.
+ The alternative to having these 
+\family typewriter 
+QgsProviderMetata
+\family default 
+ objects stored in this way would have been to load and keep 
+\emph on 
+all
+\emph default 
+ the data providers in memory during the application's lifetime regardless
+ if they would ultimately be used.
+ Instead of wastefully keeping all the data providers loaded, they are lazily
+ loaded only when needed via the mechanism that uses 
+\family typewriter 
+QgsProviderMetadata
+\family default 
+ objects.
+ When a specific data provider is needed, the following steps are performed:
+\layout Enumerate
+
+
+\family typewriter 
+QgsProviderRegistry::getProvider()
+\family default 
+ is invoked with a provider key
+\layout Enumerate
+
+The 
+\family typewriter 
+QgsProviderMetadata
+\family default 
+ matching that key is retrieved
+\layout Enumerate
+
+A 
+\family typewriter 
+QLibrary::load()
+\family default 
+ call is made with the associated file path found in the returned metadata
+ 
+\family typewriter 
+library()
+\family default 
+ call
+\layout Enumerate
+
+The plug-in's 
+\family typewriter 
+classFactory()
+\family default 
+ member is invoked with the data source name as its argument
+\layout Enumerate
+
+The created data provider returned from the 
+\family typewriter 
+classFactory()
+\family default 
+ invocation is then returned to the caller
+\layout Standard
+
+The data provider is owned by its associated layer, which is then responsible
+ for its destrction.
+ (This will likely change in a subsequent refactoring to address the problem
+ of a data source having more than one layer.)
 \the_end

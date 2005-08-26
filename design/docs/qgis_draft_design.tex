@@ -4,7 +4,6 @@
 \usepackage[T1]{fontenc}
 \usepackage[latin1]{inputenc}
 \usepackage{geometry}
-\usepackage{ae,aecompl}
 \geometry{verbose,letterpaper,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in,headheight=0.2in,headsep=0.25in,footskip=0.5in}
 \usepackage{array}
 \usepackage{graphicx}
@@ -1829,7 +1828,7 @@ is saved on exit and restored on startup.
 \caption{\label{cap:Sample-QGIS-Main}Sample QGIS Main Window Layout}
 \smallskip{}
 
-\includegraphics{./qgismain}
+\includegraphics{./qgismain.png}
 \end{figure}
 
 
@@ -1853,7 +1852,7 @@ a conceptual model of QGIS with regard to plugins.%
 \caption{\label{cap:Conceptual-Diagram-of}Conceptual Diagram of Plugin Architecture}
 \smallskip{}
 
-\includegraphics{./plugin}
+\includegraphics{./plugin.png}
 \end{figure}
 
 
@@ -1876,6 +1875,72 @@ it.
 method, passing a pointer to the one and only instance of QgisInterface.
 \item Once the plugin instance is created, the plugin can do any initialization
 required, including adding menus and toolbars to the using the QgisInterface
-pointer.\end{enumerate}
+pointer.
+\end{enumerate}
 
+\subsection{Data Providers}
+
+Data providers are a special kind of plug-in. qgis uses data providers
+to implement geospatial data I/O for specific formats. The notion
+is that support for additional geospatial formats can easily added
+by merely creating a data provider plug-in that supports agiven format.
+Moreover it should be possible to have multiple support for the same
+format; that is, have more than one data provider available to load
+a given geospatial data type. Figure \ref{cap:DataProvider} depicts
+the data provider class hierarchy.
+
+%
+\begin{figure}
+\includegraphics[%
+  width=1.0\columnwidth]{dataprovider.eps}
+
+
+\caption{\label{cap:DataProvider}Data provider class hierarchy}
+\end{figure}
+
+
+Note that currently there is no \texttt{QgsRasterDataProvider} sub-hierarchy,
+though that will change in a subsequent design refactoring. Currently
+\texttt{QgsRasterLayer} manages its own data I/O directly through
+GDAL library calls.
+
+The data provider plug-ins use a different loading method than for
+the general qgis plug-ins. 
+
+All data provider plug-in information is managed by the \texttt{QgsProviderRegistry}
+Singleton object. When initially created it searches the plug-in path
+for all data provider plug-ins. It does this by visiting each dynamic
+object in the path (\texttt{.DLL} in Windows, and \texttt{.so} in
+{*}nix environments); if the dynamic loader is able to resolve the
+symbol \texttt{isProvider}, then the currently loaded dynamic object
+is indeed a data provider. In that case, a \texttt{QgsProviderMetadata}
+object is created which stores a provider name, description, and full
+file name; this information is loaded from the dynamic object via
+calls to its \texttt{providerKey()}, \texttt{description()} and \texttt{library()}
+functions, respectively. The \texttt{QgsProviderRegistry} Singleton
+keeps an internal associative container of these \texttt{QgsProviderMetadata}
+objects keyed by the string returned from the providerKey() call.
+The alternative to having these \texttt{QgsProviderMetata} objects
+stored in this way would have been to load and keep \emph{all} the
+data providers in memory during the application's lifetime regardless
+if they would ultimately be used. Instead of wastefully keeping all
+the data providers loaded, they are lazily loaded only when needed
+via the mechanism that uses \texttt{QgsProviderMetadata} objects.
+When a specific data provider is needed, the following steps are performed:
+
+\begin{enumerate}
+\item \texttt{QgsProviderRegistry::getProvider()} is invoked with a provider
+key
+\item The \texttt{QgsProviderMetadata} matching that key is retrieved
+\item A \texttt{QLibrary::load()} call is made with the associated file
+path found in the returned metadata \texttt{library()} call
+\item The plug-in's \texttt{classFactory()} member is invoked with the data
+source name as its argument
+\item The created data provider returned from the \texttt{classFactory()}
+invocation is then returned to the caller
+\end{enumerate}
+The data provider is owned by its associated layer, which is then
+responsible for its destrction. (This will likely change in a subsequent
+refactoring to address the problem of a data source having more than
+one layer.)
 \end{document}
