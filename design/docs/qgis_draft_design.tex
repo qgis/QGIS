@@ -6,6 +6,7 @@
 \usepackage{geometry}
 \geometry{verbose,letterpaper,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in,headheight=0.2in,headsep=0.25in,footskip=0.5in}
 \usepackage{array}
+\usepackage{varioref}
 \usepackage{graphicx}
 
 \makeatletter
@@ -68,8 +69,9 @@ that represent a real-world entity. The terms feature and object are
 often used synonymously.
 \item [GIS:]Geographic Information System. A software system that provides
 the ability to view and analyze spatial data and its attributes.
-\item [Layer:]A dataset that has a spatial context and can be drawn on
-a map canvas. Layers may have associated attributes. 
+\item [\label{des:Layer:-A-dataset}Layer:]A dataset that has a spatial
+context and can be drawn on a map canvas. Layers may have associated
+attributes. 
 \item [Plugin:]A compiled library that can be dynamically loaded into an
 application to provide new functionality.
 \item [Projection:]A method of representing the earth's three-dimensional
@@ -325,7 +327,7 @@ In the sections that follow, the use cases are presented in no particular
 order.
 
 
-\subsubsection{Load Data }
+\subsubsection{\label{sub:Load-Data}Load Data }
 
 \begin{tabular}{p{2in}p{3in}}
 \smallskip{}
@@ -1843,7 +1845,7 @@ With a flexible plugin architecture, QGIS can be easily extended to
 support additional features and capabilities. 
 
 
-\subsection{Class Diagram}
+\subsubsection{Class Diagram}
 
 The class diagram in Figure \ref{cap:Conceptual-Diagram-of} provides
 a conceptual model of QGIS with regard to plugins.%
@@ -1857,7 +1859,7 @@ a conceptual model of QGIS with regard to plugins.%
 
 
 
-\subsection{Load Sequence}
+\subsubsection{Plugin Load Sequence}
 
 The main application class uses QLibrary to load and resolve plugin
 functions. In order for a plugin to be recognized, it must implement
@@ -1878,12 +1880,17 @@ required, including adding menus and toolbars to the using the QgisInterface
 pointer.
 \end{enumerate}
 
-\subsection{Data Providers}
+\subsection{\label{sub:Data-Providers}Data Providers}
 
+\begin{comment}
+Data providers are a kind of plugin, but they're very different. So,
+I put this in a separate section. However, it's still plugin-like.
+So should it be rolled into the previous subsection?
+\end{comment}
 Data providers are a special kind of plug-in. qgis uses data providers
 to implement geospatial data I/O for specific formats. The notion
 is that support for additional geospatial formats can easily added
-by merely creating a data provider plug-in that supports agiven format.
+by merely creating a data provider plug-in that supports a given format.
 Moreover it should be possible to have multiple support for the same
 format; that is, have more than one data provider available to load
 a given geospatial data type. Figure \ref{cap:DataProvider} depicts
@@ -1943,4 +1950,85 @@ The data provider is owned by its associated layer, which is then
 responsible for its destrction. (This will likely change in a subsequent
 refactoring to address the problem of a data source having more than
 one layer.)
+
+
+\subsection{Layers}
+
+As described \vpageref{des:Layer:-A-dataset} layer is a set of related
+geospatial data and their associated attributes. Layers tend to contain
+a particular type of data, such as hydrography, transportation, and
+hypsography data. Layers therefore tend to be {}``thematic'' in
+nature. There are two kinds of qgis layers that follow from their
+representations -- vector and raster layers. Figure \ref{cap:maplayer}
+shows the \texttt{QgsMapLayer} hierarchy that qgis uses to implement
+vector and raster layers.
+
+%
+\begin{figure}
+\includegraphics[%
+  width=1.0\columnwidth]{maplayer.eps}
+
+
+\caption{\label{cap:maplayer}QgsMapLayer Class Hierarchy}
+\end{figure}
+
+
+\begin{comment}
+Add stuff to describe layer contents. This would start with general
+common things found in QgsMapLayer followed by descriptions for each
+of the subclasses. Try to emphasize the static attributes -- the dynamic
+aspects on HOW they'll be used will be in subsequent chapters.
+
+Need to talk about renderers.
+
+And especially about coordinate transforms.
+\end{comment}
+Layers have a unique identification string and a separate string for
+a base name. They also have a source string which can contain a file
+name or URI. The base name is used to identify the layer in the legend.
+
+The \texttt{QgsMapLayerRegistry} is the Singleton object that stores
+all canonical layer instances. QgsMapLayerRegistry supports three
+Qt signals. \texttt{layerWasAdded()} is raised when a new layer is
+added to the registry. \texttt{layerWillBeRemoved()} is raised if
+a layer is to be deleted. \texttt{removeAll()} is raised if all the
+layers are to be cleared. The last is an optimization for clearing
+all layers at once instead of raising a signal for each layer that's
+removed when, say, clearing a project.
+
+
+\section{Use Case Scenario Design}
+
+In this section we describe the underlying design that supports the
+various use case scenarios given in section \ref{sec:Use-Cases}.
+
+
+\subsection{Load Data}
+
+This use case, as described \vpageref{sub:Load-Data}, is of course
+for when the user loads data into qgis. Though vector and raster layers
+share many features, they are very different especially in how they
+respectively load data.
+
+
+\subsubsection{Vector Layer Loading}
+
+A new \texttt{QgsVectorLayer} is created when \texttt{QgisApp::addLayer()},
+\texttt{QgisApp::addDatabaseLayer()}, or \texttt{QgsProject::read()}
+are invoked. The newly created \texttt{QgsVectorLayer} is given the
+file path for the data source, the basename of that file path as its
+name, and a data provider key used to find an appropriate data provider
+from the data provider registry described in section \ref{sub:Data-Providers}.
+The data provider key will be {}``ogr'' if for a file based format
+since only the OGR data provider is the one currently supporting such.
+If PostGIS support is enabled, the data provider key can be {}``postgres''
+so the data provider registry can find the PostgreSQL/PostGIS data
+provider. (Yes, but this only happens when addDatabaseLayer is invoked.
+May need to further break this down or re-organize.)
+
+
+\subsubsection{Raster Layer Loading}
+
+Also triggered by QgisApp::addLayer() or QgsProject::read() a new
+\texttt{QgsRasterLayer} is created.
 \end{document}

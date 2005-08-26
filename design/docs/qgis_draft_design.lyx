@@ -103,6 +103,11 @@ GIS: Geographic Information System.
  data and its attributes.
 \layout Description
 
+
+\begin_inset LatexCommand \label{des:Layer:-A-dataset}
+
+\end_inset 
+
 Layer: A dataset that has a spatial context and can be drawn on a map canvas.
  Layers may have associated attributes.
  
@@ -571,6 +576,11 @@ Case Descriptions
 In the sections that follow, the use cases are presented in no particular
  order.
 \layout Subsubsection
+
+
+\begin_inset LatexCommand \label{sub:Load-Data}
+
+\end_inset 
 
 Load Data 
 \layout Standard
@@ -7099,7 +7109,7 @@ The QGIS main window consists of a Qt QMainWindow widget and includes docking
 \begin_inset Float figure
 placement h
 wide false
-collapsed false
+collapsed true
 
 \layout Caption
 \added_space_bottom smallskip 
@@ -7134,7 +7144,7 @@ QGIS will rely heavily on plugins to implement all major functions.
  With a flexible plugin architecture, QGIS can be easily extended to support
  additional features and capabilities.
  
-\layout Subsection
+\layout Subsubsection
 
 Class Diagram
 \layout Standard
@@ -7148,7 +7158,7 @@ The class diagram in Figure
 \begin_inset Float figure
 placement h
 wide false
-collapsed false
+collapsed true
 
 \layout Caption
 \added_space_bottom smallskip 
@@ -7170,9 +7180,9 @@ Conceptual Diagram of Plugin Architecture
 \end_inset 
 
 
-\layout Subsection
+\layout Subsubsection
 
-Load Sequence
+Plugin Load Sequence
 \layout Standard
 
 The main application class uses QLibrary to load and resolve plugin functions.
@@ -7207,7 +7217,18 @@ Once the plugin instance is created, the plugin can do any initialization
  pointer.
 \layout Subsection
 
+
+\begin_inset LatexCommand \label{sub:Data-Providers}
+
+\end_inset 
+
 Data Providers
+\layout Comment
+
+Data providers are a kind of plugin, but they're very different.
+ So, I put this in a separate section.
+ However, it's still plugin-like.
+ So should it be rolled into the previous subsection?
 \layout Standard
 
 Data providers are a special kind of plug-in.
@@ -7384,4 +7405,200 @@ The data provider is owned by its associated layer, which is then responsible
  for its destrction.
  (This will likely change in a subsequent refactoring to address the problem
  of a data source having more than one layer.)
+\layout Subsection
+
+Layers
+\layout Standard
+
+As described 
+\begin_inset LatexCommand \vpageref{des:Layer:-A-dataset}
+
+\end_inset 
+
+ layer is a set of related geospatial data and their associated attributes.
+ Layers tend to contain a particular type of data, such as hydrography,
+ transportation, and hypsography data.
+ Layers therefore tend to be 
+\begin_inset Quotes eld
+\end_inset 
+
+thematic
+\begin_inset Quotes erd
+\end_inset 
+
+ in nature.
+ There are two kinds of qgis layers that follow from their representations
+ -- vector and raster layers.
+ Figure 
+\begin_inset LatexCommand \ref{cap:maplayer}
+
+\end_inset 
+
+ shows the 
+\family typewriter 
+QgsMapLayer
+\family default 
+ hierarchy that qgis uses to implement vector and raster layers.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed true
+
+\layout Standard
+
+
+\begin_inset Graphics
+	filename maplayer.eps
+	width 100col%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{cap:maplayer}
+
+\end_inset 
+
+QgsMapLayer Class Hierarchy
+\end_inset 
+
+
+\layout Comment
+
+Add stuff to describe layer contents.
+ This would start with general common things found in QgsMapLayer followed
+ by descriptions for each of the subclasses.
+ Try to emphasize the static attributes -- the dynamic aspects on HOW they'll
+ be used will be in subsequent chapters.
+\layout Comment
+
+Need to talk about renderers.
+\layout Comment
+
+And especially about coordinate transforms.
+\layout Standard
+
+Layers have a unique identification string and a separate string for a base
+ name.
+ They also have a source string which can contain a file name or URI.
+ The base name is used to identify the layer in the legend.
+\layout Standard
+
+The 
+\family typewriter 
+QgsMapLayerRegistry
+\family default 
+ is the Singleton object that stores all canonical layer instances.
+ QgsMapLayerRegistry supports three Qt signals.
+
+\family typewriter 
+ layerWasAdded()
+\family default 
+ is raised when a new layer is added to the registry.
+ 
+\family typewriter 
+layerWillBeRemoved()
+\family default 
+ is raised if a layer is to be deleted.
+ 
+\family typewriter 
+removeAll()
+\family default 
+ is raised if all the layers are to be cleared.
+ The last is an optimization for clearing all layers at once instead of
+ raising a signal for each layer that's removed when, say, clearing a project.
+\layout Section
+
+Use Case Scenario Design
+\layout Standard
+
+In this section we describe the underlying design that supports the various
+ use case scenarios given in section 
+\begin_inset LatexCommand \ref{sec:Use-Cases}
+
+\end_inset 
+
+.
+\layout Subsection
+
+Load Data
+\layout Standard
+
+This use case, as described 
+\begin_inset LatexCommand \vpageref{sub:Load-Data}
+
+\end_inset 
+
+, is of course for when the user loads data into qgis.
+ Though vector and raster layers share many features, they are very different
+ especially in how they respectively load data.
+\layout Subsubsection
+
+Vector Layer Loading
+\layout Standard
+
+A new 
+\family typewriter 
+QgsVectorLayer
+\family default 
+ is created when 
+\family typewriter 
+QgisApp::addLayer()
+\family default 
+, 
+\family typewriter 
+QgisApp::addDatabaseLayer()
+\family default 
+, or 
+\family typewriter 
+QgsProject::read()
+\family default 
+ are invoked.
+ The newly created 
+\family typewriter 
+QgsVectorLayer
+\family default 
+ is given the file path for the data source, the basename of that file path
+ as its name, and a data provider key used to find an appropriate data provider
+ from the data provider registry described in section 
+\begin_inset LatexCommand \ref{sub:Data-Providers}
+
+\end_inset 
+
+.
+ The data provider key will be 
+\begin_inset Quotes eld
+\end_inset 
+
+ogr
+\begin_inset Quotes erd
+\end_inset 
+
+ if for a file based format since only the OGR data provider is the one
+ currently supporting such.
+ If PostGIS support is enabled, the data provider key can be 
+\begin_inset Quotes eld
+\end_inset 
+
+postgres
+\begin_inset Quotes erd
+\end_inset 
+
+ so the data provider registry can find the PostgreSQL/PostGIS data provider.
+ (Yes, but this only happens when addDatabaseLayer is invoked.
+ May need to further break this down or re-organize.)
+\layout Subsubsection
+
+Raster Layer Loading
+\layout Standard
+
+Also triggered by QgisApp::addLayer() or QgsProject::read() a new 
+\family typewriter 
+QgsRasterLayer
+\family default 
+ is created.
 \the_end
