@@ -3292,7 +3292,8 @@ void QgisApp::removeLayer()
   if(lvi)
   {
     QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
-    if(lvi)
+    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(lvi);
+    if(llf)
     {
 	QgsMapLayer *layer = llf->layer();
 	//call the registry to unregister the layer. It will in turn
@@ -3312,6 +3313,10 @@ void QgisApp::removeLayer()
 	// draw the map
 	mMapCanvas->clear();
 	mMapCanvas->render();
+    }
+    else if(ll)
+    {
+	mMapLegend->legendLayerRemove();
     }
   }
 }
