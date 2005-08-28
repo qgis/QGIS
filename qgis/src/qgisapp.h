@@ -394,8 +394,6 @@ private slots:
     //! Open project properties dialog and show the projections tab
     void projectPropertiesProjections();
     /*  void urlData(); */
-    /** Used to (re)set the zordering of the overview map*/
-    void setOverviewZOrder(QgsLegend * );
     //! Kills the splash screen
     void killSplashScreen();
     //! Show the spatial bookmarks dialog
@@ -413,6 +411,8 @@ public slots:
     void projectionsEnabled(bool theFlag);
 //    void debugHook();
     void stopZoom();
+/** Used to (re)set the zordering of the overview map*/
+    void setOverviewZOrder(QgsLegend * );
 
 signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able

@@ -281,7 +281,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
 #ifdef QGISDEBUG
         cout << "QgsProviderRegistry::getProvider: Instantiated the data provider plugin\n";
         cout << "provider name: " << dataProvider->name() << "\n";
-        cout << "provider description: " << dataProvider->description() << "\n";
+        //cout << "provider description: " << dataProvider->description() << "\n";
 #endif
         if (dataProvider->isValid())
         {

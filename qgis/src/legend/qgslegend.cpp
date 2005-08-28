@@ -132,6 +132,8 @@ void QgsLegend::removeLayer(QString layer_key)
 	    }
 	}
     }
+    //update the overview canvas
+    mApp->setOverviewZOrder(this);
 }
 
 void QgsLegend::contentsMousePressEvent(QMouseEvent * e)
@@ -385,9 +387,10 @@ void QgsLegend::handleRightClickEvent(QListViewItem* item, const QPoint& positio
 		//todo: show a right click menu with remove, toggle in overview and layer properties
 		//connect to the private slots legendLayerRemove(), legendLayerToggleInOverview(), legendLayerShowProperties()
 		QPopupMenu pm;
-		pm.insertItem(tr("&ToggleInOverview"), this, SLOT(legendLayerToggleInOverview()));
 		pm.insertItem(tr("&Remove"), this, SLOT(legendLayerRemove()));
 		pm.insertItem(tr("&Properties"), this, SLOT(legendLayerShowProperties()));
+		pm.insertItem(tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
+		pm.insertItem(tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
 		pm.exec(position);
 	    }
 	}
@@ -544,7 +547,10 @@ void QgsLegend::legendLayerRemove()
    for(std::list<QgsMapLayer*>::iterator it = maplayers.begin(); it!=maplayers.end(); ++it)
    {
        //remove the layer
-       QgsMapLayerRegistry::instance()->removeMapLayer((*it)->getLayerID());
+       if(*it)
+       {
+	   QgsMapLayerRegistry::instance()->removeMapLayer((*it)->getLayerID());
+       }
    }
 
    if(maplayers.size()>0)
@@ -557,11 +563,54 @@ void QgsLegend::legendLayerRemove()
    placeCheckBoxes();
 }
 
-void QgsLegend::legendLayerToggleInOverview()
+void QgsLegend::legendLayerAddToOverview()
 {
-#ifdef QGISDEBUG
-    qWarning("This message comes from within QgsLegend::legendLayerToggleInOverview()");
-#endif
+   //add or remove all layers to/ from overview
+   QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(currentItem());
+   if(!ll)
+   {
+       return;
+   }
+
+   std::list<QgsMapLayer*> maplayers = ll->mapLayers();
+   for(std::list<QgsMapLayer*>::iterator it = maplayers.begin(); it!=maplayers.end(); ++it)
+   {
+       if(*it)
+       {
+	       (*it)->inOverview(true);
+       }
+   }
+
+   if(maplayers.size()>0)
+   {
+       //update the overview canvas
+       mApp->setOverviewZOrder(this);
+   } 
+}
+
+void QgsLegend::legendLayerRemoveFromOverview()
+{
+    //add or remove all layers to/ from overview
+   QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(currentItem());
+   if(!ll)
+   {
+       return;
+   }
+   std::list<QgsMapLayer*> maplayers = ll->mapLayers();
+
+   for(std::list<QgsMapLayer*>::iterator it = maplayers.begin(); it!=maplayers.end(); ++it)
+   {
+       if(*it)
+       {
+	   (*it)->inOverview(false); //else
+       }
+   }
+
+   if(maplayers.size()>0)
+   {
+       //update the overview canvas
+       mApp->setOverviewZOrder(this);
+   } 
 }
 
 void QgsLegend::legendLayerShowProperties()
