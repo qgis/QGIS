@@ -184,8 +184,10 @@ protected:
   void placeCheckBoxes();
   /**Removes legend layer files and the legend layer containing them*/
   void legendLayerRemove();
-  /**Toggles all the legend layer files of a legend layer in overview*/
-  void legendLayerToggleInOverview();
+  /**Adds all the legend layer files of the current legend layer to overview*/
+  void legendLayerAddToOverview();
+  /**Removes all the legend layer files of the current legend layer from overview*/
+  void legendLayerRemoveFromOverview();
   /**Shows the property dialog of the first legend layer file in a legend layer*/
   void legendLayerShowProperties();
 

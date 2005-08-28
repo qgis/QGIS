@@ -107,6 +107,10 @@ std::list<QgsMapLayer*> QgsLegendLayer::mapLayers()
 	return list;
     }
     QListViewItem* llf = llfgroup->firstChild();
+    if(!llf)
+    {
+	return list;
+    }
     QgsLegendLayerFile* legendlayerfile = 0;
     do
     {
