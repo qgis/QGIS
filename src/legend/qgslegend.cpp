@@ -561,6 +561,8 @@ void QgsLegend::legendLayerRemove()
    }
    delete ll;
    placeCheckBoxes();
+   //update the overview canvas
+   mApp->setOverviewZOrder(this);
 }
 
 void QgsLegend::legendLayerAddToOverview()

@@ -129,8 +129,11 @@ public slots:
    * The user will be prompted for the name of the newly added group.
    * @return void
    */
-  void removeLayer(QString);
   void addGroup();
+  void removeLayer(QString);
+
+  /**Removes the current LegendLayer and all its LegendLayerFiles*/
+  void legendLayerRemove();
 
 protected:
 
@@ -182,8 +185,6 @@ protected:
   /**Moves all the checkboxes stored in mCheckBoxes to the right places. Needs to
    be called every time the geometry of the treeview is changed*/
   void placeCheckBoxes();
-  /**Removes legend layer files and the legend layer containing them*/
-  void legendLayerRemove();
   /**Adds all the legend layer files of the current legend layer to overview*/
   void legendLayerAddToOverview();
   /**Removes all the legend layer files of the current legend layer from overview*/
