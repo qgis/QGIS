@@ -66,14 +66,6 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
   connect( this, SIGNAL(collapsed(QListViewItem*)), this, SLOT(placeCheckBoxes()));
   connect( this, SIGNAL(contentsMoving(int, int)), this, SLOT(placeCheckBoxes()));
 
-  mPopupMenu = new QPopupMenu(this);
-  mPopupMenu->insertItem("&Add Group", this, SLOT(addGroup()));
-  mPopupMenu->insertItem("&Remove", this, SLOT(addGroup()));
-  mPopupMenu->insertItem("&Add Group", this, SLOT(addGroup()));
-  mPopupMenu->insertItem("&Add Group", this, SLOT(addGroup()));
-  mPopupMenu->insertItem("&Add Group", this, SLOT(addGroup()));
-  mPopupMenu->insertItem("&Add Group", this, SLOT(addGroup()));
-
   setSorting(-1);
 }
 
@@ -84,8 +76,11 @@ QgsLegend::~QgsLegend()
 
 void QgsLegend::addGroup()
 {
-  std::cout << "in addGroup" << std::endl << std::flush;
+#ifdef QGISDEBUG
+    qWarning("in addGroup");
+#endif
 }
+
 void QgsLegend::updateLegendItem( QListViewItem * li )
 {
   QgsLegendItem * qli = dynamic_cast<QgsLegendItem*>(li);
@@ -96,12 +91,7 @@ void QgsLegend::updateLegendItem( QListViewItem * li )
     return;
   }
 
-
-
-} // QgsLegend::updateLegendItem
-
-
-
+} 
 
 void QgsLegend::removeAll()
 {
@@ -384,8 +374,6 @@ void QgsLegend::handleRightClickEvent(QListViewItem* item, const QPoint& positio
 	    }
 	    else if(li->type() == QgsLegendItem::LEGEND_LAYER)
 	    {
-		//todo: show a right click menu with remove, toggle in overview and layer properties
-		//connect to the private slots legendLayerRemove(), legendLayerToggleInOverview(), legendLayerShowProperties()
 		QPopupMenu pm;
 		pm.insertItem(tr("&Remove"), this, SLOT(legendLayerRemove()));
 		pm.insertItem(tr("&Properties"), this, SLOT(legendLayerShowProperties()));
@@ -412,20 +400,6 @@ int QgsLegend::getItemPos(QListViewItem * item)
     ++index;
   }
   return index;
-}
-
-void QgsLegend::showContextMenu(QListViewItem * lvi, const QPoint & pt)
-{
-  //if (!mMapCanvas->isDrawing()&&lvi)
-  //{
-  // get the context menu from the layer and display it
-  //  QgsMapLayer *layer = ((QgsLegendItem *) lvi)->layer();
-  //  QPopupMenu *mPopupMenu = layer->contextMenu();
-  //  if (mPopupMenu)
-  //  {
-  mPopupMenu->exec(pt);
-  //  }
-  //}
 }
 
 void QgsLegend::addLayer( QgsMapLayer * layer )
