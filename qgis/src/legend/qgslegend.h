@@ -90,14 +90,6 @@ class QgsLegend : public QListView
   //! Destructor
    ~QgsLegend();
 
-   /*!
-   * Show a context menu of things that can be done to / in a legend
-   * @param theListViewItem The QListViewItem with which the context menu is associated.
-   * @param thePoint The QPoint indicating wher the context menu should be displayed.
-   * @return void
-   */
-  void showContextMenu(QListViewItem * lvi, const QPoint & pt);
-
   /*!Returns the current layer or 0 if the current item is not a QgsLegendLayerFile*/
   QgsMapLayer* currentLayer();
 
