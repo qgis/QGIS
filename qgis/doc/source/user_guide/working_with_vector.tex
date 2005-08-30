@@ -159,7 +159,7 @@ Builder}\label{sec:query_builder}\index{PostgreSQL!query builder}
 The PostgreSQL Query Builder allows you to define a subset of a table and add it
 as a layer in QGIS.  For example, if you have a towns layer with a population
 field you could select only larger towns by entering \textsl{population >
-100000} in the SQL box of the query builder. Figure \ref{fig:querybuilder} shows an
+100000} in the SQL box of the query builder. Figure \ref{fig:query_builder} shows an
 example of the query builder populated with data from a layer in PostgreSQL. 
 
 \begin{figure}[h]
@@ -231,7 +231,10 @@ a PostGIS enabled database. For example, to import a shapefile named lakes into 
 \begin{verbatim} 
   shp2pgsql -s 2964 lakes.shp lakes_new | psql gis_data
 \end{verbatim}
-This creates a new layer named lakes\_new in the the gis\_data database. The new layer will have a spatial reference identifier (SRID) of 2964. See Section \ref{sec:projections} for more information on spatial reference systems and projections.
+This creates a new layer named lakes\_new in the the gis\_data database. The
+new layer will have a spatial reference identifier (SRID) of 2964. See Chapter
+\ref{chp:projections} for more information on spatial reference systems and
+projections.
 
 \parpic[l]{\includegraphics{qgis_user_guide_images/spiticon}}QGIS comes with a
 plugin named SPIT (Shapefile to PostGIS Import Tool)\index{SPIT}.
