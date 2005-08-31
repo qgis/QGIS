@@ -72,8 +72,6 @@ public:
   void cboModelAlgorithm_highlighted( const QString &theModelAlgorithm );
   void leOutputFileName_textChanged( const QString &theOutputFileName);
   void leOutputDirectory_textChanged( const QString &theOutputDirectory);
-  void traverseDirectories(const QString& dirname, QListBox*, QComboBox*);
-  bool checkLocalitiesFileFormat(const QString);
   void pbnDefaultParameters_clicked();
   //void pbnSelectLayerFolder_clicked();
   //void pbnSelectLayerFolderProj_clicked();

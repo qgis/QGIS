@@ -51,6 +51,7 @@ plugin_MOC = plugin.moc.cpp openmodellergui.moc.cpp layerselector.moc.cpp
 libopenmodellerplugin_la_SOURCES = plugin.cpp \
 	plugin.h \
 	qlogcallback.h \
+	omggdal.cpp \
 	openmodellergui.cpp \
 	openmodellergui.h \
 	request_file.cpp \
@@ -77,6 +78,7 @@ BUILT_SOURCES = $(UIHEADERS) $(UISOURCES) $(UIMOC) $(plugin_MOC)
 omgui_SOURCES = 	main.cpp \
 			qlogcallback.h \
 			omguimain.cpp \
+			omggdal.cpp \
 			openmodellergui.cpp \
 			openmodellergui.h \
 			request_file.cpp \

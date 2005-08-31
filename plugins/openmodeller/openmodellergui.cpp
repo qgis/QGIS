@@ -1352,7 +1352,11 @@ void OpenModellerGui::getProjList()
 #ifdef WIN32
   QString theFileNameQString = "wkt_defs.txt";
 #else
+#ifdef Q_OS_MACX
+  QString theFileNameQString = qApp->applicationDirPath() + "/share/qgis";
+#else
   QString theFileNameQString = QGISDATAPATH;
+#endif
   theFileNameQString += "/wkt_defs.txt";
 #endif
 
