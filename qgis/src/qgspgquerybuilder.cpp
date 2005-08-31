@@ -20,15 +20,15 @@
 #include <qlabel.h>
 #include "qgspgquerybuilder.h"
 // default constructor
-  QgsPgQueryBuilder::QgsPgQueryBuilder(QWidget *parent, const char *name)
-: QgsPgQueryBuilderBase(parent, name)
+  QgsPgQueryBuilder::QgsPgQueryBuilder(QWidget *parent, const char *name, bool modal)
+: QgsPgQueryBuilderBase(parent, name, modal)
 {
 }
 // constructor used when the query builder must make its own
 // connection to the database
 QgsPgQueryBuilder::QgsPgQueryBuilder(QgsDataSourceURI *uri, 
-    QWidget *parent, const char *name) : QgsPgQueryBuilderBase(parent, name),
-mUri(uri)
+    QWidget *parent, const char *name, bool modal)
+: QgsPgQueryBuilderBase(parent, name, modal), mUri(uri)
 {
   // The query builder must make its own connection to the database when
   // using this constructor
@@ -67,8 +67,8 @@ mUri(uri)
 // constructor from the add table dialog is in the form schema.table, these components are 
 // parsed out and populated in the mURI structure prior to performing any operations against the database.
 QgsPgQueryBuilder::QgsPgQueryBuilder(QString tableName, PGconn *con, 
-    QWidget *parent, const char *name)
-: QgsPgQueryBuilderBase(parent, name), mPgConnection(con)
+    QWidget *parent, const char *name, bool modal)
+: QgsPgQueryBuilderBase(parent, name, modal), mPgConnection(con)
 {
   mOwnConnection = false; // we don't own this conneciton since it was passed to us
   mUri = new QgsDataSourceURI();

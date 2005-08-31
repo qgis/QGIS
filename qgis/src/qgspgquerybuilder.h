@@ -43,7 +43,7 @@ class QgsPgQueryBuilder : public QgsPgQueryBuilderBase {
    Q_OBJECT 
   public:
   //! Default constructor - not very useful
-  QgsPgQueryBuilder(QWidget *parent = 0, const char *name=0);
+  QgsPgQueryBuilder(QWidget *parent = 0, const char *name=0, bool modal=true);
 
   /*! Constructor which also takes the table name and PG connection pointer.
   * This constructor is used when adding layers to the map from a PG database since
@@ -53,7 +53,8 @@ class QgsPgQueryBuilder : public QgsPgQueryBuilderBase {
   * @param parent Parent widget
   * @param name Name of the widget
   */
-  QgsPgQueryBuilder(QString tableName, PGconn *con, QWidget *parent = 0, const char *name=0);
+  QgsPgQueryBuilder(QString tableName, PGconn *con, QWidget *parent = 0,
+      const char *name=0, bool modal=true);
   
   /*! Constructor that uses a data source URI to create its own connection to the 
   * PG database. This constructor should be used when a layer's own PG connection
@@ -65,7 +66,7 @@ class QgsPgQueryBuilder : public QgsPgQueryBuilderBase {
    * @param name Name of the widget
    */
   QgsPgQueryBuilder(QgsDataSourceURI *uri, QWidget *parent = 0,
-      const char *name=0); 
+      const char *name=0, bool modal=true); 
   
   ~QgsPgQueryBuilder(); 
  

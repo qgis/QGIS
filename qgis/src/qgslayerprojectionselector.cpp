@@ -24,7 +24,7 @@
  * Constructor
  */
 QgsLayerProjectionSelector::QgsLayerProjectionSelector(QWidget *parent, 
-    const char * name) : QgsLayerProjectionSelectorBase(parent, name)
+    const char * name, bool modal) : QgsLayerProjectionSelectorBase(parent, name, modal)
 {
 
  qApp->restoreOverrideCursor();
