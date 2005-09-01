@@ -124,7 +124,11 @@ void QgsOpenModellerPlugin::run()
   //listen for when the layer has been made so we can draw it
   connect(myOpenModellerGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myOpenModellerGui, SIGNAL(modelDone(QString)), this, SLOT(modelDone(QString)));
-  myOpenModellerGui->show();
+  mReport->txtbLog->setText("");
+  if (myOpenModellerGui->exec())
+  {
+    mReport->show();
+  }
 }
 //!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
 //layer
@@ -141,8 +145,7 @@ void QgsOpenModellerPlugin::drawRasterLayer(QString theQString)
 void QgsOpenModellerPlugin::modelDone(QString theText)
 {
   // remove the GUI
-  mReport->txtbLog->setText(theText);
-  mReport->show();
+  mReport->txtbLog->append(theText);
   //std::cout << theText << std::endl;
 }
 // Unload the plugin by cleaning up the GUI
