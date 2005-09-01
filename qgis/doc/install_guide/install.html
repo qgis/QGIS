@@ -22,6 +22,17 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 </HEAD>
 
 <BODY >
+<!--Navigation Panel-->
+<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive"
+ SRC="file:/sw/share/lib/latex2html/icons/nx_grp_g.png"> 
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/sw/share/lib/latex2html/icons/up_g.png"> 
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/sw/share/lib/latex2html/icons/prev_g.png">   
+<BR>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
 
 <P>
 
@@ -37,71 +48,103 @@ Contents</A>
 <!--Table of Contents-->
 
 <UL>
-<LI><A NAME="tex2html41"
+<LI><A NAME="tex2html48"
   HREF="install.html#SECTION00020000000000000000">Introduction</A>
 <UL>
-<LI><A NAME="tex2html42"
+<LI><A NAME="tex2html49"
   HREF="install.html#SECTION00021000000000000000">Installing Windows Version</A>
-<LI><A NAME="tex2html43"
-  HREF="install.html#SECTION00022000000000000000">Installing Mac OSX Version</A>
-<LI><A NAME="tex2html44"
+<LI><A NAME="tex2html50"
+  HREF="install.html#SECTION00022000000000000000">Installing Mac OS X Version</A>
+<LI><A NAME="tex2html51"
   HREF="install.html#SECTION00023000000000000000">Building from Source</A>
 </UL>
 <BR>
-<LI><A NAME="tex2html45"
-  HREF="install.html#SECTION00030000000000000000">Getting QGIS</A>
-<LI><A NAME="tex2html46"
-  HREF="install.html#SECTION00040000000000000000">PostgreSQL</A>
-<LI><A NAME="tex2html47"
-  HREF="install.html#SECTION00050000000000000000">GEOS</A>
-<LI><A NAME="tex2html48"
-  HREF="install.html#SECTION00060000000000000000">PostGIS</A>
-<LI><A NAME="tex2html49"
-  HREF="install.html#SECTION00070000000000000000">GRASS</A>
-<LI><A NAME="tex2html50"
-  HREF="install.html#SECTION00080000000000000000">GDAL/OGR</A>
-<LI><A NAME="tex2html51"
-  HREF="install.html#SECTION00090000000000000000">Qt</A>
 <LI><A NAME="tex2html52"
-  HREF="install.html#SECTION000100000000000000000">Building QGIS</A>
-<UL>
+  HREF="install.html#SECTION00030000000000000000">Getting QGIS</A>
 <LI><A NAME="tex2html53"
-  HREF="install.html#SECTION000101000000000000000">Quick and Dirty</A>
+  HREF="install.html#SECTION00040000000000000000">PostgreSQL</A>
 <LI><A NAME="tex2html54"
-  HREF="install.html#SECTION000102000000000000000">Configuring QGIS the Right Way</A>
+  HREF="install.html#SECTION00050000000000000000">GEOS</A>
+<LI><A NAME="tex2html55"
+  HREF="install.html#SECTION00060000000000000000">PostGIS</A>
+<LI><A NAME="tex2html56"
+  HREF="install.html#SECTION00070000000000000000">GRASS</A>
+<LI><A NAME="tex2html57"
+  HREF="install.html#SECTION00080000000000000000">Proj4</A>
+<LI><A NAME="tex2html58"
+  HREF="install.html#SECTION00090000000000000000">SQLite</A>
+<LI><A NAME="tex2html59"
+  HREF="install.html#SECTION000100000000000000000">GDAL/OGR</A>
+<LI><A NAME="tex2html60"
+  HREF="install.html#SECTION000110000000000000000">Qt</A>
+<LI><A NAME="tex2html61"
+  HREF="install.html#SECTION000120000000000000000">Building QGIS</A>
+<UL>
+<LI><A NAME="tex2html62"
+  HREF="install.html#SECTION000121000000000000000">Quick and Dirty</A>
+<LI><A NAME="tex2html63"
+  HREF="install.html#SECTION000122000000000000000">Configuring QGIS the Right Way</A>
 </UL>
 <BR>
-<LI><A NAME="tex2html55"
-  HREF="install.html#SECTION000110000000000000000">Building Plugins</A>
+<LI><A NAME="tex2html64"
+  HREF="install.html#SECTION000130000000000000000">Building Plugins</A>
 </UL>
 <!--End of Table of Contents--> 
 
 <P>
 
 
-<P>
-
 <H1><A NAME="SECTION00020000000000000000"></A><A NAME="label_introduction"></A>
 <BR>
 Introduction
 </H1>
-This document briefly describes how to build QGIS 0.6 (<I>`Simon'</I>) from the source distribution. These instructions are for Linux/Unix and other POSIX systems which have the required build environment.
+The majority of this document is devoted to describing how to build QGIS 0.7
+(<I>`Seamus'</I>) from the source distribution. These instructions are for
+Linux/Unix and other POSIX systems which have the required build
+environment. If you are building on FreeBSD, see
+<TT><A NAME="tex2html1"
+  HREF="http://community.qgis.org/buildingOnFreeBSD.html">http://community.qgis.org/buildingOnFreeBSD.html</A></TT> for hints and further
+information.
 
 <P>
-The latest version of this document can always be found at <TT><A NAME="tex2html1"
+Installing on Windows and Mac OS X is a simple process as described
+below.
+
+<P>
+You don't have to build all the QGIS dependencies from source. If your
+platform provides packages at an acceptable version for the needed
+dependencies, you can install them prior to building QGIS. Make sure you
+also install the "development" package (if separate from the main package)
+for each dependency. QGIS needs the header files from these packages in
+order to build. 
+
+<P>
+The latest version of this document can always be found at
+<TT><A NAME="tex2html2"
   HREF="http://qgis.org/docs/install.html">http://qgis.org/docs/install.html</A></TT>.
 
 <H2><A NAME="SECTION00021000000000000000">
 Installing Windows Version</A>
 </H2>
-Installing the Windows version of QGIS is simply a matter of running the user friendly setup wizard. See the README.WIN32 file for additional information regarding the Windows version of QGIS. At version 0.6, the GRASS plugin is not available in Windows.
+Installing the Windows version of QGIS is simply a matter of running the
+user friendly setup wizard. See the README.WIN32 file for additional
+information regarding the Windows version of QGIS. At version 0.7, the GRASS
+plugin is not available in Windows. Work on including the plugin in the next
+version of QGIS is under way.
+
+<P>
 
 <H2><A NAME="SECTION00022000000000000000">
-Installing Mac OSX Version</A>
+Installing Mac OS X Version</A>
 </H2>
 To install the compressed disk image containing the OSX version of QGIS,
-double-click to expand and mount the image, then drag QGIS application to your
-hard drive. The OSX version does not include GRASS support.
+double-click to expand and mount the image, then drag QGIS application to
+your hard drive. If you want to build from source on Mac OS X, see
+<TT><A NAME="tex2html3"
+  HREF="http://wiki.qgis.org/qgiswiki/BuildingOnMacOsX">http://wiki.qgis.org/qgiswiki/BuildingOnMacOsX</A></TT>. Installing the
+compressed disk image is the easiest method and gives you the full
+functionality of QGIS and all plugins, including GRASS. See the README file
+included on the disk image for additional instructions.
 
 <P>
 
@@ -110,6 +153,9 @@ Building from Source</A>
 </H2>
 The remainder of this document deals with compiling and installing QGIS from the
 source code. Specifically this applies to Linux/Unix systems.
+
+<P>
+At 0.7, there are two new requirements: SQLite and Proj4. These must be built and installed prior to configuring QGIS.
 
 <P>
 QGIS can be installed with three levels of support for data stores:
@@ -124,18 +170,21 @@ QGIS can be installed with three levels of support for data stores:
 </OL> 
 
 <P>
-Basic support uses the GDAL/OGR libraries and supports many raster and vector formats. For more information on the available formats, see <TT><A NAME="tex2html2"
-  HREF="http://www.remotesensing.org:16080/gdal/formats_list.html">http://www.remotesensing.org:16080/gdal/formats_list.html</A></TT> and <TT><A NAME="tex2html3"
-  HREF="http://www.remotesensing.org:16080/gdal/ogr/ogr_formats.html">http://www.remotesensing.org:16080/gdal/ogr/ogr_formats.html</A></TT>.
+Basic support uses the GDAL/OGR libraries and supports many raster and
+vector formats. For more information on the available formats, see
+<TT><A NAME="tex2html4"
+  HREF="http://gdal.maptools.org/formats_list.html">http://gdal.maptools.org/formats_list.html</A></TT> and
+<TT><A NAME="tex2html5"
+  HREF="http://gdal.maptools.org/ogr/ogr_formats.html">http://gdal.maptools.org/ogr/ogr_formats.html</A></TT>.
 
 <P>
 PostgreSQL/PostGIS support allows you to store spatial data in a PostgreSQL database. GRASS support provides access to GRASS mapsets. 
 
 <P>
-<B>Note:</B> - If you plan to build QGIS with GRASS support, version 1.2.3 or higher of GDAL must be used. 
+<B>Note:</B> - If you plan to build QGIS with GRASS support, version 1.2.6 or higher of GDAL must be used. 
 
 <P>
-Each of the requirements are discussed below. Note that the information given below is abstracted from the installation documentation for each of the libraries. See the install information for each library to get detailed instructions. In the documentation below, the file names and versions used are examples.
+Each of the requirements is discussed below. Note that the information given below is abstracted from the installation documentation for each of the libraries. See the install information for each library to get detailed instructions. In the documentation below, the file names and versions used are examples.
 
 <P>
 If you are building QGIS without PostgreSQL or GRASS support, skip to the section on Installing GDAL/OGR. 
@@ -143,38 +192,43 @@ If you are building QGIS without PostgreSQL or GRASS support, skip to the sectio
 <H1><A NAME="SECTION00030000000000000000">
 Getting QGIS</A>
 </H1>
-QGIS is available in both source and package format from <TT><A NAME="tex2html4"
+QGIS is available in both source and package format from <TT><A NAME="tex2html6"
   HREF="http://qgis.org">http://qgis.org</A></TT>. 
 
 <P>
 In addition, packages for many Linux distributions are independently maintained in various locations. See 
-the <I>Download</I> section on <TT><A NAME="tex2html5"
+the <I>Download</I> section on <TT><A NAME="tex2html7"
   HREF="http://qgis.org">http://qgis.org</A></TT> for the latest information on package locations.
 
 <P>
-Packages for most of the software/libraries discussed below can be found for almost all Linux distributions. While it is possible to mix compiling from source and installing packages to meet the requirements for QGIS, sometimes this becomes tricky. Following the steps below will generally ensure a successful installation. If you are using SuSE 9.1, the LinGIS distribution <TT><A NAME="tex2html6"
+Packages for most of the software/libraries discussed below can be found for almost all Linux distributions. While it is possible to mix compiling from source and installing packages to meet the requirements for QGIS, sometimes this becomes tricky. Following the steps below will generally ensure a successful installation. If you are using SuSE 9.1, the LinGIS distribution <TT><A NAME="tex2html8"
   HREF="ftp://ftp.lingis.org">ftp://ftp.lingis.org</A></TT> is a good choice for installing QGIS and its dependencies.
+
+<P>
+For information on installing dependencies and building QGIS on FreeBSD, see
+<I>Building QGIS on FreeBSD</I> on <TT><A NAME="tex2html9"
+  HREF="http://community.qgis.org">http://community.qgis.org</A></TT>.
 
 <P>
 
 <H1><A NAME="SECTION00040000000000000000">
 PostgreSQL</A>
 </H1>
-  QGIS uses the latest features of PostgreSQL. For this reason, version 7.4.x or higher is recommended with QGIS version 0.5. If you choose to add PostgreSQL, you must also install PostGIS and the GEOS library (see below). 
+  QGIS uses the latest features of PostgreSQL. For this reason, version 8.0.x or higher is recommended with QGIS version 0.7. If you choose to add PostgreSQL, you must also install PostGIS (see below). 
   
 <OL>
 <LI>Download PostgreSQL source from www.postgresql.org 
 </LI>
 <LI>Extract the source 
   <PRE>
-  tar -xzf postgresql-7.4.1.tar.gz
+  tar -xzf postgresql-8.0.1.tar.gz
 </PRE>
 
 <P>
 </LI>
 <LI>Change to the source directory 
   <PRE>
-  cd postgresql-7.4.1
+  cd postgresql-8.0.1
 </PRE>
 
 <P>
@@ -271,7 +325,7 @@ PostgreSQL</A>
   select version();
   version
   -------------------------------------------------------------------------------------
-  PostgreSQL 7.4.1 on i686-pc-linux-gnu, compiled by GCC gcc (GCC) 3.3.1 (SuSE Linux)
+  PostgreSQL 8.0.1 on i686-pc-linux-gnu, compiled by GCC gcc (GCC) 3.3.1 (SuSE Linux)
 (1 row)
 
   \q
@@ -301,7 +355,7 @@ QGIS uses GEOS to properly fetch features from the the underlying datastore
 To install GEOS:
   
 <OL>
-<LI>Download GEOS source from <TT><A NAME="tex2html7"
+<LI>Download GEOS source from <TT><A NAME="tex2html10"
   HREF="http://geos.refractions.net">http://geos.refractions.net</A></TT>
 </LI>
 <LI>Untar GEOS
@@ -336,12 +390,12 @@ NOTE - You must edit the PostGIS Makefile and make sure that USE_GEOS=1 is
   set. Also adjust GEOS_DIR to point to your GEOS installation directory.
   
 <OL>
-<LI>Download PostGIS source from <TT><A NAME="tex2html8"
+<LI>Download PostGIS source from <TT><A NAME="tex2html11"
   HREF="http://postgis.refractions.net">http://postgis.refractions.net</A></TT> 
 
 <P>
 </LI>
-<LI>Untar PostGIS into the contrib subdirectory of the postgresql build directory. The contrib subdirectory is located in the directory created in step 3 of the PostgreSQL installation process.
+<LI>Untar PostGIS into the contrib subdirectory of the PostgreSQL build directory. The contrib subdirectory is located in the directory created in step 3 of the PostgreSQL installation process.
 </LI>
 <LI>Change to the postgis subdirectory
 </LI>
@@ -352,18 +406,18 @@ NOTE - You must edit the PostGIS Makefile and make sure that USE_GEOS=1 is
 <LI>The quick and dirty steps to install PostGIS are:
   <PRE>
    cd contrib
-   gunzip postgis-0.8.0.tar.gz 
-   tar xvf postgis-0.8.0.tar 
-   cd postgis-0.8.0 
+   gunzip postgis-1.0.2.tar.gz 
+   tar xvf postgis-1.0.2.tar 
+   cd postgis-1.0.2 
    make 
    make install 
    createlang plpgsql yourtestdatabase 
-   psql -d yourtestdatabase -f postgis.sql 
+   psql -d yourtestdatabase -f lwpostgis.sql 
    psql -d yourtestdatabase -f spatial_ref_sys.sql
 </PRE>
 </LI>
 </OL>
-The <B>better way</B> to install PostGIS is to carefully follow the instructions in the PostGIS manual in the doc/html subdirectory or the online manual at <TT><A NAME="tex2html9"
+The <B>better way</B> to install PostGIS is to carefully follow the instructions in the PostGIS manual in the doc/html subdirectory or the online manual at <TT><A NAME="tex2html12"
   HREF="http://postgis.refractions.net/docs">http://postgis.refractions.net/docs</A></TT>
 <P>
 
@@ -371,30 +425,53 @@ The <B>better way</B> to install PostGIS is to carefully follow the instructions
 GRASS</A>
 </H1>
 If you want QGIS to support GRASS vector and raster layers, you must build GRASS prior to proceeding. 
-Follow the directions on the GRASS website carefully to build version 5.7. Additional information and the build instructions can be found at <TT><A NAME="tex2html10"
+Follow the directions on the GRASS website carefully to build version 6.0.x. Additional information and the build instructions can be found at <TT><A NAME="tex2html13"
   HREF="http://grass.itc.it">http://grass.itc.it</A></TT>.
 
 <P>
-The GRASS software is available for download at <TT><A NAME="tex2html11"
+The GRASS software is available for download at <TT><A NAME="tex2html14"
   HREF="http://grass.itc.it/download.html">http://grass.itc.it/download.html</A></TT>.
 
-<P>
-
 <H1><A NAME="SECTION00080000000000000000">
+Proj4</A>
+</H1>
+Proj4 provides the functions needed for on the fly projection of map layers in version 0.7. To build and install Proj4, download the latest version from <TT><A NAME="tex2html15"
+  HREF="http://proj.maptools.org">http://proj.maptools.org</A></TT>, untar the distribution and:
+<PRE>
+  ./configure
+  make
+  make install
+</PRE>
+<H1><A NAME="SECTION00090000000000000000">
+SQLite</A>
+</H1>
+Sqlite is used to manage the projections database and store persistent data such as spatial bookmarks. Download the latest (3.x) version of SQLite from <TT><A NAME="tex2html16"
+  HREF="http://www.sqlite.org/">http://www.sqlite.org/</A></TT>. Untar the distribution and:
+<PRE>
+  ./configure
+  make
+  make install
+</PRE>
+Note - SQLite 3.x is included on Mac OS X 10.4.
+
+<H1><A NAME="SECTION000100000000000000000">
 GDAL/OGR</A>
 </H1>
   The GDAL and OGR libraries provide support for raster and vector data formats. QGIS makes use of both of these libraries (which come bundled in one distribution).
 
 <P>
-Note: A Linux binary of GDAL is available at <TT><A NAME="tex2html12"
+Note: A Linux binary of GDAL is available at <TT><A NAME="tex2html17"
   HREF="http://www.remotesensing.org/gdal">http://www.remotesensing.org/gdal</A></TT>. If you choose to install the binary you will also need to download and unpack the source tree since QGIS needs the header files in order to compile.
 
 <P>
 To install GDAL/OGR from source:
   
 <OL>
-<LI>Download the GDAL distribution from <TT><A NAME="tex2html13"
-  HREF="http://www.remotesensing.org/gdal">http://www.remotesensing.org/gdal</A></TT>. You should use version 1.1.9 or higher. Versions prior to 1.1.9 contained a bug that caused problems when a null feature was encountered. If you want to build vector support for GRASS, you must use GDAL 1.2.3.
+<LI>Download the GDAL distribution from
+  <TT><A NAME="tex2html18"
+  HREF="http://www.remotesensing.org/gdal">http://www.remotesensing.org/gdal</A></TT>. You should use the latest
+  version of GDAL if possible. The minimum recommended version for use
+  with QGIS is 1.2.6. 
 
 <P>
 </LI>
@@ -420,7 +497,9 @@ To install GDAL/OGR from source:
   <PRE>
     ./configure --with-grass=&lt;full path to grass install&gt;
 </PRE>
-  Depending on the GDAL version you are building, it may be necessary to specify -without-ogdi when running configure if you don't have the OGDI libary avaiable on your system.
+  Depending on the GDAL version you are building, it may be necessary to
+  specify -without-ogdi when running configure if you don't have the OGDI
+  library available on your system.
 
 <P>
 </LI>
@@ -458,15 +537,15 @@ To install GDAL/OGR from source:
 </OL>
 
 <P>
-If you've had problems during the installation, refer to this manual, where the whole process is described with some more detail: <TT><A NAME="tex2html14"
+If you've had problems during the installation, refer to this manual, where the whole process is described with some more detail: <TT><A NAME="tex2html19"
   HREF="http://www.remotesensing.org/gdal/gdal_building.html">http://www.remotesensing.org/gdal/gdal_building.html</A></TT> 
 
 <P>
 
-<H1><A NAME="SECTION00090000000000000000">
+<H1><A NAME="SECTION000110000000000000000">
 Qt</A>
 </H1>
-  Qt 3.1.2 or higher is required in order to compile QGIS. You may already have Qt on your system. If so, check to see if you have version 3.1.2 or later. You can check the Qt version using the find command:
+  Qt 3.2.1 or higher is required in order to compile QGIS. You may already have Qt on your system. If so, check to see if you have version 3.2.1 or later. You can check the Qt version using the find command:
   <PRE>
   find ./ -name qglobal.h 2&gt;/dev/null | xargs grep QT_VERSION_STR
 </PRE>
@@ -487,7 +566,7 @@ If Qt is not installed, you will have to install the Qt development package for 
 To install Qt from source:
   
 <OL>
-<LI>Download Qt from <TT><A NAME="tex2html15"
+<LI>Download Qt from <TT><A NAME="tex2html20"
   HREF="http://www.trolltech.com/developer">http://www.trolltech.com/developer</A></TT> (choose the Qt/X11 Free Edition)
 </LI>
 <LI>Unpack the distribution
@@ -505,17 +584,19 @@ To install Qt from source:
   
 </LI>
 </OL>
+NOTE - QGIS will not compile under Qt 4.0.x. The best choice for compiling
+QGIS is Qt 3.3.x.
 
 <P>
 
-<H1><A NAME="SECTION000100000000000000000">
+<H1><A NAME="SECTION000120000000000000000">
 Building QGIS</A>
 </H1>
 
 <P>
 After you have installed the required libraries, you are ready to build QGIS. Download and untar the QGIS distribution and change to the QGIS source directory. You have two options for building and installing QGIS: <B>Quick and Dirty</B> and the <B>right way</B>.
   
-<H2><A NAME="SECTION000101000000000000000">
+<H2><A NAME="SECTION000121000000000000000">
 Quick and Dirty</A>
 </H2>
   If you don't need PostgreSQL support and have installed GDAL ,
@@ -528,7 +609,7 @@ Quick and Dirty</A>
   The above assumes that the gdal-config program is in your PATH
   See the next section for the full configuration instructions.
   
-<H2><A NAME="SECTION000102000000000000000">
+<H2><A NAME="SECTION000122000000000000000">
 Configuring QGIS the Right Way</A>
 </H2>
   To see the configure options available, change the the QGIS 
@@ -549,7 +630,7 @@ Configuring QGIS the Right Way</A>
 
 <P>
 
-<H3><A NAME="SECTION000102100000000000000">
+<H3><A NAME="SECTION000122100000000000000">
 Qt</A>
 </H3>
   The configure script will detect Qt, unless it is installed in a
@@ -557,7 +638,7 @@ Qt</A>
   make ensure that the detection succeeds. You can also specify the
   path using the -with-qtdir option. 
   
-<H3><A NAME="SECTION000102200000000000000">
+<H3><A NAME="SECTION000122200000000000000">
 GDAL</A>
 </H3>
   If the gdal-config script is in the PATH, configure will automatically
@@ -566,7 +647,7 @@ GDAL</A>
   <PRE>
     /configure --with-gdal=/usr/mystuff/bin/gdal-config
 </PRE>
-<H3><A NAME="SECTION000102300000000000000">
+<H3><A NAME="SECTION000122300000000000000">
 PostgreSQL</A>
 </H3>
   If the pg_config script is in the PATH, configure will automatically
@@ -575,16 +656,16 @@ PostgreSQL</A>
   <PRE>
     ./configure --with-pg=/usr/local/psql/bin/pg_config
 </PRE>
-<H3><A NAME="SECTION000102400000000000000">
+<H3><A NAME="SECTION000122400000000000000">
 GRASS</A>
 </H3>
 To build QGIS with GRASS support you must specify the full path to the installed GRASS binary package:
 <PRE>
-    ./configure --with-grass=/usr/local/grass-5.7.0
+    ./configure --with-grass=/usr/local/grass-6.0.0
 </PRE>
 This assumes that GRASS is installed in the default location. Change the path to match the location of your GRASS installation.
   
-<H3><A NAME="SECTION000102500000000000000">
+<H3><A NAME="SECTION000122500000000000000">
 Example Use of Configure</A>
 </H3>
   An example of use of configure for building QGIS with all options:
@@ -592,7 +673,7 @@ Example Use of Configure</A>
     ./configure --prefix=/usr/local/qgis \
     --with-gdal=/usr/local/gdal/bin/gdal-config \
     --with-pg=/usr/local/psql/bin/pg_config \
-    --with-grass=/usr/local/grass-5.7.0
+    --with-grass=/usr/local/grass-6.0.0
 </PRE>
   This will configure QGIS to use GDAL, GRASS, and PostgreSQL. QGIS will be
   installed in /usr/local/qgis.
@@ -603,7 +684,7 @@ If QTDIR is set and gdal-config and pg_config are both
   options. The configure script will properly detect and configure
   GDAL and PostgreSQL. You must still use the -with-grass option if building with GRASS support.
   
-<H3><A NAME="SECTION000102600000000000000">
+<H3><A NAME="SECTION000122600000000000000">
 Compiling and Installing QGIS</A>
 </H3>
   Once properly configured simply issue the following commands:
@@ -611,21 +692,21 @@ Compiling and Installing QGIS</A>
     make
     make install
 </PRE>
-NOTE - As of version 0.1, you can no longer run QGIS from the src directory. You must do a make install and start QGIS from the installed location. In the case of the example above, the QGIS binary resides in the bin subdirectory of the directory specified with the prefix option (/usr/local/qgis/bin).
+NOTE - You must do a <I>make install</I> and start QGIS from the installed location. In the case of the example above, the QGIS binary resides in the bin subdirectory of the directory specified with the prefix option (/usr/local/qgis/bin).
 
 <P>
 For information on using QGIS see the QGIS User Guide.
 
 <P>
 
-<H1><A NAME="SECTION000110000000000000000">
+<H1><A NAME="SECTION000130000000000000000">
 Building Plugins</A>
 </H1>
-The QGIS source distribution contains a number of "core" plugins. These are built along with QGIS using the instructions above. Additional external plugins are available from the QGIS community website at <TT><A NAME="tex2html16"
-  HREF="http://community.qgis.org">http://community.qgis.org</A></TT>. Instructions for building an external plugin can be found at <TT><A NAME="tex2html17"
+The QGIS source distribution contains a number of "core" plugins. These are built along with QGIS using the instructions above. Additional external plugins are available from the QGIS community website at <TT><A NAME="tex2html21"
+  HREF="http://community.qgis.org">http://community.qgis.org</A></TT>. Instructions for building an external plugin can be found at <TT><A NAME="tex2html22"
   HREF="http://wiki.qgis.org/qgiswiki/StepByStepBuildInstructions">http://wiki.qgis.org/qgiswiki/StepByStepBuildInstructions</A></TT>. Some external plugins may include instructions on building. If so, follow the instructions provided with the plugin rather than those provided in the wiki. 
 
-<H1><A NAME="SECTION000120000000000000000">
+<H1><A NAME="SECTION000140000000000000000">
 About this document ...</A>
 </H1>
  <STRONG>Building and Installing QGIS</STRONG><P>
@@ -641,13 +722,21 @@ Copyright &#169; 1997, 1998, 1999,
 Mathematics Department, Macquarie University, Sydney.
 <P>
 The command line arguments were: <BR>
- <STRONG>latex2html</STRONG> <TT>-dir html -nonavigation -split 0 install.tex</TT>
+ <STRONG>latex2html</STRONG> <TT>-split 0 install.tex</TT>
 <P>
-The translation was initiated by Gary Sherman on 2004-12-19
-<BR><HR>
+The translation was initiated by Gary Sherman on 2005-09-01<HR>
+<!--Navigation Panel-->
+<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive"
+ SRC="file:/sw/share/lib/latex2html/icons/nx_grp_g.png"> 
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/sw/share/lib/latex2html/icons/up_g.png"> 
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/sw/share/lib/latex2html/icons/prev_g.png">   
+<BR>
+<!--End of Navigation Panel-->
 <ADDRESS>
 Gary Sherman
-2004-12-19
+2005-09-01
 </ADDRESS>
 </BODY>
 </HTML>
