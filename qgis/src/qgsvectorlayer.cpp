@@ -933,6 +933,7 @@ void QgsVectorLayer::identify(QgsRect * r)
       // restore the identify window position and show it
       ir->restorePosition();
     } else {
+      ir->raise();
       ir->clear();
       ir->setActions ( mActions );
     }
