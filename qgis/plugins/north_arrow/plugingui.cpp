@@ -162,7 +162,7 @@ void QgsNorthArrowPluginGui::rotatePixmap(int theRotationInt)
     QFont myQFont("time", 18, QFont::Bold);
     myQPainter.setFont(myQFont);
     myQPainter.setPen(Qt::red);
-    myQPainter.drawText(10, 20, QString("Pixmap Not Found"));
+    myQPainter.drawText(10, 20, QString(tr("Pixmap Not Found")));
     myQPainter.end();
     pixmapLabel->setPixmap(myPainterPixmap);    
   }

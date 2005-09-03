@@ -105,7 +105,7 @@ void QgsScaleBarPlugin::initGui()
   pluginMenu->setWhatsThis(menuId, tr("Creates a scale bar that is displayed on the map canvas"));
 
   // Create the action for tool
-  myQActionPointer = new QAction(tr("Scale Bar"), QIconSet(icon), tr("&Wmi"),0, this, tr("run"));
+  myQActionPointer = new QAction(tr("Scale Bar"), QIconSet(icon), "&Wmi",0, this, tr("run"));
   myQActionPointer->setWhatsThis(tr("Creates a scale bar that is displayed on the map canvas"));
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
