@@ -66,19 +66,19 @@ void QgsScaleBarPluginGui::setEnabled(bool theBool)
 
 void QgsScaleBarPluginGui::setStyle(QString theStyleQString)
 {
-  if ((tr(theStyleQString))=="Tick Down")
+  if ((tr(theStyleQString))==tr("Tick Down"))
   {
     cboStyle->setCurrentItem(0);
   }
-  else if ((tr(theStyleQString))=="Tick Up")
+  else if ((tr(theStyleQString))==tr("Tick Up"))
   {
     cboStyle->setCurrentItem(1);
   }
-  else if ((tr(theStyleQString))=="Box")
+  else if ((tr(theStyleQString))==tr("Box"))
   {
     cboStyle->setCurrentItem(2);
   }
-  else if ((tr(theStyleQString))=="Bar")
+  else if ((tr(theStyleQString))==tr("Bar"))
   {
     cboStyle->setCurrentItem(3);
   }

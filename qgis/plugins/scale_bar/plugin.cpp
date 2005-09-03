@@ -83,8 +83,8 @@ qgisMainWindowPointer(theQGisApp),
 QgisPlugin(name_,description_,version_,type_)
 {
   mPreferredSize = 30;
-  mPlacement = "Top Left";
-  mStyle = "Tick Down";
+  mPlacement = tr("Top Left");
+  mStyle = tr("Tick Down");
   mEnabled = true;
   mSnapping = true;
 }
@@ -99,14 +99,14 @@ QgsScaleBarPlugin::~QgsScaleBarPlugin()
  */
 void QgsScaleBarPlugin::initGui()
 {
-  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
-  menuId = pluginMenu->insertItem(QIconSet(icon),"&ScaleBar", this, SLOT(run()));
+  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu(tr("&Decorations"));
+  menuId = pluginMenu->insertItem(QIconSet(icon),tr("&ScaleBar"), this, SLOT(run()));
 
-  pluginMenu->setWhatsThis(menuId, "Creates a scale bar that is displayed on the map canvas");
+  pluginMenu->setWhatsThis(menuId, tr("Creates a scale bar that is displayed on the map canvas"));
 
   // Create the action for tool
-  myQActionPointer = new QAction("Scale Bar", QIconSet(icon), "&Wmi",0, this, "run");
-  myQActionPointer->setWhatsThis("Creates a scale bar that is displayed on the map canvas");
+  myQActionPointer = new QAction(tr("Scale Bar"), QIconSet(icon), tr("&Wmi"),0, this, tr("run"));
+  myQActionPointer->setWhatsThis(tr("Creates a scale bar that is displayed on the map canvas"));
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   //render the scale bar each time the map is rendered
@@ -143,7 +143,7 @@ void QgsScaleBarPlugin::help()
 // Slot called when the  menu item is activated
 void QgsScaleBarPlugin::run()
 {
-  QgsScaleBarPluginGui *myPluginGui=new QgsScaleBarPluginGui(qgisMainWindowPointer,"Scale Bar",true,0);
+  QgsScaleBarPluginGui *myPluginGui=new QgsScaleBarPluginGui(qgisMainWindowPointer,tr("Scale Bar"),true,0);
   myPluginGui->setPreferredSize(mPreferredSize);
   myPluginGui->setSnapping(mSnapping);
   myPluginGui->setPlacement(mPlacement);
@@ -504,7 +504,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
 void QgsScaleBarPlugin::unload()
 {
   // remove the GUI
-  qGisInterface->removePluginMenuItem("&Decorations",menuId);
+  qGisInterface->removePluginMenuItem(tr("&Decorations"),menuId);
   qGisInterface->removeToolBarIcon(myQActionPointer);
 
   // remove the northarrow from the canvas
