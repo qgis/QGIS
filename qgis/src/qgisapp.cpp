@@ -666,7 +666,7 @@ void QgisApp::about()
     abt->setURLs(urls);
     QString watsNew = "<html><body>" + tr("Version") + " ";
     watsNew += QGis::qgisVersion;
-    watsNew += "<h3>New features</h3>";
+    watsNew += "<h3>" + tr("New features") + "</h3>";
     watsNew += "<ul><li>"
       + tr("On the fly projection support to automatically project layers from different coordinate systems")
       + "<li>"
