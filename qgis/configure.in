@@ -232,7 +232,7 @@ fi
 
 if test x"$PG_CONFIG" != "xno" ; then
   PG_LIB="-L`$PG_CONFIG --libdir` -lpq"
-  PG_INC="`$PG_CONFIG --includedir`"
+  PG_INC="-I`$PG_CONFIG --includedir`"
   AC_MSG_CHECKING([for postgreSQL libs])
   AC_MSG_RESULT([$PG_LIB])
   AC_DEFINE([HAVE_POSTGRESQL],1,
