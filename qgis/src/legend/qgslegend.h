@@ -177,6 +177,8 @@ protected:
   /**Moves all the checkboxes stored in mCheckBoxes to the right places. Needs to
    be called every time the geometry of the treeview is changed*/
   void placeCheckBoxes();
+  /**Removes the current legend group*/
+  void legendGroupRemove();
   /**Adds all the legend layer files of the current legend layer to overview*/
   void legendLayerAddToOverview();
   /**Removes all the legend layer files of the current legend layer from overview*/
