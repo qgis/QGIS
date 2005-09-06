@@ -8,5 +8,5 @@
 TEMPLATE = subdirs
 SUBDIRS =  delimitedtext \
            ogr \
-           postgres \
-	   gpx
+           postgres 
+#	   gpx
