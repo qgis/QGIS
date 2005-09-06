@@ -40,6 +40,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayerproperties.h"
 #include <iostream>
+#include <qpushbutton.h>
 
 static const char *const ident_ = "$Id$";
 
@@ -53,6 +54,11 @@ const int AUTOSCROLL_MARGIN = 16;
 QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
     : QListView(parent, name), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0)
 {
+    
+    QPushButton* addGroupButton = new QPushButton(QIconSet(QPixmap(QString(PKGDATAPATH)+QString("/images/icons/folder_new.png"))), "", this);
+    connect( addGroupButton, SIGNAL(clicked()),
+           this, SLOT(addGroup()));
+
   connect( this, SIGNAL(selectionChanged(QListViewItem *)),
            this, SLOT(updateLegendItem(QListViewItem *)) );
 
@@ -76,9 +82,9 @@ QgsLegend::~QgsLegend()
 
 void QgsLegend::addGroup()
 {
-#ifdef QGISDEBUG
-    qWarning("in addGroup");
-#endif
+    QgsLegendGroup* group = new QgsLegendGroup(this, tr("group"));
+    group->setRenameEnabled(0, true);
+    group->setOpen(true);
 }
 
 void QgsLegend::updateLegendItem( QListViewItem * li )
@@ -381,6 +387,12 @@ void QgsLegend::handleRightClickEvent(QListViewItem* item, const QPoint& positio
 		pm.insertItem(tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
 		pm.exec(position);
 	    }
+	    else if(li->type() == QgsLegendItem::LEGEND_GROUP)
+	    {
+		QPopupMenu pm;
+		pm.insertItem(tr("&Remove"), this, SLOT(legendGroupRemove()));
+		pm.exec(position);
+	    }
 	}
     }
 }
@@ -505,6 +517,23 @@ void QgsLegend::placeCheckBox(QListViewItem* litem, QCheckBox* cbox)
     else
     {
 	cbox->hide();
+    }
+}
+
+void QgsLegend::legendGroupRemove()
+{
+    QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup*>(currentItem());
+    if(lg)
+    {
+	//delete the legend layers first
+	QListViewItem * child = lg->firstChild();
+        while(child) 
+	{
+	    setCurrentItem(child);
+	    legendLayerRemove();
+            child = lg->firstChild();
+        }
+	delete lg;
     }
 }
 

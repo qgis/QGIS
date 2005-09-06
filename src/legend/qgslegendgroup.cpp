@@ -23,14 +23,14 @@ QgsLegendGroup::QgsLegendGroup(QListViewItem * theItem ,QString theName)
     : QgsLegendItem(theItem,theName)
 {
   mType=LEGEND_GROUP;
-  QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/group.png"));
+  QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/folder.png"));
   setPixmap(0,myPixmap);
 }
 QgsLegendGroup::QgsLegendGroup(QListView * theListView, QString theString)
     : QgsLegendItem(theListView,theString)
 {
   mType=LEGEND_GROUP;
-  QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/group.png"));
+  QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/folder.png"));
   setPixmap(0,myPixmap);
 }
 
