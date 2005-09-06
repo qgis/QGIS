@@ -479,9 +479,8 @@ void QgsMapLayer::initContextMenu(QgisApp * app)
     popMenu->insertItem(tr("&Zoom to extent of selected layer"), app, SLOT(zoomToLayerExtent()));
     popMenu->insertSeparator();
 
-
-
     app->actionInOverview->addTo( popMenu );
+    mShowInOverviewItemId = popMenu->idAt(3);
 
     popMenu->insertSeparator();
     popMenu->insertItem(tr("&Remove"), app, SLOT(removeLayer()));
