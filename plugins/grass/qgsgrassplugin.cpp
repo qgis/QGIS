@@ -182,33 +182,6 @@ void QgsGrassPlugin::initGui()
 
   mCanvas = qGisInterface->getMapCanvas();
 
-  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&GRASS");
-
-  int id = pluginMenu->insertItem(QIconSet(icon_add_vector),"Add Grass &Vector", this,
-      SLOT(addVector()));
-  pluginMenu->setWhatsThis(id, "Add a GRASS vector layer to the map canvas.");
-  menuId.push_back(id);
-
-  id = pluginMenu->insertItem(QIconSet(icon_add_raster),"Add Grass &Raster", this, SLOT(addRaster()));
-  pluginMenu->setWhatsThis(id, "Add a GRASS raster layer to the map canvas.");
-  menuId.push_back(id);
-
-  id = pluginMenu->insertItem(QIconSet(icon_grass_tools),"GRASS &Tools", this, SLOT(openTools()));
-  pluginMenu->setWhatsThis(id, "Open GRASS tools.");
-  menuId.push_back(id);
-
-  id = pluginMenu->insertItem(QIconSet(icon_grass_region),"Display Current Grass Region", this, SLOT(switchRegion(bool)));
-  pluginMenu->setWhatsThis(id, "Display Current Grass Region");
-  menuId.push_back(id);
-
-  id = pluginMenu->insertItem(QIconSet(icon_grass_region_edit),"Edit Current Grass Region", this, SLOT(changeRegion()));
-  pluginMenu->setWhatsThis(id, "Edit Current Grass Region");
-  menuId.push_back(id);
-
-  id = pluginMenu->insertItem(QIconSet(icon_grass_edit),"&Edit Grass Vector", this, SLOT(edit()));
-  pluginMenu->setWhatsThis(id, "Edit a GRASS vector layer");
-  menuId.push_back(id);
-
   // Create the action for tool
   QAction *addVectorAction = new QAction("Add GRASS vector layer", QIconSet(icon_add_vector), 
       "Add GRASS vector layer",0, this, "addVector");
@@ -250,6 +223,17 @@ void QgsGrassPlugin::initGui()
   connect(editAction, SIGNAL(activated()), this, SLOT(edit()));
   connect(mRegionAction, SIGNAL(toggled(bool)), this, SLOT(switchRegion(bool)));
   connect(editRegionAction, SIGNAL(activated()), this, SLOT(changeRegion()));
+
+  // Create GRASS plugin menu entry
+  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&GRASS");
+
+  // Add actions to the menu
+  addVectorAction->addTo(pluginMenu);
+  addRasterAction->addTo(pluginMenu);
+  openToolsAction->addTo(pluginMenu);
+  mRegionAction->addTo(pluginMenu);
+  editRegionAction->addTo(pluginMenu);
+  editAction->addTo(pluginMenu);
 
   // Add the toolbar
   toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "GRASS");
