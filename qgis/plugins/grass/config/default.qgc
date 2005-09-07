@@ -31,6 +31,9 @@
 	<section label="Set raster color table">
 		<grass name="r.colors"/>
 	</section>
+	<section label="Visualization">
+		<grass name="nviz"/>
+	</section>
 	<section label="General">
 		<grass name="g.gisenv"/>
 	</section>
