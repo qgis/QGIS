@@ -405,6 +405,8 @@ void QgsComposition::contentsMouseReleaseEvent(QMouseEvent* e)
         mRectangleItem = 0;
 
         if ( w > 0 && h > 0 ) {
+          mComposer->selectItem(); // usually just one map
+
           QgsComposerMap *m = new QgsComposerMap ( this, mNextItemId++, x, y, w, h );
 
           m->setUserExtent( mMapCanvas->extent());
@@ -415,8 +417,6 @@ void QgsComposition::contentsMouseReleaseEvent(QMouseEvent* e)
             QgsComposerItem *coi = dynamic_cast <QgsComposerItem *> (mSelectedItem);
             coi->setSelected ( false );
           }
-
-          mComposer->selectItem(); // usually just one map
 
           m->setSelected ( true );
           mComposer->showItemOptions ( m->options() );
