@@ -511,7 +511,18 @@ private:
     unsigned int mMousePrecisionDecimalPlaces;
     //! Flag to indicate how the project properties dialog was summoned
     bool mShowProjectionTab;
-    
+
+    /** String containing supporting vector file formats 
+
+       Suitable for a QFileDialog file filter.  Build in ctor.
+    */
+    QString mVectorFileFilter;
+
+    /** String containing supporting raster file formats 
+
+       Suitable for a QFileDialog file filter.  Build in ctor.
+    */
+    QString mRasterFileFilter;
 };
 
 #endif

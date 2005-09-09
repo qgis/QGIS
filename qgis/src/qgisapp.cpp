@@ -28,6 +28,7 @@
 #include <vector>
 #include <list>
 #include <algorithm>
+#include <functional>
 
 using namespace std;
 
@@ -276,6 +277,11 @@ static char *identify_cursor[] = {
                                  };
 
 
+/// build the vector file filter string for a QFileDialog
+/*
+  called in ctor for initializing mVectorFileFilter
+ */
+static void buildSupportedVectorFileFilter_(QString & fileFilters);
 
 
 /** set the application title bar text
@@ -631,6 +637,13 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // Map composer
     mComposer = new QgsComposer(this);
 
+    // now build vector file filter
+    buildSupportedVectorFileFilter_( mVectorFileFilter );
+
+    // now build raster file filter
+    QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
+
+
 } // QgisApp ctor
 
 
@@ -828,7 +841,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
     // if we've already built the supported vector string, just return what
     // we've already built
-    if ( ! myFileFilters.isEmpty() )
+    if ( ! ( myFileFilters.isEmpty() || myFileFilters.isNull() ) )
     {
         fileFilters = myFileFilters;
 
@@ -841,7 +854,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
     if (!driverRegistrar)
     {
-        QMessageBox::warning(0,"OGR Driver Manger","unable to get OGRDriverManager");
+        QMessageBox::warning(0,"OGR Driver Manager","unable to get OGRDriverManager");
         return;                   // XXX good place to throw exception if we
     }                           // XXX decide to do exceptions
 
@@ -1041,9 +1054,6 @@ static void openFilesRememberingFilter_(QString const &filterName,
 void QgisApp::addLayer()
 {
 
-    QString fileFilters;
-
-    buildSupportedVectorFileFilter_(fileFilters);
 
     //qDebug( "vector file filters: " + fileFilters );
 
@@ -1065,12 +1075,12 @@ void QgisApp::addLayer()
         QStringList selectedFiles;
 #ifdef QGISDEBUG
 
-        std::cerr << "Vector file filters: " << fileFilters.local8Bit() << std::endl;
+        std::cerr << "Vector file filters: " << mVectorFileFilter.local8Bit() << std::endl;
 #endif
 
         QString enc;
         QString title = tr("Open an OGR Supported Vector Layer");
-        openFilesRememberingFilter_("lastVectorFileFilter", fileFilters, selectedFiles, enc,
+        openFilesRememberingFilter_("lastVectorFileFilter", mVectorFileFilter, selectedFiles, enc,
                                     title);
         if (selectedFiles.isEmpty())
         {
@@ -1637,12 +1647,12 @@ setDataSource_( QDomNode & layerNode, QString const & dataSource )
 
 
 
-/**
+/** this is used to locate files that have moved or otherwise are missing
    
 */
 static
 void
-findMissingFile_( QDomNode & layerNode )
+findMissingFile_( QString const & fileFilters, QDomNode & layerNode )
 {
     // Prepend that file name to the valid file format filter list since it
     // makes it easier for the user to not only find the original file, but to
@@ -1653,22 +1663,16 @@ findMissingFile_( QDomNode & layerNode )
     QString memoryQualifier;    // to differentiate between last raster and
                                 // vector directories
 
-    QString fileFilters;        // file dialog fliter strings
-
     switch( dataType_( layerNode ) )
     {
         case IS_VECTOR:
         {
-            buildSupportedVectorFileFilter_(fileFilters);
-
             memoryQualifier = "lastVectorFileFilter";
 
             break;
         }
         case IS_RASTER:
         {
-            QgsRasterLayer::buildSupportedRasterFileFilter(fileFilters);
-
             memoryQualifier = "lastRasterFileFilter";
 
             break;
@@ -1683,14 +1687,14 @@ findMissingFile_( QDomNode & layerNode )
     // for the file type will also be added in case the file name itself has
     // changed, too.
 
-    fileFilters = originalDataSource.fileName() + ";;" + fileFilters;
+    QString myFileFilters = originalDataSource.fileName() + ";;" + fileFilters;
 
     QStringList selectedFiles;
     QString     enc;
     QString     title( QObject::trUtf8("Open an OGR Supported Layer") );
 
     openFilesRememberingFilter_(memoryQualifier,
-                                fileFilters, 
+                                myFileFilters, 
                                 selectedFiles, 
                                 enc,
                                 title);
@@ -1730,17 +1734,16 @@ findMissingFile_( QDomNode & layerNode )
 */
 static
 void
-findLayer_( QDomNode const & constLayerNode )
+findLayer_( QString const & fileFilters, QDomNode const & constLayerNode ) 
 {
     // XXX actually we could possibly get away with a copy of the node
     QDomNode & layerNode = const_cast<QDomNode&>(constLayerNode);
-
 
     switch ( providerType_(layerNode) )
     {
         case IS_FILE:
             qDebug( "%s:%d layer is file based", __FILE__, __LINE__ );
-            findMissingFile_( layerNode );
+            findMissingFile_( fileFilters, layerNode );
             break;
         case IS_DATABASE:
             qDebug( "%s:%d layer is database based", __FILE__, __LINE__ );
@@ -1753,7 +1756,7 @@ findLayer_( QDomNode const & constLayerNode )
             break;
     }
 
-} // findLayer_
+}; // findLayer_
 
 
 
@@ -1765,9 +1768,19 @@ findLayer_( QDomNode const & constLayerNode )
 */
 static
 void
-findLayers_( list<QDomNode> const & layerNodes )
+findLayers_( QString const & fileFilters, list<QDomNode> const & layerNodes )
 {
-    for_each( layerNodes.begin(), layerNodes.end(), findLayer_ );
+#ifdef QGISDEBUG
+    const char * fileFiltersC = fileFilters.ascii(); // debugger probe
+#endif
+
+    for( list<QDomNode>::const_iterator i = layerNodes.begin();
+         i != layerNodes.end();
+         ++i )
+    {
+        findLayer_( fileFilters, *i );
+    }
+
 } // findLayers_
 
 
@@ -2088,6 +2101,9 @@ void QgisApp::fileOpen()
                                   tr("") + "\n" + e.what() );
             qDebug( "%s:%d %d bad layers found", __FILE__, __LINE__, e.layers().size() );
 
+            // attempt to find the new locations for missing layers
+            // XXX vector file hard-coded -- but what if it's raster?
+            findLayers_( mVectorFileFilter, e.layers() );
         }
         catch ( std::exception & e )
         {
@@ -2164,7 +2180,8 @@ bool QgisApp::addProject(QString projectFile)
             qDebug( "%s:%d want to find missing layers is true", __FILE__, __LINE__ );
 
             // attempt to find the new locations for missing layers
-            findLayers_( e.layers() );
+            // XXX vector file hard-coded -- but what if it's raster?
+            findLayers_( mVectorFileFilter, e.layers() );
         }
 
     }
@@ -4824,13 +4841,11 @@ void QgisApp::addRasterLayer()
 
     QString fileFilters;
 
-    // build the file filters based on the loaded GDAL drivers
-    QgsRasterLayer::buildSupportedRasterFileFilter(fileFilters);
 
     QStringList selectedFiles;
     QString e;//only for parameter correctness
     QString title = tr("Open a GDAL Supported Raster Data Source");
-    openFilesRememberingFilter_("lastRasterFileFilter", fileFilters, selectedFiles,e,
+    openFilesRememberingFilter_("lastRasterFileFilter", mRasterFileFilter, selectedFiles,e,
       title);
 
     if (selectedFiles.isEmpty())
