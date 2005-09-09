@@ -253,9 +253,10 @@ void QgsPgGeoprocessing::buffer()
 #endif
               PGresult *geoCol = PQexec(conn, (const char *) sql);
 
-            if (PQresultStatus(geoCol) == PGRES_COMMAND_OK) {
+            if (PQresultStatus(geoCol) == PGRES_TUPLES_OK) {
               PQclear(geoCol);
               // drop the check constraint based on geometry type
+              /*
               sql = QString("alter table %1.%2 drop constraint \"$2\"")
                 .arg(bb->schema())
                 .arg(bb->bufferLayerName());
@@ -264,9 +265,20 @@ void QgsPgGeoprocessing::buffer()
 #endif
               result = PQexec(conn, (const char *) sql);
               PQclear(result);
+              */
+#ifdef SUPPORTOLDPG
               // check pg version and formulate insert query accordingly
-              result = PQexec(conn,"select version()");
+              sql = "select version()";
+              result = PQexec(conn,(const char *) sql);
+#ifdef QGISDEBUG 
+              std::cerr << "Result of select version(): " << PQresultStatus(result) << std::endl; 
+              std::cerr << "Error string: " << PQerrorMessage(conn) << std::endl; 
+#endif 
+
               QString versionString = PQgetvalue(result,0,0);
+#ifdef QGISDEBUG 
+              std::cerr << "PostgreSQL Version String: " << versionString << std::endl; 
+#endif 
               QStringList versionParts = QStringList::split(" ", versionString);
               // second element is the version number
               QString version = versionParts[1];
@@ -278,6 +290,8 @@ void QgsPgGeoprocessing::buffer()
 #ifdef QGISDEBUG
               std::cerr << "Table name for PG 7.3 is: " << tableName.mid(tableName.find(".")+1) << std::endl;
 #endif
+#endif //SUPPORTOLDPG
+
               //   if(PQresultStatus(geoCol) == PGRES_COMMAND_OK) {
               // do the buffer and insert the features
               if (objId == "objectid") {
@@ -300,14 +314,23 @@ void QgsPgGeoprocessing::buffer()
 
               }
               result = PQexec(conn, (const char *) sql);
+#ifdef QGISDEBUG 
+              std::cerr << "Result of buffer operation: " << PQresultStatus(result) << std::endl; 
+#endif 
               PQclear(result);
               // }
 #ifdef QGISDEBUG
               std::cerr << sql << std::endl;
 #endif
               result = PQexec(conn, "end work");
+#ifdef QGISDEBUG 
+              std::cerr << "Result of end work operation: " << PQresultStatus(result) << std::endl; 
+#endif 
               PQclear(result);
               result = PQexec(conn, "commit;vacuum");
+#ifdef QGISDEBUG 
+              std::cerr << "Result of commit;vacuum operation: " << PQresultStatus(result) << std::endl; 
+#endif 
               PQclear(result);
               PQfinish(conn);
               // QMessageBox::information(0, "Add to Map?", "Do you want to add the layer to the map?");
@@ -344,6 +367,9 @@ void QgsPgGeoprocessing::buffer()
             }
             else
             {
+#ifdef QGISDEBUG 
+              std::cerr << "AddGeometryColumn result: " << PQresultStatus(geoCol) << std::endl; 
+#endif 
               QMessageBox::critical(0, "Unable to add geometry column",
                   QString("Unable to add geometry column to the output table %1-%2")
                   .arg(bb->bufferLayerName()).arg(PQerrorMessage(conn)));
