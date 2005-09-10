@@ -16,7 +16,7 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
-
+#include "qgssearchtreenode.h"
 
 QgsVectorDataProvider::QgsVectorDataProvider(): mEncoding(QTextCodec::codecForLocale())
 {
@@ -185,3 +185,9 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
 }
 
+bool QgsVectorDataProvider::setAttributeFilter(const QgsSearchString& attributeFilter)
+{
+  mAttributeFilter = attributeFilter;
+  // TODO: maybe check if all referenced columns are there, return false if not
+  return true;
+}

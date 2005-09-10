@@ -45,6 +45,7 @@ email                : sherman at mrcc.com
 #endif 
 
 
+#include "../../src/qgssearchtreenode.h"
 #include "../../src/qgsdataprovider.h"
 #include "../../src/qgsfeature.h"
 #include "../../src/qgsfield.h"
@@ -106,20 +107,7 @@ QgsOgrProvider::QgsOgrProvider(QString uri)
     std::cerr << "checking validity\n";
 #endif
 
-    OGRFeatureDefn* fdef = ogrLayer->GetLayerDefn();
-    if(fdef)
-    {
-      geomType = fdef->GetGeomType();
-      for(int i=0;i<fdef->GetFieldCount();++i)
-      {
-        OGRFieldDefn *fldDef = fdef->GetFieldDefn(i);
-        attributeFields.push_back(QgsField(
-              fldDef->GetNameRef(), 
-              fldDef->GetFieldTypeName(fldDef->GetType()),
-              fldDef->GetWidth(),
-              fldDef->GetPrecision()));
-      }
-    }
+    loadFields();
 
 #ifdef QGISDEBUG
     std::cerr << "Done checking validity\n";
@@ -146,9 +134,9 @@ QgsOgrProvider::QgsOgrProvider(QString uri)
   //    std::cerr << "Creating the wktReader\n";
   wktReader = new geos::WKTReader(geometryFactory);
 
-  mNumericalTypes.push_back("OFTInteger");
-  mNumericalTypes.push_back("OFTReal");
-  mNonNumericalTypes.push_back("OFTString");
+  mNumericalTypes.push_back("Integer");
+  mNumericalTypes.push_back("Real");
+  mNonNumericalTypes.push_back("String");
 }
 
 QgsOgrProvider::~QgsOgrProvider()
@@ -166,7 +154,11 @@ QgsOgrProvider::~QgsOgrProvider()
 void QgsOgrProvider::setEncoding(const QString& e)
 {
     QgsVectorDataProvider::setEncoding(e);
+    loadFields();
+}
 
+void QgsOgrProvider::loadFields()
+{
     //the attribute fields need to be read again when the encoding changes
     attributeFields.clear();
     OGRFeatureDefn* fdef = ogrLayer->GetLayerDefn();
@@ -176,11 +168,14 @@ void QgsOgrProvider::setEncoding(const QString& e)
       for(int i=0;i<fdef->GetFieldCount();++i)
       {
         OGRFieldDefn *fldDef = fdef->GetFieldDefn(i);
+        OGRFieldType type = type = fldDef->GetType();
+        bool numeric = (type == OFTInteger || type == OFTReal);
         attributeFields.push_back(QgsField(
               mEncoding->toUnicode(fldDef->GetNameRef()), 
-              mEncoding->toUnicode(fldDef->GetFieldTypeName(fldDef->GetType())),
+              mEncoding->toUnicode(fldDef->GetFieldTypeName(type)),
               fldDef->GetWidth(),
-              fldDef->GetPrecision()));
+              fldDef->GetPrecision(),
+              numeric));
       }
     }
 }
@@ -375,7 +370,8 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
    QgsFeature *f = 0;
    while((fet = ogrLayer->GetNextFeature()) != NULL)
    {
-       if (fet->GetGeometryRef())
+     
+     if (fet->GetGeometryRef())
        {
 	   geom = fet->GetGeometryRef();
 	   // get the wkb representation
@@ -386,12 +382,20 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
 
 	   f = new QgsFeature(fet->GetFID(), featureTypeName);
 	   f->setGeometryAndOwnership(feature, geom->WkbSize());
-	   if(fetchAttributes)
+	   if(fetchAttributes  /*|| !mAttributeFilter.isEmpty()*/)
 	   {
 	       getFeatureAttributes(fet, f);
-	   }
+	   
+        // filtering by attribute
+        // TODO: improve, speed up!
+/*        if (!mAttributeFilter.isEmpty() && !mAttributeFilter.tree()->checkAgainst(f->attributeMap()))
+        {
+          delete fet;
+          continue;
+        }    */
+    }
 	   delete fet;
-
+    
 	   if(mUseIntersect)
 	   {
        geos::Geometry *geosGeom = 0;
@@ -754,7 +758,9 @@ void QgsOgrProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature * f, in
 
   QString fld = fldDef->GetNameRef();
   QCString cstr(ogrFet->GetFieldAsString(attindex));
-  f->addAttribute(fld, mEncoding->toUnicode(cstr));
+  bool numeric = attributeFields[attindex].isNumeric();
+
+  f->addAttribute(fld, mEncoding->toUnicode(cstr), numeric);
 }
 
 /**
@@ -781,6 +787,12 @@ std::vector<QgsField> const & QgsOgrProvider::fields() const
 
 void QgsOgrProvider::reset()
 {
+  // TODO: check whether it supports normal SQL or only that "restricted_sql"
+  if (mAttributeFilter.isEmpty())
+    ogrLayer->SetAttributeFilter(NULL);
+  else
+    ogrLayer->SetAttributeFilter(mAttributeFilter.string());
+
   ogrLayer->SetSpatialFilter(0);
   ogrLayer->ResetReading();
   // Reset the use intersect flag on a provider reset, otherwise only the last

@@ -85,6 +85,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsattributedialog.h"
+#include "qgsattributetabledisplay.h"
 #ifdef Q_WS_X11
 #include "qgsclipper.h"
 #endif
@@ -1093,7 +1094,7 @@ void QgsVectorLayer::table()
     QApplication::setOverrideCursor(Qt::waitCursor);
     tabledisplay = new QgsAttributeTableDisplay(this);
     connect(tabledisplay, SIGNAL(deleted()), this, SLOT(invalidateTableDisplay()));
-    fillTable(tabledisplay->table());
+    tabledisplay->table()->fillTable(this);
     tabledisplay->table()->setSorting(true);
 
 
@@ -1126,67 +1127,6 @@ void QgsVectorLayer::table()
   }
 
 } // QgsVectorLayer::table
-
-void QgsVectorLayer::fillTable(QgsAttributeTable* t)
-{
-    if(t&&dataProvider)
-    {
-  int row = 0;
-  int id;
-  QgsFeature *fet;
-
-  // set up the column headers
-  QHeader *colHeader = t->horizontalHeader();
-  
-  std::vector < QgsField > fields = dataProvider->fields();
-  int numFields = fields.size();
-  t->setNumCols(numFields+1);
-  t->setNumRows(dataProvider->featureCount()+mAddedFeatures.size()-mDeleted.size());
-  colHeader->setLabel(0, "id");
-  for (int h = 1; h <= numFields; h++)
-  {
-      colHeader->setLabel(h, fields[h - 1].name());
-  }
-   
-
-  //go through the features and fill the values into the table
-  dataProvider->reset();
-  while ((fet = dataProvider->getNextFeature(true)))
-  {
-      id=fet->featureId();
-      if(mDeleted.find(id)==mDeleted.end())
-      {
-    //id-field
-    t->setText(row, 0, QString::number(id));
-    t->insertFeatureId(fet->featureId(), row);  //insert the id into the search tree of qgsattributetable
-    std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
-    for (int i = 0; i < attr.size(); i++)
-    {
-        // get the field values
-        t->setText(row, i + 1, attr[i].fieldValue());
-    }
-    row++;
-      }
-      delete fet;
-  }
-
-  //also consider the not commited features
-  for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-  {
-      //id-field
-      tabledisplay->table()->setText(row, 0, QString::number((*it)->featureId()));
-      tabledisplay->table()->insertFeatureId((*it)->featureId(), row);  //insert the id into the search tree of qgsattributetable
-      std::vector < QgsFeatureAttribute > attr = (*it)->attributeMap();
-      for (int i = 0; i < attr.size(); i++)
-      {
-    // get the field values
-    tabledisplay->table()->setText(row, i + 1, attr[i].fieldValue());
-      }
-      row++;
-  }
-  dataProvider->reset();
-    }
-}
 
 void QgsVectorLayer::select(int number)
 {

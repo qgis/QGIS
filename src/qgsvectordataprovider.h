@@ -27,6 +27,9 @@ class QgsGeometry;
 //QGIS Includes
 #include <qgsdataprovider.h>
 #include <qgsspatialrefsys.h>
+
+#include <qgssearchstring.h>
+
 /** Base class for vector data providers
  */
  
@@ -217,6 +220,12 @@ class QgsVectorDataProvider : public QgsDataProvider
       /**Creates a spatial index on the datasource (if supported by the provider type). Returns true in case of success*/
       virtual bool createSpatialIndex();
 
+      /** Sets filter based on attribute values. Returns false when input string contains errors */
+      virtual bool setAttributeFilter(const QgsSearchString& attributeFilter);
+
+      /** Returns current attribute filter */
+      virtual QgsSearchString getAttributeFilter() { return mAttributeFilter; }
+      
       /** Returns a bitmask containing the supported capabilities
           Note, some capabilities may change depending on whether
           a spatial filter is active on this provider, so it may
@@ -299,6 +308,9 @@ class QgsVectorDataProvider : public QgsDataProvider
       std::list<QString> mNonNumericalTypes;
       /**List of type names for numerical types*/
       std::list<QString> mNumericalTypes;
+      /** attribute filter (in 'simple search string' format) */
+      QgsSearchString mAttributeFilter;
+
       /** The spatial reference id of the map canvas. This is the 
        * SRID the provider should transform its coordinates to if 
        * supportsNativeTransform is true. Otherwise this member is unused.

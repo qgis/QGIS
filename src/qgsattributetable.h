@@ -26,6 +26,7 @@
 
 class QPopupMenu;
 class QgsVectorLayer;
+class QgsFeature;
 
 #include "qgsattributeaction.h"
 
@@ -75,6 +76,12 @@ class QgsAttributeTable:public QTable
     void fillTable(QgsVectorLayer* layer);
     /**Swaps the selected rows such that the selected ones are on the top of the table*/
     void bringSelectedToTop();
+    /** Selects rows with chosen feature IDs */
+    void selectRowsWithId(const std::vector<int>& ids);
+    /** Shows only rows with chosen feature IDs, others get hidden */
+    void showRowsWithId(const std::vector<int>& ids);
+    /** Shows all rows */
+    void showAllRows();
 
     public slots:
       void columnClicked(int col);
@@ -105,6 +112,7 @@ class QgsAttributeTable:public QTable
     /**Nested map containing the changed attribute values. The int is the feature id, 
       the first QString the attribute name and the second QString the new value*/
     std::map<int,std::map<QString,QString> > mChangedValues;
+
     /**Compares the content of two cells either alphanumeric or numeric. If 'ascending' is true, -1 means s1 is less, 0 equal, 1 greater. If 'ascending' is false, -1 means s1 is more, 0 equal, 1 greater. This method is used mainly to sort a column*/
     int compareItems(QString s1, QString s2, bool ascending, bool alphanumeric);
     void keyPressEvent(QKeyEvent* ev);
@@ -117,6 +125,8 @@ class QgsAttributeTable:public QTable
     /**Removes the column belonging to an attribute from the table
       @name attribut name*/
     void removeAttrColumn(const QString& name);
+    /** puts attributes of feature to the chosen table row */
+    void putFeatureInTable(int row, QgsFeature* fet);
 
 signals:
 
