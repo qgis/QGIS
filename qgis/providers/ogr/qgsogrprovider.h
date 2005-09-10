@@ -183,6 +183,10 @@ class QgsOgrProvider:public QgsVectorDataProvider
     int capabilities() const;
 
     void setEncoding(const QString& e);
+    
+  protected:
+    /** loads fields from input file to member attributeFields */
+    void loadFields();
 
   private:
     unsigned char *getGeometryPointer(OGRFeature * fet);

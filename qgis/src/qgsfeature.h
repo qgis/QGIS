@@ -96,7 +96,7 @@ class QgsFeature {
     /** 
      * Add an attribute to the map
      */
-    void addAttribute(QString const & field, QString const & value = "");
+    void addAttribute(QString const & field, QString const & value = "", bool numeric = false);
 
     /**Deletes an attribute and its value*/
     void deleteAttribute(const QString& name);

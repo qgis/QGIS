@@ -30,7 +30,7 @@ class QgsFeatureAttribute
 public:
 
   //! Constructor
-  QgsFeatureAttribute(QString const & field = 0, QString const & value = 0);
+  QgsFeatureAttribute(QString const & field = 0, QString const & value = 0, bool num = false);
 
   //! Destructor
   ~QgsFeatureAttribute();
@@ -48,9 +48,17 @@ public:
 	*/
   QString const & fieldValue() const;
 
+  /**
+  * Returns whether value is numeric or not
+  * @return Numeric flag
+  */
+  bool isNumeric() const;
+
   void setFieldName(QString name){field=name;}
 
   void setFieldValue(QString thevalue){value=thevalue;}
+
+  void setNumeric(bool num = true) { numeric=num; }
 
 private:
 
@@ -59,6 +67,9 @@ private:
 
   //! attribute field value
   QString value;
+
+  //! flag whether field is numeric
+  bool numeric;
 
 }; // class QgsFeatureAttribute
 

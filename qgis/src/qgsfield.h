@@ -38,8 +38,9 @@ public:
      * @param len Field length
      * @param prec Field precision. Usually decimal places but may also be
      * used in conjunction with other fields types (eg. variable character fields)
+     * @param num Has to be true if field contains numeric values.
      */
-  QgsField(QString nam = "", QString typ = "", int len = 0, int prec = 0);
+  QgsField(QString nam = "", QString typ = "", int len = 0, int prec = 0, bool num = false);
 
   //! Destructor
    ~QgsField();
@@ -73,6 +74,11 @@ public:
      */
   int precision() const;
 
+    /**
+     Returns true if field contains numeric values. This information is set by provider.
+     */
+  bool isNumeric() const;
+
 
     /**
       Set the field name.
@@ -98,6 +104,11 @@ public:
      */
   void setPrecision(int prec);
 
+    /**
+      Set whether field is numeric
+      */
+  void setNumeric(bool num);
+
 private:
 
   //! Name
@@ -111,6 +122,9 @@ private:
 
   //! Precision
   int mPrecision;
+
+  //! Numeric
+  bool mNumeric;
 
 }; // class QgsField
 

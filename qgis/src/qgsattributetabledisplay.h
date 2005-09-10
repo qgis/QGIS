@@ -25,6 +25,8 @@
 #include "qgsattributetablebase.uic.h"
 #endif
 
+#include <vector>
+
 class QgsAttributeTable;
 class QgsVectorLayer;
 class QPopupMenu;
@@ -43,6 +45,11 @@ class QgsAttributeTableDisplay:public QgsAttributeTableBase
     void setTitle(QString title);
   protected:
     QgsVectorLayer* mLayer;
+    
+    void doSearch(const QString& searchString);
+    
+    /** array of feature IDs that match last searched condition */
+    std::vector<int> mSearchIds;
 
     protected slots:
       void deleteAttributes();
@@ -52,6 +59,9 @@ class QgsAttributeTableDisplay:public QgsAttributeTableBase
     void selectedToTop();
     void invertSelection();
     void removeSelection();
+    void search();
+    void advancedSearch();
+    void searchShowResultsChanged(int item);
 };
 
 #endif

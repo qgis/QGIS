@@ -43,10 +43,11 @@ class QgsLabel;
 
 #include "qgsmaplayer.h"
 #include "qgsattributeaction.h"
-#include "qgsattributetabledisplay.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryvertexindex.h"
 #include "qgsvectordataprovider.h"
+
+class QgsAttributeTableDisplay;
 
 /*! \class QgsVectorLayer
  * \brief Vector layer backed by a data source provider
@@ -85,9 +86,6 @@ public:
 
   //! Display the attribute table
   void table();
-
-  //! Resize and fill the attribute table
-  void fillTable(QgsAttributeTable* t);
 
   //! Set the primary display field to be used in the identify results dialog
   void setDisplayField(QString fldName=0);
@@ -399,7 +397,11 @@ public slots:
    */
   void drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst, double scale);
 
-  
+  /** returns array of added features */
+  std::vector<QgsFeature*>& addedFeatures() { return mAddedFeatures; }
+
+  /** returns array of deleted feature IDs */
+  std::set<int>& deletedFeatureIds() { return mDeleted; }
  
 protected:
   /**Pointer to the table display object if there is one, else a pointer to 0*/

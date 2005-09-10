@@ -18,8 +18,8 @@
 
 #include "qgsfeatureattribute.h"
 
-QgsFeatureAttribute::QgsFeatureAttribute(QString const & fld, QString const & val)
-    : field(fld), value(val)
+QgsFeatureAttribute::QgsFeatureAttribute(QString const & fld, QString const & val, bool num)
+    : field(fld), value(val), numeric(num)
 {
 }
 
@@ -37,4 +37,9 @@ QString const & QgsFeatureAttribute::fieldName() const
 QString const & QgsFeatureAttribute::fieldValue() const 
 {
   return value;
+}
+
+bool QgsFeatureAttribute::isNumeric() const
+{
+  return numeric;
 }

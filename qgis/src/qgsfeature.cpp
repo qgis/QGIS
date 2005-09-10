@@ -200,8 +200,8 @@ int QgsFeature::featureId() const
 const std::vector < QgsFeatureAttribute > &QgsFeature::attributeMap()
 {
 #ifdef QGISDEBUG
-      std::cout << "QgsFeature::attributeMap: Returning attributes"
-                << "." << std::endl;
+//      std::cout << "QgsFeature::attributeMap: Returning attributes"
+//                << "." << std::endl;
 #endif
   
   return attributes;
@@ -210,9 +210,9 @@ const std::vector < QgsFeatureAttribute > &QgsFeature::attributeMap()
 /**
  * Add an attribute to the map
  */
-void QgsFeature::addAttribute(QString const&  field, QString const & value)
+void QgsFeature::addAttribute(QString const&  field, QString const & value, bool numeric)
 {
-  attributes.push_back(QgsFeatureAttribute(field, value));
+  attributes.push_back(QgsFeatureAttribute(field, value, numeric));
 }
 
 /**Deletes an attribute and its value*/
