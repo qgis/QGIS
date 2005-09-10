@@ -1,0 +1,121 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>QgsAdvancedAttrSearchBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsAdvancedAttrSearchBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>486</width>
+            <height>193</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Advanced search</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>Search string:</string>
+            </property>
+        </widget>
+        <widget class="QTextEdit">
+            <property name="name">
+                <cstring>mSearchString</cstring>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout5</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnShowHelp</cstring>
+                    </property>
+                    <property name="text">
+                        <string>He&amp;lp</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+L</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>250</width>
+                            <height>31</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnSearch</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Search</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+S</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>C&amp;ancel</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+A</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>btnCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsAdvancedAttrSearchBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>btnSearch</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsAdvancedAttrSearchBase</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>btnShowHelp</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsAdvancedAttrSearchBase</receiver>
+        <slot>showHelp()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>showHelp()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

@@ -46,3 +46,21 @@ void QgsAttributeTableBase::removeSelection()
 {
 
 }
+
+
+void QgsAttributeTableBase::search()
+{
+
+}
+
+
+void QgsAttributeTableBase::advancedSearch()
+{
+
+}
+
+
+void QgsAttributeTableBase::searchShowResultsChanged(int)
+{
+
+}

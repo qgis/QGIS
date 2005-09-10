@@ -64,6 +64,7 @@ headers =	qgisapp.h					\
 		qgsacetateobject.h				\
 		qgsacetaterectangle.h				\
 		qgsaddattrdialog.h				\
+		qgsadvancedattrsearch.h				\
 		qgsattributeaction.h				\
 		qgsattributeactiondialog.h			\
 		qgsattributedialog.h				\
@@ -148,6 +149,8 @@ headers =	qgisapp.h					\
 		qgsrenderitem.h					\
 		qgsrunprocess.h					\
 		qgsscalecalculator.h				\
+                qgssearchstring.h				\
+                qgssearchtreenode.h				\
 		qgsserversourceselect.h				\
 		qgssinglesymrenderer.h				\
 		qgssisydialog.h					\
@@ -176,6 +179,7 @@ headers =	qgisapp.h					\
 qgis_UIC =	qgisappbase.ui				\
 		qgsabout.ui				\
 		qgsaddattrdialogbase.ui			\
+		qgsadvancedattrsearchbase.ui		\
 		qgsattributedialogbase.ui		\
 		qgsattributeactiondialogbase.ui		\
 		qgsattributetablebase.ui		\
@@ -249,6 +253,7 @@ qgis_UIMOC = $(qgis_UIC:.ui=.moc.uic.cpp)
 qgis_MOC =	qgisapp.moc.cpp				\
 		qgisinterface.moc.cpp			\
 		qgsaddattrdialog.moc.cpp		\
+		qgsadvancedattrsearch.moc.cpp		\
 		qgsattributeactiondialog.moc.cpp	\
 		qgsattributedialog.moc.cpp		\
 		qgsattributetabledisplay.moc.cpp		\
@@ -313,6 +318,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsacetateobject.cpp		\
 		qgsacetaterectangle.cpp		\
 		qgsaddattrdialog.cpp		\
+		qgsadvancedattrsearch.cpp	\
 		qgsattributeaction.cpp		\
 		qgsattributeactiondialog.cpp	\
 		qgsattributedialog.cpp		\
@@ -396,6 +402,10 @@ qgis_SOURCES =	main.cpp			\
 		qgsrenderitem.cpp		\
 		qgsrunprocess.cpp		\
 		qgsscalecalculator.cpp		\
+                qgssearchstring.cpp             \
+                qgssearchtreenode.cpp		\
+                qgssearchstringlexer.ll		\
+                qgssearchstringparser.yy	\
 		qgsserversourceselect.cpp	\
 		qgssinglesymrenderer.cpp	\
 		qgssisydialog.cpp		\
@@ -411,6 +421,9 @@ qgis_SOURCES =	main.cpp			\
 		splashscreen.cpp \
 		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp \
 		qgscustomprojectiondialog.cpp
+
+AM_YFLAGS       = -d
+qgis_YACC       = qgssearchstringparser.h
 
 postgresHEADERS = qgsdbsourceselect.h		\
 		  qgsnewconnection.h		\
@@ -446,7 +459,7 @@ nodist_qgis_SOURCES = $(qgis_MOC) $(qgis_UISOURCES) $(qgis_UIMOC) \
                       $(postgresMOC) $(postgresUISOURCES) $(postgresUIMOC)
 
 
-BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) \
+BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) $(qgis_YACC) \
 					$(postgresMOC) $(postgresUIMOC) $(postgresUIHEADERS) $(postgresUISOURCES)
 
 

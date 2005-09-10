@@ -21,13 +21,19 @@
 #include "qgsattributetable.h"
 #include "qgsattributetabledisplay.h"
 #include "qgsdelattrdialog.h"
+#include "qgsadvancedattrsearch.h"
 #include "qgsvectorlayer.h"
+#include "qgssearchtreenode.h"
 #include <qlayout.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
 #include <qpopupmenu.h>
 #include <qpushbutton.h> 
 #include <qtoolbutton.h> 
+#include <qcombobox.h>
+#include <qlineedit.h>
+#include <qtextedit.h>
+#include <qapplication.h>
 
 QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAttributeTableBase(), mLayer(layer)
 {
@@ -46,6 +52,23 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAtt
   {
     btnStartEditing->setEnabled(false);
   }
+
+  // fill in mSearchColumns with available columns
+  QgsVectorDataProvider* provider = mLayer->getDataProvider();
+  if (provider)
+  {
+    std::vector < QgsField > fields = provider->fields();
+    int fieldcount = provider->fieldCount();
+    for (int h = 1; h <= fieldcount; h++)
+    {
+      mSearchColumns->insertItem(fields[h - 1].name());
+    }
+  }
+  
+  // TODO: create better labels
+  mSearchShowResults->insertItem(tr("select"));
+  mSearchShowResults->insertItem(tr("select and bring to top"));
+  mSearchShowResults->insertItem(tr("show only mathing"));
 }
 
 QgsAttributeTableDisplay::~QgsAttributeTableDisplay()
@@ -176,5 +199,122 @@ void QgsAttributeTableDisplay::removeSelection()
 }
 
 
+void QgsAttributeTableDisplay::search()
+{
+  // if selected field is numeric, numeric comparison will be used
+  // else attributes containing entered text will be matched
+
+  QgsVectorDataProvider* provider = mLayer->getDataProvider();
+  int item = mSearchColumns->currentItem();
+  bool numeric = provider->fields()[item].isNumeric();
+  
+  QString str;
+  str = mSearchColumns->currentText();
+  if (numeric)
+    str += " = '";
+  else
+    str += " ~ '";
+  str += mSearchText->text();
+  str += "'";
+
+  doSearch(str);
+}
 
 
+void QgsAttributeTableDisplay::advancedSearch()
+{
+  QgsAdvancedAttrSearch* searchDlg = new QgsAdvancedAttrSearch(this);
+  if (searchDlg->exec())
+  {
+    doSearch(searchDlg->mSearchString->text());
+  }
+  delete searchDlg;
+}
+
+
+void QgsAttributeTableDisplay::searchShowResultsChanged(int item)
+{
+  QApplication::setOverrideCursor(Qt::waitCursor);
+
+  if (item == 2) // show only matching
+  {
+    table()->showRowsWithId(mSearchIds);
+  }
+  else
+  {    
+    // make sure that all rows are shown
+    table()->showAllRows();
+    
+    // select matching
+    table()->selectRowsWithId(mSearchIds);
+  
+    if (item == 1) // select matching and bring to top
+      table()->bringSelectedToTop();
+  }
+
+  QApplication::restoreOverrideCursor();
+}
+
+
+void QgsAttributeTableDisplay::doSearch(const QString& searchString)
+{
+  // parse search string (and build parsed tree)
+  QgsSearchString search;
+  if (!search.setString(searchString))
+  {
+    QMessageBox::critical(this, tr("Search string parsing error"), search.parserErrorMsg());
+    return;
+  }
+  QgsSearchTreeNode* searchTree = search.tree();
+  if (searchTree == NULL)
+  {
+    QMessageBox::information(this, tr("Search results"), tr("You've supplied an empty search string."));
+    return;
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "Search by attribute: " << searchString << std::endl
+            << " parsed as: " << search.tree()->makeSearchString() << std::endl;
+#endif
+
+  QApplication::setOverrideCursor(Qt::waitCursor);
+
+  // TODO: need optimized getNextFeature which won't extract geometry
+  // or search by traversing table ... which one is quicker?
+  QgsFeature* fet;
+  QgsVectorDataProvider* provider = mLayer->getDataProvider();
+  provider->reset();
+  mSearchIds.clear();
+  while (fet = provider->getNextFeature(true))
+  {
+    if (searchTree->checkAgainst(fet->attributeMap()))
+    {
+      mSearchIds.push_back(fet->featureId());
+    }
+    delete fet;
+    
+    // check if there were errors during evaulating
+    if (searchTree->hasError())
+      break;
+  }
+  provider->reset();
+
+  QApplication::restoreOverrideCursor();
+
+  if (searchTree->hasError())
+  {
+    QMessageBox::critical(this, tr("Error during search"), searchTree->errorMsg());
+    return;
+  }
+
+  // update table
+  searchShowResultsChanged(mSearchShowResults->currentItem());
+   
+  QString str;
+  if (mSearchIds.size())
+    str.sprintf(tr("Found %d matching features."), mSearchIds.size());
+  else
+    str = tr("No matching features found.");
+  QMessageBox::information(this, tr("Search results"), str);
+
+}

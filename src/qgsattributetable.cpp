@@ -381,56 +381,83 @@ bool QgsAttributeTable::commitChanges(QgsVectorLayer* layer)
 
 bool QgsAttributeTable::rollBack(QgsVectorLayer* layer)
 {
-    if(layer)
-    {
-	layer->fillTable(this);
-    }
-    mEdited=false;
-    clearEditingStructures();
-    return true;
+  if(layer)
+  {
+    fillTable(layer);
+  }
+  mEdited=false;
+  clearEditingStructures();
+  return true;
 }
 
-//todo: replace some of the lines in QgsVectorLayer::table() with this function
+
 void QgsAttributeTable::fillTable(QgsVectorLayer* layer)
 {
-    QgsVectorDataProvider* provider=layer->getDataProvider();
-    if(provider)
-    {
-	int row = 0;
-	// set up the column headers
-	QHeader *colHeader = horizontalHeader();
-	colHeader->setLabel(0, "id"); //label for the id-column
-	std::vector < QgsField > fields = provider->fields();
-	int fieldcount=provider->fieldCount();
-	setNumCols(fieldcount+1);
+  QgsVectorDataProvider* provider=layer->getDataProvider();
+  if(provider)
+  {
+    QgsFeature *fet;
+    int row = 0;
+  
+    std::vector<QgsFeature*>& addedFeatures = layer->addedFeatures();
+    std::set<int>& deletedFeatures = layer->deletedFeatureIds();
 
-	for (int h = 1; h <= fieldcount; h++)
-	{
-	    colHeader->setLabel(h, fields[h - 1].name());
+    // set up the column headers
+    QHeader *colHeader = horizontalHeader();
+    std::vector < QgsField > fields = provider->fields();
+    int fieldcount=provider->fieldCount();
 #ifdef QGISDEBUG
-	    qWarning("Setting column label "+fields[h - 1].name());
+    for (int l = 0; l < fields.size(); l++)
+      std::cout << "field: " << fields[l].name() << " | " << fields[l].isNumeric() << " | " << fields[l].type() << std::endl;
 #endif
-	}
-	QgsFeature *fet;
-	provider->reset();
-	while ((fet = provider->getNextFeature(true)))
-	{
-	    //id-field
-	    setText(row, 0, QString::number(fet->featureId()));
-	    insertFeatureId(fet->featureId(), row);  //insert the id into the search tree of qgsattributetable
-	    std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
-	    for (int i = 0; i < attr.size(); i++)
-	    {
-		// get the field values
-		setText(row, i + 1, attr[i].fieldValue());
+  
+    setNumRows(provider->featureCount() + addedFeatures.size() - deletedFeatures.size());
+    setNumCols(fieldcount+1);
+    colHeader->setLabel(0, "id"); //label for the id-column
+
+    for (int h = 1; h <= fieldcount; h++)
+    {
+        colHeader->setLabel(h, fields[h - 1].name());
 #ifdef QGISDEBUG
-		//qWarning("Setting value for "+QString::number(i+1)+"//"+QString::number(row)+"//"+attr[i].fieldValue());
+        qWarning("Setting column label "+fields[h - 1].name());
 #endif
-	    }
-	    row++;
-	    delete fet;
-	}
     }
+
+    //go through the features and fill the values into the table
+    provider->reset();
+    while ((fet = provider->getNextFeature(true)))
+    {
+      if(deletedFeatures.find(fet->featureId()) == deletedFeatures.end())
+      {
+        putFeatureInTable(row, fet);
+        row++;
+      }
+      delete fet;
+    }
+
+    //also consider the not commited features
+    for(std::vector<QgsFeature*>::iterator it = addedFeatures.begin(); it != addedFeatures.end(); it++)
+    {
+      putFeatureInTable(row, *it);
+      row++;
+    }
+
+    provider->reset();
+  }
+}
+
+void QgsAttributeTable::putFeatureInTable(int row, QgsFeature* fet)
+{
+  //id-field
+  int id = fet->featureId();
+  setText(row, 0, QString::number(id));
+  insertFeatureId(id, row);  //insert the id into the search tree of qgsattributetable
+  std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
+  for (int i = 0; i < attr.size(); i++)
+  {
+    // get the field values
+    setText(row, i + 1, attr[i].fieldValue());
+  }
 }
 
 void QgsAttributeTable::storeChangedValue(int row, int column)
@@ -537,4 +564,46 @@ void QgsAttributeTable::bringSelectedToTop()
     }
 
     blockSignals(false);
+}
+
+void QgsAttributeTable::selectRowsWithId(const std::vector<int>& ids)
+{
+  // to select more rows at once effectively, we stop sending signals to handleChangedSelections()
+  // otherwise it will repaint map everytime row is selected
+  
+  QObject::disconnect(this, SIGNAL(selectionChanged()), this, SLOT(handleChangedSelections()));
+    
+  clearSelection(false);
+  for (int i = 0; i < ids.size(); i++)
+  {
+    selectRowWithId(ids[i]);
+    emit selected(ids[i]);
+  }
+  
+  QObject::connect(this, SIGNAL(selectionChanged()), this, SLOT(handleChangedSelections()));
+
+  emit repaintRequested();
+}
+
+void QgsAttributeTable::showRowsWithId(const std::vector<int>& ids)
+{
+  setUpdatesEnabled(false);
+  
+  // hide all rows first
+  for (int i = 0; i < numRows(); i++)
+    hideRow(i);
+  
+  // show only matching rows
+  for (int i = 0; i < ids.size(); i++)
+    showRow(rowIdMap[ids[i]]);
+  
+  clearSelection(); // deselect all
+  setUpdatesEnabled(true);
+  repaintContents();
+}
+
+void QgsAttributeTable::showAllRows()
+{
+  for (int i = 0; i < numRows(); i++)
+    showRow(i);
 }
