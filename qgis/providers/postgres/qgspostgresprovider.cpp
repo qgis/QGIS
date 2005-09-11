@@ -1542,14 +1542,23 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
     unsigned char* geom=f->getGeometry();
     for(int i=0;i<f->getGeometrySize();++i)
     {
-      QString hex=QString::number((int)geom[i],16).upper();
-      if(hex.length()==1)
-      {
-        hex="0"+hex;
-      }
-      insert+=hex;
+	//Postgis 1.0 wants bytea instead of hex
+	QString oct = QString::number((int)geom[i], 8);
+	if(oct.length()==3)
+	{
+	    oct="\\\\"+oct;
+	}
+	else if(oct.length()==1)
+	{
+	    oct="\\\\00"+oct;
+	}
+	else if(oct.length()==2)
+	{
+	    oct="\\\\0"+oct; 
+	}
+	insert+=oct;
     }
-    insert+="',"+srid+")";
+    insert+="::bytea',"+srid+")";
 
     //add the field values to the insert statement
     for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)
