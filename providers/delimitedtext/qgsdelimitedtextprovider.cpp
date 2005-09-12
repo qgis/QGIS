@@ -30,6 +30,7 @@
 #include <qsettings.h>
 #include <qregexp.h>
 #include <qurl.h>
+#include <qglobal.h>
 
 #include <ogrsf_frmts.h>
 
@@ -402,7 +403,11 @@ QgsDelimitedTextProvider::getNextFeature_( QgsFeature & feature,
                                                                          // to
                                                                          // geometry
 
+#if QT_VERSION < 0x040000
            QDataStream s( buffer, IO_WriteOnly ); // open on buffers's data
+#else
+           QDataStream s( &buffer, QIODevice::WriteOnly ); // open on buffers's data
+#endif
 
            switch ( endian() )
            {
@@ -883,13 +888,13 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
                 {
                   std::cerr << "Setting " << i << " " << (const char *)attributeFields[i].
                     name().local8Bit() << " to " << (const char *)parts[i].local8Bit() << std::endl;
-                  poFeature->SetField(saveCodec->fromUnicode(attributeFields[i].name()),
-                                      saveCodec->fromUnicode(parts[i]));
+                  poFeature->SetField(saveCodec->fromUnicode(attributeFields[i].name()).data(),
+                                      saveCodec->fromUnicode(parts[i]).data());
 
                 }
                 else
                 {
-                  poFeature->SetField(saveCodec->fromUnicode(attributeFields[i].name()), "");
+                  poFeature->SetField(saveCodec->fromUnicode(attributeFields[i].name()).data(), "");
                 }
               }
               std::cerr << "Field values set" << std::endl;

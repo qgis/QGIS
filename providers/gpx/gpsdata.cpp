@@ -314,7 +314,7 @@ GPSData* GPSData::getData(const QString& filename) {
       return 0;
     }
     GPSData* data = new GPSData;
-    std::cerr<<"Loading file "<<filename<<std::endl;
+    std::cerr << "Loading file " << filename.local8Bit() << std::endl;
     GPXHandler handler(*data);
     bool failed = false;
     
@@ -346,7 +346,7 @@ GPSData* GPSData::getData(const QString& filename) {
     dataObjects[filename] = std::pair<GPSData*, unsigned>(data, 0);
   }
   else
-    std::cerr<<filename<<" is already loaded"<<std::endl;
+    std::cerr << filename.local8Bit() << " is already loaded"<<std::endl;
   
   // return a pointer and increase the reference count for that filename
   DataMap::iterator iter = dataObjects.find(filename);
@@ -361,9 +361,9 @@ void GPSData::releaseData(const QString& filename) {
      it if the reference count becomes 0 */
   DataMap::iterator iter = dataObjects.find(filename);
   if (iter != dataObjects.end()) {
-    std::cerr<<"unrefing "<<filename<<std::endl;
+    std::cerr << "unrefing " << filename.local8Bit() << std::endl;
     if (--(iter->second.second) == 0) {
-      std::cerr<<"No one's using "<<filename<<", I'll erase it"<<std::endl;
+      std::cerr << "No one's using " << filename.local8Bit() << ", I'll erase it" << std::endl;
       delete iter->second.first;
       dataObjects.erase(iter);
     }
