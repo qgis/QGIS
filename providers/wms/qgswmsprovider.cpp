@@ -31,6 +31,11 @@
 #include <qurl.h>
 #include <qmessagebox.h>
 
+#include <qglobal.h>
+#if QT_VERSION >= 0x040000
+#include <QPicture>
+#endif
+
 #ifdef QGISDEBUG
 #include <qfile.h>
 #endif
@@ -48,7 +53,7 @@ QgsWmsProvider::QgsWmsProvider(QString uri)
     httpcapabilitiesresponse(0)
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider: constructing with uri '" << uri << "'." << std::endl;
+  std::cout << "QgsWmsProvider: constructing with uri '" << uri.local8Bit() << "'." << std::endl;
 #endif
   
   // assume this is a valid layer until we determine otherwise
@@ -133,7 +138,7 @@ void QgsWmsProvider::addLayers(QStringList layers)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::addLayers: Entering" <<
-                  " with layer list of " << layers.join(", ") << std::endl;
+                  " with layer list of " << layers.join(", ").local8Bit() << std::endl;
 #endif
 
   // TODO: Make activeSubLayers a std::map in order to avoid duplicates
@@ -149,7 +154,7 @@ void QgsWmsProvider::addLayers(QStringList layers)
     activeSubLayerVisibility[*it] = TRUE;
  
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::addLayers: set visibility of layer '" << *it << "' to TRUE." << std::endl;
+  std::cout << "QgsWmsProvider::addLayers: set visibility of layer '" << (*it).local8Bit() << "' to TRUE." << std::endl;
 #endif
   }
 
@@ -338,14 +343,18 @@ QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight
 
 #ifdef QGISDEBUG
   // Get what we can support
-  
+
+// TODO: Qt4 has inputFormatList in QPicture - need to refactor.
+#if QT_VERSION < 0x040000
   QStringList list = i->inputFormatList();
   QStringList::Iterator it = list.begin();
   while( it != list.end() )
   {
-    std::cout << "QgsWmsProvider::addLayers: can support input of '" << *it << "'." << std::endl;
+    std::cout << "QgsWmsProvider::addLayers: can support input of '" << (*it).local8Bit() << "'." << std::endl;
     ++it;
   }
+#endif
+
 #endif
 
   
@@ -414,7 +423,7 @@ void QgsWmsProvider::downloadCapabilitiesURI(QString uri)
 {
 
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::downloadCapabilitiesURI: Entered with '" << uri << "'" << std::endl;
+  std::cout << "QgsWmsProvider::downloadCapabilitiesURI: Entered with '" << uri.local8Bit() << "'" << std::endl;
 #endif
 
   QgsHttpTransaction http(uri, httpproxyhost, httpproxyport);
@@ -452,7 +461,7 @@ Example URL (works!)
 */
 
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::drawTest: Entered with '" << uri << "'" << std::endl;
+  std::cout << "QgsWmsProvider::drawTest: Entered with '" << uri.local8Bit() << "'" << std::endl;
 #endif
   
   QgsHttpTransaction http(uri, httpproxyhost, httpproxyport);
@@ -616,8 +625,8 @@ void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerpropert
 #ifdef QGISDEBUG
 //    std::cout << "QgsWmsProvider::parseLayer: A layer definition is complete." << std::endl;
 
-    std::cout << "QgsWmsProvider::parseLayer:   name is: '" << layerproperty.name << "'." << std::endl;
-    std::cout << " QgsWmsProvider::parseLayer:  title is: '" << layerproperty.title << "'." << std::endl;
+    std::cout << "QgsWmsProvider::parseLayer:   name is: '" << layerproperty.name.local8Bit() << "'." << std::endl;
+    std::cout << " QgsWmsProvider::parseLayer:  title is: '" << layerproperty.title.local8Bit() << "'." << std::endl;
 //    std::cout << "QgsWmsProvider::parseLayer:   srs is: '" << layerproperty.srs << "'." << std::endl;
 //    std::cout << "QgsWmsProvider::parseLayer:   bbox is: '" << layerproperty.latlonbbox.stringRep() << "'." << std::endl;
     
@@ -743,13 +752,13 @@ void QgsWmsProvider::calculateExtent()
   
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::calculateExtent: combined extent is '" << 
-               layerExtent.stringRep() << "' after '" << *it << "'." << std::endl;
+               layerExtent.stringRep().local8Bit() << "' after '" << (*it).local8Bit() << "'." << std::endl;
 #endif
 
   }
 
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::calculateExtent: exiting with '" << layerExtent.stringRep() << "'." << std::endl;
+  std::cout << "QgsWmsProvider::calculateExtent: exiting with '" << layerExtent.stringRep().local8Bit() << "'." << std::endl;
 #endif
 
 }

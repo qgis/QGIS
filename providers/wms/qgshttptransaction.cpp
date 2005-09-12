@@ -70,12 +70,12 @@ QByteArray QgsHttpTransaction::getSynchronously(int redirections)
   
 #ifdef QGISDEBUG
   std::cout << "QgsHttpTransaction::getSynchronously: Entered." << std::endl;
-  std::cout << "QgsHttpTransaction::getSynchronously: Using '" << httpurl << "'." << std::endl;
+  std::cout << "QgsHttpTransaction::getSynchronously: Using '" << httpurl.local8Bit() << "'." << std::endl;
 #endif
 
   QUrl qurl(httpurl);
   
-  if (!httphost)
+  if (httphost.isEmpty())
   {
     // No proxy was specified - connect directly to host in URI
     httphost = qurl.host();
@@ -136,11 +136,11 @@ QByteArray QgsHttpTransaction::getSynchronously(int redirections)
   // Do one level of redirection
   // TODO make this recursable
   // TODO detect any redirection loops
-  if (httpredirecturl)
+  if (!httpredirecturl.isEmpty())
   {
 #ifdef QGISDEBUG
   std::cout << "QgsHttpTransaction::getSynchronously: Starting get of '" << 
-               httpredirecturl << "'." << std::endl;
+               httpredirecturl.local8Bit() << "'." << std::endl;
 #endif
 
     QgsHttpTransaction httprecurse(httpredirecturl, httphost, httpport);
@@ -190,8 +190,8 @@ void QgsHttpTransaction::dataHeaderReceived( const QHttpResponseHeader& resp )
 
 #ifdef QGISDEBUG
   std::cout << "QgsHttpTransaction::dataHeaderReceived: statuscode " << 
-    resp.statusCode() << ", reason '" << resp.reasonPhrase() << "', content type: '" <<
-    resp.value("Content-Type") << "'." << std::endl;
+    resp.statusCode() << ", reason '" << resp.reasonPhrase().local8Bit() << "', content type: '" <<
+    resp.value("Content-Type").local8Bit() << "'." << std::endl;
 #endif
 
   if (resp.statusCode() == 302) // Redirect

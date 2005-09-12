@@ -67,7 +67,7 @@ QgsOgrProvider::QgsOgrProvider(QString uri)
   mSelectionRectangle = 0;
   // make connection to the data source
 #ifdef QGISDEBUG
-  std::cerr << "Data source uri is " << uri << std::endl;
+  std::cerr << "Data source uri is " << uri.local8Bit() << std::endl;
 #endif
   // try to open for update
   ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.local8Bit(), TRUE, &ogrDriver);
@@ -198,12 +198,12 @@ QString QgsOgrProvider::getProjectionWKT()
     // if appropriate, morph the projection from ESRI form
     QString fileName = ogrDataSource->GetName();
 #ifdef QGISDEBUG 
-    std::cerr << "Data source file name is : " << fileName << std::endl; 
+    std::cerr << "Data source file name is : " << fileName.local8Bit() << std::endl; 
 #endif 
     if(fileName.contains(".shp"))
     {
 #ifdef QGISDEBUG 
-      std::cerr << "Morphing " << fileName << " WKT from ESRI" << std::endl; 
+      std::cerr << "Morphing " << fileName.local8Bit() << " WKT from ESRI" << std::endl; 
 #endif 
       // morph it
       mySpatialRefSys->morphFromESRI();
@@ -642,7 +642,7 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
   //TODO   about it. If setting the filter fails, all records will be returned
   if (result == OGRERR_NONE) 
   {
-    std::cerr << "Setting spatial filter using " << wktExtent   << std::endl;
+    std::cerr << "Setting spatial filter using " << wktExtent.local8Bit() << std::endl;
     ogrLayer->SetSpatialFilter(filter);
     //ogrLayer->SetSpatialFilterRect(rect->xMin(), rect->yMin(), rect->xMax(), rect->yMax());
   }else{
@@ -1132,7 +1132,7 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
 		OGRFieldType type = fd->GetType();
 
 #ifdef QGISDEBUG
-		std::cerr << "set field " << f << " : " << name << " to " << value << std::endl;
+		std::cerr << "set field " << f << " : " << name.local8Bit() << " to " << value.local8Bit() << std::endl;
 #endif
 		switch ( type ) {
 		    case OFTInteger:

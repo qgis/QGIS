@@ -66,7 +66,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri)
   // For postgres, the connection information is passed as a space delimited
   // string:
   //  host=192.168.1.5 dbname=test port=5342 user=gsherman password=xxx table=tablename
-  std::cout << "Data source uri is " << uri << std::endl;
+  std::cout << "Data source uri is " << uri.local8Bit() << std::endl;
 
   // Strip the table and sql statement name off and store them
   int sqlStart = uri.find(" sql");
@@ -141,14 +141,14 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri)
   /* end uri structure */
 
 #ifdef QGISDEBUG
-  std::cerr << "Geometry column is: " << geometryColumn << std::endl;
-  std::cerr << "Schema is: " + mSchema << std::endl;
-  std::cerr << "Table name is: " + tableName << std::endl;
+  std::cerr << "Geometry column is: " << geometryColumn.local8Bit() << std::endl;
+  std::cerr << "Schema is: " << mSchema.local8Bit() << std::endl;
+  std::cerr << "Table name is: " << tableName.local8Bit() << std::endl;
 #endif
   //QString logFile = "./pg_provider_" + tableName + ".log";
   //pLog.open((const char *)logFile);
 #ifdef QGISDEBUG
-  std::cerr << "Opened log file for " << tableName << std::endl;
+  std::cerr << "Opened log file for " << tableName.local8Bit() << std::endl;
 #endif
   PGconn *pd = PQconnectdb((const char *) connInfo);
   // check the connection status
@@ -171,7 +171,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri)
       QMessageBox::warning(0, tr("Unable to access relation"),
           tr("Unable to access the ") + tableName + 
           tr(" relation.\nThe error message from the database was:\n") +
-          PQresultErrorMessage(testAccess) + ".\n");
+          QString(PQresultErrorMessage(testAccess)) + ".\n");
       QApplication::setOverrideCursor(Qt::waitCursor);
       PQclear(testAccess);
       valid = false;
@@ -267,8 +267,8 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri)
         PQclear(tresult);
 
 #ifdef QGISDEBUG
-        std::cerr << "Field: " << attnum << " maps to " << i << " " << fieldName << ", " 
-          << fieldType << " (" << fldtyp << "),  " << fieldSize << ", "  
+        std::cerr << "Field: " << attnum.local8Bit() << " maps to " << i << " " << fieldName.local8Bit() << ", " 
+          << fieldType.local8Bit() << " (" << fldtyp << "),  " << fieldSize.local8Bit() << ", "  
           << fieldModifier << std::endl;
 #endif
         attributeFieldsIdMap[attnum.toInt()] = i;
@@ -678,14 +678,14 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
 
 #ifdef QGISDEBUG
   std::cerr << "Selection rectangle is " << *rect << std::endl;
-  std::cerr << "Selection polygon is " << rect->asPolygon() << std::endl;
+  std::cerr << "Selection polygon is " << rect->asPolygon().local8Bit() << std::endl;
 #endif
 
   QString declare = QString("declare qgisf binary cursor for select "
       + primaryKey  
       + ",asbinary(%1,'%2') as qgs_feature_geometry from \"%3\"").arg(geometryColumn).arg(endianString()).arg(tableName);
 #ifdef QGISDEBUG
-  std::cout << "Binary cursor: " << declare << std::endl; 
+  std::cout << "Binary cursor: " << declare.local8Bit() << std::endl; 
 #endif
   if(useIntersect){
     //    declare += " where intersects(" + geometryColumn;
@@ -719,7 +719,7 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
   }
 
 #ifdef QGISDEBUG
-  std::cerr << "Selecting features using: " << declare << std::endl;
+  std::cerr << "Selecting features using: " << declare.local8Bit() << std::endl;
 #endif
   // set up the cursor
   if(ready){
@@ -827,7 +827,7 @@ void QgsPostgresProvider::getFeatureAttributes(int key, int &row, QgsFeature *f)
   QString sql = QString("select * from %1 where %2 = %3").arg(tableName).arg(primaryKey).arg(key);
 
 #ifdef QGISDEBUG
-  std::cerr << "QgsPostgresProvider::getFeatureAttributes using: " << sql << std::endl; 
+  std::cerr << "QgsPostgresProvider::getFeatureAttributes using: " << sql.local8Bit() << std::endl; 
 #endif
   PGresult *attr = PQexec(connection, (const char *)(sql.utf8()));
 
@@ -893,7 +893,7 @@ void QgsPostgresProvider::reset()
   }
   //--std::cout << "Selecting features using: " << declare << std::endl;
 #ifdef QGISDEBUG
-  std::cerr << "Setting up binary cursor: " << declare << std::endl;
+  std::cerr << "Setting up binary cursor: " << declare.local8Bit() << std::endl;
 #endif
   // set up the cursor
   PQexec(connection,"end work");
@@ -964,7 +964,7 @@ QString QgsPostgresProvider::getPrimaryKey()
     + tableName + "')";
 
 #ifdef QGISDEBUG
-  std::cerr << "Getting primary key using '" << sql << "'\n";
+  std::cerr << "Getting primary key using '" << sql.local8Bit() << "'\n";
 #endif
   // XXX Do we need the utf8 here ?? Couldn't tell when doing the merge... -ges
   PGresult *pk = PQexec(connection,(const char *)(sql.utf8()));
@@ -1022,7 +1022,7 @@ QString QgsPostgresProvider::getPrimaryKey()
       }
       PQclear(oidPresent);
     }
-    else if (type = "v") // the relation is a view
+    else if (type == "v") // the relation is a view
     {
       // Have a poke around the view to see if any of the columns
       // could be used as the primary key.
@@ -1090,7 +1090,7 @@ QString QgsPostgresProvider::getPrimaryKey()
 
   //#ifdef QGISDEBUG
   if (primaryKey.length() > 0)
-    std::cerr << "Qgis row key is " << primaryKey << '\n';
+    std::cerr << "Qgis row key is " << primaryKey.local8Bit() << '\n';
   else
     std::cerr << "Qgis row key was not set.\n";
   //#endif
@@ -1143,8 +1143,8 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols,
 
 #ifdef QGISDEBUG
     if (PQntuples(result) == 1)
-      std::cerr << "Column " << viewCol << " from " 
-        << tableName << "." << tableCol
+      std::cerr << "Column " << viewCol.local8Bit() << " from " 
+        << tableName.local8Bit() << "." << tableCol.local8Bit()
         << " is suitable.\n";
 #endif
     PQclear(result);
@@ -1161,7 +1161,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols,
     {
       suitable[oids[i]->first] = oids[i]->second;
 #ifdef QGISDEBUG
-      std::cerr << "Adding column " << oids[i]->first 
+      std::cerr << "Adding column " << oids[i]->first.local8Bit()
         << " as it may be suitable.\n";
 #endif
     }
@@ -1176,7 +1176,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols,
     {
       key = suitable.begin()->first;
 #ifdef QGISDEBUG
-      std::cerr << "Picked column " << key
+      std::cerr << "Picked column " << key.local8Bit()
                 << " as it is the only one that was suitable.\n";
 #endif
     }
@@ -1200,7 +1200,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols,
       { // Got one. Use it.
         key = i->first;
 #ifdef QGISDEBUG
-        std::cerr << "Picked column '" << key
+        std::cerr << "Picked column '" << key.local8Bit()
           << "' because it has an index.\n";
 #endif
         break;
@@ -1218,7 +1218,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols,
       {
         key = i->first;
 #ifdef QGISDEBUG
-        std::cerr << "Picked column " << key
+        std::cerr << "Picked column " << key.local8Bit()
           << " as it is probably the postgresql object id "
           << " column (which contains unique values) and there are no"
           << " columns with indices to choose from\n.";
@@ -1229,7 +1229,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols,
       {
         key = suitable.begin()->first;
 #ifdef QGISDEBUG
-        std::cerr << "Picked column " << key
+        std::cerr << "Picked column " << key.local8Bit()
           << " as it was the first suitable column found"
           << " and there are no"
           << " columns with indices to choose from\n.";
@@ -1286,7 +1286,7 @@ void QgsPostgresProvider::findColumns(QString relationName, tableCols& cols)
     QString rColumn = column;
 
 #ifdef QGISDEBUG
-    std::cerr << "Looking at " << relation << '.' << column << '\n';
+    std::cerr << "Looking at " << relation.local8Bit() << '.' << column.local8Bit() << '\n';
 #endif
 
     // status is a flag variable. 0 means the relation is a view, 1
@@ -1299,9 +1299,9 @@ void QgsPostgresProvider::findColumns(QString relationName, tableCols& cols)
           rRelation, rColumn);
 #ifdef QGISDEBUG
       if (status == 0)
-        std::cerr << "  " << relation << '.' << column
+        std::cerr << "  " << relation.local8Bit() << '.' << column.local8Bit()
           << " derives from " 
-          << rRelation << '.' << rColumn << '\n';
+          << rRelation.local8Bit() << '.' << rColumn.local8Bit() << '\n';
 #endif
       relation = rRelation;
       column = rColumn;
@@ -1311,8 +1311,8 @@ void QgsPostgresProvider::findColumns(QString relationName, tableCols& cols)
     {
 #ifdef QGISDEBUG
       std::cerr << "Search completed: " 
-        << relationName << '.' << *i
-        << " ends at " << relation << '.' << column 
+        << relationName.local8Bit() << '.' << (*i).local8Bit()
+        << " ends at " << relation.local8Bit() << '.' << column.local8Bit()
         << "\n\n";
 #endif
       cols[*i] = std::make_pair<QString, QString>(relation, column);
@@ -1320,7 +1320,7 @@ void QgsPostgresProvider::findColumns(QString relationName, tableCols& cols)
     else if (status == 2) // we've reached a dead-end
     {
 #ifdef QGISDEBUG
-      std::cerr << "Search stopped: " << relation << '.' << column 
+      std::cerr << "Search stopped: " << relation.local8Bit() << '.' << column.local8Bit()
         << " is not suitable.\n";
 #endif
     }
@@ -1427,7 +1427,7 @@ void QgsPostgresProvider::findTableColumns(QString selectCmd,
     QString cmd = selectCmd.remove(0, start + 6);
     cmd = cmd.remove(stop - (start + 6), 10000000);
 #ifdef QGISDEBUG
-    std::cerr << "View definition is: " << cmd << '\n';
+    std::cerr << "View definition is: " << cmd.local8Bit() << '\n';
 #endif
     // Now split the columns definitions on commas to get at actual
     // column definitions. The complication is that if column
@@ -1491,7 +1491,7 @@ void QgsPostgresProvider::findTableColumns(QString selectCmd,
         tableColName = tt[1];
       }
       else
-        std::cerr << "The view column definition '" << f 
+        std::cerr << "The view column definition '" << f.local8Bit()
           << "' is not in relation.column form.\n";
 
       // If there was no 'AS', the view column name is the same as
@@ -1500,8 +1500,8 @@ void QgsPostgresProvider::findTableColumns(QString selectCmd,
         viewColName = tableColName;
 
 #ifdef QGISDEBUG
-      std::cerr << "View column '" << viewColName << "' comes from " 
-        << tableName << "." << tableColName << '\n';
+      std::cerr << "View column '" << viewColName.local8Bit() << "' comes from " 
+        << tableName.local8Bit() << "." << tableColName.local8Bit() << '\n';
 #endif
       // If there are braces () in the table_col_name this probably
       // indicates that some sql function is being used to transform
@@ -1517,21 +1517,21 @@ void QgsPostgresProvider::findTableColumns(QString selectCmd,
 #ifdef QGISDEBUG
         if (!tableName.contains('(') && !viewColName.contains('('))
           std::cerr << "The definition for view column '" 
-            << viewColName << "' contains "
+            << viewColName.local8Bit() << "' contains "
             "an open bracket in the definition which probably means that "
             "a postgreSQL function is being used to derive the column and "
             "hence that it is unsuitable for use as a key into the "
             "table.\n";
         if (tableName.length() == 0 || viewColName.length() == 0)
           std::cerr << "Failed to extract a sensible table name or "
-            "view column name from '" << f << "'\n";
+            "view column name from '" << f.local8Bit() << "'\n";
 #endif
       }
     }
   }
   else
     std::cerr << "Couldn't extract view column definitions from '"
-      << selectCmd << "'.\n";
+      << selectCmd.local8Bit() << "'.\n";
 }
 
 // Returns the minimum value of an attribute
@@ -1615,7 +1615,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
     insert += primaryKey;
 
 #ifdef QGISDEBUG
-      std::cout << "QgsPostgresProvider::addFeature: Constructing insert SQL, currently at: " << insert
+      std::cout << "QgsPostgresProvider::addFeature: Constructing insert SQL, currently at: " << insert.local8Bit()
                 << "." << std::endl;
 #endif
   
@@ -1634,7 +1634,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
       QString fieldname=it->fieldName();
 
 #ifdef QGISDEBUG
-      std::cout << "QgsPostgresProvider::addFeature: Checking field against: " << fieldname
+      std::cout << "QgsPostgresProvider::addFeature: Checking field against: " << fieldname.local8Bit()
                 << "." << std::endl;
 #endif
 
@@ -1690,7 +1690,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
     {
       QString fieldname=it->fieldName();
 #ifdef QGISDEBUG
-      std::cout << "QgsPostgresProvider::addFeature: Checking field name " << fieldname
+      std::cout << "QgsPostgresProvider::addFeature: Checking field name " << fieldname.local8Bit()
                 << "." << std::endl;
 #endif
       
@@ -1721,7 +1721,7 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f, int primaryKeyHighWater)
         insert+=",";
 
 #ifdef QGISDEBUG
-      std::cout << "QgsPostgresProvider::addFeature: Field is in layer with value " << fieldvalue
+      std::cout << "QgsPostgresProvider::addFeature: Field is in layer with value " << fieldvalue.local8Bit()
                 << "." << std::endl;
 #endif
         
@@ -1835,7 +1835,7 @@ QString QgsPostgresProvider::postgisVersion(PGconn *connection){
   PGresult *result = PQexec(connection, "select postgis_version()");
   postgisVersionInfo = PQgetvalue(result,0,0);
 #ifdef QGISDEBUG
-  std::cerr << "PostGIS version info: " << postgisVersionInfo << std::endl;
+  std::cerr << "PostGIS version info: " << postgisVersionInfo.local8Bit() << std::endl;
 #endif
   // assume no capabilities
   geosAvailable = false;
@@ -2063,7 +2063,7 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
 
 #ifdef QGISDEBUG
       std::cerr << "QgsPostgresProvider::changeGeometryValues: Updating with '"
-                << sql
+                << sql.local8Bit()
                 << "'."
                 << std::endl;
 #endif
@@ -2448,7 +2448,7 @@ void QgsPostgresProvider::calculateExtents()
     QTextOStream(&xMsg).width(18);
     QTextOStream(&xMsg) << "Set extents to: " << layerExtent.
       xMin() << ", " << layerExtent.yMin() << " " << layerExtent.xMax() << ", " << layerExtent.yMax();
-    std::cerr << xMsg << std::endl;
+    std::cerr << xMsg.local8Bit() << std::endl;
 #endif
     // clear query result
     PQclear(result);
@@ -2572,7 +2572,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     geometryColumn + "' and f_table_schema = '" + mSchema + "'";
 
 #ifdef QGISDEBUG
-  std::cerr << "Getting geometry column: " + sql << std::endl;
+  std::cerr << "Getting geometry column: " << sql.local8Bit() << std::endl;
 #endif
 
   PGresult *result = PQexec(connection, (const char *) sql);
@@ -2627,8 +2627,8 @@ bool QgsPostgresProvider::getGeometryDetails()
   }
 
 #ifdef QGISDEBUG
-  std::cout << "SRID is " << srid << '\n'
-    << "type is " << fType << '\n'
+  std::cout << "SRID is " << srid.local8Bit() << '\n'
+    << "type is " << fType.local8Bit() << '\n'
     << "Feature type is " << geomType << '\n'
     << "Feature type name is " 
     << QGis::qgisFeatureTypes[geomType] << std::endl;
