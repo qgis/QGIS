@@ -409,8 +409,8 @@ std::vector<QgsFeature>& QgsGPXProvider::identify(QgsRect * rect) {
   // reset the data source since we need to be able to read through
   // all features
   reset();
-  std::cerr<<"Attempting to identify features falling within "
-	    <<rect->stringRep()<<std::endl; 
+  std::cerr << "Attempting to identify features falling within "
+	    << rect->stringRep().local8Bit() << std::endl; 
   // select the features
   select(rect);
   // temporary fix to get this to compile under windows
