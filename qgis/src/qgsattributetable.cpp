@@ -21,6 +21,7 @@
 #include <qpopupmenu.h>
 #include <qlabel.h>
 #include <qfont.h>
+#include <qglobal.h>
 #include "qgsattributetable.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
@@ -277,7 +278,10 @@ void QgsAttributeTable::popupMenu(int row, int col, const QPoint& pos)
 
     QLabel* popupLabel = new QLabel( mActionPopup );
     popupLabel->setText( tr("<center>Run action</center>") );
+// TODO: Qt4 uses "QAction"s - need to refactor.
+#if QT_VERSION < 0x040000
     mActionPopup->insertItem(popupLabel);
+#endif
     mActionPopup->insertSeparator();
 
     QgsAttributeAction::aIter	iter = mActions.begin();
