@@ -19,6 +19,7 @@
 #include <iostream>
 #include <qstring.h>
 #include <qmenubar.h>
+#include <qglobal.h>
 #include "qgisinterface.h"
 #include "qgisapp.h"
 #include "qgsmaplayer.h"
@@ -56,7 +57,14 @@ bool QgisIface::addVectorLayer(QString vectorLayerPath, QString baseName, QStrin
 
 bool QgisIface::addRasterLayer(QString rasterLayerPath)
 {
+// TODO: This doesn't work in Qt4.  morb_au thinks this is casting to 
+// "bool addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedrawFlag=false)"
+// in qgisapp.h; and causing a
+// "invalid conversion from ‘QNoImplicitBoolCast’ to ‘QgsRasterLayer*’" error
+// not sure why or how to fix.
+#if QT_VERSION < 0x040000
   return qgis->addRasterLayer(rasterLayerPath);
+#endif
 }
 
 bool QgisIface::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRenderFlag)
