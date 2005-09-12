@@ -80,7 +80,7 @@ void QgsBookmarks::initialise()
       {
         QString name  = (char*)sqlite3_column_text(ppStmt, 1);
         //        sqlite3_bind_parameter_index(ppStmt, "name"));
-        std::cout << "Bookmark name: " << name << std::endl; 
+        std::cout << "Bookmark name: " << name.local8Bit() << std::endl; 
         QListViewItem *lvi = new QListViewItem(lstBookmarks, name);
         // set the project name
         lvi->setText(1, (char*)sqlite3_column_text(ppStmt, 2)); 
@@ -167,13 +167,13 @@ void QgsBookmarks::deleteBookmark()
           if(rc != SQLITE_OK)
           {
             // XXX Provide popup message on failure?
-            std::cout << "Failed to delete " << lvi->text(0) 
+            std::cout << "Failed to delete " << lvi->text(0).local8Bit()
               << " bookmark from the database" << std::endl; 
           }
           else
           {
             // XXX Provide popup message on failure?
-            std::cout << "Failed to delete " << lvi->text(0) 
+            std::cout << "Failed to delete " << lvi->text(0).local8Bit()
               << " bookmark from the database" << std::endl; 
           }
         }
@@ -269,7 +269,7 @@ bool QgsBookmarks::createDatabase()
     myPath += "/.qgis";
     myUserQGisDir.setPath(myPath);
 #ifdef QGISDEBUG 
-    std::cout << "Using " << myPath << " as path for qgis.db" << std::endl; 
+    std::cout << "Using " << myPath.local8Bit() << " as path for qgis.db" << std::endl; 
 #endif 
     //now make sure the users .qgis dir exists 
     makeDir(myUserQGisDir);
@@ -286,7 +286,7 @@ bool QgsBookmarks::createDatabase()
     if (! myInputStream)
     {
       std::cerr << "unable to open input file: "
-        << myMasterDatabaseFileName << " --bailing out! \n";
+        << myMasterDatabaseFileName.local8Bit() << " --bailing out! \n";
       //XXX Do better error handling
       return false;
     }

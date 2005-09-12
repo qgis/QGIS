@@ -72,7 +72,7 @@ void QgsClipboard::replaceWithCopyOf( std::vector<QgsFeature> features )
     {
 #ifdef QGISDEBUG
        std::cout << "QgsClipboard::replaceWithCopyOf: inspecting field '"
-                 << (it2->fieldName())
+                 << (it2->fieldName()).local8Bit()
                  << "'." << std::endl;
 #endif
       textFields += it2->fieldValue();
@@ -90,7 +90,7 @@ void QgsClipboard::replaceWithCopyOf( std::vector<QgsFeature> features )
   
 #ifdef QGISDEBUG
         std::cerr << "QgsClipboard::replaceWith: replaced system clipboard with: "
-                  << textCopy
+                  << textCopy.local8Bit()
                   << "."
                   << std::endl;
 #endif
@@ -137,7 +137,7 @@ void QgsClipboard::insert( QgsFeature& feature )
 {
   mFeatureClipboard.push_back(feature);
 #ifdef QGISDEBUG
-        std::cerr << "QgsClipboard::insert: inserted " << feature.geometry()->wkt()
+        std::cerr << "QgsClipboard::insert: inserted " << feature.geometry()->wkt().local8Bit()
                   << std::endl;
 #endif
 

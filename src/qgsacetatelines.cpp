@@ -19,6 +19,7 @@
 /* $Id$ */
 #include <qstring.h>
 #include <qpainter.h>
+#include <qglobal.h>
 #include <qgsmaptopixel.h>
 #include <qgspoint.h>
 #include <qgsrect.h>
@@ -56,7 +57,10 @@ void QgsAcetateLines::draw(QPainter *painter, QgsMapToPixel *cXf)
       cXf->transform(&begin);
       cXf->transform(&end);
     }
+// TODO: Qt4 has delegated moveTo and lineTo to QPainterPath - need to refactor appropriately.
+#if QT_VERSION < 0x040000
     painter->moveTo(static_cast<int>(begin.x()), static_cast<int>(begin.y()));
     painter->lineTo(static_cast<int>(end.x()), static_cast<int>(end.y()));
+#endif
   }
 }

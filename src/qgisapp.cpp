@@ -79,6 +79,7 @@ using namespace std;
 #include <qtimer.h>
 #include <qcheckbox.h>
 #include <qtooltip.h>
+#include <qglobal.h>
 
 
 #include "qgsencodingfiledialog.h"
@@ -431,11 +432,16 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     
     // Add the recently accessed project file paths to the File menu
     mRecentProjectPaths = settings.readListEntry("/qgis/UI/recentProjectsList");
+
+// TODO: Qt4 will have to do this a different way...
+#if QT_VERSION < 0x040000
     // Exit is the last item. Find it and insert these just before it
     uint count = popupMenuFile->count();
     // Remember the items before and after the paths so we can manipulate them later
     popupMenuFile->setId(count - 2, BEFORE_RECENT_PATHS); // item before paths
     popupMenuFile->setId(count - 1, AFTER_RECENT_PATHS); // Exit - comes after paths
+#endif
+
     updateRecentProjectPaths();
     
     // Add the empty plugin menu
@@ -2372,6 +2378,8 @@ void QgisApp::saveRecentProjectPath(QString projectPath, QSettings & settings)
     // Persist the list
     settings.writeEntry("/qgis/UI/recentProjectsList", mRecentProjectPaths);
     
+// TODO: Qt4 will have to do this a different way...
+#if QT_VERSION < 0x040000
     // Update the file menu with the changed list
     // Find the item before the paths in the menu
     uint currentIndex = popupMenuFile->indexOf(BEFORE_RECENT_PATHS);
@@ -2383,6 +2391,8 @@ void QgisApp::saveRecentProjectPath(QString projectPath, QSettings & settings)
     }
     // Add back in the updated list of paths
     updateRecentProjectPaths();
+#endif
+
 } // QgisApp::saveRecentProjectPath
 
 
@@ -2568,7 +2578,6 @@ void QgisApp::saveMapAsImage()
             myLastUsedDir,
             myFilters,
             0,
-            QFileDialog::tr("Save file dialog"),
             tr("Choose a filename to save the map image as")
         )
     );
@@ -2577,7 +2586,7 @@ void QgisApp::saveMapAsImage()
     // allow for selection of more than one file
     myQFileDialog->setMode(QFileDialog::AnyFile);
 
-    if (myLastUsedFilter!=QString::null)       // set the filter to the last one used
+    if (!myLastUsedFilter.isEmpty())       // set the filter to the last one used
     {
         myQFileDialog->setSelectedFilter(myLastUsedFilter);
     }
@@ -3721,7 +3730,7 @@ void QgisApp::testPluginFunctions()
                 //QLibrary myLib("../plugins/" + pluginDir[i]);
 #ifdef QGISDEBUG
 
-                std::cout << "Attempting to load " << "../plugins/" + pluginDir[i] << std::endl;
+                std::cout << "Attempting to load " << "../plugins/" << pluginDir[i].local8Bit() << std::endl;
 #endif
                 /*  void *handle = dlopen("/home/gsherman/development/qgis/plugins/" + pluginDir[i], RTLD_LAZY);
                    if (!handle) {
@@ -4337,6 +4346,8 @@ int QgisApp::addPluginMenu(QString menuText, QPopupMenu *menu)
 
 QPopupMenu* QgisApp::getPluginMenu(QString menuName)
 {
+// TODO: Qt4 will have to do this a different way...
+#if QT_VERSION < 0x040000
   for (int i = 0; i < mPluginMenu->count(); ++i)
     if (mPluginMenu->text(mPluginMenu->idAt(i)) == menuName)
     {
@@ -4348,10 +4359,13 @@ QPopupMenu* QgisApp::getPluginMenu(QString menuName)
   QPopupMenu* menu = new QPopupMenu(mPluginMenu);
   mPluginMenu->insertItem(menuName, menu);
   return menu;
+#endif
 }
 
 void QgisApp::removePluginMenuItem(QString name, int menuId)
 {
+// TODO: Qt4 will have to do this a different way...
+#if QT_VERSION < 0x040000
   for (int i = 0; i < mPluginMenu->count(); ++i)
     if (mPluginMenu->text(mPluginMenu->idAt(i)) == name)
     {
@@ -4362,6 +4376,7 @@ void QgisApp::removePluginMenuItem(QString name, int menuId)
 	mPluginMenu->removeItem(mPluginMenu->idAt(i));
       break;
     }
+#endif
 }
 
 int QgisApp::addPluginToolBarIcon (QAction * qAction)

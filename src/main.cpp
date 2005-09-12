@@ -456,7 +456,7 @@ int main(int argc, char *argv[])
 
 
 #ifdef QGISDEBUG
-    std::cout << "Trying to load file : " << *myIterator << std::endl;
+    std::cout << "Trying to load file : " << (*myIterator).local8Bit() << std::endl;
 #endif
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files
