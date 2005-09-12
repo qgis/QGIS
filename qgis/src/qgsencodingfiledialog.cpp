@@ -74,6 +74,13 @@ QgsEncodingFileDialog::QgsEncodingFileDialog(const QString & dirName, const QStr
       {
 	mEncodingComboBox->setCurrentText(currentencoding);
       }
+
+    // if this dialog is being invoked from QgisApp::findFiles_(), then we
+    // need to force selection of the first filter since that corresponds to
+    // the file name we're looking for; even if we're not here from
+    // findFiles_(), it won't hurt to force selection of the first file filter
+    setSelectedFilter( 0 );
+
 }
 
 QgsEncodingFileDialog::~QgsEncodingFileDialog()
