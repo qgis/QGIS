@@ -2929,67 +2929,44 @@ void QgisApp::stopZoom()
 
 void QgisApp::attributeTable()
 {
-    QListViewItem *li = mMapLegend->currentItem();
-    if (li)
+    QgsMapLayer *layer = mMapLegend->currentLayer();
+    if (layer)
     {
-	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
-	QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(li);
-	if(llf)
-	{
-	    QgsMapLayer *layer = llf->layer();
-	    if (layer)
-	    {
-		layer->table();
-
-	    }
-	}
-	else if(ll) //if the current item is a legendlayer, take the first legend layer file
-	{
-	    QgsMapLayer* layer = ll->firstMapLayer();
-	    if(layer)
-	    {
-		layer->table();
-	    }
-	}
+	layer->table();
     }
     else
     {
 	QMessageBox::information(this, tr("No Layer Selected"),
-                                     tr("To open an attribute table, you must select a layer in the legend"));
+				 tr("To open an attribute table, you must select a layer in the legend"));
     }
 }
 
 void QgisApp::deleteSelected()
 {
-#ifdef QGISDEBUG
-    qWarning("In slot QgisApp::deleteSelected");
-#endif
-
-    QListViewItem *li = mMapLegend->currentItem();
-    if (li)
+    QgsMapLayer *layer = mMapLegend->currentLayer();
+    if(layer)
     {
-        //QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(((QgsLegendItem *) li)->layer());
-	//todo: add a new mechanism that works with the new legend
-	QgsVectorLayer* vlayer = 0;
-        if(vlayer)
-        {
-            if(!vlayer->deleteSelectedFeatures())
+	QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(layer);
+	if(vlayer)
+	{
+	    if(!vlayer->deleteSelectedFeatures())
             {
                 QMessageBox::information(this, tr("Problem deleting features"),
                                          tr("A problem occured during deletion of features"));
             }
-        }
-        else
-        {
-            QMessageBox::information(this, tr("No Vector Layer Selected"),
+	}
+	else
+	{
+	    QMessageBox::information(this, tr("No Vector Layer Selected"),
                                      tr("Deleting features only works on vector layers"));
-        }
+	}
     }
     else
     {
-        QMessageBox::information(this, tr("No Layer Selected"),
+	QMessageBox::information(this, tr("No Layer Selected"),
                                  tr("To delete features, you must select a vector layer in the legend"));
     }
+
     // notify the project we've made a change
     QgsProject::instance()->dirty(true);
 }

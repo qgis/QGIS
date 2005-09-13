@@ -461,7 +461,15 @@ QgsMapLayer* QgsLegend::currentLayer()
 	}
 	else
 	{
-	    return 0;
+	    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(citem);
+	    if(ll)
+	    {
+		return ll->firstMapLayer();
+	    }
+	    else
+	    {
+		return 0;
+	    }
 	}
     }
     else
