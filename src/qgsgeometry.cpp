@@ -1095,7 +1095,6 @@ QgsRect QgsGeometry::boundingBox() const
     QgsPoint pt;
     QPointArray *pa;
     int wkbType;
-    unsigned char *mGeometry;
 
     if(mGeometry)
     {
