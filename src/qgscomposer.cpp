@@ -616,6 +616,7 @@ void QgsComposer::setToolActionsOff(void)
   actionAddVectorLegend->setOn ( false );
   actionAddLabel->setOn ( false );
   actionAddScalebar->setOn ( false );
+  actionAddPicture->setOn ( false );
 }
 
 void QgsComposer::selectItem(void)
@@ -651,6 +652,13 @@ void QgsComposer::addScalebar(void)
   mComposition->setTool ( QgsComposition::AddScalebar );
   setToolActionsOff();
   actionAddScalebar->setOn ( true );
+}
+
+void QgsComposer::addPicture(void)
+{
+  mComposition->setTool ( QgsComposition::AddPicture );
+  setToolActionsOff();
+  actionAddPicture->setOn ( true );
 }
 
 void QgsComposer::moveEvent ( QMoveEvent *e ) { saveWindowState(); }
