@@ -26,6 +26,7 @@
 #include <qobjectlist.h>
 #include <qdom.h>
 #include <qstringlist.h>
+#include <qmessagebox.h>
 
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
@@ -38,6 +39,7 @@
 #include "qgscomposervectorlegend.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerscalebar.h"
+#include "qgscomposerpicture.h"
 
 QgsCompositionPaper::QgsCompositionPaper ( QString name, int w, int h, bool c) 
   :mName(name), mWidth(w), mHeight(h), mCustom(c)
@@ -183,13 +185,17 @@ void QgsComposition::createCanvas(void)
 void QgsComposition::resizeCanvas(void) 
 {
   mCanvas->resize ( (int) mPaperWidth * mScale, (int) mPaperHeight * mScale );
+#ifdef QGISDEBUG
   std::cout << "mCanvas width = " << mCanvas->width() << " height = " << mCanvas->height() << std::endl;
+#endif
   mPaperItem->setSize ( (int) mPaperWidth * mScale, (int) mPaperHeight * mScale );
 }
 
 QgsComposition::~QgsComposition()
 {
+#ifdef QGISDEBUG
   std::cerr << "QgsComposition::~QgsComposition" << std::endl;
+#endif
   mView->setCanvas ( 0 );
 
   if ( mPaperItem ) delete mPaperItem;
@@ -217,10 +223,13 @@ void QgsComposition::setActive (  bool active )
 
 void QgsComposition::contentsMousePressEvent(QMouseEvent* e)
 {
+#ifdef QGISDEBUG
   std::cerr << "QgsComposition::contentsMousePressEvent() mTool = " << mTool << " mToolStep = "
     << mToolStep << std::endl;
+#endif
 
   QPoint p = mView->inverseWorldMatrix().map(e->pos());
+  mLastPoint = p;
 
   switch ( mTool ) {
     case Select:
@@ -265,7 +274,9 @@ void QgsComposition::contentsMousePressEvent(QMouseEvent* e)
       break;
 
     case AddMap:
+#ifdef QGISDEBUG
       std::cerr << "AddMap" << std::endl;
+#endif
       if ( mToolStep == 0 ) {
         mRectangleItem = new QCanvasRectangle( p.x(), p.y(), 0, 0, mCanvas );
         mRectangleItem->setBrush( Qt::NoBrush );
@@ -275,7 +286,9 @@ void QgsComposition::contentsMousePressEvent(QMouseEvent* e)
         mRectangleItem->show();
         mToolStep = 1;
       }
+#ifdef QGISDEBUG
       std::cerr << "mToolStep = " << mToolStep << std::endl;
+#endif
       break;
 
     case AddVectorLegend:
@@ -334,13 +347,31 @@ void QgsComposition::contentsMousePressEvent(QMouseEvent* e)
         mCanvas->update();
       }
       break;
+
+    case AddPicture:
+      {
+        //mNewCanvasItem->setX( p.x() );
+        //mNewCanvasItem->setY( p.y() );
+
+        QgsComposerPicture *pi = dynamic_cast <QgsComposerPicture*> (mNewCanvasItem);
+	//pi->setSize (0, 0);
+	pi->setBox ( p.x(), p.y(), p.x(), p.y() );
+
+        mCanvas->update();
+
+        mToolStep = 1;
+	
+      }
+      break;
   }
 }
 
 void QgsComposition::contentsMouseMoveEvent(QMouseEvent* e)
 {
+#ifdef QGISDEBUG
   std::cerr << "QgsComposition::contentsMouseMoveEvent() mTool = " << mTool << " mToolStep = "
     << mToolStep << std::endl;
+#endif
 
   QPoint p = mView->inverseWorldMatrix().map(e->pos());
 
@@ -384,13 +415,40 @@ void QgsComposition::contentsMouseMoveEvent(QMouseEvent* e)
       mNewCanvasItem->move ( p.x(), p.y() );
       mCanvas->update();
       break;
+
+    case AddPicture:
+      if ( mToolStep == 1 ) { // draw rectangle
+        QgsComposerPicture *pi = dynamic_cast <QgsComposerPicture*> (mNewCanvasItem);
+
+	pi->setBox ( mLastPoint.x(), mLastPoint.y(), p.x(), p.y() );
+/*
+        double x, y;
+        int w, h;
+
+        x = p.x() < pi->QCanvasRectangle::x() ? p.x() : pi->QCanvasRectangle::x();
+        y = p.y() < pi->QCanvasRectangle::y() ? p.y() : pi->QCanvasRectangle::y();
+
+        w = abs ( p.x() - (int)pi->QCanvasRectangle::x() );
+        h = abs ( p.y() - (int)pi->QCanvasRectangle::y() );
+
+        pi->setX(x);
+        pi->setY(y);
+
+        pi->setSize(w,h);
+*/
+
+        mCanvas->update();
+      	break;
+      }
   }
 }
 
 void QgsComposition::contentsMouseReleaseEvent(QMouseEvent* e)
 {
+#ifdef QGISDEBUG
   std::cerr << "QgsComposition::contentsMouseReleaseEvent() mTool = " << mTool 
     << " mToolStep = " << mToolStep << std::endl;
+#endif
 
   QPoint p = mView->inverseWorldMatrix().map(e->pos());
 
@@ -429,18 +487,44 @@ void QgsComposition::contentsMouseReleaseEvent(QMouseEvent* e)
       }
       break;
 
+    case AddPicture:
+      {
+        QgsComposerPicture *pi = dynamic_cast <QgsComposerPicture*> (mNewCanvasItem);
+
+        if (  mLastPoint.x()-p.x() != 0 && mLastPoint.y()-p.y() != 0 ) {
+	    mNewCanvasItem = 0; // !!! Must be before mComposer->selectItem()
+	    mComposer->selectItem(); // usually just one ???
+
+	    pi->writeSettings();
+	    mItems.push_back(pi);
+
+	    pi->setSelected ( true );
+	    mComposer->showItemOptions ( pi->options() );
+	    mSelectedItem = dynamic_cast <QCanvasItem*> (pi);
+
+            mCanvas->update();
+
+        } else {
+            mToolStep = 0;
+        }
+      }
+      break;
+
     case Select:
       if ( mSelectedItem ) {
         // the object was probably moved
         QgsComposerItem *ci = dynamic_cast <QgsComposerItem *> (mSelectedItem);
         ci->writeSettings();
       }
+      break;
   }
 }
 
 void QgsComposition::keyPressEvent ( QKeyEvent * e )
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposition::keyPressEvent() key = " << e->key() << std::endl;
+#endif
 
   if ( e->key() == Qt::Key_Delete && mSelectedItem ) { // delete
 
@@ -455,7 +539,6 @@ void QgsComposition::keyPressEvent ( QKeyEvent * e )
         break;
       }
     }
-    std::cout << "mItems.size() = " << mItems.size() << std::endl;
     delete (mSelectedItem);
     mSelectedItem = 0;
     mCanvas->update();
@@ -464,12 +547,16 @@ void QgsComposition::keyPressEvent ( QKeyEvent * e )
 
 void QgsComposition::paperSizeChanged ( void )
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposition::paperSizeChanged" << std::endl;
+#endif
 
   mPaper = mPaperSizeComboBox->currentItem();
   mPaperOrientation = mPaperOrientationComboBox->currentItem();
+#ifdef QGISDEBUG
   std::cout << "custom = " << mPapers[mPaper].mCustom << std::endl;
   std::cout << "orientation = " << mPaperOrientation << std::endl;
+#endif
   if ( mPapers[mPaper].mCustom ) {
     mUserPaperWidth = mPaperWidthLineEdit->text().toDouble();
     mUserPaperHeight = mPaperHeightLineEdit->text().toDouble();
@@ -500,7 +587,9 @@ void QgsComposition::recalculate ( void )
     mPaperWidth = mUserPaperHeight;
     mPaperHeight = mUserPaperWidth;
   }
+#ifdef QGISDEBUG
   std::cout << "mPaperWidth = " << mPaperWidth << " mPaperHeight = " << mPaperHeight << std::endl;
+#endif
   resizeCanvas();
   mComposer->zoomFull();
 }
@@ -642,6 +731,42 @@ void QgsComposition::setTool ( Tool tool )
     mComposer->showItemOptions ( sb->options() );
 
     mView->viewport()->setMouseTracking ( true ); // to recieve mouse move
+  } else if ( tool == AddPicture ) {
+    if ( mNewCanvasItem ) delete mNewCanvasItem;
+
+    while ( 1 )
+    {
+	QString file = QgsComposerPicture::pictureDialog();
+
+        if ( file.isNull() )
+	{
+	    // TODO: This is not nice, because selectItem() calls 
+            //       this function, do it better
+	    mComposer->selectItem();
+	    tool = Select;
+	    break;
+        }
+
+	// Create new object outside the visible area
+	QgsComposerPicture *pi = new QgsComposerPicture ( this, mNextItemId++,      			         		   file );
+
+	if ( pi->pictureValid() )
+	{
+  	    std::cout << "picture is valid" << std::endl;
+	    mNewCanvasItem = dynamic_cast <QCanvasItem *> (pi);
+	    mComposer->showItemOptions ( pi->options() );
+
+	    mView->viewport()->setMouseTracking ( true ); // to recieve mouse move
+            break;
+	}
+	else
+        {
+	    QMessageBox::warning( 0, "Warning",
+                         "Cannot load picture." );
+
+	    delete pi;
+	}
+    }
   }
 
   mTool = tool;
@@ -714,7 +839,9 @@ bool QgsComposition::writeSettings ( void )
 
 bool QgsComposition::readSettings ( void )
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposition::readSettings" << std::endl;
+#endif
 
   bool ok;
 
@@ -742,7 +869,9 @@ bool QgsComposition::readSettings ( void )
 
   // First maps because they can be used by other objects
   for ( QStringList::iterator it = el.begin(); it != el.end(); ++it ) {
+#ifdef QGISDEBUG
     std::cout << "key: " << (*it).ascii() << std::endl;
+#endif
 
     QStringList l = QStringList::split( '_', (*it) );
     if ( l.size() == 2 ) {
@@ -760,7 +889,9 @@ bool QgsComposition::readSettings ( void )
   }
 
   for ( QStringList::iterator it = el.begin(); it != el.end(); ++it ) {
+#ifdef QGISDEBUG
     std::cout << "key: " << (*it).ascii() << std::endl;
+#endif
 
     QStringList l = QStringList::split( '_', (*it) );
     if ( l.size() == 2 ) {
@@ -777,6 +908,9 @@ bool QgsComposition::readSettings ( void )
       } else if ( name.compare("scalebar") == 0 ) {
         QgsComposerScalebar *sb = new QgsComposerScalebar ( this, id );
         mItems.push_back(sb);
+      } else if ( name.compare("picture") == 0 ) {
+        QgsComposerPicture *pi = new QgsComposerPicture ( this, id );
+        mItems.push_back(pi);
       }
 
       if ( id >= mNextItemId ) mNextItemId = id + 1;

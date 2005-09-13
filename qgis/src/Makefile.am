@@ -81,6 +81,7 @@ headers =	qgisapp.h					\
 		qgscomposermap.h				\
 		qgscomposervectorlegend.h			\
 		qgscomposerlabel.h				\
+		qgscomposerpicture.h				\
 		qgscomposerscalebar.h				\
 		qgscomposerview.h				\
 		qgscomposition.h				\
@@ -189,6 +190,7 @@ qgis_UIC =	qgisappbase.ui				\
 		qgscomposermapbase.ui			\
 		qgscomposervectorlegendbase.ui		\
 		qgscomposerlabelbase.ui		     	\
+		qgscomposerpicturebase.ui	     	\
 		qgscomposerscalebarbase.ui		\
 		qgscontcoldialogbase.ui			\
 		qgsdelattrdialogbase.ui			\
@@ -260,6 +262,7 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsattributetable.moc.cpp		\
 		qgsbookmarks.moc.cpp		\
 		qgscomposerlabel.moc.cpp		\
+		qgscomposerpicture.moc.cpp		\
 		qgscomposermap.moc.cpp			\
 		qgscomposer.moc.cpp			\
 		qgscomposerscalebar.moc.cpp		\
@@ -332,6 +335,7 @@ qgis_SOURCES =	main.cpp			\
 		qgscomposer.cpp			\
 		qgscomposeritem.cpp		\
 		qgscomposerlabel.cpp		\
+		qgscomposerpicture.cpp		\
 		qgscomposermap.cpp		\
 		qgscomposerscalebar.cpp		\
 		qgscomposervectorlegend.cpp	\
@@ -487,6 +491,9 @@ libqgis_la_SOURCES =						\
 		qgscomposerlabel.cpp				\
 		qgscomposerlabel.moc.cpp			\
 		qgscomposerlabelbase.moc.uic.cpp		\
+		qgscomposerpicture.cpp				\
+		qgscomposerpicture.moc.cpp			\
+		qgscomposerpicturebase.moc.uic.cpp		\
 		qgscomposermap.cpp				\
 		qgscomposermap.moc.cpp				\
 		qgscomposermapbase.moc.uic.cpp			\
@@ -564,6 +571,7 @@ libqgis_la_SOURCES +=						\
 		qgisappbase.uic.cpp				\
 		qgscomposerbase.uic.cpp				\
 		qgscomposerlabelbase.uic.cpp			\
+		qgscomposerpicturebase.uic.cpp			\
 		qgscomposermapbase.uic.cpp			\
 		qgscomposerscalebarbase.uic.cpp			\
 		qgscomposervectorlegendbase.uic.cpp		\

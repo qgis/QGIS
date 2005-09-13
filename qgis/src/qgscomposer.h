@@ -134,6 +134,9 @@ public slots:
     
     //! Add new scalebar
     void addScalebar(void);
+    
+    //! Add new picture
+    void addPicture(void);
 
     //! read project
     void projectRead();

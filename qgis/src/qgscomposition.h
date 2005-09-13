@@ -19,6 +19,7 @@
 #include <vector>
 
 #include <qprinter.h>
+#include <qpoint.h>
 
 #ifdef WIN32
 #include "qgscompositionbase.h"
@@ -80,7 +81,8 @@ public:
 	AddMap,          // add new map 
 	AddVectorLegend, // add vector legend
 	AddLabel,        // add label
-	AddScalebar      // add scalebar
+	AddScalebar,     // add scalebar
+	AddPicture       // add raster/vector picture
     };
 
     /** \brief Scaling mode, defines which parameters are fixed and which are changing  */
@@ -302,6 +304,9 @@ private:
     
     /** \brief Resize canvas to current paper size */
     void resizeCanvas(void);
+
+    /** \brief first point, set with MousePressEvent */
+    QPoint mLastPoint;
 };
 
 #endif
