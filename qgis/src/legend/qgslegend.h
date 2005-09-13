@@ -90,7 +90,9 @@ class QgsLegend : public QListView
   //! Destructor
    ~QgsLegend();
 
-  /*!Returns the current layer or 0 if the current item is not a QgsLegendLayerFile*/
+  /*!Returns the current layer if the current item is a QgsLegendLayerFile.
+   If the current item is a QgsLegendLayer, its first maplayer is returned.
+  Else, 0 is returned.*/
   QgsMapLayer* currentLayer();
 
   /**Adds a checkbox and its item to mCheckBoxes*/
