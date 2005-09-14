@@ -394,7 +394,6 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
           continue;
         }    */
     }
-	   delete fet;
     
 	   if(mUseIntersect)
 	   {
