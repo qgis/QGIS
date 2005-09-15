@@ -13,7 +13,7 @@
 #define QGSCUSTOMPROJECTIONDIALOG_H
 
 #include <qdir.h>
-#include <qnetworkprotocol.h> 
+//  #include <qnetworkprotocol.h>     not sure why needed - breaks portage to Qt4
 #include <qgscustomprojectiondialogbase.uic.h>
 
 /**
@@ -25,7 +25,7 @@ class QgsCustomProjectionDialog : public QgsCustomProjectionDialogBase
 {
 Q_OBJECT
 public:
-    QgsCustomProjectionDialog(QWidget* parent , const char* name = "", WFlags fl=0);
+    QgsCustomProjectionDialog(QWidget* parent, const char* name = "", Qt::WFlags fl=0);
     ~QgsCustomProjectionDialog();
     //a recursive function to make a directory and its ancestors
     bool makeDir(QDir &theQDir);

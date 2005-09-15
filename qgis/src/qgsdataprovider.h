@@ -233,7 +233,7 @@ signals:
        *   PostGIS extents for this layer, and its event has been received by this
        *   provider.
        */  
-      virtual void fullExtentCalculated();
+      void fullExtentCalculated();
 
 };
 

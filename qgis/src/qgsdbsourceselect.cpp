@@ -224,7 +224,7 @@ void QgsDbSourceSelect::dbConnect()
   }
   connString += " password=" + password;
 #ifdef QGISDEBUG
-  std::cout << "Connection info: " << connString << std::endl;
+  std::cout << "Connection info: " << connString.local8Bit() << std::endl;
 #endif
   if (makeConnection)
   {
@@ -419,7 +419,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     {
       qDebug(tr("Access to relation ") + table + tr(" using sql;\n") + sql +
        tr("\nhas failed. The database said:\n") +
-       PQresultErrorMessage(gresult));
+       QString( PQresultErrorMessage(gresult)) );
     }
     else
     {
