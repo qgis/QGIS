@@ -23,6 +23,7 @@
 #include <qpen.h>
 #include <qpainter.h>
 #include <qpixmap.h>
+#include <qglobal.h>
 
 #include "qgspoint.h"
 #include "qgsmaptopixel.h"
@@ -142,6 +143,8 @@ void QgsMeasure::drawLine(void)
     std::cout << "QgsMeasure::drawLine" << std::endl;
 #endif
 
+// TODO: Qt4 uses "QRubberBand"s - need to refactor.
+#if QT_VERSION < 0x040000
     QPainter p;
     p.begin(mPixmap);
     QPen pen(Qt::gray);
@@ -158,6 +161,7 @@ void QgsMeasure::drawLine(void)
 	}
     }
     p.end();
+#endif
     mMapCanvas->repaint(false);
 }
 
@@ -167,6 +171,8 @@ void QgsMeasure::drawDynamicLine( void )
     //std::cout << "QgsMeasure::drawDynamicLine" << std::endl;
 #endif
 
+// TODO: Qt4 uses "QRubberBand"s and "QPainterPath"s - need to refactor.
+#if QT_VERSION < 0x040000
     QPainter p;
     p.begin(mPixmap);
     QPen pen(Qt::gray);
@@ -179,6 +185,7 @@ void QgsMeasure::drawDynamicLine( void )
     ppnt = trans->transform(mDynamicPoints[1]);
     p.lineTo(static_cast<int>(ppnt.x()), static_cast<int>(ppnt.y()));
     p.end();
+#endif
     mMapCanvas->repaint(false);
 }
 

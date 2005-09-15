@@ -16,6 +16,8 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include <qglobal.h>
+
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 
@@ -479,7 +481,7 @@ void QgsMapCanvas::showInOverview( QgsMapLayer * maplayer, bool visible )
 void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 {
 #ifdef QGISDEBUG
-  std::cout << name() << " is adding " << lyr->name() << std::endl;
+  std::cout << name() << " is adding " << lyr->name().local8Bit() << std::endl;
 #endif
 
   Q_CHECK_PTR( lyr );
@@ -854,7 +856,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
   std::cout << ".............................." << std::endl;
   std::cout << "...........Rendering.........." << std::endl;
   std::cout << ".............................." << std::endl;
-  std::cout << name() << " canvas is " << msg << std::endl;
+  std::cout << name() << " canvas is " << msg.local8Bit() << std::endl;
 #endif
 
   int myHeight=0;
@@ -991,7 +993,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         while (li != mCanvasProperties->zOrder.end())
         {
 #ifdef QGISDEBUG
-        std::cout << "QgsMapCanvas::render: at layer item '" << *li << "'." << std::endl;
+        std::cout << "QgsMapCanvas::render: at layer item '" << (*li).local8Bit() << "'." << std::endl;
 #endif
           
           emit setProgress(myRenderCounter++,mCanvasProperties->zOrder.size());
@@ -1001,17 +1003,17 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
           {
             //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
 #ifdef QGISDEBUG
-            std::cout << "QgsMapCanvas::render: Rendering layer " << ml->name() << '\n'
+            std::cout << "QgsMapCanvas::render: Rendering layer " << ml->name().local8Bit() << '\n'
           << "Layer minscale " << ml->minScale() 
           << ", maxscale " << ml->maxScale() << '\n' 
           << ". Scale dep. visibility enabled? " 
           << ml->scaleBasedVisibility() << '\n'
-          << "Input extent: " << ml->extent().stringRep() 
+          << "Input extent: " << ml->extent().stringRep().local8Bit()
           << std::endl;
             try
             {
               std::cout << "Transformed extent" 
-      << ml->coordinateTransform()->transform(ml->extent()).stringRep() 
+      << ml->coordinateTransform()->transform(ml->extent()).stringRep().local8Bit()
       << std::endl;
             }
             catch (QgsCsException &e)
@@ -1134,6 +1136,8 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 //and also the connection to mDigitMovePoint
       if((mLineEditing || mPolygonEditing) && mCaptureList.size()>0)
       {
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
 	  paint->setRasterOp(Qt::XorROP);
 	  QgsPoint digitpoint=mCanvasProperties->coordXForm->transform(mDigitMovePoint.x(), mDigitMovePoint.y());
 	  paint->drawLine(static_cast<int>(current.x()), static_cast<int>(current.y()), static_cast<int>(digitpoint.x()),\
@@ -1144,6 +1148,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 	      paint->drawLine(static_cast<int>(first.x()), static_cast<int>(first.y()), static_cast<int>(digitpoint.x()),\
 					  static_cast<int>(digitpoint.y()));
 	  }
+#endif
       }
 
 				      
@@ -1183,7 +1188,7 @@ void QgsMapCanvas::currentScale(int thePrecision)
   std::cout << "------------------------------------------ " << std::endl;
 
   std::cout << "Current extent is " 
-      << mCanvasProperties->currentExtent.stringRep() << std::endl;
+      << mCanvasProperties->currentExtent.stringRep().local8Bit() << std::endl;
   std::cout << "MuppX is: " << muppX << "\n"
       << "MuppY is: " << muppY << std::endl;
   std::cout << "Canvas width: " << width() 
@@ -1517,6 +1522,8 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
   #endif
                                     
         
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
         // Draw initial rubber band
         paint.begin(this);
         paint.setPen(pen);
@@ -1526,6 +1533,7 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
         paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
         
         paint.end();
+#endif
       } // if snapSegmentWithContext
 
       break;
@@ -1626,6 +1634,8 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
                   << "." << std::endl;
   #endif
 
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
         // Draw initial rubber band
         paint.begin(this);
         paint.setPen(pen);
@@ -1641,6 +1651,7 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
         }
 
         paint.end();
+#endif
       } // if snapVertexWithContext
 
 
@@ -1718,6 +1729,8 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
                   << "." << std::endl;
   #endif
 
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
         // Draw X symbol - people can feel free to pretty this up if they like
         paint.begin(this);
         paint.setPen(pen);
@@ -1737,6 +1750,7 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
                         mCanvasProperties->rubberMidPoint.y() - crossSize  );
 
         paint.end();
+#endif
       } // if snapVertexWithContext
 
 
@@ -1780,12 +1794,15 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     switch (mCanvasProperties->mapTool)
     {
     case QGis::ZoomIn:
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
       // erase the rubber band box
       paint.begin(this);
       paint.setPen(pen);
       paint.setRasterOp(Qt::XorROP);
       paint.drawRect(mCanvasProperties->zoomBox);
       paint.end();
+#endif
       // store the rectangle
       mCanvasProperties->zoomBox.setRight(e->pos().x());
       mCanvasProperties->zoomBox.setBottom(e->pos().y());
@@ -1807,12 +1824,15 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       break;
     case QGis::ZoomOut:
       {
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
         // erase the rubber band box
         paint.begin(this);
         paint.setPen(pen);
         paint.setRasterOp(Qt::XorROP);
         paint.drawRect(mCanvasProperties->zoomBox);
         paint.end();
+#endif
         // store the rectangle
         mCanvasProperties->zoomBox.setRight(e->pos().x());
         mCanvasProperties->zoomBox.setBottom(e->pos().y());
@@ -1901,12 +1921,15 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       
     case QGis::Select:
       {
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
       // erase the rubber band box
       paint.begin(this);
       paint.setPen(pen);
       paint.setRasterOp(Qt::XorROP);
       paint.drawRect(mCanvasProperties->zoomBox);
       paint.end();
+#endif
 
       QgsMapLayer *lyr = mCanvasProperties->mapLegend->currentLayer();
 
@@ -2235,6 +2258,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       
       // TODO: Find nearest line portion of the selected line, add a node at the mouse location
 
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
       // Undraw rubber band
       paint.begin(this);
       paint.setPen(pen);
@@ -2244,7 +2269,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
       paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
       paint.end();
-
+#endif
 
       // Add the new vertex
 
@@ -2293,6 +2318,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       QgsVectorLayer* vlayer =
         dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
 
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
       // Undraw rubber band
       paint.begin(this);
       paint.setPen(pen);
@@ -2302,7 +2329,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
       paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
       paint.end();
-
+#endif
 
       // Move the vertex
 
@@ -2346,6 +2373,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       QgsVectorLayer* vlayer =
         dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
 
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
       // Undraw X symbol - people can feel free to pretty this up if they like
       paint.begin(this);
       paint.setPen(pen);
@@ -2365,6 +2394,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                       mCanvasProperties->rubberMidPoint.y() - crossSize  );
 
       paint.end();
+#endif
 
       if (vlayer)
       {
@@ -2465,6 +2495,8 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
       // draw the rubber band box as the user drags the mouse
       mCanvasProperties->dragging = true;
 
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
       paint.begin(this);
       paint.setPen(pen);
       paint.setRasterOp(Qt::XorROP);
@@ -2477,6 +2509,8 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 
       paint.drawRect(mCanvasProperties->zoomBox);
       paint.end();
+#endif
+
       break;
     case QGis::Pan:
       // show the pmCanvas as the user drags the mouse
@@ -2557,7 +2591,9 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
   
       QPainter paint;
       QPen pen(Qt::gray);
-      
+
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
       paint.begin(this);
       paint.setPen(pen);
       paint.setRasterOp(Qt::XorROP);
@@ -2572,6 +2608,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
   
       paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberStopPoint);
       paint.end();
+#endif
     
     }
     
@@ -2618,6 +2655,9 @@ void QgsMapCanvas::drawLineToDigitisingCursor(QPainter* paint, bool last)
 			    QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),\
 			    QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
    paint->setPen(QPen(digitcolor,QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",1),Qt::SolidLine));
+
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
    paint->setRasterOp(Qt::XorROP);
    std::list<QgsPoint>::iterator it;
    if(last)
@@ -2633,6 +2673,8 @@ void QgsMapCanvas::drawLineToDigitisingCursor(QPainter* paint, bool last)
    QgsPoint digitpoint = mCanvasProperties->coordXForm->transform(mDigitMovePoint.x(), mDigitMovePoint.y());
    paint->drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),\
 		  static_cast<int>(digitpoint.x()), static_cast<int>(digitpoint.y()));
+#endif
+
 }
 
 /** 
@@ -2899,7 +2941,7 @@ void QgsMapCanvas::setZOrder(std::list <QString> theZOrder)
     if (ml)
     {
 #ifdef QGISDEBUG
-      std::cout << "Adding  " << ml->name() << " to zOrder" << std::endl;
+      std::cout << "Adding  " << ml->name().local8Bit() << " to zOrder" << std::endl;
 #endif
 
       mCanvasProperties->zOrder.push_back(ml->getLayerID());
@@ -2907,7 +2949,7 @@ void QgsMapCanvas::setZOrder(std::list <QString> theZOrder)
     else
     {
 #ifdef QGISDEBUG
-      std::cout << "Cant add  " << ml->name() << " to zOrder (it isnt in layers array)" << std::endl;
+      std::cout << "Cant add  " << ml->name().local8Bit() << " to zOrder (it isnt in layers array)" << std::endl;
 #endif
 
     }
@@ -3048,8 +3090,8 @@ void QgsMapCanvas::recalculateExtents()
   {
     QgsMapLayer * lyr = dynamic_cast<QgsMapLayer *>(mit->second);
 #ifdef QGISDEBUG
-    std::cout << "Updating extent using " << lyr->name() << std::endl;
-    std::cout << "Input extent: " << lyr->extent().stringRep() << std::endl;
+    std::cout << "Updating extent using " << lyr->name().local8Bit() << std::endl;
+    std::cout << "Input extent: " << lyr->extent().stringRep().local8Bit() << std::endl;
     try
     {
       std::cout << "Transformed extent" << lyr->coordinateTransform()->transform(lyr->extent(), QgsCoordinateTransform::FORWARD) << std::endl;

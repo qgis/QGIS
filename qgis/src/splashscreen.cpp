@@ -18,6 +18,7 @@
 #include <qapplication.h>
 #include <qpainter.h>
 #include <qpixmap.h>
+#include <qglobal.h>
 #include "splashscreen.h"
 #include "qfont.h"
 #include "qgis.h"
@@ -35,7 +36,12 @@ SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash)
   //
   // NOTES! the mask must be a 1 BIT IMAGE or it wont work!
   //
-  QPixmap myMaskPixmap( 564, 300, -1, QPixmap::BestOptim );  
+#if QT_VERSION < 0x040000
+  QPixmap myMaskPixmap( 564, 300, -1, QPixmap::BestOptim );
+#else
+  // TODO: Confirm this is all we need under Qt4
+  QPixmap myMaskPixmap( 564, 300 );
+#endif
   myMaskPixmap.load( QString(PKGDATAPATH) + QString("/images/splash/splash_mask.png"), 0, Qt::ThresholdDither |   Qt::ThresholdAlphaDither | Qt::AvoidDither );
   setBackgroundPixmap(splashImage);
   setMask( myMaskPixmap.createHeuristicMask() );
@@ -74,7 +80,12 @@ void qt_wait_for_window_manager(QWidget * widget);
 void SplashScreen::finish(QWidget * mainWin)
 {
 #if defined(Q_WS_X11)
+// TODO: Qt4 (and Qt3.3 for that matter) has a dedicated QSplashScreen class;
+// this class will need to be refactored to use QSplashScreen and therefore
+// avoid the following hack.
+#if QT_VERSION < 0x040000
   qt_wait_for_window_manager(mainWin);
+#endif
 #endif
   close();
 }
@@ -87,7 +98,12 @@ void SplashScreen::mousePressEvent(QMouseEvent *)
 void SplashScreen::setStatus(const QString & message, int alignment, const QColor & color)
 {
   QPixmap textPix = splashImage;
-  QPainter painter(&textPix, this);
+
+  // TODO: Confirm that removing the "const QWidget * copyAttributes" 2nd parameter,
+  // in order to make things work in Qt4, doesn't break things in Qt3.
+  //QPainter painter(&textPix, this);
+  QPainter painter(&textPix);
+
   painter.setPen(color);
   QFont myQFont("arial", 10, QFont::Bold);
   painter.setFont(myQFont);

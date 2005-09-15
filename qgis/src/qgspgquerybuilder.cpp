@@ -39,7 +39,7 @@ mUri(uri)
     .arg(mUri->username)
     .arg(mUri->password);
 #ifdef QGISDEBUG
-  std::cerr << "Attempting connect using: " << connInfo << std::endl; 
+  std::cerr << "Attempting connect using: " << connInfo.local8Bit() << std::endl; 
 #endif
   mPgConnection = PQconnectdb((const char *) connInfo);
   // check the connection status
@@ -109,20 +109,20 @@ void QgsPgQueryBuilder::populateFields()
       QString fieldName = PQfname(result, i);
       int fldtyp = PQftype(result, i);
       QString typOid = QString().setNum(fldtyp);
-      std::cerr << "typOid is: " << typOid << std::endl; 
+      std::cerr << "typOid is: " << typOid.local8Bit() << std::endl; 
       int fieldModifier = PQfmod(result, i);
       QString sql = "select typelem from pg_type where typelem = " + typOid + " and typlen = -1";
       //  //--std::cout << sql << std::endl;
       PGresult *oidResult = PQexec(mPgConnection, 
 				   (const char *) (sql.utf8()));
       if (PQresultStatus(oidResult) == PGRES_TUPLES_OK) 
-        std::cerr << "Ok fetching typelem using\n" << sql << std::endl; 
+        std::cerr << "Ok fetching typelem using\n" << sql.local8Bit() << std::endl; 
 
       // get the oid of the "real" type
       QString poid = QString::fromUtf8(PQgetvalue(oidResult, 0, 
 						  PQfnumber(oidResult, 
 							    "typelem")));
-      std::cerr << "poid is: " << poid << std::endl; 
+      std::cerr << "poid is: " << poid.local8Bit() << std::endl; 
       PQclear(oidResult);
       sql = "select typname, typlen from pg_type where oid = " + poid;
       // //--std::cout << sql << std::endl;
@@ -134,8 +134,8 @@ void QgsPgQueryBuilder::populateFields()
       QString fieldSize = QString::fromUtf8(PQgetvalue(oidResult, 0, 1));
       PQclear(oidResult);
 #ifdef QGISDEBUG
-      std::cerr << "Field parms: Name = " + fieldName 
-        + ", Type = " + fieldType << std::endl; 
+      std::cerr << "Field parms: Name = " << fieldName.local8Bit()
+        << ", Type = " << fieldType.local8Bit() << std::endl; 
 #endif
       mFieldMap[fieldName] = QgsField(fieldName, fieldType, 
           fieldSize.toInt(), fieldModifier);
@@ -144,7 +144,7 @@ void QgsPgQueryBuilder::populateFields()
   }else
   {
 #ifdef QGISDEBUG 
-    std::cerr << "Error fetching a row from " + mUri->table << std::endl; 
+    std::cerr << "Error fetching a row from " << mUri->table.local8Bit() << std::endl; 
 #endif 
   }
   PQclear(result);
@@ -180,7 +180,7 @@ void QgsPgQueryBuilder::getSampleValues()
 
   }else
   {
-    QMessageBox::warning(this, tr("Database error"), tr("Failed to get sample of field values") + PQerrorMessage(mPgConnection));
+    QMessageBox::warning(this, tr("Database error"), tr("Failed to get sample of field values") + QString(PQerrorMessage(mPgConnection)) );
   }
   // free the result set
   PQclear(result);
@@ -217,7 +217,7 @@ void QgsPgQueryBuilder::getAllValues()
 
   }else
   {
-    QMessageBox::warning(this, tr("Database error"), tr("Failed to get sample of field values") + PQerrorMessage(mPgConnection));
+    QMessageBox::warning(this, tr("Database error"), tr("Failed to get sample of field values") + QString(PQerrorMessage(mPgConnection)) );
   }
   // free the result set
   PQclear(result);

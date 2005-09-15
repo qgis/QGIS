@@ -124,14 +124,14 @@ void QgsServerSourceSelect::serverConnect()
   if ( ! ( (part = settings.readEntry(key + "/proxyhost")).isEmpty() ) )
   {
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyhost - '" << part << "'." << std::endl;
+  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyhost - '" << part.local8Bit() << "'." << std::endl;
 #endif
     connStringParts += part;
   
     if ( ! ( (part = settings.readEntry(key + "/proxyport")).isEmpty() ) )
     {
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyport - '" << part << "'." << std::endl;
+  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyport - '" << part.local8Bit() << "'." << std::endl;
 #endif
       connStringParts += part;
     }
@@ -141,7 +141,7 @@ void QgsServerSourceSelect::serverConnect()
   m_connInfo = connStringParts.join(" ");  // url ( + " " + proxyhost + " " + proxyport)
 
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: Connection info: '" << m_connInfo << "'." << std::endl;
+  std::cout << "QgsServerSourceSelect::serverConnect: Connection info: '" << m_connInfo.local8Bit() << "'." << std::endl;
 #endif
     
     
@@ -168,7 +168,7 @@ void QgsServerSourceSelect::serverConnect()
 //    QgsWmsLayerProperty layer = *it;
 
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: got layer name " << layer->name << " and title '" << layer->title << "'." << std::endl;
+  std::cout << "QgsServerSourceSelect::serverConnect: got layer name " << layer->name.local8Bit() << " and title '" << layer->title.local8Bit() << "'." << std::endl;
 #endif
 
 
@@ -203,7 +203,7 @@ void QgsServerSourceSelect::addLayers()
       m_selectedLayers += item->text(1);
 
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::addLayers: Added " << item->text(1) << std::endl;
+  std::cout << "QgsServerSourceSelect::addLayers: Added " << item->text(1).local8Bit() << std::endl;
 #endif
     
     }

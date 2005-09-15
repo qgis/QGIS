@@ -169,6 +169,9 @@ public slots:
   void triggerRepaint();
   /**Shows the properties dialog*/
   virtual void showLayerProperties();
+
+public:
+
   /**Returns a pointer to the renderer*/
   const QgsRenderer* renderer() const;
   /**Sets the renderer. If a renderer is already present, it is deleted*/

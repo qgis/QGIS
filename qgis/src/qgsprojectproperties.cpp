@@ -215,7 +215,7 @@ void QgsProjectProperties::apply()
     // write the projection's _id_ to the project settings rather
     QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSID",(int)mySRSID);
     // write the currently selected projections _proj string_ to project settings
-    std::cout << "SpatialRefSys/ProjectSRSProj4String: " <<  projectionSelector->getCurrentProj4String() << std::endl;
+    std::cout << "SpatialRefSys/ProjectSRSProj4String: " <<  projectionSelector->getCurrentProj4String().local8Bit() << std::endl;
     QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSProj4String",projectionSelector->getCurrentProj4String());
     // Set the map units to the projected coordinates if we are projecting
     if (isProjected())

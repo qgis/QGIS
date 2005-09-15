@@ -58,8 +58,16 @@ QgsMapLayer::QgsMapLayer(int type,
     // used) until we learn otherwise
 
 {
+#ifdef QGISDEBUG
+  std::cout << "QgsMapLayer::QgsMapLayer - lyrname is '" << lyrname.local8Bit() << "'."<< std::endl;
+#endif
+
     // Set the display name = internal name
     layerName = internalName;
+
+#ifdef QGISDEBUG
+  std::cout << "QgsMapLayer::QgsMapLayer - layerName is '" << layerName.local8Bit() << "'."<< std::endl;
+#endif
 
     // Generate the unique ID of this layer
     QDateTime dt = QDateTime::currentDateTime();
@@ -103,12 +111,18 @@ QString const & QgsMapLayer::getLayerID() const
 /** Write property of QString layerName. */
 void QgsMapLayer::setLayerName(const QString & _newVal)
 {
+#ifdef QGISDEBUG
+  std::cout << "QgsMapLayer::setLayerName: new name is '" << _newVal.local8Bit() << "'."<< std::endl;
+#endif
     layerName = _newVal;
 }
 
 /** Read property of QString layerName. */
 QString const & QgsMapLayer::name() const
 {
+#ifdef QGISDEBUG
+  std::cout << "QgsMapLayer::name: returning name '" << layerName.local8Bit() << "'."<< std::endl;
+#endif
     return layerName;
 }
 
@@ -467,6 +481,8 @@ void QgsMapLayer::connectNotify( const char * signal )
 void QgsMapLayer::initContextMenu(QgisApp * app)
 {
     popMenu = new QPopupMenu();
+
+#if QT_VERSION < 0x040000
     myPopupLabel = new QLabel( popMenu );
 
     myPopupLabel->setFrameStyle( QFrame::Panel | QFrame::Raised );
@@ -475,6 +491,12 @@ void QgsMapLayer::initContextMenu(QgisApp * app)
     // myPopupLabel->setText( tr("<center><b>Vector Layer</b></center>") );
 
     popMenu->insertItem(myPopupLabel,0);
+#else
+    // Initialise and insert Qt4 QAction
+    myPopupLabel = new QAction( popMenu );
+
+    popMenu->addAction(myPopupLabel);
+#endif
 
     popMenu->insertItem(tr("&Zoom to extent of selected layer"), app, SLOT(zoomToLayerExtent()));
     popMenu->insertSeparator();
@@ -492,11 +514,15 @@ void QgsMapLayer::initContextMenu(QgisApp * app)
     popMenu->insertItem(tr("&Properties"), this, SLOT(showLayerProperties()));
 } // QgsMapLayer::initContextMenu(QgisApp * app)
 
+
+
+
 void QgsMapLayer::keyPressed ( QKeyEvent * e )
 {
   if (e->key()==Qt::Key_Escape) mDrawingCancelled = true;
   std::cout << e->ascii() << " pressed in maplayer !" << std::endl;
 }
+
 
     /** Accessor for the coordinate transformation object */
 QgsCoordinateTransform * QgsMapLayer::coordinateTransform() 

@@ -198,7 +198,7 @@ QString QgsRect::stringRep(int thePrecision) const
                 QString(",") +
                 QString::number(ymax,'f',thePrecision) ;
 #ifdef QGISDEBUG
-  std::cout << "Extents : " << rep << std::endl;
+  std::cout << "Extents : " << rep.local8Bit() << std::endl;
 #endif    
   return rep;
 }
