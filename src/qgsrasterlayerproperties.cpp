@@ -180,7 +180,7 @@ const char * const ident =
       QString myQString = *myIterator;
 #ifdef QGISDEBUG
 
-      std::cout << "Inserting : " << myQString << std::endl;
+      std::cout << "Inserting : " << myQString.local8Bit() << std::endl;
 #endif
 
       cboGray->insertItem(myQString);
@@ -317,8 +317,8 @@ void QgsRasterLayerProperties::apply()
 #endif
 #ifdef QGISDEBUG
 
-        std::cout << "Combo value : " << cboGray->currentText() << " GrayBand Mapping : " << rasterLayer->
-            getGrayBandName() << std::endl;
+        std::cout << "Combo value : " << cboGray->currentText().local8Bit() << " GrayBand Mapping : " << rasterLayer->
+            getGrayBandName().local8Bit() << std::endl;
 #endif
 
         rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY);
@@ -341,8 +341,8 @@ void QgsRasterLayerProperties::apply()
       {
 #ifdef QGISDEBUG
         std::cout << "Setting Raster Drawing Style to :: MULTI_BAND_SINGLE_BAND_GRAY" << std::endl;
-        std::cout << "Combo value : " << cboGray->currentText() << " GrayBand Mapping : " << rasterLayer->
-            getGrayBandName() << std::endl;
+        std::cout << "Combo value : " << cboGray->currentText().local8Bit() << " GrayBand Mapping : " << rasterLayer->
+            getGrayBandName().local8Bit() << std::endl;
 #endif
 
         rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY);
@@ -616,7 +616,7 @@ void QgsRasterLayerProperties::makeScalePreview(QString theColor)
   //
   QPainter myQPainter(myQPixmap);
   myQPainter.rotate(-45);
-  myQPainter.drawImage(-70, 0, myQImage.scale(140, 140));
+  myQPainter.drawImage(-70, 0, myQImage.scale(140, 140));  // TODO: maybe should add ScaleMin (Qt3) / Qt::KeepAspectRatio (Qt4) ?
   myQPainter.rotate(45);
   QFont myQFont("arial", 18, QFont::Bold);
   myQPainter.setFont(myQFont);
@@ -1030,7 +1030,12 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
   int myImageHeight =  pixHistogram->height();
   QPixmap myPixmap(myImageWidth,myImageHeight);
   myPixmap.fill(Qt::white);
-  QPainter myPainter(&myPixmap, this);
+
+  // TODO: Confirm that removing the "const QWidget * copyAttributes" 2nd parameter,
+  // in order to make things work in Qt4, doesn't break things in Qt3.
+  //QPainter myPainter(&myPixmap, this);
+  QPainter myPainter(&myPixmap);
+
   //determine labels sizes and draw them
   QFont myQFont("arial", 8, QFont::Normal);
   QFontMetrics myFontMetrics( myQFont );

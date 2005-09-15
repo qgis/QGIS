@@ -23,6 +23,7 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qcombobox.h>
+#include <qglobal.h>
 
 #include "qgspastetransformations.h"
 #include "qgsmaplayerregistry.h"
@@ -41,7 +42,7 @@ QgsPasteTransformations::QgsPasteTransformations()
   {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::QgsPasteTransformations: QgsMapLayerRegistry has "
-          << it->second->name() << "."
+          << it->second->name().local8Bit() << "."
           << std::endl;
 #endif
 
@@ -96,7 +97,7 @@ void QgsPasteTransformations::sourceChanged(const QString& layerName)
 {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::sourceChanged: Source changed to "
-          << layerName << "."
+          << layerName.local8Bit() << "."
           << std::endl;
 #endif
 
@@ -109,7 +110,7 @@ void QgsPasteTransformations::destinationChanged(const QString& layerName)
 {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::destinationChanged: Destination changed to "
-          << layerName << "."
+          << layerName.local8Bit() << "."
           << std::endl;
 #endif
 
@@ -122,17 +123,29 @@ void QgsPasteTransformations::addTransfer(const QString& sourceSelectedFieldName
                                           const QString& destinationSelectedFieldName)
 {
 #ifdef QGISDEBUG
-        std::cerr << "QgsPasteTransformations::addTransfer: From " << sourceSelectedFieldName 
-                                                         << " to " << destinationSelectedFieldName << "."
+        std::cerr << "QgsPasteTransformations::addTransfer: From " << sourceSelectedFieldName.local8Bit()
+                                                         << " to " << destinationSelectedFieldName.local8Bit() << "."
           << std::endl;
 #endif
+
+#if QT_VERSION < 0x040000
   int newRow = transferLayout->numRows();
+#else
+  // For some reason Qt4's uic3 only outputs generic names for layout items
+  int newRow = gridLayout->numRows();
+#endif
 
 // TODO: Do not add the transfer if neither the sourceSelectedFieldName nor the destinationSelectedFieldName could be found.
 
   // Build a Transfer row at the end of the grid layout.
+#if QT_VERSION < 0x040000
   QComboBox* newSourceFields      = new QComboBox(FALSE, transferLayout->mainWidget() );
   QComboBox* newDestinationFields = new QComboBox(FALSE, transferLayout->mainWidget() );
+#else
+  // For some reason Qt4's uic3 only outputs generic names for layout items
+  QComboBox* newSourceFields      = new QComboBox(FALSE, gridLayout->mainWidget() );
+  QComboBox* newDestinationFields = new QComboBox(FALSE, gridLayout->mainWidget() );
+#endif
 
   int count = 0;
 
@@ -171,8 +184,14 @@ void QgsPasteTransformations::addTransfer(const QString& sourceSelectedFieldName
   }
 
   // Append to dialog layout
+#if QT_VERSION < 0x040000
   transferLayout->addWidget(newSourceFields,      newRow, 0);
   transferLayout->addWidget(newDestinationFields, newRow, 1);
+#else
+  // For some reason Qt4's uic3 only outputs generic names for layout items
+  gridLayout->addWidget(newSourceFields,      newRow, 0);
+  gridLayout->addWidget(newDestinationFields, newRow, 1);
+#endif
 
   // Keep a reference to them so that we can read from them
   // when the dialog is dismissed
@@ -191,7 +210,7 @@ void QgsPasteTransformations::layerChanged(const QString& layerName, std::vector
   // Fetch the fields that will be populated into the Transfer rows.
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::layerChanged: Layer changed to "
-          << layerName << "."
+          << layerName.local8Bit() << "."
           << std::endl;
 #endif
 
@@ -206,7 +225,7 @@ void QgsPasteTransformations::layerChanged(const QString& layerName, std::vector
   {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::layerChanged: Got field "
-          << it->name() << "."
+          << it->name().local8Bit() << "."
           << std::endl;
 #endif
 
@@ -235,8 +254,8 @@ void QgsPasteTransformations::restoreTransfers(const QString& sourceLayerName,
   {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::restoreTransfers: Testing source '"
-          << (*it) << "' with '"
-          << sourceLayerName << "'."
+          << (*it).local8Bit() << "' with '"
+          << sourceLayerName.local8Bit() << "'."
           << std::endl;
 #endif
     if ((sourceLayerName == (*it)))
@@ -249,8 +268,8 @@ void QgsPasteTransformations::restoreTransfers(const QString& sourceLayerName,
       {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::restoreTransfers: Testing destination '"
-          << (*it2) << "' with '"
-          << destinationLayerName << "'."
+          << (*it2).local8Bit() << "' with '"
+          << destinationLayerName.local8Bit() << "'."
           << std::endl;
 #endif
         if ((destinationLayerName == (*it2)))
@@ -267,7 +286,7 @@ void QgsPasteTransformations::restoreTransfers(const QString& sourceLayerName,
           {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::restoreTransfers: setting transfer for "
-          << (*it3) << "."
+          << (*it3).local8Bit() << "."
           << std::endl;
 #endif
             QString destinationField = 
@@ -305,7 +324,7 @@ QString QgsPasteTransformations::pasteTo(const QString& sourceLayerName,
   }
 
 #ifdef QGISDEBUG
-        std::cerr << "QgsPasteTransformations::pasteTo: Returning '" << destinationField << "'."
+        std::cerr << "QgsPasteTransformations::pasteTo: Returning '" << destinationField.local8Bit() << "'."
           << std::endl;
 #endif
 

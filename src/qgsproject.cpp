@@ -39,7 +39,7 @@ using namespace std;
 #include <qdict.h>
 #include <qmessagebox.h>
 #include <qwidgetlist.h>
-
+#include <qglobal.h>
 
 
 
@@ -72,7 +72,7 @@ QgsProject * QgsProject::theProject_;
      const char * scope_str = scope.ascii(); // debugger probes
      const char * key_str   = key.ascii();
 
-     QStringList keyTokens = scope;
+     QStringList keyTokens = QStringList(scope);
      keyTokens += QStringList::split('/', key);
 
      // be sure to include the canonical root node
@@ -658,7 +658,7 @@ static bool _getMapUnits(QDomDocument const &doc)
     {
         std::
             cerr << __FILE__ << ":" << __LINE__ << " unknown map unit type " <<
-            element.text() << "\n";
+            element.text().local8Bit() << "\n";
         false;
     }
 
@@ -718,6 +718,8 @@ static QgsMapCanvas * _findMapCanvas(QString const &canonicalMapCanvasName)
 {
     QgsMapCanvas * theMapCanvas = 0x0;
 
+// TODO: Need to refactor for Qt4 - uses QWidgetList only (no pointer-to)
+#if QT_VERSION < 0x040000
     QWidgetList *list = QApplication::topLevelWidgets();
     QWidgetListIt it(*list);      // iterate over the widgets
     QWidget *w;
@@ -735,6 +737,7 @@ static QgsMapCanvas * _findMapCanvas(QString const &canonicalMapCanvasName)
     }
 
     delete list;                  // delete the list, not the widgets
+#endif
 
     if (theMapCanvas)
     {
@@ -836,7 +839,7 @@ static pair< bool, list<QDomNode> > _getMapLayers(QDomDocument const &doc)
         QgsMapLayer *mapLayer;
 #ifdef QGISDEBUG
 
-        std::cerr << "type is " << type << std::endl;
+        std::cerr << "type is " << type.local8Bit() << std::endl;
 #endif
 
         if (type == "vector")

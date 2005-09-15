@@ -24,6 +24,11 @@
 #include <qwidget.h>
 #include <qobject.h>
 #include <qpixmap.h>
+#include <qglobal.h>
+
+#if QT_VERSION >= 0x040000
+#include <QAction>
+#endif
 
 #include <qgsrect.h>
 #include <qgis.h>
@@ -349,7 +354,7 @@ signals:
     void setStatus(QString theStatusQString);
 
     /** This signal should be connected with the slot QgsMapCanvas::refresh() */
-    virtual void repaintRequested();
+    void repaintRequested();
 
     /** This is used to notify the application whether this layer should be shown in overview or not. */
     //@{
@@ -400,8 +405,13 @@ protected:
     //! context menu
     QPopupMenu *popMenu;
 
+#if QT_VERSION < 0x040000
     //! label for popMenu
     QLabel * myPopupLabel;
+#else
+    //! header for popMenu
+    QAction * myPopupLabel;
+#endif
 
     //! checkable item id in popmenu that sets overview status
     int mShowInOverviewItemId;

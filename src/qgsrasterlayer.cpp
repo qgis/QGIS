@@ -87,6 +87,7 @@ wish to see edbug messages printed to stdout.
 #include <qwidget.h>
 #include <qwidgetlist.h>
 #include <qsettings.h>
+#include <qglobal.h>
 
 
 /*
@@ -352,7 +353,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
   // can't forget the default case
   theFileFiltersString += catchallFilter + "All other files (*)";
 #ifdef QGISDEBUG
-  std::cout << "Raster filter list built: " << theFileFiltersString << std::endl;
+  std::cout << "Raster filter list built: " << theFileFiltersString.local8Bit() << std::endl;
 #endif
 }                               // buildSupportedRasterFileFilter_()
 
@@ -506,7 +507,7 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
 QgsRasterLayer::~QgsRasterLayer()
 {
 
-  if (!(providerKey))
+  if (providerKey.isEmpty())
   {
     GDALClose(gdalDataset);
   }  
@@ -560,7 +561,7 @@ QgsRasterLayer::readFile( QString const & fileName )
   QString mySourceWKT = getProjectionWKT();
 #ifdef QGISDEBUG
     std::cout << "--------------------------------------------------------------------------------------" << std::endl;
-    std::cout << "QgsRasterLayer::readFile --- using wkt\n" << mySourceWKT << std::endl;
+    std::cout << "QgsRasterLayer::readFile --- using wkt\n" << mySourceWKT.local8Bit() << std::endl;
    std::cout << "--------------------------------------------------------------------------------------" << std::endl;
 #endif
     mCoordinateTransform->sourceSRS().createFromWkt(mySourceWKT);
@@ -772,7 +773,7 @@ bool QgsRasterLayer::update()
 QDateTime QgsRasterLayer::lastModified ( QString name )
 {
 #ifdef QGISDEBUG
-  std::cerr << "QgsRasterLayer::lastModified: " << name << std::endl;
+  std::cerr << "QgsRasterLayer::lastModified: " << name.local8Bit() << std::endl;
 #endif
   QDateTime t;
 
@@ -806,10 +807,18 @@ QDateTime QgsRasterLayer::lastModified ( QString name )
       QFile f ( name + "/REF" );
       if ( f.open ( IO_ReadOnly ) )
       {
-        QString ln;
         QString dir = fi.dirPath() + "/../../../";
+#if QT_VERSION < 0x040000
+        QString ln;
         while ( f.readLine(ln,100) != -1 )
         {
+#else
+        // In Qt4, QFile::readLine now expects a bare char*
+        char buf[101];
+        while ( f.readLine(buf,100) != -1 )
+        {
+          QString ln = QString(buf);
+#endif
           QStringList sl = QStringList::split ( ' ', ln.stripWhiteSpace() );
           QString map = sl.first();
           sl.pop_front();
@@ -833,7 +842,7 @@ QDateTime QgsRasterLayer::lastModified ( QString name )
     }
   }
 #ifdef QGISDEBUG
-  std::cerr << "last modified = " << t.toString() << std::endl;
+  std::cerr << "last modified = " << t.toString().local8Bit() << std::endl;
 #endif
 
   return t;
@@ -957,7 +966,7 @@ muliband layers may have more than one "Undefined" band!
 bool QgsRasterLayer::hasBand(QString theBandName)
 {
 #ifdef QGISDEBUG
-  std::cout << "Looking for band : " << theBandName << std::endl;
+  std::cout << "Looking for band : " << theBandName.local8Bit() << std::endl;
 #endif
 
   for (int i = 1; i <= gdalDataset->GetRasterCount(); i++)
@@ -973,13 +982,13 @@ bool QgsRasterLayer::hasBand(QString theBandName)
     {
 #ifdef QGISDEBUG
       std::cout << "band : " << i << std::endl;
-      std::cout << "Found band : " << theBandName << std::endl;
+      std::cout << "Found band : " << theBandName.local8Bit() << std::endl;
 #endif
 
       return true;
     }
 #ifdef QGISDEBUG
-    std::cout << "Found unmatched band : " << i << " " << myColorQString << std::endl;
+    std::cout << "Found unmatched band : " << i << " " << myColorQString.local8Bit() << std::endl;
 #endif
 
   }
@@ -1240,10 +1249,10 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
     std::cout << "QgsRasterLayer::draw: Checking for provider key." << std::endl; 
 #endif
   
-  if (providerKey)
+  if (!providerKey.isEmpty())
   {
 #ifdef QGISDEBUG
-    std::cout << "QgsRasterLayer::draw: Wanting a '" << providerKey << "' provider to draw this." << std::endl; 
+    std::cout << "QgsRasterLayer::draw: Wanting a '" << providerKey.local8Bit() << "' provider to draw this." << std::endl; 
 #endif
 
   emit setStatus(QString("Retrieving using ")+providerKey);
@@ -1412,7 +1421,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter, QgsRasterViewPort * myRasterV
     if (grayBandNameQString == tr("Not Set"))
     {
 #ifdef QGISDEBUG
-      std::cout << "MULTI_BAND_SINGLE_BAND_GRAY Not Set detected..." << grayBandNameQString << std::endl;
+      std::cout << "MULTI_BAND_SINGLE_BAND_GRAY Not Set detected..." << grayBandNameQString.local8Bit() << std::endl;
 #endif
 
       break;
@@ -2487,7 +2496,7 @@ void QgsRasterLayer::showDebugOverlay(QPainter * theQPainter, QgsRasterViewPort 
   QBrush myQBrush(qRgba(128, 128, 164, 50), Dense6Pattern); //semi transparent
   theQPainter->setBrush(myQBrush);  // set the yellow brush
   theQPainter->drawRect(5, 5, theQPainter->window().width() - 10, 60);
-  theQPainter->setBrush(NoBrush); // do not fill
+  theQPainter->setBrush(Qt::NoBrush); // do not fill
 
   theQPainter->drawText(10, 20, "QPainter: "
                         + QString::number(theQPainter->window().width()) + " x " + QString::number(theQPainter->window().height()));
@@ -2539,20 +2548,20 @@ const int QgsRasterLayer::getRasterBandNumber(QString theBandNameQString)
     RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
 #ifdef QGISDEBUG
 
-    std::cout << "myRasterBandStats.bandName: " << myRasterBandStats.bandName << "  :: theBandNameQString: " << theBandNameQString << std::endl;
+    std::cout << "myRasterBandStats.bandName: " << myRasterBandStats.bandName.local8Bit() << "  :: theBandNameQString: " << theBandNameQString.local8Bit() << std::endl;
 #endif
 
     if (myRasterBandStats.bandName == theBandNameQString)
     {
 #ifdef QGISDEBUG
-      std::cerr << "********** band " << myRasterBandStats.bandNoInt << " was found in getRasterBandNumber " << theBandNameQString << std::endl;
+      std::cerr << "********** band " << myRasterBandStats.bandNoInt << " was found in getRasterBandNumber " << theBandNameQString.local8Bit() << std::endl;
 #endif
 
       return myRasterBandStats.bandNoInt;
     }
   }
 #ifdef QGISDEBUG
-  std::cerr << "********** no band was found in getRasterBandNumber " << theBandNameQString << std::endl;
+  std::cerr << "********** no band was found in getRasterBandNumber " << theBandNameQString.local8Bit() << std::endl;
 #endif
 
   return 0;                     //no band was found
@@ -2937,7 +2946,7 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 void QgsRasterLayer::setRedBandName(QString theBandNameQString)
 {
 #ifdef QGISDEBUG
-  std::cout << "setRedBandName :  " << theBandNameQString << std::endl;
+  std::cout << "setRedBandName :  " << theBandNameQString.local8Bit() << std::endl;
 #endif
   //check if the band is unset
   if (theBandNameQString == tr("Not Set"))
@@ -3082,7 +3091,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap()
 QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer::getLegendQPixmap called (" << getDrawingStyleAsQString() << ")" << std::endl;
+  std::cout << "QgsRasterLayer::getLegendQPixmap called (" << getDrawingStyleAsQString().local8Bit() << ")" << std::endl;
 #endif
 
 
@@ -3090,10 +3099,10 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
   QPainter myQPainter; 
  
 
-  if (providerKey)
+  if (!providerKey.isEmpty())
   {
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer::getLegendQPixmap called with provider Key (" << providerKey << ")" << std::endl;
+  std::cout << "QgsRasterLayer::getLegendQPixmap called with provider Key (" << providerKey.local8Bit() << ")" << std::endl;
 #endif
     
     myLegendQPixmap = QPixmap(3, 1);
@@ -3649,6 +3658,8 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
   myTransparencyLabel->setFrameStyle( QFrame::Panel | QFrame::Raised );
   myTransparencyLabel->setText( tr("<center><b>Transparency</b></center>") );
 
+// TODO: Qt4 will have to use a QAction instead
+#if QT_VERSION < 0x040000
   popMenu->insertItem(myTransparencyLabel);
 
   // XXX why GUI element here?
@@ -3660,6 +3671,7 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
   connect(mTransparencySlider, SIGNAL(valueChanged(int)), this, SLOT(popupTransparencySliderMoved(int)));
 
   popMenu->insertItem(mTransparencySlider);
+#endif
 
 } // QgsRasterLayer::initContextMenu
 
@@ -4375,7 +4387,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   {
     std::cerr << __FILE__ << ":" << __LINE__
     << " unable to read from raster file "
-    << source() << "\n";
+    << source().local8Bit() << "\n";
 
     return false;
   }
@@ -4519,6 +4531,8 @@ void QgsRasterLayer::identify(QgsRect * r)
   if( !mIdentifyResults)
   {
 
+// TODO: Doesn't work in Qt4 (list is now just a QWidgetList, not a pointer to one)
+#if QT_VERSION < 0x040000
     // TODO it is necessary to pass topLevelWidget()as parent, but there is no QWidget availabl
     QWidgetList *list = QApplication::topLevelWidgets ();
     QWidgetListIt it( *list );
@@ -4537,6 +4551,7 @@ void QgsRasterLayer::identify(QgsRect * r)
     QgsAttributeAction aa;
     mIdentifyResults = new QgsIdentifyResults(aa, top);
     mIdentifyResults->restorePosition();
+#endif
   }
   else
   {
@@ -4787,7 +4802,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider, QStringList laye
   // load the data provider
   myLib = new QLibrary((const char *) ogrlib);
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer::setDataProvider: Library name is " << myLib->library() << std::endl;
+  std::cout << "QgsRasterLayer::setDataProvider: Library name is " << myLib->library().local8Bit() << std::endl;
 #endif
   bool loaded = myLib->load();
 
@@ -4815,7 +4830,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider, QStringList laye
       {
 #ifdef QGISDEBUG
         std::cout << "QgsRasterLayer::setDataProvider: Instantiated the data provider plugin" <<
-                  " with layer list of " << layers.join(", ") << std::endl;
+                  " with layer list of " << layers.join(", ").local8Bit() << std::endl;
 #endif
         if (dataProvider->isValid())
         {
@@ -4829,7 +4844,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider, QStringList laye
           // show the extent
           QString s = mbr->stringRep();
 #ifdef QGISDEBUG
-          std::cout << "QgsRasterLayer::setDataProvider: Extent of layer: " << s << std::endl;
+          std::cout << "QgsRasterLayer::setDataProvider: Extent of layer: " << s.local8Bit() << std::endl;
 #endif
           // store the extent
           layerExtent.setXmax(mbr->xMax());
@@ -4840,7 +4855,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider, QStringList laye
           // upper case the first letter of the layer name
           layerName = layerName.left(1).upper() + layerName.mid(1);
 #ifdef QGISDEBUG
-          std::cout << "QgsRasterLayer::setDataProvider: layerName: " << layerName << std::endl;
+          std::cout << "QgsRasterLayer::setDataProvider: layerName: " << layerName.local8Bit() << std::endl;
 #endif
 
 
@@ -4856,7 +4871,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider, QStringList laye
           // the inverese projection of the map extents of the canvas when zooming in etc. so
           // that they match the coordinate system of this layer
 #ifdef QGISDEBUG
-          std::cout << "QgsRasterLayer::setDataProvider: myDestWKT: " << myDestWKT << std::endl;
+          std::cout << "QgsRasterLayer::setDataProvider: myDestWKT: " << myDestWKT.local8Bit() << std::endl;
 #endif
           
           // Hard-code the source coordinate reference for now
