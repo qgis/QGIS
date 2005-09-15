@@ -35,8 +35,8 @@
 
 QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, QgsVectorLayer * theVectorLayer)
 {
-  std::cout << "QgsVectorFileWriter constructor called with " << theOutputFileName << 
-      " and vector layer : " << theVectorLayer->getLayerID() << std::endl;
+  std::cout << "QgsVectorFileWriter constructor called with " << theOutputFileName.local8Bit() << 
+      " and vector layer : " << theVectorLayer->getLayerID().local8Bit() << std::endl;
   //const char *mOutputFormat = "ESRI Shapefile";
   mOutputFormat = "ESRI Shapefile";
   //const char *theOutputFileName = "ogrtest.shp";
@@ -54,7 +54,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, QgsVectorLay
 
 QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, OGRwkbGeometryType theGeometryType)
 {
-  std::cout << "QgsVectorFileWriter constructor called with " << theOutputFileName <<  " and no input vector layer "  << std::endl;
+  std::cout << "QgsVectorFileWriter constructor called with " << theOutputFileName.local8Bit() <<  " and no input vector layer "  << std::endl;
   mOutputFormat = "ESRI Shapefile"; //hard coded for now!
   mOutputFileName = theOutputFileName; 
   mGeometryType = theGeometryType;
@@ -100,7 +100,7 @@ bool QgsVectorFileWriter::initialise()
 
   if( myDriverHandle == NULL )
   {
-    std::cout << "Unable to find format driver named " << mOutputFormat << std::endl;
+    std::cout << "Unable to find format driver named " << mOutputFormat.local8Bit() << std::endl;
     return false;
   }
 
@@ -140,7 +140,7 @@ bool QgsVectorFileWriter::initialise()
   //    const char *myWKT = GDALGetProjectionRef( hBand );
 
 
-  if( myWKT != NULL && strlen(myWKT) != 0 )
+  if( !myWKT.isEmpty() )
   {
     mySpatialReferenceSystemHandle = OSRNewSpatialReference( myWKT );
   }

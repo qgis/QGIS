@@ -66,7 +66,7 @@ QString libDir = baseDir + "/lib"; */
   QDir pluginDir(libDir, "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
 #endif
 #ifdef QGISDEBUG
-  cerr << "Checking " << libDir << " for provider plugins" << endl;
+  std::cerr << "Checking " << libDir.local8Bit() << " for provider plugins" << std::endl;
 #endif
   if (pluginDir.count() == 0)
     {
@@ -83,7 +83,8 @@ QString libDir = baseDir + "/lib"; */
           bool loaded = myLib->load();
           if (loaded)
             {
-#ifdef QGISDEBUG		    
+#ifdef QGISDEBUG
+              std::cout << "Checking  " << myLib->library().local8Bit() << std::endl;
               cout << "Checking  " << myLib->library() << endl;
 #endif
               // get the description and the key for the provider plugin
@@ -104,13 +105,13 @@ QString libDir = baseDir + "/lib"; */
                           // add this provider to the provider map
                           provider[pKey()] = new QgsProviderMetadata(pKey(), pDesc(), myLib->library());
 #ifdef QGISDEBUG
-                          cout << "Loaded " << pDesc() << endl;
+                          std::cout << "Loaded " << pDesc().local8Bit() << std::endl;
 #endif
                       } else
                         {
-                          cout << myLib->
-                            library() << " Unable to find one of the required provider functions:\n\tproviderKey() or description()" <<
-                            endl;
+                          std::cout << myLib->
+                            library().local8Bit() << " Unable to find one of the required provider functions:\n\tproviderKey() or description()" <<
+                            std::endl;
                         }
                     }
                 }
@@ -252,7 +253,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
   // load the data provider
   QLibrary* myLib = new QLibrary((const char *) lib);
 #ifdef QGISDEBUG
-  cout << "QgsProviderRegistry::getProvider: Library name is " << myLib->library() << endl;
+  std::cout << "QgsProviderRegistry::getRasterProvider: Library name is " << myLib->library().local8Bit() << std::endl;
 #endif
   bool loaded = myLib->load();
 

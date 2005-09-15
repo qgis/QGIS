@@ -85,7 +85,7 @@ void QgsNewConnection::testConnection()
       QMessageBox::information(this, tr("Test connection"), tr("Connection to %1 was successfull").arg(txtDatabase->text()));
   } else
     {
-      QMessageBox::information(this, tr("Test connection"), tr("Connection failed - Check settings and try again.\n\nExtended error information:\n") + PQerrorMessage(pd));
+      QMessageBox::information(this, tr("Test connection"), tr("Connection failed - Check settings and try again.\n\nExtended error information:\n") + QString(PQerrorMessage(pd)) );
     }
   // free pg connection resources
   PQfinish(pd);

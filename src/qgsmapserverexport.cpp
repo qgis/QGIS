@@ -91,7 +91,7 @@ void QgsMapserverExport::writeMapFile()
 {
   // write the map file, making massive assumptions about default values
 #ifdef QGISDEBUG
-  std::cout << "Opening map file " << txtMapFilePath->text() << std::endl;
+  std::cout << "Opening map file " << txtMapFilePath->text().local8Bit() << std::endl;
 #endif
   std::ofstream mapFile(txtMapFilePath->text());
   if (!mapFile.fail())
@@ -102,10 +102,10 @@ void QgsMapserverExport::writeMapFile()
     if (!chkExpLayersOnly->isChecked())
     {
       // header
-      mapFile << "NAME " << txtMapName->text() << std::endl;
+      mapFile << "NAME " << txtMapName->text().local8Bit() << std::endl;
       mapFile << "STATUS ON" << std::endl;
       mapFile << "\n# Map image size. Change size as desired" << std::endl;
-      mapFile << "SIZE " << txtMapWidth->text() << " " << txtMapHeight->text() << std::endl;
+      mapFile << "SIZE " << txtMapWidth->text().local8Bit() << " " << txtMapHeight->text().local8Bit() << std::endl;
       // web interface definition - this is minimal!
       mapFile << "#" << std::endl;
       mapFile << "# Start of web interface definition. Only the TEMPLATE parameter" << std::endl;
@@ -119,7 +119,7 @@ void QgsMapserverExport::writeMapFile()
       } else
       {
         // header provided - write it
-        mapFile << "  HEADER " << txtWebHeader->text() << std::endl;
+        mapFile << "  HEADER " << txtWebHeader->text().local8Bit() << std::endl;
       }
       // if no template provided, write the template line but comment it out
       if (txtWebTemplate->text().isEmpty())
@@ -128,7 +128,7 @@ void QgsMapserverExport::writeMapFile()
       } else
       {
         // template provided - write it
-        mapFile << "  TEMPLATE " << txtWebTemplate->text() << std::endl;
+        mapFile << "  TEMPLATE " << txtWebTemplate->text().local8Bit() << std::endl;
       }
       // if no footer provided, write the footer line but comment it out
       if (txtWebFooter->text().isEmpty())
@@ -136,13 +136,13 @@ void QgsMapserverExport::writeMapFile()
         mapFile << "  # FOOTER" << std::endl;
       } else
       {
-        mapFile << "  FOOTER " << txtWebFooter->text() << std::endl;
+        mapFile << "  FOOTER " << txtWebFooter->text().local8Bit() << std::endl;
       }
       QString minScale = txtMinScale->text().isEmpty()?"#MINSCALE":"MINSCALE";
       QString maxScale = txtMinScale->text().isEmpty()?"  #MAXSCALE ":"  MAXSCALE ";
       // write min and maxscale
-      mapFile << minScale << txtMinScale->text() << std::endl;
-      mapFile << maxScale << txtMaxScale->text() << std::endl;
+      mapFile << minScale.local8Bit() << txtMinScale->text().local8Bit() << std::endl;
+      mapFile << maxScale.local8Bit() << txtMaxScale->text().local8Bit() << std::endl;
       // write comments about the imagepath and image url
       mapFile << "# Set IMAGEPATH to the path where mapserver should\n" <<
         "# write its output\n" <<
@@ -159,10 +159,10 @@ void QgsMapserverExport::writeMapFile()
       mapFile << extent.xMin() << " " << extent.yMin() << " ";
       mapFile << extent.xMax() << " " << extent.yMax() << std::endl;
       // units
-      mapFile << "UNITS " << cmbMapUnits->currentText() << std::endl;
+      mapFile << "UNITS " << cmbMapUnits->currentText().local8Bit() << std::endl;
       // image info
       mapFile << "IMAGECOLOR 255 255 255" << std::endl;
-      mapFile << "IMAGETYPE " << cmbMapImageType->currentText() << std::endl;
+      mapFile << "IMAGETYPE " << cmbMapImageType->currentText().local8Bit() << std::endl;
       // projection information TODO: support projections :)
       mapFile << "# Projection definition" << std::endl;
       mapFile << "# Projections are not currenlty supported. If desired, add your own" << std::endl;
@@ -191,7 +191,7 @@ void QgsMapserverExport::writeMapFile()
       name.replace(QRegExp("\\."), "_");
       name.replace(QRegExp("\\("), "_");
       name.replace(QRegExp("\\)"), "_");
-      mapFile << "  NAME " << name << std::endl;
+      mapFile << "  NAME " << name.local8Bit() << std::endl;
       // feature type
 #ifdef QGISDEBUG
       std::cout << "\tMapsrver Export checking feature type" << std::endl;
@@ -251,21 +251,21 @@ void QgsMapserverExport::writeMapFile()
             {
               QgsDataSourceURI *dUri = 
                 dynamic_cast<QgsVectorLayer *>(lyr)->getDataProvider()->getURI();
-              mapFile << "CONNECTION \"user=" << dUri->username;
+              mapFile << "CONNECTION \"user=" << dUri->username.local8Bit();
               if(dUri->password.length() > 0)
               {
-                mapFile << " password="<< dUri->password;
+                mapFile << " password="<< dUri->password.local8Bit();
               }
-              mapFile  << " dbname=" << dUri->database 
-                << " host=" << dUri->host
-                << " port=" << dUri->port 
+              mapFile  << " dbname=" << dUri->database.local8Bit()
+                << " host=" << dUri->host.local8Bit()
+                << " port=" << dUri->port.local8Bit()
                 << "\"" << std::endl; 
               mapFile << "CONNECTIONTYPE postgis" << std::endl; 
-              mapFile << "DATA \"" << dUri->geometryColumn << " from " 
-                << dUri->table << "\"" << std::endl; 
+              mapFile << "DATA \"" << dUri->geometryColumn.local8Bit() << " from " 
+                << dUri->table.local8Bit() << "\"" << std::endl; 
               if(dUri->sql.length() > 0)
               {
-                mapFile << "FILTER \"" << dUri->sql << "\"" << std::endl; 
+                mapFile << "FILTER \"" << dUri->sql.local8Bit() << "\"" << std::endl; 
               }
 
             }
@@ -273,12 +273,12 @@ void QgsMapserverExport::writeMapFile()
             {
 
               // must be an ogr 
-              mapFile << "  DATA " << lyr->source() << std::endl;
+              mapFile << "  DATA " << lyr->source().local8Bit() << std::endl;
             }
           }
           break;
         case QgsMapLayer::RASTER:
-          mapFile << "  DATA " << lyr->source() << std::endl; 
+          mapFile << "  DATA " << lyr->source().local8Bit() << std::endl; 
           
           break;
       }
@@ -295,7 +295,7 @@ void QgsMapserverExport::writeMapFile()
 #ifdef QGISDEBUG
       std::cout << "\tMapsrver Export symbol name" << std::endl;
 #endif
-      mapFile << "    NAME \"" << lyr->name() << "\"" << std::endl;
+      mapFile << "    NAME \"" << lyr->name().local8Bit() << "\"" << std::endl;
       mapFile << "    # TEMPLATE" << std::endl;
       if (isPolygon)
       {
