@@ -54,7 +54,7 @@ void QgsDelimitedTextPluginGui::pbnOK_clicked()
       .arg(txtDelimiter->text())
       .arg(cmbXField->currentText())
       .arg(cmbYField->currentText());
-    std::cerr << "Adding layer using " << uri << std::endl; 
+    std::cerr << "Adding layer using " << uri.local8Bit() << std::endl; 
     // add the layer to the map
     emit drawVectorLayer(uri,txtLayerName->text(),"delimitedtext");
     // store the settings
@@ -91,8 +91,8 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
       if(txtDelimiter->text().length() > 0)
       {
 #ifdef QGISDEBUG
-        std::cerr << "Attempting to split the input line: " << line <<
-          " using delimiter " << txtDelimiter->text() << std::endl;
+        std::cerr << "Attempting to split the input line: " << line.local8Bit() <<
+          " using delimiter " << txtDelimiter->text().local8Bit() << std::endl;
 #endif
 
         QStringList fieldList = QStringList::split(QRegExp(txtDelimiter->text()), line);
