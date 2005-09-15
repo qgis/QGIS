@@ -15,11 +15,27 @@ plugindir = ${pkglibdir}
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui
+if HAVE_QT3
+%.uic.h: %.ui 
 	$(UIC) -o $@ $<
+endif
 
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
+if HAVE_QT4
+%.uic.h: %.ui 
+	$(UIC) -o $@ $<
+	../../tools/qgis-qt3to4.pl -uic $@
+endif
+
+if !NO_UIC_IMPLEMENTATIONS
+%.uic.cpp: %.ui
+	$(UIC) -o $@ -impl $*.uic.h $<
+endif
+
+# %.h: %.ui
+# 	$(UIC) -o $@ $<
+#
+# %.cpp: %.ui
+# 	$(UIC) -o $@ -impl $*.h $<
 
 
 plugin_LTLIBRARIES = pggeoprocessingplugin.la
@@ -29,8 +45,8 @@ pggeoprocessing_MOC = 	qgspggeoprocessing.moc.cpp \
 		        qgsdlgpgbufferbase.moc.cpp \
 		        qgsdlgpgbuffer.moc.cpp
 
-pggeoprocessing_UI = qgsdlgpgbufferbase.h \
-                     qgsdlgpgbufferbase.cpp 
+pggeoprocessing_UI = qgsdlgpgbufferbase.uic.h \
+                     qgsdlgpgbufferbase.uic.cpp 
 
 pggeoprocessing_UIC = qgsdlgpgbufferbase.ui
 
@@ -43,8 +59,8 @@ pggeoprocessingplugin_la_SOURCES =  qgspggeoprocessing.cpp \
 nodist_pggeoprocessingplugin_la_SOURCES = $(pggeoprocessing_MOC)
 
 # UI dependencies			
-qgsdlgpgbufferbase.cpp: qgsdlgpgbufferbase.h qgsdlgpgbufferbase.ui
-qgsdlgpgbufferbase.h: qgsdlgpgbufferbase.ui
+qgsdlgpgbufferbase.uic.cpp: qgsdlgpgbufferbase.uic.h qgsdlgpgbufferbase.ui
+qgsdlgpgbufferbase.uic.h: qgsdlgpgbufferbase.ui
 
 
 BUILT_SOURCES = $(pggeoprocessing_MOC) $(pggeoprocessing_UI)
