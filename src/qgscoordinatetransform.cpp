@@ -21,6 +21,8 @@
 //qt includes
 #include <qdom.h>
 
+// Qt4-only includes to go here
+
 QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject()
 
 {

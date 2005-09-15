@@ -30,6 +30,7 @@
 #include <qpointarray.h>
 #include <qlabel.h>
 #include <qcheckbox.h>
+#include <qglobal.h>
 
 #include "qgis.h"
 #include "qgsproject.h"
@@ -224,7 +225,7 @@ void QgsComposerMap::cache ( void )
     // WARNING: ymax in QgsMapToPixel is device height!!!
     QgsMapToPixel transform(scale, h, mCacheExtent.yMin(), mCacheExtent.xMin() );
 
-    std::cout << "transform = " << transform.showParameters() << std::endl;
+    std::cout << "transform = " << transform.showParameters().local8Bit() << std::endl;
     
     mCachePixmap.fill(QColor(255,255,255));
 
@@ -278,10 +279,15 @@ void QgsComposerMap::draw ( QPainter & painter )
       
       painter.save();
       painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
-	 
+
+#if QT_VERSION < 0x040000
       // Note: CoordDevice doesn't work well
       painter.setClipRect ( 0, 0, QCanvasRectangle::width(), QCanvasRectangle::height(), QPainter::CoordPainter );
-      
+#else
+      // TODO: Qt4 appears to force QPainter::CoordDevice - need to check if this is actually valid.
+      painter.setClipRect ( 0, 0, Q3CanvasRectangle::width(), Q3CanvasRectangle::height() );
+#endif
+
       draw( &painter, &mExtent, &transform, painter.device() );
       painter.restore();
     } 
@@ -481,9 +487,9 @@ void QgsComposerMap::recalculate ( void )
 
     }
 
-    std::cout << "mUserExtent = " << mUserExtent.stringRep() << std::endl;
+    std::cout << "mUserExtent = " << mUserExtent.stringRep().local8Bit() << std::endl;
     std::cout << "mScale = " << mScale << std::endl;
-    std::cout << "mExtent = " << mExtent.stringRep() << std::endl;
+    std::cout << "mExtent = " << mExtent.stringRep().local8Bit() << std::endl;
 
     setOptions();
     mCacheUpdated = false;

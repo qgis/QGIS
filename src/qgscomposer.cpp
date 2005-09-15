@@ -39,6 +39,7 @@
 #include <qimage.h>
 #include <qpicture.h>
 #include <qfiledialog.h>
+#include <qglobal.h>
 
 #include "qgisapp.h"
 #include "qgsproject.h"
@@ -106,6 +107,7 @@ void QgsComposer::removeWidgetChildren ( QWidget *w )
 {
   std::cout << "QgsComposer::removeWidgetChildren" << std::endl;
 
+#if QT_VERSION < 0x040000
   const QObjectList *ol = mItemOptionsFrame->children();
   if ( ol ) {
     QObjectListIt olit( *ol );
@@ -119,6 +121,24 @@ void QgsComposer::removeWidgetChildren ( QWidget *w )
       }
     }
   }
+#else
+  const QObjectList ol = mItemOptionsFrame->children();
+  if ( !ol.isEmpty() ) 
+  {
+    QListIterator<QObject*> olit( ol );
+    QObject *ob;
+    while( olit.hasNext() )
+    {
+      ob = olit.next();
+      if( ob->isWidgetType() ) 
+      {
+        QWidget *ow = (QWidget *) ob;
+        w->removeChild ( ob );
+        ow->hide ();
+      }
+    }
+  }
+#endif
 }
 
 void QgsComposer::showCompositionOptions ( QWidget *w ) {
@@ -305,8 +325,10 @@ void QgsComposer::print(void)
       Q_LONG size;
       bool found = false;
       QString s;
+      char buf[101];
       while ( !f.atEnd() ) {
-        size = f.readLine ( s, 100 );
+        size = f.readLine ( buf, 100 );
+        s = QString(buf);
         if ( s.find ("%%BoundingBox:") == 0 ) {
           found = true;
           break;
@@ -362,7 +384,8 @@ void QgsComposer::print(void)
         QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale/defM matrix CM d \\} d" );
 
         while ( !f.atEnd() ) {
-          size = f.readLine ( s, 100 );
+          size = f.readLine ( buf, 100 );
+          s = QString(buf);
           if ( rx.search( s ) != -1 ) {
             found = true;
             break;
@@ -502,7 +525,7 @@ void QgsComposer::image(void)
   FilterMap::Iterator myIterator;
   for ( myIterator = myFilterMap.begin(); myIterator != myFilterMap.end(); ++myIterator )
   {
-    std::cout << myIterator.key() << "  :  " << myIterator.data() << std::endl;
+    std::cout << myIterator.key().local8Bit() << "  :  " << myIterator.data().local8Bit() << std::endl;
   }
 #endif
 
@@ -512,7 +535,6 @@ void QgsComposer::image(void)
         "",
         myFilters,
         0,
-        QFileDialog::tr("Save file dialog"),
         tr("Choose a filename to save the map image as")
         )
       );
@@ -535,8 +557,8 @@ void QgsComposer::image(void)
   myOutputFileNameQString = myQFileDialog->selectedFile();
   QString myFilterString = myQFileDialog->selectedFilter();
 #ifdef QGISDEBUG
-  std::cout << "Selected filter: " << myFilterString << std::endl;
-  std::cout << "Image type: " << myFilterMap[myFilterString] << std::endl;
+  std::cout << "Selected filter: " << myFilterString.local8Bit() << std::endl;
+  std::cout << "Image type: " << myFilterMap[myFilterString].local8Bit() << std::endl;
 #endif
 
   myQSettings.writeEntry("/qgis/UI/lastSaveAsImageFormat" , myFilterMap[myFilterString] );
@@ -571,7 +593,6 @@ void QgsComposer::svg(void)
   QString myLastUsedFile = myQSettings.readEntry("/qgis/UI/lastSaveAsSvgFile","qgis.svg");
 
   QFileDialog *myQFileDialog = new QFileDialog( "", "SVG Format (*.svg *SVG)", 0,
-      QFileDialog::tr("Save file dialog"),
       tr("Choose a filename to save the map as") );
 
   myQFileDialog->setSelection ( myLastUsedFile );

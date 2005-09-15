@@ -25,6 +25,7 @@
 #include <qevent.h>
 #include <qlabel.h>
 #include <qpopupmenu.h>
+#include <qglobal.h>
 
 #include "qgsidentifyresults.h"
 
@@ -78,7 +79,10 @@ void QgsIdentifyResults::popupContextMenu(QListViewItem* item,
 
     QLabel* popupLabel = new QLabel( mActionPopup );
     popupLabel->setText( tr("<center>Run action</center>") );
+// TODO: Qt4 uses "QAction"s - need to refactor.
+#if QT_VERSION < 0x040000
     mActionPopup->insertItem(popupLabel);
+#endif
     mActionPopup->insertSeparator();
 
     QgsAttributeAction::aIter iter = mActions.begin();

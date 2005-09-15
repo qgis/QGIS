@@ -48,7 +48,7 @@ extern "C"{
 }
 
 
-QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const char* name , WFlags fl  )
+QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const char* name , Qt::WFlags fl  )
     : QgsCustomProjectionDialogBase( parent, "Projection Designer", fl )
 {
   mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
@@ -78,7 +78,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
     if (! myInputStream)
     {
       std::cerr << "unable to open input file: "
-          << myMasterDatabaseFileName << " --bailing out! \n";
+          << myMasterDatabaseFileName.local8Bit() << " --bailing out! \n";
       //XXX Do better error handling
       return ;
     }
@@ -227,7 +227,7 @@ void QgsCustomProjectionDialog::pbnDelete_clicked()
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
 #ifdef QGISDEBUG
-    std::cout << "Query to delete current:" << mySql << std::endl;
+    std::cout << "Query to delete current:" << mySql.local8Bit() << std::endl;
 #endif
   if(myResult == SQLITE_OK)
   {
@@ -451,7 +451,7 @@ void QgsCustomProjectionDialog::pbnFirst_clicked()
 
   QString mySql = "select * from tbl_srs order by srs_id limit 1";
 #ifdef QGISDEBUG
-    std::cout << "Query to move first:" << mySql << std::endl;
+    std::cout << "Query to move first:" << mySql.local8Bit() << std::endl;
 #endif
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -471,7 +471,7 @@ void QgsCustomProjectionDialog::pbnFirst_clicked()
   else
   {
 #ifdef QGISDEBUG
-  std::cout << "pbnFirst query failed: " << mySql << std::endl;
+  std::cout << "pbnFirst query failed: " << mySql.local8Bit() << std::endl;
 #endif
     
   }
@@ -520,7 +520,7 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
 
   QString mySql = "select * from tbl_srs where srs_id < " + mCurrentRecordId + " order by srs_id desc limit 1";
 #ifdef QGISDEBUG
-    std::cout << "Query to move previous:" << mySql << std::endl;
+    std::cout << "Query to move previous:" << mySql.local8Bit() << std::endl;
 #endif
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -540,7 +540,7 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
   else
   {
 #ifdef QGISDEBUG
-  std::cout << "pbnPrevious query failed: " << mySql << std::endl;
+  std::cout << "pbnPrevious query failed: " << mySql.local8Bit() << std::endl;
 #endif
     
   }
@@ -598,7 +598,7 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
 
   QString mySql = "select * from tbl_srs where srs_id > " + mCurrentRecordId + " order by srs_id asc limit 1";
 #ifdef QGISDEBUG
-    std::cout << "Query to move next:" << mySql << std::endl;
+    std::cout << "Query to move next:" << mySql.local8Bit() << std::endl;
 #endif
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -618,7 +618,7 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
   else
   {
 #ifdef QGISDEBUG
-  std::cout << "pbnNext query failed: " << mySql << std::endl;
+  std::cout << "pbnNext query failed: " << mySql.local8Bit() << std::endl;
 #endif
     
   }
@@ -672,7 +672,7 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
 
   QString mySql = "select * from tbl_srs order by srs_id desc limit 1";
 #ifdef QGISDEBUG
-    std::cout << "Query to move last:" << mySql << std::endl;
+    std::cout << "Query to move last:" << mySql.local8Bit() << std::endl;
 #endif
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -692,7 +692,7 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
   else
   {
 #ifdef QGISDEBUG
-  std::cout << "pbnLast query failed: " << mySql << std::endl;
+  std::cout << "pbnLast query failed: " << mySql.local8Bit() << std::endl;
 #endif
     
   }
@@ -849,7 +849,7 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
     assert(myResult == 0);
   }
 #ifdef QGISDEBUG
-  std::cout << "Update or insert sql \n" << mySql << std::endl;
+  std::cout << "Update or insert sql \n" << mySql.local8Bit() << std::endl;
 #endif
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   sqlite3_step(myPreparedStatement);
@@ -901,7 +901,7 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
   // Set up the query to retreive the projection information needed to populate the PROJECTION list
   QString mySql = "select parameters from tbl_projection name where name='"+theText+"'";
 #ifdef QGISDEBUG
-    std::cout << "Query to get proj params:" << mySql << std::endl;
+    std::cout << "Query to get proj params:" << mySql.local8Bit() << std::endl;
 #endif
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -910,7 +910,7 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
     sqlite3_step(myPreparedStatement) == SQLITE_ROW;
     QString myParametersString = (char *)sqlite3_column_text(myPreparedStatement,0);
 #ifdef QGISDEBUG
-    std::cout << "Setting parameters text box to: " << myParametersString << std::endl;
+    std::cout << "Setting parameters text box to: " << myParametersString.local8Bit() << std::endl;
 #endif
     txtExpectedParameters->setReadOnly(false);
     txtExpectedParameters->setText(myParametersString);
@@ -987,7 +987,7 @@ void QgsCustomProjectionDialog::setCombosUsingParameters()
 {
 
   QString myProj4String = leParameters->text();
-  std::cout << "QgsCustomProjectionDialog::setCombosUsingParameters \n" << myProj4String << std::endl;
+  std::cout << "QgsCustomProjectionDialog::setCombosUsingParameters \n" << myProj4String.local8Bit() << std::endl;
   QRegExp myProjRegExp( "proj=[a-zA-Z]* " );    
   int myStart= 0;
   int myLength=0;
@@ -1002,7 +1002,7 @@ void QgsCustomProjectionDialog::setCombosUsingParameters()
     QString myProjectionAcronym;  
     myProjectionAcronym = myProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength-(PROJ_PREFIX_LEN+1));//+1 for space
     //now update the combos
-    std::cout << "Prj acronym" << myProjectionAcronym << std::endl;
+    std::cout << "Prj acronym" << myProjectionAcronym.local8Bit() << std::endl;
     cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionAcronym));
   }
   
@@ -1021,7 +1021,7 @@ void QgsCustomProjectionDialog::setCombosUsingParameters()
     QString myEllipsoidAcronym;
     myEllipsoidAcronym = myProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength-(ELLPS_PREFIX_LEN+1));
     //now update the combos
-    std::cout << "Ellps acronym" << myEllipsoidAcronym << std::endl;
+    std::cout << "Ellps acronym" << myEllipsoidAcronym.local8Bit() << std::endl;
     cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidAcronym));
   }
 }
