@@ -44,6 +44,7 @@ email                : tim@linfiniti.com
 #include <qbutton.h>
 #include <qcheckbox.h>
 #include <qpaintdevicemetrics.h>
+#include <qglobal.h>
 
 //non qt includes
 #include <iostream>
@@ -95,7 +96,11 @@ void QgsCopyrightLabelPlugin::initGui()
     pluginMenu->setWhatsThis(menuId, "Creates a copyright label that is displayed on the map canvas.");
 
     // Create the action for tool
+#if QT_VERSION < 0x040000
     myQActionPointer = new QAction("Copyright Label", QIconSet(icon), "&Wmi",0, this, "run");
+#else
+    myQActionPointer = new QAction(QIconSet(icon), "Copyright Label", this);
+#endif
     myQActionPointer->setWhatsThis("Creates a copyright label that is displayed on the map canvas.");
     // Connect the action to the run
     connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
