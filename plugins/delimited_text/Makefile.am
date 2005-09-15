@@ -16,11 +16,27 @@ plugindir = ${pkglibdir}
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui
+if HAVE_QT3
+%.uic.h: %.ui 
 	$(UIC) -o $@ $<
+endif
 
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
+if HAVE_QT4
+%.uic.h: %.ui 
+	$(UIC) -o $@ $<
+	../../tools/qgis-qt3to4.pl -uic $@
+endif
+
+if !NO_UIC_IMPLEMENTATIONS
+%.uic.cpp: %.ui
+	$(UIC) -o $@ -impl $*.uic.h $<
+endif
+
+# %.h: %.ui
+# 	$(UIC) -o $@ $<
+#
+# %.cpp: %.ui
+# 	$(UIC) -o $@ -impl $*.h $<
 
 
 # DelimitedTextLayer below to be replaced with the name of the plugin
@@ -30,8 +46,8 @@ plugin_MOC = qgsdelimitedtextplugin.moc.cpp		\
 	     qgsdelimitedtextplugingui.moc.cpp		\
 	     qgsdelimitedtextpluginguibase.moc.cpp
 
-plugin_UI = qgsdelimitedtextpluginguibase.h \
-	    qgsdelimitedtextpluginguibase.cpp 
+plugin_UI = qgsdelimitedtextpluginguibase.uic.h \
+	    qgsdelimitedtextpluginguibase.uic.cpp 
 
 plugin_UIC = qgsdelimitedtextpluginguibase.ui
 
