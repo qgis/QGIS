@@ -180,7 +180,7 @@ void QgsContColDialog::apply()
 
 void QgsContColDialog::selectMinimumColor()
 {
-    QColor mincolor = QColorDialog::getColor(QColor(black), this);
+    QColor mincolor = QColorDialog::getColor(QColor(Qt::black), this);
     if(mincolor.isValid())
     {
 	lblMinValue->setPaletteBackgroundColor(mincolor);
@@ -190,7 +190,7 @@ void QgsContColDialog::selectMinimumColor()
 
 void QgsContColDialog::selectMaximumColor()
 {
-    QColor maxcolor = QColorDialog::getColor(QColor(black), this);
+    QColor maxcolor = QColorDialog::getColor(QColor(Qt::black), this);
     if(maxcolor.isValid())
     {
 	lblMaxValue->setPaletteBackgroundColor(maxcolor);
