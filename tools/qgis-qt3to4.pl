@@ -75,7 +75,7 @@ sub Qt3to4File
     # Qt4:
     #   QString foo;  foo.toAscii().data();
 
-    $line =~ s/\.ascii\(\)/\.toAscii\(\)\.data\(\)/g;
+    $line =~ s/ascii\(\)/toAscii\(\)\.data\(\)/g;
 
     # 1a. Use of QStrings in std::ostream operator<< context
     #
@@ -85,7 +85,7 @@ sub Qt3to4File
     # Qt4:
     #   QString foo;  foo.toLocal8Bit().data();
 
-    $line =~ s/\.local8Bit\(\)/\.toLocal8Bit\(\)\.data\(\)/g;
+    $line =~ s/local8Bit\(\)/toLocal8Bit\(\)\.data\(\)/g;
 
     # 2. Fix qt3to4's use of QImageIO to QPictureIO
     #
@@ -100,6 +100,18 @@ sub Qt3to4File
     $line =~ s/\#include \<QImageIO\>/\#include \<QPictureIO\>/;
 
     $line =~ s/QImageIO\:\:/QPictureIO\:\:/g;
+
+    # 2.a. QImage scale
+    #
+    # Qt3:
+    #   QImage foo;
+    #   foo.scale(10,10);
+    #
+    # Qt4:
+    #   QImage foo;
+    #   foo.scaled(10,10);
+
+    $line =~ s/\.scale\(/\.scaled\(/g;
 
     # 3. Fix qt3to4's oversight of QCanvas to Q3Canvas
     #
@@ -116,6 +128,134 @@ sub Qt3to4File
     $line =~ s/public QCanvasView/public Q3CanvasView/g;
 
 
+    # Menu substitutions:
+
+    # 4. Qt3 QPopupMenu vs. Qt4 QMenu
+    #
+    # Qt3:
+    #   QPopupMenu *foo;
+    #   foo->indexOf(a);
+    #
+    # Qt4:
+    #   QMenu *foo;
+    #   foo->actions().indexOf(a);
+
+    # for this one, use specific cases, not a general "indexOf" grep, as it may be too wide a net
+    $line =~ s/popupMenuFile\-\>indexOf/popupMenuFile\-\>actions\(\)\.indexOf/g;
+
+
+    # FileInfo substitutions:
+
+    # 5. Base Names
+    #
+    # Qt3:
+    #   QFileInfo foo;
+    #   foo.baseName(TRUE);
+    #
+    # Qt4:
+    #   QFileInfo foo;
+    #   foo.completeBaseName();
+
+    $line =~ s/baseName\(TRUE\)/completeBaseName\(\)/g;
+
+
+    # QIODevice substitutions:
+
+    # 5.a.a. end-of-line terminators
+    #
+    # Qt3:
+    #   QFile foo;
+    #   foo.open(IO_Translate);
+    #
+    # after qt3to4:
+    #   QFile foo;
+    #   foo.open(QIODevice::Translate);
+    #
+    # Qt4:
+    #   QFile foo;
+    #   foo.open(QIODevice::Text);
+
+    $line =~ s/QIODevice\:\:Translate/QIODevice\:\:Text/g;
+
+
+    # Widget substitutions:
+
+    # 5.a. StrongFocus
+    #
+    # Qt3:
+    #   QWidget foo;
+    #   foo.setFocusPolicy(QWidget::StrongFocus);
+    #
+    # Qt4:
+    #   QWidget foo;
+    #   foo.setFocusPolicy(Qt::StrongFocus);
+
+    $line =~ s/QWidget\:\:StrongFocus/Qt\:\:StrongFocus/g;
+
+
+    # QProgressDialog substitutions:
+
+    # 5.b. wasCancelled - now American spelling
+    #
+    # Qt3:
+    #   QProgressDialog foo;
+    #   if (foo.wasCancelled()) { ... ]
+    #
+    # Qt4:
+    #   Q3ProgressDialog foo;
+    #   if (foo.wasCanceled()) { ... ]
+
+    $line =~ s/\.wasCancelled\(\)/\.wasCanceled\(\)/g;
+
+
+    # Additional items for specific files
+
+    # 6. Add <QDesktopWidget> include to qgisapp.cpp AND splashscreen.cpp
+
+    if (
+        ($filename =~ /qgisapp\.cpp$/) or
+        ($filename =~ /splashscreen\.cpp$/) or
+       )
+    {
+      if ($line =~ /Added by qt3to4\:/)  # Good as place as any to add it
+      {
+        $line += "#include <QDesktopWidget>\n";
+      }
+    }
+
+    # 6a. Add <QTextOStream> include to qgscoordinatetransform.cpp
+
+    if ($filename =~ /qgscoordinatetransform\.cpp$/)
+    {
+      if ($line =~ /Qt4-only includes to go here/)  # Good as place as any to add it
+      {
+        $line += "#include <QTextOStream>\n";
+      }
+    }
+
+    # 6b. Add <QStringList> include to qgsprojectproperty.cpp
+
+    if ($filename =~ /qgsprojectproperty\.cpp$/)
+    {
+      if ($line =~ /Qt4-only includes to go here/)  # Good as place as any to add it
+      {
+        $line += "#include <QStringList>\n";
+      }
+    }
+
+    # 7. Mop up overzealous color conversions by qt3to4 to qgscontinuouscolrenderer.cpp
+    # Qt::red -> red,
+    # Qt::green -> green,
+    # Qt::blue -> blue.
+
+    if ($filename =~ /qgscontinuouscolrenderer\.cpp$/)
+    {
+      $line =~ /Qt\:\:red/red/g;
+      $line =~ /Qt\:\:green/green/g;
+      $line =~ /Qt\:\:blue/blue/g;
+    }
+
+    # End of substitutions
     $cppqt4 .= $line;
 
   }
