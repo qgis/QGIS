@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<XMI xmlns:UML="http://schema.omg.org/spec/UML/1.3" verified="false" timestamp="2005-09-15T15:51:35" xmi.version="1.2" >
+<XMI xmlns:UML="http://schema.omg.org/spec/UML/1.3" verified="false" timestamp="2005-09-15T17:55:35" xmi.version="1.2" >
  <XMI.header>
   <XMI.documentation>
    <XMI.exporter>umbrello uml modeller http://uml.sf.net</XMI.exporter>
@@ -60,7 +60,7 @@
      <UML:Classifier.feature>
       <UML:Operation comment="Returns a file filters string suitable for QFileDialog objects." isSpecification="false" isLeaf="false" visibility="public" xmi.id="48" isRoot="false" isAbstract="false" name="getFileFilters" >
        <UML:BehavioralFeature.parameter>
-        <UML:Parameter kind="return" xmi.id="727" type="10" />
+        <UML:Parameter kind="return" xmi.id="799" type="10" />
        </UML:BehavioralFeature.parameter>
       </UML:Operation>
       <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="297" isRoot="false" isAbstract="false" name="open" >
@@ -93,7 +93,7 @@ This parameter optionally allows the user to specify a data provider, such as mi
       </UML:Operation>
       <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="248" isRoot="false" isAbstract="false" name="endian" >
        <UML:BehavioralFeature.parameter>
-        <UML:Parameter kind="return" xmi.id="728" type="252" />
+        <UML:Parameter kind="return" xmi.id="800" type="252" />
        </UML:BehavioralFeature.parameter>
       </UML:Operation>
       <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="495" isRoot="false" isAbstract="false" name="load" />
@@ -173,7 +173,7 @@ This parameter optionally allows the user to specify a data provider, such as mi
   </UML:Model>
  </XMI.content>
  <XMI.extensions xmi.extender="umbrello" >
-  <docsettings viewid="1" documentation="" uniqueid="728" />
+  <docsettings viewid="326" documentation="" uniqueid="800" />
   <diagrams>
    <diagram snapgrid="0" showattsig="1" fillcolor="#ffffc0" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="1135" snapy="10" showatts="1" xmi.id="1" documentation="" type="402" showops="1" showpackage="0" name="data provider class diagram" localid="900000" showstereotype="0" showscope="1" snapcsgrid="0" font="Arial,12,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="783" >
     <widgets>
@@ -273,26 +273,40 @@ This parameter optionally allows the user to specify a data provider, such as mi
      </assocwidget>
     </associations>
    </diagram>
-   <diagram snapgrid="0" showattsig="1" fillcolor="#ffffc0" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="914" snapy="10" showatts="1" xmi.id="326" documentation="" type="401" showops="1" showpackage="0" name="collaboration diagram" localid="899994" showstereotype="0" showscope="1" snapcsgrid="0" font="Sans,10,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="698" >
+   <diagram snapgrid="0" showattsig="1" fillcolor="#ffffc0" linewidth="0" zoom="100" showgrid="0" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="772" snapy="10" showatts="1" xmi.id="326" documentation="1. the QgisApp gets from the user that they want to open a file, database, server, whatever; QgisApp sends open message with data source URI to the layer manager.  For this scenario, presume it's a file based data format.
+
+2. The layer manager then asks the data provider registry for a provider that supports the given URI.  The provider then goes through the provider metadata to find one that supports the given format.
+
+3. Presuming a provider that supports the URI is found, the provider will load via QLibrary call the data provider.
+
+4. ... which is passed back to the layer manager.
+
+5. ... which then asks the data provider to create layers for each corresponding layer in its data.
+
+6. The data provider creates N layers for each N layer stored in the data.
+
+7. The layer manager then adds the new layers to the layer registry.
+
+8. For each new layer, signal is raised so that all object clients interested in newly loaded layers are informed.  This should update all relevent GUI objects.  (E.g., the legend, canvas, etc.)" type="401" showops="1" showpackage="0" name="collaboration diagram" localid="899994" showstereotype="0" showscope="1" snapcsgrid="0" font="Sans,10,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="713" >
     <widgets>
-     <objectwidget usesdiagramfillcolour="1" width="66" usesdiagramusefillcolour="1" x="8" linecolour="none" y="468" instancename="" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="27" usefillcolor="1" isinstance="0" xmi.id="331" decon="0" localid="899999" multipleinstance="0" drawasactor="0" font="Sans,10,-1,5,50,0,1,0,0,0" />
+     <objectwidget usesdiagramfillcolour="1" width="66" usesdiagramusefillcolour="1" x="34" linecolour="none" y="254" instancename="" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="27" usefillcolor="1" isinstance="0" xmi.id="331" decon="0" localid="899999" multipleinstance="0" drawasactor="0" font="Sans,10,-1,5,50,0,1,0,0,0" />
      <objectwidget usesdiagramfillcolour="1" width="121" usesdiagramusefillcolour="1" x="346" linecolour="none" y="170" instancename="" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="27" usefillcolor="1" isinstance="0" xmi.id="17" decon="0" localid="899998" multipleinstance="0" drawasactor="0" font="Sans,10,-1,5,50,0,1,0,0,0" />
      <objectwidget usesdiagramfillcolour="1" width="132" usesdiagramusefillcolour="1" x="375" linecolour="none" y="30" instancename="" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="27" usefillcolor="1" isinstance="0" xmi.id="16" decon="0" localid="899997" multipleinstance="0" drawasactor="0" font="Sans,10,-1,5,50,0,1,0,0,0" />
      <objectwidget usesdiagramfillcolour="1" width="113" usesdiagramusefillcolour="1" x="593" linecolour="none" y="303" instancename="" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="27" usefillcolor="1" isinstance="0" xmi.id="38" decon="0" localid="899996" multipleinstance="0" drawasactor="0" font="Sans,10,-1,5,50,0,1,0,0,0" />
      <notewidget usesdiagramfillcolour="1" width="146" usesdiagramusefillcolour="1" x="567" linecolour="none" y="25" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="102" usefillcolor="1" isinstance="0" xmi.id="502" text="Scan through metadata and find first data provider that accepts given URI type, then load that data provider." font="Sans,10,-1,5,50,0,0,0,0,0" />
-     <objectwidget usesdiagramfillcolour="1" width="113" usesdiagramusefillcolour="1" x="652" linecolour="none" y="467" instancename="" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="27" usefillcolor="1" isinstance="0" xmi.id="12" decon="0" localid="899995" multipleinstance="0" drawasactor="0" font="Sans,10,-1,5,50,0,1,0,0,0" />
-     <objectwidget usesdiagramfillcolour="0" width="106" usesdiagramusefillcolour="0" x="358" linecolour="#ff0000" y="355" instancename="" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="0" fillcolour="#ffffc0" height="37" usefillcolor="1" isinstance="0" xmi.id="13" decon="0" localid="899994" multipleinstance="1" drawasactor="0" font="Sans,10,-1,5,50,0,1,0,0,0" />
+     <objectwidget usesdiagramfillcolour="1" width="113" usesdiagramusefillcolour="1" x="202" linecolour="none" y="434" instancename="" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="27" usefillcolor="1" isinstance="0" xmi.id="12" decon="0" localid="899995" multipleinstance="0" drawasactor="0" font="Sans,10,-1,5,50,0,1,0,0,0" />
+     <objectwidget usesdiagramfillcolour="0" width="106" usesdiagramusefillcolour="0" x="545" linecolour="#ff0000" y="476" instancename="" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="0" fillcolour="#ffffc0" height="37" usefillcolor="1" isinstance="0" xmi.id="13" decon="0" localid="899994" multipleinstance="1" drawasactor="0" font="Sans,10,-1,5,50,0,1,0,0,0" />
      <notewidget usesdiagramfillcolour="1" width="252" usesdiagramusefillcolour="1" x="231" linecolour="none" y="523" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="81" usefillcolor="1" isinstance="0" xmi.id="656" text="Qt signal is raised for each added layer, which QgisApp intercepts and other client objects (not shown) to update GUI." font="Sans,10,-1,5,50,0,0,0,0,0" />
     </widgets>
     <messages/>
     <associations>
-     <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="4" indexb="1" widgetbid="899998" widgetaid="899999" xmi.id="356" type="505" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+     <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="5" indexb="1" widgetbid="899998" widgetaid="899999" xmi.id="356" type="505" changeabilityA="900" changeabilityB="900" visibilityA="200" >
       <linepath>
-       <startpoint startx="41" starty="468" />
-       <endpoint endx="376" endy="197" />
+       <startpoint startx="100" starty="267" />
+       <endpoint endx="370" endy="197" />
       </linepath>
-      <floatingtext usesdiagramfillcolour="1" width="120" usesdiagramusefillcolour="1" x="208" linecolour="none" y="332" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="706" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="380" text=" 1: open(URI : string)" font="Sans,10,-1,5,50,0,0,0,0,0" />
-      <floatingtext usesdiagramfillcolour="1" width="18" usesdiagramusefillcolour="1" x="43" linecolour="none" y="470" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="384" text=" 1" font="Sans,10,-1,5,50,0,0,0,0,0" />
+      <floatingtext usesdiagramfillcolour="1" width="120" usesdiagramusefillcolour="1" x="153" linecolour="none" y="200" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="706" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="380" text=" 1: open(URI : string)" font="Sans,10,-1,5,50,0,0,0,0,0" />
+      <floatingtext usesdiagramfillcolour="1" width="18" usesdiagramusefillcolour="1" x="89" linecolour="none" y="240" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="384" text=" 1" font="Sans,10,-1,5,50,0,0,0,0,0" />
      </assocwidget>
      <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="3" indexb="1" widgetbid="899997" widgetaid="899998" xmi.id="401" type="505" changeabilityA="900" changeabilityB="900" visibilityA="200" >
       <linepath>
@@ -310,47 +324,54 @@ This parameter optionally allows the user to specify a data provider, such as mi
       <floatingtext usesdiagramfillcolour="1" width="53" usesdiagramusefillcolour="1" x="587" linecolour="none" y="179" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="706" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="490" text="3: load()" font="Sans,10,-1,5,50,0,0,0,0,0" />
       <floatingtext usesdiagramfillcolour="1" width="15" usesdiagramusefillcolour="1" x="446" linecolour="none" y="59" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="499" text="3" font="Sans,10,-1,5,50,0,0,0,0,0" />
      </assocwidget>
-     <assocwidget totalcounta="3" indexa="1" visibilityB="200" totalcountb="4" indexb="3" widgetbid="899998" widgetaid="899996" xmi.id="415" type="505" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+     <assocwidget totalcounta="3" indexa="1" visibilityB="200" totalcountb="5" indexb="4" widgetbid="899998" widgetaid="899996" xmi.id="415" type="505" changeabilityA="900" changeabilityB="900" visibilityA="200" >
       <linepath>
        <startpoint startx="630" starty="303" />
-       <endpoint endx="436" endy="197" />
+       <endpoint endx="442" endy="197" />
        <point x="519" y="211" />
       </linepath>
-      <floatingtext usesdiagramfillcolour="1" width="123" usesdiagramusefillcolour="1" x="412" linecolour="none" y="216" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="706" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="522" text="4: QgsDataProvider()" font="Sans,10,-1,5,50,0,0,0,0,0" />
+      <floatingtext usesdiagramfillcolour="1" width="123" usesdiagramusefillcolour="1" x="437" linecolour="none" y="237" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="706" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="522" text="4: QgsDataProvider()" font="Sans,10,-1,5,50,0,0,0,0,0" />
       <floatingtext usesdiagramfillcolour="1" width="15" usesdiagramusefillcolour="1" x="598" linecolour="none" y="282" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="526" text="4" font="Sans,10,-1,5,50,0,0,0,0,0" />
      </assocwidget>
-     <assocwidget totalcounta="4" indexa="2" visibilityB="200" totalcountb="3" indexb="1" widgetbid="899996" widgetaid="899998" xmi.id="91" type="505" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+     <assocwidget totalcounta="5" indexa="3" visibilityB="200" totalcountb="2" indexb="1" widgetbid="899996" widgetaid="899998" xmi.id="91" type="505" changeabilityA="900" changeabilityB="900" visibilityA="200" >
       <linepath>
-       <startpoint startx="406" starty="197" />
-       <endpoint endx="593" endy="312" />
+       <startpoint startx="418" starty="197" />
+       <endpoint endx="593" endy="316" />
        <point x="408" y="307" />
       </linepath>
       <floatingtext usesdiagramfillcolour="1" width="100" usesdiagramusefillcolour="1" x="414" linecolour="none" y="281" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="706" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="570" text="5: createLayers()" font="Sans,10,-1,5,50,0,0,0,0,0" />
-      <floatingtext usesdiagramfillcolour="1" width="15" usesdiagramusefillcolour="1" x="369" linecolour="none" y="199" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="582" text="5" font="Sans,10,-1,5,50,0,0,0,0,0" />
+      <floatingtext usesdiagramfillcolour="1" width="15" usesdiagramusefillcolour="1" x="416" linecolour="none" y="195" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="582" text="5" font="Sans,10,-1,5,50,0,0,0,0,0" />
      </assocwidget>
-     <assocwidget totalcounta="3" indexa="2" visibilityB="200" totalcountb="2" indexb="1" widgetbid="899994" widgetaid="899996" xmi.id="591" type="505" changeabilityA="900" changeabilityB="900" visibilityA="200" >
-      <linepath>
-       <startpoint startx="593" starty="321" />
-       <endpoint endx="464" endy="373" />
-      </linepath>
-      <floatingtext usesdiagramfillcolour="1" width="106" usesdiagramusefillcolour="1" x="523" linecolour="none" y="355" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="706" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="586" text="6: QgsMapLayer()" font="Sans,10,-1,5,50,0,0,0,0,0" />
-      <floatingtext usesdiagramfillcolour="1" width="15" usesdiagramusefillcolour="1" x="576" linecolour="none" y="298" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="595" text="6" font="Sans,10,-1,5,50,0,0,0,0,0" />
-     </assocwidget>
-     <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="899995" widgetaid="899996" xmi.id="602" type="505" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+     <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="899994" widgetaid="899996" xmi.id="591" type="505" changeabilityA="900" changeabilityB="900" visibilityA="200" >
       <linepath>
        <startpoint startx="649" starty="330" />
-       <endpoint endx="708" endy="467" />
+       <endpoint endx="598" endy="476" />
       </linepath>
-      <floatingtext usesdiagramfillcolour="1" width="225" usesdiagramusefillcolour="1" x="685" linecolour="none" y="387" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="706" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="613" text="7: addLayer(map_layer : QgsMapLayer)" font="Sans,10,-1,5,50,0,0,0,0,0" />
-      <floatingtext usesdiagramfillcolour="1" width="15" usesdiagramusefillcolour="1" x="632" linecolour="none" y="332" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="621" text="7" font="Sans,10,-1,5,50,0,0,0,0,0" />
+      <floatingtext usesdiagramfillcolour="1" width="106" usesdiagramusefillcolour="1" x="618" linecolour="none" y="411" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="706" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="586" text="6: QgsMapLayer()" font="Sans,10,-1,5,50,0,0,0,0,0" />
+      <floatingtext usesdiagramfillcolour="1" width="15" usesdiagramusefillcolour="1" x="651" linecolour="none" y="332" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="595" text="6" font="Sans,10,-1,5,50,0,0,0,0,0" />
      </assocwidget>
-     <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="899999" widgetaid="899995" xmi.id="648" type="505" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+     <assocwidget totalcounta="3" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="899999" widgetaid="899995" xmi.id="648" type="505" changeabilityA="900" changeabilityB="900" visibilityA="200" >
       <linepath>
-       <startpoint startx="652" starty="480" />
-       <endpoint endx="74" endy="481" />
+       <startpoint startx="239" starty="434" />
+       <endpoint endx="67" endy="281" />
       </linepath>
-      <floatingtext usesdiagramfillcolour="1" width="138" usesdiagramusefillcolour="1" x="277" linecolour="none" y="484" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="706" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="643" text="8: signal(AddedLayer : )" font="Sans,10,-1,5,50,0,0,0,0,0" />
-      <floatingtext usesdiagramfillcolour="1" width="15" usesdiagramusefillcolour="1" x="635" linecolour="none" y="457" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="653" text="8" font="Sans,10,-1,5,50,0,0,0,0,0" />
+      <floatingtext usesdiagramfillcolour="1" width="138" usesdiagramusefillcolour="1" x="137" linecolour="none" y="313" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="706" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="643" text="8: signal(AddedLayer : )" font="Sans,10,-1,5,50,0,0,0,0,0" />
+      <floatingtext usesdiagramfillcolour="1" width="15" usesdiagramusefillcolour="1" x="182" linecolour="none" y="421" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="653" text="8" font="Sans,10,-1,5,50,0,0,0,0,0" />
+     </assocwidget>
+     <assocwidget totalcounta="5" indexa="2" visibilityB="200" totalcountb="3" indexb="2" widgetbid="899995" widgetaid="899998" xmi.id="602" type="505" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="394" starty="197" />
+       <endpoint endx="277" endy="434" />
+       <point x="336" y="338" />
+      </linepath>
+      <floatingtext usesdiagramfillcolour="1" width="225" usesdiagramusefillcolour="1" x="323" linecolour="none" y="355" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="706" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="748" text="7: addLayer(map_layer : QgsMapLayer)" font="Sans,10,-1,5,50,0,0,0,0,0" />
+      <floatingtext usesdiagramfillcolour="1" width="15" usesdiagramusefillcolour="1" x="369" linecolour="none" y="210" linewidth="none" usesdiagramlinewidth="1" posttext="" usesdiagramlinecolour="1" role="701" fillcolour="none" height="21" usefillcolor="1" pretext="" isinstance="0" xmi.id="754" text="7" font="Sans,10,-1,5,50,0,0,0,0,0" />
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" widgetbid="656" widgetaid="899995" roleBdoc="" documentation="" roleAdoc="" type="513" changeabilityA="900" changeabilityB="900" visibilityA="200" >
+      <linepath>
+       <startpoint startx="258" starty="461" />
+       <endpoint endx="357" endy="523" />
+      </linepath>
      </assocwidget>
     </associations>
    </diagram>
