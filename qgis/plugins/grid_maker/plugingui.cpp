@@ -36,13 +36,13 @@ void QgsGridMakerPluginGui::pbnOK_clicked()
   //check input file exists
   //
   std::cout << "GrativuleCreator called with: " <<
-  leOutputShapeFile->text() <<
-  leLongitudeInterval->text() <<
-  leLatitudeInterval->text() <<
-  leOriginLongitude->text() <<
-  leOriginLatitude->text() <<
-  leEndPointLongitude->text() <<
-  leEndPointLatitude->text()
+  leOutputShapeFile->text().local8Bit() <<
+  leLongitudeInterval->text().local8Bit() <<
+  leLatitudeInterval->text().local8Bit() <<
+  leOriginLongitude->text().local8Bit() <<
+  leOriginLatitude->text().local8Bit() <<
+  leEndPointLongitude->text().local8Bit() <<
+  leEndPointLatitude->text().local8Bit()
   << std::endl;
 
   if (leOutputShapeFile->text().isEmpty())
