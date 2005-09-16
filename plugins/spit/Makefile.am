@@ -19,11 +19,27 @@ bin_PROGRAMS = spit
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui
+if HAVE_QT3
+%.uic.h: %.ui 
 	$(UIC) -o $@ $<
+endif
 
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
+if HAVE_QT4
+%.uic.h: %.ui 
+	$(UIC) -o $@ $<
+	../../tools/qgis-qt3to4.pl -uic $@
+endif
+
+if !NO_UIC_IMPLEMENTATIONS
+%.uic.cpp: %.ui
+	$(UIC) -o $@ -impl $*.uic.h $<
+endif
+
+# %.h: %.ui
+# 	$(UIC) -o $@ $<
+#
+# %.cpp: %.ui
+# 	$(UIC) -o $@ -impl $*.h $<
 
 spit_MOC = qgsspit.moc.cpp \
 	qgsconnectiondialog.moc.cpp \
@@ -38,17 +54,17 @@ spit_MOC = qgsspit.moc.cpp \
 
 spitplugin_la_MOC = $(spit_MOC) qgsspitplugin.moc.cpp
 
-spit_UI = qgsconnectiondialogbase.h \
-	qgsconnectiondialogbase.cpp \
-	qgsspitbase.h \
-	qgsspitbase.cpp \
-	qgsmessageviewerbase.h \
-	qgsmessageviewerbase.cpp \
-	qgseditreservedwordsbase.cpp \
-	qgseditreservedwordsbase.h \
-	qgsscangeometries.h \
+spit_UI = qgsconnectiondialogbase.uic.h \
+	qgsconnectiondialogbase.uic.cpp \
+	qgsspitbase.uic.h \
+	qgsspitbase.uic.cpp \
+	qgsmessageviewerbase.uic.h \
+	qgsmessageviewerbase.uic.cpp \
+	qgseditreservedwordsbase.uic.cpp \
+	qgseditreservedwordsbase.uic.h \
+	qgsscangeometries.uic.h \
 	qgsscangeometries.ui.h \
-	qgsscangeometries.cpp
+	qgsscangeometries.uic.cpp
 
 spit_UIC = qgsconnectiondialogbase.ui \
 	qgsmessageviewerbase.ui \

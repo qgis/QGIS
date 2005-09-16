@@ -15,6 +15,7 @@
 #include <qapplication.h>
 #include <qpainter.h>
 #include <qlabel.h>
+#include <qglobal.h>
 #include <iostream>
 #include <qspinbox.h>
 #include <qslider.h>
@@ -148,7 +149,11 @@ void QgsNorthArrowPluginGui::rotatePixmap(int theRotationInt)
     //determine the center of the canvas given that we will bitblt form the origin of the narrow
     int myCenterXInt = static_cast<int>((pixmapLabel->width()-myQPixmap.width())/2);
     int myCenterYInt = static_cast<int>((pixmapLabel->height()-myQPixmap.height())/2);
+#if QT_VERSION < 0x040000
     bitBlt ( pixmapLabel, myCenterXInt,myCenterYInt, &myPainterPixmap, 0, 0, -1 , -1, Qt::CopyROP, false);
+#else
+// TODO: Qt4 uses QPainter::drawPixmap instead; need to refactor
+#endif
 
 
     //pixmapLabel1->setPixmap(myPainterPixmap);            

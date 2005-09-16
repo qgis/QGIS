@@ -35,6 +35,7 @@ email                : tim@linfiniti.com
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qglobal.h>
 
 //non qt includes
 #include <iostream>
@@ -111,7 +112,11 @@ void QgsGridMakerPlugin::initGui()
   pluginMenu->setWhatsThis(menuId, "Creates a graticule (grid) and stores the result as a shapefile");
 
   // Create the action for tool
+#if QT_VERSION < 0x040000
   myQActionPointer = new QAction("Graticule Creator", QIconSet(icon), "&Wmi",0, this, "run");
+#else
+  myQActionPointer = new QAction(QIcon(icon), "Graticule Creator", this);
+#endif
   myQActionPointer->setWhatsThis("Creates a graticule (grid) and stores the result as a shapefile");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
