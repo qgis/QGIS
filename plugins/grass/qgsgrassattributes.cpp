@@ -200,7 +200,7 @@ void QgsGrassAttributes::addAttribute ( int tab, const QString &name, const QStr
                                   const QString &type )
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrassAttributes::addAttribute(): " << name << ": " << value << std::endl;
+    std::cerr << "QgsGrassAttributes::addAttribute(): " << name.local8Bit() << ": " << value.local8Bit() << std::endl;
     #endif
 
     QTable *tb = (QTable *) tabCats->page(tab);
@@ -270,7 +270,7 @@ void QgsGrassAttributes::updateAttributes ( )
       }
 
       #ifdef QGISDEBUG
-      std::cerr << "sql: " << sql << std::endl;
+      std::cerr << "sql: " << sql.local8Bit() << std::endl;
       #endif
 
       QString *error = mProvider->updateAttributes ( tb->text(0,1).toInt(), tb->text(1,1).toInt(), sql );

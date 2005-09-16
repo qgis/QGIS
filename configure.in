@@ -86,7 +86,9 @@ dnl Qt check
 dnl ---------------------------------------------------------------------------
 AQ_CHECK_QT
 
-AM_CONDITIONAL([NO_UIC_IMPLEMENTATIONS], [test "$QT_MAJOR" = "4"])
+dnl Assume for the moment that Qt4 installations will still compile against uic3
+dnl AM_CONDITIONAL([NO_UIC_IMPLEMENTATIONS], [test "$QT_MAJOR" = "4"])
+AM_CONDITIONAL([NO_UIC_IMPLEMENTATIONS], [test "$QT_MAJOR" = "0"])
 
 AM_CONDITIONAL([HAVE_QT3], [test "$QT_MAJOR" = "3"])
 AM_CONDITIONAL([HAVE_QT4], [test "$QT_MAJOR" = "4"])

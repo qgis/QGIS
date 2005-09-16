@@ -276,7 +276,7 @@ void QgsGrassSelect::setLayers()
 	                            (char *) emapset->currentText().ascii());
 
     if ( QgsGrass::getError() == QgsGrass::FATAL ) {
-	std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage() << std::endl;
+	std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage().local8Bit() << std::endl;
 	return;
     }
 

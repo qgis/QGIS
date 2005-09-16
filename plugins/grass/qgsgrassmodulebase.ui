@@ -72,9 +72,6 @@
             <property name="name">
                 <cstring>mProgressBar</cstring>
             </property>
-            <property name="indicatorFollowsStyle">
-                <bool>false</bool>
-            </property>
         </widget>
         <widget class="QFrame">
             <property name="name">

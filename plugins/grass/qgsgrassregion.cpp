@@ -40,6 +40,7 @@
 #include <qpalette.h>
 #include <qcolordialog.h>
 #include <qspinbox.h>
+#include <qglobal.h>
 
 #include "../../src/qgis.h"
 #include "../../src/qgisapp.h"
@@ -291,8 +292,8 @@ void QgsGrassRegion::colsChanged(const QString &str)
 void QgsGrassRegion::adjust()
 {
     int r, c;
-    if ( mRowsRadio->state() == QButton::On ) r = 1; else r = 0;
-    if ( mColsRadio->state() == QButton::On ) c = 1; else c = 0;
+    if ( mRowsRadio->isChecked() ) r = 1; else r = 0;
+    if ( mColsRadio->isChecked() ) c = 1; else c = 0;
     G_adjust_Cell_head ( &mWindow, r, c );
 }
 
@@ -302,14 +303,14 @@ void QgsGrassRegion::radioChanged()
     std::cerr << "QgsGrassRegion::radioChanged()" << std::endl;
     #endif
     
-    if ( mRowsRadio->state() == QButton::On ) {
+    if ( mRowsRadio->isChecked() ) {
         mNSRes->setEnabled(false);
         mRows->setEnabled(true);
     } else { 
         mNSRes->setEnabled(true);
         mRows->setEnabled(false);
     }
-    if ( mColsRadio->state() == QButton::On ) {
+    if ( mColsRadio->isChecked() ) {
         mEWRes->setEnabled(false);
         mCols->setEnabled(true);
     } else { 
@@ -375,6 +376,7 @@ void QgsGrassRegion::displayRegion()
     std::cerr << "QgsGrassRegion::displayRegion()" << std::endl;
     #endif
 
+#if QT_VERSION < 0x040000
     QPainter *painter = new QPainter();
     QPixmap *pixmap = mCanvas->canvasPixmap();
     painter->begin(pixmap);
@@ -409,6 +411,10 @@ void QgsGrassRegion::displayRegion()
     delete painter;
 
     mDisplayed = true;
+#else
+// TODO: Qt4 uses QRubberBand, need to refactor.
+#endif
+
 }
 
 void QgsGrassRegion::postRender(QPainter *painter)

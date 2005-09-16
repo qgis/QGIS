@@ -211,7 +211,7 @@ void QgsGPSPluginGui::pbnGPXSelectFile_clicked()
           "Select GPX file" , //caption
           &myFileTypeQString //the pointer to store selected filter
           );
-  std::cout << "Selected filetype filter is : " << myFileTypeQString << std::endl;
+  std::cout << "Selected filetype filter is : " << myFileTypeQString.local8Bit() << std::endl;
   leGPXFile->setText(myFileNameQString);
 }
 
@@ -230,11 +230,11 @@ void QgsGPSPluginGui::pbnIMPInput_clicked() {
   std::map<QString, QgsBabelFormat*>::const_iterator iter;
   iter = mImporters.find(mImpFormat);
   if (iter == mImporters.end()) {
-    std::cerr<<"Unknown file format selected: "
-	     <<myFileType.left(myFileType.length() - 6)<<std::endl;
+    std::cerr << "Unknown file format selected: "
+	      << myFileType.left(myFileType.length() - 6).local8Bit() << std::endl;
   }
   else {
-    std::cerr<<iter->first<<" selected"<<std::endl;
+    std::cerr << iter->first.local8Bit() << " selected" << std::endl;
     leIMPInput->setText(myFileName);
     cmbIMPFeature->clear();
     if (iter->second->supportsWaypoints())

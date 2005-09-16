@@ -20,7 +20,6 @@ class QCloseEvent;
 class QString;
 class QStringList;
 class QGroupBox;
-class QVGroupBox;
 class QFrame;
 class QListView;
 class QDomNode;
@@ -31,7 +30,6 @@ class QPixmap;
 
 #include <vector>
 #include <qgroupbox.h>
-#include <qvgroupbox.h>
 #include <qcheckbox.h>
 #include <qprocess.h>
 
@@ -174,7 +172,7 @@ private:
 /*! \class QgsGrassModuleOption
  *  \brief  GRASS option 
  */
-class QgsGrassModuleOption: public QVGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleOption: public QGroupBox, public QgsGrassModuleItem
 {
     Q_OBJECT;
 
@@ -240,7 +238,7 @@ private:
 /*! \class QgsGrassModuleInput
  *  \brief Class representing raster or vector module input
  */
-class QgsGrassModuleInput: public QVGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleInput: public QGroupBox, public QgsGrassModuleItem
 {
     Q_OBJECT;
 
