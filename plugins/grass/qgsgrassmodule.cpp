@@ -54,7 +54,7 @@
 #include <qregexp.h>
 #include <qprogressbar.h>
 #include <qstylesheet.h>
-#include <qvgroupbox.h>
+#include <qgroupbox.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qpicture.h>
@@ -114,7 +114,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     if ( !qDoc.setContent( &qFile,  &err, &line, &column ) ) {
 	QString errmsg = "Cannot read module file (" + mpath + "):\n" + err + "\nat line "
 	                 + QString::number(line) + " column " + QString::number(column);
-	std::cerr << errmsg << std::endl;
+	std::cerr << errmsg.local8Bit() << std::endl;
 	QMessageBox::warning( 0, "Warning", errmsg );
 	qFile.close();
 	return;
@@ -142,7 +142,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     if ( !gDoc.setContent( (QByteArray)gDescArray, &err, &line, &column ) ) {
 	QString errmsg = "Cannot read module description (" + mXName + "):\n" + err + "\nat line "
 	                 + QString::number(line) + " column " + QString::number(column);
-	std::cerr << errmsg << std::endl;
+	std::cerr << errmsg.local8Bit() << std::endl;
 	QMessageBox::warning( 0, "Warning", errmsg );
 	return;
     }
@@ -159,7 +159,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
 	    //std::cout << "optionType = " << optionType << std::endl;
 
 	    QString key = e.attribute("key");
-	    std::cout << "key = " << key << std::endl;
+	    std::cout << "key = " << key.local8Bit() << std::endl;
 
 	    QDomNode gnode = nodeByKey ( gDocElem, key );
 	    if ( gnode.isNull() ) {
@@ -226,7 +226,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     strcpy ( envstr, env );
     putenv( envstr );
 
-    mOutputTextBrowser->setTextFormat(RichText);
+    mOutputTextBrowser->setTextFormat(Qt::RichText);
     mOutputTextBrowser->setReadOnly(TRUE);
 }
 
@@ -251,7 +251,7 @@ QString QgsGrassModule::label ( QString path )
     if ( !qDoc.setContent( &qFile,  &err, &line, &column ) ) {
 	QString errmsg = "Cannot read module file (" + path + "):\n" + err + "\nat line "
 	                 + QString::number(line) + " column " + QString::number(column);
-	std::cerr << errmsg << std::endl;
+	std::cerr << errmsg.local8Bit() << std::endl;
 	QMessageBox::warning( 0, "Warning", errmsg );
 	qFile.close();
 	return QString ( "Not available, incorrect description (" + path + ")" );
@@ -393,7 +393,7 @@ void QgsGrassModule::run()
 	    QStringList list = mItems[i]->options();
 
 	    for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it ) {
-		std::cerr << "option: " << *it << std::endl;
+		std::cerr << "option: " << (*it).local8Bit() << std::endl;
 		command.append ( " " + *it );
 		mProcess.addArgument( *it );
 	    }
@@ -410,7 +410,7 @@ void QgsGrassModule::run()
 	
 	mProcess.start( );
 	
-	std::cerr << "command" << command << std::endl;
+	std::cerr << "command" << command.local8Bit() << std::endl;
 	mOutputTextBrowser->clear();
 
 	mOutputTextBrowser->append( "<B>" +  command + "</B>" );
@@ -511,7 +511,7 @@ QgsGrassModule::~QgsGrassModule()
 QDomNode QgsGrassModule::nodeByKey ( QDomElement elem, QString key )
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrassModule::nodeByKey() key = " << key << std::endl;
+    std::cerr << "QgsGrassModule::nodeByKey() key = " << key.local8Bit() << std::endl;
     #endif
     QDomNode n = elem.firstChild();
 
@@ -534,7 +534,8 @@ QDomNode QgsGrassModule::nodeByKey ( QDomElement elem, QString key )
 QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key, 
 	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
 	                                   QWidget * parent)
-                    :QVGroupBox ( parent ), QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode )
+                    : QGroupBox ( 1, Qt::Vertical, parent ),
+                      QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModuleOption::QgsGrassModuleOption" << std::endl;
@@ -694,8 +695,9 @@ QgsGrassModuleFlag::~QgsGrassModuleFlag()
 QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module, QString key,
 	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
 	                                   QWidget * parent)
-                    :QVGroupBox ( parent ), QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
-		     mUpdate(false), mVectorTypeOption(0), mVectorLayerOption(0)
+                    : QGroupBox ( 1, Qt::Vertical, parent ),
+                      QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
+		      mUpdate(false), mVectorTypeOption(0), mVectorLayerOption(0)
 {
     mVectorTypeMask = GV_POINT | GV_LINE | GV_AREA;
 
@@ -872,7 +874,7 @@ void QgsGrassModuleInput::updateQgisLayers()
 	    // TODO add map() mapset() location() gisbase() to grass provider
 	    QString source = QDir::cleanDirPath ( provider->getDataSourceUri() );
 
-	    char sep = QDir::separator();
+	    QChar sep = QDir::separator();
 	    
 	    // Check GISBASE and LOCATION
 	    QStringList split = QStringList::split ( sep, source );
@@ -886,7 +888,7 @@ void QgsGrassModuleInput::updateQgisLayers()
 	    QString mapset = split.last();
 	    split.pop_back(); // mapset
 	    
-	    QDir locDir ( sep + split.join ( QChar(sep) ) ) ;
+	    QDir locDir ( sep + split.join ( QString(sep) ) ) ;
 	    QString loc = locDir.canonicalPath();
 
 	    QDir curlocDir ( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );
@@ -917,7 +919,7 @@ void QgsGrassModuleInput::updateQgisLayers()
 	    // Check if it is GRASS raster
 	    QString source = QDir::cleanDirPath ( layer->source() ); 
 
-	    char sep = QDir::separator();
+	    QChar sep = QDir::separator();
 	    if ( source.contains( "cellhd" ) == 0 ) continue;
 	    
 	    // Most probably GRASS layer, check GISBASE and LOCATION
@@ -933,7 +935,7 @@ void QgsGrassModuleInput::updateQgisLayers()
 	    QString mapset = split.last();
 	    split.pop_back(); // mapset
 	    
-	    QDir locDir ( sep + split.join ( QChar(sep) ) ) ;
+	    QDir locDir ( sep + split.join ( QString(sep) ) ) ;
 	    QString loc = locDir.canonicalPath();
 
 	    QDir curlocDir ( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );

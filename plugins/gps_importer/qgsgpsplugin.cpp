@@ -41,6 +41,7 @@
 #include <qprogressdialog.h>
 #include <qsettings.h>
 #include <qstringlist.h>
+#include <qglobal.h>
 
 //non qt includes
 #include <cassert>
@@ -107,8 +108,12 @@ void QgsGPSPlugin::initGui()
   pluginMenu->setWhatsThis(mMenuIdGPX, "Creates a new GPX layer and displays it on the map canvas");
 
   // add an action to the toolbar
+#if QT_VERSION < 0x040000
   mQActionPointer = new QAction("Gps Tools", QIconSet(icon), "&Wmi",0, 
 				this, "run");
+#else
+  mQActionPointer = new QAction(QIcon(icon), "Gps Tools", this);
+#endif
   mQActionPointer->setWhatsThis( "Creates a new GPX layer and displays it on the map canvas");
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   mQGisInterface->addToolBarIcon(mQActionPointer);
@@ -267,7 +272,11 @@ void QgsGPSPlugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer
 				 NULL, 0, true);
   progressDialog.show();
   for (int i = 0; babelProcess.isRunning(); ++i) {
+#if QT_VERSION < 0x040000
     QApplication::eventLoop()->processEvents(0);
+#else
+    QCoreApplication::processEvents();
+#endif
     progressDialog.setProgress(i/64);
     if (progressDialog.wasCancelled())
       return;
@@ -340,7 +349,11 @@ void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
 				 NULL, 0, true);
   progressDialog.show();
   for (int i = 0; babelProcess.isRunning(); ++i) {
+#if QT_VERSION < 0x040000
     QApplication::eventLoop()->processEvents(0);
+#else
+    QCoreApplication::processEvents();
+#endif
     progressDialog.setProgress(i/64);
     if (progressDialog.wasCancelled())
       return;
@@ -395,7 +408,7 @@ void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
     features = "tracks";
   }
   else {
-    std::cerr<<source.right(8)<<std::endl;
+    std::cerr << source.right(8).local8Bit() << std::endl;
     assert(false);
   }
   
@@ -421,7 +434,11 @@ void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
 				 NULL, 0, true);
   progressDialog.show();
   for (int i = 0; babelProcess.isRunning(); ++i) {
+#if QT_VERSION < 0x040000
     QApplication::eventLoop()->processEvents(0);
+#else
+    QCoreApplication::processEvents();
+#endif
     progressDialog.setProgress(i/64);
     if (progressDialog.wasCancelled())
       return;

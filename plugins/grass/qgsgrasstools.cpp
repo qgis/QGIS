@@ -127,7 +127,7 @@ void QgsGrassTools::moduleClicked( QListViewItem * item )
 bool QgsGrassTools::loadConfig(QString filePath)
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrassTools::loadConfig(): " << filePath << std::endl;
+    std::cerr << "QgsGrassTools::loadConfig(): " << filePath.local8Bit() << std::endl;
     #endif
     mModulesListView->clear();
 
@@ -148,7 +148,7 @@ bool QgsGrassTools::loadConfig(QString filePath)
     if ( !doc.setContent( &file,  &err, &line, &column ) ) {
 	QString errmsg = "Cannot read config file (" + filePath + "):\n" + err + "\nat line "  
 	                 + QString::number(line) + " column " + QString::number(column);
-	std::cerr << errmsg << std::endl;
+	std::cerr << errmsg.local8Bit() << std::endl;
 	QMessageBox::warning( 0, "Warning", errmsg );
 	file.close();
 	return false;
@@ -195,7 +195,7 @@ void QgsGrassTools::addModules (  QListViewItem *parent, QDomElement &element )
 
 	    if ( e.tagName() == "section" ) {
 		QString label = e.attribute("label");
-	        std::cout << "label = " << label << std::endl;
+	        std::cout << "label = " << label.local8Bit() << std::endl;
 		item->setText( 0, label );
 		item->setOpen(true); // for debuging to spare one click
 
@@ -204,7 +204,7 @@ void QgsGrassTools::addModules (  QListViewItem *parent, QDomElement &element )
 		lastItem = item;
 	    } else if ( e.tagName() == "grass" ) { // GRASS module
 		QString name = e.attribute("name");
-	        std::cout << "name = " << name << std::endl;
+	        std::cout << "name = " << name.local8Bit() << std::endl;
 
                 QString path = mAppDir + "/share/qgis/grass/modules/" + name;
                 QString label = QgsGrassModule::label ( path );
