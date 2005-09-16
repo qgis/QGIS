@@ -16,7 +16,7 @@ GraticuleCreator::GraticuleCreator(QString theOutputFileName,
                                    double theYEndPointDouble
                                    )
 {
-    std::cout << "GraticuleCreator constructor called with " << theOutputFileName
+    std::cout << "GraticuleCreator constructor called with " << theOutputFileName.local8Bit()
     << " for output file and " << theXIntervalDouble << "," << theYIntervalDouble << " for x,y interval " << std::endl;
     DBFHandle myDbfHandle;    /* handle for dBase file */
     SHPHandle myShapeHandle;    /* handle for shape files .shx and .shp */
@@ -73,18 +73,18 @@ void GraticuleCreator::writeDbfRecord (DBFHandle theDbfHandle, int theRecordIdIn
 {
 
   
-    std::cerr << "writeDbfRecord : " << theRecordIdInt << " - " << theLabel;
+    std::cerr << "writeDbfRecord : " << theRecordIdInt << " - " << theLabel.local8Bit();
     if (! DBFWriteIntegerAttribute(theDbfHandle, theRecordIdInt, 0, theRecordIdInt))
     {
         std::cerr <<  "DBFWriteIntegerAttribute failed. : " <<  theRecordIdInt << " - " << theRecordIdInt << std::endl;
 
         //exit(ERR_DBFWRITEINTEGERATTRIBUTE);
     }
-    if (theLabel != NULL)
+    if (!theLabel.isNull())
     {
       if (! DBFWriteStringAttribute(theDbfHandle, theRecordIdInt, 1, theLabel))
       {
-        std::cerr <<  "DBFWriteStringAttribute failed. : " <<  theRecordIdInt << " - " << theLabel <<std::endl;
+        std::cerr <<  "DBFWriteStringAttribute failed. : " <<  theRecordIdInt << " - " << theLabel.local8Bit() <<std::endl;
         //exit(ERR_DBFWRITEINTEGERATTRIBUTE);
       }
       std::cerr << " - OK! " << std::endl;
@@ -100,7 +100,7 @@ void  GraticuleCreator::writeProjectionFile(QString theFileName )
   std::ofstream of(theFileName);
   if(!of.fail())
   {
-    of << GEOWKT
+    of << GEOWKT.local8Bit()
       << std::endl; 
     of.close();
 
@@ -236,7 +236,7 @@ void GraticuleCreator::generatePoints (QString theInputFileName, DBFHandle theDb
                 double x=myLongQString.toDouble();
                 double y=myLatQString.toDouble();
                 //create the dbf and shape recs
-                std::cerr << "Writing record: " << myDateQString << " - " << x << " - " << y << std::endl;
+                std::cerr << "Writing record: " << myDateQString.local8Bit() << " - " << x << " - " << y << std::endl;
                 writeDbfRecord(theDbfHandle, myRecordInt, myDateQString);
                 writePoint(theShapeHandle, myRecordInt, x, y);
                 myRecordInt++;

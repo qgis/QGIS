@@ -47,6 +47,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include <qspinbox.h>
 #include <qcolor.h>
 #include <qcolordialog.h>
+#include <qglobal.h>
 
 //non qt includes
 #include <iostream>
@@ -105,7 +106,11 @@ void QgsScaleBarPlugin::initGui()
   pluginMenu->setWhatsThis(menuId, "Creates a scale bar that is displayed on the map canvas");
 
   // Create the action for tool
+#if QT_VERSION < 0x040000
   myQActionPointer = new QAction("Scale Bar", QIconSet(icon), "&Wmi",0, this, "run");
+#else
+  myQActionPointer = new QAction(QIcon(icon), "Scale Bar", this);
+#endif
   myQActionPointer->setWhatsThis("Creates a scale bar that is displayed on the map canvas");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));

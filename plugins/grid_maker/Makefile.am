@@ -25,11 +25,27 @@ bin_PROGRAMS = gridmaker
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui
+if HAVE_QT3
+%.uic.h: %.ui 
 	$(UIC) -o $@ $<
+endif
 
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
+if HAVE_QT4
+%.uic.h: %.ui 
+	$(UIC) -o $@ $<
+	../../tools/qgis-qt3to4.pl -uic $@
+endif
+
+if !NO_UIC_IMPLEMENTATIONS
+%.uic.cpp: %.ui
+	$(UIC) -o $@ -impl $*.uic.h $<
+endif
+
+# %.h: %.ui
+# 	$(UIC) -o $@ $<
+#
+# %.cpp: %.ui
+# 	$(UIC) -o $@ -impl $*.h $<
 
 ##
 ##  For plugin lib
@@ -51,13 +67,13 @@ plugin_MOC = plugin.moc.cpp \
 	plugingui.moc.cpp \
 	pluginguibase.moc.cpp
 
-plugin_UI = pluginguibase.h \
-	    pluginguibase.cpp 
+plugin_UI = pluginguibase.uic.h \
+	    pluginguibase.uic.cpp 
 
 plugin_UIC = pluginguibase.ui
 
 # UI dependencies      
-pluginguibase.cpp: pluginguibase.h pluginguibase.ui
+pluginguibase.uic.cpp: pluginguibase.uic.h pluginguibase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
@@ -88,15 +104,15 @@ gridmaker_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PKGDATAPATH)
 standalone_MOC = plugingui.moc.cpp \
 	     pluginguibase.moc.cpp 
 
-standalone_UI = pluginguibase.h \
-	    pluginguibase.cpp 
+standalone_UI = pluginguibase.uic.h \
+	    pluginguibase.uic.cpp 
 
 ## 
 ## Anything that must go in the tarball gets added here
 ##
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm \
-pluginguibase.h \
+pluginguibase.uic.h \
 pluginguibase.ui.h \
 plugingui.h \
 plugin.h \

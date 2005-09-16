@@ -149,11 +149,11 @@ QString QgsShapeFile::getFeatureClass(){
       */
       //geom_type = QString(geom->getGeometryName());
       //geom_type = "GEOMETRY";
-      std::cerr << "Preparing to escape " << geom_type << std::endl; 
+      std::cerr << "Preparing to escape " << geom_type.local8Bit() << std::endl; 
       char * esc_str = new char[geom_type.length()*2+1];
       PQescapeString(esc_str, (const char *)geom_type, geom_type.length());
       geom_type = QString(esc_str);
-      std::cerr << "After escaping, geom_type is : " << geom_type << std::endl;  
+      std::cerr << "After escaping, geom_type is : " << geom_type.local8Bit() << std::endl;  
       delete[] esc_str;
       
       QString file(filename);
@@ -257,19 +257,19 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
     if(!column_names[n][0].isLetter())
       result = false;
     char * esc_str = new char[column_names[n].length()*2+1];
-    std::cerr << "Escaping " << column_names[n] << " to ";
+    std::cerr << "Escaping " << column_names[n].local8Bit() << " to ";
     PQescapeString(esc_str, (const char *)column_names[n].lower(), column_names[n].length());
     std::cerr << esc_str << std::endl; 
     query += esc_str;
-    std::cerr << query << std::endl; 
+    std::cerr << query.local8Bit() << std::endl; 
     query += " ";
-    std::cerr << query << std::endl; 
+    std::cerr << query.local8Bit() << std::endl; 
     query += column_types[n];
-    std::cerr << query << std::endl; 
+    std::cerr << query.local8Bit() << std::endl; 
     if(n<column_names.size()-1)
     {
       query += ", ";
-      std::cerr << query << std::endl; 
+      std::cerr << query.local8Bit() << std::endl; 
     }
     delete[] esc_str;
   }

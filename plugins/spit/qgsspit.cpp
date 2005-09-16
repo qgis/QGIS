@@ -533,7 +533,7 @@ void QgsSpit::import()
 
       for ( int k = 1; k < names_copy.size(); k++ )
       {
-        std::cerr << "USING :" << names_copy[ k ] << " index " << k << std::endl;
+        std::cerr << "USING :" << names_copy[ k ].local8Bit() << " index " << k << std::endl;
         qWarning( "Checking to see if " + names_copy[ k ] + " == " + names_copy[ k - 1 ] );
         if ( names_copy[ k ] == names_copy[ k - 1 ] )
           dupl += names_copy[ k ] + "\n";
@@ -634,7 +634,10 @@ void QgsSpit::import()
                                        QMessageBox::Warning,
                                        QMessageBox::Yes | QMessageBox::Default,
                                        QMessageBox::No | QMessageBox::Escape,
-                                       QMessageBox::NoButton, this, tr("Relation Exists") );
+                                       QMessageBox::NoButton, 
+                                       this
+//                                       tr("Relation Exists") 
+                                     );
 
         if ( del_confirm->exec() == QMessageBox::Yes )
         {

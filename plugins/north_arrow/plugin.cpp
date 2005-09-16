@@ -42,6 +42,7 @@ email                : tim@linfiniti.com
 #include <qpicture.h>
 #include <qpointarray.h>
 #include <qpaintdevicemetrics.h>
+#include <qglobal.h>
 
 //non qt includes
 #include <iostream>
@@ -104,7 +105,11 @@ void QgsNorthArrowPlugin::initGui()
   pluginMenu->setWhatsThis(menuId, "Creates a north arrow that is displayed on the map canvas");
 
   // Create the action for tool
+#if QT_VERSION < 0x040000
   myQActionPointer = new QAction("North Arrow", QIconSet(icon), "&Wmi",0, this, "run");
+#else
+  myQActionPointer = new QAction(QIcon(icon), "North Arrow", this);
+#endif
   myQActionPointer->setWhatsThis("Creates a north arrow that is displayed on the map canvas");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
@@ -212,7 +217,7 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
       int myWidth = myMetrics.width();
 
 #ifdef QGISDEBUG
-      std::cout << "Rendering n-arrow at " << mPlacement << std::endl;
+      std::cout << "Rendering n-arrow at " << mPlacement.local8Bit() << std::endl;
 #endif
       //Determine placement of label from form combo box
       if (mPlacement==tr("Bottom Left"))

@@ -31,6 +31,8 @@
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
+#include <qglobal.h>
+
 #include "qgsspitplugin.h"
 #include "qgsspit.h"
 // xpm for creating the toolbar icon
@@ -81,6 +83,7 @@ void QgsSpitPlugin::initGui()
         "The schema and field names can be customized on import"); 
 
      // Create the action for tool
+#if QT_VERSION < 0x040000
     spitAction = new QAction("Import Shapefiles to PostgreSQL", QIconSet(spitIcon), "&SPIT",
                                               0, this, "spit");
     spitAction->setWhatsThis("Import shapefiles into a PostGIS-enabled PostgreSQL database. "
@@ -88,7 +91,10 @@ void QgsSpitPlugin::initGui()
     // Connect the action to the spit slot
     connect(spitAction, SIGNAL(activated()), this, SLOT(spit()));
      // Add the icon to the toolbar
-  qI->addToolBarIcon(spitAction); 
+    qI->addToolBarIcon(spitAction); 
+#else
+// TODO: Refactor QAction for Qt4 use
+#endif
 
 }
 
