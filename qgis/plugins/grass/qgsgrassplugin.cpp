@@ -38,6 +38,7 @@
 #include <qfileinfo.h>
 #include <qsettings.h>
 #include <qregexp.h>
+#include <qglobal.h>
 
 //non qt includes
 #include <iostream>
@@ -183,27 +184,60 @@ void QgsGrassPlugin::initGui()
   mCanvas = qGisInterface->getMapCanvas();
 
   // Create the action for tool
+#if QT_VERSION < 0x040000
   QAction *addVectorAction = new QAction("Add GRASS vector layer", QIconSet(icon_add_vector), 
       "Add GRASS vector layer",0, this, "addVector");
+#else
+  QAction *addVectorAction = new QAction(QIcon(icon_add_vector),
+      "Add GRASS vector layer", this);
+#endif
   addVectorAction->setWhatsThis("Adds a GRASS vector layer to the map canvas");
+
+#if QT_VERSION < 0x040000
   QAction *addRasterAction = new QAction("Add GRASS raster layer", QIconSet(icon_add_raster), 
       "Add GRASS raster layer",0, this, "addRaster");
+#else
+  QAction *addRasterAction = new QAction(QIcon(icon_add_raster),
+      "Add GRASS raster layer", this);
+#endif
   addRasterAction->setWhatsThis("Adds a GRASS raster layer to the map canvas");
 
+#if QT_VERSION < 0x040000
   QAction *openToolsAction = new QAction("Open GRASS tools", QIconSet(icon_grass_tools), 
       "Open GRASS tools",0, this, "openTools");
+#else
+  QAction *openToolsAction = new QAction(QIcon(icon_grass_tools),
+      "Open GRASS tools", this);
+#endif
   addRasterAction->setWhatsThis("Open GRASS tools");
 
-
+#if QT_VERSION < 0x040000
   mRegionAction = new QAction("Display Current Grass Region", QIconSet(icon_grass_region), 
       "Display Current Grass Region",0, this, "region", true);
+#else
+  mRegionAction = new QAction(QIcon(icon_grass_region),
+      "Display Current Grass Region", this);
+#endif
   mRegionAction->setWhatsThis("Displays the current GRASS region as a rectangle on the map canvas");
+
+#if QT_VERSION < 0x040000
   QAction *editRegionAction = new QAction("Edit Current Grass Region", QIconSet(icon_grass_region_edit), 
       "Edit Current Grass Region",0, this, "editRegion");
+#else
+  QAction *editRegionAction = new QAction(QIcon(icon_grass_region_edit),
+      "Edit Current Grass Region", this);
+#endif
   editRegionAction->setWhatsThis("Edit the current GRASS region");
+
+#if QT_VERSION < 0x040000
   QAction *editAction = new QAction("Edit Grass Vector layer", QIconSet(icon_grass_edit), 
       "Edit Grass Vector layer",0, this, "edit");
+#else
+  QAction *editAction = new QAction(QIcon(icon_grass_edit),
+      "Edit Grass Vector layer", this);
+#endif
   editAction->setWhatsThis("Edit the currently selected GRASS vector layer.");
+
   if ( !QgsGrass::activeMode() )  {
     openToolsAction->setEnabled(false);
     mRegionAction->setEnabled(false);
@@ -285,7 +319,7 @@ void QgsGrassPlugin::addVector()
     uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + sel->map + "/" + sel->layer;
   }
 #ifdef QGISDEBUG
-  std::cerr << "plugin URI: " << uri << std::endl;
+  std::cerr << "plugin URI: " << uri.local8Bit() << std::endl;
 #endif
   if ( uri.length() == 0 ) {
     std::cerr << "Nothing was selected" << std::endl;
@@ -347,7 +381,7 @@ void QgsGrassPlugin::addVector()
 
       Vect_close ( &map );
     } else {
-      std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage() << std::endl;
+      std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage().local8Bit() << std::endl;
     }
 
     qGisInterface->addVectorLayer( uri, name, "grass");
@@ -373,7 +407,7 @@ void QgsGrassPlugin::addRaster()
     uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + element + "/" + sel->map;
   }
 #ifdef QGISDEBUG
-  std::cerr << "plugin URI: " << uri << std::endl;
+  std::cerr << "plugin URI: " << uri.local8Bit() << std::endl;
 #endif
   if ( uri.length() == 0 ) {
     std::cerr << "Nothing was selected" << std::endl;

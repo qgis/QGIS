@@ -38,6 +38,7 @@
 #include <qcolordialog.h>
 #include <qtable.h>
 #include <qstatusbar.h>
+#include <qglobal.h>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsmapcanvas.h"
@@ -86,7 +87,7 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
     return;
   }
 
-  std::cerr << "layer name: " << layer->name() << std::endl;
+  std::cerr << "layer name: " << layer->name().local8Bit() << std::endl;
 
   if ( layer->type() != QgsMapLayer::VECTOR ) {
     std::cerr << "The selected layer is not vector." << std::endl;
@@ -97,7 +98,7 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
   //TODO dynamic_cast ?
   QgsVectorLayer *vector = (QgsVectorLayer*)layer;
 
-  std::cerr << "Vector layer type: " << vector->providerType() << std::endl;
+  std::cerr << "Vector layer type: " << vector->providerType().local8Bit() << std::endl;
 
   if ( vector->providerType() != "grass" ) {
     QMessageBox::warning( 0, "Warning", "The selected vector is not in GRASS format." );
@@ -113,7 +114,7 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
     return;
   }
 
-  std::cerr << "Vector layer type: " << vector->providerType() << std::endl;
+  std::cerr << "Vector layer type: " << vector->providerType().local8Bit() << std::endl;
   if ( !(mProvider->startEdit()) ) {
     QMessageBox::warning( 0, "Warning", "Cannot open vector for update." );
     return;
@@ -1531,10 +1532,10 @@ void QgsGrassEdit::addAttributes ( int field, int cat )
         for ( int j = 0; j < cols->size(); j++ ) {
           QgsField col = (*cols)[j];
           QgsFeatureAttribute att = (*atts)[j];
-          std::cerr << " name = " << col.name() <<  std::endl;
+          std::cerr << " name = " << col.name().local8Bit() <<  std::endl;
 
           if ( col.name() != *key ) {
-            std::cerr << " value = " << att.fieldValue() <<  std::endl;
+            std::cerr << " value = " << att.fieldValue().local8Bit() <<  std::endl;
             mAttributes->addAttribute ( tab, col.name(), att.fieldValue(), col.type() );
           }
         }
@@ -1911,6 +1912,7 @@ void QgsGrassEdit::displayLastDynamic ( void )
   std::cerr << "QgsGrassEdit::displayLastDynamic" << std::endl;
 #endif
 
+#if QT_VERSION < 0x040000
   QPainter myPainter;
   myPainter.begin(mPixmap);
 
@@ -1936,6 +1938,10 @@ void QgsGrassEdit::displayLastDynamic ( void )
   }
 
   myPainter.end();
+#else
+// TODO: Qt4 uses QRubberBand, need to refactor.
+#endif
+
 }
 
 void QgsGrassEdit::displayNode ( int node, const QPen & pen, int size, QPainter *painter )
