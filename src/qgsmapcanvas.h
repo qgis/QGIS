@@ -146,11 +146,6 @@ class QgsMapCanvas : public QWidget
     //! Return the state of the canvas (dirty or not)
     bool isDirty() const;
 
-    //! accessor for mIsOverviewCanvas member
-    bool isOverviewCanvas();
-    //! mutator for mIsOverviewCanvas member
-    void setIsOverviewCanvas(bool theFlag) { mIsOverviewCanvas = theFlag; };
-
     //! Calculate the scale and return as a string
     void currentScale(int thePrecision);
 
@@ -182,12 +177,14 @@ class QgsMapCanvas : public QWidget
 
     //! true if canvas currently drawing
     bool isDrawing();
+
+  
 public slots:
 
     /*! Adds a layer to the map canvas.
      * @param lyr Pointer to a layer derived from QgsMapLayer
      */
-    void addLayer(QgsMapLayer * lyr);
+    virtual void addLayer(QgsMapLayer * lyr);
 
     /*! \brief Add a layer from a map layer interface defined in a plugin.
       @note
@@ -234,7 +231,7 @@ public slots:
     // to the pmCanvas (ie the gui map display). The idea is that you can pass
     // an alternative device such as one that will be used for printing or
     // saving a map view as an image file.
-    void render(QPaintDevice * theQPaintDevice=0);
+    virtual void render(QPaintDevice * theQPaintDevice=0);
 
     //! Save the convtents of the map canvas to disk as an image
     void saveAsImage(QString theFileName,QPixmap * QPixmap=0, QString="PNG" );
@@ -245,28 +242,10 @@ public slots:
     //! sets z order based on order of layers in the legend
     void setZOrderFromLegend(QgsLegend *lv);
 
-    //! determines whether the user can interact with the overview canvas.
-    void userInteractionAllowed(bool);
-    //! accessor to flag indicating whether the user can interact with the canvase
-    bool isUserInteractionAllowed();
-
     //! Whether to suppress rendering or not
     void setRenderFlag(bool theFlag);
     //! State of render suppression flag
     bool renderFlag() {return mRenderFlag;};
-
-    /** possibly add or remove the given layer from the overview map canvas
-
-      @note
-
-      Yes, of the two canvas instances, this slot is relevant only to the
-      overview map canvas, and thus is a hint that they should be two separate
-      classes.
-
-      @param maplayer is layer to be possibly added or removed from overview canvas
-      @param b is true if visible in over view
-     */
-    void showInOverview( QgsMapLayer * maplayer, bool visible );
 
     /**
     Recalculate the full extent for the map canvas. This slot is connected to
@@ -280,7 +259,7 @@ public slots:
 
     /** A simple helper method to find out if on the fly projections are enabled or not */
     bool projectionsEnabled();
-
+    
 signals:
     /** Let the owner know how far we are with render operations */
     void setProgress(int,int);
@@ -324,7 +303,7 @@ signals:
      *  QgisApp should catch it and reset tool to the last non zoom tool */
     void stopZoom();
 
-private:
+protected:
     /// this class is non-copyable
     /**
        @note
@@ -398,15 +377,12 @@ private:
     //! Zooms to a given center and scale 
     void zoomByScale(int x, int y, double scaleFactor);
 
-    //! detrmines whether the user can interact with the canvas using a mouse
-    //(useful for locking the overview canvas)
-    bool mUserInteractionAllowed;
-
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag;
-
+    
     //! lets us know whether this canvas is being used as an overview canvas or note
     bool mIsOverviewCanvas;
+    
   /** debugging member
       invoked when a connect() is made to this object
   */
@@ -420,5 +396,6 @@ private:
     static const double scaleDefaultMultiple;
 
 }; // class QgsMapCanvas
+
 
 #endif

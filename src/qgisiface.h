@@ -19,8 +19,8 @@
 #ifndef QGISIFACE_H
 #define QGISIFACE_H
 #include "qgisinterface.h"
-#include "qgsmapcanvas.h"
 
+class QgsMapCanvas;
 class QgsMapLayer;
 /** \class QgisIface
  * \brief Interface class to provide access to private methods in QgisApp

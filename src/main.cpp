@@ -505,7 +505,7 @@ int main(int argc, char *argv[])
     {
        // set extent from parsed values
        QgsRect rect(coords[0],coords[1],coords[2],coords[3]);
-       qgis->getMapCanvas()->setExtent(rect);
+       qgis->setExtent(rect);
     }
   }
  

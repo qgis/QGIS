@@ -36,6 +36,7 @@
 #include "qgslegendsymbologygroup.h"
 #include "qgslegendlayerfile.h"
 #include "qgslegendlayerfilegroup.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayerproperties.h"
