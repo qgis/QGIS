@@ -2802,11 +2802,18 @@ void QgsVectorLayer::refreshLegend()
 bool QgsVectorLayer::copySymbologySettings(const QgsMapLayer& other)
 {
     const QgsVectorLayer* vl = dynamic_cast<const QgsVectorLayer*>(&other);
+
+    if(this == vl)//exit if both vectorlayer are the same
+    {
+	return false;
+    }
+
     if(!vl)
     {
 	return false;
     }
     delete m_renderer;
+    
     QgsRenderer* r = vl->m_renderer;
     if(r)
     {
