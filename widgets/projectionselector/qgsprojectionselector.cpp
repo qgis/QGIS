@@ -439,7 +439,7 @@ void QgsProjectionSelector::getProjList()
     QListViewItem *newItem;
     // set up the progress dialog
     int myProgress = 1;
-    QProgressDialog myProgressBar( "Building Projections List...", 0, myEntriesCount,
+    QProgressDialog myProgressBar( tr("Building Projections List..."), 0, myEntriesCount,
                                    this, "progress", TRUE );
     // set initial value to 1
     myProgressBar.setProgress(myProgress);
