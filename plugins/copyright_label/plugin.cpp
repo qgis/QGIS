@@ -26,7 +26,7 @@ email                : tim@linfiniti.com
 #include <qgsmaplayer.h>
 #include "plugin.h"
 #include <qgsproject.h>
-
+#include <qgsmapcanvas.h>
 
 #include <qtoolbar.h>
 #include <qmenubar.h>

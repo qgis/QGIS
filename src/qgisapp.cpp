@@ -85,6 +85,7 @@ using namespace std;
 #include "qgsencodingfiledialog.h"
 #include "qgsrect.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapoverviewcanvas.h"
 #include "qgsacetaterectangle.h"
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
@@ -376,15 +377,6 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     mMapLegend->setSorting(-1);
     QWhatsThis::add(mMapLegend, tr("Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties."));
 
-    // "theOverviewCanvas" used to find canonical
-    // instance later
-    mOverviewCanvas = new QgsMapCanvas(legendOverviewSplit, "theOverviewCanvas");
-    QWhatsThis::add(mOverviewCanvas, tr("Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas."));
-    //tell the overview canvas it is an overview canvas so it will suppress labels etc
-    mOverviewCanvas->setIsOverviewCanvas(true);
-    // lock the canvas to prevent user interaction
-    mOverviewCanvas->userInteractionAllowed(false);
-
     // mL = new QScrollView(canvasLegendSplit);
 
     // add a canvas
@@ -400,6 +392,11 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     mMapCanvas->setBackgroundColor(Qt::white); //QColor (220, 235, 255));
     mMapCanvas->setMinimumWidth(400);
     canvasLegendLayout->addWidget(canvasLegendSplit, 0, 0);
+
+    // overview canvas
+    mOverviewCanvas = new QgsMapOverviewCanvas(legendOverviewSplit, mMapCanvas);
+    QWhatsThis::add(mOverviewCanvas, tr("Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas."));
+
 
     mMapLegend->setBackgroundColor(QColor(192, 192, 192));
     mMapLegend->setMapCanvas(mMapCanvas);
@@ -4414,21 +4411,23 @@ void QgisApp::showExtents(QgsRect theExtents)
 {
     // update the statusbar with the current extents.
     statusBar()->message(QString(tr("Extents: ")) + theExtents.stringRep(true));
-    // set the extents of the overview to match the mapcanvas
-    mOverviewCanvas->setExtent(mMapCanvas->fullExtent());
-    // Update the extent rectangle in the overview map
-    QgsPoint origin(0,0);
-    // create the new acetate object
-    QgsAcetateRectangle *acRect = new QgsAcetateRectangle(origin, mMapCanvas->extent());
-    // add it to the acetate layer
-    mOverviewCanvas->addAcetateObject("extent", acRect);
-    // refresh the overview map
+    
+    if (mOverviewCanvas->extent() != mMapCanvas->fullExtent())
+    {
 #ifdef QGISDEBUG
-
-    std::cerr << "Adding extent to acetate layer" << std::endl;
+  std::cout << "showExtents: " << std::endl << "  full: " << mMapCanvas->fullExtent() << std::endl <<
+          "  over: " << mOverviewCanvas->extent() << std::endl;
 #endif
-
-    mOverviewCanvas->refresh();
+         
+      // set the extents of the overview to match the mapcanvas
+      mOverviewCanvas->setExtent(mMapCanvas->fullExtent());
+      // refresh the overview map
+      mOverviewCanvas->clear();
+      mOverviewCanvas->render();
+    }
+    
+    // update panning widget in overview
+    mOverviewCanvas->reflectChangedExtent();
 
 } // QgisApp::showExtents
 
@@ -4534,6 +4533,9 @@ void QgisApp::projectProperties()
   //pass any refresg signals off to canvases
   connect (pp,SIGNAL(refresh()), mMapCanvas, SLOT(refresh()));
   connect (pp,SIGNAL(refresh()), mOverviewCanvas, SLOT(refresh()));
+  
+  bool wasProjected = pp->isProjected();
+  
   // Display the modal dialog box.
   pp->exec();
 
@@ -4543,9 +4545,9 @@ void QgisApp::projectProperties()
     mMapCanvas->setMapUnits(pp->mapUnits());
   }
 
-  // If the canvas is projected, we need to recalculate the extents in the
+  // If the canvas projection settings changed, we need to recalculate the extents in the
   // new coordinate system
-  if(pp->isProjected())
+  if(pp->isProjected() != wasProjected)
   {
     mMapCanvas->recalculateExtents();
   }
@@ -4773,10 +4775,10 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
     }
 
     //mOverviewCanvas->render();
-    mOverviewCanvas->zoomFullExtent();
+    //mOverviewCanvas->zoomFullExtent();
     // set the extents of the overview to match the mapcanvas
     mOverviewCanvas->setExtent(mMapCanvas->fullExtent());
-    //mOverviewCanvas->refresh();
+    mOverviewCanvas->refresh();
 
     // notify the project we've made a change
     QgsProject::instance()->dirty(true);

@@ -144,7 +144,7 @@ void QgsRect::combineExtentWith(QgsRect * rect)
 }
 
 
-bool QgsRect::isEmpty()
+bool QgsRect::isEmpty() const
 {
   if (xmax <= xmin || ymax <= ymin)
   {
@@ -228,12 +228,18 @@ QString QgsRect::asPolygon() const
 } // QgsRect::asPolygon() const
 
 
-bool QgsRect::operator==(const QgsRect & r1)
+bool QgsRect::operator==(const QgsRect & r1) const
 {
   return (r1.xMax() == xMax() && 
           r1.xMin() == xMin() && 
           r1.yMax() == yMax() && 
           r1.yMin() == yMin());
+}
+
+
+bool QgsRect::operator!=(const QgsRect & r1) const
+{
+  return ( ! operator==(r1));
 }
 
 

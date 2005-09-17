@@ -239,6 +239,8 @@ void QgsDbSourceSelect::dbConnect()
       QPixmap pxLine(line_layer_xpm);
       QPixmap pxPoly(polygon_layer_xpm);
       //qDebug("Connection succeeded");
+      // tell the DB that we want text encoded in UTF8
+      PQsetClientEncoding(pd, "UNICODE");
 
       // clear the existing entries
       lstTables->clear();

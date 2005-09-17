@@ -27,6 +27,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include <qgsmaplayer.h>
 #include "plugin.h"
 #include "qgsproject.h"
+#include "qgsmapcanvas.h"
 
 #include <qtoolbar.h>
 #include <qmenubar.h>
