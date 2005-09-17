@@ -134,7 +134,12 @@ QString QgsShapeFile::getFeatureClass(){
   // type. 
   qApp->processEvents();
   isMulti = scanGeometries();
-  OGRFeature *feat = ogrLayer->GetNextFeature();
+  OGRFeature *feat;
+  // skip features without geometry
+  while ((feat = ogrLayer->GetNextFeature()) != NULL) {
+    if (feat->GetGeometryRef())
+      break;
+  }
   if(feat){
     OGRGeometry *geom = feat->GetGeometryRef();
     if(geom){

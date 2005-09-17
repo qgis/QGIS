@@ -32,6 +32,7 @@ using namespace std;
 #include "qgsmaplayerregistry.h"
 #include "qgsexception.h"
 #include "qgsprojectproperty.h"
+#include "qgsmapcanvas.h"
 
 #include <qapplication.h>
 #include <qfileinfo.h>
@@ -909,6 +910,8 @@ static void _setCanvasExtent(QString const &canonicalMapCanvasName,
     // XXX worrisome inconsistency; regardless, unfreeze the canvases to ensure
     // XXX a redraw
     theMapCanvas->freeze(false);
+    
+    theMapCanvas->update();
 
 }                               // _setCanvasExtent()
 
@@ -1092,12 +1095,12 @@ bool QgsProject::read()
          // return false;
     }
 
-    // now restore the extent for the main canvas
-    _setCanvasExtent("theMapCanvas", savedExtent);
-
     // ensure that overview map canvas is set to *entire* extent
     QgsRect mapCanvasFullExtent = _getFullExtent("theMapCanvas");
     _setCanvasExtent("theOverviewCanvas", mapCanvasFullExtent);
+
+    // now restore the extent for the main canvas
+    _setCanvasExtent("theMapCanvas", savedExtent);
 
     if ( ! getMapLayersResults.first )
     {

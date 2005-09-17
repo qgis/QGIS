@@ -23,6 +23,7 @@
 #include "qgisinterface.h"
 #include "qgisapp.h"
 #include "qgsmaplayer.h"
+#include "qgsmapcanvas.h"
 
 QgisIface::QgisIface(QgisApp * _qgis, const char *name):qgis(_qgis)
 {

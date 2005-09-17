@@ -40,6 +40,7 @@ class QSocket;
 class QgsProviderRegistry;
 class QgsHelpViewer;
 class QgsMapCanvas;
+class QgsMapOverviewCanvas;
 class QgsMapLayerRegistry;
 class QgsRasterLayer;
 class QCheckBox;
@@ -485,7 +486,7 @@ private:
     //! Map layer registry
     // use instance() now QgsMapLayerRegistry *mLayerRegistry;
     //! Overview canvas where the map overview is shown
-    QgsMapCanvas * mOverviewCanvas;
+    QgsMapOverviewCanvas * mOverviewCanvas;
     //! Table of contents (legend) for the map
     QgsLegend *mMapLegend;
     QCursor *mMapCursor;

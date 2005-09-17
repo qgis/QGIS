@@ -84,7 +84,7 @@ class QgsRect
     //! expand the rectangle so that covers both the original rectangle and the given rectangle
     void combineExtentWith(QgsRect *rect);
     //! test if rectangle is empty
-    bool isEmpty();
+    bool isEmpty() const;
     //! returns string representation in WKT form
     QString asWKTCoords() const;
     //! returns string representation of form xmin,ymin xmax,ymax
@@ -96,7 +96,11 @@ class QgsRect
     /*! Comparison operator
       @return True if rectangles are equal
     */
-    bool operator==(const QgsRect &r1);
+    bool operator==(const QgsRect &r1) const;
+    /*! Comparison operator
+    @return False if rectangles are equal
+     */
+    bool operator!=(const QgsRect &r1) const;
     /*! Assignment operator
      * @param r1 QgsRect to assign from
      */
