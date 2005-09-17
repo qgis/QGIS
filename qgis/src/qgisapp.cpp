@@ -1986,7 +1986,7 @@ void QgisApp::newVectorLayer()
         writer=new QgsVectorFileWriter(filename,enc,wkbPoint);
         if(!writer->initialise())
         {
-            QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
+            QMessageBox::warning(0,tr("Warning"),tr("Writing of the layer failed"),QMessageBox::Ok,QMessageBox::NoButton);
             return;
         }
     }
@@ -1995,7 +1995,7 @@ void QgisApp::newVectorLayer()
         writer=new QgsVectorFileWriter(filename,enc,wkbLineString);
         if(!writer->initialise())
         {
-            QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
+            QMessageBox::warning(0,tr("Warning"),tr("Writing of the layer failed"),QMessageBox::Ok,QMessageBox::NoButton);
             return;
         }
     }
@@ -2004,7 +2004,7 @@ void QgisApp::newVectorLayer()
         writer=new QgsVectorFileWriter(filename,enc,wkbPolygon);
         if(!writer->initialise())
         {
-            QMessageBox::warning(0,"Warning","Writing of the layer failed",QMessageBox::Ok,QMessageBox::NoButton);
+            QMessageBox::warning(0,tr("Warning"),tr("Writing of the layer failed"),QMessageBox::Ok,QMessageBox::NoButton);
             return;
         }
     }
@@ -2190,7 +2190,7 @@ bool QgisApp::addProject(QString projectFile)
         qDebug( "%s:%d BAD LAYERS FOUND", __FILE__, __LINE__ );
 
         QMessageBox::critical( 0x0, 
-                               "Unable to open project", e.what(), QMessageBox::Ok, 
+                               tr("Unable to open project"), e.what(), QMessageBox::Ok, 
                                QMessageBox::NoButton );
 
         return false;
@@ -2297,7 +2297,7 @@ void QgisApp::fileSave()
     catch ( std::exception & e )
     {
         QMessageBox::critical( 0x0,
-                               "Unable to save project " + QgsProject::instance()->filename(),
+                               tr("Unable to save project ") + QgsProject::instance()->filename(),
                                e.what(),
                                QMessageBox::Ok,
                                QMessageBox::NoButton );
@@ -2498,8 +2498,8 @@ void QgisApp::openProject(const QString & fileName)
         catch ( QgsIOException & io_exception )
         {
             QMessageBox::critical( 0x0, 
-                                   "QGIS: Unable to load project", 
-                                   "Unable to load project " + fileName );
+                                   tr("QGIS: Unable to load project"), 
+                                   tr("Unable to load project ") + fileName );
         }
     }
 }
@@ -2801,8 +2801,8 @@ void QgisApp::exportMapServer()
     }
     else
     {
-        QMessageBox::warning(this, "No Map Layers",
-                             "No layers to export. You must add at least one layer to the map in order to export the view.");
+        QMessageBox::warning(this, tr("No Map Layers"),
+                             tr("No layers to export. You must add at least one layer to the map in order to export the view."));
     }
 }
 void QgisApp::zoomIn()
@@ -4170,8 +4170,8 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
         }
         else
         {
-            QMessageBox::critical(this,"Layer is not valid",
-                                  "The layer is not a valid layer and can not be added to the map");
+            QMessageBox::critical(this,tr("Layer is not valid"),
+                                  tr("The layer is not a valid layer and can not be added to the map"));
         }
         qApp->processEvents();
         mMapCanvas->freeze(false);
@@ -4208,8 +4208,8 @@ void QgisApp::addMapLayer(QgsMapLayer *theMapLayer)
     }
     else
     {
-        QMessageBox::critical(this,"Layer is not valid",
-                              "The layer is not a valid layer and can not be added to the map");
+        QMessageBox::critical(this,tr("Layer is not valid"),
+                              tr("The layer is not a valid layer and can not be added to the map"));
     }
     qApp->processEvents();
     mMapCanvas->freeze(false);
@@ -4263,8 +4263,8 @@ int QgisApp::saveDirty()
         // old code: mProjectIsDirtyFlag = true;
 
         // prompt user to save
-        answer = QMessageBox::information(this, "Save?",
-                                          "Do you want to save the current project?",
+        answer = QMessageBox::information(this, tr("Save?"),
+                                          tr("Do you want to save the current project?"),
                                           QMessageBox::Yes | QMessageBox::Default,
                                           QMessageBox::No,
                                           QMessageBox::Cancel | QMessageBox::Escape);
@@ -4644,10 +4644,10 @@ void QgisApp::setupToolbarPopups(QString themeName)
     tbtnOverviewTools->setIconSet(QIconSet(QPixmap(iconPath + "/add_all_to_overview.png")));
     toolPopupOverviews = new QPopupMenu();
     toolPopupOverviews->insertItem(QIconSet(QPixmap(iconPath + "/add_all_to_overview.png")),
-                                   "Add all layers to the overview map",
+                                   tr("Add all layers to the overview map"),
                                    this, SLOT(addAllToOverview()));
     toolPopupOverviews->insertItem(QIconSet(QPixmap(iconPath + "/remove_all_from_overview.png")),
-                                   "Remove all layers from the overview map",
+                                   tr("Remove all layers from the overview map"),
                                    this, SLOT(removeAllFromOverview()));
     tbtnOverviewTools->setPopup(toolPopupOverviews);
     tbtnOverviewTools->setPopupDelay(0);
@@ -4659,10 +4659,10 @@ void QgisApp::setupToolbarPopups(QString themeName)
     tbtnDisplayTools->setIconSet(QIconSet(QPixmap(iconPath + "/show_all_layers.png")));
     toolPopupDisplay = new QPopupMenu();
     toolPopupDisplay->insertItem(QIconSet(QPixmap(iconPath + "/show_all_layers.png")),
-                                 "Show all layers",
+                                 tr("Show all layers"),
                                  this, SLOT(showAllLayers()));
     toolPopupDisplay->insertItem(QIconSet(QPixmap(iconPath + "/hide_all_layers.png")),
-                                 "Hide all layers",
+                                 tr("Hide all layers"),
                                  this, SLOT(hideAllLayers()));
     tbtnDisplayTools->setPopup(toolPopupDisplay);
     tbtnDisplayTools->setPopupDelay(0);
@@ -4674,16 +4674,16 @@ void QgisApp::setupToolbarPopups(QString themeName)
     tbtnCaptureTools->setIconSet(QIconSet(QPixmap(iconPath + "/digitising_point.png")));
     toolPopupCapture = new QPopupMenu();
     toolPopupCapture->insertItem(QIconSet(QPixmap(iconPath + "/digitising_point.png")),
-                                 "Capture points",
+                                 tr("Capture points"),
                                  this, SLOT(capturePoint()),0,0);
     toolPopupCapture->insertItem(QIconSet(QPixmap(iconPath + "/digitising_line.png")),
-                                 "Capture lines",
+                                 tr("Capture lines"),
                                  this, SLOT(captureLine()),0,1);
     toolPopupCapture->insertItem(QIconSet(QPixmap(iconPath + "/digitising_general.png")),
-                                 "Capture polygons",
+                                tr("Capture polygons"),
                                  this, SLOT(capturePolygon()),0,2);
     toolPopupCapture->insertItem(QIconSet(QPixmap(iconPath + "/delete_selected.png")),
-                                 "Delete selection",
+                                tr("Delete selection"),
                                  this, SLOT(deleteSelected()),0,3);
     tbtnCaptureTools->setPopup(toolPopupCapture);
     tbtnCaptureTools->setPopupDelay(0);
@@ -4795,14 +4795,14 @@ void QgisApp::showCapturePointCoordinate(QgsPoint & theQgsPoint)
     if (myClipboard->supportsSelection())
     {
         myClipboard->setText(theQgsPoint.stringRep(2),QClipboard::Selection);
-        QString myMessage = "Clipboard contents set to: ";
+        QString myMessage = tr("Clipboard contents set to: ");
         statusBar()->message(myMessage + myClipboard->text(QClipboard::Selection));
     }
     else
     {
         //user has an inferior operating system....
         myClipboard->setText(theQgsPoint.stringRep(2),QClipboard::Clipboard );
-        QString myMessage = "Clipboard contents set to: ";
+        QString myMessage = tr("Clipboard contents set to: ");
         statusBar()->message(myMessage + myClipboard->text(QClipboard::Clipboard));
     }
 #ifdef QGISDEBUG
@@ -4974,8 +4974,8 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile, bool guiWarning)
         {
           // don't show the gui warning (probably because we are loading from command line)
           QString msg(rasterFile.baseName(TRUE)
-              + " is not a valid or recognized raster data source");
-          QMessageBox::critical(this, "Invalid Data Source", msg);
+              + tr(" is not a valid or recognized raster data source"));
+          QMessageBox::critical(this, tr("Invalid Data Source"), msg);
         }
         return false;
     }
@@ -5051,8 +5051,8 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList, bool gui
 
             if(guiWarning)
             {
-                QString msg(*myIterator + " is not a supported raster data source");
-                QMessageBox::critical(this, "Unsupported Data Source", msg);
+                QString msg(*myIterator + tr(" is not a supported raster data source"));
+                QMessageBox::critical(this, tr("Unsupported Data Source"), msg);
             }
             returnValue = false;
         }
@@ -5139,8 +5139,8 @@ void QgisApp::actionNewBookmark_activated()
   // the mapcanvas
 
   bool ok;
-  QString bookmarkName = QInputDialog::getText("New Bookmark", 
-      "Enter a name for the new bookmark:", QLineEdit::Normal,
+  QString bookmarkName = QInputDialog::getText(tr("New Bookmark"), 
+      tr("Enter a name for the new bookmark:"), QLineEdit::Normal,
       QString::null, &ok, this);
   if( ok && !bookmarkName.isEmpty())
   {
@@ -5158,7 +5158,7 @@ void QgisApp::actionNewBookmark_activated()
     }
     else
     {
-      QMessageBox::warning(this,"Error", "Unable to create the bookmark. Your user database may be missing or corrupted");
+      QMessageBox::warning(this,tr("Error"), tr("Unable to create the bookmark. Your user database may be missing or corrupted"));
     }
   }
 }      
