@@ -34,8 +34,8 @@
  *   DON'T: separate variable names using underscores: my_variable_name (NO!)
  *
  * **************************************************************************/
-#ifndef [pluginname]
-#define [pluginname]
+#ifndef [pluginsentinel]
+#define [pluginsentinel]
 #include "../qgisplugin.h"
 #include <qwidget.h>
 

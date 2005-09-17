@@ -39,6 +39,9 @@ print "Menu item name: ";
 $menuItemName = <STDIN>;
 chop $menuItemName;
 
+# create the name for the include sentinel in the plugin file
+$pluginSentinel =~ tr/a-z/A-Z/; 
+
 # print a summary of what's about to happen
 print << "EOF";
 
@@ -46,6 +49,7 @@ Summary of plugin parameters:
 ---------------------------------------------
 Plugin directory      $pluginDir
 Name of the plugin:   $pluginName
+Name of the sentinel: $pluginSentinel
 Description of the plugin:   $pluginDescription
 Menu name:            $menuName
 Menu item name:       $menuItemName
@@ -70,6 +74,8 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
   # Substitute the plugin specific vars in the various files
   # This is a brute force approach but its quick and dirty :)
   #
+  # replace [pluginsentinel] in template with the new plugin sentinel name
+  system("perl -pi -e 's/\\\[pluginsentinel\\\]/$pluginSentinel/g' $pluginDir/*.cpp $pluginDir/*.h $pluginDir/*.am $pluginDir/*.ui");
   # replace [pluginname] in template with the new plugin name
   system("perl -pi -e 's/\\\[pluginname\\\]/$pluginName/g' $pluginDir/*.cpp $pluginDir/*.h $pluginDir/*.am $pluginDir/*.ui");
   # replace [plugindescription] in template with the description
@@ -90,7 +96,7 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
       # add our plugin dir to the SUBDIRS line
       chop;
       print MAKEFILEMOD;
-      print MAKEFILEMOD " $pluginDir\n";
+      print MAKEFILEMOD "\\\n $pluginDir\n";
     }else{
       print MAKEFILEMOD;
     }
