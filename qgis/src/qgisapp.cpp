@@ -4529,6 +4529,9 @@ void QgisApp::projectProperties()
   //pass any refresg signals off to canvases
   connect (pp,SIGNAL(refresh()), mMapCanvas, SLOT(refresh()));
   connect (pp,SIGNAL(refresh()), mOverviewCanvas, SLOT(refresh()));
+  
+  bool wasProjected = pp->isProjected();
+  
   // Display the modal dialog box.
   pp->exec();
 
@@ -4538,9 +4541,9 @@ void QgisApp::projectProperties()
     mMapCanvas->setMapUnits(pp->mapUnits());
   }
 
-  // If the canvas is projected, we need to recalculate the extents in the
+  // If the canvas projection settings changed, we need to recalculate the extents in the
   // new coordinate system
-  if(pp->isProjected())
+  if(pp->isProjected() != wasProjected)
   {
     mMapCanvas->recalculateExtents();
   }

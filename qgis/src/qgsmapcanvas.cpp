@@ -2268,19 +2268,7 @@ void QgsMapCanvas::remove
   }
   else
   {
-    std::map < QString, QgsMapLayer * >::iterator mi =
-      mCanvasProperties->layers.begin();
-
-    mCanvasProperties->fullExtent = mi->second->extent();
-    mCanvasProperties->fullExtent.scale(1.1); // XXX why set the scale to this magic
-    // XXX number?
-
-    ++mi;
-
-    for ( ; mi != mCanvasProperties->layers.end(); ++mi )
-    {
-      updateFullExtent(mi->second->extent());
-    }
+    recalculateExtents();
   }
 
   mCanvasProperties->dirty = true;
