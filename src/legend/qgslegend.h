@@ -187,6 +187,10 @@ protected:
   void legendLayerRemoveFromOverview();
   /**Shows the property dialog of the first legend layer file in a legend layer*/
   void legendLayerShowProperties();
+   /**Sets all listview items to open*/
+  void expandAll();
+  /**Sets all listview items to closed*/
+  void collapseAll();
 
 private:
 
