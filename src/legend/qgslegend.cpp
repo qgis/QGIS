@@ -161,7 +161,7 @@ void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
 	{
 	    mItemBeingMoved = item;
 	    mItemBeingMovedOrigPos = getItemPos(mItemBeingMoved);
-	    setCursor(SizeVerCursor);
+	    setCursor(Qt::SizeVerCursor);
 	}
     }
     else if (mItemBeingMoved)

@@ -214,12 +214,12 @@ sub Qt3to4File
 
     if (
         ($filename =~ /qgisapp\.cpp$/) or
-        ($filename =~ /splashscreen\.cpp$/) or
+        ($filename =~ /splashscreen\.cpp$/)
        )
     {
       if ($line =~ /Added by qt3to4\:/)  # Good as place as any to add it
       {
-        $line += "#include <QDesktopWidget>\n";
+        $line .= "#include <QDesktopWidget>\n";
       }
     }
 
@@ -229,7 +229,7 @@ sub Qt3to4File
     {
       if ($line =~ /Qt4-only includes to go here/)  # Good as place as any to add it
       {
-        $line += "#include <QTextOStream>\n";
+        $line .= "#include <QTextOStream>\n";
       }
     }
 
@@ -239,7 +239,7 @@ sub Qt3to4File
     {
       if ($line =~ /Qt4-only includes to go here/)  # Good as place as any to add it
       {
-        $line += "#include <QStringList>\n";
+        $line .= "#include <QStringList>\n";
       }
     }
 
@@ -250,9 +250,9 @@ sub Qt3to4File
 
     if ($filename =~ /qgscontinuouscolrenderer\.cpp$/)
     {
-      $line =~ /Qt\:\:red/red/g;
-      $line =~ /Qt\:\:green/green/g;
-      $line =~ /Qt\:\:blue/blue/g;
+      $line =~ s/Qt\:\:red/red/g;
+      $line =~ s/Qt\:\:green/green/g;
+      $line =~ s/Qt\:\:blue/blue/g;
     }
 
     # End of substitutions

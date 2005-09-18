@@ -46,7 +46,7 @@ void QgsLegendItem::print(QgsLegendItem * theItem)
     while (myIterator.current())
     {
       LEGEND_ITEM_TYPE curtype = dynamic_cast<QgsLegendItem *>(myIterator.current())->type();
-      std::cout << myIterator.current()->text(0) << " - " << curtype << std::endl;
+      std::cout << myIterator.current()->text(0).local8Bit() << " - " << curtype << std::endl;
       if (myIterator.current()->childCount() > 0)
       {
         //print(dynamic_cast<QgsLegendItem *>(myIterator.current()));
