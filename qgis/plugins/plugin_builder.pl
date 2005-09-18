@@ -40,6 +40,7 @@ $menuItemName = <STDIN>;
 chop $menuItemName;
 
 # create the name for the include sentinel in the plugin file
+$pluginSentinel = "QGS" . $pluginName; 
 $pluginSentinel =~ tr/a-z/A-Z/; 
 
 # print a summary of what's about to happen
