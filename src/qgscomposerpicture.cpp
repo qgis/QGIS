@@ -113,7 +113,7 @@ void QgsComposerPicture::init ( void )
 void QgsComposerPicture::loadPicture ( void ) 
 {
 #ifdef QGISDEBUG
-    std::cerr << "QgsComposerPicture::loadPicture() mPicturePath = " << mPicturePath << std::endl;
+    std::cerr << "QgsComposerPicture::loadPicture() mPicturePath = " << mPicturePath.local8Bit() << std::endl;
 #endif
     mPicture = QPicture(); 
     mPictureValid = false;
