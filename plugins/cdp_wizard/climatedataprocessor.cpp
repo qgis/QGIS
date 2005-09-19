@@ -453,9 +453,9 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
        //! @note the assumption is implicit here that the first file in a file series ends in 00 !!!! 
        QString myFileNameBase = myFileName.left(myFileName.length()-2);//e.g. 'somefile00' becomes 'somefile'
 
-        for (int myInt=0; myInt < 11; myInt++)
+        for (int myInt=1; myInt < 13; myInt++)
         {
-            QString myCurrentFileName = myPath+QDir::separator ()+myFileNameBase;
+            QString myCurrentFileName = myPath+QDir::separator()+myFileNameBase;
 
             if (myInt < 10)
             {
