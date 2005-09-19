@@ -2433,8 +2433,12 @@ void QgisApp::openProject(int pathIndex)
 
   if (answer != QMessageBox::Cancel)
   {
+#if QT_VERSION < 0x040000
     QStringList::Iterator it = mRecentProjectPaths.at(pathIndex);
     addProject((*it));
+#else
+    addProject(mRecentProjectPaths.at(pathIndex));
+#endif
   }
   //set the projections enabled icon in the status bar
   int myProjectionEnabledFlag =

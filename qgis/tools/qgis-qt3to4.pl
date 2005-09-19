@@ -75,7 +75,8 @@ sub Qt3to4File
     # Qt4:
     #   QString foo;  foo.toAscii().data();
 
-    $line =~ s/ascii\(\)/toAscii\(\)\.data\(\)/g;
+    # Commented out as we now use "local8Bit" in ostreams and it also breaks QKeyEvent's "ascii()"
+    #$line =~ s/ascii\(\)/toAscii\(\)\.data\(\)/g;
 
     # 1a. Use of QStrings in std::ostream operator<< context
     #
@@ -111,7 +112,9 @@ sub Qt3to4File
     #   QImage foo;
     #   foo.scaled(10,10);
 
-    $line =~ s/\.scale\(/\.scaled\(/g;
+    # Commented out in favour of using Qt version ifdef
+    # since this broke QMatrix.scale()
+    #$line =~ s/\.scale\(/\.scaled\(/g;
 
     # 3. Fix qt3to4's oversight of QCanvas to Q3Canvas
     #
@@ -141,7 +144,8 @@ sub Qt3to4File
     #   foo->actions().indexOf(a);
 
     # for this one, use specific cases, not a general "indexOf" grep, as it may be too wide a net
-    $line =~ s/popupMenuFile\-\>indexOf/popupMenuFile\-\>actions\(\)\.indexOf/g;
+    # Commented out in favour of using Qt version ifdef
+    #$line =~ s/popupMenuFile\-\>indexOf/popupMenuFile\-\>actions\(\)\.indexOf/g;
 
 
     # FileInfo substitutions:
