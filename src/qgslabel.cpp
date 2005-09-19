@@ -810,24 +810,24 @@ void QgsLabel::writeXML(std::ostream& xml)
     // else
     if ( mLabelAttributes->textIsSet() && !mLabelField[Text].isEmpty() )
     {
-        xml << "\t\t\t<label text=\"" << mLabelAttributes->text() << "\" field=\"" << mLabelField[Text].local8Bit() << "\" />\n";
+        xml << "\t\t\t<label text=\"" << mLabelAttributes->text().local8Bit() << "\" field=\"" << mLabelField[Text].local8Bit() << "\" />\n";
     }
     else if ( mLabelAttributes->textIsSet() )
     {
-        xml << "\t\t\t<label text=\"" << mLabelAttributes->text() << "\" field=\"\" />\n";
+        xml << "\t\t\t<label text=\"" << mLabelAttributes->text().local8Bit() << "\" field=\"\" />\n";
     }
     else
     {
-        xml << "\t\t\t<label text=\"" << mLabelAttributes->text() << "\" field=\"" << mLabelField[Text].local8Bit() << "\" />\n";
+        xml << "\t\t\t<label text=\"" << mLabelAttributes->text().local8Bit() << "\" field=\"" << mLabelField[Text].local8Bit() << "\" />\n";
     }
 
     if ( mLabelAttributes->familyIsSet() && ! mLabelAttributes->family().isNull() && mLabelField[Family].isNull())
     {
-        xml << "\t\t\t<family name=\"" << mLabelAttributes->family() << "\" field=\"" << mLabelField[Family].local8Bit() << "\" />\n";
+        xml << "\t\t\t<family name=\"" << mLabelAttributes->family().local8Bit() << "\" field=\"" << mLabelField[Family].local8Bit() << "\" />\n";
     }
     else if ( mLabelAttributes->familyIsSet() && ! mLabelAttributes->family().isNull() )
     {
-        xml << "\t\t\t<family name=\"" << mLabelAttributes->family() << "\" field=\"\" />\n";
+        xml << "\t\t\t<family name=\"" << mLabelAttributes->family().local8Bit() << "\" field=\"\" />\n";
     }
     else
     {
