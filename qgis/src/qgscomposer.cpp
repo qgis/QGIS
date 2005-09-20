@@ -50,6 +50,8 @@
 #include "qgscomposeritem.h"
 #include "qgscomposermap.h"
 
+#include "qgsexception.h"
+
 #include <iostream>
 
 QgsComposer::QgsComposer( QgisApp *qgis): QgsComposerBase()
@@ -291,6 +293,7 @@ void QgsComposer::print(void)
     mComposition->setPlotStyle ( QgsComposition::Postscript );
 
     if ( mPrinter->outputToFile() ) {
+      try {
       std::cout << "Print to file" << std::endl;
 
 #ifdef Q_WS_X11
@@ -320,7 +323,9 @@ void QgsComposer::print(void)
       QFile f(mPrinter->outputFileName());
 
       // Overwrite the bounding box
-      f.open( IO_ReadWrite );
+      if (!f.open( IO_ReadWrite )) {
+        throw QgsIOException(tr("Couldn't open " + f.name() + tr(" for read/write")));
+      }
       Q_LONG offset = 0;
       Q_LONG size;
       bool found = false;
@@ -375,7 +380,9 @@ void QgsComposer::print(void)
 
       // Overwrite translate
       if ( mPrinter->orientation() == QPrinter::Portrait ) { 
-        f.open( IO_ReadWrite );
+        if (!f.open( IO_ReadWrite )) {
+          throw QgsIOException(tr("Couldn't open " + f.name() + tr(" for read/write")));
+        }
         offset = 0;
         found = false;
 
@@ -425,6 +432,9 @@ void QgsComposer::print(void)
           QMessageBox::warning(this,"Error in Print", "Cannot find translate");
         }
         f.close();
+      }
+      } catch (QgsIOException e) {
+        QMessageBox::warning(this,"File IO Error", e.what());
       }
 #endif
     } else {  // print to printer
