@@ -310,6 +310,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
     cout << "QgsProviderRegistry::getProvider: exiting." << "\n";
 #endif
 
+  return 0;  // factory didn't exist
   
 
 } // QgsProviderRegistry::setDataProvider
