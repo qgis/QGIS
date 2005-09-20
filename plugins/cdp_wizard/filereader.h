@@ -299,7 +299,7 @@ public:
   * @return GdalDriverMap An associative array where the key is the text description
   *               of the driver, and the value is the extension pattern e.g. .tif
   */
-  static GdalDriverMap getGdalDriverMap();
+  static void getGdalDriverMap(QString & theFileFiltersString);
 
 private:
   //

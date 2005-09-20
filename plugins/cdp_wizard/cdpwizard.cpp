@@ -569,22 +569,10 @@ void CDPWizard::checkInputFilenames()
 void CDPWizard::promptForFileName(QLineEdit * theLineEdit, QString theShortName, QString theLongName)
 {
     QSettings myQSettings;
+    QString myFilterList;
+    FileReader::getGdalDriverMap(myFilterList);
     QString myWorkDirString = myQSettings.readEntry("/qgis/cdpwizard/DefaultDirectories/" + theShortName + "Dir",QDir::homeDirPath());
 
-    QString myFilterList = "";
-    FileReader::GdalDriverMap::Iterator myIterator;
-    FileReader::GdalDriverMap myMap = FileReader::getGdalDriverMap();
-    for ( myIterator = myMap.begin(); myIterator != myMap.end(); ++myIterator ) 
-    {
-            if (!myFilterList.isEmpty())
-            {
-              myFilterList+=";;"; //note! two semicolons must be used!
-            }
-            myFilterList+= myIterator.key().latin1();
-            myFilterList+= "(*.";
-            myFilterList+= myIterator.data().latin1();
-            myFilterList+= ")";
-     }
     std::cout << "Filter List: " << myFilterList << std::endl;
     QString myFileNameQString = QFileDialog::getOpenFileName (myWorkDirString,myFilterList,0,"Select " + theLongName ,"Select " + theLongName);
     theLineEdit->setText(myFileNameQString);

@@ -974,17 +974,17 @@ void FileReader::printFirstCellInEachBlock()
 }
 
 
-FileReader::GdalDriverMap FileReader::getGdalDriverMap()
+void FileReader::getGdalDriverMap(QString & theFileFiltersString)
 {
-  GdalDriverMap myGdalDriverMap;
-  // This code was taken largely from qgis qgsrasterlayer.cpp
+  // first get the GDAL driver manager
   GDALAllRegister();
+
   GDALDriverManager *myGdalDriverManager = GetGDALDriverManager();
 
   if (!myGdalDriverManager)
   {
-    std::cerr << "unable to get GDALDriverManager\n" << std::endl;
-    return myGdalDriverMap;                   // XXX good place to throw exception if we
+    std::cerr << "unable to get GDALDriverManager\n";
+    return;                   // XXX good place to throw exception if we
   }                           // XXX decide to do exceptions
 
   // then iterate through all of the supported drivers, adding the
@@ -997,7 +997,9 @@ FileReader::GdalDriverMap FileReader::getGdalDriverMap()
   QString myGdalDriverLongName("");   // long name for the given driver
   QString myGdalDriverExtension("");  // file name extension for given driver
   QString myGdalDriverDescription;    // QString wrapper of GDAL driver description
+
   QStringList metadataTokens;   // essentially the metadata string delimited by '='
+
   QString catchallFilter;       // for Any file(*.*), but also for those
   // drivers with no specific file
   // filter
@@ -1012,18 +1014,24 @@ FileReader::GdalDriverMap FileReader::getGdalDriverMap()
   // "DMD_EXTENSION=.*".  We'll also store the long name of the
   // driver, which will be found in DMD_LONGNAME, which will have the
   // same form.
+
+  std::cout <<  myGdalDriverManager->GetDriverCount() << " Drivers registered" << std::endl;
   for (int i = 0; i < myGdalDriverManager->GetDriverCount(); ++i)
   {
     myGdalDriver = myGdalDriverManager->GetDriver(i);
+
     Q_CHECK_PTR(myGdalDriver);
+
     if (!myGdalDriver)
     {
       qWarning("unable to get driver %d", i);
       continue;
     }
+    // now we need to see if the driver is for something currently
+    // supported; if not, we give it a miss for the next driver
 
+    myGdalDriverDescription = myGdalDriver->GetDescription();
 
-    //add this driver to the map
     // std::cerr << "got driver string " << myGdalDriver->GetDescription() << "\n";
 
     myGdalDriverMetadata = myGdalDriver->GetMetadata();
@@ -1032,8 +1040,11 @@ FileReader::GdalDriverMap FileReader::getGdalDriverMap()
     // address is 0, or the first character is null
     while (myGdalDriverMetadata && '\0' != myGdalDriverMetadata[0])
     {
-      metadataTokens = QStringList::split("=", *myGdalDriverMetadata);
-      // std::cerr << "\t" << *myGdalDriverMetadata << "\n";
+      //qt4 style
+      //metadataTokens = QString(*myGdalDriverMetadata).split("=");
+      //qt3 style
+      QString myTokens(*myGdalDriverMetadata);
+      metadataTokens = QStringList::split("=",myTokens);
 
       // XXX add check for malformed metadataTokens
 
@@ -1043,15 +1054,9 @@ FileReader::GdalDriverMap FileReader::getGdalDriverMap()
 
       if (metadataTokens.count() > 1)
       {
-        std::cout << "Listing GDAL Metadata tokens: "  << std::endl;
-        for (int i = 0; i < metadataTokens.count() ; i++)
-        {
-          std::cout << "GDAL Metadata token: " << metadataTokens[i] << std::endl;
-        }
         if ("DMD_EXTENSION" == metadataTokens[0])
         {
           myGdalDriverExtension = metadataTokens[1];
-          std::cout << "Extension found: " << myGdalDriverExtension << std::endl;
 
         }
         else if ("DMD_LONGNAME" == metadataTokens[0])
@@ -1070,13 +1075,20 @@ FileReader::GdalDriverMap FileReader::getGdalDriverMap()
       // the next driver
       if (!(myGdalDriverExtension.isEmpty() || myGdalDriverLongName.isEmpty()))
       {
-        myGdalDriverMap[myGdalDriverLongName]=myGdalDriverExtension;
+        // XXX add check for SDTS; in that case we want (*CATD.DDF)
+        QString glob = "*." + myGdalDriverExtension;
+        // qt4 style :
+        // theFileFiltersString += myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+        // qt3 style :
+        theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
+
         break;            // ... to next driver, if any.
       }
 
       ++myGdalDriverMetadata;
 
     }                       // each metadata item
+
     if (myGdalDriverExtension.isEmpty() && !myGdalDriverLongName.isEmpty())
     {
       // Then what we have here is a driver with no corresponding
@@ -1093,23 +1105,71 @@ FileReader::GdalDriverMap FileReader::getGdalDriverMap()
       // USGS DEMs use "*.dem"
       if (myGdalDriverDescription.startsWith("USGSDEM"))
       {
-        myGdalDriverMap[myGdalDriverLongName]="dem";
+        QString glob = "*.dem";
+        // qt4 style :
+        //theFileFiltersString += myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+        //qt3 style:
+        theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
       }
       else if (myGdalDriverDescription.startsWith("DTED"))
       {
         // DTED use "*.dt0"
-        myGdalDriverMap[myGdalDriverLongName]="dt0";
+        QString glob = "*.dt0";
+        // qt4 style :
+        //theFileFiltersString += myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+        // qt3 style :
+        theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
       }
       else if (myGdalDriverDescription.startsWith("MrSID"))
       {
         // MrSID use "*.sid"
-        myGdalDriverMap[myGdalDriverLongName]="sid";
+        QString glob = "*.sid";
+        // qt4 style :
+        // theFileFiltersString += myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+        // qt3 style :
+        theFileFiltersString += myGdalDriverLongName + " (" + glob.lower() + " " + glob.upper() + ");;";
       }
       else
       {
-        myGdalDriverMap["All other types"]="*";
+        catchallFilter += QString(myGdalDriver->GetDescription()) + " ";
       }
     }
-  }
-  return myGdalDriverMap;
+
+    // A number of drivers support JPEG 2000. Add it in for those.
+    if (  myGdalDriverDescription.startsWith("MrSID")
+          || myGdalDriverDescription.startsWith("ECW")
+          || myGdalDriverDescription.startsWith("JPEG2000")
+          || myGdalDriverDescription.startsWith("JP2KAK") )
+    {
+      QString glob = "*.jp2 *.j2k";
+      //qt4 style
+      //theFileFiltersString += "JPEG 2000 (" + glob.toLower() + " " + glob.toUpper() + ");;";
+      //qt 3 style
+      theFileFiltersString += "JPEG 2000 (" + glob.lower() + " " + glob.upper() + ");;";
+    }
+
+    // A number of drivers support JPEG 2000. Add it in for those.
+    if (  myGdalDriverDescription.startsWith("MrSID")
+          || myGdalDriverDescription.startsWith("ECW")
+          || myGdalDriverDescription.startsWith("JPEG2000")
+          || myGdalDriverDescription.startsWith("JP2KAK") )
+    {
+      QString glob = "*.jp2 *.j2k";
+      //qt4 style
+      //theFileFiltersString += "JPEG 2000 (" + glob.toLower() + " " + glob.toUpper() + ");;";
+      //qt3 style
+      theFileFiltersString += "JPEG 2000 (" + glob.lower() + " " + glob.upper() + ");;";
+    }
+
+    myGdalDriverExtension = myGdalDriverLongName = "";  // reset for next driver
+
+  }                           // each loaded GDAL driver
+
+  // can't forget the default case
+  theFileFiltersString += catchallFilter + "All other files (*)";
+#ifdef QGISDEBUG
+  std::cout << "Raster filter list built: " << theFileFiltersString.local8Bit() << std::endl;
+#endif
+  std::cout << "Filter List\n" << theFileFiltersString << std::endl;
+  return;
 }
