@@ -27,7 +27,8 @@ void QgsMarkerSymbol::setPicture(const QString& svgpath)
 
 bool QgsMarkerSymbol::writeXML( QDomNode & item, QDomDocument & document )
 {
-    bool returnval=false;
+    bool returnval = false;
+    returnval = true; // remove this if anyone ever adds checking here
     QDomElement markersymbol=document.createElement("markersymbol");
     item.appendChild(markersymbol);
     QDomElement svgpath=document.createElement("svgpath");
@@ -62,6 +63,7 @@ bool QgsMarkerSymbol::writeXML( QDomNode & item, QDomDocument & document )
     fillpattern.appendChild(fillpatterntxt);
     markersymbol.appendChild(fillpattern);
     fillpattern.appendChild(fillpatterntxt);
+    return returnval;
 }
     
 

@@ -82,5 +82,6 @@ QString QgsGeometryVertexIndex::toString()
     s += QString::number(*iter) + " ";
   }
 
+  return s;
 }    
 

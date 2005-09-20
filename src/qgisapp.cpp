@@ -2474,6 +2474,7 @@ void QgisApp::openProject(const QString & fileName)
                                    tr("Unable to load project ") + fileName );
         }
     }
+    return ;
 }
 
 /**

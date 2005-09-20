@@ -204,6 +204,7 @@ QString QgsVectorLayer::storageType() const
   {
     return dataProvider->storageType();
   }
+  return 0;
 }
 
 
@@ -213,6 +214,7 @@ QString QgsVectorLayer::capabilitiesString() const
   {
     return dataProvider->capabilitiesString();
   }
+  return 0;
 }
 
 int QgsVectorLayer::getProjectionSrid()
@@ -440,8 +442,8 @@ QgsRect QgsVectorLayer::inverseProjectRect(const QgsRect& r) const
 	     __FILE__, __LINE__, e.what());
     }
   }
-  else
-    return QgsRect(r);
+  // fall through for all failures
+  return QgsRect(r);
 }
 
 unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature, 
@@ -2769,6 +2771,7 @@ bool QgsVectorLayer::addFeatures(std::vector<QgsFeature*>* features, bool makeSe
     
     updateExtents();
   }  
+  return true;
 }
 
 void QgsVectorLayer::refreshLegend()
@@ -2910,6 +2913,8 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   }
   point.setX(mindistx);
   point.setY(mindisty);
+
+  return true;
 }
 
 

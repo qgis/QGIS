@@ -102,6 +102,7 @@ void QgsCoordinateTransform::setDestSRSID (long theSRSID)
 }
 
 // XXX This whole function is full of multiple return statements!!!
+// And probably shouldn't be a void
 void QgsCoordinateTransform::initialise()
 {
 
@@ -383,6 +384,8 @@ bool QgsCoordinateTransform::readXML( QDomNode & theNode )
   QDomNode myDestNode = myDestNodeParent.namedItem("spatialrefsys");
   mDestSRS.readXML(myDestNode);
   initialise();
+
+  return true;
 }
 
 bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc )
@@ -401,4 +404,5 @@ bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc
   
   myNodeElement.appendChild(myTransformElement);
 
+  return true;
 }

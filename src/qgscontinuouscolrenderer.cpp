@@ -223,6 +223,7 @@ bool QgsContinuousColRenderer::writeXML( QDomNode & layer_node, QDomDocument & d
     {
 	mMaximumSymbol->writeXML(highestsymbol,document);
     }
+    return returnval;
 }
 
 const std::list<QgsSymbol*> QgsContinuousColRenderer::symbols() const
