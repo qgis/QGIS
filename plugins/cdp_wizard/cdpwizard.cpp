@@ -52,107 +52,108 @@ CDPWizard::~CDPWizard()
 
 bool CDPWizard::initialise()
 {
-    //
-    // Populate the file types combo
-    //
-    cboFileType->insertItem(tr("GDAL Supported Raster"));
-    cboFileType->insertItem(tr("Hadley Centre HadCM3 SRES Scenario"));
-    cboFileType->insertItem(tr("Hadley Centre HadCM3 IS92a Scenario"));
-    cboFileType->insertItem(tr("IPCC Observed Climatology"));
-    cboFileType->insertItem(tr("University of Reading Palaeoclimate data"));
-    cboFileType->insertItem(tr("Max Planck Institute fur Meteorologie (MPIfM) ECHAM4 data"));
-    cboFileType->insertItem(tr("CSIRO-Mk2 Model data"));
-    cboFileType->insertItem(tr("National Center for Atmospheric Research (NCAR) NCAR-CSM and NCAR-PCM data"));
-    cboFileType->insertItem(tr("Geophysical Fluid Dynamics Laboratory (GFDL) R30 Model data"));
-    cboFileType->insertItem(tr("Canadian Center for Climate Modelling and Analysis (CCCma) CGCM2 Model data"));
-    cboFileType->insertItem(tr("CCSR/NIES AGCM model data and CCSR OGCM model data"));
+  QSettings myQSettings;
+  //
+  // Populate the file types combo
+  //
+  cboFileType->insertItem(tr("GDAL Supported Raster"));
+  cboFileType->insertItem(tr("Hadley Centre HadCM3 SRES Scenario"));
+  cboFileType->insertItem(tr("Hadley Centre HadCM3 IS92a Scenario"));
+  cboFileType->insertItem(tr("IPCC Observed Climatology"));
+  cboFileType->insertItem(tr("University of Reading Palaeoclimate data"));
+  cboFileType->insertItem(tr("Max Planck Institute fur Meteorologie (MPIfM) ECHAM4 data"));
+  cboFileType->insertItem(tr("CSIRO-Mk2 Model data"));
+  cboFileType->insertItem(tr("National Center for Atmospheric Research (NCAR) NCAR-CSM and NCAR-PCM data"));
+  cboFileType->insertItem(tr("Geophysical Fluid Dynamics Laboratory (GFDL) R30 Model data"));
+  cboFileType->insertItem(tr("Canadian Center for Climate Modelling and Analysis (CCCma) CGCM2 Model data"));
+  cboFileType->insertItem(tr("CCSR/NIES AGCM model data and CCSR OGCM model data"));
 
-    //
-    // set up the lstVariablesToCalc combo box
-    //
+  //
+  // set up the lstVariablesToCalc combo box
+  //
 #ifdef QGISDEBUG
 
-    std::cout << "Adding items into the lstVariablesToCalc list box" << std::endl;
+  std::cout << "Adding items into the lstVariablesToCalc list box" << std::endl;
 #endif
 
-    lstVariablesToCalc->insertItem(tr("Annual mean diurnal temperature range"));
-    lstVariablesToCalc->insertItem(tr("Annual mean number of frost days"));
-    lstVariablesToCalc->insertItem(tr("Annual mean total incident solar radiation"));
-    lstVariablesToCalc->insertItem(tr("Annual temperature range"));
-    lstVariablesToCalc->insertItem(tr("Highest temperature in warmest month"));
-    lstVariablesToCalc->insertItem(tr("Lowest temperature in coolest month"));
-    lstVariablesToCalc->insertItem(tr("Mean daily precipitation"));
-    lstVariablesToCalc->insertItem(tr("Mean daily precipitation in coolest month"));
-    lstVariablesToCalc->insertItem(tr("Mean daily precipitation in coolest quarter"));
-    lstVariablesToCalc->insertItem(tr("Mean daily precipitation in driest month"));
-    lstVariablesToCalc->insertItem(tr("Mean daily precipitation in driest quarter"));
-    lstVariablesToCalc->insertItem(tr("Mean daily precipitation in warmest month"));
-    lstVariablesToCalc->insertItem(tr("Mean daily precipitation in warmest quarter"));
-    lstVariablesToCalc->insertItem(tr("Mean daily precipitation in wettest month"));
-    lstVariablesToCalc->insertItem(tr("Mean daily precipitation in wettest quarter"));
-    lstVariablesToCalc->insertItem(tr("Mean diurnal temperature range in coolest month"));
-    lstVariablesToCalc->insertItem(tr("Mean diurnal temperature range in warmest month"));
-    lstVariablesToCalc->insertItem(tr("Mean precipitation in frost free months"));
-    lstVariablesToCalc->insertItem(tr("Mean temperature"));
-    lstVariablesToCalc->insertItem(tr("Mean temperature in coolest month"));
-    lstVariablesToCalc->insertItem(tr("Mean temperature in coolest quarter"));
-    lstVariablesToCalc->insertItem(tr("Mean temperature in frost free months"));
-    lstVariablesToCalc->insertItem(tr("Mean temperature in warmest month"));
-    lstVariablesToCalc->insertItem(tr("Mean temperature in warmest quarter"));
-    lstVariablesToCalc->insertItem(tr("Mean wind speed"));
-    lstVariablesToCalc->insertItem(tr("Number of months with minimum temperature above freezing"));
-    lstVariablesToCalc->insertItem(tr("Radiation in coolest month"));
-    lstVariablesToCalc->insertItem(tr("Radiation in coolest quarter"));
-    lstVariablesToCalc->insertItem(tr("Radiation in driest month"));
-    lstVariablesToCalc->insertItem(tr("Radiation in driest quarter"));
-    lstVariablesToCalc->insertItem(tr("Radiation in warmest month"));
-    lstVariablesToCalc->insertItem(tr("Radiation in warmest quarter"));
-    lstVariablesToCalc->insertItem(tr("Radiation in wettest month"));
-    lstVariablesToCalc->insertItem(tr("Radiation in wettest quarter"));
-    lstVariablesToCalc->insertItem(tr("Standard deviation of mean precipitation"));
-    lstVariablesToCalc->insertItem(tr("Standard deviation of mean temperature"));
+  lstVariablesToCalc->insertItem(tr("Annual mean diurnal temperature range"));
+  lstVariablesToCalc->insertItem(tr("Annual mean number of frost days"));
+  lstVariablesToCalc->insertItem(tr("Annual mean total incident solar radiation"));
+  lstVariablesToCalc->insertItem(tr("Annual temperature range"));
+  lstVariablesToCalc->insertItem(tr("Highest temperature in warmest month"));
+  lstVariablesToCalc->insertItem(tr("Lowest temperature in coolest month"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in coolest month"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in coolest quarter"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in driest month"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in driest quarter"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in warmest month"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in warmest quarter"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in wettest month"));
+  lstVariablesToCalc->insertItem(tr("Mean daily precipitation in wettest quarter"));
+  lstVariablesToCalc->insertItem(tr("Mean diurnal temperature range in coolest month"));
+  lstVariablesToCalc->insertItem(tr("Mean diurnal temperature range in warmest month"));
+  lstVariablesToCalc->insertItem(tr("Mean precipitation in frost free months"));
+  lstVariablesToCalc->insertItem(tr("Mean temperature"));
+  lstVariablesToCalc->insertItem(tr("Mean temperature in coolest month"));
+  lstVariablesToCalc->insertItem(tr("Mean temperature in coolest quarter"));
+  lstVariablesToCalc->insertItem(tr("Mean temperature in frost free months"));
+  lstVariablesToCalc->insertItem(tr("Mean temperature in warmest month"));
+  lstVariablesToCalc->insertItem(tr("Mean temperature in warmest quarter"));
+  lstVariablesToCalc->insertItem(tr("Mean wind speed"));
+  lstVariablesToCalc->insertItem(tr("Number of months with minimum temperature above freezing"));
+  lstVariablesToCalc->insertItem(tr("Radiation in coolest month"));
+  lstVariablesToCalc->insertItem(tr("Radiation in coolest quarter"));
+  lstVariablesToCalc->insertItem(tr("Radiation in driest month"));
+  lstVariablesToCalc->insertItem(tr("Radiation in driest quarter"));
+  lstVariablesToCalc->insertItem(tr("Radiation in warmest month"));
+  lstVariablesToCalc->insertItem(tr("Radiation in warmest quarter"));
+  lstVariablesToCalc->insertItem(tr("Radiation in wettest month"));
+  lstVariablesToCalc->insertItem(tr("Radiation in wettest quarter"));
+  lstVariablesToCalc->insertItem(tr("Standard deviation of mean precipitation"));
+  lstVariablesToCalc->insertItem(tr("Standard deviation of mean temperature"));
 
-    //
-    //set up the output formats combo
-    //
+  //
+  //set up the output formats combo
+  //
 #ifdef QGISDEBUG
 
-    std::cout << "Adding items into the output filetype combo box" << endl;
+  std::cout << "Adding items into the output filetype combo box" << endl;
 #endif
 
-    cboOutputFormat->insertItem(tr("GDAL Tiff Image"));
-    cboOutputFormat->insertItem(tr("Arc/Info Ascii Grid"));
-    cboOutputFormat->insertItem(tr("Plain matrix with no header"));
-    cboOutputFormat->insertItem(tr("Matlab"));
-    //
-    // Create a climate data processor instance - this is the thing that does all
-    // the hard work!
-    //
-    climateDataProcessor = new ClimateDataProcessor();
+  cboOutputFormat->insertItem(tr("GDAL Tiff Image"));
+  cboOutputFormat->insertItem(tr("Arc/Info Ascii Grid"));
+  cboOutputFormat->insertItem(tr("Plain matrix with no header"));
+  cboOutputFormat->insertItem(tr("Matlab"));
+  //
+  // Create a climate data processor instance - this is the thing that does all
+  // the hard work!
+  //
+  climateDataProcessor = new ClimateDataProcessor();
 
-    //hook uo signals and slots
-    connect(climateDataProcessor,SIGNAL(numberOfCellsToCalc(int)),
-                                 this,SLOT(numberOfCellsToCalc(int)));
-    connect(climateDataProcessor,SIGNAL(numberOfVariablesToCalc(int)),
-                                 this,SLOT(numberOfVariablesToCalc(int)));
-    connect(climateDataProcessor,SIGNAL(numberOfYearsToCalc(int)),
-                                 this,SLOT(numberOfYearsToCalc(int)));
-    connect(climateDataProcessor,SIGNAL(yearStart(QString)),
-                                 this,SLOT(yearStart(QString )));
-    connect(climateDataProcessor,SIGNAL(yearDone()),
-                                 this,SLOT(yearDone()));
-    connect(climateDataProcessor,SIGNAL(variableStart(QString )),
-                                 this,SLOT(variableStart(QString )));
-    connect(climateDataProcessor,SIGNAL(variableDone(QString)),
-                                 this,SLOT(variableDone(QString)));
-    connect(climateDataProcessor,SIGNAL(cellDone(float)),
-                                 this,SLOT(cellDone(float)));
+  //hook uo signals and slots
+  connect(climateDataProcessor,SIGNAL(numberOfCellsToCalc(int)),
+          this,SLOT(numberOfCellsToCalc(int)));
+  connect(climateDataProcessor,SIGNAL(numberOfVariablesToCalc(int)),
+          this,SLOT(numberOfVariablesToCalc(int)));
+  connect(climateDataProcessor,SIGNAL(numberOfYearsToCalc(int)),
+          this,SLOT(numberOfYearsToCalc(int)));
+  connect(climateDataProcessor,SIGNAL(yearStart(QString)),
+          this,SLOT(yearStart(QString )));
+  connect(climateDataProcessor,SIGNAL(yearDone()),
+          this,SLOT(yearDone()));
+  connect(climateDataProcessor,SIGNAL(variableStart(QString )),
+          this,SLOT(variableStart(QString )));
+  connect(climateDataProcessor,SIGNAL(variableDone(QString)),
+          this,SLOT(variableDone(QString)));
+  connect(climateDataProcessor,SIGNAL(cellDone(float)),
+          this,SLOT(cellDone(float)));
 
-    //Load default settings
-    loadDefaults();
+  //Load default settings
+  loadDefaults();
 
-    //presume all went ok
-    return true;
+  //presume all went ok
+  return true;
 }
 
 
@@ -199,7 +200,9 @@ void CDPWizard::loadDefaults()
     spinFirstYearToCalc->setValue(myQSettings.readNumEntry("/qgis/cdpwizard/firstYearToCalc"));
     spinLastYearToCalc->setValue(myQSettings.readNumEntry("/qgis/cdpwizard/lastYearToCalc"));
 
-    leOutputPath->setText(myQSettings.readEntry("/qgis/cdpwizard/outputPath"));
+
+    QString myOutputDir = myQSettings.readEntry("/qgis/cdpwizard/DefaultDirectories/OutputDir",QDir::homeDirPath());
+    leOutputPath->setText(myOutputDir);
     cboOutputFormat->setCurrentItem(myQSettings.readNumEntry("/qgis/cdpwizard/outputFormat"));
 
     cboFileType_activated(cboFileType->currentText());
@@ -649,8 +652,17 @@ void CDPWizard::pbtnTotalSolarRad_clicked()
 
 void CDPWizard::pbtnOutputPath_clicked()
 {
-  QString myFileNameQString = QFileDialog::getExistingDirectory(QString::null,0, QString("Select ouput directory"), QString("Select output directory"), true, true);
-  leOutputPath->setText(myFileNameQString);
+  QSettings myQSettings;
+  QString myLastDir = myQSettings.readEntry("/qgis/cdpwizard/DefaultDirectories/OutputDir",QDir::homeDirPath());
+  QString myFileNameQString;
+  QFileDialog myFileDialog (myLastDir,"",this,"Select Output Directory");
+  myFileDialog.setMode(QFileDialog::DirectoryOnly);
+  if ( myFileDialog.exec() == QDialog::Accepted )
+  {
+    myFileNameQString = myFileDialog.selectedFile();
+    leOutputPath->setText(myFileNameQString);
+    myQSettings.writeEntry("/qgis/cdpwizard/DefaultDirectories/OutputDir",myFileNameQString);
+  }
 }
 
 
