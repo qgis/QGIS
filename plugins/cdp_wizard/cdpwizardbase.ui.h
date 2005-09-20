@@ -124,27 +124,6 @@ void CDPWizardBase::cboFileType_activated( const QString & )
 
 
 
-void CDPWizardBase::spinFirstYearToCalc_valueChanged( int )
-{
-
-}
-
-
-
-
-
-void CDPWizardBase::spinFirstYearInFile_valueChanged( int )
-{
-
-}
-
-
-void CDPWizardBase::spinLastYearToCalc_valueChanged( int )
-{
-
-}
-
-
 void CDPWizardBase::pbtnOutputPath_clicked()
 {
 
@@ -158,12 +137,6 @@ void CDPWizardBase::lstVariablesToCalc_selectionChanged()
 
 
 void CDPWizardBase::leOutputPath_textChanged( const QString & )
-{
-
-}
-
-
-void CDPWizardBase::cbxYearType_highlighted( const QString & )
 {
 
 }

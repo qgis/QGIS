@@ -275,11 +275,9 @@ class ClimateDataProcessor : public QObject {
 
         /**
         * Set up the filegroups for each filename that has been registered
-        * @param theStartYearInt - the year in the file (not used if files
-        * are in series) for which the filegroup should be made.
         * @return bool - A boolean indicating success or failure of the operation
         */
-        bool makeFileGroups(int theStartYearInt);
+        bool makeFileGroups();
 
         /**  Build a list of which calculations can be performed given the input files
          *    that have been registered. The boolean field indicates whether the user actually

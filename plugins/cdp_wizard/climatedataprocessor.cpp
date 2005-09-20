@@ -42,9 +42,6 @@ ClimateDataProcessor::ClimateDataProcessor() : QObject()
     windSpeedFileNameString=myString;
 
     outputFilePathString = myString;
-    fileStartYearInt=0;
-    jobStartYearInt=0;
-    jobEndYearInt=0;
     inputFileType=FileReader::GDAL;
 
 
@@ -326,7 +323,7 @@ void ClimateDataProcessor::setOutputFilePathString( QString theFilePathString)
     std::cout << "outputFilePathString set to : " << outputFilePathString << std::endl;
 }
 
-bool ClimateDataProcessor::makeFileGroups(int theStartYearInt=1)
+bool ClimateDataProcessor::makeFileGroups()
 {
 
     /*   These are the possible filegroups available:
@@ -341,14 +338,14 @@ bool ClimateDataProcessor::makeFileGroups(int theStartYearInt=1)
          windSpeedFileGroup;
          -----------------------------------------------------------------
          */
-
+    const int START_YEAR=1; //this will be deprecated soon!
     if (meanTempFileNameString==QString(""))
     {
         std::cout <<     "makeFileGroups - meanTempFileNameString is NOT initialised! *****************************" << std::endl;
     }
     else
     {
-        meanTempFileGroup = initialiseFileGroup(meanTempFileNameString,theStartYearInt);
+        meanTempFileGroup = initialiseFileGroup(meanTempFileNameString,START_YEAR);
     }
 
     if (minTempFileNameString==QString(""))
@@ -357,7 +354,7 @@ bool ClimateDataProcessor::makeFileGroups(int theStartYearInt=1)
     }
     else
     {
-        minTempFileGroup = initialiseFileGroup(minTempFileNameString,theStartYearInt);
+        minTempFileGroup = initialiseFileGroup(minTempFileNameString,START_YEAR);
     }
 
     if (maxTempFileNameString==QString(""))
@@ -366,7 +363,7 @@ bool ClimateDataProcessor::makeFileGroups(int theStartYearInt=1)
     }
     else
     {
-        maxTempFileGroup = initialiseFileGroup(maxTempFileNameString,theStartYearInt);
+        maxTempFileGroup = initialiseFileGroup(maxTempFileNameString,START_YEAR);
     }
 
     if (diurnalTempFileNameString==QString(""))
@@ -375,7 +372,7 @@ bool ClimateDataProcessor::makeFileGroups(int theStartYearInt=1)
     }
     else
     {
-        diurnalTempFileGroup = initialiseFileGroup(diurnalTempFileNameString,theStartYearInt);
+        diurnalTempFileGroup = initialiseFileGroup(diurnalTempFileNameString,START_YEAR);
     }
 
     if (meanPrecipFileNameString==QString(""))
@@ -384,7 +381,7 @@ bool ClimateDataProcessor::makeFileGroups(int theStartYearInt=1)
     }
     else
     {
-        meanPrecipFileGroup = initialiseFileGroup(meanPrecipFileNameString,theStartYearInt);
+        meanPrecipFileGroup = initialiseFileGroup(meanPrecipFileNameString,START_YEAR);
     }
 
     if (meanPrecipFileNameString==QString(""))
@@ -393,7 +390,7 @@ bool ClimateDataProcessor::makeFileGroups(int theStartYearInt=1)
     }
     else
     {
-        meanPrecipFileGroup = initialiseFileGroup(meanPrecipFileNameString,theStartYearInt);
+        meanPrecipFileGroup = initialiseFileGroup(meanPrecipFileNameString,START_YEAR);
     }
 
 
@@ -403,7 +400,7 @@ bool ClimateDataProcessor::makeFileGroups(int theStartYearInt=1)
     }
     else
     {
-        frostDaysFileGroup = initialiseFileGroup(frostDaysFileNameString,theStartYearInt);
+        frostDaysFileGroup = initialiseFileGroup(frostDaysFileNameString,START_YEAR);
     }
 
 
@@ -413,7 +410,7 @@ bool ClimateDataProcessor::makeFileGroups(int theStartYearInt=1)
     }
     else
     {
-        totalSolarRadFileGroup = initialiseFileGroup(totalSolarRadFileNameString,theStartYearInt);
+        totalSolarRadFileGroup = initialiseFileGroup(totalSolarRadFileNameString,START_YEAR);
     }
 
 
@@ -423,7 +420,7 @@ bool ClimateDataProcessor::makeFileGroups(int theStartYearInt=1)
     }
     else
     {
-        windSpeedFileGroup = initialiseFileGroup(windSpeedFileNameString,theStartYearInt);
+        windSpeedFileGroup = initialiseFileGroup(windSpeedFileNameString,START_YEAR);
     }
     return true;
 }
@@ -978,1584 +975,1525 @@ void ClimateDataProcessor::setFilesInSeriesFlag( const bool theFlag)
   this is the method to call! */
 bool ClimateDataProcessor::run()
 {
-    std::cout << "ClimateDataProcessor run() method called.\n " << std::endl;
-    std::cout << "Go and have a cup of tea cause this may take a while!" << std::endl;
-    std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-    
-    //create a data processor to do the low level processing
-    DataProcessor *myDataProcessor = new DataProcessor();
-    int myOffsetInt = jobStartYearInt - fileStartYearInt;
-    int myNumberOfIterationsInt = (jobEndYearInt - jobStartYearInt) +1;
-    //work out how many variables we are going to calculate
-    int myNumberOfVariablesInt = 0;
-    QMap<QString, bool>::const_iterator myIter;
-    for (myIter=availableCalculationsMap.begin(); myIter != availableCalculationsMap.end(); myIter++)
+  std::cout << "ClimateDataProcessor run() method called.\n " << std::endl;
+  std::cout << "Go and have a cup of tea cause this may take a while!" << std::endl;
+  std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+
+  //create a data processor to do the low level processing
+  DataProcessor myDataProcessor;
+  //work out how many variables we are going to calculate
+  int myNumberOfVariablesInt = 0;
+  QMap<QString, bool>::const_iterator myIter;
+  for (myIter=availableCalculationsMap.begin(); myIter != availableCalculationsMap.end(); myIter++)
+  {
+    if (myIter.data()) //true
     {
-        if (myIter.data()) //true
-        {
-            myNumberOfVariablesInt++;
-        }
+      myNumberOfVariablesInt++;
     }
-    //
-    //work out how many cells need to be processed for each calculations
-    //
-    int myNumberOfCells =0;
-    int myXDimInt= 0;
-    int myYDimInt=0;
-    if (meanTempFileGroup)
+  }
+  //
+  //work out how many cells need to be processed for each calculations
+  //
+  int myNumberOfCells =0;
+  int myXDimInt= 0;
+  int myYDimInt=0;
+  if (meanTempFileGroup)
+  {
+    myNumberOfCells = meanTempFileGroup->getElementCount();
+    myXDimInt=meanTempFileGroup->getXDimInt();
+    myYDimInt=meanTempFileGroup->getYDimInt();
+  }
+  else if (minTempFileGroup)
+  {
+    myNumberOfCells = minTempFileGroup->getElementCount();
+    myXDimInt=minTempFileGroup->getXDimInt();
+    myYDimInt=minTempFileGroup->getYDimInt();
+  }
+  else if (maxTempFileGroup)
+  {
+    myNumberOfCells = maxTempFileGroup->getElementCount();
+    myXDimInt=maxTempFileGroup->getXDimInt();
+    myYDimInt=maxTempFileGroup->getYDimInt();
+  }
+  else if (diurnalTempFileGroup)
+  {
+    myNumberOfCells = diurnalTempFileGroup->getElementCount();
+    myXDimInt=diurnalTempFileGroup->getXDimInt();
+    myYDimInt=diurnalTempFileGroup->getYDimInt();
+  }
+  else if (meanPrecipFileGroup)
+  {
+    myNumberOfCells = meanPrecipFileGroup->getElementCount();
+    myXDimInt=meanPrecipFileGroup->getXDimInt();
+    myYDimInt=meanPrecipFileGroup->getYDimInt();
+  }
+  else if (frostDaysFileGroup)
+  {
+    myNumberOfCells = frostDaysFileGroup->getElementCount();
+    myXDimInt=frostDaysFileGroup->getXDimInt();
+    myYDimInt=frostDaysFileGroup->getYDimInt();
+  }
+  else if (totalSolarRadFileGroup)
+  {
+    myNumberOfCells = totalSolarRadFileGroup->getElementCount();
+    myXDimInt=totalSolarRadFileGroup->getXDimInt();
+    myYDimInt=totalSolarRadFileGroup->getYDimInt();
+  }
+  else if (windSpeedFileGroup)
+  {
+    myNumberOfCells = windSpeedFileGroup->getElementCount();
+    myXDimInt=windSpeedFileGroup->getXDimInt();
+    myYDimInt=windSpeedFileGroup->getYDimInt();
+  }
+  //check nothing fishy is going on
+  if (myNumberOfCells ==  0)
+  {
+    return false;
+  }
+
+
+  //send singals so progress monitors can set themselves up
+  emit numberOfCellsToCalc(myNumberOfCells);
+  emit numberOfVariablesToCalc(myNumberOfVariablesInt);
+
+
+  //create a filewriter map for storing the OUTPUTS of each selected user calculation
+  //this is not very element - I put the filewriter pointer into a struct and then  put the struct in to the
+  //map, because I cant seem to be able to put the pointer directly into the map itself :-(
+  QMap<QString, FileWriterStruct> myFileWriterMap;
+
+  for (myIter=availableCalculationsMap.begin(); myIter != availableCalculationsMap.end(); myIter++)
+  {
+    if (myIter.data()) //true
     {
-        myNumberOfCells = meanTempFileGroup->getElementCount();
-        myXDimInt=meanTempFileGroup->getXDimInt();
-        myYDimInt=meanTempFileGroup->getYDimInt();
+      std::cout << "Adding " <<  myIter.key() << " to myFileWriterMap\n";
+      //create the fileWriter object
+      //note I am not using pointer & the 'new' keyword here
+      //because map doesnt let me add a pointer to the list
+
+      QString myFileNameString = myIter.key();
+
+      //replace any spaces with underscores in the name
+      myFileNameString = myFileNameString.replace( QRegExp(" "), "_");
+      //set the extension
+      myFileNameString =  outputFilePathString + myFileNameString + ".asc";
+      FileWriter * myFileWriter = new FileWriter(myFileNameString,outputFileType);
+
+      //Use externally defined header if its been set
+      if (!outputHeaderString.isEmpty())
+      {
+        myFileWriter->writeString(outputHeaderString);
+      }
+      //Otherwise calculate one dynamically
+      else
+      {
+        // Use the matrix dimensions to create the ascii file
+        // Warning: this assumes a GLOBAL dataset
+        // Warning: this screws up cellsizes that are not square
+        // Warning: this only works for integers at present
+        QString myHeaderString=
+            QString ("ncols         ") +
+            QString::number (myXDimInt) + 
+            QString ("\n")+
+            QString ("nrows         ") + 
+            QString::number (myYDimInt) + 
+            QString ("\n")+
+            QString ("xllcorner     -180\n")+
+            QString ("yllcorner     -90\n")+
+            QString ("cellsize      ") + 
+            QString::number (360/static_cast<float>(myXDimInt)) +
+            QString ("\n")+
+            QString ("nodata_value  -9999.0\n");
+        myFileWriter->writeString(myHeaderString);
+        // Formerly this was fixed to the following
+        //QString myHeaderString=
+        //QString ("ncols         720\n")+
+        //QString ("nrows         360\n")+
+        //QString ("xllcorner     -180\n")+
+        //QString ("yllcorner     -90\n")+
+        //QString ("cellsize      0.5\n")+
+        //QString ("nodata_value  -9999\n");                    myFileWriter->writeString(myHeaderString);
+
+      }
+
+      std::cout << "Added " << myFileWriter->getFileNameString() << std::endl;
+      FileWriterStruct myFileWriterStruct;
+      myFileWriterStruct.structFileWriter=myFileWriter;
+      myFileWriterStruct.structFullFileName=myFileNameString;
+      //add it to the map
+      myFileWriterMap[myIter.key()]=myFileWriterStruct;
+      std::cout << "Added " << myFileWriterStruct.structFullFileName << std::endl;
     }
-    else if (minTempFileGroup)
+  }
+
+
+  // cycle through each FileGroup, fetching the element array from it and running any user
+  // selected calculations, then writing the outputs to its associated filewriter in
+  // myFileWriterMap
+
+
+  if (meanTempFileGroup && meanTempFileNameString !="" &&
+          availableCalculationsMap["Mean temperature"])
+  {
+    emit variableStart("Mean temperature");
+    std::cout << "ClimateDataProcessor::run - Mean temperature requested" << std::endl;
+    //move to start of the current data matrix
+    meanTempFileGroup->moveToDataStart();
+
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+
+    int myXCountInt=0;
+    bool myFirstIterationFlag=true;
+    while (!meanTempFileGroup->getEndOfMatrixFlag())
     {
-        myNumberOfCells = minTempFileGroup->getElementCount();
-        myXDimInt=minTempFileGroup->getXDimInt();
-        myYDimInt=minTempFileGroup->getYDimInt();
-    }
-    else if (maxTempFileGroup)
-    {
-        myNumberOfCells = maxTempFileGroup->getElementCount();
-        myXDimInt=maxTempFileGroup->getXDimInt();
-        myYDimInt=maxTempFileGroup->getYDimInt();
-    }
-    else if (diurnalTempFileGroup)
-    {
-        myNumberOfCells = diurnalTempFileGroup->getElementCount();
-        myXDimInt=diurnalTempFileGroup->getXDimInt();
-        myYDimInt=diurnalTempFileGroup->getYDimInt();
-    }
-    else if (meanPrecipFileGroup)
-    {
-        myNumberOfCells = meanPrecipFileGroup->getElementCount();
-        myXDimInt=meanPrecipFileGroup->getXDimInt();
-        myYDimInt=meanPrecipFileGroup->getYDimInt();
-    }
-    else if (frostDaysFileGroup)
-    {
-        myNumberOfCells = frostDaysFileGroup->getElementCount();
-        myXDimInt=frostDaysFileGroup->getXDimInt();
-        myYDimInt=frostDaysFileGroup->getYDimInt();
-    }
-    else if (totalSolarRadFileGroup)
-    {
-        myNumberOfCells = totalSolarRadFileGroup->getElementCount();
-        myXDimInt=totalSolarRadFileGroup->getXDimInt();
-        myYDimInt=totalSolarRadFileGroup->getYDimInt();
-    }
-    else if (windSpeedFileGroup)
-    {
-        myNumberOfCells = windSpeedFileGroup->getElementCount();
-        myXDimInt=windSpeedFileGroup->getXDimInt();
-        myYDimInt=windSpeedFileGroup->getYDimInt();
-    }
-    //check nothing fishy is going on
-    if (myNumberOfCells ==  0)
-    {
-        delete myDataProcessor;
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.meanOverYear(myFloatVector );
+      if (myFirstIterationFlag || meanTempFileGroup->getEndOfMatrixFlag())
+      {
+        //this next bit is just for debugging purposes"
+        printVectorAndResult(myFloatVector,myFloat);
+        myFirstIterationFlag=false;
+      }
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
         return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      ////emit cellDone(myFloat);
     }
+    std::cout << " ++++++ Emitting variableDone signal! " << std::endl;
+    emit variableDone(myFileWriterStruct.structFullFileName);
 
-
-    int myCurrentYearInt = jobStartYearInt; //this will be changed on each iteration
-
-    //send singals so progress monitors can set themselves up
-    emit numberOfCellsToCalc(myNumberOfCells);
-    emit numberOfVariablesToCalc(myNumberOfVariablesInt);
-    emit numberOfYearsToCalc(myNumberOfIterationsInt);
-
-    //This is the MAIN OUTER LOOP:
-    //cycle through each year block, doing all the requested calculations for that year
-
-    bool myFirstLoopFlag = true;
-    for (int myCDPMainLoopInt = jobStartYearInt;
-            myCDPMainLoopInt < (jobEndYearInt +1);
-            myCDPMainLoopInt ++)
+  }
+  if (diurnalTempFileGroup && diurnalTempFileNameString != "" &&
+          availableCalculationsMap["Annual mean diurnal temperature range"])
+  {
+    emit variableStart("Annual mean diurnal temperature range");
+    std::cout << "ClimateDataProcessor::run Annual mean diurnal temperature range requested" << std::endl;
+    //move to start of the current data matrix
+    diurnalTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual mean diurnal temperature range"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!diurnalTempFileGroup->getEndOfMatrixFlag())
     {
-        emit yearStart(QString::number(myCDPMainLoopInt));
-        if (myFirstLoopFlag)
-        {
-            myFirstLoopFlag=false;
-        }
-        else
-        {
-            //shift all the filegroups' filereaders' startmonths on a year
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = diurnalTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.meanOverYear(myFloatVector );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      ////emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
 
-            if (meanTempFileGroup)
-                meanTempFileGroup->incrementDataBlocks(12);
-            if (minTempFileGroup)
-                minTempFileGroup->incrementDataBlocks(12);
-            if (maxTempFileGroup)
-                maxTempFileGroup->incrementDataBlocks(12);
-            if (diurnalTempFileGroup)
-                diurnalTempFileGroup->incrementDataBlocks(12);
-            if (meanPrecipFileGroup)
-                meanPrecipFileGroup->incrementDataBlocks(12);
-            if (frostDaysFileGroup)
-                frostDaysFileGroup->incrementDataBlocks(12);
-            if (totalSolarRadFileGroup)
-                totalSolarRadFileGroup->incrementDataBlocks(12);
-            if (windSpeedFileGroup)
-                windSpeedFileGroup->incrementDataBlocks(12);
+  if (frostDaysFileGroup && frostDaysFileNameString != "" &&
+          availableCalculationsMap["Annual mean number of frost days"])
+  {
+    emit variableStart("Annual mean number of frost days");
+    std::cout << "ClimateDataProcessor::run Annual mean number of frost days requested" << std::endl;
+    //move to start of the current data matrix
+    frostDaysFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual mean number of frost days"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!frostDaysFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = frostDaysFileGroup->getElementVector();
 
-        }
-        //create a filewriter map for storing the OUTPUTS of each selected user calculation
-        //this is not very element - I put the filewriter pointer into a struct and then  put the struct in to the
-        //map, because I cant seem to be able to put the pointer directly into the map itself :-(
-        QMap<QString, FileWriterStruct> myFileWriterMap;
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.meanOverYear(myFloatVector );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      ////emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
 
-        QMap<QString, bool>::const_iterator myIter;
-        for (myIter=availableCalculationsMap.begin(); myIter != availableCalculationsMap.end(); myIter++)
-        {
-            if (myIter.data()) //true
-            {
-                std::cout << "Adding " <<  myIter.key() << " to myFileWriterMap\n";
-                //create the fileWriter object
-                //note I am not using pointer & the 'new' keyword here
-                //because map doesnt let me add a pointer to the list
+  if (totalSolarRadFileGroup && totalSolarRadFileNameString != "" &&
+          availableCalculationsMap["Annual mean total incident solar radiation"])
+  {
+    emit variableStart("Annual mean total incident solar radiation");
+    std::cout << "ClimateDataProcessor::run Annual mean total incident solar radiation requested" << std::endl;
+    //move to start of the current data matrix
+    totalSolarRadFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual mean total incident solar radiation"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = totalSolarRadFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.meanOverYear(myFloatVector );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
 
-                QString myFileNameString = myIter.key();
-                QString myYearString;
-                //convert the active year to a number -
-                //the same caveats as mentioned above applyin that we presume all data
-                //is AD at this stage - need to imlement bc support still
-                char myYearChar[7];
-                if ( myCDPMainLoopInt >=0)
-                {
-                    sprintf(myYearChar,"%iAD",myCDPMainLoopInt);
-                }
-                else
-                {
-                    //loop logic still needs to be implemented properly for this to work!
-                    sprintf(myYearChar,"%iBP",myCDPMainLoopInt);
-                }
+  if ( minTempFileGroup
+          && maxTempFileGroup
+          && minTempFileNameString != ""
+          && maxTempFileNameString != ""
+          && availableCalculationsMap["Annual temperature range"])
+  {
 
-                //replace any spaces with underscores in the name
-                myFileNameString = myFileNameString.replace( QRegExp(" "), "_");
-                //set the extension
-                myFileNameString =  outputFilePathString + myFileNameString + "_" + myYearChar +".asc";
-                FileWriter * myFileWriter = new FileWriter(myFileNameString,outputFileType);
+    emit variableStart("Annual temperature range");
+    std::cout << "ClimateDataProcessor::run - Annual temperature range requested" << std::endl;
+    //move to start of the current data matrix
+    minTempFileGroup->moveToDataStart();
+    maxTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual temperature range"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!minTempFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector, myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = minTempFileGroup->getElementVector();
+      myFloatVector2 = maxTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.greatestTotalRange(myFloatVector,myFloatVector2);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
 
-                //Use externally defined header if its been set
-                if (!outputHeaderString.isEmpty())
-                {
-                    myFileWriter->writeString(outputHeaderString);
-                }
-                //Otherwise calculate one dynamically
-                else
-                {
-		  // Use the matrix dimensions to create the ascii file
-		  // Warning: this assumes a GLOBAL dataset
-		  // Warning: this screws up cellsizes that are not square
-		  // Warning: this only works for integers at present
-		  QString myHeaderString=
-		    QString ("ncols         ") +
-		    QString::number (myXDimInt) + 
-		    QString ("\n")+
-		    QString ("nrows         ") + 
-		    QString::number (myYDimInt) + 
-		    QString ("\n")+
-		    QString ("xllcorner     -180\n")+
-		    QString ("yllcorner     -90\n")+
-		    QString ("cellsize      ") + 
-		    QString::number (360/static_cast<float>(myXDimInt)) +
-		    QString ("\n")+
-		    QString ("nodata_value  -9999.0\n");
-                  myFileWriter->writeString(myHeaderString);
-		  // Formerly this was fixed to the following
-		  //QString myHeaderString=
-		  //QString ("ncols         720\n")+
-		  //QString ("nrows         360\n")+
-		  //QString ("xllcorner     -180\n")+
-		  //QString ("yllcorner     -90\n")+
-		  //QString ("cellsize      0.5\n")+
-		  //QString ("nodata_value  -9999\n");                    myFileWriter->writeString(myHeaderString);
+  if (maxTempFileGroup
+          && maxTempFileNameString != ""
+          && availableCalculationsMap["Highest temperature in warmest month"])
+  {
+    emit variableStart("Highest temperature in warmest month");
+    std::cout << "ClimateDataProcessor::run - Highest temperature in warmest month requested" << std::endl;
+    maxTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Highest temperature in warmest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!maxTempFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = maxTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.highestValue(myFloatVector);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
 
-                }
+  if (minTempFileGroup
+          && minTempFileNameString != ""
+          && availableCalculationsMap["Lowest temperature in coolest month"])
+  {
+    emit variableStart("Lowest temperature in coolest month");
+    std::cout << "ClimateDataProcessor::run - Lowest temperature in coolest month requested" << std::endl;
+    minTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Lowest temperature in coolest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!minTempFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = minTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.lowestValue(myFloatVector);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
 
-                std::cout << "Added " << myFileWriter->getFileNameString() << std::endl;
-                FileWriterStruct myFileWriterStruct;
-                myFileWriterStruct.structFileWriter=myFileWriter;
-                myFileWriterStruct.structFullFileName=myFileNameString;
-                //add it to the map
-                myFileWriterMap[myIter.key()]=myFileWriterStruct;
-                std::cout << "Added " << myFileWriterStruct.structFullFileName << std::endl;
-            }
-        }
+  }
+  if (meanPrecipFileGroup
+          && meanPrecipFileNameString != ""
+          && availableCalculationsMap["Mean daily precipitation"])
+  {
+    emit variableStart("Mean daily precipitation");
+    std::cout << "ClimateDataProcessor::run Mean daily precipitation" << std::endl;
+    meanPrecipFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanPrecipFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = meanPrecipFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.meanOverYear(myFloatVector );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if ( meanPrecipFileGroup &&  minTempFileGroup
+          && meanPrecipFileNameString != "" && meanTempFileNameString != ""
+          && availableCalculationsMap["Mean daily precipitation in coolest month"])
+  {
+    emit variableStart("Mean daily precipitation in coolest month");
+    std::cout << "ClimateDataProcessor::run Mean daily precipitation in coolest month" << std::endl;
+    meanPrecipFileGroup->moveToDataStart();
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in coolest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanPrecipFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = meanPrecipFileGroup->getElementVector();
+      myFloatVector2 = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myBlockInt = myDataProcessor.monthWithLowestValue(myFloatVector2);
+      float myFloat  = myDataProcessor.valueGivenMonth(myFloatVector,myBlockInt);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanPrecipFileGroup &&  minTempFileGroup && meanPrecipFileNameString != ""
+          && meanTempFileNameString != ""
+          && availableCalculationsMap["Mean daily precipitation in coolest quarter"])
+  {
+    emit variableStart("Mean daily precipitation in coolest quarter");
+    std::cout << "ClimateDataProcessor::run Mean daily precipitation in coolest month" << std::endl;
+    meanPrecipFileGroup->moveToDataStart();
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in coolest quarter"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanPrecipFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = meanPrecipFileGroup->getElementVector();
+      myFloatVector2 = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myBlockInt = myDataProcessor.firstMonthOfLowestQ(myFloatVector2);
+      float myFloat  = myDataProcessor.meanOverQuarter(myFloatVector,myBlockInt);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  &&
+          availableCalculationsMap["Mean daily precipitation in driest month"])
+  {
+    emit variableStart("Mean daily precipitation in driest month");
+    std::cout << "ClimateDataProcessor::run Mean daily precipitation in driest month" << std::endl;
+    meanPrecipFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in driest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanPrecipFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = meanPrecipFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.lowestValue(myFloatVector );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  &&
+          availableCalculationsMap["Mean daily precipitation in driest quarter"])
+  {
+    emit variableStart("Mean daily precipitation in driest quarter");
+    std::cout << "ClimateDataProcessor::run Mean daily precipitation in driest quarter" << std::endl;
+    meanPrecipFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in driest quarter"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanPrecipFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = meanPrecipFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.meanOverLowestQ(myFloatVector);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""
+          && meanTempFileGroup
+          && meanTempFileNameString != ""
+          && availableCalculationsMap["Mean daily precipitation in warmest month"])
+  {
+    emit variableStart("Mean daily precipitation in warmest month");
+    std::cout << "ClimateDataProcessor::run Mean daily precipitation in warmest month" << std::endl;
+    //move to the start of data blocks
+    meanPrecipFileGroup->moveToDataStart();
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in warmest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanPrecipFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = meanPrecipFileGroup->getElementVector();
+      myFloatVector2 = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myBlockInt = myDataProcessor.monthWithHighestValue(myFloatVector2);
+      float myFloat  = myDataProcessor.valueGivenMonth(myFloatVector,myBlockInt);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""
+          && meanTempFileGroup &&  meanTempFileNameString != ""
+          &&availableCalculationsMap["Mean daily precipitation in warmest quarter"])
+  {
+    emit variableStart("Mean daily precipitation in warmest quarter");
+    std::cout << "ClimateDataProcessor::run Mean daily precipitation in warmest quarter" << std::endl;
+    meanPrecipFileGroup->moveToDataStart();
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in warmest quarter"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanPrecipFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = meanPrecipFileGroup->getElementVector();
+      myFloatVector2 = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myCurrentBlockOfWarmestQuarterInt = myDataProcessor.firstMonthOfHighestQ(myFloatVector2);
+      float myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myCurrentBlockOfWarmestQuarterInt);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""   &&
+          availableCalculationsMap["Mean daily precipitation in wettest month"])
+  {
+    emit variableStart("Mean daily precipitation in wettest month");
+    std::cout << "ClimateDataProcessor::run Mean daily precipitation in wettest month" << std::endl;
+    meanPrecipFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in wettest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanPrecipFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = meanPrecipFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.highestValue(myFloatVector );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""   &&
+          availableCalculationsMap["Mean daily precipitation in wettest quarter"])
+  {
+    emit variableStart("Mean daily precipitation in wettest quarter");
+    std::cout << "ClimateDataProcessor::run Mean daily precipitation in wettest quarter" << std::endl;
+    meanPrecipFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in wettest quarter"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanPrecipFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float > myFloatVector;
+      //get the next element from the file group
+      myFloatVector = meanPrecipFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.meanOverHighestQ(myFloatVector);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (diurnalTempFileGroup && diurnalTempFileNameString != ""
+          && meanTempFileGroup
+          && meanTempFileNameString !=""
+          && availableCalculationsMap["Mean diurnal temperature range in coolest month"])
+  {
+    emit variableStart("Mean diurnal temperature range in coolest month");
+    std::cout << "ClimateDataProcessor::run Mean diurnal temperature range in coolest month" << std::endl;
+    diurnalTempFileGroup->moveToDataStart();
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean diurnal temperature range in coolest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!diurnalTempFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = diurnalTempFileGroup->getElementVector();
+      myFloatVector2 = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myCoolestBlockInt = myDataProcessor.monthWithLowestValue(myFloatVector2);
+      float myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myCoolestBlockInt);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (diurnalTempFileGroup && diurnalTempFileNameString != "" && meanTempFileGroup
+          && meanTempFileNameString !=""
+          && availableCalculationsMap["Mean diurnal temperature range in warmest month"])
+  {
+    emit variableStart("Mean diurnal temperature range in warmest month");
+    std::cout << "ClimateDataProcessor::run Mean diurnal temperature range in warmest month" << std::endl;
+    diurnalTempFileGroup->moveToDataStart();
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean diurnal temperature range in warmest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!diurnalTempFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = diurnalTempFileGroup->getElementVector();
+      myFloatVector2 = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myCoolestBlockInt = myDataProcessor.monthWithHighestValue(myFloatVector2);
+      float myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myCoolestBlockInt);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  && frostDaysFileGroup
+          && frostDaysFileNameString != ""
+          && availableCalculationsMap["Mean precipitation in frost free months"])
+  {
+    emit variableStart("Mean precipitation in frost free months");
+    std::cout << "ClimateDataProcessor::run Mean precipitation in frost free months" << std::endl;
+    meanPrecipFileGroup->moveToDataStart();
+    frostDaysFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean precipitation in frost free months"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanPrecipFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = meanPrecipFileGroup->getElementVector();
+      myFloatVector2 = frostDaysFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.meanValueOverFrostFreeMonths(myFloatVector2, myFloatVector);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
 
+  if (meanTempFileGroup && meanTempFileNameString !="" &&
+          availableCalculationsMap["Mean temperature in coolest month"])
+  {
+    emit variableStart("Mean temperature in coolest month");
+    std::cout << "ClimateDataProcessor::run Mean temperature in coolest month" << std::endl;
 
-        // cycle through each FileGroup, fetching the element array from it and running any user
-        // selected calculations, then writing the outputs to its associated filewriter in
-        // myFileWriterMap
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in coolest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanTempFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.lowestValue(myFloatVector );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanTempFileGroup && meanTempFileNameString !="" &&
+          availableCalculationsMap["Mean temperature in coolest quarter"])
+  {
+    emit variableStart("Mean temperature in coolest quarter");
+    std::cout << "ClimateDataProcessor::run Mean temperature in coolest quarter" << std::endl;
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in coolest quarter"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanTempFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.meanOverLowestQ(myFloatVector);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanTempFileGroup && meanTempFileNameString !="" && frostDaysFileGroup
+          && frostDaysFileNameString != ""
+          && availableCalculationsMap["Mean temperature in frost free months"])
+  {
+    emit variableStart("Mean temperature in frost free months");
+    std::cout << "ClimateDataProcessor::run Mean temperature in frost free months" << std::endl;
+    meanTempFileGroup->moveToDataStart();
+    frostDaysFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in frost free months"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanTempFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = meanTempFileGroup->getElementVector();
+      myFloatVector2 = frostDaysFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.meanValueOverFrostFreeMonths(myFloatVector2, myFloatVector);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanTempFileGroup && meanTempFileNameString !="" &&
+          availableCalculationsMap["Mean temperature in warmest month"])
+  {
+    emit variableStart("Mean temperature in warmest month");
+    std::cout << "ClimateDataProcessor::run Mean temperature in warmest month" << std::endl;
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in warmest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanTempFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.highestValue(myFloatVector );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanTempFileGroup && meanTempFileNameString !="" &&
+          availableCalculationsMap["Mean temperature in warmest quarter"])
+  {
+    emit variableStart("Mean temperature in warmest quarter");
+    std::cout << "ClimateDataProcessor::run Mean temperature in warmest quarter" << std::endl;
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in warmest quarter"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanTempFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.meanOverHighestQ(myFloatVector);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (windSpeedFileGroup && windSpeedFileNameString != "" &&
+          availableCalculationsMap["Mean wind speed"])
+  {
+    emit variableStart("Mean wind speed");
+    std::cout << "ClimateDataProcessor::run Mean wind speed" << std::endl;
+    windSpeedFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean wind speed"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!windSpeedFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = windSpeedFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.meanOverYear(myFloatVector );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (minTempFileGroup && minTempFileNameString !="" &&
+          availableCalculationsMap["Number of months with minimum temperature above freezing"])
+  {
+    emit variableStart("Number of months with minimum temperature above freezing");
+    std::cout << "ClimateDataProcessor::run Number of months with minimum temperature above freezing" << std::endl;
+    minTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Number of months with minimum temperature above freezing"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!minTempFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = minTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.numberOfMonthsAboveZero(myFloatVector );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
+          && meanTempFileGroup && meanTempFileNameString !=""
+          && availableCalculationsMap["Radiation in coolest month"])
+  {
+    emit variableStart("Radiation in coolest quarter");
+    std::cout << "ClimateDataProcessor::run Radiation in coolest month" << std::endl;
+    totalSolarRadFileGroup->moveToDataStart();
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in coolest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = totalSolarRadFileGroup->getElementVector();
+      myFloatVector2 = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myCoolestBlockInt = myDataProcessor.monthWithLowestValue(myFloatVector2);
+      float myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myCoolestBlockInt );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
+          && meanTempFileGroup && meanTempFileNameString !=""
+          && availableCalculationsMap["Radiation in coolest quarter"])
+  {
+    emit variableStart("Radiation in coolest quarter");
+    std::cout << "ClimateDataProcessor::run Radiation in coolest quarter" << std::endl;
+    totalSolarRadFileGroup->moveToDataStart();
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in coolest quarter"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = totalSolarRadFileGroup->getElementVector();
+      myFloatVector2 = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myFirstBlockInt = myDataProcessor.firstMonthOfLowestQ(myFloatVector2);
+      float myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myFirstBlockInt );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
+          && meanTempFileGroup && meanTempFileNameString != ""
+          && availableCalculationsMap["Radiation in warmest month"])
+  {
+    emit variableStart("Radiation in warmest month");
+    std::cout << "ClimateDataProcessor::run Radiation in warmest month" << std::endl;
+    totalSolarRadFileGroup->moveToDataStart();
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in warmest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = totalSolarRadFileGroup->getElementVector();
+      myFloatVector2 = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myHighestBlockInt = myDataProcessor.monthWithHighestValue(myFloatVector2);
+      float myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myHighestBlockInt );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
+          && meanTempFileGroup && meanTempFileNameString != ""
+          && availableCalculationsMap["Radiation in warmest quarter"])
+  {
+    emit variableStart("Radiation in warmest quarter");
+    std::cout << "ClimateDataProcessor::run Radiation in warmest quarter" << std::endl;
+    totalSolarRadFileGroup->moveToDataStart();
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in warmest quarter"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
+    {
 
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = totalSolarRadFileGroup->getElementVector();
+      myFloatVector2 = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myFirstBlockInt = myDataProcessor.firstMonthOfHighestQ(myFloatVector2);
+      float myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myFirstBlockInt );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
+          && meanPrecipFileGroup && meanPrecipFileNameString != ""
+          && availableCalculationsMap["Radiation in driest month"])
+  {
+    emit variableStart("Radiation in driest month");
+    std::cout << "ClimateDataProcessor::run Radiation in driest month" << std::endl;
+    totalSolarRadFileGroup->moveToDataStart();
+    meanPrecipFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in driest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = totalSolarRadFileGroup->getElementVector();
+      myFloatVector2 = meanPrecipFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myDriestBlockInt = myDataProcessor.monthWithLowestValue(myFloatVector2);
+      float myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myDriestBlockInt );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
+          && meanPrecipFileGroup && meanPrecipFileNameString != ""
+          && availableCalculationsMap["Radiation in driest quarter"])
+  {
+    emit variableStart("Radiation in driest quarter");
+    std::cout << "ClimateDataProcessor::run Radiation in driest quarter" << std::endl;
+    totalSolarRadFileGroup->moveToDataStart();
+    meanPrecipFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in driest quarter"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = totalSolarRadFileGroup->getElementVector();
+      myFloatVector2 = meanPrecipFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myFirstBlockInt = myDataProcessor.firstMonthOfLowestQ(myFloatVector2);
+      float myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myFirstBlockInt );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
 
-        if (meanTempFileGroup && meanTempFileNameString !="" &&
-                availableCalculationsMap["Mean temperature"])
-        {
-            emit variableStart("Mean temperature");
-            std::cout << "ClimateDataProcessor::run - Mean temperature requested" << std::endl;
-            //move to start of the current data matrix
-            meanTempFileGroup->moveToDataStart();
-
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-
-            int myXCountInt=0;
-            bool myFirstIterationFlag=true;
-            while (!meanTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->meanOverYear(myFloatVector );
-                if (myFirstIterationFlag || meanTempFileGroup->getEndOfMatrixFlag())
-                {
-                    //this next bit is just for debugging purposes"
-                    printVectorAndResult(myFloatVector,myFloat);
-                    myFirstIterationFlag=false;
-                }
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            std::cout << " ++++++ Emitting variableDone signal! " << std::endl;
-            emit variableDone(myFileWriterStruct.structFullFileName);
-
-        }
-        if (diurnalTempFileGroup && diurnalTempFileNameString != "" &&
-                availableCalculationsMap["Annual mean diurnal temperature range"])
-        {
-            emit variableStart("Annual mean diurnal temperature range");
-            std::cout << "ClimateDataProcessor::run Annual mean diurnal temperature range requested" << std::endl;
-            //move to start of the current data matrix
-            diurnalTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual mean diurnal temperature range"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!diurnalTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = diurnalTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->meanOverYear(myFloatVector );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-
-        if (frostDaysFileGroup && frostDaysFileNameString != "" &&
-                availableCalculationsMap["Annual mean number of frost days"])
-        {
-            emit variableStart("Annual mean number of frost days");
-            std::cout << "ClimateDataProcessor::run Annual mean number of frost days requested" << std::endl;
-            //move to start of the current data matrix
-            frostDaysFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual mean number of frost days"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!frostDaysFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = frostDaysFileGroup->getElementVector();
-
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->meanOverYear(myFloatVector );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-
-        if (totalSolarRadFileGroup && totalSolarRadFileNameString != "" &&
-                availableCalculationsMap["Annual mean total incident solar radiation"])
-        {
-            emit variableStart("Annual mean total incident solar radiation");
-            std::cout << "ClimateDataProcessor::run Annual mean total incident solar radiation requested" << std::endl;
-            //move to start of the current data matrix
-            totalSolarRadFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual mean total incident solar radiation"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = totalSolarRadFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->meanOverYear(myFloatVector );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-
-        if ( minTempFileGroup
-                && maxTempFileGroup
-                && minTempFileNameString != ""
-                && maxTempFileNameString != ""
-                && availableCalculationsMap["Annual temperature range"])
-        {
-
-            emit variableStart("Annual temperature range");
-            std::cout << "ClimateDataProcessor::run - Annual temperature range requested" << std::endl;
-            //move to start of the current data matrix
-            minTempFileGroup->moveToDataStart();
-            maxTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Annual temperature range"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!minTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector, myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = minTempFileGroup->getElementVector();
-                myFloatVector2 = maxTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->greatestTotalRange(myFloatVector,myFloatVector2);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-
-        if (maxTempFileGroup
-                && maxTempFileNameString != ""
-                && availableCalculationsMap["Highest temperature in warmest month"])
-        {
-            emit variableStart("Highest temperature in warmest month");
-            std::cout << "ClimateDataProcessor::run - Highest temperature in warmest month requested" << std::endl;
-            maxTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Highest temperature in warmest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!maxTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = maxTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->highestValue(myFloatVector);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-
-        if (minTempFileGroup
-                && minTempFileNameString != ""
-                && availableCalculationsMap["Lowest temperature in coolest month"])
-        {
-            emit variableStart("Lowest temperature in coolest month");
-            std::cout << "ClimateDataProcessor::run - Lowest temperature in coolest month requested" << std::endl;
-            minTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Lowest temperature in coolest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!minTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = minTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->lowestValue(myFloatVector);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-
-        }
-        if (meanPrecipFileGroup
-                && meanPrecipFileNameString != ""
-                && availableCalculationsMap["Mean daily precipitation"])
-        {
-            emit variableStart("Mean daily precipitation");
-            std::cout << "ClimateDataProcessor::run Mean daily precipitation" << std::endl;
-            meanPrecipFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanPrecipFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = meanPrecipFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->meanOverYear(myFloatVector );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if ( meanPrecipFileGroup &&  minTempFileGroup
-                && meanPrecipFileNameString != "" && meanTempFileNameString != ""
-                && availableCalculationsMap["Mean daily precipitation in coolest month"])
-        {
-            emit variableStart("Mean daily precipitation in coolest month");
-            std::cout << "ClimateDataProcessor::run Mean daily precipitation in coolest month" << std::endl;
-            meanPrecipFileGroup->moveToDataStart();
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in coolest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanPrecipFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = meanPrecipFileGroup->getElementVector();
-                myFloatVector2 = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myBlockInt = myDataProcessor->monthWithLowestValue(myFloatVector2);
-                float myFloat  = myDataProcessor->valueGivenMonth(myFloatVector,myBlockInt);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanPrecipFileGroup &&  minTempFileGroup && meanPrecipFileNameString != ""
-                && meanTempFileNameString != ""
-                && availableCalculationsMap["Mean daily precipitation in coolest quarter"])
-        {
-            emit variableStart("Mean daily precipitation in coolest quarter");
-            std::cout << "ClimateDataProcessor::run Mean daily precipitation in coolest month" << std::endl;
-            meanPrecipFileGroup->moveToDataStart();
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in coolest quarter"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanPrecipFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = meanPrecipFileGroup->getElementVector();
-                myFloatVector2 = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myBlockInt = myDataProcessor->firstMonthOfLowestQ(myFloatVector2);
-                float myFloat  = myDataProcessor->meanOverQuarter(myFloatVector,myBlockInt);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  &&
-                availableCalculationsMap["Mean daily precipitation in driest month"])
-        {
-            emit variableStart("Mean daily precipitation in driest month");
-            std::cout << "ClimateDataProcessor::run Mean daily precipitation in driest month" << std::endl;
-            meanPrecipFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in driest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanPrecipFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = meanPrecipFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->lowestValue(myFloatVector );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  &&
-                availableCalculationsMap["Mean daily precipitation in driest quarter"])
-        {
-            emit variableStart("Mean daily precipitation in driest quarter");
-            std::cout << "ClimateDataProcessor::run Mean daily precipitation in driest quarter" << std::endl;
-            meanPrecipFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in driest quarter"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanPrecipFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = meanPrecipFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->meanOverLowestQ(myFloatVector);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""
-                && meanTempFileGroup
-                && meanTempFileNameString != ""
-                && availableCalculationsMap["Mean daily precipitation in warmest month"])
-        {
-            emit variableStart("Mean daily precipitation in warmest month");
-            std::cout << "ClimateDataProcessor::run Mean daily precipitation in warmest month" << std::endl;
-            //move to the start of data blocks
-            meanPrecipFileGroup->moveToDataStart();
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in warmest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanPrecipFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = meanPrecipFileGroup->getElementVector();
-                myFloatVector2 = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myBlockInt = myDataProcessor->monthWithHighestValue(myFloatVector2);
-                float myFloat  = myDataProcessor->valueGivenMonth(myFloatVector,myBlockInt);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""
-                && meanTempFileGroup &&  meanTempFileNameString != ""
-                &&availableCalculationsMap["Mean daily precipitation in warmest quarter"])
-        {
-            emit variableStart("Mean daily precipitation in warmest quarter");
-            std::cout << "ClimateDataProcessor::run Mean daily precipitation in warmest quarter" << std::endl;
-            meanPrecipFileGroup->moveToDataStart();
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in warmest quarter"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanPrecipFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = meanPrecipFileGroup->getElementVector();
-                myFloatVector2 = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myCurrentBlockOfWarmestQuarterInt = myDataProcessor->firstMonthOfHighestQ(myFloatVector2);
-                float myFloat = myDataProcessor->meanOverQuarter(myFloatVector,myCurrentBlockOfWarmestQuarterInt);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""   &&
-                availableCalculationsMap["Mean daily precipitation in wettest month"])
-        {
-            emit variableStart("Mean daily precipitation in wettest month");
-            std::cout << "ClimateDataProcessor::run Mean daily precipitation in wettest month" << std::endl;
-            meanPrecipFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in wettest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanPrecipFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = meanPrecipFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->highestValue(myFloatVector );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""   &&
-                availableCalculationsMap["Mean daily precipitation in wettest quarter"])
-        {
-            emit variableStart("Mean daily precipitation in wettest quarter");
-            std::cout << "ClimateDataProcessor::run Mean daily precipitation in wettest quarter" << std::endl;
-            meanPrecipFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean daily precipitation in wettest quarter"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanPrecipFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float > myFloatVector;
-                //get the next element from the file group
-                myFloatVector = meanPrecipFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->meanOverHighestQ(myFloatVector);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (diurnalTempFileGroup && diurnalTempFileNameString != ""
-                && meanTempFileGroup
-                && meanTempFileNameString !=""
-                && availableCalculationsMap["Mean diurnal temperature range in coolest month"])
-        {
-            emit variableStart("Mean diurnal temperature range in coolest month");
-            std::cout << "ClimateDataProcessor::run Mean diurnal temperature range in coolest month" << std::endl;
-            diurnalTempFileGroup->moveToDataStart();
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean diurnal temperature range in coolest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!diurnalTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = diurnalTempFileGroup->getElementVector();
-                myFloatVector2 = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myCoolestBlockInt = myDataProcessor->monthWithLowestValue(myFloatVector2);
-                float myFloat = myDataProcessor->valueGivenMonth(myFloatVector,myCoolestBlockInt);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (diurnalTempFileGroup && diurnalTempFileNameString != "" && meanTempFileGroup
-                && meanTempFileNameString !=""
-                && availableCalculationsMap["Mean diurnal temperature range in warmest month"])
-        {
-            emit variableStart("Mean diurnal temperature range in warmest month");
-            std::cout << "ClimateDataProcessor::run Mean diurnal temperature range in warmest month" << std::endl;
-            diurnalTempFileGroup->moveToDataStart();
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean diurnal temperature range in warmest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!diurnalTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = diurnalTempFileGroup->getElementVector();
-                myFloatVector2 = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myCoolestBlockInt = myDataProcessor->monthWithHighestValue(myFloatVector2);
-                float myFloat = myDataProcessor->valueGivenMonth(myFloatVector,myCoolestBlockInt);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanPrecipFileGroup &&  meanPrecipFileNameString != ""  && frostDaysFileGroup
-                && frostDaysFileNameString != ""
-                && availableCalculationsMap["Mean precipitation in frost free months"])
-        {
-            emit variableStart("Mean precipitation in frost free months");
-            std::cout << "ClimateDataProcessor::run Mean precipitation in frost free months" << std::endl;
-            meanPrecipFileGroup->moveToDataStart();
-            frostDaysFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean precipitation in frost free months"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanPrecipFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = meanPrecipFileGroup->getElementVector();
-                myFloatVector2 = frostDaysFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->meanValueOverFrostFreeMonths(myFloatVector2, myFloatVector);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-
-        if (meanTempFileGroup && meanTempFileNameString !="" &&
-                availableCalculationsMap["Mean temperature in coolest month"])
-        {
-            emit variableStart("Mean temperature in coolest month");
-            std::cout << "ClimateDataProcessor::run Mean temperature in coolest month" << std::endl;
-
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in coolest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->lowestValue(myFloatVector );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanTempFileGroup && meanTempFileNameString !="" &&
-                availableCalculationsMap["Mean temperature in coolest quarter"])
-        {
-            emit variableStart("Mean temperature in coolest quarter");
-            std::cout << "ClimateDataProcessor::run Mean temperature in coolest quarter" << std::endl;
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in coolest quarter"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->meanOverLowestQ(myFloatVector);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanTempFileGroup && meanTempFileNameString !="" && frostDaysFileGroup
-                && frostDaysFileNameString != ""
-                && availableCalculationsMap["Mean temperature in frost free months"])
-        {
-            emit variableStart("Mean temperature in frost free months");
-            std::cout << "ClimateDataProcessor::run Mean temperature in frost free months" << std::endl;
-            meanTempFileGroup->moveToDataStart();
-            frostDaysFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in frost free months"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = meanTempFileGroup->getElementVector();
-                myFloatVector2 = frostDaysFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->meanValueOverFrostFreeMonths(myFloatVector2, myFloatVector);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanTempFileGroup && meanTempFileNameString !="" &&
-                availableCalculationsMap["Mean temperature in warmest month"])
-        {
-            emit variableStart("Mean temperature in warmest month");
-            std::cout << "ClimateDataProcessor::run Mean temperature in warmest month" << std::endl;
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in warmest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->highestValue(myFloatVector );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanTempFileGroup && meanTempFileNameString !="" &&
-                availableCalculationsMap["Mean temperature in warmest quarter"])
-        {
-            emit variableStart("Mean temperature in warmest quarter");
-            std::cout << "ClimateDataProcessor::run Mean temperature in warmest quarter" << std::endl;
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean temperature in warmest quarter"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->meanOverHighestQ(myFloatVector);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (windSpeedFileGroup && windSpeedFileNameString != "" &&
-                availableCalculationsMap["Mean wind speed"])
-        {
-            emit variableStart("Mean wind speed");
-            std::cout << "ClimateDataProcessor::run Mean wind speed" << std::endl;
-            windSpeedFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Mean wind speed"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!windSpeedFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = windSpeedFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->meanOverYear(myFloatVector );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (minTempFileGroup && minTempFileNameString !="" &&
-                availableCalculationsMap["Number of months with minimum temperature above freezing"])
-        {
-            emit variableStart("Number of months with minimum temperature above freezing");
-            std::cout << "ClimateDataProcessor::run Number of months with minimum temperature above freezing" << std::endl;
-            minTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Number of months with minimum temperature above freezing"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!minTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = minTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->numberOfMonthsAboveZero(myFloatVector );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
-                && meanTempFileGroup && meanTempFileNameString !=""
-                && availableCalculationsMap["Radiation in coolest month"])
-        {
-            emit variableStart("Radiation in coolest quarter");
-            std::cout << "ClimateDataProcessor::run Radiation in coolest month" << std::endl;
-            totalSolarRadFileGroup->moveToDataStart();
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in coolest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = totalSolarRadFileGroup->getElementVector();
-                myFloatVector2 = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myCoolestBlockInt = myDataProcessor->monthWithLowestValue(myFloatVector2);
-                float myFloat = myDataProcessor->valueGivenMonth(myFloatVector,myCoolestBlockInt );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
-                && meanTempFileGroup && meanTempFileNameString !=""
-                && availableCalculationsMap["Radiation in coolest quarter"])
-        {
-            emit variableStart("Radiation in coolest quarter");
-            std::cout << "ClimateDataProcessor::run Radiation in coolest quarter" << std::endl;
-            totalSolarRadFileGroup->moveToDataStart();
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in coolest quarter"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = totalSolarRadFileGroup->getElementVector();
-                myFloatVector2 = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myFirstBlockInt = myDataProcessor->firstMonthOfLowestQ(myFloatVector2);
-                float myFloat = myDataProcessor->meanOverQuarter(myFloatVector,myFirstBlockInt );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
-                && meanTempFileGroup && meanTempFileNameString != ""
-                && availableCalculationsMap["Radiation in warmest month"])
-        {
-            emit variableStart("Radiation in warmest month");
-            std::cout << "ClimateDataProcessor::run Radiation in warmest month" << std::endl;
-            totalSolarRadFileGroup->moveToDataStart();
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in warmest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = totalSolarRadFileGroup->getElementVector();
-                myFloatVector2 = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myHighestBlockInt = myDataProcessor->monthWithHighestValue(myFloatVector2);
-                float myFloat = myDataProcessor->valueGivenMonth(myFloatVector,myHighestBlockInt );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
-                && meanTempFileGroup && meanTempFileNameString != ""
-                && availableCalculationsMap["Radiation in warmest quarter"])
-        {
-            emit variableStart("Radiation in warmest quarter");
-            std::cout << "ClimateDataProcessor::run Radiation in warmest quarter" << std::endl;
-            totalSolarRadFileGroup->moveToDataStart();
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in warmest quarter"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
-            {
-
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = totalSolarRadFileGroup->getElementVector();
-                myFloatVector2 = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myFirstBlockInt = myDataProcessor->firstMonthOfHighestQ(myFloatVector2);
-                float myFloat = myDataProcessor->meanOverQuarter(myFloatVector,myFirstBlockInt );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
-                && meanPrecipFileGroup && meanPrecipFileNameString != ""
-                && availableCalculationsMap["Radiation in driest month"])
-        {
-            emit variableStart("Radiation in driest month");
-            std::cout << "ClimateDataProcessor::run Radiation in driest month" << std::endl;
-            totalSolarRadFileGroup->moveToDataStart();
-            meanPrecipFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in driest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = totalSolarRadFileGroup->getElementVector();
-                myFloatVector2 = meanPrecipFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myDriestBlockInt = myDataProcessor->monthWithLowestValue(myFloatVector2);
-                float myFloat = myDataProcessor->valueGivenMonth(myFloatVector,myDriestBlockInt );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
-                && meanPrecipFileGroup && meanPrecipFileNameString != ""
-                && availableCalculationsMap["Radiation in driest quarter"])
-        {
-            emit variableStart("Radiation in driest quarter");
-            std::cout << "ClimateDataProcessor::run Radiation in driest quarter" << std::endl;
-            totalSolarRadFileGroup->moveToDataStart();
-            meanPrecipFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in driest quarter"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = totalSolarRadFileGroup->getElementVector();
-                myFloatVector2 = meanPrecipFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myFirstBlockInt = myDataProcessor->firstMonthOfLowestQ(myFloatVector2);
-                float myFloat = myDataProcessor->meanOverQuarter(myFloatVector,myFirstBlockInt );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-
-        if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
-                && meanPrecipFileGroup && meanPrecipFileNameString != ""
-                && availableCalculationsMap["Radiation in wettest month"])
-        {
-            emit variableStart("Radiation in wettest month");
-            std::cout << "ClimateDataProcessor::run Radiation in wettest month" << std::endl;
-            totalSolarRadFileGroup->moveToDataStart();
-            meanPrecipFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in wettest month"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = totalSolarRadFileGroup->getElementVector();
-                myFloatVector2 = meanPrecipFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myWettestBlockInt = myDataProcessor->monthWithHighestValue(myFloatVector2);
-                float myFloat = myDataProcessor->valueGivenMonth(myFloatVector,myWettestBlockInt );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
-                && meanPrecipFileGroup && meanPrecipFileNameString != ""
-                && availableCalculationsMap["Radiation in wettest quarter"])
-        {
-            emit variableStart("Radiation in wettest quarter");
-            std::cout << "ClimateDataProcessor::run Radiation in wettest quarter" << std::endl;
-            totalSolarRadFileGroup->moveToDataStart();
-            meanPrecipFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in wettest quarter"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector,myFloatVector2;
-                //get the next element from the file group
-                myFloatVector = totalSolarRadFileGroup->getElementVector();
-                myFloatVector2 = meanPrecipFileGroup->getElementVector();
-                //we are using mean over year summary
-                int myFirstBlockInt = myDataProcessor->firstMonthOfHighestQ(myFloatVector2);
-                float myFloat = myDataProcessor->meanOverQuarter(myFloatVector,myFirstBlockInt );
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanPrecipFileGroup && meanPrecipFileNameString != "" &&
-                availableCalculationsMap["Standard deviation of mean precipitation"])
-        {
-            emit variableStart("Standard deviation of mean precipitation");
-            std::cout << "ClimateDataProcessor::run Standard deviation of mean precipitation" << std::endl;
-            meanPrecipFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Standard deviation of mean precipitation"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanPrecipFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = meanPrecipFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->stddevOverYear(myFloatVector);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        if (meanTempFileGroup && meanTempFileNameString != ""
-                && availableCalculationsMap["Standard deviation of mean temperature"])
-        {
-            emit variableStart("Standard deviation of mean temperature");
-            std::cout << "ClimateDataProcessor::run Standard deviation of mean temperature" << std::endl;
-            meanTempFileGroup->moveToDataStart();
-            //get the struct containing the filewriter pointer and full file name from the writer map
-            FileWriterStruct myFileWriterStruct = myFileWriterMap["Standard deviation of mean temperature"];
-            //get the filewriter from out of the struct
-            FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
-            int myXCountInt=0;
-            while (!meanTempFileGroup->getEndOfMatrixFlag())
-            {
-                QValueVector<float> myFloatVector;
-                //get the next element from the file group
-                myFloatVector = meanTempFileGroup->getElementVector();
-                //we are using mean over year summary
-                float myFloat = myDataProcessor->stddevOverYear(myFloatVector);
-                //write the result to our output file
-                bool myResultFlag = myFileWriter->writeElement(myFloat);
-                if (!myResultFlag)
-                {
-                    std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
-                    delete myDataProcessor;
-                    return false;
-                }
-                myXCountInt++;
-                if (myXCountInt%myXDimInt==0)
-                {
-                    myFileWriter->writeString("\n");
-                }
-                emit cellDone(myFloat);
-            }
-            emit variableDone(myFileWriterStruct.structFullFileName);
-        }
-        emit yearDone();
-    }//This is the END OF MAIN OUTER LOOP:
-    //presume all went ok - need to add better error checking later
-    delete myDataProcessor;
-    return true;
+  if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
+          && meanPrecipFileGroup && meanPrecipFileNameString != ""
+          && availableCalculationsMap["Radiation in wettest month"])
+  {
+    emit variableStart("Radiation in wettest month");
+    std::cout << "ClimateDataProcessor::run Radiation in wettest month" << std::endl;
+    totalSolarRadFileGroup->moveToDataStart();
+    meanPrecipFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in wettest month"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = totalSolarRadFileGroup->getElementVector();
+      myFloatVector2 = meanPrecipFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myWettestBlockInt = myDataProcessor.monthWithHighestValue(myFloatVector2);
+      float myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myWettestBlockInt );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (totalSolarRadFileGroup && totalSolarRadFileNameString != ""
+          && meanPrecipFileGroup && meanPrecipFileNameString != ""
+          && availableCalculationsMap["Radiation in wettest quarter"])
+  {
+    emit variableStart("Radiation in wettest quarter");
+    std::cout << "ClimateDataProcessor::run Radiation in wettest quarter" << std::endl;
+    totalSolarRadFileGroup->moveToDataStart();
+    meanPrecipFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Radiation in wettest quarter"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!totalSolarRadFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector,myFloatVector2;
+      //get the next element from the file group
+      myFloatVector = totalSolarRadFileGroup->getElementVector();
+      myFloatVector2 = meanPrecipFileGroup->getElementVector();
+      //we are using mean over year summary
+      int myFirstBlockInt = myDataProcessor.firstMonthOfHighestQ(myFloatVector2);
+      float myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myFirstBlockInt );
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanPrecipFileGroup && meanPrecipFileNameString != "" &&
+          availableCalculationsMap["Standard deviation of mean precipitation"])
+  {
+    emit variableStart("Standard deviation of mean precipitation");
+    std::cout << "ClimateDataProcessor::run Standard deviation of mean precipitation" << std::endl;
+    meanPrecipFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Standard deviation of mean precipitation"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanPrecipFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = meanPrecipFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.stddevOverYear(myFloatVector);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  if (meanTempFileGroup && meanTempFileNameString != ""
+          && availableCalculationsMap["Standard deviation of mean temperature"])
+  {
+    emit variableStart("Standard deviation of mean temperature");
+    std::cout << "ClimateDataProcessor::run Standard deviation of mean temperature" << std::endl;
+    meanTempFileGroup->moveToDataStart();
+    //get the struct containing the filewriter pointer and full file name from the writer map
+    FileWriterStruct myFileWriterStruct = myFileWriterMap["Standard deviation of mean temperature"];
+    //get the filewriter from out of the struct
+    FileWriter *myFileWriter = myFileWriterStruct.structFileWriter;
+    int myXCountInt=0;
+    while (!meanTempFileGroup->getEndOfMatrixFlag())
+    {
+      QValueVector<float> myFloatVector;
+      //get the next element from the file group
+      myFloatVector = meanTempFileGroup->getElementVector();
+      //we are using mean over year summary
+      float myFloat = myDataProcessor.stddevOverYear(myFloatVector);
+      //write the result to our output file
+      bool myResultFlag = myFileWriter->writeElement(myFloat);
+      if (!myResultFlag)
+      {
+        std::cout << "Error! Writing an element to " <<  myFileWriterStruct.structFullFileName << " failed " << std::endl;
+        
+        return false;
+      }
+      myXCountInt++;
+      if (myXCountInt%myXDimInt==0)
+      {
+        myFileWriter->writeString("\n");
+      }
+      //emit cellDone(myFloat);
+    }
+    emit variableDone(myFileWriterStruct.structFullFileName);
+  }
+  return true;
 }
 
 void ClimateDataProcessor::printVectorAndResult(QValueVector<float> theVector, float theResultFloat)
@@ -2577,13 +2515,7 @@ QString ClimateDataProcessor::getDescription()
     QString myString, myNumberString;
     myString += "\n Climate Data Processor Description \n";
     myString += " ---------------------------------- \n";
-    myNumberString = QString::number( getFileStartYearInt());   //convert an int to a string!
-    myString += QString("File Start Year : ") + myNumberString + QString("\n") ;
 
-    myNumberString = QString::number( getJobStartYearInt());
-    myString += QString("Job Start Year : ") + myNumberString+ QString("\n") ;
-    myNumberString = QString::number( getJobEndYearInt());
-    myString += QString("Job End Year : ") + myNumberString + QString("\n") ;
 
     myNumberString = QString::number(getInputFileType());
     myString += QString("Input File Type Enum : ") + myNumberString+ QString("\n");

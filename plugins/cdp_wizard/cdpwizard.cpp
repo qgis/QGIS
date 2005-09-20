@@ -22,7 +22,6 @@ email                : t.sutton@reading.ac.uk
 #include <qcombobox.h>
 #include <qlistbox.h>
 #include <qlineedit.h>
-#include <qspinbox.h>
 #include <string.h>
 #include <qlabel.h>
 #include <qpixmap.h>
@@ -134,14 +133,6 @@ bool CDPWizard::initialise()
   //hook uo signals and slots
   connect(climateDataProcessor,SIGNAL(numberOfCellsToCalc(int)),
           this,SLOT(numberOfCellsToCalc(int)));
-  connect(climateDataProcessor,SIGNAL(numberOfVariablesToCalc(int)),
-          this,SLOT(numberOfVariablesToCalc(int)));
-  connect(climateDataProcessor,SIGNAL(numberOfYearsToCalc(int)),
-          this,SLOT(numberOfYearsToCalc(int)));
-  connect(climateDataProcessor,SIGNAL(yearStart(QString)),
-          this,SLOT(yearStart(QString )));
-  connect(climateDataProcessor,SIGNAL(yearDone()),
-          this,SLOT(yearDone()));
   connect(climateDataProcessor,SIGNAL(variableStart(QString )),
           this,SLOT(variableStart(QString )));
   connect(climateDataProcessor,SIGNAL(variableDone(QString)),
@@ -172,10 +163,6 @@ void CDPWizard::saveDefaults()
     myQSettings.writeEntry("/qgis/cdpwizard/windSpeed",leWindSpeed->text());
     myQSettings.writeEntry("/qgis/cdpwizard/fileType",cboFileType->currentItem());
 
-    //Page 3
-    myQSettings.writeEntry("/qgis/cdpwizard/firstYearInFile",spinFirstYearInFile->value());
-    myQSettings.writeEntry("/qgis/cdpwizard/firstYearToCalc",spinFirstYearToCalc->value());
-    myQSettings.writeEntry("/qgis/cdpwizard/lastYearToCalc",spinLastYearToCalc->value());
 
     //Page 4
     myQSettings.writeEntry("/qgis/cdpwizard/outputPath",leOutputPath->text());
@@ -195,10 +182,6 @@ void CDPWizard::loadDefaults()
     leTotalSolarRadiation->setText(myQSettings.readEntry("/qgis/cdpwizard/totalSolarRadiation"));
     leWindSpeed->setText(myQSettings.readEntry("/qgis/cdpwizard/windSpeed"));
     cboFileType->setCurrentItem(myQSettings.readNumEntry("/qgis/cdpwizard/fileType"));
-
-    spinFirstYearInFile->setValue(myQSettings.readNumEntry("/qgis/cdpwizard/firstYearInFile"));
-    spinFirstYearToCalc->setValue(myQSettings.readNumEntry("/qgis/cdpwizard/firstYearToCalc"));
-    spinLastYearToCalc->setValue(myQSettings.readNumEntry("/qgis/cdpwizard/lastYearToCalc"));
 
 
     QString myOutputDir = myQSettings.readEntry("/qgis/cdpwizard/DefaultDirectories/OutputDir",QDir::homeDirPath());
@@ -279,7 +262,7 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
         //
         climateDataProcessor->setInputFileType(cboFileType->currentText().latin1());
         //Should not need to have the next line here - it slows everythinf down!
-        //climateDataProcessor->makeFileGroups(0);
+        //climateDataProcessor->makeFileGroups();
         //#ifdef QGISDEBUG
 
         std::cout << "Getting available calculations list" << std::endl;
@@ -343,10 +326,6 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
             }
         }
 
-        //update the start and end date summary boxes
-        leStartYearSummary->setText(QString::number(spinFirstYearToCalc->value()));
-        leEndYearSummary->setText(QString::number(spinLastYearToCalc->value()));
-
         //update the output file format summary box
         leInputFormatSummary->setText(cboFileType->currentText());
 
@@ -379,15 +358,6 @@ void CDPWizard::run()
     int myFirstYearInFileInt, myJobStartYearInt, myJobEndYearInt;
     QString myInputFileTypeString, myOutputFileTypeString, myOutputPathString;
     QString myQString;
-
-    // get the first year in file value
-    climateDataProcessor->setFileStartYearInt(spinFirstYearInFile->value());
-
-    // get the first year in file to be processed in this job
-    climateDataProcessor->setJobStartYearInt(spinFirstYearToCalc->value());
-
-    // get the last year in file to be processed in this job
-    climateDataProcessor->setJobEndYearInt(spinLastYearToCalc->value());
 
     // get the ouput file path
     climateDataProcessor->setOutputFilePathString(leOutputPath->text());
@@ -432,7 +402,7 @@ void CDPWizard::run()
 
     //setup the climate data processor's filereaders
     /** @todo see what this hardcoding means and remove if possible */
-    if (!climateDataProcessor->makeFileGroups (1))    //hardcoding year 1 for now
+    if (!climateDataProcessor->makeFileGroups ())
     {
         std::cerr << "cdpwizards call to make file groups failed!" << std::endl;
         return;
@@ -469,30 +439,6 @@ void CDPWizard::numberOfCellsToCalc(int theNumberInt)
 {
    progressCurrentTask->setTotalSteps(theNumberInt);
 }
-void CDPWizard::numberOfVariablesToCalc(int theNumberInt)
-{
-  //progressCurrentYear->setTotalSteps(theNumberInt);
-  progressCurrentYear->setTotalSteps(progressCurrentTask->totalSteps()* theNumberInt);
-}
-void CDPWizard::numberOfYearsToCalc(int theNumberInt)
-{
-  //progressTotalJob->setTotalSteps(theNumberInt);
-  progressTotalJob->setTotalSteps(progressCurrentYear->totalSteps()* theNumberInt);
-}
-void CDPWizard::yearStart(QString theNameQString)
-{
-  progressCurrentYear->setProgress(0);
-  lblCurrentYear->setText("<p align=\"right\">Calculating variables for " + theNameQString + "</p>");
-  qApp->processEvents();
-}
-void CDPWizard::yearDone()
-{
-   //dont set progress to 0 - 0 has a special qt meaning of 'busy'
-  //progressCurrentTask->setProgress(0);
-  //progressCurrentYear->setProgress(0);
-  //progressTotalJob->setProgress(progressTotalJob->progress()+1);
-  qApp->processEvents();
-}
 void CDPWizard::variableStart(QString theNameQString)
 {
   lblCurrentTask->setText("<p align=\"right\">" + theNameQString + "</p>");
@@ -523,14 +469,12 @@ void CDPWizard::variableDone(QString theFileNameString)
   pixmapLabel2->setScaledContents(true);
   pixmapLabel2->setPixmap(myPixmap);
   //dont set progress to 0 - 0 has a special qt meaning of 'busy'
-  //progressCurrentYear->setProgress(progressCurrentYear->progress()+1);
   //progressTotalJob->setProgress(progressTotalJob->progress()+1);
   qApp->processEvents();
 }
 void CDPWizard::cellDone(float theResultFloat)
 {
   progressCurrentTask->setProgress(progressCurrentTask->progress()+1);
-  progressCurrentYear->setProgress(progressCurrentYear->progress()+1);
   progressTotalJob->setProgress(progressTotalJob->progress()+1);
   //update the elapsed time
   QString myLabelString;
@@ -664,180 +608,6 @@ void CDPWizard::pbtnOutputPath_clicked()
     myQSettings.writeEntry("/qgis/cdpwizard/DefaultDirectories/OutputDir",myFileNameQString);
   }
 }
-
-
-void CDPWizard::spinFirstYearInFile_valueChanged( int theInt)
-{
-    if (cbxYearType->currentText()=="AD")
-    {
-        //
-        //Year type is AD
-        //
-
-        //check firstyeartocalc is not lower then firstyearinfile
-        if (theInt > spinFirstYearToCalc->value())
-        {
-            spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
-        }
-
-        //check lastyeartocalc is not lower then firstyearinfile
-        if (theInt > spinLastYearToCalc->value())
-        {
-            spinLastYearToCalc->setValue(spinFirstYearInFile->value());
-        }
-
-        //set lower bounds of first and last year spin boxes to first year in file
-        spinFirstYearToCalc->setMinValue(spinFirstYearInFile->value());
-        spinLastYearToCalc->setMinValue(spinFirstYearInFile->value());
-        spinFirstYearToCalc->setMaxValue(3000);
-        spinLastYearToCalc->setMaxValue(3000);
-    }
-
-    else
-    {
-        //
-        //Year type is BP
-        //
-
-        //check firstyeartocalc is not higher then firstyearinfile
-        if (theInt < spinFirstYearToCalc->value())
-        {
-            spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
-        }
-
-        //check lastyeartocalc is not lower then firstyearinfile
-        if (theInt < spinLastYearToCalc->value())
-        {
-            spinLastYearToCalc->setValue(spinFirstYearInFile->value());
-        }
-
-        //set lower and upper bounds
-        spinFirstYearToCalc->setMaxValue(spinFirstYearInFile->value());
-        spinLastYearToCalc->setMaxValue(spinFirstYearInFile->value());
-        spinFirstYearToCalc->setMinValue(0);
-        spinLastYearToCalc->setMinValue(0);
-    }
-}
-
-void CDPWizard::spinFirstYearToCalc_valueChanged( int theInt)
-{
-    if (cbxYearType->currentText()=="AD")
-    {
-        //
-        //Year type is AD
-        //
-
-        if (theInt > spinLastYearToCalc->value())
-        {
-            spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
-        }
-    }
-
-    else
-    {
-        //
-        //Year type is BP
-        //
-
-        if (theInt < spinLastYearToCalc->value())
-        {
-            spinLastYearToCalc->setValue(spinFirstYearToCalc->value());
-        }
-
-    }
-
-}
-
-void CDPWizard::spinLastYearToCalc_valueChanged( int theInt)
-{
-    if (cbxYearType->currentText()=="AD")
-    {
-        //
-        //Year type is AD
-        //
-
-        if (theInt < spinFirstYearToCalc->value())
-        {
-            spinFirstYearToCalc->setValue(spinLastYearToCalc->value());
-        }
-    }
-
-    else
-    {
-        //
-        //Year type is BP
-        //
-
-        if (theInt > spinFirstYearToCalc->value())
-        {
-            spinFirstYearToCalc->setValue(spinLastYearToCalc->value());
-        }
-
-    }
-}
-
-void CDPWizard::cbxYearType_highlighted( const QString & theYearType )
-{
-    std::cout << "Setting year type to " << theYearType << std::endl;
-    spinFirstYearToCalc->setSuffix(theYearType);
-    spinLastYearToCalc->setSuffix(theYearType);
-
-    if (theYearType=="AD")
-    {
-        //
-        //Year type is AD
-        //
-
-        if (spinFirstYearInFile->value()>3000)
-        {
-            spinFirstYearInFile->setValue(2000);
-        }
-
-        if (spinFirstYearToCalc->value() < spinFirstYearInFile->value())
-        {
-            spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
-        }
-
-        if (spinLastYearToCalc->value() < spinFirstYearInFile->value())
-        {
-            spinLastYearToCalc->setValue(spinFirstYearInFile->value());
-        }
-
-        spinFirstYearToCalc->setMinValue(spinFirstYearInFile->value());
-        spinLastYearToCalc->setMinValue(spinFirstYearInFile->value());
-        spinFirstYearToCalc->setMaxValue(3000);
-        spinLastYearToCalc->setMaxValue(3000);
-
-
-    }
-
-    else
-    {
-
-        //
-        //Year type is BP
-        //
-
-        if (spinFirstYearToCalc->value() > spinFirstYearInFile->value())
-        {
-            spinFirstYearToCalc->setValue(spinFirstYearInFile->value());
-        }
-
-        if (spinLastYearToCalc->value() > spinFirstYearInFile->value())
-        {
-            spinLastYearToCalc->setValue(spinFirstYearInFile->value());
-        }
-
-        spinFirstYearToCalc->setMaxValue(spinFirstYearInFile->value());
-        spinLastYearToCalc->setMaxValue(spinFirstYearInFile->value());
-        spinFirstYearToCalc->setMinValue(0);
-        spinLastYearToCalc->setMinValue(0);
-
-
-    }
-}
-
-
 
 
 

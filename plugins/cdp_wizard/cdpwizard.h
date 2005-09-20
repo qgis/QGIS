@@ -137,27 +137,6 @@ public:
 
     /**
     * Reimplements method by the same name in parent class
-    * @param theInt - the new value for first year to be calculated.
-    * @return void
-    */
-    void spinFirstYearToCalc_valueChanged( int theInt);
-
-    /**
-    * Reimplements method by the same name in parent class
-    * @param theInt - the new value for first year contained in the input file(s).
-    * @return void
-    */
-    void spinFirstYearInFile_valueChanged( int theInt);
-
-    /**
-    * Reimplements method by the same name in parent class
-    * @param theInt - the new value for last year to be processed.
-    * @return void
-    */
-    void spinLastYearToCalc_valueChanged( int theInt);
-
-    /**
-    * Reimplements method by the same name in parent class
     * @return void
     */
     void lstVariablesToCalc_selectionChanged();
@@ -306,39 +285,12 @@ public slots: // Public slots
     //
 
     /**
-     * A slot for notices of how many years'
-     * data will be calculated.
-     *@param theNumberInt - The total number of years
-     *@return void - No return
-     */
-    void numberOfYearsToCalc(int theNumberInt);
-    /**
-    * A slot for notices of how many variables
-    * are going to be calculated for each years data.
-    *@param theNumberInt - The total number of variables
-    *@return void - No return
-    */
-    void numberOfVariablesToCalc(int theNumberInt);
-    /**
     * A slot for notices of how many cells
     * will be passed through in each block.
     *@param theNumberInt - The total number of cells in any block
     *@return void - No return
     */
     void numberOfCellsToCalc(int theNumberInt);
-    /**
-    * A slot for notices of that we are about to
-    * start processing data for a given year.
-    *@param theNameQString - A String containing the year e.g. '1998' or '20000BP'
-    *@return void - No return
-    */
-    void yearStart(QString theNameQString);
-    /**
-    * A slot for notices of that we have
-    * completed processing the current year.
-    *@return void - No return
-    */
-    void yearDone();
     /**
     * A slot for notices of that we are about to
     * start calculating a variable for one years data.
