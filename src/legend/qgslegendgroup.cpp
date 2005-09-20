@@ -18,19 +18,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "qgslegendgroup.h"
+#include <qapplication.h>
 
 QgsLegendGroup::QgsLegendGroup(QListViewItem * theItem ,QString theName)
     : QgsLegendItem(theItem,theName)
 {
   mType=LEGEND_GROUP;
-  QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/folder.png"));
+#if defined(Q_OS_MACX) || defined(WIN32)
+  QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+#else
+  QString pkgDataPath(PKGDATAPATH);
+#endif
+  QPixmap myPixmap(pkgDataPath+QString("/images/icons/folder.png"));
   setPixmap(0,myPixmap);
 }
 QgsLegendGroup::QgsLegendGroup(QListView * theListView, QString theString)
     : QgsLegendItem(theListView,theString)
 {
   mType=LEGEND_GROUP;
-  QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/folder.png"));
+#if defined(Q_OS_MACX) || defined(WIN32)
+  QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+#else
+  QString pkgDataPath(PKGDATAPATH);
+#endif
+  QPixmap myPixmap(pkgDataPath+QString("/images/icons/folder.png"));
   setPixmap(0,myPixmap);
 }
 
