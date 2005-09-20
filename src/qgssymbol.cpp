@@ -287,7 +287,8 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor )
 
 bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document ) const
 {
-    bool returnval=false;
+    bool returnval = false;
+    returnval = true; // no error checking yet
     QDomElement symbol=document.createElement("symbol");
     item.appendChild(symbol);
 
@@ -339,6 +340,8 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document ) const
     fillpattern.appendChild(fillpatterntxt);
     symbol.appendChild(fillpattern);
     fillpattern.appendChild(fillpatterntxt);
+    
+    return returnval;
 }
 
 bool QgsSymbol::readXML( QDomNode & synode )

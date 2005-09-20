@@ -792,13 +792,14 @@ void QgsComposer::newProject(void)
 
 bool QgsComposer::writeSettings ( void )
 {
-
+  bool ok = false;
+  return ok;
 }
 
 bool QgsComposer::readSettings ( void )
 {
-  bool ok;
-
+  bool ok = false;
+  return ok;
 }
 
 bool QgsComposer::writeXML( QDomNode & node, QDomDocument & doc )
