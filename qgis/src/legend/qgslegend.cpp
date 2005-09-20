@@ -42,7 +42,6 @@
 #include "qgsrasterlayerproperties.h"
 #include <iostream>
 #include <qlayout.h>
-#include <qpushbutton.h>
 
 static const char *const ident_ = "$Id$";
 
@@ -302,12 +301,18 @@ void QgsLegend::handleRightClickEvent(QListViewItem* item, const QPoint& positio
 {
     if(!mMapCanvas->isDrawing())
     {
+#if defined(Q_OS_MACX) || defined(WIN32)
+    QString iconsPath(qApp->applicationDirPath()+QString("/share/qgis"));
+#else
+    QString iconsPath(PKGDATAPATH);
+#endif
+    iconsPath += QString("/images/icons/");
 	if(!item)//show list view popup menu
 	{
 	    QPopupMenu pm;
-	    pm.insertItem(QIconSet(QPixmap(QString(PKGDATAPATH)+QString("/images/icons/folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
-	    pm.insertItem(QIconSet(QPixmap(QString(PKGDATAPATH)+QString("/images/icons/expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
-	    pm.insertItem(QIconSet(QPixmap(QString(PKGDATAPATH)+QString("/images/icons/collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
+	    pm.insertItem(QIconSet(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
+	    pm.insertItem(QIconSet(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
+	    pm.insertItem(QIconSet(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
 	    pm.exec(position);
 	    return;
 	}
@@ -337,18 +342,18 @@ void QgsLegend::handleRightClickEvent(QListViewItem* item, const QPoint& positio
 		pm.insertItem(tr("&Properties"), this, SLOT(legendLayerShowProperties()));
 		pm.insertItem(tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
 		pm.insertItem(tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
-		pm.insertItem(QIconSet(QPixmap(QString(PKGDATAPATH)+QString("/images/icons/folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
-		pm.insertItem(QIconSet(QPixmap(QString(PKGDATAPATH)+QString("/images/icons/expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
-		pm.insertItem(QIconSet(QPixmap(QString(PKGDATAPATH)+QString("/images/icons/collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
+		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
+		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
+		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
 		pm.exec(position);
 	    }
 	    else if(li->type() == QgsLegendItem::LEGEND_GROUP)
 	    {
 		QPopupMenu pm;
 		pm.insertItem(tr("&Remove"), this, SLOT(legendGroupRemove()));
-		pm.insertItem(QIconSet(QPixmap(QString(PKGDATAPATH)+QString("/images/icons/folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
-		pm.insertItem(QIconSet(QPixmap(QString(PKGDATAPATH)+QString("/images/icons/expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
-		pm.insertItem(QIconSet(QPixmap(QString(PKGDATAPATH)+QString("/images/icons/collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
+		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
+		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
+		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
 		pm.exec(position);
 	    }
 	}

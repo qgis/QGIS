@@ -20,6 +20,7 @@
 #include "qgslegendlayer.h"
 #include "qgslegendlayerfile.h"
 #include "qgsmaplayer.h"
+#include <qapplication.h>
 #include <qlistview.h>
 #include <qpixmap.h>
 #include <qpopupmenu.h>
@@ -29,14 +30,24 @@ QgsLegendLayer::QgsLegendLayer(QListViewItem * parent,QString name)
     : QObject(), QgsLegendItem(parent, name)
 {
     mType=LEGEND_LAYER;
-    QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/layer.png"));
+#if defined(Q_OS_MACX) || defined(WIN32)
+    QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+#else
+    QString pkgDataPath(PKGDATAPATH);
+#endif
+    QPixmap myPixmap(pkgDataPath+QString("/images/icons/layer.png"));
     setPixmap(0,myPixmap);
 }
 
 QgsLegendLayer::QgsLegendLayer(QListView* parent, QString name): QObject(), QgsLegendItem(parent, name)
 {
     mType=LEGEND_LAYER;
-    QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/layer.png"));
+#if defined(Q_OS_MACX) || defined(WIN32)
+    QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+#else
+    QString pkgDataPath(PKGDATAPATH);
+#endif
+    QPixmap myPixmap(pkgDataPath+QString("/images/icons/layer.png"));
     setPixmap(0,myPixmap);
 }
 
