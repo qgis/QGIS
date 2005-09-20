@@ -21,13 +21,19 @@
 #include "qgslegendlayerfilegroup.h"
 #include "qgslegendsymbologygroup.h"
 #include "qgsmaplayer.h"
+#include <qapplication.h>
 #include <qpixmap.h>
 
 QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(QListViewItem * theItem, QString theString)
     : QgsLegendItem( theItem, theString)
 {
   mType = LEGEND_SYMBOL_GROUP;
-  QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/symbology.png"));
+#if defined(Q_OS_MACX) || defined(WIN32)
+  QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+#else
+  QString pkgDataPath(PKGDATAPATH);
+#endif
+  QPixmap myPixmap(pkgDataPath+QString("/images/icons/symbology.png"));
   setPixmap(0,myPixmap);
 }
 

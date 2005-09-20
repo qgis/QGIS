@@ -58,7 +58,12 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFile::accept(LEGEND_ITEM_TYPE type)
 
 QPixmap QgsLegendLayerFile::getOriginalPixmap() const
 {
-    QPixmap myPixmap(QString(PKGDATAPATH)+QString("/images/icons/file.png"));
+#if defined(Q_OS_MACX) || defined(WIN32)
+    QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+#else
+    QString pkgDataPath(PKGDATAPATH);
+#endif
+    QPixmap myPixmap(pkgDataPath+QString("/images/icons/file.png"));
     return myPixmap;
 }
 
