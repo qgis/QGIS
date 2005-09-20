@@ -574,11 +574,22 @@ void CDPWizard::promptForFileName(QLineEdit * theLineEdit, QString theShortName,
     QString myWorkDirString = myQSettings.readEntry("/qgis/cdpwizard/DefaultDirectories/" + theShortName + "Dir",QDir::homeDirPath());
 
     std::cout << "Filter List: " << myFilterList << std::endl;
-    QString myFileNameQString = QFileDialog::getOpenFileName (myWorkDirString,myFilterList,0,"Select " + theLongName ,"Select " + theLongName);
-    theLineEdit->setText(myFileNameQString);
-    QFileInfo myFileInfo(myFileNameQString);
-    myQSettings.writeEntry("/qgis/cdpwizard/DefaultDirectories/" + theShortName + "Dir",myFileInfo.dirPath());
-    checkInputFilenames();
+    QString myFileNameQString;
+    QFileDialog myFileDialog (myWorkDirString,myFilterList,0,"Select " + theLongName ,"Select " + theLongName);
+    QString myLastFilter = myQSettings.readEntry("/qgis/cdpwizard/DefaultDirectories/" + theShortName + "Filter","");
+    if (!myLastFilter.isEmpty())
+    {
+      myFileDialog.setSelectedFilter(myLastFilter);
+    }
+    if ( myFileDialog.exec() == QDialog::Accepted )
+    {
+      myFileNameQString = myFileDialog.selectedFile();
+      theLineEdit->setText(myFileNameQString);
+      QFileInfo myFileInfo(myFileNameQString);
+      myQSettings.writeEntry("/qgis/cdpwizard/DefaultDirectories/" + theShortName + "Dir",myFileInfo.dirPath());
+      myQSettings.writeEntry("/qgis/cdpwizard/DefaultDirectories/" + theShortName + "Filter",myFileDialog.selectedFilter());
+      checkInputFilenames();
+    }
 }
 
 void CDPWizard::pbtnMeanTemp_clicked()

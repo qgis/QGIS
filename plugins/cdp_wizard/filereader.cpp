@@ -1170,6 +1170,5 @@ void FileReader::getGdalDriverMap(QString & theFileFiltersString)
 #ifdef QGISDEBUG
   std::cout << "Raster filter list built: " << theFileFiltersString.local8Bit() << std::endl;
 #endif
-  std::cout << "Filter List\n" << theFileFiltersString << std::endl;
   return;
 }
