@@ -19,7 +19,9 @@
 * Interface class for map layer plugins
 */
 #include <qobject.h>
-#include "qgisapp.h"
+
+class QMainWindow;
+
 class QgsMapLayerInterface: public QObject{
 	Q_OBJECT
 public:

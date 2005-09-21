@@ -27,7 +27,7 @@ class OGRLayer;
 class OGRDataSource;
 
 class QgisApp;
-
+class QgsMapToPixel;
 class QgsData;
 class QgsRenderer;
 class QgsLegendItem;
@@ -563,35 +563,4 @@ private:                       // Private methods
 
 };
 
-
-// Convenience function to transform the given point
-inline void QgsVectorLayer::transformPoint(double& x, 
-             double& y, 
-             QgsMapToPixel* mtp,
-             bool projectionsEnabledFlag)
-{
-  // transform the point
-  if (projectionsEnabledFlag)
-  {
-    double z = 0;
-    mCoordinateTransform->transformInPlace(x, y, z);
-  }
-
-  // transform from projected coordinate system to pixel 
-  // position on map canvas
-  mtp->transformInPlace(x, y);
-}
-
-inline void QgsVectorLayer::transformPoints(
-    std::vector<double>& x, std::vector<double>& y, std::vector<double>& z,
-    QgsMapToPixel* mtp, bool projectionsEnabledFlag)
-{
-  // transform the point
-  if (projectionsEnabledFlag)
-    mCoordinateTransform->transformInPlace(x, y, z);
-
-  // transform from projected coordinate system to pixel 
-  // position on map canvas
-  mtp->transformInPlace(x, y);
-}
 #endif

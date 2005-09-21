@@ -2890,7 +2890,7 @@ void QgisApp::identify()
 
 void QgisApp::measure()
 {
-    mMapTool = QGis::Measure;
+    mMapTool = QGis::MeasureDist;
     mMapCanvas->setMapTool(mMapTool);
 
     //QPixmap pm = QPixmap((const char **)  capture_point_cursor);
@@ -2898,6 +2898,15 @@ void QgisApp::measure()
     //mMapCursor = new QCursor(pm, 8, 8);
     mMapCanvas->setCursor( Qt::CrossCursor );
     actionMeasure->setOn(true);
+}
+
+void QgisApp::measureArea()
+{
+  mMapTool = QGis::MeasureArea;
+  mMapCanvas->setMapTool(mMapTool);
+
+  mMapCanvas->setCursor( Qt::CrossCursor );
+  actionMeasureArea->setOn(true);
 }
 
 void QgisApp::stopZoom() 
@@ -2925,8 +2934,11 @@ void QgisApp::stopZoom()
   case QGis::EmitPoint:
       mMapCanvas->setMapTool( QGis::EmitPoint );
       break;
-  case QGis::Measure:
+  case QGis::MeasureDist:
       measure();
+      break;
+  case QGis::MeasureArea:
+      measureArea();
       break;
     }
 }
@@ -4639,6 +4651,7 @@ void QgisApp::setTheme(QString themeName)
     actionSelect->setIconSet(QIconSet(QPixmap(iconPath + "/select.png")));
     actionOpenTable->setIconSet(QIconSet(QPixmap(iconPath + "/attribute_table.png")));
     actionMeasure->setIconSet(QIconSet(QPixmap(iconPath + "/measure.png")));
+    actionMeasureArea->setIconSet(QIconSet(QPixmap(iconPath + "/measure_area.png")));
     actionShowBookmarks->setIconSet(QIconSet(QPixmap(iconPath + "/bookmarks.png")));
     actionNewBookmark->setIconSet(QIconSet(QPixmap(iconPath + "/new_bookmark.png")));
     actionCustomProjection->setIconSet(QIconSet(QPixmap(iconPath + "/custom_projection.png")));

@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>251</width>
+            <width>252</width>
             <height>272</height>
         </rect>
     </property>
@@ -24,34 +24,14 @@
     <property name="icon">
         <pixmap>image0</pixmap>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
         <property name="margin">
             <number>4</number>
         </property>
-        <widget class="QTable">
-            <property name="name">
-                <cstring>mTable</cstring>
-            </property>
-            <property name="resizePolicy">
-                <enum>Manual</enum>
-            </property>
-            <property name="numRows">
-                <number>0</number>
-            </property>
-            <property name="numCols">
-                <number>2</number>
-            </property>
-            <property name="showGrid">
-                <bool>true</bool>
-            </property>
-            <property name="readOnly">
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget class="QFrame">
+        <widget class="QFrame" row="2" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>frame4</cstring>
             </property>
@@ -97,7 +77,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>60</width>
+                            <width>30</width>
                             <height>26</height>
                         </size>
                     </property>
@@ -115,12 +95,56 @@
                         <cstring>mCloseButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Close</string>
+                        <string>Cl&amp;ose</string>
                     </property>
                 </widget>
             </hbox>
         </widget>
-    </vbox>
+        <widget class="QTable" row="0" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mTable</cstring>
+            </property>
+            <property name="resizePolicy">
+                <enum>Manual</enum>
+            </property>
+            <property name="numRows">
+                <number>0</number>
+            </property>
+            <property name="numCols">
+                <number>1</number>
+            </property>
+            <property name="showGrid">
+                <bool>true</bool>
+            </property>
+            <property name="readOnly">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QLabel" row="1" column="0">
+            <property name="name">
+                <cstring>textLabel2</cstring>
+            </property>
+            <property name="text">
+                <string>Total:</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="1" column="1">
+            <property name="name">
+                <cstring>lblTotal</cstring>
+            </property>
+            <property name="font">
+                <font>
+                    <bold>1</bold>
+                </font>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+            <property name="alignment">
+                <set>AlignVCenter|AlignRight</set>
+            </property>
+        </widget>
+    </grid>
 </widget>
 <images>
     <image name="image0">

@@ -24,6 +24,8 @@
 #include <qradiobutton.h>
 #include <qapplication.h>
 #include <qtextbrowser.h>
+#include <sqlite3.h>
+#include <cassert>
 #include "qgsoptions.h"
 #include "qgisapp.h"
 #include "qgssvgcache.h"
@@ -71,7 +73,14 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name) : QgsOptionsBase(paren
   mGlobalSRSID = settings.readNumEntry("/qgis/projections/defaultProjectionSRSID");
   //! @todo changes this control name in gui to txtGlobalProjString
   txtGlobalWKT->setText(QString::number(mGlobalSRSID));
+  
+  // populate combo box with ellipsoids
+  mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
+  getEllipsoidList();
+  QString myEllipsoidId = settings.readEntry("/qgis/measure/ellipsoid", "WGS84");
+  cmbEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
 }
+
 //! Destructor
 QgsOptions::~QgsOptions(){}
 
@@ -122,6 +131,8 @@ void QgsOptions::saveOptions()
   }
   settings.writeEntry("/qgis/projections/defaultProjectionSRSID",(int)mGlobalSRSID);
 
+  settings.writeEntry("/qgis/measure/ellipsoid", getEllipsoidAcronym(cmbEllipsoid->currentText()));
+  
   //all done
   accept();
 }
@@ -196,4 +207,108 @@ void QgsOptions::pbnSelectProjection_clicked()
 bool QgsOptions::newVisible()
 {
   return !chkAddedVisibility->isChecked();
+}
+
+void QgsOptions::getEllipsoidList()
+{
+  // (copied from qgscustomprojectiondialog.cpp)
+
+  // 
+  // Populate the ellipsoid combo
+  // 
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+
+  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  QString mySql = "select * from tbl_ellipsoid order by name";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+    while(sqlite3_step(myPreparedStatement) == SQLITE_ROW)
+    {
+      cmbEllipsoid->insertItem((char *)sqlite3_column_text(myPreparedStatement,1));
+    }
+  }
+  // close the sqlite3 statement
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+}
+
+QString QgsOptions::getEllipsoidAcronym(QString theEllipsoidName)
+{
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  QString       myName;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  QString mySql = "select acronym from tbl_ellipsoid where name='" + theEllipsoidName + "'";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+    sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+    myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
+  }
+  // close the sqlite3 statement
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+  return myName;
+
+}
+
+QString QgsOptions::getEllipsoidName(QString theEllipsoidAcronym)
+{
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  QString       myName;
+  //check the db is available
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  if(myResult) 
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
+    // XXX This will likely never happen since on open, sqlite creates the 
+    //     database if it does not exist.
+    assert(myResult == 0);
+  }
+  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  QString mySql = "select name from tbl_ellipsoid where acronym='" + theEllipsoidAcronym + "'";
+  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+    sqlite3_step(myPreparedStatement) == SQLITE_ROW;
+    myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
+  }
+  // close the sqlite3 statement
+  sqlite3_finalize(myPreparedStatement);
+  sqlite3_close(myDatabase);
+  return myName;
+
 }

@@ -96,6 +96,7 @@ headers =	qgisapp.h					\
 		qgsdatasource.h					\
 		qgsdatasourceuri.h				\
 		qgsdelattrdialog.h				\
+		qgsdistancearea.h				\
 		qgsdlgvectorlayerproperties.h			\
 		qgsexception.h					\
 		qgscsexception.h				\
@@ -350,6 +351,7 @@ qgis_SOURCES =	main.cpp			\
 		qgscustomsymbol.cpp		\
 		qgsdatasource.cpp		\
 		qgsdelattrdialog.cpp		\
+		qgsdistancearea.cpp			\
 		qgsdlgvectorlayerproperties.cpp	\
 		qgsencodingfiledialog.cpp	\
 		qgsfeatureattribute.cpp		\
