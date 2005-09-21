@@ -33,6 +33,7 @@ email                : t.sutton@reading.ac.uk
 #include <qfileinfo.h>
 #include <qmap.h>
 #include <qcheckbox.h>
+#include <qcursor.h>
 
 CDPWizard::CDPWizard( QWidget* parent , const char* name , bool modal , WFlags fl  )
         : CDPWizardBase( parent, name, modal, fl )
@@ -121,14 +122,10 @@ bool CDPWizard::initialise()
   climateDataProcessor = new ClimateDataProcessor();
 
   //hook uo signals and slots
-  connect(climateDataProcessor,SIGNAL(numberOfCellsToCalc(int)),
-          this,SLOT(numberOfCellsToCalc(int)));
   connect(climateDataProcessor,SIGNAL(variableStart(QString )),
           this,SLOT(variableStart(QString )));
   connect(climateDataProcessor,SIGNAL(variableDone(QString)),
           this,SLOT(variableDone(QString)));
-  connect(climateDataProcessor,SIGNAL(cellDone(float)),
-          this,SLOT(cellDone(float)));
 
   //Load default settings
   loadDefaults();
@@ -313,68 +310,62 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
 
 void CDPWizard::run()
 {
-    //mark the start time:
-    startTime.start();
+  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+  qApp->processEvents();
+  progressTotalJob->setProgress(0,lstVariablesToCalc->count());
+  //mark the start time:
+  startTime.start();
+  QString myLabelString;
+  myLabelString.sprintf("<p align=\"right\">Time elapsed: %d s</p>", startTime.elapsed()/1000);
+  lblElapsedTime->setText(myLabelString);
 
-    int myFirstYearInFileInt, myJobStartYearInt, myJobEndYearInt;
-    QString myInputFileTypeString, myOutputFileTypeString, myOutputPathString;
-    QString myQString;
+  int myFirstYearInFileInt, myJobStartYearInt, myJobEndYearInt;
+  QString myInputFileTypeString, myOutputFileTypeString, myOutputPathString;
+  QString myQString;
 
-    // get the ouput file path
-    climateDataProcessor->setOutputFilePathString(leOutputPath->text());
+  // get the ouput file path
+  climateDataProcessor->setOutputFilePathString(leOutputPath->text()+QDir::separator ());
 
-    // get the input file type
-    climateDataProcessor->setInputFileType("GDAL Supported Raster");
+  // get the input file type
+  climateDataProcessor->setInputFileType("GDAL Supported Raster");
 
-    // get the ouput file type
-    climateDataProcessor->setOutputFileType(cboOutputFormat->currentText());
-
-
-
-    //
-    // find out if datafiles are in series (discrete files for each month)
-    // We are using the isVisible property for the label, but we cant guarantee
-    // that the wizard page on which the label occurs will be visible so we need
-    // to use the isVisibleTo(parent) property, with a reference to the wzard page as parent
-    //
-    QWidget *  myPageWidget = page(1);
-#ifdef QGISDEBUG
-
-    std::cout << "\nFile in series label visible? "<<   lblFileSeriesNote->isVisible() << std::endl;
-#endif
-
-    //! @todo Get rid of the whole files in series paradigm
-    climateDataProcessor->setFilesInSeriesFlag(true);
+  // get the ouput file type
+  climateDataProcessor->setOutputFileType(cboOutputFormat->currentText());
 
 
-    //setup the climate data processor's filereaders
-    /** @todo see what this hardcoding means and remove if possible */
-    if (!climateDataProcessor->makeFileGroups ())
+  //! @todo Get rid of the whole files in series paradigm
+  climateDataProcessor->setFilesInSeriesFlag(true);
+
+
+  //setup the climate data processor's filereaders
+  /** @todo see what this hardcoding means and remove if possible */
+  if (!climateDataProcessor->makeFileGroups ())
+  {
+    std::cerr << "cdpwizards call to make file groups failed!" << std::endl;
+    return;
+  }
+  //add each selected user calculation to the user calculation map
+  // Go through all items of the first ListBox
+  for ( unsigned int i = 0; i < lstVariablesToCalc->count(); i++ )
+  {
+    QListBoxItem *myQListBoxItem = lstVariablesToCalc->item( i );
+    // if the item is selected...
+    if ( myQListBoxItem->isSelected() )
     {
-        std::cerr << "cdpwizards call to make file groups failed!" << std::endl;
-        return;
+      climateDataProcessor->addUserCalculation(myQListBoxItem->text().latin1() );
     }
-    //add each selected user calculation to the user calculation map
-    // Go through all items of the first ListBox
-    for ( unsigned int i = 0; i < lstVariablesToCalc->count(); i++ )
-    {
-        QListBoxItem *myQListBoxItem = lstVariablesToCalc->item( i );
-        // if the item is selected...
-        if ( myQListBoxItem->isSelected() )
-        {
-            climateDataProcessor->addUserCalculation(myQListBoxItem->text().latin1() );
-        }
-    }
+  }
 
-    //get a summary of the climate dataprocessor class now
+  //get a summary of the climate dataprocessor class now
 #ifdef QGISDEBUG
-    std::cout << climateDataProcessor->getDescription() << endl;
+  std::cout << climateDataProcessor->getDescription() << endl;
 #endif
-    //
-    //now we let the climatedataprocessor run!
-    //
-    climateDataProcessor->run();
-    setFinishEnabled( step_6, TRUE );
+  //
+  //now we let the climatedataprocessor run!
+  //
+  climateDataProcessor->run();
+  QApplication::restoreOverrideCursor();
+  setFinishEnabled( step_6, TRUE );
 } //end of run()
 
 //
@@ -382,14 +373,9 @@ void CDPWizard::run()
 // emitted by climatedataprocessor
 //
 
-void CDPWizard::numberOfCellsToCalc(int theNumberInt)
-{
-   progressCurrentTask->setTotalSteps(theNumberInt);
-}
 void CDPWizard::variableStart(QString theNameQString)
 {
   lblCurrentTask->setText("<p align=\"right\">" + theNameQString + "</p>");
-  progressCurrentTask->setProgress(0);
 }
 void CDPWizard::variableDone(QString theFileNameString)
 {
@@ -429,13 +415,6 @@ void CDPWizard::variableDone(QString theFileNameString)
     }
   }
 
-  //dont set progress to 0 - 0 has a special qt meaning of 'busy'
-  //progressTotalJob->setProgress(progressTotalJob->progress()+1);
-  qApp->processEvents();
-}
-void CDPWizard::cellDone(float theResultFloat)
-{
-  progressCurrentTask->setProgress(progressCurrentTask->progress()+1);
   progressTotalJob->setProgress(progressTotalJob->progress()+1);
   //update the elapsed time
   QString myLabelString;

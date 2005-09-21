@@ -10,7 +10,7 @@
             <x>0</x>
             <y>0</y>
             <width>594</width>
-            <height>555</height>
+            <height>569</height>
         </rect>
     </property>
     <property name="paletteBackgroundColor">
@@ -922,6 +922,48 @@ Please check that the following options are correct. Press back to correct mista
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
+            <spacer row="1" column="0">
+                <property name="name">
+                    <cstring>spacer7</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>131</width>
+                        <height>31</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLabel" row="1" column="1">
+                <property name="name">
+                    <cstring>pixmapLabel2</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>0</hsizetype>
+                        <vsizetype>0</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>300</width>
+                        <height>150</height>
+                    </size>
+                </property>
+                <property name="frameShape">
+                    <enum>Box</enum>
+                </property>
+                <property name="scaledContents">
+                    <bool>true</bool>
+                </property>
+            </widget>
             <widget class="QTextEdit" row="0" column="0" rowspan="1" colspan="3">
                 <property name="name">
                     <cstring>textEdit5_2_2_2_2_2</cstring>
@@ -960,23 +1002,6 @@ Please wait while the climate variables are calculated. The top progress bar sho
                     <bool>true</bool>
                 </property>
             </widget>
-            <spacer row="1" column="0">
-                <property name="name">
-                    <cstring>spacer7</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>131</width>
-                        <height>31</height>
-                    </size>
-                </property>
-            </spacer>
             <spacer row="1" column="2">
                 <property name="name">
                     <cstring>spacer8</cstring>
@@ -989,103 +1014,20 @@ Please wait while the climate variables are calculated. The top progress bar sho
                 </property>
                 <property name="sizeHint">
                     <size>
-                        <width>141</width>
+                        <width>170</width>
                         <height>31</height>
                     </size>
                 </property>
             </spacer>
-            <widget class="QLabel" row="1" column="1">
-                <property name="name">
-                    <cstring>pixmapLabel2</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>0</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>300</width>
-                        <height>150</height>
-                    </size>
-                </property>
-                <property name="frameShape">
-                    <enum>Box</enum>
-                </property>
-                <property name="scaledContents">
-                    <bool>true</bool>
-                </property>
-            </widget>
             <widget class="QLayoutWidget" row="2" column="0" rowspan="1" colspan="3">
                 <property name="name">
-                    <cstring>layout11</cstring>
+                    <cstring>layout10</cstring>
                 </property>
                 <grid>
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QLayoutWidget" row="0" column="0">
-                        <property name="name">
-                            <cstring>layout35</cstring>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLabel">
-                                <property name="name">
-                                    <cstring>textLabel1_3_2_3_6_2_5</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Current task:</string>
-                                </property>
-                            </widget>
-                            <spacer>
-                                <property name="name">
-                                    <cstring>spacer1</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>21</width>
-                                        <height>21</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget class="QProgressBar">
-                                <property name="name">
-                                    <cstring>progressCurrentTask</cstring>
-                                </property>
-                                <property name="minimumSize">
-                                    <size>
-                                        <width>400</width>
-                                        <height>0</height>
-                                    </size>
-                                </property>
-                                <property name="maximumSize">
-                                    <size>
-                                        <width>400</width>
-                                        <height>32767</height>
-                                    </size>
-                                </property>
-                                <property name="progress">
-                                    <number>50</number>
-                                </property>
-                                <property name="centerIndicator">
-                                    <bool>true</bool>
-                                </property>
-                            </widget>
-                        </hbox>
-                    </widget>
-                    <widget class="QLabel" row="1" column="0">
+                    <widget class="QLabel" row="0" column="0" rowspan="1" colspan="3">
                         <property name="name">
                             <cstring>lblCurrentTask</cstring>
                         </property>
@@ -1097,62 +1039,10 @@ Please wait while the climate variables are calculated. The top progress bar sho
                             <string>Loading minimum temperature data</string>
                         </property>
                         <property name="alignment">
-                            <set>AlignTop|AlignRight</set>
+                            <set>AlignBottom|AlignRight</set>
                         </property>
                     </widget>
-                    <widget class="QLayoutWidget" row="2" column="0">
-                        <property name="name">
-                            <cstring>layout37</cstring>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLabel">
-                                <property name="name">
-                                    <cstring>textLabel1_3_2_3_6_2_5_3</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Total Job:</string>
-                                </property>
-                            </widget>
-                            <spacer>
-                                <property name="name">
-                                    <cstring>spacer3</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>41</width>
-                                        <height>21</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget class="QProgressBar">
-                                <property name="name">
-                                    <cstring>progressTotalJob</cstring>
-                                </property>
-                                <property name="minimumSize">
-                                    <size>
-                                        <width>400</width>
-                                        <height>0</height>
-                                    </size>
-                                </property>
-                                <property name="maximumSize">
-                                    <size>
-                                        <width>400</width>
-                                        <height>32767</height>
-                                    </size>
-                                </property>
-                            </widget>
-                        </hbox>
-                    </widget>
-                    <widget class="QLabel" row="3" column="0">
+                    <widget class="QLabel" row="2" column="0" rowspan="1" colspan="3">
                         <property name="name">
                             <cstring>lblElapsedTime</cstring>
                         </property>
@@ -1165,6 +1055,48 @@ Please wait while the climate variables are calculated. The top progress bar sho
                         </property>
                         <property name="alignment">
                             <set>WordBreak|AlignTop</set>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="1" column="0">
+                        <property name="name">
+                            <cstring>textLabel1_3_2_3_6_2_5_3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Total Job:</string>
+                        </property>
+                    </widget>
+                    <spacer row="1" column="1">
+                        <property name="name">
+                            <cstring>spacer3</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>40</width>
+                                <height>21</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QProgressBar" row="1" column="2">
+                        <property name="name">
+                            <cstring>progressTotalJob</cstring>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>400</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>400</width>
+                                <height>32767</height>
+                            </size>
                         </property>
                     </widget>
                 </grid>

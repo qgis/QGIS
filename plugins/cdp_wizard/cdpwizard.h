@@ -265,13 +265,6 @@ public slots: // Public slots
     //
 
     /**
-    * A slot for notices of how many cells
-    * will be passed through in each block.
-    *@param theNumberInt - The total number of cells in any block
-    *@return void - No return
-    */
-    void numberOfCellsToCalc(int theNumberInt);
-    /**
     * A slot for notices of that we are about to
     * start calculating a variable for one years data.
     *@param theNameQString - A String containing the variable name e.g.
@@ -287,13 +280,6 @@ public slots: // Public slots
     *@return void - No return
     */
     void variableDone(QString theFileNameString);
-    /**
-    * A slot for notices of that we
-    * have completed calculating a given cell.
-    *@param theResultFloat - The calculated value for a cell
-    *@return void - No return
-    */
-    void cellDone(float theResultFloat);
 
 };
 
