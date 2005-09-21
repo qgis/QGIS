@@ -48,8 +48,8 @@ public:
     QRect r(QPoint(0,0), size());
     QPainter p;
     p.begin(this);
-    p.setPen(red);
-    p.setBrush(red);
+    p.setPen(Qt::red);
+    p.setBrush(Qt::red);
     p.drawRect(r);
     p.end();
   }

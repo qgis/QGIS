@@ -70,5 +70,7 @@ pggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(GDAL_LDADD) $(PG_LIB) ../../src
 pggeoprocessingplugin_la_LDFLAGS = -avoid-version -module
 pggeoprocessingplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src
 
+CLEANFILES = $(BUILT_SOURCES)
+
 EXTRA_DIST = $(pggeoprocessing_UIC) icon_buffer.xpm
 

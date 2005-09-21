@@ -2208,7 +2208,8 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
     
       // TODO: Redraw rubber band
       
-      // Redraw rubber band
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
       paint.begin(this);
       paint.setPen(pen);
       paint.setRasterOp(Qt::XorROP);
@@ -2224,6 +2225,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
       paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
       
       paint.end();
+#endif
 
       break;
 

@@ -4710,7 +4710,7 @@ QgsRasterLayer::QgsRasterLayer(
 
 #ifdef QGISDEBUG
       std::cout << "QgsRasterLayer::QgsRasterLayer(4 arguments): starting." <<
-                  " with layer list of " << layers.join(", ") <<
+                  " with layer list of " << layers.join(", ").local8Bit() <<
                   std::endl;
 #endif
 

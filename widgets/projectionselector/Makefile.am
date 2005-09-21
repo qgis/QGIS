@@ -18,26 +18,43 @@ endif
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui
+%.moc.uic.cpp: %.uic.h
+	$(MOC) -o $@ $<
+
+if HAVE_QT3
+%.uic.h: %.ui 
 	$(UIC) -o $@ $<
+endif
 
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
+if HAVE_QT4
+%.uic.h: %.ui 
+	$(UIC) -o $@ $<
+	../tools/qgis-qt3to4.pl -uic $@
+endif
 
+if !NO_UIC_IMPLEMENTATIONS
+%.uic.cpp: %.ui
+	$(UIC) -o $@ -impl $*.uic.h $<
+endif
+
+# %.h: %.ui
+# 	$(UIC) -o $@ $<
+#
+# %.cpp: %.ui
+# 	$(UIC) -o $@ -impl $*.h $<
 
 
 # name of the qgis library widget
 plugin_LTLIBRARIES = libqgsprojectionselector.la
 
 plugin_MOC = qgsprojectionselector.moc.cpp		\
-	     qgsprojectionselectorbase.moc.cpp		
-	     
+	     qgsprojectionselectorbase.moc.cpp
 
-plugin_UI = qgsprojectionselectorbase.h \
-	    qgsprojectionselectorbase.cpp 
+plugin_UI = qgsprojectionselectorbase.uic.h \
+	    qgsprojectionselectorbase.uic.cpp
 
 plugin_UIC = qgsprojectionselectorbase.ui \
-    qgsprojectionselectorbase.ui.h \
+	qgsprojectionselectorbase.ui.h \
 	qgsprojectionselectorbase.uic.h
 
 libqgsprojectionselector_la_SOURCES =  qgsprojectionselector.cpp	\

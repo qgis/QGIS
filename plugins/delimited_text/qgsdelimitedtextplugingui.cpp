@@ -125,7 +125,10 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
       txtSample->insert(line + "\n"); 
       // put a few more lines into the sample box
       int counter = 0;
-      while((line=stream.readLine()) && (counter < 20))
+      while (
+              (!(line=stream.readLine()).isEmpty()) && 
+              (counter < 20)
+            )
       {
         txtSample->insert(line + "\n");
         counter++;
