@@ -244,7 +244,7 @@ Press next to continue</string>
                     <string>Select raw data files</string>
                 </property>
                 <property name="toolTip" stdset="0">
-                    <string>Browse for the raw data files that are required to create the variables that you have selected. Each month of data should be in a separate file. The files should be numbered e.g. meantemp01.asc, meantemp02.asc ... meantemp12.asc</string>
+                    <string>Browse for the raw data files &lt;br&gt;that are required to create the variables &lt;br&gt;that you have selected. Each month &lt;br&gt;of data should be in a separate file.&lt;br&gt; The files should be numbered &lt;br&gt;e.g. meantemp01.asc, meantemp02.asc &lt;br&gt;... meantemp12.asc</string>
                 </property>
                 <grid>
                     <property name="name">
@@ -685,7 +685,7 @@ Specify an output path and format for your new climate variable files.</string>
             </spacer>
             <widget class="QCheckBox" row="3" column="1" rowspan="1" colspan="2">
                 <property name="name">
-                    <cstring>checkBox2</cstring>
+                    <cstring>cbxMeridianSwitch</cstring>
                 </property>
                 <property name="text">
                     <string>Switch meridian (for datasets where 0' longitude is in first column)</string>
@@ -693,7 +693,7 @@ Specify an output path and format for your new climate variable files.</string>
             </widget>
             <widget class="QCheckBox" row="4" column="1" rowspan="1" colspan="2">
                 <property name="name">
-                    <cstring>checkBox3</cstring>
+                    <cstring>cbxPseudoColour</cstring>
                 </property>
                 <property name="text">
                     <string>Create pseudocoloured image of each output file</string>

@@ -32,6 +32,7 @@ email                : t.sutton@reading.ac.uk
 #include <qdir.h>
 #include <qfileinfo.h>
 #include <qmap.h>
+#include <qcheckbox.h>
 
 CDPWizard::CDPWizard( QWidget* parent , const char* name , bool modal , WFlags fl  )
         : CDPWizardBase( parent, name, modal, fl )
@@ -396,24 +397,38 @@ void CDPWizard::variableDone(QString theFileNameString)
   QFileInfo myQFileInfo(theFileNameString);
   //convert the completed variable layer to an image file
   ImageWriter myImageWriter;
-  QString myImageFileNameString = myQFileInfo.dirPath()+"/"+myQFileInfo.baseName()+".png";
-  myImageWriter.writeImage(theFileNameString,myImageFileNameString);
-  //spit the filename up so we can rename it for the meridian shift
-  QString myMSFileNameString = myQFileInfo.dirPath()+"/"+myQFileInfo.baseName()+"MS."+myQFileInfo.extension();
-  //perform the meridian shift (hard coding for now but we should have a class member 
-  //boolean that stores whether this is needed
-  MeridianSwitcher mySwitcher;
-  
-  mySwitcher.doSwitch(theFileNameString,myMSFileNameString);
-  //make an image for the shifted file too
-  QFileInfo myQFileInfo2(myMSFileNameString);
-  myImageFileNameString = myQFileInfo2.dirPath()+"/"+myQFileInfo2.baseName()+".png";
-  myImageWriter.writeImage(myMSFileNameString,myImageFileNameString);
-  //set the image label on the calculating variables screen to show the last
-  //variable calculated
-  QPixmap myPixmap(myImageFileNameString);
-  pixmapLabel2->setScaledContents(true);
-  pixmapLabel2->setPixmap(myPixmap);
+  if (cbxPseudoColour->isChecked())
+  {
+    QString myImageFileNameString = myQFileInfo.dirPath()+"/"+myQFileInfo.baseName()+".png";
+    myImageWriter.writeImage(theFileNameString,myImageFileNameString);
+    //set the image label on the calculating variables screen to show the last
+    //variable calculated
+    QPixmap myPixmap(myImageFileNameString);
+    pixmapLabel2->setScaledContents(true);
+    pixmapLabel2->setPixmap(myPixmap);
+  }
+  if (cbxMeridianSwitch->isChecked())
+  {
+    //spit the filename up so we can rename it for the meridian shift
+    QString myMSFileNameString = myQFileInfo.dirPath()+"/"+myQFileInfo.baseName()+"MS."+myQFileInfo.extension();
+    //perform the meridian shift (hard coding for now but we should have a class member 
+    //boolean that stores whether this is needed
+    MeridianSwitcher mySwitcher;
+    mySwitcher.doSwitch(theFileNameString,myMSFileNameString);
+    if (cbxPseudoColour->isChecked())
+    {
+      //make an image for the shifted file too
+      QFileInfo myQFileInfo2(myMSFileNameString);
+      QString myImageFileNameString = myQFileInfo2.dirPath()+"/"+myQFileInfo2.baseName()+".png";
+      myImageWriter.writeImage(myMSFileNameString,myImageFileNameString);
+      //set the image label on the calculating variables screen to show the last
+      //variable calculated
+      QPixmap myPixmap(myImageFileNameString);
+      pixmapLabel2->setScaledContents(true);
+      pixmapLabel2->setPixmap(myPixmap);
+    }
+  }
+
   //dont set progress to 0 - 0 has a special qt meaning of 'busy'
   //progressTotalJob->setProgress(progressTotalJob->progress()+1);
   qApp->processEvents();
