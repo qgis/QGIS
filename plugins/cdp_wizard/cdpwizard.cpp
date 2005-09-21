@@ -312,7 +312,6 @@ void CDPWizard::run()
 {
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
   qApp->processEvents();
-  progressTotalJob->setProgress(0,lstVariablesToCalc->count());
   //mark the start time:
   startTime.start();
   QString myLabelString;
@@ -346,6 +345,7 @@ void CDPWizard::run()
   }
   //add each selected user calculation to the user calculation map
   // Go through all items of the first ListBox
+  unsigned int myVarsCount=0;
   for ( unsigned int i = 0; i < lstVariablesToCalc->count(); i++ )
   {
     QListBoxItem *myQListBoxItem = lstVariablesToCalc->item( i );
@@ -353,9 +353,11 @@ void CDPWizard::run()
     if ( myQListBoxItem->isSelected() )
     {
       climateDataProcessor->addUserCalculation(myQListBoxItem->text().latin1() );
+      myVarsCount++;
     }
   }
 
+  progressTotalJob->setProgress(0,myVarsCount);
   //get a summary of the climate dataprocessor class now
 #ifdef QGISDEBUG
   std::cout << climateDataProcessor->getDescription() << endl;
