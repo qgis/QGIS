@@ -279,7 +279,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
     delete[] esc_str;
   }
   query += " )";
-      std::cerr << query << std::endl; 
+      std::cerr << query.local8Bit() << std::endl; 
 
   PGresult *res = PQexec(conn, (const char *)query);
   qWarning(query);

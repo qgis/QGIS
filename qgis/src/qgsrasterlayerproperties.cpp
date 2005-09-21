@@ -40,6 +40,7 @@ email                : tim@linfiniti.com
 #include <qspinbox.h>
 #include <qpointarray.h>
 #include <qrect.h>
+#include <qglobal.h>
 
 const char * const ident = 
 "$Id";
@@ -616,7 +617,11 @@ void QgsRasterLayerProperties::makeScalePreview(QString theColor)
   //
   QPainter myQPainter(myQPixmap);
   myQPainter.rotate(-45);
-  myQPainter.drawImage(-70, 0, myQImage.scale(140, 140));  // TODO: maybe should add ScaleMin (Qt3) / Qt::KeepAspectRatio (Qt4) ?
+#if QT_VERSION < 0x040000
+  myQPainter.drawImage(-70, 0, myQImage.scale(140, 140));  // TODO: maybe should add ScaleMin ?
+#else
+  myQPainter.drawImage(-70, 0, myQImage.scaled(140, 140)); // TODO: maybe should add Qt::KeepAspectRatio ?
+#endif
   myQPainter.rotate(45);
   QFont myQFont("arial", 18, QFont::Bold);
   myQPainter.setFont(myQFont);

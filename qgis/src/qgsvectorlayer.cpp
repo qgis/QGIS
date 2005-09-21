@@ -56,6 +56,7 @@
 #include <qsettings.h>
 #include <qwidget.h>
 #include <qwidgetlist.h>
+#include <qglobal.h>
 
 #include "qgisapp.h"
 #include "qgsproject.h"
@@ -288,7 +289,7 @@ void QgsVectorLayer::setDisplayField(QString fldName)
 
       QString fldName = fields[j].name();
 #ifdef QGISDEBUG
-      std::cerr << "Checking field " << fldName << " of " << fields.size() << " total" << std::endl;
+      std::cerr << "Checking field " << fldName.local8Bit() << " of " << fields.size() << " total" << std::endl;
 #endif
       // Check the fields and keep the first one that matches.
       // We assume that the user has organized the data with the
@@ -429,9 +430,9 @@ QgsRect QgsVectorLayer::inverseProjectRect(const QgsRect& r) const
 			        QgsCoordinateTransform::INVERSE);
 #ifdef QGISDEBUG
       std::cerr << "Projections are enabled\n";
-      std::cerr << "Rectangle was: " << r.stringRep(true) << '\n';
+      std::cerr << "Rectangle was: " << r.stringRep(true).local8Bit() << '\n';
       QgsRect tt(p1, p2);
-      std::cerr << "Inverse transformed to: " << tt.stringRep(true) << '\n';
+      std::cerr << "Inverse transformed to: " << tt.stringRep(true).local8Bit() << '\n';
 #endif
       return QgsRect(p1, p2);
 
@@ -825,7 +826,12 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
   {
     //copy the drawing buffer every updateThreshold elements
     if(0 == featureCount % updateThreshold)
+#if QT_VERSION < 0x040000
       bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
+#else
+// TODO: Double check if this is appropriate for Qt4 - probably better to use QPainter::drawPixmap().
+      bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::AutoColor);
+#endif
   }
 
   if (fet == 0)
@@ -948,6 +954,8 @@ void QgsVectorLayer::identify(QgsRect * r)
       {
     // TODO it is necessary to pass topLevelWidget()as parent, but there is no QWidget available 
 
+// TODO: Qt4 doesn't have QWidgetList, need to work out an alternative.
+#if QT_VERSION < 0x040000
     QWidgetList *list = QApplication::topLevelWidgets ();
     QWidgetListIt it( *list ); 
           QWidget *w;
@@ -959,8 +967,9 @@ void QgsVectorLayer::identify(QgsRect * r)
       break;
         }
     }
-    delete list;     
+    delete list;
     ir = new QgsIdentifyResults(mActions, top);
+#endif
           
     // restore the identify window position and show it
     ir->restorePosition();
@@ -979,7 +988,7 @@ void QgsVectorLayer::identify(QgsRect * r)
   for (int i = 0; i < attr.size(); i++)
   {
 #ifdef QGISDEBUG
-    std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
+    std::cout << attr[i].fieldName().local8Bit() << " == " << fieldIndex.local8Bit() << std::endl;
 #endif
     if (attr[i].fieldName().lower() == fieldIndex)
     {
@@ -1767,7 +1776,7 @@ bool QgsVectorLayer::addFeature(QgsFeature* f, bool alsoUpdateExtent)
     {
 #ifdef QGISDEBUG
        std::cout << "QgsVectorLayer::addFeature: inspecting field '"
-                 << (it->second)
+                 << (it->second).local8Bit()
                  << "'." << std::endl;
 #endif
 
@@ -2110,7 +2119,7 @@ int QgsVectorLayer::maximumScale()
 bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 {
 #ifdef QGISDEBUG
-  std::cerr << "Datasource in QgsVectorLayer::readXML_: " << dataSource << std::endl;
+  std::cerr << "Datasource in QgsVectorLayer::readXML_: " << dataSource.local8Bit() << std::endl;
 #endif
   // process the attribute actions
   mActions.readXML(layer_node);
@@ -2282,7 +2291,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
           // show the extent
           QString s = mbr->stringRep();
 #ifdef QGISDEBUG
-          std::cout << "Extent of layer: " << s << std::endl;
+          std::cout << "Extent of layer: " << s.local8Bit() << std::endl;
 #endif
           // store the extent
           layerExtent.setXmax(mbr->xMax());
@@ -2300,13 +2309,13 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
           if (providerKey == "postgres")
           {
 #ifdef QGISDEBUG
-              std::cout << "Beautifying layer name " << layerName << std::endl;
+              std::cout << "Beautifying layer name " << layerName.local8Bit() << std::endl;
 #endif
               // adjust the display name for postgres layers
               layerName = layerName.mid(layerName.find(".") + 1);
               layerName = layerName.left(layerName.find("(") - 1);   // Take one away, to avoid a trailing space
 #ifdef QGISDEBUG
-              std::cout << "Beautified name is " << layerName << std::endl;
+              std::cout << "Beautified name is " << layerName.local8Bit() << std::endl;
 #endif
 
           }
@@ -2534,7 +2543,7 @@ bool QgsVectorLayer::commitChanges()
 
     for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
     {
-      std::cout << "QgsVectorLayer::commitChanges: Got: " << (*it)->geometry()->wkt()
+      std::cout << "QgsVectorLayer::commitChanges: Got: " << (*it)->geometry()->wkt().local8Bit()
                 << "." << std::endl;
     }
 
@@ -2675,7 +2684,7 @@ std::vector<QgsFeature>* QgsVectorLayer::selectedFeatures()
       f->setGeometry(*mCachedGeometries[*it]);
 
 #ifdef QGISDEBUG
-      std::cout << "QgsVectorLayer::selectedFeatures: '" << f->geometry()->wkt() << "'"
+      std::cout << "QgsVectorLayer::selectedFeatures: '" << f->geometry()->wkt().local8Bit() << "'"
                 << "." << std::endl;
 #endif
       
@@ -3301,13 +3310,13 @@ void QgsVectorLayer::setCoordinateSystem()
   if(srid == 0)
   {
     QString mySourceWKT(getProjectionWKT());
-    if (mySourceWKT==NULL)
+    if (mySourceWKT.isNull())
     {
       mySourceWKT=QString("");
     }
     
 #ifdef QGISDEBUG
-    std::cout << "QgsVectorLayer::setCoordinateSystem --- using wkt\n" << mySourceWKT << std::endl;
+    std::cout << "QgsVectorLayer::setCoordinateSystem --- using wkt\n" << mySourceWKT.local8Bit() << std::endl;
 #endif
     mCoordinateTransform->sourceSRS().createFromWkt(mySourceWKT);
     //mCoordinateTransform->sourceSRS()->createFromWkt(getProjectionWKT());

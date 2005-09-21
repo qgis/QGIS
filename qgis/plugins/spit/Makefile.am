@@ -113,4 +113,6 @@ spit_LDADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD)
 #spit_LDFLAGS = -avoid-version -module
 spit_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) -I$(PG_INC)  -I../../src
 
+CLEANFILES = $(BUILT_SOURCES)
+
 EXTRA_DIST = $(spit_UIC) icon_spit.xpm spiticon.xpm spit_icons.h
