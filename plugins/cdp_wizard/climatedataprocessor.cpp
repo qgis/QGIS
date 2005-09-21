@@ -537,42 +537,7 @@ FileGroup * ClimateDataProcessor::initialiseFileGroup(QString theFileNameString,
     } //end of second part of files in series flag test
 
 }
-/** Read property of int fileStartYearInt. */
-const int ClimateDataProcessor::getFileStartYearInt()
-{
-    return fileStartYearInt;
-}
-/** Write property of int fileStartYearInt. */
-void ClimateDataProcessor::setFileStartYearInt( const int theYearInt)
-{
-    fileStartYearInt = theYearInt;
-    std::cout << "fileStartYearInt set to : " << fileStartYearInt << std::endl;
-}
 
-
-/** Read property of int jobStartYearInt. */
-const int ClimateDataProcessor::getJobStartYearInt()
-{
-    return jobStartYearInt;
-}
-/** Write property of int jobStartYearInt. */
-void ClimateDataProcessor::setJobStartYearInt( const int theYearInt)
-{
-    jobStartYearInt = theYearInt;
-    std::cout << "jobStartYearInt set to : " << jobStartYearInt << std::endl;
-}
-
-
-/** Read property of int jobEndYearInt. */
-const int ClimateDataProcessor::getJobEndYearInt()
-{
-    return jobEndYearInt;
-}
-/** Write property of int jobEndYearInt. */
-void ClimateDataProcessor::setJobEndYearInt( const int theYearInt)
-{
-    jobEndYearInt = theYearInt;
-}
 
 /** Read property of FileReader::FileType FileType. */
 const FileReader::FileTypeEnum ClimateDataProcessor::getInputFileType()

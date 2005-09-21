@@ -369,13 +369,6 @@ class ClimateDataProcessor : public QObject {
 
     signals:
         /**
-        * A signal emitted to notify listeners how many years'
-        * data will be calculated.
-        *@param theNumberInt - The total number of years
-        *@return void - No return
-        */
-        void numberOfYearsToCalc(int theNumberInt);
-        /**
         * A signal emitted to notify listeners how many variables
         * are going to be calculated for each years data.
         *@param theNumberInt - The total number of variables
@@ -389,19 +382,6 @@ class ClimateDataProcessor : public QObject {
         *@return void - No return
         */
         void numberOfCellsToCalc(int theNumberInt);
-        /**
-        * A signal emitted to notify listeners that we are about to
-        * start processing data for a given year.
-        *@param theNameQString - A String containing the year e.g. '1998' or '20000BP'
-        *@return void - No return
-        */
-        void yearStart(QString theNameQString);
-        /**
-        * A signal emitted to notify listeners that we have
-        * completed processing the current year.
-        *@return void - No return
-        */
-        void yearDone();
         /**
         * A signal emitted to notify listeners that we are about to
         * start calculating a variable for one years data.
@@ -452,18 +432,6 @@ class ClimateDataProcessor : public QObject {
         // Private attributes
         /** The directory where the processed results will be stored. */
         QString outputFilePathString;
-        /** This is the FILE START year (must be common to all files used!)
-         *   in the files provided to the climate data processor. */
-        int fileStartYearInt;
-        /** This is the START year that should actually be processed
-         *   (must be common to all files used!) in the files provided
-         *   to the climate data proccessor. */
-        int jobStartYearInt;
-        /** This is the END year that should actually be processed
-         *   (must be common to all files used!) in the files provided
-         *   to the climate data proccessor. */
-
-        int jobEndYearInt;
         /** The type of input files to be processed by the climate date processor. */
         FileReader::FileTypeEnum inputFileType;
 
