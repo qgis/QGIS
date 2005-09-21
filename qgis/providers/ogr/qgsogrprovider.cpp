@@ -105,8 +105,11 @@ QgsOgrProvider::QgsOgrProvider(QString uri): QgsVectorDataProvider(), dataSource
       for(int i=0;i<fdef->GetFieldCount();++i)
       {
         OGRFieldDefn *fldDef = fdef->GetFieldDefn(i);
-        attributeFields.push_back(QgsField(
-              mEncoding->toUnicode(fldDef->GetNameRef()), 
+        QString fieldName = mEncoding->toUnicode(fldDef->GetNameRef());
+        std::cout << "Adding field with name " << fieldName.local8Bit() << ", "
+                  << "decoded from " << mEncoding->name() << std::endl;
+
+        attributeFields.push_back(QgsField(fieldName, 
               mEncoding->toUnicode(fldDef->GetFieldTypeName(fldDef->GetType())),
               fldDef->GetWidth(),
               fldDef->GetPrecision()));

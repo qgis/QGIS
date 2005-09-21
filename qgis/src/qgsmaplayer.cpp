@@ -649,10 +649,10 @@ bool QgsMapLayer::projectExtent(QgsRect& extent, QgsRect& r2)
       else // can't cross 180
         extent = mCoordinateTransform->transformBoundingBox(extent, QgsCoordinateTransform::INVERSE);
     }
-    catch (QgsCsException &e)
+    catch (QgsCsException &cse)
       {
         qDebug( "Transform error caught in %s line %d:\n%s", 
-                __FILE__, __LINE__, e.what());
+                __FILE__, __LINE__, cse.what());
         extent = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
         r2     = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
       }

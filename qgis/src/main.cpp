@@ -25,6 +25,7 @@
 #endif
 
 #include <qapplication.h>
+#include <qdir.h>
 #include <qfont.h>
 #include <qfile.h>
 #include <qfileinfo.h>
@@ -225,7 +226,7 @@ int main(int argc, char *argv[])
       break;
 
     case 's':
-      mySnapshotFileName = optarg;
+      mySnapshotFileName = QDir::convertSeparators(QFileInfo(QFile::decodeName(optarg)).absFilePath());
       break;
 
     case 'l':
@@ -233,7 +234,7 @@ int main(int argc, char *argv[])
       break;
 
     case 'p':
-      myProjectFileName = optarg;
+      myProjectFileName = QDir::convertSeparators(QFileInfo(QFile::decodeName(optarg)).absFilePath());
       break;
 
     case 'h':
@@ -261,7 +262,7 @@ int main(int argc, char *argv[])
     int idx = optind;
     std::cout << idx << ": " << argv[idx] << std::endl;
 #endif
-    myFileList.append(argv[optind++]);
+    myFileList.append(QDir::convertSeparators(QFileInfo(QFile::decodeName(argv[optind++])).absFilePath()));
     }
   }
   }
@@ -384,10 +385,10 @@ int main(int argc, char *argv[])
     // check for a .qgs
     for(int i = 0; i < argc; i++)
     {
-      QString arg = argv[i];
+      QString arg = QDir::convertSeparators(QFileInfo(QFile::decodeName(argv[i])).absFilePath());
       if(arg.contains(".qgs"))
       {
-        myProjectFileName = argv[i];
+        myProjectFileName = arg;
         break;
       }
     }

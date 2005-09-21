@@ -195,11 +195,11 @@ QgsPoint QgsCoordinateTransform::transform(const QgsPoint thePoint,TransformDire
   { 
     transformCoords(1, &x, &y, &z, direction );
   }
-  catch(QgsException &e)
+  catch(QgsCsException &cse)
   {
     // rethrow the exception
     std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
-    throw e;
+    throw cse;
   }
 
 #ifdef QGISDEBUG
@@ -215,11 +215,11 @@ QgsPoint QgsCoordinateTransform::transform(const double theX, const double theY=
   {
     return transform(QgsPoint(theX, theY), direction);
   }
-  catch(QgsException &e)
+  catch(QgsCsException &cse)
   {
     // rethrow the exception
     std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
-    throw e;
+    throw cse;
   }
 }
 
@@ -283,11 +283,11 @@ void QgsCoordinateTransform::transformInPlace(double& x, double& y, double& z,
   {
     transformCoords(1, &x, &y, &z, direction );
   }
-  catch (QgsCsException &e)
+  catch(QgsCsException &cse)
   {
     // rethrow the exception
     std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
-    throw e;
+    throw cse;
   }
 }
 
@@ -309,11 +309,11 @@ void QgsCoordinateTransform::transformInPlace(std::vector<double>& x,
   {
     transformCoords(x.size(), &x[0], &y[0], &z[0], direction);
   }
-  catch(QgsException &e)
+  catch(QgsCsException &cse)
   {
     // rethrow the exception
     std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
-    throw e;
+    throw cse;
   }
 }
 
@@ -374,11 +374,11 @@ QgsRect QgsCoordinateTransform::transformBoundingBox(const QgsRect rect, Transfo
   {
     transformCoords(numP * numP, x, y, z, direction);
   }
-  catch(QgsException &e)
+  catch(QgsCsException &cse)
   {
-    // rethrow the exception
+  // rethrow the exception
     std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
-    throw e;
+    throw cse;
   }
 
   // Calculate the bounding box and use that for the extent

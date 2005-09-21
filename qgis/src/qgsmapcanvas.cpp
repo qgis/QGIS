@@ -583,7 +583,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
           }
           else
           {
-              updateFullExtent(lyr->coordinateTransform()->transformBoundingBox(lyr->extent()));
+                  updateFullExtent(lyr->coordinateTransform()->transformBoundingBox(lyr->extent()));
           }
       }
       catch(QgsCsException &cse)
@@ -961,10 +961,10 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                 << ml->coordinateTransform()->transformBoundingBox(ml->extent()).stringRep().local8Bit() 
                 << std::endl;
             }
-            catch (QgsCsException &e)
+            catch (QgsCsException &cse)
             {
               qDebug( "Transform error caught in %s line %d:\n%s", 
-                  __FILE__, __LINE__, e.what());
+                  __FILE__, __LINE__, cse.what());
             }
 #endif
 
@@ -1115,7 +1115,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
           }
 
 
-          catch(QgsException &e)
+          catch(QgsException &cse)
           {
             // ignore this for now
             // we need this to keep windows from wanted to send
@@ -1349,9 +1349,9 @@ void QgsMapCanvas::zoomToSelected()
 
         rect = lyr->coordinateTransform()->transformBoundingBox(lyr->bBoxOfSelected());
       }
-      catch (QgsCsException &e)
+      catch (QgsCsException &cse)
       {
-        qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+        qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what());
       }
     }
     else
@@ -2529,9 +2529,9 @@ void QgsMapCanvas::recalculateExtents()
         lyr->coordinateTransform()->transformBoundingBox(lyr->extent(), 
             QgsCoordinateTransform::FORWARD) << std::endl;
     }
-    catch (QgsCsException &e)
+    catch (QgsCsException &cse)
     {
-      qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+      qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what());
     }
 #endif
     // Layer extents are stored in the coordinate system (CS) of the
@@ -2551,9 +2551,9 @@ void QgsMapCanvas::recalculateExtents()
 
         updateFullExtent(lyr->coordinateTransform()->transformBoundingBox(lyr->extent()));
       }
-      catch (QgsCsException &e)
+      catch (QgsCsException &cse)
       {
-        qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+        qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what());
       }
     }
     else
