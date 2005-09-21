@@ -111,3 +111,26 @@ outlinecolor,outlinestyle,outlinewidth,fillcolor,fillpattern) >
 <!ATTLIST invertHistogramFlag boolean (1|0|true|false) "false">
 <!ATTLIST stdDevsToPlotDouble value CDATA "0">
 <!ATTLIST transparencyLevelInt value CDATA "0">
+
+<!--
+  --  Legend
+  --
+  -->
+
+<!ELEMENT legend (legendgroup* | legendlayer*) >
+<!ATTLIST legend open (1|0|true|false) "false"> #open or closed
+<!ELEMENT legendgroup>
+<!ATTLIST legendgroup open (1|0|true|false) "false"> #open or closed
+<!ELEMENT legendlayer>
+<!ATTLIST legendlayer open (1|0|true|false) "false"> #open or closed
+<!ELEMENT legendlayerfilegroup>
+<!ATTLIST legendlayerfile open (1|0|true|false) "false"> #open or closed
+<!ELEMENT legendlayerfile>
+<!ATTLIST legendlayerfile open (1|0|true|false) "false"> #open or closed
+<!ELEMENT legendsymbologygroup>
+<!ATTLIST legendsymbologygroup open (1|0|true|false) "false"> #open or closed
+<!ELEMENT legendsymbologyitem>
+<!ATTLIST legendsymbologyitem open (1|0|true|false) "false"> #open or closed
+<!ELEMENT legenpropertygroup>
+<!ATTLIST legendpropertygroup open (1|0|true|false) "false"> #open or closed
+

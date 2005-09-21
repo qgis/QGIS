@@ -1793,15 +1793,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
           QgsPoint endpoint = mCanvasProperties->coordXForm->transform(digitisedpoint.x(),digitisedpoint.y());
           paint.drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),
             static_cast<int>(endpoint.x()),static_cast<int>(endpoint.y()));
-          //draw it to an acetate layer
-          QgsLine digitline(*it,digitisedpoint);
-          QgsAcetateLines* acetate=new QgsAcetateLines();
-          acetate->add(digitline);
-          addAcetateObject(vlayer->name()+"_##digit##ac"+QString::number(mCaptureList.size()),acetate);
-  #ifdef QGISDEBUG
-          qWarning("adding "+vlayer->name()+"_##digit##ac"+QString::number(mCaptureList.size()));
-  #endif
-          
+          repaint();
         }
         
         if (e->button() == Qt::RightButton)
