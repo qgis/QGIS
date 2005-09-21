@@ -55,18 +55,7 @@ bool CDPWizard::initialise()
   //
   // Populate the file types combo
   //
-  cboFileType->insertItem(tr("GDAL Supported Raster"));
-  cboFileType->insertItem(tr("Hadley Centre HadCM3 SRES Scenario"));
-  cboFileType->insertItem(tr("Hadley Centre HadCM3 IS92a Scenario"));
-  cboFileType->insertItem(tr("IPCC Observed Climatology"));
-  cboFileType->insertItem(tr("University of Reading Palaeoclimate data"));
-  cboFileType->insertItem(tr("Max Planck Institute fur Meteorologie (MPIfM) ECHAM4 data"));
-  cboFileType->insertItem(tr("CSIRO-Mk2 Model data"));
-  cboFileType->insertItem(tr("National Center for Atmospheric Research (NCAR) NCAR-CSM and NCAR-PCM data"));
-  cboFileType->insertItem(tr("Geophysical Fluid Dynamics Laboratory (GFDL) R30 Model data"));
-  cboFileType->insertItem(tr("Canadian Center for Climate Modelling and Analysis (CCCma) CGCM2 Model data"));
-  cboFileType->insertItem(tr("CCSR/NIES AGCM model data and CCSR OGCM model data"));
-
+  //cboFileType->insertItem(tr("GDAL Supported Raster"));
   //
   // set up the lstVariablesToCalc combo box
   //
@@ -160,8 +149,6 @@ void CDPWizard::saveDefaults()
     myQSettings.writeEntry("/qgis/cdpwizard/meanPrecip",leMeanPrecipitation->text());
     myQSettings.writeEntry("/qgis/cdpwizard/frostDays",leFrostDays->text());
     myQSettings.writeEntry("/qgis/cdpwizard/totalSolarRadiation",leTotalSolarRadiation->text());
-    myQSettings.writeEntry("/qgis/cdpwizard/windSpeed",leWindSpeed->text());
-    myQSettings.writeEntry("/qgis/cdpwizard/fileType",cboFileType->currentItem());
 
 
     //Page 4
@@ -180,42 +167,16 @@ void CDPWizard::loadDefaults()
     leMeanPrecipitation->setText(myQSettings.readEntry("/qgis/cdpwizard/meanPrecip"));
     leFrostDays->setText(myQSettings.readEntry("/qgis/cdpwizard/frostDays"));
     leTotalSolarRadiation->setText(myQSettings.readEntry("/qgis/cdpwizard/totalSolarRadiation"));
-    leWindSpeed->setText(myQSettings.readEntry("/qgis/cdpwizard/windSpeed"));
-    cboFileType->setCurrentItem(myQSettings.readNumEntry("/qgis/cdpwizard/fileType"));
 
 
     QString myOutputDir = myQSettings.readEntry("/qgis/cdpwizard/DefaultDirectories/OutputDir",QDir::homeDirPath());
     leOutputPath->setText(myOutputDir);
     cboOutputFormat->setCurrentItem(myQSettings.readNumEntry("/qgis/cdpwizard/outputFormat"));
 
-    cboFileType_activated(cboFileType->currentText());
 
 }
 
 
-void CDPWizard::cboFileType_activated( const QString &myQString )
-{
-#ifdef QGISDEBUG
-    std::cout << "cboFileType text changed" << std::endl;
-#endif
-
-    if (myQString==tr("University of Reading Palaeoclimate data") || 
-        myQString==tr("GDAL Supported Raster"))
-    {
-        //show the user some instructions about how the files must be on disk
-        lblFileSeriesNote->show();
-        //set the label on the summary form
-        lblFileSeriesSummary->setText(tr("<p align=\"right\">And <font color=\"red\"><b>are</b></font> in a file series</p>"));
-    }
-    else
-    {
-        //show the user some instructions about how the files must be on disk
-        lblFileSeriesNote->hide();
-        //set the label on the summary form
-        lblFileSeriesSummary->setText(tr("<p align=\"right\">And <font color=\"red\"><b>are not</b></font> in a file series</p>"));
-    }
-
-}
 
 void CDPWizard::formSelected(const QString  &thePageNameQString)
 {
@@ -245,7 +206,6 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
         climateDataProcessor->setMeanPrecipFileName(leMeanPrecipitation->text());
         climateDataProcessor->setFrostDaysFileName(leFrostDays->text());
         climateDataProcessor->setTotalSolarRadFileName(leTotalSolarRadiation->text());
-        climateDataProcessor->setWindSpeedFileName(leWindSpeed->text());
 
         //turn off next button until one or more variables have been selected
         setNextEnabled(currentPage(), false);
@@ -260,7 +220,7 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
         //
         // get the input file type
         //
-        climateDataProcessor->setInputFileType(cboFileType->currentText().latin1());
+        climateDataProcessor->setInputFileType("GDAL Supported Raster");
         //Should not need to have the next line here - it slows everythinf down!
         //climateDataProcessor->makeFileGroups();
         //#ifdef QGISDEBUG
@@ -327,7 +287,7 @@ void CDPWizard::formSelected(const QString  &thePageNameQString)
         }
 
         //update the output file format summary box
-        leInputFormatSummary->setText(cboFileType->currentText());
+        leInputFormatSummary->setText("GDAL Supported Raster");
 
         //update the file output path box
         leOutputPathSummary->setText(leOutputPath->text());
@@ -363,7 +323,7 @@ void CDPWizard::run()
     climateDataProcessor->setOutputFilePathString(leOutputPath->text());
 
     // get the input file type
-    climateDataProcessor->setInputFileType(cboFileType->currentText());
+    climateDataProcessor->setInputFileType("GDAL Supported Raster");
 
     // get the ouput file type
     climateDataProcessor->setOutputFileType(cboOutputFormat->currentText());
@@ -382,22 +342,8 @@ void CDPWizard::run()
     std::cout << "\nFile in series label visible? "<<   lblFileSeriesNote->isVisible() << std::endl;
 #endif
 
-    if (lblFileSeriesNote->isVisibleTo(myPageWidget))
-    {
-#ifdef QGISDEBUG
-        std::cout << "Setting files in series flag to true" << std::endl;
-#endif
-
-        climateDataProcessor->setFilesInSeriesFlag(true);
-    }
-    else
-    {
-#ifdef QGISDEBUG
-        std::cout << "Setting files in series flag to false" << std::endl;
-#endif
-
-        climateDataProcessor->setFilesInSeriesFlag(false);
-    }
+    //! @todo Get rid of the whole files in series paradigm
+    climateDataProcessor->setFilesInSeriesFlag(true);
 
 
     //setup the climate data processor's filereaders
@@ -502,7 +448,7 @@ void CDPWizard::accept()
 
 void CDPWizard::checkInputFilenames()
 {
-    if (leMeanTemp->text() =="" && leMinTemp->text() =="" && leMaxTemp->text() ==""  && leDiurnalTemp->text()=="" && leMeanPrecipitation->text()=="" && leFrostDays->text()=="" && leFrostDays->text()=="" && leTotalSolarRadiation->text()=="" && leWindSpeed->text() =="" )
+    if (leMeanTemp->text() =="" && leMinTemp->text() =="" && leMaxTemp->text() ==""  && leDiurnalTemp->text()=="" && leMeanPrecipitation->text()=="" && leFrostDays->text()=="" && leFrostDays->text()=="" && leTotalSolarRadiation->text()=="" )
     {
         setNextEnabled(currentPage(),false);
     }
@@ -640,9 +586,6 @@ void CDPWizard::lstVariablesToCalc_selectionChanged()
 }
 
 
-void CDPWizard::cboFileType_textChanged( const QString & )
-{
-}
 
 
 void CDPWizard::leMeanTemp_textChanged( const QString & )
@@ -686,11 +629,6 @@ void CDPWizard::leTotalSolarRadiation_textChanged( const QString & )
     checkInputFilenames();
 }
 
-
-void CDPWizard::leWindSpeed_textChanged( const QString & )
-{
-    checkInputFilenames();
-}
 
 
 void CDPWizard::leOutputPath_textChanged( const QString & theOutputPath)

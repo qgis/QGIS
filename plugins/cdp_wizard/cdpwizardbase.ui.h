@@ -115,11 +115,6 @@ void CDPWizardBase::accept()
 
 
 
-void CDPWizardBase::cboFileType_activated( const QString & )
-{
-
-}
-
 
 
 

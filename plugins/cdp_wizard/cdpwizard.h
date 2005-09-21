@@ -143,14 +143,6 @@ public:
 
     /**
     * Reimplements method by the same name in parent class
-    * @param theQString - new selected file type - will be converted to FileReader::FileTypeEnum
-    * @return void
-    * @see FileReader::FileTypeEnum
-    */
-    void cboFileType_textChanged( const QString & theQString);
-
-    /**
-    * Reimplements method by the same name in parent class
     * @param theFileNameString - new filename for mean temperature file
     * @return void
     */
@@ -197,13 +189,6 @@ public:
     * @return void
     */
     void leTotalSolarRadiation_textChanged( const QString & theFileNameString);
-
-    /**
-    * Reimplements method by the same name in parent class
-    * @param theFileNameString - new filename for windspeed file
-    * @return void
-    */
-    void leWindSpeed_textChanged( const QString & theFileNameString);
 
     /**
     * Reimplements method by the same name in parent class
@@ -266,11 +251,6 @@ private:
 
 public slots: // Public slots
 
-    /** This method overrides the virtual CDPWizardBase method (slot) of the same name.
-    * @param myQString - Used to notify listeners when the filetype has changed
-    * @return void
-    */
-    void cboFileType_activated( const QString &myQString );
 
     /** This method overrides the virtual CDPWizardBase method (slot) of the same name.
     * It is called when each page selected event (by pressing the next button)

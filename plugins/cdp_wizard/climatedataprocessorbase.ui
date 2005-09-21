@@ -1,0 +1,688 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>ClimateDataProcessorBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>ClimateDataProcessorBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>585</width>
+            <height>654</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Climate Processor</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>grpInput</cstring>
+            </property>
+            <property name="title">
+                <string>Select raw data files</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Browse for the raw data files that are required to create the variables that you have selected. Each month of data should be in a separate file. The files should be numbered e.g. meantemp01.asc, meantemp02.asc ... meantemp12.asc</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="4" column="0">
+                    <property name="name">
+                        <cstring>lblMeanPrecipitation</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Mean precipitation:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>leMeanPrecipitation</cstring>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="2" column="2">
+                    <property name="name">
+                        <cstring>pbtnMaxTemp</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>lblDiurnalTemperature</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Diurnal temperature:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>leDiurnalTemp</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="4" column="1">
+                    <property name="name">
+                        <cstring>leMeanPrecipitation</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>1</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="2">
+                    <property name="name">
+                        <cstring>pbtnMinTemp</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="1">
+                    <property name="name">
+                        <cstring>leMeanTemp</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>1</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="5" column="0">
+                    <property name="name">
+                        <cstring>lblFrostDays</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Frost days:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>leFrostDays</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>lblMinTemp</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Minimum temperature:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>leMinTemp</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="6" column="1">
+                    <property name="name">
+                        <cstring>leTotalSolarRadiation</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>1</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="5" column="2">
+                    <property name="name">
+                        <cstring>pbtnFrostDays</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="2">
+                    <property name="name">
+                        <cstring>pbtnMeanTemp</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="6" column="0">
+                    <property name="name">
+                        <cstring>lblSolarRadiation</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Total solar radiation:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>leTotalSolarRadiation</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>lblMeanTemp</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Mean temperature:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>leMeanTemp</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="5" column="1">
+                    <property name="name">
+                        <cstring>leFrostDays</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>1</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="3" column="1">
+                    <property name="name">
+                        <cstring>leDiurnalTemp</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>1</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>lblMaxTemp</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Maximum temperature:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>leMaxTemp</cstring>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="3" column="2">
+                    <property name="name">
+                        <cstring>pbtnDiurnalTemp</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>leMinTemp</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>1</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="2" column="1">
+                    <property name="name">
+                        <cstring>leMaxTemp</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>1</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="4" column="2">
+                    <property name="name">
+                        <cstring>pbtnMeanPrecipitation</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="6" column="2">
+                    <property name="name">
+                        <cstring>pbtnTotalSolarRad</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="1" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>grpVars</cstring>
+            </property>
+            <property name="title">
+                <string>Select variables to calculate</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QListBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>lstVariablesToCalc</cstring>
+                    </property>
+                    <property name="selectionMode">
+                        <enum>Multi</enum>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="1" column="0">
+                    <property name="name">
+                        <cstring>layout27</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>cbxSelectAllVars</cstring>
+                            </property>
+                            <property name="text">
+                                <string>(select / deselect all)</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>lblVariableCount</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&lt;p align="right"&gt;(0) Variables selected &lt;/p&gt;</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="2" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>grpOutput</cstring>
+            </property>
+            <property name="title">
+                <string>Output Options</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>cboOutputFormat</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>lblFormat</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Format:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>cboOutputFormat</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>lblPath</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Path:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>leOutputPath</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>leOutputPath</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="1" column="2">
+                    <property name="name">
+                        <cstring>pbtnOutputPath</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>20</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="2" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>cbxSwitchMeridian</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Switch meridian (for datasets where 0' longitude is in first column)</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="3" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>cbxPseudoColour</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Create pseudocoloured image of each output file</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QLabel" row="3" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>lblCurrentTask</cstring>
+            </property>
+            <property name="font">
+                <font>
+                </font>
+            </property>
+            <property name="text">
+                <string>Loading minimum temperature data</string>
+            </property>
+            <property name="alignment">
+                <set>AlignTop|AlignRight</set>
+            </property>
+        </widget>
+        <widget class="QProgressBar" row="4" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>progressTotalJob</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>1</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>399</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>32767</width>
+                    <height>32767</height>
+                </size>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="5" column="1">
+            <property name="name">
+                <cstring>pbtnOK</cstring>
+            </property>
+            <property name="text">
+                <string>OK</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="5" column="2">
+            <property name="name">
+                <cstring>pbtnClose</cstring>
+            </property>
+            <property name="text">
+                <string>Close</string>
+            </property>
+        </widget>
+        <spacer row="5" column="0">
+            <property name="name">
+                <cstring>spacer13</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>311</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+    </grid>
+</widget>
+<images>
+    <image name="image0">
+        <data format="PNG" length="1141">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000043c49444154388d959531881d551885bf2757f82f4ce00e6c600656d88104de2c09e43db4d85466b19085142ea4308810162bb18a58a8d869215a8a9558482c0453aedd5b30e4ad68b26b119c852c4c200f66200bf7421ece5f5c188b97984d4804abd3dc7bf8efb9e73f6770fbf7db1001c30b71bfddee9ba6263d99520e0b5c581bfcd779220c6e4e6f2246d0a84f61cd769f0f85fa5e8b2402283a079d7b9c4b91c49192c26c3478de7d234620c271d4e1a497a06884f26c4678a848143451900200df06580196a6bd50c09d62709ce7258d0a06fec533935e4e804d400414c59d0015f0ade28f02a82e9ead8055021572aeea8ff33c35b1b45ff7a94087224171896055200869842c2a36119a0781f1494777d0609dc01cfc8386d484de976b032298c79ae4ef4e7aa702aec61a4ba31e4108ed3a3fc70d761d6084e228308a8a8f9ec2b474c00e23be5b2e599f376cfe149e685c7eb1dbd7b39cdcb56002249e5c0ba66dc937cb5b4c3f70ac5eb0f8394cbff55c6b2025256b3d18a12a2c6108cd2f42f751e8b7be6c0646a3521dc075466c1e39d2a3924e605b4a7ebc781eb9d2b1f52ad4c1d345e06d41ef077cdad02de74047be04e137080796fd3f8e69fc8ebb4c6684e200ea64ccf6d0d1bc67397f0946272cdac16e0bf58d00a4e02cc88250b084b8f0ae2e4365523edcd17eb0f9ebdffdf6f796f206205097a06f4276015697c0cf179f9f0b0850cf1a4068549008cc03ed3c47ef82dc0177b7232f15436211d3b116949d3329fa0648daa1ad65af050da0f7a14e405e06b21cad3bf48e455a000ba643b0c8031063c92b30c40e775f599fef33be254c0e73d440956534a7213890c4a2330f5e90a0e473a19c795c549485a6123de3a81095955382e1c8b27ed0b2211516cf65155ab574472becff9952250555f268791420c51bc058f279c31a0de3644abe5cd369c01aa14b0acc55371d7ceaca7e322b399f54a46e4a218bcd5a8d0ea20096263854737c146a93d346c70aca5826e4c309b81654e8128f2dd617ae084bc275374283b01e41a4c6660d480bae83932d7927a0421153c63347174a6c14300a6ae17004498335c2dea5f7173e2e5e53b815189b06311e8ba39b09d6292453483aba730d3651980924051c2ab4a385b7ef8dd89d8f28a425cbfe7ae2e34f2ed603fd61bfcf9626d853f52260e642a7763195b7a081c6815b018e1a98e534283e16ec6ac1b5a5353674c2fa67cf64c5e84a033b0d8c2a7040001b160104165d569ad7a0894a2ee0dc1eb2ef29424ade5ea00e191baf5bc2b3795c5ddc18942b55efe33e62162946007c0e6d4abadcd1942d9ac0de2bb01a954c6aecbd808615b6ce54f88f8b813c6a10733cf9abb35707a94aefee6e63670a4d0a4702f30c7616647bc3804d81a858035de6e12d682ee5037994c76284c18b3aafd8f9bc971d0f6d8a8d4217059216ca9af6614736527458529ffe6af0bf3aef319637aef7e1d0a3c1e2c45349a03c5550ad6d3eb7eb1ee33f8cbd5500267085670000000049454e44ae426082</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>pbtnMeanTemp</sender>
+        <signal>clicked()</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>pbtnMeanTemp_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbtnMinTemp</sender>
+        <signal>clicked()</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>pbtnMinTemp_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbtnMaxTemp</sender>
+        <signal>clicked()</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>pbtnMaxTemp_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbtnDiurnalTemp</sender>
+        <signal>clicked()</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>pbtnDiurnalTemp_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbtnMeanPrecipitation</sender>
+        <signal>clicked()</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>pbtnMeanPrecipitation_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbtnFrostDays</sender>
+        <signal>clicked()</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>pbtnFrostDays_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbtnTotalSolarRad</sender>
+        <signal>clicked()</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>pbtnTotalSolarRad_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>leMeanTemp</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>leMeanTemp_textChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>leMinTemp</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>leMinTemp_textChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>leMaxTemp</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>leMaxTemp_textChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>leDiurnalTemp</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>leDiurnalTemp_textChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>leMeanPrecipitation</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>leMeanPrecipitation_textChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>leFrostDays</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>leFrostDays_textChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>leTotalSolarRadiation</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>leTotalSolarRadiation_textChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>cbxSelectAllVars</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>cbxSelectAllVars_toggled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>pbtnOutputPath</sender>
+        <signal>clicked()</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>pbtnOutputPath_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbtnOK</sender>
+        <signal>clicked()</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>pbtnOK_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>pbtnClose</sender>
+        <signal>clicked()</signal>
+        <receiver>ClimateDataProcessorBase</receiver>
+        <slot>pbtnClose_clicked()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>leMeanTemp</tabstop>
+    <tabstop>pbtnMeanTemp</tabstop>
+    <tabstop>leMinTemp</tabstop>
+    <tabstop>pbtnMinTemp</tabstop>
+    <tabstop>leMaxTemp</tabstop>
+    <tabstop>pbtnMaxTemp</tabstop>
+    <tabstop>leDiurnalTemp</tabstop>
+    <tabstop>pbtnDiurnalTemp</tabstop>
+    <tabstop>leMeanPrecipitation</tabstop>
+    <tabstop>pbtnMeanPrecipitation</tabstop>
+    <tabstop>leFrostDays</tabstop>
+    <tabstop>pbtnFrostDays</tabstop>
+    <tabstop>leTotalSolarRadiation</tabstop>
+    <tabstop>pbtnTotalSolarRad</tabstop>
+    <tabstop>lstVariablesToCalc</tabstop>
+    <tabstop>cbxSelectAllVars</tabstop>
+    <tabstop>cboOutputFormat</tabstop>
+    <tabstop>leOutputPath</tabstop>
+    <tabstop>pbtnOutputPath</tabstop>
+    <tabstop>cbxSwitchMeridian</tabstop>
+    <tabstop>cbxPseudoColour</tabstop>
+    <tabstop>pbtnOK</tabstop>
+    <tabstop>pbtnClose</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">climatedataprocessorbase.ui.h</include>
+</includes>
+<slots>
+    <slot>pbtnMeanTemp_clicked()</slot>
+    <slot>pbtnMinTemp_clicked()</slot>
+    <slot>pbtnMaxTemp_clicked()</slot>
+    <slot>pbtnDiurnalTemp_clicked()</slot>
+    <slot>pbtnMeanPrecipitation_clicked()</slot>
+    <slot>pbtnFrostDays_clicked()</slot>
+    <slot>pbtnTotalSolarRad_clicked()</slot>
+    <slot>leMeanTemp_textChanged( const QString &amp; )</slot>
+    <slot>leMinTemp_textChanged( const QString &amp; )</slot>
+    <slot>leMaxTemp_textChanged( const QString &amp; )</slot>
+    <slot>leDiurnalTemp_textChanged( const QString &amp; )</slot>
+    <slot>leMeanPrecipitation_textChanged( const QString &amp; )</slot>
+    <slot>leFrostDays_textChanged( const QString &amp; )</slot>
+    <slot>leTotalSolarRadiation_textChanged( const QString &amp; )</slot>
+    <slot>cbxSelectAllVars_toggled( bool )</slot>
+    <slot>pbtnOutputPath_clicked()</slot>
+    <slot>pbtnOK_clicked()</slot>
+    <slot>pbtnClose_clicked()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
