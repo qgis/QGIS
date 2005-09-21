@@ -87,6 +87,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsattributedialog.h"
 #include "qgsattributetabledisplay.h"
+#include "qgsdistancearea.h"
 #ifdef Q_WS_X11
 #include "qgsclipper.h"
 #endif
@@ -948,6 +949,9 @@ void QgsVectorLayer::identify(QgsRect * r)
   QgsFeature *fet;
   unsigned char *feature;
 
+  QgsDistanceArea calc;
+  calc.setSourceSRS(mCoordinateTransform->sourceSRS().srsid());
+  
   if ( !isEditable() ) {
       // display features falling within the search radius
       if( !ir )
@@ -997,6 +1001,22 @@ void QgsVectorLayer::identify(QgsRect * r)
     ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
   }
 
+  // measure distance or area
+  if (vectorType() == QGis::Line)
+  {
+    double dist = calc.measure(fet->geometry());
+    QString str = QString::number(dist/1000, 'f', 3);
+    str += " km";
+    ir->addAttribute(featureNode, ".Length", str);
+  }
+  else if (vectorType() == QGis::Polygon)
+  {
+    double area = calc.measure(fet->geometry());
+    QString str = QString::number(area/1000000, 'f', 3);
+    str += " km2";
+    ir->addAttribute(featureNode, ".Area", str);
+  }
+  
   // Add actions 
   
   QgsAttributeAction::aIter iter = mActions.begin();
@@ -1042,7 +1062,7 @@ void QgsVectorLayer::identify(QgsRect * r)
 
       ir->setTitle(name());
       if (featureCount == 1)
-    ir->showAllAttributes();
+        ir->showAllAttributes();
       
       if (featureCount == 0)
       {
@@ -3450,4 +3470,35 @@ bool QgsVectorLayer::commitAttributeChanges(const std::set<QString>& deleted,
   returnvalue=false;
     }
     return returnvalue;
+}
+
+// Convenience function to transform the given point
+inline void QgsVectorLayer::transformPoint(double& x, 
+                                           double& y, 
+                                           QgsMapToPixel* mtp,
+                                           bool projectionsEnabledFlag)
+{
+  // transform the point
+  if (projectionsEnabledFlag)
+  {
+    double z = 0;
+    mCoordinateTransform->transformInPlace(x, y, z);
+  }
+
+  // transform from projected coordinate system to pixel 
+  // position on map canvas
+  mtp->transformInPlace(x, y);
+}
+
+inline void QgsVectorLayer::transformPoints(
+    std::vector<double>& x, std::vector<double>& y, std::vector<double>& z,
+    QgsMapToPixel* mtp, bool projectionsEnabledFlag)
+{
+  // transform the point
+  if (projectionsEnabledFlag)
+    mCoordinateTransform->transformInPlace(x, y, z);
+
+  // transform from projected coordinate system to pixel 
+  // position on map canvas
+  mtp->transformInPlace(x, y);
 }

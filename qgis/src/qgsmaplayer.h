@@ -32,14 +32,12 @@
 
 #include <qgsrect.h>
 #include <qgis.h>
-#include <qgsmaptopixel.h>
-#include <qgisapp.h>
-#include <qgssymbol.h>
 #include <qgsfield.h>
 
 #include <qgscoordinatetransform.h>
 
-
+class QgisApp;
+class QgsMapToPixel;
 class QgsFeature;
 class QPopupMenu;
 class QgsLegendLayerFile;
@@ -47,6 +45,7 @@ class QgsLegendSymbologyGroup;
 class QDomNode;
 class QDomDocument;
 class QEvent;
+class QLabel;
 
 /** \class QgsMapLayer
  * \brief Base class for all map layer types.

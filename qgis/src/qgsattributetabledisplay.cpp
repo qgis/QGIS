@@ -24,6 +24,7 @@
 #include "qgsadvancedattrsearch.h"
 #include "qgsvectorlayer.h"
 #include "qgssearchtreenode.h"
+#include "qgsfeature.h"
 #include <qlayout.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
@@ -68,7 +69,7 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAtt
   // TODO: create better labels
   mSearchShowResults->insertItem(tr("select"));
   mSearchShowResults->insertItem(tr("select and bring to top"));
-  mSearchShowResults->insertItem(tr("show only mathing"));
+  mSearchShowResults->insertItem(tr("show only matching"));
 }
 
 QgsAttributeTableDisplay::~QgsAttributeTableDisplay()

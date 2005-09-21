@@ -124,7 +124,6 @@ QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
   delete pdm;
     
   mMeasure = 0;
-
 } // QgsMapCanvas ctor
 
 
@@ -1433,6 +1432,18 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
       emit xyClickCoordinates(idPoint,e->button());
       break;
     }
+    
+    case QGis::MeasureDist:
+    case QGis::MeasureArea:
+    {
+      if (mMeasure && e->button() == Qt::LeftButton)
+      {
+        QgsPoint  idPoint = mCanvasProperties->coordXForm->
+            toMapCoordinates(e->x(), e->y());
+        mMeasure->mousePress(idPoint);
+      }
+      break;
+    }
   }
 } // mousePressEvent
 
@@ -1882,7 +1893,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         break;
       }  
   
-      case QGis::Measure:
+/*      case QGis::Measure:
       {
         QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
   
@@ -1892,7 +1903,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         mMeasure->addPoint(point);
         mMeasure->show();
         break;
-      }
+    }*/
       
     } // switch mapTool
     
@@ -2080,21 +2091,21 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       break;
     }
 
-    case QGis::Measure:
+    case QGis::MeasureDist:
+    case QGis::MeasureArea:
     {
+   
       QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
 
-      if(e->button()==Qt::RightButton) // restart
+      if(e->button()==Qt::RightButton && (e->state() & Qt::LeftButton) == 0) // restart
       {
-            if ( mMeasure ) {   
+            if ( mMeasure )
+            {   
                 mMeasure->restart();
             }
       } 
-      else 
+      else if (e->button() == Qt::LeftButton)
       {
-        if ( !mMeasure ) {
-            mMeasure = new QgsMeasure(this, topLevelWidget() );
-        }
         mMeasure->addPoint(point);
         mMeasure->show();
       }
@@ -2195,8 +2206,9 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
       bitBlt(this, dx, dy, mCanvasProperties->pmCanvas);
       break;
       
-    case QGis::Measure:
-      if ( mMeasure ) 
+    case QGis::MeasureDist:
+    case QGis::MeasureArea:
+      if (mMeasure && (e->state() & Qt::LeftButton))
       {
         QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->pos().x(), e->pos().y());
         mMeasure->mouseMove(point);
@@ -2368,6 +2380,19 @@ void QgsMapCanvas::setMapTool(int tool)
     {
 	mLineEditing=false;
 	mPolygonEditing=true;
+    }
+    else if (tool == QGis::MeasureDist || tool == QGis::MeasureArea)
+    {
+      bool measureArea = (tool == QGis::MeasureArea);
+      if (!mMeasure)
+      {
+        mMeasure = new QgsMeasure(measureArea, this, topLevelWidget());
+      }
+      else if (mMeasure && mMeasure->measureArea() != measureArea)
+      {
+        // tell window that the tool has been changed
+        mMeasure->setMeasureArea(measureArea);
+      }
     }
 } // setMapTool
 

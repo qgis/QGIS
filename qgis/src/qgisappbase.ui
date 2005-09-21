@@ -205,6 +205,7 @@
         <action name="actionIdentify"/>
         <action name="actionSelect"/>
         <action name="actionMeasure"/>
+        <action name="actionMeasureArea"/>
         <separator/>
         <widget class="QToolButton">
             <property name="name">
@@ -566,6 +567,26 @@
             </property>
             <property name="whatsThis">
               <string>Measure distances on the map canvas.</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>actionMeasureArea</cstring>
+            </property>
+            <property name="toggleAction">
+                <bool>true</bool>
+            </property>
+            <property name="iconSet">
+                <iconset>image14</iconset>
+            </property>
+            <property name="text">
+                <string>Measure Area</string>
+            </property>
+            <property name="menuText">
+                <string>Measure Area</string>
+            </property>
+            <property name="whatsThis">
+              <string>Measure areas on the map canvas.</string>
             </property>
         </action>
     </actiongroup>
@@ -1751,6 +1772,12 @@
         <slot>measure()</slot>
     </connection>
     <connection>
+        <sender>actionMeasureArea</sender>
+        <signal>activated()</signal>
+        <receiver>QgisAppBase</receiver>
+        <slot>measureArea()</slot>
+    </connection>
+    <connection>
         <sender>actionAddWmsLayer</sender>
         <signal>activated()</signal>
         <receiver>QgisAppBase</receiver>
@@ -1873,6 +1900,7 @@
     <slot>zoomToLayer()</slot>
     <slot>zoomToLayerExtent()</slot>
     <slot>measure()</slot>
+    <slot>measureArea()</slot>
     <slot>addVertex()</slot>
     <slot>moveVertex()</slot>
     <slot>actionCustomProjection_activated()</slot>

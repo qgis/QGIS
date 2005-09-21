@@ -23,6 +23,7 @@
 #include "qgscontcoldialog.h"
 #include "qgssymbologyutils.h"
 #include "qgsmarkercatalogue.h"
+#include "qgssymbol.h"
 #include <qdom.h>
 
 QgsContinuousColRenderer::QgsContinuousColRenderer(QGis::VectorType type): mMinimumSymbol(0), mMaximumSymbol(0)

@@ -59,7 +59,8 @@ namespace QGis
     CaptureLine,
     CapturePolygon,
     EmitPoint,
-    Measure,
+    MeasureDist,
+    MeasureArea,
     AddVertex,
     MoveVertex,
     DeleteVertex
