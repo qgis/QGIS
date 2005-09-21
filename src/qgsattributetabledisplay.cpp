@@ -273,8 +273,8 @@ void QgsAttributeTableDisplay::doSearch(const QString& searchString)
   }
 
 #ifdef QGISDEBUG
-  std::cout << "Search by attribute: " << searchString << std::endl
-            << " parsed as: " << search.tree()->makeSearchString() << std::endl;
+  std::cout << "Search by attribute: " << searchString.local8Bit() << std::endl
+            << " parsed as: " << search.tree()->makeSearchString().local8Bit() << std::endl;
 #endif
 
   QApplication::setOverrideCursor(Qt::waitCursor);

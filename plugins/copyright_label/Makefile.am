@@ -65,5 +65,7 @@ copyrightlabelplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/libqgis.la
 copyrightlabelplugin_la_LDFLAGS = -avoid-version -module
 copyrightlabelplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src
 
+CLEANFILES = $(BUILT_SOURCES)
+
 EXTRA_DIST = $(plugin_UIC) icon.xpm \
 	pluginguibase.ui.h

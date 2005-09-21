@@ -94,7 +94,7 @@ gridmaker_SOURCES = main.cpp \
 	dbfopen.c \
 	shapefile.h \
 	plugingui.cpp \
-	pluginguibase.cpp \
+	pluginguibase.uic.cpp \
 	$(standalone_MOC) 
 
 gridmaker_LDADD = $(QT_LDADD) 
@@ -106,6 +106,8 @@ standalone_MOC = plugingui.moc.cpp \
 
 standalone_UI = pluginguibase.uic.h \
 	    pluginguibase.uic.cpp 
+
+CLEANFILES = $(BUILT_SOURCES)
 
 ## 
 ## Anything that must go in the tarball gets added here

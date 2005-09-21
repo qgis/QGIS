@@ -85,7 +85,6 @@ QString libDir = baseDir + "/lib"; */
             {
 #ifdef QGISDEBUG
               std::cout << "Checking  " << myLib->library().local8Bit() << std::endl;
-              cout << "Checking  " << myLib->library() << endl;
 #endif
               // get the description and the key for the provider plugin
 

@@ -13,6 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
+
 #include <iostream>
 
 #include "qstring.h"
@@ -89,8 +91,8 @@ void QgsGrass::setLocation( QString gisdbase, QString location )
 void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::setLocation(): gisdbase = " << gisdbase << " location = "
-	      << location << " mapset = " << mapset << std::endl;
+    std::cerr << "QgsGrass::setLocation(): gisdbase = " << gisdbase.local8Bit() << " location = "
+	      << location.local8Bit() << " mapset = " << mapset.local8Bit() << std::endl;
     #endif
     init();
 

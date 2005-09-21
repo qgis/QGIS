@@ -63,7 +63,7 @@ void QgsProjectionSelector::setSelectedSRSName(QString theSRSNAme)
 {
   //get the srid given the wkt so we can pick the correct list item
 #ifdef QGISDEBUG
-  std::cout << "QgsProjectionSelector::setSelectedSRSName called with \n" << theSRSNAme << std::endl;
+  std::cout << "QgsProjectionSelector::setSelectedSRSName called with \n" << theSRSNAme.local8Bit() << std::endl;
 #endif
   //now delegate off to the rest of the work
   QListViewItemIterator myIterator (lstCoordinateSystems);
@@ -128,7 +128,7 @@ QString QgsProjectionSelector::getCurrentProj4String()
       QString myDatabaseFileName;
       QString mySrsId = myItem->text(1);
 
-      std::cout << " QgsProjectionSelector::getCurrentProj4String :  mySrsId = " << mySrsId << std::endl;
+      std::cout << " QgsProjectionSelector::getCurrentProj4String :  mySrsId = " << mySrsId.local8Bit() << std::endl;
       std::cout << " QgsProjectionSelector::getCurrentProj4String :  USER_PROJECTION_START_ID = " << USER_PROJECTION_START_ID << std::endl;
       //
       // Determine if this is a user projection or a system on
@@ -149,7 +149,7 @@ QString QgsProjectionSelector::getCurrentProj4String()
       {
         myDatabaseFileName =  mSrsDatabaseFileName;
       }
-      std::cout << "QgsProjectionSelector::getCurrentProj4String db = " << myDatabaseFileName << std::endl;
+      std::cout << "QgsProjectionSelector::getCurrentProj4String db = " << myDatabaseFileName.local8Bit() << std::endl;
 
 
       sqlite3 *db;
@@ -170,7 +170,7 @@ QString QgsProjectionSelector::getCurrentProj4String()
       QString sql = "select parameters from tbl_srs where srs_id = ";
       sql += mySrsId;
 #ifdef QGISDEBUG
-      std::cout << "Selection sql : " << sql << std::endl;
+      std::cout << "Selection sql : " << sql.local8Bit() << std::endl;
 #endif
 
       rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
@@ -188,8 +188,8 @@ QString QgsProjectionSelector::getCurrentProj4String()
       // close the database
       sqlite3_close(db);
 #ifdef QGISDEBUG
-      std::cout << "Item selected : " << myItem->text(0) << std::endl;
-      std::cout << "Item selected full string : " << myProjString << std::endl;
+      std::cout << "Item selected : " << myItem->text(0).local8Bit() << std::endl;
+      std::cout << "Item selected full string : " << myProjString.local8Bit() << std::endl;
 #endif
       assert(myProjString.length() > 0);
       return myProjString;
@@ -220,7 +220,7 @@ long QgsProjectionSelector::getCurrentSRID()
   if(lvi)
   {
     // Make sure the selected node is a srs and not a top-level projection node
-    std::cout << lvi->text(1) << std::endl;
+    std::cout << lvi->text(1).local8Bit() << std::endl;
     if(lvi->text(1).length() > 0)
     {
       QString myDatabaseFileName;
@@ -236,7 +236,7 @@ long QgsProjectionSelector::getCurrentSRID()
         if ( !myFileInfo.exists( ) )
         {
           std::cout << " QgsSpatialRefSys::createFromSrid failed :  users qgis.db not found" << std::endl;
-          return NULL;
+          return 0;
         }
       }
       else //must be  a system projection then
@@ -267,7 +267,7 @@ long QgsProjectionSelector::getCurrentSRID()
       sql += lvi->text(1);
 
 #ifdef QGISDEBUG
-      std::cout << "Finding selected srid using : " <<  sql << std::endl;
+      std::cout << "Finding selected srid using : " << sql.local8Bit() << std::endl;
 #endif
       rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
       // XXX Need to free memory from the error msg if one is set
@@ -292,7 +292,7 @@ long QgsProjectionSelector::getCurrentSRID()
   else
   {
     // No node is selected, return null
-    return NULL;
+    return 0;
   }
 
 }
@@ -305,7 +305,7 @@ long QgsProjectionSelector::getCurrentSRSID()
   }
   else
   {
-    return NULL;
+    return 0;
   }
 }
 
@@ -352,7 +352,7 @@ void QgsProjectionSelector::getUserProjList()
   // Set up the query to retreive the projection information needed to populate the list
   QString mySql = "select description,srs_id,is_geo, name,parameters from vw_srs";
 #ifdef QGISDEBUG
-  std::cout << "User projection list sql" << mySql << std::endl;
+  std::cout << "User projection list sql" << mySql.local8Bit() << std::endl;
 #endif
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -426,7 +426,7 @@ void QgsProjectionSelector::getProjList()
   //changes the underlying view TS
   sql = "select description,srs_id,is_geo, name,parameters from vw_srs";
 #ifdef QGISDEBUG
-  std::cout << "SQL for projection list:\n" << sql << std::endl;
+  std::cout << "SQL for projection list:\n" << sql.local8Bit() << std::endl;
 #endif
   rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
   // XXX Need to free memory from the error msg if one is set
@@ -569,7 +569,7 @@ void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem )
   QString myDescription = tr("QGIS SRSID: ") + QString::number(getCurrentSRSID()) +"\n";
   myDescription        += tr("PostGIS SRID: ") + QString::number(getCurrentSRID()) +"\n";
   QString myProjString = getCurrentProj4String();
-  if (myProjString)
+  if (!myProjString.isEmpty())
   {
     myDescription+=(myProjString);
   }
@@ -612,7 +612,7 @@ void QgsProjectionSelector::pbnFind_clicked()
     mySql= "select srs_id from tbl_srs where epsg=" + leSearch->text();
   }
 #ifdef QGISDEBUG
-  std::cout << " Search sql" << mySql << std::endl;
+  std::cout << " Search sql" << mySql.local8Bit() << std::endl;
 #endif
   myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set

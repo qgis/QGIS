@@ -75,8 +75,11 @@ sub Qt3to4File
     # Qt4:
     #   QString foo;  foo.toAscii().data();
 
-    # Commented out as we now use "local8Bit" in ostreams and it also breaks QKeyEvent's "ascii()"
-    #$line =~ s/ascii\(\)/toAscii\(\)\.data\(\)/g;
+    # Restricted to filenames as we now use "local8Bit" in ostreams and it also breaks QKeyEvent's "ascii()"
+    if ($filename =~ /qgsrasterlayer\.cpp$/)
+    {
+      $line =~ s/ascii\(\)/toAscii\(\)\.data\(\)/g;
+    }
 
     # 1a. Use of QStrings in std::ostream operator<< context
     #

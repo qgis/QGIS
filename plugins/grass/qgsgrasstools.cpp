@@ -183,7 +183,7 @@ void QgsGrassTools::addModules (  QListViewItem *parent, QDomElement &element )
 	    //std::cout << "tag = " << e.tagName() << std::endl;
 
 	    if ( e.tagName() == "section" && e.tagName() == "grass" ) {
-		std::cout << "Unknown tag: " << e.tagName() << std::endl;
+		std::cout << "Unknown tag: " << e.tagName().local8Bit() << std::endl;
 		continue;
 	    }
 	    
