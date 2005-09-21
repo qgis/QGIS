@@ -98,8 +98,9 @@ void QgsLegend::updateLegendItem( QListViewItem * li )
 
 void QgsLegend::removeAll()
 {
-  clear();
-} // QgsLegend::removeAll()
+    mCheckBoxes.clear();
+    clear();
+}
 
 void QgsLegend::removeLayer(QString layer_key)
 {
@@ -219,6 +220,11 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
       
       QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>(mItemBeingMoved);
       QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>(destItem);
+
+      if(!dest || !origin)
+      {
+	  return;
+      }
 
       QgsLegendItem::DRAG_ACTION daction= dest->accept(origin->type());
 
@@ -379,8 +385,6 @@ int QgsLegend::getItemPos(QListViewItem * item)
 
 void QgsLegend::addLayer( QgsMapLayer * layer )
 {
-    //QgsLegendGroup * lgroup = new QgsLegendGroup(this,QString("Layer Group"));
-    //lgroup->setRenameEnabled(0, true);
     QgsLegendLayer * llayer = new QgsLegendLayer(/*lgroup*/this,QString(layer->name()));
     llayer->setRenameEnabled(0, true);
     QgsLegendPropertyGroup * lpgroup = new QgsLegendPropertyGroup(llayer,QString("Properties"));
@@ -403,7 +407,6 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
     layer->setLegendLayerFile(llfile);
     layer->initContextMenu(mApp);
 
-    /*lgroup->setOpen(true);*/
     llayer->setOpen(false);
     lpgroup->setOpen(false);
     lsgroup->setOpen(false); 
