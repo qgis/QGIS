@@ -21,6 +21,7 @@ class QPainter;
 class QPixmap;
 
 class QgsMapCanvas;
+class QgsDistanceArea;
 
 #include <vector>
 #include "qgspoint.h"
@@ -31,13 +32,14 @@ class QgsMapCanvas;
 #include "qgsmeasurebase.uic.h"
 #endif
 
+
 class QgsMeasure:public QgsMeasureBase
 {
   Q_OBJECT;
   public:
 
   //! Constructor
-  QgsMeasure(QgsMapCanvas *, QWidget *parent = 0, const char * name = 0, WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WStyle_Dialog | Qt::WStyle_Tool );
+  QgsMeasure(bool measureArea, QgsMapCanvas *, QWidget *parent = 0, const char * name = 0, WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WStyle_Dialog | Qt::WStyle_Tool );
 
   ~QgsMeasure();
 
@@ -52,6 +54,14 @@ class QgsMeasure:public QgsMeasureBase
   
   //! Mose move
   void mouseMove(QgsPoint &point);
+  
+  //! Mouse press
+  void mousePress(QgsPoint &point);
+  
+  //! returns whether measuring distance or area
+  bool measureArea() { return mMeasureArea; }
+  //! sets whether we're measuring area (and restarts)
+  void setMeasureArea(bool measureArea);
 
 public slots:
   //! Close
@@ -70,10 +80,23 @@ public slots:
   void showHelp();
   
 private:
+  
+  //! formats distance to most appropriate units
+  QString formatDistance(double distance);
+  
+  //! formats area to most appropriate units
+  QString formatArea(double area);
+  
+  //! shows/hides table, shows correct units
+  void updateUi();
+  
   QgsMapCanvas *mMapCanvas;
 
   QPixmap *mPixmap;
-
+  
+  //! distance/area calculator
+  QgsDistanceArea* mCalc;
+  
   std::vector<QgsPoint> mPoints;
 
   double mTotal;
@@ -85,13 +108,16 @@ private:
   QgsPoint mDynamicPoints[2];
 
   //! Draw current points with XOR
-  void drawLine(void); 
+  void drawLine(bool erase = false); 
   
   //! Draw current dynamic line
   void drawDynamicLine(void); 
 
   //! Help context id
   static const int context_id = 940759457;
+  
+  //! indicates whether we're measuring distances or areas
+  bool mMeasureArea;
 };
 
 #endif

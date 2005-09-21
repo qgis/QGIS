@@ -36,7 +36,7 @@
 #include "qgslegenditem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-
+#include "qgssymbol.h"
 
 
 QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer)

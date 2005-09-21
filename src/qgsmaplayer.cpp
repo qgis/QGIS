@@ -31,6 +31,8 @@
 #include <qpopupmenu.h>
 #include <qevent.h>
 
+#include "qgisapp.h"
+#include "qgsmaptopixel.h"
 #include "qgsrect.h"
 #include "qgsproject.h"
 #include "qgssymbol.h"

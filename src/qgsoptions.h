@@ -63,6 +63,14 @@ class QgsOptions :public QgsOptionsBase{
      * true.
      */
     bool newVisible();
+  protected:
+    //! Populates combo box with ellipsoids
+    void getEllipsoidList();
+    
+    QString getEllipsoidAcronym(QString theEllipsoidName);
+    QString getEllipsoidName(QString theEllipsoidAcronym);
+    QString mQGisSettingsDir;
+
   private:
     //! Pointer to our parent
     QWidget *qparent;

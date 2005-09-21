@@ -287,6 +287,11 @@ void QgisAppBase::menubar_highlighted(int)
 
 void QgisAppBase::about()
 {
+
+}
+
+void QgisAppBase::measureArea()
+{
 }
 
 

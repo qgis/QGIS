@@ -62,6 +62,7 @@ wish to see edbug messages printed to stdout.
 #include "qgslegendsymbologygroup.h"
 #include "qgslegendsymbologyitem.h"
 #include "qgsrasterlayer.h"
+#include "qgsmaptopixel.h"
 
 #include <cstdio>
 #include <cmath>
