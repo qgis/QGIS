@@ -55,17 +55,12 @@ endif
 ## ancillary library for plug-ins
 lib_LTLIBRARIES = libqgis.la
 
-headers =	qgisapp.h					\
-		qgsaddattrdialog.h \
+qgisHEADERS =	\
 		qgis.h						\
 		qgisiface.h					\
 		qgisinterface.h					\
-		qgsacetatelines.h				\
-		qgsacetateobject.h				\
-		qgsacetaterectangle.h				\
 		qgsaddattrdialog.h				\
 		qgsadvancedattrsearch.h				\
-		qgsattributeaction.h				\
 		qgsattributeactiondialog.h			\
 		qgsattributedialog.h				\
 		qgsattributetabledisplay.h			\
@@ -73,22 +68,8 @@ headers =	qgisapp.h					\
 		qgsbookmarks.h			\
 		qgsbookmarkitem.h			\
 		qgsclipboard.h					\
-		qgsclipper.h					\
-		qgscolortable.h					\
-		qgscomposer.h					\
-		qgscomposition.h				\
-		qgscomposeritem.h				\
-		qgscomposermap.h				\
-		qgscomposervectorlegend.h			\
-		qgscomposerlabel.h				\
-		qgscomposerpicture.h				\
-		qgscomposerscalebar.h				\
-		qgscomposerview.h				\
-		qgscomposition.h				\
 		qgscontexthelp.h				\
 		qgscontcoldialog.h				\
-		qgscontinuouscolrenderer.h			\
-		qgscoordinatetransform.h			\
 		qgsencodingfiledialog.h				\
 		qgsmaptopixel.h					\
 		qgscustomsymbol.h				\
@@ -100,31 +81,19 @@ headers =	qgisapp.h					\
 		qgsdlgvectorlayerproperties.h			\
 		qgsexception.h					\
 		qgscsexception.h				\
-		qgsfeatureattribute.h				\
-		qgsfeature.h					\
-		qgsfield.h					\
-		qgsgeometry.h					\
-		qgsgeometryvertexindex.h			\
 		qgsgeomtypedialog.h				\
-		qgsgraduatedsymrenderer.h			\
 		qgsgrasydialog.h				\
 		qgshelpviewer.h					\
 		qgsidentifyresults.h				\
 		qgslabelattributes.h				\
 		qgslabeldialog.h				\
-		qgslabel.h					\
 		qgsline.h					\
 		qgslinestyledialog.h				\
 		qgslinesymbol.h					\
 		qgsludialog.h					\
-		qgsmapcanvas.h					\
-		qgsmaplayer.h					\
 		qgsmaplayerinterface.h				\
-		qgsmaplayerregistry.h				\
-		qgsmapoverviewcanvas.h			\
 		qgsmapserverexport.h				\
 		qgsmarkerdialog.h				\
-		qgsmarkersymbol.h				\
 		qgsmeasure.h					\
 		qgsnewhttpconnection.h				\
 		qgsoptions.h					\
@@ -134,52 +103,29 @@ headers =	qgisapp.h					\
 		qgspluginmanager.h				\
 		qgspluginmetadata.h				\
 		qgspluginregistry.h				\
-		qgspoint.h					\
 		qgspolygonsymbol.h				\
 		qgsproject.h					\
-		qgsprojectproperty.h				\
 		qgsprojectproperties.h				\
-		qgsprovidercountcalcevent.h			\
-		qgsproviderextentcalcevent.h			\
 		qgsprovidermetadata.h				\
-		qgsproviderregistry.h				\
-		qgsrangerenderitem.h				\
 		qgsrasterdataprovider.h				\
-		qgsrasterlayer.h				\
 		qgsrasterlayerproperties.h			\
-		qgsrect.h					\
-		qgsrenderer.h					\
-		qgsrenderitem.h					\
-		qgsrunprocess.h					\
-		qgsscalecalculator.h				\
                 qgssearchstring.h				\
                 qgssearchtreenode.h				\
 		qgsserversourceselect.h				\
-		qgssinglesymrenderer.h				\
 		qgssisydialog.h					\
-		qgsspatialrefsys.h	\
 		qgssvgcache.h					\
 		qgsmarkercatalogue.h				\
-		qgssymbol.h					\
 		qgssymbologyutils.h				\
-		qgsuniquevalrenderer.h				\
 		qgsuvaldialog.h					\
-		qgsvectordataprovider.h				\
-		qgsvectorfilewriter.h				\
-		qgsvectorlayer.h				\
 		splashscreen.h				\
 		qgslayerprojectionselector.h \
 		$(WIDGETPATH)/projectionselector/qgsprojectionselector.h \
-		qgscustomprojectiondialog.h \
-		qgspointstylewidget.h				\
-		qgslinestylewidget.h				\
-		qgsfillstylewidget.h				\
 		splashscreen.h				
 
 
 ## qt designer files for all the GUI stuff
 
-qgis_UIC =	qgisappbase.ui				\
+qgis_UIC =	\
 		qgsabout.ui				\
 		qgsaddattrdialogbase.ui			\
 		qgsadvancedattrsearchbase.ui		\
@@ -187,13 +133,6 @@ qgis_UIC =	qgisappbase.ui				\
 		qgsattributeactiondialogbase.ui		\
 		qgsattributetablebase.ui		\
 		qgsbookmarksbase.ui		\
-		qgscomposerbase.ui			\
-		qgscompositionbase.ui			\
-		qgscomposermapbase.ui			\
-		qgscomposervectorlegendbase.ui		\
-		qgscomposerlabelbase.ui		     	\
-		qgscomposerpicturebase.ui	     	\
-		qgscomposerscalebarbase.ui		\
 		qgscontcoldialogbase.ui			\
 		qgsdelattrdialogbase.ui			\
 		qgsdlgvectorlayerpropertiesbase.ui	\
@@ -219,11 +158,7 @@ qgis_UIC =	qgisappbase.ui				\
 		qgssisydialogbase.ui			\
 		qgsuvaldialogbase.ui			\
 		qgslayerprojectionselectorbase.ui \
-		$(WIDGETPATH)/projectionselector/qgsprojectionselectorbase.ui \
-		qgscustomprojectiondialogbase.ui \
-		qgspointstylewidgetbase.ui		\
-		qgsfillstylewidgetbase.ui		\
-		qgslinestylewidgetbase.ui
+		$(WIDGETPATH)/projectionselector/qgsprojectionselectorbase.ui
 
 ## all the ui files generate a corresponding header file
 qgis_UIHEADERS = $(qgis_UIC:.ui=.uic.h)
@@ -234,7 +169,7 @@ qgis_UISOURCES = $(qgis_UIC:.ui=.uic.cpp)
 endif
 
 ## these are optional ancillary user-defined qtdesigner-based headers
-qgis_UIH =	qgisappbase.ui.h			\
+qgis_UIH =	\
 		qgsabout.ui.h				\
 		qgsattributetablebase.ui.h		\
 		qgshelpviewerbase.ui.h			\
@@ -245,8 +180,7 @@ qgis_UIH =	qgisappbase.ui.h			\
 		qgsserversourceselectbase.ui.h		\
 		qgslabeldialogbase.ui.h			\
 		qgslayerprojectionselectorbase.ui.h \
-		qgsprojectpropertiesbase.ui.h	\
-		qgscustomprojectiondialogbase.ui.h
+		qgsprojectpropertiesbase.ui.h
 
 ## these generated files need MOC files, too
 qgis_UIMOC = $(qgis_UIC:.ui=.moc.uic.cpp)
@@ -254,7 +188,7 @@ qgis_UIMOC = $(qgis_UIC:.ui=.moc.uic.cpp)
 
 ## non-uic files generated from MOC
 
-qgis_MOC =	qgisapp.moc.cpp				\
+qgis_MOC =	\
 		qgisinterface.moc.cpp			\
 		qgsaddattrdialog.moc.cpp		\
 		qgsadvancedattrsearch.moc.cpp		\
@@ -263,22 +197,11 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgsattributetabledisplay.moc.cpp		\
 		qgsattributetable.moc.cpp		\
 		qgsbookmarks.moc.cpp		\
-		qgscomposerlabel.moc.cpp		\
-		qgscomposerpicture.moc.cpp		\
-		qgscomposermap.moc.cpp			\
-		qgscomposer.moc.cpp			\
-		qgscomposerscalebar.moc.cpp		\
-		qgscomposervectorlegend.moc.cpp		\
-		qgscomposerview.moc.cpp			\
-		qgscomposition.moc.cpp			\
 		qgscontcoldialog.moc.cpp		\
 		qgscontexthelp.moc.cpp			\
-		qgscoordinatetransform.moc.cpp		\
-		qgsdataprovider.moc.cpp		\
 		qgsdelattrdialog.moc.cpp			\
 		qgsdlgvectorlayerproperties.moc.cpp	\
 		qgsencodingfiledialog.moc.cpp		\
-		qgsfillstylewidget.moc.cpp		\
 		qgsgeomtypedialog.moc.cpp		\
 		qgsgrasydialog.moc.cpp			\
 		qgshelpviewer.moc.cpp			\
@@ -286,13 +209,8 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgslabeldialog.moc.cpp			\
 		qgslayerprojectionselector.moc.cpp \
 		qgslinestyledialog.moc.cpp		\
-		qgslinestylewidget.moc.cpp		\
 		qgsludialog.moc.cpp			\
-		qgsmapcanvas.moc.cpp			\
 		qgsmaplayerinterface.moc.cpp		\
-		qgsmaplayer.moc.cpp			\
-		qgsmaplayerregistry.moc.cpp		\
-		qgsmapoverviewcanvas.moc.cpp	\
 		qgsmapserverexport.moc.cpp		\
 		qgsmarkerdialog.moc.cpp			\
 		qgsmeasure.moc.cpp			\
@@ -301,31 +219,20 @@ qgis_MOC =	qgisapp.moc.cpp				\
 		qgspastetransformations.moc.cpp		\
 		qgspatterndialog.moc.cpp		\
 		qgspluginmanager.moc.cpp		\
-		qgspointstylewidget.moc.cpp 		\
 		qgsprojectproperties.moc.cpp		\
 		qgsrasterdataprovider.moc.cpp		\
-		qgsrasterlayer.moc.cpp			\
 		qgsrasterlayerproperties.moc.cpp	\
-		qgsrunprocess.moc.cpp			\
 		qgsserversourceselect.moc.cpp		\
 		qgssisydialog.moc.cpp			\
 		qgsuvaldialog.moc.cpp			\
-		qgsvectordataprovider.moc.cpp		\
-		qgsvectorlayer.moc.cpp			\
 		splashscreen.moc.cpp		\
-		$(WIDGETPATH)/projectionselector/qgsprojectionselector.moc.cpp \
-		qgscustomprojectiondialog.moc.cpp
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.moc.cpp
 
 qgis_SOURCES =	main.cpp			\
-		qgisapp.cpp			\
 		qgisiface.cpp			\
 		qgisinterface.cpp		\
-		qgsacetatelines.cpp		\
-		qgsacetateobject.cpp		\
-		qgsacetaterectangle.cpp		\
 		qgsaddattrdialog.cpp		\
 		qgsadvancedattrsearch.cpp	\
-		qgsattributeaction.cpp		\
 		qgsattributeactiondialog.cpp	\
 		qgsattributedialog.cpp		\
 		qgsattributetable.cpp		\
@@ -333,56 +240,27 @@ qgis_SOURCES =	main.cpp			\
 		qgsbookmarks.cpp	\
 		qgsbookmarkitem.cpp	\
 		qgsclipboard.cpp		\
-		qgsclipper.cpp			\
-		qgscolortable.cpp		\
-		qgscomposer.cpp			\
-		qgscomposeritem.cpp		\
-		qgscomposerlabel.cpp		\
-		qgscomposerpicture.cpp		\
-		qgscomposermap.cpp		\
-		qgscomposerscalebar.cpp		\
-		qgscomposervectorlegend.cpp	\
-		qgscomposerview.cpp		\
-		qgscomposition.cpp		\
 		qgscontcoldialog.cpp		\
 		qgscontexthelp.cpp		\
-		qgscontinuouscolrenderer.cpp	\
-		qgscoordinatetransform.cpp	\
 		qgscustomsymbol.cpp		\
 		qgsdatasource.cpp		\
 		qgsdelattrdialog.cpp		\
 		qgsdistancearea.cpp			\
 		qgsdlgvectorlayerproperties.cpp	\
 		qgsencodingfiledialog.cpp	\
-		qgsfeatureattribute.cpp		\
-		qgsfeature.cpp			\
-		qgsfield.cpp			\
-		qgsfillstylewidget.cpp		\
-		qgsgeometry.cpp			\
-		qgsgeometryvertexindex.cpp	\
 		qgsgeomtypedialog.cpp		\
-		qgsgraduatedsymrenderer.cpp	\
 		qgsgrasydialog.cpp		\
 		qgshelpviewer.cpp		\
 		qgsidentifyresults.cpp		\
 		qgslabelattributes.cpp		\
-		qgslabel.cpp			\
 		qgslabeldialog.cpp		\
 		qgslayerprojectionselector.cpp \
 		qgsline.cpp			\
 		qgslinestyledialog.cpp		\
-		qgslinestylewidget.cpp		\
 		qgslinesymbol.cpp		\
 		qgsludialog.cpp			\
-		qgsmapcanvas.cpp		\
-		qgsmaplayer.cpp			\
-		qgsmaplayerregistry.cpp		\
-		qgsmapoverviewcanvas.cpp	\
 		qgsmapserverexport.cpp		\
-		qgsmaptopixel.cpp		\
-		qgsmarkercatalogue.cpp		\
 		qgsmarkerdialog.cpp		\
-		qgsmarkersymbol.cpp		\
 		qgsmeasure.cpp			\
 		qgsnewhttpconnection.cpp	\
 		qgsoptions.cpp			\
@@ -392,63 +270,41 @@ qgis_SOURCES =	main.cpp			\
 		qgspluginmanager.cpp		\
 		qgspluginmetadata.cpp		\
 		qgspluginregistry.cpp		\
-		qgspoint.cpp			\
-		qgspointstylewidget.cpp		\
 		qgspolygonsymbol.cpp		\
 		qgsproject.cpp			\
 		qgsprojectproperties.cpp	\
-		qgsprojectproperty.cpp		\
-		qgsprovidercountcalcevent.cpp	\
-		qgsproviderextentcalcevent.cpp	\
 		qgsprovidermetadata.cpp		\
-		qgsproviderregistry.cpp		\
-		qgsrangerenderitem.cpp		\
 		qgsrasterdataprovider.cpp	\
-		qgsrasterlayer.cpp		\
 		qgsrasterlayerproperties.cpp	\
-		qgsrect.cpp			\
-		qgsrenderer.cpp 		\
-		qgsrenderitem.cpp		\
-		qgsrunprocess.cpp		\
-		qgsscalecalculator.cpp		\
                 qgssearchstring.cpp             \
                 qgssearchtreenode.cpp		\
                 qgssearchstringlexer.ll		\
                 qgssearchstringparser.yy	\
 		qgsserversourceselect.cpp	\
-		qgssinglesymrenderer.cpp	\
 		qgssisydialog.cpp		\
-		qgsspatialrefsys.cpp	\
 		qgssvgcache.cpp			\
-		qgssymbol.cpp			\
 		qgssymbologyutils.cpp		\
-		qgsuniquevalrenderer.cpp	\
 		qgsuvaldialog.cpp		\
-		qgsvectordataprovider.cpp	\
-		qgsvectorfilewriter.cpp		\
-		qgsvectorlayer.cpp		\
 		splashscreen.cpp \
-		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp \
-		qgscustomprojectiondialog.cpp
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp
 
 AM_YFLAGS       = -d
 qgis_YACC       = qgssearchstringparser.h
 
 postgresHEADERS = qgsdbsourceselect.h		\
 		  qgsnewconnection.h		\
-		  qgspgquerybuilder.h		\
-		  qgspgutil.h
+		  qgspgquerybuilder.h
 
 postgresSOURCES = qgsdbsourceselect.cpp		\
 		  qgsnewconnection.cpp		\
-		  qgspgquerybuilder.cpp		\
-		  qgspgutil.h
+		  qgspgquerybuilder.cpp
 
 postgresUIC     = qgsdbsourceselectbase.ui		\
 		  qgsnewconnectionbase.ui		\
 		  qgspgquerybuilderbase.ui	
 
 postgresUIH     = 
+postgresLIBHEADERS = qgspgutil.h
 postgresLIBSOURCES = qgspgutil.cpp
 
 if HAVE_POSTGRESQL
@@ -472,7 +328,7 @@ BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) $(
 					$(postgresMOC) $(postgresUIMOC) $(postgresUIHEADERS) $(postgresUISOURCES)
 
 
-qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) -lproj -lsqlite3 libqgis.la legend/libqgis_legend.la
+qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) -lproj -lsqlite3 libqgis.la
 if HAVE_QTMAC
 qgis_LDFLAGS = -framework ApplicationServices
 else
@@ -480,144 +336,221 @@ qgis_LDFLAGS = -rdynamic
 endif
 qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) -I../widgets/projectionselector/ -I./legend/
 
+
+libqgisHEADERS =							\
+		qgisapp.h							\
+		qgsacetatelines.h					\
+		qgsacetateobject.h					\
+		qgsacetaterectangle.h				\
+		qgsattributeaction.h				\
+		qgsclipper.h						\
+		qgscolortable.h						\
+		qgscomposer.h						\
+		qgscomposeritem.h					\
+		qgscomposerlabel.h					\
+		qgscomposerpicture.h				\
+		qgscomposermap.h					\
+		qgscomposerscalebar.h				\
+		qgscomposervectorlegend.h			\
+		qgscomposerview.h					\
+		qgscomposition.h					\
+		qgscontinuouscolrenderer.h			\
+		qgscoordinatetransform.h			\
+		qgscustomprojectiondialog.h			\
+		qgsexception.h						\
+		qgsfeature.h						\
+		qgsfeatureattribute.h				\
+		qgsfield.h							\
+		qgsfillstylewidget.h				\
+		qgsgeometry.h						\
+		qgsgeometryvertexindex.h			\
+		qgsgraduatedsymrenderer.h			\
+		qgslabel.h							\
+		qgslinestylewidget.h				\
+		qgsmapcanvas.h						\
+		qgsmapoverviewcanvas.h				\
+		qgsmaplayer.h						\
+		qgsmaplayerregistry.h				\
+		qgsmaptopixel.h						\
+		qgsmarkercatalogue.h				\
+		qgsmarkersymbol.h					\
+		qgspoint.h							\
+		qgspointstylewidget.h				\
+		qgsprojectproperty.h				\
+		qgsprovidercountcalcevent.h			\
+		qgsproviderextentcalcevent.h		\
+		qgsproviderregistry.h				\
+		qgsrangerenderitem.h				\
+		qgsrasterlayer.h					\
+		qgsrect.h							\
+		qgsrenderer.h						\
+		qgsrenderitem.h						\
+		qgsrunprocess.h						\
+		qgsscalecalculator.h				\
+		qgssinglesymrenderer.h				\
+		qgsspatialrefsys.h					\
+		qgssymbol.h							\
+		qgsuniquevalrenderer.h				\
+		qgsvectordataprovider.h				\
+		qgsvectorfilewriter.h				\
+		qgsvectorlayer.h
+
+## qt designer files for all the GUI stuff
+
+libqgis_la_UIC =							\
+		qgisappbase.ui						\
+		qgscomposerbase.ui					\
+		qgscomposerlabelbase.ui		     	\
+		qgscomposermapbase.ui				\
+		qgscomposerpicturebase.ui	     	\
+		qgscomposerscalebarbase.ui			\
+		qgscomposervectorlegendbase.ui		\
+		qgscompositionbase.ui				\
+		qgscustomprojectiondialogbase.ui	\
+		qgsfillstylewidgetbase.ui			\
+		qgslinestylewidgetbase.ui			\
+		qgspointstylewidgetbase.ui
+
+## all the ui files generate a corresponding header file
+libqgis_la_UIHEADERS = $(libqgis_la_UIC:.ui=.uic.h)
+
+if !NO_UIC_IMPLEMENTATIONS
+## similarly all the ui files generate a corresponding implementation file
+libqgis_la_UISOURCES = $(libqgis_la_UIC:.ui=.uic.cpp)
+endif
+
+## these are optional ancillary user-defined qtdesigner-based headers
+libqgis_la_UIH =							\
+		qgisappbase.ui.h					\
+		qgscustomprojectiondialogbase.ui.h
+
+## these generated files need MOC files, too
+libqgis_la_UIMOC = $(libqgis_la_UIC:.ui=.moc.uic.cpp)
+
+## non-uic files generated from MOC
+libqgis_la_MOC =							\
+		qgisapp.moc.cpp						\
+		qgscomposer.moc.cpp					\
+		qgscomposerlabel.moc.cpp			\
+		qgscomposerpicture.moc.cpp			\
+		qgscomposermap.moc.cpp				\
+		qgscomposerscalebar.moc.cpp			\
+		qgscomposervectorlegend.moc.cpp		\
+		qgscomposerview.moc.cpp				\
+		qgscomposition.moc.cpp				\
+		qgscoordinatetransform.moc.cpp		\
+		qgscustomprojectiondialog.moc.cpp 	\
+		qgsdataprovider.moc.cpp				\
+		qgsfillstylewidget.moc.cpp			\
+		qgslinestylewidget.moc.cpp			\
+		qgsmapcanvas.moc.cpp				\
+		qgsmaplayer.moc.cpp					\
+		qgsmaplayerregistry.moc.cpp			\
+		qgsmapoverviewcanvas.moc.cpp		\
+		qgspointstylewidget.moc.cpp			\
+		qgsrasterlayer.moc.cpp				\
+		qgsrunprocess.moc.cpp				\
+		qgsvectordataprovider.moc.cpp		\
+		qgsvectorlayer.moc.cpp
+
 libqgis_la_SOURCES =						\
-		qgisapp.cpp					\
-		qgisapp.moc.cpp					\
-		qgisappbase.moc.uic.cpp				\
+		qgisapp.cpp							\
+		qgsacetatelines.cpp					\
 		qgsacetateobject.cpp				\
 		qgsacetaterectangle.cpp				\
 		qgsattributeaction.cpp				\
-		qgsclipper.cpp					\
-		qgscolortable.cpp				\
-		qgscomposer.cpp					\
-		qgscomposer.moc.cpp				\
-		qgscomposerbase.moc.uic.cpp			\
-		qgscomposeritem.cpp				\
+		qgsclipper.cpp						\
+		qgscolortable.cpp					\
+		qgscomposer.cpp						\
+		qgscomposeritem.cpp					\
 		qgscomposerlabel.cpp				\
-		qgscomposerlabel.moc.cpp			\
-		qgscomposerlabelbase.moc.uic.cpp		\
 		qgscomposerpicture.cpp				\
-		qgscomposerpicture.moc.cpp			\
-		qgscomposerpicturebase.moc.uic.cpp		\
-		qgscomposermap.cpp				\
-		qgscomposermap.moc.cpp				\
-		qgscomposermapbase.moc.uic.cpp			\
+		qgscomposermap.cpp					\
 		qgscomposerscalebar.cpp				\
-		qgscomposerscalebar.moc.cpp			\
-		qgscomposerscalebarbase.moc.uic.cpp		\
 		qgscomposervectorlegend.cpp			\
-		qgscomposervectorlegend.moc.cpp			\
-		qgscomposervectorlegendbase.moc.uic.cpp		\
-		qgscomposerview.cpp				\
-		qgscomposerview.moc.cpp				\
-		qgscomposition.cpp				\
-		qgscomposition.moc.cpp				\
-		qgscompositionbase.moc.uic.cpp			\
-		qgscontinuouscolrenderer.cpp			\
+		qgscomposerview.cpp					\
+		qgscomposition.cpp					\
+		qgscontinuouscolrenderer.cpp		\
 		qgscoordinatetransform.cpp			\
-		qgscoordinatetransform.moc.cpp			\
-		qgscustomprojectiondialog.cpp			\
-		qgscustomprojectiondialogbase.moc.uic.cpp	\
-		qgscustomprojectiondialog.moc.cpp 		\
-		qgsdataprovider.moc.cpp				\
-		qgsexception.cpp				\
-		qgsfeature.cpp					\
+		qgscustomprojectiondialog.cpp		\
+		qgsexception.cpp					\
+		qgsfeature.cpp						\
 		qgsfeatureattribute.cpp				\
-		qgsfield.cpp					\
+		qgsfield.cpp						\
 		qgsfillstylewidget.cpp				\
-		qgsfillstylewidget.moc.cpp			\
-		qgsfillstylewidgetbase.moc.uic.cpp		\
-		qgsgeometry.cpp					\
+		qgsgeometry.cpp						\
 		qgsgeometryvertexindex.cpp			\
 		qgsgraduatedsymrenderer.cpp			\
-		qgslabel.cpp					\
+		qgslabel.cpp						\
 		qgslinestylewidget.cpp				\
-		qgslinestylewidget.moc.cpp			\
-		qgslinestylewidgetbase.moc.uic.cpp		\
-		qgsmapcanvas.cpp				\
-		qgsmapcanvas.moc.cpp				\
-		qgsmapoverviewcanvas.cpp		\
-		qgsmapoverviewcanvas.moc.cpp		\
-		qgsmaplayer.cpp					\
-		qgsmaplayer.moc.cpp				\
+		qgsmapcanvas.cpp					\
+		qgsmapoverviewcanvas.cpp			\
+		qgsmaplayer.cpp						\
 		qgsmaplayerregistry.cpp				\
-		qgsmaplayerregistry.moc.cpp			\
-		qgsmaptopixel.cpp				\
+		qgsmaptopixel.cpp					\
 		qgsmarkercatalogue.cpp				\
-		qgsmarkersymbol.cpp				\
-		qgspoint.cpp					\
-		qgspoint.moc.cpp				\
+		qgsmarkersymbol.cpp					\
+		qgspoint.cpp						\
 		qgspointstylewidget.cpp				\
-		qgspointstylewidget.moc.cpp			\
-		qgspointstylewidgetbase.moc.uic.cpp		\
 		qgsprojectproperty.cpp				\
-		qgsprovidercountcalcevent.cpp			\
-		qgsproviderextentcalcevent.cpp			\
+		qgsprovidercountcalcevent.cpp		\
+		qgsproviderextentcalcevent.cpp		\
 		qgsproviderregistry.cpp				\
 		qgsrangerenderitem.cpp				\
-		qgsrasterlayer.cpp				\
-		qgsrasterlayer.moc.cpp				\
-		qgsrect.cpp					\
-		qgsrenderer.cpp					\
-		qgsrenderitem.cpp				\
-		qgsrunprocess.cpp				\
-		qgsrunprocess.moc.cpp				\
+		qgsrasterlayer.cpp					\
+		qgsrect.cpp							\
+		qgsrenderer.cpp						\
+		qgsrenderitem.cpp					\
+		qgsrunprocess.cpp					\
 		qgsscalecalculator.cpp				\
 		qgssinglesymrenderer.cpp			\
 		qgsspatialrefsys.cpp				\
-		qgssymbol.cpp					\
+		qgssymbol.cpp						\
 		qgsuniquevalrenderer.cpp			\
 		qgsvectordataprovider.cpp			\
-		qgsvectordataprovider.moc.cpp			\
 		qgsvectorfilewriter.cpp				\
-		qgsvectorlayer.cpp				\
-		qgsvectorlayer.moc.cpp
-
-if !NO_UIC_IMPLEMENTATIONS
-libqgis_la_SOURCES +=						\
-		qgisappbase.uic.cpp				\
-		qgscomposerbase.uic.cpp				\
-		qgscomposerlabelbase.uic.cpp			\
-		qgscomposerpicturebase.uic.cpp			\
-		qgscomposermapbase.uic.cpp			\
-		qgscomposerscalebarbase.uic.cpp			\
-		qgscomposervectorlegendbase.uic.cpp		\
-		qgscompositionbase.uic.cpp			\
-		qgscustomprojectiondialogbase.uic.cpp		\
-		qgsfillstylewidgetbase.uic.cpp			\
-		qgslinestylewidgetbase.uic.cpp			\
-		qgspointstylewidgetbase.uic.cpp
-endif
+		qgsvectorlayer.cpp
 
 if HAVE_POSTGRESQL
 libqgis_la_SOURCES += $(postgresLIBSOURCES)
 endif
 
 
-libqgis_la_LIBFLAGS = $(QT_LDADD) $(GEOS_LDADD) $(GDAL_LDADD)
-libqgis_la_LDFLAGS = -version-info $(INTERFACE_VERSION) $(QT_LDADD) $(GDAL_LDADD) -lsqlite3
+nodist_libqgis_la_SOURCES = $(libqgis_la_MOC) $(libqgis_la_UISOURCES) $(libqgis_la_UIMOC)
+
+BUILT_SOURCES += $(libqgis_la_MOC) $(libqgis_la_UIMOC) $(libqgis_la_UIHEADERS) $(libqgis_la_UISOURCES)
+
+
+libqgis_la_LIBADD = legend/libqgis_legend.la $(QT_LDADD) $(GEOS_LDADD) $(GDAL_LDADD) -lsqlite3
+libqgis_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
 
 libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) -I../widgets/projectionselector/ -I./legend/
 
 ## for installing headers in $(includedir)/qgis
-pkginclude_HEADERS = $(headers) \
-		$(qgis_UIHEADERS) \
+pkginclude_HEADERS = $(qgisHEADERS) \
 		$(qgis_UIH) \
 		$(postgresHEADERS) \
-		$(postgresUIH)
+		$(postgresUIH) \
+		$(postgresLIBHEADERS) \
+		$(libqgisHEADERS) \
+		$(libqgis_la_UIH)
+
+nodist_pkginclude_HEADERS = $(qgis_UIHEADERS) \
+		$(libqgis_la_UIHEADERS)
 
 pkginclude_dir = $(includedir)/qgis
 
 
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(postgresHEADERS) \
-		$(postgresSOURCES) \
+EXTRA_DIST = $(postgresSOURCES) \
 		$(postgresUIC) \
+		$(postgresLIBSOURCES) \
 		$(qgis_UIC) \
+		$(libqgis_la_UIC) \
 		xpm/*.png \
 		xpm/*.xpm \
 		xpm/16x16/mapserver.xpm \
 		xpm/16x16/camera.png 
-		
+
 noinst_HEADERS = qgsdatasourceuri.h
