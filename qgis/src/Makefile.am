@@ -73,6 +73,7 @@ qgisHEADERS =	\
 		qgsencodingfiledialog.h				\
 		qgsmaptopixel.h					\
 		qgscustomsymbol.h				\
+		qgsdatamanager.h				\
 		qgsdataprovider.h				\
 		qgsdatasource.h					\
 		qgsdatasourceuri.h				\
@@ -199,7 +200,7 @@ qgis_MOC =	\
 		qgsbookmarks.moc.cpp		\
 		qgscontcoldialog.moc.cpp		\
 		qgscontexthelp.moc.cpp			\
-		qgsdelattrdialog.moc.cpp			\
+		qgsdelattrdialog.moc.cpp		\
 		qgsdlgvectorlayerproperties.moc.cpp	\
 		qgsencodingfiledialog.moc.cpp		\
 		qgsgeomtypedialog.moc.cpp		\
@@ -472,9 +473,10 @@ libqgis_la_SOURCES =						\
 		qgscomposition.cpp					\
 		qgscontinuouscolrenderer.cpp		\
 		qgscoordinatetransform.cpp			\
-		qgscustomprojectiondialog.cpp		\
-		qgsexception.cpp					\
-		qgsfeature.cpp						\
+		qgscustomprojectiondialog.cpp			\
+		qgsdatamanager.cpp				\
+		qgsexception.cpp				\
+		qgsfeature.cpp					\
 		qgsfeatureattribute.cpp				\
 		qgsfield.cpp						\
 		qgsfillstylewidget.cpp				\
