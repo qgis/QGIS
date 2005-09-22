@@ -27,7 +27,7 @@
 QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
 #define STATUS_TEXT_X 90
-#define STATUS_TEXT_Y 30
+#define STATUS_TEXT_Y 20
 SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash)
 {
   //set up masking
@@ -61,7 +61,7 @@ SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash)
   // myCaption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
   myCaption += QString("%1").arg(QGis::qgisVersion);
 
-  painter.drawText(150, 240, myCaption);
+  painter.drawText(250, 50, myCaption);
   repaint();
 
   show();
