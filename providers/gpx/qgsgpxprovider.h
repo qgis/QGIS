@@ -38,7 +38,7 @@ class GPSData;
 */
 class QgsGPXProvider : public QgsVectorDataProvider {
 public:
-  QgsGPXProvider(QString uri=0);
+  QgsGPXProvider(QString const & uri = "");
   virtual ~QgsGPXProvider();
   
   /**
@@ -223,8 +223,9 @@ private:
   std::list<int> mAllAttributes;
   //! Map to store field position by name
   std::map<QString, int> fieldPositions;
-  QString mDataSourceUri;
+
   QString mFileName;
+
   enum { WaypointType, RouteType, TrackType } mFeatureType;
   enum Attribute { NameAttr = 0, EleAttr, SymAttr, NumAttr, 
 		   CmtAttr, DscAttr, SrcAttr, URLAttr, URLNameAttr };

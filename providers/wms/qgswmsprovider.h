@@ -87,7 +87,7 @@ public:
   *                contact the host directly.
   *
   */
-  QgsWmsProvider(QString uri = 0);
+  QgsWmsProvider(QString const & uri = 0);
 
   //! Destructor
   virtual ~QgsWmsProvider();
@@ -169,14 +169,6 @@ public:
   //! get raster formats supported
   std::list<QString> formatsSupported();
   
-  /* Included here because qgsdataprovider.h insisted */
-  void setDataSourceUri(QString)
-  {}
-
-  /* Included here because qgsdataprovider.h insisted */
-  QString getDataSourceUri()
-  {}
-
   /**
    * Sub-layers handled by this provider, in order from bottom to top
    *

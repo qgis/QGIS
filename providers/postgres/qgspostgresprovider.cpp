@@ -61,8 +61,8 @@ const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 
 
-QgsPostgresProvider::QgsPostgresProvider(QString uri)
-          : dataSourceUri(uri)
+QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
+    : QgsVectorDataProvider(uri)
 {
   // assume this is a valid layer until we determine otherwise
   valid = true;
@@ -737,30 +737,13 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
   mFeatureQueue.empty();
 }
 
-/**
- * Set the data source specification. This may be a path or database
- * connection string
- * @uri data source specification
- */
-void QgsPostgresProvider::setDataSourceUri(QString uri)
-{
-  dataSourceUri = uri;
-}
-
-/**
- * Get the data source specification. This may be a path or database
- * connection string
- * @return data source specification
- */
-QString QgsPostgresProvider::getDataSourceUri()
-{
-  return dataSourceUri;
-}
 
 QgsDataSourceURI * QgsPostgresProvider::getURI()
 {
   return &mUri;
 }
+
+
 /**
  * Identify features within the search radius specified by rect
  * @param rect Bounding rectangle of search radius

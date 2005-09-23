@@ -53,11 +53,12 @@ static QString GRASS_DESCRIPTION = "Grass provider"; // XXX verify this
 
 
 
-QgsGrassProvider::QgsGrassProvider(QString uri):mDataSourceUri(uri)
+QgsGrassProvider::QgsGrassProvider(QString const & uri)
+    : QgsVectorDataProvider(uri)
 {
-    #ifdef QGISDEBUG
+#ifdef QGISDEBUG
     std::cerr << "QgsGrassProvider URI: " << uri.local8Bit() << std::endl;
-    #endif
+#endif
 
     QTime time;
     time.start();
@@ -66,11 +67,11 @@ QgsGrassProvider::QgsGrassProvider(QString uri):mDataSourceUri(uri)
     
     // Parse URI 
     QDir dir ( uri );  // it is not a directory in fact
-    uri = dir.path();  // no dupl '/'
+    QString myURI = dir.path();  // no dupl '/'
 
     mLayer = dir.dirName();
-    uri = uri.left( dir.path().findRev('/') );
-    dir = QDir(uri);
+    myURI = myURI.left( dir.path().findRev('/') );
+    dir = QDir(myURI);
     mMapName = dir.dirName();
     dir.cdUp(); 
     mMapset = dir.dirName();
@@ -150,7 +151,7 @@ QgsGrassProvider::QgsGrassProvider(QString uri):mDataSourceUri(uri)
 
     mLayerId = openLayer(mGisdbase, mLocation, mMapset, mMapName, mLayerField);
     if ( mLayerId < 0 ) {
-	std::cerr << "Cannot open GRASS layer:" << uri.local8Bit() << std::endl;
+	std::cerr << "Cannot open GRASS layer:" << myURI.local8Bit() << std::endl;
 	return;
     }
     #ifdef QGISDEBUG
@@ -546,25 +547,6 @@ void QgsGrassProvider::select(QgsRect *rect, bool useIntersect)
     #endif
 }
 
-/**
-* Set the data source specification. This may be a path or database
-* connection string
-* @uri data source specification
-*/
-void QgsGrassProvider::setDataSourceUri(QString uri)
-{
-	mDataSourceUri = uri;
-}
-
-/**
-* Get the data source specification. This may be a path or database
-* connection string
-* @return data source specification
-*/
-QString QgsGrassProvider::getDataSourceUri()
-{
-	return mDataSourceUri;
-}
 
 /**
 * Identify features within the search radius specified by rect
@@ -1315,11 +1297,11 @@ bool QgsGrassProvider::isEdited ( void )
 
 bool QgsGrassProvider::startEdit ( void )
 {
-    #ifdef QGISDEBUG
+#ifdef QGISDEBUG
     std::cerr << "QgsGrassProvider::startEdit" << std::endl;
-    std::cerr << "  uri = " << mDataSourceUri.local8Bit() << std::endl;
+    std::cerr << "  uri = " << getDataSourceUri().local8Bit() << std::endl;
     std::cerr << "  mMaps.size() = " << mMaps.size() << std::endl;
-    #endif
+#endif
 
     if ( !isGrassEditable() )
 	return false;
