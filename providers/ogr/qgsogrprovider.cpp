@@ -51,11 +51,19 @@ email                : sherman at mrcc.com
 #include "../../src/qgsfield.h"
 #include "../../src/qgsrect.h"
 #include "../../src/qgis.h"
+
+
 #ifdef WIN32
 #define QGISEXTERN extern "C" __declspec( dllexport )
 #else
 #define QGISEXTERN extern "C"
 #endif
+
+static const QString TEXT_PROVIDER_KEY = "ogr";
+static const QString TEXT_PROVIDER_DESCRIPTION = "OGR data provider";
+
+
+
 QgsOgrProvider::QgsOgrProvider(QString uri)
    : QgsVectorDataProvider(),
      dataSourceUri(uri),
@@ -1278,6 +1286,23 @@ int QgsOgrProvider::capabilities() const
 */
 }
 
+
+
+
+QString  QgsOgrProvider::name() const
+{
+    return TEXT_PROVIDER_KEY;
+} // ::name()
+
+
+
+QString  QgsOgrProvider::description() const
+{
+    return TEXT_PROVIDER_DESCRIPTION;
+} //  QgsOgrProvider::name()
+
+
+
 /**
  * Class factory to return a pointer to a newly created 
  * QgsOgrProvider object
@@ -1286,19 +1311,25 @@ QGISEXTERN QgsOgrProvider * classFactory(const QString *uri)
 {
   return new QgsOgrProvider(*uri);
 }
+
+
+
 /** Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
-  return QString("ogr");
+  return TEXT_PROVIDER_KEY;
 }
+
+
 /**
  * Required description function 
  */
 QGISEXTERN QString description()
 {
-  return QString("OGR data provider");
+    return TEXT_PROVIDER_DESCRIPTION;
 } 
+
 /**
  * Required isProvider function. Used to determine if this shared library
  * is a data provider plugin
@@ -1436,3 +1467,6 @@ OGR_Fld_Destroy( myFieldDefinitionHandle );
 
 return true;*/
   }
+
+
+

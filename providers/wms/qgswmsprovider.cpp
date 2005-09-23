@@ -46,6 +46,11 @@
 #define QGISEXTERN extern "C"
 #endif
 
+
+static QString WMS_KEY = "wms";
+static QString WMS_DESCRIPTION = "OGC Web Map Service data provider";
+
+
 QgsWmsProvider::QgsWmsProvider(QString uri)
   : httpuri(uri),
     httpproxyhost(0),
@@ -763,6 +768,22 @@ void QgsWmsProvider::calculateExtent()
 
 }
 
+
+QString  QgsWmsProvider::name() const
+{
+    return WMS_KEY;
+} //  QgsWmsProvider::name()
+
+
+
+QString  QgsWmsProvider::description() const
+{
+    return WMS_DESCRIPTION;
+} //  QgsWmsProvider::description()
+
+
+
+
    
 /**
  * Class factory to return a pointer to a newly created 
@@ -775,13 +796,14 @@ QGISEXTERN QgsWmsProvider * classFactory(const char *uri)
 /** Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey(){
-  return QString("wms");
+  return WMS_KEY;
 }
 /**
  * Required description function 
  */
-QGISEXTERN QString description(){
-  return QString("OGC Web Map Service data provider");
+QGISEXTERN QString description()
+{
+    return WMS_DESCRIPTION;
 } 
 /**
  * Required isProvider function. Used to determine if this shared library

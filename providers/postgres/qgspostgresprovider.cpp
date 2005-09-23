@@ -55,6 +55,12 @@
 #else
 #define QGISEXTERN extern "C"
 #endif
+
+
+const QString POSTGRES_KEY = "postgres";
+const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
+
+
 QgsPostgresProvider::QgsPostgresProvider(QString uri)
           : dataSourceUri(uri)
 {
@@ -2667,6 +2673,20 @@ size_t QgsPostgresProvider::layerCount() const
 
 
 
+QString  QgsPostgresProvider::name() const
+{
+    return POSTGRES_KEY;
+} //  QgsPostgresProvider::name()
+
+
+
+QString  QgsPostgresProvider::description() const
+{
+    return POSTGRES_DESCRIPTION;
+} //  QgsPostgresProvider::description()
+
+
+
 
 /**
  * Class factory to return a pointer to a newly created 
@@ -2678,14 +2698,16 @@ QGISEXTERN QgsPostgresProvider * classFactory(const QString *uri)
 }
 /** Required key function (used to map the plugin to a data store type)
 */
-QGISEXTERN QString providerKey(){
-  return QString("postgres");
+QGISEXTERN QString providerKey()
+{
+  return  POSTGRES_KEY;
 }
 /**
  * Required description function 
  */
-QGISEXTERN QString description(){
-  return QString("PostgreSQL/PostGIS data provider");
+QGISEXTERN QString description()
+{
+    return POSTGRES_DESCRIPTION;
 } 
 /**
  * Required isProvider function. Used to determine if this shared library

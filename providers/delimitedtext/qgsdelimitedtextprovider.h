@@ -241,6 +241,39 @@ public:
     bool usesSrid(){return false;}
     bool usesWKT(){return false;}
 
+      /** return a provider name
+
+      Essentially just returns the provider key.  Should be used to build file
+      dialogs so that providers can be shown with their supported types. Thus
+      if more than one provider supports a given format, the user is able to
+      select a specific provider to open that file.
+
+      @note
+
+      Instead of being pure virtual, might be better to generalize this
+      behavior and presume that none of the sub-classes are going to do
+      anything strange with regards to their name or description?
+
+      */
+    QString name() const;
+
+
+    /** return description
+
+      Return a terse string describing what the provider is.
+
+      @note
+
+      Instead of being pure virtual, might be better to generalize this
+      behavior and presume that none of the sub-classes are going to do
+      anything strange with regards to their name or description?
+
+     */
+    QString description() const;
+
+
+
+
 private:
 
   /** get the next feature, if any
