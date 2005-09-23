@@ -22,7 +22,10 @@
 
 #include <map>
 
+#include <qdir.h>
 #include <qstring.h>
+
+
 
 class QgsDataProvider;
 class QgsProviderMetadata;
@@ -43,12 +46,16 @@ public:
 
     QString pluginList(bool asHtml = false) const;
 
-    QString const & libDirectory() const;
+    /// return library directory where plugins are found
+    QDir const & libraryDirectory() const;
 
-    void setLibDirectory(QString const & path);
+    void setLibraryDirectory(QDir const & path);
  
-    QgsDataProvider* getProvider( QString const & providerKey, 
-                                  QString const & dataSource );
+    QgsDataProvider * getProvider( QString const & providerKey, 
+                                   QString const & dataSource );
+
+    /// type for data provider metadata associative container
+    typedef std::map<QString,QgsProviderMetadata*> Providers;
 
 private:
 
@@ -59,10 +66,10 @@ private:
     static QgsProviderRegistry* _instance;
 
     /// associative container of provider metadata handles
-    std::map<QString,QgsProviderMetadata*> provider;
+    Providers mProviders;
 
-    /// directory provider plugins are installed in
-    QString libDir;
+    /// directory in which provider plugins are installed
+    QDir mLibraryDirectory;
 
 }; // class QgsProviderRegistry
 

@@ -21,7 +21,7 @@ class QgsGeometry;
 //Qt includes
 #include <set>
 #include <map>
-#include <qobject.h>
+// XXX no signals or slots so not needed #include <qobject.h>
 #include <qtextcodec.h>
 
 //QGIS Includes
@@ -36,7 +36,7 @@ class QgsGeometry;
 class QgsVectorDataProvider : public QgsDataProvider
 {
 
-  Q_OBJECT
+    // XXX no  signals or slots, so not needed Q_OBJECT
 
     public:
 
@@ -126,6 +126,7 @@ class QgsVectorDataProvider : public QgsDataProvider
        * @return int representing the feature type
        */
       virtual int geometryType() const = 0;
+
 
       /**
        * Number of features in the layer

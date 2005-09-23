@@ -33,7 +33,7 @@
 #include <netinet/in.h>
 #endif
 
-QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, QgsVectorLayer * theVectorLayer)
+QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, QString fileEncoding, QgsVectorLayer * theVectorLayer)
 {
   std::cout << "QgsVectorFileWriter constructor called with " << theOutputFileName.local8Bit() << 
       " and vector layer : " << theVectorLayer->getLayerID().local8Bit() << std::endl;
@@ -41,6 +41,18 @@ QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, QgsVectorLay
   mOutputFormat = "ESRI Shapefile";
   //const char *theOutputFileName = "ogrtest.shp";
   mOutputFileName = theOutputFileName;
+
+  QTextCodec* ncodec=QTextCodec::codecForName(fileEncoding.local8Bit());
+  if(ncodec)
+    {
+      mEncoding=ncodec;
+    }
+  else
+    {
+#ifdef QGISDEBUG
+      qWarning("error finding QTextCodec in QgsVectorFileWriter ctor");
+#endif
+    }
 
   //
   // We should retrieve the geometry type from the vector layer!
@@ -52,10 +64,21 @@ QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, QgsVectorLay
   
 }
 
-QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, OGRwkbGeometryType theGeometryType)
+QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, QString fileEncoding, OGRwkbGeometryType theGeometryType)
 {
   std::cout << "QgsVectorFileWriter constructor called with " << theOutputFileName.local8Bit() <<  " and no input vector layer "  << std::endl;
   mOutputFormat = "ESRI Shapefile"; //hard coded for now!
+  QTextCodec* ncodec=QTextCodec::codecForName(fileEncoding.local8Bit());
+  if(ncodec)
+    {
+      mEncoding=ncodec;
+    }
+  else
+    {
+#ifdef QGISDEBUG
+      qWarning("error finding QTextCodec in QgsVectorFileWriter ctor");
+#endif
+    }
   mOutputFileName = theOutputFileName; 
   mGeometryType = theGeometryType;
   mInitialisedFlag = false;
@@ -96,7 +119,7 @@ bool QgsVectorFileWriter::initialise()
   mInitialisedFlag=false; 
   
   OGRRegisterAll();
-  OGRSFDriverH myDriverHandle = OGRGetDriverByName( mOutputFormat );
+  OGRSFDriverH myDriverHandle = OGRGetDriverByName( mOutputFormat.local8Bit() );
 
   if( myDriverHandle == NULL )
   {
@@ -104,7 +127,8 @@ bool QgsVectorFileWriter::initialise()
     return false;
   }
 
-  mDataSourceHandle = OGR_Dr_CreateDataSource( myDriverHandle, mOutputFileName, NULL );
+  // Filename needs local8Bit()
+  mDataSourceHandle = OGR_Dr_CreateDataSource( myDriverHandle, mOutputFileName.local8Bit(), NULL );
   if( mDataSourceHandle == NULL )
   {
     std::cout << "Datasource handle is null! " << std::endl;
@@ -114,6 +138,31 @@ bool QgsVectorFileWriter::initialise()
   //define the spatial ref system
   OGRSpatialReferenceH mySpatialReferenceSystemHandle = NULL;
 
+// HEAD version
+// <<<<<<< qgsvectorfilewriter.cpp
+//   QgsSpatialRefSys mySpatialRefSys;
+//   mySpatialRefSys.validate();
+//   char* WKT;
+//   QString myWKT = NULL;
+//   if(mySpatialRefSys.toOgrSrs().exportToWkt(&WKT)==OGRERR_NONE)
+//   {
+// #ifdef QGISDEBUG
+//       qWarning("export to WKT successful****************************************************************************************************");
+// #endif
+//       myWKT=WKT;
+// #ifdef QGISDEBUG
+//       qWarning("WKT is:WKT "+myWKT);
+// #endif    
+//   }
+//   else
+//   {
+// #ifdef QGISDEBUG
+//       qWarning("export to WKT failed*******************************************************************************************************3");
+// #endif      
+//   }
+
+ 
+// =======
   QgsSpatialRefSys mySpatialRefSys;
   mySpatialRefSys.validate();
   char* WKT;
@@ -125,7 +174,7 @@ bool QgsVectorFileWriter::initialise()
 #endif
       myWKT=WKT;
 #ifdef QGISDEBUG
-      qWarning("WKT is:WKT "+myWKT);
+      qWarning(("WKT is:WKT "+myWKT).local8Bit());
 #endif    
   }
   else
@@ -136,17 +185,18 @@ bool QgsVectorFileWriter::initialise()
   }
 
  
+//>>>>>>> 1.4.2.2
   //sample below shows how to extract srs from a raster
   //    const char *myWKT = GDALGetProjectionRef( hBand );
 
 
-  if( !myWKT.isEmpty() )
+  if( !myWKT.isNull()  &&  myWKT.length() != 0 )
   {
-    mySpatialReferenceSystemHandle = OSRNewSpatialReference( myWKT );
+    mySpatialReferenceSystemHandle = OSRNewSpatialReference( myWKT.local8Bit() );
   }
   //change 'contour' to something more useful!
 #ifdef QGISDEBUG
-  qWarning("mOutputFileName: "+mOutputFileName);
+  qWarning(("mOutputFileName: "+mOutputFileName).local8Bit());
 #endif //QGISDEBUG
 
 #ifdef WIN32 
@@ -157,10 +207,11 @@ bool QgsVectorFileWriter::initialise()
   
 
 #ifdef QGISDEBUG
-  qWarning("outname: "+outname);
+  qWarning(("outname: "+outname).local8Bit());
 #endif //QGISDEBUG
 
-  mLayerHandle = OGR_DS_CreateLayer( mDataSourceHandle, outname, 
+  // Unsure if this will be a filename or not. Use custom encoding for now.
+  mLayerHandle = OGR_DS_CreateLayer( mDataSourceHandle, mEncoding->fromUnicode(outname), 
   mySpatialReferenceSystemHandle, mGeometryType, NULL );
   
   if( mLayerHandle == NULL )
@@ -173,6 +224,13 @@ bool QgsVectorFileWriter::initialise()
     std::cout << "File handle created!" << std::endl;
   }
 
+  // Check and fall back on encoding.
+  if (mEncoding == NULL)
+  {
+    qWarning("Failed to initialize VectorFileWriter with encoding. Falling back on utf8");
+    mEncoding = QTextCodec::codecForName("utf8");
+    Q_ASSERT(mEncoding);
+  }
   //let other methods know we have an initialised file
   mInitialisedFlag=true; 
   return true;
@@ -199,7 +257,9 @@ bool QgsVectorFileWriter::createField(QString theName, OGRFieldType theType, int
   //        OFTWideStringList = 7,
   //        OFTBinary = 8
   //
-  myFieldDefinitionHandle = OGR_Fld_Create( theName, theType );
+  // XXX Is the layer encoding set here?
+  Q_ASSERT(mEncoding != NULL);
+  myFieldDefinitionHandle = OGR_Fld_Create( mEncoding->fromUnicode(theName), theType );
   OGR_Fld_SetWidth( myFieldDefinitionHandle, theWidthInt );
   //
   // Set the precision where applicable!
@@ -208,7 +268,7 @@ bool QgsVectorFileWriter::createField(QString theName, OGRFieldType theType, int
   {
       case OFTInteger:
           //do nothing  (has no precision to set)
-          break;
+        break;
       case OFTIntegerList:
           //XXX Find out how this is used!!!!!!!
           break;
