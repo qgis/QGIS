@@ -23,7 +23,7 @@ nodist_i18n_DATA = \
 								qgis_id.qm \
 								qgis_it.qm \
 								qgis_ja.qm \
-								qgis_lv_LV.qm \
+								qgis_lv.qm \
 								qgis_nl.qm \
 								qgis_pl_PL.qm \
 								qgis_pt_BR.qm \
@@ -39,7 +39,7 @@ i18n_SOURCES = \
 								qgis_id.ts \
 								qgis_it.ts \
 								qgis_ja.ts \
-								qgis_lv_LV.ts \
+								qgis_lv.ts \
 								qgis_nl.ts \
 								qgis_pl_PL.ts \
 								qgis_pt_BR.ts \
