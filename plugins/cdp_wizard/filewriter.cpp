@@ -46,17 +46,16 @@ FileWriter::FileWriter(QString theFileNameString, FileWriter::FileTypeEnum theFi
         endOfStringFlag=true;
       }
     }
-
-  filePointer=new QFile(myFileNameString);
+  mFile.setName(theFileNameString);
   seperatorString=QString(" ");
-  if (!filePointer->open(IO_WriteOnly))
+  if (!mFile.open(IO_WriteOnly))
   {
     std::cout << "FileWriter::Cannot open file : " << myFileNameString << std::endl;
     isWriteableFlag=false;
   }
   else
   {
-    textStream = new QTextStream(filePointer);
+    mTextStream.setDevice(&mFile);
     fileNameString = myFileNameString;
     std::cout << "FileWriter::Opened file ... " << fileNameString << " successfully." << std::endl;
     isWriteableFlag=true;
@@ -65,22 +64,22 @@ FileWriter::FileWriter(QString theFileNameString, FileWriter::FileTypeEnum theFi
 
 FileWriter::~FileWriter()
 {
-  delete filePointer;
+
 }
 
 bool FileWriter::writeElement(float theElementFloat){
   //cout << "FileWriter::writeElement Writing element to   " << fileNameString << endl;
   if (theElementFloat==-9999.0) { theElementFloat=-9999.9; }
-  if (filePointer==0)
-  {
-    return false;
-  }
-  if (textStream==0)
-  {
-    return false;
-  }
+  //if (mFile==0)
+  //{
+  //  return false;
+  //}
+  //if (mTextStream==0)
+  //{
+   // return false;
+  //}
   //write the number to the file
-  *textStream << theElementFloat << seperatorString;
+  mTextStream << theElementFloat << seperatorString;
 }
 
 const QString FileWriter::getFileNameString()
@@ -94,34 +93,17 @@ const QString FileWriter::getFileNameString()
 bool FileWriter::sendLineBreak()
 {
   //cout << "FileWriter::writeElement Writing element to   " << fileNameString << endl;
-  if (filePointer==0)
-  {
-    return false;
-  }
-  if (textStream==0)
-  {
-    return false;
-  }
-  //write the number to the file
-  *textStream << QString("\n");
+  mTextStream << QString("\n");
 }
 
 void FileWriter::close()
 {
-  filePointer->close();
+  mFile.close();
 }
 
 bool FileWriter::writeString(QString theQString)
 {
-  if (filePointer==0)
-  {
-    return false;
-  }
-  if (textStream==0)
-  {
-    return false;
-  }
   //write the string to the file
-  *textStream << theQString;
+  mTextStream << theQString;
 }
 

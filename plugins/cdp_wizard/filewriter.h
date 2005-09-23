@@ -103,10 +103,10 @@ public:
 private:
 
     /**  The file handle containing our output data matrix. */
-    QFile * filePointer;
+    QFile mFile;
     /** A text stream associated with the output file that
     * will be used when writing data to the file. */
-    QTextStream * textStream;
+    QTextStream mTextStream;
     /* The separater that will be used between each
     *  value as its written to file */
     QString seperatorString;
