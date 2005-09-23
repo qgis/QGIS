@@ -283,9 +283,13 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
 
   // load the data provider
   QLibrary* myLib = new QLibrary((const char *) lib);
+
 #ifdef QGISDEBUG
-  std::cout << "QgsProviderRegistry::getRasterProvider: Library name is " << myLib->library().local8Bit() << std::endl;
+  std::cout << "QgsProviderRegistry::getRasterProvider: Library name is " 
+            << myLib->library().local8Bit() 
+            << std::endl;
 #endif
+
   bool loaded = myLib->load();
 
   if (loaded)
@@ -298,7 +302,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
 
     if (classFactory)
     {
-      QgsDebug( "QgsProviderRegistry::getProvider: Getting pointer to a dataProvider object from the library" );
+      QgsDebug( "Getting pointer to a dataProvider object from the library" );
 
       //XXX - This was a dynamic cast but that kills the Windows
       //      version big-time with an abnormal termination error
@@ -318,10 +322,22 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
         {
           return dataProvider;
         }
+        else
+        {   // this is likely because the dataSource is invalid, and isn't
+            // necessarily a reflection on the data provider itself
+            QgsDebug( "Invalid data provider" );
+
+            myLib->unload();
+
+            return 0;
+        }
       }
       else
       {
         QgsDebug( "Unable to instantiate the data provider plugin" );
+
+        myLib->unload();
+
         return 0;
       }
     }
@@ -333,7 +349,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
     return 0;
   }
   
-    QgsDebug( "QgsProviderRegistry::getProvider: exiting." );
+  QgsDebug( "exiting" );
 
   return 0;  // factory didn't exist
   

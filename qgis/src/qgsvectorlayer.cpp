@@ -2173,6 +2173,10 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     providerKey = "ogr";
   }
 
+#ifdef QGISDEBUG
+  const char * dataproviderStr = providerKey.ascii(); // debugger probe
+#endif
+
   if ( ! setDataProvider( providerKey ) )
   {
       return false;
@@ -2359,6 +2363,8 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   else
   {
       QgsDebug( " unable to get data provider" );
+
+      return false;
   }
 
   return true;
