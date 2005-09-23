@@ -53,8 +53,8 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";
 
 
 
-QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
-    : mDataSourceUri(uri),
+QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString const &uri)
+    : QgsVectorDataProvider(uri), 
       mMinMaxCacheDirty(true)
 {
   // Get the file name and mDelimiter out of the uri
@@ -249,7 +249,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
     else
       // file does not exist
       std::
-        cerr << "Data source " << (const char *)mDataSourceUri.local8Bit() << " could not be opened" <<
+        cerr << "Data source " << (const char *)getDataSourceUri().local8Bit() << " could not be opened" <<
         std::endl;
 
   }
@@ -542,25 +542,6 @@ void QgsDelimitedTextProvider::select(QgsRect * rect, bool useIntersect)
 
 }
 
-/**
- * Set the data source specification. This may be a path or database
- * connection string
- * @uri data source specification
- */
-void QgsDelimitedTextProvider::setDataSourceUri(QString uri)
-{
-  mDataSourceUri = uri;
-}
-
-/**
- * Get the data source specification. This may be a path or database
- * connection string
- * @return data source specification
- */
-QString QgsDelimitedTextProvider::getDataSourceUri()
-{
-  return mDataSourceUri;
-}
 
 /**
  * Identify features within the search radius specified by rect

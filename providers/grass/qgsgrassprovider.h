@@ -101,7 +101,7 @@ class QgsGrassProvider : public QgsVectorDataProvider
 {
 public:
 
-  QgsGrassProvider(QString uri=0);
+  QgsGrassProvider(QString const & uri = "");
 
   virtual ~QgsGrassProvider();
 
@@ -162,19 +162,6 @@ public:
    */
   void select(QgsRect *mbr, bool useIntersect=false);
 
-  /** 
-   * Set the data source specification. This may be a path or database
-   * connection string
-   * @uri data source specification
-   */
-  void setDataSourceUri(QString uri);
-	
-  /** 
-   * Get the data source specification. This may be a path or database
-   * connection string
-   * @return data source specification
-   */
-  QString getDataSourceUri();
 	
   /**
    * Identify features within the search radius specified by rect
@@ -514,7 +501,6 @@ private:
   char    *mSelection;           // !UPDATE!
   int     mSelectionSize;        // !UPDATE! Size of selection array
 
-  QString mDataSourceUri;
   bool    mValid;                // !UPDATE! 
   long    mNumberFeatures;       // !UPDATE!
 	

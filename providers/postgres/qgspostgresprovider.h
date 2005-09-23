@@ -64,7 +64,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      * @param uri String containing the required parameters to connect to the database
      * and query the table.
      */
-    QgsPostgresProvider(QString uri = 0);
+    QgsPostgresProvider(QString const & uri = "");
 
     //! Destructor
     virtual ~ QgsPostgresProvider();
@@ -368,8 +368,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     std::vector < bool > *selected;
     std::vector < QgsField > attributeFields;
     std::map < int, int > attributeFieldsIdMap;
-
-    QString dataSourceUri;
 
     //! Data source URI struct for this layer
     QgsDataSourceURI mUri;

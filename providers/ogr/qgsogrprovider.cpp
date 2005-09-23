@@ -64,10 +64,9 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "OGR data provider";
 
 
 
-QgsOgrProvider::QgsOgrProvider(QString uri)
-   : QgsVectorDataProvider(),
-     dataSourceUri(uri),
-     minmaxcachedirty(true)
+QgsOgrProvider::QgsOgrProvider(QString const & uri)
+    : QgsVectorDataProvider(uri),
+      minmaxcachedirty(true)
 {
   OGRRegisterAll();
 
@@ -666,26 +665,6 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
 
 
 /**
- * Set the data source specification. This may be a path or database
- * connection string
- * @uri data source specification
- */
-void QgsOgrProvider::setDataSourceUri(QString uri)
-{
-  dataSourceUri = uri;
-}
-
-/**
- * Get the data source specification. This may be a path or database
- * connection string
- * @return data source specification
- */
-QString QgsOgrProvider::getDataSourceUri()
-{
-  return dataSourceUri;
-}
-
-/**
  * Identify features within the search radius specified by rect
  * @param rect Bounding rectangle of search radius
  * @return std::vector containing QgsFeature objects that intersect rect
@@ -1171,13 +1150,13 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
 bool QgsOgrProvider::createSpatialIndex()
 {
     //experimental, try to create a spatial index
-    QString filename=dataSourceUri.section('/',-1,-1);//todo: find out the filename from the uri
+    QString filename=getDataSourceUri().section('/',-1,-1);//todo: find out the filename from the uri
     QString layername=filename.section('.',0,0);
     QString sql="CREATE SPATIAL INDEX ON "+layername;
     ogrDataSource->ExecuteSQL (sql.ascii(), ogrLayer->GetSpatialFilter(),"");
     //todo: find out, if the .qix file is there
-    QString indexname=dataSourceUri;
-    indexname.truncate(dataSourceUri.length()-filename.length());
+    QString indexname = getDataSourceUri();
+    indexname.truncate(getDataSourceUri().length()-filename.length());
     indexname=indexname+layername+".qix";
     QFile indexfile(indexname);
     if(indexfile.exists())
