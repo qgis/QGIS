@@ -40,12 +40,12 @@ void QgsPropertyValue::dump( size_t tabs ) const
 
         for (QStringList::const_iterator i = sl.begin(); i != sl.end(); ++i)
         {
-            qDebug("%s[%s] ", tabString.local8Bit(), (const char *) (*i).local8Bit());
+            qDebug("%s[%s] ", tabString.local8Bit().data(), (const char *) (*i).local8Bit());
         } 
     }
     else
     {
-        qDebug("%s%s", tabString.local8Bit(), (const char *) value_.toString().local8Bit());
+        qDebug("%s%s", tabString.local8Bit().data(), (const char *) value_.toString().local8Bit());
     }
 } // QgsPropertyValue::dump()
 
@@ -400,43 +400,45 @@ void QgsPropertyKey::dump( size_t tabs ) const
 
     tabString.fill( '\t', tabs );
 
-    qDebug( "%sname: %s", tabString.local8Bit(), name().local8Bit() );
+    qDebug( "%sname: %s", tabString.local8Bit().data(), name().local8Bit().data() );
          
     tabs++;
     tabString.fill( '\t', tabs );
 
-    for (QDictIterator < QgsProperty > i(properties_); i.current(); ++i)
+    if ( ! properties_.isEmpty() )
     {
-        if ( i.current()->isValue() )
+        for (QDictIterator < QgsProperty > i(properties_); i.current(); ++i)
         {
-            QgsPropertyValue * propertyValue = 
-                dynamic_cast<QgsPropertyValue*>( i.current() );
-
-            if ( QVariant::StringList == propertyValue->value().type() )
+            if ( i.current()->isValue() )
             {
-                qDebug("%skey: <%s>  value:", 
-                       tabString.local8Bit(), 
-                       i.currentKey().local8Bit() );
+                QgsPropertyValue * propertyValue = 
+                    dynamic_cast<QgsPropertyValue*>( i.current() );
 
-                propertyValue->dump( tabs + 1 );
+                if ( QVariant::StringList == propertyValue->value().type() )
+                {
+                    qDebug("%skey: <%s>  value:", 
+                           tabString.local8Bit().data(), 
+                           i.currentKey().local8Bit().data() );
+
+                    propertyValue->dump( tabs + 1 );
+                }
+                else
+                {
+                    qDebug("%skey: <%s>  value: %s", 
+                           tabString.local8Bit().data(), 
+                           i.currentKey().local8Bit().data(), 
+                           propertyValue->value().toString().local8Bit().data() );
+                }
             }
             else
             {
-                qDebug("%skey: <%s>  value: %s", 
-                       tabString.local8Bit(), 
-                       i.currentKey().local8Bit(), 
-                       propertyValue->value().toString().local8Bit() );
-            }
-        }
-        else
-        {
-            qDebug("%skey: <%s>  subkey: <%s>", 
-                   tabString.local8Bit(), 
-                   i.currentKey().local8Bit(),
-                   dynamic_cast<QgsPropertyKey*>(i.current())->name().local8Bit() );
+                qDebug("%skey: <%s>  subkey: <%s>", 
+                       tabString.local8Bit().data(), 
+                       i.currentKey().local8Bit().data(),
+                       dynamic_cast<QgsPropertyKey*>(i.current())->name().local8Bit().data() );
 
-            i.current()->dump( tabs + 1 );
-        }
+                i.current()->dump( tabs + 1 );
+            }
 
 //              qDebug("<%s>", (const char *) name().utf8());
 //              if ( i.current()->isValue() )
@@ -449,7 +451,9 @@ void QgsPropertyKey::dump( size_t tabs ) const
 //                  qDebug("   </%s>", (const char*) i.currentKey().utf8() );
 //              }
 //              qDebug("</%s>", (const char *) name().utf8());
+        }
     }
+
 } // QgsPropertyKey::dump
 
 
