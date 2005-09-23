@@ -53,8 +53,8 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name
   mSrsDatabaseFileName = PKGDATAPATH;
   mSrsDatabaseFileName += "/resources/srs.db";
   // Populate the projection list view
-  getUserProjList();
   getProjList();
+  getUserProjList();
 }
 
 QgsProjectionSelector::~QgsProjectionSelector()
@@ -236,7 +236,7 @@ long QgsProjectionSelector::getCurrentSRID()
         if ( !myFileInfo.exists( ) )
         {
           std::cout << " QgsSpatialRefSys::createFromSrid failed :  users qgis.db not found" << std::endl;
-          return NULL;
+          return (long)NULL;
         }
       }
       else //must be  a system projection then
@@ -292,7 +292,7 @@ long QgsProjectionSelector::getCurrentSRID()
   else
   {
     // No node is selected, return null
-    return NULL;
+    return (long)NULL;
   }
 
 }
@@ -305,7 +305,7 @@ long QgsProjectionSelector::getCurrentSRSID()
   }
   else
   {
-    return NULL;
+    return (long)NULL;
   }
 }
 
@@ -596,6 +596,9 @@ void QgsProjectionSelector::pbnFind_clicked()
     mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'" +
            " order by srs_id desc limit 1";
     long myLargestSrsId = getLargestSRSIDMatch(mySql);
+#ifdef QGISDEBUG
+    std::cout << "Largest SRSID" << myLargestSrsId << std::endl;
+#endif
     //a name search is ambiguous, so we find the first srsid after the current seelcted srsid
     // each time the find button is pressed. This means we can loop through all matches.
     if (myLargestSrsId <= getCurrentSRSID())
@@ -646,35 +649,40 @@ void QgsProjectionSelector::pbnFind_clicked()
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-    sqlite3_step(myPreparedStatement);
-    QString mySrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 0));
-    setSelectedSRSID(mySrsId.toLong());
-    // close the sqlite3 statement
-    sqlite3_finalize(myPreparedStatement);
-    sqlite3_close(myDatabase);
-  }
-  else //search the users db
-  {
-    QString myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
-    QFileInfo myFileInfo;
-    myFileInfo.setFile(myDatabaseFileName);
-    if ( !myFileInfo.exists( ) ) //its not critical if this happens
-    {
-      return ;
-    }
-    myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
-    if(myResult)
-    {
-      std::cout <<  "Can't open * user * database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
-      //no need for assert because user db may not have been created yet
+    myResult = sqlite3_step(myPreparedStatement);
+    if (myResult == SQLITE_ROW)
+    {  
+      QString mySrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 0));
+      setSelectedSRSID(mySrsId.toLong());
+      // close the sqlite3 statement
+      sqlite3_finalize(myPreparedStatement);
+      sqlite3_close(myDatabase);
       return;
     }
-
-    myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
-    // XXX Need to free memory from the error msg if one is set
-    if(myResult == SQLITE_OK)
-    {
-      sqlite3_step(myPreparedStatement);
+  }
+  //search the users db
+  QString myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+  QFileInfo myFileInfo;
+  myFileInfo.setFile(myDatabaseFileName);
+  if ( !myFileInfo.exists( ) ) //its not critical if this happens
+  {
+    return ;
+  }
+  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
+  if(myResult)
+  {
+    std::cout <<  "Can't open * user * database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
+    //no need for assert because user db may not have been created yet
+    return;
+  }
+  
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+    myResult = sqlite3_step(myPreparedStatement);
+    if (myResult == SQLITE_ROW)
+    {  
       QString mySrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 0));
       setSelectedSRSID(mySrsId.toLong());
       // close the sqlite3 statement
@@ -705,7 +713,7 @@ long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
   myFileInfo.setFile(myDatabaseFileName);
   if ( myFileInfo.exists( ) ) //only bother trying to open if the file exists
   {
-    myResult = sqlite3_open(mSrsDatabaseFileName.local8Bit(), &myDatabase);
+    myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
     if(myResult)
     {
       std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -721,13 +729,16 @@ long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
       // XXX Need to free memory from the error msg if one is set
       if(myResult == SQLITE_OK)
       {
-        sqlite3_step(myPreparedStatement);
-        QString mySrsIdString = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 0));
-        mySrsId = mySrsIdString.toLong();
-        // close the sqlite3 statement
-        sqlite3_finalize(myPreparedStatement);
-        sqlite3_close(myDatabase);
-        return mySrsId;
+        myResult = sqlite3_step(myPreparedStatement);
+        if (myResult == SQLITE_ROW)
+        {  
+          QString mySrsIdString = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 0));
+          mySrsId = mySrsIdString.toLong();
+          // close the sqlite3 statement
+          sqlite3_finalize(myPreparedStatement);
+          sqlite3_close(myDatabase);
+          return mySrsId;
+        }
       }
     }
   }
@@ -745,12 +756,15 @@ long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-    sqlite3_step(myPreparedStatement);
-    QString mySrsIdString = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 0));
-    mySrsId =  mySrsIdString.toLong();
-    // close the sqlite3 statement
-    sqlite3_finalize(myPreparedStatement);
-    sqlite3_close(myDatabase);
+    myResult = sqlite3_step(myPreparedStatement);
+    if (myResult == SQLITE_ROW)
+    {  
+      QString mySrsIdString = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 0));
+      mySrsId =  mySrsIdString.toLong();
+      // close the sqlite3 statement
+      sqlite3_finalize(myPreparedStatement);
+      sqlite3_close(myDatabase);
+    }
   }
   return mySrsId;
 }
