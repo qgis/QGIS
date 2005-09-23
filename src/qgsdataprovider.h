@@ -49,8 +49,8 @@ class QgsSpatialRefSys;
  */
 
 
-class QgsDataProvider : public QObject {
-
+class QgsDataProvider : public QObject 
+{
   Q_OBJECT
 
     public: 
@@ -224,6 +224,36 @@ class QgsDataProvider : public QObject {
       {
         // NOOP
       }
+
+      /** return a provider name
+
+      Essentially just returns the provider key.  Should be used to build file
+      dialogs so that providers can be shown with their supported types. Thus
+      if more than one provider supports a given format, the user is able to
+      select a specific provider to open that file.
+
+      @note
+
+      Instead of being pure virtual, might be better to generalize this
+      behavior and presume that none of the sub-classes are going to do
+      anything strange with regards to their name or description?
+
+      */
+      virtual QString name() const = 0;
+
+
+    /** return description
+
+      Return a terse string describing what the provider is.
+
+      @note
+
+      Instead of being pure virtual, might be better to generalize this
+      behavior and presume that none of the sub-classes are going to do
+      anything strange with regards to their name or description?
+
+     */
+    virtual QString description() const = 0;
 
 
 signals:

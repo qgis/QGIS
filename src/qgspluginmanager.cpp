@@ -50,7 +50,7 @@ QgsPluginManager::QgsPluginManager(QWidget * parent, const char *name):QgsPlugin
      QString baseDir = appDir.left(bin);
      QString libDir = baseDir + "/lib"; */
 
-  txtPluginDir->setText(pr->libDirectory());
+  txtPluginDir->setText(pr->libraryDirectory().path());
   getPluginDescriptions();
 }
 
