@@ -43,9 +43,6 @@
                     <property name="accel">
                         <string>F1</string>
                     </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
                 </widget>
                 <spacer>
                     <property name="name">
@@ -74,9 +71,6 @@
                     <property name="accel">
                         <string>Alt+A</string>
                     </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
@@ -91,9 +85,6 @@
                     <property name="autoDefault">
                         <bool>true</bool>
                     </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
@@ -104,9 +95,6 @@
                     </property>
                     <property name="accel">
                         <string></string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
                     </property>
                 </widget>
             </hbox>

@@ -111,6 +111,9 @@
                             <property name="text">
                                 <string>Find</string>
                             </property>
+                            <property name="default">
+                                <bool>true</bool>
+                            </property>
                         </widget>
                         <widget class="QRadioButton" row="0" column="0">
                             <property name="name">
@@ -168,6 +171,12 @@
     <connection>
         <sender>pbnFind</sender>
         <signal>clicked()</signal>
+        <receiver>QgsProjectionSelectorBase</receiver>
+        <slot>pbnFind_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>leSearch</sender>
+        <signal>returnPressed()</signal>
         <receiver>QgsProjectionSelectorBase</receiver>
         <slot>pbnFind_clicked()</slot>
     </connection>
