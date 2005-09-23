@@ -11,6 +11,7 @@ using namespace std;
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <qgsproject.h>
+#include <qgis.h>
 #include <qgsexception.h>
 
 #include <qstring.h>
@@ -107,18 +108,18 @@ class ProjectTest : public CppUnit::TestFixture
     void testMapUnits()
     {
         QgsProject::instance()->dirty( false );
-        QgsProject::instance()->mapUnits( QgsScaleCalculator::METERS );
-        CPPUNIT_ASSERT( QgsScaleCalculator::METERS == QgsProject::instance()->mapUnits() );
+        QgsProject::instance()->mapUnits( QGis::METERS );
+        CPPUNIT_ASSERT( QGis::METERS == QgsProject::instance()->mapUnits() );
         CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
 
         QgsProject::instance()->dirty( false );
-        QgsProject::instance()->mapUnits( QgsScaleCalculator::FEET );
-        CPPUNIT_ASSERT( QgsScaleCalculator::FEET == QgsProject::instance()->mapUnits() );
+        QgsProject::instance()->mapUnits( QGis::FEET );
+        CPPUNIT_ASSERT( QGis::FEET == QgsProject::instance()->mapUnits() );
         CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
 
         QgsProject::instance()->dirty( false );
-        QgsProject::instance()->mapUnits( QgsScaleCalculator::DEGREES );
-        CPPUNIT_ASSERT( QgsScaleCalculator::DEGREES == QgsProject::instance()->mapUnits() );
+        QgsProject::instance()->mapUnits( QGis::DEGREES );
+        CPPUNIT_ASSERT( QGis::DEGREES == QgsProject::instance()->mapUnits() );
         CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
     } // testMapUnits
 
