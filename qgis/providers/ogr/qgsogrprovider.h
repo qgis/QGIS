@@ -37,7 +37,7 @@ class OGRPolygon;
 class QgsOgrProvider:public QgsVectorDataProvider
 {
   public:
-    QgsOgrProvider(QString uri = 0);
+    QgsOgrProvider(QString const & uri = "");
     virtual ~ QgsOgrProvider();
 
     /**
@@ -104,19 +104,6 @@ class QgsOgrProvider:public QgsVectorDataProvider
      * @param useIntersect Use geos functions to determine the selected set
      */
     void select(QgsRect * mbr, bool useIntersect = false);
-    /** 
-     * Set the data source specification. This may be a path or database
-     * connection string
-     * @uri data source specification
-     */
-    void setDataSourceUri(QString uri);
-
-    /** 
-     * Get the data source specification. This may be a path or database
-     * connection string
-     * @return data source specification
-     */
-    QString getDataSourceUri();
 
     /**
      * Identify features within the search radius specified by rect
@@ -223,7 +210,7 @@ class QgsOgrProvider:public QgsVectorDataProvider
   private:
     unsigned char *getGeometryPointer(OGRFeature * fet);
     std::vector < QgsField > attributeFields;
-    QString dataSourceUri;
+
     OGRDataSource *ogrDataSource;
     OGREnvelope *extent_;
     OGRLayer *ogrLayer;

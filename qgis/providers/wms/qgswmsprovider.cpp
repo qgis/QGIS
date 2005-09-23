@@ -51,8 +51,9 @@ static QString WMS_KEY = "wms";
 static QString WMS_DESCRIPTION = "OGC Web Map Service data provider";
 
 
-QgsWmsProvider::QgsWmsProvider(QString uri)
-  : httpuri(uri),
+QgsWmsProvider::QgsWmsProvider(QString const & uri)
+  : QgsRasterDataProvider(uri),
+    httpuri(uri),
     httpproxyhost(0),
     httpproxyport(80),
     httpcapabilitiesresponse(0)
