@@ -63,7 +63,6 @@ spit_UI = qgsconnectiondialogbase.uic.h \
 	qgseditreservedwordsbase.uic.cpp \
 	qgseditreservedwordsbase.uic.h \
 	qgsscangeometries.uic.h \
-	qgsscangeometries.ui.h \
 	qgsscangeometries.uic.cpp
 
 spit_UIC = qgsconnectiondialogbase.ui \
@@ -83,6 +82,7 @@ common_sources =  qgsspit.cpp \
 	qgsmessageviewer.h \
 	qgseditreservedwordsdialog.h \
 	qgseditreservedwordsdialog.cpp \
+	qgsscangeometries.ui.h \
 	$(spit_UI)
 
 spitplugin_la_SOURCES =  $(common_sources) \
