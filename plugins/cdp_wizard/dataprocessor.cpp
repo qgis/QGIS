@@ -21,6 +21,7 @@
 
 const int QUARTER = 3;
 const float FREEZING_POINT=0;
+const float NO_DATA=-9999.0;
 
 DataProcessor::DataProcessor()
 {
@@ -60,7 +61,9 @@ float DataProcessor::meanOverLowestQ(QValueVector <float> theClimateVector)
         {
             for (mySegmentInt=myInt ; mySegmentInt<=(myInt + QUARTER -1);mySegmentInt++)
             {
-                myCurrentMeanFloat = myCurrentMeanFloat + theClimateVector[mySegmentInt];
+                float myFloat = theClimateVector[mySegmentInt];
+                if (NO_DATA==myFloat) { return NO_DATA; }
+                myCurrentMeanFloat = myCurrentMeanFloat + myFloat;
 #ifdef QGISDEBUG
                 std::cout << "Processing element " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
 #endif
@@ -72,7 +75,9 @@ float DataProcessor::meanOverLowestQ(QValueVector <float> theClimateVector)
             //Near end of vector so read last month(s)
             for (mySegmentInt = myInt; mySegmentInt < myVectorLengthInt ; mySegmentInt++)
             {
-                myCurrentMeanFloat = myCurrentMeanFloat + theClimateVector[mySegmentInt];
+                float myFloat = theClimateVector[mySegmentInt];
+                if (NO_DATA==myFloat) { return NO_DATA; }
+                myCurrentMeanFloat = myCurrentMeanFloat + myFloat;
 #ifdef QGISDEBUG
                 std::cout << "Wrap Processing element (from end) " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
 #endif
@@ -149,7 +154,9 @@ float DataProcessor::meanOverHighestQ ( QValueVector <float> theClimateVector)
         {
             for (mySegmentInt=myInt ; mySegmentInt<=(myInt + QUARTER -1);mySegmentInt++)
             {
-                myCurrentMeanFloat = myCurrentMeanFloat + theClimateVector[mySegmentInt];
+                float myFloat = theClimateVector[mySegmentInt];
+                if (NO_DATA==myFloat) { return NO_DATA; }
+                myCurrentMeanFloat = myCurrentMeanFloat + myFloat;
 #ifdef QGISDEBUG
                 std::cout << "Processing element " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
 #endif
@@ -161,7 +168,9 @@ float DataProcessor::meanOverHighestQ ( QValueVector <float> theClimateVector)
             //Near end of vector so read last month(s)
             for (mySegmentInt = myInt; mySegmentInt < myVectorLengthInt ; mySegmentInt++)
             {
-                myCurrentMeanFloat = myCurrentMeanFloat + theClimateVector[mySegmentInt];
+                float myFloat = theClimateVector[mySegmentInt];
+                if (NO_DATA==myFloat) { return NO_DATA; }
+                myCurrentMeanFloat = myCurrentMeanFloat + myFloat;
 #ifdef QGISDEBUG
                 std::cout << "Wrap Processing element (from end) " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
 #endif
@@ -169,7 +178,9 @@ float DataProcessor::meanOverHighestQ ( QValueVector <float> theClimateVector)
             //Read remainding months from beginning of vector
             for (mySegmentInt = 0; mySegmentInt<=(QUARTER - (myVectorLengthInt - myInt + 1));mySegmentInt++)
             {
-                myCurrentMeanFloat = myCurrentMeanFloat + theClimateVector[mySegmentInt];
+                float myFloat = theClimateVector[mySegmentInt];
+                if (NO_DATA==myFloat) { return NO_DATA; }
+                myCurrentMeanFloat = myCurrentMeanFloat + myFloat;
 #ifdef QGISDEBUG
                 std::cout << "Wrap Processing element (from start)" <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
 #endif
@@ -231,7 +242,9 @@ int DataProcessor::firstMonthOfLowestQ (QValueVector <float> theClimateVector)
             {
                 for (mySegmentInt=myInt ; mySegmentInt<=(myInt + QUARTER -1);mySegmentInt++)
                 {
-                    myCurrentFloat += theClimateVector[mySegmentInt];
+                    float myFloat = theClimateVector[mySegmentInt];
+                    if (NO_DATA==myFloat) { return static_cast<int>(NO_DATA); }
+                    myCurrentFloat += myFloat;
 #ifdef QGISDEBUG
                     std::cout << "Processing element " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
 #endif
@@ -242,7 +255,9 @@ int DataProcessor::firstMonthOfLowestQ (QValueVector <float> theClimateVector)
                 //Near end of vector so read last month(s)
                 for (mySegmentInt = myInt; mySegmentInt < myVectorLengthInt; mySegmentInt++)
                 {
-                    myCurrentFloat += theClimateVector[mySegmentInt];
+                    float myFloat = theClimateVector[mySegmentInt];
+                    if (NO_DATA==myFloat) { return static_cast<int>(NO_DATA); }
+                    myCurrentFloat += myFloat;
 #ifdef QGISDEBUG
                     std::cout << "Wrap Processing element (from end) " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
 #endif
@@ -251,7 +266,9 @@ int DataProcessor::firstMonthOfLowestQ (QValueVector <float> theClimateVector)
                 //for (mySegmentInt = 0; mySegmentInt < (QUARTER - (myVectorLengthInt - myInt) - 1); mySegmentInt++)
                 for (mySegmentInt = 0; mySegmentInt <=(QUARTER - (myVectorLengthInt - myInt + 1));mySegmentInt++)
                 {
-                    myCurrentFloat += theClimateVector[mySegmentInt];
+                    float myFloat = theClimateVector[mySegmentInt];
+                    if (NO_DATA==myFloat) { return static_cast<int>(NO_DATA); }
+                    myCurrentFloat += myFloat;
 #ifdef QGISDEBUG
                     std::cout << "Wrap Processing element (from start)" <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
 #endif
@@ -280,7 +297,7 @@ int DataProcessor::firstMonthOfLowestQ (QValueVector <float> theClimateVector)
     {
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the firstMonthOfLowestQ method " << std::endl;
-        myLowestMonthInt = -9999;
+        myLowestMonthInt = NO_DATA;
 #endif
     }
 
@@ -327,7 +344,9 @@ int DataProcessor::firstMonthOfHighestQ (QValueVector <float> theClimateVector)
             {
                 for (mySegmentInt=myInt ; mySegmentInt<=(myInt + QUARTER -1);mySegmentInt++)
                 {
-                    myCurrentFloat += theClimateVector[mySegmentInt];
+                    float myFloat = theClimateVector[mySegmentInt];
+                    if (NO_DATA==myFloat) { return static_cast<int>(NO_DATA); }
+                    myCurrentFloat += myFloat;
 #ifdef QGISDEBUG
                     std::cout << "Processing element " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
 #endif
@@ -338,7 +357,9 @@ int DataProcessor::firstMonthOfHighestQ (QValueVector <float> theClimateVector)
                 //Near end of vector so read last month(s)
                 for (mySegmentInt = myInt; mySegmentInt < myVectorLengthInt; mySegmentInt++)
                 {
-                    myCurrentFloat += theClimateVector[mySegmentInt];
+                    float myFloat = theClimateVector[mySegmentInt];
+                    if (NO_DATA==myFloat) { return static_cast<int>(NO_DATA); }
+                    myCurrentFloat += myFloat;
 #ifdef QGISDEBUG
                     std::cout << "Wrap Processing element (from end) " <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
 #endif
@@ -347,7 +368,10 @@ int DataProcessor::firstMonthOfHighestQ (QValueVector <float> theClimateVector)
                 //for (mySegmentInt = 0; mySegmentInt < (QUARTER - (myVectorLengthInt - myInt) - 1); mySegmentInt++)
                 for (mySegmentInt = 0; mySegmentInt <=(QUARTER - (myVectorLengthInt - myInt + 1));mySegmentInt++)
                 {
-                    myCurrentFloat += theClimateVector[mySegmentInt];
+                    float myFloat = theClimateVector[mySegmentInt];
+                    if (NO_DATA==myFloat) { return static_cast<int>(NO_DATA); }
+                    myCurrentFloat += myFloat;
+
 #ifdef QGISDEBUG
                     std::cout << "Wrap Processing element (from start)" <<    myInt << ", value is " << theClimateVector[mySegmentInt] << std::endl;
 #endif
@@ -377,7 +401,7 @@ int DataProcessor::firstMonthOfHighestQ (QValueVector <float> theClimateVector)
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the firstMonthOfHighestQ method " << std::endl;
 #endif
-        myHighestMonthInt = -9999;
+        myHighestMonthInt = static_cast<int>(NO_DATA);
     }
 
 
@@ -408,7 +432,9 @@ float DataProcessor::meanOverQuarter (QValueVector <float> theClimateVector, int
             //No wrapping necessary
             for (myInt = theStartMonth-1; myInt < (theStartMonth-1 + (QUARTER)); myInt++)
             {
-                myMeanFloat += theClimateVector[myInt];
+                float myFloat = theClimateVector[myInt];
+                if (NO_DATA==myFloat) { return NO_DATA; }
+                myMeanFloat += myFloat;
 #ifdef QGISDEBUG
                 std::cout << "Added " << theClimateVector[myInt] << ", total is now : " << myMeanFloat << std::endl;
 #endif
@@ -419,7 +445,9 @@ float DataProcessor::meanOverQuarter (QValueVector <float> theClimateVector, int
             //Wrapping necessary so read last month(s) as normal
             for (mySegmentInt=theStartMonth-1; mySegmentInt < myVectorLengthInt; mySegmentInt++)
             {
-                myMeanFloat += theClimateVector[mySegmentInt];
+                float myFloat = theClimateVector[mySegmentInt];
+                if (NO_DATA==myFloat) { return NO_DATA; }
+                myMeanFloat += myFloat;
 #ifdef QGISDEBUG
                 std::cout << "Wrap Added from end " << theClimateVector[mySegmentInt] << ", total is now : " << myMeanFloat << std::endl;
 #endif
@@ -427,7 +455,9 @@ float DataProcessor::meanOverQuarter (QValueVector <float> theClimateVector, int
             //Read remainding months from beginning of vector
             for (mySegmentInt = 0; mySegmentInt < (QUARTER - (myVectorLengthInt - theStartMonth) - 1); mySegmentInt++)
             {
-                myMeanFloat += theClimateVector[mySegmentInt];
+               float myFloat = theClimateVector[mySegmentInt];
+                if (NO_DATA==myFloat) { return NO_DATA; }
+                myMeanFloat += myFloat;
 #ifdef QGISDEBUG
                 std::cout << "Wrap Added from start " << theClimateVector[mySegmentInt] << ", total is now : " << myMeanFloat << std::endl;
 #endif
@@ -440,7 +470,7 @@ float DataProcessor::meanOverQuarter (QValueVector <float> theClimateVector, int
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the meanOverQuarter method " << std::endl;
 #endif
-        myMeanFloat = -9999;
+        myMeanFloat = NO_DATA;
     }
     return myMeanFloat;
 }
@@ -466,7 +496,9 @@ float DataProcessor::lowestValue (QValueVector <float> theClimateVector)
             //If this is the first run store value as lowest
             if (myFirstTimeFlag)
             {
-                myLowestFloat = theClimateVector[myInt];
+                float myFloat = theClimateVector[myInt];
+                if (NO_DATA==myFloat) { return NO_DATA; }
+                myLowestFloat = myFloat;
 #ifdef QGISDEBUG
                 std::cout << "Lowest value set to " << myLowestFloat << " on first iteration." << std::endl;
 #endif
@@ -489,7 +521,7 @@ float DataProcessor::lowestValue (QValueVector <float> theClimateVector)
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the lowestValue method " << std::endl;
 #endif
-        myLowestFloat = -9999;
+        myLowestFloat = NO_DATA;
     }
     //Return lowest value
     return myLowestFloat;
@@ -516,7 +548,9 @@ float DataProcessor::highestValue (QValueVector <float> theClimateVector)
             //If this is the first run store value as lowest
             if (myFirstTimeFlag == true)
             {
-                myHighestFloat = theClimateVector[myInt];
+                float myFloat = theClimateVector[myInt];
+                if (NO_DATA==myFloat) { return NO_DATA; }
+                myHighestFloat = myFloat;
 #ifdef QGISDEBUG
                 std::cout << "Highest value set to " << myHighestFloat << " on first iteration." << std::endl;
 #endif
@@ -526,9 +560,11 @@ float DataProcessor::highestValue (QValueVector <float> theClimateVector)
             //Test to see whether value is highest so far
             else
             {
-                if (myHighestFloat < theClimateVector[myInt])
+                float myFloat = theClimateVector[myInt];
+                if (NO_DATA==myFloat) { return NO_DATA; }
+                if (myHighestFloat < myFloat)
                 {
-                    myHighestFloat = theClimateVector[myInt];
+                    myHighestFloat = myFloat;
                 }
             }
         }
@@ -538,7 +574,7 @@ float DataProcessor::highestValue (QValueVector <float> theClimateVector)
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the highest value method " << std::endl;
 #endif
-        myHighestFloat = -9999;
+        myHighestFloat = NO_DATA;
     }
     //Return highest value
     return myHighestFloat;
@@ -562,7 +598,7 @@ float DataProcessor::greatestTotalRange (QValueVector <float> theClimateVector1,
     //dont default to 0 as it may be lower (or higher) than any existing value in each vector
     float myHighestFloat=theClimateVector1[0]; //default to a valid value in the set
     float myLowestFloat=theClimateVector1[0];  //default to a valid value in the set
-    float myRangeFloat=-9999;
+    float myRangeFloat=NO_DATA;
     int myInt=0;
     int myVectorLengthInt1 = theClimateVector1.size();
     int myVectorLengthInt2 = theClimateVector2.size();
@@ -571,18 +607,30 @@ float DataProcessor::greatestTotalRange (QValueVector <float> theClimateVector1,
         //process array1 first
         for (myInt = 0; myInt < myVectorLengthInt1; myInt++)
         {
-            if (myHighestFloat < theClimateVector1[myInt])
-                myHighestFloat = theClimateVector1[myInt];
-            if (myLowestFloat > theClimateVector1[myInt])
-                myLowestFloat = theClimateVector1[myInt];
+            float myFloat = theClimateVector1[myInt];
+            if (NO_DATA==myFloat) { return NO_DATA; }
+            if (myHighestFloat < myFloat)
+            {
+                myHighestFloat = myFloat ;
+            }
+            if (myLowestFloat > myFloat)
+            {
+                myLowestFloat = myFloat;
+            }
         }
         //now the second vector
         for (myInt = 0; myInt < myVectorLengthInt2; myInt++)
         {
-            if (myHighestFloat < theClimateVector2[myInt])
-                myHighestFloat = theClimateVector2[myInt];
-            if (myLowestFloat > theClimateVector2[myInt])
-                myLowestFloat = theClimateVector2[myInt];
+            float myFloat = theClimateVector2[myInt];
+            if (NO_DATA==myFloat) { return NO_DATA; }
+            if (myHighestFloat < myFloat)
+            {
+                myHighestFloat = myFloat;
+            }
+            if (myLowestFloat > myFloat)
+            {
+                myLowestFloat = myFloat;
+            }
         }
         myRangeFloat = myHighestFloat - myLowestFloat;
     }
@@ -591,7 +639,7 @@ float DataProcessor::greatestTotalRange (QValueVector <float> theClimateVector1,
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the greatestTotalRange method " << std::endl;
 #endif
-        myRangeFloat = -9999;
+        myRangeFloat = NO_DATA;
 
     }
     return myRangeFloat;
@@ -624,7 +672,9 @@ float DataProcessor::meanOverYear (QValueVector <float> theClimateVector)
     {
         for (int myInt = 0; myInt <= myVectorLengthInt-1; myInt++)
         {
-            myRunningTotFloat += theClimateVector[myInt];
+            float myFloat = theClimateVector[myInt];
+            if (NO_DATA==myFloat) { return NO_DATA; }
+            myRunningTotFloat += myFloat;
 #ifdef QGISDEBUG
             std::cout << "Iteration " << myInt << ", running total is : " << myRunningTotFloat << std::endl;
 #endif
@@ -636,7 +686,7 @@ float DataProcessor::meanOverYear (QValueVector <float> theClimateVector)
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the meanOverYear method " << std::endl;
 #endif
-        myMeanOverYearFloat = -9999;
+        myMeanOverYearFloat = NO_DATA;
     }
 #ifdef QGISDEBUG
     std::cout << "Completed - mean over year is : " << myMeanOverYearFloat << std::endl;
@@ -664,7 +714,11 @@ float DataProcessor::stddevOverYear (QValueVector <float> theClimateVector)
     {
         for (myInt = 0; myInt <= myVectorLengthInt-1; myInt++)
         {
-            myRunningTotFloat += theClimateVector[myInt];
+          float myFloat = theClimateVector[myInt];
+          //if any element is null, cell is null!
+          if (NO_DATA == myFloat) { return NO_DATA; }
+          //assert (myFloat < 0);
+          myRunningTotFloat += myFloat;
 #ifdef QGISDEBUG
             std::cout << "Iteration " << myInt << ", running total is : " << myRunningTotFloat << std::endl;
 #endif
@@ -685,7 +739,7 @@ float DataProcessor::stddevOverYear (QValueVector <float> theClimateVector)
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the stddevOverYear method " << std::endl;
 #endif
-        myStddevOverYearFloat = -9999;
+        myStddevOverYearFloat = NO_DATA;
     }
 #ifdef QGISDEBUG
     std::cout << "Completed - stddev over year is : " << myMeanOverYearFloat << std::endl;
@@ -704,9 +758,13 @@ int DataProcessor::monthWithLowestValue(QValueVector <float> theClimateVector)
     {
         for (int myInt = 0; myInt < myVectorLengthInt; myInt++)
         {
+            float myFloat = theClimateVector[myInt];
+            if (NO_DATA==myFloat) { return static_cast<int>(NO_DATA); }
             //Test to see whether current value is the lowest so far.
-            if (theClimateVector[myInt] < theClimateVector[myLowestInt])
+            if (myFloat < theClimateVector[myLowestInt])
+            {
                 myLowestInt = myInt ;
+            }
         }
     }
     catch (...)
@@ -735,9 +793,13 @@ int DataProcessor::monthWithHighestValue (QValueVector <float> theClimateVector)
     {
         for (int myInt = 0; myInt < myVectorLengthInt; myInt++)
         {
+            float myFloat = theClimateVector[myInt];
+            if (NO_DATA==myFloat) { return static_cast<int>(NO_DATA); }
             //Test to see whether current value is the lowest so far.
-            if (theClimateVector[myInt] > theClimateVector[myHighestInt])
+            if (myFloat > theClimateVector[myHighestInt])
+            {
                 myHighestInt = myInt ;
+            }
         }
     }
     catch (...)
@@ -771,14 +833,14 @@ float DataProcessor::valueGivenMonth (QValueVector <float> theClimateVector,int 
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the valueGivenMonth function" << std::endl;
 #endif
-        myValueFloat = -9999;
+        myValueFloat = NO_DATA;
     }
     return myValueFloat;
 }
 /** This value will return the mean value (normally temperature or precipitation) of months in theClimateVector where the corresponding months in
 theFrostArray have frost free days. The frost vector should contain the number of frost days
 per month, so a value of 0 in the frost vector means there were no frost days that month. If there
-are no frost free months, -9999 will be returned.*/
+are no frost free months, NO_DATA will be returned.*/
 float DataProcessor::meanValueOverFrostFreeMonths (QValueVector<float> theFrostVector,
         QValueVector <float> theClimateVector)
 {
@@ -790,7 +852,7 @@ float DataProcessor::meanValueOverFrostFreeMonths (QValueVector<float> theFrostV
     int myInt =0;
     float myRunningTotalFloat =0;
     float myMonthCountInt =0;
-    float myMeanFloat=-9999;
+    float myMeanFloat=NO_DATA;
     int myFrostVectorLengthInt = theFrostVector.size();
     int myClimateVectorLengthInt = theClimateVector.size();
 
@@ -798,11 +860,15 @@ float DataProcessor::meanValueOverFrostFreeMonths (QValueVector<float> theFrostV
     {
         //Check that the frost and climate arrays are the same size
         if (myFrostVectorLengthInt != myClimateVectorLengthInt)
+        {
             throw ("Vector sizes must be equal!");
+        }
         for (myInt = 0; myInt < myFrostVectorLengthInt; myInt++)
         {
+            float myFloat = theClimateVector[myInt];
+            if (NO_DATA==myFloat) { return NO_DATA; }
             //iterate through frost vector looking for frost free months
-            if (theFrostVector[myInt] == 0)
+            if (myFloat == 0)
             {
                 //If month is frost free add value to myRunningTotalDbl and add month to monthcounter
                 myRunningTotalFloat += theClimateVector[myInt];
@@ -821,7 +887,7 @@ float DataProcessor::meanValueOverFrostFreeMonths (QValueVector<float> theFrostV
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the meanValueOverFrostFreeMonths function" << std::endl;
 #endif
-        myMeanFloat = -9999;
+        myMeanFloat = NO_DATA;
     }
 
     return myMeanFloat;
@@ -840,8 +906,10 @@ int DataProcessor::numberOfMonthsAboveZero (QValueVector <float> theClimateVecto
     {
         for (myInt=0; myInt < theClimateVector.size(); myInt++)
         {
-            if (theClimateVector[myInt] == -9999)
-                return -9999;
+            if (theClimateVector[myInt] == NO_DATA)
+            {
+                return static_cast<int>(NO_DATA);
+            }
             if (theClimateVector[myInt] > FREEZING_POINT)
                 myMonthCountInt += 1;
         }
@@ -851,7 +919,7 @@ int DataProcessor::numberOfMonthsAboveZero (QValueVector <float> theClimateVecto
 #ifdef QGISDEBUG
         std::cout << "A fatal error occured in the numberOfMonthsAboveZero function" << std::endl;
 #endif
-        myMonthCountInt = -9999;
+        myMonthCountInt = static_cast<int>(NO_DATA);
     }
     return myMonthCountInt;
 }

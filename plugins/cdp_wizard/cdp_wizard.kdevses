@@ -1,28 +1,13 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <!DOCTYPE KDevPrjSession>
 <KDevPrjSession>
- <DocsAndViews NumberOfDocuments="7" >
-  <Doc0 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/climatedataprocessor.cpp" >
-   <View0 line="1201" Type="Source" />
+ <DocsAndViews NumberOfDocuments="2" >
+  <Doc0 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/plugins/cdp_wizard/dataprocessor.cpp" >
+   <View0 line="63" Type="Source" />
   </Doc0>
-  <Doc1 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filewriter.cpp" >
-   <View0 line="71" Type="Source" />
+  <Doc1 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/plugins/cdp_wizard/climatedataprocessor.cpp" >
+   <View0 line="2405" Type="Source" />
   </Doc1>
-  <Doc2 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filereader.h" >
-   <View0 line="339" Type="Source" />
-  </Doc2>
-  <Doc3 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/filereader.cpp" >
-   <View0 line="101" Type="Source" />
-  </Doc3>
-  <Doc4 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/plugin.h" >
-   <View0 line="60" Type="Source" />
-  </Doc4>
-  <Doc5 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/main.cpp" >
-   <View0 line="91" Type="Source" />
-  </Doc5>
-  <Doc6 NumberOfViews="1" URL="file:///home/aps02ts/dev/cpp/qgis_plugins/cdp_wizard/cdpwizard.cpp" >
-   <View0 line="579" Type="Source" />
-  </Doc6>
  </DocsAndViews>
  <pluginList>
   <kdevdebugger>
@@ -34,6 +19,10 @@
   <kdevbookmarks>
    <bookmarks/>
   </kdevbookmarks>
+  <kdevrbdebugger>
+   <breakpointList/>
+   <watchExpressions/>
+  </kdevrbdebugger>
   <kdevvalgrind>
    <executable path="" params="" />
    <valgrind path="valgrind" params="--tool=memcheck --tool=memcheck --tool=memcheck --leak-check=yes" />

@@ -70,6 +70,7 @@ FileWriter::~FileWriter()
 
 bool FileWriter::writeElement(float theElementFloat){
   //cout << "FileWriter::writeElement Writing element to   " << fileNameString << endl;
+  if (theElementFloat==-9999.0) { theElementFloat=-9999.9; }
   if (filePointer==0)
   {
     return false;
