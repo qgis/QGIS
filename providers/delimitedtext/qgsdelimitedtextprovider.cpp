@@ -47,6 +47,12 @@
 #define QGISEXTERN extern "C"
 #endif
 
+
+static const QString TEXT_PROVIDER_KEY = "delimitedtext";
+static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";
+
+
+
 QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
     : mDataSourceUri(uri),
       mMinMaxCacheDirty(true)
@@ -998,6 +1004,23 @@ int *QgsDelimitedTextProvider::getFieldLengths()
   return lengths;
 }
 
+
+
+
+
+QString  QgsDelimitedTextProvider::name() const
+{
+    return TEXT_PROVIDER_KEY;
+} // ::name()
+
+
+
+QString  QgsDelimitedTextProvider::description() const
+{
+    return TEXT_PROVIDER_DESCRIPTION;
+} //  QgsDelimitedTextProvider::name()
+
+
 /**
  * Class factory to return a pointer to a newly created 
  * QgsDelimitedTextProvider object
@@ -1011,7 +1034,7 @@ QGISEXTERN QgsDelimitedTextProvider *classFactory(const QString *uri)
 */
 QGISEXTERN QString providerKey()
 {
-  return QString("delimitedtext");
+    return TEXT_PROVIDER_KEY;
 }
 
 /**
@@ -1019,7 +1042,7 @@ QGISEXTERN QString providerKey()
  */
 QGISEXTERN QString description()
 {
-  return QString("Delimited text data provider");
+    return TEXT_PROVIDER_DESCRIPTION;
 }
 
 /**
