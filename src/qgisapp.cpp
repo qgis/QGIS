@@ -16,6 +16,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 /* $Id$ */
 
 #ifndef WIN32
@@ -28,6 +29,7 @@
 #include <vector>
 #include <list>
 #include <algorithm>
+#include <functional>
 
 using namespace std;
 
@@ -88,7 +90,7 @@ using namespace std;
 #include "qgsmapoverviewcanvas.h"
 #include "qgsacetaterectangle.h"
 #include "qgsmaplayer.h"
-#include "qgslegenditem.h"
+// XXX deprecated?? #include "qgslegenditem.h"
 #include "qgslegend.h"
 #include "qgslegendlayer.h"
 #include "qgslegendlayerfile.h"
@@ -283,6 +285,11 @@ static char *identify_cursor[] = {
                                  };
 
 
+/// build the vector file filter string for a QFileDialog
+/*
+  called in ctor for initializing mVectorFileFilter
+ */
+static void buildSupportedVectorFileFilter_(QString & fileFilters);
 
 
 /** set the application title bar text
@@ -637,6 +644,13 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // Map composer
     mComposer = new QgsComposer(this);
 
+    // now build vector file filter
+    buildSupportedVectorFileFilter_( mVectorFileFilter );
+
+    // now build raster file filter
+    QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
+
+
 } // QgisApp ctor
 
 
@@ -672,9 +686,7 @@ void QgisApp::about()
     abt->setURLs(urls);
     QString watsNew = "<html><body>" + tr("Version") + " ";
     watsNew += QGis::qgisVersion;
-    watsNew += "<h3>"
-      + tr("New features")
-      + "</h3>";
+    watsNew += "<h3>" + tr("New features") + "</h3>";
     watsNew += "<ul><li>"
       + tr("On the fly projection support to automatically project layers from different coordinate systems")
       + "<li>"
@@ -818,10 +830,10 @@ static QString createFileFilter_(QString const &longName, QString const &glob)
    Builds the list of file filter strings to later be used by
    QgisApp::addLayer()
 
-   We query OGR for a list of supported raster formats; we then build
-   a list of file filter strings from that list.  We return a string
-   that contains this list that is suitable for use in a a
-   QFileDialog::getOpenFileNames() call.
+   We query OGR for a list of supported vector formats; we then build a list
+   of file filter strings from that list.  We return a string that contains
+   this list that is suitable for use in a a QFileDialog::getOpenFileNames()
+   call.
 
    XXX Most of the file name filters need to be filled in; however we
    XXX may want to wait until we've tested each format before committing
@@ -836,7 +848,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
     // if we've already built the supported vector string, just return what
     // we've already built
-    if ( ! myFileFilters.isEmpty() )
+    if ( ! ( myFileFilters.isEmpty() || myFileFilters.isNull() ) )
     {
         fileFilters = myFileFilters;
 
@@ -849,8 +861,8 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
     if (!driverRegistrar)
     {
-        QMessageBox::warning(0,"OGR Driver Manger","unable to get OGRDriverManager");
-        return;                   // XXX good place to throw exception if we
+        QMessageBox::warning(0,"OGR Driver Manager","unable to get OGRDriverManager");
+        return;                 // XXX good place to throw exception if we
     }                           // XXX decide to do exceptions
 
     // then iterate through all of the supported drivers, adding the
@@ -947,7 +959,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
         {
             // NOP, we don't know anything about the current driver
             // with regards to a proper file filter string
-            qDebug( "%s:%d unknown driver %s", __FILE__, __LINE__, driverName.ascii() );
+            qDebug( "%s:%d unknown driver %s", __FILE__, __LINE__, (const char *)driverName.local8Bit() );
         }
 
     }                           // each loaded GDAL driver
@@ -1049,9 +1061,6 @@ static void openFilesRememberingFilter_(QString const &filterName,
 void QgisApp::addLayer()
 {
 
-    QString fileFilters;
-
-    buildSupportedVectorFileFilter_(fileFilters);
 
     //qDebug( "vector file filters: " + fileFilters );
 
@@ -1072,13 +1081,12 @@ void QgisApp::addLayer()
 
         QStringList selectedFiles;
 #ifdef QGISDEBUG
-
-        std::cerr << "Vector file filters: " << fileFilters.local8Bit() << std::endl;
+        std::cerr << "Vector file filters: " << mVectorFileFilter.local8Bit() << "\n";
 #endif
 
         QString enc;
         QString title = tr("Open an OGR Supported Vector Layer");
-        openFilesRememberingFilter_("lastVectorFileFilter", fileFilters, selectedFiles, enc,
+        openFilesRememberingFilter_("lastVectorFileFilter", mVectorFileFilter, selectedFiles, enc,
                                     title);
         if (selectedFiles.isEmpty())
         {
@@ -1419,11 +1427,12 @@ void QgisApp::addDatabaseLayer()
                 //qWarning("creating layer");
                 QgsVectorLayer *layer = new QgsVectorLayer(connInfo + " table=" + *it, *it, "postgres");
 		QObject::connect(layer, SIGNAL(editingStopped(bool)), mMapCanvas, SLOT(removeDigitizingLines(bool)));
+
 		
 		if(layer->getDataProvider())
-		  {
+                {
 		    layer->setProviderEncoding(dbs->encoding());
-		  }
+                }
 
                 if (layer->isValid())
                 {
@@ -1477,11 +1486,7 @@ void QgisApp::addDatabaseLayer()
             statusBar()->message(mMapCanvas->extent().stringRep(2));
         }
 
-	QSettings settings;
-	settings.writeEntry("/qgis/UI/encoding", dbs->encoding());
-
         qApp->processEvents();
-
         mMapCanvas->freeze(false);
         mMapCanvas->render();
         QApplication::restoreOverrideCursor();
@@ -1571,7 +1576,7 @@ dataType_( QDomNode & layerNode )
         return IS_VECTOR;
     }
 
-    qDebug( "%s:%d is unknown type %s", __FILE__, __LINE__, type.ascii() );
+    qDebug( "%s:%d is unknown type %s", __FILE__, __LINE__, (const char *)type.local8Bit() );
 
     return IS_BOGUS;
 } // dataType_( QDomNode & layerNode )
@@ -1635,7 +1640,7 @@ providerType_( QDomNode & layerNode )
             QString dataSource = dataSource_( layerNode );
 
 #ifdef QGISDEBUG
-            qDebug( "%s:%d datasource is %s", __FILE__, __LINE__, dataSource.ascii() );
+            qDebug( "%s:%d datasource is %s", __FILE__, __LINE__, (const char *)dataSource.local8Bit() );
 #endif
             if ( dataSource.contains("host=") )
             {
@@ -1681,7 +1686,7 @@ setDataSource_( QDomNode & layerNode, QString const & dataSource )
 #ifdef QGISDEBUG
     QString originalDataSource = dataSourceText.data();
 
-    qDebug( "%s:%d datasource changed from %s", __FILE__, __LINE__, originalDataSource.ascii() );
+    qDebug( "%s:%d datasource changed from %s", __FILE__, __LINE__, (const char *)originalDataSource.local8Bit() );
 #endif
 
     dataSourceText.setData( dataSource );
@@ -1689,19 +1694,19 @@ setDataSource_( QDomNode & layerNode, QString const & dataSource )
 #ifdef QGISDEBUG
     QString newDataSource = dataSourceText.data();
 
-    qDebug( "%s:%d to %s", __FILE__, __LINE__, newDataSource.ascii() );
+    qDebug( "%s:%d to %s", __FILE__, __LINE__, (const char *)newDataSource.local8Bit() );
 #endif
 } // setDataSource_
 
 
 
 
-/**
+/** this is used to locate files that have moved or otherwise are missing
    
 */
 static
 void
-findMissingFile_( QDomNode & layerNode )
+findMissingFile_( QString const & fileFilters, QDomNode & layerNode )
 {
     // Prepend that file name to the valid file format filter list since it
     // makes it easier for the user to not only find the original file, but to
@@ -1712,22 +1717,16 @@ findMissingFile_( QDomNode & layerNode )
     QString memoryQualifier;    // to differentiate between last raster and
                                 // vector directories
 
-    QString fileFilters;        // file dialog fliter strings
-
     switch( dataType_( layerNode ) )
     {
         case IS_VECTOR:
         {
-            buildSupportedVectorFileFilter_(fileFilters);
-
             memoryQualifier = "lastVectorFileFilter";
 
             break;
         }
         case IS_RASTER:
         {
-            QgsRasterLayer::buildSupportedRasterFileFilter(fileFilters);
-
             memoryQualifier = "lastRasterFileFilter";
 
             break;
@@ -1742,14 +1741,14 @@ findMissingFile_( QDomNode & layerNode )
     // for the file type will also be added in case the file name itself has
     // changed, too.
 
-    fileFilters = originalDataSource.fileName() + ";;" + fileFilters;
+    QString myFileFilters = originalDataSource.fileName() + ";;" + fileFilters;
 
     QStringList selectedFiles;
     QString     enc;
     QString     title( QObject::trUtf8("Open an OGR Supported Layer") );
 
     openFilesRememberingFilter_(memoryQualifier,
-                                fileFilters, 
+                                myFileFilters, 
                                 selectedFiles, 
                                 enc,
                                 title);
@@ -1786,7 +1785,7 @@ findMissingFile_( QDomNode & layerNode )
 */
 static
 void
-findLayer_( QDomNode const & constLayerNode )
+findLayer_( QString const & fileFilters, QDomNode const & constLayerNode ) 
 {
     // XXX actually we could possibly get away with a copy of the node
     QDomNode & layerNode = const_cast<QDomNode&>(constLayerNode);
@@ -1795,7 +1794,7 @@ findLayer_( QDomNode const & constLayerNode )
     {
         case IS_FILE:
             qDebug( "%s:%d layer is file based", __FILE__, __LINE__ );
-            findMissingFile_( layerNode );
+            findMissingFile_( fileFilters, layerNode );
             break;
 
         case IS_DATABASE:
@@ -1810,6 +1809,7 @@ findLayer_( QDomNode const & constLayerNode )
             qDebug( "%s:%d layer has an unkown type", __FILE__, __LINE__ );
             break;
     }
+
 } // findLayer_
 
 
@@ -1822,9 +1822,19 @@ findLayer_( QDomNode const & constLayerNode )
 */
 static
 void
-findLayers_( list<QDomNode> const & layerNodes )
+findLayers_( QString const & fileFilters, list<QDomNode> const & layerNodes )
 {
-    for_each( layerNodes.begin(), layerNodes.end(), findLayer_ );
+#ifdef QGISDEBUG
+    const char * fileFiltersC = fileFilters.ascii(); // debugger probe
+#endif
+
+    for( list<QDomNode>::const_iterator i = layerNodes.begin();
+         i != layerNodes.end();
+         ++i )
+    {
+        findLayer_( fileFilters, *i );
+    }
+
 } // findLayers_
 
 
@@ -1923,12 +1933,56 @@ void QgisApp::newVectorLayer()
     std::list<std::pair<QString, QString> > attributes;
     geomDialog.attributes(attributes);
 
-    QString filename=QFileDialog::getSaveFileName();
-    if(filename.isNull())
+    bool haveLastUsedFilter = false; // by default, there is no last
+                                // used filter
+    QString enc;
+    QString filename;
+
+    QSettings settings;         // where we keep last used filter in
+                                // persistant state
+
+    QString lastUsedFilter = settings.readEntry("/qgis/UI/lastVectorFileFilter",
+                             QString::null,
+                             &haveLastUsedFilter);
+
+    QString lastUsedDir = settings.readEntry("/qgis/UI/lastVectorFileFilterDir",
+                          ".");
+
+    QString lastUsedEncoding = settings.readEntry("/qgis/UI/encoding");
+
+#ifdef QGISDEBUG
+
+    std::cerr << "Saving vector file dialog without filters: " << std::endl;
+#endif
+
+    QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog(lastUsedDir, "", 0, QFileDialog::tr("save new vector files dialog"), lastUsedEncoding);
+
+    // allow for selection of more than one file
+    openFileDialog->setMode(QFileDialog::AnyFile);
+    openFileDialog->setCaption(tr("Save As"));
+
+    if (haveLastUsedFilter)       // set the filter to the last one used
     {
-        //file dialog rejected
-        return;
+        openFileDialog->setSelectedFilter(lastUsedFilter);
     }
+
+    if (openFileDialog->exec() != QDialog::Accepted)
+    {
+      delete openFileDialog;
+      return;
+    }
+
+    filename = openFileDialog->selectedFile();
+    enc = openFileDialog->encoding();
+
+    settings.writeEntry("/qgis/UI//lastVectorFileFilter", openFileDialog->selectedFilter());
+
+    settings.writeEntry("/qgis/UI//lastVectorFileFilterDir", openFileDialog->dirPath());
+    settings.writeEntry("/qgis/UI/encoding", openFileDialog->encoding());
+
+    delete openFileDialog;
+
+
     // check to see if user specified the extension. if not, add it...
     if(filename.find(QRegExp("\\.shp$")) == -1)
     {
@@ -1983,7 +2037,7 @@ void QgisApp::newVectorLayer()
 
     if(geometrytype == QGis::WKBPoint)
     {
-        writer=new QgsVectorFileWriter(filename,wkbPoint);
+        writer=new QgsVectorFileWriter(filename,enc,wkbPoint);
         if(!writer->initialise())
         {
             QMessageBox::warning(0,tr("Warning"),tr("Writing of the layer failed"),QMessageBox::Ok,QMessageBox::NoButton);
@@ -1992,7 +2046,7 @@ void QgisApp::newVectorLayer()
     }
     else if(geometrytype == QGis::WKBLineString)
     {
-        writer=new QgsVectorFileWriter(filename,wkbLineString);
+        writer=new QgsVectorFileWriter(filename,enc,wkbLineString);
         if(!writer->initialise())
         {
             QMessageBox::warning(0,tr("Warning"),tr("Writing of the layer failed"),QMessageBox::Ok,QMessageBox::NoButton);
@@ -2001,7 +2055,7 @@ void QgisApp::newVectorLayer()
     }
     else if(geometrytype == QGis::WKBPolygon)
     {
-        writer=new QgsVectorFileWriter(filename,wkbPolygon);
+        writer=new QgsVectorFileWriter(filename,enc,wkbPolygon);
         if(!writer->initialise())
         {
             QMessageBox::warning(0,tr("Warning"),tr("Writing of the layer failed"),QMessageBox::Ok,QMessageBox::NoButton);
@@ -2038,8 +2092,9 @@ void QgisApp::newVectorLayer()
     delete writer;
 
     //then add the layer to the view
-    QFileInfo fileinfo(filename);
-    addLayer(fileinfo);
+    QStringList filelist;
+    filelist.append(filename);
+    addLayer(filelist, enc);
     return;
 }
 
@@ -2054,8 +2109,9 @@ void QgisApp::fileOpen()
         QSettings settings;
         QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
         
-        QFileDialog * openFileDialog = new QFileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0, 
-                                                        QFileDialog::tr("Choose a QGIS project file to open"));
+        QFileDialog * openFileDialog = new QFileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0,
+                                                       "open project file");
+        openFileDialog->setCaption(tr("Choose a QGIS project file to open"));
         openFileDialog->setMode(QFileDialog::ExistingFile);
         
         QString fullPath;
@@ -2099,6 +2155,9 @@ void QgisApp::fileOpen()
                                   tr("") + "\n" + e.what() );
             qDebug( "%s:%d %d bad layers found", __FILE__, __LINE__, e.layers().size() );
 
+            // attempt to find the new locations for missing layers
+            // XXX vector file hard-coded -- but what if it's raster?
+            findLayers_( mVectorFileFilter, e.layers() );
         }
         catch ( std::exception & e )
         {
@@ -2175,7 +2234,8 @@ bool QgisApp::addProject(QString projectFile)
             qDebug( "%s:%d want to find missing layers is true", __FILE__, __LINE__ );
 
             // attempt to find the new locations for missing layers
-            findLayers_( e.layers() );
+            // XXX vector file hard-coded -- but what if it's raster?
+            findLayers_( mVectorFileFilter, e.layers() );
         }
 
     }
@@ -2219,39 +2279,56 @@ void QgisApp::fileSave()
                                                                    0,
                                                                    QFileDialog::tr("Choose a QGIS project file")) );
 
+        saveFileDialog->setCaption(tr("Choose a QGIS project file"));
         saveFileDialog->setMode(QFileDialog::AnyFile);
         
         if (saveFileDialog->exec() == QDialog::Accepted)
         {
-            fullPath = saveFileDialog->selectedFile();
-        } else 
+            fullPath.setFile( saveFileDialog->selectedFile() );
+        }
+        else 
         {
             // if they didn't select anything, just return
+            // delete saveFileDialog; auto_ptr auto destroys
             return;
         }
         
         // make sure we have the .qgs extension in the file name
-        if( "qgs" != fullPath.extension(false) )
+        if( "qgs" != fullPath.extension( false ) )
         {
-          fullPath.setFile( fullPath.filePath() + ".qgs" );
+            QString newFilePath = fullPath.filePath() + ".qgs";
+#ifdef QGISDEBUG
+            const char* filePathStr = newFilePath.ascii(); // debugger probe
+#endif
+            fullPath.setFile( newFilePath );
         }
 
-        // if the file already exists
-        if ( fullPath.exists() &&
-             QMessageBox::question( // yes, hacked from Qt example
-                 this,
-                 tr("Overwrite Project?"),
-                 tr("A project named %1 exists."
-                    "Do you want to overwrite it?")
-                 .arg( fullPath.fileName() ),
-                 tr("&Yes"), tr("&No"),
-                 QString::null, 0, 1 ) )
-        {
-            return;
-        }
-        // XXX We should check to see if the file exists before just blasting
-        //     it into oblivion...
+        //  Check to see if the file exists before just blasting it into
+        //  oblivion; abort saving the project if the user does not want to
+        //  over-write an existing file.
 
+        if ( fullPath.exists() )
+        {
+            if ( QMessageBox::No == QMessageBox::warning( 0x0, 
+                                                          tr("Project file exists."),
+                                                          tr("The given project file exists.  Do you wish to over-write it with a new one?"),
+                                                          QMessageBox::Yes | QMessageBox::Default,
+                                                          QMessageBox::No  | QMessageBox::Escape,
+                                                          QMessageBox::NoButton ) )
+            {
+                return;         // abort saving the file since the user
+                                // doesn't want to over-write
+            }
+                                                           
+        }
+        else
+        {
+            QgsDebug( " project file does not already exist" );
+        }
+
+#ifdef QGISDEBUG
+        const char* filePathStr = fullPath.filePath().ascii(); // debugger probe
+#endif
         QgsProject::instance()->filename( fullPath.filePath() );
     }
 
@@ -2259,7 +2336,7 @@ void QgisApp::fileSave()
     {
         if ( QgsProject::instance()->write() )
         {
-            statusBar()->message(tr("Saved map to:") + " " + QgsProject::instance()->filename() );
+            statusBar()->message(tr("Saved project to:") + " " + QgsProject::instance()->filename() );
             
             if (isNewProject)
             {
@@ -2295,11 +2372,12 @@ void QgisApp::fileSaveAs()
     QSettings settings;
     QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
     
-    std::auto_ptr<QFileDialog> saveFileDialog( new QFileDialog(lastUsedDir, 
-                                                               QObject::tr("QGis files (*.qgs)"), 
-                                                               0, 
-                                                               QFileDialog::tr("Choose a QGIS project file")));
+    auto_ptr<QFileDialog> saveFileDialog( new QFileDialog(lastUsedDir, 
+                                                          QObject::tr("QGis files (*.qgs)"), 
+                                                          0,
+                                                          "save project file as"));
 
+    saveFileDialog->setCaption(tr("Choose a QGIS project file"));
     saveFileDialog->setMode(QFileDialog::AnyFile);
 
     // if we don't have a filename, then obviously we need to get one; note
@@ -2308,10 +2386,12 @@ void QgisApp::fileSaveAs()
 
     if (saveFileDialog->exec() == QDialog::Accepted)
     {
-        fullPath = saveFileDialog->selectedFile();
-    } else 
+        fullPath.setFile( saveFileDialog->selectedFile() );
+    } 
+    else
     {
         // if they didn't select anything, just return
+        // delete saveFileDialog; auto_ptr auto deletes
         return;
     }
     
@@ -2322,28 +2402,42 @@ void QgisApp::fileSaveAs()
     // make sure the .qgs extension is included in the path name. if not, add it...
     if( "qgs" != fullPath.extension(false) )
     {
-        fullPath.setFile( fullPath.filePath() + ".qgs" );
+        QString newFilePath = fullPath.filePath() + ".qgs";
+#ifdef QGISDEBUG
+        const char* filePathStr = newFilePath.ascii(); // debugger probe
+#endif
+        fullPath.setFile( newFilePath );
     }
 
-    // if the file already exists
-    if ( fullPath.exists() &&
-         QMessageBox::question( // yes, hacked from Qt example
-             this,
-             tr("Overwrite Project?"),
-             tr("A project named %1 exists."
-                "Do you want to overwrite it?")
-             .arg( fullPath.fileName() ),
-             tr("&Yes"), tr("&No"),
-             QString::null, 0, 1 ) )
+
+    //  Check to see if the file exists before just blasting it into
+    //  oblivion; abort saving the project if the user does not want to
+    //  over-write an existing file.
+
+    if ( fullPath.exists() )
     {
-        return;
+        if ( QMessageBox::No == QMessageBox::warning( 0x0, 
+                                                      tr("Project file exists."),
+                                                      tr("The given project file exists.  Do you wish to over-write it with a new one?"),
+                                                      QMessageBox::Yes | QMessageBox::Default,
+                                                      QMessageBox::No  | QMessageBox::Escape,
+                                                      QMessageBox::NoButton ) )
+        {
+            return;             // abort saving the file since the user
+                                // doesn't want to over-write
+        }
     }
+    else
+    {
+        QgsDebug( " project file does not already exist" );
+    }
+
 
     QgsProject::instance()->filename( fullPath.filePath() );
 
     if ( QgsProject::instance()->write() )
     {
-        statusBar()->message(tr("Saved map to:") + " " + QgsProject::instance()->filename() );
+        statusBar()->message(tr("Saved project to:") + " " + QgsProject::instance()->filename() );
         // add this to the list of recently used project files
         saveRecentProjectPath(fullPath.filePath(), settings);
     }
@@ -2354,6 +2448,8 @@ void QgisApp::fileSaveAs()
                               tr("Unable to save project to ") + QgsProject::instance()->filename() );
     }
 } // QgisApp::fileSaveAs
+
+
 
 
 // add this file to the recently opened/saved projects list
@@ -2477,6 +2573,7 @@ void QgisApp::openProject(const QString & fileName)
     return ;
 }
 
+
 /**
   Open a raster or vector file; ignore other files.
   Used to process a commandline argument or OpenDocument AppleEvent.
@@ -2497,7 +2594,11 @@ bool QgisApp::openLayer(const QString & fileName)
             std::cout << "Unable to load " << fileName.local8Bit() << std::endl;
         }
     }
+#ifdef WIN32
+	return true;
+#endif
 }
+
 
 
 /*
@@ -2583,12 +2684,14 @@ void QgisApp::saveMapAsImage()
             myLastUsedDir,
             myFilters,
             0,
+
             tr("Choose a filename to save the map image as")
         )
     );
 
 
     // allow for selection of more than one file
+    myQFileDialog->setCaption(tr("Choose a filename to save the map image as"));
     myQFileDialog->setMode(QFileDialog::AnyFile);
 
     if (!myLastUsedFilter.isEmpty())       // set the filter to the last one used
@@ -2608,7 +2711,7 @@ void QgisApp::saveMapAsImage()
 #ifdef QGISDEBUG
 
     std::cout << "Selected filter: " << myFilterString.local8Bit() << std::endl;
-    std::cout << "Image type to be passed to mapcanvas: " << myFilterMap[myFilterString].local8Bit() << std::endl;
+    std::cout << "Image type to be passed to mapcanvas: " << (myFilterMap[myFilterString]).local8Bit() << std::endl;
 #endif
 
     myQSettings.writeEntry("/qgis/UI/lastSaveAsImageFilter" , myFilterString);
@@ -3336,34 +3439,36 @@ void QgisApp::removeAllLayers()
 void QgisApp::zoomToLayerExtent()
 {
 // zoom only if one or more layers loaded
-  if(QgsMapLayerRegistry::instance()->count() > 0) 
+  if(QgsMapLayerRegistry::instance()->count() > 0)
   {
     // get the selected item
     QListViewItem *li = mMapLegend->currentItem();
     QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
     if(llf)
     {
-	QgsMapLayer *layer = llf->layer();
-	// Check if the layer extent has to be transformed to the map canvas
-	// coordinate system 
-	if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
-	{
-	    QgsCoordinateTransform *ct = layer->coordinateTransform();
-	    QgsRect transformedExtent = ct->transform(layer->extent());
-	    mMapCanvas->setExtent(transformedExtent);
-	}
-	else
-	{
-	    mMapCanvas->setExtent(layer->extent());
-	}
-	mMapCanvas->clear();
-	mMapCanvas->render();
+        QgsMapLayer *layer = llf->layer();
+        // Check if the layer extent has to be transformed to the map canvas
+        // coordinate system
+        if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
+        {
+            QgsCoordinateTransform *ct = layer->coordinateTransform();
+            QgsRect transformedExtent = ct->transform(layer->extent());
+            mMapCanvas->setExtent(transformedExtent);
+        }
+        else
+        {
+            mMapCanvas->setExtent(layer->extent());
+        }
+        mMapCanvas->clear();
+        mMapCanvas->render();
 
-	// notify the project we've made a change
-	QgsProject::instance()->dirty(true);
+        // notify the project we've made a change
+        QgsProject::instance()->dirty(true);
     }
   }
-}
+} // QgisApp::zoomToLayerExtent()
+
+
 
 void QgisApp::currentLayerChanged(QListViewItem * lvi)
 {
@@ -3617,7 +3722,7 @@ void QgisApp::testMapLayerPlugins()
             std::cout << "Attempting to load the plugin using dlopen\n";
 #endif
             //          void *handle = dlopen("../plugins/maplayer/" + mlpDir[i], RTLD_LAZY);
-            void *handle = dlopen("../plugins/maplayer/" + mlpDir[i], RTLD_LAZY | RTLD_GLOBAL );
+            void *handle = dlopen(("../plugins/maplayer/" + mlpDir[i]).local8Bit(), RTLD_LAZY | RTLD_GLOBAL );
             if (!handle)
             {
 #ifdef QGISDEBUG
@@ -3724,7 +3829,7 @@ void QgisApp::testPluginFunctions()
                 //QLibrary myLib("../plugins/" + pluginDir[i]);
 #ifdef QGISDEBUG
 
-                std::cout << "Attempting to load " << "../plugins/" << pluginDir[i].local8Bit() << std::endl;
+                std::cout << "Attempting to load " << "../plugins/" + pluginDir[i].local8Bit() << std::endl;
 #endif
                 /*  void *handle = dlopen("/home/gsherman/development/qgis/plugins/" + pluginDir[i], RTLD_LAZY);
                    if (!handle) {
@@ -4017,8 +4122,8 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
      * commandline application rather than a bundled application.
      */
     CFURLRef urlRef = CFURLCreateWithBytes(kCFAllocatorDefault,
-                                           reinterpret_cast<const UInt8*>(url.local8Bit()), url.length(),
-                                           kCFStringEncodingMacRoman, NULL);
+                                           reinterpret_cast<const UInt8*>(url.utf8().data()), url.length(),
+                                           kCFStringEncodingUTF8, NULL);
     OSStatus status = LSOpenCFURLRef(urlRef, NULL);
     CFRelease(urlRef);
 #else
@@ -4029,12 +4134,12 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
     {
         // ask user for browser and use it
         bool ok;
-        QString myHeading = "QGIS Browser Selection";
-        QString myMessage = "Enter the name of a web browser to use (eg. konqueror).\n";
-        myMessage += "Enter the full path if the browser is not in your PATH.\n";
-        myMessage += "You can change this option later by selecting Preferences from the Settings menu.";
-        QString text = QInputDialog::getText(tr(myHeading),
-                                             tr(myMessage),
+        QString myHeading = tr("QGIS Browser Selection");
+        QString myMessage = tr("Enter the name of a web browser to use (eg. konqueror).\n");
+        myMessage += tr("Enter the full path if the browser is not in your PATH.\n");
+        myMessage += tr("You can change this option later by selecting Preferences from the Settings menu.");
+        QString text = QInputDialog::getText(myHeading,
+                                             myMessage,
                                              QLineEdit::Normal,
                                              QString::null, &ok, this);
         if (ok && !text.isEmpty())
@@ -4773,7 +4878,7 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
 	    mOverviewCanvas->remove
 		(myLayerId);
 #ifdef QGISDEBUG
-	    std::cout << " Removed layer " << myLayerId.local8Bit() << " from overview map" << std::endl;
+        std::cout << " Removed layer " << myLayerId.local8Bit() << " from overview map" << std::endl;
 #endif
 	    myOverviewLayerVector.push_back(myLayerId);
 	}
@@ -4787,7 +4892,6 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
         {
             mOverviewCanvas->addLayer(lyr);
 #ifdef QGISDEBUG
-
             std::cout << " Added layer " << (*myIterator).local8Bit() << " to overview map" << std::endl;
 #endif
 
@@ -4876,13 +4980,11 @@ void QgisApp::addRasterLayer()
 
     QString fileFilters;
 
-    // build the file filters based on the loaded GDAL drivers
-    QgsRasterLayer::buildSupportedRasterFileFilter(fileFilters);
 
     QStringList selectedFiles;
     QString e;//only for parameter correctness
     QString title = tr("Open a GDAL Supported Raster Data Source");
-    openFilesRememberingFilter_("lastRasterFileFilter", fileFilters, selectedFiles,e,
+    openFilesRememberingFilter_("lastRasterFileFilter", mRasterFileFilter, selectedFiles,e,
       title);
 
     if (selectedFiles.isEmpty())
@@ -5237,8 +5339,13 @@ void QgisApp::killSplashScreen()
 
 void QgisApp::keyPressEvent ( QKeyEvent * e )
 {
-    std::cout << e->ascii() << " (keypress recevied)" << std::endl;
+	// The following statment causes a crash on WIN32 and should be 
+	// enclosed in an #ifdef QGISDEBUG if its really necessary. Its
+	// commented out for now. [gsherman]
+	//    std::cout << e->text().local8Bit() << " (keypress recevied)" << std::endl;
     emit keyPressed (e);
+    e->ignore();
+    
 }
 // Debug hook - used to output diagnostic messages when evoked (usually from the menu)
 /* Temporarily disabled...
@@ -5251,13 +5358,24 @@ void QgisApp::debugHook()
 */
 void QgisApp::actionCustomProjection_activated()
 {
-  QgsCustomProjectionDialog * myDialog = new QgsCustomProjectionDialog(this);
+  // Create an instance of the Custom Projection Designer modeless dialog.
+  // Autodelete the dialog when closing since a pointer is not retained.
+  QgsCustomProjectionDialog * myDialog = new QgsCustomProjectionDialog(this,
+    "Projection Designer", WDestructiveClose);
   myDialog->show();
 }
 void QgisApp::actionShowBookmarks_activated()
 {
-  QgsBookmarks *bookmarks = new QgsBookmarks(this);
+  // Create or show the single instance of the Bookmarks modeless dialog.
+  // Closing a QWidget only hides it so it can be shown again later.
+  static QgsBookmarks *bookmarks = NULL;
+  if (bookmarks == NULL)
+  {
+    bookmarks = new QgsBookmarks(this);
+  }
   bookmarks->show();
+  bookmarks->raise();
+  bookmarks->setActiveWindow();
 }
 
 void QgisApp::actionNewBookmark_activated()

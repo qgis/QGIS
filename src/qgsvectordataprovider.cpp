@@ -18,9 +18,9 @@
 #include "qgsfeature.h"
 #include "qgssearchtreenode.h"
 
-QgsVectorDataProvider::QgsVectorDataProvider(): mEncoding(QTextCodec::codecForLocale())
+QgsVectorDataProvider::QgsVectorDataProvider()
+    : mEncoding(QTextCodec::codecForLocale())
 {
-
 }
 
 

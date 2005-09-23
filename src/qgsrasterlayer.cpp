@@ -3720,6 +3720,59 @@ unsigned int QgsRasterLayer::getTransparency()
   return transparencyLevelInt;
 }
 
+
+
+// convenience function for building getMetadata() HTML table cells
+static
+QString
+makeTableCell_( QString const & value )
+{
+    return "<td>" + value + "</td>";
+} // makeTableCell_
+
+
+
+// convenience function for building getMetadata() HTML table cells
+static
+QString
+makeTableCells_( QStringList const & values )
+{
+    QString s( "<tr>" );
+
+    for ( QStringList::const_iterator i = values.begin();
+          i != values.end();
+          ++i )
+    {
+        s += makeTableCell_( *i );
+    }
+
+    s += "</tr>";
+
+    return s;
+} // makeTableCell_
+
+
+
+// convenience function for creating a string list from a C style string list
+static
+QStringList
+cStringList2Q_( char ** stringList )
+{
+    QStringList strings;
+
+    // presume null terminated string list
+    for ( size_t i = 0; stringList[i]; ++i )
+    {
+        strings.append( stringList[i] );
+    }
+
+    return strings;
+
+} // cStringList2Q_
+
+
+
+
 QString QgsRasterLayer::getMetadata()
 {
   QString myMetadataQString = "<html><body>";
@@ -3732,6 +3785,57 @@ QString QgsRasterLayer::getMetadata()
   myMetadataQString += "<br>";
   myMetadataQString += QString(gdalDataset->GetDriver()->GetMetadataItem(GDAL_DMD_LONGNAME));
   myMetadataQString += "</td></tr>";
+
+  // my added code
+
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("my stuff:");
+  myMetadataQString += "</td></tr>";
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += QString(gdalDataset->GetDescription());
+  myMetadataQString += "</td></tr>";
+
+  char ** GDALmetadata = gdalDataset->GetMetadata();
+  
+  if ( GDALmetadata )
+  {
+      QStringList metadata = cStringList2Q_( GDALmetadata );
+      myMetadataQString += makeTableCells_( metadata ); 
+  }
+  else
+  {
+      qDebug( "%s:%d dataset has no metadata", __FILE__, __LINE__);
+  }
+
+  for ( int i = 1; i <= gdalDataset->GetRasterCount(); ++i )
+  {
+      gdalDataset->GetRasterBand(i)->GetMetadata();
+
+      if ( GDALmetadata )
+      {
+          QStringList metadata = cStringList2Q_( GDALmetadata );
+          myMetadataQString += makeTableCells_( metadata ); 
+      }
+      else
+      {
+          qDebug( "%s:%d band %d has no metadata", __FILE__, __LINE__, i );
+      }
+
+      char ** GDALcategories = gdalDataset->GetRasterBand(i)->GetCategoryNames();
+
+      if ( GDALcategories )
+      {
+          QStringList categories = cStringList2Q_( GDALcategories );
+          myMetadataQString += makeTableCells_( categories ); 
+      }
+      else
+      {
+          qDebug( "%s:%d band %d has no categories", __FILE__, __LINE__, i );
+      }
+
+  }
+
+  // end my added code
 
   myMetadataQString += "<tr><td bgcolor=\"gray\">";
   myMetadataQString += tr("Dimensions:");
