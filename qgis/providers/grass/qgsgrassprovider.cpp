@@ -47,6 +47,12 @@ extern "C" {
 std::vector<GLAYER> QgsGrassProvider::mLayers;
 std::vector<GMAP> QgsGrassProvider::mMaps;
 
+
+static QString GRASS_KEY = "grass"; // XXX verify this
+static QString GRASS_DESCRIPTION = "Grass provider"; // XXX verify this
+
+
+
 QgsGrassProvider::QgsGrassProvider(QString uri):mDataSourceUri(uri)
 {
     #ifdef QGISDEBUG
@@ -2179,5 +2185,19 @@ size_t QgsGrassProvider::layerCount() const
 {
     return 1;                   // XXX how to find how many layers?
 } // QgsGrassProvider::layerCount()
+
+
+
+QString QgsGrassProvider::name() const
+{
+    return GRASS_KEY;
+} // QgsGrassProvider::name()
+
+
+
+QString QgsGrassProvider::description() const
+{
+    return GRASS_DESCRIPTION;
+} // QgsGrassProvider::description()
 
 

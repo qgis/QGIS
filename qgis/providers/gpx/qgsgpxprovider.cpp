@@ -54,6 +54,11 @@ const char* QgsGPXProvider::attr[] = { "name", "elevation", "symbol", "number",
 				       "url", "url name" };
 
 
+const QString GPX_KEY = "gpx";
+
+const QString GPX_DESCRIPTION = "GPS eXchange format provider";
+
+
 QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
 					      mMinMaxCacheDirty(true),
 					      mEditable(false) {
@@ -852,6 +857,24 @@ bool QgsGPXProvider::boundsCheck(double x, double y)
 }
 
 
+QString QgsGPXProvider::name() const
+{
+    return GPX_KEY;
+} // QgsGPXProvider::name()
+
+
+
+QString QgsGPXProvider::description() const
+{
+    return GPX_DESCRIPTION;
+} // QgsGPXProvider::description()
+
+
+
+
+
+
+
 /**
  * Class factory to return a pointer to a newly created 
  * QgsGPXProvider object
@@ -864,7 +887,7 @@ QGISEXTERN QgsGPXProvider * classFactory(const QString *uri) {
 /** Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey(){
-  return QString("gpx");
+    return GPX_KEY;
 }
 
 
@@ -872,7 +895,7 @@ QGISEXTERN QString providerKey(){
  * Required description function 
  */
 QGISEXTERN QString description(){
-  return QString("GPS eXchange format provider");
+    return GPX_DESCRIPTION;
 } 
 
 
