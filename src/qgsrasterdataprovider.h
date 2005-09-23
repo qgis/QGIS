@@ -99,6 +99,8 @@ public:
 
     QgsRasterDataProvider();
 
+    QgsRasterDataProvider( QString const & uri );
+
     virtual ~QgsRasterDataProvider() {};
 
     /**

@@ -54,6 +54,11 @@ class QgsDataProvider : public QObject
   Q_OBJECT
 
     public: 
+
+      QgsDataProvider( QString const & uri = "" )
+         : mDataSourceURI(uri)
+      {}
+
       /**
        * We need this so the subclass destructors get called
        */
@@ -90,16 +95,25 @@ class QgsDataProvider : public QObject
        * connection string
        * @param data source specification
        */
-      virtual void setDataSourceUri(QString uri) = 0;
+      virtual void setDataSourceUri(QString const & uri)
+      {
+          mDataSourceURI = uri;
+      }
 
       /** 
        * Get the data source specification. This may be a path or database
        * connection string
        * @return data source specification
        */
-      virtual QString getDataSourceUri() = 0;
+      virtual QString const & getDataSourceUri() const
+      {
+          return mDataSourceURI;
+      }
 
-      virtual QgsDataSourceURI * getURI()=0;
+      /**
+         XXX why have the string versions then this?
+      */
+      virtual QgsDataSourceURI * getURI() = 0;
       /**
        * Get the extent of the layer
        * @return QgsRect containing the extent of the layer
@@ -264,6 +278,14 @@ signals:
        *   provider.
        */  
       void fullExtentCalculated();
+
+private:
+
+    /** Universal Resource Identifier for source data
+
+       This could be a file, database, or server address.
+     */
+    QString mDataSourceURI;
 
 };
 

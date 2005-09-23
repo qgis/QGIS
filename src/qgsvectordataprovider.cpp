@@ -23,6 +23,12 @@ QgsVectorDataProvider::QgsVectorDataProvider()
 {
 }
 
+QgsVectorDataProvider::QgsVectorDataProvider( QString const & uri )
+    : QgsDataProvider(uri),
+      mEncoding(QTextCodec::codecForLocale())
+{
+}
+
 
 bool QgsVectorDataProvider::addFeatures(std::list<QgsFeature*> flist)
 {

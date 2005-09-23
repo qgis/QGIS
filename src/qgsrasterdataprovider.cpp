@@ -21,7 +21,12 @@
 
 QgsRasterDataProvider::QgsRasterDataProvider()
 {
+}
 
+
+QgsRasterDataProvider::QgsRasterDataProvider( QString const & uri )
+    : QgsDataProvider(uri)
+{
 }
 
 

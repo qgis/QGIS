@@ -57,6 +57,8 @@ class QgsVectorDataProvider : public QgsDataProvider
 
       QgsVectorDataProvider();
 
+      QgsVectorDataProvider( QString const & uri );
+
       virtual ~QgsVectorDataProvider() {};
 
       /**
