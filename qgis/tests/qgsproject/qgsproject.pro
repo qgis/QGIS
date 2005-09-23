@@ -16,15 +16,18 @@ GDAL_DEPS = $$system(gdal-config --dep-libs)
 
 # get gdal inludes
 GDAL_INC = $$system(gdal-config --cflags)
-INCLUDEPATH += . $$GDAL_INC
+GDAL_INC ~= s/-I//g
+INCLUDEPATH += $$GDAL_INC
 
 # cppunit
 CPPUNIT_INC = $$system(cppunit-config --cflags)
+CPPUNIT_INC ~= s/-I//g
 INCLUDEPATH += $$CPPUNIT_INC
 CPPUNIT_LIBS = $$system(cppunit-config --libs)
 
 # qgis
 QGIS_INC = $$system(qgis-config --cflags)
+QGIS_INC ~= s/-I//g
 INCLUDEPATH += $$QGIS_INC
 QGIS_LIBS = $$system(qgis-config --lib)
 
