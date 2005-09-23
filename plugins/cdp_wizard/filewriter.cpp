@@ -69,6 +69,18 @@ FileWriter::~FileWriter()
 
 bool FileWriter::writeElement(float theElementFloat){
   //cout << "FileWriter::writeElement Writing element to   " << fileNameString << endl;
+  //
+  // Right there is a bit of kludging going on here:
+  // 1) if you send -9999.0 out the output stream, it truncates it to -9999
+  // 2) if gdal reads -9999 as the first cell, it assumes dataset is int 16, causeing all values
+  //    thereafter to be read as int16, losing any data after the decimal place
+  // 3) using a decimal place wich isnt well represented by float32 will cause problems.
+  //    we initially used -9999.99 as no data, but when gdal reads this from the asc file again
+  //    it incorrectly receivese the value of -9999.8998433943 or similar. THis causes all the
+  //    stats for the file to be incorrect.
+  // 4) in dataprocessor, comparisons of no data are made between the input file data (which is -9999 usually)
+  //    and the data processords idea of what no data shoud be. Consequently we need to rewrite nodata now.
+  //
   if (theElementFloat==-9999.0) { theElementFloat=-9999.5; }
   //if (mFile==0)
   //{
