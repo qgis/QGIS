@@ -1,9 +1,0 @@
-*.lo
-*.la
-*.moc.cpp
-Makefile.in
-Makefile
-.libs
-.deps
-qgsdelimitedtextpluginguibase.cpp
-qgsdelimitedtextpluginguibase.h

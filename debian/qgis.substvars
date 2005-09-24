@@ -1,1 +1,0 @@
-shlibs:Depends=libc6 (>= 2.3.2.ds1-21), libgcc1 (>= 1:4.0.0-9), libgdal1 (>= 1.2.6), libgeos2, libgsl0 (>= 1.4), libpq3 (>= 7.4), libqt3c102-mt (>= 3:3.3.4), libsqlite3-0 (>= 3.2.1), libstdc++5 (>= 1:3.3.4-1), proj (>= 4.4.1-1)
