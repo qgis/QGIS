@@ -540,6 +540,7 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
   for (unsigned int idx = 0; idx < numRings; idx++)
   {
     int nPoints = *((int*)ptr);
+
     ringTypePtr ring = new ringType(std::vector<double>(nPoints),
             std::vector<double>(nPoints));
     ptr += 4;
@@ -567,6 +568,14 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
         #endif
       */
     }
+    // If ring has fewer than two points, what is it then?
+    // Anyway, this check prevents a crash
+    if (nPoints < 1) 
+    {
+      std::cout << "Ring has only " << nPoints << " points! Skipping this ring." << std::endl;
+      continue;
+    }
+
     // Transform the points into map coordinates (and reproject if
     // necessary)
     double oldx = ring->first[0];
@@ -1000,10 +1009,12 @@ ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
 }
 }*/
 
-    ir->setTitle(name());
-if (featureCount == 1)
+    ir->setTitle(name() + " - " + QString::number(featureCount) + tr(" features found"));
+if (featureCount == 1) 
+{
   ir->showAllAttributes();
-
+  ir->setTitle(name() + " - " + tr(" 1 feature found") );
+}
 if (featureCount == 0)
 {
   //QMessageBox::information(0, tr("No features found"), tr("No features were found in the active layer at the point you clicked"));

@@ -23,6 +23,7 @@ email                : sherman at mrcc.com
 #include <limits>
 #endif
 #include <cstring>
+#include <assert.h>
 
 /** \class QgsFeature
  * \brief Encapsulates a spatial feature with attributes
@@ -977,7 +978,7 @@ geos::Geometry* QgsFeature::geosGeometry() const
 	    for (kdx = 0; kdx < *numPolygons; kdx++)
 	    {
 #ifdef QGISDEBUG
-		//qWarning("Polygon nr: "+QString::number(kdx));
+              //qWarning("Polygon nr: "+QString::number(kdx));
 #endif
 		geos::LinearRing* outer=0;
 		std::vector<geos::Geometry*>* inner=new std::vector<geos::Geometry*>;
@@ -990,7 +991,7 @@ geos::Geometry* QgsFeature::geosGeometry() const
 		for (idx = 0; idx < *numRings; idx++)
 		{
 #ifdef QGISDEBUG
-		    //qWarning("Ring nr: "+QString::number(idx));
+                  //qWarning("Ring nr: "+QString::number(idx));
 #endif
 		    geos::DefaultCoordinateSequence* sequence=new geos::DefaultCoordinateSequence();
 		    // get number of points in the ring
@@ -1004,19 +1005,28 @@ geos::Geometry* QgsFeature::geosGeometry() const
 			y = (double *) ptr;
 			ptr += sizeof(double);
 #ifdef QGISDEBUG
-			//qWarning("adding coordinate pair "+QString::number(*x)+"//"+QString::number(*y));
+			//qWarning("adding coordinate pair "+QString::number(*x, 'f')+"//"+QString::number(*y, 'f'));
 #endif
 			sequence->add(geos::Coordinate(*x,*y));
 		    }
-		    geos::LinearRing* ring=geometryFactory->createLinearRing(sequence);
-		    if(idx==0)
-		    {
+                    try
+                    {
+                      geos::LinearRing* ring=geometryFactory->createLinearRing(sequence);
+                      if(idx==0)
+		      {
 			outer=ring;
-		    }
-		    else
-		    {
+		      }
+		      else
+		      {
 			inner->push_back(ring);
-		    }
+		      }
+                    }
+                    catch(...)
+                    {
+                      std::cout << "Ring has " << *nPoints << " points! Problem with this ring." << std::endl;
+                      continue;
+                    }
+
 		}
 	    
 		polygons->push_back(geometryFactory->createPolygon(outer,inner));

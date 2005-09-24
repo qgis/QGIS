@@ -381,61 +381,83 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
 
 	   if(mUseIntersect)
 	   {
-       geos::Geometry *geosGeom = 0;
-       // XXX This if/else block fixes the endian issue on 
-       //     XDR (big endian) platforms for release 0.7. This
-       //     code should be revisited to see if there is a more
-       //     efficient way to create the geos geometry and to push
-       //     the job down to QgsFeature instead of the mix we have
-       //     here. The side-effect of this fix is extremely slow
-       //     performance on when identifying or selecting multipart
-       //     features on XDR platforms.
-        if (endian() == QgsDataProvider::XDR)
-        {
-          // big endian -- use wkt method
-          geom  =  fet->GetGeometryRef();
-          char *wkt = new char[2 * f->getGeometrySize()];
-          assert(wkt != 0);
-          geom->exportToWkt(&wkt);
-          geosGeom = wktReader->read(wkt);
-        }
-        else
-        {
-          // little endian -- use QgsFeature method
-          geosGeom=f->geosGeometry();
-        }
-         assert(geosGeom != 0);
+                   geos::Geometry *geosGeom = 0;
+                   // XXX This if/else block fixes the endian issue on 
+                   //     XDR (big endian) platforms for release 0.7. This
+                   //     code should be revisited to see if there is a more
+                   //     efficient way to create the geos geometry and to push
+                   //     the job down to QgsFeature instead of the mix we have
+                   //     here. The side-effect of this fix is extremely slow
+                   //     performance on when identifying or selecting multipart
+                   //     features on XDR platforms.
+                   if (endian() == QgsDataProvider::XDR)
+                   {
+                           // big endian -- use wkt method
+                           geom  =  fet->GetGeometryRef();
+                           char *wkt = new char[2 * f->getGeometrySize()];
+                           assert(wkt != 0);
+                           geom->exportToWkt(&wkt);
+                           geosGeom = wktReader->read(wkt);
+                   }
+                   else
+                   {
+                           // little endian -- use QgsFeature method
+                           geosGeom=f->geosGeometry();
+                   }
+                   assert(geosGeom != 0);
          
-	       char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
-	       mSelectionRectangle->exportToWkt(&sWkt);  
-	       geos::Geometry *geosRect = wktReader->read(sWkt);
-         assert(geosGeom != 0);
-	       if(geosGeom->intersects(geosRect))
-	       {
+                   char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
+                   mSelectionRectangle->exportToWkt(&sWkt);  
+                   geos::Geometry *geosRect = wktReader->read(sWkt);
+                   assert(geosRect != 0);
+                   // If we get an exception from geos::nitersects, it
+                   // probably means the feature has unspoorted geometry.
+                   // Let's ignore those features for now.
 #ifdef QGISDEBUG
-		   qWarning("intersection found");
+                   // isValid() crashes...
+                   // if(!geosGeom->isValid()) std::cout << "Geos deems this geometry invalid!" << std::endl;
 #endif
-		   delete[] sWkt;
-		   delete geosGeom;
-		   break;
-	       }
-	       else
-	       {
+                   geosGeom->normalize();
+                   try
+                   {
+                           if(geosRect->intersects(geosGeom))
+                           {
 #ifdef QGISDEBUG
-		   qWarning("no intersection found");
+                                   qWarning("intersection found");
 #endif
-		   delete[] sWkt;
-		   delete geosGeom;
-		   delete f;
-		   f=0;
-	       }
-	   }
-	   else
-	   {
-	       break;
-	   }
+                                   delete[] sWkt;
+                                   delete geosGeom;
+                                   break;
+                           }
+                           else
+                           {
+#ifdef QGISDEBUG
+                                   qWarning("no intersection found");
+#endif
+                                   delete[] sWkt;
+                                   delete geosGeom;
+                                   delete f;
+                                   f=0;
+                           }
+                   }
+                   catch(...)
+                   {
+#ifdef QGISDEBUG
+                           std::cout << "Feture makes geos::intersect() vomit. Ignore."
+                                     << /*std::endl << geosGeom->toString() <<*/ std::endl;
+#endif
+                           delete[] sWkt;
+                           delete geosGeom;
+                           delete f;
+                           f=0;                           
+                   }
+           }
+           else
+           {
+                   break;
+           }
        }
-	   delete fet;
+       delete fet;
    }
    return f;
 }
