@@ -26,6 +26,8 @@ email                : t.sutton@reading.ac.uk
 #include <qdir.h>
 #include <qregexp.h>
 
+const float NO_DATA=-9999.0;
+
 ClimateDataProcessor::ClimateDataProcessor() : QObject()
 {
     std::cout << "Climate Data Processor constructor called." << std::endl;
@@ -1430,7 +1432,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanTempFileGroup->getElementVector();
       //we are using mean over year summary
       int myBlockInt = myDataProcessor.monthWithLowestValue(myFloatVector2);
-      float myFloat  = myDataProcessor.valueGivenMonth(myFloatVector,myBlockInt);
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myBlockInt) != NO_DATA)
+      {
+          myFloat  = myDataProcessor.valueGivenMonth(myFloatVector,myBlockInt);
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
@@ -1469,7 +1475,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanTempFileGroup->getElementVector();
       //we are using mean over year summary
       int myBlockInt = myDataProcessor.firstMonthOfLowestQ(myFloatVector2);
-      float myFloat  = myDataProcessor.meanOverQuarter(myFloatVector,myBlockInt);
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myBlockInt) != NO_DATA)
+      {
+         myFloat  = myDataProcessor.meanOverQuarter(myFloatVector,myBlockInt);
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
@@ -1580,7 +1590,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanTempFileGroup->getElementVector();
       //we are using mean over year summary
       int myBlockInt = myDataProcessor.monthWithHighestValue(myFloatVector2);
-      float myFloat  = myDataProcessor.valueGivenMonth(myFloatVector,myBlockInt);
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myBlockInt) != NO_DATA)
+      {
+        myFloat  = myDataProcessor.valueGivenMonth(myFloatVector,myBlockInt);
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
@@ -1619,7 +1633,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanTempFileGroup->getElementVector();
       //we are using mean over year summary
       int myCurrentBlockOfWarmestQuarterInt = myDataProcessor.firstMonthOfHighestQ(myFloatVector2);
-      float myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myCurrentBlockOfWarmestQuarterInt);
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myCurrentBlockOfWarmestQuarterInt) != NO_DATA)
+      {
+        myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myCurrentBlockOfWarmestQuarterInt);
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
@@ -1729,7 +1747,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanTempFileGroup->getElementVector();
       //we are using mean over year summary
       int myCoolestBlockInt = myDataProcessor.monthWithLowestValue(myFloatVector2);
-      float myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myCoolestBlockInt);
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myCoolestBlockInt) != NO_DATA)
+      {
+        myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myCoolestBlockInt);
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
@@ -1768,7 +1790,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanTempFileGroup->getElementVector();
       //we are using mean over year summary
       int myCoolestBlockInt = myDataProcessor.monthWithHighestValue(myFloatVector2);
-      float myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myCoolestBlockInt);
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myCoolestBlockInt) != NO_DATA)
+      {
+        myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myCoolestBlockInt);
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
@@ -2095,7 +2121,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanTempFileGroup->getElementVector();
       //we are using mean over year summary
       int myCoolestBlockInt = myDataProcessor.monthWithLowestValue(myFloatVector2);
-      float myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myCoolestBlockInt );
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myCoolestBlockInt) != NO_DATA)
+      {
+        myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myCoolestBlockInt );
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
@@ -2134,7 +2164,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanTempFileGroup->getElementVector();
       //we are using mean over year summary
       int myFirstBlockInt = myDataProcessor.firstMonthOfLowestQ(myFloatVector2);
-      float myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myFirstBlockInt );
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myFirstBlockInt) != NO_DATA)
+      {
+        myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myFirstBlockInt );
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
@@ -2173,7 +2207,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanTempFileGroup->getElementVector();
       //we are using mean over year summary
       int myHighestBlockInt = myDataProcessor.monthWithHighestValue(myFloatVector2);
-      float myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myHighestBlockInt );
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myHighestBlockInt) != NO_DATA)
+      {
+        myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myHighestBlockInt );
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
@@ -2213,7 +2251,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanTempFileGroup->getElementVector();
       //we are using mean over year summary
       int myFirstBlockInt = myDataProcessor.firstMonthOfHighestQ(myFloatVector2);
-      float myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myFirstBlockInt );
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myFirstBlockInt) != NO_DATA)
+      {
+        myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myFirstBlockInt );
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
@@ -2252,7 +2294,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanPrecipFileGroup->getElementVector();
       //we are using mean over year summary
       int myDriestBlockInt = myDataProcessor.monthWithLowestValue(myFloatVector2);
-      float myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myDriestBlockInt );
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myDriestBlockInt) != NO_DATA)
+      {
+        myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myDriestBlockInt );
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
@@ -2291,7 +2337,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanPrecipFileGroup->getElementVector();
       //we are using mean over year summary
       int myFirstBlockInt = myDataProcessor.firstMonthOfLowestQ(myFloatVector2);
-      float myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myFirstBlockInt );
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myFirstBlockInt) != NO_DATA)
+      {
+        myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myFirstBlockInt );
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
@@ -2331,7 +2381,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanPrecipFileGroup->getElementVector();
       //we are using mean over year summary
       int myWettestBlockInt = myDataProcessor.monthWithHighestValue(myFloatVector2);
-      float myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myWettestBlockInt );
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myWettestBlockInt) != NO_DATA)
+      {
+        myFloat = myDataProcessor.valueGivenMonth(myFloatVector,myWettestBlockInt );
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
@@ -2370,7 +2424,11 @@ bool ClimateDataProcessor::run()
       myFloatVector2 = meanPrecipFileGroup->getElementVector();
       //we are using mean over year summary
       int myFirstBlockInt = myDataProcessor.firstMonthOfHighestQ(myFloatVector2);
-      float myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myFirstBlockInt );
+      float myFloat=NO_DATA;
+      if (static_cast<int>(myFirstBlockInt) != NO_DATA)
+      {
+        myFloat = myDataProcessor.meanOverQuarter(myFloatVector,myFirstBlockInt );
+      }
       //write the result to our output file
       bool myResultFlag = myFileWriter->writeElement(myFloat);
       if (!myResultFlag)
