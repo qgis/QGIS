@@ -805,6 +805,14 @@ public:
     bool isSymbologyCompatible(const QgsMapLayer& other) const {return false;} //todo
 
 public slots:    
+    /**
+     * Convert this raster to another format
+     */
+    void const convertTo();
+    /**
+     * Mainly inteded for use in propogating progress updates from gdal up to the parent app.
+     **/
+    void updateProgress(int,int);
 
     /** sets whether this is in overview or not */
     void inOverview( bool );
@@ -864,7 +872,7 @@ public slots:
   */
   /* virtual */ bool writeXML_( QDomNode & layer_node, QDomDocument & doc );
 
-
+    
 private:
 
     //

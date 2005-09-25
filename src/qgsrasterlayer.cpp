@@ -63,6 +63,7 @@ wish to see edbug messages printed to stdout.
 #include "qgslegendsymbologyitem.h"
 #include "qgsrasterlayer.h"
 #include "qgsmaptopixel.h"
+#include "omggdal.h"
 
 #include <cstdio>
 #include <cmath>
@@ -3664,6 +3665,7 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
   popMenu->insertItem(myTransparencyLabel);
 
   // XXX why GUI element here?
+  // XXX Dunno who put the above comment in, but whole context menu is a gui element! TS
   mTransparencySlider = new QSlider(0,255,5,0,QSlider::Horizontal,popMenu);
   mTransparencySlider->setTickmarks(QSlider::Both);
   mTransparencySlider->setTickInterval(25);
@@ -3674,9 +3676,34 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
   popMenu->insertItem(mTransparencySlider);
 #endif
 
+  popMenu->insertItem(tr("&Convert to..."), this, SLOT(convertTo()));
 } // QgsRasterLayer::initContextMenu
 
+void const QgsRasterLayer::convertTo()
+{
+  //qDebug("Converting to tiff!");
+  OmgGdal myOmgGdal;
+  //connect(&myOmgGdal, SIGNAL(updateProgress(int, int )), this, SLOT(updateProgress(int, int )));
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
+  // Iterate through file list and process
+  //if (cboOutputFileType->currentText()=="GeoTiff")
+  //{
+    myOmgGdal.convert(source(), "/tmp/", OmgGdal::GeoTiff);
+  //}
+  //else
+  //{
+  //  myOmgGdal.convert(layerName, "/tmp", OmgGdal::ArcInfoAscii);
+  //}
+  emit setProgress (0,0);
+  QApplication::restoreOverrideCursor();
+}
+
+void QgsRasterLayer::updateProgress(int theProgress, int theMax)
+{
+  //simply propogate it on!
+  emit setProgress (theProgress,theMax);
+}
 
 void QgsRasterLayer::popupTransparencySliderMoved(int theInt)
 {
