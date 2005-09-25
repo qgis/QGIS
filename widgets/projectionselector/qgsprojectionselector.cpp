@@ -568,6 +568,7 @@ void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem )
 {
   QString myDescription = tr("QGIS SRSID: ") + QString::number(getCurrentSRSID()) +"\n";
   myDescription        += tr("PostGIS SRID: ") + QString::number(getCurrentSRID()) +"\n";
+  emit sridSelected(QString::number(getCurrentSRSID()));
   QString myProjString = getCurrentProj4String();
   if (!myProjString.isEmpty())
   {
