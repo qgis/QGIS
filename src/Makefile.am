@@ -42,6 +42,7 @@ if !NO_UIC_IMPLEMENTATIONS
 	$(UIC) -o $@ -impl $*.uic.h $<
 endif
 
+
 ## main app
 if HAVE_QTMAC
 # Qt/Mac binary must be in MacOS directory within bundle, not in bin subdirectory
@@ -52,7 +53,9 @@ else
 bin_PROGRAMS = qgis
 endif
 
+
 ## ancillary library for plug-ins
+## Changed by Tim so lib builds first then app
 lib_LTLIBRARIES = libqgis.la
 
 qgisHEADERS =	\
@@ -121,7 +124,8 @@ qgisHEADERS =	\
 		splashscreen.h				\
 		qgslayerprojectionselector.h \
 		$(WIDGETPATH)/projectionselector/qgsprojectionselector.h \
-		splashscreen.h				
+		splashscreen.h				\
+		omggdal.h
 
 
 ## qt designer files for all the GUI stuff
@@ -227,7 +231,8 @@ qgis_MOC =	\
 		qgssisydialog.moc.cpp			\
 		qgsuvaldialog.moc.cpp			\
 		splashscreen.moc.cpp		\
-		$(WIDGETPATH)/projectionselector/qgsprojectionselector.moc.cpp
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.moc.cpp \
+		omggdal.moc.cpp
 
 qgis_SOURCES =	main.cpp			\
 		qgisiface.cpp			\
@@ -287,7 +292,9 @@ qgis_SOURCES =	main.cpp			\
 		qgssymbologyutils.cpp		\
 		qgsuvaldialog.cpp		\
 		splashscreen.cpp \
-		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp \
+		omggdal.cpp
+		
 
 AM_YFLAGS       = -d
 qgis_YACC       = qgssearchstringparser.h
@@ -394,7 +401,8 @@ libqgisHEADERS =							\
 		qgsuniquevalrenderer.h				\
 		qgsvectordataprovider.h				\
 		qgsvectorfilewriter.h				\
-		qgsvectorlayer.h
+		qgsvectorlayer.h \
+		omggdal.h
 
 ## qt designer files for all the GUI stuff
 
@@ -452,7 +460,8 @@ libqgis_la_MOC =							\
 		qgsrasterlayer.moc.cpp				\
 		qgsrunprocess.moc.cpp				\
 		qgsvectordataprovider.moc.cpp		\
-		qgsvectorlayer.moc.cpp
+		qgsvectorlayer.moc.cpp \
+		omggdal.moc.cpp 
 
 libqgis_la_SOURCES =						\
 		qgisapp.cpp							\
@@ -511,7 +520,8 @@ libqgis_la_SOURCES =						\
 		qgsuniquevalrenderer.cpp			\
 		qgsvectordataprovider.cpp			\
 		qgsvectorfilewriter.cpp				\
-		qgsvectorlayer.cpp
+		qgsvectorlayer.cpp \
+		omggdal.h
 
 if HAVE_POSTGRESQL
 libqgis_la_SOURCES += $(postgresLIBSOURCES)
