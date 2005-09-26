@@ -54,7 +54,7 @@ pggeoprocessingplugin_la_SOURCES =  qgspggeoprocessing.cpp \
 nodist_pggeoprocessingplugin_la_SOURCES = $(pggeoprocessing_MOC)
 
 # UI dependencies			
-qgsdlgpgbufferbase..cpp: qgsdlgpgbufferbase.h qgsdlgpgbufferbase.ui
+qgsdlgpgbufferbase.cpp: qgsdlgpgbufferbase.h qgsdlgpgbufferbase.ui
 qgsdlgpgbufferbase.h: qgsdlgpgbufferbase.ui
 
 
