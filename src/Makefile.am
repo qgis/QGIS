@@ -459,7 +459,6 @@ libqgis_la_MOC =							\
 		qgspointstylewidget.moc.cpp			\
 		qgsrasterlayer.moc.cpp				\
 		qgsrunprocess.moc.cpp				\
-#		qgsvectordataprovider.moc.cpp		\
 		qgsvectorlayer.moc.cpp \
 		omggdal.moc.cpp 
 
