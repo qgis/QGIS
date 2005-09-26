@@ -20,20 +20,15 @@ plugin_LTLIBRARIES = gpsimporterplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-if HAVE_QT3
-%.uic.h: %.ui 
+%.h: %.ui 
 	$(UIC) -o $@ $<
-endif
-
 if HAVE_QT4
-%.uic.h: %.ui 
-	$(UIC) -o $@ $<
 	../../tools/qgis-qt3to4.pl -uic $@
 endif
 
 if !NO_UIC_IMPLEMENTATIONS
-%.uic.cpp: %.ui
-	$(UIC) -o $@ -impl $*.uic.h $<
+%.cpp: %.ui
+	$(UIC) -o $@ -impl $*.h $<
 endif
 
 # %.h: %.ui
@@ -62,10 +57,10 @@ plugin_MOC = \
 	qgsgpsdevicedialog.moc.cpp
 
 plugin_UI = \
-	qgsgpspluginguibase.uic.h \
-	qgsgpspluginguibase.uic.cpp \
-	qgsgpsdevicedialogbase.uic.h \
-	qgsgpsdevicedialogbase.uic.cpp
+	qgsgpspluginguibase.h \
+	qgsgpspluginguibase.cpp \
+	qgsgpsdevicedialogbase.h \
+	qgsgpsdevicedialogbase.cpp
 
 plugin_UIC = \
 	qgsgpspluginguibase.ui \

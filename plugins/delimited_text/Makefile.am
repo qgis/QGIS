@@ -16,14 +16,9 @@ plugindir = ${pkglibdir}
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-if HAVE_QT3
 %.uic.h: %.ui 
 	$(UIC) -o $@ $<
-endif
-
 if HAVE_QT4
-%.uic.h: %.ui 
-	$(UIC) -o $@ $<
 	../../tools/qgis-qt3to4.pl -uic $@
 endif
 
@@ -57,6 +52,9 @@ delimitedtextplugin_la_SOURCES =  qgsdelimitedtextplugin.cpp	\
 				       qgsdelimitedtextplugingui.h	\
 				       $(plugin_UI)			\
 				       $(plugin_MOC)
+
+qgsdelimitedtextpluginguibase.uic.cpp: qgsdelimitedtextpluginguibase.uic.h qgsdelimitedtextpluginguibase.ui
+
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
