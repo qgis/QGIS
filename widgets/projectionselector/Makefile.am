@@ -18,23 +18,15 @@ endif
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.moc.uic.cpp: %.uic.h
-	$(MOC) -o $@ $<
-
-if HAVE_QT3
-%.uic.h: %.ui 
+%.h: %.ui 
 	$(UIC) -o $@ $<
-endif
-
 if HAVE_QT4
-%.uic.h: %.ui 
-	$(UIC) -o $@ $<
 	../tools/qgis-qt3to4.pl -uic $@
 endif
 
 if !NO_UIC_IMPLEMENTATIONS
-%.uic.cpp: %.ui
-	$(UIC) -o $@ -impl $*.uic.h $<
+%.cpp: %.ui
+	$(UIC) -o $@ -impl $*.h $<
 endif
 
 # %.h: %.ui
@@ -50,12 +42,11 @@ plugin_LTLIBRARIES = libqgsprojectionselector.la
 plugin_MOC = qgsprojectionselector.moc.cpp		\
 	     qgsprojectionselectorbase.moc.cpp
 
-plugin_UI = qgsprojectionselectorbase.uic.h \
-	    qgsprojectionselectorbase.uic.cpp
+plugin_UI = qgsprojectionselectorbase.h \
+	    qgsprojectionselectorbase.cpp
 
 plugin_UIC = qgsprojectionselectorbase.ui \
-	qgsprojectionselectorbase.ui.h \
-	qgsprojectionselectorbase.uic.h
+	qgsprojectionselectorbase.h 
 
 libqgsprojectionselector_la_SOURCES =  qgsprojectionselector.cpp	\
 			         $(plugin_UI)			\
