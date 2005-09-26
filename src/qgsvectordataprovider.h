@@ -21,13 +21,13 @@ class QgsGeometry;
 //Qt includes
 #include <set>
 #include <map>
+#include <vector>
 // XXX no signals or slots so not needed #include <qobject.h>
 #include <qtextcodec.h>
 
 //QGIS Includes
 #include <qgsdataprovider.h>
 #include <qgsspatialrefsys.h>
-
 #include <qgssearchstring.h>
 
 /** Base class for vector data providers

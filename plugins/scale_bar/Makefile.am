@@ -17,23 +17,15 @@ plugin_LTLIBRARIES = libScaleBarplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-if HAVE_QT3
 %.h: %.ui 
 	$(UIC) -o $@ $<
-
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
-endif
-
 if HAVE_QT4
-%.uic.h: %.ui 
-	$(UIC) -o $@ $<
 	../../tools/qgis-qt3to4.pl -uic $@
 endif
 
 if !NO_UIC_IMPLEMENTATIONS
-%.uic.cpp: %.ui
-	$(UIC) -o $@ -impl $*.uic.h $<
+%.cpp: %.ui
+	$(UIC) -o $@ -impl $*.h $<
 endif
 
 # %.h: %.ui
@@ -53,26 +45,13 @@ plugin_MOC = plugin.moc.cpp \
 	     plugingui.moc.cpp \
 	     pluginguibase.moc.cpp
 
-if HAVE_QT3
 plugin_UI = pluginguibase.h \
 	    pluginguibase.cpp 
-endif
-
-if HAVE_QT4
-plugin_UI = pluginguibase.uic.h \
-	    pluginguibase.uic.cpp 
-endif
 
 plugin_UIC = pluginguibase.ui
 
 # UI dependencies      
-if HAVE_QT3
 pluginguibase.cpp: pluginguibase.h pluginguibase.ui
-endif
-
-if HAVE_QT4
-pluginguibase.uic.cpp: pluginguibase.uic.h pluginguibase.ui
-endif
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 

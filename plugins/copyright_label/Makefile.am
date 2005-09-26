@@ -17,20 +17,15 @@ plugin_LTLIBRARIES = copyrightlabelplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-if HAVE_QT3
-%.uic.h: %.ui 
+%.h: %.ui 
 	$(UIC) -o $@ $<
-endif
-
 if HAVE_QT4
-%.uic.h: %.ui 
-	$(UIC) -o $@ $<
 	../../tools/qgis-qt3to4.pl -uic $@
 endif
 
 if !NO_UIC_IMPLEMENTATIONS
-%.uic.cpp: %.ui
-	$(UIC) -o $@ -impl $*.uic.h $<
+%.cpp: %.ui
+	$(UIC) -o $@ -impl $*.h $<
 endif
 
 # %.h: %.ui
@@ -50,13 +45,13 @@ plugin_MOC = plugin.moc.cpp \
 	     plugingui.moc.cpp \
 	     pluginguibase.moc.cpp
 
-plugin_UI = pluginguibase.uic.h \
-	    pluginguibase.uic.cpp 
+plugin_UI = pluginguibase.h \
+	    pluginguibase.cpp 
 
 plugin_UIC = pluginguibase.ui
 
 # UI dependencies      
-pluginguibase.uic.cpp: pluginguibase.uic.h pluginguibase.ui
+pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 

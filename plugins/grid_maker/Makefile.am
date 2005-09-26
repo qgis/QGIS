@@ -25,20 +25,15 @@ bin_PROGRAMS = gridmaker
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-if HAVE_QT3
-%.uic.h: %.ui 
+%.h: %.ui 
 	$(UIC) -o $@ $<
-endif
-
 if HAVE_QT4
-%.uic.h: %.ui 
-	$(UIC) -o $@ $<
 	../../tools/qgis-qt3to4.pl -uic $@
 endif
 
 if !NO_UIC_IMPLEMENTATIONS
-%.uic.cpp: %.ui
-	$(UIC) -o $@ -impl $*.uic.h $<
+%.cpp: %.ui
+	$(UIC) -o $@ -impl $*.h $<
 endif
 
 # %.h: %.ui
@@ -67,13 +62,13 @@ plugin_MOC = plugin.moc.cpp \
 	plugingui.moc.cpp \
 	pluginguibase.moc.cpp
 
-plugin_UI = pluginguibase.uic.h \
-	    pluginguibase.uic.cpp 
+plugin_UI = pluginguibase.h \
+	    pluginguibase.cpp 
 
 plugin_UIC = pluginguibase.ui
 
 # UI dependencies      
-pluginguibase.uic.cpp: pluginguibase.uic.h pluginguibase.ui
+pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
@@ -94,7 +89,7 @@ gridmaker_SOURCES = main.cpp \
 	dbfopen.c \
 	shapefile.h \
 	plugingui.cpp \
-	pluginguibase.uic.cpp \
+	pluginguibase.cpp \
 	$(standalone_MOC) 
 
 gridmaker_LDADD = $(QT_LDADD) 
@@ -104,8 +99,8 @@ gridmaker_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PKGDATAPATH)
 standalone_MOC = plugingui.moc.cpp \
 	     pluginguibase.moc.cpp 
 
-standalone_UI = pluginguibase.uic.h \
-	    pluginguibase.uic.cpp 
+standalone_UI = pluginguibase.h \
+	    pluginguibasepp 
 
 CLEANFILES = $(BUILT_SOURCES)
 
@@ -114,8 +109,8 @@ CLEANFILES = $(BUILT_SOURCES)
 ##
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm \
-pluginguibase.uic.h \
-pluginguibase.ui.h \
+pluginguibase.h \
+pluginguibase.h \
 plugingui.h \
 plugin.h \
 utils.h
