@@ -928,8 +928,8 @@ The GRASS database is the top-level directory in this tree structure.</string>
                     <number>0</number>
                 </property>
                 <property name="text">
-                    <string>The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. 
-&lt;br&gt;It is possible to change the default location region later.</string>
+                    <string>The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. &lt;br&gt;
+It is possible to change the default location region later.</string>
                 </property>
             </widget>
         </grid>
