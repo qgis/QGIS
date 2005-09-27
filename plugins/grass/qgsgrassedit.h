@@ -105,6 +105,13 @@ public:
     QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
 	           QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
 
+    QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
+                   QgsGrassProvider *provider,
+	           QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+
+    // Shared by constructors
+    void init ();
+
     //! Destructor
     ~QgsGrassEdit();
 
@@ -369,6 +376,9 @@ private:
     
     // Set prompt for mouse buttons
     void setCanvasPropmt ( QString left, QString mid, QString rigth);
+
+    // New map, add new layers on exit
+    bool mNewMap;
 };
 
 #endif // QGSGRASSEDIT_H

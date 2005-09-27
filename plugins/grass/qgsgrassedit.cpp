@@ -75,6 +75,7 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
   mSuspend = false;
   mQgisApp = qgisApp;
   mIface = iface;
+  mNewMap = false;
 
   mCanvas = mIface->getMapCanvas();
 
@@ -104,17 +105,47 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
     QMessageBox::warning( 0, "Warning", "The selected vector is not in GRASS format." );
     return;
   }
+   
+  std::cerr << "Vector layer type: " << vector->providerType().local8Bit() << std::endl;
 
   //TODO dynamic_cast ?
   mProvider = (QgsGrassProvider *) vector->getDataProvider();
 
+  init();
+}
+
+QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
+    QgsGrassProvider *provider,
+    QWidget * parent, const char * name, WFlags f )
+:QgsGrassEditBase ( parent, name, f )
+{
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrassEdit()" << std::endl;
+#endif
+
+  mRunning = true;
+  mValid = false;
+  mTool = QgsGrassEdit::NONE;
+  mSuspend = false;
+  mQgisApp = qgisApp;
+  mIface = iface;
+  mNewMap = true;
+
+  mCanvas = mIface->getMapCanvas();
+
+  mProvider = provider;
+
+  init();
+}
+
+void QgsGrassEdit::init()
+{
   if ( !(mProvider->isGrassEditable()) ) {
     QMessageBox::warning( 0, "Warning", "You are not owner of the mapset, "
         "cannot open the vector for editing." );
     return;
   }
 
-  std::cerr << "Vector layer type: " << vector->providerType().local8Bit() << std::endl;
   if ( !(mProvider->startEdit()) ) {
     QMessageBox::warning( 0, "Warning", "Cannot open vector for update." );
     return;
@@ -688,6 +719,36 @@ void QgsGrassEdit::closeEdit(void)
   mProvider->closeEdit();
 
   hide();
+
+  // Add new layers
+  if ( mNewMap )
+  {
+     QString uri = mProvider->getDataSourceUri();
+     QChar sep = QDir::separator();
+
+     QStringList split = QStringList::split ( sep, uri );
+     split.pop_back(); // layer
+     QString map = split.last();
+     split.pop_back(); // map
+     QString mapset = split.last();
+
+     QStringList layers = QgsGrassSelect::vectorLayers ( 
+           QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(),
+           mapset, map );
+
+     for ( int i = 0; i < layers.count(); i++ )
+     {
+         uri = QgsGrass::getDefaultGisdbase() + "/"
+               + QgsGrass::getDefaultLocation() + "/"
+               + mapset + "/" + map + "/" + layers[i]; 
+
+#ifdef QGISDEBUG
+         std::cerr << "layer = " << layers[i] << std::endl;
+         std::cerr << "uri = " << uri << std::endl;
+#endif
+         mIface->addVectorLayer( uri, layers[i], "grass");
+     }
+  }
 
   delete this; 
 }
