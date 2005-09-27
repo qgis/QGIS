@@ -123,19 +123,19 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     QDomElement qDocElem = qDoc.documentElement();
 
     // Read GRASS module description
-    QString gisBase = getenv("GISBASE"); // TODO read from QgsGrassPlugin
     mXName = qDocElem.attribute("module");
-    //mXPath = gisBase + "/bin/" + mXName;
     QProcess *process = new QProcess( this );
     process->addArgument( mXName );
     process->addArgument( "--interface-description" );
-    if ( !process->start() ) {
+
+    if ( !process->start( ) ) {
 	QMessageBox::warning( 0, "Warning", "Cannot start module " + mXName );
 	return;
     }
     while ( process->isRunning () ) { // TODO: check time, if it is not running too long
     }
     QByteArray gDescArray = process->readStdout();
+    QByteArray errArray = process->readStderr();
     delete process;
 
     QDomDocument gDoc ( "task" );
@@ -143,6 +143,8 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
 	QString errmsg = "Cannot read module description (" + mXName + "):\n" + err + "\nat line "
 	                 + QString::number(line) + " column " + QString::number(column);
 	std::cerr << errmsg.local8Bit() << std::endl;
+	std::cerr << gDescArray << std::endl;
+	std::cerr << errArray << std::endl;
 	QMessageBox::warning( 0, "Warning", errmsg );
 	return;
     }
@@ -210,6 +212,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     layout->addItem ( si );
 
     // Create manual if available
+    QString gisBase = getenv("GISBASE");
     QString manPath = gisBase + "/docs/html/" + mXName + ".html";
     QFile manFile ( manPath );
     if ( manFile.exists() ) {

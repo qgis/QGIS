@@ -21,18 +21,23 @@ endif
 
 plugindir = ${pkglibdir}
 
+grassdatadir = ${pkgdatadir}/grass/
+grassdata_DATA = *.gml
+
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui 
+%.uic.h: %.ui
 	$(UIC) -o $@ $<
 
+%.h: %.ui 
+	$(UIC) -o $@ $<
 if HAVE_QT4
 	../../tools/qgis-qt3to4.pl -uic $@
 endif
 
 if !NO_UIC_IMPLEMENTATIONS
-%.cpp: %.ui
+%.uic.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
 endif
 
@@ -46,30 +51,35 @@ plugin_LTLIBRARIES = grassplugin.la
 
 plugin_MOC = qgsgrassplugin.moc.cpp \
 	     qgsgrassselectbase.moc.cpp \
+	     qgsgrassselect.moc.cpp \
 	     qgsgrasseditbase.moc.cpp \
 	     qgsgrassedit.moc.cpp \
 	     qgsgrasstoolsbase.moc.cpp \
 	     qgsgrasstools.moc.cpp \
 	     qgsgrassmodulebase.moc.cpp \
 	     qgsgrassmodule.moc.cpp \
+	     qgsgrassnewmapsetbase.moc.cpp \
+	     qgsgrassnewmapset.moc.cpp \
 	     qgsgrassattributesbase.moc.cpp \
 	     qgsgrassattributes.moc.cpp \
 	     qgsgrassregionbase.moc.cpp \
 	     qgsgrassregion.moc.cpp
 
 
-plugin_UI = qgsgrassselectbase.h \
-	    qgsgrassselectbase.cpp \
-	    qgsgrasseditbase.h \
-	    qgsgrasseditbase.cpp \
-	    qgsgrasstoolsbase.h \
-	    qgsgrasstoolsbase.cpp \
-	    qgsgrassmodulebase.h \
-	    qgsgrassmodulebase.cpp \
-	    qgsgrassattributesbase.h \
-	    qgsgrassattributesbase.cpp \
-	    qgsgrassregionbase.h \
-	    qgsgrassregionbase.cpp 
+plugin_UI = qgsgrassselectbase.uic.h \
+	    qgsgrassselectbase.uic.cpp \
+	    qgsgrasseditbase.uic.h \
+	    qgsgrasseditbase.uic.cpp \
+	    qgsgrasstoolsbase.uic.h \
+	    qgsgrasstoolsbase.uic.cpp \
+	    qgsgrassmodulebase.uic.h \
+	    qgsgrassmodulebase.uic.cpp \
+	    qgsgrassnewmapsetbase.uic.h \
+	    qgsgrassnewmapsetbase.uic.cpp \
+	    qgsgrassattributesbase.uic.h \
+	    qgsgrassattributesbase.uic.cpp \
+	    qgsgrassregionbase.uic.h \
+	    qgsgrassregionbase.uic.cpp 
 
 plugin_UIC = qgsgrassselectbase.ui \
 	     qgsgrassselectbase.ui.h \
@@ -77,6 +87,8 @@ plugin_UIC = qgsgrassselectbase.ui \
 	     qgsgrasseditbase.ui.h \
 	     qgsgrasstoolsbase.ui \
 	     qgsgrassmodulebase.ui \
+	     qgsgrassnewmapsetbase.ui \
+	     qgsgrassnewmapsetbase.ui.h \
 	     qgsgrassattributesbase.ui \
 	     qgsgrassattributesbase.ui.h \
 	     qgsgrassregionbase.ui 
@@ -91,6 +103,8 @@ grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 			 qgsgrasstools.h \
 			 qgsgrassmodule.cpp \
 			 qgsgrassmodule.h \
+			 qgsgrassnewmapset.cpp \
+			 qgsgrassnewmapset.h \
 			 qgsgrassattributes.cpp \
 			 qgsgrassattributes.h \
 			 qgsgrassregion.cpp \
@@ -103,18 +117,20 @@ grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 nodist_grassplugin_la_SOURCES = $(plugin_MOC)
 
 # UI dependencies      
-qgsgrassselectbase.cpp: qgsgrassselectbase.h qgsgrassselectbase.ui 
-qgsgrassselectbase.h: qgsgrassselectbase.ui
-qgsgrasseditbase.cpp: qgsgrasseditbase.h qgsgrasseditbase.ui
-qgsgrasseditbase.h: qgsgrasseditbase.ui
-qgsgrasstoolsbase.cpp: qgsgrasstoolsbase.h qgsgrasstoolsbase.ui
-qgsgrasstoolsbase.h: qgsgrasstoolsbase.ui
-qgsgrassmodulebase.cpp: qgsgrassmodulebase.h qgsgrassmodulebase.ui
-qgsgrassmodulebase.h: qgsgrassmodulebase.ui
-qgsgrassattributesbase.cpp: qgsgrassattributesbase.h qgsgrassattributesbase.ui
-qgsgrassattributesbase.h: qgsgrassattributesbase.ui
-qgsgrassregionbase.cpp: qgsgrassregionbase.h qgsgrassregionbase.ui
-qgsgrassregionbase.h: qgsgrassregionbase.ui
+qgsgrassselectbase.uic.cpp: qgsgrassselectbase.uic.h qgsgrassselectbase.ui 
+qgsgrassselectbase.uic.h: qgsgrassselectbase.ui
+qgsgrasseditbase.uic.cpp: qgsgrasseditbase.uic.h qgsgrasseditbase.ui
+qgsgrasseditbase.uic.h: qgsgrasseditbase.ui
+qgsgrasstoolsbase.uic.cpp: qgsgrasstoolsbase.uic.h qgsgrasstoolsbase.ui
+qgsgrasstoolsbase.uic.h: qgsgrasstoolsbase.ui
+qgsgrassmodulebase.uic.cpp: qgsgrassmodulebase.uic.h qgsgrassmodulebase.ui
+qgsgrassmodulebase.uic.h: qgsgrassmodulebase.ui
+qgsgrassnewmapsetbase.uic.cpp: qgsgrassnewmapsetbase.uic.h qgsgrassnewmapsetbase.ui
+qgsgrassnewmapsetbase.uic.h: qgsgrassnewmapsetbase.ui
+qgsgrassattributesbase.uic.cpp: qgsgrassattributesbase.uic.h qgsgrassattributesbase.ui
+qgsgrassattributesbase.uic.h: qgsgrassattributesbase.ui
+qgsgrassregionbase.uic.cpp: qgsgrassregionbase.uic.h qgsgrassregionbase.ui
+qgsgrassregionbase.uic.h: qgsgrassregionbase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
@@ -131,4 +147,5 @@ EXTRA_DIST = $(plugin_UIC) \
 	grass_edit.xpm \
 	grass_region.xpm \
 	grass_region_edit.xpm \
-	grass_tools.xpm
+	grass_tools.xpm \
+	$(grassdata_DATA)
