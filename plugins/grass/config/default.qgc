@@ -16,24 +16,38 @@
 		<grass name="v.select.overlap"/>
 		<grass name="v.extract.where"/>
 	</section>
+	<section label="Delaunay triangulation, Voronoi diagram and convex hull">
+		<grass name="v.delaunay.line"/>
+		<grass name="v.delaunay.area"/>
+		<grass name="v.voronoi.line"/>
+		<grass name="v.voronoi.area"/>
+		<grass name="v.hull"/>
+	</section>
+	<section label="Density of points">
+		<grass name="v.neighbors"/>
+		<grass name="v.kernel"/>
+	</section>
+	<grass name="v.random"/>
+	<grass name="v.mkgrid.region"/>
+	<grass name="v.in.region"/>
+	<section label="Convert a vector to raster">
+		<grass name="v.to.rast.constant"/>
+	</section>
 	<section label="Geomorphology">
 		<grass name="r.slope.aspect.slope"/>
 		<grass name="r.slope.aspect.aspect"/>
 	</section>
-	<section label="Convert a vector to raster">
-		<grass name="v.to.rast.constant"/>
+	<section label="Set raster color table">
+		<grass name="r.colors"/>
 	</section>
 	<section label="Convert a raster to vector">
 		<grass name="r.to.vect.point"/>
 		<grass name="r.to.vect.line"/>
 		<grass name="r.to.vect.area"/>
 	</section>
-	<section label="Set raster color table">
-		<grass name="r.colors"/>
-	</section>
-	<section label="Visualization">
-		<grass name="nviz"/>
-	</section>
+        <section label="Visualization">
+                <grass name="nviz"/>
+        </section>
 	<section label="General">
 		<grass name="g.gisenv"/>
 	</section>
