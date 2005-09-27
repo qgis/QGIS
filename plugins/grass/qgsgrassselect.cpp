@@ -305,77 +305,18 @@ void QgsGrassSelect::setLayers()
     if (type != VECTOR ) return;
     if ( emap->count() < 1 ) return;
 
-    // Set location
-    QgsGrass::setLocation ( egisdbase->text(), elocation->currentText() );
-
-    /* Open vector */
-    QgsGrass::resetError();
-    Vect_set_open_level (2);
-    struct Map_info map;
-    int level = Vect_open_old_head (&map, (char *) emap->currentText().ascii(), 
-	                            (char *) emapset->currentText().ascii());
-
-    if ( QgsGrass::getError() == QgsGrass::FATAL ) {
-	std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage().local8Bit() << std::endl;
-	return;
-    }
-
-    if ( level < 2 ) {
-        std::cerr << "Cannot open vector on level 2" << std::endl;
-	QMessageBox::warning( 0, "Warning", "Cannot open vector on level 2 (topology not available)." );
-	return;
-    }
-
-    #ifdef QGISDEBUG
-    std::cerr << "GRASS vector successfully opened" << std::endl;
-    #endif
-
+    QStringList layers = vectorLayers ( egisdbase->text(),
+              elocation->currentText(), emapset->currentText(),
+              emap->currentText().ascii() );
+    
     int idx = 0;
     int sel = -1;
-
-    // Get layers
-    int ncidx = Vect_cidx_get_num_fields ( &map );
-
-    for ( int i = 0; i < ncidx; i++ ) {
-	int field = Vect_cidx_get_field_number ( &map, i);
-	QString fs;
-	fs.sprintf("%d",field);
-
-	/* Points */
-	int npoints = Vect_cidx_get_type_count ( &map, field, GV_POINT);
-	if ( npoints > 0 ) {
-	    QString l = fs + "_point";
-	    elayer->insertItem ( l, -1 );
-	    if ( l == lastLayer ) sel = idx;
-	    idx++;
-	}
-
-	/* Lines */
-	/* Lines without category appears in layer 0, but not boundaries */
-	int tp;
-	if ( field == 0 ) 
-	    tp = GV_LINE;
-	else
-	    tp = GV_LINE | GV_BOUNDARY;
-	
-	int nlines = Vect_cidx_get_type_count ( &map, field, tp);
-	if ( nlines > 0 ) {
-	    QString l = fs + "_line";
-	    elayer->insertItem ( l, -1 );
-	    if ( l == lastLayer ) sel = idx;
-	    idx++;
-	}
-
-	/* Polygons */
-	int nareas = Vect_cidx_get_type_count ( &map, field, GV_AREA);
-	if ( nareas > 0 ) {
-	    QString l = fs + "_polygon";
-	    elayer->insertItem ( l, -1 );
-	    if ( l == lastLayer ) sel = idx;
-	    idx++;
-	}
+    for ( int i = 0; i < layers.count(); i++ ) 
+    {
+	elayer->insertItem ( layers[i], -1 );
+	if ( layers[i] == lastLayer ) sel = idx;
+	idx++;
     }
-    Vect_close ( &map );
 	
     if ( idx >= 0 ) {
         elayer->setCurrentItem(sel);
@@ -389,6 +330,79 @@ void QgsGrassSelect::setLayers()
 	elayer->setDisabled(false);
     }
 }
+
+QStringList QgsGrassSelect::vectorLayers ( QString gisdbase,
+          QString location, QString mapset, QString mapName )
+{
+    QStringList list;
+
+    // Set location
+    QgsGrass::setLocation ( gisdbase, location);
+
+    /* Open vector */
+    QgsGrass::resetError();
+    Vect_set_open_level (2);
+    struct Map_info map;
+    int level = Vect_open_old_head (&map, (char *) mapName.ascii(), 
+	                            (char *) mapset.ascii());
+
+    if ( QgsGrass::getError() == QgsGrass::FATAL ) {
+	std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage().local8Bit() << std::endl;
+	return list;
+    }
+
+    if ( level < 2 ) {
+        std::cerr << "Cannot open vector on level 2" << std::endl;
+	QMessageBox::warning( 0, "Warning", "Cannot open vector on level 2 (topology not available)." );
+	return list;
+    }
+
+    #ifdef QGISDEBUG
+    std::cerr << "GRASS vector successfully opened" << std::endl;
+    #endif
+
+
+    // Get layers
+    int ncidx = Vect_cidx_get_num_fields ( &map );
+
+    for ( int i = 0; i < ncidx; i++ ) {
+	int field = Vect_cidx_get_field_number ( &map, i);
+	QString fs;
+	fs.sprintf("%d",field);
+
+	/* Points */
+	int npoints = Vect_cidx_get_type_count ( &map, field, GV_POINT);
+	if ( npoints > 0 ) {
+	    QString l = fs + "_point";
+            list.append ( l );
+	}
+
+	/* Lines */
+	/* Lines without category appears in layer 0, but not boundaries */
+	int tp;
+	if ( field == 0 ) 
+	    tp = GV_LINE;
+	else
+	    tp = GV_LINE | GV_BOUNDARY;
+	
+	int nlines = Vect_cidx_get_type_count ( &map, field, tp);
+	if ( nlines > 0 ) {
+	    QString l = fs + "_line";
+            list.append ( l );
+	}
+
+	/* Polygons */
+	int nareas = Vect_cidx_get_type_count ( &map, field, GV_AREA);
+	if ( nareas > 0 ) {
+	    QString l = fs + "_polygon";
+            list.append ( l );
+	}
+    }
+    Vect_close ( &map );
+
+    return list;
+}
+
 void QgsGrassSelect::getGisdbase()
 {
     

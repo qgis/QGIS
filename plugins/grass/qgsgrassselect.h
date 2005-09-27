@@ -54,6 +54,9 @@ public:
     //! Reset combobox of layers for current Gisdbase + Location + Map
     void setLayers (void );
 
+    //! Get list of vector layer
+    static QStringList vectorLayers ( QString, QString, QString, QString );
+
     QString  gisdbase;
     QString  location;
     QString  mapset;
