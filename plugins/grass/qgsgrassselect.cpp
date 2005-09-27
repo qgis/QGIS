@@ -37,6 +37,9 @@ extern "C" {
 
 QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
 {
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrassSelect() type = " << type << std::endl;
+#endif
   if ( first ) {
     if ( QgsGrass::activeMode() ) {
       lastGisdbase = QgsGrass::getDefaultGisdbase();
@@ -60,6 +63,7 @@ QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
     {
 	case QgsGrassSelect::VECTOR:
 	    setCaption ( "Add GRASS Vector Layer" );
+            break;
 
 	case QgsGrassSelect::RASTER:
 	    /* Remove layer combo box */
@@ -142,9 +146,9 @@ void QgsGrassSelect::setLocations()
 	if ( !QFile::exists ( chf ) ) continue;
              	    
 	// if type is MAPSET check also if at least one mapset woned by user exists
-	bool exists = false;
         if  ( QgsGrassSelect::type == QgsGrassSelect::MAPSET )
 	{
+	    bool exists = false;
 	    
 	    QString ldpath = egisdbase->text() + "/" + d[i];
 	    QDir ld = QDir( ldpath );
@@ -161,8 +165,9 @@ void QgsGrassSelect::setLocations()
 		exists = true;
 		break;
 	    }
+	
+            if ( !exists ) continue;
 	}
-	if ( !exists ) continue;
     
 	elocation->insertItem ( QString ( d[i] ), -1 );
 	if ( QString ( d[i] ) == lastLocation ) {
