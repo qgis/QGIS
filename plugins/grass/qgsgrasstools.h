@@ -71,6 +71,8 @@ public slots:
     //! Module in list clicked
     void moduleClicked ( QListViewItem * item );
 
+    //! Current mapset changed
+    void mapsetChanged();
 private:
     //! QGIS application
     QgisApp *mQgisApp;

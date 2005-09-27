@@ -89,6 +89,14 @@ public slots:
   void postRender(QPainter *);
   //! Open tools 
   void openTools(void);
+  //! Create new mapset
+  void newMapset();
+  //! Open existing mapset
+  void openMapset();
+  //! Close mapset
+  void closeMapset();
+  //! Current mapset changed (opened/closed)
+  void mapsetChanged(); 
 
 private:
   //! Check if given directory contains a GRASS installation
@@ -119,6 +127,16 @@ private:
   QPen mRegionPen;
   //! GRASS tools
   QgsGrassTools *mTools;
+
+  // Actions
+  QAction *mOpenMapsetAction;
+  QAction *mNewMapsetAction;
+  QAction *mCloseMapsetAction;
+  QAction *mAddVectorAction;
+  QAction *mAddRasterAction;
+  QAction *mOpenToolsAction;
+  QAction *mEditRegionAction; 
+  QAction *mEditAction;
 };
 
 #endif // QGSGRASSPLUGIN_H

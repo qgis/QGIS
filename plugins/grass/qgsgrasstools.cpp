@@ -97,6 +97,10 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
     mAppDir = PREFIX;
 #endif
 
+    QString title = "GRASS Tools: " + QgsGrass::getDefaultLocation()
+                + "/" + QgsGrass::getDefaultMapset();
+    setCaption(title);
+
     QString conf = mAppDir + "/share/qgis/grass/config/default.qgc";
     loadConfig ( conf );
     statusBar()->hide();
@@ -218,6 +222,19 @@ void QgsGrassTools::addModules (  QListViewItem *parent, QDomElement &element )
 	}
 	n = n.nextSibling();
     }
+}
+
+void QgsGrassTools::mapsetChanged()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassTools::mapsetChanged()" << std::endl;
+    #endif
+
+    QString title = "GRASS Tools: " + QgsGrass::getDefaultLocation()
+                + "/" + QgsGrass::getDefaultMapset();
+    setCaption(title);
+
+    // TODO: Close opened tools (tabs) ?
 }
 
 QgsGrassTools::~QgsGrassTools()

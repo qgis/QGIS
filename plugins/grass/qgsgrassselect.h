@@ -22,6 +22,8 @@
  */
 class QgsGrassSelect: public QgsGrassSelectBase
 {
+    Q_OBJECT;
+
 public:
     //! Constructor
     //QgsGrassSelect(QWidget *parent = 0, int type = VECTOR );
@@ -29,7 +31,7 @@ public:
     //! Destructor
     ~QgsGrassSelect();
 
-    enum TYPE { VECTOR, RASTER, GROUP }; // GROUP = group of rasters, used in selectedType
+    enum TYPE { VECTOR, RASTER, GROUP, MAPSET }; // GROUP = group of rasters, used in selectedType
 
     //! OK 
     void accept (void);

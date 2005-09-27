@@ -56,14 +56,25 @@ QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
   }
     QgsGrassSelect::type = type;
 
-    if ( type == QgsGrassSelect::RASTER ) {
-	/* Remove layer combo box */
-	optionsFrame->removeChild ( dynamic_cast<QWidget *>(Layer) );
-	optionsFrame->removeChild ( dynamic_cast<QWidget *>(elayer) );
-	
-	setCaption ( "Add GRASS Raster Layer" );
-    } else { // vector
-	setCaption ( "Add GRASS Vector Layer" );
+    switch ( type ) 
+    {
+	case QgsGrassSelect::VECTOR:
+	    setCaption ( "Add GRASS Vector Layer" );
+
+	case QgsGrassSelect::RASTER:
+	    /* Remove layer combo box */
+	    Layer->hide();
+	    elayer->hide();
+	    setCaption ( "Add GRASS Raster Layer" );
+	    break;
+	    
+	case QgsGrassSelect::MAPSET:
+	    Layer->hide();
+	    elayer->hide();
+	    MapName->hide();
+	    emap->hide();
+	    setCaption ( "Select GRASS Mapset" );
+	    break;
     }
 	    
     egisdbase->setText(lastGisdbase);
@@ -127,13 +138,37 @@ void QgsGrassSelect::setLocations()
 	if ( d[i] == "." || d[i] == ".." ) continue; 
 
 	QString chf = egisdbase->text() + "/" + d[i] + "/PERMANENT/DEFAULT_WIND";
-	if ( QFile::exists ( chf ) ) {
-            elocation->insertItem ( QString ( d[i] ), -1 );
-	    if ( QString ( d[i] ) == lastLocation ) {
-		sel = idx;
+	
+	if ( !QFile::exists ( chf ) ) continue;
+             	    
+	// if type is MAPSET check also if at least one mapset woned by user exists
+	bool exists = false;
+        if  ( QgsGrassSelect::type == QgsGrassSelect::MAPSET )
+	{
+	    
+	    QString ldpath = egisdbase->text() + "/" + d[i];
+	    QDir ld = QDir( ldpath );
+         
+	    for ( unsigned int j = 0; j < ld.count(); j++ ) {
+		QString windf = ldpath + "/" + ld[j] + "/WIND";
+		if ( !QFile::exists ( windf ) ) continue;
+		
+		QFileInfo info ( ldpath + "/" + ld[j] );
+		if ( !info.isWritable() ) continue;
+
+		// TODO: check if owner == user: how to get uer name in QT
+		
+		exists = true;
+		break;
 	    }
-	    idx++;
 	}
+	if ( !exists ) continue;
+    
+	elocation->insertItem ( QString ( d[i] ), -1 );
+	if ( QString ( d[i] ) == lastLocation ) {
+	    sel = idx;
+	}
+	idx++;
     }
     if ( sel >= 0 ) {
         elocation->setCurrentItem(sel);
@@ -382,7 +417,7 @@ void QgsGrassSelect::accept()
     
     map = emap->currentText().stripWhiteSpace();
 
-    if ( map.isEmpty() ) {
+    if ( type != QgsGrassSelect::MAPSET && map.isEmpty() ) {
         QString msg = "Select a map.";
 	QMessageBox::warning(0, "No map", msg);
 	return;
@@ -392,7 +427,7 @@ void QgsGrassSelect::accept()
         lastVectorMap = map;
 	layer = elayer->currentText().stripWhiteSpace();
 	lastLayer = layer;
-    } else { // RASTER
+    } else if ( type == QgsGrassSelect::RASTER) { 
         lastRasterMap = map;
 	if ( map.find(" (GROUP)") != -1 ) {
 	    map.remove ( " (GROUP)" );
