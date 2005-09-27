@@ -6,3 +6,6 @@ Makefile
 *.uic.cpp
 .deps
 .libs
+*.lo
+*.la
+
