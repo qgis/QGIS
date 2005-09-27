@@ -97,6 +97,8 @@ public slots:
   void closeMapset();
   //! Current mapset changed (opened/closed)
   void mapsetChanged(); 
+  //! Create new vector
+  void newVector();
 
 private:
   //! Check if given directory contains a GRASS installation
@@ -137,6 +139,7 @@ private:
   QAction *mOpenToolsAction;
   QAction *mEditRegionAction; 
   QAction *mEditAction;
+  QAction *mNewVectorAction;
 };
 
 #endif // QGSGRASSPLUGIN_H
