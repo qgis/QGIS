@@ -1,77 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docbase="/home/pinuz/gis/qgis-cvs/qgis/plugins/grass/modules"
-   sodipodi:docname="v.buffer.2.svg"
-   inkscape:version="0.41"
-   sodipodi:version="0.32"
-   id="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/v.overlay.and.2"
-   height="250"
-   y="0"
-   x="0"
-   width="250">
-  <metadata
-     id="metadata19">
-    <rdf:RDF
-       id="RDF21">
-      <cc:Work
-         id="Work23"
-         rdf:about="">
-        <dc:format
-           id="format25">image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage"
-           id="type27" />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs
-     id="defs17">
-    <clipPath
-       id="clip1">
-      <rect
-         id="rect8"
-         height="245"
-         y="0"
-         x="0"
-         width="245" />
-    </clipPath>
-  </defs>
-  <sodipodi:namedview
-     inkscape:current-layer="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/v.overlay.and.2"
-     inkscape:window-y="58"
-     inkscape:window-x="26"
-     inkscape:zoom="0.50000000"
-     inkscape:cx="128.98520"
-     inkscape:cy="134.74347"
-     inkscape:window-height="539"
-     inkscape:window-width="640"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base" />
-  <rect
-     id="rect3"
-     style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);"
-     height="250"
-     y="0"
-     x="0"
-     width="250" />
-  <path
-     style="stroke-opacity:1.0000000;stroke-dashoffset:0.0000000;stroke-miterlimit:4.0000000;stroke-linejoin:round;stroke-linecap:round;stroke-width:1.5056434;stroke:#4b4b4b;fill-rule:nonzero;fill-opacity:1.0000000;fill:#2be844"
-     d="M 53.088940,8.8702443 C 30.657390,8.8702443 12.474208,27.057687 12.474208,49.484976 C 12.474208,56.750985 14.510471,63.493418 17.856884,69.397110 L 17.329909,69.660597 L 86.551866,209.30903 L 87.154122,209.00790 C 92.932197,224.41136 107.64244,235.43194 125.05869,235.43194 C 128.15197,235.43194 131.15903,235.03359 134.05492,234.37799 L 197.10373,233.09819 C 197.37243,233.10344 197.62424,233.17347 197.89420,233.17347 C 198.30737,233.17347 198.68851,233.07281 199.09871,233.06055 L 206.13759,232.90999 L 206.09995,232.34537 C 224.59419,228.54107 238.50893,212.13238 238.50893,192.52110 C 238.50893,171.81141 222.94063,154.89447 202.90046,152.39571 L 202.86282,151.64288 L 149.26191,152.73447 L 91.068798,35.407210 C 85.320560,19.945615 70.546901,8.8702433 53.088940,8.8702443 z "
-     id="path1296" />
-  <path
-     style="stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000;stroke-linejoin:miter;stroke-linecap:round;stroke-width:1.2500000;stroke:#e10000;fill-rule:evenodd;fill-opacity:0.75000000;fill:none"
-     d="M 51.001798,46.937285 L 124.67106,192.38686 L 200.22928,193.33134"
-     id="path2071"
-     sodipodi:nodetypes="ccc" />
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" x="0" y="0" height="500" id="/putrela0/mpasol/blazek/inst/qgiscvs07/plugins/grass/modules/v.buffer.2" >
+ <rect width="500" x="0" y="0" height="500" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);" />
+ <g style="stroke:rgb(0,0,0);stroke-width:0.9;fill:none;" >
+  <clipPath id="clip1" >
+   <rect width="500" x="0" y="0" height="500" />
+  </clipPath>
+  <g style="clip-path:url(#clip1)" >
+   <polygon points="125 435 125 436 118 447 107 457 95 463 81 465 68 463 55 458 44 449 36 438 32 424 32 411 35 397 49 363 51 359 66 329 70 324 90 295 94 289 100 284 130 260 137 255 145 251 197 234 200 233 260 218 297 203 318 183 358 140 374 105 386 76 393 59 393 58 401 46 411 37 423 31 437 28 450 30 463 35 474 43 482 54 486 68 487 81 484 95 477 113 476 115 463 145 463 145 443 188 440 194 435 201 389 250 386 253 357 281 350 286 342 290 294 310 288 312 226 327 184 341 166 356 152 377 139 402 125 435" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="125 435 125 436 118 447 107 457 95 463 81 465 68 463 55 458 44 449 36 438 32 424 32 411 35 397 49 363 51 359 66 329 70 324 90 295 94 289 100 284 130 260 137 255 145 251 197 234 200 233 260 218 297 203 318 183 358 140 374 105 386 76 393 59 393 58 401 46 411 37 423 31 437 28 450 30 463 35 474 43 482 54 486 68 487 81 484 95 477 113 476 115 463 145 463 145 443 188 440 194 435 201 389 250 386 253 357 281 350 286 342 290 294 310 288 312 226 327 184 341 166 356 152 377 139 402 125 435" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+  </g>
+ </g>
 </svg>

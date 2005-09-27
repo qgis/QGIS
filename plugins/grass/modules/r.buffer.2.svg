@@ -1,161 +1,35 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="500"
-   x="0"
-   y="0"
-   height="500"
-   id="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/r.to.vect.line.1"
-   sodipodi:version="0.32"
-   inkscape:version="0.41"
-   sodipodi:docname="r.buffer.2b.svg"
-   sodipodi:docbase="/home/pinuz/gis/qgis-cvs/qgis/plugins/grass/modules">
-  <metadata
-     id="metadata30">
-    <rdf:RDF
-       id="RDF32">
-      <cc:Work
-         rdf:about=""
-         id="Work34">
-        <dc:format
-           id="format36">image/svg+xml</dc:format>
-        <dc:type
-           id="type38"
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs
-     id="defs28" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="640"
-     inkscape:window-height="539"
-     inkscape:cy="417.84947"
-     inkscape:cx="305.25953"
-     inkscape:zoom="0.43415836"
-     inkscape:window-x="0"
-     inkscape:window-y="26"
-     inkscape:current-layer="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/r.to.vect.line.1" />
-  <rect
-     width="500"
-     x="0"
-     y="0"
-     height="500"
-     style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);"
-     id="rect3" />
-  <g
-     id="g1300">
-    <polygon
-       points="347 143 347 75 415 75 415 143 347 143"
-       style="fill-opacity:1.0000000;fill:#fef400;stroke-width:0.0000000;stroke:none;stroke-opacity:1.0000000"
-       id="polygon7" />
-    <polygon
-       points="347 143 347 75 415 75 415 143 347 143"
-       style="fill-opacity:1.0000000;fill:#fef400;stroke-width:1.0000000;stroke:none;stroke-opacity:1.0000000"
-       id="polygon9" />
-    <polygon
-       points="279 212 279 143 347 143 347 212 279 212"
-       style="fill-opacity:1.0000000;fill:#fef400;stroke-width:0.0000000;stroke:none;stroke-opacity:1.0000000"
-       id="polygon11" />
-    <polygon
-       points="279 212 279 143 347 143 347 212 279 212"
-       style="fill-opacity:1.0000000;fill:#fef400;stroke-width:1.0000000;stroke:none;stroke-opacity:1.0000000"
-       id="polygon13" />
-    <polygon
-       points="210 280 210 212 279 212 279 280 210 280"
-       style="fill-opacity:1.0000000;fill:#fef400;stroke-width:0.0000000;stroke:none;stroke-opacity:1.0000000"
-       id="polygon15" />
-    <polygon
-       points="210 280 210 212 279 212 279 280 210 280"
-       style="fill-opacity:1.0000000;fill:#fef400;stroke-width:1.0000000;stroke:none;stroke-opacity:1.0000000"
-       id="polygon17" />
-    <polygon
-       points="142 348 142 280 210 280 210 348 142 348"
-       style="fill-opacity:1.0000000;fill:#fef400;stroke-width:0.0000000;stroke:none;stroke-opacity:1.0000000"
-       id="polygon19" />
-    <polygon
-       points="142 348 142 280 210 280 210 348 142 348"
-       style="fill-opacity:1.0000000;fill:#fef400;stroke-width:1.0000000;stroke:none;stroke-opacity:1.0000000"
-       id="polygon21" />
-    <polygon
-       points="142 348 142 416 74 416 74 348 142 348"
-       style="fill-opacity:1.0000000;fill:#fef400;stroke-width:0.0000000;stroke:none;stroke-opacity:1.0000000"
-       id="polygon23" />
-    <polygon
-       points="142 348 142 416 74 416 74 348 142 348"
-       style="fill-opacity:1.0000000;fill:#fef400;stroke-width:1.0000000;stroke:none;stroke-opacity:1.0000000"
-       id="polygon25" />
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" x="0" y="0" height="500" id="/putrela0/mpasol/blazek/inst/qgiscvs07/plugins/grass/modules/r.buffer.2" >
+ <rect width="500" x="0" y="0" height="500" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);" />
+ <g style="stroke:rgb(0,0,0);stroke-width:0.9;fill:none;" >
+  <clipPath id="clip1" >
+   <rect width="500" x="0" y="0" height="500" />
+  </clipPath>
+  <g style="clip-path:url(#clip1)" >
+   <polygon points="147 447 29 447 29 326 68 326 68 246 108 246 108 206 225 206 225 166 303 166 303 86 342 86 342 46 460 46 460 166 421 166 421 246 381 246 381 286 342 286 342 326 186 326 186 407 147 407 147 447 381 126 421 126 421 86 381 86 381 126 342 126 342 206 264 206 264 246 147 246 147 286 108 286 108 367 68 367 68 407 108 407 108 367 147 367 147 286 303 286 303 246 342 246 342 206 381 206 381 126 147 447" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="147 447 29 447 29 326 68 326 68 246 108 246 108 206 225 206 225 166 303 166 303 86 342 86 342 46 460 46 460 166 421 166 421 246 381 246 381 286 342 286 342 326 186 326 186 407 147 407 147 447" style="stroke:rgb(0,0,0);stroke-width:1;fill:none;" />
+   <polygon points="381 126 421 126 421 86 381 86 381 126 342 126 342 206 264 206 264 246 147 246 147 286 108 286 108 367 68 367 68 407 108 407 108 367 147 367 147 286 303 286 303 246 342 246 342 206 381 206 381 126" style="stroke:rgb(0,0,0);stroke-width:1;fill:none;" />
+   <polygon points="381 126 381 86 421 86 421 126 381 126" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="381 126 381 86 421 86 421 126 381 126" style="stroke:rgb(0,0,0);stroke-width:1;fill:none;" />
+   <polygon points="342 206 342 126 381 126 381 206 342 206" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="342 206 342 126 381 126 381 206 342 206" style="stroke:rgb(0,0,0);stroke-width:1;fill:none;" />
+   <polygon points="147 286 147 246 264 246 264 206 342 206 342 246 303 246 303 286 147 286" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="147 286 147 246 264 246 264 206 342 206 342 246 303 246 303 286 147 286" style="stroke:rgb(0,0,0);stroke-width:1;fill:none;" />
+   <polygon points="108 367 108 286 147 286 147 367 108 367" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="108 367 108 286 147 286 147 367 108 367" style="stroke:rgb(0,0,0);stroke-width:1;fill:none;" />
+   <polygon points="108 367 108 407 68 407 68 367 108 367" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="108 367 108 407 68 407 68 367 108 367" style="stroke:rgb(0,0,0);stroke-width:1;fill:none;" />
+   <polygon points="381 126 381 86 421 86 421 126 381 126" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="381 126 381 86 421 86 421 126 381 126" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="342 206 342 126 381 126 381 206 342 206" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="342 206 342 126 381 126 381 206 342 206" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="147 286 147 246 264 246 264 206 342 206 342 246 303 246 303 286 147 286" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="147 286 147 246 264 246 264 206 342 206 342 246 303 246 303 286 147 286" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="108 367 108 286 147 286 147 367 108 367" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="108 367 108 286 147 286 147 367 108 367" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="108 367 108 407 68 407 68 367 108 367" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="108 367 108 407 68 407 68 367 108 367" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
   </g>
-  <polygon
-     transform="translate(-69.20496,-0.923342)"
-     points="347.00000,143.00000 347.00000,75.000000 415.00000,75.000000 415.00000,143.00000 347.00000,143.00000 "
-     style="fill:#fe2600;fill-opacity:1.0000000;stroke:none;stroke-width:0.0000000;stroke-opacity:1.0000000"
-     id="polygon1314" />
-  <polygon
-     transform="translate(-69.20496,-0.923342)"
-     points="279.00000,212.00000 279.00000,143.00000 347.00000,143.00000 347.00000,212.00000 279.00000,212.00000 "
-     style="fill:#fe2600;fill-opacity:1.0000000;stroke:none;stroke-width:0.0000000;stroke-opacity:1.0000000"
-     id="polygon1318" />
-  <polygon
-     transform="translate(-69.20496,-0.923342)"
-     points="210.00000,280.00000 210.00000,212.00000 279.00000,212.00000 279.00000,280.00000 210.00000,280.00000 "
-     style="fill:#fe2600;fill-opacity:1.0000000;stroke:none;stroke-width:0.0000000;stroke-opacity:1.0000000"
-     id="polygon1322" />
-  <polygon
-     transform="translate(-69.20496,-0.923342)"
-     points="142.00000,348.00000 142.00000,280.00000 210.00000,280.00000 210.00000,348.00000 142.00000,348.00000 "
-     style="fill:#fe2600;fill-opacity:1.0000000;stroke:none;stroke-width:0.0000000;stroke-opacity:1.0000000"
-     id="polygon1326" />
-  <polygon
-     transform="translate(-69.20496,-0.923342)"
-     points="142.00000,348.00000 142.00000,416.00000 74.000000,416.00000 74.000000,348.00000 142.00000,348.00000 "
-     style="fill:#fe2600;fill-opacity:1.0000000;stroke:none;stroke-width:0.0000000;stroke-opacity:1.0000000"
-     id="polygon1330" />
-  <polygon
-     transform="translate(68.78631,1.069204)"
-     points="347.00000,143.00000 347.00000,75.000000 415.00000,75.000000 415.00000,143.00000 347.00000,143.00000 "
-     style="fill:#fe2600;fill-opacity:1.0000000;stroke:none;stroke-width:0.0000000;stroke-opacity:1.0000000"
-     id="polygon2102" />
-  <polygon
-     transform="translate(68.78631,1.069204)"
-     points="279.00000,212.00000 279.00000,143.00000 347.00000,143.00000 347.00000,212.00000 279.00000,212.00000 "
-     style="fill:#fe2600;fill-opacity:1.0000000;stroke:none;stroke-width:0.0000000;stroke-opacity:1.0000000"
-     id="polygon2104" />
-  <polygon
-     transform="translate(68.78631,1.069204)"
-     points="210.00000,280.00000 210.00000,212.00000 279.00000,212.00000 279.00000,280.00000 210.00000,280.00000 "
-     style="fill:#fe2600;fill-opacity:1.0000000;stroke:none;stroke-width:0.0000000;stroke-opacity:1.0000000"
-     id="polygon2106" />
-  <polygon
-     transform="translate(68.78631,1.069204)"
-     points="142.00000,348.00000 142.00000,280.00000 210.00000,280.00000 210.00000,348.00000 142.00000,348.00000 "
-     style="fill:#fe2600;fill-opacity:1.0000000;stroke:none;stroke-width:0.0000000;stroke-opacity:1.0000000"
-     id="polygon2108" />
-  <polygon
-     transform="translate(68.78631,1.069204)"
-     points="142.00000,348.00000 142.00000,416.00000 74.000000,416.00000 74.000000,348.00000 142.00000,348.00000 "
-     style="fill:#fe2600;fill-opacity:1.0000000;stroke:none;stroke-width:0.0000000;stroke-opacity:1.0000000"
-     id="polygon2110" />
-  <polygon
-     transform="translate(-0.217039,-68.74130)"
-     points="347.00000,143.00000 347.00000,75.000000 415.00000,75.000000 415.00000,143.00000 347.00000,143.00000 "
-     style="fill:#fe2600;fill-opacity:1.0000000;stroke:none;stroke-width:0.0000000;stroke-opacity:1.0000000"
-     id="polygon2112" />
-  <polygon
-     transform="translate(-4.844750,68.33266)"
-     points="142.00000,348.00000 142.00000,416.00000 74.000000,416.00000 74.000000,348.00000 142.00000,348.00000 "
-     style="fill:#fe2600;fill-opacity:1.0000000;stroke:none;stroke-width:0.0000000;stroke-opacity:1.0000000"
-     id="polygon2114" />
+ </g>
 </svg>
