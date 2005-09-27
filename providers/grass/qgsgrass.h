@@ -74,6 +74,18 @@ public:
     //! Get last error message 
     static QString getErrorMessage ( void ); 
 
+    /** \brief Open existing GRASS mapset
+     * \return NULL string or error message
+     */
+    static QString openMapset ( QString gisdbase, 
+                   QString location, QString mapset );
+
+    /** \brief Close mapset if it was opened from QGIS.
+     *         Delete GISRC, lock and temporary directory
+     * \return NULL string or error message
+     */
+    static QString closeMapset ();
+
 private:
     static int initialized; // Set to 1 after initialization 
     static bool active; // is active mode
@@ -88,5 +100,11 @@ private:
 
     static int error_routine ( char *msg, int fatal); // static because pointer to this function is set later
 };
+    // Current mapset lock file path
+    static QString mMapsetLock;  
+    // Current mapset GISRC file path
+    static QString mGisrc;  
+    // Temporary directory where GISRC and sockets are stored
+    static QString mTmp;  
 
 #endif // QGSGRASS_H
