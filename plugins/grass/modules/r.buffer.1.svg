@@ -1,98 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docbase="/home/pinuz/gis/qgis-cvs/qgis/plugins/grass/modules"
-   sodipodi:docname="r.buffer.1b.svg"
-   inkscape:version="0.41"
-   sodipodi:version="0.32"
-   id="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/r.to.vect.line.1"
-   height="500"
-   y="0"
-   x="0"
-   width="500">
-  <metadata
-     id="metadata30">
-    <rdf:RDF
-       id="RDF32">
-      <cc:Work
-         id="Work34"
-         rdf:about="">
-        <dc:format
-           id="format36">image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage"
-           id="type38" />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs
-     id="defs28" />
-  <sodipodi:namedview
-     inkscape:current-layer="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/r.to.vect.line.1"
-     inkscape:window-y="26"
-     inkscape:window-x="0"
-     inkscape:zoom="0.43415836"
-     inkscape:cx="305.25953"
-     inkscape:cy="417.84947"
-     inkscape:window-height="539"
-     inkscape:window-width="640"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base" />
-  <rect
-     id="rect3"
-     style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);"
-     height="500"
-     y="0"
-     x="0"
-     width="500" />
-  <polygon
-     id="polygon7"
-     style="fill-opacity:1.0000000;fill:#fef400;stroke-width:0.0000000;stroke:none;stroke-opacity:1.0000000"
-     points="347 143 347 75 415 75 415 143 347 143" />
-  <polygon
-     id="polygon9"
-     style="fill-opacity:1.0000000;fill:#fef400;stroke-width:1.0000000;stroke:none;stroke-opacity:1.0000000"
-     points="347 143 347 75 415 75 415 143 347 143" />
-  <polygon
-     id="polygon11"
-     style="fill-opacity:1.0000000;fill:#fef400;stroke-width:0.0000000;stroke:none;stroke-opacity:1.0000000"
-     points="279 212 279 143 347 143 347 212 279 212" />
-  <polygon
-     id="polygon13"
-     style="fill-opacity:1.0000000;fill:#fef400;stroke-width:1.0000000;stroke:none;stroke-opacity:1.0000000"
-     points="279 212 279 143 347 143 347 212 279 212" />
-  <polygon
-     id="polygon15"
-     style="fill-opacity:1.0000000;fill:#fef400;stroke-width:0.0000000;stroke:none;stroke-opacity:1.0000000"
-     points="210 280 210 212 279 212 279 280 210 280" />
-  <polygon
-     id="polygon17"
-     style="fill-opacity:1.0000000;fill:#fef400;stroke-width:1.0000000;stroke:none;stroke-opacity:1.0000000"
-     points="210 280 210 212 279 212 279 280 210 280" />
-  <polygon
-     id="polygon19"
-     style="fill-opacity:1.0000000;fill:#fef400;stroke-width:0.0000000;stroke:none;stroke-opacity:1.0000000"
-     points="142 348 142 280 210 280 210 348 142 348" />
-  <polygon
-     id="polygon21"
-     style="fill-opacity:1.0000000;fill:#fef400;stroke-width:1.0000000;stroke:none;stroke-opacity:1.0000000"
-     points="142 348 142 280 210 280 210 348 142 348" />
-  <polygon
-     id="polygon23"
-     style="fill-opacity:1.0000000;fill:#fef400;stroke-width:0.0000000;stroke:none;stroke-opacity:1.0000000"
-     points="142 348 142 416 74 416 74 348 142 348" />
-  <polygon
-     id="polygon25"
-     style="fill-opacity:1.0000000;fill:#fef400;stroke-width:1.0000000;stroke:none;stroke-opacity:1.0000000"
-     points="142 348 142 416 74 416 74 348 142 348" />
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" x="0" y="0" height="500" id="/putrela0/mpasol/blazek/inst/qgiscvs07/plugins/grass/modules/r.buffer.1" >
+ <rect width="500" x="0" y="0" height="500" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);" />
+ <g style="stroke:rgb(0,0,0);stroke-width:0.9;fill:none;" >
+  <clipPath id="clip1" >
+   <rect width="500" x="0" y="0" height="500" />
+  </clipPath>
+  <g style="clip-path:url(#clip1)" >
+   <polygon points="381 126 381 86 421 86 421 126 381 126" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="381 126 381 86 421 86 421 126 381 126" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="342 206 342 126 381 126 381 206 342 206" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="342 206 342 126 381 126 381 206 342 206" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="147 286 147 246 264 246 264 206 342 206 342 246 303 246 303 286 147 286" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="147 286 147 246 264 246 264 206 342 206 342 246 303 246 303 286 147 286" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="108 367 108 286 147 286 147 367 108 367" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="108 367 108 286 147 286 147 367 108 367" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="108 367 108 407 68 407 68 367 108 367" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="108 367 108 407 68 407 68 367 108 367" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+  </g>
+ </g>
 </svg>
