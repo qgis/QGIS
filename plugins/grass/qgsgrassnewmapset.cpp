@@ -38,6 +38,7 @@
 #include <qdom.h>
 #include <qpushbutton.h>
 #include <qtextbrowser.h>
+#include <qapplication.h>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsmapcanvas.h"
@@ -733,7 +734,7 @@ void QgsGrassNewMapset::loadRegions()
 #endif
 
 #if defined(WIN32) || defined(Q_OS_MACX)
-    QString appDir = mQgisApp->applicationDirPath();
+    QString appDir = qApp->applicationDirPath();
 #else
     QString appDir = PREFIX;
 #endif
