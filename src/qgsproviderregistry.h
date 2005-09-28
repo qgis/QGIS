@@ -57,6 +57,20 @@ public:
     /// type for data provider metadata associative container
     typedef std::map<QString,QgsProviderMetadata*> Providers;
 
+    /** return vector file filter string
+
+      Returns a string suitable for a QFileDialog of vector file formats
+      supported by all data providers.
+
+      This walks through all data providers appending calls to their
+      fileVectorFilters to a string, which is then returned.
+
+      @note
+
+      It'd be nice to eventually be raster/vector neutral.
+    */
+    virtual QString fileVectorFilters() const;
+
 private:
 
     /** ctor private since instance() creates it */
@@ -70,6 +84,16 @@ private:
 
     /// directory in which provider plugins are installed
     QDir mLibraryDirectory;
+
+    /** file filter string for vector files
+
+        Built once when registry is constructed by appending strings returned
+        from iteratively calling vectorFileFilter() for each visited data
+        provider.  The alternative would have been to do this each time
+        fileVectorFilters was invoked; instead we only have to build it the
+        one time.
+     */
+    QString mVectorFileFilters;
 
 }; // class QgsProviderRegistry
 
