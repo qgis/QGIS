@@ -99,17 +99,20 @@
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLineEdit" row="0" column="3">
+                        <widget class="QLineEdit" row="0" column="4">
                             <property name="name">
                                 <cstring>leSearch</cstring>
                             </property>
                         </widget>
-                        <widget class="QPushButton" row="0" column="4">
+                        <widget class="QPushButton" row="0" column="5">
                             <property name="name">
                                 <cstring>pbnFind</cstring>
                             </property>
                             <property name="text">
                                 <string>Find</string>
+                            </property>
+                            <property name="default">
+                                <bool>true</bool>
                             </property>
                         </widget>
                         <widget class="QRadioButton" row="0" column="0">
@@ -131,23 +134,22 @@
                                 <string>EPSG ID</string>
                             </property>
                         </widget>
-                        <spacer row="0" column="2">
+                        <widget class="QRadioButton" row="0" column="2">
                             <property name="name">
-                                <cstring>spacer1</cstring>
+                                <cstring>radSRSID</cstring>
                             </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
+                            <property name="text">
+                                <string>QGIS SRSID</string>
                             </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
+                        </widget>
+                        <widget class="QRadioButton" row="0" column="3">
+                            <property name="name">
+                                <cstring>radName</cstring>
                             </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>81</width>
-                                    <height>21</height>
-                                </size>
+                            <property name="text">
+                                <string>Name</string>
                             </property>
-                        </spacer>
+                        </widget>
                     </grid>
                 </widget>
             </grid>
@@ -169,6 +171,12 @@
     <connection>
         <sender>pbnFind</sender>
         <signal>clicked()</signal>
+        <receiver>QgsProjectionSelectorBase</receiver>
+        <slot>pbnFind_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>leSearch</sender>
+        <signal>returnPressed()</signal>
         <receiver>QgsProjectionSelectorBase</receiver>
         <slot>pbnFind_clicked()</slot>
     </connection>
