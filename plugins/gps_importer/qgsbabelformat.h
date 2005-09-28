@@ -48,8 +48,8 @@ public:
 protected:
   
   QString mName;
-  bool mSupportsImport, mSupportsExport, mSupportsWaypoints;
-  bool mSupportsRoutes, mSupportsTracks;
+  bool mSupportsImport, mSupportsExport;
+  bool mSupportsWaypoints, mSupportsRoutes, mSupportsTracks;
 };
 
 

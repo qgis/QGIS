@@ -29,7 +29,9 @@ QgsPointDialog::QgsPointDialog() {
 QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, QWidget* parent, 
 			       const char* name, bool modal, WFlags fl) 
   : QgsPointDialogBase(parent, name, modal, fl), 
-    mLayer(layer), mCursor(NULL) {
+    mCursor(NULL),
+    mLayer(layer)
+{
   
   // set up the canvas
   QHBoxLayout* layout = new QHBoxLayout(canvasFrame);

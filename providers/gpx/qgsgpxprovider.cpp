@@ -59,11 +59,11 @@ const QString GPX_KEY = "gpx";
 const QString GPX_DESCRIPTION = "GPS eXchange format provider";
 
 
-QgsGPXProvider::QgsGPXProvider(QString const & uri) 
-    : QgsVectorDataProvider(uri),
-      mMinMaxCacheDirty(true),
-      mEditable(false) {
-  
+QgsGPXProvider::QgsGPXProvider(QString const & uri) : 
+        QgsVectorDataProvider(uri),
+        mEditable(false),
+        mMinMaxCacheDirty(true)
+{
   // assume that it won't work
   mValid = false;
   

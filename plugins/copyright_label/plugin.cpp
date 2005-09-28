@@ -77,9 +77,9 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  */
 QgsCopyrightLabelPlugin::QgsCopyrightLabelPlugin(QgisApp * theQGisApp, 
 						 QgisIface * theQgisInterFace):
+        QgisPlugin(name_,description_,version_,type_),
         qgisMainWindowPointer(theQGisApp),
-        qGisInterface(theQgisInterFace),
-        QgisPlugin(name_,description_,version_,type_)
+        qGisInterface(theQgisInterFace)
 {}
 
 QgsCopyrightLabelPlugin::~QgsCopyrightLabelPlugin()

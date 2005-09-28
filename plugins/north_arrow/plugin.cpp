@@ -80,10 +80,11 @@ const double QgsNorthArrowPlugin::TOL = 1e-8;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsNorthArrowPlugin::QgsNorthArrowPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
+QgsNorthArrowPlugin::QgsNorthArrowPlugin(QgisApp * theQGisApp,
+                                         QgisIface * theQgisInterFace):
+    QgisPlugin(name_,description_,version_,type_),
     qgisMainWindowPointer(theQGisApp),
-    qGisInterface(theQgisInterFace),
-    QgisPlugin(name_,description_,version_,type_)
+    qGisInterface(theQgisInterFace)
 {
   mRotationInt=0;
   mAutomatic=true;

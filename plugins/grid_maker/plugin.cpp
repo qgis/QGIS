@@ -67,9 +67,9 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  */
 QgsGridMakerPlugin::QgsGridMakerPlugin(QgisApp * theQGisApp, 
 				       QgisIface * theQgisInterFace):
+          QgisPlugin(name_,description_,version_,type_),
           qgisMainWindowPointer(theQGisApp), 
-          qGisInterface(theQgisInterFace),
-          QgisPlugin(name_,description_,version_,type_)
+          qGisInterface(theQgisInterFace)
 {
 }
 

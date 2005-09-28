@@ -79,10 +79,11 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsScaleBarPlugin::QgsScaleBarPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-qgisMainWindowPointer(theQGisApp),
-    qGisInterface(theQgisInterFace),
-QgisPlugin(name_,description_,version_,type_)
+QgsScaleBarPlugin::QgsScaleBarPlugin(QgisApp * theQGisApp,
+                                     QgisIface * theQgisInterFace):
+        QgisPlugin(name_,description_,version_,type_),
+        qgisMainWindowPointer(theQGisApp),
+        qGisInterface(theQgisInterFace)
 {
   mPreferredSize = 30;
   mPlacement = "Top Left";

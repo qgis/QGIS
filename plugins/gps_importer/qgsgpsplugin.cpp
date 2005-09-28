@@ -77,9 +77,9 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * @param _qI Pointer to the QGIS interface object
  */
 QgsGPSPlugin::QgsGPSPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
+  QgisPlugin(name_,description_,version_,type_),
   mMainWindowPointer(theQGisApp), 
-  mQGisInterface(theQgisInterFace),
-  QgisPlugin(name_,description_,version_,type_)
+  mQGisInterface(theQgisInterFace)
 {
   setupBabel();
 }
