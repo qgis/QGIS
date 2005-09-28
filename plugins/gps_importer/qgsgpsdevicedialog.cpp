@@ -22,8 +22,8 @@
 
 QgsGPSDeviceDialog::QgsGPSDeviceDialog(std::map<QString, QgsGPSDevice*>& 
 				       devices) : 
-     mDevices(devices),
-     QgsGPSDeviceDialogBase(0, 0, true ) //ensure dialog is openened modal
+     QgsGPSDeviceDialogBase(0, 0, true ), //ensure dialog is openened modal
+     mDevices(devices)
   
 {
   slotUpdateDeviceList();

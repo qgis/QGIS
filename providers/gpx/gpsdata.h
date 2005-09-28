@@ -63,8 +63,8 @@ class GPSExtended : public GPSObject {
  public:
   GPSExtended();
   virtual void writeXML(QTextStream& stream);
-  int number;
   double xMin, xMax, yMin, yMax;
+  int number;
 };
 
 

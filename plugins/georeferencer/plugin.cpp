@@ -100,9 +100,9 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
 QgsGeorefPlugin::QgsGeorefPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterface):
+                 QgisPlugin(sName,sDescription,sPluginVersion,sPluginType),
                  mQGisApp(theQGisApp), 
-                 mQGisIface(theQgisInterface),
-                 QgisPlugin(sName,sDescription,sPluginVersion,sPluginType)
+                 mQGisIface(theQgisInterface)
 {
 }
 
