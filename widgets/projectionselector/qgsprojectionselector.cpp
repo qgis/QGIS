@@ -42,7 +42,7 @@
 #include <cpl_error.h>
 
 
-QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name , Qt::WFlags fl  )
+QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name , WFlags fl  )
     : QgsProjectionSelectorBase( parent, "Projection Selector", fl )
 {
   // Get the package data path and set the full path name to the sqlite3 spatial reference
@@ -53,8 +53,8 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name
   mSrsDatabaseFileName = PKGDATAPATH;
   mSrsDatabaseFileName += "/resources/srs.db";
   // Populate the projection list view
-  getUserProjList();
   getProjList();
+  getUserProjList();
 }
 
 QgsProjectionSelector::~QgsProjectionSelector()
@@ -155,7 +155,7 @@ QString QgsProjectionSelector::getCurrentProj4String()
       sqlite3 *db;
       char *zErrMsg = 0;
       int rc;
-      rc = sqlite3_open(myDatabaseFileName, &db);
+      rc = sqlite3_open(myDatabaseFileName.local8Bit(), &db);
       if(rc)
       {
         std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
@@ -173,14 +173,14 @@ QString QgsProjectionSelector::getCurrentProj4String()
       std::cout << "Selection sql : " << sql.local8Bit() << std::endl;
 #endif
 
-      rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+      rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
       // XXX Need to free memory from the error msg if one is set
       QString myProjString;
       if(rc == SQLITE_OK)
       {
         if(sqlite3_step(ppStmt) == SQLITE_ROW)
         {
-          myProjString = (char*)sqlite3_column_text(ppStmt, 0);
+          myProjString = QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 0));
         }
       }
       // close the statement
@@ -220,7 +220,7 @@ long QgsProjectionSelector::getCurrentSRID()
   if(lvi)
   {
     // Make sure the selected node is a srs and not a top-level projection node
-    std::cout << lvi->text(1).local8Bit() << std::endl;
+    //TODO - blast this outta here: std::cout << lvi->text(1).local8Bit() << std::endl;
     if(lvi->text(1).length() > 0)
     {
       QString myDatabaseFileName;
@@ -236,7 +236,7 @@ long QgsProjectionSelector::getCurrentSRID()
         if ( !myFileInfo.exists( ) )
         {
           std::cout << " QgsSpatialRefSys::createFromSrid failed :  users qgis.db not found" << std::endl;
-          return 0;
+          return (long)NULL;
         }
       }
       else //must be  a system projection then
@@ -251,7 +251,7 @@ long QgsProjectionSelector::getCurrentSRID()
       sqlite3 *db;
       char *zErrMsg = 0;
       int rc;
-      rc = sqlite3_open(myDatabaseFileName, &db);
+      rc = sqlite3_open(myDatabaseFileName.local8Bit(), &db);
       if(rc)
       {
         std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
@@ -267,9 +267,9 @@ long QgsProjectionSelector::getCurrentSRID()
       sql += lvi->text(1);
 
 #ifdef QGISDEBUG
-      std::cout << "Finding selected srid using : " << sql.local8Bit() << std::endl;
+      std::cout << "Finding selected srid using : " <<  sql.local8Bit() << std::endl;
 #endif
-      rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+      rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
       // XXX Need to free memory from the error msg if one is set
       QString mySrid;
       if(rc == SQLITE_OK)
@@ -278,7 +278,7 @@ long QgsProjectionSelector::getCurrentSRID()
         if(sqlite3_step(ppStmt) == SQLITE_ROW)
         {
           // get the wkt
-          mySrid = (char*)sqlite3_column_text(ppStmt, 0);
+          mySrid = QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 0));
         }
       }
       // close the statement
@@ -292,7 +292,7 @@ long QgsProjectionSelector::getCurrentSRID()
   else
   {
     // No node is selected, return null
-    return 0;
+    return (long)NULL;
   }
 
 }
@@ -305,7 +305,7 @@ long QgsProjectionSelector::getCurrentSRSID()
   }
   else
   {
-    return 0;
+    return (long)NULL;
   }
 }
 
@@ -338,7 +338,7 @@ void QgsProjectionSelector::getUserProjList()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(myQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(myQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -354,16 +354,16 @@ void QgsProjectionSelector::getUserProjList()
 #ifdef QGISDEBUG
   std::cout << "User projection list sql" << mySql.local8Bit() << std::endl;
 #endif
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
     QListViewItem *newItem;
     while(sqlite3_step(myPreparedStatement) == SQLITE_ROW)
     {
-      newItem = new QListViewItem(mUserProjList, (char *)sqlite3_column_text(myPreparedStatement,0));
+      newItem = new QListViewItem(mUserProjList, QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0)));
       // display the qgis srs_id in the second column of the list view
-      newItem->setText(1,(char *)sqlite3_column_text(myPreparedStatement, 1));
+      newItem->setText(1,QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 1)));
     }
   }
   // close the sqlite3 statement
@@ -396,7 +396,7 @@ void QgsProjectionSelector::getProjList()
   sqlite3 *db;
   char *zErrMsg = 0;
   int rc;
-  rc = sqlite3_open(mSrsDatabaseFileName, &db);
+  rc = sqlite3_open(mSrsDatabaseFileName.local8Bit(), &db);
   if(rc)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
@@ -411,7 +411,7 @@ void QgsProjectionSelector::getProjList()
   // get total count of records in the projection table
   QString sql = "select count(*) from tbl_srs";
 
-  rc = sqlite3_prepare(db, sql, sql.length(), &ppStmt, &pzTail);
+  rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
   assert(rc == SQLITE_OK);
   sqlite3_step(ppStmt);
   // Set the max for the progress dialog to the number of entries in the srs_name table
@@ -428,7 +428,7 @@ void QgsProjectionSelector::getProjList()
 #ifdef QGISDEBUG
   std::cout << "SQL for projection list:\n" << sql.local8Bit() << std::endl;
 #endif
-  rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
+  rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
   // XXX Need to free memory from the error msg if one is set
   if(rc == SQLITE_OK)
   {
@@ -445,8 +445,8 @@ void QgsProjectionSelector::getProjList()
     myProgressBar.setProgress(myProgress);
     while(sqlite3_step(ppStmt) == SQLITE_ROW)
     {
-      // only update the progress dialog every 10 records
-      if((myProgress++ % 10) == 0)
+      // only update the progress dialog every 200 records
+      if((myProgress++ % 200) == 0)
       {
         myProgressBar.setProgress(myProgress++);
       }
@@ -456,10 +456,10 @@ void QgsProjectionSelector::getProjList()
       {
         // this is a geographic coordinate system
         // Add it to the tree
-        newItem = new QListViewItem(mGeoList, (char *)sqlite3_column_text(ppStmt,0));
+        newItem = new QListViewItem(mGeoList, QString::fromUtf8((char *)sqlite3_column_text(ppStmt,0)));
 
         // display the qgis srs_id in the second column of the list view
-        newItem->setText(1,(char *)sqlite3_column_text(ppStmt, 1));
+        newItem->setText(1,QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 1)));
       }
       else
       {
@@ -468,27 +468,28 @@ void QgsProjectionSelector::getProjList()
         QListViewItem *node;
         // Fine the node for this type and add the projection to it
         // If the node doesn't exist, create it
-        node = lstCoordinateSystems->findItem(QString((char*)sqlite3_column_text(ppStmt, 3)),0);
+        node = lstCoordinateSystems->findItem(QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 3)),0);
         if(node == 0)
         {
           // the node doesn't exist -- create it
-          node = new QListViewItem(mProjList, (char*)sqlite3_column_text(ppStmt, 3));
+          node = new QListViewItem(mProjList, QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 3)));
         }
 
         // add the item, setting the projection name in the first column of the list view
-        newItem = new QListViewItem(node, (char *)sqlite3_column_text(ppStmt,0));
+        newItem = new QListViewItem(node, QString::fromUtf8((char *)sqlite3_column_text(ppStmt,0)));
         // set the srs_id in the second column on the list view
-        newItem->setText(1,(char *)sqlite3_column_text(ppStmt, 1));
+        newItem->setText(1,QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 1)));
       }
       //Only enable thse lines temporarily if you want to generate a script
       //to update proj an ellipoid fields in the srs.db
-      //updateProjAndEllipsoidAcronyms(QString((char *)sqlite3_column_text(ppStmt, 1)).toLong(),
-      //                               QString((char *)sqlite3_column_text(ppStmt, 4)))  ;
+      //updateProjAndEllipsoidAcronyms(QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 1)).toLong(),
+      //                               QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 4)))  ;
     }
     // update the progress bar to 100% -- just for eye candy purposes (some people hate to
     // see a progress dialog end at 99%)
     myProgressBar.setProgress(myEntriesCount);
   }
+  std::cout << "Size of projection list widget : " << sizeof(*lstCoordinateSystems) << std::endl;
   // close the sqlite3 statement
   sqlite3_finalize(ppStmt);
   // close the database
@@ -498,8 +499,8 @@ void QgsProjectionSelector::getProjList()
 //this is a little helper function to populate the (well give you a sql script to populate)
 //the projection_acronym and ellipsoid_acronym fields in the srs.db backend
 //To cause it to be run, uncomment or add the line:
-//      updateProjAndEllipsoidAcronyms(QString((char *)sqlite3_column_text(ppStmt, 1)).toLong(),
-//                                     QString((char *)sqlite3_column_text(ppStmt, 4)))  ;
+//      updateProjAndEllipsoidAcronyms(QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 1)).toLong(),
+//                                     QString:.fromUtf8((char *)sqlite3_column_text(ppStmt, 4)))  ;
 //to the above method. NOTE it will cause a huge slow down in population of the proj selector dialog so
 //remember to disable it again!
 void QgsProjectionSelector::updateProjAndEllipsoidAcronyms(int theSrsid,QString theProj4String)
@@ -510,11 +511,6 @@ void QgsProjectionSelector::updateProjAndEllipsoidAcronyms(int theSrsid,QString 
   QFile myFile( "/tmp/srs_updates.sql" );
   myFile.open(  IO_WriteOnly | IO_Append );
   QTextStream myStream( &myFile );
-
-
-
-
-
 
   QRegExp myProjRegExp( "proj=[a-zA-Z]* " );
   int myStart= 0;
@@ -533,7 +529,7 @@ void QgsProjectionSelector::updateProjAndEllipsoidAcronyms(int theSrsid,QString 
   }
 
 
-  QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\-]* " );
+  QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\\-]* " );
   myStart= 0;
   myLength=0;
   myStart = myEllipseRegExp.search(theProj4String, myStart);
@@ -570,11 +566,11 @@ void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem )
   myDescription        += tr("PostGIS SRID: ") + QString::number(getCurrentSRID()) +"\n";
   emit sridSelected(QString::number(getCurrentSRSID()));
   QString myProjString = getCurrentProj4String();
-  if (!myProjString.isEmpty())
+  if (!myProjString.isNull())
   {
     myDescription+=(myProjString);
   }
-    teProjection->setText(myDescription);
+  teProjection->setText(myDescription);
 }
 
 void QgsProjectionSelector::pbnFind_clicked()
@@ -584,6 +580,55 @@ void QgsProjectionSelector::pbnFind_clicked()
   std::cout << "pbnFind..." << std::endl;
 #endif
 
+  QString mySearchString(stringSQLSafe(leSearch->text()));
+  // Set up the query to retreive the projection information needed to populate the list
+  QString mySql;
+  if (radSRID->isChecked())
+  {
+    mySql= "select srs_id from tbl_srs where srid=" + mySearchString;
+  }
+  else if (radEPSGID->isChecked())
+  {
+    mySql= "select srs_id from tbl_srs where epsg=" + mySearchString;
+  }
+  else if (radName->isChecked()) //name search
+  {
+    //we need to find what the largest srsid matching our query so we know whether to
+    //loop backto the beginning
+    mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'" +
+           " order by srs_id desc limit 1";
+    long myLargestSrsId = getLargestSRSIDMatch(mySql);
+#ifdef QGISDEBUG
+    std::cout << "Largest SRSID" << myLargestSrsId << std::endl;
+#endif
+    //a name search is ambiguous, so we find the first srsid after the current seelcted srsid
+    // each time the find button is pressed. This means we can loop through all matches.
+    if (myLargestSrsId <= getCurrentSRSID())
+    {
+      //roll search around to the beginning
+      mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'" +
+             " order by srs_id limit 1";
+    }
+    else
+    {
+      // search ahead of the current postion
+      mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'" +
+             " and srs_id > " + QString::number(getCurrentSRSID()) + " order by srs_id limit 1";
+    }
+  }
+  else //qgis srsid
+  {
+    //no need to try too look up srsid in db as user has already entered it!
+    setSelectedSRSID(mySearchString.toLong());
+    return;
+  }
+#ifdef QGISDEBUG
+  std::cout << " Search sql" << mySql.local8Bit() << std::endl;
+#endif
+
+  //
+  // Now perform the actual search
+  //
 
   sqlite3      *myDatabase;
   char         *myErrorMessage = 0;
@@ -591,7 +636,7 @@ void QgsProjectionSelector::pbnFind_clicked()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(mSrsDatabaseFileName, &myDatabase);
+  myResult = sqlite3_open(mSrsDatabaseFileName.local8Bit(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -602,31 +647,144 @@ void QgsProjectionSelector::pbnFind_clicked()
     assert(myResult == 0);
   }
 
-  // Set up the query to retreive the projection information needed to populate the list
-  QString mySql;
-  if (radSRID->isChecked())
-  {
-    mySql= "select srs_id from tbl_srs where srid=" + leSearch->text();
-  }
-  else
-  {
-    mySql= "select srs_id from tbl_srs where epsg=" + leSearch->text();
-  }
-#ifdef QGISDEBUG
-  std::cout << " Search sql" << mySql.local8Bit() << std::endl;
-#endif
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-    sqlite3_step(myPreparedStatement);
-    QString mySrsId((char *)sqlite3_column_text(myPreparedStatement, 0));
-    setSelectedSRSID(mySrsId.toLong());
+    myResult = sqlite3_step(myPreparedStatement);
+    if (myResult == SQLITE_ROW)
+    {  
+      QString mySrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 0));
+      setSelectedSRSID(mySrsId.toLong());
+      // close the sqlite3 statement
+      sqlite3_finalize(myPreparedStatement);
+      sqlite3_close(myDatabase);
+      return;
+    }
   }
-  // close the sqlite3 statement
-  sqlite3_finalize(myPreparedStatement);
-  sqlite3_close(myDatabase);
-
+  //search the users db
+  QString myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+  QFileInfo myFileInfo;
+  myFileInfo.setFile(myDatabaseFileName);
+  if ( !myFileInfo.exists( ) ) //its not critical if this happens
+  {
+    return ;
+  }
+  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
+  if(myResult)
+  {
+    std::cout <<  "Can't open * user * database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
+    //no need for assert because user db may not have been created yet
+    return;
+  }
+  
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+    myResult = sqlite3_step(myPreparedStatement);
+    if (myResult == SQLITE_ROW)
+    {  
+      QString mySrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 0));
+      setSelectedSRSID(mySrsId.toLong());
+      // close the sqlite3 statement
+      sqlite3_finalize(myPreparedStatement);
+      sqlite3_close(myDatabase);
+    }
+  }
 }
 
+long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
+{
+  long mySrsId =0;
+  //
+  // Now perform the actual search
+  //
 
+  sqlite3      *myDatabase;
+  char         *myErrorMessage = 0;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+
+  // first we search the users db as any srsid there will be definition be greater than in sys db
+
+  //check the db is available
+  QString myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+  QFileInfo myFileInfo;
+  myFileInfo.setFile(myDatabaseFileName);
+  if ( myFileInfo.exists( ) ) //only bother trying to open if the file exists
+  {
+    myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
+    if(myResult)
+    {
+      std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
+      // XXX This will likely never happen since on open, sqlite creates the
+      //     database if it does not exist. But we checked earlier for its existance
+      //     and aborted in that case. This is because we may be runnig from read only
+      //     media such as live cd and dont want to force trying to create a db.
+
+    }
+    else
+    {
+      myResult = sqlite3_prepare(myDatabase, theSql.utf8(), theSql.length(), &myPreparedStatement, &myTail);
+      // XXX Need to free memory from the error msg if one is set
+      if(myResult == SQLITE_OK)
+      {
+        myResult = sqlite3_step(myPreparedStatement);
+        if (myResult == SQLITE_ROW)
+        {  
+          QString mySrsIdString = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 0));
+          mySrsId = mySrsIdString.toLong();
+          // close the sqlite3 statement
+          sqlite3_finalize(myPreparedStatement);
+          sqlite3_close(myDatabase);
+          return mySrsId;
+        }
+      }
+    }
+  }
+  //only bother looking in srs.db if it wasnt found above
+
+  myResult = sqlite3_open(mSrsDatabaseFileName.local8Bit(), &myDatabase);
+  if(myResult)
+  {
+    std::cout <<  "Can't open * user * database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
+    //no need for assert because user db may not have been created yet
+    return 0;
+  }
+
+  myResult = sqlite3_prepare(myDatabase, theSql.utf8(), theSql.length(), &myPreparedStatement, &myTail);
+  // XXX Need to free memory from the error msg if one is set
+  if(myResult == SQLITE_OK)
+  {
+    myResult = sqlite3_step(myPreparedStatement);
+    if (myResult == SQLITE_ROW)
+    {  
+      QString mySrsIdString = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 0));
+      mySrsId =  mySrsIdString.toLong();
+      // close the sqlite3 statement
+      sqlite3_finalize(myPreparedStatement);
+      sqlite3_close(myDatabase);
+    }
+  }
+  return mySrsId;
+}
+/*!
+* \brief Make the string safe for use in SQL statements.
+*  This involves escaping single quotes, double quotes, backslashes,
+*  and optionally, percentage symbols.  Percentage symbols are used
+*  as wildcards sometimes and so when using the string as part of the
+*  LIKE phrase of a select statement, should be escaped.
+* \arg const QString in The input string to make safe.
+* \return The string made safe for SQL statements.
+*/
+const QString QgsProjectionSelector::stringSQLSafe(const QString theSQL)
+{
+	QString myRetval = theSQL;
+	myRetval.replace("\\","\\\\");
+	myRetval.replace('\"',"\\\"");
+	myRetval.replace("\'","\\'");
+	myRetval.replace("%","\\%");
+	return myRetval;
+ }
