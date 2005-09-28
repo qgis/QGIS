@@ -39,6 +39,7 @@ using namespace std;
 typedef QString providerkey_t();
 typedef QString description_t();
 typedef bool    isprovider_t();
+typedef QString fileVectorFilters_t();
 
 QgsProviderRegistry *QgsProviderRegistry::_instance = 0;
 
@@ -127,6 +128,28 @@ QString mLibraryDirectory = baseDir + "/lib"; */
 #ifdef QGISDEBUG
                           std::cout << "Loaded " << pDesc().local8Bit() << std::endl;
 #endif
+
+                          // now get vector file filters, if any
+                          fileVectorFilters_t *pFileVectorFilters = 
+                              (fileVectorFilters_t *) myLib->resolve("fileVectorFilters");
+
+                          if ( pVectorFileFilters )
+                          {
+                              QString vectorFileFilters = pVectorFileFilters();
+
+                              if ( ! vectorFileFilters.isEmpty() )
+                              {
+                                  mVectorFileFilters += vectorFileFilters;
+                              }
+                              else
+                              {
+                                  QgsDebug( QString("No vector file filters for " + pKey()).ascii() );
+                              }
+                          }
+                          else
+                          {
+                              QgsDebug( "Unable to invoke fileVectorFilters()" );
+                          }
                       } 
                       else
                       {
@@ -354,3 +377,14 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
   return 0;  // factory didn't exist
   
 } // QgsProviderRegistry::setDataProvider
+
+
+
+
+
+QString QgsProviderRegistry::fileVectorFilters() const
+{
+    return mVectorFileFilters;
+} //  QgsProviderRegistry::fileVectorFilters
+
+

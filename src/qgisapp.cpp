@@ -844,6 +844,7 @@ static QString createFileFilter_(QString const &longName, QString const &glob)
 static void buildSupportedVectorFileFilter_(QString & fileFilters)
 {
 
+#ifdef DEPRECATED
     static QString myFileFilters;
 
     // if we've already built the supported vector string, just return what
@@ -970,6 +971,10 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
     myFileFilters += "All files (*.*)";
     fileFilters = myFileFilters;
+
+#endif // DEPRECATED
+
+    fileFilters = QgsProviderRegistry::instance()->fileVectorFilters();
 
 }                               // buildSupportedVectorFileFilter_()
 
