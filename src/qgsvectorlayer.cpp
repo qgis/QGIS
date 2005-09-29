@@ -113,11 +113,11 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
                                QString providerKey)
     : QgsMapLayer(VECTOR, baseName, vectorLayerPath),
       tabledisplay(0),
-      providerKey(providerKey),
-      valid(false),
       m_renderer(0),
       mLabel(0),
       m_propertiesDialog(0),
+      providerKey(providerKey),
+      valid(false),
       myLib(0),
       ir(0),                    // initialize the identify results pointer
       updateThreshold(0),       // XXX better default value?

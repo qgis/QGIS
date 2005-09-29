@@ -20,8 +20,12 @@
 #include <qstring.h>
 #include "../plugins/qgisplugin.h"
 #include "qgspluginmetadata.h"
-QgsPluginMetadata::QgsPluginMetadata(QString _libraryPath, QString _name, QgisPlugin * _plugin):libraryPath(_libraryPath), m_name(_name),
-m_plugin(_plugin)
+QgsPluginMetadata::QgsPluginMetadata(QString _libraryPath, 
+                                     QString _name,
+                                     QgisPlugin * _plugin):
+        m_name(_name),
+        libraryPath(_libraryPath),
+        m_plugin(_plugin)
 {
 
 }

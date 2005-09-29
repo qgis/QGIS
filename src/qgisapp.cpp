@@ -337,8 +337,8 @@ setTitleBarText_( QWidget & qgisApp )
 
 QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
         : QgisAppBase(parent, name, fl),
-          myHideSplashFlag(false),
-          mMapTool(QGis::NoTool)
+          mMapTool(QGis::NoTool),
+          myHideSplashFlag(false)
 {
     //
     // Splash screen global is declared in qgisapp.h header
