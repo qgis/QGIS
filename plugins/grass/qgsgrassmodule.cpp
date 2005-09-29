@@ -124,93 +124,10 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
 
     // Read GRASS module description
     mXName = qDocElem.attribute("module");
-    QProcess *process = new QProcess( this );
-    process->addArgument( mXName );
-    process->addArgument( "--interface-description" );
-
-    if ( !process->start( ) ) {
-	QMessageBox::warning( 0, "Warning", "Cannot start module " + mXName );
-	return;
-    }
-    while ( process->isRunning () ) { // TODO: check time, if it is not running too long
-    }
-    QByteArray gDescArray = process->readStdout();
-    QByteArray errArray = process->readStderr();
-    delete process;
-
-    QDomDocument gDoc ( "task" );
-    if ( !gDoc.setContent( (QByteArray)gDescArray, &err, &line, &column ) ) {
-	QString errmsg = "Cannot read module description (" + mXName + "):\n" + err + "\nat line "
-	                 + QString::number(line) + " column " + QString::number(column);
-	std::cerr << errmsg.local8Bit() << std::endl;
-	std::cerr << gDescArray << std::endl;
-	std::cerr << errArray << std::endl;
-	QMessageBox::warning( 0, "Warning", errmsg );
-	return;
-    }
-    QDomElement gDocElem = gDoc.documentElement();
-
     
-    // Read QGIS options and create controls
-    QDomNode n = qDocElem.firstChild();
-    QVBoxLayout *layout = new QVBoxLayout ( mTabWidget->page(0), 10 );
-    while( !n.isNull() ) {
-	QDomElement e = n.toElement();
-	if( !e.isNull() ) {
-	    QString optionType = e.tagName();
-	    //std::cout << "optionType = " << optionType << std::endl;
-
-	    QString key = e.attribute("key");
-	    std::cout << "key = " << key.local8Bit() << std::endl;
-
-	    QDomNode gnode = nodeByKey ( gDocElem, key );
-	    if ( gnode.isNull() ) {
-		QMessageBox::warning( 0, "Warning", "Cannot find key " +  key );
-		return;
-	    }
-
-	    if ( optionType == "option" ) {
-	        bool created = false;
-
-		// Check option type and create appropriate control
-		QDomNode promptNode = gnode.namedItem ( "gisprompt" );
-		if ( !promptNode.isNull() ) {
-		    QDomElement promptElem = promptNode.toElement();
-		    QString element = promptElem.attribute("element"); 
-		    QString age = promptElem.attribute("age"); 
-		    //std::cout << "element = " << element << " age = " << age << std::endl;
-		    if ( age == "old" && ( element == "vector" || element == "cell") ) {
-			QgsGrassModuleInput *mi = new QgsGrassModuleInput ( this, key, e, gDocElem, 
-				                                gnode, mTabWidget->page(0) );
-
-			layout->addWidget ( mi );
-			created = true;
-			mItems.push_back(mi);
-		    }
-		} 
-
-		if ( !created ) {
-		    QgsGrassModuleOption *so = 
-			new QgsGrassModuleOption ( this, key, e, gDocElem, gnode, mTabWidget->page(0) );
-		    
-			layout->addWidget ( so );
-			created = true;
-		    mItems.push_back(so);
-		}
-	    } else if ( optionType == "flag" )  {
-		    QgsGrassModuleFlag *flag = 
-			new QgsGrassModuleFlag ( this, key, e, gDocElem, gnode, mTabWidget->page(0) );
-		    
-		    layout->addWidget ( flag );
-		    mItems.push_back(flag);
-	    }
-	}
-	n = n.nextSibling();
-    }
-
-    QSpacerItem *si = new QSpacerItem ( 10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding );
-    layout->addItem ( si );
-
+    mOptions = new QgsGrassModuleStandardOptions ( mTools, this,
+               mQgisApp, mIface, mXName, qDocElem, mTabWidget->page(0) );
+                                
     // Create manual if available
     QString gisBase = getenv("GISBASE");
     QString manPath = gisBase + "/docs/html/" + mXName + ".html";
@@ -231,6 +148,159 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
 
     mOutputTextBrowser->setTextFormat(Qt::RichText);
     mOutputTextBrowser->setReadOnly(TRUE);
+}
+
+QgsGrassModuleOptions::QgsGrassModuleOptions ( 
+           QgsGrassTools *tools, QgsGrassModule *module,
+           QgisApp *qgisApp, QgisIface *iface )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleOptions()" << std::endl;
+    #endif
+
+    mTools = tools;
+    mModule = module;
+    mQgisApp = qgisApp;
+    mIface = iface;
+    mCanvas = mIface->getMapCanvas();
+    mAppDir = mTools->appDir();
+
+}
+
+QgsGrassModuleOptions::~QgsGrassModuleOptions()
+{
+}
+
+QStringList QgsGrassModuleOptions::arguments()
+{
+    return QStringList();
+}
+
+QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions ( 
+           QgsGrassTools *tools, QgsGrassModule *module,
+           QgisApp *qgisApp, QgisIface *iface, 
+	   QString xname, QDomElement qDocElem,
+           QWidget * parent, const char * name, WFlags f )
+             :QgsGrassModuleOptions( tools, module, qgisApp, iface),
+              QWidget ( parent, name, f )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleStandardOptions()" << std::endl;
+    #endif
+
+    mXName = xname;
+    mParent = parent;
+
+    QProcess *process = new QProcess( this );
+    process->addArgument( mXName );
+    process->addArgument( "--interface-description" );
+
+    if ( !process->start( ) ) {
+	QMessageBox::warning( 0, "Warning", "Cannot start module " + mXName );
+	return;
+    }
+    while ( process->isRunning () ) { // TODO: check time, if it is not running too long
+    }
+    QByteArray gDescArray = process->readStdout();
+    QByteArray errArray = process->readStderr();
+    delete process;
+
+    QDomDocument gDoc ( "task" );
+    QString err;
+    int line, column;
+    if ( !gDoc.setContent( (QByteArray)gDescArray, &err, &line, &column ) ) {
+	QString errmsg = "Cannot read module description (" + mXName + "):\n" + err + "\nat line "
+	                 + QString::number(line) + " column " + QString::number(column);
+	std::cerr << errmsg.local8Bit() << std::endl;
+	std::cerr << gDescArray << std::endl;
+	std::cerr << errArray << std::endl;
+	QMessageBox::warning( 0, "Warning", errmsg );
+	return;
+    }
+    QDomElement gDocElem = gDoc.documentElement();
+
+    // Read QGIS options and create controls
+    QDomNode n = qDocElem.firstChild();
+    //QVBoxLayout *layout = new QVBoxLayout ( mTabWidget->page(0), 10 );
+    QVBoxLayout *layout = new QVBoxLayout ( mParent, 10 );
+    while( !n.isNull() ) {
+	QDomElement e = n.toElement();
+	if( !e.isNull() ) {
+	    QString optionType = e.tagName();
+	    //std::cout << "optionType = " << optionType << std::endl;
+
+	    QString key = e.attribute("key");
+	    std::cout << "key = " << key.local8Bit() << std::endl;
+
+	    QDomNode gnode = QgsGrassModule::nodeByKey ( gDocElem, key );
+	    if ( gnode.isNull() ) {
+		QMessageBox::warning( 0, "Warning", "Cannot find key " +  key );
+		return;
+	    }
+
+	    if ( optionType == "option" ) {
+	        bool created = false;
+
+		// Check option type and create appropriate control
+		QDomNode promptNode = gnode.namedItem ( "gisprompt" );
+		if ( !promptNode.isNull() ) {
+		    QDomElement promptElem = promptNode.toElement();
+		    QString element = promptElem.attribute("element"); 
+		    QString age = promptElem.attribute("age"); 
+		    //std::cout << "element = " << element << " age = " << age << std::endl;
+		    if ( age == "old" && ( element == "vector" || element == "cell") ) {
+			QgsGrassModuleInput *mi = new QgsGrassModuleInput ( 
+                               mModule, key, e, gDocElem, gnode, mParent );
+
+			layout->addWidget ( mi );
+			created = true;
+			mItems.push_back(mi);
+		    }
+		} 
+
+		if ( !created ) {
+		    QgsGrassModuleOption *so = new QgsGrassModuleOption ( 
+                              mModule, key, e, gDocElem, gnode, mParent );
+		    
+			layout->addWidget ( so );
+			created = true;
+		    mItems.push_back(so);
+		}
+	    } else if ( optionType == "flag" )  {
+		    QgsGrassModuleFlag *flag = new QgsGrassModuleFlag ( 
+                           mModule, key, e, gDocElem, gnode, mParent );
+		    
+		    layout->addWidget ( flag );
+		    mItems.push_back(flag);
+	    }
+	}
+	n = n.nextSibling();
+    }
+
+    QSpacerItem *si = new QSpacerItem ( 10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding );
+    layout->addItem ( si );
+
+}
+
+QStringList QgsGrassModuleStandardOptions::arguments()
+{
+    QStringList arg;
+
+    for ( int i = 0; i < mItems.size(); i++ ) 
+    {
+	QStringList list = mItems[i]->options();
+        
+	for ( QStringList::Iterator it = list.begin(); 
+              it != list.end(); ++it ) 
+        {
+	    arg.append ( *it );
+        }
+    } 
+    return arg;
+}
+
+QgsGrassModuleStandardOptions::~QgsGrassModuleStandardOptions()
+{
 }
 
 QString QgsGrassModule::label ( QString path ) 
@@ -391,15 +461,13 @@ void QgsGrassModule::run()
 	mProcess.clearArguments();
 	mProcess.addArgument( mXName );
 	command = mXName;
+  
+        QStringList list = mOptions->arguments();
 
-	for ( int i = 0; i < mItems.size(); i++ ) {
-	    QStringList list = mItems[i]->options();
-
-	    for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it ) {
-		std::cerr << "option: " << (*it).local8Bit() << std::endl;
-		command.append ( " " + *it );
-		mProcess.addArgument( *it );
-	    }
+	for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it ) {
+	    std::cerr << "option: " << (*it).local8Bit() << std::endl;
+	    command.append ( " " + *it );
+	    mProcess.addArgument( *it );
 	}
 
 	/* WARNING - TODO: there was a bug in GRASS 6.0.0 / 6.1.CVS (< 2005-04-29):
@@ -533,6 +601,12 @@ QDomNode QgsGrassModule::nodeByKey ( QDomElement elem, QString key )
 
      return QDomNode();
 }
+
+/************************ QgsGrassModuleOptions *************************************/
+
+/******************** QgsGrassModuleStandardOptions *********************************/
+
+/************************ QgsGrassModuleOption **************************************/
 
 QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key, 
 	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,

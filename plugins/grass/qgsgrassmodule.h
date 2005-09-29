@@ -40,6 +40,8 @@ class QPixmap;
 class QgsGrassProvider;
 class QgsGrassTools;
 class QgsGrassModuleItem;
+class QgsGrassModuleOptions; 
+class QgsGrassModuleStandardOptions; 
 #include "qgsgrassmodulebase.h"
 
 /*! \class QgsGrassModule
@@ -116,14 +118,87 @@ private:
     //! Parent widget
     QWidget *mParent;
 
-    //! Option items
-    std::vector<QgsGrassModuleItem*> mItems;
-
     //! Running GRASS module
     QProcess mProcess;
 
     //! QGIS directory
     QString mAppDir;
+
+    //! Pointer to options widget
+    QgsGrassModuleOptions *mOptions; 
+};
+
+/*! \class QgsGrassModuleOptions
+ *  \brief Widget with GRASS options.
+ *
+ */
+class QgsGrassModuleOptions
+{
+public:
+    //! Constructor
+    QgsGrassModuleOptions ( 
+            QgsGrassTools *tools, QgsGrassModule *module, 
+            QgisApp *qgisApp, QgisIface *iface ); 
+
+    //! Destructor
+    virtual ~QgsGrassModuleOptions();
+
+    //! Get module options as list of arguments for QProcess
+    virtual QStringList arguments();
+
+protected:
+    //! QGIS application
+    QgisApp *mQgisApp;
+
+    //! Pointer to the QGIS interface object
+    QgisIface *mIface;
+
+    //! Pointer to canvas
+    QgsMapCanvas *mCanvas;
+
+    //! Pointer to GRASS Tools 
+    QgsGrassTools *mTools;
+
+    //! Pointer to GRASS module
+    QgsGrassModule *mModule;
+
+    //! Parent widget
+    QWidget *mParent;
+
+    //! QGIS directory
+    QString mAppDir;
+};
+
+/*! \class QgsGrassModuleStandardOptions
+ *  \brief Widget with GRASS standard options.
+ *
+ */
+class QgsGrassModuleStandardOptions: public QgsGrassModuleOptions, QWidget 
+{
+public:
+    //! Constructor
+    QgsGrassModuleStandardOptions ( 
+            QgsGrassTools *tools, QgsGrassModule *module, 
+            QgisApp *qgisApp, QgisIface *iface,  
+	    QString xname, QDomElement docElem,
+            QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+
+    //! Destructor
+    ~QgsGrassModuleStandardOptions();
+
+    //! Get module options as list of arguments for QProcess
+    QStringList arguments();
+
+private:
+    //! Name of module executable 
+    QString mXName;
+
+    //! Path to module executable 
+    QString mXPath;
+
+    //! Option items
+    std::vector<QgsGrassModuleItem*> mItems;
+
 };
 
 /*! \class QgsGrassModuleItem
