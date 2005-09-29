@@ -48,10 +48,13 @@
 QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition, 
 					int id, QString file ) 
     : QCanvasPolygonalItem(0),
-      mPicturePath ( file ), mPictureValid(false),
-      mCX(-10), mCY(-10), mWidth(0), mHeight(0), mAngle(0),
-      mBoundingRect(0,0,0,0), mAreaPoints(4),
-      mFrame(false)
+      mPicturePath ( file ),
+      mPictureValid(false),
+      mCX(-10), mCY(-10),
+      mWidth(0), mHeight(0), mAngle(0),
+      mFrame(false),
+      mAreaPoints(4),
+      mBoundingRect(0,0,0,0)
 {
 #ifdef QGISDEBUG
     std::cout << "QgsComposerPicture::QgsComposerPicture()" << std::endl;
@@ -72,9 +75,11 @@ QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition,
     writeSettings();
 }
 
-QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition, int id ) 
-    : QCanvasPolygonalItem(0), mBoundingRect(0,0,0,0), mAreaPoints(4),
-      mFrame(false)
+QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition, int id ) :
+    QCanvasPolygonalItem(0),
+    mFrame(false),
+    mAreaPoints(4),
+    mBoundingRect(0,0,0,0)
 {
 #ifdef QGISDEBUG
     std::cout << "QgsComposerPicture::QgsComposerPicture()" << std::endl;

@@ -30,9 +30,9 @@ QgsGeometry::QgsGeometry()
     mWkt(0),
     mGeos(0),
     
-    mDirtyGeos(FALSE),
     mDirtyWkb(FALSE),
-    mDirtyWkt(FALSE)
+    mDirtyWkt(FALSE),
+    mDirtyGeos(FALSE)
 {
   // NOOP
 }    
@@ -43,9 +43,9 @@ QgsGeometry::QgsGeometry( QgsGeometry const & rhs )
       mGeometrySize( rhs.mGeometrySize ),
       mWkt( rhs.mWkt ),
       
-      mDirtyGeos( rhs.mDirtyGeos ),
       mDirtyWkb( rhs.mDirtyWkb ),
-      mDirtyWkt( rhs.mDirtyWkt )
+      mDirtyWkt( rhs.mDirtyWkt ),
+      mDirtyGeos( rhs.mDirtyGeos )
 {      
   
   

@@ -453,16 +453,16 @@ bool QgsRasterLayer::isValidRasterFileName(QString * theFileNameQString)
 QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     : QgsMapLayer(RASTER, baseName, path),
     // XXX where is this? popMenu(0), //popMenu is the contextmenu obtained by right clicking on the legend
+    rasterXDimInt( std::numeric_limits<int>::max() ),
+    rasterYDimInt( std::numeric_limits<int>::max() ),
+    showDebugOverlayFlag(false),
     invertHistogramFlag(false),
     stdDevsToPlotDouble(0),
     transparencyLevelInt(255), // 0 is completely transparent
-    showDebugOverlayFlag(false),
-    mLayerProperties(0x0),
     mTransparencySlider(0x0),
+    mLayerProperties(0x0),
     mIdentifyResults(0),
-    dataProvider(0),
-    rasterXDimInt( std::numeric_limits<int>::max() ),
-    rasterYDimInt( std::numeric_limits<int>::max() )
+    dataProvider(0)
 
 {
   // Initialise the affine transform matrix
@@ -4824,19 +4824,19 @@ QgsRasterLayer::QgsRasterLayer(
                                QStringList layers
                                )
     : QgsMapLayer(RASTER, baseName, rasterLayerPath),
-    providerKey(providerKey),
-    mEditable(false),
-    mModified(false),
+    rasterXDimInt( std::numeric_limits<int>::max() ),
+    rasterYDimInt( std::numeric_limits<int>::max() ),
+    showDebugOverlayFlag(false),
     invertHistogramFlag(false),
     stdDevsToPlotDouble(0),
     transparencyLevelInt(255), // 0 is completely transparent
-    showDebugOverlayFlag(false),
-    mLayerProperties(0x0),
     mTransparencySlider(0x0),
+    mLayerProperties(0x0),
     mIdentifyResults(0),
+    providerKey(providerKey),
     dataProvider(0),
-    rasterXDimInt( std::numeric_limits<int>::max() ),
-    rasterYDimInt( std::numeric_limits<int>::max() )
+    mEditable(false),
+    mModified(false)
 
 {
 

@@ -30,8 +30,13 @@
 #include <iostream>
 #include <stdlib.h>
 
-QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):QTable(parent, name), lockKeyPressed(false),
-									 sort_ascending(true), mActionPopup(0), mEditable(false), mEdited(false)
+QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):
+        QTable(parent, name),
+        lockKeyPressed(false),
+        sort_ascending(true),
+        mEditable(false),
+        mEdited(false),
+        mActionPopup(0)
 {
   QFont f(font());
   f.setFamily("Helvetica");

@@ -45,19 +45,19 @@
 
 QgsMapLayer::QgsMapLayer(int type,
                          QString lyrname,
-                         QString source)
-        : internalName(lyrname),
+                         QString source) :
+        valid(true), // assume the layer is valid (data source exists and 
+                     // can be used) until we learn otherwise
+        dataSource(source),
+        internalName(lyrname),
+        mShowInOverviewItemId(0),
+        mShowInOverview(false),
+        mCoordinateTransform(NULL),
+        mLegendSymbologyGroupParent(0),
+        mLegendLayerFile(0),
         ID(""),
-	  mCoordinateTransform(NULL),
-	  mLegendSymbologyGroupParent(0),
-	  mLegendLayerFile(0),
-	  layerType(type),
-	  dataSource(source),
-	  m_visible(true),
-	  mShowInOverview(false),
-	  mShowInOverviewItemId(0),
-	  valid(true) // assume the layer is valid (data source exists and can be
-    // used) until we learn otherwise
+        layerType(type),
+        m_visible(true)
 
 {
 #ifdef QGISDEBUG

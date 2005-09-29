@@ -28,9 +28,9 @@ email                : sherman at mrcc.com
 //! Constructor
 QgsFeature::QgsFeature()
     : mFid(0), 
-      mDirty(0),
       mGeometry(0),
-      mOwnsGeometry(0)
+      mOwnsGeometry(0),
+      mDirty(0)
 {
   // NOOP
 }
@@ -38,9 +38,9 @@ QgsFeature::QgsFeature()
 
 QgsFeature::QgsFeature(int id, QString const & typeName )
     : mFid(id), 
-      mDirty(0),
       mGeometry(0),
       mOwnsGeometry(0),
+      mDirty(0),
       mTypeName(typeName)
 {
   // NOOP
@@ -50,9 +50,9 @@ QgsFeature::QgsFeature( QgsFeature const & rhs,
                         std::map<int,std::map<QString,QString> > & changedAttributes,
                         std::map<int, QgsGeometry> & changedGeometries )
     : mFid( rhs.mFid ), 
-      mDirty( rhs.mDirty ),
       fieldNames( rhs.fieldNames ),
       mValid( rhs.mValid ),
+      mDirty( rhs.mDirty ),
       mTypeName( rhs.mTypeName )
 
 {
@@ -121,10 +121,10 @@ QgsFeature::QgsFeature( QgsFeature const & rhs,
 
 QgsFeature::QgsFeature( QgsFeature const & rhs )
     : mFid( rhs.mFid ), 
-      mDirty( rhs.mDirty ),
       attributes( rhs.attributes ),
       fieldNames( rhs.fieldNames ),
       mValid( rhs.mValid ),
+      mDirty( rhs.mDirty ),
       mTypeName( rhs.mTypeName )
 {
 

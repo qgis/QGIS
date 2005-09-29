@@ -33,45 +33,45 @@
 #include <qrect.h>
 #include <qpointarray.h>
 
-QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString label)
-    : mType(t),
+QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString label) : 
       mLowerValue(lvalue),
       mUpperValue(uvalue),
       mLabel(label),
+      mType(t),
       mPointSymbolName( "hard:circle" ),
       mPointSize( 6 ),
-      mCacheUpToDate( false ),
-      mCacheUpToDate2( false ),
-      mPointSymbolPixmap(1,1),
       mOversampling(1),
-      mWidthScale(1.0)
+      mPointSymbolPixmap(1,1),
+      mWidthScale(1.0),
+      mCacheUpToDate( false ),
+      mCacheUpToDate2( false )
 {}
 
 
-QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString label, QColor c)
-    : mType(t),
+QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString label, QColor c) : 
       mLowerValue(lvalue),
       mUpperValue(uvalue),
       mLabel(label),
+      mType(t),
       mPen( c ),
       mBrush( c ),
       mPointSymbolName( "hard:circle" ),
       mPointSize( 6 ),
-      mCacheUpToDate( false ),
-      mCacheUpToDate2( false ),
-      mPointSymbolPixmap(1,1),
       mOversampling(1),
-      mWidthScale(1.0)
+      mPointSymbolPixmap(1,1),
+      mWidthScale(1.0),
+      mCacheUpToDate( false ),
+      mCacheUpToDate2( false )
 {}
 
 QgsSymbol::QgsSymbol()
     : mPointSymbolName( "hard:circle" ),
       mPointSize( 6 ),
-      mCacheUpToDate( false ),
-      mCacheUpToDate2( false ),
-      mPointSymbolPixmap(1,1),
       mOversampling(1),
-      mWidthScale(1.0)
+      mPointSymbolPixmap(1,1),
+      mWidthScale(1.0),
+      mCacheUpToDate( false ),
+      mCacheUpToDate2( false )
 {}
 
 
@@ -80,11 +80,11 @@ QgsSymbol::QgsSymbol(QColor c)
       mBrush( c ),
       mPointSymbolName( "hard:circle" ),
       mPointSize( 6 ),
-      mCacheUpToDate( false ),
-      mCacheUpToDate2( false ),
-      mPointSymbolPixmap(1,1),
       mOversampling(1),
-      mWidthScale(1.0)
+      mPointSymbolPixmap(1,1),
+      mWidthScale(1.0),
+      mCacheUpToDate( false ),
+      mCacheUpToDate2( false )
 {}
 
 QgsSymbol::~QgsSymbol()
