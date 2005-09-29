@@ -9,4 +9,7 @@ lib*.lo
 libqgis.la
 .deps
 .libs
+*lexer.cc
+*parser.cc
+*parser.h
 
