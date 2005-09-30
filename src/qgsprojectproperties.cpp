@@ -42,6 +42,7 @@
 #include <qcolor.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
+#include <qtoolbutton.h>
 #include <qcheckbox.h>
 #include <qregexp.h>
 #include <qlistview.h>

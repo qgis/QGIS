@@ -77,9 +77,6 @@
                     <property name="autoDefault">
                         <bool>true</bool>
                     </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
@@ -229,15 +226,21 @@
                                     <number>1</number>
                                 </property>
                             </widget>
-                            <widget class="QPushButton" row="2" column="2">
+                            <widget class="QToolButton" row="2" column="2">
                                 <property name="name">
                                     <cstring>pbnDigitisedLineColour</cstring>
                                 </property>
+                                <property name="minimumSize">
+                                    <size>
+                                        <width>0</width>
+                                        <height>22</height>
+                                    </size>
+                                </property>
                                 <property name="paletteBackgroundColor">
                                     <color>
-                                        <red>111</red>
-                                        <green>244</green>
-                                        <blue>200</blue>
+                                        <red>255</red>
+                                        <green>0</green>
+                                        <blue>0</blue>
                                     </color>
                                 </property>
                                 <property name="text">
@@ -403,29 +406,22 @@
                                     <string>Selection Color:</string>
                                 </property>
                             </widget>
-                            <widget class="QPushButton" row="0" column="2">
+                            <widget class="QToolButton" row="0" column="2">
                                 <property name="name">
                                     <cstring>pbnSelectionColour</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>5</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
                                 </property>
                                 <property name="minimumSize">
                                     <size>
                                         <width>120</width>
-                                        <height>0</height>
+                                        <height>22</height>
                                     </size>
                                 </property>
-                                <property name="maximumSize">
-                                    <size>
-                                        <width>120</width>
-                                        <height>32767</height>
-                                    </size>
+                                <property name="paletteBackgroundColor">
+                                    <color>
+                                        <red>255</red>
+                                        <green>255</green>
+                                        <blue>0</blue>
+                                    </color>
                                 </property>
                                 <property name="text">
                                     <string></string>
