@@ -247,10 +247,6 @@
                     <property name="name">
                         <cstring>btnClose</cstring>
                     </property>
-                    <property name="font">
-                        <font>
-                        </font>
-                    </property>
                     <property name="text">
                         <string>&amp;Close</string>
                     </property>
