@@ -34,7 +34,7 @@ class QgsLayerProjectionSelector :public QgsLayerProjectionSelectorBase{
     /**
      * Constructor
      */
-    QgsLayerProjectionSelector();
+    QgsLayerProjectionSelector(QWidget *parent=0, const char *name=0, bool modal=true);
     //! Destructor
     ~QgsLayerProjectionSelector();
 

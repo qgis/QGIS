@@ -34,7 +34,8 @@
  * \class QgsOptions - Set user options and preferences
  * Constructor
  */
-QgsOptions::QgsOptions(QWidget *parent, const char *name) : QgsOptionsBase(parent, name)
+QgsOptions::QgsOptions(QWidget *parent, const char *name, bool modal) :
+  QgsOptionsBase(parent, name, modal)
 {
   qparent = parent;
   // read the current browser and set it
@@ -179,7 +180,7 @@ void QgsOptions::findBrowser()
 void QgsOptions::pbnSelectProjection_clicked()
 {
   QSettings settings;
-  QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector();
+  QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector(this);
   mySelector->setSelectedSRSID(mGlobalSRSID);
   if(mySelector->exec())
   {

@@ -35,7 +35,14 @@
 #include "qgsmapcanvas.h"
 
 QgsBookmarks::QgsBookmarks(QWidget *parent, const char *name)
-  : mParent(parent)
+#ifdef Q_OS_MACX
+  // Mac modeless dialog dosn't have correct window type if parent is specified
+  : QgsBookmarksBase(NULL, name),
+#else
+  // Specifying parent suppresses separate taskbar entry for dialog
+  : QgsBookmarksBase(parent, name),
+#endif
+  mParent(parent)
 {
   // make sure the users database for bookmarks exists
   mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
