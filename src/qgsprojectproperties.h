@@ -37,7 +37,7 @@ class QgsProjectProperties : public QgsProjectPropertiesBase
   Q_OBJECT
 public:
     //! Constructor
-  QgsProjectProperties(QWidget *parent = 0, const char * name = 0);
+  QgsProjectProperties(QWidget *parent = 0, const char * name = 0, bool modal = true);
 
   //! Destructor
   ~QgsProjectProperties();

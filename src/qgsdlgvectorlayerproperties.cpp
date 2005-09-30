@@ -414,7 +414,7 @@ void QgsDlgVectorLayerProperties::pbnQueryBuilder_clicked()
   // create the query builder object using the table name
   // and postgres connection from the provider
   QgsPgQueryBuilder *pqb =
-      new QgsPgQueryBuilder(myPGProvider->getURI());
+      new QgsPgQueryBuilder(myPGProvider->getURI(), this);
        
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)

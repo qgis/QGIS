@@ -43,11 +43,12 @@ email                : tim@linfiniti.com
 #include <qglobal.h>
 
 const char * const ident = 
-"$Id";
+  "$Id$";
 
 
-    QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr)
-: rasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
+QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *parent, const char *name, bool modal)
+: QgsRasterLayerPropertiesBase(parent, name, modal), 
+  rasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
 {
 
   // set up the scale based layer visibility stuff....

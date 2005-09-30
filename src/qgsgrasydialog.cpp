@@ -387,7 +387,7 @@ void QgsGraSyDialog::changeClass(QListBoxItem* item)
     {
 	symbol=iter->second;
     }
-    QgsLUDialog dialog;
+    QgsLUDialog dialog(this);
     
     if(symbol)
     {

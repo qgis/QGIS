@@ -48,8 +48,14 @@ extern "C"{
 }
 
 
-QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const char* name , Qt::WFlags fl  )
-    : QgsCustomProjectionDialogBase( parent, "Projection Designer", fl )
+QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const char* name , WFlags fl  )
+#ifdef Q_OS_MACX
+  // Mac modeless dialog dosn't have correct window type if parent is specified
+  : QgsCustomProjectionDialogBase( NULL, name, false, fl)
+#else
+  // Specifying parent suppresses separate taskbar entry for dialog
+  : QgsCustomProjectionDialogBase( parent, name, false, fl)
+#endif
 {
   mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
   // first we look for ~/.qgis/qgis.db

@@ -29,7 +29,7 @@ class QgsLUDialog: public QgsLUDialogBase
 {
     Q_OBJECT
  public:
-    QgsLUDialog();
+    QgsLUDialog(QWidget *parent=0, const char *name=0, bool modal=true);
     ~QgsLUDialog();
     QString lowerValue() const;
     void setLowerValue(QString val);
