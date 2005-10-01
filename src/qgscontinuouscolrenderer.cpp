@@ -176,7 +176,7 @@ void QgsContinuousColRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl
     QDomNode lsymbolnode = lowernode.namedItem("symbol");
     if( ! lsymbolnode.isNull() )
     {
-	QgsSymbol* lsy = new QgsSymbol();
+	QgsSymbol* lsy = new QgsSymbol(mVectorType);
 	lsy->readXML ( lsymbolnode );
 	this->setMinimumSymbol(lsy);
     }
@@ -184,7 +184,7 @@ void QgsContinuousColRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl
     QDomNode usymbolnode = uppernode.namedItem("symbol");
     if( ! usymbolnode.isNull() )
     {
-	QgsSymbol* usy = new QgsSymbol();
+	QgsSymbol* usy = new QgsSymbol(mVectorType);
 	usy->readXML ( usymbolnode );
 	this->setMaximumSymbol(usy);
     }

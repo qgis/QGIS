@@ -23,6 +23,7 @@
 
 using namespace std;
 
+#include "qgslegend.h"
 #include "qgsrect.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
@@ -865,6 +866,7 @@ static pair< bool, list<QDomNode> > _getMapLayers(QDomDocument const &doc)
         if ( mapLayer->readXML(node) )
         {
             mapLayer = QgsMapLayerRegistry::instance()->addMapLayer(mapLayer);
+	    mapLayer->refreshLegend();
         }
         else
         {
@@ -881,8 +883,6 @@ static pair< bool, list<QDomNode> > _getMapLayers(QDomDocument const &doc)
     return make_pair(returnStatus, brokenNodes);
 
 } // _getMapLayers
-
-
 
 
 /**
@@ -1122,6 +1122,22 @@ bool QgsProject::read()
 //         return false;
     }
 
+    //restore legend
+    QgsMapCanvas *theMapCanvas = _findMapCanvas("theMapCanvas");
+    if(theMapCanvas)
+    {
+	QgsLegend* theLegend = theMapCanvas->getLegend();
+	if(theLegend)
+	{
+	    QDomNodeList ll = doc->elementsByTagName("legend");
+	    if(ll.count()==1)
+	    {
+		QDomNode legendnode = ll.item(0);
+		theLegend->readXML(legendnode);
+	    }
+	}
+    }
+
     // can't be dirty since we're allegedly in pristine state
     dirty(false);
 
@@ -1271,6 +1287,17 @@ bool QgsProject::write()
     {
         theMapCanvas->writeXML(qgisNode, *doc);
     }
+
+    //save legend settings
+    if(theMapCanvas)
+    {
+	QgsLegend* theLegend = theMapCanvas->getLegend();
+	if(theLegend)
+	{
+	    theLegend->writeXML(qgisNode, *doc);
+	}
+    }
+
     // now add the optional extra properties
 
     dump_(imp_->properties_);

@@ -37,7 +37,10 @@ QgsLegendLayerFile::QgsLegendLayerFile(QListViewItem * theLegendItem, QString th
   //visibility check box
   mVisibilityCheckBox = new QCheckBox(listView());
   ((QgsLegend*)(listView()))->registerCheckBox(this, mVisibilityCheckBox);
-  mVisibilityCheckBox->setChecked(true);
+  if(mLayer->visible())
+  {
+      mVisibilityCheckBox->setChecked(true);
+  }
   mVisibilityCheckBox->hide();
   QObject::connect(mVisibilityCheckBox, SIGNAL(toggled(bool)), mLayer, SLOT(setVisible(bool)));
 
