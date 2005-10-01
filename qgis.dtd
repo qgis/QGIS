@@ -120,7 +120,7 @@ outlinecolor,outlinestyle,outlinewidth,fillcolor,fillpattern) >
 <!ELEMENT legend (legendgroup* | legendlayer*) >
 <!ATTLIST legend open (1|0|true|false) "false"> #open or closed
 <!ELEMENT legendgroup>
-<!ATTLIST legendgroup open (1|0|true|false) "false"> #open or closed
+<!ATTLIST legendgroup open (1|0|true|false) "false" name CDATA> #open or closed
 <!ELEMENT legendlayer>
 <!ATTLIST legendlayer open (1|0|true|false) "false"> #open or closed
 <!ELEMENT legendlayerfilegroup>

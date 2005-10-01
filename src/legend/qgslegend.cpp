@@ -633,3 +633,199 @@ void QgsLegend::collapseAll()
 	++it;
     } 
 }
+
+bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
+{
+    QDomElement legendnode = document.createElement("legend");
+    layer_node.appendChild(legendnode);
+
+    QDomElement tmplegendnode = legendnode; /*copy of the legendnode*/
+    QDomElement legendgroupnode;
+    QDomElement legendlayernode;
+    QDomElement layerfilegroupnode;
+    QDomElement legendsymbolnode;
+    QDomElement legendpropertynode;
+    
+    QListViewItemIterator it(this);
+    while(it.current()) 
+    {
+	QgsLegendItem *item = dynamic_cast<QgsLegendItem*>(it.current());
+	if(item)
+	{
+	    switch(item->type())
+	    {
+		case QgsLegendItem::LEGEND_GROUP:
+		    //make sure the legendnode is 'legend' again after a legend group
+		    if(!(item->parent()))
+		    {
+			legendnode = tmplegendnode;
+		    }
+		    legendgroupnode = document.createElement("legendgroup");
+		    if(item->isOpen())
+		    {
+			legendgroupnode.setAttribute("open","true");
+		    }
+		    else
+		    {
+			legendgroupnode.setAttribute("open","false");
+		    }
+		    legendgroupnode.setAttribute("name",item->text(0));
+		    legendnode.appendChild(legendgroupnode);
+		    tmplegendnode =  legendnode;
+		    legendnode = legendgroupnode;
+		    break;
+
+		case QgsLegendItem::LEGEND_LAYER:
+		    //make sure the legendnode is 'legend' again after a legend group
+		    if(!(item->parent()))
+		    {
+			legendnode = tmplegendnode;
+		    }
+		    legendlayernode = document.createElement("legendlayer");
+		    if(item->isOpen())
+		    {
+			legendlayernode.setAttribute("open","true");
+		    }
+		    else
+		    {
+			legendlayernode.setAttribute("open","false");
+		    }
+		    legendnode.appendChild(legendlayernode);
+		    break;
+
+		case QgsLegendItem::LEGEND_PROPERTY_GROUP:
+		    legendpropertynode = document.createElement("propertygroup");
+		    if(item->isOpen())
+		    {
+			legendpropertynode.setAttribute("open","true");	
+		    }
+		    else
+		    {
+			legendpropertynode.setAttribute("open","false");
+		    }
+		    legendlayernode.appendChild(legendpropertynode);
+		    break;
+
+		case QgsLegendItem::LEGEND_SYMBOL_GROUP:
+		    legendsymbolnode = document.createElement("symbolgroup");
+		    if(item->isOpen())
+		    {
+			legendsymbolnode.setAttribute("open", "true");
+		    }
+		    else
+		    {
+			legendsymbolnode.setAttribute("open", "false");
+		    }
+		    legendlayernode.appendChild(legendsymbolnode);
+		    break;
+		
+  
+		case QgsLegendItem::LEGEND_LAYER_FILE_GROUP:
+		    layerfilegroupnode = document.createElement("filegroup");
+		    if(item->isOpen())
+		    {
+			layerfilegroupnode.setAttribute("open", "true");
+		    }
+		    else
+		    {
+			layerfilegroupnode.setAttribute("open", "false");
+		    }
+		    legendlayernode.appendChild(layerfilegroupnode);
+		    break;
+
+		default: //do nothing for the leaf nodes
+		    break;
+	    }
+	}
+	++it;
+    }
+    return true;
+}
+
+bool QgsLegend::readXML(QDomNode& legendnode)
+{
+    QString open;
+    QListViewItemIterator it(this);
+    QListViewItem* theItem = firstChild(); //first level hierarchy items
+    QListViewItem* prevchild = 0; //store last value of theItem because of legend group
+    QListViewItem* secondLevelItem = 0; //second level item
+    QgsLegendGroup* group = 0; //pointer to the last inserted legend group
+
+    QDomNode child = legendnode.firstChild();
+    if(!child.isNull())
+    {
+	do //iterate over legend layers/ legend groups
+	{
+	    //simplified: only legend layers
+	    QDomElement legendlayerelem = child.toElement();//todo: distinguish between legend layer and legend group
+	    
+	    if(legendlayerelem.tagName()=="legendgroup")
+	    {
+		group = new QgsLegendGroup(this, legendlayerelem.attribute("name"));
+		open = legendlayerelem.attribute("open");
+		if(open == "true")
+		{
+		    group->setOpen(true);
+		}
+		if(theItem != firstChild())
+		{
+		    group->moveItem(prevchild);
+		    theItem = group->nextSibling(); //go one hierarchy step down
+		    child = child.firstChild();
+		}
+		continue;
+	    }
+
+	    open = legendlayerelem.attribute("open");
+	    if(child.parentNode().toElement().tagName()=="legendgroup")
+	    {
+		group->insertItem(theItem);
+	    }
+	    if(open == "true")
+	    {
+		theItem->setOpen(true);
+	    }
+
+	    //file group
+	    secondLevelItem = theItem->firstChild();
+	    QDomNode filegroupnode = child.firstChild();
+	    QDomElement filegroupelem = filegroupnode.toElement();
+	    open = filegroupelem.attribute("open");
+	    if(open == "true")
+	    {
+		secondLevelItem->setOpen(true);
+	    }
+
+	    //symbology group
+	    secondLevelItem = secondLevelItem->nextSibling();
+	    QDomNode symbologygroupnode = filegroupnode.nextSibling();
+	    QDomElement symbologygroupelem = symbologygroupnode.toElement();
+	    open = symbologygroupelem.attribute("open");
+	    if(open == "true")
+	    {
+		secondLevelItem->setOpen(true);
+	    }
+
+	    //property group
+	    secondLevelItem = secondLevelItem->nextSibling();
+	    QDomNode propertygroupnode = symbologygroupnode.nextSibling();
+	    QDomElement propertygroupelem = propertygroupnode.toElement();
+	    open = propertygroupelem.attribute("open");
+	    {
+		secondLevelItem->setOpen(true);
+	    }
+
+	    if(!theItem->nextSibling() && theItem->parent()) //go one hierarchy step up
+	    {
+		theItem = theItem->parent();
+		child = child.parentNode();
+	    }
+
+	    prevchild = theItem;
+	    theItem = theItem->nextSibling();
+	    child=child.nextSibling();
+	}
+	while(!(child.isNull()));
+    }
+    return true;
+}

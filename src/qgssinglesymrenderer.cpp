@@ -122,7 +122,7 @@ void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture*
 void QgsSingleSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
     mVectorType = vl.vectorType();
-    QgsSymbol* sy = new QgsSymbol();
+    QgsSymbol* sy = new QgsSymbol(mVectorType);
 
     QDomNode synode = rnode.namedItem("symbol");
     

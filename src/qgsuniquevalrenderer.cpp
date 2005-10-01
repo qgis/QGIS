@@ -158,7 +158,7 @@ void QgsUniqueValRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     QDomNode symbolnode = rnode.namedItem("symbol");
     while (!symbolnode.isNull())
     {
-	QgsSymbol* msy = new QgsSymbol();
+	QgsSymbol* msy = new QgsSymbol(mVectorType);
 	msy->readXML ( symbolnode );
 	this->insertValue(msy->lowerValue(),msy);
 	symbolnode = symbolnode.nextSibling();

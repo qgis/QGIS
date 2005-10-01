@@ -371,8 +371,11 @@ void QgsMapLayer::setVisible(bool vis)
   if (m_visible != vis)
   {
       m_visible = vis;
-      mLegendLayerFile->toggleCheckBox(vis);
-      emit visibilityChanged();  
+      if(mLegendLayerFile)
+      {
+	  mLegendLayerFile->toggleCheckBox(vis);
+      }
+      emit visibilityChanged();
   }
 }
 

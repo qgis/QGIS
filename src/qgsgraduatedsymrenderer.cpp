@@ -152,7 +152,7 @@ void QgsGraduatedSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     QDomNode symbolnode = rnode.namedItem("symbol");
     while (!symbolnode.isNull())
     {
-	QgsSymbol* sy = new QgsSymbol();
+	QgsSymbol* sy = new QgsSymbol(mVectorType);
 	sy->readXML ( symbolnode );
 	this->addSymbol(sy);
 
