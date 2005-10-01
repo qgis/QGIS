@@ -445,8 +445,8 @@ void QgsProjectionSelector::getProjList()
     myProgressBar.setProgress(myProgress);
     while(sqlite3_step(ppStmt) == SQLITE_ROW)
     {
-      // only update the progress dialog every 10 records
-      if((myProgress++ % 10) == 0)
+      // only update the progress dialog every 200 records
+      if((myProgress++ % 200) == 0)
       {
         myProgressBar.setProgress(myProgress++);
       }
@@ -489,6 +489,7 @@ void QgsProjectionSelector::getProjList()
     // see a progress dialog end at 99%)
     myProgressBar.setProgress(myEntriesCount);
   }
+  std::cout << "Size of projection list widget : " << sizeof(*lstCoordinateSystems) << std::endl;
   // close the sqlite3 statement
   sqlite3_finalize(ppStmt);
   // close the database

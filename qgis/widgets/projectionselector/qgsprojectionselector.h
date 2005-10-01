@@ -81,6 +81,8 @@ signals:
       void sridSelected(QString theSRID);
       //! Refresh any listening canvases
       void refresh();
+      //! Let listeners know if find has focus so they can adjust the default button
+      void searchBoxHasFocus(bool);
 };
 
 #endif
