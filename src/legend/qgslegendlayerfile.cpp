@@ -25,8 +25,9 @@
 #include "qgsrasterlayerproperties.h"
 #include <qapplication.h>
 #include <qcheckbox.h>
-#include <qpixmap.h>
 #include <qobject.h>
+#include <qpixmap.h>
+#include <qpainter.h>
 #include <qpopupmenu.h>
 
 QgsLegendLayerFile::QgsLegendLayerFile(QListViewItem * theLegendItem, QString theString, QgsMapLayer* theLayer)
@@ -37,14 +38,30 @@ QgsLegendLayerFile::QgsLegendLayerFile(QListViewItem * theLegendItem, QString th
   //visibility check box
   mVisibilityCheckBox = new QCheckBox(listView());
   ((QgsLegend*)(listView()))->registerCheckBox(this, mVisibilityCheckBox);
+  QPixmap originalPixmap = getOriginalPixmap();
+
+  //ensure the checkbox is properly checked/ unchecked
   if(mLayer->visible())
   {
       mVisibilityCheckBox->setChecked(true);
   }
+
+  //ensure the overview glasses is painted if necessary
+  if(mLayer->showInOverviewStatus())
+  {
+#if defined(Q_OS_MACX) || defined(WIN32) 
+      QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+#else
+      QString pkgDataPath(PKGDATAPATH);
+#endif  
+      QPixmap inOverviewPixmap(pkgDataPath+QString("/images/icons/inoverview.png"));
+      QPainter p(&originalPixmap);
+      p.drawPixmap(0,0,inOverviewPixmap);
+  }
   mVisibilityCheckBox->hide();
   QObject::connect(mVisibilityCheckBox, SIGNAL(toggled(bool)), mLayer, SLOT(setVisible(bool)));
 
-  setPixmap(0, getOriginalPixmap());
+  setPixmap(0, originalPixmap);
 }
 
 

@@ -344,10 +344,10 @@ void QgsLegend::handleRightClickEvent(QListViewItem* item, const QPoint& positio
 	    else if(li->type() == QgsLegendItem::LEGEND_LAYER)
 	    {
 		QPopupMenu pm;
-		pm.insertItem(tr("&Remove"), this, SLOT(legendLayerRemove()));
+		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("remove.png"))), tr("&Remove"), this, SLOT(legendLayerRemove()));
 		pm.insertItem(tr("&Properties"), this, SLOT(legendLayerShowProperties()));
-		pm.insertItem(tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
-		pm.insertItem(tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
+		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("inoverview.png"))), tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
+		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("remove_from_overview.png"))), tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
 		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
 		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
 		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
