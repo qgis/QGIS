@@ -830,6 +830,7 @@ void QgsPostgresProvider::getFeatureAttributes(int key, int &row, QgsFeature *f)
       f->addAttribute(fld, val);
     }
   }
+  PQclear(attr);
 } 
 
 /**Fetch attributes with indices contained in attlist*/
@@ -838,10 +839,8 @@ void QgsPostgresProvider::getFeatureAttributes(int key, int &row,
     std::list<int> const & attlist)
 {
   std::list<int>::const_iterator iter;
-  int i=-1;
   for(iter=attlist.begin();iter!=attlist.end();++iter)
   {
-    ++i;
     QString sql = QString("select %1 from \"%2\" where %3 = %4")
       .arg(fields()[*iter].name())
       .arg(tableName)
@@ -854,11 +853,12 @@ void QgsPostgresProvider::getFeatureAttributes(int key, int &row,
     if(fld != geometryColumn)
     {
       // Add the attribute to the feature
-      //QString val = mEncoding->toUnicode(PQgetvalue(attr,0, i));
-	QString val = QString::fromUtf8(PQgetvalue(attr, row, i));
+      //QString val = mEncoding->toUnicode(PQgetvalue(attr,0, 0));
+	QString val = QString::fromUtf8(PQgetvalue(attr, row, 0));
       //qWarning(val);
       f->addAttribute(fld, val);
     }
+    PQclear(attr);
   }
 }
 
@@ -1263,6 +1263,7 @@ void QgsPostgresProvider::findColumns(QString relationName, tableCols& cols)
   PGresult* result = PQexec(connection, (const char*)(sql.utf8()));
   for (int i = 0; i < PQntuples(result); ++i)
     columnNames.push_back(PQgetvalue(result, i, 0));
+  PQclear(result);
   // Iterate over all of the columns in the given relation and work
   // downwards until we reach a table (rather than a view).
   columnNamesType::const_iterator i = columnNames.begin();
@@ -1834,6 +1835,7 @@ QString QgsPostgresProvider::postgisVersion(PGconn *connection){
 #ifdef QGISDEBUG
   std::cerr << "PostGIS version info: " << postgisVersionInfo.local8Bit() << std::endl;
 #endif
+  PQclear(result);
   // assume no capabilities
   geosAvailable = false;
   gistAvailable = false;
@@ -2532,6 +2534,7 @@ bool QgsPostgresProvider::deduceEndian()
   PGresult * oidResult = PQexec(connection, (const char*)(firstOid.utf8()));
   // get the int value from a "normal" select
   QString oidValue = PQgetvalue(oidResult,0,0);
+  PQclear(oidResult);
 
 #ifdef QGISDEBUG
   std::cerr << "Creating binary cursor" << std::endl;
