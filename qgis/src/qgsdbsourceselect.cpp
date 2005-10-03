@@ -363,7 +363,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     PGresult* gresult = PQexec(pg, query.local8Bit());
     if (PQresultStatus(gresult) != PGRES_TUPLES_OK)
     {
-      qDebug((tr("Access to relation ") + table + tr(" using sql;\n") + sql +
+      qDebug((tr("Access to relation ") + table + tr(" using sql;\n") + query +
        tr("\nhas failed. The database said:\n") +
        PQresultErrorMessage(gresult)).local8Bit());
     }
