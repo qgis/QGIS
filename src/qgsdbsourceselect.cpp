@@ -390,7 +390,8 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     "pg_attribute, pg_class, pg_type where pg_type.typname = 'geometry' and "
     "pg_attribute.atttypid = pg_type.oid and pg_attribute.attrelid = pg_class.oid "
     "and cast(pg_class.relname as character varying) not in "
-    "(select f_table_name from geometry_columns)";
+    "(select f_table_name from geometry_columns) "
+    "and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
   
   result = PQexec(pg, (const char *) sql);
 
