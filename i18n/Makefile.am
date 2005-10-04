@@ -13,6 +13,7 @@
 i18ndir = ${pkgdatadir}/i18n
 
 nodist_i18n_DATA = \
+	qgis_cs_CZ.qm \
 	qgis_de.qm \
 	qgis_fr.qm \
 	qgis_it.qm \
@@ -25,6 +26,7 @@ nodist_i18n_DATA = \
 	qgis_zh_CN.qm
 
 i18n_SOURCES = \
+	qgis_cs_CZ.ts \
 	qgis_de.ts \
 	qgis_fr.ts \
 	qgis_it.ts \
