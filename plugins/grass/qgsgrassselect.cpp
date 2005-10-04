@@ -62,14 +62,21 @@ QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
     switch ( type ) 
     {
 	case QgsGrassSelect::VECTOR:
-	    setCaption ( "Add GRASS Vector Layer" );
+	    setCaption ( "Select GRASS Vector Layer" );
             break;
 
 	case QgsGrassSelect::RASTER:
 	    /* Remove layer combo box */
 	    Layer->hide();
 	    elayer->hide();
-	    setCaption ( "Add GRASS Raster Layer" );
+	    setCaption ( "Select GRASS Raster Layer" );
+	    break;
+
+	case QgsGrassSelect::MAPCALC:
+	    /* Remove layer combo box */
+	    Layer->hide();
+	    elayer->hide();
+	    setCaption ( "Select GRASS mapcalc schema" );
 	    break;
 	    
 	case QgsGrassSelect::MAPSET:
@@ -125,6 +132,7 @@ QString QgsGrassSelect::lastMapset;
 QString QgsGrassSelect::lastVectorMap;
 QString QgsGrassSelect::lastRasterMap;
 QString QgsGrassSelect::lastLayer;
+QString QgsGrassSelect::lastMapcalc;
 
 void QgsGrassSelect::setLocations()
 {
@@ -256,7 +264,7 @@ void QgsGrassSelect::setMaps()
 		idx++;
 	    }
 	}
-    } else { // raster
+    } else if ( type == RASTER ) {
 	/* add cells */
 	QDir md = QDir( ldpath + "/cell/" );
 	md.setFilter (QDir::Files);
@@ -280,6 +288,20 @@ void QgsGrassSelect::setMaps()
 	    QString m = QString( md[j] + " (GROUP)" );
 	    emap->insertItem ( m, -1 );
 	    if ( m == lastRasterMap ) {
+		sel = idx;
+	    }
+	    idx++;
+	}
+    }
+    else if (type == MAPCALC ) 
+    {
+	QDir md = QDir( ldpath + "/mapcalc/" );
+	md.setFilter (QDir::Files);
+	
+	for ( unsigned int j = 0; j < md.count(); j++ ) {
+	    QString m = QString( md[j] );
+	    emap->insertItem ( m, -1 );
+	    if ( m == lastMapcalc ) {
 		sel = idx;
 	    }
 	    idx++;
@@ -454,7 +476,9 @@ void QgsGrassSelect::accept()
 	} else {
 	    selectedType = QgsGrassSelect::RASTER;
 	}
-    }
+    } else if ( type == QgsGrassSelect::MAPCALC ) {
+	lastMapcalc = map;
+    }	
     QDialog::accept();
 }
 

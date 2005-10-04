@@ -33,6 +33,7 @@
 	<section label="Convert a vector to raster">
 		<grass name="v.to.rast.constant"/>
 	</section>
+	<grass name="r.mapcalc"/>
 	<section label="Geomorphology">
 		<grass name="r.slope.aspect.slope"/>
 		<grass name="r.slope.aspect.aspect"/>

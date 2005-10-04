@@ -31,7 +31,14 @@ public:
     //! Destructor
     ~QgsGrassSelect();
 
-    enum TYPE { VECTOR, RASTER, GROUP, MAPSET }; // GROUP = group of rasters, used in selectedType
+    enum TYPE 
+    { 
+	MAPSET,
+	VECTOR, 
+	RASTER, 
+	GROUP, // group of rasters, used in selectedType
+	MAPCALC // file in $MAPSET/mapcalc directory (used by QgsGrassMapcalc)
+    };
 
     //! OK 
     void accept (void);
@@ -73,6 +80,7 @@ private:
     static QString lastVectorMap;
     static QString lastRasterMap;
     static QString lastLayer; // vector layer
+    static QString lastMapcalc;
 
     void restorePosition(void);
     void saveWindowLocation(void);

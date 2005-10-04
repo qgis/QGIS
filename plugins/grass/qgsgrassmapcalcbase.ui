@@ -1,0 +1,419 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>QgsGrassMapcalcBase</class>
+<widget class="QMainWindow">
+    <property name="name">
+        <cstring>QgsGrassMapcalcBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>461</width>
+            <height>354</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>7</hsizetype>
+            <vsizetype>7</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="minimumSize">
+        <size>
+            <width>299</width>
+            <height>145</height>
+        </size>
+    </property>
+    <property name="caption">
+        <string>Mapcalc</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QFrame" row="0" column="0">
+            <property name="name">
+                <cstring>mInputFrame</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>1</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>0</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Plain</enum>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>3</number>
+                </property>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>mMapComboBox</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>150</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>mConstantLineEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>mFunctionComboBox</cstring>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QFrame" row="1" column="0">
+            <property name="name">
+                <cstring>mViewFrame</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="2" column="0">
+            <property name="name">
+                <cstring>layout4</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Output</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>mOutputLineEdit</cstring>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer4</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>200</width>
+                            <height>16</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+    </grid>
+</widget>
+<toolbars>
+    <toolbar dock="2">
+        <property name="name">
+            <cstring>toolBar</cstring>
+        </property>
+        <property name="label">
+            <string>Tools</string>
+        </property>
+        <action name="mActionAddMap"/>
+        <action name="mActionAddConstant"/>
+        <action name="mActionAddFunction"/>
+        <action name="mActionAddConnection"/>
+        <action name="mActionSelectItem"/>
+        <action name="mActionDeleteItem"/>
+        <separator/>
+        <action name="mActionLoad"/>
+        <action name="mActionSave"/>
+        <action name="mActionSaveAs"/>
+    </toolbar>
+</toolbars>
+<actions>
+    <action>
+        <property name="name">
+            <cstring>mActionSelectItem</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>image0</iconset>
+        </property>
+        <property name="text">
+            <string>Select item</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mActionAddMap</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="on">
+            <bool>true</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>image1</iconset>
+        </property>
+        <property name="text">
+            <string>Add new map</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mActionAddConstant</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>image2</iconset>
+        </property>
+        <property name="text">
+            <string>Add new constant value</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mActionAddFunction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>image3</iconset>
+        </property>
+        <property name="text">
+            <string>Add new operator or function</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mActionDeleteItem</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>image4</iconset>
+        </property>
+        <property name="text">
+            <string>Delete selected item</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mActionAddConnection</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>image5</iconset>
+        </property>
+        <property name="text">
+            <string>Add new connector</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mActionSave</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image6</iconset>
+        </property>
+        <property name="text">
+            <string>Save</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mActionSaveAs</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image7</iconset>
+        </property>
+        <property name="text">
+            <string>Save as</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mActionLoad</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image8</iconset>
+        </property>
+        <property name="text">
+            <string>Open</string>
+        </property>
+    </action>
+</actions>
+<images>
+    <image name="image0">
+        <data format="PNG" length="643">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000024a49444154388d9d94316fd34014c77fe7c6b8b548109d68c2c0c4c282d4c11d00656428c299fa39502546d43266e16374aa920a75a8102262cb86c4170055b104a42934ad5ac7f63d86f8dcc87593b47fc93aebfceef7feefee9d95effb3d52b5dbed1a05ba4d8c35f951447abeeff7f2631e5014974fa4ccc256ab5564e4466a341a9963659c026c6d6d556f03141136373787954a65a894aa01944c26e3787575f5c6e0240ab16d3b328e33707e1beaf5fadc501d857cf9fc89a5a5a58b56ab8552ea123ce9d8a85c2ecf86c623f482a09308c331b28a1ccfe53489d051888e432489c9732cdff77b9399ae93e779789e878890c41149784e125da0a31099706cbacc9a4acba9dbedb2b6b6c6c9f111ff8e8f08cf8663781c5d89bd11d8c05faebfe6f0e70ffa7f7e73713a44c7a32b71a576bb5d2bba39b3e09ee7f1e1fd5be27b771985e768ad49bba296399e678f8be06fde35098280d39313c23054beef5f3a86d95d61dae93ae7af5e3ca5dfef5b3b3b3bda755d05c84cc7a213240aa73afff8f51b4110588d46c3021c40153aee743a63a868741c217131d8dc3280c160606d6f6f737070701f18ccfd77f33cafdaed7633a08864efbbbbbb03cbb268369be2384ed2e9741e67ed66b6233f6e6c6c28a05aad560373498a64dbf6b2e3385909a55c69b5c91253672e7006b0b2b212eceded3d011e2aa5be8b082282526a797f7f1f1111dbb605b8fe502625220b2637e3c379309e1e0b10d775d781e7c02360511592a64b01778045e06f3af70c280311f00b382c15af9d5e00304a213650016a6932491ffe03d8c4466f5b908a3b0000000049454e44ae426082</data>
+    </image>
+    <image name="image1">
+        <data format="PNG" length="583">89504e470d0a1a0a0000000d4948445200000014000000130806000000908c2db50000020e49444154388da5943f68136118c67ff727b6491a53fb076c083a0822c40c220e8aa3839b8b84888320082eba080687b8097612eb62ddba1dd2a1a3434b3288140445a958b0d6da84184a7a6dda24974b72f95ccc71977869aacff4f1ddcbef79def7fd38893f4aa55282ffd4f4f4b4a43a2fcedd79da5394cc4b68d1c1bc5220d4eecb645eb2cf83821c0991bd605ee99279a9a7ce2957422d2afa163bbf75d7758c5d09bbe54cd7cfc819c41378d8f979263c2ca85bf60cf5bd2ad6c7059657d6b999bfcb6be33663e110571e3cb78d3a6d754c3b4b732ecf06fafd0194890857af9f45917d7cf8f49577f3733de9fff6ac9c5dd9c0914080e160105f20487ebfc15aa5496e3337509b4e137b86c7a722c8aa4ab1d6a450ab53aad458dfc8f1f8da799e242ef6a4f292faece59cb870f91296a450a8186c18350c4bd09214466e3d62bb5a85f78b7d211d9385e40dd4d0d110c1d1636c56ea14258bb269620a30a227690c8fd332eab43e2f1fd87679e915b1580cf597aef36da7caf7aac990aaa0c8327b468b49ff1126fc3e4a759396f79bb661994c064dd324f5cdd25b56cc007a53303516626732c28ffd3ae1c24fc2569bc6761943dff284ed2ece92cd66d1344d0270799f78382bcc53a7312cc1d0da2a627e06d3a8502bebb49b0642b81792482488c7e3a4d3699be3028ede7f21da676200c8ab5fd89db97740b3bd72fd6d44690bb9386e9fff45bf014abce732aff6a6110000000049454e44ae426082</data>
+    </image>
+    <image name="image2">
+        <data format="PNG" length="464">89504e470d0a1a0a0000000d4948445200000014000000130806000000908c2db50000019749444154388dbd944d4b1b5114869ff9486b26a6b1c640134abb28b8a96e04a14817a5ddf40774efca45a1eb427f85e0a60addb8f707b8b03b11411094a042424c939286a063924ee6ce4726d7456d30d1e24c90beab730ef7bce7bde79c7be19ea1dc1293577139746ed80f0d19d11f801e81f84eb2bb88fe953cb2c2ebc9c33dfc7fb8f7cafdf12f7dfc24dfbc7dc76ebe84f9b380102e93a924dfbeae445a917e0fe371036d2ac7fb0f33686a8cfd83637636d6232b54ff1ae386c1582241cc4850f3a168f9542bd5d1099f6473a8ba4eddf6a9d90e67964da95c65fae59c9c9d7b15bacffaf2eaba9c7fbd40a068d42c4159d88840d25534c617bf70dee9c0de5668857af25192c4c4632a96435d0968b92eae04f1f439de589aae70e81eee86bff22fd3a470d1e1a8692355154d55697b3d32f1074cc563e88a12e92bd037bf6f93770d4c5f929d4c7291c971fadb2155fb412ae8e19db710662334e140ed679fd7a4fb621a11481e164f901b2bb8c2c26e99049e1d4ae7c05b6e3b1ebde0cf40fd6e40b3721269a96f10cab3066a3dddb747c1252d2ea2390b81d5bf0000000049454e44ae426082</data>
+    </image>
+    <image name="image3">
+        <data format="PNG" length="484">89504e470d0a1a0a0000000d4948445200000014000000130806000000908c2db5000001ab49444154388dc5944d4b5b4114869f997b53cd8d69ea17d450da85e0a6ba110a222ec46efc01ee5db910ba2ef45714dc58a11bf7fe802eeaae14a15050a415143f124983e8d5e8cd9dfb919be942136bbc2644c4be307086e19cf3bc338781ff287db51eac585c7c4bf2a13ab6a338a23b291f9df02e927b3d4eaba4d873b316cccdbfd393536f59dbdcc53edc46299f9e4c5a7f5e5c10ed50d40b269316465f96e999610c99e0e7fa6fbeaf2c37cb155794371ad61fa5cbb2e84ca54858290a21ec3821f95cbe1db89b059f0f6491a649d10d29b81ec78ecbee7e9ea1d7a37a6474ac765fba61d528af2d7ffcb4acdf4c8c13098382a3d8572e2ad2548441d7ec074eca65f8f1b5d16a9c750061a69fa6493deb26e778144544c9f7f135a817af083a7ba9288fcac65a2ba7b5265afeb16db64fcbfc3a73d1526248c97950a53ff984be6402538846a6669f8430bfac7e63d3b7b043cd404f9ad3fe2c7b171e99c20199a84a705242d947cd2cc7a202f0f2fd92f607875091a663670bbdb280af1cdc924d14b8b163d228f3dfcdb917508d2edd849588b3dc565b437daba03e3e42167beb712b4771fa0b2a18aa351fed43650000000049454e44ae426082</data>
+    </image>
+    <image name="image4">
+        <data format="PNG" length="126">89504e470d0a1a0a0000000d4948445200000014000000130806000000908c2db50000004549444154388d636018d9e03f03c37faaab27d650922c27a498549fe0d5449661b834536418ba2154310cdd50aa1a4655efe2e2536418458652351d5235a7d0242f0f7f0000271e31cfa544895e0000000049454e44ae426082</data>
+    </image>
+    <image name="image5">
+        <data format="PNG" length="479">89504e470d0a1a0a0000000d4948445200000014000000130806000000908c2db5000001a649444154388ddd944d6b135114869f7b67629b4963b41fd006d185d08dba290845ba2876e30f70efca45a1eb427f85d08d0a6ebaef0f70a13b91822028450b2db5269286d24e9b7632773e32392e4a625a27a364a7efe61eb8f73ee73de75c2efc9b1264d0ab2a13a652f607d239746097d9e8ff0eda6dfad3c525997fb8c0c6e62eee8f6d8c09192d1579f57cb57346481be225d99d209f77b0c6cb3c7a7c174be7f8f8e92befd7d72e27ff2354778211c761b85020e714a8c5b0e3c5542bd5b48a32cbef0227a7ca68dba6eec7d4fc8043cf6777afcaf49d19b93733db0bc984dacf5eacc9fdb90724caa2e619f68c8f498496b21879b2c251b3091fdef473fa5bf976f16a91c2b5eb54bc80ba4a688421a180b9718b68788c9609687dde4833930ad5fbaecbf671932f273ea23596d69c466d26f25718cfe7b095ca1a8302447a5a60bf7efb8ecdd0c18d85a9d122c71365be9d05946adf29256da2a306c63de84b945fab28501772df5c7e29e1ed694c220ced6c21ebab84c6c36fb82491dfd76707063def10e034886827e739e356c24965ebaf7e9bdea65c00cae101ba3ed68d07d14f2389ac3494a12bd70000000049454e44ae426082</data>
+    </image>
+    <image name="image6">
+        <data format="PNG" length="763">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000002c249444154388dd5943d8f1c4510869fd99d35773ef0c705c8329203021001827f8090900810883f003111227506d14504fc03624840204182217300423210fa641964c9be1577bb33bbd3dd55d5d504333bc7c96b3b764badaaee19bdfdf4dbd50d4f5bab36c90f3ffefa515d4f0f5433b37a42d376c4a464cbccea29661911c52ca36aa86ea271e79f39f3a3c577cd62f5f1cf373e5f00d41be1ba9e1ebcf4cab54b5071edea3e9f7ef10dcb2670e1b95d3efbe4fdc7d27d7fe3167fdebafdc1b75ffd02f0e119e194942e0ad5b0899bbf1f72f9c279ea7af2c46d2f9a0e07dcf3bb23e82691617b55d50bef5fdce3e517aff0c295cb4f14163196cb1529c938772a2c8aa831a97ac2b7df7895abcf5f64ffd2b38f15752f2c9b96e5a2c12c3f2c9cc410cd94629c341defbdf53aa5144a81f9713be4fd7813cd8c939396a307c774216266db887b2bba98f8ed8f3ba865cc32967dc8bdaf889c1131624834cb96f53a707cd212a33c8a581155421c4aca725f529607ff8d98941885b65d11ba484a424a8a88106324e72dc23a58e1ee9cdf3d87651f6ad7a88ae30693929996ccce6cca64f71cb349c56c3ae12804521272f647111b3bcfcc78e7cdd7707742104248a4a4a8da6097f5072d36f62fbffe8979488ff718c02c1342220441d5b6089f5d208920a2dbad484911cd981a77effecbfdfb0daa365c611daeb08ef698f5e23b3b35290a49d2766119c84c95aa2aecedd588802ad475a1ae613a2d98c16452502d5455011c1988ddb7799c94d5ba239bb15a45168b6ea4ea094f1f21111d1fa1d9ac1aac90edc43124d6eb407147d570cfe4fc7037eba3bb8d42fd42b29d38c4440809bc606694e2b8f7bdcff330ee63ce9bbca022a828ee5b88c33ab25eb4e46cac56cbf1e44fabe0ec21aae6f19f75db90ba35bead8e8fe78bebf7fe7e701053e2f65f87e45c46e29c0ba5f8ffe64ebfb917ee1dcee982e2ce759edaf61f121ae0ff0b36cf4c0000000049454e44ae426082</data>
+    </image>
+    <image name="image7">
+        <data format="PNG" length="1079">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000003fe49444154388dd593cb6b5d551487bf73ee39378f9bf7a3a6e94b694b2bb65a1111a13a102b82edc0fe0d0a82e0d006670e041d8aa8d38238d18120522cad5207c596da121f55aad69b3ed2a4499a9b7bef39679fbdd77e38484c93b60a1dba266bb3f8f1b1d66fed15711fb1f03ed5643cfdc00dbcf96a73aa7db53d75e9a3b9b3c78f1e38c9dc9ddae47ec07137bbba7686fdd591ebd1e0de57b635ebd36f0767fb4ef0cd3b074ea2d681bf3e7eee485c8927ac78d224a6d9cad1c6e2ac234d2a586b31c662ade3d78e0f93a7fb8fd7b8f62951fb045d0b8f76deca8b873f0b2f77c217ebc169357d77c7cecdc49598cd63831c79ef738cb13c30dac7c46b2fad0a8364985f5e27f6319440d3b37875961fd28387cf3716a68137d64da7b5509486521b004e9fff83d9f926aa346b64015b3f4a7564065add20fdf8762fbf15db311bf7e0bd3b7497c7462c461c61a53032d8c3eeed1b7968ebe8aac8e737201c230a03a03ba0eca2b950e5f7aea768b60a8cc85dfb488cb118b144d172e1e073fbd83a3ecc86e1de956603be718ab8a30ed910f80a2eebc36e7a9cf9eb63349b0dac75f7020b462cce7b1aad82c32f3e4108811002f38b6d708afef65754077b60b102ba83765ee5726d2f4bb94315e5bf812d228e565672eea73ad63aac7588f558e718f5177876cf34a8412080d4b8382d7ca92d8b799b526b9cfb8f8e556910eb1071cbd93a82e43c367686a46f1c16045c42d1709cbab9911b91c31883526bc1fb60f9365c62c461c4e17da0d655c5a6cb9d6a6de9e347366d0b607a0003b687bfaecdd0ecdb4d8f4bb99917686d70ce03fb52a00ba80226d15a3022f4f674f2c2fe4770ce5396069535e96c9ea636340a6d03a146de70c896e739f4e43318717cfcc9318a4221622ac0c81a27d25856bedb3fdee6b922cf4ba45ca223aa1345034037f8216e3522dae916546968b532f2bc4015eade1e6b2d88388a4253af2f3037d746c452b10d86c7c7408621aae26ccccfd714533d31aa9ca2b33341a912630cdef93bb93e316229b5c11a431c07babb13440249d6c2fbed50dd859319ea93df32dbb117224f9ac684e011238811bc5f053b960f5e275a0bedaca05a89c9b29266b340c4d2b1344f36344054445c3e53e7eccc832c25bdd84c61ad234d638c118c15bcf70168ad403d4c8644294d912b7c9a206271cee1bd23cb0cdf7f779eeeca247fb60650dd9bf062f1dee19c238a02ce59bcb3048287c97cad17b1521aa50c6569b0d61282c77b8f379672fa0a57cc18a677332184d59193a442b59ae2bc47ac5b6bc5ede5a9a2245b6a6192983c6f216211b198da06f48e03844a8d542cb03c490860ad43298d6ab7d0457eafe591cccf2e4e4c5d9e9e10112e5eb884f7cb9d39e757dfb7f3fadaec95065a5bbc8fdeba8bfcbf8bbf01e870cbc9b35858b90000000049454e44ae426082</data>
+    </image>
+    <image name="image8">
+        <data format="PNG" length="750">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000002b549444154388da5944f6855571087bf7beeb9ef3d7d9a16534d8a2022b5a69bd6065c44295a9054d7ae2c2891bad395d0e2425070d58d74e3ba6217dd75215d89285a51083450c8222e8211897992344da3e6be7bce3d335dbcffe6bd8447077e9c99e1de6fe6ce196e347673fee772299e28c686dc077227e42ee0eb67ee04bfc999bb40f0828440c8de206ef5962d97e2896f4687c81c6455a86650add695425a8534adabdd4f410c380517400d0044d12ab8bb13764bc19265e05c4dde81f775e590e710425d6dbeb4499596c5091105ec40a21cf9b8f5429e435e87e46df2edbe6f9dde2b2180aaa20ac129bffc66b01f14e1d81efa36d51a4c441051441455c565cafdc706a31ddff1ffa00d1f550cd21fb805d5aed05a0c46fb007742651d54550922a82ab6d728c6570e76c4bf86fb94cb65ac4d10918e22b58b6b15ac81bb743cbe7290efe3cb1db92fef7cc6c3af26d9b97317499274edb87d143d3b9e4affe05936dd8c8f7f3dc275cec23feb9fbdf76086c9f1997a41dd78145e1c59c80058cc37be8791c37b39fbf64433de719deea30070e270c1f3af5a2e0c9d63decff6042f24bf73a674a3195f7c71ad77c75571ac850c8c657a6d0a63424f708ab25478de91b3bdf6d889c79b3247b77fc1aaae406f2e6b41582cce017073e121954bdf61df6f58ea85d6f2b4995bc8e67b53019709538527ad6e4b835815e98036c073b2c4e8d6fd4cbe9bdc100a4035f06ca9c2b219e4fc9f57f8d1085682e27d5edbc7505bf086dd7df9687368c3d2c047833030f021b04c74e8eab4eedb11137c20e481e003e9c5737c3e7394d39f7e4b260e80525ca4688a6c4bb69344098929b0252e93188b8d124ece1ee6d58553d86dbb997d1d6381a84b7d6d408ba6d0846f664b7fdd3800ccf1c94f2eeab66e7b6e0ff5fd2f753f440780b94aa5e200ba828787870781b13ed94f2b95cadf8de03f3bcf2aa89b5050df0000000049454e44ae426082</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>mActionAddConnection</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassMapcalcBase</receiver>
+        <slot>addConnection()</slot>
+    </connection>
+    <connection>
+        <sender>mActionAddConstant</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassMapcalcBase</receiver>
+        <slot>addConstant()</slot>
+    </connection>
+    <connection>
+        <sender>mActionAddFunction</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassMapcalcBase</receiver>
+        <slot>addFunction()</slot>
+    </connection>
+    <connection>
+        <sender>mActionAddMap</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassMapcalcBase</receiver>
+        <slot>addMap()</slot>
+    </connection>
+    <connection>
+        <sender>mActionDeleteItem</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassMapcalcBase</receiver>
+        <slot>deleteItem()</slot>
+    </connection>
+    <connection>
+        <sender>mActionSelectItem</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassMapcalcBase</receiver>
+        <slot>selectItem()</slot>
+    </connection>
+    <connection>
+        <sender>mMapComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>QgsGrassMapcalcBase</receiver>
+        <slot>mapChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mConstantLineEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>QgsGrassMapcalcBase</receiver>
+        <slot>constantChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mFunctionComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>QgsGrassMapcalcBase</receiver>
+        <slot>functionChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mActionLoad</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassMapcalcBase</receiver>
+        <slot>load()</slot>
+    </connection>
+    <connection>
+        <sender>mActionSave</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassMapcalcBase</receiver>
+        <slot>save()</slot>
+    </connection>
+    <connection>
+        <sender>mActionSaveAs</sender>
+        <signal>activated()</signal>
+        <receiver>QgsGrassMapcalcBase</receiver>
+        <slot>saveAs()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>addMap()</slot>
+    <slot>addConstant()</slot>
+    <slot>addFunction()</slot>
+    <slot>addConnection()</slot>
+    <slot>selectItem()</slot>
+    <slot>deleteItem()</slot>
+    <slot>mapChanged()</slot>
+    <slot>constantChanged()</slot>
+    <slot>functionChanged()</slot>
+    <slot>save()</slot>
+    <slot>saveAs()</slot>
+    <slot>load()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

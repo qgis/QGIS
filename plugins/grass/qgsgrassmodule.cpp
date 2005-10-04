@@ -77,6 +77,7 @@ extern "C" {
 #include "../../providers/grass/qgsgrassprovider.h"
 #include "qgsgrassattributes.h"
 #include "qgsgrassmodule.h"
+#include "qgsgrassmapcalc.h"
 #include "qgsgrasstools.h"
 
 QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIface *iface, 
@@ -125,8 +126,24 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     // Read GRASS module description
     mXName = qDocElem.attribute("module");
     
-    mOptions = new QgsGrassModuleStandardOptions ( mTools, this,
+    if ( mXName == "r.mapcalc" )
+    {
+        QGridLayout *layout = new QGridLayout ( mTabWidget->page(0), 1, 1 );
+
+        mOptions = new QgsGrassMapcalc ( mTools, this,
+               mQgisApp, mIface, mTabWidget->page(0) );
+
+        QWidget *w = dynamic_cast<QWidget *>(mOptions);
+        			
+        std::cerr << "w = " << w << std::endl;
+
+        layout->addWidget ( dynamic_cast<QWidget *>(mOptions), 0, 0 );
+    }
+    else
+    {
+        mOptions = new QgsGrassModuleStandardOptions ( mTools, this,
                mQgisApp, mIface, mXName, qDocElem, mTabWidget->page(0) );
+    }
                                 
     // Create manual if available
     QString gisBase = getenv("GISBASE");
@@ -484,6 +501,9 @@ void QgsGrassModule::run()
 	std::cerr << "command" << command.local8Bit() << std::endl;
 	mOutputTextBrowser->clear();
 
+	command.replace ( "&", "&amp;" );
+	command.replace ( "<", "&lt;" );
+	command.replace ( ">", "&gt;" );
 	mOutputTextBrowser->append( "<B>" +  command + "</B>" );
 	mTabWidget->setCurrentPage(1);
 	mRunButton->setText( tr("Stop") );

@@ -56,6 +56,8 @@ plugin_MOC = qgsgrassplugin.moc.cpp \
 	     qgsgrassedit.moc.cpp \
 	     qgsgrasstoolsbase.moc.cpp \
 	     qgsgrasstools.moc.cpp \
+	     qgsgrassmapcalcbase.moc.cpp \
+	     qgsgrassmapcalc.moc.cpp \
 	     qgsgrassmodulebase.moc.cpp \
 	     qgsgrassmodule.moc.cpp \
 	     qgsgrassnewmapsetbase.moc.cpp \
@@ -72,6 +74,8 @@ plugin_UI = qgsgrassselectbase.uic.h \
 	    qgsgrasseditbase.uic.cpp \
 	    qgsgrasstoolsbase.uic.h \
 	    qgsgrasstoolsbase.uic.cpp \
+	    qgsgrassmapcalcbase.uic.h \
+	    qgsgrassmapcalcbase.uic.cpp \
 	    qgsgrassmodulebase.uic.h \
 	    qgsgrassmodulebase.uic.cpp \
 	    qgsgrassnewmapsetbase.uic.h \
@@ -86,6 +90,7 @@ plugin_UIC = qgsgrassselectbase.ui \
 	     qgsgrasseditbase.ui \
 	     qgsgrasseditbase.ui.h \
 	     qgsgrasstoolsbase.ui \
+	     qgsgrassmapcalcbase.ui \
 	     qgsgrassmodulebase.ui \
 	     qgsgrassnewmapsetbase.ui \
 	     qgsgrassnewmapsetbase.ui.h \
@@ -101,6 +106,8 @@ grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 			 qgsgrassedit.h \
 			 qgsgrasstools.cpp \
 			 qgsgrasstools.h \
+			 qgsgrassmapcalc.cpp \
+			 qgsgrassmapcalc.h \
 			 qgsgrassmodule.cpp \
 			 qgsgrassmodule.h \
 			 qgsgrassnewmapset.cpp \
@@ -123,6 +130,8 @@ qgsgrasseditbase.uic.cpp: qgsgrasseditbase.uic.h qgsgrasseditbase.ui
 qgsgrasseditbase.uic.h: qgsgrasseditbase.ui
 qgsgrasstoolsbase.uic.cpp: qgsgrasstoolsbase.uic.h qgsgrasstoolsbase.ui
 qgsgrasstoolsbase.uic.h: qgsgrasstoolsbase.ui
+qgsgrassmapcalcbase.uic.cpp: qgsgrassmapcalcbase.uic.h qgsgrassmapcalcbase.ui
+qgsgrassmapcalcbase.uic.h: qgsgrassmapcalcbase.ui
 qgsgrassmodulebase.uic.cpp: qgsgrassmodulebase.uic.h qgsgrassmodulebase.ui
 qgsgrassmodulebase.uic.h: qgsgrassmodulebase.ui
 qgsgrassnewmapsetbase.uic.cpp: qgsgrassnewmapsetbase.uic.h qgsgrassnewmapsetbase.ui
