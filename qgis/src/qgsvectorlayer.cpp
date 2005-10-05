@@ -454,18 +454,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
     //std::cout <<"...WKBLineString start at (" << oldx << ", " << oldy << ")" <<std::endl;
 #endif
 
-  try
-  {
-    transformPoints(x, y, z, mtp, projectionsEnabledFlag);
-  }
-  catch (QgsCsException &cse)
-  {
-    std::cout << "Illegal transformation of line starting at (" << oldx <<
-      "," << oldy << ") caught. Ignoring (Multi-)Linestring." << std::endl;
-  
-    return ptr;
-  }
-
+  transformPoints(x, y, z, mtp, projectionsEnabledFlag);
  
 #if defined(Q_WS_X11)
   // Work around a +/- 32768 limitation on coordinates in X11
@@ -585,17 +574,7 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     //std::cout <<"...WKBLineString start at (" << oldx << ", " << oldy << ")" <<std::endl;
 #endif
 
-    try
-    {
-      transformPoints(ring->first, ring->second, zVector, mtp, projectionsEnabledFlag);
-    }
-    catch (QgsCsException &cse)
-    {
-      std::cout << "Illegal transformation of polygon starting at (" << oldx <<
-        "," << oldy << ") caught. Ignoring (Multi-)Polygon." << std::endl;
-  
-      return ptr;
-    }
+    transformPoints(ring->first, ring->second, zVector, mtp, projectionsEnabledFlag);
 
 #if defined(Q_WS_X11)
     // Work around a +/- 32768 limitation on coordinates in X11
@@ -866,7 +845,8 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     }
     catch (QgsCsException &cse)
     {
-      QString msg("Failed to transform a point: ");
+      QString msg("Failed to transform a point while drawing a feature of type '"
+                  + fet->typeName() + "'. Ignoring this feature.");
       msg += cse.what();
       qWarning(msg.local8Bit());
     }
@@ -2523,6 +2503,8 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   point.setY(mindisty);
 }
 
+//! Draws features. May cause projections exceptions to be generated
+// (i.e., code that calls this function needs to catch them
 void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * theMapToPixelTransform, 
              QPicture* marker, double markerScaleFactor, bool projectionsEnabledFlag)
 {
@@ -2555,17 +2537,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 //  std::cout <<"...WKBPoint (" << x << ", " << y << ")" <<std::endl;
 #endif
 
-    try
-    {
-      transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
-    }
-    catch (QgsCsException &cse)
-    {
-      std::cout << "Illegal transformation of (" << x <<
-        "," << y << ") caught. Ignoring point." << std::endl;
+    transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
 
-      break;
-    }
     p->save();
     p->scale(markerScaleFactor,markerScaleFactor);
     p->drawPicture(static_cast<int>(x / markerScaleFactor 
@@ -2600,17 +2573,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       std::cout <<"...WKBMultiPoint (" << x << ", " << y << ")" <<std::endl;
 #endif
 
-      try
-      {
-        transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
-      }
-      catch (QgsCsException &cse)
-      {
-        std::cout << "Illegal transformation of (" << x <<
-        "," << y << ") caught. Ignoring multipoint." << std::endl;
-        
-        continue;
-      }
+      transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
 
 #if defined(Q_WS_X11)
       // Work around a +/- 32768 limitation on coordinates in X11

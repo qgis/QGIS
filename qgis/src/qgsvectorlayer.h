@@ -344,9 +344,12 @@ protected slots:
   void startEditing();
   void stopEditing();
 
-  void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPicture* marker, double markerScaleFactor, bool projectionsEnabledFlag );
 
 private:                       // Private attributes
+
+  //! Draws features. May cause projections exceptions to be generated
+  // (i.e., code that calls this function needs to catch them
+  void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPicture* marker, double markerScaleFactor, bool projectionsEnabledFlag );
 
   //! Draws the layer labels using coordinate transformation
   void drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst);
