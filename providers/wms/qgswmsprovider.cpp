@@ -790,9 +790,9 @@ QString  QgsWmsProvider::description() const
  * Class factory to return a pointer to a newly created 
  * QgsWmsProvider object
  */
-QGISEXTERN QgsWmsProvider * classFactory(const char *uri)
+QGISEXTERN QgsWmsProvider * classFactory(const QString *uri)
 {
-  return new QgsWmsProvider(uri);
+  return new QgsWmsProvider(*uri);
 }
 /** Required key function (used to map the plugin to a data store type)
 */
