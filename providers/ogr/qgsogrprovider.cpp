@@ -154,6 +154,10 @@ QgsOgrProvider::~QgsOgrProvider()
   }
   delete[] minmaxcache;
 
+  OGRDataSource::DestroyDataSource(ogrDataSource);
+  ogrDataSource = 0;
+  delete extent_;
+  extent_ = 0;
   delete geometryFactory;
   delete wktReader;
 }
@@ -870,7 +874,7 @@ bool QgsOgrProvider::addFeature(QgsFeature* f)
       {
         OGRPoint* p=new OGRPoint();
         p->importFromWkb(f->getGeometry(),1+sizeof(int)+2*sizeof(double));
-        feature->SetGeometry(p);
+        OGRErr err = feature->SetGeometry(p);
         break;
       }
     case QGis::WKBLineString:
