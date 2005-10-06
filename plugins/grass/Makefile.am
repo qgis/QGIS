@@ -65,22 +65,22 @@ plugin_MOC = qgsgrassplugin.moc.cpp \
 	     qgsgrassregion.moc.cpp
 
 
-plugin_UI = qgsgrassselectbase.uic.h \
-	    qgsgrassselectbase.uic.cpp \
-	    qgsgrasseditbase.uic.h \
-	    qgsgrasseditbase.uic.cpp \
-	    qgsgrasstoolsbase.uic.h \
-	    qgsgrasstoolsbase.uic.cpp \
-	    qgsgrassmapcalcbase.uic.h \
-	    qgsgrassmapcalcbase.uic.cpp \
-	    qgsgrassmodulebase.uic.h \
-	    qgsgrassmodulebase.uic.cpp \
-	    qgsgrassnewmapsetbase.uic.h \
-	    qgsgrassnewmapsetbase.uic.cpp \
-	    qgsgrassattributesbase.uic.h \
-	    qgsgrassattributesbase.uic.cpp \
-	    qgsgrassregionbase.uic.h \
-	    qgsgrassregionbase.uic.cpp 
+plugin_UI = qgsgrassselectbase.h \
+	    qgsgrassselectbase.cpp \
+	    qgsgrasseditbase.h \
+	    qgsgrasseditbase.cpp \
+	    qgsgrasstoolsbase.h \
+	    qgsgrasstoolsbase.cpp \
+	    qgsgrassmapcalcbase.h \
+	    qgsgrassmapcalcbase.cpp \
+	    qgsgrassmodulebase.h \
+	    qgsgrassmodulebase.cpp \
+	    qgsgrassnewmapsetbase.h \
+	    qgsgrassnewmapsetbase.cpp \
+	    qgsgrassattributesbase.h \
+	    qgsgrassattributesbase.cpp \
+	    qgsgrassregionbase.h \
+	    qgsgrassregionbase.cpp 
 
 plugin_UIC = qgsgrassselectbase.ui \
 	     qgsgrassselectbase.ui.h \
@@ -121,21 +121,21 @@ grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 nodist_grassplugin_la_SOURCES = $(plugin_MOC)
 
 # UI dependencies      
-qgsgrassselectbase.cpp: qgsgrassselectbase.uic.h qgsgrassselectbase.ui 
+qgsgrassselectbase.cpp: qgsgrassselectbase.h qgsgrassselectbase.ui 
 qgsgrassselectbase.h: qgsgrassselectbase.ui
-qgsgrasseditbase.cpp: qgsgrasseditbase.uic.h qgsgrasseditbase.ui
+qgsgrasseditbase.cpp: qgsgrasseditbase.h qgsgrasseditbase.ui
 qgsgrasseditbase.h: qgsgrasseditbase.ui
-qgsgrasstoolsbase.cpp: qgsgrasstoolsbase.uic.h qgsgrasstoolsbase.ui
+qgsgrasstoolsbase.cpp: qgsgrasstoolsbase.h qgsgrasstoolsbase.ui
 qgsgrasstoolsbase.h: qgsgrasstoolsbase.ui
-qgsgrassmapcalcbase.cpp: qgsgrassmapcalcbase.uic.h qgsgrassmapcalcbase.ui
+qgsgrassmapcalcbase.cpp: qgsgrassmapcalcbase.h qgsgrassmapcalcbase.ui
 qgsgrassmapcalcbase.h: qgsgrassmapcalcbase.ui
-qgsgrassmodulebase.cpp: qgsgrassmodulebase.uic.h qgsgrassmodulebase.ui
+qgsgrassmodulebase.cpp: qgsgrassmodulebase.h qgsgrassmodulebase.ui
 qgsgrassmodulebase.h: qgsgrassmodulebase.ui
-qgsgrassnewmapsetbase.cpp: qgsgrassnewmapsetbase.uic.h qgsgrassnewmapsetbase.ui
+qgsgrassnewmapsetbase.cpp: qgsgrassnewmapsetbase.h qgsgrassnewmapsetbase.ui
 qgsgrassnewmapsetbase.h: qgsgrassnewmapsetbase.ui
-qgsgrassattributesbase.cpp: qgsgrassattributesbase.uic.h qgsgrassattributesbase.ui
+qgsgrassattributesbase.cpp: qgsgrassattributesbase.h qgsgrassattributesbase.ui
 qgsgrassattributesbase.h: qgsgrassattributesbase.ui
-qgsgrassregionbase.cpp: qgsgrassregionbase.uic.h qgsgrassregionbase.ui
+qgsgrassregionbase.cpp: qgsgrassregionbase.h qgsgrassregionbase.ui
 qgsgrassregionbase.h: qgsgrassregionbase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
