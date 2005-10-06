@@ -377,8 +377,8 @@ void QgsGrassMapcalc::contentsMouseReleaseEvent(QMouseEvent* e)
 	   if ( mToolStep == 1 )
 	   {
 	       QPoint p0 = mConnector->point(0);
-	       double d = sqrt ( pow( p.x()-p0.x(), 2 )
-				+ pow( p.y()-p0.y(), 2 ) );
+	       double d = sqrt ( pow( (double)(p.x()-p0.x()), 2.0 )
+				+ pow( (double)(p.y()-p0.y()), 2.0 ) );
                std::cerr << "d = " << d << std::endl;
 	       if ( d <  5 ) // filter 'single' clicks
 	       {
@@ -1569,8 +1569,8 @@ bool QgsGrassMapcalcObject::tryConnect( QgsGrassMapcalcConnector *connector,
 	{
 	    if ( mInputConnectors[i] ) continue; // used
 
-	    double d = sqrt ( pow( mInputPoints[i].x() - p.x(), 2 )
-			    + pow( mInputPoints[i].y() - p.y(), 2 ) );
+	    double d = sqrt ( pow( (double)(mInputPoints[i].x() - p.x()), 2.0 )
+			    + pow( (double)(mInputPoints[i].y() - p.y()), 2.0 ) );
 
 	    if ( d <= mSocketHalf )
 	    {
@@ -1585,8 +1585,8 @@ bool QgsGrassMapcalcObject::tryConnect( QgsGrassMapcalcConnector *connector,
     // Output
     if ( !connector->connected(Out) && !mOutputConnector )
     {
-	double d = sqrt ( pow( mOutputPoint.x() - p.x(), 2 )
-			+ pow( mOutputPoint.y() - p.y(), 2 ) );
+	double d = sqrt ( pow( (double)(mOutputPoint.x() - p.x()), 2.0 )
+			+ pow( (double)(mOutputPoint.y() - p.y()), 2.0 ) );
 
 	if ( d <= mSocketHalf )
 	{
@@ -1771,11 +1771,11 @@ void QgsGrassMapcalcConnector::selectEnd( QPoint point )
     std::cerr << "QgsGrassMapcalcConnector::selectEnd" << std::endl;
     mSelectedEnd = -1;
 
-    double d0 = sqrt ( pow(point.x()-mPoints[0].x(),2) 
-	             + pow(point.y()-mPoints[0].y(),2) );
+    double d0 = sqrt ( pow((double)(point.x()-mPoints[0].x()),2.0) 
+	             + pow((double)(point.y()-mPoints[0].y()),2.0) );
 
-    double d1 = sqrt ( pow(point.x()-mPoints[1].x(),2) 
-	             + pow(point.y()-mPoints[1].y(),2) );
+    double d1 = sqrt ( pow((double)(point.x()-mPoints[1].x()),2.0) 
+	             + pow((double)(point.y()-mPoints[1].y()),2.0) );
 
     
     if ( d0 < 15 || d1 < 15 )
