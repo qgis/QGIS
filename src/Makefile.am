@@ -292,9 +292,7 @@ qgis_SOURCES =	main.cpp			\
 		qgssymbologyutils.cpp		\
 		qgsuvaldialog.cpp		\
 		splashscreen.cpp \
-		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp \
-		omggdal.cpp
-		
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp
 
 AM_YFLAGS       = -d
 qgis_YACC       = qgssearchstringparser.h
@@ -520,7 +518,7 @@ libqgis_la_SOURCES =						\
 		qgsvectordataprovider.cpp			\
 		qgsvectorfilewriter.cpp				\
 		qgsvectorlayer.cpp \
-		omggdal.h
+		omggdal.cpp 
 
 if HAVE_POSTGRESQL
 libqgis_la_SOURCES += $(postgresLIBSOURCES)
