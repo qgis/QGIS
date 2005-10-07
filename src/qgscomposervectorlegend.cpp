@@ -210,13 +210,12 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
     
     // Fonts for rendering
     
-    // I have no idea why 2.54 - it is an empirical value
     // TODO: For output to Postscript the font must be scaled. But how?
     //       The factor is an empirical value.
     //       In any case, each font scales in in different way even if painter.scale()
     //       is used instead of font size!!! -> Postscript is never exactly the same as
     //       in preview.
-    double psFontFactor = 2.45;
+    double psFontFactor = QgsComposition::psFontScaleFactor();
 
     double psTitleSize = psFontFactor * 72.0 * mTitleFont.pointSizeFloat() / mComposition->resolution();
     double psSectionSize = psFontFactor * 72.0 * mSectionFont.pointSizeFloat() / mComposition->resolution();
