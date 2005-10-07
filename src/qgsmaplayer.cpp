@@ -45,8 +45,8 @@
 
 QgsMapLayer::QgsMapLayer(int type,
                          QString lyrname,
-                         QString source) :
-        valid(true), // assume the layer is valid (data source exists and 
+                         QString source) 
+    :   valid(true), // assume the layer is valid (data source exists and 
                      // can be used) until we learn otherwise
         dataSource(source),
         internalName(lyrname),
@@ -57,7 +57,8 @@ QgsMapLayer::QgsMapLayer(int type,
         mLegendLayerFile(0),
         ID(""),
         layerType(type),
-        m_visible(true)
+        m_visible(true),
+        mDataSourceLayerNum(0)
 
 {
 #ifdef QGISDEBUG
