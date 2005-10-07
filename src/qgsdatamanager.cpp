@@ -21,6 +21,10 @@
 #include "qgsvectordataprovider.h"
 #include "qgsproviderregistry.h"
 
+#include <list>
+
+using namespace std;
+
 
 
 static const char* const ident_ = "$Id$";
@@ -60,20 +64,51 @@ QgsDataManager::instance()
 
 
 
-bool QgsDataManager::openVector( QString const & name )
+bool QgsDataManager::openVector( QString const & dataSource )
 {
   // find the default provider that can handle the given name
-  
-  // note that we may already have the provider
-  
-  // create a QgsDataSourceLayer for the provider
+  QgsDataProvider * vectorDataProvider = // XXX ogr temporarily hard-coded
+      QgsProviderRegistry::instance()->openVector( dataSource, "ogr" ); 
+
+
+  if ( ! vectorDataProvider )
+  {
+      QgsDebug( "Unable to get default vector data provider" );
+
+      return false;
+  }
+
+  // now get all the layers corresponding to the data provider
+
+  list<QgsMapLayer*> mapLayers = vectorDataProvider->createLayers();
+
+  if ( mapLayers.empty() )
+  {
+      QgsDebug( "Unable to get create map layers" );
+
+      return false;
+  }
+
+  // and then add them to the map layer registry; each time a layer is added,
+  // a signal is emitted which will cause the GUI to be updated with the new
+  // layer
+
+  // TODO
+
   return false;
+
 } // QgsDataManager::openVector
 
 
 
-bool QgsDataManager::openVector( QString const & name, QgsDataProvider & provider )
+bool QgsDataManager::openVector( QString const & dataSource, 
+                                 QString const & providerKey )
 {
+  // find the default provider that can handle the given name
+
+  QgsDataProvider * vectorDataProvider = 
+      QgsProviderRegistry::instance()->openVector( dataSource, providerKey );
+
   return false;
 } // QgsDataManager::openVector
 
@@ -86,7 +121,7 @@ bool QgsDataManager::openRaster( QString const & name )
 
 
 
-bool QgsDataManager::openRaster( QString const & name, QgsDataProvider & provider )
+bool QgsDataManager::openRaster( QString const & name, QString const & provider )
 {
   return false;
 } // QgsDataManager::openRaster

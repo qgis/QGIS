@@ -17,7 +17,6 @@
 #define QGSDATAMANAGER_H
 
 
-class QgsDataProvider;
 class QString;
 
 
@@ -25,7 +24,15 @@ class QString;
 
 @note
 
-Eventually the data provider and map layer registries will be rolled into this class
+Eventually the data provider and map layer registries will be rolled into this
+class.
+
+One thing to consider is that the open{Raster,Vector}( source, key ) could
+possibly be consolidated into a single open( source, key ) since presumably
+the key would match an appropriate data source provider.
+
+I don't like QgsDataManager since "Data" is fairily generic.  It manages
+_both_ layers _and_ their respective data providers.
 
 */
 class QgsDataManager
@@ -50,7 +57,7 @@ public:
     enough to figure out whether the given name mapped to a vector,
     raster, or database source.
   */
-  bool openVector( QString const & name );
+  bool openVector( QString const & dataSource );
 
   /** open the given vector data source
   
@@ -62,7 +69,7 @@ public:
     sdts++.)
   
     @param name could be a file, URI
-    @param provider is the dataprovider used to open name
+    @param provider is the key for the dataprovider used to open name
     @return false if unable to open vector source
     
     Temporarily always returns false until finished implementing.
@@ -71,7 +78,7 @@ public:
     enough to figure out whether the given name mapped to a vector,
     raster, or database source.
   */
-  bool openVector( QString const & name, QgsDataProvider & provider );
+  bool openVector( QString const & dataSource, QString const & providerKey );
   
   /** open the given raster data source
   
@@ -86,7 +93,7 @@ public:
     enough to figure out whether the given name mapped to a vector,
     raster, or database source.
   */
-  bool openRaster( QString const & name );
+  bool openRaster( QString const & dataSource );
 
   /** open the given raster data source
   
@@ -100,7 +107,7 @@ public:
     Temporarily always returns false until finished implementing.
     
     @param name could be a file, URI
-    @param provider is the dataprovider used to open name
+    @param provider is the key to the dataprovider used to open name
     @return false if unable to open vector source
     
     @note
@@ -109,7 +116,7 @@ public:
     enough to figure out whether the given name mapped to a vector,
     raster, or database source.
   */
-  bool openRaster( QString const & name, QgsDataProvider & provider );
+  bool openRaster( QString const & dataSource, QString const & providerKey );
 
 
 private:
