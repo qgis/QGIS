@@ -178,8 +178,7 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
 	  if ( vector->labelOn() ) {
 	      double fontScale = 25.4 * mFontScale * mComposition->scale() / 72;
 	      if ( plotStyle() == QgsComposition::Postscript ) {
-		  // I have no idea why 2.54 - it is an empirical value
-		  fontScale = 2.54 * 72.0 / mComposition->resolution();
+		  fontScale = QgsComposition::psFontScaleFactor() * 72.0 / mComposition->resolution();
 	      }
 	      vector->drawLabels (  painter, extent, transform, device, fontScale );
 	  }
