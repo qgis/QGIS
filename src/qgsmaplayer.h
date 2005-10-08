@@ -478,15 +478,6 @@ private:                       // Private attributes
     /** A flag that tells us whether to use the above vars to restrict layer visibility */
     bool mScaleBasedVisibility;
 
-    /** data source layer number
-
-    Each data source can have multiple layers.  Therefore each QgsLayer needs
-    to know which layer within its corresponding data source contains its
-    data.
-
-    */
-    size_t mDataSourceLayerNum;
-
 public:                        // Public attributes
 
     /** map label ? */
