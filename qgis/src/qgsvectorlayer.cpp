@@ -1641,6 +1641,8 @@ void QgsVectorLayer::setSubsetString(QString subset)
   else
   {
     dataProvider->setSubsetString(subset);
+    // get the updated data source string from the provider
+    dataSource = dataProvider->getDataSourceUri();
     updateExtents();
   }
   //trigger a recalculate extents request to any attached canvases
