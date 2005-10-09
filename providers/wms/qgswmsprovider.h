@@ -127,6 +127,8 @@ public:
   // TODO: Document this better.
   /** \brief   Renders the layer as an image
    * TODO: Add pixel depth parameter (intended to match the display or printer device)
+   * Ownership of the returned QImage remains with this provider and its lifetime
+   * is guaranteed only until the next call to draw() or destruction of this provider.
    */
   QImage* draw(QgsRect viewExtent, int pixelWidth, int pixelHeight);
 
@@ -317,6 +319,28 @@ private:
    * Visibility status of the given active sublayer
    */
   std::map<QString, bool> activeSubLayerVisibility;
+
+  /**
+   * The previously retrieved image from the WMS server.
+   * This can be reused if draw() is called consecutively
+   * with the same parameters.
+   */
+  QImage* cachedImage;
+
+  /**
+   * The previous parameter to draw().
+   */
+  QgsRect cachedViewExtent;
+
+  /**
+   * The previous parameter to draw().
+   */
+  int cachedPixelWidth;
+
+  /**
+   * The previous parameter to draw().
+   */
+  int cachedPixelHeight;
 
 };
 
