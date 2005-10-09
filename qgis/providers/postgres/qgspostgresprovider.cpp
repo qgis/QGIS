@@ -1857,6 +1857,11 @@ int QgsPostgresProvider::capabilities() const
 void QgsPostgresProvider::setSubsetString(QString theSQL)
 {
   sqlWhereClause=theSQL;
+  // Need to adjust the datasource URI since this gets stored back to the 
+  // project file when a save/saveAs is done. The sql statement is always the last
+  // part of the URI. 
+   mUri.sql = theSQL;
+   dataSourceUri = dataSourceUri.left(dataSourceUri.find("sql=")+ 5) + theSQL;
   // need to recalculate the number of features...
   getFeatureCount();
   calculateExtents();
