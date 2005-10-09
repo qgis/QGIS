@@ -56,7 +56,11 @@ QgsWmsProvider::QgsWmsProvider(QString const & uri)
     httpuri(uri),
     httpproxyhost(0),
     httpproxyport(80),
-    httpcapabilitiesresponse(0)
+    httpcapabilitiesresponse(0),
+    cachedImage(0),
+    cachedViewExtent(0),
+    cachedPixelWidth(0),
+    cachedPixelHeight(0)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider: constructing with uri '" << uri.local8Bit() << "'." << std::endl;
@@ -105,7 +109,12 @@ QgsWmsProvider::~QgsWmsProvider()
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider: deconstructing." << std::endl;
 #endif
-  
+
+  // Dispose of any cached image as created by draw()
+  if (cachedImage)
+  {
+    delete cachedImage;
+  }
 
 }
 
@@ -195,10 +204,6 @@ void QgsWmsProvider::setSubLayerVisibility(QString name, bool vis)
 
 QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight)
 {
-
-  QImage* i;
-  
-
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::draw: Entering." << std::endl;
 #endif
@@ -213,6 +218,16 @@ QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight
   std::cout << "QgsWmsProvider::draw: viewExtent.yMax() = " << viewExtent.yMax() << std::endl;
 #endif
 
+  // Can we reuse the previously cached image?
+  if (
+      (cachedImage) &&
+      (cachedViewExtent == viewExtent) &&
+      (cachedPixelWidth == pixelWidth) &&
+      (cachedPixelHeight == pixelHeight)
+     )
+  {
+    return cachedImage;
+  }
 
   // Bounding box in WMS format
   QString bbox;
@@ -344,15 +359,26 @@ QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight
   }
 #endif
 
+  // Load into the final QImage.
+
   //bool success = i.loadFromData(imagesource);
-  i = new QImage(imagesource);
+  if (cachedImage)
+  {
+    delete cachedImage;
+  }
+  cachedImage = new QImage(imagesource);
+
+  // Remember settings for useful caching next time.
+  cachedViewExtent = viewExtent;
+  cachedPixelWidth = pixelWidth;
+  cachedPixelHeight = pixelHeight;
 
 #ifdef QGISDEBUG
   // Get what we can support
 
 // TODO: Qt4 has inputFormatList in QPicture - need to refactor.
 #if QT_VERSION < 0x040000
-  QStringList list = i->inputFormatList();
+  QStringList list = cachedImage->inputFormatList();
   QStringList::Iterator it = list.begin();
   while( it != list.end() )
   {
@@ -372,7 +398,7 @@ QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight
 
   // TODO: bit depth conversion to the client's expectation
 //  return *(i.convertDepth(32));
-  return i;
+  return cachedImage;
 
 }
 
