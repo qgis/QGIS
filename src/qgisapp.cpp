@@ -132,7 +132,7 @@ using namespace std;
 #include "qgscomposer.h"
 #include "qgsbookmarks.h"
 #include "qgsbookmarkitem.h"
-
+#include "qgsfile.h"
 
 #include "xpm/qgis.xpm"
 
@@ -650,6 +650,37 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // now build raster file filter
     QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
 
+    ///////////////////////////////////////////////////////
+    // Check qgis.db and make private copy if necessary
+    QString qgisSettingsDirPath(QDir::homeDirPath () + "/.qgis/");
+    QgsFile qgisPrivateDbFile(qgisSettingsDirPath + "qgis.db");
+  
+    // first we look for ~/.qgis/qgis.db
+    if (!qgisPrivateDbFile.exists())
+    {
+      // if it doesnt exist we copy it in from the global resources dir
+#if defined(Q_OS_MACX) || defined(WIN32)
+      QString PKGDATAPATH(qApp->applicationDirPath() + "/share/qgis");
+#endif
+      QString qgisMasterDbFileName = PKGDATAPATH;
+      qgisMasterDbFileName += "/resources/qgis.db";
+
+      // Must be sure there is destination directory ~/.qgis
+      // @todo XXX REPLACE with recursive dir creator, but first define QgsDir class and
+      // move i.e. makeDir from QgsBookmarks to QgsDir
+      QDir destDir;
+      destDir.mkdir(qgisSettingsDirPath, TRUE);
+
+      //now copy the master file into the users .qgis dir
+      bool isDbFileCopied = QgsFile::copy(qgisMasterDbFileName, qgisPrivateDbFile.name());
+
+#ifdef QGISDEBUG
+      if (!isDbFileCopied)
+      {
+        std::cout << "[ERROR] Can not make qgis.db private copy" << std::endl;
+      }
+#endif
+    }
 
 } // QgisApp ctor
 
