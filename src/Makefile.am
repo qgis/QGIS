@@ -84,6 +84,7 @@ qgisHEADERS =	\
 		qgsdistancearea.h				\
 		qgsdlgvectorlayerproperties.h			\
 		qgsexception.h					\
+		qgsfile.h					\
 		qgscsexception.h				\
 		qgsgeomtypedialog.h				\
 		qgsgrasydialog.h				\
@@ -254,6 +255,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsdistancearea.cpp			\
 		qgsdlgvectorlayerproperties.cpp	\
 		qgsencodingfiledialog.cpp	\
+		qgsfile.cpp			\
 		qgsgeomtypedialog.cpp		\
 		qgsgrasydialog.cpp		\
 		qgshelpviewer.cpp		\
