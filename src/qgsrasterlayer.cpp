@@ -4890,10 +4890,9 @@ QgsRasterLayer::QgsRasterLayer(
 } // QgsRasterLayer ctor
 
 
- 
 // typedef for the QgsDataProvider class factory
-typedef QgsDataProvider * create_it(const char * uri);
- 
+typedef QgsDataProvider * classFactoryFunction_t( const QString * );
+
 
 /** Copied from QgsVectorLayer::setDataProvider 
  *  TODO: Make it work in the raster environment
@@ -4944,7 +4943,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider, QStringList laye
     std::cout << "QgsRasterLayer::setDataProvider: Loaded data provider library" << std::endl;
     std::cout << "QgsRasterLayer::setDataProvider: Attempting to resolve the classFactory function" << std::endl;
 #endif
-    create_it * classFactory = (create_it *) myLib->resolve("classFactory");
+    classFactoryFunction_t * classFactory = (classFactoryFunction_t *) myLib->resolve("classFactory");
 
     valid = false;            // assume the layer is invalid until we
     // determine otherwise
@@ -4955,8 +4954,11 @@ void QgsRasterLayer::setDataProvider( QString const & provider, QStringList laye
 #endif
       //XXX - This was a dynamic cast but that kills the Windows
       //      version big-time with an abnormal termination error
-      dataProvider = (QgsRasterDataProvider*)(classFactory((const
-                                              char*)(dataSource.utf8())));
+//      dataProvider = (QgsRasterDataProvider*)(classFactory((const
+//                                              char*)(dataSource.utf8())));
+
+      // Copied from qgsproviderregistry in preference to the above.
+      dataProvider = (QgsRasterDataProvider*)(*classFactory)(&dataSource);
 
       if (dataProvider)
       {
