@@ -127,7 +127,7 @@ void QgsNorthArrowPlugin::projectRead()
     //default text to start with - try to fetch it from qgsproject
 
     mRotationInt = QgsProject::instance()->readNumEntry("NorthArrow","/Rotation",0);
-    mPlacement = QgsProject::instance()->readEntry("NorthArrow","/Placement","Bottom Left");
+    mPlacement = QgsProject::instance()->readEntry("NorthArrow","/Placement",tr("Bottom Left"));
     mEnable = QgsProject::instance()->readBoolEntry("NorthArrow","/Enabled",true);
     mAutomatic = QgsProject::instance()->readBoolEntry("NorthArrow","/Automatic",true);
 }
