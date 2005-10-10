@@ -28,7 +28,6 @@ nodist_i18n_DATA = \
 								qgis_pl_PL.qm \
 								qgis_pt_BR.qm \
 								qgis_ru.qm \
-								qgis_se.qm \
 								qgis_sk.qm \
 								qgis_sv.qm \
 								qgis_zh_CN.qm
