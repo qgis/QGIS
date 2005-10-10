@@ -251,7 +251,7 @@ QgsFeature * QgsOgrProvider::getFirstFeature(bool fetchAttributes)
     else
     {
 #ifdef QGISDEBUG
-      std::cerr << "First feature is null\n";
+      std::cerr << "First feature is null " << __FILE__ << " " << __LINE__ << "\n";
 
 #endif
       return 0x0;               // so return a null feature indicating that we got a null feature
@@ -300,8 +300,10 @@ bool QgsOgrProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
     // skip features without geometry
     OGRFeature *fet;
     while ((fet = ogrLayer->GetNextFeature()) != NULL) {
-      if (fet->GetGeometryRef())
+      OGRGeometry *geo = fet->GetGeometryRef();
+      if(geo->WkbSize() > 0){
         break;
+      }
     }
     if(fet){
       OGRGeometry *geom = fet->GetGeometryRef();
@@ -327,7 +329,7 @@ bool QgsOgrProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
       returnValue = true;
     }else{
 #ifdef QGISDEBUG
-      std::cerr << "Feature is null\n";
+      std::cerr << "Feature is null " << __FILE__ << " " << __LINE__ << "\n";
       f.setValid(false);
       returnValue = false;
 #endif
@@ -552,8 +554,14 @@ QgsFeature *QgsOgrProvider::getNextFeature(std::list<int> const& attlist)
   {
     // skip features without geometry
     OGRFeature *fet;
-    while ((fet = ogrLayer->GetNextFeature()) != NULL) {
-
+    bool goodFeature = false;
+    while (!goodFeature && ((fet = ogrLayer->GetNextFeature()) != NULL)) {
+      // Test of null features
+      OGRGeometry *geo = fet->GetGeometryRef();
+      if(geo->WkbSize() > 0){
+        goodFeature = true;
+      }
+/*
       if (fet->GetGeometryRef())
       {
         if(mUseIntersect)
@@ -572,6 +580,7 @@ QgsFeature *QgsOgrProvider::getNextFeature(std::list<int> const& attlist)
           break;
         }
       }
+      */
     }
     if(fet)
     {
@@ -595,7 +604,7 @@ QgsFeature *QgsOgrProvider::getNextFeature(std::list<int> const& attlist)
     else
     {
 #ifdef QGISDEBUG
-      std::cerr << "Feature is null\n";
+      std::cerr << "Feature is null " << __FILE__ << " " << __LINE__ << "\n";
 #endif  
       // probably should reset reading here
       ogrLayer->ResetReading();
