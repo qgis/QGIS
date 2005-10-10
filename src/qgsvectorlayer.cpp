@@ -3321,7 +3321,7 @@ void QgsVectorLayer::saveAsShapefile()
 }
 void QgsVectorLayer::setCoordinateSystem()
 {
-  //delete mCoordinateTransform;
+  delete mCoordinateTransform;
   mCoordinateTransform=new QgsCoordinateTransform();
 #ifdef QGISDEBUG
     std::cout << "QgsVectorLayer::setCoordinateSystem ------------------------------------------------start" << std::endl;
