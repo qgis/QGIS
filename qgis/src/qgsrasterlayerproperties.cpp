@@ -84,28 +84,28 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   if (rasterLayer->getRasterLayerType()
           == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
   {
-    cboRed->insertItem("Red");
-    cboGreen->insertItem("Red");
-    cboBlue->insertItem("Red");
+    cboRed->insertItem(tr("Red"));
+    cboGreen->insertItem(tr("Red"));
+    cboBlue->insertItem(tr("Red"));
 
-    cboRed->insertItem("Green");
-    cboGreen->insertItem("Green");
-    cboBlue->insertItem("Green");
+    cboRed->insertItem(tr("Green"));
+    cboGreen->insertItem(tr("Green"));
+    cboBlue->insertItem(tr("Green"));
 
-    cboRed->insertItem("Blue");
-    cboGreen->insertItem("Blue");
-    cboBlue->insertItem("Blue");
+    cboRed->insertItem(tr("Blue"));
+    cboGreen->insertItem(tr("Blue"));
+    cboBlue->insertItem(tr("Blue"));
 
-    cboRed->insertItem("Not Set");
-    cboGreen->insertItem("Not Set");
-    cboBlue->insertItem("Not Set");
+    cboRed->insertItem(tr("Not Set"));
+    cboGreen->insertItem(tr("Not Set"));
+    cboBlue->insertItem(tr("Not Set"));
 
-    cboGray->insertItem("Red");
-    cboGray->insertItem("Green");
-    cboGray->insertItem("Blue");
-    cboGray->insertItem("Not Set");
+    cboGray->insertItem(tr("Red"));
+    cboGray->insertItem(tr("Green"));
+    cboGray->insertItem(tr("Blue"));
+    cboGray->insertItem(tr("Not Set"));
 
-    lstHistogramLabels->insertItem(tr("Palette"));
+    lstHistogramLabels->insertItem(tr(tr("Palette")));
   }
   else                   // all other layer types use band name entries only
   {
@@ -170,9 +170,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
       {
         myPixmap.fill( Qt::gray );
       }
-      lstHistogramLabels->insertItem(myPixmap,myRasterBandNameQString);
+      lstHistogramLabels->insertItem(myPixmap,tr(myRasterBandNameQString));
       //keep a list of band names for later use
-      myBandNameQStringList.append(myRasterBandNameQString);
+      myBandNameQStringList.append(tr(myRasterBandNameQString));
     }
 
     //select all histogram layers list items by default
@@ -194,15 +194,15 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
       std::cout << "Inserting : " << myQString.local8Bit() << std::endl;
 #endif
 
-      cboGray->insertItem(myQString);
-      cboRed->insertItem(myQString);
-      cboGreen->insertItem(myQString);
-      cboBlue->insertItem(myQString);
+      cboGray->insertItem(tr(myQString));
+      cboRed->insertItem(tr(myQString));
+      cboGreen->insertItem(tr(myQString));
+      cboBlue->insertItem(tr(myQString));
     }
-    cboRed->insertItem("Not Set");
-    cboGreen->insertItem("Not Set");
-    cboBlue->insertItem("Not Set");
-    cboGray->insertItem("Not Set");
+    cboRed->insertItem(tr("Not Set"));
+    cboGreen->insertItem(tr("Not Set"));
+    cboBlue->insertItem(tr("Not Set"));
+    cboGray->insertItem(tr("Not Set"));
   }
 
   //
@@ -272,10 +272,10 @@ void QgsRasterLayerProperties::apply()
     rasterLayer->setInvertHistogramFlag(false);
   }
   //now set the color -> band mapping combos to the correct values
-  rasterLayer->setRedBandName(cboRed->currentText());
-  rasterLayer->setGreenBandName(cboGreen->currentText());
-  rasterLayer->setBlueBandName(cboBlue->currentText());
-  rasterLayer->setGrayBandName(cboGray->currentText());
+  rasterLayer->setRedBandName(tr(cboRed->currentText()));
+  rasterLayer->setGreenBandName(tr(cboGreen->currentText()));
+  rasterLayer->setBlueBandName(tr(cboBlue->currentText()));
+  rasterLayer->setGrayBandName(tr(cboGray->currentText()));
   //set the appropriate color ramping type
   if (cboColorMap->currentText() == tr("Pseudocolor"))
   {
@@ -424,19 +424,19 @@ void QgsRasterLayerProperties::apply()
   pixmapThumbnail->setPixmap(myQPixmap);
   //make sure the layer is redrawn
   rasterLayer->triggerRepaint();
-}
+}//apply
 
 void QgsRasterLayerProperties::accept()
 {
   apply();
   close();
-}
+}//accept
 void QgsRasterLayerProperties::sliderTransparency_valueChanged(int theValue)
 {
   //set the transparency percentage label to a suitable value
   int myInt = static_cast < int >((theValue / 255.0) * 100);  //255.0 to prevent integer division
   lblTransparencyPercent->setText(QString::number(myInt) + "%");
-}
+}//sliderTransparency_valueChanged
 
 void QgsRasterLayerProperties::sliderMaxRed_valueChanged(int)
 {
@@ -788,44 +788,44 @@ void QgsRasterLayerProperties::sync()
   switch (rasterLayer->getDrawingStyle())
   {
       case QgsRasterLayer::SINGLE_BAND_GRAY:
-          rbtnSingleBand->toggle();
           rbtnThreeBand->setEnabled(false);
           rbtnSingleBand->setEnabled(true);
+          rbtnSingleBand->toggle();
           break;
       case QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR:
-          rbtnSingleBand->toggle();
           rbtnThreeBand->setEnabled(false);
           rbtnSingleBand->setEnabled(true);
+          rbtnSingleBand->toggle();
           break;
       case QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY:
-          rbtnSingleBand->toggle();
           rbtnThreeBand->setEnabled(true);
           rbtnSingleBand->setEnabled(true);
+          rbtnSingleBand->toggle();
           break;
       case QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR:
-          rbtnSingleBand->toggle();
           rbtnThreeBand->setEnabled(true);
           rbtnSingleBand->setEnabled(true);
+          rbtnSingleBand->toggle();
           break;
       case QgsRasterLayer::PALETTED_MULTI_BAND_COLOR:
-          rbtnThreeBand->toggle();
           rbtnThreeBand->setEnabled(true);
           rbtnSingleBand->setEnabled(true);
+          rbtnThreeBand->toggle();
           break;
       case QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY:
-          rbtnSingleBand->toggle();
           rbtnThreeBand->setEnabled(true);
           rbtnSingleBand->setEnabled(true);
+          rbtnSingleBand->toggle();
           break;
       case QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR:
-          rbtnSingleBand->toggle();
           rbtnThreeBand->setEnabled(true);
           rbtnSingleBand->setEnabled(true);
+          rbtnSingleBand->toggle();
           break;
       case QgsRasterLayer::MULTI_BAND_COLOR:
-          rbtnThreeBand->toggle();
           rbtnThreeBand->setEnabled(true);
           rbtnSingleBand->setEnabled(true);
+          rbtnThreeBand->toggle();
           break;
       default:
           break;
