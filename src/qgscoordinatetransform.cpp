@@ -23,7 +23,7 @@
 
 // Qt4-only includes to go here
 
-QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject()
+QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject(), mSourceSRS(0), mDestSRS(0)
 
 {
 }

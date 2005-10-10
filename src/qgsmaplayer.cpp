@@ -52,7 +52,7 @@ QgsMapLayer::QgsMapLayer(int type,
         internalName(lyrname),
         mShowInOverviewItemId(0),
         mShowInOverview(false),
-        mCoordinateTransform(NULL),
+        mCoordinateTransform(0),
         mLegendSymbologyGroupParent(0),
         mLegendLayerFile(0),
         ID(""),
@@ -98,7 +98,9 @@ QgsMapLayer::QgsMapLayer(int type,
 
 
 QgsMapLayer::~QgsMapLayer()
-{}
+{
+    //delete mCoordinateTransform; //crash when removing layers. Why?
+}
 const int QgsMapLayer::type()
 {
     return layerType;

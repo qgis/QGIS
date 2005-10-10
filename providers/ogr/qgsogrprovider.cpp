@@ -49,7 +49,6 @@ email                : sherman at mrcc.com
 #include "../../src/qgsdataprovider.h"
 #include "../../src/qgsfeature.h"
 #include "../../src/qgsfield.h"
-#include "../../src/qgsrect.h"
 #include "../../src/qgis.h"
 
 
@@ -65,8 +64,7 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "OGR data provider";
 
 
 QgsOgrProvider::QgsOgrProvider(QString const & uri)
-    : QgsVectorDataProvider(uri),
-      minmaxcachedirty(true)
+    : QgsVectorDataProvider(uri), ogrDataSource(0), extent_(0), ogrLayer(0), ogrDriver(0), minmaxcachedirty(true)
 {
   OGRRegisterAll();
 
@@ -696,12 +694,10 @@ unsigned char * QgsOgrProvider::getGeometryPointer(OGRFeature *fet){
 }
 
 
-// TODO - make this function return the real extent_
 QgsRect *QgsOgrProvider::extent()
 {
-  // TODO: Find out where this new QgsRect is being lost (as reported by valgrind)
-
-  return new QgsRect(extent_->MinX, extent_->MinY, extent_->MaxX, extent_->MaxY);
+  mExtentRect.set(extent_->MinX, extent_->MinY, extent_->MaxX, extent_->MaxY);
+  return &mExtentRect;
 }
 
 

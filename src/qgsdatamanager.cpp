@@ -16,8 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdatamanager.h"
-
-
+#include "qgsmaplayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsproviderregistry.h"
 

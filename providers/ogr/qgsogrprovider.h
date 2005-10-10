@@ -16,6 +16,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 /* $Id$ */
 
+#include "../../src/qgsrect.h"
 #include "../../src/qgsvectordataprovider.h"
 #include <geos.h>
 
@@ -213,6 +214,9 @@ class QgsOgrProvider:public QgsVectorDataProvider
 
     OGRDataSource *ogrDataSource;
     OGREnvelope *extent_;
+    /**This member variable receives the same value as extent_
+     in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
+    QgsRect mExtentRect;
     OGRLayer *ogrLayer;
 
     // OGR Driver that was actually used to open the layer
