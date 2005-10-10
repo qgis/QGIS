@@ -1135,60 +1135,60 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
 
     if (layer->isValid())
     {
-        // Register this layer with the layers registry
-        QgsMapLayerRegistry::instance()->addMapLayer(layer);
-        // init the context menu so it can connect to slots
-        // in main app
-        // XXX move to legend::addLayer() layer->initContextMenu(this);
+      // Register this layer with the layers registry
+      QgsMapLayerRegistry::instance()->addMapLayer(layer);
+      // init the context menu so it can connect to slots
+      // in main app
+      // XXX move to legend::addLayer() layer->initContextMenu(this);
 
-        // XXX What about the rest of these?  Where should they be moved, if at
-        // XXX all?  Some of this functionality is taken care of in the
-        // XXX QgsProject::read() (If layers added via that.)
+      // XXX What about the rest of these?  Where should they be moved, if at
+      // XXX all?  Some of this functionality is taken care of in the
+      // XXX QgsProject::read() (If layers added via that.)
 
-        //add single symbol renderer as default
-        QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();
+      //add single symbol renderer as default
+      QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer();
 
-        Q_CHECK_PTR( renderer );
+      Q_CHECK_PTR( renderer );
 
-        if ( ! renderer )
-        {
-            mMapCanvas->freeze(false);
-            QApplication::restoreOverrideCursor();
+      if ( ! renderer )
+      {
+        mMapCanvas->freeze(false);
+        QApplication::restoreOverrideCursor();
 
-            // XXX should we also delete the layer?
+        // XXX should we also delete the layer?
 
-            // XXX insert meaningful whine to the user here
-            return false;
-        }
+        // XXX insert meaningful whine to the user here
+        return false;
+      }
 
-        layer->setRenderer(renderer);
-        renderer->initializeSymbology(layer);
-        // not necessary since registry will add to canvas mMapCanvas->addLayer(layer);
-        // XXX some day will not necessary since connect up a request from
-        // the raster layer to show in overview map
-        //      QObject::connect(layer,
-        //              SIGNAL(showInOverview(QString,bool)),
-        //              this,
-        //              SLOT(setLayerOverviewStatus(QString,bool)));
+      layer->setRenderer(renderer);
+      renderer->initializeSymbology(layer);
+      // not necessary since registry will add to canvas mMapCanvas->addLayer(layer);
+      // XXX some day will not necessary since connect up a request from
+      // the raster layer to show in overview map
+      //      QObject::connect(layer,
+      //              SIGNAL(showInOverview(QString,bool)),
+      //              this,
+      //              SLOT(setLayerOverviewStatus(QString,bool)));
 
-        // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
+      // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
 #ifdef QGISDEBUG
-  std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
+      std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
 #endif
-        QObject::connect(this,
-                         SIGNAL(keyPressed(QKeyEvent *)),
-                         layer,
-                         SLOT(keyPressed(QKeyEvent* )));
-            //add hooks for letting layer know canvas needs to recalc the layer extents
-            QObject::connect(layer,
-                             SIGNAL(recalculateExtents()),
-                             mMapCanvas,
-                             SLOT(recalculateExtents()));
+      QObject::connect(this,
+              SIGNAL(keyPressed(QKeyEvent *)),
+              layer,
+              SLOT(keyPressed(QKeyEvent* )));
+      //add hooks for letting layer know canvas needs to recalc the layer extents
+      QObject::connect(layer,
+              SIGNAL(recalculateExtents()),
+              mMapCanvas,
+              SLOT(recalculateExtents()));
 
-            QObject::connect(layer,
-                             SIGNAL(recalculateExtents()),
-                             mOverviewCanvas,
-                             SLOT(recalculateExtents()));
+      QObject::connect(layer,
+              SIGNAL(recalculateExtents()),
+              mOverviewCanvas,
+              SLOT(recalculateExtents()));
     }
     else
     {
@@ -2046,90 +2046,102 @@ void QgisApp::newVectorLayer()
 
 void QgisApp::fileOpen()
 {
-    // possibly save any pending work before opening a new project
-    int answer = saveDirty();
+  // possibly save any pending work before opening a new project
+  int answer = saveDirty();
 
-    if (answer != QMessageBox::Cancel)
+  if (answer != QMessageBox::Cancel)
+  {
+    // Retrieve last used project dir from persistent settings
+    QSettings settings;
+    QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
+
+    QFileDialog * openFileDialog = new QFileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0,
+            "open project file");
+    openFileDialog->setCaption(tr("Choose a QGIS project file to open"));
+    openFileDialog->setMode(QFileDialog::ExistingFile);
+
+    QString fullPath;
+    if (openFileDialog->exec() == QDialog::Accepted)
     {
-        // Retrieve last used project dir from persistent settings
-        QSettings settings;
-        QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
-        
-        QFileDialog * openFileDialog = new QFileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0,
-                                                       "open project file");
-        openFileDialog->setCaption(tr("Choose a QGIS project file to open"));
-        openFileDialog->setMode(QFileDialog::ExistingFile);
-        
-        QString fullPath;
-        if (openFileDialog->exec() == QDialog::Accepted)
-        {
-            fullPath = openFileDialog->selectedFile();
-        } else {
-            // if they didn't select anything, just return
-            delete openFileDialog;
-            return;
-        }
-        
-        // Persist last used project dir
-        settings.writeEntry("/qgis/UI/lastProjectDir", openFileDialog->dirPath());
-        
-        delete openFileDialog;
-        
-        // clear out any stuff from previous project
-        removeAllLayers();
-
-        QgsProject::instance()->filename( fullPath );
-
-        try 
-        {
-            if ( QgsProject::instance()->read() )
-            {
-                setTitleBarText_( *this );
-                mMapCanvas->setMapUnits(QgsProject::instance()->mapUnits());
-                emit projectRead();     // let plug-ins know that we've read in a new
-                // project so that they can check any project
-                // specific plug-in state
-                
-                // add this to the list of recently used project files
-                saveRecentProjectPath(fullPath, settings);
-            }
-        }
-        catch ( QgsProjectBadLayerException & e )
-        {
-            QMessageBox::critical(this, 
-                                  tr("QGIS Project Read Error"), 
-                                  tr("") + "\n" + e.what() );
-            qDebug( "%s:%d %d bad layers found", __FILE__, __LINE__, e.layers().size() );
-
-            // attempt to find the new locations for missing layers
-            // XXX vector file hard-coded -- but what if it's raster?
-            findLayers_( mVectorFileFilter, e.layers() );
-        }
-        catch ( std::exception & e )
-        {
-            QMessageBox::critical(this, 
-                                  tr("QGIS Project Read Error"), 
-                                  tr("") + "\n" + e.what() );
-            qDebug( "%s:%d BAD LAYERS FOUND", __FILE__, __LINE__ );
-        }
+      fullPath = openFileDialog->selectedFile();
+    } else {
+      // if they didn't select anything, just return
+      delete openFileDialog;
+      return;
     }
-    //loop through all layers in the layers registry and connect up 
-   // keybindings for the escape key
+
+    // Persist last used project dir
+    settings.writeEntry("/qgis/UI/lastProjectDir", openFileDialog->dirPath());
+
+    delete openFileDialog;
+
+    // clear out any stuff from previous project
+    removeAllLayers();
+
+    QgsProject::instance()->filename( fullPath );
+
+    try 
+    {
+      if ( QgsProject::instance()->read() )
+      {
+        setTitleBarText_( *this );
+        mMapCanvas->setMapUnits(QgsProject::instance()->mapUnits());
+        emit projectRead();     // let plug-ins know that we've read in a new
+        // project so that they can check any project
+        // specific plug-in state
+
+        // add this to the list of recently used project files
+        saveRecentProjectPath(fullPath, settings);
+      }
+    }
+    catch ( QgsProjectBadLayerException & e )
+    {
+      QMessageBox::critical(this, 
+              tr("QGIS Project Read Error"), 
+              tr("") + "\n" + e.what() );
+      qDebug( "%s:%d %d bad layers found", __FILE__, __LINE__, e.layers().size() );
+
+      // attempt to find the new locations for missing layers
+      // XXX vector file hard-coded -- but what if it's raster?
+      findLayers_( mVectorFileFilter, e.layers() );
+    }
+    catch ( std::exception & e )
+    {
+      QMessageBox::critical(this, 
+              tr("QGIS Project Read Error"), 
+              tr("") + "\n" + e.what() );
+      qDebug( "%s:%d BAD LAYERS FOUND", __FILE__, __LINE__ );
+    }
+  }
+  //loop through all layers in the layers registry and connect up 
+  // keybindings for the escape key
   std::map<QString, QgsMapLayer *> myMapLayers 
-    = QgsMapLayerRegistry::instance()->mapLayers();
+      = QgsMapLayerRegistry::instance()->mapLayers();
   std::map<QString, QgsMapLayer *>::iterator myMapIterator;
   for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator )
   {
+    
     QgsMapLayer * myMapLayer = myMapIterator->second;
     QObject::connect(this,
-                         SIGNAL(keyPressed(QKeyEvent *)),
-                         myMapLayer,
-                         SLOT(keyPressed(QKeyEvent* )));
-    }
+            SIGNAL(keyPressed(QKeyEvent *)),
+            myMapLayer,
+            SLOT(keyPressed(QKeyEvent* )));
+    
+    //add hooks for letting layer know canvas needs to recalc the layer extents
+    QObject::connect(myMapLayer,
+            SIGNAL(recalculateExtents()),
+            mMapCanvas,
+            SLOT(recalculateExtents()));
+
+    QObject::connect(myMapLayer,
+            SIGNAL(recalculateExtents()),
+            mOverviewCanvas,
+            SLOT(recalculateExtents()));
+  }
 
   //set the projections enabled icon in the status bar
   int myProjectionEnabledFlag =
-         QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
+      QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
   projectionsEnabled(myProjectionEnabledFlag);
 } // QgisApp::fileOpen
 
