@@ -376,16 +376,8 @@ QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight
 #ifdef QGISDEBUG
   // Get what we can support
 
-// TODO: Qt4 has inputFormatList in QPicture - need to refactor.
-#if QT_VERSION < 0x040000
-  QStringList list = cachedImage->inputFormatList();
-  QStringList::Iterator it = list.begin();
-  while( it != list.end() )
-  {
-    std::cout << "QgsWmsProvider::addLayers: can support input of '" << (*it).local8Bit() << "'." << std::endl;
-    ++it;
-  }
-#endif
+// Commented out for now, causes segfaults.
+//  supportedFormats();
 
 #endif
 
@@ -567,13 +559,23 @@ void QgsWmsProvider::parseCapability(QDomElement e)
       if( !e1.isNull() ) {
           //std::cout << "  " << e1.tagName() << std::endl; // the node really is an element.
       
-          if (e1.tagName() == "Layer")
+          if (e1.tagName() == "Request")
           {
-            // TODO: Initialise this variable
-            QgsWmsLayerProperty layerproperty = {0};
-            
-            parseLayer(e1, layerproperty);
-          }  
+            // TODO: How do we ensure this is null?
+            QgsWmsRequestProperty requestProperty;
+
+            parseRequest(e1, requestProperty);
+
+            // TODO: Do something with serverProperty
+         }
+          else if (e1.tagName() == "Layer")
+          {
+            QgsWmsLayerProperty layerProperty = {0};
+
+            parseLayer(e1, layerProperty);
+
+            // TODO: Do something with layerProperty
+          }
       
       }
       n1 = n1.nextSibling();
@@ -586,17 +588,198 @@ void QgsWmsProvider::parseCapability(QDomElement e)
 }
 
 
-void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerproperty)
+void QgsWmsProvider::parseOnlineResource(QDomElement e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseOnlineResource: entering." << std::endl;
+#endif
+
+  onlineResourceAttribute.xlinkHref = e.attribute("xlink:href");
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseOnlineResource: exiting." << std::endl;
+#endif
+}
+
+
+void QgsWmsProvider::parseGet(QDomElement e, QgsWmsGetProperty& getProperty)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseGet: entering." << std::endl;
+#endif
+
+  QDomNode n1 = e.firstChild();
+  while( !n1.isNull() ) {
+      QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+      if( !e1.isNull() ) {
+          if      (e1.tagName() == "OnlineResource")
+          {
+            std::cout << "      OnlineResource." << std::endl;
+            parseOnlineResource(e1, getProperty.onlineResource);
+          }
+      }
+      n1 = n1.nextSibling();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseGet: exiting." << std::endl;
+#endif
+}
+
+
+void QgsWmsProvider::parsePost(QDomElement e, QgsWmsPostProperty& postProperty)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parsePost: entering." << std::endl;
+#endif
+
+  QDomNode n1 = e.firstChild();
+  while( !n1.isNull() ) {
+      QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+      if( !e1.isNull() ) {
+          if      (e1.tagName() == "OnlineResource")
+          {
+            std::cout << "      OnlineResource." << std::endl;
+            parseOnlineResource(e1, postProperty.onlineResource);
+          }
+      }
+      n1 = n1.nextSibling();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parsePost: exiting." << std::endl;
+#endif
+}
+
+
+void QgsWmsProvider::parseHttp(QDomElement e, QgsWmsHttpProperty& httpProperty)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseHttp: entering." << std::endl;
+#endif
+
+  QDomNode n1 = e.firstChild();
+  while( !n1.isNull() ) {
+      QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+      if( !e1.isNull() ) {
+          if      (e1.tagName() == "Get")
+          {
+            std::cout << "      Get." << std::endl;
+            parseGet(e1, httpProperty.get);
+          }
+          else if (e1.tagName() == "Post")
+          {
+            std::cout << "      Post." << std::endl;
+            parsePost(e1, httpProperty.post);
+          }
+      }
+      n1 = n1.nextSibling();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseHttp: exiting." << std::endl;
+#endif
+}
+
+
+void QgsWmsProvider::parseDcpType(QDomElement e, QgsWmsDcpTypeProperty& dcpType)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseDcpType: entering." << std::endl;
+#endif
+
+  QDomNode n1 = e.firstChild();
+  while( !n1.isNull() ) {
+      QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+      if( !e1.isNull() ) {
+          if      (e1.tagName() == "HTTP")
+          {
+            std::cout << "      HTTP." << std::endl; 
+            parseHttp(e1, dcpType.http);
+          }
+      }
+      n1 = n1.nextSibling();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseDcpType: exiting." << std::endl;
+#endif
+}
+
+
+void QgsWmsProvider::parseOperationType(QDomElement e, QgsWmsOperationType& operationType)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseOperationType: entering." << std::endl;
+#endif
+
+  QDomNode n1 = e.firstChild();
+  while( !n1.isNull() ) {
+      QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+      if( !e1.isNull() ) {
+          if      (e1.tagName() == "Format")
+          {
+            std::cout << "      Format." << std::endl; 
+            operationType.format.push_back(e1.text());
+          }
+          else if (e1.tagName() == "DCPType")
+          {
+            std::cout << "      DCPType." << std::endl;
+            QgsWmsDcpTypeProperty dcp;
+            parseDcpType(e1, dcp);
+            operationType.dcpType.push_back(dcp);
+          }
+      }
+      n1 = n1.nextSibling();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseOperationType: exiting." << std::endl;
+#endif
+}
+
+
+void QgsWmsProvider::parseRequest(QDomElement e, QgsWmsRequestProperty& requestProperty)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseRequest: entering." << std::endl;
+#endif
+
+  QDomNode n1 = e.firstChild();
+  while( !n1.isNull() ) {
+      QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+      if( !e1.isNull() ) {
+          if      (e1.tagName() == "GetMap")
+          {
+            std::cout << "      GetMap." << std::endl; 
+            parseOperationType(e1, requestProperty.getMap);
+          }
+          else if (e1.tagName() == "GetFeatureInfo")
+          {
+            std::cout << "      GetFeatureInfo." << std::endl;
+            parseOperationType(e1, requestProperty.getFeatureInfo);
+          }
+      }
+      n1 = n1.nextSibling();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseRequest: exiting." << std::endl;
+#endif
+}
+
+
+void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerProperty)
 {
 #ifdef QGISDEBUG
 //  std::cout << "QgsWmsProvider::parseLayer: entering." << std::endl;
 #endif
 
   // enforce WMS non-inheritance rules
-  layerproperty.name =        QString::null;
-  layerproperty.title =       QString::null;
-  layerproperty.abstract =    QString::null;
-  layerproperty.keywordlist = QString::null;
+  layerProperty.name =        QString::null;
+  layerProperty.title =       QString::null;
+  layerProperty.abstract =    QString::null;
+  layerProperty.keywordList.clear();
 
   // assume true until we find a child layer
   bool atleaf = TRUE;
@@ -611,23 +794,23 @@ void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerpropert
           {
 //            std::cout << "      Nested layer." << std::endl; 
 
-            parseLayer(e1, layerproperty);
+            parseLayer(e1, layerProperty);
             atleaf = FALSE;
           }
           else if (e1.tagName() == "Name")
           {
 //            std::cout << "      Name is: '" << e1.text() << "'." << std::endl;
-            layerproperty.name = e1.text();
+            layerProperty.name = e1.text();
           }
           else if (e1.tagName() == "Title")
           {
 //            std::cout << "      Title is: '" << e1.text() << "'." << std::endl;
-            layerproperty.title = e1.text();
+            layerProperty.title = e1.text();
           }  
           else if (e1.tagName() == "SRS")
           {
 //            std::cout << "      SRS is: '" << e1.text() << "'." << std::endl;
-            layerproperty.srs = e1.text();
+            layerProperty.srs = e1.text();
           }  
           else if (e1.tagName() == "LatLonBoundingBox")
           {
@@ -637,7 +820,7 @@ void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerpropert
 //            std::cout << "      LLBB is: '" << e1.attribute("maxx") << "'." << std::endl;
 //            std::cout << "      LLBB is: '" << e1.attribute("maxy") << "'." << std::endl;
             
-            layerproperty.latlonbbox = QgsRect( 
+            layerProperty.latLonBBox = QgsRect( 
                                                 e1.attribute("minx").toDouble(),
                                                 e1.attribute("miny").toDouble(),
                                                 e1.attribute("maxx").toDouble(),
@@ -657,17 +840,17 @@ void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerpropert
 #ifdef QGISDEBUG
 //    std::cout << "QgsWmsProvider::parseLayer: A layer definition is complete." << std::endl;
 
-    std::cout << "QgsWmsProvider::parseLayer:   name is: '" << layerproperty.name.local8Bit() << "'." << std::endl;
-    std::cout << " QgsWmsProvider::parseLayer:  title is: '" << layerproperty.title.local8Bit() << "'." << std::endl;
-//    std::cout << "QgsWmsProvider::parseLayer:   srs is: '" << layerproperty.srs << "'." << std::endl;
-//    std::cout << "QgsWmsProvider::parseLayer:   bbox is: '" << layerproperty.latlonbbox.stringRep() << "'." << std::endl;
+    std::cout << "QgsWmsProvider::parseLayer:   name is: '" << layerProperty.name.local8Bit() << "'." << std::endl;
+    std::cout << " QgsWmsProvider::parseLayer:  title is: '" << layerProperty.title.local8Bit() << "'." << std::endl;
+//    std::cout << "QgsWmsProvider::parseLayer:   srs is: '" << layerProperty.srs << "'." << std::endl;
+//    std::cout << "QgsWmsProvider::parseLayer:   bbox is: '" << layerProperty.latlonbbox.stringRep() << "'." << std::endl;
     
     // Store the extent so that it can be combined with others later
     // in calculateExtent()
-    extentForLayer[ layerproperty.name ] = layerproperty.latlonbbox;
+    extentForLayer[ layerProperty.name ] = layerProperty.latLonBBox;
     
     // Insert into the local class' registry
-    layersSupported.push_back(layerproperty);
+    layersSupported.push_back(layerProperty);
        
 
 #endif
@@ -721,9 +904,26 @@ QString QgsWmsProvider::wmsVersion()
   // TODO
 } 
 
-std::list<QString> QgsWmsProvider::formatsSupported()
+std::list<QString> QgsWmsProvider::supportedFormats()
 {
-  // TODO
+  std::list<QString> returnList;
+
+#if QT_VERSION < 0x040000
+  QStringList list = QImage::inputFormatList();
+#else
+  QStringList list = QPicture::inputFormatList();
+#endif
+
+  QStringList::Iterator it = list.begin();
+  while( it != list.end() )
+  {
+    std::cout << "QgsWmsProvider::supportedFormats: can support input of '" << (*it).local8Bit() << "'." << std::endl;
+
+    returnList.push_back(*it);
+
+    ++it;
+  }
+
 } 
 
   

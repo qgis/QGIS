@@ -36,27 +36,148 @@
 #include <qdom.h>
 
 
-  /** Layer Property structure */  
+/*
+ * The following structs reflect the WMS XML schema,
+ * as illustrated in Appendix E of the Web Map Service standard, version 1.3, 2004-08-02.
+ */
+
+  /** Layer Property structure */
   // TODO: Fill to WMS specifications
   struct QgsWmsLayerProperty
   {
     // WMS layer properties
-    QString name;
-    QString title;
-    QString abstract;
-    QString keywordlist;
-    QString style;
-    QString srs;
-    QgsRect latlonbbox;
-    
+    QString            name;
+    QString            title;
+    QString            abstract;
+    std::list<QString> keywordList;
+    QString            style;
+    QString            srs;
+    QgsRect            latLonBBox;
+
     // WMS layer attributes
-    bool    queryable;
-    int     cascaded;
-    bool    opaque;
-    bool    nosubsets;
-    int     fixedwidth;
-    int     fixedheight;
-    
+    bool               queryable;
+    int                cascaded;
+    bool               opaque;
+    bool               noSubsets;
+    int                fixedWidth;
+    int                fixedHeight;
+  };
+
+  /** OnlineResource Attribute structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsOnlineResourceAttribute
+  {
+    QString xlinkHref;
+  };
+
+  /** Get Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsGetProperty
+  {
+    QgsWmsOnlineResourceAttribute onlineResource;
+  };
+
+  /** Post Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsPostProperty
+  {
+    QgsWmsOnlineResourceAttribute onlineResource;
+  };
+
+  /** HTTP Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsHttpProperty
+  {
+    QgsWmsGetProperty    get;
+    QgsWmsPostProperty   post;  // can be null
+  };
+
+  /** DCP Type Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsDcpTypeProperty
+  {
+    QgsWmsHttpProperty http;
+  };
+
+  /** Operation Type structure (for GetMap and GetFeatureInfo) */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsOperationType
+  {
+    std::list<QString>                 format;
+    std::list<QgsWmsDcpTypeProperty>   dcpType;
+  };
+
+  /** Request Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsRequestProperty
+  {
+    // QgsWmsGetCapabilitiesProperty   ...
+    // -- don't include since if we can get the capabilities,
+    //    we already know what's in this part.
+    QgsWmsOperationType     getMap;
+    QgsWmsOperationType     getFeatureInfo;
+  };
+
+  /** Exception Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsExceptionProperty
+  {
+    std::list<QString>                 format;   // text formats supported.
+  };
+
+  /** Capability Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsCapabilityProperty
+  {
+    QgsWmsRequestProperty    request;
+    QgsWmsExceptionProperty  exception;
+  };
+
+  /** Primary Contact Person Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsContactPersonPrimaryProperty
+  {
+    QString            contactPerson;
+    QString            contactOrganization;
+  };
+
+  /** Contact Address Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsContactAddressProperty
+  {
+    QString            addressType;
+    QString            address;
+    QString            city;
+    QString            stateOrProvince;
+    QString            postCode;
+    QString            country;
+  };
+
+  /** Contact Information Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsContactInformationProperty
+  {
+    QgsWmsContactPersonPrimaryProperty contactPersonPrimary;
+    QString                            contactPosition;
+    QgsWmsContactAddressProperty       contactAddress;
+    QString                            contactVoiceTelephone;
+    QString                            contactElectronicMailAddress;
+  };
+
+  /** Service Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsServiceProperty
+  {
+    QString                         name;
+    QString                         title;
+    QString                         abstract;
+    std::list<QString>              keywordList;
+    QgsWmsOnlineResourceAttribute   onlineResource;
+    QString                         fees;
+    QString                         accessConstraints;
+    int                             layerLimit;
+    int                             maxWidth;
+    int                             maxHeight;
   };
 
 
@@ -168,8 +289,8 @@ public:
   //! get WMS Server version string
   QString wmsVersion();
 
-  //! get raster formats supported
-  std::list<QString> formatsSupported();
+  //! get raster formats supported by both the WMS Server and Qt
+  std::list<QString> supportedFormats();
   
   /**
    * Sub-layers handled by this provider, in order from bottom to top
@@ -257,9 +378,30 @@ private:
   //! parse the WMS Capability XML element
   void parseCapability(QDomElement e);
 
+  //! parse the WMS OnlineResource XML element
+  void parseOnlineResource(QDomElement e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute);
+
+  //! parse the WMS Get XML element
+  void parseGet(QDomElement e, QgsWmsGetProperty& getProperty);
+
+  //! parse the WMS Post XML element
+  void parsePost(QDomElement e, QgsWmsPostProperty& postProperty);
+
+  //! parse the WMS HTTP XML element
+  void parseHttp(QDomElement e, QgsWmsHttpProperty& httpProperty);
+
+  //! parse the WMS DCPType XML element
+  void parseDcpType(QDomElement e, QgsWmsDcpTypeProperty& dcpType);
+
+  //! parse the WMS GetCapabilities, GetMap, or GetFeatureInfo XML element, each of type "OperationType".
+  void parseOperationType(QDomElement e, QgsWmsOperationType& operationType);
+
+  //! parse the WMS Request XML element
+  void parseRequest(QDomElement e, QgsWmsRequestProperty& requestProperty);
+
   //! parse the WMS Layer XML element
   // TODO: Make recursable
-  void parseLayer(QDomElement e, QgsWmsLayerProperty& layerproperty);
+  void parseLayer(QDomElement e, QgsWmsLayerProperty& layerProperty);
 
   //! calculates the combined extent of the layers selected by layersDrawn  
   void calculateExtent();
