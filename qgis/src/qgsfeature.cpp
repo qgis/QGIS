@@ -239,6 +239,18 @@ bool QgsFeature::isValid() const
 {
   return mValid;
 }
+bool QgsFeature::validate() const
+{
+  // valid feature has a point set
+  if ((geometrySize > 0) && geometry )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
 
 void QgsFeature::setValid(bool validity)
 {

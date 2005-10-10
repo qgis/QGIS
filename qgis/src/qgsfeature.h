@@ -105,6 +105,11 @@ class QgsFeature {
      */
     bool isValid() const;
 
+    /**
+     * Validate the feature
+     */
+    bool validate() const;
+
     /** 
      * Set the validity of the feature.
      */

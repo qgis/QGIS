@@ -442,6 +442,10 @@ void QgsDlgVectorLayerProperties::pbnQueryBuilder_clicked()
     // if the sql is changed, update it in the prop subset text box
     txtSubsetSQL->setText(pqb->sql());
     //TODO If the sql is changed in the prop dialog, the layer extent should be recalculated
+
+    // The datasource for the layer needs to be updated with the new sql since this gets
+    // saved to the project file. This should happen at the map layer level...
+
   }
   // delete the query builder object
   delete pqb;
