@@ -1861,7 +1861,7 @@ void QgsPostgresProvider::setSubsetString(QString theSQL)
   // project file when a save/saveAs is done. The sql statement is always the last
   // part of the URI. 
    mUri.sql = theSQL;
-   dataSourceUri = dataSourceUri.left(dataSourceUri.find("sql=")+ 5) + theSQL;
+   dataSourceUri = dataSourceUri.left(dataSourceUri.find("sql=")+ 4) + theSQL;
   // need to recalculate the number of features...
   getFeatureCount();
   calculateExtents();
