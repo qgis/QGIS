@@ -278,7 +278,7 @@ void QgsUValMaDialog::apply()
 void QgsUValMaDialog::changeClassificationAttribute(int nr)
 {
 #ifdef QGISDEBUG
-    qWarning("in changeClassificationAttribute, nr is: "+QString::number(nr));
+    qWarning(("in changeClassificationAttribute, nr is: "+QString::number(nr)).local8Bit());
 #endif
 
     //delete old entries
@@ -371,7 +371,7 @@ void QgsUValMaDialog::applySymbologyChanges()
     QgsMarkerSymbol* ms = dynamic_cast<QgsMarkerSymbol*>(it->second->
 							 getSymbol());
     assert(ms != NULL);
-    std::cerr<<"madialog.getPicture() = "<<madialog.getPicture()<<std::endl;
+    std::cerr<<"madialog.getPicture() = "<<madialog.getPicture().local8Bit()<<std::endl;
     ms->setPicture(madialog.getPicture());
     ms->setScaleFactor(madialog.getScaleFactor());
   }

@@ -143,11 +143,11 @@ void QgsSiMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     msy->setPen(pen);
     msy->setPicture(svgpath);
 #ifdef QGISDEBUG
-    qWarning("the svgpath: "+svgpath);
+    qWarning(("the svgpath: "+svgpath).local8Bit());
 #endif
     msy->setScaleFactor(scalefactor);
 #ifdef QGISDEBUG
-    qWarning("the scalefactor: "+QString::number(scalefactor,'f',2));
+    qWarning(("the scalefactor: "+QString::number(scalefactor,'f',2)).local8Bit());
 #endif
     QgsRenderItem* ri = new QgsRenderItem();
     ri->setSymbol(msy);
@@ -171,17 +171,18 @@ void QgsSiMaRenderer::writeXML(std::ostream& xml)
 #ifdef QGISDEBUG
     qWarning("in QgsSiMaRenderer::writeXML");
     qWarning("label seems to make problems");
-    qWarning(this->item()->label());
+    qWarning((this->item()->label()).local8Bit());
 #endif
+    // Always use utf8 for XML?
     xml << "\t\t<singlemarker>\n";
     xml << "\t\t\t<renderitem>\n";
-    xml << "\t\t\t\t<value>" + this->item()->value() + "</value>\n";
+    xml << "\t\t\t\t<value>" + this->item()->value().utf8() + "</value>\n";
 
     QgsMarkerSymbol *markersymbol = dynamic_cast<QgsMarkerSymbol*>(this->item()->getSymbol());
     if(markersymbol)
     {
 	xml << "\t\t\t\t<markersymbol>\n";
-	xml << "\t\t\t\t\t<svgpath>" << (const char *) markersymbol->picture() << "</svgpath>\n";
+	xml << "\t\t\t\t\t<svgpath>" << (const char *) markersymbol->picture().utf8() << "</svgpath>\n";
 	xml << "\t\t\t\t\t<scalefactor>"  << markersymbol->scaleFactor() << "</scalefactor>\n";
 	xml << "\t\t\t\t\t<outlinecolor red=\"" 
     << markersymbol->pen().color().red() 
@@ -190,7 +191,7 @@ void QgsSiMaRenderer::writeXML(std::ostream& xml)
     << "\" blue=\"" 
     << markersymbol->pen().color().blue()
     << "\" />\n";
-	xml << "\t\t\t\t\t<outlinestyle>" << (const char *) QgsSymbologyUtils::penStyle2QString(markersymbol->pen().style()) << "</outlinestyle>\n";
+	xml << "\t\t\t\t\t<outlinestyle>" << (const char *) QgsSymbologyUtils::penStyle2QString(markersymbol->pen().style()).utf8() << "</outlinestyle>\n";
 	xml << "\t\t\t\t\t<outlinewidth>" <<  markersymbol->pen().width() << "</outlinewidth>\n";
 	xml << "\t\t\t\t\t<fillcolor red=\"" << markersymbol->brush().color().red() 
     << "\" green=\"" 
@@ -199,10 +200,10 @@ void QgsSiMaRenderer::writeXML(std::ostream& xml)
     << markersymbol->brush().color().blue()
     << "\" />\n";
 	xml << "\t\t\t\t\t<fillpattern>" 
-    << (const char *)QgsSymbologyUtils::brushStyle2QString(markersymbol->brush().style())
+    << (const char *)QgsSymbologyUtils::brushStyle2QString(markersymbol->brush().style()).utf8()
 	  << "</fillpattern>\n";
 	  xml << "\t\t\t\t</markersymbol>\n";
-	  xml << "\t\t\t\t<label>" + this->item()->label() + "</label>\n";
+	  xml << "\t\t\t\t<label>" + this->item()->label().utf8() + "</label>\n";
 	xml << "\t\t\t</renderitem>\n";
 	xml << "\t\t</singlemarker>\n";
     }else

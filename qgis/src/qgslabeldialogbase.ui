@@ -768,10 +768,16 @@
                                 <property name="name">
                                     <cstring>spinXOffset</cstring>
                                 </property>
+                                <property name="minValue">
+                                    <number>-99</number>
+                                </property>
                             </widget>
                             <widget class="QSpinBox" row="1" column="1">
                                 <property name="name">
                                     <cstring>spinYOffset</cstring>
+                                </property>
+                                <property name="minValue">
+                                    <number>-99</number>
                                 </property>
                             </widget>
                             <widget class="QLabel" row="1" column="0">

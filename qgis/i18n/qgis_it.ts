@@ -1,302 +1,24 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name>Plugin</name>
+    <name>MapCoordsDialogBase</name>
     <message>
-        <source>Bottom Right</source>
-        <translation>In basso a destra</translation>
+        <source>Enter map coordinates</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Bottom Left</source>
-        <translation>In basso a sinistra</translation>
+        <source>X:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Top Left</source>
-        <translation>In alto a sinistra</translation>
-    </message>
-    <message>
-        <source>Top Right</source>
-        <translation>In alto a destra</translation>
-    </message>
-    <message>
-        <source> metres/km</source>
-        <translation> metri/km</translation>
-    </message>
-    <message>
-        <source> feet</source>
-        <translation> piedi</translation>
-    </message>
-    <message>
-        <source> degrees</source>
-        <translation> gradi</translation>
-    </message>
-    <message>
-        <source> metres</source>
-        <translation> metri</translation>
-    </message>
-    <message>
-        <source> km</source>
-        <translation> km</translation>
-    </message>
-    <message>
-        <source>Tick Down</source>
-        <translation>Bordo basso</translation>
-    </message>
-    <message>
-        <source>Tick Up</source>
-        <translation>Bordo alto</translation>
-    </message>
-    <message>
-        <source>Bar</source>
-        <translation>Barra</translation>
-    </message>
-    <message>
-        <source>Box</source>
-        <translation>Rettangolo</translation>
-    </message>
-</context>
-<context>
-    <name>PluginGuiBase</name>
-    <message>
-        <source>QGIS Plugin Template</source>
-        <translation>Modello plugin QGIS</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation>...</translation>
-    </message>
-    <message>
-        <source>Graticule Builder</source>
-        <translation>Creazione reticolo</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Descrizione&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Questo plugin genera un ESRI Shape file contenente un reticolo geografico da poter poi utilizzare successivamente come vettoriale per QGIS&lt;/p&gt;
-&lt;/body&gt;&lt;html&gt;</translation>
-    </message>
-    <message>
-        <source>Latitude Interval:</source>
-        <translation>Intervallo di latitudine:</translation>
-    </message>
-    <message>
-        <source>Longitude Interval:</source>
-        <translation>Intervallo di longitudine:</translation>
-    </message>
-    <message>
-        <source>Copyright Label Plugin</source>
-        <translation>Etichetta di Copyright</translation>
-    </message>
-    <message>
-        <source>Placement</source>
-        <translation>Posizione</translation>
-    </message>
-    <message>
-        <source>Bottom Left</source>
-        <translation>In basso a sinistra</translation>
-    </message>
-    <message>
-        <source>Top Left</source>
-        <translation>In alto a sinistra</translation>
-    </message>
-    <message>
-        <source>Bottom Right</source>
-        <translation>In basso a destra</translation>
-    </message>
-    <message>
-        <source>Top Right</source>
-        <translation>In alto a destra</translation>
-    </message>
-    <message>
-        <source>Orientation</source>
-        <translation>Direzione</translation>
-    </message>
-    <message>
-        <source>Horizontal</source>
-        <translation>Orizzontale</translation>
-    </message>
-    <message>
-        <source>Vertical</source>
-        <translation>Verticale</translation>
-    </message>
-    <message>
-        <source>Enable Copyright Label</source>
-        <translation>Abilita etichetta di Copyright</translation>
-    </message>
-    <message>
-        <source>North Arrow Plugin</source>
-        <translation>Rosa dei venti</translation>
-    </message>
-    <message>
-        <source>Properties</source>
-        <translation>Proprietà</translation>
-    </message>
-    <message>
-        <source>Angle</source>
-        <translation>Angolo</translation>
-    </message>
-    <message>
-        <source>Placement on screen</source>
-        <translation>Posizione sullo schermo</translation>
-    </message>
-    <message>
-        <source>Preview of north arrow</source>
-        <translation>Anteprima della rosa dei venti</translation>
-    </message>
-    <message>
-        <source>Icon</source>
-        <translation>Icona</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation>Nuovo elemento</translation>
-    </message>
-    <message>
-        <source>Plugin Template</source>
-        <translation>Modello di plugin</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin was generated using QGIS internal plugin template. Please modify it according to your needs.&lt;/p&gt;
-&lt;p&gt;Tim Sutton&lt;/p&gt;
-&lt;p&gt;2004&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrizione&lt;/span&gt;&lt;/p&gt; 
-&lt;p&gt;Questo è un plugin QGIS di esempio. Puoi modificarlo secondo le tue esigenze.&lt;/p&gt; 
-&lt;p&gt;Tim Sutton&lt;/p&gt; 
-&lt;p&gt;2004&lt;/p&gt; 
-&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
-&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label.  For example:&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt; 
-&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Descrizione&lt;/span&gt;&lt;/p&gt; 
-&lt;p&gt; Inserisce una etichetta di copyright. Il testo dell&apos;etichetta può essere formattato facendo uso dei tag html di base. Esempio:&lt;/p&gt; 
-&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt;&lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Testo marcato&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt;&lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italico&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>Y:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation>&amp;OK</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation>Alt+O</translation>
+        <translation type="unfinished">&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>&amp;Annulla</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation>Alt+C</translation>
-    </message>
-    <message>
-        <source>Enable North Arrow</source>
-        <translation>Abilita rosa dei venti</translation>
-    </message>
-    <message>
-        <source>Scale Bar Plugin</source>
-        <translation>Visualizzazione scala</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt; 
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrizione&lt;/span&gt;&lt;/p&gt; 
-&lt;p&gt;Disegna una barra con la rappresentazione della scala della mappa. Il valore della larghezza rappresentata va considerato come &apos;preferito&apos; in quanto QGIS lo cambia a seconda del livello di zoom. L&apos;unità di misura indicata è la stessa usata nelle proprietà del progetto.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Size of bar:</source>
-        <translation>Larghezza della barra:</translation>
-    </message>
-    <message>
-        <source>Select Colour</source>
-        <translation>Selezione del colore</translation>
-    </message>
-    <message>
-        <source>Placement:</source>
-        <translation>Posizione:</translation>
-    </message>
-    <message>
-        <source>Tick Down</source>
-        <translation>Bordo basso</translation>
-    </message>
-    <message>
-        <source>Tick Up</source>
-        <translation>Bordo alto</translation>
-    </message>
-    <message>
-        <source>Box</source>
-        <translation>Rettangolo</translation>
-    </message>
-    <message>
-        <source>Bar</source>
-        <translation>Barra</translation>
-    </message>
-    <message>
-        <source>Select the style of the scale bar</source>
-        <translation>Selezione dello stile della barra</translation>
-    </message>
-    <message>
-        <source>Colour of bar:</source>
-        <translation>Colore della barra</translation>
-    </message>
-    <message>
-        <source>Scale bar style:</source>
-        <translation>Stile della barra:</translation>
-    </message>
-    <message>
-        <source>Enable scale bar</source>
-        <translation>Abilita la visualizzazione della scala</translation>
-    </message>
-    <message>
-        <source>Automatically snap to round number on resize</source>
-        <translation>Arrotonda automaticamente ridimensionando</translation>
-    </message>
-    <message>
-        <source>Origin (Lower Left)</source>
-        <translation>Origine (in basso a sinistra)</translation>
-    </message>
-    <message>
-        <source>Latitude:</source>
-        <translation>Latitudine:</translation>
-    </message>
-    <message>
-        <source>Longitude:</source>
-        <translation>Longitudine:</translation>
-    </message>
-    <message>
-        <source>End point (Upper Right)</source>
-        <translation>Fine punto (in alto a destra)</translation>
-    </message>
-    <message>
-        <source>Output (Shape) File</source>
-        <translation>File in output (Shape)</translation>
-    </message>
-    <message>
-        <source>Graticule Size (units in degrees)</source>
-        <translation>Dimensioni del reticolo (unità in gradi)</translation>
-    </message>
-    <message>
-        <source>&#xa9; QGIS 2004</source>
-        <translation type="obsolete">© QGIS 2004</translation>
-    </message>
-    <message encoding="UTF-8">
-        <source>© QGIS 2004</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -304,15 +26,23 @@
     <name>QFileDialog</name>
     <message>
         <source>open files dialog</source>
-        <translation>Apri una finestra di dialogo dei file</translation>
+        <translation>apri finestra di dialogo dei file</translation>
     </message>
     <message>
         <source>Save file dialog</source>
-        <translation>Finestra di dialogo per salvare file</translation>
+        <translation type="obsolete">Finestra di dialogo per salvare file</translation>
     </message>
     <message>
-        <source>Open an OGR Supported Data Source</source>
-        <translation>Apri una sorgente dati supportata da OGR</translation>
+        <source>Choose a QGIS project file to open</source>
+        <translation type="obsolete">Seleziona un progetto QGIS da caricare</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file</source>
+        <translation type="obsolete">Selezione un file di progetto QGIS</translation>
+    </message>
+    <message>
+        <source>save new vector files dialog</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -328,30 +58,90 @@
     </message>
     <message>
         <source>No vector layers can be loaded. Check your QGIS installation</source>
-        <translation>Nessun livello può essere caricato. Controllare l&apos;installazione di QGIS</translation>
+        <translation>Nessun layer può essere caricato. Controllare l&apos;installazione di QGIS</translation>
     </message>
     <message>
         <source>No data provider plugins are available. No vector layers can be loaded</source>
-        <translation>Nessun plugin disponibile per l&apos;accesso ai dati. Nessun vettoriale può essere caricato</translation>
+        <translation>Nessun plugin disponibile per l&apos;accesso ai dati. Nessun layer può essere caricato</translation>
     </message>
     <message>
         <source>QGis files (*.qgs)</source>
         <translation>QGis files (*.qgs)</translation>
     </message>
     <message>
-        <source>Choose a QGIS project file to open</source>
-        <translation>Seleziona un progetto QGIS da caricare</translation>
+        <source>Open an OGR Supported Layer</source>
+        <translation>Apri un layer supportato da OGR</translation>
     </message>
     <message>
-        <source>Choose a QGIS project file</source>
-        <translation>Scegli un progetto QGIS</translation>
+        <source>Project file read error</source>
+        <translation>Errore nella lettura del file di proiezione</translation>
+    </message>
+    <message>
+        <source> at line </source>
+        <translation> alla linea </translation>
+    </message>
+    <message>
+        <source> column </source>
+        <translation> colonna</translation>
+    </message>
+    <message>
+        <source> for file </source>
+        <translation> per file </translation>
+    </message>
+    <message>
+        <source>No proj4 projection string. Unable to set map units.</source>
+        <translation>Nessuna string di proiezione proj. Impossibile definire l&apos;unità mappa.</translation>
+    </message>
+    <message>
+        <source>Unsupported map units of </source>
+        <translation> Tipo di unità mappa non supportato</translation>
+    </message>
+    <message>
+        <source>Unable to save to file </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No oid column in table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The table has no primary key nor oid column. 
+Qgis requires that the table either has a primary key 
+or has a column containing the PostgreSQL oid.
+For better performance the column should be indexed
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No suitable key column in view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The view has no column suitable for use as a unique key.
+
+Qgis requires that the view has a column that can be
+used as a unique key. It should be derived from a column
+of type int4 and be either a primary key or have
+a unique constraint on it (an indexed column will
+give better performance).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No primary key column in table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The table has a primary key that is composed of 
+more than one column. Qgis does not currently 
+support this.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgisApp</name>
     <message>
         <source>Layers</source>
-        <translation>Livelli</translation>
+        <translation>layer</translation>
     </message>
     <message>
         <source>Quantum GIS - </source>
@@ -403,11 +193,11 @@
     </message>
     <message>
         <source>Saved map to:</source>
-        <translation>Mappa salvata in:</translation>
+        <translation type="obsolete">Mappa salvata in:</translation>
     </message>
     <message>
         <source>No Layer Selected</source>
-        <translation>Nessun livello selezionato</translation>
+        <translation>Nessun layer selezionato</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a layer in the legend</source>
@@ -415,11 +205,11 @@
     </message>
     <message>
         <source>No MapLayer Plugins</source>
-        <translation>Mancato plugin per il livello mappa</translation>
+        <translation>Mancato plugin per il layer mappa</translation>
     </message>
     <message>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation>Nessun plugin per il livello mappa presente in ../plugins/maplayer</translation>
+        <translation>Nessun plugin per il layer mappa presente in ../plugins/maplayer</translation>
     </message>
     <message>
         <source>No Plugins</source>
@@ -527,11 +317,11 @@
     </message>
     <message>
         <source>Invalid Layer</source>
-        <translation>Livello non valido</translation>
+        <translation>layer non valido</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation>%1 è un livello non valido e non può essere caricato.</translation>
+        <translation>%1 è un layer non valido e non può essere caricato.</translation>
     </message>
     <message>
         <source>Error Loading Plugin</source>
@@ -598,66 +388,6 @@
         <translation>QGIS pronto</translation>
     </message>
     <message>
-        <source>GEOS support in the OGR provider to refine selection of features via identify. This improves over the previous method of feature selection which used a simple MBR intersection check.</source>
-        <translation>Il supporto GEOS delle librerie OGR permette una selezione precisa delle geometria per l&apos;interrogazione. Questo metodo è molto pià performante del precedente che usava una semplice intesezione MBR.</translation>
-    </message>
-    <message>
-        <source>PostGIS editing support in provider</source>
-        <translation>Supporto per la modifica dei dati PostGIS</translation>
-    </message>
-    <message>
-        <source>Vector dialog redesign to improve usability</source>
-        <translation>Completa ridisegnamento dell&apos;interfaccia di gestione dei vettoriali a favore di una maggiore usabilità</translation>
-    </message>
-    <message>
-        <source>Improvement in project handling (loading and saving)</source>
-        <translation>Miglioramenti nella gestione del progetto (caricamento e salvataggio)</translation>
-    </message>
-    <message>
-        <source>Scale dependent rendering</source>
-        <translation>Rappresentazione in base alla scala</translation>
-    </message>
-    <message>
-        <source>User option to load layers with out drawing them, thus allowing you to set scale dependency, etc without waiting for the initial draw to complete</source>
-        <translation>L&apos;utente è in grado di caricare vettoriali senza attendere che QGIS debba completare la loro rappresentazione, in questo modo si può stabilire il fattore di scala ed altro senza dover aspettare l&apos;iniziale operazione di disegno.</translation>
-    </message>
-    <message>
-        <source>Attribute actions - the ability to run an external program based on the contents of an attribute field in a layer</source>
-        <translation>Azioni suli attributi - è ora possibile eseguire un programma esterno applicandolo sui contenuti degli attributi di un vettoriale</translation>
-    </message>
-    <message>
-        <source>Create new vector layer (shapefile) for editing</source>
-        <translation>Crea un nuovo vettoriale (Shape) per la modifica</translation>
-    </message>
-    <message>
-        <source>Windows installer</source>
-        <translation>Installer per Windows</translation>
-    </message>
-    <message>
-        <source>Mac OSX binary</source>
-        <translation>Binario Mac OSX</translation>
-    </message>
-    <message>
-        <source>New options in the graticule builder plugin</source>
-        <translation>Nuove opzioni nel plugin per la creazione del reticolo</translation>
-    </message>
-    <message>
-        <source>Enhancements to the GPS plugin</source>
-        <translation>Miglioramenti nel plugin GPS</translation>
-    </message>
-    <message>
-        <source>Man page</source>
-        <translation>Pagina del manuale (man qgis)</translation>
-    </message>
-    <message>
-        <source>QGis files (*.qgs)</source>
-        <translation>QGis files (*.qgs)</translation>
-    </message>
-    <message>
-        <source>Choose a QGIS project file</source>
-        <translation>Seleziona un progetto QGIS</translation>
-    </message>
-    <message>
         <source>Unable to save project</source>
         <translation>Impossibile salvare il progetto</translation>
     </message>
@@ -667,11 +397,11 @@
     </message>
     <message>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
-        <translation>Legenda che mostra tutti i livelli attualmente presenti sulla mappa. Per abilitare/disabilitare la vista di un livello basta fare click sul relativo check box. Un doppio click su un livello nella legenda permette di personalizzarne il tipo di rappresentazione ed altre proprietà.</translation>
+        <translation>Legenda che mostra tutti i layer attualmente presenti sulla mappa. Per abilitare/disabilitare la vista di un layer basta fare click sul relativo check box. Un doppio click su un layer nella legenda permette di personalizzarne il tipo di rappresentazione ed altre proprietà.</translation>
     </message>
     <message>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
-        <translation>Vista panoramica. Quest&apos;area può essere utilizzata per visualizzare l&apos;estensione attualmente in uso dalla mappa. L&apos;estensione in uso è rappresentata da un rettangolo rosso. Qualsiasi livello può essere aggiunto come vista panoramica.</translation>
+        <translation>Vista panoramica. Quest&apos;area può essere utilizzata per visualizzare l&apos;estensione attualmente in uso dalla mappa. L&apos;estensione in uso è rappresentata da un rettangolo rosso. Qualsiasi layer può essere aggiunto come vista panoramica.</translation>
     </message>
     <message>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
@@ -679,7 +409,7 @@
     </message>
     <message>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
-        <translation>Barra di progressione che mostra lo stato del ridisegnamento dei livelli e moltre altre operazioni che richiedono tempo</translation>
+        <translation>Barra di progressione che mostra lo stato del ridisegnamento dei layer e moltre altre operazioni che richiedono tempo</translation>
     </message>
     <message>
         <source>Displays the current map scale</source>
@@ -694,39 +424,141 @@
         <translation>Se selezionato, l&apos;area dedicata alla mappa ridisegna tutti i vettoriali con le relative proprietà. Se non selezionato, non avverà alcun ridisegnamento. Questo permette di aggiungere un gran numero di vettoriali e di cambiarne le proprietà prima che vengano disegnati.</translation>
     </message>
     <message>
-        <source>Save delimited text as shapefile</source>
-        <translation>Salva un testo delimitato come shapefile</translation>
-    </message>
-    <message>
-        <source>Improved Delimited Text plugin, including preview of text file</source>
-        <translation>Miglioramento del plugin per il testo delimitato compresa l&apos;anteprima del contenuto del file</translation>
-    </message>
-    <message>
-        <source>Improved SPIT handling of PostgreSQL reserved words and shapefiles with multiple geometry types</source>
-        <translation>Miglioramento del plugin SPIT: gestione delle parole riservate e degli shapefile con geometrie di tipo diverso</translation>
-    </message>
-    <message>
-        <source>Display SQL query used to create a PostGIS layer</source>
-        <translation>Mostra la query SQL utilizzata per creare il vettoriale PostGIS</translation>
-    </message>
-    <message>
-        <source>PostgreSQL query builder</source>
-        <translation>Creatore di query PostgreSQL</translation>
-    </message>
-    <message>
-        <source>Ability to redefine the query used for PostgreSQL layers from the layer properties dialog</source>
-        <translation>Possibilità di redifinire una query utilizzata da un vettoriale PostgreSQL dalle proprietà del vettoriale</translation>
-    </message>
-    <message>
-        <source>North arrow, scalebar, and copyright plugins save their state in the project file</source>
-        <translation>Nel file di progetto vengono salvati gli stati dei plugin: rosa dei venti, barra di scala e copyright</translation>
-    </message>
-    <message>
-        <source>Datasets with UTF8, Kanjii and CJK filenames now load properly</source>
-        <translation>Caricamento dei dati con nomi dei file codificati in UTF8, Kanjii e CJK</translation>
-    </message>
-    <message>
         <source>&amp;Plugins</source>
+        <translation>&amp;Plugins</translation>
+    </message>
+    <message>
+        <source>Toggle map rendering</source>
+        <translation> Abilita il rendering della mappa</translation>
+    </message>
+    <message>
+        <source>This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
+        <translation>Questa icona mostra se il sistema di cambio di proiezione al volo è abilitato o meno. Fai click sull&apos;icona per avere le informazioni sulla proiezione e alterarne il comportamento.</translation>
+    </message>
+    <message>
+        <source>Projection status - Click to open projection dialog</source>
+        <translation>Stato della proiezione - Click per aprire la finestra di diaologo della proiezione</translation>
+    </message>
+    <message>
+        <source>On the fly projection support to automatically project layers from different coordinate systems</source>
+        <translation>Supporto per il cambio di proiezione al volo di layer con diversi tipi di sistemi di coordinate</translation>
+    </message>
+    <message>
+        <source>Map Composer for creating map layouts</source>
+        <translation>Map Composer per creare il layout della mappa</translation>
+    </message>
+    <message>
+        <source>Toolbox for running GRASS tools from QGIS. The toolbox can be easily customized to add additional tools</source>
+        <translation> Toolbox per eseguire comandi GRASS da QGIS. Il toolbox può essere personalizzato facilmente aggiungendo altri comandi.</translation>
+    </message>
+    <message>
+        <source>Handling of spatially enabled tables and views in PostgreSQL has been greatly improved. QGIS can now load any table in the database that contains a geometry column</source>
+        <translation>La gestione delle tabelle e viste spaziali PostgreSQL è stato migliorato pesantemente. QGIS ora è in grado di caricare un qualsiasi tipo di tabella che contiene almeno una colonna di tipo geometrico.</translation>
+    </message>
+    <message>
+        <source>PostgreSQL views containing a geometry column can be viewed in QGIS</source>
+        <translation>Le viste PostgreSQL contenenti geometrie possono essere visualizzate in QGIS</translation>
+    </message>
+    <message>
+        <source>Raster graphing tool to produce a histogram for a raster layer</source>
+        <translation>Strumento grafico per la creazione di istogrammi da un raster</translation>
+    </message>
+    <message>
+        <source>Raster query using the identify tool allows you to get the pixel values from a raster by making it the active layer and clicking on the point of interest</source>
+        <translation>L&apos;interrogazione dei raster attraverso il tool di identificazione permette di ottenere i valori dei pixel partendo da un raster attivo e facendo click sul punto di interesse.</translation>
+    </message>
+    <message>
+        <source>User preferences provides customizable settings for the digitizing line width, color, and selection color</source>
+        <translation>Le preferenze utente permettono di personalizzare i parametri per la digitalizzazione (larghezza linea, colore e colore per la selezione)</translation>
+    </message>
+    <message>
+        <source>New symbols for use with point layers are available from the layer properties dialog</source>
+        <translation>Disponibili nuovi simboli da utilizzare per i vettoriali di tipo puntuale dalla finestra di dialogo della proprietà del layer</translation>
+    </message>
+    <message>
+        <source>Spatial bookmarks allow you to create and manage bookmarks for an area on the map. Bookmarks are persistent and global; meaning they are available for all projects</source>
+        <translation>I segnalibri spaziali permettono di creare e gestire segnalibri per un area sulla mappa. I segnalibri sono persistenti e globali, questo vuol dire che possono essere utilizzati da tutti i progetti</translation>
+    </message>
+    <message>
+        <source>Measure tool allows you to measure distances on the map with both segment length and total length displayed as you click</source>
+        <translation>Lo strumento di misurazione permette di calcolare, ad ogni click,  la distanza sulla mappa sia con per la lunghezza dei segmenti sia per il totale.</translation>
+    </message>
+    <message>
+        <source>GPX loading times and memory consumption for large GPX (GPS) files has been drastically reduced</source>
+        <translation>Il tempo di caricamento e la quantità di memoria impiegata per il caricamento di file GPX (GPS) è stata drasticamente ridotto</translation>
+    </message>
+    <message>
+        <source>Many enhancements to the digitizing tools have been made, including the ability to capture data straight into PostgreSQL/PostGIS, and improvements to the definition of attribute tables for newly created layers</source>
+        <translation>Sono stati inserite diverse migliore per lo strumento di digitalizzazione, inclusa la possibilità di archiviare direttamente in PostgreSQL/PostGIS e la definizione di nuovi attributi nelle tabelle per i nuovi vettoriali creati</translation>
+    </message>
+    <message>
+        <source>The Raster Georeferencer plugin can be used to generate a world file for a raster. The plugin allows you to define known control points in the raster coordinate system. Once enough control points are defined, the world file can be generated and the raster properly displayed in QGIS or other GIS applications</source>
+        <translation>Il plugin di georeferenzazione dei raster (Raster Georeferencer) può essere usato per generare un world file da un raster. Il plugin permette di definire i punti del controllo secondo il sistema di coordinate del raster. Una volta che è i punti sono stati individuati, verrà generato un world file che permetterà di visualizzare il raster georeferenziato in QGIS o qualsiasi altra applicazione GIS:</translation>
+    </message>
+    <message>
+        <source>Improvements to the Mapserver export tool</source>
+        <translation>Migliorie nel tool di esportazione per Mapserver</translation>
+    </message>
+    <message>
+        <source>Open an OGR Supported Vector Layer</source>
+        <translation>Supporto per il caricamento di un qualsiasi vettoriale supportato da OGR</translation>
+    </message>
+    <message>
+        <source>QGIS Project Read Error</source>
+        <translation>Errore di lettura del progetto QGIS</translation>
+    </message>
+    <message>
+        <source></source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Try to find missing layers?</source>
+        <translation>Provo a cercare i layer persi?</translation>
+    </message>
+    <message>
+        <source>Open a GDAL Supported Raster Data Source</source>
+        <translation>Apri un raster supportato da GDAL</translation>
+    </message>
+    <message>
+        <source>Save As</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file to open</source>
+        <translation type="unfinished">Seleziona un progetto QGIS da caricare</translation>
+    </message>
+    <message>
+        <source>Choose a QGIS project file</source>
+        <translation type="unfinished">Selezione un file di progetto QGIS</translation>
+    </message>
+    <message>
+        <source>Project file exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The given project file exists.  Do you wish to over-write it with a new one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saved project to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Browser Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the name of a web browser to use (eg. konqueror).
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the full path if the browser is not in your PATH.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You can change this option later by selecting Preferences from the Settings menu.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -866,7 +698,7 @@
     </message>
     <message>
         <source>Zoom to selected features in active layer</source>
-        <translation>Zoom sugli elementi selezionati nel livello attivo</translation>
+        <translation>Zoom sugli elementi selezionati nel layer attivo</translation>
     </message>
     <message>
         <source>Add a Vector Layer</source>
@@ -914,11 +746,11 @@
     </message>
     <message>
         <source>Open a previously saved QGIS project file. The layers (raster and vector) stored in the project file will be loaded and displayed on the map canvas</source>
-        <translation>Apre un progetto QGIS precedentemente salvato. I livelli (raster e vettoriali) archiviati nel progetto verrannò caricati e visualizzati nell&apos;area dedicata alla mappa mappa</translation>
+        <translation>Apre un progetto QGIS precedentemente salvato. I layer (raster e vettoriali) archiviati nel progetto verrannò caricati e visualizzati nell&apos;area dedicata alla mappa mappa</translation>
     </message>
     <message>
         <source>Close all layers and exit QGIS</source>
-        <translation>Chiudi tutti i livelli ed esci da QGIS</translation>
+        <translation>Chiudi tutti i layer ed esci da QGIS</translation>
     </message>
     <message>
         <source>Add a PostgreSQL layer to the map. This requires a properly configured and running PostgreSQL database and the PostGIS extensions.</source>
@@ -926,11 +758,11 @@
     </message>
     <message>
         <source>Refresh the map by clearing the map canvas and redrawing all visible layers</source>
-        <translation>Aggiorna la mappa cancellandola e ridisegnando tutti i livelli visibili</translation>
+        <translation>Aggiorna la mappa cancellandola e ridisegnando tutti i layer visibili</translation>
     </message>
     <message>
         <source>Zoom to the full extent of all layers on the map. This brings everything on the map into full view</source>
-        <translation>Zoom all&apos;estensione massima di tutti i livelli contenuti nella mappa.</translation>
+        <translation>Zoom all&apos;estensione massima di tutti i layer contenuti nella mappa.</translation>
     </message>
     <message>
         <source>Zoom in on the map. Drag the mouse (hold down the left button) to draw a rectangle around the area you want to zoom to, then release the mouse.</source>
@@ -946,7 +778,7 @@
     </message>
     <message>
         <source>Zoom to the extent of selected features on the active layer. The view will be zoomed so that all selected features are visible. If there are no selected features, the view is not changed.</source>
-        <translation>Zoom della mappa sull&apos;insieme degli elementi selezionati sul livello attivo. Qualora non sia stato selezionato nessun elemento, non avverrà alcuna operazione di zoom.</translation>
+        <translation>Zoom della mappa sull&apos;insieme degli elementi selezionati sul layer attivo. Qualora non sia stato selezionato nessun elemento, non avverrà alcuna operazione di zoom.</translation>
     </message>
     <message>
         <source>Identify a feature on the active layer (the active layer is the highlighted layer in the legend). Idenify searches for features near where the mouse is clicked and displays information about the results. The search radius can be customized on the QGIS Preferences dialog.</source>
@@ -955,7 +787,7 @@ Facendo click in prossimità della geometria da interrogare comparirà una tabel
     </message>
     <message>
         <source>Select features on the active layer by dragging the mouse to create a box around the features of interest. When the mouse is released, the features are selected and drawn in a different color (default is yellow)</source>
-        <translation>Seleziona gli elementi del livello attivo raccogliendoli in un rettangolo. Le geometrie selezionatie cambiano colore (valore predefinito: giallo) al rilascio del mouse.</translation>
+        <translation>Seleziona gli elementi del layer attivo raccogliendoli in un rettangolo. Le geometrie selezionatie cambiano colore (valore predefinito: giallo) al rilascio del mouse.</translation>
     </message>
     <message>
         <source>Display the About QGIS dialog. About QGIS contains information about the current version, contributors, and available data provider plugins.</source>
@@ -981,15 +813,15 @@ http://www.remotesensing.org/gdal/ogr/ogr_formats.html</translation>
     </message>
     <message>
         <source>Save the current map as a QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
-        <translation>Salva lo stato attuale della mappa come progetto QIGS. Un progetto QGIS può essere utilizzato per poter riottenere lo stesso stato della mappa (livelli caricati e relativi stili di rappresentazione) in un successivo uso dell&apos;applicazione.</translation>
+        <translation>Salva lo stato attuale della mappa come progetto QIGS. Un progetto QGIS può essere utilizzato per poter riottenere lo stesso stato della mappa (layer caricati e relativi stili di rappresentazione) in un successivo uso dell&apos;applicazione.</translation>
     </message>
     <message>
         <source>Save the current map as a new QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
-        <translation>Salva la mappa attualmente in uso come nuovo progetto QGIS. Un progetto può essere utilizzato per poter riottenere lo stesso stato della mappa  (livelli caricati e relativi stili di rappresentazione) in un successivo uso dell&apos;applicazione.</translation>
+        <translation>Salva la mappa attualmente in uso come nuovo progetto QGIS. Un progetto può essere utilizzato per poter riottenere lo stesso stato della mappa  (layer caricati e relativi stili di rappresentazione) in un successivo uso dell&apos;applicazione.</translation>
     </message>
     <message>
         <source>Create a new, empty QGIS project. All layers will be removed from the map canvas and a blank canvas will be created.</source>
-        <translation>Crea un nuovo progetto QGIS. Tutti i livelli caricati vengono rimossi per poter creare una nuova mappa.</translation>
+        <translation>Crea un nuovo progetto QGIS. Tutti i layer caricati vengono rimossi per poter creare una nuova mappa.</translation>
     </message>
     <message>
         <source>Opens the Plugin Manager and allows you to view loaded plugins or load a new one. The Plugin Manager lists the available plugins and a description of the features each provides.</source>
@@ -1052,7 +884,7 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
     </message>
     <message>
         <source>&amp;Layer</source>
-        <translation>&amp;Livello</translation>
+        <translation>&amp;layer</translation>
     </message>
     <message>
         <source>&amp;View</source>
@@ -1179,16 +1011,12 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
         <translation>&amp;Proprietà</translation>
     </message>
     <message>
-        <source>Properties for the selected layer</source>
-        <translation>Proprietà del livello selezionato</translation>
-    </message>
-    <message>
         <source>Zoom to layer</source>
-        <translation>Zoom alle dimensioni del livello</translation>
+        <translation>Zoom alle dimensioni del layer</translation>
     </message>
     <message>
         <source>Zoom to &amp;layer</source>
-        <translation>Zoom estensione &amp;livello</translation>
+        <translation>Zoom estensione &amp;layer</translation>
     </message>
     <message>
         <source>Print</source>
@@ -1236,7 +1064,7 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
     </message>
     <message>
         <source>Show All Layers</source>
-        <translation>Mostra tutti i livelli</translation>
+        <translation>Mostra tutti i layer</translation>
     </message>
     <message>
         <source>S</source>
@@ -1244,7 +1072,7 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
     </message>
     <message>
         <source>Hide All Layers</source>
-        <translation>Nascondi tutti i livelli</translation>
+        <translation>Nascondi tutti i layer</translation>
     </message>
     <message>
         <source>H</source>
@@ -1264,7 +1092,7 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
     </message>
     <message>
         <source>Show all layers</source>
-        <translation>Mostra tutti i livelli</translation>
+        <translation>Mostra tutti i layer</translation>
     </message>
     <message>
         <source>Add to overview</source>
@@ -1292,7 +1120,7 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
     </message>
     <message>
         <source>Remove Layer</source>
-        <translation>Elimina livello</translation>
+        <translation>Elimina layer</translation>
     </message>
     <message>
         <source>Toggle In Overview</source>
@@ -1301,6 +1129,122 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
     <message>
         <source>New Vectorlayer</source>
         <translation>Nuovo vettoriale</translation>
+    </message>
+    <message>
+        <source>Bookmarks Toolbar</source>
+        <translation>Barra strumenti dei bookmark</translation>
+    </message>
+    <message>
+        <source>Capture (digitise) a point on the current layer. The layer must be in edit mode.</source>
+        <translation>Digitalizzazione di un punto sul vettoriale. attivo. Il vettoriale deve essere in modalità di inserimento.</translation>
+    </message>
+    <message>
+        <source>Capture (digitise) a line on the current layer. The layer must be in edit mode.</source>
+        <translation>Digitalizzazione di una linea sul vettoriale. attivo. Il vettoriale deve essere in modalità di inserimento.</translation>
+    </message>
+    <message>
+        <source>Capture (digitise) a polygon on the current layer. The layer must be in edit mode.</source>
+        <translation>Digitalizzazione di un poligono sul vettoriale. attivo. Il vettoriale deve essere in modalità di inserimento.</translation>
+    </message>
+    <message>
+        <source>Measure</source>
+        <translation>Misura</translation>
+    </message>
+    <message>
+        <source>Measure distances on the map canvas.</source>
+        <translation>Misura le distanza sull&apos;area mappa</translation>
+    </message>
+    <message>
+        <source>Ctrl+M</source>
+        <translation>Ctrl+M</translation>
+    </message>
+    <message>
+        <source>Properties for the selected layer, including rendering and projection settings.</source>
+        <translation>Proprietà per il layer selezionato, incluse le modalità di rendering e di proiezione.</translation>
+    </message>
+    <message>
+        <source>Zoom to the extent of the active layer</source>
+        <translation>Zoom all&apos;estensione del layer attivo</translation>
+    </message>
+    <message>
+        <source>Open the Map Composer to create and print a map using the current layers and settings.</source>
+        <translation>Apri il Map Composer per creare e stampare una mappa che fa uso dei layer attivi e relativa configurazione.</translation>
+    </message>
+    <message>
+        <source>Add all layers to the overview map.</source>
+        <translation>Aggiungi tutti i layer alla mappa panoramica</translation>
+    </message>
+    <message>
+        <source>Remove all layers to the overview map.</source>
+        <translation>Rimuovi tutti i layer dalla mappa panoramica</translation>
+    </message>
+    <message>
+        <source>Toggle the visibility of all layers to on and redraw the map.</source>
+        <translation>Cambia lo stato di visibilità di tutti i layer e ridisegna la mappa.</translation>
+    </message>
+    <message>
+        <source>Toggle the visibility of all layers to off and clear the map.</source>
+        <translation>Rendi invisibili tutti i layer e pulisci la mappa</translation>
+    </message>
+    <message>
+        <source>Remove the active layer from the map.</source>
+        <translation>Rimuovi il layer attivo della mappa</translation>
+    </message>
+    <message>
+        <source>Add or remove the active layer to the Overview map.</source>
+        <translation>Aggiungi o rimuovi il layer attivo nella mappa panoramica.</translation>
+    </message>
+    <message>
+        <source>Create a new vector layer (shapefile) for editing.</source>
+        <translation>Crea un nuovo vettoriale (shapefile) per la modifica</translation>
+    </message>
+    <message>
+        <source>DebugHook</source>
+        <translation>DebugHook</translation>
+    </message>
+    <message>
+        <source>DebugHook to which random stuff can be attached</source>
+        <translation>DebugHook per vedere quale staff casuale può essere allegato</translation>
+    </message>
+    <message>
+        <source>Custom Projections</source>
+        <translation>Proiezioni personalizzate</translation>
+    </message>
+    <message>
+        <source>Create or manage custom projection definitions.</source>
+        <translation>Crea o gestisce delle definizioni personali di proiezioni.</translation>
+    </message>
+    <message>
+        <source>Show geospatial bookmarks</source>
+        <translation>Visualizza i segnalibri geospaziali</translation>
+    </message>
+    <message>
+        <source>Geospatial bookmarks...</source>
+        <translation>Segnalibri geospaziali...</translation>
+    </message>
+    <message>
+        <source>Show the spatial bookmarks dialog and zoom to a bookmark or delete unwanted bookmarks.</source>
+        <translation>Visualizza la finestra di dialogo dei segnalibri geospaziali per zoomare su un segnalibro o eliminare segnalibri non voluti.</translation>
+    </message>
+    <message>
+        <source>Create a new geospatial bookmark</source>
+        <translation>Crea un nuovo segnalibro geospaziale</translation>
+    </message>
+    <message>
+        <source>New geospatial bookmark...</source>
+        <translation>Nuovo segnalibro geospaziale...</translation>
+    </message>
+    <message>
+        <source>Create a new geospatial bookmark for the current view</source>
+        <translation>Crea un nuovo segnalibro geospaziale dalla vista in uso</translation>
+    </message>
+    <message>
+        <source>Ctrl+B</source>
+        <translation>Ctrl+B</translation>
+    </message>
+    <message>
+        <source>Create a new geospatial bookmark for the current view extent.</source>
+        <translation>Crea un nuovo segnalibro geospaziale a partire dall&apos;estensione della vista attuale</translation>
     </message>
 </context>
 <context>
@@ -1334,54 +1278,6 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
         <translation>&lt;h2&gt;Collaboratori QGIS&lt;/h2&gt;</translation>
     </message>
     <message>
-        <source>Gary E. Sherman</source>
-        <translation type="obsolete">Gary E. Sherman</translation>
-    </message>
-    <message>
-        <source>Steve Halasz</source>
-        <translation type="obsolete">Steve Halasz</translation>
-    </message>
-    <message>
-        <source>Tim Sutton</source>
-        <translation type="obsolete">Tim Sutton</translation>
-    </message>
-    <message>
-        <source>Marco Hugentobler</source>
-        <translation type="obsolete">Marco Hugentobler</translation>
-    </message>
-    <message>
-        <source>Denis Antipov</source>
-        <translation type="obsolete">Denis Antipov</translation>
-    </message>
-    <message>
-        <source>Mark Coletti</source>
-        <translation type="obsolete">Mark Coletti</translation>
-    </message>
-    <message>
-        <source>Jens Oberender</source>
-        <translation type="obsolete">Jens Oberender</translation>
-    </message>
-    <message>
-        <source>Radim Blazek</source>
-        <translation type="obsolete">Radim Blazek</translation>
-    </message>
-    <message>
-        <source>Carl Anderson</source>
-        <translation type="obsolete">Carl Anderson</translation>
-    </message>
-    <message>
-        <source>Masaru Hoshi</source>
-        <translation type="obsolete">Masaru Hoshi</translation>
-    </message>
-    <message>
-        <source>Lars Luthman</source>
-        <translation type="obsolete">Lars Luthman</translation>
-    </message>
-    <message>
-        <source>Peter Brewer</source>
-        <translation type="obsolete">Peter Brewer</translation>
-    </message>
-    <message>
         <source>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</source>
         <translation>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</translation>
     </message>
@@ -1398,22 +1294,33 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
         <translation>Fornitori dati</translation>
     </message>
     <message>
-        <source>Christoph Spoerri</source>
-        <translation type="obsolete">Christoph Spoerri</translation>
-    </message>
-    <message>
-        <source>Tom Elwertowski</source>
-        <translation type="obsolete">Tom Elwertowski</translation>
-    </message>
-    <message>
         <source>&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
 &lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</source>
         <translation>&lt;p align=&quot;center&quot;&gt;Quantum GIS è distribuito sotto licenza GNU General Public License&lt;p&gt;
 &lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</translation>
     </message>
+</context>
+<context>
+    <name>QgsAddAttrDialogBase</name>
     <message>
-        <source>Gavin Macaulay</source>
-        <translation type="obsolete">Gavin Macaulay</translation>
+        <source>Add Attribute</source>
+        <translation>Aggiungi attributo</translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation>Nome:</translation>
+    </message>
+    <message>
+        <source>Type:</source>
+        <translation>Tipo:</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Annulla</translation>
     </message>
 </context>
 <context>
@@ -1518,6 +1425,22 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
         <translation>Inserisci l&apos;azione qui. Questo può essere un programma o uno script o un comando presenti sul tuo sistema. Quando l&apos;azione viene invocata tutti i caratteri che cominciano con il simbolo % e che hanno nome uguale al campo vengono sostituiti con il valore contenuto nel relativo campo. Il carattere speciale %% sostituisce il valore del campo che è stato selezionato. Le doppie virgolette marcano una parte di testo come singolo argomento per il programma, script o comando. Le doppie virgolette vengono ignorate se precedute da un backslash.</translation>
     </message>
+    <message>
+        <source>Capture</source>
+        <translation>Digitalizza</translation>
+    </message>
+    <message>
+        <source>Capture output</source>
+        <translation>Digitalizza l&apos;output</translation>
+    </message>
+    <message>
+        <source>Captures any output from the action</source>
+        <translation>Digitalizza ogni output dall&apos;azione</translation>
+    </message>
+    <message>
+        <source>Captures the standard output or error generated by the action and displays it in a dialog box</source>
+        <translation>Gli output di digitalizzazione fatti da l&apos;azione (sia standard che errori) saranno visualizzati in una finestra di dialogo </translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeDialogBase</name>
@@ -1548,8 +1471,618 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
         <translation>Tabella attributi</translation>
     </message>
     <message>
+        <source>Start editing</source>
+        <translation>Abilita modifica</translation>
+    </message>
+    <message>
+        <source>Stop editing</source>
+        <translation>Interrompi modifica</translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation>&amp;Chiudi</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation>Alt+C</translation>
+    </message>
+    <message>
+        <source>Ctrl+X</source>
+        <translation>Ctrl+X</translation>
+    </message>
+    <message>
+        <source>Delete attribute</source>
+        <translation>Elimina attributo</translation>
+    </message>
+    <message>
+        <source>Ctrl+N</source>
+        <translation>Ctrl+N </translation>
+    </message>
+    <message>
+        <source>New attribute</source>
+        <translation>Nuovo attributo</translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation>Ctrl+S</translation>
+    </message>
+    <message>
+        <source>Invert selection</source>
+        <translation>Inverti selezione</translation>
+    </message>
+    <message>
+        <source>Ctrl+T</source>
+        <translation>Ctrl+T</translation>
+    </message>
+    <message>
+        <source>Move selected to top</source>
+        <translation>Muovi selezione in alto</translation>
+    </message>
+    <message>
+        <source>Remove selection</source>
+        <translation>Rimuovi selezione</translation>
+    </message>
+</context>
+<context>
+    <name>QgsBookmarks</name>
+    <message>
+        <source>Really Delete?</source>
+        <translation>Vuoi cancellare veramente?</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation>&amp;Sì</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation>&amp;No</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete the </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> bookmark?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsBookmarksBase</name>
+    <message>
+        <source>Geospatial Bookmarks</source>
+        <translation>Segnalibri geospaziali</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>Nome</translation>
+    </message>
+    <message>
+        <source>Project</source>
+        <translation>Proiezione</translation>
+    </message>
+    <message>
+        <source>Extent</source>
+        <translation>Estensione</translation>
+    </message>
+    <message>
+        <source>Id</source>
+        <translation>Id</translation>
+    </message>
+    <message>
+        <source>Zoom To</source>
+        <translation>Zoom a</translation>
+    </message>
+    <message>
+        <source>Zoom to the currently selected bookmark</source>
+        <translation>Zoom al segnalibro selezionato</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Elimina</translation>
+    </message>
+    <message>
+        <source>Delete the currently selected bookmark</source>
+        <translation>Elimina il segnalibro selezionato</translation>
+    </message>
+    <message>
         <source>Close</source>
         <translation>Chiudi</translation>
+    </message>
+    <message>
+        <source>Close the dialog</source>
+        <translation>Chiude la finestra di dialogo</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Aiuto</translation>
+    </message>
+</context>
+<context>
+    <name>QgsCommunityRegPluginGuiBase</name>
+    <message>
+        <source>QGIS Plugin QGIS Community Registration Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation type="unfinished">Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>qgis.community.org</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin will register you on the community.qgis.org users map.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Home URL:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Email:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Place Description:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation type="unfinished">Nome:</translation>
+    </message>
+    <message>
+        <source>Longitude (dec. degrees):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Country:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image URL (50x50):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Latitude (dec. degrees):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Get From Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposer</name>
+    <message>
+        <source>Choose a filename to save the map image as</source>
+        <translation>Assegna un nome da dare all&apos;immagine</translation>
+    </message>
+    <message>
+        <source>Choose a filename to save the map as</source>
+        <translation>Selezione un nome di file per salvare la mappa come</translation>
+    </message>
+    <message>
+        <source> for read/write</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerBase</name>
+    <message>
+        <source>Map Composer</source>
+        <translation>Map Composer</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation>Generale</translation>
+    </message>
+    <message>
+        <source>Composition</source>
+        <translation>Composizione</translation>
+    </message>
+    <message>
+        <source>Item</source>
+        <translation>Oggetto</translation>
+    </message>
+    <message>
+        <source>Toolbar_2</source>
+        <translation>Barrastrumenti_2</translation>
+    </message>
+    <message>
+        <source>Toolbar</source>
+        <translation>Barra degli strumenti</translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <translation>Strumenti</translation>
+    </message>
+    <message>
+        <source>Open Template</source>
+        <translation>Apri modello</translation>
+    </message>
+    <message>
+        <source>&amp;Open Template ...</source>
+        <translation>&amp;Apri modello ...</translation>
+    </message>
+    <message>
+        <source>Ctrl+O</source>
+        <translation>Ctrl+O</translation>
+    </message>
+    <message>
+        <source>Save Template As</source>
+        <translation>Salva il modello come</translation>
+    </message>
+    <message>
+        <source>Save Template &amp;As...</source>
+        <translation>S&amp;alva il modello come...</translation>
+    </message>
+    <message>
+        <source>Print</source>
+        <translation>Stampa</translation>
+    </message>
+    <message>
+        <source>&amp;Print...</source>
+        <translation>Stam&amp;pa...</translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <translation>Ctrl+P</translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation type="obsolete">Azione</translation>
+    </message>
+    <message>
+        <source>Add new map</source>
+        <translation>Aggiungi nuova mappa</translation>
+    </message>
+    <message>
+        <source>Add new label</source>
+        <translation>Aggiungi nuova etichetta</translation>
+    </message>
+    <message>
+        <source>Add new vect legend</source>
+        <translation>Aggiungi nuova legenda vettoriale</translation>
+    </message>
+    <message>
+        <source>Select/Move item</source>
+        <translation>Selezione/Sposta oggetto</translation>
+    </message>
+    <message>
+        <source>Export as image</source>
+        <translation>Esporta come immagine</translation>
+    </message>
+    <message>
+        <source>Export as SVG</source>
+        <translation>Esporta come SVG</translation>
+    </message>
+    <message>
+        <source>Add new scalebar</source>
+        <translation>Aggiungi nuova barra di scala</translation>
+    </message>
+    <message>
+        <source>Refresh view</source>
+        <translation>Aggiorna la vista</translation>
+    </message>
+    <message>
+        <source>Zoom to full extent</source>
+        <translation type="unfinished">Zoom all&apos;estensione massima</translation>
+    </message>
+    <message>
+        <source>Zoom in</source>
+        <translation type="unfinished">Aumenta lo zoom</translation>
+    </message>
+    <message>
+        <source>Zoom out</source>
+        <translation type="unfinished">Zoom indietro</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerLabelBase</name>
+    <message>
+        <source>Label Options</source>
+        <translation>Opzioni etichetta</translation>
+    </message>
+    <message>
+        <source>Font</source>
+        <translation>Carattere</translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation>Rettangolo</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerMap</name>
+    <message>
+        <source>Map %d</source>
+        <translation type="obsolete">Mappa %d</translation>
+    </message>
+    <message>
+        <source>Extent (calculate scale)</source>
+        <translation>Estensione (calcola scala)</translation>
+    </message>
+    <message>
+        <source>Scale (calculate extent)</source>
+        <translation>Scala (calcola estensione)</translation>
+    </message>
+    <message>
+        <source>Map %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerMapBase</name>
+    <message>
+        <source>Map options</source>
+        <translation>Opzioni mappa</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Map&lt;/b&gt;</source>
+        <translation>&lt;b&gt;Mappa&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Set</source>
+        <translation>Definisci</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation>Larghezza</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation>Altezza</translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation>Scala</translation>
+    </message>
+    <message>
+        <source>1 :</source>
+        <translation>1 :</translation>
+    </message>
+    <message>
+        <source>Set Extent</source>
+        <translation>Definisci estensione</translation>
+    </message>
+    <message>
+        <source>Set map extent to current extent in QGIS map canvas</source>
+        <translation>Cambia l&apos;estensione della mappa alle dimensioni dell&apos;area mappa di QGIS</translation>
+    </message>
+    <message>
+        <source>Line width scale</source>
+        <translation>Larghezza della linea di scala</translation>
+    </message>
+    <message>
+        <source>Width of one unit in millimeters</source>
+        <translation>Larghezza di una unità in millimetri</translation>
+    </message>
+    <message>
+        <source>Symbol scale</source>
+        <translation>Scala simbolo</translation>
+    </message>
+    <message>
+        <source>Font size scale</source>
+        <translation>Dimensioni carattere di scala</translation>
+    </message>
+    <message>
+        <source>Frame</source>
+        <translation>Cornice</translation>
+    </message>
+    <message>
+        <source>Preview</source>
+        <translation>Anteprima</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerScalebarBase</name>
+    <message>
+        <source>Barscale Options</source>
+        <translation>Opzioni barra di scala</translation>
+    </message>
+    <message>
+        <source>Segment size</source>
+        <translation>Dimensione segmento</translation>
+    </message>
+    <message>
+        <source>Number of segments</source>
+        <translation>Numero di segmenti</translation>
+    </message>
+    <message>
+        <source>Map units per scalebar unit</source>
+        <translation>Unità mappa per unità di barra di scala</translation>
+    </message>
+    <message>
+        <source>Unit label</source>
+        <translation>Unità etichetta</translation>
+    </message>
+    <message>
+        <source>Map</source>
+        <translation>Mappa</translation>
+    </message>
+    <message>
+        <source>Font</source>
+        <translation>Carattere</translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation>Spessore linea</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerVectorLegend</name>
+    <message>
+        <source>Layers</source>
+        <translation>layer</translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation>Gruppo</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerVectorLegendBase</name>
+    <message>
+        <source>Vector Legend Options</source>
+        <translation>Opzioni legenda vettoriale</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation>Titolo</translation>
+    </message>
+    <message>
+        <source>Map</source>
+        <translation>Mappa</translation>
+    </message>
+    <message>
+        <source>Font</source>
+        <translation>Carattere</translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation>Rettangolo</translation>
+    </message>
+    <message>
+        <source>Column 1</source>
+        <translation>Colonna 1</translation>
+    </message>
+    <message>
+        <source>New Item</source>
+        <translation>Nuovo oggetto</translation>
+    </message>
+    <message>
+        <source>Preview</source>
+        <translation>Anteprima</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposition</name>
+    <message>
+        <source>Custom</source>
+        <translation>Personale</translation>
+    </message>
+    <message>
+        <source>A5 (148x210 mm)</source>
+        <translation>A5  (148x210 mm)</translation>
+    </message>
+    <message>
+        <source>A4 (210x297 mm)</source>
+        <translation>A4  (210x297 mm)</translation>
+    </message>
+    <message>
+        <source>A3 (297x420 mm)</source>
+        <translation>A3 (297x420 mm)</translation>
+    </message>
+    <message>
+        <source>A2 (420x594 mm)</source>
+        <translation>A2 (420x594 mm)</translation>
+    </message>
+    <message>
+        <source>A1 (594x841 mm)</source>
+        <translation>A1 (594x841 mm)</translation>
+    </message>
+    <message>
+        <source>A0 (841x1189 mm)</source>
+        <translation>A0 (841x1189 mm)</translation>
+    </message>
+    <message>
+        <source>B5 (176 x 250 mm)</source>
+        <translation>B5 (176 x 250 mm)</translation>
+    </message>
+    <message>
+        <source>B4 (250 x 353 mm)</source>
+        <translation>B4 (250 x 353 mm)</translation>
+    </message>
+    <message>
+        <source>B3 (353 x 500 mm)</source>
+        <translation>B3 (353 x 500 mm)</translation>
+    </message>
+    <message>
+        <source>B2 (500 x 707 mm)</source>
+        <translation>B2 (500 x 707 mm)</translation>
+    </message>
+    <message>
+        <source>B1 (707 x 1000 mm)</source>
+        <translation>B1 (707 x 1000 mm)</translation>
+    </message>
+    <message>
+        <source>B0 (1000 x 1414 mm)</source>
+        <translation>B0 (1000 x 1414 mm)</translation>
+    </message>
+    <message>
+        <source>Letter (8.5x11 inches)</source>
+        <translation>Letter (8.5x11 inches)</translation>
+    </message>
+    <message>
+        <source>Legal (8.5x14 inches)</source>
+        <translation>Legal (8.5x14 inches)</translation>
+    </message>
+    <message>
+        <source>Portrait</source>
+        <translation>Verticale</translation>
+    </message>
+    <message>
+        <source>Landscape</source>
+        <translation>Orizzontale</translation>
+    </message>
+</context>
+<context>
+    <name>QgsCompositionBase</name>
+    <message>
+        <source>Composition</source>
+        <translation>Composizione</translation>
+    </message>
+    <message>
+        <source>Paper</source>
+        <translation>Carta</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation>Dimensione</translation>
+    </message>
+    <message>
+        <source>Units</source>
+        <translation>Unità</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation>Larghezza</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation>Altezza</translation>
+    </message>
+    <message>
+        <source>Orientation</source>
+        <translation>Direzione</translation>
+    </message>
+    <message>
+        <source>Resolution (dpi)</source>
+        <translation>Risoluzione (dpi)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsConnectionDialog</name>
+    <message>
+        <source>SPIT - Help</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1647,6 +2180,293 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
     </message>
 </context>
 <context>
+    <name>QgsContextHelpBase</name>
+    <message>
+        <source>Help</source>
+        <translation type="obsolete">Aiuto</translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="obsolete">&amp;Chiudi</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation type="obsolete">Alt+C</translation>
+    </message>
+</context>
+<context>
+    <name>QgsCoordinateTransform</name>
+    <message>
+        <source>Failed</source>
+        <translation>Fallito</translation>
+    </message>
+    <message>
+        <source>transform of</source>
+        <translation>trasformazione di </translation>
+    </message>
+    <message>
+        <source>with error: </source>
+        <translation>con l&apos;errore: </translation>
+    </message>
+</context>
+<context>
+    <name>QgsCopyrightLabelPlugin</name>
+    <message>
+        <source>Bottom Left</source>
+        <translation type="unfinished">In basso a sinistra</translation>
+    </message>
+    <message>
+        <source>Top Left</source>
+        <translation type="unfinished">In alto a sinistra</translation>
+    </message>
+    <message>
+        <source>Top Right</source>
+        <translation type="unfinished">In alto a destra</translation>
+    </message>
+</context>
+<context>
+    <name>QgsCopyrightLabelPluginGuiBase</name>
+    <message>
+        <source>Copyright Label Plugin</source>
+        <translation>Etichetta di Copyright</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label.  For example:&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt; 
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Descrizione&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt; Inserisce una etichetta di copyright. Il testo dell&apos;etichetta può essere formattato facendo uso dei tag html di base. Esempio:&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt;&lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Testo marcato&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt;&lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italico&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&#xa9; QGIS 2004</source>
+        <translation type="obsolete">@ QGIS 2004</translation>
+    </message>
+    <message>
+        <source>Placement</source>
+        <translation>Posizione</translation>
+    </message>
+    <message>
+        <source>Bottom Left</source>
+        <translation>In basso a sinistra</translation>
+    </message>
+    <message>
+        <source>Top Left</source>
+        <translation>In alto a sinistra</translation>
+    </message>
+    <message>
+        <source>Bottom Right</source>
+        <translation>In basso a destra</translation>
+    </message>
+    <message>
+        <source>Top Right</source>
+        <translation>In alto a destra</translation>
+    </message>
+    <message>
+        <source>Orientation</source>
+        <translation>Direzione</translation>
+    </message>
+    <message>
+        <source>Horizontal</source>
+        <translation>Orizzontale</translation>
+    </message>
+    <message>
+        <source>Vertical</source>
+        <translation>Verticale</translation>
+    </message>
+    <message>
+        <source>Enable Copyright Label</source>
+        <translation>Abilita etichetta di Copyright</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation>Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Annulla</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation>Alt+C</translation>
+    </message>
+    <message encoding="UTF-8">
+        <source>© QGIS 2004</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsCustomProjectionDialog</name>
+    <message>
+        <source>Delete Projection Definition?</source>
+        <translation>Elimina definizione delle proiezione</translation>
+    </message>
+    <message>
+        <source>Deleting a projection definition is not reversable. Do you want to delete it?</source>
+        <translation>La cancellazione di un file progetto non è riversibile. Devo cancellarlo?</translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation>Abort</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation>Nuovo</translation>
+    </message>
+    <message>
+        <source>QGIS Custom Projection</source>
+        <translation>QGIS Proiezione personalizzata</translation>
+    </message>
+    <message>
+        <source>This proj4 projection definition is not valid. Please correct before pressing save.</source>
+        <translation>Questa proiezione proj4 non è valida. Per piacere correggerla prma di premere salva. </translation>
+    </message>
+    <message>
+        <source>This proj4 projection definition is not valid.</source>
+        <translation>La proiezione proj4 non è valida</translation>
+    </message>
+    <message>
+        <source>Northing and Easthing must be in decimal form.</source>
+        <translation>Nord ed Est devono essere in cifre decimali.</translation>
+    </message>
+    <message>
+        <source>Internal Error (source projection invalid?</source>
+        <translation>Errore interno (sorgente della proiezione non valido?)</translation>
+    </message>
+    <message>
+        <source>This proj4 projection definition is not valid. Please give the projection a name before pressing save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This proj4 projection definition is not valid. Please add the parameters before pressing save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This proj4 projection definition is not valid. Please add a proj= clause before pressing save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsCustomProjectionDialogBase</name>
+    <message>
+        <source>Custom Projection Definition</source>
+        <translation>Definizione di una proiezione personalizzata</translation>
+    </message>
+    <message>
+        <source>Define</source>
+        <translation>Definizione</translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation>Nome:</translation>
+    </message>
+    <message>
+        <source>Projection Family:</source>
+        <translation type="obsolete">Proiezione della famiglia:</translation>
+    </message>
+    <message>
+        <source>Ellipsoid:</source>
+        <translation type="obsolete">Elissoide:</translation>
+    </message>
+    <message>
+        <source>Parameters:</source>
+        <translation>Parametri:</translation>
+    </message>
+    <message>
+        <source>Expected 
+Parameters:</source>
+        <translation type="obsolete">Parametri attesi:</translation>
+    </message>
+    <message>
+        <source>|&lt;</source>
+        <translation>|&lt;</translation>
+    </message>
+    <message>
+        <source>&lt;</source>
+        <translation>&lt;</translation>
+    </message>
+    <message>
+        <source>1 of 1</source>
+        <translation>1 di 1</translation>
+    </message>
+    <message>
+        <source>&gt;</source>
+        <translation>&gt;</translation>
+    </message>
+    <message>
+        <source>&gt;|</source>
+        <translation>&gt;|</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation>Nuovo</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>Salva</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Elimina</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Chiudi</translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation>Prova</translation>
+    </message>
+    <message>
+        <source>Transform from WGS84 to the chosen projection</source>
+        <translation>Trasforma da WGS84 alla proiezione selezionata</translation>
+    </message>
+    <message>
+        <source>Calculate</source>
+        <translation>Calcola</translation>
+    </message>
+    <message>
+        <source>Projected Corrdinate System</source>
+        <translation>Proiezione del sistema di coordinate</translation>
+    </message>
+    <message>
+        <source>Geographic / WGS84</source>
+        <translation>Geografica / WGS84</translation>
+    </message>
+    <message>
+        <source>North:</source>
+        <translation>Nord:</translation>
+    </message>
+    <message>
+        <source>East:</source>
+        <translation>Est:</translation>
+    </message>
+    <message>
+        <source>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are know (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.</source>
+        <translation type="obsolete">Usa i box testuali per provare la proiezione create. Inserisci una coordinata in lat/long di cui conosci il risultato della proiezione (esempio leggendo una mappa). A quel punto premi il bottone di calcola per vedere se il sistema di proiezioni da te definito è corretto.</translation>
+    </message>
+    <message>
+        <source>You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsDbSourceSelect</name>
     <message>
         <source>Are you sure you want to remove the </source>
@@ -1691,6 +2511,21 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4%5</source>
         <translation>Connessione fallita al database %1 per la tabella%2. Probabilmente il database server non è raggiungibile, oppure i parametri di connessione sono sbagliati. %3Controlla il tuo username e la password e prova ancora %4 %5</translation>
+    </message>
+    <message>
+        <source>Access to relation </source>
+        <translation>Accesso alla relazione </translation>
+    </message>
+    <message>
+        <source> using sql;
+</source>
+        <translation> usando sql;</translation>
+    </message>
+    <message>
+        <source>
+has failed. The database said:
+</source>
+        <translation> è fallito. Il database dice: </translation>
     </message>
 </context>
 <context>
@@ -1751,184 +2586,154 @@ http://www.remotesensing.org/gdal/formats_list.html</translation>
         <source>Sql</source>
         <translation>Sql</translation>
     </message>
+    <message>
+        <source>Encoding:</source>
+        <translation type="obsolete">Codifica:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDelAttrDialogBase</name>
+    <message>
+        <source>Delete Attributes</source>
+        <translation>Rimuovi attributi</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Annulla</translation>
+    </message>
+    <message>
+        <source>New Item</source>
+        <translation>Nuovo oggetto</translation>
+    </message>
 </context>
 <context>
     <name>QgsDelimitedTextPluginGui</name>
     <message>
         <source>No layer name</source>
-        <translation>Nessun nome assegnato al vettoriale</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Please enter a layer name before adding the layer to the map</source>
-        <translation>Prima di inserire il vettoriale sulla mappa occorre assegnare un nome</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No delimiter</source>
-        <translation>Nessun delimitatore</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Please specify a delimiter prior to parsing the file</source>
-        <translation>Occorre definire un delimitatore per poter importare il file</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose a delimited text file to open</source>
-        <translation>Scegli un file con testo delimitato d&apos;aprire</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsDelimitedTextPluginGuiBase</name>
     <message>
         <source>Create a Layer from a Delimited Text File</source>
-        <translation>Crea un vettoriale usando un file di testo delimitato</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Cancella</translation>
-    </message>
-    <message>
-        <source>Help on using the plugin</source>
-        <translation>Aiuto sull&apos;uso del plugin</translation>
-    </message>
-    <message>
-        <source>Opens the Delimited Text Plugin help in your configured browser</source>
-        <translation>Apre la pagina di aiuto del plugin per il testo delimitato nel browser web configurato</translation>
-    </message>
-    <message>
-        <source>Parse the header row and update the X and Y field lists</source>
-        <translation>Analizza la riga di intestazione e aggiorna la lista dei campi X e Y</translation>
-    </message>
-    <message>
-        <source>Parse the header row of the input file and refresh the fields in the X and Y field drop-down lists. Use this button to refresh the field lists if you change the delimiter after selecting the delimited text file.</source>
-        <translation>Analizza l&apos;intestazione della colonna del file di input e aggiorna la lista a comparsa dei campi X e Y. Utilizza questo bottone per aggiornare la lista dei campi solo quando il delimitatore è stato cambiato e dopo aver selezionato il file di input.</translation>
-    </message>
-    <message>
-        <source>Creates a layer using the specified parameters and adds it to the map. The dialog remains open to allow adding of additional layers.</source>
-        <translation>Crea un vettoriale di punti utilizzando i parametri specificati e lo aggiungi alla mappa. La finestra di dialogo rimane aperta per permettere l&apos;aggiunta di altri livelli.</translation>
-    </message>
-    <message>
-        <source>Close the dialog</source>
-        <translation>Chiude la finestra di dialogo</translation>
-    </message>
-    <message>
-        <source>Close the dialog without adding anything to the map.</source>
-        <translation>Chiudere la finestra di diaologo senza aggiungere nient&apos;altro alla mappa</translation>
-    </message>
-    <message>
-        <source>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</source>
-        <translation>&lt;p align=&quot;right&quot;&gt;campo X&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Name of the field containing x values</source>
-        <translation>Nome che contiene il campo dei valori di x</translation>
-    </message>
-    <message>
-        <source>Name of the field containing x values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation>Nome del campo che contiene il valore x.Seleziona un campo dalla lista. La lista è generata analizzando la riga di intestazione del file di testo delimitato.</translation>
-    </message>
-    <message>
-        <source>&lt;p align=&quot;right&quot;&gt;Y field&lt;/p&gt;</source>
-        <translation>&lt;p align=&quot;right&quot;&gt;campo Y&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Name of the field containing y values</source>
-        <translation>Nome che contiene il campo dei valori di y</translation>
-    </message>
-    <message>
-        <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation>Nome del campo che contiene il valore y. Seleziona un campo dalla lista. La lista è generata utilizzando la riga di intestazione del file di testo delimitato.</translation>
-    </message>
-    <message>
-        <source>Layer name</source>
-        <translation>Nome vettoriale</translation>
-    </message>
-    <message>
-        <source>Name to display in the map legend</source>
-        <translation>Nome da inserire nella legenda</translation>
-    </message>
-    <message>
-        <source>Name displayed in the map legend</source>
-        <translation>Nome con cui compare nella legenda</translation>
-    </message>
-    <message>
-        <source>Delimiter</source>
-        <translation>Delimitatore</translation>
-    </message>
-    <message>
-        <source>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</source>
-        <translation>Delimitatore da utilizzare per separare i campi nel file di testo. Il delimitatore può essere composto da uno o più caratteri.</translation>
-    </message>
-    <message>
-        <source>Delimiter to use when splitting fields in the delimited text file. The delimiter can be 1 or more characters in length.</source>
-        <translation>Delimitatore da utilizzare per dividere i campi del testo. Il delimitatore può essere composto da uno o più caratteri</translation>
-    </message>
-    <message>
-        <source>Delimited Text Layer</source>
-        <translation>Vettoriale da testo delimitato</translation>
-    </message>
-    <message>
-        <source>Delimited text file</source>
-        <translation>File di testo delimitato</translation>
-    </message>
-    <message>
-        <source>Full path to the delimited text file</source>
-        <translation>Percorso completo del file di testo delimitato</translation>
-    </message>
-    <message>
-        <source>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</source>
-        <translation>Percorso completo del file di testo delimitato. Per poter analizzare correttamente i campi del file, il testo di delimitazione deve essere definito prima di selezionare il file. Utilizzare il bottone &apos;Sfoglia&apos; alla destra di questo campo per selezionare il file di input.</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation>...</translation>
-    </message>
-    <message>
-        <source>Browse to find the delimited text file to be processed</source>
-        <translation>Seleziona il file di testo delimitato da processare</translation>
-    </message>
-    <message>
-        <source>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</source>
-        <translation>Utilizzare questo bottone per individuare la posizione di un file di testo delimitato. 
-Questo bottone non sarà abilitato fino a quando non sarà inserito il carattere di delimitazione nel box apposito. Una volta che file è stato scelti i campo di X e Y sottostanti verranno popolati con i valori contenuti nel file di testo delimitato</translation>
-    </message>
-    <message>
-        <source>Add layer using the delimiter, file, and x/y fields specified</source>
-        <translation>Aggiungi un vettoriale di punti dichiarando: il delimitatore, il file e i campi x/y</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation>&amp;Aiuto</translation>
+        <translation type="unfinished">&amp;Aiuto</translation>
     </message>
     <message>
         <source>Alt+H</source>
-        <translation>Alt+H</translation>
+        <translation type="unfinished">Alt+H</translation>
+    </message>
+    <message>
+        <source>Help on using the plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Opens the Delimited Text Plugin help in your configured browser</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Parse</source>
-        <translation>&amp;Analizza</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Alt+P</source>
-        <translation>Alt+P</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parse the header row and update the X and Y field lists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parse the header row of the input file and refresh the fields in the X and Y field drop-down lists. Use this button to refresh the field lists if you change the delimiter after selecting the delimited text file.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Add Layer</source>
-        <translation>&amp;Aggiungi vettoriale</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Alt+A</source>
-        <translation>Alt+A</translation>
+        <translation type="unfinished">Alt+A</translation>
+    </message>
+    <message>
+        <source>Add layer using the delimiter, file, and x/y fields specified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creates a layer using the specified parameters and adds it to the map. The dialog remains open to allow adding of additional layers.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation>&amp;Chiudi</translation>
+        <translation type="unfinished">&amp;Chiudi</translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation>Alt+C</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close the dialog</source>
+        <translation type="unfinished">Chiude la finestra di dialogo</translation>
+    </message>
+    <message>
+        <source>Close the dialog without adding anything to the map.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the field containing x values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the field containing x values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p align=&quot;right&quot;&gt;Y field&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the field containing y values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Sample text</source>
-        <translation>Testo di esempio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -1937,79 +2742,133 @@ Questo bottone non sarà abilitato fino a quando non sarà inserito il carattere
 &lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, commar or tab). Note this box accepts regular expressions so use \t for tab and so on. After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Descrizione&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Tramite questo plugin è possibile caricare un file di testo delimitato che contiene coordinate X e Y e visualizzarlo sulla mappa come se fosse un vettoriale di punti.&lt;/p&gt;
-&lt;p&gt;Utilizzare: la casella \&quot;nome vettoriale\&quot; per specificare con quale nome il nuovo vettoriale apparirà in legenda e quella \&quot;delimitatore\&quot; per scegliere il tipo di delimitatore usando nel file (es. spazio, virgola, o tabulatore). Nota: a casella \&quot;delimitatore\&quot; accetta anche espressioni regolari, pertanto utilizzare \t per il tabulatore e così via per altri. Dopo aver scelto il delimitatore, premere il bottone di caricamento del file e selezionare le colonne che contengono i valore x e y per il vettoriale&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delimited Text Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delimited text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full path to the delimited text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Browse to find the delimited text file to be processed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name to display in the map legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name displayed in the map legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delimiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delimiter to use when splitting fields in the delimited text file. The delimiter can be 1 or more characters in length.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsDelimitedTextProvider</name>
+    <message>
+        <source>Save layer as...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsDlgPgBufferBase</name>
     <message>
         <source>Buffer features</source>
-        <translation>Caratteristiche buffer</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation>&amp;Aiuto</translation>
+        <translation type="unfinished">&amp;Aiuto</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation>F1</translation>
+        <translation type="unfinished">F1</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation>&amp;OK</translation>
+        <translation type="unfinished">&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>&amp;Cancella</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Buffer Settings:</source>
-        <translation>Preferenze buffer</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Buffer distance in map units:</source>
-        <translation>Distanza del buffer in unità mappa</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Table name for the buffered layer:</source>
-        <translation>Nome della tabella del vettoriale bufferizzato</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Create unique object id</source>
-        <translation>Crea un oggetto con id univoco</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>public</source>
-        <translation>pubblico</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Geometry column:</source>
-        <translation>Colonna della geometria</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Spatial reference ID:</source>
-        <translation>ID di riferimento spaziale:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Unique field to use as feature id:</source>
-        <translation>Campo da utilizzare come identificativo univoco della geometria</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Schema:</source>
-        <translation>Schema:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Add the buffered layer to the map?</source>
-        <translation>Aggiungi il vettoriale del buffer alla mappa?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;h2&gt;Buffer the features in layer: &lt;/h2&gt;</source>
-        <translation>&lt;h2&gt;Crea un buffer sulle geometrie del vettoriale&lt;/h2&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2055,14 +2914,6 @@ Questo bottone non sarà abilitato fino a quando non sarà inserito il carattere
         <translation>La query utilizzata per individuare le geometrie del vettoriale è questa qui sotto. Attualmente il supporto è solo per i vettoriali PostgreSQL. Per cambiare la query, fa click sul bottone Costruttore di query</translation>
     </message>
     <message>
-        <source>Geometry type of the features in this layer</source>
-        <translation>Tipo di geometrie degli elementi nel vettoriale</translation>
-    </message>
-    <message>
-        <source>The number of features in this layer</source>
-        <translation>Numero di elementi del vettoriale</translation>
-    </message>
-    <message>
         <source>In order for QGIS to support SVG markers under Windows, we need to build QGIS</source>
         <translation>Per poter utilizzare il supporto per i simboli SVG su Windows, dobbiamo compilare QGIS</translation>
     </message>
@@ -2085,6 +2936,78 @@ Questo bottone non sarà abilitato fino a quando non sarà inserito il carattere
     <message>
         <source>No SVG Support</source>
         <translation>Mancato supporto SVG</translation>
+    </message>
+    <message>
+        <source>Spatial Index</source>
+        <translation>Indice spaziale</translation>
+    </message>
+    <message>
+        <source>Creation of spatial index successfull</source>
+        <translation>Creazione dell&apos;indice spaziale avvenuta con successo</translation>
+    </message>
+    <message>
+        <source>Creation of spatial index failed</source>
+        <translation>Creazione dell&apos;indice spaziale fallita</translation>
+    </message>
+    <message>
+        <source>General:</source>
+        <translation>Generale:</translation>
+    </message>
+    <message>
+        <source>Geometry type of the features in this layer : </source>
+        <translation>Tipo di geometria utilizzata dagli elementi presenti in questo vettoriale : </translation>
+    </message>
+    <message>
+        <source>The number of features in this layer : </source>
+        <translation>Numero di elementi in questo vettoriale : </translation>
+    </message>
+    <message>
+        <source>Extents:</source>
+        <translation>Estensione:</translation>
+    </message>
+    <message>
+        <source>In layer spatial reference system units : </source>
+        <translation>Unità del sistema di riferimento spaziale usato nel vettoriale : </translation>
+    </message>
+    <message>
+        <source>xMin,yMin </source>
+        <translation>xMin,yMin </translation>
+    </message>
+    <message>
+        <source> : xMax,yMax </source>
+        <translation> : xMax,yMax </translation>
+    </message>
+    <message>
+        <source>In project spatial reference system units : </source>
+        <translation>unità utilizzate nel sistema di riferimento spaziale : </translation>
+    </message>
+    <message>
+        <source>Layer Spatial Reference System:</source>
+        <translation>Sistema di riferimento spaziale usato nel vettoriale:</translation>
+    </message>
+    <message>
+        <source>Project (Output) Spatial Reference System:</source>
+        <translation>Sistema di riferimento spaziale della proiezione (output):</translation>
+    </message>
+    <message>
+        <source>Attribute field info:</source>
+        <translation>Informazione dell&apos;attributo campo:</translation>
+    </message>
+    <message>
+        <source>Field</source>
+        <translation>Campo</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>Tipo</translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation>Lunghezza</translation>
+    </message>
+    <message>
+        <source>Precision</source>
+        <translation>Precisione</translation>
     </message>
 </context>
 <context>
@@ -2112,62 +3035,6 @@ Questo bottone non sarà abilitato fino a quando non sarà inserito il carattere
     <message>
         <source>TextLabel2</source>
         <translation>EtichettaTesto2</translation>
-    </message>
-    <message>
-        <source>Fields</source>
-        <translation>Campi</translation>
-    </message>
-    <message>
-        <source>Field</source>
-        <translation>Campo</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation>Tipo</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation>Lunghezza</translation>
-    </message>
-    <message>
-        <source>Precision</source>
-        <translation>Precisione</translation>
-    </message>
-    <message>
-        <source>Features</source>
-        <translation>Elementi</translation>
-    </message>
-    <message>
-        <source>Count</source>
-        <translation>Totale</translation>
-    </message>
-    <message>
-        <source>count</source>
-        <translation>totale</translation>
-    </message>
-    <message>
-        <source>Geometry type</source>
-        <translation>Tipo geometria</translation>
-    </message>
-    <message>
-        <source>geom</source>
-        <translation>geom</translation>
-    </message>
-    <message>
-        <source>Upper right</source>
-        <translation>In alto a destra</translation>
-    </message>
-    <message>
-        <source>ur</source>
-        <translation>ur</translation>
-    </message>
-    <message>
-        <source>ll</source>
-        <translation>ll</translation>
-    </message>
-    <message>
-        <source>Lower left</source>
-        <translation>In basso a sinistra</translation>
     </message>
     <message>
         <source>Legend type:</source>
@@ -2253,6 +3120,26 @@ Questo bottone non sarà abilitato fino a quando non sarà inserito il carattere
         <source>Actions</source>
         <translation>Azioni</translation>
     </message>
+    <message>
+        <source>Spatial Reference System</source>
+        <translation>Sistema di riferimento spaziale</translation>
+    </message>
+    <message>
+        <source>Change</source>
+        <translation>Cambia</translation>
+    </message>
+    <message>
+        <source>Spatial Index</source>
+        <translation>Indice spaziale</translation>
+    </message>
+    <message>
+        <source>Create Spatial Index</source>
+        <translation>Crea indice spaziale</translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation>Crea</translation>
+    </message>
 </context>
 <context>
     <name>QgsEditReservedWordsBase</name>
@@ -2299,75 +3186,134 @@ Modifica i nomi delle colonne in modo che nessuna delle parole nella lista sulla
     </message>
 </context>
 <context>
+    <name>QgsEncodingFileDialog</name>
+    <message>
+        <source>Encoding:</source>
+        <translation>Codifica:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsFillStyleWidgetBase</name>
+    <message>
+        <source>Form1</source>
+        <translation>Form1</translation>
+    </message>
+    <message>
+        <source>Fill Style</source>
+        <translation>Stile di riempimento</translation>
+    </message>
+    <message>
+        <source>PolyStyleWidget</source>
+        <translation>Widget a stile multiplo</translation>
+    </message>
+    <message>
+        <source>Colour:</source>
+        <translation>Colore:</translation>
+    </message>
+    <message>
+        <source>col</source>
+        <translation>col</translation>
+    </message>
+</context>
+<context>
     <name>QgsGPSDeviceDialogBase</name>
     <message>
         <source>GPS Device Editor</source>
-        <translation>Dispositivo GPS</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Device name:</source>
-        <translation>Nome dispositivo:</translation>
+        <source>Update device</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Download command:</source>
-        <translation>Comando per il download:</translation>
+        <source>Delete device</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>This is the command that will be used to download GPS data from the device. %in and %out will be replaced by the port and the GPX filename, respectively.</source>
-        <translation>Questo comando va utilizzato per scaricare in dati dal GPS. %in e %out vanno sostituiti rispettivamente con la porta e il nome del file GPX</translation>
+        <source>New device</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>This is the name of the device as it will appear in the lists</source>
-        <translation>Questo è il nome del dispositivo come appare nella lista</translation>
-    </message>
-    <message>
-        <source>This is the command that will be used to upload GPS data to the device. %in and %out will be replaced by the GPX filename and the port, respectively.</source>
-        <translation>Questo comando va utilizzanto per caricare i dati sul GPS. %in and %out sono rispettivamente il nome del file GPX e della porta.</translation>
-    </message>
-    <message>
-        <source>Upload command:</source>
-        <translation>Comando di upload:</translation>
+        <source>Close</source>
+        <translation type="unfinished">Chiudi</translation>
     </message>
     <message>
         <source>&lt;p&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/p&gt;
 &lt;i&gt;%babel&lt;/i&gt; - the path to GPSBabel&lt;br&gt;
-&lt;i&gt;%type&lt;/i&gt; - the flag for the feature type that is being transferred (-w, -r or -t)&lt;br&gt;
 &lt;i&gt;%in&lt;/i&gt; - the GPX filename when uploading or the port when downloading&lt;br&gt;
 &lt;i&gt;%out&lt;/i&gt; - the port when uploading or the GPX filename when downloading</source>
-        <translation>&lt;p&gt;Per i comandi di upload e download alcune parole speciali vengono sostituite da QGIS quando i comando sono utilizzati. Questa la lista delle parole utilizzate:&lt;/p&gt; 
-&lt;ul style=\&quot;list-style: none\&quot;&gt;
-&lt;li&gt;&lt;i&gt;%babel&lt;/i&gt; - il percorso di  GPSBabel&lt;/li&gt;
-&lt;li&gt;&lt;i&gt;%type&lt;/i&gt; - il flag per decidere il tipo di geometrie (-w, -r or -t)&lt;/li&gt;
-&lt;li&gt;&lt;i&gt;%in&lt;/i&gt; - il nome del file GPX o la porta da dove effettuare il download&lt;/li&gt;
-&lt;li&gt;&lt;i&gt;%out&lt;/i&gt; - la porta dove effettuare l&apos;upload o il nome del file GPX&lt;/li&gt; 
-&lt;/ul&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Update device</source>
-        <translation>Aggiorna dispositivo</translation>
+        <source>Commands</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Delete device</source>
-        <translation>Elimina dispositivo</translation>
+        <source>Waypoint download:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>New device</source>
-        <translation>Nuovo dispositivo</translation>
+        <source>Waypoint upload:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Close</source>
-        <translation>Chiudi</translation>
+        <source>Route download:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Route upload:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Track download:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The command that is used to upload tracks to the device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Track upload:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The command that is used to download tracks from the device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The command that is used to upload routes to the device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The command that is used to download routes from the device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The command that is used to upload waypoints to the device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The command that is used to download waypoints from the device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the name of the device as it will appear in the lists</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsGPSPluginGuiBase</name>
     <message>
         <source>GPS Tools</source>
-        <translation>Strumenti GPS</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Load GPX file</source>
-        <translation>Carica un file GPX</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -2376,38 +3322,35 @@ Modifica i nomi delle colonne in modo che nessuna delle parole nella lista sulla
 &lt;p&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Il formato GPX - &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt; - è utilizzato per archiviare informazione riguardo punti di passaggio, percorsi e tracciati nei GPS&lt;/p&gt;
-&lt;p&gt;Scegli un file GPX file e la tipologia di dato che vuoi caricare&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>File:</source>
-        <translation>File:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Feature types:</source>
-        <translation>Tipologia di dati:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Waypoints</source>
-        <translation>Punti di passaggio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Routes</source>
-        <translation>Percorsi</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Tracks</source>
-        <translation>Tracciati</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <source>Import other file</source>
-        <translation>Importa altro file</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -2422,32 +3365,27 @@ and a name for the new layer. All file formats can not store waypoints, routes, 
 tracks, so some feature types may be disabled for some file formats.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrizione&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;QGIS è in grado di gestire solo file GPX, qualsiasi altro tipo di dato può essere convertito utilizzando GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;). Per tale motivo è necessario che GPSBabel sia installato in un percorso accessibile anche da QGIS.&lt;/p&gt;
-&lt;p&gt;Scegli un formato GPS e il tipo di file che vuoi importare, il tipo di dato che vuoi utilizzare, un nome da assegnare al file GPX dove verrà salvata la conversione e il nome del nuovo vettoriale. Attenzione: non tutti i formati sono in grado di gestori punti di passaggio, percorsi e tracciati, per tale motivo, in questi casi, alcuni tipi di dato sono disabilitati.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>File to import:</source>
-        <translation>File da importare:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Feature type:</source>
-        <translation>Tipo di dato:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>GPX output file:</source>
-        <translation>file GPX in output:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Layer name:</source>
-        <translation>Nome del vettoriale:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Download from GPS</source>
-        <translation>Scarica dal GPS</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -2461,33 +3399,27 @@ you want to change some settings, you can also edit the devices.&lt;/p&gt;
 don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrizione&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Questo tool serve per scaricare dati da un GPS. Seleziona: il modello del tuo GPS, la porta a cui è collegato, il nome del nuovo vettoriale e il tipo di geometria che vuoi scaricare. Qualora il tuo GPS non sia in lista o tu voglia cambiare qualche parametro, puoi modificare le informazione del dispositivo.&lt;/p&gt;
-&lt;p&gt;Per trasferire i dati viene utilizzato il software GPSBabel
-(&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;). Affinchè tutto funzioni occorre che GPSBabel sia installato in un percorso di sistema accessibile da QGIS.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Edit devices</source>
-        <translation>Modifica dispositivi</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>GPS device:</source>
-        <translation>Dispositivo GPS:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Output file:</source>
-        <translation>File in output:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation>Porta:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Upload to GPS</source>
-        <translation>Trasferisci sul GPS</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
@@ -2501,40 +3433,42 @@ edit the devices.&lt;/p&gt;
 to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrizione&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Questo tool serve per trasferire dati da un vettoriale GPX verso un GPS. Seleziona:vettoriale GPX che vuoi trasferire, il nome del dispositivo su cui vuoi effettuare l&apos;upload and la porta a cui è connesso. Qualora il tuo GPS non sia in lista o tu voglia cambiare qualche parametro, puoi modificare le informazione del dispositivo.&lt;/p&gt;
-&lt;p&gt;Per trasferire i dati viene utilizzato il software GPSBabel
-(&lt;a href=&quot;http://gpsbabel.sf.net&quot;&gt;http://gpsbabel.sf.net&lt;/a&gt;). Affinchè tutto funzioni occorre che GPSBabel sia installato in un percorso di sistema accessibile da QGIS.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Data layer:</source>
-        <translation>Dati del vettoriale:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation>&amp;OK</translation>
+        <translation type="unfinished">&amp;OK</translation>
     </message>
     <message>
         <source>Alt+O</source>
-        <translation>Alt+O</translation>
+        <translation type="unfinished">Alt+O</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>&amp;Annulla</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation>Alt+A</translation>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGeomTypeDialog</name>
+    <message>
+        <source>Name</source>
+        <translation>Nome</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>Tipo</translation>
     </message>
 </context>
 <context>
     <name>QgsGeomTypeDialogBase</name>
-    <message>
-        <source>Select Geometry type</source>
-        <translation>Seleziona tipo di geometria</translation>
-    </message>
     <message>
         <source>Type</source>
         <translation>Tipo</translation>
@@ -2558,6 +3492,92 @@ to transfer the data. If you don&apos;t have GPSBabel installed where QGIS can f
     <message>
         <source>Cancel</source>
         <translation>Annulla</translation>
+    </message>
+    <message>
+        <source>New Vector Layer</source>
+        <translation>Nuovo vettoriale</translation>
+    </message>
+    <message>
+        <source>Attributes:</source>
+        <translation>Attributi:</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>Aggiungi</translation>
+    </message>
+    <message>
+        <source>Column 1</source>
+        <translation>Colonna 1</translation>
+    </message>
+    <message>
+        <source>New Item</source>
+        <translation>Nuovo oggetto</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Rimuovi</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGeorefPluginGuiBase</name>
+    <message>
+        <source>Georeferencer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Chiudi</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Raster file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:helvetica&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:15pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter world coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGeorefWarpOptionsDialogBase</name>
+    <message>
+        <source>Warp options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resampling method:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest neighbour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cubic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished">OK</translation>
+    </message>
+    <message>
+        <source>Use 0 for transparency when needed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2660,6 +3680,101 @@ scala</translation>
     <message>
         <source>Delete selected category</source>
         <translation>Elimina la categoria selezionata</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassEdit</name>
+    <message>
+        <source>New vertex</source>
+        <translation>Nuovo vertice</translation>
+    </message>
+    <message>
+        <source>New point</source>
+        <translation>Nuovo punto</translation>
+    </message>
+    <message>
+        <source>New centroid</source>
+        <translation>Nuovo centroide</translation>
+    </message>
+    <message>
+        <source>Select vertex</source>
+        <translation>Seleziona vertice</translation>
+    </message>
+    <message>
+        <source>Select line segment</source>
+        <translation>Seleziona segmento linea</translation>
+    </message>
+    <message>
+        <source>Select position on line</source>
+        <translation>Seleziona posizione sulla linea</translation>
+    </message>
+    <message>
+        <source>Select element</source>
+        <translation>Seleziona elemento</translation>
+    </message>
+    <message>
+        <source>Undo last point</source>
+        <translation>Annulla ultimo punto</translation>
+    </message>
+    <message>
+        <source>Close line</source>
+        <translation>Chiudi linea</translation>
+    </message>
+    <message>
+        <source>Delete selected / select next</source>
+        <translation>Elimina selezionato / seleziona prossimo</translation>
+    </message>
+    <message>
+        <source>Release selected</source>
+        <translation>Rilascia selezionato</translation>
+    </message>
+    <message>
+        <source>New location</source>
+        <translation>Nuova locazione</translation>
+    </message>
+    <message>
+        <source>Select new position</source>
+        <translation>Seleziona nuova posizione</translation>
+    </message>
+    <message>
+        <source>New vertex position</source>
+        <translation>Posizione nuovo vertice</translation>
+    </message>
+    <message>
+        <source>Release</source>
+        <translation>Rilascia</translation>
+    </message>
+    <message>
+        <source>Delete vertex</source>
+        <translation>Elimina vertice</translation>
+    </message>
+    <message>
+        <source>Release vertex</source>
+        <translation>Rilascia vertice</translation>
+    </message>
+    <message>
+        <source>Split the line</source>
+        <translation>Dividi la linea</translation>
+    </message>
+    <message>
+        <source>Release the line</source>
+        <translation>Rilascia la linea</translation>
+    </message>
+    <message>
+        <source>Select point on line</source>
+        <translation>Seleziona punto su linea</translation>
+    </message>
+    <message>
+        <source>Left: </source>
+        <translation>Sinistra: </translation>
+    </message>
+    <message>
+        <source>Middle: </source>
+        <translation>Centrale: </translation>
+    </message>
+    <message>
+        <source>Rigth: </source>
+        <translation>Destra: </translation>
     </message>
 </context>
 <context>
@@ -2805,12 +3920,57 @@ scala</translation>
         <translation>F11</translation>
     </message>
     <message>
-        <source>Edit categories</source>
-        <translation>Modifica le categorie</translation>
-    </message>
-    <message>
         <source>Edit attributes</source>
         <translation>Modifica attributi</translation>
+    </message>
+    <message>
+        <source>ActionGroup</source>
+        <translation>GruppoAzione</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassModule</name>
+    <message>
+        <source>Run</source>
+        <translation>Esegui</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>Interrompi</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassModuleBase</name>
+    <message>
+        <source>GRASS Module</source>
+        <translation>Modulo GRASS</translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation>Opzioni</translation>
+    </message>
+    <message>
+        <source>Output</source>
+        <translation>Output</translation>
+    </message>
+    <message>
+        <source>Manual</source>
+        <translation>Manuale</translation>
+    </message>
+    <message>
+        <source>Run</source>
+        <translation>Esegui</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Chiudi</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassPlugin</name>
+    <message>
+        <source>GRASS</source>
+        <translation>GRASS</translation>
     </message>
 </context>
 <context>
@@ -2892,7 +4052,7 @@ scala</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation>Livello</translation>
+        <translation>layer</translation>
     </message>
     <message>
         <source>OK</source>
@@ -2904,11 +4064,149 @@ scala</translation>
     </message>
     <message>
         <source>Add GRASS Layer</source>
-        <translation>Aggiungi un livello GRASS</translation>
+        <translation>Aggiungi un layer GRASS</translation>
     </message>
     <message>
         <source>Cancel</source>
         <translation>Cancella</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassToolsBase</name>
+    <message>
+        <source>GRASS Tools</source>
+        <translation>Strumenti GRASS</translation>
+    </message>
+    <message>
+        <source>Modules</source>
+        <translation>Moduli</translation>
+    </message>
+    <message>
+        <source>Column 1</source>
+        <translation>Colonna 1</translation>
+    </message>
+    <message>
+        <source>New Item</source>
+        <translation>Nuovo oggetto</translation>
+    </message>
+    <message>
+        <source>New Mapset</source>
+        <translation>Nuovo Mapset</translation>
+    </message>
+    <message>
+        <source>&amp;New</source>
+        <translation>&amp;Nuovo</translation>
+    </message>
+    <message>
+        <source>Ctrl+N</source>
+        <translation>Ctrl+N </translation>
+    </message>
+    <message>
+        <source>Open Mapset</source>
+        <translation>Apri Mapset</translation>
+    </message>
+    <message>
+        <source>&amp;Open...</source>
+        <translation>&amp;Apri...</translation>
+    </message>
+    <message>
+        <source>Ctrl+O</source>
+        <translation>Ctrl+O</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGridMakerPluginGuiBase</name>
+    <message>
+        <source>QGIS Plugin Template</source>
+        <translation type="unfinished">Modello plugin QGIS</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation type="unfinished">Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graticule Builder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
+&lt;p&gt;Please enter all units in decimal degrees&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Origin (Lower Left)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>#000.00000; </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Latitude:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Longitude:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>End point (Upper Right)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output (Shape) File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Graticule Size (units in degrees)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Latitude Interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Longitude Interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsHelpViewer</name>
+    <message>
+        <source>Quantum GIS Help - </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to get the help text from the database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The QGIS help database is not installed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3219,6 +4517,28 @@ scala</translation>
     </message>
 </context>
 <context>
+    <name>QgsLayerProjectionSelectorBase</name>
+    <message>
+        <source>Layer Projection Selector</source>
+        <translation>Selezione proiezione layer</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Define this layer&apos;s projection:&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This layer appears to have no projection specification. By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Definisci la proiezione di questo layer:&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Questo layer sembra non avere alcuna proiezione specificata. La scelta predefinita dal sistema è quella di assumere come proiezione quella utilizzata dal progetto, ma questa scelta può essere modificata a piacere.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+</context>
+<context>
     <name>QgsLegendItemBase</name>
     <message>
         <source>Form1</source>
@@ -3253,10 +4573,83 @@ scala</translation>
     </message>
 </context>
 <context>
+    <name>QgsLineStyleWidgetBase</name>
+    <message>
+        <source>Form2</source>
+        <translation>Form2</translation>
+    </message>
+    <message>
+        <source>Outline Style</source>
+        <translation>Stile della linea esterna</translation>
+    </message>
+    <message>
+        <source>Width:</source>
+        <translation>Larghezza:</translation>
+    </message>
+    <message>
+        <source>Colour:</source>
+        <translation>Colore:</translation>
+    </message>
+    <message>
+        <source>LineStyleWidget</source>
+        <translation>WidgetStileLinea</translation>
+    </message>
+    <message>
+        <source>col</source>
+        <translation>col</translation>
+    </message>
+</context>
+<context>
+    <name>QgsLocationCaptureWidget</name>
+    <message>
+        <source>Captured Pos: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current Pos: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsLocationCaptureWidgetBase</name>
+    <message>
+        <source>Form1</source>
+        <translation type="unfinished">Form1</translation>
+    </message>
+    <message>
+        <source>ZoomIn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pan</source>
+        <translation type="unfinished">Sposta</translation>
+    </message>
+    <message>
+        <source>Zoom Out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Capture Pos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished">OK</translation>
+    </message>
+    <message>
+        <source>Captured Pos:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current Pos:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsMapCanvas</name>
     <message>
         <source>No active layer</source>
-        <translation>Nessun livello attivo</translation>
+        <translation>Nessun layer attivo</translation>
     </message>
     <message>
         <source>To select features, you must choose an layer active by clicking on its name in the legend</source>
@@ -3266,12 +4659,16 @@ scala</translation>
         <source>To identify features, you must choose an layer active by clicking on its name in the legend</source>
         <translation>Per ottenere informazioni sulle geometrie devi prima selezionare un vettoriale con un click sul relativo nome in legenda</translation>
     </message>
+    <message>
+        <source>Error when projecting the view extent, you may need to manually zoom to the region of interest.</source>
+        <translation>Errore durante la proiezione della vista a questa estensione, forse devi cambiare con uno zoom la regione di interesse.</translation>
+    </message>
 </context>
 <context>
     <name>QgsMapLayer</name>
     <message>
         <source>&amp;Zoom to extent of selected layer</source>
-        <translation>&amp;Zoom sul livello scelto</translation>
+        <translation>&amp;Zoom sul layer scelto</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
@@ -3294,7 +4691,7 @@ scala</translation>
     </message>
     <message>
         <source>Export LAYER information only</source>
-        <translation>Solo informazioni del LIVELLO</translation>
+        <translation>Solo informazioni del layer</translation>
     </message>
     <message>
         <source>Map</source>
@@ -3449,6 +4846,36 @@ scala</translation>
     </message>
 </context>
 <context>
+    <name>QgsMeasure</name>
+    <message>
+        <source>Increment</source>
+        <translation>Incrementa</translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation>Totale</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMeasureBase</name>
+    <message>
+        <source>Measure</source>
+        <translation>Misura</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation>Nuovo</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Chiudi</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Aiuto</translation>
+    </message>
+</context>
+<context>
     <name>QgsMessageViewer</name>
     <message>
         <source>QGIS Message</source>
@@ -3558,6 +4985,100 @@ Ulteriori informazioni sull&apos;errore:</translation>
     </message>
 </context>
 <context>
+    <name>QgsNorthArrowPlugin</name>
+    <message>
+        <source>Bottom Left</source>
+        <translation type="unfinished">In basso a sinistra</translation>
+    </message>
+    <message>
+        <source>Top Right</source>
+        <translation type="unfinished">In alto a destra</translation>
+    </message>
+    <message>
+        <source>Bottom Right</source>
+        <translation type="unfinished">In basso a destra</translation>
+    </message>
+</context>
+<context>
+    <name>QgsNorthArrowPluginGuiBase</name>
+    <message>
+        <source>North Arrow Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="unfinished">Proprietà</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Placement</source>
+        <translation type="unfinished">Posizione</translation>
+    </message>
+    <message>
+        <source>Set direction automatically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable North Arrow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Top Left</source>
+        <translation type="unfinished">In alto a sinistra</translation>
+    </message>
+    <message>
+        <source>Top Right</source>
+        <translation type="unfinished">In alto a destra</translation>
+    </message>
+    <message>
+        <source>Bottom Left</source>
+        <translation type="unfinished">In basso a sinistra</translation>
+    </message>
+    <message>
+        <source>Bottom Right</source>
+        <translation type="unfinished">In basso a destra</translation>
+    </message>
+    <message>
+        <source>Placement on screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preview of north arrow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>New Item</source>
+        <translation type="unfinished">Nuovo oggetto</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation type="unfinished">Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsOptionsBase</name>
     <message>
         <source>QGIS Options</source>
@@ -3566,10 +5087,6 @@ Ulteriori informazioni sull&apos;errore:</translation>
     <message>
         <source>epiphany</source>
         <translation>epiphany</translation>
-    </message>
-    <message>
-        <source>firebird</source>
-        <translation>firebird</translation>
     </message>
     <message>
         <source>galeon</source>
@@ -3641,7 +5158,7 @@ Ulteriori informazioni sull&apos;errore:</translation>
     </message>
     <message>
         <source>&amp;Rendering</source>
-        <translation>&amp;Refresh livelli</translation>
+        <translation>&amp;Refresh layer</translation>
     </message>
     <message>
         <source>&amp;Update During Drawing</source>
@@ -3693,7 +5210,7 @@ Ulteriori informazioni sull&apos;errore:</translation>
     </message>
     <message>
         <source>New layers added to the map are not displayed</source>
-        <translation>I nuovi livelli aggiungi sulla mappa non sono visibili</translation>
+        <translation>I nuovi layer aggiungi sulla mappa non sono visibili</translation>
     </message>
     <message>
         <source>&lt;html&gt;
@@ -3704,11 +5221,43 @@ By default QGIS uses a value of 5. Increase the value if you have trouble
 identifying features without zooming in very close.
 &lt;/html&gt;</source>
         <translation>&lt;html&gt;
-&lt;b&gt;Nota:&lt;/b&gt; Specificare il valore in millesimi. Il valore di ricerca è calcolato come:&lt;br&gt;
-&amp;nbsp;&amp;nbsp;&lt;i&gt;(Larghezza mappa) * ( Valore/1000.0)&lt;/i&gt;
+&lt;b&gt;Nota:&lt;/b&gt; Il valore va specificato in migliaia.  Il raggio di ricerca è calcolato come:&lt;br&gt;
+&amp;nbsp;&amp;nbsp;&lt;i&gt;(Larghezza della vista mappa) * ( Valore/1000.0)&lt;/i&gt;
 &lt;br&gt;
-Il valore predefinito di QGIS è 5. Aumenta il valore solo se hai problemi ad individuare una geometria senza un livello di zoom molto alto
+Il valore predefinito usato da QGIS è 5. Aumenta il valore nel caso si abbiano problemi nell&apos;identificare gli elementi senza la necessità di uno zoom molto ristretto.
 &lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Projection</source>
+        <translation>Proiezione</translation>
+    </message>
+    <message>
+        <source>Select Global Default ...</source>
+        <translation>Selezioni globali predefinite ...</translation>
+    </message>
+    <message>
+        <source>When layer is loaded that has no projection information:</source>
+        <translation>Il layer caricato non ha alcuna informazione di proiezione:</translation>
+    </message>
+    <message>
+        <source>Prompt for projection.</source>
+        <translation>Prompt per la proiezione.</translation>
+    </message>
+    <message>
+        <source>Project wide default projection will be used.</source>
+        <translation>Questa proiezione sarà utilizzata per tutto il progetto</translation>
+    </message>
+    <message>
+        <source>Global default projection displayed below will be used.</source>
+        <translation>La proiezione visualizzata qui sotto sarà utilizzata come quella globale predefinita.</translation>
+    </message>
+    <message>
+        <source>firefox</source>
+        <translation>firefox</translation>
+    </message>
+    <message>
+        <source>mozilla-firefox</source>
+        <translation>mozilla-firefox</translation>
     </message>
     <message>
         <source>&lt;html&gt;<byte value="xd"/>
@@ -3740,11 +5289,11 @@ identifying features without zooming in very close.<byte value="xd"/>
     <name>QgsPgGeoprocessing</name>
     <message>
         <source>Buffer features in layer %1</source>
-        <translation>Buffer delle geometrie del vettoriale %1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Error connecting to the database</source>
-        <translation>Errore durante la connessione al database</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3988,6 +5537,115 @@ identifying features without zooming in very close.<byte value="xd"/>
     </message>
 </context>
 <context>
+    <name>QgsPointDialogBase</name>
+    <message>
+        <source>Georeferencer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Helmert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom in</source>
+        <translation type="unfinished">Aumenta lo zoom</translation>
+    </message>
+    <message>
+        <source>Zoom out</source>
+        <translation type="unfinished">Zoom indietro</translation>
+    </message>
+    <message>
+        <source>Zoom to the raster extents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pan</source>
+        <translation type="unfinished">Sposta</translation>
+    </message>
+    <message>
+        <source>Add points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate world file and load layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate world file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>World file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Modified raster:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsPointStyleWidgetBase</name>
+    <message>
+        <source>Form3</source>
+        <translation>Form3</translation>
+    </message>
+    <message>
+        <source>Symbol Style</source>
+        <translation>Stile simbolo</translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation>Scala</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPostgresProvider</name>
+    <message>
+        <source>Unable to access relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to access the </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> relation.
+The error message from the database was:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No GEOS Support!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your PostGIS installation has no GEOS support.
+Feature selection and identification will not work properly.
+Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsProjectPropertiesBase</name>
     <message>
         <source>Project Properties</source>
@@ -4026,12 +5684,142 @@ identifying features without zooming in very close.<byte value="xd"/>
         <translation>&amp;Annulla</translation>
     </message>
     <message>
-        <source>Title</source>
-        <translation>Titolo</translation>
-    </message>
-    <message>
         <source>Default project title</source>
         <translation>Titolo progetto predefinito</translation>
+    </message>
+    <message>
+        <source>&amp;Apply</source>
+        <translation>&amp;Applica</translation>
+    </message>
+    <message>
+        <source>Alt+A</source>
+        <translation>Alt+A</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation>Generale</translation>
+    </message>
+    <message>
+        <source>Digitising Settings</source>
+        <translation>Parametri di digitalizzazione</translation>
+    </message>
+    <message>
+        <source>Line Width:</source>
+        <translation>Larghezza linea:</translation>
+    </message>
+    <message>
+        <source>Snapping Tolerance:</source>
+        <translation>Tolleranza di snapping:</translation>
+    </message>
+    <message>
+        <source>Line Colour:</source>
+        <translation>Colore linea:</translation>
+    </message>
+    <message>
+        <source>Cursor display precision</source>
+        <translation>Precisione del cursore sul display</translation>
+    </message>
+    <message>
+        <source>Automatic</source>
+        <translation>Automatico</translation>
+    </message>
+    <message>
+        <source>Automatically sets the number of decimal places in the mouse position display</source>
+        <translation>Calcola automaticamente il numero di decimali per la visualizzazione della posizione del mouse sul display</translation>
+    </message>
+    <message>
+        <source>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</source>
+        <translation>Il numero di cifre decimali utilizzate per visualizzare la posizione del mouse durante il suo trascinamento sullo schermo sono calcolate in modo tale che lo spostamento da un pixel ad un altro cambi rispetto alla posizione sullo schermo.</translation>
+    </message>
+    <message>
+        <source>Manual</source>
+        <translation>Manuale</translation>
+    </message>
+    <message>
+        <source>Sets the number of decimal places to use for the mouse position display</source>
+        <translation>Stabilisce il numero di cifre decimali durante lo spostamento del mouse sul display</translation>
+    </message>
+    <message>
+        <source>The number of decimal places for the manual option</source>
+        <translation>Numero della posizione dei decimali per l&apos;opzione manuale</translation>
+    </message>
+    <message>
+        <source>decimal places</source>
+        <translation>posizione dei decimali</translation>
+    </message>
+    <message>
+        <source>Map Appearance</source>
+        <translation>Aspetto della mappa</translation>
+    </message>
+    <message>
+        <source>Selection Color:</source>
+        <translation>Seleziona colore:</translation>
+    </message>
+    <message>
+        <source>Project Title</source>
+        <translation>Titolo progetto</translation>
+    </message>
+    <message>
+        <source>Projection</source>
+        <translation>Proiezione</translation>
+    </message>
+    <message>
+        <source>Enable on the fly projection</source>
+        <translation>Abilita la proiezione al volo</translation>
+    </message>
+</context>
+<context>
+    <name>QgsProjectionSelector</name>
+    <message>
+        <source>QGIS SRSID: </source>
+        <translation>QGIS SRSID:</translation>
+    </message>
+    <message>
+        <source>PostGIS SRID: </source>
+        <translation>PostGIS SRID: </translation>
+    </message>
+</context>
+<context>
+    <name>QgsProjectionSelectorBase</name>
+    <message>
+        <source>Projection Selector</source>
+        <translation>Selettore di proiezione</translation>
+    </message>
+    <message>
+        <source>Projection</source>
+        <translation>Proiezione</translation>
+    </message>
+    <message>
+        <source>Coordinate Systems</source>
+        <translation>Sistemi di coordinate</translation>
+    </message>
+    <message>
+        <source>Spatial Reference Id</source>
+        <translation>Id di riferimento spaziale (Spatial Reference Id)</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>Cerca</translation>
+    </message>
+    <message>
+        <source>Find</source>
+        <translation>Trova</translation>
+    </message>
+    <message>
+        <source>Postgis SRID</source>
+        <translation>Postgis SRID</translation>
+    </message>
+    <message>
+        <source>EPSG ID</source>
+        <translation>EPSG ID</translation>
+    </message>
+    <message>
+        <source>QGIS SRSID</source>
+        <translation>QGIS SRSID</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>Nome</translation>
     </message>
 </context>
 <context>
@@ -4059,10 +5847,6 @@ identifying features without zooming in very close.<byte value="xd"/>
     <message>
         <source> Bands: </source>
         <translation> Bande:</translation>
-    </message>
-    <message>
-        <source>Projection: </source>
-        <translation>Proiezione:</translation>
     </message>
     <message>
         <source>Origin:</source>
@@ -4235,6 +6019,34 @@ identifying features without zooming in very close.<byte value="xd"/>
         <source>Average</source>
         <translation>Media</translation>
     </message>
+    <message>
+        <source>Layer Spatial Reference System: </source>
+        <translation>Sistema di riferimento spaziale del layer: </translation>
+    </message>
+    <message>
+        <source>Project Spatial Reference System: </source>
+        <translation>Sistema di riferimento spaziale del progetto: </translation>
+    </message>
+    <message>
+        <source>Building pyramids failed.</source>
+        <translation>Errore nella creazione della piramide colori.</translation>
+    </message>
+    <message>
+        <source>out of extent</source>
+        <translation>al di fuori dell&apos;estensione</translation>
+    </message>
+    <message>
+        <source>null (no data)</source>
+        <translation>nullo (nessun dato)</translation>
+    </message>
+    <message>
+        <source>The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Building pyramid overviews is not supported on this type of raster.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayerProperties</name>
@@ -4273,6 +6085,10 @@ identifying features without zooming in very close.<byte value="xd"/>
     <message>
         <source>Rows:</source>
         <translation>Righe:</translation>
+    </message>
+    <message>
+        <source>Palette</source>
+        <translation>Tavolozza</translation>
     </message>
 </context>
 <context>
@@ -4323,7 +6139,7 @@ identifying features without zooming in very close.<byte value="xd"/>
     </message>
     <message>
         <source>Show debug info as overlay on raster?</source>
-        <translation>Mostro le informazioni di debug come livello sovrapposto al raster?</translation>
+        <translation>Mostro le informazioni di debug come layer sovrapposto al raster?</translation>
     </message>
     <message>
         <source>No Data:</source>
@@ -4490,27 +6306,6 @@ identifying features without zooming in very close.<byte value="xd"/>
         <translation>Tavolozza:</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
-&lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
-&lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Note&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt;
-&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:21pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Andale Sans UI&quot;&gt; 
-&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:21pt;font-weight:600&quot;&gt;Descrizione&lt;/span&gt;&lt;/p&gt; 
-&lt;p&gt;Livelli raster di dimensioni molto grandi possono rallentare la navigazione in QGIS. Creando copie dei dati in bassa risoluzione (piramidi), le performance possono incrementare in quanto QGIS seleziona la risoluzione migliore in base al livello di zoom. 
-Per fare questo occorre avere i diritti di scrittura nella cartella dove sono caricati i dati e dove creare le piramidi&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Attenzione: la creazione delle piramidi può alterare i valori originali dei dati e, una volta create non possono essere rimosse&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <source>Visibility</source>
         <translation>Visibilità</translation>
     </message>
@@ -4533,6 +6328,272 @@ Per fare questo occorre avere i diritti di scrittura nella cartella dove sono ca
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
         <translation>Scala minima secondo la quale il raster deve essere visualizzato</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Note&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Spatial Reference System</source>
+        <translation>Sistema di riferimento spaziale</translation>
+    </message>
+    <message>
+        <source>Change</source>
+        <translation>Cambia</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;Descrizione&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Raster con risoluzione molto alta possono rendere lenta la navigazione in QGIS. Con la creazione di copie di risoluzioni più basse (piramidi) si ottiene un miglioramento nelle performance: QGIS sceglierà la risoluzione migliore in base al layer di zoom. E&apos; importante avere i diritti di scrittura nella cartella dove sono archiviati i dati originali in modo da permettere la creazione delle piramidi. &lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Attenzione le piramidi create possono alterare i dati e, una volta create, non possono essere rimosse&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</translation>
+    </message>
+    <message>
+        <source>Histogram</source>
+        <translation>Istogramma</translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation>Opzioni</translation>
+    </message>
+    <message>
+        <source>Out Of Range OK?</source>
+        <translation>Al di fuori del confine OK?</translation>
+    </message>
+    <message>
+        <source>Allow Approximation</source>
+        <translation>Abilita approssimazione</translation>
+    </message>
+    <message>
+        <source>Chart Type</source>
+        <translation>Tipo diagramma</translation>
+    </message>
+    <message>
+        <source>Bar Chart</source>
+        <translation>Diagramma a colonna</translation>
+    </message>
+    <message>
+        <source>Line Graph</source>
+        <translation>Diagramma a linea</translation>
+    </message>
+    <message>
+        <source>X Range:</source>
+        <translation>Confine X:</translation>
+    </message>
+    <message>
+        <source>Refresh</source>
+        <translation>Aggiorna</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids could corrupt your image - always make a backup of your data first!&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsRunProcess</name>
+    <message>
+        <source>Unable to run command</source>
+        <translation>Impossibile eseguire il comando</translation>
+    </message>
+    <message>
+        <source>Unable to run the command</source>
+        <translation>Impossibile eseguire il comando</translation>
+    </message>
+    <message>
+        <source>Starting</source>
+        <translation>Avvio</translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation>Fatto</translation>
+    </message>
+</context>
+<context>
+    <name>QgsScaleBarPlugin</name>
+    <message>
+        <source> metres/km</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> feet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> degrees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> km</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> cm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> m</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> foot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> degree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Top Left</source>
+        <translation type="unfinished">In alto a sinistra</translation>
+    </message>
+    <message>
+        <source>Bottom Left</source>
+        <translation type="unfinished">In basso a sinistra</translation>
+    </message>
+    <message>
+        <source>Top Right</source>
+        <translation type="unfinished">In alto a destra</translation>
+    </message>
+    <message>
+        <source>Bottom Right</source>
+        <translation type="unfinished">In basso a destra</translation>
+    </message>
+    <message>
+        <source>Tick Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tick Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation type="unfinished">Rettangolo</translation>
+    </message>
+</context>
+<context>
+    <name>QgsScaleBarPluginGuiBase</name>
+    <message>
+        <source>Scale Bar Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation type="unfinished">Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Top Left</source>
+        <translation type="unfinished">In alto a sinistra</translation>
+    </message>
+    <message>
+        <source>Top Right</source>
+        <translation type="unfinished">In alto a destra</translation>
+    </message>
+    <message>
+        <source>Bottom Left</source>
+        <translation type="unfinished">In basso a sinistra</translation>
+    </message>
+    <message>
+        <source>Bottom Right</source>
+        <translation type="unfinished">In basso a destra</translation>
+    </message>
+    <message>
+        <source>Size of bar:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Colour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Placement:</source>
+        <translation type="unfinished">Posizione:</translation>
+    </message>
+    <message>
+        <source>Tick Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tick Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation type="unfinished">Rettangolo</translation>
+    </message>
+    <message>
+        <source>Bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the style of the scale bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colour of bar:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale bar style:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable scale bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically snap to round number on resize</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4610,6 +6671,232 @@ Per fare questo occorre avere i diritti di scrittura nella cartella dove sono ca
     <message>
         <source>Fill Patterns:</source>
         <translation>Motivi di riempimento:</translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation>Punto</translation>
+    </message>
+    <message>
+        <source>Symbol</source>
+        <translation>Simbolo</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation>Dimensione</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSpit</name>
+    <message>
+        <source>Are you sure you want to remove the [</source>
+        <translation>Siamo sicuri di voler rimuovere [</translation>
+    </message>
+    <message>
+        <source>] connection and all associated settings?</source>
+        <translation>] la connessione e tutti i parametri associati?</translation>
+    </message>
+    <message>
+        <source>Confirm Delete</source>
+        <translation>Conferma eliminazione</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Sì</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>No</translation>
+    </message>
+    <message>
+        <source> - Edit Column Names</source>
+        <translation> - Modifica i nomi della colonna</translation>
+    </message>
+    <message>
+        <source>The following Shapefile(s) could not be loaded:
+
+</source>
+        <translation>Il seguente/i file shape non possono essere caricati</translation>
+    </message>
+    <message>
+        <source>REASON: File cannot be opened</source>
+        <translation>RAGIONE: il file non può essere aperto</translation>
+    </message>
+    <message>
+        <source>REASON: One or both of the Shapefile files (*.dbf, *.shx) missing</source>
+        <translation>RAGIONE: Uno o entrambi i file shape (*.dbf, *.shx) non sono presenti</translation>
+    </message>
+    <message>
+        <source>General Interface Help:</source>
+        <translation>Interfaccia generale di aiuto:</translation>
+    </message>
+    <message>
+        <source>PostgreSQL Connections:</source>
+        <translation>Connessioni PostgreSQL:</translation>
+    </message>
+    <message>
+        <source>[New ...] - create a new connection</source>
+        <translation>[Nuova ...] - crea una nuova connessione</translation>
+    </message>
+    <message>
+        <source>[Edit ...] - edit the currently selected connection</source>
+        <translation>[Modifica ...] - modifica la connessione attualmente selezionata</translation>
+    </message>
+    <message>
+        <source>[Remove] - remove the currently selected connection</source>
+        <translation>[Rimuovi] - rimuove la connessione attualmente selezionata</translation>
+    </message>
+    <message>
+        <source>-you need to select a connection that works (connects properly) in order to import files</source>
+        <translation>- bisogna selezionare una connessione funzionante prima di poter importare file</translation>
+    </message>
+    <message>
+        <source>-when changing connections Global Schema also changes accordingly</source>
+        <translation>- mentre cambiando le connessioni cambiano di conseguenza anche il Global Schema</translation>
+    </message>
+    <message>
+        <source>Shapefile List:</source>
+        <translation>Lista degli shapefile:</translation>
+    </message>
+    <message>
+        <source>[Add ...] - open a File dialog and browse to the desired file(s) to import</source>
+        <translation>[Aggiungi ... ] - apre una finestra di dialogo da cui poter sfogliare il file system e selezionare uno o più file da importare</translation>
+    </message>
+    <message>
+        <source>[Remove] - remove the currently selected file(s) from the list</source>
+        <translation>[Rimuovi] - rimuove dalla lista uno o più file selezionati</translation>
+    </message>
+    <message>
+        <source>[Remove All] - remove all the files in the list</source>
+        <translation>[Rimuovi tutto] - rimuove tutti i file della lista</translation>
+    </message>
+    <message>
+        <source>[SRID] - Reference ID for the shapefiles to be imported</source>
+        <translation>[SRID] - ID del sistema di riferimento per i file shape da importare</translation>
+    </message>
+    <message>
+        <source>[Use Default (SRID)] - set SRID to -1</source>
+        <translation>[Usa predefinito (SRID)] - assume il valore -1 per l&apos;SRID</translation>
+    </message>
+    <message>
+        <source>[Geometry Column Name] - name of the geometry column in the database</source>
+        <translation>[Nome colonna geometria] - nome della colonna con la geometria presente nel database</translation>
+    </message>
+    <message>
+        <source>[Use Default (Geometry Column Name)] - set column name to &apos;the_geom&apos;</source>
+        <translation>[Usa predefinito (nome colonna geometria)] - assegna il nome &apos;the_geom&apos; alla colonna con la geometria</translation>
+    </message>
+    <message>
+        <source>[Glogal Schema] - set the schema for all files to be imported into</source>
+        <translation>[Schema globale] - definisce lo schema con cui importare tutti i file</translation>
+    </message>
+    <message>
+        <source>[Import] - import the current shapefiles in the list</source>
+        <translation>[Importa] - importa la lista dei file shape selezionati</translation>
+    </message>
+    <message>
+        <source>[Quit] - quit the program
+</source>
+        <translation>[Esci] - Chiude il programma</translation>
+    </message>
+    <message>
+        <source>[Help] - display this help dialog</source>
+        <translation>[Aiuto] - visualizza questa finestra di aiuto</translation>
+    </message>
+    <message>
+        <source>Import Shapefiles</source>
+        <translation>Importa shapefile</translation>
+    </message>
+    <message>
+        <source>You need to specify a Connection first</source>
+        <translation>Prima si deve definire una connessione</translation>
+    </message>
+    <message>
+        <source>Connection failed - Check settings and try again</source>
+        <translation>Connessione fallita - Controllare i parametri e tentare ancora</translation>
+    </message>
+    <message>
+        <source>You need to add shapefiles to the list first</source>
+        <translation>Prima si deve aggiungere uno shapefile dalla lista</translation>
+    </message>
+    <message>
+        <source>Importing files</source>
+        <translation>Importa file</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Annulla</translation>
+    </message>
+    <message>
+        <source>Progress</source>
+        <translation>Progresso</translation>
+    </message>
+    <message>
+        <source>Problem inserting features from file:</source>
+        <translation>Problema nell&apos;inserimento di elementi dal file:</translation>
+    </message>
+    <message>
+        <source>Invalid table name.</source>
+        <translation>Nome di tabella non valido.</translation>
+    </message>
+    <message>
+        <source>No fields detected.</source>
+        <translation>Nessun campo individuato.</translation>
+    </message>
+    <message>
+        <source>The following fields are duplicates:</source>
+        <translation>Questi campi risultano duplicati:</translation>
+    </message>
+    <message>
+        <source>Import Shapefiles - Relation Exists</source>
+        <translation>Importa shapefile - Relazione esistente</translation>
+    </message>
+    <message>
+        <source>The Shapefile:</source>
+        <translation>Lo shapefile:</translation>
+    </message>
+    <message>
+        <source>will use [</source>
+        <translation>verrà usato [</translation>
+    </message>
+    <message>
+        <source>] relation for its data,</source>
+        <translation>] in relazione ad ogni dato,  </translation>
+    </message>
+    <message>
+        <source>which already exists and possibly contains data.</source>
+        <translation>che sono già presenti e possibilimente contengono dati.</translation>
+    </message>
+    <message>
+        <source>To avoid data loss change the &quot;DB Relation Name&quot;</source>
+        <translation>Per evitare la perdita di dati camba &apos;Nome relazione DB&apos;</translation>
+    </message>
+    <message>
+        <source>for this Shapefile in the main dialog file list.</source>
+        <translation>per questo shapefile nella lista principale dei file</translation>
+    </message>
+    <message>
+        <source>Do you want to overwrite the [</source>
+        <translation>Vuoi sovrascrivere la relazione [</translation>
+    </message>
+    <message>
+        <source>] relation?</source>
+        <translation>] ?</translation>
+    </message>
+    <message>
+        <source>Relation Exists</source>
+        <translation>Relazione presente</translation>
+    </message>
+    <message>
+        <source>Use the table below to edit column names. Make sure that none of the columns are named using a PostgreSQL reserved word</source>
+        <translation>Usa la tabella qui sotto per modificare il nome delle colonne. Fa attenzione che nessuna delle colonne faccia uno di una parola chiave usata da PostgreSQL</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HelpMessage</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4823,6 +7110,22 @@ Per fare questo occorre avere i diritti di scrittura nella cartella dove sono ca
         <source>The current layer is not editable. Choose &apos;start editing&apos; in the legend item right click menu</source>
         <translation>Il vettoriale selezionato non è modificabile. Seleziona la voce  \&quot;avvia modifica\&quot; nella legenda  nel menu della legenda (bottone destro del mouse)</translation>
     </message>
+    <message>
+        <source>action</source>
+        <translation>azione</translation>
+    </message>
+    <message>
+        <source>Do you want to save the changes?</source>
+        <translation>Vuoi salvare le modifiche?</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation>&amp;Sì</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation>&amp;No</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
@@ -4864,10 +7167,105 @@ Per fare questo occorre avere i diritti di scrittura nella cartella dove sono ca
     </message>
 </context>
 <context>
+    <name>QgsVectorSymbologyWidgetBase</name>
+    <message>
+        <source>Form2</source>
+        <translation>Form2</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>Etichetta</translation>
+    </message>
+    <message>
+        <source>Min</source>
+        <translation>Min</translation>
+    </message>
+    <message>
+        <source>Max</source>
+        <translation>Max</translation>
+    </message>
+    <message>
+        <source>Rivers</source>
+        <translation>Fiumi</translation>
+    </message>
+    <message>
+        <source>1000</source>
+        <translation>1000</translation>
+    </message>
+    <message>
+        <source>10000</source>
+        <translation>10000</translation>
+    </message>
+    <message>
+        <source>Symbol Classes:</source>
+        <translation>Classi di simboli:</translation>
+    </message>
+    <message>
+        <source>Count:</source>
+        <translation>Totale:</translation>
+    </message>
+    <message>
+        <source>Mode:</source>
+        <translation>Modalità: </translation>
+    </message>
+    <message>
+        <source>Field:</source>
+        <translation>Campo:</translation>
+    </message>
+</context>
+<context>
     <name>SplashScreen</name>
     <message>
-        <source>Quantum GIS - </source>
-        <translation>Quantum GIS - </translation>
+        <source>Version </source>
+        <translation>Versione</translation>
+    </message>
+</context>
+<context>
+    <name>[pluginname]GuiBase</name>
+    <message>
+        <source>QGIS Plugin Template</source>
+        <translation>Modello plugin QGIS</translation>
+    </message>
+    <message>
+        <source>Plugin Template</source>
+        <translation>Modello di plugin</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
+&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This plugin was generated using QGIS internal plugin template. Please modify it according to your needs.&lt;/p&gt;
+&lt;p&gt;Tim Sutton&lt;/p&gt;
+&lt;p&gt;2004&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Descrizione&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;Questo è un plugin QGIS di esempio. Puoi modificarlo secondo le tue esigenze.&lt;/p&gt; 
+&lt;p&gt;Tim Sutton&lt;/p&gt; 
+&lt;p&gt;2004&lt;/p&gt; 
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation>&amp;OK</translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
+        <translation>Alt+O</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>&amp;Annulla</translation>
+    </message>
+    <message>
+        <source>Alt+C</source>
+        <translation>Alt +C </translation>
+    </message>
+</context>
+<context>
+    <name>pluginname</name>
+    <message>
+        <source>Replace this with a short description of the what the plugin does</source>
+        <translation>Sostituisci questa breve descrizione con ciò che deve fare il plugin</translation>
     </message>
 </context>
 </TS>

@@ -84,15 +84,16 @@ wish to see edbug messages printed to stdout.
 #include <qlistview.h>
 #include <qwidget.h>
 #include <qwidgetlist.h>
+#include <qsettings.h>
 
 #include "qgsrect.h"
 #include "qgisapp.h"
-#include "qgscolortable.h"
+//#include "qgscolortable.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsproject.h"
 #include "qgsidentifyresults.h"
 #include "qgsattributeaction.h"
-
+#include "qgsmaplayerregistry.h"
 #include "qgsspatialrefsys.h"
 
 #include <gdal_priv.h>
@@ -320,7 +321,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter(QString & theFileFiltersStri
   // can't forget the default case
   theFileFiltersString += catchallFilter + "All other files (*)";
 #ifdef QGISDEBUG
-  std::cout << "Raster filter list built: " << theFileFiltersString << std::endl;
+  std::cout << "Raster filter list built: " << theFileFiltersString.local8Bit() << std::endl;
 #endif
 }                               // buildSupportedRasterFileFilter_()
 
@@ -481,7 +482,7 @@ QgsRasterLayer::readFile( QString const & fileName )
   }
 
   // Store timestamp
-  mLastModified = lastModified ( fileName.local8Bit() );
+  mLastModified = lastModified ( fileName );
 
   //check f this file has pyramids
   GDALRasterBandH myGDALBand = GDALGetRasterBand( gdalDataset, 1 ); //just use the first band
@@ -505,7 +506,61 @@ QgsRasterLayer::readFile( QString const & fileName )
   mPyramidPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
   mNoPyramidPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
 
-  //just testing remove this later
+  // Get the layer's projection info and set up the
+  // QgsCoordinateTransform for this layer
+  // NOTE: we must do this before getMetadata is called
+  mCoordinateTransform = new QgsCoordinateTransform();
+  QString mySourceWKT = getProjectionWKT();
+#ifdef QGISDEBUG
+    std::cout << "--------------------------------------------------------------------------------------" << std::endl;
+    std::cout << "QgsRasterLayer::readFile --- using wkt\n" << mySourceWKT.local8Bit() << std::endl;
+   std::cout << "--------------------------------------------------------------------------------------" << std::endl;
+#endif
+    mCoordinateTransform->sourceSRS().createFromWkt(mySourceWKT);
+  //get the project projection, defaulting to this layer's projection
+  //if none exists....
+  if (!mCoordinateTransform->sourceSRS().isValid())
+  {
+    mCoordinateTransform->sourceSRS().validate();
+  }
+  QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT",mySourceWKT);
+  //set up the coordinat transform - in the case of raster this is mainly used to convert
+  //the inverese projection of the map extents of the canvas when zzooming in etc. so
+  //that they match the coordinate system of this layer
+  // if no other layers exist, set the output projection to be
+  // the same as the input projection, otherwise set the output to the
+  // project srs
+#ifdef QGISDEBUG
+    std::cout << "Layer registry has " << QgsMapLayerRegistry::instance()->count() << " layers " << std::endl;
+#endif     
+  if (QgsMapLayerRegistry::instance()->count() ==0)
+  {
+     mCoordinateTransform->destSRS().createFromProj4(
+           mCoordinateTransform->sourceSRS().proj4String());
+    //first layer added will set the default project level projection
+    //TODO remove cast if poss!
+    int mySrsId = static_cast<int>(mCoordinateTransform->sourceSRS().srsid());
+    if (mySrsId)
+    {
+      QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSID",mySrsId);
+    }
+  }
+  else 
+  {
+      mCoordinateTransform->destSRS().createFromSrsId(
+        QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",0));
+  }
+  if (!mCoordinateTransform->destSRS().isValid())
+  {
+    mCoordinateTransform->destSRS().validate();  
+  }
+
+  
+  //initialise the transform - you should do this any time one of the SRS's changes
+
+  mCoordinateTransform->initialise();
+
+
   getMetadata();
 
   // Use the affine transform to get geo coordinates for
@@ -611,19 +666,7 @@ QgsRasterLayer::readFile( QString const & fileName )
     }
   }
 
-  // Get the layer's projection info and set up the
-  // QgsCoordinateTransform for this layer
 
-  QString mySourceWKT = getProjectionWKT();
-  //get the project projection, defaulting to this layer's projection
-  //if none exists....
-  QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT",mySourceWKT);
-  //set up the coordinat transform - in the case of raster this is mainly used to convert
-  //the inverese projection of the map extents of the canvas when zzooming in etc. so
-  //that they match the coordinate system of this layer
-  mCoordinateTransform = new QgsCoordinateTransform(mySourceWKT,myDestWKT);
-  //validate the source coordinate system!
-  mCoordinateTransform->sourceSRS().validate();
   
 
   //mark the layer as valid
@@ -631,6 +674,22 @@ QgsRasterLayer::readFile( QString const & fileName )
   return true;
 
 } // QgsRasterLayer::readFile
+
+QString QgsRasterLayer::getProjectionWKT() 
+{ 
+   QString myWKTString;
+   QgsSpatialRefSys mySRS;   
+   myWKTString=QString (gdalDataset->GetProjectionRef());
+   mySRS.createFromWkt(myWKTString);
+   if (!mySRS.isValid())
+   {
+      //try to get the gcp srs from the raster layer if available
+      myWKTString=QString(gdalDataset->GetGCPProjection());
+    }
+    
+   
+   return myWKTString;
+}
 
 void QgsRasterLayer::closeDataset()
 {
@@ -666,7 +725,7 @@ bool QgsRasterLayer::update()
 QDateTime QgsRasterLayer::lastModified ( QString name )
 {
 #ifdef QGISDEBUG
-  std::cerr << "QgsRasterLayer::lastModified: " << name << std::endl;
+  std::cerr << "QgsRasterLayer::lastModified: " << name.local8Bit() << std::endl;
 #endif
   QDateTime t;
 
@@ -727,7 +786,7 @@ QDateTime QgsRasterLayer::lastModified ( QString name )
     }
   }
 #ifdef QGISDEBUG
-  std::cerr << "last modified = " << t.toString() << std::endl;
+  std::cerr << "last modified = " << t.toString().local8Bit() << std::endl;
 #endif
 
   return t;
@@ -851,7 +910,7 @@ muliband layers may have more than one "Undefined" band!
 bool QgsRasterLayer::hasBand(QString theBandName)
 {
 #ifdef QGISDEBUG
-  std::cout << "Looking for band : " << theBandName << std::endl;
+  std::cout << "Looking for band : " << theBandName.local8Bit() << std::endl;
 #endif
 
   for (int i = 1; i <= gdalDataset->GetRasterCount(); i++)
@@ -867,13 +926,13 @@ bool QgsRasterLayer::hasBand(QString theBandName)
     {
 #ifdef QGISDEBUG
       std::cout << "band : " << i << std::endl;
-      std::cout << "Found band : " << theBandName << std::endl;
+      std::cout << "Found band : " << theBandName.local8Bit() << std::endl;
 #endif
 
       return true;
     }
 #ifdef QGISDEBUG
-    std::cout << "Found unmatched band : " << i << " " << myColorQString << std::endl;
+    std::cout << "Found unmatched band : " << i << " " << myColorQString.local8Bit() << std::endl;
 #endif
 
   }
@@ -923,8 +982,8 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
 #ifdef QGISDEBUG
       std::cout << "....found GCI_PaletteIndex" << std::endl;
 #endif
-      double myMinDouble = myColorTable->min();
-      double myMaxDouble = myColorTable->max();
+      double myMinDouble = myColorTable->rmin();
+      double myMaxDouble = myColorTable->rmax();
 
 #ifdef QGISDEBUG
       std::cout << "myMinDouble = " << myMinDouble << " myMaxDouble = " << myMaxDouble << std::endl;
@@ -1037,10 +1096,11 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   
   // Add one to the raster dimensions to guard against the integer truncation
   // effects of static_cast<int>
+  // TODO: Can we get rid of this now that we are rounding at the point of the static_cast?
   myRasterViewPort->clippedWidthInt++;
   myRasterViewPort->clippedHeightInt++;
   
-  // make sure we don't exceed size of raster
+  // make sure we don't exceed size of raster, otherwise GDAL RasterIO doesn't like it
   if (myRasterViewPort->clippedWidthInt > rasterXDimInt)
   {
     myRasterViewPort->clippedWidthInt = rasterXDimInt;
@@ -1054,15 +1114,16 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   myRasterViewPort->topLeftPoint = theQgsMapToPixel->transform(myRasterExtent.xMin(), myRasterExtent.yMax());
   myRasterViewPort->bottomRightPoint = theQgsMapToPixel->transform(myRasterExtent.xMax(), myRasterExtent.yMin());
 
-  myRasterViewPort->drawableAreaXDimInt = 
-    static_cast<int>( myRasterViewPort->clippedWidthInt  
-                    / theQgsMapToPixel->mapUnitsPerPixel() 
-                    * fabs(adfGeoTransform[1]) );
-                    
-  myRasterViewPort->drawableAreaYDimInt = 
-    static_cast<int>( myRasterViewPort->clippedHeightInt 
-                    / theQgsMapToPixel->mapUnitsPerPixel() 
-                    * fabs(adfGeoTransform[5]) );
+  // Since GDAL's RasterIO can't handle floating point, we have to round to
+  // the nearest pixel.  Add 0.5 to get rounding instead of truncation
+  // out of static_cast<int>.
+  myRasterViewPort->drawableAreaXDimInt =
+    static_cast<int>(myRasterViewPort->bottomRightPoint.x() + 0.5) -
+    static_cast<int>(myRasterViewPort->topLeftPoint    .x() + 0.5);
+
+  myRasterViewPort->drawableAreaYDimInt =
+    static_cast<int>(myRasterViewPort->bottomRightPoint.y() + 0.5) -
+    static_cast<int>(myRasterViewPort->topLeftPoint    .y() + 0.5);
 
 #ifdef QGISDEBUG
     std::cout << "QgsRasterLayer::draw: mapUnitsPerPixel      = " << theQgsMapToPixel->mapUnitsPerPixel() << std::endl; 
@@ -1186,7 +1247,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter, RasterViewPort * myRasterView
     if (grayBandNameQString == tr("Not Set"))
     {
 #ifdef QGISDEBUG
-      std::cout << "MULTI_BAND_SINGLE_BAND_GRAY Not Set detected..." << grayBandNameQString << std::endl;
+      std::cout << "MULTI_BAND_SINGLE_BAND_GRAY Not Set detected..." << grayBandNameQString.local8Bit() << std::endl;
 #endif
 
       break;
@@ -1297,13 +1358,17 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, RasterViewPort *
   }                                   
 
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer - painting image to canvas at " 
-            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+  std::cout << "QgsRasterLayer - painting image to canvas from " 
+            << paintXoffset << ", " << paintYoffset
+            << " to "
+            << static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5) << ", " 
+            << static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5)
+            << "." << std::endl;
 #endif
-  
+
   //part of the experimental transparency support
-  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
-                         static_cast<int>(theRasterViewPort->topLeftPoint.y()),
+  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5),
+                         static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5),
                          myQImage,
                          paintXoffset,
                          paintYoffset);
@@ -1511,13 +1576,17 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
   }                                   
 
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer - painting image to canvas at " 
-            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+  std::cout << "QgsRasterLayer - painting image to canvas from " 
+            << paintXoffset << ", " << paintYoffset
+            << " to "
+            << static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5) << ", " 
+            << static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5)
+            << "." << std::endl;
 #endif
-  
+
   //part of the experimental transparency support
-  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
-                         static_cast<int>(theRasterViewPort->topLeftPoint.y()),
+  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5),
+                         static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5),
                          myQImage,
                          paintXoffset,
                          paintYoffset);
@@ -1530,7 +1599,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, RasterVie
 * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
 * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
 */
-void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,
+	QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedSingleBandColor called" << std::endl;
@@ -1594,13 +1664,17 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, RasterV
   }                                   
 
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer - painting image to canvas at " 
-            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+  std::cout << "QgsRasterLayer - painting image to canvas from " 
+            << paintXoffset << ", " << paintYoffset
+            << " to "
+            << static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5) << ", " 
+            << static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5)
+            << "." << std::endl;
 #endif
-  
+
   //part of the experimental transparency support
-  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
-                         static_cast<int>(theRasterViewPort->topLeftPoint.y()),
+  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5),
+                         static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5),
                          myQImage,
                          paintXoffset,
                          paintYoffset);
@@ -1698,13 +1772,17 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, RasterVi
   }                                   
 
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer - painting image to canvas at " 
-            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+  std::cout << "QgsRasterLayer - painting image to canvas from " 
+            << paintXoffset << ", " << paintYoffset
+            << " to "
+            << static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5) << ", " 
+            << static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5)
+            << "." << std::endl;
 #endif
-  
+
   //part of the experimental transparency support
-  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
-                         static_cast<int>(theRasterViewPort->topLeftPoint.y()),
+  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5),
+                         static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5),
                          myQImage,
                          paintXoffset,
                          paintYoffset);
@@ -1938,13 +2016,17 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, R
   }                                   
 
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer - painting image to canvas at " 
-            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+  std::cout << "QgsRasterLayer - painting image to canvas from " 
+            << paintXoffset << ", " << paintYoffset
+            << " to "
+            << static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5) << ", " 
+            << static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5)
+            << "." << std::endl;
 #endif
-  
+
   //part of the experimental transparency support
-  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
-                         static_cast<int>(theRasterViewPort->topLeftPoint.y()),
+  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5),
+                         static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5),
                          myQImage,
                          paintXoffset,
                          paintYoffset);
@@ -1957,7 +2039,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, R
 * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
 * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
 */
-void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,
+	QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedMultiBandColor called" << std::endl;
@@ -2048,13 +2131,17 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
   }                                   
 
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer - painting image to canvas at " 
-            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+  std::cout << "QgsRasterLayer - painting image to canvas from " 
+            << paintXoffset << ", " << paintYoffset
+            << " to "
+            << static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5) << ", " 
+            << static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5)
+            << "." << std::endl;
 #endif
-  
+
   //part of the experimental transparency support
-  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
-                         static_cast<int>(theRasterViewPort->topLeftPoint.y()),
+  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5),
+                         static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5),
                          myQImage,
                          paintXoffset,
                          paintYoffset);
@@ -2062,13 +2149,15 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
   CPLFree(myGdalScanData);
 }
 
-void QgsRasterLayer::drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawMultiBandSingleBandGray(QPainter * theQPainter, RasterViewPort * theRasterViewPort,
+	QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
   //delegate to drawSingleBandGray!
   drawSingleBandGray(theQPainter, theRasterViewPort, theQgsMapToPixel, theBandNoInt);
 }
 
-void QgsRasterLayer::drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,                                                              QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawMultiBandSingleBandPseudoColor(QPainter * theQPainter, RasterViewPort * theRasterViewPort,
+	QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
 {
   //delegate to drawSinglePseudocolor!
   drawSingleBandPseudoColor(theQPainter, theRasterViewPort, theQgsMapToPixel, theBandNoInt);
@@ -2162,13 +2251,17 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
   }                                   
 
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer - painting image to canvas at " 
-            << paintXoffset << ", " << paintYoffset << "." << std::endl;
+  std::cout << "QgsRasterLayer - painting image to canvas from " 
+            << paintXoffset << ", " << paintYoffset
+            << " to "
+            << static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5) << ", " 
+            << static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5)
+            << "." << std::endl;
 #endif
-  
+
   //part of the experimental transparency support
-  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x()),
-                         static_cast<int>(theRasterViewPort->topLeftPoint.y()),
+  theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5),
+                         static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5),
                          myQImage,
                          paintXoffset,
                          paintYoffset);
@@ -2185,7 +2278,7 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, RasterViewPort *
 void QgsRasterLayer::filterLayer(QImage * theQImage)
 {
   //do stuff here....
-  return;
+  //return;
 }
 
 /**
@@ -2254,20 +2347,20 @@ const int QgsRasterLayer::getRasterBandNumber(QString theBandNameQString)
     RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
 #ifdef QGISDEBUG
 
-    std::cout << "myRasterBandStats.bandName: " << myRasterBandStats.bandName << "  :: theBandNameQString: " << theBandNameQString << std::endl;
+    std::cout << "myRasterBandStats.bandName: " << myRasterBandStats.bandName.local8Bit() << "  :: theBandNameQString: " << theBandNameQString.local8Bit() << std::endl;
 #endif
 
     if (myRasterBandStats.bandName == theBandNameQString)
     {
 #ifdef QGISDEBUG
-      std::cerr << "********** band " << myRasterBandStats.bandNoInt << " was found in getRasterBandNumber " << theBandNameQString << std::endl;
+      std::cerr << "********** band " << myRasterBandStats.bandNoInt << " was found in getRasterBandNumber " << theBandNameQString.local8Bit() << std::endl;
 #endif
 
       return myRasterBandStats.bandNoInt;
     }
   }
 #ifdef QGISDEBUG
-  std::cerr << "********** no band was found in getRasterBandNumber " << theBandNameQString << std::endl;
+  std::cerr << "********** no band was found in getRasterBandNumber " << theBandNameQString.local8Bit() << std::endl;
 #endif
 
   return 0;                     //no band was found
@@ -2652,7 +2745,7 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 void QgsRasterLayer::setRedBandName(QString theBandNameQString)
 {
 #ifdef QGISDEBUG
-  std::cout << "setRedBandName :  " << theBandNameQString << std::endl;
+  std::cout << "setRedBandName :  " << theBandNameQString.local8Bit() << std::endl;
 #endif
   //check if the band is unset
   if (theBandNameQString == tr("Not Set"))
@@ -2797,7 +2890,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap()
 QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer::getLegendQPixmap called (" << getDrawingStyleAsQString() << ")" << std::endl;
+  std::cout << "QgsRasterLayer::getLegendQPixmap called (" << getDrawingStyleAsQString().local8Bit() << ")" << std::endl;
 #endif
   //
   // Get the adjusted matrix stats
@@ -3291,7 +3384,7 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
   popMenu->insertItem(myTransparencyLabel);
 
   // XXX why GUI element here?
-  mTransparencySlider = new QSlider(0,255,5,0,QSlider::Horizontal,popMenu);
+  mTransparencySlider = new QSlider(0,255,5,255-transparencyLevelInt,QSlider::Horizontal,popMenu);
   mTransparencySlider->setTickmarks(QSlider::Both);
   mTransparencySlider->setTickInterval(25);
   mTransparencySlider->setTracking(false); //stop slider emmitting a signal until mouse released
@@ -3335,8 +3428,9 @@ void QgsRasterLayer::setTransparency(int theInt)
   //delegate rest to transparency slider
   if ( mTransparencySlider )
   {
-    mTransparencySlider->setValue(255-theInt);
+    mTransparencySlider->setValue(255-theInt);    
   }
+  transparencyLevelInt=theInt;
 } //  QgsRasterLayer::setTransparency(int theInt)
 
 
@@ -3434,28 +3528,20 @@ QString QgsRasterLayer::getMetadata()
   }
   myMetadataQString += "</td></tr>";
 
-  //layer coordinate system
-  if (gdalDataset->GetProjectionRef() != NULL)
-  {
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr("Layer Spatial Reference System: ");
-    myMetadataQString += "</td></tr>";
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
-    //note we inject some white space so the projection wraps better in the <td>
-    QString myProjectionQString = QString(gdalDataset->GetProjectionRef());
-    myProjectionQString = myProjectionQString.replace(QRegExp("\"")," \"");
-    myMetadataQString += myProjectionQString ;
-    myMetadataQString += "</td></tr>";
-  }
+
+   myMetadataQString += "<tr><td bgcolor=\"gray\">";
+   myMetadataQString += tr("Layer Spatial Reference System: ");
+   myMetadataQString += "</td></tr>";
+   myMetadataQString += "<tr><td bgcolor=\"white\">";
+   myMetadataQString += mCoordinateTransform->sourceSRS().proj4String();
+   myMetadataQString += "</td></tr>";
+
   // output coordinate system
-  QString myDestWKT = QgsProject::instance()->readEntry("SpatialRefSys","/WKT","");
   myMetadataQString += "<tr><td bgcolor=\"gray\">";
   myMetadataQString += tr("Project Spatial Reference System: ");
   myMetadataQString += "</td></tr>";
   myMetadataQString += "<tr><td bgcolor=\"white\">";
-  //note we inject some white space so the projection wraps better in the <td>
-  myDestWKT = myDestWKT.replace(QRegExp("\"")," \"");
-  myMetadataQString += myDestWKT ;
+  myMetadataQString +=  mCoordinateTransform->destSRS().proj4String();
   myMetadataQString += "</td></tr>";
 
   if (gdalDataset->GetGeoTransform(adfGeoTransform) == CE_None)
@@ -3624,8 +3710,9 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
 {
   emit setProgress(0,0);
   //first test if the file is writeable
-  QFile myQFile(dataSource);
-  if (!myQFile.open(IO_WriteOnly| IO_Append))
+  QFileInfo myQFile(dataSource);
+  
+  if (!myQFile.isWritable())
   {
 
     QMessageBox myMessageBox( tr("Write access denied"),
@@ -3638,17 +3725,33 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
 
     return;
   }
-  myQFile.close();
   // let the user know we're going to possibly be taking a while
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   GDALAllRegister();
   //close the gdal dataset and reopen it in read / write mode
   delete gdalDataset;
-  gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_Update);
+  gdalDataset = (GDALDataset *) GDALOpen(dataSource.local8Bit(), GA_Update);
+  
+  // if the dataset couldn't be opened in read / write mode, tell the user
+  if (!gdalDataset) {
+    emit setProgress(0,0);
+    QApplication::restoreOverrideCursor();
+    QMessageBox myMessageBox( tr("Building pyramids failed."),
+			      tr("The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again."),
+			      QMessageBox::Warning,
+			      QMessageBox::Ok,
+			      QMessageBox::NoButton,
+			      QMessageBox::NoButton );
+    myMessageBox.exec();
+    gdalDataset = (GDALDataset *) GDALOpen(dataSource.local8Bit(), GA_ReadOnly);
+    return;
+  }
+
   //
   // Iterate through the Raster Layer Pyramid Vector, building any pyramid
   // marked as exists in eaxh RasterPyramid struct.
   //
+  CPLErr myError; //in case anything fails
   int myCountInt=1;
   int myTotalInt=theRasterPyramidList.count();
   RasterPyramidList::iterator myRasterPyramidIterator;
@@ -3675,53 +3778,58 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
       * pfnProgress : a function to call to report progress, or NULL.
       * pProgressData : application data to pass to the progress function.
       */
-#ifdef QGISDEBUG
       //build the pyramid and show progress to console
-      if(theResamplingMethod==tr("Average Magphase"))
+      try 
       {
-        gdalDataset->BuildOverviews( "MODE", 1, myOverviewLevelsIntArray, 0, NULL,
-                                     GDALTermProgress, NULL );
-      }
-      else if(theResamplingMethod==tr("Average"))
 
-      {
-        gdalDataset->BuildOverviews( "AVERAGE", 1, myOverviewLevelsIntArray, 0, NULL,
-                                     GDALTermProgress, NULL );
-      }
-      else // fall back to nearest neighbor
-      {
-        gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
-                                     GDALTermProgress, NULL );
-      }
-#else
-      //build the pyramid and show progress to console
-      if(theResamplingMethod==tr("Average Magphase"))
-      {
-        gdalDataset->BuildOverviews( "MODE", 1, myOverviewLevelsIntArray, 0, NULL,
+        //build the pyramid and show progress to console
+        if(theResamplingMethod==tr("Average Magphase"))
+        {
+           myError = gdalDataset->BuildOverviews( "MODE", 1, myOverviewLevelsIntArray, 0, NULL,
                                      GDALDummyProgress, NULL );
-      }
-      else if(theResamplingMethod==tr("Average"))
+        }
+        else if(theResamplingMethod==tr("Average"))
 
-      {
-        gdalDataset->BuildOverviews( "AVERAGE", 1, myOverviewLevelsIntArray, 0, NULL,
+        {
+          myError = gdalDataset->BuildOverviews( "AVERAGE", 1, myOverviewLevelsIntArray, 0, NULL,
                                      GDALDummyProgress, NULL );
-      }
-      else // fall back to nearest neighbor
-      {
-        gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
+        }
+        else // fall back to nearest neighbor
+        {
+          myError = gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
                                      GDALDummyProgress, NULL );
+        }
+        if (myError == CE_Failure || CPLGetLastErrorNo()==CPLE_NotSupported  )
+        {
+           //something bad happenend
+           //QString myString = QString (CPLGetLastError());
+           QApplication::restoreOverrideCursor();
+           QMessageBox myMessageBox( tr("Building pyramids failed."),
+                              tr("Building pyramid overviews is not supported on this type of raster."),
+                              QMessageBox::Warning,
+                              QMessageBox::Ok,
+                              QMessageBox::NoButton,
+                              QMessageBox::NoButton );
+            myMessageBox.exec();
+            delete gdalDataset;
+            gdalDataset = (GDALDataset *) GDALOpen(dataSource.local8Bit(), GA_ReadOnly);
+            emit setProgress(0,0);
+            return;
+        }
+        myCountInt++;
+        //make sure the raster knows it has pyramids
+        hasPyramidsFlag=true;
       }
-#endif
-      myCountInt++;
-      //make sure the raster knows it has pyramids
-      hasPyramidsFlag=true;
+      catch (CPLErr)
+      {
+         std::cout << "Pyramid overview building failed!" << std::endl;
+      }
     }
-
   }
   std::cout << "Pyramid overviews built" << std::endl;
   //close the gdal dataset and reopen it in read only mode
   delete gdalDataset;
-  gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_ReadOnly);
+  gdalDataset = (GDALDataset *) GDALOpen(dataSource.local8Bit(), GA_ReadOnly);
   emit setProgress(0,0);
   QApplication::restoreOverrideCursor();
 }
@@ -3836,7 +3944,7 @@ void QgsRasterLayer::readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *t
       double min, max;
       int min_c1, min_c2, min_c3, max_c1, max_c2, max_c3;
 
-      if ( sscanf((char*)metadataTokens[1].ascii(),"%lf %lf %d %d %d %d %d %d",
+      if ( sscanf(metadataTokens[1].local8Bit(), "%lf %lf %d %d %d %d %d %d",
                   &min, &max, &min_c1, &min_c2, &min_c3, &max_c1, &max_c2, &max_c3) != 8 )
       {
         continue;
@@ -3889,6 +3997,20 @@ void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, RasterViewPort *viewP
   int size = GDALGetDataTypeSize ( type ) / 8;
 
   void *data = CPLMalloc ( size * viewPort->drawableAreaXDimInt * viewPort->drawableAreaYDimInt );
+
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer::readData: calling RasterIO with "
+                                     << GF_Read
+                             << ", " << viewPort->rectXOffsetInt
+                             << ", " << viewPort->rectYOffsetInt
+                             << ", " << viewPort->clippedWidthInt
+                             << ", " << viewPort->clippedHeightInt
+                             << ", " << data
+                             << ", " << viewPort->drawableAreaXDimInt
+                             << ", " << viewPort->drawableAreaYDimInt
+                             << ", " << type
+            << std::endl;
+#endif
 
   CPLErr myErr = gdalBand->RasterIO ( GF_Read,
                                       viewPort->rectXOffsetInt,
@@ -3989,6 +4111,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   snode = mnl.namedItem("redBandNameQString");
   myElement = snode.toElement();
   setRedBandName(myElement.text());
+
   snode = mnl.namedItem("greenBandNameQString");
   myElement = snode.toElement();
   setGreenBandName(myElement.text());
@@ -4001,14 +4124,14 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   myElement = snode.toElement();
   setGrayBandName(myElement.text());
 
-  const char * sourceNameStr = source(); // debugger probe
+  const char * sourceNameStr = source().local8Bit(); // debugger probe
 
   if ( ! readFile( source() ) )   // Data source name set in
     // QgsMapLayer::readXML()
   {
     std::cerr << __FILE__ << ":" << __LINE__
     << " unable to read from raster file "
-    << source() << "\n";
+    << source().local8Bit() << "\n";
 
     return false;
   }
@@ -4028,7 +4151,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
   if ( mapLayerNode.isNull() || ("maplayer" != mapLayerNode.nodeName()) )
   {
-    const char * nn = mapLayerNode.nodeName(); // debugger probe
+    const char * nn = mapLayerNode.nodeName().local8Bit(); // debugger probe
 
     qDebug( "QgsRasterLayer::writeXML() can't find <maplayer>" );
 
@@ -4260,7 +4383,7 @@ void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool
     myRasterBandStats.histogramVector->clear();
     myRasterBandStats.histogramEstimatedFlag=theHistogramEstimatedFlag;
     myRasterBandStats.histogramOutOfRangeFlag=theIgnoreOutOfRangeFlag;
-    int myHistogramArray[theBinCountInt];
+    int *myHistogramArray = new int[theBinCountInt];
 
 
     /*

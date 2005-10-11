@@ -68,10 +68,10 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     QString connInfo();
     //! Add the layer selected when user double-clicks the mouse
     void addLayer(QListBoxItem *item);
-    //! Return the name of the selected encoding (e.g. UTF-8, ISO-8859-1, etc.)
-    QString encoding();
+
     public slots:
       void setSql(QListViewItem *);
+      void showHelp();
  private:
 
     typedef std::pair<QString, QString> geomPair;
@@ -85,6 +85,7 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     //! Pointer to the qgis application mainwindow
     QgisApp *qgisApp;
     PGconn *pd;
+    static const int context_id = 1244423922;
 };
 
 

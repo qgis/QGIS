@@ -278,6 +278,8 @@ public slots:
      */
     void recalculateExtents();
 
+    /** A simple helper method to find out if on the fly projections are enabled or not */
+    bool projectionsEnabled();
 
 signals:
     /** Let the owner know how far we are with render operations */
@@ -323,9 +325,6 @@ signals:
     void stopZoom();
 
 private:
-    /** A simple helper method to find out if on the fly projections are enabled or not */
-    bool projectionsEnabled();
-    
     /// this class is non-copyable
     /**
        @note
@@ -368,6 +367,12 @@ private:
        to mDigitMovePoint using Qt::XorROP. The settings for QPen are read from the QgsProject singleton*/
     void drawLineToDigitisingCursor(QPainter* paint, bool last = true);
 
+    //! Overridden key press event
+    void keyPressEvent(QKeyEvent * e);
+
+    //! Overridden key release event
+    void keyReleaseEvent(QKeyEvent * e);
+
     //! Overridden mouse move event
     void mouseMoveEvent(QMouseEvent * e);
 
@@ -396,8 +401,17 @@ private:
     //! Updates the z order for layers on the map
     void updateZpos();
 
+    //! Ends pan action and redraws the canvas.
+    void panActionEnd(QPoint releasePoint);
 
+    //! Called when mouse is moving and pan is activated
+    void panAction(QMouseEvent * event);
 
+    //! Helper function to inverse project a point if projections
+    // are enabled. Failsafe, returns the sent point if anything fails.
+    // @whenmsg is a part fo the error message.
+
+    QgsPoint maybeInversePoint(QgsPoint point, const char whenmsg[]);
     //! detrmines whether the user can interact with the canvas using a mouse
     //(useful for locking the overview canvas)
     bool mUserInteractionAllowed;
@@ -414,6 +428,7 @@ private:
 
     //! Measure tool
     QgsMeasure *mMeasure;
+
 }; // class QgsMapCanvas
 
 #endif

@@ -10,7 +10,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>442</width>
+            <width>525</width>
             <height>461</height>
         </rect>
     </property>
@@ -202,8 +202,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">
@@ -216,8 +216,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">
@@ -230,8 +230,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">
@@ -244,8 +244,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">
@@ -258,8 +258,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">
@@ -272,8 +272,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">
@@ -286,8 +286,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">
@@ -300,8 +300,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">
@@ -314,8 +314,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">
@@ -328,8 +328,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">
@@ -342,8 +342,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">
@@ -356,8 +356,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">
@@ -370,8 +370,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">
@@ -384,8 +384,8 @@
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>50</width>
-                            <height>25</height>
+                            <width>74</width>
+                            <height>32767</height>
                         </size>
                     </property>
                     <property name="text">

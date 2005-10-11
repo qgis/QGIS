@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsGrassEditBase</class>
 <widget class="QMainWindow">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>419</width>
-            <height>272</height>
+            <width>462</width>
+            <height>278</height>
         </rect>
     </property>
     <property name="caption">
@@ -432,6 +432,9 @@
         <property name="text">
             <string>ActionGroup</string>
         </property>
+        <property name="menuText">
+            <string>ActionGroup</string>
+        </property>
         <property name="usesDropDown">
             <bool>false</bool>
         </property>
@@ -468,6 +471,9 @@
             <property name="text">
                 <string>New point</string>
             </property>
+            <property name="menuText">
+                <string>New point</string>
+            </property>
             <property name="accel">
                 <string>F1</string>
             </property>
@@ -483,6 +489,9 @@
                 <iconset>image3</iconset>
             </property>
             <property name="text">
+                <string>New boundary</string>
+            </property>
+            <property name="menuText">
                 <string>New boundary</string>
             </property>
             <property name="accel">
@@ -502,6 +511,9 @@
             <property name="text">
                 <string>New centroid</string>
             </property>
+            <property name="menuText">
+                <string>New centroid</string>
+            </property>
             <property name="accel">
                 <string>F4</string>
             </property>
@@ -517,6 +529,9 @@
                 <iconset>image5</iconset>
             </property>
             <property name="text">
+                <string>Move vertex</string>
+            </property>
+            <property name="menuText">
                 <string>Move vertex</string>
             </property>
             <property name="accel">
@@ -536,6 +551,9 @@
             <property name="text">
                 <string>Add vertex</string>
             </property>
+            <property name="menuText">
+                <string>Add vertex</string>
+            </property>
             <property name="accel">
                 <string>F6</string>
             </property>
@@ -551,6 +569,9 @@
                 <iconset>image7</iconset>
             </property>
             <property name="text">
+                <string>Delete vertex</string>
+            </property>
+            <property name="menuText">
                 <string>Delete vertex</string>
             </property>
             <property name="accel">
@@ -570,6 +591,9 @@
             <property name="text">
                 <string>Split line</string>
             </property>
+            <property name="menuText">
+                <string>Split line</string>
+            </property>
             <property name="accel">
                 <string>F10</string>
             </property>
@@ -585,6 +609,9 @@
                 <iconset>image9</iconset>
             </property>
             <property name="text">
+                <string>Move line</string>
+            </property>
+            <property name="menuText">
                 <string>Move line</string>
             </property>
             <property name="accel">
@@ -604,6 +631,9 @@
             <property name="text">
                 <string>Delete line</string>
             </property>
+            <property name="menuText">
+                <string>Delete line</string>
+            </property>
             <property name="accel">
                 <string>F11</string>
             </property>
@@ -621,12 +651,15 @@
             <property name="text">
                 <string>Edit attributes</string>
             </property>
+            <property name="menuText">
+                <string>Edit attributes</string>
+            </property>
         </action>
     </actiongroup>
 </actions>
 <images>
     <image name="image0">
-        <data format="XPM.GZ" length="676">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523232520022130543251d2e253d856405bffcbc54103b09c8564e340041103711c44d4b4b4c3535077195215c10006bc40a6827a30c0258649461005d4659194d8a0819dca6e925c2001e99a4a424ec32204d49483289b4934171016e191457a38535aa475162014582bc38adb5e6020039de90ca</data>
+        <data format="XPM.GZ" length="2942">789c3d96c95224390c86ef3c4545ebd631a1cecdb9c4c41c8066df1be80626e6e0b4d35040155014343031ef3e2afda2020ef5a594b2f45b96f3dbd7d1c5f1c1e8ebb795e7b99f8fc328dcf8d9e86b7c994cdefffee7af7f57bee4f568f15fb951f1e58f952f27f351181d3e4c8705300990cff3266b9527ca55eeb3a0bcbae4b8603f557679ca33b5df2fb813ca9cdac7c63998bdfa679fec27c64596abfd78c9b03f2cf329174c9572210cbb37eec074bee446f9c0b8cf3ae52dcb37a21efaf8cc3fd3fa69062e72d44377ca4d51e62a1679e32ad77cf8c3b8c9a157a1dc167daeebf1adb22f8602faa81e3e4838f0cd92353edf195785ea416ec9b05f2f19eb27635740dfa83c946d81f507e524f65a39187fda4f16dc67652a9272af9c575989fcd6958b72b0fa4e955b5714e887efc66581fed950ee5c5b623fcf947b3794ba1fbca91c5c28918fee471febac44fcdd0587acee2becb7e61b8a3a56f0df331e2af527ed9f503679e5d5aefb1f2a791ff5ed8365c37af59f1b5795f62f1f18bb0afbdf28bba6ae540f4ac68d831eda8fa196f550ffa171e7b01f57c6bdab944be546de87fdd1b883dddf2f19fd7c632c4baa7f663c8009feadc443fc27e360fc63c9787f663c38e8f50a6e73a77a111b170ef5409f4eec382febc6aec679181bd735f6f759d98b3ff6ef72c9d0f7d5b8417cda316e6b9ca747e3ae863ebf8dbdc37efc5c32f6635b39487cf4db8bb1b37a6a63f3e74e39ca7a88ffa63cb4094cbf9453dbd7fabe47bfa54e3a4ced645cd5e8a77cc13113869e4fc64dadf5929ef79877ae46bfbd1bf70dead5fe8f45171bf4b3d613cb2e6f90cf9e71d760ff8e8c077b5feb899530f43803fbbc81deaa6f745d89f8746afce95f807dd1428f7763077fdf1bd7589ff4fcc4a64b0dfae10dec33c4f3b7c6aed5fc3c2d19f3b834ae8db55f622bf5419f55e3be81ded0b7f339fc7d326e5bf5f7daafd1fbae85de7afe622ff5c0ff0e2ce31ef352e7670c62c77e6d18870ee7790d2ce302fe7a9fc5d88b821a4fe7e990cb3847fcc1d875e837d56b287c0f7fba00f725ecacfd3894920ff4bc34761dead7793e3861addf1b4b03430f9dcf4317320ffdf57c0c21b81ef783cedf2186a6477f20bf21d43df2d17992b2201229ebfd9af2907a9c47ad2f15c2e81fcd3f9531eb717ef4fca5265601f78bdebfa98d4d809e3a6f52178788f9a0fd9a7c4c11f9e93c4c61a822f6bf558e4313a18fcedb948634c03e05cb758cfe7d5932f45b33ce8d1f8c8b01f9ec1abb01f3ac35962b4fed99714a38cfbf96acf59ecc99d873cf81230f9cf89a6f78ccb77cc7f73c3999eb3b24d6293ff0233ff18c9f79ce2ffccabff98ddff98357d5c7f31aaff377dee04ddee26ddee15ddee37d3ee0433ee263dcbdfc834ff98ccff927ffb2bf0bbee42bce3867f463e052629cabad62c73537f2abe58e9888a061943c361731a8a74091064a742d744363baa53b7c07f08cee1731c463c20d4d17abd083783dd213cdf02d21b56ccb93679ad09ca6f4221eaff45b9ebcd13b7de0fb43aadd9127abe291e885d6c4639dbecb930ddaa42df5b9e117da5ed44289afc4e3413c7668577cf6689f0ed4672c8aed2d6aa14359e5888ec5e344e8079dd2199dabcf2dfde47d525dc4e3822ee94a7e6594534125e97d478e6a6aa4968e8e3e35a4563c3acf5ebebb34cebdef79b10ad3d8071ffd20799c52e193bff6377eac3e13d9b923ce45d35bd1e35d6ad9a7337febeffcbd9ff8a9f5c62a1f73419eee68461fb44507744e957ff0633f95def8efcf95ff0103869040</data>
     </image>
     <image name="image1">
         <data format="XPM.GZ" length="646">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232325200210543251d2e253d856405bffcbc54105b19c85636360041b014563014659471c92823eb5156c621a30c460809b88c329c4093514688c028423228c640796832480e01cba0b817c6c1908103bac542ad351700afdf726b</data>

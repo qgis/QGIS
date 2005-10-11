@@ -4,11 +4,15 @@
 
 TEMPLATE = lib
 INCLUDEPATH += . ..\..\src \
-          $(GEOS)\include
-LIBS += ..\..\src\libqgis.lib \
-        $(GDAL)\lib\gdal_i.lib \
-        $(GEOS)\lib\geos.lib \
-        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib 
+              $(WINSDK)\Include \
+              $(FWTOOLS)\include
+LIBS += $(FWTOOLS)\lib\gdal_i.lib \
+        $(FWTOOLS)\lib\proj_i.lib \
+        ..\..\src\libqgis.lib \
+        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib \
+        ..\..\widgets\projectionselector\projectionselector.lib \
+        $(SQLITE3)\sqlite3.lib \
+        $(GEOS)\lib\geos.lib 
 CONFIG += qt dll thread
 DLLDESTDIR= ..\..\win_build\lib\qgis
 

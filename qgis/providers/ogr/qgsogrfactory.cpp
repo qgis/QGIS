@@ -50,9 +50,9 @@ void QgsOGRFactory::setURI(QString uri)
   OGRRegisterAll();
 
   // make connection to the data source
-  std::cerr << "Data source uri is " << dataSourceURI << std::endl;
+  std::cerr << "Data source uri is " << dataSourceURI.local8Bit() << std::endl;
   // try to open for read
-  ogrDS = OGRSFDriverRegistrar::Open((const char *) dataSourceURI, FALSE, &ogrDriver);
+  ogrDS = OGRSFDriverRegistrar::Open(dataSourceURI.local8Bit(), FALSE, &ogrDriver);
   if(ogrDS != NULL)
   {
 #ifdef QGISDEBUG
@@ -88,9 +88,9 @@ QStringList QgsOGRFactory::getLayers()
     {
       lyr = ogrDS->GetLayer(i);
       lyrDef = lyr->GetLayerDefn();
-      std::cerr << "Layer " << i << " is: " << lyrDef->GetName() << "\n";
+      std::cerr << "Layer " << i << " is: " << lyrDef->GetName().local8Bit() << "\n";
       //TODO append extension to name, so that it can be opened properly
-      lyrList.append(lyrDef->GetName());
+      lyrList.append(lyrDef->GetName().local8Bit());
     }
   }
   return lyrList;
@@ -103,7 +103,7 @@ bool QgsOGRFactory::copy(QString oldName, QString newName)
   
   if (valid)
   {
-    oldLyr = ogrDS->GetLayerByName((const char*) oldName);
+    oldLyr = ogrDS->GetLayerByName(oldName.local8Bit());
     std::cout << "datasource is " << ogrDriver->GetName() << std::endl;
     if (QString::compare(ogrDriver->GetName(),"ESRI Shapefile")==0) {
       std::cout << "Copy shapefile" << std::endl;

@@ -168,7 +168,7 @@ void QgsGraMaExtensionWidget::selectMarker()
     if(mdialog.exec()==QDialog::Accepted)
     {
 	QString svgfile=mdialog.selectedMarker();
-	((QPushButton *) sender())->setName(svgfile);
+	((QPushButton *) sender())->setName(svgfile.local8Bit());
 	//draw the SVG-Image on the button
 	QPicture pic;
 
@@ -185,7 +185,7 @@ void QgsGraMaExtensionWidget::selectMarker()
 	}
 
 #ifdef QGISDEBUG	
-	qWarning("indexnumber: "+QString::number(indexnumber));
+	qWarning(("indexnumber: "+QString::number(indexnumber)).local8Bit());
 #endif
 	adjustMarker(indexnumber);
     }

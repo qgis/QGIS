@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsDlgPgBufferBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>520</width>
-            <height>314</height>
+            <height>320</height>
         </rect>
     </property>
     <property name="caption">
@@ -321,21 +321,9 @@
                         <cstring>txtBufferedLayerName</cstring>
                     </property>
                 </widget>
-                <widget class="QSpinBox" row="0" column="3">
+                <widget class="QLineEdit" row="0" column="3">
                     <property name="name">
-                        <cstring>spinBufferDistance</cstring>
-                    </property>
-                    <property name="buttonSymbols">
-                        <enum>UpDownArrows</enum>
-                    </property>
-                    <property name="maxValue">
-                        <number>100000000</number>
-                    </property>
-                    <property name="lineStep">
-                        <number>10</number>
-                    </property>
-                    <property name="value">
-                        <number>1</number>
+                        <cstring>txtBufferDistance</cstring>
                     </property>
                 </widget>
             </grid>

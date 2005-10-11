@@ -97,6 +97,21 @@ public:
 	Postscript   // Fonts need different scaling!
     };
 
+    /** \brief Font scaling factor for PostScript output
+     *
+     *  For output to Postscript the font must be scaled. But how?  
+     *  The factor is an empirical value. In any case, each font scales
+     *  in in different way even if painter.scale() is used instead of
+     *  font size!!! -> Postscript is never exactly the same as in preview.
+     */
+    static const double psFontScaleFactor() {
+#ifdef Q_OS_MACX
+    return 1.85;
+#else
+    return 2.45; // I have no idea why 2.45 - it is an empirical value
+#endif
+    }
+
     /** \brief Composition ID */
     int id ( void );
 
@@ -288,7 +303,7 @@ private:
     /** \brief Temporary item used as pointer to new objecs which must be drawn */ 
     QCanvasItem *mNewCanvasItem; 
 
-    /** \breif Resolution in DPI */
+    /** \brief Resolution in DPI */
     int mResolution; 
 
     /** \brief canvas scale */

@@ -15,6 +15,7 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include <iostream>
 #include "qgsfield.h"
 
 #include <qstring.h>

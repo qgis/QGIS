@@ -174,6 +174,7 @@ class QgsVectorDataProvider : public QgsDataProvider
       virtual bool saveAsShapefile()
       {
         // NOP by default
+        return false;
       }
 
       /**Creates a spatial index on the datasource (if supported by the provider type). Returns true in case of success*/
@@ -185,7 +186,7 @@ class QgsVectorDataProvider : public QgsDataProvider
       const std::list<QString>& nonNumericalTypes(){return mNonNumericalTypes;}
       const std::list<QString>& numericalTypes(){return mNumericalTypes;}
 
-      void setEncoding(const QString& e);
+      virtual void setEncoding(const QString& e);
       QString encoding() const;
 
       /*! Indicates if the provider does its own coordinate transforms

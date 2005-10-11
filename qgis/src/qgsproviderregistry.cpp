@@ -31,7 +31,7 @@ typedef QString description_t();
 typedef bool isprovider_t();
 
 QgsProviderRegistry *QgsProviderRegistry::_instance = 0;
-QgsProviderRegistry *QgsProviderRegistry::instance(const char *pluginPath)
+QgsProviderRegistry *QgsProviderRegistry::instance(QString pluginPath)
 {
   if (_instance == 0)
     {
@@ -40,7 +40,7 @@ QgsProviderRegistry *QgsProviderRegistry::instance(const char *pluginPath)
   return _instance;
 }
 
-QgsProviderRegistry::QgsProviderRegistry(const char *pluginPath)
+QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
 {
 // At startup, examine the libs in the qgis/lib dir and store those that
 // are a provider shared lib
@@ -59,7 +59,7 @@ QString libDir = baseDir + "/lib"; */
   QDir pluginDir(libDir, "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
 #endif
 #ifdef QGISDEBUG
-  std::cerr << "Checking " << libDir << " for provider plugins" << std::endl;
+  std::cerr << "Checking " << libDir.local8Bit() << " for provider plugins" << std::endl;
 #endif
   if (pluginDir.count() == 0)
     {
@@ -77,7 +77,7 @@ QString libDir = baseDir + "/lib"; */
           if (loaded)
             {
 #ifdef QGISDEBUG		    
-              std::cout << "Checking  " << myLib->library() << std::endl;
+              std::cout << "Checking  " << myLib->library().local8Bit() << std::endl;
 #endif
               // get the description and the key for the provider plugin
 
@@ -93,16 +93,16 @@ QString libDir = baseDir + "/lib"; */
                       providerkey_t *pKey = (providerkey_t *) myLib->resolve("providerKey");
                       if (pDesc && pKey)
                         {
-							const char *foo = pKey();
+							const char *foo = pKey().local8Bit();
                           // add this provider to the provider map
                           provider[pKey()] = new QgsProviderMetadata(pKey(), pDesc(), myLib->library());
 #ifdef QGISDEBUG
-                          std::cout << "Loaded " << pDesc() << std::endl;
+                          std::cout << "Loaded " << pDesc().local8Bit() << std::endl;
 #endif
                       } else
                         {
                           std::cout << myLib->
-                            library() << " Unable to find one of the required provider functions:\n\tproviderKey() or description()" <<
+                            library().local8Bit() << " Unable to find one of the required provider functions:\n\tproviderKey() or description()" <<
                             std::endl;
                         }
                     }

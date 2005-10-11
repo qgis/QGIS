@@ -28,6 +28,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsmapcanvas.h"
 #include "qgsmeasure.h"
+#include "qgscontexthelp.h"
 
 QgsMeasure::QgsMeasure( QgsMapCanvas *mc, QWidget *parent, const char * name, WFlags f)
            :QgsMeasureBase( parent, name, f)
@@ -216,4 +217,9 @@ void QgsMeasure::saveWindowLocation()
   settings.writeEntry("/qgis/Windows/Measure/w", s.width());
   settings.writeEntry("/qgis/Windows/Measure/h", s.height());
 } 
+
+void QgsMeasure::showHelp()
+{
+  QgsContextHelp::run(context_id);
+}
 

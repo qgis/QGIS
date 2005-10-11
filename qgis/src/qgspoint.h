@@ -32,6 +32,9 @@ class QgsPoint
   QgsPoint()
   {}
     
+  /*! Create a point from another point */
+  QgsPoint(const QgsPoint& p);
+
   /*! Create a point from x,y coordinates
    * @param x x coordinate
    * @param y y coordinate
@@ -103,8 +106,11 @@ class QgsPoint
   //! Inequality operator
   bool operator!=(const QgsPoint &other);
     
-  /// Assignment
+  //! Assignment
   QgsPoint & operator=(const QgsPoint &other);
+
+  //! Multiply x and y by the given value
+  void multiply(const double& scalar);
   
  private:
 
@@ -127,8 +133,9 @@ inline bool operator==(const QgsPoint &p1, const QgsPoint &p2)
 
 inline std::ostream& operator << (std::ostream& os, const QgsPoint &p)
 {
-   os << p.stringRep();
-   return os;
+  // Use Local8Bit for printouts
+  os << p.stringRep().local8Bit();
+  return os;
 }
 
   

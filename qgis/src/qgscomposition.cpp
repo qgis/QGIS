@@ -742,7 +742,7 @@ bool QgsComposition::readSettings ( void )
 
   // First maps because they can be used by other objects
   for ( QStringList::iterator it = el.begin(); it != el.end(); ++it ) {
-    std::cout << "key: " << (*it).ascii() << std::endl;
+    std::cout << "key: " << (*it).local8Bit() << std::endl;
 
     QStringList l = QStringList::split( '_', (*it) );
     if ( l.size() == 2 ) {
@@ -760,7 +760,7 @@ bool QgsComposition::readSettings ( void )
   }
 
   for ( QStringList::iterator it = el.begin(); it != el.end(); ++it ) {
-    std::cout << "key: " << (*it).ascii() << std::endl;
+    std::cout << "key: " << (*it).local8Bit() << std::endl;
 
     QStringList l = QStringList::split( '_', (*it) );
     if ( l.size() == 2 ) {

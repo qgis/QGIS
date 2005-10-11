@@ -5,9 +5,13 @@
 ** update this file, preserving your code. Create an init() slot in place of
 ** a constructor, and a destroy() slot in place of a destructor.
 *****************************************************************************/
+#ifdef Q_OS_MACX
+#include <ApplicationServices/ApplicationServices.h>
+#else
 #include <qsettings.h>
 #include <qprocess.h>
 #include <qinputdialog.h>
+#endif
 #include <qfile.h>
 #include <qstringlist.h>
 #include <qtextstream.h>
@@ -29,7 +33,7 @@ void QgsAbout::init()
 
   QFile file(appPath + "/doc/AUTHORS" );
 #ifdef QGISDEBUG
-  printf ("Readng authors file " + file.name() + ".............................................\n");
+  printf (("Reading authors file " + file.name() + ".............................................\n").local8Bit());
 #endif
   if ( file.open( IO_ReadOnly ) ) {
     QTextStream stream( &file );
@@ -41,7 +45,7 @@ void QgsAbout::init()
       //ignore the line if it starts with a hash....
       if (line.left(1)=="#") continue;
 #ifdef QGISDEBUG 
-      printf( "Contributor: %3d: %s\n", i++, line.latin1() );
+      printf( "Contributor: %3d: %s\n", i++, (const char *)line.local8Bit() );
 #endif 
       QStringList myTokens = QStringList::split("\t",line);
       //printf ("Added contributor name to listbox: %s ",myTokens[0]);
@@ -51,7 +55,7 @@ void QgsAbout::init()
       QString authorName = myTokens[0].replace(" ","_");
 
       QString myString =QString(appPath + "/images/developers/") + authorName + QString(".jpg");
-      printf ("Loading mug: %s\n", myString.ascii()); 
+      printf ("Loading mug: %s\n", myString.local8Bit()); 
       QPixmap *pixmap = new QPixmap(myString);
       mugs[myTokens[0]] = *pixmap;
       */
@@ -91,11 +95,11 @@ void QgsAbout::showAuthorPic( QListBoxItem * theItem)
   QString myString = listBox1->currentText();
   myString = myString.replace(" ","_");
 #ifdef QGISDEBUG 
-  printf ("Loading mug: %s", myString.ascii()); 
+  printf ("Loading mug: %s", (const char *)myString.local8Bit()); 
 #endif 
   myString =QString(appPath + "/images/developers/") + myString + QString(".jpg");
 #ifdef QGISDEBUG 
-  printf ("Loading mug: %s\n", myString.ascii()); 
+  printf ("Loading mug: %s\n", (const char *)myString.local8Bit()); 
 #endif 
   QPixmap *pixmap = new QPixmap(myString);
   pixAuthorMug->setPixmap(*pixmap);
@@ -117,6 +121,18 @@ void QgsAbout::qgisHomePage()
 }
 void QgsAbout::openUrl(QString url)
 {
+#ifdef Q_OS_MACX
+    /* Use Mac OS X Launch Services which uses the user's default browser
+     * and will just open a new window if that browser is already running.
+     * QProcess creates a new browser process for each invocation and expects a
+     * commandline application rather than a bundled application.
+     */
+    CFURLRef urlRef = CFURLCreateWithBytes(kCFAllocatorDefault,
+                                           reinterpret_cast<const UInt8*>(url.utf8().data()), url.length(),
+                                           kCFStringEncodingUTF8, NULL);
+    OSStatus status = LSOpenCFURLRef(urlRef, NULL);
+    CFRelease(urlRef);
+#else
   QSettings settings;
   QString browser = settings.readEntry("/qgis/browser");
   if (browser.length() == 0)
@@ -149,6 +165,7 @@ void QgsAbout::openUrl(QString url)
     helpProcess->addArgument(url);
     helpProcess->start();
   }
+#endif
   /*  mHelpViewer = new QgsHelpViewer(this,"helpviewer",false);
       mHelpViewer->showContent(mAppDir +"/share/doc","index.html");
       mHelpViewer->show(); */

@@ -29,6 +29,7 @@
 #include <qprogressdialog.h>
 #include <qmemarray.h>
 #include <qapplication.h>
+#include <qregexp.h>
 #include <qfile.h>
 #include <qsettings.h>
 #include <qpixmap.h>
@@ -37,7 +38,7 @@
 #include "qgsspit.h"
 #include "qgsconnectiondialog.h"
 #include "qgseditreservedwordsdialog.h"
-#include "qgsmessageviewer.h"
+#include <qgsmessageviewer.h>
 #include "spiticon.xpm"
 #include "spit_icons.h"
 
@@ -200,7 +201,9 @@ void QgsSpit::addFile()
           tblShapefiles->setText( row, ColFILENAME, name );
           tblShapefiles->setText( row, ColFEATURECLASS, featureClass );
           tblShapefiles->setText( row, ColFEATURECOUNT, QString( "%1" ).arg( file->getFeatureCount() ) );
-          tblShapefiles->setText( row, ColDBRELATIONNAME, file->getTable() );
+          // Sanitize the relation name to make it pg friendly
+          QString relName = file->getTable().replace(QRegExp("\\s"), "_");
+          tblShapefiles->setText( row, ColDBRELATIONNAME, relName );
           QComboTableItem* schema = new QComboTableItem( tblShapefiles, schema_list );
           schema->setCurrentItem( cmbSchema->currentText() );
           tblShapefiles->setItem( row, ColDBSCHEMA, schema );
@@ -274,7 +277,8 @@ void QgsSpit::addFile()
       error2 += "----------------------------------------------------------------------------------------";
       error2 += "\n" + tr("REASON: One or both of the Shapefile files (*.dbf, *.shx) missing") + "\n\n";
     }
-    QgsMessageViewer * e = new QgsMessageViewer( this, "error" );
+    QgsMessageViewer * e = new QgsMessageViewer( this );
+    e->setCaption( tr("Error" ));
     e->setMessage( message + error1 + error2 );
     e->exec();
   }
@@ -382,7 +386,8 @@ void QgsSpit::helpInfo()
                tr("[Import] - import the current shapefiles in the list") + "\n" ) + QString(
                tr("[Quit] - quit the program\n") ) + QString(
                tr("[Help] - display this help dialog") + "\n\n" );
-  QgsMessageViewer * e = new QgsMessageViewer( this, "HelpMessage" );
+  QgsMessageViewer * e = new QgsMessageViewer( this);
+  e->setCaption(tr( "HelpMessage" ));
   e->setMessage( message );
   e->exec();
 }

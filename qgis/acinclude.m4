@@ -198,7 +198,6 @@ AC_CHECK_PROG(QEMBED, qembed, qembed)
 QT_CXXFLAGS="-I$QTINC"
 QT_IS_EMBEDDED="no"
 # On unix, figure out if we're doing a static or dynamic link
-
 case "${host}" in
   *-cygwin)
     AC_DEFINE_UNQUOTED(WIN32, "", Defined if on Win32 platform)
@@ -313,6 +312,15 @@ case "${host}" in
     QT_LIBS="$QT_LIB"
     if test $QT_IS_STATIC = yes && test $QT_IS_EMBEDDED = no; then
       QT_LIBS="$QT_LIBS -L$x_libraries -lXext -lX11 -lm -lSM -lICE -ldl -ljpeg"
+    fi
+    ;;
+
+  *freebsd*)
+    QT_LIBS="$QT_LIB"
+    if test $QT_IS_STATIC = yes && test $QT_IS_EMBEDDED = no; then
+      QT_LIBS="$QT_LIBS -L$x_libraries -lXext -lX11 -lm -lSM -lICE -ldl -ljpeg -lpthread"
+   else
+      QT_LIBS="$QT_LIBS -lpthread"
     fi
     ;;
 

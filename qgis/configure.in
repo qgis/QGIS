@@ -23,13 +23,13 @@ dnl ---------------------------------------------------------------------------
 dnl version number
 dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
-MINOR_VERSION=6
-MICRO_VERSION=0
-EXTRA_VERSION=26
+MINOR_VERSION=7
+MICRO_VERSION=3
+EXTRA_VERSION=0
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
-   VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel${EXTRA_VERSION}
+   VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}pre${EXTRA_VERSION}
 fi
 
 dnl ---------------------------------------------------------------------------
@@ -81,7 +81,18 @@ dnl ---------------------------------------------------------------------------
 dnl Qt check
 dnl ---------------------------------------------------------------------------
 AQ_CHECK_QT
-AM_CONDITIONAL([HAVE_QTMAC], [test x$QTDIR != x -a -f "$QTDIR/config.tests/mac/tst_mac_version"])
+
+dnl ---------------------------------------------------------------------------
+dnl Qt/Mac check (install everything into application bundle)
+dnl ---------------------------------------------------------------------------
+if test x$QTDIR != x -a -f "$QTDIR/config.tests/mac/tst_mac_version"; then
+  have_qtmac=yes
+  bundle_suffix=$PACKAGE.app/Contents/MacOS
+  if test `expr "$prefix" : ".*$bundle_suffix$"` -eq 0; then
+    prefix="$prefix/$bundle_suffix"
+  fi
+fi
+AM_CONDITIONAL([HAVE_QTMAC], [test "$have_qtmac" = "yes"])
 
 dnl ---------------------------------------------------------------------------
 dnl GDAL/OGR
@@ -221,7 +232,7 @@ fi
 
 if test x"$PG_CONFIG" != "xno" ; then
   PG_LIB="-L`$PG_CONFIG --libdir` -lpq"
-  PG_INC="`$PG_CONFIG --includedir`"
+  PG_INC="-I`$PG_CONFIG --includedir`"
   AC_MSG_CHECKING([for postgreSQL libs])
   AC_MSG_RESULT([$PG_LIB])
   AC_DEFINE([HAVE_POSTGRESQL],1,
@@ -407,6 +418,10 @@ AC_CONFIG_FILES([
   src/resources/Makefile
   src/themes/Makefile
   src/themes/default/Makefile
+  src/themes/nkids/Makefile
+  src/mac/Makefile
+  src/mac/Contents/Makefile
+  src/mac/Contents/Resources/Makefile
   providers/Makefile 
   providers/ogr/Makefile
   providers/postgres/Makefile
@@ -444,6 +459,7 @@ AC_CONFIG_FILES([
   widgets/projectionselector/Makefile
   designer_plugins/Makefile
   i18n/Makefile
+  helpviewer/Makefile
   qgis.spec
 ])
 
@@ -467,8 +483,13 @@ echo ""
 echo "Debug         : $ac_debug"
 echo "Plugin dir    : ${libdir}/$PACKAGE"
 echo ""
-echo "The binary will be installed in $prefix/bin"
+if test "$have_qtmac" = "yes"; then
+  echo "The binary will be installed in $prefix"
+else
+  echo "The binary will be installed in $prefix/bin"
+fi
 echo ""
 echo "The build is using Qt in $QTDIR"
+echo "Linking with $QT_LIBS"
 echo "------------------------------------------"
 echo "Configure finished, type 'make' to build."

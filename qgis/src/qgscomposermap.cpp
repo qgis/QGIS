@@ -47,7 +47,7 @@ QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int
     mComposition = composition;
     mId = id;
     mMapCanvas = mComposition->mapCanvas();
-    mName.sprintf ( tr("Map %d"), mId );
+    mName = QString(tr("Map %1").arg(mId));
 
     init();
     recalculate();
@@ -65,7 +65,7 @@ QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id )
     mComposition = composition;
     mId = id;
     mMapCanvas = mComposition->mapCanvas();
-    mName.sprintf ( tr("Map %d"), mId );
+    mName = QString(tr("Map %1").arg(mId));
 
     init();
     readSettings();
@@ -177,8 +177,7 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
 	  if ( vector->labelOn() ) {
 	      double fontScale = 25.4 * mFontScale * mComposition->scale() / 72;
 	      if ( plotStyle() == QgsComposition::Postscript ) {
-		  // I have no idea why 2.54 - it is an empirical value
-		  fontScale = 2.54 * 72.0 / mComposition->resolution();
+		  fontScale = QgsComposition::psFontScaleFactor() * 72.0 / mComposition->resolution();
 	      }
 	      vector->drawLabels (  painter, extent, transform, device, fontScale );
 	  }
@@ -224,7 +223,7 @@ void QgsComposerMap::cache ( void )
     // WARNING: ymax in QgsMapToPixel is device height!!!
     QgsMapToPixel transform(scale, h, mCacheExtent.yMin(), mCacheExtent.xMin() );
 
-    std::cout << "transform = " << transform.showParameters() << std::endl;
+    std::cout << "transform = " << transform.showParameters().local8Bit() << std::endl;
     
     mCachePixmap.fill(QColor(255,255,255));
 
@@ -481,9 +480,9 @@ void QgsComposerMap::recalculate ( void )
 
     }
 
-    std::cout << "mUserExtent = " << mUserExtent.stringRep() << std::endl;
+    std::cout << "mUserExtent = " << mUserExtent.stringRep().local8Bit() << std::endl;
     std::cout << "mScale = " << mScale << std::endl;
-    std::cout << "mExtent = " << mExtent.stringRep() << std::endl;
+    std::cout << "mExtent = " << mExtent.stringRep().local8Bit() << std::endl;
 
     setOptions();
     mCacheUpdated = false;

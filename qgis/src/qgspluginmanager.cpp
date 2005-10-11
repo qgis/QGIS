@@ -32,7 +32,10 @@
 
 #define TESTLIB
 #ifdef TESTLIB
-#ifndef WIN32
+// This doesn't work on WIN32 and causes problems with plugins
+// on OS X (the code doesn't cause a problem but including dlfcn.h
+// renders plugins unloadable)
+#if !defined(WIN32) && !defined(Q_OS_MACX) 
 #include <dlfcn.h>
 #endif
 #endif
@@ -84,11 +87,17 @@ sharedLibExtension = "*.so*";
       for (unsigned i = 0; i < pluginDir.count(); i++)
         {
 #ifdef TESTLIB
-#ifndef WIN32
+          // This doesn't work on WIN32 and causes problems with plugins
+          // on OS X (the code doesn't cause a problem but including dlfcn.h
+          // renders plugins unloadable)
+#if !defined(WIN32) && !defined(Q_OS_MACX)
           // test code to help debug loading problems
+          // This doesn't work on WIN32 and causes problems with plugins
+          // on OS X (the code doesn't cause a problem but including dlfcn.h
+          // renders plugins unloadable)
           QString lib = QString("%1/%2").arg(txtPluginDir->text()).arg(pluginDir[i]);
 //          void *handle = dlopen((const char *) lib, RTLD_LAZY);
-          void *handle = dlopen((const char *) lib, RTLD_LAZY | RTLD_GLOBAL);
+          void *handle = dlopen(lib.local8Bit(), RTLD_LAZY | RTLD_GLOBAL);
           if (!handle)
             {
               std::cout << "Error in dlopen: " << dlerror() << std::endl;
@@ -98,33 +107,33 @@ sharedLibExtension = "*.so*";
               std::cout << "dlopen suceeded" << std::endl;
               dlclose(handle);
             }
-#endif //#ifndef WIN32
+#endif //#ifndef WIN32 && Q_OS_MACX
 #endif //#ifdef TESTLIB
 
 
-          std::cout << "Examining " << txtPluginDir->text() << "/" << pluginDir[i] << std::endl;
+          std::cout << "Examining " << txtPluginDir->text().local8Bit() << "/" << pluginDir[i].local8Bit() << std::endl;
           QLibrary *myLib = new QLibrary(txtPluginDir->text() + "/" + pluginDir[i]);
           bool loaded = myLib->load();
           if (loaded)
             {
-              std::cout << "Loaded " << myLib->library() << std::endl;
+              std::cout << "Loaded " << myLib->library().local8Bit() << std::endl;
               name_t *pName = (name_t *) myLib->resolve("name");
               description_t *pDesc = (description_t *) myLib->resolve("description");
               version_t *pVersion = (version_t *) myLib->resolve("version");
 #ifdef QGISDEBUG
               // show the values (or lack of) for each function
               if(pName){
-                std::cout << "Plugin name: " << pName() << std::endl;
+                std::cout << "Plugin name: " << pName().local8Bit() << std::endl;
               }else{
                 std::cout << "Plugin name not returned when queried\n";
               }
                if(pDesc){
-                std::cout << "Plugin description: " << pDesc() << std::endl;
+                std::cout << "Plugin description: " << pDesc().local8Bit() << std::endl;
               }else{
                 std::cout << "Plugin description not returned when queried\n";
               }
              if(pVersion){
-                std::cout << "Plugin version: " << pVersion() << std::endl;
+                std::cout << "Plugin version: " << pVersion().local8Bit() << std::endl;
               }else{
                 std::cout << "Plugin version not returned when queried\n";
               }
@@ -159,11 +168,11 @@ sharedLibExtension = "*.so*";
                     }
               } else
                 {
-                  std::cout << "Failed to get name, description, or type for " << myLib->library() << std::endl;
+                  std::cout << "Failed to get name, description, or type for " << myLib->library().local8Bit() << std::endl;
                 }
           } else
             {
-              std::cout << "Failed to load " << myLib->library() << std::endl;
+              std::cout << "Failed to load " << myLib->library().local8Bit() << std::endl;
             }
         }
     }
@@ -188,7 +197,7 @@ void QgsPluginManager::unload()
           // its off -- see if it is loaded and if so, unload it
           QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
 #ifdef QGISDEBUG
-          std::cout << "Checking to see if " << lvi->text(0) << " is loaded" << std::endl;
+          std::cout << "Checking to see if " << lvi->text(0).local8Bit() << " is loaded" << std::endl;
 #endif
           QgisPlugin *plugin = pRegistry->plugin(lvi->text(0));
           if (plugin)

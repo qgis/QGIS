@@ -100,7 +100,7 @@ QgsGraMaDialog::QgsGraMaDialog(QgsVectorLayer* layer): QgsGraMaDialogBase(), ext
 	((QLineEdit *) (ext->getWidget(0, number)))->setText((*it)->value());
 	((QLineEdit *) ext->getWidget(1, number))->setText((*it)->upper_value());
 	((QLineEdit *) ext->getWidget(2, number))->setText((*it)->label());
-	((QPushButton *) ext->getWidget(3, number))->setName(((QgsMarkerSymbol*)((*it)->getSymbol()))->picture());
+	((QPushButton *) ext->getWidget(3, number))->setName((((QgsMarkerSymbol*)((*it)->getSymbol()))->picture()).local8Bit());
 	((QLineEdit *) ext->getWidget(4, number))->setText(QString::number(((QgsMarkerSymbol*)((*it)->getSymbol()))->scaleFactor(),'f',2));
 	number++;
     }
@@ -193,11 +193,11 @@ void QgsGraMaDialog::apply()
 	  int width = p.width();
 	  if(width>markerwidth) {
 	    markerwidth=width;
-	    qWarning("markerwidth: "+QString::number(markerwidth));
+	    qWarning(("markerwidth: "+QString::number(markerwidth)).local8Bit());
 	  }
 	  int height = p.height();
 	  height = (height>rowheight) ? height : rowheight;
-	  qWarning("height: " + QString::number(height));
+	  qWarning(("height: " + QString::number(height)).local8Bit());
 	  classesheight+=height;
 	}
 
@@ -242,7 +242,7 @@ void QgsGraMaDialog::apply()
         {
 	    QgsMarkerSymbol* sy = new QgsMarkerSymbol();
 	    sy->setPicture(((QPushButton*)(ext->getWidget(3,i)))->name());
-	    qWarning("SVG file: " + QString::fromAscii(((QPushButton*)(ext->getWidget(3,i)))->name()));
+	    qWarning(("SVG file: " + QString::fromAscii(((QPushButton*)(ext->getWidget(3,i)))->name())).local8Bit());
 	    sy->setScaleFactor(((QLineEdit*)(ext->getWidget(4,i)))->text().toDouble());
 	    
 	    QString lower_bound = ((QLineEdit *) (ext->getWidget(0, i)))->text();
@@ -272,9 +272,9 @@ void QgsGraMaDialog::apply()
 	    if (lbcontainsletter == false && ubcontainsletter == false && lower_bound.length() > 0 && upper_bound.length() > 0) //only add the item if the value bounds do not contain letters and are not null strings
             {
 		QgsRangeRenderItem *item = new QgsRangeRenderItem(sy, lower_bound, upper_bound, label);
-		qWarning("lower_bound: " +lower_bound);
-		qWarning("upper_bound: " +upper_bound);
-		qWarning("label: " +label);
+		qWarning(("lower_bound: " +lower_bound).local8Bit());
+		qWarning(("upper_bound: " +upper_bound).local8Bit());
+		qWarning(("label: " +label).local8Bit());
 		renderer->addItem(item);
 		
                 //add the symbol to the picture

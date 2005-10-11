@@ -99,17 +99,19 @@ QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
   // set the selection rectangle to null
   mSelectionRectangle = 0;
   
-  // parse the file
-  data = GPSData::getData(mFileName);
-  if (data == 0)
-    return;
-  mValid = true;
-  
   // resize the cache matrix
   mMinMaxCache=new double*[attributeFields.size()];
   for(int i=0;i<attributeFields.size();i++) {
     mMinMaxCache[i]=new double[2];
   }
+
+  // parse the file
+  data = GPSData::getData(mFileName);
+  if (data == 0) {
+    return;
+  }
+
+  mValid = true;
 }
 
 
@@ -559,6 +561,7 @@ bool QgsGPXProvider::addFeatures(std::list<QgsFeature*> flist) {
   if (!file.open(IO_WriteOnly))
     return false;
   QTextStream ostr(&file);
+  ostr.precision(10);
   data->writeXML(ostr);
   return true;
 }
@@ -726,6 +729,7 @@ bool QgsGPXProvider::deleteFeatures(std::list<int> const & id) {
   if (!file.open(IO_WriteOnly))
     return false;
   QTextStream ostr(&file);
+  ostr.precision(10);
   data->writeXML(ostr);
   return true;
 }
@@ -767,6 +771,7 @@ bool QgsGPXProvider::changeAttributeValues(std::map<int,std::map<QString,QString
   if (!file.open(IO_WriteOnly))
     return false;
   QTextStream ostr(&file);
+  ostr.precision(10);
   data->writeXML(ostr);
   return true;
 }

@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2003 by Tim Sutton                                      *
- *   tim@linfiniti.com                                                     *
+ *   Copyright (C) 2005 by Lars Luthman
+ *   larsl@users.sourceforge.net
  *                                                                         *
  *   This is a plugin generated from the QGIS plugin template              *
  *                                                                         *
@@ -13,6 +13,7 @@
 #include "qgsleastsquares.h"
 #include "qgspointdialog.h"
 #include "qgsrasterlayer.h"
+#include "qgsproject.h"
 
 //qt includes
 #include <qfiledialog.h>
@@ -77,10 +78,12 @@ void QgsGeorefPluginGui::openPointDialog() {
   }
   
   // remember the directory
-  QSettings settings;
-  QFileInfo fileInfo(leSelectRaster->text());
-  settings.writeEntry("/qgis/plugin/georef/rasterdirectory", 
-		      fileInfo.dirPath());
+  {
+    QSettings settings;
+    QFileInfo fileInfo(leSelectRaster->text());
+    settings.writeEntry("/qgis/plugin/georef/rasterdirectory", 
+			fileInfo.dirPath());
+  }
   
   // guess the world file name
   QString raster = leSelectRaster->text();
@@ -104,7 +107,30 @@ void QgsGeorefPluginGui::openPointDialog() {
     }
   }
   
+  // XXX This is horrible, but it works and I'm tired / ll
+  {
+    QSettings settings;
+    mProjBehaviour = settings.readEntry("/qgis/projections/defaultBehaviour");
+    mProjectSRS = QgsProject::instance()->
+      readEntry("SpatialRefSys", "/ProjectSRSProj4String");
+    mProjectSRSID = QgsProject::instance()->
+      readNumEntry("SpatialRefSys", "/ProjectSRSID");
+    settings.writeEntry("/qgis/projections/defaultBehaviour", "useProject");
+    QgsProject::instance()->
+      writeEntry("SpatialRefSys", "/ProjectSRSProj4String", GEOPROJ4);
+    QgsProject::instance()->
+    writeEntry("SpatialRefSys", "/ProjectSRSID", int(GEOSRS_ID));
+  }
   QgsRasterLayer* layer = new QgsRasterLayer(raster, "Raster");
+  {
+    QSettings settings;
+    settings.writeEntry("/qgis/projections/defaultBehaviour", mProjBehaviour);
+    QgsProject::instance()->
+      writeEntry("SpatialRefSys", "/ProjectSRSProj4String", mProjectSRS);
+    QgsProject::instance()->
+      writeEntry("SpatialRefSys", "/ProjectSRSID", mProjectSRSID);
+  }
+  
   QgsPointDialog* dlg = new QgsPointDialog(layer, this, NULL, true);
   connect(dlg, SIGNAL(loadLayer(QString)), this, SLOT(loadLayer(QString)));
   dlg->show();

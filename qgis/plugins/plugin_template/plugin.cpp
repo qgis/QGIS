@@ -87,10 +87,10 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  */
 void [pluginname]::initGui()
 {
-  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&[menuname]");
-  menuId = pluginMenu->insertItem(QIconSet(icon),"&[menuitemname]", this, SLOT(run()));
+  QPopupMenu *pluginMenu = mQGisIface->getPluginMenu("&[menuname]");
+  mMenuId = pluginMenu->insertItem(QIconSet(icon),"&[menuitemname]", this, SLOT(run()));
 
-  pluginMenu->setWhatsThis(menuId, tr("Replace this with a short description of the what the plugin does"));
+  pluginMenu->setWhatsThis(mMenuId, tr("Replace this with a short description of the what the plugin does"));
 
   // Create the action for tool
   mQActionPointer = new QAction("[menuitemname]", QIconSet(icon), "&icon",0, this, "run");
@@ -123,7 +123,7 @@ void [pluginname]::run()
 void [pluginname]::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenuItem("&[menuname]",menuId);
+  mQGisIface->removePluginMenuItem("&[menuname]",mMenuId);
   mQGisIface->removeToolBarIcon(mQActionPointer);
   delete mQActionPointer;
 }

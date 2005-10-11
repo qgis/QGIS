@@ -20,15 +20,15 @@
 #include <qlabel.h>
 #include "qgspgquerybuilder.h"
 // default constructor
-  QgsPgQueryBuilder::QgsPgQueryBuilder(QWidget *parent, const char *name)
-: QgsPgQueryBuilderBase(parent, name)
+  QgsPgQueryBuilder::QgsPgQueryBuilder(QWidget *parent, const char *name, bool modal)
+: QgsPgQueryBuilderBase(parent, name, modal)
 {
 }
 // constructor used when the query builder must make its own
 // connection to the database
 QgsPgQueryBuilder::QgsPgQueryBuilder(QgsDataSourceURI *uri, 
-    QWidget *parent, const char *name) : QgsPgQueryBuilderBase(parent, name),
-mUri(uri)
+    QWidget *parent, const char *name, bool modal)
+: QgsPgQueryBuilderBase(parent, name, modal), mUri(uri)
 {
   // The query builder must make its own connection to the database when
   // using this constructor
@@ -39,9 +39,9 @@ mUri(uri)
     .arg(mUri->username)
     .arg(mUri->password);
 #ifdef QGISDEBUG
-  std::cerr << "Attempting connect using: " << connInfo << std::endl; 
+  std::cerr << "Attempting connect using: " << connInfo.local8Bit() << std::endl; 
 #endif
-  mPgConnection = PQconnectdb((const char *) connInfo);
+  mPgConnection = PQconnectdb(connInfo.local8Bit());
   // check the connection status
   if (PQstatus(mPgConnection) == CONNECTION_OK) {
     QString datasource = QString(tr("Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>"))
@@ -67,8 +67,8 @@ mUri(uri)
 // constructor from the add table dialog is in the form schema.table, these components are 
 // parsed out and populated in the mURI structure prior to performing any operations against the database.
 QgsPgQueryBuilder::QgsPgQueryBuilder(QString tableName, PGconn *con, 
-    QWidget *parent, const char *name)
-: QgsPgQueryBuilderBase(parent, name), mPgConnection(con)
+    QWidget *parent, const char *name, bool modal)
+: QgsPgQueryBuilderBase(parent, name, modal), mPgConnection(con)
 {
   mOwnConnection = false; // we don't own this conneciton since it was passed to us
   mUri = new QgsDataSourceURI();
@@ -100,7 +100,7 @@ void QgsPgQueryBuilder::populateFields()
   // field name, type, length, and precision (if numeric)
   QString sql = "select * from " + mUri->schema + "." + mUri->table + " limit 1";
   PGresult *result = PQexec(mPgConnection, (const char *) (sql.utf8()));
-  qWarning("Query executed: " + sql);
+  qWarning(("Query executed: " + sql).local8Bit());
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
   {
     //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
@@ -109,20 +109,20 @@ void QgsPgQueryBuilder::populateFields()
       QString fieldName = PQfname(result, i);
       int fldtyp = PQftype(result, i);
       QString typOid = QString().setNum(fldtyp);
-      std::cerr << "typOid is: " << typOid << std::endl; 
+      std::cerr << "typOid is: " << typOid.local8Bit() << std::endl; 
       int fieldModifier = PQfmod(result, i);
       QString sql = "select typelem from pg_type where typelem = " + typOid + " and typlen = -1";
       //  //--std::cout << sql << std::endl;
       PGresult *oidResult = PQexec(mPgConnection, 
 				   (const char *) (sql.utf8()));
       if (PQresultStatus(oidResult) == PGRES_TUPLES_OK) 
-        std::cerr << "Ok fetching typelem using\n" << sql << std::endl; 
+        std::cerr << "Ok fetching typelem using\n" << sql.local8Bit() << std::endl; 
 
       // get the oid of the "real" type
       QString poid = QString::fromUtf8(PQgetvalue(oidResult, 0, 
 						  PQfnumber(oidResult, 
 							    "typelem")));
-      std::cerr << "poid is: " << poid << std::endl; 
+      std::cerr << "poid is: " << poid.local8Bit() << std::endl; 
       PQclear(oidResult);
       sql = "select typname, typlen from pg_type where oid = " + poid;
       // //--std::cout << sql << std::endl;
@@ -134,8 +134,8 @@ void QgsPgQueryBuilder::populateFields()
       QString fieldSize = QString::fromUtf8(PQgetvalue(oidResult, 0, 1));
       PQclear(oidResult);
 #ifdef QGISDEBUG
-      std::cerr << "Field parms: Name = " + fieldName 
-        + ", Type = " + fieldType << std::endl; 
+      std::cerr << ("Field parms: Name = " + fieldName 
+        + ", Type = " + fieldType).local8Bit() << std::endl; 
 #endif
       mFieldMap[fieldName] = QgsField(fieldName, fieldType, 
           fieldSize.toInt(), fieldModifier);
@@ -144,7 +144,7 @@ void QgsPgQueryBuilder::populateFields()
   }else
   {
 #ifdef QGISDEBUG 
-    std::cerr << "Error fetching a row from " + mUri->table << std::endl; 
+    std::cerr << "Error fetching a row from " + mUri->table.local8Bit() << std::endl; 
 #endif 
   }
   PQclear(result);
@@ -282,22 +282,129 @@ void QgsPgQueryBuilder::setConnection(PGconn *con)
 
 void QgsPgQueryBuilder::accept()
 {
-  // test the query to see if it will result in a valid layer
-  long numRecs = countRecords(txtSQL->text());
-  if(numRecs == -1)
+  // if user hits Ok and there is no query, skip the validation
+  if(txtSQL->text().stripWhiteSpace().length() > 0)
   {
-    //error in query - show the problem
-    QMessageBox::warning(this,"Error in Query", mPgErrorMessage);
-  }
-  else
-  {
-    if(numRecs == 0)
+    // test the query to see if it will result in a valid layer
+    long numRecs = countRecords(txtSQL->text());
+    if(numRecs == -1)
     {
-      QMessageBox::warning(this, tr("No Records"), tr("The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature."));
+      //error in query - show the problem
+      QMessageBox::warning(this,"Error in Query", mPgErrorMessage);
     }
     else
     {
-      QgsPgQueryBuilderBase::accept();
+      if(numRecs == 0)
+      {
+        QMessageBox::warning(this, tr("No Records"), tr("The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature."));
+      }
+      else
+      {
+        QgsPgQueryBuilderBase::accept();
+      }
     }
   }
+  else
+  {
+    QgsPgQueryBuilderBase::accept();
+  }
+}
+
+void QgsPgQueryBuilder::insEqual()
+{
+  txtSQL->insert(" = ");
+}
+
+void QgsPgQueryBuilder::insLt()
+{
+  txtSQL->insert(" < ");
+}
+
+void QgsPgQueryBuilder::insGt()
+{
+  txtSQL->insert(" > ");
+}
+
+void QgsPgQueryBuilder::insPct()
+{
+  txtSQL->insert(" % ");
+}
+
+void QgsPgQueryBuilder::insIn()
+{
+  txtSQL->insert(" IN ");
+}
+
+void QgsPgQueryBuilder::insNotIn()
+{
+  txtSQL->insert(" NOT IN ");
+}
+
+void QgsPgQueryBuilder::insLike()
+{
+  txtSQL->insert(" LIKE ");
+}
+
+QString QgsPgQueryBuilder::sql()
+{
+  return txtSQL->text();
+}
+
+void QgsPgQueryBuilder::setSql( QString sqlStatement)
+{
+  txtSQL->setText(sqlStatement);
+}
+
+void QgsPgQueryBuilder::fieldDoubleClick( QListBoxItem *item )
+{
+  txtSQL->insert(item->text());
+}
+
+void QgsPgQueryBuilder::valueDoubleClick( QListBoxItem *item )
+{
+  txtSQL->insert(item->text());
+}
+
+void QgsPgQueryBuilder::insLessThanEqual()
+{
+  txtSQL->insert(" <= ");
+}
+
+void QgsPgQueryBuilder::insGreaterThanEqual()
+{
+  txtSQL->insert(" >= ");
+}
+
+void QgsPgQueryBuilder::insNotEqual()
+{
+  txtSQL->insert(" != ");
+}
+
+void QgsPgQueryBuilder::insAnd()
+{
+  txtSQL->insert(" AND ");
+}
+
+void QgsPgQueryBuilder::insNot()
+{
+  txtSQL->insert(" NOT ");
+}
+
+void QgsPgQueryBuilder::insOr()
+{
+  txtSQL->insert(" OR ");
+}
+
+void QgsPgQueryBuilder::clearSQL()
+{
+  txtSQL->clear();
+}
+
+void QgsPgQueryBuilder::insIlike()
+{
+  txtSQL->insert(" ILIKE ");
+}
+void QgsPgQueryBuilder::setDatasourceDescription(QString uri)
+{
+  lblDataUri->setText(uri);
 }

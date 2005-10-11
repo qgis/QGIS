@@ -89,14 +89,14 @@ QgsCopyrightLabelPlugin::~QgsCopyrightLabelPlugin()
  */
 void QgsCopyrightLabelPlugin::initGui()
 {
-    QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
-    menuId = pluginMenu->insertItem(QIconSet(icon),"&CopyrightLabel", this, SLOT(run()));
+    QPopupMenu *pluginMenu = qGisInterface->getPluginMenu(tr("&Decorations"));
+    menuId = pluginMenu->insertItem(QIconSet(icon),tr("&CopyrightLabel"), this, SLOT(run()));
 
-    pluginMenu->setWhatsThis(menuId, "Creates a copyright label that is displayed on the map canvas.");
+    pluginMenu->setWhatsThis(menuId, tr("Creates a copyright label that is displayed on the map canvas."));
 
     // Create the action for tool
-    myQActionPointer = new QAction("Copyright Label", QIconSet(icon), "&Wmi",0, this, "run");
-    myQActionPointer->setWhatsThis("Creates a copyright label that is displayed on the map canvas.");
+    myQActionPointer = new QAction(tr("Copyright Label"), QIconSet(icon), "&Wmi",0, this, tr("run"));
+    myQActionPointer->setWhatsThis(tr("Creates a copyright label that is displayed on the map canvas."));
     // Connect the action to the run
     connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
     // This calls the renderer everytime the cnavas has drawn itself
@@ -120,7 +120,7 @@ void QgsCopyrightLabelPlugin::projectRead()
     mQFont.setFamily(QgsProject::instance()->readEntry("CopyrightLabel","/FontName","Arial"));
     mQFont.setPointSize(QgsProject::instance()->readNumEntry("CopyrightLabel","/FontSize",14));
     mLabelQString = QgsProject::instance()->readEntry("CopyrightLabel","/Label","(c) QGIS 2004");
-    mPlacement = QgsProject::instance()->readEntry("CopyrightLabel","/Placement","Bottom Right");
+    mPlacement = QgsProject::instance()->readEntry("CopyrightLabel","/Placement",tr("Bottom Right"));
     mEnable = QgsProject::instance()->readBoolEntry("CopyrightLabel","/Enabled",true);
     // todo - read & store state of font color
     mLabelQColor = QColor(Qt::black);
@@ -134,7 +134,7 @@ void QgsCopyrightLabelPlugin::help()
 // Slot called when the buffer menu item is activated
 void QgsCopyrightLabelPlugin::run()
 {
-    QgsCopyrightLabelPluginGui *myPluginGui=new QgsCopyrightLabelPluginGui(qgisMainWindowPointer,"Copyright Label",true,0);
+    QgsCopyrightLabelPluginGui *myPluginGui=new QgsCopyrightLabelPluginGui(qgisMainWindowPointer,tr("Copyright Label"),true,0);
     //listen for when the layer has been made so we can draw it
     //connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
     //connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
@@ -214,7 +214,7 @@ void QgsCopyrightLabelPlugin::renderLabel(QPainter * theQPainter)
 void QgsCopyrightLabelPlugin::unload()
 {
     // remove the GUI
-    qGisInterface->removePluginMenuItem("&Decorations",menuId); 
+    qGisInterface->removePluginMenuItem(tr("&Decorations"),menuId); 
     qGisInterface->removeToolBarIcon(myQActionPointer);
     // remove the copyright from the canvas
     disconnect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)),

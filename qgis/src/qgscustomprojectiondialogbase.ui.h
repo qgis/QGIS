@@ -93,3 +93,9 @@ void QgsCustomProjectionDialogBase::pbnDelete_clicked()
 {
 
 }
+
+
+void QgsCustomProjectionDialogBase::pbnCalculate_clicked()
+{
+
+}

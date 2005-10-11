@@ -218,7 +218,7 @@
                     <cstring>tab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Contributors</string>
+                    <string>Developers</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -229,7 +229,7 @@
                             <cstring>textLabel1</cstring>
                         </property>
                         <property name="text">
-                            <string>&lt;h2&gt;QGIS Contributors&lt;/h2&gt;</string>
+                            <string>&lt;h2&gt;QGIS Developers&lt;/h2&gt;</string>
                         </property>
                     </widget>
                     <widget class="QListBox" row="1" column="0">

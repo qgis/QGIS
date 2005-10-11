@@ -37,12 +37,12 @@ void QgsPropertyValue::dump( size_t tabs ) const
 
         for (QStringList::const_iterator i = sl.begin(); i != sl.end(); ++i)
         {
-            qDebug("%s[%s] ", tabString.ascii(), (const char *) (*i).ascii());
+            qDebug("%s[%s] ", (const char *)tabString.local8Bit(), (const char *) (*i).local8Bit());
         } 
     }
     else
     {
-        qDebug("%s%s", tabString.ascii(), (const char *) value_.toString().ascii());
+        qDebug("%s%s", (const char *)tabString.local8Bit(), (const char *) value_.toString().local8Bit());
     }
 } // QgsPropertyValue::dump()
 
@@ -69,7 +69,7 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
     value_.clear();
 
     // get the type associated with the value first
-    QVariant::Type type = QVariant::nameToType(typeString);
+    QVariant::Type type = QVariant::nameToType(typeString.local8Bit());
 
     // This huge switch is left-over from an earlier incarnation of
     // QgsProject where there was a fine level of granularity for value
@@ -390,7 +390,7 @@ void QgsPropertyKey::dump( size_t tabs ) const
 
     tabString.fill( '\t', tabs );
 
-    qDebug( "%sname: %s", tabString.ascii(), name().ascii() );
+    qDebug( "%sname: %s", (const char *)tabString.local8Bit(), (const char *)name().local8Bit() );
          
     tabs++;
     tabString.fill( '\t', tabs );
@@ -405,25 +405,25 @@ void QgsPropertyKey::dump( size_t tabs ) const
             if ( QVariant::StringList == propertyValue->value().type() )
             {
                 qDebug("%skey: <%s>  value:", 
-                       tabString.ascii(), 
-                       i.currentKey().ascii() );
+                       (const char *)tabString.local8Bit(), 
+                       (const char *)i.currentKey().local8Bit() );
 
                 propertyValue->dump( tabs + 1 );
             }
             else
             {
                 qDebug("%skey: <%s>  value: %s", 
-                       tabString.ascii(), 
-                       i.currentKey().ascii(), 
-                       propertyValue->value().toString().ascii() );
+                       (const char *)tabString.local8Bit(), 
+                       (const char *)i.currentKey().local8Bit(), 
+                       (const char *)propertyValue->value().toString().local8Bit() );
             }
         }
         else
         {
             qDebug("%skey: <%s>  subkey: <%s>", 
-                   tabString.ascii(), 
-                   i.currentKey().ascii(),
-                   dynamic_cast<QgsPropertyKey*>(i.current())->name().ascii() );
+                   (const char *)tabString.local8Bit(), 
+                   (const char *)i.currentKey().local8Bit(),
+                   (const char *)dynamic_cast<QgsPropertyKey*>(i.current())->name().local8Bit() );
 
             i.current()->dump( tabs + 1 );
         }
@@ -524,7 +524,7 @@ void QgsPropertyKey::entryList( QStringList & entries ) const
     // now add any leaf nodes to the entries list
     for (QDictIterator<QgsProperty> i(properties_); i.current(); ++i)
     {
-        const char *currentNodeStr = i.currentKey().ascii(); // debugger probe
+        const char *currentNodeStr = i.currentKey().local8Bit(); // debugger probe
 
         // add any of the nodes that have just a single value
         if (i.current()->isLeaf())
@@ -541,7 +541,7 @@ void QgsPropertyKey::subkeyList(QStringList & entries) const
     // now add any leaf nodes to the entries list
     for (QDictIterator < QgsProperty > i(properties_); i.current(); ++i)
     {
-        const char *currentNodeStr = i.currentKey().ascii(); // debugger probe
+        const char *currentNodeStr = i.currentKey().local8Bit(); // debugger probe
 
         // add any of the nodes that have just a single value
         if (!i.current()->isLeaf())

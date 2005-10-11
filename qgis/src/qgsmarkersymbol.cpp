@@ -62,6 +62,9 @@ bool QgsMarkerSymbol::writeXML( QDomNode & item, QDomDocument & document )
     fillpattern.appendChild(fillpatterntxt);
     markersymbol.appendChild(fillpattern);
     fillpattern.appendChild(fillpatterntxt);
+#ifdef WIN32
+	return true;
+#endif
 }
     
 

@@ -35,16 +35,13 @@
                 </property>
                 <widget class="QPushButton">
                     <property name="name">
-                        <cstring>buttonHelp</cstring>
+                        <cstring>pbnHelp</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Help</string>
                     </property>
                     <property name="accel">
                         <string>F1</string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
                     </property>
                 </widget>
                 <spacer>
@@ -74,12 +71,6 @@
                     <property name="accel">
                         <string>Alt+A</string>
                     </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
@@ -94,9 +85,6 @@
                     <property name="autoDefault">
                         <bool>true</bool>
                     </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
@@ -107,9 +95,6 @@
                     </property>
                     <property name="accel">
                         <string></string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
                     </property>
                 </widget>
             </hbox>
@@ -229,15 +214,21 @@
                                     <number>1</number>
                                 </property>
                             </widget>
-                            <widget class="QPushButton" row="2" column="2">
+                            <widget class="QToolButton" row="2" column="2">
                                 <property name="name">
                                     <cstring>pbnDigitisedLineColour</cstring>
                                 </property>
+                                <property name="minimumSize">
+                                    <size>
+                                        <width>0</width>
+                                        <height>22</height>
+                                    </size>
+                                </property>
                                 <property name="paletteBackgroundColor">
                                     <color>
-                                        <red>111</red>
-                                        <green>244</green>
-                                        <blue>200</blue>
+                                        <red>255</red>
+                                        <green>0</green>
+                                        <blue>0</blue>
                                     </color>
                                 </property>
                                 <property name="text">
@@ -403,29 +394,22 @@
                                     <string>Selection Color:</string>
                                 </property>
                             </widget>
-                            <widget class="QPushButton" row="0" column="2">
+                            <widget class="QToolButton" row="0" column="2">
                                 <property name="name">
                                     <cstring>pbnSelectionColour</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>5</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
                                 </property>
                                 <property name="minimumSize">
                                     <size>
                                         <width>120</width>
-                                        <height>0</height>
+                                        <height>22</height>
                                     </size>
                                 </property>
-                                <property name="maximumSize">
-                                    <size>
-                                        <width>120</width>
-                                        <height>32767</height>
-                                    </size>
+                                <property name="paletteBackgroundColor">
+                                    <color>
+                                        <red>255</red>
+                                        <green>255</green>
+                                        <blue>0</blue>
+                                    </color>
                                 </property>
                                 <property name="text">
                                     <string></string>
@@ -563,6 +547,12 @@
         <receiver>QgsProjectPropertiesBase</receiver>
         <slot>pbnDigitisedLineColour_clicked()</slot>
     </connection>
+    <connection>
+        <sender>pbnHelp</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsProjectPropertiesBase</receiver>
+        <slot>pbnHelp_clicked()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">qgsprojectpropertiesbase.ui.h</include>
@@ -572,6 +562,7 @@
     <slot>apply()</slot>
     <slot>pbnSelectionColour_clicked()</slot>
     <slot>pbnDigitisedLineColour_clicked()</slot>
+    <slot>pbnHelp_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>

@@ -37,7 +37,7 @@ class QgsProjectProperties : public QgsProjectPropertiesBase
   Q_OBJECT
 public:
     //! Constructor
-  QgsProjectProperties(QWidget *parent = 0, const char * name = 0);
+  QgsProjectProperties(QWidget *parent = 0, const char * name = 0, bool modal = true);
 
   //! Destructor
   ~QgsProjectProperties();
@@ -81,6 +81,11 @@ public slots:
    */
   void showProjectionsTab();
   
+  /*!
+   * Slot to show the context help for this dialog
+   */
+  void pbnHelp_clicked();
+
 signals:
   /*! This signal is used to notify all coordinateTransform objects to update
    * their dest SRSID because the project output projection system is changed 
@@ -94,5 +99,5 @@ signals:
   //! notification of when on the fly projections are enabled / disabled
   void projectionEnabled(bool);
 private:
-
+static const int context_id = 1173513647;
 };

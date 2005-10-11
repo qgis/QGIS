@@ -29,7 +29,7 @@
 class QgsNewConnection : public QgsNewConnectionBase 
 {
   Q_OBJECT
- public:
+  public:
     //! Constructor
     QgsNewConnection(QString connName= QString::null);
     //! Destructor
@@ -38,6 +38,10 @@ class QgsNewConnection : public QgsNewConnectionBase
     void testConnection();
     //! Saves the connection to ~/.qt/qgisrc
     void saveConnection();
+  public slots:
+    void helpInfo();
+  private:
+    static const int context_id = 821572257;
 };
 
 #endif //  QGSNEWCONNECTIONBASE_H

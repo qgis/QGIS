@@ -19,6 +19,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <cassert>
 
 #include <qtextstream.h>
 #include <qstringlist.h>
@@ -73,7 +74,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
   qDebug(  "****************************************");
   qDebug(  "****   Postgresql Layer Creation   *****" );
   qDebug(  "****************************************");
-  qDebug(  "URI: " + uri );
+  qDebug(  (const char*)(QString("URI: ") + uri).local8Bit() );
   QString msg;
 
   qDebug(  "tableStart: " + msg.setNum(tableStart) );
@@ -90,8 +91,8 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
   }
   QString connInfo = uri.left(uri.find("table="));
 #ifdef QGISDEBUG
-  qDebug( "Table name is " + tableName);
-  qDebug( "SQL is " + sqlWhereClause );
+  qDebug( (const char*)(QString("Table name is ") + tableName).local8Bit());
+  qDebug( (const char*)(QString("SQL is ") + sqlWhereClause).local8Bit() );
   qDebug( "Connection info is " + connInfo);
 #endif
   // calculate the schema if specified
@@ -102,6 +103,12 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
   geometryColumn = tableName.mid(tableName.find(" (") + 2);
   geometryColumn.truncate(geometryColumn.length() - 1);
   tableName = tableName.mid(tableName.find(".") + 1, tableName.find(" (") - (tableName.find(".") + 1)); 
+
+  // Keep a schema qualified table name for convenience later on.
+  if (mSchema.length() > 0)
+    schemaTableName = "\"" + mSchema + "\".\"" + tableName + "\"";
+  else
+    schemaTableName = "\"" + tableName + "\"";
 
   /* populate the uri structure */
   mUri.schema = mSchema;
@@ -159,17 +166,38 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
     std::cerr << "Checking for select permission on the relation\n";
 #endif
 
+    //set client encoding to unicode because QString uses UTF-8 anyway
+#ifdef QGISDEBUG
+    qWarning("setting client encoding to UNICODE");
+#endif
+    int errcode=PQsetClientEncoding(connection, "UNICODE");
+#ifdef QGISDEBUG
+    if(errcode==0)
+    {
+        qWarning("encoding successfully set");
+    }
+    else if(errcode==-1)
+    {
+        qWarning("error in setting encoding");
+    }
+    else
+    {
+        qWarning("undefined return value from encoding setting");
+    }
+#endif
+
     // Check that we can read from the table (i.e., we have
     // select permission).
-    QString sql = "select * from \"" + tableName + "\" limit 1";
-    PGresult* testAccess = PQexec(pd, (const char*)sql);
+    QString sql = "select * from " + schemaTableName + " limit 1";
+    PGresult* testAccess = PQexec(pd, (const char*)(sql.utf8()));
     if (PQresultStatus(testAccess) != PGRES_TUPLES_OK)
     {
       QApplication::restoreOverrideCursor();
       QMessageBox::warning(0, tr("Unable to access relation"),
-          tr("Unable to access the ") + tableName + 
+          tr("Unable to access the ") + schemaTableName + 
           tr(" relation.\nThe error message from the database was:\n") +
-          PQresultErrorMessage(testAccess) + ".\n");
+          PQresultErrorMessage(testAccess) + ".\n" + 
+          "SQL: " + sql);
       QApplication::setOverrideCursor(Qt::waitCursor);
       PQclear(testAccess);
       valid = false;
@@ -192,9 +220,32 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       QApplication::setOverrideCursor(Qt::waitCursor);
     }
     //--std::cout << "Connection to the database was successful\n";
-    // set the schema
 
-    PQexec(pd,(const char *)QString("set search_path = '%1','public'").arg(mSchema));
+    // get the current schema search path
+    PGresult *spath = PQexec(pd, "show search_path");
+    QString searchPath = PQgetvalue(spath, 0, 0);
+    // split out the search paths
+    QStringList searchPaths = QStringList::split(",", searchPath);
+    // build the new path
+    searchPath = "";
+    for ( QStringList::Iterator it = searchPaths.begin(); it != searchPaths.end(); ++it ) {
+        searchPath += "'" + *it + "',";
+    }
+    // append the schema for this layer if its not already in there
+    if(searchPath.find("'" + mSchema + "'") == -1)
+    {
+      searchPath += "'" + mSchema + "'";
+    }
+    else
+    {
+      // strip the trailing comma
+      searchPath = searchPath.left(searchPath.length() -1);
+    }
+    
+    PQclear(spath);
+
+    // set the schema search path 
+    PQexec(pd,(const char *)(QString("set search_path = " + searchPath).utf8()));
 
     if (getGeometryDetails()) // gets srid and geometry type
     {
@@ -207,8 +258,9 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       selectSQL = "select ";
       // Populate the field vector for this layer. The field vector contains
       // field name, type, length, and precision (if numeric)
-      sql = "select * from \"" + tableName + "\" limit 1";
-      PGresult* result = PQexec(pd, (const char *) sql);
+      sql = "select * from " + schemaTableName + " limit 1";
+
+      PGresult* result = PQexec(pd, (const char *) (sql.utf8()));
       //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
       for (int i = 0; i < PQnfields(result); i++)
       {
@@ -231,13 +283,14 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
         QString fieldSize = PQgetvalue(oidResult, 0, 1);
         PQclear(oidResult);
 
-        sql = "select oid from pg_class where relname = '" + tableName + "'";
-        PGresult *tresult= PQexec(pd, (const char *)sql);
+        sql = "select oid from pg_class where relname = '" + tableName + "' and relnamespace = ("
+	  "select oid from pg_namespace where nspname = '" + mSchema + "')";
+        PGresult *tresult= PQexec(pd, (const char *)(sql.utf8()));
         QString tableoid = PQgetvalue(tresult, 0, 0);
         PQclear(tresult);
 
         sql = "select attnum from pg_attribute where attrelid = " + tableoid + " and attname = '" + fieldName + "'";
-        tresult = PQexec(pd, (const char *)sql);
+        tresult = PQexec(pd, (const char *)(sql.utf8()));
         QString attnum = PQgetvalue(tresult, 0, 0);
         PQclear(tresult);
 
@@ -266,7 +319,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
 
       // set the primary key
       getPrimaryKey();
-      selectSQL += " from " + tableName;
+      selectSQL += " from " + schemaTableName;
       //--std::cout << "selectSQL: " << (const char *)selectSQL << std::endl;
 
       // Kick off the long running threads
@@ -303,9 +356,6 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
 #endif
     }
 
-    // reset tableName to include schema
-    schemaTableName += mSchema + "." + tableName;
-
     ready = false; // not ready to read yet cuz the cursor hasn't been created
 
   } else {
@@ -321,27 +371,6 @@ QgsPostgresProvider::QgsPostgresProvider(QString uri):dataSourceUri(uri)
       selected = 0;
       } */
   //  tabledisplay=0;
-
-  //set client encoding to unicode because QString uses UTF-8 anyway
-#ifdef QGISDEBUG
-  qWarning("setting client encoding to UNICODE");
-#endif
-  int errcode=PQsetClientEncoding(connection, "UNICODE");
- 
-#ifdef QGISDEBUG
-  if(errcode==0)
-  {
-      qWarning("encoding successfully set");
-  }
-  else if(errcode==-1)
-  {
-      qWarning("error in setting encoding");
-  }
-  else
-  {
-      qWarning("undefined return value from encoding setting");
-  }
-#endif
 
   //fill type names into lists
   mNumericalTypes.push_back("double precision");
@@ -601,7 +630,7 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
 
   QString declare = QString("declare qgisf binary cursor for select "
       + primaryKey  
-      + ",asbinary(%1,'%2') as qgs_feature_geometry from \"%3\"").arg(geometryColumn).arg(endianString()).arg(tableName);
+      + ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn).arg(endianString()).arg(schemaTableName);
 #ifdef QGISDEBUG
   std::cout << "Binary cursor: " << declare << std::endl; 
 #endif
@@ -739,7 +768,7 @@ int QgsPostgresProvider::fieldCount() const
  */
 void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f){
 
-  QString sql = QString("select * from %1 where %2 = %3").arg(tableName).arg(primaryKey).arg(key);
+  QString sql = QString("select * from %1 where %2 = %3").arg(schemaTableName).arg(primaryKey).arg(key);
 
 #ifdef QGISDEBUG
   //  std::cerr << "getFeatureAttributes using: " << sql << std::endl; 
@@ -757,6 +786,7 @@ void QgsPostgresProvider::getFeatureAttributes(int key, QgsFeature *f){
       f->addAttribute(fld, val);
     }
   }
+  PQclear(attr);
 } 
 
 /**Fetch attributes with indices contained in attlist*/
@@ -765,13 +795,11 @@ void QgsPostgresProvider::getFeatureAttributes(int key,
     std::list<int> const & attlist)
 {
   std::list<int>::const_iterator iter;
-  int i=-1;
   for(iter=attlist.begin();iter!=attlist.end();++iter)
   {
-    ++i;
-    QString sql = QString("select %1 from \"%2\" where %3 = %4")
+    QString sql = QString("select %1 from %2 where %3 = %4")
       .arg(fields()[*iter].name())
-      .arg(tableName)
+      .arg(schemaTableName)
       .arg(primaryKey)
       .arg(key);//todo: only query one attribute
     PGresult *attr = PQexec(connection, (const char *)(sql.utf8()));
@@ -781,11 +809,12 @@ void QgsPostgresProvider::getFeatureAttributes(int key,
     if(fld != geometryColumn)
     {
       // Add the attribute to the feature
-      //QString val = mEncoding->toUnicode(PQgetvalue(attr,0, i));
-	QString val = QString::fromUtf8(PQgetvalue(attr,0, i));
+      //QString val = mEncoding->toUnicode(PQgetvalue(attr,0, 0));
+	QString val = QString::fromUtf8(PQgetvalue(attr,0, 0));
       //qWarning(val);
       f->addAttribute(fld, val);
     }
+    PQclear(attr);
   }
 }
 
@@ -800,8 +829,8 @@ void QgsPostgresProvider::reset()
   //--std::cout << "Resetting the cursor to the first record " << std::endl;
   QString declare = QString("declare qgisf binary cursor for select " +
       primaryKey + 
-      ",asbinary(%1,'%2') as qgs_feature_geometry from \"%3\"").arg(geometryColumn)
-    .arg(endianString()).arg(tableName);
+      ",asbinary(%1,'%2') as qgs_feature_geometry from %3").arg(geometryColumn)
+    .arg(endianString()).arg(schemaTableName);
   if(sqlWhereClause.length() > 0)
   {
     declare += " where " + sqlWhereClause;
@@ -872,7 +901,8 @@ QString QgsPostgresProvider::getPrimaryKey()
      */
   QString sql = "select indkey from pg_index where indisprimary = 't' and "
     "indrelid = (select oid from pg_class where relname = '"
-    + tableName + "')";
+    + tableName + "' and relnamespace = (select oid from pg_namespace where "
+    "nspname = '" + mSchema + "'))";
 
 #ifdef QGISDEBUG
   std::cerr << "Getting primary key using '" << sql << "'\n";
@@ -898,9 +928,10 @@ QString QgsPostgresProvider::getPrimaryKey()
 
     primaryKey = "";
 
-    sql = "select relkind from pg_class where relname = '" 
-      + tableName + "'";
-    PGresult* tableType = PQexec(connection, (const char*) sql);
+    sql = "select relkind from pg_class where relname = '" + tableName + 
+      "' and relnamespace = (select oid from pg_namespace where "
+      "nspname = '" + mSchema + "')";
+    PGresult* tableType = PQexec(connection, (const char*) (sql.utf8()));
     QString type = PQgetvalue(tableType, 0, 0);
     PQclear(tableType);
 
@@ -910,8 +941,8 @@ QString QgsPostgresProvider::getPrimaryKey()
       std::cerr << "Relation is a table. Checking to see if it has an "
         << "oid column.\n";
 #endif
-      sql = "select oid from \"" + tableName + "\" limit 1";
-      PGresult* oidPresent = PQexec(connection, (const char*)sql);
+      sql = "select oid from " + schemaTableName + " limit 1";
+      PGresult* oidPresent = PQexec(connection, (const char*)(sql.utf8()));
 
       if (PQntuples(oidPresent) == 0)
       {
@@ -944,7 +975,7 @@ QString QgsPostgresProvider::getPrimaryKey()
       // int4 type)
       tableCols cols;
       findColumns(tableName, cols);
-      primaryKey = chooseViewColumn(cols);
+      primaryKey = chooseViewColumn(cols, tableName);
 
       if (primaryKey.isEmpty())
       {
@@ -953,10 +984,10 @@ QString QgsPostgresProvider::getPrimaryKey()
         QMessageBox::warning(0, QObject::tr("No suitable key column in view"),
             QObject::tr("The view has no column suitable for use as a "
               "unique key.\n\n"
-              "Qgis requires that the view have a column that can be\n"
+              "Qgis requires that the view has a column that can be\n"
               "used as a unique key. It should be derived from a column\n"
               "of type int4 and be either a primary key or have\n"
-              "a unique constraint on it (an indexed column wiln"
+              "a unique constraint on it (an indexed column will\n"
               "give better performance)."));
         QApplication::setOverrideCursor(Qt::waitCursor);
       }
@@ -1013,7 +1044,8 @@ QString QgsPostgresProvider::getPrimaryKey()
 // choose one. Prefers column with an index on them, but will
 // otherwise choose something suitable.
 
-QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
+QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols,
+                                              QString tableName)
 {
   // For each relation name and column name need to see if it
   // has unique constraints on it, or is a primary key (if not,
@@ -1047,7 +1079,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
       tableName + "') and (contype = 'p' or contype = 'u') "
       " and array_dims(conkey) = '[1:1]'";
 
-    PGresult* result = PQexec(connection, (const char*)sql);
+    PGresult* result = PQexec(connection, (const char*)(sql.utf8()));
     if (PQntuples(result) == 1)
       suitable[viewCol] = iter->second;
 
@@ -1082,11 +1114,14 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
   // pick the first one. If there are none we return an empty string. 
   if (suitable.size() == 1)
   {
-    key = suitable.begin()->first;
+    if (uniqueData(tableName, suitable.begin()->first))
+    {
+      key = suitable.begin()->first;
 #ifdef QGISDEBUG
-    std::cerr << "Picked column " << key
-      << " as it is the only one that was suitable.\n";
+      std::cerr << "Picked column " << key
+                << " as it is the only one that was suitable.\n";
 #endif
+    }
   }
   else if (suitable.size() > 1)
   {
@@ -1101,9 +1136,9 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
         "(select oid from pg_class where relname = '" +
         i->second.first + "') and attname = '" + 
         i->second.second + "')";
-      PGresult* result = PQexec(connection, (const char*)sql);
+      PGresult* result = PQexec(connection, (const char*)(sql.utf8()));
 
-      if (PQntuples(result) > 0)
+      if (PQntuples(result) > 0 && uniqueData(tableName, i->first))
       { // Got one. Use it.
         key = i->first;
 #ifdef QGISDEBUG
@@ -1121,7 +1156,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
       // exists). This is legacy support and could be removed in
       // future. 
       i = suitable.find("oid");
-      if (i != suitable.end())
+      if (i != suitable.end() && uniqueData(tableName, i->first))
       {
         key = i->first;
 #ifdef QGISDEBUG
@@ -1131,7 +1166,8 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
           << " columns with indices to choose from\n.";
 #endif
       }
-      else // else choose the first one in the container
+      // else choose the first one in the container
+      else if (uniqueData(tableName, suitable.begin()->first))
       {
         key = suitable.begin()->first;
 #ifdef QGISDEBUG
@@ -1147,6 +1183,25 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
   return key;
 }
 
+bool QgsPostgresProvider::uniqueData(QString tableName, QString colName)
+{
+  // Check to see if the given column contains unique data
+
+  bool isUnique = false;
+
+  QString sql = "select count(distinct " + colName + ") = count(" +
+    colName + ") from \"" + tableName + "\"";
+
+  PGresult* unique = PQexec(connection, (const char*) (sql.utf8()));
+  if (PQntuples(unique) == 1)
+    if (strncmp(PQgetvalue(unique, 0, 0),"t", 1) == 0)
+      isUnique = true;
+
+  PQclear(unique);
+
+  return isUnique;
+}
+
 // Given a relation name, will return in the cols variable the
 // underlying table and columns for each column in the given
 // relation. This is trivial for tables, but for views that reference
@@ -1159,9 +1214,10 @@ void QgsPostgresProvider::findColumns(QString relationName, tableCols& cols)
   columnNamesType columnNames;
   QString sql = "select attname from pg_attribute where attrelid = ("
     "select oid from pg_class where relname = '" + relationName + "')";
-  PGresult* result = PQexec(connection, (const char*)sql);
+  PGresult* result = PQexec(connection, (const char*)(sql.utf8()));
   for (int i = 0; i < PQntuples(result); ++i)
     columnNames.push_back(PQgetvalue(result, i, 0));
+  PQclear(result);
   // Iterate over all of the columns in the given relation and work
   // downwards until we reach a table (rather than a view).
   columnNamesType::const_iterator i = columnNames.begin();
@@ -1234,7 +1290,7 @@ int QgsPostgresProvider::findRelationAndColumn(
   {
     QString sql = "select relkind from pg_class where relname = '" +
       relation + "'";
-    PGresult* result = PQexec(connection, (const char*)sql);
+    PGresult* result = PQexec(connection, (const char*)(sql.utf8()));
     if (PQntuples(result) == 0)
     {
       qDebug("Relation " + relation + " is unknown!");
@@ -1271,7 +1327,7 @@ int QgsPostgresProvider::findRelationAndColumn(
   {
     QString sql = "select definition from pg_views where viewname = '" 
       + relation + "'";
-    PGresult* def = PQexec(connection, (const char*)sql);
+    PGresult* def = PQexec(connection, (const char*)(sql.utf8()));
     if (PQntuples(def) == 0)
       qDebug("View " + relation + " is not a view!");
     QString selectCmd = PQgetvalue(def, 0, 0);
@@ -1428,11 +1484,11 @@ QString QgsPostgresProvider::minValue(int position){
   QString sql;
   if(sqlWhereClause.isEmpty())
   {
-    sql = QString("select min(%1) from \"%2\"").arg(fld.name()).arg(tableName);
+    sql = QString("select min(%1) from %2").arg(fld.name()).arg(schemaTableName);
   }
   else
   {
-    sql = QString("select min(%1) from \"%2\"").arg(fld.name()).arg(tableName)+" where "+sqlWhereClause;
+    sql = QString("select min(%1) from %2").arg(fld.name()).arg(schemaTableName)+" where "+sqlWhereClause;
   }
   PGresult *rmin = PQexec(connection,(const char *)(sql.utf8()));
   QString minValue = PQgetvalue(rmin,0,0);
@@ -1448,11 +1504,11 @@ QString QgsPostgresProvider::maxValue(int position){
   QString sql;
   if(sqlWhereClause.isEmpty())
   {
-    sql = QString("select max(%1) from \"%2\"").arg(fld.name()).arg(tableName);
+    sql = QString("select max(%1) from %2").arg(fld.name()).arg(schemaTableName);
   }
   else
   {
-    sql = QString("select max(%1) from \"%2\"").arg(fld.name()).arg(tableName)+" where "+sqlWhereClause;
+    sql = QString("select max(%1) from %2").arg(fld.name()).arg(schemaTableName)+" where "+sqlWhereClause;
   } 
   PGresult *rmax = PQexec(connection,(const char *)(sql.utf8()));
   QString maxValue = PQgetvalue(rmax,0,0);
@@ -1468,9 +1524,9 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
 {
   if(f)
   {
-    QString insert("INSERT INTO \"");
-    insert+=tableName;
-    insert+="\" (";
+    QString insert("INSERT INTO ");
+    insert+=schemaTableName;
+    insert+=" (";
 
     //add the name of the geometry column to the insert statement
     insert+=geometryColumn;//first the geometry
@@ -1493,14 +1549,23 @@ bool QgsPostgresProvider::addFeature(QgsFeature* f)
     unsigned char* geom=f->getGeometry();
     for(int i=0;i<f->getGeometrySize();++i)
     {
-      QString hex=QString::number((int)geom[i],16).upper();
-      if(hex.length()==1)
-      {
-        hex="0"+hex;
-      }
-      insert+=hex;
+	//Postgis 1.0 wants bytea instead of hex
+	QString oct = QString::number((int)geom[i], 8);
+	if(oct.length()==3)
+	{
+	    oct="\\\\"+oct;
+	}
+	else if(oct.length()==1)
+	{
+	    oct="\\\\00"+oct;
+	}
+	else if(oct.length()==2)
+	{
+	    oct="\\\\0"+oct; 
+	}
+	insert+=oct;
     }
-    insert+="',"+srid+")";
+    insert+="::bytea',"+srid+")";
 
     //add the field values to the insert statement
     for(std::vector<QgsFeatureAttribute>::iterator it=attributevec.begin();it!=attributevec.end();++it)
@@ -1568,7 +1633,7 @@ QString QgsPostgresProvider::getDefaultValue(const QString& attr, QgsFeature* f)
 
 bool QgsPostgresProvider::deleteFeature(int id)
 {
-  QString sql("DELETE FROM \""+tableName+"\" WHERE "+primaryKey+" = "+QString::number(id));
+  QString sql("DELETE FROM "+schemaTableName+" WHERE "+primaryKey+" = "+QString::number(id));
 #ifdef QGISDEBUG
   qWarning("delete sql: "+sql);
 #endif
@@ -1606,6 +1671,7 @@ QString QgsPostgresProvider::postgisVersion(PGconn *connection){
 #ifdef QGISDEBUG
   std::cerr << "PostGIS version info: " << postgisVersionInfo << std::endl;
 #endif
+  PQclear(result);
   // assume no capabilities
   geosAvailable = false;
   gistAvailable = false;
@@ -1665,12 +1731,12 @@ bool QgsPostgresProvider::addAttributes(std::map<QString,QString> const & name)
   PQexec(connection,"BEGIN");
   for(std::map<QString,QString>::const_iterator iter=name.begin();iter!=name.end();++iter)
   {
-    QString sql="ALTER TABLE \""+tableName+"\" ADD COLUMN "+(*iter).first+" "+(*iter).second;
+    QString sql="ALTER TABLE "+schemaTableName+" ADD COLUMN "+(*iter).first+" "+(*iter).second;
 #ifdef QGISDEBUG
     qWarning(sql);
 #endif
     //send sql statement and do error handling
-    PGresult* result=PQexec(connection, (const char *)sql);
+    PGresult* result=PQexec(connection, (const char *)(sql.utf8()));
     if(result==0)
     {
       returnvalue=false;
@@ -1692,12 +1758,12 @@ bool QgsPostgresProvider::deleteAttributes(std::set<QString> const & name)
   PQexec(connection,"BEGIN");
   for(std::set<QString>::const_iterator iter=name.begin();iter!=name.end();++iter)
   {
-    QString sql="ALTER TABLE \""+tableName+"\" DROP COLUMN "+(*iter);
+    QString sql="ALTER TABLE "+schemaTableName+" DROP COLUMN "+(*iter);
 #ifdef QGISDEBUG
     qWarning(sql);
 #endif
     //send sql statement and do error handling
-    PGresult* result=PQexec(connection, (const char *)sql);
+    PGresult* result=PQexec(connection, (const char *)(sql.utf8()));
     if(result==0)
     {
       returnvalue=false;
@@ -1751,7 +1817,7 @@ bool QgsPostgresProvider::changeAttributeValues(std::map<int,std::map<QString,QS
         value.append("'");
       }
 
-      QString sql="UPDATE \""+tableName+"\" SET "+(*siter).first+"="+value+" WHERE " +primaryKey+"="+QString::number((*iter).first);
+      QString sql="UPDATE "+schemaTableName+" SET "+(*siter).first+"="+value+" WHERE " +primaryKey+"="+QString::number((*iter).first);
 #ifdef QGISDEBUG
       qWarning(sql);
 #endif
@@ -1791,6 +1857,11 @@ int QgsPostgresProvider::capabilities() const
 void QgsPostgresProvider::setSubsetString(QString theSQL)
 {
   sqlWhereClause=theSQL;
+  // Need to adjust the datasource URI since this gets stored back to the 
+  // project file when a save/saveAs is done. The sql statement is always the last
+  // part of the URI. 
+   mUri.sql = theSQL;
+   dataSourceUri = dataSourceUri.left(dataSourceUri.find("sql=")+ 4) + theSQL;
   // need to recalculate the number of features...
   getFeatureCount();
   calculateExtents();
@@ -1811,7 +1882,7 @@ long QgsPostgresProvider::getFeatureCount()
   std::cerr << "QgsPostgresProvider: Running SQL: " << 
     sql << std::endl;        
 #else                 
-  QString sql = "select count(*) from \"" + tableName + "\"";
+  QString sql = "select count(*) from " + schemaTableName;
 
   if(sqlWhereClause.length() > 0)
   {
@@ -1819,7 +1890,7 @@ long QgsPostgresProvider::getFeatureCount()
   }
 #endif
 
-  PGresult *result = PQexec(connection, (const char *) sql);
+  PGresult *result = PQexec(connection, (const char *) (sql.utf8()));
 
 #ifdef QGISDEBUG
   std::cerr << "QgsPostgresProvider: Approximate Number of features as text: " << 
@@ -1845,8 +1916,8 @@ void QgsPostgresProvider::calculateExtents()
   // get the approximate extent by retreiving the bounding box
   // of the first few items with a geometry
 
-  QString sql = "select box3d(" + geometryColumn + ") from \"" 
-    + tableName + "\" where ";
+  QString sql = "select box3d(" + geometryColumn + ") from " 
+    + schemaTableName + " where ";
 
   if(sqlWhereClause.length() > 0)
   {
@@ -1861,13 +1932,13 @@ void QgsPostgresProvider::calculateExtents()
     "xmin(extent(" + geometryColumn + ")) as xmin,"
     "ymax(extent(" + geometryColumn + ")) as ymax," 
     "ymin(extent(" + geometryColumn + ")) as ymin" 
-    " from \"" + tableName + "\"";
+    " from " + schemaTableName + "";
 #endif
 
 #ifdef QGISDEBUG 
-  qDebug("QgsPostgresProvider::calculateExtents - Getting approximate extent using: '" + sql + "'");
+  qDebug((const char*)(QString("QgsPostgresProvider::calculateExtents - Getting approximate extent using: '") + sql + "'").local8Bit());
 #endif
-  PGresult *result = PQexec(connection, (const char *) sql);
+  PGresult *result = PQexec(connection, (const char *) (sql.utf8()));
 
   // TODO: Guard against the result having no rows
 
@@ -1914,8 +1985,8 @@ void QgsPostgresProvider::calculateExtents()
 
   // get the extents
 
-  QString sql = "select extent(" + geometryColumn + ") from \"" + 
-    tableName + "\"";
+  QString sql = "select extent(" + geometryColumn + ") from " + 
+    schemaTableName;
   if(sqlWhereClause.length() > 0)
   {
     sql += " where " + sqlWhereClause;
@@ -1926,13 +1997,13 @@ void QgsPostgresProvider::calculateExtents()
     "xmin(extent(" + geometryColumn + ")) as xmin,"
     "ymax(extent(" + geometryColumn + ")) as ymax," 
     "ymin(extent(" + geometryColumn + ")) as ymin" 
-    " from \"" + tableName + "\"";
+    " from " + schemaTableName;
 #endif
 
 #ifdef QGISDEBUG 
-  qDebug("+++++++++QgsPostgresProvider::calculateExtents -  Getting extents using schema.table: " + sql);
+  qDebug((const char*)(QString("+++++++++QgsPostgresProvider::calculateExtents -  Getting extents using schema.table: ") + sql).local8Bit());
 #endif
-  PGresult *result = PQexec(connection, (const char *) sql);
+  PGresult *result = PQexec(connection, (const char *) (sql.utf8()));
   Q_ASSERT(PQntuples(result) == 1);
   std::string box3d = PQgetvalue(result, 0, 0);
 
@@ -2042,10 +2113,12 @@ bool QgsPostgresProvider::deduceEndian()
   // return data in the endian of the server
 
   QString firstOid = "select oid from pg_class where relname = '" + 
-    tableName + "'";
-  PGresult * oidResult = PQexec(connection, firstOid);
+    tableName + "' and relnamespace = (select oid from pg_namespace where nspname = '"
+    + mSchema + "')";
+  PGresult * oidResult = PQexec(connection, (const char*)(firstOid.utf8()));
   // get the int value from a "normal" select
   QString oidValue = PQgetvalue(oidResult,0,0);
+  PQclear(oidResult);
 
 #ifdef QGISDEBUG
   std::cerr << "Creating binary cursor" << std::endl;
@@ -2054,7 +2127,7 @@ bool QgsPostgresProvider::deduceEndian()
   // get the same value using a binary cursor
 
   PQexec(connection,"begin work");
-  QString oidDeclare = QString("declare oidcursor binary cursor for select oid from pg_class where relname = '%1'").arg(tableName);
+  QString oidDeclare = QString("declare oidcursor binary cursor for select oid from pg_class where relname = '%1' and relnamespace = (select oid from pg_namespace where nspname = '%2'").arg(tableName).arg(mSchema);
   // set up the cursor
   PQexec(connection, (const char *)oidDeclare);
   QString fetch = "fetch forward 1 from oidcursor";
@@ -2095,7 +2168,7 @@ bool QgsPostgresProvider::getGeometryDetails()
   std::cerr << "Getting geometry column: " + sql << std::endl;
 #endif
 
-  PGresult *result = PQexec(connection, (const char *) sql);
+  PGresult *result = PQexec(connection, (const char *) (sql.utf8()));
 
   if (PQntuples(result) > 0)
   {
@@ -2126,10 +2199,10 @@ bool QgsPostgresProvider::getGeometryDetails()
 
     sql = "select "
       "srid("         + geometryColumn + "), "
-      "geometrytype(" + geometryColumn + ") from \"" + 
-      tableName + "\" limit 1";
+      "geometrytype(" + geometryColumn + ") from " + 
+      schemaTableName + " limit 1";
 
-    result = PQexec(connection, (const char*) sql);
+    result = PQexec(connection, (const char*) (sql.utf8()));
 
     if (PQntuples(result) > 0)
     {

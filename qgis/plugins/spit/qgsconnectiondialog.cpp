@@ -26,7 +26,7 @@ extern "C"
 }
 
 #include "qgsconnectiondialog.h"
-#include "qgsmessageviewer.h"
+#include <qgsmessageviewer.h>
 
 QgsConnectionDialog::QgsConnectionDialog (QWidget* parent, QString connName, bool modal, WFlags fl)
 	: QgsConnectionDialogBase(parent,(const char *)connName,modal,fl)
@@ -102,7 +102,8 @@ void QgsConnectionDialog::saveConnection()
 
 void QgsConnectionDialog::helpInfo(){
   QString message = "General Interface Help:\n\n";
-  QgsMessageViewer * e = new QgsMessageViewer(this, "HelpMessage");
+  QgsMessageViewer * e = new QgsMessageViewer(this);
+  e->setCaption(tr("SPIT - Help"));
   e->setMessage(message);
   e->exec();
 }

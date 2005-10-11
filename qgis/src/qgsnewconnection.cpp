@@ -21,6 +21,7 @@
 #include <qcheckbox.h>
 #include <qmessagebox.h>
 #include "qgsnewconnection.h"
+#include "qgscontexthelp.h"
 extern "C"
 {
 #include <libpq-fe.h>
@@ -77,7 +78,7 @@ void QgsNewConnection::testConnection()
     " port=" + txtPort->text() +
     " user=" + txtUsername->text() + 
     " password=" + txtPassword->text();
-  PGconn *pd = PQconnectdb((const char *) connInfo);
+  PGconn *pd = PQconnectdb(connInfo.local8Bit());
 //  std::cout << pd->ErrorMessage();
   if (PQstatus(pd) == CONNECTION_OK)
     {
@@ -112,7 +113,10 @@ void QgsNewConnection::saveConnection()
     }
   accept();
 }
-
+void QgsNewConnection::helpInfo()
+{
+  QgsContextHelp::run(context_id);
+}
 /* void QgsNewConnection::saveConnection()
 {
 	QSettings settings;

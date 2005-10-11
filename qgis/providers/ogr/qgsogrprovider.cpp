@@ -63,7 +63,7 @@ QgsOgrProvider::QgsOgrProvider(QString uri): QgsVectorDataProvider(), dataSource
   mSelectionRectangle = 0;
   // make connection to the data source
 #ifdef QGISDEBUG
-  std::cerr << "Data source uri is " << uri << std::endl;
+  std::cerr << "Data source uri is " << uri.local8Bit() << std::endl;
 #endif
   // try to open for update
   ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.local8Bit(),TRUE);
@@ -105,9 +105,12 @@ QgsOgrProvider::QgsOgrProvider(QString uri): QgsVectorDataProvider(), dataSource
       for(int i=0;i<fdef->GetFieldCount();++i)
       {
         OGRFieldDefn *fldDef = fdef->GetFieldDefn(i);
-        attributeFields.push_back(QgsField(
-              fldDef->GetNameRef(), 
-              fldDef->GetFieldTypeName(fldDef->GetType()),
+        QString fieldName = mEncoding->toUnicode(fldDef->GetNameRef());
+        std::cout << "Adding field with name " << fieldName.local8Bit() << ", "
+                  << "decoded from " << mEncoding->name() << std::endl;
+
+        attributeFields.push_back(QgsField(fieldName, 
+              mEncoding->toUnicode(fldDef->GetFieldTypeName(fldDef->GetType())),
               fldDef->GetWidth(),
               fldDef->GetPrecision()));
       }
@@ -154,6 +157,29 @@ QgsOgrProvider::~QgsOgrProvider()
   delete geometryFactory;
   delete wktReader;
 }
+
+void QgsOgrProvider::setEncoding(const QString& e)
+{
+    QgsVectorDataProvider::setEncoding(e);
+
+    //the attribute fields need to be read again when the encoding changes
+    attributeFields.clear();
+    OGRFeatureDefn* fdef = ogrLayer->GetLayerDefn();
+    if(fdef)
+    {
+      geomType = fdef->GetGeomType();
+      for(int i=0;i<fdef->GetFieldCount();++i)
+      {
+        OGRFieldDefn *fldDef = fdef->GetFieldDefn(i);
+        attributeFields.push_back(QgsField(
+              mEncoding->toUnicode(fldDef->GetNameRef()), 
+              mEncoding->toUnicode(fldDef->GetFieldTypeName(fldDef->GetType())),
+              fldDef->GetWidth(),
+              fldDef->GetPrecision()));
+      }
+    }
+}
+
 QString QgsOgrProvider::getProjectionWKT()
 { 
 #ifdef QGISDEBUG 
@@ -172,12 +198,12 @@ QString QgsOgrProvider::getProjectionWKT()
     // if appropriate, morph the projection from ESRI form
     QString fileName = ogrDataSource->GetName();
 #ifdef QGISDEBUG 
-    std::cerr << "Data source file name is : " << fileName << std::endl; 
+    std::cerr << "Data source file name is : " << fileName.local8Bit() << std::endl; 
 #endif 
     if(fileName.contains(".shp"))
     {
 #ifdef QGISDEBUG 
-      std::cerr << "Morphing " << fileName << " WKT from ESRI" << std::endl; 
+      std::cerr << "Morphing " << fileName.local8Bit() << " WKT from ESRI" << std::endl; 
 #endif 
       // morph it
       mySpatialRefSys->morphFromESRI();
@@ -225,7 +251,7 @@ QgsFeature * QgsOgrProvider::getFirstFeature(bool fetchAttributes)
     else
     {
 #ifdef QGISDEBUG
-      std::cerr << "First feature is null\n";
+      std::cerr << "First feature is null " << __FILE__ << " " << __LINE__ << "\n";
 
 #endif
       return 0x0;               // so return a null feature indicating that we got a null feature
@@ -274,12 +300,13 @@ bool QgsOgrProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
     // skip features without geometry
     OGRFeature *fet;
     while ((fet = ogrLayer->GetNextFeature()) != NULL) {
-      if (fet->GetGeometryRef())
+      OGRGeometry *geo = fet->GetGeometryRef();
+      if(geo->WkbSize() > 0){
         break;
+      }
     }
     if(fet){
       OGRGeometry *geom = fet->GetGeometryRef();
-
       // get the wkb representation
       unsigned char *feature = new unsigned char[geom->WkbSize()];
       geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
@@ -302,7 +329,7 @@ bool QgsOgrProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
       returnValue = true;
     }else{
 #ifdef QGISDEBUG
-      std::cerr << "Feature is null\n";
+      std::cerr << "Feature is null " << __FILE__ << " " << __LINE__ << "\n";
       f.setValid(false);
       returnValue = false;
 #endif
@@ -342,6 +369,7 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
 	   geom = fet->GetGeometryRef();
 	   // get the wkb representation
 	   unsigned char *feature = new unsigned char[geom->WkbSize()];
+     
 	   geom->exportToWkb((OGRwkbByteOrder) endian(), feature);
 	   OGRFeatureDefn * featureDefinition = fet->GetDefnRef();
 	   QString featureTypeName =   featureDefinition ? QString(featureDefinition->GetName()) : QString("");
@@ -352,39 +380,86 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
 	   {
 	       getFeatureAttributes(fet, f);
 	   }
-	   delete fet;
 
 	   if(mUseIntersect)
 	   {
-	       geos::Geometry* geosGeom=f->geosGeometry();
-	       char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
-	       mSelectionRectangle->exportToWkt(&sWkt);  
-	       geos::Geometry *geosRect = wktReader->read(sWkt);
-	       if(geosGeom->intersects(geosRect))
-	       {
+                   geos::Geometry *geosGeom = 0;
+                   // XXX This if/else block fixes the endian issue on 
+                   //     XDR (big endian) platforms for release 0.7. This
+                   //     code should be revisited to see if there is a more
+                   //     efficient way to create the geos geometry and to push
+                   //     the job down to QgsFeature instead of the mix we have
+                   //     here. The side-effect of this fix is extremely slow
+                   //     performance on when identifying or selecting multipart
+                   //     features on XDR platforms.
+                   if (endian() == QgsDataProvider::XDR)
+                   {
+                           // big endian -- use wkt method
+                           geom  =  fet->GetGeometryRef();
+                           char *wkt = new char[2 * f->getGeometrySize()];
+                           assert(wkt != 0);
+                           geom->exportToWkt(&wkt);
+                           geosGeom = wktReader->read(wkt);
+                   }
+                   else
+                   {
+                           // little endian -- use QgsFeature method
+                           geosGeom=f->geosGeometry();
+                   }
+                   assert(geosGeom != 0);
+         
+                   char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
+                   mSelectionRectangle->exportToWkt(&sWkt);  
+                   geos::Geometry *geosRect = wktReader->read(sWkt);
+                   assert(geosRect != 0);
+                   // If we get an exception from geos::nitersects, it
+                   // probably means the feature has unspoorted geometry.
+                   // Let's ignore those features for now.
 #ifdef QGISDEBUG
-		   qWarning("intersection found");
+                   // isValid() crashes...
+                   // if(!geosGeom->isValid()) std::cout << "Geos deems this geometry invalid!" << std::endl;
 #endif
-		   delete[] sWkt;
-		   delete geosGeom;
-		   break;
-	       }
-	       else
-	       {
+                   geosGeom->normalize();
+                   try
+                   {
+                           if(geosRect->intersects(geosGeom))
+                           {
 #ifdef QGISDEBUG
-		   qWarning("no intersection found");
+                                   qWarning("intersection found");
 #endif
-		   delete[] sWkt;
-		   delete geosGeom;
-		   delete f;
-		   f=0;
-	       }
-	   }
-	   else
-	   {
-	       break;
-	   }
+                                   delete[] sWkt;
+                                   delete geosGeom;
+                                   break;
+                           }
+                           else
+                           {
+#ifdef QGISDEBUG
+                                   qWarning("no intersection found");
+#endif
+                                   delete[] sWkt;
+                                   delete geosGeom;
+                                   delete f;
+                                   f=0;
+                           }
+                   }
+                   catch(...)
+                   {
+#ifdef QGISDEBUG
+                           std::cout << "Feture makes geos::intersect() vomit. Ignore."
+                                     << /*std::endl << geosGeom->toString() <<*/ std::endl;
+#endif
+                           delete[] sWkt;
+                           delete geosGeom;
+                           delete f;
+                           f=0;                           
+                   }
+           }
+           else
+           {
+                   break;
+           }
        }
+       delete fet;
    }
    return f;
 }
@@ -479,8 +554,14 @@ QgsFeature *QgsOgrProvider::getNextFeature(std::list<int> const& attlist)
   {
     // skip features without geometry
     OGRFeature *fet;
-    while ((fet = ogrLayer->GetNextFeature()) != NULL) {
-
+    bool goodFeature = false;
+    while (!goodFeature && ((fet = ogrLayer->GetNextFeature()) != NULL)) {
+      // Test of null features
+      OGRGeometry *geo = fet->GetGeometryRef();
+      if(geo->WkbSize() > 0){
+        goodFeature = true;
+      }
+/*
       if (fet->GetGeometryRef())
       {
         if(mUseIntersect)
@@ -499,6 +580,7 @@ QgsFeature *QgsOgrProvider::getNextFeature(std::list<int> const& attlist)
           break;
         }
       }
+      */
     }
     if(fet)
     {
@@ -522,7 +604,7 @@ QgsFeature *QgsOgrProvider::getNextFeature(std::list<int> const& attlist)
     else
     {
 #ifdef QGISDEBUG
-      std::cerr << "Feature is null\n";
+      std::cerr << "Feature is null " << __FILE__ << " " << __LINE__ << "\n";
 #endif  
       // probably should reset reading here
       ogrLayer->ResetReading();
@@ -554,7 +636,8 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
   OGRGeometry *filter = 0;
   filter = new OGRPolygon();
   QString wktExtent = QString("POLYGON ((%1))").arg(rect->asPolygon());
-  const char *wktText = (const char *)wktExtent;
+  const char *wktText = (const char *)wktExtent.ascii(); //Why does this not work with local8Bit()?
+  char *pWkt = (char *)wktText;
 
   if(useIntersect)
   {
@@ -562,25 +645,25 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
     // an identify and display attributes
     //    delete mSelectionRectangle;
     mSelectionRectangle = new OGRPolygon();
-    mSelectionRectangle->importFromWkt((char **)&wktText);
+    mSelectionRectangle->importFromWkt(&pWkt);
   }
 
   // reset the extent for the ogr filter
-  wktExtent = QString("POLYGON ((%1))").arg(rect->asPolygon());
-  wktText = (const char *)wktExtent;
-
-  OGRErr result = ((OGRPolygon *) filter)->importFromWkt((char **)&wktText);
+  //wktExtent = QString("POLYGON ((%1))").arg(rect->asPolygon());
+  //wktText = (const char *)wktExtent.latin1();
+  pWkt = (char *)wktText;
+  OGRErr result = ((OGRPolygon *) filter)->importFromWkt(&pWkt);
   //TODO - detect an error in setting the filter and figure out what to
   //TODO   about it. If setting the filter fails, all records will be returned
   if (result == OGRERR_NONE) 
   {
-    std::cerr << "Setting spatial filter using " << wktExtent   << std::endl;
+    std::cerr << "Setting spatial filter using " << wktExtent.local8Bit()   << std::endl;
     ogrLayer->SetSpatialFilter(filter);
     //ogrLayer->SetSpatialFilterRect(rect->xMin(), rect->yMin(), rect->xMax(), rect->yMax());
   }else{
 #ifdef QGISDEBUG    
-    std::cerr << "Setting spatial filter failed!" << std::endl;
-    assert(result==OGRERR_NONE);
+    std::cerr << "Setting spatial filter failed with error code : " << result << std::endl;
+    //assert(result==OGRERR_NONE);
 #endif
   }
 } // QgsOgrProvider::select
@@ -676,7 +759,7 @@ void QgsOgrProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature * f, in
     return;
   }
 
-  QString fld = fldDef->GetNameRef();
+  QString fld = mEncoding->toUnicode(fldDef->GetNameRef());
   QCString cstr(ogrFet->GetFieldAsString(attindex));
   f->addAttribute(fld, mEncoding->toUnicode(cstr));
 }
@@ -901,7 +984,7 @@ bool QgsOgrProvider::addFeature(QgsFeature* f)
   {
     QString s=(f->attributeMap())[i].fieldValue();
 #ifdef QGISDEBUG
-    qWarning("adding attribute: "+s);
+    qWarning("%s%s", "adding attribute: ", (const char *)s.local8Bit());
 #endif
     if(!s.isEmpty())
     {
@@ -909,21 +992,21 @@ bool QgsOgrProvider::addFeature(QgsFeature* f)
       {
         feature->SetField(i,s.toInt());
 #ifdef QGISDEBUG
-        qWarning("OFTInteger, attribute value: "+s.toInt());
+        qWarning("%s%d", "OFTInteger, attribute value: ", s.toInt());
 #endif
       }
       else if(fdef->GetFieldDefn(i)->GetType()==OFTReal)
       {
         feature->SetField(i,s.toDouble());
 #ifdef QGISDEBUG
-        qWarning("OFTReal, attribute value: "+QString::number(s.toDouble(),'f',3));
+        qWarning("%s%f", "OFTReal, attribute value: ", s.toDouble());
 #endif
       }
       else if(fdef->GetFieldDefn(i)->GetType()==OFTString)
       {
-	  feature->SetField(i,s.ascii());
+	  feature->SetField(i,mEncoding->fromUnicode(s));
 #ifdef QGISDEBUG
-        qWarning("OFTString, attribute value: "+QString(s.ascii()));
+        qWarning("%s%s", "OFTString, attribute value: ", (const char *)s.local8Bit());
 #endif
       }
       else
@@ -969,7 +1052,7 @@ bool QgsOgrProvider::addAttributes(std::map<QString,QString> const & name)
     {
 	if(iter->second=="OFTInteger")
 	{
-	    OGRFieldDefn fielddefn(iter->first,OFTInteger);
+	    OGRFieldDefn fielddefn(mEncoding->fromUnicode((iter->first)),OFTInteger);
 	    if(ogrLayer->CreateField(&fielddefn)!=OGRERR_NONE)
 	    {
 #ifdef QGISDEBUG
@@ -980,7 +1063,7 @@ bool QgsOgrProvider::addAttributes(std::map<QString,QString> const & name)
 	}
 	else if(iter->second=="OFTReal")
 	{
-	    OGRFieldDefn fielddefn(iter->first,OFTReal);
+	    OGRFieldDefn fielddefn(mEncoding->fromUnicode(iter->first),OFTReal);
 	    if(ogrLayer->CreateField(&fielddefn)!=OGRERR_NONE)
 	    {
 #ifdef QGISDEBUG
@@ -991,7 +1074,7 @@ bool QgsOgrProvider::addAttributes(std::map<QString,QString> const & name)
 	}
 	else if(iter->second=="OFTString")
 	{
-	    OGRFieldDefn fielddefn(iter->first,OFTString);
+	    OGRFieldDefn fielddefn(mEncoding->fromUnicode(iter->first),OFTString);
 	    if(ogrLayer->CreateField(&fielddefn)!=OGRERR_NONE)
 	    {
 #ifdef QGISDEBUG
@@ -1040,11 +1123,11 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
 	for ( int f = 0; f < fc; f++ ) {
 	    OGRFieldDefn *fd = of->GetFieldDefnRef ( f );
 	    
-	    if ( name.compare( fd->GetNameRef() ) == 0 ) {
+	    if ( name.compare( mEncoding->toUnicode(fd->GetNameRef()) ) == 0 ) {
 		OGRFieldType type = fd->GetType();
 
 #ifdef QGISDEBUG
-		std::cerr << "set field " << f << " : " << name << " to " << value << std::endl;
+		std::cerr << "set field " << f << " : " << name.local8Bit() << " to " << value.local8Bit() << std::endl;
 #endif
 		switch ( type ) {
 		    case OFTInteger:
@@ -1054,7 +1137,7 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
 		        of->SetField ( f, value.toDouble() );
 			break;
 		    case OFTString:
-		        of->SetField ( f, value.ascii() );
+		        of->SetField ( f, mEncoding->fromUnicode(value) );
 			break;
 		    default:
                         QMessageBox::warning (0, "Warning", "Unknown field type, cannot change attribute" );
@@ -1079,6 +1162,9 @@ bool QgsOgrProvider::createSpatialIndex()
     QString filename=dataSourceUri.section('/',-1,-1);//todo: find out the filename from the uri
     QString layername=filename.section('.',0,0);
     QString sql="CREATE SPATIAL INDEX ON "+layername;
+#ifdef QGISDEBUG
+  qDebug("Creating spatial index using: " + sql);
+#endif
     ogrDataSource->ExecuteSQL (sql.ascii(), ogrLayer->GetSpatialFilter(),"");
     //todo: find out, if the .qix file is there
     QString indexname=dataSourceUri;
@@ -1150,19 +1236,19 @@ QGISEXTERN bool createEmptyDataSource(const QString& uri,const QString& format, 
   {
     return false;
   }
-  OGRSFDriver* driver = driverregist->GetDriverByName(mOutputFormat);
+  OGRSFDriver* driver = driverregist->GetDriverByName(mOutputFormat.local8Bit());
   if(driver==0)
   {
     return false;
   }
-  OGRDataSource* datasource = driver->CreateDataSource(mOutputFileName,NULL);
+  OGRDataSource* datasource = driver->CreateDataSource(mOutputFileName.local8Bit(),NULL);
   if(datasource==0)
   {
     return false;
   }
 
   OGRSpatialReference reference;
-  OGRLayer* layer = datasource->CreateLayer(outname.latin1(),&reference,geomtype,NULL);
+  OGRLayer* layer = datasource->CreateLayer(outname.local8Bit(),&reference,geomtype,NULL);
   if(layer==0)
   {
     return false;
@@ -1179,7 +1265,7 @@ QGISEXTERN bool createEmptyDataSource(const QString& uri,const QString& format, 
 
   int count=layer->GetLayerDefn()->GetFieldCount();
 #ifdef QGISDEBUG
-  qWarning("Field count is: "+QString::number(count));
+  qWarning("Field count is: "+QString::number(count).local8Bit());
 #endif
   //just for a test: create a dummy featureO
   /*OGRFeatureDefn* fdef=layer->GetLayerDefn();
@@ -1210,7 +1296,7 @@ QGISEXTERN bool createEmptyDataSource(const QString& uri,const QString& format, 
     return false;
     }
 
-    OGRDataSourceH mDataSourceHandle = OGR_Dr_CreateDataSource( myDriverHandle, mOutputFileName, NULL );
+    OGRDataSourceH mDataSourceHandle = OGR_Dr_CreateDataSource( myDriverHandle, mOutputFileName.local8Bit(), NULL );
     if( mDataSourceHandle == NULL )
     {
     std::cout << "Datasource handle is null! " << std::endl;

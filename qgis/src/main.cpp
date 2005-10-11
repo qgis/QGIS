@@ -25,6 +25,7 @@
 #endif
 
 #include <qapplication.h>
+#include <qdir.h>
 #include <qfont.h>
 #include <qfile.h>
 #include <qfileinfo.h>
@@ -35,6 +36,10 @@
 #include <qstyle.h>
 #include <qpixmap.h>
 #include <qstringlist.h> 
+
+#ifdef Q_OS_MACX
+#include <ApplicationServices/ApplicationServices.h>
+#endif
 
 #include "qgisapp.h"
 #include "qgsexception.h"
@@ -67,6 +72,82 @@ void usage( std::string const & appName )
 } // usage()
 
 
+/////////////////////////////////////////////////////////////////
+// Command line options 'behaviour' flag setup
+////////////////////////////////////////////////////////////////
+
+// These two are global so that they can be set by the OpenDocuments
+// AppleEvent handler as well as by the main routine argv processing
+
+// This behaviour will cause QGIS to autoload a project
+static QString myProjectFileName="";
+
+// This is the 'leftover' arguments collection
+static QStringList myFileList;
+
+
+#ifdef Q_OS_MACX
+/* Mac OS OpenDocuments AppleEvent handler called when files are double-clicked.
+ * May be called at startup before application is initialized as well as
+ * at any time while the application is running.
+ */
+short openDocumentsAEHandler(const AppleEvent *event, AppleEvent *reply, long refCon)
+{
+  AEDescList docs;
+  if (AEGetParamDesc(event, keyDirectObject, typeAEList, &docs) == noErr)
+  {
+    // Get count of files to open
+    long count = 0;
+    AECountItems(&docs, &count);
+
+    // Examine files and load first project file followed by all other non-project files
+    myProjectFileName.truncate(0);
+    myFileList.clear();
+    for (int i = 0; i < count; i++)
+    {
+      FSRef ref;
+      UInt8 strBuffer[256];
+      if (AEGetNthPtr(&docs, i + 1, typeFSRef, 0, 0, &ref, sizeof(ref), 0) == noErr &&
+          FSRefMakePath(&ref, strBuffer, 256) == noErr)
+      {
+        QString fileName(QString::fromUtf8(reinterpret_cast<char *>(strBuffer)));
+        if (fileName.endsWith(".qgs"))
+        {
+          // Load first project file and ignore all other project files
+          if (myProjectFileName.isEmpty())
+          {
+            myProjectFileName = fileName;
+          }
+        }
+        else
+        {
+           // Load all non-project files
+           myFileList.append(fileName);
+        }
+      }
+    }
+
+    // Open files now if application has been initialized
+    QgisApp *qgis = dynamic_cast<QgisApp *>(qApp->mainWidget());
+    if (qgis)
+    {
+      if (!myProjectFileName.isEmpty())
+      {
+        qgis->openProject(myProjectFileName);
+      }
+      for (QStringList::Iterator myIterator = myFileList.begin();
+           myIterator != myFileList.end(); ++myIterator ) 
+      {
+        QString fileName = *myIterator;
+        qgis->openLayer(fileName);
+      }
+    }
+  }
+  return noErr;
+}
+#endif
+
+
 /* Test to determine if this program was started on Mac OS X by double-clicking
  * the application bundle rather then from a command line. If clicked, argv[1]
  * contains a process serial number in the form -psn_0_1234567. Don't process
@@ -95,15 +176,9 @@ int main(int argc, char *argv[])
   // save the image to disk and then exit
   QString mySnapshotFileName="";
 
-  // This behaviour will cause QGIS to autoload a project
-  QString myProjectFileName="";
-
   // This behaviour will allow you to force the use of a translation file
   // which is useful for testing
-  QString myTranslationFileName="";
-
-  // This is the 'leftover' arguments collection
-  QStringList * myFileList=new QStringList();
+  QString myTranslationCode="";
 
 #ifndef WIN32
   if ( !bundleclicked(argc, argv) )
@@ -151,15 +226,15 @@ int main(int argc, char *argv[])
       break;
 
     case 's':
-      mySnapshotFileName = optarg;
+      mySnapshotFileName = QDir::convertSeparators(QFileInfo(QFile::decodeName(optarg)).absFilePath());
       break;
 
     case 'l':
-      myTranslationFileName = optarg;
+      myTranslationCode = optarg;
       break;
 
     case 'p':
-      myProjectFileName = optarg;
+      myProjectFileName = QDir::convertSeparators(QFileInfo(QFile::decodeName(optarg)).absFilePath());
       break;
 
     case 'h':
@@ -187,7 +262,7 @@ int main(int argc, char *argv[])
     int idx = optind;
     std::cout << idx << ": " << argv[idx] << std::endl;
 #endif
-    myFileList->append(argv[optind++]);
+    myFileList.append(QDir::convertSeparators(QFileInfo(QFile::decodeName(argv[optind++])).absFilePath()));
     }
   }
   }
@@ -212,6 +287,15 @@ int main(int argc, char *argv[])
     exit(1); //exit for now until a version of qgis is capabable of running non interactive
   }
   QApplication a(argc, argv, myUseGuiFlag );
+
+#ifdef Q_OS_MACX
+  // Install OpenDocuments AppleEvent handler after application object is initialized
+  // but before any other event handling (including dialogs or splash screens) occurs.
+  // If an OpenDocuments event has been created before the application was launched,
+  // it must be handled before some other event handler runs and dismisses it as unknown.
+  // If run at startup, the handler will set either or both of myProjectFileName and myFileList.
+  AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, openDocumentsAEHandler, 0, false);
+#endif
 
   // Check to see if qgis was started from the source directory. 
   // This is done by looking for Makefile in the directory where qgis was
@@ -253,25 +337,35 @@ int main(int argc, char *argv[])
   QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
 
-  QTranslator tor(0);
-
-  // For WIN32, get the locale
-  if (myTranslationFileName!="")
+  QString i18nPath = QString(PKGDATAPATH) + "/i18n";
+  if (myTranslationCode.isEmpty())
   {
-    QString translation = "qgis_" + myTranslationFileName;
-    tor.load(translation, QString(PKGDATAPATH) + "/i18n");
-  } 
-  else
-  {
+    myTranslationCode = QTextCodec::locale();
+  }
 #ifdef QGISDEBUG
-    std::cout << "Setting translation to " 
-      << PKGDATAPATH << "/i18n/qgis_" << QTextCodec::locale() << std::endl; 
+  std::cout << "Setting translation to "
+    << i18nPath.local8Bit() << "/qgis_" << myTranslationCode.local8Bit() << std::endl;
 #endif
-    tor.load(QString("qgis_") + QTextCodec::locale(), QString(PKGDATAPATH) + "/i18n");
+
+  /* Translation file for Qt.
+   * The strings from the QMenuBar context section are used by Qt/Mac to shift
+   * the About, Preferences and Quit items to the Mac Application menu.
+   * These items must be translated identically in both qt_ and qgis_ files.
+   */
+  QTranslator qttor(0);
+  if (qttor.load(QString("qt_") + myTranslationCode, i18nPath))
+  {
+    a.installTranslator(&qttor);
   }
 
-  //tor.load("qgis_go", "." );
-  a.installTranslator(&tor);
+  /* Translation file for QGIS.
+   */
+  QTranslator qgistor(0);
+  if (qgistor.load(QString("qgis_") + myTranslationCode, i18nPath))
+  {
+    a.installTranslator(&qgistor);
+  }
+
   /* uncomment the following line, if you want a Windows 95 look */
   //a.setStyle("Windows");
 
@@ -291,10 +385,10 @@ int main(int argc, char *argv[])
     // check for a .qgs
     for(int i = 0; i < argc; i++)
     {
-      QString arg = argv[i];
+      QString arg = QDir::convertSeparators(QFileInfo(QFile::decodeName(argv[i])).absFilePath());
       if(arg.contains(".qgs"))
       {
-        myProjectFileName = argv[i];
+        myProjectFileName = arg;
         break;
       }
     }
@@ -305,27 +399,7 @@ int main(int argc, char *argv[])
   /////////////////////////////////////////////////////////////////////
   if( ! myProjectFileName.isEmpty() )
   {
-//       if ( ! qgis->addProject(myProjectFileName) )
-//       {
-// #ifdef QGISDEBUG
-//           std::cerr << "unable to load project " << myProjectFileName << "\n";
-// #endif
-//       }
-      try
-      {
-          if ( ! qgis->addProject(myProjectFileName) )
-          {
-#ifdef QGISDEBUG
-           std::cerr << "unable to load project " << myProjectFileName << "\n";
-#endif
-          }
-      }
-      catch ( QgsIOException & io_exception )
-      {
-          QMessageBox::critical( 0x0, 
-                                 "QGIS: Unable to load project", 
-                                 "Unable to load project " + myProjectFileName );
-      }
+    qgis->openProject(myProjectFileName);
   }
 
 
@@ -333,33 +407,20 @@ int main(int argc, char *argv[])
   // autoload any filenames that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
 #ifdef QGISDEBUG
-  std::cout << "Number of files in myFileList: " << myFileList->count() << std::endl;
+  std::cout << "Number of files in myFileList: " << myFileList.count() << std::endl;
 #endif
-  for ( QStringList::Iterator myIterator = myFileList->begin(); myIterator != myFileList->end(); ++myIterator ) 
+  for ( QStringList::Iterator myIterator = myFileList.begin(); myIterator != myFileList.end(); ++myIterator ) 
   {
 
 
 #ifdef QGISDEBUG
-    std::cout << "Trying to load file : " << *myIterator << std::endl;
+    std::cout << "Trying to load file : " << (*myIterator).local8Bit() << std::endl;
 #endif
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files
     if(!myLayerName.contains(".qgs"))
     {
-      // try to add all these layers - any unsupported file types will
-      // be rejected automatically
-      // The funky bool ok is so this can be debugged a bit easier...
-
-      //nope - try and load it as raster
-      bool ok = qgis->addRasterLayer(QFileInfo(myLayerName), false);
-      if(!ok){
-        //nope - try and load it as a shape/ogr
-        ok = qgis->addLayer(QFileInfo(myLayerName));
-        //we have no idea what this layer is...
-        if(!ok){
-          std::cout << "Unable to load " << myLayerName << std::endl;
-        }
-      }
+      qgis->openLayer(myLayerName);
     }
   }
 

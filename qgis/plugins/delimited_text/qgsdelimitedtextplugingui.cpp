@@ -23,6 +23,7 @@
 #include <qfileinfo.h>
 #include <qregexp.h>
 #include <qmessagebox.h>
+#include <qurl.h>
 #include "qgsdelimitedtextplugingui.h"
 #include "../../src/qgisiface.h"
 
@@ -46,14 +47,32 @@ QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
 
 void QgsDelimitedTextPluginGui::pbnOK_clicked()
 {
+  QString filePath =  txtFilePath->text();
+  QString delimiter = txtDelimiter->text();
+  QString xField =    cmbXField->currentText();
+  QString yField =    cmbYField->currentText();
+
+  // Encode the parts of the uri. Good if someone entered '=' as a delimiter, for instance.
+#ifdef QGISDEBUG
+  std::cout << "Path : " << (const char *)filePath.local8Bit() << std::endl
+            << "Delim: " << (const char *)delimiter.local8Bit() << std::endl
+            << "X    : " << (const char *)xField.local8Bit() << std::endl
+            << "Y    : " << (const char *)yField.local8Bit() << std::endl;
+#endif
+  QUrl::encode(filePath);
+  QUrl::encode(delimiter);
+  QUrl::encode(xField);
+  QUrl::encode(yField);
+#ifdef QGISDEBUG
+  std::cout << "Path : " << (const char *)filePath.local8Bit() << std::endl
+            << "Delim: " << (const char *)delimiter.local8Bit() << std::endl
+            << "X    : " << (const char *)xField.local8Bit() << std::endl
+            << "Y    : " << (const char *)yField.local8Bit() << std::endl;
+#endif
   if(txtLayerName->text().length() > 0)
   {
     //Build the delimited text URI from the user provided information
-    QString uri = QString("%1?delimiter=%2&xField=%3&yField=%4")
-      .arg(txtFilePath->text())
-      .arg(txtDelimiter->text())
-      .arg(cmbXField->currentText())
-      .arg(cmbYField->currentText());
+    QString uri = QString(filePath + "?delimiter=" + delimiter + "&xField=" + xField + "&yField=" + yField);
     std::cerr << "Adding layer using " << uri << std::endl; 
     // add the layer to the map
     emit drawVectorLayer(uri,txtLayerName->text(),"delimitedtext");

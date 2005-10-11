@@ -4,6 +4,10 @@
 AM_1=1
 AM_2=7
 AM_3=2
+if [[ ! $(which "automake") ]]; then
+    echo "you don't have automake"
+    exit 0
+fi
 
 # Autoconfversion
 AC_1=2
@@ -21,15 +25,26 @@ if [ "`uname`" = "Darwin" ]; then
 	LIBTOOLIZE=glibtoolize
 fi
 
+if [[ ! $(which "$LIBTOOL") ]]; then
+    echo "You don't have (g)libtool.  We recommend version >= $LT_1.$LT_2"
+    exit 0
+fi
+
 # Check automake version
-AM_VERSION=`automake --version | sed -n -e 's#[^0-9]* \([0-9]*\)\.\([0-9]*\)\.\([0-9]*\).*$#\1 \2 \3#p'`
+AM_VERSION=`automake --version | sed -n -e 's#[^0-9]* \([0-9]*\)\.\([0-9]*\)[.-][^0-9]*\([0-9]*\).*$#\1 \2 \3#p'`
 AM_V1=`echo $AM_VERSION | awk '{print $1}'`
 AM_V2=`echo $AM_VERSION | awk '{print $2}'`
 AM_V3=`echo $AM_VERSION | awk '{print $3}'`
 
-if [ $AM_1 -gt $AM_V1 ]; then
-	AM_ERROR=1 
+if [ "x$AM_VERSION" == "x" ]; then
+    echo "Couldn't determine the version of your automake."
+    echo "Looks like our sed script is broken"
+    AM_ERROR=1
 else
+
+   if [ $AM_1 -gt $AM_V1 ]; then
+	AM_ERROR=1 
+   else
 	if [ $AM_1 -eq $AM_V1 ]; then
 		if [ $AM_2 -gt $AM_V2 ]; then
 			AM_ERROR=1 
@@ -41,15 +56,14 @@ else
 			fi
 		fi
 	fi
+   fi
 fi
 
 if [ "$AM_ERROR" = "1" ]; then
-	echo -e  '\E[31;m'
-	echo -n "Your automake version `automake --version | sed -n -e 's#[^0-9]* \([0-9]*\.[0-9]*\.[0-9]*\).*#\1#p'`"
+	echo -n "Your automake version $AM_V1.$AM_V2.$AM_V3"
 	echo " is older than the suggested one, $AM_1.$AM_2.$AM_3"
 	echo "Go on at your own risk. :-)"
 	echo
-	tput sgr0
 fi
 
 # Check autoconf version
@@ -68,12 +82,10 @@ else
 fi
 
 if [ "$AC_ERROR" = "1" ]; then
-	echo -e  '\E[31;m'
-	echo -n "Your autoconf version `autoconf --version | sed -n -e 's#[^0-9]* \([0-9]*\.[0-9]*\).*#\1#p'`"
+	echo -n "Your autoconf version $AC_V1.$AC_V2"
 	echo " is older than the suggested one, $AC_1.$AC_2"
 	echo "Go on at your own risk. :-)"
 	echo
-	tput sgr0
 fi
 
 # Check libtool version
@@ -92,12 +104,10 @@ else
 fi
 
 if [ "$LT_ERROR" = "1" ]; then
-	echo -e  '\E[31;m'
-	echo -n "Your libtool version `$LIBTOOL --version | sed -n -e 's#[^0-9]* \([0-9]*\.[0-9]*\).*#\1#p'`"
+	echo -n "Your libtool version $LT_V1.$LT_V2"
 	echo " is older than the suggested one, $LT_1.$LT_2"
 	echo "Go on at your own risk. :-)"
 	echo
-	tput sgr0
 fi
 
 echo Configuring build environment for QGIS

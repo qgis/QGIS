@@ -48,10 +48,16 @@ public:
     /*!
 	\param gisdbase full path to GRASS GISDBASE.
 	\param location location name (not path!).
+    */
+    static void setLocation( QString gisdbase, QString location);
+
+    /*!
+	\param gisdbase full path to GRASS GISDBASE.
+	\param location location name (not path!).
 	\param mapset current mupset. Note that some variables depend on mapset and
 	              may influence behaviour of some functions (e.g. search path etc.) 
     */
-    static void setLocation( QString gisdbase, QString location);
+    static void setMapset( QString gisdbase, QString location, QString mapset);
 
     //! Error codes returned by GetError() 
     enum ERROR { OK, /*!< OK. No error. */  
