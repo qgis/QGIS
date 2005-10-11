@@ -1189,7 +1189,7 @@ void QgsVectorLayer::select(QgsRect * rect, bool lock)
 
   QgsFeature *fet;
 
-  while (fet = dataProvider->getNextFeature(true))
+  while (fet = dataProvider->getNextFeature(false))
   {
     if(mDeleted.find(fet->featureId())==mDeleted.end())//don't select deleted features
     {

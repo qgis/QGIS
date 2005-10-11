@@ -402,39 +402,18 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
           delete fet;
           continue;
         }    */
-    }
+	   }
     
 	   if(mUseIntersect)
 	   {
-       geos::Geometry *geosGeom = 0;
-       // XXX This if/else block fixes the endian issue on 
-       //     XDR (big endian) platforms for release 0.7. This
-       //     code should be revisited to see if there is a more
-       //     efficient way to create the geos geometry and to push
-       //     the job down to QgsFeature instead of the mix we have
-       //     here. The side-effect of this fix is extremely slow
-       //     performance on when identifying or selecting multipart
-       //     features on XDR platforms.
-        if (endian() == QgsDataProvider::XDR)
-        {
-          // big endian -- use wkt method
-          geom  =  fet->GetGeometryRef();
-          char *wkt = new char[2 * f->getGeometrySize()];
-          assert(wkt != 0);
-          geom->exportToWkt(&wkt);
-          geosGeom = wktReader->read(wkt);
-        }
-        else
-        {
-          // little endian -- use QgsFeature method
-          geosGeom=f->geosGeometry();
-        }
-         assert(geosGeom != 0);
+	       geos::Geometry *geosGeom = 0;
+	       geosGeom=f->geosGeometry();
+	       assert(geosGeom != 0);
          
 	       char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
 	       mSelectionRectangle->exportToWkt(&sWkt);  
 	       geos::Geometry *geosRect = wktReader->read(sWkt);
-         assert(geosGeom != 0);
+	       assert(geosRect != 0);
 	       if(geosGeom->intersects(geosRect))
 	       {
 #ifdef QGISDEBUG
@@ -636,7 +615,7 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
   {
     // store the selection rectangle for use in filtering features during
     // an identify and display attributes
-    //    delete mSelectionRectangle;
+    delete mSelectionRectangle;
     mSelectionRectangle = new OGRPolygon();
     mSelectionRectangle->importFromWkt((char **)&wktText);
   }
