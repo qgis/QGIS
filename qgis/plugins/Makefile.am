@@ -16,7 +16,7 @@ if WITH_COMMUNITY
 COMMUNITY = community_reg_plugin
 endif
 
-SUBDIRS = $(GEOPROCESSING) \ 
+SUBDIRS = $(GEOPROCESSING) \
 		$(SPIT) \
 		$(GRASS) \
 		$(COMMUNITY) \
