@@ -1346,7 +1346,7 @@ bool QgsGeometry::exportToWkt(unsigned char * geom) const
 	double *x,*y;
 
 	mWkt="";
-	memcpy(&wkbType, (geom+1), sizeof(int));
+	wkbType = (geom[0] == 1) ? geom[1] : geom[4];
 	switch (wkbType)
 	{
 	    case QGis::WKBPoint:
@@ -1624,7 +1624,7 @@ geos::Geometry* QgsGeometry::geosGeometry() const
 //    // TODO: Make this a static member - save generating for every geometry
 //    geos::GeometryFactory* geometryFactory = new geos::GeometryFactory();
     
-    wkbtype=(int) mGeometry[1];
+    wkbtype = (mGeometry[0] == 1) ? mGeometry[1] : mGeometry[4];
     switch(wkbtype)
     {
 	case QGis::WKBPoint:
