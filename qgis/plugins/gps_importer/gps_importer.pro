@@ -3,12 +3,15 @@
 ######################################################################
 
 TEMPLATE = lib
-INCLUDEPATH += . ..\..\src \
+INCLUDEPATH += . ..\..\src $(FWTOOLS)\include $(WINSDK)\Include \
           $(GEOS)\include
-LIBS += ..\..\src\libqgis.lib \
-        $(GDAL)\lib\gdal_i.lib \
-        $(GEOS)\lib\geos.lib \
-        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib 
+LIBS += $(FWTOOLS)\lib\gdal_i.lib \
+        $(FWTOOLS)\lib\proj_i.lib \
+        ..\..\src\libqgis.lib \
+        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib \
+        ..\..\widgets\projectionselector\projectionselector.lib \
+        $(SQLITE3)\sqlite3.lib \
+        $(GEOS)\lib\geos.lib 
 
 DLLDESTDIR= ..\..\win_build\lib\qgis
 CONFIG += qt dll thread rtti
@@ -18,13 +21,14 @@ CONFIG += qt dll thread rtti
 HEADERS +=    qgsgpsplugin.h \
               qgsbabelformat.h \
               qgsgpsplugingui.h \
+              qgsgpsdevice.h \
               qgsgpsdevicedialog.h
 INTERFACES += qgsgpspluginguibase.ui \
               qgsgpsdevicedialogbase.ui
 SOURCES +=    qgsgpsplugin.cpp \
-              qgsbabelformat.h \
               qgsbabelformat.cpp \
               qgsgpsplugingui.cpp \
+              qgsgpsdevice.cpp \
               qgsgpsdevicedialog.cpp 
 
            
