@@ -1295,6 +1295,7 @@ bool QgsProject::write()
 	if(theLegend)
 	{
 	    theLegend->writeXML(qgisNode, *doc);
+	    //theLegend->saveToProject();
 	}
     }
 

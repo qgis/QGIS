@@ -101,8 +101,14 @@ class QgsLegend : public QListView
   /**Removes a checkbox from mCheckBoxes. Does not delete the objects*/
   void unregisterCheckBox(QListViewItem* item);
 
+  /**Writes the content of the legend using the key system of QgsProject*/
+  void saveToProject();
+
   /**Writes the content of the legend to a project file*/
   bool writeXML(QDomNode & layer_node, QDomDocument & document);
+
+  /**Restores the legend from a project file using the key system of QgsProject*/
+  void restoreFromProject();
 
   /**Restores the legend from a project file*/
   bool readXML(QDomNode& legendnode);
