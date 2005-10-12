@@ -39,6 +39,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsrasterlayerproperties.h"
 #include <iostream>
 #include <qlayout.h>
@@ -828,4 +829,96 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	while(!(child.isNull()));
     }
     return true;
+}
+
+void QgsLegend::saveToProject()
+{
+    int lgroupidx=0;
+    int llayeridx=0;
+    QString groupstring; //string which have to be prepended if an element is into a group
+
+    QListViewItemIterator it(this);
+    while(it.current()) 
+    {
+	QgsLegendItem *item = dynamic_cast<QgsLegendItem*>(it.current());
+	if(item)
+	{
+	    switch(item->type())
+	    {
+		case QgsLegendItem::LEGEND_GROUP:
+		    ++lgroupidx;
+		    groupstring = "/LegendGroup"+QString::number(lgroupidx);
+		    QgsProject::instance()->writeEntry("Legend","/LegendGroup"+QString::number(lgroupidx)+"/Name",item->text(0));
+		    if(item->isOpen())
+		    {
+			QgsProject::instance()->writeEntry("Legend","/LegendGroup"+QString::number(lgroupidx)+"/Open",true);	
+		    }
+		    else
+		    {
+			QgsProject::instance()->writeEntry("Legend","/LegendGroup"+QString::number(lgroupidx)+"/Open",true);
+		    }
+		    break;
+		    
+
+		case QgsLegendItem::LEGEND_LAYER:
+		    ++llayeridx;
+		    if(item->parent()==0)//legend layer is not in a group
+		    {
+			groupstring="";
+		    }
+		    QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/Name",item->text(0));
+		    if(item->isOpen())
+		    {
+			QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/Open",true);
+		    }
+		    else
+		    {
+			QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/Open",false);
+		    }
+		    break;
+
+		case QgsLegendItem::LEGEND_PROPERTY_GROUP:
+		    if(item->isOpen())
+		    {
+			QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/LegendPropertyGroup/Open", true);
+		    }
+		    else
+		    {
+			QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/LegendPropertyGroup/Open", false);
+		    }
+		    break;
+
+		case QgsLegendItem::LEGEND_SYMBOL_GROUP:
+		    if(item->isOpen())
+		    {
+			QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/LegendSymbolGroup/Open", true);
+		    }
+		    else
+		    {
+			QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/LegendSymbolGroup/Open", false);
+		    }
+		    break;
+		
+		case QgsLegendItem::LEGEND_LAYER_FILE_GROUP:
+		    if(item->isOpen())
+		    {
+			QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/LegendLayerFileGroup/Open", true);
+		    }
+		    else
+		    {
+			QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/LegendLayerFileGroup/Open", false);
+		    }
+		    break;
+
+		default: //do nothing for the leaf nodes
+		    break;	
+	    }
+	}
+	++it;
+    }
+}
+
+void QgsLegend::restoreFromProject()
+{
+
 }
