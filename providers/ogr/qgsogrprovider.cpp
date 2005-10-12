@@ -1298,133 +1298,100 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN bool createEmptyDataSource(const QString& uri,const QString& format, QGis::WKBTYPE vectortype)
+/**Creates an empty data source
+@param uri location to store the file(s)
+@param format data format (e.g. "ESRI Shapefile"
+@param vectortype point/line/polygon or multitypes
+@param attributes a list of name/type pairs for the initial attributes
+@return true in case of success*/
+QGISEXTERN bool createEmptyDataSource(const QString& uri,const QString& format, QGis::WKBTYPE vectortype, \
+const std::list<std::pair<QString, QString> >& attributes)
 {
-  //hard coded for the moment
-  OGRwkbGeometryType geomtype=(OGRwkbGeometryType)((int)vectortype);
-  QString mOutputFormat = "ESRI Shapefile";
-  QString mOutputFileName = uri;
-#ifdef WIN32 
-  QString outname=mOutputFileName.mid(mOutputFileName.findRev("\\")+1,mOutputFileName.length());
-#else
-  QString outname=mOutputFileName.mid(mOutputFileName.findRev("/")+1,mOutputFileName.length());
-#endif
-  OGRSFDriverRegistrar* driverregist = OGRSFDriverRegistrar::GetRegistrar();
-
-  if(driverregist==0)
-  {
-    return false;
-  }
-  OGRSFDriver* driver = driverregist->GetDriverByName(mOutputFormat);
-  if(driver==0)
-  {
-    return false;
-  }
-  OGRDataSource* datasource = driver->CreateDataSource(mOutputFileName,NULL);
-  if(datasource==0)
-  {
-    return false;
-  }
-
-  OGRSpatialReference reference;
-  OGRLayer* layer = datasource->CreateLayer(outname.latin1(),&reference,geomtype,NULL);
-  if(layer==0)
-  {
-    return false;
-  }
-
-  //create a dummy field
-  OGRFieldDefn fielddef("dummy",OFTReal);
-  fielddef.SetWidth(1);
-  fielddef.SetPrecision(1);
-  if(layer->CreateField(&fielddef,FALSE)!=OGRERR_NONE)
-  {
-    return false;
-  }
-
-  int count=layer->GetLayerDefn()->GetFieldCount();
-#ifdef QGISDEBUG
-  qWarning("Field count is: "+QString::number(count));
-#endif
-  //just for a test: create a dummy featureO
-  /*OGRFeatureDefn* fdef=layer->GetLayerDefn();
-    OGRFeature* feature=new OGRFeature(fdef);
-    OGRPoint* p=new OGRPoint();
-    p->setX(700000);
-    p->setY(300000);
-    feature->setGeometryAndOwnership(p);
-    if(layer->CreateFeature(feature)!=OGRERR_NONE)
-    {
-    qWarning("errrrrrrrrrror!");
-    }*/
-
-  if(layer->SyncToDisk()!=OGRERR_NONE)
-  {
-    return false;
-  }
-
-  return true;
-
-  /*OGRLayerH mLayerHandle;
+    OGRSFDriver* driver;
     OGRRegisterAll();
-    OGRSFDriverH myDriverHandle = OGRGetDriverByName( mOutputFormat );
-
-    if( myDriverHandle == NULL )
+    driver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(format);
+    if(driver == NULL)
     {
-    std::cout << "Unable to find format driver named " << mOutputFormat << std::endl;
-    return false;
+	return false;
     }
 
-    OGRDataSourceH mDataSourceHandle = OGR_Dr_CreateDataSource( myDriverHandle, mOutputFileName, NULL );
-    if( mDataSourceHandle == NULL )
+    OGRDataSource* dataSource;
+    dataSource = driver->CreateDataSource(uri, NULL);
+    if(dataSource == NULL)
     {
-    std::cout << "Datasource handle is null! " << std::endl;
-    return false;
+	return false;
     }
 
-  //define the spatial ref system
-  OGRSpatialReferenceH mySpatialReferenceSystemHandle = NULL;
-
-  QString myWKT = NULL; //WKT = Well Known Text
-  //sample below shows how to extract srs from a raster
-  //    const char *myWKT = GDALGetProjectionRef( hBand );
-
-  if( myWKT != NULL && strlen(myWKT) != 0 )
-  {
-  mySpatialReferenceSystemHandle = OSRNewSpatialReference( myWKT );
-  }
-  //change 'contour' to something more useful!
+    //consider spatial reference system
+    OGRSpatialReference* reference = NULL;
+    QgsSpatialRefSys mySpatialRefSys;
+    mySpatialRefSys.validate();
+    char* WKT;
+    QString myWKT = NULL;
+    if(mySpatialRefSys.toOgrSrs().exportToWkt(&WKT)==OGRERR_NONE)
+    {
+	myWKT=WKT;
+    }
+    else
+    {
 #ifdef QGISDEBUG
-qWarning("mOutputFileName: "+mOutputFileName);
-#endif //QGISDEBUG
+	qWarning("createEmptyDataSource: export of srs to wkt failed");
+#endif
+    }
+    if( !myWKT.isNull()  &&  myWKT.length() != 0 )
+    {
+	reference = new OGRSpatialReference(myWKT.local8Bit());
+    }
 
+    OGRLayer* layer;	
+    layer = dataSource->CreateLayer(uri, reference, (OGRwkbGeometryType)vectortype, NULL);
+    if(layer == NULL)
+    {
+	return false;
+    }
 
+    //create the attribute fields
+    for(std::list<std::pair<QString, QString> >::const_iterator it= attributes.begin(); it != attributes.end(); ++it)
+    {
+	if(it->second == "Real")
+	{
+	    OGRFieldDefn field(it->first, OFTReal);
+	    if(layer->CreateField(&field) != OGRERR_NONE)
+	    {
 #ifdef QGISDEBUG
-qWarning("outname: "+outname);
-#endif //QGISDEBUG
+		qWarning("creation of OFTReal field failed");
+#endif
+	    }
+	}
+	else if(it->second == "Integer")
+	{
+	    OGRFieldDefn field(it->first, OFTInteger);
+	    if(layer->CreateField(&field) != OGRERR_NONE)
+	    {
+#ifdef QGISDEBUG
+		qWarning("creation of OFTInteger field failed");
+#endif
+	    }
+	}
+	else if(it->second == "String")
+	{
+	    OGRFieldDefn field(it->first, OFTString);
+	    if(layer->CreateField(&field) != OGRERR_NONE)
+	    {
+#ifdef QGISDEBUG
+		qWarning("creation of OFTString field failed");
+#endif
+	    }
+	}
+    }
 
-mLayerHandle = OGR_DS_CreateLayer( mDataSourceHandle, outname, 
-mySpatialReferenceSystemHandle, geomtype, NULL );
-
-if( mLayerHandle == NULL )
-{
-std::cout << "Error layer handle is null!" << std::endl;
-return false;
+    OGRDataSource::DestroyDataSource(dataSource);
+    if(reference)
+    {
+	reference->Release();
+    }
+    return true;
 }
-else
-{
-std::cout << "File handle created!" << std::endl;
-}
-
-OGRFieldDefnH myFieldDefinitionHandle;
-myFieldDefinitionHandle = OGR_Fld_Create( "dummy",OFTReal);
-OGR_Fld_SetWidth( myFieldDefinitionHandle,1);
-OGR_Fld_SetPrecision( myFieldDefinitionHandle,1);
-OGR_L_CreateField( mLayerHandle, myFieldDefinitionHandle, FALSE );
-OGR_Fld_Destroy( myFieldDefinitionHandle );
-
-return true;*/
-  }
 
 
 

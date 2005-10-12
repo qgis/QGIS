@@ -2024,8 +2024,10 @@ void QgisApp::newVectorLayer()
     {
       filename += ".shp";
     }
-    //strange, the 'provider way' does not work...
-    /*QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
+
+#if 0
+    //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
+    QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
     QString ogrlib = pReg->library("ogr");
     const char *cOgrLib = (const char *) ogrlib;
     // load the data provider
@@ -2033,25 +2035,26 @@ void QgisApp::newVectorLayer()
     bool loaded = myLib->load();
     if (loaded)
     {
-    #ifdef QGISDEBUG
+#ifdef QGISDEBUG
         qWarning("ogr provider loaded");
-    #endif
-        typedef bool (*createEmptyDataSourceProc)(const QString&,const QString&, QGis::WKBTYPE);
+#endif
+        typedef bool (*createEmptyDataSourceProc)(const QString&, const QString&, QGis::WKBTYPE, \
+const std::list<std::pair<QString, QString> >&);
         createEmptyDataSourceProc createEmptyDataSource=(createEmptyDataSourceProc)myLib->resolve("createEmptyDataSource");
         if(createEmptyDataSource)
         {
-            QString format("ESRI Shapefile");
+            QString format("ESRI Shapefile"); //todo: support also the other OGR formats
             if(geometrytype == QGis::WKBPoint)
             {
-                createEmptyDataSource(filename,format,QGis::WKBPoint);
+                createEmptyDataSource(filename,format,QGis::WKBPoint, attributes);
             }
             else if (geometrytype == QGis::WKBLineString)
             {
-                createEmptyDataSource(filename,format,QGis::WKBLineString);
+                createEmptyDataSource(filename,format,QGis::WKBLineString, attributes);
             }
             else if(geometrytype == QGis::WKBPolygon)
             {
-                createEmptyDataSource(filename,format,QGis::WKBPolygon);
+                createEmptyDataSource(filename,format,QGis::WKBPolygon, attributes);
             }
             else
             {
@@ -2067,8 +2070,10 @@ void QgisApp::newVectorLayer()
             qWarning("Resolving newEmptyDataSource(...) failed");;
     #endif
         }
-        }*/
+        }
+#endif //0
 
+    //create the new layer with QgsVectorFileWriter
     QgsVectorFileWriter* writer=0;
 
     if(geometrytype == QGis::WKBPoint)
