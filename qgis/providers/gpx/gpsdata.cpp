@@ -392,12 +392,28 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
     parseModes.push(ParsingWaypoint);
     mWpt = Waypoint();
     for (int i = 0; attr[2*i] != NULL; ++i) {
-      if (!std::strcmp(attr[2*i], "lat"))
+      if (!std::strcmp(attr[2*i], "lat")){
+#ifdef WIN32
+        QString slat = attr[2*i+1];
+	mWpt.lat = slat.toDouble();
+#else
 	mWpt.lat = mCLocale.toDouble(attr[2*i+1]);
-      else if (!std::strcmp(attr[2*i], "lon"))
+      
+#endif
+      }
+      else{
+        if (!std::strcmp(attr[2*i], "lon")){
+#ifdef WIN32
+        QString slon = attr[2*i+1];
+	mWpt.lon = slon.toDouble();
+#else
 	mWpt.lon = mCLocale.toDouble(attr[2*i+1]);
+
+#endif
+      }
     }
     mObj = &mWpt;
+  }
   }
   else if (!std::strcmp(qName, "rte")) {
     parseModes.push(ParsingRoute);
@@ -535,10 +551,23 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
     if (parseModes.top() == ParsingRoute) {
       mRtept = Routepoint();
       for (int i = 0; attr[2*i] != NULL; ++i) {
-  if (!std::strcmp(attr[2*i], "lat"))
+  if (!std::strcmp(attr[2*i], "lat")){
+#ifdef WIN32
+    QString slat = attr[2*i+1];
+    mRtept.lat = slat.toDouble();
+#else
     mRtept.lat = mCLocale.toDouble(attr[2*i+1]);
-  else if (!std::strcmp(attr[2*i], "lon"))
+#endif
+  }
+  else if (!std::strcmp(attr[2*i], "lon")){
+#ifdef WIN32
+    QString slon = attr[2*i+1];
+    mRtept.lon = slon.toDouble();
+#else
     mRtept.lon = mCLocale.toDouble(attr[2*i+1]);
+#endif
+
+  }
       }
       parseModes.push(ParsingRoutepoint);
     }
@@ -559,10 +588,22 @@ bool GPXHandler::startElement(const XML_Char* qName, const XML_Char** attr) {
     if (parseModes.top() == ParsingTrackSegment) {
       mTrkpt = Trackpoint();
       for (int i = 0; attr[2*i] != NULL; ++i) {
-  if (!std::strcmp(attr[2*i], "lat"))
+  if (!std::strcmp(attr[2*i], "lat")){
+#ifdef WIN32
+    QString slat = attr[2*i+1];
+    mTrkpt.lat = slat.toDouble();
+#else
     mTrkpt.lat = mCLocale.toDouble(attr[2*i+1]);
-  else if (!std::strcmp(attr[2*i], "lon"))
+#endif
+  }
+  else if (!std::strcmp(attr[2*i], "lon")){
+#ifdef WIN32
+    QString slon = attr[2*i+1];
+    mTrkpt.lon = slon.toDouble();
+#else
     mTrkpt.lon = mCLocale.toDouble(attr[2*i+1]);
+#endif
+  }
       }
       parseModes.push(ParsingTrackpoint);
     }
@@ -617,11 +658,19 @@ bool GPXHandler::endElement(const std::string& qName) {
     mTrk.yMax = (mTrk.yMax > mTrkpt.lat ? mTrk.yMax : mTrkpt.lat);
   }
   else if (parseModes.top() == ParsingDouble) {
+#ifdef WIN32
+    *mDouble = mCharBuffer.toDouble();
+#else
     *mDouble = mCLocale.toDouble(mCharBuffer);
+#endif
     mCharBuffer = "";
   }
   else if (parseModes.top() == ParsingInt) {
+#ifdef WIN32
+    *mInt = mCharBuffer.toInt();
+#else
     *mInt = mCLocale.toInt(mCharBuffer);
+#endif
     mCharBuffer = "";
   }
   else if (parseModes.top() == ParsingString) {

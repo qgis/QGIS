@@ -224,7 +224,11 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	    feature->addAttribute(attr[NameAttr], wpt->name);
 	    break;
 	  case 1:
+#ifdef WIN32
+	    if (wpt->ele == -1.79769e+308)
+#else
 	    if (wpt->ele == -std::numeric_limits<double>::max())
+#endif
 	      feature->addAttribute(attr[EleAttr], "");
 	    else
 	      feature->addAttribute(attr[EleAttr], QString("%1").arg(wpt->ele));
@@ -291,7 +295,11 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	  if (*iter == 0)
 	    feature->addAttribute(attr[NameAttr], rte->name);
 	  else if (*iter == 1) {
+#ifdef WIN32
+	    if (rte->number == 2147483647)
+#else
 	    if (rte->number == std::numeric_limits<int>::max())
+#endif
 	      feature->addAttribute(attr[NumAttr], "");
 	    else
 	      feature->addAttribute(attr[NumAttr], QString("%1").arg(rte->number));
@@ -351,7 +359,11 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	  if (*iter == 0)
 	    feature->addAttribute(attr[NameAttr], trk->name);
 	  else if (*iter == 1) {
+#ifdef WIN32
+	    if (trk->number == 2147483647)
+#else
 	    if (trk->number == std::numeric_limits<int>::max())
+#endif
 	      feature->addAttribute(attr[NumAttr], "");
 	    else
 	      feature->addAttribute(attr[NumAttr], QString("%1").arg(trk->number));
@@ -605,11 +617,17 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
     Route rte;
     
     // reset bounds
+#ifdef WIN32
+    rte.xMin = 1.79769e+308;
+    rte.xMax = -1.79769e+308;
+    rte.yMin = 1.79769e+308;
+    rte.yMax = -1.79769e+308;
+#else
     rte.xMin = std::numeric_limits<double>::max();
     rte.xMax = -std::numeric_limits<double>::max();
     rte.yMin = std::numeric_limits<double>::max();
     rte.yMax = -std::numeric_limits<double>::max();
-
+#endif
     // add geometry
     int nPoints;
     std::memcpy(&nPoints, geo + 5, 4);
@@ -649,10 +667,17 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
     TrackSegment trkseg;
     
     // reset bounds
+#ifdef WIN32
+    trk.xMin = 1.79769e+308;
+    trk.xMax = -1.79769e+308;
+    trk.yMin = 1.79769e+308;
+    trk.yMax = -1.79769e+308;
+#else
     trk.xMin = std::numeric_limits<double>::max();
     trk.xMax = -std::numeric_limits<double>::max();
     trk.yMin = std::numeric_limits<double>::max();
     trk.yMax = -std::numeric_limits<double>::max();
+#endif
 
     // add geometry
     int nPoints;

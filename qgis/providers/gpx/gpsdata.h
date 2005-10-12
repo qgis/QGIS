@@ -28,7 +28,9 @@
 
 #include <expat.h>
 #include <qdatetime.h>
+#ifndef WIN32
 #include <qlocale.h>
+#endif
 #include <qregexp.h>
 #include <qstring.h>
 #include <qtextstream.h>
@@ -171,8 +173,14 @@ class GPSData {
   /** This function tries to add a new waypoint. An iterator to the new
       waypoint will be returned (it will be waypointsEnd() if the waypoint
       couldn't be added. */
+#ifdef WIN32
   WaypointIterator addWaypoint(double lat, double lon, QString name = "", 
-			       double ele = -std::numeric_limits<double>::max());
+			       double ele = -1.79769e+308);
+
+#else
+  WaypointIterator addWaypoint(double lat, double lon, QString name = "", 
+			       double ele = -1 * std::numeric_limits<double>::max());
+#endif
 
   WaypointIterator addWaypoint(const Waypoint& wpt);
 
@@ -245,8 +253,12 @@ class GPSData {
 
 class GPXHandler {
 public:
+#ifndef WIN32
   
   GPXHandler(GPSData& data) : mData(data), mCLocale(QLocale::C) { }
+#else
+  GPXHandler(GPSData& data) : mData(data) { }
+#endif
   
   /** This function is called when expat encounters a new start element in 
       the XML stream. */
@@ -305,7 +317,9 @@ private:
   double* mDouble;
   int* mInt;
   QString mCharBuffer;
+#ifndef WIN32
   QLocale mCLocale;
+#endif 
 
   static QRegExp mTimezoneRegex;
 
