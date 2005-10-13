@@ -432,7 +432,7 @@ void QgsWmsProvider::retrieveServerCapabilities()
     std::cout << "QgsWmsProvider::getServerCapabilities: Converting to DOM." << std::endl;
 #endif
   
-    parseCapabilities(httpcapabilitiesresponse);
+    parseCapabilities(httpcapabilitiesresponse, capabilities);
 
   }
   
@@ -459,7 +459,7 @@ void QgsWmsProvider::downloadCapabilitiesURI(QString uri)
   std::cout << "QgsWmsProvider::downloadCapabilitiesURI: Converting to DOM." << std::endl;
 #endif
   
-  parseCapabilities(httpcapabilitiesresponse);
+  parseCapabilities(httpcapabilitiesresponse, capabilities);
 
 
   
@@ -507,7 +507,7 @@ Example URL (works!)
 }
 
 
-void QgsWmsProvider::parseCapabilities(QByteArray xml)
+void QgsWmsProvider::parseCapabilities(QByteArray xml, QgsWmsCapabilitiesProperty& capabilitiesProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseCapabilities: entering." << std::endl;
@@ -524,18 +524,30 @@ void QgsWmsProvider::parseCapabilities(QByteArray xml)
   capabilitiesDOM.setContent(xml);
 
   QDomElement docElem = capabilitiesDOM.documentElement();
-  
+
+  // TODO: Assert the docElem.tagName() is "WMS_Capabilities"
+
+  capabilitiesProperty.version = docElem.attribute("version");
+
+  // Start walking through XML.
   QDomNode n = docElem.firstChild();
+
   while( !n.isNull() ) {
       QDomElement e = n.toElement(); // try to convert the node to an element.
       if( !e.isNull() ) {
           //std::cout << e.tagName() << std::endl; // the node really is an element.
-          
-          if (e.tagName() == "Capability")
+
+          if      (e.tagName() == "Service")
           {
-            parseCapability(e);
-          }  
-      
+            std::cout << "  Service." << std::endl;
+            parseService(e, capabilitiesProperty.service);
+          }
+          else if (e.tagName() == "Capability")
+          {
+            std::cout << "  Capability." << std::endl;
+            parseCapability(e, capabilitiesProperty.capability);
+          }
+
       }
       n = n.nextSibling();
   }
@@ -543,12 +555,72 @@ void QgsWmsProvider::parseCapabilities(QByteArray xml)
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseCapabilities: exiting." << std::endl;
 #endif
+}
 
+
+void QgsWmsProvider::parseService(QDomElement e, QgsWmsServiceProperty& serviceProperty)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseService: entering." << std::endl;
+#endif
+  QDomNode n1 = e.firstChild();
+  while( !n1.isNull() ) {
+      QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+      if( !e1.isNull() ) {
+          //std::cout << "  " << e1.tagName() << std::endl; // the node really is an element.
+
+          if      (e1.tagName() == "Title")
+          {
+            serviceProperty.title = e1.text();
+          }
+          else if (e1.tagName() == "Abstract")
+          {
+            serviceProperty.abstract = e1.text();
+          }
+          else if (e1.tagName() == "KeywordList")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "OnlineResource")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "ContactInformation")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "Fees")
+          {
+            serviceProperty.fees = e1.text();
+          }
+          else if (e1.tagName() == "AccessConstraints")
+          {
+            serviceProperty.accessConstraints = e1.text();
+          }
+          else if (e1.tagName() == "LayerLimit")
+          {
+            serviceProperty.layerLimit = e1.text().toUInt();
+          }
+          else if (e1.tagName() == "MaxWidth")
+          {
+            serviceProperty.maxWidth = e1.text().toUInt();
+          }
+          else if (e1.tagName() == "MaxHeight")
+          {
+            serviceProperty.maxHeight = e1.text().toUInt();
+          }
+      }
+      n1 = n1.nextSibling();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseService: exiting." << std::endl;
+#endif
 
 }
 
 
-void QgsWmsProvider::parseCapability(QDomElement e)
+void QgsWmsProvider::parseCapability(QDomElement e, QgsWmsCapabilityProperty& capabilityProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseCapability: entering." << std::endl;
@@ -561,20 +633,11 @@ void QgsWmsProvider::parseCapability(QDomElement e)
       
           if (e1.tagName() == "Request")
           {
-            // TODO: How do we ensure this is null?
-            QgsWmsRequestProperty requestProperty;
-
-            parseRequest(e1, requestProperty);
-
-            // TODO: Do something with serverProperty
-         }
+            parseRequest(e1, capabilityProperty.request);
+          }
           else if (e1.tagName() == "Layer")
           {
-            QgsWmsLayerProperty layerProperty = {0};
-
-            parseLayer(e1, layerProperty);
-
-            // TODO: Do something with layerProperty
+            parseLayer(e1, capabilityProperty.layer);
           }
       
       }
@@ -810,7 +873,7 @@ void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerPropert
           else if (e1.tagName() == "SRS")
           {
 //            std::cout << "      SRS is: '" << e1.text() << "'." << std::endl;
-            layerProperty.srs = e1.text();
+            layerProperty.crs.push_back(e1.text());
           }  
           else if (e1.tagName() == "LatLonBoundingBox")
           {
@@ -820,7 +883,7 @@ void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerPropert
 //            std::cout << "      LLBB is: '" << e1.attribute("maxx") << "'." << std::endl;
 //            std::cout << "      LLBB is: '" << e1.attribute("maxy") << "'." << std::endl;
             
-            layerProperty.latLonBBox = QgsRect( 
+            layerProperty.ex_GeographicBoundingBox = QgsRect( 
                                                 e1.attribute("minx").toDouble(),
                                                 e1.attribute("miny").toDouble(),
                                                 e1.attribute("maxx").toDouble(),
@@ -847,7 +910,7 @@ void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerPropert
     
     // Store the extent so that it can be combined with others later
     // in calculateExtent()
-    extentForLayer[ layerProperty.name ] = layerProperty.latLonBBox;
+    extentForLayer[ layerProperty.name ] = layerProperty.ex_GeographicBoundingBox;
     
     // Insert into the local class' registry
     layersSupported.push_back(layerProperty);
@@ -904,9 +967,9 @@ QString QgsWmsProvider::wmsVersion()
   // TODO
 } 
 
-std::list<QString> QgsWmsProvider::supportedFormats()
+std::vector<QString> QgsWmsProvider::supportedFormats()
 {
-  std::list<QString> returnList;
+  std::vector<QString> returnList;
 
 #if QT_VERSION < 0x040000
   QStringList list = QImage::inputFormatList();
@@ -993,6 +1056,123 @@ void QgsWmsProvider::calculateExtent()
   std::cout << "QgsWmsProvider::calculateExtent: exiting with '" << layerExtent.stringRep().local8Bit() << "'." << std::endl;
 #endif
 
+}
+
+QString QgsWmsProvider::getMetadata()
+{
+  QString myMetadataQString = "";
+
+  // Server Properties section
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Server Properties:");
+  myMetadataQString += "</td></tr>";
+
+  // Use a nested table
+  myMetadataQString += "<table width=\"100%\">";
+
+  // Table header
+  myMetadataQString += "<tr><th bgcolor=\"black\">";
+  myMetadataQString += "<font color=\"white\">" + tr("Property") + "</font>";
+  myMetadataQString += "</th>";
+  myMetadataQString += "<th bgcolor=\"black\">";
+  myMetadataQString += "<font color=\"white\">" + tr("Value") + "</font>";
+  myMetadataQString += "</th><tr>";
+
+  // WMS Version
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("WMS Version");
+  myMetadataQString += "</td>";
+  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += capabilities.version;
+  myMetadataQString += "</td></tr>";
+
+  // Service Title
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Title");
+  myMetadataQString += "</td>";
+  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += capabilities.service.title;
+  myMetadataQString += "</td></tr>";
+
+  // Service Abstract
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Abstract");
+  myMetadataQString += "</td>";
+  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += capabilities.service.abstract;
+  myMetadataQString += "</td></tr>";
+
+  // Service Abstract
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Keywords");
+  myMetadataQString += "</td>";
+  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "-";
+  myMetadataQString += "</td></tr>";
+
+  // Service Online Resource
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Online Resource");
+  myMetadataQString += "</td>";
+  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "-";
+  myMetadataQString += "</td></tr>";
+
+  // Service Contact Information
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Contact Information");
+  myMetadataQString += "</td>";
+  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "-";
+  myMetadataQString += "</td></tr>";
+
+  // Service Fees
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Fees");
+  myMetadataQString += "</td>";
+  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += capabilities.service.fees;
+  myMetadataQString += "</td></tr>";
+
+  // Service Access Constraints
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Access Constraints");
+  myMetadataQString += "</td>";
+  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += capabilities.service.accessConstraints;
+  myMetadataQString += "</td></tr>";
+
+  // Close the nested table
+  myMetadataQString += "</table>";
+
+  // Layer Properties section
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Layer Properties:");
+  myMetadataQString += "</td></tr>";
+
+  // Use a nested table
+  myMetadataQString += "<table width=\"100%\">";
+
+  // Table header
+  myMetadataQString += "<tr><th bgcolor=\"black\">";
+  myMetadataQString += "<font color=\"white\">" + tr("Property") + "</font>";
+  myMetadataQString += "</th>";
+  myMetadataQString += "<th bgcolor=\"black\">";
+  myMetadataQString += "<font color=\"white\">" + tr("Value") + "</font>";
+  myMetadataQString += "</th><tr>";
+
+  // test
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("test");
+  myMetadataQString += "</td>";
+  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += capabilities.version;
+  myMetadataQString += "</td></tr>";
+
+  // Close the nested table
+  myMetadataQString += "</table>";
+
+  return myMetadataQString;
 }
 
 

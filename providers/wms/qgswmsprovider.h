@@ -41,28 +41,6 @@
  * as illustrated in Appendix E of the Web Map Service standard, version 1.3, 2004-08-02.
  */
 
-  /** Layer Property structure */
-  // TODO: Fill to WMS specifications
-  struct QgsWmsLayerProperty
-  {
-    // WMS layer properties
-    QString            name;
-    QString            title;
-    QString            abstract;
-    std::list<QString> keywordList;
-    QString            style;
-    QString            srs;
-    QgsRect            latLonBBox;
-
-    // WMS layer attributes
-    bool               queryable;
-    int                cascaded;
-    bool               opaque;
-    bool               noSubsets;
-    int                fixedWidth;
-    int                fixedHeight;
-  };
-
   /** OnlineResource Attribute structure */
   // TODO: Fill to WMS specifications
   struct QgsWmsOnlineResourceAttribute
@@ -103,8 +81,8 @@
   // TODO: Fill to WMS specifications
   struct QgsWmsOperationType
   {
-    std::list<QString>                 format;
-    std::list<QgsWmsDcpTypeProperty>   dcpType;
+    std::vector<QString>                 format;
+    std::vector<QgsWmsDcpTypeProperty>   dcpType;
   };
 
   /** Request Property structure */
@@ -122,19 +100,10 @@
   // TODO: Fill to WMS specifications
   struct QgsWmsExceptionProperty
   {
-    std::list<QString>                 format;   // text formats supported.
-  };
-
-  /** Capability Property structure */
-  // TODO: Fill to WMS specifications
-  struct QgsWmsCapabilityProperty
-  {
-    QgsWmsRequestProperty    request;
-    QgsWmsExceptionProperty  exception;
+    std::vector<QString>                 format;   // text formats supported.
   };
 
   /** Primary Contact Person Property structure */
-  // TODO: Fill to WMS specifications
   struct QgsWmsContactPersonPrimaryProperty
   {
     QString            contactPerson;
@@ -142,7 +111,6 @@
   };
 
   /** Contact Address Property structure */
-  // TODO: Fill to WMS specifications
   struct QgsWmsContactAddressProperty
   {
     QString            addressType;
@@ -154,13 +122,13 @@
   };
 
   /** Contact Information Property structure */
-  // TODO: Fill to WMS specifications
   struct QgsWmsContactInformationProperty
   {
     QgsWmsContactPersonPrimaryProperty contactPersonPrimary;
     QString                            contactPosition;
     QgsWmsContactAddressProperty       contactAddress;
     QString                            contactVoiceTelephone;
+    QString                            contactFacsimileTelephone;
     QString                            contactElectronicMailAddress;
   };
 
@@ -168,16 +136,190 @@
   // TODO: Fill to WMS specifications
   struct QgsWmsServiceProperty
   {
-    QString                         name;
-    QString                         title;
-    QString                         abstract;
-    std::list<QString>              keywordList;
+    // QString                            name;  // Should always be "WMS"
+    QString                            title;
+    QString                            abstract;
+    std::vector<QString>               keywordList;
+    QgsWmsOnlineResourceAttribute      onlineResource;
+    QgsWmsContactInformationProperty   contactInformation;
+    QString                            fees;
+    QString                            accessConstraints;
+    uint                               layerLimit;
+    uint                               maxWidth;
+    uint                               maxHeight;
+  };
+
+  /** Bounding Box Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsBoundingBoxProperty
+  {
+    QString   crs;
+    QgsRect   box;    // consumes minx, miny, maxx, maxy.
+    double    resx;   // spatial resolution (in CRS units)
+    double    resy;   // spatial resolution (in CRS units)
+  };
+
+  /** Dimension Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsDimensionProperty
+  {
+    QString   name;
+    QString   units;
+    QString   unitSymbol;
+    QString   defaultValue;   // plain "default" is a reserved word
+    bool      multipleValues;
+    bool      nearestValue;
+    bool      current;
+  };
+
+  /** Logo URL Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsLogoUrlProperty
+  {
+    QString                         format;
     QgsWmsOnlineResourceAttribute   onlineResource;
-    QString                         fees;
-    QString                         accessConstraints;
-    int                             layerLimit;
-    int                             maxWidth;
-    int                             maxHeight;
+
+    int                             width;
+    int                             height;
+  };
+
+  /** Attribution Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsAttributionProperty
+  {
+    QString                         title;
+    QgsWmsOnlineResourceAttribute   onlineResource;
+    QgsWmsLogoUrlProperty           logoUrl;
+  };
+
+  /** Legend URL Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsLegendUrlProperty
+  {
+    QString                         format;
+    QgsWmsOnlineResourceAttribute   onlineResource;
+
+    int                             width;
+    int                             height;
+  };
+
+  /** StyleSheet URL Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsStyleSheetUrlProperty
+  {
+    QString                         format;
+    QgsWmsOnlineResourceAttribute   onlineResource;
+  };
+
+  /** Style URL Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsStyleUrlProperty
+  {
+    QString                         format;
+    QgsWmsOnlineResourceAttribute   onlineResource;
+  };
+
+  /** Style Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsStyleProperty
+  {
+    QString                               name;
+    QString                               title;
+    QString                               abstract;
+    std::vector<QgsWmsLegendUrlProperty>  legendUrl;
+    QgsWmsStyleSheetUrlProperty           styleSheetUrl;
+    QgsWmsStyleUrlProperty                styleUrl;
+  };
+
+  /** Authority URL Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsAuthorityUrlProperty
+  {
+    QgsWmsOnlineResourceAttribute   onlineResource;
+    QString                         name;             // XML "NMTOKEN" type
+  };
+
+  /** Identifier Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsIdentifierProperty
+  {
+    QString   authority;
+  };
+
+  /** Metadata URL Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsMetadataUrlProperty
+  {
+    QString                         format;
+    QgsWmsOnlineResourceAttribute   onlineResource;
+    QString                         type;             // XML "NMTOKEN" type
+  };
+
+  /** Data List URL Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsDataListUrlProperty
+  {
+    QString                         format;
+    QgsWmsOnlineResourceAttribute   onlineResource;
+  };
+
+  /** Feature List URL Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsFeatureListUrlProperty
+  {
+    QString                         format;
+    QgsWmsOnlineResourceAttribute   onlineResource;
+  };
+
+  /** Layer Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsLayerProperty
+  {
+    // WMS layer properties
+    QString                                     name;
+    QString                                     title;
+    QString                                     abstract;
+    std::vector<QString>                        keywordList;
+    std::vector<QString>                        crs;        // coord ref sys
+    QgsRect                                     ex_GeographicBoundingBox;
+    std::vector<QgsWmsBoundingBoxProperty>      boundingBox;
+    std::vector<QgsWmsDimensionProperty>        dimension;
+    QgsWmsAttributionProperty                   attribution;
+    std::vector<QgsWmsAuthorityUrlProperty>     authorityUrl;
+    std::vector<QgsWmsIdentifierProperty>       identifier;
+    std::vector<QgsWmsMetadataUrlProperty>      metadataUrl;
+    std::vector<QgsWmsDataListUrlProperty>      dataListUrl;
+    std::vector<QgsWmsFeatureListUrlProperty>   featureListUrl;
+    std::vector<QgsWmsStyleProperty>            style;
+    double                                      minScaleDenominator;
+    double                                      maxScaleDenominator;
+    std::vector<QgsWmsLayerProperty>            layer;      // nested layers
+
+    // WMS layer attributes
+    bool               queryable;
+    int                cascaded;
+    bool               opaque;
+    bool               noSubsets;
+    int                fixedWidth;
+    int                fixedHeight;
+  };
+
+  /** Capability Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsCapabilityProperty
+  {
+    QgsWmsRequestProperty           request;
+    QgsWmsExceptionProperty         exception;
+    QgsWmsLayerProperty             layer;
+  };
+
+  /** Capabilities Property structure */
+  // TODO: Fill to WMS specifications
+  struct QgsWmsCapabilitiesProperty
+  {
+    QgsWmsServiceProperty           service;
+    QgsWmsCapabilityProperty        capability;
+    QString                         version;
   };
 
 
@@ -290,7 +432,7 @@ public:
   QString wmsVersion();
 
   //! get raster formats supported by both the WMS Server and Qt
-  std::list<QString> supportedFormats();
+  std::vector<QString> supportedFormats();
   
   /**
    * Sub-layers handled by this provider, in order from bottom to top
@@ -308,6 +450,11 @@ public:
   /**Returns a bitmask containing the supported capabilities*/
   // int capabilities() const;
 
+  /**
+   * Get metadata in a format suitable for feeding directly
+   * into a subset of the GUI raster properties "Metadata" tab.
+   */
+  QString getMetadata();
 
     /** return a provider name
 
@@ -373,10 +520,13 @@ private:
   void drawTest(QString uri);
   
   //! Test function: see if we can parse a WMS' capabilites
-  void parseCapabilities(QByteArray xml);
+  void parseCapabilities(QByteArray xml, QgsWmsCapabilitiesProperty& capabilitiesProperty);
   
+  //! parse the WMS Service XML element
+  void parseService(QDomElement e, QgsWmsServiceProperty& serviceProperty);
+
   //! parse the WMS Capability XML element
-  void parseCapability(QDomElement e);
+  void parseCapability(QDomElement e, QgsWmsCapabilityProperty& capabilityProperty);
 
   //! parse the WMS OnlineResource XML element
   void parseOnlineResource(QDomElement e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute);
@@ -440,6 +590,11 @@ private:
    * Capabilities of the WMS Server
    */
   QDomDocument capabilitiesDOM;
+
+  /**
+   * Parsed capabilities of the WMS Server
+   */
+  QgsWmsCapabilitiesProperty capabilities;
   
   /**
    * layers hosted by the WMS Server
