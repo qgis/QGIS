@@ -14,7 +14,7 @@ SUBDIRS = config modules themes
 
 INCLUDES = -I../../src
 
-DEFS=-DGRASS_BASE=\"$(GRASS_BASE)\"
+DEFS=-DGRASS_BASE=\"$(GRASS_BASE)\" -DHAVE_OPENPTY=$(HAVE_OPENPTY) 
 if !HAVE_QTMAC
 PREFIX=-DPREFIX=\"$(prefix)\"
 endif
@@ -59,6 +59,8 @@ plugin_MOC = qgsgrassplugin.moc.cpp \
 	     qgsgrassmodule.moc.cpp \
 	     qgsgrassnewmapsetbase.moc.cpp \
 	     qgsgrassnewmapset.moc.cpp \
+	     qgsgrassshellbase.moc.cpp \
+	     qgsgrassshell.moc.cpp \
 	     qgsgrassattributesbase.moc.cpp \
 	     qgsgrassattributes.moc.cpp \
 	     qgsgrassregionbase.moc.cpp \
@@ -77,6 +79,8 @@ plugin_UI = qgsgrassselectbase.h \
 	    qgsgrassmodulebase.cpp \
 	    qgsgrassnewmapsetbase.h \
 	    qgsgrassnewmapsetbase.cpp \
+	    qgsgrassshellbase.h \
+	    qgsgrassshellbase.cpp \
 	    qgsgrassattributesbase.h \
 	    qgsgrassattributesbase.cpp \
 	    qgsgrassregionbase.h \
@@ -91,6 +95,8 @@ plugin_UIC = qgsgrassselectbase.ui \
 	     qgsgrassmodulebase.ui \
 	     qgsgrassnewmapsetbase.ui \
 	     qgsgrassnewmapsetbase.ui.h \
+	     qgsgrassshellbase.ui \
+	     qgsgrassshellbase.ui.h \
 	     qgsgrassattributesbase.ui \
 	     qgsgrassattributesbase.ui.h \
 	     qgsgrassregionbase.ui 
@@ -109,6 +115,8 @@ grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 			 qgsgrassmodule.h \
 			 qgsgrassnewmapset.cpp \
 			 qgsgrassnewmapset.h \
+			 qgsgrassshell.cpp \
+			 qgsgrassshell.h \
 			 qgsgrassattributes.cpp \
 			 qgsgrassattributes.h \
 			 qgsgrassregion.cpp \
@@ -133,6 +141,8 @@ qgsgrassmodulebase.cpp: qgsgrassmodulebase.h qgsgrassmodulebase.ui
 qgsgrassmodulebase.h: qgsgrassmodulebase.ui
 qgsgrassnewmapsetbase.cpp: qgsgrassnewmapsetbase.h qgsgrassnewmapsetbase.ui
 qgsgrassnewmapsetbase.h: qgsgrassnewmapsetbase.ui
+qgsgrassshellbase.cpp: qgsgrassshellbase.h qgsgrassshellbase.ui
+qgsgrassshellbase.h: qgsgrassshellbase.ui
 qgsgrassattributesbase.cpp: qgsgrassattributesbase.h qgsgrassattributesbase.ui
 qgsgrassattributesbase.h: qgsgrassattributesbase.ui
 qgsgrassregionbase.cpp: qgsgrassregionbase.h qgsgrassregionbase.ui

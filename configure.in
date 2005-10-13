@@ -307,6 +307,8 @@ AM_CONDITIONAL([HAVE_SPIT], [test "$ac_spit" = "yes"])
 dnl ---------------------------------------------------------------------------
 dnl GRASS package
 dnl ---------------------------------------------------------------------------
+AC_CHECK_LIB(util, openpty)
+
 AC_ARG_WITH(grass,
     AC_HELP_STRING([--with-grass=DIR],[GRASS Support (full path to GRASS binary package, e.g. --with-grass=/usr1/grass57/dist.i686-pc-linux-gnu)]))
 
@@ -329,6 +331,11 @@ if test -n "$with_grass" -a x"$with_grass" != "xno"; then
     fi
     GRASS_LIB="-L$with_grass/${_lib} -lgrass_vect -lgrass_dig2 -lgrass_dbmiclient -lgrass_dbmibase -lgrass_shape -lgrass_dgl -lgrass_rtree -lgrass_gis -lgrass_datetime -lgrass_linkm -lgrass_form -lgrass_gproj"
 
+    if test "$ac_cv_lib_util_openpty" = yes; then
+      HAVE_OPENPTY=1
+      GRASS_LIB="$GRASS_LIB -lutil"
+    fi
+
     GISINC=`ls $with_grass/include/gis.h`
     if test ! -f "$GISINC"; then
   AC_MSG_ERROR( [GRASS headers not found] )
@@ -346,10 +353,10 @@ fi
 
 AC_SUBST(GRASS_BASE)
 AC_SUBST(HAVE_GRASS)
+AC_SUBST(HAVE_OPENPTY)
 AC_SUBST(GRASS_LIB)
 AC_SUBST(GRASS_INC)
 AM_CONDITIONAL([HAVE_GRASS], [test "$ac_grass" = "yes"])
-
 
 dnl ---------------------------------------------------------------------------
 dnl GPX and GPS plugins

@@ -50,6 +50,7 @@
                 <grass name="nviz"/>
         </section>
 	<section label="General">
+		<grass name="shell"/>
 		<grass name="g.gisenv"/>
 	</section>
 </modules>
