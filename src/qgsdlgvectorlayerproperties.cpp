@@ -445,17 +445,25 @@ QString QgsDlgVectorLayerProperties::getMetadata()
                        QString::number(myExtent.yMax());
   myMetadataQString += "</td></tr>";
   //extents in project cs
-  QgsRect myProjectedExtent = layer->coordinateTransform()->transform(layer->extent());
+  QgsRect myProjectedExtent;
+  try
+  {
+      myProjectedExtent = layer->coordinateTransform()->transform(layer->extent());
+  }
+  catch(QgsCsException &cse)
+  {
+  }
+
   myMetadataQString += "<tr><td bgcolor=\"white\">";
   myMetadataQString += tr("In project spatial reference system units : ") + 
-                       tr("xMin,yMin ") + 
-                       QString::number(myProjectedExtent.xMin()) + 
-                       "," + 
-                       QString::number( myProjectedExtent.yMin()) +
-                       tr(" : xMax,yMax ") + 
-                       QString::number(myProjectedExtent.xMax()) + 
-                       "," + 
-                       QString::number(myProjectedExtent.yMax());
+      tr("xMin,yMin ") + 
+      QString::number(myProjectedExtent.xMin()) + 
+      "," + 
+      QString::number( myProjectedExtent.yMin()) +
+      tr(" : xMax,yMax ") + 
+      QString::number(myProjectedExtent.xMax()) + 
+      "," + 
+      QString::number(myProjectedExtent.yMax());
   myMetadataQString += "</td></tr>";
 
   // 
