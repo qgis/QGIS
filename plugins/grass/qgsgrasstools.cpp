@@ -67,6 +67,7 @@ extern "C" {
 #include "qgsgrassattributes.h"
 #include "qgsgrasstools.h"
 #include "qgsgrassmodule.h"
+#include "qgsgrassshell.h"
 
 QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface, 
 	                     QWidget * parent, const char * name, WFlags f )
@@ -117,15 +118,34 @@ void QgsGrassTools::moduleClicked( QListViewItem * item )
     if ( name.length() == 0 ) return;  // Section
     
     QString path = mAppDir + "/share/qgis/grass/modules/" + name;
-    QgsGrassModule *m = new QgsGrassModule ( this, mQgisApp, mIface, path, mTabWidget );
-    //mTabWidget->addTab ( m, item->text(0) );
+    QWidget *m;
+    QgsGrassShell *sh = 0;
+    if ( name == "shell" )
+    {
+#ifdef HAVE_OPENPTY
+        sh = new QgsGrassShell(this, mTabWidget);
+        m = dynamic_cast<QWidget *> ( sh );
+#else
+	QMessageBox::warning( 0, "Warning", "GRASS Shell is not compiled." );
+#endif
+    }
+    else
+    {
+	m = dynamic_cast<QWidget *> ( new QgsGrassModule ( this, 
+                                      mQgisApp, mIface, path, mTabWidget ) );
+    }
     
+    //mTabWidget->addTab ( m, item->text(0) );
     QPixmap pixmap = QgsGrassModule::pixmap ( path, 25 ); 
     QIconSet is;
     is.setPixmap ( pixmap, QIconSet::Small, QIconSet::Normal );
-    mTabWidget->addTab ( (QWidget*)m, is, "" );
+    mTabWidget->addTab ( m, is, "" );
 		
     mTabWidget->setCurrentPage ( mTabWidget->count()-1 );
+     
+    // We must call resize to reset COLUMNS enviroment variable
+    // used by bash !!!
+    if ( sh ) sh->resizeTerminal();
 }
 
 bool QgsGrassTools::loadConfig(QString filePath)
