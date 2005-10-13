@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>QgsGeomTypeDialogBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>389</width>
-            <height>532</height>
+            <width>377</width>
+            <height>481</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,7 +19,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QButtonGroup" row="0" column="0" rowspan="1" colspan="3">
+        <widget class="QButtonGroup" row="0" column="0" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>buttonGroup1</cstring>
             </property>
@@ -59,7 +59,7 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QLayoutWidget" row="4" column="0" rowspan="1" colspan="3">
+        <widget class="QLayoutWidget" row="5" column="0" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>layout3</cstring>
             </property>
@@ -122,23 +122,7 @@
                 </spacer>
             </hbox>
         </widget>
-        <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>mAttributeLabel</cstring>
-            </property>
-            <property name="text">
-                <string>Attributes:</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="2" column="0">
-            <property name="name">
-                <cstring>mAddAttributeButton</cstring>
-            </property>
-            <property name="text">
-                <string>Add</string>
-            </property>
-        </widget>
-        <widget class="QListView" row="3" column="0" rowspan="1" colspan="3">
+        <widget class="QListView" row="4" column="0" rowspan="1" colspan="4">
             <column>
                 <property name="text">
                     <string>Column 1</string>
@@ -162,15 +146,23 @@
                 <cstring>mAttributeView</cstring>
             </property>
         </widget>
-        <widget class="QPushButton" row="2" column="1">
+        <widget class="QPushButton" row="3" column="0">
             <property name="name">
-                <cstring>mRemoveAttributeButton</cstring>
+                <cstring>mAddAttributeButton</cstring>
             </property>
             <property name="text">
-                <string>Remove</string>
+                <string>Add</string>
             </property>
         </widget>
-        <spacer row="2" column="2">
+        <widget class="QLabel" row="2" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>mAttributeLabel</cstring>
+            </property>
+            <property name="text">
+                <string>Attributes:</string>
+            </property>
+        </widget>
+        <spacer row="3" column="3">
             <property name="name">
                 <cstring>spacer3</cstring>
             </property>
@@ -187,6 +179,27 @@
                 </size>
             </property>
         </spacer>
+        <widget class="QPushButton" row="3" column="1" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mRemoveAttributeButton</cstring>
+            </property>
+            <property name="text">
+                <string>Remove</string>
+            </property>
+        </widget>
+        <widget class="QComboBox" row="1" column="2" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mFileFormatComboBox</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>mFileFormatLabel</cstring>
+            </property>
+            <property name="text">
+                <string>File Format:</string>
+            </property>
+        </widget>
     </grid>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>

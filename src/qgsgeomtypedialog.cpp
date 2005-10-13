@@ -18,6 +18,7 @@
 
 #include "qgsaddattrdialog.h"
 #include "qgsgeomtypedialog.h"
+#include <qcombobox.h>
 #include <qlistview.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
@@ -32,6 +33,10 @@ QgsGeomTypeDialog::QgsGeomTypeDialog(): QgsGeomTypeDialogBase()
     mAttributeView->removeColumn(0);
     mAttributeView->addColumn(tr("Name"));
     mAttributeView->addColumn(tr("Type"));
+    mFileFormatComboBox->insertItem("ESRI Shapefile");
+    /*mFileFormatComboBox->insertItem("Comma Separated Value");
+    mFileFormatComboBox->insertItem("GML");
+    mFileFormatComboBox->insertItem("Mapinfo File");*/
 }
 
 QgsGeomTypeDialog::~QgsGeomTypeDialog()
@@ -39,7 +44,7 @@ QgsGeomTypeDialog::~QgsGeomTypeDialog()
 
 }
 
-QGis::WKBTYPE QgsGeomTypeDialog::selectedType()
+QGis::WKBTYPE QgsGeomTypeDialog::selectedType() const
 {
     if(mPointRadioButton->isChecked())
     {
@@ -96,4 +101,9 @@ void QgsGeomTypeDialog::attributes(std::list<std::pair<QString, QString> >& at) 
 #endif	
 	++it;
     }
+}
+
+QString QgsGeomTypeDialog::selectedFileFormat() const
+{
+    return mFileFormatComboBox->currentText();
 }

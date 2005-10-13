@@ -1958,6 +1958,7 @@ void QgisApp::newVectorLayer()
 {
 
     QGis::WKBTYPE geometrytype;
+    QString fileformat;
 
     QgsGeomTypeDialog geomDialog;
     if(geomDialog.exec()==QDialog::Rejected)
@@ -1965,6 +1966,7 @@ void QgisApp::newVectorLayer()
         return;
     }
     geometrytype = geomDialog.selectedType();
+    fileformat = geomDialog.selectedFileFormat();
 
     std::list<std::pair<QString, QString> > attributes;
     geomDialog.attributes(attributes);
@@ -2020,10 +2022,10 @@ void QgisApp::newVectorLayer()
 
 
     // check to see if user specified the extension. if not, add it...
-    if(filename.find(QRegExp("\\.shp$")) == -1)
-    {
-      filename += ".shp";
-    }
+    //if(filename.find(QRegExp("\\.shp$")) == -1)
+    //{
+    //filename += ".shp";
+    //}
 
     //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
     QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
@@ -2042,18 +2044,17 @@ const std::list<std::pair<QString, QString> >&);
         createEmptyDataSourceProc createEmptyDataSource=(createEmptyDataSourceProc)myLib->resolve("createEmptyDataSource");
         if(createEmptyDataSource)
         {
-            QString format("ESRI Shapefile"); //todo: support also the other OGR formats
             if(geometrytype == QGis::WKBPoint)
             {
-                createEmptyDataSource(filename,format,QGis::WKBPoint, attributes);
+                createEmptyDataSource(filename,fileformat,QGis::WKBPoint, attributes);
             }
             else if (geometrytype == QGis::WKBLineString)
             {
-                createEmptyDataSource(filename,format,QGis::WKBLineString, attributes);
+                createEmptyDataSource(filename,fileformat,QGis::WKBLineString, attributes);
             }
             else if(geometrytype == QGis::WKBPolygon)
             {
-                createEmptyDataSource(filename,format,QGis::WKBPolygon, attributes);
+                createEmptyDataSource(filename,fileformat,QGis::WKBPolygon, attributes);
             }
             else
             {
