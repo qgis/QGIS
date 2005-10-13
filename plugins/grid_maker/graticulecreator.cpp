@@ -7,74 +7,67 @@
 #include <qfileinfo.h>
 #include <qstringlist.h>
 #include <qgis.h>
-GraticuleCreator::GraticuleCreator(QString theOutputFileName, 
-                                   double theXIntervalDouble, 
-                                   double theYIntervalDouble,
-                                   double theXOriginDouble,
-                                   double theYOriginDouble,
-                                   double theXEndPointDouble,
-                                   double theYEndPointDouble
-                                   )
+GraticuleCreator::GraticuleCreator(QString theOutputFileName,ShapeType theType)
 {
     std::cout << "GraticuleCreator constructor called with " << theOutputFileName.local8Bit()
-    << " for output file and " << theXIntervalDouble << "," << theYIntervalDouble << " for x,y interval " << std::endl;
-    DBFHandle myDbfHandle;    /* handle for dBase file */
-    SHPHandle myShapeHandle;    /* handle for shape files .shx and .shp */
+    << " for output file " << std::endl;
     /* Open and prepare output files */
-    myDbfHandle = createDbf(theOutputFileName);
-    myShapeHandle = createShapeFile(theOutputFileName);
+    createDbf(theOutputFileName);
+    createShapeFile(theOutputFileName,theType);
     writeProjectionFile(theOutputFileName);
-    //test the write point routine....
-    //generatePoints(theInputFileName,myDbfHandle,myShapeHandle);
-    generateGraticule(myDbfHandle,
-                      myShapeHandle,
-                      theXIntervalDouble,
-                      theYIntervalDouble,
-                      theXOriginDouble,
-                      theYOriginDouble,
-                      theXEndPointDouble,
-                      theYEndPointDouble);
-    DBFClose( myDbfHandle );
-    SHPClose( myShapeHandle );
+
+}
+GraticuleCreator::~GraticuleCreator()
+{
+    DBFClose( mDbfHandle );
+    SHPClose( mShapeHandle );
+}
+    
+/* DbfName need not include the file extension. */
+void GraticuleCreator::createDbf (QString mDbfName )
+{
+    //remove the path part of the dbf name
+    QFileInfo myFileInfo( mDbfName );
+    QString myBaseString = myFileInfo.dirPath()+QString("/")+myFileInfo.baseName();  // excludes any extension
+    //create the dbf
+    mDbfHandle = DBFCreate( myBaseString+".dbf" );
+    //create an index field named after the base part of the file name
+
+    DBFAddField( mDbfHandle, myBaseString+"_id", FTInteger, 11, 0 );
+    //create a second arbitary attribute field
+    DBFAddField( mDbfHandle, "Date", FTString, 12, 0 );
+    //close the dbf
+    DBFClose( mDbfHandle );
+    //reopen
+    mDbfHandle = DBFOpen( myBaseString+".dbf", "r+b" );
+    //exit this fn giving
     return;
 }
 
-/* DbfName need not include the file extension. */
-DBFHandle GraticuleCreator::createDbf (QString theDbfName )
+void GraticuleCreator::createShapeFile(QString theFileName , ShapeType theType)
 {
-    DBFHandle myDbfHandle;
-    //remove the path part of the dbf name
-    QFileInfo myFileInfo( theDbfName );
-    QString myBaseString = myFileInfo.dirPath()+QString("/")+myFileInfo.baseName();  // excludes any extension
-    //create the dbf
-    myDbfHandle = DBFCreate( myBaseString+".dbf" );
-    //create an index field named after the base part of the file name
+  switch (theType)
+  {
+      case POINT:
+          mShapeHandle = SHPCreate(theFileName, SHPT_POINT );
+          break;
 
-    DBFAddField( myDbfHandle, myBaseString+"_id", FTInteger, 11, 0 );
-    //create a second arbitary attribute field
-    DBFAddField( myDbfHandle, "Date", FTString, 12, 0 );
-    //close the dbf
-    DBFClose( myDbfHandle );
-    //reopen
-    myDbfHandle = DBFOpen( myBaseString+".dbf", "r+b" );
-    //exit this fn giving
-    return myDbfHandle;
+      case LINE:
+          mShapeHandle = SHPCreate(theFileName, SHPT_ARC );
+          break;
+
+      default: //POLYGON
+          mShapeHandle = SHPCreate(theFileName, SHPT_POLYGON);
+  }
+  return;
 }
 
-SHPHandle GraticuleCreator::createShapeFile(QString theFileName )
-{
-    SHPHandle myShapeHandle;
-    //myShapeHandle = SHPCreate(theFileName, SHPT_POINT );
-    myShapeHandle = SHPCreate(theFileName, SHPT_ARC );
-    return myShapeHandle;
-}
-
-void GraticuleCreator::writeDbfRecord (DBFHandle theDbfHandle, int theRecordIdInt, QString theLabel)
+void GraticuleCreator::writeDbfRecord ( int theRecordIdInt, QString theLabel)
 {
 
   
     std::cerr << "writeDbfRecord : " << theRecordIdInt << " - " << theLabel.local8Bit();
-    if (! DBFWriteIntegerAttribute(theDbfHandle, theRecordIdInt, 0, theRecordIdInt))
+    if (! DBFWriteIntegerAttribute(mDbfHandle, theRecordIdInt, 0, theRecordIdInt))
     {
         std::cerr <<  "DBFWriteIntegerAttribute failed. : " <<  theRecordIdInt << " - " << theRecordIdInt << std::endl;
 
@@ -82,15 +75,15 @@ void GraticuleCreator::writeDbfRecord (DBFHandle theDbfHandle, int theRecordIdIn
     }
     if (!theLabel.isNull())
     {
-      if (! DBFWriteStringAttribute(theDbfHandle, theRecordIdInt, 1, theLabel))
+      if (! DBFWriteStringAttribute(mDbfHandle, theRecordIdInt, 1, theLabel))
       {
         std::cerr <<  "DBFWriteStringAttribute failed. : " <<  theRecordIdInt << " - " << theLabel.local8Bit() <<std::endl;
         //exit(ERR_DBFWRITEINTEGERATTRIBUTE);
       }
       std::cerr << " - OK! " << std::endl;
     }
-    //DBFWriteIntegerAttribute(theDbfHandle, theRecordIdInt, 0, theRecordIdInt);
-    //DBFWriteStringAttribute(theDbfHandle, theRecordIdInt, 1, theLabel);
+    //DBFWriteIntegerAttribute(mDbfHandle, theRecordIdInt, 0, theRecordIdInt);
+    //DBFWriteStringAttribute(mDbfHandle, theRecordIdInt, 1, theLabel);
 }
 
 void  GraticuleCreator::writeProjectionFile(QString theFileName )
@@ -106,15 +99,35 @@ void  GraticuleCreator::writeProjectionFile(QString theFileName )
 
   }
 }
-void GraticuleCreator::writePoint(SHPHandle theShapeHandle, int theRecordInt, double theXDouble, double theYDouble )
+void GraticuleCreator::writePoint( int theRecordInt, double theXDouble, double theYDouble )
 {
     SHPObject * myShapeObject;
     myShapeObject = SHPCreateObject( SHPT_POINT, theRecordInt, 0, NULL, NULL, 1, &theXDouble, &theYDouble, NULL, NULL );
-    SHPWriteObject( theShapeHandle, -1, myShapeObject );
+    SHPWriteObject( mShapeHandle, -1, myShapeObject );
     SHPDestroyObject( myShapeObject );
 }
+void GraticuleCreator::writePoint(
+        int theRecordInt, 
+        int theCoordinateCountInt, 
+        double * theXArrayDouble, 
+        double * theYArrayDouble ) 
+{
+  SHPObject * myShapeObject;
+  myShapeObject = SHPCreateObject( SHPT_POINT, 
+                                   theRecordInt, 
+                                   0, 
+                                   NULL, 
+                                   NULL,
+                                   theCoordinateCountInt, 
+                                   theXArrayDouble, 
+                                   theYArrayDouble,
+                                   NULL, 
+                                   NULL );
+  SHPWriteObject( mShapeHandle, -1, myShapeObject );
+  SHPDestroyObject( myShapeObject );
+}
 
-void GraticuleCreator::writeLine(SHPHandle theShapeHandle, 
+void GraticuleCreator::writeLine(
         int theRecordInt, 
         int theCoordinateCountInt, 
         double * theXArrayDouble, 
@@ -131,14 +144,68 @@ void GraticuleCreator::writeLine(SHPHandle theShapeHandle,
                                    theYArrayDouble,
                                    NULL, 
                                    NULL );
-  SHPWriteObject( theShapeHandle, -1, myShapeObject );
+  SHPWriteObject( mShapeHandle, -1, myShapeObject );
   SHPDestroyObject( myShapeObject );
 }
 
+void GraticuleCreator::writePolygon(
+        int theRecordInt, 
+        int theCoordinateCountInt, 
+        double * theXArrayDouble, 
+        double * theYArrayDouble ) 
+{
+  SHPObject * myShapeObject;
+  myShapeObject = SHPCreateObject( SHPT_POLYGON, 
+                                   theRecordInt, 
+                                   0, 
+                                   NULL, 
+                                   NULL,
+                                   theCoordinateCountInt, 
+                                   theXArrayDouble, 
+                                   theYArrayDouble,
+                                   NULL, 
+                                   NULL );
+  SHPWriteObject( mShapeHandle, -1, myShapeObject );
+  SHPDestroyObject( myShapeObject );
+}
 //TODO: check for rediculous intervals!
-void GraticuleCreator::generateGraticule(DBFHandle theDbfHandle, 
-                                         SHPHandle theShapeHandle,
+void GraticuleCreator::generatePointGraticule(
                                          double theXIntervalDouble,
+                                         double theYIntervalDouble,
+                                         double theXOriginDouble,
+                                         double theYOriginDouble,
+                                         double theXEndPointDouble,
+                                         double theYEndPointDouble)
+{
+  
+  int myRecordInt=0;
+  //create the arrays for storing the coordinates
+  double * myXArrayDouble;
+  double * myYArrayDouble;
+  long myXIntersectionCount = 1;
+  long myYIntersectionCount = 1;
+  myXArrayDouble = (double *)malloc(myYIntersectionCount * sizeof(double));
+  myYArrayDouble = (double *)malloc(myYIntersectionCount * sizeof(double));
+  for (double myXDouble = theXOriginDouble;myXDouble <=theXEndPointDouble;myXDouble+=theXIntervalDouble)
+  {
+    for (double myYDouble=theYOriginDouble;myYDouble<=theYEndPointDouble;myYDouble+=theYIntervalDouble)
+    {
+      myXArrayDouble[0]=myXDouble;
+      myYArrayDouble[0]=myYDouble;
+      writeDbfRecord(myRecordInt,"testing");
+      writePoint( myRecordInt, myYIntersectionCount, myXArrayDouble, myYArrayDouble); 
+    }
+    ++myRecordInt;
+  }
+  delete myXArrayDouble;
+  delete myYArrayDouble;
+
+  // write a proj file for the graticule
+  
+}
+
+//TODO: check for rediculous intervals!
+void GraticuleCreator::generateLineGraticule(double theXIntervalDouble,
                                          double theYIntervalDouble,
                                          double theXOriginDouble,
                                          double theYOriginDouble,
@@ -156,8 +223,8 @@ void GraticuleCreator::generateGraticule(DBFHandle theDbfHandle,
   //so first we need to work out how many intersections there are...
   //
   
-  long myXIntersectionCount = ((theXEndPointDouble - theXOriginDouble) / theXIntervalDouble)+1;
-  long myYIntersectionCount = ((theYEndPointDouble - theYOriginDouble) / theYIntervalDouble)+1;
+  long myXIntersectionCount = static_cast<long>((theXEndPointDouble - theXOriginDouble) / theXIntervalDouble)+1;
+  long myYIntersectionCount = static_cast<long>((theYEndPointDouble - theYOriginDouble) / theYIntervalDouble)+1;
   
   
   //
@@ -174,8 +241,8 @@ void GraticuleCreator::generateGraticule(DBFHandle theDbfHandle,
       myYArrayDouble[myVertexNo]=myYDouble;
       ++myVertexNo;
     }
-    writeDbfRecord(theDbfHandle,myRecordInt,"testing");
-    writeLine(theShapeHandle, myRecordInt, myYIntersectionCount, myXArrayDouble, myYArrayDouble); 
+    writeDbfRecord(myRecordInt,"testing");
+    writeLine( myRecordInt, myYIntersectionCount, myXArrayDouble, myYArrayDouble); 
 
     ++myRecordInt;
   }
@@ -197,8 +264,8 @@ void GraticuleCreator::generateGraticule(DBFHandle theDbfHandle,
       ++myVertexNo;
     }
     
-    writeDbfRecord(theDbfHandle,myRecordInt,"testing");
-    writeLine(theShapeHandle, myRecordInt,myXIntersectionCount, myXArrayDouble, myYArrayDouble); 
+    writeDbfRecord(myRecordInt,"testing");
+    writeLine( myRecordInt,myXIntersectionCount, myXArrayDouble, myYArrayDouble); 
 
     ++myRecordInt;
   }
@@ -208,9 +275,69 @@ void GraticuleCreator::generateGraticule(DBFHandle theDbfHandle,
   // write a proj file for the graticule
   
 }
+//TODO: check for rediculous intervals!
+void GraticuleCreator::generatePolygonGraticule(
+                                         double theXIntervalDouble,
+                                         double theYIntervalDouble,
+                                         double theXOriginDouble,
+                                         double theYOriginDouble,
+                                         double theXEndPointDouble,
+                                         double theYEndPointDouble)
+{
+  
+  int myRecordInt=0;
+  //create the arrays for storing the coordinates
+  double * myXArrayDouble;
+  double * myYArrayDouble;
+  //we want out graticule to be made of short line segments rather tban
+  //long ones that imply span xmin <-> xmax
+  //so that when reprojecting the graticule will warp properly
+  //so first we need to work out how many intersections there are...
+  //
+  
+  long myXVertexCount = 5; // four vertices of the sqaure for each cell, plus end at start
+  long myYVertexCount = 5;
+  
+  
+  //
+  //Longitude loop
+  //
+  myXArrayDouble = (double *)malloc(myYVertexCount * sizeof(double));
+  myYArrayDouble = (double *)malloc(myYVertexCount * sizeof(double));
+  for (double myXDouble = theXOriginDouble ; myXDouble < theXEndPointDouble ; myXDouble+=theXIntervalDouble)
+  {
+    for (double myYDouble=theYOriginDouble;myYDouble<=theYEndPointDouble;myYDouble+=theYIntervalDouble)
+    {
+      //top left of rect
+      myXArrayDouble[0]=myXDouble;
+      myYArrayDouble[0]=myYDouble;
+      //top right
+      myXArrayDouble[1]=myXDouble+theXIntervalDouble;
+      myYArrayDouble[1]=myYDouble;
+      //bottom right
+      myXArrayDouble[2]=myXDouble+theXIntervalDouble;
+      myYArrayDouble[2]=myYDouble+theYIntervalDouble;
+      //bottom left
+      myXArrayDouble[3]=myXDouble;
+      myYArrayDouble[3]=myYDouble+theYIntervalDouble;
+      //return to top left
+      myXArrayDouble[4]=myXDouble;
+      myYArrayDouble[4]=myYDouble;
+      writeDbfRecord(myRecordInt,"testing");
+      writePolygon( myRecordInt, myYVertexCount, myXArrayDouble, myYArrayDouble); 
 
-/* read from fp and generate point shapefile to theDbfHandle/theShapeHandle */
-void GraticuleCreator::generatePoints (QString theInputFileName, DBFHandle theDbfHandle, SHPHandle theShapeHandle)
+      ++myRecordInt;
+    }
+  }
+  delete myXArrayDouble;
+  delete myYArrayDouble;
+
+  // write a proj file for the graticule
+  
+}
+
+/* read from fp and generate point shapefile to mDbfHandle/mShapeHandle */
+void GraticuleCreator::generatePoints (QString theInputFileName)
 {
     QFile myFile( theInputFileName );
     if ( myFile.open( IO_ReadOnly ) )
@@ -237,8 +364,8 @@ void GraticuleCreator::generatePoints (QString theInputFileName, DBFHandle theDb
                 double y=myLatQString.toDouble();
                 //create the dbf and shape recs
                 std::cerr << "Writing record: " << myDateQString.local8Bit() << " - " << x << " - " << y << std::endl;
-                writeDbfRecord(theDbfHandle, myRecordInt, myDateQString);
-                writePoint(theShapeHandle, myRecordInt, x, y);
+                writeDbfRecord( myRecordInt, myDateQString);
+                writePoint( myRecordInt, x, y);
                 myRecordInt++;
             }
         }

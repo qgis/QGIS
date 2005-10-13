@@ -11,35 +11,55 @@
 class GraticuleCreator
 {
     public:
-        GraticuleCreator(QString theOutputFileName, 
-                         double theXIntervalDouble, 
-                         double theYIntervalDouble,
-                         double theXOriginDouble,
-                         double theYOriginDouble,
-                         double theXEndPointDouble,
-                         double theYEndPointDouble);
-        ~GraticuleCreator() {};
-        DBFHandle GraticuleCreator::createDbf (QString theDbfName ) ;
-        SHPHandle GraticuleCreator::createShapeFile(QString theFileName ); 
-        void writeDbfRecord (DBFHandle theDbfHandle, int theRecordIdInt, QString theLabel) ;
-        void writePoint(SHPHandle theShapeHandle, int theRecordInt, double theXDouble, double y ); 
-        //! Writes a WGS 84 .prj file for the generated grid
-        void writeProjectionFile(QString theFileName);
-        static void writeLine(SHPHandle theShapeHandle, 
-                int theRecordInt, 
-                int theCoordinateCountInt, 
-                double * theXArrayDouble, 
-                double * theYArrayDouble ); 
-        void generateGraticule(DBFHandle theDbfHandle, 
-                               SHPHandle theShapeHandle,
+        enum ShapeType { POINT, LINE, POLYGON };
+        GraticuleCreator(QString theOutputFileName, ShapeType theType);
+        ~GraticuleCreator() ;
+        void generatePointGraticule(
                                double theXIntervalDouble,
                                double theYIntervalDouble,
                                double theXOriginDouble,
                                double theYOriginDouble,
                                double theXEndPointDouble,
                                double theYEndPointDouble);
-        void generatePoints (QString theInputFileName, DBFHandle theDbfHandle, SHPHandle theShapeHandle);
+        void generateLineGraticule(
+                               double theXIntervalDouble,
+                               double theYIntervalDouble,
+                               double theXOriginDouble,
+                               double theYOriginDouble,
+                               double theXEndPointDouble,
+                               double theYEndPointDouble);
+        void generatePolygonGraticule(
+                               double theXIntervalDouble,
+                               double theYIntervalDouble,
+                               double theXOriginDouble,
+                               double theYOriginDouble,
+                               double theXEndPointDouble,
+                               double theYEndPointDouble);
+        void generatePoints (QString theInputFileName );
 
     private:
+        DBFHandle mDbfHandle; 
+        SHPHandle mShapeHandle;
+        void GraticuleCreator::createDbf (QString theDbfName ) ;
+        void GraticuleCreator::createShapeFile(QString theFileNamei, ShapeType theType ); 
+        void writeDbfRecord ( int theRecordIdInt, QString theLabel) ;
+        void writePoint(int theRecordInt, double theXDouble, double y ); 
+        //! Writes a WGS 84 .prj file for the generated grid
+        void writeProjectionFile(QString theFileName);
+        void writePoint(
+                int theRecordInt, 
+                int theCoordinateCountInt, 
+                double * theXArrayDouble, 
+                double * theYArrayDouble ); 
+        void writeLine(
+                int theRecordInt, 
+                int theCoordinateCountInt, 
+                double * theXArrayDouble, 
+                double * theYArrayDouble ); 
+        void writePolygon(
+                int theRecordInt, 
+                int theCoordinateCountInt, 
+                double * theXArrayDouble, 
+                double * theYArrayDouble ); 
 };
 #endif

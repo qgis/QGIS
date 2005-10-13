@@ -17,6 +17,7 @@
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qfile.h>
+#include <qradiobutton.h>
 #include "graticulecreator.h"
 //standard includes
 #include <iostream>
@@ -36,19 +37,19 @@ void QgsGridMakerPluginGui::pbnOK_clicked()
   //check input file exists
   //
   std::cout << "GrativuleCreator called with: " <<
-  leOutputShapeFile->text().local8Bit() <<
-  leLongitudeInterval->text().local8Bit() <<
-  leLatitudeInterval->text().local8Bit() <<
-  leOriginLongitude->text().local8Bit() <<
-  leOriginLatitude->text().local8Bit() <<
-  leEndPointLongitude->text().local8Bit() <<
-  leEndPointLatitude->text().local8Bit()
-  << std::endl;
+      leOutputShapeFile->text().local8Bit() <<
+      leLongitudeInterval->text().local8Bit() <<
+      leLatitudeInterval->text().local8Bit() <<
+      leOriginLongitude->text().local8Bit() <<
+      leOriginLatitude->text().local8Bit() <<
+      leEndPointLongitude->text().local8Bit() <<
+      leEndPointLatitude->text().local8Bit()
+      << std::endl;
 
   if (leOutputShapeFile->text().isEmpty())
   {
     QMessageBox::warning( 0, "QGIS - Grid Maker",
-        QString("Please enter the file name before pressing OK!." ));
+            QString("Please enter the file name before pressing OK!." ));
     return;
   }
 
@@ -58,7 +59,7 @@ void QgsGridMakerPluginGui::pbnOK_clicked()
   if (!myFlag)
   {
     QMessageBox::warning( 0, "QGIS - Grid Maker",
-        QString("Longitude Interval is invalid - please correct and try again." ));
+            QString("Longitude Interval is invalid - please correct and try again." ));
     return;
   }
   myFlag=false;//reset test flag
@@ -66,7 +67,7 @@ void QgsGridMakerPluginGui::pbnOK_clicked()
   if (!myFlag)
   {
     QMessageBox::warning( 0, "QGIS - Grid Maker",
-        QString("Latitude Interval is invalid - please correct and try again." ));
+            QString("Latitude Interval is invalid - please correct and try again." ));
     return;
   }
   myFlag=false;//reset test flag
@@ -74,7 +75,7 @@ void QgsGridMakerPluginGui::pbnOK_clicked()
   if (!myFlag)
   {
     QMessageBox::warning( 0, "QGIS - Grid Maker",
-        QString("Longitude Origin is invalid - please correct and try again.." ));
+            QString("Longitude Origin is invalid - please correct and try again.." ));
     return;
   }
   myFlag=false;//reset test flag
@@ -82,7 +83,7 @@ void QgsGridMakerPluginGui::pbnOK_clicked()
   if (!myFlag)
   {
     QMessageBox::warning( 0, "QGIS - Grid Maker",
-        QString("Latitude Origin is invalid - please correct and try again." ));
+            QString("Latitude Origin is invalid - please correct and try again." ));
     return;
   }
   myFlag=false;//reset test flag
@@ -90,7 +91,7 @@ void QgsGridMakerPluginGui::pbnOK_clicked()
   if (!myFlag)
   {
     QMessageBox::warning( 0, "QGIS - Grid Maker",
-        QString("End Point Longitude is invalid - please correct and try again." ));
+            QString("End Point Longitude is invalid - please correct and try again." ));
     return;
   }
   myFlag=false;//reset test flag
@@ -98,20 +99,47 @@ void QgsGridMakerPluginGui::pbnOK_clicked()
   if (!myFlag)
   {
     QMessageBox::warning( 0, "QGIS - Grid Maker",
-        QString("End Point Latitude is invalid - please correct and try again." ));
+            QString("End Point Latitude is invalid - please correct and try again." ));
     return;
   }
-  
 
-  GraticuleCreator *  myGraticuleCreator = new GraticuleCreator(
-        leOutputShapeFile->text(),
-        myLongitudeInterval,
-        myLatitudeInterval,
-        myLongitudeOrigin,
-        myLatitudeOrigin,
-        myEndPointLongitude,
-        myEndPointLatitude
-      );
+
+  if (radPoint->isChecked())
+  {
+    GraticuleCreator  myGraticuleCreator ( leOutputShapeFile->text(),GraticuleCreator::POINT );
+    myGraticuleCreator.generatePointGraticule(
+            myLongitudeInterval,
+            myLatitudeInterval,
+            myLongitudeOrigin,
+            myLatitudeOrigin,
+            myEndPointLongitude,
+            myEndPointLatitude
+            );
+  }
+  else if (radLine->isChecked())
+  {
+    GraticuleCreator  myGraticuleCreator ( leOutputShapeFile->text(),GraticuleCreator::LINE );
+    myGraticuleCreator.generateLineGraticule(
+            myLongitudeInterval,
+            myLatitudeInterval,
+            myLongitudeOrigin,
+            myLatitudeOrigin,
+            myEndPointLongitude,
+            myEndPointLatitude
+            );
+  }
+  else
+  {
+    GraticuleCreator  myGraticuleCreator ( leOutputShapeFile->text(),GraticuleCreator::POLYGON);
+    myGraticuleCreator.generatePolygonGraticule(
+            myLongitudeInterval,
+            myLatitudeInterval,
+            myLongitudeOrigin,
+            myLatitudeOrigin,
+            myEndPointLongitude,
+            myEndPointLatitude
+            );
+  }
   //
   // If you have a produced a raster layer using your plugin, you can ask qgis to
   // add it to the view using:
@@ -120,7 +148,6 @@ void QgsGridMakerPluginGui::pbnOK_clicked()
   //emit drawVectorLayer(QString("pathname"),QString("layername"),QString("provider name (either ogr or postgres"));
   //
 
-  delete myGraticuleCreator;
   emit drawVectorLayer(leOutputShapeFile->text(),QString("Graticule"),QString("ogr"));
   //close the dialog
   done(1);
