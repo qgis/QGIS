@@ -2025,7 +2025,6 @@ void QgisApp::newVectorLayer()
       filename += ".shp";
     }
 
-#if 0
     //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
     QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
     QString ogrlib = pReg->library("ogr");
@@ -2070,9 +2069,9 @@ const std::list<std::pair<QString, QString> >&);
             qWarning("Resolving newEmptyDataSource(...) failed");;
     #endif
         }
-        }
-#endif //0
+    }
 
+#if 0
     //create the new layer with QgsVectorFileWriter
     QgsVectorFileWriter* writer=0;
 
@@ -2131,6 +2130,7 @@ const std::list<std::pair<QString, QString> >&);
 	}
     }
     delete writer;
+#endif //0
 
     //then add the layer to the view
     QStringList filelist;
