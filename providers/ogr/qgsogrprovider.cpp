@@ -25,7 +25,7 @@ email                : sherman at mrcc.com
 #include <cfloat>
 #include <cassert>
 
-#include <gdal_version.h>
+//#include <gdal_version.h>
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
 #include <ogr_spatialref.h>
@@ -1388,14 +1388,14 @@ const std::list<std::pair<QString, QString> >& attributes)
 
     OGRDataSource::DestroyDataSource(dataSource);
 
-    qWarning("GDAL Version number is: "+QString::number(GDAL_VERSION_NUM));
-#if GDAL_VERSION_NUM >= 1310
-    if(reference)
-    {
-	reference->Release();
-    }
-#endif //GDAL_VERSION_NUM
-    return true;
+    //qWarning("GDAL Version number is: "+QString::number(GDAL_VERSION_NUM));
+//#if GDAL_VERSION_NUM >= 1310
+    //if(reference)
+    //{
+    //reference->Release();
+    //}
+//#endif //GDAL_VERSION_NUM
+    //return true;
 }
 
 
