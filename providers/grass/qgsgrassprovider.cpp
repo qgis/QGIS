@@ -1968,6 +1968,9 @@ QString *QgsGrassProvider::createTable ( int field, const QString &key, const QS
     std::cerr << "Field info not found -> create new table" << std::endl;
     #endif
 
+    // We must set mapset before Vect_default_field_info
+    QgsGrass::setMapset ( mGisdbase, mLocation, mMapset ); 
+
     int nLinks = Vect_get_num_dblinks( mMap );
     if ( nLinks == 0 ) {
         fi = Vect_default_field_info ( mMap, field, NULL, GV_1TABLE );
@@ -1975,7 +1978,6 @@ QString *QgsGrassProvider::createTable ( int field, const QString &key, const QS
         fi = Vect_default_field_info ( mMap, field, NULL, GV_MTABLE );
     }
     
-    QgsGrass::setMapset ( mGisdbase, mLocation, mMapset ); 
     dbDriver *driver = db_start_driver_open_database ( fi->driver, fi->database );
 
     if ( driver == NULL ) {
