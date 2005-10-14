@@ -25,7 +25,8 @@ email                : sherman at mrcc.com
 #include <cfloat>
 #include <cassert>
 
-//#include <gdal_version.h>
+#include <gdal.h>         // to collect version information
+
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
 #include <ogr_spatialref.h>
@@ -60,7 +61,13 @@ email                : sherman at mrcc.com
 #endif
 
 static const QString TEXT_PROVIDER_KEY = "ogr";
-static const QString TEXT_PROVIDER_DESCRIPTION = "OGR data provider";
+static const QString TEXT_PROVIDER_DESCRIPTION = 
+               QString("OGR data provider")
+             + " (compiled against GDAL/OGR library version "
+             + GDAL_RELEASE_NAME
+             + ", running against GDAL/OGR library version "
+             + GDALVersionInfo("RELEASE_NAME")
+             + ")";
 
 
 
@@ -1251,14 +1258,14 @@ int QgsOgrProvider::capabilities() const
 QString  QgsOgrProvider::name() const
 {
     return TEXT_PROVIDER_KEY;
-} // ::name()
+} // QgsOgrProvider::name()
 
 
 
 QString  QgsOgrProvider::description() const
 {
     return TEXT_PROVIDER_DESCRIPTION;
-} //  QgsOgrProvider::name()
+} //  QgsOgrProvider::description()
 
 
 
