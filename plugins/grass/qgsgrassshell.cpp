@@ -30,7 +30,11 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <pty.h> 
+#ifdef Q_OS_MACX
+#include <util.h>
+#else
+#include <pty.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -449,10 +453,12 @@ void QgsGrassShell::printStdout()
 				break;
 
 			    case 'P' : // DCH - Delete Character
+			    {
 				int n = rx.cap(2).toInt();
 				mText->setSelection ( mParagraph, mIndex, mParagraph, mIndex+n, 0 );
 				mText->removeSelectedText ( 0 );
 				break;
+			    }
 
 			    case 'K' : // EL - Erase In Line
 				if ( rx.cap(2).isEmpty() || rx.cap(2).toInt() == 0 )
