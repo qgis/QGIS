@@ -81,7 +81,7 @@
   // TODO: Fill to WMS specifications
   struct QgsWmsOperationType
   {
-    std::vector<QString>                 format;
+    QStringList                          format;
     std::vector<QgsWmsDcpTypeProperty>   dcpType;
   };
 
@@ -100,7 +100,7 @@
   // TODO: Fill to WMS specifications
   struct QgsWmsExceptionProperty
   {
-    std::vector<QString>                 format;   // text formats supported.
+    QStringList                 format;   // text formats supported.
   };
 
   /** Primary Contact Person Property structure */
@@ -139,7 +139,7 @@
     // QString                            name;  // Should always be "WMS"
     QString                            title;
     QString                            abstract;
-    std::vector<QString>               keywordList;
+    QStringList                        keywordList;
     QgsWmsOnlineResourceAttribute      onlineResource;
     QgsWmsContactInformationProperty   contactInformation;
     QString                            fees;
@@ -279,7 +279,7 @@
     QString                                     name;
     QString                                     title;
     QString                                     abstract;
-    std::vector<QString>                        keywordList;
+    QStringList                                 keywordList;
     std::vector<QString>                        crs;        // coord ref sys
     QgsRect                                     ex_GeographicBoundingBox;
     std::vector<QgsWmsBoundingBoxProperty>      boundingBox;
@@ -528,8 +528,22 @@ private:
   //! parse the WMS Capability XML element
   void parseCapability(QDomElement e, QgsWmsCapabilityProperty& capabilityProperty);
 
+  //! parse the WMS ContactPersonPrimary XML element
+  void parseContactPersonPrimary(QDomElement e, QgsWmsContactPersonPrimaryProperty&
+                                                contactPersonPrimaryProperty);
+
+  //! parse the WMS ContactAddress XML element
+  void parseContactAddress(QDomElement e, QgsWmsContactAddressProperty& contactAddressProperty);
+
+  //! parse the WMS ContactInformation XML element
+  void parseContactInformation(QDomElement e, QgsWmsContactInformationProperty&
+                                              contactInformationProperty);
+
   //! parse the WMS OnlineResource XML element
   void parseOnlineResource(QDomElement e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute);
+
+  //! parse the WMS KeywordList XML element
+  void parseKeywordList(QDomElement e, QStringList& keywordListProperty);
 
   //! parse the WMS Get XML element
   void parseGet(QDomElement e, QgsWmsGetProperty& getProperty);
