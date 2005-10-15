@@ -48,7 +48,7 @@
 
 
 static QString WMS_KEY = "wms";
-static QString WMS_DESCRIPTION = "OGC Web Map Service data provider";
+static QString WMS_DESCRIPTION = "OGC Web Map Service version 1.3 data provider";
 
 
 QgsWmsProvider::QgsWmsProvider(QString const & uri)
@@ -579,15 +579,15 @@ void QgsWmsProvider::parseService(QDomElement e, QgsWmsServiceProperty& serviceP
           }
           else if (e1.tagName() == "KeywordList")
           {
-            // TODO
+            parseKeywordList(e1, serviceProperty.keywordList);
           }
           else if (e1.tagName() == "OnlineResource")
           {
-            // TODO
+            parseOnlineResource(e1, serviceProperty.onlineResource);
           }
           else if (e1.tagName() == "ContactInformation")
           {
-            // TODO
+            parseContactInformation(e1, serviceProperty.contactInformation);
           }
           else if (e1.tagName() == "Fees")
           {
@@ -651,6 +651,122 @@ void QgsWmsProvider::parseCapability(QDomElement e, QgsWmsCapabilityProperty& ca
 }
 
 
+void QgsWmsProvider::parseContactPersonPrimary(QDomElement e, QgsWmsContactPersonPrimaryProperty& contactPersonPrimaryProperty)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseContactPersonPrimary: entering." << std::endl;
+#endif
+
+  QDomNode n1 = e.firstChild();
+  while( !n1.isNull() ) {
+      QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+      if( !e1.isNull() ) {
+          if      (e1.tagName() == "ContactPerson")
+          {
+            contactPersonPrimaryProperty.contactPerson = e1.text();
+          }
+          else if (e1.tagName() == "ContactOrganization")
+          {
+            contactPersonPrimaryProperty.contactOrganization = e1.text();
+          }
+      }
+      n1 = n1.nextSibling();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseContactPersonPrimary: exiting." << std::endl;
+#endif
+}
+
+
+void QgsWmsProvider::parseContactAddress(QDomElement e, QgsWmsContactAddressProperty& contactAddressProperty)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseContactAddress: entering." << std::endl;
+#endif
+
+  QDomNode n1 = e.firstChild();
+  while( !n1.isNull() ) {
+      QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+      if( !e1.isNull() ) {
+          if      (e1.tagName() == "AddressType")
+          {
+            contactAddressProperty.addressType = e1.text();
+          }
+          else if (e1.tagName() == "Address")
+          {
+            contactAddressProperty.address = e1.text();
+          }
+          else if (e1.tagName() == "City")
+          {
+            contactAddressProperty.city = e1.text();
+          }
+          else if (e1.tagName() == "StateOrProvince")
+          {
+            contactAddressProperty.stateOrProvince = e1.text();
+          }
+          else if (e1.tagName() == "PostCode")
+          {
+            contactAddressProperty.postCode = e1.text();
+          }
+          else if (e1.tagName() == "Country")
+          {
+            contactAddressProperty.country = e1.text();
+          }
+      }
+      n1 = n1.nextSibling();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseContactAddress: exiting." << std::endl;
+#endif
+}
+
+
+void QgsWmsProvider::parseContactInformation(QDomElement e, QgsWmsContactInformationProperty& contactInformationProperty)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseContactInformation: entering." << std::endl;
+#endif
+
+  QDomNode n1 = e.firstChild();
+  while( !n1.isNull() ) {
+      QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+      if( !e1.isNull() ) {
+          if      (e1.tagName() == "ContactPersonPrimary")
+          {
+            parseContactPersonPrimary(e1, contactInformationProperty.contactPersonPrimary);
+          }
+          else if (e1.tagName() == "ContactPosition")
+          {
+            contactInformationProperty.contactPosition = e1.text();
+          }
+          else if (e1.tagName() == "ContactAddress")
+          {
+            parseContactAddress(e1, contactInformationProperty.contactAddress);
+          }
+          else if (e1.tagName() == "ContactVoiceTelephone")
+          {
+            contactInformationProperty.contactVoiceTelephone = e1.text();
+          }
+          else if (e1.tagName() == "ContactFacsimileTelephone")
+          {
+            contactInformationProperty.contactFacsimileTelephone = e1.text();
+          }
+          else if (e1.tagName() == "ContactElectronicMailAddress")
+          {
+            contactInformationProperty.contactElectronicMailAddress = e1.text();
+          }
+      }
+      n1 = n1.nextSibling();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseContactInformation: exiting." << std::endl;
+#endif
+}
+
+
 void QgsWmsProvider::parseOnlineResource(QDomElement e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute)
 {
 #ifdef QGISDEBUG
@@ -661,6 +777,31 @@ void QgsWmsProvider::parseOnlineResource(QDomElement e, QgsWmsOnlineResourceAttr
 
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseOnlineResource: exiting." << std::endl;
+#endif
+}
+
+
+void QgsWmsProvider::parseKeywordList(QDomElement e, QStringList& keywordListProperty)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseKeywordList: entering." << std::endl;
+#endif
+
+  QDomNode n1 = e.firstChild();
+  while( !n1.isNull() ) {
+      QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+      if( !e1.isNull() ) {
+          if      (e1.tagName() == "Keyword")
+          {
+            std::cout << "      Keyword." << std::endl; 
+            keywordListProperty += e1.text();
+          }
+      }
+      n1 = n1.nextSibling();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseKeywordList: exiting." << std::endl;
 #endif
 }
 
@@ -783,7 +924,7 @@ void QgsWmsProvider::parseOperationType(QDomElement e, QgsWmsOperationType& oper
           if      (e1.tagName() == "Format")
           {
             std::cout << "      Format." << std::endl; 
-            operationType.format.push_back(e1.text());
+            operationType.format += e1.text();
           }
           else if (e1.tagName() == "DCPType")
           {
@@ -862,17 +1003,22 @@ void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerPropert
           }
           else if (e1.tagName() == "Name")
           {
-//            std::cout << "      Name is: '" << e1.text() << "'." << std::endl;
             layerProperty.name = e1.text();
           }
           else if (e1.tagName() == "Title")
           {
-//            std::cout << "      Title is: '" << e1.text() << "'." << std::endl;
             layerProperty.title = e1.text();
-          }  
-          else if (e1.tagName() == "SRS")
+          }
+          else if (e1.tagName() == "Abstract")
           {
-//            std::cout << "      SRS is: '" << e1.text() << "'." << std::endl;
+            layerProperty.abstract = e1.text();
+          }
+          else if (e1.tagName() == "KeywordList")
+          {
+            parseKeywordList(e1, layerProperty.keywordList);
+          }
+          else if (e1.tagName() == "CRS")
+          {
             layerProperty.crs.push_back(e1.text());
           }  
           else if (e1.tagName() == "LatLonBoundingBox")
@@ -1068,6 +1214,7 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += "</td></tr>";
 
   // Use a nested table
+  myMetadataQString += "<tr><td bgcolor=\"white\">";
   myMetadataQString += "<table width=\"100%\">";
 
   // Table header
@@ -1102,12 +1249,12 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += capabilities.service.abstract;
   myMetadataQString += "</td></tr>";
 
-  // Service Abstract
+  // Service Keywords
   myMetadataQString += "<tr><td bgcolor=\"gray\">";
   myMetadataQString += tr("Keywords");
   myMetadataQString += "</td>";
   myMetadataQString += "<td bgcolor=\"gray\">";
-  myMetadataQString += "-";
+  myMetadataQString += capabilities.service.keywordList.join("<br />");
   myMetadataQString += "</td></tr>";
 
   // Service Online Resource
@@ -1120,10 +1267,14 @@ QString QgsWmsProvider::getMetadata()
 
   // Service Contact Information
   myMetadataQString += "<tr><td bgcolor=\"gray\">";
-  myMetadataQString += tr("Contact Information");
+  myMetadataQString += tr("Contact Person");
   myMetadataQString += "</td>";
   myMetadataQString += "<td bgcolor=\"gray\">";
-  myMetadataQString += "-";
+  myMetadataQString += capabilities.service.contactInformation.contactPersonPrimary.contactPerson;
+  myMetadataQString += "<br />";
+  myMetadataQString += capabilities.service.contactInformation.contactPosition;
+  myMetadataQString += "<br />";
+  myMetadataQString += capabilities.service.contactInformation.contactPersonPrimary.contactOrganization;
   myMetadataQString += "</td></tr>";
 
   // Service Fees
@@ -1142,35 +1293,108 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += capabilities.service.accessConstraints;
   myMetadataQString += "</td></tr>";
 
-  // Close the nested table
-  myMetadataQString += "</table>";
-
-  // Layer Properties section
+  // GetMap Request Formats
   myMetadataQString += "<tr><td bgcolor=\"gray\">";
-  myMetadataQString += tr("Layer Properties:");
-  myMetadataQString += "</td></tr>";
-
-  // Use a nested table
-  myMetadataQString += "<table width=\"100%\">";
-
-  // Table header
-  myMetadataQString += "<tr><th bgcolor=\"black\">";
-  myMetadataQString += "<font color=\"white\">" + tr("Property") + "</font>";
-  myMetadataQString += "</th>";
-  myMetadataQString += "<th bgcolor=\"black\">";
-  myMetadataQString += "<font color=\"white\">" + tr("Value") + "</font>";
-  myMetadataQString += "</th><tr>";
-
-  // test
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
-  myMetadataQString += tr("test");
+  myMetadataQString += tr("Image Formats");
   myMetadataQString += "</td>";
   myMetadataQString += "<td bgcolor=\"gray\">";
-  myMetadataQString += capabilities.version;
+  myMetadataQString += capabilities.capability.request.getMap.format.join("<br />");
+  myMetadataQString += "</td></tr>";
+
+  // Layer Count (as managed by this provider)
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Layer Count");
+  myMetadataQString += "</td>";
+  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += layersSupported.size();
   myMetadataQString += "</td></tr>";
 
   // Close the nested table
   myMetadataQString += "</table>";
+  myMetadataQString += "</td></tr>";
+
+  // Iterate through layers
+
+  for (int i = 0; i < layersSupported.size(); i++)
+  {
+
+    // TODO: Handle nested layers
+    QString layerName = layersSupported[i].name;   // for aesthetic convenience
+
+    // Layer Properties section
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Layer Properties: ");
+    myMetadataQString += layerName;
+    myMetadataQString += "</td></tr>";
+  
+    // Use a nested table
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += "<table width=\"100%\">";
+  
+    // Table header
+    myMetadataQString += "<tr><th bgcolor=\"black\">";
+    myMetadataQString += "<font color=\"white\">" + tr("Property") + "</font>";
+    myMetadataQString += "</th>";
+    myMetadataQString += "<th bgcolor=\"black\">";
+    myMetadataQString += "<font color=\"white\">" + tr("Value") + "</font>";
+    myMetadataQString += "</th><tr>";
+  
+    // Layer Selectivity (as managed by this provider)
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Selected");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += (activeSubLayers.findIndex(layerName) >= 0) ?
+                           tr("Yes") : tr("No");
+    myMetadataQString += "</td></tr>";
+  
+    // Layer Visibility (as managed by this provider)
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Visibility");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += (activeSubLayers.findIndex(layerName) >= 0) ?
+                           (
+                            (activeSubLayerVisibility.find(layerName)->second) ?
+                            tr("Visible") : tr("Hidden")
+                           ) :
+                           tr("n/a");
+    myMetadataQString += "</td></tr>";
+  
+    // Layer Title
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Title");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += layersSupported[i].title;
+    myMetadataQString += "</td></tr>";
+  
+    // Layer Abstract
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Abstract");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += layersSupported[i].abstract;
+    myMetadataQString += "</td></tr>";
+  
+
+
+    // Layer Coordinate Reference Systems
+    for (int j = 0; i < layersSupported[i].crs.size(); i++)
+    {
+      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += tr("Available in CRS");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"gray\">";
+      myMetadataQString += layersSupported[i].crs[j];
+      myMetadataQString += "</td></tr>";
+    }
+
+    // Close the nested table
+    myMetadataQString += "</table>";
+    myMetadataQString += "</td></tr>";
+
+  }
 
   return myMetadataQString;
 }

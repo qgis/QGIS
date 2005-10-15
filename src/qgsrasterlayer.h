@@ -1069,8 +1069,11 @@ public:
   // \param  dummy  is just there to distinguish this function signature from the old non-provider one.
   QgsRasterLayer(int dummy, QString baseName = 0, QString path = 0, 
                             QString providerLib = 0, QStringList layers = 0);
-  
+
   void setDataProvider( QString const & provider, QStringList layers );
+
+  //! Does this layer use a provider for setting/retrieving data?
+  bool usesProvider();
   
   
 public slots:

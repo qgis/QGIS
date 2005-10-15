@@ -203,27 +203,31 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   QPixmap myPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
   QPixmap myNoPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
 
-  RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
-  RasterPyramidList::iterator myRasterPyramidIterator;
-
-  for ( myRasterPyramidIterator=myPyramidList.begin();
-          myRasterPyramidIterator != myPyramidList.end();
-          ++myRasterPyramidIterator )
+  // Only do pyramids if dealing directly with GDAL.
+  if (!(rasterLayer->usesProvider()))
   {
-    if ((*myRasterPyramidIterator).existsFlag==true)
+    RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
+    RasterPyramidList::iterator myRasterPyramidIterator;
+  
+    for ( myRasterPyramidIterator=myPyramidList.begin();
+            myRasterPyramidIterator != myPyramidList.end();
+            ++myRasterPyramidIterator )
     {
-      lbxPyramidResolutions->insertItem(myPyramidPixmap,
-              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
-              QString::number((*myRasterPyramidIterator).yDimInt)); 
-    }
-    else
-    {
-      lbxPyramidResolutions->insertItem(myNoPyramidPixmap,
-              QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
-              QString::number((*myRasterPyramidIterator).yDimInt)); 
+      if ((*myRasterPyramidIterator).existsFlag==true)
+      {
+        lbxPyramidResolutions->insertItem(myPyramidPixmap,
+                QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
+                QString::number((*myRasterPyramidIterator).yDimInt)); 
+      }
+      else
+      {
+        lbxPyramidResolutions->insertItem(myNoPyramidPixmap,
+                QString::number((*myRasterPyramidIterator).xDimInt) + QString(" x ") + 
+                QString::number((*myRasterPyramidIterator).yDimInt)); 
+      }
     }
   }
-  
+
   //draw the histogram
   //pbnHistRefresh_clicked();
   

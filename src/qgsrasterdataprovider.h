@@ -122,6 +122,11 @@ public:
     // TODO: Get the file masks supported by this provider, suitable for feeding into the file open dialog box
     
 
+    /**
+     * Get metadata in a format suitable for feeding directly
+     * into a subset of the GUI raster properties "Metadata" tab.
+     */
+    virtual QString getMetadata() = 0;
 
     
         
