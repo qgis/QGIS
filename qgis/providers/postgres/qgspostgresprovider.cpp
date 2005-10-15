@@ -662,7 +662,7 @@ void QgsPostgresProvider::select(QgsRect * rect, bool useIntersect)
   }
   if(sqlWhereClause.length() > 0)
   {
-    declare += " and " + sqlWhereClause;
+    declare += " and (" + sqlWhereClause + ")";
   }
 
 #ifdef QGISDEBUG
