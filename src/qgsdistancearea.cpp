@@ -73,7 +73,6 @@ bool QgsDistanceArea::setEllipsoid(const QString& ellipsoid)
   //
   QString mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -175,7 +174,6 @@ bool QgsDistanceArea::setDefaultEllipsoid()
 
 double QgsDistanceArea::measure(QgsGeometry* geometry)
 {
-  size_t size = geometry->wkbSize();
   unsigned char* wkb = geometry->wkbBuffer();
   unsigned char* ptr;
   unsigned int wkbType;
@@ -305,7 +303,6 @@ unsigned char* QgsDistanceArea::measurePolygon(unsigned char* feature, double* a
   
     if (points.size() > 2)
     {
-      bool clockWise = true;
       areaTmp = computePolygonArea(points);
       if (idx == 0)
         *area += areaTmp; // exterior ring

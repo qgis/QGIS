@@ -41,7 +41,6 @@ QgsBookmarkItem::~QgsBookmarkItem()
   // the record using the parameters set in the constructor
 
   sqlite3 *db;
-  char *zErrMsg = 0;
   int rc;
 #ifdef QGISDEBUG 
   std::cout << "Opening user database: " << mUserDbPath.local8Bit() << std::endl; 
@@ -58,7 +57,6 @@ QgsBookmarkItem::~QgsBookmarkItem()
   // prepare the sql statement
   const char *pzTail;
   sqlite3_stmt *ppStmt;
-  char *pzErrmsg;
   QString sql;
   QTextOStream sqlStream(&sql);
   sqlStream << "insert into tbl_bookmarks values(null,'" <<

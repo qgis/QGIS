@@ -487,7 +487,7 @@ QgsPoint QgsLabel::labelPoint ( QgsFeature *feature )
         {
             double sx, sy;
             unsigned char *ptr;
-            int idx, jdx, kdx;
+            int idx, kdx;
             int *numPolygons, *numRings;
 
             // get the number of polygons

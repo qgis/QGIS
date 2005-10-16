@@ -219,8 +219,6 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     QDomElement mne = mnl.toElement();
     dataSource = mne.text();
 
-    const char * dataSourceStr = dataSource; // debugger probe
-
     // the internal name is just the data source basename
     QFileInfo dataSourceFileInfo( dataSource );
     internalName = dataSourceFileInfo.baseName();
@@ -239,8 +237,6 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     mnl = layer_node.namedItem("layername");
     mne = mnl.toElement();
     setLayerName( mne.text() );
-
-    const char * layerNameStr = mne.text(); // debugger probe
 
     //read srs
     QDomNode srsNode = layer_node.namedItem("coordinatetransform");

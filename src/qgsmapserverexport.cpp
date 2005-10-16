@@ -289,8 +289,7 @@ void QgsMapserverExport::writeMapFile()
       //TODO: adapt the following section to the new symbology
 
       mapFile << "  CLASS" << std::endl;
-      QgsLegend *lgd = map->getLegend();
-      //QListViewItem *li = lgd->currentItem();
+      //QListViewItem *li = map->getLegend()->currentItem();
       //    return li->text(0);
 #ifdef QGISDEBUG
       std::cout << "\tMapsrver Export symbol name" << std::endl;

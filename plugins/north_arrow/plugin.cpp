@@ -314,8 +314,6 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
     QgsMapLayer& mapLayer = *(mapCanvas.getZpos(0));
     QgsSpatialRefSys& outputSRS = mapLayer.coordinateTransform()->destSRS();
 
-    bool yy = outputSRS.geographicFlag();
-
     if (outputSRS.isValid() && !outputSRS.geographicFlag())
     {
       // Use a geographic SRS to get lat/long to work out direction

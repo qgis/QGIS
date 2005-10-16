@@ -538,7 +538,6 @@ void QgsRasterLayerProperties::makeScalePreview(QString theColor)
   double myRedDouble = 0;
   double myBlueDouble = 0;
   double myGreenDouble = 0;
-  unsigned int myTransparencyInt = sliderTransparency->value();
   //the 255- is used because a vertical qslider has its max value at the bottom and
   //we want it to appear to the user that the max value is at the top, so we invert its value
   if (theColor == "red")

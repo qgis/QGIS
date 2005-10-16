@@ -369,7 +369,7 @@ void OmgGdal::buildSupportedRasterFileFilter(QString & theFileFiltersString)
 const QString OmgGdal::contour(const QString theInputFile)
 {
   GDALDatasetH hSrcDS;
-  int i, b3D = FALSE, bNoDataSet = FALSE, bIgnoreNoData = FALSE;
+  int b3D = FALSE, bNoDataSet = FALSE;
   int myBandNumber = 1;
   double dfInterval = 1.0;
   double  dfNoData = 0.0;

@@ -201,7 +201,6 @@ bool QgsSpatialRefSys::createFromSrid(long theSrid)
 
 
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -326,7 +325,6 @@ bool QgsSpatialRefSys::createFromEpsg(long theEpsg)
 
 
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -417,7 +415,6 @@ bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
 
 
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -608,7 +605,6 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
   QString myFieldName;
   QString myFieldValue;
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -945,7 +941,6 @@ long QgsSpatialRefSys::findMatchingProj()
   }
 
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -1291,7 +1286,6 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
 
 
       sqlite3 *db;
-      char *zErrMsg = 0;
       int rc;
       rc = sqlite3_open(myDatabaseFileName.local8Bit(), &db);
       if(rc)
@@ -1304,8 +1298,6 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
       // prepare the sql statement
       const char *pzTail;
       sqlite3_stmt *ppStmt;
-      char *pzErrmsg;
-
 
       rc = sqlite3_prepare(db, mySql.utf8(), mySql.length(), &ppStmt, &pzTail);
       // XXX Need to free memory from the error msg if one is set

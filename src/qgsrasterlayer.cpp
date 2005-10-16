@@ -1582,7 +1582,6 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, QgsRaster
   //calculate the adjusted matrix stats - which come into affect if the user has chosen
   RasterBandStats myAdjustedRasterBandStats = getRasterBandStats(theBandNoInt);
 
-  double myRangeDouble = myAdjustedRasterBandStats.rangeDouble;
   int myRedInt = 0;
   int myGreenInt = 0;
   int myBlueInt = 0;
@@ -1616,7 +1615,6 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, QgsRaster
   double myClassBreakMin2 = myClassBreakMax1;
   double myClassBreakMax2 = myClassBreakMin2 + myBreakSizeDouble;
   double myClassBreakMin3 = myClassBreakMax2;
-  double myClassBreakMax3 = myAdjustedRasterBandStats.maxValDouble;
 
   myQImage.setAlphaBuffer(true);
 
@@ -2002,7 +2000,6 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, Q
   myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
 
-  double myRangeDouble = myRasterBandStats.rangeDouble;
   int myRedInt = 0;
   int myGreenInt = 0;
   int myBlueInt = 0;
@@ -2038,7 +2035,6 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, Q
   double myClassBreakMin2 = myClassBreakMax1;
   double myClassBreakMax2 = myClassBreakMin2 + myBreakSizeDouble;
   double myClassBreakMin3 = myClassBreakMax2;
-  double myClassBreakMax3 = myAdjustedRasterBandStats.maxValDouble;
 
 
   for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
@@ -2376,7 +2372,6 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
   void *myGdalGreenData = readData ( myGdalGreenBand, theRasterViewPort );
   void *myGdalBlueData = readData ( myGdalBlueBand, theRasterViewPort );
 
-  int myRedInt, myGreenInt, myBlueInt;
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
   myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
@@ -3140,7 +3135,6 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
   // Get the adjusted matrix stats
   //
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(1);
-  double noDataDouble = myGdalBand->GetNoDataValue();
   QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
     
     
@@ -3182,7 +3176,6 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
     double myClassBreakMin2 = myClassBreakMax1;
     double myClassBreakMax2 = myClassBreakMin2 + myBreakSizeDouble;
     double myClassBreakMin3 = myClassBreakMax2;
-    double myClassBreakMax3 = myClassBreakMin3 + myBreakSizeDouble;
 
     //
     // Create the legend pixmap - note it is generated on the preadjusted stats
@@ -3312,7 +3305,6 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
     QFont myQFont("arial", 10, QFont::Normal);
     QFontMetrics myQFontMetrics(myQFont);
 
-    int myWidthInt = 40 + myQFontMetrics.width(this->name());
     int myHeightInt = (myQFontMetrics.height() + 10 > 35) ? myQFontMetrics.height() + 10 : 35;
 
     //create a matrix to
@@ -3385,13 +3377,11 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCountInt=3)
   int myImageHeightInt = ((myFontHeight + (myInterLabelSpacing*2)) * theLabelCountInt);
   int myLongestLabelWidthInt =  myQFontMetrics.width(this->name());
   const int myHorizontalLabelSpacing = 5;
-  int myImageWidthInt = (myHorizontalLabelSpacing*2) + myLongestLabelWidthInt;
   const int myColourBarWidthInt = 10;
   //
   // Get the adjusted matrix stats
   //
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(1);
-  double noDataDouble = myGdalBand->GetNoDataValue();
   QString myColorInterpretation = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
   QPixmap myLegendQPixmap;      //will be initialised once we know what drawing style is active
   QPainter myQPainter;
@@ -3433,7 +3423,6 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCountInt=3)
     double myClassBreakMin2 = myClassBreakMax1;
     double myClassBreakMax2 = myClassBreakMin2 + myBreakSizeDouble;
     double myClassBreakMin3 = myClassBreakMax2;
-    double myClassBreakMax3 = myClassBreakMin3 + myBreakSizeDouble;
 
     //
     // Create the legend pixmap - note it is generated on the preadjusted stats
@@ -4026,7 +4015,6 @@ QString QgsRasterLayer::getMetadata()
     myMetadataQString += "<font color=\"white\">" + tr("Value") + "</font>";
     myMetadataQString += "</th><tr>";
   
-    int myRowInt = 0;
     int myBandCountInt = getBandCount();
     for (int myIteratorInt = 1; myIteratorInt <= myBandCountInt; ++myIteratorInt)
     {
@@ -4542,8 +4530,6 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   myElement = snode.toElement();
   setGrayBandName(myElement.text());
 
-  const char * sourceNameStr = source(); // debugger probe
-
   if ( ! readFile( source() ) )   // Data source name set in
     // QgsMapLayer::readXML()
   {
@@ -4569,10 +4555,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
   if ( mapLayerNode.isNull() || ("maplayer" != mapLayerNode.nodeName()) )
   {
-    const char * nn = mapLayerNode.nodeName(); // debugger probe
-
     qDebug( "QgsRasterLayer::writeXML() can't find <maplayer>" );
-
     return false;
   }
 
@@ -4941,9 +4924,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider, QStringList laye
 
   //QString ogrlib = libDir + "/libpostgresprovider.so";
 
-  const char *cOgrLib = (const char *) ogrlib;
-
 #ifdef TESTPROVIDERLIB
+  const char *cOgrLib = (const char *) ogrlib;
   // test code to help debug provider loading problems
   //  void *handle = dlopen(cOgrLib, RTLD_LAZY);
   void *handle = dlopen(cOgrLib, RTLD_LAZY | RTLD_GLOBAL);
@@ -5099,7 +5081,6 @@ void QgsRasterLayer::refreshLegend()
     if(mLegendSymbologyGroupParent)
     {
 	//first remove the existing child item (currently there is always one for rasterlayers)
-	QListViewItem* tmp;
 	QListViewItem* myChild = mLegendSymbologyGroupParent->firstChild();
 	delete myChild;
 

@@ -420,9 +420,6 @@ void QgsComposerPicture::pictureChanged ( )
 
     mPicturePath = mPictureLineEdit->text();
 
-    int w = mWidth;
-    int h = mHeight;
-
     loadPicture();
 
     if ( !mPictureValid ) {

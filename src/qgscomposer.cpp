@@ -642,9 +642,6 @@ void QgsComposer::svg(void)
 
   QRect br = pic.boundingRect();
 
-  int width = (int) ( mComposition->paperWidth() * mComposition->scale() ); 
-  int height = (int) ( mComposition->paperHeight()  * mComposition->scale() ); 
-
   pic.save ( myOutputFileNameQString, "svg" );
 }
 

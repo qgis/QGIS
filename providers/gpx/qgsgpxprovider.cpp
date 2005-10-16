@@ -277,7 +277,6 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
       
       if (rte->points.size() == 0)
 	continue;
-      const Routepoint& rtept(rte->points[0]);
       const QgsRect& b(*mSelectionRectangle);
       if ((rte->xMax >= b.xMin()) && (rte->xMin <= b.xMax()) &&
 	  (rte->yMax >= b.yMin()) && (rte->yMin <= b.yMax())) {
@@ -337,7 +336,6 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	continue;
       if (trk->segments[0].points.size() == 0)
 	continue;
-      const Trackpoint& trkpt(trk->segments[0].points[0]);
       const QgsRect& b(*mSelectionRectangle);
       if ((trk->xMax >= b.xMin()) && (trk->xMin <= b.xMax()) &&
 	  (trk->yMax >= b.yMin()) && (trk->yMin <= b.yMax())) {
