@@ -427,12 +427,6 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
     mTransparencySlider(0x0),
     mIdentifyResults(0)
 {
-  // we need to do the tr() stuff outside of the loop becauses tr() is a time
-  // consuming operation nd we dont want to do it in the loop!
-
-  redTranslatedQString   = tr("Red");
-  greenTranslatedQString = tr("Green");
-  blueTranslatedQString  = tr("Blue");
 
   // set the layer name (uppercase first character)
 
@@ -596,7 +590,7 @@ QgsRasterLayer::readFile( QString const & fileName )
     GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(i);
     QString myColorQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
     RasterBandStats myRasterBandStats;
-    myRasterBandStats.bandName = myColorQString + " (" + QString::number(i) + ")";
+    myRasterBandStats.bandName = myColorQString ;
     //myRasterBandStats.bandName=QString::number(i) + " : " + myColorQString;
     myRasterBandStats.bandNoInt = i;
     myRasterBandStats.statsGatheredFlag = false;
@@ -626,9 +620,9 @@ QgsRasterLayer::readFile( QString const & fileName )
 
   if (rasterLayerType == PALETTE)
   {
-    redBandNameQString = redTranslatedQString; // sensible default
-    greenBandNameQString = greenTranslatedQString; // sensible default
-    blueBandNameQString = blueTranslatedQString; // sensible default
+    redBandNameQString = "Red"; // sensible default
+    greenBandNameQString = "Green"; // sensible default
+    blueBandNameQString = "Blue";// sensible default
     grayBandNameQString = tr("Not Set");  //sensible default
     drawingStyle = PALETTED_MULTI_BAND_COLOR; //sensible default
   }
@@ -656,14 +650,7 @@ QgsRasterLayer::readFile( QString const & fileName )
     greenBandNameQString = tr("Not Set"); //sensible default
     blueBandNameQString = tr("Not Set");  //sensible default
     drawingStyle = SINGLE_BAND_GRAY;  //sensible default
-    if (hasBand("Gray"))
-    {
-      grayBandNameQString = "Gray"; // sensible default //dont tr() this its a gdal word!
-    }
-    else if (hasBand("Undefined")) //dont tr() this its a gdal word!
-    {
-      grayBandNameQString = "Undefined";  // sensible default
-    }
+    grayBandNameQString = getRasterBandName(1); // usually gdal will return gray or undefined  
   }
 
 
@@ -1722,15 +1709,15 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, RasterVi
 
       int myGrayValueInt = 0; //color 1 int
 
-      if (theColorQString == redTranslatedQString)
+      if (theColorQString == redBandNameQString)
       {
         myGrayValueInt = c1;
       }
-      else if (theColorQString == greenTranslatedQString)
+      else if (theColorQString == greenBandNameQString)
       {
         myGrayValueInt = c2;
       }
-      else if (theColorQString == blueTranslatedQString)
+      else if (theColorQString == blueBandNameQString)
       {
         myGrayValueInt = c3;
       }
@@ -1869,15 +1856,15 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, R
       int myInt;
 
       //check for alternate color mappings
-      if (theColorQString == redTranslatedQString)
+      if (theColorQString == redBandNameQString)
       {
         myInt = c1;
       }
-      else if (theColorQString == ("Green"))
+      else if (theColorQString == greenBandNameQString)
       {
         myInt = c2;
       }
-      else if (theColorQString == ("Blue"))
+      else if (theColorQString == blueBandNameQString)
       {
         myInt = c3;
       }
@@ -2073,25 +2060,26 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, RasterVi
       int myBlueValueInt = 0; //color 3 int
 
       //check for alternate color mappings
-      if (redBandNameQString == redTranslatedQString)
+      if (redBandNameQString == "Red")
         myRedValueInt = c1;
-      else if (redBandNameQString == greenTranslatedQString)
+      else if (redBandNameQString == "Green")
         myRedValueInt = c2;
-      else if (redBandNameQString == blueTranslatedQString)
+      else if (redBandNameQString == "Blue")
         myRedValueInt = c3;
 
-      if (greenBandNameQString == redTranslatedQString)
+      if (greenBandNameQString == "Red")
         myGreenValueInt = c1;
-      else if (greenBandNameQString == greenTranslatedQString)
+      else if (greenBandNameQString == "Green")
         myGreenValueInt = c2;
-      else if (greenBandNameQString == blueTranslatedQString)
+      else if (greenBandNameQString == "Blue")
+        
         myGreenValueInt = c3;
 
-      if (blueBandNameQString == redTranslatedQString)
+      if (blueBandNameQString == "Red")
         myBlueValueInt = c1;
-      else if (blueBandNameQString == greenTranslatedQString)
+      else if (blueBandNameQString == "Green")
         myBlueValueInt = c2;
-      else if (blueBandNameQString == blueTranslatedQString)
+      else if (blueBandNameQString == "Blue")
         myBlueValueInt = c3;
 
       if (invertHistogramFlag)
@@ -2469,13 +2457,13 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
     {
       // a "Red" layer
     case 1:
-      myRasterBandStats.bandName = redTranslatedQString;
+      myRasterBandStats.bandName = redBandNameQString;
       break;
     case 2:
-      myRasterBandStats.bandName = blueTranslatedQString;
+      myRasterBandStats.bandName = blueBandNameQString;
       break;
     case 3:
-      myRasterBandStats.bandName = greenTranslatedQString;
+      myRasterBandStats.bandName = greenBandNameQString;
       break;
     default:
       //invalid band id so return
@@ -2754,7 +2742,7 @@ void QgsRasterLayer::setRedBandName(QString theBandNameQString)
     return;
   }
   //check if the image is paletted
-  if (rasterLayerType == PALETTE && (theBandNameQString == redTranslatedQString || theBandNameQString == greenTranslatedQString || theBandNameQString == blueTranslatedQString))
+  if (rasterLayerType == PALETTE && (theBandNameQString == "Red" || theBandNameQString == "Green" || theBandNameQString == "Blue"))
   {
     redBandNameQString = theBandNameQString;
     return;
@@ -2787,7 +2775,7 @@ void QgsRasterLayer::setGreenBandName(QString theBandNameQString)
     return;
   }
   //check if the image is paletted
-  if (rasterLayerType == PALETTE && (theBandNameQString == redTranslatedQString || theBandNameQString == greenTranslatedQString || theBandNameQString == blueTranslatedQString))
+  if (rasterLayerType == PALETTE && (theBandNameQString == "Red" || theBandNameQString == "Green" || theBandNameQString == "Blue"))
   {
     greenBandNameQString = theBandNameQString;
     return;
@@ -2820,7 +2808,7 @@ void QgsRasterLayer::setBlueBandName(QString theBandNameQString)
     return;
   }
   //check if the image is paletted
-  if (rasterLayerType == PALETTE && (theBandNameQString == redTranslatedQString || theBandNameQString == greenTranslatedQString || theBandNameQString == blueTranslatedQString))
+  if (rasterLayerType == PALETTE && (theBandNameQString == "Red" || theBandNameQString == "Green" || theBandNameQString == "Blue"))
   {
     blueBandNameQString = theBandNameQString;
     return;
@@ -2853,7 +2841,7 @@ void QgsRasterLayer::setGrayBandName(QString theBandNameQString)
     return;
   }
   //check if the image is paletted
-  if (rasterLayerType == PALETTE && (theBandNameQString == redTranslatedQString || theBandNameQString == greenTranslatedQString || theBandNameQString == blueTranslatedQString))
+  if (rasterLayerType == PALETTE && (theBandNameQString == redBandNameQString || theBandNameQString == greenBandNameQString || theBandNameQString == blueBandNameQString))
   {
     grayBandNameQString = theBandNameQString;
     return;

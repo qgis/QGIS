@@ -1023,11 +1023,6 @@ private:
     RasterPyramidList mPyramidList;
     //Transparency slider for popup menu
     QSlider * mTransparencySlider; 
-    //we need to do the tr() stuff outside of the main drawing loops becauses tr() is a 
-    //time consuming operation nd we dont want to do it in the loop!
-    QString redTranslatedQString;
-    QString greenTranslatedQString;
-    QString blueTranslatedQString;
 
     /* raster properties dialog 
 

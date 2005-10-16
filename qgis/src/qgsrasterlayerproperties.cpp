@@ -84,28 +84,28 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   if (rasterLayer->getRasterLayerType()
           == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
   {
-    cboRed->insertItem(tr("Red"));
-    cboGreen->insertItem(tr("Red"));
-    cboBlue->insertItem(tr("Red"));
+    cboRed->insertItem("Red");
+    cboGreen->insertItem("Red");
+    cboBlue->insertItem("Red");
 
-    cboRed->insertItem(tr("Green"));
-    cboGreen->insertItem(tr("Green"));
-    cboBlue->insertItem(tr("Green"));
+    cboRed->insertItem("Green");
+    cboGreen->insertItem("Green");
+    cboBlue->insertItem("Green");
 
-    cboRed->insertItem(tr("Blue"));
-    cboGreen->insertItem(tr("Blue"));
-    cboBlue->insertItem(tr("Blue"));
+    cboRed->insertItem("Blue");
+    cboGreen->insertItem("Blue");
+    cboBlue->insertItem("Blue");
 
     cboRed->insertItem(tr("Not Set"));
     cboGreen->insertItem(tr("Not Set"));
     cboBlue->insertItem(tr("Not Set"));
 
-    cboGray->insertItem(tr("Red"));
-    cboGray->insertItem(tr("Green"));
-    cboGray->insertItem(tr("Blue"));
+    cboGray->insertItem("Red");
+    cboGray->insertItem("Green");
+    cboGray->insertItem("Blue");
     cboGray->insertItem(tr("Not Set"));
 
-    lstHistogramLabels->insertItem(tr(tr("Palette")));
+    lstHistogramLabels->insertItem(tr("Palette"));
   }
   else                   // all other layer types use band name entries only
   {
@@ -170,9 +170,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
       {
         myPixmap.fill( Qt::gray );
       }
-      lstHistogramLabels->insertItem(myPixmap,tr(myRasterBandNameQString));
+      lstHistogramLabels->insertItem(myPixmap,myRasterBandNameQString);
       //keep a list of band names for later use
-      myBandNameQStringList.append(tr(myRasterBandNameQString));
+      //! @note band names should not be translated!
+      myBandNameQStringList.append(myRasterBandNameQString);
     }
 
     //select all histogram layers list items by default
@@ -194,10 +195,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
       std::cout << "Inserting : " << myQString.local8Bit() << std::endl;
 #endif
 
-      cboGray->insertItem(tr(myQString));
-      cboRed->insertItem(tr(myQString));
-      cboGreen->insertItem(tr(myQString));
-      cboBlue->insertItem(tr(myQString));
+      cboGray->insertItem(myQString);
+      cboRed->insertItem(myQString);
+      cboGreen->insertItem(myQString);
+      cboBlue->insertItem(myQString);
     }
     cboRed->insertItem(tr("Not Set"));
     cboGreen->insertItem(tr("Not Set"));
@@ -272,10 +273,10 @@ void QgsRasterLayerProperties::apply()
     rasterLayer->setInvertHistogramFlag(false);
   }
   //now set the color -> band mapping combos to the correct values
-  rasterLayer->setRedBandName(tr(cboRed->currentText()));
-  rasterLayer->setGreenBandName(tr(cboGreen->currentText()));
-  rasterLayer->setBlueBandName(tr(cboBlue->currentText()));
-  rasterLayer->setGrayBandName(tr(cboGray->currentText()));
+  rasterLayer->setRedBandName(cboRed->currentText());
+  rasterLayer->setGreenBandName(cboGreen->currentText());
+  rasterLayer->setBlueBandName(cboBlue->currentText());
+  rasterLayer->setGrayBandName(cboGray->currentText());
   //set the appropriate color ramping type
   if (cboColorMap->currentText() == tr("Pseudocolor"))
   {
