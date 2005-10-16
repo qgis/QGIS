@@ -34,6 +34,7 @@ void QgsAbout::init()
   if ( file.open( IO_ReadOnly ) ) {
     QTextStream stream( &file );
     QString line;
+    int i = 1;
     while ( !stream.atEnd() ) 
     {
       line = stream.readLine(); // line of text excluding '\n'
