@@ -71,9 +71,6 @@ QgsProject * QgsProject::theProject_;
  static 
  QStringList makeKeyTokens_(QString const &scope, QString const &key)
  {
-     const char * scope_str = scope.ascii(); // debugger probes
-     const char * key_str   = key.ascii();
-
      QStringList keyTokens = QStringList(scope);
      keyTokens += QStringList::split('/', key);
 
@@ -106,10 +103,6 @@ QgsProject * QgsProject::theProject_;
 
      while ( ! keySequence.isEmpty() )
      {
-         // debugger probes
-         const char * currentPropertyName = currentProperty->name().ascii();
-         const char * keySequenceFirst    = keySequence.first().ascii();
-
          // if the current head of the sequence list matches the property name,
          // then traverse down the property hierarchy
          if ( keySequence.first() == currentProperty->name() )
@@ -132,8 +125,6 @@ QgsProject * QgsProject::theProject_;
              }
              else if ( nextProperty = currentProperty->find( keySequence.first() ) )
              {
-                 keySequenceFirst    = keySequence.first().ascii();
-
                  if ( nextProperty->isKey() )
                  {
                      currentProperty = dynamic_cast<QgsPropertyKey*>(nextProperty);
@@ -188,10 +179,6 @@ QgsProject * QgsProject::theProject_;
 
      while ( ! keySequence.isEmpty() )
      {
-         // debugger probes
-         const char * currentPropertyName = currentProperty->name().ascii();
-         const char * keySeqeunceFirst    = keySequence.first().ascii();
-
          // if the current head of the sequence list matches the property name,
          // then traverse down the property hierarchy
          if ( keySequence.first() == currentProperty->name() )
@@ -264,10 +251,6 @@ QgsProject * QgsProject::theProject_;
 
      while ( ! keySequence.isEmpty() )
      {
-         // debugger probes
-         const char * currentPropertyName = currentProperty->name().ascii();
-         const char * keySequenceFirst    = keySequence.first().ascii();
-
          // if the current head of the sequence list matches the property name,
          // then traverse down the property hierarchy
          if ( keySequence.first() == currentProperty->name() )
@@ -290,8 +273,6 @@ QgsProject * QgsProject::theProject_;
              }
              else if ( nextProperty = currentProperty->find( keySequence.first() ) )
              {
-                 keySequenceFirst    = keySequence.first().ascii();
-
                  previousQgsPropertyKey = currentProperty;
                  currentProperty = dynamic_cast<QgsPropertyKey*>(nextProperty);
 
@@ -1558,9 +1539,6 @@ bool QgsProject::removeEntry(QString const &scope, const QString & key)
 
 QStringList QgsProject::entryList(QString const &scope, QString const &key) const
 {
-    const char * scope_str = scope.ascii();
-    const char * key_str   = key.ascii();
-
     QgsProperty * foundProperty = findKey_( scope, key, imp_->properties_ );
 
     QStringList entries;
@@ -1580,9 +1558,6 @@ QStringList QgsProject::entryList(QString const &scope, QString const &key) cons
 QStringList 
 QgsProject::subkeyList(QString const &scope, QString const &key) const
 {
-    const char * scope_str = scope.ascii();
-    const char * key_str   = key.ascii();
-
     QgsProperty * foundProperty = findKey_( scope, key, imp_->properties_ );
 
     QStringList entries;

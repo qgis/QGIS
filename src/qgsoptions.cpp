@@ -218,7 +218,6 @@ void QgsOptions::getEllipsoidList()
   // Populate the ellipsoid combo
   // 
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -251,7 +250,6 @@ void QgsOptions::getEllipsoidList()
 QString QgsOptions::getEllipsoidAcronym(QString theEllipsoidName)
 {
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -284,7 +282,6 @@ QString QgsOptions::getEllipsoidAcronym(QString theEllipsoidName)
 QString QgsOptions::getEllipsoidName(QString theEllipsoidAcronym)
 {
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;

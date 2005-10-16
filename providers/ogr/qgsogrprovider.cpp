@@ -127,8 +127,8 @@ QgsOgrProvider::QgsOgrProvider(QString const & uri)
 #endif
   } else {
     std::cerr << "Data source is invalid" << std::endl;
-    const char *er = CPLGetLastErrorMsg();
 #ifdef QGISDEBUG
+    const char *er = CPLGetLastErrorMsg();
     std::cerr << er << std::endl;
 #endif
     valid = false;
@@ -1395,14 +1395,14 @@ const std::list<std::pair<QString, QString> >& attributes)
 
     OGRDataSource::DestroyDataSource(dataSource);
 
-    //qWarning("GDAL Version number is: "+QString::number(GDAL_VERSION_NUM));
-//#if GDAL_VERSION_NUM >= 1310
-    //if(reference)
-    //{
-    //reference->Release();
-    //}
-//#endif //GDAL_VERSION_NUM
-    //return true;
+    qWarning("GDAL Version number is: "+QString::number(GDAL_VERSION_NUM));
+#if GDAL_VERSION_NUM >= 1310
+    if(reference)
+    {
+    reference->Release();
+    }
+#endif //GDAL_VERSION_NUM
+    return true;
 }
 
 

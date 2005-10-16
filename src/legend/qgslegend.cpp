@@ -138,8 +138,6 @@ void QgsLegend::contentsMousePressEvent(QMouseEvent * e)
 #endif
   if (e->button() == Qt::LeftButton || e->button() == Qt::MidButton)
   {
-    QPoint p(contentsToViewport(e->pos()));
-    QListViewItem *i = itemAt(p);
     mLastPressPos = e->pos();
     mMousePressedFlag = true;
   }
@@ -216,7 +214,6 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
 
   if (mItemBeingMoved)
   {
-      QListViewItem *item = itemAt(mLastPressPos);
       QListViewItem *destItem = itemAt(e->pos());
       
       QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>(mItemBeingMoved);

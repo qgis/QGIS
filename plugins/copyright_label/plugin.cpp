@@ -166,7 +166,6 @@ void QgsCopyrightLabelPlugin::renderLabel(QPainter * theQPainter)
     if (mEnable)
     {
         //@todo softcode this!myQSimpleText.height()
-        int myRotationInt = 90;
         // need width/height of paint device
         QPaintDeviceMetrics myMetrics( theQPainter->device() );
         int myHeight = myMetrics.height();

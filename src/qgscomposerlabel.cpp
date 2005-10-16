@@ -249,7 +249,6 @@ QRect QgsComposerLabel::boundingRect ( void ) const
     int h = metrics.height() ;
     
     int buf = 0;
-    int width;
     
     if ( mBox ) {
 	buf = (int) ( size / 10 * mComposition->scale() + 2 ); // 2 is for line width

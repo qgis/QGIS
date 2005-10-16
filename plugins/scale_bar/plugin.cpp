@@ -210,7 +210,6 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     // Hard coded sizes
     int myMajorTickSize=8;
     int myTextOffsetX=3;
-    int myTextOffsetY=3;
     double myActualSize=mPreferredSize;
     int myMargin=20;
 

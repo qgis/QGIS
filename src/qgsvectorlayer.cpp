@@ -284,7 +284,6 @@ void QgsVectorLayer::setDisplayField(QString fldName)
   }
   else
   {
-    int j = 0;
     for (int j = 0; j < fields.size(); j++)
     {
 
@@ -783,21 +782,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     qWarning("Starting draw of features");
 #endif
     QgsFeature *fet;
-    unsigned char *feature;
-    bool attributesneeded = m_renderer->needsAttributes();
-
-    double *x;
-    double *y;
-    int *nPoints;
-    int *numRings;
-    int *numPolygons;
-    int numPoints;
-    int numLineStrings;
-    int idx, jdx, kdx;
-    unsigned char *ptr;
-    QgsPoint pt;
-    QPointArray *pa;
-    int wkbType;
 
     bool projectionsEnabledFlag = projectionsEnabled();
     std::list<int> attributes=m_renderer->classificationAttributes();
@@ -947,7 +931,6 @@ void QgsVectorLayer::identify(QgsRect * r)
   dataProvider->select(&pr, true);
   int featureCount = 0;
   QgsFeature *fet;
-  unsigned char *feature;
 
   QgsDistanceArea calc;
   calc.setSourceSRS(mCoordinateTransform->sourceSRS().srsid());
@@ -2383,10 +2366,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
   if ( mapLayerNode.isNull() || ("maplayer" != mapLayerNode.nodeName()) )
   {
-    const char * nn = mapLayerNode.nodeName(); // debugger probe
-
     qDebug( "QgsVectorLayer::writeXML() can't find <maplayer>" );
-
     return false;
   }
 
@@ -2474,8 +2454,6 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
     rawXML  = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n";
 
     temp_str = labelXML.str();
-
-    const char * temp_str_c = temp_str.c_str(); // debugger probe point
 
     rawXML   += temp_str;
 

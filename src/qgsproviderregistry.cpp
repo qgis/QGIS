@@ -121,7 +121,6 @@ QgsProviderRegistry::QgsProviderRegistry(const char *pluginPath)
                         providerkey_t *pKey = (providerkey_t *) myLib->resolve("providerKey");
                         if (pDesc && pKey)
                         {
-                            const char *foo = pKey();
                             // add this provider to the provider map
                             mProviders[pKey()] = 
                                 new QgsProviderMetadata(pKey(), pDesc(), myLib->library());

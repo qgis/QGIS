@@ -538,8 +538,6 @@ void QgsPropertyKey::entryList( QStringList & entries ) const
     // now add any leaf nodes to the entries list
     for (QDictIterator<QgsProperty> i(properties_); i.current(); ++i)
     {
-        const char *currentNodeStr = i.currentKey().local8Bit(); // debugger probe
-
         // add any of the nodes that have just a single value
         if (i.current()->isLeaf())
         {
@@ -555,8 +553,6 @@ void QgsPropertyKey::subkeyList(QStringList & entries) const
     // now add any leaf nodes to the entries list
     for (QDictIterator < QgsProperty > i(properties_); i.current(); ++i)
     {
-        const char *currentNodeStr = i.currentKey().local8Bit(); // debugger probe
-
         // add any of the nodes that have just a single value
         if (!i.current()->isLeaf())
         {
@@ -568,12 +564,11 @@ void QgsPropertyKey::subkeyList(QStringList & entries) const
 
 bool QgsPropertyKey::isLeaf() const
 {
-    int c = count();         // debugger probe
-
     if (0 == count())
     {
         return true;
-    } else if (1 == count())
+    }
+    else if (1 == count())
     {
         QDictIterator < QgsProperty > i(properties_);
 

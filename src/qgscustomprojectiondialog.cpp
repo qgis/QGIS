@@ -131,7 +131,6 @@ void QgsCustomProjectionDialog::getProjList ()
   // Populate the projection combo
   // 
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -167,7 +166,6 @@ void QgsCustomProjectionDialog::getEllipsoidList()
   // Populate the ellipsoid combo
   // 
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -214,7 +212,6 @@ void QgsCustomProjectionDialog::pbnDelete_clicked()
   }
 
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -275,7 +272,6 @@ void QgsCustomProjectionDialog::pbnClose_clicked()
 long QgsCustomProjectionDialog::getRecordCount()
 {
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -309,7 +305,6 @@ long QgsCustomProjectionDialog::getRecordCount()
 QString QgsCustomProjectionDialog::getProjectionFamilyName(QString theProjectionFamilyAcronym)
 {
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -341,7 +336,6 @@ QString QgsCustomProjectionDialog::getProjectionFamilyName(QString theProjection
 QString QgsCustomProjectionDialog::getEllipsoidName(QString theEllipsoidAcronym)
 {
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -373,7 +367,6 @@ QString QgsCustomProjectionDialog::getEllipsoidName(QString theEllipsoidAcronym)
 QString QgsCustomProjectionDialog::getProjectionFamilyAcronym(QString theProjectionFamilyName)
 {
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -405,7 +398,6 @@ QString QgsCustomProjectionDialog::getProjectionFamilyAcronym(QString theProject
 QString QgsCustomProjectionDialog::getEllipsoidAcronym(QString theEllipsoidName)
 {
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -441,7 +433,6 @@ void QgsCustomProjectionDialog::pbnFirst_clicked()
   std::cout << "QgsCustomProjectionDialog::pbnFirst_clicked()" << std::endl;
 #endif
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -510,7 +501,6 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
     return;
   }
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -588,7 +578,6 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
     return;
   }
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -662,7 +651,6 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
   std::cout << "QgsCustomProjectionDialog::pbnLast_clicked()" << std::endl;
 #endif
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -841,7 +829,6 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
         ;
   }
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -893,7 +880,6 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
   //search the sqlite user projections db for the projection entry 
   //and display its parameters
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;

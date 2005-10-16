@@ -92,7 +92,7 @@ double  QgsScaleCalculator::calculateGeographicDistance(QgsRect &mapExtent)
   double c = 2 * atan2(sqrt(a), sqrt(1-a));
   // calculate radius of earth
   double ra = 6378;
-  double rb = 6357;
+  // unused! double rb = 6357;
   double e = .081082;
   double R = ra* sqrt(1-pow(e,2))/(1 - pow(e,2)*pow(sin(lat1*rads),2));
   double d = c *R; // kilometers;

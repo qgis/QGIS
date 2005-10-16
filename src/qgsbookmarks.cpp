@@ -75,7 +75,6 @@ void QgsBookmarks::initialise()
     // prepare the sql statement
     const char *pzTail;
     sqlite3_stmt *ppStmt;
-    char *pzErrmsg;
     QString sql = "select * from tbl_bookmarks";
 
     rc = sqlite3_prepare(db, (const char *)sql, sql.length(), &ppStmt, &pzTail);
@@ -244,7 +243,6 @@ void QgsBookmarks::zoomToBookmark()
 int QgsBookmarks::connectDb()
 {
 
-  char *zErrMsg = 0;
   int rc;
   rc = sqlite3_open(mUserDbPath, &db);
   if(rc)

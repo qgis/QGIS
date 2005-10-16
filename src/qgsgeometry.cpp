@@ -780,7 +780,6 @@ bool QgsGeometry::vertexAt(double &x, double &y,
             {
                 unsigned char *ptr;
                 int *nPoints;
-                int idx;
 
                 // get number of points in the line
                 ptr = mGeometry + 5;     // now at mGeometry.numPoints
@@ -988,7 +987,6 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
   QgsPoint minDistPoint;
 
   int wkbType;
-  double x,y;
   double *thisx,*thisy;
   double *prevx,*prevy;
   double testdist;
@@ -1091,13 +1089,11 @@ QgsRect QgsGeometry::boundingBox() const
     int *nPoints;
     int *numRings;
     int *numPolygons;
-    int numPoints;
     int numLineStrings;
     int idx, jdx, kdx;
     unsigned char *ptr;
     char lsb;
     QgsPoint pt;
-    QPointArray *pa;
     int wkbType;
 
     if(mGeometry)
@@ -1614,13 +1610,11 @@ geos::Geometry* QgsGeometry::geosGeometry() const
     int *nPoints;
     int *numRings;
     int *numPolygons;
-    int numPoints;
     int numLineStrings;
     int idx, jdx, kdx;
     unsigned char *ptr;
     char lsb;
     QgsPoint pt;
-    QPointArray *pa;
     int wkbtype;
 
 //    // TODO: Make this a static member - save generating for every geometry

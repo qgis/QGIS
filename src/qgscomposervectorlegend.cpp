@@ -656,8 +656,6 @@ void QgsComposerVectorLegend::recalculate ( void )
     std::cout << "mMargin = " << mMargin << " mSymbolHeight = " << mSymbolHeight
               << "mSymbolWidth = " << mSymbolWidth << " mSymbolSpace = " << mSymbolSpace << std::endl;
      
-    int nlayers = mMapCanvas->layerCount();
-
     QRect r = render(0);
 
     QCanvasRectangle::setSize ( r.width(), r.height() );

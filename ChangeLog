@@ -1,5 +1,11 @@
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
+Version 0.8 'Joesephine' .... development version
+2005-10-13 [timlinux] 0.7.9
+** Added capability to generate point and polygon based graticules to the
+grid_maker plugin
+
+
 Version 0.6 'Simon' .... development version
 QGIS Change Log
 2005-07-03 [morb_au] 0.7.devel2

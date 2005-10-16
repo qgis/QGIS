@@ -103,7 +103,6 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
         //
         // We don't know anything about a text based field other
         // than its name. All fields are assumed to be text
-        int fieldPos = 0;
         for ( QStringList::Iterator it = fieldList.begin(); it != fieldList.end(); ++it ) {
           // add item to both drop-downs (X field and Y field)
           if((*it).length() > 0)

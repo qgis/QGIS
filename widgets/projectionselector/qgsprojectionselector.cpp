@@ -153,7 +153,6 @@ QString QgsProjectionSelector::getCurrentProj4String()
 
 
       sqlite3 *db;
-      char *zErrMsg = 0;
       int rc;
       rc = sqlite3_open(myDatabaseFileName.local8Bit(), &db);
       if(rc)
@@ -166,7 +165,6 @@ QString QgsProjectionSelector::getCurrentProj4String()
       // prepare the sql statement
       const char *pzTail;
       sqlite3_stmt *ppStmt;
-      char *pzErrmsg;
       QString sql = "select parameters from tbl_srs where srs_id = ";
       sql += mySrsId;
 #ifdef QGISDEBUG
@@ -249,7 +247,6 @@ long QgsProjectionSelector::getCurrentSRID()
       // assuming that it will never be used anywhere else. Given the low overhead,
       // opening it each time seems to be a reasonable approach at this time.
       sqlite3 *db;
-      char *zErrMsg = 0;
       int rc;
       rc = sqlite3_open(myDatabaseFileName.local8Bit(), &db);
       if(rc)
@@ -262,7 +259,6 @@ long QgsProjectionSelector::getCurrentSRID()
       // prepare the sql statement
       const char *pzTail;
       sqlite3_stmt *ppStmt;
-      char *pzErrmsg;
       QString sql = "select srid from tbl_srs where srs_id = ";
       sql += lvi->text(1);
 
@@ -333,7 +329,6 @@ void QgsProjectionSelector::getUserProjList()
   }
 
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -394,7 +389,6 @@ void QgsProjectionSelector::getProjList()
 
   // open the database containing the spatial reference data
   sqlite3 *db;
-  char *zErrMsg = 0;
   int rc;
   rc = sqlite3_open(mSrsDatabaseFileName.local8Bit(), &db);
   if(rc)
@@ -407,7 +401,6 @@ void QgsProjectionSelector::getProjList()
   // prepare the sql statement
   const char *pzTail;
   sqlite3_stmt *ppStmt;
-  char *pzErrmsg;
   // get total count of records in the projection table
   QString sql = "select count(*) from tbl_srs";
 
@@ -631,7 +624,6 @@ void QgsProjectionSelector::pbnFind_clicked()
   //
 
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
@@ -702,7 +694,6 @@ long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
   //
 
   sqlite3      *myDatabase;
-  char         *myErrorMessage = 0;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;

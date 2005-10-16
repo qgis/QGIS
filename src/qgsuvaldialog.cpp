@@ -157,7 +157,6 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
 	attlist.push_back(nr);
 	std::vector < QgsFeatureAttribute > vec;
 	QgsSymbol* symbol;
-	QgsRenderItem* ritemptr;
 
 	provider->reset();
 	QgsFeature* f;
