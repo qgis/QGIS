@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Import OGR vector layer" module="v.in.ogr">
+	<ogr key="dsn" layeroption="layer" label="OGR vector layer" />
+	<option key="output" />
+	<flag key="o" answer="on" hidden="yes" />
+</qgisgrassmodule>

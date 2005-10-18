@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Extract selected features" module="v.extract">
+	<option key="input" typeoption="type" layeroption="layer" id="input"/>
+	<selection key="list" layerid="input" label="Cats" />
+	<option key="output" />
+</qgisgrassmodule>
