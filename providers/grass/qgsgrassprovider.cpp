@@ -608,6 +608,11 @@ std::vector<QgsField> const & QgsGrassProvider::fields() const
       return mLayers[mLayerId].fields;
 }
 
+int QgsGrassProvider::keyField()
+{
+      return mLayers[mLayerId].keyColumn;
+}
+
 void QgsGrassProvider::reset()
 {
     if ( isEdited() )
@@ -919,6 +924,7 @@ void QgsGrassProvider::loadAttributes ( GLAYER &layer )
 
     // Add cat if no attribute fields exist (otherwise qgis crashes)
     if ( layer.nColumns == 0 ) {
+        layer.keyColumn = 0;
 	layer.fields.push_back ( QgsField( "cat", "integer", 10, 0) );
 	layer.minmax = new double[1][2];
 	layer.minmax[0][0] = 0; 
