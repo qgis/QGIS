@@ -9,16 +9,29 @@ INCLUDEPATH += . \
                 ..\..\src \
                 $(POSTGRESQL)\src\interfaces\libpq \
                 $(POSTGRESQL)\src\include \
-                $(GEOS)\include
+                $(GEOS)\include \
+                $(GDAL)\include \
+                $(WINSDK)\include
 LIBS += $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib \
         ..\..\src\libqgis.lib \
-        $(GEOS)\lib\geos.lib
+        $(GEOS)\lib\geos.lib \
+        $(FWTOOLS)\lib\gdal_i.lib
 
 CONFIG += qt dll thread
 DLLDESTDIR= ..\..\win_build\lib\qgis
 # Input
-HEADERS += qgspostgresprovider.h
+HEADERS += qgspostgresprovider.h \
+           qgspostgrescountthread.h \
+           qgspostgisbox2d.h \
+           qgspostgisbox3d.h \
+           qgspostgresextentthread.h \
+           
+
 SOURCES += qgspostgresprovider.cpp \
+           qgspostgrescountthread.cpp \
+           qgspostgisbox2d.cpp \
+           qgspostgisbox3d.cpp \
+           qgspostgresextentthread.cpp \
            ..\..\src\qgsfeature.cpp \
            ..\..\src\qgsfield.cpp \
            ..\..\src\qgsrect.cpp \
