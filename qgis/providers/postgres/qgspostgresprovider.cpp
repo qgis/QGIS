@@ -1292,7 +1292,8 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
     columnRelationsType::const_iterator 
       ii = columnRelations.find(PQgetvalue(result, i, 0));
 
-    assert(ii != columnRelations.end());
+    if (ii == columnRelations.end())
+      continue;
 
     int count = 0;
     const int max_loops = 100;
