@@ -156,7 +156,9 @@ signals:
   @param norepaint true: there is no repaint at all. False: QgsMapCanvas
   decides, if a repaint is necessary or not*/
   void editingStopped(bool norepaint);
-  
+
+  /** This signal is emited when selection was changed */
+  void selectionChanged(); 
   
 public slots:
 
@@ -216,15 +218,17 @@ public:
 
   /**
   * Get the first feature resulting from a select operation
+  * @param selected selected feeatures only
   * @return QgsFeature
   */
-  virtual QgsFeature * getFirstFeature(bool fetchAttributes=false) const;
+  virtual QgsFeature * getFirstFeature(bool fetchAttributes=false, bool selected=false) const;
 
   /**
   * Get the next feature resulting from a select operation
+  * @param selected selected feeatures only
   * @return QgsFeature
   */
-  virtual QgsFeature * getNextFeature(bool fetchAttributes=false) const;
+  virtual QgsFeature * getNextFeature(bool fetchAttributes=false, bool selected=false) const;
 
   /**
    * Get the next feature using new method
