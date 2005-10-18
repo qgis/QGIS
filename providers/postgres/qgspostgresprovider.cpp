@@ -153,14 +153,14 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
   /* end uri structure */
 
 #ifdef QGISDEBUG
-  std::cerr << "Geometry column is: " << geometryColumn.local8bit() << std::endl;
-  std::cerr << "Schema is: " + mSchemaName.local8bit() << std::endl;
-  std::cerr << "Table name is: " + mTableName.local8bit() << std::endl;
+  std::cerr << "Geometry column is: " << geometryColumn.local8Bit() << std::endl;
+  std::cerr << "Schema is: " + mSchemaName.local8Bit() << std::endl;
+  std::cerr << "Table name is: " + mTableName.local8Bit() << std::endl;
 #endif
   //QString logFile = "./pg_provider_" + mTableName + ".log";
   //pLog.open((const char *)logFile);
 #ifdef QGISDEBUG
-  std::cerr << "Opened log file for " << mTableName.local8bit() << std::endl;
+  std::cerr << "Opened log file for " << mTableName.local8Bit() << std::endl;
 #endif
   PGconn *pd = PQconnectdb((const char *) connInfo);
   // check the connection status
@@ -1182,9 +1182,9 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
 
 #ifdef QGISDEBUG
     if (PQntuples(result) == 1)
-      std::cerr << "Column " << viewCol.local8bit() << " from " 
-		<< schemaName.local8bit() << "." << tableName.local8bit() 
-		<< "." << tableCol.local8bit()
+      std::cerr << "Column " << viewCol.local8Bit() << " from " 
+		<< schemaName.local8Bit() << "." << tableName.local8Bit() 
+		<< "." << tableCol.local8Bit()
 		<< " is suitable.\n";
 #endif
     PQclear(result);
@@ -1221,7 +1221,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
     {
       key = suitable.begin()->first;
 #ifdef QGISDEBUG
-      std::cerr << "Picked column " << key.local8bit()
+      std::cerr << "Picked column " << key.local8Bit()
                 << " as it is the only one that was suitable.\n";
 #endif
     }
