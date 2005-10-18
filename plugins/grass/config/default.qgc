@@ -2,6 +2,10 @@
 <!DOCTYPE qgisgrass SYSTEM "http://mrcc.com/qgisgrass.dtd">
 <qgisgrass name="Default">
 <modules>
+	<section label="Import">
+		<grass name="v.in.ogr"/>
+		<grass name="r.in.gdal"/>
+	</section>
 	<section label="Vector overlay">
 		<grass name="v.overlay.or"/>
 		<grass name="v.overlay.and"/>
@@ -15,6 +19,7 @@
 	<section label="Extract features from vector">
 		<grass name="v.select.overlap"/>
 		<grass name="v.extract.where"/>
+		<grass name="v.extract.list"/>
 	</section>
 	<section label="Delaunay triangulation, Voronoi diagram and convex hull">
 		<grass name="v.delaunay.line"/>
@@ -23,15 +28,29 @@
 		<grass name="v.voronoi.area"/>
 		<grass name="v.hull"/>
 	</section>
-	<section label="Density of points">
-		<grass name="v.neighbors"/>
-		<grass name="v.kernel"/>
+	<section label="Network analysis">
+		<grass name="v.net.nodes"/>
+		<grass name="v.net.alloc"/>
+		<grass name="v.net.iso"/>
+		<grass name="v.net.salesman"/>
+		<grass name="v.net.steiner"/>
+	</section>
+	<section label="Layers">
+		<grass name="v.category.add"/>
 	</section>
 	<grass name="v.random"/>
 	<grass name="v.mkgrid.region"/>
 	<grass name="v.in.region"/>
 	<section label="Convert a vector to raster">
 		<grass name="v.to.rast.constant"/>
+	</section>
+	<section label="Density of points">
+		<grass name="v.neighbors"/>
+		<grass name="v.kernel"/>
+	</section>
+	<section label="Interpolation">
+		<grass name="v.surf.rst"/>
+		<grass name="v.surf.idw"/>
 	</section>
 	<grass name="r.mapcalc"/>
 	<section label="Geomorphology">

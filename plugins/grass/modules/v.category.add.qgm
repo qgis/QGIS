@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<!-- TODO: this is bad -->
+<qgisgrassmodule label="Add elements to layer (ALL elements of the selected layer type!)" module="v.category">
+	<option key="input" typeoption="type"/>
+	<option key="layer"/>
+	<option key="output" />
+</qgisgrassmodule>
