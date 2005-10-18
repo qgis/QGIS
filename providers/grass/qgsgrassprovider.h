@@ -178,6 +178,9 @@ public:
    * Get the field information for the layer
    */
   std::vector<QgsField> const& fields() const;
+
+  // ! Key (category) field index
+  int keyField();
 	 
   /* Reset the layer - for an OGRLayer, this means clearing the
    * spatial filter and calling ResetReading
