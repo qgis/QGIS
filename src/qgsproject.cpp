@@ -1108,6 +1108,7 @@ bool QgsProject::read()
     if(theMapCanvas)
     {
 	QgsLegend* theLegend = theMapCanvas->getLegend();
+	//theLegend->restoreFromProject();
 	if(theLegend)
 	{
 	    QDomNodeList ll = doc->elementsByTagName("legend");
@@ -1115,6 +1116,7 @@ bool QgsProject::read()
 	    {
 		QDomNode legendnode = ll.item(0);
 		theLegend->readXML(legendnode);
+		theLegend->restoreFromProject();
 	    }
 	}
     }
@@ -1275,8 +1277,8 @@ bool QgsProject::write()
 	QgsLegend* theLegend = theMapCanvas->getLegend();
 	if(theLegend)
 	{
-	    theLegend->writeXML(qgisNode, *doc);
-	    //theLegend->saveToProject();
+	  theLegend->writeXML(qgisNode, *doc);
+	  //theLegend->saveToProject();
 	}
     }
 
