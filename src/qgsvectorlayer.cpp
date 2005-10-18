@@ -1205,6 +1205,8 @@ void QgsVectorLayer::select(QgsRect * rect, bool lock)
   }
   triggerRepaint();
   QApplication::restoreOverrideCursor();
+
+  emit selectionChanged();
 }
 
 void QgsVectorLayer::invertSelection()
@@ -1281,6 +1283,8 @@ void QgsVectorLayer::invertSelection()
     
     triggerRepaint();
     QApplication::restoreOverrideCursor();
+
+    emit selectionChanged();
 }
 
 void QgsVectorLayer::removeSelection()
@@ -1513,7 +1517,7 @@ void QgsVectorLayer::setLayerProperties(QgsDlgVectorLayerProperties * properties
 
 
 
-QgsFeature * QgsVectorLayer::getFirstFeature(bool fetchAttributes) const
+QgsFeature * QgsVectorLayer::getFirstFeature(bool fetchAttributes, bool selected) const
 {
   if ( ! dataProvider )
   {
@@ -1522,17 +1526,40 @@ QgsFeature * QgsVectorLayer::getFirstFeature(bool fetchAttributes) const
     return 0x0;
   }
 
+  if ( selected )
+  {
+      QgsFeature *fet = dataProvider->getFirstFeature(fetchAttributes);
+      while(fet)
+      {
+          bool sel = mSelected.find(fet->featureId()) != mSelected.end();
+          if ( sel ) return fet;
+          fet = dataProvider->getNextFeature(fetchAttributes);
+      }
+      return 0;
+  }
+
   return dataProvider->getFirstFeature( fetchAttributes );
 } // QgsVectorLayer::getFirstFeature
 
 
-QgsFeature * QgsVectorLayer::getNextFeature(bool fetchAttributes) const
+QgsFeature * QgsVectorLayer::getNextFeature(bool fetchAttributes, bool selected) const
 {
   if ( ! dataProvider )
   {
     std::cerr << __FILE__ << ":" << __LINE__
     << " QgsVectorLayer::getNextFeature() invoked with null dataProvider\n";
     return 0x0;
+  }
+
+  if ( selected )
+  {
+      QgsFeature *fet;
+      while ( fet = dataProvider->getNextFeature(fetchAttributes) )
+      {
+          bool sel = mSelected.find(fet->featureId()) != mSelected.end();
+          if ( sel ) return fet;
+      }
+      return 0;
   }
 
   return dataProvider->getNextFeature( fetchAttributes );
