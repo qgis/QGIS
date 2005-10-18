@@ -66,6 +66,7 @@
 #include "../../src/qgsvectorlayer.h"
 #include "../../src/qgsdataprovider.h"
 #include "../../src/qgsfield.h"
+#include "../../src/qgsfeature.h"
 #include "../../src/qgsfeatureattribute.h"
 
 extern "C" {
@@ -167,6 +168,8 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     mOutputTextBrowser->setReadOnly(TRUE);
 }
 
+/******************* QgsGrassModuleOptions *******************/
+
 QgsGrassModuleOptions::QgsGrassModuleOptions ( 
            QgsGrassTools *tools, QgsGrassModule *module,
            QgisApp *qgisApp, QgisIface *iface )
@@ -192,6 +195,8 @@ QStringList QgsGrassModuleOptions::arguments()
 {
     return QStringList();
 }
+
+/*************** QgsGrassModuleStandardOptions ***********************/
 
 QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions ( 
            QgsGrassTools *tools, QgsGrassModule *module,
@@ -267,7 +272,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
 		    //std::cout << "element = " << element << " age = " << age << std::endl;
 		    if ( age == "old" && ( element == "vector" || element == "cell") ) {
 			QgsGrassModuleInput *mi = new QgsGrassModuleInput ( 
-                               mModule, key, e, gDocElem, gnode, mParent );
+                               mModule, this, key, e, gDocElem, gnode, mParent );
 
 			layout->addWidget ( mi );
 			created = true;
@@ -283,7 +288,41 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
 			created = true;
 		    mItems.push_back(so);
 		}
-	    } else if ( optionType == "flag" )  {
+	    } 
+	    else if ( optionType == "ogr" ) 
+	    {
+		QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput ( 
+		       mModule, QgsGrassModuleGdalInput::Ogr, key, e, 
+		       gDocElem, gnode, mParent );
+		layout->addWidget ( mi );
+		mItems.push_back(mi);
+	    } 
+	    else if ( optionType == "gdal" ) 
+	    {
+		QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput ( 
+		       mModule, QgsGrassModuleGdalInput::Gdal, key, e, 
+		       gDocElem, gnode, mParent );
+		layout->addWidget ( mi );
+		mItems.push_back(mi);
+	    } 
+	    else if ( optionType == "field" ) 
+	    {
+		QgsGrassModuleField *mi = new QgsGrassModuleField ( 
+		       mModule, this, key, e, 
+		       gDocElem, gnode, mParent );
+		layout->addWidget ( mi );
+		mItems.push_back(mi);
+	    } 
+	    else if ( optionType == "selection" ) 
+	    {
+		QgsGrassModuleSelection *mi = new QgsGrassModuleSelection ( 
+		       mModule, this, key, e, 
+		       gDocElem, gnode, mParent );
+		layout->addWidget ( mi );
+		mItems.push_back(mi);
+	    } 
+	    else if ( optionType == "flag" )  
+	    {
 		    QgsGrassModuleFlag *flag = new QgsGrassModuleFlag ( 
                            mModule, key, e, gDocElem, gnode, mParent );
 		    
@@ -314,6 +353,25 @@ QStringList QgsGrassModuleStandardOptions::arguments()
         }
     } 
     return arg;
+}
+
+QgsGrassModuleItem *QgsGrassModuleStandardOptions::item ( QString id )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleStandardOptions::item() id = " 
+	      << id.local8Bit() << std::endl;
+    #endif
+        
+    for ( int i = 0; i < mItems.size(); i++ )
+    {
+	if ( mItems[i]->id() == id ) 
+	{
+	    return mItems[i];
+	}
+    }
+
+    QMessageBox::warning( 0, "Warning", "Item with id " + id + " not found" );
+    return 0;
 }
 
 QgsGrassModuleStandardOptions::~QgsGrassModuleStandardOptions()
@@ -622,11 +680,7 @@ QDomNode QgsGrassModule::nodeByKey ( QDomElement elem, QString key )
      return QDomNode();
 }
 
-/************************ QgsGrassModuleOptions *************************************/
-
-/******************** QgsGrassModuleStandardOptions *********************************/
-
-/************************ QgsGrassModuleOption **************************************/
+/******************* QgsGrassModuleOption ****************************/
 
 QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key, 
 	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
@@ -789,13 +843,20 @@ QgsGrassModuleFlag::~QgsGrassModuleFlag()
 {
 }
 
-QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module, QString key,
+/************************** QgsGrassModuleInput ***************************/
+
+QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
+       					   QgsGrassModuleStandardOptions *options, QString key,
 	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
 	                                   QWidget * parent)
                     : QGroupBox ( 1, Qt::Vertical, parent ),
                       QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
+		      mModuleStandardOptions(options),
 		      mUpdate(false), mVectorTypeOption(0), mVectorLayerOption(0)
 {
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleInput::QgsGrassModuleInput" << std::endl;
+    #endif
     mVectorTypeMask = GV_POINT | GV_LINE | GV_AREA;
 
     QString tit;
@@ -889,7 +950,7 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module, QString key,
             mVectorTypeMask &= mask;
 	}
 
-	// Read "layeroption" is defined
+	// Read "layeroption" if defined
 	opt = qdesc.attribute("layeroption");
 	if ( ! opt.isNull() ) {
 	
@@ -904,6 +965,9 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module, QString key,
 		mVectorLayerOption = opt;
 	    }
 	}
+
+	// Read "mapid"
+	mMapId = qdesc.attribute("mapid");
     } 
     else if ( element == "cell" ) 
     {
@@ -918,7 +982,6 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module, QString key,
 	mUpdate = true;
     }
 
-
     mLayerComboBox = new QComboBox ( this );
 
     // Of course, activated(int) is not enough, but there is no signal BEFORE the cobo is opened
@@ -928,6 +991,20 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module, QString key,
     QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
     connect ( canvas, SIGNAL(addedLayer(QgsMapLayer *)), this, SLOT(updateQgisLayers()) );
     connect ( canvas, SIGNAL(removedLayer(QString)), this, SLOT(updateQgisLayers()) );
+
+    connect ( mLayerComboBox, SIGNAL(activated(int)), this, SLOT(changed(int)) );
+
+    if ( !mMapId.isEmpty() )
+    {
+	QgsGrassModuleItem *item = mModuleStandardOptions->item(mMapId);
+	if ( item ) 
+	{
+	    QgsGrassModuleInput *mapInput = 
+			   dynamic_cast<QgsGrassModuleInput *>(item);
+
+	    connect ( mapInput, SIGNAL(valueChanged()), this, SLOT(updateQgisLayers()) );
+	}
+    }
     
     // Fill in QGIS layers 
     updateQgisLayers();
@@ -942,9 +1019,24 @@ void QgsGrassModuleInput::updateQgisLayers()
     mLayerComboBox->clear();
     mMaps.resize(0);
     mVectorTypes.resize(0);
-    mVectorLayers.resize(0);
+    mVectorLayerNames.resize(0);
+    mMapLayers.resize(0);
+    mVectorFields.resize(0);
 
     QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+
+    // Find map option
+    QString sourceMap;
+    if ( !mMapId.isEmpty() )
+    {
+        QgsGrassModuleItem *item = mModuleStandardOptions->item(mMapId);
+	if ( item ) 
+	{
+            QgsGrassModuleInput *mapInput = 
+		           dynamic_cast<QgsGrassModuleInput *>(item);
+	    sourceMap = mapInput->currentMap();
+	}
+    }
 
     int nlayers = canvas->layerCount();
     for ( int i = 0; i < nlayers; i++ ) {
@@ -995,8 +1087,16 @@ void QgsGrassModuleInput::updateQgisLayers()
 
 	    if ( mUpdate && mapset != QgsGrass::getDefaultMapset() ) continue;
 
+	    // Check if it comes from source map if necessary
+            if ( !mMapId.isEmpty() )
+	    {
+		 QString cm = map + "@" + mapset;
+	         if ( sourceMap != cm ) continue;
+	    }
+
 	    mLayerComboBox->insertItem( layer->name() );
 	    if ( layer->name() == current ) mLayerComboBox->setCurrentText ( current );
+
 	    mMaps.push_back ( map + "@" + mapset );
 
 	    if ( geomType == QGis::WKBPoint ) {
@@ -1009,7 +1109,10 @@ void QgsGrassModuleInput::updateQgisLayers()
 	        mVectorTypes.push_back ( "unknown" );
 	    }
 
-	    mVectorLayers.push_back ( QString::number(provider->grassLayer()) );
+	    mMapLayers.push_back ( vector );
+	    mVectorLayerNames.push_back ( QString::number(provider->grassLayer()) );
+            std::vector<QgsField> fields = vector->fields();
+	    mVectorFields.push_back ( fields );
 	} 
 	else if ( mType == Raster && layer->type() == QgsMapLayer::RASTER ) 
 	{
@@ -1047,21 +1150,25 @@ void QgsGrassModuleInput::updateQgisLayers()
 	    mMaps.push_back ( map + "@" + mapset );
 	}
     }
-
 }
 
 QStringList QgsGrassModuleInput::options()
 {
     QStringList list;
+    QString opt;
 
     int current = mLayerComboBox->currentItem();
 
-    QString opt(mKey + "=");
+    // TODO: this is hack for network nodes, do it somehow better
+    if ( mMapId.isEmpty() )
+    {
+        opt = mKey + "=";
 
-    if ( current <  mMaps.size() ) {
-	opt.append ( mMaps[current] );
+	if ( current <  mMaps.size() ) {
+	    opt.append ( mMaps[current] );
+	}
+	list.push_back( opt );
     }
-    list.push_back( opt );
 
     if ( !mVectorTypeOption.isNull() && current < mVectorTypes.size() ) 
     {
@@ -1069,18 +1176,75 @@ QStringList QgsGrassModuleInput::options()
 	list.push_back( opt );
     }
 	
-    if ( !mVectorLayerOption.isNull() && current < mVectorLayers.size() ) 
+    if ( !mVectorLayerOption.isNull() && current < mVectorLayerNames.size() ) 
     {
-	opt = mVectorLayerOption + "=" + mVectorLayers[current] ;
+	opt = mVectorLayerOption + "=" + mVectorLayerNames[current] ;
 	list.push_back( opt );
     }
     
     return list;
 }
 
+std::vector<QgsField> QgsGrassModuleInput::currentFields()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleInput::currentFields" << std::endl;
+    #endif
+
+    std::vector<QgsField> fields;
+    
+    int current = mLayerComboBox->currentItem();
+
+    if ( current >= 0 && current <  mVectorFields.size() ) 
+    {
+	fields = mVectorFields[current];
+    }
+
+    return fields;
+}
+
+QgsMapLayer * QgsGrassModuleInput::currentLayer()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleInput::currentLayer" << std::endl;
+    #endif
+
+    int current = mLayerComboBox->currentItem();
+
+    if ( current >= 0 && current <  mMapLayers.size() ) 
+    {
+	return mMapLayers[current];
+    }
+
+    return 0;
+}
+
+QString QgsGrassModuleInput::currentMap()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleInput::currentMap" << std::endl;
+    #endif
+
+    int current = mLayerComboBox->currentItem();
+
+    if ( current >= 0 && current <  mMaps.size() ) 
+    {
+	return mMaps[current];
+    }
+
+    return QString();
+}
+
+void QgsGrassModuleInput::changed(int i)
+{
+    emit valueChanged();
+}
+
 QgsGrassModuleInput::~QgsGrassModuleInput()
 {
 }
+
+/********************** QgsGrassModuleItem *************************/
 
 QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
 	 				QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode )
@@ -1094,12 +1258,21 @@ QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
 	mHidden = true;
     }
 
-    QDomNode n = gnode.namedItem ( "description" );
-    if ( !n.isNull() ) {
-        QDomElement e = n.toElement();
-	mDescription = e.text().stripWhiteSpace();
-	mDescription.replace( 0, 1, mDescription.left(1).upper() );
+    if ( !qdesc.attribute("label").isEmpty() )
+    {
+	mDescription = qdesc.attribute("label");
     }
+    else
+    {
+	QDomNode n = gnode.namedItem ( "description" );
+	if ( !n.isNull() ) {
+	    QDomElement e = n.toElement();
+	    mDescription = e.text().stripWhiteSpace();
+	    mDescription.replace( 0, 1, mDescription.left(1).upper() );
+	}
+    }
+
+    mId = qdesc.attribute("id");
 }
 
 bool QgsGrassModuleItem::hidden() { return mHidden; }
@@ -1107,3 +1280,329 @@ bool QgsGrassModuleItem::hidden() { return mHidden; }
 QStringList QgsGrassModuleItem::options() { return QStringList(); }
 
 QgsGrassModuleItem::~QgsGrassModuleItem() {}
+
+/***************** QgsGrassModuleGdalInput *********************/
+
+QgsGrassModuleGdalInput::QgsGrassModuleGdalInput ( 
+	QgsGrassModule *module, int type, QString key, QDomElement &qdesc, 
+	QDomElement &gdesc, QDomNode &gnode, QWidget * parent)
+      : QGroupBox ( 1, Qt::Vertical, parent ),
+        QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
+        mType(type), mOgrLayerOption(0)
+{
+    QString tit;
+    if ( mDescription.isEmpty() ) 
+    {
+	tit = "OGR/GDAL Input";
+    } 
+    else 
+    {
+	if ( mDescription.length() > 40 ) {
+	    tit = mDescription.left(40) + " ...";
+	} else {
+	    tit = mDescription;
+	}
+    }
+	    
+    setTitle ( " " + tit + " " );
+
+    QDomNode promptNode = gnode.namedItem ( "gisprompt" );
+    QDomElement promptElem = promptNode.toElement();
+    QString element = promptElem.attribute("element"); 
+
+    // Read "layeroption" is defined
+    QString opt = qdesc.attribute("layeroption");
+    if ( ! opt.isNull() ) {
+    
+	QDomNode optNode = QgsGrassModule::nodeByKey ( gdesc, opt );
+
+	if ( optNode.isNull() ) 
+	{
+	    QMessageBox::warning( 0, "Warning", "Cannot find layeroption " +  opt );
+	} 
+	else 
+	{
+	    mOgrLayerOption = opt;
+	}
+    }
+
+    mLayerComboBox = new QComboBox ( this );
+
+    // Of course, activated(int) is not enough, but there is no signal 
+    // BEFORE the cobo is opened 
+    // connect ( mLayerComboBox, SIGNAL( activated(int) ), this, SLOT(updateQgisLayers()) );
+    
+    // Connect to canvas 
+    QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+    connect ( canvas, SIGNAL(addedLayer(QgsMapLayer *)), this, SLOT(updateQgisLayers()) );
+    connect ( canvas, SIGNAL(removedLayer(QString)), this, SLOT(updateQgisLayers()) );
+    
+    // Fill in QGIS layers 
+    updateQgisLayers();
+}
+
+void QgsGrassModuleGdalInput::updateQgisLayers()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleGdalInput::updateQgisLayers" << std::endl;
+    #endif
+    QString current = mLayerComboBox->currentText ();
+    mLayerComboBox->clear();
+    mUri.resize(0);
+    mOgrLayers.resize(0);
+
+    QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+
+    int nlayers = canvas->layerCount();
+    for ( int i = 0; i < nlayers; i++ ) {
+	QgsMapLayer *layer = canvas->getZpos(i);
+
+	if (  mType == Ogr && layer->type() == QgsMapLayer::VECTOR ) 
+	{
+	    QgsVectorLayer *vector = (QgsVectorLayer*)layer;
+	    if ( vector->providerType() != "ogr" ) continue;
+
+	    QgsDataProvider *provider = vector->getDataProvider();
+	    QString uri = provider->getDataSourceUri();
+
+	    mLayerComboBox->insertItem( layer->name() );
+	    if ( layer->name() == current ) mLayerComboBox->setCurrentText ( current );
+	    mUri.push_back ( uri );
+	} 
+	else if ( mType == Gdal && layer->type() == QgsMapLayer::RASTER ) 
+	{
+            QString uri = layer->source();
+	    mLayerComboBox->insertItem( layer->name() );
+	    if ( layer->name() == current ) mLayerComboBox->setCurrentText ( current );
+	    mUri.push_back ( uri );
+	}
+    }
+}
+
+QStringList QgsGrassModuleGdalInput::options()
+{
+    QStringList list;
+
+    int current = mLayerComboBox->currentItem();
+
+    QString opt(mKey + "=");
+
+    if ( current <  mUri.size() ) {
+	opt.append ( mUri[current] );
+    }
+    list.push_back( opt );
+
+    // TODO
+    /*
+    if ( !mOgrLayerOption.isNull() ) 
+    {
+	opt = mOgrLayerOption + "=" ;
+	list.push_back( opt );
+    }
+    */
+    return list;
+}
+
+QgsGrassModuleGdalInput::~QgsGrassModuleGdalInput()
+{
+}
+
+/***************** QgsGrassModuleField *********************/
+
+QgsGrassModuleField::QgsGrassModuleField ( 
+	QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
+       	QString key, QDomElement &qdesc, 
+	QDomElement &gdesc, QDomNode &gnode, QWidget * parent)
+      : QGroupBox ( 1, Qt::Vertical, parent ),
+        QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
+	mModuleStandardOptions(options), mLayerInput(0)
+{
+    QString tit;
+    if ( mDescription.isEmpty() ) 
+    {
+	tit = "Attribute field";
+    } 
+    else 
+    {
+	if ( mDescription.length() > 40 ) {
+	    tit = mDescription.left(40) + " ...";
+	} else {
+	    tit = mDescription;
+	}
+    }
+	    
+    setTitle ( " " + tit + " " );
+
+    QDomNode promptNode = gnode.namedItem ( "gisprompt" );
+    QDomElement promptElem = promptNode.toElement();
+    QString element = promptElem.attribute("element"); 
+
+    mLayerId = qdesc.attribute("layerid");
+
+    mType = qdesc.attribute("type");
+
+    QgsGrassModuleItem *item = mModuleStandardOptions->item(mLayerId);
+    // TODO check type
+    if ( item ) 
+    {
+        mLayerInput = dynamic_cast<QgsGrassModuleInput *>(item);
+        connect ( mLayerInput, SIGNAL(valueChanged()), this, SLOT(updateFields()) );
+    }
+
+    mFieldComboBox = new QComboBox ( this );
+
+    // Fill in layer current fields
+    updateFields();
+}
+
+void QgsGrassModuleField::updateFields()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleField::updateFields" << std::endl;
+    #endif
+    QString current = mFieldComboBox->currentText ();
+    mFieldComboBox->clear();
+
+    QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+
+    if ( mLayerInput == 0 ) return;
+
+    std::vector<QgsField> fields = mLayerInput->currentFields();
+
+    for ( int i = 0; i < fields.size(); i++ )
+    {
+	if ( mType.contains ( fields[i].type() ) )
+	{
+            mFieldComboBox->insertItem( fields[i].name() );
+	    if ( fields[i].name() == current )
+	    {
+		mFieldComboBox->setCurrentText ( current );
+	    }
+	}
+    }
+}
+
+QStringList QgsGrassModuleField::options()
+{
+    QStringList list;
+
+    QString opt(mKey + "=" + mFieldComboBox->currentText() );
+    list.push_back( opt );
+
+    return list;
+}
+
+QgsGrassModuleField::~QgsGrassModuleField()
+{
+}
+
+/***************** QgsGrassModuleSelection *********************/
+
+QgsGrassModuleSelection::QgsGrassModuleSelection ( 
+	QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
+       	QString key, QDomElement &qdesc, 
+	QDomElement &gdesc, QDomNode &gnode, QWidget * parent)
+      : QGroupBox ( 1, Qt::Vertical, parent ),
+        QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
+	mModuleStandardOptions(options), mLayerInput(0),
+	mVectorLayer(0)
+{
+    QString tit;
+    if ( mDescription.isEmpty() ) 
+    {
+	tit = "Attribute field";
+    } 
+    else 
+    {
+	if ( mDescription.length() > 40 ) {
+	    tit = mDescription.left(40) + " ...";
+	} else {
+	    tit = mDescription;
+	}
+    }
+	    
+    setTitle ( " " + tit + " " );
+
+    QDomNode promptNode = gnode.namedItem ( "gisprompt" );
+    QDomElement promptElem = promptNode.toElement();
+    QString element = promptElem.attribute("element"); 
+
+    mLayerId = qdesc.attribute("layerid");
+
+    mType = qdesc.attribute("type");
+
+    QgsGrassModuleItem *item = mModuleStandardOptions->item(mLayerId);
+    // TODO check type
+    if ( item ) 
+    {
+        mLayerInput = dynamic_cast<QgsGrassModuleInput *>(item);
+        connect ( mLayerInput, SIGNAL(valueChanged()), this, SLOT(updateSelection()) );
+    }
+
+    mLineEdit = new QLineEdit ( this );
+
+    // Fill in layer current fields
+    updateSelection();
+}
+
+void QgsGrassModuleSelection::updateSelection()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleSelection::updateSelection" << std::endl;
+    #endif
+
+    mLineEdit->setText("");
+    QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+    if ( mLayerInput == 0 ) return;
+
+    QgsMapLayer *layer = mLayerInput->currentLayer();
+    if ( !layer ) return;
+    QgsVectorLayer *vector = dynamic_cast<QgsVectorLayer*>(layer);
+	    
+    QgsGrassProvider *provider = (QgsGrassProvider *) vector->getDataProvider();
+    int keyField = provider->keyField();
+
+    if ( keyField < 0 ) return;
+    
+    QString cats;
+    QgsFeature *feature = vector->getFirstFeature(true, true);
+
+    int i = 0;
+    while ( feature )
+    {
+	std::vector<QgsFeatureAttribute> attr = feature->attributeMap();
+	if ( attr.size() > keyField )
+	{
+	    if ( i > 0 ) cats.append( "," );
+	    cats.append( attr[keyField].fieldValue() );
+	    i++;
+	}
+        feature = vector->getNextFeature(true, true);
+    }
+    if ( mVectorLayer != vector ) 
+    {
+	if ( mVectorLayer ) 
+	{
+            disconnect ( mVectorLayer, SIGNAL(selectionChanged()), this, SLOT(updateSelection()) );
+	}
+
+        connect ( vector, SIGNAL(selectionChanged()), this, SLOT(updateSelection()) );
+	mVectorLayer = vector;
+    }
+    
+    mLineEdit->setText(cats);
+}
+
+QStringList QgsGrassModuleSelection::options()
+{
+    QStringList list;
+
+    QString opt(mKey + "=" + mLineEdit->text() );
+    list.push_back( opt );
+
+    return list;
+}
+
+QgsGrassModuleSelection::~QgsGrassModuleSelection()
+{
+}
