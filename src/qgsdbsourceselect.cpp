@@ -362,11 +362,6 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
       if (PQntuples(exists) == 1)
   {
     QString v = "";
-    if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"))))
-    {
-      v += PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"));
-      v += ".";
-    }
 
     if (schemaName.length() > 0)
     {
