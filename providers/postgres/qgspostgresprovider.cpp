@@ -1931,7 +1931,7 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
                 << std::endl;
 #endif
     
-      QString sql = "UPDATE \"" + mSchemaTableName + "\" SET " + 
+      QString sql = "UPDATE "+ mSchemaTableName +" SET " + 
                     geometryColumn + "=";
                     
       sql += "GeomFromWKB('";
@@ -1958,9 +1958,7 @@ bool QgsPostgresProvider::changeGeometryValues(std::map<int, QgsGeometry> & geom
         sql += oct;
       }
       sql+="::bytea',"+srid+")";
-      
-      sql += " WHERE " + 
-             primaryKey + "=" + QString::number( iter->first );
+      sql+=" WHERE " +primaryKey+"="+QString::number(iter->first);
 
 #ifdef QGISDEBUG
       std::cerr << "QgsPostgresProvider::changeGeometryValues: Updating with '"

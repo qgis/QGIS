@@ -1717,7 +1717,10 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                                     QMessageBox::Ok);
           return;
         }
-  
+
+	mDigitMovePoint.setX(e->x());
+	mDigitMovePoint.setY(e->y());
+	mDigitMovePoint=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
         QgsPoint digitisedpoint=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
         vlayer->snapPoint(digitisedpoint,QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0));
         mCaptureList.push_back(digitisedpoint);
@@ -2218,7 +2221,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
   //draw a line to the cursor position in line/polygon editing mode
   if ( mCanvasProperties->mapTool == QGis::CaptureLine || mCanvasProperties->mapTool == QGis::CapturePolygon )
   {
-	      if(mCaptureList.size()>0)
+    if(mCaptureList.size()>0)
 	      {
 		  QPainter paint(mCanvasProperties->pmCanvas);
 		  QPainter paint2(this);
