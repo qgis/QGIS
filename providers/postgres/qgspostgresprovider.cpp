@@ -2435,7 +2435,7 @@ bool QgsPostgresProvider::deduceEndian()
   // get the same value using a binary cursor
 
   PQexec(connection,"begin work");
-  QString oidDeclare = QString("declare oidcursor binary cursor for select oid from pg_class where relname = '%1' and relnamespace = (select oid from pg_namespace where nspname = '%2'").arg(mTableName).arg(mSchemaName);
+  QString oidDeclare = QString("declare oidcursor binary cursor for select oid from pg_class where relname = '%1' and relnamespace = (select oid from pg_namespace where nspname = '%2')").arg(mTableName).arg(mSchemaName);
   // set up the cursor
   PQexec(connection, (const char *)oidDeclare);
   QString fetch = "fetch forward 1 from oidcursor";
@@ -2446,6 +2446,7 @@ bool QgsPostgresProvider::deduceEndian()
 
   PGresult *fResult = PQexec(connection, (const char *)fetch);
   PQexec(connection, "end work");
+  swapEndian = true;
   if(PQntuples(fResult) > 0){
     // get the oid value from the binary cursor
     int oid = *(int *)PQgetvalue(fResult,0,0);
@@ -2453,11 +2454,9 @@ bool QgsPostgresProvider::deduceEndian()
     //--std::cout << "Got oid of " << oid << " from the binary cursor" << std::endl;
     //--std::cout << "First oid is " << oidValue << std::endl;
     // compare the two oid values to determine if we need to do an endian swap
-    if(oid == oidValue.toInt()){
+    if(oid == oidValue.toInt())
       swapEndian = false;
-    }else{
-      swapEndian = true;
-    }
+
     PQclear(fResult);
   }
   return swapEndian;
