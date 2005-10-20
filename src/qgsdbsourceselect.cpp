@@ -471,5 +471,14 @@ void QgsDbSourceSelect::setConnectionListPosition()
   // items as it allows the user to repeatidly click on delete to
   // remove a whole lot of items).
   if (!set && cmbConnections->count() > 0)
-    cmbConnections->setCurrentItem(cmbConnections->count()-1);
+  {
+    // If toSelect is null, then the selected connection wasn't found
+    // by QSettings, which probably means that this is the first time
+    // the user has used qgis with database connections, so default to
+    // the first in the list of connetions. Otherwise default to the last.
+    if (toSelect.isNull())
+      cmbConnections->setCurrentItem(0);
+    else
+      cmbConnections->setCurrentItem(cmbConnections->count()-1);
+  }
 }
