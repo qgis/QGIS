@@ -82,6 +82,9 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
 
     bool getGeometryColumnInfo(PGconn *pd, 
 			       geomCol& details);
+    // Set the position of the database connection list to the last
+    // used one. 
+    void setConnectionListPosition();
 
     QString m_connInfo;
     QStringList m_selectedTables;
