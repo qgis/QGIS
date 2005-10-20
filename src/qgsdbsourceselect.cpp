@@ -117,16 +117,7 @@ void QgsDbSourceSelect::populateConnectionList()
     cmbConnections->insertItem(*it);
     ++it;
   }
-
-  // If possible, set the item currently displayed database
-  QString toSelect = settings.readEntry("/Qgis/connections/selected");
-  // Does toSelect exist in cmbConnections?
-  for (int i = 0; i < cmbConnections->count(); ++i)
-    if (cmbConnections->text(i) == toSelect)
-    {
-      cmbConnections->setCurrentItem(i);
-      break;
-    }
+  setConnectionListPosition();
 }
 void QgsDbSourceSelect::addNewConnection()
 {
@@ -169,12 +160,7 @@ void QgsDbSourceSelect::deleteConnection()
     //  QMessageBox::information(this,"Unable to Remove","Unable to remove the connection " + cmbConnections->currentText());
     //}
     cmbConnections->removeItem(cmbConnections->currentItem());  // populateConnectionList();
-  }
-  // Select the first connection in the list, checking to make sure there is
-  // at least one item to select
-  if(cmbConnections->count() > 0)
-  {
-    cmbConnections->setCurrentItem(0);
+    setConnectionListPosition();
   }
 }
 
@@ -465,4 +451,25 @@ void QgsDbSourceSelect::dbChanged()
   QSettings settings;
   settings.writeEntry("/Qgis/connections/selected", 
 		      cmbConnections->currentText());
+}
+void QgsDbSourceSelect::setConnectionListPosition()
+{
+  QSettings settings;
+  // If possible, set the item currently displayed database
+  QString toSelect = settings.readEntry("/Qgis/connections/selected");
+  // Does toSelect exist in cmbConnections?
+  bool set = false;
+  for (int i = 0; i < cmbConnections->count(); ++i)
+    if (cmbConnections->text(i) == toSelect)
+    {
+      cmbConnections->setCurrentItem(i);
+      set = true;
+      break;
+    }
+  // If we couldn't find the stored item, but there are some, 
+  // default to the last item (this makes some sense when deleting
+  // items as it allows the user to repeatidly click on delete to
+  // remove a whole lot of items).
+  if (!set && cmbConnections->count() > 0)
+    cmbConnections->setCurrentItem(cmbConnections->count()-1);
 }

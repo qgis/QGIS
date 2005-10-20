@@ -97,6 +97,7 @@ void QgsNewConnection::saveConnection()
 {
   QSettings settings; 
   QString baseKey = "/Qgis/connections/";
+  settings.writeEntry(baseKey + "selected", txtName->text());
   baseKey += txtName->text();
   settings.writeEntry(baseKey + "/host", txtHost->text());
   settings.writeEntry(baseKey + "/database", txtDatabase->text());
