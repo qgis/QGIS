@@ -70,6 +70,8 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     void addLayer(QListBoxItem *item);
     //! Return the name of the selected encoding (e.g. UTf-8, ISO-8559-1, etc/)
     QString encoding();
+    // Store the selected database
+    void dbChanged();
     public slots:
       void setSql(QListViewItem *);
       void showHelp();

@@ -117,6 +117,16 @@ void QgsDbSourceSelect::populateConnectionList()
     cmbConnections->insertItem(*it);
     ++it;
   }
+
+  // If possible, set the item currently displayed database
+  QString toSelect = settings.readEntry("/Qgis/connections/selected");
+  // Does toSelect exist in cmbConnections?
+  for (int i = 0; i < cmbConnections->count(); ++i)
+    if (cmbConnections->text(i) == toSelect)
+    {
+      cmbConnections->setCurrentItem(i);
+      break;
+    }
 }
 void QgsDbSourceSelect::addNewConnection()
 {
@@ -448,4 +458,11 @@ QString QgsDbSourceSelect::encoding()
 void QgsDbSourceSelect::showHelp()
 {
 	QgsContextHelp::run(context_id);
+}
+void QgsDbSourceSelect::dbChanged()
+{
+  // Remember which database was selected.
+  QSettings settings;
+  settings.writeEntry("/Qgis/connections/selected", 
+		      cmbConnections->currentText());
 }

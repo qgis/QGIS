@@ -292,6 +292,12 @@
         <receiver>QgsDbSourceSelectBase</receiver>
         <slot>setSql(QListViewItem*)</slot>
     </connection>
+    <connection>
+        <sender>cmbConnections</sender>
+        <signal>activated(const QString&amp;)</signal>
+        <receiver>QgsDbSourceSelectBase</receiver>
+        <slot>dbChanged()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>cmbConnections</tabstop>
@@ -313,6 +319,7 @@
     <slot>editConnection()</slot>
     <slot>deleteConnection()</slot>
     <slot>setSql(QListViewItem*)</slot>
+    <slot>dbChanged()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

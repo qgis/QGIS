@@ -44,3 +44,9 @@ void QgsDbSourceSelectBase::setSql( QListViewItem * )
 {
 
 }
+
+
+void QgsDbSourceSelectBase::dbChanged()
+{
+
+}
