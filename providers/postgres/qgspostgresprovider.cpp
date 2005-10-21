@@ -349,6 +349,12 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
       selectSQL += " from " + mSchemaTableName;
       //--std::cout << "selectSQL: " << (const char *)selectSQL << std::endl;
 
+      // Set the postgresql message level so that we don't get the
+      // 'there is no transaction in progress' warning.
+#ifndef QGISDEBUG
+      PQexec(connection, "set client_min_messages to error");
+#endif
+
       // Kick off the long running threads
 
 #ifdef POSTGRESQL_THREADS
