@@ -25,6 +25,10 @@
 #include "qtextstream.h"
 #include "qgsgrass.h"
 
+extern "C" {
+#include <unistd.h>
+}
+
 void QgsGrass::init( void ) {
     if ( !initialized ) {
         // Is it active mode ?
