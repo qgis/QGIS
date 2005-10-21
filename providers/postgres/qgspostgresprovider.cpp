@@ -463,47 +463,18 @@ QgsFeature *QgsPostgresProvider::getNextFeature(bool fetchAttributes)
 #ifdef QGISDEBUG
     // std::cerr << "OID from database: " << oid << std::endl; 
 #endif
-    // oid is in big endian
-    // XXX If you're so sure about that, then why do you have to check to swap?
-    int *noid;
 
-    // We don't support primary keys that are not int4 so if
-    // the key is int8 we use the oid as the id instead.
-    // TODO Throw a warning to let the user know that the layer
-    // is not using a primary key and that performance will suffer
+    if (swapEndian)
+      oid = ntohl(oid); // convert oid to opposite endian
 
-    // XXX noid = &oid could probably be moved out of if statements since all
-    // XXX valid execution paths do that
-    if(primaryKeyType == "int8")
-    {
-      noid = &oid;
-    }
-    else
-    {
-      if(swapEndian)
-      {
-        // XXX I'm assuming swapping from big-endian, or network, byte order to little endian
-#ifdef QGISDEBUG
-        //        std::cerr << "swapping endian for oid" << std::endl;
-#endif 
-        // convert oid to opposite endian
-        // XXX "Opposite?"  Umm, that's not enough information.
-        oid = ntohl(oid);
-        noid = &oid;
-      }
-      else
-      {
-        noid = &oid;
-      }
-    }
-    // noid contains the oid to be used in fetching attributes if 
+    // oid is the key to be used in fetching attributes if 
     // fetchAttributes = true
 #ifdef QGISDEBUG
-    //    std::cerr << "Using OID: " << *noid << std::endl;
+    //    std::cerr << "Using OID: " << oid << std::endl;
 #endif
-    f = new QgsFeature(*noid);
+    f = new QgsFeature(oid);
     if (fetchAttributes)
-      getFeatureAttributes(*noid, row, f);
+      getFeatureAttributes(oid, row, f);
 
     int returnedLength = PQgetlength(queryResult, row, PQfnumber(queryResult,"qgs_feature_geometry"));
     //--std::cerr << __FILE__ << ":" << __LINE__ << " Returned length is " << returnedLength << std::endl;
@@ -563,52 +534,27 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist, 
       
       if (rows == 0)
       {
-  #ifdef QGISDEBUG
+#ifdef QGISDEBUG
         std::cerr << "End of features.\n";
-  #endif  
+#endif  
         PQexec(connection, "end work");
         ready = false;
         return 0;
       }
-      int *noid;
       
       for (int row = 0; row < rows; row++)
       {
         int oid = *(int *)PQgetvalue(queryResult, row, PQfnumber(queryResult,primaryKey));
-    #ifdef QGISDEBUG 
+#ifdef QGISDEBUG 
         //  std::cerr << "Primary key type is " << primaryKeyType << std::endl; 
-    #endif  
-        // We don't support primary keys that are not int4 so if
-        // the key is int8 we use the oid as the id instead.
-        // TODO Throw a warning to let the user know that the layer
-        // is not using a primary key and that performance will suffer
-        if(primaryKeyType == "int8")
-        {
-          noid = &oid;
-        }
-        else
-        {
-          if(swapEndian)
-          {
-            // XXX I'm assuming swapping from big-endian, or network, byte order to little endian
-    #ifdef QGISDEBUG
-            //XXX TOO MUCH OUTPUT!!!    qWarning("swapping endian for oid");
-    #endif 
-            // convert oid to opposite endian
-            // XXX "Opposite?"  Umm, that's not enough information.
-            oid = ntohl(oid);
-            noid = &oid;
-          }
-          else
-          {
-            noid = &oid;
-          }   
-        }
-    
-        f = new QgsFeature(*noid);    
+#endif  
+	if (swapEndian)
+	  oid = ntohl(oid); // convert oid to opposite endian
+
+        f = new QgsFeature(oid);
         if(!attlist.empty())
         {
-          getFeatureAttributes(*noid, row, f, attlist);
+          getFeatureAttributes(oid, row, f, attlist);
         } 
         int returnedLength = PQgetlength(queryResult, row, PQfnumber(queryResult,"qgs_feature_geometry")); 
         if(returnedLength > 0)
