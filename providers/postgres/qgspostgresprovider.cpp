@@ -254,9 +254,6 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
       calculateExtents();
       getFeatureCount();
 
-      // selectSQL stores the select sql statement. This has to include 
-      // each attribute plus the geometry column in binary form
-      selectSQL = "select ";
       // Populate the field vector for this layer. The field vector contains
       // field name, type, length, and precision (if numeric)
       sql = "select * from " + mSchemaTableName + " limit 1";
@@ -306,22 +303,11 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
         {
           attributeFields.push_back(QgsField(fieldName, fieldType, fieldSize.toInt(), fieldModifier));
         }
-
-        // add to the select sql statement
-        if(i > 0)
-          selectSQL += ", ";
-
-        if (fieldType == "geometry")
-          selectSQL += "asbinary(" + geometryColumn + ",'" + endianString() + "') as qgs_feature_geometry";
-        else
-          selectSQL += fieldName;
       }
       PQclear(result);
 
       // set the primary key
       getPrimaryKey();
-      selectSQL += " from " + mSchemaTableName;
-      //--std::cout << "selectSQL: " << (const char *)selectSQL << std::endl;
 
       // Set the postgresql message level so that we don't get the
       // 'there is no transaction in progress' warning.
