@@ -424,10 +424,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      */
     int geomType;
     /**
-     * SQL to select all records in this layer
-     */
-    QString selectSQL;
-    /**
      * Connection pointer
      */
     PGconn *connection;
