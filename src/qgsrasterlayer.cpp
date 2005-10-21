@@ -3994,10 +3994,7 @@ QString QgsRasterLayer::getMetadata()
       myMetadataQString += QString::number(adfGeoTransform[5]);
       myMetadataQString += "</td></tr>";
     }
-    else
-    {
-      adfGeoTransform[5] = -1;
-    }
+
     //
     // Add the stats for each band to the output table
     //
