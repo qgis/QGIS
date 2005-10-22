@@ -199,6 +199,10 @@ void QgsAttributeTableDisplay::removeSelection()
     mLayer->triggerRepaint();
 }
 
+void QgsAttributeTableDisplay::copySelectedRowsToClipboard()
+{
+  table()->copySelectedRows();
+}
 
 void QgsAttributeTableDisplay::search()
 {

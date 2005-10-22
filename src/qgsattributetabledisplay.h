@@ -59,6 +59,7 @@ class QgsAttributeTableDisplay:public QgsAttributeTableBase
     void selectedToTop();
     void invertSelection();
     void removeSelection();
+    void copySelectedRowsToClipboard();
     void search();
     void advancedSearch();
     void searchShowResultsChanged(int item);
