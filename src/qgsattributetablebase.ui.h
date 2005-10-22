@@ -64,3 +64,9 @@ void QgsAttributeTableBase::searchShowResultsChanged(int)
 {
 
 }
+
+
+void QgsAttributeTableBase::copySelectedRowsToClipboard()
+{
+
+}

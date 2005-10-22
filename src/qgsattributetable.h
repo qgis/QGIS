@@ -66,6 +66,8 @@ class QgsAttributeTable:public QTable
     /**Deletes an attribute (but does not commit it)
       @param name attribute name*/
     void deleteAttribute(const QString& name);
+    /**Copies the selected rows to the clipboard */
+    void copySelectedRows();
     /**Delegates to QgsVectorLayer to decide, which changes
       belong to not commited features or to commited ones*/
     bool commitChanges(QgsVectorLayer* layer);

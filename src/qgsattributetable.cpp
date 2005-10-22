@@ -22,6 +22,7 @@
 #include <qlabel.h>
 #include <qfont.h>
 #include <qglobal.h>
+#include <qclipboard.h>
 #include "qgsattributetable.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
@@ -369,6 +370,38 @@ void QgsAttributeTable::deleteAttribute(const QString& name)
     mEdited=true;
 }
 
+void QgsAttributeTable::copySelectedRows()
+{
+  // Copy selected rows to the clipboard
+
+  QString toClipboard;
+  const char fieldSep = '\t';
+
+  // Pick up the headers first
+  QHeader* header = horizontalHeader();
+  for (int i = 0; i < header->count(); ++i)
+    toClipboard += header->label(i) + fieldSep;
+  toClipboard += '\n';
+
+  // Then populate with the cell contents
+  for (int i = 0; i < numSelections(); ++i)
+  {
+    QTableSelection sel = selection(i);
+    for (int row = sel.topRow(); row < sel.topRow()+sel.numRows(); ++row)
+    {
+      for (int column = 0; column < numCols(); ++column)
+	toClipboard += text(row, column) + fieldSep;
+      toClipboard += '\n';
+    }
+  }
+#ifdef QGISDEBUG
+  std::cerr << "Selected data in table is:\n" << toClipboard;
+#endif
+  // And then copy to the clipboard
+  QClipboard* clipboard = QApplication::clipboard(); 
+  clipboard->setText(toClipboard);
+}
+
 bool QgsAttributeTable::commitChanges(QgsVectorLayer* layer)
 {
     bool returnvalue=true;
@@ -573,6 +606,7 @@ void QgsAttributeTable::bringSelectedToTop()
     }
 
     blockSignals(false);
+
 }
 
 void QgsAttributeTable::selectRowsWithId(const std::vector<int>& ids)
