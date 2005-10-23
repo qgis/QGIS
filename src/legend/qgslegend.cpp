@@ -389,19 +389,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
     QgsLegendSymbologyGroup * lsgroup = new QgsLegendSymbologyGroup(llayer,QString("Symbology"));
     QgsLegendLayerFileGroup * llfgroup = new QgsLegendLayerFileGroup(llayer,QString("Files"));
     layer->setLegendSymbologyGroupParent(lsgroup);
-    QString sourcename = layer->source();
-    if(sourcename.startsWith("host", false))
-    {
-	//this layer is a database layer
-	//modify source string such that password is not visible
-	sourcename = layer->name();
-    }
-    else
-    {
-	//modify source name such that only the file is visible
-	sourcename = layer->source().section('/',-1,-1);
-    }
-    QgsLegendLayerFile * llfile = new QgsLegendLayerFile(llfgroup, sourcename, layer);
+    QgsLegendLayerFile * llfile = new QgsLegendLayerFile(llfgroup, QgsLegendLayerFile::nameFromLayer(layer), layer);
     layer->setLegendLayerFile(llfile);
     layer->initContextMenu(mApp);
 
@@ -643,6 +631,7 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
     QDomElement layerfilegroupnode;
     QDomElement legendsymbolnode;
     QDomElement legendpropertynode;
+    QDomElement legendlayerfilenode;
     
     QListViewItemIterator it(this);
     while(it.current()) 
@@ -651,10 +640,10 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 	if(item)
 	{
 	    switch(item->type())
-	    {
-		case QgsLegendItem::LEGEND_GROUP:
-		    //make sure the legendnode is 'legend' again after a legend group
-		    if(!(item->parent()))
+	      {
+	        case QgsLegendItem::LEGEND_GROUP:
+		//make sure the legendnode is 'legend' again after a legend group
+		if(!(item->parent()))
 		    {
 			legendnode = tmplegendnode;
 		    }
@@ -731,6 +720,16 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 		    }
 		    legendlayernode.appendChild(layerfilegroupnode);
 		    break;
+	    
+	      case QgsLegendItem::LEGEND_LAYER_FILE:
+		legendlayerfilenode = document.createElement("legendlayerfile");
+		QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(item);
+		if(llf)
+		  {
+		    legendlayerfilenode.setAttribute("layerid", llf->layer()->getLayerID());
+		    layerfilegroupnode.appendChild(legendlayerfilenode);
+		  }
+		break;
 
 		default: //do nothing for the leaf nodes
 		    break;
@@ -821,6 +820,48 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	    {
 		secondLevelItem->setOpen(true);
 	    }
+	    QDomNode layerfilenode = filegroupnode.firstChild();
+	    QDomElement layerfileelem = layerfilenode.toElement();
+     
+	    //remove the existing legendlayerfile and insert the one(s) according to the entries in the XML file
+	    if(secondLevelItem->firstChild())
+	      {
+		QgsLegendLayerFile* llfdelete = dynamic_cast<QgsLegendLayerFile*>(secondLevelItem->firstChild());
+		if(llfdelete)
+		  {
+		    unregisterCheckBox(llfdelete);
+		    delete llfdelete;
+		    placeCheckBoxes();
+		  }
+	      }
+	    
+	    //if there are several legend layer files in this group, create the additional items
+	    std::map<QString,QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+	    while(true)
+	      {
+		if(layerfilenode.isNull())
+		  {
+		    break;
+		  }
+		
+		std::map<QString,QgsMapLayer*>::iterator it = layers.find(layerfileelem.attribute("layerid"));
+		if(it != layers.end())
+		  {
+		    QgsMapLayer* newlayer = it->second;
+		    QgsLegendLayerFile* newfile = new QgsLegendLayerFile(secondLevelItem, QgsLegendLayerFile::nameFromLayer(newlayer), newlayer); 
+		    newlayer->setLegendLayerFile(newfile);
+		    newlayer->initContextMenu(mApp);
+
+		    //move newfile as the last child of the legendlayerfilegroup
+		    QListViewItem* curitem = newfile;
+		    while(curitem = newfile->nextSibling())
+		      {
+			newfile->moveItem(curitem);
+		      }
+		  }
+		layerfilenode = layerfilenode.nextSibling();
+		layerfileelem = layerfilenode.toElement();
+	      }
 
 	    //symbology group
 	    secondLevelItem = secondLevelItem->nextSibling();
