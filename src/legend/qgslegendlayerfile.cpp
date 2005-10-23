@@ -97,3 +97,20 @@ void QgsLegendLayerFile::toggleCheckBox(bool state)
     mVisibilityCheckBox->setChecked(state);
 }
 
+QString QgsLegendLayerFile::nameFromLayer(QgsMapLayer* layer)
+{
+  QString sourcename = layer->source(); //todo: move this duplicated code into a new function
+  if(sourcename.startsWith("host", false))
+    {
+      //this layer is a database layer
+      //modify source string such that password is not visible
+      sourcename = layer->name();
+    }
+  else
+    {
+      //modify source name such that only the file is visible
+      sourcename = layer->source().section('/',-1,-1);
+    }
+  return sourcename;
+}
+

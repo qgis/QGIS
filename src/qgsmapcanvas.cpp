@@ -1693,7 +1693,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         {
           // XOR-out the old line
           paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberStopPoint);
-        }  
+	}  
   
         mCanvasProperties->rubberStopPoint = e->pos();
         
@@ -1717,6 +1717,14 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                                     QMessageBox::Ok);
           return;
         }
+
+	//prevent clearing of the line between the first and the second polygon vertex
+	//during the next mouse move event
+	if(mCaptureList.size() == 1 && mCanvasProperties->mapTool == QGis::CapturePolygon)
+	  {
+	    QPainter paint(mCanvasProperties->pmCanvas);
+	    drawLineToDigitisingCursor(&paint);
+	  }
 
 	mDigitMovePoint.setX(e->x());
 	mDigitMovePoint.setY(e->y());

@@ -43,6 +43,9 @@ public:
     void setLegendPixmap(const QPixmap& pix);
     /**Sets mVisibilityCheckBox to on/off*/
     void toggleCheckBox(bool state);
+    /**Returns a label for a layer. Is static such that
+     the name can be passed to the constructor of QgsLegendLayerFile*/
+    static QString nameFromLayer(QgsMapLayer* layer);
  protected:
     QgsMapLayer* mLayer;
     QCheckBox* mVisibilityCheckBox;
