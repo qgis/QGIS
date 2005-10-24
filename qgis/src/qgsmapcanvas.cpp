@@ -522,10 +522,12 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
       }
       else
       {
-          mCanvasProperties->previousOutputSRS = lyr->coordinateTransform()->destSRS();
-          // While we're here, set the default map units to those
-          // of the destSRS().
-          setMapUnits(lyr->coordinateTransform()->destSRS().mapUnits());
+	// Adding the first layer. Set the previousOutputSRS to the output
+	// SRS for the layer.
+	mCanvasProperties->previousOutputSRS = lyr->coordinateTransform()->destSRS();
+	// Set the map units from the dest SRS because any existing map
+	// units applied to previously loaded layers, not this one.
+	setMapUnits(lyr->coordinateTransform()->destSRS().mapUnits());
       }
   }
 
