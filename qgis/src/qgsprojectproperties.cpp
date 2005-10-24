@@ -227,6 +227,7 @@ void QgsProjectProperties::apply()
         QgsProject::instance()->mapUnits(srs.mapUnits());
     }
   }
+  emit mapUnitsChanged();
 
   // set the mouse display precision method and the
   // number of decimal places for the manual option

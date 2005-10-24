@@ -4540,18 +4540,13 @@ void QgisApp::projectProperties()
   QApplication::restoreOverrideCursor();
   //pass any refresg signals off to canvases
   connect (pp,SIGNAL(refresh()), mMapCanvas, SLOT(refresh()));
+  connect (pp,SIGNAL(mapUnitsChanged()), mMapCanvas, SLOT(mapUnitsChanged()));  
   connect (pp,SIGNAL(refresh()), mOverviewCanvas, SLOT(refresh()));
-  
+
   bool wasProjected = pp->isProjected();
   
   // Display the modal dialog box.
   pp->exec();
-
-  // set the map units for the project if they have changed
-  if (mMapCanvas->mapUnits() != pp->mapUnits())
-  {
-    mMapCanvas->setMapUnits(pp->mapUnits());
-  }
 
   // If the canvas projection settings changed, we need to recalculate the extents in the
   // new coordinate system
@@ -4559,8 +4554,7 @@ void QgisApp::projectProperties()
   {
     mMapCanvas->recalculateExtents();
   }
-  // Set the window title. No way to do a comparison like for the map
-  // units above, so redo it everytime.
+  // Set the window title.
   setTitleBarText_( *this );
   // delete the property sheet object
   delete pp;
