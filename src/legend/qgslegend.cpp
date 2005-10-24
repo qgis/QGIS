@@ -632,7 +632,8 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
     QDomElement legendsymbolnode;
     QDomElement legendpropertynode;
     QDomElement legendlayerfilenode;
-    
+    QgsLegendLayerFile* llf;
+
     QListViewItemIterator it(this);
     while(it.current()) 
     {
@@ -723,7 +724,7 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 	    
 	      case QgsLegendItem::LEGEND_LAYER_FILE:
 		legendlayerfilenode = document.createElement("legendlayerfile");
-		QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(item);
+		llf = dynamic_cast<QgsLegendLayerFile*>(item);
 		if(llf)
 		  {
 		    legendlayerfilenode.setAttribute("layerid", llf->layer()->getLayerID());
