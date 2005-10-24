@@ -259,6 +259,9 @@ public slots:
 
     /** A simple helper method to find out if on the fly projections are enabled or not */
     bool projectionsEnabled();
+
+    /** The map units may have changed, so cope with that */
+    void mapUnitsChanged();
     
 signals:
     /** Let the owner know how far we are with render operations */

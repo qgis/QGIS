@@ -955,6 +955,13 @@ bool QgsMapCanvas::projectionsEnabled()
   }
 }
 
+void QgsMapCanvas::mapUnitsChanged()
+{
+  // We assume that if the map units have changed, the changed value
+  // will be accessible from QgsProject.
+  setMapUnits(QgsProject::instance()->mapUnits());
+}
+
 void QgsMapCanvas::zoomToSelected()
 {
   QgsVectorLayer *lyr =
