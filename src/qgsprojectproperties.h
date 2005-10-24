@@ -89,6 +89,9 @@ signals:
   void setDestSRSID(long theSRSID);   
   //! Signal used to inform listeners that the mouse display precision may have changed
   void displayPrecisionChanged();
+  //! Signal used to inform listeners that the map units may of
+  //changed (and that the new value can be found in QgsProject.
+  void mapUnitsChanged();
   //! let listening canvases know to refresh
   void refresh();
   //! notification of when on the fly projections are enabled / disabled
