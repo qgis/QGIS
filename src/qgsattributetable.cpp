@@ -398,8 +398,18 @@ void QgsAttributeTable::copySelectedRows()
   std::cerr << "Selected data in table is:\n" << toClipboard;
 #endif
   // And then copy to the clipboard
-  QClipboard* clipboard = QApplication::clipboard(); 
-  clipboard->setText(toClipboard);
+  QClipboard* clipboard = QApplication::clipboard();
+
+  // With qgis running under Linux, but with a Windows based X
+  // server (Xwin32), ::Selection was necessary to get the data into
+  // the Windows clipboard (which seems contrary to the Qt
+  // docs). With a Linux X server, ::Clipboard was required.
+  // The simple solution was to put the text into both clipboards.
+
+  // The ::Selection setText() below one may need placing inside so
+  // #ifdef so that it doesn't get compiled under Windows.
+  clipboard->setText(toClipboard, QClipboard::Selection);
+  clipboard->setText(toClipboard, QClipboard::Clipboard);
 }
 
 bool QgsAttributeTable::commitChanges(QgsVectorLayer* layer)
