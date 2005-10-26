@@ -1023,8 +1023,23 @@ QString QgsPostgresProvider::getPrimaryKey()
     }
     else
     {
-      // key is not a 4-byte int -- use the oid instead
-      primaryKey = "oid";
+      // key is not a 4-byte int -- use the oid instead (if one exists);
+      sql = "select oid from " + mSchemaTableName + " limit 1";
+      PGresult* oidPresent = PQexec(connection, (const char*)(sql.utf8()));
+      if (PQntuples(oidPresent) == 0)
+      {
+	valid = false;
+        QApplication::restoreOverrideCursor();
+        QMessageBox::warning(0, QObject::tr("Unsupported key column type"),
+            QObject::tr("Qgis currently does not support key columns of type " + fld.type() + ",\n"
+			"and there is no oid on this table that could be used instead.\n"
+			"Qgis currently only supports type int4. You can either change the\n"
+			"key column to type int4 or add an oid to the table."));
+        QApplication::setOverrideCursor(Qt::waitCursor);
+      }
+      else
+	primaryKey = "oid";
+      PQclear(oidPresent);
     }
   }
   PQclear(pk);
