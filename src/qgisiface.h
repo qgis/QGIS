@@ -58,8 +58,6 @@ class QgisIface : public QgisInterface{
         QgsMapLayer *activeLayer();
         //! Get source of the active layer
         QString activeLayerSource();
-        //! Add a menu to the main menu bar of the application, positioned to the left of Help
-        int addMenu(QString menuText, QPopupMenu *menu);
 
 	QPopupMenu* getPluginMenu(QString menuName);
 

@@ -70,8 +70,6 @@ class QgisInterface : public QWidget{
 
     //! Get pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer()=0;
-    //! add a menu item to the main menu, postioned to the left of the Help menu
-    virtual int addMenu(QString menuText, QPopupMenu *menu) =0;
     //! Add an icon to the plugins toolbar
     virtual int addToolBarIcon(QAction *qAction) =0;
     //! Remove an action (icon) from the plugin toolbar
