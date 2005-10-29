@@ -4488,6 +4488,15 @@ Raster layer project file XML of form:
 */
 bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 {
+  if ( ! readFile( source() ) )   // Data source name set in
+    // QgsMapLayer::readXML()
+  {
+    std::cerr << __FILE__ << ":" << __LINE__
+    << " unable to read from raster file "
+    << source().local8Bit() << "\n";
+
+    return false;
+  }
   QDomNode mnl = layer_node.namedItem("rasterproperties");
 
   QDomNode snode = mnl.namedItem("showDebugOverlayFlag");
@@ -4527,15 +4536,6 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   myElement = snode.toElement();
   setGrayBandName(myElement.text());
 
-  if ( ! readFile( source() ) )   // Data source name set in
-    // QgsMapLayer::readXML()
-  {
-    std::cerr << __FILE__ << ":" << __LINE__
-    << " unable to read from raster file "
-    << source().local8Bit() << "\n";
-
-    return false;
-  }
 
   return true;
 
