@@ -1038,6 +1038,10 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
     // nothing to do
     return;
   }
+
+
+
+
   //
   // The first thing we do is set up the RasterViewPort. This struct stores all the settings
   // relating to the size (in pixels and coordinate system units) of the raster part that is
@@ -1139,6 +1143,12 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
     std::cout << "QgsRasterLayer::draw: clippedHeightInt      = " << myRasterViewPort->clippedHeightInt << std::endl; 
     std::cout << "QgsRasterLayer::draw: drawableAreaXDimInt   = " << myRasterViewPort->drawableAreaXDimInt << std::endl; 
     std::cout << "QgsRasterLayer::draw: drawableAreaYDimInt   = " << myRasterViewPort->drawableAreaYDimInt << std::endl; 
+
+  std::cout << "ReadXml: gray band name : " << grayBandNameQString.local8Bit() << std::endl;
+  std::cout << "ReadXml: red band name %s " <<redBandNameQString.local8Bit()<< std::endl;
+  std::cout << "ReadXml: green band name %s " << greenBandNameQString.local8Bit()<< std::endl;
+  std::cout << "ReadXml: blue band name %s " << blueBandNameQString.local8Bit()<< std::endl;
+
 #endif
 
   draw(theQPainter, myRasterViewPort, theQgsMapToPixel);
@@ -2852,6 +2862,7 @@ void QgsRasterLayer::setGrayBandName(QString theBandNameQString)
   {
     //find out the name of this band
     RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
+    std::cout << __FILE__ << ":" << __LINE__ << "Checking if " << myRasterBandStats.bandName << " == " << grayBandNameQString << std::endl;
     if (myRasterBandStats.bandName == theBandNameQString)
     {
       grayBandNameQString = theBandNameQString;
@@ -4068,6 +4079,17 @@ Raster layer project file XML of form:
 */
 bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 {
+  //! @NOTE Make sure to read the file first so stats etc are initialised properly!
+ 
+  if ( ! readFile( source() ) )   // Data source name set in
+    // QgsMapLayer::readXML()
+  {
+    std::cerr << __FILE__ << ":" << __LINE__
+    << " unable to read from raster file "
+    << source().local8Bit() << "\n";
+
+    return false;
+  }
   QDomNode mnl = layer_node.namedItem("rasterproperties");
 
   QDomNode snode = mnl.namedItem("showDebugOverlayFlag");
@@ -4106,19 +4128,18 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
   snode = mnl.namedItem("grayBandNameQString");
   myElement = snode.toElement();
+  std::cout << __FILE__ << ":" << __LINE__<< " Setting gray band to : " << myElement.text() << std::endl;
   setGrayBandName(myElement.text());
+
+  std::cout << __FILE__ << ":" << __LINE__<< "ReadXml: gray band name " << grayBandNameQString << std::endl;
+  std::cout << __FILE__ << ":" << __LINE__<< "ReadXml: red band name " << redBandNameQString << std::endl;
+  std::cout << __FILE__ << ":" << __LINE__<< "ReadXml: green band name  " << greenBandNameQString << std::endl;
+  std::cout << __FILE__ << ":" << __LINE__<< "ReadXml: blue band name " << blueBandNameQString << std::endl;
+  std::cout << __FILE__ << ":" << __LINE__<< "Drawing style " << getDrawingStyleAsQString() << std::endl;
 
   const char * sourceNameStr = source().local8Bit(); // debugger probe
 
-  if ( ! readFile( source() ) )   // Data source name set in
-    // QgsMapLayer::readXML()
-  {
-    std::cerr << __FILE__ << ":" << __LINE__
-    << " unable to read from raster file "
-    << source().local8Bit() << "\n";
 
-    return false;
-  }
 
   return true;
 
