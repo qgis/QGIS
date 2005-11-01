@@ -134,6 +134,10 @@ support this.</source>
         <translation>Tabulai ir primārā atslēga kas ir veidota no 
 vairākām kolonnām. QGIS pagaidām to neatbalsta.</translation>
     </message>
+    <message>
+        <source>Unsupported key column type</source>
+        <translation>Neatbalstīts atslēgas kolonnas tips</translation>
+    </message>
 </context>
 <context>
     <name>QgisApp</name>
@@ -555,6 +559,122 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     <message>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Atvērt GDAL atbalstītu datu avotu</translation>
+    </message>
+    <message>
+        <source>New features</source>
+        <translation>Jaunās iespējas</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Brīdinājums</translation>
+    </message>
+    <message>
+        <source>Writing of the layer failed</source>
+        <translation>Slāņa rakstīšana neizdevās</translation>
+    </message>
+    <message>
+        <source>Unable to open project</source>
+        <translation>Nav iespējams atvērt projektu</translation>
+    </message>
+    <message>
+        <source>Unable to save project </source>
+        <translation>Nav iespējams saglabāt projektu </translation>
+    </message>
+    <message>
+        <source>QGIS: Unable to load project</source>
+        <translation>QGIS: Nav iespējams ielādēt projektu</translation>
+    </message>
+    <message>
+        <source>Unable to load project </source>
+        <translation>Nav iespējams ielādēt projektu </translation>
+    </message>
+    <message>
+        <source>No Map Layers</source>
+        <translation>Nav kartes slāņu</translation>
+    </message>
+    <message>
+        <source>No layers to export. You must add at least one layer to the map in order to export the view.</source>
+        <translation>Nav slāņu eksportēšanai. Jums ir jāpievieno vismaz viens kartes slānis, lai varētu veikt kartes skata eksportēšanu.</translation>
+    </message>
+    <message>
+        <source>Layer is not valid</source>
+        <translation>Slānis ir nederīgs</translation>
+    </message>
+    <message>
+        <source>The layer is not a valid layer and can not be added to the map</source>
+        <translation>Slānis nav derīgs un tādēļ to nevar pievienot kartei</translation>
+    </message>
+    <message>
+        <source>Save?</source>
+        <translation>Saglabāt?</translation>
+    </message>
+    <message>
+        <source>Do you want to save the current project?</source>
+        <translation>Vai Jūs vēlaties saglabāt projektu?</translation>
+    </message>
+    <message>
+        <source>Add all layers to the overview map</source>
+        <translation>Pievienot visus slāņus pārskata kartei</translation>
+    </message>
+    <message>
+        <source>Remove all layers from the overview map</source>
+        <translation>Noņemt visus slāņus no pārskata kartes</translation>
+    </message>
+    <message>
+        <source>Show all layers</source>
+        <translation>Rādīt visus slāņus</translation>
+    </message>
+    <message>
+        <source>Hide all layers</source>
+        <translation>Slēpt visus slāņus</translation>
+    </message>
+    <message>
+        <source>Capture points</source>
+        <translation>Atlikt punktus</translation>
+    </message>
+    <message>
+        <source>Capture lines</source>
+        <translation>Atlikt līnijas</translation>
+    </message>
+    <message>
+        <source>Capture polygons</source>
+        <translation>Atlikt laukumus</translation>
+    </message>
+    <message>
+        <source>Delete selection</source>
+        <translation>Dzēst izvēlēto</translation>
+    </message>
+    <message>
+        <source>Clipboard contents set to: </source>
+        <translation>Starpliktuves saturu uzstādīt uz: </translation>
+    </message>
+    <message>
+        <source> is not a valid or recognized raster data source</source>
+        <translation> ir nederīgs vai neatpazīts rastra datu avots</translation>
+    </message>
+    <message>
+        <source> is not a supported raster data source</source>
+        <translation> ir neatbalstīts rastra datu avots</translation>
+    </message>
+    <message>
+        <source>Unsupported Data Source</source>
+        <translation>Neatbalstīts datu avots</translation>
+    </message>
+    <message>
+        <source>New Bookmark</source>
+        <translation>Jauna grāmatzīme</translation>
+    </message>
+    <message>
+        <source>Enter a name for the new bookmark:</source>
+        <translation>Ievadiet nosaukumu jaunajai grāmatzīmei:</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Kļūda</translation>
+    </message>
+    <message>
+        <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
+        <translation>Nav iespējams izveidot grāmatzīmi. Jūsu lietotāju datubāzeir vai nu bojāta, vai tās vispār nav</translation>
     </message>
 </context>
 <context>
@@ -2219,6 +2339,30 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
     <message>
         <source>Top Right</source>
         <translation>Augšējais labais</translation>
+    </message>
+    <message>
+        <source>&amp;Decorations</source>
+        <translation>&amp;Dekorācijas</translation>
+    </message>
+    <message>
+        <source>&amp;CopyrightLabel</source>
+        <translation>&amp;Autortiesību iezīme</translation>
+    </message>
+    <message>
+        <source>Creates a copyright label that is displayed on the map canvas.</source>
+        <translation>Izveido autortiesību iezīmi ko attēlot uz kartes.</translation>
+    </message>
+    <message>
+        <source>Copyright Label</source>
+        <translation>Autortiesību iezīme</translation>
+    </message>
+    <message>
+        <source>run</source>
+        <translation>Darbināt</translation>
+    </message>
+    <message>
+        <source>Bottom Right</source>
+        <translation>Apakšējais labais</translation>
     </message>
 </context>
 <context>
@@ -4519,7 +4663,7 @@ Factor</source>
     </message>
     <message>
         <source>&amp;Colour:</source>
-        <translation type="unfinished">Krāsa:</translation>
+        <translation>&amp;Krāsa:</translation>
     </message>
     <message>
         <source>Font and Alignment</source>
@@ -5022,6 +5166,37 @@ Paplašināta kļūdas informācija:
     <message>
         <source>Bottom Right</source>
         <translation>Apakšējais labais</translation>
+    </message>
+    <message>
+        <source>&amp;Decorations</source>
+        <translation>&amp;Dekorācijas</translation>
+    </message>
+    <message>
+        <source>&amp;NorthArrow</source>
+        <translation>&amp;Ziemeļu bulta</translation>
+    </message>
+    <message>
+        <source>Creates a north arrow that is displayed on the map canvas</source>
+        <translation>Izveido ziemeļu virziena bultu rādīšanai uz kartes</translation>
+    </message>
+    <message>
+        <source>North Arrow</source>
+        <translation>Ziemeļu bulta</translation>
+    </message>
+    <message>
+        <source>run</source>
+        <translation>Darbināt</translation>
+    </message>
+    <message>
+        <source>Pixmap Not Found</source>
+        <translation>Pikseļkarte nav atrasta</translation>
+    </message>
+</context>
+<context>
+    <name>QgsNorthArrowPluginGui</name>
+    <message>
+        <source>Pixmap Not Found</source>
+        <translation>Pikseļkarte nav atrasta</translation>
     </message>
 </context>
 <context>
@@ -5595,7 +5770,7 @@ Pēc noklusējuma QGIS izmantotā vērtība ir vienāda ar 5. Palieliniet šo v�
     </message>
     <message>
         <source>Generate world file and load layer</source>
-        <translation>Ģenerēt piesaistes failu pun pievienot slāni</translation>
+        <translation>Ģenerēt piesaistes failu un pievienot slāni</translation>
     </message>
     <message>
         <source>Generate world file</source>
@@ -5796,6 +5971,10 @@ Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</tran
         <source>PostGIS SRID: </source>
         <translation>PostGIS SRID: </translation>
     </message>
+    <message>
+        <source>Building Projections List...</source>
+        <translation>Veidoju projekciju sarakstu...</translation>
+    </message>
 </context>
 <context>
     <name>QgsProjectionSelectorBase</name>
@@ -5844,15 +6023,15 @@ Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</tran
     <name>QgsRasterLayer</name>
     <message>
         <source>Red</source>
-        <translation>Sarkans</translation>
+        <translation type="obsolete">Sarkans</translation>
     </message>
     <message>
         <source>Green</source>
-        <translation>Zaļš</translation>
+        <translation type="obsolete">Zaļš</translation>
     </message>
     <message>
         <source>Blue</source>
-        <translation>Zils</translation>
+        <translation type="obsolete">Zils</translation>
     </message>
     <message>
         <source>Not Set</source>
@@ -6107,6 +6286,10 @@ Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</tran
     <message>
         <source>Palette</source>
         <translation>Palete</translation>
+    </message>
+    <message>
+        <source>Not Set</source>
+        <translation>Neuzstādīts</translation>
     </message>
 </context>
 <context>
@@ -6510,6 +6693,45 @@ Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</tran
     <message>
         <source>Box</source>
         <translation>Kaste</translation>
+    </message>
+    <message>
+        <source>&amp;Decorations</source>
+        <translation>&amp;Dekorācijas</translation>
+    </message>
+    <message>
+        <source>&amp;ScaleBar</source>
+        <translation>&amp;Mērogjosla</translation>
+    </message>
+    <message>
+        <source>Creates a scale bar that is displayed on the map canvas</source>
+        <translation>Izveido mērogjoslu attēlošanai uz kartes</translation>
+    </message>
+    <message>
+        <source>Scale Bar</source>
+        <translation>Mērogjosla</translation>
+    </message>
+    <message>
+        <source>run</source>
+        <translation>Darbināt</translation>
+    </message>
+</context>
+<context>
+    <name>QgsScaleBarPluginGui</name>
+    <message>
+        <source>Tick Down</source>
+        <translation>Ragi uz leju</translation>
+    </message>
+    <message>
+        <source>Tick Up</source>
+        <translation>Ragi uz augšu</translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation>Kaste</translation>
+    </message>
+    <message>
+        <source>Bar</source>
+        <translation>Josla</translation>
     </message>
 </context>
 <context>
@@ -7143,91 +7365,99 @@ Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</tran
         <source>&amp;No</source>
         <translation>&amp;Nē</translation>
     </message>
+    <message>
+        <source> features found</source>
+        <translation> objekti atrasti</translation>
+    </message>
+    <message>
+        <source> 1 feature found</source>
+        <translation> 1 objekts atrasts</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
     <message>
         <source>Layer Properties</source>
-        <translation type="obsolete">Slāņa īpašības</translation>
+        <translation>Slāņa īpašības</translation>
     </message>
     <message>
         <source>Legend type:</source>
-        <translation type="obsolete">Leģendas tips:</translation>
+        <translation>Leģendas tips:</translation>
     </message>
     <message>
         <source>Layer source</source>
-        <translation type="obsolete">Slāņa avots</translation>
+        <translation>Slāņa avots</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="obsolete">Palīdzība</translation>
+        <translation>Palīdzība</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="obsolete">F1</translation>
+        <translation>F1</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="obsolete">Parametri</translation>
+        <translation>Parametri</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="obsolete">Labi</translation>
+        <translation>Labi</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Atcelt</translation>
+        <translation>Atcelt</translation>
     </message>
     <message>
         <source>TextLabel2</source>
-        <translation type="obsolete">TekstaIezīme2</translation>
+        <translation>TekstaIezīme2</translation>
     </message>
 </context>
 <context>
     <name>QgsVectorSymbologyWidgetBase</name>
     <message>
         <source>Form2</source>
-        <translation type="obsolete">Forma2</translation>
+        <translation>Forma2</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation type="obsolete">Iezīme</translation>
+        <translation>Iezīme</translation>
     </message>
     <message>
         <source>Min</source>
-        <translation type="obsolete">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <source>Max</source>
-        <translation type="obsolete">Maks</translation>
+        <translation>Maks</translation>
     </message>
     <message>
         <source>Rivers</source>
-        <translation type="obsolete">Upes</translation>
+        <translation>Upes</translation>
     </message>
     <message>
         <source>1000</source>
-        <translation type="obsolete">1000</translation>
+        <translation>1000</translation>
     </message>
     <message>
         <source>10000</source>
-        <translation type="obsolete">10000</translation>
+        <translation>10000</translation>
     </message>
     <message>
         <source>Symbol Classes:</source>
-        <translation type="obsolete">Simbolu klases:</translation>
+        <translation>Simbolu klases:</translation>
     </message>
     <message>
         <source>Count:</source>
-        <translation type="obsolete">Skaits:</translation>
+        <translation>Skaits:</translation>
     </message>
     <message>
         <source>Mode:</source>
-        <translation type="obsolete">Režīms:</translation>
+        <translation>Režīms:</translation>
     </message>
     <message>
         <source>Field:</source>
-        <translation type="obsolete">Lauks:</translation>
+        <translation>Lauks:</translation>
     </message>
 </context>
 <context>
