@@ -81,7 +81,6 @@ using namespace std;
 #include <qcheckbox.h>
 #include <qtooltip.h>
 
-
 #include "qgsencodingfiledialog.h"
 #include "qgsrect.h"
 #include "qgsmapcanvas.h"
@@ -1006,17 +1005,16 @@ static void openFilesRememberingFilter_(QString const &filterName,
                              QString::null,
                              &haveLastUsedFilter);
 
-    QString lastUsedDir = settings.readEntry("/qgis/UI/" + filterName + "Dir",
-                          ".");
+    QString lastUsedDir = settings.readEntry("/qgis/UI/" + filterName + "Dir",".");
 
     QString lastUsedEncoding = settings.readEntry("/qgis/UI/encoding");
 
 #ifdef QGISDEBUG
-
-    std::cerr << "Opening vector file dialog with filters: " << filters.local8Bit() << std::endl;
+    std::cerr << "Opening file dialog with filters: " << filters.local8Bit() << std::endl;
 #endif
 
-    QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog(lastUsedDir, filters, 0, QFileDialog::tr("open files dialog"), lastUsedEncoding);
+    QgsEncodingFileDialog* openFileDialog = 
+      new QgsEncodingFileDialog(lastUsedDir, filters, 0, QFileDialog::tr("open files dialog"), lastUsedEncoding);
 
     // allow for selection of more than one file
     openFileDialog->setMode(QFileDialog::ExistingFiles);
@@ -1029,18 +1027,25 @@ static void openFilesRememberingFilter_(QString const &filterName,
 
     if (openFileDialog->exec() == QDialog::Accepted)
     {
-        selectedFiles = openFileDialog->selectedFiles();
-        enc = openFileDialog->encoding();
+      selectedFiles = openFileDialog->selectedFiles();
+      enc = openFileDialog->encoding();
+      // Fix by Tim - getting the dirPath from the dialog
+      // directly truncates the last node in the dir path.
+      // This is a workaround for that
+      QString myFirstFileName = selectedFiles.first();
+      QFileInfo myFI(myFirstFileName);
+      QString myPath = myFI.dirPath();
+#ifdef QGISDEBUG
+      qDebug("Writing last used dir: " + myPath);
+#endif
+
+      settings.writeEntry("/qgis/UI/" + filterName, openFileDialog->selectedFilter());
+      settings.writeEntry("/qgis/UI/" + filterName + "Dir", myPath);
+      settings.writeEntry("/qgis/UI/encoding", openFileDialog->encoding());
     }
 
-    settings.writeEntry("/qgis/UI/" + filterName, openFileDialog->selectedFilter());
-
-
-    settings.writeEntry("/qgis/UI/" + filterName + "Dir", openFileDialog->dirPath());
-    settings.writeEntry("/qgis/UI/encoding", openFileDialog->encoding());
-
     delete openFileDialog;
-}                               // openFilesRememberingFilter_
+}   // openFilesRememberingFilter_
 
 
 
