@@ -2068,15 +2068,22 @@ void QgisApp::fileOpen()
     QString fullPath;
     if (openFileDialog->exec() == QDialog::Accepted)
     {
+      // Fix by Tim - getting the dirPath from the dialog
+      // directly truncates the last node in the dir path.
+      // This is a workaround for that
       fullPath = openFileDialog->selectedFile();
-    } else {
+      QFileInfo myFI(fullPath);
+      QString myPath = myFI.dirPath();
+      settings.writeEntry("/qgis/UI/lastProjectDir", myPath);
+    }
+    else 
+    {
       // if they didn't select anything, just return
       delete openFileDialog;
       return;
     }
 
     // Persist last used project dir
-    settings.writeEntry("/qgis/UI/lastProjectDir", openFileDialog->dirPath());
 
     delete openFileDialog;
 
@@ -2343,16 +2350,20 @@ void QgisApp::fileSaveAs()
 
     if (saveFileDialog->exec() == QDialog::Accepted)
     {
-        fullPath.setFile( saveFileDialog->selectedFile() );
-    } else
+      // Fix by Tim - getting the dirPath from the dialog
+      // directly truncates the last node in the dir path.
+      // This is a workaround for that
+      fullPath.setFile(saveFileDialog->selectedFile());
+      QString myPath = fullPath.dirPath();
+      // Persist last used project dir
+      settings.writeEntry("/qgis/UI/lastProjectDir", myPath);
+    } 
+    else
     {
         // if they didn't select anything, just return
         // delete saveFileDialog; auto_ptr auto deletes
         return;
     }
-    
-    // Persist last used project dir
-    settings.writeEntry("/qgis/UI/lastProjectDir", saveFileDialog->dirPath());
     
     // delete saveFileDialog; auto_ptr auto deletes
     
