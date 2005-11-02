@@ -2145,75 +2145,82 @@ const std::list<std::pair<QString, QString> >&);
 
 void QgisApp::fileOpen()
 {
-    // possibly save any pending work before opening a new project
-    int answer = saveDirty();
+  // possibly save any pending work before opening a new project
+  int answer = saveDirty();
 
-    if (answer != QMessageBox::Cancel)
+  if (answer != QMessageBox::Cancel)
+  {
+    // Retrieve last used project dir from persistent settings
+    QSettings settings;
+    QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
+
+    QFileDialog * openFileDialog = new QFileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0,
+        "open project file");
+    openFileDialog->setCaption(tr("Choose a QGIS project file to open"));
+    openFileDialog->setMode(QFileDialog::ExistingFile);
+
+
+    QString fullPath;
+    if (openFileDialog->exec() == QDialog::Accepted)
     {
-        // Retrieve last used project dir from persistent settings
-        QSettings settings;
-        QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
-        
-        QFileDialog * openFileDialog = new QFileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0,
-                                                       "open project file");
-        openFileDialog->setCaption(tr("Choose a QGIS project file to open"));
-        openFileDialog->setMode(QFileDialog::ExistingFile);
-        
-        QString fullPath;
-        if (openFileDialog->exec() == QDialog::Accepted)
-        {
-            fullPath = openFileDialog->selectedFile();
-        } else {
-            // if they didn't select anything, just return
-            delete openFileDialog;
-            return;
-        }
-        
-        // Persist last used project dir
-        settings.writeEntry("/qgis/UI/lastProjectDir", openFileDialog->dirPath());
-        
-        delete openFileDialog;
-        
-        // clear out any stuff from previous project
-        removeAllLayers();
-
-        QgsProject::instance()->filename( fullPath );
-
-        try 
-        {
-            if ( QgsProject::instance()->read() )
-            {
-                setTitleBarText_( *this );
-                mMapCanvas->setMapUnits(QgsProject::instance()->mapUnits());
-                emit projectRead();     // let plug-ins know that we've read in a new
-                // project so that they can check any project
-                // specific plug-in state
-                
-                // add this to the list of recently used project files
-                saveRecentProjectPath(fullPath, settings);
-            }
-        }
-        catch ( QgsProjectBadLayerException & e )
-        {
-            QMessageBox::critical(this, 
-                                  tr("QGIS Project Read Error"), 
-                                  tr("") + "\n" + e.what() );
-            qDebug( "%s:%d %d bad layers found", __FILE__, __LINE__, e.layers().size() );
-
-            // attempt to find the new locations for missing layers
-            // XXX vector file hard-coded -- but what if it's raster?
-            findLayers_( mVectorFileFilter, e.layers() );
-        }
-        catch ( std::exception & e )
-        {
-            QMessageBox::critical(this, 
-                                  tr("QGIS Project Read Error"), 
-                                  tr("") + "\n" + e.what() );
-            qDebug( "%s:%d BAD LAYERS FOUND", __FILE__, __LINE__ );
-        }
+      // Fix by Tim - getting the dirPath from the dialog
+      // directly truncates the last node in the dir path.
+      // This is a workaround for that
+      fullPath = openFileDialog->selectedFile();
+      QFileInfo myFI(fullPath);
+      QString myPath = myFI.dirPath();
+      // Persist last used project dir
+      settings.writeEntry("/qgis/UI/lastProjectDir", myPath);
     }
-    //loop through all layers in the layers registry and connect up 
-   // keybindings for the escape key
+    else 
+    {
+      // if they didn't select anything, just return
+      delete openFileDialog;
+      return;
+    }
+
+    delete openFileDialog;
+
+    // clear out any stuff from previous project
+    removeAllLayers();
+
+    QgsProject::instance()->filename( fullPath );
+
+    try 
+    {
+      if ( QgsProject::instance()->read() )
+      {
+        setTitleBarText_( *this );
+        mMapCanvas->setMapUnits(QgsProject::instance()->mapUnits());
+        emit projectRead();     // let plug-ins know that we've read in a new
+        // project so that they can check any project
+        // specific plug-in state
+
+        // add this to the list of recently used project files
+        saveRecentProjectPath(fullPath, settings);
+      }
+    }
+    catch ( QgsProjectBadLayerException & e )
+    {
+      QMessageBox::critical(this, 
+          tr("QGIS Project Read Error"), 
+          tr("") + "\n" + e.what() );
+      qDebug( "%s:%d %d bad layers found", __FILE__, __LINE__, e.layers().size() );
+
+      // attempt to find the new locations for missing layers
+      // XXX vector file hard-coded -- but what if it's raster?
+      findLayers_( mVectorFileFilter, e.layers() );
+    }
+    catch ( std::exception & e )
+    {
+      QMessageBox::critical(this, 
+          tr("QGIS Project Read Error"), 
+          tr("") + "\n" + e.what() );
+      qDebug( "%s:%d BAD LAYERS FOUND", __FILE__, __LINE__ );
+    }
+  }
+  //loop through all layers in the layers registry and connect up 
+  // keybindings for the escape key
   std::map<QString, QgsMapLayer *> myMapLayers 
     = QgsMapLayerRegistry::instance()->mapLayers();
   std::map<QString, QgsMapLayer *>::iterator myMapIterator;
@@ -2221,14 +2228,14 @@ void QgisApp::fileOpen()
   {
     QgsMapLayer * myMapLayer = myMapIterator->second;
     QObject::connect(this,
-                         SIGNAL(keyPressed(QKeyEvent *)),
-                         myMapLayer,
-                         SLOT(keyPressed(QKeyEvent* )));
-    }
+        SIGNAL(keyPressed(QKeyEvent *)),
+        myMapLayer,
+        SLOT(keyPressed(QKeyEvent* )));
+  }
 
   //set the projections enabled icon in the status bar
   int myProjectionEnabledFlag =
-         QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
+    QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
   projectionsEnabled(myProjectionEnabledFlag);
 } // QgisApp::fileOpen
 
@@ -2431,7 +2438,13 @@ void QgisApp::fileSaveAs()
 
     if (saveFileDialog->exec() == QDialog::Accepted)
     {
-        fullPath.setFile( saveFileDialog->selectedFile() );
+      // Fix by Tim - getting the dirPath from the dialog
+      // directly truncates the last node in the dir path.
+      // This is a workaround for that
+      fullPath.setFile(saveFileDialog->selectedFile());
+      QString myPath = fullPath.dirPath();
+      // Persist last used project dir
+      settings.writeEntry("/qgis/UI/lastProjectDir", myPath);
     } 
     else
     {
@@ -2439,10 +2452,6 @@ void QgisApp::fileSaveAs()
         // delete saveFileDialog; auto_ptr auto deletes
         return;
     }
-    
-    // Persist last used project dir
-    settings.writeEntry("/qgis/UI/lastProjectDir", saveFileDialog->dirPath());
-    
 
     // make sure the .qgs extension is included in the path name. if not, add it...
     if( "qgs" != fullPath.extension(false) )
