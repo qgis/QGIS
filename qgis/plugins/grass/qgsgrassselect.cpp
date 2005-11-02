@@ -58,9 +58,9 @@ QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
 
     if ( type == QgsGrassSelect::RASTER ) {
 	/* Remove layer combo box */
-	optionsFrame->removeChild ( dynamic_cast<QWidget *>(Layer) );
-	optionsFrame->removeChild ( dynamic_cast<QWidget *>(elayer) );
-	
+	Layer->hide();
+	elayer->hide();
+
 	setCaption ( "Add GRASS Raster Layer" );
     } else { // vector
 	setCaption ( "Add GRASS Vector Layer" );

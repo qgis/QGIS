@@ -250,7 +250,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     PGconn * pgConnection() {return connection;};
 
     //! Get the table name associated with this provider instance
-    QString getTableName() {return tableName;};
+    QString getTableName() {return mTableName;};
 
     /** mutator for sql where clause used to limit dataset size */
     void setSubsetString(QString theSQL); //{sqlWhereClause = theSQL;};
@@ -329,15 +329,15 @@ signals:
     /**
      * Name of the table with no schema
      */
-    QString tableName;
+    QString mTableName;
     /**
      * Name of the table with schema included
      */
-    QString schemaTableName;
+    QString mSchemaTableName;
     /** 
      * Name of the schema
      */
-    QString mSchema;
+    QString mSchemaName;
     /**
      * SQL statement used to limit the features retreived
      */
@@ -396,14 +396,48 @@ signals:
     bool deduceEndian();
     bool getGeometryDetails();
 
-    typedef std::map<QString, std::pair<QString, QString> > tableCols;
+    // A simple class to store the rows of the sql executed in the
+    // findColumns() function.
+    class TT
+    {
+    public:
+      TT() {};
 
+      QString view_schema;
+      QString view_name;
+      QString view_column_name;
+      QString table_schema;
+      QString table_name;
+      QString column_name;
+      QString table_type;
+      QString column_type;
+    };
+
+
+    // A simple class to store three strings
+    class SRC 
+    { 
+    public:
+      SRC() {};
+      SRC(QString s, QString r, QString c) :
+	schema(s), relation(r), column(c) {};
+      QString schema, relation, column; 
+    };
+
+    // A structure to store the underlying schema.table.column for
+    // each column in mSchemaName.mTableName
+    typedef std::map<QString, SRC> tableCols;
+
+    // A function that chooses a view column that is suitable for use
+    // a the qgis key column.
     QString chooseViewColumn(const tableCols& cols);
 
-    void findTableColumns(QString selectCmd, tableCols& cols);
-    void findColumns(QString selectCmd, tableCols& cols);
-    int findRelationAndColumn(QString relation, QString column,
-        QString& rRelation, QString& rColumn);
+    // A function that determines if the given schema.table.column
+    // contains unqiue entries
+    bool uniqueData(QString schemaName, QString tableName, QString colName);
+
+    // Function that populates the given cols structure.
+    void findColumns(tableCols& cols);
 
     bool ready;
     std::ofstream pLog;

@@ -8,7 +8,9 @@
 
 TEMPLATE = lib
 INCLUDEPATH += . $(GEOS)\include \
-                 $(GDAL)\include
+                 $(GDAL)\include \
+                 ..\..\src \
+                $(WINSDK)\include
 LIBS += ..\..\src\libqgis.lib \
         $(GEOS)\lib\geos.lib \
         $(GDAL)\lib\gdal_i.lib 

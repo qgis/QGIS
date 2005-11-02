@@ -21,7 +21,9 @@
 TEMPLATE = lib
 INCLUDEPATH += . $(GDAL)\include \
                 $(GEOS)\include \
-                $(QTDIR)\include
+                $(QTDIR)\include \
+                ..\..\src \
+                "C:\Program Files\Microsoft Platform SDK\Include"
 LIBS += $(GDAL)\lib\gdal_i.lib \
                 ..\..\src\libqgis.lib \
                 $(GEOS)\lib\geos.lib
@@ -30,8 +32,8 @@ CONFIG += qt dll thread debug rtti
 DLLDESTDIR= ..\..\win_build\lib\qgis
 #DEFINES += NOWIN32GEOS
 # Input
-HEADERS += qgsshapefileprovider.h
-SOURCES += qgsshapefileprovider.cpp \
+HEADERS += qgsogrprovider.h
+SOURCES += qgsogrprovider.cpp \
            ..\..\src\qgsfeature.cpp \
            ..\..\src\qgsfield.cpp \
            ..\..\src\qgsrect.cpp \

@@ -498,7 +498,7 @@ void QgsGraSyDialog::changeClass(QListBoxItem* item)
     {
 	rritem=iter->second;
     }
-    QgsLUDialog dialog;
+    QgsLUDialog dialog(this);
     
     if(rritem)
     {

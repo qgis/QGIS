@@ -39,7 +39,7 @@ class QgsRasterLayerProperties : public QgsRasterLayerPropertiesBase
         /** \brief Constructor
          * @param ml Map layer for which properties will be displayed
          */
-        QgsRasterLayerProperties(QgsMapLayer *lyr);
+        QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *parent=0, const char *name=0, bool modal=true);
         /** \brief Destructor */
         ~QgsRasterLayerProperties();
         /** \brief Applies the settings made in the dialog without closing the box */
@@ -70,6 +70,8 @@ class QgsRasterLayerProperties : public QgsRasterLayerPropertiesBase
         void rbtnThreeBand_toggled( bool );
         /** \brief slot executed when user wishes to refresh raster histogram */
         void QgsRasterLayerProperties::pbnHistRefresh_clicked();
+        /** Override the SRS specified when the layer was loaded */
+        void pbnChangeSpatialRefSys_clicked();
 
         /** synchronize state with associated raster layer */
         void sync();

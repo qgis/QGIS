@@ -49,6 +49,8 @@
 #include "qgscomposeritem.h"
 #include "qgscomposermap.h"
 
+#include "qgsexception.h"
+
 #include <iostream>
 
 QgsComposer::QgsComposer( QgisApp *qgis): QgsComposerBase()
@@ -230,8 +232,16 @@ void QgsComposer::print(void)
     //mPrinter = new QPrinter ( QPrinter::HighResolution );
     //mPrinter = new QPrinter ( QPrinter::ScreenResolution );
     mPrinter->setFullPage ( true );
+#ifndef Q_OS_MACX
+    // For Qt/Mac 3, don't set outputToFile to true before calling setup 
+    // because it wiil suppress the Print dialog and output to file without
+    // giving the user a chance to select a printer instead.
+    // The Mac Print dialog provides an option to create a pdf which is
+    // intended to be invisible to the application. If an eps is desired,
+    // a custom Mac Print dialog is needed.
     mPrinter->setOutputToFile (true ) ;
     mPrinter->setOutputFileName ( QDir::convertSeparators ( QDir::home().path() + "/" + "qgis.eps") );
+#endif
 
     if ( mComposition->paperOrientation() == QgsComposition::Portrait ) {
       mPrinter->setOrientation ( QPrinter::Portrait );
@@ -270,100 +280,50 @@ void QgsComposer::print(void)
 
     mComposition->setPlotStyle ( QgsComposition::Postscript );
 
-    if ( mPrinter->outputToFile() ) {
-      std::cout << "Print to file" << std::endl;
+    if ( mPrinter->outputToFile() ) 
+    {
+      try 
+      {
+        std::cout << "Print to file" << std::endl;
 
 #ifdef Q_WS_X11
-      // NOTE: On UNIX setPageSize after setup() works, but setOrientation does not
-      //   -> the BoundingBox must follow the orientation 
+        // NOTE: On UNIX setPageSize after setup() works, but setOrientation does not
+        //   -> the BoundingBox must follow the orientation 
 
-      QPrinter::PageSize psize = mPrinter->pageSize();
-      // B0 ( 1000x1414mm = 2835x4008pt ) is the biggest defined in Qt, a map can be bigger 
-      // but probably not bigger than 9999x9999pt = 3527x3527mm 
-      mPrinter->setPageSize ( QPrinter::B0 );
+        QPrinter::PageSize psize = mPrinter->pageSize();
+        // B0 ( 1000x1414mm = 2835x4008pt ) is the biggest defined in Qt, a map can be bigger 
+        // but probably not bigger than 9999x9999pt = 3527x3527mm 
+        mPrinter->setPageSize ( QPrinter::B0 );
 #endif
 
-      QPainter p(mPrinter);
-      p.scale ( scale, scale); 
+        QPainter p(mPrinter);
+        p.scale ( scale, scale); 
 
-      mComposition->canvas()->drawArea ( QRect(0,0, 
-            (int) (mComposition->paperWidth() * mComposition->scale()),
-            (int) (mComposition->paperHeight() * mComposition->scale()) ), 
-            &p, FALSE );
+        mComposition->canvas()->drawArea ( QRect(0,0, 
+                    (int) (mComposition->paperWidth() * mComposition->scale()),
+                    (int) (mComposition->paperHeight() * mComposition->scale()) ), 
+                &p, FALSE );
 
-      p.end();
+        p.end();
 
 #ifdef Q_WS_X11
-      // reset the page
-      mPrinter->setPageSize ( psize );
+        // reset the page
+        mPrinter->setPageSize ( psize );
 
-      QFile f(mPrinter->outputFileName());
+        QFile f(mPrinter->outputFileName());
 
-      // Overwrite the bounding box
-      f.open( IO_ReadWrite );
-      Q_LONG offset = 0;
-      Q_LONG size;
-      bool found = false;
-      QString s;
-      while ( !f.atEnd() ) {
-        size = f.readLine ( s, 100 );
-        if ( s.find ("%%BoundingBox:") == 0 ) {
-          found = true;
-          break;
+        // Overwrite the bounding box
+        if (!f.open( IO_ReadWrite )) 
+        {
+          throw QgsIOException(tr("Couldn't open " + f.name() + tr(" for read/write")));
         }
-        offset += size;
-      }
-
-      if ( found ) {
-        int w,h;
-
-        w = (int) ( 72 * mComposition->paperWidth() / 25.4 );
-        h = (int) ( 72 * mComposition->paperHeight() / 25.4 );
-        if ( mPrinter->orientation() == QPrinter::Landscape ) { 
-          int tmp = w; w = h; h = tmp;
-        }
-        s.sprintf( "%%%%BoundingBox: 0 0 %d %d", w, h );
-
-        if ( s.length() > size ) {
-          QMessageBox::warning(this,"Error in Print", "Cannot format BoundingBox");
-        } else {
-          if ( ! f.at(offset) ) {
-            QMessageBox::warning(this,"Error in Print", "Cannot seek");
-          } else {
-            /* Write spaces (for case the size > s.length() ) */
-            QString es;
-            es.fill(' ', size-1 );
-            f.flush();
-            if ( f.writeBlock ( es.ascii(), size-1 ) < size-1 ) {
-              QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
-            }
-            f.flush();
-            f.at(offset);
-            f.flush();
-            if ( f.writeBlock ( s.ascii(), s.length() ) <  s.length()-1 ) {
-              QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
-            }
-            f.flush();
-          }
-        }
-      } else {
-        QMessageBox::warning(this,"Error in Print", "Cannot find BoundingBox");
-      }
-      f.close();
-
-      // Overwrite translate
-      if ( mPrinter->orientation() == QPrinter::Portrait ) { 
-        f.open( IO_ReadWrite );
-        offset = 0;
-        found = false;
-
-        //Example:
-        //0 4008 translate 1 -1 scale/defM ...
-        QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale/defM matrix CM d \\} d" );
-
+        Q_LONG offset = 0;
+        Q_LONG size;
+        bool found = false;
+        QString s;
         while ( !f.atEnd() ) {
           size = f.readLine ( s, 100 );
-          if ( rx.search( s ) != -1 ) {
+          if ( s.find ("%%BoundingBox:") == 0 ) {
             found = true;
             break;
           }
@@ -371,13 +331,17 @@ void QgsComposer::print(void)
         }
 
         if ( found ) {
-          int trans;
+          int w,h;
 
-          trans = (int) ( 72 * mComposition->paperHeight() / 25.4 );
-          s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, rx.cap(1).ascii() );
+          w = (int) ( 72 * mComposition->paperWidth() / 25.4 );
+          h = (int) ( 72 * mComposition->paperHeight() / 25.4 );
+          if ( mPrinter->orientation() == QPrinter::Landscape ) { 
+            int tmp = w; w = h; h = tmp;
+          }
+          s.sprintf( "%%%%BoundingBox: 0 0 %d %d", w, h );
 
           if ( s.length() > size ) {
-            QMessageBox::warning(this,"Error in Print", "Cannot format translate");
+            QMessageBox::warning(this,"Error in Print", "Cannot format BoundingBox");
           } else {
             if ( ! f.at(offset) ) {
               QMessageBox::warning(this,"Error in Print", "Cannot seek");
@@ -386,24 +350,83 @@ void QgsComposer::print(void)
               QString es;
               es.fill(' ', size-1 );
               f.flush();
-              if ( f.writeBlock ( es.ascii(), size-1 ) < size-1 ) {
-                QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
+              if ( f.writeBlock ( es.local8Bit(), size-1 ) < size-1 ) {
+                QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
               }
               f.flush();
               f.at(offset);
               f.flush();
-              if ( f.writeBlock ( s.ascii(), s.length() ) <  s.length()-1 ) {
-                QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
+              if ( f.writeBlock ( s.local8Bit(), s.length() ) <  s.length()-1 ) {
+                QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
               }
               f.flush();
             }
           }
         } else {
-          QMessageBox::warning(this,"Error in Print", "Cannot find translate");
+          QMessageBox::warning(this,"Error in Print", "Cannot find BoundingBox");
         }
         f.close();
-      }
+
+        // Overwrite translate
+        if ( mPrinter->orientation() == QPrinter::Portrait ) { 
+          if (!f.open( IO_ReadWrite )) {
+            throw QgsIOException(tr("Couldn't open " + f.name() + tr(" for read/write")));
+          }
+          offset = 0;
+          found = false;
+
+          //Example:
+          //0 4008 translate 1 -1 scale/defM ...
+          QRegExp rx ( "^0 [^ ]+ translate ([^ ]+ [^ ]+) scale/defM matrix CM d \\} d" );
+
+          while ( !f.atEnd() ) {
+            size = f.readLine ( s, 100 );
+            if ( rx.search( s ) != -1 ) {
+              found = true;
+              break;
+            }
+            offset += size;
+          }
+
+          if ( found ) {
+            int trans;
+
+            trans = (int) ( 72 * mComposition->paperHeight() / 25.4 );
+            s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, (const char *)rx.cap(1).local8Bit() );
+
+            if ( s.length() > size ) {
+              QMessageBox::warning(this,"Error in Print", "Cannot format translate");
+            } else {
+              if ( ! f.at(offset) ) {
+                QMessageBox::warning(this,"Error in Print", "Cannot seek");
+              } else {
+                /* Write spaces (for case the size > s.length() ) */
+                QString es;
+                es.fill(' ', size-1 );
+                f.flush();
+                if ( f.writeBlock ( es.local8Bit(), size-1 ) < size-1 ) {
+                  QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
+                }
+                f.flush();
+                f.at(offset);
+                f.flush();
+                if ( f.writeBlock ( s.local8Bit(), s.length() ) <  s.length()-1 ) {
+                  QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
+                }
+                f.flush();
+              }
+            }
+          } else {
+            QMessageBox::warning(this,"Error in Print", "Cannot find translate");
+          }
+          f.close();
+        }
 #endif
+      } 
+      catch (QgsIOException e) 
+      {
+        QMessageBox::warning(this,"File IO Error", e.what());
+      }
     } else {  // print to printer
 	bool print = true;
 
@@ -502,7 +525,7 @@ void QgsComposer::image(void)
   FilterMap::Iterator myIterator;
   for ( myIterator = myFilterMap.begin(); myIterator != myFilterMap.end(); ++myIterator )
   {
-    std::cout << myIterator.key() << "  :  " << myIterator.data() << std::endl;
+    std::cout << myIterator.key().local8Bit() << "  :  " << myIterator.data().local8Bit() << std::endl;
   }
 #endif
 
@@ -512,10 +535,10 @@ void QgsComposer::image(void)
         "",
         myFilters,
         0,
-        QFileDialog::tr("Save file dialog"),
-        tr("Choose a filename to save the map image as")
+        "Save mapcomposer file dialog"
         )
       );
+  myQFileDialog->setCaption(tr("Choose a filename to save the map image as"));
   myQFileDialog->setSelection ( myLastUsedFile );
 
   // allow for selection of more than one file
@@ -535,8 +558,8 @@ void QgsComposer::image(void)
   myOutputFileNameQString = myQFileDialog->selectedFile();
   QString myFilterString = myQFileDialog->selectedFilter();
 #ifdef QGISDEBUG
-  std::cout << "Selected filter: " << myFilterString << std::endl;
-  std::cout << "Image type: " << myFilterMap[myFilterString] << std::endl;
+  std::cout << "Selected filter: " << myFilterString.local8Bit() << std::endl;
+  std::cout << "Image type: " << myFilterMap[myFilterString].local8Bit() << std::endl;
 #endif
 
   myQSettings.writeEntry("/qgis/UI/lastSaveAsImageFormat" , myFilterMap[myFilterString] );
@@ -562,7 +585,7 @@ void QgsComposer::image(void)
   mComposition->setPlotStyle ( QgsComposition::Preview );
   mView->setCanvas(mComposition->canvas());
 
-  pixmap.save ( myOutputFileNameQString, myFilterMap[myFilterString] );
+  pixmap.save ( myOutputFileNameQString, myFilterMap[myFilterString].local8Bit() );
 }
 
 void QgsComposer::svg(void)
@@ -571,8 +594,9 @@ void QgsComposer::svg(void)
   QString myLastUsedFile = myQSettings.readEntry("/qgis/UI/lastSaveAsSvgFile","qgis.svg");
 
   QFileDialog *myQFileDialog = new QFileDialog( "", "SVG Format (*.svg *SVG)", 0,
-      QFileDialog::tr("Save file dialog"),
-      tr("Choose a filename to save the map as") );
+                                                "Save svg file dialog");
+  
+  myQFileDialog->setCaption(tr("Choose a filename to save the map as"));
 
   myQFileDialog->setSelection ( myLastUsedFile );
   myQFileDialog->setMode(QFileDialog::AnyFile);
@@ -711,7 +735,7 @@ void QgsComposer::projectRead(void)
 
   bool found = false;
   for ( QStringList::iterator it = l.begin(); it != l.end(); ++it ) {
-    std::cout << "key: " << (*it).ascii() << std::endl;
+    std::cout << "key: " << (*it).local8Bit() << std::endl;
     if ( (*it).compare ( "composition_1" ) == 0 ) {
       found = true;
       break;
@@ -753,13 +777,17 @@ void QgsComposer::newProject(void)
 
 bool QgsComposer::writeSettings ( void )
 {
-
+#ifdef WIN32
+	return true;
+#endif
 }
 
 bool QgsComposer::readSettings ( void )
 {
   bool ok;
-
+#ifdef WIN32
+  return true;
+#endif
 }
 
 bool QgsComposer::writeXML( QDomNode & node, QDomDocument & doc )

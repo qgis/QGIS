@@ -65,6 +65,9 @@ public slots:
 
   //! Connected to canvas renderComplete
   void draw(QPainter *); 
+
+  //! Show the help for the dialog 
+  void showHelp();
   
 private:
   QgsMapCanvas *mMapCanvas;
@@ -86,6 +89,9 @@ private:
   
   //! Draw current dynamic line
   void drawDynamicLine(void); 
+
+  //! Help context id
+  static const int context_id = 940759457;
 };
 
 #endif

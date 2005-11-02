@@ -48,8 +48,11 @@ void QgsNorthArrowPluginGui::pbnOK_clicked()
   hide();
   //close the dialog
   emit rotationChanged(sliderRotation->value());
+  emit enableAutomatic(cboxAutomatic->isChecked());
   emit changePlacement(cboPlacement->currentText());
   emit enableNorthArrow(cboxShow->isChecked());
+  emit needToRefresh();
+
   done(1);
 }
 void QgsNorthArrowPluginGui::pbnCancel_clicked()
@@ -71,6 +74,16 @@ void QgsNorthArrowPluginGui::setPlacement(QString thePlacementQString)
 void QgsNorthArrowPluginGui::setEnabled(bool theBool)
 {
   cboxShow->setChecked(theBool);
+}
+
+void QgsNorthArrowPluginGui::setAutomatic(bool theBool)
+{
+  cboxAutomatic->setChecked(theBool);
+}
+
+void QgsNorthArrowPluginGui::setAutomaticDisabled()
+{
+  cboxAutomatic->setEnabled(false);
 }
 
 
@@ -149,7 +162,7 @@ void QgsNorthArrowPluginGui::rotatePixmap(int theRotationInt)
     QFont myQFont("time", 18, QFont::Bold);
     myQPainter.setFont(myQFont);
     myQPainter.setPen(Qt::red);
-    myQPainter.drawText(10, 20, QString("Pixmap Not Found"));
+    myQPainter.drawText(10, 20, QString(tr("Pixmap Not Found")));
     myQPainter.end();
     pixmapLabel->setPixmap(myPainterPixmap);    
   }

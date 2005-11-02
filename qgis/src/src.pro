@@ -113,7 +113,8 @@ FORMS	= qgisappbase.ui \
 	qgspluginmanagerbase.ui \
 	qgsprojectpropertiesbase.ui \
 	qgsrasterlayerpropertiesbase.ui \
-	qgslabeldialogbase.ui
+	qgslabeldialogbase.ui \
+	qgscustomprojectiondialogbase.ui
 
 ######################################################################
 # Qmake project file for QGIS src directory

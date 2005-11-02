@@ -1,12 +1,17 @@
 TEMPLATE = lib
 TARGET=libqgis
-INCLUDEPATH += . $(GDAL)\include \
+INCLUDEPATH += . \
                 $(POSTGRESQL)\src\interfaces\libpq \
                 $(POSTGRESQL)\src\include \
-                $(GEOS)\include
-LIBS += $(GDAL)\lib\gdal_i.lib \
+                $(GEOS)\include \
+                $(WINSDK)\Include \
+                $(FWTOOLS)\include \
+                $(SQLITE3)
+LIBS += $(FWTOOLS)\lib\gdal_i.lib \
+        $(FWTOOLS)\lib\proj_i.lib \
         $(GEOS)\lib\geos.lib \
-        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib 
+        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib \
+        ..\widgets\projectionselector\projectionselector.lib
 CONFIG += qt thread rtti
 DLLDESTDIR= ..\..\src\lib\qgis
 # Input
@@ -14,19 +19,46 @@ SOURCES +=  moc_qgisapp.cpp \
 moc_qgisappbase.cpp \
 moc_qgisinterface.cpp \ 
 moc_qgsabout.cpp \
+moc_qgsaddattrdialog.cpp \
+moc_qgsaddattrdialogbase.cpp \
 moc_qgsattributeactiondialog.cpp \
 moc_qgsattributeactiondialogbase.cpp \
 moc_qgsattributedialog.cpp \
 moc_qgsattributedialogbase.cpp \
 moc_qgsattributetable.cpp \
 moc_qgsattributetablebase.cpp \
+moc_qgsattributetabledisplay.cpp \
+moc_qgsbookmarks.cpp \
+moc_qgsbookmarksbase.cpp \
+moc_qgscomposer.cpp \
+moc_qgscomposerbase.cpp \
+moc_qgscomposerlabel.cpp \
+moc_qgscomposerlabelbase.cpp \
+moc_qgscomposermap.cpp \
+moc_qgscomposermapbase.cpp \
+moc_qgscomposerscalebar.cpp \
+moc_qgscomposerscalebarbase.cpp \
+moc_qgscomposervectorlegend.cpp \
+moc_qgscomposervectorlegendbase.cpp \
+moc_qgscomposerview.cpp \
+moc_qgscomposition.cpp \
+moc_qgscompositionbase.cpp \
 moc_qgscontcoldialog.cpp \
 moc_qgscontcoldialogbase.cpp \
+moc_qgscontexthelp.cpp \
+moc_qgscoordinatetransform.cpp \
+moc_qgscustomprojectiondialog.cpp \
+moc_qgscustomprojectiondialogbase.cpp \
+moc_qgsdataprovider.cpp \
 moc_qgsdbsourceselect.cpp \
 moc_qgsdbsourceselectbase.cpp \
+moc_qgsdelattrdialog.cpp \
+moc_qgsdelattrdialogbase.cpp \
 moc_qgsdlgvectorlayerproperties.cpp \
 moc_qgsdlgvectorlayerpropertiesbase.cpp \
+moc_qgsencodingfiledialog.cpp \
 moc_qgsgeomtypedialogbase.cpp \
+moc_qgsgeomtypedialog.cpp \
 moc_qgsgramadialog.cpp \
 moc_qgsgramadialogbase.cpp \
 moc_qgsgramaextensionwidget.cpp \
@@ -38,6 +70,8 @@ moc_qgsidentifyresults.cpp \
 moc_qgsidentifyresultsbase.cpp \
 moc_qgslabeldialog.cpp \
 moc_qgslabeldialogbase.cpp \
+moc_qgslayerprojectionselector.cpp \
+moc_qgslayerprojectionselectorbase.cpp \
 moc_qgslegend.cpp \
 moc_qgslegenditembase.cpp \
 moc_qgslinestyledialog.cpp \
@@ -52,6 +86,8 @@ moc_qgsmapserverexport.cpp \
 moc_qgsmapserverexportbase.cpp \
 moc_qgsmarkerdialog.cpp \
 moc_qgsmarkerdialogbase.cpp \
+moc_qgsmeasure.cpp \
+moc_qgsmeasurebase.cpp \
 moc_qgsmessageviewer.cpp \
 moc_qgsnewconnection.cpp \
 moc_qgsnewconnectionbase.cpp \
@@ -68,6 +104,7 @@ moc_qgsprojectpropertiesbase.cpp \
 moc_qgsrasterlayer.cpp \
 moc_qgsrasterlayerproperties.cpp \
 moc_qgsrasterlayerpropertiesbase.cpp \
+moc_qgsrunprocess.cpp \
 moc_qgssimadialog.cpp \
 moc_qgssimadialogbase.cpp \
 moc_qgssisydialog.cpp \
@@ -76,6 +113,7 @@ moc_qgsuvaldialog.cpp \
 moc_qgsuvaldialogbase.cpp \
 moc_qgsuvalmadialog.cpp \
 moc_qgsuvalmadialogbase.cpp \
+moc_qgsvectordataprovider.cpp \
 moc_qgsvectorlayer.cpp \
 moc_splashscreen.cpp \
 qgisapp.cpp \
@@ -83,6 +121,8 @@ qgisappbase.cpp \
 qgisiface.cpp \
 qgisinterface.cpp \
 qgsabout.cpp \
+qgsaddattrdialog.cpp \
+qgsaddattrdialogbase.cpp \
 qgsacetateobject.cpp \
 qgsacetaterectangle.cpp \
 qgsattributeaction.cpp \
@@ -93,17 +133,41 @@ qgsattributedialogbase.cpp \
 qgsattributetable.cpp \
 qgsattributetablebase.cpp \
 qgsattributetabledisplay.cpp \
+qgsbookmarkitem.cpp \
+qgsbookmarks.cpp \
+qgsbookmarksbase.cpp \
 qgscolortable.cpp \
+qgscomposer.cpp \
+qgscomposerbase.cpp \
+qgscomposeritem.cpp \
+qgscomposerlabel.cpp \
+qgscomposerlabelbase.cpp \
+qgscomposermap.cpp \
+qgscomposermapbase.cpp \
+qgscomposerscalebar.cpp \
+qgscomposerscalebarbase.cpp \
+qgscomposervectorlegend.cpp \
+qgscomposervectorlegendbase.cpp \
+qgscomposerview.cpp \
+qgscomposition.cpp \
+qgscompositionbase.cpp \
 qgscontcoldialog.cpp \
 qgscontcoldialogbase.cpp \
+qgscontexthelp.cpp \
 qgscontinuouscolrenderer.cpp \
 qgscoordinatetransform.cpp \
 qgscustomsymbol.cpp \
+qgscustomprojectiondialog.cpp \
+qgscustomprojectiondialogbase.cpp \
 qgsdatasource.cpp \
+qgsdelattrdialog.cpp \
+qgsdelattrdialogbase.cpp \
 qgsdbsourceselect.cpp \
 qgsdbsourceselectbase.cpp \
 qgsdlgvectorlayerproperties.cpp \
 qgsdlgvectorlayerpropertiesbase.cpp \
+qgsencodingfiledialog.cpp \
+qgsexception.cpp \
 qgsfeature.cpp \
 qgsfeatureattribute.cpp \
 qgsfield.cpp \
@@ -124,6 +188,8 @@ qgslabel.cpp \
 qgslabelattributes.cpp \
 qgslabeldialog.cpp \
 qgslabeldialogbase.cpp \
+qgslayerprojectionselector.cpp \
+qgslayerprojectionselectorbase.cpp \
 qgslegend.cpp \
 qgslegenditem.cpp \
 qgslegenditembase.cpp \
@@ -133,13 +199,17 @@ qgslinesymbol.cpp \
 qgsludialog.cpp \
 qgsludialogbase.cpp \
 qgsmapcanvas.cpp \
+qgsmaptopixel.cpp \
 qgsmaplayer.cpp \
 qgsmaplayerregistry.cpp \
 qgsmapserverexport.cpp \
 qgsmapserverexportbase.cpp \
+qgsmarkercatalogue.cpp \
 qgsmarkerdialog.cpp \
 qgsmarkerdialogbase.cpp \
 qgsmarkersymbol.cpp \
+qgsmeasure.cpp \
+qgsmeasurebase.cpp \
 qgsmessageviewer.cpp \
 qgsnewconnection.cpp \
 qgsnewconnectionbase.cpp \
@@ -160,6 +230,9 @@ qgspolygonsymbol.cpp \
 qgsproject.cpp \
 qgsprojectproperties.cpp \
 qgsprojectpropertiesbase.cpp \
+qgsprojectproperty.cpp \
+qgsprovidercountcalcevent.cpp \
+qgsproviderextentcalcevent.cpp \
 qgsprovidermetadata.cpp \
 qgsproviderregistry.cpp \
 qgsrangerenderitem.cpp \
@@ -167,7 +240,9 @@ qgsrasterlayer.cpp \
 qgsrasterlayerproperties.cpp \
 qgsrasterlayerpropertiesbase.cpp \
 qgsrect.cpp \
+qgsrenderer.cpp \
 qgsrenderitem.cpp \
+qgsrunprocess.cpp \
 qgsscalecalculator.cpp \
 qgssimadialog.cpp \
 qgssimadialogbase.cpp \
@@ -175,6 +250,7 @@ qgssimarenderer.cpp \
 qgssinglesymrenderer.cpp \
 qgssisydialog.cpp \
 qgssisydialogbase.cpp \
+qgsspatialrefsys.cpp \
 qgssvgcache.cpp \
 qgssymbol.cpp \
 qgssymbologyutils.cpp \
@@ -186,4 +262,5 @@ qgsuvalmadialogbase.cpp \
 qgsuvalmarenderer.cpp \
 qgsvectordataprovider.cpp \
 qgsvectorfilewriter.cpp \
-qgsvectorlayer.cpp 
+qgsvectorlayer.cpp \
+splashscreen.cpp 

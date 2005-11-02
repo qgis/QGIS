@@ -131,6 +131,7 @@
                 <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:11pt;font-family:Arial"&gt;
 &lt;p style="margin-top:16px"&gt;&lt;span style="font-size:16pt;font-weight:600"&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
+&lt;p&gt;Please enter all units in decimal degrees&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </string>
             </property>
@@ -156,6 +157,9 @@
                     <property name="name">
                         <cstring>leOriginLatitude</cstring>
                     </property>
+                    <property name="inputMask">
+                        <string>#000.00000; </string>
+                    </property>
                 </widget>
                 <widget class="QLabel" row="0" column="0">
                     <property name="name">
@@ -168,6 +172,9 @@
                 <widget class="QLineEdit" row="0" column="3">
                     <property name="name">
                         <cstring>leOriginLongitude</cstring>
+                    </property>
+                    <property name="inputMask">
+                        <string>#000.00000; </string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="0" column="2">
@@ -195,6 +202,9 @@
                     <property name="name">
                         <cstring>leEndPointLatitude</cstring>
                     </property>
+                    <property name="inputMask">
+                        <string>#000.00000; </string>
+                    </property>
                 </widget>
                 <widget class="QLabel" row="0" column="0">
                     <property name="name">
@@ -207,6 +217,9 @@
                 <widget class="QLineEdit" row="0" column="3">
                     <property name="name">
                         <cstring>leEndPointLongitude</cstring>
+                    </property>
+                    <property name="inputMask">
+                        <string>#000.00000; </string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="0" column="2">
@@ -276,10 +289,16 @@
                     <property name="name">
                         <cstring>leLatitudeInterval</cstring>
                     </property>
+                    <property name="inputMask">
+                        <string>#000.00000; </string>
+                    </property>
                 </widget>
                 <widget class="QLineEdit" row="0" column="3">
                     <property name="name">
                         <cstring>leLongitudeInterval</cstring>
+                    </property>
+                    <property name="inputMask">
+                        <string>#000.00000; </string>
                     </property>
                 </widget>
             </grid>

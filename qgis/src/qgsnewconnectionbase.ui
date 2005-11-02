@@ -78,7 +78,7 @@
                         <cstring>btnHelp</cstring>
                     </property>
                     <property name="enabled">
-                        <bool>false</bool>
+                        <bool>true</bool>
                     </property>
                     <property name="text">
                         <string>Help</string>

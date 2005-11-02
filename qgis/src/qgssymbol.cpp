@@ -284,6 +284,9 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document )
     fillpattern.appendChild(fillpatterntxt);
     symbol.appendChild(fillpattern);
     fillpattern.appendChild(fillpatterntxt);
+#ifdef WIN32
+	return true;
+#endif
 }
 
 bool QgsSymbol::readXML( QDomNode & synode )

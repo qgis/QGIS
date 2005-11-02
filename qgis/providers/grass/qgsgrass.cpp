@@ -86,6 +86,24 @@ void QgsGrass::setLocation( QString gisdbase, QString location )
     for ( int i = 0; ms[i]; i++ )  G_add_mapset_to_search_path ( ms[i] );
 }
 
+void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrass::setLocation(): gisdbase = " << gisdbase << " location = "
+	      << location << " mapset = " << mapset << std::endl;
+    #endif
+    init();
+
+    // Set principal GRASS variables (in memory)
+    G__setenv( "GISDBASE", (char *) gisdbase.ascii() );        
+    G__setenv( "LOCATION_NAME", (char *) location.ascii() );
+    G__setenv( "MAPSET", (char *) mapset.ascii() ); 
+
+    // Add all available mapsets to search path
+    char **ms = G_available_mapsets();
+    for ( int i = 0; ms[i]; i++ )  G_add_mapset_to_search_path ( ms[i] );
+}
+
 int QgsGrass::initialized = 0;
 
 bool QgsGrass::active = 0;

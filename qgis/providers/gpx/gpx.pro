@@ -4,9 +4,15 @@
 
 TEMPLATE = lib
 INCLUDEPATH += . \
-        $(GEOS)\include
+        $(GEOS)\include \
+        $(WINSDK)\Include \
+        $(FWTOOLS)\include \
+        $(EXPAT_INC) \
+        ..\..\src
 LIBS += ..\..\src\libqgis.lib \
-        $(GEOS)\lib\geos.lib
+        $(GEOS)\lib\geos.lib \
+        $(EXPAT_LIB)\libexpat.lib \
+        $(GDAL)\lib\gdal_i.lib 
 
 CONFIG += qt dll thread
 DLLDESTDIR= ..\..\win_build\lib\qgis

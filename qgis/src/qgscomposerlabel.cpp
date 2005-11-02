@@ -158,7 +158,7 @@ void QgsComposerLabel::draw ( QPainter & painter )
 	//       In any case, each font scales in in different way even if painter.scale()
 	//       is used instead of font size!!! -> Postscript is never exactly the same as 
 	//       in preview.
-	double factor = 2.45;
+	double factor = QgsComposition::psFontScaleFactor();
 	
 	double pssize = factor * 72.0 * mFont.pointSizeFloat() / mComposition->resolution();
 	double psscale = pssize/size;

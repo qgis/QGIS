@@ -18,6 +18,8 @@
 
 #include <cfloat>
 #include <iostream>
+#include <limits>
+#include <cmath>
 
 #include <qapplication.h>
 #include <qdatetime.h>
@@ -30,6 +32,7 @@
 #include <qevent.h>
 
 #include "qgsrect.h"
+#include "qgsproject.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 #include "qgslegenditem.h"
@@ -68,7 +71,7 @@ QgsMapLayer::QgsMapLayer(int type,
 
     mInOverviewPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/inoverview.png"));
     mEditablePixmap.load(QString(PKGDATAPATH) + QString("/images/icons/editable.png"));
-
+    mProjectionErrorPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection_problem.png"));
     //mActionInOverview = new QAction( "in Overview", "Ctrl+O", this );
 
     //set some generous  defaults for scale based visibility
@@ -125,9 +128,12 @@ const QgsRect QgsMapLayer::extent()
 QgsRect QgsMapLayer::calculateExtent()
 {
     //just to prevent any crashes
-    QgsRect rect(DBL_MAX, DBL_MAX, DBL_MIN, DBL_MIN);
+    QgsRect rect;
+    
+    rect.setMinimal();
     return rect;
 }
+
 void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
 {
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
@@ -196,7 +202,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     QDomElement mne = mnl.toElement();
     dataSource = mne.text();
 
-    const char * dataSourceStr = dataSource; // debugger probe
+    const char * dataSourceStr = dataSource.local8Bit(); // debugger probe
 
     // the internal name is just the data source basename
     QFileInfo dataSourceFileInfo( dataSource );
@@ -217,7 +223,17 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     mne = mnl.toElement();
     setLayerName( mne.text() );
 
-    const char * layerNameStr = mne.text(); // debugger probe
+    const char * layerNameStr = mne.text().local8Bit(); // debugger probe
+
+
+
+    //read srs
+    QDomNode srsNode = layer_node.namedItem("coordinatetransform");
+    if( ! srsNode.isNull()  )
+    {
+       mCoordinateTransform=new QgsCoordinateTransform();
+       mCoordinateTransform->readXML(srsNode);
+    }
 
     // now let the children grab what they need from the DOM node.
     return readXML_( layer_node );
@@ -297,6 +313,9 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
     // zorder
     // This is no longer stored in the project file. It is superflous since the layers
     // are written and read in the proper order.
+
+    //write the projection 
+    mCoordinateTransform->writeXML(maplayer,document);
 
     // now append layer node to map layer node
 
@@ -404,6 +423,24 @@ void QgsMapLayer::updateItemPixmap()
             //add editing icon to the pixmap
             QPainter p(&pix);
             p.drawPixmap(30,0,mEditablePixmap);
+        }
+        ((QCheckListItem *) m_legendItem)->setPixmap(0,pix);
+    }
+}
+
+void QgsMapLayer::invalidTransformInput()
+{
+#ifdef QGISDEBUG
+  std::cout << " QgsMapLayer::invalidTransformInput() called" << std::endl;
+#endif
+    if (m_legendItem)             // XXX should we know about our legend?
+    {
+        QPixmap pix=*(this->legendPixmap());
+        if(mShowInOverview)
+        {
+            //add overview glasses to the pixmap
+            QPainter p(&pix);
+            p.drawPixmap(60,0,mProjectionErrorPixmap);
         }
         ((QCheckListItem *) m_legendItem)->setPixmap(0,pix);
     }
@@ -531,7 +568,11 @@ void QgsMapLayer::initContextMenu(QgisApp * app)
 void QgsMapLayer::keyPressed ( QKeyEvent * e )
 {
   if (e->key()==Qt::Key_Escape) mDrawingCancelled = true;
-  std::cout << e->ascii() << " pressed in maplayer !" << std::endl;
+// The following statment causes a crash on WIN32 and should be 
+// enclosed in an #ifdef QGISDEBUG if its really necessary. Its
+// commented out for now. [gsherman]
+//  std::cout << e->text().local8Bit() << " pressed in maplayer !" << std::endl;
+  e->ignore();
 }
 
     /** Accessor for the coordinate transformation object */
@@ -551,4 +592,70 @@ QgsCoordinateTransform * QgsMapLayer::coordinateTransform()
 #endif
   
  return mCoordinateTransform;
+}
+
+bool QgsMapLayer::projectionsEnabled() const
+{
+  if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool QgsMapLayer::projectExtent(QgsRect& extent, QgsRect& r2)
+{
+  bool split = false;
+
+  if (projectionsEnabled())
+  {
+    try
+    {
+#ifdef QGISDEBUG
+      std::cerr << "Getting extent of canvas in layers CS. Canvas is " 
+                << extent << '\n'; 
+#endif
+      // Split the extent into two if the source SRS is
+      // geographic and the extent crosses the split in
+      // geographic coordinates (usually +/- 180 degrees,
+      // and is assumed to be so here), and draw each
+      // extent separately.
+      static const double splitCoord = 180.0;
+
+      if (mCoordinateTransform->sourceSRS().geographicFlag())
+      {
+        // Note: ll = lower left point
+        //   and ur = upper right point
+        QgsPoint ll = mCoordinateTransform->transform(
+                          extent.xMin(), extent.yMin(), 
+                          QgsCoordinateTransform::INVERSE);
+
+        QgsPoint ur = mCoordinateTransform->transform(
+                          extent.xMax(), extent.yMax(), 
+                          QgsCoordinateTransform::INVERSE);
+
+        if (ll.x() > ur.x())
+        {
+          extent.set(ll, QgsPoint(splitCoord, ur.y()));
+          r2.set(QgsPoint(-splitCoord, ll.y()), ur);
+          split = true;
+        }
+        else // no need to split
+          extent = mCoordinateTransform->transformBoundingBox(extent, QgsCoordinateTransform::INVERSE);
+      }
+      else // can't cross 180
+        extent = mCoordinateTransform->transformBoundingBox(extent, QgsCoordinateTransform::INVERSE);
+    }
+    catch (QgsCsException &cse)
+      {
+        qDebug( "Transform error caught in %s line %d:\n%s", 
+                __FILE__, __LINE__, cse.what());
+        extent = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
+        r2     = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
+      }
+  }
+  return split;
 }

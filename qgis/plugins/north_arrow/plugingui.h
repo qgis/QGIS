@@ -38,12 +38,16 @@ signals:
    void changePlacement(QString);
    // enable NorthArrow
    void enableNorthArrow(bool);
+   void enableAutomatic(bool);
+   void needToRefresh();
 
 public slots:
     void setRotation(int);
     void setPlacement(QString thePlacementQString);
     void setEnabled(bool);
-    
+    void setAutomatic(bool);
+    void setAutomaticDisabled();
+
 private slots:
     //overides function byt the same name created in .ui
     void spinSize_valueChanged( int theInt);

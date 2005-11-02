@@ -82,7 +82,7 @@ QgsSiMaDialog::QgsSiMaDialog(QgsVectorLayer* vectorlayer): QgsSiMaDialogBase(), 
 #endif
         mCurrentDir=QString(PKGDATAPATH)+"/svg/";
 #ifdef QGISDEBUG
-  qWarning("mCurrentDir in constructor: "+mCurrentDir);
+  qWarning(("mCurrentDir in constructor: "+mCurrentDir).local8Bit());
 #endif
         visualizeMarkers(mCurrentDir);
         mDirectoryEdit->setText(mCurrentDir);
@@ -106,7 +106,7 @@ void QgsSiMaDialog::apply()
     QgsMarkerSymbol* ms= new QgsMarkerSymbol();
     QString string(mSelectedMarker);
 #ifdef QGISDEBUG
-    qWarning(string);
+    qWarning(string.local8Bit());
 #endif
 
     ms->setPicture(string);
@@ -199,7 +199,7 @@ void QgsSiMaDialog::setMarker(const QString& file, double scaleFactor) {
       mIconView->setSelected(item, true);
       
       // set the scale factor
-      mScaleSpin->setValue(scaleFactor * 100.0);
+      mScaleSpin->setValue((int)scaleFactor * 100.0);
     }
   }
   emit settingsChanged();
@@ -267,7 +267,7 @@ void QgsSiMaDialog::visualizeMarkers(QString directory)
     for(QStringList::Iterator it = files.begin(); it != files.end(); ++it )
     {
 #ifdef QGISDEBUG
-        qWarning(*it);
+        qWarning((*it).local8Bit());
 #endif
 	QPixmap pix = QgsSVGCache::instance().getPixmap(mCurrentDir + 
 							"/" + (*it), 1);

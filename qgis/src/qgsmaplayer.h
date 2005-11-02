@@ -272,9 +272,22 @@ public:
 
     /** Accessor for the coordinate transformation object */
     QgsCoordinateTransform * coordinateTransform();
+
+    /** A simple helper method to find out if on the fly projections 
+        are enabled or not */
+    bool projectionsEnabled() const;
     
+    // Convenience function to project an extent into the layer source
+    // SRS, but also split it into two extents if it crosses
+    // the +/- 180 degree line. Modifies the given extent to be in the
+    // source SRS coordinates, and if it was split, returns true, and
+    // also sets the contents of the r2 parameter
+    bool projectExtent(QgsRect& extent, QgsRect& r2);
 
 public  slots:
+   //! event handler for when a coordinate transofrm fails due to bad vertex error
+   virtual void invalidTransformInput();
+
 
     //! keyPress event so we can check if cancel was pressed
     void keyPressed ( QKeyEvent * e );
@@ -385,7 +398,9 @@ protected:
 
     /**Pixmap used in the legend item*/
     QPixmap m_legendPixmap;
-    //
+
+    /** Pixmap to show a bogus vertex was encoutnered in this layer (applies to vector layers only) */
+   QPixmap mProjectionErrorPixmap;
     //! A little pixmap to show if this layer is represented in overview or now
     QPixmap mInOverviewPixmap;
 
@@ -449,7 +464,6 @@ private:                       // Private attributes
         invoked when a connect() is made to this object
     */
     void connectNotify( const char * signal );
-
 
     /** Minimum scale at which this layer should be displayed */
     float mMinScale;

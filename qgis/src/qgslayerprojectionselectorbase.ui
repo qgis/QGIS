@@ -56,6 +56,14 @@
             <property name="name">
                 <cstring>textEdit1</cstring>
             </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
             <property name="text">
                 <string>&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;/head&gt;&lt;body style="font-size:12pt;font-family:Bitstream Vera Sans"&gt;
 &lt;p style="margin-top:16px"&gt;&lt;span style="font-size:18pt;font-weight:600"&gt;Define this layer's projection:&lt;/span&gt;&lt;/p&gt;

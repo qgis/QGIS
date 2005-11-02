@@ -17,6 +17,8 @@ email                : tim@linfiniti.com
 
 
 #include "qgsrasterlayerproperties.h"
+#include "qgslayerprojectionselector.h"
+#include "qgsproject.h"
 #include <qlabel.h>
 #include <qapplication.h>
 #include <qpixmap.h>
@@ -42,11 +44,12 @@ email                : tim@linfiniti.com
 #include <qrect.h>
 
 const char * const ident = 
-"$Id";
+  "$Id$";
 
 
-    QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer * lyr)
-: rasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
+QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *parent, const char *name, bool modal)
+: QgsRasterLayerPropertiesBase(parent, name, modal), 
+  rasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
 {
 
   // set up the scale based layer visibility stuff....
@@ -93,15 +96,15 @@ const char * const ident =
     cboGreen->insertItem("Blue");
     cboBlue->insertItem("Blue");
 
-    cboRed->insertItem("Not Set");
-    cboGreen->insertItem("Not Set");
-    cboBlue->insertItem("Not Set");
+    cboRed->insertItem(tr("Not Set"));
+    cboGreen->insertItem(tr("Not Set"));
+    cboBlue->insertItem(tr("Not Set"));
 
     cboGray->insertItem("Red");
     cboGray->insertItem("Green");
     cboGray->insertItem("Blue");
-    cboGray->insertItem("Not Set");
-    
+    cboGray->insertItem(tr("Not Set"));
+
     lstHistogramLabels->insertItem(tr("Palette"));
   }
   else                   // all other layer types use band name entries only
@@ -130,48 +133,57 @@ const char * const ident =
       //add the band to the histogram tab
       //
       QPixmap myPixmap(10,10);
-          
+
       if (myBandCountInt==1) //draw single band images with black
       {
-      myPixmap.fill( Qt::black );
+        myPixmap.fill( Qt::black );
       }
       else if (myIteratorInt==1)
       {
-      myPixmap.fill( Qt::red );
+        myPixmap.fill( Qt::red );
       }
       else if (myIteratorInt==2)
       {
-      myPixmap.fill( Qt::green );
+        myPixmap.fill( Qt::green );
       }
       else if (myIteratorInt==3)
       {
-      myPixmap.fill( Qt::blue );
+        myPixmap.fill( Qt::blue );
       }
       else if (myIteratorInt==4)
       {
-      myPixmap.fill( Qt::magenta );
+        myPixmap.fill( Qt::magenta );
       }
       else if (myIteratorInt==5)
       {
-      myPixmap.fill( Qt::darkRed );
+        myPixmap.fill( Qt::darkRed );
       }
       else if (myIteratorInt==6)
       {
-      myPixmap.fill( Qt::darkGreen );
+        myPixmap.fill( Qt::darkGreen );
       }
       else if (myIteratorInt==7)
       {
-      myPixmap.fill( Qt::darkBlue );
+        myPixmap.fill( Qt::darkBlue );
       }
       else
       {
-      myPixmap.fill( Qt::gray );
+        myPixmap.fill( Qt::gray );
       }
       lstHistogramLabels->insertItem(myPixmap,myRasterBandNameQString);
       //keep a list of band names for later use
+      //! @note band names should not be translated!
       myBandNameQStringList.append(myRasterBandNameQString);
     }
 
+    //select all histogram layers list items by default
+    for (int myIteratorInt = 1;
+          myIteratorInt <= myBandCountInt;
+          ++myIteratorInt)
+    {
+      QListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
+      lstHistogramLabels->setSelected( myItem,true);
+    }
 
     for (QStringList::Iterator myIterator = myBandNameQStringList.begin(); 
             myIterator != myBandNameQStringList.end(); 
@@ -180,7 +192,7 @@ const char * const ident =
       QString myQString = *myIterator;
 #ifdef QGISDEBUG
 
-      std::cout << "Inserting : " << myQString << std::endl;
+      std::cout << "Inserting : " << myQString.local8Bit() << std::endl;
 #endif
 
       cboGray->insertItem(myQString);
@@ -188,10 +200,10 @@ const char * const ident =
       cboGreen->insertItem(myQString);
       cboBlue->insertItem(myQString);
     }
-    cboRed->insertItem("Not Set");
-    cboGreen->insertItem("Not Set");
-    cboBlue->insertItem("Not Set");
-    cboGray->insertItem("Not Set");
+    cboRed->insertItem(tr("Not Set"));
+    cboGreen->insertItem(tr("Not Set"));
+    cboBlue->insertItem(tr("Not Set"));
+    cboGray->insertItem(tr("Not Set"));
   }
 
   //
@@ -221,11 +233,15 @@ const char * const ident =
               QString::number((*myRasterPyramidIterator).yDimInt)); 
     }
   }
-  
+
+  if ( rasterLayer->coordinateTransform() )
+  {
+    leSpatialRefSys->setText(rasterLayer->coordinateTransform()->sourceSRS().proj4String());
+  }
   //draw the histogram
   //pbnHistRefresh_clicked();
-  
- // update based on lyr's current state
+
+  // update based on lyr's current state
   sync();  
 } // QgsRasterLayerProperties ctor
 
@@ -317,8 +333,8 @@ void QgsRasterLayerProperties::apply()
 #endif
 #ifdef QGISDEBUG
 
-        std::cout << "Combo value : " << cboGray->currentText() << " GrayBand Mapping : " << rasterLayer->
-            getGrayBandName() << std::endl;
+        std::cout << "Combo value : " << cboGray->currentText().local8Bit() << " GrayBand Mapping : " << rasterLayer->
+            getGrayBandName().local8Bit() << std::endl;
 #endif
 
         rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY);
@@ -341,8 +357,8 @@ void QgsRasterLayerProperties::apply()
       {
 #ifdef QGISDEBUG
         std::cout << "Setting Raster Drawing Style to :: MULTI_BAND_SINGLE_BAND_GRAY" << std::endl;
-        std::cout << "Combo value : " << cboGray->currentText() << " GrayBand Mapping : " << rasterLayer->
-            getGrayBandName() << std::endl;
+        std::cout << "Combo value : " << cboGray->currentText().local8Bit() << " GrayBand Mapping : " << rasterLayer->
+            getGrayBandName().local8Bit() << std::endl;
 #endif
 
         rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY);
@@ -373,15 +389,15 @@ void QgsRasterLayerProperties::apply()
     }
 
   }
-
-
+  
+  rasterLayer->setLayerName(leDisplayName->text());
+  
   //update the legend pixmap
   pixmapLegend->setPixmap(rasterLayer->getLegendQPixmap());
   pixmapLegend->setScaledContents(true);
   pixmapLegend->repaint(false);
   rasterLayer->updateItemPixmap();
-
-  rasterLayer->setLayerName(leDisplayName->text());
+  
   //see if the user would like debug overlays
   if (cboxShowDebugInfo->isChecked()
           == true)
@@ -409,19 +425,19 @@ void QgsRasterLayerProperties::apply()
   pixmapThumbnail->setPixmap(myQPixmap);
   //make sure the layer is redrawn
   rasterLayer->triggerRepaint();
-}
+}//apply
 
 void QgsRasterLayerProperties::accept()
 {
   apply();
   close();
-}
+}//accept
 void QgsRasterLayerProperties::sliderTransparency_valueChanged(int theValue)
 {
   //set the transparency percentage label to a suitable value
   int myInt = static_cast < int >((theValue / 255.0) * 100);  //255.0 to prevent integer division
   lblTransparencyPercent->setText(QString::number(myInt) + "%");
-}
+}//sliderTransparency_valueChanged
 
 void QgsRasterLayerProperties::sliderMaxRed_valueChanged(int)
 {
@@ -773,44 +789,44 @@ void QgsRasterLayerProperties::sync()
   switch (rasterLayer->getDrawingStyle())
   {
       case QgsRasterLayer::SINGLE_BAND_GRAY:
-          rbtnSingleBand->toggle();
           rbtnThreeBand->setEnabled(false);
           rbtnSingleBand->setEnabled(true);
+          rbtnSingleBand->toggle();
           break;
       case QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR:
-          rbtnSingleBand->toggle();
           rbtnThreeBand->setEnabled(false);
           rbtnSingleBand->setEnabled(true);
+          rbtnSingleBand->toggle();
           break;
       case QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY:
-          rbtnSingleBand->toggle();
           rbtnThreeBand->setEnabled(true);
           rbtnSingleBand->setEnabled(true);
+          rbtnSingleBand->toggle();
           break;
       case QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR:
-          rbtnSingleBand->toggle();
           rbtnThreeBand->setEnabled(true);
           rbtnSingleBand->setEnabled(true);
+          rbtnSingleBand->toggle();
           break;
       case QgsRasterLayer::PALETTED_MULTI_BAND_COLOR:
-          rbtnThreeBand->toggle();
           rbtnThreeBand->setEnabled(true);
           rbtnSingleBand->setEnabled(true);
+          rbtnThreeBand->toggle();
           break;
       case QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY:
-          rbtnSingleBand->toggle();
           rbtnThreeBand->setEnabled(true);
           rbtnSingleBand->setEnabled(true);
+          rbtnSingleBand->toggle();
           break;
       case QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR:
-          rbtnSingleBand->toggle();
           rbtnThreeBand->setEnabled(true);
           rbtnSingleBand->setEnabled(true);
+          rbtnSingleBand->toggle();
           break;
       case QgsRasterLayer::MULTI_BAND_COLOR:
-          rbtnThreeBand->toggle();
           rbtnThreeBand->setEnabled(true);
           rbtnSingleBand->setEnabled(true);
+          rbtnThreeBand->toggle();
           break;
       default:
           break;
@@ -1306,3 +1322,26 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
   pixHistogram->setPixmap(myPixmap);
 }
 
+void QgsRasterLayerProperties::pbnChangeSpatialRefSys_clicked()
+{
+    
+
+    QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector(this);
+    long myDefaultSRS = rasterLayer->coordinateTransform()->sourceSRS().srsid();
+    if (myDefaultSRS==0)
+    {
+      myDefaultSRS=QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
+    }
+    mySelector->setSelectedSRSID(myDefaultSRS);
+    if(mySelector->exec())
+    {
+      rasterLayer->coordinateTransform()->sourceSRS().createFromSrsId(mySelector->getCurrentSRSID());
+      rasterLayer->coordinateTransform()->initialise();
+    }
+    else
+    {
+      QApplication::restoreOverrideCursor();
+    }
+    delete mySelector;
+    leSpatialRefSys->setText(rasterLayer->coordinateTransform()->sourceSRS().proj4String());
+}

@@ -88,6 +88,9 @@
                     <property name="name">
                         <cstring>mOkButton</cstring>
                     </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
                     <property name="text">
                         <string>OK</string>
                     </property>

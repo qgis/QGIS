@@ -202,7 +202,7 @@ void QgsGraduatedMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 
 #ifdef QGISDEBUG
 	qWarning("label is: ");
-	qWarning(label);
+	qWarning(label.local8Bit());
 #endif
 
 	//create a renderer and add it to the vector layer
@@ -211,16 +211,16 @@ void QgsGraduatedMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 	msy->setPicture(svgpath);
 
 #ifdef QGISDEBUG
-	qWarning("the svgpath: "+svgpath);
+	qWarning(("the svgpath: "+svgpath).local8Bit());
 #endif
 	msy->setScaleFactor(scalefactor);
 #ifdef QGISDEBUG
-	qWarning("the scalefactor: "+QString::number(scalefactor,'f',2));
+	qWarning(("the scalefactor: "+QString::number(scalefactor,'f',2)).local8Bit());
 #endif
 	QgsRangeRenderItem* ri = new QgsRangeRenderItem(msy,lowervalue,uppervalue,label);
 #ifdef QGISDEBUG
-	qWarning("lowervalue "+lowervalue);
-	qWarning("uppervalue "+uppervalue);
+	qWarning(("lowervalue "+lowervalue).local8Bit());
+	qWarning(("uppervalue "+uppervalue).local8Bit());
 #endif
 	this->addItem(ri);
 
@@ -240,31 +240,32 @@ void QgsGraduatedMaRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 
 void QgsGraduatedMaRenderer::writeXML(std::ostream& xml)
 {
+        // ALways use utf8 for XML?
     xml << "\t\t<graduatedmarker>\n";
-    xml << "\t\t\t<classificationfield>" + QString::number(this->classificationField()) +
+    xml << "\t\t\t<classificationfield>" + QString::number(this->classificationField()).utf8() +
 	"</classificationfield>\n";
     for (std::list < QgsRangeRenderItem * >::iterator it = this->items().begin(); it != this->items().end();
 	 ++it)
     {
 	xml << "\t\t\t<rangerenderitem>\n";
-	xml << "\t\t\t\t<lowervalue>" + (*it)->value() + "</lowervalue>\n";
-	xml << "\t\t\t\t<uppervalue>" + (*it)->upper_value() + "</uppervalue>\n";
+	xml << "\t\t\t\t<lowervalue>" + (*it)->value().utf8() + "</lowervalue>\n";
+	xml << "\t\t\t\t<uppervalue>" + (*it)->upper_value().utf8() + "</uppervalue>\n";
 	QgsMarkerSymbol *markersymbol = dynamic_cast<QgsMarkerSymbol*>((*it)->getSymbol());
 	xml << "\t\t\t\t<markersymbol>\n";
-	xml << "\t\t\t\t\t<svgpath>" + markersymbol->picture() + "</svgpath>\n";
-	xml << "\t\t\t\t\t<scalefactor>" + QString::number(markersymbol->scaleFactor()) + "</scalefactor>\n";
-	xml << "\t\t\t\t\t<outlinecolor red=\"" + QString::number(markersymbol->pen().color().red()) + "\" green=\"" +
-	    QString::number(markersymbol->pen().color().green()) + "\" blue=\"" + QString::number(markersymbol->pen().color().blue()) +
+	xml << "\t\t\t\t\t<svgpath>" + markersymbol->picture().utf8() + "</svgpath>\n";
+	xml << "\t\t\t\t\t<scalefactor>" + QString::number(markersymbol->scaleFactor()).utf8() + "</scalefactor>\n";
+	xml << "\t\t\t\t\t<outlinecolor red=\"" + QString::number(markersymbol->pen().color().red()).utf8() + "\" green=\"" +
+	    QString::number(markersymbol->pen().color().green()).utf8() + "\" blue=\"" + QString::number(markersymbol->pen().color().blue()).utf8() +
 	    "\" />\n";
-	xml << "\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(markersymbol->pen().style()) + "</outlinestyle>\n";
-	xml << "\t\t\t\t\t<outlinewidth>" + QString::number(markersymbol->pen().width()) + "</outlinewidth>\n";
-	xml << "\t\t\t\t\t<fillcolor red=\"" + QString::number(markersymbol->brush().color().red()) + "\" green=\"" +
-	    QString::number(markersymbol->brush().color().green()) + "\" blue=\"" + QString::number(markersymbol->brush().color().blue()) +
+	xml << "\t\t\t\t\t<outlinestyle>" + QgsSymbologyUtils::penStyle2QString(markersymbol->pen().style()).utf8() + "</outlinestyle>\n";
+	xml << "\t\t\t\t\t<outlinewidth>" + QString::number(markersymbol->pen().width()).utf8() + "</outlinewidth>\n";
+	xml << "\t\t\t\t\t<fillcolor red=\"" + QString::number(markersymbol->brush().color().red()).utf8() + "\" green=\"" +
+	    QString::number(markersymbol->brush().color().green()).utf8() + "\" blue=\"" + QString::number(markersymbol->brush().color().blue()).utf8() +
 	    "\" />\n";
-	xml << "\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(markersymbol->brush().style()) +
+	xml << "\t\t\t\t\t<fillpattern>" + QgsSymbologyUtils::brushStyle2QString(markersymbol->brush().style()).utf8() +
 	    "</fillpattern>\n";
 	xml << "\t\t\t\t</markersymbol>\n";
-	xml << "\t\t\t\t<label>" + (*it)->label() + "</label>\n";
+	xml << "\t\t\t\t<label>" + (*it)->label().utf8() + "</label>\n";
 	xml << "\t\t\t</rangerenderitem>\n";
     }
     xml << "\t\t</graduatedmarker>\n";

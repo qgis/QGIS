@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Delaunay triangulation (lines)" module="v.delaunay">
+	<option key="input"/>
+	<option key="output" />
+	<flag key="l" answer="on" hidden="yes" />
+</qgisgrassmodule>

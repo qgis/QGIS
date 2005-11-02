@@ -10,6 +10,5 @@
 
 TEMPLATE = subdirs
 SUBDIRS =  widgets \
-           src \
            providers \
            plugins

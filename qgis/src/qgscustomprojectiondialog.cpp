@@ -49,7 +49,13 @@ extern "C"{
 
 
 QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const char* name , WFlags fl  )
-    : QgsCustomProjectionDialogBase( parent, "Projection Designer", fl )
+#ifdef Q_OS_MACX
+  // Mac modeless dialog dosn't have correct window type if parent is specified
+  : QgsCustomProjectionDialogBase( NULL, name, false, fl)
+#else
+  // Specifying parent suppresses separate taskbar entry for dialog
+  : QgsCustomProjectionDialogBase( parent, name, false, fl)
+#endif
 {
   mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
   // first we look for ~/.qgis/qgis.db
@@ -73,21 +79,21 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
     QString myMasterDatabaseFileName = PKGDATAPATH;
     myMasterDatabaseFileName += "/resources/qgis.db";
     //now copy the master file into the users .qgis dir
-    std::ifstream myInputStream(myMasterDatabaseFileName.latin1() );
+    std::ifstream myInputStream(myMasterDatabaseFileName.local8Bit() );
 
     if (! myInputStream)
     {
       std::cerr << "unable to open input file: "
-          << myMasterDatabaseFileName << " --bailing out! \n";
+          << myMasterDatabaseFileName.local8Bit() << " --bailing out! \n";
       //XXX Do better error handling
       return ;
     }
 
-    std::ofstream myOutputStream(QString(mQGisSettingsDir+"qgis.db").latin1());
+    std::ofstream myOutputStream(QString(mQGisSettingsDir+"qgis.db").local8Bit());
 
     if (! myOutputStream)
     {
-      std::cerr << "cannot open " << QString(mQGisSettingsDir+"qgis.db").latin1()  << "  for output\n";
+      std::cerr << "cannot open " << QString(mQGisSettingsDir+"qgis.db").local8Bit()  << "  for output\n";
       //XXX Do better error handling
       return ;
     }
@@ -108,8 +114,10 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
   //
   // Set up databound controls
   //
-  getProjList();
-  getEllipsoidList();
+
+  // deprecated methods
+  //getProjList();
+  //getEllipsoidList();
   mRecordCountLong=getRecordCount();
   pbnFirst_clicked();
 }
@@ -118,7 +126,9 @@ QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
 {
   
 }
-
+/*
+ * These two methods will be deprecated
+ * 
 void QgsCustomProjectionDialog::getProjList ()
 {
   // 
@@ -130,7 +140,7 @@ void QgsCustomProjectionDialog::getProjList ()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -141,13 +151,13 @@ void QgsCustomProjectionDialog::getProjList ()
 
   // Set up the query to retreive the projection information needed to populate the PROJECTION list
   QString mySql = "select * from tbl_projection order by name";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
     while(sqlite3_step(myPreparedStatement) == SQLITE_ROW)
     {
-      cboProjectionFamily->insertItem((char *)sqlite3_column_text(myPreparedStatement,1));
+      cboProjectionFamily->insertItem(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
     }
   }
   sqlite3_finalize(myPreparedStatement);
@@ -166,7 +176,7 @@ void QgsCustomProjectionDialog::getEllipsoidList()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -177,19 +187,20 @@ void QgsCustomProjectionDialog::getEllipsoidList()
 
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
   QString mySql = "select * from tbl_ellipsoid order by name";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
     while(sqlite3_step(myPreparedStatement) == SQLITE_ROW)
     {
-      cboEllipsoid->insertItem((char *)sqlite3_column_text(myPreparedStatement,1));
+      cboEllipsoid->insertItem(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
     }
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
 }
+*/
 void QgsCustomProjectionDialog::pbnHelp_clicked()
 {
 
@@ -214,7 +225,7 @@ void QgsCustomProjectionDialog::pbnDelete_clicked()
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -224,10 +235,10 @@ void QgsCustomProjectionDialog::pbnDelete_clicked()
   }
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
   QString mySql = "delete from tbl_srs where srs_id='" + mCurrentRecordId + "'";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
 #ifdef QGISDEBUG
-    std::cout << "Query to delete current:" << mySql << std::endl;
+    std::cout << "Query to delete current:" << mySql.local8Bit() << std::endl;
 #endif
   if(myResult == SQLITE_OK)
   {
@@ -275,7 +286,7 @@ long QgsCustomProjectionDialog::getRecordCount()
   int           myResult;
   long          myRecordCount=0;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -285,12 +296,12 @@ long QgsCustomProjectionDialog::getRecordCount()
   }
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
   QString mySql = "select count(*) from tbl_srs";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      QString myRecordCountString((char *)sqlite3_column_text(myPreparedStatement,0));
+      QString myRecordCountString = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
       myRecordCount=myRecordCountString.toLong();
   }
   // close the sqlite3 statement
@@ -309,7 +320,7 @@ QString QgsCustomProjectionDialog::getProjectionFamilyName(QString theProjection
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -319,12 +330,12 @@ QString QgsCustomProjectionDialog::getProjectionFamilyName(QString theProjection
   }
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
   QString mySql = "select name from tbl_projection where acronym='" + theProjectionFamilyAcronym + "'";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
+      myName = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
@@ -341,7 +352,7 @@ QString QgsCustomProjectionDialog::getEllipsoidName(QString theEllipsoidAcronym)
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -351,12 +362,12 @@ QString QgsCustomProjectionDialog::getEllipsoidName(QString theEllipsoidAcronym)
   }
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
   QString mySql = "select name from tbl_ellipsoid where acronym='" + theEllipsoidAcronym + "'";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
+      myName = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
@@ -373,7 +384,7 @@ QString QgsCustomProjectionDialog::getProjectionFamilyAcronym(QString theProject
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -383,12 +394,12 @@ QString QgsCustomProjectionDialog::getProjectionFamilyAcronym(QString theProject
   }
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
   QString mySql = "select acronym from tbl_projection where name='" + theProjectionFamilyName + "'";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
+      myName = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
@@ -405,7 +416,7 @@ QString QgsCustomProjectionDialog::getEllipsoidAcronym(QString theEllipsoidName)
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -415,12 +426,12 @@ QString QgsCustomProjectionDialog::getEllipsoidAcronym(QString theEllipsoidName)
   }
   // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
   QString mySql = "select acronym from tbl_ellipsoid where name='" + theEllipsoidName + "'";
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      myName = QString((char *)sqlite3_column_text(myPreparedStatement,0));
+      myName = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
   }
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
@@ -440,7 +451,7 @@ void QgsCustomProjectionDialog::pbnFirst_clicked()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -451,27 +462,27 @@ void QgsCustomProjectionDialog::pbnFirst_clicked()
 
   QString mySql = "select * from tbl_srs order by srs_id limit 1";
 #ifdef QGISDEBUG
-    std::cout << "Query to move first:" << mySql << std::endl;
+    std::cout << "Query to move first:" << mySql.local8Bit() << std::endl;
 #endif
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      mCurrentRecordId = QString ((char *)sqlite3_column_text(myPreparedStatement,0));
-      leName->setText((char *)sqlite3_column_text(myPreparedStatement,1));
-      QString myProjectionFamilyId((char *)sqlite3_column_text(myPreparedStatement,2));
-      cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
-      cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
+      mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+      leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
+      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+      leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
       mCurrentRecordLong=1; 
       lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
   }
   else
   {
 #ifdef QGISDEBUG
-  std::cout << "pbnFirst query failed: " << mySql << std::endl;
+  std::cout << "pbnFirst query failed: " << mySql.local8Bit() << std::endl;
 #endif
     
   }
@@ -509,7 +520,7 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -520,27 +531,27 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
 
   QString mySql = "select * from tbl_srs where srs_id < " + mCurrentRecordId + " order by srs_id desc limit 1";
 #ifdef QGISDEBUG
-    std::cout << "Query to move previous:" << mySql << std::endl;
+    std::cout << "Query to move previous:" << mySql.local8Bit() << std::endl;
 #endif
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      mCurrentRecordId = QString ((char *)sqlite3_column_text(myPreparedStatement,0));
-      leName->setText((char *)sqlite3_column_text(myPreparedStatement,1));
-      QString myProjectionFamilyId((char *)sqlite3_column_text(myPreparedStatement,2));
-      cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
-      cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
+      mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+      leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
+      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+      leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4))),
       --mCurrentRecordLong;
       lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
   }
   else
   {
 #ifdef QGISDEBUG
-  std::cout << "pbnPrevious query failed: " << mySql << std::endl;
+  std::cout << "pbnPrevious query failed: " << mySql.local8Bit() << std::endl;
 #endif
     
   }
@@ -587,7 +598,7 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -596,29 +607,30 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
     assert(myResult == 0);
   }
 
+
   QString mySql = "select * from tbl_srs where srs_id > " + mCurrentRecordId + " order by srs_id asc limit 1";
 #ifdef QGISDEBUG
-    std::cout << "Query to move next:" << mySql << std::endl;
+    std::cout << "Query to move next:" << mySql.local8Bit() << std::endl;
 #endif
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      mCurrentRecordId = QString ((char *)sqlite3_column_text(myPreparedStatement,0));
-      leName->setText((char *)sqlite3_column_text(myPreparedStatement,1));
-      QString myProjectionFamilyId((char *)sqlite3_column_text(myPreparedStatement,2));
-      cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
-      cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
+      mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+      leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
+      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+      //leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
       ++mCurrentRecordLong;
       lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
   }
   else
   {
 #ifdef QGISDEBUG
-  std::cout << "pbnNext query failed: " << mySql << std::endl;
+  std::cout << "pbnNext query failed: " << mySql.local8Bit() << std::endl;
 #endif
     
   }
@@ -661,7 +673,7 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -672,27 +684,27 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
 
   QString mySql = "select * from tbl_srs order by srs_id desc limit 1";
 #ifdef QGISDEBUG
-    std::cout << "Query to move last:" << mySql << std::endl;
+    std::cout << "Query to move last:" << mySql.local8Bit() << std::endl;
 #endif
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
       sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-      mCurrentRecordId = QString ((char *)sqlite3_column_text(myPreparedStatement,0));
-      leName->setText((char *)sqlite3_column_text(myPreparedStatement,1));
-      QString myProjectionFamilyId((char *)sqlite3_column_text(myPreparedStatement,2));
-      cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      QString myEllipsoidId((char *)sqlite3_column_text(myPreparedStatement,3));
-      cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      leParameters->setText((char *)sqlite3_column_text(myPreparedStatement,4));
+      mCurrentRecordId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
+      leName->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,1)));
+      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
+      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
+      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
+      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+      leParameters->setText(QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,4)));
       mCurrentRecordLong =mRecordCountLong;
       lblRecordNo->setText(QString::number(mCurrentRecordLong) + " of " + QString::number(mRecordCountLong));
   }
   else
   {
 #ifdef QGISDEBUG
-  std::cout << "pbnLast query failed: " << mySql << std::endl;
+  std::cout << "pbnLast query failed: " << mySql.local8Bit() << std::endl;
 #endif
     
   }
@@ -718,15 +730,29 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
 void QgsCustomProjectionDialog::pbnNew_clicked()
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsCustomProjectionDialog::pbnNew_clicked()" << std::endl;
+  if (pbnNew->text()==tr("Abort")) 
+  {
+    std::cout << "QgsCustomProjectionDialog::pbnNew_clicked() - abort requested" << std::endl;
+  }
+  else
+  {
+   std::cout << "QgsCustomProjectionDialog::pbnNew_clicked() - new requested" << std::endl;
+  }
 #endif
   if (pbnNew->text()==tr("Abort")) 
   {
     //if we get here, user has aborted add record
     pbnNew->setText(tr("New"));
     //get back to the last used record before insert was pressed
-    mCurrentRecordLong=mLastRecordLong;
-    pbnNext_clicked();
+   if (mCurrentRecordId.isEmpty())
+   {
+      pbnFirst_clicked();
+    }
+    else
+    {
+      mCurrentRecordLong=mLastRecordLong;
+      pbnNext_clicked();
+    }
   }
   else
   {
@@ -739,11 +765,12 @@ void QgsCustomProjectionDialog::pbnNew_clicked()
     //clear the controls
     leName->setText("");
     leParameters->setText("");
-    cboProjectionFamily->setCurrentItem(0);
-    cboEllipsoid->setCurrentItem(0);
+    //cboProjectionFamily->setCurrentItem(0);
+    //cboEllipsoid->setCurrentItem(0);
     lblRecordNo->setText("* of " + QString::number(mRecordCountLong));
     //remember the rec we are on in case the user aborts
     mLastRecordLong=mCurrentRecordLong;
+    mCurrentRecordId="";
   }
 
 }
@@ -754,27 +781,52 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
 #ifdef QGISDEBUG
   std::cout << "QgsCustomProjectionDialog::pbnSave_clicked()" << std::endl;
 #endif
-  //
-  // Now make sure the combos are set correclty
-  // This applies when parameters DO have proj and ellps
-  //
-  
-  setCombosUsingParameters();
  
+  QString myName = leName->text();
+  QString myParameters = leParameters->text();
+  if (myName.isEmpty())
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("This proj4 projection definition is not valid. Please give the projection a name before pressing save.") );
+    return;
+  }
+  if (myParameters.isEmpty())
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("This proj4 projection definition is not valid. Please add the parameters before pressing save.") );
+    return;
+  }
+
+  
   //
-  // Now make sure parameters have proj and ellipse from combos
-  // This applies when user has NOT entered proj and ellips
-  // and wants us to do it for them from the combos
+  // Now make sure parameters have proj and ellipse 
   //
   
-  checkParametersHaveProj();
-  checkParametersHaveEllipse();
+  QString myProjectionAcronym  =  getProjFromParameters();
+  QString myEllipsoidAcronym   =  getEllipseFromParameters();
+  
+  if ( myProjectionAcronym == NULL ) 
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("This proj4 projection definition is not valid. Please add a proj= clause before pressing save.") );
+    return;
+  }
+  
+  if ( myEllipsoidAcronym == NULL ) 
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.") );
+    return;
+  }
+  
   
   //
   // We must check the prj def is valid!
+  // NOTE :  the test below may be bogus as the processes abpve emsired there
+  // is always at least a projection and ellpsoid - which proj will parse as acceptible
   //
 
-  projPJ myProj = pj_init_plus( leParameters->text().latin1() );
+  projPJ myProj = pj_init_plus( leParameters->text().local8Bit() );
 
   if ( myProj == NULL ) 
   {
@@ -786,6 +838,9 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   }
   pj_free(myProj);
 
+
+  /** TODO Check the projection is not a duplicate ! */
+
   
   //CREATE TABLE tbl_srs (
   //srs_id integer primary key,
@@ -795,11 +850,6 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   //parameters varchar(80) NOT NULL default ''
   //);
 
-  //get the acronym for preojection and ellipsoid
-  QString myProjectionAcronym = getProjectionFamilyAcronym(cboProjectionFamily->currentText());
-  QString myEllipsoidAcronym = getEllipsoidAcronym(cboEllipsoid->currentText());
-  QString myName = leName->text();
-  QString myParameters = leParameters->text();
   QString mySql;
   //insert a record if mode is enabled
   if (pbnNew->text()==tr("Abort")) 
@@ -840,7 +890,7 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -849,9 +899,9 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
     assert(myResult == 0);
   }
 #ifdef QGISDEBUG
-  std::cout << "Update or insert sql \n" << mySql << std::endl;
+  std::cout << "Update or insert sql \n" << mySql.local8Bit() << std::endl;
 #endif
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   sqlite3_step(myPreparedStatement);
   // XXX Need to free memory from the error msg if one is set
   if(myResult != SQLITE_OK)
@@ -867,15 +917,92 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
     //get to the newly inserted record 
     ++mRecordCountLong;
     mCurrentRecordLong=mRecordCountLong-1;
-    pbnNext_clicked();
+    pbnLast_clicked();
   }
 
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
 }
 
+void QgsCustomProjectionDialog::pbnCalculate_clicked()
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsCustomProjectionDialog::pbnCalculate_clicked()" << std::endl;
+#endif
 
 
+  //
+  // We must check the prj def is valid!
+  //
+
+  projPJ myProj = pj_init_plus( leTestParameters->text().local8Bit() );
+
+  std::cout << "My proj: " << leTestParameters->text().local8Bit() << std::endl;
+
+  if ( myProj == NULL ) 
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("This proj4 projection definition is not valid.") );
+    projectedX->setText("");
+    projectedY->setText("");
+    pj_free(myProj);
+    return;
+    
+  }
+  // Get the WGS84 coordinates
+  bool okN, okE;
+  double northing = northWGS84->text().toDouble(&okN) * DEG_TO_RAD;  
+  double easthing = eastWGS84->text().toDouble(&okE)  * DEG_TO_RAD;  
+
+  if ( !okN || !okE )
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("Northing and Easthing must be in decimal form.") );
+    projectedX->setText("");
+    projectedY->setText("");
+    pj_free(myProj);
+    return;    
+  }  
+
+  projPJ wgs84Proj = pj_init_plus( GEOPROJ4.local8Bit() ); //defined in qgis.h
+
+  if ( wgs84Proj == NULL ) 
+  {
+    QMessageBox::information( this, tr("QGIS Custom Projection"),
+            tr("Internal Error (source projection invalid?") );
+    projectedX->setText("");
+    projectedY->setText("");
+    pj_free(myProj);
+    return;
+  }
+
+  double z = 0.0;
+
+  int projResult = pj_transform(wgs84Proj, myProj, 1, 0, &northing, &easthing, &z);
+  if ( projResult != 0 )
+  {
+    projectedX->setText("Error");
+    projectedY->setText("Error");
+    std::cout << pj_strerrno(projResult) << std::endl;
+  }
+  else 
+  {
+    QString tmp;
+
+    tmp = tmp.setNum(northing, 'f', 4);
+    projectedX->setText(tmp);
+    tmp = tmp.setNum(easthing, 'f', 4);
+    projectedY->setText(tmp);
+  }
+
+  //
+  pj_free(myProj);
+  pj_free(wgs84Proj);
+
+}
+
+
+/* This is deprecated - to be deleted
 void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString & theText)
 {
 #ifdef QGISDEBUG
@@ -889,7 +1016,7 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -901,16 +1028,16 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
   // Set up the query to retreive the projection information needed to populate the PROJECTION list
   QString mySql = "select parameters from tbl_projection name where name='"+theText+"'";
 #ifdef QGISDEBUG
-    std::cout << "Query to get proj params:" << mySql << std::endl;
+    std::cout << "Query to get proj params:" << mySql.local8Bit() << std::endl;
 #endif
-  myResult = sqlite3_prepare(myDatabase, (const char *)mySql, mySql.length(), &myPreparedStatement, &myTail);
+  myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
     sqlite3_step(myPreparedStatement) == SQLITE_ROW;
-    QString myParametersString = (char *)sqlite3_column_text(myPreparedStatement,0);
+    QString myParametersString = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0));
 #ifdef QGISDEBUG
-    std::cout << "Setting parameters text box to: " << myParametersString << std::endl;
+    std::cout << "Setting parameters text box to: " << myParametersString.local8Bit() << std::endl;
 #endif
     txtExpectedParameters->setReadOnly(false);
     txtExpectedParameters->setText(myParametersString);
@@ -919,7 +1046,7 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
 }
-
+*/
 
 //a recursive function to make a directory and its ancestors
 bool QgsCustomProjectionDialog::makeDir(QDir &theQDir)
@@ -942,87 +1069,50 @@ bool QgsCustomProjectionDialog::makeDir(QDir &theQDir)
   }
 
   qDebug("attempting to create directory %s in %s", 
-          (const char *)myTempFileInfo.fileName(),
-          myBaseDir.path().latin1());
+          (const char *)myTempFileInfo.fileName().local8Bit(),
+          (const char *)myBaseDir.path().local8Bit());
 
   return myBaseDir.mkdir(myTempFileInfo.fileName());
 }
 
 
-void QgsCustomProjectionDialog::checkParametersHaveProj()
+QString QgsCustomProjectionDialog::getProjFromParameters()
 {
-
-  std::cout << "QgsCustomProjectionDialog::checkParametersHaveProj()" << std::endl;
+  std::cout << "QgsCustomProjectionDialog::getProjFromParameters()" << std::endl;
   QString myProj4String = leParameters->text();
-  QRegExp myProjRegExp( "proj=[a-zA-Z]* " );    
+  QRegExp myProjRegExp( "\\+proj=[a-zA-Z]*" );    
   int myStart= 0;
   myStart = myProjRegExp.search(myProj4String, myStart);
-  QString myProjection;  
   if (myStart==-1)
   {
-    std::cout << "proj string supplied has no +proj argument adding from combo" << std::endl;
-    myProjection=cboProjectionFamily->currentText();
-    leParameters->setText("+proj=" + getProjectionFamilyAcronym(myProjection) + " " + leParameters->text());
-  }
-}
-
-void QgsCustomProjectionDialog::checkParametersHaveEllipse()
-{
-
-  std::cout << "QgsCustomProjectionDialog::checkParametersHaveEllipse()" << std::endl;
-  QString myProj4String = leParameters->text();
-  QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\-]* " );    
-  int myStart= 0;
-  myStart = myEllipseRegExp.search(myProj4String, myStart);
-  QString myEllipsoid;
-  if (myStart==-1)
-  {
-    std::cout << "proj string supplied has no +ellps argument adding from combo" << std::endl;
-    myEllipsoid=cboEllipsoid->currentText();
-    leParameters->setText("+ellps=" + getEllipsoidAcronym(myEllipsoid) + " " + leParameters->text());
-  }
-}
-
-void QgsCustomProjectionDialog::setCombosUsingParameters()
-{
-
-  QString myProj4String = leParameters->text();
-  std::cout << "QgsCustomProjectionDialog::setCombosUsingParameters \n" << myProj4String << std::endl;
-  QRegExp myProjRegExp( "proj=[a-zA-Z]* " );    
-  int myStart= 0;
-  int myLength=0;
-  myStart = myProjRegExp.search(myProj4String, myStart);
-  if (myStart==-1)
-  {
-    std::cout << "proj string supplied has no +proj argument combo will not be changed" << std::endl;
+    qDebug ("proj string supplied has no +proj argument!");
+    return NULL;
   }
   else
   {
-    myLength = myProjRegExp.matchedLength();
-    QString myProjectionAcronym;  
-    myProjectionAcronym = myProj4String.mid(myStart+PROJ_PREFIX_LEN,myLength-(PROJ_PREFIX_LEN+1));//+1 for space
-    //now update the combos
-    std::cout << "Prj acronym" << myProjectionAcronym << std::endl;
-    cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionAcronym));
+    int myLength = myProjRegExp.matchedLength();
+    QString myProjectionAcronym = myProj4String.mid(myStart+(PROJ_PREFIX_LEN),myLength-(PROJ_PREFIX_LEN));//+1 for space
+    return myProjectionAcronym;
   }
-  
-  
-  QRegExp myEllipseRegExp( "ellps=[a-zA-Z0-9\-]* " );    
-  myStart= 0;
-  myLength=0;
+}
+
+QString QgsCustomProjectionDialog::getEllipseFromParameters()
+{
+  std::cout << "QgsCustomProjectionDialog::getEllipseFromParameters()" << std::endl;
+  QString myProj4String = leParameters->text();
+  QRegExp myEllipseRegExp( "\\+ellps=[a-zA-Z0-9\\-_]*" );    
+  int myStart= 0;
   myStart = myEllipseRegExp.search(myProj4String, myStart);
   if (myStart==-1)
   {
-    std::cout << "proj string supplied has no +ellps argument combo will not be changed" << std::endl;
+    std::cout << "proj string supplied has no +ellps!" << std::endl;
+    return NULL;
   }
-  else
+  else //match was found
   {
-    myLength = myEllipseRegExp.matchedLength();
-    QString myEllipsoidAcronym;
-    myEllipsoidAcronym = myProj4String.mid(myStart+ELLPS_PREFIX_LEN,myLength-(ELLPS_PREFIX_LEN+1));
-    //now update the combos
-    std::cout << "Ellps acronym" << myEllipsoidAcronym << std::endl;
-    cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidAcronym));
+    int myLength = myEllipseRegExp.matchedLength();
+    QString myEllipsoidAcronym = myProj4String.mid(myStart+(ELLPS_PREFIX_LEN),myLength-(ELLPS_PREFIX_LEN));
+    return myEllipsoidAcronym;
   }
 }
 
@@ -1039,8 +1129,8 @@ const QString QgsCustomProjectionDialog::stringSQLSafe(const QString theSQL)
 {
 
     QString myRetval;
-    std::string myString(theSQL.latin1());
-    for (std::string::const_iterator it = myString.begin(); it != myString.end(); it++) {
+    QChar *it = (QChar *)theSQL.unicode();
+    for (int i = 0; i < theSQL.length(); i++) {
         if (*it == '\"') {
             myRetval += "\\\"";
         } else if (*it == '\'') {
@@ -1052,8 +1142,8 @@ const QString QgsCustomProjectionDialog::stringSQLSafe(const QString theSQL)
         } else {
             myRetval += *it;
         }
+        it++;
     }
-
     return myRetval;
 }
   

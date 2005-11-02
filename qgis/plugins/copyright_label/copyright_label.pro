@@ -7,13 +7,20 @@
 ####################################################################
 TEMPLATE = lib
 INCLUDEPATH += . ..\..\src \
-          $(GEOS)\include
+          $(GEOS)\include \
+          $(WINSDK)\Include \
+          $(FWTOOLS)\include
 LIBS += ..\..\src\libqgis.lib \
-        $(GDAL)\lib\gdal_i.lib \
+        $(FWTOOLS)\lib\gdal_i.lib \
+        $(FWTOOLS)\lib\proj_i.lib \
         $(GEOS)\lib\geos.lib \
-        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib 
-CONFIG += qt dll thread
+        $(SQLITE3)\sqlite3.lib \
+        $(POSTGRESQL)\src\interfaces\libpq\Release\libpq.lib \
+        ..\..\widgets\projectionselector\projectionselector.lib \
+        ..\..\src\libqgis.lib 
+
 DLLDESTDIR= ..\..\win_build\lib\qgis
+CONFIG += qt dll thread
 
 # Input
 HEADERS += plugin.h \
@@ -21,4 +28,5 @@ HEADERS += plugin.h \
            pluginguibase.ui.h 
 INTERFACES += pluginguibase.ui
 SOURCES += plugin.cpp \
-           plugingui.cpp 
+           plugingui.cpp
+

@@ -1,6 +1,0 @@
-This is some sample data to use with the EXIF importer plugin.
-
-The time offset should be set to "2:00:00", because the pictures are
-taken in Sweden (UTC+1) in the summer (+day saving time). The coordinates 
-in the GPX file are in the Swedish RT90 grid, so the coordinates in the 
-generated GPX file will also be in that grid.

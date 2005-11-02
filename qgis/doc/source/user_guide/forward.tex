@@ -1,0 +1,87 @@
+% vim: set textwidth=78 autoindent:
+\chapter{Forward}
+
+Welcome to the wonderful world of Geographical Information Systems (GIS)!
+Quantum GIS (QGIS) is an Open Source Geographic Information System. The project
+was born in May of 2002 and was established as a project on SourceForge in June
+of the same year. We've worked hard to make GIS software (which is traditionaly
+expensive commerical software) a viable prospect for anyone with basic access
+to a Personal Computer. QGIS currently runs on most Unix platforms, Windows, and
+OS X. QGIS is developed using the Qt toolkit (\url{http://www.trolltech.com})
+and C++. This means that QGIS feels snappy to use and has a pleasing, easy to
+use graphical user interface. 
+
+QGIS aims to be an easy to use GIS, providing common functions and features.
+The initial goal was to provide a GIS data viewer. QGIS has reached that point
+in its evolution and is being used by many for their daily GIS data viewing
+needs. QGIS supports a number of raster and vector data formats, with new
+support easily added using the plugin architecture (see Appendix
+\ref{appdx_data_formats} for a full list of currenly supported data formats).
+QGIS is released under the GNU Public License (GPL). Developing QGIS under this
+license means that you can (if you want to) inspect and modify the source code
+and guarantees that you, our happy user will always have access to a GIS
+program that is free of cost and can be freely modified. You should have
+received a full copy of the license with your copy of QGIS, and is also
+available as Appendix \ref{gpl_appendix}.  
+\begin{quote}
+\begin{center}
+\textbf{Note:} The latest version of this document can always be found at \newline
+http://qgis.sourceforge.net/docs/userguide.html 
+\end{center}
+\end{quote}
+
+\section{Major Features}
+
+QGIS has many common GIS features and functions. The major features
+are listed below. 
+
+\begin{compactenum}
+\item Support for spatially enabled PostgreSQL tables using PostGIS 
+\item Support for ESRI shapefiles and other vector formats support by the
+OGR library, including MapInfo files 
+\item GRASS integration, including view, edit, and analysis
+\item On the fly projection of vector layers
+\item Map composer
+\item Identify features 
+\item Display attribute table 
+\item Select features 
+\item Label features
+\item Persistent selections 
+\item Save and restore projects
+\item Support for raster formats supported by the GDAL library 
+\item Change vector symbology (single, graduated, unique value, and continuous) 
+\item SVG markers symbology (single, unique value, and graduated) 
+\item Display raster data such as digital elevation models, aerial photography
+or landsat imagery 
+\item Change raster symbology (grayscale, pseudocolor and multiband RGB) 
+\item Export to Mapserver map file 
+\item Digitizing support
+\item Map overview
+\item Plugins 
+\end{compactenum}
+
+
+\section{Whats New in 0.7}
+Version 0.7 brings several important features, including projection support, a map composer, and better integration with GRASS. The major new features in this release include:
+\begin{compactenum}
+  \item On the fly projection for reprojecting layers in different coordinate systems
+  \item Map Composer for creating print layouts
+  \item Toolbox for running GRASS tools from QGIS
+  \item Raster graphing tool to produce a histogram for a raster layer.
+  \item Raster query using the identify tool to get the pixel
+  values from a raster 
+  \item New customizable settings for the digitizing line width, color, and selection color  
+  \item New symbols for use with point layers are available from the layer properties dialog 
+  \item Spatial bookmarks allow you to create and manage bookmarks for an area on the map
+  \item Measure tool to measure distances on the map with both
+  segment length and total length displayed as you click
+  \item GPX loading times and memory consumption for large GPX (GPS) files
+  has been drastically reduced.  
+  \item Digitizing enhancements, including the ability to capture data straight
+  into PostgreSQL/PostGIS, and improvements to the definition of attribute tables
+  for newly created layers.
+  \item Raster Georeferencing plugin can be used
+  to generate a world file for a raster by defining known
+  control points in the raster coordinate system.
+\end{compactenum}
+

@@ -40,3 +40,9 @@ void QgsAttributeTableBase::selectedToTop()
 {
 
 }
+
+
+void QgsAttributeTableBase::removeSelection()
+{
+
+}

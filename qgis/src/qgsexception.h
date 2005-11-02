@@ -37,7 +37,7 @@ public:
     {}
 
     QgsException( QString const & what )
-        : what_( (const char *)what )
+        : what_( (const char *)what.local8Bit() )
     {}
 
     virtual ~QgsException() throw()

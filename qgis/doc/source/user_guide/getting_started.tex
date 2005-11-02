@@ -1,15 +1,16 @@
-% vim: set textwidth=78 autoindent:
+% vim:autoindent:set textwidth=78:
 \chapter{Getting Started}
 
-This chapter gives you a quick overview of running QGIS and examining data available on the QGIS web page.
+This chapter gives you a quick overview of running QGIS and examining data
+available on the QGIS web page.
 
 
 \section{Installation}
 \index{installation}
 Installation of QGIS is documented in Appendix \ref{install_guide}. The
 Installation Guide is distributed with the QGIS source code and is also
-available at \url{http://qgis.org}. Under Windows and Mac OSX, QGIS is
-available as a standard installer package for these platforms. Packages for
+available at \url{http://qgis.org}. Under Windows and Mac OS X, QGIS is
+available as a standard installer package. Packages for
 many flavors of Linux are also available. 
 
 
@@ -25,7 +26,7 @@ provided in this document.
 Assuming that QGIS is installed in the PATH, you can start QGIS by typing:
 \textbf{qgis}  at a command prompt or by double clicking on the QGIS
 application link (or shortcut) on the desktop. Under MS Windows, start QGIS
-using the Start menu shortcut, and under Mac OSX, double click the icon in
+using the Start menu shortcut, and under Mac OS X, double click the icon in
 your Applications folder.
 %\begin{figure}
 %\caption{QGIS Main Window}
@@ -86,11 +87,12 @@ The QGIS main window is divided into six areas:
 \item The status bar
 \end{compactenum}
 
-These six components of the QGIS interface are described in more detail in the following sections
+These six components of the QGIS interface are described in more detail in the
+following sections 
 \subsection{The QGIS menu bar}
 \index{menus}
 The menu bar provides access to various QGIS features using a standard 
-heirachical menu. The top-level menus and a summary of some of the functions provided are:
+hierarchical menu. The top-level menus and a summary of some of the functions provided are:
 \begin{compactitem}
 \item File (project open, save, export image, properties)
 \item View (zoom, refresh)
@@ -141,7 +143,7 @@ layer that is currently enabled for editing.\\
 \index{map!view}
 This is the 'business end' of QGIS - maps are displayed in this area! The map
 displayed in this window will depend on the vector and raster layers you have
-chosen to load (see sections that follow for more info on how to load layers).
+chosen to load (see sections that follow for more information on how to load layers).
 The map view can be panned (shifting the focus of the map display to another
 region) and zoomed in and out. Various other operations can be performed on
 the map as described in the toolbar description above.  The map view and the
@@ -158,22 +160,22 @@ The map overview area provides a full extent view of layers added to it.
 Within the view is a rectangle showing the current map extent. This allows you
 to quickly determine which area of the map you are currently viewing. Note
 that labels are not rendered to the map overview even if the layers in the map
-overview have been set up for labelling. You can add a single layer to the
+overview have been set up for labeling. You can add a single layer to the
 overview by right-clicking on it in the legend and choosing \textit{Toggle in
 Overview}. You can also add or remove all layers to the overview using the
 \textit{Add to Overview tool} on the toolbar.
 
 \subsection{The QGIS map status bar} 
 The status bar shows you your current position in map coordinates (e.g. meters
-or decimal degress) as the mouse pointer is moved accross the map view. The
+or decimal degrees) as the mouse pointer is moved across the map view. The
 status bar also shows the view extents of the map view as you pan and zoom in
 and out. A progress bar in the status bar shows progress of rendering as each
 layer is drawn to the map view. In some cases, such as the gathering of
 statistics in raster layers, the progress bar will be used to show the status
 of lengthy operations. On the right side of the status bar is a small checkbox which
-can be used to temporarily prevent layers being rendered to the map view )see
-Section \ref{subsec:redraw_events} below. At the far right of the status bar
-is a projector icon. Clicking on this opens the projection properies for the
+can be used to temporarily prevent layers being rendered to the map view (see
+Section \ref{subsec:redraw_events} below). At the far right of the status bar
+is a projector icon. Clicking on this opens the projection properties for the
 current project.
 
 \section{Rendering}\label{subsec:redraw_events}\index{rendering}
@@ -211,7 +213,7 @@ pressing ESC and the time the map drawing is halted.
 To suspend rendering, click the \textit{Render} checkbox in the lower right
 corner of the statusbar. When the \textit{Render} box is not checked, QGIS does
 not redraw the canvas in response to any of the events described in Section
-\ref{sec:redraw_events}. Examples of when you might want to suspend rendering
+\ref{subsec:redraw_events}. Examples of when you might want to suspend rendering
 include:
 \begin{compactitem}
 \item Add many layers and symbolize them prior to drawing

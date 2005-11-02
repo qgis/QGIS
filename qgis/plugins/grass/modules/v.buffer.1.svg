@@ -1,73 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="250"
-   x="0"
-   y="0"
-   height="250"
-   id="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/v.overlay.and.2"
-   sodipodi:version="0.32"
-   inkscape:version="0.41"
-   sodipodi:docname="v.buffer.1.svg"
-   sodipodi:docbase="/home/pinuz/gis/qgis-cvs/qgis/plugins/grass/modules">
-  <metadata
-     id="metadata19">
-    <rdf:RDF
-       id="RDF21">
-      <cc:Work
-         rdf:about=""
-         id="Work23">
-        <dc:format
-           id="format25">image/svg+xml</dc:format>
-        <dc:type
-           id="type27"
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs
-     id="defs17">
-    <clipPath
-       id="clip1">
-      <rect
-         width="245"
-         x="0"
-         y="0"
-         height="245"
-         id="rect8" />
-    </clipPath>
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="640"
-     inkscape:window-height="539"
-     inkscape:cy="134.74347"
-     inkscape:cx="128.98520"
-     inkscape:zoom="0.50000000"
-     inkscape:window-x="26"
-     inkscape:window-y="58"
-     inkscape:current-layer="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/v.overlay.and.2" />
-  <rect
-     width="250"
-     x="0"
-     y="0"
-     height="250"
-     style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);"
-     id="rect3" />
-  <path
-     sodipodi:nodetypes="ccc"
-     id="path2071"
-     d="M 51.001798,46.937285 L 124.67106,192.38686 L 200.22928,193.33134"
-     style="stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000;stroke-linejoin:miter;stroke-linecap:round;stroke-width:1.2500000;stroke:#e10000;fill-rule:evenodd;fill-opacity:0.75000000;fill:none" />
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" x="0" y="0" height="500" id="/putrela0/mpasol/blazek/inst/qgiscvs07/plugins/grass/modules/v.buffer.1" >
+ <rect width="500" x="0" y="0" height="500" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);" />
+ <g style="stroke:rgb(0,0,0);stroke-width:0.9;fill:none;" >
+  <clipPath id="clip1" >
+   <rect width="500" x="0" y="0" height="500" />
+  </clipPath>
+  <g style="clip-path:url(#clip1)" >
+   <polyline points="80 416 94 381 110 352 130 322 161 298 213 281 276 264 323 245 353 217 399 168 418 125 431 95 438 77" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+  </g>
+ </g>
 </svg>

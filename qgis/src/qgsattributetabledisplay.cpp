@@ -27,6 +27,7 @@
 #include <qmessagebox.h>
 #include <qpopupmenu.h>
 #include <qpushbutton.h> 
+#include <qtoolbutton.h> 
 
 QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAttributeTableBase(), mLayer(layer)
 {
@@ -166,3 +167,14 @@ void QgsAttributeTableDisplay::invertSelection()
     mLayer->invertSelection();
   }
 }
+
+void QgsAttributeTableDisplay::removeSelection()
+{
+    mLayer->removeSelection();
+    table()->clearSelection();
+    mLayer->triggerRepaint();
+}
+
+
+
+

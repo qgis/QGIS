@@ -123,7 +123,7 @@ void QgsUniqueValRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 	QDomNode valuenode = renderitemnode.namedItem("value");
 	QString value = valuenode.toElement().text();
 #ifdef QGISDEBUG
-	qWarning("readXML, value is "+value);
+	qWarning(("readXML, value is "+value).local8Bit());
 #endif
 	QgsSymbol* msy = new QgsSymbol();
 	QPen pen;

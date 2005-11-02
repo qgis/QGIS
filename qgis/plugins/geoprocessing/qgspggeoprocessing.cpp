@@ -43,6 +43,12 @@ email                : sherman at mrcc.com
 // xpm for creating the toolbar icon
 #include "icon_buffer.xpm"
 
+#ifdef WIN32
+#define QGISEXTERN extern "C" __declspec( dllexport )
+#else
+#define QGISEXTERN extern "C"
+#endif
+
 static const char *pluginVersion = "0.1";
 
 static const char * const ident_ = "$Id$";
@@ -246,8 +252,11 @@ void QgsPgGeoprocessing::buffer()
               std::cerr << sql << std::endl;
 #endif
               PGresult *geoCol = PQexec(conn, (const char *) sql);
+
+            if (PQresultStatus(geoCol) == PGRES_TUPLES_OK) {
               PQclear(geoCol);
               // drop the check constraint based on geometry type
+              /*
               sql = QString("alter table %1.%2 drop constraint \"$2\"")
                 .arg(bb->schema())
                 .arg(bb->bufferLayerName());
@@ -256,9 +265,20 @@ void QgsPgGeoprocessing::buffer()
 #endif
               result = PQexec(conn, (const char *) sql);
               PQclear(result);
+              */
+#ifdef SUPPORTOLDPG
               // check pg version and formulate insert query accordingly
-              result = PQexec(conn,"select version()");
+              sql = "select version()";
+              result = PQexec(conn,(const char *) sql);
+#ifdef QGISDEBUG 
+              std::cerr << "Result of select version(): " << PQresultStatus(result) << std::endl; 
+              std::cerr << "Error string: " << PQerrorMessage(conn) << std::endl; 
+#endif 
+
               QString versionString = PQgetvalue(result,0,0);
+#ifdef QGISDEBUG 
+              std::cerr << "PostgreSQL Version String: " << versionString << std::endl; 
+#endif 
               QStringList versionParts = QStringList::split(" ", versionString);
               // second element is the version number
               QString version = versionParts[1];
@@ -270,6 +290,8 @@ void QgsPgGeoprocessing::buffer()
 #ifdef QGISDEBUG
               std::cerr << "Table name for PG 7.3 is: " << tableName.mid(tableName.find(".")+1) << std::endl;
 #endif
+#endif //SUPPORTOLDPG
+
               //   if(PQresultStatus(geoCol) == PGRES_COMMAND_OK) {
               // do the buffer and insert the features
               if (objId == "objectid") {
@@ -292,14 +314,23 @@ void QgsPgGeoprocessing::buffer()
 
               }
               result = PQexec(conn, (const char *) sql);
+#ifdef QGISDEBUG 
+              std::cerr << "Result of buffer operation: " << PQresultStatus(result) << std::endl; 
+#endif 
               PQclear(result);
               // }
 #ifdef QGISDEBUG
               std::cerr << sql << std::endl;
 #endif
               result = PQexec(conn, "end work");
+#ifdef QGISDEBUG 
+              std::cerr << "Result of end work operation: " << PQresultStatus(result) << std::endl; 
+#endif 
               PQclear(result);
               result = PQexec(conn, "commit;vacuum");
+#ifdef QGISDEBUG 
+              std::cerr << "Result of commit;vacuum operation: " << PQresultStatus(result) << std::endl; 
+#endif 
               PQclear(result);
               PQfinish(conn);
               // QMessageBox::information(0, "Add to Map?", "Do you want to add the layer to the map?");
@@ -333,6 +364,17 @@ void QgsPgGeoprocessing::buffer()
                  "postgres"); 
 
               }
+            }
+            else
+            {
+#ifdef QGISDEBUG 
+              std::cerr << "AddGeometryColumn result: " << PQresultStatus(geoCol) << std::endl; 
+#endif 
+              QMessageBox::critical(0, "Unable to add geometry column",
+                  QString("Unable to add geometry column to the output table %1-%2")
+                  .arg(bb->bufferLayerName()).arg(PQerrorMessage(conn)));
+
+            }
             } else {
               QMessageBox::critical(0, "Unable to create table",
                   QString("Failed to create the output table %1").arg(bb->bufferLayerName()));
@@ -418,37 +460,37 @@ void QgsPgGeoprocessing::unload()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-extern "C" QgisPlugin * classFactory(QgisApp * qgis, QgisIface * qI)
+QGISEXTERN QgisPlugin * classFactory(QgisApp * qgis, QgisIface * qI)
 {
   return new QgsPgGeoprocessing(qgis, qI);
 }
 
 // Return the name of the plugin
-extern "C" QString name()
+QGISEXTERN QString name()
 {
     return name_;
 }
 
 // Return the description
-extern "C" QString description()
+QGISEXTERN QString description()
 {
     return description_;
 }
 
 // Return the type (either UI or MapLayer plugin)
-extern "C" int type()
+QGISEXTERN int type()
 {
     return type_;
 }
 
 // Return the version number for the plugin
-extern "C" QString version()
+QGISEXTERN QString version()
 {
   return version_;
 }
 
 // Delete ourself
-extern "C" void unload(QgisPlugin * p)
+QGISEXTERN void unload(QgisPlugin * p)
 {
   delete p;
 }

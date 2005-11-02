@@ -34,6 +34,7 @@ email                : sherman at mrcc.com
 #include "qgsnewconnection.h"
 #include "qgspgquerybuilder.h"
 #include "qgisapp.h"
+#include "qgscontexthelp.h"
 QgsDbSourceSelect::QgsDbSourceSelect(QgisApp * app, QWidget * parent, const char *name):QgsDbSourceSelectBase(parent, name),
                                                                                         qgisApp(app)
 {
@@ -43,63 +44,6 @@ QgsDbSourceSelect::QgsDbSourceSelect(QgisApp * app, QWidget * parent, const char
 
   //disable the 'where clause' box for 0.4 release
   //  groupBox3->hide();
-
-  //insert the encoding types available in qt
-  mEncodingComboBox->insertItem("BIG5"); 
-  mEncodingComboBox->insertItem("BIG5-HKSCS"); 
-  mEncodingComboBox->insertItem("EUCJP"); 
-  mEncodingComboBox->insertItem("EUCKR"); 
-  mEncodingComboBox->insertItem("GB2312"); 
-  mEncodingComboBox->insertItem("GBK"); 
-  mEncodingComboBox->insertItem("GB18030"); 
-  mEncodingComboBox->insertItem("JIS7"); 
-  mEncodingComboBox->insertItem("SHIFT-JIS"); 
-  mEncodingComboBox->insertItem("TSCII"); 
-  mEncodingComboBox->insertItem("UTF-8"); 
-  mEncodingComboBox->insertItem("UTF-16"); 
-  mEncodingComboBox->insertItem("KOI8-R"); 
-  mEncodingComboBox->insertItem("KOI8-U"); 
-  mEncodingComboBox->insertItem("ISO8859-1"); 
-  mEncodingComboBox->insertItem("ISO8859-2");
-  mEncodingComboBox->insertItem("ISO8859-3"); 
-  mEncodingComboBox->insertItem("ISO8859-4"); 
-  mEncodingComboBox->insertItem("ISO8859-5"); 
-  mEncodingComboBox->insertItem("ISO8859-6");
-  mEncodingComboBox->insertItem("ISO8859-7"); 
-  mEncodingComboBox->insertItem("ISO8859-8"); 
-  mEncodingComboBox->insertItem("ISO8859-8-I"); 
-  mEncodingComboBox->insertItem("ISO8859-9"); 
-  mEncodingComboBox->insertItem("ISO8859-10"); 
-  mEncodingComboBox->insertItem("ISO8859-13"); 
-  mEncodingComboBox->insertItem("ISO8859-14"); 
-  mEncodingComboBox->insertItem("ISO8859-15"); 
-  mEncodingComboBox->insertItem("IBM 850"); 
-  mEncodingComboBox->insertItem("IBM 866"); 
-  mEncodingComboBox->insertItem("CP874"); 
-  mEncodingComboBox->insertItem("CP1250"); 
-  mEncodingComboBox->insertItem("CP1251"); 
-  mEncodingComboBox->insertItem("CP1252"); 
-  mEncodingComboBox->insertItem("CP1253"); 
-  mEncodingComboBox->insertItem("CP1254"); 
-  mEncodingComboBox->insertItem("CP1255"); 
-  mEncodingComboBox->insertItem("CP1256"); 
-  mEncodingComboBox->insertItem("CP1257"); 
-  mEncodingComboBox->insertItem("CP1258"); 
-  mEncodingComboBox->insertItem("Apple Roman"); 
-  mEncodingComboBox->insertItem("TIS-620"); 
-
-  //read the last encoding from the settings
-  //or use local as default
-  QSettings settings; 
-  QString lastUsedEncoding = settings.readEntry("/qgis/UI/encoding");
-  if(lastUsedEncoding.isNull()||lastUsedEncoding.isEmpty()||lastUsedEncoding=="\0")
-    {
-      mEncodingComboBox->setCurrentText(QString(QTextCodec::codecForLocale()->name()));
-    }
-  else
-    {
-      mEncodingComboBox->setCurrentText(lastUsedEncoding);
-    }
 }
 
 QgsDbSourceSelect::~QgsDbSourceSelect()
@@ -224,13 +168,13 @@ void QgsDbSourceSelect::dbConnect()
   }
   connString += " password=" + password;
 #ifdef QGISDEBUG
-  std::cout << "Connection info: " << connString << std::endl;
+  std::cout << "Connection info: " << connString.local8Bit() << std::endl;
 #endif
   if (makeConnection)
   {
     m_connInfo = connString;  //host + " " + database + " " + username + " " + password;
     //qDebug(m_connInfo);
-    pd = PQconnectdb((const char *) m_connInfo);
+    pd = PQconnectdb(m_connInfo.local8Bit());
     //  std::cout << pd->ErrorMessage();
     if (PQstatus(pd) == CONNECTION_OK)
     {
@@ -239,6 +183,8 @@ void QgsDbSourceSelect::dbConnect()
       QPixmap pxLine(line_layer_xpm);
       QPixmap pxPoly(polygon_layer_xpm);
       //qDebug("Connection succeeded");
+      // tell the DB that we want text encoded in UTF8
+      PQsetClientEncoding(pd, "UNICODE");
 
       // clear the existing entries
       lstTables->clear();
@@ -266,7 +212,7 @@ void QgsDbSourceSelect::dbConnect()
     }
     else
     {
-      qDebug("Unknown geometry type of " + iter->second);
+      qDebug(("Unknown geometry type of " + iter->second).local8Bit());
     }
   }
       }
@@ -335,7 +281,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
   // where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
   sql += " order by f_table_name";
   //qDebug("Fetching tables using: " + sql);
-  PGresult *result = PQexec(pg, (const char *) sql);
+  PGresult *result = PQexec(pg, sql.local8Bit());
   if (result)
   {
     QString msg;
@@ -347,22 +293,23 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
       // exists. This is not done as a subquery in the query above
       // because I can't get it to work correctly when there are tables
       // with capital letters in the name.
-      QString tableName = PQgetvalue(result, idx, PQfnumber(result, "f_table_name"));
-      sql = "select oid from pg_class where relname = '" + tableName + "'";
 
-      PGresult* exists = PQexec(pg, (const char*)sql);
+      // Take care to deal with tables with the same name but in different schema.
+      QString tableName = PQgetvalue(result, idx, PQfnumber(result, "f_table_name"));
+      QString schemaName = PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"));
+      sql = "select oid from pg_class where relname = '" + tableName + "'";
+      if (schemaName.length() > 0)
+	sql +=" and relnamespace = (select oid from pg_namespace where nspname = '" +
+	  schemaName + "')";
+
+      PGresult* exists = PQexec(pg, sql.local8Bit());
       if (PQntuples(exists) == 1)
   {
     QString v = "";
-    if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"))))
-    {
-      v += PQgetvalue(result, idx, PQfnumber(result, "f_table_catalog"));
-      v += ".";
-    }
 
-    if (strlen(PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"))))
+    if (schemaName.length() > 0)
     {
-      v += PQgetvalue(result, idx, PQfnumber(result, "f_table_schema"));
+      v += schemaName;
       v += ".";
     }
 
@@ -384,47 +331,46 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
   // geometry_columns table. This code is specific to postgresql,
   // but an equivalent query should be possible in other
   // databases.
-  sql = "select pg_class.relname, pg_attribute.attname from "
-    "pg_attribute, pg_class, pg_type where pg_type.typname = 'geometry' and "
+  sql = "select pg_class.relname, pg_namespace.nspname, pg_attribute.attname from "
+    "pg_attribute, pg_class, pg_type, pg_namespace where pg_type.typname = 'geometry' and "
     "pg_attribute.atttypid = pg_type.oid and pg_attribute.attrelid = pg_class.oid "
     "and cast(pg_class.relname as character varying) not in "
-    "(select f_table_name from geometry_columns)";
+    "(select f_table_name from geometry_columns) "
+    "and pg_namespace.oid = pg_class.relnamespace "
+    "and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
   
-  result = PQexec(pg, (const char *) sql);
+  result = PQexec(pg, sql.local8Bit());
 
   for (int i = 0; i < PQntuples(result); i++)
   {
-    // Have the column name and the table name. The concept of a
+    // Have the column name, schema name and the table name. The concept of a
     // catalog doesn't exist in postgresql so we ignore that, but we
-    // do need to get the schema name and geometry type.
+    // do need to get the geometry type.
 
     // Make the assumption that the geometry type for the first
     // row is the same as for all other rows. 
 
-    // There may be more than one geometry column per table, so need
-    // to deal with that. Currently just take the first column
-    // returned. XXXX
-      
     // Flag these not geometry_columns table tables so that the UI
     // can indicate this????
     QString table  = PQgetvalue(result, i, 0); // relname
-    QString column = PQgetvalue(result, i, 1); // attname
+    QString schema = PQgetvalue(result, i, 1); // nspname
+    QString column = PQgetvalue(result, i, 2); // attname
 
-    QString query = "select GeometryType(" + 
-      column + "), current_schema() from \"" + table + 
-      "\" where " + column + " is not null limit 1";
+    QString query = "select GeometryType(" + column + ") from ";
+    if (schema.length() > 0)
+      query += "\"" + schema + "\".";
+    query += "\"" + table + "\" where " + column + " is not null limit 1";
 
-    PGresult* gresult = PQexec(pg, (const char*) query);
+    PGresult* gresult = PQexec(pg, query.local8Bit());
     if (PQresultStatus(gresult) != PGRES_TUPLES_OK)
     {
-      qDebug(tr("Access to relation ") + table + tr(" using sql;\n") + sql +
+      qDebug((tr("Access to relation ") + table + tr(" using sql;\n") + query +
        tr("\nhas failed. The database said:\n") +
-       PQresultErrorMessage(gresult));
+       PQresultErrorMessage(gresult)).local8Bit());
     }
     else
     {
       QString type = PQgetvalue(gresult, 0, 0); // GeometryType
-      QString schema = PQgetvalue(gresult, 0, 1); // current_schema
       QString full_desc = "";
       if (schema.length() > 0)
   full_desc = schema + ".";
@@ -440,7 +386,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
   return ok;
 }
 
-QString QgsDbSourceSelect::encoding()
+void QgsDbSourceSelect::showHelp()
 {
-  return mEncodingComboBox->currentText();
+	QgsContextHelp::run(context_id);
 }

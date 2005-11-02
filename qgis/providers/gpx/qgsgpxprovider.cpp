@@ -99,17 +99,19 @@ QgsGPXProvider::QgsGPXProvider(QString uri) : mDataSourceUri(uri),
   // set the selection rectangle to null
   mSelectionRectangle = 0;
   
-  // parse the file
-  data = GPSData::getData(mFileName);
-  if (data == 0)
-    return;
-  mValid = true;
-  
   // resize the cache matrix
   mMinMaxCache=new double*[attributeFields.size()];
   for(int i=0;i<attributeFields.size();i++) {
     mMinMaxCache[i]=new double[2];
   }
+
+  // parse the file
+  data = GPSData::getData(mFileName);
+  if (data == 0) {
+    return;
+  }
+
+  mValid = true;
 }
 
 
@@ -222,7 +224,11 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	    feature->addAttribute(attr[NameAttr], wpt->name);
 	    break;
 	  case 1:
+#ifdef WIN32
+	    if (wpt->ele == -1.79769e+308)
+#else
 	    if (wpt->ele == -std::numeric_limits<double>::max())
+#endif
 	      feature->addAttribute(attr[EleAttr], "");
 	    else
 	      feature->addAttribute(attr[EleAttr], QString("%1").arg(wpt->ele));
@@ -289,7 +295,11 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	  if (*iter == 0)
 	    feature->addAttribute(attr[NameAttr], rte->name);
 	  else if (*iter == 1) {
+#ifdef WIN32
+	    if (rte->number == 2147483647)
+#else
 	    if (rte->number == std::numeric_limits<int>::max())
+#endif
 	      feature->addAttribute(attr[NumAttr], "");
 	    else
 	      feature->addAttribute(attr[NumAttr], QString("%1").arg(rte->number));
@@ -349,7 +359,11 @@ bool QgsGPXProvider::getNextFeature(QgsFeature* feature,
 	  if (*iter == 0)
 	    feature->addAttribute(attr[NameAttr], trk->name);
 	  else if (*iter == 1) {
+#ifdef WIN32
+	    if (trk->number == 2147483647)
+#else
 	    if (trk->number == std::numeric_limits<int>::max())
+#endif
 	      feature->addAttribute(attr[NumAttr], "");
 	    else
 	      feature->addAttribute(attr[NumAttr], QString("%1").arg(trk->number));
@@ -559,6 +573,7 @@ bool QgsGPXProvider::addFeatures(std::list<QgsFeature*> flist) {
   if (!file.open(IO_WriteOnly))
     return false;
   QTextStream ostr(&file);
+  ostr.precision(10);
   data->writeXML(ostr);
   return true;
 }
@@ -602,11 +617,17 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
     Route rte;
     
     // reset bounds
+#ifdef WIN32
+    rte.xMin = 1.79769e+308;
+    rte.xMax = -1.79769e+308;
+    rte.yMin = 1.79769e+308;
+    rte.yMax = -1.79769e+308;
+#else
     rte.xMin = std::numeric_limits<double>::max();
     rte.xMax = -std::numeric_limits<double>::max();
     rte.yMin = std::numeric_limits<double>::max();
     rte.yMax = -std::numeric_limits<double>::max();
-
+#endif
     // add geometry
     int nPoints;
     std::memcpy(&nPoints, geo + 5, 4);
@@ -646,10 +667,17 @@ bool QgsGPXProvider::addFeature(QgsFeature* f) {
     TrackSegment trkseg;
     
     // reset bounds
+#ifdef WIN32
+    trk.xMin = 1.79769e+308;
+    trk.xMax = -1.79769e+308;
+    trk.yMin = 1.79769e+308;
+    trk.yMax = -1.79769e+308;
+#else
     trk.xMin = std::numeric_limits<double>::max();
     trk.xMax = -std::numeric_limits<double>::max();
     trk.yMin = std::numeric_limits<double>::max();
     trk.yMax = -std::numeric_limits<double>::max();
+#endif
 
     // add geometry
     int nPoints;
@@ -726,6 +754,7 @@ bool QgsGPXProvider::deleteFeatures(std::list<int> const & id) {
   if (!file.open(IO_WriteOnly))
     return false;
   QTextStream ostr(&file);
+  ostr.precision(10);
   data->writeXML(ostr);
   return true;
 }
@@ -767,6 +796,7 @@ bool QgsGPXProvider::changeAttributeValues(std::map<int,std::map<QString,QString
   if (!file.open(IO_WriteOnly))
     return false;
   QTextStream ostr(&file);
+  ostr.precision(10);
   data->writeXML(ostr);
   return true;
 }

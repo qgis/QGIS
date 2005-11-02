@@ -108,7 +108,7 @@ static QgsLegendItem *findLegendItem_(QgsLegend * legend, QString const &name)
 
       if (li)
         {
-          std::cerr << "comparing " << li->layerID() << " and " << name << "\n";
+          std::cerr << "comparing " << li->layerID().local8Bit() << " and " << name.local8Bit() << "\n";
           if (li->layerID() == name)
             {
               return li;
@@ -212,7 +212,7 @@ void QgsLegend::addLayer(QgsMapLayer * layer)
 
   layer->initContextMenu(mQgisApp);
 
-  const char * layerName = layer->name(); // debugger probe
+  const char * layerName = layer->name().local8Bit(); // debugger probe
 
   QgsLegendItem *legend_item = new QgsLegendItem(layer, this, mQgisApp->actionInOverview);
 
