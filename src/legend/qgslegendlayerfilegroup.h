@@ -23,5 +23,6 @@ class QgsLegendLayerFileGroup: public QgsLegendItem
     QgsLegendLayerFileGroup(QListViewItem* theItem, QString theString);
     bool isLeafNode() {return false;}
     DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
-    bool insert(QgsLegendItem* theItem);
+    QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
+    bool insert(QgsLegendItem* theItem, bool changesettings = true);
 };

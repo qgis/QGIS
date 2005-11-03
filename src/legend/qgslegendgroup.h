@@ -35,8 +35,9 @@ public:
     ~QgsLegendGroup();
 
     QgsLegendItem::DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
+    QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
     bool isLeafNode();
-    bool insert(QgsLegendItem* theItem);
+    bool insert(QgsLegendItem* theItem, bool changesettings = true);
 };
 
 #endif

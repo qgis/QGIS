@@ -76,6 +76,18 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFile::accept(LEGEND_ITEM_TYPE type)
   return NO_ACTION;
 }
 
+QgsLegendItem::DRAG_ACTION QgsLegendLayerFile::accept(const QgsLegendItem* li) const
+{
+  if(li->type() == QgsLegendItem::LEGEND_LAYER_FILE)
+    {
+      if(li->parent() == this->parent())
+	{
+	  return REORDER;
+	}
+    }
+  return NO_ACTION;
+}
+
 QPixmap QgsLegendLayerFile::getOriginalPixmap() const
 {
 #if defined(Q_OS_MACX) || defined(WIN32)

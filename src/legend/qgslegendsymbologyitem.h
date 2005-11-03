@@ -32,6 +32,7 @@ public:
     ~QgsLegendSymbologyItem();
     bool isLeafNode() {return true;}
     DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
+    QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
 };
 
 #endif

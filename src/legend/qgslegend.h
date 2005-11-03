@@ -113,6 +113,9 @@ class QgsLegend : public QListView
   /**Restores the legend from a project file*/
   bool readXML(QDomNode& legendnode);
 
+  /**Returns true, if the y-coordinate is >= the center of the item*/
+  bool yCoordAboveCenter(QgsLegendItem* it, int ycoord);
+
 public slots:
 
     /*!Adds a new layer group with the maplayer to the canvas*/
@@ -181,6 +184,11 @@ protected:
    * @return void
    */  
   void contentsMouseReleaseEvent(QMouseEvent * e);
+  /**Stores the necessary information about the position of an item in the hierarchy. Afterwards, 
+this item may be moved back to the original position with resetToInitialPosition()*/
+  void storeInitialPosition(QListViewItem* li);
+  /**Moves an item back to the position where storeInitialPosition has been called*/
+  void resetToInitialPosition(QListViewItem* li);
 
   private slots:
 
@@ -239,6 +247,16 @@ private:
    * will be 1,2 3 etc... regardless of nesting level.
    */
   int mItemBeingMovedOrigPos;
+
+  /**Information needed by 'storeInitialPosition' and 'resetToInitialPosition'*/
+  enum HIERARCHY_POSITION_TYPE
+    {
+      FIRST_ITEM,
+      FIRST_CHILD,
+      YOUNGER_SIBLING
+    };
+  HIERARCHY_POSITION_TYPE mRestoreInformation;
+  QListViewItem* mRestoreItem;
 
   /*!
    * A fuction sed to determin how far down in the list an item is.

@@ -160,6 +160,10 @@ void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
 	{
 	    mItemBeingMoved = item;
 	    mItemBeingMovedOrigPos = getItemPos(mItemBeingMoved);
+
+	    //store information to insert the item back to the original position
+	    storeInitialPosition(mItemBeingMoved);
+ 
 	    setCursor(Qt::SizeVerCursor);
 	}
     }
@@ -189,18 +193,44 @@ void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
 	if (item && (item != mItemBeingMoved))
 	{
 
-	    QgsLegendItem::DRAG_ACTION action = dest->accept(origin->type());
+	    QgsLegendItem::DRAG_ACTION action = dest->accept(origin);
 	    if(action == QgsLegendItem::REORDER)
 	    {
-		setCursor( QCursor(Qt::SizeVerCursor) );
+	      if(!yCoordAboveCenter(dest, e->y())) //over bottom of item
+	      {
+		  if (mItemBeingMoved->nextSibling() != dest)
+		  {
+		      if(origin->parent() != dest->parent())
+		      {
+			  dest->parent()->insertItem(origin);
+			  mItemBeingMoved->moveItem(dest);
+			  dest->moveItem(mItemBeingMoved);
+		      }
+		      else
+		      {
+			  dest->moveItem(mItemBeingMoved);
+		      }
+		  }
+	      }
+	      else //over top of item
+	      {
+		  if (mItemBeingMoved != dest->nextSibling())
+		  {
+		      mItemBeingMoved->moveItem(dest);
+		  } 
+	      }
+	      placeCheckBoxes();
 	    }
 	    else if(action == QgsLegendItem::INSERT)
 	    {
-		setCursor( QCursor(Qt::PointingHandCursor) );
+	      setCursor( QCursor(Qt::PointingHandCursor) );
+	      dest->insert(origin, false);
+	      placeCheckBoxes();
 	    }
-	    else
+	    else//no action
 	    {
-		setCursor( QCursor(Qt::ForbiddenCursor) );
+	      resetToInitialPosition(mItemBeingMoved);
+	      setCursor( QCursor(Qt::ForbiddenCursor) );
 	    }
 	}     
     }
@@ -224,9 +254,78 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
 	  return;
       }
 
-      QgsLegendItem::DRAG_ACTION daction= dest->accept(origin->type());
+      if(dest && origin && getItemPos(dest) != mItemBeingMovedOrigPos)
+      {
+	QgsLegendItem::LEGEND_ITEM_TYPE originType = origin->type();
+	QgsLegendItem::LEGEND_ITEM_TYPE destType = dest->type();
 
-      if (dest && origin && (origin != dest))
+	if(originType == QgsLegendItem::LEGEND_LAYER_FILE && destType == QgsLegendItem::LEGEND_LAYER_FILE_GROUP)
+	  {
+	    QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
+	    
+	    if(origLayer->legendSymbologyGroupParent() != dest->nextSibling())
+	      {
+		origLayer->setLegendSymbologyGroupParent((QgsLegendSymbologyGroup*)(dest->nextSibling()));
+		if(dest->childCount() > 1)
+		  {
+		    //find the first layer in the legend layer group != origLayer and copy its settings
+		    QListViewItem* currentItem = dest->firstChild();
+		    while(currentItem)
+		      {
+			if(currentItem != origin)
+			  {
+			    QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
+			    QgsMapLayer* currentLayer = ((QgsLegendLayerFile*)(currentItem))->layer();
+			    origLayer->copySymbologySettings(*currentLayer);
+			    break;
+			  }
+			currentItem = currentItem->nextSibling();
+		      }
+		  }
+	      }
+	  }
+	else if(originType == QgsLegendItem::LEGEND_LAYER_FILE && destType == QgsLegendItem::LEGEND_LAYER_FILE)
+	  {
+	    QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
+	    QgsMapLayer* destLayer = ((QgsLegendLayerFile*)(dest))->layer();
+	    if(dest == origin)//origin item has been moved in mouseMoveEvent such that it is under the mouse cursor now
+	      {
+		if(origLayer->legendSymbologyGroupParent() != origin->parent())
+		  {
+		    origLayer->setLegendSymbologyGroupParent((QgsLegendSymbologyGroup*)(origin->parent()->nextSibling()));
+		    if(origin->parent()->childCount() > 1)
+		      {
+			//find the first layer in the legend layer group != origLayer and copy its settings
+			QListViewItem* currentItem = dest->parent()->firstChild();
+			while(currentItem)
+			  {
+			    if(currentItem != origin)
+			      {
+				QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
+				QgsMapLayer* currentLayer = ((QgsLegendLayerFile*)(currentItem))->layer();
+				origLayer->copySymbologySettings(*currentLayer);
+				break;
+			      }
+			    currentItem = currentItem->nextSibling();
+			  }
+		      }
+		  }
+	      }
+	    else
+	      {
+		QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
+		QgsMapLayer* destLayer = ((QgsLegendLayerFile*)(dest))->layer();
+		origLayer->copySymbologySettings(*destLayer);
+		origLayer->setLegendSymbologyGroupParent((QgsLegendSymbologyGroup*)(dest->parent()->nextSibling()));
+	      }
+	  }
+	//placeCheckBoxes()
+	emit zOrderChanged(this);
+      }
+
+      /*QgsLegendItem::DRAG_ACTION daction= dest->accept(origin->type());
+
+      if(dest && origin && getItemPos(dest) != mItemBeingMovedOrigPos)
       {
 	  if( daction == QgsLegendItem::INSERT )
 	  {
@@ -235,12 +334,7 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
 	  }
 	  else if( daction == QgsLegendItem::REORDER)
 	  {
-	      //find out, if mouse is over the top or the bottom of the item
-	      QRect rect = itemRect(dest);
-	      int height = rect.height();
-	      int top = rect.top();
-	      int mid = top + (height / 2);
-	      if (e->y() < mid) //bottom
+	      if(!yCoordAboveCenter(dest, e->y())) //over bottom of item
 	      {
 		  if (mItemBeingMoved->nextSibling() != destItem)
 		  {
@@ -256,7 +350,7 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
 		      }
 		  }
 	      }
-	      else //top
+	      else //over top of item
 	      {
 		  if (mItemBeingMoved != destItem->nextSibling())
 		  {
@@ -266,7 +360,7 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
 	      placeCheckBoxes();
 	  }
 	emit zOrderChanged(this);
-      }
+	}*/
   }
   mMousePressedFlag = false;
   mItemBeingMoved = NULL;
@@ -1032,5 +1126,61 @@ void QgsLegend::restoreFromProject()
 	{
 	  qWarning(*it);
 	}
+    }
+}
+
+void QgsLegend::storeInitialPosition(QListViewItem* li)
+{
+  if(li == firstChild()) //the item is the first item in the list view
+    {
+      mRestoreInformation = FIRST_ITEM;
+      mRestoreItem = 0;
+    }
+  else if(li->parent() == 0) //li is a toplevel item, but not the first one
+    {
+      mRestoreInformation = YOUNGER_SIBLING;
+      mRestoreItem = ((QgsLegendItem*)(li))->findYoungerSibling();
+    }
+  else if(li == li->parent()->firstChild())//li is not a toplevel item, but the first child
+    {
+      mRestoreInformation = FIRST_CHILD;
+      mRestoreItem = li->parent();
+    }
+  else
+    {
+      mRestoreInformation = YOUNGER_SIBLING;
+      mRestoreItem = ((QgsLegendItem*)(li))->findYoungerSibling();
+    }
+}
+
+void QgsLegend::resetToInitialPosition(QListViewItem* li)
+{
+  if(mRestoreInformation == FIRST_ITEM)
+    {
+      insertItem(li);
+    }
+  else if(mRestoreInformation == FIRST_CHILD)
+    {
+      mRestoreItem->insertItem(li);
+    }
+  else if(mRestoreInformation == YOUNGER_SIBLING)
+    {
+      li->moveItem(mRestoreItem);
+    }
+}
+
+bool QgsLegend::yCoordAboveCenter(QgsLegendItem* it, int ycoord)
+{
+  QRect rect = itemRect(it);
+  int height = rect.height();
+  int top = rect.top();
+  int mid = top + (height / 2);
+  if (ycoord < mid) //bottom
+    {
+      return false;
+    }
+  else//top
+    {
+      return true;
     }
 }

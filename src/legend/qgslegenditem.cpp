@@ -65,3 +65,33 @@ void QgsLegendItem::print(QgsLegendItem * theItem)
       ++myIterator;
     }
 }
+
+QgsLegendItem* QgsLegendItem::findYoungerSibling()
+{
+  QgsLegendItem* theItem = 0;
+  QgsLegendItem* ysibling = 0;
+  if(parent() == 0)
+    {
+      theItem = (QgsLegendItem*)(listView()->firstChild());
+    }
+  else
+    {
+      theItem = (QgsLegendItem*)(parent()->firstChild());
+    }
+
+  if(theItem == this)
+    {
+      return 0;
+    }
+  
+  while(theItem)
+    {
+      if(theItem->nextSibling() == this)
+	{
+	  ysibling = theItem;
+	  return ysibling;
+	}
+      theItem = (QgsLegendItem*)(theItem->nextSibling());
+    }
+  return 0;
+}

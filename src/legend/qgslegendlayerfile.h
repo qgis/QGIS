@@ -35,7 +35,8 @@ public:
     ~QgsLegendLayerFile();
     bool isLeafNode() {return true;}
     DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
-    QgsMapLayer* layer(){return mLayer;}
+    QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
+    QgsMapLayer* layer() const {return mLayer;}
     /**Returns the pixmap containing the file symbol.
      This method is used by QgsMapLayer to paint additional
     information (overview, editable, pyramides) to the pixmap*/
