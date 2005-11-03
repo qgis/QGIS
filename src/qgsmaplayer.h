@@ -272,6 +272,7 @@ public:
     bool projectExtent(QgsRect& extent, QgsRect& r2);
 
     void setLegendSymbologyGroupParent(QgsLegendSymbologyGroup* item) {mLegendSymbologyGroupParent = item;}
+    const QgsLegendSymbologyGroup* legendSymbologyGroupParent() {return mLegendSymbologyGroupParent;}
 
     /**Refresh the symbology part of the legend. Specific implementations have to be provided by subclasses*/
     virtual void refreshLegend() = 0;

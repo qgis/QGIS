@@ -58,19 +58,27 @@ public:
        {
 	   REORDER, //change order of items (drag with left mouse button)
 	   INSERT, //insert an item into another one (drag with middle mouse button)
-	   NO_ACTION //move without mouse button pressed
+	   NO_ACTION //do nothing
        };
 
     virtual bool isLeafNode()=0;
-    virtual const LEGEND_ITEM_TYPE type(){return mType;}
+    virtual LEGEND_ITEM_TYPE type() const {return mType;}
     virtual void addItem(QgsLegendItem*){}
     /**Returns the type of action that will be done if a drag, originating at a certain
      item type, will be released at this item*/
     virtual DRAG_ACTION accept(LEGEND_ITEM_TYPE type)=0;
-    /**Subclasses which allow insertion of other items may implement this method. Returns true in case 
-     of success and false if theItem cannot be inserted*/
-    virtual bool insert(QgsLegendItem* theItem) {return false;}
+    /**Retrns the type of action that will be done if a legend item is dragged over this item*/
+    virtual DRAG_ACTION accept(const QgsLegendItem* li) const = 0;
+    /**Subclasses which allow insertion of other items may implement this method. 
+       @param theItem legend item to insert into this item
+       @param changesettings Some insert actions may change the state of the layers or the map canvas. 
+       If false, such settings don't change (e.g. during mouse drags). If true, the layers and/or map canvas
+       settings are allowed to change (e.g. if the mouse button is released).
+       @return true in case of success and false if theItem cannot be inserted*/
+    virtual bool insert(QgsLegendItem* theItem, bool changesettings = true) {return false;}
     void print(QgsLegendItem * theItem);
+    /**Returns the younger sibling or 0 if this item is the first child*/
+    QgsLegendItem* findYoungerSibling();
 protected:
    bool mLeafNodeFlag;
    LEGEND_ITEM_TYPE mType; 

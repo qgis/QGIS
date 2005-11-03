@@ -73,6 +73,19 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(LEGEND_ITEM_TYPE type)
     }
 }
 
+QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(const QgsLegendItem* li) const
+{
+  if(li)
+    {
+      LEGEND_ITEM_TYPE type = li->type();
+      if ( type == LEGEND_LAYER)//todo: only if both layers toplevel or both symbology compatible
+	{
+	  return REORDER;
+	}
+    }
+  return NO_ACTION;
+}
+
 void QgsLegendLayer::handleRightClickEvent(const QPoint& position)
 {
     /*QgsMapLayer* ml = firstMapLayer();

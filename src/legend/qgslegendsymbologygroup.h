@@ -34,6 +34,7 @@ public:
   ~QgsLegendSymbologyGroup();
   bool isLeafNode() {return false;}
   DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
+  QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
   /** Overloads cmpare function of QListViewItem
     * @note The symbology group must always be the second in the list
     */

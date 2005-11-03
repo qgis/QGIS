@@ -36,6 +36,7 @@ public:
 
 	bool isLeafNode() {return mLeafNodeFlag;}
         DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
+	QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
         /** Overloads cmpare function of QListViewItem
           * @note The property group must always be the first in the list
           */

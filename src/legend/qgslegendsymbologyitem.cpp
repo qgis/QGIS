@@ -34,4 +34,8 @@ QgsLegendItem::DRAG_ACTION QgsLegendSymbologyItem::accept(LEGEND_ITEM_TYPE type)
   return NO_ACTION;
 }
 
+QgsLegendItem::DRAG_ACTION QgsLegendSymbologyItem::accept(const QgsLegendItem* li) const
+{
+  return NO_ACTION;
+}
 

@@ -70,7 +70,24 @@ QgsLegendItem::DRAG_ACTION QgsLegendGroup::accept(LEGEND_ITEM_TYPE type)
     }
 }
 
-bool QgsLegendGroup::insert(QgsLegendItem* theItem)
+QgsLegendItem::DRAG_ACTION QgsLegendGroup::accept(const QgsLegendItem* li) const
+{
+  if(li)
+    {
+      LEGEND_ITEM_TYPE type = li->type();
+      if ( type == LEGEND_GROUP )
+	{
+	  return REORDER;
+	}
+      if( type == LEGEND_LAYER )
+	{
+	  return INSERT;
+	}
+    }
+  return NO_ACTION;
+}
+
+bool QgsLegendGroup::insert(QgsLegendItem* theItem, bool changesettings)
 {
     if(theItem->type() == LEGEND_LAYER)
     {
