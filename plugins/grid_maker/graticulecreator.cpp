@@ -66,7 +66,7 @@ void GraticuleCreator::writeDbfRecord ( int theRecordIdInt, QString theLabel)
 {
 
   
-    std::cerr << "writeDbfRecord : " << theRecordIdInt << " - " << theLabel.local8Bit();
+    //std::cerr << "writeDbfRecord : " << theRecordIdInt << " - " << theLabel.local8Bit();
     if (! DBFWriteIntegerAttribute(mDbfHandle, theRecordIdInt, 0, theRecordIdInt))
     {
         std::cerr <<  "DBFWriteIntegerAttribute failed. : " <<  theRecordIdInt << " - " << theRecordIdInt << std::endl;
