@@ -1,4 +1,9 @@
-\documentclass[10pt,english]{timthesis}
+%Slovak version of QGIS documantation - DRAFT
+%modificated qgis_user_guide.tex
+%translated by Lubos Balazovic (balazovic at mailbox dot sk)
+%used encoding: iso-8859-2
+
+\documentclass[10pt,slovak]{timthesis}
 
 \usepackage{geometry}
 \geometry{verbose,letterpaper,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=
@@ -10,7 +15,7 @@
 \usepackage{paralist}
 \usepackage{color}
 \usepackage{hyperref}
-\hypersetup{backref,colorlinks=true}
+ \hypersetup{backref,colorlinks=true}
 \usepackage{ae,aecompl}
 \usepackage{graphicx}
 \usepackage{picins}
@@ -38,9 +43,9 @@
 %\renewcommand\familydefault{lucidabrightsans}
 \title{
 \includegraphics[scale=0.4]{qgis_user_guide_images/qgis_icon_new_verylarge}\\
-Quantum GIS User Guide\\
-\large Version 0.7 \textsl{'Seamus'}}
-\author{Gary E. Sherman \\Tim Sutton \\Radim Blazek (GRASS) \\ Lars Luthman (GPS Plugin)\\
+Pouívateµská príruèka Quantum GIS\\
+\large Verzia 0.7 \textsl{'Seamus'}}
+\author{Gary E. Sherman \\Tim Sutton \\Radim Bla¾ek (GRASS) \\ Lars Luthman (GPS modul)\\
 \date{\mydate\today}
 }
 
@@ -54,7 +59,7 @@ Quantum GIS User Guide\\
 
 \maketitle
 \tableofcontents
-\listof{Tip}{QGIS Tips}
+\listof{Tip}{Zoznam QGIS tipov}
 \newpage
 %\newpage
 %added by Tim to create a decent space between paragraphs
@@ -62,50 +67,49 @@ Quantum GIS User Guide\\
 \setlength{\parskip}{8pt plus 1pt minus 1pt}
 %\fancyfoot[C]{\thepage}
 \pagestyle{fancy}
-\fancyhead[L]{QGIS User Guide}
-\fancyhead[R]{\textsl{Version 0.7}}
+\fancyhead[L]{Pou¾ívateµská príruèka QGIS}
+\fancyhead[R]{\textsl{Verza 0.7}}
 
 \pagenumbering{arabic}
 \begin{onehalfspace}
 \reversemarginpar
-\input{forward.tex}
-\input{introduction.tex}
-\input{getting_started.tex}
-\input{working_with_vector.tex}
-\input{working_with_raster.tex}
-\input{working_with_projections.tex}
-\input{grass_integration.tex}
-\input{map_composer.tex}
+\input{forward_sk.tex}
+%\input{introduction.tex} not translated yet
+\input{getting_started_sk.tex}
+%\input{working_with_vector.tex} not translated yet
+%\input{working_with_raster.tex} not translated yet
+%\input{working_with_projections.tex} not translated yet
+%\input{grass_integration.tex} not translated yet
 %first the general intro to plugins
 %then each individual plugin can have a section
 %in the plugins chapter
-\input{plugins.tex}
-\input{plugins_gps.tex}
-\input{plugins_delimited_text.tex}
+%\input{plugins.tex} not translated yet
+%\input{plugins_gps.tex} not translated yet
+%\input{plugins_delimited_text.tex} not translated yet
 %end of plugin docs
-\input{help_and_support.tex}
+%\input{help_and_support.tex} not translated yet
 
 \appendix
 
 
 
-\input{appendices/supported_data_formats.tex}
-\input{appendices/gpl.tex}
-\input{appendices/qgis_qt_gpl_exception.tex}
+%\input{appendices/supported_data_formats.tex} not translated yet
+%\input{appendices/gpl.tex} not included yet
+%\input{appendices/qgis_qt_gpl_exception.tex} not translated yet
 %install guide is a special case because we are snarfing it
 %out of a separate document, we need to add the chapter here
-\chapter{QGIS Installation Guide}
+\chapter{In¹talaèná príruèka QGIS}
 \label{install_guide}
-\input{../install_guide/install_source.tex}
+%\input{../install_guide/install_source.tex} not translated yet
 
 
 \end{onehalfspace}
-\index{PostgreSQL!layer definition| \see{query builder}}
-\index{PostgreSQL!importing data| \see{SPIT}}
-\index{layers!vector| \see{vector layers}}
-\index{vector layers!symbology!renderers| \see{renderers}}
-\index{layers!raster| \see{rasters}}
-\index{attribute actions| \see{actions}}
-\index{indexes| \see{spatial index}}
+%\index{PostgreSQL!layer definition| \see{query builder}}
+%\index{PostgreSQL!import data| \see{SPIT}}
+%\index{layers!vector| \see{vector layers}}
+%\index{vector layers!symbology!renderers| \see{renderers}}
+\index{vrstvy!rastrové| \see{rastre}}
+%\index{attribute actions| \see{actions}}
+%\index{indexes| \see{spatial index}}
 \printindex
 \end{document}
