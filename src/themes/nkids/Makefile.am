@@ -1,4 +1,4 @@
-# Copyright (C) 2004 Jens Oberender <j.obi at troja.net>
+# Copyright (C) 2005 Gary Sherman <gsherman at mrcc.com>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -10,4 +10,8 @@
 #
 # $Id$
 
-SUBDIRS =  default nkids
+imagedir = ${pkgdatadir}/themes/nkids
+
+image_DATA = *.png
+
+EXTRA_DIST = $(image_DATA)
