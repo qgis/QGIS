@@ -445,6 +445,7 @@ AC_CONFIG_FILES([
   src/resources/Makefile
   src/themes/Makefile
   src/themes/default/Makefile
+  src/themes/nkids/Makefile
   src/mac/Makefile
   src/mac/Contents/Makefile
   src/mac/Contents/Resources/Makefile
