@@ -486,6 +486,7 @@ AC_CONFIG_FILES([
   widgets/projectionselector/Makefile
   designer_plugins/Makefile
   i18n/Makefile
+  helpviewer/Makefile
   qgis.spec
 ])
 
