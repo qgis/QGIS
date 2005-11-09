@@ -162,9 +162,8 @@ void QgsUniqueValRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 	msy->readXML ( symbolnode );
 	this->insertValue(msy->lowerValue(),msy);
 	symbolnode = symbolnode.nextSibling();
-    }
-
     vl.setRenderer(this);
+    }
 }
 
 void QgsUniqueValRenderer::clearValues()

@@ -48,7 +48,7 @@ QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int
     mComposition = composition;
     mId = id;
     mMapCanvas = mComposition->mapCanvas();
-    mName.sprintf ( tr("Map %d"), mId );
+    mName = QString(tr("Map %1").arg(mId));
 
     init();
     recalculate();
@@ -66,7 +66,7 @@ QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id )
     mComposition = composition;
     mId = id;
     mMapCanvas = mComposition->mapCanvas();
-    mName.sprintf ( tr("Map %d"), mId );
+    mName = QString(tr("Map %1").arg(mId));
 
     init();
     readSettings();

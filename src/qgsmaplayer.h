@@ -286,6 +286,9 @@ public:
     virtual std::vector < QgsField > const &fields() const;
 
 public  slots:
+   //! event handler for when a coordinate transofrm fails due to bad vertex error
+   virtual void invalidTransformInput();
+
 
     //! keyPress event so we can check if cancel was pressed
     void keyPressed ( QKeyEvent * e );
@@ -390,6 +393,9 @@ protected:
 
     //! Geometry type as defined in enum WKBTYPE (qgis.h)
     int geometryType;
+
+    /** Pixmap to show a bogus vertex was encoutnered in this layer (applies to vector layers only) */
+    QPixmap mProjectionErrorPixmap;
 
     //! A little pixmap to show if this layer is represented in overview or now
     QPixmap mInOverviewPixmap;

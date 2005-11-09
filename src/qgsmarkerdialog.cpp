@@ -81,7 +81,7 @@ void QgsMarkerDialog::visualizeMarkers(QString directory)
     
     for(QStringList::Iterator it = files.begin(); it != files.end(); ++it )
     {
-	qWarning(*it);
+	qWarning((*it).local8Bit());
 	
 	//render the SVG file to a pixmap and put it into mIconView
 	QPixmap pix = QgsSVGCache::instance().getPixmap(mCurrentDir + "/" + 

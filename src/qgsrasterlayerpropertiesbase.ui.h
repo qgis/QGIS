@@ -104,3 +104,9 @@ void QgsRasterLayerPropertiesBase::pbnHistRefresh_clicked()
 {
 
 }
+
+
+void QgsRasterLayerPropertiesBase::pbnChangeSpatialRefSys_clicked()
+{
+
+}

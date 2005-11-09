@@ -461,6 +461,11 @@ protected slots:
   
   void stopEditing();
 
+
+private:                       // Private attributes
+
+  //! Draws features. May cause projections exceptions to be generated
+  // (i.e., code that calls this function needs to catch them
   void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPicture* marker, double markerScaleFactor, bool projectionsEnabledFlag );
 
 private:                       // Private attributes

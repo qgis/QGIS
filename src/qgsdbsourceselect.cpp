@@ -443,7 +443,7 @@ QString QgsDbSourceSelect::encoding()
 }
 void QgsDbSourceSelect::showHelp()
 {
-	QgsContextHelp::run(context_id);
+  QgsContextHelp::run(context_id);
 }
 void QgsDbSourceSelect::dbChanged()
 {

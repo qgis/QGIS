@@ -70,6 +70,8 @@ class QgsRasterLayerProperties : public QgsRasterLayerPropertiesBase
         void rbtnThreeBand_toggled( bool );
         /** \brief slot executed when user wishes to refresh raster histogram */
         void QgsRasterLayerProperties::pbnHistRefresh_clicked();
+        /** Override the SRS specified when the layer was loaded */
+        void pbnChangeSpatialRefSys_clicked();
 
         /** synchronize state with associated raster layer */
         void sync();

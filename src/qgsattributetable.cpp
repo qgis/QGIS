@@ -244,16 +244,15 @@ void QgsAttributeTable::qsort(int lower, int upper, int col, bool ascending, boo
   if (upper > lower)
     {
       //chose a random element (this avoids n^2 worst case)
-      int element = int (rand() / RAND_MAX * (upper - lower) + lower);
-
+      int element = int ( (double)rand() / (double)RAND_MAX * (upper - lower) + lower);
       swapRows(element, upper);
       v = text(upper, col);
       i = lower - 1;
       j = upper;
       for (;;)
-        {
-          while (compareItems(text(++i, col), v, ascending, alphanumeric) == -1);
-          while (compareItems(text(--j, col), v, ascending, alphanumeric) == 1 && j > 0); //make sure that j does not get negative
+      {
+	  while (compareItems(text(++i, col), v, ascending, alphanumeric) == -1);
+	  while (compareItems(text(--j, col), v, ascending, alphanumeric) == 1 && j > 0); //make sure that j does not get negative
           if (i >= j)
             {
               break;
@@ -340,9 +339,9 @@ bool QgsAttributeTable::addAttribute(const QString& name, const QString& type)
     }
     mAddedAttributes.insert(std::make_pair(name,type));
 #ifdef QGISDEBUG
-    qWarning("inserting attribute "+name+" of type "+type);
+    qWarning(("inserting attribute "+name+" of type "+type).local8Bit());
     //add a new column at the end of the table
-    qWarning("numCols: "+QString::number(numCols()));
+    qWarning(("numCols: "+QString::number(numCols())).local8Bit());
 #endif
     insertColumns(numCols());
     horizontalHeader()->setLabel(numCols()-1,name);
@@ -362,7 +361,7 @@ void QgsAttributeTable::deleteAttribute(const QString& name)
     else
     {
 #ifdef QGISDEBUG
-	qWarning("QgsAttributeTable: deleteAttribute "+name);
+	qWarning(("QgsAttributeTable: deleteAttribute "+name).local8Bit());
 #endif
 	mDeletedAttributes.insert(name);
 	removeAttrColumn(name);
@@ -521,8 +520,8 @@ void QgsAttributeTable::storeChangedValue(int row, int column)
 	int id=text(row,0).toInt();
 	QString attribute=horizontalHeader()->label(column);
 #ifdef QGISDEBUG
-	qWarning("feature id: "+QString::number(id));
-	qWarning("attribute: "+attribute);
+	qWarning(("feature id: "+QString::number(id)).local8Bit());
+	qWarning(("attribute: "+attribute).local8Bit());
 #endif
 	std::map<int,std::map<QString,QString> >::iterator iter=mChangedValues.find(id);
 	if(iter==mChangedValues.end())
@@ -534,7 +533,7 @@ void QgsAttributeTable::storeChangedValue(int row, int column)
 	iter->second.erase(attribute);
 	iter->second.insert(std::make_pair(attribute,text(row,column)));
 #ifdef QGISDEBUG
-	qWarning("value: "+text(row,column));
+	qWarning(("value: "+text(row,column)).local8Bit());
 #endif	
 	mEdited=true;
     }

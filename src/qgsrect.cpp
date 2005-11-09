@@ -19,7 +19,9 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
-
+#ifdef WIN32
+#include <limits>
+#endif
 #include <qstring.h>
 #include <qtextstream.h> 
 
@@ -75,6 +77,14 @@ void QgsRect::normalize()
   }
 } // QgsRect::normalize()
 
+
+void QgsRect::setMinimal()
+{
+  xmin = std::numeric_limits<double>::max();
+  ymin = std::numeric_limits<double>::max();
+  xmax =-std::numeric_limits<double>::max();
+  ymax =-std::numeric_limits<double>::max();
+}
 
 void QgsRect::scale(double scaleFactor, QgsPoint * cp)
 {
@@ -142,6 +152,16 @@ void QgsRect::combineExtentWith(QgsRect * rect)
 
 }
 
+void QgsRect::combineExtentWith(double x, double y)
+{
+ 
+  xmin = ( (xmin < x)? xmin : x );
+  xmax = ( (xmax > x)? xmax : x );
+
+  ymin = ( (ymin < y)? ymin : y );
+  ymax = ( (ymax > y)? ymax : y );
+
+}
 
 bool QgsRect::isEmpty() const
 {

@@ -473,7 +473,7 @@ void QgsSiSyDialog::setFillColor(QColor& c)
 void QgsSiSyDialog::setFillStyle(Qt::BrushStyle fstyle)
 {
 #ifdef QGISDEBUG
-    qWarning("Setting fill style: "+QgsSymbologyUtils::brushStyle2QString(fstyle));
+    qWarning(("Setting fill style: "+QgsSymbologyUtils::brushStyle2QString(fstyle)).local8Bit());
 #endif
 
     // XXX use switch instead

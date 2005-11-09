@@ -16,7 +16,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 /* $Id$ */
 
 #ifndef WIN32
@@ -82,7 +81,6 @@ using namespace std;
 #include <qcheckbox.h>
 #include <qtooltip.h>
 #include <qglobal.h>
-
 
 #include "qgsencodingfiledialog.h"
 #include "qgsrect.h"
@@ -1120,7 +1118,7 @@ void QgisApp::addLayer()
 
         QStringList selectedFiles;
 #ifdef QGISDEBUG
-        std::cerr << "Vector file filters: " << mVectorFileFilter.local8Bit() << "\n";
+        std::cerr << "Vector file filters: " << mVectorFileFilter.local8Bit() << std::endl;
 #endif
 
         QString enc;
@@ -1180,63 +1178,63 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
 
     if (layer->isValid())
     {
-        // init the context menu so it can connect to slots
-        // in main app
-        // XXX move to legend::addLayer() layer->initContextMenu(this);
+      // init the context menu so it can connect to slots
+      // in main app
+      // XXX move to legend::addLayer() layer->initContextMenu(this);
 
-        // XXX What about the rest of these?  Where should they be moved, if at
-        // XXX all?  Some of this functionality is taken care of in the
-        // XXX QgsProject::read() (If layers added via that.)
+      // XXX What about the rest of these?  Where should they be moved, if at
+      // XXX all?  Some of this functionality is taken care of in the
+      // XXX QgsProject::read() (If layers added via that.)
 
-        //add single symbol renderer as default
-        QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());
+      //add single symbol renderer as default
+      QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());
 
-        Q_CHECK_PTR( renderer );
+      Q_CHECK_PTR( renderer );
 
-        if ( ! renderer )
-        {
-            mMapCanvas->freeze(false);
-            QApplication::restoreOverrideCursor();
+      if ( ! renderer )
+      {
+        mMapCanvas->freeze(false);
+        QApplication::restoreOverrideCursor();
 
-            // XXX should we also delete the layer?
+        // XXX should we also delete the layer?
 
-            // XXX insert meaningful whine to the user here
-            return false;
-        }
+        // XXX insert meaningful whine to the user here
+        return false;
+      }
 
-        layer->setRenderer(renderer);
+      layer->setRenderer(renderer);
 
-	// Register this layer with the layers registry
-        QgsMapLayerRegistry::instance()->addMapLayer(layer);
-	layer->refreshLegend();
-	
+      // Register this layer with the layers registry
+      QgsMapLayerRegistry::instance()->addMapLayer(layer);
+	  layer->refreshLegend();
 
-        // not necessary since registry will add to canvas mMapCanvas->addLayer(layer);
-        // XXX some day will not necessary since connect up a request from
-        // the raster layer to show in overview map
-        //      QObject::connect(layer,
-        //              SIGNAL(showInOverview(QString,bool)),
-        //              this,
-        //              SLOT(setLayerOverviewStatus(QString,bool)));
+      // map canvas and overview canvas already know about this layer
+      // when it is added to map registry
+      //      mMapCanvas->addLayer(layer);
+      //      // XXX some day use other means to  connect up a request from the raster layer to show in overview map
+      //      QObject::connect(layer,
+      //              SIGNAL(showInOverview(QString,bool)),
+      //              this,
+      //              SLOT(setLayerOverviewStatus(QString,bool)));
 
-        // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
+      // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
 #ifdef QGISDEBUG
-  std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
+      std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
 #endif
-        QObject::connect(this,
-                         SIGNAL(keyPressed(QKeyEvent *)),
-                         layer,
-                         SLOT(keyPressed(QKeyEvent* )));
-            //add hooks for letting layer know canvas needs to recalc the layer extents
-            QObject::connect(layer,
-                             SIGNAL(recalculateExtents()),
-                             mMapCanvas,
-                             SLOT(recalculateExtents()));
+      QObject::connect(this,
+              SIGNAL(keyPressed(QKeyEvent *)),
+              layer,
+              SLOT(keyPressed(QKeyEvent* )));
+      //add hooks for letting layer know canvas needs to recalc the layer extents
+      QObject::connect(layer,
+              SIGNAL(recalculateExtents()),
+              mMapCanvas,
+              SLOT(recalculateExtents()));
 
-            QObject::connect(layer,
-                             SIGNAL(recalculateExtents()),
-                             mOverviewCanvas,
-                             SLOT(recalculateExtents()));
+      QObject::connect(layer,
+              SIGNAL(recalculateExtents()),
+              mOverviewCanvas,
+              SLOT(recalculateExtents()));
     }
     else
     {
@@ -1466,12 +1464,6 @@ void QgisApp::addDatabaseLayer()
                 //qWarning("creating layer");
                 QgsVectorLayer *layer = new QgsVectorLayer(connInfo + " table=" + *it, *it, "postgres");
 		QObject::connect(layer, SIGNAL(editingStopped(bool)), mMapCanvas, SLOT(removeDigitizingLines(bool)));
-
-		
-		if(layer->getDataProvider())
-                {
-		    layer->setProviderEncoding(dbs->encoding());
-                }
 
                 if (layer->isValid())
                 {
@@ -1849,7 +1841,7 @@ findLayer_( QString const & fileFilters, QDomNode const & constLayerNode )
             break;
     }
 
-} // findLayer_
+}; // findLayer_
 
 
 
@@ -2222,20 +2214,32 @@ void QgisApp::fileOpen()
   //loop through all layers in the layers registry and connect up 
   // keybindings for the escape key
   std::map<QString, QgsMapLayer *> myMapLayers 
-    = QgsMapLayerRegistry::instance()->mapLayers();
+      = QgsMapLayerRegistry::instance()->mapLayers();
   std::map<QString, QgsMapLayer *>::iterator myMapIterator;
   for ( myMapIterator = myMapLayers.begin(); myMapIterator != myMapLayers.end(); ++myMapIterator )
   {
+    
     QgsMapLayer * myMapLayer = myMapIterator->second;
     QObject::connect(this,
-        SIGNAL(keyPressed(QKeyEvent *)),
-        myMapLayer,
-        SLOT(keyPressed(QKeyEvent* )));
+            SIGNAL(keyPressed(QKeyEvent *)),
+            myMapLayer,
+            SLOT(keyPressed(QKeyEvent* )));
+    
+    //add hooks for letting layer know canvas needs to recalc the layer extents
+    QObject::connect(myMapLayer,
+            SIGNAL(recalculateExtents()),
+            mMapCanvas,
+            SLOT(recalculateExtents()));
+
+    QObject::connect(myMapLayer,
+            SIGNAL(recalculateExtents()),
+            mOverviewCanvas,
+            SLOT(recalculateExtents()));
   }
 
   //set the projections enabled icon in the status bar
   int myProjectionEnabledFlag =
-    QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
+      QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
   projectionsEnabled(myProjectionEnabledFlag);
 } // QgisApp::fileOpen
 
@@ -2329,7 +2333,7 @@ void QgisApp::fileSave()
         std::auto_ptr<QFileDialog> saveFileDialog( new QFileDialog(lastUsedDir, 
                                                                    QObject::tr("QGis files (*.qgs)"), 
                                                                    0,
-                                                                   QFileDialog::tr("Choose a QGIS project file")) );
+                                                                   "save project file") );
 
         saveFileDialog->setCaption(tr("Choose a QGIS project file"));
         saveFileDialog->setMode(QFileDialog::AnyFile);
@@ -2454,7 +2458,7 @@ void QgisApp::fileSaveAs()
     }
 
     // make sure the .qgs extension is included in the path name. if not, add it...
-    if( "qgs" != fullPath.extension(false) )
+    if( "qgs" != fullPath.extension( false ) )
     {
         QString newFilePath = fullPath.filePath() + ".qgs";
 #ifdef QGISDEBUG
@@ -2654,7 +2658,6 @@ bool QgisApp::openLayer(const QString & fileName)
 }
 
 
-
 /*
 void QgisApp::filePrint()
 {
@@ -2738,8 +2741,7 @@ void QgisApp::saveMapAsImage()
             myLastUsedDir,
             myFilters,
             0,
-
-            tr("Choose a filename to save the map image as")
+            "save map file dialog"
         )
     );
 
@@ -3503,11 +3505,27 @@ void QgisApp::zoomToLayerExtent()
         QgsMapLayer *layer = llf->layer();
         // Check if the layer extent has to be transformed to the map canvas
         // coordinate system
+#ifdef QGISDEBUG
+        std::cout << "Layer extent is : " << (layer->extent()).stringRep().local8Bit() << std::endl;
+#endif
         if (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0)
         {
             QgsCoordinateTransform *ct = layer->coordinateTransform();
+            try {
             QgsRect transformedExtent = ct->transform(layer->extent());
             mMapCanvas->setExtent(transformedExtent);
+#ifdef QGISDEBUG
+            std::cout << "Canvas extent is : " << transformedExtent.stringRep().local8Bit() << std::endl;
+#endif
+            }
+            catch(QgsCsException &cse)
+            {
+#ifdef QGISDEBUG
+	        std::cout << "Caught transform error in zoomToLayerExtent(). "
+		        << "Setting untransformed extents." << std::endl;
+#endif	
+	        mMapCanvas->setExtent(layer->extent());
+            }
         }
         else
         {
@@ -4713,9 +4731,9 @@ void QgisApp::projectProperties()
   connect (pp,SIGNAL(refresh()), mMapCanvas, SLOT(refresh()));
   connect (pp,SIGNAL(mapUnitsChanged()), mMapCanvas, SLOT(mapUnitsChanged()));  
   connect (pp,SIGNAL(refresh()), mOverviewCanvas, SLOT(refresh()));
-  
+
   bool wasProjected = pp->isProjected();
-  
+
   // Display the modal dialog box.
   pp->exec();
 

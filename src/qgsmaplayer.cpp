@@ -83,7 +83,7 @@ QgsMapLayer::QgsMapLayer(int type,
 
     mInOverviewPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/inoverview.png"));
     mEditablePixmap.load(QString(PKGDATAPATH) + QString("/images/icons/editable.png"));
-
+    mProjectionErrorPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection_problem.png"));
     //mActionInOverview = new QAction( "in Overview", "Ctrl+O", this );
 
     //set some generous  defaults for scale based visibility
@@ -148,9 +148,12 @@ const QgsRect QgsMapLayer::extent()
 QgsRect QgsMapLayer::calculateExtent()
 {
     //just to prevent any crashes
-    QgsRect rect(DBL_MAX, DBL_MAX, DBL_MIN, DBL_MIN);
+    QgsRect rect;
+    
+    rect.setMinimal();
     return rect;
 }
+
 void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
 {
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
@@ -219,6 +222,8 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     QDomElement mne = mnl.toElement();
     dataSource = mne.text();
 
+    const char * dataSourceStr = dataSource.local8Bit(); // debugger probe
+
     // the internal name is just the data source basename
     QFileInfo dataSourceFileInfo( dataSource );
     internalName = dataSourceFileInfo.baseName();
@@ -237,6 +242,10 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     mnl = layer_node.namedItem("layername");
     mne = mnl.toElement();
     setLayerName( mne.text() );
+
+    const char * layerNameStr = mne.text().local8Bit(); // debugger probe
+
+
 
     //read srs
     QDomNode srsNode = layer_node.namedItem("coordinatetransform");
@@ -441,6 +450,24 @@ void QgsMapLayer::updateItemPixmap()
     }
 }
 
+void QgsMapLayer::invalidTransformInput()
+{
+#ifdef QGISDEBUG
+  std::cout << " QgsMapLayer::invalidTransformInput() called" << std::endl;
+#endif
+    if (mLegendLayerFile)             // XXX should we know about our legend?
+    {
+        QPixmap pix=mLegendLayerFile->getOriginalPixmap();
+        if(mShowInOverview)
+        {
+            //add overview glasses to the pixmap
+            QPainter p(&pix);
+            p.drawPixmap(60,0,mProjectionErrorPixmap);
+        }
+	    mLegendLayerFile->setLegendPixmap(pix);
+    }
+}
+
 void QgsMapLayer::updateOverviewPopupItem()
 {
     if (mShowInOverviewItemId != 0)
@@ -523,7 +550,11 @@ void QgsMapLayer::initContextMenu(QgisApp * app)
 void QgsMapLayer::keyPressed ( QKeyEvent * e )
 {
   if (e->key()==Qt::Key_Escape) mDrawingCancelled = true;
-  std::cout << e->ascii() << " pressed in maplayer !" << std::endl;
+// The following statment causes a crash on WIN32 and should be 
+// enclosed in an #ifdef QGISDEBUG if its really necessary. Its
+// commented out for now. [gsherman]
+//  std::cout << e->text().local8Bit() << " pressed in maplayer !" << std::endl;
+  e->ignore();
 }
 
 
@@ -596,15 +627,17 @@ bool QgsMapLayer::projectExtent(QgsRect& extent, QgsRect& r2)
           split = true;
         }
         else // no need to split
-          extent = calcProjectedBoundingBox(extent);
+          extent = mCoordinateTransform->transformBoundingBox(extent, QgsCoordinateTransform::INVERSE);
       }
       else // can't cross 180
-        extent = calcProjectedBoundingBox(extent);
+        extent = mCoordinateTransform->transformBoundingBox(extent, QgsCoordinateTransform::INVERSE);
     }
-    catch (QgsCsException &e)
+    catch (QgsCsException &cse)
       {
         qDebug( "Transform error caught in %s line %d:\n%s", 
-                __FILE__, __LINE__, e.what());
+                __FILE__, __LINE__, cse.what());
+        extent = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
+        r2     = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
       }
   }
   return split;
