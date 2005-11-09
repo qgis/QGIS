@@ -107,6 +107,7 @@ QgsMapCanvas::QgsMapCanvas()
 QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
     : QWidget(parent, name),
     mCanvasProperties( new CanvasProperties(width(), height()) ),
+    mUserInteractionAllowed(true), // by default we allow a user to interact with the canvas
     mLineEditing(false), mPolygonEditing(false)
 {
   // by default, the canvas is rendered
@@ -208,10 +209,20 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
   {
     // Adding the first layer. Set the previousOutputSRS to the output
     // SRS for the layer.
-    mCanvasProperties->previousOutputSRS = lyr->coordinateTransform()->destSRS();
-    // Set the map units from the dest SRS because any existing map
-    // units applied to previously loaded layers, not this one.
-    setMapUnits(lyr->coordinateTransform()->destSRS().mapUnits());
+
+      if ( ! lyr->coordinateTransform() )
+      {
+          QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
+      }
+      else
+      {
+	// Adding the first layer. Set the previousOutputSRS to the output
+	// SRS for the layer.
+	mCanvasProperties->previousOutputSRS = lyr->coordinateTransform()->destSRS();
+	// Set the map units from the dest SRS because any existing map
+	// units applied to previously loaded layers, not this one.
+	setMapUnits(lyr->coordinateTransform()->destSRS().mapUnits());
+      }
   }
 
   mCanvasProperties->layers[lyr->getLayerID()] = lyr;
@@ -225,8 +236,25 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
     // system as the map canvas prior to updating the canvas extents
     if(projectionsEnabled())
     {
-      QgsRect tRect = lyr->coordinateTransform()->transform(lyr->extent());
-      mCanvasProperties->fullExtent = tRect;
+      try
+      {
+          if ( ! lyr->coordinateTransform() )
+          {
+              QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
+          }
+          else
+          {
+              QgsRect tRect = lyr->coordinateTransform()->transformBoundingBox(lyr->extent());
+              mCanvasProperties->fullExtent = tRect;
+          }
+      }
+      catch(QgsCsException &cse)
+      {
+#ifdef QGISDEBUG
+	std::cout << "Caught transform error in QgsMapCanvas::addLayer(). "
+		  << "Setting extents to untransformed extents" << std::endl;
+#endif	
+      }
     }
     else
     {
@@ -240,7 +268,25 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
   {
     if(projectionsEnabled())
     {
-      updateFullExtent(lyr->coordinateTransform()->transform(lyr->extent()));
+      // project the layer extent and pass it off to update the full extent
+      try 
+      {
+          if ( ! lyr->coordinateTransform() )
+          {
+              QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
+          }
+          else
+          {
+                  updateFullExtent(lyr->coordinateTransform()->transformBoundingBox(lyr->extent()));
+          }
+      }
+      catch(QgsCsException &cse)
+      {
+#ifdef QGISDEBUG
+	std::cout << "Caught transform error in QgsMapCanvas::addLayer(). "
+		  << "Ignoring this layer in map extents calculation." << std::endl;
+#endif	
+      }
     }
     else
     {
@@ -372,6 +418,15 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
     std::map<QString, QgsMapLayer*>::const_iterator 
      i = mCanvasProperties->layers.begin();
 
+    if ( ! i->second->coordinateTransform() )
+    {
+        QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
+
+        return;                 // XXX KLUDGY HACK, but necessary to underscore problem
+                                // XXX with layers NOT HAVING DEFAULT COORDINATE TRANSFORMS
+    }
+
+
     const QgsSpatialRefSys& currentOutputSRS = 
       i->second->coordinateTransform()->destSRS();
 
@@ -388,11 +443,11 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       try
       {
         mCanvasProperties->currentExtent = 
-          transform.transform(mCanvasProperties->currentExtent);
+          transform.transformBoundingBox(mCanvasProperties->currentExtent);
       }
       catch(QgsCsException &cse)
       {
-        qWarning(tr("Error when projecting the view extent, you may need to manually zoom to the region of interest."));
+        qWarning(tr("Error when projecting the view extent, you may need to manually zoom to the region of interest.").local8Bit());
 #ifdef QGISDEBUG
         std::cerr << "Attempted to transform the view extent from\n"
                   << mCanvasProperties->previousOutputSRS 
@@ -506,7 +561,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       muppY = mCanvasProperties->currentExtent.height() / myHeight;
       muppX = mCanvasProperties->currentExtent.width() / myWidth;
       mCanvasProperties->m_mupp = muppY > muppX ? muppY : muppX;
-      
+
       // calculate the actual extent of the mapCanvas
       double dxmin, dxmax, dymin, dymax, whitespace;
 
@@ -515,7 +570,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         dymin = mCanvasProperties->currentExtent.yMin();
         dymax = mCanvasProperties->currentExtent.yMax();
         whitespace = ((myWidth * mCanvasProperties->m_mupp) - 
-          mCanvasProperties->currentExtent.width()) / 2;
+            mCanvasProperties->currentExtent.width()) / 2;
         dxmin = mCanvasProperties->currentExtent.xMin() - whitespace;
         dxmax = mCanvasProperties->currentExtent.xMax() + whitespace;
       }
@@ -524,7 +579,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         dxmin = mCanvasProperties->currentExtent.xMin();
         dxmax = mCanvasProperties->currentExtent.xMax();
         whitespace = ((myHeight * mCanvasProperties->m_mupp) - 
-          mCanvasProperties->currentExtent.height()) / 2;
+            mCanvasProperties->currentExtent.height()) / 2;
         dymin = mCanvasProperties->currentExtent.yMin() - whitespace;
         dymax = mCanvasProperties->currentExtent.yMax() + whitespace;
       }
@@ -536,7 +591,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       // the mupp if we're rendering to an alternative device (it uses the
       // widget size in its calculations).
       if (!theQPaintDevice)
-  currentScale(0);
+        currentScale(0);
 
 #ifdef QGISDEBUG
 
@@ -609,22 +664,22 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
             //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
 #ifdef QGISDEBUG
             std::cout << "QgsMapCanvas::render: Rendering layer " << ml->name().local8Bit() << '\n'
-          << "Layer minscale " << ml->minScale() 
-          << ", maxscale " << ml->maxScale() << '\n' 
-          << ". Scale dep. visibility enabled? " 
-          << ml->scaleBasedVisibility() << '\n'
-          << "Input extent: " << ml->extent().stringRep().local8Bit()
-          << std::endl;
+              << "Layer minscale " << ml->minScale() 
+              << ", maxscale " << ml->maxScale() << '\n' 
+              << ". Scale dep. visibility enabled? " 
+              << ml->scaleBasedVisibility() << '\n'
+              << "Input extent: " << ml->extent().stringRep().local8Bit() 
+              << std::endl;
             try
             {
               std::cout << "Transformed extent" 
-      << ml->coordinateTransform()->transform(ml->extent()).stringRep().local8Bit()
-      << std::endl;
+                << ml->coordinateTransform()->transformBoundingBox(ml->extent()).stringRep().local8Bit() 
+                << std::endl;
             }
-            catch (QgsCsException &e)
+            catch (QgsCsException &cse)
             {
               qDebug( "Transform error caught in %s line %d:\n%s", 
-          __FILE__, __LINE__, e.what());
+                  __FILE__, __LINE__, cse.what());
             }
 #endif
 
@@ -649,7 +704,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
               else
               {
                 std::cout << "Layer not rendered because it is not within "
-        << "the defined visibility scale range" << std::endl;
+                  << "the defined visibility scale range" << std::endl;
               }
 #endif
 
@@ -710,52 +765,82 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 
       // draw the acetate layer
       std::map <QString, QgsAcetateObject *>::iterator 
-  ai = mCanvasProperties->acetateObjects.begin();
+        ai = mCanvasProperties->acetateObjects.begin();
       while(ai != mCanvasProperties->acetateObjects.end())
       {
         QgsAcetateObject *acObj = ai->second;
         if(acObj)
         {
+          try
+          {
+
           acObj->draw(paint, mCanvasProperties->coordXForm);
+          }
+          catch(QgsException &e)
+          {
+            std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 
+          }
         }
         ai++;
       }
 
       //draw mCaptureList with color and width stored in QgsProject
       QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),
-            QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),
-            QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
+          QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),
+          QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
       paint->setPen(QPen(digitcolor,QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",1),Qt::SolidLine));
-      
-      std::list<QgsPoint>::iterator it=mCaptureList.begin();
-      QgsPoint previous=mCanvasProperties->coordXForm->transform(it->x(), it->y());
-      QgsPoint current;
-      for(std::list<QgsPoint>::iterator it=++mCaptureList.begin();it!=mCaptureList.end();++it)
+      if(mCaptureList.size() > 0)
       {
-	  current=mCanvasProperties->coordXForm->transform(it->x(), it->y());
-	  paint->drawLine(static_cast<int>(previous.x()), static_cast<int>(previous.y()), static_cast<int>(current.x()),\
-			 static_cast<int>(current.y()));
-	  previous=mCanvasProperties->coordXForm->transform(it->x(), it->y());
-      }
-      
-//and also the connection to mDigitMovePoint
-      if((mLineEditing || mPolygonEditing) && mCaptureList.size()>0)
-      {
+
+        std::list<QgsPoint>::iterator it=mCaptureList.begin();
+        QgsPoint current;
+        try
+        {
+          QgsPoint previous=mCanvasProperties->coordXForm->transform(it->x(), it->y());
+          for(std::list<QgsPoint>::iterator it=++mCaptureList.begin();it!=mCaptureList.end();++it)
+          {
+            current=mCanvasProperties->coordXForm->transform(it->x(), it->y());
+            paint->drawLine(static_cast<int>(previous.x()), static_cast<int>(previous.y()), static_cast<int>(current.x()),\
+                static_cast<int>(current.y()));
+            previous=mCanvasProperties->coordXForm->transform(it->x(), it->y());
+          }
+        }
+        catch(QgsException &e)
+        {
+          // ignore this exception at present
+          std::cout << "QgsException: " << __FILE__ << __LINE__ << std::endl; 
+        }
+
+
+        //and also the connection to mDigitMovePoint
+        if((mLineEditing || mPolygonEditing) && mCaptureList.size()>0)
+        {
 // TODO: Qt4 will have to do this a different way, using QRubberBand ...
 #if QT_VERSION < 0x040000
-	  paint->setRasterOp(Qt::XorROP);
-	  QgsPoint digitpoint=mCanvasProperties->coordXForm->transform(mDigitMovePoint.x(), mDigitMovePoint.y());
-	  paint->drawLine(static_cast<int>(current.x()), static_cast<int>(current.y()), static_cast<int>(digitpoint.x()),\
-					  static_cast<int>(digitpoint.y()));
-	  if(mPolygonEditing && mCaptureList.size()>1)
-	  {
-	      QgsPoint first=mCanvasProperties->coordXForm->transform(*(mCaptureList.begin()));
-	      paint->drawLine(static_cast<int>(first.x()), static_cast<int>(first.y()), static_cast<int>(digitpoint.x()),\
-					  static_cast<int>(digitpoint.y()));
-	  }
+          paint->setRasterOp(Qt::XorROP);
+          try
+          {
+            QgsPoint digitpoint=mCanvasProperties->coordXForm->transform(mDigitMovePoint.x(), mDigitMovePoint.y());
+            paint->drawLine(static_cast<int>(current.x()), static_cast<int>(current.y()), static_cast<int>(digitpoint.x()),\
+                static_cast<int>(digitpoint.y()));
+            if(mPolygonEditing && mCaptureList.size()>1)
+            {
+              QgsPoint first=mCanvasProperties->coordXForm->transform(*(mCaptureList.begin()));
+              paint->drawLine(static_cast<int>(first.x()), static_cast<int>(first.y()), static_cast<int>(digitpoint.x()),\
+                  static_cast<int>(digitpoint.y()));
+            }
+          }
 #endif
-      }
 
+
+          catch(QgsException &cse)
+          {
+            // ignore this for now
+            // we need this to keep windows from wanted to send
+            // a bug report to Bill
+          }
+        }
+      }
 				      
 
       // notify any listeners that rendering is complete
@@ -868,11 +953,11 @@ void QgsMapCanvas::saveAsImage(QString theFileName, QPixmap * theQPixmap, QStrin
   if (theQPixmap != NULL)
   {
     render(theQPixmap);
-    theQPixmap->save(theFileName,theFormat);
+    theQPixmap->save(theFileName,theFormat.local8Bit());
   }
   else //use the map view
   {
-    mCanvasProperties->pmCanvas->save(theFileName,theFormat);
+    mCanvasProperties->pmCanvas->save(theFileName,theFormat.local8Bit());
   }
 } // saveAsImage
 
@@ -979,11 +1064,19 @@ void QgsMapCanvas::zoomToSelected()
     {
       try
       {      
-        rect = lyr->coordinateTransform()->transform(lyr->bBoxOfSelected());
+        if ( ! lyr->coordinateTransform() )
+        {
+#ifdef QGISDEBUG 
+            std::cout << "Throwing exception "<< __FILE__ << __LINE__ << std::endl; 
+#endif
+            throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+        }
+
+        rect = lyr->coordinateTransform()->transformBoundingBox(lyr->bBoxOfSelected());
       }
-      catch (QgsCsException &e)
+      catch (QgsCsException &cse)
       {
-        qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+        qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what());
       }
     }
     else
@@ -1013,10 +1106,150 @@ void QgsMapCanvas::zoomToSelected()
   }
 } // zoomToSelected
 
+void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
+{
 
+#ifdef QGISDEBUG
+  qDebug("keyPress event at line %d in %s",  __LINE__, __FILE__);
+#endif
+  
+  if (!mUserInteractionAllowed || mCanvasProperties->mouseButtonDown
+      || mCanvasProperties->panSelectorDown)
+    return;
+
+  QPainter paint;
+  QPen     pen(Qt::gray);
+  QgsPoint ll, ur;
+
+  if (! mCanvasProperties->mouseButtonDown )
+  {
+    // Don't want to interfer with mouse events
+
+    double dx = fabs((mCanvasProperties->currentExtent.xMax()- mCanvasProperties->currentExtent.xMin()) / 4);
+    double dy = fabs((mCanvasProperties->currentExtent.yMax()- mCanvasProperties->currentExtent.yMin()) / 4);
+
+    switch ( e->key() ) 
+    {
+    case Qt::Key_Left:
+#ifdef QGISDEBUG
+	    std::cout << "Pan left" << std::endl;
+#endif
+
+	    mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+
+	    mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() - dx);
+	    mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() - dx);
+	    
+	    clear();
+	    render();
+	    emit extentsChanged(mCanvasProperties->currentExtent);
+	    break;
+
+    case Qt::Key_Right:
+#ifdef QGISDEBUG
+	    std::cout << "Pan right" << std::endl;
+#endif
+
+	    mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+
+	    mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() + dx);
+	    mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() + dx);
+
+	    clear();
+	    render();
+	    emit extentsChanged(mCanvasProperties->currentExtent);
+	    break;
+
+    case Qt::Key_Up:
+#ifdef QGISDEBUG
+	    std::cout << "Pan up" << std::endl;
+#endif
+
+	    mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+
+	    mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() + dy);
+	    mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() + dy);
+
+	    clear();
+	    render();
+	    emit extentsChanged(mCanvasProperties->currentExtent);
+	    break;
+
+    case Qt::Key_Down:
+#ifdef QGISDEBUG
+	    std::cout << "Pan down" << std::endl;
+#endif
+	    mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+
+	    mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() - dy);
+	    mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() - dy);
+
+	    clear();
+	    render();
+	    emit extentsChanged(mCanvasProperties->currentExtent);
+	    break;
+
+    case Qt::Key_Space:
+#ifdef QGISDEBUG
+	    std::cout << "Pressing pan selector" << std::endl;
+#endif
+	    //mCanvasProperties->dragging = true;
+	    if ( ! e->isAutoRepeat() )
+	    {
+	      mCanvasProperties->panSelectorDown = true;
+	      mCanvasProperties->rubberStartPoint = mCanvasProperties->mouseLastXY;
+	    }
+	    break;
+
+    default:
+	    // Pass it on
+	    e->ignore();
+#ifdef QGISDEBUG
+	    qDebug("Ignoring key (%d)", e->key());
+#endif
+	      
+
+    }
+  }
+} //keyPressEvent()
+
+void QgsMapCanvas::keyReleaseEvent(QKeyEvent * e)
+{
+
+#ifdef QGISDEBUG
+  qDebug("keyRelease event at line %d in %s",  __LINE__, __FILE__);
+#endif
+  
+  if (!mUserInteractionAllowed)
+    return;
+  switch( e->key() )
+  {
+    case Qt::Key_Space:
+      if ( !e->isAutoRepeat() && mCanvasProperties->panSelectorDown)
+      {
+#ifdef QGISDEBUG
+	std::cout << "Releaseing pan selector" << std::endl;
+#endif
+      // mCanvasProperties->dragging = false;
+	mCanvasProperties->panSelectorDown = false;
+	panActionEnd(mCanvasProperties->mouseLastXY);
+      }
+      break;
+
+    default:
+      // Pass it on
+      e->ignore();
+#ifdef QGISDEBUG
+      qDebug("Ignoring key release (%d)", e->key());
+#endif
+  }
+} //keyReleaseEvent()
 
 void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 {
+  if (!mUserInteractionAllowed || mCanvasProperties->panSelectorDown)
+    return;
+
   // right button was pressed in zoom tool, return to previous non zoom tool
   if ( e->button() == Qt::RightButton &&
        ( mCanvasProperties->mapTool == QGis::ZoomIn || mCanvasProperties->mapTool == QGis::ZoomOut
@@ -1392,6 +1625,12 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 
 void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 {
+
+  mCanvasProperties->mouseButtonDown = false;
+
+  if (!mUserInteractionAllowed || mCanvasProperties->panSelectorDown)
+    return;
+
   // right button was pressed in zoom tool, return to previous non zoom tool
   if ( e->button() == Qt::RightButton &&
        ( mCanvasProperties->mapTool == QGis::ZoomIn || mCanvasProperties->mapTool == QGis::ZoomOut
@@ -1497,44 +1736,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       break;
 
     case QGis::Pan:
-      {
-        // use start and end box points to calculate the extent
-        QgsPoint start = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->rubberStartPoint);
-        QgsPoint end = mCanvasProperties->coordXForm->toMapCoordinates(e->pos());
-
-        double dx = fabs(end.x() - start.x());
-        double dy = fabs(end.y() - start.y());
-
-        // modify the extent
-        mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
-
-        if (end.x() < start.x())
-        {
-          mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() + dx);
-          mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() + dx);
-        }
-        else
-        {
-          mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() - dx);
-          mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() - dx);
-        }
-
-        if (end.y() < start.y())
-        {
-          mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() + dy);
-          mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() + dy);
-
-        }
-        else
-        {
-          mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() - dy);
-          mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() - dy);
-
-        }
-        clear();
-        render();
-        emit extentsChanged(mCanvasProperties->currentExtent);
-      }
+      panActionEnd(e->pos());
       break;
       
     case QGis::Select:
@@ -1613,7 +1815,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
           // create the search rectangle
           double searchRadius = extent().width() * calculateSearchRadiusValue();
-          QgsRect * search = new QgsRect;
+          QgsRect * search = new QgsRect();
           // convert screen coordinates to map coordinates
           QgsPoint idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
           search->setXmin(idPoint.x() - searchRadius);
@@ -1665,8 +1867,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             int size=5+2*sizeof(double);
             unsigned char *wkb = new unsigned char[size];
             int wkbtype=QGis::WKBPoint;
-            double x=idPoint.x();
-            double y=idPoint.y();
+            QgsPoint savePoint = maybeInversePoint(idPoint, "adding point");
+            double x = savePoint.x();
+            double y = savePoint.y();
             memcpy(&wkb[1],&wkbtype, sizeof(int));
             memcpy(&wkb[5], &x, sizeof(double));
             memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
@@ -1753,10 +1956,18 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
           --it;
           --it;
           
+          try
+	      {
           QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
           QgsPoint endpoint = mCanvasProperties->coordXForm->transform(digitisedpoint.x(),digitisedpoint.y());
           paint.drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),
             static_cast<int>(endpoint.x()),static_cast<int>(endpoint.y()));
+	      }
+	      catch(QgsException &e)
+	      {
+		    // ignore this 
+		    // we need it to keep windows quiet
+	      }
           repaint();
         }
         
@@ -1782,10 +1993,13 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             double x,y;
             for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
             {
-              x=it->x();
+              QgsPoint savePoint = maybeInversePoint(*it, "adding line");
+              x = savePoint.x();
+              y = savePoint.y();
+
               memcpy(&wkb[position],&x,sizeof(double));
               position+=sizeof(double);
-              y=it->y();
+
               memcpy(&wkb[position],&y,sizeof(double));
               position+=sizeof(double);
             }
@@ -1805,19 +2019,25 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             std::list<QgsPoint>::iterator it;
             for(it=mCaptureList.begin();it!=mCaptureList.end();++it)
             {
-              x=it->x();
+              QgsPoint savePoint = maybeInversePoint(*it, "adding poylgon");
+              x = savePoint.x();
+              y = savePoint.y();
+
               memcpy(&wkb[position],&x,sizeof(double));
               position+=sizeof(double);
-              y=it->y();
+
               memcpy(&wkb[position],&y,sizeof(double));
               position+=sizeof(double);
             }
             //close the polygon
             it=mCaptureList.begin();
-            x=it->x();
+            QgsPoint savePoint = maybeInversePoint(*it, "closing polygon");
+            x = savePoint.x();
+            y = savePoint.y();
+
             memcpy(&wkb[position],&x,sizeof(double));
             position+=sizeof(double);
-            y=it->y();
+
             memcpy(&wkb[position],&y,sizeof(double));
           }
           f->setGeometryAndOwnership(&wkb[0],size);
@@ -2097,7 +2317,17 @@ void QgsMapCanvas::wheelEvent(QWheelEvent *e)
 
 void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 {
-  if ( (e->state() && Qt::LeftButton) == Qt::LeftButton)
+  if (!mUserInteractionAllowed)
+    return;
+
+  mCanvasProperties->mouseLastXY = e->pos();
+
+  if (mCanvasProperties->panSelectorDown)
+  {
+    panAction(e);
+  }
+  else if (e->state() == Qt::LeftButton || e->state() == 513)
+  // XXX magic numbers BAD -- 513?
   {
     // this is a drag-type operation (zoom, pan or other maptool)
   
@@ -2133,30 +2363,8 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
     case QGis::Pan:
       // show the pmCanvas as the user drags the mouse
       mCanvasProperties->dragging = true;
-      // bitBlt the pixmap on the screen, offset by the
-      // change in mouse coordinates
-      dx = e->pos().x() - mCanvasProperties->rubberStartPoint.x();
-      dy = e->pos().y() - mCanvasProperties->rubberStartPoint.y();
+      panAction(e);
 
-      //erase only the necessary parts to avoid flickering
-      if (dx > 0)
-      {
-        erase(0, 0, dx, height());
-      }
-      else
-      {
-        erase(width() + dx, 0, -dx, height());
-      }
-      if (dy > 0)
-      {
-        erase(0, 0, width(), dy);
-      }
-      else
-      {
-        erase(0, height() + dy, width(), -dy);
-      }
-
-      bitBlt(this, dx, dy, mCanvasProperties->pmCanvas);
       break;
       
     case QGis::MeasureDist:
@@ -2528,7 +2736,7 @@ double QgsMapCanvas::calculateSearchRadiusValue()
 {
   QSettings settings;
 
-  int identifyValue = settings.readNumEntry("/qgis/map/identifyRadius", 5);
+  int identifyValue = settings.readNumEntry("/qgis/map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS);
 
   return(identifyValue/1000.0);
 
@@ -2687,10 +2895,7 @@ void QgsMapCanvas::recalculateExtents()
 
   // reset the map canvas extent since the extent may now be smaller
   // We can't use a constructor since QgsRect normalizes the rectangle upon construction
-  mCanvasProperties->fullExtent.setXmin(9999999999.0);
-  mCanvasProperties->fullExtent.setYmin(999999999.0);
-  mCanvasProperties->fullExtent.setXmax(-999999999.0);
-  mCanvasProperties->fullExtent.setYmax(-999999999.0);
+  mCanvasProperties->fullExtent.setMinimal();
   // get the map layer register collection
   QgsMapLayerRegistry *reg = QgsMapLayerRegistry::instance();
   std::map<QString, QgsMapLayer*>layers = reg->mapLayers();
@@ -2705,11 +2910,21 @@ void QgsMapCanvas::recalculateExtents()
     std::cout << "Input extent: " << lyr->extent().stringRep().local8Bit() << std::endl;
     try
     {
-      std::cout << "Transformed extent" << lyr->coordinateTransform()->transform(lyr->extent(), QgsCoordinateTransform::FORWARD) << std::endl;
+      if ( ! lyr->coordinateTransform() )
+      {
+#ifdef QGISDEBUG 
+        std::cout << "Throwing exception "<< __FILE__ << __LINE__ << std::endl; 
+#endif 
+        throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+      }
+
+      std::cout << "Transformed extent" << 
+        lyr->coordinateTransform()->transformBoundingBox(lyr->extent(), 
+            QgsCoordinateTransform::FORWARD) << std::endl;
     }
-    catch (QgsCsException &e)
+    catch (QgsCsException &cse)
     {
-      qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+      qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what());
     }
 #endif
     // Layer extents are stored in the coordinate system (CS) of the
@@ -2719,11 +2934,19 @@ void QgsMapCanvas::recalculateExtents()
     {
       try
       {
-        updateFullExtent(lyr->coordinateTransform()->transform(lyr->extent()));
+        if ( ! lyr->coordinateTransform() )
+        {
+#ifdef QGISDEBUG 
+          std::cout << "Throwing exception "<< __FILE__ << __LINE__ << std::endl; 
+#endif 
+          throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+        }
+
+        updateFullExtent(lyr->coordinateTransform()->transformBoundingBox(lyr->extent()));
       }
-      catch (QgsCsException &e)
+      catch (QgsCsException &cse)
       {
-        qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, e.what());
+        qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what());
       }
     }
     else
@@ -2737,4 +2960,100 @@ void QgsMapCanvas::recalculateExtents()
 int QgsMapCanvas::mapTool()
 {
   return mCanvasProperties->mapTool;
+}
+
+void QgsMapCanvas::panActionEnd(QPoint releasePoint)
+{
+  // use start and end box points to calculate the extent
+  QgsPoint start = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->rubberStartPoint);
+  QgsPoint end = mCanvasProperties->coordXForm->toMapCoordinates(releasePoint);
+  
+  double dx = fabs(end.x() - start.x());
+  double dy = fabs(end.y() - start.y());
+  
+  // modify the extent
+  mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+  
+  if (end.x() < start.x())
+  {
+    mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() + dx);
+    mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() + dx);
+  }
+  else
+  {
+    mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() - dx);
+    mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() - dx);
+  }
+  
+  if (end.y() < start.y())
+  {
+    mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() + dy);
+    mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() + dy);
+    
+  }
+  else
+  {
+    mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() - dy);
+    mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() - dy);
+    
+  }
+  clear();
+  render();
+  emit extentsChanged(mCanvasProperties->currentExtent);
+}
+
+void QgsMapCanvas::panAction(QMouseEvent * e)
+{
+
+  // bitBlt the pixmap on the screen, offset by the
+  // change in mouse coordinates
+  double dx = e->pos().x() - mCanvasProperties->rubberStartPoint.x();
+  double dy = e->pos().y() - mCanvasProperties->rubberStartPoint.y();
+  
+  //erase only the necessary parts to avoid flickering
+  if (dx > 0)
+  {
+    erase(0, 0, (int)dx, height());
+  }
+  else
+  {
+    erase(width() + (int)dx, 0, -(int)dx, height());
+  }
+  if (dy > 0)
+  {
+    erase(0, 0, width(), (int)dy);
+  }
+  else
+  {
+    erase(0, height() + (int)dy, width(), -(int)dy);
+  }
+  
+  bitBlt(this, (int)dx, (int)dy, mCanvasProperties->pmCanvas);
+}    
+
+QgsPoint QgsMapCanvas::maybeInversePoint(QgsPoint point, const char whenmsg[])
+{
+  QgsVectorLayer* vlayer=
+    dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+  QgsPoint transformedPoint;
+
+  if( projectionsEnabled() )
+  {
+    // Do reverse transformation before saving. If possible!
+    try
+    {
+      transformedPoint = vlayer->coordinateTransform()->transform(point, QgsCoordinateTransform::INVERSE);
+    }
+    catch(QgsCsException &cse)
+    {
+      //#ifdef QGISDEBUG
+      std::cout << "Caught transform error when " << whenmsg <<"." 
+                << "Setting untransformed values." << std::endl;
+      //#endif	
+      // Transformation failed,. Bail out with original rectangle.
+      return point;
+    }
+    return transformedPoint;
+  }
+  return point;
 }

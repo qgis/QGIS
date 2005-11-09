@@ -9,7 +9,8 @@
 #include "qgsgeometry.h"
 #include "qgsmaptopixel.h"
 #include "qgsvectorlayer.h"
-#include <qgsscalecalculator.h>
+#include "qgsscalecalculator.h"
+#include "qgsproject.h"
 
 
 /**
@@ -31,6 +32,7 @@ class QgsMapCanvas::CanvasProperties
     coordXForm( 0x0 ),
     pmCanvas( 0x0 ),
     bgColor( Qt::white ),
+    panSelectorDown( false ),
     dragging( false ),
     capturing( false ),
     drawing( false ),
@@ -56,6 +58,7 @@ class QgsMapCanvas::CanvasProperties
     coordXForm( 0x0 ),
     pmCanvas( 0x0 ),
     bgColor( Qt::white ),
+    panSelectorDown( false ),
     dragging( false ),
     capturing( false ),
     drawing( false ),
@@ -94,6 +97,7 @@ class QgsMapCanvas::CanvasProperties
     {
       mMapUnits = u;
       scaleCalculator->setMapUnits(mMapUnits);
+      QgsProject::instance()->mapUnits(u);
     }
 
     QGis::units mapUnits()
@@ -153,9 +157,6 @@ class QgsMapCanvas::CanvasProperties
   //! Rubber band box for dynamic zoom
               QRect zoomBox;
 
-  //! Beginning point of a rubber band box
-              QPoint boxStartPoint;
-
   //! Last seen point of the mouse
               QPoint mouseLastXY;
 
@@ -195,15 +196,15 @@ class QgsMapCanvas::CanvasProperties
   //! Background color for the map canvas
               QColor bgColor;
 
+  //! Flag to indicate the pan selector key is held down by user
+              bool panSelectorDown;
+
   //! Flag to indicate a map canvas drag operation is taking place
               bool dragging;
 
   //! Flag to indicate a map canvas capture operation is taking place
               bool capturing;
   
-  //! Flag to indicate the pan selector key is held down by user
-              bool panSelectorDown;
-
   //! Vector containing the inital color for a layer
               std::vector < QColor > initialColor;
 
