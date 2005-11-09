@@ -307,6 +307,16 @@ signals:
     void stopZoom();
 
 protected:
+    /// implementation struct
+    class CanvasProperties;
+
+    /// Handle pattern for implementation object
+    std::auto_ptr<CanvasProperties> mCanvasProperties;
+
+    //! lets us know whether this canvas is being used as an overview canvas or note
+    bool mIsOverviewCanvas;
+    
+private:
     /// this class is non-copyable
     /**
        @note
@@ -320,12 +330,6 @@ protected:
        private to force use of ctor with arguments
      */
     QgsMapCanvas();
-
-    /// implementation struct
-    class CanvasProperties;
-
-    /// Handle pattern for implementation object
-    std::auto_ptr<CanvasProperties> mCanvasProperties;
 
     /**
        List to store the points of digitised lines and polygons
@@ -348,6 +352,12 @@ protected:
     /**Draws a line from the last point of mCaptureList (if last is true, else from the first point)
        to mDigitMovePoint using Qt::XorROP. The settings for QPen are read from the QgsProject singleton*/
     void drawLineToDigitisingCursor(QPainter* paint, bool last = true);
+
+    //! Overridden key press event
+    void keyPressEvent(QKeyEvent * e);
+
+    //! Overridden key release event
+    void keyReleaseEvent(QKeyEvent * e);
 
     //! Overridden mouse move event
     void mouseMoveEvent(QMouseEvent * e);
@@ -380,11 +390,23 @@ protected:
     //! Zooms to a given center and scale 
     void zoomByScale(int x, int y, double scaleFactor);
 
+    //! Ends pan action and redraws the canvas.
+    void panActionEnd(QPoint releasePoint);
+
+    //! Called when mouse is moving and pan is activated
+    void panAction(QMouseEvent * event);
+
+    //! Helper function to inverse project a point if projections
+    // are enabled. Failsafe, returns the sent point if anything fails.
+    // @whenmsg is a part fo the error message.
+    QgsPoint maybeInversePoint(QgsPoint point, const char whenmsg[]);
+
+    //! detrmines whether the user can interact with the canvas using a mouse
+    //(useful for locking the overview canvas)
+    bool mUserInteractionAllowed;
+
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag;
-    
-    //! lets us know whether this canvas is being used as an overview canvas or note
-    bool mIsOverviewCanvas;
     
   /** debugging member
       invoked when a connect() is made to this object
