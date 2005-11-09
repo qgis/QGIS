@@ -70,6 +70,7 @@ qgisHEADERS =	\
 		qgsattributetable.h				\
 		qgsbookmarks.h			\
 		qgsbookmarkitem.h			\
+		qgscoordinatetransform.h			\
 		qgsclipboard.h					\
 		qgscontexthelp.h				\
 		qgscontcoldialog.h				\
@@ -122,11 +123,9 @@ qgisHEADERS =	\
 		qgsmarkercatalogue.h				\
 		qgssymbologyutils.h				\
 		qgsuvaldialog.h					\
-		splashscreen.h				\
 		qgslayerprojectionselector.h \
 		$(WIDGETPATH)/projectionselector/qgsprojectionselector.h \
-		splashscreen.h				\
-		omggdal.h
+		splashscreen.h
 
 
 ## qt designer files for all the GUI stuff
@@ -205,6 +204,7 @@ qgis_MOC =	\
 		qgsbookmarks.moc.cpp		\
 		qgscontcoldialog.moc.cpp		\
 		qgscontexthelp.moc.cpp			\
+		qgscoordinatetransform.moc.cpp			\
 		qgsdelattrdialog.moc.cpp		\
 		qgsdlgvectorlayerproperties.moc.cpp	\
 		qgsencodingfiledialog.moc.cpp		\
@@ -232,8 +232,7 @@ qgis_MOC =	\
 		qgssisydialog.moc.cpp			\
 		qgsuvaldialog.moc.cpp			\
 		splashscreen.moc.cpp		\
-		$(WIDGETPATH)/projectionselector/qgsprojectionselector.moc.cpp \
-		omggdal.moc.cpp
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.moc.cpp
 
 qgis_SOURCES =	main.cpp			\
 		qgisiface.cpp			\
@@ -249,6 +248,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsclipboard.cpp		\
 		qgscontcoldialog.cpp		\
 		qgscontexthelp.cpp		\
+		qgscoordinatetransform.cpp			\
 		qgscustomsymbol.cpp		\
 		qgsdatasource.cpp		\
 		qgsdelattrdialog.cpp		\

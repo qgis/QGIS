@@ -39,3 +39,9 @@ void QgsProjectPropertiesBase::pbnDigitisedLineColour_clicked()
     pbnDigitisedLineColour->setPaletteBackgroundColor(color);
   }
 }
+
+void QgsProjectPropertiesBase::pbnHelp_clicked()
+{
+}
+
+

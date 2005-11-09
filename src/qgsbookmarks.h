@@ -17,10 +17,15 @@
  /* $Id$ */
 #ifndef QGSBOOKMARKS_H
 #define QGSBOOKMARKS_H
+#ifdef WIN32
+#include "qgsbookmarksbase.h"
+#else
 #include "qgsbookmarksbase.uic.h"
+#endif
 class QString;
 class QDir;
 class QWidget;
+class QListViewItem;
 class sqlite3;
 class QgsBookmarks : public QgsBookmarksBase{
   Q_OBJECT
@@ -31,8 +36,10 @@ public:
 public slots:
  void deleteBookmark();
  void zoomToBookmark();
+ void zoomViaDoubleClick(QListViewItem *);
  int connectDb();
  void refreshBookmarks();
+ void showHelp();
 
 private:
  QWidget *mParent;
@@ -41,7 +48,7 @@ private:
  QString mUserDbPath;
  QString mQGisSettingsDir;
  sqlite3 *db;
-
+ static const int context_id = 85340544;
 
 };
 #endif // QGSBOOKMARKS_H

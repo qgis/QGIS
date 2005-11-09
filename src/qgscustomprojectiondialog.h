@@ -14,8 +14,11 @@
 
 #include <qdir.h>
 //  #include <qnetworkprotocol.h>     not sure why needed - breaks portage to Qt4
+#ifdef WIN32
+#include <qgscustomprojectiondialogbase.h>
+#else
 #include <qgscustomprojectiondialogbase.uic.h>
-
+#endif
 /**
 The custom projection widget is used to define the projection family, ellipsoid and paremters needed by proj4 to assemble a customised projection definition. The resulting projection will be store in an sqlite backend.
 
@@ -30,10 +33,10 @@ public:
     //a recursive function to make a directory and its ancestors
     bool makeDir(QDir &theQDir);
 public slots:    
+    void pbnCalculate_clicked();
     void pbnHelp_clicked();
     void pbnClose_clicked();
     void pbnDelete_clicked();
-    void cboProjectionFamily_highlighted( const QString & );
     //
     // Database navigation controles
     //
@@ -48,20 +51,17 @@ public slots:
     //
     // Contol population
     //
+    /* These two methods will be deprecated
     void getProjList();
     void getEllipsoidList();
+    */
     QString getProjectionFamilyName(QString theProjectionFamilyAcronym);
     QString getEllipsoidName(QString theEllipsoidAcronym);
     QString getProjectionFamilyAcronym(QString theProjectionFamilyName);
     QString getEllipsoidAcronym(QString theEllipsoidName);
 private: 
-    /*! This is a helper function to parse the proj parameters string
-     * and make sure that the combos for projection and ellipsoid
-     * match. If they dont, the combos are changed appropriately 
-     */
-    void setCombosUsingParameters();
-    void checkParametersHaveProj();
-    void checkParametersHaveEllipse();
+    QString getProjFromParameters();
+    QString getEllipseFromParameters();
     
         
     QString mCurrentRecordId;

@@ -38,7 +38,7 @@ namespace QGis
   // Version string 
   static const char *qgisVersion = VERSION;
   // Version number used for comparing versions using the "Check QGIS Version" function
-  static const int qgisVersionInt =600;
+  static const int qgisVersionInt =703;
   // Release name
   static const char *qgisReleaseName = "Seamus";
 
@@ -121,7 +121,8 @@ namespace QGis
     //! The row count has been calculated by a provider of a layer
     ProviderCountCalcEvent
   };
-
+  
+  const int DEFAULT_IDENTIFY_RADIUS=5;
 }
   /** WKT string that represents a geographic coord sys */
   const  QString GEOWKT =
@@ -154,18 +155,6 @@ namespace QGis
 
 
 
-  //! Structure for storing a spatial_ref_sys item
-  /* THIS IS DEFUNCT NOW!
-  typedef struct{
-    QString srid; // spatial reference id (ala PostGIS)
-    QString auth_name; // name of the author for this SRS
-    QString auth_srid; // srid used by the author
-    QString srtext; // WKT of the coordinate system
-    QString proj4text; // Proj4 parameter string 
-  } SPATIAL_REF_SYS; 
-  */
-
-
 /** debugging convenience function
 
   Wrapper round qDebug() that's only embedded if QGISDEBUG set, thus
@@ -182,6 +171,5 @@ namespace QGis
 #else
 #define QgsDebug(str)
 #endif
-
 
 #endif

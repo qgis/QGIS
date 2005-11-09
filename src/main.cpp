@@ -28,6 +28,7 @@
 #include <stdlib.h>
 
 #include <qapplication.h>
+#include <qdir.h>
 #include <qfont.h>
 #include <qfile.h>
 #include <qfileinfo.h>
@@ -225,7 +226,7 @@ int main(int argc, char *argv[])
 
   // This behaviour will allow you to force the use of a translation file
   // which is useful for testing
-  QString myTranslationFileName="";
+  QString myTranslationCode="";
 
 #ifndef WIN32
   if ( !bundleclicked(argc, argv) )
@@ -274,15 +275,15 @@ int main(int argc, char *argv[])
       break;
 
     case 's':
-      mySnapshotFileName = optarg;
+      mySnapshotFileName = QDir::convertSeparators(QFileInfo(QFile::decodeName(optarg)).absFilePath());
       break;
 
     case 'l':
-      myTranslationFileName = optarg;
+      myTranslationCode = optarg;
       break;
 
     case 'p':
-      myProjectFileName = optarg;
+      myProjectFileName = QDir::convertSeparators(QFileInfo(QFile::decodeName(optarg)).absFilePath());
       break;
 
     case 'e':
@@ -314,7 +315,7 @@ int main(int argc, char *argv[])
     int idx = optind;
     std::cout << idx << ": " << argv[idx] << std::endl;
 #endif
-    myFileList.append(argv[optind++]);
+    myFileList.append(QDir::convertSeparators(QFileInfo(QFile::decodeName(argv[optind++])).absFilePath()));
     }
   }
   }
@@ -389,25 +390,35 @@ int main(int argc, char *argv[])
   QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
 
-  QTranslator tor(0);
-
-  // For WIN32, get the locale
-  if (myTranslationFileName!="")
+  QString i18nPath = QString(PKGDATAPATH) + "/i18n";
+  if (myTranslationCode.isEmpty())
   {
-    QString translation = "qgis_" + myTranslationFileName;
-    tor.load(translation, QString(PKGDATAPATH) + "/i18n");
-  } 
-  else
-  {
+    myTranslationCode = QTextCodec::locale();
+  }
 #ifdef QGISDEBUG
-    std::cout << "Setting translation to " 
-      << PKGDATAPATH << "/i18n/qgis_" << QTextCodec::locale() << std::endl; 
+  std::cout << "Setting translation to "
+    << i18nPath.local8Bit() << "/qgis_" << myTranslationCode.local8Bit() << std::endl;
 #endif
-    tor.load(QString("qgis_") + QTextCodec::locale(), QString(PKGDATAPATH) + "/i18n");
+
+  /* Translation file for Qt.
+   * The strings from the QMenuBar context section are used by Qt/Mac to shift
+   * the About, Preferences and Quit items to the Mac Application menu.
+   * These items must be translated identically in both qt_ and qgis_ files.
+   */
+  QTranslator qttor(0);
+  if (qttor.load(QString("qt_") + myTranslationCode, i18nPath))
+  {
+    a.installTranslator(&qttor);
   }
 
-  //tor.load("qgis_go", "." );
-  a.installTranslator(&tor);
+  /* Translation file for QGIS.
+   */
+  QTranslator qgistor(0);
+  if (qgistor.load(QString("qgis_") + myTranslationCode, i18nPath))
+  {
+    a.installTranslator(&qgistor);
+  }
+
   /* uncomment the following line, if you want a Windows 95 look */
   //a.setStyle("Windows");
 
@@ -427,10 +438,10 @@ int main(int argc, char *argv[])
     // check for a .qgs
     for(int i = 0; i < argc; i++)
     {
-      QString arg = argv[i];
+      QString arg = QDir::convertSeparators(QFileInfo(QFile::decodeName(argv[i])).absFilePath());
       if(arg.contains(".qgs"))
       {
-        myProjectFileName = argv[i];
+        myProjectFileName = arg;
         break;
       }
     }

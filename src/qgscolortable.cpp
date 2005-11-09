@@ -24,7 +24,7 @@ bool compareRampSort ( const RAMP &a, const RAMP &b)
 { 
     if ( a.min < b.min || a.max < b.max ) return true;
 
-    return false; 
+    return false;
 } 
 
 bool compareRampSearch ( const RAMP &a, const RAMP &b)
@@ -173,15 +173,16 @@ int QgsColorTable::interpretation ( void )
     return mInterp;
 }
 
-double QgsColorTable::min ( void )
+double QgsColorTable::rmin ( void )
 {
     return mMin;
 }
 
-double QgsColorTable::max ( void )
+double QgsColorTable::rmax ( void )
 {
-    return mMax;
+    return mMax;  
 }
+
 
 void QgsColorTable::print ( void )
 {

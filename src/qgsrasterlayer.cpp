@@ -108,7 +108,7 @@ wish to see edbug messages printed to stdout.
 
 #include "qgsrect.h"
 #include "qgisapp.h"
-#include "qgscolortable.h"
+//#include "qgscolortable.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsproject.h"
 #include "qgsidentifyresults.h"
@@ -473,13 +473,6 @@ QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
   adfGeoTransform[4] =  0;
   adfGeoTransform[5] = -1;
 
-  // we need to do the tr() stuff outside of the loop becauses tr() is a time
-  // consuming operation nd we dont want to do it in the loop!
-
-  redTranslatedQString   = tr("Red");
-  greenTranslatedQString = tr("Green");
-  blueTranslatedQString  = tr("Blue");
-
   // set the layer name (uppercase first character)
 
   if ( ! baseName.isEmpty() )   // XXX shouldn't this happen in parent?
@@ -532,7 +525,7 @@ QgsRasterLayer::readFile( QString const & fileName )
   }
 
   // Store timestamp
-  mLastModified = lastModified ( fileName.local8Bit() );
+  mLastModified = lastModified ( fileName );
 
   //check f this file has pyramids
   GDALRasterBandH myGDALBand = GDALGetRasterBand( gdalDataset, 1 ); //just use the first band
@@ -646,7 +639,7 @@ QgsRasterLayer::readFile( QString const & fileName )
     GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(i);
     QString myColorQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
     RasterBandStats myRasterBandStats;
-    myRasterBandStats.bandName = myColorQString + " (" + QString::number(i) + ")";
+    myRasterBandStats.bandName = myColorQString ;
     //myRasterBandStats.bandName=QString::number(i) + " : " + myColorQString;
     myRasterBandStats.bandNoInt = i;
     myRasterBandStats.statsGatheredFlag = false;
@@ -676,9 +669,9 @@ QgsRasterLayer::readFile( QString const & fileName )
 
   if (rasterLayerType == PALETTE)
   {
-    redBandNameQString = redTranslatedQString; // sensible default
-    greenBandNameQString = greenTranslatedQString; // sensible default
-    blueBandNameQString = blueTranslatedQString; // sensible default
+    redBandNameQString = "Red"; // sensible default
+    greenBandNameQString = "Green"; // sensible default
+    blueBandNameQString = "Blue";// sensible default
     grayBandNameQString = tr("Not Set");  //sensible default
     drawingStyle = PALETTED_MULTI_BAND_COLOR; //sensible default
   }
@@ -706,14 +699,7 @@ QgsRasterLayer::readFile( QString const & fileName )
     greenBandNameQString = tr("Not Set"); //sensible default
     blueBandNameQString = tr("Not Set");  //sensible default
     drawingStyle = SINGLE_BAND_GRAY;  //sensible default
-    if (hasBand("Gray"))
-    {
-      grayBandNameQString = "Gray"; // sensible default //dont tr() this its a gdal word!
-    }
-    else if (hasBand("Undefined")) //dont tr() this its a gdal word!
-    {
-      grayBandNameQString = "Undefined";  // sensible default
-    }
+    grayBandNameQString = getRasterBandName(1); // usually gdal will return gray or undefined  
   }
 
 
@@ -1052,8 +1038,8 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
 #ifdef QGISDEBUG
       std::cout << "....found GCI_PaletteIndex" << std::endl;
 #endif
-      double myMinDouble = myColorTable->min();
-      double myMaxDouble = myColorTable->max();
+      double myMinDouble = myColorTable->rmin();
+      double myMaxDouble = myColorTable->rmax();
 
 #ifdef QGISDEBUG
       std::cout << "myMinDouble = " << myMinDouble << " myMaxDouble = " << myMaxDouble << std::endl;
@@ -1252,6 +1238,12 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
     std::cout << "QgsRasterLayer::draw: clippedHeightInt      = " << myRasterViewPort->clippedHeightInt << std::endl; 
     std::cout << "QgsRasterLayer::draw: drawableAreaXDimInt   = " << myRasterViewPort->drawableAreaXDimInt << std::endl; 
     std::cout << "QgsRasterLayer::draw: drawableAreaYDimInt   = " << myRasterViewPort->drawableAreaYDimInt << std::endl; 
+
+  std::cout << "ReadXml: gray band name : " << grayBandNameQString.local8Bit() << std::endl;
+  std::cout << "ReadXml: red band name %s " <<redBandNameQString.local8Bit()<< std::endl;
+  std::cout << "ReadXml: green band name %s " << greenBandNameQString.local8Bit()<< std::endl;
+  std::cout << "ReadXml: blue band name %s " << blueBandNameQString.local8Bit()<< std::endl;
+
 #endif
   
   // /\/\/\ - added to handle zoomed-in rasters
@@ -1908,15 +1900,15 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, QgsRaste
 
       int myGrayValueInt = 0; //color 1 int
 
-      if (theColorQString == redTranslatedQString)
+      if (theColorQString == redBandNameQString)
       {
         myGrayValueInt = c1;
       }
-      else if (theColorQString == greenTranslatedQString)
+      else if (theColorQString == greenBandNameQString)
       {
         myGrayValueInt = c2;
       }
-      else if (theColorQString == blueTranslatedQString)
+      else if (theColorQString == blueBandNameQString)
       {
         myGrayValueInt = c3;
       }
@@ -2053,15 +2045,15 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, Q
       int myInt;
 
       //check for alternate color mappings
-      if (theColorQString == redTranslatedQString)
+      if (theColorQString == redBandNameQString)
       {
         myInt = c1;
       }
-      else if (theColorQString == ("Green"))
+      else if (theColorQString == greenBandNameQString)
       {
         myInt = c2;
       }
-      else if (theColorQString == ("Blue"))
+      else if (theColorQString == blueBandNameQString)
       {
         myInt = c3;
       }
@@ -2257,25 +2249,26 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, QgsRaste
       int myBlueValueInt = 0; //color 3 int
 
       //check for alternate color mappings
-      if (redBandNameQString == redTranslatedQString)
+      if (redBandNameQString == "Red")
         myRedValueInt = c1;
-      else if (redBandNameQString == greenTranslatedQString)
+      else if (redBandNameQString == "Green")
         myRedValueInt = c2;
-      else if (redBandNameQString == blueTranslatedQString)
+      else if (redBandNameQString == "Blue")
         myRedValueInt = c3;
 
-      if (greenBandNameQString == redTranslatedQString)
+      if (greenBandNameQString == "Red")
         myGreenValueInt = c1;
-      else if (greenBandNameQString == greenTranslatedQString)
+      else if (greenBandNameQString == "Green")
         myGreenValueInt = c2;
-      else if (greenBandNameQString == blueTranslatedQString)
+      else if (greenBandNameQString == "Blue")
+        
         myGreenValueInt = c3;
 
-      if (blueBandNameQString == redTranslatedQString)
+      if (blueBandNameQString == "Red")
         myBlueValueInt = c1;
-      else if (blueBandNameQString == greenTranslatedQString)
+      else if (blueBandNameQString == "Green")
         myBlueValueInt = c2;
-      else if (blueBandNameQString == blueTranslatedQString)
+      else if (blueBandNameQString == "Blue")
         myBlueValueInt = c3;
 
       if (invertHistogramFlag)
@@ -2488,7 +2481,7 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
 void QgsRasterLayer::filterLayer(QImage * theQImage)
 {
   //do stuff here....
-  return;
+  //return;
 }
 
 /**
@@ -2679,13 +2672,13 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
     {
       // a "Red" layer
     case 1:
-      myRasterBandStats.bandName = redTranslatedQString;
+      myRasterBandStats.bandName = redBandNameQString;
       break;
     case 2:
-      myRasterBandStats.bandName = blueTranslatedQString;
+      myRasterBandStats.bandName = blueBandNameQString;
       break;
     case 3:
-      myRasterBandStats.bandName = greenTranslatedQString;
+      myRasterBandStats.bandName = greenBandNameQString;
       break;
     default:
       //invalid band id so return
@@ -2964,7 +2957,7 @@ void QgsRasterLayer::setRedBandName(QString theBandNameQString)
     return;
   }
   //check if the image is paletted
-  if (rasterLayerType == PALETTE && (theBandNameQString == redTranslatedQString || theBandNameQString == greenTranslatedQString || theBandNameQString == blueTranslatedQString))
+  if (rasterLayerType == PALETTE && (theBandNameQString == "Red" || theBandNameQString == "Green" || theBandNameQString == "Blue"))
   {
     redBandNameQString = theBandNameQString;
     return;
@@ -2997,7 +2990,7 @@ void QgsRasterLayer::setGreenBandName(QString theBandNameQString)
     return;
   }
   //check if the image is paletted
-  if (rasterLayerType == PALETTE && (theBandNameQString == redTranslatedQString || theBandNameQString == greenTranslatedQString || theBandNameQString == blueTranslatedQString))
+  if (rasterLayerType == PALETTE && (theBandNameQString == "Red" || theBandNameQString == "Green" || theBandNameQString == "Blue"))
   {
     greenBandNameQString = theBandNameQString;
     return;
@@ -3030,7 +3023,7 @@ void QgsRasterLayer::setBlueBandName(QString theBandNameQString)
     return;
   }
   //check if the image is paletted
-  if (rasterLayerType == PALETTE && (theBandNameQString == redTranslatedQString || theBandNameQString == greenTranslatedQString || theBandNameQString == blueTranslatedQString))
+  if (rasterLayerType == PALETTE && (theBandNameQString == "Red" || theBandNameQString == "Green" || theBandNameQString == "Blue"))
   {
     blueBandNameQString = theBandNameQString;
     return;
@@ -3063,7 +3056,7 @@ void QgsRasterLayer::setGrayBandName(QString theBandNameQString)
     return;
   }
   //check if the image is paletted
-  if (rasterLayerType == PALETTE && (theBandNameQString == redTranslatedQString || theBandNameQString == greenTranslatedQString || theBandNameQString == blueTranslatedQString))
+  if (rasterLayerType == PALETTE && (theBandNameQString == redBandNameQString || theBandNameQString == greenBandNameQString || theBandNameQString == blueBandNameQString))
   {
     grayBandNameQString = theBandNameQString;
     return;
@@ -3074,6 +3067,7 @@ void QgsRasterLayer::setGrayBandName(QString theBandNameQString)
   {
     //find out the name of this band
     RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
+    std::cout << __FILE__ << ":" << __LINE__ << "Checking if " << myRasterBandStats.bandName << " == " << grayBandNameQString << std::endl;
     if (myRasterBandStats.bandName == theBandNameQString)
     {
       grayBandNameQString = theBandNameQString;
@@ -3667,7 +3661,7 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
 
   // XXX why GUI element here?
   // XXX Dunno who put the above comment in, but whole context menu is a gui element! TS
-  mTransparencySlider = new QSlider(0,255,5,0,QSlider::Horizontal,popMenu);
+  mTransparencySlider = new QSlider(0,255,5,255-transparencyLevelInt,QSlider::Horizontal,popMenu);
   mTransparencySlider->setTickmarks(QSlider::Both);
   mTransparencySlider->setTickInterval(25);
   mTransparencySlider->setTracking(false); //stop slider emmitting a signal until mouse released
@@ -3737,8 +3731,9 @@ void QgsRasterLayer::setTransparency(int theInt)
   //delegate rest to transparency slider
   if ( mTransparencySlider )
   {
-    mTransparencySlider->setValue(255-theInt);
+    mTransparencySlider->setValue(255-theInt);    
   }
+  transparencyLevelInt=theInt;
 } //  QgsRasterLayer::setTransparency(int theInt)
 
 
@@ -4136,8 +4131,9 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
 {
   emit setProgress(0,0);
   //first test if the file is writeable
-  QFile myQFile(dataSource);
-  if (!myQFile.open(IO_WriteOnly| IO_Append))
+  QFileInfo myQFile(dataSource);
+  
+  if (!myQFile.isWritable())
   {
 
     QMessageBox myMessageBox( tr("Write access denied"),
@@ -4150,17 +4146,33 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
 
     return;
   }
-  myQFile.close();
   // let the user know we're going to possibly be taking a while
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   GDALAllRegister();
   //close the gdal dataset and reopen it in read / write mode
   delete gdalDataset;
-  gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_Update);
+  gdalDataset = (GDALDataset *) GDALOpen(dataSource.local8Bit(), GA_Update);
+  
+  // if the dataset couldn't be opened in read / write mode, tell the user
+  if (!gdalDataset) {
+    emit setProgress(0,0);
+    QApplication::restoreOverrideCursor();
+    QMessageBox myMessageBox( tr("Building pyramids failed."),
+			      tr("The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again."),
+			      QMessageBox::Warning,
+			      QMessageBox::Ok,
+			      QMessageBox::NoButton,
+			      QMessageBox::NoButton );
+    myMessageBox.exec();
+    gdalDataset = (GDALDataset *) GDALOpen(dataSource.local8Bit(), GA_ReadOnly);
+    return;
+  }
+
   //
   // Iterate through the Raster Layer Pyramid Vector, building any pyramid
   // marked as exists in eaxh RasterPyramid struct.
   //
+  CPLErr myError; //in case anything fails
   int myCountInt=1;
   int myTotalInt=theRasterPyramidList.count();
   RasterPyramidList::iterator myRasterPyramidIterator;
@@ -4187,53 +4199,58 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
       * pfnProgress : a function to call to report progress, or NULL.
       * pProgressData : application data to pass to the progress function.
       */
-#ifdef QGISDEBUG
       //build the pyramid and show progress to console
-      if(theResamplingMethod==tr("Average Magphase"))
+      try 
       {
-        gdalDataset->BuildOverviews( "MODE", 1, myOverviewLevelsIntArray, 0, NULL,
-                                     GDALTermProgress, NULL );
-      }
-      else if(theResamplingMethod==tr("Average"))
 
-      {
-        gdalDataset->BuildOverviews( "AVERAGE", 1, myOverviewLevelsIntArray, 0, NULL,
-                                     GDALTermProgress, NULL );
-      }
-      else // fall back to nearest neighbor
-      {
-        gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
-                                     GDALTermProgress, NULL );
-      }
-#else
-      //build the pyramid and show progress to console
-      if(theResamplingMethod==tr("Average Magphase"))
-      {
-        gdalDataset->BuildOverviews( "MODE", 1, myOverviewLevelsIntArray, 0, NULL,
+        //build the pyramid and show progress to console
+        if(theResamplingMethod==tr("Average Magphase"))
+        {
+           myError = gdalDataset->BuildOverviews( "MODE", 1, myOverviewLevelsIntArray, 0, NULL,
                                      GDALDummyProgress, NULL );
-      }
-      else if(theResamplingMethod==tr("Average"))
+        }
+        else if(theResamplingMethod==tr("Average"))
 
-      {
-        gdalDataset->BuildOverviews( "AVERAGE", 1, myOverviewLevelsIntArray, 0, NULL,
+        {
+          myError = gdalDataset->BuildOverviews( "AVERAGE", 1, myOverviewLevelsIntArray, 0, NULL,
                                      GDALDummyProgress, NULL );
-      }
-      else // fall back to nearest neighbor
-      {
-        gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
+        }
+        else // fall back to nearest neighbor
+        {
+          myError = gdalDataset->BuildOverviews( "NEAREST", 1, myOverviewLevelsIntArray, 0, NULL,
                                      GDALDummyProgress, NULL );
+        }
+        if (myError == CE_Failure || CPLGetLastErrorNo()==CPLE_NotSupported  )
+        {
+           //something bad happenend
+           //QString myString = QString (CPLGetLastError());
+           QApplication::restoreOverrideCursor();
+           QMessageBox myMessageBox( tr("Building pyramids failed."),
+                              tr("Building pyramid overviews is not supported on this type of raster."),
+                              QMessageBox::Warning,
+                              QMessageBox::Ok,
+                              QMessageBox::NoButton,
+                              QMessageBox::NoButton );
+            myMessageBox.exec();
+            delete gdalDataset;
+            gdalDataset = (GDALDataset *) GDALOpen(dataSource.local8Bit(), GA_ReadOnly);
+            emit setProgress(0,0);
+            return;
+        }
+        myCountInt++;
+        //make sure the raster knows it has pyramids
+        hasPyramidsFlag=true;
       }
-#endif
-      myCountInt++;
-      //make sure the raster knows it has pyramids
-      hasPyramidsFlag=true;
+      catch (CPLErr)
+      {
+         std::cout << "Pyramid overview building failed!" << std::endl;
+      }
     }
-
   }
   std::cout << "Pyramid overviews built" << std::endl;
   //close the gdal dataset and reopen it in read only mode
   delete gdalDataset;
-  gdalDataset = (GDALDataset *) GDALOpen(dataSource, GA_ReadOnly);
+  gdalDataset = (GDALDataset *) GDALOpen(dataSource.local8Bit(), GA_ReadOnly);
   emit setProgress(0,0);
   QApplication::restoreOverrideCursor();
 }
@@ -4348,7 +4365,7 @@ void QgsRasterLayer::readColorTable ( GDALRasterBand *gdalBand, QgsColorTable *t
       double min, max;
       int min_c1, min_c2, min_c3, max_c1, max_c2, max_c3;
 
-      if ( sscanf((char*)metadataTokens[1].ascii(),"%lf %lf %d %d %d %d %d %d",
+      if ( sscanf(metadataTokens[1].local8Bit(), "%lf %lf %d %d %d %d %d %d",
                   &min, &max, &min_c1, &min_c2, &min_c3, &max_c1, &max_c2, &max_c3) != 8 )
       {
         continue;
@@ -4488,6 +4505,8 @@ Raster layer project file XML of form:
 */
 bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 {
+  //! @NOTE Make sure to read the file first so stats etc are initialised properly!
+ 
   if ( ! readFile( source() ) )   // Data source name set in
     // QgsMapLayer::readXML()
   {
@@ -4524,6 +4543,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   snode = mnl.namedItem("redBandNameQString");
   myElement = snode.toElement();
   setRedBandName(myElement.text());
+
   snode = mnl.namedItem("greenBandNameQString");
   myElement = snode.toElement();
   setGreenBandName(myElement.text());
@@ -4534,7 +4554,15 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
   snode = mnl.namedItem("grayBandNameQString");
   myElement = snode.toElement();
+  std::cout << __FILE__ << ":" << __LINE__<< " Setting gray band to : " << myElement.text() << std::endl;
   setGrayBandName(myElement.text());
+
+  std::cout << __FILE__ << ":" << __LINE__<< "ReadXml: gray band name " << grayBandNameQString << std::endl;
+  std::cout << __FILE__ << ":" << __LINE__<< "ReadXml: red band name " << redBandNameQString << std::endl;
+  std::cout << __FILE__ << ":" << __LINE__<< "ReadXml: green band name  " << greenBandNameQString << std::endl;
+  std::cout << __FILE__ << ":" << __LINE__<< "ReadXml: blue band name " << blueBandNameQString << std::endl;
+  std::cout << __FILE__ << ":" << __LINE__<< "Drawing style " << getDrawingStyleAsQString() << std::endl;
+
 
 
   return true;
@@ -4784,7 +4812,7 @@ void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool
     myRasterBandStats.histogramVector->clear();
     myRasterBandStats.histogramEstimatedFlag=theHistogramEstimatedFlag;
     myRasterBandStats.histogramOutOfRangeFlag=theIgnoreOutOfRangeFlag;
-    int myHistogramArray[theBinCountInt];
+    int *myHistogramArray = new int[theBinCountInt];
 
 
     /*

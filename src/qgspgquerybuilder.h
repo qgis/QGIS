@@ -77,7 +77,27 @@ class QgsPgQueryBuilder : public QgsPgQueryBuilderBase {
   void setConnection(PGconn *con); 
 
   public slots:
+    void insEqual();
     void accept();
+    void insLt();
+    void insGt();
+    void insPct();
+    void insIn();
+    void insNotIn();
+    void insLike();
+    QString sql();
+    void setSql( QString sqlStatement);
+    void fieldDoubleClick( QListBoxItem *item );
+    void valueDoubleClick( QListBoxItem *item );
+    void insLessThanEqual();
+    void insGreaterThanEqual();
+    void insNotEqual();
+    void insAnd();
+    void insNot();
+    void insOr();
+    void clearSQL();
+    void insIlike();
+    void setDatasourceDescription(QString uri);
   private:
   /*! 
    * Populate the field list for the selected table

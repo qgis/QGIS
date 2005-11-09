@@ -19,8 +19,11 @@ email                : sherman at mrcc.com
 #include "qgsrect.h"
 #include <iostream>
 #include <cfloat>
-
+#ifdef WIN32
+#include <limits>
+#endif
 #include <cstring>
+#include <assert.h>
 
 /** \class QgsFeature
  * \brief Encapsulates a spatial feature with attributes
@@ -1118,7 +1121,7 @@ QgsPoint QgsFeature::closestVertex(const QgsPoint& point) const
     if(mGeometry)
     {
 	int wkbType;
-	double actdist=DBL_MAX;
+    double actdist = std::numeric_limits<double>::max();
 	double x,y;
 	double *tempx,*tempy;
 	memcpy(&wkbType, (mGeometry+1), sizeof(int));
@@ -1667,4 +1670,3 @@ geos::Geometry* QgsFeature::geosGeometry() const
 {
   return mGeometry->geosGeometry();
 }
-

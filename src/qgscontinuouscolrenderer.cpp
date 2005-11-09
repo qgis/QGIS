@@ -206,6 +206,7 @@ QString QgsContinuousColRenderer::name() const
 bool QgsContinuousColRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
 {
     bool returnval=true;
+#ifndef WIN32
     QDomElement continuoussymbol=document.createElement("continuoussymbol");
     layer_node.appendChild(continuoussymbol);
     QDomElement classificationfield=document.createElement("classificationfield");
@@ -224,6 +225,7 @@ bool QgsContinuousColRenderer::writeXML( QDomNode & layer_node, QDomDocument & d
     {
 	mMaximumSymbol->writeXML(highestsymbol,document);
     }
+#endif
     return returnval;
 }
 

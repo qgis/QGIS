@@ -40,7 +40,7 @@ public:
 
     /** means of accessing canonical single instance
      */
-    static QgsProviderRegistry* instance(const char *pluginPath = 0);
+    static QgsProviderRegistry* instance(QString pluginPath = QString::null);
 
     QString library(QString const & providerKey) const;
 
@@ -99,7 +99,7 @@ public:
 private:
 
     /** ctor private since instance() creates it */
-    QgsProviderRegistry(const char *pluginPath);
+    QgsProviderRegistry(QString pluginPath);
 
     /// pointer to canonical Singleton object
     static QgsProviderRegistry* _instance;

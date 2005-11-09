@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsclipper.h  -  a class that clips line
+                          qgsclipper.cpp  -  a class that clips line
                           segments and polygons
                              -------------------
     begin                : March 2004

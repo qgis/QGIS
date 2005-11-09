@@ -117,7 +117,7 @@ class QgsCoordinateTransform: public QObject
     * @param direction TransformDirection (defaults to FORWARD)
     * @return QgsPoint in Destination Coordinate System
      */    
-   QgsPoint transform(const QgsPoint p,TransformDirection direction=FORWARD) const;
+   QgsPoint transform(const QgsPoint p,TransformDirection direction=FORWARD);
     /*! Transform the point specified by x,y from Source Coordinate System to Destination Coordinate System
     * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
     * otherwise points are transformed from map canvas CS to layerCS.
@@ -126,15 +126,27 @@ class QgsCoordinateTransform: public QObject
     * @param direction TransformDirection (defaults to FORWARD)
     * @return QgsPoint in Destination Coordinate System
      */
-   QgsPoint transform(const double x, const double y,TransformDirection direction=FORWARD) const ;
+   QgsPoint transform(const double x, const double y,TransformDirection direction=FORWARD);
+
+    /*! Transform a QgsRect to the dest Coordinate system 
+    * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
+    * otherwise points are transformed from map canvas CS to layerCS.
+    * It assumes that rect is a bounding box, and creates a bounding box
+    * in the proejcted CS, so that all points in source rectangle is within
+    * returned rectangle.
+    * @param QgsRect rect to transform
+    * @param direction TransformDirection (defaults to FORWARD)
+    * @return QgsRect in Destination Coordinate System
+     */        
+   QgsRect transformBoundingBox(const QgsRect theRect,TransformDirection direction=FORWARD);
 
    // Same as for the other transform() functions, but alters the x
    // and y variables in place. The second one works with good old-fashioned
    // C style arrays.
-   void transformInPlace(double& x, double& y, double &z, TransformDirection direction = FORWARD) const;
+   void transformInPlace(double& x, double& y, double &z, TransformDirection direction = FORWARD);
 
    void transformInPlace(std::vector<double>& x, std::vector<double>& y, std::vector<double>& z, 
-       TransformDirection direction = FORWARD) const;
+       TransformDirection direction = FORWARD);
 
     /*! Transform a QgsRect to the dest Coordinate system 
     * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
@@ -143,7 +155,7 @@ class QgsCoordinateTransform: public QObject
     * @param direction TransformDirection (defaults to FORWARD)
     * @return QgsRect in Destination Coordinate System
      */        
-   QgsRect transform(const QgsRect theRect,TransformDirection direction=FORWARD) const;
+   QgsRect transform(const QgsRect theRect,TransformDirection direction=FORWARD);
     
     /*! Transform an array of coordinates to a different Coordinate System
     * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
@@ -153,7 +165,7 @@ class QgsCoordinateTransform: public QObject
     * @param direction TransformDirection (defaults to FORWARD)
     * @return QgsRect in Destination Coordinate System
      */        
-   void transformCoords( const int &numPoint, double *x, double *y, double *z,TransformDirection direction=FORWARD) const;
+   void transformCoords( const int &numPoint, double *x, double *y, double *z,TransformDirection direction=FORWARD);
   /*! 
    * Flag to indicate whether the coordinate systems have been initialised
    * @return true if initialised, otherwise false
@@ -188,6 +200,11 @@ class QgsCoordinateTransform: public QObject
     * @return bool True on success, False on failure
     */
     bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
+
+ signals:
+    /** Signal when an invalid pj_transform() has occured */
+    void  invalidTransformInput();
+
  private:
 
     /*! 
@@ -262,7 +279,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsCoordinateTransform
   }
 */
   mySummary+=("\nCoordinate Transform def ends \n%%%%%%%%%%%%%%%%%%%%%%%%\n");
-  return os << mySummary.ascii() << std::endl;
+  return os << mySummary.local8Bit() << std::endl;
 }
 
 

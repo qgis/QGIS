@@ -137,32 +137,6 @@ bool QgsVectorFileWriter::initialise()
 
   //define the spatial ref system
   OGRSpatialReferenceH mySpatialReferenceSystemHandle = NULL;
-
-// HEAD version
-// <<<<<<< qgsvectorfilewriter.cpp
-//   QgsSpatialRefSys mySpatialRefSys;
-//   mySpatialRefSys.validate();
-//   char* WKT;
-//   QString myWKT = NULL;
-//   if(mySpatialRefSys.toOgrSrs().exportToWkt(&WKT)==OGRERR_NONE)
-//   {
-// #ifdef QGISDEBUG
-//       qWarning("export to WKT successful****************************************************************************************************");
-// #endif
-//       myWKT=WKT;
-// #ifdef QGISDEBUG
-//       qWarning("WKT is:WKT "+myWKT);
-// #endif    
-//   }
-//   else
-//   {
-// #ifdef QGISDEBUG
-//       qWarning("export to WKT failed*******************************************************************************************************3");
-// #endif      
-//   }
-
- 
-// =======
   QgsSpatialRefSys mySpatialRefSys;
   mySpatialRefSys.validate();
   char* WKT;
@@ -185,7 +159,6 @@ bool QgsVectorFileWriter::initialise()
   }
 
  
-//>>>>>>> 1.4.2.2
   //sample below shows how to extract srs from a raster
   //    const char *myWKT = GDALGetProjectionRef( hBand );
 

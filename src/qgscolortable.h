@@ -30,6 +30,7 @@
  *
  */
 
+
 typedef struct {
     unsigned char c1, c2, c3, c4;
 } DISCRETE; 
@@ -39,7 +40,6 @@ typedef struct {
     unsigned char min_c1, min_c2, min_c3, min_c4;
     unsigned char max_c1, max_c2, max_c3, max_c4;
 } RAMP;
-
 class QgsColorTable
 {
 public:
@@ -93,13 +93,14 @@ public:
     void print ( void );
 
     /** \brief Minimum value */
-    double min ( void );
-
+    double rmin();
+   
     /** \brief Maximum value */
-    double max ( void );
+    double rmax();
 
     /** \brief Clear the color table */
     void clear();
+	void gack();
 
 private:
     /** \brief vector of discrete values */

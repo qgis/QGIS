@@ -72,7 +72,7 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
     value_.clear();
 
     // get the type associated with the value first
-    QVariant::Type type = QVariant::nameToType(typeString);
+    QVariant::Type type = QVariant::nameToType(typeString.local8Bit());
 
     // This huge switch is left-over from an earlier incarnation of
     // QgsProject where there was a fine level of granularity for value

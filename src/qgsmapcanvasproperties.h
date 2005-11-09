@@ -153,6 +153,12 @@ class QgsMapCanvas::CanvasProperties
   //! Rubber band box for dynamic zoom
               QRect zoomBox;
 
+  //! Beginning point of a rubber band box
+              QPoint boxStartPoint;
+
+  //! Last seen point of the mouse
+              QPoint mouseLastXY;
+
   //! Beginning point of a rubber band
               QPoint rubberStartPoint;
 
@@ -195,6 +201,9 @@ class QgsMapCanvas::CanvasProperties
   //! Flag to indicate a map canvas capture operation is taking place
               bool capturing;
   
+  //! Flag to indicate the pan selector key is held down by user
+              bool panSelectorDown;
+
   //! Vector containing the inital color for a layer
               std::vector < QColor > initialColor;
 

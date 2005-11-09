@@ -66,7 +66,13 @@
 #include <qapplication.h>
 
 
-QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, QWidget * parent, const char *name, bool modal):QgsDlgVectorLayerPropertiesBase(parent, name, modal), layer(lyr), mRendererDialog(0)
+QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, 
+                                                         QWidget * parent, 
+                                                         const char *name, 
+                                                         bool modal)
+    : QgsDlgVectorLayerPropertiesBase(parent, name, modal), 
+      layer(lyr), 
+      mRendererDialog(0)
 {
   // Create the Label dialog tab
   QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
@@ -91,8 +97,13 @@ QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, Q
 	  indexGroupBox->setEnabled(true);
       }
   }
-  leSpatialRefSys->setText(layer->coordinateTransform()->sourceSRS().proj4String());
-}
+
+  if ( layer->coordinateTransform() )
+  {
+      leSpatialRefSys->setText(layer->coordinateTransform()->sourceSRS().proj4String());
+  }
+
+} // QgsDlgVectorLayerProperties ctor
 
 QgsDlgVectorLayerProperties::~QgsDlgVectorLayerProperties()
 {
@@ -137,7 +148,7 @@ QgsRenderer *QgsDlgVectorLayerProperties::getBufferRenderer()
 
 void QgsDlgVectorLayerProperties::setLegendType(QString type)
 {
-  legendtypecombobox->setCurrentText(tr(type));
+  legendtypecombobox->setCurrentText(type);
 }
 
 void QgsDlgVectorLayerProperties::setDisplayField(QString name)
@@ -188,8 +199,8 @@ void QgsDlgVectorLayerProperties::reset( void )
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked(layer->scaleBasedVisibility());
-  spinMinimumScale->setValue(layer->minScale());
-  spinMaximumScale->setValue(layer->maxScale());
+  spinMinimumScale->setValue((int)layer->minScale());
+  spinMaximumScale->setValue((int)layer->maxScale());
 
   // symbology initialization
   if(legendtypecombobox->count()==0)
@@ -248,7 +259,10 @@ void QgsDlgVectorLayerProperties::reset( void )
   actionDialog->init();
   labelDialog->init();
   labelCheckBox->setChecked(layer->labelOn());
-}
+
+} // reset()
+
+
 //
 // methods reimplemented from qt designer base class
 //
@@ -350,6 +364,10 @@ void QgsDlgVectorLayerProperties::pbnQueryBuilder_clicked()
     // if the sql is changed, update it in the prop subset text box
     txtSubsetSQL->setText(pqb->sql());
     //TODO If the sql is changed in the prop dialog, the layer extent should be recalculated
+
+    // The datasource for the layer needs to be updated with the new sql since this gets
+    // saved to the project file. This should happen at the map layer level...
+
   }
   // delete the query builder object
   delete pqb;
@@ -410,7 +428,8 @@ QString QgsDlgVectorLayerProperties::getMetadata()
 #endif
 
       myMetadataQString += "<tr><td bgcolor=\"white\">";
-      myMetadataQString += tr("Geometry type of the features in this layer : ") + vectorTypeString ;
+      myMetadataQString += tr("Geometry type of the features in this layer : ") + 
+          vectorTypeString;
       myMetadataQString += "</td></tr>";
   }
 
@@ -444,48 +463,65 @@ QString QgsDlgVectorLayerProperties::getMetadata()
                        "," + 
                        QString::number(myExtent.yMax());
   myMetadataQString += "</td></tr>";
+
   //extents in project cs
-  QgsRect myProjectedExtent;
+
   try
   {
-      myProjectedExtent = layer->coordinateTransform()->transform(layer->extent());
+    QgsCoordinateTransform * coordinateTransform = layer->coordinateTransform();
+
+    if ( ! coordinateTransform )
+    {
+        throw QgsCsException( string("unable to get layer coordinate transform object") );
+    }
+
+    QgsRect myProjectedExtent = coordinateTransform->transformBoundingBox(layer->extent());
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += tr("In project spatial reference system units : ") + 
+                         tr("xMin,yMin ") + 
+                         QString::number(myProjectedExtent.xMin()) + 
+                         "," + 
+                         QString::number( myProjectedExtent.yMin()) +
+                         tr(" : xMax,yMax ") + 
+                         QString::number(myProjectedExtent.xMax()) + 
+                         "," + 
+                         QString::number(myProjectedExtent.yMax());
+    myMetadataQString += "</td></tr>";
+
+
+
+    // 
+    // Display layer spatial ref system
+    //
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Layer Spatial Reference System:");
+    myMetadataQString += "</td></tr>";  
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += coordinateTransform->sourceSRS().proj4String().replace(QRegExp("\"")," \"");                       
+    myMetadataQString += "</td></tr>";
+
+    // 
+    // Display project (output) spatial ref system
+    //  
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Project (Output) Spatial Reference System:");
+    myMetadataQString += "</td></tr>";  
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += coordinateTransform->destSRS().proj4String().replace(QRegExp("\"")," \"");                       
+    myMetadataQString += "</td></tr>";
+
   }
   catch(QgsCsException &cse)
   {
+    QgsDebug( cse.what() );
+
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += tr("In project spatial reference system units : ");
+    myMetadataQString += " (Invalid transformation of layer extents) ";
+    myMetadataQString += "</td></tr>";
+
   }
 
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += tr("In project spatial reference system units : ") + 
-      tr("xMin,yMin ") + 
-      QString::number(myProjectedExtent.xMin()) + 
-      "," + 
-      QString::number( myProjectedExtent.yMin()) +
-      tr(" : xMax,yMax ") + 
-      QString::number(myProjectedExtent.xMax()) + 
-      "," + 
-      QString::number(myProjectedExtent.yMax());
-  myMetadataQString += "</td></tr>";
-
-  // 
-  // Display layer spatial ref system
-  //
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
-  myMetadataQString += tr("Layer Spatial Reference System:");
-  myMetadataQString += "</td></tr>";  
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += layer->coordinateTransform()->sourceSRS().proj4String().replace(QRegExp("\"")," \"");                       
-  myMetadataQString += "</td></tr>";
-
-  // 
-  // Display project (output) spatial ref system
-  //  
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
-  myMetadataQString += tr("Project (Output) Spatial Reference System:");
-  myMetadataQString += "</td></tr>";  
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += layer->coordinateTransform()->destSRS().proj4String().replace(QRegExp("\"")," \"");                       
-  myMetadataQString += "</td></tr>";
-  
       
   //
   // Add the info about each field in the attribute table
@@ -545,11 +581,14 @@ QString QgsDlgVectorLayerProperties::getMetadata()
   return myMetadataQString;
 
 }
+
+
+
 void QgsDlgVectorLayerProperties::pbnChangeSpatialRefSys_clicked()
 {
     
 
-    QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector();
+    QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector(this);
     long myDefaultSRS =layer->coordinateTransform()->sourceSRS().srsid();
     if (myDefaultSRS==0)
     {
@@ -559,6 +598,7 @@ void QgsDlgVectorLayerProperties::pbnChangeSpatialRefSys_clicked()
     if(mySelector->exec())
     {
       layer->coordinateTransform()->sourceSRS().createFromSrsId(mySelector->getCurrentSRSID());
+      layer->coordinateTransform()->initialise();
     }
     else
     {

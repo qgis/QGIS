@@ -9,7 +9,7 @@
           copyright            : (C) 2003 by Gary E.Sherman
           email                : sherman at mrcc.com
  
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -161,7 +161,7 @@ QgsVectorLayer::~QgsVectorLayer()
 
   if(isEditable())
   {
-    stopEditing();
+      stopEditing();
   }
 
   if (tabledisplay)
@@ -396,6 +396,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
         }
 
       //render labels of not-commited features
+      //XXX changed from std::vector to std::list in merge from 0.7 to head (TS)
       for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
         {
           bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
@@ -471,6 +472,14 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
 
   // Transform the points into map coordinates (and reproject if
   // necessary)
+
+  double oldx = x[0];
+  double oldy = y[0];
+
+#ifdef QGISDEBUG 
+    //std::cout <<"...WKBLineString start at (" << oldx << ", " << oldy << ")" <<std::endl;
+#endif
+
   transformPoints(x, y, z, mtp, projectionsEnabledFlag);
  
 #if defined(Q_WS_X11)
@@ -496,9 +505,14 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   // the double* versions for the OGR coordinate transformation).
   QPointArray pa(nPoints);
   for (int i = 0; i < nPoints; ++i)
+#ifdef WIN32
+	   // vc++ doesn't have a round function so we fake it
+	 pa.setPoint(i, static_cast<int>(floor(x[i] + 0.5)),
+       static_cast<int>(floor(y[i] + 0.5)));
+#else
     pa.setPoint(i, static_cast<int>(round(x[i])),
        static_cast<int>(round(y[i])));
-
+#endif
 #ifdef QGISDEBUGVERBOSE
   for (int i = 0; i < pa.size(); ++i)
     std::cerr << pa.point(i).x() << ", " << pa.point(i).y()
@@ -541,6 +555,7 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
   for (unsigned int idx = 0; idx < numRings; idx++)
   {
     int nPoints = *((int*)ptr);
+
     ringTypePtr ring = new ringType(std::vector<double>(nPoints),
             std::vector<double>(nPoints));
     ptr += 4;
@@ -550,10 +565,10 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     // Extract the points from the WKB and store in a pair of
     // vectors.
     /*
-#ifdef QGISDEBUG
+      #ifdef QGISDEBUG
     std::cerr << "Points for ring " << idx << " ("
         << nPoints << " points)\n";
-#endif
+      #endif
     */
     for (unsigned int jdx = 0; jdx < nPoints; jdx++)
     {
@@ -562,14 +577,29 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
       ring->second[jdx] = *((double *) ptr);
       ptr += sizeof(double);
       /*
-#ifdef QGISDEBUG
+        #ifdef QGISDEBUG
       std::cerr << jdx << ": " 
     << ring->first[jdx] << ", " << ring->second[jdx] << '\n';
-#endif
+        #endif
       */
     }
+    // If ring has fewer than two points, what is it then?
+    // Anyway, this check prevents a crash
+    if (nPoints < 1) 
+    {
+      std::cout << "Ring has only " << nPoints << " points! Skipping this ring." << std::endl;
+      continue;
+    }
+
     // Transform the points into map coordinates (and reproject if
     // necessary)
+    double oldx = ring->first[0];
+    double oldy = ring->second[0];
+
+#ifdef QGISDEBUG 
+    //std::cout <<"...WKBLineString start at (" << oldx << ", " << oldy << ")" <<std::endl;
+#endif
+
     transformPoints(ring->first, ring->second, zVector, mtp, projectionsEnabledFlag);
 
 #if defined(Q_WS_X11)
@@ -585,13 +615,13 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
       {
         QgsClipper::trimFeature(ring->first, ring->second, false);
         /*
-#ifdef QGISDEBUG
-std::cerr << "Trimmed points (" << ring->first.size() << ")\n";
-for (int i = 0; i < ring->first.size(); ++i)
-std::cerr << i << ": " << ring->first[i] 
-<< ", " << ring->second[i] << '\n';
-#endif
-*/
+          #ifdef QGISDEBUG
+          std::cerr << "Trimmed points (" << ring->first.size() << ")\n";
+          for (int i = 0; i < ring->first.size(); ++i)
+          std::cerr << i << ": " << ring->first[i] 
+          << ", " << ring->second[i] << '\n';
+          #endif
+        */
         break;
       }
       //std::cout << "POLYGONTRANSFORM: " << ring->first[i] << ", " << ring->second[i] << std::endl; 
@@ -630,34 +660,39 @@ std::cerr << i << ": " << ring->first[i]
     QPointArray pa(total_points + rings.size() - 1);
 
     for (int i = 0; i < rings.size(); ++i)
+    {
+      // Store the pointer in a variable with a short name so as to make
+      // the following code easier to type and read.
+      ringTypePtr r = rings[i];
+
+      // Store the start index of this ring, and the number of
+      // points in the ring.
+      ringDetails.push_back(std::make_pair(ii, r->first.size()));
+
+      // Transfer points to the QPointArray
+      for (int j = 0; j != r->first.size(); ++j)
+#ifdef WIN32
+		  // vc++ doesn't have a round function so we fake it
+		  pa.setPoint(ii++, static_cast<int>(floor(r->first[j] + 0.5)),
+                    static_cast<int>(floor(r->second[j] + 0.5)));
+#else
+        pa.setPoint(ii++, static_cast<int>(round(r->first[j])),
+                    static_cast<int>(round(r->second[j])));
+#endif
+      // Store the last point of the first ring, and insert it at
+      // the end of all other rings. This makes all the other rings
+      // appear as holes in the first ring.
+      if (i == 0)
       {
-  // Store the pointer in a variable with a short name so as to make
-  // the following code easier to type and read.
-  ringTypePtr r = rings[i];
-
-  // Store the start index of this ring, and the number of
-  // points in the ring.
-  ringDetails.push_back(std::make_pair(ii, r->first.size()));
-
-  // Transfer points to the QPointArray
-  for (int j = 0; j != r->first.size(); ++j)
-    pa.setPoint(ii++, static_cast<int>(round(r->first[j])),
-                static_cast<int>(round(r->second[j])));
-
-  // Store the last point of the first ring, and insert it at
-  // the end of all other rings. This makes all the other rings
-  // appear as holes in the first ring.
-  if (i == 0)
-  {
-    outerRingPt.setX(pa.point(ii-1).x());
-    outerRingPt.setY(pa.point(ii-1).y());
-  }
-  else
-    pa.setPoint(ii++, outerRingPt);
-
-  // Tidy up the pointed to pairs of vectors as we finish with them
-  delete rings[i];
+        outerRingPt.setX(pa.point(ii-1).x());
+        outerRingPt.setY(pa.point(ii-1).y());
       }
+      else
+        pa.setPoint(ii++, outerRingPt);
+
+      // Tidy up the pointed to pairs of vectors as we finish with them
+      delete rings[i];
+    }
 
     
 #ifdef QGISDEBUGVERBOSE
@@ -676,9 +711,9 @@ std::cerr << i << ": " << ring->first[i]
     /*
     // A bit of code to aid in working out what values of
     // QgsClipper::minX, etc cause the X11 zoom bug.
-    int largestX  = std::numeric_limits<int>::min();
+    int largestX  = -std::numeric_limits<int>::max();
     int smallestX = std::numeric_limits<int>::max();
-    int largestY  = std::numeric_limits<int>::min();
+    int largestY  = -std::numeric_limits<int>::max();
     int smallestY = std::numeric_limits<int>::max();
 
     for (int i = 0; i < pa.size(); ++i)
@@ -798,52 +833,52 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
       while (fet = dataProvider->getNextFeature(attributes, updateThreshold))
 //      while((fet = dataProvider->getNextFeature(attributes)))
       {
-      
-#ifdef QGISDEBUG
-//      std::cout << "QgsVectorLayer::draw: got " << fet->featureId() << std::endl; 
-#endif
-      
-  qApp->processEvents(); //so we can trap for esc press
-  if (mDrawingCancelled) return;
-  // If update threshold is greater than 0, check to see if
-  // the threshold has been exceeded
-  if(updateThreshold > 0)
-  {
-    //copy the drawing buffer every updateThreshold elements
-    if(0 == featureCount % updateThreshold)
-#if QT_VERSION < 0x040000
-      bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
-#else
-// TODO: Double check if this is appropriate for Qt4 - probably better to use QPainter::drawPixmap().
-      bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::AutoColor);
-#endif
-  }
 
-  if (fet == 0)
-  {
 #ifdef QGISDEBUG
-    std::cerr << "get next feature returned null\n";
+        //      std::cout << "QgsVectorLayer::draw: got " << fet->featureId() << std::endl; 
 #endif
-	}
-	else
-	{
+
+        qApp->processEvents(); //so we can trap for esc press
+        if (mDrawingCancelled) return;
+        // If update threshold is greater than 0, check to see if
+        // the threshold has been exceeded
+        if(updateThreshold > 0)
+        {
+          //copy the drawing buffer every updateThreshold elements
+          if(0 == featureCount % updateThreshold)
+#if QT_VERSION < 0x040000
+            bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
+#else
+          // TODO: Double check if this is appropriate for Qt4 - probably better to use QPainter::drawPixmap().
+          bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::AutoColor);
+#endif
+        }
+
+        if (fet == 0)
+        {
+#ifdef QGISDEBUG
+          std::cerr << "get next feature returned null\n";
+#endif
+        }
+        else
+        {
           // Cache this for the use of (e.g.) modifying the feature's geometry.
-//          mCachedGeometries[fet->featureId()] = fet->geometryAndOwnership();
-          
-	  if (mDeleted.find(fet->featureId())==mDeleted.end())
-	  {
+          //          mCachedGeometries[fet->featureId()] = fet->geometryAndOwnership();
+
+          if (mDeleted.find(fet->featureId())==mDeleted.end())
+          {
             // not deleted.
-            
+
             // check to see if the feature has an uncommitted modification.
             // if so, substitute the modified geometry
- 
-//#ifdef QGISDEBUG
-//	  std::cerr << "QgsVectorLayer::draw: Looking for modified geometry for " << fet->featureId() << std::endl;
-//#endif
+
+            //#ifdef QGISDEBUG
+            //	  std::cerr << "QgsVectorLayer::draw: Looking for modified geometry for " << fet->featureId() << std::endl;
+            //#endif
             if (mChangedGeometries.find(fet->featureId()) != mChangedGeometries.end())
             {
 #ifdef QGISDEBUG
-	  std::cerr << "QgsVectorLayer::draw: Found modified geometry for " << fet->featureId() << std::endl;
+              std::cerr << "QgsVectorLayer::draw: Found modified geometry for " << fet->featureId() << std::endl;
 #endif
               // substitute the modified geometry for the committed version
               fet->setGeometry( mChangedGeometries[ fet->featureId() ] );
@@ -852,21 +887,21 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
             // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
             mCachedGeometries[fet->featureId()] = fet->geometryAndOwnership();
 
-	    bool sel=mSelected.find(fet->featureId()) != mSelected.end();
-	    m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
-				      sel, oversampling, widthScale );
-	    
+            bool sel=mSelected.find(fet->featureId()) != mSelected.end();
+            m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
+                sel, oversampling, widthScale );
+
             double scale = markerScaleFactor * symbolScale;
-	    drawFeature(p,fet,theMapToPixelTransform,&marker, scale, 
-			projectionsEnabledFlag);
-	    
-      //test for geos performance
-      //geos::Geometry* g=fet->geosGeometry();
-      //delete g;
+            drawFeature(p,fet,theMapToPixelTransform,&marker, scale, 
+                projectionsEnabledFlag);
+
+            //test for geos performance
+            //geos::Geometry* g=fet->geosGeometry();
+            //delete g;
             ++featureCount;
-	    delete fet;
-	  }
-	}
+            delete fet;
+          }
+        }
 
       }
 
@@ -876,19 +911,20 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
       std::vector<QgsFeature*>::iterator it = mAddedFeatures.begin();
       for(; it != mAddedFeatures.end(); ++it)
       {
-  bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
-  m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
-          sel, oversampling, widthScale);
-  double scale = markerScaleFactor * symbolScale;
-  drawFeature(p,*it,theMapToPixelTransform,&marker,scale, 
-        projectionsEnabledFlag);
+        bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
+        m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
+                                  sel, oversampling, widthScale);
+        double scale = markerScaleFactor * symbolScale;
+        drawFeature(p,*it,theMapToPixelTransform,&marker,scale, 
+                    projectionsEnabledFlag);
       }
     }
     catch (QgsCsException &cse)
     {
-      QString msg("Failed to transform a point: ");
+      QString msg("Failed to transform a point while drawing a feature of type '"
+                  + fet->typeName() + "'. Ignoring this feature.");
       msg += cse.what();
-      qWarning(msg);
+      qWarning(msg.local8Bit());
     }
 
 #ifdef QGISDEBUG
@@ -936,53 +972,60 @@ void QgsVectorLayer::identify(QgsRect * r)
   calc.setSourceSRS(mCoordinateTransform->sourceSRS().srsid());
   
   if ( !isEditable() ) {
-      // display features falling within the search radius
-      if( !ir )
-      {
-    // TODO it is necessary to pass topLevelWidget()as parent, but there is no QWidget available 
-
+    // display features falling within the search radius
+    if( !ir )
+    {
 // TODO: Qt4 doesn't have QWidgetList, need to work out an alternative.
 #if QT_VERSION < 0x040000
-    QWidgetList *list = QApplication::topLevelWidgets ();
-    QWidgetListIt it( *list ); 
-          QWidget *w;
-          QWidget *top = 0;
-          while ( (w=it.current()) != 0 ) {
+      // It is necessary to pass topLevelWidget()as parent, but there is no QWidget available.
+      //
+      // Win32 doesn't like this approach to creating the window and seems
+      // to work fine without it [gsherman]
+      QWidget *top = 0;
+#ifndef WIN32
+
+      QWidgetList *list = QApplication::topLevelWidgets ();
+      QWidgetListIt it( *list ); 
+      QWidget *w;
+
+      while ( (w=it.current()) != 0 ) {
         ++it;
         if ( typeid(*w) == typeid(QgisApp) ) {
-      top = w;
-      break;
+          top = w;
+          break;
         }
-    }
-    delete list;
-    ir = new QgsIdentifyResults(mActions, top);
-#endif
-          
-    // restore the identify window position and show it
-    ir->restorePosition();
-      } else {
-          ir->clear();
-    ir->setActions ( mActions );
       }
+      delete list;     
+#endif
+      ir = new QgsIdentifyResults(mActions, top);
+#endif
 
-      while ((fet = dataProvider->getNextFeature(true)))
+      // restore the identify window position and show it
+      ir->restorePosition();
+    } else {
+      ir->raise();
+      ir->clear();
+      ir->setActions ( mActions );
+    }
+
+    while ((fet = dataProvider->getNextFeature(true)))
+    {
+      featureCount++;
+
+      QListViewItem *featureNode = ir->addNode("foo");
+      featureNode->setText(0, fieldIndex);
+      std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
+      for (int i = 0; i < attr.size(); i++)
       {
-  featureCount++;
-
-  QListViewItem *featureNode = ir->addNode("foo");
-  featureNode->setText(0, fieldIndex);
-  std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
-  for (int i = 0; i < attr.size(); i++)
-  {
 #ifdef QGISDEBUG
     std::cout << attr[i].fieldName().local8Bit() << " == " << fieldIndex.local8Bit() << std::endl;
 #endif
-    if (attr[i].fieldName().lower() == fieldIndex)
-    {
-      featureNode->setText(1, attr[i].fieldValue());
-    }
-    ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
-  }
+        if (attr[i].fieldName().lower() == fieldIndex)
+        {
+          featureNode->setText(1, attr[i].fieldValue());
+        }
+        ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
+      }
 
   // measure distance or area
   if (vectorType() == QGis::Line)
@@ -999,63 +1042,65 @@ void QgsVectorLayer::identify(QgsRect * r)
     str += " km2";
     ir->addAttribute(featureNode, ".Area", str);
   }
-  
-  // Add actions 
-  
-  QgsAttributeAction::aIter iter = mActions.begin();
-  for (int i = 0; iter != mActions.end(); ++iter, ++i)
-  {
-      ir->addAction( featureNode, i, tr("action"), iter->name() );
-  }
-  
-  delete fet;
+
+      // Add actions 
+
+      QgsAttributeAction::aIter iter = mActions.begin();
+      for (int i = 0; iter != mActions.end(); ++iter, ++i)
+      {
+        ir->addAction( featureNode, i, tr("action"), iter->name() );
       }
 
-#ifdef QGISDEBUG
-      std::cout << "Feature count on identify: " << featureCount << std::endl;
-#endif
-
-      //also test the not commited features //todo: eliminate copy past code
-      /*for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-      {
-    if((*it)->intersects(r))
-    {
-        featureCount++;
-        if (featureCount == 1)
-        {
-      ir = new QgsIdentifyResults(mActions);
-        }
-
-        QListViewItem *featureNode = ir->addNode("foo");
-        featureNode->setText(0, fieldIndex);
-        std::vector < QgsFeatureAttribute > attr = (*it)->attributeMap();
-        for (int i = 0; i < attr.size(); i++)
-        {
-#ifdef QGISDEBUG
-      std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
-#endif
-      if (attr[i].fieldName().lower() == fieldIndex)
-      {
-          featureNode->setText(1, attr[i].fieldValue());
-      }
-      ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
-        } 
+      delete fet;
     }
-    }*/
 
-      ir->setTitle(name());
-      if (featureCount == 1)
-        ir->showAllAttributes();
-      
-      if (featureCount == 0)
+#ifdef QGISDEBUG
+    std::cout << "Feature count on identify: " << featureCount << std::endl;
+#endif
+
+    //also test the not commited features //todo: eliminate copy past code
+    /*for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
       {
-    //QMessageBox::information(0, tr("No features found"), tr("No features were found in the active layer at the point you clicked"));
-
-    ir->setTitle(name() + " - " + tr("No features found") );
-    ir->setMessage ( tr("No features found"), tr("No features were found in the active layer at the point you clicked") );
+      if((*it)->intersects(r))
+      {
+      featureCount++;
+      if (featureCount == 1)
+      {
+      ir = new QgsIdentifyResults(mActions);
       }
-      ir->show();
-  } 
+
+      QListViewItem *featureNode = ir->addNode("foo");
+      featureNode->setText(0, fieldIndex);
+      std::vector < QgsFeatureAttribute > attr = (*it)->attributeMap();
+      for (int i = 0; i < attr.size(); i++)
+      {
+#ifdef QGISDEBUG
+std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
+#endif
+if (attr[i].fieldName().lower() == fieldIndex)
+{
+featureNode->setText(1, attr[i].fieldValue());
+}
+ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
+} 
+}
+}*/
+
+    ir->setTitle(name() + " - " + QString::number(featureCount) + tr(" features found"));
+if (featureCount == 1) 
+{
+  ir->showAllAttributes();
+  ir->setTitle(name() + " - " + tr(" 1 feature found") );
+}
+if (featureCount == 0)
+{
+  //QMessageBox::information(0, tr("No features found"), tr("No features were found in the active layer at the point you clicked"));
+
+  ir->setTitle(name() + " - " + tr("No features found") );
+  ir->setMessage ( tr("No features found"), tr("No features were found in the active layer at the point you clicked") );
+}
+ir->show();
+} 
   else { // Edit attributes 
       // TODO: what to do if more features were selected? - nearest?
       if ( (fet = dataProvider->getNextFeature(true)) ) {
@@ -1126,7 +1171,7 @@ void QgsVectorLayer::table()
       {
         tabledisplay->table()->selectRowWithId(*it);//todo: avoid that the table gets repainted during each selection
 #ifdef QGISDEBUG
-        qWarning("selecting row with id " + QString::number(*it));
+        qWarning(("selecting row with id " + QString::number(*it)).local8Bit());
 #endif
 
       }
@@ -1444,63 +1489,30 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
   return QgsRect(0,0,0,0);
     }
 
-  double xmin=DBL_MAX;
-  double ymin=DBL_MAX;
-  double xmax=-DBL_MAX;
-  double ymax=-DBL_MAX;
-  QgsRect r;
+  QgsRect r, retval;
   QgsFeature* fet;
   dataProvider->reset();
 
+  retval.setMinimal();
   while ((fet = dataProvider->getNextFeature(false)))
   {
     if (mSelected.find(fet->featureId()) != mSelected.end())
     {
-  r=fet->geometry()->boundingBox();
-  if(r.xMin()<xmin)
-  {
-      xmin=r.xMin();
-  }
-  if(r.yMin()<ymin)
-  {
-      ymin=r.yMin();
-  }
-  if(r.xMax()>xmax)
-  {
-      xmax=r.xMax();
-  }
-  if(r.yMax()>ymax)
-  {
-      ymax=r.yMax();
-  }
+      r=fet->geometry()->boundingBox();
+      retval.combineExtentWith(&r);
     }
       delete fet;
   }
   //also go through the not commited features
   for(std::vector<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
   {
-      if(mSelected.find((*iter)->featureId())!=mSelected.end())
-      {
-    r=(*iter)->geometry()->boundingBox();
-    if(r.xMin()<xmin)
+    if(mSelected.find((*iter)->featureId())!=mSelected.end())
     {
-        xmin=r.xMin();
+      r=(*iter)->geometry()->boundingBox();
+      retval.combineExtentWith(&r);
     }
-    if(r.yMin()<ymin)
-    {
-        ymin=r.yMin();
-    }
-    if(r.xMax()>xmax)
-    {
-        xmax=r.xMax();
-    }
-    if(r.yMax()>ymax)
-    {
-        ymax=r.yMax();
-    }
-      }
   }
-  return QgsRect(xmin,ymin,xmax,ymax);
+  return retval;
 }
 
 void QgsVectorLayer::setLayerProperties(QgsDlgVectorLayerProperties * properties)
@@ -1619,41 +1631,19 @@ void QgsVectorLayer::updateExtents()
       else
 	{
 	  QgsFeature* fet=0;
-	  double xmin=DBL_MAX;
-	  double xmax=-DBL_MAX;
-	  double ymin=DBL_MAX;
-	  double ymax=-DBL_MAX;
 	  QgsRect bb;
 
+          layerExtent.setMinimal();
 	  dataProvider->reset();
 	  while(fet=dataProvider->getNextFeature(false))
 	    {
 	      if(mDeleted.find(fet->featureId())==mDeleted.end())
 		{
 		  bb=fet->boundingBox();
-		  if(bb.xMin()<xmin)
-		    {
-		      xmin=bb.xMin();
-		    }
-		  if(bb.xMax()>xmax)
-		    {
-		      xmax=bb.xMax();
-		    }
-		  if(bb.yMin()<ymin)
-		    {
-		      ymin=bb.yMin();
-		    }
-		  if(bb.yMax()>ymax)
-		    {
-		      ymax=bb.yMax();
-		    }
+                  layerExtent.combineExtentWith(&bb);
 		}
 	      delete fet;
 	    }
-	  layerExtent.setXmin(xmin);
-	  layerExtent.setXmax(xmax);
-	  layerExtent.setYmin(ymin);
-	  layerExtent.setYmax(ymax);
 	}
     }
   else
@@ -1666,22 +1656,8 @@ void QgsVectorLayer::updateExtents()
   for(std::vector<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
     {
       QgsRect bb=(*iter)->boundingBox();
-      if(bb.xMin()<layerExtent.xMin())
-	{
-	  layerExtent.setXmin(bb.xMin());
-	}
-      if(bb.xMax()>layerExtent.xMax())
-	{
-	  layerExtent.setXmax(bb.xMax());
-	}
-      if(bb.yMin()<layerExtent.yMin())
-	{
-	  layerExtent.setYmin(bb.yMin());
-	}
-      if(bb.yMax()>layerExtent.yMax())
-	{
-	  layerExtent.setYmax(bb.yMax());
-	}
+      layerExtent.combineExtentWith(&bb);
+
     }
   
   // Send this (hopefully) up the chain to the map canvas
@@ -1708,6 +1684,8 @@ void QgsVectorLayer::setSubsetString(QString subset)
   else
   {
     dataProvider->setSubsetString(subset);
+    // get the updated data source string from the provider
+    dataSource = dataProvider->getDataSourceUri();
     updateExtents();
   }
   //trigger a recalculate extents request to any attached canvases
@@ -2207,6 +2185,8 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
     setDisplayField(e.text());
   }
 
+
+
   // create and bind a renderer to this layer
 
   QDomNode singlenode = layer_node.namedItem("singlesymbol");
@@ -2228,11 +2208,17 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 
 
   // if we don't have a coordinate transform, get one
-  if ( ! coordinateTransform() )
-  {
-      mCoordinateTransform = new QgsCoordinateTransform("", "");
-      setCoordinateSystem();
-  }
+
+  //
+  // Im commenting this out - if the layer was serialied in a 
+  //  >=0.7 project it should have been validated and have all
+  // coord xform info
+  //
+
+  //if ( ! coordinateTransform() )
+  //{
+  //    setCoordinateSystem();
+  //}
 
   if (!singlenode.isNull())
   {
@@ -2489,9 +2475,9 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 #endif
     const char * s = rawXML.c_str(); // debugger probe
   // Use the const char * form of the xml to make non-stl qt happy
-    if ( ! labelDOM.setContent( QString(s), &errorMsg, &errorLine, &errorColumn ) )
+    if ( ! labelDOM.setContent( QString::fromUtf8(s), &errorMsg, &errorLine, &errorColumn ) )
     {
-      qDebug( "XML import error at line %d column %d " + errorMsg, errorLine, errorColumn );
+      qDebug( ("XML import error at line %d column %d " + errorMsg).local8Bit(), errorLine, errorColumn );
 
       return false;
     }
@@ -2546,7 +2532,7 @@ int QgsVectorLayer::findFreeId()
       delete fet;
     }
 #ifdef QGISDEBUG
-    qWarning("freeid is: "+QString::number(freeid+1));
+    qWarning(("freeid is: "+QString::number(freeid+1)).local8Bit());
 #endif
     return freeid+1;
   }
@@ -3214,56 +3200,69 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
   unsigned int wkbType;
   memcpy(&wkbType, (feature+1), sizeof(wkbType));
 
+#ifdef QGISDEBUG
+//std::cout <<"Entering drawFeature()" << std::endl;
+#endif
+
   switch (wkbType)
   {
   case WKBPoint:
-    {
-      double x = *((double *) (feature + 5));
-      double y = *((double *) (feature + 5 + sizeof(double)));
-      transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
+  {
+    double x = *((double *) (feature + 5));
+    double y = *((double *) (feature + 5 + sizeof(double)));
 
-      p->save();
-      p->scale(markerScaleFactor,markerScaleFactor);
-      p->drawPicture(static_cast<int>(x / markerScaleFactor 
-               - marker->boundingRect().x() 
+#ifdef QGISDEBUG 
+//  std::cout <<"...WKBPoint (" << x << ", " << y << ")" <<std::endl;
+#endif
+
+    transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
+
+    p->save();
+    p->scale(markerScaleFactor,markerScaleFactor);
+    p->drawPicture(static_cast<int>(x / markerScaleFactor 
+                     - marker->boundingRect().x() 
                      - marker->boundingRect().width() / 2),
                      static_cast<int>(y / markerScaleFactor 
-         - marker->boundingRect().y() 
+                     - marker->boundingRect().y() 
                      - marker->boundingRect().height() / 2),
                      *marker);
-      p->restore();
+    p->restore();
 
-      break;
-    }
+    break;
+  }
   case WKBMultiPoint:
+  {
+    unsigned char *ptr = feature + 5;
+    unsigned int nPoints = *((int*)ptr);
+    ptr += 4;
+
+    p->save();
+    p->scale(markerScaleFactor, markerScaleFactor);
+
+    for (int i = 0; i < nPoints; ++i)
     {
-      unsigned char *ptr = feature + 5;
-      unsigned int nPoints = *((int*)ptr);
-      ptr += 4;
+      ptr += 5;
+      double x = *((double *) ptr);
+      ptr += sizeof(double);
+      double y = *((double *) ptr);
+      ptr += sizeof(double);
 
-      p->save();
-      p->scale(markerScaleFactor, markerScaleFactor);
+#ifdef QGISDEBUG 
+      std::cout <<"...WKBMultiPoint (" << x << ", " << y << ")" <<std::endl;
+#endif
 
-      for (int i = 0; i < nPoints; ++i)
-      {
-  ptr += 5;
-  double x = *((double *) ptr);
-  ptr += sizeof(double);
-  double y = *((double *) ptr);
-  ptr += sizeof(double);
-
-  transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
+      transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
 
 #if defined(Q_WS_X11)
-  // Work around a +/- 32768 limitation on coordinates in X11
-  if (std::abs(x) > QgsClipper::maxX ||
-      std::abs(y) > QgsClipper::maxY)
-    needToTrim = true;
-  else
+      // Work around a +/- 32768 limitation on coordinates in X11
+      if (std::abs(x) > QgsClipper::maxX ||
+          std::abs(y) > QgsClipper::maxY)
+        needToTrim = true;
+      else
 #endif
-    p->drawPicture(static_cast<int>(x / markerScaleFactor 
-         - marker->boundingRect().x() 
-         - marker->boundingRect().width() / 2),
+        p->drawPicture(static_cast<int>(x / markerScaleFactor 
+           - marker->boundingRect().x() 
+           - marker->boundingRect().width() / 2),
        static_cast<int>(y / markerScaleFactor 
          - marker->boundingRect().y() 
          - marker->boundingRect().height() / 2),
@@ -3272,42 +3271,42 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
       p->restore();
 
       break;
-    }
+  }
   case WKBLineString:
-    {
-      drawLineString(feature, p, theMapToPixelTransform,
-         projectionsEnabledFlag);
-      break;
-    }
+  {
+    drawLineString(feature, p, theMapToPixelTransform,
+                   projectionsEnabledFlag);
+    break;
+  }
   case WKBMultiLineString:
-    {
-      unsigned char* ptr = feature + 5;
-      unsigned int numLineStrings = *((int*)ptr);
-      ptr = feature + 9;
+  {
+    unsigned char* ptr = feature + 5;
+    unsigned int numLineStrings = *((int*)ptr);
+    ptr = feature + 9;
 
-      for (int jdx = 0; jdx < numLineStrings; jdx++)
-      {
-  ptr = drawLineString(ptr, p, theMapToPixelTransform,
-           projectionsEnabledFlag);
-      }
-      break;
+    for (int jdx = 0; jdx < numLineStrings; jdx++)
+    {
+      ptr = drawLineString(ptr, p, theMapToPixelTransform,
+                           projectionsEnabledFlag);
     }
+    break;
+  }
   case WKBPolygon:
-    {
-      drawPolygon(feature, p, theMapToPixelTransform,
-      projectionsEnabledFlag);
-      break;
-    }
+  {
+    drawPolygon(feature, p, theMapToPixelTransform,
+                projectionsEnabledFlag);
+    break;
+  }
   case WKBMultiPolygon:
-    {
-      unsigned char *ptr = feature + 5;
-      unsigned int numPolygons = *((int*)ptr);
-      ptr = feature + 9;
-      for (int kdx = 0; kdx < numPolygons; kdx++)
-  ptr = drawPolygon(ptr, p, theMapToPixelTransform, 
-        projectionsEnabledFlag);
-      break;
-    }
+  {
+    unsigned char *ptr = feature + 5;
+    unsigned int numPolygons = *((int*)ptr);
+    ptr = feature + 9;
+    for (int kdx = 0; kdx < numPolygons; kdx++)
+      ptr = drawPolygon(ptr, p, theMapToPixelTransform, 
+                        projectionsEnabledFlag);
+    break;
+  }
   default:
 #ifdef QGISDEBUG
     std::cout << "UNKNOWN WKBTYPE ENCOUNTERED\n";
@@ -3328,6 +3327,9 @@ void QgsVectorLayer::setCoordinateSystem()
 {
   delete mCoordinateTransform;
   mCoordinateTransform=new QgsCoordinateTransform();
+  //slot is defined inthe maplayer superclass
+  connect(mCoordinateTransform, SIGNAL(invalidTransformInput()), this, SLOT(invalidTransformInput()));
+   
 #ifdef QGISDEBUG
     std::cout << "QgsVectorLayer::setCoordinateSystem ------------------------------------------------start" << std::endl;
     std::cout << "QgsVectorLayer::setCoordinateSystem ----- Computing Coordinate System" << std::endl;

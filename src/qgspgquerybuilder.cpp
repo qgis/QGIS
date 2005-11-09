@@ -41,7 +41,7 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QgsDataSourceURI *uri,
 #ifdef QGISDEBUG
   std::cerr << "Attempting connect using: " << connInfo.local8Bit() << std::endl; 
 #endif
-  mPgConnection = PQconnectdb((const char *) connInfo);
+  mPgConnection = PQconnectdb(connInfo.local8Bit());
   // check the connection status
   if (PQstatus(mPgConnection) == CONNECTION_OK) {
     QString datasource = QString(tr("Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>"))
@@ -100,7 +100,7 @@ void QgsPgQueryBuilder::populateFields()
   // field name, type, length, and precision (if numeric)
   QString sql = "select * from " + mUri->schema + "." + mUri->table + " limit 1";
   PGresult *result = PQexec(mPgConnection, (const char *) (sql.utf8()));
-  qWarning("Query executed: " + sql);
+  qWarning(("Query executed: " + sql).local8Bit());
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
   {
     //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
@@ -282,22 +282,129 @@ void QgsPgQueryBuilder::setConnection(PGconn *con)
 
 void QgsPgQueryBuilder::accept()
 {
-  // test the query to see if it will result in a valid layer
-  long numRecs = countRecords(txtSQL->text());
-  if(numRecs == -1)
+  // if user hits Ok and there is no query, skip the validation
+  if(txtSQL->text().stripWhiteSpace().length() > 0)
   {
-    //error in query - show the problem
-    QMessageBox::warning(this,"Error in Query", mPgErrorMessage);
-  }
-  else
-  {
-    if(numRecs == 0)
+    // test the query to see if it will result in a valid layer
+    long numRecs = countRecords(txtSQL->text());
+    if(numRecs == -1)
     {
-      QMessageBox::warning(this, tr("No Records"), tr("The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature."));
+      //error in query - show the problem
+      QMessageBox::warning(this,"Error in Query", mPgErrorMessage);
     }
     else
     {
-      QgsPgQueryBuilderBase::accept();
+      if(numRecs == 0)
+      {
+        QMessageBox::warning(this, tr("No Records"), tr("The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature."));
+      }
+      else
+      {
+        QgsPgQueryBuilderBase::accept();
+      }
     }
   }
+  else
+  {
+    QgsPgQueryBuilderBase::accept();
+  }
+}
+
+void QgsPgQueryBuilder::insEqual()
+{
+  txtSQL->insert(" = ");
+}
+
+void QgsPgQueryBuilder::insLt()
+{
+  txtSQL->insert(" < ");
+}
+
+void QgsPgQueryBuilder::insGt()
+{
+  txtSQL->insert(" > ");
+}
+
+void QgsPgQueryBuilder::insPct()
+{
+  txtSQL->insert(" % ");
+}
+
+void QgsPgQueryBuilder::insIn()
+{
+  txtSQL->insert(" IN ");
+}
+
+void QgsPgQueryBuilder::insNotIn()
+{
+  txtSQL->insert(" NOT IN ");
+}
+
+void QgsPgQueryBuilder::insLike()
+{
+  txtSQL->insert(" LIKE ");
+}
+
+QString QgsPgQueryBuilder::sql()
+{
+  return txtSQL->text();
+}
+
+void QgsPgQueryBuilder::setSql( QString sqlStatement)
+{
+  txtSQL->setText(sqlStatement);
+}
+
+void QgsPgQueryBuilder::fieldDoubleClick( QListBoxItem *item )
+{
+  txtSQL->insert(item->text());
+}
+
+void QgsPgQueryBuilder::valueDoubleClick( QListBoxItem *item )
+{
+  txtSQL->insert(item->text());
+}
+
+void QgsPgQueryBuilder::insLessThanEqual()
+{
+  txtSQL->insert(" <= ");
+}
+
+void QgsPgQueryBuilder::insGreaterThanEqual()
+{
+  txtSQL->insert(" >= ");
+}
+
+void QgsPgQueryBuilder::insNotEqual()
+{
+  txtSQL->insert(" != ");
+}
+
+void QgsPgQueryBuilder::insAnd()
+{
+  txtSQL->insert(" AND ");
+}
+
+void QgsPgQueryBuilder::insNot()
+{
+  txtSQL->insert(" NOT ");
+}
+
+void QgsPgQueryBuilder::insOr()
+{
+  txtSQL->insert(" OR ");
+}
+
+void QgsPgQueryBuilder::clearSQL()
+{
+  txtSQL->clear();
+}
+
+void QgsPgQueryBuilder::insIlike()
+{
+  txtSQL->insert(" ILIKE ");
+}
+void QgsPgQueryBuilder::setDatasourceDescription(QString uri)
+{
+  lblDataUri->setText(uri);
 }

@@ -27,7 +27,6 @@ void QgsDbSourceSelectBase::addNewConnection()
 
 }
 
-
 void QgsDbSourceSelectBase::editConnection()
 {
 
@@ -38,15 +37,17 @@ void QgsDbSourceSelectBase::deleteConnection()
 
 }
 
-
-
 void QgsDbSourceSelectBase::setSql( QListViewItem * )
 {
 
 }
 
-
 void QgsDbSourceSelectBase::dbChanged()
+{
+
+}
+
+void QgsDbSourceSelectBase::showHelp()
 {
 
 }

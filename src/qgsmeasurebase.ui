@@ -41,6 +41,12 @@
                     <height>0</height>
                 </size>
             </property>
+            <property name="minimumSize">
+                <size>
+                    <width>150</width>
+                    <height>0</height>
+                </size>
+            </property>
             <property name="frameShape">
                 <enum>StyledPanel</enum>
             </property>

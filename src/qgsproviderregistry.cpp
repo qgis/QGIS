@@ -43,7 +43,7 @@ typedef QString fileVectorFilters_t();
 
 QgsProviderRegistry *QgsProviderRegistry::_instance = 0;
 
-QgsProviderRegistry *QgsProviderRegistry::instance(const char *pluginPath)
+QgsProviderRegistry *QgsProviderRegistry::instance(QString pluginPath)
 {
     if (_instance == 0)
     {
@@ -56,7 +56,7 @@ QgsProviderRegistry *QgsProviderRegistry::instance(const char *pluginPath)
 
 
 
-QgsProviderRegistry::QgsProviderRegistry(const char *pluginPath)
+QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
 {
     // At startup, examine the libs in the qgis/lib dir and store those that
     // are a provider shared lib
