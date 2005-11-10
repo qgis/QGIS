@@ -254,6 +254,8 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 	std::cout << "Caught transform error in QgsMapCanvas::addLayer(). "
 		  << "Setting extents to untransformed extents" << std::endl;
 #endif	
+	mCanvasProperties->fullExtent = lyr->extent();
+	mCanvasProperties->fullExtent.scale(1.1);
       }
     }
     else
