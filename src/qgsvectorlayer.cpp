@@ -2857,44 +2857,63 @@ bool QgsVectorLayer::copySymbologySettings(const QgsMapLayer& other)
 
 bool QgsVectorLayer::isSymbologyCompatible(const QgsMapLayer& other) const
 {
-   const QgsVectorLayer* vl = dynamic_cast<const QgsVectorLayer*>(&other);
-    if(!vl)
+  //vector layers are symbology compatible if they have the same sequence of numerical/ non numerical fields and the same field names
+  
+  const QgsVectorLayer* otherVectorLayer = dynamic_cast<const QgsVectorLayer*>(&other);
+  if(otherVectorLayer)
     {
-	return false;
-    }
-    
-    //vector type must be the same
-    if(vectorType() != vl->vectorType())
-    {
-	return false;
-    }
-    //attributes must be the same
-    if(dataProvider && vl->dataProvider)
-    {
-	const std::vector<QgsField> fields1 = dataProvider->fields();
-	const std::vector<QgsField> fields2 = vl->dataProvider->fields();
-	
-	if(fields1.size() != fields2.size())
-	{
-	    return false;
-	}
+     const std::vector<QgsField> fieldsThis = dataProvider->fields();
+     const std::vector<QgsField> fieldsOther = otherVectorLayer ->dataProvider->fields();
 
-        //compare if equal
-	std::vector<QgsField>::const_iterator it1;
-	std::vector<QgsField>::const_iterator it2;
-	for(it1 = fields1.begin(), it2 = fields2.begin(); (it1 != fields1.end())&&(it2 != fields2.end()); ++it1, ++it2)
-	{
-	    if( *it1 != *it2)
-	    {
-		return false;
-	    }
-	}
-	return true;
+     if(fieldsThis.size() != fieldsOther.size())
+       {
+	 return false;
+       }
+
+      //fill two sets with the numerical types for both layers
+     const std::list<QString> numAttThis = dataProvider->numericalTypes();
+     std::set<QString> numericalThis; //the set of numerical types for this vector layer
+     for(std::list<QString>::const_iterator it = numAttThis.begin(); it != numAttThis.end(); ++it)
+       {
+	 numericalThis.insert(*it);
+       }
+
+     const std::list<QString> numAttOther = otherVectorLayer ->dataProvider->numericalTypes();
+     std::set<QString> numericalOther; //the set of numerical types for the other vector layer
+     for(std::list<QString>::const_iterator it = numAttOther.begin(); it != numAttOther.end(); ++it)
+       {
+	 numericalOther.insert(*it);
+       }
+
+     std::set<QString>::const_iterator thisiter;
+     std::set<QString>::const_iterator otheriter;
+
+     for(int i = 0; i < fieldsThis.size(); ++i)
+       {
+	 if(fieldsThis[i].name() != fieldsOther[i].name())//field names need to be the same
+	   {
+	     return false;
+	   }
+	 thisiter = numericalThis.find(fieldsThis[i].name());
+	 otheriter = numericalOther.find(fieldsOther[i].name());
+	 if(thisiter == numericalThis.end())
+	   {
+	     if(otheriter != numericalOther.end())
+	       {
+		 return false;
+	       }
+	   }
+	 else
+	   {
+	     if(otheriter == numericalOther.end())
+	       {
+		 return false;
+	       }
+	   }
+       }
+     return true; //layers are symbology compatible if the code reaches this point
     }
-    else
-    {
-	return false;
-    }
+  return false;
 }
 
 bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
