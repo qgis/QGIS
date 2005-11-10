@@ -315,7 +315,7 @@
             <iconset>image3</iconset>
         </property>
         <property name="text">
-            <string>Action</string>
+            <string>Zoom to full extent</string>
         </property>
         <property name="menuText">
             <string>Action</string>
@@ -329,7 +329,7 @@
             <iconset>image4</iconset>
         </property>
         <property name="text">
-            <string>Action</string>
+            <string>Zoom in</string>
         </property>
         <property name="menuText">
             <string>Action</string>
@@ -343,7 +343,7 @@
             <iconset>image5</iconset>
         </property>
         <property name="text">
-            <string>Action</string>
+            <string>Zoom out</string>
         </property>
         <property name="menuText">
             <string>Action</string>
