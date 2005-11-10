@@ -322,48 +322,9 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
 	//placeCheckBoxes()
 	emit zOrderChanged(this);
       }
-
-      /*QgsLegendItem::DRAG_ACTION daction= dest->accept(origin->type());
-
-      if(dest && origin && getItemPos(dest) != mItemBeingMovedOrigPos)
-      {
-	  if( daction == QgsLegendItem::INSERT )
-	  {
-	      dest->insert(origin);
-	      placeCheckBoxes();
-	  }
-	  else if( daction == QgsLegendItem::REORDER)
-	  {
-	      if(!yCoordAboveCenter(dest, e->y())) //over bottom of item
-	      {
-		  if (mItemBeingMoved->nextSibling() != destItem)
-		  {
-		      if(origin->parent() != dest->parent())
-		      {
-			  dest->parent()->insertItem(origin);
-			  mItemBeingMoved->moveItem(destItem);
-			  destItem->moveItem(mItemBeingMoved);
-		      }
-		      else
-		      {
-			  destItem->moveItem(mItemBeingMoved);
-		      }
-		  }
-	      }
-	      else //over top of item
-	      {
-		  if (mItemBeingMoved != destItem->nextSibling())
-		  {
-		      mItemBeingMoved->moveItem(destItem);
-		  } 
-	      }
-	      placeCheckBoxes();
-	  }
-	emit zOrderChanged(this);
-	}*/
   }
   mMousePressedFlag = false;
-  mItemBeingMoved = NULL;
+  mItemBeingMoved = NULL; 
 }
 
 void QgsLegend::handleDoubleClickEvent(QListViewItem* item)
@@ -564,7 +525,7 @@ void QgsLegend::placeCheckBox(QListViewItem* litem, QCheckBox* cbox)
 	}
 	else
 	{
-	    cbox->setGeometry(/*3*/2*treeStepSize()-14, ypos, 14, 14);
+	    cbox->setGeometry(2*treeStepSize()-14, ypos, 14, 14);
 	    cbox->show();
 	}
     }

@@ -77,7 +77,7 @@ public:
        @return true in case of success and false if theItem cannot be inserted*/
     virtual bool insert(QgsLegendItem* theItem, bool changesettings = true) {return false;}
     void print(QgsLegendItem * theItem);
-    /**Returns the younger sibling or 0 if this item is the first child*/
+    /**Returns the younger sibling or 0 if this item is the first child of its parent*/
     QgsLegendItem* findYoungerSibling();
 protected:
    bool mLeafNodeFlag;
