@@ -1,8 +1,7 @@
 TODO,v 1.21 2004/06/03 18:36:46 gsherman Exp
 #############################################################################
-TODO List for 0.4 (in no order of importance)
+TODO List for 0.8 (in no order of importance)
 #############################################################################
- 1. Support for tile rasters 
- 2. Load / save support for delimited text layers in project files 
- 3. Layer definition query for PostGIS layers to define the features that make up a layer 
- 4. Translation support for plugins 
+ 1. Complete WMS support
+ 2. Implement new legend
+ 3. New GRASS tools in toolbox
