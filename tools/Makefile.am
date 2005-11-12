@@ -9,8 +9,11 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 # $Id$
+if USE_PYTHON
+MAPSERVER = mapserver_export
+endif
 
-SUBDIRS = qgis_config
+SUBDIRS = qgis_config $(MAPSERVER)
 
 m4filedir = $(datadir)/aclocal
 

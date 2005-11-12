@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl configure.in,v 1.204 2004/10/21 17:27:35 mcoletti Exp
+dnl $Id$
 
 
 
@@ -488,6 +488,7 @@ AC_CONFIG_FILES([
   doc/plugins/delimited_text/Makefile
   tools/Makefile
   tools/qgis_config/Makefile
+  tools/mapserver_export/Makefile
   widgets/Makefile
   widgets/projectionselector/Makefile
   designer_plugins/Makefile
@@ -512,7 +513,7 @@ echo "Georeferencer : $ac_gsl"
 echo "GPS/GPX       : $have_expat_lib"
 echo "PROJ4         : $have_proj_lib"
 echo "SQLITE3       : $have_sqlite3_lib"
-echo "Python        : $have_python"
+echo "Python        : $ac_use_python"
 echo ""
 echo "Debug         : $ac_debug"
 echo "Plugin dir    : ${libdir}/$PACKAGE"
