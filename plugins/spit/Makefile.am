@@ -101,12 +101,12 @@ BUILT_SOURCES = $(spit_MOC) $(spit_UI) $() $(splitplugin_la_MOC)
 
 spitplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD) ../../src/libqgis.la
 spitplugin_la_LDFLAGS = -avoid-version -module
-spitplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) -I$(PG_INC) $(GEOS_CFLAGS) -I../../src
+spitplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(GEOS_CFLAGS) -I../../src
 
 
 spit_LDADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD)
 #spit_LDFLAGS = -avoid-version -module
-spit_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) -I$(PG_INC)  -I../../src
+spit_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PG_INC)  -I../../src
 
 CLEANFILES = $(BUILT_SOURCES)
 
