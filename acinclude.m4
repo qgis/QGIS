@@ -362,6 +362,15 @@ case "${host}" in
     fi
     ;;
 
+  *freebsd*)
+    QT_LIBS="$QT_LIB"
+    if test $QT_IS_STATIC = yes && test $QT_IS_EMBEDDED = no; then
+      QT_LIBS="$QT_LIBS -L$x_libraries -lXext -lX11 -lm -lSM -lICE -ldl -ljpeg -lpthread"
+   else
+      QT_LIBS="$QT_LIBS -lpthread"
+    fi
+    ;;
+
   *darwin*)
     QT_LIBS="$QT_LIB"
     if test $QT_IS_STATIC = yes && test $QT_IS_EMBEDDED = no; then
@@ -609,3 +618,63 @@ int main (void)
   rm -f conf.gsltest
 ])
 
+dnl Python
+dnl Available from the GNU Autoconf Macro Archive at:
+dnl http://www.gnu.org/software/ac-archive/htmldoc/ax_python.html
+dnl
+AC_DEFUN([AX_PYTHON],
+[
+AC_ARG_WITH([python],
+AC_HELP_STRING([--with-python],
+[Include Python scripting support ]))
+
+if test x"$with_python" = "x"; then
+AC_MSG_RESULT( Not using python )
+have_python=no
+else
+have_python=yes
+AC_MSG_CHECKING(for python build information)
+   for python in python2.4 python2.3 python2.2 python2.1 python; do
+   AC_CHECK_PROGS(PYTHON_BIN, [$python])
+   ax_python_bin=$PYTHON_BIN
+   if test x$ax_python_bin != x; then
+      AC_CHECK_LIB($ax_python_bin, main, ax_python_lib=$ax_python_bin, ax_python_lib=no)
+      AC_CHECK_HEADER([$ax_python_bin/Python.h],
+      [[ax_python_header=`locate $ax_python_bin/Python.h | sed -e s,/Python.h,,`]],
+      ax_python_header=no)
+      if test $ax_python_lib != no; then
+        if test $ax_python_header != no; then
+          break;
+        fi
+      fi
+   fi
+   done
+   if test x$ax_python_bin = x; then
+      ax_python_bin=no
+   fi
+   if test x$ax_python_header = x; then
+      ax_python_header=no
+   fi
+   if test x$ax_python_lib = x; then
+      ax_python_lib=no
+   fi
+ 
+   AC_MSG_RESULT([  results of the Python check:])
+   AC_MSG_RESULT([    Binary:      $ax_python_bin])
+   AC_MSG_RESULT([    Library:     $ax_python_lib])
+   AC_MSG_RESULT([    Include Dir: $ax_python_header])
+ 
+   if test x$ax_python_header != xno; then
+     PYTHON_INCLUDE_DIR=-I$ax_python_header
+     AC_SUBST(PYTHON_INCLUDE_DIR)
+   fi
+   if test x$ax_python_lib != xno; then
+     PYTHON_LIB=-l$ax_python_lib
+     AC_SUBST(PYTHON_LIB)
+   fi
+    HAVE_PYTHON=-DHAVE_PYTHON
+    AC_SUBST(HAVE_PYTHON)
+   ]
+fi
+)
+dnl 

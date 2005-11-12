@@ -106,6 +106,11 @@ fi
 AM_CONDITIONAL([HAVE_QTMAC], [test "$have_qtmac" = "yes"])
 
 dnl ---------------------------------------------------------------------------
+dnl Python
+dnl ---------------------------------------------------------------------------
+AX_PYTHON
+
+dnl ---------------------------------------------------------------------------
 dnl GDAL/OGR
 dnl ---------------------------------------------------------------------------
 AQ_CHECK_GDAL
@@ -507,6 +512,7 @@ echo "Georeferencer : $ac_gsl"
 echo "GPS/GPX       : $have_expat_lib"
 echo "PROJ4         : $have_proj_lib"
 echo "SQLITE3       : $have_sqlite3_lib"
+echo "Python        : $have_python"
 echo ""
 echo "Debug         : $ac_debug"
 echo "Plugin dir    : ${libdir}/$PACKAGE"
