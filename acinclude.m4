@@ -630,9 +630,8 @@ AC_HELP_STRING([--with-python],
 
 if test x"$with_python" = "x"; then
 AC_MSG_RESULT( Not using python )
-have_python=no
+    ac_use_python=no
 else
-have_python=yes
 AC_MSG_CHECKING(for python build information)
    for python in python2.4 python2.3 python2.2 python2.1 python; do
    AC_CHECK_PROGS(PYTHON_BIN, [$python])
@@ -663,6 +662,7 @@ AC_MSG_CHECKING(for python build information)
    AC_MSG_RESULT([    Binary:      $ax_python_bin])
    AC_MSG_RESULT([    Library:     $ax_python_lib])
    AC_MSG_RESULT([    Include Dir: $ax_python_header])
+   AC_MSG_RESULT([    Have python: $ac_use_python])
  
    if test x$ax_python_header != xno; then
      PYTHON_INCLUDE_DIR=-I$ax_python_header
@@ -672,9 +672,13 @@ AC_MSG_CHECKING(for python build information)
      PYTHON_LIB=-l$ax_python_lib
      AC_SUBST(PYTHON_LIB)
    fi
+  if test x$ax_python_header != xno; then
+  dnl  & x$ax_python_lib != xno; then
+    ac_use_python=yes
     HAVE_PYTHON=-DHAVE_PYTHON
-    AC_SUBST(HAVE_PYTHON)
-   ]
+  fi 
 fi
-)
+
+AM_CONDITIONAL([USE_PYTHON], [test "$ac_use_python" = "yes"])
+])
 dnl 
