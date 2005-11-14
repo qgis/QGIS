@@ -491,7 +491,10 @@ private:
     QgsMapOverviewCanvas * mOverviewCanvas;
     //! Table of contents (legend) for the map
     QgsLegend *mMapLegend;
+    //! Cursor for the map
     QCursor *mMapCursor;
+    //! Cursor for the overview map
+    QCursor *mOverviewMapCursor;
     //! scale factor
     double mScaleFactor;
     //! Current map window extent in real-world coordinates
