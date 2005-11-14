@@ -1,4 +1,4 @@
-To build and install the cvs version:
+To build and install the source checked out from Subversion:
   ./autogen.sh <configure options>
   make
   make install
