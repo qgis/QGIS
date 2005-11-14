@@ -401,7 +401,10 @@ QgisApp::QgisApp(QWidget * parent, const char *name, WFlags fl)
     // overview canvas
     mOverviewCanvas = new QgsMapOverviewCanvas(legendOverviewSplit, mMapCanvas);
     QWhatsThis::add(mOverviewCanvas, tr("Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas."));
-
+    QBitmap overviewPanBmp(16, 16, pan_bits, true);
+    QBitmap overviewPanBmpMask(16, 16, pan_mask_bits, true);
+    mOverviewMapCursor = new QCursor(overviewPanBmp, overviewPanBmpMask, 5, 5);
+    mOverviewCanvas->setCursor(*mOverviewMapCursor);
 
     mMapLegend->setBackgroundColor(QColor(192, 192, 192));
     mMapLegend->setMapCanvas(mMapCanvas);
