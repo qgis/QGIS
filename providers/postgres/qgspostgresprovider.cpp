@@ -555,7 +555,7 @@ QgsFeature* QgsPostgresProvider::getNextFeature(std::list<int> const & attlist, 
         if(!attlist.empty())
         {
           getFeatureAttributes(oid, row, f, attlist);
-        } 
+        }
         int returnedLength = PQgetlength(queryResult, row, PQfnumber(queryResult,"qgs_feature_geometry")); 
         if(returnedLength > 0)
         {
@@ -784,16 +784,16 @@ void QgsPostgresProvider::getFeatureAttributes(int key, int &row,
       .arg(mSchemaTableName)
       .arg(primaryKey)
       .arg(key);//todo: only query one attribute
+
     PGresult *attr = PQexec(connection, (const char *)(sql.utf8()));
     QString fld = PQfname(attr, 0);
+
     // Dont add the WKT representation of the geometry column to the identify
     // results
     if(fld != geometryColumn)
     {
       // Add the attribute to the feature
-      //QString val = mEncoding->toUnicode(PQgetvalue(attr,0, 0));
-	QString val = QString::fromUtf8(PQgetvalue(attr, row, 0));
-      //qWarning(val);
+	QString val = QString::fromUtf8(PQgetvalue(attr, 0, 0));
       f->addAttribute(fld, val);
     }
     PQclear(attr);

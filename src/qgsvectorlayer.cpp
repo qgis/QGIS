@@ -2969,6 +2969,7 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point,
                                            QgsGeometry& snappedGeometry,
                                            double tolerance)
 {
+  bool vertexFound = false; //flag to check if a meaningful result can be returned
   QgsGeometryVertexIndex atVertexTemp;
 
   QgsPoint origPoint = point;
@@ -3032,6 +3033,7 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point,
       atVertex          = atVertexTemp;
       snappedFeatureId  = feature->featureId();
       snappedGeometry   = *(feature->geometry());
+      vertexFound = true;
 
 #ifdef QGISDEBUG
       std::cout << "QgsVectorLayer::snapVertexWithContext: minSqrDist reduced to: " << minSqrDist
@@ -3065,6 +3067,7 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point,
       atVertex      = atVertexTemp;
       snappedFeatureId  =   (*iter)->featureId();
       snappedGeometry   = *((*iter)->geometry());
+      vertexFound = true;
     }
   }
 
@@ -3074,6 +3077,15 @@ bool QgsVectorLayer::snapVertexWithContext(QgsPoint& point,
 //                << " and beforeVertex " << beforeVertex
                 << "." << std::endl;
 #endif
+
+      if(!vertexFound)
+	{
+	  // set some default values before we bail
+	  atVertex = QgsGeometryVertexIndex();
+	  snappedFeatureId = std::numeric_limits<int>::min();
+	  snappedGeometry = QgsGeometry();
+	  return FALSE;
+	}
 
   return TRUE;
 }
@@ -3085,6 +3097,7 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
                                             QgsGeometry& snappedGeometry,
                                             double tolerance)
 {
+  bool segmentFound = false; //flag to check if a reasonable result can be returned
   QgsGeometryVertexIndex beforeVertexTemp;
 
   QgsPoint origPoint = point;
@@ -3152,6 +3165,7 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
       beforeVertex      = beforeVertexTemp;
       snappedFeatureId  = feature->featureId();
       snappedGeometry   = *(feature->geometry());
+      segmentFound = true;
 
 #ifdef QGISDEBUG
       std::cout << "QgsVectorLayer::snapSegmentWithContext: minSqrDist reduced to: " << minSqrDist
@@ -3185,6 +3199,7 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
       beforeVertex      = beforeVertexTemp;
       snappedFeatureId  =   (*iter)->featureId();
       snappedGeometry   = *((*iter)->geometry());
+      segmentFound = true;
     }
   }
 
@@ -3195,8 +3210,15 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
                 << "." << std::endl;
 #endif
   
-  
-    
+      if(!segmentFound)
+	{
+	  // set some default values before we bail
+	  beforeVertex = QgsGeometryVertexIndex();
+	  snappedFeatureId = std::numeric_limits<int>::min();
+	  snappedGeometry = QgsGeometry();
+	  return FALSE;
+	}
+
   return TRUE;
   
 }
