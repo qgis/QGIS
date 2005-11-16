@@ -4829,6 +4829,8 @@ void QgisApp::setTheme(QString themeName)
     actionShowBookmarks->setIconSet(QIconSet(QPixmap(iconPath + "/bookmarks.png")));
     actionNewBookmark->setIconSet(QIconSet(QPixmap(iconPath + "/new_bookmark.png")));
     actionCustomProjection->setIconSet(QIconSet(QPixmap(iconPath + "/custom_projection.png")));
+    actionAddWmsLayer->setIconSet(QIconSet(QPixmap(iconPath + "/wms_add.png")));
+    actionInOverview->setIconSet(QIconSet(QPixmap(iconPath + "/toggle.png")));
 
 }
 void QgisApp::setupToolbarPopups(QString themeName)
