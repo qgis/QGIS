@@ -70,7 +70,7 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QString tableName, PGconn *con,
     QWidget *parent, const char *name, bool modal)
 : QgsPgQueryBuilderBase(parent, name, modal), mPgConnection(con)
 {
-  mOwnConnection = false; // we don't own this conneciton since it was passed to us
+  mOwnConnection = false; // we don't own this connection since it was passed to us
   mUri = new QgsDataSourceURI();
   QString datasource = QString(tr("Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>"))
     .arg(tableName)
@@ -81,7 +81,8 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QString tableName, PGconn *con,
   // populate minimum uri fields needed for the populate fields function
   QStringList parts = QStringList::split(".", tableName); // table name contains table and schema
   mUri->schema = parts[0];
-  mUri->table = parts[1];
+  // strip whitespace to make sure the table name is clean
+  mUri->table = parts[1].stripWhiteSpace();
 
   lblDataUri->setText(datasource);
   populateFields();
