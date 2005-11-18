@@ -98,7 +98,7 @@ void QgsPgQueryBuilder::populateFields()
 {
   // Populate the field vector for this layer. The field vector contains
   // field name, type, length, and precision (if numeric)
-  QString sql = "select * from " + mUri->schema + "." + mUri->table + " limit 1";
+  QString sql = "select * from \"" + mUri->schema + "\".\"" + mUri->table + "\" limit 1";
   PGresult *result = PQexec(mPgConnection, (const char *) (sql.utf8()));
   qWarning(("Query executed: " + sql).local8Bit());
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
@@ -152,9 +152,9 @@ void QgsPgQueryBuilder::populateFields()
 
 void QgsPgQueryBuilder::getSampleValues()
 {
-  QString sql = "select distinct " + lstFields->currentText() 
-    + " from " + mUri->schema + "." + mUri->table + " order by " + lstFields->currentText()
-    + " limit 25";
+  QString sql = "select distinct \"" + lstFields->currentText() 
+      + "\" from \"" + mUri->schema + "\".\"" + mUri->table + "\" order by \"" + lstFields->currentText()
+    + "\" limit 25";
   // clear the values list 
   lstValues->clear();
   // determine the field type
@@ -188,8 +188,8 @@ void QgsPgQueryBuilder::getSampleValues()
 
 void QgsPgQueryBuilder::getAllValues()
 {
-  QString sql = "select distinct " + lstFields->currentText() 
-    + " from " + mUri->schema + "." + mUri->table + " order by " + lstFields->currentText();
+  QString sql = "select distinct \"" + lstFields->currentText() 
+    + "\" from \"" + mUri->schema + "\".\"" + mUri->table + "\" order by \"" + lstFields->currentText() + "\"";
   // clear the values list 
   lstValues->clear();
   // determine the field type
@@ -229,8 +229,8 @@ void QgsPgQueryBuilder::testSql()
   // by counting the number of records that would be
   // returned
   QString numRows;
-  QString sql = "select count(*) from " + mUri->schema + "." + mUri->table
-    + " where " + txtSQL->text();
+  QString sql = "select count(*) from \"" + mUri->schema + "\".\"" + mUri->table
+      + "\" where " + txtSQL->text();
   PGresult *result = PQexec(mPgConnection, (const char *)(sql.utf8()));
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
   {
@@ -253,8 +253,8 @@ void QgsPgQueryBuilder::testSql()
 // XXX This should really throw an exception
 long QgsPgQueryBuilder::countRecords(QString where) 
 {
-  QString sql = "select count(*) from " + mUri->schema + "." + mUri->table
-    + " where " + where;
+  QString sql = "select count(*) from \"" + mUri->schema + "\".\"" + mUri->table
+      + "\" where " + where;
 
   long numRows;
   PGresult *result = PQexec(mPgConnection, (const char *)(sql.utf8()));
@@ -357,7 +357,7 @@ void QgsPgQueryBuilder::setSql( QString sqlStatement)
 
 void QgsPgQueryBuilder::fieldDoubleClick( QListBoxItem *item )
 {
-  txtSQL->insert(item->text());
+  txtSQL->insert("\"" + item->text() + "\"");
 }
 
 void QgsPgQueryBuilder::valueDoubleClick( QListBoxItem *item )
