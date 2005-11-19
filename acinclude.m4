@@ -172,7 +172,7 @@ fi
 AC_MSG_CHECKING([Qt version])
 QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTVERTEST/qglobal.h | perl -p -e 's/\D//g'`
 case "${QT_VER}" in
-  40*)
+  41*|40*)
     QT_MAJOR="4"
     QT4_3SUPPORTINC=$QTDIR/include/Qt3Support
     QT4_COREINC=$QTDIR/include/QtCore
