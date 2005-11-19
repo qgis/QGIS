@@ -24,6 +24,8 @@
 #include "qgisapp.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
+//Added by qt3to4:
+#include <Q3PopupMenu>
 
 QgisIface::QgisIface(QgisApp * _qgis, const char *name):qgis(_qgis)
 {
@@ -93,7 +95,7 @@ QString QgisIface::activeLayerSource()
   return qgis->activeLayerSource();
 }
 
-QPopupMenu* QgisIface::getPluginMenu(QString menuName)
+Q3PopupMenu* QgisIface::getPluginMenu(QString menuName)
 {
   return qgis->getPluginMenu(menuName);
 }

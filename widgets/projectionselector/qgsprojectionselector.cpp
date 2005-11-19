@@ -24,12 +24,12 @@
 //qt includes
 #include <qapplication.h>
 #include <qfile.h>
-#include <qtextedit.h>
-#include <qbuttongroup.h>
+#include <q3textedit.h>
+#include <q3buttongroup.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>
 #include <qregexp.h>
-#include <qprogressdialog.h>
+#include <q3progressdialog.h>
 #include <qfileinfo.h>
 #include <qdir.h>
 #include <qtextstream.h>
@@ -42,7 +42,7 @@
 #include <cpl_error.h>
 
 
-QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name , WFlags fl  )
+QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name , Qt::WFlags fl  )
     : QgsProjectionSelectorBase( parent, "Projection Selector", fl )
 {
   // Get the package data path and set the full path name to the sqlite3 spatial reference
@@ -63,10 +63,10 @@ void QgsProjectionSelector::setSelectedSRSName(QString theSRSNAme)
 {
   //get the srid given the wkt so we can pick the correct list item
 #ifdef QGISDEBUG
-  std::cout << "QgsProjectionSelector::setSelectedSRSName called with \n" << theSRSNAme.local8Bit() << std::endl;
+  std::cout << "QgsProjectionSelector::setSelectedSRSName called with \n" << theSRSNAme.toLocal8Bit().data() << std::endl;
 #endif
   //now delegate off to the rest of the work
-  QListViewItemIterator myIterator (lstCoordinateSystems);
+  Q3ListViewItemIterator myIterator (lstCoordinateSystems);
   while (myIterator.current())
   {
     if (myIterator.current()->text(0)==theSRSNAme)
@@ -82,7 +82,7 @@ void QgsProjectionSelector::setSelectedSRSName(QString theSRSNAme)
 void QgsProjectionSelector::setSelectedSRSID(long theSRSID)
 {
   QString mySRSIDString=QString::number(theSRSID);
-  QListViewItemIterator myIterator (lstCoordinateSystems);
+  Q3ListViewItemIterator myIterator (lstCoordinateSystems);
   while (myIterator.current())
   {
     if (myIterator.current()->text(1)==mySRSIDString)
@@ -100,7 +100,7 @@ void QgsProjectionSelector::setSelectedSRSID(long theSRSID)
 QString QgsProjectionSelector::getSelectedName()
 {
   // return the selected wkt name from the list view
-  QListViewItem *lvi = lstCoordinateSystems->currentItem();
+  Q3ListViewItem *lvi = lstCoordinateSystems->currentItem();
   if(lvi)
   {
     return lvi->text(0);
@@ -119,7 +119,7 @@ QString QgsProjectionSelector::getCurrentProj4String()
   // system
   //
   // Get the selected node
-  QListViewItem *myItem = lstCoordinateSystems->currentItem();
+  Q3ListViewItem *myItem = lstCoordinateSystems->currentItem();
   if(myItem)
   {
 
@@ -128,7 +128,7 @@ QString QgsProjectionSelector::getCurrentProj4String()
       QString myDatabaseFileName;
       QString mySrsId = myItem->text(1);
 
-      std::cout << " QgsProjectionSelector::getCurrentProj4String :  mySrsId = " << mySrsId.local8Bit() << std::endl;
+      std::cout << " QgsProjectionSelector::getCurrentProj4String :  mySrsId = " << mySrsId.toLocal8Bit().data() << std::endl;
       std::cout << " QgsProjectionSelector::getCurrentProj4String :  USER_PROJECTION_START_ID = " << USER_PROJECTION_START_ID << std::endl;
       //
       // Determine if this is a user projection or a system on
@@ -149,12 +149,12 @@ QString QgsProjectionSelector::getCurrentProj4String()
       {
         myDatabaseFileName =  mSrsDatabaseFileName;
       }
-      std::cout << "QgsProjectionSelector::getCurrentProj4String db = " << myDatabaseFileName.local8Bit() << std::endl;
+      std::cout << "QgsProjectionSelector::getCurrentProj4String db = " << myDatabaseFileName.toLocal8Bit().data() << std::endl;
 
 
       sqlite3 *db;
       int rc;
-      rc = sqlite3_open(myDatabaseFileName.local8Bit(), &db);
+      rc = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &db);
       if(rc)
       {
         std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
@@ -168,7 +168,7 @@ QString QgsProjectionSelector::getCurrentProj4String()
       QString sql = "select parameters from tbl_srs where srs_id = ";
       sql += mySrsId;
 #ifdef QGISDEBUG
-      std::cout << "Selection sql : " << sql.local8Bit() << std::endl;
+      std::cout << "Selection sql : " << sql.toLocal8Bit().data() << std::endl;
 #endif
 
       rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
@@ -186,8 +186,8 @@ QString QgsProjectionSelector::getCurrentProj4String()
       // close the database
       sqlite3_close(db);
 #ifdef QGISDEBUG
-      std::cout << "Item selected : " << myItem->text(0).local8Bit() << std::endl;
-      std::cout << "Item selected full string : " << myProjString.local8Bit() << std::endl;
+      std::cout << "Item selected : " << myItem->text(0).toLocal8Bit().data() << std::endl;
+      std::cout << "Item selected full string : " << myProjString.toLocal8Bit().data() << std::endl;
 #endif
       assert(myProjString.length() > 0);
       return myProjString;
@@ -214,11 +214,11 @@ long QgsProjectionSelector::getCurrentSRID()
   // system
   //
   // Get the selected node
-  QListViewItem *lvi = lstCoordinateSystems->currentItem();
+  Q3ListViewItem *lvi = lstCoordinateSystems->currentItem();
   if(lvi)
   {
     // Make sure the selected node is a srs and not a top-level projection node
-    //TODO - blast this outta here: std::cout << lvi->text(1).local8Bit() << std::endl;
+    //TODO - blast this outta here: std::cout << lvi->text(1).toLocal8Bit().data() << std::endl;
     if(lvi->text(1).length() > 0)
     {
       QString myDatabaseFileName;
@@ -248,7 +248,7 @@ long QgsProjectionSelector::getCurrentSRID()
       // opening it each time seems to be a reasonable approach at this time.
       sqlite3 *db;
       int rc;
-      rc = sqlite3_open(myDatabaseFileName.local8Bit(), &db);
+      rc = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &db);
       if(rc)
       {
         std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
@@ -263,7 +263,7 @@ long QgsProjectionSelector::getCurrentSRID()
       sql += lvi->text(1);
 
 #ifdef QGISDEBUG
-      std::cout << "Finding selected srid using : " <<  sql.local8Bit() << std::endl;
+      std::cout << "Finding selected srid using : " <<  sql.toLocal8Bit().data() << std::endl;
 #endif
       rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
       // XXX Need to free memory from the error msg if one is set
@@ -311,7 +311,7 @@ void QgsProjectionSelector::getUserProjList()
   std::cout << "Fetching user projection list..." << std::endl;
 #endif
   // User defined coordinate system node
-  mUserProjList = new QListViewItem(lstCoordinateSystems,"User Defined Coordinate System");
+  mUserProjList = new Q3ListViewItem(lstCoordinateSystems,"User Defined Coordinate System");
   //determine where the user proj database lives for this user. If none is found an empty
   //now only will be shown
   QString myQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
@@ -333,7 +333,7 @@ void QgsProjectionSelector::getUserProjList()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(myQGisSettingsDir+"qgis.db").local8Bit(), &myDatabase);
+  myResult = sqlite3_open(QString(myQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -347,16 +347,16 @@ void QgsProjectionSelector::getUserProjList()
   // Set up the query to retreive the projection information needed to populate the list
   QString mySql = "select description,srs_id,is_geo, name,parameters from vw_srs";
 #ifdef QGISDEBUG
-  std::cout << "User projection list sql" << mySql.local8Bit() << std::endl;
+  std::cout << "User projection list sql" << mySql.toLocal8Bit().data() << std::endl;
 #endif
   myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
   if(myResult == SQLITE_OK)
   {
-    QListViewItem *newItem;
+    Q3ListViewItem *newItem;
     while(sqlite3_step(myPreparedStatement) == SQLITE_ROW)
     {
-      newItem = new QListViewItem(mUserProjList, QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0)));
+      newItem = new Q3ListViewItem(mUserProjList, QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,0)));
       // display the qgis srs_id in the second column of the list view
       newItem->setText(1,QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 1)));
     }
@@ -371,9 +371,9 @@ void QgsProjectionSelector::getProjList()
   // Create the top-level nodes for the list view of projections
   //
   // Geographic coordinate system node
-  mGeoList = new QListViewItem(lstCoordinateSystems,"Geographic Coordinate System");
+  mGeoList = new Q3ListViewItem(lstCoordinateSystems,"Geographic Coordinate System");
   // Projected coordinate system node
-  mProjList = new QListViewItem(lstCoordinateSystems,"Projected Coordinate System");
+  mProjList = new Q3ListViewItem(lstCoordinateSystems,"Projected Coordinate System");
 
   //bail out in case the projections db does not exist
   //this is neccessary in case the pc is running linux with a
@@ -390,7 +390,7 @@ void QgsProjectionSelector::getProjList()
   // open the database containing the spatial reference data
   sqlite3 *db;
   int rc;
-  rc = sqlite3_open(mSrsDatabaseFileName.local8Bit(), &db);
+  rc = sqlite3_open(mSrsDatabaseFileName.toLocal8Bit().data(), &db);
   if(rc)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
@@ -419,7 +419,7 @@ void QgsProjectionSelector::getProjList()
   //changes the underlying view TS
   sql = "select description,srs_id,is_geo, name,parameters from vw_srs";
 #ifdef QGISDEBUG
-  std::cout << "SQL for projection list:\n" << sql.local8Bit() << std::endl;
+  std::cout << "SQL for projection list:\n" << sql.toLocal8Bit().data() << std::endl;
 #endif
   rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
   // XXX Need to free memory from the error msg if one is set
@@ -429,10 +429,10 @@ void QgsProjectionSelector::getProjList()
     std::cout << "SQL for projection list executed ok..."  << std::endl;
 #endif
 
-    QListViewItem *newItem;
+    Q3ListViewItem *newItem;
     // set up the progress dialog
     int myProgress = 1;
-    QProgressDialog myProgressBar( tr("Building Projections List..."), 0, myEntriesCount,
+    Q3ProgressDialog myProgressBar( tr("Building Projections List..."), 0, myEntriesCount,
                                    this, "progress", TRUE );
     // set initial value to 1
     myProgressBar.setProgress(myProgress);
@@ -449,7 +449,7 @@ void QgsProjectionSelector::getProjList()
       {
         // this is a geographic coordinate system
         // Add it to the tree
-        newItem = new QListViewItem(mGeoList, QString::fromUtf8((char *)sqlite3_column_text(ppStmt,0)));
+        newItem = new Q3ListViewItem(mGeoList, QString::fromUtf8((char *)sqlite3_column_text(ppStmt,0)));
 
         // display the qgis srs_id in the second column of the list view
         newItem->setText(1,QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 1)));
@@ -458,18 +458,18 @@ void QgsProjectionSelector::getProjList()
       {
         // This is a projected srs
 
-        QListViewItem *node;
+        Q3ListViewItem *node;
         // Fine the node for this type and add the projection to it
         // If the node doesn't exist, create it
         node = lstCoordinateSystems->findItem(QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 3)),0);
         if(node == 0)
         {
           // the node doesn't exist -- create it
-          node = new QListViewItem(mProjList, QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 3)));
+          node = new Q3ListViewItem(mProjList, QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 3)));
         }
 
         // add the item, setting the projection name in the first column of the list view
-        newItem = new QListViewItem(node, QString::fromUtf8((char *)sqlite3_column_text(ppStmt,0)));
+        newItem = new Q3ListViewItem(node, QString::fromUtf8((char *)sqlite3_column_text(ppStmt,0)));
         // set the srs_id in the second column on the list view
         newItem->setText(1,QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 1)));
       }
@@ -502,7 +502,7 @@ void QgsProjectionSelector::updateProjAndEllipsoidAcronyms(int theSrsid,QString 
 
   //temporary hack
   QFile myFile( "/tmp/srs_updates.sql" );
-  myFile.open(  IO_WriteOnly | IO_Append );
+  myFile.open(  QIODevice::WriteOnly | QIODevice::Append );
   QTextStream myStream( &myFile );
 
   QRegExp myProjRegExp( "proj=[a-zA-Z]* " );
@@ -553,7 +553,7 @@ void QgsProjectionSelector::updateProjAndEllipsoidAcronyms(int theSrsid,QString 
 }
 
 // New coordinate system selected from the list
-void QgsProjectionSelector::coordinateSystemSelected( QListViewItem * theItem )
+void QgsProjectionSelector::coordinateSystemSelected( Q3ListViewItem * theItem )
 {
   QString myDescription = tr("QGIS SRSID: ") + QString::number(getCurrentSRSID()) +"\n";
   myDescription        += tr("PostGIS SRID: ") + QString::number(getCurrentSRID()) +"\n";
@@ -616,7 +616,7 @@ void QgsProjectionSelector::pbnFind_clicked()
     return;
   }
 #ifdef QGISDEBUG
-  std::cout << " Search sql" << mySql.local8Bit() << std::endl;
+  std::cout << " Search sql" << mySql.toLocal8Bit().data() << std::endl;
 #endif
 
   //
@@ -628,7 +628,7 @@ void QgsProjectionSelector::pbnFind_clicked()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(mSrsDatabaseFileName.local8Bit(), &myDatabase);
+  myResult = sqlite3_open(mSrsDatabaseFileName.toLocal8Bit().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -662,7 +662,7 @@ void QgsProjectionSelector::pbnFind_clicked()
   {
     return ;
   }
-  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open * user * database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -706,7 +706,7 @@ long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
   myFileInfo.setFile(myDatabaseFileName);
   if ( myFileInfo.exists( ) ) //only bother trying to open if the file exists
   {
-    myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
+    myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
     if(myResult)
     {
       std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -737,7 +737,7 @@ long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
   }
   //only bother looking in srs.db if it wasnt found above
 
-  myResult = sqlite3_open(mSrsDatabaseFileName.local8Bit(), &myDatabase);
+  myResult = sqlite3_open(mSrsDatabaseFileName.toLocal8Bit().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open * user * database: " <<  sqlite3_errmsg(myDatabase) << std::endl;

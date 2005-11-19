@@ -25,7 +25,7 @@
 #include <qbrush.h>
 #include <qpen.h>
 #include <qpixmap.h>
-#include <qpicture.h>
+#include <q3picture.h>
 #include <qdom.h>
 
 class QString;
@@ -99,7 +99,7 @@ class QgsSymbol{
       *        >= 1 -> returns mPointSymbolPicture, widthScale ignored
       *        0    -> returns mPointSymbolPicture2, with widthScale
       */
-    virtual QPicture getPointSymbolAsPicture(int oversampling = 1, double widthScale = 1., 
+    virtual Q3Picture getPointSymbolAsPicture(int oversampling = 1, double widthScale = 1., 
 	               bool selected = false, QColor selectionColor = Qt::yellow );
 
     /**Writes the contents of the symbol to a configuration file
@@ -137,15 +137,15 @@ class QgsSymbol{
     QPixmap mPointSymbolPixmap;
 
     /* Point symbol cache with oversampling mOversampling (but vector if mOversampling == 1) */
-    QPicture mPointSymbolPicture;
-    QPicture mPointSymbolPictureSelected;
+    Q3Picture mPointSymbolPicture;
+    Q3Picture mPointSymbolPictureSelected;
 
     /* Current line width scale used by mPointSymbolVectorPicture */
     double mWidthScale;
     
     /* Point symbol cache without oversampling (always vector picture) but with line width scale mWidthScale */
-    QPicture mPointSymbolPicture2;
-    QPicture mPointSymbolPictureSelected2;
+    Q3Picture mPointSymbolPicture2;
+    Q3Picture mPointSymbolPictureSelected2;
     
     /* Create point symbol mPointSymbolPixmap/mPointSymbolPicture cache */
     void cache( int oversampling, QColor selectionColor );

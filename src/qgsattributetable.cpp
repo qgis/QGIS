@@ -18,7 +18,7 @@
 /* $Id$ */
 #include <qapplication.h>
 #include <qcursor.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlabel.h>
 #include <qfont.h>
 #include <qglobal.h>
@@ -28,11 +28,15 @@
 #include "qgsfield.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+//Added by qt3to4:
+#include <QKeyEvent>
+#include <Q3ValueList>
+#include <QMouseEvent>
 #include <iostream>
 #include <stdlib.h>
 
 QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):
-        QTable(parent, name),
+        Q3Table(parent, name),
         lockKeyPressed(false),
         sort_ascending(true),
         mEditable(false),
@@ -43,7 +47,7 @@ QgsAttributeTable::QgsAttributeTable(QWidget * parent, const char *name):
   f.setFamily("Helvetica");
   f.setPointSize(11);
   setFont(f);
-  setSelectionMode(QTable::MultiRow);
+  setSelectionMode(Q3Table::MultiRow);
   QObject::connect(this, SIGNAL(selectionChanged()), this, SLOT(handleChangedSelections()));
   connect(this, SIGNAL(contextMenuRequested(int, int, const QPoint&)), this, SLOT(popupMenu(int, int, const QPoint&)));
   connect(this, SIGNAL(valueChanged(int, int)), this, SLOT(storeChangedValue(int,int)));
@@ -60,7 +64,7 @@ void QgsAttributeTable::columnClicked(int col)
   QApplication::setOverrideCursor(Qt::waitCursor);
 
   //store the ids of the selected rows in a list
-  QValueList < int >idsOfSelected;
+  Q3ValueList < int >idsOfSelected;
   for (int i = 0; i < numSelections(); i++)
     {
       for (int j = selection(i).topRow(); j <= selection(i).bottomRow(); j++)
@@ -85,7 +89,7 @@ void QgsAttributeTable::columnClicked(int col)
 
   //select the rows again after sorting
 
-  QValueList < int >::iterator it;
+  Q3ValueList < int >::iterator it;
   for (it = idsOfSelected.begin(); it != idsOfSelected.end(); ++it)
     {
       selectRowWithId((*it));
@@ -116,7 +120,7 @@ void QgsAttributeTable::keyReleaseEvent(QKeyEvent * ev)
 
 void QgsAttributeTable::handleChangedSelections()
 {
-  QTableSelection cselection;
+  Q3TableSelection cselection;
   if (lockKeyPressed == false)
     {
       //clear the list and evaluate the last selection
@@ -279,7 +283,7 @@ void QgsAttributeTable::popupMenu(int row, int col, const QPoint& pos)
   // in a seperate class
   if (mActionPopup == 0)
   {
-    mActionPopup = new QPopupMenu();
+    mActionPopup = new Q3PopupMenu();
 
     QLabel* popupLabel = new QLabel( mActionPopup );
     popupLabel->setText( tr("<center>Run action</center>") );
@@ -302,7 +306,7 @@ void QgsAttributeTable::popupMenu(int row, int col, const QPoint& pos)
   // these are needed for substituting into the actions if the user
   // chooses one.
   mActionValues.clear();
-  QHeader* header = horizontalHeader();
+  Q3Header* header = horizontalHeader();
 
 #ifdef QGISDEBUG
   if (header->count() != numCols())
@@ -339,9 +343,9 @@ bool QgsAttributeTable::addAttribute(const QString& name, const QString& type)
     }
     mAddedAttributes.insert(std::make_pair(name,type));
 #ifdef QGISDEBUG
-    qWarning(("inserting attribute "+name+" of type "+type).local8Bit());
+    qWarning(("inserting attribute "+name+" of type "+type).toLocal8Bit().data());
     //add a new column at the end of the table
-    qWarning(("numCols: "+QString::number(numCols())).local8Bit());
+    qWarning(("numCols: "+QString::number(numCols())).toLocal8Bit().data());
 #endif
     insertColumns(numCols());
     horizontalHeader()->setLabel(numCols()-1,name);
@@ -361,7 +365,7 @@ void QgsAttributeTable::deleteAttribute(const QString& name)
     else
     {
 #ifdef QGISDEBUG
-	qWarning(("QgsAttributeTable: deleteAttribute "+name).local8Bit());
+	qWarning(("QgsAttributeTable: deleteAttribute "+name).toLocal8Bit().data());
 #endif
 	mDeletedAttributes.insert(name);
 	removeAttrColumn(name);
@@ -377,7 +381,7 @@ void QgsAttributeTable::copySelectedRows()
   const char fieldSep = '\t';
 
   // Pick up the headers first
-  QHeader* header = horizontalHeader();
+  Q3Header* header = horizontalHeader();
   for (int i = 0; i < header->count(); ++i)
     toClipboard += header->label(i) + fieldSep;
   toClipboard += '\n';
@@ -385,7 +389,7 @@ void QgsAttributeTable::copySelectedRows()
   // Then populate with the cell contents
   for (int i = 0; i < numSelections(); ++i)
   {
-    QTableSelection sel = selection(i);
+    Q3TableSelection sel = selection(i);
     for (int row = sel.topRow(); row < sel.topRow()+sel.numRows(); ++row)
     {
       for (int column = 0; column < numCols(); ++column)
@@ -454,12 +458,12 @@ void QgsAttributeTable::fillTable(QgsVectorLayer* layer)
     std::set<int>& deletedFeatures = layer->deletedFeatureIds();
 
     // set up the column headers
-    QHeader *colHeader = horizontalHeader();
+    Q3Header *colHeader = horizontalHeader();
     std::vector < QgsField > fields = provider->fields();
     int fieldcount=provider->fieldCount();
 #ifdef QGISDEBUG
     for (int l = 0; l < fields.size(); l++)
-      std::cout << "field: " << fields[l].name().local8Bit() << " | " << fields[l].isNumeric() << " | " << fields[l].type().local8Bit() << std::endl;
+      std::cout << "field: " << fields[l].name().toLocal8Bit().data() << " | " << fields[l].isNumeric() << " | " << fields[l].type().toLocal8Bit().data() << std::endl;
 #endif
   
     setNumRows(provider->featureCount() + addedFeatures.size() - deletedFeatures.size());
@@ -520,8 +524,8 @@ void QgsAttributeTable::storeChangedValue(int row, int column)
 	int id=text(row,0).toInt();
 	QString attribute=horizontalHeader()->label(column);
 #ifdef QGISDEBUG
-	qWarning(("feature id: "+QString::number(id)).local8Bit());
-	qWarning(("attribute: "+attribute).local8Bit());
+	qWarning(("feature id: "+QString::number(id)).toLocal8Bit().data());
+	qWarning(("attribute: "+attribute).toLocal8Bit().data());
 #endif
 	std::map<int,std::map<QString,QString> >::iterator iter=mChangedValues.find(id);
 	if(iter==mChangedValues.end())
@@ -533,7 +537,7 @@ void QgsAttributeTable::storeChangedValue(int row, int column)
 	iter->second.erase(attribute);
 	iter->second.insert(std::make_pair(attribute,text(row,column)));
 #ifdef QGISDEBUG
-	qWarning(("value: "+text(row,column)).local8Bit());
+	qWarning(("value: "+text(row,column)).toLocal8Bit().data());
 #endif	
 	mEdited=true;
     }
@@ -552,7 +556,7 @@ void QgsAttributeTable::clearEditingStructures()
 
 void QgsAttributeTable::removeAttrColumn(const QString& name)
 {
-    QHeader* header=horizontalHeader();
+    Q3Header* header=horizontalHeader();
     for(int i=0;i<header->count();++i)
     {
 	if(header->label(i)==name)
@@ -567,7 +571,7 @@ void QgsAttributeTable::bringSelectedToTop()
 {
     blockSignals(true);
     int swaptorow=0;
-    std::list<QTableSelection> selections;
+    std::list<Q3TableSelection> selections;
     bool removeselection;
 
     for(int i=0;i<numSelections();++i)
@@ -575,9 +579,9 @@ void QgsAttributeTable::bringSelectedToTop()
 	selections.push_back(selection(i));
     }
 
-    QTableSelection sel;  
+    Q3TableSelection sel;  
 
-    for(std::list<QTableSelection>::iterator iter=selections.begin();iter!=selections.end();++iter)
+    for(std::list<Q3TableSelection>::iterator iter=selections.begin();iter!=selections.end();++iter)
     {
 	removeselection=true;
 	while(isRowSelected(swaptorow, true))//selections are not necessary stored in ascending order

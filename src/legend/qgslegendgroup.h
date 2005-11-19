@@ -30,8 +30,8 @@ This is a specialised version of QLegendItem that specifies that the items below
 class QgsLegendGroup : public QgsLegendItem
 {
 public:
-    QgsLegendGroup(QListViewItem * ,QString);
-    QgsLegendGroup(QListView *,QString);
+    QgsLegendGroup(Q3ListViewItem * ,QString);
+    QgsLegendGroup(Q3ListView *,QString);
     ~QgsLegendGroup();
 
     QgsLegendItem::DRAG_ACTION accept(LEGEND_ITEM_TYPE type);

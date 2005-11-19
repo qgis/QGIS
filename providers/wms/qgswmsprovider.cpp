@@ -26,14 +26,14 @@
 
 #include "qgswmsprovider.h"
 
-#include <qnetwork.h>
-#include <qhttp.h>
-#include <qurl.h>
+#include <q3network.h>
+#include <q3http.h>
+#include <q3url.h>
 #include <qmessagebox.h>
 
 #include <qglobal.h>
 #if QT_VERSION >= 0x040000
-#include <QPicture>
+#include <Q3Picture>
 #endif
 
 #ifdef QGISDEBUG
@@ -63,7 +63,7 @@ QgsWmsProvider::QgsWmsProvider(QString const & uri)
     cachedPixelHeight(0)
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider: constructing with uri '" << uri.local8Bit() << "'." << std::endl;
+  std::cout << "QgsWmsProvider: constructing with uri '" << uri.toLocal8Bit().data() << "'." << std::endl;
 #endif
   
   // assume this is a valid layer until we determine otherwise
@@ -153,7 +153,7 @@ void QgsWmsProvider::addLayers(QStringList layers)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::addLayers: Entering" <<
-                  " with layer list of " << layers.join(", ").local8Bit() << std::endl;
+                  " with layer list of " << layers.join(", ").toLocal8Bit().data() << std::endl;
 #endif
 
   // TODO: Make activeSubLayers a std::map in order to avoid duplicates
@@ -169,7 +169,7 @@ void QgsWmsProvider::addLayers(QStringList layers)
     activeSubLayerVisibility[*it] = TRUE;
  
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::addLayers: set visibility of layer '" << (*it).local8Bit() << "' to TRUE." << std::endl;
+  std::cout << "QgsWmsProvider::addLayers: set visibility of layer '" << (*it).toLocal8Bit().data() << "' to TRUE." << std::endl;
 #endif
   }
 
@@ -290,7 +290,7 @@ QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight
   }
     
   QString layers = visibleLayers.join(",");
-  QUrl::encode( layers );
+  Q3Url::encode( layers );
   
   
   // compose the URL query string for the WMS server.
@@ -352,7 +352,7 @@ QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight
 
 #ifdef QGISDEBUG
   QFile file( "/tmp/qgis-wmsprovider-draw-raw.png" );
-  if ( file.open( IO_WriteOnly ) ) 
+  if ( file.open( QIODevice::WriteOnly ) ) 
   {
     file.writeBlock(imagesource);
     file.close();
@@ -447,7 +447,7 @@ void QgsWmsProvider::downloadCapabilitiesURI(QString uri)
 {
 
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::downloadCapabilitiesURI: Entered with '" << uri.local8Bit() << "'" << std::endl;
+  std::cout << "QgsWmsProvider::downloadCapabilitiesURI: Entered with '" << uri.toLocal8Bit().data() << "'" << std::endl;
 #endif
 
   QgsHttpTransaction http(uri, httpproxyhost, httpproxyport);
@@ -485,7 +485,7 @@ Example URL (works!)
 */
 
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::drawTest: Entered with '" << uri.local8Bit() << "'" << std::endl;
+  std::cout << "QgsWmsProvider::drawTest: Entered with '" << uri.toLocal8Bit().data() << "'" << std::endl;
 #endif
   
   QgsHttpTransaction http(uri, httpproxyhost, httpproxyport);
@@ -513,7 +513,7 @@ void QgsWmsProvider::parseCapabilities(QByteArray xml, QgsWmsCapabilitiesPropert
   std::cout << "QgsWmsProvider::parseCapabilities: entering." << std::endl;
   
   QFile file( "/tmp/qgis-wmsprovider-capabilities.xml" );
-  if ( file.open( IO_WriteOnly ) ) 
+  if ( file.open( QIODevice::WriteOnly ) ) 
   {
     file.writeBlock(xml);
     file.close();
@@ -1049,8 +1049,8 @@ void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerPropert
 #ifdef QGISDEBUG
 //    std::cout << "QgsWmsProvider::parseLayer: A layer definition is complete." << std::endl;
 
-    std::cout << "QgsWmsProvider::parseLayer:   name is: '" << layerProperty.name.local8Bit() << "'." << std::endl;
-    std::cout << " QgsWmsProvider::parseLayer:  title is: '" << layerProperty.title.local8Bit() << "'." << std::endl;
+    std::cout << "QgsWmsProvider::parseLayer:   name is: '" << layerProperty.name.toLocal8Bit().data() << "'." << std::endl;
+    std::cout << " QgsWmsProvider::parseLayer:  title is: '" << layerProperty.title.toLocal8Bit().data() << "'." << std::endl;
 //    std::cout << "QgsWmsProvider::parseLayer:   srs is: '" << layerProperty.srs << "'." << std::endl;
 //    std::cout << "QgsWmsProvider::parseLayer:   bbox is: '" << layerProperty.latlonbbox.stringRep() << "'." << std::endl;
     
@@ -1120,13 +1120,13 @@ std::vector<QString> QgsWmsProvider::supportedFormats()
 #if QT_VERSION < 0x040000
   QStringList list = QImage::inputFormatList();
 #else
-  QStringList list = QPicture::inputFormatList();
+  QStringList list = Q3Picture::inputFormatList();
 #endif
 
   QStringList::Iterator it = list.begin();
   while( it != list.end() )
   {
-    std::cout << "QgsWmsProvider::supportedFormats: can support input of '" << (*it).local8Bit() << "'." << std::endl;
+    std::cout << "QgsWmsProvider::supportedFormats: can support input of '" << (*it).toLocal8Bit().data() << "'." << std::endl;
 
     returnList.push_back(*it);
 
@@ -1193,13 +1193,13 @@ void QgsWmsProvider::calculateExtent()
   
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::calculateExtent: combined extent is '" << 
-               layerExtent.stringRep().local8Bit() << "' after '" << (*it).local8Bit() << "'." << std::endl;
+               layerExtent.stringRep().toLocal8Bit().data() << "' after '" << (*it).toLocal8Bit().data() << "'." << std::endl;
 #endif
 
   }
 
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::calculateExtent: exiting with '" << layerExtent.stringRep().local8Bit() << "'." << std::endl;
+  std::cout << "QgsWmsProvider::calculateExtent: exiting with '" << layerExtent.stringRep().toLocal8Bit().data() << "'." << std::endl;
 #endif
 
 }

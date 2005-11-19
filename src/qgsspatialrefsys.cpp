@@ -205,7 +205,7 @@ bool QgsSpatialRefSys::createFromSrid(long theSrid)
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -246,7 +246,7 @@ bool QgsSpatialRefSys::createFromSrid(long theSrid)
   else
   {
 #ifdef QGISDEBUG
-    std::cout << " QgsSpatialRefSys::createFromSrid failed :  " << mySql.local8Bit() << std::endl;
+    std::cout << " QgsSpatialRefSys::createFromSrid failed :  " << mySql.toLocal8Bit().data() << std::endl;
 #endif
     mIsValidFlag = false;
   }
@@ -257,17 +257,17 @@ bool QgsSpatialRefSys::createFromSrid(long theSrid)
 
 bool QgsSpatialRefSys::createFromWkt(QString theWkt)
 {
-  if (!theWkt)
+  if (theWkt.isEmpty())
   {
     std::cout << "QgsSpatialRefSys::createFromWkt -- theWkt is uninitialised, operation failed" << std::endl;
     mIsValidFlag = false;
     return false;
   }
 #ifdef QGISDEBUG
-  std::cout << "QgsSpatialRefSys::createFromWkt(QString theWkt) using: \n" << theWkt.local8Bit() << std::endl;
+  std::cout << "QgsSpatialRefSys::createFromWkt(QString theWkt) using: \n" << theWkt.toLocal8Bit().data() << std::endl;
 #endif
   //this is really ugly but we need to get a QString to a char**
-  const char *myCharArrayPointer = theWkt.latin1(); //Why doesn't it work with local8Bit()?
+  const char *myCharArrayPointer = theWkt.latin1(); //Why doesn't it work with toLocal8Bit().data()?
   char *pWkt = (char *)myCharArrayPointer;
   /* Here are the possible OGR error codes :
      typedef int OGRErr;
@@ -289,7 +289,7 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
     std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"<< std::endl;
     std::cout << "QgsSpatialRefSys::createFromWkt(QString theWkt) " << __FILE__ << __LINE__ << std::endl;
     std::cout << "This SRS could *** NOT *** be set from the supplied WKT " << std::endl;
-    std::cout << "INPUT: " << std::endl << theWkt.local8Bit() << std::endl;
+    std::cout << "INPUT: " << std::endl << theWkt.toLocal8Bit().data() << std::endl;
     std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
     mIsValidFlag = false;
     return false;
@@ -329,7 +329,7 @@ bool QgsSpatialRefSys::createFromEpsg(long theEpsg)
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -370,7 +370,7 @@ bool QgsSpatialRefSys::createFromEpsg(long theEpsg)
   else
   {
 #ifdef QGISDEBUG
-    std::cout << " QgsSpatialRefSys::createFromEpsg failed :  " << mySql.local8Bit() << std::endl;
+    std::cout << " QgsSpatialRefSys::createFromEpsg failed :  " << mySql.toLocal8Bit().data() << std::endl;
 #endif
     mIsValidFlag = false;
   }
@@ -419,7 +419,7 @@ bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -459,7 +459,7 @@ bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
   else
   {
 #ifdef QGISDEBUG
-    std::cout << " QgsSpatialRefSys::createFromSrsId failed :  " << mySql.local8Bit() << std::endl;
+    std::cout << " QgsSpatialRefSys::createFromSrsId failed :  " << mySql.toLocal8Bit().data() << std::endl;
 #endif
     mIsValidFlag = false;
   }
@@ -610,7 +610,7 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
   int           myResult;
 
 #ifdef QGISDEBUG
-  std::cout << " QgsSpatialRefSys::getRecord...running query:\n"<< theSql.local8Bit() << "\n" << std::endl;
+  std::cout << " QgsSpatialRefSys::getRecord...running query:\n"<< theSql.toLocal8Bit().data() << "\n" << std::endl;
   std::cout << " QgsSpatialRefSys::getRecord...trying system srs.db" << std::endl;
 #endif
   // Get the package data path and set the full path name to the sqlite3 spatial reference
@@ -623,7 +623,7 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
 
 
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -664,7 +664,7 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
     }
 
     //check the db is available
-    myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
+    myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
     if(myResult)
     {
       std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -690,7 +690,7 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
     else
     {
 #ifdef QGISDEBUG
-      std::cout << " QgsSpatialRefSys::getRecord failed :  " << theSql.local8Bit() << std::endl;
+      std::cout << " QgsSpatialRefSys::getRecord failed :  " << theSql.toLocal8Bit().data() << std::endl;
 #endif
 
     }
@@ -699,11 +699,11 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
   sqlite3_close(myDatabase);
 
 #ifdef QGISDEBUG
-         std::cout << " QgsSpatialRefSys::getRecord retrieved:  " << theSql.local8Bit() << std::endl;
+         std::cout << " QgsSpatialRefSys::getRecord retrieved:  " << theSql.toLocal8Bit().data() << std::endl;
         RecordMap::Iterator it;
         for ( it = myMap.begin(); it != myMap.end(); ++it )
        {
-            std::cout << it.key().local8Bit() << " => " <<  it.data().local8Bit() << std::endl;
+            std::cout << it.key().toLocal8Bit().data() << " => " <<  it.data().toLocal8Bit().data() << std::endl;
         }
 #endif
 
@@ -735,7 +735,7 @@ long QgsSpatialRefSys::srid() const
  */
 QString QgsSpatialRefSys::description () const
 {
-  if (!mDescription)
+  if (mDescription.isNull())
   {
     return "";
   }
@@ -749,7 +749,7 @@ QString QgsSpatialRefSys::description () const
  */
 QString QgsSpatialRefSys::projectionAcronym() const
 {
-  if (!mProjectionAcronym)
+  if (mProjectionAcronym.isNull())
   {
     return "";
   }
@@ -763,7 +763,7 @@ QString QgsSpatialRefSys::projectionAcronym() const
  */
 QString QgsSpatialRefSys::ellipsoidAcronym () const
 {
-  if (!mEllipsoidAcronym)
+  if (mEllipsoidAcronym.isNull())
   {
     return "";
   }
@@ -777,7 +777,7 @@ QString QgsSpatialRefSys::ellipsoidAcronym () const
  */
 QString QgsSpatialRefSys::proj4String() const
 {
-  if (!mProj4String)
+  if (mProj4String.isNull())
   {
     return "";
   }
@@ -858,7 +858,7 @@ void QgsSpatialRefSys::setMapUnits()
 {
   if (mProj4String.isEmpty())
   {
-    qWarning(QObject::tr("No proj4 projection string. Unable to set map units.").local8Bit());
+    qWarning(QObject::tr("No proj4 projection string. Unable to set map units.").toLocal8Bit().data());
     mMapUnits = QGis::UNKNOWN;
     return;
   }
@@ -888,7 +888,7 @@ void QgsSpatialRefSys::setMapUnits()
       unit = "Foot";
 
 #ifdef QGISDEBUG
-    std::cerr << "Projection has linear units of " << unit.local8Bit() << '\n';
+    std::cerr << "Projection has linear units of " << unit.toLocal8Bit().data() << '\n';
 #endif
 
     if (unit == "Meter")
@@ -897,7 +897,7 @@ void QgsSpatialRefSys::setMapUnits()
       mMapUnits = QGis::FEET;
     else
     {
-      qWarning((QObject::tr("Unsupported map units of ") + unit).local8Bit());
+      qWarning((QObject::tr("Unsupported map units of ") + unit).toLocal8Bit().data());
       mMapUnits = QGis::UNKNOWN;
     }
   }
@@ -909,11 +909,11 @@ void QgsSpatialRefSys::setMapUnits()
       mMapUnits = QGis::DEGREES;
     else
     {
-      qWarning((QObject::tr("Unsupported map units of ") + unit).local8Bit());
+      qWarning((QObject::tr("Unsupported map units of ") + unit).toLocal8Bit().data());
       mMapUnits = QGis::UNKNOWN;
     }
 #ifdef QGISDEBUG
-    std::cerr << "Projection has angular units of " << unit.local8Bit() << '\n';
+    std::cerr << "Projection has angular units of " << unit.toLocal8Bit().data() << '\n';
 #endif
 
   }
@@ -934,7 +934,7 @@ long QgsSpatialRefSys::findMatchingProj()
 #ifdef QGISDEBUG
   std::cout << "QgsSpatialRefSys::findMatchingProj..." << std::endl;
 #endif
-  if (!mEllipsoidAcronym || ! mProjectionAcronym || ! mProj4String)
+  if (mEllipsoidAcronym.isNull() ||  mProjectionAcronym.isNull() || mProj4String.isNull())
   {
     std::cout << "QgsSpatialRefSys::findMatchingProj will only work if prj acr ellipsoid acr and proj4string are set!..." << std::endl;
     return 0;
@@ -949,7 +949,7 @@ long QgsSpatialRefSys::findMatchingProj()
   QString mySql = QString ("select srs_id,parameters from tbl_srs where projection_acronym='" +
                            mProjectionAcronym + "' and ellipsoid_acronym='" + mEllipsoidAcronym + "'");
 #ifdef QGISDEBUG
- // std::cout << "QgsSpatialRefSys::findMatchingProj list sql\n" << mySql.local8Bit() << std::endl;
+ // std::cout << "QgsSpatialRefSys::findMatchingProj list sql\n" << mySql.toLocal8Bit().data() << std::endl;
  // std::cout << " QgsSpatialRefSys::findMatchingProj...trying system srs.db" << std::endl;
 #endif
   // Get the package data path and set the full path name to the sqlite3 spatial reference
@@ -962,7 +962,7 @@ long QgsSpatialRefSys::findMatchingProj()
 
 
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "QgsSpatialRefSys::findMatchingProj Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -982,7 +982,7 @@ long QgsSpatialRefSys::findMatchingProj()
       QString myProj4String = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 1));
       if (this->equals(myProj4String))
       {
-        std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in srs.db srsid: " << mySrsId.local8Bit() << std::endl;
+        std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in srs.db srsid: " << mySrsId.toLocal8Bit().data() << std::endl;
         // close the sqlite3 statement
         sqlite3_finalize(myPreparedStatement);
         sqlite3_close(myDatabase);
@@ -1004,7 +1004,7 @@ long QgsSpatialRefSys::findMatchingProj()
 
   myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.local8Bit(), &myDatabase);
+  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "QgsSpatialRefSys::findMatchingProj Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -1023,7 +1023,7 @@ long QgsSpatialRefSys::findMatchingProj()
       QString myProj4String = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 1));
       if (this->equals(myProj4String))
       {
-        std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in user qgis.db srsid: " << mySrsId.local8Bit() << std::endl;
+        std::cout << "QgsSpatialRefSys::findMatchingProj -------> MATCH FOUND in user qgis.db srsid: " << mySrsId.toLocal8Bit().data() << std::endl;
         // close the sqlite3 statement
         sqlite3_finalize(myPreparedStatement);
         sqlite3_close(myDatabase);
@@ -1257,7 +1257,7 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
 #ifdef QGISDEBUG
       std::cout << "QgsSpatialRefSys::getProj4FromSrsId :  mySrsId = " << theSrsId << std::endl;
       std::cout << "QgsSpatialRefSys::getProj4FromSrsId :  USER_PROJECTION_START_ID = " << USER_PROJECTION_START_ID << std::endl;
-      std::cout << "QgsSpatialRefSys::getProj4FromSrsId :Selection sql : " << mySql.local8Bit() << std::endl;
+      std::cout << "QgsSpatialRefSys::getProj4FromSrsId :Selection sql : " << mySql.toLocal8Bit().data() << std::endl;
 #endif
       //
       // Determine if this is a user projection or a system on
@@ -1282,12 +1282,12 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
         myDatabaseFileName = PKGDATAPATH;
         myDatabaseFileName += "/resources/srs.db";
       }
-      std::cout << "QgsSpatialRefSys::getProj4FromSrsId db = " << myDatabaseFileName.local8Bit() << std::endl;
+      std::cout << "QgsSpatialRefSys::getProj4FromSrsId db = " << myDatabaseFileName.toLocal8Bit().data() << std::endl;
 
 
       sqlite3 *db;
       int rc;
-      rc = sqlite3_open(myDatabaseFileName.local8Bit(), &db);
+      rc = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &db);
       if(rc)
       {
         std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;

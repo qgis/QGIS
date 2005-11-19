@@ -94,7 +94,7 @@ QgsMapLayer *
 QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer )
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsMapLayerRegistry::addMaplayer - '" << theMapLayer->name().local8Bit() << "'."<< std::endl;
+  std::cout << "QgsMapLayerRegistry::addMaplayer - '" << theMapLayer->name().toLocal8Bit().data() << "'."<< std::endl;
 #endif
   //check the layer is not already registered!
   std::map<QString,QgsMapLayer*>::iterator myIterator = mMapLayers.find(theMapLayer->getLayerID());
@@ -113,7 +113,7 @@ QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer )
   {
 
 #ifdef QGISDEBUG
-    std::cout << "addMaplayer - " << theMapLayer->name().local8Bit() << " already registered" << std::endl;
+    std::cout << "addMaplayer - " << theMapLayer->name().toLocal8Bit().data() << " already registered" << std::endl;
 #endif
     return 0x0;
   }

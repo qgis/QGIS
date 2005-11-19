@@ -19,10 +19,12 @@
 #include <iostream>
 #include <qstring.h>
 #include <qdir.h>
-#include <qprocess.h>
-#include <qsocket.h>
+#include <q3process.h>
+#include <q3socket.h>
 #include <qapplication.h>
 #include "qgscontexthelp.h"
+//Added by qt3to4:
+#include <QTextStream>
 
 // Note: QGSCONTEXTHELP_REUSE must be defined (or not) in qgscontexthelp.h.
 // The flag determines if an existing viewer process should be reused or
@@ -48,7 +50,7 @@ QgsContextHelp::QgsContextHelp(int contextId)
   mProcess = start(contextId);
 #ifdef QGSCONTEXTHELP_REUSE
   // Create socket to communicate with process
-  mSocket = new QSocket(this);
+  mSocket = new Q3Socket(this);
   connect(mProcess, SIGNAL(readyReadStdout()), SLOT(readPort()));
 #else
   // Placeholder for new process if terminating and restarting
@@ -67,7 +69,7 @@ QgsContextHelp::~QgsContextHelp()
   delete mProcess;
 }
 
-QProcess *QgsContextHelp::start(int contextId)
+Q3Process *QgsContextHelp::start(int contextId)
 {
   // Assume minimum Qt 3.2 version and use the API to get the path
   // path to the help viewer
@@ -77,10 +79,10 @@ QProcess *QgsContextHelp::start(int contextId)
 #endif
   helpPath += "/qgis_help";
 #ifdef QGISDEBUG
-  std::cout << "Help path is " << helpPath.local8Bit() << std::endl; 
+  std::cout << "Help path is " << helpPath.toLocal8Bit().data() << std::endl; 
 #endif
 
-  QProcess *process = new QProcess(helpPath);
+  Q3Process *process = new Q3Process(helpPath);
   QString arg1;
   arg1.setNum(contextId);
   process->addArgument(arg1);

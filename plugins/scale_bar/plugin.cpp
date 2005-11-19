@@ -29,22 +29,22 @@ email                : sbr00pwb@users.sourceforge.net
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlineedit.h>
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qpen.h>
 #include <qgspoint.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qgsmaptopixel.h>
 #include <qstring.h>
 #include <qfontmetrics.h>
 #include <qfont.h>
-#include <qpaintdevicemetrics.h>
+#include <q3paintdevicemetrics.h>
 #include <qspinbox.h>
 #include <qcolor.h>
 #include <qcolordialog.h>
@@ -102,14 +102,14 @@ QgsScaleBarPlugin::~QgsScaleBarPlugin()
  */
 void QgsScaleBarPlugin::initGui()
 {
-  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
-  menuId = pluginMenu->insertItem(QIconSet(icon),"&ScaleBar", this, SLOT(run()));
+  Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
+  menuId = pluginMenu->insertItem(QIcon(icon),"&ScaleBar", this, SLOT(run()));
 
   pluginMenu->setWhatsThis(menuId, "Creates a scale bar that is displayed on the map canvas");
 
   // Create the action for tool
 #if QT_VERSION < 0x040000
-  myQActionPointer = new QAction("Scale Bar", QIconSet(icon), "&Wmi",0, this, "run");
+  myQActionPointer = new QAction("Scale Bar", QIcon(icon), "&Wmi",0, this, "run");
 #else
   myQActionPointer = new QAction(QIcon(icon), "Scale Bar", this);
 #endif
@@ -191,7 +191,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
   int myBufferSize=1; //softcode this later
 
   //Get canvas dimensions
-  QPaintDeviceMetrics myMetrics( theQPainter->device() );
+  Q3PaintDeviceMetrics myMetrics( theQPainter->device() );
   int myCanvasHeight = myMetrics.height();
   int myCanvasWidth = myMetrics.width();
 
@@ -337,7 +337,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     //Create array of vertices for scale bar depending on style
     if (mStyle==tr("Tick Down"))
     {
-      QPointArray myTickDownArray(4);
+      Q3PointArray myTickDownArray(4);
       //draw a buffer first so bar shows up on dark images
       theQPainter->setPen( myBackgroundPen );
       myTickDownArray.putPoints(0,4,
@@ -359,7 +359,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     }
     else if (mStyle==tr("Tick Up"))
     {
-      QPointArray myTickUpArray(4);
+      Q3PointArray myTickUpArray(4);
       //draw a buffer first so bar shows up on dark images
       theQPainter->setPen( myBackgroundPen );
       myTickUpArray.putPoints(0,4,
@@ -381,7 +381,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     }
     else if (mStyle==tr("Bar"))
     {
-      QPointArray myBarArray(2);
+      Q3PointArray myBarArray(2);
       //draw a buffer first so bar shows up on dark images
       theQPainter->setPen( myBackgroundPen );
       myBarArray.putPoints(0,2,
@@ -399,7 +399,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     }
     else if (mStyle==tr("Box"))
     {
-      QPointArray myBoxArray(5);
+      Q3PointArray myBoxArray(5);
       //draw a buffer first so bar shows up on dark images
       theQPainter->setPen( myBackgroundPen );
       myBoxArray.putPoints(0,5,

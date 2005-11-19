@@ -51,10 +51,10 @@
 // Required QT includes
 //
 
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlineedit.h>
 #include <qaction.h>
 #include <qapplication.h>
@@ -116,10 +116,10 @@ QgsGeorefPlugin::~QgsGeorefPlugin()
  */
 void QgsGeorefPlugin::initGui()
 {
-  QIconSet iconset(qembed_findImage("icon"));
+  QIcon iconset(qembed_findImage("icon"));
 
-  QPopupMenu *pluginMenu = mQGisIface->getPluginMenu("&Georeferencer");
-  mMenuId = pluginMenu->insertItem(QIconSet(iconset),"&Georeferencer", this, SLOT(run()));
+  Q3PopupMenu *pluginMenu = mQGisIface->getPluginMenu("&Georeferencer");
+  mMenuId = pluginMenu->insertItem(QIcon(iconset),"&Georeferencer", this, SLOT(run()));
 
   // Create the action for tool
   mQActionPointer = new QAction("Georeferencer", iconset, "&icon",0, this, "run");

@@ -21,16 +21,18 @@
 #define QGSSPITPLUGIN_H
 #include "../qgisplugin.h"
 #include <qwidget.h>
-#include <qmainwindow.h>
+#include <q3mainwindow.h>
+//Added by qt3to4:
+#include <Q3PopupMenu>
 extern "C"
 {
 #include <libpq-fe.h>
 }
 
 class QMessageBox;
-class QToolBar;
+class Q3ToolBar;
 class QMenuBar;
-class QPopupMenu;
+class Q3PopupMenu;
 
 //#include "qgsworkerclass.h"
 #include "../../src/qgisapp.h"
@@ -71,7 +73,7 @@ class QgsSpitPlugin:public QObject, public QgisPlugin
     //! Id of the plugin's menu. Used for unloading
     int menuId;
     //! Pointer to our toolbar
-    QToolBar *toolBar;
+    Q3ToolBar *toolBar;
     //! Pionter to QGIS main application object
     QgisApp *qgisMainWindow;
     //! Pointer to the QGIS interface object

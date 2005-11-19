@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include <qcheckbox.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 
 #include "qgsgeorefwarpoptionsdialog.h"
 

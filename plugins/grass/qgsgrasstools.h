@@ -1,3 +1,5 @@
+//Added by qt3to4:
+#include <QCloseEvent>
 /***************************************************************************
                               qgsgrasstools.h 
                              -------------------
@@ -18,7 +20,7 @@
 
 class QCloseEvent;
 class QString;
-class QListView;
+class Q3ListView;
 class QDomNode;
 class QDomElement;
 
@@ -40,14 +42,14 @@ class QgsGrassTools: public QgsGrassToolsBase
 public:
     //! Constructor
     QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface, 
-	           QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+	           QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassTools();
 
     //! Recursively add sections and modules to the list view
     //  If parent is 0, the modules are added to mModulesListView root
-    void addModules ( QListViewItem *parent, QDomElement &element );
+    void addModules ( Q3ListViewItem *parent, QDomElement &element );
 
     //! Returns application directory
     QString appDir();
@@ -69,7 +71,7 @@ public slots:
     void saveWindowLocation();
 
     //! Module in list clicked
-    void moduleClicked ( QListViewItem * item );
+    void moduleClicked ( Q3ListViewItem * item );
 
     //! Current mapset changed
     void mapsetChanged();

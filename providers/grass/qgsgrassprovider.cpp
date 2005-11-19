@@ -21,11 +21,13 @@
 #include <cfloat>
 
 #include <qpixmap.h>
-#include <qiconset.h>
+#include <qicon.h>
 #include <qdir.h>
 #include <qstring.h>
 #include <qdatetime.h>
 #include <qmessagebox.h>
+//Added by qt3to4:
+#include <Q3CString>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsdataprovider.h"
@@ -57,7 +59,7 @@ QgsGrassProvider::QgsGrassProvider(QString const & uri)
     : QgsVectorDataProvider(uri)
 {
 #ifdef QGISDEBUG
-    std::cerr << "QgsGrassProvider URI: " << uri.local8Bit() << std::endl;
+    std::cerr << "QgsGrassProvider URI: " << uri.toLocal8Bit().data() << std::endl;
 #endif
 
     QTime time;
@@ -81,11 +83,11 @@ QgsGrassProvider::QgsGrassProvider(QString const & uri)
     mGisdbase = dir.path();
     
     #ifdef QGISDEBUG
-    std::cerr << "gisdbase: " << mGisdbase.local8Bit() << std::endl;
-    std::cerr << "location: " << mLocation.local8Bit() << std::endl;
-    std::cerr << "mapset: "   << mMapset.local8Bit() << std::endl;
-    std::cerr << "mapName: "  << mMapName.local8Bit() << std::endl;
-    std::cerr << "layer: "    << mLayer.local8Bit() << std::endl;
+    std::cerr << "gisdbase: " << mGisdbase.toLocal8Bit().data() << std::endl;
+    std::cerr << "location: " << mLocation.toLocal8Bit().data() << std::endl;
+    std::cerr << "mapset: "   << mMapset.toLocal8Bit().data() << std::endl;
+    std::cerr << "mapName: "  << mMapName.toLocal8Bit().data() << std::endl;
+    std::cerr << "layer: "    << mLayer.toLocal8Bit().data() << std::endl;
     #endif
 
     /* Parse Layer, supported layers <field>_point, <field>_line, <field>_area
@@ -103,7 +105,7 @@ QgsGrassProvider::QgsGrassProvider(QString const & uri)
 	int pos = mLayer.find('_');
 
 	if ( pos == -1 ) {
-	    std::cerr << "Invalid layer name, no underscore found: " << mLayer.local8Bit() << std::endl;
+	    std::cerr << "Invalid layer name, no underscore found: " << mLayer.toLocal8Bit().data() << std::endl;
 	    return;
 	}
 
@@ -120,7 +122,7 @@ QgsGrassProvider::QgsGrassProvider(QString const & uri)
 	    mLayerType = POLYGON;
 	    mGrassType = GV_AREA; 
 	} else {
-	    std::cerr << "Invalid layer name, wrong type: " << ts.local8Bit() << std::endl;
+	    std::cerr << "Invalid layer name, wrong type: " << ts.toLocal8Bit().data() << std::endl;
 	    return;
 	}
     }
@@ -151,7 +153,7 @@ QgsGrassProvider::QgsGrassProvider(QString const & uri)
 
     mLayerId = openLayer(mGisdbase, mLocation, mMapset, mMapName, mLayerField);
     if ( mLayerId < 0 ) {
-	std::cerr << "Cannot open GRASS layer:" << myURI.local8Bit() << std::endl;
+	std::cerr << "Cannot open GRASS layer:" << myURI.toLocal8Bit().data() << std::endl;
 	return;
     }
     #ifdef QGISDEBUG
@@ -655,7 +657,7 @@ QString QgsGrassProvider::maxValue(int position)
 bool QgsGrassProvider::isValid(){
     #ifdef QGISDEBUG
     QString validString = mValid?"true":"false";
-    std::cerr << "QgsGrassProvider::isValid() returned: " << validString.local8Bit() << std::endl;
+    std::cerr << "QgsGrassProvider::isValid() returned: " << validString.toLocal8Bit().data() << std::endl;
     #endif
     return mValid;
 }
@@ -673,10 +675,10 @@ int QgsGrassProvider::openLayer(QString gisdbase, QString location, QString maps
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassProvider::openLayer()" << std::endl;
-    std::cerr << "gisdbase: " << gisdbase.local8Bit() << std::endl;
-    std::cerr << "location: " << location.local8Bit() << std::endl;
-    std::cerr << "mapset: "   << mapset.local8Bit() << std::endl;
-    std::cerr << "mapName: "  << mapName.local8Bit() << std::endl;
+    std::cerr << "gisdbase: " << gisdbase.toLocal8Bit().data() << std::endl;
+    std::cerr << "location: " << location.toLocal8Bit().data() << std::endl;
+    std::cerr << "mapset: "   << mapset.toLocal8Bit().data() << std::endl;
+    std::cerr << "mapName: "  << mapName.toLocal8Bit().data() << std::endl;
     std::cerr << "field: "    << field << std::endl;
     #endif
 
@@ -1025,7 +1027,7 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
     // Set GRASS location
     QgsGrass::setLocation ( gisdbase, location ); 
 #ifdef QGISDEBUG
-	std::cerr << "Setting  gisdbase, location: " << gisdbase.local8Bit() << ", " << location.local8Bit() << std::endl;
+	std::cerr << "Setting  gisdbase, location: " << gisdbase.toLocal8Bit().data() << ", " << location.toLocal8Bit().data() << std::endl;
 #endif
 
     // Find the vector
@@ -1050,7 +1052,7 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
     Vect_open_old ( map.map, (char *) mapName.ascii(), (char *) mapset.ascii());
 
     if ( QgsGrass::getError() == QgsGrass::FATAL ) {
-	std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage().local8Bit() << std::endl;
+	std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage().toLocal8Bit().data() << std::endl;
 	return -1;
     }
     #ifdef QGISDEBUG
@@ -1095,7 +1097,7 @@ void QgsGrassProvider::updateMap ( int mapId )
     Vect_open_old ( map->map, (char *) map->mapName.ascii(), (char *) map->mapset.ascii());
 
     if ( QgsGrass::getError() == QgsGrass::FATAL ) {
-	std::cerr << "Cannot reopen GRASS vector: " << QgsGrass::getErrorMessage().local8Bit() << std::endl;
+	std::cerr << "Cannot reopen GRASS vector: " << QgsGrass::getErrorMessage().toLocal8Bit().data() << std::endl;
 
 	// TODO if reopen fails, mLayers should be also updated
 	return;
@@ -1201,7 +1203,7 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
 
 	for (int i = 0; i < mLayers[layerId].nColumns; i++) {
 	    if ( att != NULL ) {
-		QCString cstr( att->values[i] );
+		Q3CString cstr( att->values[i] );
 		feature->addAttribute ( mLayers[layerId].fields[i].name(), mEncoding->toUnicode(cstr) );
 	    } else { /* it may happen that attributes are missing -> set to empty string */
 		feature->addAttribute ( mLayers[layerId].fields[i].name(), "");
@@ -1228,7 +1230,7 @@ void QgsGrassProvider::setFeatureAttributes ( int layerId, int cat, QgsFeature *
 
 	for (std::list<int>::const_iterator iter=attlist.begin(); iter!=attlist.end();++iter) {
 	    if ( att != NULL ) {
-		QCString cstr( att->values[*iter] );
+		Q3CString cstr( att->values[*iter] );
 		feature->addAttribute ( mLayers[layerId].fields[*iter].name(), mEncoding->toUnicode(cstr) );
 	    } else { /* it may happen that attributes are missing -> set to empty string */
 		feature->addAttribute ( mLayers[layerId].fields[*iter].name(), "");	
@@ -1305,7 +1307,7 @@ bool QgsGrassProvider::startEdit ( void )
 {
 #ifdef QGISDEBUG
     std::cerr << "QgsGrassProvider::startEdit" << std::endl;
-    std::cerr << "  uri = " << getDataSourceUri().local8Bit() << std::endl;
+    std::cerr << "  uri = " << getDataSourceUri().toLocal8Bit().data() << std::endl;
     std::cerr << "  mMaps.size() = " << mMaps.size() << std::endl;
 #endif
 
@@ -1337,7 +1339,7 @@ bool QgsGrassProvider::startEdit ( void )
     int level = Vect_open_update ( map->map, (char *) map->mapName.ascii(), (char *) map->mapset.ascii() );
     if (  level < 2 ) { 
 	if ( QgsGrass::getError() == QgsGrass::FATAL ) {
-	    std::cerr << "Cannot open GRASS vector for update: " << QgsGrass::getErrorMessage().local8Bit() << std::endl;
+	    std::cerr << "Cannot open GRASS vector for update: " << QgsGrass::getErrorMessage().toLocal8Bit().data() << std::endl;
 	} else {
 	    std::cerr << "Cannot open GRASS vector for update on level 2." << std::endl;
 	}
@@ -1349,7 +1351,7 @@ bool QgsGrassProvider::startEdit ( void )
     
 	if ( level < 2 ) {
 	    if ( QgsGrass::getError() == QgsGrass::FATAL ) {
-		std::cerr << "Cannot reopen GRASS vector: " << QgsGrass::getErrorMessage().local8Bit() << std::endl;
+		std::cerr << "Cannot reopen GRASS vector: " << QgsGrass::getErrorMessage().toLocal8Bit().data() << std::endl;
 	    } else {
 		std::cerr << "Cannot reopen GRASS vector on level 2." << std::endl;
 	    }
@@ -1414,7 +1416,7 @@ bool QgsGrassProvider::closeEdit ( void )
     Vect_open_old ( map->map, (char *) map->mapName.ascii(), (char *) map->mapset.ascii());
 
     if ( QgsGrass::getError() == QgsGrass::FATAL ) {
-	std::cerr << "Cannot reopen GRASS vector: " << QgsGrass::getErrorMessage().local8Bit() << std::endl;
+	std::cerr << "Cannot reopen GRASS vector: " << QgsGrass::getErrorMessage().toLocal8Bit().data() << std::endl;
 	return -1;
     }
 
@@ -1840,7 +1842,7 @@ std::vector<QgsFeatureAttribute> *QgsGrassProvider::attributes ( int field, int 
 	db_convert_column_value_to_string (column, &dbstr);
 
         QString v = mEncoding->toUnicode(db_get_string(&dbstr));
-	std::cerr << "Value: " << v.local8Bit() << std::endl;
+	std::cerr << "Value: " << v.toLocal8Bit().data() << std::endl;
         att->push_back ( QgsFeatureAttribute( db_get_column_name(column), v ) );
     }
 
@@ -1893,7 +1895,7 @@ QString *QgsGrassProvider::updateAttributes ( int field, int cat, const QString 
 	    + " = " + QString::number(cat);
 
     #ifdef QGISDEBUG
-    std::cerr << "query: " << query.local8Bit() << std::endl;
+    std::cerr << "query: " << query.toLocal8Bit().data() << std::endl;
     #endif
 
     // For some strange reason, mEncoding->fromUnicode(query) does not work, 
@@ -1901,7 +1903,7 @@ QString *QgsGrassProvider::updateAttributes ( int field, int cat, const QString 
     //  -> it is possible to edit only in current locales at present
     // QCString qcs = mEncoding->fromUnicode(query);
 
-    QCString qcs = query.local8Bit();
+    Q3CString qcs = query.toLocal8Bit().data();
     #ifdef QGISDEBUG
     std::cerr << "qcs: " << qcs.data() << std::endl;
     #endif

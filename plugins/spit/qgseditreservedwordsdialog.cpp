@@ -1,7 +1,7 @@
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qpixmap.h>
-#include <qlistview.h>
-#include <qtextedit.h>
+#include <q3listview.h>
+#include <q3textedit.h>
 #include "../../src/qgspgutil.h"
 #include "spit_icons.h"
 
@@ -20,7 +20,7 @@ void QgsEditReservedWordsDialog::setReservedWords(const QStringList &words)
 {
   lstReservedWords->insertStringList(words);
 }
-void QgsEditReservedWordsDialog::checkWord(QListViewItem *lvi, int col, const QString &word)
+void QgsEditReservedWordsDialog::checkWord(Q3ListViewItem *lvi, int col, const QString &word)
 {
   QgsPgUtil *pgu = QgsPgUtil::instance();
   if(pgu->isReserved(word))
@@ -37,7 +37,7 @@ void QgsEditReservedWordsDialog::addColumn(QString column, bool isReserved, int 
 {
   QString indexNumber;
   indexNumber = indexNumber.setNum(index);
-  QListViewItem *lvi = new QListViewItem(lvColumns,"",column, indexNumber);
+  Q3ListViewItem *lvi = new Q3ListViewItem(lvColumns,"",column, indexNumber);
 //  lvi-setText(1, column);
   lvi->setRenameEnabled(1, true);
   if(isReserved)
@@ -49,7 +49,7 @@ void QgsEditReservedWordsDialog::addColumn(QString column, bool isReserved, int 
     lvi->setPixmap(0, QPixmap(icon_ok));
   }
 }
-void QgsEditReservedWordsDialog::editWord(QListViewItem *lvi)
+void QgsEditReservedWordsDialog::editWord(Q3ListViewItem *lvi)
 {
   if(lvi)
   {
@@ -62,7 +62,7 @@ QStringList QgsEditReservedWordsDialog::columnNames()
   QStringList cols;
   lvColumns->setSorting(2);
   lvColumns->sort();
-  QListViewItem *lvi = lvColumns->firstChild();
+  Q3ListViewItem *lvi = lvColumns->firstChild();
   while(lvi)
   {
     cols << lvi->text(1); 

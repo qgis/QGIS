@@ -1067,7 +1067,7 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 #ifdef QGISDEBUG
       std::cout << "QgsGeometry::closestSegment: Exiting with beforeVertex "
 //                << beforeVertex << ", sqrDist from "
-                << point.stringRep().local8Bit() << " is "
+                << point.stringRep().toLocal8Bit().data() << " is "
                 << sqrDist
                 << "." << std::endl;
 #endif

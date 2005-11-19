@@ -21,7 +21,7 @@
 #define QGSLEGENDPROPERTYITEM_H
 
 #include <qgslegenditem.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qstring.h>
 /**
 A legend property item is a leaf node (it can have no children) that is used to represent a layer property e.g. projection, labels,metadata etc.
@@ -31,7 +31,7 @@ A legend property item is a leaf node (it can have no children) that is used to 
 class QgsLegendPropertyItem : public QgsLegendItem
 {
 public:
-  QgsLegendPropertyItem(QListViewItem * theItem,QString theString);
+  QgsLegendPropertyItem(Q3ListViewItem * theItem,QString theString);
 
   ~QgsLegendPropertyItem();
 

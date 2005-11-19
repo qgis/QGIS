@@ -22,9 +22,11 @@
 
 #include "qgisapp.h"
 #include "qgslegenditem.h"
+//Added by qt3to4:
+#include <QMouseEvent>
 #include <map>
-#include <qlistview.h>
-#include <qpopupmenu.h>
+#include <q3listview.h>
+#include <q3popupmenu.h>
 
 class QCheckBox;
 class QgsMapLayer;
@@ -75,7 +77,7 @@ class QgsMapCanvas;
    @author Gary E.Sherman, Tim Sutton, Marco Hugentobler and Jens Oberender
 */
 
-class QgsLegend : public QListView
+class QgsLegend : public Q3ListView
 {
     Q_OBJECT;
 	
@@ -96,10 +98,10 @@ class QgsLegend : public QListView
   QgsMapLayer* currentLayer();
 
   /**Adds a checkbox and its item to mCheckBoxes*/
-  void registerCheckBox(QListViewItem* item, QCheckBox* cbox);
+  void registerCheckBox(Q3ListViewItem* item, QCheckBox* cbox);
 
   /**Removes a checkbox from mCheckBoxes. Does not delete the objects*/
-  void unregisterCheckBox(QListViewItem* item);
+  void unregisterCheckBox(Q3ListViewItem* item);
 
   /**Writes the content of the legend using the key system of QgsProject*/
   void saveToProject();
@@ -124,7 +126,7 @@ public slots:
     void setMapCanvas(QgsMapCanvas * canvas){mMapCanvas = canvas;}
 
 
- void updateLegendItem( QListViewItem * li );
+ void updateLegendItem( Q3ListViewItem * li );
  
  /*!
    * Slot called to clear the tree of all items
@@ -186,16 +188,16 @@ protected:
   void contentsMouseReleaseEvent(QMouseEvent * e);
   /**Stores the necessary information about the position of an item in the hierarchy. Afterwards, 
 this item may be moved back to the original position with resetToInitialPosition()*/
-  void storeInitialPosition(QListViewItem* li);
+  void storeInitialPosition(Q3ListViewItem* li);
   /**Moves an item back to the position where storeInitialPosition has been called*/
-  void resetToInitialPosition(QListViewItem* li);
+  void resetToInitialPosition(Q3ListViewItem* li);
 
   private slots:
 
   /**Calls 'handleDoubleClickEvent' on the item*/
-  void handleDoubleClickEvent(QListViewItem* item);
+  void handleDoubleClickEvent(Q3ListViewItem* item);
   /**Calls 'handleRightClickEvent' on the item*/
-  void handleRightClickEvent(QListViewItem* item, const QPoint& position);
+  void handleRightClickEvent(Q3ListViewItem* item, const QPoint& position);
   /**Moves all the checkboxes stored in mCheckBoxes to the right places. Needs to
    be called every time the geometry of the treeview is changed*/
   void placeCheckBoxes();
@@ -239,7 +241,7 @@ private:
   bool mMousePressedFlag;
 
   /// keep track of the Item being dragged
-  QListViewItem* mItemBeingMoved;
+  Q3ListViewItem* mItemBeingMoved;
 
   /*!
    * Position in the list of the item being moved as it was at the start of a drag event.
@@ -256,18 +258,18 @@ private:
       YOUNGER_SIBLING
     };
   HIERARCHY_POSITION_TYPE mRestoreInformation;
-  QListViewItem* mRestoreItem;
+  Q3ListViewItem* mRestoreItem;
 
   /*!
    * A fuction sed to determin how far down in the list an item is.
    * @see mItemBeingMovedOrigPos
    */
-  int getItemPos(QListViewItem * item);
+  int getItemPos(Q3ListViewItem * item);
 
   /*!
    * A QPopupMenu that will be displayed when the right mouse button is clicked.
    */
-  QPopupMenu * mPopupMenu;
+  Q3PopupMenu * mPopupMenu;
 
   /**Pointer to the main canvas. Used for requiring repaints in case of legend changes*/
   QgsMapCanvas* mMapCanvas;
@@ -277,10 +279,10 @@ private:
   manages the positioning of the checkboxes if the geometry of the treeview is changed. New checkboxes can be
   registered together with their QListViewItem using registerCheckBox() and unregistered using unregisterCheckBox().
   QgsLegend then takes care of the positioning of the checkboxes*/
-  std::map<QListViewItem*, QCheckBox*> mCheckBoxes;
+  std::map<Q3ListViewItem*, QCheckBox*> mCheckBoxes;
 
   /**Moves a checkbox to a position next to its listview*/
-  void placeCheckBox(QListViewItem* litem, QCheckBox* cbox);
+  void placeCheckBox(Q3ListViewItem* litem, QCheckBox* cbox);
 
 signals:
   void zOrderChanged(QgsLegend * lv);

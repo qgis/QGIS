@@ -1,6 +1,8 @@
 #include "qgslegendvectorsymbologyitem.h"
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
+//Added by qt3to4:
+#include <QPixmap>
 
 
 QColor QgsRenderer::mSelectionColor=QColor(0,0,0);
@@ -10,13 +12,13 @@ QgsRenderer::QgsRenderer()
 
 }
 
-void QgsRenderer::refreshLegend(QListViewItem* legendparent) const
+void QgsRenderer::refreshLegend(Q3ListViewItem* legendparent) const
 {
     if(legendparent)
     {
 	//first remove the existing child items
-	QListViewItem* tmp;
-	QListViewItem* myChild = legendparent->firstChild();
+	Q3ListViewItem* tmp;
+	Q3ListViewItem* myChild = legendparent->firstChild();
 
         while( myChild ) 
 	{

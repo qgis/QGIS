@@ -13,15 +13,21 @@
 #include <qvariant.h>
 #include <qpixmap.h>
 #include <qdialog.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3HBoxLayout>
+#include <QLabel>
+#include <Q3GridLayout>
+#include <Q3Frame>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QSpacerItem;
-class QFrame;
+class Q3Frame;
 class QPushButton;
 class QLabel;
-class QTextEdit;
+class Q3TextEdit;
 class QLineEdit;
 
 class QgsCommunityRegPluginGuiBase : public QDialog
@@ -29,14 +35,14 @@ class QgsCommunityRegPluginGuiBase : public QDialog
     Q_OBJECT
 
 public:
-    QgsCommunityRegPluginGuiBase( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    QgsCommunityRegPluginGuiBase( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~QgsCommunityRegPluginGuiBase();
 
-    QFrame* line1;
+    Q3Frame* line1;
     QPushButton* pbnOK;
     QPushButton* pbnCancel;
     QLabel* txtHeading;
-    QTextEdit* teInstructions_2;
+    Q3TextEdit* teInstructions_2;
     QLabel* textLabel3;
     QLabel* textLabel1;
     QLabel* textLabel2_2;
@@ -62,10 +68,10 @@ public slots:
     virtual void pbnGetCoords_clicked();
 
 protected:
-    QGridLayout* QgsCommunityRegPluginGuiBaseLayout;
-    QHBoxLayout* layout73;
+    Q3GridLayout* QgsCommunityRegPluginGuiBaseLayout;
+    Q3HBoxLayout* layout73;
     QSpacerItem* spacer2;
-    QGridLayout* layout3;
+    Q3GridLayout* layout3;
 
 protected slots:
     virtual void languageChange();

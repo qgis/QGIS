@@ -78,7 +78,7 @@ void QgsNewConnection::testConnection()
     " port=" + txtPort->text() +
     " user=" + txtUsername->text() + 
     " password=" + txtPassword->text();
-  PGconn *pd = PQconnectdb(connInfo.local8Bit());
+  PGconn *pd = PQconnectdb(connInfo.toLocal8Bit().data());
 //  std::cout << pd->ErrorMessage();
   if (PQstatus(pd) == CONNECTION_OK)
     {

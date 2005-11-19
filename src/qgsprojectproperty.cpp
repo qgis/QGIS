@@ -22,6 +22,7 @@
 #include <qglobal.h>
 
 // Qt4-only includes to go here
+#include <QStringList>
 
 
 static const char * const ident_ = "$Id$";
@@ -40,12 +41,12 @@ void QgsPropertyValue::dump( size_t tabs ) const
 
         for (QStringList::const_iterator i = sl.begin(); i != sl.end(); ++i)
         {
-            qDebug("%s[%s] ", tabString.local8Bit().data(), (const char *) (*i).local8Bit());
+            qDebug("%s[%s] ", tabString.toLocal8Bit().data(), (const char *) (*i).toLocal8Bit().data());
         } 
     }
     else
     {
-        qDebug("%s%s", tabString.local8Bit().data(), (const char *) value_.toString().local8Bit());
+        qDebug("%s%s", tabString.toLocal8Bit().data(), (const char *) value_.toString().toLocal8Bit().data());
     }
 } // QgsPropertyValue::dump()
 
@@ -72,7 +73,7 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
     value_.clear();
 
     // get the type associated with the value first
-    QVariant::Type type = QVariant::nameToType(typeString.local8Bit());
+    QVariant::Type type = QVariant::nameToType(typeString.toLocal8Bit().data());
 
     // This huge switch is left-over from an earlier incarnation of
     // QgsProject where there was a fine level of granularity for value
@@ -195,7 +196,7 @@ bool QgsPropertyValue::readXML(QDomNode & keyNode)
 
 // qt3to4 changes this to QCoreVariant::Icon, which is then not compilable.
 #if QT_VERSION < 0x040000
-        case QVariant::IconSet:
+        case QCoreVariant::Icon:
             qDebug("qgsproject.cpp:%d add support for QVariant::IconSet", __LINE__);
 
             return false;
@@ -400,14 +401,14 @@ void QgsPropertyKey::dump( size_t tabs ) const
 
     tabString.fill( '\t', tabs );
 
-    qDebug( "%sname: %s", tabString.local8Bit().data(), name().local8Bit().data() );
+    qDebug( "%sname: %s", tabString.toLocal8Bit().data(), name().toLocal8Bit().data() );
          
     tabs++;
     tabString.fill( '\t', tabs );
 
     if ( ! properties_.isEmpty() )
     {
-        for (QDictIterator < QgsProperty > i(properties_); i.current(); ++i)
+        for (Q3DictIterator < QgsProperty > i(properties_); i.current(); ++i)
         {
             if ( i.current()->isValue() )
             {
@@ -417,25 +418,25 @@ void QgsPropertyKey::dump( size_t tabs ) const
                 if ( QVariant::StringList == propertyValue->value().type() )
                 {
                     qDebug("%skey: <%s>  value:", 
-                           tabString.local8Bit().data(), 
-                           i.currentKey().local8Bit().data() );
+                           tabString.toLocal8Bit().data(), 
+                           i.currentKey().toLocal8Bit().data() );
 
                     propertyValue->dump( tabs + 1 );
                 }
                 else
                 {
                     qDebug("%skey: <%s>  value: %s", 
-                           tabString.local8Bit().data(), 
-                           i.currentKey().local8Bit().data(), 
-                           propertyValue->value().toString().local8Bit().data() );
+                           tabString.toLocal8Bit().data(), 
+                           i.currentKey().toLocal8Bit().data(), 
+                           propertyValue->value().toString().toLocal8Bit().data() );
                 }
             }
             else
             {
                 qDebug("%skey: <%s>  subkey: <%s>", 
-                       tabString.local8Bit().data(), 
-                       i.currentKey().local8Bit().data(),
-                       dynamic_cast<QgsPropertyKey*>(i.current())->name().local8Bit().data() );
+                       tabString.toLocal8Bit().data(), 
+                       i.currentKey().toLocal8Bit().data(),
+                       dynamic_cast<QgsPropertyKey*>(i.current())->name().toLocal8Bit().data() );
 
                 i.current()->dump( tabs + 1 );
             }
@@ -515,7 +516,7 @@ bool QgsPropertyKey::writeXML(QString const &nodeName, QDomElement & element, QD
 
     if ( ! properties_.isEmpty() )
     {
-        for (QDictIterator < QgsProperty > i(properties_); i.current(); ++i)
+        for (Q3DictIterator < QgsProperty > i(properties_); i.current(); ++i)
         {
             if (!i.current()->writeXML(i.currentKey(), keyElement, document))
             {
@@ -536,7 +537,7 @@ bool QgsPropertyKey::writeXML(QString const &nodeName, QDomElement & element, QD
 void QgsPropertyKey::entryList( QStringList & entries ) const
 {
     // now add any leaf nodes to the entries list
-    for (QDictIterator<QgsProperty> i(properties_); i.current(); ++i)
+    for (Q3DictIterator<QgsProperty> i(properties_); i.current(); ++i)
     {
         // add any of the nodes that have just a single value
         if (i.current()->isLeaf())
@@ -551,7 +552,7 @@ void QgsPropertyKey::entryList( QStringList & entries ) const
 void QgsPropertyKey::subkeyList(QStringList & entries) const
 {
     // now add any leaf nodes to the entries list
-    for (QDictIterator < QgsProperty > i(properties_); i.current(); ++i)
+    for (Q3DictIterator < QgsProperty > i(properties_); i.current(); ++i)
     {
         // add any of the nodes that have just a single value
         if (!i.current()->isLeaf())
@@ -570,7 +571,7 @@ bool QgsPropertyKey::isLeaf() const
     }
     else if (1 == count())
     {
-        QDictIterator < QgsProperty > i(properties_);
+        Q3DictIterator < QgsProperty > i(properties_);
 
         if (i.current() && i.current()->isValue())
         {

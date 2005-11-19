@@ -16,7 +16,7 @@
  ***************************************************************************/
 #include <iostream>
 
-#include <qwmatrix.h>
+#include <qmatrix.h>
 #include <qevent.h>
 
 #include "qgsrect.h"
@@ -26,16 +26,19 @@
 #include "qgscomposerview.h"
 
 #include "qgscomposermap.h"
+//Added by qt3to4:
+#include <QMouseEvent>
+#include <QKeyEvent>
 
 // Note: |WRepaintNoErase|WResizeNoErase|WStaticContents doeen't make it faster
-QgsComposerView::QgsComposerView( QgsComposer *composer, QWidget* parent, const char* name, WFlags f) :
-                                  QCanvasView(parent,name,f|WRepaintNoErase|WResizeNoErase|WStaticContents)
+QgsComposerView::QgsComposerView( QgsComposer *composer, QWidget* parent, const char* name, Qt::WFlags f) :
+                                  Q3CanvasView(parent,name,f|Qt::WNoAutoErase|Qt::WResizeNoErase|Qt::WStaticContents)
 {
     mComposer = composer;
 
     // TODO: nothing doe work -> necessary to call setFocus ()
     setEnabled ( true );
-    setFocusPolicy ( QWidget::StrongFocus );
+    setFocusPolicy ( Qt::StrongFocus );
     setFocusProxy ( 0 );
 }
 

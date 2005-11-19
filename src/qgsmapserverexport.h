@@ -35,7 +35,7 @@ class QgsMapserverExport:public QgsMapserverExportBase
 Q_OBJECT
 public:
   QgsMapserverExport(QgsMapCanvas *map=0, QWidget* parent = 0, 
-	const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+	const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
   ~QgsMapserverExport();
   //! Read the file and create the map
   bool read();

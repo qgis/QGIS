@@ -29,8 +29,8 @@
 
 #include <qstring.h>
 #include <qmessagebox.h>
-#include <qprocess.h>
-#include <qtextedit.h>
+#include <q3process.h>
+#include <q3textedit.h>
 
 QgsRunProcess::QgsRunProcess(const QStringList& args,
 			     bool capture) : mProcess(NULL), mLogViewer(NULL)
@@ -40,9 +40,9 @@ QgsRunProcess::QgsRunProcess(const QStringList& args,
   QString whole_cmd;
   for (int i = 0; i < args.count(); ++i)
     whole_cmd += "[" + args[i] + "] ";
-  qDebug("Running command: %s\n", (const char *)whole_cmd.local8Bit());
+  qDebug("Running command: %s\n", (const char *)whole_cmd.toLocal8Bit().data());
 
-  mProcess = new QProcess;
+  mProcess = new Q3Process;
   mProcess->setArguments(args);
 
   if (capture)
@@ -59,7 +59,7 @@ QgsRunProcess::QgsRunProcess(const QStringList& args,
   {
     QMessageBox::critical(0, tr("Unable to run command"), 
 			  tr("Unable to run the command") + "\n" + whole_cmd +
-			  "\n", QMessageBox::Ok, QMessageBox::NoButton);
+			  "\n", QMessageBox::Ok, Qt::NoButton);
     // Didn't work, so no need to hang around
     die();
   }

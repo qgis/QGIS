@@ -17,7 +17,7 @@
 
 #include "qgsfillstylewidget.h"
 
-QgsFillStyleWidget::QgsFillStyleWidget(  QWidget *parent, const char * name, WFlags f)
+QgsFillStyleWidget::QgsFillStyleWidget(  QWidget *parent, const char * name, Qt::WFlags f)
            :QgsFillStyleWidgetBase( parent, name, f)
 {
 }

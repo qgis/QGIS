@@ -26,13 +26,13 @@
 
 #include <list>
 
-class QHeader;
+class Q3Header;
 
 class QgsDelAttrDialog: public QgsDelAttrDialogBase
 {
     Q_OBJECT
  public:
-    QgsDelAttrDialog(QHeader* header);
+    QgsDelAttrDialog(Q3Header* header);
     const std::list<QString>* selectedAttributes();
  protected:
     std::list<QString> mSelectedItems;

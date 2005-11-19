@@ -42,8 +42,11 @@
  */ 
  
 #include <qwidget.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qobject.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3PopupMenu>
 #include <map>
 #include "qgsrect.h"
 
@@ -57,8 +60,8 @@
 #include "qgscomposervectorlegendbase.uic.h"
 #endif
 
-class QCanvasItem;
-class QCanvasRectangle;
+class Q3CanvasItem;
+class Q3CanvasRectangle;
 class QPainter;
 class QWidget;
 class QDomNode;
@@ -68,7 +71,7 @@ class QImage;
 class QFont;
 class QPen;
 class QRect;
-class QPopupMenu;
+class Q3PopupMenu;
 
 
 class QgsMapCanvas;
@@ -83,7 +86,7 @@ class QgsComposerItem;
  */
 // NOTE: QgsComposerVectorLegendBase must be first, otherwise does not compile
 class QgsComposerVectorLegend : public QgsComposerVectorLegendBase, 
-                                public QCanvasRectangle, 
+                                public Q3CanvasRectangle, 
                                 public QgsComposerItem
 {
     Q_OBJECT
@@ -168,10 +171,10 @@ public slots:
     void mapChanged ( int id );
 
     // Show popup menu
-    void showLayersPopupMenu ( QListViewItem * lvi, const QPoint & pt, int );
+    void showLayersPopupMenu ( Q3ListViewItem * lvi, const QPoint & pt, int );
 
     // Layer status changed
-    void layerChanged ( QListViewItem *lvi );
+    void layerChanged ( Q3ListViewItem *lvi );
 
     // Combine selected layers
     void groupLayers( void );
@@ -233,7 +236,7 @@ private:
     int mNextLayerGroup;
 
     /** \brief Layers list popup menu */
-    QPopupMenu *mLayersPopupMenu;
+    Q3PopupMenu *mLayersPopupMenu;
 
     /** \brief Draw frame  */
     bool mFrame;

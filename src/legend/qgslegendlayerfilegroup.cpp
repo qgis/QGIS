@@ -20,7 +20,7 @@
 #include "qgslegendsymbologygroup.h"
 #include "qgsmaplayer.h"
 
-QgsLegendLayerFileGroup::QgsLegendLayerFileGroup(QListViewItem* theItem, QString theString): QgsLegendItem(theItem, theString)
+QgsLegendLayerFileGroup::QgsLegendLayerFileGroup(Q3ListViewItem* theItem, QString theString): QgsLegendItem(theItem, theString)
 {
     mType = LEGEND_LAYER_FILE_GROUP;
 }
@@ -73,7 +73,7 @@ qWarning("insert");
 #endif
 if ( newItem->type() == LEGEND_LAYER_FILE )
 {
-    QListViewItem* oldItem = firstChild();
+    Q3ListViewItem* oldItem = firstChild();
     if(!oldItem || !(oldItem->nextSibling()) )//this item is the first child
     {
 	insertItem(newItem);
@@ -82,7 +82,7 @@ if ( newItem->type() == LEGEND_LAYER_FILE )
 	    return true;
 	  }
 	QgsMapLayer* newLayer = (dynamic_cast<QgsLegendLayerFile*>(newItem))->layer();
-	QListViewItem* nexts = nextSibling();
+	Q3ListViewItem* nexts = nextSibling();
 	if(nexts)
 	{
 	    QgsLegendSymbologyGroup* sg = dynamic_cast<QgsLegendSymbologyGroup*>(nexts);
@@ -128,7 +128,7 @@ if ( newItem->type() == LEGEND_LAYER_FILE )
 	  {
 	    return true;
 	  }
-	QListViewItem* nexts = nextSibling();
+	Q3ListViewItem* nexts = nextSibling();
 	if(nexts)
 	{
 	    QgsLegendSymbologyGroup* sg = dynamic_cast<QgsLegendSymbologyGroup*>(nexts);

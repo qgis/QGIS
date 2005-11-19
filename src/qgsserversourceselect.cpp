@@ -20,14 +20,14 @@
 #include <cassert>
 #include <qsettings.h>
 #include <qpixmap.h>
-#include <qlistbox.h>
-#include <qlistview.h>
+#include <q3listbox.h>
+#include <q3listview.h>
 #include <qstringlist.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qpushbutton.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 
 #include "xpm/point_layer.xpm"
 #include "xpm/line_layer.xpm"
@@ -124,14 +124,14 @@ void QgsServerSourceSelect::serverConnect()
   if ( ! ( (part = settings.readEntry(key + "/proxyhost")).isEmpty() ) )
   {
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyhost - '" << part.local8Bit() << "'." << std::endl;
+  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyhost - '" << part.toLocal8Bit().data() << "'." << std::endl;
 #endif
     connStringParts += part;
   
     if ( ! ( (part = settings.readEntry(key + "/proxyport")).isEmpty() ) )
     {
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyport - '" << part.local8Bit() << "'." << std::endl;
+  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyport - '" << part.toLocal8Bit().data() << "'." << std::endl;
 #endif
       connStringParts += part;
     }
@@ -141,7 +141,7 @@ void QgsServerSourceSelect::serverConnect()
   m_connInfo = connStringParts.join(" ");  // url ( + " " + proxyhost + " " + proxyport)
 
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: Connection info: '" << m_connInfo.local8Bit() << "'." << std::endl;
+  std::cout << "QgsServerSourceSelect::serverConnect: Connection info: '" << m_connInfo.toLocal8Bit().data() << "'." << std::endl;
 #endif
     
     
@@ -168,11 +168,11 @@ void QgsServerSourceSelect::serverConnect()
 //    QgsWmsLayerProperty layer = *it;
 
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: got layer name " << layer->name.local8Bit() << " and title '" << layer->title.local8Bit() << "'." << std::endl;
+  std::cout << "QgsServerSourceSelect::serverConnect: got layer name " << layer->name.toLocal8Bit().data() << " and title '" << layer->title.toLocal8Bit().data() << "'." << std::endl;
 #endif
 
 
-    QListViewItem *lItem = new QListViewItem(lstLayers);
+    Q3ListViewItem *lItem = new Q3ListViewItem(lstLayers);
     lItem->setText(1,layer->name);
     lItem->setText(2,layer->title);
 //    lItem->setPixmap(0,*p);
@@ -192,10 +192,10 @@ void QgsServerSourceSelect::serverConnect()
 void QgsServerSourceSelect::addLayers()
 {
   //store the layer info
-  QListViewItemIterator it( lstLayers );
+  Q3ListViewItemIterator it( lstLayers );
   while ( it.current() ) 
   {
-    QListViewItem *item = it.current();
+    Q3ListViewItem *item = it.current();
     ++it;
 
     if ( item->isSelected() )
@@ -203,7 +203,7 @@ void QgsServerSourceSelect::addLayers()
       m_selectedLayers += item->text(1);
 
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::addLayers: Added " << item->text(1).local8Bit() << std::endl;
+  std::cout << "QgsServerSourceSelect::addLayers: Added " << item->text(1).toLocal8Bit().data() << std::endl;
 #endif
     
     }

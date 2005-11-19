@@ -1,3 +1,9 @@
+//Added by qt3to4:
+#include <Q3PopupMenu>
+#include <QKeyEvent>
+#include <QEvent>
+#include <QPixmap>
+#include <QLabel>
 /***************************************************************************
                           qgisapp.h  -  description
                              -------------------
@@ -19,24 +25,24 @@
 #ifndef QGISAPP_H
 #define QGISAPP_H
 
-class QCanvas;
+class Q3Canvas;
 class QRect;
-class QCanvasView;
+class Q3CanvasView;
 class QStringList;
-class QScrollView;
+class Q3ScrollView;
 class QgsPoint;
 class QgsLegend;
 class QgsLegendView;
-class QVBox;
+class Q3VBox;
 class QCursor;
 class QLabel;
-class QListView;
-class QListViewItem;
-class QProgressBar;
+class Q3ListView;
+class Q3ListViewItem;
+class Q3ProgressBar;
 class QFileInfo;
 class QgsMapLayer;
 class QSettings;
-class QSocket;
+class Q3Socket;
 class QgsProviderRegistry;
 class QgsHelpViewer;
 class QgsMapCanvas;
@@ -73,7 +79,7 @@ class QgisApp : public QgisAppBase
 public:
 
     //! Constructor
-    QgisApp(QWidget * parent = 0, const char *name = 0, WFlags fl = WType_TopLevel);
+    QgisApp(QWidget * parent = 0, const char *name = 0, Qt::WFlags fl = Qt::WType_TopLevel);
 
     ~QgisApp();
 
@@ -303,7 +309,7 @@ private slots:
     //! Slot to show current map scale;
     void showScale(QString theScale);
     //! Disable/enable toolbar buttons as appropriate for selected layer
-    void currentLayerChanged(QListViewItem *);
+    void currentLayerChanged(Q3ListViewItem *);
     //! Remove a layer from the map and legend
     void removeLayer();
     //! zoom to extent of layer
@@ -319,9 +325,9 @@ private slots:
     //! plugin loader
     void loadPlugin(QString name, QString description, QString mFullPath);
     //! Add a plugin menu to the main Plugins menu
-    int addPluginMenu(QString menuText, QPopupMenu *menu);
+    int addPluginMenu(QString menuText, Q3PopupMenu *menu);
 
-    QPopupMenu* getPluginMenu(QString menuName);
+    Q3PopupMenu* getPluginMenu(QString menuName);
 
     void removePluginMenuItem(QString name, int menuId);
 
@@ -465,21 +471,21 @@ private:
     //! Widget that will live in the statusbar to display coords
     QLabel * mCoordsLabel;
     //! Widget that will live in the statusbar to show progress of operations
-    QProgressBar * mProgressBar;
+    Q3ProgressBar * mProgressBar;
     //! Widget used to suppress rendering
     QCheckBox * mRenderSuppresionCBox;
     //! Widget in status bar used to show status of on the fly projection
     QToolButton * mOnTheFlyProjectionStatusButton;
     //! Popup menu
-    QPopupMenu * mPopupMenu;
+    Q3PopupMenu * mPopupMenu;
     //! Top level plugin menu
-    QPopupMenu *mPluginMenu;
+    Q3PopupMenu *mPluginMenu;
     //! Popup menu for the map overview tools
-    QPopupMenu *toolPopupOverviews;
+    Q3PopupMenu *toolPopupOverviews;
     //! Popup menu for the display tools
-    QPopupMenu *toolPopupDisplay;
+    Q3PopupMenu *toolPopupDisplay;
     //! Popup menu for the capture tools
-    QPopupMenu *toolPopupCapture;
+    Q3PopupMenu *toolPopupCapture;
     //! Legend list view control
     //doesnt see to be used...(TS)
     //QgsLegendView *mLegendView;
@@ -508,7 +514,7 @@ private:
     //! full path name of the current map file (if it has been saved or loaded)
     QString mFullPathName;
     QgisIface *mQgisInterface;
-    QSocket *mSocket;
+    Q3Socket *mSocket;
     QString mVersionMessage;
     friend class QgisIface;
     QgsProviderRegistry *mProviderRegistry;

@@ -17,6 +17,8 @@ email                : sherman at mrcc.com
 /* $Id$ */
 
 #include "qgsogrprovider.h"
+//Added by qt3to4:
+#include <Q3CString>
 
 #ifndef WIN32
 #include <netinet/in.h>
@@ -80,14 +82,14 @@ QgsOgrProvider::QgsOgrProvider(QString const & uri)
   mSelectionRectangle = 0;
   // make connection to the data source
 #ifdef QGISDEBUG
-  std::cerr << "Data source uri is " << uri.local8Bit() << std::endl;
+  std::cerr << "Data source uri is " << uri.toLocal8Bit().data() << std::endl;
 #endif
   // try to open for update
-  ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.local8Bit(), TRUE, &ogrDriver);
+  ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.toLocal8Bit().data(), TRUE, &ogrDriver);
   if(ogrDataSource == NULL)
   {
     // try to open read-only
-    ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.local8Bit(),FALSE, &ogrDriver);
+    ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.toLocal8Bit().data(),FALSE, &ogrDriver);
 
     //TODO Need to set a flag or something to indicate that the layer
     //TODO is in read-only mode, otherwise edit ops will fail
@@ -215,12 +217,12 @@ QString QgsOgrProvider::getProjectionWKT()
     // if appropriate, morph the projection from ESRI form
     QString fileName = ogrDataSource->GetName();
 #ifdef QGISDEBUG 
-    std::cerr << "Data source file name is : " << fileName.local8Bit() << std::endl; 
+    std::cerr << "Data source file name is : " << fileName.toLocal8Bit().data() << std::endl; 
 #endif 
     if(fileName.contains(".shp"))
     {
 #ifdef QGISDEBUG 
-      std::cerr << "Morphing " << fileName.local8Bit() << " WKT from ESRI" << std::endl; 
+      std::cerr << "Morphing " << fileName.toLocal8Bit().data() << " WKT from ESRI" << std::endl; 
 #endif 
       // morph it
       mySpatialRefSys->morphFromESRI();
@@ -637,7 +639,7 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
   //TODO   about it. If setting the filter fails, all records will be returned
   if (result == OGRERR_NONE) 
   {
-    std::cerr << "Setting spatial filter using " << wktExtent.local8Bit() << std::endl;
+    std::cerr << "Setting spatial filter using " << wktExtent.toLocal8Bit().data() << std::endl;
     ogrLayer->SetSpatialFilter(filter);
     //ogrLayer->SetSpatialFilterRect(rect->xMin(), rect->yMin(), rect->xMax(), rect->yMax());
   }else{
@@ -730,7 +732,7 @@ void QgsOgrProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature * f, in
   }
 
   QString fld = fldDef->GetNameRef();
-  QCString cstr(ogrFet->GetFieldAsString(attindex));
+  Q3CString cstr(ogrFet->GetFieldAsString(attindex));
   bool numeric = attributeFields[attindex].isNumeric();
 
   f->addAttribute(fld, mEncoding->toUnicode(cstr), numeric);
@@ -1000,7 +1002,7 @@ bool QgsOgrProvider::addFeature(QgsFeature* f)
   {
     //writing failed
     QMessageBox::warning (0, "Warning", "Writing of the feature failed",
-        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
+        QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
     returnValue = false;
   }
   ++numberFeatures;
@@ -1105,7 +1107,7 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
 		OGRFieldType type = fd->GetType();
 
 #ifdef QGISDEBUG
-		std::cerr << "set field " << f << " : " << name.local8Bit() << " to " << value.local8Bit() << std::endl;
+		std::cerr << "set field " << f << " : " << name.toLocal8Bit().data() << " to " << value.toLocal8Bit().data() << std::endl;
 #endif
 		switch ( type ) {
 		    case OFTInteger:
@@ -1348,7 +1350,7 @@ const std::list<std::pair<QString, QString> >& attributes)
     }
     if( !myWKT.isNull()  &&  myWKT.length() != 0 )
     {
-	reference = new OGRSpatialReference(myWKT.local8Bit());
+	reference = new OGRSpatialReference(myWKT.toLocal8Bit().data());
     }
 
     OGRLayer* layer;	

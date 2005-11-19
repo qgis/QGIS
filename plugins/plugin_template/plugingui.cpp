@@ -20,7 +20,7 @@
   
 }
 
-[pluginname]Gui::[pluginname]Gui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+[pluginname]Gui::[pluginname]Gui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
 : [pluginname]GuiBase( parent, name, modal, fl )
 {
    

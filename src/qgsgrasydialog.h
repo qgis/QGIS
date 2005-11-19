@@ -29,7 +29,7 @@
 
 class QgsGraSyExtensionWidget;
 class QgsVectorLayer;
-class QScrollView;
+class Q3ScrollView;
 
 class QgsGraSyDialog: public QgsGraSyDialogBase
 {
@@ -51,7 +51,7 @@ class QgsGraSyDialog: public QgsGraSyDialogBase
      /**Writes changes in the single symbol dialog to the corresponding QgsRangeRenderItem*/
      void applySymbologyChanges();
      /**Shows a dialog to modify lower and upper values*/
-     void changeClass(QListBoxItem* item);
+     void changeClass(Q3ListBoxItem* item);
  protected:
      /**Pointer to the associated vector layer*/
      QgsVectorLayer* mVectorLayer;

@@ -18,14 +18,14 @@
 /* $Id$ */
 #ifndef QGSHELPSERVER_H
 #define QGSHELPSERVER_H
-#include <qserversocket.h>
-#include <qsocket.h>
+#include <q3serversocket.h>
+#include <q3socket.h>
 
 /*!
  * \class QgsHelpContextServer
  * \brief Listens for localhost connection and creates socket.
  */
-class QgsHelpContextServer : public QServerSocket
+class QgsHelpContextServer : public Q3ServerSocket
 {
   Q_OBJECT
 public:
@@ -41,7 +41,7 @@ signals:
  * \class QgsHelpContextSocket
  * \brief Receives and passes context numbers to viewer.
  */
-class QgsHelpContextSocket : public QSocket
+class QgsHelpContextSocket : public Q3Socket
 {
   Q_OBJECT
 public:

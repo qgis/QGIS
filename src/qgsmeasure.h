@@ -1,3 +1,6 @@
+//Added by qt3to4:
+#include <QPixmap>
+#include <QCloseEvent>
 /***************************************************************************
                                 qgsmeasure.h 
                                ------------------
@@ -39,7 +42,7 @@ class QgsMeasure:public QgsMeasureBase
   public:
 
   //! Constructor
-  QgsMeasure(bool measureArea, QgsMapCanvas *, QWidget *parent = 0, const char * name = 0, WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WStyle_Dialog | Qt::WStyle_Tool );
+  QgsMeasure(bool measureArea, QgsMapCanvas *, QWidget *parent = 0, const char * name = 0, Qt::WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WType_Dialog | Qt::WStyle_Tool );
 
   ~QgsMeasure();
 

@@ -1,3 +1,7 @@
+//Added by qt3to4:
+#include <QPixmap>
+#include <QCloseEvent>
+#include <Q3Frame>
 /***************************************************************************
                               qgsgrasstools.h 
                              -------------------
@@ -19,9 +23,9 @@
 class QCloseEvent;
 class QString;
 class QStringList;
-class QGroupBox;
-class QFrame;
-class QListView;
+class Q3GroupBox;
+class Q3Frame;
+class Q3ListView;
 class QDomNode;
 class QDomElement;
 class QComboBox;
@@ -29,9 +33,9 @@ class QLineEdit;
 class QPixmap;
 
 #include <vector>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qcheckbox.h>
-#include <qprocess.h>
+#include <q3process.h>
 
 // Must be here, so that it is included to moc file
 #include "../../src/qgisapp.h"
@@ -56,7 +60,7 @@ class QgsGrassModule: public QgsGrassModuleBase
 public:
     //! Constructor
     QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIface *iface,  
-	           QString path, QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+	           QString path, QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassModule();
@@ -123,7 +127,7 @@ private:
     QWidget *mParent;
 
     //! Running GRASS module
-    QProcess mProcess;
+    Q3Process mProcess;
 
     //! QGIS directory
     QString mAppDir;
@@ -185,7 +189,7 @@ public:
             QgsGrassTools *tools, QgsGrassModule *module, 
             QgisApp *qgisApp, QgisIface *iface,  
 	    QString xname, QDomElement docElem,
-            QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+            QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassModuleStandardOptions();
@@ -265,7 +269,7 @@ private:
 /*! \class QgsGrassModuleOption
  *  \brief  GRASS option 
  */
-class QgsGrassModuleOption: public QGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleOption: public Q3GroupBox, public QgsGrassModuleItem
 {
     Q_OBJECT;
 
@@ -333,7 +337,7 @@ private:
 /*! \class QgsGrassModuleInput
  *  \brief Class representing raster or vector module input
  */
-class QgsGrassModuleInput: public QGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleInput: public Q3GroupBox, public QgsGrassModuleItem
 {
     Q_OBJECT;
 
@@ -422,7 +426,7 @@ private:
 /*! \class QgsGrassModuleGdalInput
  *  \brief GDAL/OGR module input
  */
-class QgsGrassModuleGdalInput: public QGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleGdalInput: public Q3GroupBox, public QgsGrassModuleItem
 {
     Q_OBJECT;
 
@@ -469,7 +473,7 @@ private:
 /*! \class QgsGrassModuleField
  *  \brief GRASS vector attribute column.
  */
-class QgsGrassModuleField: public QGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleField: public Q3GroupBox, public QgsGrassModuleItem
 {
     Q_OBJECT;
 
@@ -516,7 +520,7 @@ private:
 /*! \class QgsGrassModuleSelection
  *  \brief List of categories taken from current layer selection.
  */
-class QgsGrassModuleSelection: public QGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleSelection: public Q3GroupBox, public QgsGrassModuleItem
 {
     Q_OBJECT;
 

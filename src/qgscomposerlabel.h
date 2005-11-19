@@ -18,7 +18,7 @@
 #define QGSCOMPOSERLABEL_H
 
 #include <qwidget.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qobject.h>
 
 #include "qgsrect.h"
@@ -26,6 +26,9 @@
 #include "qgscomposer.h"
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3PointArray>
 
 #ifdef WIN32
 #include "qgscomposerlabelbase.h"
@@ -33,8 +36,8 @@
 #include "qgscomposerlabelbase.uic.h"
 #endif
 
-class QCanvasItem;
-class QCanvasRectangle;
+class Q3CanvasItem;
+class Q3CanvasRectangle;
 class QPainter;
 class QWidget;
 class QDomNode;
@@ -56,7 +59,7 @@ class QgsComposition;
  */
 // NOTE: QgsComposerLabelBase must be first, otherwise does not compile
 //class QgsComposerLabel : public QgsComposerLabelBase, public QCanvasRectangle, public QgsComposerItem
-class QgsComposerLabel : public QgsComposerLabelBase, public QCanvasPolygonalItem, public QgsComposerItem
+class QgsComposerLabel : public QgsComposerLabelBase, public Q3CanvasPolygonalItem, public QgsComposerItem
 {
     Q_OBJECT
 
@@ -90,7 +93,7 @@ public:
     void draw ( QPainter & painter );
 
     void drawShape(QPainter&);
-    QPointArray areaPoints() const;
+    Q3PointArray areaPoints() const;
     
     /** \brief Set values in GUI to current values */
     void setOptions ( void );

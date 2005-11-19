@@ -14,12 +14,12 @@
  ***************************************************************************/
 
 #include "qgsencodingfiledialog.h"
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qlabel.h>
 #include <qtextcodec.h>
 
 
-QgsEncodingFileDialog::QgsEncodingFileDialog(const QString & dirName, const QString& filter, QWidget * parent, const QString name, const QString currentencoding): QFileDialog(dirName, filter, parent, name.local8Bit())
+QgsEncodingFileDialog::QgsEncodingFileDialog(const QString & dirName, const QString& filter, QWidget * parent, const QString name, const QString currentencoding): Q3FileDialog(dirName, filter, parent, name.toLocal8Bit().data())
 {
   mEncodingComboBox=new QComboBox(this);
   QLabel* l=new QLabel(tr("Encoding:"),this);

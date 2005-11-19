@@ -24,7 +24,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include "../qgisplugin.h"
 #include <qwidget.h>
 #include <qpainter.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 
 
 #include "../../src/qgisapp.h"
@@ -98,7 +98,7 @@ class QgsScaleBarPlugin:public QObject, public QgisPlugin
   QColor mColour;
 
   //! Pointer to our toolbar
-  QToolBar *toolBarPointer;
+  Q3ToolBar *toolBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object

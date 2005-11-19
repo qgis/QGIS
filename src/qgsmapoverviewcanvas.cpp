@@ -21,6 +21,11 @@
 #include "qgsmapcanvasproperties.h"
 
 #include <qpainter.h>
+//Added by qt3to4:
+#include <QWheelEvent>
+#include <QPaintEvent>
+#include <QResizeEvent>
+#include <QMouseEvent>
 
 //! widget that serves as rectangle showing current extent in overview
 class QgsPanningWidget : public QWidget

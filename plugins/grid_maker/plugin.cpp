@@ -27,10 +27,10 @@ email                : tim@linfiniti.com
 #include "plugin.h"
 
 
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlineedit.h>
 #include <qaction.h>
 #include <qapplication.h>
@@ -106,14 +106,14 @@ int QgsGridMakerPlugin::type()
  */
 void QgsGridMakerPlugin::initGui()
 {
-  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Graticules");
-  menuId = pluginMenu->insertItem(QIconSet(icon),"&GraticuleMaker", this, SLOT(run()));
+  Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Graticules");
+  menuId = pluginMenu->insertItem(QIcon(icon),"&GraticuleMaker", this, SLOT(run()));
 
   pluginMenu->setWhatsThis(menuId, "Creates a graticule (grid) and stores the result as a shapefile");
 
   // Create the action for tool
 #if QT_VERSION < 0x040000
-  myQActionPointer = new QAction("Graticule Creator", QIconSet(icon), "&Wmi",0, this, "run");
+  myQActionPointer = new QAction("Graticule Creator", QIcon(icon), "&Wmi",0, this, "run");
 #else
   myQActionPointer = new QAction(QIcon(icon), "Graticule Creator", this);
 #endif

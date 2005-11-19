@@ -25,7 +25,7 @@
 
 #include <qvariant.h>
 #include <qstring.h>
-#include <qdict.h>
+#include <q3dict.h>
 
 class QDomNode;
 class QDomElement;
@@ -318,7 +318,7 @@ private:
     QString name_;
 
     /// sub-keys
-    QDict < QgsProperty > properties_;
+    Q3Dict < QgsProperty > properties_;
 
 }; // class QgsPropertyKey
 

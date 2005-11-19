@@ -18,7 +18,7 @@
 #include <iostream>
 
 #include "qstring.h"
-#include "qprocess.h"
+#include "q3process.h"
 #include "qfile.h"
 #include "qfileinfo.h"
 #include "qdir.h"
@@ -64,7 +64,7 @@ void QgsGrass::init( void ) {
         path.append ( ":" + p );
 
 	#ifdef QGISDEBUG
-	std::cerr << "set PATH: " << path.local8Bit() << std::endl;
+	std::cerr << "set PATH: " << path.toLocal8Bit().data() << std::endl;
 	#endif
 	char *pathEnvChar = new char[path.length()+1];
 	strcpy ( pathEnvChar, const_cast<char *>(path.ascii()) );
@@ -98,8 +98,8 @@ QString QgsGrass::getDefaultMapset ( void ) {
 void QgsGrass::setLocation( QString gisdbase, QString location )
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::setLocation(): gisdbase = " << gisdbase.local8Bit() << " location = "
-	      << location.local8Bit() << std::endl;
+    std::cerr << "QgsGrass::setLocation(): gisdbase = " << gisdbase.toLocal8Bit().data() << " location = "
+	      << location.toLocal8Bit().data() << std::endl;
     #endif
     init();
 
@@ -116,8 +116,8 @@ void QgsGrass::setLocation( QString gisdbase, QString location )
 void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrass::setLocation(): gisdbase = " << gisdbase.local8Bit() << " location = "
-	      << location.local8Bit() << " mapset = " << mapset.local8Bit() << std::endl;
+    std::cerr << "QgsGrass::setLocation(): gisdbase = " << gisdbase.toLocal8Bit().data() << " location = "
+	      << location.toLocal8Bit().data() << " mapset = " << mapset.toLocal8Bit().data() << std::endl;
     #endif
     init();
 
@@ -183,7 +183,7 @@ QString QgsGrass::openMapset ( QString gisdbase, QString location, QString mapse
     
     QString lock = mapsetPath + "/.gislock";
     QFile lockFile ( lock );
-    QProcess *process = new QProcess();
+    Q3Process *process = new Q3Process();
     process->addArgument ( gisBase + "/etc/lock" ); // lock program
     process->addArgument ( lock ); // lock file
 
@@ -241,7 +241,7 @@ QString QgsGrass::openMapset ( QString gisdbase, QString location, QString mapse
 #endif
 
     QFile out ( mGisrc );
-    if ( !out.open( IO_WriteOnly ) ) 
+    if ( !out.open( QIODevice::WriteOnly ) ) 
     {
         lockFile.remove();
 	return "Cannot create " + mGisrc; 
@@ -250,7 +250,7 @@ QString QgsGrass::openMapset ( QString gisdbase, QString location, QString mapse
 
     QFile in ( globalGisrc );
     QString line;
-    if ( in.open( IO_ReadOnly ) ) 
+    if ( in.open( QIODevice::ReadOnly ) ) 
     {
 	while ( in.readLine( line, 1000 ) != -1 ) 
 	{

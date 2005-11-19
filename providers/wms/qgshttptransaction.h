@@ -22,7 +22,7 @@
 #ifndef QGSHTTPTRANSACTION_H
 #define QGSHTTPTRANSACTION_H
 
-#include <qhttp.h>
+#include <q3http.h>
 #include <qstring.h>
 
 /**
@@ -62,9 +62,9 @@ public slots:
 
   void dataStarted( int id );
   
-  void dataHeaderReceived( const QHttpResponseHeader& resp );
+  void dataHeaderReceived( const Q3HttpResponseHeader& resp );
   
-  void dataReceived( const QHttpResponseHeader& resp );
+  void dataReceived( const Q3HttpResponseHeader& resp );
 
   void dataProgress( int done, int total );
 
@@ -91,7 +91,7 @@ private:
    *        but strange things were happening with the signals -
    *        therefore we use the "pointer to" instead.
    */
-  QHttp* http;
+  Q3Http* http;
 
   /**
    * Indicates the QHttp ID

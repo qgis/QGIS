@@ -25,10 +25,13 @@
 #endif
 
 #include "qgsattributeaction.h"
+//Added by qt3to4:
+#include <Q3PopupMenu>
+#include <QCloseEvent>
 #include <vector>
 #include <map>
 
-class QPopupMenu;
+class Q3PopupMenu;
 
 /**
  *@author Gary E.Sherman
@@ -42,20 +45,20 @@ class QgsIdentifyResults:public QgsIdentifyResultsBase
   //! Constructor - takes it own copy of the QgsAttributeAction so
   // that it is independent of whoever created it.
   QgsIdentifyResults(const QgsAttributeAction&, QWidget *parent = 0, const char * name = 0, 
-               WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title 
-         | Qt::WStyle_Dialog | Qt::WStyle_Tool);
+               Qt::WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title 
+         | Qt::WType_Dialog | Qt::WStyle_Tool);
 
   ~QgsIdentifyResults();
   /** Add an attribute to the feature display node */
-  void addAttribute(QListViewItem *parent, QString field, QString value);
+  void addAttribute(Q3ListViewItem *parent, QString field, QString value);
   /** Add an attribute */
   void addAttribute(QString field, QString value);
 
   /** Add an action to the feature display node */
-  void addAction(QListViewItem *parent, int id, QString field, QString value);
+  void addAction(Q3ListViewItem *parent, int id, QString field, QString value);
 
   /** Add a feature node to the feature display */
-  QListViewItem * addNode(QString label);
+  Q3ListViewItem * addNode(QString label);
   /** Set the title for the identify results dialog */
   void setTitle(QString title);
   /** Set header column */
@@ -64,7 +67,7 @@ class QgsIdentifyResults:public QgsIdentifyResultsBase
   void restorePosition();  
   void close();
   void closeEvent(QCloseEvent *e);
-  void popupContextMenu(QListViewItem*, const QPoint&, int);
+  void popupContextMenu(Q3ListViewItem*, const QPoint&, int);
   void showAllAttributes();
 
   /** Remove results */
@@ -84,13 +87,13 @@ class QgsIdentifyResults:public QgsIdentifyResultsBase
     void popupItemSelected(int id);
 
     /* Item in tree was clicked */
-    void clicked ( QListViewItem *lvi );
+    void clicked ( Q3ListViewItem *lvi );
 
  private:
   
   QgsAttributeAction mActions;
   int mClickedOnValue;
-  QPopupMenu* mActionPopup;
+  Q3PopupMenu* mActionPopup;
   std::vector<std::pair<QString, QString> > mValues;
 };
 

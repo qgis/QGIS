@@ -9,7 +9,7 @@
 #include <ApplicationServices/ApplicationServices.h>
 #else
 #include <qsettings.h>
-#include <qprocess.h>
+#include <q3process.h>
 #include <qinputdialog.h>
 #endif
 #include <qfile.h>
@@ -18,6 +18,8 @@
 #include <qstring.h>
 #include <qapplication.h>
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <QPixmap>
 #include <map>
   std::map<QString, QPixmap> mugs;
 void QgsAbout::init()
@@ -33,9 +35,9 @@ void QgsAbout::init()
 
   QFile file(appPath + "/doc/AUTHORS" );
 #ifdef QGISDEBUG
-  printf (("Reading authors file " + file.name() + ".............................................\n").local8Bit());
+  printf (("Reading authors file " + file.name() + ".............................................\n").toLocal8Bit().data());
 #endif
-  if ( file.open( IO_ReadOnly ) ) {
+  if ( file.open( QIODevice::ReadOnly ) ) {
     QTextStream stream( &file );
     QString line;
     int i = 1;
@@ -45,7 +47,7 @@ void QgsAbout::init()
       //ignore the line if it starts with a hash....
       if (line.left(1)=="#") continue;
 #ifdef QGISDEBUG 
-      printf( "Contributor: %3d: %s\n", i++, (const char *)line.local8Bit() );
+      printf( "Contributor: %3d: %s\n", i++, (const char *)line.toLocal8Bit().data() );
 #endif 
       QStringList myTokens = QStringList::split("\t",line);
       //printf ("Added contributor name to listbox: %s ",myTokens[0]);
@@ -55,7 +57,7 @@ void QgsAbout::init()
       QString authorName = myTokens[0].replace(" ","_");
 
       QString myString =QString(appPath + "/images/developers/") + authorName + QString(".jpg");
-      printf ("Loading mug: %s\n", myString.local8Bit()); 
+      printf ("Loading mug: %s\n", myString.toLocal8Bit().data()); 
       QPixmap *pixmap = new QPixmap(myString);
       mugs[myTokens[0]] = *pixmap;
       */
@@ -80,7 +82,7 @@ void QgsAbout::setPluginInfo(QString txt){
 }
 
 
-void QgsAbout::showAuthorPic( QListBoxItem * theItem)
+void QgsAbout::showAuthorPic( Q3ListBoxItem * theItem)
 {
   //replace spaces in author name
 #ifdef QGISDEBUG 
@@ -95,11 +97,11 @@ void QgsAbout::showAuthorPic( QListBoxItem * theItem)
   QString myString = listBox1->currentText();
   myString = myString.replace(" ","_");
 #ifdef QGISDEBUG 
-  printf ("Loading mug: %s", (const char *)myString.local8Bit()); 
+  printf ("Loading mug: %s", (const char *)myString.toLocal8Bit().data()); 
 #endif 
   myString =QString(appPath + "/images/developers/") + myString + QString(".jpg");
 #ifdef QGISDEBUG 
-  printf ("Loading mug: %s\n", (const char *)myString.local8Bit()); 
+  printf ("Loading mug: %s\n", (const char *)myString.toLocal8Bit().data()); 
 #endif 
   QPixmap *pixmap = new QPixmap(myString);
   pixAuthorMug->setPixmap(*pixmap);
@@ -160,7 +162,7 @@ void QgsAbout::openUrl(QString url)
     // find the installed location of the help files
     // open index.html using browser
     //XXX for debug on win32      QMessageBox::information(this,"Help opening...", browser + " - " + url);
-    QProcess *helpProcess = new QProcess(this);
+    Q3Process *helpProcess = new Q3Process(this);
     helpProcess->addArgument(browser);
     helpProcess->addArgument(url);
     helpProcess->start();

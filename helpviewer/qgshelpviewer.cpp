@@ -4,7 +4,7 @@
 #include <qapplication.h>
 #include <qmessagebox.h>
 #include <qfileinfo.h>
-#include <qtextbrowser.h>
+#include <q3textbrowser.h>
 #include <sqlite3.h>
 #include "qgshelpviewer.h"
 QgsHelpViewer::QgsHelpViewer(const QString &contextId, QWidget *parent, 

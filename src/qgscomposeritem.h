@@ -20,7 +20,7 @@
 #include "qgscomposition.h"
 
 class QWidget;
-class QCanvas;
+class Q3Canvas;
 class QDomNode;
 class QDomDocument;
 

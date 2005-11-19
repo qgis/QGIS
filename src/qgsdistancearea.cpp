@@ -105,7 +105,7 @@ bool QgsDistanceArea::setEllipsoid(const QString& ellipsoid)
   if (radius.isEmpty() || parameter2.isEmpty())
   {
 #ifdef QGISDEBUG
-    std::cout << "setEllipsoid: no row in tbl_ellipsoid for acronym '" << ellipsoid.local8Bit() << "'" << std::endl;
+    std::cout << "setEllipsoid: no row in tbl_ellipsoid for acronym '" << ellipsoid.toLocal8Bit().data() << "'" << std::endl;
 #endif
     return false;
   }
@@ -116,7 +116,7 @@ bool QgsDistanceArea::setEllipsoid(const QString& ellipsoid)
   else
   {
 #ifdef QGISDEBUG
-    std::cout << "setEllipsoid: wrong format of radius field: '" << radius.local8Bit() << "'" << std::endl;
+    std::cout << "setEllipsoid: wrong format of radius field: '" << radius.toLocal8Bit().data() << "'" << std::endl;
 #endif
     return false;
   }
@@ -137,7 +137,7 @@ bool QgsDistanceArea::setEllipsoid(const QString& ellipsoid)
   else
   {
 #ifdef QGISDEBUG
-    std::cout << "setEllipsoid: wrong format of parameter2 field: '" << parameter2.local8Bit() << "'" << std::endl;
+    std::cout << "setEllipsoid: wrong format of parameter2 field: '" << parameter2.toLocal8Bit().data() << "'" << std::endl;
 #endif
     return false;
   }

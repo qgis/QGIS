@@ -30,7 +30,7 @@ extern "C"
 #include <vector>
 #include <utility>
 
-class QListBoxItem;
+class Q3ListBoxItem;
 class QgisApp;
 /*! \class QgsDbSourceSelect
  * \brief Dialog to create connections and add tables from PostgresQL.
@@ -67,13 +67,13 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     //! Connection info (database, host, user, password)
     QString connInfo();
     //! Add the layer selected when user double-clicks the mouse
-    void addLayer(QListBoxItem *item);
+    void addLayer(Q3ListBoxItem *item);
     //! Return the name of the selected encoding (e.g. UTf-8, ISO-8559-1, etc/)
     QString encoding();
     // Store the selected database
     void dbChanged();
     public slots:
-      void setSql(QListViewItem *);
+      void setSql(Q3ListViewItem *);
       void showHelp();
  private:
 

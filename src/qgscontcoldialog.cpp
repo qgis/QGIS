@@ -23,7 +23,7 @@
 #include <iostream>
 
 #include <qcolordialog.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>

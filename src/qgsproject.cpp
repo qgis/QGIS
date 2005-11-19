@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgsproject.h"
+//Added by qt3to4:
+#include <QTextStream>
 
 #include <memory>
 #include <cassert>
@@ -38,9 +40,9 @@ using namespace std;
 #include <qapplication.h>
 #include <qfileinfo.h>
 #include <qdom.h>
-#include <qdict.h>
+#include <q3dict.h>
 #include <qmessagebox.h>
-#include <qwidgetlist.h>
+#include <qwidget.h>
 #include <qglobal.h>
 #include <qobject.h>
 
@@ -72,8 +74,8 @@ QgsProject * QgsProject::theProject_;
  static 
  QStringList makeKeyTokens_(QString const &scope, QString const &key)
  {
-     const char * scope_str = scope.local8Bit(); // debugger probes
-     const char * key_str   = key.local8Bit();
+     const char * scope_str = scope.toLocal8Bit().data(); // debugger probes
+     const char * key_str   = key.toLocal8Bit().data();
 
      QStringList keyTokens = QStringList(scope);
      keyTokens += QStringList::split('/', key);
@@ -644,7 +646,7 @@ static bool _getMapUnits(QDomDocument const &doc)
     {
         std::
             cerr << __FILE__ << ":" << __LINE__ << " unknown map unit type " <<
-            element.text().local8Bit() << "\n";
+            element.text().toLocal8Bit().data() << "\n";
         false;
     }
 
@@ -737,7 +739,7 @@ static QgsMapCanvas * _findMapCanvas(QString const &canonicalMapCanvasName)
     {                             // for each top level widget...
         ++it;
         theMapCanvas =
-            dynamic_cast <QgsMapCanvas *>(w->child(canonicalMapCanvasName.local8Bit(), 0, true));
+            dynamic_cast <QgsMapCanvas *>(w->child(canonicalMapCanvasName.toLocal8Bit().data(), 0, true));
 
         if (theMapCanvas)
         {
@@ -753,7 +755,7 @@ static QgsMapCanvas * _findMapCanvas(QString const &canonicalMapCanvasName)
         return theMapCanvas;
     } else
     {
-        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).local8Bit());
+        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).toLocal8Bit().data());
 
         return 0x0;                 // XXX some sort of error value? Exception?
     }
@@ -848,7 +850,7 @@ static pair< bool, list<QDomNode> > _getMapLayers(QDomDocument const &doc)
         QgsMapLayer *mapLayer;
 #ifdef QGISDEBUG
 
-        std::cerr << "type is " << type.local8Bit() << std::endl;
+        std::cerr << "type is " << type.toLocal8Bit().data() << std::endl;
 #endif
 
         if (type == "vector")
@@ -879,7 +881,7 @@ static pair< bool, list<QDomNode> > _getMapLayers(QDomDocument const &doc)
         {
             delete mapLayer;
 
-            qDebug( "%s:%d unable to load %s layer", __FILE__, __LINE__, (const char *)type.local8Bit() );
+            qDebug( "%s:%d unable to load %s layer", __FILE__, __LINE__, (const char *)type.toLocal8Bit().data() );
 
             returnStatus = false; // flag that we had problems loading layers
 
@@ -906,7 +908,7 @@ static void _setCanvasExtent(QString const &canonicalMapCanvasName,
 
     if (!theMapCanvas)
     {
-        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).local8Bit());
+        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).toLocal8Bit().data());
 
         return;                     // XXX some sort of error value? Exception?
     }
@@ -944,7 +946,7 @@ static QgsRect _getFullExtent(QString const &canonicalMapCanvasName)
 
     if (!theMapCanvas)
     {
-        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).local8Bit());
+        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).toLocal8Bit().data());
 
         return QgsRect();           // XXX some sort of error value? Exception?
     }
@@ -979,7 +981,7 @@ static QgsRect _getExtent(QString const &canonicalMapCanvasName)
 
     if (!theMapCanvas)
     {
-        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).local8Bit());
+        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).toLocal8Bit().data());
 
         return QgsRect();           // XXX some sort of error value? Exception?
     }
@@ -1013,7 +1015,7 @@ bool QgsProject::read()
     std::auto_ptr< QDomDocument > doc =
         std::auto_ptr < QDomDocument > (new QDomDocument("qgis"));
 
-    if (!imp_->file.open(IO_ReadOnly))
+    if (!imp_->file.open(QIODevice::ReadOnly))
     {
         imp_->file.close();     // even though we got an error, let's make
                                 // sure it's closed anyway
@@ -1052,7 +1054,7 @@ bool QgsProject::read()
 
 
 #ifdef QGISDEBUG
-    qWarning(("opened document " + imp_->file.name()).local8Bit());
+    qWarning(("opened document " + imp_->file.name()).toLocal8Bit().data());
 #endif
 
     // before we start loading everything, let's clear out the current set of
@@ -1090,7 +1092,7 @@ bool QgsProject::read()
     // XXX some day insert version checking
 
 #ifdef QGISDEBUG
-    qDebug(("Project title: " + imp_->title).local8Bit());
+    qDebug(("Project title: " + imp_->title).toLocal8Bit().data());
 #endif
 
     // now set the map units; note, alters QgsProject::instance().
@@ -1211,7 +1213,7 @@ bool QgsProject::read( QDomNode & layerNode )
     {
         delete mapLayer;
 
-        qDebug( "%s:%d unable to load %s layer", __FILE__, __LINE__, (const char *)type.local8Bit() );
+        qDebug( "%s:%d unable to load %s layer", __FILE__, __LINE__, (const char *)type.toLocal8Bit().data() );
 
         return false;
     }
@@ -1234,7 +1236,7 @@ bool QgsProject::write()
   // if we have problems creating or otherwise writing to the project file,
   // let's find out up front before we go through all the hand-waving
   // necessary to create all the DOM objects
-  if (!imp_->file.open(IO_WriteOnly | IO_Translate | IO_Truncate))
+  if (!imp_->file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
   {
     imp_->file.close();         // even though we got an error, let's make
     // sure it's closed anyway

@@ -3,7 +3,7 @@
 #define QGSMAPCANVASPROPERTIES_H
 
 #ifndef QPAINTDEVICEMETRICS_H
-#include <qpaintdevicemetrics.h>
+#include <q3paintdevicemetrics.h>
 #endif
 
 #include "qgsgeometry.h"
@@ -11,6 +11,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsscalecalculator.h"
 #include "qgsproject.h"
+//Added by qt3to4:
+#include <QPixmap>
 
 
 /**
@@ -82,7 +84,7 @@ class QgsMapCanvas::CanvasProperties
     } // ~CanvasProperties
 
 
-    void initMetrics(QPaintDeviceMetrics *pdm)
+    void initMetrics(Q3PaintDeviceMetrics *pdm)
     {
     // set the logical dpi
       mDpi = pdm->logicalDpiX();

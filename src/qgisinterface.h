@@ -22,10 +22,12 @@
 #include <qaction.h> 
 
 #include <qwidget.h>
+//Added by qt3to4:
+#include <Q3PopupMenu>
 #include <map>
 class QgisApp;
 class QgsMapLayer;
-class QPopupMenu;
+class Q3PopupMenu;
 class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsMapLayerRegistry;

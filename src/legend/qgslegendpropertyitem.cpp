@@ -21,7 +21,7 @@
 #include <qapplication.h>
 #include <qpixmap.h>
 
-QgsLegendPropertyItem::QgsLegendPropertyItem(QListViewItem * theItem,QString theString)
+QgsLegendPropertyItem::QgsLegendPropertyItem(Q3ListViewItem * theItem,QString theString)
  : QgsLegendItem(theItem ,theString)
 {
   mType=LEGEND_PROPERTY_ITEM;

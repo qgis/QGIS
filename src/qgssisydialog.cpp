@@ -24,10 +24,10 @@
 #include <qlineedit.h>
 #include <qtoolbutton.h>
 #include <qlabel.h>
-#include <qbuttongroup.h>
+#include <q3buttongroup.h>
 #include <qbrush.h>
 #include <qpen.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 
 #include "qgsvectorlayer.h"
 #include "qgslegenditem.h"
@@ -74,7 +74,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer): QgsSiSyDialogBase(), mVect
     // Get maximum symbol width - this is probably slow
     for ( QStringList::iterator it = ml.begin(); it != ml.end(); ++it ) {
     
-      QPicture pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
+      Q3Picture pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
       	                pen, brush, QgsSVGCache::instance().getOversampling() );
 
       QRect br = pic.boundingRect();
@@ -88,7 +88,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer): QgsSiSyDialogBase(), mVect
     for ( QStringList::iterator it = ml.begin(); it != ml.end(); ++it ) {
       mMarkers.push_back ( *it );
 
-      QPicture pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
+      Q3Picture pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
 		      pen, brush, QgsSVGCache::instance().getOversampling() );
 
       QRect br = pic.boundingRect();
@@ -473,7 +473,7 @@ void QgsSiSyDialog::setFillColor(QColor& c)
 void QgsSiSyDialog::setFillStyle(Qt::BrushStyle fstyle)
 {
 #ifdef QGISDEBUG
-    qWarning(("Setting fill style: "+QgsSymbologyUtils::brushStyle2QString(fstyle)).local8Bit());
+    qWarning(("Setting fill style: "+QgsSymbologyUtils::brushStyle2QString(fstyle)).toLocal8Bit().data());
 #endif
 
     // XXX use switch instead

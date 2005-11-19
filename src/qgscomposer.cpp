@@ -17,28 +17,28 @@
 #include <qdir.h>
 #include <qprinter.h>
 #include <qpainter.h>
-#include <qwmatrix.h>
+#include <qmatrix.h>
 #include <qlayout.h>
 #include <qfile.h>
 #include <qstring.h>
 #include <qmessagebox.h>
 #include <qtabwidget.h>
 #include <qpoint.h>
-#include <qcombobox.h>
-#include <qobjectlist.h>
-#include <qpaintdevicemetrics.h>
+#include <q3combobox.h>
+#include <qobject.h>
+#include <q3paintdevicemetrics.h>
 #include <qdom.h>
 #include <qsettings.h>
 #include <qdesktopwidget.h>
 #include <qapplication.h>
 #include <qevent.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qsplitter.h>
 #include <qregexp.h>
 #include <qpixmap.h>
 #include <qimage.h>
-#include <qpicture.h>
-#include <qfiledialog.h>
+#include <q3picture.h>
+#include <q3filedialog.h>
 #include <qglobal.h>
 
 #include "qgisapp.h"
@@ -51,6 +51,11 @@
 #include "qgscomposermap.h"
 
 #include "qgsexception.h"
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QMoveEvent>
+#include <Q3GridLayout>
+#include <QPictureIO>
 
 #include <iostream>
 
@@ -64,11 +69,11 @@ QgsComposer::QgsComposer( QgisApp *qgis): QgsComposerBase()
   mView = new QgsComposerView ( this, mViewFrame);
   mPrinter = 0;
 
-  QGridLayout *l = new QGridLayout(mViewFrame, 1, 1 );
+  Q3GridLayout *l = new Q3GridLayout(mViewFrame, 1, 1 );
   l->addWidget( mView, 0, 0 );
 
-  mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame, 1, 1 );
-  mItemOptionsLayout = new QGridLayout( mItemOptionsFrame, 1, 1 );
+  mCompositionOptionsLayout = new Q3GridLayout( mCompositionOptionsFrame, 1, 1 );
+  mItemOptionsLayout = new Q3GridLayout( mItemOptionsFrame, 1, 1 );
 
   mCompositionNameComboBox->insertItem( "Map 1" );
 
@@ -187,7 +192,7 @@ QgsComposition *QgsComposer::composition(void)
 
 void QgsComposer::zoomFull(void)
 {
-  QWMatrix m;
+  QMatrix m;
 
   // scale
   double xscale = 1.0 * (mView->width()-10) / mComposition->canvas()->width();
@@ -207,7 +212,7 @@ void QgsComposer::zoomFull(void)
 
 void QgsComposer::zoomIn(void)
 {
-  QWMatrix m = mView->worldMatrix();
+  QMatrix m = mView->worldMatrix();
   m.scale( 2.0, 2.0 );
   mView->setWorldMatrix( m );
   mView->repaintContents();
@@ -215,7 +220,7 @@ void QgsComposer::zoomIn(void)
 
 void QgsComposer::zoomOut(void)
 {
-  QWMatrix m = mView->worldMatrix();
+  QMatrix m = mView->worldMatrix();
   m.scale( 0.5, 0.5 );
   mView->setWorldMatrix( m );
   mView->repaintContents();
@@ -331,7 +336,7 @@ void QgsComposer::print(void)
       QFile f(mPrinter->outputFileName());
 
       // Overwrite the bounding box
-      if (!f.open( IO_ReadWrite )) {
+      if (!f.open( QIODevice::ReadWrite )) {
         throw QgsIOException(tr("Couldn't open " + f.name() + tr(" for read/write")));
       }
       Q_LONG offset = 0;
@@ -369,13 +374,13 @@ void QgsComposer::print(void)
             QString es;
             es.fill(' ', size-1 );
             f.flush();
-            if ( f.writeBlock ( es.local8Bit(), size-1 ) < size-1 ) {
+            if ( f.writeBlock ( es.toLocal8Bit().data(), size-1 ) < size-1 ) {
               QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
             }
             f.flush();
             f.at(offset);
             f.flush();
-            if ( f.writeBlock ( s.local8Bit(), s.length() ) <  s.length()-1 ) {
+            if ( f.writeBlock ( s.toLocal8Bit().data(), s.length() ) <  s.length()-1 ) {
               QMessageBox::warning(this,"Error in Print", "Cannot overwrite BoundingBox");
             }
             f.flush();
@@ -388,7 +393,7 @@ void QgsComposer::print(void)
 
       // Overwrite translate
       if ( mPrinter->orientation() == QPrinter::Portrait ) { 
-        if (!f.open( IO_ReadWrite )) {
+        if (!f.open( QIODevice::ReadWrite )) {
           throw QgsIOException(tr("Couldn't open " + f.name() + tr(" for read/write")));
         }
         offset = 0;
@@ -412,7 +417,7 @@ void QgsComposer::print(void)
           int trans;
 
           trans = (int) ( 72 * mComposition->paperHeight() / 25.4 );
-          s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, (const char *)rx.cap(1).local8Bit() );
+          s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, (const char *)rx.cap(1).toLocal8Bit().data() );
 
           if ( s.length() > size ) {
             QMessageBox::warning(this,"Error in Print", "Cannot format translate");
@@ -424,13 +429,13 @@ void QgsComposer::print(void)
               QString es;
               es.fill(' ', size-1 );
               f.flush();
-              if ( f.writeBlock ( es.local8Bit(), size-1 ) < size-1 ) {
+              if ( f.writeBlock ( es.toLocal8Bit().data(), size-1 ) < size-1 ) {
                 QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
               }
               f.flush();
               f.at(offset);
               f.flush();
-              if ( f.writeBlock ( s.local8Bit(), s.length() ) <  s.length()-1 ) {
+              if ( f.writeBlock ( s.toLocal8Bit().data(), s.length() ) <  s.length()-1 ) {
                 QMessageBox::warning(this,"Error in Print", "Cannot overwrite translate");
               }
               f.flush();
@@ -449,7 +454,7 @@ void QgsComposer::print(void)
 	bool print = true;
 
 	// Check size 
-	QPaintDeviceMetrics pm(mPrinter);
+	Q3PaintDeviceMetrics pm(mPrinter);
 
 	std::cout << "Paper: " << pm.widthMM() << " x " << pm.heightMM() << std::endl;
 	if ( mComposition->paperWidth() != pm.widthMM() || 
@@ -526,9 +531,9 @@ void QgsComposer::image(void)
   int myCounterInt=0;
   QString myFilters;
   QString myLastUsedFilter;
-  for ( ; myCounterInt < QImageIO::outputFormats().count(); myCounterInt++ )
+  for ( ; myCounterInt < QPictureIO::outputFormats().count(); myCounterInt++ )
   {
-    QString myFormat=QString(QImageIO::outputFormats().at( myCounterInt ));
+    QString myFormat=QString(QPictureIO::outputFormats().at( myCounterInt ));
     QString myFilter = myFormat + " format (*." + myFormat.lower() + " *." + myFormat.upper() + ")";
     if ( myCounterInt > 0 ) myFilters += ";;";
     myFilters += myFilter;
@@ -543,13 +548,13 @@ void QgsComposer::image(void)
   FilterMap::Iterator myIterator;
   for ( myIterator = myFilterMap.begin(); myIterator != myFilterMap.end(); ++myIterator )
   {
-    std::cout << myIterator.key().local8Bit() << "  :  " << myIterator.data().local8Bit() << std::endl;
+    std::cout << myIterator.key().toLocal8Bit().data() << "  :  " << myIterator.data().toLocal8Bit().data() << std::endl;
   }
 #endif
 
   //create a file dialog using the the filter list generated above
-  std::auto_ptr < QFileDialog > myQFileDialog(
-      new QFileDialog(
+  std::auto_ptr < Q3FileDialog > myQFileDialog(
+      new Q3FileDialog(
         "",
         myFilters,
         0,
@@ -560,7 +565,7 @@ void QgsComposer::image(void)
   myQFileDialog->setSelection ( myLastUsedFile );
 
   // allow for selection of more than one file
-  myQFileDialog->setMode(QFileDialog::AnyFile);
+  myQFileDialog->setMode(Q3FileDialog::AnyFile);
 
   // set the filter to the last one used
   myQFileDialog->setSelectedFilter(myLastUsedFilter);
@@ -576,8 +581,8 @@ void QgsComposer::image(void)
   myOutputFileNameQString = myQFileDialog->selectedFile();
   QString myFilterString = myQFileDialog->selectedFilter();
 #ifdef QGISDEBUG
-  std::cout << "Selected filter: " << myFilterString.local8Bit() << std::endl;
-  std::cout << "Image type: " << myFilterMap[myFilterString].local8Bit() << std::endl;
+  std::cout << "Selected filter: " << myFilterString.toLocal8Bit().data() << std::endl;
+  std::cout << "Image type: " << myFilterMap[myFilterString].toLocal8Bit().data() << std::endl;
 #endif
 
   myQSettings.writeEntry("/qgis/UI/lastSaveAsImageFormat" , myFilterMap[myFilterString] );
@@ -603,7 +608,7 @@ void QgsComposer::image(void)
   mComposition->setPlotStyle ( QgsComposition::Preview );
   mView->setCanvas(mComposition->canvas());
 
-  pixmap.save ( myOutputFileNameQString, myFilterMap[myFilterString].local8Bit() );
+  pixmap.save ( myOutputFileNameQString, myFilterMap[myFilterString].toLocal8Bit().data() );
 }
 
 void QgsComposer::svg(void)
@@ -611,13 +616,13 @@ void QgsComposer::svg(void)
   QSettings myQSettings;
   QString myLastUsedFile = myQSettings.readEntry("/qgis/UI/lastSaveAsSvgFile","qgis.svg");
 
-  QFileDialog *myQFileDialog = new QFileDialog( "", "SVG Format (*.svg *SVG)", 0,
+  Q3FileDialog *myQFileDialog = new Q3FileDialog( "", "SVG Format (*.svg *SVG)", 0,
                                                 "Save svg file dialog");
   
   myQFileDialog->setCaption(tr("Choose a filename to save the map as"));
 
   myQFileDialog->setSelection ( myLastUsedFile );
-  myQFileDialog->setMode(QFileDialog::AnyFile);
+  myQFileDialog->setMode(Q3FileDialog::AnyFile);
 
   int result = myQFileDialog->exec();
   raise ();
@@ -632,7 +637,7 @@ void QgsComposer::svg(void)
   mView->setCanvas(0);
   mComposition->setPlotStyle ( QgsComposition::Print );
 
-  QPicture pic;
+  Q3Picture pic;
   QPainter p(&pic);
   mComposition->canvas()->drawArea ( QRect(0,0, 
         (int) (mComposition->paperWidth() * mComposition->scale()),
@@ -716,8 +721,8 @@ void QgsComposer::saveWindowState()
   settings.writeEntry("/qgis/Composer/geometry/w", s.width());
   settings.writeEntry("/qgis/Composer/geometry/h", s.height());
 
-  QValueList<int> list = mSplitter->sizes();
-  QValueList<int>::Iterator it = list.begin();
+  Q3ValueList<int> list = mSplitter->sizes();
+  Q3ValueList<int>::Iterator it = list.begin();
   settings.writeEntry("/qgis/Composer/geometry/wiev", (int)(*it) );
   it++;
   settings.writeEntry("/qgis/Composer/geometry/options", (int)(*it) );
@@ -738,7 +743,7 @@ void QgsComposer::restoreWindowState()
   move(x, y);
 
   // This doesn't work
-  QValueList<int> list;
+  Q3ValueList<int> list;
   w = settings.readNumEntry("/qgis/Composer/geometry/view", 300);
   list.push_back( w );
   w = settings.readNumEntry("/qgis/Composer/geometry/options", 300);
@@ -758,7 +763,7 @@ void QgsComposer::projectRead(void)
 
   bool found = false;
   for ( QStringList::iterator it = l.begin(); it != l.end(); ++it ) {
-    std::cout << "key: " << (*it).local8Bit() << std::endl;
+    std::cout << "key: " << (*it).toLocal8Bit().data() << std::endl;
     if ( (*it).compare ( "composition_1" ) == 0 ) {
       found = true;
       break;

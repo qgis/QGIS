@@ -20,8 +20,8 @@
 #ifndef QGSCONTEXTHELP_H
 #define QGSCONTEXTHELP_H
 #include <qobject.h>
-class QProcess;
-class QSocket;
+class Q3Process;
+class Q3Socket;
 #ifdef Q_OS_MACX
 #define QGSCONTEXTHELP_REUSE 1
 #endif
@@ -55,17 +55,17 @@ private:
   //! Destructor
   ~QgsContextHelp();
 
-  QProcess *start(int contextId);
+  Q3Process *start(int contextId);
   void showContext(int contextId);
 
   static QgsContextHelp *gContextHelp; // Singleton instance
-  QProcess *mProcess;
+  Q3Process *mProcess;
 #ifdef QGSCONTEXTHELP_REUSE
   // Communications socket when reusing existing process
-  QSocket *mSocket;
+  Q3Socket *mSocket;
 #else
   // Replacement process when terminating and restarting
-  QProcess *mNextProcess;
+  Q3Process *mNextProcess;
 #endif
 };
 #endif //QGSCONTEXTHELP_H

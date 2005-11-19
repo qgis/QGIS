@@ -1,3 +1,5 @@
+//Added by qt3to4:
+#include <QCustomEvent>
 /***************************************************************************
       qgspostgresprovider.h  -  Data provider for PostgreSQL/PostGIS layers
                              -------------------

@@ -22,32 +22,35 @@
 
 #include <qwidget.h>
 #include <qrect.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qcheckbox.h>
 #include <qdom.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qpainter.h>
 #include <qstring.h>
 #include <qpixmap.h>
-#include <qpicture.h>
+#include <q3picture.h>
 #include <qimage.h>
 #include <qlineedit.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qpen.h>
 #include <qrect.h>
 #include <qlabel.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qmessagebox.h>
 
 #include "qgsproject.h"
 #include "qgscomposition.h"
 #include "qgscomposerpicture.h"
+//Added by qt3to4:
+#include <QPictureIO>
+#include <Q3StrList>
 
 #define PI 3.14159265358979323846
 
 QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition, 
 					int id, QString file ) 
-    : QCanvasPolygonalItem(0),
+    : Q3CanvasPolygonalItem(0),
       mPicturePath ( file ),
       mPictureValid(false),
       mCX(-10), mCY(-10),
@@ -69,14 +72,14 @@ QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition,
     // Add to canvas
     setCanvas(mComposition->canvas());
 
-    QCanvasPolygonalItem::show();
-    QCanvasPolygonalItem::update();
+    Q3CanvasPolygonalItem::show();
+    Q3CanvasPolygonalItem::update();
      
     writeSettings();
 }
 
 QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition, int id ) :
-    QCanvasPolygonalItem(0),
+    Q3CanvasPolygonalItem(0),
     mFrame(false),
     mAreaPoints(4),
     mBoundingRect(0,0,0,0)
@@ -100,8 +103,8 @@ QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition, int id ) :
 
     recalculate();
 
-    QCanvasPolygonalItem::show();
-    QCanvasPolygonalItem::update();
+    Q3CanvasPolygonalItem::show();
+    Q3CanvasPolygonalItem::update();
 }
 
 void QgsComposerPicture::init ( void ) 
@@ -113,16 +116,16 @@ void QgsComposerPicture::init ( void )
     }
 
     // Rectangle
-    QCanvasPolygonalItem::setZ(60);
+    Q3CanvasPolygonalItem::setZ(60);
     setActive(true);
 }
 
 void QgsComposerPicture::loadPicture ( void ) 
 {
 #ifdef QGISDEBUG
-    std::cerr << "QgsComposerPicture::loadPicture() mPicturePath = " << mPicturePath.local8Bit() << std::endl;
+    std::cerr << "QgsComposerPicture::loadPicture() mPicturePath = " << mPicturePath.toLocal8Bit().data() << std::endl;
 #endif
-    mPicture = QPicture(); 
+    mPicture = Q3Picture(); 
     mPictureValid = false;
 
     if ( !mPicturePath.isNull() ) 
@@ -197,7 +200,7 @@ QgsComposerPicture::~QgsComposerPicture()
 #ifdef QGISDEBUG
     std::cerr << "QgsComposerPicture::~QgsComposerPicture()" << std::endl;
 #endif
-    QCanvasItem::hide();
+    Q3CanvasItem::hide();
 }
 
 void QgsComposerPicture::draw ( QPainter & painter )
@@ -297,7 +300,7 @@ void QgsComposerPicture::recalculate()
     std::cout << "QgsComposerPicture::recalculate" << std::endl;
 #endif
     
-    QCanvasPolygonalItem::invalidate();
+    Q3CanvasPolygonalItem::invalidate();
 
     QRect box = mPicture.boundingRect();
 
@@ -333,9 +336,9 @@ void QgsComposerPicture::recalculate()
 
     mBoundingRect = mAreaPoints.boundingRect();
     
-    QCanvasPolygonalItem::canvas()->setChanged(mBoundingRect);
-    QCanvasPolygonalItem::update();
-    QCanvasPolygonalItem::canvas()->update();
+    Q3CanvasPolygonalItem::canvas()->setChanged(mBoundingRect);
+    Q3CanvasPolygonalItem::update();
+    Q3CanvasPolygonalItem::canvas()->update();
 }
 
 QRect QgsComposerPicture::boundingRect ( void ) const
@@ -346,7 +349,7 @@ QRect QgsComposerPicture::boundingRect ( void ) const
     return mBoundingRect;
 }
 
-QPointArray QgsComposerPicture::areaPoints() const
+Q3PointArray QgsComposerPicture::areaPoints() const
 {
 #ifdef QGISDEBUG
     std::cout << "QgsComposerPicture::areaPoints" << std::endl;
@@ -360,8 +363,8 @@ void QgsComposerPicture::frameChanged ( )
 {
     mFrame = mFrameCheckBox->isChecked();
 
-    QCanvasPolygonalItem::update();
-    QCanvasPolygonalItem::canvas()->update();
+    Q3CanvasPolygonalItem::update();
+    Q3CanvasPolygonalItem::canvas()->update();
 
     writeSettings();
 }
@@ -469,7 +472,7 @@ void QgsComposerPicture::setOptions ( void )
 void QgsComposerPicture::setSelected (  bool s ) 
 {
     mSelected = s;
-    QCanvasPolygonalItem::update(); // show highlight
+    Q3CanvasPolygonalItem::update(); // show highlight
 }    
 
 bool QgsComposerPicture::selected( void )
@@ -486,17 +489,17 @@ QWidget *QgsComposerPicture::options ( void )
 QString QgsComposerPicture::pictureDialog ( void )
 {
     QString filters = "Pictures ( *.svg *.SVG ";
-    QStrList formats = QImageIO::outputFormats();
+    Q3StrList formats = QPictureIO::outputFormats();
 
     for ( int i = 0; i < formats.count(); i++ )
     {
-        QString frmt = QImageIO::outputFormats().at( i );
+        QString frmt = QPictureIO::outputFormats().at( i );
         QString fltr = " *." + frmt.lower() + " *." + frmt.upper();
         filters += fltr;
     }
     filters += " )";
 
-    QString file = QFileDialog::getOpenFileName(
+    QString file = Q3FileDialog::getOpenFileName(
                     ".",
                     filters,
                     0,

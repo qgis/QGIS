@@ -13,9 +13,9 @@
 
 //qt includes
 #include <qmessagebox.h>
-#include <qurl.h>
+#include <q3url.h>
 #include <qlineedit.h>
-#include <qhttp.h>
+#include <q3http.h>
 #include <qregexp.h>
 #include <qcursor.h> 
 #include <qapplication.h> 
@@ -31,10 +31,10 @@ QgsCommunityRegPluginGui::QgsCommunityRegPluginGui() : QgsCommunityRegPluginGuiB
 
 }
 
-    QgsCommunityRegPluginGui::QgsCommunityRegPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+    QgsCommunityRegPluginGui::QgsCommunityRegPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
 : QgsCommunityRegPluginGuiBase( parent, name, modal, fl )
 {
-  mConnection = new QHttp();
+  mConnection = new Q3Http();
   connect(mConnection, SIGNAL(done(bool)), this, SLOT(registrationDone(bool)));
 }  
 QgsCommunityRegPluginGui::~QgsCommunityRegPluginGui()
@@ -45,10 +45,10 @@ QgsCommunityRegPluginGui::~QgsCommunityRegPluginGui()
 
 void QgsCommunityRegPluginGui::pbnOK_clicked()
 {
-  QUrl myTargetUrl("http://community.qgis.org");
+  Q3Url myTargetUrl("http://community.qgis.org");
   QString myHost = myTargetUrl.host();
   int myPort = myTargetUrl.port();
-  mHttp = new QHttp(myHost, myPort == -1 ? 80 : myPort);
+  mHttp = new Q3Http(myHost, myPort == -1 ? 80 : myPort);
   connect(mHttp, SIGNAL(requestStarted(int)), this, 
           SLOT(slotRequestStarted(int)));
   connect(mHttp, SIGNAL(requestFinished(int, bool)), this, 
@@ -57,8 +57,8 @@ void QgsCommunityRegPluginGui::pbnOK_clicked()
   connect(mHttp, SIGNAL(dataReadProgress(int,int)), this, 
           SLOT(slotDataReadProgress(int,int)));
   connect(mHttp, SIGNAL(responseHeaderReceived(const 
-                  QHttpResponseHeader&)),
-          this, SLOT(slotResponseHeaderReceived(const QHttpResponseHeader 
+                  Q3HttpResponseHeader&)),
+          this, SLOT(slotResponseHeaderReceived(const Q3HttpResponseHeader 
                   &)));
   QByteArray *myByteArray=new QByteArray();
   QString tmp = "name=shie";
@@ -83,10 +83,10 @@ void QgsCommunityRegPluginGui::pbnGetCoords_clicked()
 
 void QgsCommunityRegPluginGui::submit()
 {
-  if (mConnection->state() == QHttp::HostLookup
-          || mConnection->state() == QHttp::Connecting
-          || mConnection->state() == QHttp::Sending
-          || mConnection->state() == QHttp::Reading) {
+  if (mConnection->state() == Q3Http::HostLookup
+          || mConnection->state() == Q3Http::Connecting
+          || mConnection->state() == Q3Http::Sending
+          || mConnection->state() == Q3Http::Reading) {
     mConnection->abort();
   }
 
@@ -98,7 +98,7 @@ void QgsCommunityRegPluginGui::submit()
   {
     QMessageBox::critical(this, "Empty query",
             "Please type a submit string.",
-            QMessageBox::Ok, QMessageBox::NoButton);
+            QMessageBox::Ok, Qt::NoButton);
   } 
   else 
   {
@@ -106,26 +106,26 @@ void QgsCommunityRegPluginGui::submit()
 
     mConnection->setHost("community.qgis.org");
 
-    QHttpRequestHeader myHeader("POST", "/qgis_users/index.php");
+    Q3HttpRequestHeader myHeader("POST", "/qgis_users/index.php");
     myHeader.setValue("Host", "community.qgis.org");
     myHeader.setContentType("application/x-www-form-urlmyEncoded");
 
     QString myEncodedName = leName->text();
-    QUrl::encode(myEncodedName);
+    Q3Url::encode(myEncodedName);
     QString myEncodedEmail = leEmail->text();
-    QUrl::encode(myEncodedEmail);
+    Q3Url::encode(myEncodedEmail);
     QString myEncodedImageUrl = leImageUrl->text();
-    QUrl::encode(myEncodedImageUrl);
+    Q3Url::encode(myEncodedImageUrl);
     QString myEncodedHomeUrl = leHomeUrl->text();
-    QUrl::encode(myEncodedHomeUrl);
+    Q3Url::encode(myEncodedHomeUrl);
     QString myEncodedCountry = leCountry->text();
-    QUrl::encode(myEncodedCountry);
+    Q3Url::encode(myEncodedCountry);
     QString myEncodedPlaceDescription = lePlaceDescription->text();
-    QUrl::encode(myEncodedPlaceDescription);
+    Q3Url::encode(myEncodedPlaceDescription);
     QString myEncodedLatitude = leLatitude->text();
-    QUrl::encode(myEncodedLatitude);
+    Q3Url::encode(myEncodedLatitude);
     QString myEncodedLongitude = leLongitude->text();
-    QUrl::encode(myEncodedLongitude);
+    Q3Url::encode(myEncodedLongitude);
     QString myPostString = "formAction=save";
     myPostString += "&fldname=" + myEncodedName;
     myPostString += "&fldemail="+myEncodedEmail;
@@ -147,7 +147,7 @@ void QgsCommunityRegPluginGui::submitDone( bool error )
     QMessageBox::critical(this, "Error submiting",
             "An error occurred when submiting: "
             + mConnection->errorString(),
-            QMessageBox::Ok, QMessageBox::NoButton);
+            QMessageBox::Ok, Qt::NoButton);
   } else {
     QString result(mConnection->readAll());
     /*

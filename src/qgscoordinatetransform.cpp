@@ -22,6 +22,7 @@
 #include <qdom.h>
 
 // Qt4-only includes to go here
+#include <QTextOStream>
 
 QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject(), mSourceSRS(0), mDestSRS(0)
 
@@ -391,7 +392,7 @@ QgsRect QgsCoordinateTransform::transformBoundingBox(const QgsRect rect, Transfo
     bb_rect.combineExtentWith(x[i], y[i]);
   }
 #ifdef QGISDEBUG 
-  std::cout << "Projected extent: " << (bb_rect.stringRep()).local8Bit() << std::endl;
+  std::cout << "Projected extent: " << (bb_rect.stringRep()).toLocal8Bit().data() << std::endl;
 #endif 
   return bb_rect;
 }
@@ -468,7 +469,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
 
     pjErr << tr("with error: ") << pj_strerrno(projResult) << '\n';
 #ifdef QGISDEBUG
-  std::cout << "Projection failed emitting invalid transform signal: \n" << msg.local8Bit() << std::endl;
+  std::cout << "Projection failed emitting invalid transform signal: \n" << msg.toLocal8Bit().data() << std::endl;
 #endif
     emit invalidTransformInput();
     std::cout << "Throwing exception " << __FILE__ << __LINE__ << std::endl; 

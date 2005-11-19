@@ -18,16 +18,18 @@
 #define QGSCOMPOSERPICTURE_H
 
 #include <qwidget.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qobject.h>
-#include <qpicture.h>
+#include <q3picture.h>
 #include <qrect.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 
 #include "qgsrect.h"
 #include "qgscomposer.h"
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
+//Added by qt3to4:
+#include <QPixmap>
 
 #ifdef WIN32
 #include "qgscomposerpicturebase.h"
@@ -35,8 +37,8 @@
 #include "qgscomposerpicturebase.uic.h"
 #endif
 
-class QCanvasItem;
-class QCanvasRectangle;
+class Q3CanvasItem;
+class Q3CanvasRectangle;
 class QPainter;
 class QWidget;
 class QDomNode;
@@ -59,7 +61,7 @@ class QgsComposerItem;
 // NOTE: QgsComposerPictureBase must be first, otherwise does not compile
 //                                public QCanvasRectangle, 
 class QgsComposerPicture : public QgsComposerPictureBase, 
-				public QCanvasPolygonalItem,
+				public Q3CanvasPolygonalItem,
                                 public QgsComposerItem
 {
     Q_OBJECT
@@ -93,7 +95,7 @@ public:
     // Reimplement QCanvasItem::boundingRect
     QRect boundingRect ( void ) const;
 
-    QPointArray areaPoints() const;
+    Q3PointArray areaPoints() const;
 
     // Reimplemented
     void moveBy( double x, double y);
@@ -140,7 +142,7 @@ private:
     QString mPicturePath;
 
     // Picture
-    QPicture mPicture;
+    Q3Picture mPicture;
 
     bool mPictureValid;
 
@@ -170,7 +172,7 @@ private:
     /** \brief Calculate size according to current settings */
     void recalculate ( void );
 
-    QPointArray mAreaPoints;
+    Q3PointArray mAreaPoints;
 
     // Current bounding box
     QRect mBoundingRect;

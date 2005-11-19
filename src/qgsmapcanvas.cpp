@@ -20,6 +20,12 @@
 
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
+//Added by qt3to4:
+#include <QPaintEvent>
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <QKeyEvent>
+#include <QWheelEvent>
 
 #include <iosfwd>
 #include <cmath>
@@ -39,7 +45,7 @@
 #endif
 
 #ifndef QLISTVIEW_H
-#include <qlistview.h>
+#include <q3listview.h>
 #endif
 
 #ifndef QMESSAGEBOX_H
@@ -118,9 +124,9 @@ QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
   setEraseColor(mCanvasProperties->bgColor);
 
   setMouseTracking(true);
-  setFocusPolicy(QWidget::StrongFocus);
+  setFocusPolicy(Qt::StrongFocus);
 
-  QPaintDeviceMetrics *pdm = new QPaintDeviceMetrics(this);
+  Q3PaintDeviceMetrics *pdm = new Q3PaintDeviceMetrics(this);
   mCanvasProperties->initMetrics(pdm);
   delete pdm;
     
@@ -191,7 +197,7 @@ void QgsMapCanvas::addLayer(QgsMapLayerInterface * lyr)
 void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
 {
 #ifdef QGISDEBUG
-  std::cout << name() << " is adding " << lyr->name().local8Bit() << std::endl;
+  std::cout << name() << " is adding " << lyr->name().toLocal8Bit().data() << std::endl;
 #endif
 
   Q_CHECK_PTR( lyr );
@@ -372,7 +378,7 @@ QgsMapLayer *QgsMapCanvas::getZpos(int idx)
 void QgsMapCanvas::setZOrderFromLegend(QgsLegend * lv)
 {
     mCanvasProperties->zOrder.clear();
-    QListViewItemIterator it(lv);
+    Q3ListViewItemIterator it(lv);
 
     while (it.current())
     {
@@ -449,7 +455,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       }
       catch(QgsCsException &cse)
       {
-        qWarning(tr("Error when projecting the view extent, you may need to manually zoom to the region of interest.").local8Bit());
+        qWarning(tr("Error when projecting the view extent, you may need to manually zoom to the region of interest.").toLocal8Bit().data());
 #ifdef QGISDEBUG
         std::cerr << "Attempted to transform the view extent from\n"
                   << mCanvasProperties->previousOutputSRS 
@@ -512,7 +518,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
   std::cout << ".............................." << std::endl;
   std::cout << "...........Rendering.........." << std::endl;
   std::cout << ".............................." << std::endl;
-  std::cout << name() << " canvas is " << msg.local8Bit() << std::endl;
+  std::cout << name() << " canvas is " << msg.toLocal8Bit().data() << std::endl;
 #endif
 
   int myHeight=0;
@@ -536,7 +542,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       else  //painting to an arbitary pixmap passed to render()
       {
         // need width/height of paint device
-        QPaintDeviceMetrics myMetrics( theQPaintDevice );
+        Q3PaintDeviceMetrics myMetrics( theQPaintDevice );
         myHeight = myMetrics.height();
         myWidth = myMetrics.width();
         //fall back to widget height & width if retrieving them from passed in canvas fails
@@ -655,7 +661,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         while (li != mCanvasProperties->zOrder.end())
         {
 #ifdef QGISDEBUG
-        std::cout << "QgsMapCanvas::render: at layer item '" << (*li).local8Bit() << "'." << std::endl;
+        std::cout << "QgsMapCanvas::render: at layer item '" << (*li).toLocal8Bit().data() << "'." << std::endl;
 #endif
           
           emit setProgress(myRenderCounter++,mCanvasProperties->zOrder.size());
@@ -665,17 +671,17 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
           {
             //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
 #ifdef QGISDEBUG
-            std::cout << "QgsMapCanvas::render: Rendering layer " << ml->name().local8Bit() << '\n'
+            std::cout << "QgsMapCanvas::render: Rendering layer " << ml->name().toLocal8Bit().data() << '\n'
               << "Layer minscale " << ml->minScale() 
               << ", maxscale " << ml->maxScale() << '\n' 
               << ". Scale dep. visibility enabled? " 
               << ml->scaleBasedVisibility() << '\n'
-              << "Input extent: " << ml->extent().stringRep().local8Bit() 
+              << "Input extent: " << ml->extent().stringRep().toLocal8Bit().data() 
               << std::endl;
             try
             {
               std::cout << "Transformed extent" 
-                << ml->coordinateTransform()->transformBoundingBox(ml->extent()).stringRep().local8Bit() 
+                << ml->coordinateTransform()->transformBoundingBox(ml->extent()).stringRep().toLocal8Bit().data() 
                 << std::endl;
             }
             catch (QgsCsException &cse)
@@ -832,7 +838,6 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                   static_cast<int>(digitpoint.y()));
             }
           }
-#endif
 
 
           catch(QgsException &cse)
@@ -841,6 +846,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
             // we need this to keep windows from wanted to send
             // a bug report to Bill
           }
+#endif
         }
       }
 				      
@@ -880,7 +886,7 @@ void QgsMapCanvas::currentScale(int thePrecision)
   std::cout << "------------------------------------------ " << std::endl;
 
   std::cout << "Current extent is " 
-      << mCanvasProperties->currentExtent.stringRep().local8Bit() << std::endl;
+      << mCanvasProperties->currentExtent.stringRep().toLocal8Bit().data() << std::endl;
   std::cout << "MuppX is: " << muppX << "\n"
       << "MuppY is: " << muppY << std::endl;
   std::cout << "Canvas width: " << width() 
@@ -889,7 +895,7 @@ void QgsMapCanvas::currentScale(int thePrecision)
       << mCanvasProperties->currentExtent.width() << ", height: "
       << mCanvasProperties->currentExtent.height() << std::endl;
 
-  QPaintDeviceMetrics pdm(this);
+  Q3PaintDeviceMetrics pdm(this);
   std::cout << "dpiX " << pdm.logicalDpiX() 
       << ", dpiY " << pdm.logicalDpiY() << std::endl;
   std::cout << "widthMM " << pdm.widthMM() 
@@ -955,11 +961,11 @@ void QgsMapCanvas::saveAsImage(QString theFileName, QPixmap * theQPixmap, QStrin
   if (theQPixmap != NULL)
   {
     render(theQPixmap);
-    theQPixmap->save(theFileName,theFormat.local8Bit());
+    theQPixmap->save(theFileName,theFormat.toLocal8Bit().data());
   }
   else //use the map view
   {
-    mCanvasProperties->pmCanvas->save(theFileName,theFormat.local8Bit());
+    mCanvasProperties->pmCanvas->save(theFileName,theFormat.toLocal8Bit().data());
   }
 } // saveAsImage
 
@@ -1314,7 +1320,7 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
          )
       {
         QMessageBox::warning(0, "Error", "Could not snap segment. Have you set the tolerance?",
-                             QMessageBox::Ok, QMessageBox::NoButton);
+                             QMessageBox::Ok, Qt::NoButton);
       }
       else
       {
@@ -1420,7 +1426,7 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
          )
       {
         QMessageBox::warning(0, "Error", "Could not snap vertex. Have you set the tolerance?",
-                             QMessageBox::Ok, QMessageBox::NoButton);
+                             QMessageBox::Ok, Qt::NoButton);
       }
       else
       {
@@ -1536,7 +1542,7 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
          )
       {
         QMessageBox::warning(0, "Error", "Could not snap vertex. Have you set the tolerance?",
-                             QMessageBox::Ok, QMessageBox::NoButton);
+                             QMessageBox::Ok, Qt::NoButton);
       }
       else
       {
@@ -1768,7 +1774,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
         QgsRect *search = new QgsRect(ll.x(), ll.y(), ur.x(), ur.y());
 
-        if ( e->state() == (Qt::LeftButton + Qt::ControlButton) )
+        if ( e->state() == (Qt::LeftButton + Qt::ControlModifier) )
         {
           lyr->select(search, true);
         } else
@@ -2773,7 +2779,7 @@ void QgsMapCanvas::setZOrder(std::list <QString> theZOrder)
     if (ml)
     {
 #ifdef QGISDEBUG
-      std::cout << "Adding  " << ml->name().local8Bit() << " to zOrder" << std::endl;
+      std::cout << "Adding  " << ml->name().toLocal8Bit().data() << " to zOrder" << std::endl;
 #endif
 
       mCanvasProperties->zOrder.push_back(ml->getLayerID());
@@ -2781,7 +2787,7 @@ void QgsMapCanvas::setZOrder(std::list <QString> theZOrder)
     else
     {
 #ifdef QGISDEBUG
-      std::cout << "Cant add  " << ml->name().local8Bit() << " to zOrder (it isnt in layers array)" << std::endl;
+      std::cout << "Cant add  " << ml->name().toLocal8Bit().data() << " to zOrder (it isnt in layers array)" << std::endl;
 #endif
 
     }
@@ -2908,8 +2914,8 @@ void QgsMapCanvas::recalculateExtents()
   {
     QgsMapLayer * lyr = dynamic_cast<QgsMapLayer *>(mit->second);
 #ifdef QGISDEBUG
-    std::cout << "Updating extent using " << lyr->name().local8Bit() << std::endl;
-    std::cout << "Input extent: " << lyr->extent().stringRep().local8Bit() << std::endl;
+    std::cout << "Updating extent using " << lyr->name().toLocal8Bit().data() << std::endl;
+    std::cout << "Input extent: " << lyr->extent().stringRep().toLocal8Bit().data() << std::endl;
     try
     {
       if ( ! lyr->coordinateTransform() )

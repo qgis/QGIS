@@ -28,9 +28,9 @@
 #include <qobject.h>
 #include <qpixmap.h>
 #include <qpainter.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 
-QgsLegendLayerFile::QgsLegendLayerFile(QListViewItem * theLegendItem, QString theString, QgsMapLayer* theLayer)
+QgsLegendLayerFile::QgsLegendLayerFile(Q3ListViewItem * theLegendItem, QString theString, QgsMapLayer* theLayer)
     : QgsLegendItem(theLegendItem, theString), mLayer(theLayer)
 {
   mType = LEGEND_LAYER_FILE;

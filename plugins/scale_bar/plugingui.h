@@ -22,7 +22,7 @@ class QgsScaleBarPluginGui : public QgsScaleBarPluginGuiBase
 Q_OBJECT;
 public:
     QgsScaleBarPluginGui();
-    QgsScaleBarPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    QgsScaleBarPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~QgsScaleBarPluginGui();
     void pbnOK_clicked();
     void pbnCancel_clicked();

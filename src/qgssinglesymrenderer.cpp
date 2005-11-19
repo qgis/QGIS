@@ -27,7 +27,7 @@
 #include "qgssvgcache.h"
 #include <qdom.h>
 #include <qpainter.h>
-#include <qpicture.h>
+#include <q3picture.h>
 #include <qpixmap.h>
 
 QgsSingleSymRenderer::QgsSingleSymRenderer(QGis::VectorType type)
@@ -40,17 +40,17 @@ QgsSingleSymRenderer::QgsSingleSymRenderer(QGis::VectorType type)
     QgsSymbol* sy = new QgsSymbol(mVectorType);
   
     //random fill colors for points and polygons and pen colors for lines
-    int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-    int green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-    int blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+    int Qt::red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+    int Qt::green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+    int Qt::blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
 
     if (type == QGis::Line)
     {
-	sy->setColor(QColor(red, green, blue));
+	sy->setColor(QColor(Qt::red, Qt::green, Qt::blue));
     } 
     else
     {
-	sy->setFillColor(QColor(red, green, blue));
+	sy->setFillColor(QColor(Qt::red, Qt::green, Qt::blue));
 	sy->setFillStyle(Qt::SolidPattern);
 	sy->setColor(QColor(0, 0, 0));
     }
@@ -85,7 +85,7 @@ void QgsSingleSymRenderer::addSymbol(QgsSymbol* sy)
     mSymbol=sy;
 }
 
-void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, 
+void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, Q3Picture* pic, 
 	         double* scalefactor, bool selected, int oversampling, double widthScale)
 {
 	// Point 

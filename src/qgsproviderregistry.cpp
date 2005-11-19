@@ -80,7 +80,7 @@ QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
 #endif
 
 #ifdef QGISDEBUG
-    cerr << "Checking " << mLibraryDirectory.path() << " for provider plugins\n";
+    cerr << "Checking " << mLibraryDirectory.path().data() << " for provider plugins\n";
 #endif
 
     if (mLibraryDirectory.count() == 0)
@@ -93,20 +93,22 @@ QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
     } 
     else
     {
-        const QFileInfoList *list = mLibraryDirectory.entryInfoList();
-        QFileInfoListIterator it( *list );
-        QFileInfo *fi;
+        const QFileInfoList list = mLibraryDirectory.entryInfoList();
+        QListIterator<QFileInfo> it( list );
+        QFileInfo fi;
 
-        while ( (fi = it.current()) != 0 ) 
+        while (it.hasNext())
         {
-            QLibrary *myLib = new QLibrary( fi->filePath() );
+          fi = it.next();
+        
+            QLibrary *myLib = new QLibrary( fi.filePath() );
 
             bool loaded = myLib->load();
 
             if (loaded)
             {
 #ifdef QGISDEBUG
-                std::cout << "Checking  " << myLib->library().local8Bit() << std::endl;
+                std::cout << "Checking  " << myLib->library().toLocal8Bit().data() << std::endl;
 #endif
                 // get the description and the key for the provider plugin
                 isprovider_t *isProvider = (isprovider_t *) myLib->resolve("isProvider");
@@ -125,7 +127,7 @@ QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
                             mProviders[pKey()] = 
                                 new QgsProviderMetadata(pKey(), pDesc(), myLib->library());
 #ifdef QGISDEBUG
-                            std::cout << "Loaded " << pDesc().local8Bit() << std::endl;
+                            std::cout << "Loaded " << pDesc().toLocal8Bit().data() << std::endl;
 #endif
 
                             // now get vector file filters, if any
@@ -161,7 +163,7 @@ QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
                             } 
                             else
                             {
-                                cout << myLib->library() 
+                                cout << myLib->library().data()
                                      << " Unable to find one of the required provider functions:\n\tproviderKey() or description()" 
                                      << endl;
                             }
@@ -174,13 +176,13 @@ QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
                 } 
                 else
                 {
-                    cout << myLib->library() 
+                    cout << myLib->library().data()
                          << " Unable to find one of the required provider functions:\n\tproviderKey() or description()" 
                          << endl;
                 }
             }
 
-            ++it;
+            //++it;
 
             delete myLib;
         }
@@ -329,7 +331,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
 
 #ifdef QGISDEBUG
   std::cout << "QgsProviderRegistry::getRasterProvider: Library name is " 
-            << myLib->library().local8Bit() 
+            << myLib->library().toLocal8Bit().data() 
             << std::endl;
 #endif
 
@@ -358,7 +360,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
       {
 #ifdef QGISDEBUG
         QgsDebug( "Instantiated the data provider plugin" );
-        cerr << "provider name: " << dataProvider->name() << "\n";
+        cerr << "provider name: " << dataProvider->name().data() << "\n";
         //cout << "provider description: " << dataProvider->description() << "\n";
 #endif
         if (dataProvider->isValid())

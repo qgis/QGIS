@@ -18,8 +18,8 @@
 
 #include "qgsaddattrdialog.h"
 #include "qgsgeomtypedialog.h"
-#include <qcombobox.h>
-#include <qlistview.h>
+#include <q3combobox.h>
+#include <q3listview.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 
@@ -71,7 +71,7 @@ void QgsGeomTypeDialog::addAttribute()
     QgsAddAttrDialog d(types);
     if(d.exec()==QDialog::Accepted)
     {
-	QListViewItem* attritem=new QListViewItem(mAttributeView, d.name(), d.type());
+	Q3ListViewItem* attritem=new Q3ListViewItem(mAttributeView, d.name(), d.type());
     }
     if(mAttributeView->childCount()>0)
     {
@@ -91,13 +91,13 @@ void QgsGeomTypeDialog::removeAttribute()
 
 void QgsGeomTypeDialog::attributes(std::list<std::pair<QString, QString> >& at) const
 {
-    QListViewItemIterator it(mAttributeView);
+    Q3ListViewItemIterator it(mAttributeView);
     while ( it.current() ) 
     {
-	QListViewItem *item = it.current();
+	Q3ListViewItem *item = it.current();
 	at.push_back(std::make_pair(item->text(0), item->text(1)));
 #ifdef QGISDEBUG
-	qWarning(("appending "+item->text(0)+"//"+item->text(1)).local8Bit());
+	qWarning(("appending "+item->text(0)+"//"+item->text(1)).toLocal8Bit().data());
 #endif	
 	++it;
     }

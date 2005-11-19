@@ -87,8 +87,8 @@ class QgsPgQueryBuilder : public QgsPgQueryBuilderBase {
     void insLike();
     QString sql();
     void setSql( QString sqlStatement);
-    void fieldDoubleClick( QListBoxItem *item );
-    void valueDoubleClick( QListBoxItem *item );
+    void fieldDoubleClick( Q3ListBoxItem *item );
+    void valueDoubleClick( Q3ListBoxItem *item );
     void insLessThanEqual();
     void insGreaterThanEqual();
     void insNotEqual();

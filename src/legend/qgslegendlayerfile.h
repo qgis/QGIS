@@ -21,6 +21,8 @@
 #define QGSLEGENDLAYERFILE_H
 
 #include <qgslegenditem.h>
+//Added by qt3to4:
+#include <QPixmap>
 
 class QCheckBox;
 class QgsMapLayer;
@@ -31,7 +33,7 @@ class QgsMapLayer;
 class QgsLegendLayerFile : public QgsLegendItem
 {
 public:
-    QgsLegendLayerFile(QListViewItem * theLegendItem, QString theString, QgsMapLayer* theLayer);
+    QgsLegendLayerFile(Q3ListViewItem * theLegendItem, QString theString, QgsMapLayer* theLayer);
     ~QgsLegendLayerFile();
     bool isLeafNode() {return true;}
     DRAG_ACTION accept(LEGEND_ITEM_TYPE type);

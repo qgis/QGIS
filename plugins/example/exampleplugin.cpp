@@ -19,10 +19,10 @@
 // includes
 #include <iostream>
 #include "../../src/qgisapp.h"
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qaction.h>
 #include "exampleplugin.h"
 // xpm for creating the toolbar icon
@@ -79,19 +79,19 @@ ExamplePlugin::~ExamplePlugin()
 void ExamplePlugin::initGui()
 {
   // add a test menu with 3 items
-  QPopupMenu *pluginMenu = new QPopupMenu(qgisMainWindow);
+  Q3PopupMenu *pluginMenu = new Q3PopupMenu(qgisMainWindow);
 
   pluginMenu->insertItem("&Open", this, SLOT(open()));
   pluginMenu->insertItem("&New", this, SLOT(newThing()));
   pluginMenu->insertItem("&Unload Example Plugin", this, SLOT(unload()));
 
-  menu = ((QMainWindow *) qgisMainWindow)->menuBar();
+  menu = ((Q3MainWindow *) qgisMainWindow)->menuBar();
 
   menuId = menu->insertItem("&ExamplePluginMenu", pluginMenu);
 
   /* Add a test toolbar with one tool (a zoom previous tool) */
   // Create the action for tool
-  QAction *zoomPreviousAction = new QAction("Zoom Previous", QIconSet(icon_matrix), "&Zoom Previous",
+  QAction *zoomPreviousAction = new QAction("Zoom Previous", QIcon(icon_matrix), "&Zoom Previous",
                                             CTRL + Key_S, qgisMainWindow, "zoomPrevious");
   // Connect the action to the zoomPrevous slot
   connect(zoomPreviousAction, SIGNAL(activated()), this, SLOT(zoomPrevious()));

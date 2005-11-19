@@ -1,13 +1,16 @@
 #include "qgsdesignerwidgets.h"
 #include <qstringlist.h>
 #include <qimage.h>
-#include <qdragobject.h>
+#include <q3dragobject.h>
 #include "qgslegend.h"
 #include "qgsmapcanvas.h"
 #include "qgslinestylewidget.h"
 #include "qgsfillstylewidget.h"
 #include "qgspointstylewidget.h"
 #include "qgsvectorsymbologywidget.h"
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3ValueList>
 static const char *legend_pixmap[] = {
     "22 22 8 1",
     "  c Gray100",
@@ -65,7 +68,7 @@ namespace
         QString whatshis;
     };
 
-    QValueList<Entry> mEntriesVector;
+    Q3ValueList<Entry> mEntriesVector;
 
     const Entry *entry(const QString& theString)
     {
@@ -131,19 +134,19 @@ QString QgsDesignerWidgets::group( const QString& feature ) const
     return QString::null;
 }
 
-QIconSet QgsDesignerWidgets::iconSet( const QString& thePixmap) const
+QIcon QgsDesignerWidgets::iconSet( const QString& thePixmap) const
 {
     QString pixmapKey("qwtwidget.png");
     if (entry(thePixmap) != NULL )
         pixmapKey = entry(thePixmap)->pixmap;
 
     const QMimeSource *ms =
-        QMimeSourceFactory::defaultFactory()->data(pixmapKey);
+        Q3MimeSourceFactory::defaultFactory()->data(pixmapKey);
 
     QPixmap pixmap;
-    QImageDrag::decode(ms, pixmap);
+    Q3ImageDrag::decode(ms, pixmap);
 
-    return QIconSet(pixmap);
+    return QIcon(pixmap);
 }
 
 QString QgsDesignerWidgets::includeFile( const QString& feature ) const

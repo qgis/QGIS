@@ -21,12 +21,12 @@
 
 #include <qvariant.h>
 #include <qpushbutton.h>
-#include <qtextbrowser.h>
+#include <q3textbrowser.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include "qgshelpviewer.h"
-QgsHelpViewer::QgsHelpViewer(QWidget * parent, const char *name, bool modal, WFlags fl):QgsHelpViewerBase(parent, name, modal, fl)
+QgsHelpViewer::QgsHelpViewer(QWidget * parent, const char *name, bool modal, Qt::WFlags fl):QgsHelpViewerBase(parent, name, modal, fl)
 {
 
 }

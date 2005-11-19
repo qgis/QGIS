@@ -19,6 +19,9 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qglobal.h>
+//Added by qt3to4:
+#include <QDesktopWidget>
+#include <QMouseEvent>
 #include "splashscreen.h"
 #include "qfont.h"
 #include "qgis.h"
@@ -28,7 +31,7 @@ QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
 #endif
 #define STATUS_TEXT_X 90
 #define STATUS_TEXT_Y 20
-SplashScreen::SplashScreen():QWidget(0, 0, WStyle_Customize | WStyle_Splash)
+SplashScreen::SplashScreen():QWidget(0, 0, Qt::WStyle_Customize | Qt::WStyle_Splash)
 {
   //set up masking
   splashImage.load(QString(PKGDATAPATH) + QString("/images/splash/splash.png"), 0, Qt::ThresholdDither |   Qt::AvoidDither );

@@ -24,7 +24,7 @@
 #include <qfileinfo.h>
 #include <qstring.h>
 #include <qdir.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qapplication.h>
 #include <qmessagebox.h>
 
@@ -87,8 +87,8 @@ void QgsBookmarks::initialise()
       {
         QString name = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 1));
         //        sqlite3_bind_parameter_index(ppStmt, "name"));
-        std::cout << "Bookmark name: " << name.local8Bit() << std::endl; 
-        QListViewItem *lvi = new QListViewItem(lstBookmarks, name);
+        std::cout << "Bookmark name: " << name.toLocal8Bit().data() << std::endl; 
+        Q3ListViewItem *lvi = new Q3ListViewItem(lstBookmarks, name);
         // set the project name
         lvi->setText(1, QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 2))); 
         // get the extents
@@ -140,8 +140,8 @@ bool QgsBookmarks::makeDir(QDir &theQDir)
   }
 
   qDebug("attempting to create directory %s in %s", 
-          (const char *)myTempFileInfo.fileName().local8Bit(),
-          (const char *)myBaseDir.path().local8Bit());
+          (const char *)myTempFileInfo.fileName().toLocal8Bit().data(),
+          (const char *)myBaseDir.path().toLocal8Bit().data());
 
   return myBaseDir.mkdir(myTempFileInfo.fileName());
 }
@@ -149,7 +149,7 @@ bool QgsBookmarks::makeDir(QDir &theQDir)
 void QgsBookmarks::deleteBookmark()
 {
   // get the current item
-  QListViewItem *lvi = lstBookmarks->currentItem();
+  Q3ListViewItem *lvi = lstBookmarks->currentItem();
   if(lvi)
   {
     // make sure the user really wants to delete this bookmark
@@ -174,13 +174,13 @@ void QgsBookmarks::deleteBookmark()
           if(rc != SQLITE_OK)
           {
             // XXX Provide popup message on failure?
-            std::cout << "Failed to delete " << lvi->text(0).local8Bit()
+            std::cout << "Failed to delete " << lvi->text(0).toLocal8Bit().data()
               << " bookmark from the database" << std::endl; 
           }
           else
           {
             // XXX Provide popup message on failure?
-            std::cout << "Failed to delete " << lvi->text(0).local8Bit()
+            std::cout << "Failed to delete " << lvi->text(0).toLocal8Bit().data()
               << " bookmark from the database" << std::endl; 
           }
         }
@@ -194,7 +194,7 @@ void QgsBookmarks::deleteBookmark()
   }
 }
 
-void QgsBookmarks::zoomViaDoubleClick(QListViewItem *lvi)
+void QgsBookmarks::zoomViaDoubleClick(Q3ListViewItem *lvi)
 {
   zoomToBookmark();
 }
@@ -203,7 +203,7 @@ void QgsBookmarks::zoomToBookmark()
 	// Need to fetch the extent for the selected bookmark and then redraw
 	// the map
   // get the current item
-  QListViewItem *lvi = lstBookmarks->currentItem();
+  Q3ListViewItem *lvi = lstBookmarks->currentItem();
   if(!lvi)
   {
       return;
@@ -249,7 +249,7 @@ int QgsBookmarks::connectDb()
 {
 
   int rc;
-  rc = sqlite3_open(mUserDbPath.local8Bit(), &db);
+  rc = sqlite3_open(mUserDbPath.toLocal8Bit().data(), &db);
   if(rc)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
@@ -279,7 +279,7 @@ bool QgsBookmarks::createDatabase()
     myPath += "/.qgis";
     myUserQGisDir.setPath(myPath);
 #ifdef QGISDEBUG 
-    std::cout << "Using " << myPath.local8Bit() << " as path for qgis.db" << std::endl; 
+    std::cout << "Using " << myPath.toLocal8Bit().data() << " as path for qgis.db" << std::endl; 
 #endif 
     //now make sure the users .qgis dir exists 
     makeDir(myUserQGisDir);
@@ -291,21 +291,21 @@ bool QgsBookmarks::createDatabase()
     QString myMasterDatabaseFileName = PKGDATAPATH;
     myMasterDatabaseFileName += "/resources/qgis.db";
     //now copy the master file into the users .qgis dir
-    std::ifstream myInputStream(myMasterDatabaseFileName.local8Bit() );
+    std::ifstream myInputStream(myMasterDatabaseFileName.toLocal8Bit().data() );
 
     if (! myInputStream)
     {
       std::cerr << "unable to open input file: "
-        << myMasterDatabaseFileName.local8Bit() << " --bailing out! \n";
+        << myMasterDatabaseFileName.toLocal8Bit().data() << " --bailing out! \n";
       //XXX Do better error handling
       return false;
     }
 
-    std::ofstream myOutputStream(QString(qgisSettingsDir+"qgis.db").local8Bit());
+    std::ofstream myOutputStream(QString(qgisSettingsDir+"qgis.db").toLocal8Bit().data());
 
     if (! myOutputStream)
     {
-      std::cerr << "cannot open " << QString(qgisSettingsDir+"qgis.db").local8Bit()  << "  for output\n";
+      std::cerr << "cannot open " << QString(qgisSettingsDir+"qgis.db").toLocal8Bit().data()  << "  for output\n";
       //XXX Do better error handling
       return false;
     }

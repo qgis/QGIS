@@ -25,7 +25,7 @@
 #include "qgshttptransaction.h"
 
 #include <qapplication.h>
-#include <qurl.h>
+#include <q3url.h>
 
 
 QgsHttpTransaction::QgsHttpTransaction(QString uri, QString proxyHost, Q_UINT16 proxyPort)
@@ -70,17 +70,17 @@ QByteArray QgsHttpTransaction::getSynchronously(int redirections)
   
 #ifdef QGISDEBUG
   std::cout << "QgsHttpTransaction::getSynchronously: Entered." << std::endl;
-  std::cout << "QgsHttpTransaction::getSynchronously: Using '" << httpurl.local8Bit() << "'." << std::endl;
+  std::cout << "QgsHttpTransaction::getSynchronously: Using '" << httpurl.toLocal8Bit().data() << "'." << std::endl;
 #endif
 
-  QUrl qurl(httpurl);
+  Q3Url qurl(httpurl);
   
   if (httphost.isEmpty())
   {
     // No proxy was specified - connect directly to host in URI
     httphost = qurl.host();
   }  
-  http = new QHttp( httphost, httpport );
+  http = new Q3Http( httphost, httpport );
 
 #ifdef QGISDEBUG
 //  std::cout << "QgsHttpTransaction::getSynchronously: qurl.host() is '" << qurl.host() << "'." << std::endl;
@@ -95,11 +95,11 @@ QByteArray QgsHttpTransaction::getSynchronously(int redirections)
   connect(http, SIGNAL( requestStarted ( int ) ), 
           this,      SLOT( dataStarted ( int ) ) );
   
-  connect(http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader& ) ), 
-          this,       SLOT( dataHeaderReceived( const QHttpResponseHeader& ) ) );
+  connect(http, SIGNAL( responseHeaderReceived( const Q3HttpResponseHeader& ) ), 
+          this,       SLOT( dataHeaderReceived( const Q3HttpResponseHeader& ) ) );
   
-  connect(http,  SIGNAL( readyRead( const QHttpResponseHeader& ) ), 
-          this, SLOT( dataReceived( const QHttpResponseHeader& ) ) );
+  connect(http,  SIGNAL( readyRead( const Q3HttpResponseHeader& ) ), 
+          this, SLOT( dataReceived( const Q3HttpResponseHeader& ) ) );
   
   connect(http, SIGNAL( dataReadProgress ( int, int ) ), 
           this,       SLOT( dataProgress ( int, int ) ) );
@@ -140,7 +140,7 @@ QByteArray QgsHttpTransaction::getSynchronously(int redirections)
   {
 #ifdef QGISDEBUG
   std::cout << "QgsHttpTransaction::getSynchronously: Starting get of '" << 
-               httpredirecturl.local8Bit() << "'." << std::endl;
+               httpredirecturl.toLocal8Bit().data() << "'." << std::endl;
 #endif
 
     QgsHttpTransaction httprecurse(httpredirecturl, httphost, httpport);
@@ -185,13 +185,13 @@ void QgsHttpTransaction::dataStarted( int id )
 }
 
 
-void QgsHttpTransaction::dataHeaderReceived( const QHttpResponseHeader& resp )
+void QgsHttpTransaction::dataHeaderReceived( const Q3HttpResponseHeader& resp )
 {
 
 #ifdef QGISDEBUG
   std::cout << "QgsHttpTransaction::dataHeaderReceived: statuscode " << 
-    resp.statusCode() << ", reason '" << resp.reasonPhrase().local8Bit() << "', content type: '" <<
-    resp.value("Content-Type").local8Bit() << "'." << std::endl;
+    resp.statusCode() << ", reason '" << resp.reasonPhrase().toLocal8Bit().data() << "', content type: '" <<
+    resp.value("Content-Type").toLocal8Bit().data() << "'." << std::endl;
 #endif
 
   if (resp.statusCode() == 302) // Redirect
@@ -206,7 +206,7 @@ void QgsHttpTransaction::dataHeaderReceived( const QHttpResponseHeader& resp )
 }
 
 
-void QgsHttpTransaction::dataReceived( const QHttpResponseHeader& resp )
+void QgsHttpTransaction::dataReceived( const Q3HttpResponseHeader& resp )
 {
   // TODO: Match 'resp' with 'http' if we move to multiple http connections
 
@@ -284,48 +284,48 @@ void QgsHttpTransaction::dataStateChanged( int state )
 #ifdef QGISDEBUG
   switch (state)
   {
-    case QHttp::Unconnected:
+    case Q3Http::Unconnected:
 //      std::cout << "There is no connection to the host." << std::endl;
   
       emit setStatus( QString("Not connected") );
       break;
       
-    case QHttp::HostLookup:
+    case Q3Http::HostLookup:
 //      std::cout << "A host name lookup is in progress." << std::endl;
   
       emit setStatus( QString("Looking up '%1'")
                          .arg(httphost) );
       break;
       
-    case QHttp::Connecting:
+    case Q3Http::Connecting:
 //      std::cout << "An attempt to connect to the host is in progress." << std::endl;
   
       emit setStatus( QString("Connecting to '%1'")
                          .arg(httphost) );
       break;
       
-    case QHttp::Sending:
+    case Q3Http::Sending:
 //      std::cout << "The client is sending its request to the server." << std::endl;
   
       emit setStatus( QString("Sending request '%1'")
                          .arg(httpurl) );
       break;
       
-    case QHttp::Reading:
+    case Q3Http::Reading:
 //      std::cout << "The client's request has been sent and the client "
 //                   "is reading the server's response." << std::endl;
   
       emit setStatus( QString("Receiving reply") );
       break;
       
-    case QHttp::Connected:
+    case Q3Http::Connected:
 //      std::cout << "The connection to the host is open, but the client "
 //                   "is neither sending a request, nor waiting for a response." << std::endl;
   
       emit setStatus( QString("Response is complete") );
       break;
       
-    case QHttp::Closing:
+    case Q3Http::Closing:
 //      std::cout << "The connection is closing down, but is not yet closed. "
 //                   "(The state will be Unconnected when the connection is closed.)" << std::endl;
   

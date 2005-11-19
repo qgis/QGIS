@@ -19,12 +19,16 @@
 #ifndef QGSATTRIBUTETABLE_H
 #define QGSATTRIBUTETABLE_H
 
-#include <qtable.h>
+#include <q3table.h>
 #include <qmap.h>
+//Added by qt3to4:
+#include <QMouseEvent>
+#include <QKeyEvent>
+#include <Q3PopupMenu>
 #include <map>
 #include <set>
 
-class QPopupMenu;
+class Q3PopupMenu;
 class QgsVectorLayer;
 class QgsFeature;
 
@@ -36,7 +40,7 @@ class QgsFeature;
  *@author Gary E.Sherman
  */
 
-class QgsAttributeTable:public QTable
+class QgsAttributeTable:public Q3Table
 {
   Q_OBJECT 
 
@@ -144,7 +148,7 @@ signals:
     // Data to do with providing a popup menu of actions that
     std::vector<std::pair<QString, QString> > mActionValues;
     int mClickedOnValue;
-    QPopupMenu* mActionPopup;
+    Q3PopupMenu* mActionPopup;
     QgsAttributeAction mActions;
 };
 

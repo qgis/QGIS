@@ -17,10 +17,10 @@
 
 #include "qgsdelattrdialog.h"
 #include "qgsfield.h"
-#include <qheader.h>
-#include <qlistbox.h>
+#include <q3header.h>
+#include <q3listbox.h>
 
-QgsDelAttrDialog::QgsDelAttrDialog(QHeader* header): QgsDelAttrDialogBase()
+QgsDelAttrDialog::QgsDelAttrDialog(Q3Header* header): QgsDelAttrDialogBase()
 {
     QObject::connect((QObject*)mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
     QObject::connect((QObject*)mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));

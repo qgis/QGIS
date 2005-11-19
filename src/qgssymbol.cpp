@@ -31,7 +31,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 #include <qrect.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 
 QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString label) : 
       mLowerValue(lvalue),
@@ -192,7 +192,7 @@ QPixmap QgsSymbol::getPolygonSymbolAsPixmap()
     return pix; //this is ok because of qts sharing mechanism 
 }
 
-QPicture QgsSymbol::getPointSymbolAsPicture( int oversampling, double widthScale,
+Q3Picture QgsSymbol::getPointSymbolAsPicture( int oversampling, double widthScale,
                bool selected, QColor selectionColor )
 {
     //std::cerr << "QgsSymbol::getPointSymbolAsPicture oversampling = " << oversampling <<
@@ -392,7 +392,7 @@ bool QgsSymbol::readXML( QDomNode & synode )
     int red = oulcelement.attribute("red").toInt();
     int green = oulcelement.attribute("green").toInt();
     int blue = oulcelement.attribute("blue").toInt();
-    setColor(QColor(red, green, blue));
+    setColor(QColor(Qt::red, Qt::green, Qt::blue));
 
     QDomNode outlstnode = synode.namedItem("outlinestyle");
     QDomElement outlstelement = outlstnode.toElement();
@@ -407,7 +407,7 @@ bool QgsSymbol::readXML( QDomNode & synode )
     red = fillcelement.attribute("red").toInt();
     green = fillcelement.attribute("green").toInt();
     blue = fillcelement.attribute("blue").toInt();
-    setFillColor(QColor(red, green, blue));
+    setFillColor(QColor(Qt::red, Qt::green, Qt::blue));
 
     QDomNode fillpnode = synode.namedItem("fillpattern");
     QDomElement fillpelement = fillpnode.toElement();

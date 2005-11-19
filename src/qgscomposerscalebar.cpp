@@ -21,24 +21,24 @@
 
 #include <qwidget.h>
 #include <qrect.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qdom.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qpainter.h>
 #include <qstring.h>
 #include <qpixmap.h>
 #include <qimage.h>
 #include <qlineedit.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qfont.h>
 #include <qfontmetrics.h>
 #include <qfontdialog.h>
 #include <qpen.h>
 #include <qrect.h>
-#include <qlistview.h>
-#include <qpopupmenu.h>
+#include <q3listview.h>
+#include <q3popupmenu.h>
 #include <qlabel.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qrect.h>
 #include <qspinbox.h>
 
@@ -66,7 +66,7 @@
 
 QgsComposerScalebar::QgsComposerScalebar ( QgsComposition *composition, int id, 
 	                                            int x, int y )
-    : QCanvasPolygonalItem(0),
+    : Q3CanvasPolygonalItem(0),
     mComposition(composition),
     mMap(0),
     mBrush(QColor(150,150,150))
@@ -77,8 +77,8 @@ QgsComposerScalebar::QgsComposerScalebar ( QgsComposition *composition, int id,
 
     mMapCanvas = mComposition->mapCanvas();
 
-    QCanvasPolygonalItem::setX(x);
-    QCanvasPolygonalItem::setY(y);
+    Q3CanvasPolygonalItem::setX(x);
+    Q3CanvasPolygonalItem::setY(y);
 
     init();
 
@@ -95,7 +95,7 @@ QgsComposerScalebar::QgsComposerScalebar ( QgsComposition *composition, int id,
 	mUnitLabel = "m";
 
 	// make one segment cca 1/10 of map width and it will be 1xxx, 2xxx or 5xxx
-	double mapwidth = 1. * map->QCanvasRectangle::width() / map->scale();
+	double mapwidth = 1. * map->Q3CanvasRectangle::width() / map->scale();
 
 	mSegmentLength = mapwidth / 10;
 	
@@ -131,14 +131,14 @@ QgsComposerScalebar::QgsComposerScalebar ( QgsComposition *composition, int id,
     // Add to canvas
     setCanvas(mComposition->canvas());
 
-    QCanvasPolygonalItem::show();
-    QCanvasPolygonalItem::update();
+    Q3CanvasPolygonalItem::show();
+    Q3CanvasPolygonalItem::update();
      
     writeSettings();
 }
 
 QgsComposerScalebar::QgsComposerScalebar ( QgsComposition *composition, int id ) 
-    : QCanvasPolygonalItem(0),
+    : Q3CanvasPolygonalItem(0),
     mComposition(composition),
     mMap(0),
     mBrush(QColor(150,150,150))
@@ -159,8 +159,8 @@ QgsComposerScalebar::QgsComposerScalebar ( QgsComposition *composition, int id )
     // Add to canvas
     setCanvas(mComposition->canvas());
 
-    QCanvasPolygonalItem::show();
-    QCanvasPolygonalItem::update();
+    Q3CanvasPolygonalItem::show();
+    Q3CanvasPolygonalItem::update();
 }
 
 void QgsComposerScalebar::init ( void ) 
@@ -168,7 +168,7 @@ void QgsComposerScalebar::init ( void )
     mUnitLabel = "m";
 
     // Rectangle
-    QCanvasPolygonalItem::setZ(50);
+    Q3CanvasPolygonalItem::setZ(50);
     setActive(true);
 
     // Plot style
@@ -180,7 +180,7 @@ void QgsComposerScalebar::init ( void )
 QgsComposerScalebar::~QgsComposerScalebar()
 {
     std::cerr << "QgsComposerScalebar::~QgsComposerScalebar()" << std::endl;
-    QCanvasItem::hide();
+    Q3CanvasItem::hide();
 }
 
 QRect QgsComposerScalebar::render ( QPainter *p )
@@ -233,8 +233,8 @@ QRect QgsComposerScalebar::render ( QPainter *p )
     int ymin; // min y
     int ymax; // max y
 
-    int cx = (int) QCanvasPolygonalItem::x();
-    int cy = (int) QCanvasPolygonalItem::y();
+    int cx = (int) Q3CanvasPolygonalItem::x();
+    int cy = (int) Q3CanvasPolygonalItem::y();
 
     painter->setPen ( mPen );
     painter->setBrush ( mBrush );
@@ -360,8 +360,8 @@ void QgsComposerScalebar::changeFont ( void )
 
     if ( result ) {
 	recalculate();
-	QCanvasPolygonalItem::update();
-	QCanvasPolygonalItem::canvas()->update();
+	Q3CanvasPolygonalItem::update();
+	Q3CanvasPolygonalItem::canvas()->update();
 	writeSettings();
     }
 }
@@ -370,8 +370,8 @@ void QgsComposerScalebar::unitLabelChanged (  )
 {
     mUnitLabel = mUnitLabelLineEdit->text();
     recalculate();
-    QCanvasPolygonalItem::update();
-    QCanvasPolygonalItem::canvas()->update();
+    Q3CanvasPolygonalItem::update();
+    Q3CanvasPolygonalItem::canvas()->update();
     writeSettings();
 }
 
@@ -379,8 +379,8 @@ void QgsComposerScalebar::mapSelectionChanged ( int i )
 {
     mMap = mMaps[i];
     recalculate();
-    QCanvasPolygonalItem::update();
-    QCanvasPolygonalItem::canvas()->update();
+    Q3CanvasPolygonalItem::update();
+    Q3CanvasPolygonalItem::canvas()->update();
     writeSettings();
 }
 
@@ -388,8 +388,8 @@ void QgsComposerScalebar::mapChanged ( int id )
 {
     if ( id != mMap ) return;
     recalculate();
-    QCanvasPolygonalItem::update();
-    QCanvasPolygonalItem::canvas()->update();
+    Q3CanvasPolygonalItem::update();
+    Q3CanvasPolygonalItem::canvas()->update();
 }
 
 void QgsComposerScalebar::sizeChanged ( )
@@ -399,15 +399,15 @@ void QgsComposerScalebar::sizeChanged ( )
     mPen.setWidth ( mLineWidthSpinBox->value() );
     mMapUnitsPerUnit = mMapUnitsPerUnitLineEdit->text().toInt();
     recalculate();
-    QCanvasPolygonalItem::update();
-    QCanvasPolygonalItem::canvas()->update();
+    Q3CanvasPolygonalItem::update();
+    Q3CanvasPolygonalItem::canvas()->update();
     writeSettings();
 }
 
 void QgsComposerScalebar::moveBy(double x, double y )
 {
     std::cout << "QgsComposerScalebar::move" << std::endl;
-    QCanvasItem::moveBy ( x, y );
+    Q3CanvasItem::moveBy ( x, y );
 
     recalculate();
     //writeSettings(); // not necessary called by composition
@@ -421,11 +421,11 @@ void QgsComposerScalebar::recalculate ( void )
     mMargin = (int) (3.*mHeight/2);
     
     // !!! invalidate() MUST BE called before the value returned by areaPoints() changes
-    QCanvasPolygonalItem::invalidate();
+    Q3CanvasPolygonalItem::invalidate();
     
     mBoundingRect = render(0);
     
-    QCanvasItem::update();
+    Q3CanvasItem::update();
 }
 
 QRect QgsComposerScalebar::boundingRect ( void ) const
@@ -434,12 +434,12 @@ QRect QgsComposerScalebar::boundingRect ( void ) const
     return mBoundingRect;
 }
 
-QPointArray QgsComposerScalebar::areaPoints() const
+Q3PointArray QgsComposerScalebar::areaPoints() const
 {
     std::cout << "QgsComposerScalebar::areaPoints" << std::endl;
 
     QRect r = boundingRect();
-    QPointArray pa(4);
+    Q3PointArray pa(4);
     pa[0] = QPoint( r.x(), r.y() );
     pa[1] = QPoint( r.x()+r.width(), r.y() );
     pa[2] = QPoint( r.x()+r.width(), r.y()+r.height() );
@@ -484,7 +484,7 @@ void QgsComposerScalebar::setOptions ( void )
 void QgsComposerScalebar::setSelected (  bool s ) 
 {
     mSelected = s;
-    QCanvasPolygonalItem::update(); // show highlight
+    Q3CanvasPolygonalItem::update(); // show highlight
 }    
 
 bool QgsComposerScalebar::selected( void )
@@ -504,8 +504,8 @@ bool QgsComposerScalebar::writeSettings ( void )
     QString path;
     path.sprintf("/composition_%d/scalebar_%d/", mComposition->id(), mId ); 
 
-    QgsProject::instance()->writeEntry( "Compositions", path+"x", mComposition->toMM((int)QCanvasPolygonalItem::x()) );
-    QgsProject::instance()->writeEntry( "Compositions", path+"y", mComposition->toMM((int)QCanvasPolygonalItem::y()) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"x", mComposition->toMM((int)Q3CanvasPolygonalItem::x()) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"y", mComposition->toMM((int)Q3CanvasPolygonalItem::y()) );
 
     QgsProject::instance()->writeEntry( "Compositions", path+"map", mMap );
 
@@ -532,8 +532,8 @@ bool QgsComposerScalebar::readSettings ( void )
     QString path;
     path.sprintf("/composition_%d/scalebar_%d/", mComposition->id(), mId );
 
-    QCanvasPolygonalItem::setX( mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"x", 0, &ok)) );
-    QCanvasPolygonalItem::setY( mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"y", 0, &ok)) );
+    Q3CanvasPolygonalItem::setX( mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"x", 0, &ok)) );
+    Q3CanvasPolygonalItem::setY( mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"y", 0, &ok)) );
     
     mMap = QgsProject::instance()->readNumEntry("Compositions", path+"map", 0, &ok);
     mUnitLabel = QgsProject::instance()->readEntry("Compositions", path+"unit/label", "???", &ok);

@@ -24,7 +24,7 @@
 
 #include <qobject.h>
 
-class QProcess;
+class Q3Process;
 class QgsMessageViewer;
 class QStringList;
 
@@ -61,7 +61,7 @@ class QgsRunProcess: public QObject
   // Deletes the instance of the class
   void die();
 
-  QProcess* mProcess;
+  Q3Process* mProcess;
   QgsMessageViewer* mLogViewer;
 };
 

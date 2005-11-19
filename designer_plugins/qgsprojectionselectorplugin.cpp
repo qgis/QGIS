@@ -1,4 +1,6 @@
 #include "qgsprojectionselectorplugin.h"
+//Added by qt3to4:
+#include <QPixmap>
 #include "../widgets/projectionselector/qgsprojectionselector.h"
 
 static const char *projectionselector_pixmap[] = {
@@ -60,9 +62,9 @@ QString QgsProjectionSelectorPlugin::group( const QString& feature ) const
     return QString::null;
 }
 
-QIconSet QgsProjectionSelectorPlugin::iconSet( const QString& ) const
+QIcon QgsProjectionSelectorPlugin::iconSet( const QString& ) const
 {
-    return QIconSet( QPixmap( projectionselector_pixmap ) );
+    return QIcon( QPixmap( projectionselector_pixmap ) );
 }
 
 QString QgsProjectionSelectorPlugin::includeFile( const QString& feature ) const

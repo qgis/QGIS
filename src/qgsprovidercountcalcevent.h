@@ -23,6 +23,8 @@
 #include <qevent.h>
 
 #include "qgis.h"
+//Added by qt3to4:
+#include <QCustomEvent>
 
 /*!
  * \brief   A custom event that is designed to be fired when a layer count has been fully calculated.

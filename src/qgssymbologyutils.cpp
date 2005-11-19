@@ -16,6 +16,8 @@
  ***************************************************************************/
 /* $Id$ */
 #include "qgssymbologyutils.h"
+//Added by qt3to4:
+#include <QPixmap>
 
 static const char *solidLineData[] = {
   "60 26 4 1",
@@ -715,7 +717,7 @@ QString QgsSymbologyUtils::brushStyle2QString(Qt::BrushStyle brushstyle)
   } else if (brushstyle == Qt::DiagCrossPattern)
     {
       return "DiagCrossPattern";
-  } else if (brushstyle == Qt::CustomPattern)
+  } else if (brushstyle == Qt::TexturePattern)
     {
       return "CustomPattern";
   } else                        //return a null string
@@ -774,7 +776,7 @@ Qt::BrushStyle QgsSymbologyUtils::qString2BrushStyle(QString brushString)
       return Qt::DiagCrossPattern;
   } else if (brushString == "CustomPattern")
     {
-      return Qt::CustomPattern;
+      return Qt::TexturePattern;
   } else                        //return a null string
     {
       return Qt::NoBrush;
@@ -945,7 +947,7 @@ const char *QgsSymbologyUtils::brushStyle2Char(Qt::BrushStyle brushstyle)
   } else if (brushstyle == Qt::DiagCrossPattern)
     {
       return "DiagCrossPattern";
-  } else if (brushstyle == Qt::CustomPattern)
+  } else if (brushstyle == Qt::TexturePattern)
     {
       return "CustomPattern";
   } else                        //return an empty char*
@@ -1124,7 +1126,7 @@ Qt::BrushStyle QgsSymbologyUtils::char2BrushStyle(const char *c)
       return Qt::DiagCrossPattern;
   } else if (strcmp(c, "CustomPattern") == 0)
     {
-      return Qt::CustomPattern;
+      return Qt::TexturePattern;
   } else if(strcmp(c, "NoBrush") == 0)
 {
     return Qt::NoBrush;

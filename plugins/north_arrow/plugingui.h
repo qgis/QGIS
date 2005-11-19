@@ -13,6 +13,9 @@
 #define QGSNORTHARROWPLUGINGUI_H
 
 #include <pluginguibase.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QPaintEvent>
 
 /**
 @author Tim Sutton
@@ -22,7 +25,7 @@ class QgsNorthArrowPluginGui : public QgsNorthArrowPluginGuiBase
 Q_OBJECT
 public:
     QgsNorthArrowPluginGui();
-    QgsNorthArrowPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    QgsNorthArrowPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~QgsNorthArrowPluginGui();
     void pbnOK_clicked();
     void pbnCancel_clicked();

@@ -15,7 +15,7 @@
  ***************************************************************************/
 #include <cmath>
 
-#include <qtable.h>
+#include <q3table.h>
 #include <qsettings.h>
 #include <qevent.h>
 #include <qsize.h>
@@ -33,10 +33,12 @@
 #include "qgscontexthelp.h"
 
 #include "qgsdistancearea.h"
+//Added by qt3to4:
+#include <QCloseEvent>
 
 
 
-QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, QWidget *parent, const char * name, WFlags f)
+QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, QWidget *parent, const char * name, Qt::WFlags f)
            :QgsMeasureBase( parent, name, f)
 {
     mMeasureArea = measureArea;

@@ -16,27 +16,27 @@
 #include <iostream>
 #include <qdir.h>
 #include <qfile.h>
-#include <qfiledialog.h> 
+#include <q3filedialog.h> 
 #include <qsettings.h>
 #include <qpixmap.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qstringlist.h>
 #include <qlabel.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qspinbox.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
 #include <qpainter.h>
 #include <qpen.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qcursor.h>
 #include <qnamespace.h>
 #include <qsettings.h>
 #include <qvalidator.h>
-#include <qbutton.h>
+#include <q3button.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
-#include <qbuttongroup.h>
+#include <q3buttongroup.h>
 #include <qpalette.h>
 #include <qcolordialog.h>
 #include <qspinbox.h>
@@ -63,7 +63,7 @@ extern "C" {
 bool QgsGrassRegion::mRunning = false;
 
 QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, QgisIface *interface,
-        QWidget * parent, const char * name, WFlags f ) :QgsGrassRegionBase ( parent, name, f )
+        QWidget * parent, const char * name, Qt::WFlags f ) :QgsGrassRegionBase ( parent, name, f )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassRegion()" << std::endl;
@@ -94,8 +94,8 @@ QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, Qgis
     mCols->setValidator ( iv );
 
     // Group radio buttons
-    mNSRadioGroup = new QButtonGroup();
-    mEWRadioGroup = new QButtonGroup();
+    mNSRadioGroup = new Q3ButtonGroup();
+    mEWRadioGroup = new Q3ButtonGroup();
     mNSRadioGroup->insert ( mNSResRadio );
     mNSRadioGroup->insert ( mRowsRadio );
     mEWRadioGroup->insert ( mEWResRadio );

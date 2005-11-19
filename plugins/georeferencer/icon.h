@@ -1,7 +1,7 @@
 #ifndef _QEMBED_1804289383
 #define _QEMBED_1804289383
 #include <qimage.h>
-#include <qdict.h>
+#include <q3dict.h>
 static const QRgb icon_data[] = {
     0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
     0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
@@ -55,7 +55,7 @@ static struct EmbedImage {
 
 static const QImage& qembed_findImage( const QString& name )
 {
-    static QDict<QImage> dict;
+    static Q3Dict<QImage> dict;
     QImage* img = dict.find( name );
     if ( !img ) {
 	for ( int i = 0; embed_image_vec[i].data; i++ ) {

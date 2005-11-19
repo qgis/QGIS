@@ -28,10 +28,10 @@ email                : tim@linfiniti.com
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlineedit.h>
 #include <qaction.h>
 #include <qapplication.h>
@@ -39,9 +39,9 @@ email                : tim@linfiniti.com
 #include <qpixmap.h>
 #include <qpainter.h>
 #include <qfont.h>
-#include <qpicture.h>
-#include <qpointarray.h>
-#include <qpaintdevicemetrics.h>
+#include <q3picture.h>
+#include <q3pointarray.h>
+#include <q3paintdevicemetrics.h>
 #include <qglobal.h>
 
 //non qt includes
@@ -100,14 +100,14 @@ QgsNorthArrowPlugin::~QgsNorthArrowPlugin()
  */
 void QgsNorthArrowPlugin::initGui()
 {
-  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
-  menuId = pluginMenu->insertItem(QIconSet(icon),"&NorthArrow", this, SLOT(run()));
+  Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
+  menuId = pluginMenu->insertItem(QIcon(icon),"&NorthArrow", this, SLOT(run()));
 
   pluginMenu->setWhatsThis(menuId, "Creates a north arrow that is displayed on the map canvas");
 
   // Create the action for tool
 #if QT_VERSION < 0x040000
-  myQActionPointer = new QAction("North Arrow", QIconSet(icon), "&Wmi",0, this, "run");
+  myQActionPointer = new QAction("North Arrow", QIcon(icon), "&Wmi",0, this, "run");
 #else
   myQActionPointer = new QAction(QIcon(icon), "North Arrow", this);
 #endif
@@ -213,12 +213,12 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
                                     ) - centerYDouble);
 
       // need width/height of paint device
-      QPaintDeviceMetrics myMetrics( theQPainter->device() );
+      Q3PaintDeviceMetrics myMetrics( theQPainter->device() );
       int myHeight = myMetrics.height();
       int myWidth = myMetrics.width();
 
 #ifdef QGISDEBUG
-      std::cout << "Rendering n-arrow at " << mPlacement.local8Bit() << std::endl;
+      std::cout << "Rendering n-arrow at " << mPlacement.toLocal8Bit().data() << std::endl;
 #endif
       //Determine placement of label from form combo box
       if (mPlacement==tr("Bottom Left"))

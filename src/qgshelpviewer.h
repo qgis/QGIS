@@ -22,24 +22,28 @@
 
 #include <qvariant.h>
 #include <qdialog.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3HBoxLayout>
+#include <Q3GridLayout>
 #ifdef WIN32
 #include "qgshelpviewerbase.h"
 #else
 #include "qgshelpviewerbase.uic.h"
 #endif
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QPushButton;
-class QTextBrowser;
+class Q3TextBrowser;
 class QString;
 class QgsHelpViewer : public QgsHelpViewerBase
 {
     Q_OBJECT
 
 public:
-    QgsHelpViewer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    QgsHelpViewer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~QgsHelpViewer();
     void showContent(QString path, QString doc);
 

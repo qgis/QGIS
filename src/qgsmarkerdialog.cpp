@@ -19,21 +19,23 @@
 #include "qgsmarkerdialog.h"
 #include "qgssvgcache.h"
 #include <qdir.h>
-#include <qfiledialog.h>
-#include <qiconview.h>
+#include <q3filedialog.h>
+#include <q3iconview.h>
 #include <qlineedit.h>
-#include <qpicture.h>
+#include <q3picture.h>
 #include <qpushbutton.h>
 #include <qpainter.h>
 #include <qapplication.h>
 #include "qgsconfig.h"
+//Added by qt3to4:
+#include <QPixmap>
 
 QgsMarkerDialog::QgsMarkerDialog(QString startdir): QgsMarkerDialogBase(0,0,true,Qt::WStyle_StaysOnTop), mCurrentDir(startdir)
 {
     QObject::connect(mOkButton,SIGNAL(clicked()),this,SLOT(accept()));
     QObject::connect(mCancelButton,SIGNAL(clicked()),this,SLOT(reject()));
     QObject::connect(mBrowseDirectoriesButton,SIGNAL(clicked()),this,SLOT(changeDirectory()));
-    QObject::connect(mIconView,SIGNAL(currentChanged(QIconViewItem*)),this,SLOT(updateSelectedMarker()));
+    QObject::connect(mIconView,SIGNAL(currentChanged(Q3IconViewItem*)),this,SLOT(updateSelectedMarker()));
     mDirectoryEdit->setText(startdir);
     visualizeMarkers(startdir);
 }
@@ -45,7 +47,7 @@ QgsMarkerDialog::~QgsMarkerDialog()
 
 void QgsMarkerDialog::updateSelectedMarker()
 {
-    QIconViewItem* current=mIconView->currentItem();
+    Q3IconViewItem* current=mIconView->currentItem();
     if(current)
     {
 	mSelectedMarker=current->text();
@@ -63,7 +65,7 @@ QString QgsMarkerDialog::selectedMarker()
 
 void QgsMarkerDialog::changeDirectory()
 {
-    QString newdir=QFileDialog::getExistingDirectory(mCurrentDir,this,"get existing directory","Choose a directory",TRUE);
+    QString newdir=Q3FileDialog::getExistingDirectory(mCurrentDir,this,"get existing directory","Choose a directory",TRUE);
     if (!newdir.isEmpty())
     {
 	mCurrentDir=newdir;
@@ -81,12 +83,12 @@ void QgsMarkerDialog::visualizeMarkers(QString directory)
     
     for(QStringList::Iterator it = files.begin(); it != files.end(); ++it )
     {
-	qWarning((*it).local8Bit());
+	qWarning((*it).toLocal8Bit().data());
 	
 	//render the SVG file to a pixmap and put it into mIconView
 	QPixmap pix = QgsSVGCache::instance().getPixmap(mCurrentDir + "/" + 
 							(*it), 1);
-	QIconViewItem* ivi=new QIconViewItem(mIconView,*it,pix);
+	Q3IconViewItem* ivi=new Q3IconViewItem(mIconView,*it,pix);
 	
     }
 }

@@ -13,8 +13,8 @@ public:
     //! Set the description displayed in the dialog
     void setDescription(const QString &description);
 public slots:
-    void checkWord(QListViewItem *, int , const QString&);
-    void editWord(QListViewItem *);
+    void checkWord(Q3ListViewItem *, int , const QString&);
+    void editWord(Q3ListViewItem *);
 
 
 

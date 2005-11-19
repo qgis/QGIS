@@ -20,11 +20,13 @@
 
 #include <qimage.h>
 #include <qpainter.h>
-#include <qpicture.h>
+#include <q3picture.h>
 #include <qsettings.h>
 #include <qmessagebox.h>
 
 #include "qgssvgcache.h"
+//Added by qt3to4:
+#include <QPixmap>
 
 
 QgsSVGCache::QgsSVGCache() {
@@ -34,7 +36,7 @@ QgsSVGCache::QgsSVGCache() {
   totalPixels = 0;
 }
 
-QPicture QgsSVGCache::getPicture(QString filename) 
+Q3Picture QgsSVGCache::getPicture(QString filename) 
 {
     PictureMap::const_iterator iter;
     PictureMap::key_type key(filename);
@@ -52,7 +54,7 @@ QPicture QgsSVGCache::getPicture(QString filename)
         std::cerr<<"SVGCACHE: loading " << filename << std::endl;
 #endif
 
-    QPicture pic;
+    Q3Picture pic;
     pic.load(filename,"svg");
     
     pictureMap[key] = pic;
@@ -82,7 +84,7 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
 #if QGISDEBUG > 2
   std::cerr<<"SVGCACHE: loading "<<filename<<"["<<scaleFactor<<"]"<<std::endl;
 #endif
-  QPicture pic;
+  Q3Picture pic;
   pic.load(filename,"svg");
   int width=pic.boundingRect().width();
   width=static_cast<int>(static_cast<double>(width)*scaleFactor);

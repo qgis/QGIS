@@ -19,7 +19,7 @@
 #include <cfloat>
 
 #include <qpixmap.h>
-#include <qiconset.h>
+#include <qicon.h>
 #include <qdir.h>
 #include <qstring.h>
 #include <qdatetime.h>

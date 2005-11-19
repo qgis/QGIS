@@ -24,7 +24,7 @@ class QgsDelimitedTextPluginGui : public QgsDelimitedTextPluginGuiBase
   Q_OBJECT
   public:
     QgsDelimitedTextPluginGui();
-    QgsDelimitedTextPluginGui( QgisIface * _qI, QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    QgsDelimitedTextPluginGui( QgisIface * _qI, QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~QgsDelimitedTextPluginGui();
     public slots:
     void pbnOK_clicked();

@@ -17,19 +17,19 @@
 #include <qdir.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qfiledialog.h> 
+#include <q3filedialog.h> 
 #include <qfileinfo.h>
 #include <qsettings.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qstringlist.h>
 #include <qlabel.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qspinbox.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
 #include <qcursor.h>
-#include <qlistview.h>
-#include <qheader.h>
+#include <q3listview.h>
+#include <q3header.h>
 #include <qradiobutton.h>
 #include <qlayout.h>
 #include <qpainter.h>
@@ -37,8 +37,13 @@
 #include <qpen.h>
 #include <qdom.h>
 #include <qpushbutton.h>
-#include <qtextbrowser.h>
+#include <q3textbrowser.h>
 #include <qapplication.h>
+//Added by qt3to4:
+#include <QKeyEvent>
+#include <QTextStream>
+#include <Q3GridLayout>
+#include <QCloseEvent>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsmapcanvas.h"
@@ -55,7 +60,7 @@ bool QgsGrassNewMapset::mRunning = false;
 
 QgsGrassNewMapset::QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface, 
 	QgsGrassPlugin *plugin,
-    QWidget * parent, const char * name, WFlags f )
+    QWidget * parent, const char * name, Qt::WFlags f )
 :QgsGrassNewMapsetBase ( parent, name, f )
 {
 #ifdef QGISDEBUG
@@ -108,24 +113,24 @@ QgsGrassNewMapset::QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface,
     mTreeListView->setSortColumn(-1); // No sorting
     mTreeListView->setColumnText( 0, "Tree" );
     mTreeListView->addColumn( "Comment" );
-    QListViewItem *dbi = new QListViewItem( mTreeListView, "OurDatabase", "Database" );
+    Q3ListViewItem *dbi = new Q3ListViewItem( mTreeListView, "OurDatabase", "Database" );
     dbi->setOpen(true);
     
     // First inserted is last in the view
-    QListViewItem *l = new QListViewItem( dbi, "New Zealand", "Location 1" );
+    Q3ListViewItem *l = new Q3ListViewItem( dbi, "New Zealand", "Location 1" );
     l->setOpen(true);
-    QListViewItem *m = new QListViewItem( l, "Klima", "User's mapset");
+    Q3ListViewItem *m = new Q3ListViewItem( l, "Klima", "User's mapset");
     m->setOpen(true);
-    m = new QListViewItem( l, "PERMANENT", "System mapset" );
+    m = new Q3ListViewItem( l, "PERMANENT", "System mapset" );
     m->setOpen(true);
     
-    l = new QListViewItem( dbi, "Mexico", "Location 2" );
+    l = new Q3ListViewItem( dbi, "Mexico", "Location 2" );
     m->setOpen(true);
-    m = new QListViewItem( l, "Jirovec", "User's mapset");
+    m = new Q3ListViewItem( l, "Jirovec", "User's mapset");
     l->setOpen(true);
-    m = new QListViewItem( l, "Cimrman", "User's mapset");
+    m = new Q3ListViewItem( l, "Cimrman", "User's mapset");
     m->setOpen(true);
-    m = new QListViewItem( l, "PERMANENT", "System mapset" );
+    m = new Q3ListViewItem( l, "PERMANENT", "System mapset" );
     m->setOpen(true);
     
     // PROJECTION
@@ -155,8 +160,8 @@ QgsGrassNewMapset::~QgsGrassNewMapset()
 void QgsGrassNewMapset::browseDatabase()
 {
     // TODO: unfortunately QFileDialog does not support 'new' directory
-    QFileDialog *fd = new QFileDialog ( mDatabaseLineEdit->text() );
-    fd->setMode ( QFileDialog::DirectoryOnly ); 
+    Q3FileDialog *fd = new Q3FileDialog ( mDatabaseLineEdit->text() );
+    fd->setMode ( Q3FileDialog::DirectoryOnly ); 
     
     if ( fd->exec() == QDialog::Accepted )
     {
@@ -751,7 +756,7 @@ void QgsGrassNewMapset::loadRegions()
                    "Regions file (" + path + ") not found." );
         return;
     }
-    if ( ! file.open( IO_ReadOnly ) ) {
+    if ( ! file.open( QIODevice::ReadOnly ) ) {
         QMessageBox::warning( 0, "Warning", 
                    "Cannot open locations file (" + path +")" );
         return;
@@ -765,7 +770,7 @@ void QgsGrassNewMapset::loadRegions()
         QString errmsg = "Cannot read locations file (" + path + "):\n" 
                          + err + "\nat line " + QString::number(line) 
                          + " column " + QString::number(column);
-        std::cerr << errmsg.local8Bit() << std::endl;
+        std::cerr << errmsg.toLocal8Bit().data() << std::endl;
         QMessageBox::warning( 0, "Warning", errmsg );
         file.close();
         return;
@@ -1178,7 +1183,7 @@ void QgsGrassNewMapset::setMapsets()
     QDir d ( locationPath );
 
     // Add all subdirs containing WIND
-    QListViewItem *lvi;
+    Q3ListViewItem *lvi;
     for ( int i = 0; i < d.count(); i++ ) 
     {
 	if ( d[i] == "." || d[i] == ".." ) continue; 
@@ -1189,7 +1194,7 @@ void QgsGrassNewMapset::setMapsets()
 
 	if ( QFile::exists ( windPath ) ) 
 	{
-            lvi = new QListViewItem( mMapsetsListView, d[i], mapsetInfo.owner() );
+            lvi = new Q3ListViewItem( mMapsetsListView, d[i], mapsetInfo.owner() );
 	}
     }
 }
@@ -1334,14 +1339,14 @@ void QgsGrassNewMapset::createMapset()
 	// Copy WIND Better way to copy file in Qt?
         QStringList lines;
         QFile in ( locationPath + "/PERMANENT/DEFAULT_WIND" );
-        if ( !in.open( IO_ReadOnly ) ) 
+        if ( !in.open( QIODevice::ReadOnly ) ) 
 	{
 	    QMessageBox::warning (this, "Create mapset", "Cannot open DEFAULT_WIND" ); 
 	    return;
 	}
 	    
         QFile out ( locationPath + "/" + mapset + "/WIND" );
-        if ( !out.open( IO_WriteOnly ) ) 
+        if ( !out.open( QIODevice::WriteOnly ) ) 
 	{
 	    QMessageBox::warning (this, "Create mapset", "Cannot open WIND" ); 
 	    return;
@@ -1441,7 +1446,7 @@ void QgsGrassNewMapset::pageSelected( const QString & title )
     	    // Projection selector
 	    if ( !mProjectionSelector )
 	    {
-		QGridLayout *projectionLayout = new QGridLayout( mProjectionFrame, 1, 1 );
+		Q3GridLayout *projectionLayout = new Q3GridLayout( mProjectionFrame, 1, 1 );
 	
 		mProjectionSelector = new QgsProjectionSelector ( mProjectionFrame, "Projection", 0 );
 		mProjectionSelector->setEnabled ( false );

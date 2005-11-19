@@ -17,7 +17,7 @@
 #define QGSCOMPOSERSCALEBAR_H
 
 #include <qwidget.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qobject.h>
 
 #include "qgsrect.h"
@@ -25,6 +25,10 @@
 #include "qgscomposer.h"
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3PointArray>
+#include <Q3PopupMenu>
 
 #ifdef WIN32
 #include "qgscomposerscalebarbase.h"
@@ -32,8 +36,8 @@
 #include "qgscomposerscalebarbase.uic.h"
 #endif
 
-class QCanvasItem;
-class QCanvasRectangle;
+class Q3CanvasItem;
+class Q3CanvasRectangle;
 class QPainter;
 class QWidget;
 class QDomNode;
@@ -43,7 +47,7 @@ class QImage;
 class QFont;
 class QPen;
 class QRect;
-class QPopupMenu;
+class Q3PopupMenu;
 
 
 class QgsMapCanvas;
@@ -58,7 +62,7 @@ class QgsComposerMap;
  *         x,y is center of upper side of the bar, the center position depends on scalebar style
  */
 // NOTE: QgsComposerScalebarBase must be first, otherwise does not compile
-class QgsComposerScalebar : public QgsComposerScalebarBase, public QCanvasPolygonalItem, public QgsComposerItem
+class QgsComposerScalebar : public QgsComposerScalebarBase, public Q3CanvasPolygonalItem, public QgsComposerItem
 {
     Q_OBJECT
 
@@ -100,7 +104,7 @@ public:
     void draw ( QPainter & painter );
 
     void drawShape(QPainter&);
-    QPointArray areaPoints() const;
+    Q3PointArray areaPoints() const;
     
     /** \brief Calculate size according to current settings */
     void recalculate ( void );

@@ -17,6 +17,10 @@
 #define QGSGRASSNEWMAPSET_H
 
 #include <vector>
+//Added by qt3to4:
+#include <QPixmap>
+#include <QKeyEvent>
+#include <QCloseEvent>
 class QString;
 class QCloseEvent;
 #include <qlabel.h>
@@ -62,7 +66,7 @@ public:
     //! Constructor
     QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface,
                    QgsGrassPlugin *plugin, 
-	           QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+	           QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassNewMapset();

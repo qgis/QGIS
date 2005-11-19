@@ -16,13 +16,13 @@
 #include <iostream>
 #include <qdir.h>
 #include <qfile.h>
-#include <qfiledialog.h> 
+#include <q3filedialog.h> 
 #include <qsettings.h>
 #include <qpixmap.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qstringlist.h>
 #include <qlabel.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qspinbox.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
@@ -30,13 +30,15 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qpen.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qcursor.h>
 #include <qnamespace.h>
 #include <qtabwidget.h>
-#include <qtable.h>
+#include <q3table.h>
 #include <qsettings.h>
 #include <qevent.h>
+//Added by qt3to4:
+#include <QKeyEvent>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsmapcanvas.h"
@@ -56,7 +58,7 @@ extern "C" {
 #include "qgsgrassedit.h"
 #include "qgsgrassattributes.h"
 
-QgsGrassAttributesKeyPress::QgsGrassAttributesKeyPress ( QTable *tab )
+QgsGrassAttributesKeyPress::QgsGrassAttributesKeyPress ( Q3Table *tab )
 {
     mTable = tab;
 }
@@ -81,7 +83,7 @@ bool QgsGrassAttributesKeyPress::eventFilter( QObject *o, QEvent *e )
 }
 
 QgsGrassAttributes::QgsGrassAttributes ( QgsGrassEdit *edit, QgsGrassProvider *provider, int line, 
-        QWidget * parent, const char * name, WFlags f ) :QgsGrassAttributesBase ( parent, name, f)
+        QWidget * parent, const char * name, Qt::WFlags f ) :QgsGrassAttributesBase ( parent, name, f)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassAttributes()" << std::endl;
@@ -141,7 +143,7 @@ int QgsGrassAttributes::addTab ( const QString & label )
     std::cerr << "QgsGrassAttributes::addTab()" << std::endl;
     #endif
 
-    QTable *tb = new QTable ( 2, 3 );
+    Q3Table *tb = new Q3Table ( 2, 3 );
     tb->setColumnReadOnly ( 0, TRUE );
     tb->setColumnReadOnly ( 2, TRUE );
     tb->setRowReadOnly ( 0, TRUE );
@@ -172,7 +174,7 @@ void QgsGrassAttributes::setField ( int tab, int field )
     std::cerr << "QgsGrassAttributes::setField()" << std::endl;
     #endif
 
-    QTable *tb = (QTable *) tabCats->page(tab);
+    Q3Table *tb = (Q3Table *) tabCats->page(tab);
 
     QString str;
     str.sprintf("%d", field);
@@ -186,7 +188,7 @@ void QgsGrassAttributes::setCat ( int tab, const QString & name, int cat )
     std::cerr << "QgsGrassAttributes::setField()" << std::endl;
     #endif
 
-    QTable *tb = (QTable *) tabCats->page(tab);
+    Q3Table *tb = (Q3Table *) tabCats->page(tab);
     
     tb->setText ( 1, 0, name );
 
@@ -200,10 +202,10 @@ void QgsGrassAttributes::addAttribute ( int tab, const QString &name, const QStr
                                   const QString &type )
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrassAttributes::addAttribute(): " << name.local8Bit() << ": " << value.local8Bit() << std::endl;
+    std::cerr << "QgsGrassAttributes::addAttribute(): " << name.toLocal8Bit().data() << ": " << value.toLocal8Bit().data() << std::endl;
     #endif
 
-    QTable *tb = (QTable *) tabCats->page(tab);
+    Q3Table *tb = (Q3Table *) tabCats->page(tab);
 
     tb->setNumRows ( tb->numRows()+1 );
 
@@ -222,7 +224,7 @@ void QgsGrassAttributes::addTextRow ( int tab, const QString &text )
     std::cerr << "QgsGrassAttributes::addTextRow()" << std::endl;
     #endif
 
-    QTable *tb = (QTable *) tabCats->page(tab);
+    Q3Table *tb = (Q3Table *) tabCats->page(tab);
 
     tb->setNumRows ( tb->numRows()+1 );
 
@@ -237,7 +239,7 @@ void QgsGrassAttributes::updateAttributes ( )
     std::cerr << "QgsGrassAttributes::updateAttributes()" << std::endl;
     #endif
 
-    QTable *tb = (QTable *) tabCats->currentPage();
+    Q3Table *tb = (Q3Table *) tabCats->currentPage();
 
     if ( tb->numRows() > 2 ) {
 
@@ -270,7 +272,7 @@ void QgsGrassAttributes::updateAttributes ( )
       }
 
       #ifdef QGISDEBUG
-      std::cerr << "sql: " << sql.local8Bit() << std::endl;
+      std::cerr << "sql: " << sql.toLocal8Bit().data() << std::endl;
       #endif
 
       QString *error = mProvider->updateAttributes ( tb->text(0,1).toInt(), tb->text(1,1).toInt(), sql );
@@ -305,7 +307,7 @@ void QgsGrassAttributes::deleteCat ( )
     std::cerr << "QgsGrassAttributes::deleteCat()" << std::endl;
     #endif
     
-    QTable *tb = (QTable *) tabCats->currentPage();
+    Q3Table *tb = (Q3Table *) tabCats->currentPage();
 
     int field = tb->text(0,1).toInt();
     int cat = tb->text(1,1).toInt();
@@ -322,7 +324,7 @@ void QgsGrassAttributes::tabChanged ( QWidget *widget )
     std::cerr << "QgsGrassAttributes::tabChanged()" << std::endl;
     #endif
     
-    QTable *tb = (QTable *) tabCats->currentPage();
+    Q3Table *tb = (Q3Table *) tabCats->currentPage();
 
     resultLabel->setText ( "" );
 }

@@ -27,20 +27,23 @@
 #include "../../src/qgsfeatureattribute.h"
 #include "../../src/qgsproviderregistry.h"
 
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlineedit.h>
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qfileinfo.h>
 #include <qsettings.h>
 #include <qregexp.h>
 #include <qglobal.h>
 #include <qinputdialog.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3PointArray>
 
 //non qt includes
 #include <iostream>
@@ -163,7 +166,7 @@ void QgsGrassPlugin::initGui()
     //    "cannot be used.\nPlease select your GISBASE.\nGISBASE is full path to the\n"
     //    "directory where GRASS is installed." );
     // XXX Need to subclass this and add explantory message above to left side
-    gisBase = QFileDialog::getExistingDirectory(
+    gisBase = Q3FileDialog::getExistingDirectory(
         gisBase, qgisMainWindowPointer,
         "get GISBASE" ,
         "Choose GISBASE ...", TRUE );
@@ -191,17 +194,17 @@ void QgsGrassPlugin::initGui()
   mOpenMapsetAction = new QAction( "Open mapset", 0, this );
   mNewMapsetAction = new QAction( "New mapset", 0, this );
   mCloseMapsetAction = new QAction( "Close mapset", 0, this );
-  mAddVectorAction = new QAction("Add GRASS vector layer", QIconSet(icon_add_vector), 
+  mAddVectorAction = new QAction("Add GRASS vector layer", QIcon(icon_add_vector), 
       "Add GRASS vector layer",0, this, "addVector");
-  mAddRasterAction = new QAction("Add GRASS raster layer", QIconSet(icon_add_raster), 
+  mAddRasterAction = new QAction("Add GRASS raster layer", QIcon(icon_add_raster), 
       "Add GRASS raster layer",0, this, "addRaster");
-  mOpenToolsAction = new QAction("Open GRASS tools", QIconSet(icon_grass_tools), 
+  mOpenToolsAction = new QAction("Open GRASS tools", QIcon(icon_grass_tools), 
       "Open GRASS tools",0, this, "openTools");
-  mRegionAction = new QAction("Display Current Grass Region", QIconSet(icon_grass_region), 
+  mRegionAction = new QAction("Display Current Grass Region", QIcon(icon_grass_region), 
       "Display Current Grass Region",0, this, "region", true);
-  mEditRegionAction = new QAction("Edit Current Grass Region", QIconSet(icon_grass_region_edit), 
+  mEditRegionAction = new QAction("Edit Current Grass Region", QIcon(icon_grass_region_edit), 
       "Edit Current Grass Region",0, this, "editRegion");
-  mEditAction = new QAction("Edit Grass Vector layer", QIconSet(icon_grass_edit), 
+  mEditAction = new QAction("Edit Grass Vector layer", QIcon(icon_grass_edit), 
       "Edit Grass Vector layer",0, this, "edit");
   mNewVectorAction = new QAction("Create new Grass Vector", 0, this);
 #else
@@ -243,7 +246,7 @@ void QgsGrassPlugin::initGui()
   connect(mCloseMapsetAction, SIGNAL(activated()), this, SLOT(closeMapset()));
 
   // Create GRASS plugin menu entry
-  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&GRASS");
+  Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&GRASS");
 
   // Add actions to the menu
   mOpenMapsetAction->addTo(pluginMenu);
@@ -258,7 +261,7 @@ void QgsGrassPlugin::initGui()
   mNewVectorAction->addTo(pluginMenu);
 
   // Add the toolbar
-  toolBarPointer = new QToolBar((QMainWindow *) qgisMainWindowPointer, "GRASS");
+  toolBarPointer = new Q3ToolBar((Q3MainWindow *) qgisMainWindowPointer, "GRASS");
   toolBarPointer->setLabel(tr("GRASS"));
 
   // Add to the toolbar
@@ -343,7 +346,7 @@ void QgsGrassPlugin::addVector()
     uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + sel->map + "/" + sel->layer;
   }
 #ifdef QGISDEBUG
-  std::cerr << "plugin URI: " << uri.local8Bit() << std::endl;
+  std::cerr << "plugin URI: " << uri.toLocal8Bit().data() << std::endl;
 #endif
   if ( uri.length() == 0 ) {
     std::cerr << "Nothing was selected" << std::endl;
@@ -405,7 +408,7 @@ void QgsGrassPlugin::addVector()
 
       Vect_close ( &map );
     } else {
-      std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage().local8Bit() << std::endl;
+      std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage().toLocal8Bit().data() << std::endl;
     }
 
     qGisInterface->addVectorLayer( uri, name, "grass");
@@ -434,7 +437,7 @@ void QgsGrassPlugin::addRaster()
     uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + element + "/" + sel->map;
   }
 #ifdef QGISDEBUG
-  std::cerr << "plugin URI: " << uri.local8Bit() << std::endl;
+  std::cerr << "plugin URI: " << uri.toLocal8Bit().data() << std::endl;
 #endif
   if ( uri.length() == 0 ) {
     std::cerr << "Nothing was selected" << std::endl;
@@ -646,7 +649,7 @@ void QgsGrassPlugin::displayRegion(QPainter *painter)
   points[4].setX(window.west); points[4].setY(window.south);
 
   QgsMapToPixel *transform = mCanvas->getCoordinateTransform();
-  QPointArray pointArray(5);
+  Q3PointArray pointArray(5);
 
   for ( int i = 0; i < 5; i++ ) {
     transform->transform( &(points[i]) );

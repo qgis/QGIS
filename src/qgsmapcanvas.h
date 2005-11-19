@@ -41,6 +41,13 @@
 #endif
 
 #include <qgis.h>
+//Added by qt3to4:
+#include <QWheelEvent>
+#include <QPixmap>
+#include <QPaintEvent>
+#include <QKeyEvent>
+#include <QResizeEvent>
+#include <QMouseEvent>
 
 class QRect;
 class QColor;

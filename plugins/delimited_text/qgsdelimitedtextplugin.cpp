@@ -27,15 +27,15 @@ Functions:
 #include "qgsdelimitedtextplugin.h"
 
 
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlineedit.h>
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include <qglobal.h>
 
 //non qt includes
@@ -108,8 +108,8 @@ void QgsDelimitedTextPlugin::help()
  */
 void QgsDelimitedTextPlugin::initGui()
 {
-  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Delimited text");
-  menuId = pluginMenu->insertItem(QIconSet(icon),"&Add Delimited Text Layer", this, SLOT(run()));
+  Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Delimited text");
+  menuId = pluginMenu->insertItem(QIcon(icon),"&Add Delimited Text Layer", this, SLOT(run()));
 
   pluginMenu->setWhatsThis(menuId, "Add a delimited text file as a map layer. "
       "The file must have a header row containing the field names. "
@@ -117,7 +117,7 @@ void QgsDelimitedTextPlugin::initGui()
 
   // Create the action for tool
 #if QT_VERSION < 0x040000
-  myQActionPointer = new QAction("Add Delimited Text Layer", QIconSet(icon), "&Wmi",0, this, "run");
+  myQActionPointer = new QAction("Add Delimited Text Layer", QIcon(icon), "&Wmi",0, this, "run");
 #else
   myQActionPointer = new QAction(QIcon(icon), "Add Delimited Text Layer", this);
 #endif
@@ -155,8 +155,8 @@ void QgsDelimitedTextPlugin::drawVectorLayer(QString thePathNameQString,
     QString theBaseNameQString, QString theProviderQString)
 {
   std::cerr << "Calling addVectorLayer with:" 
-    << thePathNameQString.local8Bit() << ", " << theBaseNameQString.local8Bit()
-    << ", " << theProviderQString.local8Bit() << std::endl; 
+    << thePathNameQString.toLocal8Bit().data() << ", " << theBaseNameQString.toLocal8Bit().data()
+    << ", " << theProviderQString.toLocal8Bit().data() << std::endl; 
   qGisInterface->addVectorLayer( thePathNameQString, 
       theBaseNameQString, theProviderQString);
 }

@@ -134,7 +134,7 @@ inline bool operator==(const QgsPoint &p1, const QgsPoint &p2)
 inline std::ostream& operator << (std::ostream& os, const QgsPoint &p)
 {
   // Use Local8Bit for printouts
-  os << p.stringRep().local8Bit();
+  os << p.stringRep().toLocal8Bit().data();
   return os;
 }
 

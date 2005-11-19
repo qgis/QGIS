@@ -2,12 +2,14 @@
 #define QGISEXAMPLEPLUGIN_H
 #include "../qgisplugin.h"
 #include <qwidget.h>
-#include <qmainwindow.h>
+#include <q3mainwindow.h>
+//Added by qt3to4:
+#include <Q3PopupMenu>
 
 class QMessageBox;
-class QToolBar;
+class Q3ToolBar;
 class QMenuBar;
-class QPopupMenu;
+class Q3PopupMenu;
 //#include "qgsworkerclass.h"
 #include "../../src/qgisapp.h"
 
@@ -62,7 +64,7 @@ private:
   //! Id of the plugin's menu. Used for unloading
   int menuId;
   //! Pointer to our toolbar
-  QToolBar *toolBar;
+  Q3ToolBar *toolBar;
   //! Pointer to our menu
   QMenuBar *menu;
   //! Pionter to QGIS main application object

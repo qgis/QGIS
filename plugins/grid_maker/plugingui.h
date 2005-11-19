@@ -23,7 +23,7 @@ class QgsGridMakerPluginGui : public QgsGridMakerPluginGuiBase
 public:
   QgsGridMakerPluginGui();
   QgsGridMakerPluginGui( QWidget* parent , const char* name ,
-                         bool modal , WFlags );
+                         bool modal , Qt::WFlags );
   ~QgsGridMakerPluginGui();
 
 private:

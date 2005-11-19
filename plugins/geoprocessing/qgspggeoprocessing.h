@@ -23,15 +23,17 @@
 #define QGISQgsPgGeoprocessing_H
 #include "../qgisplugin.h"
 #include <qwidget.h>
-#include <qmainwindow.h>
+#include <q3mainwindow.h>
+//Added by qt3to4:
+#include <Q3PopupMenu>
 extern "C"
 {
 #include <libpq-fe.h>
 }
 class QMessageBox;
-class QToolBar;
+class Q3ToolBar;
 class QMenuBar;
-class QPopupMenu;
+class Q3PopupMenu;
 class QAction;
 
 //#include "qgsworkerclass.h"

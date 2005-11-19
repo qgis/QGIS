@@ -24,6 +24,8 @@
 
 #include "qgis.h"
 #include "qgsrect.h"
+//Added by qt3to4:
+#include <QCustomEvent>
 
 /*!
  * \brief   A custom event that is designed to be fired when a layer extent has been fully calculated.

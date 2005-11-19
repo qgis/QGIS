@@ -20,12 +20,12 @@
 */
 #include <qobject.h>
 
-class QMainWindow;
+class Q3MainWindow;
 
 class QgsMapLayerInterface: public QObject{
 	Q_OBJECT
 public:
-virtual void setQgisMainWindow(QMainWindow *qgis) = 0;
+virtual void setQgisMainWindow(Q3MainWindow *qgis) = 0;
 // a test function to return an int
 virtual int getInt()=0;
 // setup the plugin's GUI
