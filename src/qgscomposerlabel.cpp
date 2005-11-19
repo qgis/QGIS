@@ -21,15 +21,15 @@
 
 #include <qwidget.h>
 #include <qrect.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qdom.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qpainter.h>
 #include <qstring.h>
 #include <qpixmap.h>
 #include <qimage.h>
 #include <qlineedit.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qfont.h>
 #include <qfontmetrics.h>
 #include <qfontdialog.h>
@@ -49,7 +49,7 @@
 
 QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id, 
 	                                            int x, int y, QString text, int fontSize )
-    : QCanvasPolygonalItem(0), mBox(false)
+    : Q3CanvasPolygonalItem(0), mBox(false)
 {
     std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
 
@@ -63,8 +63,8 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id,
     mFont.setPointSize ( fontSize );
     mPen.setWidth (1);
 
-    QCanvasPolygonalItem::setX(x);
-    QCanvasPolygonalItem::setY(y);
+    Q3CanvasPolygonalItem::setX(x);
+    Q3CanvasPolygonalItem::setY(y);
 
     mSelected = false;
 
@@ -72,16 +72,16 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id,
 
     // Add to canvas
     setCanvas(mComposition->canvas());
-    QCanvasPolygonalItem::setZ(100);
+    Q3CanvasPolygonalItem::setZ(100);
     setActive(true);
-    QCanvasPolygonalItem::show();
-    QCanvasPolygonalItem::update(); // ?
+    Q3CanvasPolygonalItem::show();
+    Q3CanvasPolygonalItem::update(); // ?
 
     writeSettings();
 }
 
 QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id ) 
-    : QCanvasPolygonalItem(0)
+    : Q3CanvasPolygonalItem(0)
 {
     std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
 
@@ -95,17 +95,17 @@ QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id )
 
     // Add to canvas
     setCanvas(mComposition->canvas());
-    QCanvasPolygonalItem::setZ(100);
+    Q3CanvasPolygonalItem::setZ(100);
     setActive(true);
-    QCanvasPolygonalItem::show();
-    QCanvasPolygonalItem::update(); // ?
+    Q3CanvasPolygonalItem::show();
+    Q3CanvasPolygonalItem::update(); // ?
 
 }
 
 QgsComposerLabel::~QgsComposerLabel()
 {
     std::cout << "QgsComposerLabel::~QgsComposerLabel" << std::endl;
-    QCanvasItem::hide();
+    Q3CanvasItem::hide();
 }
 
 void QgsComposerLabel::drawShape ( QPainter & painter )
@@ -131,8 +131,8 @@ void QgsComposerLabel::draw ( QPainter & painter )
     painter.setPen ( mPen );
     painter.setFont ( font );
     
-    int x = (int) QCanvasPolygonalItem::x();
-    int y = (int) QCanvasPolygonalItem::y();
+    int x = (int) Q3CanvasPolygonalItem::x();
+    int y = (int) Q3CanvasPolygonalItem::y();
     
     int w = metrics.width ( mText );
     int h = metrics.height() ;
@@ -174,7 +174,7 @@ void QgsComposerLabel::draw ( QPainter & painter )
 	QRect psr ( (int)( -1.*(w+2*buf)/2/psscale), (int) (-1.*h/2/psscale),(int)(1.*(w+2*buf)/psscale), (int)(1.*h/psscale) );
 
         //painter.drawText ( 0, 0, mText );	
-	painter.drawText ( psr, Qt::AlignCenter|Qt::SingleLine , mText );
+	painter.drawText ( psr, Qt::AlignCenter|Qt::TextSingleLine , mText );
 	
 	painter.restore();
     } else {
@@ -210,10 +210,10 @@ void QgsComposerLabel::changeFont ( void )
     mFont = QFontDialog::getFont(&result, mFont, this );
 
     if ( result ) {
-	QCanvasPolygonalItem::invalidate();
-    	QCanvasPolygonalItem::canvas()->setChanged(r);
-	QCanvasPolygonalItem::update();
-	QCanvasPolygonalItem::canvas()->update();
+	Q3CanvasPolygonalItem::invalidate();
+    	Q3CanvasPolygonalItem::canvas()->setChanged(r);
+	Q3CanvasPolygonalItem::update();
+	Q3CanvasPolygonalItem::canvas()->update();
     }
     writeSettings();
 }
@@ -224,10 +224,10 @@ void QgsComposerLabel::boxChanged ()
     
     mBox = mBoxCheckBox->isChecked();
 
-    QCanvasPolygonalItem::invalidate();
-    QCanvasPolygonalItem::canvas()->setChanged(r);
-    QCanvasPolygonalItem::update();
-    QCanvasPolygonalItem::canvas()->update();
+    Q3CanvasPolygonalItem::invalidate();
+    Q3CanvasPolygonalItem::canvas()->setChanged(r);
+    Q3CanvasPolygonalItem::update();
+    Q3CanvasPolygonalItem::canvas()->update();
 
     writeSettings();
 }
@@ -243,8 +243,8 @@ QRect QgsComposerLabel::boundingRect ( void ) const
     
     QFontMetrics metrics ( font );
     
-    int x = (int) QCanvasPolygonalItem::x();
-    int y = (int) QCanvasPolygonalItem::y();
+    int x = (int) Q3CanvasPolygonalItem::x();
+    int y = (int) Q3CanvasPolygonalItem::y();
     int w = metrics.width ( mText );
     int h = metrics.height() ;
     
@@ -259,12 +259,12 @@ QRect QgsComposerLabel::boundingRect ( void ) const
     return r;
 }
 
-QPointArray QgsComposerLabel::areaPoints() const
+Q3PointArray QgsComposerLabel::areaPoints() const
 {
     std::cout << "QgsComposerLabel::areaPoints" << std::endl;
     QRect r = boundingRect();
 
-    QPointArray pa(4);
+    Q3PointArray pa(4);
     pa[0] = QPoint( r.x(), r.y() );
     pa[1] = QPoint( r.x()+r.width(), r.y() );
     pa[2] = QPoint( r.x()+r.width(), r.y()+r.height() );
@@ -284,10 +284,10 @@ void QgsComposerLabel::textChanged ( void )
 { 
     QRect r = boundingRect();
     mText = mTextLineEdit->text();
-    QCanvasPolygonalItem::invalidate();
-    QCanvasPolygonalItem::canvas()->setChanged(r);
-    QCanvasPolygonalItem::update();
-    QCanvasPolygonalItem::canvas()->update();
+    Q3CanvasPolygonalItem::invalidate();
+    Q3CanvasPolygonalItem::canvas()->setChanged(r);
+    Q3CanvasPolygonalItem::update();
+    Q3CanvasPolygonalItem::canvas()->update();
     writeSettings();
 }
 
@@ -295,7 +295,7 @@ void QgsComposerLabel::setSelected (  bool s )
 {
     std::cout << "QgsComposerLabel::setSelected" << std::endl;
     mSelected = s;
-    QCanvasPolygonalItem::update(); // show highlight
+    Q3CanvasPolygonalItem::update(); // show highlight
             
     std::cout << "mSelected = " << mSelected << std::endl;
 }    
@@ -318,8 +318,8 @@ bool QgsComposerLabel::writeSettings ( void )
     
     QgsProject::instance()->writeEntry( "Compositions", path+"text", mText );
 
-    QgsProject::instance()->writeEntry( "Compositions", path+"x", mComposition->toMM((int)QCanvasPolygonalItem::x()) );
-    QgsProject::instance()->writeEntry( "Compositions", path+"y", mComposition->toMM((int)QCanvasPolygonalItem::y()) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"x", mComposition->toMM((int)Q3CanvasPolygonalItem::x()) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"y", mComposition->toMM((int)Q3CanvasPolygonalItem::y()) );
 
     QgsProject::instance()->writeEntry( "Compositions", path+"font/size", mFont.pointSize() );
     QgsProject::instance()->writeEntry( "Compositions", path+"font/family", mFont.family() );
@@ -343,9 +343,9 @@ bool QgsComposerLabel::readSettings ( void )
     mText = QgsProject::instance()->readEntry("Compositions", path+"text", "???", &ok);
 
     int x = mComposition->fromMM( QgsProject::instance()->readDoubleEntry( "Compositions", path+"x", 0, &ok) );
-    QCanvasPolygonalItem::setX( x );
+    Q3CanvasPolygonalItem::setX( x );
     int y = mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"y", 0, &ok) );
-    QCanvasPolygonalItem::setY( y );
+    Q3CanvasPolygonalItem::setY( y );
 
     mFont.setFamily ( QgsProject::instance()->readEntry("Compositions", path+"font/family", "", &ok) );
     mFont.setPointSize ( QgsProject::instance()->readNumEntry("Compositions", path+"font/size", 10, &ok) );
@@ -355,7 +355,7 @@ bool QgsComposerLabel::readSettings ( void )
 
     mBox = QgsProject::instance()->readBoolEntry("Compositions", path+"box", false, &ok);
 
-    QCanvasPolygonalItem::update();
+    Q3CanvasPolygonalItem::update();
 
     return true;
 }

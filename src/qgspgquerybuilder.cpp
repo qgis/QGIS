@@ -14,9 +14,9 @@
  ***************************************************************************/
 /* $Id$ */
 #include <iostream>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qmessagebox.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <qlabel.h>
 #include "qgspgquerybuilder.h"
 // default constructor
@@ -39,9 +39,9 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QgsDataSourceURI *uri,
     .arg(mUri->username)
     .arg(mUri->password);
 #ifdef QGISDEBUG
-  std::cerr << "Attempting connect using: " << connInfo.local8Bit() << std::endl; 
+  std::cerr << "Attempting connect using: " << connInfo.toLocal8Bit().data() << std::endl; 
 #endif
-  mPgConnection = PQconnectdb(connInfo.local8Bit());
+  mPgConnection = PQconnectdb(connInfo.toLocal8Bit().data());
   // check the connection status
   if (PQstatus(mPgConnection) == CONNECTION_OK) {
     QString datasource = QString(tr("Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>"))
@@ -101,7 +101,7 @@ void QgsPgQueryBuilder::populateFields()
   // field name, type, length, and precision (if numeric)
   QString sql = "select * from \"" + mUri->schema + "\".\"" + mUri->table + "\" limit 1";
   PGresult *result = PQexec(mPgConnection, (const char *) (sql.utf8()));
-  qWarning(("Query executed: " + sql).local8Bit());
+  qWarning(("Query executed: " + sql).toLocal8Bit().data());
   if (PQresultStatus(result) == PGRES_TUPLES_OK) 
   {
     //--std::cout << "Field: Name, Type, Size, Modifier:" << std::endl;
@@ -110,20 +110,20 @@ void QgsPgQueryBuilder::populateFields()
       QString fieldName = PQfname(result, i);
       int fldtyp = PQftype(result, i);
       QString typOid = QString().setNum(fldtyp);
-      std::cerr << "typOid is: " << typOid.local8Bit() << std::endl; 
+      std::cerr << "typOid is: " << typOid.toLocal8Bit().data() << std::endl; 
       int fieldModifier = PQfmod(result, i);
       QString sql = "select typelem from pg_type where typelem = " + typOid + " and typlen = -1";
       //  //--std::cout << sql << std::endl;
       PGresult *oidResult = PQexec(mPgConnection, 
 				   (const char *) (sql.utf8()));
       if (PQresultStatus(oidResult) == PGRES_TUPLES_OK) 
-        std::cerr << "Ok fetching typelem using\n" << sql.local8Bit() << std::endl; 
+        std::cerr << "Ok fetching typelem using\n" << sql.toLocal8Bit().data() << std::endl; 
 
       // get the oid of the "real" type
       QString poid = QString::fromUtf8(PQgetvalue(oidResult, 0, 
 						  PQfnumber(oidResult, 
 							    "typelem")));
-      std::cerr << "poid is: " << poid.local8Bit() << std::endl; 
+      std::cerr << "poid is: " << poid.toLocal8Bit().data() << std::endl; 
       PQclear(oidResult);
       sql = "select typname, typlen from pg_type where oid = " + poid;
       // //--std::cout << sql << std::endl;
@@ -135,8 +135,8 @@ void QgsPgQueryBuilder::populateFields()
       QString fieldSize = QString::fromUtf8(PQgetvalue(oidResult, 0, 1));
       PQclear(oidResult);
 #ifdef QGISDEBUG
-      std::cerr << "Field parms: Name = " << fieldName.local8Bit()
-        << ", Type = " << fieldType.local8Bit() << std::endl; 
+      std::cerr << "Field parms: Name = " << fieldName.toLocal8Bit().data()
+        << ", Type = " << fieldType.toLocal8Bit().data() << std::endl; 
 #endif
       mFieldMap[fieldName] = QgsField(fieldName, fieldType, 
           fieldSize.toInt(), fieldModifier);
@@ -145,7 +145,7 @@ void QgsPgQueryBuilder::populateFields()
   }else
   {
 #ifdef QGISDEBUG 
-    std::cerr << "Error fetching a row from " << mUri->table.local8Bit() << std::endl; 
+    std::cerr << "Error fetching a row from " << mUri->table.toLocal8Bit().data() << std::endl; 
 #endif 
   }
   PQclear(result);
@@ -356,12 +356,12 @@ void QgsPgQueryBuilder::setSql( QString sqlStatement)
   txtSQL->setText(sqlStatement);
 }
 
-void QgsPgQueryBuilder::fieldDoubleClick( QListBoxItem *item )
+void QgsPgQueryBuilder::fieldDoubleClick( Q3ListBoxItem *item )
 {
   txtSQL->insert("\"" + item->text() + "\"");
 }
 
-void QgsPgQueryBuilder::valueDoubleClick( QListBoxItem *item )
+void QgsPgQueryBuilder::valueDoubleClick( Q3ListBoxItem *item )
 {
   txtSQL->insert(item->text());
 }

@@ -26,9 +26,9 @@
 #include <qdom.h>
 #include <qfileinfo.h>
 #include <qlabel.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qpainter.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qevent.h>
 
 #include "qgisapp.h"
@@ -39,6 +39,10 @@
 #include "qgsmaplayer.h"
 #include "qgslegendlayerfile.h"
 #include "qgslegendsymbologygroup.h"
+//Added by qt3to4:
+#include <QPixmap>
+#include <QKeyEvent>
+#include <Q3Frame>
 
 
 
@@ -61,14 +65,14 @@ QgsMapLayer::QgsMapLayer(int type,
 
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsMapLayer::QgsMapLayer - lyrname is '" << lyrname.local8Bit() << "'."<< std::endl;
+  std::cout << "QgsMapLayer::QgsMapLayer - lyrname is '" << lyrname.toLocal8Bit().data() << "'."<< std::endl;
 #endif
 
     // Set the display name = internal name
     layerName = internalName;
 
 #ifdef QGISDEBUG
-  std::cout << "QgsMapLayer::QgsMapLayer - layerName is '" << layerName.local8Bit() << "'."<< std::endl;
+  std::cout << "QgsMapLayer::QgsMapLayer - layerName is '" << layerName.toLocal8Bit().data() << "'."<< std::endl;
 #endif
 
     // Generate the unique ID of this layer
@@ -116,7 +120,7 @@ QString const & QgsMapLayer::getLayerID() const
 void QgsMapLayer::setLayerName(const QString & _newVal)
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsMapLayer::setLayerName: new name is '" << _newVal.local8Bit() << "'."<< std::endl;
+  std::cout << "QgsMapLayer::setLayerName: new name is '" << _newVal.toLocal8Bit().data() << "'."<< std::endl;
 #endif
     layerName = _newVal;
 }
@@ -125,7 +129,7 @@ void QgsMapLayer::setLayerName(const QString & _newVal)
 QString const & QgsMapLayer::name() const
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsMapLayer::name: returning name '" << layerName.local8Bit() << "'."<< std::endl;
+  std::cout << "QgsMapLayer::name: returning name '" << layerName.toLocal8Bit().data() << "'."<< std::endl;
 #endif
     return layerName;
 }
@@ -222,7 +226,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     QDomElement mne = mnl.toElement();
     dataSource = mne.text();
 
-    const char * dataSourceStr = dataSource.local8Bit(); // debugger probe
+    const char * dataSourceStr = dataSource.toLocal8Bit().data(); // debugger probe
 
     // the internal name is just the data source basename
     QFileInfo dataSourceFileInfo( dataSource );
@@ -243,7 +247,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     mne = mnl.toElement();
     setLayerName( mne.text() );
 
-    const char * layerNameStr = mne.text().local8Bit(); // debugger probe
+    const char * layerNameStr = mne.text().toLocal8Bit().data(); // debugger probe
 
 
 
@@ -488,7 +492,7 @@ void QgsMapLayer::setFeatureType(const int &_newVal)
     geometryType = _newVal;
 }
 
-QPopupMenu *QgsMapLayer::contextMenu()
+Q3PopupMenu *QgsMapLayer::contextMenu()
 {
     return 0;
 }
@@ -510,12 +514,12 @@ void QgsMapLayer::connectNotify( const char * signal )
 
 void QgsMapLayer::initContextMenu(QgisApp * app)
 {
-    popMenu = new QPopupMenu();
+    popMenu = new Q3PopupMenu();
 
 #if QT_VERSION < 0x040000
     myPopupLabel = new QLabel( popMenu );
 
-    myPopupLabel->setFrameStyle( QFrame::Panel | QFrame::Raised );
+    myPopupLabel->setFrameStyle( Q3Frame::Panel | Q3Frame::Raised );
 
     // now set by children
     // myPopupLabel->setText( tr("<center><b>Vector Layer</b></center>") );
@@ -553,7 +557,7 @@ void QgsMapLayer::keyPressed ( QKeyEvent * e )
 // The following statment causes a crash on WIN32 and should be 
 // enclosed in an #ifdef QGISDEBUG if its really necessary. Its
 // commented out for now. [gsherman]
-//  std::cout << e->text().local8Bit() << " pressed in maplayer !" << std::endl;
+//  std::cout << e->text().toLocal8Bit().data() << " pressed in maplayer !" << std::endl;
   e->ignore();
 }
 

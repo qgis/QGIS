@@ -12,7 +12,7 @@
 
 
 
-void QgsVectorSymbologyWidgetBase::listView1_selectionChanged( QListViewItem * )
+void QgsVectorSymbologyWidgetBase::listView1_selectionChanged( Q3ListViewItem * )
 {
 
 }

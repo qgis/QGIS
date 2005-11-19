@@ -20,7 +20,7 @@
 #define QGSMARKERSYMBOL_H
 
 #include "qgssymbol.h"
-#include <qpicture.h>
+#include <q3picture.h>
 
 /**Representation of a marker symbol*/
 class QgsMarkerSymbol : public QgsSymbol

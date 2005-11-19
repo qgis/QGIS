@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -78,7 +78,7 @@ void QgsGPSDeviceDialog::slotUpdateDevice() {
 void QgsGPSDeviceDialog::slotUpdateDeviceList(const QString& selection) {
   QString selected;
   if (selection == "") {
-    QListBoxItem* item = lbDeviceList->selectedItem();
+    Q3ListBoxItem* item = lbDeviceList->selectedItem();
     selected = (item ? item->text() : "");
   }
   else {
@@ -87,7 +87,7 @@ void QgsGPSDeviceDialog::slotUpdateDeviceList(const QString& selection) {
   lbDeviceList->clear();
   std::map<QString, QgsGPSDevice*>::const_iterator iter;
   for (iter = mDevices.begin(); iter != mDevices.end(); ++iter) {
-    QListBoxText* item = new QListBoxText(iter->first);
+    Q3ListBoxText* item = new Q3ListBoxText(iter->first);
     lbDeviceList->insertItem(item);
     if (iter->first == selected)
       lbDeviceList->setSelected(item, true);

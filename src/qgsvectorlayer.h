@@ -1,3 +1,5 @@
+//Added by qt3to4:
+#include <Q3PopupMenu>
 /***************************************************************************
                           qgsvectorlayer.h  -  description
                              -------------------
@@ -39,7 +41,8 @@ class QgsLabel;
 #include <map>
 #include <vector>
 
-#include "qvaluevector.h"
+#include "q3valuevector.h"
+#include <Q3Picture>
 
 #include "qgsmaplayer.h"
 #include "qgsattributeaction.h"
@@ -185,7 +188,7 @@ public:
   /**Returns a pointer to the properties dialog*/
   QgsDlgVectorLayerProperties *propertiesDialog();
   /** Return the context menu for the layer */
-  QPopupMenu *contextMenu();
+  Q3PopupMenu *contextMenu();
   /**Returns the bounding box of the selected features. If there is no selection, QgsRect(0,0,0,0) is returned*/
   virtual QgsRect bBoxOfSelected();
   //! Return the provider type for this layer
@@ -466,7 +469,7 @@ private:                       // Private attributes
 
   //! Draws features. May cause projections exceptions to be generated
   // (i.e., code that calls this function needs to catch them
-  void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPicture* marker, double markerScaleFactor, bool projectionsEnabledFlag );
+  void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, Q3Picture* marker, double markerScaleFactor, bool projectionsEnabledFlag );
 
 private:                       // Private attributes
 

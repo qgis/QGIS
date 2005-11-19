@@ -24,7 +24,7 @@ class QgsConnectionDialog : public QgsConnectionDialogBase
 {
  public:
 
-    QgsConnectionDialog(QWidget* parent = 0, QString connName=QString::null, bool modal = true, WFlags fl = 0);
+    QgsConnectionDialog(QWidget* parent = 0, QString connName=QString::null, bool modal = true, Qt::WFlags fl = 0);
     ~QgsConnectionDialog();
     void testConnection();
     void saveConnection();

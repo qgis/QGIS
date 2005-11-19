@@ -28,17 +28,17 @@
 
 
 #include <qeventloop.h>
-#include <qfiledialog.h>
-#include <qtoolbar.h>
+#include <q3filedialog.h>
+#include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlineedit.h>
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
-#include <qprocess.h>
-#include <qprogressdialog.h>
+#include <q3process.h>
+#include <q3progressdialog.h>
 #include <qsettings.h>
 #include <qstringlist.h>
 #include <qglobal.h>
@@ -101,15 +101,15 @@ QgsGPSPlugin::~QgsGPSPlugin()
  */
 void QgsGPSPlugin::initGui()
 {
-  QPopupMenu *pluginMenu = mQGisInterface->getPluginMenu("&Gps");
-  mMenuIdGPS = pluginMenu->insertItem(QIconSet(icon),"&Gps Tools", this, SLOT(run()));
-  mMenuIdGPX = pluginMenu->insertItem(QIconSet(icon),"&Create new GPX layer", this, SLOT(createGPX()));
+  Q3PopupMenu *pluginMenu = mQGisInterface->getPluginMenu("&Gps");
+  mMenuIdGPS = pluginMenu->insertItem(QIcon(icon),"&Gps Tools", this, SLOT(run()));
+  mMenuIdGPX = pluginMenu->insertItem(QIcon(icon),"&Create new GPX layer", this, SLOT(createGPX()));
 
   pluginMenu->setWhatsThis(mMenuIdGPX, "Creates a new GPX layer and displays it on the map canvas");
 
   // add an action to the toolbar
 #if QT_VERSION < 0x040000
-  mQActionPointer = new QAction("Gps Tools", QIconSet(icon), "&Wmi",0, 
+  mQActionPointer = new QAction("Gps Tools", QIcon(icon), "&Wmi",0, 
 				this, "run");
 #else
   mQActionPointer = new QAction(QIcon(icon), "Gps Tools", this);
@@ -168,7 +168,7 @@ void QgsGPSPlugin::run()
 
 void QgsGPSPlugin::createGPX() {
   QString fileName = 
-    QFileDialog::getSaveFileName("." , "GPS eXchange file (*.gpx)",
+    Q3FileDialog::getSaveFileName("." , "GPS eXchange file (*.gpx)",
 				  mMainWindowPointer, "OpenFileDialog",
 				 "Save new GPX file as...");
   if (!fileName.isEmpty()) {
@@ -260,7 +260,7 @@ void QgsGPSPlugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer
   QStringList babelArgs = 
     importer->importCommand(mBabelPath, typeArg, 
 			       inputFilename, outputFilename);
-  QProcess babelProcess(babelArgs);
+  Q3Process babelProcess(babelArgs);
   if (!babelProcess.start()) {
     QMessageBox::warning(NULL, "Could not start process",
 			 "Could not start GPSBabel!");
@@ -268,7 +268,7 @@ void QgsGPSPlugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer
   }
   
   // wait for gpsbabel to finish (or the user to cancel)
-  QProgressDialog progressDialog("Importing data...", "Cancel", 0,
+  Q3ProgressDialog progressDialog("Importing data...", "Cancel", 0,
 				 NULL, 0, true);
   progressDialog.show();
   for (int i = 0; babelProcess.isRunning(); ++i) {
@@ -278,7 +278,7 @@ void QgsGPSPlugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer
     QCoreApplication::processEvents();
 #endif
     progressDialog.setProgress(i/64);
-    if (progressDialog.wasCancelled())
+    if (progressDialog.wasCanceled())
       return;
   }
   
@@ -337,7 +337,7 @@ void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
 				 "of ") + features + ".");
     return;
   }
-  QProcess babelProcess(babelArgs);
+  Q3Process babelProcess(babelArgs);
   if (!babelProcess.start()) {
     QMessageBox::warning(NULL, "Could not start process",
 			 "Could not start GPSBabel!");
@@ -345,7 +345,7 @@ void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
   }
   
   // wait for gpsbabel to finish (or the user to cancel)
-  QProgressDialog progressDialog("Downloading data...", "Cancel", 0,
+  Q3ProgressDialog progressDialog("Downloading data...", "Cancel", 0,
 				 NULL, 0, true);
   progressDialog.show();
   for (int i = 0; babelProcess.isRunning(); ++i) {
@@ -355,7 +355,7 @@ void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
     QCoreApplication::processEvents();
 #endif
     progressDialog.setProgress(i/64);
-    if (progressDialog.wasCancelled())
+    if (progressDialog.wasCanceled())
       return;
   }
   
@@ -408,7 +408,7 @@ void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
     features = "tracks";
   }
   else {
-    std::cerr << source.right(8).local8Bit() << std::endl;
+    std::cerr << source.right(8).toLocal8Bit().data() << std::endl;
     assert(false);
   }
   
@@ -422,7 +422,7 @@ void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
 			 features + ".");
     return;
   }
-  QProcess babelProcess(babelArgs);
+  Q3Process babelProcess(babelArgs);
   if (!babelProcess.start()) {
     QMessageBox::warning(NULL, "Could not start process",
 			 "Could not start GPSBabel!");
@@ -430,7 +430,7 @@ void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
   }
   
   // wait for gpsbabel to finish (or the user to cancel)
-  QProgressDialog progressDialog("Uploading data...", "Cancel", 0,
+  Q3ProgressDialog progressDialog("Uploading data...", "Cancel", 0,
 				 NULL, 0, true);
   progressDialog.show();
   for (int i = 0; babelProcess.isRunning(); ++i) {
@@ -440,7 +440,7 @@ void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
     QCoreApplication::processEvents();
 #endif
     progressDialog.setProgress(i/64);
-    if (progressDialog.wasCancelled())
+    if (progressDialog.wasCanceled())
       return;
   }
   

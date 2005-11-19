@@ -18,13 +18,13 @@
 #include <qapplication.h>
 #include <qdir.h>
 #include <qfile.h>
-#include <qfiledialog.h> 
+#include <q3filedialog.h> 
 #include <qsettings.h>
 #include <qpixmap.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qstringlist.h>
 #include <qlabel.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qspinbox.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
@@ -32,12 +32,12 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qpen.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qcursor.h>
 #include <qnamespace.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qcolordialog.h>
-#include <qtable.h>
+#include <q3table.h>
 #include <qstatusbar.h>
 #include <qevent.h>
 #include <qpoint.h>
@@ -46,8 +46,10 @@
 #include <qtabwidget.h>
 #include <qlayout.h>
 #include <qcheckbox.h>
-#include <qprocess.h>
-#include <qiconset.h>
+#include <q3process.h>
+#include <qicon.h>
+//Added by qt3to4:
+#include <QCloseEvent>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsmapcanvas.h"
@@ -70,7 +72,7 @@ extern "C" {
 #include "qgsgrassshell.h"
 
 QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface, 
-	                     QWidget * parent, const char * name, WFlags f )
+	                     QWidget * parent, const char * name, Qt::WFlags f )
              :QgsGrassToolsBase ( parent, name, f )
 {
     #ifdef QGISDEBUG
@@ -86,11 +88,11 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
     mModulesListView->clear();
     mModulesListView->setSorting(-1);
     mModulesListView->setRootIsDecorated(true);
-    mModulesListView->setResizeMode(QListView::AllColumns);
+    mModulesListView->setResizeMode(Q3ListView::AllColumns);
     mModulesListView->header()->hide();
 
-    connect( mModulesListView, SIGNAL(clicked(QListViewItem *)), 
-		         this, SLOT(moduleClicked( QListViewItem *)) );
+    connect( mModulesListView, SIGNAL(clicked(Q3ListViewItem *)), 
+		         this, SLOT(moduleClicked( Q3ListViewItem *)) );
 
 #if defined(WIN32) || defined(Q_OS_MACX)
     mAppDir = qApp->applicationDirPath();
@@ -108,7 +110,7 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
     restorePosition();
 }
 
-void QgsGrassTools::moduleClicked( QListViewItem * item )
+void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
 {
     if ( !item ) return;
 
@@ -137,8 +139,8 @@ void QgsGrassTools::moduleClicked( QListViewItem * item )
     
     //mTabWidget->addTab ( m, item->text(0) );
     QPixmap pixmap = QgsGrassModule::pixmap ( path, 25 ); 
-    QIconSet is;
-    is.setPixmap ( pixmap, QIconSet::Small, QIconSet::Normal );
+    QIcon is;
+    is.setPixmap ( pixmap, QIcon::Small, QIcon::Normal );
     mTabWidget->addTab ( m, is, "" );
 		
     mTabWidget->setCurrentPage ( mTabWidget->count()-1 );
@@ -151,7 +153,7 @@ void QgsGrassTools::moduleClicked( QListViewItem * item )
 bool QgsGrassTools::loadConfig(QString filePath)
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrassTools::loadConfig(): " << filePath.local8Bit() << std::endl;
+    std::cerr << "QgsGrassTools::loadConfig(): " << filePath.toLocal8Bit().data() << std::endl;
     #endif
     mModulesListView->clear();
 
@@ -161,7 +163,7 @@ bool QgsGrassTools::loadConfig(QString filePath)
 	QMessageBox::warning( 0, "Warning", "The config file (" + filePath + ") not found." );
 	return false;
     }
-    if ( ! file.open( IO_ReadOnly ) ) {
+    if ( ! file.open( QIODevice::ReadOnly ) ) {
 	QMessageBox::warning( 0, "Warning", "Cannot open config file (" + filePath + ")" );
 	return false;
     }
@@ -172,7 +174,7 @@ bool QgsGrassTools::loadConfig(QString filePath)
     if ( !doc.setContent( &file,  &err, &line, &column ) ) {
 	QString errmsg = "Cannot read config file (" + filePath + "):\n" + err + "\nat line "  
 	                 + QString::number(line) + " column " + QString::number(column);
-	std::cerr << errmsg.local8Bit() << std::endl;
+	std::cerr << errmsg.toLocal8Bit().data() << std::endl;
 	QMessageBox::warning( 0, "Warning", errmsg );
 	file.close();
 	return false;
@@ -195,31 +197,31 @@ bool QgsGrassTools::loadConfig(QString filePath)
     file.close();
 }
 
-void QgsGrassTools::addModules (  QListViewItem *parent, QDomElement &element )
+void QgsGrassTools::addModules (  Q3ListViewItem *parent, QDomElement &element )
 {
     QDomNode n = element.firstChild();
 
-    QListViewItem *item;
-    QListViewItem *lastItem = 0;
+    Q3ListViewItem *item;
+    Q3ListViewItem *lastItem = 0;
     while( !n.isNull() ) {
 	QDomElement e = n.toElement();
 	if( !e.isNull() ) {
 	    //std::cout << "tag = " << e.tagName() << std::endl;
 
 	    if ( e.tagName() == "section" && e.tagName() == "grass" ) {
-		std::cout << "Unknown tag: " << e.tagName().local8Bit() << std::endl;
+		std::cout << "Unknown tag: " << e.tagName().toLocal8Bit().data() << std::endl;
 		continue;
 	    }
 	    
 	    if ( parent ) {
-		item = new QListViewItem( parent, lastItem );
+		item = new Q3ListViewItem( parent, lastItem );
 	    } else {
-		item = new QListViewItem( mModulesListView, lastItem );
+		item = new Q3ListViewItem( mModulesListView, lastItem );
 	    }
 
 	    if ( e.tagName() == "section" ) {
 		QString label = e.attribute("label");
-	        std::cout << "label = " << label.local8Bit() << std::endl;
+	        std::cout << "label = " << label.toLocal8Bit().data() << std::endl;
 		item->setText( 0, label );
 		item->setOpen(true); // for debuging to spare one click
 
@@ -228,7 +230,7 @@ void QgsGrassTools::addModules (  QListViewItem *parent, QDomElement &element )
 		lastItem = item;
 	    } else if ( e.tagName() == "grass" ) { // GRASS module
 		QString name = e.attribute("name");
-	        std::cout << "name = " << name.local8Bit() << std::endl;
+	        std::cout << "name = " << name.toLocal8Bit().data() << std::endl;
 
                 QString path = mAppDir + "/share/qgis/grass/modules/" + name;
                 QString label = QgsGrassModule::label ( path );

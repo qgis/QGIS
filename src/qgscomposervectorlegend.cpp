@@ -22,24 +22,24 @@
 
 #include <qwidget.h>
 #include <qrect.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qcheckbox.h>
 #include <qdom.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qpainter.h>
 #include <qstring.h>
 #include <qpixmap.h>
-#include <qpicture.h>
+#include <q3picture.h>
 #include <qimage.h>
 #include <qlineedit.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qfont.h>
 #include <qfontmetrics.h>
 #include <qfontdialog.h>
 #include <qpen.h>
 #include <qrect.h>
-#include <qlistview.h>
-#include <qpopupmenu.h>
+#include <q3listview.h>
+#include <q3popupmenu.h>
 #include <qlabel.h>
 
 #include "qgsrect.h"
@@ -67,7 +67,7 @@
 
 QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, int id, 
                                               int x, int y, int fontSize )
-    : QCanvasRectangle(x,y,10,10,0)
+    : Q3CanvasRectangle(x,y,10,10,0)
 {
     std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
 
@@ -92,15 +92,15 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
     // Add to canvas
     setCanvas(mComposition->canvas());
 
-    QCanvasRectangle::show();
-    QCanvasRectangle::update();
+    Q3CanvasRectangle::show();
+    Q3CanvasRectangle::update();
 
      
     writeSettings();
 }
 
 QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, int id ) 
-    : QCanvasRectangle(0,0,10,10,0)
+    : Q3CanvasRectangle(0,0,10,10,0)
 {
     std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
 
@@ -118,8 +118,8 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
     // Add to canvas
     setCanvas(mComposition->canvas());
 
-    QCanvasRectangle::show();
-    QCanvasRectangle::update();
+    Q3CanvasRectangle::show();
+    Q3CanvasRectangle::update();
 }
 
 void QgsComposerVectorLegend::init ( void ) 
@@ -135,25 +135,25 @@ void QgsComposerVectorLegend::init ( void )
     mCacheUpdated = false;
 
     // Rectangle
-    QCanvasRectangle::setZ(50);
+    Q3CanvasRectangle::setZ(50);
     setActive(true);
 
     // Layers list view
     mLayersListView->setColumnText(0,tr("Layers"));
     mLayersListView->addColumn(tr("Group"));
     mLayersListView->setSorting(-1);
-    mLayersListView->setResizeMode(QListView::AllColumns);
-    mLayersListView->setSelectionMode(QListView::Extended);
+    mLayersListView->setResizeMode(Q3ListView::AllColumns);
+    mLayersListView->setSelectionMode(Q3ListView::Extended);
 
-    mLayersPopupMenu = new QPopupMenu( );
+    mLayersPopupMenu = new Q3PopupMenu( );
 
     mLayersPopupMenu->insertItem( "Combine selected layers", this, SLOT(groupLayers()) );
 
-    connect ( mLayersListView, SIGNAL(clicked(QListViewItem *)), 
-                         this, SLOT(layerChanged(QListViewItem *)));
+    connect ( mLayersListView, SIGNAL(clicked(Q3ListViewItem *)), 
+                         this, SLOT(layerChanged(Q3ListViewItem *)));
 
-    connect ( mLayersListView, SIGNAL(rightButtonClicked(QListViewItem *, const QPoint &, int)), 
-                    this, SLOT( showLayersPopupMenu(QListViewItem *, const QPoint &, int)) );
+    connect ( mLayersListView, SIGNAL(rightButtonClicked(Q3ListViewItem *, const QPoint &, int)), 
+                    this, SLOT( showLayersPopupMenu(Q3ListViewItem *, const QPoint &, int)) );
 
     // Plot style
     setPlotStyle ( QgsComposition::Preview );
@@ -336,7 +336,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	      if ( itemHeights[icnt] < mSymbolHeight ) { // init first
 		  itemHeights[icnt] = mSymbolHeight;
 	      }
-	      QPicture pic = sym->getPointSymbolAsPicture(0,widthScale);
+	      Q3Picture pic = sym->getPointSymbolAsPicture(0,widthScale);
 	      QRect br = pic.boundingRect();
 
 	      int h = (int) ( scale * br.height() );
@@ -418,7 +418,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	  double scale = map->symbolScale() * mComposition->scale();
 
 	  // Get the picture of appropriate size directly from catalogue
-	  QPicture pic = sym->getPointSymbolAsPicture(0,widthScale);
+	  Q3Picture pic = sym->getPointSymbolAsPicture(0,widthScale);
 	      
 	  QRect br = pic.boundingRect();
 	
@@ -481,7 +481,7 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 
     height += mMargin;
     
-    QCanvasRectangle::setSize (  width, height );
+    Q3CanvasRectangle::setSize (  width, height );
     
     if ( !p ) {
       delete painter;
@@ -495,7 +495,7 @@ void QgsComposerVectorLegend::cache ( void )
 {
     std::cout << "QgsComposerVectorLegend::cache()" << std::endl;
 
-    mCachePixmap.resize ( QCanvasRectangle::width(), QCanvasRectangle::height() ); 
+    mCachePixmap.resize ( Q3CanvasRectangle::width(), Q3CanvasRectangle::height() ); 
 
     QPainter p(&mCachePixmap);
     
@@ -520,8 +520,8 @@ void QgsComposerVectorLegend::draw ( QPainter & painter )
 
   painter.save();
       
-  painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
-  painter.drawRect ( 0, 0, QCanvasRectangle::width()+1, QCanvasRectangle::height()+1 ); // is it right?
+  painter.translate ( Q3CanvasRectangle::x(), Q3CanvasRectangle::y() );
+  painter.drawRect ( 0, 0, Q3CanvasRectangle::width()+1, Q3CanvasRectangle::height()+1 ); // is it right?
   painter.restore();
     }
     
@@ -533,8 +533,8 @@ void QgsComposerVectorLegend::draw ( QPainter & painter )
   }
   
   painter.save();
-  painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
-        std::cout << "translate: " << QCanvasRectangle::x() << ", " << QCanvasRectangle::y() << std::endl;
+  painter.translate ( Q3CanvasRectangle::x(), Q3CanvasRectangle::y() );
+        std::cout << "translate: " << Q3CanvasRectangle::x() << ", " << Q3CanvasRectangle::y() << std::endl;
   painter.drawPixmap(0,0, mCachePixmap);
 
   painter.restore();
@@ -546,7 +546,7 @@ void QgsComposerVectorLegend::draw ( QPainter & painter )
         std::cout << "render" << std::endl;
   
   painter.save();
-  painter.translate ( QCanvasRectangle::x(), QCanvasRectangle::y() );
+  painter.translate ( Q3CanvasRectangle::x(), Q3CanvasRectangle::y() );
   render( &painter );
   painter.restore();
     } 
@@ -558,16 +558,16 @@ void QgsComposerVectorLegend::draw ( QPainter & painter )
         painter.setPen( mComposition->selectionPen() );
         painter.setBrush( mComposition->selectionBrush() );
   
-  int x = (int) QCanvasRectangle::x();
-  int y = (int) QCanvasRectangle::y();
+  int x = (int) Q3CanvasRectangle::x();
+  int y = (int) Q3CanvasRectangle::y();
   int s = mComposition->selectionBoxSize();
 
   painter.drawRect ( x, y, s, s );
-  x += QCanvasRectangle::width();
+  x += Q3CanvasRectangle::width();
   painter.drawRect ( x-s, y, s, s );
-  y += QCanvasRectangle::height();
+  y += Q3CanvasRectangle::height();
   painter.drawRect ( x-s, y-s, s, s );
-  x -= QCanvasRectangle::width();
+  x -= Q3CanvasRectangle::width();
   painter.drawRect ( x, y-s, s, s );
     }
 }
@@ -580,8 +580,8 @@ void QgsComposerVectorLegend::changeFont ( void )
 
     if ( result ) {
   recalculate();
-  QCanvasRectangle::update();
-  QCanvasRectangle::canvas()->update();
+  Q3CanvasRectangle::update();
+  Q3CanvasRectangle::canvas()->update();
         writeSettings();
     }
 }
@@ -590,8 +590,8 @@ void QgsComposerVectorLegend::titleChanged (  )
 {
     mTitle = mTitleLineEdit->text();
     recalculate();
-    QCanvasRectangle::update();
-    QCanvasRectangle::canvas()->update();
+    Q3CanvasRectangle::update();
+    Q3CanvasRectangle::canvas()->update();
     writeSettings();
 }
 
@@ -606,8 +606,8 @@ void QgsComposerVectorLegend::mapSelectionChanged ( int i )
 {
     mMap = mMaps[i];
     recalculate();
-    QCanvasRectangle::update();
-    QCanvasRectangle::canvas()->update();
+    Q3CanvasRectangle::update();
+    Q3CanvasRectangle::canvas()->update();
     writeSettings();
 }
 
@@ -616,16 +616,16 @@ void QgsComposerVectorLegend::mapChanged ( int id )
     if ( id != mMap ) return;
 
     recalculate();
-    QCanvasRectangle::update();
-    QCanvasRectangle::canvas()->update();
+    Q3CanvasRectangle::update();
+    Q3CanvasRectangle::canvas()->update();
 }
 
 void QgsComposerVectorLegend::frameChanged ( )
 {
     mFrame = mFrameCheckBox->isChecked();
 
-    QCanvasRectangle::update();
-    QCanvasRectangle::canvas()->update();
+    Q3CanvasRectangle::update();
+    Q3CanvasRectangle::canvas()->update();
 
     writeSettings();
 }
@@ -658,7 +658,7 @@ void QgsComposerVectorLegend::recalculate ( void )
      
     QRect r = render(0);
 
-    QCanvasRectangle::setSize ( r.width(), r.height() );
+    Q3CanvasRectangle::setSize ( r.width(), r.height() );
     
     mCacheUpdated = false;
 }
@@ -707,7 +707,7 @@ void QgsComposerVectorLegend::setOptions ( void )
     if ( !layer->visible() ) continue;
     //if ( layer->type() != QgsMapLayer::VECTOR ) continue;
 
-    QCheckListItem *li = new QCheckListItem ( mLayersListView, layer->name(), QCheckListItem::CheckBox );
+    Q3CheckListItem *li = new Q3CheckListItem ( mLayersListView, layer->name(), Q3CheckListItem::CheckBox );
 
     QString id = layer->getLayerID();
     li->setText(2, id );
@@ -730,7 +730,7 @@ void QgsComposerVectorLegend::setOptions ( void )
 void QgsComposerVectorLegend::setSelected (  bool s ) 
 {
     mSelected = s;
-    QCanvasRectangle::update(); // show highlight
+    Q3CanvasRectangle::update(); // show highlight
 }    
 
 bool QgsComposerVectorLegend::selected( void )
@@ -738,7 +738,7 @@ bool QgsComposerVectorLegend::selected( void )
     return mSelected;
 }
 
-void QgsComposerVectorLegend::showLayersPopupMenu ( QListViewItem * lvi, const QPoint & pt, int )
+void QgsComposerVectorLegend::showLayersPopupMenu ( Q3ListViewItem * lvi, const QPoint & pt, int )
 {
     std::cout << "QgsComposerVectorLegend::showLayersPopupMenu" << std::endl;
 
@@ -789,34 +789,34 @@ void QgsComposerVectorLegend::setLayerGroup ( QString id, int group )
     }
 }
 
-void QgsComposerVectorLegend::layerChanged ( QListViewItem *lvi )
+void QgsComposerVectorLegend::layerChanged ( Q3ListViewItem *lvi )
 {
     std::cout << "QgsComposerVectorLegend::layerChanged" << std::endl;
 
     if ( lvi == 0 ) return; 
     
     QString id = lvi->text(2);
-    QCheckListItem *cli = dynamic_cast <QCheckListItem *>(lvi);
+    Q3CheckListItem *cli = dynamic_cast <Q3CheckListItem *>(lvi);
     setLayerOn ( id, cli->isOn() );
 
     writeSettings();
 
     recalculate();
-    QCanvasRectangle::update();
-    QCanvasRectangle::canvas()->update();
+    Q3CanvasRectangle::update();
+    Q3CanvasRectangle::canvas()->update();
 }
 
 void QgsComposerVectorLegend::groupLayers ( void ) 
 {
     std::cout << "QgsComposerVectorLegend::groupLayers" << std::endl;
 
-    QListViewItemIterator it( mLayersListView );
+    Q3ListViewItemIterator it( mLayersListView );
     int count = 0;
-    QListViewItem *lastItem;
+    Q3ListViewItem *lastItem;
     QString id;
     while ( it.current() ) {
         if ( it.current()->isSelected() ) {
-      std::cout << "selected: " << it.current()->text(0).local8Bit() << " " << it.current()->text(2).local8Bit() << std::endl;
+      std::cout << "selected: " << it.current()->text(0).toLocal8Bit().data() << " " << it.current()->text(2).toLocal8Bit().data() << std::endl;
 
       id = it.current()->text(2);
       setLayerGroup ( id, mNextLayerGroup );
@@ -834,7 +834,7 @@ void QgsComposerVectorLegend::groupLayers ( void )
     std::cout << "Groups:" << std::endl;
 
     for ( std::map<QString,int>::iterator it3 = mLayersGroups.begin(); it3 != mLayersGroups.end(); ++it3 ) {
-        std::cout << "layer: " << (it3->first).local8Bit() << " group: " << it3->second << std::endl;
+        std::cout << "layer: " << (it3->first).toLocal8Bit().data() << " group: " << it3->second << std::endl;
     }
     
     mNextLayerGroup++;
@@ -842,8 +842,8 @@ void QgsComposerVectorLegend::groupLayers ( void )
     writeSettings();
 
     recalculate();
-    QCanvasRectangle::update();
-    QCanvasRectangle::canvas()->update();
+    Q3CanvasRectangle::update();
+    Q3CanvasRectangle::canvas()->update();
 }    
 
 QWidget *QgsComposerVectorLegend::options ( void )
@@ -858,8 +858,8 @@ bool QgsComposerVectorLegend::writeSettings ( void )
     QString path;
     path.sprintf("/composition_%d/vectorlegend_%d/", mComposition->id(), mId ); 
 
-    QgsProject::instance()->writeEntry( "Compositions", path+"x", mComposition->toMM((int)QCanvasRectangle::x()) );
-    QgsProject::instance()->writeEntry( "Compositions", path+"y", mComposition->toMM((int)QCanvasRectangle::y()) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"x", mComposition->toMM((int)Q3CanvasRectangle::x()) );
+    QgsProject::instance()->writeEntry( "Compositions", path+"y", mComposition->toMM((int)Q3CanvasRectangle::y()) );
 
     QgsProject::instance()->writeEntry( "Compositions", path+"map", mMap );
 
@@ -888,7 +888,7 @@ bool QgsComposerVectorLegend::writeSettings ( void )
     if ( !layer->visible() ) continue;
 
     QString id = layer->getLayerID();
-                path.sprintf("/composition_%d/vectorlegend_%d/layers/layer_%s/", mComposition->id(), mId, (const char *)id.local8Bit() ); 
+                path.sprintf("/composition_%d/vectorlegend_%d/layers/layer_%s/", mComposition->id(), mId, (const char *)id.toLocal8Bit().data() ); 
     QgsProject::instance()->writeEntry( "Compositions", path+"on", layerOn(id) );
     QgsProject::instance()->writeEntry( "Compositions", path+"group", layerGroup(id) );
       }
@@ -906,8 +906,8 @@ bool QgsComposerVectorLegend::readSettings ( void )
     QString path;
     path.sprintf("/composition_%d/vectorlegend_%d/", mComposition->id(), mId );
 
-    QCanvasRectangle::setX( mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"x", 0, &ok)) );
-    QCanvasRectangle::setY( mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"y", 0, &ok)) );
+    Q3CanvasRectangle::setX( mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"x", 0, &ok)) );
+    Q3CanvasRectangle::setY( mComposition->fromMM(QgsProject::instance()->readDoubleEntry( "Compositions", path+"y", 0, &ok)) );
 
     mMap = QgsProject::instance()->readNumEntry("Compositions", path+"map", 0, &ok);
     mTitle = QgsProject::instance()->readEntry("Compositions", path+"title", "???", &ok);
@@ -932,7 +932,7 @@ bool QgsComposerVectorLegend::readSettings ( void )
 
   QString id = (*it).right( (*it).length() - (idx+1) );
   
-  path.sprintf("/composition_%d/vectorlegend_%d/layers/layer_%s/", mComposition->id(), mId, (const char *)id.local8Bit() );
+  path.sprintf("/composition_%d/vectorlegend_%d/layers/layer_%s/", mComposition->id(), mId, (const char *)id.toLocal8Bit().data() );
   bool on = QgsProject::instance()->readBoolEntry("Compositions", path+"on", true, &ok);
   int group = QgsProject::instance()->readNumEntry("Compositions", path+"group", 0, &ok);
   setLayerOn ( id , on );

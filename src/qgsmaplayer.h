@@ -35,11 +35,16 @@
 #include <qgsfield.h>
 
 #include <qgscoordinatetransform.h>
+//Added by qt3to4:
+#include <QEvent>
+#include <QKeyEvent>
+#include <QLabel>
+#include <Q3PopupMenu>
 
 class QgisApp;
 class QgsMapToPixel;
 class QgsFeature;
-class QPopupMenu;
+class Q3PopupMenu;
 class QgsLegendLayerFile;
 class QgsLegendSymbologyGroup;
 class QDomNode;
@@ -153,7 +158,7 @@ public:
     virtual const int &featureType();
 
     /** Return the context menu for the layer */
-    virtual QPopupMenu *contextMenu() = 0;
+    virtual Q3PopupMenu *contextMenu() = 0;
 
     /**
      * Returns the sublayers of this layer
@@ -409,7 +414,7 @@ protected:
     QString internalName;
 
     //! context menu
-    QPopupMenu *popMenu;
+    Q3PopupMenu *popMenu;
 
 #if QT_VERSION < 0x040000
     //! label for popMenu

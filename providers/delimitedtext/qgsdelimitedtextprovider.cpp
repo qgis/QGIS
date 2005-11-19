@@ -26,10 +26,10 @@
 #include <qtextstream.h>
 #include <qstringlist.h>
 #include <qmessagebox.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qsettings.h>
 #include <qregexp.h>
-#include <qurl.h>
+#include <q3url.h>
 #include <qglobal.h>
 
 #include <ogrsf_frmts.h>
@@ -73,16 +73,16 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString const &uri)
   temp = parameters.grep("yField=");
   mYField = temp.size()? temp[0].mid(temp[0].find("=") + 1) : "";
   // Decode the parts of the uri. Good if someone entered '=' as a delimiter, for instance.
-  QUrl::decode(mFileName);
-  QUrl::decode(mDelimiter);
-  QUrl::decode(mXField);
-  QUrl::decode(mYField);
+  Q3Url::decode(mFileName);
+  Q3Url::decode(mDelimiter);
+  Q3Url::decode(mXField);
+  Q3Url::decode(mYField);
 #ifdef QGISDEBUG
-  std::cerr << "Data source uri is " << (const char *)uri.local8Bit() << std::endl;
-  std::cerr << "Delimited text file is: " << (const char *)mFileName.local8Bit() << std::endl;
-  std::cerr << "Delimiter is: " << (const char *)mDelimiter.local8Bit() << std::endl;
-  std::cerr << "xField is: " << (const char *)mXField.local8Bit() << std::endl;
-  std::cerr << "yField is: " << (const char *)mYField.local8Bit() << std::endl;
+  std::cerr << "Data source uri is " << (const char *)uri.toLocal8Bit().data() << std::endl;
+  std::cerr << "Delimited text file is: " << (const char *)mFileName.toLocal8Bit().data() << std::endl;
+  std::cerr << "Delimiter is: " << (const char *)mDelimiter.toLocal8Bit().data() << std::endl;
+  std::cerr << "xField is: " << (const char *)mXField.toLocal8Bit().data() << std::endl;
+  std::cerr << "yField is: " << (const char *)mYField.toLocal8Bit().data() << std::endl;
 #endif
   // Set the selection rectangle to null
   mSelectionRectangle = 0;
@@ -98,7 +98,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString const &uri)
       // file has a header row and process accordingly. Caller should make
       // sure the the delimited file is properly formed.
       mFile = new QFile(mFileName);
-      if (mFile->open(IO_ReadOnly))
+      if (mFile->open(QIODevice::ReadOnly))
       {
         QTextStream stream(mFile);
         QString line;
@@ -119,8 +119,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString const &uri)
             // fields vector
 #ifdef QGISDEBUG
             std::
-              cerr << "Attempting to split the input line: " << (const char *)line.local8Bit() <<
-              " using delimiter " << (const char *)mDelimiter.local8Bit() << std::endl;
+              cerr << "Attempting to split the input line: " << (const char *)line.toLocal8Bit().data() <<
+              " using delimiter " << (const char *)mDelimiter.toLocal8Bit().data() << std::endl;
 #endif
             QStringList fieldList =
               QStringList::split(QRegExp(mDelimiter), line, true);
@@ -143,19 +143,19 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString const &uri)
                 if (mXField == *it)
                 {
 #ifdef QGISDEBUG
-                  std::cerr << "Found x field " << (const char *)(*it).local8Bit() << std::endl;
+                  std::cerr << "Found x field " << (const char *)(*it).toLocal8Bit().data() << std::endl;
 #endif
                   xyCount++;
                 }
                 if (mYField == *it)
                 {
 #ifdef QGISDEBUG
-                  std::cerr << "Found y field " << (const char *)(*it).local8Bit() << std::endl;
+                  std::cerr << "Found y field " << (const char *)(*it).toLocal8Bit().data() << std::endl;
 #endif
                   xyCount++;
                 }
 #ifdef QGISDEBUG
-                std::cerr << "Adding field: " << (const char *)(*it).local8Bit() << std::endl;
+                std::cerr << "Adding field: " << (const char *)(*it).toLocal8Bit().data() << std::endl;
 #endif
 
               }
@@ -224,7 +224,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString const &uri)
 #ifdef QGISDEBUG
           std::cerr << "Data store is valid" << std::endl;
           std::cerr << "Number of features " << mNumberFeatures << std::endl;
-          std::cerr << "Extents " << (const char *)mExtent->stringRep().local8Bit() << std::endl;
+          std::cerr << "Extents " << (const char *)mExtent->stringRep().toLocal8Bit().data() << std::endl;
 #endif
           mValid = true;
         }
@@ -249,7 +249,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString const &uri)
     else
       // file does not exist
       std::
-        cerr << "Data source " << (const char *)getDataSourceUri().local8Bit() << " could not be opened" <<
+        cerr << "Data source " << (const char *)getDataSourceUri().toLocal8Bit().data() << " could not be opened" <<
         std::endl;
 
   }
@@ -410,7 +410,7 @@ QgsDelimitedTextProvider::getNextFeature_( QgsFeature & feature,
                                                                          // geometry
 
 #if QT_VERSION < 0x040000
-           QDataStream s( buffer, IO_WriteOnly ); // open on buffers's data
+           QDataStream s( buffer, QIODevice::WriteOnly ); // open on buffers's data
 #else
            QDataStream s( &buffer, QIODevice::WriteOnly ); // open on buffers's data
 #endif
@@ -554,7 +554,7 @@ std::vector < QgsFeature > &QgsDelimitedTextProvider::identify(QgsRect * rect)
   // all features
   reset();
   std::cerr << "Attempting to identify features falling within " << (const char *)rect->
-    stringRep().local8Bit() << std::endl;
+    stringRep().toLocal8Bit().data() << std::endl;
   // select the features
   select(rect);
 #ifdef WIN32
@@ -744,7 +744,7 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
   OGRRegisterAll();
   poDriver =
     OGRSFDriverRegistrar::GetRegistrar()->
-    GetDriverByName((const char *)driverName.local8Bit());
+    GetDriverByName((const char *)driverName.toLocal8Bit().data());
   bool returnValue = true;
   if (poDriver != NULL)
   {
@@ -764,7 +764,7 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
                                                                       QString("UTF-8"));
 
     // allow for selection of more than one file
-    openFileDialog->setMode(QFileDialog::AnyFile);
+    openFileDialog->setMode(Q3FileDialog::AnyFile);
     openFileDialog->setCaption(tr("Save layer as..."));
 
 
@@ -790,7 +790,7 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
       poDS = poDriver->CreateDataSource((const char *) shapefileName, NULL);
       if (poDS != NULL)
       {
-        QTextCodec* saveCodec = QTextCodec::codecForName(enc.local8Bit());
+        QTextCodec* saveCodec = QTextCodec::codecForName(enc.toLocal8Bit().data());
         if(!saveCodec)
         {
 #ifdef QGISDEBUG
@@ -828,7 +828,7 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
             fld.SetWidth(lengths[i]);
             // create the field
             std::cerr << "creating field " << (const char *)attrField.
-              name().local8Bit() << " width length " << lengths[i] << std::endl;
+              name().toLocal8Bit().data() << " width length " << lengths[i] << std::endl;
             if (poLayer->CreateField(&fld) != OGRERR_NONE)
             {
               QMessageBox::warning(0, "Error",
@@ -844,7 +844,7 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
           while (!stream.atEnd())
           {
             line = stream.readLine(); // line of text excluding '\n'
-            std::cerr << (const char *)line.local8Bit() << std::endl;
+            std::cerr << (const char *)line.toLocal8Bit().data() << std::endl;
             // split the line
             QStringList parts =
               QStringList::split(QRegExp(mDelimiter), line, true);
@@ -874,7 +874,7 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
                 if (parts[i] != QString::null)
                 {
                   std::cerr << "Setting " << i << " " << (const char *)attributeFields[i].
-                    name().local8Bit() << " to " << (const char *)parts[i].local8Bit() << std::endl;
+                    name().toLocal8Bit().data() << " to " << (const char *)parts[i].toLocal8Bit().data() << std::endl;
                   poFeature->SetField(saveCodec->fromUnicode(attributeFields[i].name()).data(),
                                       saveCodec->fromUnicode(parts[i]).data());
 

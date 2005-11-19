@@ -17,13 +17,13 @@
  ***************************************************************************/
 /* $Id$ */
 #include <qsettings.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qcheckbox.h>
 #include <qspinbox.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qradiobutton.h>
 #include <qapplication.h>
-#include <qtextbrowser.h>
+#include <q3textbrowser.h>
 #include <sqlite3.h>
 #include <cassert>
 #include "qgsoptions.h"
@@ -168,7 +168,7 @@ void QgsOptions::findBrowser()
 #else
   filter = "All Files (*)";
 #endif
-  QString browser = QFileDialog::getOpenFileName(
+  QString browser = Q3FileDialog::getOpenFileName(
           "./",
           filter, 
           this,

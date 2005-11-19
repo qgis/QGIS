@@ -18,7 +18,7 @@
 
 #include <qgis.h>
 #include <qstring.h>
-#include <qlistview.h>
+#include <q3listview.h>
 
 
 /**
@@ -28,7 +28,7 @@ class QgsProjectionSelector: public QgsProjectionSelectorBase
 {
   Q_OBJECT
     public:
-      QgsProjectionSelector( QWidget* parent , const char* name ,WFlags fl =0  );
+      QgsProjectionSelector( QWidget* parent , const char* name="", Qt::WFlags fl =0  );
       ~QgsProjectionSelector();
       //! Populate the proj tree view with  user defined projection names...
       void getUserProjList();
@@ -59,11 +59,11 @@ class QgsProjectionSelector: public QgsProjectionSelectorBase
 
       // List view nodes for the tree view of projections
       //! User defined projections node
-      QListViewItem *mUserProjList;
+      Q3ListViewItem *mUserProjList;
       //! GEOGCS node
-      QListViewItem *mGeoList;
+      Q3ListViewItem *mGeoList;
       //! PROJCS node
-      QListViewItem *mProjList;
+      Q3ListViewItem *mProjList;
       //! Users custom coordinate system file
       QString mCustomCsFile;
       //! File name of the sqlite3 database
@@ -72,7 +72,7 @@ class QgsProjectionSelector: public QgsProjectionSelectorBase
       /**private handler for when user selects a cs
        *it will cause wktSelected and sridSelected events to be spawned
        */
-      void coordinateSystemSelected(QListViewItem*);
+      void coordinateSystemSelected(Q3ListViewItem*);
       /** 
        * Utility method used in conjunction with name based searching tool 
        */

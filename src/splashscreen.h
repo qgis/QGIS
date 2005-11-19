@@ -21,6 +21,8 @@
 
 #include <qpixmap.h>
 #include <qwidget.h>
+//Added by qt3to4:
+#include <QMouseEvent>
     
 /**A splash screen to show on application startup. Based on code found at: http://doc.trolltech.com/qq/qq04-splashscreen.html
   *@author Tim Sutton
@@ -33,7 +35,7 @@ class SplashScreen : public QWidget
 public:
   SplashScreen();
 
-  void setStatus( const QString &message, int alignment = AlignLeft, const QColor &color = Qt::black );
+  void setStatus( const QString &message, int alignment = Qt::AlignLeft, const QColor &color = Qt::black );
   void finish( QWidget *mainWin );
   void repaint();
 

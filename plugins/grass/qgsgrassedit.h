@@ -17,11 +17,14 @@
 #define QGSGRASSEDIT_H
 
 #include <vector>
+//Added by qt3to4:
+#include <QPixmap>
+#include <QCloseEvent>
 
 class QString;
 class QCloseEvent;
 
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qcursor.h>
 #include <qpen.h>
 #include <qpainter.h>
@@ -103,11 +106,11 @@ public:
 
     //! Constructor
     QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
-	           QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+	           QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
     QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
                    QgsGrassProvider *provider,
-	           QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+	           QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
     // Shared by constructors
     void init ();
@@ -171,7 +174,7 @@ public slots:
     //! Close editing
     void closeEdit (void); 
 
-    void changeSymbology( QListViewItem * item, const QPoint & pnt, int col );
+    void changeSymbology( Q3ListViewItem * item, const QPoint & pnt, int col );
 
     // The type of column was changed
     void columnTypeChanged ( int row, int col );
@@ -190,7 +193,7 @@ private:
     void displayMap (void); 
 
     //! Set point array to icon
-    void setIconPoints ( QPointArray &points, int type, int size ); 
+    void setIconPoints ( Q3PointArray &points, int type, int size ); 
 
     /** 
      *  Display icon 

@@ -19,10 +19,10 @@
  ***************************************************************************/
 #include "qgslegendpropertygroup.h"
 #include <qapplication.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qstring.h>
 #include <qpixmap.h>
-QgsLegendPropertyGroup::QgsLegendPropertyGroup(QListViewItem * theLegendItem, QString theString)
+QgsLegendPropertyGroup::QgsLegendPropertyGroup(Q3ListViewItem * theLegendItem, QString theString)
     : QgsLegendItem(theLegendItem,theString )
 {
   mType=LEGEND_PROPERTY_GROUP;

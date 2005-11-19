@@ -16,18 +16,18 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <qlistbox.h>
-#include <qtable.h>
+#include <q3listbox.h>
+#include <q3table.h>
 #include <qstringlist.h>
 #include <qmessagebox.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qpushbutton.h>
 #include <qspinbox.h>
 #include <qcheckbox.h>
 #include <qinputdialog.h>
-#include <qfiledialog.h>
-#include <qprogressdialog.h>
-#include <qmemarray.h>
+#include <q3filedialog.h>
+#include <q3progressdialog.h>
+#include <q3memarray.h>
 #include <qapplication.h>
 #include <qregexp.h>
 #include <qfile.h>
@@ -43,7 +43,7 @@
 #include "spit_icons.h"
 
 // Qt implementation of alignment() + changed the numeric types to be shown on the left as well
-int QTableItem::alignment() const
+int Q3TableItem::alignment() const
 {
   bool num;
   bool ok1 = FALSE, ok2 = FALSE;
@@ -52,7 +52,7 @@ int QTableItem::alignment() const
     ( void ) txt.toDouble( &ok2 );
   num = ok1 || ok2;
 
-  return ( num ? AlignLeft : AlignLeft ) | AlignVCenter;
+  return ( num ? Qt::AlignLeft : Qt::AlignLeft ) | Qt::AlignVCenter;
 }
 
 QgsSpit::QgsSpit( QWidget *parent, const char *name ) : QgsSpitBase( parent, name )
@@ -150,7 +150,7 @@ void QgsSpit::addFile()
   bool is_error = false;
   QSettings settings;
 
-  QStringList files = QFileDialog::getOpenFileNames(
+  QStringList files = Q3FileDialog::getOpenFileNames(
                         "Shapefiles (*.shp)|All files (*.*)", settings.readEntry( "/Qgis/spit/last_directory" ), this, "add file dialog", "Add Shapefiles" );
   if ( files.size() > 0 )
   {
@@ -204,7 +204,7 @@ void QgsSpit::addFile()
           // Sanitize the relation name to make it pg friendly
           QString relName = file->getTable().replace(QRegExp("\\s"), "_");
           tblShapefiles->setText( row, ColDBRELATIONNAME, relName );
-          QComboTableItem* schema = new QComboTableItem( tblShapefiles, schema_list );
+          Q3ComboTableItem* schema = new Q3ComboTableItem( tblShapefiles, schema_list );
           schema->setCurrentItem( cmbSchema->currentText() );
           tblShapefiles->setItem( row, ColDBSCHEMA, schema );
           total_features += file->getFeatureCount();
@@ -311,7 +311,7 @@ void QgsSpit::removeFile()
       }
       temp.push_back( n );
     }
-  QMemArray<int> array( temp.size() );
+  Q3MemArray<int> array( temp.size() );
   for ( int i = 0; i < temp.size(); i++ )
     array[ i ] = temp[ i ];
   tblShapefiles->removeRows( array );
@@ -320,7 +320,7 @@ void QgsSpit::removeFile()
 
 void QgsSpit::removeAllFiles()
 {
-  QMemArray<int> array( tblShapefiles->numRows() );
+  Q3MemArray<int> array( tblShapefiles->numRows() );
   for ( int n = 0; n < tblShapefiles->numRows(); n++ )
     array[ n ] = n;
 
@@ -450,7 +450,7 @@ void QgsSpit::getSchema()
   for ( int i = 0; i < tblShapefiles->numRows(); i++ )
   {
     tblShapefiles->clearCell( i, 4 );
-    QComboTableItem* temp_schemas = new QComboTableItem( tblShapefiles, schema_list );
+    Q3ComboTableItem* temp_schemas = new Q3ComboTableItem( tblShapefiles, schema_list );
     temp_schemas->setCurrentItem( "public" );
     tblShapefiles->setItem( i, 4, temp_schemas );
 
@@ -466,7 +466,7 @@ void QgsSpit::updateSchema()
   for ( int i = 0; i < tblShapefiles->numRows(); i++ )
   {
     tblShapefiles->clearCell( i, 4 );
-    QComboTableItem* temp_schemas = new QComboTableItem( tblShapefiles, schema_list );
+    Q3ComboTableItem* temp_schemas = new Q3ComboTableItem( tblShapefiles, schema_list );
     temp_schemas->setCurrentItem( cmbSchema->currentText() );
     tblShapefiles->setItem( i, 4, temp_schemas );
 
@@ -491,7 +491,7 @@ void QgsSpit::import()
   else if ( pd != NULL )
   {
     PGresult * res;
-    QProgressDialog * pro = new QProgressDialog( tr("Importing files"), 
+    Q3ProgressDialog * pro = new Q3ProgressDialog( tr("Importing files"), 
                             tr("Cancel"), total_features, 
                             this, tr("Progress"), true );
     pro->setProgress( 0 );
@@ -533,7 +533,7 @@ void QgsSpit::import()
 
       for ( int k = 1; k < names_copy.size(); k++ )
       {
-        std::cerr << "USING :" << names_copy[ k ].local8Bit() << " index " << k << std::endl;
+        std::cerr << "USING :" << names_copy[ k ].toLocal8Bit().data() << " index " << k << std::endl;
         qWarning( "Checking to see if " + names_copy[ k ] + " == " + names_copy[ k - 1 ] );
         if ( names_copy[ k ] == names_copy[ k - 1 ] )
           dupl += names_copy[ k ] + "\n";
@@ -634,7 +634,7 @@ void QgsSpit::import()
                                        QMessageBox::Warning,
                                        QMessageBox::Yes | QMessageBox::Default,
                                        QMessageBox::No | QMessageBox::Escape,
-                                       QMessageBox::NoButton, 
+                                       Qt::NoButton, 
                                        this
 //                                       tr("Relation Exists") 
                                      );

@@ -37,7 +37,7 @@ void QgsDbSourceSelectBase::deleteConnection()
 
 }
 
-void QgsDbSourceSelectBase::setSql( QListViewItem * )
+void QgsDbSourceSelectBase::setSql( Q3ListViewItem * )
 {
 
 }

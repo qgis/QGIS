@@ -24,23 +24,23 @@ email                : tim@linfiniti.com
 #include <qpixmap.h>
 #include <qimage.h>
 #include <qslider.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qcheckbox.h>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qstring.h>
 #include <qradiobutton.h>
 #include <qlineedit.h>
-#include <qtable.h>
-#include <qtextedit.h>
+#include <q3table.h>
+#include <q3textedit.h>
 #include <qpainter.h>
 #include <qfont.h>
 #include <qtabwidget.h>
 #include <qwidget.h>
-#include <qlistview.h>
-#include <qlistbox.h>
-#include <qtextbrowser.h>
+#include <q3listview.h>
+#include <q3listbox.h>
+#include <q3textbrowser.h>
 #include <qspinbox.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qrect.h>
 #include <qglobal.h>
 
@@ -182,7 +182,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
           myIteratorInt <= myBandCountInt;
           ++myIteratorInt)
     {
-      QListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
+      Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
       lstHistogramLabels->setSelected( myItem,true);
     }
 
@@ -193,7 +193,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
       QString myQString = *myIterator;
 #ifdef QGISDEBUG
 
-      std::cout << "Inserting : " << myQString.local8Bit() << std::endl;
+      std::cout << "Inserting : " << myQString.toLocal8Bit().data() << std::endl;
 #endif
 
       cboGray->insertItem(myQString);
@@ -338,8 +338,8 @@ void QgsRasterLayerProperties::apply()
 #endif
 #ifdef QGISDEBUG
 
-        std::cout << "Combo value : " << cboGray->currentText().local8Bit() << " GrayBand Mapping : " << rasterLayer->
-            getGrayBandName().local8Bit() << std::endl;
+        std::cout << "Combo value : " << cboGray->currentText().toLocal8Bit().data() << " GrayBand Mapping : " << rasterLayer->
+            getGrayBandName().toLocal8Bit().data() << std::endl;
 #endif
 
         rasterLayer->setDrawingStyle(QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY);
@@ -362,8 +362,8 @@ void QgsRasterLayerProperties::apply()
       {
 #ifdef QGISDEBUG
         std::cout << "Setting Raster Drawing Style to :: MULTI_BAND_SINGLE_BAND_GRAY" << std::endl;
-        std::cout << "Combo value : " << cboGray->currentText().local8Bit() << " GrayBand Mapping : " << rasterLayer->
-            getGrayBandName().local8Bit() << std::endl;
+        std::cout << "Combo value : " << cboGray->currentText().toLocal8Bit().data() << " GrayBand Mapping : " << rasterLayer->
+            getGrayBandName().toLocal8Bit().data() << std::endl;
 #endif
 
         rasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_SINGLE_BAND_GRAY);
@@ -695,7 +695,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
   for ( unsigned int myCounterInt = 0; myCounterInt < lbxPyramidResolutions->count(); myCounterInt++ )
   {
-    QListBoxItem *myItem = lbxPyramidResolutions->item( myCounterInt );
+    Q3ListBoxItem *myItem = lbxPyramidResolutions->item( myCounterInt );
     if ( myItem->isSelected() )
     {
       //mark to be pyramided
@@ -943,7 +943,7 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
           ++myIteratorInt)
   {
     RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
-    QListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
+    Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
     if ( myItem->isSelected() )
     {
       mySelectionCount++;
@@ -1005,7 +1005,7 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
     {
       myXAxisMax=static_cast < unsigned int >(myRasterBandStats.maxValDouble);
     }
-    QListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
+    Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
     if ( myItem->isSelected() )
     {
 #ifdef QGISDEBUG
@@ -1098,7 +1098,7 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
   if (rasterLayer->getRasterLayerType()
           == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
   {
-    QPointArray myPointArray(myLastBinWithData);
+    Q3PointArray myPointArray(myLastBinWithData);
     QgsColorTable *myColorTable=rasterLayer->colorTable(1);
 #ifdef QGISDEBUG
     std::cout << "Making paletted image histogram....computing band stats" << std::endl;
@@ -1176,11 +1176,11 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
             ++myIteratorInt)
     {
       RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
-      QListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
+      Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
       if ( myItem->isSelected() )
       {
 
-        QPointArray myPointArray(myLastBinWithData);
+        Q3PointArray myPointArray(myLastBinWithData);
         for (int myBin = 0; myBin <myLastBinWithData; myBin++)
         {
           double myBinValue = myRasterBandStats.histogramVector->at(myBin);
@@ -1299,7 +1299,7 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
   myPainter.setPen( Qt::gray );
   for (int i=0;i<myXDivisions;++i)
   {
-    QPointArray myPointArray(4);
+    Q3PointArray myPointArray(4);
     myPointArray.setPoint(0,(i*myXDivisions)+myYGutterWidth , myImageHeight-myXGutterHeight);
     myPointArray.setPoint(1,(i*myXDivisions)+myYGutterWidth , myImageHeight-(myXGutterHeight-5));
     myPointArray.setPoint(2,(i*myXDivisions)+myYGutterWidth , myImageHeight-myXGutterHeight);
@@ -1314,7 +1314,7 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
   for (int i=myYDivisions;i>0;--i)
   {
 
-    QPointArray myPointArray(4);
+    Q3PointArray myPointArray(4);
     int myYOrigin = myImageHeight-myXGutterHeight;
     myPointArray.setPoint(0,myYGutterWidth,myYOrigin-(i*myYDivisions ));
     myPointArray.setPoint(1,myYGutterWidth-5,myYOrigin-(i*myYDivisions ));

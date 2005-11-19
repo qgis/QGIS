@@ -414,7 +414,7 @@ std::vector<QgsFeature>& QgsGPXProvider::identify(QgsRect * rect) {
   // all features
   reset();
   std::cerr << "Attempting to identify features falling within "
-	    << rect->stringRep().local8Bit() << std::endl; 
+	    << rect->stringRep().toLocal8Bit().data() << std::endl; 
   // select the features
   select(rect);
   // temporary fix to get this to compile under windows
@@ -559,7 +559,7 @@ bool QgsGPXProvider::addFeatures(std::list<QgsFeature*> flist) {
   
   // write back to file
   QFile file(mFileName);
-  if (!file.open(IO_WriteOnly))
+  if (!file.open(QIODevice::WriteOnly))
     return false;
   QTextStream ostr(&file);
   data->writeXML(ostr);
@@ -726,7 +726,7 @@ bool QgsGPXProvider::deleteFeatures(std::list<int> const & id) {
 
   // write back to file
   QFile file(mFileName);
-  if (!file.open(IO_WriteOnly))
+  if (!file.open(QIODevice::WriteOnly))
     return false;
   QTextStream ostr(&file);
   data->writeXML(ostr);
@@ -767,7 +767,7 @@ bool QgsGPXProvider::changeAttributeValues(std::map<int,std::map<QString,QString
 
   // write back to file
   QFile file(mFileName);
-  if (!file.open(IO_WriteOnly))
+  if (!file.open(QIODevice::WriteOnly))
     return false;
   QTextStream ostr(&file);
   data->writeXML(ostr);

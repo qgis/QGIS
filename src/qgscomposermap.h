@@ -18,7 +18,7 @@
 #define QGSCOMPOSERMAP_H
 
 #include <qwidget.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qobject.h>
 
 #include "qgsrect.h"
@@ -26,6 +26,8 @@
 #include "qgscomposer.h"
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
+//Added by qt3to4:
+#include <QPixmap>
 
 #ifdef WIN32
 #include "qgscomposermapbase.h"
@@ -33,8 +35,8 @@
 #include "qgscomposermapbase.uic.h"
 #endif
 
-class QCanvasItem;
-class QCanvasRectangle;
+class Q3CanvasItem;
+class Q3CanvasRectangle;
 class QPainter;
 class QWidget;
 class QDomNode;
@@ -52,7 +54,7 @@ class QgsComposition;
  *  \brief Object representing map window. 
  */
 // NOTE: QgsComposerMapBase must be first, otherwise does not compile
-class QgsComposerMap : public QgsComposerMapBase, public QCanvasRectangle, public QgsComposerItem
+class QgsComposerMap : public QgsComposerMapBase, public Q3CanvasRectangle, public QgsComposerItem
 {
     Q_OBJECT
 

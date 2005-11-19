@@ -16,13 +16,13 @@
 #include <iostream>
 #include <qdir.h>
 #include <qfile.h>
-#include <qfiledialog.h> 
+#include <q3filedialog.h> 
 #include <qsettings.h>
 #include <qpixmap.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qstringlist.h>
 #include <qlabel.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
 #include <qsettings.h>
@@ -369,7 +369,7 @@ QStringList QgsGrassSelect::vectorLayers ( QString gisdbase,
 	                            (char *) mapset.ascii());
 
     if ( QgsGrass::getError() == QgsGrass::FATAL ) {
-	std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage().local8Bit() << std::endl;
+	std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage().toLocal8Bit().data() << std::endl;
 	return list;
     }
 
@@ -428,7 +428,7 @@ QStringList QgsGrassSelect::vectorLayers ( QString gisdbase,
 void QgsGrassSelect::getGisdbase()
 {
     
-    QString Gisdbase = QFileDialog::getExistingDirectory( egisdbase->text(), this, 
+    QString Gisdbase = Q3FileDialog::getExistingDirectory( egisdbase->text(), this, 
 	                            "get existing GISDBASE" , "Choose existing GISDBASE", TRUE );
     egisdbase->setText ( Gisdbase );
 }

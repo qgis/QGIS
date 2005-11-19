@@ -78,7 +78,7 @@ const QString  OmgGdal::getWorldFile(const QString theFileName)
 {
 
 #if QT_VERSION < 0x040000
-  GDALDataset  *gdalDataset = (GDALDataset *) GDALOpen( theFileName.local8Bit(), GA_ReadOnly );
+  GDALDataset  *gdalDataset = (GDALDataset *) GDALOpen( theFileName.toLocal8Bit().data(), GA_ReadOnly );
 #else
   GDALDataset  *gdalDataset = (GDALDataset *) GDALOpen( theFileName.toLocal8Bit(), GA_ReadOnly );
 #endif
@@ -111,7 +111,7 @@ const QString  OmgGdal::getWorldFile(const QString theFileName)
 const QString  OmgGdal::getAsciiHeader(const QString theFileName)
 {
 #if QT_VERSION < 0x040000
-  GDALDataset  *gdalDataset = (GDALDataset *) GDALOpen( theFileName.local8Bit(), GA_ReadOnly );
+  GDALDataset  *gdalDataset = (GDALDataset *) GDALOpen( theFileName.toLocal8Bit().data(), GA_ReadOnly );
 #else
   GDALDataset  *gdalDataset = (GDALDataset *) GDALOpen( theFileName.toLocal8Bit(), GA_ReadOnly );
 #endif
@@ -362,7 +362,7 @@ void OmgGdal::buildSupportedRasterFileFilter(QString & theFileFiltersString)
   // can't forget the default case
   theFileFiltersString += catchallFilter + "All other files (*)";
 #ifdef QGISDEBUG
-  std::cout << "Raster filter list built: " << theFileFiltersString.local8Bit() << std::endl;
+  std::cout << "Raster filter list built: " << theFileFiltersString.toLocal8Bit().data() << std::endl;
 #endif
 }  // buildSupportedRasterFileFilter
 
@@ -386,7 +386,7 @@ const QString OmgGdal::contour(const QString theInputFile)
   GDALRasterBandH hBand;
 
 #if QT_VERSION < 0x040000
-  hSrcDS = GDALOpen( theInputFile.local8Bit(), GA_ReadOnly );
+  hSrcDS = GDALOpen( theInputFile.toLocal8Bit().data(), GA_ReadOnly );
 #else
   hSrcDS = GDALOpen( theInputFile.toLocal8Bit(), GA_ReadOnly );
 #endif
@@ -415,7 +415,7 @@ const QString OmgGdal::contour(const QString theInputFile)
   //      Create the outputfile
   OGRDataSourceH hDS;
 #if QT_VERSION < 0x040000
-  OGRSFDriverH hDriver = OGRGetDriverByName( myFormat.local8Bit() );
+  OGRSFDriverH hDriver = OGRGetDriverByName( myFormat.toLocal8Bit().data() );
 #else
   OGRSFDriverH hDriver = OGRGetDriverByName( myFormat.toLocal8Bit() );
 #endif
@@ -427,7 +427,7 @@ const QString OmgGdal::contour(const QString theInputFile)
   {
 #if QT_VERSION < 0x040000    
     fprintf( stderr, "Unable to find format driver named %s.\n",
-             myFormat.local8Bit().data() );
+             myFormat.toLocal8Bit().data().data() );
 #else
     fprintf( stderr, "Unable to find format driver named %s.\n",
              myFormat.toLocal8Bit().data() );
@@ -513,7 +513,7 @@ const QString OmgGdal::gdal2Tiff(const QString theFileName, const QString theOut
   char **papszMetadata;
 
 #if QT_VERSION < 0x040000
-  mypDriver = GetGDALDriverManager()->GetDriverByName(myFormat.local8Bit());
+  mypDriver = GetGDALDriverManager()->GetDriverByName(myFormat.toLocal8Bit().data());
 #else
   mypDriver = GetGDALDriverManager()->GetDriverByName(myFormat.toLocal8Bit());
 #endif
@@ -544,8 +544,8 @@ const QString OmgGdal::gdal2Tiff(const QString theFileName, const QString theOut
 
 #if QT_VERSION < 0x040000
   GDALDataset *mypSourceDataset =
-    (GDALDataset *) GDALOpen( theFileName.local8Bit(), GA_ReadOnly );
-  GDALDataset *mypDestinationDataset = mypDriver->CreateCopy( myFileName.local8Bit(),
+    (GDALDataset *) GDALOpen( theFileName.toLocal8Bit().data(), GA_ReadOnly );
+  GDALDataset *mypDestinationDataset = mypDriver->CreateCopy( myFileName.toLocal8Bit().data(),
                           mypSourceDataset, FALSE,
                           NULL, progressCallback, this );
 #else
@@ -572,7 +572,7 @@ const QString OmgGdal::gdal2Ascii(const QString theFileName, const QString theOu
   QString myFileName(myBaseString+".asc");
   QFile myFile( myFileName );
 #if QT_VERSION < 0x040000
-  if ( !myFile.open( IO_WriteOnly ) )
+  if ( !myFile.open( QIODevice::WriteOnly ) )
 #else
   if ( !myFile.open( QIODevice::WriteOnly ) )
 #endif
@@ -583,7 +583,7 @@ const QString OmgGdal::gdal2Ascii(const QString theFileName, const QString theOu
   else
   {
 #if QT_VERSION < 0x040000
-    qDebug("Writing " + myFileName.local8Bit());
+    qDebug("Writing " + myFileName.toLocal8Bit().data());
 #else
     qDebug("Writing " + myFileName.toLocal8Bit());
 #endif
@@ -591,7 +591,7 @@ const QString OmgGdal::gdal2Ascii(const QString theFileName, const QString theOu
   QTextStream myStream( &myFile );
   GDALAllRegister();
 #if QT_VERSION < 0x040000
-  GDALDataset  *gdalDataset = (GDALDataset *) GDALOpen( theFileName.local8Bit(), GA_ReadOnly );
+  GDALDataset  *gdalDataset = (GDALDataset *) GDALOpen( theFileName.toLocal8Bit().data(), GA_ReadOnly );
 #else
   GDALDataset  *gdalDataset = (GDALDataset *) GDALOpen( theFileName.toLocal8Bit(), GA_ReadOnly );
 #endif

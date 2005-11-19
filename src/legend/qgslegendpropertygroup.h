@@ -30,7 +30,7 @@ container for layer properties  (e.g. projection, scale dependent view)
 class QgsLegendPropertyGroup : public QgsLegendItem
 {
 public:
-    QgsLegendPropertyGroup(QListViewItem * ,QString);
+    QgsLegendPropertyGroup(Q3ListViewItem * ,QString);
 
     ~QgsLegendPropertyGroup();
 
@@ -40,7 +40,7 @@ public:
         /** Overloads cmpare function of QListViewItem
           * @note The property group must always be the first in the list
           */
-        int compare (QListViewItem * i,int col, bool ascending) {return -1;}
+        int compare (Q3ListViewItem * i,int col, bool ascending) {return -1;}
 };
 
 #endif

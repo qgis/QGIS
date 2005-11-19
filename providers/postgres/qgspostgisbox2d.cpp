@@ -75,7 +75,7 @@ QString QgsPostGisBox2d::stringRepAsBox2d()
         .arg( xmax )
         .arg( ymax );
 
-  std::cerr << "QgsPostGisBox2d: stringRepAsBox2d is returning '" << s.local8Bit() << "'" << std::endl;
+  std::cerr << "QgsPostGisBox2d: stringRepAsBox2d is returning '" << s.toLocal8Bit().data() << "'" << std::endl;
 
   return s;        
 }

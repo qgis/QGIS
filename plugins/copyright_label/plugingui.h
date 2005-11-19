@@ -24,7 +24,7 @@ class QgsCopyrightLabelPluginGui : public QgsCopyrightLabelPluginGuiBase
 Q_OBJECT
 public:
     QgsCopyrightLabelPluginGui();
-    QgsCopyrightLabelPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    QgsCopyrightLabelPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~QgsCopyrightLabelPluginGui();
     void pbnOK_clicked();
     void pbnCancel_clicked();    

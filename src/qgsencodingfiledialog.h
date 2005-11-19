@@ -17,11 +17,11 @@
 #define QGSENCODINGFILEDIALOG_H
 
 #include "qgsvectordataprovider.h"
-#include <qcombobox.h>
-#include <qfiledialog.h>
+#include <q3combobox.h>
+#include <q3filedialog.h>
 
 /**A file dialog which lets the user select the prefered encoding type for a data provider*/
-class QgsEncodingFileDialog: public QFileDialog
+class QgsEncodingFileDialog: public Q3FileDialog
 {
     Q_OBJECT
  public:

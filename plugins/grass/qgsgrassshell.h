@@ -1,12 +1,16 @@
 #include <qstring.h>
-#include <qtextedit.h>
-#include <qprocess.h>
+#include <q3textedit.h>
+#include <q3process.h>
 #include <qmessagebox.h>
 #include <qsocketnotifier.h>
-#include <qcstring.h>
+#include <q3cstring.h>
 
 #include "qgsgrasstools.h"
 #include "qgsgrassshellbase.h"
+//Added by qt3to4:
+#include <QMouseEvent>
+#include <QKeyEvent>
+#include <QResizeEvent>
     
 class QgsGrassShellText;
 
@@ -143,10 +147,10 @@ private:
     QSocketNotifier *mOutNotifier;
 
     // Buffer for data read form shell stdout
-    QCString mStdoutBuffer; 
+    Q3CString mStdoutBuffer; 
 
     // Buffer for data read form shell stderr
-    QCString mStderrBuffer; 
+    Q3CString mStderrBuffer; 
 
     // Modes
     bool mMode[ModeCount];
@@ -189,7 +193,7 @@ private:
     std::vector<bool> mTabStop;
 };
 
-class QgsGrassShellText : public QTextEdit
+class QgsGrassShellText : public Q3TextEdit
 {
     Q_OBJECT;
 public:

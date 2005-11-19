@@ -21,7 +21,7 @@
 #define QGSCLIPPER_H
 
 #include "qgspoint.h"
-#include "qpointarray.h"
+#include "q3pointarray.h"
 
 #include <vector>
 #include <utility>

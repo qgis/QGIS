@@ -20,6 +20,8 @@
 #include <fstream>
 #include <qevent.h>
 #include <qapplication.h>
+//Added by qt3to4:
+#include <QCustomEvent>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsrect.h"

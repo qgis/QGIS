@@ -28,11 +28,14 @@
 #endif
 
 #include "qgsrect.h"
+//Added by qt3to4:
+#include <QKeyEvent>
+#include <QMouseEvent>
 
 class QWidget;
-class QCanvas;
-class QCanvasItem;
-class QCanvasRectangle;
+class Q3Canvas;
+class Q3CanvasItem;
+class Q3CanvasRectangle;
 class QMouseEvent;
 class QDomNode;
 class QDomDocument;
@@ -152,7 +155,7 @@ public:
     void setActive ( bool active );
 
     /** \brief returns pointer to canvas */
-    QCanvas *canvas(void);
+    Q3Canvas *canvas(void);
     
     /** \brief recieves contentsMousePressEvent from view */
     void contentsMousePressEvent(QMouseEvent*);
@@ -272,7 +275,7 @@ private:
     QgsComposer *mComposer;
 
     /** \brief Canvas. One per composition, created by QgsComposition */
-    QCanvas *mCanvas;
+    Q3Canvas *mCanvas;
 
     /** \brief Pointer to canvas view */
     QgsComposerView *mView;
@@ -285,10 +288,10 @@ private:
     double mLastY;
 
     /** \brief Selected item, 0 if no item is selected */ 
-    QCanvasItem* mSelectedItem; 
+    Q3CanvasItem* mSelectedItem; 
 
     /** \brief Item representing the paper */
-    QCanvasRectangle *mPaperItem;
+    Q3CanvasRectangle *mPaperItem;
 
     /** \brief  Plot style */
     PlotStyle mPlotStyle;
@@ -300,10 +303,10 @@ private:
     int mToolStep;
     
     /** \brief Temporary rectangle item used as rectangle drawn by mouse */
-    QCanvasRectangle *mRectangleItem;
+    Q3CanvasRectangle *mRectangleItem;
     
     /** \brief Temporary item used as pointer to new objecs which must be drawn */ 
-    QCanvasItem *mNewCanvasItem; 
+    Q3CanvasItem *mNewCanvasItem; 
 
     /** \brief Resolution in DPI */
     int mResolution; 

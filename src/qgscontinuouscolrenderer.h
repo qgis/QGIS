@@ -37,7 +37,7 @@ class QgsContinuousColRenderer: public QgsRenderer
     QgsContinuousColRenderer& operator=(const QgsContinuousColRenderer& other);
     virtual ~QgsContinuousColRenderer();
     /**Renders the feature using the minimum and maximum value of the classification field*/
-    void renderFeature(QPainter* p, QgsFeature* f, QPicture* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.);
+    void renderFeature(QPainter* p, QgsFeature* f, Q3Picture* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.);
     /**Returns the number of the classification field*/
     int classificationField() const;
     /**Sets the id of the classification field*/

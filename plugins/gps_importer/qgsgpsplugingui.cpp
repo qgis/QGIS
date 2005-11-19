@@ -17,16 +17,16 @@
 //qt includes
 #include <qapplication.h>
 #include <qcheckbox.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qeventloop.h>
 #include <qfileinfo.h>
-#include <qprocess.h>
-#include <qprogressdialog.h>
+#include <q3process.h>
+#include <q3progressdialog.h>
 #include <qpushbutton.h>
 #include <qtabwidget.h>
 #include <qlineedit.h>
 #include <qspinbox.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qmessagebox.h>
 #include <qfile.h>
 #include <qsettings.h>
@@ -41,7 +41,7 @@ QgsGPSPluginGui::QgsGPSPluginGui(const BabelMap& importers,
 				 std::map<QString, QgsGPSDevice*>& devices,
 				 std::vector<QgsVectorLayer*> gpxMapLayers, 
 				 QWidget* parent, const char* name, 
-				 bool modal, WFlags fl)
+				 bool modal, Qt::WFlags fl)
   : QgsGPSPluginGuiBase(parent, name, modal, fl), mGPXLayers(gpxMapLayers),
     mImporters(importers), mDevices(devices) 
 {
@@ -124,7 +124,7 @@ void QgsGPSPluginGui::pbnOK_clicked()
 void QgsGPSPluginGui::pbnDLOutput_clicked()
 {
   QString myFileNameQString = 
-    QFileDialog::getSaveFileName("." , //initial dir
+    Q3FileDialog::getSaveFileName("." , //initial dir
 				 "GPS eXchange format (*.gpx)",
 				 this , //parent dialog
 				 "Select GPX output",
@@ -203,7 +203,7 @@ void QgsGPSPluginGui::pbnGPXSelectFile_clicked()
   QString dir = settings.readEntry("/qgis/gps/gpxdirectory");
   if (dir.isEmpty())
     dir = ".";
-  QString myFileNameQString = QFileDialog::getOpenFileName(
+  QString myFileNameQString = Q3FileDialog::getOpenFileName(
           dir , //initial dir
           myFilterString,  //filters to select
           this , //parent dialog
@@ -211,14 +211,14 @@ void QgsGPSPluginGui::pbnGPXSelectFile_clicked()
           "Select GPX file" , //caption
           &myFileTypeQString //the pointer to store selected filter
           );
-  std::cout << "Selected filetype filter is : " << myFileTypeQString.local8Bit() << std::endl;
+  std::cout << "Selected filetype filter is : " << myFileTypeQString.toLocal8Bit().data() << std::endl;
   leGPXFile->setText(myFileNameQString);
 }
 
 
 void QgsGPSPluginGui::pbnIMPInput_clicked() {
   QString myFileType;
-  QString myFileName = QFileDialog::getOpenFileName(
+  QString myFileName = Q3FileDialog::getOpenFileName(
           "." , //initial dir
 	  mBabelFilter,
           this , //parent dialog
@@ -231,10 +231,10 @@ void QgsGPSPluginGui::pbnIMPInput_clicked() {
   iter = mImporters.find(mImpFormat);
   if (iter == mImporters.end()) {
     std::cerr << "Unknown file format selected: "
-	      << myFileType.left(myFileType.length() - 6).local8Bit() << std::endl;
+	      << myFileType.left(myFileType.length() - 6).toLocal8Bit().data() << std::endl;
   }
   else {
-    std::cerr << iter->first.local8Bit() << " selected" << std::endl;
+    std::cerr << iter->first.toLocal8Bit().data() << " selected" << std::endl;
     leIMPInput->setText(myFileName);
     cmbIMPFeature->clear();
     if (iter->second->supportsWaypoints())
@@ -249,7 +249,7 @@ void QgsGPSPluginGui::pbnIMPInput_clicked() {
 
 void QgsGPSPluginGui::pbnIMPOutput_clicked() {
   QString myFileNameQString = 
-    QFileDialog::getSaveFileName("." , //initial dir
+    Q3FileDialog::getSaveFileName("." , //initial dir
 				 "GPS eXchange format (*.gpx)",
 				 this , //parent dialog
 				 "Select GPX output",

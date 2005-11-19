@@ -21,7 +21,7 @@
 #include "qpushbutton.h"
 #include "qgssymbologyutils.h"
 
-QgsPatternDialog::QgsPatternDialog(QWidget * parent, const char *name, bool modal, WFlags fl):QgsPatternDialogBase(parent, name, modal,
+QgsPatternDialog::QgsPatternDialog(QWidget * parent, const char *name, bool modal, Qt::WFlags fl):QgsPatternDialogBase(parent, name, modal,
                      fl)
 {
   //set the icons (which are stored in QgsSymbologyUtils.cpp to avoid redundancy)

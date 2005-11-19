@@ -16,14 +16,14 @@
 #ifndef QGSGRASSREGION_H
 #define QGSGRASSREGION_H
 
-#include <qpointarray.h>
+#include <q3pointarray.h>
 
 class QgsGrassProvider;
 class QgsGrassPlugin;
 class QgisApp;
 class QgisIface;
 class QgsMapCanvas;
-class QButtonGroup;
+class Q3ButtonGroup;
 class QgsPoint;
 #include "qgsgrassregionbase.h"
 
@@ -43,7 +43,7 @@ public:
     //! Constructor
     QgsGrassRegion ( QgsGrassPlugin *plugin, QgisApp *qgisApp, QgisIface *interface, 
 	             QWidget * parent = 0, const char * name = 0, 
-		     WFlags f = 0 );
+		     Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassRegion();
@@ -101,8 +101,8 @@ private:
     //! Pointer to canvas
     QgsMapCanvas *mCanvas;
 
-    QButtonGroup *mNSRadioGroup;
-    QButtonGroup *mEWRadioGroup;
+    Q3ButtonGroup *mNSRadioGroup;
+    Q3ButtonGroup *mEWRadioGroup;
 
     //! Current new region
     struct Cell_head mWindow;
@@ -114,7 +114,7 @@ private:
     bool mDisplayed;
 
     //! Old displayed region points
-    QPointArray mPointArray;
+    Q3PointArray mPointArray;
 
     //! Draw region
     void draw ( double x1, double y1, double x2, double y2 );

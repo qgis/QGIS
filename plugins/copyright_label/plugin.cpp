@@ -28,10 +28,10 @@ email                : tim@linfiniti.com
 #include <qgsproject.h>
 #include <qgsmapcanvas.h>
 
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlineedit.h>
 #include <qaction.h>
 #include <qapplication.h>
@@ -41,9 +41,9 @@ email                : tim@linfiniti.com
 #include <qfont.h>
 #include <qrect.h>
 #include <qbrush.h>
-#include <qbutton.h>
+#include <q3button.h>
 #include <qcheckbox.h>
-#include <qpaintdevicemetrics.h>
+#include <q3paintdevicemetrics.h>
 #include <qglobal.h>
 
 //non qt includes
@@ -90,16 +90,16 @@ QgsCopyrightLabelPlugin::~QgsCopyrightLabelPlugin()
  */
 void QgsCopyrightLabelPlugin::initGui()
 {
-    QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
-    menuId = pluginMenu->insertItem(QIconSet(icon),"&CopyrightLabel", this, SLOT(run()));
+    Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
+    menuId = pluginMenu->insertItem(QIcon(icon),"&CopyrightLabel", this, SLOT(run()));
 
     pluginMenu->setWhatsThis(menuId, "Creates a copyright label that is displayed on the map canvas.");
 
     // Create the action for tool
 #if QT_VERSION < 0x040000
-    myQActionPointer = new QAction("Copyright Label", QIconSet(icon), "&Wmi",0, this, "run");
+    myQActionPointer = new QAction("Copyright Label", QIcon(icon), "&Wmi",0, this, "run");
 #else
-    myQActionPointer = new QAction(QIconSet(icon), "Copyright Label", this);
+    myQActionPointer = new QAction(QIcon(icon), "Copyright Label", this);
 #endif
     myQActionPointer->setWhatsThis("Creates a copyright label that is displayed on the map canvas.");
     // Connect the action to the run
@@ -167,14 +167,14 @@ void QgsCopyrightLabelPlugin::renderLabel(QPainter * theQPainter)
     {
         //@todo softcode this!myQSimpleText.height()
         // need width/height of paint device
-        QPaintDeviceMetrics myMetrics( theQPainter->device() );
+        Q3PaintDeviceMetrics myMetrics( theQPainter->device() );
         int myHeight = myMetrics.height();
         int myWidth = myMetrics.width();
         //hard coded cludge for getting a colorgroup.  Needs to be replaced
-        QButton * myQButton =new QButton();
+        Q3Button * myQButton =new Q3Button();
         QColorGroup myQColorGroup = myQButton->colorGroup();
 
-        QSimpleRichText myQSimpleText(mLabelQString, mQFont);
+        Q3SimpleRichText myQSimpleText(mLabelQString, mQFont);
         myQSimpleText.setWidth( theQPainter, myWidth-10 );
 
         //Get canvas dimensions

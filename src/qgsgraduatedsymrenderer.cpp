@@ -25,7 +25,7 @@
 #include "qgssvgcache.h"
 #include <qdom.h>
 #include <qpixmap.h>
-#include <qpicture.h>
+#include <q3picture.h>
 
 
 QgsGraduatedSymRenderer::QgsGraduatedSymRenderer(QGis::VectorType type)
@@ -83,7 +83,7 @@ void QgsGraduatedSymRenderer::removeSymbols()
     mSymbols.clear();
 }
 
-void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPicture* pic, 
+void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, Q3Picture* pic, 
 	double* scalefactor, bool selected, int oversampling, double widthScale)
 {
     //first find out the value for the classification attribute

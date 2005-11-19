@@ -1,4 +1,4 @@
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qmessagebox.h>
 #include "../qgisplugin.h"
 #include "maplayertest.h"
@@ -6,7 +6,7 @@
 #include "matrix1.xpm"
 MapLayerTest::MapLayerTest(){
 }
-void MapLayerTest::setQgisMainWindow(QMainWindow *app){
+void MapLayerTest::setQgisMainWindow(Q3MainWindow *app){
 	qgisApp = app;
 }
 // set the coordinate transform for drawing the layer
@@ -15,12 +15,12 @@ void MapLayerTest::setCoordinateTransform(QgsMapToPixel *xform){
 }
 void MapLayerTest::initGui(){
 	// setup the menu
-	 QPopupMenu *mapLayerPluginMenu = new QPopupMenu( qgisApp );
+	 Q3PopupMenu *mapLayerPluginMenu = new Q3PopupMenu( qgisApp );
 
         mapLayerPluginMenu->insertItem("&Add Foobar Layer", this, SLOT(open()));
         mapLayerPluginMenu->insertItem(  "&Unload Foobar Plugin", this, SLOT(unload()));
 	// create the menubar
-	 menu = ((QMainWindow *)qgisApp)->menuBar();
+	 menu = ((Q3MainWindow *)qgisApp)->menuBar();
 
         menuId = menu->insertItem( "&PluginMenu", mapLayerPluginMenu );
 	//QAction *zoomPreviousAction = new QAction( "Zoom Previous",QIconSet(icon_matrix), "&Zoom Previous", CTRL+Key_S, qgisMainWindow, "zoomFull" );

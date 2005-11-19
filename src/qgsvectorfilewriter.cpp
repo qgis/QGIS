@@ -35,14 +35,14 @@
 
 QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, QString fileEncoding, QgsVectorLayer * theVectorLayer)
 {
-  std::cout << "QgsVectorFileWriter constructor called with " << theOutputFileName.local8Bit() << 
-      " and vector layer : " << theVectorLayer->getLayerID().local8Bit() << std::endl;
+  std::cout << "QgsVectorFileWriter constructor called with " << theOutputFileName.toLocal8Bit().data() << 
+      " and vector layer : " << theVectorLayer->getLayerID().toLocal8Bit().data() << std::endl;
   //const char *mOutputFormat = "ESRI Shapefile";
   mOutputFormat = "ESRI Shapefile";
   //const char *theOutputFileName = "ogrtest.shp";
   mOutputFileName = theOutputFileName;
 
-  QTextCodec* ncodec=QTextCodec::codecForName(fileEncoding.local8Bit());
+  QTextCodec* ncodec=QTextCodec::codecForName(fileEncoding.toLocal8Bit().data());
   if(ncodec)
     {
       mEncoding=ncodec;
@@ -66,9 +66,9 @@ QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, QString file
 
 QgsVectorFileWriter::QgsVectorFileWriter(QString theOutputFileName, QString fileEncoding, OGRwkbGeometryType theGeometryType)
 {
-  std::cout << "QgsVectorFileWriter constructor called with " << theOutputFileName.local8Bit() <<  " and no input vector layer "  << std::endl;
+  std::cout << "QgsVectorFileWriter constructor called with " << theOutputFileName.toLocal8Bit().data() <<  " and no input vector layer "  << std::endl;
   mOutputFormat = "ESRI Shapefile"; //hard coded for now!
-  QTextCodec* ncodec=QTextCodec::codecForName(fileEncoding.local8Bit());
+  QTextCodec* ncodec=QTextCodec::codecForName(fileEncoding.toLocal8Bit().data());
   if(ncodec)
     {
       mEncoding=ncodec;
@@ -119,16 +119,16 @@ bool QgsVectorFileWriter::initialise()
   mInitialisedFlag=false; 
   
   OGRRegisterAll();
-  OGRSFDriverH myDriverHandle = OGRGetDriverByName( mOutputFormat.local8Bit() );
+  OGRSFDriverH myDriverHandle = OGRGetDriverByName( mOutputFormat.toLocal8Bit().data() );
 
   if( myDriverHandle == NULL )
   {
-    std::cout << "Unable to find format driver named " << mOutputFormat.local8Bit() << std::endl;
+    std::cout << "Unable to find format driver named " << mOutputFormat.toLocal8Bit().data() << std::endl;
     return false;
   }
 
-  // Filename needs local8Bit()
-  mDataSourceHandle = OGR_Dr_CreateDataSource( myDriverHandle, mOutputFileName.local8Bit(), NULL );
+  // Filename needs toLocal8Bit().data()
+  mDataSourceHandle = OGR_Dr_CreateDataSource( myDriverHandle, mOutputFileName.toLocal8Bit().data(), NULL );
   if( mDataSourceHandle == NULL )
   {
     std::cout << "Datasource handle is null! " << std::endl;
@@ -148,7 +148,7 @@ bool QgsVectorFileWriter::initialise()
 #endif
       myWKT=WKT;
 #ifdef QGISDEBUG
-      qWarning(("WKT is:WKT "+myWKT).local8Bit());
+      qWarning(("WKT is:WKT "+myWKT).toLocal8Bit().data());
 #endif    
   }
   else
@@ -165,11 +165,11 @@ bool QgsVectorFileWriter::initialise()
 
   if( !myWKT.isNull()  &&  myWKT.length() != 0 )
   {
-    mySpatialReferenceSystemHandle = OSRNewSpatialReference( myWKT.local8Bit() );
+    mySpatialReferenceSystemHandle = OSRNewSpatialReference( myWKT.toLocal8Bit().data() );
   }
   //change 'contour' to something more useful!
 #ifdef QGISDEBUG
-  qWarning(("mOutputFileName: "+mOutputFileName).local8Bit());
+  qWarning(("mOutputFileName: "+mOutputFileName).toLocal8Bit().data());
 #endif //QGISDEBUG
 
 #ifdef WIN32 
@@ -180,7 +180,7 @@ bool QgsVectorFileWriter::initialise()
   
 
 #ifdef QGISDEBUG
-  qWarning(("outname: "+outname).local8Bit());
+  qWarning(("outname: "+outname).toLocal8Bit().data());
 #endif //QGISDEBUG
 
   // Unsure if this will be a filename or not. Use custom encoding for now.

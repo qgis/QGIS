@@ -106,7 +106,7 @@ private:
   //! Id of the plugin's menu. Used for unloading
   int mMenuId;
   //! Pointer to our toolbar
-  QToolBar *mToolBarPointer;
+  Q3ToolBar *mToolBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *mQGisApp;
   //! Pointer to the QGIS interface object

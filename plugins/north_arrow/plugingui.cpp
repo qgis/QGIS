@@ -16,11 +16,15 @@
 #include <qpainter.h>
 #include <qlabel.h>
 #include <qglobal.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <QResizeEvent>
+#include <QPaintEvent>
 #include <iostream>
 #include <qspinbox.h>
 #include <qslider.h>
 #include <qtabwidget.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qcheckbox.h>
 //standard includes
 #include <math.h>
@@ -32,7 +36,7 @@ QgsNorthArrowPluginGui::QgsNorthArrowPluginGui() : QgsNorthArrowPluginGuiBase()
   rotatePixmap(0);
 }
 
-QgsNorthArrowPluginGui::QgsNorthArrowPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+QgsNorthArrowPluginGui::QgsNorthArrowPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
 : QgsNorthArrowPluginGuiBase( parent, name, modal, fl )
 {
   //temporary hack until this is implemented

@@ -32,7 +32,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 #include <qobject.h>
-#include <qhttp.h>
+#include <q3http.h>
 #include <qdom.h>
 
 

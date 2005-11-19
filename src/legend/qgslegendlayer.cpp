@@ -21,12 +21,12 @@
 #include "qgslegendlayerfile.h"
 #include "qgsmaplayer.h"
 #include <qapplication.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qpixmap.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <iostream>
 
-QgsLegendLayer::QgsLegendLayer(QListViewItem * parent,QString name)
+QgsLegendLayer::QgsLegendLayer(Q3ListViewItem * parent,QString name)
     : QObject(), QgsLegendItem(parent, name)
 {
     mType=LEGEND_LAYER;
@@ -39,7 +39,7 @@ QgsLegendLayer::QgsLegendLayer(QListViewItem * parent,QString name)
     setPixmap(0,myPixmap);
 }
 
-QgsLegendLayer::QgsLegendLayer(QListView* parent, QString name): QObject(), QgsLegendItem(parent, name)
+QgsLegendLayer::QgsLegendLayer(Q3ListView* parent, QString name): QObject(), QgsLegendItem(parent, name)
 {
     mType=LEGEND_LAYER;
 #if defined(Q_OS_MACX) || defined(WIN32)
@@ -101,12 +101,12 @@ void QgsLegendLayer::handleRightClickEvent(const QPoint& position)
 
 QgsMapLayer* QgsLegendLayer::firstMapLayer()
 {
-    QListViewItem* llfgroup = firstChild(); //the legend layer file group
+    Q3ListViewItem* llfgroup = firstChild(); //the legend layer file group
     if(!llfgroup)
     {
 	return 0;
     }
-    QListViewItem* llf = llfgroup->firstChild();
+    Q3ListViewItem* llf = llfgroup->firstChild();
     if(!llf)
     {
 	return 0;
@@ -125,12 +125,12 @@ QgsMapLayer* QgsLegendLayer::firstMapLayer()
 std::list<QgsMapLayer*> QgsLegendLayer::mapLayers()
 {
     std::list<QgsMapLayer*> list;
-    QListViewItem* llfgroup = firstChild(); //the legend layer file group
+    Q3ListViewItem* llfgroup = firstChild(); //the legend layer file group
     if(!llfgroup)
     {
 	return list;
     }
-    QListViewItem* llf = llfgroup->firstChild();
+    Q3ListViewItem* llf = llfgroup->firstChild();
     if(!llf)
     {
 	return list;

@@ -26,7 +26,7 @@
 class QgsLegendLayer;
 class QgsLegendPropertyGroup;
 class QgsMapLayer;
-class QListView;
+class Q3ListView;
 
 /**
 Container for layer, including layer file(s), symbology class breaks and properties
@@ -36,8 +36,8 @@ Container for layer, including layer file(s), symbology class breaks and propert
 class QgsLegendLayer : public QgsLegendItem, public QObject //for signal/ slot
 {
 public:
-    QgsLegendLayer(QListViewItem * ,QString);
-    QgsLegendLayer(QListView * ,QString);
+    QgsLegendLayer(Q3ListViewItem * ,QString);
+    QgsLegendLayer(Q3ListView * ,QString);
     ~QgsLegendLayer();
     bool isLeafNode();
     QgsLegendItem::DRAG_ACTION accept(LEGEND_ITEM_TYPE type);

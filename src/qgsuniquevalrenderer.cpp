@@ -28,7 +28,7 @@
 #include <qdom.h>
 #include <qpainter.h>
 #include <qpixmap.h>
-#include <qpicture.h>
+#include <q3picture.h>
 #include <vector>
 
 QgsUniqueValRenderer::QgsUniqueValRenderer(QGis::VectorType type): mClassificationField(0)
@@ -99,7 +99,7 @@ int QgsUniqueValRenderer::classificationField()
     return mClassificationField;
 }
     
-void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, 
+void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,Q3Picture* pic, 
 	double* scalefactor, bool selected, int oversampling, double widthScale)
 {
     std::vector < QgsFeatureAttribute > vec = f->attributeMap();

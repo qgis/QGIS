@@ -10,7 +10,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "plugingui.h"
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qspinbox.h> 
 #include <qcheckbox.h> 
 
@@ -19,7 +19,7 @@ QgsScaleBarPluginGui::QgsScaleBarPluginGui() : QgsScaleBarPluginGuiBase()
   
 }
 
-QgsScaleBarPluginGui::QgsScaleBarPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+QgsScaleBarPluginGui::QgsScaleBarPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
 : QgsScaleBarPluginGuiBase( parent, name, modal, fl )
 {
    

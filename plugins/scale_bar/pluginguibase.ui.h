@@ -77,5 +77,5 @@ void QgsScaleBarPluginGuiBase::btnBottomRight_toggled( bool )
 
 void QgsScaleBarPluginGuiBase::pbnChangeColour_clicked()
 {
- frameColour->setPaletteBackgroundColor(QColorDialog::getColor(QColor(black),this));
+ frameColour->setPaletteBackgroundColor(QColorDialog::getColor(QColor(Qt::black),this));
 }

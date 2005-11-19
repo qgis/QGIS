@@ -279,7 +279,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsCoordinateTransform
   }
 */
   mySummary+=("\nCoordinate Transform def ends \n%%%%%%%%%%%%%%%%%%%%%%%%\n");
-  return os << mySummary.local8Bit() << std::endl;
+  return os << mySummary.toLocal8Bit().data() << std::endl;
 }
 
 

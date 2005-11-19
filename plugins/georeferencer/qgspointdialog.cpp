@@ -2,12 +2,16 @@
 
 #include <qtoolbutton.h>
 #include <qpushbutton.h>
-#include <qcombobox.h>
-#include <qfiledialog.h>
-#include <qframe.h>
+#include <q3combobox.h>
+#include <q3filedialog.h>
+#include <q3frame.h>
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <QTextStream>
+#include <Q3HBoxLayout>
 
 #include "datapointacetate.h"
 #include "qgspointdialog.h"
@@ -27,14 +31,14 @@ QgsPointDialog::QgsPointDialog() {
 
 
 QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, QWidget* parent, 
-			       const char* name, bool modal, WFlags fl) 
+			       const char* name, bool modal, Qt::WFlags fl) 
   : QgsPointDialogBase(parent, name, modal, fl), 
     mCursor(NULL),
     mLayer(layer)
 {
   
   // set up the canvas
-  QHBoxLayout* layout = new QHBoxLayout(canvasFrame);
+  Q3HBoxLayout* layout = new Q3HBoxLayout(canvasFrame);
   layout->setAutoAdd(true);
   mCanvas = new QgsMapCanvas(canvasFrame, "georefCanvas");
   mCanvas->setBackgroundColor(Qt::white);
@@ -45,7 +49,7 @@ QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, QWidget* parent,
   
   // load previously added points
   QFile pointFile(mLayer->source() + ".points");
-  if (pointFile.open(IO_ReadOnly)) {
+  if (pointFile.open(QIODevice::ReadOnly)) {
     QTextStream points(&pointFile);
     QString tmp;
     points>>tmp>>tmp>>tmp>>tmp;
@@ -72,9 +76,9 @@ QgsPointDialog::~QgsPointDialog() {
 
 
 void QgsPointDialog::handleCanvasClick(QgsPoint& pixelCoords) {
-  if (tbnAddPoint->state() == QButton::On)
+  if (tbnAddPoint->state() == QCheckBox::On)
     showCoordDialog(pixelCoords);
-  else if (tbnDeletePoint->state() == QButton::On)
+  else if (tbnDeletePoint->state() == QCheckBox::On)
     deleteDataPoint(pixelCoords);
 }
 
@@ -122,7 +126,7 @@ void QgsPointDialog::pbnGenerateAndLoad_clicked() {
 
 void QgsPointDialog::pbnSelectWorldFile_clicked() {
   QString filename = 
-    QFileDialog::getSaveFileName(".",
+    Q3FileDialog::getSaveFileName(".",
 				 NULL,
 				 this,
 				 "Save world file"
@@ -133,7 +137,7 @@ void QgsPointDialog::pbnSelectWorldFile_clicked() {
 
 void QgsPointDialog::pbnSelectModifiedRaster_clicked() {
   QString filename = 
-    QFileDialog::getSaveFileName(".",
+    Q3FileDialog::getSaveFileName(".",
 				 NULL,
 				 this,
 				 "Save modified raster file"
@@ -197,7 +201,7 @@ bool QgsPointDialog::generateWorldFile() {
   
   // write the world file
   QFile file(leSelectWorldFile->text());
-  if (!file.open(IO_WriteOnly)) {
+  if (!file.open(QIODevice::WriteOnly)) {
     QMessageBox::critical(this, "Error", 
 			  "Could not write to " + leSelectWorldFile->text());
     return false;
@@ -212,7 +216,7 @@ bool QgsPointDialog::generateWorldFile() {
   
   // write the data points in case we need them later
   QFile pointFile(mLayer->source() + ".points");
-  if (pointFile.open(IO_WriteOnly)) {
+  if (pointFile.open(QIODevice::WriteOnly)) {
     QTextStream points(&pointFile);
     points<<"mapX\tmapY\tpixelX\tpixelY"<<endl;
     for (int i = 0; i < mMapCoords.size(); ++i) {
@@ -226,7 +230,7 @@ bool QgsPointDialog::generateWorldFile() {
 
 
 void QgsPointDialog::tbnZoomIn_changed(int state) {
-  if (state == QButton::On) {
+  if (state == QCheckBox::On) {
     tbnZoomOut->setOn(false);
     tbnPan->setOn(false);
     tbnAddPoint->setOn(false);
@@ -241,7 +245,7 @@ void QgsPointDialog::tbnZoomIn_changed(int state) {
 
 
 void QgsPointDialog::tbnZoomOut_changed(int state) {
-  if (state == QButton::On) {
+  if (state == QCheckBox::On) {
     tbnZoomIn->setOn(false);
     tbnPan->setOn(false);
     tbnAddPoint->setOn(false);
@@ -262,7 +266,7 @@ void QgsPointDialog::tbnZoomToLayer_clicked() {
 
 
 void QgsPointDialog::tbnPan_changed(int state) {
-  if (state == QButton::On) {
+  if (state == QCheckBox::On) {
     tbnZoomIn->setOn(false);
     tbnZoomOut->setOn(false);
     tbnAddPoint->setOn(false);
@@ -277,7 +281,7 @@ void QgsPointDialog::tbnPan_changed(int state) {
 
 
 void QgsPointDialog::tbnAddPoint_changed(int state) {
-  if (state == QButton::On) {
+  if (state == QCheckBox::On) {
     tbnZoomIn->setOn(false);
     tbnZoomOut->setOn(false);
     tbnPan->setOn(false);
@@ -292,7 +296,7 @@ void QgsPointDialog::tbnAddPoint_changed(int state) {
 
 
 void QgsPointDialog::tbnDeletePoint_changed(int state) {
-  if (state == QButton::On) {
+  if (state == QCheckBox::On) {
     tbnZoomIn->setOn(false);
     tbnZoomOut->setOn(false);
     tbnPan->setOn(false);

@@ -19,6 +19,8 @@
 #include <stdexcept>
 
 #include <qfile.h>
+//Added by qt3to4:
+#include <QTextStream>
 
 #include "gpsdata.h"
 
@@ -309,12 +311,12 @@ GPSData* GPSData::getData(const QString& filename) {
   // if the data isn't there already, try to load it
   if (dataObjects.find(filename) == dataObjects.end()) {
     QFile file(filename);
-    if (!file.open(IO_ReadOnly)) {
+    if (!file.open(QIODevice::ReadOnly)) {
       qWarning("Couldn't open the data source: " + filename);
       return 0;
     }
     GPSData* data = new GPSData;
-    std::cerr << "Loading file " << filename.local8Bit() << std::endl;
+    std::cerr << "Loading file " << filename.toLocal8Bit().data() << std::endl;
     GPXHandler handler(*data);
     bool failed = false;
     
@@ -346,7 +348,7 @@ GPSData* GPSData::getData(const QString& filename) {
     dataObjects[filename] = std::pair<GPSData*, unsigned>(data, 0);
   }
   else
-    std::cerr << filename.local8Bit() << " is already loaded"<<std::endl;
+    std::cerr << filename.toLocal8Bit().data() << " is already loaded"<<std::endl;
   
   // return a pointer and increase the reference count for that filename
   DataMap::iterator iter = dataObjects.find(filename);
@@ -361,9 +363,9 @@ void GPSData::releaseData(const QString& filename) {
      it if the reference count becomes 0 */
   DataMap::iterator iter = dataObjects.find(filename);
   if (iter != dataObjects.end()) {
-    std::cerr << "unrefing " << filename.local8Bit() << std::endl;
+    std::cerr << "unrefing " << filename.toLocal8Bit().data() << std::endl;
     if (--(iter->second.second) == 0) {
-      std::cerr << "No one's using " << filename.local8Bit() << ", I'll erase it" << std::endl;
+      std::cerr << "No one's using " << filename.toLocal8Bit().data() << ", I'll erase it" << std::endl;
       delete iter->second.first;
       dataObjects.erase(iter);
     }

@@ -19,8 +19,10 @@
  ***************************************************************************/
 #include "qgslegendgroup.h"
 #include <qapplication.h>
+//Added by qt3to4:
+#include <QPixmap>
 
-QgsLegendGroup::QgsLegendGroup(QListViewItem * theItem ,QString theName)
+QgsLegendGroup::QgsLegendGroup(Q3ListViewItem * theItem ,QString theName)
     : QgsLegendItem(theItem,theName)
 {
   mType=LEGEND_GROUP;
@@ -32,7 +34,7 @@ QgsLegendGroup::QgsLegendGroup(QListViewItem * theItem ,QString theName)
   QPixmap myPixmap(pkgDataPath+QString("/images/icons/folder.png"));
   setPixmap(0,myPixmap);
 }
-QgsLegendGroup::QgsLegendGroup(QListView * theListView, QString theString)
+QgsLegendGroup::QgsLegendGroup(Q3ListView * theListView, QString theString)
     : QgsLegendItem(theListView,theString)
 {
   mType=LEGEND_GROUP;

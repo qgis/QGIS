@@ -21,6 +21,9 @@
 #define QGSMAPOVERVIEWCANVAS_H
 
 #include "qgsmapcanvas.h"
+//Added by qt3to4:
+#include <QMouseEvent>
+#include <QWheelEvent>
 
 class QgsPanningWidget; // defined in .cpp
 

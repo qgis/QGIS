@@ -42,20 +42,20 @@
 
 #include <qapplication.h>
 #include <qcursor.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qpainter.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qstring.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlabel.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qlibrary.h>
-#include <qpicture.h>
-#include <qprogressdialog.h>
+#include <q3picture.h>
+#include <q3progressdialog.h>
 #include <qsettings.h>
 #include <qwidget.h>
-#include <qwidgetlist.h>
+#include <qwidget.h>
 #include <qglobal.h>
 
 #include "qgisapp.h"
@@ -289,7 +289,7 @@ void QgsVectorLayer::setDisplayField(QString fldName)
 
       QString fldName = fields[j].name();
 #ifdef QGISDEBUG
-      std::cerr << "Checking field " << fldName.local8Bit() << " of " << fields.size() << " total" << std::endl;
+      std::cerr << "Checking field " << fldName.toLocal8Bit().data() << " of " << fields.size() << " total" << std::endl;
 #endif
       // Check the fields and keep the first one that matches.
       // We assume that the user has organized the data with the
@@ -431,9 +431,9 @@ QgsRect QgsVectorLayer::inverseProjectRect(const QgsRect& r) const
 			        QgsCoordinateTransform::INVERSE);
 #ifdef QGISDEBUG
       std::cerr << "Projections are enabled\n";
-      std::cerr << "Rectangle was: " << r.stringRep(true).local8Bit() << '\n';
+      std::cerr << "Rectangle was: " << r.stringRep(true).toLocal8Bit().data() << '\n';
       QgsRect tt(p1, p2);
-      std::cerr << "Inverse transformed to: " << tt.stringRep(true).local8Bit() << '\n';
+      std::cerr << "Inverse transformed to: " << tt.stringRep(true).toLocal8Bit().data() << '\n';
 #endif
       return QgsRect(p1, p2);
 
@@ -503,7 +503,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   // calls to drawPolyline with a QPointArray holding floats (or
   // doubles?), so this loop may become unnecessary (but may still need
   // the double* versions for the OGR coordinate transformation).
-  QPointArray pa(nPoints);
+  Q3PointArray pa(nPoints);
   for (int i = 0; i < nPoints; ++i)
 #ifdef WIN32
 	   // vc++ doesn't have a round function so we fake it
@@ -657,7 +657,7 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     // QPainter::drawpolygon() call. The size is the sum of points in
     // the polygon plus one extra point for each ring except for the
     // first ring.
-    QPointArray pa(total_points + rings.size() - 1);
+    Q3PointArray pa(total_points + rings.size() - 1);
 
     for (int i = 0; i < rings.size(); ++i)
     {
@@ -775,7 +775,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 
     QPen pen;
     /*Pointer to a marker image*/
-    QPicture marker;
+    Q3Picture marker;
     /*Scale factor of the marker image*/
     double markerScaleFactor=1.;
 
@@ -924,7 +924,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
       QString msg("Failed to transform a point while drawing a feature of type '"
                   + fet->typeName() + "'. Ignoring this feature.");
       msg += cse.what();
-      qWarning(msg.local8Bit());
+      qWarning(msg.toLocal8Bit().data());
     }
 
 #ifdef QGISDEBUG
@@ -1012,13 +1012,13 @@ void QgsVectorLayer::identify(QgsRect * r)
     {
       featureCount++;
 
-      QListViewItem *featureNode = ir->addNode("foo");
+      Q3ListViewItem *featureNode = ir->addNode("foo");
       featureNode->setText(0, fieldIndex);
       std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
       for (int i = 0; i < attr.size(); i++)
       {
 #ifdef QGISDEBUG
-    std::cout << attr[i].fieldName().local8Bit() << " == " << fieldIndex.local8Bit() << std::endl;
+    std::cout << attr[i].fieldName().toLocal8Bit().data() << " == " << fieldIndex.toLocal8Bit().data() << std::endl;
 #endif
         if (attr[i].fieldName().lower() == fieldIndex)
         {
@@ -1171,7 +1171,7 @@ void QgsVectorLayer::table()
       {
         tabledisplay->table()->selectRowWithId(*it);//todo: avoid that the table gets repainted during each selection
 #ifdef QGISDEBUG
-        qWarning(("selecting row with id " + QString::number(*it)).local8Bit());
+        qWarning(("selecting row with id " + QString::number(*it)).toLocal8Bit().data());
 #endif
 
       }
@@ -1302,7 +1302,7 @@ void QgsVectorLayer::invertSelection()
     if(tabledisplay)
     {
 	//todo: show progress dialog
-	QProgressDialog progress( "Invert Selection...", "Abort", mSelected.size(), 0, "progress", TRUE );
+	Q3ProgressDialog progress( "Invert Selection...", "Abort", mSelected.size(), 0, "progress", TRUE );
 	int i=0;
 	for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
 	{
@@ -1477,7 +1477,7 @@ void QgsVectorLayer::initContextMenu_(QgisApp * app)
 
 
 // XXX why is this here?  This should be generalized up to QgsMapLayer
-QPopupMenu *QgsVectorLayer::contextMenu()
+Q3PopupMenu *QgsVectorLayer::contextMenu()
 {
   return popMenu;
 }
@@ -1784,7 +1784,7 @@ bool QgsVectorLayer::addFeature(QgsFeature* f, bool alsoUpdateExtent)
     {
 #ifdef QGISDEBUG
        std::cout << "QgsVectorLayer::addFeature: inspecting field '"
-                 << (it->second).local8Bit()
+                 << (it->second).toLocal8Bit().data()
                  << "'." << std::endl;
 #endif
 
@@ -2127,7 +2127,7 @@ int QgsVectorLayer::maximumScale()
 bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 {
 #ifdef QGISDEBUG
-  std::cerr << "Datasource in QgsVectorLayer::readXML_: " << dataSource.local8Bit() << std::endl;
+  std::cerr << "Datasource in QgsVectorLayer::readXML_: " << dataSource.toLocal8Bit().data() << std::endl;
 #endif
   // process the attribute actions
   mActions.readXML(layer_node);
@@ -2311,7 +2311,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
           // show the extent
           QString s = mbr->stringRep();
 #ifdef QGISDEBUG
-          std::cout << "Extent of layer: " << s.local8Bit() << std::endl;
+          std::cout << "Extent of layer: " << s.toLocal8Bit().data() << std::endl;
 #endif
           // store the extent
           layerExtent.setXmax(mbr->xMax());
@@ -2329,13 +2329,13 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
           if (providerKey == "postgres")
           {
 #ifdef QGISDEBUG
-              std::cout << "Beautifying layer name " << layerName.local8Bit() << std::endl;
+              std::cout << "Beautifying layer name " << layerName.toLocal8Bit().data() << std::endl;
 #endif
               // adjust the display name for postgres layers
               layerName = layerName.mid(layerName.find(".") + 1);
               layerName = layerName.left(layerName.find("(") - 1);   // Take one away, to avoid a trailing space
 #ifdef QGISDEBUG
-              std::cout << "Beautified name is " << layerName.local8Bit() << std::endl;
+              std::cout << "Beautified name is " << layerName.toLocal8Bit().data() << std::endl;
 #endif
 
           }
@@ -2477,7 +2477,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   // Use the const char * form of the xml to make non-stl qt happy
     if ( ! labelDOM.setContent( QString::fromUtf8(s), &errorMsg, &errorLine, &errorColumn ) )
     {
-      qDebug( ("XML import error at line %d column %d " + errorMsg).local8Bit(), errorLine, errorColumn );
+      qDebug( ("XML import error at line %d column %d " + errorMsg).toLocal8Bit().data(), errorLine, errorColumn );
 
       return false;
     }
@@ -2532,7 +2532,7 @@ int QgsVectorLayer::findFreeId()
       delete fet;
     }
 #ifdef QGISDEBUG
-    qWarning(("freeid is: "+QString::number(freeid+1)).local8Bit());
+    qWarning(("freeid is: "+QString::number(freeid+1)).toLocal8Bit().data());
 #endif
     return freeid+1;
   }
@@ -2560,7 +2560,7 @@ bool QgsVectorLayer::commitChanges()
 
     for(std::vector<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
     {
-      std::cout << "QgsVectorLayer::commitChanges: Got: " << (*it)->geometry()->wkt().local8Bit()
+      std::cout << "QgsVectorLayer::commitChanges: Got: " << (*it)->geometry()->wkt().toLocal8Bit().data()
                 << "." << std::endl;
     }
 
@@ -2701,7 +2701,7 @@ std::vector<QgsFeature>* QgsVectorLayer::selectedFeatures()
       f->setGeometry(*mCachedGeometries[*it]);
 
 #ifdef QGISDEBUG
-      std::cout << "QgsVectorLayer::selectedFeatures: '" << f->geometry()->wkt().local8Bit() << "'"
+      std::cout << "QgsVectorLayer::selectedFeatures: '" << f->geometry()->wkt().toLocal8Bit().data() << "'"
                 << "." << std::endl;
 #endif
       
@@ -3225,7 +3225,7 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
 
 
 void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * theMapToPixelTransform, 
-             QPicture* marker, double markerScaleFactor, bool projectionsEnabledFlag)
+             Q3Picture* marker, double markerScaleFactor, bool projectionsEnabledFlag)
 {
   // Only have variables, etc outside the switch() statement that are
   // used in all cases of the statement (otherwise they may get
@@ -3390,7 +3390,7 @@ void QgsVectorLayer::setCoordinateSystem()
     }
     
 #ifdef QGISDEBUG
-    std::cout << "QgsVectorLayer::setCoordinateSystem --- using wkt\n" << mySourceWKT.local8Bit() << std::endl;
+    std::cout << "QgsVectorLayer::setCoordinateSystem --- using wkt\n" << mySourceWKT.toLocal8Bit().data() << std::endl;
 #endif
     mCoordinateTransform->sourceSRS().createFromWkt(mySourceWKT);
     //mCoordinateTransform->sourceSRS()->createFromWkt(getProjectionWKT());

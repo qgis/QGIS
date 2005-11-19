@@ -19,14 +19,14 @@ email                : sherman at mrcc.com
 #include <cassert>
 #include <qsettings.h>
 #include <qpixmap.h>
-#include <qlistbox.h>
-#include <qlistview.h>
+#include <q3listbox.h>
+#include <q3listview.h>
 #include <qstringlist.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qpushbutton.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include "xpm/point_layer.xpm"
 #include "xpm/line_layer.xpm"
 #include "xpm/polygon_layer.xpm"
@@ -167,10 +167,10 @@ void QgsDbSourceSelect::deleteConnection()
 void QgsDbSourceSelect::addTables()
 {
   //store the table info
-  QListViewItemIterator it( lstTables );
+  Q3ListViewItemIterator it( lstTables );
   while ( it.current() ) 
   {
-    QListViewItem *item = it.current();
+    Q3ListViewItem *item = it.current();
     ++it;
 
     if ( item->isSelected() )
@@ -220,13 +220,13 @@ void QgsDbSourceSelect::dbConnect()
   }
   connString += " password=" + password;
 #ifdef QGISDEBUG
-  std::cout << "Connection info: " << connString.local8Bit() << std::endl;
+  std::cout << "Connection info: " << connString.toLocal8Bit().data() << std::endl;
 #endif
   if (makeConnection)
   {
     m_connInfo = connString;  //host + " " + database + " " + username + " " + password;
     //qDebug(m_connInfo);
-    pd = PQconnectdb(m_connInfo.local8Bit());
+    pd = PQconnectdb(m_connInfo.toLocal8Bit().data());
     //  std::cout << pd->ErrorMessage();
     if (PQstatus(pd) == CONNECTION_OK)
     {
@@ -257,14 +257,14 @@ void QgsDbSourceSelect::dbConnect()
 
     if (p != 0)
     {
-      QListViewItem *lItem = new QListViewItem(lstTables);
+      Q3ListViewItem *lItem = new Q3ListViewItem(lstTables);
       lItem->setText(1,iter->first);
       lItem->setPixmap(0,*p);
       lstTables->insertItem(lItem);
     }
     else
     {
-      qDebug(("Unknown geometry type of " + iter->second).local8Bit());
+      qDebug(("Unknown geometry type of " + iter->second).toLocal8Bit().data());
     }
   }
       }
@@ -296,7 +296,7 @@ QString QgsDbSourceSelect::connInfo()
 {
   return m_connInfo;
 }
-void QgsDbSourceSelect::setSql(QListViewItem *item)
+void QgsDbSourceSelect::setSql(Q3ListViewItem *item)
 {
   // Parse out the table name
   QString table = item->text(1).left(item->text(1).find("("));
@@ -318,7 +318,7 @@ void QgsDbSourceSelect::setSql(QListViewItem *item)
   // delete the query builder object
   delete pgb;
 }
-void QgsDbSourceSelect::addLayer(QListBoxItem * item)
+void QgsDbSourceSelect::addLayer(Q3ListBoxItem * item)
 {
   qgisApp->addVectorLayer(m_connInfo, item->text(), "postgres");
   //  lstTables->setSelected(item, false);
@@ -333,7 +333,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
   // where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
   sql += " order by f_table_name";
   //qDebug("Fetching tables using: " + sql);
-  PGresult *result = PQexec(pg, sql.local8Bit());
+  PGresult *result = PQexec(pg, sql.toLocal8Bit().data());
   if (result)
   {
     QString msg;
@@ -354,7 +354,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
 	sql +=" and relnamespace = (select oid from pg_namespace where nspname = '" +
 	  schemaName + "')";
 
-      PGresult* exists = PQexec(pg, sql.local8Bit());
+      PGresult* exists = PQexec(pg, sql.toLocal8Bit().data());
       if (PQntuples(exists) == 1)
   {
     QString v = "";
@@ -391,7 +391,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     "and pg_namespace.oid = pg_class.relnamespace "
     "and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
   
-  result = PQexec(pg, sql.local8Bit());
+  result = PQexec(pg, sql.toLocal8Bit().data());
 
   for (int i = 0; i < PQntuples(result); i++)
   {
@@ -413,12 +413,12 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
       query += "\"" + schema + "\".";
     query += "\"" + table + "\" where " + column + " is not null limit 1";
 
-    PGresult* gresult = PQexec(pg, query.local8Bit());
+    PGresult* gresult = PQexec(pg, query.toLocal8Bit().data());
     if (PQresultStatus(gresult) != PGRES_TUPLES_OK)
     {
       qDebug((tr("Access to relation ") + table + tr(" using sql;\n") + query +
        tr("\nhas failed. The database said:\n") +
-       PQresultErrorMessage(gresult)).local8Bit());
+       PQresultErrorMessage(gresult)).toLocal8Bit().data());
     }
     else
     {

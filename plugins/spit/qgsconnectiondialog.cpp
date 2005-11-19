@@ -28,7 +28,7 @@ extern "C"
 #include "qgsconnectiondialog.h"
 #include "qgsmessageviewer.h"
 
-QgsConnectionDialog::QgsConnectionDialog (QWidget* parent, QString connName, bool modal, WFlags fl)
+QgsConnectionDialog::QgsConnectionDialog (QWidget* parent, QString connName, bool modal, Qt::WFlags fl)
 	: QgsConnectionDialogBase(parent,(const char *)connName,modal,fl)
 {
 	if (!connName.isEmpty()) {

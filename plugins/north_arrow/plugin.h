@@ -90,7 +90,7 @@ class QgsNorthArrowPlugin:public QObject, public QgisPlugin
   //! Id of the plugin's menu. Used for unloading
   int menuId;
   //! Pointer to our toolbar
-  QToolBar *toolBarPointer;
+  Q3ToolBar *toolBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object

@@ -18,6 +18,8 @@
 /* $Id$ */
 
 #include "qgsproviderextentcalcevent.h"
+//Added by qt3to4:
+#include <QCustomEvent>
 
 QgsProviderExtentCalcEvent::QgsProviderExtentCalcEvent( QgsRect* layerExtent )
     : QCustomEvent( QGis::ProviderExtentCalcEvent ),

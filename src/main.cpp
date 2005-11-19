@@ -190,7 +190,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
         QMessageBox::warning( 0, "libpng Error",
           msg,
           QMessageBox::Ok,
-          QMessageBox::NoButton);
+          Qt::NoButton);
       }
       
       break;
@@ -397,7 +397,7 @@ int main(int argc, char *argv[])
   }
 #ifdef QGISDEBUG
   std::cout << "Setting translation to "
-    << i18nPath.local8Bit() << "/qgis_" << myTranslationCode.local8Bit() << std::endl;
+    << i18nPath.toLocal8Bit().data() << "/qgis_" << myTranslationCode.toLocal8Bit().data() << std::endl;
 #endif
 
   /* Translation file for Qt.
@@ -467,7 +467,7 @@ int main(int argc, char *argv[])
 
 
 #ifdef QGISDEBUG
-    std::cout << "Trying to load file : " << (*myIterator).local8Bit() << std::endl;
+    std::cout << "Trying to load file : " << (*myIterator).toLocal8Bit().data() << std::endl;
 #endif
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files

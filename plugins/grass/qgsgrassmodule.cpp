@@ -18,13 +18,13 @@
 #include <qapplication.h>
 #include <qdir.h>
 #include <qfile.h>
-#include <qfiledialog.h> 
+#include <q3filedialog.h> 
 #include <qsettings.h>
 #include <qpixmap.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qstringlist.h>
 #include <qlabel.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qspinbox.h>
 #include <qpushbutton.h>
 #include <qmessagebox.h>
@@ -33,12 +33,12 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qpen.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qcursor.h>
 #include <qnamespace.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qcolordialog.h>
-#include <qtable.h>
+#include <q3table.h>
 #include <qstatusbar.h>
 #include <qevent.h>
 #include <qpoint.h>
@@ -46,19 +46,22 @@
 #include <qdom.h>
 #include <qtabwidget.h>
 #include <qlayout.h>
-#include <qprocess.h>
-#include <qcstring.h>
+#include <q3process.h>
+#include <q3cstring.h>
 #include <qlineedit.h>
-#include <qtextbrowser.h>
+#include <q3textbrowser.h>
 #include <qdir.h>
 #include <qregexp.h>
-#include <qprogressbar.h>
-#include <qstylesheet.h>
-#include <qgroupbox.h>
+#include <q3progressbar.h>
+#include <q3stylesheet.h>
+#include <q3groupbox.h>
 #include <qpainter.h>
 #include <qpixmap.h>
-#include <qpicture.h>
+#include <q3picture.h>
 #include <qimage.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3GridLayout>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsmapcanvas.h"
@@ -82,7 +85,7 @@ extern "C" {
 #include "qgsgrasstools.h"
 
 QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIface *iface, 
-	                     QString path, QWidget * parent, const char * name, WFlags f )
+	                     QString path, QWidget * parent, const char * name, Qt::WFlags f )
              :QgsGrassModuleBase ( parent, name, f )
 {
     #ifdef QGISDEBUG
@@ -106,7 +109,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
 	QMessageBox::warning( 0, "Warning", "The module file (" + mpath + ") not found." );
 	return;
     }
-    if ( ! qFile.open( IO_ReadOnly ) ) {
+    if ( ! qFile.open( QIODevice::ReadOnly ) ) {
 	QMessageBox::warning( 0, "Warning", "Cannot open module file (" + mpath + ")" );
 	return;
     }
@@ -116,7 +119,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     if ( !qDoc.setContent( &qFile,  &err, &line, &column ) ) {
 	QString errmsg = "Cannot read module file (" + mpath + "):\n" + err + "\nat line "
 	                 + QString::number(line) + " column " + QString::number(column);
-	std::cerr << errmsg.local8Bit() << std::endl;
+	std::cerr << errmsg.toLocal8Bit().data() << std::endl;
 	QMessageBox::warning( 0, "Warning", errmsg );
 	qFile.close();
 	return;
@@ -129,7 +132,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     
     if ( mXName == "r.mapcalc" )
     {
-        QGridLayout *layout = new QGridLayout ( mTabWidget->page(0), 1, 1 );
+        Q3GridLayout *layout = new Q3GridLayout ( mTabWidget->page(0), 1, 1 );
 
         mOptions = new QgsGrassMapcalc ( mTools, this,
                mQgisApp, mIface, mTabWidget->page(0) );
@@ -202,7 +205,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
            QgsGrassTools *tools, QgsGrassModule *module,
            QgisApp *qgisApp, QgisIface *iface, 
 	   QString xname, QDomElement qDocElem,
-           QWidget * parent, const char * name, WFlags f )
+           QWidget * parent, const char * name, Qt::WFlags f )
              :QgsGrassModuleOptions( tools, module, qgisApp, iface),
               QWidget ( parent, name, f )
 {
@@ -213,7 +216,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
     mXName = xname;
     mParent = parent;
 
-    QProcess *process = new QProcess( this );
+    Q3Process *process = new Q3Process( this );
     process->addArgument( mXName );
     process->addArgument( "--interface-description" );
 
@@ -233,7 +236,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
     if ( !gDoc.setContent( (QByteArray)gDescArray, &err, &line, &column ) ) {
 	QString errmsg = "Cannot read module description (" + mXName + "):\n" + err + "\nat line "
 	                 + QString::number(line) + " column " + QString::number(column);
-	std::cerr << errmsg.local8Bit() << std::endl;
+	std::cerr << errmsg.toLocal8Bit().data() << std::endl;
 	std::cerr << gDescArray << std::endl;
 	std::cerr << errArray << std::endl;
 	QMessageBox::warning( 0, "Warning", errmsg );
@@ -244,7 +247,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
     // Read QGIS options and create controls
     QDomNode n = qDocElem.firstChild();
     //QVBoxLayout *layout = new QVBoxLayout ( mTabWidget->page(0), 10 );
-    QVBoxLayout *layout = new QVBoxLayout ( mParent, 10 );
+    Q3VBoxLayout *layout = new Q3VBoxLayout ( mParent, 10 );
     while( !n.isNull() ) {
 	QDomElement e = n.toElement();
 	if( !e.isNull() ) {
@@ -252,7 +255,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
 	    //std::cout << "optionType = " << optionType << std::endl;
 
 	    QString key = e.attribute("key");
-	    std::cout << "key = " << key.local8Bit() << std::endl;
+	    std::cout << "key = " << key.toLocal8Bit().data() << std::endl;
 
 	    QDomNode gnode = QgsGrassModule::nodeByKey ( gDocElem, key );
 	    if ( gnode.isNull() ) {
@@ -359,7 +362,7 @@ QgsGrassModuleItem *QgsGrassModuleStandardOptions::item ( QString id )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModuleStandardOptions::item() id = " 
-	      << id.local8Bit() << std::endl;
+	      << id.toLocal8Bit().data() << std::endl;
     #endif
         
     for ( int i = 0; i < mItems.size(); i++ )
@@ -390,7 +393,7 @@ QString QgsGrassModule::label ( QString path )
     if ( !qFile.exists() ) {
 	return QString ( "Not available, decription not found (" + path + ")" );
     }
-    if ( ! qFile.open( IO_ReadOnly ) ) {
+    if ( ! qFile.open( QIODevice::ReadOnly ) ) {
 	return QString ( "Not available, cannot open description (" + path + ")" ) ;
     }
     QDomDocument qDoc ( "qgisgrassmodule" );
@@ -399,7 +402,7 @@ QString QgsGrassModule::label ( QString path )
     if ( !qDoc.setContent( &qFile,  &err, &line, &column ) ) {
 	QString errmsg = "Cannot read module file (" + path + "):\n" + err + "\nat line "
 	                 + QString::number(line) + " column " + QString::number(column);
-	std::cerr << errmsg.local8Bit() << std::endl;
+	std::cerr << errmsg.toLocal8Bit().data() << std::endl;
 	QMessageBox::warning( 0, "Warning", errmsg );
 	qFile.close();
 	return QString ( "Not available, incorrect description (" + path + ")" );
@@ -427,7 +430,7 @@ QPixmap QgsGrassModule::pixmap ( QString path, int height )
         QFileInfo fi ( fpath );
         if ( fi.exists() ) 
 	{
-	    QPicture pic;
+	    Q3Picture pic;
 	    if ( ! pic.load ( fpath, "svg" ) ) break;
 
 	    QRect br = pic.boundingRect();
@@ -503,7 +506,7 @@ QPixmap QgsGrassModule::pixmap ( QString path, int height )
 	    pos += buffer;
 	    painter.drawLine ( pos, height/2, pos+arrowWidth, height/2 );
 
-	    QPointArray pa(3);
+	    Q3PointArray pa(3);
 	    pa.setPoint(0, pos+arrowWidth/2+1, height/2-arrowWidth/4);
 	    pa.setPoint(1, pos+arrowWidth, height/2 );
 	    pa.setPoint(2, pos+arrowWidth/2+1, height/2+arrowWidth/4);
@@ -540,7 +543,7 @@ void QgsGrassModule::run()
         QStringList list = mOptions->arguments();
 
 	for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it ) {
-	    std::cerr << "option: " << (*it).local8Bit() << std::endl;
+	    std::cerr << "option: " << (*it).toLocal8Bit().data() << std::endl;
 	    command.append ( " " + *it );
 	    mProcess.addArgument( *it );
 	}
@@ -556,7 +559,7 @@ void QgsGrassModule::run()
 	
 	mProcess.start( );
 	
-	std::cerr << "command" << command.local8Bit() << std::endl;
+	std::cerr << "command" << command.toLocal8Bit().data() << std::endl;
 	mOutputTextBrowser->clear();
 
 	command.replace ( "&", "&amp;" );
@@ -660,7 +663,7 @@ QgsGrassModule::~QgsGrassModule()
 QDomNode QgsGrassModule::nodeByKey ( QDomElement elem, QString key )
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrassModule::nodeByKey() key = " << key.local8Bit() << std::endl;
+    std::cerr << "QgsGrassModule::nodeByKey() key = " << key.toLocal8Bit().data() << std::endl;
     #endif
     QDomNode n = elem.firstChild();
 
@@ -685,7 +688,7 @@ QDomNode QgsGrassModule::nodeByKey ( QDomElement elem, QString key )
 QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key, 
 	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
 	                                   QWidget * parent)
-                    : QGroupBox ( 1, Qt::Vertical, parent ),
+                    : Q3GroupBox ( 1, Qt::Vertical, parent ),
                       QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode )
 {
     #ifdef QGISDEBUG
@@ -849,7 +852,7 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
        					   QgsGrassModuleStandardOptions *options, QString key,
 	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
 	                                   QWidget * parent)
-                    : QGroupBox ( 1, Qt::Vertical, parent ),
+                    : Q3GroupBox ( 1, Qt::Vertical, parent ),
                       QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
 		      mModuleStandardOptions(options),
 		      mUpdate(false), mVectorTypeOption(0), mVectorLayerOption(0)
@@ -1286,7 +1289,7 @@ QgsGrassModuleItem::~QgsGrassModuleItem() {}
 QgsGrassModuleGdalInput::QgsGrassModuleGdalInput ( 
 	QgsGrassModule *module, int type, QString key, QDomElement &qdesc, 
 	QDomElement &gdesc, QDomNode &gnode, QWidget * parent)
-      : QGroupBox ( 1, Qt::Vertical, parent ),
+      : Q3GroupBox ( 1, Qt::Vertical, parent ),
         QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
         mType(type), mOgrLayerOption(0)
 {
@@ -1413,7 +1416,7 @@ QgsGrassModuleField::QgsGrassModuleField (
 	QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
        	QString key, QDomElement &qdesc, 
 	QDomElement &gdesc, QDomNode &gnode, QWidget * parent)
-      : QGroupBox ( 1, Qt::Vertical, parent ),
+      : Q3GroupBox ( 1, Qt::Vertical, parent ),
         QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
 	mModuleStandardOptions(options), mLayerInput(0)
 {
@@ -1502,7 +1505,7 @@ QgsGrassModuleSelection::QgsGrassModuleSelection (
 	QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
        	QString key, QDomElement &qdesc, 
 	QDomElement &gdesc, QDomNode &gnode, QWidget * parent)
-      : QGroupBox ( 1, Qt::Vertical, parent ),
+      : Q3GroupBox ( 1, Qt::Vertical, parent ),
         QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
 	mModuleStandardOptions(options), mLayerInput(0),
 	mVectorLayer(0)

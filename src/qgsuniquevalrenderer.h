@@ -31,7 +31,7 @@ class QgsUniqueValRenderer: public QgsRenderer
     QgsUniqueValRenderer(const QgsUniqueValRenderer& other);
     QgsUniqueValRenderer& operator=(const QgsUniqueValRenderer& other);
     virtual ~QgsUniqueValRenderer();
-    void renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.);
+    void renderFeature(QPainter* p, QgsFeature* f,Q3Picture* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.);
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
      @param vl the vector layer which will be associated with the renderer*/

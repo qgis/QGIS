@@ -14,19 +14,21 @@
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include "qgslocationcapturewidgetbase.ui.h"
+//Added by qt3to4:
+#include <Q3GridLayout>
 
 /*
  *  Constructs a QgsLocationCaptureWidgetBase as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-QgsLocationCaptureWidgetBase::QgsLocationCaptureWidgetBase( QWidget* parent, const char* name, WFlags fl )
+QgsLocationCaptureWidgetBase::QgsLocationCaptureWidgetBase( QWidget* parent, const char* name, Qt::WFlags fl )
     : QWidget( parent, name, fl )
 {
     if ( !name )
 	setName( "QgsLocationCaptureWidgetBase" );
-    QgsLocationCaptureWidgetBaseLayout = new QGridLayout( this, 1, 1, 11, 6, "QgsLocationCaptureWidgetBaseLayout"); 
+    QgsLocationCaptureWidgetBaseLayout = new Q3GridLayout( this, 1, 1, 11, 6, "QgsLocationCaptureWidgetBaseLayout"); 
 
     qgsMapCanvas = new QgsMapCanvas( this, "qgsMapCanvas" );
 

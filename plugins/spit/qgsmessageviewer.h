@@ -17,7 +17,7 @@
 
 #include <qwidget.h>
 #include <qstring.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include "qgsmessageviewerbase.h"
  
 class QgsMessageViewer: public QgsMessageViewerBase{

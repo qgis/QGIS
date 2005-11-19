@@ -1,3 +1,9 @@
+//Added by qt3to4:
+#include <QMouseEvent>
+#include <Q3Frame>
+#include <QKeyEvent>
+#include <QCloseEvent>
+#include <QPixmap>
 /**********************************************************************
                            qgsgrassmapcalc.h 
                              -------------------
@@ -17,9 +23,9 @@
 class QCloseEvent;
 class QString;
 class QStringList;
-class QGroupBox;
-class QFrame;
-class QListView;
+class Q3GroupBox;
+class Q3Frame;
+class Q3ListView;
 class QDomNode;
 class QDomElement;
 class QComboBox;
@@ -27,10 +33,10 @@ class QLineEdit;
 class QPixmap;
 
 #include <vector>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qcheckbox.h>
-#include <qprocess.h>
-#include <qcanvas.h>
+#include <q3process.h>
+#include <q3canvas.h>
 
 // Must be here, so that it is included to moc file
 #include "../../src/qgisapp.h"
@@ -60,7 +66,7 @@ public:
     QgsGrassMapcalc ( 
             QgsGrassTools *tools, QgsGrassModule *module, 
             QgisApp *qgisApp, QgisIface *iface,  
-            QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+            QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassMapcalc();
@@ -157,7 +163,7 @@ private:
     QgsGrassMapcalcView *mView;
 
     // Canvas
-    QCanvas *mCanvas;
+    Q3Canvas *mCanvas;
 
     // Tool
     int mTool;
@@ -197,7 +203,7 @@ private:
     int mNextId;
 
     //! Background
-    QCanvasRectangle *mPaper;
+    Q3CanvasRectangle *mPaper;
 };
 
 /* 
@@ -302,7 +308,7 @@ protected:
  *  |                   |
  *  mInputHeight        mLabelX
  */ 
-class QgsGrassMapcalcObject: public QCanvasRectangle, public QgsGrassMapcalcItem
+class QgsGrassMapcalcObject: public Q3CanvasRectangle, public QgsGrassMapcalcItem
 {
 public:
     enum Type {
@@ -439,10 +445,10 @@ private:
  * Connector. 
  * End are stored in vectors with indexes 0,1
  */
-class QgsGrassMapcalcConnector: public QCanvasLine, public QgsGrassMapcalcItem
+class QgsGrassMapcalcConnector: public Q3CanvasLine, public QgsGrassMapcalcItem
 {
 public:
-    QgsGrassMapcalcConnector( QCanvas * );
+    QgsGrassMapcalcConnector( Q3Canvas * );
     ~QgsGrassMapcalcConnector();
 
     void draw ( QPainter & painter );
@@ -507,12 +513,12 @@ private:
 };
 
 /******************** CANVAS VIEW ******************************/
-class QgsGrassMapcalcView: public QCanvasView
+class QgsGrassMapcalcView: public Q3CanvasView
 {
     Q_OBJECT
 	
 public:
-    QgsGrassMapcalcView (QgsGrassMapcalc *mapcalc, QWidget* parent=0, const char* name=0, WFlags f=0);
+    QgsGrassMapcalcView (QgsGrassMapcalc *mapcalc, QWidget* parent=0, const char* name=0, Qt::WFlags f=0);
 
 protected:
     void contentsMousePressEvent(QMouseEvent*);

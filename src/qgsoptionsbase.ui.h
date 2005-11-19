@@ -7,8 +7,8 @@
 ** place of a destructor.
 *****************************************************************************/
 #include <qsettings.h>
-#include <qfiledialog.h>
-#include <qcombobox.h>
+#include <q3filedialog.h>
+#include <q3combobox.h>
 
 #include "qgssvgcache.h"
 

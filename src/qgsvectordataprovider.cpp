@@ -72,7 +72,7 @@ bool QgsVectorDataProvider::createSpatialIndex()
 
 void QgsVectorDataProvider::setEncoding(const QString& e)
 {
-    QTextCodec* ncodec=QTextCodec::codecForName(e.local8Bit());
+    QTextCodec* ncodec=QTextCodec::codecForName(e.toLocal8Bit().data());
     if(ncodec)
     {
 	mEncoding=ncodec;

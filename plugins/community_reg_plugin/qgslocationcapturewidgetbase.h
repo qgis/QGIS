@@ -12,10 +12,15 @@
 
 #include <qvariant.h>
 #include <qwidget.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3HBoxLayout>
+#include <QLabel>
+#include <Q3GridLayout>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QSpacerItem;
 class QgsMapCanvas;
 class QPushButton;
@@ -26,7 +31,7 @@ class QgsLocationCaptureWidgetBase : public QWidget
     Q_OBJECT
 
 public:
-    QgsLocationCaptureWidgetBase( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    QgsLocationCaptureWidgetBase( QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0 );
     ~QgsLocationCaptureWidgetBase();
 
     QgsMapCanvas* qgsMapCanvas;
@@ -43,7 +48,7 @@ public slots:
     virtual void qgsMapCanvas_xyCoordinates( QgsPoint & );
 
 protected:
-    QGridLayout* QgsLocationCaptureWidgetBaseLayout;
+    Q3GridLayout* QgsLocationCaptureWidgetBaseLayout;
 
 protected slots:
     virtual void languageChange();

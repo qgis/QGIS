@@ -166,9 +166,9 @@ The [type] part of the variable should be the type class of the variable written
 // Includes
 // 
  
-#include <qvaluevector.h>
-#include <qvaluelist.h> 
-#include <qvaluevector.h> 
+#include <q3valuevector.h>
+#include <q3valuelist.h> 
+#include <q3valuevector.h> 
 #include <qslider.h>
 #include <qdatetime.h>
 
@@ -201,6 +201,9 @@ The [type] part of the variable should be the type class of the variable written
  */ 
  
 #include "qgsrasterdataprovider.h"
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3PopupMenu>
 
 /*
  * END
@@ -254,7 +257,7 @@ struct RasterBandStats
      * TODO: check if NO_DATA are excluded!*/
     int elementCountInt;    
     /** \brief Store the histogram for a given layer */
-    typedef QValueVector<int> HistogramVector;
+    typedef Q3ValueVector<int> HistogramVector;
     HistogramVector * histogramVector;
     /** \brief whteher histogram values are estimated or completely calculated */
     bool histogramEstimatedFlag;
@@ -267,7 +270,7 @@ struct RasterBandStats
 /** \brief  A vector containing one RasterBandStats struct per raster band in this raster layer.
  * Note that while very RasterBandStats element will have the name and number of its associated
  * band populated, any additional stats are calculated on a need to know basis.*/
-typedef QValueVector<RasterBandStats> RasterStatsVector;
+typedef Q3ValueVector<RasterBandStats> RasterStatsVector;
 
 
 /** \brief This struct is used to store pyramid info for the raster layer. */
@@ -292,7 +295,7 @@ struct RasterPyramid
  * we will check to see if a pyramid matching these dimensions already exists
  * in the raster layer, and if so mark the exists flag as true. */
   
-typedef QValueList<RasterPyramid> RasterPyramidList;
+typedef Q3ValueList<RasterPyramid> RasterPyramidList;
 
 /** \brief This typedef is used when the showProgress function is passed to gdal as a function
 pointer. */
@@ -775,7 +778,7 @@ public:
     void initContextMenu_(QgisApp *);
 
     /** \brief Accessor for the superclass's popmenu var - implements the pure virtual funtion. */
-    QPopupMenu *contextMenu();
+    Q3PopupMenu *contextMenu();
     /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();
     /** \brief Obtain GDAL Metadata for this layer */

@@ -16,12 +16,12 @@
  ***************************************************************************/
 
 #include "qgsattributedialog.h"
-#include <qheader.h>
-#include <qtable.h>
+#include <q3header.h>
+#include <q3table.h>
 
 QgsAttributeDialog::QgsAttributeDialog(std::vector<QgsFeatureAttribute>* attributes): QgsAttributeDialogBase()
 {
-    QHeader* header=mTable->horizontalHeader();
+    Q3Header* header=mTable->horizontalHeader();
     header->setLabel(0,"field");
     header->setLabel(1,"value");
     mTable->setNumRows(attributes->size());

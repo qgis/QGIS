@@ -5,26 +5,31 @@
 #include <qapplication.h>
 #include <qpushbutton.h>
 #include <qwidget.h>
-#include <qtextedit.h>
-#include <qprocess.h>
+#include <q3textedit.h>
+#include <q3process.h>
 #include <qmessagebox.h>
-#include <qcstring.h>
+#include <q3cstring.h>
 #include <qfile.h>
 #include <qdatastream.h>
 #include <qstringlist.h>
 #include <qsocketnotifier.h>
-#include <qsocket.h>
-#include <qsocketdevice.h>
+#include <q3socket.h>
+#include <q3socketdevice.h>
 #include <qevent.h>
-#include <qtextbrowser.h>
+#include <q3textbrowser.h>
 #include <qregexp.h>
 #include <qcursor.h>
 #include <qlayout.h>
 #include <qclipboard.h>
 #include <qfontmetrics.h>
-#include <qprogressbar.h>
+#include <q3progressbar.h>
 
 #include "qgsgrassshell.h"
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <QKeyEvent>
+#include <QResizeEvent>
+#include <QMouseEvent>
 
 extern "C" {
 #include <stdio.h>
@@ -49,7 +54,7 @@ QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools,
 {
     mValid = false;
 
-    QGridLayout *layout = new QGridLayout( mTextFrame, 1, 1 );
+    Q3GridLayout *layout = new Q3GridLayout( mTextFrame, 1, 1 );
     mText = new QgsGrassShellText( this, mTextFrame);
     layout->addWidget ( mText, 0 , 0 );
     mText->show();
@@ -845,7 +850,7 @@ void QgsGrassShell::readStderr()
     
 QgsGrassShellText::QgsGrassShellText ( QgsGrassShell *gs, 
       QWidget * parent, const char *name )
-    : QTextEdit (parent,name),
+    : Q3TextEdit (parent,name),
       mShell(gs)
 {
 }
@@ -858,7 +863,7 @@ void QgsGrassShellText::contentsMousePressEvent(QMouseEvent* e)
     std::cerr << "contentsMousePressEvent()" << std::endl;
 #endif
     mShell->mousePressEvent(e);
-    QTextEdit::contentsMousePressEvent(e);
+    Q3TextEdit::contentsMousePressEvent(e);
 }
 
 void QgsGrassShellText::keyPressEvent ( QKeyEvent * e )
@@ -883,6 +888,6 @@ void QgsGrassShellText::resizeEvent(QResizeEvent *e)
     std::cerr << "resizeEvent()" << std::endl;
 #endif
     mShell->resizeTerminal();
-    QTextEdit::resizeEvent(e);
+    Q3TextEdit::resizeEvent(e);
 }
 

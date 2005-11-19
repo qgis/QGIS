@@ -28,10 +28,10 @@ email                : tim@linfiniti.com
 #include "plugin.h"
 
 
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlineedit.h>
 #include <qaction.h>
 #include <qapplication.h>
@@ -87,17 +87,17 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  */
 void [pluginname]::initGui()
 {
-  QPopupMenu *pluginMenu = qGisInterface->getPluginMenu("&[menuname]");
-  menuId = pluginMenu->insertItem(QIconSet(icon),"&[menuitemname]", this, SLOT(run()));
+  Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&[menuname]");
+  menuId = pluginMenu->insertItem(QIcon(icon),"&[menuitemname]", this, SLOT(run()));
 
   pluginMenu->setWhatsThis(menuId, tr("Replace this with a short description of the what the plugin does"));
 
   // Create the action for tool
-  mQActionPointer = new QAction("[menuitemname]", QIconSet(icon), "&icon",0, this, "run");
+  mQActionPointer = new QAction("[menuitemname]", QIcon(icon), "&icon",0, this, "run");
   // Connect the action to the run
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the toolbar
-  mToolBarPointer = new QToolBar((QMainWindow *) mQGisApp, "[menuname]");
+  mToolBarPointer = new Q3ToolBar((Q3MainWindow *) mQGisApp, "[menuname]");
   mToolBarPointer->setLabel("[menuitemname]");
   // Add the to the toolbar
   mQGisIface->addToolBarIcon(mQActionPointer);

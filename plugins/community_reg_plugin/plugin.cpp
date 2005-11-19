@@ -28,10 +28,10 @@ email                : tim@linfiniti.com
 #include "plugin.h"
 
 
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlineedit.h>
 #include <qaction.h>
 #include <qapplication.h>
@@ -87,15 +87,15 @@ QgsCommunityRegPlugin::~QgsCommunityRegPlugin()
  */
 void QgsCommunityRegPlugin::initGui()
 {
-  QPopupMenu *pluginMenu = mQGisIface->getPluginMenu("&Community Register");
-  mMenuId = pluginMenu->insertItem(QIconSet(icon),"&Community Register", this, SLOT(run()));
+  Q3PopupMenu *pluginMenu = mQGisIface->getPluginMenu("&Community Register");
+  mMenuId = pluginMenu->insertItem(QIcon(icon),"&Community Register", this, SLOT(run()));
 
   // Create the action for tool
-  mQActionPointer = new QAction("Community Register", QIconSet(icon), "&icon",0, this, "run");
+  mQActionPointer = new QAction("Community Register", QIcon(icon), "&icon",0, this, "run");
   // Connect the action to the run
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the toolbar
-  mToolBarPointer = new QToolBar((QMainWindow *) mQGisApp, "Community Register");
+  mToolBarPointer = new Q3ToolBar((Q3MainWindow *) mQGisApp, "Community Register");
   mToolBarPointer->setLabel("Community Register");
   // Add the to the toolbar
   mQGisIface->addToolBarIcon(mQActionPointer);

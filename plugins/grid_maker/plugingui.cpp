@@ -14,7 +14,7 @@
 //qt includes
 #include <qpushbutton.h>
 #include <qlineedit.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qmessagebox.h>
 #include <qfile.h>
 #include <qradiobutton.h>
@@ -25,7 +25,7 @@
 QgsGridMakerPluginGui::QgsGridMakerPluginGui() : QgsGridMakerPluginGuiBase()
 {
 }
-QgsGridMakerPluginGui::QgsGridMakerPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+QgsGridMakerPluginGui::QgsGridMakerPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
     : QgsGridMakerPluginGuiBase( parent, name, modal, fl )
 {
 }
@@ -37,13 +37,13 @@ void QgsGridMakerPluginGui::pbnOK_clicked()
   //check input file exists
   //
   std::cout << "GrativuleCreator called with: " <<
-      leOutputShapeFile->text().local8Bit() <<
-      leLongitudeInterval->text().local8Bit() <<
-      leLatitudeInterval->text().local8Bit() <<
-      leOriginLongitude->text().local8Bit() <<
-      leOriginLatitude->text().local8Bit() <<
-      leEndPointLongitude->text().local8Bit() <<
-      leEndPointLatitude->text().local8Bit()
+      leOutputShapeFile->text().toLocal8Bit().data() <<
+      leLongitudeInterval->text().toLocal8Bit().data() <<
+      leLatitudeInterval->text().toLocal8Bit().data() <<
+      leOriginLongitude->text().toLocal8Bit().data() <<
+      leOriginLatitude->text().toLocal8Bit().data() <<
+      leEndPointLongitude->text().toLocal8Bit().data() <<
+      leEndPointLatitude->text().toLocal8Bit().data()
       << std::endl;
 
   if (leOutputShapeFile->text().isEmpty())
@@ -157,7 +157,7 @@ void QgsGridMakerPluginGui::pbnOK_clicked()
 void QgsGridMakerPluginGui::pbnSelectOutputFile_clicked()
 {
   std::cout << " Gps File Importer Gui::pbnSelectOutputFile_clicked() " << std::endl;
-  QString myOutputFileNameQString = QFileDialog::getSaveFileName(
+  QString myOutputFileNameQString = Q3FileDialog::getSaveFileName(
           ".",
           "ESRI Shapefile (*.shp)",
           this,

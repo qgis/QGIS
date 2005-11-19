@@ -374,7 +374,7 @@ inline std::ostream& operator << (std::ostream& os, const QgsSpatialRefSys &r)
     mySummary += "Undefined" ;
   }
   // Using streams we need to use local 8 Bit
-  return os << mySummary.local8Bit() << std::endl;
+  return os << mySummary.toLocal8Bit().data() << std::endl;
 }
 
 

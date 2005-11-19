@@ -31,7 +31,7 @@ class QgsVectorSymbologyWidget:public QgsVectorSymbologyWidgetBase
   public:
 
   //! Constructor
-  QgsVectorSymbologyWidget(QWidget *parent = 0, const char * name = 0, WFlags f = 0 );
+  QgsVectorSymbologyWidget(QWidget *parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
   ~QgsVectorSymbologyWidget();
 

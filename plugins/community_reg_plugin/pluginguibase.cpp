@@ -11,15 +11,18 @@
 
 #include <qvariant.h>
 #include <qpushbutton.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qlabel.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <qlineedit.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include <qimage.h>
 #include <qpixmap.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
 
 #include "pluginguibase.ui.h"
 static const unsigned char image0_data[] = { 
@@ -633,7 +636,7 @@ static const char* const image1_data[] = {
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-QgsCommunityRegPluginGuiBase::QgsCommunityRegPluginGuiBase( QWidget* parent, const char* name, bool modal, WFlags fl )
+QgsCommunityRegPluginGuiBase::QgsCommunityRegPluginGuiBase( QWidget* parent, const char* name, bool modal, Qt::WFlags fl )
     : QDialog( parent, name, modal, fl ),
       image1( (const char **) image1_data )
 {
@@ -644,17 +647,17 @@ QgsCommunityRegPluginGuiBase::QgsCommunityRegPluginGuiBase( QWidget* parent, con
 	setName( "QgsCommunityRegPluginGuiBase" );
     setPaletteBackgroundColor( QColor( 255, 255, 255 ) );
     setIcon( image0 );
-    QgsCommunityRegPluginGuiBaseLayout = new QGridLayout( this, 1, 1, 11, 6, "QgsCommunityRegPluginGuiBaseLayout"); 
+    QgsCommunityRegPluginGuiBaseLayout = new Q3GridLayout( this, 1, 1, 11, 6, "QgsCommunityRegPluginGuiBaseLayout"); 
 
-    line1 = new QFrame( this, "line1" );
+    line1 = new Q3Frame( this, "line1" );
     line1->setMaximumSize( QSize( 2, 32767 ) );
-    line1->setFrameShape( QFrame::VLine );
-    line1->setFrameShadow( QFrame::Sunken );
-    line1->setFrameShape( QFrame::VLine );
+    line1->setFrameShape( Q3Frame::VLine );
+    line1->setFrameShadow( Q3Frame::Sunken );
+    line1->setFrameShape( Q3Frame::VLine );
 
     QgsCommunityRegPluginGuiBaseLayout->addMultiCellWidget( line1, 0, 3, 1, 1 );
 
-    layout73 = new QHBoxLayout( 0, 0, 6, "layout73"); 
+    layout73 = new Q3HBoxLayout( 0, 0, 6, "layout73"); 
     spacer2 = new QSpacerItem( 320, 21, QSizePolicy::Expanding, QSizePolicy::Minimum );
     layout73->addItem( spacer2 );
 
@@ -673,17 +676,17 @@ QgsCommunityRegPluginGuiBase::QgsCommunityRegPluginGuiBase( QWidget* parent, con
     txtHeading_font.setPointSize( 24 );
     txtHeading_font.setBold( TRUE );
     txtHeading->setFont( txtHeading_font ); 
-    txtHeading->setAlignment( int( QLabel::AlignCenter ) );
+    txtHeading->setAlignment( int( Qt::AlignCenter ) );
 
     QgsCommunityRegPluginGuiBaseLayout->addWidget( txtHeading, 0, 2 );
 
-    teInstructions_2 = new QTextEdit( this, "teInstructions_2" );
-    teInstructions_2->setWordWrap( QTextEdit::WidgetWidth );
+    teInstructions_2 = new Q3TextEdit( this, "teInstructions_2" );
+    teInstructions_2->setWordWrap( Q3TextEdit::WidgetWidth );
     teInstructions_2->setReadOnly( TRUE );
 
     QgsCommunityRegPluginGuiBaseLayout->addWidget( teInstructions_2, 1, 2 );
 
-    layout3 = new QGridLayout( 0, 1, 1, 0, 6, "layout3"); 
+    layout3 = new Q3GridLayout( 0, 1, 1, 0, 6, "layout3"); 
 
     textLabel3 = new QLabel( this, "textLabel3" );
 

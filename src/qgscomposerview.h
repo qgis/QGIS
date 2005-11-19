@@ -18,16 +18,19 @@
 #ifndef QGSCOMPOSERVIEW_H
 #define QGSCOMPOSERVIEW_H
 
-#include <qcanvas.h>
+#include <q3canvas.h>
+//Added by qt3to4:
+#include <QMouseEvent>
+#include <QKeyEvent>
 
 class QgsComposer;
 
-class QgsComposerView: public QCanvasView
+class QgsComposerView: public Q3CanvasView
 {
     Q_OBJECT
 	
 public:
-    QgsComposerView (QgsComposer *composer, QWidget* parent=0, const char* name=0, WFlags f=0);
+    QgsComposerView (QgsComposer *composer, QWidget* parent=0, const char* name=0, Qt::WFlags f=0);
 
 protected:
     void contentsMousePressEvent(QMouseEvent*);

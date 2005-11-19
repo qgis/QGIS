@@ -23,10 +23,10 @@
 #include <vector>
 #include "../../src/qgisapp.h"
 
-#include <qtoolbar.h>
+#include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qlineedit.h>
 #include <qaction.h>
 #include <qapplication.h>
@@ -76,15 +76,15 @@ QgsSpitPlugin::~QgsSpitPlugin()
 */
 void QgsSpitPlugin::initGui()
 {
-    QPopupMenu *pluginMenu = qI->getPluginMenu("&Spit");
-    menuId = pluginMenu->insertItem(QIconSet(spitIcon),"&Import Shapefiles to PostgreSQL", this, SLOT(spit()));
+    Q3PopupMenu *pluginMenu = qI->getPluginMenu("&Spit");
+    menuId = pluginMenu->insertItem(QIcon(spitIcon),"&Import Shapefiles to PostgreSQL", this, SLOT(spit()));
 
     pluginMenu->setWhatsThis(menuId,"Import shapefiles into a PostGIS-enabled PostgreSQL database. "
         "The schema and field names can be customized on import"); 
 
      // Create the action for tool
 #if QT_VERSION < 0x040000
-    spitAction = new QAction("Import Shapefiles to PostgreSQL", QIconSet(spitIcon), "&SPIT",
+    spitAction = new QAction("Import Shapefiles to PostgreSQL", QIcon(spitIcon), "&SPIT",
                                               0, this, "spit");
     spitAction->setWhatsThis("Import shapefiles into a PostGIS-enabled PostgreSQL database. "
         "The schema and field names can be customized on import"); 

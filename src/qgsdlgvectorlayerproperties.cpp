@@ -18,21 +18,21 @@
  /* $Id$ */
 #include <qstring.h>
 #include <qlineedit.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <qlabel.h>
-#include <qlistview.h>
-#include <qcombobox.h>
+#include <q3listview.h>
+#include <q3combobox.h>
 #include <qcheckbox.h>
 #include <qtextstream.h>
-#include <qtable.h>
+#include <q3table.h>
 #include <qlayout.h>
 #include <qmessagebox.h>
 #include <qspinbox.h>
-#include <qwidgetstack.h>
+#include <q3widgetstack.h>
 #include <qpushbutton.h>
 #include <qwidget.h>
-#include <qgroupbox.h>
-#include <qwhatsthis.h>
+#include <q3groupbox.h>
+#include <q3whatsthis.h>
 #include <qregexp.h>
 #include <qtabwidget.h>
 
@@ -41,6 +41,8 @@
 #include "qgsfield.h"
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgsvectordataprovider.h"
+//Added by qt3to4:
+#include <Q3VBoxLayout>
 #ifdef HAVE_POSTGRESQL
 #include "../providers/postgres/qgspostgresprovider.h"
 #endif
@@ -54,7 +56,7 @@
 #include "qgsgrasydialog.h"
 #include "qgscontcoldialog.h"
 #include "qgsuvaldialog.h"
-#include "qobjectlist.h"
+#include "qobject.h"
 #include "qgslabelattributes.h"
 #include "qgslabel.h"
 #include "qgslabeldialog.h"
@@ -75,13 +77,13 @@ QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr,
       mRendererDialog(0)
 {
   // Create the Label dialog tab
-  QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
+  Q3VBoxLayout *layout = new Q3VBoxLayout( labelOptionsFrame );
   labelDialog = new QgsLabelDialog ( layer->label(), labelOptionsFrame);
   layout->addWidget( labelDialog );
 
   // Create the Actions dialog tab
   QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
-  QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
+  Q3VBoxLayout *actionLayout = new Q3VBoxLayout( actionOptionsFrame );
   std::vector<QgsField> fields = dp->fields();
   actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields, 
                                                 actionOptionsFrame );
@@ -165,9 +167,9 @@ void QgsDlgVectorLayerProperties::reset( void )
   lblSource->setText(source);
   txtDisplayName->setText(layer->name());
   // set whats this stuff
-  QWhatsThis::add(lblSource, tr("The source of the data (path name or database connection information)"));
-  QWhatsThis::add(pbnQueryBuilder, tr("This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer"));
-  QWhatsThis::add(txtSubsetSQL, tr("The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button"));
+  Q3WhatsThis::add(lblSource, tr("The source of the data (path name or database connection information)"));
+  Q3WhatsThis::add(pbnQueryBuilder, tr("This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer"));
+  Q3WhatsThis::add(txtSubsetSQL, tr("The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button"));
 
   //we are dealing with a pg layer here so that we can enable the sql box
   QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());

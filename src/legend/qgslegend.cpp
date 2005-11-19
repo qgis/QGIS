@@ -19,14 +19,14 @@
 
 #include <qcheckbox.h>
 #include <qcursor.h>
-#include <qheader.h>
+#include <q3header.h>
 #include <qstring.h>
 #include <qpainter.h>
 #include <qlabel.h>
-#include <qvbox.h>
-#include <qlistview.h>
-#include <qptrlist.h>
-#include <qobjectlist.h>
+#include <q3vbox.h>
+#include <q3listview.h>
+#include <q3ptrlist.h>
+#include <qobject.h>
 #include <qapplication.h>
 
 #include "qgslegend.h"
@@ -41,6 +41,10 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrasterlayerproperties.h"
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3PopupMenu>
+#include <QMouseEvent>
 #include <iostream>
 #include <qlayout.h>
 
@@ -54,19 +58,19 @@ const int AUTOSCROLL_MARGIN = 16;
    set mItemBeingMoved pointer to 0 to prevent SuSE 9.0 crash
 */
 QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
-    : QListView(parent, name), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0)
+    : Q3ListView(parent, name), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0)
 {
-  connect( this, SIGNAL(selectionChanged(QListViewItem *)),
-           this, SLOT(updateLegendItem(QListViewItem *)) );
+  connect( this, SIGNAL(selectionChanged(Q3ListViewItem *)),
+           this, SLOT(updateLegendItem(Q3ListViewItem *)) );
 
-  connect( this, SIGNAL(rightButtonPressed(QListViewItem *, const QPoint &, int)),
-	   this, SLOT(handleRightClickEvent(QListViewItem*, const QPoint&)));
+  connect( this, SIGNAL(rightButtonPressed(Q3ListViewItem *, const QPoint &, int)),
+	   this, SLOT(handleRightClickEvent(Q3ListViewItem*, const QPoint&)));
 
-  connect( this, SIGNAL(doubleClicked(QListViewItem *, const QPoint &, int)),
-	   this, SLOT(handleDoubleClickEvent(QListViewItem*)));
+  connect( this, SIGNAL(doubleClicked(Q3ListViewItem *, const QPoint &, int)),
+	   this, SLOT(handleDoubleClickEvent(Q3ListViewItem*)));
 
-  connect( this, SIGNAL(expanded(QListViewItem*)), this, SLOT(placeCheckBoxes()));
-  connect( this, SIGNAL(collapsed(QListViewItem*)), this, SLOT(placeCheckBoxes()));
+  connect( this, SIGNAL(expanded(Q3ListViewItem*)), this, SLOT(placeCheckBoxes()));
+  connect( this, SIGNAL(collapsed(Q3ListViewItem*)), this, SLOT(placeCheckBoxes()));
   connect( this, SIGNAL(contentsMoving(int, int)), this, SLOT(placeCheckBoxes()));
 
   setSorting(-1);
@@ -85,7 +89,7 @@ void QgsLegend::addGroup()
     placeCheckBoxes();
 }
 
-void QgsLegend::updateLegendItem( QListViewItem * li )
+void QgsLegend::updateLegendItem( Q3ListViewItem * li )
 {
   QgsLegendItem * qli = dynamic_cast<QgsLegendItem*>(li);
 
@@ -105,7 +109,7 @@ void QgsLegend::removeAll()
 
 void QgsLegend::removeLayer(QString layer_key)
 {
-    QListViewItemIterator it(this);
+    Q3ListViewItemIterator it(this);
 
     for (; it.current(); ++it)
     {
@@ -141,7 +145,7 @@ void QgsLegend::contentsMousePressEvent(QMouseEvent * e)
     mLastPressPos = e->pos();
     mMousePressedFlag = true;
   }
-  QListView::contentsMousePressEvent(e);
+  Q3ListView::contentsMousePressEvent(e);
 }                               // contentsMousePressEvent
 
 
@@ -155,7 +159,7 @@ void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
 
 	// remember item we've pressed as the one being moved
 	// and where it was originally
-	QListViewItem *item = itemAt(contentsToViewport(mLastPressPos));
+	Q3ListViewItem *item = itemAt(contentsToViewport(mLastPressPos));
 	if (item)
 	{
 	    mItemBeingMoved = item;
@@ -186,7 +190,7 @@ void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
 
 
 	// change the cursor appropriate to if drop is allowed
-	QListViewItem *item = itemAt(p);
+	Q3ListViewItem *item = itemAt(p);
 	QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>(mItemBeingMoved);
 	QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>(item);
 
@@ -240,11 +244,11 @@ void QgsLegend::contentsMouseMoveEvent(QMouseEvent * e)
 void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
 {
   setCursor(QCursor(Qt::ArrowCursor));
-  QListView::contentsMouseReleaseEvent(e);
+  Q3ListView::contentsMouseReleaseEvent(e);
 
   if (mItemBeingMoved)
   {
-      QListViewItem *destItem = itemAt(e->pos());
+      Q3ListViewItem *destItem = itemAt(e->pos());
       
       QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>(mItemBeingMoved);
       QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>(destItem);
@@ -269,7 +273,7 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
 		if(dest->childCount() > 1)
 		  {
 		    //find the first layer in the legend layer group != origLayer and copy its settings
-		    QListViewItem* currentItem = dest->firstChild();
+		    Q3ListViewItem* currentItem = dest->firstChild();
 		    while(currentItem)
 		      {
 			if(currentItem != origin)
@@ -296,7 +300,7 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
 		    if(origin->parent()->childCount() > 1)
 		      {
 			//find the first layer in the legend layer group != origLayer and copy its settings
-			QListViewItem* currentItem = dest->parent()->firstChild();
+			Q3ListViewItem* currentItem = dest->parent()->firstChild();
 			while(currentItem)
 			  {
 			    if(currentItem != origin)
@@ -327,7 +331,7 @@ void QgsLegend::contentsMouseReleaseEvent(QMouseEvent * e)
   mItemBeingMoved = NULL; 
 }
 
-void QgsLegend::handleDoubleClickEvent(QListViewItem* item)
+void QgsLegend::handleDoubleClickEvent(Q3ListViewItem* item)
 {
     QgsLegendItem* li = dynamic_cast<QgsLegendItem*>(item);
     if(li)
@@ -356,7 +360,7 @@ void QgsLegend::handleDoubleClickEvent(QListViewItem* item)
     }
 }
 
-void QgsLegend::handleRightClickEvent(QListViewItem* item, const QPoint& position)
+void QgsLegend::handleRightClickEvent(Q3ListViewItem* item, const QPoint& position)
 {
     if(!mMapCanvas->isDrawing())
     {
@@ -368,10 +372,10 @@ void QgsLegend::handleRightClickEvent(QListViewItem* item, const QPoint& positio
     iconsPath += QString("/images/icons/");
 	if(!item)//show list view popup menu
 	{
-	    QPopupMenu pm;
-	    pm.insertItem(QIconSet(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
-	    pm.insertItem(QIconSet(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
-	    pm.insertItem(QIconSet(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
+	    Q3PopupMenu pm;
+	    pm.insertItem(QIcon(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
+	    pm.insertItem(QIcon(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
+	    pm.insertItem(QIcon(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
 	    pm.exec(position);
 	    return;
 	}
@@ -386,7 +390,7 @@ void QgsLegend::handleRightClickEvent(QListViewItem* item, const QPoint& positio
 		   QgsMapLayer* ml = llf->layer();
 		   if(ml)
 		   {
-		       QPopupMenu *mPopupMenu = ml->contextMenu();
+		       Q3PopupMenu *mPopupMenu = ml->contextMenu();
 		       if (mPopupMenu)
 		       {
 			   mPopupMenu->exec(position);
@@ -396,32 +400,32 @@ void QgsLegend::handleRightClickEvent(QListViewItem* item, const QPoint& positio
 	    }
 	    else if(li->type() == QgsLegendItem::LEGEND_LAYER)
 	    {
-		QPopupMenu pm;
-		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("remove.png"))), tr("&Remove"), this, SLOT(legendLayerRemove()));
+		Q3PopupMenu pm;
+		pm.insertItem(QIcon(QPixmap(iconsPath+QString("remove.png"))), tr("&Remove"), this, SLOT(legendLayerRemove()));
 		pm.insertItem(tr("&Properties"), this, SLOT(legendLayerShowProperties()));
-		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("inoverview.png"))), tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
-		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("remove_from_overview.png"))), tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
-		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
-		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
-		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
+		pm.insertItem(QIcon(QPixmap(iconsPath+QString("inoverview.png"))), tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
+		pm.insertItem(QIcon(QPixmap(iconsPath+QString("remove_from_overview.png"))), tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
+		pm.insertItem(QIcon(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
+		pm.insertItem(QIcon(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
+		pm.insertItem(QIcon(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
 		pm.exec(position);
 	    }
 	    else if(li->type() == QgsLegendItem::LEGEND_GROUP)
 	    {
-		QPopupMenu pm;
+		Q3PopupMenu pm;
 		pm.insertItem(tr("&Remove"), this, SLOT(legendGroupRemove()));
-		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
-		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
-		pm.insertItem(QIconSet(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
+		pm.insertItem(QIcon(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
+		pm.insertItem(QIcon(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
+		pm.insertItem(QIcon(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
 		pm.exec(position);
 	    }
 	}
     }
 }
 
-int QgsLegend::getItemPos(QListViewItem * item)
+int QgsLegend::getItemPos(Q3ListViewItem * item)
 {
-  QListViewItemIterator it(this);
+  Q3ListViewItemIterator it(this);
   int index = 0;
   while (it.current())
   {
@@ -484,13 +488,13 @@ QgsMapLayer* QgsLegend::currentLayer()
     }
 }
 
-void QgsLegend::registerCheckBox(QListViewItem* item, QCheckBox* cbox)
+void QgsLegend::registerCheckBox(Q3ListViewItem* item, QCheckBox* cbox)
 {
     mCheckBoxes.insert(std::make_pair(item, cbox) );
     placeCheckBox(item, cbox);
 }
 
-void QgsLegend::unregisterCheckBox(QListViewItem* item)
+void QgsLegend::unregisterCheckBox(Q3ListViewItem* item)
 {
     mCheckBoxes.erase(item);
 }
@@ -498,13 +502,13 @@ void QgsLegend::unregisterCheckBox(QListViewItem* item)
 void QgsLegend::placeCheckBoxes()
 {
     updateContents();
-    for(std::map<QListViewItem*, QCheckBox*>::iterator it = mCheckBoxes.begin(); it!=mCheckBoxes.end(); ++it)
+    for(std::map<Q3ListViewItem*, QCheckBox*>::iterator it = mCheckBoxes.begin(); it!=mCheckBoxes.end(); ++it)
     {
 	placeCheckBox(it->first, it->second);
     }
 }
 
-void QgsLegend::placeCheckBox(QListViewItem* litem, QCheckBox* cbox)
+void QgsLegend::placeCheckBox(Q3ListViewItem* litem, QCheckBox* cbox)
 {
     QRect itempos = itemRect(litem);
     if(itempos.isValid())//rectangle is not valid if the item is not visible
@@ -541,7 +545,7 @@ void QgsLegend::legendGroupRemove()
     if(lg)
     {
 	//delete the legend layers first
-	QListViewItem * child = lg->firstChild();
+	Q3ListViewItem * child = lg->firstChild();
         while(child) 
 	{
 	    setCurrentItem(child);
@@ -655,10 +659,10 @@ void QgsLegend::legendLayerShowProperties()
 
 void QgsLegend::expandAll()
 {
-    QListViewItemIterator it(this);
+    Q3ListViewItemIterator it(this);
     while(it.current()) 
     {
-	QListViewItem *item = it.current();
+	Q3ListViewItem *item = it.current();
 	item->setOpen(true);
 	++it;
     }
@@ -666,10 +670,10 @@ void QgsLegend::expandAll()
 
 void QgsLegend::collapseAll()
 {
-   QListViewItemIterator it(this);
+   Q3ListViewItemIterator it(this);
     while(it.current()) 
     {
-	QListViewItem *item = it.current();
+	Q3ListViewItem *item = it.current();
 	item->setOpen(false);
 	++it;
     } 
@@ -689,7 +693,7 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
     QDomElement legendlayerfilenode;
     QgsLegendLayerFile* llf;
 
-    QListViewItemIterator it(this);
+    Q3ListViewItemIterator it(this);
     while(it.current()) 
     {
 	QgsLegendItem *item = dynamic_cast<QgsLegendItem*>(it.current());
@@ -799,10 +803,10 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 bool QgsLegend::readXML(QDomNode& legendnode)
 {
     QString open;
-    QListViewItemIterator it(this);
-    QListViewItem* theItem = firstChild(); //first level hierarchy items
-    QListViewItem* prevchild = 0; //store last value of theItem because of legend group
-    QListViewItem* secondLevelItem = 0; //second level item
+    Q3ListViewItemIterator it(this);
+    Q3ListViewItem* theItem = firstChild(); //first level hierarchy items
+    Q3ListViewItem* prevchild = 0; //store last value of theItem because of legend group
+    Q3ListViewItem* secondLevelItem = 0; //second level item
     QgsLegendGroup* group = 0; //pointer to the last inserted legend group
 
     QDomNode child = legendnode.firstChild();
@@ -846,7 +850,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	    if(child.parentNode().toElement().tagName()=="legendgroup")
 	    {
 	      group->insertItem(theItem);
-	      QListViewItem* currentChild = group->firstChild();
+	      Q3ListViewItem* currentChild = group->firstChild();
 	      if(!currentChild)
 		{
 		  group->insertItem(theItem);//insert the first child in the group
@@ -909,7 +913,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		    newlayer->initContextMenu(mApp);
 
 		    //move newfile as the last child of the legendlayerfilegroup
-		    QListViewItem* curitem = newfile;
+		    Q3ListViewItem* curitem = newfile;
 		    while(curitem = newfile->nextSibling())
 		      {
 			newfile->moveItem(curitem);
@@ -973,7 +977,7 @@ void QgsLegend::saveToProject()
   int llayeridx=0;
   QString groupstring; //string which have to be prepended if an element is into a group
 
-  QListViewItemIterator it(this);
+  Q3ListViewItemIterator it(this);
   while(it.current()) 
     {
       QgsLegendItem *item = dynamic_cast<QgsLegendItem*>(it.current());
@@ -1090,7 +1094,7 @@ void QgsLegend::restoreFromProject()
     }
 }
 
-void QgsLegend::storeInitialPosition(QListViewItem* li)
+void QgsLegend::storeInitialPosition(Q3ListViewItem* li)
 {
   if(li == firstChild()) //the item is the first item in the list view
     {
@@ -1114,7 +1118,7 @@ void QgsLegend::storeInitialPosition(QListViewItem* li)
     }
 }
 
-void QgsLegend::resetToInitialPosition(QListViewItem* li)
+void QgsLegend::resetToInitialPosition(Q3ListViewItem* li)
 {
   if(mRestoreInformation == FIRST_ITEM)
     {

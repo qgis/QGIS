@@ -26,10 +26,12 @@
 #endif
 
 #include <vector>
+//Added by qt3to4:
+#include <Q3PopupMenu>
 
 class QgsAttributeTable;
 class QgsVectorLayer;
-class QPopupMenu;
+class Q3PopupMenu;
 
 /**
   *@author Gary E.Sherman

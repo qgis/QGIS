@@ -17,9 +17,9 @@
 /* $Id$ */
 #include <iostream>
 #include <qapplication.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qlineedit.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qmessagebox.h>
 #include <qlibrary.h>
 #include <qsettings.h>
@@ -61,7 +61,7 @@ QgsPluginManager::~QgsPluginManager()
 
 void QgsPluginManager::browseFiles()
 {
-  QString s = QFileDialog::getExistingDirectory(0, this, "get existing directory", tr("Choose a directory"), TRUE);
+  QString s = Q3FileDialog::getExistingDirectory(0, this, "get existing directory", tr("Choose a directory"), TRUE);
   txtPluginDir->setText(s);
   getPluginDescriptions();
 }
@@ -97,7 +97,7 @@ sharedLibExtension = "*.so*";
           // renders plugins unloadable)
           QString lib = QString("%1/%2").arg(txtPluginDir->text()).arg(pluginDir[i]);
 //          void *handle = dlopen((const char *) lib, RTLD_LAZY);
-          void *handle = dlopen(lib.local8Bit(), RTLD_LAZY | RTLD_GLOBAL);
+          void *handle = dlopen(lib.toLocal8Bit().data(), RTLD_LAZY | RTLD_GLOBAL);
           if (!handle)
             {
               std::cout << "Error in dlopen: " << dlerror() << std::endl;
@@ -111,36 +111,36 @@ sharedLibExtension = "*.so*";
 #endif //#ifdef TESTLIB
 
 
-          std::cout << "Examining " << txtPluginDir->text().local8Bit() << "/" << pluginDir[i].local8Bit() << std::endl;
+          std::cout << "Examining " << txtPluginDir->text().toLocal8Bit().data() << "/" << pluginDir[i].toLocal8Bit().data() << std::endl;
           QLibrary *myLib = new QLibrary(txtPluginDir->text() + "/" + pluginDir[i]);
           bool loaded = myLib->load();
           if (loaded)
             {
-              std::cout << "Loaded " << myLib->library().local8Bit() << std::endl;
+              std::cout << "Loaded " << myLib->library().toLocal8Bit().data() << std::endl;
               name_t *pName = (name_t *) myLib->resolve("name");
               description_t *pDesc = (description_t *) myLib->resolve("description");
               version_t *pVersion = (version_t *) myLib->resolve("version");
 #ifdef QGISDEBUG
               // show the values (or lack of) for each function
               if(pName){
-                std::cout << "Plugin name: " << pName().local8Bit() << std::endl;
+                std::cout << "Plugin name: " << pName().toLocal8Bit().data() << std::endl;
               }else{
                 std::cout << "Plugin name not returned when queried\n";
               }
                if(pDesc){
-                std::cout << "Plugin description: " << pDesc().local8Bit() << std::endl;
+                std::cout << "Plugin description: " << pDesc().toLocal8Bit().data() << std::endl;
               }else{
                 std::cout << "Plugin description not returned when queried\n";
               }
              if(pVersion){
-                std::cout << "Plugin version: " << pVersion().local8Bit() << std::endl;
+                std::cout << "Plugin version: " << pVersion().toLocal8Bit().data() << std::endl;
               }else{
                 std::cout << "Plugin version not returned when queried\n";
               }
 #endif
               if (pName && pDesc && pVersion)
                 {
-                  QCheckListItem *pl = new QCheckListItem(lstPlugins, pName(), QCheckListItem::CheckBox); //, pDesc(), pluginDir[i])
+                  Q3CheckListItem *pl = new Q3CheckListItem(lstPlugins, pName(), Q3CheckListItem::CheckBox); //, pDesc(), pluginDir[i])
                   pl->setText(1, pVersion());
                   pl->setText(2, pDesc());
                   pl->setText(3, pluginDir[i]);
@@ -168,11 +168,11 @@ sharedLibExtension = "*.so*";
                     }
               } else
                 {
-                  std::cout << "Failed to get name, description, or type for " << myLib->library().local8Bit() << std::endl;
+                  std::cout << "Failed to get name, description, or type for " << myLib->library().toLocal8Bit().data() << std::endl;
                 }
           } else
             {
-              std::cout << "Failed to load " << myLib->library().local8Bit() << std::endl;
+              std::cout << "Failed to load " << myLib->library().toLocal8Bit().data() << std::endl;
             }
         }
     }
@@ -189,7 +189,7 @@ void QgsPluginManager::unload()
 #ifdef QGISDEBUG
   std::cout << "Checking for plugins to unload" << std::endl;
 #endif
-  QCheckListItem *lvi = (QCheckListItem *) lstPlugins->firstChild();
+  Q3CheckListItem *lvi = (Q3CheckListItem *) lstPlugins->firstChild();
   while (lvi != 0)
     {
       if (!lvi->isOn())
@@ -197,7 +197,7 @@ void QgsPluginManager::unload()
           // its off -- see if it is loaded and if so, unload it
           QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
 #ifdef QGISDEBUG
-          std::cout << "Checking to see if " << lvi->text(0).local8Bit() << " is loaded" << std::endl;
+          std::cout << "Checking to see if " << lvi->text(0).toLocal8Bit().data() << " is loaded" << std::endl;
 #endif
           QgisPlugin *plugin = pRegistry->plugin(lvi->text(0));
           if (plugin)
@@ -209,14 +209,14 @@ void QgsPluginManager::unload()
             settings.writeEntry("/qgis/Plugins/" + lvi->text(0), false);
           }
         }
-      lvi = (QCheckListItem *) lvi->nextSibling();
+      lvi = (Q3CheckListItem *) lvi->nextSibling();
     }
 }
 
 std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
 {
   std::vector < QgsPluginItem > pis;
-  QCheckListItem *lvi = (QCheckListItem *) lstPlugins->firstChild();
+  Q3CheckListItem *lvi = (Q3CheckListItem *) lstPlugins->firstChild();
   while (lvi != 0)
     {
       if (lvi->isOn())
@@ -227,18 +227,18 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
         {
 
         }
-      lvi = (QCheckListItem *) lvi->nextSibling();
+      lvi = (Q3CheckListItem *) lvi->nextSibling();
     }
   return pis;
 }
 void QgsPluginManager::selectAll()
 {
   // select all plugins
-  QCheckListItem *child = dynamic_cast<QCheckListItem *>(lstPlugins->firstChild());
+  Q3CheckListItem *child = dynamic_cast<Q3CheckListItem *>(lstPlugins->firstChild());
   while(child)
   {
     child->setOn(true);
-    child = dynamic_cast<QCheckListItem *>(child->nextSibling());
+    child = dynamic_cast<Q3CheckListItem *>(child->nextSibling());
   }
 
 }
@@ -246,10 +246,10 @@ void QgsPluginManager::selectAll()
 void QgsPluginManager::clearAll()
 {
   // clear all selection checkboxes 
-  QCheckListItem *child = dynamic_cast<QCheckListItem *>(lstPlugins->firstChild());
+  Q3CheckListItem *child = dynamic_cast<Q3CheckListItem *>(lstPlugins->firstChild());
   while(child)
   {
     child->setOn(false);
-    child = dynamic_cast<QCheckListItem *>(child->nextSibling());
+    child = dynamic_cast<Q3CheckListItem *>(child->nextSibling());
   }
 }

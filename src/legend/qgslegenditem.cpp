@@ -22,8 +22,8 @@
 #include <qpixmap.h>
 #include <iostream>
 
-QgsLegendItem::QgsLegendItem(QListViewItem * theItem ,QString theName)
- : QListViewItem(theItem,theName)
+QgsLegendItem::QgsLegendItem(Q3ListViewItem * theItem ,QString theName)
+ : Q3ListViewItem(theItem,theName)
 {
 #if defined(Q_OS_MACX) || defined(WIN32)
   QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
@@ -34,8 +34,8 @@ QgsLegendItem::QgsLegendItem(QListViewItem * theItem ,QString theName)
   setPixmap(0,myPixmap);
 }
 
-QgsLegendItem::QgsLegendItem(QListView * theListView,QString theString)
- : QListViewItem(theListView,theString)
+QgsLegendItem::QgsLegendItem(Q3ListView * theListView,QString theString)
+ : Q3ListViewItem(theListView,theString)
 {
 #if defined(Q_OS_MACX) || defined(WIN32)
   QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
@@ -53,11 +53,11 @@ QgsLegendItem::~QgsLegendItem()
 
 void QgsLegendItem::print(QgsLegendItem * theItem)
 {
-    QListViewItemIterator myIterator (theItem);
+    Q3ListViewItemIterator myIterator (theItem);
     while (myIterator.current())
     {
       LEGEND_ITEM_TYPE curtype = dynamic_cast<QgsLegendItem *>(myIterator.current())->type();
-      std::cout << myIterator.current()->text(0).local8Bit() << " - " << curtype << std::endl;
+      std::cout << myIterator.current()->text(0).toLocal8Bit().data() << " - " << curtype << std::endl;
       if (myIterator.current()->childCount() > 0)
       {
         //print(dynamic_cast<QgsLegendItem *>(myIterator.current()));

@@ -61,7 +61,7 @@ void QgsOGRFactory::setURI(QString uri)
     valid = true;
   } else
   {
-    QMessageBox::warning(NULL, "Wrong Path/URI", "The provided path for the dataset is not valid.",QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    QMessageBox::warning(NULL, "Wrong Path/URI", "The provided path for the dataset is not valid.",QMessageBox::Ok, Qt::NoButton, Qt::NoButton);
     valid = false;
   }
 }

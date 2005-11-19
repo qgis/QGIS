@@ -23,13 +23,13 @@ class QgsMapToPixel;
 class QgsVectorLayer;
 class QPainter;
 class QgsDlgVectorLayerProperties;
-class QPicture;
+class Q3Picture;
 class QDomNode;
 class QColor;
 
 #include <fstream>
 #include <list>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qstring.h>
 #include <qdom.h>
 
@@ -51,7 +51,7 @@ class QgsRenderer
      @param f a pointer to the feature to be rendered
      @param pic pointer to a marker from SVG (is only used by marker renderers)
      @param scalefactor pointer to the scale factor for the marker image*/
-    virtual void renderFeature(QPainter* p, QgsFeature* f,QPicture* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.)=0;
+    virtual void renderFeature(QPainter* p, QgsFeature* f,Q3Picture* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.)=0;
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
      @param vl the vector layer which will be associated with the renderer*/
@@ -73,7 +73,7 @@ class QgsRenderer
     virtual const std::list<QgsSymbol*> symbols() const=0;
     /**Deletes the child items of the legendparent and add new ones according to the 
      QgsSymbols contained in this renderer*/
-    virtual void refreshLegend(QListViewItem* legendparent) const;
+    virtual void refreshLegend(Q3ListViewItem* legendparent) const;
     /**Returns a copy of the renderer (a deep copy on the heap)*/
     virtual QgsRenderer* clone() const=0;
     /**Color to draw selected features - static so we can change it in proj props and automatically 

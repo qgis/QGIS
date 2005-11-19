@@ -21,7 +21,7 @@
 #include <iostream>
 #include "qgssymbologyutils.h"
 
-QgsLineStyleDialog::QgsLineStyleDialog(QWidget * parent, const char *name, bool modal, WFlags fl):QgsLineStyleDialogBase(parent, name, modal,
+QgsLineStyleDialog::QgsLineStyleDialog(QWidget * parent, const char *name, bool modal, Qt::WFlags fl):QgsLineStyleDialogBase(parent, name, modal,
                        fl)
 {
   //load the icons stored in QgsSymbologyUtils.cpp (to avoid redundancy)

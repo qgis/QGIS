@@ -13,17 +13,19 @@
  ***************************************************************************/
 /* $Id$ */
 #include <iostream>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qlineedit.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <qfile.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qpushbutton.h>
 #include <qsettings.h>
 #include <qfileinfo.h>
 #include <qregexp.h>
 #include <qmessagebox.h>
 #include "qgsdelimitedtextplugingui.h"
+//Added by qt3to4:
+#include <QTextStream>
 #include "../../src/qgisiface.h"
 
 QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui() : QgsDelimitedTextPluginGuiBase()
@@ -31,7 +33,7 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui() : QgsDelimitedTextPluginG
 
 }
 
-QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisIface * _qI, QWidget* parent , const char* name , bool modal , WFlags fl  ) : QgsDelimitedTextPluginGuiBase( parent, name, modal, fl ), qI(_qI)
+QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisIface * _qI, QWidget* parent , const char* name , bool modal , Qt::WFlags fl  ) : QgsDelimitedTextPluginGuiBase( parent, name, modal, fl ), qI(_qI)
 {
   // at startup, fetch the last used delimiter and directory from
   // settings
@@ -54,7 +56,7 @@ void QgsDelimitedTextPluginGui::pbnOK_clicked()
       .arg(txtDelimiter->text())
       .arg(cmbXField->currentText())
       .arg(cmbYField->currentText());
-    std::cerr << "Adding layer using " << uri.local8Bit() << std::endl; 
+    std::cerr << "Adding layer using " << uri.toLocal8Bit().data() << std::endl; 
     // add the layer to the map
     emit drawVectorLayer(uri,txtLayerName->text(),"delimitedtext");
     // store the settings
@@ -81,7 +83,7 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
 
   if(QFile::exists(txtFilePath->text())){
     QFile *file = new QFile(txtFilePath->text());
-    if ( file->open( IO_ReadOnly ) ) {
+    if ( file->open( QIODevice::ReadOnly ) ) {
       // clear the field lists
       cmbXField->clear();
       cmbYField->clear();
@@ -91,8 +93,8 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
       if(txtDelimiter->text().length() > 0)
       {
 #ifdef QGISDEBUG
-        std::cerr << "Attempting to split the input line: " << line.local8Bit() <<
-          " using delimiter " << txtDelimiter->text().local8Bit() << std::endl;
+        std::cerr << "Attempting to split the input line: " << line.toLocal8Bit().data() <<
+          " using delimiter " << txtDelimiter->text().toLocal8Bit().data() << std::endl;
 #endif
 
         QStringList fieldList = QStringList::split(QRegExp(txtDelimiter->text()), line);
@@ -145,7 +147,7 @@ void QgsDelimitedTextPluginGui::getOpenFileName()
   // Set inital dir to last used
   QSettings settings;
 
-  QString s = QFileDialog::getOpenFileName(
+  QString s = Q3FileDialog::getOpenFileName(
       settings.readEntry("/Qgis/delimited_text_plugin/text_path","./"),
       "Text files (*.txt)",
       0,

@@ -24,12 +24,12 @@ back to QgsVectorLayer.
 #include <iostream>
 #include <vector>
 
-#include <qtable.h>
+#include <q3table.h>
 #include <qlineedit.h>
 #include <qstring.h>
 #include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qfiledialog.h>
+#include <q3combobox.h>
+#include <q3filedialog.h>
 
 #include "qgsattributeactiondialog.h"
 #include "qgsattributeaction.h"
@@ -68,7 +68,7 @@ void QgsAttributeActionDialog::init()
     attributeActionTable->insertRows(i);
     attributeActionTable->setText(i, 0, iter->name());
     attributeActionTable->setText(i, 1, iter->action());
-    QCheckTableItem* cp = new QCheckTableItem(attributeActionTable, "");
+    Q3CheckTableItem* cp = new Q3CheckTableItem(attributeActionTable, "");
     cp->setEnabled(false);
     if (iter->capture())
       cp->setChecked(true);
@@ -131,7 +131,7 @@ void QgsAttributeActionDialog::browse()
   // Popup a file browser and place the results into the actionName
   // widget 
 
-  QString action = QFileDialog::getOpenFileName(
+  QString action = Q3FileDialog::getOpenFileName(
 	QString::null, QString::null, this, 
 	"Select action dialog", "Select an action");
 
@@ -197,7 +197,7 @@ void QgsAttributeActionDialog::insert(int pos)
 
   attributeActionTable->setText(pos, 0, name);
   attributeActionTable->setText(pos, 1, actionAction->text());
-  QCheckTableItem* cp = new QCheckTableItem(attributeActionTable, "");
+  Q3CheckTableItem* cp = new Q3CheckTableItem(attributeActionTable, "");
   cp->setEnabled(false);
   if (captureCB->isChecked())
     cp->setChecked(true);
@@ -242,7 +242,7 @@ void QgsAttributeActionDialog::apply()
     if (!attributeActionTable->text(i, 0).isEmpty() &&
 	!attributeActionTable->text(i, 1).isEmpty())
     {
-      QCheckTableItem* cp = (QCheckTableItem*) (attributeActionTable->item(i, 2));
+      Q3CheckTableItem* cp = (Q3CheckTableItem*) (attributeActionTable->item(i, 2));
       mActions->addAction(attributeActionTable->text(i, 0),
 			  attributeActionTable->text(i, 1),
 			  cp->isChecked());
@@ -257,7 +257,7 @@ void QgsAttributeActionDialog::rowSelected(int row, int col, int button,
   // populate the edit section of the dialog so that they can change
   // the row if desired.
 
-  QCheckTableItem* cp = (QCheckTableItem*) (attributeActionTable->item(row, 2));
+  Q3CheckTableItem* cp = (Q3CheckTableItem*) (attributeActionTable->item(row, 2));
   if ( cp )
   {
     // Only if a populated row was selected

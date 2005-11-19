@@ -10,9 +10,9 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "plugingui.h"
-#include <qtextedit.h>
-#include <qsimplerichtext.h>
-#include <qcombobox.h>
+#include <q3textedit.h>
+#include <q3simplerichtext.h>
+#include <q3combobox.h>
 #include <qcheckbox.h>
 #include <qlabel.h>
 
@@ -27,7 +27,7 @@ QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui() : QgsCopyrightLabelPlug
   textLabel15->hide();
 }
 
-QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui( QWidget* parent , const char* name , bool modal , WFlags fl  )
+QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
 : QgsCopyrightLabelPluginGuiBase( parent, name, modal, fl )
 {
   //programmatically hide orientation selection for now

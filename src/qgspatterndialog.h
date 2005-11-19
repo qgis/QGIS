@@ -31,7 +31,7 @@ class QgsPatternDialog: public QgsPatternDialogBase
 {
     Q_OBJECT
  public:
-    QgsPatternDialog(QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = Qt::WStyle_StaysOnTop);
+    QgsPatternDialog(QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = Qt::WStyle_StaysOnTop);
     ~QgsPatternDialog();
     Qt::BrushStyle pattern();
  protected:

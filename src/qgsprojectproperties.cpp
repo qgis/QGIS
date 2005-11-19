@@ -32,10 +32,10 @@
 
 //qt includes
 #include <qapplication.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qfile.h>
-#include <qtextedit.h>
-#include <qbuttongroup.h>
+#include <q3textedit.h>
+#include <q3buttongroup.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>
 #include <qstring.h>
@@ -46,8 +46,8 @@
 #include <qtoolbutton.h>
 #include <qcheckbox.h>
 #include <qregexp.h>
-#include <qlistview.h>
-#include <qprogressdialog.h> 
+#include <q3listview.h>
+#include <q3progressdialog.h> 
 #include <qapplication.h>
 #include <qtabwidget.h>
 
@@ -215,7 +215,7 @@ void QgsProjectProperties::apply()
     // write the projection's _id_ to the project settings rather
     QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSID",(int)mySRSID);
     // write the currently selected projections _proj string_ to project settings
-    std::cout << "SpatialRefSys/ProjectSRSProj4String: " <<  projectionSelector->getCurrentProj4String().local8Bit() << std::endl;
+    std::cout << "SpatialRefSys/ProjectSRSProj4String: " <<  projectionSelector->getCurrentProj4String().toLocal8Bit().data() << std::endl;
     QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSProj4String",projectionSelector->getCurrentProj4String());
     // Set the map units to the projected coordinates if we are projecting
     if (isProjected())

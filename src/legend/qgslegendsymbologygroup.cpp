@@ -24,7 +24,7 @@
 #include <qapplication.h>
 #include <qpixmap.h>
 
-QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(QListViewItem * theItem, QString theString)
+QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(Q3ListViewItem * theItem, QString theString)
     : QgsLegendItem( theItem, theString)
 {
   mType = LEGEND_SYMBOL_GROUP;
@@ -54,7 +54,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendSymbologyGroup::accept(const QgsLegendItem* 
 /** Overloads cmpare function of QListViewItem
   * @note The symbology group must always be the second in the list
   */
-int QgsLegendSymbologyGroup::compare (QListViewItem * i,int col, bool ascending)
+int QgsLegendSymbologyGroup::compare (Q3ListViewItem * i,int col, bool ascending)
 {
   QgsLegendItem * myItem = dynamic_cast<QgsLegendItem *>(i) ;
   if (myItem->type() == QgsLegendItem::LEGEND_PROPERTY_GROUP)
@@ -70,12 +70,12 @@ int QgsLegendSymbologyGroup::compare (QListViewItem * i,int col, bool ascending)
 void QgsLegendSymbologyGroup::updateLayerSymbologySettings(const QgsMapLayer* thelayer)
 {
     //find the legend layer group node
-    QListViewItem* parent = this->parent();
+    Q3ListViewItem* parent = this->parent();
     if(!parent)
     {
 	return;
     }
-    QListViewItem* sibling = 0;
+    Q3ListViewItem* sibling = 0;
     QgsLegendLayerFileGroup* group = 0;
     for(sibling = parent->firstChild(); sibling != 0; sibling = sibling->nextSibling())
     {

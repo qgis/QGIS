@@ -22,7 +22,7 @@ class [pluginname]Gui : public [pluginname]GuiBase
 Q_OBJECT
 public:
     [pluginname]Gui();
-    [pluginname]Gui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    [pluginname]Gui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~[pluginname]Gui();
     void pbnOK_clicked();
     void pbnCancel_clicked();

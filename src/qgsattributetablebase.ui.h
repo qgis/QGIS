@@ -1,3 +1,5 @@
+//Added by qt3to4:
+#include <QCloseEvent>
 void QgsAttributeTableBase::closeEvent(QCloseEvent* ev)
 {
     ev->ignore();

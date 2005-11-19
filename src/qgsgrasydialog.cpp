@@ -20,8 +20,8 @@
 #include "qgsgrasydialog.h"
 #include "qspinbox.h"
 #include "qpushbutton.h"
-#include <qcombobox.h>
-#include <qlistbox.h>
+#include <q3combobox.h>
+#include <q3listbox.h>
 #include "qgssymbologyutils.h"
 #include "qgsrangerenderitem.h"
 #include "qlineedit.h"
@@ -31,9 +31,9 @@
 #include "qgslegenditem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfield.h"
-#include "qscrollview.h"
+#include "q3scrollview.h"
 #include <qlayout.h>
-#include <qwidgetstack.h>
+#include <q3widgetstack.h>
 
 QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVectorLayer(layer), sydialog(layer)
 {
@@ -121,7 +121,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
     QObject::connect(modeComboBox, SIGNAL(activated(int)), this, SLOT(adjustClassification()));
     QObject::connect(mClassBreakBox, SIGNAL(selectionChanged()), this, SLOT(changeCurrentValue()));
     QObject::connect(&sydialog, SIGNAL(settingsChanged()), this, SLOT(applySymbologyChanges()));
-    QObject::connect(mClassBreakBox, SIGNAL(doubleClicked(QListBoxItem*)), this, SLOT(changeClass(QListBoxItem*)));
+    QObject::connect(mClassBreakBox, SIGNAL(doubleClicked(Q3ListBoxItem*)), this, SLOT(changeClass(Q3ListBoxItem*)));
 
     mSymbolWidgetStack->addWidget(&sydialog);
     mSymbolWidgetStack->raiseWidget(&sydialog); 
@@ -349,7 +349,7 @@ void QgsGraSyDialog::adjustClassification()
 void QgsGraSyDialog::changeCurrentValue()
 {
     sydialog.blockSignals(true);//block signals to prevent sydialog from changing the current QgsRenderItem
-    QListBoxItem* item=mClassBreakBox->selectedItem();
+    Q3ListBoxItem* item=mClassBreakBox->selectedItem();
     if(item)
     {
 	QString value=item->text();
@@ -365,7 +365,7 @@ void QgsGraSyDialog::changeCurrentValue()
 
 void QgsGraSyDialog::applySymbologyChanges()
 {
-    QListBoxItem* item=mClassBreakBox->selectedItem();
+    Q3ListBoxItem* item=mClassBreakBox->selectedItem();
     if(item)
     {
 	QString value=item->text();
@@ -378,7 +378,7 @@ void QgsGraSyDialog::applySymbologyChanges()
     }
 }
 
-void QgsGraSyDialog::changeClass(QListBoxItem* item)
+void QgsGraSyDialog::changeClass(Q3ListBoxItem* item)
 {
     QString currenttext=item->text();
     QgsSymbol* symbol=0;

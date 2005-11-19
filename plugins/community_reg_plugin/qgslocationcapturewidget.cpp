@@ -19,7 +19,7 @@
 #include <qgspoint.h>
 #include <qlabel.h>
 
-QgsLocationCaptureWidget::QgsLocationCaptureWidget( QWidget *parent, const char * name, WFlags f)
+QgsLocationCaptureWidget::QgsLocationCaptureWidget( QWidget *parent, const char * name, Qt::WFlags f)
            :QgsLocationCaptureWidgetBase( parent, name, f)
 {
 }

@@ -43,9 +43,9 @@ QgsBookmarkItem::~QgsBookmarkItem()
   sqlite3 *db;
   int rc;
 #ifdef QGISDEBUG 
-  std::cout << "Opening user database: " << mUserDbPath.local8Bit() << std::endl; 
+  std::cout << "Opening user database: " << mUserDbPath.toLocal8Bit().data() << std::endl; 
 #endif 
-  rc = sqlite3_open(mUserDbPath.local8Bit(), &db);
+  rc = sqlite3_open(mUserDbPath.toLocal8Bit().data(), &db);
   if(rc)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
@@ -69,7 +69,7 @@ QgsBookmarkItem::~QgsBookmarkItem()
     mSrid << ")";
 
 #ifdef QGISDEBUG 
-  std::cout << "Storing bookmark using: " << sql.local8Bit() << std::endl; 
+  std::cout << "Storing bookmark using: " << sql.toLocal8Bit().data() << std::endl; 
 #endif 
   rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
   // XXX Need to free memory from the error msg if one is set

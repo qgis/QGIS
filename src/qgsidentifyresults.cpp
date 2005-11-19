@@ -18,25 +18,28 @@
 /* $Id$ */
 #include <iostream>
 #include <qapplication.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qsettings.h>
 #include <qpoint.h>
 #include <qsize.h>
 #include <qevent.h>
 #include <qlabel.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qglobal.h>
 
 #include "qgsidentifyresults.h"
+//Added by qt3to4:
+#include <QPixmap>
+#include <QCloseEvent>
 
 QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& aa, QWidget *parent, 
-    const char * name, WFlags f) :
+    const char * name, Qt::WFlags f) :
   QgsIdentifyResultsBase ( parent, name, f),
   mActions(aa), mClickedOnValue(0), mActionPopup(0)
 {
-  lstResults->setResizeMode(QListView::AllColumns);
+  lstResults->setResizeMode(Q3ListView::AllColumns);
 
-  connect ( lstResults, SIGNAL(clicked(QListViewItem *)), this, SLOT(clicked(QListViewItem *)));
+  connect ( lstResults, SIGNAL(clicked(Q3ListViewItem *)), this, SLOT(clicked(Q3ListViewItem *)));
 }
 
 QgsIdentifyResults::~QgsIdentifyResults()
@@ -62,7 +65,7 @@ void QgsIdentifyResults::closeEvent(QCloseEvent *e)
 // Popup (create if necessary) a context menu that contains a list of
 // actions that can be applied to the data in the identify results
 // dialog box.
-void QgsIdentifyResults::popupContextMenu(QListViewItem* item, 
+void QgsIdentifyResults::popupContextMenu(Q3ListViewItem* item, 
     const QPoint& p, int i)
 {
   // if the user clicked below the end of the attribute list, just return
@@ -75,7 +78,7 @@ void QgsIdentifyResults::popupContextMenu(QListViewItem* item,
   // such a dialog box is around.
   if (mActionPopup == 0)
   {
-    mActionPopup = new QPopupMenu();
+    mActionPopup = new Q3PopupMenu();
 
     QLabel* popupLabel = new QLabel( mActionPopup );
     popupLabel->setText( tr("<center>Run action</center>") );
@@ -100,8 +103,8 @@ void QgsIdentifyResults::popupContextMenu(QListViewItem* item,
   // track of which row in the identify results table was actually
   // clicked on. This is stored as an index into the mValues vector.
 
-  QListViewItem* parent = item->parent();
-  QListViewItem* child;
+  Q3ListViewItem* parent = item->parent();
+  Q3ListViewItem* child;
 
   if (item->parent() == 0)
     child = item->firstChild();
@@ -155,18 +158,18 @@ void QgsIdentifyResults::saveWindowLocation()
   settings.writeEntry("/qgis/Windows/Identify/h", s.height());
 } 
 /** add an attribute and its value to the list */
-void QgsIdentifyResults::addAttribute(QListViewItem * fnode, QString field, QString value)
+void QgsIdentifyResults::addAttribute(Q3ListViewItem * fnode, QString field, QString value)
 {
-  new QListViewItem(fnode, field, value);
+  new Q3ListViewItem(fnode, field, value);
 }
 void QgsIdentifyResults::addAttribute(QString field, QString value)
 {
-  new QListViewItem(lstResults, field, value);
+  new Q3ListViewItem(lstResults, field, value);
 }
 
-void QgsIdentifyResults::addAction(QListViewItem * fnode, int id, QString field, QString value)
+void QgsIdentifyResults::addAction(Q3ListViewItem * fnode, int id, QString field, QString value)
 {
-  QListViewItem *item = new QListViewItem(fnode, field, value, "action", QString::number(id) );
+  Q3ListViewItem *item = new Q3ListViewItem(fnode, field, value, "action", QString::number(id) );
 
   QString appDir;
 #if defined(WIN32) || defined(Q_OS_MACX)
@@ -182,9 +185,9 @@ void QgsIdentifyResults::addAction(QListViewItem * fnode, int id, QString field,
 }
 
 /** Add a feature node to the list */
-QListViewItem *QgsIdentifyResults::addNode(QString label)
+Q3ListViewItem *QgsIdentifyResults::addNode(QString label)
 {
-  return (new QListViewItem(lstResults, label));
+  return (new Q3ListViewItem(lstResults, label));
 }
 
 void QgsIdentifyResults::setTitle(QString title)
@@ -205,7 +208,7 @@ void QgsIdentifyResults::popupItemSelected(int id)
 
 /** Expand all the identified features (show their attributes). */
 void QgsIdentifyResults::showAllAttributes() {
-  QListViewItemIterator qlvii(lstResults);
+  Q3ListViewItemIterator qlvii(lstResults);
   for ( ; *qlvii; ++qlvii)
     lstResults->setOpen(*qlvii, true);
 }
@@ -217,7 +220,7 @@ void QgsIdentifyResults::clear()
 
 void QgsIdentifyResults::setMessage( QString shortMsg, QString longMsg )
 {
-  new QListViewItem(lstResults, shortMsg, longMsg );
+  new Q3ListViewItem(lstResults, shortMsg, longMsg );
 }
 
 void QgsIdentifyResults::setActions( const QgsAttributeAction& actions  )
@@ -225,7 +228,7 @@ void QgsIdentifyResults::setActions( const QgsAttributeAction& actions  )
   mActions = actions;
 }
 
-void QgsIdentifyResults::clicked ( QListViewItem *item )
+void QgsIdentifyResults::clicked ( Q3ListViewItem *item )
 {
   if ( !item ) return;
 
@@ -233,8 +236,8 @@ void QgsIdentifyResults::clicked ( QListViewItem *item )
 
   int id = item->text(3).toInt();
 
-  QListViewItem* parent = item->parent();
-  QListViewItem* child;
+  Q3ListViewItem* parent = item->parent();
+  Q3ListViewItem* child;
 
   if (item->parent() == 0)
     child = item->firstChild();

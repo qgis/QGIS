@@ -20,8 +20,8 @@
 #ifndef QGSLEGENDITEM_H
 #define QGSLEGENDITEM_H
 
-#include <qlistview.h>
-#include <qpopupmenu.h>
+#include <q3listview.h>
+#include <q3popupmenu.h>
 
 class QgsLegendGroup;
 class QgsLegendLayer;
@@ -33,11 +33,11 @@ This is an abstract base class that all qgis legen items inerit from
 
 @author Tim Sutton
 */
-class QgsLegendItem : public QListViewItem
+class QgsLegendItem : public Q3ListViewItem
 {
 public:
-    QgsLegendItem(QListViewItem*, QString);
-    QgsLegendItem (QListView *,QString);
+    QgsLegendItem(Q3ListViewItem*, QString);
+    QgsLegendItem (Q3ListView *,QString);
     ~QgsLegendItem();
 
    enum LEGEND_ITEM_TYPE 

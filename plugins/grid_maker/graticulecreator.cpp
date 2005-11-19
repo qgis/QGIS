@@ -9,7 +9,7 @@
 #include <qgis.h>
 GraticuleCreator::GraticuleCreator(QString theOutputFileName,ShapeType theType)
 {
-    std::cout << "GraticuleCreator constructor called with " << theOutputFileName.local8Bit()
+    std::cout << "GraticuleCreator constructor called with " << theOutputFileName.toLocal8Bit().data()
     << " for output file " << std::endl;
     /* Open and prepare output files */
     createDbf(theOutputFileName);
@@ -66,7 +66,7 @@ void GraticuleCreator::writeDbfRecord ( int theRecordIdInt, QString theLabel)
 {
 
   
-    //std::cerr << "writeDbfRecord : " << theRecordIdInt << " - " << theLabel.local8Bit();
+    //std::cerr << "writeDbfRecord : " << theRecordIdInt << " - " << theLabel.toLocal8Bit().data();
     if (! DBFWriteIntegerAttribute(mDbfHandle, theRecordIdInt, 0, theRecordIdInt))
     {
         std::cerr <<  "DBFWriteIntegerAttribute failed. : " <<  theRecordIdInt << " - " << theRecordIdInt << std::endl;
@@ -77,7 +77,7 @@ void GraticuleCreator::writeDbfRecord ( int theRecordIdInt, QString theLabel)
     {
       if (! DBFWriteStringAttribute(mDbfHandle, theRecordIdInt, 1, theLabel))
       {
-        std::cerr <<  "DBFWriteStringAttribute failed. : " <<  theRecordIdInt << " - " << theLabel.local8Bit() <<std::endl;
+        std::cerr <<  "DBFWriteStringAttribute failed. : " <<  theRecordIdInt << " - " << theLabel.toLocal8Bit().data() <<std::endl;
         //exit(ERR_DBFWRITEINTEGERATTRIBUTE);
       }
       std::cerr << " - OK! " << std::endl;
@@ -93,7 +93,7 @@ void  GraticuleCreator::writeProjectionFile(QString theFileName )
   std::ofstream of(theFileName);
   if(!of.fail())
   {
-    of << GEOWKT.local8Bit()
+    of << GEOWKT.toLocal8Bit().data()
       << std::endl; 
     of.close();
 
@@ -340,7 +340,7 @@ void GraticuleCreator::generatePolygonGraticule(
 void GraticuleCreator::generatePoints (QString theInputFileName)
 {
     QFile myFile( theInputFileName );
-    if ( myFile.open( IO_ReadOnly ) )
+    if ( myFile.open( QIODevice::ReadOnly ) )
     {
         QTextStream myStream( &myFile );
         QString myLineString;
@@ -363,7 +363,7 @@ void GraticuleCreator::generatePoints (QString theInputFileName)
                 double x=myLongQString.toDouble();
                 double y=myLatQString.toDouble();
                 //create the dbf and shape recs
-                std::cerr << "Writing record: " << myDateQString.local8Bit() << " - " << x << " - " << y << std::endl;
+                std::cerr << "Writing record: " << myDateQString.toLocal8Bit().data() << " - " << x << " - " << y << std::endl;
                 writeDbfRecord( myRecordInt, myDateQString);
                 writePoint( myRecordInt, x, y);
                 myRecordInt++;

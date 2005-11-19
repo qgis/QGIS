@@ -22,7 +22,7 @@
 #include <qsettings.h>
 #include <qlayout.h>
 #include <qlabel.h>
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qglobal.h>
 
 #include "qgspastetransformations.h"
@@ -42,7 +42,7 @@ QgsPasteTransformations::QgsPasteTransformations()
   {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::QgsPasteTransformations: QgsMapLayerRegistry has "
-          << it->second->name().local8Bit() << "."
+          << it->second->name().toLocal8Bit().data() << "."
           << std::endl;
 #endif
 
@@ -97,7 +97,7 @@ void QgsPasteTransformations::sourceChanged(const QString& layerName)
 {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::sourceChanged: Source changed to "
-          << layerName.local8Bit() << "."
+          << layerName.toLocal8Bit().data() << "."
           << std::endl;
 #endif
 
@@ -110,7 +110,7 @@ void QgsPasteTransformations::destinationChanged(const QString& layerName)
 {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::destinationChanged: Destination changed to "
-          << layerName.local8Bit() << "."
+          << layerName.toLocal8Bit().data() << "."
           << std::endl;
 #endif
 
@@ -123,8 +123,8 @@ void QgsPasteTransformations::addTransfer(const QString& sourceSelectedFieldName
                                           const QString& destinationSelectedFieldName)
 {
 #ifdef QGISDEBUG
-        std::cerr << "QgsPasteTransformations::addTransfer: From " << sourceSelectedFieldName.local8Bit()
-                                                         << " to " << destinationSelectedFieldName.local8Bit() << "."
+        std::cerr << "QgsPasteTransformations::addTransfer: From " << sourceSelectedFieldName.toLocal8Bit().data()
+                                                         << " to " << destinationSelectedFieldName.toLocal8Bit().data() << "."
           << std::endl;
 #endif
 
@@ -210,7 +210,7 @@ void QgsPasteTransformations::layerChanged(const QString& layerName, std::vector
   // Fetch the fields that will be populated into the Transfer rows.
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::layerChanged: Layer changed to "
-          << layerName.local8Bit() << "."
+          << layerName.toLocal8Bit().data() << "."
           << std::endl;
 #endif
 
@@ -225,7 +225,7 @@ void QgsPasteTransformations::layerChanged(const QString& layerName, std::vector
   {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::layerChanged: Got field "
-          << it->name().local8Bit() << "."
+          << it->name().toLocal8Bit().data() << "."
           << std::endl;
 #endif
 
@@ -254,8 +254,8 @@ void QgsPasteTransformations::restoreTransfers(const QString& sourceLayerName,
   {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::restoreTransfers: Testing source '"
-          << (*it).local8Bit() << "' with '"
-          << sourceLayerName.local8Bit() << "'."
+          << (*it).toLocal8Bit().data() << "' with '"
+          << sourceLayerName.toLocal8Bit().data() << "'."
           << std::endl;
 #endif
     if ((sourceLayerName == (*it)))
@@ -268,8 +268,8 @@ void QgsPasteTransformations::restoreTransfers(const QString& sourceLayerName,
       {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::restoreTransfers: Testing destination '"
-          << (*it2).local8Bit() << "' with '"
-          << destinationLayerName.local8Bit() << "'."
+          << (*it2).toLocal8Bit().data() << "' with '"
+          << destinationLayerName.toLocal8Bit().data() << "'."
           << std::endl;
 #endif
         if ((destinationLayerName == (*it2)))
@@ -286,7 +286,7 @@ void QgsPasteTransformations::restoreTransfers(const QString& sourceLayerName,
           {
 #ifdef QGISDEBUG
         std::cerr << "QgsPasteTransformations::restoreTransfers: setting transfer for "
-          << (*it3).local8Bit() << "."
+          << (*it3).toLocal8Bit().data() << "."
           << std::endl;
 #endif
             QString destinationField = 
@@ -324,7 +324,7 @@ QString QgsPasteTransformations::pasteTo(const QString& sourceLayerName,
   }
 
 #ifdef QGISDEBUG
-        std::cerr << "QgsPasteTransformations::pasteTo: Returning '" << destinationField.local8Bit() << "'."
+        std::cerr << "QgsPasteTransformations::pasteTo: Returning '" << destinationField.toLocal8Bit().data() << "'."
           << std::endl;
 #endif
 

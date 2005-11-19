@@ -18,7 +18,7 @@ void QgsProjectionSelectorBase::projectionChanged( const QString & )
 
 
 
-void QgsProjectionSelectorBase::coordinateSystemSelected( QListViewItem * )
+void QgsProjectionSelectorBase::coordinateSystemSelected( Q3ListViewItem * )
 {
 
 }

@@ -24,7 +24,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 #include <qrect.h>
-#include <qpointarray.h>
+#include <q3pointarray.h>
 #include <qdir.h>
 
 #include "qgssvgcache.h"
@@ -88,10 +88,10 @@ QgsMarkerCatalogue *QgsMarkerCatalogue::instance()
     return QgsMarkerCatalogue::mMarkerCatalogue;
 }
 
-QPicture QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrush brush, int oversampling, bool qtBug )
+Q3Picture QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrush brush, int oversampling, bool qtBug )
 {
     //std::cerr << "QgsMarkerCatalogue::marker" << std::endl;
-    QPicture picture;
+    Q3Picture picture;
     
     if ( fullName.left(5) == "hard:" ) {
         return hardMarker ( fullName.mid(5), size, pen, brush, oversampling, qtBug ); 
@@ -102,15 +102,15 @@ QPicture QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBru
     return picture; // empty
 }
 
-QPicture QgsMarkerCatalogue::svgMarker ( QString name, int s, int oversampling )
+Q3Picture QgsMarkerCatalogue::svgMarker ( QString name, int s, int oversampling )
 {
-    QPicture picture;
+    Q3Picture picture;
     QPainter painter;
     painter.begin(&picture);
 
     if ( oversampling <= 1 ) 
     {
-	QPicture pic = QgsSVGCache::instance().getPicture(name);
+	Q3Picture pic = QgsSVGCache::instance().getPicture(name);
 
 	QRect br = pic.boundingRect();
 
@@ -136,12 +136,12 @@ QPicture QgsMarkerCatalogue::svgMarker ( QString name, int s, int oversampling )
     return picture;
 }
 
-QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush brush, int oversampling, bool qtBug )
+Q3Picture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush brush, int oversampling, bool qtBug )
 {
     // Size of polygon symbols is calculated so that the area is equal to circle with 
     // diameter mPointSize
     
-    QPicture picture;
+    Q3Picture picture;
     
     // Size for circle
     int half = (int)floor(s/2.0); // number of points from center
@@ -171,7 +171,7 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
     else if ( name == "diamond" ) 
     {
 	half = (int) ( sqrt(area/2.) );
-	QPointArray pa(4);
+	Q3PointArray pa(4);
 	pa.setPoint ( 0, 0, half);
 	pa.setPoint ( 1, half, 2*half);
 	pa.setPoint ( 2, 2*half, half);

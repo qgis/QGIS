@@ -28,12 +28,12 @@
 #include <qlayout.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qpushbutton.h> 
 #include <qtoolbutton.h> 
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qlineedit.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <qapplication.h>
 
 QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAttributeTableBase(), mLayer(layer)
@@ -278,8 +278,8 @@ void QgsAttributeTableDisplay::doSearch(const QString& searchString)
   }
 
 #ifdef QGISDEBUG
-  std::cout << "Search by attribute: " << searchString.local8Bit() << std::endl
-            << " parsed as: " << search.tree()->makeSearchString().local8Bit() << std::endl;
+  std::cout << "Search by attribute: " << searchString.toLocal8Bit().data() << std::endl
+            << " parsed as: " << search.tree()->makeSearchString().toLocal8Bit().data() << std::endl;
 #endif
 
   QApplication::setOverrideCursor(Qt::waitCursor);

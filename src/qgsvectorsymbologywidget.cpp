@@ -17,7 +17,7 @@
 
 #include <qgssymbol.h>
 
-QgsVectorSymbologyWidget::QgsVectorSymbologyWidget(  QWidget *parent, const char * name, WFlags f)
+QgsVectorSymbologyWidget::QgsVectorSymbologyWidget(  QWidget *parent, const char * name, Qt::WFlags f)
            :QgsVectorSymbologyWidgetBase( parent, name, f)
 {
 }

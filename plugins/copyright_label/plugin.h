@@ -24,7 +24,7 @@
 #include <qwidget.h>
 #include <qfont.h>
 #include <qcolor.h>
-#include <qsimplerichtext.h>
+#include <q3simplerichtext.h>
 #include <qpainter.h>
 /**
 * \class Plugin

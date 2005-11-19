@@ -27,7 +27,7 @@
 #include <vector>
 #include <utility>
 
-class QListBoxItem;
+class Q3ListBoxItem;
 class QgisApp;
 /*!
  * \brief   Dialog to create connections and add layers from WMS, etc.

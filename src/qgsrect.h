@@ -184,7 +184,7 @@ inline QgsPoint QgsRect::center() const
 }
 inline std::ostream& operator << (std::ostream& os, const QgsRect &r)
 {
-  return os << r.stringRep().local8Bit();
+  return os << r.stringRep().toLocal8Bit().data();
 }
   
 #endif // QGSRECT_H

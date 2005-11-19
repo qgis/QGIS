@@ -26,9 +26,9 @@
 #include "qgssymbol.h"
 #include "qgsrenderitem.h"
 #include "qgsuniquevalrenderer.h"
-#include <qwidgetstack.h>
-#include <qlistbox.h>
-#include <qcombobox.h>
+#include <q3widgetstack.h>
+#include <q3listbox.h>
+#include <q3combobox.h>
 #include <qpainter.h>
 #include <list>
 
@@ -215,7 +215,7 @@ void QgsUValDialog::changeClassificationAttribute(int nr)
 void QgsUValDialog::changeCurrentValue()
 {
     sydialog.blockSignals(true);//block signal to prevent sydialog from changing the current QgsRenderItem
-    QListBoxItem* item=mClassBreakBox->selectedItem();
+    Q3ListBoxItem* item=mClassBreakBox->selectedItem();
     QString value=item->text();
     std::map<QString,QgsSymbol*>::iterator it=mValues.find(value);
     if(it!=mValues.end())
@@ -232,7 +232,7 @@ void QgsUValDialog::changeCurrentValue()
 
 void QgsUValDialog::applySymbologyChanges()
 {
-  QListBoxItem* item=mClassBreakBox->selectedItem();
+  Q3ListBoxItem* item=mClassBreakBox->selectedItem();
   QString value=item->text();
   std::map<QString,QgsSymbol*>::iterator it=mValues.find(value);
   if(it!=mValues.end())
