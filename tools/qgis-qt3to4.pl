@@ -2,6 +2,7 @@
 
 #
 # WARNING: PROOF OF CONCEPT ONLY.  DO NOT RUN UNLESS YOU KNOW WHAT YOU ARE DOING.
+# REQUIRES QTDIR to be set!! [gsherman]
 #
 
 #
@@ -39,7 +40,7 @@ sub RunQt3to4
   print "About to run '$cmd'\n";
   `$cmd`;
 
-  my($cmd) = "/usr/local/Trolltech/Qt-4.0.0/bin/qt3to4 -alwaysOverwrite $directory$direntry";
+  my($cmd) = "$ENV{'QTDIR'}/bin/qt3to4 -alwaysOverwrite $directory$direntry";
   print "About to run '$cmd'\n";
   `$cmd`;
 
@@ -394,6 +395,20 @@ sub ParseDirectory
 
 }
 
+# Check for QTDIR and exit if not set
+if(length($ENV{'QTDIR'}) == 0){
+  print<<EOF
+  QTDIR must be set to the Qt 4 directory:
+  export QTDIR=/my/path/to/qt
+  You should also set the PATH to use the Qt 4 binaries:
+  PATH=\$QTDIR/bin:\$PATH
+
+  QTDIR not set -- exiting.
+EOF
+  ;
+
+exit;
+}
 print "Starting $0...\n";
 
 if ($ARGV[0] eq "-uic")
