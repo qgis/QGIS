@@ -1,0 +1,535 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>QgsMapserverExportBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>QgsMapserverExportBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>481</width>
+            <height>447</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Export to Mapserver</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QGroupBox" row="4" column="0">
+            <property name="name">
+                <cstring>grpWeb</cstring>
+            </property>
+            <property name="title">
+                <string>Web Interface Definition</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget" row="2" column="0">
+                    <property name="name">
+                        <cstring>layout6</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel5_3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Footer</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>txtWebFooter</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>btnChooseFooterFile</cstring>
+                            </property>
+                            <property name="text">
+                                <string>...</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget" row="0" column="0">
+                    <property name="name">
+                        <cstring>layout5</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel5_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Template</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>txtWebTemplate</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>btnChooseTemplateFile</cstring>
+                            </property>
+                            <property name="text">
+                                <string>...</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget" row="1" column="0">
+                    <property name="name">
+                        <cstring>layout4</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel5</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Header</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>txtWebHeader</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>btnChooseHeaderFile</cstring>
+                            </property>
+                            <property name="text">
+                                <string>...</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="3" column="0">
+            <property name="name">
+                <cstring>grpMap</cstring>
+            </property>
+            <property name="title">
+                <string>Map</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Name</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string></string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="5">
+                    <property name="name">
+                        <cstring>textLabel2_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Height</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="1" column="1">
+                    <item>
+                        <property name="text">
+                            <string>dd</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>feet</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>meters</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>miles</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>inches</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>kilometers</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>cmbMapUnits</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Units</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="2" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>textLabel4</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Image type</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="1" column="4" rowspan="1" colspan="2">
+                    <item>
+                        <property name="text">
+                            <string>gif</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>gtiff</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>jpeg</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>png</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>swf</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>userdefined</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>wbmp</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>cmbMapImageType</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>txtMapName</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile. It should be kept short.</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="4">
+                    <property name="name">
+                        <cstring>txtMapWidth</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="6">
+                    <property name="name">
+                        <cstring>txtMapHeight</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="3">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Width</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="2" column="0" rowspan="1" colspan="6">
+                    <property name="name">
+                        <cstring>layout7</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel6</cstring>
+                            </property>
+                            <property name="text">
+                                <string>MinScale</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>txtMinScale</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel6_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>MaxScale</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>txtMaxScale</cstring>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QLayoutWidget" row="5" column="0">
+            <property name="name">
+                <cstring>Layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonHelp</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Help</string>
+                    </property>
+                    <property name="accel">
+                        <string>F1</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Horizontal Spacing2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonOk</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;OK</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QCheckBox" row="2" column="0">
+            <property name="name">
+                <cstring>chkExpLayersOnly</cstring>
+            </property>
+            <property name="text">
+                <string>Export LAYER information only</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="1" column="0">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel7_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>QGIS Project File</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>txtQgisFilePath</cstring>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnChooseProjectFile</cstring>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="0" column="0">
+            <property name="name">
+                <cstring>layout3</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel7</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Map file</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>txtMapFilePath</cstring>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>btnChooseFile</cstring>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>buttonOk</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsMapserverExportBase</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>buttonCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsMapserverExportBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>chkExpLayersOnly</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsMapserverExportBase</receiver>
+        <slot>exportLayersOnly()</slot>
+    </connection>
+    <connection>
+        <sender>btnChooseFile</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsMapserverExportBase</receiver>
+        <slot>chooseMapFile()</slot>
+    </connection>
+    <connection>
+        <sender>buttonHelp</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsMapserverExportBase</receiver>
+        <slot>showHelp()</slot>
+    </connection>
+    <connection>
+        <sender>btnChooseProjectFile</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsMapserverExportBase</receiver>
+        <slot>chooseProjectFile()</slot>
+    </connection>
+    <connection>
+        <sender>btnChooseTemplateFile</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsMapserverExportBase</receiver>
+        <slot>chooseTemplateFile()</slot>
+    </connection>
+    <connection>
+        <sender>btnChooseHeaderFile</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsMapserverExportBase</receiver>
+        <slot>chooseHeaderFile()</slot>
+    </connection>
+    <connection>
+        <sender>btnChooseFooterFile</sender>
+        <signal>clicked()</signal>
+        <receiver>QgsMapserverExportBase</receiver>
+        <slot>chooseFooterFile()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">qgsmapserverexportbase.ui.h</include>
+</includes>
+<slots>
+    <slot>exportLayersOnly()</slot>
+    <slot>chooseMapFile()</slot>
+    <slot>showHelp()</slot>
+    <slot>chooseProjectFile()</slot>
+    <slot>chooseTemplateFile()</slot>
+    <slot>chooseHeaderFile()</slot>
+    <slot>chooseFooterFile()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
