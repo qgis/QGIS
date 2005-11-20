@@ -641,12 +641,12 @@ QgsRasterLayer::readFile( QString const & fileName )
   {
     GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(i);
     QString myColorQString = GDALGetColorInterpretationName(myGdalBand->GetColorInterpretation());
-    RasterBandStats myRasterBandStats;
+    QgsRasterBandStats myRasterBandStats;
     myRasterBandStats.bandName = myColorQString ;
     //myRasterBandStats.bandName=QString::number(i) + " : " + myColorQString;
     myRasterBandStats.bandNoInt = i;
     myRasterBandStats.statsGatheredFlag = false;
-    myRasterBandStats.histogramVector = new RasterBandStats::HistogramVector();
+    myRasterBandStats.histogramVector = new QgsRasterBandStats::HistogramVector();
     // Read color table
     readColorTable ( myGdalBand, &(myRasterBandStats.colorTable) );
 
@@ -1483,7 +1483,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
 #ifdef QGISDEBUG
   std::cerr << "QgsRasterLayer::drawSingleBandGray called for layer " << theBandNoInt << std::endl;
 #endif
-  RasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
+  QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
@@ -1565,7 +1565,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, QgsRaster
   std::cout << "QgsRasterLayer::drawSingleBandPseudoColor called" << std::endl;
 #endif
 
-  RasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
+  QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
@@ -1575,7 +1575,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, QgsRaster
   myQImage.setAlphaBuffer(true);
 
   //calculate the adjusted matrix stats - which come into affect if the user has chosen
-  RasterBandStats myAdjustedRasterBandStats = getRasterBandStats(theBandNoInt);
+  QgsRasterBandStats myAdjustedRasterBandStats = getRasterBandStats(theBandNoInt);
 
   int myRedInt = 0;
   int myGreenInt = 0;
@@ -1878,7 +1878,7 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, QgsRaste
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedSingleBandGray called" << std::endl;
 #endif
-  RasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
+  QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
@@ -1985,7 +1985,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, Q
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedSingleBandPseudoColor called" << std::endl;
 #endif
-  RasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
+  QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
   GDALDataType myDataType = myGdalBand->GetRasterDataType();
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
@@ -2000,7 +2000,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, Q
   int myBlueInt = 0;
 
   //calculate the adjusted matrix stats - which come into affect if the user has chosen
-  RasterBandStats myAdjustedRasterBandStats = getRasterBandStats(theBandNoInt);
+  QgsRasterBandStats myAdjustedRasterBandStats = getRasterBandStats(theBandNoInt);
 
   //to histogram stretch to a given number of std deviations
   //see if we are using histogram stretch using stddev and plot only within the selected number of deviations if we are
@@ -2523,21 +2523,21 @@ void QgsRasterLayer::showDebugOverlay(QPainter * theQPainter, QgsRasterViewPort 
 WARDNING::: THERE IS NO GUARANTEE THAT BAND NAMES ARE UNIQE
 THE FIRST MATCH WILL BE RETURNED!!!!!!!!!!!!
 */
-const RasterBandStats QgsRasterLayer::getRasterBandStats(QString theBandNameQString)
+const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(QString theBandNameQString)
 {
 
   //we cant use a vector iterator because the iterator is astruct not a class
   //and the qvector model does not like this.
   for (int i = 1; i <= gdalDataset->GetRasterCount(); i++)
   {
-    RasterBandStats myRasterBandStats = getRasterBandStats(i);
+    QgsRasterBandStats myRasterBandStats = getRasterBandStats(i);
     if (myRasterBandStats.bandName == theBandNameQString)
     {
       return myRasterBandStats;
     }
   }
 
-  return RasterBandStats();     // return a null one
+  return QgsRasterBandStats();     // return a null one
   // XXX is this ok?  IS there a "null" one?
 }
 
@@ -2550,7 +2550,7 @@ const int QgsRasterLayer::getRasterBandNumber(QString theBandNameQString)
   for (int myIteratorInt = 0; myIteratorInt <= rasterStatsVector.size(); ++myIteratorInt)
   {
     //find out the name of this band
-    RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
+    QgsRasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
 #ifdef QGISDEBUG
 
     std::cout << "myRasterBandStats.bandName: " << myRasterBandStats.bandName.toLocal8Bit().data() << "  :: theBandNameQString: " << theBandNameQString.toLocal8Bit().data() << std::endl;
@@ -2625,24 +2625,24 @@ Calculates:
 That this is a cpu intensive and slow task!
  
 */
-const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
+const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 {
   // check if we have received a valid band number
   if ((gdalDataset->GetRasterCount() < theBandNoInt) && rasterLayerType != PALETTE)
   {
     // invalid band id, return nothing
-    RasterBandStats myNullReturnStats;
+    QgsRasterBandStats myNullReturnStats;
     return myNullReturnStats;
   }
   if (rasterLayerType == PALETTE && (theBandNoInt > 3))
   {
     // invalid band id, return nothing
-    RasterBandStats myNullReturnStats;
+    QgsRasterBandStats myNullReturnStats;
     return myNullReturnStats;
   }
   // check if we have previously gathered stats for this band...
 
-  RasterBandStats myRasterBandStats = rasterStatsVector[theBandNoInt - 1];
+  QgsRasterBandStats myRasterBandStats = rasterStatsVector[theBandNoInt - 1];
   myRasterBandStats.bandNoInt = theBandNoInt;
 
   // don't bother with this if we already have stats
@@ -2685,7 +2685,7 @@ const RasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
       break;
     default:
       //invalid band id so return
-      RasterBandStats myNullReturnStats;
+      QgsRasterBandStats myNullReturnStats;
       return myNullReturnStats;
       break;
     }
@@ -2970,7 +2970,7 @@ void QgsRasterLayer::setRedBandName(QString theBandNameQString)
   for (int myIteratorInt = 0; myIteratorInt < rasterStatsVector.size(); ++myIteratorInt)
   {
     //find out the name of this band
-    RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
+    QgsRasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
     if (myRasterBandStats.bandName == theBandNameQString)
     {
       redBandNameQString = theBandNameQString;
@@ -3003,7 +3003,7 @@ void QgsRasterLayer::setGreenBandName(QString theBandNameQString)
   for (int myIteratorInt = 0; myIteratorInt < rasterStatsVector.size(); ++myIteratorInt)
   {
     //find out the name of this band
-    RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
+    QgsRasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
     if (myRasterBandStats.bandName == theBandNameQString)
     {
       greenBandNameQString = theBandNameQString;
@@ -3036,7 +3036,7 @@ void QgsRasterLayer::setBlueBandName(QString theBandNameQString)
   for (int myIteratorInt = 0; myIteratorInt < rasterStatsVector.size(); ++myIteratorInt)
   {
     //find out the name of this band
-    RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
+    QgsRasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
     if (myRasterBandStats.bandName == theBandNameQString)
     {
       blueBandNameQString = theBandNameQString;
@@ -3069,7 +3069,7 @@ void QgsRasterLayer::setGrayBandName(QString theBandNameQString)
   for (int myIteratorInt = 0; myIteratorInt < rasterStatsVector.size(); ++myIteratorInt)
   {
     //find out the name of this band
-    RasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
+    QgsRasterBandStats myRasterBandStats = rasterStatsVector[myIteratorInt];
     std::cout << __FILE__ << ":" << __LINE__ << "Checking if " << myRasterBandStats.bandName.data() << " == " << grayBandNameQString.data() << std::endl;
     if (myRasterBandStats.bandName == theBandNameQString)
     {
@@ -3674,8 +3674,10 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
   popMenu->insertItem(mTransparencySlider);
 #endif
 
-  popMenu->insertItem(tr("&Convert to..."), this, SLOT(convertTo()));
+  //popMenu->insertItem(tr("&Convert to..."), this, SLOT(convertTo()));
 } // QgsRasterLayer::initContextMenu
+
+/**
 
 void const QgsRasterLayer::convertTo()
 {
@@ -3696,7 +3698,7 @@ void const QgsRasterLayer::convertTo()
   emit setProgress (0,0);
   QApplication::restoreOverrideCursor();
 }
-
+*/
 void QgsRasterLayer::updateProgress(int theProgress, int theMax)
 {
   //simply propogate it on!
@@ -4051,7 +4053,7 @@ QString QgsRasterLayer::getMetadata()
         std::cout << ".....yes" << std::endl;
   #endif
   
-        RasterBandStats myRasterBandStats = getRasterBandStats(myIteratorInt);
+        QgsRasterBandStats myRasterBandStats = getRasterBandStats(myIteratorInt);
         //Min Val
         myMetadataQString += "<tr><td bgcolor=\"white\">";
         myMetadataQString += tr("Min Val");
@@ -4258,7 +4260,7 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
   QApplication::restoreOverrideCursor();
 }
 
-RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
+QgsRasterLayer::RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
 {
   //
   // First we build up a list of potential pyramid layers
@@ -4273,7 +4275,7 @@ RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
   while((myWidth/myDivisorInt > 32) && ((myHeight/myDivisorInt)>32))
   {
 
-    RasterPyramid myRasterPyramid;
+    QgsRasterPyramid myRasterPyramid;
     myRasterPyramid.levelInt=myDivisorInt;
     myRasterPyramid.xDimInt = (int)(0.5 + (myWidth/(double)myDivisorInt));
     myRasterPyramid.yDimInt = (int)(0.5 + (myHeight/(double)myDivisorInt));
@@ -4802,7 +4804,7 @@ void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool
 {
 
   GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(theBandNoInt);
-  RasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
+  QgsRasterBandStats myRasterBandStats = getRasterBandStats(theBandNoInt);
   //calculate the histogram for this band
   //we assume that it only needs to be calculated if the lenght of the histogram
   //vector is not equal to the number of bins

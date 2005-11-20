@@ -191,7 +191,8 @@ The [type] part of the variable should be the type class of the variable written
 #include "qgsmaplayer.h"
 #include "qgscolortable.h"
 #include "qgsrasterlayer.h"
-
+#include "qgsrasterbandstats.h"
+#include "qgsrasterpyramid.h"
 
 /*
  * 
@@ -225,83 +226,7 @@ class QImage;
 // Structs
 //
 
-/** \brief The RasterBandStats struct is a container for statistics about a single
- * raster band.
- */
-struct RasterBandStats
-{
-    /** \brief The name of the band that these stats belong to. */
-    QString bandName;
-    /** \brief The gdal band number (starts at 1)*/
-    int bandNoInt; 
-    /** \brief A flag to indicate whether this RasterBandStats struct 
-     * is completely populated */
-    bool statsGatheredFlag; 
-    /** \brief The minimum cell value in the raster band. NO_DATA values
-     * are ignored. This does not use the gdal GetMinimum function. */
-    double minValDouble;
-    /** \brief The maximum cell value in the raster band. NO_DATA values
-     * are ignored. This does not use the gdal GetMaximmum function. */
-    double maxValDouble;
-    /** \brief The range is the distance between min & max. */
-    double rangeDouble;
-    /** \brief The mean cell value for the band. NO_DATA values are excluded. */
-    double meanDouble;
-    /** \brief The sum of the squares. Used to calculate standard deviation. */
-    double sumSqrDevDouble; 
-    /** \brief The standard deviation of the cell values. */
-    double stdDevDouble;
-    /** \brief The sum of all cells in the band. NO_DATA values are excluded. */
-    double sumDouble;
-    /** \brief The number of cells in the band. Equivalent to height x width. 
-     * TODO: check if NO_DATA are excluded!*/
-    int elementCountInt;    
-    /** \brief Store the histogram for a given layer */
-    typedef Q3ValueVector<int> HistogramVector;
-    HistogramVector * histogramVector;
-    /** \brief whteher histogram values are estimated or completely calculated */
-    bool histogramEstimatedFlag;
-    /** whehter histogram compuation should include out of range values */
-    bool histogramOutOfRangeFlag;
-    /** Color table */
-    QgsColorTable colorTable;
-};
 
-/** \brief  A vector containing one RasterBandStats struct per raster band in this raster layer.
- * Note that while very RasterBandStats element will have the name and number of its associated
- * band populated, any additional stats are calculated on a need to know basis.*/
-typedef Q3ValueVector<RasterBandStats> RasterStatsVector;
-
-
-/** \brief This struct is used to store pyramid info for the raster layer. */
-struct RasterPyramid
-{
-  /** \brief The pyramid level as implemented in gdal (level 2 is half orignal raster size etc) */
-  int levelInt;
-  /** \brief XDimension for this pyramid layer */
-  int xDimInt;
-  /** \brief YDimension for this pyramid layer */
-  int yDimInt;
-  /** \brief Whether the pyramid layer has been built yet */
-  bool existsFlag;
-
-};
-
-/** \brief  A list containing one RasterPyramid struct per 
- * POTENTIAL pyramid layer. How this works is we divide the height
- * and width of the raster by an incrementing number. As soon as the result
- * of the division is <=256 we stop allowing RasterPyramid stracuts
- * to be added to the list. Each time a RasterPyramid is created
- * we will check to see if a pyramid matching these dimensions already exists
- * in the raster layer, and if so mark the exists flag as true. */
-  
-typedef Q3ValueList<RasterPyramid> RasterPyramidList;
-
-/** \brief This typedef is used when the showProgress function is passed to gdal as a function
-pointer. */
-//  typedef  int (QgsRasterLayer::*showTextProgress)( double theProgressDouble,
-//                                      const char *theMessageCharArray,
-//                                      void *theData);
   
   
 /*! \class QgsRasterLayer
@@ -346,6 +271,28 @@ public:
 
     /** \brief The destuctor.  */
     ~QgsRasterLayer();
+
+    /** \brief  A vector containing one RasterBandStats struct per raster band in this raster layer.
+     * Note that while very RasterBandStats element will have the name and number of its associated
+     * band populated, any additional stats are calculated on a need to know basis.*/
+    typedef Q3ValueVector<QgsRasterBandStats> RasterStatsVector;
+
+
+    /** \brief  A list containing one RasterPyramid struct per 
+     * POTENTIAL pyramid layer. How this works is we divide the height
+     * and width of the raster by an incrementing number. As soon as the result
+     * of the division is <=256 we stop allowing RasterPyramid stracuts
+     * to be added to the list. Each time a RasterPyramid is created
+     * we will check to see if a pyramid matching these dimensions already exists
+     * in the raster layer, and if so mark the exists flag as true. */
+      
+    typedef Q3ValueList<QgsRasterPyramid> RasterPyramidList;
+
+    /** \brief This typedef is used when the showProgress function is passed to gdal as a function
+    pointer. */
+    //  typedef  int (QgsRasterLayer::*showTextProgress)( double theProgressDouble,
+    //                                      const char *theMessageCharArray,
+    //                                      void *theData);
 
     /** \brief Identify raster value(s) found in center of the search rectangle */
     void identify(QgsRect *);
@@ -417,14 +364,14 @@ public:
         return rasterStatsVector.size();
     };
     /** \brief Get RasterBandStats for a band given its number (read only)  */
-    const  RasterBandStats getRasterBandStats(int);
+    const  QgsRasterBandStats getRasterBandStats(int);
     /** \brief  Check whether a given band number has stats associated with it */
     const bool hasStats(int theBandNoInt);
     /** \brief Overloaded method that also returns stats for a band, but uses the band colour name
     *    Note this approach is not recommeneded because it is possible for two gdal raster
     *    bands to have the same name!
     */
-    const  RasterBandStats getRasterBandStats(QString);
+    const  QgsRasterBandStats getRasterBandStats(QString);
     /** \brief Get the number of a band given its name. Note this will be the rewritten name set 
     *   up in the constructor, and will not necessarily be the same as the name retrieved directly from gdal!
     *   If no matching band is found zero will be returned! */
@@ -811,7 +758,7 @@ public slots:
     /**
      * Convert this raster to another format
      */
-    void const convertTo();
+    //void const convertTo();
     /**
      * Mainly inteded for use in propogating progress updates from gdal up to the parent app.
      **/
@@ -874,7 +821,6 @@ public slots:
 
   */
   /* virtual */ bool writeXML_( QDomNode & layer_node, QDomDocument & doc );
-
     
 private:
 

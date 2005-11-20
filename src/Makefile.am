@@ -390,6 +390,8 @@ libqgisHEADERS =							\
 		qgsproviderregistry.h				\
 		qgsrangerenderitem.h				\
 		qgsrasterlayer.h					\
+		qgsrasterlayerstats.h					\
+		qgsrasterpyramid.h					\
 		qgsrect.h							\
 		qgsrenderer.h						\
 		qgsrenderitem.h						\
