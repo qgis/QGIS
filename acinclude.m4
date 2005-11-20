@@ -221,7 +221,7 @@ if test $QT_MAJOR = "4" ; then
     AC_MSG_ERROR([*** moc must be in path])
   fi
   # uic3 is the Qt user interface compiler in Qt3 legacy mode
-  AC_CHECK_PROG(UIC, uic3, $QTDIR/bin/uic3, , $QTDIR/bin)
+  AC_PATH_PROG(UIC, uic3, , [$PATH:$QTDIR/bin])
   if test x$UIC = x ; then
     AC_MSG_ERROR([*** uic3 must be in path])
   fi
@@ -681,4 +681,4 @@ fi
 
 AM_CONDITIONAL([USE_PYTHON], [test "$ac_use_python" = "yes"])
 ])
-dnl 
+dnl
