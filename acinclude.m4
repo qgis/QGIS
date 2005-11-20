@@ -300,7 +300,7 @@ case "${host}" in
     ;;
   *)
     # determin static or dynamic -- prefer dynamic
-    QT_IS_DYNAMIC=`ls $QTDIR/${_lib}/libqt*.so $QTDIR/${_lib}/libQtCore.so 2> /dev/null`
+    QT_IS_DYNAMIC=`ls $QTDIR/${_lib}/libqt*.so $QTDIR/${_lib}/libQtCore.so /usr/lib/libQtCore.so 2> /dev/null`
     if test "x$QT_IS_DYNAMIC" = x;  then
       QT_IS_STATIC=`ls $QTDIR/${_lib}/libqt*.a $QTDIR/${_lib}/libQtCore.a 2> /dev/null`
       if test "x$QT_IS_STATIC" = x; then
@@ -330,7 +330,7 @@ case "${host}" in
       QT_LIB="-lqte-mt"
       QT_IS_MT="yes"
       QT_IS_EMBEDDED="yes"
-    elif test "x`ls $QTDIR/${_lib}/libQtCore.* 2> /dev/null`" != x ; then
+    elif test "x`ls $QTDIR/${_lib}/libQtCore.* /usr/lib/libQtCore.* 2> /dev/null`" != x ; then
       QT_LIB="-lQtCore -lQt3Support -lQtGui -lQtNetwork"
 QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QTINC"
       QT_IS_MT="yes"
