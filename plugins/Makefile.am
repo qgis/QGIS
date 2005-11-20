@@ -21,12 +21,13 @@ SUBDIRS = $(GEOPROCESSING) \
 		$(GRASS) \
 		$(COMMUNITY) \
 		delimited_text \
-#		georeferencer \
 		gps_importer \
 		grid_maker \
 		north_arrow \
 		copyright_label \
 		scale_bar
+		
+# georefencer was removed from the SUBDIRS list until Qt4 UI issues are resolved
 
 EXTRA_DIST = \
 		example/exampleplugin.cpp \
