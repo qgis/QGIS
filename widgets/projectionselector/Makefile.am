@@ -21,7 +21,7 @@ endif
 %.h: %.ui 
 	$(UIC) -o $@ $<
 if HAVE_QT4
-	../tools/qgis-qt3to4.pl -uic $@
+	../../tools/qgis-qt3to4.pl -uic $@
 endif
 
 if !NO_UIC_IMPLEMENTATIONS
