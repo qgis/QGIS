@@ -216,6 +216,11 @@ void QgsGeometry::setGeos(geos::Geometry* geos)
 
 QgsPoint QgsGeometry::closestVertex(const QgsPoint& point) const
 {
+  if(mDirtyWkb)
+    {
+      exportGeosToWkb();
+    }
+
     if(mGeometry)
     {
 	int wkbType;
@@ -447,6 +452,7 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
         {
           // Put in the new GEOS geometry
           setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(new_sequence) ) );
+	  mDirtyWkb = true;
           return TRUE;
         }
         else
@@ -577,6 +583,7 @@ bool QgsGeometry::moveVertexAt(double x, double y,
         {
           // Put in the new GEOS geometry
           setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(new_sequence) ) );
+	  mDirtyWkb = true;
           return TRUE;
         }
         else
@@ -699,6 +706,7 @@ bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
         {
           // Put in the new GEOS geometry
           setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(new_sequence) ) );
+	  mDirtyWkb = true;
           return TRUE;
         }
         else
@@ -986,7 +994,7 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 
   QgsPoint minDistPoint;
 
-  int wkbType;
+  int wkbType; 
   double *thisx,*thisy;
   double *prevx,*prevy;
   double testdist;
@@ -994,6 +1002,11 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
   // Initialise some stuff
   beforeVertex.clear();
   sqrDist   = std::numeric_limits<double>::max();
+
+  if(mDirtyWkb) //convert latest geos to mGeometry
+    {
+      exportGeosToWkb();
+    }
 
 // TODO: Convert this to a GEOS comparison not a WKB comparison.
   if (mGeometry)
