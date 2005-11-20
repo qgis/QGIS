@@ -31,14 +31,12 @@ public:
 public slots:
     void openPointDialog();
     void loadLayer(QString);
-    
 private:
     
+   QString mProjBehaviour, mProjectSRS;
 signals:
    void drawRasterLayer(QString);
    void drawVectorLayer(QString,QString,QString);
-   
-   QString mProjBehaviour, mProjectSRS;
    int mProjectSRSID;
 };
 
