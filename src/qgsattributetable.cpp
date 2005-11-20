@@ -398,7 +398,7 @@ void QgsAttributeTable::copySelectedRows()
     }
   }
 #ifdef QGISDEBUG
-  std::cerr << "Selected data in table is:\n" << toClipboard;
+  std::cerr << "Selected data in table is:\n" << toClipboard.data();
 #endif
   // And then copy to the clipboard
   QClipboard* clipboard = QApplication::clipboard();

@@ -745,8 +745,8 @@ void QgsGrassEdit::closeEdit(void)
                + mapset + "/" + map + "/" + layers[i]; 
 
 #ifdef QGISDEBUG
-         std::cerr << "layer = " << layers[i] << std::endl;
-         std::cerr << "uri = " << uri << std::endl;
+         std::cerr << "layer = " << layers[i].local8Bit().data() << std::endl;
+         std::cerr << "uri = " << uri.local8Bit().data() << std::endl;
 #endif
          mIface->addVectorLayer( uri, layers[i], "grass");
      }

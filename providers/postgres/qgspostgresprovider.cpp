@@ -157,8 +157,8 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
 
 #ifdef QGISDEBUG
   std::cerr << "Geometry column is: " << geometryColumn.toLocal8Bit().data() << std::endl;
-  std::cerr << "Schema is: " + mSchemaName.toLocal8Bit().data() << std::endl;
-  std::cerr << "Table name is: " + mTableName.toLocal8Bit().data() << std::endl;
+  std::cerr << "Schema is: " << mSchemaName.toLocal8Bit().data() << std::endl;
+  std::cerr << "Table name is: " << mTableName.toLocal8Bit().data() << std::endl;
 #endif
   //QString logFile = "./pg_provider_" + mTableName + ".log";
   //pLog.open((const char *)logFile);
@@ -1083,7 +1083,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
     }
     else
       {
-	std::cerr << "Relation " << schemaName << '.' << tableName
+	std::cerr << "Relation " << schemaName.toLocal8Bit().data() << '.' << tableName.toLocal8Bit().data()
 		  << " doesn't exist in the pg_class table. This "
 		  << "shouldn't happen and is odd.\n";
 	assert(0);
@@ -1265,14 +1265,14 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
     temp.column_type      = PQgetvalue(result, i, 7);
 
 #ifdef QGISDEBUG
-    std::cout << temp.view_schema << "." 
-	      << temp.view_name << "."
-	      << temp.view_column_name << " <- "
-	      << temp.table_schema << "."
-	      << temp.table_name << "."
-	      << temp.column_name << " is a '"
-	      << temp.table_type << "' of type "
-	      << temp.column_type << '\n';
+    std::cout << temp.view_schema.data() << "." 
+	      << temp.view_name.data() << "."
+	      << temp.view_column_name.data() << " <- "
+	      << temp.table_schema.data() << "."
+	      << temp.table_name.data() << "."
+	      << temp.column_name.data() << " is a '"
+	      << temp.table_type.data() << "' of type "
+	      << temp.column_type.data() << '\n';
 #endif
     columnRelations[temp.view_schema + '.' +
 		    temp.view_name + '.' +
@@ -1307,9 +1307,9 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
     {
 #ifdef QGISDEBUG
       std::cerr << "Searching for the column that " 
-		<< ii->second.table_schema  << '.'
-		<< ii->second.table_name << "."
-		<< ii->second.column_name << " refers to.\n";
+		<< ii->second.table_schema.data()  << '.'
+		<< ii->second.table_name.data() << "."
+		<< ii->second.column_name.data() << " refers to.\n";
 #endif
 
       ii = columnRelations.find(QString(ii->second.table_schema + '.' +
@@ -1322,9 +1322,9 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
     if (count >= max_loops)
     {
       std::cerr << "  Search for the underlying table.column for view column "
-		<< ii->second.table_schema << '.' 
-		<< ii->second.table_name << '.'
-		<< ii->second.column_name << " failed: exceeded maximum "
+		<< ii->second.table_schema.data() << '.' 
+		<< ii->second.table_name.data() << '.'
+		<< ii->second.column_name.data() << " failed: exceeded maximum "
 		<< "interation limit (" << max_loops << ").\n";
       cols[ii->second.view_column_name] = SRC("","","");
     }
@@ -1337,9 +1337,9 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
 
 #ifdef QGISDEBUG
       std::cerr << "  " << PQgetvalue(result, i, 0) << " derives from " 
-		<< ii->second.table_schema << "."
-		<< ii->second.table_name << "."
-		<< ii->second.column_name << '\n';
+		<< ii->second.table_schema.data() << "."
+		<< ii->second.table_name.data() << "."
+		<< ii->second.column_name.data() << '\n';
 #endif
     }
   }

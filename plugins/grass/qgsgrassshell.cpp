@@ -248,7 +248,7 @@ void QgsGrassShell::keyPressEvent( QKeyEvent * e  )
     char c = (char) e->ascii();
 #ifdef QGISDEBUG
     std::cerr << "c = " << (int)c << " key = " << e->key() 
-	      << " text = " << e->text() << std::endl;
+	      << " text = " << e->text().local8Bit().data() << std::endl;
 #endif
     s[0] = c;
     length = 1;
@@ -336,11 +336,11 @@ void QgsGrassShell::printStdout()
 	if ( c > '\037' && c != '\177' ) // control characters
 	{
 	    s = (char) c;
-	    std::cerr << s;
+	    std::cerr << s.local8Bit().data();
 	}
 	else
 	{
-	    std::cerr << "(c=" << QString::number(c,8) << ")";
+	    std::cerr << "(c=" << QString::number(c,8).local8Bit().data() << ")";
 	}
     }
     std::cerr << "<--" << std::endl;
@@ -374,7 +374,7 @@ void QgsGrassShell::printStdout()
 	{
 	    int c = mStdoutBuffer[0];
 #ifdef QGISDEBUG
-	    std::cerr << "c = " << QString::number(c,8) << std::endl;
+	    std::cerr << "c = " << QString::number(c,8).local8Bit().data() << std::endl;
 #endif
 
 	    // control sequence
@@ -395,7 +395,7 @@ void QgsGrassShell::printStdout()
 		{
 		    int mlen = rx.matchedLength();
 #ifdef QGISDEBUG
-		    std::cerr << "ESC(set title): " << rx.cap(2) << std::endl;
+		    std::cerr << "ESC(set title): " << rx.cap(2).local8Bit().data() << std::endl;
 #endif
 		    mStdoutBuffer.remove ( 0, mlen+1 );
 		    found = true;
@@ -424,15 +424,15 @@ void QgsGrassShell::printStdout()
 			    {
 				int mode = -1;
 				switch ( rx.cap(2).toInt() )
-				{
-				    case 4 :
-					mode = Insert;
-					break;
+        {
+          case 4 :
+            mode = Insert;
+            break;
 
-				    default:
-		                        std::cerr << "ESC ignored: " << rx.cap(0) << std::endl;
-					break;
-				}
+          default:
+            std::cerr << "ESC ignored: " << rx.cap(0).local8Bit().data() << std::endl;
+            break;
+        }
 				if ( mode >= 0 )
 				{
 				    if ( final == 'l' )
@@ -453,7 +453,7 @@ void QgsGrassShell::printStdout()
 				}
 				else
 				{
-				    std::cerr << "ESC SGR ignored: " << rx.cap(0) << std::endl;
+				    std::cerr << "ESC SGR ignored: " << rx.cap(0).local8Bit().data() << std::endl;
 				}
 				break;
 
@@ -498,7 +498,7 @@ void QgsGrassShell::printStdout()
 				break;
 
 			    default:
-				std::cerr << "ESC ignored: " << rx.cap(0) << std::endl;
+				std::cerr << "ESC ignored: " << rx.cap(0).local8Bit().data() << std::endl;
 				break;
 			}
 			
@@ -513,7 +513,7 @@ void QgsGrassShell::printStdout()
 		    rx.setPattern ( "#(\\d)" ); 
 		    if ( rx.search ( mStdoutBuffer, 1 ) == 1 )
 		    {
-			std::cerr << "ESC ignored: " << rx.cap(0) << std::endl;
+			std::cerr << "ESC ignored: " << rx.cap(0).local8Bit().data() << std::endl;
 			mStdoutBuffer.remove ( 0, 3 );
 			found = true;
 		    }
@@ -525,7 +525,7 @@ void QgsGrassShell::printStdout()
 		    rx.setPattern ( "[A-z<>=]" ); 
 		    if ( rx.search ( mStdoutBuffer, 1 ) == 1 )
 		    {
-			std::cerr << "ESC ignored: " << rx.cap(0) << std::endl;
+			std::cerr << "ESC ignored: " << rx.cap(0).local8Bit().data() << std::endl;
 			mStdoutBuffer.remove ( 0, 2 );
 			found = true;
 		    }
@@ -537,7 +537,7 @@ void QgsGrassShell::printStdout()
 		if ( !found ) 
 		{
 		    // For now move forward
-		    std::cerr << "UNKNOWN ESC ignored: " << mStdoutBuffer.mid(1,5) << std::endl;
+		    std::cerr << "UNKNOWN ESC ignored: " << mStdoutBuffer.mid(1,5).data() << std::endl;
 		    mStdoutBuffer.remove ( 0, 1 );
 		}
 	    }
@@ -581,12 +581,12 @@ void QgsGrassShell::printStdout()
 			
 		    case '>' : // Keypad Numeric Mode 
 		        std::cerr << "Keypad Numeric Mode ignored: " 
-                                  << QString::number(c,8) << std::endl;
+                      << QString::number(c,8).local8Bit().data() << std::endl;
 			mStdoutBuffer.remove ( 0, 2 );
 			break;
 
 		    default : // unknown control, do nothing
-		        std::cerr << "UNKNOWN control char ignored: " << QString::number(c,8) << std::endl;
+		        std::cerr << "UNKNOWN control char ignored: " << QString::number(c,8).local8Bit().data() << std::endl;
 			mStdoutBuffer.remove ( 0, 1 );
 			break;
 		}
@@ -636,7 +636,7 @@ void QgsGrassShell::printStdout()
 	    if ( mlen > 0 ) // found error or warning
 	    {
 #ifdef QGISDEBUG
-		std::cerr << "MSG: " << msg << std::endl;
+		std::cerr << "MSG: " << msg.local8Bit().data() << std::endl;
 #endif
 
 		// Delete all previous empty paragraphs.
@@ -685,7 +685,7 @@ void QgsGrassShell::printStdout()
 	{
 	    QString out = mStdoutBuffer.left ( length ) ;
 #ifdef QGISDEBUG
-	    std::cerr << "TXT: '" << out << "'" << std::endl;
+	    std::cerr << "TXT: '" << out.local8Bit().data()<< "'" << std::endl;
 #endif
 	    
 	    insert ( QString::fromLocal8Bit( out ) );

@@ -237,8 +237,8 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
 	QString errmsg = "Cannot read module description (" + mXName + "):\n" + err + "\nat line "
 	                 + QString::number(line) + " column " + QString::number(column);
 	std::cerr << errmsg.toLocal8Bit().data() << std::endl;
-	std::cerr << gDescArray << std::endl;
-	std::cerr << errArray << std::endl;
+	std::cerr << QString(gDescArray).local8Bit().data() << std::endl;
+	std::cerr << QString(errArray).local8Bit().data() << std::endl;
 	QMessageBox::warning( 0, "Warning", errmsg );
 	return;
     }

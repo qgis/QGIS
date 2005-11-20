@@ -122,7 +122,8 @@ void QgsGeorefPlugin::initGui()
   mMenuId = pluginMenu->insertItem(QIcon(iconset),"&Georeferencer", this, SLOT(run()));
 
   // Create the action for tool
-  mQActionPointer = new QAction("Georeferencer", iconset, "&icon",0, this, "run");
+  //mQActionPointer = new QAction("Georeferencer", iconset, "&icon",0, this, "run");
+  mQActionPointer = new QAction(iconset, "&icon",0, this, "run");
   // Connect the action to the run
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the to the toolbar
