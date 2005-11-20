@@ -111,12 +111,13 @@ qgisHEADERS =	\
 		qgspluginregistry.h				\
 		qgspolygonsymbol.h				\
 		qgsproject.h					\
-		qgsprojectproperties.h				\
-		qgsprovidermetadata.h				\
-		qgsrasterdataprovider.h				\
-		qgsrasterlayerproperties.h			\
-                qgssearchstring.h				\
-                qgssearchtreenode.h				\
+		qgsprojectproperties.h			\
+		qgsprovidermetadata.h			\
+		qgsrasterdataprovider.h			\
+		qgsrasterlayerproperties.h		\
+		qgsrasterbandstats.h           \
+        qgssearchstring.h				\
+        qgssearchtreenode.h				\
 		qgsserversourceselect.h				\
 		qgssisydialog.h					\
 		qgssvgcache.h					\
@@ -390,7 +391,7 @@ libqgisHEADERS =							\
 		qgsproviderregistry.h				\
 		qgsrangerenderitem.h				\
 		qgsrasterlayer.h					\
-		qgsrasterlayerstats.h					\
+		qgsrasterbandstats.h					\
 		qgsrasterpyramid.h					\
 		qgsrect.h							\
 		qgsrenderer.h						\
