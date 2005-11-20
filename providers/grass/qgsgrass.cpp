@@ -170,9 +170,9 @@ QString QgsGrass::openMapset ( QString gisdbase, QString location, QString mapse
 {
 #ifdef QGISDEBUG
     std::cerr << "QgsGrass::openMapset" << std::endl;
-    std::cerr << "gisdbase = " << gisdbase << std::endl;
-    std::cerr << "location = " << location << std::endl;
-    std::cerr << "mapset = " << mapset << std::endl;
+    std::cerr << "gisdbase = " << gisdbase.local8Bit().data() << std::endl;
+    std::cerr << "location = " << location.local8Bit().data() << std::endl;
+    std::cerr << "mapset = " << mapset.local8Bit().data() << std::endl;
 #endif
 
     QString mapsetPath = gisdbase + "/" + location + "/" + mapset;
@@ -236,8 +236,8 @@ QString QgsGrass::openMapset ( QString gisdbase, QString location, QString mapse
     mGisrc = mTmp + "/gisrc";
 
 #ifdef QGISDEBUG
-    std::cerr << "globalGisrc = " << globalGisrc << std::endl;
-    std::cerr << "mGisrc = " << mGisrc << std::endl;
+    std::cerr << "globalGisrc = " << globalGisrc.local8Bit().data() << std::endl;
+    std::cerr << "mGisrc = " << mGisrc.local8Bit().data() << std::endl;
 #endif
 
     QFile out ( mGisrc );
@@ -250,10 +250,12 @@ QString QgsGrass::openMapset ( QString gisdbase, QString location, QString mapse
 
     QFile in ( globalGisrc );
     QString line;
+    char buf[1000];
     if ( in.open( QIODevice::ReadOnly ) ) 
     {
-	while ( in.readLine( line, 1000 ) != -1 ) 
+	while ( in.readLine( buf, 1000 ) != -1 ) 
 	{
+      line = buf;
 	    if ( line.contains("GISDBASE:") || 
 		 line.contains("LOCATION_NAME:") ||
 	         line.contains("MAPSET:") )
@@ -344,13 +346,13 @@ QString QgsGrass::closeMapset ( )
 		dir.remove(dir[i]); 
 		if ( dir.remove(dir[i]) )
 		{
-		    std::cerr << "Cannot remove temporary file " << dir[i] << std::endl;
+		    std::cerr << "Cannot remove temporary file " << dir[i].local8Bit().data() << std::endl;
 		}
 	    }
              
             if ( !dir.rmdir(mTmp) )
             {
-                std::cerr << "Cannot remove temporary directory " << mTmp << std::endl;
+                std::cerr << "Cannot remove temporary directory " << mTmp.local8Bit().data() << std::endl;
             }
         } 
     }

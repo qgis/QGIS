@@ -61,7 +61,7 @@ bool QgsGrassNewMapset::mRunning = false;
 QgsGrassNewMapset::QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface, 
 	QgsGrassPlugin *plugin,
     QWidget * parent, const char * name, Qt::WFlags f )
-:QgsGrassNewMapsetBase ( parent, name, f )
+:QgsGrassNewMapsetBase ( parent, name) //XXX removed Wflags f from this call to the base class constructor
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassNewMapset()" << std::endl;
@@ -422,7 +422,7 @@ void QgsGrassNewMapset::setGrassProjection()
     if ( !proj4.isNull() ) 
     {
 #ifdef QGISDEBUG
-	std::cerr << "proj4 = " << proj4 << std::endl;
+	std::cerr << "proj4 = " << proj4.local8Bit().data() << std::endl;
 #endif
 		    
 	OGRSpatialReferenceH hSRS = NULL;
@@ -746,7 +746,7 @@ void QgsGrassNewMapset::loadRegions()
 
     QString path = appDir + "/share/qgis/grass/locations.gml";
 #ifdef QGISDEBUG
-    std::cerr << "load:" << path << std::endl;
+    std::cerr << "load:" << path.local8Bit().data() << std::endl;
 #endif
 
     QFile file ( path );
@@ -1355,8 +1355,9 @@ void QgsGrassNewMapset::createMapset()
 
         //QTextStream stream( &file );
         QString line;
-        while ( in.readLine( line, 100 ) != -1 ) {
-	    stream << line;
+        char buf[100];
+        while ( in.readLine( buf, 100 ) != -1 ) {
+	    stream << buf;
         }
 	
         in.close();
@@ -1424,7 +1425,7 @@ void QgsGrassNewMapset::keyPressEvent ( QKeyEvent * e )
 void QgsGrassNewMapset::pageSelected( const QString & title )
 {
 #ifdef QGISDEBUG
-    std::cerr << "QgsGrassNewMapset::pageSelected(): " << title << std::endl;
+    std::cerr << "QgsGrassNewMapset::pageSelected(): " << title.local8Bit().data() << std::endl;
 #endif
 
     int index = indexOf ( currentPage () );

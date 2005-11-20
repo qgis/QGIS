@@ -34,10 +34,10 @@ public slots:
 private:
     
    QString mProjBehaviour, mProjectSRS;
+   int mProjectSRSID;
 signals:
    void drawRasterLayer(QString);
    void drawVectorLayer(QString,QString,QString);
-   int mProjectSRSID;
 };
 
 #endif

@@ -1105,7 +1105,7 @@ void QgsGrassMapcalc::load()
         QDomElement e = node.toElement();
         if( e.isNull() ) continue;
 
-	std::cerr << "id = " << e.attribute("id","?") << std::endl;
+	std::cerr << "id = " << e.attribute("id","?").local8Bit().data() << std::endl;
 	int id = e.attribute("id","0").toInt();
 	int x = e.attribute("x","0").toInt();
 	int y = e.attribute("y","0").toInt();
@@ -1185,7 +1185,7 @@ void QgsGrassMapcalc::load()
         QDomElement e = node.toElement();
         if( e.isNull() ) continue;
 
-	std::cerr << "id = " << e.attribute("id","?") << std::endl;
+	std::cerr << "id = " << e.attribute("id","?").local8Bit().data() << std::endl;
 	int id = e.attribute("id","0").toInt();
 	if ( id >= mNextId ) mNextId = id+1;
 
@@ -1381,8 +1381,12 @@ void QgsGrassMapcalcObject::draw( QPainter & painter )
 	QFontMetrics metrics ( mFont );
 	for ( int i = 0; i < mFunction.inputLabels().size(); i++ ) 
 	{
-            QStringList::Iterator it = mFunction.inputLabels().at(i); 
+    /*
+      QStringList::Iterator it = mFunction.inputLabels().at(i); 
 	    QString l = *it;
+      */
+    QString l = mFunction.inputLabels().at(i); 
+
 
 	    int lx = mRect.x()+mSpace;
 	    int ly = mRect.y() +mSpace + i*(mTextHeight+mSpace);
@@ -1438,8 +1442,11 @@ void QgsGrassMapcalcObject::resetSize()
     {
 	for ( int i = 0; i < mFunction.inputLabels().size(); i++ ) 
 	{
+    /*
             QStringList::Iterator it = mFunction.inputLabels().at(i); 
 	    QString l = *it;
+      */
+      QString l = mFunction.inputLabels().at(i); 
 	    int len = metrics.width ( l );
 	    if ( len > mInputTextWidth ) mInputTextWidth = len;
 	}
@@ -1682,7 +1689,7 @@ QString QgsGrassMapcalcObject::expression()
 	
     exp.append ( ")" );
 
-    std::cerr << "exp = " << exp << std::endl;
+    std::cerr << "exp = " << exp.local8Bit().data() << std::endl;
     return exp;
 }
 

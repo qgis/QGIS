@@ -53,7 +53,7 @@ static struct EmbedImage {
     { 0, 0, 0, 0, 0, 0, 0, 0 }
 };
 
-static const QImage& qembed_findImage( const QString& name )
+static const QPixmap& qembed_findImage( const QString& name )
 {
     static Q3Dict<QImage> dict;
     QImage* img = dict.find( name );
@@ -75,10 +75,10 @@ static const QImage& qembed_findImage( const QString& name )
 	}
 	if ( !img ) {
 	    static QImage dummy;
-	    return dummy;
+	    return QPixmap::fromImage(dummy);
 	}
     }
-    return *img;
+    return QPixmap::fromImage(*img);
 }
 
 #endif
