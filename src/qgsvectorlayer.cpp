@@ -2933,9 +2933,18 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
   selectrect = inverseProjectRect(selectrect);
   dataProvider->reset();
   dataProvider->select(&selectrect);
+
+  //go to through the features reported by the spatial filter of the provider
   while ((fet = dataProvider->getNextFeature(false)))
   {
-    vertexFeature=fet->geometry()->closestVertex(point);
+    if(mChangedGeometries.find(fet->featureId()) != mChangedGeometries.end())//if geometry has been changed, use the new geometry
+      {
+	vertexFeature = mChangedGeometries[fet->featureId()].closestVertex(point);
+      }
+    else
+      {
+	vertexFeature=fet->geometry()->closestVertex(point);
+      }
     minvertexdist=vertexFeature.sqrDist(point.x(),point.y());
     if(minvertexdist<mindist)
     {
@@ -2944,18 +2953,40 @@ bool QgsVectorLayer::snapPoint(QgsPoint& point, double tolerance)
       mindist=minvertexdist;
     }
   }
+
   //also go through the not commited features
   for(std::vector<QgsFeature*>::iterator iter=mAddedFeatures.begin();iter!=mAddedFeatures.end();++iter)
   {
-      vertexFeature=(*iter)->geometry()->closestVertex(point);
-      minvertexdist=vertexFeature.sqrDist(point.x(),point.y());
-      if(minvertexdist<mindist)
+    if(mChangedGeometries.find((*iter)->featureId()) != mChangedGeometries.end())//use the changed geometry
       {
-    mindistx=vertexFeature.x();
-    mindisty=vertexFeature.y();
-    mindist=minvertexdist;
+	vertexFeature = mChangedGeometries[(*iter)->featureId()].closestVertex(point);
+      }
+    else
+      {
+	vertexFeature=(*iter)->geometry()->closestVertex(point);
+      }
+    minvertexdist=vertexFeature.sqrDist(point.x(),point.y());
+    if(minvertexdist<mindist)
+      {
+	mindistx=vertexFeature.x();
+	mindisty=vertexFeature.y();
+	mindist=minvertexdist;
       }
   }
+  
+  //and also go through the changed geometries, because the spatial filter of the provider did not consider feature changes
+  for(std::map<int, QgsGeometry>::const_iterator iter = mChangedGeometries.begin(); iter != mChangedGeometries.end(); ++iter)
+    {
+      vertexFeature = iter->second.closestVertex(point);
+      minvertexdist=vertexFeature.sqrDist(point.x(),point.y());
+      if(minvertexdist<mindist)
+	{
+	  mindistx=vertexFeature.x();
+	  mindisty=vertexFeature.y();
+	  mindist=minvertexdist;
+	}
+    }
+
   point.setX(mindistx);
   point.setY(mindisty);
 
@@ -3156,6 +3187,10 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
     minDistSegPoint = feature->geometry()->closestSegmentWithContext(origPoint, 
                                                                      beforeVertexTemp,
                                                                      testSqrDist);
+
+#ifdef QGISDEBUG
+    qWarning(beforeVertexTemp.toString());
+#endif
 
     if (testSqrDist < minSqrDist)
     {
