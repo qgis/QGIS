@@ -18,6 +18,8 @@ email                : tim@linfiniti.com
 
 #include "qgsrasterlayerproperties.h"
 #include "qgslayerprojectionselector.h"
+#include "qgsrasterbandstats.h"
+#include "qgsrasterpyramid.h"
 #include "qgsproject.h"
 #include <qlabel.h>
 #include <qapplication.h>

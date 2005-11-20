@@ -1,3 +1,6 @@
+#ifndef QGSRASTERBANDSTATS
+#define QGSRASTERBANDSTATS
+
 #include <QString>
 #include <Q3ValueVector>
 
@@ -44,4 +47,4 @@ class QgsRasterBandStats
     /** Color table */
     QgsColorTable colorTable;
 };
-
+#endif
