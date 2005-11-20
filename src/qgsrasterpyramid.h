@@ -1,3 +1,5 @@
+#ifndef QGSRASTERPYRAMID
+#define QGSRASTERPYRAMID
 /** \brief This struct is used to store pyramid info for the raster layer. */
 class QgsRasterPyramid
 {
@@ -12,4 +14,4 @@ class QgsRasterPyramid
   bool existsFlag;
 
 };
-
+#endif

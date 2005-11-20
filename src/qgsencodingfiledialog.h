@@ -17,6 +17,7 @@
 #define QGSENCODINGFILEDIALOG_H
 
 #include "qgsvectordataprovider.h"
+#include <QComboBox>
 #include <q3combobox.h>
 #include <q3filedialog.h>
 
