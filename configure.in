@@ -435,6 +435,7 @@ AC_CONFIG_FILES([
   Makefile 
   src/Makefile 
   src/legend/Makefile
+  src/raster/Makefile
   src/svg/Makefile
   src/svg/biology/Makefile
   src/svg/geometric/Makefile

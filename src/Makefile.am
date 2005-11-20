@@ -12,7 +12,7 @@ if HAVE_QTMAC
 MAC = mac
 endif
 
-SUBDIRS = legend svg images themes resources $(MAC)
+SUBDIRS = legend svg images themes resources raster $(MAC)
 
 if !HAVE_QTMAC
 PREFIX=-DPREFIX=\"$(prefix)\"
@@ -115,7 +115,6 @@ qgisHEADERS =	\
 		qgsprovidermetadata.h			\
 		qgsrasterdataprovider.h			\
 		qgsrasterlayerproperties.h		\
-		qgsrasterbandstats.h           \
         qgssearchstring.h				\
         qgssearchtreenode.h				\
 		qgsserversourceselect.h				\
@@ -337,13 +336,13 @@ BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) $(
 					$(postgresMOC) $(postgresUIMOC) $(postgresUIHEADERS) $(postgresUISOURCES)
 
 
-qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) $(PYTHON_LIB) -lproj -lsqlite3 libqgis.la
+qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) $(PYTHON_LIB) -lproj -lsqlite3 libqgis.la 
 if HAVE_QTMAC
 qgis_LDFLAGS = -framework ApplicationServices
 else
 qgis_LDFLAGS = -rdynamic
 endif
-qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS)  $(HAVE_PYTHON) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) -I../widgets/projectionselector/ -I./legend/
+qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS)  $(HAVE_PYTHON) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) -I../widgets/projectionselector/ -I./legend/ -I./raster/
 
 
 libqgisHEADERS =							\
@@ -391,8 +390,6 @@ libqgisHEADERS =							\
 		qgsproviderregistry.h				\
 		qgsrangerenderitem.h				\
 		qgsrasterlayer.h					\
-		qgsrasterbandstats.h					\
-		qgsrasterpyramid.h					\
 		qgsrect.h							\
 		qgsrenderer.h						\
 		qgsrenderitem.h						\
@@ -535,10 +532,10 @@ nodist_libqgis_la_SOURCES = $(libqgis_la_MOC) $(libqgis_la_UISOURCES) $(libqgis_
 BUILT_SOURCES += $(libqgis_la_MOC) $(libqgis_la_UIMOC) $(libqgis_la_UIHEADERS) $(libqgis_la_UISOURCES)
 
 
-libqgis_la_LIBADD = legend/libqgis_legend.la $(QT_LDADD) $(GEOS_LDADD) $(GDAL_LDADD) $(PYTHON_LIB) -lsqlite3
+libqgis_la_LIBADD = raster/libqgsraster.la legend/libqgis_legend.la $(QT_LDADD) $(GEOS_LDADD) $(GDAL_LDADD) $(PYTHON_LIB) -lsqlite3
 libqgis_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
 
-libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) $(HAVE_PYTHON) -I../widgets/projectionselector/ -I./legend/
+libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) $(HAVE_PYTHON) -I../widgets/projectionselector/ -I./legend/ -I./raster/
 
 ## for installing headers in $(includedir)/qgis
 pkginclude_HEADERS = $(qgisHEADERS) \
