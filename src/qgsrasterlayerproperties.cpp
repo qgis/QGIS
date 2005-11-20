@@ -45,7 +45,7 @@ email                : tim@linfiniti.com
 #include <q3pointarray.h>
 #include <qrect.h>
 #include <qglobal.h>
-
+#include <Q3ValueList>
 const char * const ident = 
   "$Id$";
 
@@ -219,8 +219,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *pa
   // Only do pyramids if dealing directly with GDAL.
   if (!(rasterLayer->usesProvider()))
   {
-    RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
-    RasterPyramidList::iterator myRasterPyramidIterator;
+    QgsRasterLayer::RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
+    QgsRasterLayer::RasterPyramidList::iterator myRasterPyramidIterator;
   
     for ( myRasterPyramidIterator=myPyramidList.begin();
             myRasterPyramidIterator != myPyramidList.end();
@@ -694,7 +694,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   // Go through the list marking any files that are selected in the listview
   // as true so that we can generate pyramids for them.
   //
-  RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
+  QgsRasterLayer::RasterPyramidList myPyramidList = rasterLayer->buildRasterPyramidList();
   for ( unsigned int myCounterInt = 0; myCounterInt < lbxPyramidResolutions->count(); myCounterInt++ )
   {
     Q3ListBoxItem *myItem = lbxPyramidResolutions->item( myCounterInt );
@@ -717,7 +717,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
 #endif
   QPixmap myPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
   QPixmap myNoPyramidPixmap(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
-  RasterPyramidList::iterator myRasterPyramidIterator;
+  QgsRasterLayer::RasterPyramidList::iterator myRasterPyramidIterator;
   for ( myRasterPyramidIterator=myPyramidList.begin();
           myRasterPyramidIterator != myPyramidList.end();
           ++myRasterPyramidIterator )
@@ -944,7 +944,7 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
           myIteratorInt <= myBandCountInt;
           ++myIteratorInt)
   {
-    RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
+    QgsRasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
     Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
     if ( myItem->isSelected() )
     {
@@ -997,7 +997,7 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
           myIteratorInt <= myBandCountInt;
           ++myIteratorInt)
   {
-    RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
+    QgsRasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
     //calculate the x axis min max
     if (myRasterBandStats.minValDouble < myXAxisMin || myIteratorInt==1)
     {
@@ -1107,7 +1107,7 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
     std::cout << "myLastBinWithData = " << myLastBinWithData << std::endl;
 #endif
 
-    RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(1);
+    QgsRasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(1);
     for (int myBin = 0; myBin < myLastBinWithData; myBin++)
     {
       double myBinValue = myRasterBandStats.histogramVector->at(myBin);
@@ -1177,7 +1177,7 @@ void QgsRasterLayerProperties::pbnHistRefresh_clicked()
             myIteratorInt <= myBandCountInt;
             ++myIteratorInt)
     {
-      RasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
+      QgsRasterBandStats myRasterBandStats = rasterLayer->getRasterBandStats(myIteratorInt);
       Q3ListBoxItem *myItem = lstHistogramLabels->item( myIteratorInt-1 );
       if ( myItem->isSelected() )
       {
