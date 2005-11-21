@@ -40,17 +40,17 @@ QgsSingleSymRenderer::QgsSingleSymRenderer(QGis::VectorType type)
     QgsSymbol* sy = new QgsSymbol(mVectorType);
   
     //random fill colors for points and polygons and pen colors for lines
-    int Qt::red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-    int Qt::green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-    int Qt::blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+    int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+    int green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+    int blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
 
     if (type == QGis::Line)
     {
-	sy->setColor(QColor(Qt::red, Qt::green, Qt::blue));
+	sy->setColor(QColor(red, green, blue));
     } 
     else
     {
-	sy->setFillColor(QColor(Qt::red, Qt::green, Qt::blue));
+	sy->setFillColor(QColor(red, green, blue));
 	sy->setFillStyle(Qt::SolidPattern);
 	sy->setColor(QColor(0, 0, 0));
     }
