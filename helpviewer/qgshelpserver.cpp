@@ -22,7 +22,7 @@
 // See qt/tools/assistant/ main.cpp and lib/qassistantclient.cpp (Qt 3.3.4).
 
 QgsHelpContextServer::QgsHelpContextServer(QObject *parent) :
-   Q3ServerSocket(0x7f000001, 0, 1, parent)
+   Q3ServerSocket(0x7f000001, 0, parent)
 {
   // Superclass listens for localhost connection
 }
