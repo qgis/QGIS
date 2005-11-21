@@ -18,7 +18,7 @@ QgsHelpViewer::~QgsHelpViewer()
 void QgsHelpViewer::setContext(const QString &contextId)
 {
 #ifndef WIN32
-  setWindowState(windowState() & ~WindowMinimized);
+  setWindowState(windowState() & ~Qt::WindowMinimized);
 #endif
   raise();
   setActiveWindow();
@@ -60,7 +60,7 @@ void QgsHelpViewer::loadContext(const QString &contextId)
           // there should only be one row returned
           // Set the browser text to the record from the database
           txtBrowser->setText((char*)sqlite3_column_text(ppStmt, 0));
-          setCaption(tr("Quantum GIS Help - ") +(char*)sqlite3_column_text(ppStmt, 1));
+          setCaption(tr("Quantum GIS Help - ") +QString((char*)sqlite3_column_text(ppStmt, 1)));
         }
       }
       else
