@@ -32,7 +32,7 @@
 
 //qt includes
 #include <qapplication.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qfile.h>
 #include <q3textedit.h>
 #include <q3buttongroup.h>

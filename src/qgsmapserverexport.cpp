@@ -22,7 +22,7 @@ email                : sherman at mrcc.com
 #include <qfileinfo.h>
 #include <qlineedit.h>
 #include <qcheckbox.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qmessagebox.h>
 #include <qcolor.h>
 #include <qregexp.h>

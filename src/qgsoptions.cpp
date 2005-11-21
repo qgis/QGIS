@@ -17,7 +17,7 @@
  ***************************************************************************/
 /* $Id$ */
 #include <qsettings.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qcheckbox.h>
 #include <qspinbox.h>
 #include <q3filedialog.h>

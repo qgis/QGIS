@@ -22,7 +22,7 @@
 #include <q3listbox.h>
 #include <qstringlist.h>
 #include <qlabel.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
 #include <qsettings.h>

@@ -17,7 +17,7 @@
 #include <qlineedit.h>
 #include <q3textedit.h>
 #include <qfile.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qpushbutton.h>
 #include <qsettings.h>
 #include <qfileinfo.h>

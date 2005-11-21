@@ -31,7 +31,7 @@
 #include <functional>
 //Added by qt3to4:
 #include <QDesktopWidget>
-#include <Q3GridLayout>
+#include <QGridLayout>
 #include <QPictureIO>
 #include <QKeyEvent>
 
@@ -378,7 +378,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, Qt::WFlags fl)
         gSplashScreen->setStatus(tr("Setting up QGIS gui..."));
         qApp->processEvents();
     }
-    Q3GridLayout *canvasLegendLayout = new Q3GridLayout(frameMain, 1, 1, 4, 6, "canvasLegendLayout");
+    QGridLayout *canvasLegendLayout = new QGridLayout(frameMain, 1, 1, 4, 6, "canvasLegendLayout");
     QSplitter *canvasLegendSplit = new QSplitter(frameMain);
     QSplitter *legendOverviewSplit = new QSplitter(Qt::Vertical,canvasLegendSplit);
 

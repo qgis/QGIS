@@ -20,7 +20,7 @@
 #include "qgsgrasydialog.h"
 #include "qspinbox.h"
 #include "qpushbutton.h"
-#include <q3combobox.h>
+#include <QComboBox>
 #include <q3listbox.h>
 #include "qgssymbologyutils.h"
 #include "qgsrangerenderitem.h"

@@ -24,7 +24,7 @@
 #include <q3listbox.h>
 #include <qstringlist.h>
 #include <qlabel.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qspinbox.h>
 #include <qpushbutton.h>
 #include <qmessagebox.h>
@@ -60,8 +60,8 @@
 #include <q3picture.h>
 #include <qimage.h>
 //Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3GridLayout>
+#include <QVBoxLayout>
+#include <QGridLayout>
 
 #include "../../src/qgis.h"
 #include "../../src/qgsmapcanvas.h"
@@ -132,7 +132,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     
     if ( mXName == "r.mapcalc" )
     {
-        Q3GridLayout *layout = new Q3GridLayout ( mTabWidget->page(0), 1, 1 );
+        QGridLayout *layout = new QGridLayout ( mTabWidget->page(0), 1, 1 );
 
         mOptions = new QgsGrassMapcalc ( mTools, this,
                mQgisApp, mIface, mTabWidget->page(0) );
@@ -247,7 +247,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
     // Read QGIS options and create controls
     QDomNode n = qDocElem.firstChild();
     //QVBoxLayout *layout = new QVBoxLayout ( mTabWidget->page(0), 10 );
-    Q3VBoxLayout *layout = new Q3VBoxLayout ( mParent, 10 );
+    QVBoxLayout *layout = new QVBoxLayout ( mParent, 10 );
     while( !n.isNull() ) {
 	QDomElement e = n.toElement();
 	if( !e.isNull() ) {

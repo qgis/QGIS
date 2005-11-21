@@ -21,7 +21,7 @@
 
 #include <qwidget.h>
 #include <qrect.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qdom.h>
 #include <q3canvas.h>
 #include <qpainter.h>

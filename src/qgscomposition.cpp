@@ -16,7 +16,7 @@
 #include <iostream>
 
 #include <qwidget.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qlineedit.h>
 #include <q3canvas.h>
 #include <qevent.h>

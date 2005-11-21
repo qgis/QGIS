@@ -18,7 +18,6 @@
 
 #include "qgsvectordataprovider.h"
 #include <QComboBox>
-#include <q3combobox.h>
 #include <q3filedialog.h>
 
 /**A file dialog which lets the user select the prefered encoding type for a data provider*/

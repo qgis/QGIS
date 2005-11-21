@@ -22,7 +22,7 @@
 #include <qsettings.h>
 #include <qlayout.h>
 #include <qlabel.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qglobal.h>
 
 #include "qgspastetransformations.h"

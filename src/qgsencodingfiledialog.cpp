@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsencodingfiledialog.h"
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qlabel.h>
 #include <qtextcodec.h>
 

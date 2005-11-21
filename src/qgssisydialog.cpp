@@ -27,7 +27,7 @@
 #include <q3buttongroup.h>
 #include <qbrush.h>
 #include <qpen.h>
-#include <q3combobox.h>
+#include <QComboBox>
 
 #include "qgsvectorlayer.h"
 #include "qgslegenditem.h"

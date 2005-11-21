@@ -27,7 +27,7 @@
 #include <qlabel.h>
 #include <q3table.h>
 #include <qlineedit.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qfontdatabase.h>
 #include <qradiobutton.h> 
 #include <qfont.h>
