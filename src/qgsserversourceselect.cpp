@@ -23,7 +23,7 @@
 #include <q3listbox.h>
 #include <q3listview.h>
 #include <qstringlist.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qpushbutton.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>

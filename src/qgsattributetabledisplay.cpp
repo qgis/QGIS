@@ -31,7 +31,7 @@
 #include <q3popupmenu.h>
 #include <qpushbutton.h> 
 #include <qtoolbutton.h> 
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qlineedit.h>
 #include <q3textedit.h>
 #include <qapplication.h>

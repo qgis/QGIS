@@ -17,7 +17,7 @@
 #include <qapplication.h>
 #include <qstringlist.h>
 #include <qlabel.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qpushbutton.h>
 #include <qmessagebox.h>
 #include <qpen.h>
@@ -39,7 +39,7 @@
 //Added by qt3to4:
 #include <QMouseEvent>
 #include <QKeyEvent>
-#include <Q3GridLayout>
+#include <QGridLayout>
 #include <QTextStream>
 
 #include "../../src/qgis.h"
@@ -85,7 +85,7 @@ QgsGrassMapcalc::QgsGrassMapcalc (
     mInputFrame->setMaximumHeight( mInputFrame->height() );
 
     mView = new QgsGrassMapcalcView ( this, mViewFrame);
-    Q3GridLayout *layout = new Q3GridLayout( mViewFrame, 1, 1 );
+    QGridLayout *layout = new QGridLayout( mViewFrame, 1, 1 );
     layout->addWidget( mView, 0, 0 );
     
     mCanvas = new Q3Canvas ( 400, 300 );

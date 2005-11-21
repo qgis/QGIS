@@ -20,7 +20,7 @@
 #include <q3table.h>
 #include <qstringlist.h>
 #include <qmessagebox.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qpushbutton.h>
 #include <qspinbox.h>
 #include <qcheckbox.h>

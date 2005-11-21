@@ -23,7 +23,7 @@
 #include <q3listbox.h>
 #include <qstringlist.h>
 #include <qlabel.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qspinbox.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
@@ -42,7 +42,7 @@
 //Added by qt3to4:
 #include <QKeyEvent>
 #include <QTextStream>
-#include <Q3GridLayout>
+#include <QGridLayout>
 #include <QCloseEvent>
 
 #include "../../src/qgis.h"
@@ -1447,7 +1447,7 @@ void QgsGrassNewMapset::pageSelected( const QString & title )
     	    // Projection selector
 	    if ( !mProjectionSelector )
 	    {
-		Q3GridLayout *projectionLayout = new Q3GridLayout( mProjectionFrame, 1, 1 );
+		QGridLayout *projectionLayout = new QGridLayout( mProjectionFrame, 1, 1 );
 	
 		mProjectionSelector = new QgsProjectionSelector ( mProjectionFrame, "Projection", 0 );
 		mProjectionSelector->setEnabled ( false );

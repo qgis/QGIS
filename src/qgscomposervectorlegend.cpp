@@ -22,7 +22,7 @@
 
 #include <qwidget.h>
 #include <qrect.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qcheckbox.h>
 #include <qdom.h>
 #include <q3canvas.h>

@@ -26,7 +26,7 @@ email                : tim@linfiniti.com
 #include <qpixmap.h>
 #include <qimage.h>
 #include <qslider.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qcheckbox.h>
 #include <q3groupbox.h>
 #include <qstring.h>

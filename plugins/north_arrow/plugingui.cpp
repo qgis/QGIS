@@ -24,7 +24,7 @@
 #include <qspinbox.h>
 #include <qslider.h>
 #include <qtabwidget.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qcheckbox.h>
 //standard includes
 #include <math.h>

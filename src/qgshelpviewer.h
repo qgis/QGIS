@@ -23,9 +23,9 @@
 #include <qvariant.h>
 #include <qdialog.h>
 //Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3HBoxLayout>
-#include <Q3GridLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
 #ifdef WIN32
 #include "qgshelpviewerbase.h"
 #else

@@ -24,7 +24,7 @@
 #include <qmessagebox.h>
 #include <qtabwidget.h>
 #include <qpoint.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qobject.h>
 #include <q3paintdevicemetrics.h>
 #include <qdom.h>
@@ -54,7 +54,7 @@
 //Added by qt3to4:
 #include <QResizeEvent>
 #include <QMoveEvent>
-#include <Q3GridLayout>
+#include <QGridLayout>
 #include <QPictureIO>
 
 #include <iostream>
@@ -69,11 +69,11 @@ QgsComposer::QgsComposer( QgisApp *qgis): QgsComposerBase()
   mView = new QgsComposerView ( this, mViewFrame);
   mPrinter = 0;
 
-  Q3GridLayout *l = new Q3GridLayout(mViewFrame, 1, 1 );
+  QGridLayout *l = new QGridLayout(mViewFrame, 1, 1 );
   l->addWidget( mView, 0, 0 );
 
-  mCompositionOptionsLayout = new Q3GridLayout( mCompositionOptionsFrame, 1, 1 );
-  mItemOptionsLayout = new Q3GridLayout( mItemOptionsFrame, 1, 1 );
+  mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame, 1, 1 );
+  mItemOptionsLayout = new QGridLayout( mItemOptionsFrame, 1, 1 );
 
   mCompositionNameComboBox->insertItem( "Map 1" );
 

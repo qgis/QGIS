@@ -26,11 +26,11 @@
 #include "qgscomposerview.h"
 #include "qgscomposition.h"
 //Added by qt3to4:
-#include <Q3GridLayout>
+#include <QGridLayout>
 #include <QMoveEvent>
 #include <QResizeEvent>
 
-class Q3GridLayout;
+class QGridLayout;
 class QPrinter;
 class QDomNode;
 class QDomDocument;
@@ -171,10 +171,10 @@ private:
     bool mFirstTime;
 
     //! Layout 
-    Q3GridLayout *mCompositionOptionsLayout;
+    QGridLayout *mCompositionOptionsLayout;
 
     //! Layout
-    Q3GridLayout *mItemOptionsLayout;
+    QGridLayout *mItemOptionsLayout;
 };
 
 #endif

@@ -21,7 +21,7 @@
 #include <q3textedit.h>
 #include <qlabel.h>
 #include <q3listview.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qcheckbox.h>
 #include <qtextstream.h>
 #include <q3table.h>
@@ -42,7 +42,7 @@
 #include "qgsdlgvectorlayerproperties.h"
 #include "qgsvectordataprovider.h"
 //Added by qt3to4:
-#include <Q3VBoxLayout>
+#include <QVBoxLayout>
 #ifdef HAVE_POSTGRESQL
 #include "../providers/postgres/qgspostgresprovider.h"
 #endif
@@ -77,13 +77,13 @@ QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr,
       mRendererDialog(0)
 {
   // Create the Label dialog tab
-  Q3VBoxLayout *layout = new Q3VBoxLayout( labelOptionsFrame );
+  QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
   labelDialog = new QgsLabelDialog ( layer->label(), labelOptionsFrame);
   layout->addWidget( labelDialog );
 
   // Create the Actions dialog tab
   QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
-  Q3VBoxLayout *actionLayout = new Q3VBoxLayout( actionOptionsFrame );
+  QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
   std::vector<QgsField> fields = dp->fields();
   actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields, 
                                                 actionOptionsFrame );

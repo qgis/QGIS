@@ -8,7 +8,7 @@
 *****************************************************************************/
 #include <qsettings.h>
 #include <q3filedialog.h>
-#include <q3combobox.h>
+#include <QComboBox>
 
 #include "qgssvgcache.h"
 

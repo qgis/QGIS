@@ -24,7 +24,7 @@
 #include <q3listbox.h>
 #include <qstringlist.h>
 #include <qlabel.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qspinbox.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>

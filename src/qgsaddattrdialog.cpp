@@ -17,7 +17,7 @@
 
 #include "qgsaddattrdialog.h"
 #include "qgsvectordataprovider.h"
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qlineedit.h>
 
 QgsAddAttrDialog::QgsAddAttrDialog(QgsVectorDataProvider* provider): QgsAddAttrDialogBase(), mDataProvider(provider)

@@ -17,7 +17,7 @@
 //qt includes
 #include <qapplication.h>
 #include <qcheckbox.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qeventloop.h>
 #include <qfileinfo.h>
 #include <q3process.h>

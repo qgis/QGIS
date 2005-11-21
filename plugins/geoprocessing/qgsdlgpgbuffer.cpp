@@ -21,7 +21,7 @@
 #include <qlineedit.h>
 #include <qlabel.h>
 #include <qcheckbox.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qvalidator.h>
 #include "qgsdlgpgbuffer.h"
 #include <qspinbox.h>

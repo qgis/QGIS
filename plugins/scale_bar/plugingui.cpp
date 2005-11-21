@@ -10,7 +10,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "plugingui.h"
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qspinbox.h> 
 #include <qcheckbox.h> 
 

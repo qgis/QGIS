@@ -32,7 +32,7 @@
 #include <qregexp.h>
 #include <qstring.h>
 #include <q3urloperator.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <q3progressdialog.h>
 #include <qpushbutton.h>
 #include <qmessagebox.h>

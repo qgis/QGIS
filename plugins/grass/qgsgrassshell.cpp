@@ -26,7 +26,7 @@
 
 #include "qgsgrassshell.h"
 //Added by qt3to4:
-#include <Q3GridLayout>
+#include <QGridLayout>
 #include <QKeyEvent>
 #include <QResizeEvent>
 #include <QMouseEvent>
@@ -54,7 +54,7 @@ QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools,
 {
     mValid = false;
 
-    Q3GridLayout *layout = new Q3GridLayout( mTextFrame, 1, 1 );
+    QGridLayout *layout = new QGridLayout( mTextFrame, 1, 1 );
     mText = new QgsGrassShellText( this, mTextFrame);
     layout->addWidget ( mText, 0 , 0 );
     mText->show();

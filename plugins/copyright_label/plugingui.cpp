@@ -12,7 +12,7 @@
 #include "plugingui.h"
 #include <q3textedit.h>
 #include <q3simplerichtext.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qcheckbox.h>
 #include <qlabel.h>
 

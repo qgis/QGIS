@@ -18,7 +18,7 @@
 
 #include "qgsaddattrdialog.h"
 #include "qgsgeomtypedialog.h"
-#include <q3combobox.h>
+#include <QComboBox>
 #include <q3listview.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>

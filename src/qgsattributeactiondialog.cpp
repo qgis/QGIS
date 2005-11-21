@@ -28,7 +28,7 @@ back to QgsVectorLayer.
 #include <qlineedit.h>
 #include <qstring.h>
 #include <qcheckbox.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <q3filedialog.h>
 
 #include "qgsattributeactiondialog.h"

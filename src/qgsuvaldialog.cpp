@@ -28,7 +28,7 @@
 #include "qgsuniquevalrenderer.h"
 #include <q3widgetstack.h>
 #include <q3listbox.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qpainter.h>
 #include <list>
 
