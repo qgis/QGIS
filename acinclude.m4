@@ -163,6 +163,9 @@ elif test -f $QTDIR/include/qt3/qglobal.h; then
 elif test -f $QTDIR/include/Qt/qglobal.h; then
   QTINC=$QTDIR/include
   QTVERTEST=$QTDIR/include/Qt
+elif test -f $QTDIR/lib/QtCore.framework/Headers/qglobal.h; then
+  QTINC=$QTDIR/lib/QtCore.framework/Headers
+  QTVERTEST=$QTDIR/lib/QtCore.framework/Headers
 else
   QTINC=$QTDIR/include
   QTVERTEST=$QTDIR/include
@@ -174,14 +177,27 @@ QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTVERTEST/qglobal.h | perl -p -e 's/\D/
 case "${QT_VER}" in
   41*|40*)
     QT_MAJOR="4"
-    QT4_3SUPPORTINC=$QTDIR/include/Qt3Support
-    QT4_COREINC=$QTDIR/include/QtCore
+    case "${host}" in
+    *-darwin*)
+      QT4_3SUPPORTINC=$QTDIR/lib/Qt3Support.framework/Headers
+      QT4_COREINC=$QTDIR/lib/QtCore.framework/Headers
+      QT4_GUIINC=$QTDIR/lib/QtGui.framework/Headers
+      QT4_NETWORKINC=$QTDIR/lib/QtNetwork.framework/Headers
+      QT4_OPENGLINC=$QTDIR/lib/QtOpenGL.framework/Headers
+      QT4_SQLINC=$QTDIR/lib/QtSql.framework/Headers
+      QT4_XMLINC=$QTDIR/lib/QtXml.framework/Headers
+	  ;;
+    *)
+      QT4_3SUPPORTINC=$QTDIR/include/Qt3Support
+      QT4_COREINC=$QTDIR/include/QtCore
+      QT4_GUIINC=$QTDIR/include/QtGui
+      QT4_NETWORKINC=$QTDIR/include/QtNetwork
+      QT4_OPENGLINC=$QTDIR/include/QtOpenGL
+      QT4_SQLINC=$QTDIR/include/QtSql
+      QT4_XMLINC=$QTDIR/include/QtXml
+      ;;
+    esac
     QT4_DESIGNERINC=$QTDIR/include/QtDesigner
-    QT4_GUIINC=$QTDIR/include/QtGui
-    QT4_NETWORKINC=$QTDIR/include/QtNetwork
-    QT4_OPENGLINC=$QTDIR/include/QtOpenGL
-    QT4_SQLINC=$QTDIR/include/QtSql
-    QT4_XMLINC=$QTDIR/include/QtXml
     QT4_DEFAULTINC=$QTDIR/mkspecs/default
     ;;
   33*)
@@ -266,12 +282,12 @@ case "${host}" in
     ;;
   *-darwin*)
     # determin static or dynamic -- prefer dynamic
-    QT_IS_DYNAMIC=`ls $QTDIR/lib/libqt*.dylib 2> /dev/null`
+    QT_IS_DYNAMIC=`ls $QTDIR/lib/libqt*.dylib $QTDIR/lib/QtCore.framework/QtCore 2> /dev/null`
     if test "x$QT_IS_DYNAMIC" = x;  then
       QT_IS_STATIC=`ls $QTDIR/lib/libqt*.a 2> /dev/null`
       if test "x$QT_IS_STATIC" = x; then
         QT_IS_STATIC="no"
-        AC_MSG_ERROR([*** Couldn't find any Qt libraries in $QTDIR/${_lib}])
+        AC_MSG_ERROR([*** Couldn't find any Qt libraries in $QTDIR/lib])
       else
         QT_IS_STATIC="yes"
       fi
@@ -296,6 +312,10 @@ case "${host}" in
       QT_LIB="-lqte-mt"
       QT_IS_MT="yes"
       QT_IS_EMBEDDED="yes"
+    elif test "x`ls $QTDIR/lib/QtCore.framework/QtCore 2> /dev/null`" != x ; then
+      QT_LIB="-Xlinker -F$QTDIR/lib -framework QtCore -framework Qt3Support -framework QtGui -framework QtNetwork -framework QtXml"
+      QT_CXXFLAGS="-DQT3_SUPPORT -F$QTDIR/lib -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC"
+      QT_IS_MT="yes"
     fi
     ;;
   *)

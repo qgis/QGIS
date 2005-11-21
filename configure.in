@@ -96,7 +96,7 @@ AM_CONDITIONAL([HAVE_QT4], [test "$QT_MAJOR" = "4"])
 dnl ---------------------------------------------------------------------------
 dnl Qt/Mac check (install everything into application bundle)
 dnl ---------------------------------------------------------------------------
-if test x$QTDIR != x -a -f "$QTDIR/config.tests/mac/tst_mac_version"; then
+if test x$QTDIR != x -a -f "$QTDIR/mkspecs/default/Info.plist.app"; then
   have_qtmac=yes
   bundle_suffix=$PACKAGE.app/Contents/MacOS
   if test `expr "$prefix" : ".*$bundle_suffix$"` -eq 0; then
