@@ -20,7 +20,7 @@
 #define QGISIFACE_H
 #include "qgisinterface.h"
 //Added by qt3to4:
-#include <Q3PopupMenu>
+#include <QMenu>
 
 class QgsMapCanvas;
 class QgsMapLayer;
@@ -61,7 +61,7 @@ class QgisIface : public QgisInterface{
         //! Get source of the active layer
         QString activeLayerSource();
 
-	Q3PopupMenu* getPluginMenu(QString menuName);
+	QMenu* getPluginMenu(QString menuName);
 
 	void removePluginMenuItem(QString name, int menuId);
 

@@ -90,7 +90,7 @@ QgsCopyrightLabelPlugin::~QgsCopyrightLabelPlugin()
  */
 void QgsCopyrightLabelPlugin::initGui()
 {
-    Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
+    QMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
     menuId = pluginMenu->insertItem(QIcon(icon),"&CopyrightLabel", this, SLOT(run()));
 
     pluginMenu->setWhatsThis(menuId, "Creates a copyright label that is displayed on the map canvas.");

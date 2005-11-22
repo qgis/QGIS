@@ -108,7 +108,7 @@ void QgsDelimitedTextPlugin::help()
  */
 void QgsDelimitedTextPlugin::initGui()
 {
-  Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Delimited text");
+  QMenu *pluginMenu = qGisInterface->getPluginMenu("&Delimited text");
   menuId = pluginMenu->insertItem(QIcon(icon),"&Add Delimited Text Layer", this, SLOT(run()));
 
   pluginMenu->setWhatsThis(menuId, "Add a delimited text file as a map layer. "

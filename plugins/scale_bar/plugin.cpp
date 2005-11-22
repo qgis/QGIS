@@ -102,7 +102,7 @@ QgsScaleBarPlugin::~QgsScaleBarPlugin()
  */
 void QgsScaleBarPlugin::initGui()
 {
-  Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
+  QMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
   menuId = pluginMenu->insertItem(QIcon(icon),"&ScaleBar", this, SLOT(run()));
 
   pluginMenu->setWhatsThis(menuId, "Creates a scale bar that is displayed on the map canvas");
