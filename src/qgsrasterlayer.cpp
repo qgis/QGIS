@@ -635,7 +635,6 @@ QgsRasterLayer::readFile( QString const & fileName )
   // Determin the no data value
   //
   noDataValueDouble = gdalDataset->GetRasterBand(1)->GetNoDataValue();
-
   //initialise the raster band stats vector
   for (int i = 1; i <= gdalDataset->GetRasterCount(); i++)
   {
@@ -1502,7 +1501,12 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
       double myGrayValDouble = readValue ( myGdalScanData, myDataType,
                                            myColumnInt * theRasterViewPort->drawableAreaXDimInt + myRowInt );
 
-      if ( myGrayValDouble == noDataValueDouble || myGrayValDouble != myGrayValDouble ) continue;
+      if ( myGrayValDouble == noDataValueDouble ) 
+      {
+
+        myQImage.setPixel(myRowInt, myColumnInt, qRgba(255,255,255,0 ));
+        continue;
+      }
 
       int myGrayValInt = static_cast < int >( (myGrayValDouble-myRasterBandStats.minValDouble)
                                               * (255/myRangeDouble));
@@ -3896,7 +3900,7 @@ QString QgsRasterLayer::getMetadata()
     myMetadataQString += tr("No Data Value");
     myMetadataQString += "</td></tr>";
     myMetadataQString += "<tr><td bgcolor=\"white\">";
-    myMetadataQString += QString::number(myGdalBand->GetNoDataValue());
+    myMetadataQString += QString::number(noDataValueDouble);
     myMetadataQString += "</td></tr>";
     
     myMetadataQString += "</td></tr>";
