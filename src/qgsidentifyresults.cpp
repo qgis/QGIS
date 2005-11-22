@@ -192,7 +192,7 @@ Q3ListViewItem *QgsIdentifyResults::addNode(QString label)
 
 void QgsIdentifyResults::setTitle(QString title)
 {
-  setCaption("Identify Results - " + title);
+  setWindowTitle("Identify Results - " + title);
 }
 
 void QgsIdentifyResults::setColumnText ( int column, const QString & label )
