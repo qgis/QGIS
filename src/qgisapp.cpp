@@ -4526,8 +4526,6 @@ int QgisApp::addPluginMenu(QString menuText, Q3PopupMenu *menu)
 
 QMenu* QgisApp::getPluginMenu(QString menuName)
 {
-// TODO: Qt4 will have to do this a different way...
-#if QT_VERSION < 0x050000
   for (int i = 0; i < mPluginMenu->count(); ++i)
     if (mPluginMenu->text(mPluginMenu->idAt(i)) == menuName)
     {
@@ -4539,7 +4537,6 @@ QMenu* QgisApp::getPluginMenu(QString menuName)
   Q3PopupMenu* menu = new Q3PopupMenu(mPluginMenu);
   mPluginMenu->insertItem(menuName, menu);
   return menu;
-#endif
 }
 
 void QgisApp::removePluginMenuItem(QString name, int menuId)
