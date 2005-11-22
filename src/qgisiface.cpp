@@ -95,7 +95,7 @@ QString QgisIface::activeLayerSource()
   return qgis->activeLayerSource();
 }
 
-Q3PopupMenu* QgisIface::getPluginMenu(QString menuName)
+QMenu* QgisIface::getPluginMenu(QString menuName)
 {
   return qgis->getPluginMenu(menuName);
 }

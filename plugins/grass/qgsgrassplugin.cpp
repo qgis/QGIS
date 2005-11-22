@@ -246,7 +246,7 @@ void QgsGrassPlugin::initGui()
   connect(mCloseMapsetAction, SIGNAL(activated()), this, SLOT(closeMapset()));
 
   // Create GRASS plugin menu entry
-  Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&GRASS");
+  QMenu *pluginMenu = qGisInterface->getPluginMenu("&GRASS");
 
   // Add actions to the menu
   mOpenMapsetAction->addTo(pluginMenu);

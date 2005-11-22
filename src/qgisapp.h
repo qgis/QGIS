@@ -327,7 +327,7 @@ private slots:
     //! Add a plugin menu to the main Plugins menu
     int addPluginMenu(QString menuText, Q3PopupMenu *menu);
 
-    Q3PopupMenu* getPluginMenu(QString menuName);
+    QMenu* getPluginMenu(QString menuName);
 
     void removePluginMenuItem(QString name, int menuId);
 

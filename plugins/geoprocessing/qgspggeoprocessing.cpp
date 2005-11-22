@@ -78,7 +78,7 @@ QgsPgGeoprocessing::~QgsPgGeoprocessing()
  */
 void QgsPgGeoprocessing::initGui()
 {
-  Q3PopupMenu *pluginMenu = qI->getPluginMenu("&Geoprocessing");
+  QMenu *pluginMenu = qI->getPluginMenu("&Geoprocessing");
   menuId = pluginMenu->insertItem(QIcon(icon_buffer),"&Buffer Features", this, SLOT(buffer()));
 
   pluginMenu->setWhatsThis(menuId, "Create a buffer for a PostgreSQL layer. "

@@ -100,7 +100,7 @@ QgsNorthArrowPlugin::~QgsNorthArrowPlugin()
  */
 void QgsNorthArrowPlugin::initGui()
 {
-  Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
+  QMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
   menuId = pluginMenu->insertItem(QIcon(icon),"&NorthArrow", this, SLOT(run()));
 
   pluginMenu->setWhatsThis(menuId, "Creates a north arrow that is displayed on the map canvas");

@@ -101,7 +101,7 @@ QgsGPSPlugin::~QgsGPSPlugin()
  */
 void QgsGPSPlugin::initGui()
 {
-  Q3PopupMenu *pluginMenu = mQGisInterface->getPluginMenu("&Gps");
+  QMenu *pluginMenu = mQGisInterface->getPluginMenu("&Gps");
   mMenuIdGPS = pluginMenu->insertItem(QIcon(icon),"&Gps Tools", this, SLOT(run()));
   mMenuIdGPX = pluginMenu->insertItem(QIcon(icon),"&Create new GPX layer", this, SLOT(createGPX()));
 

@@ -106,7 +106,7 @@ int QgsGridMakerPlugin::type()
  */
 void QgsGridMakerPlugin::initGui()
 {
-  Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&Graticules");
+  QMenu *pluginMenu = qGisInterface->getPluginMenu("&Graticules");
   menuId = pluginMenu->insertItem(QIcon(icon),"&GraticuleMaker", this, SLOT(run()));
 
   pluginMenu->setWhatsThis(menuId, "Creates a graticule (grid) and stores the result as a shapefile");

@@ -86,6 +86,7 @@ using namespace std;
 #include <qcheckbox.h>
 #include <qtooltip.h>
 #include <qglobal.h>
+#include <QMenuItem>
 
 #include "qgsencodingfiledialog.h"
 #include "qgsrect.h"
@@ -4523,15 +4524,15 @@ int QgisApp::addPluginMenu(QString menuText, Q3PopupMenu *menu)
   return mPluginMenu->insertItem(menuText, menu);
 }
 
-Q3PopupMenu* QgisApp::getPluginMenu(QString menuName)
+QMenu* QgisApp::getPluginMenu(QString menuName)
 {
 // TODO: Qt4 will have to do this a different way...
-#if QT_VERSION < 0x040000
+#if QT_VERSION < 0x050000
   for (int i = 0; i < mPluginMenu->count(); ++i)
     if (mPluginMenu->text(mPluginMenu->idAt(i)) == menuName)
     {
       QMenuItem* item = mPluginMenu->findItem(mPluginMenu->idAt(i));
-      return item->popup();
+      return item->menu();
     }
 
   // It doesn't exist, so create one
