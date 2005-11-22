@@ -2876,7 +2876,7 @@ bool QgsMapCanvas::writeXML(QDomNode & layerNode, QDomDocument & doc)
   // Iterate over layers in zOrder
   // Call writeXML() on each
   QDomElement projectLayersNode = doc.createElement("projectlayers");
-  projectLayersNode.setAttribute("layercount", mCanvasProperties->layers.size());
+  projectLayersNode.setAttribute("layercount", qulonglong(mCanvasProperties->layers.size()));
 
   std::list < QString >::iterator li = mCanvasProperties->zOrder.begin();
   while (li != mCanvasProperties->zOrder.end())
