@@ -3829,15 +3829,16 @@ QString QgsRasterLayer::getMetadata()
   else
   {
   
-    // my added code
+    // my added code (MColetti)
   
     myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr("my stuff:");
+    myMetadataQString += tr("Dataset Description");
     myMetadataQString += "</td></tr>";
     myMetadataQString += "<tr><td bgcolor=\"white\">";
     myMetadataQString += QString(gdalDataset->GetDescription());
     myMetadataQString += "</td></tr>";
   
+    
     char ** GDALmetadata = gdalDataset->GetMetadata();
     
     if ( GDALmetadata )
@@ -3891,6 +3892,14 @@ QString QgsRasterLayer::getMetadata()
     //just use the first band
     GDALRasterBand *myGdalBand = gdalDataset->GetRasterBand(1);
   
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("No Data Value");
+    myMetadataQString += "</td></tr>";
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += QString::number(myGdalBand->GetNoDataValue());
+    myMetadataQString += "</td></tr>";
+    
+    myMetadataQString += "</td></tr>";
     myMetadataQString += "<tr><td bgcolor=\"gray\">";
     myMetadataQString += tr("Data Type:");
     myMetadataQString += "</td></tr>";
