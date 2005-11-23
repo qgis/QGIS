@@ -26,7 +26,8 @@ extern "C"
 {
 #include <libpq-fe.h>
 }
-QgsNewConnection::QgsNewConnection(QString connName):QgsNewConnectionBase()
+QgsNewConnection::QgsNewConnection(QWidget *parent, const QString& connName, bool modal)
+: QgsNewConnectionBase(parent, 0, modal)
 {
   if (!connName.isEmpty())
     {
