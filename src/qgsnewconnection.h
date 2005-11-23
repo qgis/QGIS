@@ -31,7 +31,7 @@ class QgsNewConnection : public QgsNewConnectionBase
   Q_OBJECT
   public:
     //! Constructor
-    QgsNewConnection(QString connName= QString::null);
+    QgsNewConnection(QWidget *parent = 0, const QString& connName = QString::null, bool modal = true);
     //! Destructor
     ~QgsNewConnection();
     //! Tests the connection using the parameters supplied

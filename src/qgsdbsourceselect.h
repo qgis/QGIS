@@ -45,7 +45,7 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
  public:
 
     //! Constructor
-    QgsDbSourceSelect(QgisApp *app=0, QWidget *parent = 0, const char *name = 0);
+    QgsDbSourceSelect(QgisApp *app = 0, const char *name = 0, bool modal = true);
     //! Destructor
     ~QgsDbSourceSelect();
     //! Opens the create connection dialog to build a new connection

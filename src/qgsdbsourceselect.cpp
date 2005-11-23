@@ -35,8 +35,8 @@ email                : sherman at mrcc.com
 #include "qgspgquerybuilder.h"
 #include "qgisapp.h"
 #include "qgscontexthelp.h"
-QgsDbSourceSelect::QgsDbSourceSelect(QgisApp * app, QWidget * parent, const char *name):QgsDbSourceSelectBase(parent, name),
-                                                                                        qgisApp(app)
+QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, const char *name, bool modal)
+: QgsDbSourceSelectBase(app, name, modal), qgisApp(app)
 {
   btnAdd->setEnabled(false);
   populateConnectionList();
@@ -122,7 +122,7 @@ void QgsDbSourceSelect::populateConnectionList()
 void QgsDbSourceSelect::addNewConnection()
 {
 
-  QgsNewConnection *nc = new QgsNewConnection();
+  QgsNewConnection *nc = new QgsNewConnection(this);
 
   if (nc->exec())
   {
@@ -132,7 +132,7 @@ void QgsDbSourceSelect::addNewConnection()
 void QgsDbSourceSelect::editConnection()
 {
 
-  QgsNewConnection *nc = new QgsNewConnection(cmbConnections->currentText());
+  QgsNewConnection *nc = new QgsNewConnection(this, cmbConnections->currentText());
 
   if (nc->exec())
   {
