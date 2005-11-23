@@ -1176,10 +1176,6 @@ he can open for writing only his mapset (owned by user).</string>
                         <height>30</height>
                     </size>
                 </property>
-                <property name="font">
-                    <font>
-                    </font>
-                </property>
                 <property name="text">
                     <string>Database:</string>
                 </property>
@@ -1202,10 +1198,6 @@ he can open for writing only his mapset (owned by user).</string>
                         <height>30</height>
                     </size>
                 </property>
-                <property name="font">
-                    <font>
-                    </font>
-                </property>
                 <property name="text">
                     <string>Location:</string>
                 </property>
@@ -1227,10 +1219,6 @@ he can open for writing only his mapset (owned by user).</string>
                         <width>0</width>
                         <height>30</height>
                     </size>
-                </property>
-                <property name="font">
-                    <font>
-                    </font>
                 </property>
                 <property name="text">
                     <string>Mapset:</string>

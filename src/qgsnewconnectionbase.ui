@@ -146,10 +146,6 @@
                                     <property name="name">
                                         <cstring>TextLabel1_2</cstring>
                                     </property>
-                                    <property name="font">
-                                        <font>
-                                        </font>
-                                    </property>
                                     <property name="text">
                                         <string>Name</string>
                                     </property>
@@ -157,10 +153,6 @@
                                 <widget class="QLabel">
                                     <property name="name">
                                         <cstring>TextLabel1</cstring>
-                                    </property>
-                                    <property name="font">
-                                        <font>
-                                        </font>
                                     </property>
                                     <property name="text">
                                         <string>Host</string>
@@ -170,10 +162,6 @@
                                     <property name="name">
                                         <cstring>TextLabel2</cstring>
                                     </property>
-                                    <property name="font">
-                                        <font>
-                                        </font>
-                                    </property>
                                     <property name="text">
                                         <string>Database</string>
                                     </property>
@@ -181,10 +169,6 @@
                                 <widget class="QLabel">
                                     <property name="name">
                                         <cstring>TextLabel2_2</cstring>
-                                    </property>
-                                    <property name="font">
-                                        <font>
-                                        </font>
                                     </property>
                                     <property name="text">
                                         <string>Port</string>
@@ -194,10 +178,6 @@
                                     <property name="name">
                                         <cstring>TextLabel3</cstring>
                                     </property>
-                                    <property name="font">
-                                        <font>
-                                        </font>
-                                    </property>
                                     <property name="text">
                                         <string>Username</string>
                                     </property>
@@ -205,10 +185,6 @@
                                 <widget class="QLabel">
                                     <property name="name">
                                         <cstring>TextLabel3_2</cstring>
-                                    </property>
-                                    <property name="font">
-                                        <font>
-                                        </font>
                                     </property>
                                     <property name="text">
                                         <string>Password</string>

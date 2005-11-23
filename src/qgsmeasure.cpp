@@ -56,7 +56,16 @@ QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, QWidget *parent, cons
     mTable->setColumnStretchable ( 0, true );
     //mTable->setColumnStretchable ( 1, true );
     //mTable->setColumnStretchable ( 2, true );
-    
+
+    // Widget font properties should normally be set in the ui file.
+    // This is here to work around the following bug in Qt 4.0.1:
+    // Setting another font attribute while using the default font size will
+    // cause uic3 to generate code setting the font size to 0.
+    // This causes text not to be drawn with Qt/X11 and a crash with Qt/Mac.
+    QFont font(lblTotal->font());
+    font.setBold(true);
+    lblTotal->setFont(font);
+
     updateUi();
     
     connect ( mMapCanvas, SIGNAL(renderComplete(QPainter*)), this, SLOT(draw(QPainter*)) );

@@ -138,11 +138,6 @@
             <property name="name">
                 <cstring>lblTotal</cstring>
             </property>
-            <property name="font">
-                <font>
-                    <bold>1</bold>
-                </font>
-            </property>
             <property name="text">
                 <string></string>
             </property>

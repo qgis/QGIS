@@ -73,10 +73,6 @@
                                             <property name="name">
                                                 <cstring>TextLabel1_2</cstring>
                                             </property>
-                                            <property name="font">
-                                                <font>
-                                                </font>
-                                            </property>
                                             <property name="text">
                                                 <string>Name</string>
                                             </property>
@@ -84,10 +80,6 @@
                                         <widget class="QLabel">
                                             <property name="name">
                                                 <cstring>TextLabel1</cstring>
-                                            </property>
-                                            <property name="font">
-                                                <font>
-                                                </font>
                                             </property>
                                             <property name="text">
                                                 <string>URL</string>
@@ -97,10 +89,6 @@
                                             <property name="name">
                                                 <cstring>TextLabel1_3</cstring>
                                             </property>
-                                            <property name="font">
-                                                <font>
-                                                </font>
-                                            </property>
                                             <property name="text">
                                                 <string>Proxy Host</string>
                                             </property>
@@ -108,10 +96,6 @@
                                         <widget class="QLabel">
                                             <property name="name">
                                                 <cstring>TextLabel1_3_2</cstring>
-                                            </property>
-                                            <property name="font">
-                                                <font>
-                                                </font>
                                             </property>
                                             <property name="text">
                                                 <string>Proxy Port</string>
