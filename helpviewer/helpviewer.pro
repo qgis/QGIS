@@ -13,3 +13,8 @@ LIBS += $(SQLITE3)\sqlite3.lib
 HEADERS += qgshelpserver.h qgshelpviewer.h
 INTERFACES += qgshelpviewerbase.ui
 SOURCES += main.cpp qgshelpserver.cpp qgshelpviewer.cpp
+#The following line was inserted by qt3to4
+QT +=  qt3support 
+#The following line was inserted by qt3to4
+CONFIG += uic3
+

@@ -21,9 +21,14 @@ PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
 
 %.h: %.ui
 	$(UIC) -o $@ $<
+if HAVE_QT4
+	../tools/qgis-qt3to4.pl -uic $@
+endif
 
+if !NO_UIC_IMPLEMENTATIONS
 %.cpp: %.ui
 	$(UIC) -o $@ -impl $*.h $<
+endif
 
 
 
@@ -50,7 +55,9 @@ qgis_help_LDADD = $(LDADD) $(QT_LDADD) -lsqlite3
 
 qgis_help_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(PKGDATAPATH)
 
-#EXTRA_DIST = $(qgis_help_UIC) icon.xpm
+CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST = $(qgis_help_UIC) icon.xpm
 
 # Qt/Mac app needs to be inside a bundle to function correctly
 MACBINDIR = $(bindir)/qgis_help.app/Contents/MacOS
