@@ -286,7 +286,7 @@ void QgsGrassTools::closeEvent(QCloseEvent *e)
 
 void QgsGrassTools::restorePosition()
 {
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
     int ww = settings.readNumEntry("/qgis/grass/windows/tools/w", 250);
     int wh = settings.readNumEntry("/qgis/grass/windows/tools/h", 300);
     int wx = settings.readNumEntry("/qgis/grass/windows/tools/x", 100);
@@ -298,7 +298,7 @@ void QgsGrassTools::restorePosition()
 
 void QgsGrassTools::saveWindowLocation()
 {
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
     QPoint p = this->pos();
     QSize s = this->size();
     settings.writeEntry("/qgis/grass/windows/tools/x", p.x());

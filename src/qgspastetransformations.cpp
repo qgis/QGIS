@@ -67,7 +67,7 @@ QgsPasteTransformations::~QgsPasteTransformations()
 void QgsPasteTransformations::accept()
 {
 
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QString baseKey        = "/Qgis/paste-transformations";             // TODO: promote to static member
   QString sourceKey      = sourceLayerComboBox     ->currentText();
   QString destinationKey = destinationLayerComboBox->currentText();
@@ -243,7 +243,7 @@ void QgsPasteTransformations::restoreTransfers(const QString& sourceLayerName,
         std::cerr << "QgsPasteTransformations::restoreTransfers: Entered."
           << std::endl;
 #endif
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QString baseKey = "/Qgis/paste-transformations";             // TODO: promote to static member
 
   QStringList sourceLayers = settings.subkeyList(baseKey);
@@ -312,7 +312,7 @@ QString QgsPasteTransformations::pasteTo(const QString& sourceLayerName,
         std::cerr << "QgsPasteTransformations::pasteTo: Entered."
           << std::endl;
 #endif
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QString baseKey = "/Qgis/paste-transformations";             // TODO: promote to static member
 
   QString destinationField = 

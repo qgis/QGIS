@@ -310,7 +310,7 @@ void QgsMeasure::closeEvent(QCloseEvent *e)
 
 void QgsMeasure::restorePosition()
 {
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   int ww = settings.readNumEntry("/qgis/Windows/Measure/w", 150);
   int wh;
   if (mMeasureArea)
@@ -329,7 +329,7 @@ void QgsMeasure::restorePosition()
 
 void QgsMeasure::saveWindowLocation()
 {
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QPoint p = this->pos();
   QSize s = this->size();
   settings.writeEntry("/qgis/Windows/Measure/x", p.x());

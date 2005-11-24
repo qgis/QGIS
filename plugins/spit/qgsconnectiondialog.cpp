@@ -32,7 +32,7 @@ QgsConnectionDialog::QgsConnectionDialog (QWidget* parent, QString connName, boo
 	: QgsConnectionDialogBase(parent,(const char *)connName,modal,fl)
 {
 	if (!connName.isEmpty()) {
-		QSettings settings;
+		QSettings settings("QuantumGIS", "qgis");
 		QString key = "/Qgis/connections/" + connName;
 		txtHost->setText(settings.readEntry(key + "/host"));
 		txtDatabase->setText(settings.readEntry(key + "/database"));
@@ -87,7 +87,7 @@ void QgsConnectionDialog::testConnection()
 
 void QgsConnectionDialog::saveConnection()
 {
-	QSettings settings;
+	QSettings settings("QuantumGIS", "qgis");
 	QString baseKey = "/Qgis/connections/";
 	baseKey += txtName->text();
 	settings.writeEntry(baseKey + "/host", txtHost->text());

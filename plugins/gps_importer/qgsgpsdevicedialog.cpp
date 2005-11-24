@@ -119,7 +119,7 @@ void QgsGPSDeviceDialog::slotSelectionChanged() {
 
 void QgsGPSDeviceDialog::writeDeviceSettings() {
   QStringList deviceNames;
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QString devPath = "/qgis/gps/devices/%1";
   std::map<QString, QgsGPSDevice*>::const_iterator iter;
   for (iter = mDevices.begin(); iter != mDevices.end(); ++iter) {

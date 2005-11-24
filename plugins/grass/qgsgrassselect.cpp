@@ -46,7 +46,7 @@ QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
       lastLocation = QgsGrass::getDefaultLocation();
       lastMapset = QgsGrass::getDefaultMapset();
     } else {
-      QSettings settings;
+      QSettings settings("QuantumGIS", "qgis");
       lastGisdbase = settings.readEntry("/qgis/grass/lastGisdbase");
       //check we got something from qsettings otherwise default to users home dir
       if (lastGisdbase.isEmpty())
@@ -105,7 +105,7 @@ void QgsGrassSelect::restorePosition()
   optionsFrame->adjustSize ();
   adjustSize ();
   
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   int ww = settings.readNumEntry("/qgis/grass/windows/select/w", 500);
   int wh = settings.readNumEntry("/qgis/grass/windows/select/h", 100);
   int wx = settings.readNumEntry("/qgis/grass/windows/select/x", 100);
@@ -116,7 +116,7 @@ void QgsGrassSelect::restorePosition()
 
 void QgsGrassSelect::saveWindowLocation()
 {
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QPoint p = this->pos();
   QSize s = this->size();
   settings.writeEntry("/qgis/grass/windows/select/x", p.x());
@@ -447,7 +447,7 @@ void QgsGrassSelect::accept()
     }
 
     //write to qgsettings as gisdbase seems to be valid
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
     settings.writeEntry("/qgis/grass/lastGisdbase",lastGisdbase );
 
     location = elocation->currentText();

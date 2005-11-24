@@ -130,7 +130,7 @@ void QgsGrassPlugin::initGui()
   toolBarPointer = 0;
   mTools = 0;
 
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
 
   // Require GISBASE to be set. This should point to the location of
   // the GRASS installation. The GRASS libraries use it to know
@@ -304,7 +304,7 @@ void QgsGrassPlugin::mapsetChanged ()
         mCloseMapsetAction->setEnabled(true);
         mNewVectorAction->setEnabled(true);
   
-        QSettings settings;
+        QSettings settings("QuantumGIS", "qgis");
 	bool on = settings.readBoolEntry ("/qgis/grass/region/on", true );
 	mRegionAction->setOn(on);
 
@@ -668,7 +668,7 @@ void QgsGrassPlugin::switchRegion(bool on)
   std::cout << "QgsGrassPlugin::switchRegion()" << std::endl;
 #endif
 
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   settings.writeEntry ("/qgis/grass/region/on", on );
 
   QPixmap *pixmap = mCanvas->canvasPixmap();
@@ -716,7 +716,7 @@ void QgsGrassPlugin::setRegionPen(QPen & pen)
 {
   mRegionPen = pen;
 
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   settings.writeEntry ("/qgis/grass/region/color", mRegionPen.color().name() );
   settings.writeEntry ("/qgis/grass/region/width", (int) mRegionPen.width() );
 }

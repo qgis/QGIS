@@ -54,7 +54,7 @@ void QgsGeorefPluginGui::pbnCancel_clicked()
 
 
 void QgsGeorefPluginGui::pbnSelectRaster_clicked() {
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QString dir = settings.readEntry("/qgis/plugin/georef/rasterdirectory");
   if (dir.isEmpty())
     dir = ".";
@@ -79,7 +79,7 @@ void QgsGeorefPluginGui::openPointDialog() {
   
   // remember the directory
   {
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
     QFileInfo fileInfo(leSelectRaster->text());
     settings.writeEntry("/qgis/plugin/georef/rasterdirectory", 
 			fileInfo.dirPath());
@@ -109,7 +109,7 @@ void QgsGeorefPluginGui::openPointDialog() {
   
   // XXX This is horrible, but it works and I'm tired / ll
   {
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
     mProjBehaviour = settings.readEntry("/qgis/projections/defaultBehaviour");
     mProjectSRS = QgsProject::instance()->
       readEntry("SpatialRefSys", "/ProjectSRSProj4String");
@@ -123,7 +123,7 @@ void QgsGeorefPluginGui::openPointDialog() {
   }
   QgsRasterLayer* layer = new QgsRasterLayer(raster, "Raster");
   {
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
     settings.writeEntry("/qgis/projections/defaultBehaviour", mProjBehaviour);
     QgsProject::instance()->
       writeEntry("SpatialRefSys", "/ProjectSRSProj4String", mProjectSRS);

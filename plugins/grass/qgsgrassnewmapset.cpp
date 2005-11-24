@@ -96,7 +96,7 @@ QgsGrassNewMapset::QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface,
     mMapsetText->setPaletteBackgroundColor ( paletteBackgroundColor() );
     
     // DATABASE
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
     QString db = settings.readEntry("/qgis/grass/lastGisdbase");
     if ( !db.isNull() ) 
     {
@@ -177,7 +177,7 @@ void QgsGrassNewMapset::databaseChanged()
 #endif
     // TODO: reset next tabs
     //
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
     settings.writeEntry("/qgis/grass/lastGisdbase", mDatabaseLineEdit->text() );
 
     setError ( mDatabaseErrorLabel, "" );
@@ -243,7 +243,7 @@ void QgsGrassNewMapset::setLocations ( )
 
     mLocationComboBox->clear();
     
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
     QString lastLocation = settings.readEntry("/qgis/grass/lastLocation");
 
     // Get available locations with write permissions

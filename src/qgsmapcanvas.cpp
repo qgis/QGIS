@@ -2742,7 +2742,7 @@ void QgsMapCanvas::removeAll()
  */
 double QgsMapCanvas::calculateSearchRadiusValue()
 {
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
 
   int identifyValue = settings.readNumEntry("/qgis/map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS);
 
