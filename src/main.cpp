@@ -423,10 +423,6 @@ int main(int argc, char *argv[])
   //a.setStyle("Windows");
 
   QgisApp *qgis = new QgisApp; // "QgisApp" used to find canonical instance
-    // Set up the QSettings environment
-  QCoreApplication::setOrganizationName("QuantumGIS");
-  QCoreApplication::setOrganizationDomain("qgis.org");
-  QCoreApplication::setApplicationName("qgis");
   qgis->setName( "QgisApp" );
 
   a.setMainWidget(qgis);

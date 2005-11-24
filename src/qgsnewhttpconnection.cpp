@@ -30,7 +30,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(QString connName)
       // populate the dialog with the information stored for the connection
       // populate the fields with the stored setting parameters
       
-      QSettings settings("QuantumGIS", "qgis");
+      QSettings settings;
 
       QString key = "/Qgis/connections-wms/" + connName;
       txtName->setText     (connName);
@@ -61,7 +61,7 @@ void QgsNewHttpConnection::testConnection()
 
 void QgsNewHttpConnection::saveConnection()
 {
-  QSettings settings("QuantumGIS", "qgis"); 
+  QSettings settings; 
   QString baseKey = "/Qgis/connections-wms/";
   
   baseKey += txtName->text();

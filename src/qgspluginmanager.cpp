@@ -185,7 +185,7 @@ void QgsPluginManager::apply()
 
 void QgsPluginManager::unload()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
 #ifdef QGISDEBUG
   std::cout << "Checking for plugins to unload" << std::endl;
 #endif

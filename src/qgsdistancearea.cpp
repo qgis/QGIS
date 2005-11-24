@@ -166,7 +166,7 @@ bool QgsDistanceArea::setEllipsoid(const QString& ellipsoid)
 
 bool QgsDistanceArea::setDefaultEllipsoid()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   QString ellipsoid = settings.readEntry("/qgis/measure/ellipsoid", "WGS84");
   return setEllipsoid(ellipsoid);
 }

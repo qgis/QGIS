@@ -33,7 +33,7 @@ QgsNewConnection::QgsNewConnection(QWidget *parent, const QString& connName, boo
     {
       // populate the dialog with the information stored for the connection
       // populate the fields with the stored setting parameters
-      QSettings settings("QuantumGIS", "qgis");
+      QSettings settings;
 
       QString key = "/Qgis/connections/" + connName;
       txtHost->setText(settings.readEntry(key + "/host"));
@@ -97,7 +97,7 @@ void QgsNewConnection::testConnection()
 
 void QgsNewConnection::saveConnection()
 {
-  QSettings settings("QuantumGIS", "qgis"); 
+  QSettings settings; 
   QString baseKey = "/Qgis/connections/";
   settings.writeEntry(baseKey + "selected", txtName->text());
   baseKey += txtName->text();
