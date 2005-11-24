@@ -131,7 +131,7 @@ void QgsSpatialRefSys::validate()
       return;
     }
   }
-  QSettings mySettings("QuantumGIS", "qgis");
+  QSettings mySettings;
   QString myDefaultProjectionOption =
     mySettings.readEntry("/qgis/projections/defaultBehaviour");
   if (myDefaultProjectionOption=="prompt")

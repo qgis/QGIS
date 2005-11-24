@@ -40,7 +40,7 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name, bool modal) :
 {
   qparent = parent;
   // read the current browser and set it
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   QString browser = settings.readEntry("/qgis/browser");
   cmbBrowser->setCurrentText(browser);
   // set the show splash option
@@ -103,7 +103,7 @@ QString QgsOptions::theme()
 
 void QgsOptions::saveOptions()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   settings.writeEntry("/qgis/browser", cmbBrowser->currentText());
   settings.writeEntry("/qgis/map/identifyRadius", spinBoxIdentifyValue->value());
   settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
@@ -156,7 +156,7 @@ void QgsOptions::addTheme(QString item)
 
 void QgsOptions::setCurrentTheme()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   cmbTheme->setCurrentText(settings.readEntry("/qgis/theme","default"));
 }
 
@@ -183,7 +183,7 @@ void QgsOptions::findBrowser()
 
 void QgsOptions::pbnSelectProjection_clicked()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector(this);
   mySelector->setSelectedSRSID(mGlobalSRSID);
   if(mySelector->exec())

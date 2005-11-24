@@ -145,7 +145,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
   // fetching this each time the layer is drawn. If the user
   // changes the threshold from the preferences dialog, it will
   // have no effect on existing layers
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   updateThreshold = settings.readNumEntry("qgis/map/updateThreshold", 1000);
 } // QgsVectorLayer ctor
 
@@ -754,7 +754,7 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
 
 void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst)
 {
-    QSettings settings("QuantumGIS", "qgis");
+    QSettings settings;
     int oversampling = settings.readNumEntry("/qgis/svgoversampling", 1);
 
     draw ( p, viewExtent, theMapToPixelTransform, dst, 1., 1., oversampling );

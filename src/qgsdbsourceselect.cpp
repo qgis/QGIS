@@ -90,7 +90,7 @@ QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, const char *name, bool modal)
 
   //read the last encoding from the settings
   //or use local as default
-  QSettings settings("QuantumGIS", "qgis"); 
+  QSettings settings; 
   QString lastUsedEncoding = settings.readEntry("/qgis/UI/encoding");
   if(lastUsedEncoding.isNull()||lastUsedEncoding.isEmpty()||lastUsedEncoding=="\0")
     {
@@ -108,7 +108,7 @@ QgsDbSourceSelect::~QgsDbSourceSelect()
 }
 void QgsDbSourceSelect::populateConnectionList()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   QStringList keys = settings.subkeyList("/Qgis/connections");
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
@@ -142,7 +142,7 @@ void QgsDbSourceSelect::editConnection()
 
 void QgsDbSourceSelect::deleteConnection()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   QString key = "/Qgis/connections/" + cmbConnections->currentText();
   QString msg =
     tr("Are you sure you want to remove the ") + cmbConnections->currentText() + tr(" connection and all associated settings?");
@@ -190,7 +190,7 @@ void QgsDbSourceSelect::addTables()
 void QgsDbSourceSelect::dbConnect()
 {
   // populate the table list
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
 
   QString key = "/Qgis/connections/" + cmbConnections->currentText();
   QString connString = "host=";
@@ -448,13 +448,13 @@ void QgsDbSourceSelect::showHelp()
 void QgsDbSourceSelect::dbChanged()
 {
   // Remember which database was selected.
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   settings.writeEntry("/Qgis/connections/selected", 
 		      cmbConnections->currentText());
 }
 void QgsDbSourceSelect::setConnectionListPosition()
 {
-  QSettings settings("QuantumGIS", "qgis");
+  QSettings settings;
   // If possible, set the item currently displayed database
   QString toSelect = settings.readEntry("/Qgis/connections/selected");
   // Does toSelect exist in cmbConnections?
