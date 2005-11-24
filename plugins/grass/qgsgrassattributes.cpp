@@ -117,7 +117,7 @@ QgsGrassAttributes::~QgsGrassAttributes ()
 
 void QgsGrassAttributes::restorePosition()
 {
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   int ww = settings.readNumEntry("/qgis/grass/windows/attributes/w", 250);
   int wh = settings.readNumEntry("/qgis/grass/windows/attributes/h", 350);
   int wx = settings.readNumEntry("/qgis/grass/windows/attributes/x", 100);
@@ -128,7 +128,7 @@ void QgsGrassAttributes::restorePosition()
 
 void QgsGrassAttributes::saveWindowLocation()
 {
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QPoint p = this->pos();
   QSize s = this->size();
   settings.writeEntry("/qgis/grass/windows/attributes/x", p.x());

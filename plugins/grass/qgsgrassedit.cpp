@@ -221,7 +221,7 @@ void QgsGrassEdit::init()
   mSymbName[SYMB_NODE_2]        = "Node (2 lines)";
 
   // Restore symbology
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   for ( int i = 0; i < SYMB_COUNT; i++ ) {
     bool ok;
     QString sn;
@@ -528,7 +528,7 @@ void QgsGrassEdit::changeSymbology(Q3ListViewItem * item, const QPoint & pnt, in
   std::cerr << "QgsGrassEdit::changeSymbology() col = " << col << std::endl;
 #endif
 
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
 
   if ( !item ) return;
 
@@ -562,7 +562,7 @@ void QgsGrassEdit::changeSymbology(Q3ListViewItem * item, const QPoint & pnt, in
 
 void QgsGrassEdit::restorePosition()
 {
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   int ww = settings.readNumEntry("/qgis/grass/windows/edit/w", 420);
   int wh = settings.readNumEntry("/qgis/grass/windows/edit/h", 150);
   int wx = settings.readNumEntry("/qgis/grass/windows/edit/x", 100);
@@ -573,7 +573,7 @@ void QgsGrassEdit::restorePosition()
 
 void QgsGrassEdit::saveWindowLocation()
 {
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QPoint p = this->pos();
   QSize s = this->size();
   settings.writeEntry("/qgis/grass/windows/edit/x", p.x());

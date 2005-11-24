@@ -199,7 +199,7 @@ void QgsGPSPluginGui::pbnGPXSelectFile_clicked()
   std::cout << " Gps File Importer::pbnGPXSelectFile_clicked() " << std::endl;
   QString myFileTypeQString;
   QString myFilterString="GPS eXchange format (*.gpx)";
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QString dir = settings.readEntry("/qgis/gps/gpxdirectory");
   if (dir.isEmpty())
     dir = ".";
@@ -321,7 +321,7 @@ void QgsGPSPluginGui::populatePortComboBoxes() {
   // OSX, OpenBSD, NetBSD etc? Anyone?
   
   // remember the last ports used
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QString lastDLPort = settings.readEntry("/qgis/gps/lastdlport", "");
   QString lastULPort = settings.readEntry("/qgis/gps/lastulport", "");
   for (int i = 0; i < cmbDLPort->count(); ++i) {
@@ -349,7 +349,7 @@ void QgsGPSPluginGui::populateIMPBabelFormats() {
   mBabelFilter = "";
   cmbULDevice->clear();
   cmbDLDevice->clear();
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QString lastDLDevice = settings.readEntry("/qgis/gps/lastdldevice", "");
   QString lastULDevice = settings.readEntry("/qgis/gps/lastuldevice", "");
   BabelMap::const_iterator iter;

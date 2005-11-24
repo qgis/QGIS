@@ -347,7 +347,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, Qt::WFlags fl)
     //
     // Splash screen global is declared in qgisapp.h header
     //
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
 
     myHideSplashFlag = settings.readBoolEntry("/qgis/hideSplash");
 
@@ -774,7 +774,7 @@ void QgisApp::about()
 void QgisApp::restoreSessionPlugins(QString thePluginDirString)
 {
   
-  QSettings mySettings;
+  QSettings mySettings("QuantumGIS", "qgis");
   #ifdef QGISDEBUG
   
   std::cerr << " -------------------- Restoring plugins from last session " << thePluginDirString.toLocal8Bit().data() << std::endl;
@@ -1048,7 +1048,7 @@ static void openFilesRememberingFilter_(QString const &filterName,
     bool haveLastUsedFilter = false; // by default, there is no last
                                 // used filter
 
-    QSettings settings;         // where we keep last used filter in
+    QSettings settings("QuantumGIS", "qgis");         // where we keep last used filter in
                                 // persistant state
 
     QString lastUsedFilter = settings.readEntry("/qgis/UI/" + filterName,
@@ -1980,7 +1980,7 @@ void QgisApp::newVectorLayer()
     QString enc;
     QString filename;
 
-    QSettings settings;         // where we keep last used filter in
+    QSettings settings("QuantumGIS", "qgis");         // where we keep last used filter in
                                 // persistant state
 
     QString lastUsedFilter = settings.readEntry("/qgis/UI/lastVectorFileFilter",
@@ -2152,7 +2152,7 @@ void QgisApp::fileOpen()
   if (answer != QMessageBox::Cancel)
   {
     // Retrieve last used project dir from persistent settings
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
     QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
 
     Q3FileDialog * openFileDialog = new Q3FileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0,
@@ -2277,7 +2277,7 @@ bool QgisApp::addProject(QString projectFile)
                                 // specific plug-in state
             
             // add this to the list of recently used project files
-            QSettings settings;
+            QSettings settings("QuantumGIS", "qgis");
             saveRecentProjectPath(projectFile, settings);
         }
         else
@@ -2336,7 +2336,7 @@ void QgisApp::fileSave()
         isNewProject = true;
         
         // Retrieve last used project dir from persistent settings
-        QSettings settings;
+        QSettings settings("QuantumGIS", "qgis");
         QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
         
         std::auto_ptr<Q3FileDialog> saveFileDialog( new Q3FileDialog(lastUsedDir, 
@@ -2406,7 +2406,7 @@ void QgisApp::fileSave()
             if (isNewProject)
             {
                 // add this to the list of recently used project files
-                QSettings settings;
+                QSettings settings("QuantumGIS", "qgis");
                 saveRecentProjectPath(fullPath.filePath(), settings);
             }
         }
@@ -2434,7 +2434,7 @@ void QgisApp::fileSave()
 void QgisApp::fileSaveAs()
 {
     // Retrieve last used project dir from persistent settings
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
     QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
     
     auto_ptr<Q3FileDialog> saveFileDialog( new Q3FileDialog(lastUsedDir, 
@@ -2719,7 +2719,7 @@ void QgisApp::saveMapAsImage()
     FilterMap myFilterMap;
 
     //find out the last used filter
-    QSettings myQSettings;  // where we keep last used filter in persistant state
+    QSettings myQSettings("QuantumGIS", "qgis");  // where we keep last used filter in persistant state
     QString myLastUsedFilter = myQSettings.readEntry("/qgis/UI/saveAsImageFilter");
     QString myLastUsedDir = myQSettings.readEntry("/qgis/UI/lastSaveAsImageDir",".");
 
@@ -3670,7 +3670,7 @@ void QgisApp::actionPluginManager_activated()
 
 void QgisApp::loadPlugin(QString name, QString description, QString theFullPathName)
 {
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
     // first check to see if its already loaded
     QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
     QString lib = pRegistry->library(name);
@@ -3993,7 +3993,7 @@ void QgisApp::testPluginFunctions()
 void QgisApp::saveWindowState()
 {
     // store window and toolbar positions
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
 
     QString dockStatus;
     QTextStream ts(&dockStatus, QIODevice::WriteOnly);
@@ -4012,7 +4012,7 @@ void QgisApp::saveWindowState()
 
 void QgisApp::restoreWindowState()
 {
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
 
     QString dockStatus = settings.readEntry("/qgis/Geometry/ToolBars");
     QTextStream ts(&dockStatus, QIODevice::ReadOnly);
@@ -4209,7 +4209,7 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
     CFRelease(urlRef);
 #else
     // find a browser
-    QSettings settings;
+    QSettings settings("QuantumGIS", "qgis");
     QString browser = settings.readEntry("/qgis/browser");
     if (browser.length() == 0)
     {

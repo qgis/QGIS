@@ -61,7 +61,7 @@ QgsServerSourceSelect::~QgsServerSourceSelect()
 }
 void QgsServerSourceSelect::populateConnectionList()
 {
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QStringList keys = settings.subkeyList("/Qgis/connections-wms");
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
@@ -95,7 +95,7 @@ void QgsServerSourceSelect::editConnection()
 
 void QgsServerSourceSelect::deleteConnection()
 {
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QString key = "/Qgis/connections-wms/" + cmbConnections->currentText();
   QString msg =
     tr("Are you sure you want to remove the ") + cmbConnections->currentText() + tr(" connection and all associated settings?");
@@ -111,7 +111,7 @@ void QgsServerSourceSelect::deleteConnection()
 void QgsServerSourceSelect::serverConnect()
 {
   // populate the table list
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
 
   QString key = "/Qgis/connections-wms/" + cmbConnections->currentText();
   

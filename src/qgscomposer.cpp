@@ -523,7 +523,7 @@ void QgsComposer::image(void)
   FilterMap myFilterMap;
 
   //find out the last used filter
-  QSettings myQSettings;  // where we keep last used filter in persistant state
+  QSettings myQSettings("QuantumGIS", "qgis");  // where we keep last used filter in persistant state
   QString myLastUsedFormat = myQSettings.readEntry("/qgis/UI/lastSaveAsImageFormat", "PNG" );
   QString myLastUsedFile = myQSettings.readEntry("/qgis/UI/lastSaveAsImageFile","qgis.png");
 
@@ -613,7 +613,7 @@ void QgsComposer::image(void)
 
 void QgsComposer::svg(void)
 {
-  QSettings myQSettings;
+  QSettings myQSettings("QuantumGIS", "qgis");
   QString myLastUsedFile = myQSettings.readEntry("/qgis/UI/lastSaveAsSvgFile","qgis.svg");
 
   Q3FileDialog *myQFileDialog = new Q3FileDialog( "", "SVG Format (*.svg *SVG)", 0,
@@ -711,7 +711,7 @@ void QgsComposer::resizeEvent ( QResizeEvent *e ) { saveWindowState(); }
 void QgsComposer::saveWindowState()
 {
   std::cout << "QgsComposer::saveWindowState" << std::endl;
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
 
   QPoint p = this->pos();
   QSize s = this->size();
@@ -730,7 +730,7 @@ void QgsComposer::saveWindowState()
 
 void QgsComposer::restoreWindowState()
 {
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
 
   QDesktopWidget *d = QApplication::desktop();
   int dw = d->width();

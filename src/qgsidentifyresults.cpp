@@ -135,7 +135,7 @@ void QgsIdentifyResults::popupContextMenu(Q3ListViewItem* item,
 void QgsIdentifyResults::restorePosition()
 {
 
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   int ww = settings.readNumEntry("/qgis/Windows/Identify/w", 281);
   int wh = settings.readNumEntry("/qgis/Windows/Identify/h", 316);
   int wx = settings.readNumEntry("/qgis/Windows/Identify/x", 100);
@@ -149,7 +149,7 @@ void QgsIdentifyResults::restorePosition()
 // Save the current window location (store in ~/.qt/qgisrc)
 void QgsIdentifyResults::saveWindowLocation()
 {
-  QSettings settings;
+  QSettings settings("QuantumGIS", "qgis");
   QPoint p = this->pos();
   QSize s = this->size();
   settings.writeEntry("/qgis/Windows/Identify/x", p.x());
