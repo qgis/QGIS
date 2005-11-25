@@ -79,6 +79,8 @@
 #include <qstringlist.h>
 #include <qcursor.h>
 
+#include <QRubberBand>
+
 
 #include "qgis.h"
 #include "qgsrect.h"
@@ -129,7 +131,7 @@ QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
   Q3PaintDeviceMetrics *pdm = new Q3PaintDeviceMetrics(this);
   mCanvasProperties->initMetrics(pdm);
   delete pdm;
-    
+
   mMeasure = 0;
 } // QgsMapCanvas ctor
 
@@ -1270,8 +1272,10 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
   mCanvasProperties->mouseButtonDown = true;
   mCanvasProperties->rubberStartPoint = e->pos();
   
+#if QT_VERSION < 0x040000
   QPainter paint;
   QPen pen(Qt::gray);
+#endif
 
   switch (mCanvasProperties->mapTool)
   {
@@ -1648,8 +1652,10 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       return;
   }
 
+#if QT_VERSION < 0x040000
   QPainter paint;
   QPen     pen(Qt::gray);
+#endif
   QgsPoint ll, ur;
 
   if (mCanvasProperties->dragging)
@@ -1667,6 +1673,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       paint.setRasterOp(Qt::XorROP);
       paint.drawRect(mCanvasProperties->zoomBox);
       paint.end();
+#else
+      delete mRubberBand;
 #endif
       // store the rectangle
       mCanvasProperties->zoomBox.setRight(e->pos().x());
@@ -1697,6 +1705,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         paint.setRasterOp(Qt::XorROP);
         paint.drawRect(mCanvasProperties->zoomBox);
         paint.end();
+#else
+        delete mRubberBand;
 #endif
         // store the rectangle
         mCanvasProperties->zoomBox.setRight(e->pos().x());
@@ -1757,6 +1767,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       paint.setRasterOp(Qt::XorROP);
       paint.drawRect(mCanvasProperties->zoomBox);
       paint.end();
+#else
+      delete mRubberBand;
 #endif
 
       QgsMapLayer *lyr = mCanvasProperties->mapLegend->currentLayer();
@@ -1912,10 +1924,13 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         
         if (mCanvasProperties->rubberStartPoint != mCanvasProperties->rubberStopPoint)
         {
+// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
           // XOR-out the old line
           paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberStopPoint);
-	}  
-  
+#endif
+        }
+
         mCanvasProperties->rubberStopPoint = e->pos();
         
   
@@ -2338,10 +2353,11 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
   // XXX magic numbers BAD -- 513?
   {
     // this is a drag-type operation (zoom, pan or other maptool)
-  
-    int dx, dy;
+
+#if QT_VERSION < 0x040000
     QPainter paint;
     QPen pen(Qt::gray);
+#endif
 
     switch (mCanvasProperties->mapTool)
     {
@@ -2349,10 +2365,10 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
     case QGis::ZoomIn:
     case QGis::ZoomOut:
       // draw the rubber band box as the user drags the mouse
+#if QT_VERSION < 0x040000
       mCanvasProperties->dragging = true;
 
 // TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
       paint.begin(this);
       paint.setPen(pen);
       paint.setRasterOp(Qt::XorROP);
@@ -2365,6 +2381,21 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 
       paint.drawRect(mCanvasProperties->zoomBox);
       paint.end();
+#else
+      if (!mCanvasProperties->dragging)
+      {
+        mCanvasProperties->dragging = true;
+        mRubberBand = new QRubberBand(QRubberBand::Rectangle, this);
+        mCanvasProperties->zoomBox.setTopLeft(mCanvasProperties->rubberStartPoint);
+      }
+      mCanvasProperties->zoomBox.setBottomRight(e->pos());
+#ifdef Q_OS_MACX
+      mRubberBand->setGeometry(mCanvasProperties->zoomBox);
+#else
+      mRubberBand->setGeometry(QRect(mapToGlobal(mCanvasProperties->zoomBox.topLeft()),
+        mapToGlobal(mCanvasProperties->zoomBox.bottomRight())));
+#endif
+      mRubberBand->show();
 #endif
 
       break;

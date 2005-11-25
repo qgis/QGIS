@@ -42,17 +42,16 @@
 
 #include <qgis.h>
 //Added by qt3to4:
-#include <QWheelEvent>
-#include <QPixmap>
-#include <QPaintEvent>
-#include <QKeyEvent>
-#include <QResizeEvent>
-#include <QMouseEvent>
+class QWheelEvent;
+class QPixmap;
+class QPaintEvent;
+class QKeyEvent;
+class QResizeEvent;
 
-class QRect;
 class QColor;
 class QPaintDevice;
 class QMouseEvent;
+class QRubberBand;
 
 class QgsMapToPixel;
 class QgsMapLayer;
@@ -419,6 +418,9 @@ private:
       invoked when a connect() is made to this object
   */
   void connectNotify( const char * signal );
+
+    //! Rubberband used when selecting
+    QRubberBand *mRubberBand;
 
     //! Measure tool
     QgsMeasure *mMeasure;
