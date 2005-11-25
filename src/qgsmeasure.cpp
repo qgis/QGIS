@@ -311,14 +311,14 @@ void QgsMeasure::closeEvent(QCloseEvent *e)
 void QgsMeasure::restorePosition()
 {
   QSettings settings;
-  int ww = settings.readNumEntry("/qgis/Windows/Measure/w", 150);
+  int ww = settings.readNumEntry("/Windows/Measure/w", 150);
   int wh;
   if (mMeasureArea)
-    wh = settings.readNumEntry("/qgis/Windows/Measure/hNoTable", 70);
+    wh = settings.readNumEntry("/Windows/Measure/hNoTable", 70);
   else
-    wh = settings.readNumEntry("/qgis/Windows/Measure/h", 200);    
-  int wx = settings.readNumEntry("/qgis/Windows/Measure/x", 100);
-  int wy = settings.readNumEntry("/qgis/Windows/Measure/y", 100);
+    wh = settings.readNumEntry("/Windows/Measure/h", 200);    
+  int wx = settings.readNumEntry("/Windows/Measure/x", 100);
+  int wy = settings.readNumEntry("/Windows/Measure/y", 100);
 //  setUpdatesEnabled(false);
   adjustSize();
   resize(ww,wh);
@@ -332,13 +332,13 @@ void QgsMeasure::saveWindowLocation()
   QSettings settings;
   QPoint p = this->pos();
   QSize s = this->size();
-  settings.writeEntry("/qgis/Windows/Measure/x", p.x());
-  settings.writeEntry("/qgis/Windows/Measure/y", p.y());
-  settings.writeEntry("/qgis/Windows/Measure/w", s.width());
+  settings.writeEntry("/Windows/Measure/x", p.x());
+  settings.writeEntry("/Windows/Measure/y", p.y());
+  settings.writeEntry("/Windows/Measure/w", s.width());
   if (mMeasureArea)
-    settings.writeEntry("/qgis/Windows/Measure/hNoTable", s.height());
+    settings.writeEntry("/Windows/Measure/hNoTable", s.height());
   else
-    settings.writeEntry("/qgis/Windows/Measure/h", s.height());
+    settings.writeEntry("/Windows/Measure/h", s.height());
 } 
 
 void QgsMeasure::showHelp()

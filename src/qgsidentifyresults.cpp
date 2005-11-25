@@ -136,10 +136,10 @@ void QgsIdentifyResults::restorePosition()
 {
 
   QSettings settings;
-  int ww = settings.readNumEntry("/qgis/Windows/Identify/w", 281);
-  int wh = settings.readNumEntry("/qgis/Windows/Identify/h", 316);
-  int wx = settings.readNumEntry("/qgis/Windows/Identify/x", 100);
-  int wy = settings.readNumEntry("/qgis/Windows/Identify/y", 100);
+  int ww = settings.readNumEntry("/Windows/Identify/w", 281);
+  int wh = settings.readNumEntry("/Windows/Identify/h", 316);
+  int wx = settings.readNumEntry("/Windows/Identify/x", 100);
+  int wy = settings.readNumEntry("/Windows/Identify/y", 100);
   //std::cerr << "Setting geometry: " << wx << ", " << wy << ", " << ww << ", " << wh << std::endl;
   resize(ww,wh);
   move(wx,wy);
@@ -152,10 +152,10 @@ void QgsIdentifyResults::saveWindowLocation()
   QSettings settings;
   QPoint p = this->pos();
   QSize s = this->size();
-  settings.writeEntry("/qgis/Windows/Identify/x", p.x());
-  settings.writeEntry("/qgis/Windows/Identify/y", p.y());
-  settings.writeEntry("/qgis/Windows/Identify/w", s.width());
-  settings.writeEntry("/qgis/Windows/Identify/h", s.height());
+  settings.writeEntry("/Windows/Identify/x", p.x());
+  settings.writeEntry("/Windows/Identify/y", p.y());
+  settings.writeEntry("/Windows/Identify/w", s.width());
+  settings.writeEntry("/Windows/Identify/h", s.height());
 } 
 /** add an attribute and its value to the list */
 void QgsIdentifyResults::addAttribute(Q3ListViewItem * fnode, QString field, QString value)
@@ -178,7 +178,7 @@ void QgsIdentifyResults::addAction(Q3ListViewItem * fnode, int id, QString field
   appDir = PREFIX;
 #endif
 
-  QString img = appDir + "/share/qgis/themes/default/action.png";
+  QString img = appDir + "/share/themes/default/action.png";
 
   QPixmap pm ( img );
   item->setPixmap ( 0, pm ); 
