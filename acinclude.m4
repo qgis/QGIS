@@ -111,9 +111,9 @@ AC_SUBST(GEOS_LDADD)
 ])
 
 dnl ------------------------------------------------------------------------                                                                             
-dnl Detect QT3
+dnl Detect QT
 dnl
-dnl use AQ_CHECK_QT to detect QT3
+dnl use AQ_CHECK_QT to detect QT
 dnl it sets:
 dnl   QT_CXXFLAGS
 dnl   QT_LDADD
@@ -200,9 +200,9 @@ case "${QT_VER}" in
     QT4_DESIGNERINC=$QTDIR/include/QtDesigner
     QT4_DEFAULTINC=$QTDIR/mkspecs/default
     ;;
-  33*)
-    QT_MAJOR="3"
-    ;;
+#  33*)
+#    QT_MAJOR="3"
+#    ;;
 #  32*)
 #    QT_MAJOR="3"
 #    ;;
@@ -210,7 +210,7 @@ case "${QT_VER}" in
 #    QT_MAJOR="3"
 #    ;;
   *)
-    AC_MSG_ERROR([*** Qt version 3.3.x or higher is required])
+    AC_MSG_ERROR([*** Qt version 4.0.1 or higher is required])
     ;;
 esac
 AC_MSG_RESULT([$QT_VER ($QT_MAJOR)])
