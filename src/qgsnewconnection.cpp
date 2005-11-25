@@ -35,7 +35,7 @@ QgsNewConnection::QgsNewConnection(QWidget *parent, const QString& connName, boo
       // populate the fields with the stored setting parameters
       QSettings settings;
 
-      QString key = "/Qgis/connections/" + connName;
+      QString key = "/PostgreSQL/connections/" + connName;
       txtHost->setText(settings.readEntry(key + "/host"));
       txtDatabase->setText(settings.readEntry(key + "/database"));
       QString port = settings.readEntry(key + "/port");
@@ -98,7 +98,7 @@ void QgsNewConnection::testConnection()
 void QgsNewConnection::saveConnection()
 {
   QSettings settings; 
-  QString baseKey = "/Qgis/connections/";
+  QString baseKey = "/PostgreSQL/connections/";
   settings.writeEntry(baseKey + "selected", txtName->text());
   baseKey += txtName->text();
   settings.writeEntry(baseKey + "/host", txtHost->text());
@@ -122,7 +122,7 @@ void QgsNewConnection::helpInfo()
 /* void QgsNewConnection::saveConnection()
 {
 	QSettings settings;
-	QString baseKey = "/Qgis/connections/";
+	QString baseKey = "/PostgreSQL/connections/";
 	baseKey += txtName->text();
 	settings.writeEntry(baseKey + "/host", txtHost->text());
 	settings.writeEntry(baseKey + "/database", txtDatabase->text());

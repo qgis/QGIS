@@ -4925,7 +4925,7 @@ QgsRasterLayer::QgsRasterLayer(
   // changes the threshold from the preferences dialog, it will
   // have no effect on existing layers
   // TODO: QSettings settings;
-  // updateThreshold = settings.readNumEntry("qgis/map/updateThreshold", 1000);
+  // updateThreshold = settings.readNumEntry("Map/updateThreshold", 1000);
   
   
   // TODO: Connect signals from the dataprovider to the qgisapp

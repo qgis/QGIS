@@ -146,7 +146,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
   // changes the threshold from the preferences dialog, it will
   // have no effect on existing layers
   QSettings settings;
-  updateThreshold = settings.readNumEntry("qgis/map/updateThreshold", 1000);
+  updateThreshold = settings.readNumEntry("Map/updateThreshold", 1000);
 } // QgsVectorLayer ctor
 
 

@@ -524,8 +524,8 @@ void QgsComposer::image(void)
 
   //find out the last used filter
   QSettings myQSettings;  // where we keep last used filter in persistant state
-  QString myLastUsedFormat = myQSettings.readEntry("/qgis/UI/lastSaveAsImageFormat", "PNG" );
-  QString myLastUsedFile = myQSettings.readEntry("/qgis/UI/lastSaveAsImageFile","qgis.png");
+  QString myLastUsedFormat = myQSettings.readEntry("/UI/lastSaveAsImageFormat", "PNG" );
+  QString myLastUsedFile = myQSettings.readEntry("/UI/lastSaveAsImageFile","qgis.png");
 
   // get a list of supported output image types
   int myCounterInt=0;
@@ -585,8 +585,8 @@ void QgsComposer::image(void)
   std::cout << "Image type: " << myFilterMap[myFilterString].toLocal8Bit().data() << std::endl;
 #endif
 
-  myQSettings.writeEntry("/qgis/UI/lastSaveAsImageFormat" , myFilterMap[myFilterString] );
-  myQSettings.writeEntry("/qgis/UI/lastSaveAsImageFile", myOutputFileNameQString);
+  myQSettings.writeEntry("/UI/lastSaveAsImageFormat" , myFilterMap[myFilterString] );
+  myQSettings.writeEntry("/UI/lastSaveAsImageFile", myOutputFileNameQString);
 
   if ( myOutputFileNameQString == "" ) return;
 
@@ -614,7 +614,7 @@ void QgsComposer::image(void)
 void QgsComposer::svg(void)
 {
   QSettings myQSettings;
-  QString myLastUsedFile = myQSettings.readEntry("/qgis/UI/lastSaveAsSvgFile","qgis.svg");
+  QString myLastUsedFile = myQSettings.readEntry("/UI/lastSaveAsSvgFile","qgis.svg");
 
   Q3FileDialog *myQFileDialog = new Q3FileDialog( "", "SVG Format (*.svg *SVG)", 0,
                                                 "Save svg file dialog");
@@ -632,7 +632,7 @@ void QgsComposer::svg(void)
 
   if ( myOutputFileNameQString == "" ) return;
 
-  myQSettings.writeEntry("/qgis/UI/lastSaveAsSvgFile", myOutputFileNameQString);
+  myQSettings.writeEntry("/UI/lastSaveAsSvgFile", myOutputFileNameQString);
 
   mView->setCanvas(0);
   mComposition->setPlotStyle ( QgsComposition::Print );
@@ -716,16 +716,16 @@ void QgsComposer::saveWindowState()
   QPoint p = this->pos();
   QSize s = this->size();
 
-  settings.writeEntry("/qgis/Composer/geometry/x", p.x());
-  settings.writeEntry("/qgis/Composer/geometry/y", p.y());
-  settings.writeEntry("/qgis/Composer/geometry/w", s.width());
-  settings.writeEntry("/qgis/Composer/geometry/h", s.height());
+  settings.writeEntry("/Composer/geometry/x", p.x());
+  settings.writeEntry("/Composer/geometry/y", p.y());
+  settings.writeEntry("/Composer/geometry/w", s.width());
+  settings.writeEntry("/Composer/geometry/h", s.height());
 
   Q3ValueList<int> list = mSplitter->sizes();
   Q3ValueList<int>::Iterator it = list.begin();
-  settings.writeEntry("/qgis/Composer/geometry/wiev", (int)(*it) );
+  settings.writeEntry("/Composer/geometry/wiev", (int)(*it) );
   it++;
-  settings.writeEntry("/qgis/Composer/geometry/options", (int)(*it) );
+  settings.writeEntry("/Composer/geometry/options", (int)(*it) );
 }
 
 void QgsComposer::restoreWindowState()
@@ -735,18 +735,18 @@ void QgsComposer::restoreWindowState()
   QDesktopWidget *d = QApplication::desktop();
   int dw = d->width();
   int dh = d->height();
-  int w = settings.readNumEntry("/qgis/Composer/geometry/w", 600);
-  int h = settings.readNumEntry("/qgis/Composer/geometry/h", 400);
-  int x = settings.readNumEntry("/qgis/Composer/geometry/x", (dw - 600) / 2);
-  int y = settings.readNumEntry("/qgis/Composer/geometry/y", (dh - 400) / 2);
+  int w = settings.readNumEntry("/Composer/geometry/w", 600);
+  int h = settings.readNumEntry("/Composer/geometry/h", 400);
+  int x = settings.readNumEntry("/Composer/geometry/x", (dw - 600) / 2);
+  int y = settings.readNumEntry("/Composer/geometry/y", (dh - 400) / 2);
   resize(w, h);
   move(x, y);
 
   // This doesn't work
   Q3ValueList<int> list;
-  w = settings.readNumEntry("/qgis/Composer/geometry/view", 300);
+  w = settings.readNumEntry("/Composer/geometry/view", 300);
   list.push_back( w );
-  w = settings.readNumEntry("/qgis/Composer/geometry/options", 300);
+  w = settings.readNumEntry("/Composer/geometry/options", 300);
   list.push_back( w );
   mSplitter->setSizes ( list );
 }

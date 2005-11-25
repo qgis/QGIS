@@ -353,7 +353,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, Qt::WFlags fl)
     //
     QSettings settings;
 
-    myHideSplashFlag = settings.readBoolEntry("/qgis/hideSplash");
+    myHideSplashFlag = settings.readBoolEntry("/Splash/hideSplash");
 
     if (!myHideSplashFlag)
     {
@@ -446,7 +446,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, Qt::WFlags fl)
     Q3WhatsThis::whatsThisButton(helpToolbar);
     
     // Add the recently accessed project file paths to the File menu
-    mRecentProjectPaths = settings.readListEntry("/qgis/UI/recentProjectsList");
+    mRecentProjectPaths = settings.readListEntry("/UI/recentProjectsList");
 
 // TODO: Qt4 will have to do this a different way...
 #if QT_VERSION < 0x040000
@@ -626,7 +626,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, Qt::WFlags fl)
     }
 
     // get the users theme preference from the settings
-    QString themeName = settings.readEntry("/qgis/theme","default");
+    QString themeName = settings.readEntry("/Themes","default");
 
     // set the theme
     setTheme(themeName);
@@ -823,7 +823,7 @@ QDir myPluginDir(thePluginDirString, "*.so*", QDir::Name | QDir::IgnoreCase, QDi
           // Windows stores a "true" value as a 1 in the registry so we
           // have to use readBoolEntry in this function
           
-          if (mySettings.readBoolEntry("/qgis/Plugins/" + myEntryName))
+          if (mySettings.readBoolEntry("/Plugins/" + myEntryName))
           {
             #ifdef QGISDEBUG
             std::cerr << " -------------------- loading " << myEntryName.toLocal8Bit().data() << std::endl;
@@ -1037,7 +1037,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
    @param title      the title for the dialog
    @note
 
-   Stores persistent settings under /qgis/UI/.  The sub-keys will be
+   Stores persistent settings under /UI/.  The sub-keys will be
    filterName and filterName + "Dir".
 
    Opens dialog on last directory associated with the filter name, or
@@ -1055,13 +1055,13 @@ static void openFilesRememberingFilter_(QString const &filterName,
     QSettings settings;         // where we keep last used filter in
                                 // persistant state
 
-    QString lastUsedFilter = settings.readEntry("/qgis/UI/" + filterName,
+    QString lastUsedFilter = settings.readEntry("/UI/" + filterName,
                              QString::null,
                              &haveLastUsedFilter);
 
-    QString lastUsedDir = settings.readEntry("/qgis/UI/" + filterName + "Dir",".");
+    QString lastUsedDir = settings.readEntry("/UI/" + filterName + "Dir",".");
 
-    QString lastUsedEncoding = settings.readEntry("/qgis/UI/encoding");
+    QString lastUsedEncoding = settings.readEntry("/UI/encoding");
 
 #ifdef QGISDEBUG
     std::cerr << "Opening file dialog with filters: " << filters.toLocal8Bit().data() << std::endl;
@@ -1093,9 +1093,9 @@ static void openFilesRememberingFilter_(QString const &filterName,
       qDebug("Writing last used dir: " + myPath);
 #endif
 
-      settings.writeEntry("/qgis/UI/" + filterName, openFileDialog->selectedFilter());
-      settings.writeEntry("/qgis/UI/" + filterName + "Dir", myPath);
-      settings.writeEntry("/qgis/UI/encoding", openFileDialog->encoding());
+      settings.writeEntry("/UI/" + filterName, openFileDialog->selectedFilter());
+      settings.writeEntry("/UI/" + filterName + "Dir", myPath);
+      settings.writeEntry("/UI/encoding", openFileDialog->encoding());
     }
 
     delete openFileDialog;
@@ -1987,14 +1987,14 @@ void QgisApp::newVectorLayer()
     QSettings settings;         // where we keep last used filter in
                                 // persistant state
 
-    QString lastUsedFilter = settings.readEntry("/qgis/UI/lastVectorFileFilter",
+    QString lastUsedFilter = settings.readEntry("/UI/lastVectorFileFilter",
                              QString::null,
                              &haveLastUsedFilter);
 
-    QString lastUsedDir = settings.readEntry("/qgis/UI/lastVectorFileFilterDir",
+    QString lastUsedDir = settings.readEntry("/UI/lastVectorFileFilterDir",
                           ".");
 
-    QString lastUsedEncoding = settings.readEntry("/qgis/UI/encoding");
+    QString lastUsedEncoding = settings.readEntry("/UI/encoding");
 
 #ifdef QGISDEBUG
 
@@ -2021,10 +2021,10 @@ void QgisApp::newVectorLayer()
     filename = openFileDialog->selectedFile();
     enc = openFileDialog->encoding();
 
-    settings.writeEntry("/qgis/UI//lastVectorFileFilter", openFileDialog->selectedFilter());
+    settings.writeEntry("/UI//lastVectorFileFilter", openFileDialog->selectedFilter());
 
-    settings.writeEntry("/qgis/UI//lastVectorFileFilterDir", openFileDialog->dirPath());
-    settings.writeEntry("/qgis/UI/encoding", openFileDialog->encoding());
+    settings.writeEntry("/UI//lastVectorFileFilterDir", openFileDialog->dirPath());
+    settings.writeEntry("/UI/encoding", openFileDialog->encoding());
 
     delete openFileDialog;
 
@@ -2157,7 +2157,7 @@ void QgisApp::fileOpen()
   {
     // Retrieve last used project dir from persistent settings
     QSettings settings;
-    QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
+    QString lastUsedDir = settings.readEntry("/UI/lastProjectDir", ".");
 
     Q3FileDialog * openFileDialog = new Q3FileDialog(lastUsedDir, QObject::tr("QGis files (*.qgs)"), 0,
         "open project file");
@@ -2175,7 +2175,7 @@ void QgisApp::fileOpen()
       QFileInfo myFI(fullPath);
       QString myPath = myFI.dirPath();
       // Persist last used project dir
-      settings.writeEntry("/qgis/UI/lastProjectDir", myPath);
+      settings.writeEntry("/UI/lastProjectDir", myPath);
     }
     else 
     {
@@ -2341,7 +2341,7 @@ void QgisApp::fileSave()
         
         // Retrieve last used project dir from persistent settings
         QSettings settings;
-        QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
+        QString lastUsedDir = settings.readEntry("/UI/lastProjectDir", ".");
         
         std::auto_ptr<Q3FileDialog> saveFileDialog( new Q3FileDialog(lastUsedDir, 
                                                                    QObject::tr("QGis files (*.qgs)"), 
@@ -2439,7 +2439,7 @@ void QgisApp::fileSaveAs()
 {
     // Retrieve last used project dir from persistent settings
     QSettings settings;
-    QString lastUsedDir = settings.readEntry("/qgis/UI/lastProjectDir", ".");
+    QString lastUsedDir = settings.readEntry("/UI/lastProjectDir", ".");
     
     auto_ptr<Q3FileDialog> saveFileDialog( new Q3FileDialog(lastUsedDir, 
                                                           QObject::tr("QGis files (*.qgs)"), 
@@ -2461,7 +2461,7 @@ void QgisApp::fileSaveAs()
       fullPath.setFile(saveFileDialog->selectedFile());
       QString myPath = fullPath.dirPath();
       // Persist last used project dir
-      settings.writeEntry("/qgis/UI/lastProjectDir", myPath);
+      settings.writeEntry("/UI/lastProjectDir", myPath);
     } 
     else
     {
@@ -2543,7 +2543,7 @@ void QgisApp::saveRecentProjectPath(QString projectPath, QSettings & settings)
     }
     
     // Persist the list
-    settings.writeEntry("/qgis/UI/recentProjectsList", mRecentProjectPaths);
+    settings.writeEntry("/UI/recentProjectsList", mRecentProjectPaths);
     
 // TODO: Qt4 will have to do this a different way...
 #if QT_VERSION < 0x040000
@@ -2724,8 +2724,8 @@ void QgisApp::saveMapAsImage()
 
     //find out the last used filter
     QSettings myQSettings;  // where we keep last used filter in persistant state
-    QString myLastUsedFilter = myQSettings.readEntry("/qgis/UI/saveAsImageFilter");
-    QString myLastUsedDir = myQSettings.readEntry("/qgis/UI/lastSaveAsImageDir",".");
+    QString myLastUsedFilter = myQSettings.readEntry("/UI/saveAsImageFilter");
+    QString myLastUsedDir = myQSettings.readEntry("/UI/lastSaveAsImageDir",".");
 
 
     // get a list of supported output image types
@@ -2783,8 +2783,8 @@ void QgisApp::saveMapAsImage()
     std::cout << "Image type to be passed to mapcanvas: " << (myFilterMap[myFilterString]).toLocal8Bit().data() << std::endl;
 #endif
 
-    myQSettings.writeEntry("/qgis/UI/lastSaveAsImageFilter" , myFilterString);
-    myQSettings.writeEntry("/qgis/UI/lastSaveAsImageDir", myQFileDialog->dirPath());
+    myQSettings.writeEntry("/UI/lastSaveAsImageFilter" , myFilterString);
+    myQSettings.writeEntry("/UI/lastSaveAsImageDir", myQFileDialog->dirPath());
 
     if ( myOutputFileNameQString !="")
     {
@@ -3717,14 +3717,14 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
                             // add it to the plugin registry
                             pRegistry->addPlugin(myLib->library(), name, pl);
                             //add it to the qsettings file [ts]
-                            settings.writeEntry("/qgis/Plugins/" + name, true);
+                            settings.writeEntry("/Plugins/" + name, true);
                         }
                         else
                         {
                             // something went wrong
                             QMessageBox::warning(this, tr("Error Loading Plugin"), tr("There was an error loading %1."));
                             //disable it to the qsettings file [ts]
-                            settings.writeEntry("/qgis/Plugins/" + name, false);
+                            settings.writeEntry("/Plugins/" + name, false);
                         }
                     }
                     else
@@ -3749,7 +3749,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
                             pl->setQgisMainWindow(this);
                             pl->initGui();
                             //add it to the qsettings file [ts]
-                            settings.writeEntry("/qgis/Plugins/" + name, true);
+                            settings.writeEntry("/Plugins/" + name, true);
 
                         }
                         else
@@ -3757,7 +3757,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
                             // something went wrong
                             QMessageBox::warning(this, tr("Error Loading Plugin"), tr("There was an error loading %1."));
                             //add it to the qsettings file [ts]
-                            settings.writeEntry("/qgis/Plugins/" + name, false);
+                            settings.writeEntry("/Plugins/" + name, false);
                         }
                     }
                     else
@@ -4002,15 +4002,15 @@ void QgisApp::saveWindowState()
     QString dockStatus;
     QTextStream ts(&dockStatus, QIODevice::WriteOnly);
     ts << *this;
-    settings.writeEntry("/qgis/Geometry/ToolBars", dockStatus);
+    settings.writeEntry("/Geometry/ToolBars", dockStatus);
     // store window geometry
     QPoint p = this->pos();
     QSize s = this->size();
-    settings.writeEntry("/qgis/Geometry/maximized", this->isMaximized());
-    settings.writeEntry("/qgis/Geometry/x", p.x());
-    settings.writeEntry("/qgis/Geometry/y", p.y());
-    settings.writeEntry("/qgis/Geometry/w", s.width());
-    settings.writeEntry("/qgis/Geometry/h", s.height());
+    settings.writeEntry("/Geometry/maximized", this->isMaximized());
+    settings.writeEntry("/Geometry/x", p.x());
+    settings.writeEntry("/Geometry/y", p.y());
+    settings.writeEntry("/Geometry/w", s.width());
+    settings.writeEntry("/Geometry/h", s.height());
 
 }
 
@@ -4018,7 +4018,7 @@ void QgisApp::restoreWindowState()
 {
     QSettings settings;
 
-    QString dockStatus = settings.readEntry("/qgis/Geometry/ToolBars");
+    QString dockStatus = settings.readEntry("/Geometry/ToolBars");
     QTextStream ts(&dockStatus, QIODevice::ReadOnly);
     ts >> *this;
 
@@ -4026,10 +4026,10 @@ void QgisApp::restoreWindowState()
     QDesktopWidget *d = QApplication::desktop();
     int dw = d->width();          // returns desktop width
     int dh = d->height();         // returns desktop height
-    int w = settings.readNumEntry("/qgis/Geometry/w", 600);
-    int h = settings.readNumEntry("/qgis/Geometry/h", 400);
-    int x = settings.readNumEntry("/qgis/Geometry/x", (dw - 600) / 2);
-    int y = settings.readNumEntry("/qgis/Geometry/y", (dh - 400) / 2);
+    int w = settings.readNumEntry("/Geometry/w", 600);
+    int h = settings.readNumEntry("/Geometry/h", 400);
+    int x = settings.readNumEntry("/Geometry/x", (dw - 600) / 2);
+    int y = settings.readNumEntry("/Geometry/y", (dh - 400) / 2);
     resize(w, h);
     move(x, y);
 }

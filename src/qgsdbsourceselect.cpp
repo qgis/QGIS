@@ -91,7 +91,7 @@ QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, const char *name, bool modal)
   //read the last encoding from the settings
   //or use local as default
   QSettings settings; 
-  QString lastUsedEncoding = settings.readEntry("/qgis/UI/encoding");
+  QString lastUsedEncoding = settings.readEntry("/UI/encoding");
   if(lastUsedEncoding.isNull()||lastUsedEncoding.isEmpty()||lastUsedEncoding=="\0")
     {
       mEncodingComboBox->setCurrentText(QString(QTextCodec::codecForLocale()->name()));
@@ -109,7 +109,7 @@ QgsDbSourceSelect::~QgsDbSourceSelect()
 void QgsDbSourceSelect::populateConnectionList()
 {
   QSettings settings;
-  QStringList keys = settings.subkeyList("/Qgis/connections");
+  QStringList keys = settings.subkeyList("/PostgreSQL/connections");
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
   while (it != keys.end())
@@ -192,7 +192,7 @@ void QgsDbSourceSelect::dbConnect()
   // populate the table list
   QSettings settings;
 
-  QString key = "/Qgis/connections/" + cmbConnections->currentText();
+  QString key = "/PostgreSQL/connections/" + cmbConnections->currentText();
   QString connString = "host=";
   QString host = settings.readEntry(key + "/host");
   connString += host;
@@ -449,14 +449,14 @@ void QgsDbSourceSelect::dbChanged()
 {
   // Remember which database was selected.
   QSettings settings;
-  settings.writeEntry("/Qgis/connections/selected", 
+  settings.writeEntry("/PostgreSQL/connections/selected", 
 		      cmbConnections->currentText());
 }
 void QgsDbSourceSelect::setConnectionListPosition()
 {
   QSettings settings;
   // If possible, set the item currently displayed database
-  QString toSelect = settings.readEntry("/Qgis/connections/selected");
+  QString toSelect = settings.readEntry("/PostgreSQL/connections/selected");
   // Does toSelect exist in cmbConnections?
   bool set = false;
   for (int i = 0; i < cmbConnections->count(); ++i)

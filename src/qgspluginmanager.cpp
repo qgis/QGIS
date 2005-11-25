@@ -206,7 +206,7 @@ void QgsPluginManager::unload()
             // remove the plugin from the registry
             pRegistry->removePlugin(lvi->text(0));
             //disable it to the qsettings file [ts]
-            settings.writeEntry("/qgis/Plugins/" + lvi->text(0), false);
+            settings.writeEntry("/Plugins/" + lvi->text(0), false);
           }
         }
       lvi = (Q3CheckListItem *) lvi->nextSibling();

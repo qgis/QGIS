@@ -133,7 +133,7 @@ void QgsSpatialRefSys::validate()
   }
   QSettings mySettings;
   QString myDefaultProjectionOption =
-    mySettings.readEntry("/qgis/projections/defaultBehaviour");
+    mySettings.readEntry("/Projections/defaultBehaviour");
   if (myDefaultProjectionOption=="prompt")
   {
     //@note this class is not a descendent of QWidget so we cant pass
@@ -158,10 +158,10 @@ void QgsSpatialRefSys::validate()
     // XXX TODO: Change project to store selected CS as 'projectSRS' not 'selectedWKT'
     mProj4String = QgsProject::instance()->readEntry("SpatialRefSys","//ProjectSRSProj4String",GEOPROJ4);
   }
-  else ///qgis/projections/defaultBehaviour==useDefault
+  else ///Projections/defaultBehaviour==useDefault
   {
     // XXX TODO: Change global settings to store default CS as 'defaultSRS' not 'defaultProjectionWKT'
-    mProj4String = mySettings.readEntry("/qgis/projections/defaultSRS",GEOPROJ4);
+    mProj4String = mySettings.readEntry("/Projections/defaultSRS",GEOPROJ4);
   }
 
   //

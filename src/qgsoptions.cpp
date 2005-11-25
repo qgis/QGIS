@@ -45,28 +45,28 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name, bool modal) :
   cmbBrowser->setCurrentText(browser);
   // set the show splash option
   std::cout << "Standard Identify radius setting: " << QGis::DEFAULT_IDENTIFY_RADIUS << std::endl;
-  int identifyValue = settings.readNumEntry("/qgis/map/identifyRadius",QGis::DEFAULT_IDENTIFY_RADIUS);
+  int identifyValue = settings.readNumEntry("/Map/identifyRadius",QGis::DEFAULT_IDENTIFY_RADIUS);
   std::cout << "Standard Identify radius setting read from settings file: " << identifyValue << std::endl;
   spinBoxIdentifyValue->setValue(identifyValue);
   bool hideSplashFlag = false;
-  if (settings.readEntry("/qgis/hideSplash")=="true")
+  if (settings.readEntry("/Splash/hideSplash")=="true")
   {
     hideSplashFlag =true;
   }
   cbxHideSplash->setChecked(hideSplashFlag);
 
   // set the current theme
-  cmbTheme->setCurrentText(settings.readEntry("/qgis/theme"));
+  cmbTheme->setCurrentText(settings.readEntry("/Themes"));
   // set the SVG oversampling factor
   spbSVGOversampling->setValue(QgsSVGCache::instance().getOversampling());
   // set the display update threshold
-  spinBoxUpdateThreshold->setValue(settings.readNumEntry("/qgis/map/updateThreshold"));
+  spinBoxUpdateThreshold->setValue(settings.readNumEntry("/Map/updateThreshold"));
   //set the default projection behaviour radio buttongs
-  if (settings.readEntry("/qgis/projections/defaultBehaviour")=="prompt")
+  if (settings.readEntry("/Projections/defaultBehaviour")=="prompt")
   {
     radPromptForProjection->setChecked(true);
   }
-  else if (settings.readEntry("/qgis/projections/defaultBehaviour")=="useProject")
+  else if (settings.readEntry("/Projections/defaultBehaviour")=="useProject")
   {
     radUseProjectProjection->setChecked(true);
   }
@@ -74,7 +74,7 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name, bool modal) :
   {
     radUseGlobalProjection->setChecked(true);
   }
-  mGlobalSRSID = settings.readNumEntry("/qgis/projections/defaultProjectionSRSID",GEOSRS_ID);
+  mGlobalSRSID = settings.readNumEntry("/Projections/defaultProjectionSRSID",GEOSRS_ID);
   //! @todo changes this control name in gui to txtGlobalProjString
   QString myProjString = QgsSpatialRefSys::getProj4FromSrsId(mGlobalSRSID);
   txtGlobalWKT->setText(myProjString);
@@ -105,16 +105,16 @@ void QgsOptions::saveOptions()
 {
   QSettings settings;
   settings.writeEntry("/qgis/browser", cmbBrowser->currentText());
-  settings.writeEntry("/qgis/map/identifyRadius", spinBoxIdentifyValue->value());
+  settings.writeEntry("/Map/identifyRadius", spinBoxIdentifyValue->value());
   settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
   settings.writeEntry("/qgis/new_layers_visible",!chkAddedVisibility->isChecked());
   if(cmbTheme->currentText().length() == 0)
   {
-    settings.writeEntry("/qgis/theme", "default");
+    settings.writeEntry("/Themes", "default");
   }else{
-    settings.writeEntry("/qgis/theme",cmbTheme->currentText());
+    settings.writeEntry("/Themes",cmbTheme->currentText());
   }
-  settings.writeEntry("/qgis/map/updateThreshold", spinBoxUpdateThreshold->value());
+  settings.writeEntry("/Map/updateThreshold", spinBoxUpdateThreshold->value());
   QgsSVGCache::instance().setOversampling(spbSVGOversampling->value());
   settings.writeEntry("/qgis/svgoversampling", spbSVGOversampling->value());
   //check behaviour so default projection when new layer is added with no
@@ -122,19 +122,19 @@ void QgsOptions::saveOptions()
   if (radPromptForProjection->isChecked())
   {
     //
-    settings.writeEntry("/qgis/projections/defaultBehaviour", "prompt");
+    settings.writeEntry("/Projections/defaultBehaviour", "prompt");
   }
   else if(radUseProjectProjection->isChecked())
   {
     //
-    settings.writeEntry("/qgis/projections/defaultBehaviour", "useProject");
+    settings.writeEntry("/Projections/defaultBehaviour", "useProject");
   }
   else //assumes radUseGlobalProjection is checked
   {
     //
-    settings.writeEntry("/qgis/projections/defaultBehaviour", "useGlobal");
+    settings.writeEntry("/Projections/defaultBehaviour", "useGlobal");
   }
-  settings.writeEntry("/qgis/projections/defaultProjectionSRSID",(int)mGlobalSRSID);
+  settings.writeEntry("/Projections/defaultProjectionSRSID",(int)mGlobalSRSID);
 
   settings.writeEntry("/qgis/measure/ellipsoid", getEllipsoidAcronym(cmbEllipsoid->currentText()));
   
@@ -157,7 +157,7 @@ void QgsOptions::addTheme(QString item)
 void QgsOptions::setCurrentTheme()
 {
   QSettings settings;
-  cmbTheme->setCurrentText(settings.readEntry("/qgis/theme","default"));
+  cmbTheme->setCurrentText(settings.readEntry("/Themes","default"));
 }
 
 void QgsOptions::findBrowser()
