@@ -16,16 +16,10 @@ bin_PROGRAMS = msexport
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui 
-	$(UIC) -o $@ $<
-if HAVE_QT4
-	../../tools/qgis-qt3to4.pl -uic $@
-endif
+ui_%.h: %.ui
+	uic -o $@ $<
 
-if !NO_UIC_IMPLEMENTATIONS
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
-endif
+#uic $< -o $@
 
 # %.h: %.ui
 # 	$(UIC) -o $@ $<
@@ -33,12 +27,10 @@ endif
 # %.cpp: %.ui
 # 	$(UIC) -o $@ -impl $*.h $<
 
-msexport_MOC = qgsmapserverexport.moc.cpp \
-							 qgsmapserverexportbase.moc.cpp
+msexport_MOC = qgsmapserverexport.moc.cpp 
 
 
-msexport_UI = qgsmapserverexportbase.cpp \
-	qgsmapserverexportbase.h
+msexport_UI = ui_qgsmapserverexportbase.h
 
 msexport_UIC = qgsmapserverexportbase.ui 
 

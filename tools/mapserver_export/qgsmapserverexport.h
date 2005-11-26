@@ -19,14 +19,14 @@
 
 #ifndef QGSMAPSERVEREXPORT_H
 #define QGSMAPSERVEREXPORT_H
-#include "qgsmapserverexportbase.h"
+#include "ui_qgsmapserverexportbase.h"
 
 class QgsMapCanvas;
 
 /*! \class QgsMapServerExport
 * \brief Class to handle reading and writing a Qgis project file
 */
-class QgsMapserverExport:public QgsMapserverExportBase
+class QgsMapserverExport:public QDialog, private Ui::QgsMapserverExportBase
 {
 Q_OBJECT
 public:
@@ -53,6 +53,7 @@ public:
 	};
   public slots:
 	void showHelp();
+  void on_btnChooseFile_clicked();
   private:
   void writeMapFile(void);
   QString fileName;
