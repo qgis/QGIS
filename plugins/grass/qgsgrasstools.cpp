@@ -287,10 +287,10 @@ void QgsGrassTools::closeEvent(QCloseEvent *e)
 void QgsGrassTools::restorePosition()
 {
     QSettings settings("QuantumGIS", "qgis");
-    int ww = settings.readNumEntry("/qgis/grass/windows/tools/w", 250);
-    int wh = settings.readNumEntry("/qgis/grass/windows/tools/h", 300);
-    int wx = settings.readNumEntry("/qgis/grass/windows/tools/x", 100);
-    int wy = settings.readNumEntry("/qgis/grass/windows/tools/y", 100);
+    int ww = settings.readNumEntry("/GRASS/windows/tools/w", 250);
+    int wh = settings.readNumEntry("/GRASS/windows/tools/h", 300);
+    int wx = settings.readNumEntry("/GRASS/windows/tools/x", 100);
+    int wy = settings.readNumEntry("/GRASS/windows/tools/y", 100);
     resize(ww,wh);
     move(wx,wy);
     QgsGrassToolsBase::show();
@@ -301,10 +301,10 @@ void QgsGrassTools::saveWindowLocation()
     QSettings settings("QuantumGIS", "qgis");
     QPoint p = this->pos();
     QSize s = this->size();
-    settings.writeEntry("/qgis/grass/windows/tools/x", p.x());
-    settings.writeEntry("/qgis/grass/windows/tools/y", p.y());
-    settings.writeEntry("/qgis/grass/windows/tools/w", s.width());
-    settings.writeEntry("/qgis/grass/windows/tools/h", s.height());
+    settings.writeEntry("/GRASS/windows/tools/x", p.x());
+    settings.writeEntry("/GRASS/windows/tools/y", p.y());
+    settings.writeEntry("/GRASS/windows/tools/w", s.width());
+    settings.writeEntry("/GRASS/windows/tools/h", s.height());
 }
 
 

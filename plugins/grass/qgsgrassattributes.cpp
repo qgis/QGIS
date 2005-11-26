@@ -118,10 +118,10 @@ QgsGrassAttributes::~QgsGrassAttributes ()
 void QgsGrassAttributes::restorePosition()
 {
   QSettings settings("QuantumGIS", "qgis");
-  int ww = settings.readNumEntry("/qgis/grass/windows/attributes/w", 250);
-  int wh = settings.readNumEntry("/qgis/grass/windows/attributes/h", 350);
-  int wx = settings.readNumEntry("/qgis/grass/windows/attributes/x", 100);
-  int wy = settings.readNumEntry("/qgis/grass/windows/attributes/y", 100);
+  int ww = settings.readNumEntry("/GRASS/windows/attributes/w", 250);
+  int wh = settings.readNumEntry("/GRASS/windows/attributes/h", 350);
+  int wx = settings.readNumEntry("/GRASS/windows/attributes/x", 100);
+  int wy = settings.readNumEntry("/GRASS/windows/attributes/y", 100);
   resize(ww,wh);
   move(wx,wy);
 }
@@ -131,10 +131,10 @@ void QgsGrassAttributes::saveWindowLocation()
   QSettings settings("QuantumGIS", "qgis");
   QPoint p = this->pos();
   QSize s = this->size();
-  settings.writeEntry("/qgis/grass/windows/attributes/x", p.x());
-  settings.writeEntry("/qgis/grass/windows/attributes/y", p.y());
-  settings.writeEntry("/qgis/grass/windows/attributes/w", s.width());
-  settings.writeEntry("/qgis/grass/windows/attributes/h", s.height());
+  settings.writeEntry("/GRASS/windows/attributes/x", p.x());
+  settings.writeEntry("/GRASS/windows/attributes/y", p.y());
+  settings.writeEntry("/GRASS/windows/attributes/w", s.width());
+  settings.writeEntry("/GRASS/windows/attributes/h", s.height());
 } 
 
 int QgsGrassAttributes::addTab ( const QString & label )

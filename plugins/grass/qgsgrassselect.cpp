@@ -47,7 +47,7 @@ QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
       lastMapset = QgsGrass::getDefaultMapset();
     } else {
       QSettings settings("QuantumGIS", "qgis");
-      lastGisdbase = settings.readEntry("/qgis/grass/lastGisdbase");
+      lastGisdbase = settings.readEntry("/GRASS/lastGisdbase");
       //check we got something from qsettings otherwise default to users home dir
       if (lastGisdbase.isEmpty())
       {
@@ -106,10 +106,10 @@ void QgsGrassSelect::restorePosition()
   adjustSize ();
   
   QSettings settings("QuantumGIS", "qgis");
-  int ww = settings.readNumEntry("/qgis/grass/windows/select/w", 500);
-  int wh = settings.readNumEntry("/qgis/grass/windows/select/h", 100);
-  int wx = settings.readNumEntry("/qgis/grass/windows/select/x", 100);
-  int wy = settings.readNumEntry("/qgis/grass/windows/select/y", 100);
+  int ww = settings.readNumEntry("/GRASS/windows/select/w", 500);
+  int wh = settings.readNumEntry("/GRASS/windows/select/h", 100);
+  int wx = settings.readNumEntry("/GRASS/windows/select/x", 100);
+  int wy = settings.readNumEntry("/GRASS/windows/select/y", 100);
   resize(ww,height());
   move(wx,wy);
 }
@@ -119,10 +119,10 @@ void QgsGrassSelect::saveWindowLocation()
   QSettings settings("QuantumGIS", "qgis");
   QPoint p = this->pos();
   QSize s = this->size();
-  settings.writeEntry("/qgis/grass/windows/select/x", p.x());
-  settings.writeEntry("/qgis/grass/windows/select/y", p.y());
-  settings.writeEntry("/qgis/grass/windows/select/w", s.width());
-  settings.writeEntry("/qgis/grass/windows/select/h", s.height());
+  settings.writeEntry("/GRASS/windows/select/x", p.x());
+  settings.writeEntry("/GRASS/windows/select/y", p.y());
+  settings.writeEntry("/GRASS/windows/select/w", s.width());
+  settings.writeEntry("/GRASS/windows/select/h", s.height());
 } 
 
 bool QgsGrassSelect::first = true;
@@ -448,7 +448,7 @@ void QgsGrassSelect::accept()
 
     //write to qgsettings as gisdbase seems to be valid
     QSettings settings("QuantumGIS", "qgis");
-    settings.writeEntry("/qgis/grass/lastGisdbase",lastGisdbase );
+    settings.writeEntry("/GRASS/lastGisdbase",lastGisdbase );
 
     location = elocation->currentText();
     lastLocation = location;

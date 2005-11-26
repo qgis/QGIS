@@ -38,7 +38,7 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisIface * _qI, QWidget* 
   // at startup, fetch the last used delimiter and directory from
   // settings
   QSettings settings("QuantumGIS", "qgis");
-  QString key = "/Qgis/delimited_text_plugin";
+  QString key = "/Plugin-DelimitedText";
   txtDelimiter->setText(settings.readEntry(key + "/delimiter"));
 
 }  
@@ -62,7 +62,7 @@ void QgsDelimitedTextPluginGui::pbnOK_clicked()
     // store the settings
 
     QSettings settings("QuantumGIS", "qgis");
-    QString key = "/Qgis/delimited_text_plugin";
+    QString key = "/Plugin-DelimitedText";
     settings.writeEntry(key + "/delimiter", txtDelimiter->text());
     QFileInfo fi(txtFilePath->text());
     settings.writeEntry(key + "/text_path", fi.dirPath());
@@ -148,7 +148,7 @@ void QgsDelimitedTextPluginGui::getOpenFileName()
   QSettings settings("QuantumGIS", "qgis");
 
   QString s = Q3FileDialog::getOpenFileName(
-      settings.readEntry("/Qgis/delimited_text_plugin/text_path","./"),
+      settings.readEntry("/Plugin-DelimitedText/text_path","./"),
       "Text files (*.txt)",
       0,
       "open file dialog",

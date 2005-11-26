@@ -755,7 +755,7 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
     QString enc;
     QString shapefileName;
     QString filter =  QString("Shapefiles (*.shp)");
-    QString dirName = settings.readEntry("/Qgis/delimited_text_plugin/text_path", "./");
+    QString dirName = settings.readEntry("/Plugin-DelimitedText/text_path", "./");
 
     QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog(dirName,
                                                                       filter,

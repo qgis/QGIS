@@ -225,13 +225,13 @@ void QgsGrassEdit::init()
   for ( int i = 0; i < SYMB_COUNT; i++ ) {
     bool ok;
     QString sn;
-    sn.sprintf( "/qgis/grass/edit/symb/display/%d", i );
+    sn.sprintf( "/GRASS/edit/symb/display/%d", i );
     bool displ = settings.readBoolEntry (sn, true, &ok );
     if ( ok ) {
       mSymbDisplay[i] = displ;
     }
 
-    sn.sprintf( "/qgis/grass/edit/symb/color/%d", i );
+    sn.sprintf( "/GRASS/edit/symb/color/%d", i );
     QString colorName = settings.readEntry (sn, "", &ok );
     if ( ok ) {
       QColor color( colorName );
@@ -540,10 +540,10 @@ void QgsGrassEdit::changeSymbology(Q3ListViewItem * item, const QPoint & pnt, in
     Q3CheckListItem *clvi = (Q3CheckListItem *) item;
     mSymbDisplay[index] = clvi->isOn();
 
-    int ww = settings.readNumEntry("/qgis/grass/windows/edit/w", 420);
+    int ww = settings.readNumEntry("/GRASS/windows/edit/w", 420);
     QString sn;
     // TODO use a name instead of index
-    sn.sprintf( "/qgis/grass/edit/symb/display/%d", index );
+    sn.sprintf( "/GRASS/edit/symb/display/%d", index );
     settings.writeEntry ( sn, mSymbDisplay[index] );
   } else if ( col == 1 ) {
     QColor color = QColorDialog::getColor ( mSymb[index].color(), this );
@@ -555,7 +555,7 @@ void QgsGrassEdit::changeSymbology(Q3ListViewItem * item, const QPoint & pnt, in
 
     QString sn;
     // TODO use a name instead of index
-    sn.sprintf( "/qgis/grass/edit/symb/color/%d", index );
+    sn.sprintf( "/GRASS/edit/symb/color/%d", index );
     settings.writeEntry ( sn, mSymb[index].color().name() );
   }
 }
@@ -563,10 +563,10 @@ void QgsGrassEdit::changeSymbology(Q3ListViewItem * item, const QPoint & pnt, in
 void QgsGrassEdit::restorePosition()
 {
   QSettings settings("QuantumGIS", "qgis");
-  int ww = settings.readNumEntry("/qgis/grass/windows/edit/w", 420);
-  int wh = settings.readNumEntry("/qgis/grass/windows/edit/h", 150);
-  int wx = settings.readNumEntry("/qgis/grass/windows/edit/x", 100);
-  int wy = settings.readNumEntry("/qgis/grass/windows/edit/y", 100);
+  int ww = settings.readNumEntry("/GRASS/windows/edit/w", 420);
+  int wh = settings.readNumEntry("/GRASS/windows/edit/h", 150);
+  int wx = settings.readNumEntry("/GRASS/windows/edit/x", 100);
+  int wy = settings.readNumEntry("/GRASS/windows/edit/y", 100);
   resize(ww,wh);
   move(wx,wy);
 }
@@ -576,10 +576,10 @@ void QgsGrassEdit::saveWindowLocation()
   QSettings settings("QuantumGIS", "qgis");
   QPoint p = this->pos();
   QSize s = this->size();
-  settings.writeEntry("/qgis/grass/windows/edit/x", p.x());
-  settings.writeEntry("/qgis/grass/windows/edit/y", p.y());
-  settings.writeEntry("/qgis/grass/windows/edit/w", s.width());
-  settings.writeEntry("/qgis/grass/windows/edit/h", s.height());
+  settings.writeEntry("/GRASS/windows/edit/x", p.x());
+  settings.writeEntry("/GRASS/windows/edit/y", p.y());
+  settings.writeEntry("/GRASS/windows/edit/w", s.width());
+  settings.writeEntry("/GRASS/windows/edit/h", s.height());
 } 
 
 void QgsGrassEdit::updateSymb ( void )

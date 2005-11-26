@@ -146,7 +146,7 @@ void QgsGrassPlugin::initGui()
 #endif
   if ( !isValidGrassBaseDir(gisBase) ) {
     // Look for gisbase in QSettings
-    gisBase = settings.readEntry("/qgis/grass/gisbase", "");
+    gisBase = settings.readEntry("/GRASS/gisbase", "");
 #ifdef QGISDEBUG
     qDebug( "%s:%d GRASS gisBase from QSettings is: %s", __FILE__, __LINE__, (const char*)gisBase );
 #endif
@@ -185,7 +185,7 @@ void QgsGrassPlugin::initGui()
   char *gisBaseEnvChar = new char[gisBaseEnv.length()+1];
   strcpy ( gisBaseEnvChar, const_cast<char *>(gisBaseEnv.ascii()) ); 
   putenv( gisBaseEnvChar );
-  settings.writeEntry("/qgis/grass/gisbase", gisBase);
+  settings.writeEntry("/GRASS/gisbase", gisBase);
 
   mCanvas = qGisInterface->getMapCanvas();
 
@@ -276,8 +276,8 @@ void QgsGrassPlugin::initGui()
   connect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(postRender(QPainter *)));
 
   // Init Region symbology
-  mRegionPen.setColor( QColor ( settings.readEntry ("/qgis/grass/region/color", "#ff0000" ) ) );
-  mRegionPen.setWidth( settings.readNumEntry ("/qgis/grass/region/width", 0 ) );
+  mRegionPen.setColor( QColor ( settings.readEntry ("/GRASS/region/color", "#ff0000" ) ) );
+  mRegionPen.setWidth( settings.readNumEntry ("/GRASS/region/width", 0 ) );
 
   mapsetChanged();
 }
@@ -305,7 +305,7 @@ void QgsGrassPlugin::mapsetChanged ()
         mNewVectorAction->setEnabled(true);
   
         QSettings settings("QuantumGIS", "qgis");
-	bool on = settings.readBoolEntry ("/qgis/grass/region/on", true );
+	bool on = settings.readBoolEntry ("/GRASS/region/on", true );
 	mRegionAction->setOn(on);
 
         if ( mTools ) 
@@ -669,7 +669,7 @@ void QgsGrassPlugin::switchRegion(bool on)
 #endif
 
   QSettings settings("QuantumGIS", "qgis");
-  settings.writeEntry ("/qgis/grass/region/on", on );
+  settings.writeEntry ("/GRASS/region/on", on );
 
   QPixmap *pixmap = mCanvas->canvasPixmap();
   QPainter p;
@@ -717,8 +717,8 @@ void QgsGrassPlugin::setRegionPen(QPen & pen)
   mRegionPen = pen;
 
   QSettings settings("QuantumGIS", "qgis");
-  settings.writeEntry ("/qgis/grass/region/color", mRegionPen.color().name() );
-  settings.writeEntry ("/qgis/grass/region/width", (int) mRegionPen.width() );
+  settings.writeEntry ("/GRASS/region/color", mRegionPen.color().name() );
+  settings.writeEntry ("/GRASS/region/width", (int) mRegionPen.width() );
 }
 
 void QgsGrassPlugin::openMapset()

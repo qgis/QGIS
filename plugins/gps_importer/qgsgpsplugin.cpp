@@ -225,7 +225,7 @@ void QgsGPSPlugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRo
   
   // remember the directory
   QSettings settings;
-  settings.writeEntry("/qgis/gps/gpxdirectory", fileInfo.dirPath());
+  settings.writeEntry("/Plugin-GPS/gpxdirectory", fileInfo.dirPath());
   
   // add the requested layers
   if (loadTracks)
@@ -381,8 +381,8 @@ void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
   
   // everything was OK, remember the device and port for next time
   QSettings settings;
-  settings.writeEntry("/qgis/gps/lastdldevice", device);
-  settings.writeEntry("/qgis/gps/lastdlport", port);
+  settings.writeEntry("/Plugin-GPS/lastdldevice", device);
+  settings.writeEntry("/Plugin-GPS/lastdlport", port);
   
   emit closeGui();
 }
@@ -455,8 +455,8 @@ void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
   
   // everything was OK, remember this device for next time
   QSettings settings;
-  settings.writeEntry("/qgis/gps/lastuldevice", device);
-  settings.writeEntry("/qgis/gps/lastulport", port);
+  settings.writeEntry("/Plugin-GPS/lastuldevice", device);
+  settings.writeEntry("/Plugin-GPS/lastulport", port);
   
   emit closeGui();
 }
@@ -466,7 +466,7 @@ void QgsGPSPlugin::setupBabel() {
   
   // where is gpsbabel?
   QSettings settings;
-  mBabelPath = settings.readEntry("/qgis/gps/gpsbabelpath");
+  mBabelPath = settings.readEntry("/Plugin-GPS/gpsbabelpath");
   if (mBabelPath.isEmpty())
     mBabelPath = "gpsbabel";
   // the importable formats
@@ -537,21 +537,21 @@ void QgsGPSPlugin::setupBabel() {
 		     "%babel -r -i gpx -o garmin %in %out",
 		     "%babel -t -i garmin -o gpx %in %out",
 		     "%babel -t -i gpx -o garmin %in %out");
-  QStringList deviceNames = settings.readListEntry("/qgis/gps/devicelist");
+  QStringList deviceNames = settings.readListEntry("/Plugin-GPS/devicelist");
   QStringList::iterator iter;
   for (iter = deviceNames.begin(); iter != deviceNames.end(); ++iter) {
     QString wptDownload = settings.
-      readEntry(QString("/qgis/gps/devices/%1/wptdownload").arg(*iter), "");
+      readEntry(QString("/Plugin-GPS/devices/%1/wptdownload").arg(*iter), "");
     QString wptUpload = settings.
-      readEntry(QString("/qgis/gps/devices/%1/wptupload").arg(*iter), "");
+      readEntry(QString("/Plugin-GPS/devices/%1/wptupload").arg(*iter), "");
     QString rteDownload = settings.
-      readEntry(QString("/qgis/gps/devices/%1/rtedownload").arg(*iter), "");
+      readEntry(QString("/Plugin-GPS/devices/%1/rtedownload").arg(*iter), "");
     QString rteUpload = settings.
-      readEntry(QString("/qgis/gps/devices/%1/rteupload").arg(*iter), "");
+      readEntry(QString("/Plugin-GPS/devices/%1/rteupload").arg(*iter), "");
     QString trkDownload = settings.
-      readEntry(QString("/qgis/gps/devices/%1/trkdownload").arg(*iter), "");
+      readEntry(QString("/Plugin-GPS/devices/%1/trkdownload").arg(*iter), "");
     QString trkUpload = settings.
-      readEntry(QString("/qgis/gps/devices/%1/trkupload").arg(*iter), "");
+      readEntry(QString("/Plugin-GPS/devices/%1/trkupload").arg(*iter), "");
     mDevices[*iter] = new QgsGPSDevice(wptDownload, wptUpload,
 				       rteDownload, rteUpload,
 				       trkDownload, trkUpload);
