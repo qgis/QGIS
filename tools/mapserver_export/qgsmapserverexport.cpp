@@ -14,10 +14,9 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 /* $Id: qgsmapserverexport.cpp 4170 2005-11-09 01:49:00Z timlinux $ */
 
+#include <Python.h>
 
-#include <iostream>
-#include <fstream>
-#include <q3filedialog.h>
+#include <QFileDialog>
 #include <qfileinfo.h>
 #include <qlineedit.h>
 #include <qcheckbox.h>
@@ -26,17 +25,28 @@ email                : sherman at mrcc.com
 #include <qcolor.h>
 #include <qregexp.h>
 #include <qstring.h>
+#include <QWidget>
 #include "qgsmapserverexport.h"
 #include "ui_qgsmapserverexportbase.h"
+
+
 // constructor
-QgsMapserverExport::QgsMapserverExport(QgsMapCanvas * _map, QWidget * parent, const char *name, bool modal, Qt::WFlags fl):QDialog(parent, name, modal, fl),  map(_map)
+QgsMapserverExport::QgsMapserverExport(QWidget * parent, const char *name, bool modal, Qt::WFlags fl):QDialog(parent, name, modal, fl)  
 {
+//   initialize python
+  initPy();
+
   setupUi(this);
+
 }
 
 // Default destructor
 QgsMapserverExport::~QgsMapserverExport()
 {
+
+  // cleanup python
+  Py_Finalize();
+
 }
 
 // Get the base name for the map file
@@ -45,10 +55,44 @@ QString QgsMapserverExport::baseName()
   QFileInfo fi(txtMapFilePath->text());
   return fi.baseName(true);
 }
+/** Auto-connected slots are here **/
+
+// Choose the map file to create
 void QgsMapserverExport::on_btnChooseFile_clicked()
 {
-  QMessageBox::information(this, "Test", "Test of auto-connect slot mechanism");
+  mapFile = QFileDialog::getSaveFileName(this, "Name for the map file",
+      ".", "MapServer map files (*.map);;All files(*.*)");
+  txtMapFilePath->setText(mapFile);
+
 }
+// Chooose the project file to process
+void QgsMapserverExport::on_btnChooseProjectFile_clicked()
+{
+  qgisProjectFile = QFileDialog::getOpenFileName(this, "Choose the QGIS project file",
+      ".", "QGIS Project Files (*.qgs);;All files (*.*)");
+  txtQgisFilePath->setText(qgisProjectFile);
+
+}
+// Toggle controls based on the "layer only" checkbox
+void QgsMapserverExport::on_chkExpLayersOnly_clicked(bool isChecked)
+{
+  // disable other sections if only layer export is desired
+    txtMapName->setEnabled(!isChecked);
+    txtMapWidth->setEnabled(!isChecked);
+    txtMapHeight->setEnabled(!isChecked);
+    cmbMapUnits->setEnabled(!isChecked);
+    cmbMapImageType->setEnabled(!isChecked);
+    txtMinScale->setEnabled(!isChecked);
+    txtMaxScale->setEnabled(!isChecked);
+    txtWebTemplate->setEnabled(!isChecked);
+    txtWebHeader->setEnabled(!isChecked);
+    txtWebFooter->setEnabled(!isChecked);
+    btnChooseFooterFile->setEnabled(!isChecked);
+    btnChooseHeaderFile->setEnabled(!isChecked);
+    btnChooseTemplateFile->setEnabled(!isChecked);
+}
+/** End of Slots **/
+
 // Write the map file
 bool QgsMapserverExport::write()
 {
@@ -75,12 +119,12 @@ bool QgsMapserverExport::write()
 
 void QgsMapserverExport::setFileName(QString fn)
 {
-  fullPath = fn;
+  //fullPath = fn;
 }
 
 QString QgsMapserverExport::fullPathName()
 {
-  return fullPath;
+  //return fullPath;
 }
 
 void QgsMapserverExport::writeMapFile()
@@ -350,3 +394,12 @@ void QgsMapserverExport::showHelp()
   hv->show();
   */
 }
+void QgsMapserverExport::initPy()
+{
+  // init the python interpreter
+  Py_Initialize();
+  // spit something to stdout
+  PyRun_SimpleString("print '>>>>>>>>>>>>>>>>>>>This is from python in mapserverexport!'");
+
+}
+

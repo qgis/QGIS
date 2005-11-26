@@ -30,8 +30,7 @@ class QgsMapserverExport:public QDialog, private Ui::QgsMapserverExportBase
 {
 Q_OBJECT
 public:
-  QgsMapserverExport(QgsMapCanvas *map=0, QWidget* parent = 0, 
-	const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
+  QgsMapserverExport(QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
   ~QgsMapserverExport();
   //! Read the file and create the map
   bool read();
@@ -54,12 +53,14 @@ public:
   public slots:
 	void showHelp();
   void on_btnChooseFile_clicked();
+  void on_chkExpLayersOnly_clicked(bool);
+  void on_btnChooseProjectFile_clicked();
   private:
+  void initPy();
   void writeMapFile(void);
-  QString fileName;
-  QString fullPath;
+  QString mapFile;
+  QString qgisProjectFile;
   bool neverSaved;
-  QgsMapCanvas *map;
   int action;
 };
 

@@ -37,6 +37,7 @@ msexport_UIC = qgsmapserverexportbase.ui
 msexport_SOURCES =  qgsmapserverexport.cpp \
 										qgsmapserverexport.h \
 							main.cpp \
+							msexport_wrap.cxx \
 	$(msexport_UI) \
 	$(msexport_UIC) \
 	$(msexport_MOC)
@@ -52,8 +53,16 @@ BUILT_SOURCES = $(msexport_MOC) $(msexport_UI)
 
 
 msexport_LDADD = $(QT_LDADD) $(PYTHON_LIB)
-msexport_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PYTHON_INCLUDE_DIRS) -I../../src
+msexport_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PYTHON_INCLUDE_DIR) -I../../src
 
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = $(msexport_UIC) 
+
+lib_LTLIBRARIES = libmsexport.la
+
+libmsexport_la_SOURCES = qgsmapserverexport.cpp qgsmapserverexport.moc.cpp msexport_wrap.cxx
+
+libmsexport_la_LIBADD = $(PYTHON_LIB) $(QT_LDADD)
+libmsexport_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PYTHON_INCLUDE_DIR) -I../../src
+#msexport_la_LDFLAGS
