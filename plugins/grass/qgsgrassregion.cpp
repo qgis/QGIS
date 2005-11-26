@@ -432,7 +432,7 @@ void QgsGrassRegion::accept()
     // TODO: better repaint region
     QSettings settings("QuantumGIS", "qgis");
 
-    bool on = settings.readBoolEntry ("/qgis/grass/region/on", true );
+    bool on = settings.readBoolEntry ("/GRASS/region/on", true );
 
     if ( on ) {
 	mPlugin->switchRegion(false); // delete
@@ -465,10 +465,10 @@ void QgsGrassRegion::reject()
 void QgsGrassRegion::restorePosition()
 {
   QSettings settings("QuantumGIS", "qgis");
-  int ww = settings.readNumEntry("/qgis/grass/windows/region/w", 250);
-  int wh = settings.readNumEntry("/qgis/grass/windows/region/h", 350);
-  int wx = settings.readNumEntry("/qgis/grass/windows/region/x", 100);
-  int wy = settings.readNumEntry("/qgis/grass/windows/region/y", 100);
+  int ww = settings.readNumEntry("/GRASS/windows/region/w", 250);
+  int wh = settings.readNumEntry("/GRASS/windows/region/h", 350);
+  int wx = settings.readNumEntry("/GRASS/windows/region/x", 100);
+  int wy = settings.readNumEntry("/GRASS/windows/region/y", 100);
   resize(ww,wh);
   move(wx,wy);
 }
@@ -478,9 +478,9 @@ void QgsGrassRegion::saveWindowLocation()
   QSettings settings("QuantumGIS", "qgis");
   QPoint p = this->pos();
   QSize s = this->size();
-  settings.writeEntry("/qgis/grass/windows/region/x", p.x());
-  settings.writeEntry("/qgis/grass/windows/region/y", p.y());
-  settings.writeEntry("/qgis/grass/windows/region/w", s.width());
-  settings.writeEntry("/qgis/grass/windows/region/h", s.height());
+  settings.writeEntry("/GRASS/windows/region/x", p.x());
+  settings.writeEntry("/GRASS/windows/region/y", p.y());
+  settings.writeEntry("/GRASS/windows/region/w", s.width());
+  settings.writeEntry("/GRASS/windows/region/h", s.height());
 } 
 

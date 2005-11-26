@@ -81,7 +81,7 @@ QgsSpit::QgsSpit( QWidget *parent, const char *name ) : QgsSpitBase( parent, nam
   useDefaultGeom();
 
   schema_list << "public";
-  gl_key = "/Qgis/connections/";
+  gl_key = "/PostgreSQL/connections/";
   getSchema();
   // init the geometry type list
 }
@@ -92,7 +92,7 @@ QgsSpit::~QgsSpit()
 void QgsSpit::populateConnectionList()
 {
   QSettings settings("QuantumGIS", "qgis");
-  QStringList keys = settings.subkeyList( "/Qgis/connections" );
+  QStringList keys = settings.subkeyList( "/PostgreSQL/connections" );
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
   while ( it != keys.end() )
@@ -126,7 +126,7 @@ void QgsSpit::editConnection()
 void QgsSpit::removeConnection()
 {
   QSettings settings("QuantumGIS", "qgis");
-  QString key = "/Qgis/connections/" + cmbConnections->currentText();
+  QString key = "/PostgreSQL/connections/" + cmbConnections->currentText();
   QString msg = tr("Are you sure you want to remove the [") + cmbConnections->currentText() + tr("] connection and all associated settings?");
   int result = QMessageBox::information( this, tr("Confirm Delete"), msg, tr("Yes"), tr("No") );
   if ( result == 0 )
@@ -151,12 +151,12 @@ void QgsSpit::addFile()
   QSettings settings("QuantumGIS", "qgis");
 
   QStringList files = Q3FileDialog::getOpenFileNames(
-                        "Shapefiles (*.shp)|All files (*.*)", settings.readEntry( "/Qgis/spit/last_directory" ), this, "add file dialog", "Add Shapefiles" );
+                        "Shapefiles (*.shp)|All files (*.*)", settings.readEntry( "/Plugin-Spit/last_directory" ), this, "add file dialog", "Add Shapefiles" );
   if ( files.size() > 0 )
   {
     // Save the directory for future use
     QFileInfo fi( files[ 0 ] );
-    settings.writeEntry( "/Qgis/spit/last_directory", fi.dirPath( true ) );
+    settings.writeEntry( "/Plugin-Spit/last_directory", fi.dirPath( true ) );
   }
   // Process the files
   for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it )

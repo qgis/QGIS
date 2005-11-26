@@ -200,7 +200,7 @@ void QgsGPSPluginGui::pbnGPXSelectFile_clicked()
   QString myFileTypeQString;
   QString myFilterString="GPS eXchange format (*.gpx)";
   QSettings settings("QuantumGIS", "qgis");
-  QString dir = settings.readEntry("/qgis/gps/gpxdirectory");
+  QString dir = settings.readEntry("/Plugin-GPS/gpxdirectory");
   if (dir.isEmpty())
     dir = ".";
   QString myFileNameQString = Q3FileDialog::getOpenFileName(
@@ -322,8 +322,8 @@ void QgsGPSPluginGui::populatePortComboBoxes() {
   
   // remember the last ports used
   QSettings settings("QuantumGIS", "qgis");
-  QString lastDLPort = settings.readEntry("/qgis/gps/lastdlport", "");
-  QString lastULPort = settings.readEntry("/qgis/gps/lastulport", "");
+  QString lastDLPort = settings.readEntry("/Plugin-GPS/lastdlport", "");
+  QString lastULPort = settings.readEntry("/Plugin-GPS/lastulport", "");
   for (int i = 0; i < cmbDLPort->count(); ++i) {
     if (cmbDLPort->text(i) == lastDLPort) {
       cmbDLPort->setCurrentItem(i);
@@ -350,8 +350,8 @@ void QgsGPSPluginGui::populateIMPBabelFormats() {
   cmbULDevice->clear();
   cmbDLDevice->clear();
   QSettings settings("QuantumGIS", "qgis");
-  QString lastDLDevice = settings.readEntry("/qgis/gps/lastdldevice", "");
-  QString lastULDevice = settings.readEntry("/qgis/gps/lastuldevice", "");
+  QString lastDLDevice = settings.readEntry("/Plugin-GPS/lastdldevice", "");
+  QString lastULDevice = settings.readEntry("/Plugin-GPS/lastuldevice", "");
   BabelMap::const_iterator iter;
   for (iter = mImporters.begin(); iter != mImporters.end(); ++iter)
     mBabelFilter.append((const char*)iter->first).append(" (*.*);;");

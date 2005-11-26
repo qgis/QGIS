@@ -33,7 +33,7 @@ QgsConnectionDialog::QgsConnectionDialog (QWidget* parent, QString connName, boo
 {
 	if (!connName.isEmpty()) {
 		QSettings settings("QuantumGIS", "qgis");
-		QString key = "/Qgis/connections/" + connName;
+		QString key = "/PostgreSQL/connections/" + connName;
 		txtHost->setText(settings.readEntry(key + "/host"));
 		txtDatabase->setText(settings.readEntry(key + "/database"));
 		if(settings.readEntry(key + "/port").length() ==0){
@@ -88,7 +88,7 @@ void QgsConnectionDialog::testConnection()
 void QgsConnectionDialog::saveConnection()
 {
 	QSettings settings("QuantumGIS", "qgis");
-	QString baseKey = "/Qgis/connections/";
+	QString baseKey = "/PostgreSQL/connections/";
 	baseKey += txtName->text();
 	settings.writeEntry(baseKey + "/host", txtHost->text());
 	settings.writeEntry(baseKey + "/database", txtDatabase->text());

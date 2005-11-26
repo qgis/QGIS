@@ -97,7 +97,7 @@ QgsGrassNewMapset::QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface,
     
     // DATABASE
     QSettings settings("QuantumGIS", "qgis");
-    QString db = settings.readEntry("/qgis/grass/lastGisdbase");
+    QString db = settings.readEntry("/GRASS/lastGisdbase");
     if ( !db.isNull() ) 
     {
 	mDatabaseLineEdit->setText( db );
@@ -178,7 +178,7 @@ void QgsGrassNewMapset::databaseChanged()
     // TODO: reset next tabs
     //
     QSettings settings("QuantumGIS", "qgis");
-    settings.writeEntry("/qgis/grass/lastGisdbase", mDatabaseLineEdit->text() );
+    settings.writeEntry("/GRASS/lastGisdbase", mDatabaseLineEdit->text() );
 
     setError ( mDatabaseErrorLabel, "" );
     QFileInfo databaseInfo ( mDatabaseLineEdit->text() );
@@ -244,7 +244,7 @@ void QgsGrassNewMapset::setLocations ( )
     mLocationComboBox->clear();
     
     QSettings settings("QuantumGIS", "qgis");
-    QString lastLocation = settings.readEntry("/qgis/grass/lastLocation");
+    QString lastLocation = settings.readEntry("/GRASS/lastLocation");
 
     // Get available locations with write permissions
     QDir d ( mDatabaseLineEdit->text() );
