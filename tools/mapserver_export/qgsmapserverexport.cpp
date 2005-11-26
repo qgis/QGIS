@@ -21,15 +21,17 @@ email                : sherman at mrcc.com
 #include <qfileinfo.h>
 #include <qlineedit.h>
 #include <qcheckbox.h>
-#include <q3combobox.h>
+#include <QComboBox>
 #include <qmessagebox.h>
 #include <qcolor.h>
 #include <qregexp.h>
 #include <qstring.h>
 #include "qgsmapserverexport.h"
+#include "ui_qgsmapserverexportbase.h"
 // constructor
-QgsMapserverExport::QgsMapserverExport(QgsMapCanvas * _map, QWidget * parent, const char *name, bool modal, Qt::WFlags fl):QgsMapserverExportBase(parent, name, modal, fl), map(_map)
+QgsMapserverExport::QgsMapserverExport(QgsMapCanvas * _map, QWidget * parent, const char *name, bool modal, Qt::WFlags fl):QDialog(parent, name, modal, fl),  map(_map)
 {
+  setupUi(this);
 }
 
 // Default destructor
@@ -43,7 +45,10 @@ QString QgsMapserverExport::baseName()
   QFileInfo fi(txtMapFilePath->text());
   return fi.baseName(true);
 }
-
+void QgsMapserverExport::on_btnChooseFile_clicked()
+{
+  QMessageBox::information(this, "Test", "Test of auto-connect slot mechanism");
+}
 // Write the map file
 bool QgsMapserverExport::write()
 {
