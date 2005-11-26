@@ -80,7 +80,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="txtWebTemplate" />
+         <widget class="QLineEdit" name="txtWebTemplate" >
+          <property name="toolTip" >
+           <string>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Path to the template file&lt;/p>&lt;/body>&lt;/html></string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="btnChooseTemplateFile" >
@@ -240,7 +244,7 @@
       <item row="0" column="1" colspan="2" >
        <widget class="QLineEdit" name="txtMapName" >
         <property name="toolTip" >
-         <string>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile. It should be kept short.</string>
+         <string>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile&lt;/p>&lt;/body>&lt;/html></string>
         </property>
        </widget>
       </item>
@@ -360,6 +364,9 @@
    </item>
    <item row="2" column="0" >
     <widget class="QCheckBox" name="chkExpLayersOnly" >
+     <property name="toolTip" >
+      <string>If checked, only the layer information will be processed</string>
+     </property>
      <property name="text" >
       <string>Export LAYER information only</string>
      </property>
@@ -381,7 +388,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="txtQgisFilePath" />
+      <widget class="QLineEdit" name="txtQgisFilePath" >
+       <property name="toolTip" >
+        <string>QGIS project file to export to MapServer map format</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btnChooseProjectFile" >
@@ -408,7 +419,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="txtMapFilePath" />
+      <widget class="QLineEdit" name="txtMapFilePath" >
+       <property name="toolTip" >
+        <string>Name for the map file to be created from the QGIS project file</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btnChooseFile" >
