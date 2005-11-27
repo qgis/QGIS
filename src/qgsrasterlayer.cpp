@@ -4877,7 +4877,9 @@ QgsRasterLayer::QgsRasterLayer(
                                QString rasterLayerPath,
                                QString baseName,
                                QString providerKey,
-                               QStringList layers
+                               QStringList layers,
+                               QStringList styles,
+                               QString format
                                )
     : QgsMapLayer(RASTER, baseName, rasterLayerPath),
     rasterXDimInt( std::numeric_limits<int>::max() ),
@@ -4899,6 +4901,8 @@ QgsRasterLayer::QgsRasterLayer(
 #ifdef QGISDEBUG
       std::cout << "QgsRasterLayer::QgsRasterLayer(4 arguments): starting." <<
                   " with layer list of " << layers.join(", ").toLocal8Bit().data() <<
+                   " and style list of " << styles.join(", ").toLocal8Bit().data() <<
+                   " and format of " << format.toLocal8Bit().data() <<
                   std::endl;
 #endif
 
@@ -4913,7 +4917,7 @@ QgsRasterLayer::QgsRasterLayer(
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! providerKey.isEmpty() )
   {
-    setDataProvider( providerKey, layers );
+    setDataProvider( providerKey, layers, styles, format );
   }
 
   // Default for the popup menu
@@ -4953,7 +4957,10 @@ typedef QgsDataProvider * classFactoryFunction_t( const QString * );
 /** Copied from QgsVectorLayer::setDataProvider 
  *  TODO: Make it work in the raster environment
  */
-void QgsRasterLayer::setDataProvider( QString const & provider, QStringList layers )
+void QgsRasterLayer::setDataProvider( QString const & provider,
+                                      QStringList layers,
+                                      QStringList styles,
+                                      QString format )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -5019,14 +5026,18 @@ void QgsRasterLayer::setDataProvider( QString const & provider, QStringList laye
       {
 #ifdef QGISDEBUG
         std::cout << "QgsRasterLayer::setDataProvider: Instantiated the data provider plugin" <<
-                  " with layer list of " << layers.join(", ").toLocal8Bit().data() << std::endl;
+                  " with layer list of " << layers.join(", ").toLocal8Bit().data() <<
+                   " and style list of " << styles.join(", ").toLocal8Bit().data() <<
+                   " and format of " << format.toLocal8Bit().data() <<
+                  std::endl;
 #endif
         if (dataProvider->isValid())
         {
           valid = true;
-          
-          dataProvider->addLayers(layers);
-          
+
+          dataProvider->addLayers(layers, styles);
+          dataProvider->setImageEncoding(format);
+
           // get the extent
           QgsRect *mbr = dataProvider->extent();
 

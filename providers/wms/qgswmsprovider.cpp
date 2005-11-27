@@ -149,17 +149,21 @@ size_t QgsWmsProvider::layerCount() const
 
 
 
-void QgsWmsProvider::addLayers(QStringList layers)
+void QgsWmsProvider::addLayers(QStringList layers,
+                               QStringList styles)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::addLayers: Entering" <<
-                  " with layer list of " << layers.join(", ").toLocal8Bit().data() << std::endl;
+                  " with layer list of " << layers.join(", ").toLocal8Bit().data() <<
+                   " and style list of " << styles.join(", ").toLocal8Bit().data() <<
+               std::endl;
 #endif
 
   // TODO: Make activeSubLayers a std::map in order to avoid duplicates
 
   activeSubLayers += layers;
-  
+  activeSubStyles += styles;
+
   // Set the visibility of these new layers on by default
   for ( QStringList::Iterator it  = layers.begin(); 
                               it != layers.end(); 
@@ -199,6 +203,16 @@ void QgsWmsProvider::setLayerOrder(QStringList layers)
 void QgsWmsProvider::setSubLayerVisibility(QString name, bool vis)
 {
   activeSubLayerVisibility[name] = vis;
+}
+
+
+void QgsWmsProvider::setImageEncoding(QString mimeType)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::setImageEncoding: Setting image encoding to " << mimeType.toLocal8Bit().data() << "." <<
+               std::endl;
+#endif
+  imageMimeType = mimeType;
 }
 
 
@@ -277,8 +291,19 @@ QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight
   
   // Calculate active layers that are also visible.
 
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::draw: Active" <<
+                       " layer list of " << activeSubLayers.join(", ").toLocal8Bit().data() <<
+                   " and style list of " << activeSubStyles.join(", ").toLocal8Bit().data() <<
+               std::endl;
+#endif
+
+
   QStringList visibleLayers = QStringList();
-    
+  QStringList visibleStyles = QStringList();
+
+  QStringList::Iterator it2  = activeSubStyles.begin(); 
+
   for ( QStringList::Iterator it  = activeSubLayers.begin(); 
                               it != activeSubLayers.end(); 
                             ++it ) 
@@ -286,15 +311,29 @@ QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight
     if (TRUE == activeSubLayerVisibility.find( *it )->second)
     {
       visibleLayers += *it;
+      visibleStyles += *it2;
     }
+
+    ++it2;
   }
-    
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::draw: Visible" <<
+                       " layer list of " << visibleLayers.join(", ").toLocal8Bit().data() <<
+                   " and style list of " << visibleStyles.join(", ").toLocal8Bit().data() <<
+               std::endl;
+#endif
+
+
   QString layers = visibleLayers.join(",");
   Q3Url::encode( layers );
-  
-  
+
+  QString styles = visibleStyles.join(",");
+  Q3Url::encode( styles );
+
+
   // compose the URL query string for the WMS server.
-  
+
   drawuri += "Service=WMS";
   drawuri += "&";
   drawuri += "Version=1.1.0";
@@ -311,9 +350,9 @@ QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight
   drawuri += "&";
   drawuri += "Layers=" + layers;
   drawuri += "&";
-  drawuri += "Styles=";
+  drawuri += "Styles=" + styles;
   drawuri += "&";
-  drawuri += "Format=image/png";
+  drawuri += "Format=" + imageMimeType;
 
   emit setStatus( QString("Test from QgsWmsProvider") );
 
@@ -973,32 +1012,127 @@ void QgsWmsProvider::parseRequest(QDomElement e, QgsWmsRequestProperty& requestP
 }
 
 
+void QgsWmsProvider::parseLegendUrl(QDomElement e, QgsWmsLegendUrlProperty& legendUrlProperty)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseLegendUrl: entering." << std::endl;
+#endif
+
+  legendUrlProperty.width  = e.attribute("width").toUInt();;
+  legendUrlProperty.height = e.attribute("height").toUInt();;
+
+  QDomNode n1 = e.firstChild();
+  while( !n1.isNull() ) {
+      QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+      if( !e1.isNull() ) {
+          if      (e1.tagName() == "Format")
+          {
+            legendUrlProperty.format = e1.text();
+          }
+          else if (e1.tagName() == "OnlineResource")
+          {
+            parseOnlineResource(e1, legendUrlProperty.onlineResource);
+          }
+      }
+      n1 = n1.nextSibling();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseLegendUrl: exiting." << std::endl;
+#endif
+}
+
+
+void QgsWmsProvider::parseStyle(QDomElement e, QgsWmsStyleProperty& styleProperty)
+{
+// #ifdef QGISDEBUG
+//  std::cout << "QgsWmsProvider::parseStyle: entering." << std::endl;
+// #endif
+
+  QDomNode n1 = e.firstChild();
+  while( !n1.isNull() ) {
+      QDomElement e1 = n1.toElement(); // try to convert the node to an element.
+      if( !e1.isNull() ) {
+          if      (e1.tagName() == "Name")
+          {
+            styleProperty.name = e1.text();
+          }
+          else if (e1.tagName() == "Title")
+          {
+            styleProperty.title = e1.text();
+          }
+          else if (e1.tagName() == "Abstract")
+          {
+            styleProperty.abstract = e1.text();
+          }
+          else if (e1.tagName() == "LegendURL")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "StyleSheetURL")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "StyleURL")
+          {
+            // TODO
+          }
+      }
+      n1 = n1.nextSibling();
+  }
+
+//#ifdef QGISDEBUG
+//  std::cout << "QgsWmsProvider::parseStyle: exiting." << std::endl;
+//#endif
+}
+
+
 void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerProperty)
 {
 #ifdef QGISDEBUG
 //  std::cout << "QgsWmsProvider::parseLayer: entering." << std::endl;
 #endif
 
-  // enforce WMS non-inheritance rules
-  layerProperty.name =        QString::null;
-  layerProperty.title =       QString::null;
-  layerProperty.abstract =    QString::null;
-  layerProperty.keywordList.clear();
+
+// TODO: Delete this stanza completely, depending on success of "Inherit things into the sublayer" below.
+//  // enforce WMS non-inheritance rules
+//  layerProperty.name =        QString::null;
+//  layerProperty.title =       QString::null;
+//  layerProperty.abstract =    QString::null;
+//  layerProperty.keywordList.clear();
 
   // assume true until we find a child layer
   bool atleaf = TRUE;
-  
+
+  layerProperty.queryable   = e.attribute("queryable").toUInt();
+  layerProperty.cascaded    = e.attribute("cascaded").toUInt();
+  layerProperty.opaque      = e.attribute("opaque").toUInt();
+  layerProperty.noSubsets   = e.attribute("noSubsets").toUInt();
+  layerProperty.fixedWidth  = e.attribute("fixedWidth").toUInt();
+  layerProperty.fixedHeight = e.attribute("fixedHeight").toUInt();
+
   QDomNode n1 = e.firstChild();
   while( !n1.isNull() ) {
       QDomElement e1 = n1.toElement(); // try to convert the node to an element.
       if( !e1.isNull() ) {
           //std::cout << "    " << e1.tagName() << std::endl; // the node really is an element.
-      
+
           if      (e1.tagName() == "Layer")
           {
 //            std::cout << "      Nested layer." << std::endl; 
 
-            parseLayer(e1, layerProperty);
+            QgsWmsLayerProperty subLayerProperty;
+
+            // Inherit things into the sublayer
+            //   Ref: 7.2.4.8 Inheritance of layer properties
+            subLayerProperty.style = layerProperty.style;
+            subLayerProperty.crs   = layerProperty.crs;
+            // TODO
+
+            parseLayer(e1, subLayerProperty);
+
+            layerProperty.layer.push_back(subLayerProperty);
+
             atleaf = FALSE;
           }
           else if (e1.tagName() == "Name")
@@ -1017,11 +1151,17 @@ void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerPropert
           {
             parseKeywordList(e1, layerProperty.keywordList);
           }
-          else if (e1.tagName() == "CRS")
+          else if (
+                   (e1.tagName() == "CRS")  ||
+                   (e1.tagName() == "SRS")        // legacy from earlier versions of WMS
+                  )
           {
-            layerProperty.crs.push_back(e1.text());
-          }  
-          else if (e1.tagName() == "LatLonBoundingBox")
+            layerProperty.crs.insert(e1.text());
+          }
+          else if (
+                   (e1.tagName() == "EX_GeographicBoundingBox")  ||
+                   (e1.tagName() == "LatLonBoundingBox")        // legacy from earlier versions of WMS
+                  )
           {
             
 //            std::cout << "      LLBB is: '" << e1.attribute("minx") << "'." << std::endl;
@@ -1034,18 +1174,67 @@ void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerPropert
                                                 e1.attribute("miny").toDouble(),
                                                 e1.attribute("maxx").toDouble(),
                                                 e1.attribute("maxy").toDouble()
-                                              );  
-          }  
-      
+                                              );
+          }
+          else if (e1.tagName() == "BoundingBox")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "Dimension")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "Attribution")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "AuthorityURL")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "Identifier")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "MetadataURL")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "DataURL")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "FeatureListURL")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "Style")
+          {
+            QgsWmsStyleProperty styleProperty;
+
+            parseStyle(e1, styleProperty);
+
+            layerProperty.style.push_back(styleProperty);
+          }
+          else if (e1.tagName() == "MinScaleDenominator")
+          {
+            // TODO
+          }
+          else if (e1.tagName() == "MaxScaleDenominator")
+          {
+            // TODO
+          }
+          // If we got here then it's not in the WMS 1.3 standard
+
       }
       n1 = n1.nextSibling();
-  }    
-  
+  }
+
   if (atleaf)
   {
     // We have all the information we need to properly evaluate a layer definition
     // TODO: Save this somewhere
-    
+
 #ifdef QGISDEBUG
 //    std::cout << "QgsWmsProvider::parseLayer: A layer definition is complete." << std::endl;
 
@@ -1053,19 +1242,19 @@ void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerPropert
     std::cout << " QgsWmsProvider::parseLayer:  title is: '" << layerProperty.title.toLocal8Bit().data() << "'." << std::endl;
 //    std::cout << "QgsWmsProvider::parseLayer:   srs is: '" << layerProperty.srs << "'." << std::endl;
 //    std::cout << "QgsWmsProvider::parseLayer:   bbox is: '" << layerProperty.latlonbbox.stringRep() << "'." << std::endl;
-    
+
     // Store the extent so that it can be combined with others later
     // in calculateExtent()
     extentForLayer[ layerProperty.name ] = layerProperty.ex_GeographicBoundingBox;
-    
+
     // Insert into the local class' registry
     layersSupported.push_back(layerProperty);
-       
+
 
 #endif
-    
+
   }
-  
+
 #ifdef QGISDEBUG
 //  std::cout << "QgsWmsProvider::parseLayer: exiting." << std::endl;
 #endif
@@ -1113,26 +1302,9 @@ QString QgsWmsProvider::wmsVersion()
   // TODO
 } 
 
-std::vector<QString> QgsWmsProvider::supportedFormats()
+QStringList QgsWmsProvider::supportedImageEncodings()
 {
-  std::vector<QString> returnList;
-
-#if QT_VERSION < 0x040000
-  QStringList list = QImage::inputFormatList();
-#else
-  QStringList list = Q3Picture::inputFormatList();
-#endif
-
-  QStringList::Iterator it = list.begin();
-  while( it != list.end() )
-  {
-    std::cout << "QgsWmsProvider::supportedFormats: can support input of '" << (*it).toLocal8Bit().data() << "'." << std::endl;
-
-    returnList.push_back(*it);
-
-    ++it;
-  }
-
+  return capabilities.capability.request.getMap.format;
 } 
 
   
@@ -1206,6 +1378,7 @@ void QgsWmsProvider::calculateExtent()
 
 QString QgsWmsProvider::getMetadata()
 {
+
   QString myMetadataQString = "";
 
   // Server Properties section
@@ -1306,7 +1479,7 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += tr("Layer Count");
   myMetadataQString += "</td>";
   myMetadataQString += "<td bgcolor=\"gray\">";
-  myMetadataQString += layersSupported.size();
+  myMetadataQString += QString::number( layersSupported.size() );
   myMetadataQString += "</td></tr>";
 
   // Close the nested table
@@ -1380,14 +1553,134 @@ QString QgsWmsProvider::getMetadata()
 
 
     // Layer Coordinate Reference Systems
-    for (int j = 0; i < layersSupported[i].crs.size(); i++)
+    for ( std::set<QString>::const_iterator it  = layersSupported[i].crs.begin(); 
+                                            it != layersSupported[i].crs.end(); 
+                                          ++it )
     {
       myMetadataQString += "<tr><td bgcolor=\"gray\">";
       myMetadataQString += tr("Available in CRS");
       myMetadataQString += "</td>";
       myMetadataQString += "<td bgcolor=\"gray\">";
-      myMetadataQString += layersSupported[i].crs[j];
+      myMetadataQString += (*it);
       myMetadataQString += "</td></tr>";
+    }
+
+    // Layer Styles
+    for (int j = 0; j < layersSupported[i].style.size(); j++)
+    {
+      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += tr("Available in style");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"gray\">";
+      myMetadataQString += layersSupported[i].style[j].name;
+      myMetadataQString += "</td></tr>";
+
+    myMetadataQString += "<table width=\"100%\">";
+  
+    // Table header
+    myMetadataQString += "<tr><th bgcolor=\"black\">";
+    myMetadataQString += "<font color=\"white\">" + tr("Property") + "</font>";
+    myMetadataQString += "</th>";
+    myMetadataQString += "<th bgcolor=\"black\">";
+    myMetadataQString += "<font color=\"white\">" + tr("Value") + "</font>";
+    myMetadataQString += "</th><tr>";
+  
+    // Layer Selectivity (as managed by this provider)
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Selected");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += (activeSubLayers.findIndex(layerName) >= 0) ?
+                           tr("Yes") : tr("No");
+    myMetadataQString += "</td></tr>";
+  
+    // Layer Visibility (as managed by this provider)
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Visibility");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += (activeSubLayers.findIndex(layerName) >= 0) ?
+                           (
+                            (activeSubLayerVisibility.find(layerName)->second) ?
+                            tr("Visible") : tr("Hidden")
+                           ) :
+                           tr("n/a");
+    myMetadataQString += "</td></tr>";
+  
+    // Layer Title
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Title");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += layersSupported[i].title;
+    myMetadataQString += "</td></tr>";
+  
+    // Layer Abstract
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Abstract");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += layersSupported[i].abstract;
+    myMetadataQString += "</td></tr>";
+  
+
+
+    // Layer Coordinate Reference Systems
+    for ( std::set<QString>::const_iterator it  = layersSupported[i].crs.begin(); 
+                                            it != layersSupported[i].crs.end(); 
+                                          ++it )
+    {
+      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += tr("Available in CRS");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"gray\">";
+      myMetadataQString += (*it);
+      myMetadataQString += "</td></tr>";
+    }
+
+    // Layer Styles
+    for (int j = 0; j < layersSupported[i].style.size(); j++)
+    {
+      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += tr("Available in style");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td>";
+
+      // Nested table.
+      myMetadataQString += "<table width=\"100%\">";
+
+      // Layer Style Name
+      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += tr("Name");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"gray\">";
+      myMetadataQString += layersSupported[i].style[j].name;
+      myMetadataQString += "</td></tr>";
+
+      // Layer Style Title
+      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += tr("Title");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"gray\">";
+      myMetadataQString += layersSupported[i].style[j].title;
+      myMetadataQString += "</td></tr>";
+
+      // Layer Style Abstract
+      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += tr("Abstract");
+      myMetadataQString += "</td>";
+      myMetadataQString += "<td bgcolor=\"gray\">";
+      myMetadataQString += layersSupported[i].style[j].abstract;
+      myMetadataQString += "</td></tr>";
+
+      // Close the nested table
+      myMetadataQString += "</table>";
+      myMetadataQString += "</td></tr>";
+    }
+
+    // Close the nested table
+    myMetadataQString += "</table>";
+    myMetadataQString += "</td></tr>";
     }
 
     // Close the nested table
@@ -1395,6 +1688,10 @@ QString QgsWmsProvider::getMetadata()
     myMetadataQString += "</td></tr>";
 
   }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::getMetadata: exiting with '" << myMetadataQString.toLocal8Bit().data() << "'." << std::endl;
+#endif
 
   return myMetadataQString;
 }

@@ -28,6 +28,10 @@
 #include <qmessagebox.h>
 #include <qinputdialog.h>
 #include <q3groupbox.h>
+#include <q3buttongroup.h>
+#include <qradiobutton.h>
+#include <qlayout.h>
+#include <QPicture>
 
 #include "xpm/point_layer.xpm"
 #include "xpm/line_layer.xpm"
@@ -37,6 +41,7 @@
 #include "qgsnewhttpconnection.h"
 
 #include "qgsproviderregistry.h"
+#include "qgsnumericsortlistviewitem.h"
 
 #include "../providers/wms/qgswmsprovider.h"
 
@@ -108,6 +113,133 @@ void QgsServerSourceSelect::deleteConnection()
 }
 
 
+void QgsServerSourceSelect::populateLayerList(QgsWmsProvider* wmsProvider)
+{
+  std::vector<QgsWmsLayerProperty> layers;
+
+  layers = wmsProvider->supportedLayers();
+
+  lstLayers->clear();
+
+  int layerAndStyleCount = 0;
+
+  for (std::vector<QgsWmsLayerProperty>::iterator layer  = layers.begin();
+                                                  layer != layers.end();
+                                                  layer++)
+  {
+
+#ifdef QGISDEBUG
+  std::cout << "QgsServerSourceSelect::populateLayerList: got layer name " << layer->name.toLocal8Bit().data() << " and title '" << layer->title.toLocal8Bit().data() << "'." << std::endl;
+#endif
+
+    layerAndStyleCount++;
+
+    QgsNumericSortListViewItem *lItem = new QgsNumericSortListViewItem(lstLayers);
+    lItem->setText(0, QString::number(layerAndStyleCount));
+    lItem->setText(1, layer->name.simplifyWhiteSpace());
+    lItem->setText(2, layer->title.simplifyWhiteSpace());
+    lItem->setText(3, layer->abstract.simplifyWhiteSpace());
+    lstLayers->insertItem(lItem);
+
+    // Also insert the styles
+    // Layer Styles
+    for (int j = 0; j < layer->style.size(); j++)
+    {
+#ifdef QGISDEBUG
+  std::cout << "QgsServerSourceSelect::populateLayerList: got style name " << layer->style[j].name.toLocal8Bit().data() << " and title '" << layer->style[j].title.toLocal8Bit().data() << "'." << std::endl;
+#endif
+
+      layerAndStyleCount++;
+
+      QgsNumericSortListViewItem *lItem2 = new QgsNumericSortListViewItem(lItem);
+      lItem2->setText(0, QString::number(layerAndStyleCount));
+      lItem2->setText(1, layer->style[j].name.simplifyWhiteSpace());
+      lItem2->setText(2, layer->style[j].title.simplifyWhiteSpace());
+      lItem2->setText(3, layer->style[j].abstract.simplifyWhiteSpace());
+
+      lItem->insertItem(lItem2);
+
+    }
+
+  }
+
+  // If we got some layers, let the user add them to the map
+  if (lstLayers->childCount() > 0)
+  {
+    btnAdd->setEnabled(TRUE);
+  }
+  else
+  {
+    btnAdd->setEnabled(FALSE);
+  }
+}
+
+
+void QgsServerSourceSelect::populateImageEncodingGroup(QgsWmsProvider* wmsProvider)
+{
+  QStringList formats;
+
+  formats = wmsProvider->supportedImageEncodings();
+
+  //
+  // Remove old group of buttons
+  //
+  for (int i = 1; i <= btnGrpImageEncoding->count(); i++)
+  {
+    btnGrpImageEncoding->remove( btnGrpImageEncoding->find(i) );
+  }
+
+  m_MimeTypeForButtonId.clear();
+
+  //
+  // Collect capabilities reported by Qt itself
+  //
+  QStringList qtImageFormats = QPicture::inputFormatList();
+
+  QStringList::Iterator it = qtImageFormats.begin();
+  while( it != qtImageFormats.end() )
+  {
+    std::cout << "QgsServerSourceSelect::populateImageEncodingGroup: can support input of '" << (*it).toLocal8Bit().data() << "'." << std::endl;
+    ++it;
+  }
+
+  //
+  // Add new group of buttons
+  //
+
+  int i = 1;
+  for (QStringList::Iterator format  = formats.begin();
+                             format != formats.end();
+                           ++format)
+  {
+
+#ifdef QGISDEBUG
+  std::cout << "QgsServerSourceSelect::populateImageEncodingGroup: got image format " << (*format).toLocal8Bit().data() << "." << std::endl;
+#endif
+
+    QRadioButton* radioButton = new QRadioButton(btnGrpImageEncoding);
+
+    if      ((*format) == "image/png")
+    {
+      radioButton->setText(tr("PNG"));
+    }
+    else if ((*format) == "image/jpeg")
+    {
+      radioButton->setText(tr("JPEG"));
+    }
+
+    /* Qt4 in Qt3 compat mode seems to clobber custom layout variable names */
+//    layoutImageEncoding->addWidget(radioButton);
+    hboxLayout3->addWidget(radioButton);
+
+    m_MimeTypeForButtonId[i] = (*format);
+
+    i++;
+  }
+
+}
+
+
 void QgsServerSourceSelect::serverConnect()
 {
   // populate the table list
@@ -152,74 +284,90 @@ void QgsServerSourceSelect::serverConnect()
   
   QgsWmsProvider* wmsProvider = 
     (QgsWmsProvider*) pReg->getProvider( "wms", m_connInfo );
-  
-  std::vector<QgsWmsLayerProperty> layers;
-   
-  layers = wmsProvider->supportedLayers();
-    
-  lstLayers->clear();
-  
-  for (std::vector<QgsWmsLayerProperty>::iterator layer  = layers.begin();
-                                                  layer != layers.end();
-                                                  layer++)
-       
-  {
 
-//    QgsWmsLayerProperty layer = *it;
+  populateLayerList(wmsProvider);
 
-#ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::serverConnect: got layer name " << layer->name.toLocal8Bit().data() << " and title '" << layer->title.toLocal8Bit().data() << "'." << std::endl;
-#endif
-
-
-    Q3ListViewItem *lItem = new Q3ListViewItem(lstLayers);
-    lItem->setText(1,layer->name);
-    lItem->setText(2,layer->title);
-//    lItem->setPixmap(0,*p);
-    lstLayers->insertItem(lItem);
-
-  }
-
-  
-  if (lstLayers->childCount() > 0)
-  {
-    btnAdd->setEnabled(true);
-  }  
-
-    
 }
 
 void QgsServerSourceSelect::addLayers()
 {
-  //store the layer info
+  if (m_selectedLayers.empty() == TRUE)
+  {
+    QMessageBox::information(this, tr("Select Layer"), tr("You must select at least one layer first."));
+  }
+  else
+  {
+    accept();
+  }
+}
+
+
+/**
+ * This function is used to:
+ * 1. Store the list of selected layers and visual styles as appropriate.
+ * 2. Ensure that only one style is selected per layer.
+ *    If more than one is found, the most recently selected style wins.
+ */
+void QgsServerSourceSelect::layerSelectionChanged()
+{
+  QString layerName = "";
+
+  QStringList newSelectedLayers;
+  QStringList newSelectedStylesForSelectedLayers;
+
+  std::map<QString, QString> newSelectedStyleIdForLayer;
+
+  // Iterate through the layers
   Q3ListViewItemIterator it( lstLayers );
   while ( it.current() ) 
   {
     Q3ListViewItem *item = it.current();
     ++it;
 
+    // save the name of the layer (in case only one of its styles was
+    // selected)
+    if (item->parent() == 0)
+    {
+      layerName = item->text(1);
+    }
+
     if ( item->isSelected() )
     {
-      m_selectedLayers += item->text(1);
+      newSelectedLayers += layerName;
+
+      // save the name of the style selected for the layer, if appropriate
+
+      if (item->parent() != 0)
+      {
+        newSelectedStylesForSelectedLayers += item->text(1);
+      }
+      else
+      {
+        newSelectedStylesForSelectedLayers += "";
+      }
+
+      newSelectedStyleIdForLayer[layerName] = item->text(0);
+
+      // Check if multiple styles have now been selected
+      if (
+          (!(m_selectedStyleIdForLayer[layerName].isNull())) &&  // not just isEmpty()
+          (newSelectedStyleIdForLayer[layerName] != m_selectedStyleIdForLayer[layerName])
+          )
+      {
+        // Remove old style selection
+        lstLayers->findItem(m_selectedStyleIdForLayer[layerName], 0)->setSelected(FALSE);
+      }
 
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::addLayers: Added " << item->text(1).toLocal8Bit().data() << std::endl;
+  std::cout << "QgsServerSourceSelect::addLayers: Added " << item->text(0).toLocal8Bit().data() << std::endl;
 #endif
     
     }
   }
 
-  if (m_selectedLayers.empty() == true)
-  {
-    QMessageBox::information(this, tr("Select Layer"), tr("You must select at least one layer first."));
-  }  
-  else
-  {  
-//    qgisApp->addRasterLayers("http://ims.cr.usgs.gov:80/servlet/com.esri.wms.Esrimap/USGS_EDC_Trans_BTS_Roads?", 
-//                             "Test WMS Layer", "wms");
-
-    accept();
-  }  
+  m_selectedLayers                  = newSelectedLayers;
+  m_selectedStylesForSelectedLayers = newSelectedStylesForSelectedLayers;
+  m_selectedStyleIdForLayer         = newSelectedStyleIdForLayer;
 }
 
 
@@ -236,5 +384,27 @@ QString QgsServerSourceSelect::connInfo()
 QStringList QgsServerSourceSelect::selectedLayers()
 {
   return m_selectedLayers;
+}
+
+QStringList QgsServerSourceSelect::selectedStylesForSelectedLayers()
+{
+  return m_selectedStylesForSelectedLayers;
+}
+
+QString QgsServerSourceSelect::selectedImageEncoding()
+{
+  // TODO: Match this hard coded list to the list of formats Qt reports it can actually handle.
+
+  if      (btnGrpImageEncoding->selected() == (QRadioButton *) radioButtonPng)
+  {
+    return "image/png";
+  }
+  else if (btnGrpImageEncoding->selected() == (QRadioButton *) radioButtonJpeg)
+  {
+    return "image/jpeg";
+  }
+
+  // Worst-case scenario - fall back to PNG
+  return "image/png";
 }
 

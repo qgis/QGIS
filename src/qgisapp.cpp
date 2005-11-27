@@ -1569,11 +1569,14 @@ void QgisApp::addWmsLayer()
           
           addRasterLayer(wmss->connInfo(), 
                          wmss->connName(), 
-                         "wms", 
-                         wmss->selectedLayers() );
-                         
-        }                 
-    
+                         "wms",
+                         wmss->selectedLayers(),
+                         wmss->selectedStylesForSelectedLayers(),
+                         wmss->selectedImageEncoding()
+                         );
+
+          
+        }
     }
     else
     {
@@ -5216,7 +5219,10 @@ way.
 \note   Copied from the equivalent addVectorLayer function in this file
 TODO    Make it work for rasters specifically.
 */
-void QgisApp::addRasterLayer(QString rasterLayerPath, QString baseName, QString providerKey, QStringList layers)
+void QgisApp::addRasterLayer(QString rasterLayerPath, QString baseName, QString providerKey, 
+                             QStringList layers,
+                             QStringList styles,
+                             QString format)
 {
 
 #ifdef QGISDEBUG
@@ -5243,11 +5249,13 @@ void QgisApp::addRasterLayer(QString rasterLayerPath, QString baseName, QString 
         std::cout << "QgisApp::addRasterLayer: Creating new raster layer using " <<
         rasterLayerPath.toLocal8Bit().data() << " with baseName of " << baseName.toLocal8Bit().data() <<
         " and layer list of " << layers.join(", ").toLocal8Bit().data() <<
+        " and style list of " << styles.join(", ").toLocal8Bit().data() <<
+        " and format of " << format.toLocal8Bit().data() <<
         " and providerKey of " << providerKey.toLocal8Bit().data() << std::endl;
 #endif
 
         // TODO: Remove the 0 when the raster layer becomes a full provider gateway.
-        layer = new QgsRasterLayer(0, rasterLayerPath, baseName, providerKey, layers);
+        layer = new QgsRasterLayer(0, rasterLayerPath, baseName, providerKey, layers, styles, format);
 
 #ifdef QGISDEBUG
   std::cout << "QgisApp::addRasterLayer: Constructed new layer." << std::endl;
