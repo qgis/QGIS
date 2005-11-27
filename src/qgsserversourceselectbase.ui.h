@@ -40,3 +40,9 @@ void QgsServerSourceSelectBase::deleteConnection()
 
 
 
+
+
+void QgsServerSourceSelectBase::layerSelectionChanged()
+{
+
+}

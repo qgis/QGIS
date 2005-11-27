@@ -139,7 +139,10 @@ public:
      *  Note this is included to support WMS layers only at this stage,
      *  GDAL layer support via a Provider is not yet implemented.
      */        
-    void addRasterLayer(QString rasterLayerPath, QString baseName, QString providerKey, QStringList layers);
+    void addRasterLayer(QString rasterLayerPath, QString baseName, QString providerKey,
+                        QStringList layers,
+                        QStringList styles,
+                        QString format);
 
 
     /** open a raster layer for the given file

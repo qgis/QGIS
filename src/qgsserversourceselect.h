@@ -25,10 +25,14 @@
 #endif
 
 #include <vector>
+#include <map>
 #include <utility>
 
 class Q3ListBoxItem;
 class QgisApp;
+
+class QgsWmsProvider;
+
 /*!
  * \brief   Dialog to create connections and add layers from WMS, etc.
  *
@@ -52,30 +56,53 @@ public:
     void addNewConnection();
     //! Opens a dialog to edit an existing connection
     void editConnection();
-	//! Deletes the selected connection
-	void deleteConnection();
-	//! Populate the connection list combo box
-	void populateConnectionList();
+    //! Deletes the selected connection
+    void deleteConnection();
+    //! Populate the connection list combo box
+    void populateConnectionList();
+
     /*! Connects to the database using the stored connection parameters. 
     * Once connected, available layers are displayed.
     */
     void serverConnect();
-    
+
     //! Determines the layers the user selected and closes the dialog
     void addLayers();
-    
+
+    //! Signaled when a layer selection is changed.  Ensures that only one style is selected per layer.
+    void layerSelectionChanged();
+
     //! Connection name
     QString connName();
     //! Connection info (uri)
     QString connInfo();
+
     //! String list containing the selected layers
     QStringList selectedLayers();
- 
+    //! String list containing the visual styles selected for the selected layers - this corresponds with the output from selectedLayers()
+    QStringList selectedStylesForSelectedLayers();
+
+    //! String containing the MIME type of the preferred image encoding
+    QString selectedImageEncoding();
+
 private:
+
+    //! Populate the layer list - private for now.
+    void populateLayerList(QgsWmsProvider* wmsProvider);
+
+    //! Populate the image encoding button group - private for now.
+    void populateImageEncodingGroup(QgsWmsProvider* wmsProvider);
 
     QString m_connName;
     QString m_connInfo;
     QStringList m_selectedLayers;
+    QStringList m_selectedStylesForSelectedLayers;
+
+    std::map<QString, QString> m_selectedStyleIdForLayer;
+
+    //! What MIME type corresponds to the Button ID in btnGrpImageEncoding?
+    std::vector<QString> m_MimeTypeForButtonId;
+
     //! Pointer to the qgis application mainwindow
     QgisApp *qgisApp;
 };

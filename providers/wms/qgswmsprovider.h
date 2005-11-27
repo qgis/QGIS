@@ -280,7 +280,7 @@
     QString                                     title;
     QString                                     abstract;
     QStringList                                 keywordList;
-    std::vector<QString>                        crs;        // coord ref sys
+    std::set<QString>                           crs;        // coord ref sys
     QgsRect                                     ex_GeographicBoundingBox;
     std::vector<QgsWmsBoundingBoxProperty>      boundingBox;
     std::vector<QgsWmsDimensionProperty>        dimension;
@@ -363,7 +363,8 @@ public:
   /**
    * Add the list of WMS layer names to be rendered by this server
    */
-  void addLayers(QStringList layers);
+  void addLayers(QStringList layers,
+                 QStringList styles = 0);
 
 
   /** return the number of layers for the current data source
@@ -386,7 +387,11 @@ public:
    */
   void setSubLayerVisibility(QString name, bool vis);
 
-        
+  /**
+   * Set the image encoding (as a MIME type) used in the transfer from the WMS server
+   */
+  void setImageEncoding(QString mimeType);
+
   // TODO: Document this better.
   /** \brief   Renders the layer as an image
    * TODO: Add pixel depth parameter (intended to match the display or printer device)
@@ -431,8 +436,8 @@ public:
   //! get WMS Server version string
   QString wmsVersion();
 
-  //! get raster formats supported by both the WMS Server and Qt
-  std::vector<QString> supportedFormats();
+  //! get raster image encodings supported by the WMS Server, expressed as MIME types
+  QStringList supportedImageEncodings();
   
   /**
    * Sub-layers handled by this provider, in order from bottom to top
@@ -563,6 +568,12 @@ private:
   //! parse the WMS Request XML element
   void parseRequest(QDomElement e, QgsWmsRequestProperty& requestProperty);
 
+  //! parse the WMS Legend URL XML element
+  void parseLegendUrl(QDomElement e, QgsWmsLegendUrlProperty& legendUrlProperty);
+
+  //! parse the WMS Style XML element
+  void parseStyle(QDomElement e, QgsWmsStyleProperty& styleProperty);
+
   //! parse the WMS Layer XML element
   // TODO: Make recursable
   void parseLayer(QDomElement e, QgsWmsLayerProperty& layerProperty);
@@ -626,10 +637,17 @@ private:
    */
   QStringList activeSubLayers;
 
+  QStringList activeSubStyles;
+
   /**
    * Visibility status of the given active sublayer
    */
   std::map<QString, bool> activeSubLayerVisibility;
+
+  /**
+   * MIME type of the image encoding used from the WMS server
+   */
+  QString imageMimeType;
 
   /**
    * The previously retrieved image from the WMS server.

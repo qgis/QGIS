@@ -102,6 +102,7 @@ qgisHEADERS =	\
 		qgsmarkerdialog.h				\
 		qgsmeasure.h					\
 		qgsnewhttpconnection.h				\
+		qgsnumericsortlistviewitem.h			\
 		qgsoptions.h					\
 		qgspastetransformations.h			\
 		qgspatterndialog.h				\
@@ -271,6 +272,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsmarkerdialog.cpp		\
 		qgsmeasure.cpp			\
 		qgsnewhttpconnection.cpp	\
+		qgsnumericsortlistviewitem.cpp	\
 		qgsoptions.cpp			\
 		qgspastetransformations.cpp	\
 		qgspatterndialog.cpp		\
@@ -382,6 +384,7 @@ libqgisHEADERS =							\
 		qgsmaptopixel.h						\
 		qgsmarkercatalogue.h				\
 		qgsmarkersymbol.h					\
+		qgsnumericsortlistviewitem.h			\
 		qgspoint.h							\
 		qgspointstylewidget.h				\
 		qgsprojectproperty.h				\
@@ -500,6 +503,7 @@ libqgis_la_SOURCES =						\
 		qgsmaptopixel.cpp					\
 		qgsmarkercatalogue.cpp				\
 		qgsmarkersymbol.cpp					\
+		qgsnumericsortlistviewitem.cpp			\
 		qgspoint.cpp						\
 		qgspointstylewidget.cpp				\
 		qgsprojectproperty.cpp				\
