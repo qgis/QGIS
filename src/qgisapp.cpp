@@ -4857,8 +4857,8 @@ void QgisApp::setupToolbarPopups(QString themeName)
     toolPopupOverviews->insertItem(QIcon(QPixmap(iconPath + "/remove_all_from_overview.png")),
                                    tr("Remove all layers from the overview map"),
                                    this, SLOT(removeAllFromOverview()));
-    tbtnOverviewTools->setPopup(toolPopupOverviews);
-    tbtnOverviewTools->setPopupDelay(0);
+    tbtnOverviewTools->setMenu(toolPopupOverviews);
+    tbtnOverviewTools->setPopupMode(QToolButton::MenuButtonPopup);
     // connect the top overview tool to the appropriate slot
     connect(tbtnOverviewTools, SIGNAL(clicked()), this, SLOT(addAllToOverview()));
 
@@ -4872,8 +4872,8 @@ void QgisApp::setupToolbarPopups(QString themeName)
     toolPopupDisplay->insertItem(QIcon(QPixmap(iconPath + "/hide_all_layers.png")),
                                  tr("Hide all layers"),
                                  this, SLOT(hideAllLayers()));
-    tbtnDisplayTools->setPopup(toolPopupDisplay);
-    tbtnDisplayTools->setPopupDelay(0);
+    tbtnDisplayTools->setMenu(toolPopupDisplay);
+    tbtnDisplayTools->setPopupMode(QToolButton::MenuButtonPopup);
     // connect the top overview tool to the appropriate slot
     connect(tbtnDisplayTools, SIGNAL(clicked()), this, SLOT(showAllLayers()));
 
@@ -4893,8 +4893,8 @@ void QgisApp::setupToolbarPopups(QString themeName)
     toolPopupCapture->insertItem(QIcon(QPixmap(iconPath + "/delete_selected.png")),
                                 tr("Delete selection"),
                                  this, SLOT(deleteSelected()),0,3);
-    tbtnCaptureTools->setPopup(toolPopupCapture);
-    tbtnCaptureTools->setPopupDelay(0);
+    tbtnCaptureTools->setMenu(toolPopupCapture);
+    tbtnCaptureTools->setPopupMode(QToolButton::MenuButtonPopup);
 }
 
 
