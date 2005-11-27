@@ -26,14 +26,14 @@
 #include "qfont.h"
 #include "qgis.h"
 #include "qbitmap.h"
-#if defined(WIN32) || defined(Q_OS_MACX)
-QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
 #define STATUS_TEXT_X 90
 #define STATUS_TEXT_Y 20
 SplashScreen::SplashScreen():QWidget(0, 0, Qt::WStyle_Customize | Qt::WStyle_Splash)
 {
   //set up masking
+#if defined(WIN32) || defined(Q_OS_MACX)
+  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
+#endif
   splashImage.load(QString(PKGDATAPATH) + QString("/images/splash/splash.png"), 0, Qt::ThresholdDither |   Qt::AvoidDither );
   resize(splashImage.size());
   //
