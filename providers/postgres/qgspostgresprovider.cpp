@@ -1244,7 +1244,7 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
   // This sql is derived from the one that defines the view
   // 'information_schema.view_column_usage' in PostgreSQL, with a few
   // mods to suit our purposes. 
-  QString sql = "SELECT DISTINCT nv.nspname::information_schema.sql_identifier AS view_schema, v.relname::information_schema.sql_identifier AS view_name, a.attname::information_schema.sql_identifier AS view_column_name, nt.nspname::information_schema.sql_identifier AS table_schema, t.relname::information_schema.sql_identifier AS table_name, a.attname::information_schema.sql_identifier AS column_name, t.relkind::information_schema.sql_identifier as table_type, typ.typname::information_schema.sql_identifier as column_type FROM pg_namespace nv, pg_class v, pg_depend dv, pg_depend dt, pg_class t, pg_namespace nt, pg_attribute a, pg_user u, pg_type typ WHERE nv.oid = v.relnamespace AND v.relkind = 'v'::\"char\" AND v.oid = dv.refobjid AND dv.refclassid = 'pg_class'::regclass::oid AND dv.classid = 'pg_rewrite'::regclass::oid AND dv.deptype = 'i'::\"char\" AND dv.objid = dt.objid AND dv.refobjid <> dt.refobjid AND dt.classid = 'pg_rewrite'::regclass::oid AND dt.refclassid = 'pg_class'::regclass::oid AND dt.refobjid = t.oid AND t.relnamespace = nt.oid AND (t.relkind = 'r'::\"char\" OR t.relkind = 'v'::\"char\") AND t.oid = a.attrelid AND dt.refobjsubid = a.attnum AND nv.nspname::information_schema.sql_identifier NOT IN ('pg_catalog', 'information_schema' ) AND a.atttypid = typ.oid";
+  QString sql = "SELECT DISTINCT nv.nspname AS view_schema, v.relname AS view_name, a.attname AS view_column_name, nt.nspname AS table_schema, t.relname AS table_name, a.attname AS column_name, t.relkind as table_type, typ.typname as column_type FROM pg_namespace nv, pg_class v, pg_depend dv, pg_depend dt, pg_class t, pg_namespace nt, pg_attribute a, pg_user u, pg_type typ WHERE nv.oid = v.relnamespace AND v.relkind = 'v'::\"char\" AND v.oid = dv.refobjid AND dv.refclassid = 'pg_class'::regclass::oid AND dv.classid = 'pg_rewrite'::regclass::oid AND dv.deptype = 'i'::\"char\" AND dv.objid = dt.objid AND dv.refobjid <> dt.refobjid AND dt.classid = 'pg_rewrite'::regclass::oid AND dt.refclassid = 'pg_class'::regclass::oid AND dt.refobjid = t.oid AND t.relnamespace = nt.oid AND (t.relkind = 'r'::\"char\" OR t.relkind = 'v'::\"char\") AND t.oid = a.attrelid AND dt.refobjsubid = a.attnum AND nv.nspname NOT IN ('pg_catalog', 'information_schema' ) AND a.atttypid = typ.oid";
 
   // A structure to store the results of the above sql.
   typedef std::map<QString, TT> columnRelationsType;
@@ -1280,13 +1280,15 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
   }
   PQclear(result);
 
-  // Loop over all columns in the view in question. Use the
-  // information_schema in PostgreSQL to obtain the columns in the
-  // view as that's supposedly portable across databases if and when we
-  // move beyond PostgreSQL.
-  sql = "select table_schema || '.' || table_name || '.' || "
-    "column_name from information_schema.columns where table_schema = '" +
-    mSchemaName + "' and table_name = '" + mTableName + "'";
+  // Loop over all columns in the view in question. 
+
+  sql = "SELECT pg_namespace.nspname || '.' || "
+    "pg_class.relname || '.' || pg_attribute.attname "
+    "FROM pg_attribute, pg_class, pg_namespace "
+    "WHERE pg_class.relname = '" + mTableName + "' "
+    "AND pg_namespace.nspname = '" + mSchemaName + "' "
+    "AND pg_attribute.attrelid = pg_class.oid "
+    "AND pg_class.relnamespace = pg_namespace.oid";
 
   result = PQexec(connection, (const char*)(sql.utf8()));
 
