@@ -363,8 +363,8 @@ public:
   /**
    * Add the list of WMS layer names to be rendered by this server
    */
-  void addLayers(QStringList layers,
-                 QStringList styles = 0);
+  void addLayers(QStringList const &  layers,
+                 QStringList const &  styles = QStringList());
 
 
   /** return the number of layers for the current data source
@@ -380,17 +380,17 @@ public:
    * (in order from bottom to top)
    * \note   layers must have been previously added.
    */
-  void setLayerOrder(QStringList layers);
+  void setLayerOrder(QStringList  const & layers);
 
   /**
    * Set the visibility of the given sublayer name
    */
-  void setSubLayerVisibility(QString name, bool vis);
+  void setSubLayerVisibility(QString const &  name, bool vis);
 
   /**
    * Set the image encoding (as a MIME type) used in the transfer from the WMS server
    */
-  void setImageEncoding(QString mimeType);
+  void setImageEncoding(QString  const & mimeType);
 
   // TODO: Document this better.
   /** \brief   Renders the layer as an image
@@ -398,7 +398,7 @@ public:
    * Ownership of the returned QImage remains with this provider and its lifetime
    * is guaranteed only until the next call to draw() or destruction of this provider.
    */
-  QImage* draw(QgsRect viewExtent, int pixelWidth, int pixelHeight);
+  QImage* draw(QgsRect const &  viewExtent, int pixelWidth, int pixelHeight);
 
   
   /** Experimental function only **/
@@ -498,12 +498,12 @@ public:
     void setProgress(int theProgress, int theTotalSteps);
 
     /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
-    void setStatus(QString theStatusQString);
+    void setStatus(QString const &  theStatusQString);
 
     
 public slots:
   
-  void showStatusMessage(QString theMessage);
+  void showStatusMessage(QString const &  theMessage);
  
     
 private:
@@ -519,64 +519,64 @@ private:
 
 
   //! Test function: see if we can download a WMS' capabilites
-  void downloadCapabilitiesURI(QString uri);
+  void downloadCapabilitiesURI(QString const &  uri);
 
   //! Test function: see if we can download a map from a WMS
-  void drawTest(QString uri);
+  void drawTest(QString const & uri);
   
   //! Test function: see if we can parse a WMS' capabilites
-  void parseCapabilities(QByteArray xml, QgsWmsCapabilitiesProperty& capabilitiesProperty);
+  void parseCapabilities(QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty);
   
   //! parse the WMS Service XML element
-  void parseService(QDomElement e, QgsWmsServiceProperty& serviceProperty);
+  void parseService(QDomElement const & e, QgsWmsServiceProperty& serviceProperty);
 
   //! parse the WMS Capability XML element
-  void parseCapability(QDomElement e, QgsWmsCapabilityProperty& capabilityProperty);
+  void parseCapability(QDomElement const & e, QgsWmsCapabilityProperty& capabilityProperty);
 
   //! parse the WMS ContactPersonPrimary XML element
-  void parseContactPersonPrimary(QDomElement e, QgsWmsContactPersonPrimaryProperty&
+  void parseContactPersonPrimary(QDomElement const & e, QgsWmsContactPersonPrimaryProperty&
                                                 contactPersonPrimaryProperty);
 
   //! parse the WMS ContactAddress XML element
-  void parseContactAddress(QDomElement e, QgsWmsContactAddressProperty& contactAddressProperty);
+  void parseContactAddress(QDomElement const & e, QgsWmsContactAddressProperty& contactAddressProperty);
 
   //! parse the WMS ContactInformation XML element
-  void parseContactInformation(QDomElement e, QgsWmsContactInformationProperty&
+  void parseContactInformation(QDomElement const & e, QgsWmsContactInformationProperty&
                                               contactInformationProperty);
 
   //! parse the WMS OnlineResource XML element
-  void parseOnlineResource(QDomElement e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute);
+  void parseOnlineResource(QDomElement const & e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute);
 
   //! parse the WMS KeywordList XML element
-  void parseKeywordList(QDomElement e, QStringList& keywordListProperty);
+  void parseKeywordList(QDomElement const & e, QStringList& keywordListProperty);
 
   //! parse the WMS Get XML element
-  void parseGet(QDomElement e, QgsWmsGetProperty& getProperty);
+  void parseGet(QDomElement const & e, QgsWmsGetProperty& getProperty);
 
   //! parse the WMS Post XML element
-  void parsePost(QDomElement e, QgsWmsPostProperty& postProperty);
+  void parsePost(QDomElement const & e, QgsWmsPostProperty& postProperty);
 
   //! parse the WMS HTTP XML element
-  void parseHttp(QDomElement e, QgsWmsHttpProperty& httpProperty);
+  void parseHttp(QDomElement const & e, QgsWmsHttpProperty& httpProperty);
 
   //! parse the WMS DCPType XML element
-  void parseDcpType(QDomElement e, QgsWmsDcpTypeProperty& dcpType);
+  void parseDcpType(QDomElement const & e, QgsWmsDcpTypeProperty& dcpType);
 
   //! parse the WMS GetCapabilities, GetMap, or GetFeatureInfo XML element, each of type "OperationType".
-  void parseOperationType(QDomElement e, QgsWmsOperationType& operationType);
+  void parseOperationType(QDomElement const & e, QgsWmsOperationType& operationType);
 
   //! parse the WMS Request XML element
-  void parseRequest(QDomElement e, QgsWmsRequestProperty& requestProperty);
+  void parseRequest(QDomElement const & e, QgsWmsRequestProperty& requestProperty);
 
   //! parse the WMS Legend URL XML element
-  void parseLegendUrl(QDomElement e, QgsWmsLegendUrlProperty& legendUrlProperty);
+  void parseLegendUrl(QDomElement const & e, QgsWmsLegendUrlProperty& legendUrlProperty);
 
   //! parse the WMS Style XML element
-  void parseStyle(QDomElement e, QgsWmsStyleProperty& styleProperty);
+  void parseStyle(QDomElement const & e, QgsWmsStyleProperty& styleProperty);
 
   //! parse the WMS Layer XML element
   // TODO: Make recursable
-  void parseLayer(QDomElement e, QgsWmsLayerProperty& layerProperty);
+  void parseLayer(QDomElement const & e, QgsWmsLayerProperty& layerProperty);
 
   //! calculates the combined extent of the layers selected by layersDrawn  
   void calculateExtent();

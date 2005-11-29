@@ -5219,10 +5219,12 @@ way.
 \note   Copied from the equivalent addVectorLayer function in this file
 TODO    Make it work for rasters specifically.
 */
-void QgisApp::addRasterLayer(QString rasterLayerPath, QString baseName, QString providerKey, 
-                             QStringList layers,
-                             QStringList styles,
-                             QString format)
+void QgisApp::addRasterLayer(QString const & rasterLayerPath, 
+                             QString const & baseName, 
+                             QString const & providerKey, 
+                             QStringList const & layers,
+                             QStringList const & styles,
+                             QString const & format)
 {
 
 #ifdef QGISDEBUG
