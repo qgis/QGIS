@@ -244,10 +244,10 @@ public:
         
     static void buildSupportedRasterFileFilter(QString & fileFilters);
     static bool isSupportedRasterDriver(QString const &driverName);
-    /** This helper checks to see whether the filename appears to be a valid raster file name */
-    static bool isValidRasterFileName(QString theFileNameQString);
-    /** Overloaded version of the above function provided for convenience that takes a qstring pointer */
-    static bool isValidRasterFileName(QString * theFileNameQString);
+
+    /** This helper checks to see whether the filename appears to be a valid
+       raster file name */
+    static bool isValidRasterFileName(QString const & theFileNameQString);
 
     //
     // Non Static methods:
@@ -267,7 +267,8 @@ public:
      *
      * -
      * */
-    QgsRasterLayer(QString path = 0, QString baseName = 0);
+    QgsRasterLayer(QString const & path = QString::null, 
+                   QString const &  baseName = QString::null);
 
     /** \brief The destuctor.  */
     ~QgsRasterLayer();
@@ -371,15 +372,15 @@ public:
     *    Note this approach is not recommeneded because it is possible for two gdal raster
     *    bands to have the same name!
     */
-    const  QgsRasterBandStats getRasterBandStats(QString);
+    const  QgsRasterBandStats getRasterBandStats(QString const &);
     /** \brief Get the number of a band given its name. Note this will be the rewritten name set 
     *   up in the constructor, and will not necessarily be the same as the name retrieved directly from gdal!
     *   If no matching band is found zero will be returned! */
-    const  int getRasterBandNumber (QString theBandNameQString);
+    const  int getRasterBandNumber (QString const & theBandNameQString);
     /** \brief Get the name of a band given its number.  */
     const  QString getRasterBandName(int theBandNoInt);
     /** \brief Find out whether a given band exists.    */
-    bool hasBand(QString theBandName);
+    bool hasBand(QString const &  theBandName);
     /** \brief accessor for transparency level.  */
     unsigned int getTransparency();
     /** \brief Mutator for transparency level. Should be between 0 and 255 */
@@ -392,7 +393,7 @@ public:
         return redBandNameQString;
     };
     /** \brief Mutator for red band name (allows alternate mappings e.g. map blue as red colour). */
-    void setRedBandName(QString theBandNameQString);
+    void setRedBandName(QString const & theBandNameQString);
     // 
     // Accessor and mutator for green band name
     // 
@@ -402,7 +403,7 @@ public:
         return greenBandNameQString;
     };
     /** \brief Mutator for green band name mapping.  */
-    void setGreenBandName(QString theBandNameQString);
+    void setGreenBandName(QString const & theBandNameQString);
     //
     // Accessor and mutator for blue band name
     // 
@@ -412,7 +413,7 @@ public:
         return blueBandNameQString;
     };
     /** \brief Mutator for blue band name mapping.  */
-    void setBlueBandName(QString theBandNameQString);
+    void setBlueBandName(QString const & theBandNameQString);
     //
     // Accessor and mutator for gray band name
     //
@@ -422,7 +423,7 @@ public:
         return grayBandNameQString;
     };
     /** \brief Mutator for gray band name mapping.  */
-    void setGrayBandName(QString theBandNameQString);
+    void setGrayBandName(QString const & theBandNameQString);
     // 
     // Accessor and mutator for showDebugOverlayFlag
     // 
@@ -661,13 +662,13 @@ public:
      * */
     QString getDrawingStyleAsQString();
     /** \brief Mutator for drawing style.  */
-    void setDrawingStyle(DRAWING_STYLE theDrawingStyle) {drawingStyle=theDrawingStyle;};
+    void setDrawingStyle(DRAWING_STYLE const &  theDrawingStyle) {drawingStyle=theDrawingStyle;};
     /** \brief Overloaded version of the above function for convenience when restoring from xml.
      *
      * Implementaed mainly for serialisation / deserialisation of settings to xml.
      * NOTE: May be deprecated in the future! Use alternate implementation above rather.
      * */
-    void setDrawingStyle(QString theDrawingStyleQString);
+    void setDrawingStyle(QString  const & theDrawingStyleQString);
 
 
 
@@ -711,12 +712,12 @@ public:
      * (Useful for providers that manage their own layers, such as WMS)
      *
      */
-    virtual void setLayerOrder(QStringList layers);
+    virtual void setLayerOrder(QStringList const & layers);
     
     /**
      * Set the visibility of the given sublayer name
      */
-    virtual void setSubLayerVisibility(QString name, bool vis);
+    virtual void setSubLayerVisibility(QString const & name, bool vis);
 
     /** tailor the right-click context menu with raster layer only stuff 
 
@@ -743,7 +744,7 @@ public:
     bool isEditable() const;
     
     /** Return time stamp for given file name */
-    static QDateTime lastModified ( QString name );
+    static QDateTime lastModified ( QString const &  name );
 
     /**Refresh the symbology part of the legend
      by adding a child item to mLegendSymbologyGroupParent*/
@@ -774,7 +775,8 @@ public slots:
     * This will speed up performance at the expense of hard drive space.
     * Also, write access to the file is required. If no paramter is passed in
     * it will default to nearest neighbor resampling. */
-    void buildPyramids(RasterPyramidList,QString theResamplingMethod="NEAREST");
+    void buildPyramids(RasterPyramidList const &, 
+                       QString const &  theResamplingMethod="NEAREST");
     /** \brief Used at the moment by the above function but hopefully will later
     be useable by any operation that needs to notify the user of its progress. */
 /*
@@ -793,7 +795,10 @@ public slots:
   * @param theIgnoreOutOfRangeFlag - whether to ignore values that are out of range (default=true)
   * @param theThoroughBandScanFlag - whether to visit each cell when computing the histogram (default=false)
   */
-  void populateHistogram(int theBandNoInt, int theBinCountInt=256,bool theIgnoreOutOfRangeFlag=true,bool theThoroughBandScanFlag=false);
+  void populateHistogram(int theBandNoInt, 
+                         int theBinCountInt=256,
+                         bool theIgnoreOutOfRangeFlag=true,
+                         bool theThoroughBandScanFlag=false);
 
     /** \brief Color table 
      *  \param band number
@@ -862,14 +867,14 @@ private:
                                     QgsRasterViewPort * theRasterViewPort,
                                     QgsMapToPixel * theQgsMapToPixel,
                                     int theBandNoInt,
-                                    QString theColorQString);
+                                    QString const &  theColorQString);
 
     /** \brief Drawing routine for paletted image, rendered as a single band image in pseudocolor.  */
     void drawPalettedSingleBandPseudoColor(QPainter * theQPainter,
                                            QgsRasterViewPort * theRasterViewPort,
                                            QgsMapToPixel * theQgsMapToPixel,
                                            int theBandNoInt,
-                                           QString theColorQString);
+                                           QString const &  theColorQString);
 
     /** \brief Drawing routine for paletted multiband image.  */
     void drawPalettedMultiBandColor(QPainter * theQPainter,
@@ -1011,17 +1016,18 @@ public:
   //! Constructor in provider mode
   // TODO Rename into a general constructor when the old raster interface is retired
   // \param  dummy  is just there to distinguish this function signature from the old non-provider one.
-  QgsRasterLayer(int dummy, QString baseName = 0,
-                            QString path = 0,
-                            QString providerLib = 0,
-                            QStringList layers = 0,
-                            QStringList styles = 0,
-                            QString format = 0);
+  QgsRasterLayer(int dummy, 
+                 QString const & baseName = QString::null,
+                 QString const & path = QString::null,
+                 QString const & providerLib = QString::null,
+                 QStringList const & layers = QStringList(),
+                 QStringList const & styles = QStringList(),
+                 QString const & format = QString::null);
 
   void setDataProvider( QString const & provider,
-                        QStringList layers,
-                        QStringList styles,
-                        QString format );
+                        QStringList const & layers,
+                        QStringList const & styles,
+                        QString const & format );
 
   //! Does this layer use a provider for setting/retrieving data?
   bool usesProvider();
@@ -1029,7 +1035,7 @@ public:
   
 public slots:
   
-  void showStatusMessage(QString theMessage);
+  void showStatusMessage(QString const & theMessage);
   
    
 private:

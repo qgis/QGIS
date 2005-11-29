@@ -399,7 +399,7 @@ bool QgsRasterLayer::isSupportedRasterDriver(QString const &theDriverName)
 
 
 /** This helper checks to see whether the filename appears to be a valid raster file name */
-bool QgsRasterLayer::isValidRasterFileName(QString theFileNameQString)
+bool QgsRasterLayer::isValidRasterFileName(QString const & theFileNameQString)
 {
 
   GDALDatasetH myDataset;
@@ -439,13 +439,6 @@ bool QgsRasterLayer::isValidRasterFileName(QString theFileNameQString)
 
 
 
-/** Overloaded of the above function provided for convenience that takes a qstring pointer */
-bool QgsRasterLayer::isValidRasterFileName(QString * theFileNameQString)
-{
-  //dereference and delegate
-  return isValidRasterFileName(*theFileNameQString);
-}
-
 
 
 //////////////////////////////////////////////////////////
@@ -453,7 +446,7 @@ bool QgsRasterLayer::isValidRasterFileName(QString * theFileNameQString)
 // Non Static methods now....
 //
 /////////////////////////////////////////////////////////
-QgsRasterLayer::QgsRasterLayer(QString path, QString baseName)
+QgsRasterLayer::QgsRasterLayer(QString const & path, QString const & baseName)
     : QgsMapLayer(RASTER, baseName, path),
     // XXX where is this? popMenu(0), //popMenu is the contextmenu obtained by right clicking on the legend
     rasterXDimInt( std::numeric_limits<int>::max() ),
@@ -760,7 +753,7 @@ bool QgsRasterLayer::update()
   return true;
 }
 
-QDateTime QgsRasterLayer::lastModified ( QString name )
+QDateTime QgsRasterLayer::lastModified ( QString const & name )
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsRasterLayer::lastModified: " << name.toLocal8Bit().data() << std::endl;
@@ -902,7 +895,7 @@ QString QgsRasterLayer::getDrawingStyleAsQString()
 
 }
 
-void QgsRasterLayer::setDrawingStyle(QString theDrawingStyleQString)
+void QgsRasterLayer::setDrawingStyle(QString const & theDrawingStyleQString)
 {
   if (theDrawingStyleQString == "SINGLE_BAND_GRAY")//no need to tr() this its not shown in ui
   {
@@ -953,7 +946,7 @@ void QgsRasterLayer::setDrawingStyle(QString theDrawingStyleQString)
  
 muliband layers may have more than one "Undefined" band!
 */
-bool QgsRasterLayer::hasBand(QString theBandName)
+bool QgsRasterLayer::hasBand(QString const & theBandName)
 {
 #ifdef QGISDEBUG
   std::cout << "Looking for band : " << theBandName.toLocal8Bit().data() << std::endl;
@@ -1338,7 +1331,8 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
 
 }
 
-void QgsRasterLayer::draw (QPainter * theQPainter, QgsRasterViewPort * myRasterViewPort,
+void QgsRasterLayer::draw (QPainter * theQPainter, 
+                           QgsRasterViewPort * myRasterViewPort,
                            QgsMapToPixel * theQgsMapToPixel)
 {
 #ifdef QGISDEBUG
@@ -1563,7 +1557,10 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
 } // QgsRasterLayer::drawSingleBandGray
 
 
-void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,                                                                             QgsMapToPixel * theQgsMapToPixel, int theBandNoInt)
+void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter, 
+                                               QgsRasterViewPort * theRasterViewPort,
+                                               QgsMapToPixel * theQgsMapToPixel, 
+                                               int theBandNoInt)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawSingleBandPseudoColor called" << std::endl;
@@ -1877,7 +1874,7 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, QgsRast
 */
 void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort, 
                                                 QgsMapToPixel * theQgsMapToPixel, int theBandNoInt,
-                                                QString theColorQString)
+                                                QString const & theColorQString)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedSingleBandGray called" << std::endl;
@@ -1984,7 +1981,7 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, QgsRaste
 */
 void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
                                                        QgsMapToPixel * theQgsMapToPixel, int theBandNoInt, 
-                                                       QString theColorQString)
+                                                       QString const & theColorQString)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::drawPalettedSingleBandPseudoColor called" << std::endl;
@@ -2527,7 +2524,7 @@ void QgsRasterLayer::showDebugOverlay(QPainter * theQPainter, QgsRasterViewPort 
 WARDNING::: THERE IS NO GUARANTEE THAT BAND NAMES ARE UNIQE
 THE FIRST MATCH WILL BE RETURNED!!!!!!!!!!!!
 */
-const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(QString theBandNameQString)
+const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(QString const & theBandNameQString)
 {
 
   //we cant use a vector iterator because the iterator is astruct not a class
@@ -2549,7 +2546,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(QString theBandNameQ
 //note this should be the rewritten name set up in the constructor,
 //not the name retrieved directly from gdal!
 //if no matching band is found zero will be returned!
-const int QgsRasterLayer::getRasterBandNumber(QString theBandNameQString)
+const int QgsRasterLayer::getRasterBandNumber(QString const &  theBandNameQString)
 {
   for (int myIteratorInt = 0; myIteratorInt <= rasterStatsVector.size(); ++myIteratorInt)
   {
@@ -2576,6 +2573,8 @@ const int QgsRasterLayer::getRasterBandNumber(QString theBandNameQString)
   return 0;                     //no band was found
 }
 
+
+
 // get the name of a band given its number
 const QString QgsRasterLayer::getRasterBandName(int theBandNoInt)
 {
@@ -2590,6 +2589,8 @@ const QString QgsRasterLayer::getRasterBandName(int theBandNoInt)
     return QString("");
   }
 }
+
+
 
 /** Check whether a given band number has stats associated with it */
 const bool QgsRasterLayer::hasStats(int theBandNoInt)
@@ -2951,8 +2952,9 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNoInt)
 
 
 
+
 //mutator for red band name (allows alternate mappings e.g. map blue as red colour)
-void QgsRasterLayer::setRedBandName(QString theBandNameQString)
+void QgsRasterLayer::setRedBandName(QString const &  theBandNameQString)
 {
 #ifdef QGISDEBUG
   std::cout << "setRedBandName :  " << theBandNameQString.toLocal8Bit().data() << std::endl;
@@ -2987,8 +2989,10 @@ void QgsRasterLayer::setRedBandName(QString theBandNameQString)
   return;
 }
 
+
+
 //mutator for green band name
-void QgsRasterLayer::setGreenBandName(QString theBandNameQString)
+void QgsRasterLayer::setGreenBandName(QString const &  theBandNameQString)
 {
   //check if the band is unset
   if (theBandNameQString == tr("Not Set"))
@@ -3021,7 +3025,7 @@ void QgsRasterLayer::setGreenBandName(QString theBandNameQString)
 }
 
 //mutator for blue band name
-void QgsRasterLayer::setBlueBandName(QString theBandNameQString)
+void QgsRasterLayer::setBlueBandName(QString const &  theBandNameQString)
 {
   //check if the band is unset
   if (theBandNameQString == tr("Not Set"))
@@ -3053,8 +3057,10 @@ void QgsRasterLayer::setBlueBandName(QString theBandNameQString)
   return;
 }
 
+
+
 //mutator for gray band name
-void QgsRasterLayer::setGrayBandName(QString theBandNameQString)
+void QgsRasterLayer::setGrayBandName(QString const &  theBandNameQString)
 {
   //check if the band is unset
   if (theBandNameQString == tr("Not Set"))
@@ -3611,7 +3617,7 @@ QStringList QgsRasterLayer::subLayers()
 
 // Useful for Provider mode
 
-void QgsRasterLayer::setLayerOrder(QStringList layers)
+void QgsRasterLayer::setLayerOrder(QStringList const & layers)
 {
 
 #ifdef QGISDEBUG
@@ -3631,7 +3637,7 @@ void QgsRasterLayer::setLayerOrder(QStringList layers)
 
 // Useful for Provider mode
 
-void QgsRasterLayer::setSubLayerVisibility(QString name, bool vis)
+void QgsRasterLayer::setSubLayerVisibility(QString const &  name, bool vis)
 {
   
   if (dataProvider)
@@ -3650,6 +3656,8 @@ Q3PopupMenu *QgsRasterLayer::contextMenu()
 {
   return popMenu;
 }
+
+
 
 void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
 {
@@ -4145,7 +4153,8 @@ QString QgsRasterLayer::getMetadata()
   return myMetadataQString;
 }
 
-void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QString theResamplingMethod)
+void QgsRasterLayer::buildPyramids(RasterPyramidList const & theRasterPyramidList, 
+                                   QString const & theResamplingMethod)
 {
   emit setProgress(0,0);
   //first test if the file is writeable
@@ -4193,8 +4202,8 @@ void QgsRasterLayer::buildPyramids(RasterPyramidList theRasterPyramidList, QStri
   CPLErr myError; //in case anything fails
   int myCountInt=1;
   int myTotalInt=theRasterPyramidList.count();
-  RasterPyramidList::iterator myRasterPyramidIterator;
-  for ( myRasterPyramidIterator=theRasterPyramidList.begin();
+  RasterPyramidList::const_iterator myRasterPyramidIterator;
+  for ( myRasterPyramidIterator = theRasterPyramidList.begin();
         myRasterPyramidIterator != theRasterPyramidList.end();
         ++myRasterPyramidIterator )
   {
@@ -4872,15 +4881,13 @@ void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool
  
  
  
-QgsRasterLayer::QgsRasterLayer(
-                               int dummy,
-                               QString rasterLayerPath,
-                               QString baseName,
-                               QString providerKey,
-                               QStringList layers,
-                               QStringList styles,
-                               QString format
-                               )
+QgsRasterLayer::QgsRasterLayer(int dummy,
+                               QString const &  rasterLayerPath,
+                               QString const &  baseName,
+                               QString const &  providerKey,
+                               QStringList const &  layers,
+                               QStringList const &  styles,
+                               QString  const & format )
     : QgsMapLayer(RASTER, baseName, rasterLayerPath),
     rasterXDimInt( std::numeric_limits<int>::max() ),
     rasterYDimInt( std::numeric_limits<int>::max() ),
@@ -4958,9 +4965,9 @@ typedef QgsDataProvider * classFactoryFunction_t( const QString * );
  *  TODO: Make it work in the raster environment
  */
 void QgsRasterLayer::setDataProvider( QString const & provider,
-                                      QStringList layers,
-                                      QStringList styles,
-                                      QString format )
+                                      QStringList  const & layers,
+                                      QStringList  const & styles,
+                                      QString  const & format )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -5120,7 +5127,7 @@ bool QgsRasterLayer::usesProvider()
 }
 
 
-void QgsRasterLayer::showStatusMessage(QString theMessage)
+void QgsRasterLayer::showStatusMessage(QString const & theMessage)
 {
 #ifdef QGISDEBUG
 //  std::cout << "QgsRasterLayer::showStatusMessage: entered with '" << theMessage << "'." << std::endl;

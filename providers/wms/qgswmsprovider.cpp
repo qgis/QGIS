@@ -149,8 +149,8 @@ size_t QgsWmsProvider::layerCount() const
 
 
 
-void QgsWmsProvider::addLayers(QStringList layers,
-                               QStringList styles)
+void QgsWmsProvider::addLayers(QStringList const &  layers,
+                               QStringList const &  styles)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::addLayers: Entering" <<
@@ -165,9 +165,9 @@ void QgsWmsProvider::addLayers(QStringList layers,
   activeSubStyles += styles;
 
   // Set the visibility of these new layers on by default
-  for ( QStringList::Iterator it  = layers.begin(); 
-                              it != layers.end(); 
-                            ++it ) 
+  for ( QStringList::const_iterator it  = layers.begin(); 
+        it != layers.end(); 
+        ++it ) 
   {
 
     activeSubLayerVisibility[*it] = TRUE;
@@ -186,7 +186,7 @@ void QgsWmsProvider::addLayers(QStringList layers,
 }
       
 
-void QgsWmsProvider::setLayerOrder(QStringList layers)
+void QgsWmsProvider::setLayerOrder(QStringList const &  layers)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::setLayerOrder: Entering." << std::endl;
@@ -200,13 +200,13 @@ void QgsWmsProvider::setLayerOrder(QStringList layers)
 }
 
 
-void QgsWmsProvider::setSubLayerVisibility(QString name, bool vis)
+void QgsWmsProvider::setSubLayerVisibility(QString const & name, bool vis)
 {
   activeSubLayerVisibility[name] = vis;
 }
 
 
-void QgsWmsProvider::setImageEncoding(QString mimeType)
+void QgsWmsProvider::setImageEncoding(QString const & mimeType)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::setImageEncoding: Setting image encoding to " << mimeType.toLocal8Bit().data() << "." <<
@@ -216,7 +216,7 @@ void QgsWmsProvider::setImageEncoding(QString mimeType)
 }
 
 
-QImage* QgsWmsProvider::draw(QgsRect viewExtent, int pixelWidth, int pixelHeight)
+QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pixelHeight)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::draw: Entering." << std::endl;
@@ -482,7 +482,7 @@ void QgsWmsProvider::retrieveServerCapabilities()
 }
 
 // private
-void QgsWmsProvider::downloadCapabilitiesURI(QString uri)
+void QgsWmsProvider::downloadCapabilitiesURI(QString const & uri)
 {
 
 #ifdef QGISDEBUG
@@ -510,7 +510,7 @@ void QgsWmsProvider::downloadCapabilitiesURI(QString uri)
 
 
 // private
-void QgsWmsProvider::drawTest(QString uri)
+void QgsWmsProvider::drawTest(QString const & uri)
 {
 
 /*
@@ -546,7 +546,7 @@ Example URL (works!)
 }
 
 
-void QgsWmsProvider::parseCapabilities(QByteArray xml, QgsWmsCapabilitiesProperty& capabilitiesProperty)
+void QgsWmsProvider::parseCapabilities(QByteArray  const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseCapabilities: entering." << std::endl;
@@ -597,7 +597,7 @@ void QgsWmsProvider::parseCapabilities(QByteArray xml, QgsWmsCapabilitiesPropert
 }
 
 
-void QgsWmsProvider::parseService(QDomElement e, QgsWmsServiceProperty& serviceProperty)
+void QgsWmsProvider::parseService(QDomElement const & e, QgsWmsServiceProperty& serviceProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseService: entering." << std::endl;
@@ -659,7 +659,7 @@ void QgsWmsProvider::parseService(QDomElement e, QgsWmsServiceProperty& serviceP
 }
 
 
-void QgsWmsProvider::parseCapability(QDomElement e, QgsWmsCapabilityProperty& capabilityProperty)
+void QgsWmsProvider::parseCapability(QDomElement const & e, QgsWmsCapabilityProperty& capabilityProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseCapability: entering." << std::endl;
@@ -690,7 +690,7 @@ void QgsWmsProvider::parseCapability(QDomElement e, QgsWmsCapabilityProperty& ca
 }
 
 
-void QgsWmsProvider::parseContactPersonPrimary(QDomElement e, QgsWmsContactPersonPrimaryProperty& contactPersonPrimaryProperty)
+void QgsWmsProvider::parseContactPersonPrimary(QDomElement const & e, QgsWmsContactPersonPrimaryProperty& contactPersonPrimaryProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseContactPersonPrimary: entering." << std::endl;
@@ -718,7 +718,7 @@ void QgsWmsProvider::parseContactPersonPrimary(QDomElement e, QgsWmsContactPerso
 }
 
 
-void QgsWmsProvider::parseContactAddress(QDomElement e, QgsWmsContactAddressProperty& contactAddressProperty)
+void QgsWmsProvider::parseContactAddress(QDomElement const & e, QgsWmsContactAddressProperty& contactAddressProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseContactAddress: entering." << std::endl;
@@ -762,7 +762,7 @@ void QgsWmsProvider::parseContactAddress(QDomElement e, QgsWmsContactAddressProp
 }
 
 
-void QgsWmsProvider::parseContactInformation(QDomElement e, QgsWmsContactInformationProperty& contactInformationProperty)
+void QgsWmsProvider::parseContactInformation(QDomElement const & e, QgsWmsContactInformationProperty& contactInformationProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseContactInformation: entering." << std::endl;
@@ -806,7 +806,7 @@ void QgsWmsProvider::parseContactInformation(QDomElement e, QgsWmsContactInforma
 }
 
 
-void QgsWmsProvider::parseOnlineResource(QDomElement e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute)
+void QgsWmsProvider::parseOnlineResource(QDomElement const & e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseOnlineResource: entering." << std::endl;
@@ -820,7 +820,7 @@ void QgsWmsProvider::parseOnlineResource(QDomElement e, QgsWmsOnlineResourceAttr
 }
 
 
-void QgsWmsProvider::parseKeywordList(QDomElement e, QStringList& keywordListProperty)
+void QgsWmsProvider::parseKeywordList(QDomElement  const & e, QStringList& keywordListProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseKeywordList: entering." << std::endl;
@@ -845,7 +845,7 @@ void QgsWmsProvider::parseKeywordList(QDomElement e, QStringList& keywordListPro
 }
 
 
-void QgsWmsProvider::parseGet(QDomElement e, QgsWmsGetProperty& getProperty)
+void QgsWmsProvider::parseGet(QDomElement const & e, QgsWmsGetProperty& getProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseGet: entering." << std::endl;
@@ -870,7 +870,7 @@ void QgsWmsProvider::parseGet(QDomElement e, QgsWmsGetProperty& getProperty)
 }
 
 
-void QgsWmsProvider::parsePost(QDomElement e, QgsWmsPostProperty& postProperty)
+void QgsWmsProvider::parsePost(QDomElement const & e, QgsWmsPostProperty& postProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parsePost: entering." << std::endl;
@@ -895,7 +895,7 @@ void QgsWmsProvider::parsePost(QDomElement e, QgsWmsPostProperty& postProperty)
 }
 
 
-void QgsWmsProvider::parseHttp(QDomElement e, QgsWmsHttpProperty& httpProperty)
+void QgsWmsProvider::parseHttp(QDomElement const & e, QgsWmsHttpProperty& httpProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseHttp: entering." << std::endl;
@@ -925,7 +925,7 @@ void QgsWmsProvider::parseHttp(QDomElement e, QgsWmsHttpProperty& httpProperty)
 }
 
 
-void QgsWmsProvider::parseDcpType(QDomElement e, QgsWmsDcpTypeProperty& dcpType)
+void QgsWmsProvider::parseDcpType(QDomElement const & e, QgsWmsDcpTypeProperty& dcpType)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseDcpType: entering." << std::endl;
@@ -950,7 +950,7 @@ void QgsWmsProvider::parseDcpType(QDomElement e, QgsWmsDcpTypeProperty& dcpType)
 }
 
 
-void QgsWmsProvider::parseOperationType(QDomElement e, QgsWmsOperationType& operationType)
+void QgsWmsProvider::parseOperationType(QDomElement const & e, QgsWmsOperationType& operationType)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseOperationType: entering." << std::endl;
@@ -982,7 +982,7 @@ void QgsWmsProvider::parseOperationType(QDomElement e, QgsWmsOperationType& oper
 }
 
 
-void QgsWmsProvider::parseRequest(QDomElement e, QgsWmsRequestProperty& requestProperty)
+void QgsWmsProvider::parseRequest(QDomElement const & e, QgsWmsRequestProperty& requestProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseRequest: entering." << std::endl;
@@ -1012,7 +1012,7 @@ void QgsWmsProvider::parseRequest(QDomElement e, QgsWmsRequestProperty& requestP
 }
 
 
-void QgsWmsProvider::parseLegendUrl(QDomElement e, QgsWmsLegendUrlProperty& legendUrlProperty)
+void QgsWmsProvider::parseLegendUrl(QDomElement const & e, QgsWmsLegendUrlProperty& legendUrlProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseLegendUrl: entering." << std::endl;
@@ -1043,7 +1043,7 @@ void QgsWmsProvider::parseLegendUrl(QDomElement e, QgsWmsLegendUrlProperty& lege
 }
 
 
-void QgsWmsProvider::parseStyle(QDomElement e, QgsWmsStyleProperty& styleProperty)
+void QgsWmsProvider::parseStyle(QDomElement const & e, QgsWmsStyleProperty& styleProperty)
 {
 // #ifdef QGISDEBUG
 //  std::cout << "QgsWmsProvider::parseStyle: entering." << std::endl;
@@ -1087,7 +1087,7 @@ void QgsWmsProvider::parseStyle(QDomElement e, QgsWmsStyleProperty& stylePropert
 }
 
 
-void QgsWmsProvider::parseLayer(QDomElement e, QgsWmsLayerProperty& layerProperty)
+void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& layerProperty)
 {
 #ifdef QGISDEBUG
 //  std::cout << "QgsWmsProvider::parseLayer: entering." << std::endl;
@@ -1326,7 +1326,7 @@ int QgsWmsProvider::capabilities() const
 */
 
 
-void QgsWmsProvider::showStatusMessage(QString theMessage)
+void QgsWmsProvider::showStatusMessage(QString const & theMessage)
 {
 
 #ifdef QGISDEBUG

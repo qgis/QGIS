@@ -106,8 +106,8 @@ public:
     /**
      * Add the list of WMS layer names to be rendered by this server
      */
-    virtual void addLayers(QStringList layers,
-                           QStringList styles = 0) = 0;
+    virtual void addLayers(QStringList const & layers,
+                           QStringList  const & styles = QStringList()) = 0;
 
     //! get raster image encodings supported by (e.g.) the WMS Server, expressed as MIME types
     virtual QStringList supportedImageEncodings() = 0;
@@ -115,12 +115,12 @@ public:
     /**
      * Set the image encoding (as a MIME type) used in the transfer from (e.g.) the WMS server
      */
-    virtual void setImageEncoding(QString mimeType) = 0;
+    virtual void setImageEncoding(QString  const & mimeType) = 0;
 
     // TODO: Document this better.
     /** \brief   Renders the layer as an image
      */
-    virtual QImage* draw(QgsRect viewExtent, int pixelWidth, int pixelHeight) = 0;
+    virtual QImage* draw(QgsRect  const & viewExtent, int pixelWidth, int pixelHeight) = 0;
 
     
     
@@ -137,7 +137,6 @@ public:
      */
     virtual QString getMetadata() = 0;
 
-    
         
 protected:
 
