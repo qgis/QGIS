@@ -54,6 +54,7 @@ libqgsprojectionselector_la_SOURCES =  qgsprojectionselector.cpp	\
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
+CLEANFILES = $(BUILT_SOURCES)
 
 
 libqgsprojectionselector_la_LIBADD =  ../../src/libqgis.la $(LDADD) $(QT_LDADD) $(GDAL_LDADD) -lsqlite3
