@@ -975,18 +975,44 @@ void QgsMapCanvas::saveAsImage(QString theFileName, QPixmap * theQPixmap, QStrin
 
 void QgsMapCanvas::paintEvent(QPaintEvent * ev)
 {
-  if (!mCanvasProperties->dirty)
+#ifdef QGISDEBUG
+//  std::cout << "QgsMapCanvas::paintEvent: entering." << std::endl;
+#endif
+  if (mCanvasProperties->panning)
+  {
+#ifdef QGISDEBUG
+//   std::cout << "QgsMapCanvas::paintEvent: about to drawPixmap with " << mCanvasProperties->pan_dx << 
+//                                                              " and " << mCanvasProperties->pan_dy << "." << std::endl;
+#endif
+
+    QPainter paint(this);
+//    paint.drawPixmap(  (int) mCanvasProperties->pan_dx,
+//                       (int) mCanvasProperties->pan_dy,
+//                      *(mCanvasProperties->pmCanvas));
+    paint.drawPixmap(
+                       mCanvasProperties->pan_delta,
+                     *(mCanvasProperties->pmCanvas)
+                    );
+
+#ifdef QGISDEBUG
+//  std::cout << "QgsMapCanvas::paintEvent: finished drawPixmap." << std::endl;
+#endif
+
+  }
+  else if (!mCanvasProperties->dirty)
   {
     // just bit blit the image to the canvas
+
+    // TODO: For Qt4, convert this to a QPainter::drawPixmap call - bitBlt is deprecated
     bitBlt(this, ev->rect().topLeft(), mCanvasProperties->pmCanvas, ev->rect());
   }
-  else
+  else if (!mCanvasProperties->drawing)
   {
-    if (!mCanvasProperties->drawing)
-    {
-      render();
-    }
+    render();
   }
+#ifdef QGISDEBUG
+//  std::cout << "QgsMapCanvas::paintEvent: exiting." << std::endl;
+#endif
 } // paintEvent
 
 
@@ -3003,6 +3029,8 @@ int QgsMapCanvas::mapTool()
 
 void QgsMapCanvas::panActionEnd(QPoint releasePoint)
 {
+  mCanvasProperties->panning = FALSE;
+
   // use start and end box points to calculate the extent
   QgsPoint start = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->rubberStartPoint);
   QgsPoint end = mCanvasProperties->coordXForm->toMapCoordinates(releasePoint);
@@ -3044,11 +3072,22 @@ void QgsMapCanvas::panActionEnd(QPoint releasePoint)
 void QgsMapCanvas::panAction(QMouseEvent * e)
 {
 
+#ifdef QGISDEBUG
+//  std::cout << "QgsMapCanvas::panAction: entering." << std::endl;
+#endif
+
+  mCanvasProperties->panning = TRUE;
+
   // bitBlt the pixmap on the screen, offset by the
   // change in mouse coordinates
-  double dx = e->pos().x() - mCanvasProperties->rubberStartPoint.x();
-  double dy = e->pos().y() - mCanvasProperties->rubberStartPoint.y();
-  
+//  double dx = e->pos().x() - mCanvasProperties->rubberStartPoint.x();
+//  double dy = e->pos().y() - mCanvasProperties->rubberStartPoint.y();
+//  mCanvasProperties->pan_dx = e->pos().x() - mCanvasProperties->rubberStartPoint.x();
+//  mCanvasProperties->pan_dy = e->pos().y() - mCanvasProperties->rubberStartPoint.y();
+  mCanvasProperties->pan_delta = e->pos() - mCanvasProperties->rubberStartPoint;
+
+/*
+Do we still need this in Qt4?
   //erase only the necessary parts to avoid flickering
   if (dx > 0)
   {
@@ -3066,9 +3105,38 @@ void QgsMapCanvas::panAction(QMouseEvent * e)
   {
     erase(0, height() + (int)dy, width(), -(int)dy);
   }
-  
-  bitBlt(this, (int)dx, (int)dy, mCanvasProperties->pmCanvas);
-}    
+*/
+
+#ifdef QGISDEBUG
+//  std::cout << "QgsMapCanvas::panAction: about to update with " << mCanvasProperties->pan_dx << 
+//                                                        " and " << mCanvasProperties->pan_dy << "." << std::endl;
+#endif
+
+// void bitBlt ( QPaintDevice * dst, int dx, int dy, const QPaintDevice * src, int sx, int sy, int sw, int sh, Qt::RasterOp rop, bool ignoreMask ) 
+
+//  bitBlt(this, (int)dx, (int)dy, mCanvasProperties->pmCanvas);
+
+/*
+Qt4 prefers:
+void QPainter::drawPixmap ( const QRect & targetRect, const QPixmap & pixmap, const QRect & sourceRect )
+This is an overloaded member function, provided for convenience. It behaves essentially like the above function.
+Draws the rectangular portion sourceRect of the pixmap pixmap in the rectangle targetRect.
+*/
+
+//  QPainter paint(this);
+//  paint.drawPixmap( (int)dx, (int)dy, *(mCanvasProperties->pmCanvas));
+//  paint.end();
+
+  // Since in Qt4 you normally cannot paint outside of a paint event,
+  // let the widget fire one off by calling repaint() 
+  // and let the subsequent paintEvent() call do all the heavy lifting there.
+  repaint();
+
+#ifdef QGISDEBUG
+//  std::cout << "QgsMapCanvas::panAction: exiting." << std::endl;
+#endif
+
+}
 
 QgsPoint QgsMapCanvas::maybeInversePoint(QgsPoint point, const char whenmsg[])
 {

@@ -38,6 +38,7 @@ class QgsMapCanvas::CanvasProperties
     dragging( false ),
     capturing( false ),
     drawing( false ),
+    panning( false ),
     frozen( false ),
     dirty( true ),
     scaleCalculator( 0x0 )
@@ -64,6 +65,7 @@ class QgsMapCanvas::CanvasProperties
     dragging( false ),
     capturing( false ),
     drawing( false ),
+    panning( false ),
     frozen( false ),
     dirty( true ),
     scaleCalculator( 0x0 )
@@ -213,6 +215,11 @@ class QgsMapCanvas::CanvasProperties
   //! Flag indicating a map refresh is in progress
               bool drawing;
 
+  //! Flag indicating the map is being dragged in order to pan it
+              bool panning;
+
+  //! Amount of pixels we dragged since the pan attempt started
+              QPoint pan_delta;
 
   //! Flag indicating if the map canvas is frozen.
               bool frozen;
