@@ -1137,17 +1137,6 @@ void QgisApp::addLayer()
 
 bool QgisApp::addLayer(QFileInfo const & vectorFile)
 {
-    // check to see if we have an ogr provider available
-    QString pOgr = mProviderRegistry->library("ogr");
-
-    if ( pOgr.isEmpty() )
-    {
-        QMessageBox::critical(this,
-                              tr("No OGR Provider"),
-                              tr("No OGR data provider was found in the QGIS lib directory"));
-        return false;
-    }
-
     // let the user know we're going to possibly be taking a while
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
@@ -1271,136 +1260,123 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
  */
 bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& enc)
 {
-    // check to see if we have an ogr provider available
-    QString pOgr = mProviderRegistry->library("ogr");
+  mMapCanvas->freeze();
 
-    if ( pOgr.isEmpty() )
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+
+  for ( QStringList::ConstIterator it = theLayerQStringList.begin();
+        it != theLayerQStringList.end();
+        ++it )
+  {
+    QFileInfo fi(*it);
+    QString base = fi.completeBaseName();
+
+
+    // create the layer
+
+    QgsVectorLayer *layer = new QgsVectorLayer(*it, base, "ogr");
+    QObject::connect(layer, SIGNAL(editingStopped(bool)), mMapCanvas, SLOT(removeDigitizingLines(bool)));
+
+    Q_CHECK_PTR( layer );
+    // set the visibility based on user preference for newly added
+    // layers
+    layer->setVisible(mAddedLayersHidden);
+
+    if ( ! layer )
     {
-        QMessageBox::critical(this,
-                              tr("No OGR Provider"),
-                              tr("No OGR data provider was found in the QGIS lib directory"));
+      mMapCanvas->freeze(false);
+      QApplication::restoreOverrideCursor();
+
+      // XXX insert meaningful whine to the user here
+      return false;
+    }
+
+    if (layer->isValid())
+    {
+      layer->setProviderEncoding(enc);
+      // init the context menu so it can connect to slots
+      // in main app
+
+      // XXX now taken care of in legend layer->initContextMenu(this);
+
+      //add single symbol renderer as default
+      QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());
+
+      Q_CHECK_PTR( renderer );
+
+      if ( ! renderer )
+      {
+        mMapCanvas->freeze(false);
+        QApplication::restoreOverrideCursor();
+
+        // XXX insert meaningful whine to the user here
         return false;
+      }
+
+      layer->setRenderer(renderer);
+
+      // Register this layer with the layers registry
+      QgsMapLayerRegistry::instance()->addMapLayer(layer);
+      layer->refreshLegend();
+
+      // map canvas and overview canvas already know about this layer
+      // when it is added to map registry
+      //              mMapCanvas->addLayer(layer);
+      //              // XXX some day use other means to  connect up a request from the raster layer to show in overview map
+      //              QObject::connect(layer,
+      //                      SIGNAL(showInOverview(QString,bool)),
+      //                      this,
+      //                      SLOT(setLayerOverviewStatus(QString,bool)));
+
+      // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
+#ifdef QGISDEBUG
+      std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
+#endif
+      QObject::connect(this,
+                       SIGNAL(keyPressed(QKeyEvent *)),
+                       layer,
+                       SLOT(keyPressed(QKeyEvent* )));
+      //add hooks for letting layer know canvas needs to recalc the layer extents
+      QObject::connect(layer,
+                       SIGNAL(recalculateExtents()),
+                       mMapCanvas,
+                       SLOT(recalculateExtents()));
+
+      QObject::connect(layer,
+                       SIGNAL(recalculateExtents()),
+                       mOverviewCanvas,
+                       SLOT(recalculateExtents()));
     }
     else
     {
-        mMapCanvas->freeze();
+      QString msg = *it + " ";
+      msg += tr("is not a valid or recognized data source");
+      QMessageBox::critical(this, tr("Invalid Data Source"), msg);
 
-        QApplication::setOverrideCursor(Qt::WaitCursor);
+      // since the layer is bad, stomp on it
+      delete layer;
 
-
-        for ( QStringList::ConstIterator it = theLayerQStringList.begin();
-                it != theLayerQStringList.end();
-                ++it )
-        {
-            QFileInfo fi(*it);
-            QString base = fi.completeBaseName();
-
-
-            // create the layer
-
-            QgsVectorLayer *layer = new QgsVectorLayer(*it, base, "ogr");
-	    QObject::connect(layer, SIGNAL(editingStopped(bool)), mMapCanvas, SLOT(removeDigitizingLines(bool)));
-
-            Q_CHECK_PTR( layer );
-            // set the visibility based on user preference for newly added
-            // layers
-            layer->setVisible(mAddedLayersHidden);
-
-            if ( ! layer )
-            {
-                mMapCanvas->freeze(false);
-                QApplication::restoreOverrideCursor();
-
-                // XXX insert meaningful whine to the user here
-                return false;
-            }
-
-            if (layer->isValid())
-            {
-		layer->setProviderEncoding(enc);
-                // init the context menu so it can connect to slots
-                // in main app
-
-                // XXX now taken care of in legend layer->initContextMenu(this);
-
-                //add single symbol renderer as default
-                QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());
-
-                Q_CHECK_PTR( renderer );
-
-                if ( ! renderer )
-                {
-                    mMapCanvas->freeze(false);
-                    QApplication::restoreOverrideCursor();
-
-                    // XXX insert meaningful whine to the user here
-                    return false;
-                }
-
-                layer->setRenderer(renderer);
-
-		// Register this layer with the layers registry
-		QgsMapLayerRegistry::instance()->addMapLayer(layer);
-		layer->refreshLegend();
-
-                // map canvas and overview canvas already know about this layer
-                // when it is added to map registry
-                //              mMapCanvas->addLayer(layer);
-                //              // XXX some day use other means to  connect up a request from the raster layer to show in overview map
-                //              QObject::connect(layer,
-                //                      SIGNAL(showInOverview(QString,bool)),
-                //                      this,
-                //                      SLOT(setLayerOverviewStatus(QString,bool)));
-
-                // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
-#ifdef QGISDEBUG
-  std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
-#endif
-                QObject::connect(this,
-                                 SIGNAL(keyPressed(QKeyEvent *)),
-                                 layer,
-                                 SLOT(keyPressed(QKeyEvent* )));
-            //add hooks for letting layer know canvas needs to recalc the layer extents
-            QObject::connect(layer,
-                             SIGNAL(recalculateExtents()),
-                             mMapCanvas,
-                             SLOT(recalculateExtents()));
-
-            QObject::connect(layer,
-                             SIGNAL(recalculateExtents()),
-                             mOverviewCanvas,
-                             SLOT(recalculateExtents()));
-            }
-            else
-            {
-                QString msg = *it + " ";
-                msg += tr("is not a valid or recognized data source");
-                QMessageBox::critical(this, tr("Invalid Data Source"), msg);
-
-                // since the layer is bad, stomp on it
-                delete layer;
-
-                // XXX should we return false here, or just grind through
-                // XXX the remaining arguments?
-            }
-
-        }
-
-        //qApp->processEvents();
-        // update legend
-        /*! \todo Need legend scrollview and legenditem classes */
-        // draw the map
-
-        // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
-        qApp->processEvents();    // XXX why does this need to be called manually?
-        mMapCanvas->freeze(false);
-        mMapCanvas->render();
-        QApplication::restoreOverrideCursor();
-        statusBar()->message(mMapCanvas->extent().stringRep(2));
-
+      // XXX should we return false here, or just grind through
+      // XXX the remaining arguments?
     }
 
-    return true;
+  }
+
+  //qApp->processEvents();
+  // update legend
+  /*! \todo Need legend scrollview and legenditem classes */
+  // draw the map
+
+  // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
+  qApp->processEvents();    // XXX why does this need to be called manually?
+  mMapCanvas->freeze(false);
+  mMapCanvas->render();
+  QApplication::restoreOverrideCursor();
+  statusBar()->message(mMapCanvas->extent().stringRep(2));
+
+
+  return true;
 
 } // QgisApp::addLayer()
 
@@ -1424,147 +1400,120 @@ bool QgisApp::isValidVectorFileName(QString * theFileNameQString)
 #ifdef HAVE_POSTGRESQL
 void QgisApp::addDatabaseLayer()
 {
-    // check to see if we have a postgres provider available
-    QString pOgr = mProviderRegistry->library("postgres");
+  // only supports postgis layers at present
 
-    if ( ! pOgr.isNull() )
+  // show the postgis dialog
+
+  QgsDbSourceSelect *dbs = new QgsDbSourceSelect(this);
+
+  mMapCanvas->freeze();
+
+  if (dbs->exec())
+  {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+
+    // repaint the canvas if it was covered by the dialog
+
+    // add files to the map canvas
+    QStringList tables = dbs->selectedTables();
+
+    QString connInfo = dbs->connInfo();
+    // for each selected table, connect to the database, parse the WKT geometry,
+    // and build a cavnasitem for it
+    // readWKB(connInfo,tables);
+    QStringList::Iterator it = tables.begin();
+    while (it != tables.end())
     {
-        // only supports postgis layers at present
 
-        // show the postgis dialog
+      // create the layer
+      //qWarning("creating layer");
+      QgsVectorLayer *layer = new QgsVectorLayer(connInfo + " table=" + *it, *it, "postgres");
+      QObject::connect(layer, SIGNAL(editingStopped(bool)), mMapCanvas, SLOT(removeDigitizingLines(bool)));
 
-        QgsDbSourceSelect *dbs = new QgsDbSourceSelect(this);
+      if (layer->isValid())
+      {
+        // set initial visibility based on user preference
+        layer->setVisible(mAddedLayersHidden);
 
-        mMapCanvas->freeze();
+        // give it a random color
+        QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());  // add single symbol renderer as default
+        layer->setRenderer(renderer);
 
-        if (dbs->exec())
-        {
-            QApplication::setOverrideCursor(Qt::WaitCursor);
+        // register this layer with the central layers registry
+        QgsMapLayerRegistry::instance()->addMapLayer(layer);
+        layer->refreshLegend();
 
+        // add it to the mapcanvas collection
+        // mMapCanvas->addLayer(layer);
+        //connect up a request from the raster layer to show in overview map
+        //      QObject::connect(layer,
+        //              SIGNAL(showInOverview(QString,bool)),
+        //              this,
+        //              SLOT(setLayerOverviewStatus(QString,bool)));
 
-            // repaint the canvas if it was covered by the dialog
-
-            // add files to the map canvas
-            QStringList tables = dbs->selectedTables();
-
-            QString connInfo = dbs->connInfo();
-            // for each selected table, connect to the database, parse the WKT geometry,
-            // and build a cavnasitem for it
-            // readWKB(connInfo,tables);
-            QStringList::Iterator it = tables.begin();
-            while (it != tables.end())
-            {
-
-                // create the layer
-                //qWarning("creating layer");
-                QgsVectorLayer *layer = new QgsVectorLayer(connInfo + " table=" + *it, *it, "postgres");
-		QObject::connect(layer, SIGNAL(editingStopped(bool)), mMapCanvas, SLOT(removeDigitizingLines(bool)));
-
-                if (layer->isValid())
-                {
-                    // set initial visibility based on user preference
-                    layer->setVisible(mAddedLayersHidden);
-
-                    // give it a random color
-                    QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());  // add single symbol renderer as default
-                    layer->setRenderer(renderer);
-
-		    // register this layer with the central layers registry
-                    QgsMapLayerRegistry::instance()->addMapLayer(layer);
-		    layer->refreshLegend();
-
-                    // add it to the mapcanvas collection
-                    // mMapCanvas->addLayer(layer);
-                    //connect up a request from the raster layer to show in overview map
-                    //      QObject::connect(layer,
-                    //              SIGNAL(showInOverview(QString,bool)),
-                    //              this,
-                    //              SLOT(setLayerOverviewStatus(QString,bool)));
-
-                    // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
+        // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
 #ifdef QGISDEBUG
-  std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
+        std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
 #endif
-                    QObject::connect(this,
-                                     SIGNAL(keyPressed(QKeyEvent *)),
-                                     layer,
-                                     SLOT(keyPressed(QKeyEvent* )));
-            //add hooks for letting layer know canvas needs to recalc the layer extents
-            QObject::connect(layer,
-                             SIGNAL(recalculateExtents()),
-                             mMapCanvas,
-                             SLOT(recalculateExtents()));
+        QObject::connect(this,
+                         SIGNAL(keyPressed(QKeyEvent *)),
+                         layer,
+                         SLOT(keyPressed(QKeyEvent* )));
+        //add hooks for letting layer know canvas needs to recalc the layer extents
+        QObject::connect(layer,
+                         SIGNAL(recalculateExtents()),
+                         mMapCanvas,
+                         SLOT(recalculateExtents()));
 
-            QObject::connect(layer,
-                             SIGNAL(recalculateExtents()),
-                             mOverviewCanvas,
-                             SLOT(recalculateExtents()));
-                }
-                else
-                {
-                    std::cerr << (*it).toLocal8Bit().data() << " is an invalid layer - not loaded" << std::endl;
-                    QMessageBox::critical(this, tr("Invalid Layer"), tr("%1 is an invalid layer and cannot be loaded.").arg(*it));
-                    delete layer;
-                }
-                //qWarning("incrementing iterator");
-                ++it;
-            }
-            statusBar()->message(mMapCanvas->extent().stringRep(2));
-        }
-
-        qApp->processEvents();
-        mMapCanvas->freeze(false);
-        mMapCanvas->render();
-        QApplication::restoreOverrideCursor();
+        QObject::connect(layer,
+                         SIGNAL(recalculateExtents()),
+                         mOverviewCanvas,
+                         SLOT(recalculateExtents()));
+      }
+      else
+      {
+        std::cerr << (*it).toLocal8Bit().data() << " is an invalid layer - not loaded" << std::endl;
+        QMessageBox::critical(this, tr("Invalid Layer"), tr("%1 is an invalid layer and cannot be loaded.").arg(*it));
+        delete layer;
+      }
+      //qWarning("incrementing iterator");
+      ++it;
     }
-    else
-    {
-        QMessageBox::critical(this, tr("No PostgreSQL Provider"), tr("No PostgreSQL data provider was found in the QGIS lib directory"));
+    statusBar()->message(mMapCanvas->extent().stringRep(2));
+  }
 
-    }
-}
+  qApp->processEvents();
+  mMapCanvas->freeze(false);
+  mMapCanvas->render();
+  QApplication::restoreOverrideCursor();
+} // QgisApp::addDatabaseLayer()
 #endif
 
 
 void QgisApp::addWmsLayer()
 {
-    // check to see if we have a WMS provider available
-    // QString pOgr = mProviderRegistry->library("WMS");
-
-    //if ( ! pOgr.isNull() )
-    if (1)
-    {
-
-        // Fudge for now
+  // Fudge for now
 
 #ifdef QGISDEBUG
   std::cout << "QgisApp::addWmsLayer: about to addRasterLayer" << std::endl;
 #endif
 
 
-        QgsServerSourceSelect *wmss = new QgsServerSourceSelect(this);
+  QgsServerSourceSelect *wmss = new QgsServerSourceSelect(this);
 
-        mMapCanvas->freeze();
+  mMapCanvas->freeze();
 
-        if (wmss->exec())
-        {
+  if (wmss->exec())
+  {
           
-          addRasterLayer(wmss->connInfo(), 
-                         wmss->connName(), 
-                         "wms",
-                         wmss->selectedLayers(),
-                         wmss->selectedStylesForSelectedLayers(),
-                         wmss->selectedImageEncoding()
-                         );
-
-          
-        }
-    }
-    else
-    {
-        QMessageBox::critical(this, tr("No WMS Provider"), tr("No OGC Web Map Service data provider was found in the QGIS lib directory"));
-
-    }
+    addRasterLayer(wmss->connInfo(), 
+                   wmss->connName(), 
+                   "wms",
+                   wmss->selectedLayers(),
+                   wmss->selectedStylesForSelectedLayers(),
+                   wmss->selectedImageEncoding() );
+  }
 }
 
 
