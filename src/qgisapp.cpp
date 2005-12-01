@@ -5159,27 +5159,20 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
 {
 
 #ifdef QGISDEBUG
-  std::cout << "QgisApp::addRasterLayer: about to get library for " << providerKey.toLocal8Bit().data() << std::endl;
+    std::cout << "QgisApp::addRasterLayer: about to get library for " << providerKey.toLocal8Bit().data() << std::endl;
 #endif
 
-    // check to see if the appropriate provider is available
-    QString providerName;
-
-    QString pProvider = mProviderRegistry->library(providerKey);
-
-    if ( ! pProvider.isNull() )
-    {
-        mMapCanvas->freeze();
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-        // create the layer
-        QgsRasterLayer *layer;
-        /* Eliminate the need to instantiate the layer based on provider type.
-           The caller is responsible for cobbling together the needed information to
-           open the layer
-           */
+    mMapCanvas->freeze();
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    // create the layer
+    QgsRasterLayer *layer;
+    /* Eliminate the need to instantiate the layer based on provider type.
+       The caller is responsible for cobbling together the needed information to
+       open the layer
+    */
 #ifdef QGISDEBUG
 
-        std::cout << "QgisApp::addRasterLayer: Creating new raster layer using " <<
+    std::cout << "QgisApp::addRasterLayer: Creating new raster layer using " <<
         rasterLayerPath.toLocal8Bit().data() << " with baseName of " << baseName.toLocal8Bit().data() <<
         " and layer list of " << layers.join(", ").toLocal8Bit().data() <<
         " and style list of " << styles.join(", ").toLocal8Bit().data() <<
@@ -5187,68 +5180,68 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
         " and providerKey of " << providerKey.toLocal8Bit().data() << std::endl;
 #endif
 
-        // TODO: Remove the 0 when the raster layer becomes a full provider gateway.
-        layer = new QgsRasterLayer(0, rasterLayerPath, baseName, providerKey, layers, styles, format);
+    // TODO: Remove the 0 when the raster layer becomes a full provider gateway.
+    layer = new QgsRasterLayer(0, rasterLayerPath, baseName, providerKey, layers, styles, format);
 
 #ifdef QGISDEBUG
-  std::cout << "QgisApp::addRasterLayer: Constructed new layer." << std::endl;
+    std::cout << "QgisApp::addRasterLayer: Constructed new layer." << std::endl;
 #endif
         
-        if( layer && layer->isValid() )
-        {
-            // Register this layer with the layers registry
-            QgsMapLayerRegistry::instance()->addMapLayer(layer);
-            // init the context menu so it can connect to slots in main app
-            // now taken care of in legend layer->initContextMenu(this);
+    if( layer && layer->isValid() )
+    {
+        // Register this layer with the layers registry
+        QgsMapLayerRegistry::instance()->addMapLayer(layer);
+        // init the context menu so it can connect to slots in main app
+        // now taken care of in legend layer->initContextMenu(this);
 
-            // connect up any request the raster may make to update the app progress
-            QObject::connect(layer,
-                             SIGNAL(setProgress(int,int)),
-                             this,
-                             SLOT(showProgress(int,int)));
-            // connect up any request the raster may make to update the statusbar message
-            QObject::connect(layer,
-                             SIGNAL(setStatus(QString)),
-                             this,
-                             SLOT(showStatusMessage(QString)));
+        // connect up any request the raster may make to update the app progress
+        QObject::connect(layer,
+                         SIGNAL(setProgress(int,int)),
+                         this,
+                         SLOT(showProgress(int,int)));
+        // connect up any request the raster may make to update the statusbar message
+        QObject::connect(layer,
+                         SIGNAL(setStatus(QString)),
+                         this,
+                         SLOT(showStatusMessage(QString)));
             
-            // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
+        // connect up any keypresses to be passed tot he layer (e.g. so esc can stop rendering)
 #ifdef QGISDEBUG
-  std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
+        std::cout << " Connecting up maplayers keyPressed event to the QgisApp keyPress signal" << std::endl;
 #endif
-            QObject::connect(this,
-                             SIGNAL(keyPressed(QKeyEvent * )),
-                             layer,
-                             SLOT(keyPressed(QKeyEvent* )));
+        QObject::connect(this,
+                         SIGNAL(keyPressed(QKeyEvent * )),
+                         layer,
+                         SLOT(keyPressed(QKeyEvent* )));
 
 
-            //add hooks for letting layer know canvas needs to recalc the layer extents
-            QObject::connect(layer,
-                             SIGNAL(recalculateExtents()),
-                             mMapCanvas,
-                             SLOT(recalculateExtents()));
+        //add hooks for letting layer know canvas needs to recalc the layer extents
+        QObject::connect(layer,
+                         SIGNAL(recalculateExtents()),
+                         mMapCanvas,
+                         SLOT(recalculateExtents()));
 
-            QObject::connect(layer,
-                             SIGNAL(recalculateExtents()),
-                             mOverviewCanvas,
-                             SLOT(recalculateExtents()));
+        QObject::connect(layer,
+                         SIGNAL(recalculateExtents()),
+                         mOverviewCanvas,
+                         SLOT(recalculateExtents()));
 
 
-            QgsProject::instance()->dirty(false); // XXX this might be redundant
+        QgsProject::instance()->dirty(false); // XXX this might be redundant
 
-            statusBar()->message(mMapCanvas->extent().stringRep(2));
+        statusBar()->message(mMapCanvas->extent().stringRep(2));
 
-        }
-        else
-        {
-            QMessageBox::critical(this,"Layer is not valid",
-                                  "The layer is not a valid layer and can not be added to the map");
-        }
-        qApp->processEvents();
-        mMapCanvas->freeze(false);
-        mMapCanvas->render();
-        QApplication::restoreOverrideCursor();
     }
+    else
+    {
+        QMessageBox::critical(this,"Layer is not valid",
+                              "The layer is not a valid layer and can not be added to the map");
+    }
+
+    qApp->processEvents();
+    mMapCanvas->freeze(false);
+    mMapCanvas->render();
+    QApplication::restoreOverrideCursor();
 
 } // QgisApp::addRasterLayer
 
