@@ -1110,44 +1110,26 @@ static void openFilesRememberingFilter_(QString const &filterName,
 */
 void QgisApp::addLayer()
 {
+    mMapCanvas->freeze();
 
-
-    //qDebug( "vector file filters: " + fileFilters );
-
-    // XXX pOgr is subsequently never used; so why do we do this?
-    QString pOgr = mProviderRegistry->library("ogr");
-
-    if (pOgr.isEmpty())
-    {
-#ifdef QGSDEBUG
-        qDebug("unable to get OGR registry");
+    QStringList selectedFiles;
+#ifdef QGISDEBUG
+    std::cerr << "Vector file filters: " << mVectorFileFilter.toLocal8Bit().data() << std::endl;
 #endif
 
+    QString enc;
+    QString title = tr("Open an OGR Supported Vector Layer");
+    openFilesRememberingFilter_("lastVectorFileFilter", mVectorFileFilter, selectedFiles, enc,
+                                title);
+    if (selectedFiles.isEmpty())
+    {
+        // no files were selected, so just bail
+        mMapCanvas->freeze(false);
+            
         return;
     }
-    else
-    {
-        mMapCanvas->freeze();
 
-        QStringList selectedFiles;
-#ifdef QGISDEBUG
-        std::cerr << "Vector file filters: " << mVectorFileFilter.toLocal8Bit().data() << std::endl;
-#endif
-
-        QString enc;
-        QString title = tr("Open an OGR Supported Vector Layer");
-        openFilesRememberingFilter_("lastVectorFileFilter", mVectorFileFilter, selectedFiles, enc,
-                                    title);
-        if (selectedFiles.isEmpty())
-        {
-            // no files were selected, so just bail
-            mMapCanvas->freeze(false);
-            
-            return;
-        }
-
-        addLayer(selectedFiles, enc);
-    }
+    addLayer(selectedFiles, enc);
 } // QgisApp::addLayer()
 
 
