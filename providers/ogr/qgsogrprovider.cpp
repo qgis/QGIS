@@ -35,9 +35,11 @@ email                : sherman at mrcc.com
 #include <cpl_error.h>
 #include "ogr_api.h"//only for a test
 
-#include <qfile.h>
-#include <qmessagebox.h>
-#include <qmap.h>
+#include <QtDebug>
+#include <QFile>
+#include <QMessageBox>
+#include <QMap>
+#include <QString>
 
 //TODO Following ifndef can be removed once WIN32 GEOS support
 //    is fixed
@@ -1268,6 +1270,176 @@ QString  QgsOgrProvider::description() const
 {
     return TEXT_PROVIDER_DESCRIPTION;
 } //  QgsOgrProvider::description()
+
+
+
+
+
+/**
+
+  Convenience function for readily creating file filters.
+
+  Given a long name for a file filter and a regular expression, return
+  a file filter string suitable for use in a QFileDialog::OpenFiles()
+  call.  The regular express, glob, will have both all lower and upper
+  case versions added.
+
+  @note
+
+  Copied from qgisapp.cpp.  
+
+  @todo XXX This should probably be generalized and moved to a standard
+            utility type thingy.
+
+*/
+static QString createFileFilter_(QString const &longName, QString const &glob)
+{
+    return "[OGR] " + 
+           longName + " (" + glob.lower() + " " + glob.upper() + ");;";
+} // createFileFilter_
+
+
+
+
+
+QGISEXTERN QString fileVectorFilters()
+{
+    static QString myFileFilters;
+
+    // if we've already built the supported vector string, just return what
+    // we've already built
+    if ( ! ( myFileFilters.isEmpty() || myFileFilters.isNull() ) )
+    {
+        return myFileFilters;
+    }
+
+    // first get the GDAL driver manager
+
+    OGRSFDriverRegistrar *driverRegistrar = OGRSFDriverRegistrar::GetRegistrar();
+
+    if (!driverRegistrar)
+    {
+        QMessageBox::warning(0,"OGR Driver Manager","unable to get OGRDriverManager");
+        return "";              // XXX good place to throw exception if we
+    }                           // XXX decide to do exceptions
+
+    // then iterate through all of the supported drivers, adding the
+    // corresponding file filter
+
+    OGRSFDriver *driver;          // current driver
+
+    QString driverName;           // current driver name
+
+    // Grind through all the drivers and their respective metadata.
+    // We'll add a file filter for those drivers that have a file
+    // extension defined for them; the others, welll, even though
+    // theoreticaly we can open those files because there exists a
+    // driver for them, the user will have to use the "All Files" to
+    // open datasets with no explicitly defined file name extension.
+#ifdef QGISDEBUG
+
+    std::cerr << "Driver count: " << driverRegistrar->GetDriverCount() << std::endl;
+#endif
+
+    for (int i = 0; i < driverRegistrar->GetDriverCount(); ++i)
+    {
+        driver = driverRegistrar->GetDriver(i);
+
+        Q_CHECK_PTR(driver);
+
+        if (!driver)
+        {
+            qWarning("unable to get driver %d", i);
+            continue;
+        }
+
+        driverName = driver->GetName();
+
+
+        if (driverName.startsWith("ESRI"))
+        {
+            myFileFilters += createFileFilter_("ESRI Shapefiles", "*.shp");
+        }
+        else if (driverName.startsWith("UK"))
+        {
+            // XXX needs file filter extension
+        }
+        else if (driverName.startsWith("SDTS"))
+        {
+            myFileFilters += createFileFilter_( "Spatial Data Transfer Standard",
+                                                "*catd.ddf" );
+        }
+        else if (driverName.startsWith("TIGER"))
+        {
+            // XXX needs file filter extension
+        }
+        else if (driverName.startsWith("S57"))
+        {
+            // XXX needs file filter extension
+        }
+        else if (driverName.startsWith("MapInfo"))
+        {
+            myFileFilters += createFileFilter_("MapInfo", "*.mif *.tab");
+            // XXX needs file filter extension
+        }
+        else if (driverName.startsWith("DGN"))
+        {
+            // XXX needs file filter extension
+        }
+        else if (driverName.startsWith("VRT"))
+        {
+            // XXX needs file filter extension
+        }
+        else if (driverName.startsWith("AVCBin"))
+        {
+            // XXX needs file filter extension
+        }
+        else if (driverName.startsWith("REC"))
+        {
+            // XXX needs file filter extension
+        }
+        else if (driverName.startsWith("Memory"))
+        {
+            // XXX needs file filter extension
+        }
+        else if (driverName.startsWith("Jis"))
+        {
+            // XXX needs file filter extension
+        }
+        else if (driverName.startsWith("GML"))
+        {
+            // XXX not yet supported; post 0.1 release task
+            myFileFilters += createFileFilter_( "Geography Markup Language",
+                                                "*.gml" );
+        }
+        else
+        {
+            // NOP, we don't know anything about the current driver
+            // with regards to a proper file filter string
+            qDebug( "%s:%d unknown driver %s", __FILE__, __LINE__, (const char *)driverName.local8Bit() );
+        }
+
+    }                           // each loaded GDAL driver
+
+    // can't forget the default case
+
+    myFileFilters += "All files (*.*)";
+
+    qDebug() << myFileFilters;
+
+    return myFileFilters;
+
+} // fileVectorFilters() const
+
+
+
+QString QgsOgrProvider::fileVectorFilters() const
+{
+    return fileVectorFilters();
+} // QgsOgrProvider::fileVectorFilters() const
+
+
+
 
 
 

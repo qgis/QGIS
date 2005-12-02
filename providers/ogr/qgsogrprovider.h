@@ -172,6 +172,21 @@ class QgsOgrProvider:public QgsVectorDataProvider
 
     void setEncoding(const QString& e);
     
+
+    /** return vector file filter string
+
+      Returns a string suitable for a QFileDialog of vector file formats
+      supported by the data provider.  Naturally this will be an empty string
+      for those data providers that do not deal with plain files, such as
+      databases and servers.
+
+      @note
+
+      It'd be nice to eventually be raster/vector neutral.
+    */
+    /* virtual */ QString fileVectorFilters() const;
+
+
   protected:
     /** loads fields from input file to member attributeFields */
     void loadFields();
