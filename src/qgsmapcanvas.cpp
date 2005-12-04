@@ -354,8 +354,11 @@ void QgsMapCanvas::removeDigitizingLines(bool norepaint)
     mPolygonEditing=false;
     if(rpaint)
     {
-	setDirty(true);
-	render();
+      clear();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of this widget.
+//      render();
+      update();
     }
 }
 
@@ -408,8 +411,11 @@ QgsMapLayer *QgsMapCanvas::layerByName(QString name)
 
 void QgsMapCanvas::refresh()
 {
-  mCanvasProperties->dirty = true;
-  render();
+  clear();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of this widget.
+//  render();
+  update();
 } // refresh
 
 // The painter device parameter is optional - if ommitted it will default
@@ -509,8 +515,9 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
     {
       // Go back to the previous extent
       mCanvasProperties->currentExtent = 
-  mCanvasProperties->previousExtent; 
-      repaint();
+        mCanvasProperties->previousExtent; 
+// Don't do this any more, it causes a paint event loop in Qt4.
+//      repaint();
       return;
     }
   }
@@ -674,15 +681,15 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
             //    QgsDatabaseLayer *dbl = (QgsDatabaseLayer *)&ml;
 #ifdef QGISDEBUG
             std::cout << "QgsMapCanvas::render: Rendering layer " << ml->name().toLocal8Bit().data() << '\n'
-              << "Layer minscale " << ml->minScale() 
-              << ", maxscale " << ml->maxScale() << '\n' 
-              << ". Scale dep. visibility enabled? " 
+              << "  Layer minscale " << ml->minScale() 
+              << ", maxscale " << ml->maxScale() << '.\n' 
+              << "  Scale dep. visibility enabled? " 
               << ml->scaleBasedVisibility() << '\n'
-              << "Input extent: " << ml->extent().stringRep().toLocal8Bit().data() 
+              << "  Input extent: " << ml->extent().stringRep().toLocal8Bit().data() 
               << std::endl;
             try
             {
-              std::cout << "Transformed extent" 
+              std::cout << "  Transformed extent: " 
                 << ml->coordinateTransform()->transformBoundingBox(ml->extent()).stringRep().toLocal8Bit().data() 
                 << std::endl;
             }
@@ -713,7 +720,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 #ifdef QGISDEBUG
               else
               {
-                std::cout << "Layer not rendered because it is not within "
+                std::cout << "QgsMapCanvas::render: Layer not rendered because it is not within "
                   << "the defined visibility scale range" << std::endl;
               }
 #endif
@@ -723,7 +730,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
           }
         }
 #ifdef QGISDEBUG
-        std::cout << "Done rendering map layers...emitting renderComplete(paint)\n";
+        std::cout << "QgsMapCanvas::render: Done rendering map layers...emitting renderComplete(paint)\n";
 #endif
 
         // render all labels for vector layers in the stack, starting at the base
@@ -770,7 +777,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       emit setProgress(1,1);
 #ifdef QGISDEBUG
 
-      std::cout << "Done rendering map labels...emitting renderComplete(paint)\n";
+      std::cout << "QgsMapCanvas::render: Done rendering map labels...emitting renderComplete(paint)\n";
 #endif
 
       // draw the acetate layer
@@ -862,7 +869,9 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       delete paint;
     }
     mCanvasProperties->dirty = false;
-    repaint();
+
+// Don't do this any more, it causes a paint event loop in Qt4.
+//    repaint();
   }
 
 } // render
@@ -978,6 +987,9 @@ void QgsMapCanvas::paintEvent(QPaintEvent * ev)
 #ifdef QGISDEBUG
 //  std::cout << "QgsMapCanvas::paintEvent: entering." << std::endl;
 #endif
+
+  // If a map is in the process of being panned, panAction() will end up calling this through repaint().
+  // Test for this and paint quickly using a pixmap copy rather than going back to the source dataset.
   if (mCanvasProperties->panning)
   {
 #ifdef QGISDEBUG
@@ -986,9 +998,6 @@ void QgsMapCanvas::paintEvent(QPaintEvent * ev)
 #endif
 
     QPainter paint(this);
-//    paint.drawPixmap(  (int) mCanvasProperties->pan_dx,
-//                       (int) mCanvasProperties->pan_dy,
-//                      *(mCanvasProperties->pmCanvas));
     paint.drawPixmap(
                        mCanvasProperties->pan_delta,
                      *(mCanvasProperties->pmCanvas)
@@ -997,18 +1006,28 @@ void QgsMapCanvas::paintEvent(QPaintEvent * ev)
 #ifdef QGISDEBUG
 //  std::cout << "QgsMapCanvas::paintEvent: finished drawPixmap." << std::endl;
 #endif
-
-  }
-  else if (!mCanvasProperties->dirty)
-  {
-    // just bit blit the image to the canvas
-
-    // TODO: For Qt4, convert this to a QPainter::drawPixmap call - bitBlt is deprecated
-    bitBlt(this, ev->rect().topLeft(), mCanvasProperties->pmCanvas, ev->rect());
   }
   else if (!mCanvasProperties->drawing)
   {
-    render();
+    
+    if (mCanvasProperties->dirty)
+    {
+      // rebuild, from source datasets, the pixmap we want to copy onto the canvas.
+      render();
+      // mCanvasProperties->dirty should generally be reset by this point.
+    }
+
+    if (!mCanvasProperties->dirty)
+    {
+      QPainter paint(this);
+      paint.drawPixmap(
+                        ev->rect().topLeft(),
+                      *(mCanvasProperties->pmCanvas),
+                        ev->rect()
+                      );
+  //    // just bit blit the image to the canvas
+  //    bitBlt(this, ev->rect().topLeft(), mCanvasProperties->pmCanvas, ev->rect());
+    }
   }
 #ifdef QGISDEBUG
 //  std::cout << "QgsMapCanvas::paintEvent: exiting." << std::endl;
@@ -1036,8 +1055,11 @@ void QgsMapCanvas::setExtent(QgsRect const & r)
 
 void QgsMapCanvas::clear()
 {
-  mCanvasProperties->dirty = true;
-  erase();
+  // Indicate to the next paint event that we need to rebuild the canvas contents
+  mCanvasProperties->dirty = TRUE;
+
+// Obsolete in Qt4; double buffering should take care of it
+//  erase();
 } // clear
 
 
@@ -1048,7 +1070,10 @@ void QgsMapCanvas::zoomFullExtent()
   mCanvasProperties->currentExtent = mCanvasProperties->fullExtent;
 
   clear();
-  render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of this widget.
+//  render();
+  update();
   emit extentsChanged(mCanvasProperties->currentExtent);
 } // zoomFullExtent
 
@@ -1062,7 +1087,10 @@ void QgsMapCanvas::zoomPreviousExtent()
     mCanvasProperties->currentExtent = mCanvasProperties->previousExtent;
     mCanvasProperties->previousExtent = tempRect;
     clear();
-    render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of this widget.
+//    render();
+    update();
     emit extentsChanged(mCanvasProperties->currentExtent);
   }
 } // zoomPreviousExtent
@@ -1136,7 +1164,10 @@ void QgsMapCanvas::zoomToSelected()
       mCanvasProperties->currentExtent.setYmax(rect.yMax());
       emit extentsChanged(mCanvasProperties->currentExtent);
       clear();
-      render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of this widget.
+//      render();
+      update();
       return;
     }
   }
@@ -1177,7 +1208,10 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
 	    mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() - dx);
 	    
 	    clear();
-	    render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of this widget.
+//            render();
+            update();
 	    emit extentsChanged(mCanvasProperties->currentExtent);
 	    break;
 
@@ -1192,7 +1226,10 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
 	    mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() + dx);
 
 	    clear();
-	    render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of this widget.
+//            render();
+            update();
 	    emit extentsChanged(mCanvasProperties->currentExtent);
 	    break;
 
@@ -1207,7 +1244,10 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
 	    mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() + dy);
 
 	    clear();
-	    render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of this widget.
+//            render();
+            update();
 	    emit extentsChanged(mCanvasProperties->currentExtent);
 	    break;
 
@@ -1221,7 +1261,10 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
 	    mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() - dy);
 
 	    clear();
-	    render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of this widget.
+//            render();
+            update();
 	    emit extentsChanged(mCanvasProperties->currentExtent);
 	    break;
 
@@ -1717,7 +1760,10 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       mCanvasProperties->currentExtent.setYmax(ur.y());
       mCanvasProperties->currentExtent.normalize();
       clear();
-      render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of this widget.
+//      render();
+      update();
       emit extentsChanged(mCanvasProperties->currentExtent);
 
       break;
@@ -1774,7 +1820,10 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 #endif
 
         clear();
-        render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of this widget.
+//      render();
+      update();
         emit extentsChanged(mCanvasProperties->currentExtent);
       }
       break;
@@ -2580,7 +2629,10 @@ void QgsMapCanvas::zoomByScale(int x, int y, double scaleFactor)
   QgsPoint center  = mCanvasProperties->coordXForm->toMapPoint(x, y);
   mCanvasProperties->currentExtent.scale(scaleFactor, &center);
   clear();
-  render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of this widget.
+//  render();
+  update();
   emit extentsChanged(mCanvasProperties->currentExtent);
 }
 
@@ -2675,7 +2727,10 @@ void QgsMapCanvas::layerStateChange()
   if (!mCanvasProperties->frozen)
   {
     clear();
-    render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of this widget.
+//    render();
+    update();
   }
 } // layerStateChange
 
@@ -3065,7 +3120,12 @@ void QgsMapCanvas::panActionEnd(QPoint releasePoint)
     
   }
   clear();
-  render();
+
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the overview canvas widget.
+//  render();
+  update();
+
   emit extentsChanged(mCanvasProperties->currentExtent);
 }
 

@@ -1238,7 +1238,10 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
     mMapCanvas->freeze(false);
     // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOT
     qApp->processEvents();       // XXX why does this need to be called manually?
-    mMapCanvas->render();        // XXX eh, wot?
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//    mMapCanvas->render();       // XXX eh, wot?
+    mMapCanvas->update();
 
     QApplication::restoreOverrideCursor();
 
@@ -1371,7 +1374,10 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
   // mMapLegend->update(); NOW UPDATED VIA SIGNAL/SLOTS
   qApp->processEvents();    // XXX why does this need to be called manually?
   mMapCanvas->freeze(false);
-  mMapCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//  mMapCanvas->render();
+  mMapCanvas->update();
   QApplication::restoreOverrideCursor();
   statusBar()->message(mMapCanvas->extent().stringRep(2));
 
@@ -1485,7 +1491,10 @@ void QgisApp::addDatabaseLayer()
 
   qApp->processEvents();
   mMapCanvas->freeze(false);
-  mMapCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//  mMapCanvas->render();
+  mMapCanvas->update();
   QApplication::restoreOverrideCursor();
 } // QgisApp::addDatabaseLayer()
 #endif
@@ -2764,7 +2773,10 @@ void QgisApp::addAllToOverview()
     // draw the map
     mOverviewCanvas->clear();
     mOverviewCanvas->freeze(false);
-    mOverviewCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the overview canvas widget.
+//    mOverviewCanvas->render();
+    mOverviewCanvas->update();
 
     // notify the project we've made a change
     QgsProject::instance()->dirty(true);
@@ -2787,7 +2799,10 @@ void QgisApp::removeAllFromOverview()
     // draw the map
     mOverviewCanvas->clear();
     mOverviewCanvas->freeze(false);
-    mOverviewCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the overview canvas widget.
+//    mOverviewCanvas->render();
+    mOverviewCanvas->update();
 
     // notify the project we've made a change
     QgsProject::instance()->dirty(true);
@@ -2820,8 +2835,14 @@ void QgisApp::hideAllLayers()
     mMapCanvas->clear();
     mMapCanvas->freeze(false);
     mOverviewCanvas->freeze(false);
-    mMapCanvas->render();
-    mOverviewCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//    mMapCanvas->render();
+    mMapCanvas->update();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the overview canvas widget.
+//    mOverviewCanvas->render();
+    mOverviewCanvas->update();
 
     // notify the project we've made a change
     QgsProject::instance()->dirty(true);
@@ -2854,8 +2875,14 @@ void QgisApp::showAllLayers()
     mMapCanvas->clear();
     mMapCanvas->freeze(false);
     mOverviewCanvas->freeze(false);
-    mMapCanvas->render();
-    mOverviewCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//    mMapCanvas->render();
+    mMapCanvas->update();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the overview canvas widget.
+//    mOverviewCanvas->render();
+    mOverviewCanvas->update();
 
     // notify the project we've made a change
     QgsProject::instance()->dirty(true);
@@ -3299,7 +3326,10 @@ void QgisApp::drawLayers()
 
     std::cout << "In  QgisApp::drawLayers()" << std::endl;
     mMapCanvas->setDirty(true);
-    mMapCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//    mMapCanvas->render();
+    mMapCanvas->update();
 
 }
 
@@ -3382,7 +3412,10 @@ void QgisApp::inOverview( bool in_overview )
       {
 	  QgsMapLayer *layer = llf->layer();
 	  layer->inOverview( in_overview );
-	  mOverviewCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the overview canvas widget.
+//          mOverviewCanvas->render();
+          mOverviewCanvas->update();
       }
   }
 } // QgisApp::inOverview(bool)
@@ -3413,7 +3446,10 @@ void QgisApp::removeLayer()
 	// draw the map
 	mOverviewCanvas->zoomFullExtent();
 	mOverviewCanvas->clear();
-	mOverviewCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the overview canvas widget.
+//        mOverviewCanvas->render();
+        mOverviewCanvas->update();
 	mMapCanvas->freeze(false);
 
 	//remove remaining digitising acetates
@@ -3421,7 +3457,10 @@ void QgisApp::removeLayer()
 
 	// draw the map
 	mMapCanvas->clear();
-	mMapCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//        mMapCanvas->render();
+        mMapCanvas->update();
     }
     else if(ll)
     {
@@ -3479,7 +3518,10 @@ void QgisApp::zoomToLayerExtent()
             mMapCanvas->setExtent(layer->extent());
         }
         mMapCanvas->clear();
-        mMapCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//        mMapCanvas->render();
+        mMapCanvas->update();
 
         // notify the project we've made a change
         QgsProject::instance()->dirty(true);
@@ -4311,7 +4353,10 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
         }
         qApp->processEvents();
         mMapCanvas->freeze(false);
-        mMapCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//        mMapCanvas->render();
+        mMapCanvas->update();
         QApplication::restoreOverrideCursor();
     }
 
@@ -4349,7 +4394,10 @@ void QgisApp::addMapLayer(QgsMapLayer *theMapLayer)
     }
     qApp->processEvents();
     mMapCanvas->freeze(false);
-    mMapCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//    mMapCanvas->render();
+    mMapCanvas->update();
     QApplication::restoreOverrideCursor();
 
 }
@@ -4564,7 +4612,10 @@ void QgisApp::showExtents(QgsRect theExtents)
       mOverviewCanvas->setExtent(mMapCanvas->fullExtent());
       // refresh the overview map
       mOverviewCanvas->clear();
-      mOverviewCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the overview canvas widget.
+//      mOverviewCanvas->render();
+      mOverviewCanvas->update();
     }
     
     // update panning widget in overview
@@ -5092,7 +5143,10 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
     {
         qApp->processEvents();
         mMapCanvas->freeze(false);
-        mMapCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//        mMapCanvas->render();
+        mMapCanvas->update();
     }
     return true;
 
@@ -5240,7 +5294,10 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
 
     qApp->processEvents();
     mMapCanvas->freeze(false);
-    mMapCanvas->render();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//    mMapCanvas->render();
+    mMapCanvas->update();
     QApplication::restoreOverrideCursor();
 
 } // QgisApp::addRasterLayer
