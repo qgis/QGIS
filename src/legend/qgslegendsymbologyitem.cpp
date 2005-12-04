@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "qgslegendsymbologyitem.h"
 
-QgsLegendSymbologyItem::QgsLegendSymbologyItem(Q3ListViewItem * theItem,QString theString)
+QgsLegendSymbologyItem::QgsLegendSymbologyItem(QTreeWidgetItem * theItem,QString theString)
  : QgsLegendItem(theItem, theString)
 {
   mType = LEGEND_SYMBOL_ITEM;

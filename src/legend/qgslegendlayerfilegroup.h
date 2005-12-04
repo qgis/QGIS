@@ -20,7 +20,7 @@
 class QgsLegendLayerFileGroup: public QgsLegendItem
 {
  public:
-    QgsLegendLayerFileGroup(Q3ListViewItem* theItem, QString theString);
+    QgsLegendLayerFileGroup(QTreeWidgetItem* theItem, QString theString);
     bool isLeafNode() {return false;}
     DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
     QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;

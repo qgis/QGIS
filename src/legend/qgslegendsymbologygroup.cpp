@@ -21,10 +21,9 @@
 #include "qgslegendlayerfilegroup.h"
 #include "qgslegendsymbologygroup.h"
 #include "qgsmaplayer.h"
-#include <qapplication.h>
-#include <qpixmap.h>
+#include <QIcon>
 
-QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(Q3ListViewItem * theItem, QString theString)
+QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(QTreeWidgetItem * theItem, QString theString)
     : QgsLegendItem( theItem, theString)
 {
   mType = LEGEND_SYMBOL_GROUP;
@@ -33,8 +32,9 @@ QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(Q3ListViewItem * theItem, QStri
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif
-  QPixmap myPixmap(pkgDataPath+QString("/images/icons/symbology.png"));
-  setPixmap(0,myPixmap);
+  QIcon myIcon(pkgDataPath+QString("/images/icons/symbology.png"));
+  setText(0, theString);
+  setIcon(0,myIcon);
 }
 
 
@@ -54,7 +54,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendSymbologyGroup::accept(const QgsLegendItem* 
 /** Overloads cmpare function of QListViewItem
   * @note The symbology group must always be the second in the list
   */
-int QgsLegendSymbologyGroup::compare (Q3ListViewItem * i,int col, bool ascending)
+int QgsLegendSymbologyGroup::compare (QTreeWidgetItem * i,int col, bool ascending)
 {
   QgsLegendItem * myItem = dynamic_cast<QgsLegendItem *>(i) ;
   if (myItem->type() == QgsLegendItem::LEGEND_PROPERTY_GROUP)
@@ -69,13 +69,14 @@ int QgsLegendSymbologyGroup::compare (Q3ListViewItem * i,int col, bool ascending
 
 void QgsLegendSymbologyGroup::updateLayerSymbologySettings(const QgsMapLayer* thelayer)
 {
+#if 0
     //find the legend layer group node
-    Q3ListViewItem* parent = this->parent();
+    QTreeWidgetItem* parent = this->parent();
     if(!parent)
     {
 	return;
     }
-    Q3ListViewItem* sibling = 0;
+    QTreeWidgetItem* sibling = 0;
     QgsLegendLayerFileGroup* group = 0;
     for(sibling = parent->firstChild(); sibling != 0; sibling = sibling->nextSibling())
     {
@@ -106,4 +107,5 @@ void QgsLegendSymbologyGroup::updateLayerSymbologySettings(const QgsMapLayer* th
 	    }
 	}
     }
+#endif
 }

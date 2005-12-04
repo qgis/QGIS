@@ -22,15 +22,14 @@
 
 #include "qgisapp.h"
 #include "qgslegenditem.h"
-//Added by qt3to4:
 #include <QMouseEvent>
+#include <deque>
 #include <map>
-#include <q3listview.h>
-#include <q3popupmenu.h>
+#include <QTreeWidget>
 
-class QCheckBox;
 class QgsMapLayer;
 class QgsMapCanvas;
+class QTreeWidgetItem;
 
 /**
    \class QgsLegend
@@ -77,7 +76,7 @@ class QgsMapCanvas;
    @author Gary E.Sherman, Tim Sutton, Marco Hugentobler and Jens Oberender
 */
 
-class QgsLegend : public Q3ListView
+class QgsLegend : public QTreeWidget
 {
     Q_OBJECT;
 	
@@ -97,12 +96,6 @@ class QgsLegend : public Q3ListView
   Else, 0 is returned.*/
   QgsMapLayer* currentLayer();
 
-  /**Adds a checkbox and its item to mCheckBoxes*/
-  void registerCheckBox(Q3ListViewItem* item, QCheckBox* cbox);
-
-  /**Removes a checkbox from mCheckBoxes. Does not delete the objects*/
-  void unregisterCheckBox(Q3ListViewItem* item);
-
   /**Writes the content of the legend using the key system of QgsProject*/
   void saveToProject();
 
@@ -118,6 +111,27 @@ class QgsLegend : public Q3ListView
   /**Returns true, if the y-coordinate is >= the center of the item*/
   bool yCoordAboveCenter(QgsLegendItem* it, int ycoord);
 
+  /**Returns the first item in the hierarchy*/
+  QTreeWidgetItem* firstItem();
+
+  /**Returns the next item (next sibling or next item on level above)*/
+  QTreeWidgetItem* nextItem(QTreeWidgetItem* item);
+
+  /**Returns the next sibling of an item or 0 if there is none*/
+  QTreeWidgetItem* nextSibling(QTreeWidgetItem* item);
+
+  /**Returns the previous sibling of an item or 0 if there is none*/
+  QTreeWidgetItem* previousSibling(QTreeWidgetItem* item);
+
+  /**Moves an item after another one*/
+  void moveItem(QTreeWidgetItem* move, QTreeWidgetItem* after);
+
+  /**Removes an item from the legend. This is e.g. necessary before shifting it to another place*/
+  void removeItem(QTreeWidgetItem* item);
+
+  /**Returns the ids of the layers contained in this legend. The order is bottom->top*/
+  std::deque<QString> layerIDs();
+
 public slots:
 
     /*!Adds a new layer group with the maplayer to the canvas*/
@@ -126,7 +140,7 @@ public slots:
     void setMapCanvas(QgsMapCanvas * canvas){mMapCanvas = canvas;}
 
 
- void updateLegendItem( Q3ListViewItem * li );
+ void updateLegendItem( QTreeWidgetItem* li );
  
  /*!
    * Slot called to clear the tree of all items
@@ -154,7 +168,7 @@ protected:
    * @note Overrides method of the same name in the QListView class.
    * @return void
    */ 
-  void contentsMouseMoveEvent(QMouseEvent * e);
+  void mouseMoveEvent(QMouseEvent * e);
 
   /*!
    * Event handler for buton mouse presses.
@@ -163,7 +177,7 @@ protected:
    * @note Overrides method of the same name in the QListView class.
    * @return void
    */ 
-  void contentsMousePressEvent(QMouseEvent * e);
+  void mousePressEvent(QMouseEvent * e);
 
   /*!
    * Event handler for mouse button releases.
@@ -185,22 +199,21 @@ protected:
    * @note Overrides method of the same name in the QListView class.
    * @return void
    */  
-  void contentsMouseReleaseEvent(QMouseEvent * e);
-  /**Stores the necessary information about the position of an item in the hierarchy. Afterwards, 
+  void mouseReleaseEvent(QMouseEvent * e);
+  
+    /**Stores the necessary information about the position of an item in the hierarchy. Afterwards, 
 this item may be moved back to the original position with resetToInitialPosition()*/
-  void storeInitialPosition(Q3ListViewItem* li);
+  void storeInitialPosition(QTreeWidgetItem* li);
+  
   /**Moves an item back to the position where storeInitialPosition has been called*/
-  void resetToInitialPosition(Q3ListViewItem* li);
+  void resetToInitialPosition(QTreeWidgetItem* li);
 
   private slots:
 
   /**Calls 'handleDoubleClickEvent' on the item*/
-  void handleDoubleClickEvent(Q3ListViewItem* item);
+  void handleDoubleClickEvent(QTreeWidgetItem* item);
   /**Calls 'handleRightClickEvent' on the item*/
-  void handleRightClickEvent(Q3ListViewItem* item, const QPoint& position);
-  /**Moves all the checkboxes stored in mCheckBoxes to the right places. Needs to
-   be called every time the geometry of the treeview is changed*/
-  void placeCheckBoxes();
+  void handleRightClickEvent(QTreeWidgetItem* item, const QPoint& position);
   /**Removes the current legend group*/
   void legendGroupRemove();
   /**Adds all the legend layer files of the current legend layer to overview*/
@@ -241,7 +254,7 @@ private:
   bool mMousePressedFlag;
 
   /// keep track of the Item being dragged
-  Q3ListViewItem* mItemBeingMoved;
+  QTreeWidgetItem* mItemBeingMoved;
 
   /*!
    * Position in the list of the item being moved as it was at the start of a drag event.
@@ -258,13 +271,14 @@ private:
       YOUNGER_SIBLING
     };
   HIERARCHY_POSITION_TYPE mRestoreInformation;
-  Q3ListViewItem* mRestoreItem;
+  QTreeWidgetItem* mRestoreItem;
 
   /*!
-   * A fuction sed to determin how far down in the list an item is.
+   * A fuction sed to determin how far down in the list an item is (starting with one for the first Item.
+   *If the item is not in the legend, -1 is returned
    * @see mItemBeingMovedOrigPos
    */
-  int getItemPos(Q3ListViewItem * item);
+  int getItemPos(QTreeWidgetItem* item);
 
   /*!
    * A QPopupMenu that will be displayed when the right mouse button is clicked.
@@ -274,15 +288,8 @@ private:
   /**Pointer to the main canvas. Used for requiring repaints in case of legend changes*/
   QgsMapCanvas* mMapCanvas;
 
-  /**QgsLegendItem is derived from QListViewItem, not QCheckBoxItem. So there must be a mechanism to allow
-   QgsLegendLayerFiles to have checkboxes without deriving from QCheckBoxItem. The solution is that QgsLegend
-  manages the positioning of the checkboxes if the geometry of the treeview is changed. New checkboxes can be
-  registered together with their QListViewItem using registerCheckBox() and unregistered using unregisterCheckBox().
-  QgsLegend then takes care of the positioning of the checkboxes*/
-  std::map<Q3ListViewItem*, QCheckBox*> mCheckBoxes;
-
   /**Moves a checkbox to a position next to its listview*/
-  void placeCheckBox(Q3ListViewItem* litem, QCheckBox* cbox);
+  void placeCheckBox(QTreeWidgetItem* litem, QCheckBox* cbox);
 
 signals:
   void zOrderChanged(QgsLegend * lv);

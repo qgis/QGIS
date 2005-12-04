@@ -30,7 +30,7 @@ class QgsMapLayer;
 class QgsLegendSymbologyGroup : public QgsLegendItem
 {
 public:
-  QgsLegendSymbologyGroup(Q3ListViewItem * theItem, QString theString);
+  QgsLegendSymbologyGroup(QTreeWidgetItem * theItem, QString theString);
   ~QgsLegendSymbologyGroup();
   bool isLeafNode() {return false;}
   DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
@@ -38,7 +38,7 @@ public:
   /** Overloads cmpare function of QListViewItem
     * @note The symbology group must always be the second in the list
     */
-  int compare (Q3ListViewItem * i,int col, bool ascending);
+  int compare (QTreeWidgetItem * i,int col, bool ascending);
   /**Copies the symbology settings of the layer to all maplayers in the QgsLegendLayerFileGroup.
    This method should be called whenever a layer in this group changes it symbology settings
   (normally from QgsMapLayer::refreshLegend)*/

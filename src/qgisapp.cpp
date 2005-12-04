@@ -146,6 +146,8 @@ using namespace std;
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
+class QTreeWidgetItem;
+
 /* typedefs for plugins */
 typedef QgsMapLayerInterface *create_it();
 typedef QgisPlugin *create_ui(QgisApp * qgis, QgisIface * qI);
@@ -388,8 +390,9 @@ QgisApp::QgisApp(QWidget * parent, const char *name, Qt::WFlags fl)
     QSplitter *legendOverviewSplit = new QSplitter(Qt::Vertical,canvasLegendSplit);
 
     mMapLegend = new QgsLegend(this,legendOverviewSplit, "theMapLegend");
-    mMapLegend->addColumn(tr("Layers"));
-    mMapLegend->setSorting(-1);
+    mMapLegend->setColumnCount(1);
+    QStringList slist("Layers");
+    mMapLegend->setHeaderLabels(slist);
     Q3WhatsThis::add(mMapLegend, tr("Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties."));
 
     // mL = new QScrollView(canvasLegendSplit);
@@ -416,9 +419,7 @@ QgisApp::QgisApp(QWidget * parent, const char *name, Qt::WFlags fl)
     mOverviewMapCursor = new QCursor(overviewPanBmp, overviewPanBmpMask, 5, 5);
     mOverviewCanvas->setCursor(*mOverviewMapCursor);
 
-    mMapLegend->setBackgroundColor(QColor(192, 192, 192));
     mMapLegend->setMapCanvas(mMapCanvas);
-    mMapLegend->setResizeMode(Q3ListView::AllColumns);
 
     QString caption = tr("Quantum GIS - ");
     caption += QString("%1 ('%2')").arg(QGis::qgisVersion).arg(QGis::qgisReleaseName);
@@ -3400,7 +3401,7 @@ void QgisApp::inOverview( bool in_overview )
   std::cout << "QGisApp::inOverview(" << in_overview << ")" << std::endl;
   #endif
   
-  Q3ListViewItem *lvi = mMapLegend->currentItem();
+  QTreeWidgetItem* lvi = mMapLegend->currentItem();
   
   // check to make sure there is a current layer
   // TODO: We really need to set disable/enable all menu options based on a logical scheme. 
@@ -3430,7 +3431,7 @@ void QgisApp::removeLayer()
   //make sure canvase is not rendering first by faking an escape keypress
   emit keyPressEvent(new QKeyEvent(QEvent::KeyPress ,Qt::Key_Escape,Qt::Key_Escape,0 ));
   mMapCanvas->freeze();
-  Q3ListViewItem *lvi = mMapLegend->currentItem();
+  QTreeWidgetItem *lvi = mMapLegend->currentItem();
   if(lvi)
   {
     QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
@@ -3484,7 +3485,7 @@ void QgisApp::zoomToLayerExtent()
   if(QgsMapLayerRegistry::instance()->count() > 0)
   {
     // get the selected item
-    Q3ListViewItem *li = mMapLegend->currentItem();
+    QTreeWidgetItem *li = mMapLegend->currentItem();
     QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
     if(llf)
     {
@@ -4235,7 +4236,7 @@ void QgisApp::openURL(QString url, bool useQgisDocDirectory)
 /** Get a pointer to the currently selected map layer */
 QgsMapLayer *QgisApp::activeLayer()
 {
-    Q3ListViewItem *lvi = mMapLegend->currentItem();
+    QTreeWidgetItem *lvi = mMapLegend->currentItem();
     QgsMapLayer *layer = 0;
     if (lvi)
     {
@@ -4251,7 +4252,7 @@ QgsMapLayer *QgisApp::activeLayer()
 QString QgisApp::activeLayerSource()
 {
     QString source;
-    Q3ListViewItem *lvi = mMapLegend->currentItem();
+    QTreeWidgetItem *lvi = mMapLegend->currentItem();
     QgsMapLayer *layer = 0;
     if (lvi)
     {
@@ -4927,41 +4928,22 @@ void QgisApp::setOverviewZOrder(QgsLegend * lv)
     //in the correect order!
     mOverviewCanvas->clear();
     mOverviewCanvas->freeze(false);
-    Q3ListViewItemIterator it(lv);
-    std::vector<QString> myOverviewLayerVector;
-    /** Move to the end of the list first, making sure all layers are removed as we go */
-    while (it.current())
-    {
-        QgsLegendItem *li = (QgsLegendItem *) it.current();
-	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
-	if(llf)
-	{
-	    QgsMapLayer *lyr = llf->layer();
-	    QString myLayerId = lyr->getLayerID();
-	    mOverviewCanvas->remove
-		(myLayerId);
-#ifdef QGISDEBUG
-        std::cout << " Removed layer " << myLayerId.toLocal8Bit().data() << " from overview map" << std::endl;
-#endif
-	    myOverviewLayerVector.push_back(myLayerId);
-	}
-	    ++it;
-    }
-    std::vector<QString>::reverse_iterator myIterator=myOverviewLayerVector.rbegin();
-    while (myIterator != myOverviewLayerVector.rend())
+    std::deque<QString> myOverviewLayerVector = lv->layerIDs();
+    for(std::deque<QString>::iterator it= myOverviewLayerVector.begin(); it != myOverviewLayerVector.end(); ++it)
+      {
+	mOverviewCanvas->remove(*it);
+      }
+
+    std::deque<QString>::iterator myIterator=myOverviewLayerVector.begin();
+    while (myIterator != myOverviewLayerVector.end())
     {
         QgsMapLayer *lyr = QgsMapLayerRegistry::instance()->mapLayer(*myIterator);
         if (lyr->showInOverviewStatus())
         {
             mOverviewCanvas->addLayer(lyr);
-#ifdef QGISDEBUG
-            std::cout << " Added layer " << (*myIterator).toLocal8Bit().data() << " to overview map" << std::endl;
-#endif
-
         }
         myIterator++;
     }
-
     //mOverviewCanvas->render();
     //mOverviewCanvas->zoomFullExtent();
     // set the extents of the overview to match the mapcanvas

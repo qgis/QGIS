@@ -29,7 +29,7 @@ class QColor;
 
 #include <fstream>
 #include <list>
-#include <q3listview.h>
+#include <QTreeWidgetItem>
 #include <qstring.h>
 #include <qdom.h>
 
@@ -73,7 +73,7 @@ class QgsRenderer
     virtual const std::list<QgsSymbol*> symbols() const=0;
     /**Deletes the child items of the legendparent and add new ones according to the 
      QgsSymbols contained in this renderer*/
-    virtual void refreshLegend(Q3ListViewItem* legendparent) const;
+    virtual void refreshLegend(QTreeWidgetItem* legendparent) const;
     /**Returns a copy of the renderer (a deep copy on the heap)*/
     virtual QgsRenderer* clone() const=0;
     /**Color to draw selected features - static so we can change it in proj props and automatically 

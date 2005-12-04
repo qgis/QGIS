@@ -20,13 +20,10 @@
 #include "qgslegendlayer.h"
 #include "qgslegendlayerfile.h"
 #include "qgsmaplayer.h"
-#include <qapplication.h>
-#include <q3listview.h>
-#include <qpixmap.h>
-#include <q3popupmenu.h>
 #include <iostream>
+#include <QIcon>
 
-QgsLegendLayer::QgsLegendLayer(Q3ListViewItem * parent,QString name)
+QgsLegendLayer::QgsLegendLayer(QTreeWidgetItem* parent,QString name)
     : QObject(), QgsLegendItem(parent, name)
 {
     mType=LEGEND_LAYER;
@@ -35,11 +32,12 @@ QgsLegendLayer::QgsLegendLayer(Q3ListViewItem * parent,QString name)
 #else
     QString pkgDataPath(PKGDATAPATH);
 #endif
-    QPixmap myPixmap(pkgDataPath+QString("/images/icons/layer.png"));
-    setPixmap(0,myPixmap);
+    QIcon myIcon(pkgDataPath+QString("/images/icons/layer.png"));
+    setText(0, name);
+    setIcon(0, myIcon);
 }
 
-QgsLegendLayer::QgsLegendLayer(Q3ListView* parent, QString name): QObject(), QgsLegendItem(parent, name)
+QgsLegendLayer::QgsLegendLayer(QTreeWidget* parent, QString name): QObject(), QgsLegendItem(parent, name)
 {
     mType=LEGEND_LAYER;
 #if defined(Q_OS_MACX) || defined(WIN32)
@@ -47,8 +45,9 @@ QgsLegendLayer::QgsLegendLayer(Q3ListView* parent, QString name): QObject(), Qgs
 #else
     QString pkgDataPath(PKGDATAPATH);
 #endif
-    QPixmap myPixmap(pkgDataPath+QString("/images/icons/layer.png"));
-    setPixmap(0,myPixmap);
+    QIcon myIcon(pkgDataPath+QString("/images/icons/layer.png"));
+    setText(0, name);
+    setIcon(0, myIcon);
 }
 
 QgsLegendLayer::~QgsLegendLayer()
@@ -75,7 +74,10 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(LEGEND_ITEM_TYPE type)
 
 QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(const QgsLegendItem* li) const
 {
-  if(li)
+#ifdef QGISDEBUG
+  qWarning("in QgsLegendLayer::accept");
+#endif
+  if(li && li != this)
     {
       LEGEND_ITEM_TYPE type = li->type();
       if ( type == LEGEND_LAYER)//todo: only if both layers toplevel or both symbology compatible
@@ -101,36 +103,36 @@ void QgsLegendLayer::handleRightClickEvent(const QPoint& position)
 
 QgsMapLayer* QgsLegendLayer::firstMapLayer()
 {
-    Q3ListViewItem* llfgroup = firstChild(); //the legend layer file group
-    if(!llfgroup)
+  QTreeWidgetItem* llfgroup = QTreeWidgetItem::child(0); //the legend layer file group
+  if(!llfgroup)
     {
-	return 0;
+      return 0;
     }
-    Q3ListViewItem* llf = llfgroup->firstChild();
-    if(!llf)
+  QTreeWidgetItem* llf = llfgroup->child(0);
+  if(!llf)
     {
-	return 0;
+      return 0;
     }
-    QgsLegendLayerFile* legendlayerfile = dynamic_cast<QgsLegendLayerFile*>(llf);
-    if (legendlayerfile)
+  QgsLegendLayerFile* legendlayerfile = dynamic_cast<QgsLegendLayerFile*>(llf);
+  if (legendlayerfile)
     {
-	return legendlayerfile->layer();
+      return legendlayerfile->layer();
     }
-    else
+  else
     {
-	return 0;
+      return 0;
     }
 }
 
 std::list<QgsMapLayer*> QgsLegendLayer::mapLayers()
 {
     std::list<QgsMapLayer*> list;
-    Q3ListViewItem* llfgroup = firstChild(); //the legend layer file group
+    QTreeWidgetItem* llfgroup = QTreeWidgetItem::child(0); //the legend layer file group
     if(!llfgroup)
     {
 	return list;
     }
-    Q3ListViewItem* llf = llfgroup->firstChild();
+    QgsLegendItem* llf = dynamic_cast<QgsLegendItem*>(llfgroup->child(0));
     if(!llf)
     {
 	return list;
@@ -145,6 +147,5 @@ std::list<QgsMapLayer*> QgsLegendLayer::mapLayers()
 	}
     }
     while(llf = llf->nextSibling());
-
     return list;
 }

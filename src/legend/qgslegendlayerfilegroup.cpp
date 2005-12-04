@@ -20,9 +20,10 @@
 #include "qgslegendsymbologygroup.h"
 #include "qgsmaplayer.h"
 
-QgsLegendLayerFileGroup::QgsLegendLayerFileGroup(Q3ListViewItem* theItem, QString theString): QgsLegendItem(theItem, theString)
+QgsLegendLayerFileGroup::QgsLegendLayerFileGroup(QTreeWidgetItem* theItem, QString theString): QgsLegendItem(theItem, theString)
 {
     mType = LEGEND_LAYER_FILE_GROUP;
+    setText(0, theString);
 }
 
 QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept(LEGEND_ITEM_TYPE type)
@@ -39,18 +40,21 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept(LEGEND_ITEM_TYPE type
 
 QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept(const QgsLegendItem* li) const
 {
+#ifdef QGISDEBUG
+  qWarning("in QgsLegendLayerFileGroup::accept");
+#endif
   if(li)
     {
       LEGEND_ITEM_TYPE type = li->type();
-      if ( type == LEGEND_LAYER_FILE )
+      if ( type == LEGEND_LAYER_FILE && this != li->parent())
       {
-	if(firstChild() == 0)
+	if(child(0) == 0)
 	  {
 	    return INSERT;
 	  }
 	else
 	  {
-	    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(firstChild());
+	    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(child(0));
 	    if(llf)
 	      {
 		QgsMapLayer* childlayer = llf->layer();
@@ -68,85 +72,82 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept(const QgsLegendItem* 
 
 bool QgsLegendLayerFileGroup::insert(QgsLegendItem* newItem, bool changesettings)
 {
-#ifdef QGISDEBUG
-qWarning("insert");
-#endif
-if ( newItem->type() == LEGEND_LAYER_FILE )
-{
-    Q3ListViewItem* oldItem = firstChild();
-    if(!oldItem || !(oldItem->nextSibling()) )//this item is the first child
+  if ( newItem->type() == LEGEND_LAYER_FILE )
     {
-	insertItem(newItem);
-	if(!changesettings)
-	  {
-	    return true;
-	  }
-	QgsMapLayer* newLayer = (dynamic_cast<QgsLegendLayerFile*>(newItem))->layer();
-	Q3ListViewItem* nexts = nextSibling();
-	if(nexts)
+      QgsLegendItem* oldItem = firstChild();
+      if(!oldItem)//this item is the first child
 	{
-	    QgsLegendSymbologyGroup* sg = dynamic_cast<QgsLegendSymbologyGroup*>(nexts);
-	    if(sg)
+	  insertChild(0, newItem);
+	  if(!changesettings)
 	    {
-		newLayer->setLegendSymbologyGroupParent(sg);
-		newLayer->refreshLegend();
+	      return true;
 	    }
+	  QgsMapLayer* newLayer = (dynamic_cast<QgsLegendLayerFile*>(newItem))->layer();
+	  QTreeWidgetItem* nexts = nextSibling();
+	  if(nexts)
+	    {
+	      QgsLegendSymbologyGroup* sg = dynamic_cast<QgsLegendSymbologyGroup*>(nexts);
+	      if(sg)
+		{
+		  newLayer->setLegendSymbologyGroupParent(sg);
+		  newLayer->refreshLegend();
+		}
+	    }
+	  return true;
 	}
-	return true;
-    }
-    //if there are already legend layer files, copy the symbology settings if the two layers are
-    //symbology compatible (the same number and type of attributes)
-    
-    //find the lowest sibling
-    while(oldItem->nextSibling() != 0)
-      {
-	oldItem = oldItem->nextSibling();
-      }
-    QgsLegendLayerFile* thefile = dynamic_cast<QgsLegendLayerFile*>(oldItem);
-    
-    if(!thefile)
-    {
-	return false;
-    }
-    QgsMapLayer* thelayer = thefile->layer();
-    if(!thelayer)
-    {
-	return false;
-    }
-    QgsMapLayer* newLayer = (dynamic_cast<QgsLegendLayerFile*>(newItem))->layer();
-    if(newLayer->isSymbologyCompatible(*thelayer))
-    {	
-      if(changesettings)
+      //if there are already legend layer files, copy the symbology settings if the two layers are
+      //symbology compatible (the same number and type of attributes)
+      
+      //find the lowest sibling
+      while(oldItem->nextSibling() != 0)
 	{
-	  if(!newLayer->copySymbologySettings(*thelayer))
-	    {
-	      return false;
-	    }
+	  oldItem = oldItem->nextSibling();
 	}
-	insertItem(newItem);
-	if(!changesettings)
-	  {
-	    return true;
-	  }
-	Q3ListViewItem* nexts = nextSibling();
-	if(nexts)
+      QgsLegendLayerFile* thefile = dynamic_cast<QgsLegendLayerFile*>(oldItem);
+      
+      if(!thefile)
 	{
-	    QgsLegendSymbologyGroup* sg = dynamic_cast<QgsLegendSymbologyGroup*>(nexts);
-	    if(sg)
-	    {
-		newLayer->setLegendSymbologyGroupParent(sg);
-	    }
+	  return false;
 	}
-	return true;
+      QgsMapLayer* thelayer = thefile->layer();
+      if(!thelayer)
+	{
+	  return false;
+	}
+      QgsMapLayer* newLayer = (dynamic_cast<QgsLegendLayerFile*>(newItem))->layer();
+      if(newLayer->isSymbologyCompatible(*thelayer))
+	{	
+	  if(changesettings)
+	    {
+	      if(!newLayer->copySymbologySettings(*thelayer))
+		{
+		  return false;
+		}
+	    }
+	  insertChild(childCount(), newItem);
+	  if(!changesettings)
+	    {
+	      return true;
+	    }
+	  QTreeWidgetItem* nexts = nextSibling();
+	  if(nexts)
+	    {
+	      QgsLegendSymbologyGroup* sg = dynamic_cast<QgsLegendSymbologyGroup*>(nexts);
+	      if(sg)
+		{
+		  newLayer->setLegendSymbologyGroupParent(sg);
+		}
+	    }
+	  return true;
+	}
+      else
+	{
+	  return false;
+	}  
     }
-    else
+  else
     {
-	return false;
-    }  
-}
- else
- {
-     return false;
- }
+      return false;
+    }
 }
 

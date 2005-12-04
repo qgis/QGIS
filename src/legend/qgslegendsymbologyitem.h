@@ -28,7 +28,7 @@
 class QgsLegendSymbologyItem : public QgsLegendItem
 {
 public:
-    QgsLegendSymbologyItem(Q3ListViewItem* theItem, QString theString);
+    QgsLegendSymbologyItem(QTreeWidgetItem* theItem, QString theString);
     ~QgsLegendSymbologyItem();
     bool isLeafNode() {return true;}
     DRAG_ACTION accept(LEGEND_ITEM_TYPE type);

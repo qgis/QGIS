@@ -382,22 +382,19 @@ QgsMapLayer *QgsMapCanvas::getZpos(int idx)
 
 void QgsMapCanvas::setZOrderFromLegend(QgsLegend * lv)
 {
+#ifdef QGISDEBUG
+  qWarning("in QgsMapCanvas::setZOrderFromLegend");
+#endif
     mCanvasProperties->zOrder.clear();
-    Q3ListViewItemIterator it(lv);
-
-    while (it.current())
-    {
-	QgsLegendItem *li = (QgsLegendItem *) it.current();
-	QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
-	if(llf)
-	{
-	    QgsMapLayer *lyr = llf->layer();
-	    mCanvasProperties->zOrder.push_front(lyr->getLayerID());
-	}
-	++it;
-    }
-
-  refresh();
+    std::deque<QString> layers = lv->layerIDs();
+    for(std::deque<QString>::iterator it = layers.begin(); it != layers.end(); ++it)
+      {
+	mCanvasProperties->zOrder.push_back(*it);
+      }
+    refresh();
+#ifdef QGISDEBUG
+  qWarning("leaving QgsMapCanvas::setZOrderFromLegend");
+#endif
 } // setZOrderFromLegend
 
 
@@ -431,51 +428,62 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
   if (layerCount() > 0)
   {
     // Get a map layer. Any layer should do, so just grab the first one.
+
+    if(mCanvasProperties->layers.size() == 0) //prevent a crash if there is no maplayer at all
+      {
+	return;
+      }
+
     std::map<QString, QgsMapLayer*>::const_iterator 
-     i = mCanvasProperties->layers.begin();
+      i = mCanvasProperties->layers.begin();
+    
+    if(i->second == 0)
+      {
+	//this should not happen...
+	return;
+      }
 
     if ( ! i->second->coordinateTransform() )
-    {
-        QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
-
-        return;                 // XXX KLUDGY HACK, but necessary to underscore problem
+      {
+	QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
+	
+	return;                 // XXX KLUDGY HACK, but necessary to underscore problem
                                 // XXX with layers NOT HAVING DEFAULT COORDINATE TRANSFORMS
-    }
-
-
+      }
+    
     const QgsSpatialRefSys& currentOutputSRS = 
       i->second->coordinateTransform()->destSRS();
-
+    
     if (!(mCanvasProperties->previousOutputSRS == currentOutputSRS))
-    {
-#ifdef QGISDEBUG
-      std::cerr << "The previous output projection is different to the "
-                << "current output projection, so the map extents are "
-                << "begin reprojected.\n";
-#endif
-
-      QgsCoordinateTransform transform(mCanvasProperties->previousOutputSRS, currentOutputSRS);
-      
-      try
       {
-        mCanvasProperties->currentExtent = 
-          transform.transformBoundingBox(mCanvasProperties->currentExtent);
-      }
-      catch(QgsCsException &cse)
-      {
-        qWarning(tr("Error when projecting the view extent, you may need to manually zoom to the region of interest.").toLocal8Bit().data());
 #ifdef QGISDEBUG
-        std::cerr << "Attempted to transform the view extent from\n"
-                  << mCanvasProperties->previousOutputSRS 
-                  << "\nto\n" << currentOutputSRS;
-        std::cerr << "The view extent was: " 
-                  << mCanvasProperties->currentExtent
-                  << '\n';
+	std::cerr << "The previous output projection is different to the "
+		  << "current output projection, so the map extents are "
+		  << "begin reprojected.\n";
 #endif
+	
+	QgsCoordinateTransform transform(mCanvasProperties->previousOutputSRS, currentOutputSRS);
+	
+	try
+	  {
+	    mCanvasProperties->currentExtent = 
+	      transform.transformBoundingBox(mCanvasProperties->currentExtent);
+	  }
+	catch(QgsCsException &cse)
+	  {
+	    qWarning(tr("Error when projecting the view extent, you may need to manually zoom to the region of interest.").toLocal8Bit().data());
+#ifdef QGISDEBUG
+	    std::cerr << "Attempted to transform the view extent from\n"
+		      << mCanvasProperties->previousOutputSRS 
+		      << "\nto\n" << currentOutputSRS;
+	    std::cerr << "The view extent was: " 
+		      << mCanvasProperties->currentExtent
+		      << '\n';
+#endif
+	  }
+	
+	mCanvasProperties->previousOutputSRS = currentOutputSRS;
       }
-
-      mCanvasProperties->previousOutputSRS = currentOutputSRS;
-    }
 #ifdef QGISDEBUG
     else
       std::cerr << "The previous output projection is the same as the "
@@ -2763,7 +2771,11 @@ void QgsMapCanvas::remove
   // convenience variable
   QgsMapLayer * layer = mCanvasProperties->layers[key];
 
-  Q_ASSERT( layer );
+  if(!layer)
+    {
+      return;
+    }
+  //Q_ASSERT( layer );
 
   // disconnect layer signals
   QObject::disconnect(layer, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));

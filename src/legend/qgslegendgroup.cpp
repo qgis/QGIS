@@ -18,11 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "qgslegendgroup.h"
-#include <qapplication.h>
-//Added by qt3to4:
-#include <QPixmap>
+#include <QIcon>
 
-QgsLegendGroup::QgsLegendGroup(Q3ListViewItem * theItem ,QString theName)
+QgsLegendGroup::QgsLegendGroup(QTreeWidgetItem * theItem ,QString theName)
     : QgsLegendItem(theItem,theName)
 {
   mType=LEGEND_GROUP;
@@ -31,10 +29,10 @@ QgsLegendGroup::QgsLegendGroup(Q3ListViewItem * theItem ,QString theName)
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif
-  QPixmap myPixmap(pkgDataPath+QString("/images/icons/folder.png"));
-  setPixmap(0,myPixmap);
+  QIcon myIcon(pkgDataPath+QString("/images/icons/folder.png"));
+  setIcon(0, myIcon);
 }
-QgsLegendGroup::QgsLegendGroup(Q3ListView * theListView, QString theString)
+QgsLegendGroup::QgsLegendGroup(QTreeWidget* theListView, QString theString)
     : QgsLegendItem(theListView,theString)
 {
   mType=LEGEND_GROUP;
@@ -43,8 +41,8 @@ QgsLegendGroup::QgsLegendGroup(Q3ListView * theListView, QString theString)
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif
-  QPixmap myPixmap(pkgDataPath+QString("/images/icons/folder.png"));
-  setPixmap(0,myPixmap);
+  QIcon myIcon(pkgDataPath+QString("/images/icons/folder.png"));
+  setIcon(0, myIcon);
 }
 
 QgsLegendGroup::~QgsLegendGroup()
@@ -93,6 +91,6 @@ bool QgsLegendGroup::insert(QgsLegendItem* theItem, bool changesettings)
 {
     if(theItem->type() == LEGEND_LAYER)
     {
-	insertItem(theItem);
+	addChild(theItem);
     }
 }

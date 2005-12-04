@@ -20,8 +20,8 @@
 #ifndef QGSLEGENDITEM_H
 #define QGSLEGENDITEM_H
 
-#include <q3listview.h>
-#include <q3popupmenu.h>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
 
 class QgsLegendGroup;
 class QgsLegendLayer;
@@ -33,11 +33,11 @@ This is an abstract base class that all qgis legen items inerit from
 
 @author Tim Sutton
 */
-class QgsLegendItem : public Q3ListViewItem
+class QgsLegendItem : public QTreeWidgetItem
 {
 public:
-    QgsLegendItem(Q3ListViewItem*, QString);
-    QgsLegendItem (Q3ListView *,QString);
+    QgsLegendItem(QTreeWidgetItem*, QString);
+    QgsLegendItem (QTreeWidget*,QString);
     ~QgsLegendItem();
 
    enum LEGEND_ITEM_TYPE 
@@ -77,8 +77,17 @@ public:
        @return true in case of success and false if theItem cannot be inserted*/
     virtual bool insert(QgsLegendItem* theItem, bool changesettings = true) {return false;}
     void print(QgsLegendItem * theItem);
+    /**Returns a pointer to the first child or 0 if there is none*/
+    QgsLegendItem* firstChild();
+    /**Returns the older sibling or 0 if there is none*/
+    QgsLegendItem* nextSibling();
     /**Returns the younger sibling or 0 if this item is the first child of its parent*/
     QgsLegendItem* findYoungerSibling();
+    /**Moves this item after as an older sibling after another item*/
+    void moveItem(QgsLegendItem* after);
+    /**Removes all the children of this item. This function is for qt-4.0.1 compatibility, where
+     'takeChildren()' does not yet exist*/
+    void removeAllChildren();
 protected:
    bool mLeafNodeFlag;
    LEGEND_ITEM_TYPE mType; 
