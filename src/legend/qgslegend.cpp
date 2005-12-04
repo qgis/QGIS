@@ -577,9 +577,12 @@ void QgsLegend::legendLayerRemove()
 
    if(maplayers.size()>0)
    {
-       mMapCanvas->removeDigitizingLines();
-       mMapCanvas->clear();
-       mMapCanvas->render();
+     mMapCanvas->removeDigitizingLines();
+     mMapCanvas->clear();
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//     mMapCanvas->render();
+     mMapCanvas->update();
    }
    delete ll;
    placeCheckBoxes();

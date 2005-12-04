@@ -1126,7 +1126,8 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   }
   
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer::draw(4 arguments): myRasterExtent is '" << myRasterExtent << "'." << std::endl;
+  std::cout << "QgsRasterLayer::draw(4 arguments): theViewExtent is " << std::endl << "  '" << (*theViewExtent) << "'." << std::endl;
+  std::cout << "QgsRasterLayer::draw(4 arguments): myRasterExtent is " << std::endl << "  '" << myRasterExtent << "'." << std::endl;
 #endif
 
 
@@ -1161,6 +1162,14 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   myRasterViewPort->rectXOffsetInt = static_cast < int >(myRasterViewPort->rectXOffsetFloat);
   myRasterViewPort->rectYOffsetInt = static_cast < int >(myRasterViewPort->rectYOffsetFloat);
 
+#ifdef QGISDEBUG
+  std::cout << "QgsRasterLayer::draw(4 arguments): adfGeoTransform[0] = " << adfGeoTransform[0] << "." << std::endl;
+  std::cout << "QgsRasterLayer::draw(4 arguments): adfGeoTransform[1] = " << adfGeoTransform[1] << "." << std::endl;
+  std::cout << "QgsRasterLayer::draw(4 arguments): adfGeoTransform[2] = " << adfGeoTransform[2] << "." << std::endl;
+  std::cout << "QgsRasterLayer::draw(4 arguments): adfGeoTransform[3] = " << adfGeoTransform[3] << "." << std::endl;
+  std::cout << "QgsRasterLayer::draw(4 arguments): adfGeoTransform[4] = " << adfGeoTransform[4] << "." << std::endl;
+  std::cout << "QgsRasterLayer::draw(4 arguments): adfGeoTransform[5] = " << adfGeoTransform[5] << "." << std::endl;
+#endif
 
   // get dimensions of clipped raster image in raster pixel space/ RasterIO will do the scaling for us.
   // So for example, if the user is zoomed in a long way, there may only be e.g. 5x5 pixels retrieved from
@@ -1170,18 +1179,43 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   myRasterViewPort->clippedXMaxDouble = (myRasterExtent.xMax() - adfGeoTransform[0]) / adfGeoTransform[1];
   myRasterViewPort->clippedYMinDouble = (myRasterExtent.yMin() - adfGeoTransform[3]) / adfGeoTransform[5];
   myRasterViewPort->clippedYMaxDouble = (myRasterExtent.yMax() - adfGeoTransform[3]) / adfGeoTransform[5];
+
+  // We do a "+2" for each of the 2 assignments below because:
+  //  + 1 to simulate a ceil() out of static_cast<int> which otherwise is just a truncation.
+  //  + 1 to allow for the fact that the left hand source pixel may be mostly scrolled out of view
+  //      and therefore a fraction of a pixel would "leak" in the right hand side.
+  //      (we could test for this case more explicitly if we wanted to be pedantic, but
+  //       it's easier to just add one pixel "just in case")
   myRasterViewPort->clippedWidthInt =
-    abs(static_cast < int >(myRasterViewPort->clippedXMaxDouble - myRasterViewPort->clippedXMinDouble));
+    abs(static_cast < int >(myRasterViewPort->clippedXMaxDouble - myRasterViewPort->clippedXMinDouble)) + 2;
   myRasterViewPort->clippedHeightInt =
-    abs(static_cast < int >(myRasterViewPort->clippedYMaxDouble - myRasterViewPort->clippedYMinDouble));
+    abs(static_cast < int >(myRasterViewPort->clippedYMaxDouble - myRasterViewPort->clippedYMinDouble)) + 2;
   
+/*
   // Add one to the raster dimensions to guard against the integer truncation
   // effects of static_cast<int>
   // TODO: Can we get rid of this now that we are rounding at the point of the static_cast?
   myRasterViewPort->clippedWidthInt++;
   myRasterViewPort->clippedHeightInt++;
+*/
   
-  // make sure we don't exceed size of raster, otherwise GDAL RasterIO doesn't like it
+  // but make sure the intended SE corner extent doesn't exceed the SE corner
+  // of the source raster, otherwise GDAL's RasterIO gives an error and returns nothing.
+  // The SE corner = NW origin + dimensions of the image itself.
+  if ( (myRasterViewPort->rectXOffsetInt + myRasterViewPort->clippedWidthInt)
+       > rasterXDimInt)
+  {
+    myRasterViewPort->clippedWidthInt =
+      rasterXDimInt - myRasterViewPort->rectXOffsetInt;
+  }
+  if ( (myRasterViewPort->rectYOffsetInt + myRasterViewPort->clippedHeightInt)
+        > rasterYDimInt)
+  {
+    myRasterViewPort->clippedHeightInt =
+      rasterYDimInt - myRasterViewPort->rectYOffsetInt;
+  }
+
+/*
   if (myRasterViewPort->clippedWidthInt > rasterXDimInt)
   {
     myRasterViewPort->clippedWidthInt = rasterXDimInt;
@@ -1190,11 +1224,29 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   {
     myRasterViewPort->clippedHeightInt = rasterYDimInt;
   }
+*/
 
   // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
   myRasterViewPort->topLeftPoint = theQgsMapToPixel->transform(myRasterExtent.xMin(), myRasterExtent.yMax());
   myRasterViewPort->bottomRightPoint = theQgsMapToPixel->transform(myRasterExtent.xMax(), myRasterExtent.yMin());
 
+  // Try a different method - round up to the nearest whole source pixel.
+  myRasterViewPort->drawableAreaXDimInt =
+    abs(static_cast<int> (myRasterViewPort->clippedWidthInt  / theQgsMapToPixel->mapUnitsPerPixel() * adfGeoTransform[1]));
+  myRasterViewPort->drawableAreaYDimInt =
+    abs(static_cast<int> (myRasterViewPort->clippedHeightInt / theQgsMapToPixel->mapUnitsPerPixel() * adfGeoTransform[5]));
+
+/*
+  myRasterViewPort->drawableAreaXDimInt =
+    static_cast<int> ((myRasterViewPort->clippedXMaxDouble - myRasterViewPort->clippedXMinDouble) /
+                       theQgsMapToPixel->mapUnitsPerPixel() * adfGeoTransform[1]);
+
+  myRasterViewPort->drawableAreaYDimInt =
+    static_cast<int> ((myRasterViewPort->clippedYMaxDouble - myRasterViewPort->clippedYMinDouble) /
+                       theQgsMapToPixel->mapUnitsPerPixel() * adfGeoTransform[5]);
+*/
+
+/*
   // Since GDAL's RasterIO can't handle floating point, we have to round to
   // the nearest pixel.  Add 0.5 to get rounding instead of truncation
   // out of static_cast<int>.
@@ -1205,10 +1257,14 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   myRasterViewPort->drawableAreaYDimInt =
     static_cast<int>(myRasterViewPort->bottomRightPoint.y() + 0.5) -
     static_cast<int>(myRasterViewPort->topLeftPoint    .y() + 0.5);
+*/
 
 #ifdef QGISDEBUG
     std::cout << "QgsRasterLayer::draw: mapUnitsPerPixel      = " << theQgsMapToPixel->mapUnitsPerPixel() << std::endl; 
-    
+
+    std::cout << "QgsRasterLayer::draw: rasterXDimInt         = " << rasterXDimInt << std::endl; 
+    std::cout << "QgsRasterLayer::draw: rasterYDimInt         = " << rasterYDimInt << std::endl; 
+
     std::cout << "QgsRasterLayer::draw: rectXOffsetFloat      = " << myRasterViewPort->rectXOffsetFloat << std::endl; 
     std::cout << "QgsRasterLayer::draw: rectXOffsetInt        = " << myRasterViewPort->rectXOffsetInt << std::endl; 
     std::cout << "QgsRasterLayer::draw: rectYOffsetFloat      = " << myRasterViewPort->rectYOffsetFloat << std::endl; 
@@ -1539,7 +1595,7 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
   }                                   
 
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer - painting image to canvas from " 
+  std::cout << "QgsRasterLayer::drawSingleBandGray: painting image to canvas from " 
             << paintXoffset << ", " << paintYoffset
             << " to "
             << static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5) << ", " 
@@ -2449,9 +2505,9 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
   }                                   
 
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer - painting image to canvas from " 
+  std::cout << "QgsRasterLayer::drawMultiBandColor: painting image to canvas from source NW " 
             << paintXoffset << ", " << paintYoffset
-            << " to "
+            << " to canvas NW "
             << static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5) << ", " 
             << static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5)
             << "." << std::endl;
@@ -4449,12 +4505,12 @@ void *QgsRasterLayer::readData ( GDALRasterBand *gdalBand, QgsRasterViewPort *vi
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::readData: calling RasterIO with "
                                      << GF_Read
-                             << ", " << viewPort->rectXOffsetInt
+                             << ", source NW corner: " << viewPort->rectXOffsetInt
                              << ", " << viewPort->rectYOffsetInt
-                             << ", " << viewPort->clippedWidthInt
+                             << ", source size: " << viewPort->clippedWidthInt
                              << ", " << viewPort->clippedHeightInt
                              << ", " << data
-                             << ", " << viewPort->drawableAreaXDimInt
+                             << ", dest size: " << viewPort->drawableAreaXDimInt
                              << ", " << viewPort->drawableAreaYDimInt
                              << ", " << type
             << std::endl;

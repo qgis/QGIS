@@ -237,7 +237,11 @@ void QgsMapOverviewCanvas::mouseReleaseEvent(QMouseEvent * e)
 
     mMapCanvas->setExtent(ext);
     mMapCanvas->clear();
-    mMapCanvas->render();
+
+// For Qt4, deprecate direct calling of render().  Let render() be called by the 
+// paint event loop of the map canvas widget.
+//    mMapCanvas->render();
+    mMapCanvas->repaint();
   }
 }
 
