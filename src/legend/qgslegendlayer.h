@@ -20,13 +20,13 @@
 #ifndef QGSLEGENDLAYER_H
 #define QGSLEGENDLAYER_H
 
-#include <qobject.h>
+//#include <qobject.h>
 #include <qgslegenditem.h>
 
 class QgsLegendLayer;
 class QgsLegendPropertyGroup;
 class QgsMapLayer;
-class Q3ListView;
+class QTreeWidget;
 
 /**
 Container for layer, including layer file(s), symbology class breaks and properties
@@ -36,8 +36,8 @@ Container for layer, including layer file(s), symbology class breaks and propert
 class QgsLegendLayer : public QgsLegendItem, public QObject //for signal/ slot
 {
 public:
-    QgsLegendLayer(Q3ListViewItem * ,QString);
-    QgsLegendLayer(Q3ListView * ,QString);
+    QgsLegendLayer(QTreeWidgetItem * ,QString);
+    QgsLegendLayer(QTreeWidget* ,QString);
     ~QgsLegendLayer();
     bool isLeafNode();
     QgsLegendItem::DRAG_ACTION accept(LEGEND_ITEM_TYPE type);

@@ -93,6 +93,7 @@ wish to see edbug messages printed to stdout.
 #include <qwidget.h>
 #include <qsettings.h>
 #include <qglobal.h>
+#include <QIcon>
 
 
 /*
@@ -5198,11 +5199,12 @@ void QgsRasterLayer::refreshLegend()
     if(mLegendSymbologyGroupParent)
     {
 	//first remove the existing child item (currently there is always one for rasterlayers)
-	Q3ListViewItem* myChild = mLegendSymbologyGroupParent->firstChild();
+	QTreeWidgetItem* myChild = mLegendSymbologyGroupParent->child(0);
 	delete myChild;
 
 	QgsLegendSymbologyItem* item = new QgsLegendSymbologyItem(mLegendSymbologyGroupParent, "");
-	item->setPixmap(0, getLegendQPixmap(true));
+	QIcon theIcon(getLegendQPixmap(true));
+	item->setIcon(0, theIcon);
 	//copy the symbology changes for the other layers in the same symbology group
 	mLegendSymbologyGroupParent->updateLayerSymbologySettings(this);
     }

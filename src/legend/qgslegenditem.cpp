@@ -18,32 +18,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "qgslegenditem.h"
-#include <qapplication.h>
-#include <qpixmap.h>
 #include <iostream>
+#include <QIcon>
+#include "qgslegend.h"
 
-QgsLegendItem::QgsLegendItem(Q3ListViewItem * theItem ,QString theName)
- : Q3ListViewItem(theItem,theName)
+
+QgsLegendItem::QgsLegendItem(QTreeWidgetItem * theItem ,QString theName)
+ : QTreeWidgetItem(theItem)
 {
 #if defined(Q_OS_MACX) || defined(WIN32)
   QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif
-  QPixmap myPixmap(pkgDataPath+QString("/images/icons/group.png"));
-  setPixmap(0,myPixmap);
+  QIcon myIcon(pkgDataPath+QString("/images/icons/group.png"));
+  setIcon(0,myIcon);
 }
 
-QgsLegendItem::QgsLegendItem(Q3ListView * theListView,QString theString)
- : Q3ListViewItem(theListView,theString)
+QgsLegendItem::QgsLegendItem(QTreeWidget* theListView,QString theString)
+ : QTreeWidgetItem(theListView)
 {
 #if defined(Q_OS_MACX) || defined(WIN32)
   QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif
-  QPixmap myPixmap(pkgDataPath+QString("/images/icons/group.png"));
-  setPixmap(0,myPixmap);
+  QIcon myIcon(pkgDataPath+QString("/images/icons/group.png"));
+  setIcon(0,myIcon);
 }
 
 QgsLegendItem::~QgsLegendItem()
@@ -53,6 +54,7 @@ QgsLegendItem::~QgsLegendItem()
 
 void QgsLegendItem::print(QgsLegendItem * theItem)
 {
+#if 0 //todo: adapt to qt4
     Q3ListViewItemIterator myIterator (theItem);
     while (myIterator.current())
     {
@@ -64,34 +66,33 @@ void QgsLegendItem::print(QgsLegendItem * theItem)
       }
       ++myIterator;
     }
+#endif
+}
+
+QgsLegendItem* QgsLegendItem::firstChild()
+{
+  return dynamic_cast<QgsLegendItem*>(child(0));
+}
+
+QgsLegendItem* QgsLegendItem::nextSibling()
+{
+  return dynamic_cast<QgsLegendItem*>(dynamic_cast<QgsLegend*>(treeWidget())->nextSibling(this));
 }
 
 QgsLegendItem* QgsLegendItem::findYoungerSibling()
 {
-  QgsLegendItem* theItem = 0;
-  QgsLegendItem* ysibling = 0;
-  if(parent() == 0)
-    {
-      theItem = (QgsLegendItem*)(listView()->firstChild());
-    }
-  else
-    {
-      theItem = (QgsLegendItem*)(parent()->firstChild());
-    }
+  return dynamic_cast<QgsLegendItem*>(dynamic_cast<QgsLegend*>(treeWidget())->previousSibling(this));
+}
 
-  if(theItem == this)
+void QgsLegendItem::moveItem(QgsLegendItem* after)
+{
+  dynamic_cast<QgsLegend*>(treeWidget())->moveItem(this, after);
+}
+
+void QgsLegendItem::removeAllChildren()
+{
+  while(child(0))
     {
-      return 0;
+      takeChild(0);
     }
-  
-  while(theItem)
-    {
-      if(theItem->nextSibling() == this)
-	{
-	  ysibling = theItem;
-	  return ysibling;
-	}
-      theItem = (QgsLegendItem*)(theItem->nextSibling());
-    }
-  return 0;
 }

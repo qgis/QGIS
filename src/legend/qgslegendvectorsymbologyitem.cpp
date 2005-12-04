@@ -16,9 +16,8 @@
  ***************************************************************************/
 
 #include "qgslegendvectorsymbologyitem.h"
-#include "qgssisydialog.h"
 
-QgsLegendVectorSymbologyItem::QgsLegendVectorSymbologyItem(Q3ListViewItem * theItem, QString col1)
+QgsLegendVectorSymbologyItem::QgsLegendVectorSymbologyItem(QTreeWidgetItem * theItem, QString col1)
 : QgsLegendSymbologyItem(theItem, col1)
 {
     mType = LEGEND_VECTOR_SYMBOL_ITEM;

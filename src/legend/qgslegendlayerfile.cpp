@@ -23,29 +23,13 @@
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
-#include <qapplication.h>
-#include <qcheckbox.h>
-#include <qobject.h>
-#include <qpixmap.h>
-#include <qpainter.h>
-#include <q3popupmenu.h>
+#include <QPainter>
 
-QgsLegendLayerFile::QgsLegendLayerFile(Q3ListViewItem * theLegendItem, QString theString, QgsMapLayer* theLayer)
+QgsLegendLayerFile::QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString theString, QgsMapLayer* theLayer)
     : QgsLegendItem(theLegendItem, theString), mLayer(theLayer)
 {
   mType = LEGEND_LAYER_FILE;
-  
-  //visibility check box
-  mVisibilityCheckBox = new QCheckBox(listView());
-  ((QgsLegend*)(listView()))->registerCheckBox(this, mVisibilityCheckBox);
   QPixmap originalPixmap = getOriginalPixmap();
-
-  //ensure the checkbox is properly checked/ unchecked
-  if(mLayer->visible())
-  {
-      mVisibilityCheckBox->setChecked(true);
-  }
-
   //ensure the overview glasses is painted if necessary
   if(mLayer->showInOverviewStatus())
   {
@@ -58,17 +42,16 @@ QgsLegendLayerFile::QgsLegendLayerFile(Q3ListViewItem * theLegendItem, QString t
       QPainter p(&originalPixmap);
       p.drawPixmap(0,0,inOverviewPixmap);
   }
-  mVisibilityCheckBox->hide();
-  QObject::connect(mVisibilityCheckBox, SIGNAL(toggled(bool)), mLayer, SLOT(setVisible(bool)));
-
-  setPixmap(0, originalPixmap);
+  QIcon originalIcon(originalPixmap);
+  setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsSelectable);
+  setCheckState (0, Qt::Checked );
+  setText(0, theString);
+  setIcon(0, originalIcon);
 }
 
 
 QgsLegendLayerFile::~QgsLegendLayerFile()
 {
-    //unregistering of the checkbox is done by QgsLegend
-    delete mVisibilityCheckBox;
 }
 
 QgsLegendItem::DRAG_ACTION QgsLegendLayerFile::accept(LEGEND_ITEM_TYPE type)
@@ -101,12 +84,13 @@ QPixmap QgsLegendLayerFile::getOriginalPixmap() const
 
 void QgsLegendLayerFile::setLegendPixmap(const QPixmap& pix)
 {
-    setPixmap(0, pix);
+  QIcon theIcon(pix);
+  setIcon(0, theIcon);
 }
 
 void QgsLegendLayerFile::toggleCheckBox(bool state)
 {
-    mVisibilityCheckBox->setChecked(state);
+  //todo
 }
 
 QString QgsLegendLayerFile::nameFromLayer(QgsMapLayer* layer)

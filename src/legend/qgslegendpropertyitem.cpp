@@ -18,10 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "qgslegendpropertyitem.h"
-#include <qapplication.h>
-#include <qpixmap.h>
+#include <QIcon>
 
-QgsLegendPropertyItem::QgsLegendPropertyItem(Q3ListViewItem * theItem,QString theString)
+QgsLegendPropertyItem::QgsLegendPropertyItem(QTreeWidgetItem * theItem,QString theString)
  : QgsLegendItem(theItem ,theString)
 {
   mType=LEGEND_PROPERTY_ITEM;
@@ -30,8 +29,8 @@ QgsLegendPropertyItem::QgsLegendPropertyItem(Q3ListViewItem * theItem,QString th
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif
-  QPixmap myPixmap(pkgDataPath+QString("/images/icons/property_item.png"));
-  setPixmap(0,myPixmap);
+  QIcon myIcon(pkgDataPath+QString("/images/icons/property_item.png"));
+  setIcon(0,myIcon);
 }
 
 
