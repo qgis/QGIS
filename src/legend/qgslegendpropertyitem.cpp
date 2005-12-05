@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "qgslegendpropertyitem.h"
+#include <QCoreApplication>
 #include <QIcon>
 
 QgsLegendPropertyItem::QgsLegendPropertyItem(QTreeWidgetItem * theItem,QString theString)
@@ -25,7 +26,7 @@ QgsLegendPropertyItem::QgsLegendPropertyItem(QTreeWidgetItem * theItem,QString t
 {
   mType=LEGEND_PROPERTY_ITEM;
 #if defined(Q_OS_MACX) || defined(WIN32)
-  QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+  QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif

@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "qgslegenditem.h"
 #include <iostream>
+#include <QCoreApplication>
 #include <QIcon>
 #include "qgslegend.h"
 
@@ -27,7 +28,7 @@ QgsLegendItem::QgsLegendItem(QTreeWidgetItem * theItem ,QString theName)
  : QTreeWidgetItem(theItem)
 {
 #if defined(Q_OS_MACX) || defined(WIN32)
-  QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+  QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif
@@ -39,7 +40,7 @@ QgsLegendItem::QgsLegendItem(QTreeWidget* theListView,QString theString)
  : QTreeWidgetItem(theListView)
 {
 #if defined(Q_OS_MACX) || defined(WIN32)
-  QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+  QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif

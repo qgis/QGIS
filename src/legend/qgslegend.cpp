@@ -17,6 +17,7 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include "qgisapp.h"
 #include "qgslegend.h"
 #include "qgslegendgroup.h"
 #include "qgslegendlayer.h"
@@ -29,6 +30,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrasterlayerproperties.h"
+#include <QCoreApplication>
 #include <QPixmap>
 #include <QMouseEvent>
 #include <iostream>
@@ -362,7 +364,7 @@ void QgsLegend::handleDoubleClickEvent(QTreeWidgetItem* item)
 		    if (rlp->exec())
 		    {
 			delete rlp;
-			qApp->processEvents();
+			QCoreApplication::processEvents();
 		    }
 		}
 		else if(ml) //vector
@@ -383,7 +385,7 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
     if(!mMapCanvas->isDrawing())
     {
 #if defined(Q_OS_MACX) || defined(WIN32)
-    QString iconsPath(qApp->applicationDirPath()+QString("/share/qgis"));
+    QString iconsPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
 #else
     QString iconsPath(PKGDATAPATH);
 #endif

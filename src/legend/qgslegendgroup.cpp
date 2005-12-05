@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "qgslegendgroup.h"
+#include <QCoreApplication>
 #include <QIcon>
 
 QgsLegendGroup::QgsLegendGroup(QTreeWidgetItem * theItem ,QString theName)
@@ -25,7 +26,7 @@ QgsLegendGroup::QgsLegendGroup(QTreeWidgetItem * theItem ,QString theName)
 {
   mType=LEGEND_GROUP;
 #if defined(Q_OS_MACX) || defined(WIN32)
-  QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+  QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif
@@ -37,7 +38,7 @@ QgsLegendGroup::QgsLegendGroup(QTreeWidget* theListView, QString theString)
 {
   mType=LEGEND_GROUP;
 #if defined(Q_OS_MACX) || defined(WIN32)
-  QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+  QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif

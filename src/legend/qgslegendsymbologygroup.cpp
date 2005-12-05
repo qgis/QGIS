@@ -21,6 +21,7 @@
 #include "qgslegendlayerfilegroup.h"
 #include "qgslegendsymbologygroup.h"
 #include "qgsmaplayer.h"
+#include <QCoreApplication>
 #include <QIcon>
 
 QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(QTreeWidgetItem * theItem, QString theString)
@@ -28,7 +29,7 @@ QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(QTreeWidgetItem * theItem, QStr
 {
   mType = LEGEND_SYMBOL_GROUP;
 #if defined(Q_OS_MACX) || defined(WIN32)
-  QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+  QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif

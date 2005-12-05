@@ -21,6 +21,7 @@
 #include "qgslegendlayerfile.h"
 #include "qgsmaplayer.h"
 #include <iostream>
+#include <QCoreApplication>
 #include <QIcon>
 
 QgsLegendLayer::QgsLegendLayer(QTreeWidgetItem* parent,QString name)
@@ -28,7 +29,7 @@ QgsLegendLayer::QgsLegendLayer(QTreeWidgetItem* parent,QString name)
 {
     mType=LEGEND_LAYER;
 #if defined(Q_OS_MACX) || defined(WIN32)
-    QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+    QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
 #else
     QString pkgDataPath(PKGDATAPATH);
 #endif
@@ -41,7 +42,7 @@ QgsLegendLayer::QgsLegendLayer(QTreeWidget* parent, QString name): QObject(), Qg
 {
     mType=LEGEND_LAYER;
 #if defined(Q_OS_MACX) || defined(WIN32)
-    QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+    QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
 #else
     QString pkgDataPath(PKGDATAPATH);
 #endif
