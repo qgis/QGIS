@@ -975,30 +975,22 @@ void QgsVectorLayer::identify(QgsRect * r)
     // display features falling within the search radius
     if( !ir )
     {
-// TODO: Qt4 doesn't have QWidgetList, need to work out an alternative.
-#if QT_VERSION < 0x040000
       // It is necessary to pass topLevelWidget()as parent, but there is no QWidget available.
       //
       // Win32 doesn't like this approach to creating the window and seems
       // to work fine without it [gsherman]
       QWidget *top = 0;
 #ifndef WIN32
-
-      QWidgetList *list = QApplication::topLevelWidgets ();
-      QWidgetListIt it( *list ); 
-      QWidget *w;
-
-      while ( (w=it.current()) != 0 ) {
-        ++it;
-        if ( typeid(*w) == typeid(QgisApp) ) {
+      foreach (QWidget *w, QApplication::topLevelWidgets())
+      {
+        if ( typeid(*w) == typeid(QgisApp) )
+        {
           top = w;
           break;
         }
       }
-      delete list;     
 #endif
       ir = new QgsIdentifyResults(mActions, top);
-#endif
 
       // restore the identify window position and show it
       ir->restorePosition();
