@@ -21,8 +21,7 @@
 #include "qgslegend.h"
 #include "qgslegendlayerfile.h"
 #include "qgsmaplayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterlayerproperties.h"
+#include <QCoreApplication>
 #include <QPainter>
 
 QgsLegendLayerFile::QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString theString, QgsMapLayer* theLayer)
@@ -34,7 +33,7 @@ QgsLegendLayerFile::QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString 
   if(mLayer->showInOverviewStatus())
   {
 #if defined(Q_OS_MACX) || defined(WIN32) 
-      QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+      QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
 #else
       QString pkgDataPath(PKGDATAPATH);
 #endif  
@@ -74,7 +73,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFile::accept(const QgsLegendItem* li) c
 QPixmap QgsLegendLayerFile::getOriginalPixmap() const
 {
 #if defined(Q_OS_MACX) || defined(WIN32)
-    QString pkgDataPath(qApp->applicationDirPath()+QString("/share/qgis"));
+    QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
 #else
     QString pkgDataPath(PKGDATAPATH);
 #endif

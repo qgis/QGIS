@@ -20,16 +20,20 @@
 #ifndef QGSLEGEND_H
 #define QGSLEGEND_H
 
-#include "qgisapp.h"
-#include "qgslegenditem.h"
-#include <QMouseEvent>
 #include <deque>
 #include <map>
 #include <QTreeWidget>
 
+class QgisApp;
+class QgsLegendItem;
 class QgsMapLayer;
 class QgsMapCanvas;
+class QCheckBox;
+class QDomDocument;
+class QDomNode;
+class QMouseEvent;
 class QTreeWidgetItem;
+class Q3PopupMenu;
 
 /**
    \class QgsLegend
