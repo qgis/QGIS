@@ -3401,24 +3401,18 @@ void QgisApp::inOverview( bool in_overview )
   std::cout << "QGisApp::inOverview(" << in_overview << ")" << std::endl;
   #endif
   
-  QTreeWidgetItem* lvi = mMapLegend->currentItem();
-  
-  // check to make sure there is a current layer
-  // TODO: We really need to set disable/enable all menu options based on a logical scheme. 
-  //       This is just a hack...
-  if(lvi)
-  {
-      QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
-      if(llf)
-      {
-	  QgsMapLayer *layer = llf->layer();
-	  layer->inOverview( in_overview );
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of the overview canvas widget.
-//          mOverviewCanvas->render();
-          mOverviewCanvas->update();
-      }
-  }
+  QgsMapLayer* layer = mMapLegend->currentLayer();
+  if(layer)
+    {
+      layer->inOverview( in_overview );
+
+      // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+      // paint event loop of the overview canvas widget.
+
+      //but adding a layer to overview canvas does only work at the moment when calling render()...
+      mOverviewCanvas->render();
+      //mOverviewCanvas->update();
+    }
 } // QgisApp::inOverview(bool)
 
 

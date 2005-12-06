@@ -26,7 +26,7 @@ void QgsRenderer::refreshLegend(QTreeWidgetItem* legendparent) const
       QString lw, uv, label;
       const std::list<QgsSymbol*> sym = symbols();
 	
-      for(std::list<QgsSymbol*>::const_reverse_iterator it=sym.rbegin(); it!=sym.rend(); ++it)
+      for(std::list<QgsSymbol*>::const_iterator it=sym.begin(); it!=sym.end(); ++it)
 	{
 	  QgsLegendVectorSymbologyItem* item = new QgsLegendVectorSymbologyItem(legendparent, "");
 	  item->addSymbol(*it);
@@ -67,6 +67,7 @@ void QgsRenderer::refreshLegend(QTreeWidgetItem* legendparent) const
 	    }
 	  item->setText(0, values);
 	}
+      //todo: add the name(s) of the classification field
     }
 }
 
