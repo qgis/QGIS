@@ -1355,9 +1355,9 @@ static swig_type_info *swig_types[10];
 /*-----------------------------------------------
               @(target):= _msexport.so
   ------------------------------------------------*/
-#define SWIG_init    initlibmsexport
+#define SWIG_init    init_msexport
 
-#define SWIG_name    "libmsexport"
+#define SWIG_name    "_msexport"
 
 /* Includes the header in the wrapper code */
 #include "qgsmapserverexport.h"

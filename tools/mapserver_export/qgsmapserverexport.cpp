@@ -16,6 +16,7 @@ email                : sherman at mrcc.com
 
 #include <Python.h>
 
+#include <iostream>
 #include <QFileDialog>
 #include <qfileinfo.h>
 #include <qlineedit.h>
@@ -91,7 +92,65 @@ void QgsMapserverExport::on_chkExpLayersOnly_clicked(bool isChecked)
     btnChooseHeaderFile->setEnabled(!isChecked);
     btnChooseTemplateFile->setEnabled(!isChecked);
 }
-/** End of Slots **/
+
+void QgsMapserverExport::on_buttonOk_clicked()
+{
+  
+  char *cstr;
+  PyObject *pstr, *pmod, *pclass, *pinst, *pmeth, *pargs;
+  //TODO Need to append the path to the qgis python files using the path to the
+  //     Python files in the QGIS install directory
+  PyRun_SimpleString("import sys");
+  QString curdir = "/home/gsherman/development/qgis_qt_port/tools/mapserver_export";
+  QString sysCmd = QString("sys.path.append('%1')").arg(curdir);
+  PyRun_SimpleString(sysCmd.ascii());
+
+  // Import the module
+  std::cout << "Importing module" << std::endl; 
+  pmod = PyImport_ImportModule("ms_export");
+
+  std::cout << "Getting Qgis2Map constructor as python obj" << std::endl; 
+  pclass = PyObject_GetAttrString(pmod, "Qgis2Map");
+  Py_DECREF(pmod);
+  std::cout << "Creating args to pass to the constructor" << std::endl; 
+  pargs = Py_BuildValue("(ss)", txtQgisFilePath->text().ascii(),txtMapFilePath->text().ascii());
+//XXX for testing:  pargs = Py_BuildValue("(ss)", "foo", "bar");
+
+  pinst  = PyEval_CallObject(pclass, pargs);
+
+  Py_DECREF(pclass);
+  Py_DECREF(pargs);
+
+  // Set the various options for the conversion only if we are doing a full 
+  // export (ie more than just layer info)
+  if(!chkExpLayersOnly->isChecked())
+  {
+    std::cout << "Initializing all options" << std::endl; 
+    pmeth = PyObject_GetAttrString(pinst, "setOptions");
+    pargs = Py_BuildValue("(ssssssssss)", 
+        cmbMapUnits->currentText().ascii(), cmbMapImageType->currentText().ascii(), 
+        txtMapName->text().ascii(), txtMapWidth->text().ascii(), txtMapHeight->text().ascii(), 
+        txtMinScale->text().ascii(), txtMaxScale->text().ascii(), 
+        txtWebTemplate->text().ascii(), txtWebFooter->text().ascii(),txtWebHeader->text().ascii());
+    pstr = PyEval_CallObject(pmeth, pargs);
+
+    Py_DECREF(pargs);
+    Py_DECREF(pmeth);
+
+  }
+  // Get the writeMapFile method from the Qgis2Map class
+  pmeth = PyObject_GetAttrString(pinst, "writeMapFile");
+  pargs = Py_BuildValue("( )");
+  // Execute the writeMapFile method to parse the QGIS project file and create the .map file
+  pstr = PyEval_CallObject(pmeth, pargs);
+  // Show the return value
+  PyArg_Parse(pstr, "s", &cstr);
+  std::cout << cstr << std::endl;  
+
+  Py_DECREF(pstr);
+
+}
+/** End of Auto-connected Slots **/
 
 // Write the map file
 bool QgsMapserverExport::write()
@@ -399,7 +458,6 @@ void QgsMapserverExport::initPy()
   // init the python interpreter
   Py_Initialize();
   // spit something to stdout
-  PyRun_SimpleString("print '>>>>>>>>>>>>>>>>>>>This is from python in mapserverexport!'");
-
+  PyRun_SimpleString("print '>>>>>>>>>>>>>>>>>>> Python initialized <<<<<<<<<<<<<<<<<<<'");
 }
 
