@@ -55,6 +55,7 @@ public:
   void on_btnChooseFile_clicked();
   void on_chkExpLayersOnly_clicked(bool);
   void on_btnChooseProjectFile_clicked();
+  void on_buttonOk_clicked();
   private:
   void initPy();
   void writeMapFile(void);
