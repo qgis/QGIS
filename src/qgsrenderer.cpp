@@ -67,7 +67,6 @@ void QgsRenderer::refreshLegend(QTreeWidgetItem* legendparent) const
 	    }
 	  item->setText(0, values);
 	}
-      //todo: add the name(s) of the classification field
     }
 }
 

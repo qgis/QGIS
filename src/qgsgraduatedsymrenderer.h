@@ -63,14 +63,15 @@ class QgsGraduatedSymRenderer: public QgsRenderer
     /** Returns true*/
     bool needsAttributes() const;
     /**Returns a list with the index to the classification field*/
-    virtual std::list<int> classificationAttributes() const;
+    std::list<int> classificationAttributes() const;
     /**Returns the renderers name*/
     QString name() const;
     /**Returns the symbols of the items*/
     const std::list<QgsSymbol*> symbols() const;
+    /**Returns a copy of the renderer (a deep copy on the heap)*/
     QgsRenderer* clone() const;
  protected:
-    /**Name of the classification field (it must be a numerical field)*/
+    /**Index of the classification field (it must be a numerical field)*/
     int mClassificationField;
     /**List holding the symbols for the individual classes*/
     std::list<QgsSymbol*> mSymbols;

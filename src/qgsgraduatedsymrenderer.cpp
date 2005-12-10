@@ -20,7 +20,7 @@
 #include "qgsfeature.h"
 #include "qgsgraduatedsymrenderer.h"
 #include "qgsgrasydialog.h"
-#include "qgslegenditem.h"
+#include "qgslegendsymbologyitem.h"
 #include "qgssymbologyutils.h"
 #include "qgssvgcache.h"
 #include <qdom.h>

@@ -38,6 +38,7 @@ class QgsLegendLayer : public QgsLegendItem, public QObject //for signal/ slot
 public:
     QgsLegendLayer(QTreeWidgetItem * ,QString);
     QgsLegendLayer(QTreeWidget* ,QString);
+    QgsLegendLayer(QString name);
     ~QgsLegendLayer();
     bool isLeafNode();
     QgsLegendItem::DRAG_ACTION accept(LEGEND_ITEM_TYPE type);

@@ -25,6 +25,11 @@ QgsLegendSymbologyItem::QgsLegendSymbologyItem(QTreeWidgetItem * theItem,QString
   mType = LEGEND_SYMBOL_ITEM;
 }
 
+QgsLegendSymbologyItem::QgsLegendSymbologyItem(): QgsLegendItem()
+{
+  mType = LEGEND_SYMBOL_ITEM;
+}
+
 QgsLegendSymbologyItem::~QgsLegendSymbologyItem()
 {
 }

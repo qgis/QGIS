@@ -51,6 +51,19 @@ QgsLegendLayer::QgsLegendLayer(QTreeWidget* parent, QString name): QObject(), Qg
     setIcon(0, myIcon);
 }
 
+QgsLegendLayer::QgsLegendLayer(QString name): QObject(), QgsLegendItem()
+{
+  mType=LEGEND_LAYER;
+#if defined(Q_OS_MACX) || defined(WIN32)
+    QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
+#else
+    QString pkgDataPath(PKGDATAPATH);
+#endif
+    QIcon myIcon(pkgDataPath+QString("/images/icons/layer.png"));
+    setText(0, name);
+    setIcon(0, myIcon);
+}
+
 QgsLegendLayer::~QgsLegendLayer()
 {
   mType=LEGEND_LAYER;

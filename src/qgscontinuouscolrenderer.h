@@ -60,7 +60,7 @@ class QgsContinuousColRenderer: public QgsRenderer
     /** Returns true*/
     bool needsAttributes() const;
     /**Returns a list with the index of the classification attribute*/
-    virtual std::list<int> classificationAttributes() const;
+    std::list<int> classificationAttributes() const;
     /**Returns the renderers name*/
     QString name() const;
     /**Return symbology items*/
