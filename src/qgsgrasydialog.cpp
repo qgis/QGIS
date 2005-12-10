@@ -232,7 +232,7 @@ void QgsGraSyDialog::apply()
 	std::map<QString,int>::iterator iter=mFieldMap.find(classificationComboBox->currentText());
 	if(iter!=mFieldMap.end())
 	{
-	   renderer->setClassificationField(iter->second); 
+	   renderer->setClassificationField(iter->second);
 	}
 	mVectorLayer->setRenderer(renderer);
 	mVectorLayer->refreshLegend();

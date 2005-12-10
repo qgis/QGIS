@@ -2809,7 +2809,9 @@ void QgsVectorLayer::refreshLegend()
 	    {
 		const QgsField theField = (dataProvider->fields())[*it];
 		QString classfieldname = theField.name();
-		QgsLegendVectorSymbologyItem* item = new QgsLegendVectorSymbologyItem(mLegendSymbologyGroupParent, classfieldname);
+		QgsLegendSymbologyItem* item = new QgsLegendSymbologyItem();
+		item->setText(0, classfieldname);
+		mLegendSymbologyGroupParent->insertChild(0, item);
 	    }
 	}
     }

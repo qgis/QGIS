@@ -54,7 +54,7 @@ class QgsSingleSymRenderer: public QgsRenderer
     /**Returns false, no attributes neede for single symbol*/
     bool needsAttributes() const;
     /**Returns an empty list, since no classification attributes are used*/
-    virtual std::list<int> classificationAttributes() const;
+    std::list<int> classificationAttributes() const;
     /**Returns the renderers name*/
     virtual QString name() const;
     /**Returns a list containing mSymbol*/

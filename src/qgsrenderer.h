@@ -83,7 +83,6 @@ class QgsRenderer
  protected:
     /**Layer type*/
     QGis::VectorType mVectorType;
-    
 };
 
 inline void QgsRenderer::initialiseSelectionColor()

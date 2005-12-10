@@ -52,9 +52,6 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
   connect( this, SIGNAL(selectionChanged(QTreeWidgetItem *)),
            this, SLOT(updateLegendItem(QTreeWidgetItem *)) );
 
-  /*connect( this, SIGNAL(rightButtonPressed(QTreeWidgetItem *, const QPoint &, int)),
-    this, SLOT(handleRightClickEvent(QTreeWidgetItem*, const QPoint&)));*/
-
   connect( this, SIGNAL(doubleClicked(QTreeWidgetItem *, const QPoint &, int)),
 	   this, SLOT(handleDoubleClickEvent(QTreeWidgetItem*)));
 
@@ -124,6 +121,19 @@ void QgsLegend::mousePressEvent(QMouseEvent * e)
 #ifdef QGISDEBUG
     qWarning("this message comes from within QgsLegend::contentsMousePressEvent");
 #endif
+
+#if 0
+    //check, if a checkbox has been pressed
+    QWidget* w = childAt(e->pos());
+    QCheckBox* cb = dynamic_cast<QCheckBox*>(w);
+    if(cb)
+      {
+#ifdef QGISDEBUG
+	qWarning("A checkbox has been pressed");
+#endif
+      }
+#endif
+
   if (e->button() == Qt::LeftButton)
   {
     mLastPressPos = e->pos();
@@ -461,7 +471,7 @@ int QgsLegend::getItemPos(QTreeWidgetItem* item)
 
 void QgsLegend::addLayer( QgsMapLayer * layer )
 {
-    QgsLegendLayer * llayer = new QgsLegendLayer(this,QString(layer->name()));
+    QgsLegendLayer * llayer = new QgsLegendLayer(QString(layer->name()));
     QgsLegendLayerFileGroup * llfgroup = new QgsLegendLayerFileGroup(llayer,QString("Files"));
     QgsLegendLayerFile * llfile = new QgsLegendLayerFile(llfgroup, QgsLegendLayerFile::nameFromLayer(layer), layer);
     QgsLegendSymbologyGroup * lsgroup = new QgsLegendSymbologyGroup(llayer,QString("Symbology"));
@@ -470,7 +480,9 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
     layer->setLegendLayerFile(llfile);
     layer->initContextMenu(mApp);
 
-    setExpanded(indexFromItem(llayer), true);
+    insertTopLevelItem(0, llayer);
+    
+    setExpanded(indexFromItem(llayer), false);
     setExpanded(indexFromItem(lpgroup), true);
     setExpanded(indexFromItem(lsgroup), true);
     setExpanded(indexFromItem(llfgroup), true);
@@ -627,28 +639,22 @@ void QgsLegend::legendLayerShowProperties()
 
 void QgsLegend::expandAll()
 {
-#if 0
-    Q3ListViewItemIterator it(this);
-    while(it.current()) 
-    {
-	QTreeWidgetItem *item = it.current();
-	item->setOpen(true);
-	++it;
-    }
-#endif
+    QTreeWidgetItem* theItem = firstItem();
+    while(theItem)
+      {
+	setExpanded(indexFromItem(theItem), true);
+	theItem = nextItem(theItem);
+      }
 }
 
 void QgsLegend::collapseAll()
 {
-#if 0
-   Q3ListViewItemIterator it(this);
-    while(it.current()) 
-    {
-	QTreeWidgetItem *item = it.current();
-	item->setOpen(false);
-	++it;
-    }
-#endif 
+  QTreeWidgetItem* theItem = firstItem();
+    while(theItem)
+      {
+	setExpanded(indexFromItem(theItem), false);
+	theItem = nextItem(theItem);
+      }
 }
 
 bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )

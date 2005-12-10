@@ -38,6 +38,7 @@ class QgsLegendItem : public QTreeWidgetItem
 public:
     QgsLegendItem(QTreeWidgetItem*, QString);
     QgsLegendItem (QTreeWidget*,QString);
+    QgsLegendItem();
     ~QgsLegendItem();
 
    enum LEGEND_ITEM_TYPE 
