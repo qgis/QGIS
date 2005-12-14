@@ -42,7 +42,7 @@ QgsLegendLayerFile::QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString 
       p.drawPixmap(0,0,inOverviewPixmap);
   }
   QIcon originalIcon(originalPixmap);
-  setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsSelectable);
+  setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
   setCheckState (0, Qt::Checked );
   setText(0, theString);
   setIcon(0, originalIcon);

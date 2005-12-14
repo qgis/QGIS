@@ -24,6 +24,7 @@
 #include <qgslegenditem.h>
 
 class QgsLegendLayer;
+class QgsLegendLayerFile;
 class QgsLegendPropertyGroup;
 class QgsMapLayer;
 class QTreeWidget;
@@ -49,6 +50,8 @@ public:
     QgsMapLayer* firstMapLayer();
     /**Returns the map layers associated with the QgsLegendLayerFiles*/
     std::list<QgsMapLayer*> mapLayers();
+    /**Returns the legend layer file items associated with this legend layer*/
+    std::list<QgsLegendLayerFile*> legendLayerFiles();
 };
 
 #endif

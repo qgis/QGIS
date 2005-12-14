@@ -55,6 +55,11 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
   connect( this, SIGNAL(doubleClicked(QTreeWidgetItem *, const QPoint &, int)),
 	   this, SLOT(handleDoubleClickEvent(QTreeWidgetItem*)));
 
+  //just for a test
+  
+  connect( this, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
+	   this, SLOT(handleItemChange(QTreeWidgetItem*, int)));
+
   setSortingEnabled(false);
   setDragEnabled(false);
   setAutoScroll(true);
@@ -86,7 +91,8 @@ void QgsLegend::updateLegendItem( QTreeWidgetItem * li )
 
 void QgsLegend::removeAll()
 {
-    clear();
+  mStateOfCheckBoxes.clear();
+  clear();
 }
 
 void QgsLegend::removeLayer(QString layer_key)
@@ -105,8 +111,10 @@ void QgsLegend::removeLayer(QString layer_key)
 	    {
 		if (llf->layer()&&llf->layer()->getLayerID() == layer_key)
 		{
-		    removeItem(llf);
-		    break;
+		  //remove the map entry for the checkbox
+		  mStateOfCheckBoxes.erase(llf);
+		  removeItem(llf);
+		  break;
 		}
 	    }
 	}
@@ -118,22 +126,6 @@ void QgsLegend::removeLayer(QString layer_key)
 
 void QgsLegend::mousePressEvent(QMouseEvent * e)
 {
-#ifdef QGISDEBUG
-    qWarning("this message comes from within QgsLegend::contentsMousePressEvent");
-#endif
-
-#if 0
-    //check, if a checkbox has been pressed
-    QWidget* w = childAt(e->pos());
-    QCheckBox* cb = dynamic_cast<QCheckBox*>(w);
-    if(cb)
-      {
-#ifdef QGISDEBUG
-	qWarning("A checkbox has been pressed");
-#endif
-      }
-#endif
-
   if (e->button() == Qt::LeftButton)
   {
     mLastPressPos = e->pos();
@@ -147,7 +139,6 @@ void QgsLegend::mousePressEvent(QMouseEvent * e)
     }
   QTreeWidget::mousePressEvent(e);
 }                               // contentsMousePressEvent
-
 
 void QgsLegend::mouseMoveEvent(QMouseEvent * e)
 {
@@ -265,7 +256,6 @@ void QgsLegend::mouseMoveEvent(QMouseEvent * e)
     }
     //QTreeWidget::mouseMoveEvent(e);
 }
-
 
 void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
 {
@@ -432,6 +422,7 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
 	    {
 		Q3PopupMenu pm;
 		pm.insertItem(QIcon(QPixmap(iconsPath+QString("remove.png"))), tr("&Remove"), this, SLOT(legendLayerRemove()));
+		pm.insertItem(tr("Re&name"), this, SLOT(openEditor()));
 		pm.insertItem(tr("&Properties"), this, SLOT(legendLayerShowProperties()));
 		pm.insertItem(QIcon(QPixmap(iconsPath+QString("inoverview.png"))), tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
 		pm.insertItem(QIcon(QPixmap(iconsPath+QString("remove_from_overview.png"))), tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
@@ -444,6 +435,7 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
 	    {
 		Q3PopupMenu pm;
 		pm.insertItem(tr("&Remove"), this, SLOT(legendGroupRemove()));
+		pm.insertItem(tr("Re&name"), this, SLOT(openEditor()));
 		pm.insertItem(QIcon(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
 		pm.insertItem(QIcon(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
 		pm.insertItem(QIcon(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
@@ -472,8 +464,10 @@ int QgsLegend::getItemPos(QTreeWidgetItem* item)
 void QgsLegend::addLayer( QgsMapLayer * layer )
 {
     QgsLegendLayer * llayer = new QgsLegendLayer(QString(layer->name()));
+    mStateOfCheckBoxes.insert(std::make_pair(llayer, Qt::Checked)); //insert the check state into the map to query for changes later
     QgsLegendLayerFileGroup * llfgroup = new QgsLegendLayerFileGroup(llayer,QString("Files"));
     QgsLegendLayerFile * llfile = new QgsLegendLayerFile(llfgroup, QgsLegendLayerFile::nameFromLayer(layer), layer);
+    mStateOfCheckBoxes.insert(std::make_pair(llfile, Qt::Checked)); //insert the check state into the map to query for changes later
     QgsLegendSymbologyGroup * lsgroup = new QgsLegendSymbologyGroup(llayer,QString("Symbology"));
     layer->setLegendSymbologyGroupParent(lsgroup);
     QgsLegendPropertyGroup * lpgroup = new QgsLegendPropertyGroup(llayer,QString("Properties"));
@@ -542,7 +536,16 @@ void QgsLegend::legendLayerRemove()
    {
        return;
    }
+
    std::list<QgsMapLayer*> maplayers = ll->mapLayers();
+   mStateOfCheckBoxes.erase(ll);
+
+   //todo: also remove the entries for the QgsLegendLayerFiles from the map
+   std::list<QgsLegendLayerFile*> llfiles = ll->legendLayerFiles();
+   for(std::list<QgsLegendLayerFile*>::iterator it = llfiles.begin(); it != llfiles.end(); ++it)
+     {
+       mStateOfCheckBoxes.erase(*it);
+     }
 
    for(std::list<QgsMapLayer*>::iterator it = maplayers.begin(); it!=maplayers.end(); ++it)
    {
@@ -1165,6 +1168,10 @@ QTreeWidgetItem* QgsLegend::nextItem(QTreeWidgetItem* item)
     {
       return litem->nextSibling();
     }
+  else if(!(litem->parent()))
+    {
+      return 0;
+    }
   else if(dynamic_cast<QgsLegendItem*>(litem->parent())->nextSibling())
     {
       return (dynamic_cast<QgsLegendItem*>(litem->parent())->nextSibling());//todo: make this for deeper trees
@@ -1260,4 +1267,63 @@ std::deque<QString> QgsLegend::layerIDs()
 #endif
 
   return layers;
+}
+
+void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
+{
+  QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(item);
+  if(llf)
+    {
+#ifdef QGISDEBUG
+      qWarning("item is a QgsLegendLayerFile*");
+#endif
+      std::map<QTreeWidgetItem*, Qt::CheckState>::iterator it = mStateOfCheckBoxes.find(item);
+      if(it != mStateOfCheckBoxes.end())
+	{
+	  if(it->second != item->checkState(0)) //the checkState has changed
+	    {
+	      QgsMapLayer* theLayer = llf->layer();
+	      if(theLayer)
+		{
+		  bool checked = (item->checkState(0) == Qt::Checked); 
+		  theLayer->setVisible(checked);
+		}
+	      mStateOfCheckBoxes[item] = item->checkState(0);
+	    }
+	}
+      return;
+    }
+
+  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(item);
+  if(ll)
+    {
+#ifdef QGISDEBUG
+      qWarning("item is a QgsLegendLayer");
+#endif
+      bool checked = (item->checkState(0) == Qt::Checked); 
+      std::list<QgsLegendLayerFile*> llflist = ll->legendLayerFiles();
+      mMapCanvas->setRenderFlag(false);
+      for(std::list<QgsLegendLayerFile*>::iterator it = llflist.begin(); it != llflist.end(); ++it)
+	{
+	  if(checked)
+	    {
+	      (*it)->setCheckState(0, Qt::Checked);
+	    }
+	  else
+	    {
+	      (*it)->setCheckState(0, Qt::Unchecked);
+	    }
+	}
+      mMapCanvas->setRenderFlag(true);
+      
+    }
+}
+
+void QgsLegend::openEditor()
+{
+  QTreeWidgetItem* theItem = currentItem();
+  if(theItem)
+    {
+      openPersistentEditor(theItem, 0);
+    }
 }
