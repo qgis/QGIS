@@ -33,7 +33,9 @@ QgsLegendLayer::QgsLegendLayer(QTreeWidgetItem* parent,QString name)
 #else
     QString pkgDataPath(PKGDATAPATH);
 #endif
+    setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
     QIcon myIcon(pkgDataPath+QString("/images/icons/layer.png"));
+    setCheckState (0, Qt::Checked);
     setText(0, name);
     setIcon(0, myIcon);
 }
@@ -46,6 +48,8 @@ QgsLegendLayer::QgsLegendLayer(QTreeWidget* parent, QString name): QObject(), Qg
 #else
     QString pkgDataPath(PKGDATAPATH);
 #endif
+    setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+    setCheckState (0, Qt::Checked);
     QIcon myIcon(pkgDataPath+QString("/images/icons/layer.png"));
     setText(0, name);
     setIcon(0, myIcon);
@@ -59,6 +63,8 @@ QgsLegendLayer::QgsLegendLayer(QString name): QObject(), QgsLegendItem()
 #else
     QString pkgDataPath(PKGDATAPATH);
 #endif
+    setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+    setCheckState (0, Qt::Checked);
     QIcon myIcon(pkgDataPath+QString("/images/icons/layer.png"));
     setText(0, name);
     setIcon(0, myIcon);
@@ -141,6 +147,14 @@ QgsMapLayer* QgsLegendLayer::firstMapLayer()
 std::list<QgsMapLayer*> QgsLegendLayer::mapLayers()
 {
     std::list<QgsMapLayer*> list;
+    std::list<QgsLegendLayerFile*> llist = legendLayerFiles();
+    for(std::list<QgsLegendLayerFile*>::iterator it = llist.begin(); it != llist.end(); ++it)
+      {
+	list.push_back((*it)->layer());
+      }
+    return list;
+
+#if 0
     QTreeWidgetItem* llfgroup = QTreeWidgetItem::child(0); //the legend layer file group
     if(!llfgroup)
     {
@@ -162,4 +176,31 @@ std::list<QgsMapLayer*> QgsLegendLayer::mapLayers()
     }
     while(llf = llf->nextSibling());
     return list;
+#endif
+}
+
+std::list<QgsLegendLayerFile*> QgsLegendLayer::legendLayerFiles()
+{
+  std::list<QgsLegendLayerFile*> list;
+  QTreeWidgetItem* llfgroup = QTreeWidgetItem::child(0); //the legend layer file group
+  if(!llfgroup)
+    {
+      return list;
+    }
+  QgsLegendItem* llf = dynamic_cast<QgsLegendItem*>(llfgroup->child(0));
+  if(!llf)
+    {
+      return list;
+    }
+  QgsLegendLayerFile* legendlayerfile = 0;
+  do
+    {
+      legendlayerfile = dynamic_cast<QgsLegendLayerFile*>(llf);
+      if(legendlayerfile)
+	{
+	  list.push_back(legendlayerfile);
+	}
+    }
+  while(llf = llf->nextSibling());
+  return list;
 }
