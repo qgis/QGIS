@@ -1287,6 +1287,27 @@ void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 		{
 		  bool checked = (item->checkState(0) == Qt::Checked); 
 		  theLayer->setVisible(checked);
+		  //todo: check, how the checkbox of the legendlayer needs to be updated
+		  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(item->parent()->parent());
+		  std::list<QgsLegendLayerFile*> llfiles = ll->legendLayerFiles();
+		  std::list<QgsLegendLayerFile*>::iterator iter = llfiles.begin();
+		  Qt::CheckState theState = (*iter)->checkState(0);
+		  for(; iter != llfiles.end(); ++iter)
+		    {
+		      if(theState != (*iter)->checkState(0))
+			{
+			  theState = Qt::PartiallyChecked;
+			  break;
+			}
+		    }
+		  //and update the checkbox of the legendlayer if necessary
+		  if(theState != ll->checkState(0));
+		  {
+		    blockSignals(true);
+		    ll->setCheckState(0, theState);
+		    mStateOfCheckBoxes[ll] = theState;
+		    blockSignals(false);
+		  }
 		}
 	      mStateOfCheckBoxes[item] = item->checkState(0);
 	    }
@@ -1300,22 +1321,31 @@ void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 #ifdef QGISDEBUG
       qWarning("item is a QgsLegendLayer");
 #endif
-      bool checked = (item->checkState(0) == Qt::Checked); 
-      std::list<QgsLegendLayerFile*> llflist = ll->legendLayerFiles();
-      mMapCanvas->setRenderFlag(false);
-      for(std::list<QgsLegendLayerFile*>::iterator it = llflist.begin(); it != llflist.end(); ++it)
+      std::map<QTreeWidgetItem*, Qt::CheckState>::iterator it = mStateOfCheckBoxes.find(item);
+      if(it != mStateOfCheckBoxes.end())
 	{
-	  if(checked)
+	  if(it->second != item->checkState(0)) //the checkState has changed
 	    {
-	      (*it)->setCheckState(0, Qt::Checked);
-	    }
-	  else
-	    {
-	      (*it)->setCheckState(0, Qt::Unchecked);
+	      bool checked = (item->checkState(0) == Qt::Checked); 
+	      std::list<QgsLegendLayerFile*> llflist = ll->legendLayerFiles();
+	      mMapCanvas->setRenderFlag(false);
+	      //go through all the legendlayerfiles and set their checkState
+	      for(std::list<QgsLegendLayerFile*>::iterator it = llflist.begin(); it != llflist.end(); ++it)
+		{
+		  if(checked)
+		    {
+		      (*it)->setCheckState(0, Qt::Checked);
+		      mStateOfCheckBoxes[(*it)] = Qt::Checked;
+		    }
+		  else
+		    {
+		      (*it)->setCheckState(0, Qt::Unchecked);
+		      mStateOfCheckBoxes[(*it)] = Qt::Unchecked;
+		    }
+		}
 	    }
 	}
       mMapCanvas->setRenderFlag(true);
-      
     }
 }
 

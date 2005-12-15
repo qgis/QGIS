@@ -32,9 +32,7 @@ QgsLegendItem::QgsLegendItem(QTreeWidgetItem * theItem ,QString theName)
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif
-  QIcon myIcon(pkgDataPath+QString("/images/icons/group.png"));
   setText(0, theName);
-  setIcon(0,myIcon);
 }
 
 QgsLegendItem::QgsLegendItem(QTreeWidget* theListView,QString theString)
@@ -45,9 +43,7 @@ QgsLegendItem::QgsLegendItem(QTreeWidget* theListView,QString theString)
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif
-  QIcon myIcon(pkgDataPath+QString("/images/icons/group.png"));
   setText(0, theString);
-  setIcon(0,myIcon);
 }
 
 QgsLegendItem::QgsLegendItem(): QTreeWidgetItem()
