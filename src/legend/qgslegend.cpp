@@ -165,25 +165,9 @@ void QgsLegend::mouseMoveEvent(QMouseEvent * e)
     }
     else if (mItemBeingMoved)
     { 
-	// scroll list if we're near the edge of the viewport
-	// code lifted from the poa project: http://poa.berlios.de/
-	//QPoint p(contentsToViewport(e->pos()));
       QPoint p(e->pos());
       mLastPressPos=p;
-      //if (p.y() < AUTOSCROLL_MARGIN)
-      //{
-	  // scroll up
-	  //scrollContentsBy(0, -(AUTOSCROLL_MARGIN - p.y()));
-      //}
-      //else if (p.y() > visibleHeight() - AUTOSCROLL_MARGIN)
-      //else if (p.y() > height() - AUTOSCROLL_MARGIN)
-      //{
-	  // scroll down
-	  //scrollContentsBy(0, (p.y() - (visibleHeight() - AUTOSCROLL_MARGIN)));
-	  //scrollContentsBy(0, (p.y() - (height() - AUTOSCROLL_MARGIN)));
-	  //}
-
-
+     
       // change the cursor appropriate to if drop is allowed
       QTreeWidgetItem* item = itemAt(p);
       QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>(mItemBeingMoved);
@@ -203,32 +187,20 @@ void QgsLegend::mouseMoveEvent(QMouseEvent * e)
 		    {
 		      if(origin->parent() != dest->parent())
 			{
-#ifdef QGISDEBUG
-			  qWarning("section1");
-#endif
 			  dest->parent()->insertChild(dest->parent()->childCount(), origin);
 			  origin->moveItem(dest);
 			  dest->moveItem(origin);
 		      }
 		      else
 		      {
-#ifdef QGISDEBUG
-			  qWarning("section2");
-#endif
 			  dest->moveItem(origin);
 		      }
 		  }
 	      }
 	      else //over top of item
 	      {
-#ifdef QGISDEBUG
-		qWarning("over the top");
-#endif
 		  if (mItemBeingMoved != dest->nextSibling())
 		  {
-#ifdef QGISDEBUG
-		qWarning("origin->moveItem(dest)");
-#endif
 		      origin->moveItem(dest);
 		  } 
 	      }
@@ -249,7 +221,10 @@ void QgsLegend::mouseMoveEvent(QMouseEvent * e)
 #ifdef QGISDEBUG
 	      qWarning("mouseMoveEvent::NO_ACTION");
 #endif
-	      resetToInitialPosition(mItemBeingMoved);
+	      if(mItemBeingMovedOrigPos != getItemPos(mItemBeingMoved))
+		{
+		  resetToInitialPosition(mItemBeingMoved);
+		}
 	      setCursor( QCursor(Qt::ForbiddenCursor) );
 	    }
 	}     
