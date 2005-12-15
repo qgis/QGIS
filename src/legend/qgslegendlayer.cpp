@@ -33,7 +33,7 @@ QgsLegendLayer::QgsLegendLayer(QTreeWidgetItem* parent,QString name)
 #else
     QString pkgDataPath(PKGDATAPATH);
 #endif
-    setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+    setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
     QIcon myIcon(pkgDataPath+QString("/images/icons/layer.png"));
     setCheckState (0, Qt::Checked);
     setText(0, name);
@@ -48,7 +48,7 @@ QgsLegendLayer::QgsLegendLayer(QTreeWidget* parent, QString name): QObject(), Qg
 #else
     QString pkgDataPath(PKGDATAPATH);
 #endif
-    setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+    setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
     setCheckState (0, Qt::Checked);
     QIcon myIcon(pkgDataPath+QString("/images/icons/layer.png"));
     setText(0, name);
@@ -63,7 +63,7 @@ QgsLegendLayer::QgsLegendLayer(QString name): QObject(), QgsLegendItem()
 #else
     QString pkgDataPath(PKGDATAPATH);
 #endif
-    setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+    setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
     setCheckState (0, Qt::Checked);
     QIcon myIcon(pkgDataPath+QString("/images/icons/layer.png"));
     setText(0, name);

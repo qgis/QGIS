@@ -30,7 +30,7 @@ QgsLegendGroup::QgsLegendGroup(QTreeWidgetItem * theItem ,QString theName)
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif
-  setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
+  setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   QIcon myIcon(pkgDataPath+QString("/images/icons/folder.png"));
   setIcon(0, myIcon);
 }
@@ -43,7 +43,7 @@ QgsLegendGroup::QgsLegendGroup(QTreeWidget* theListView, QString theString)
 #else
   QString pkgDataPath(PKGDATAPATH);
 #endif
-  setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
+  setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   QIcon myIcon(pkgDataPath+QString("/images/icons/folder.png"));
   setIcon(0, myIcon);
 }
