@@ -70,14 +70,13 @@ int QgsLegendSymbologyGroup::compare (QTreeWidgetItem * i,int col, bool ascendin
 
 void QgsLegendSymbologyGroup::updateLayerSymbologySettings(const QgsMapLayer* thelayer)
 {
-#if 0
     //find the legend layer group node
-    QTreeWidgetItem* parent = this->parent();
+    QgsLegendItem* parent = dynamic_cast<QgsLegendItem*>(this->parent());
     if(!parent)
     {
 	return;
     }
-    QTreeWidgetItem* sibling = 0;
+    QgsLegendItem* sibling = 0;
     QgsLegendLayerFileGroup* group = 0;
     for(sibling = parent->firstChild(); sibling != 0; sibling = sibling->nextSibling())
     {
@@ -108,5 +107,4 @@ void QgsLegendSymbologyGroup::updateLayerSymbologySettings(const QgsMapLayer* th
 	    }
 	}
     }
-#endif
 }

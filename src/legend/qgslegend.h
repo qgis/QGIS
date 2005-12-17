@@ -203,7 +203,8 @@ protected:
    * @return void
    */  
   void mouseReleaseEvent(QMouseEvent * e);
-  
+  void mouseDoubleClickEvent(QMouseEvent* e);
+  void keyPressEvent(QKeyEvent* e);
     /**Stores the necessary information about the position of an item in the hierarchy. Afterwards, 
 this item may be moved back to the original position with resetToInitialPosition()*/
   void storeInitialPosition(QTreeWidgetItem* li);
@@ -213,8 +214,6 @@ this item may be moved back to the original position with resetToInitialPosition
 
   private slots:
 
-  /**Calls 'handleDoubleClickEvent' on the item*/
-  void handleDoubleClickEvent(QTreeWidgetItem* item);
   /**Calls 'handleRightClickEvent' on the item*/
   void handleRightClickEvent(QTreeWidgetItem* item, const QPoint& position);
   /**Removes the current legend group*/
