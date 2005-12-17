@@ -51,11 +51,6 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
 {
   connect( this, SIGNAL(selectionChanged(QTreeWidgetItem *)),
            this, SLOT(updateLegendItem(QTreeWidgetItem *)) );
-
-  connect( this, SIGNAL(doubleClicked(QTreeWidgetItem *, const QPoint &, int)),
-	   this, SLOT(handleDoubleClickEvent(QTreeWidgetItem*)));
-
-  //just for a test
   
   connect( this, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
 	   this, SLOT(handleItemChange(QTreeWidgetItem*, int)));
@@ -212,9 +207,12 @@ void QgsLegend::mouseMoveEvent(QMouseEvent * e)
 	      qWarning("mouseMoveEvent::INSERT");
 #endif
 	      setCursor( QCursor(Qt::PointingHandCursor) );
-	      removeItem(origin);
-	      dest->insert(origin, false);
-	      setCurrentItem(origin);
+	      if(origin->parent() != dest)
+		{
+		  removeItem(origin);
+		  dest->insert(origin, false);
+		  setCurrentItem(origin);
+		}
 	    }
 	    else//no action
 	    {
@@ -321,35 +319,50 @@ void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
   mItemBeingMoved = NULL;
 }
 
-void QgsLegend::handleDoubleClickEvent(QTreeWidgetItem* item)
+void QgsLegend::mouseDoubleClickEvent(QMouseEvent* e)
 {
-#if 0
-    QgsLegendItem* li = dynamic_cast<QgsLegendItem*>(item);
+    QgsLegendItem* li = dynamic_cast<QgsLegendItem*>(currentItem());
+    QgsMapLayer* ml = 0;
+
     if(li)
     {
 	if(li->type() == QgsLegendItem::LEGEND_LAYER_FILE)
 	{
-	    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
-	    if(llf)
-	    {
-		QgsMapLayer* ml = llf->layer();
-		if (ml && ml->type() == QgsMapLayer::RASTER)
-		{
-		    QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties(ml);
-		    if (rlp->exec())
-		    {
-			delete rlp;
-			QCoreApplication::processEvents();
-		    }
-		}
-		else if(ml) //vector
-		{
-		    ml->showLayerProperties();
-		}
-	    } 
+	  QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
+	  ml = llf->layer();
+	}
+	else if(li->type() == QgsLegendItem::LEGEND_LAYER)
+	{
+	  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(li);
+	  ml = ll->firstMapLayer();
+	}
+       
+	if (ml && ml->type() == QgsMapLayer::RASTER)
+	  {
+	    QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties(ml);
+	    if (rlp->exec())
+	      {
+		delete rlp;
+		QCoreApplication::processEvents();
+	      }
+	  }
+	else if(ml) //vector
+	  {
+	    ml->showLayerProperties();
+	  }
+    }
+}
+
+void QgsLegend::keyPressEvent(QKeyEvent* e)
+{
+  if(e->key() == Qt::Key_Return)
+    {
+      QTreeWidgetItem* item = currentItem();
+      if(item)
+	{
+	  closePersistentEditor(item, 0);
 	}
     }
-#endif
 }
 
 void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& position)

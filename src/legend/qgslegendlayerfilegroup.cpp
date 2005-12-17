@@ -46,7 +46,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept(const QgsLegendItem* 
   if(li)
     {
       LEGEND_ITEM_TYPE type = li->type();
-      if ( type == LEGEND_LAYER_FILE && this != li->parent())
+      if ( type == LEGEND_LAYER_FILE /*&& this != li->parent()*/)
       {
 	if(child(0) == 0)
 	  {
