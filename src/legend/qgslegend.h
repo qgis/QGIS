@@ -204,7 +204,7 @@ protected:
    */  
   void mouseReleaseEvent(QMouseEvent * e);
   void mouseDoubleClickEvent(QMouseEvent* e);
-  void keyPressEvent(QKeyEvent* e);
+
     /**Stores the necessary information about the position of an item in the hierarchy. Afterwards, 
 this item may be moved back to the original position with resetToInitialPosition()*/
   void storeInitialPosition(QTreeWidgetItem* li);
