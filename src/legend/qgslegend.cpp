@@ -353,18 +353,6 @@ void QgsLegend::mouseDoubleClickEvent(QMouseEvent* e)
     }
 }
 
-void QgsLegend::keyPressEvent(QKeyEvent* e)
-{
-  if(e->key() == Qt::Key_Return)
-    {
-      QTreeWidgetItem* item = currentItem();
-      if(item)
-	{
-	  closePersistentEditor(item, 0);
-	}
-    }
-}
-
 void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& position)
 {
 #ifdef QGISDEBUG
@@ -650,7 +638,6 @@ void QgsLegend::collapseAll()
 
 bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 {
-#if 0 //todo: port to qt4
     QDomElement legendnode = document.createElement("legend");
     layer_node.appendChild(legendnode);
 
@@ -663,10 +650,10 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
     QDomElement legendlayerfilenode;
     QgsLegendLayerFile* llf;
 
-    Q3ListViewItemIterator it(this);
-    while(it.current()) 
+    QTreeWidgetItem* currentItem = firstItem();
+    while(currentItem) 
     {
-	QgsLegendItem *item = dynamic_cast<QgsLegendItem*>(it.current());
+	QgsLegendItem *item = dynamic_cast<QgsLegendItem*>(currentItem);
 	if(item)
 	{
 	    switch(item->type())
@@ -678,7 +665,7 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 			legendnode = tmplegendnode;
 		    }
 		    legendgroupnode = document.createElement("legendgroup");
-		    if(item->isOpen())
+		    if(isItemExpanded(item))
 		    {
 			legendgroupnode.setAttribute("open","true");
 		    }
@@ -699,7 +686,7 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 			legendnode = tmplegendnode;
 		    }
 		    legendlayernode = document.createElement("legendlayer");
-		    if(item->isOpen())
+		    if(isItemExpanded(item))
 		    {
 			legendlayernode.setAttribute("open","true");
 		    }
@@ -713,7 +700,7 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 
 		case QgsLegendItem::LEGEND_PROPERTY_GROUP:
 		    legendpropertynode = document.createElement("propertygroup");
-		    if(item->isOpen())
+		    if(isItemExpanded(item))
 		    {
 			legendpropertynode.setAttribute("open","true");	
 		    }
@@ -726,7 +713,7 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 
 		case QgsLegendItem::LEGEND_SYMBOL_GROUP:
 		    legendsymbolnode = document.createElement("symbolgroup");
-		    if(item->isOpen())
+		    if(isItemExpanded(item))
 		    {
 			legendsymbolnode.setAttribute("open", "true");
 		    }
@@ -740,7 +727,7 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
   
 		case QgsLegendItem::LEGEND_LAYER_FILE_GROUP:
 		    layerfilegroupnode = document.createElement("filegroup");
-		    if(item->isOpen())
+		    if(isItemExpanded(item))
 		    {
 			layerfilegroupnode.setAttribute("open", "true");
 		    }
@@ -765,9 +752,8 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 		    break;
 	    }
 	}
-	++it;
+	currentItem = nextItem(currentItem);
     }
-#endif //0
     return true;
 }
 
@@ -1259,6 +1245,7 @@ std::deque<QString> QgsLegend::layerIDs()
 
 void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 {
+  closePersistentEditor(item, row);
   QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(item);
   if(llf)
     {
@@ -1331,9 +1318,9 @@ void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 		      mStateOfCheckBoxes[(*it)] = Qt::Unchecked;
 		    }
 		}
+	      mMapCanvas->setRenderFlag(true);
 	    }
 	}
-      mMapCanvas->setRenderFlag(true);
     }
 }
 

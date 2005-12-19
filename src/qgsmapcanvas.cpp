@@ -2841,7 +2841,7 @@ void QgsMapCanvas::removeAll()
     // disconnect layer signals
     QObject::disconnect(layer, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
     QObject::disconnect(layer, SIGNAL(repaintRequested()), this, SLOT(refresh()));
-
+      
     ++mi;
   }
 
