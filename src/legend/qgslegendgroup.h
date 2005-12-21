@@ -32,6 +32,7 @@ class QgsLegendGroup : public QgsLegendItem
 public:
     QgsLegendGroup(QTreeWidgetItem * ,QString);
     QgsLegendGroup(QTreeWidget*,QString);
+    QgsLegendGroup(QString name);
     ~QgsLegendGroup();
 
     QgsLegendItem::DRAG_ACTION accept(LEGEND_ITEM_TYPE type);

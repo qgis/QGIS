@@ -748,7 +748,18 @@ static QgsMapCanvas * _findMapCanvas(QString const &canonicalMapCanvasName)
     }
 
     delete list;                  // delete the list, not the widgets
-#endif
+#else
+    QWidgetList wlist = QApplication::topLevelWidgets();
+    foreach (QWidget *widget, QApplication::topLevelWidgets()) 
+      {
+            theMapCanvas = dynamic_cast <QgsMapCanvas *>(widget->child(canonicalMapCanvasName.toLocal8Bit().data(), 0, true)); 
+	    if(theMapCanvas)
+	      {
+		break;
+	      }
+      }
+#endif //QT_VERSION < 0x040000
+
 
     if (theMapCanvas)
     {
@@ -1158,7 +1169,6 @@ bool QgsProject::read()
 	    {
 		QDomNode legendnode = ll.item(0);
 		theLegend->readXML(legendnode);
-		theLegend->restoreFromProject();
 	    }
 	}
     }
