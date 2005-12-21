@@ -99,14 +99,8 @@ class QgsLegend : public QTreeWidget
   Else, 0 is returned.*/
   QgsMapLayer* currentLayer();
 
-  /**Writes the content of the legend using the key system of QgsProject*/
-  void saveToProject();
-
   /**Writes the content of the legend to a project file*/
   bool writeXML(QDomNode & layer_node, QDomDocument & document);
-
-  /**Restores the legend from a project file using the key system of QgsProject*/
-  void restoreFromProject();
 
   /**Restores the legend from a project file*/
   bool readXML(QDomNode& legendnode);

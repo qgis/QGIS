@@ -1,3 +1,4 @@
+
 /***************************************************************************
                           qgslegend.cpp  -  description
                              -------------------
@@ -68,7 +69,6 @@ QgsLegend::~QgsLegend()
 void QgsLegend::addGroup()
 {
     QgsLegendGroup* group = new QgsLegendGroup(this, tr("group"));
-    group->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable);
     setExpanded(indexFromItem(group), true);
 }
 
@@ -759,12 +759,10 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 
 bool QgsLegend::readXML(QDomNode& legendnode)
 {
-#if 0 //todo: port to qt4
     QString open;
-    Q3ListViewItemIterator it(this);
-    Q3ListViewItem* theItem = firstChild(); //first level hierarchy items
-    Q3ListViewItem* prevchild = 0; //store last value of theItem because of legend group
-    Q3ListViewItem* secondLevelItem = 0; //second level item
+    QgsLegendItem* theItem = dynamic_cast<QgsLegendItem*>(topLevelItem(0)); //first level hierarchy items
+    QgsLegendItem* prevchild = 0; //store last value of theItem because of legend group
+    QgsLegendItem* secondLevelItem = 0; //second level item
     QgsLegendGroup* group = 0; //pointer to the last inserted legend group
 
     QDomNode child = legendnode.firstChild();
@@ -781,16 +779,16 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	    
 	    if(legendlayerelem.tagName()=="legendgroup")
 	    {
-		group = new QgsLegendGroup(this, legendlayerelem.attribute("name")); 
-		group->setRenameEnabled(0, true);
+		group = new QgsLegendGroup(legendlayerelem.attribute("name")); 
+		insertTopLevelItem(0, group);
 		open = legendlayerelem.attribute("open");
 		if(open == "true")
 		{
-		    group->setOpen(true);
+		    expandItem(group);
 		}
 		if(prevchild)
 		  {
-		    group->moveItem(prevchild);
+		    moveItem(group, prevchild);
 		  }
 		theItem = group->nextSibling();
 		if(!child.firstChild().isNull())
@@ -807,25 +805,23 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	    open = legendlayerelem.attribute("open");
 	    if(child.parentNode().toElement().tagName()=="legendgroup")
 	    {
-	      group->insertItem(theItem);
-	      Q3ListViewItem* currentChild = group->firstChild();
+	      removeItem(theItem);
+	      group->insertChild(0, theItem);
+	      QgsLegendItem* currentChild = group->firstChild();
 	      if(!currentChild)
 		{
-		  group->insertItem(theItem);//insert the first child in the group
+		  removeItem(theItem);
+		  group->insertChild(0, theItem);//insert the first child in the group
 		}
 	      else //find the last child and insert the new one after it
 		{
-		  while(currentChild->nextSibling() != 0)
-		    {
-		      currentChild = currentChild->nextSibling();
-		    }
-		  group->insertItem(theItem);
-		  theItem->moveItem(currentChild);
+		  removeItem(theItem);
+		  group->addChild(theItem);
 		}
 	    }
 	    if(open == "true")
 	    {
-		theItem->setOpen(true);
+		expandItem(theItem);
 	    }
 	    theItem->setText(0, legendlayerelem.attribute("name"));
 
@@ -836,20 +832,19 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	    open = filegroupelem.attribute("open");
 	    if(open == "true")
 	    {
-		secondLevelItem->setOpen(true);
+		expandItem(secondLevelItem);
 	    }
 	    QDomNode layerfilenode = filegroupnode.firstChild();
 	    QDomElement layerfileelem = layerfilenode.toElement();
      
 	    //remove the existing legendlayerfile and insert the one(s) according to the entries in the XML file
-	    if(secondLevelItem->firstChild())
+	    if(secondLevelItem->child(0))
 	      {
-		QgsLegendLayerFile* llfdelete = dynamic_cast<QgsLegendLayerFile*>(secondLevelItem->firstChild());
+		QgsLegendLayerFile* llfdelete = dynamic_cast<QgsLegendLayerFile*>(secondLevelItem->child(0));
 		if(llfdelete)
 		  {
-		    unregisterCheckBox(llfdelete);
-		    delete llfdelete;
-		    placeCheckBoxes();
+		    removeItem(llfdelete);
+		    mStateOfCheckBoxes.erase(llfdelete);
 		  }
 	      }
 	    
@@ -866,15 +861,23 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		if(it != layers.end())
 		  {
 		    QgsMapLayer* newlayer = it->second;
-		    QgsLegendLayerFile* newfile = new QgsLegendLayerFile(secondLevelItem, QgsLegendLayerFile::nameFromLayer(newlayer), newlayer); 
+		    QgsLegendLayerFile* newfile = new QgsLegendLayerFile(secondLevelItem, QgsLegendLayerFile::nameFromLayer(newlayer), newlayer);
+		    if(newlayer->visible())
+		      {
+			mStateOfCheckBoxes.insert(std::make_pair(newfile, Qt::Checked));
+		      }
+		    else
+		      {
+			mStateOfCheckBoxes.insert(std::make_pair(newfile, Qt::Unchecked));
+		      }
 		    newlayer->setLegendLayerFile(newfile);
 		    newlayer->initContextMenu(mApp);
 
 		    //move newfile as the last child of the legendlayerfilegroup
-		    Q3ListViewItem* curitem = newfile;
+		    QgsLegendItem* curitem = newfile;
 		    while(curitem = newfile->nextSibling())
 		      {
-			newfile->moveItem(curitem);
+			moveItem(newfile, curitem);
 		      }
 		  }
 		layerfilenode = layerfilenode.nextSibling();
@@ -888,7 +891,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	    open = symbologygroupelem.attribute("open");
 	    if(open == "true")
 	    {
-		secondLevelItem->setOpen(true);
+		expandItem(secondLevelItem);
 	    }
 
 	    //property group
@@ -897,7 +900,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	    QDomElement propertygroupelem = propertygroupnode.toElement();
 	    open = propertygroupelem.attribute("open");
 	    {
-		secondLevelItem->setOpen(true);
+		expandItem(secondLevelItem);
 	    }
 
 	    if(child.nextSibling().isNull() && !child.parentNode().isNull()) //go one hierarchy step up
@@ -906,7 +909,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	      }
 	    if(theItem->nextSibling() == 0)
 	      {
-		theItem = theItem->parent();
+		theItem = dynamic_cast<QgsLegendItem*>(theItem->parent());
 	      }
 
 	    if(!theItem)
@@ -924,137 +927,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	}
 	while(!(child.isNull()));
     }
-    placeCheckBoxes();
-#endif //0
     return true;
-}
-
-void QgsLegend::saveToProject()
-{
-#if 0 //todo: port to qt4
-  int toplayeridx=0;
-  int lgroupidx=0;
-  int llayeridx=0;
-  QString groupstring; //string which have to be prepended if an element is into a group
-
-  Q3ListViewItemIterator it(this);
-  while(it.current()) 
-    {
-      QgsLegendItem *item = dynamic_cast<QgsLegendItem*>(it.current());
-      if(item)
-	{
-	  switch(item->type())
-	    {
-	    case QgsLegendItem::LEGEND_GROUP:
-	      ++lgroupidx;
-	      groupstring = "/LegendGroup"+QString::number(lgroupidx);
-	      QgsProject::instance()->writeEntry("Legend","/LegendGroup"+QString::number(lgroupidx)+"/Name",item->text(0));
-	      ++toplayeridx;
-	      QgsProject::instance()->writeEntry("Legend","/LegendGroup"+QString::number(lgroupidx)+"/TopLayerIndex",toplayeridx);
-	      if(item->isOpen())
-		{
-		  QgsProject::instance()->writeEntry("Legend","/LegendGroup"+QString::number(lgroupidx)+"/Open",true);	
-		}
-	      else
-		{
-		  QgsProject::instance()->writeEntry("Legend","/LegendGroup"+QString::number(lgroupidx)+"/Open",true);
-		}
-	      break;
-		    
-	    case QgsLegendItem::LEGEND_LAYER:
-	      ++llayeridx;
-	      if(item->parent()==0)//legend layer is not in a group
-		{
-		  groupstring="";
-		  ++toplayeridx;
-		 QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/TopLayerIndex",toplayeridx); 
-		}
-	      else //set TopLayerIndex -1 if a LegendLayer is not a toplevel item
-		{
-		  QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/TopLayerIndex",-1);
-		}
-	      QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/Name",item->text(0));
-	      if(item->isOpen())
-		{
-		  QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/Open",true);
-		}
-	      else
-		{
-		  QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/Open",false);
-		}
-	      break;
-	      
-	    case QgsLegendItem::LEGEND_PROPERTY_GROUP:
-	      if(item->isOpen())
-		{
-		  QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/LegendPropertyGroup/Open", true);
-		}
-	      else
-		{
-		  QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/LegendPropertyGroup/Open", false);
-		}
-	      break;
-	      
-	    case QgsLegendItem::LEGEND_SYMBOL_GROUP:
-	      if(item->isOpen())
-		{
-		  QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/LegendSymbolGroup/Open", true);
-		}
-	      else
-		{
-		  QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/LegendSymbolGroup/Open", false);
-		}
-	      break;
-	      
-	    case QgsLegendItem::LEGEND_LAYER_FILE_GROUP:
-	      if(item->isOpen())
-		{
-		  QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/LegendLayerFileGroup/Open", true);
-		}
-	      else
-		{
-		  QgsProject::instance()->writeEntry("Legend",groupstring+"/LegendLayer"+QString::number(llayeridx)+"/LegendLayerFileGroup/Open", false);
-		}
-	      break;
-	      
-	    default: //do nothing for the leaf nodes
-	      break;	
-	    }
-	}
-      ++it;
-    }
-#endif //0
-}
-
-void QgsLegend::restoreFromProject()
-{
-#if 0 //todo: port to qt4
-  int legendlayercount = 0;
-  int legendgroupcount = 0;
-  QStringList legendlayerlist;
-  QStringList legendgrouplist;
-  bool ok;
-
-  legendlayerlist = QgsProject::instance()->readListEntry("Legend","/LegendLayer"+QString::number(legendlayercount+1), &ok);
-  if(ok)
-    {
-      ++legendlayercount;
-      for(QStringList::Iterator it = legendlayerlist.begin(); it != legendlayerlist.end(); ++it)
-	{
-	  qWarning(*it);
-	}
-    }
-
-  legendgrouplist = QgsProject::instance()->readListEntry("Legend","/LegendGroup"+QString::number(legendgroupcount+1), &ok);
-  if(ok)
-    {
-      ++legendgroupcount;
-      for(QStringList::Iterator it = legendgrouplist.begin(); it != legendgrouplist.end(); ++it)
-	{
-	  qWarning(*it);
-	}
-    }
-#endif
 }
 
 void QgsLegend::storeInitialPosition(QTreeWidgetItem* li)
@@ -1146,10 +1019,19 @@ QTreeWidgetItem* QgsLegend::nextItem(QTreeWidgetItem* item)
     {
       return 0;
     }
+  //todo: implement this in a nicer and safer way
   else if(dynamic_cast<QgsLegendItem*>(litem->parent())->nextSibling())
     {
-      return (dynamic_cast<QgsLegendItem*>(litem->parent())->nextSibling());//todo: make this for deeper trees
-    } 
+      return (dynamic_cast<QgsLegendItem*>(litem->parent())->nextSibling());
+    }
+  else if(dynamic_cast<QgsLegendItem*>(litem->parent()->parent())->nextSibling())
+    {
+      return (dynamic_cast<QgsLegendItem*>(litem->parent()->parent())->nextSibling());
+    }
+  /*else if(dynamic_cast<QgsLegendItem*>(litem->parent()->parent()->parent())->nextSibling())//maximum four nesting states in the current legend
+    {
+      return (dynamic_cast<QgsLegendItem*>(litem->parent()->parent()->parent())->nextSibling());
+      }*/
   else
     {
       return 0;
