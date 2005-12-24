@@ -2830,20 +2830,24 @@ void QgsMapCanvas::removeAll()
 
   QString current_key;
 
-  // first disconnnect all layer signals from this canvas
-  while ( mi != mCanvasProperties->layers.end() )
-  {
-    // save the current key
-    current_key = mi->first;
+  //don't disconnect because the maplayers are already deleted in
+  //QgsMapLayerRegistry::removeAllMapLayers(). Therefore this would
+  //cause a segfault
 
-    QgsMapLayer * layer = mCanvasProperties->layers[current_key];
+  // first disconnnect all layer signals from this canvas
+  //while ( mi != mCanvasProperties->layers.end() )
+  //{
+    // save the current key
+    //current_key = mi->first;
+
+    //QgsMapLayer * layer = mCanvasProperties->layers[current_key];
 
     // disconnect layer signals
-    QObject::disconnect(layer, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
-    QObject::disconnect(layer, SIGNAL(repaintRequested()), this, SLOT(refresh()));
+    //QObject::disconnect(layer, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
+    //QObject::disconnect(layer, SIGNAL(repaintRequested()), this, SLOT(refresh()));
       
-    ++mi;
-  }
+    //++mi;
+  //}
 
   // then empty all the other state containers
 

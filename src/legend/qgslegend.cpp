@@ -443,7 +443,21 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
     mStateOfCheckBoxes.insert(std::make_pair(llayer, Qt::Checked)); //insert the check state into the map to query for changes later
     QgsLegendLayerFileGroup * llfgroup = new QgsLegendLayerFileGroup(llayer,QString("Files"));
     QgsLegendLayerFile * llfile = new QgsLegendLayerFile(llfgroup, QgsLegendLayerFile::nameFromLayer(layer), layer);
-    mStateOfCheckBoxes.insert(std::make_pair(llfile, Qt::Checked)); //insert the check state into the map to query for changes later
+    
+    //set the correct check state
+    blockSignals(true);
+    if(layer->visible())
+      {
+	llfile->setCheckState(0, Qt::Checked);
+	mStateOfCheckBoxes.insert(std::make_pair(llfile, Qt::Checked)); //insert the check state into the map to query for changes later
+      }
+    else
+      {
+	llfile->setCheckState(0, Qt::Unchecked);
+	mStateOfCheckBoxes.insert(std::make_pair(llfile, Qt::Unchecked)); //insert the check state into the map to query for changes later
+      }
+    blockSignals(false);
+   
     QgsLegendSymbologyGroup * lsgroup = new QgsLegendSymbologyGroup(llayer,QString("Symbology"));
     layer->setLegendSymbologyGroupParent(lsgroup);
     QgsLegendPropertyGroup * lpgroup = new QgsLegendPropertyGroup(llayer,QString("Properties"));
@@ -850,6 +864,24 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	    
 	    //if there are several legend layer files in this group, create the additional items
 	    std::map<QString,QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+
+	    //find out the check state of the QgsLegendLayer in the while(true) loop below
+	    Qt::CheckState legendLayerCheckState;
+	    std::map<QString,QgsMapLayer*>::iterator it = layers.find(layerfileelem.attribute("layerid"));
+	    if(it != layers.end())
+		  {
+		    QgsMapLayer* newlayer = it->second;
+		    if(newlayer->visible())
+		      {
+			legendLayerCheckState = Qt::Checked;
+		      }
+		    else
+		      {
+			legendLayerCheckState = Qt::Unchecked;
+		      }
+		  }
+	    
+	    blockSignals(true);
 	    while(true)
 	      {
 		if(layerfilenode.isNull())
@@ -861,28 +893,37 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		if(it != layers.end())
 		  {
 		    QgsMapLayer* newlayer = it->second;
-		    QgsLegendLayerFile* newfile = new QgsLegendLayerFile(secondLevelItem, QgsLegendLayerFile::nameFromLayer(newlayer), newlayer);
+		    QgsLegendLayerFile* newfile = new QgsLegendLayerFile(QgsLegendLayerFile::nameFromLayer(newlayer), newlayer);
 		    if(newlayer->visible())
 		      {
+			if(legendLayerCheckState == Qt::Unchecked)
+			  {
+			    legendLayerCheckState = Qt::PartiallyChecked;
+			  }
+			newfile->setCheckState(0, Qt::Checked);
 			mStateOfCheckBoxes.insert(std::make_pair(newfile, Qt::Checked));
 		      }
 		    else
 		      {
+			if(legendLayerCheckState == Qt::Checked)
+			  {
+			    legendLayerCheckState = Qt::PartiallyChecked;
+			  }
+			newfile->setCheckState(0, Qt::Unchecked);
 			mStateOfCheckBoxes.insert(std::make_pair(newfile, Qt::Unchecked));
 		      }
 		    newlayer->setLegendLayerFile(newfile);
 		    newlayer->initContextMenu(mApp);
 
 		    //move newfile as the last child of the legendlayerfilegroup
-		    QgsLegendItem* curitem = newfile;
-		    while(curitem = newfile->nextSibling())
-		      {
-			moveItem(newfile, curitem);
-		      }
+		    secondLevelItem->addChild(newfile);
 		  }
 		layerfilenode = layerfilenode.nextSibling();
 		layerfileelem = layerfilenode.toElement();
 	      }
+	    secondLevelItem->parent()->setCheckState(0, legendLayerCheckState);
+	    mStateOfCheckBoxes[secondLevelItem->parent()] = legendLayerCheckState;
+	    blockSignals(false);
 
 	    //symbology group
 	    secondLevelItem = secondLevelItem->nextSibling();
@@ -1019,19 +1060,20 @@ QTreeWidgetItem* QgsLegend::nextItem(QTreeWidgetItem* item)
     {
       return 0;
     }
-  //todo: implement this in a nicer and safer way
-  else if(dynamic_cast<QgsLegendItem*>(litem->parent())->nextSibling())
+  //go to other levels to find the next item
+  else if(litem->parent() && ((QgsLegendItem*)(litem->parent()))->nextSibling())
     {
       return (dynamic_cast<QgsLegendItem*>(litem->parent())->nextSibling());
     }
-  else if(dynamic_cast<QgsLegendItem*>(litem->parent()->parent())->nextSibling())
+  else if(litem->parent() && litem->parent()->parent() && ((QgsLegendItem*)(litem->parent()->parent()))->nextSibling())
     {
       return (dynamic_cast<QgsLegendItem*>(litem->parent()->parent())->nextSibling());
     }
-  /*else if(dynamic_cast<QgsLegendItem*>(litem->parent()->parent()->parent())->nextSibling())//maximum four nesting states in the current legend
+  else if(litem->parent() && litem->parent()->parent() && litem->parent()->parent()->parent() &&\
+	  ((QgsLegendItem*)(litem->parent()->parent()->parent()))->nextSibling())//maximum four nesting states in the current legend
     {
       return (dynamic_cast<QgsLegendItem*>(litem->parent()->parent()->parent())->nextSibling());
-      }*/
+    }
   else
     {
       return 0;
