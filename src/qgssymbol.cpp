@@ -392,7 +392,7 @@ bool QgsSymbol::readXML( QDomNode & synode )
     int red = oulcelement.attribute("red").toInt();
     int green = oulcelement.attribute("green").toInt();
     int blue = oulcelement.attribute("blue").toInt();
-    setColor(QColor(Qt::red, Qt::green, Qt::blue));
+    setColor(QColor(red, green, blue));
 
     QDomNode outlstnode = synode.namedItem("outlinestyle");
     QDomElement outlstelement = outlstnode.toElement();
@@ -407,7 +407,7 @@ bool QgsSymbol::readXML( QDomNode & synode )
     red = fillcelement.attribute("red").toInt();
     green = fillcelement.attribute("green").toInt();
     blue = fillcelement.attribute("blue").toInt();
-    setFillColor(QColor(Qt::red, Qt::green, Qt::blue));
+    setFillColor(QColor(red, green, blue));
 
     QDomNode fillpnode = synode.namedItem("fillpattern");
     QDomElement fillpelement = fillpnode.toElement();

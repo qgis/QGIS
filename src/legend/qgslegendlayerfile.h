@@ -32,6 +32,7 @@ class QgsLegendLayerFile : public QgsLegendItem
 {
 public:
     QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString theString, QgsMapLayer* theLayer);
+    QgsLegendLayerFile(QString theString, QgsMapLayer* theLayer);
     ~QgsLegendLayerFile();
     bool isLeafNode() {return true;}
     DRAG_ACTION accept(LEGEND_ITEM_TYPE type);

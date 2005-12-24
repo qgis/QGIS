@@ -48,6 +48,30 @@ QgsLegendLayerFile::QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString 
   setIcon(0, originalIcon);
 }
 
+QgsLegendLayerFile::QgsLegendLayerFile(QString theString, QgsMapLayer* theLayer)
+    : QgsLegendItem(), mLayer(theLayer)
+{
+  mType = LEGEND_LAYER_FILE;
+  QPixmap originalPixmap = getOriginalPixmap();
+  //ensure the overview glasses is painted if necessary
+  if(mLayer->showInOverviewStatus())
+  {
+#if defined(Q_OS_MACX) || defined(WIN32) 
+      QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
+#else
+      QString pkgDataPath(PKGDATAPATH);
+#endif  
+      QPixmap inOverviewPixmap(pkgDataPath+QString("/images/icons/inoverview.png"));
+      QPainter p(&originalPixmap);
+      p.drawPixmap(0,0,inOverviewPixmap);
+  }
+  QIcon originalIcon(originalPixmap);
+  setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  setCheckState (0, Qt::Checked );
+  setText(0, theString);
+  setIcon(0, originalIcon);
+}
+
 
 QgsLegendLayerFile::~QgsLegendLayerFile()
 {
