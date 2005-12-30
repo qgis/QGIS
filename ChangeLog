@@ -1,6 +1,8 @@
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
 Version 0.8 'Joesephine' .... development version
+2005-11-30 [timlinux] 0.7.9.4
+** Refactored all src/*.ui into src/ui/ dir for cleaner separation of ui's
 2005-12-29 [gsherman] 0.7.9.3
 ** Merged Ui branch into HEAD
 2005-11-10 [timlinux] 0.7.9.2
