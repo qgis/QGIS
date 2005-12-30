@@ -312,6 +312,7 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
   mCanvasProperties->dirty = true;
 
   emit addedLayer( lyr );
+  render();
 
 } // addLayer
 
@@ -357,7 +358,7 @@ void QgsMapCanvas::removeDigitizingLines(bool norepaint)
     clear();
     // For Qt4, deprecate direct calling of render().  Let render() be called by the 
     // paint event loop of this widget.
-    //      render();
+          render();
     update();
   }
 }
@@ -411,7 +412,7 @@ void QgsMapCanvas::refresh()
   clear();
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of this widget.
-  //  render();
+    render();
   update();
 } // refresh
 
@@ -1082,7 +1083,7 @@ void QgsMapCanvas::zoomFullExtent()
   clear();
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of this widget.
-  //  render();
+    render();
   update();
   emit extentsChanged(mCanvasProperties->currentExtent);
 } // zoomFullExtent
@@ -1099,7 +1100,7 @@ void QgsMapCanvas::zoomPreviousExtent()
     clear();
     // For Qt4, deprecate direct calling of render().  Let render() be called by the 
     // paint event loop of this widget.
-    //    render();
+        render();
     update();
     emit extentsChanged(mCanvasProperties->currentExtent);
   }
@@ -1220,7 +1221,7 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
         clear();
         // For Qt4, deprecate direct calling of render().  Let render() be called by the 
         // paint event loop of this widget.
-        //            render();
+                    render();
         update();
         emit extentsChanged(mCanvasProperties->currentExtent);
         break;
@@ -1238,7 +1239,7 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
         clear();
         // For Qt4, deprecate direct calling of render().  Let render() be called by the 
         // paint event loop of this widget.
-        //            render();
+                    render();
         update();
         emit extentsChanged(mCanvasProperties->currentExtent);
         break;
@@ -1256,7 +1257,7 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
         clear();
         // For Qt4, deprecate direct calling of render().  Let render() be called by the 
         // paint event loop of this widget.
-        //            render();
+                    render();
         update();
         emit extentsChanged(mCanvasProperties->currentExtent);
         break;
@@ -1273,7 +1274,7 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
         clear();
         // For Qt4, deprecate direct calling of render().  Let render() be called by the 
         // paint event loop of this widget.
-        //            render();
+                    render();
         update();
         emit extentsChanged(mCanvasProperties->currentExtent);
         break;
@@ -1772,7 +1773,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         clear();
         // For Qt4, deprecate direct calling of render().  Let render() be called by the 
         // paint event loop of this widget.
-        //      render();
+              render();
         update();
         emit extentsChanged(mCanvasProperties->currentExtent);
 
@@ -1832,7 +1833,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
           clear();
           // For Qt4, deprecate direct calling of render().  Let render() be called by the 
           // paint event loop of this widget.
-          //      render();
+                render();
           update();
           emit extentsChanged(mCanvasProperties->currentExtent);
         }
@@ -2636,7 +2637,7 @@ void QgsMapCanvas::zoomByScale(int x, int y, double scaleFactor)
   clear();
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of this widget.
-  //  render();
+   render();
   update();
   emit extentsChanged(mCanvasProperties->currentExtent);
 }
@@ -2734,7 +2735,7 @@ void QgsMapCanvas::layerStateChange()
     clear();
     // For Qt4, deprecate direct calling of render().  Let render() be called by the 
     // paint event loop of this widget.
-    //    render();
+        render();
     update();
   }
 } // layerStateChange
@@ -3134,7 +3135,7 @@ void QgsMapCanvas::panActionEnd(QPoint releasePoint)
 
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the overview canvas widget.
-  //  render();
+    render();
   update();
 
   emit extentsChanged(mCanvasProperties->currentExtent);
