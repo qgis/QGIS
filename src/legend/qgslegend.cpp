@@ -37,6 +37,7 @@
 #include <iostream>
 #include <QTreeWidgetItem>
 #include <Q3PopupMenu>
+#include <QMenu>
 #include <QFont>
 #include <QHeaderView>
 
@@ -365,6 +366,59 @@ void QgsLegend::mouseDoubleClickEvent(QMouseEvent* e)
 
 void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& position)
 {
+  QMenu theMenu;
+
+#if defined(Q_OS_MACX) || defined(WIN32)
+  QString iconsPath(QCoreApplication::applicationDirPath()+QString("/share/qgis/images/icons/"));
+#else
+  QString iconsPath(PKGDATAPATH);
+  iconsPath+="/images/icons/";
+#endif
+
+  if(mMapCanvas->isDrawing())
+    {
+      return;
+    }
+
+  QgsLegendItem* li = dynamic_cast<QgsLegendItem*>(item);
+  if(li)
+    {
+      if(li->type() == QgsLegendItem::LEGEND_LAYER_FILE)
+	{
+	  (static_cast<QgsLegendLayerFile*>(li))->layer()->contextMenu()->exec(position);
+	  return;
+	}
+      else if(li->type() == QgsLegendItem::LEGEND_LAYER)
+	{
+	  theMenu.addAction(tr("&Properties"), this, SLOT(legendLayerShowProperties()));
+	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("inoverview.png"))), tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
+	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("remove_from_overview.png"))), tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
+	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("remove.png"))), tr("&Remove"), this, SLOT(legendLayerRemove()));
+	}
+      else if(li->type() == QgsLegendItem::LEGEND_GROUP)
+	{
+	  theMenu.addAction(QPixmap(iconsPath+QString("remove.png")), tr("&Remove"), this, SLOT(legendGroupRemove()));
+	}
+
+      if(li->type() == QgsLegendItem::LEGEND_LAYER || li->type() == QgsLegendItem::LEGEND_GROUP)
+	{
+	  theMenu.addAction(tr("Re&name"), this, SLOT(openEditor()));
+	}
+	
+      
+    }
+
+  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
+  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
+  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
+  
+  theMenu.exec(position);
+}
+
+
+#if 0
+void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& position)
+{
 #ifdef QGISDEBUG
   qWarning("in QgsLegend::handleRightClickEvent");
 #endif
@@ -430,6 +484,7 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
 	}
     }
 }
+#endif
 
 int QgsLegend::getItemPos(QTreeWidgetItem* item)
 {
@@ -805,11 +860,17 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	    {
 		group = new QgsLegendGroup(legendlayerelem.attribute("name")); 
 		insertTopLevelItem(0, group);
+
 		open = legendlayerelem.attribute("open");
 		if(open == "true")
-		{
-		    expandItem(group);
-		}
+		  {
+		    setItemExpanded(group, true); //expand or collapse the item
+		  }
+		else
+		  {
+		    setItemExpanded(group, false);
+		  }
+
 		if(prevchild)
 		  {
 		    moveItem(group, prevchild);
@@ -844,20 +905,30 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		}
 	    }
 	    if(open == "true")
-	    {
-		expandItem(theItem);
-	    }
+	      {
+		setItemExpanded(theItem, true);
+	      }
+	    else
+	      {
+		setItemExpanded(theItem, false);
+	      }
 	    theItem->setText(0, legendlayerelem.attribute("name"));
 
 	    //file group
 	    secondLevelItem = theItem->firstChild();
 	    QDomNode filegroupnode = child.firstChild();
 	    QDomElement filegroupelem = filegroupnode.toElement();
+
 	    open = filegroupelem.attribute("open");
 	    if(open == "true")
-	    {
-		expandItem(secondLevelItem);
-	    }
+	      {
+		setItemExpanded(secondLevelItem, true);
+	      }
+	    else
+	      {
+		setItemExpanded(secondLevelItem, false);
+	      }
+
 	    QDomNode layerfilenode = filegroupnode.firstChild();
 	    QDomElement layerfileelem = layerfilenode.toElement();
      
@@ -923,6 +994,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 			mStateOfCheckBoxes.insert(std::make_pair(newfile, Qt::Unchecked));
 		      }
 		    newlayer->setLegendLayerFile(newfile);
+		    newlayer->setLegendSymbologyGroupParent(dynamic_cast<QgsLegendSymbologyGroup*>(secondLevelItem->nextSibling()));
 		    newlayer->initContextMenu(mApp);
 
 		    //move newfile as the last child of the legendlayerfilegroup
@@ -939,20 +1011,30 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	    secondLevelItem = secondLevelItem->nextSibling();
 	    QDomNode symbologygroupnode = filegroupnode.nextSibling();
 	    QDomElement symbologygroupelem = symbologygroupnode.toElement();
+
 	    open = symbologygroupelem.attribute("open");
 	    if(open == "true")
-	    {
-		expandItem(secondLevelItem);
-	    }
+	      {
+		setItemExpanded(secondLevelItem, true);//expand or collapse the item
+	      }
+	    else
+	      {
+		setItemExpanded(secondLevelItem, false);
+	      }
 
 	    //property group
 	    secondLevelItem = secondLevelItem->nextSibling();
 	    QDomNode propertygroupnode = symbologygroupnode.nextSibling();
 	    QDomElement propertygroupelem = propertygroupnode.toElement();
 	    open = propertygroupelem.attribute("open");
-	    {
-		expandItem(secondLevelItem);
-	    }
+	    if(open == "true")
+	      {
+	      setItemExpanded(secondLevelItem, true);
+	      }
+	    else
+	      {
+		setItemExpanded(secondLevelItem, false);
+	      }
 
 	    if(child.nextSibling().isNull() && !child.parentNode().isNull()) //go one hierarchy step up
 	      {

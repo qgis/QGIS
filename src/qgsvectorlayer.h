@@ -187,8 +187,6 @@ public:
   QGis::VectorType vectorType() const;
   /**Returns a pointer to the properties dialog*/
   QgsDlgVectorLayerProperties *propertiesDialog();
-  /** Return the context menu for the layer */
-  Q3PopupMenu *contextMenu();
   /**Returns the bounding box of the selected features. If there is no selection, QgsRect(0,0,0,0) is returned*/
   virtual QgsRect bBoxOfSelected();
   //! Return the provider type for this layer
@@ -570,8 +568,8 @@ private:                       // Private methods
   /**Flag indicating whether the layer has been modified since the last commit*/
   bool mModified;
   
-  /** Position in popup menu that the "Editing" toggle item is placed. */
-  int mToggleEditingPopupItem;
+  /**Toggle editing action in the context menu*/
+  QAction* mToggleEditingAction;
 
 };
 

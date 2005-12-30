@@ -3749,16 +3749,10 @@ void QgsRasterLayer::setSubLayerVisibility(QString const &  name, bool vis)
 }
 
 
-/** Accessor for the superclass popmenu var*/
-Q3PopupMenu *QgsRasterLayer::contextMenu()
-{
-  return popMenu;
-}
-
-
 
 void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
 {
+#if 0 //In qt4, inserting a slider in QMenu seems difficult
   popMenu->setCheckable ( true );
 
   myPopupLabel->setText( tr("<center><b>Raster Layer</b></center>") );
@@ -3784,7 +3778,10 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
   popMenu->insertItem(mTransparencySlider);
 #endif
 
-  //popMenu->insertItem(tr("&Convert to..."), this, SLOT(convertTo()));
+#endif //0
+
+  myPopupLabel->setText( tr("Raster Layer") );
+  popMenu->addAction(tr("&Convert to..."), this, SLOT(convertTo()));
 } // QgsRasterLayer::initContextMenu
 
 /**

@@ -44,7 +44,6 @@ public:
     bool isLeafNode();
     QgsLegendItem::DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
     QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
-    void handleRightClickEvent(const QPoint& position);
     /**Returns the map layer associated with the first QgsLegendLayerFile or 0 if
      there is no QgsLegendLayerFile*/
     QgsMapLayer* firstMapLayer();

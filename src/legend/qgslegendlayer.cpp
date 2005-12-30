@@ -82,7 +82,7 @@ bool QgsLegendLayer::isLeafNode()
 
 QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(LEGEND_ITEM_TYPE type)
 {
-    if ( type == LEGEND_LAYER)
+    if ( type == LEGEND_LAYER || type == LEGEND_GROUP)
     {
 	return REORDER;
     }
@@ -100,25 +100,12 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(const QgsLegendItem* li) const
   if(li && li != this)
     {
       LEGEND_ITEM_TYPE type = li->type();
-      if ( type == LEGEND_LAYER)//todo: only if both layers toplevel or both symbology compatible
+      if ( type == LEGEND_LAYER || type == LEGEND_GROUP)
 	{
 	  return REORDER;
 	}
     }
   return NO_ACTION;
-}
-
-void QgsLegendLayer::handleRightClickEvent(const QPoint& position)
-{
-    /*QgsMapLayer* ml = firstMapLayer();
-    if(ml)
-    {
-	QPopupMenu *mPopupMenu = ml->contextMenu();
-	if (mPopupMenu)
-	{
-	    mPopupMenu->exec(position);
-	}
-	}*/
 }
 
 QgsMapLayer* QgsLegendLayer::firstMapLayer()

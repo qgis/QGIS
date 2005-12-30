@@ -40,6 +40,7 @@
 #include <netinet/in.h>
 #endif
 
+#include <QAction>
 #include <qapplication.h>
 #include <qcursor.h>
 #include <q3listview.h>
@@ -125,7 +126,8 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
       mMaximumScale(0),
       mScaleDependentRender(false),
       mEditable(false),
-      mModified(false)
+      mModified(false),
+      mToggleEditingAction(0)
 {
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! providerKey.isEmpty() )
@@ -1442,37 +1444,26 @@ void QgsVectorLayer::initContextMenu_(QgisApp * app)
 {
   myPopupLabel->setText( tr("<center><b>Vector Layer</b></center>") );
 
-  popMenu->insertItem(tr("&Open attribute table"), app, SLOT(attributeTable()));
+  popMenu->addAction(tr("&Open attribute table"), app, SLOT(attributeTable()));
 
-  popMenu->insertSeparator(); // XXX should this move to QgsMapLayer::initContextMenu()?
+  popMenu->addSeparator();
 
   int cap=dataProvider->capabilities();
   if((cap&QgsVectorDataProvider::AddFeatures)
      ||(cap&QgsVectorDataProvider::DeleteFeatures))
   {
-    popMenu->setCheckable(TRUE);
-  
-    mToggleEditingPopupItem = popMenu->insertItem(tr("Allow Editing"),this,SLOT(toggleEditing()));
-    
+    mToggleEditingAction = popMenu->addAction(tr("Allow Editing"),this,SLOT(toggleEditing()));
+    mToggleEditingAction->setCheckable(true);
   }
 
-  // XXX Can we ask the provider if it wants to add things to the context menu?
   if(cap&QgsVectorDataProvider::SaveAsShapefile)
   {
     // add the save as shapefile menu item
-    popMenu->insertSeparator();
-    popMenu->insertItem(tr("Save as shapefile..."), this, SLOT(saveAsShapefile()));
+    popMenu->addSeparator();
+    popMenu->addAction(tr("Save as shapefile..."), this, SLOT(saveAsShapefile()));
   }
 
 } // QgsVectorLayer::initContextMenu_(QgisApp * app)
-
-
-
-// XXX why is this here?  This should be generalized up to QgsMapLayer
-Q3PopupMenu *QgsVectorLayer::contextMenu()
-{
-  return popMenu;
-}
 
 QgsRect QgsVectorLayer::bBoxOfSelected()
 {
@@ -2005,14 +1996,17 @@ bool QgsVectorLayer::labelOn ( void )
 
 void QgsVectorLayer::toggleEditing()
 {
-  if ( popMenu->isItemChecked(mToggleEditingPopupItem) )
-  {
-    stopEditing();
-  }
-  else
-  {
-    startEditing();
-  }  
+  if(mToggleEditingAction)
+    {
+      if (mToggleEditingAction->isChecked() ) //checking of the QAction is done before calling this slot
+	{
+	  startEditing();
+	}
+      else
+	{
+	  stopEditing();
+	}
+    }
 }
 
 
@@ -2030,7 +2024,10 @@ void QgsVectorLayer::startEditing()
       if(isValid())
       {
         updateItemPixmap();
-        popMenu->setItemChecked(mToggleEditingPopupItem, TRUE);
+	if(mToggleEditingAction)
+	  {
+	    mToggleEditingAction->setChecked(true);
+	  }
       }
     }
   }
@@ -2090,7 +2087,10 @@ void QgsVectorLayer::stopEditing()
     if(isValid())
     {
       updateItemPixmap();
-      popMenu->setItemChecked(mToggleEditingPopupItem, FALSE);
+      if(mToggleEditingAction)
+	{
+	  mToggleEditingAction->setChecked(false);
+	}
     }
   }
 }

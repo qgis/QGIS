@@ -28,7 +28,6 @@
 #include <qlabel.h>
 #include <q3listview.h>
 #include <qpainter.h>
-#include <q3popupmenu.h>
 #include <qevent.h>
 
 #include "qgisapp.h"
@@ -40,6 +39,7 @@
 #include "qgslegendlayerfile.h"
 #include "qgslegendsymbologygroup.h"
 //Added by qt3to4:
+#include <QAction>
 #include <QPixmap>
 #include <QKeyEvent>
 #include <Q3Frame>
@@ -54,7 +54,7 @@ QgsMapLayer::QgsMapLayer(int type,
                      // can be used) until we learn otherwise
         dataSource(source),
         internalName(lyrname),
-        mShowInOverviewItemId(0),
+        mShowInOverviewAction(0),
         mShowInOverview(false),
         mCoordinateTransform(0),
         mLegendSymbologyGroupParent(0),
@@ -474,11 +474,10 @@ void QgsMapLayer::invalidTransformInput()
 
 void QgsMapLayer::updateOverviewPopupItem()
 {
-    if (mShowInOverviewItemId != 0)
+  if (mShowInOverviewAction)
     {
-        popMenu->setItemChecked(mShowInOverviewItemId,mShowInOverview);
+      mShowInOverviewAction->setChecked(mShowInOverview);
     }
-
 }
 
 const int &QgsMapLayer::featureType()
@@ -490,11 +489,6 @@ const int &QgsMapLayer::featureType()
 void QgsMapLayer::setFeatureType(const int &_newVal)
 {
     geometryType = _newVal;
-}
-
-Q3PopupMenu *QgsMapLayer::contextMenu()
-{
-    return 0;
 }
 
 std::vector<QgsField> const & QgsMapLayer::fields() const
@@ -514,39 +508,24 @@ void QgsMapLayer::connectNotify( const char * signal )
 
 void QgsMapLayer::initContextMenu(QgisApp * app)
 {
-    popMenu = new Q3PopupMenu();
+    popMenu = new QMenu();
 
-#if QT_VERSION < 0x040000
-    myPopupLabel = new QLabel( popMenu );
-
-    myPopupLabel->setFrameStyle( Q3Frame::Panel | Q3Frame::Raised );
-
-    // now set by children
-    // myPopupLabel->setText( tr("<center><b>Vector Layer</b></center>") );
-
-    popMenu->insertItem(myPopupLabel,0);
-#else
     // Initialise and insert Qt4 QAction
     myPopupLabel = new QAction( popMenu );
-
     popMenu->addAction(myPopupLabel);
-#endif
 
-    popMenu->insertItem(tr("&Zoom to extent of selected layer"), app, SLOT(zoomToLayerExtent()));
-    popMenu->insertSeparator();
-
-    //disabled by Tim during Qt4 dialogs port FIXME !!!
-    //app->actionInOverview->addTo( popMenu );
-    mShowInOverviewItemId = popMenu->idAt(3);
-
-    popMenu->insertSeparator();
-    popMenu->insertItem(tr("&Remove"), app, SLOT(removeLayer()));
+    popMenu->addAction(tr("&Zoom to extent of selected layer"), app, SLOT(zoomToLayerExtent()));
+    mShowInOverviewAction = popMenu->addAction(tr("Toggle in Overview"), app, SLOT(inOverview(bool)));
+    mShowInOverviewAction->setCheckable(true);
+    popMenu->addSeparator();
+    popMenu->addSeparator();
+    popMenu->addAction(tr("&Remove"), app, SLOT(removeLayer()));
 
     // now give the sub-classes a chance to tailor the context menu
     initContextMenu_( app );
     //properties goes on bottom of menu for consistency with normal ui standards
     //e.g. kde stuff
-    popMenu->insertItem(tr("&Properties"), this, SLOT(showLayerProperties()));
+    popMenu->addAction(tr("&Properties"), this, SLOT(showLayerProperties()));
 } // QgsMapLayer::initContextMenu(QgisApp * app)
 
 

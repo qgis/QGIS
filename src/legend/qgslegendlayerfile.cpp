@@ -41,8 +41,8 @@ QgsLegendLayerFile::QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString 
       QPainter p(&originalPixmap);
       p.drawPixmap(0,0,inOverviewPixmap);
   }
-  QIcon originalIcon(originalPixmap);
   setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  QIcon originalIcon(originalPixmap);
   setCheckState (0, Qt::Checked );
   setText(0, theString);
   setIcon(0, originalIcon);
@@ -65,8 +65,8 @@ QgsLegendLayerFile::QgsLegendLayerFile(QString theString, QgsMapLayer* theLayer)
       QPainter p(&originalPixmap);
       p.drawPixmap(0,0,inOverviewPixmap);
   }
-  QIcon originalIcon(originalPixmap);
   setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  QIcon originalIcon(originalPixmap);
   setCheckState (0, Qt::Checked );
   setText(0, theString);
   setIcon(0, originalIcon);
