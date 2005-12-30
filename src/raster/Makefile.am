@@ -24,7 +24,7 @@ BUILT_SOURCES = $(libqgsraster_la_MOC) $(libqgsraster_la_SOURCES)
 libqgsraster_la_LDFLAGS = -no-undefined
 libqgsraster_la_CPPFLAGS = -I$(OMSRCDIR)
 libqgsraster_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD)
-libqgsraster_la_CXXFLAGS = $(PREFIX) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../widgets/projectionselector/ -I../ -I../legend/
+libqgsraster_la_CXXFLAGS = $(PREFIX) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../widgets/projectionselector/ -I../ -I../legend/ -I../ui/
 
 EXTRA_DIST = \
 	qgsrasterbandstats.h \

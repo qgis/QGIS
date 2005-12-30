@@ -250,8 +250,7 @@ qgis_LDFLAGS = -framework ApplicationServices
 else
 qgis_LDFLAGS = -rdynamic
 endif
-qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS)  $(HAVE_PYTHON) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) -I../widgets/projectionselector/ -I./legend/ -I./raster/ -I./ui/
-
+qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS)  $(HAVE_PYTHON) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) -I./ui/ -I../widgets/projectionselector/ -I./legend/ -I./raster/ 
 
 libqgisHEADERS =							\
 		qgisapp.h							\
@@ -429,7 +428,7 @@ BUILT_SOURCES += $(libqgis_la_MOC) $(libqgis_la_UIHEADERS)
 libqgis_la_LIBADD = raster/libqgsraster.la legend/libqgis_legend.la $(QT_LDADD) $(GEOS_LDADD) $(GDAL_LDADD) $(PYTHON_LIB) -lsqlite3
 libqgis_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
 
-libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) $(HAVE_PYTHON) -I../widgets/projectionselector/ -I./legend/ -I./raster/ -I./ui/
+libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) $(HAVE_PYTHON) -I./ui/ -I../widgets/projectionselector/ -I./legend/ -I./raster/ 
 
 ## for installing headers in $(includedir)/qgis
 pkginclude_HEADERS = $(qgisHEADERS) \
