@@ -13,4 +13,4 @@ fi
 export QTDIR=/usr/local/Trolltech/Qt-4.1.0/
 export PATH=$QTDIR/bin:$PATH
 export LD_LIBRARY_PATH=$QTDIR/lib
-./autogen.sh --enable-debug --prefix=${1} --with-qtdir=$QTDIR --with-grass=/usr/lib/grass && make && sudo make install
+./autogen.sh --enable-debug --prefix=${1} --with-qtdir=$QTDIR --with-grass=/usr/lib/grass && make && make install
