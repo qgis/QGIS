@@ -394,6 +394,10 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
 	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("inoverview.png"))), tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
 	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("remove_from_overview.png"))), tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
 	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("remove.png"))), tr("&Remove"), this, SLOT(legendLayerRemove()));
+	  if(li->parent())
+	    {
+	      theMenu.addAction(tr("&Make to toplevel item"), this, SLOT(makeToTopLevelItem()));
+	    }
 	}
       else if(li->type() == QgsLegendItem::LEGEND_GROUP)
 	{
@@ -414,77 +418,6 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
   
   theMenu.exec(position);
 }
-
-
-#if 0
-void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& position)
-{
-#ifdef QGISDEBUG
-  qWarning("in QgsLegend::handleRightClickEvent");
-#endif
-    if(!mMapCanvas->isDrawing())
-    {
-#if defined(Q_OS_MACX) || defined(WIN32)
-    QString iconsPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
-#else
-    QString iconsPath(PKGDATAPATH);
-#endif
-    iconsPath += QString("/images/icons/");
-	if(!item)//show list view popup menu
-	{
-	    Q3PopupMenu pm;
-	    pm.insertItem(QIcon(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
-	    pm.insertItem(QIcon(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
-	    pm.insertItem(QIcon(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
-	    pm.exec(position);
-	    return;
-	}
-	QgsLegendItem* li = dynamic_cast<QgsLegendItem*>(item);
-	if(li)
-	{
-	    if(li->type() == QgsLegendItem::LEGEND_LAYER_FILE)
-	    {
-		QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(li);
-		if(llf)
-		{
-		   QgsMapLayer* ml = llf->layer();
-		   if(ml)
-		   {
-		       Q3PopupMenu *mPopupMenu = ml->contextMenu();
-		       if (mPopupMenu)
-		       {
-			   mPopupMenu->exec(position);
-		       }
-		   }
-		}
-	    }
-	    else if(li->type() == QgsLegendItem::LEGEND_LAYER)
-	    {
-		Q3PopupMenu pm;
-		pm.insertItem(QIcon(QPixmap(iconsPath+QString("remove.png"))), tr("&Remove"), this, SLOT(legendLayerRemove()));
-		pm.insertItem(tr("Re&name"), this, SLOT(openEditor()));
-		pm.insertItem(tr("&Properties"), this, SLOT(legendLayerShowProperties()));
-		pm.insertItem(QIcon(QPixmap(iconsPath+QString("inoverview.png"))), tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
-		pm.insertItem(QIcon(QPixmap(iconsPath+QString("remove_from_overview.png"))), tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
-		pm.insertItem(QIcon(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
-		pm.insertItem(QIcon(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
-		pm.insertItem(QIcon(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
-		pm.exec(position);
-	    }
-	    else if(li->type() == QgsLegendItem::LEGEND_GROUP)
-	    {
-		Q3PopupMenu pm;
-		pm.insertItem(tr("&Remove"), this, SLOT(legendGroupRemove()));
-		pm.insertItem(tr("Re&name"), this, SLOT(openEditor()));
-		pm.insertItem(QIcon(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
-		pm.insertItem(QIcon(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
-		pm.insertItem(QIcon(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
-		pm.exec(position);
-	    }
-	}
-    }
-}
-#endif
 
 int QgsLegend::getItemPos(QTreeWidgetItem* item)
 {
@@ -1346,5 +1279,15 @@ void QgsLegend::openEditor()
   if(theItem)
     {
       openPersistentEditor(theItem, 0);
+    }
+}
+
+void QgsLegend::makeToTopLevelItem()
+{
+  QTreeWidgetItem* theItem = currentItem();
+  if(theItem)
+    {
+      removeItem(theItem);
+      addTopLevelItem(theItem);
     }
 }
