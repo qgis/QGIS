@@ -37,7 +37,7 @@ libqgis_legend_la_SOURCES =	qgslegendgroup.cpp \
 libqgis_legend_la_LIBFLAGS = $(QT_LDADD)
 
 libqgis_legend_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
-libqgis_legend_la_CXXFLAGS = $(PKGDATAPATH) -I.. \
+libqgis_legend_la_CXXFLAGS = $(PKGDATAPATH) -I.. -I../ui/ \
 				$(CXXFLAGS) $(EXTRA_CXXFLAGS) \
 				$(GDAL_CFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GEOS_CFLAGS)
 
