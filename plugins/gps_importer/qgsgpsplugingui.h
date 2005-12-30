@@ -19,7 +19,8 @@
 #define QGSGPSPLUGINGUI_H
 
 #include "../../src/qgsvectorlayer.h"
-#include "qgsgpspluginguibase.h"
+#include "ui_qgsgpspluginguibase.h"
+#include <QDialog>
 #include "qgsbabelformat.h"
 #include "qgsgpsdevice.h"
 
@@ -31,7 +32,7 @@
 /**
 @author Tim Sutton
 */
-class QgsGPSPluginGui : public QgsGPSPluginGuiBase
+class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
 {
   Q_OBJECT
 public:

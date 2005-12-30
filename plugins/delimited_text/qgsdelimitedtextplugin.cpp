@@ -53,7 +53,7 @@ Functions:
 #define QGISEXTERN extern "C"
 #endif
 
-static const char *pluginVersion = "Version 0.1";
+static const char *pluginVersion = "Version 0.2";
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.

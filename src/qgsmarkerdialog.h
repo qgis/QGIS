@@ -19,16 +19,12 @@
 
 #ifndef QGSMARKERDIALOG_H
 #define QGSMARKERDIALOG_H
-#ifdef WIN32
-#include "qgsmarkerdialogbase.h"
-#else
-#include "qgsmarkerdialogbase.uic.h"
-#endif
-
+#include "ui_qgsmarkerdialogbase.h"
+#include <QDialog>
 #include <qdir.h>
 
 /**A class for choosing marker images by clicking icons*/
-class QgsMarkerDialog: public QgsMarkerDialogBase
+class QgsMarkerDialog: public QDialog, private Ui::QgsMarkerDialogBase
 {
     Q_OBJECT
  public:

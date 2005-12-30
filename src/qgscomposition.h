@@ -15,36 +15,25 @@
  ***************************************************************************/
 #ifndef QGSCOMPOSITION_H
 #define QGSCOMPOSITION_H
+
+#include "ui_qgscompositionbase.h"
+
 #include <list>
 #include <vector>
 
-#include <qprinter.h>
-#include <qpoint.h>
-
-#ifdef WIN32
-#include "qgscompositionbase.h"
-#else
-#include "qgscompositionbase.uic.h"
-#endif
-
-#include "qgsrect.h"
-//Added by qt3to4:
-#include <QKeyEvent>
-#include <QMouseEvent>
-
-class QWidget;
-class Q3Canvas;
-class Q3CanvasItem;
-class Q3CanvasRectangle;
-class QMouseEvent;
-class QDomNode;
-class QDomDocument;
-
-class QgsComposerView;
 class QgsComposer;
 class QgsComposerItem;
 class QgsComposerMap;
+class QgsComposerView;
 class QgsMapCanvas;
+
+class Q3Canvas;
+class Q3CanvasItem;
+class Q3CanvasRectangle;
+class QDomDocument;
+class QDomNode;
+class QKeyEvent;
+class QMouseEvent;
 
 class QgsCompositionPaper
 {
@@ -62,7 +51,7 @@ public:
  * \brief This class can store, write as XML and read from XML the description
  *        map composition for printing.
  */
-class QgsComposition: public QgsCompositionBase
+class QgsComposition: public QWidget, private Ui::QgsCompositionBase
 {
     Q_OBJECT
 public:
@@ -223,15 +212,15 @@ public:
     /** \brief sets state from DOM document */
     bool readXML( QDomNode & node );
 
+    /**  \brief Called map objects if changed, so that the composition can emit signal */
+    void emitMapChanged ( int id );
+
 public slots:
     /**  \brief Called by GUI if paper size was changed */
     void paperSizeChanged ( void );
     
     /**  \brief Called by GUI if resolution was changed */
     void resolutionChanged ( void );
-
-    /**  \brief Called map objects if changed, so that the composition can emit signal */
-    void emitMapChanged ( int id );
 
 signals:
     /**  \brief Emitted when map was changed */    

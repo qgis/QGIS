@@ -19,18 +19,14 @@
 
 #ifndef QGSMAPSERVEREXPORT_H
 #define QGSMAPSERVEREXPORT_H
-#ifdef WIN32
-#include "qgsmapserverexportbase.h"
-#else
-#include "qgsmapserverexportbase.uic.h"
-#endif
-
+#include "ui_qgsmapserverexportbase.h"
+#include <QDialog>
 class QgsMapCanvas;
 
 /*! \class QgsMapServerExport
 * \brief Class to handle reading and writing a Qgis project file
 */
-class QgsMapserverExport:public QgsMapserverExportBase
+class QgsMapserverExport:public QDialog, private Ui::QgsMapserverExportBase
 {
 Q_OBJECT
 public:
@@ -55,9 +51,11 @@ public:
 	SAVEAS,
 	OPEN
 	};
-  public slots:
-	void showHelp();
-  private:
+public slots:
+  void on_chkExpLayersOnly_clicked();
+  void on_btnChooseFile_clicked();
+  void on_buttonHelp_clicked();
+private:
   void writeMapFile(void);
   QString fileName;
   QString fullPath;

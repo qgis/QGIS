@@ -20,23 +20,18 @@ back to QgsVectorLayer.
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+
 #ifndef QGSATTRIBUTEACTIONDIALOG_H
 #define QGSATTRIBUTEACTIONDIALOG_H
 
-#include <qobject.h>
-#include <qgsfield.h>
+#include "ui_qgsattributeactiondialogbase.h"
+#include "qgsfield.h"
 #include <vector>
 
-#ifdef WIN32
-#include "qgsattributeactiondialogbase.h"
-#else
-#include "qgsattributeactiondialogbase.uic.h"
-#endif
-
-class QWidget;
 class QgsAttributeAction;
 
-class QgsAttributeActionDialog : public QgsAttributeActionDialogBase
+
+class QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
 {
   Q_OBJECT;
   

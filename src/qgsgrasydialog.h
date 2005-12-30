@@ -18,20 +18,15 @@
 
 #ifndef QGSGRASYDIALOG_H
 #define QGSGRASYDIALOG_H
-#ifdef WIN32
-#include "qgsgrasydialogbase.h"
-#else
-#include "qgsgrasydialogbase.uic.h"
-#endif
-#include "qgsrangerenderitem.h"
+
+#include "ui_qgsgrasydialogbase.h"
 #include "qgssisydialog.h"
 #include <map>
 
-class QgsGraSyExtensionWidget;
 class QgsVectorLayer;
-class Q3ScrollView;
 
-class QgsGraSyDialog: public QgsGraSyDialogBase
+
+class QgsGraSyDialog: public QDialog, private Ui::QgsGraSyDialogBase
 {
     Q_OBJECT
  public:

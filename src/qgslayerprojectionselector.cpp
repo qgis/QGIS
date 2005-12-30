@@ -17,26 +17,25 @@
  ***************************************************************************/
 /* $Id$ */
 #include "qgslayerprojectionselector.h"
-#include "qgsprojectionselector.h"
-#include <qapplication.h>
+#include <QApplication>
+
 /**
  * \class QgsLayerProjectionSelector - Set user layerprojectionselector and preferences
  * Constructor
  */
 QgsLayerProjectionSelector::QgsLayerProjectionSelector(QWidget *parent, 
-    const char * name, bool modal) : QgsLayerProjectionSelectorBase(parent, name, modal)
+    const char * name, bool modal) 
+  : QDialog(parent, name, modal)
 {
+  setupUi(this);
+  connect(pbnOK, SIGNAL(clicked()), this, SLOT( accept()));
 
- qApp->restoreOverrideCursor();
+  QApplication::restoreOverrideCursor();
 }
+
 //! Destructor
 QgsLayerProjectionSelector::~QgsLayerProjectionSelector()
 {}
-
-void QgsLayerProjectionSelector::pbnOK_clicked()
-{
- accept();
-}
 
 void QgsLayerProjectionSelector::setSelectedSRSName(QString theName)
 {

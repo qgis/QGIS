@@ -17,8 +17,13 @@
 
 #include "qgsmessageviewer.h"
 
-QgsMessageViewer::QgsMessageViewer(QWidget *parent, const char *name): QgsMessageViewerBase(parent, name){}
-QgsMessageViewer::~QgsMessageViewer(){}
+QgsMessageViewer::QgsMessageViewer(QWidget *parent, const char *name): QDialog(parent, name)
+{
+  setupUi(this);
+}
+QgsMessageViewer::~QgsMessageViewer()
+{
+}
 void QgsMessageViewer::setMessage(QString message){
   txtMessage->setText(message);
 }

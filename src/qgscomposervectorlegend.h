@@ -41,51 +41,28 @@
  *                   
  */ 
  
-#include <qwidget.h>
-#include <q3canvas.h>
-#include <qobject.h>
-//Added by qt3to4:
-#include <QPixmap>
-#include <Q3PopupMenu>
-#include <map>
-#include "qgsrect.h"
-
-#include "qgscomposer.h"
-#include "qgscomposition.h"
+#include "ui_qgscomposervectorlegendbase.h"
 #include "qgscomposeritem.h"
+#include <Q3CanvasPolygonalItem>
+#include <QPixmap>
+#include <map>
 
-#ifdef WIN32
-#include "qgscomposervectorlegendbase.h"
-#else
-#include "qgscomposervectorlegendbase.uic.h"
-#endif
-
-class Q3CanvasItem;
-class Q3CanvasRectangle;
-class QPainter;
-class QWidget;
+class QgsComposition;
+class QgsMapCanvas;
 class QDomNode;
 class QDomDocument;
-class QPixmap;
-class QImage;
 class QFont;
+class QPainter;
 class QPen;
-class QRect;
 class Q3PopupMenu;
-
-
-class QgsMapCanvas;
-class QgsRect;
-class QgsMapToPixel;
-class QgsComposition;
-class QgsComposerMap;
-class QgsComposerItem;
+class QRect;
 
 /** \class QgsComposerVectorLegend 
  *  \brief Object representing map window. 
  */
 // NOTE: QgsComposerVectorLegendBase must be first, otherwise does not compile
-class QgsComposerVectorLegend : public QgsComposerVectorLegendBase, 
+class QgsComposerVectorLegend : public QWidget,
+                                private Ui::QgsComposerVectorLegendBase, 
                                 public Q3CanvasRectangle, 
                                 public QgsComposerItem
 {
@@ -156,16 +133,16 @@ public:
 
 public slots:
     // Open font dialog
-    void changeFont ( void );
+    void on_mFontButton_clicked ( void );
 
     // Title changed
-    void titleChanged ( void );
+    void on_mTitleLineEdit_returnPressed ( void );
     
     // Called by GUI if preview style was changed
-    void previewModeChanged ( int i );
+    void on_mPreviewModeComboBox_activated ( int i );
 
     // Called by GUI when map selection changed
-    void mapSelectionChanged ( int i );
+    void on_mMapComboBox_activated ( int i );
 
     // Called when map was changed
     void mapChanged ( int id );
@@ -180,7 +157,7 @@ public slots:
     void groupLayers( void );
 
     // Frame settings changed
-    void frameChanged ( void );
+    void on_mFrameCheckBox_stateChanged ( int i );
 
 private:
     // Pointer to composition

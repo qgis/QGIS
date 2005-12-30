@@ -17,50 +17,25 @@
 #ifndef QGSCOMPOSERPICTURE_H
 #define QGSCOMPOSERPICTURE_H
 
-#include <qwidget.h>
-#include <q3canvas.h>
-#include <qobject.h>
-#include <q3picture.h>
-#include <qrect.h>
-#include <q3pointarray.h>
-
-#include "qgsrect.h"
-#include "qgscomposer.h"
-#include "qgscomposition.h"
+#include "ui_qgscomposerpicturebase.h"
 #include "qgscomposeritem.h"
-//Added by qt3to4:
-#include <QPixmap>
+#include <Q3CanvasPolygonalItem>
+#include <QPen>
+#include <Q3Picture>
+#include <Q3PointArray>
+#include <QRect>
 
-#ifdef WIN32
-#include "qgscomposerpicturebase.h"
-#else
-#include "qgscomposerpicturebase.uic.h"
-#endif
-
-class Q3CanvasItem;
-class Q3CanvasRectangle;
-class QPainter;
-class QWidget;
+class QgsComposition;
 class QDomNode;
 class QDomDocument;
-class QPixmap;
-class QImage;
-class QPen;
-class QRect;
-
-class QgsMapCanvas;
-class QgsRect;
-class QgsMapToPixel;
-class QgsComposition;
-class QgsComposerMap;
-class QgsComposerItem;
+class QPainter;
 
 /** \class QgsComposerPicture 
  *  \brief Object representing map window. 
  */
 // NOTE: QgsComposerPictureBase must be first, otherwise does not compile
 //                                public QCanvasRectangle, 
-class QgsComposerPicture : public QgsComposerPictureBase, 
+class QgsComposerPicture : public QWidget, private Ui::QgsComposerPictureBase, 
 				public Q3CanvasPolygonalItem,
                                 public QgsComposerItem
 {
@@ -115,24 +90,24 @@ public:
     // Coordinates do not need to be oriented
     void setBox ( int x1, int y1, int x2, int y2 );
 
-public slots:
-    // Called when picture file is changed in edit line
-    void pictureChanged ( void );
-
-    // Select new picture in dialog box
-    void browsePicture ( void );
-
     // Picture dialog, returns file name or empty string
     static QString pictureDialog ( void );    
 
+public slots:
+    // Called when picture file is changed in edit line
+    void on_mPictureLineEdit_returnPressed ( void );
+
+    // Select new picture in dialog box
+    void on_mPictureBrowseButton_clicked ( void );
+
     // Frame settings changed
-    void frameChanged ( void );
+    void on_mFrameCheckBox_stateChanged ( int );
 
     // Angle changed
-    void angleChanged ( void );
+    void on_mAngleLineEdit_returnPressed ( void );
 
     // Width changed
-    void widthChanged ();
+    void on_mWidthLineEdit_returnPressed ( void );
 
 private:
     // Pointer to composition
@@ -173,6 +148,9 @@ private:
     void recalculate ( void );
 
     Q3PointArray mAreaPoints;
+
+    // Called when picture file is changed
+    void pictureChanged ( void );
 
     // Current bounding box
     QRect mBoundingRect;

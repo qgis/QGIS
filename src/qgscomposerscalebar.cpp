@@ -13,64 +13,26 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <math.h>
-#include <iostream>
-#include <typeinfo>
-#include <map>
-#include <vector>
-
-#include <qwidget.h>
-#include <qrect.h>
-#include <QComboBox>
-#include <qdom.h>
-#include <q3canvas.h>
-#include <qpainter.h>
-#include <qstring.h>
-#include <qpixmap.h>
-#include <qimage.h>
-#include <qlineedit.h>
-#include <q3pointarray.h>
-#include <qfont.h>
-#include <qfontmetrics.h>
-#include <qfontdialog.h>
-#include <qpen.h>
-#include <qrect.h>
-#include <q3listview.h>
-#include <q3popupmenu.h>
-#include <qlabel.h>
-#include <q3pointarray.h>
-#include <qrect.h>
-#include <qspinbox.h>
-
-#include "qgsrect.h"
-#include "qgsmaptopixel.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsdlgvectorlayerproperties.h"
-#include "qgscomposition.h"
-#include "qgscomposermap.h"
 #include "qgscomposerscalebar.h"
+#include "qgscomposermap.h"
+#include "qgsproject.h"
 
-#include "qgssymbol.h"
+#include <QFontDialog>
+#include <QPainter>
 
-#include "qgsrenderer.h"
-#include "qgsrenderitem.h"
-#include "qgsrangerenderitem.h"
-
-#include "qgscontinuouscolrenderer.h"
-#include "qgsgraduatedsymrenderer.h"
-#include "qgssinglesymrenderer.h"
-#include "qgsuniquevalrenderer.h"
-#include "qgssvgcache.h"
+#include <cmath>
+#include <iostream>
 
 QgsComposerScalebar::QgsComposerScalebar ( QgsComposition *composition, int id, 
 	                                            int x, int y )
-    : Q3CanvasPolygonalItem(0),
+    : QWidget(composition),
+    Q3CanvasPolygonalItem(0),
     mComposition(composition),
     mMap(0),
     mBrush(QColor(150,150,150))
 {
+    setupUi(this);
+
     std::cout << "QgsComposerScalebar::QgsComposerScalebar()" << std::endl;
     mId = id;
     mSelected = false;
@@ -352,7 +314,7 @@ void QgsComposerScalebar::drawShape ( QPainter & painter )
     draw ( painter );
 }
 
-void QgsComposerScalebar::changeFont ( void ) 
+void QgsComposerScalebar::on_mFontButton_clicked ( void ) 
 {
     bool result;
     
@@ -366,7 +328,7 @@ void QgsComposerScalebar::changeFont ( void )
     }
 }
 
-void QgsComposerScalebar::unitLabelChanged (  )
+void QgsComposerScalebar::on_mUnitLabelLineEdit_returnPressed (  )
 {
     mUnitLabel = mUnitLabelLineEdit->text();
     recalculate();
@@ -375,7 +337,7 @@ void QgsComposerScalebar::unitLabelChanged (  )
     writeSettings();
 }
 
-void QgsComposerScalebar::mapSelectionChanged ( int i )
+void QgsComposerScalebar::on_mMapComboBox_activated ( int i )
 {
     mMap = mMaps[i];
     recalculate();
@@ -403,6 +365,11 @@ void QgsComposerScalebar::sizeChanged ( )
     Q3CanvasPolygonalItem::canvas()->update();
     writeSettings();
 }
+
+void QgsComposerScalebar::on_mLineWidthSpinBox_returnPressed() { sizeChanged(); }
+void QgsComposerScalebar::on_mMapUnitsPerUnitLineEdit_returnPressed() { sizeChanged(); }
+void QgsComposerScalebar::on_mNumSegmentsLineEdit_returnPressed() { sizeChanged(); }
+void QgsComposerScalebar::on_mSegmentLengthLineEdit_returnPressed() { sizeChanged(); }
 
 void QgsComposerScalebar::moveBy(double x, double y )
 {

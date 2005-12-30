@@ -15,14 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include "qgsludialog.h"
-#include <qlineedit.h>
 
-QgsLUDialog::QgsLUDialog(QWidget * parent, const char *name, bool modal)
-: QgsLUDialogBase(parent, name, modal)
+#include "qgsludialog.h"
+
+
+QgsLUDialog::QgsLUDialog(QWidget *parent, const char *name, bool modal)
+: QDialog(parent, name, modal)
 {
-    QObject::connect((QObject*)mOkButton, SIGNAL(clicked()), this, SLOT(accept()));//why is this cast necessary????
-    QObject::connect((QObject*)mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));//why is this cast necessary????
+    setupUi(this);
+    connect(mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
+    connect(mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 QgsLUDialog::~QgsLUDialog()

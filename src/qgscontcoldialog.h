@@ -16,18 +16,17 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
+
 #ifndef QGSCONTCOLDIALOG_H
 #define QGSCONTCOLDIALOG_H
-#ifdef WIN32
-#include "qgscontcoldialogbase.h"
-#else
-#include "qgscontcoldialogbase.uic.h"
-#endif
+
+#include "ui_qgscontcoldialogbase.h"
 #include <map>
 
 class QgsVectorLayer;
 
-class QgsContColDialog: public QgsContColDialogBase
+
+class QgsContColDialog: public QDialog, private Ui::QgsContColDialogBase
 {
     Q_OBJECT
  public: 

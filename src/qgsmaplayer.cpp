@@ -535,7 +535,8 @@ void QgsMapLayer::initContextMenu(QgisApp * app)
     popMenu->insertItem(tr("&Zoom to extent of selected layer"), app, SLOT(zoomToLayerExtent()));
     popMenu->insertSeparator();
 
-    app->actionInOverview->addTo( popMenu );
+    //disabled by Tim during Qt4 dialogs port FIXME !!!
+    //app->actionInOverview->addTo( popMenu );
     mShowInOverviewItemId = popMenu->idAt(3);
 
     popMenu->insertSeparator();

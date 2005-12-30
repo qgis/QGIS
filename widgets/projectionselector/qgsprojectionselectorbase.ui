@@ -1,193 +1,172 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>QgsProjectionSelectorBase</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>QgsProjectionSelectorBase</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>600</width>
-            <height>478</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Projection Selector</string>
-    </property>
-    <property name="icon">
-        <pixmap>image0</pixmap>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>QgsProjectionSelectorBase</class>
+ <widget class="QWidget" name="QgsProjectionSelectorBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>478</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Projection Selector</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset/>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>10</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="0" >
+    <widget class="Q3ButtonGroup" name="buttonGroup2" >
+     <property name="title" >
+      <string>Projection</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>10</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="0" >
+       <widget class="Q3ListView" name="lstCoordinateSystems" >
+        <property name="showSortIndicator" >
+         <bool>true</bool>
         </property>
-        <widget class="QButtonGroup" row="0" column="0">
-            <property name="name">
-                <cstring>buttonGroup2</cstring>
-            </property>
-            <property name="title">
-                <string>Projection</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QListView" row="0" column="0">
-                    <column>
-                        <property name="text">
-                            <string>Coordinate Systems</string>
-                        </property>
-                        <property name="clickable">
-                            <bool>true</bool>
-                        </property>
-                        <property name="resizable">
-                            <bool>true</bool>
-                        </property>
-                    </column>
-                    <column>
-                        <property name="text">
-                            <string>Spatial Reference Id</string>
-                        </property>
-                        <property name="clickable">
-                            <bool>true</bool>
-                        </property>
-                        <property name="resizable">
-                            <bool>true</bool>
-                        </property>
-                    </column>
-                    <property name="name">
-                        <cstring>lstCoordinateSystems</cstring>
-                    </property>
-                    <property name="showSortIndicator">
-                        <bool>true</bool>
-                    </property>
-                    <property name="rootIsDecorated">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QTextEdit" row="1" column="0">
-                    <property name="name">
-                        <cstring>teProjection</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>7</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>32767</width>
-                            <height>76</height>
-                        </size>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QButtonGroup" row="2" column="0">
-                    <property name="name">
-                        <cstring>buttonGroup2_2</cstring>
-                    </property>
-                    <property name="title">
-                        <string>Search</string>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLineEdit" row="0" column="4">
-                            <property name="name">
-                                <cstring>leSearch</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton" row="0" column="5">
-                            <property name="name">
-                                <cstring>pbnFind</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Find</string>
-                            </property>
-                            <property name="default">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                        <widget class="QRadioButton" row="0" column="0">
-                            <property name="name">
-                                <cstring>radSRID</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Postgis SRID</string>
-                            </property>
-                            <property name="checked">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                        <widget class="QRadioButton" row="0" column="1">
-                            <property name="name">
-                                <cstring>radEPSGID</cstring>
-                            </property>
-                            <property name="text">
-                                <string>EPSG ID</string>
-                            </property>
-                        </widget>
-                        <widget class="QRadioButton" row="0" column="2">
-                            <property name="name">
-                                <cstring>radSRSID</cstring>
-                            </property>
-                            <property name="text">
-                                <string>QGIS SRSID</string>
-                            </property>
-                        </widget>
-                        <widget class="QRadioButton" row="0" column="3">
-                            <property name="name">
-                                <cstring>radName</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Name</string>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-            </grid>
-        </widget>
-    </grid>
-</widget>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="2334">789c6dd45b4f23471005e0777e8545bda1e8ace73ea3280f5ccdd5c0b2bbb01be5a1e7660c1863b00113e5bfa7a7eb34510c18c97cd4e9ea9af678be6cf4aece4e7a1b5fd69ee6663eae7ad5b579ec6dd48bc964f9e75f7ffcbdb61ea4bdeeb79ff5c2f5dfd6d6cfe7bdaa379cde371d30b290befbe92ca7ea20a76fd521eb28e9987e5647b40c9cf3beafefaa6dbfdc7953edd7cb813af2fb311ffb7976d489f79c4e68dd3f4f699cd105dd576701ddd27efd4de7a06fcb3adf131dab655f9dd45c3f79b7e6a7ea94fde585f6fd17b49fa752bfcf734ffbf985665eee68bfff2f75eef335edfb3734f3e2ce3bb0e71fa88774a5c6b6da96f57a0cedf7fbd939ec3e6fadbbfb232cc22ad0f379552709fb6da9739e8f3c768e82a8cffd1fdeadfddcf94645ec7daeced84f0e3bc7411c87da3f51a7b55adcf5266152b09eaa8d090b6777bf24264dd462e882f58caea3c0d527ea2260bfb7ce69e8f332526701d71fa873dfffc4d96481f6c351e72cca0a7a87f6fbb9f3b7b77f101be7233a615dd44511697f777fe6655e242e8f80ae63cd435d04cc1f772ee2a2d03abed1cc2374ae8ccf8fe984fddcf7c5c4c6d07bde897b98e04e5da69c7fe95c9521fd46b30e773f9471c9f532a51bd623e7ba4c797dc7b4c9229777cf9f2aa952ae77df9faaae692ce88676dfef3aa9435d8fafb461ff21edf357efd6faa1ba0969f73cac9b9af360a06efcbc97b4ef7f41fb7edf3b376913a67a3ed774aa46eecdebad69bf7ee99deabc7bea36a4b59fdddfc4ce85ba4d598f69a39659e7366db91f5ebc8bcaf9c19bfd7ed086f3bbe759dbb6262b9db7bc993fa15bade3d53b57cfbc0bcd8fbd75fdf9fcb317040665f7d7e71954a8d1a0c5e86306d718e306b7b8c304f7987ecce001333ce209732cec3e533caf66f082572cf1861136b1856dec60f74366863d0cb06f33ad9de6008738fa7f06c738b15d8638c5994d9ce32b2ef06d25f31d3f70892bfcc42ff411d89e4b842b9908b1fdef1512a4c890a3c085602533b25dec4b448c9452498d8134ab334b6b27be94114672dded2463b9d18acfc8addcc944ee652a0f62afd0be3fdaf4d37f1999cb429ee5455e05b2c4add4f2269bb225db2bf38c644776ddfbd44e732933d993c1ea6721fb72e0de0fe5488ee544869f7c5e2339f57fe98b33fff3fbdabf990a122c</data>
-    </image>
-</images>
-<connections>
-    <connection>
-        <sender>lstCoordinateSystems</sender>
-        <signal>currentChanged(Q3ListViewItem*)</signal>
-        <receiver>QgsProjectionSelectorBase</receiver>
-        <slot>coordinateSystemSelected(Q3ListViewItem*)</slot>
-    </connection>
-    <connection>
-        <sender>pbnFind</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsProjectionSelectorBase</receiver>
-        <slot>pbnFind_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>leSearch</sender>
-        <signal>returnPressed()</signal>
-        <receiver>QgsProjectionSelectorBase</receiver>
-        <slot>pbnFind_clicked()</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="local" impldecl="in implementation">qgsprojectionselectorbase.ui.h</include>
-</includes>
-<slots>
-    <slot>projectionChanged( const QString &amp; )</slot>
-    <slot>coordinateSystemSelected( Q3ListViewItem * )</slot>
-    <slot>pbnFind_clicked()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+        <property name="rootIsDecorated" >
+         <bool>true</bool>
+        </property>
+        <column>
+         <property name="text" >
+          <string>Coordinate Systems</string>
+         </property>
+        </column>
+        <column>
+         <property name="text" >
+          <string>Spatial Reference Id</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="Q3TextEdit" name="teProjection" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>7</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>32767</width>
+          <height>76</height>
+         </size>
+        </property>
+        <property name="readOnly" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="Q3ButtonGroup" name="buttonGroup2_2" >
+        <property name="title" >
+         <string>Search</string>
+        </property>
+        <layout class="QGridLayout" >
+         <property name="margin" >
+          <number>10</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item row="0" column="4" >
+          <widget class="QLineEdit" name="leSearch" />
+         </item>
+         <item row="0" column="5" >
+          <widget class="QPushButton" name="pbnFind" >
+           <property name="text" >
+            <string>Find</string>
+           </property>
+           <property name="default" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" >
+          <widget class="QRadioButton" name="radSRID" >
+           <property name="text" >
+            <string>Postgis SRID</string>
+           </property>
+           <property name="checked" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" >
+          <widget class="QRadioButton" name="radEPSGID" >
+           <property name="text" >
+            <string>EPSG ID</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2" >
+          <widget class="QRadioButton" name="radSRSID" >
+           <property name="text" >
+            <string>QGIS SRSID</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3" >
+          <widget class="QRadioButton" name="radName" >
+           <property name="text" >
+            <string>Name</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3ListView</class>
+   <extends></extends>
+   <header>q3listview.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Q3TextEdit</class>
+   <extends></extends>
+   <header>q3textedit.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Q3ButtonGroup</class>
+   <extends></extends>
+   <header>Qt3Support/Q3ButtonGroup</header>
+   <container>1</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

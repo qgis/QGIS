@@ -16,7 +16,6 @@
 #include <iostream>
 #include <qdir.h>
 #include <qfile.h>
-#include <q3filedialog.h> 
 #include <qsettings.h>
 #include <qpixmap.h>
 #include <q3listbox.h>
@@ -45,7 +44,7 @@
 #include "../../src/qgis.h"
 #include "../../src/qgisapp.h"
 #include "../../src/qgsmaplayer.h"
-#include "../../src/qgsrasterlayer.h"
+#include <qgsrasterlayer.h>
 #include "../../src/qgsvectorlayer.h"
 #include "../../src/qgisiface.h"
 #include "../../src/qgsmapcanvas.h"
@@ -63,7 +62,10 @@ extern "C" {
 bool QgsGrassRegion::mRunning = false;
 
 QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, QgisIface *interface,
-        QWidget * parent, const char * name, Qt::WFlags f ) :QgsGrassRegionBase ( parent, name, f )
+        QWidget * parent, const char * name, Qt::WFlags f ) 
+        //:QgsGrassRegionBase ( parent, name, f )
+        //Tim removed params durint qt4 ui port - FIXME
+        :QgsGrassRegionBase ( )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassRegion()" << std::endl;

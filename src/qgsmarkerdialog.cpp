@@ -19,7 +19,7 @@
 #include "qgsmarkerdialog.h"
 #include "qgssvgcache.h"
 #include <qdir.h>
-#include <q3filedialog.h>
+#include <QFileDialog>
 #include <q3iconview.h>
 #include <qlineedit.h>
 #include <q3picture.h>
@@ -30,7 +30,10 @@
 //Added by qt3to4:
 #include <QPixmap>
 
-QgsMarkerDialog::QgsMarkerDialog(QString startdir): QgsMarkerDialogBase(0,0,true,Qt::WStyle_StaysOnTop), mCurrentDir(startdir)
+QgsMarkerDialog::QgsMarkerDialog(QString startdir): 
+  //paramters removed by Tim during qt4 ui port - FIXME!!!
+  //QgsMarkerDialogBase(0,0,true,Qt::WStyle_StaysOnTop), mCurrentDir(startdir)
+  QgsMarkerDialogBase(), mCurrentDir(startdir)
 {
     QObject::connect(mOkButton,SIGNAL(clicked()),this,SLOT(accept()));
     QObject::connect(mCancelButton,SIGNAL(clicked()),this,SLOT(reject()));
@@ -65,7 +68,8 @@ QString QgsMarkerDialog::selectedMarker()
 
 void QgsMarkerDialog::changeDirectory()
 {
-    QString newdir=Q3FileDialog::getExistingDirectory(mCurrentDir,this,"get existing directory","Choose a directory",TRUE);
+    QString newdir = QFileDialog::getExistingDirectory(
+        this, "Choose a directory", mCurrentDir);
     if (!newdir.isEmpty())
     {
 	mCurrentDir=newdir;

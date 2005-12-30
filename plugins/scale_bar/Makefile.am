@@ -17,22 +17,8 @@ plugin_LTLIBRARIES = libScaleBarplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui 
+ui_%.h: %.ui 
 	$(UIC) -o $@ $<
-if HAVE_QT4
-	../../tools/qgis-qt3to4.pl -uic $@
-endif
-
-if !NO_UIC_IMPLEMENTATIONS
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
-endif
-
-# %.h: %.ui
-# 	$(UIC) -o $@ $<
-#
-# %.cpp: %.ui
-# 	$(UIC) -o $@ -impl $*.h $<
 
 libScaleBarplugin_la_SOURCES =  plugin.cpp \
 			      plugin.h \
@@ -42,16 +28,12 @@ libScaleBarplugin_la_SOURCES =  plugin.cpp \
 			      $(plugin_MOC)
 
 plugin_MOC = plugin.moc.cpp \
-	     plugingui.moc.cpp \
-	     pluginguibase.moc.cpp
+	     plugingui.moc.cpp 
 
-plugin_UI = pluginguibase.h \
-	    pluginguibase.cpp 
+plugin_UI = ui_pluginguibase.h 
 
 plugin_UIC = pluginguibase.ui
 
-# UI dependencies      
-pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
@@ -64,4 +46,4 @@ CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = $(plugin_UIC) \
 	icon.xpm \
-	pluginguibase.ui.h
+	ui_pluginguibase.h

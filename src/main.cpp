@@ -39,7 +39,9 @@
 #include <qstyle.h>
 #include <qpixmap.h>
 #include <qstringlist.h> 
-
+#include <QSplashScreen>
+#include <QPixmap>
+#include <QBitmap>
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
 #endif
@@ -340,7 +342,11 @@ int main(int argc, char *argv[])
     exit(1); //exit for now until a version of qgis is capabable of running non interactive
   }
   QApplication a(argc, argv, myUseGuiFlag );
-
+  //  
+  // Set up the QSettings environment must be done after qapp is created
+  QCoreApplication::setOrganizationName("QuantumGIS");
+  QCoreApplication::setOrganizationDomain("qgis.org");
+  QCoreApplication::setApplicationName("qgis");
 #ifdef Q_OS_MACX
   // Install OpenDocuments AppleEvent handler after application object is initialized
   // but before any other event handling (including dialogs or splash screens) occurs.
@@ -419,13 +425,23 @@ int main(int argc, char *argv[])
     a.installTranslator(&qgistor);
   }
 
-  /* uncomment the following line, if you want a Windows 95 look */
-  //a.setStyle("Windows");
+    //set up masking
+#if defined(WIN32) || defined(Q_OS_MACX)
+  QString myPath = qApp->applicationDirPath() + "/share/qgis";
+#else
+  QString myPath= PKGDATAPATH;
+#endif
+  QPixmap myPixmap(myPath+QString("/images/splash/splash.png"));
+  QSplashScreen *mypSplash = new QSplashScreen(myPixmap);
+  QPixmap myMaskPixmap(myPath+QString("/images/splash/splash_mask.png"), 0, Qt::ThresholdDither |   Qt::ThresholdAlphaDither | Qt::AvoidDither );
+  mypSplash->setMask( myMaskPixmap.createHeuristicMask() );
+  mypSplash->show();
+
+
+
 
   QgisApp *qgis = new QgisApp; // "QgisApp" used to find canonical instance
   qgis->setName( "QgisApp" );
-
-  a.setMainWidget(qgis);
 
   /////////////////////////////////////////////////////////////////////
   // If no --project was specified, parse the args to look for a     //
@@ -552,6 +568,7 @@ int main(int argc, char *argv[])
   qgis->show();
   a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 
+  delete mypSplash;
   return a.exec();
 
 }

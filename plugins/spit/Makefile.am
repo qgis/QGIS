@@ -19,52 +19,27 @@ bin_PROGRAMS = spit
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui 
+ui_%.h: %.ui 
 	$(UIC) -o $@ $<
-if HAVE_QT4
-	../../tools/qgis-qt3to4.pl -uic $@
-endif
-
-if !NO_UIC_IMPLEMENTATIONS
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
-endif
-
-# %.h: %.ui
-# 	$(UIC) -o $@ $<
-#
-# %.cpp: %.ui
-# 	$(UIC) -o $@ -impl $*.h $<
 
 spit_MOC = qgsspit.moc.cpp \
 	qgsconnectiondialog.moc.cpp \
 	qgsshapefile.moc.cpp \
 	qgsmessageviewer.moc.cpp \
-	qgsconnectiondialogbase.moc.cpp \
-	qgsspitbase.moc.cpp \
-	qgsmessageviewerbase.moc.cpp \
-	qgseditreservedwordsbase.moc.cpp \
-	qgseditreservedwordsdialog.moc.cpp \
-	qgsscangeometries.moc.cpp
+	qgseditreservedwordsdialog.moc.cpp 
+
 
 spitplugin_la_MOC = $(spit_MOC) qgsspitplugin.moc.cpp
 
-spit_UI = qgsconnectiondialogbase.h \
-	qgsconnectiondialogbase.cpp \
-	qgsspitbase.h \
-	qgsspitbase.cpp \
-	qgsmessageviewerbase.h \
-	qgsmessageviewerbase.cpp \
-	qgseditreservedwordsbase.cpp \
-	qgseditreservedwordsbase.h \
-	qgsscangeometries.h \
-	qgsscangeometries.cpp
+spit_UI = ui_qgsconnectiondialogbase.h \
+	ui_qgsspitbase.h \
+	ui_qgsmessageviewerbase.h \
+	ui_qgseditreservedwordsbase.h 
 
 spit_UIC = qgsconnectiondialogbase.ui \
 	qgsmessageviewerbase.ui \
 	qgsspitbase.ui \
-	qgseditreservedwordsbase.ui \
-	qgsscangeometries.ui
+	qgseditreservedwordsbase.ui 
 
 common_sources =  qgsspit.cpp \
 	qgsspit.h \
@@ -77,7 +52,6 @@ common_sources =  qgsspit.cpp \
 	qgsmessageviewer.h \
 	qgseditreservedwordsdialog.h \
 	qgseditreservedwordsdialog.cpp \
-	qgsscangeometries.ui.h \
 	$(spit_UI)
 
 spitplugin_la_SOURCES =  $(common_sources) \
@@ -89,14 +63,14 @@ spit_SOURCES = $(common_sources) ../../src/qgspgutil.cpp  main.cpp $(SPIT_UIC) $
 nodist_spitplugin_la_SOURCES = $(spitplugin_la_MOC)
 
 # UI dependencies			
-qgsconnectiondialogbase.cpp: qgsconnectiondialogbase.ui qgsconnectiondialogbase.h
-qgsconnectiondialogbase.h: qgsconnectiondialogbase.ui
-qgsspitbase.cpp: qgsspitbase.h qgsspitbase.ui
-qgsspitbase.h: qgsspitbase.ui
-qgsmessageviewerbase.cpp: qgsmessageviewerbase.h qgsmessageviewerbase.ui
-qgsmessageviewerbase.h: qgsmessageviewerbase.ui
+##qgsconnectiondialogbase.cpp: qgsconnectiondialogbase.ui qgsconnectiondialogbase.h
+##qgsconnectiondialogbase.h: qgsconnectiondialogbase.ui
+##qgsspitbase.cpp: qgsspitbase.h qgsspitbase.ui
+##qgsspitbase.h: qgsspitbase.ui
+##qgsmessageviewerbase.cpp: qgsmessageviewerbase.h qgsmessageviewerbase.ui
+##qgsmessageviewerbase.h: qgsmessageviewerbase.ui
 
-BUILT_SOURCES = $(spit_MOC) $(spit_UI) $() $(splitplugin_la_MOC)
+BUILT_SOURCES = $(spit_MOC) $(spit_UI) $(spitplugin_la_MOC)
 
 
 spitplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD) ../../src/libqgis.la

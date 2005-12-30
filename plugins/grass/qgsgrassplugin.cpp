@@ -18,7 +18,7 @@
 // includes
 #include "../../src/qgisapp.h"
 #include "../../src/qgsmaplayer.h"
-#include "../../src/qgsrasterlayer.h"
+#include <qgsrasterlayer.h>
 #include "../../src/qgisiface.h"
 #include "../../src/qgsmapcanvas.h"
 #include "../../src/qgsmaplayer.h"
@@ -27,7 +27,7 @@
 #include "../../src/qgsfeatureattribute.h"
 #include "../../src/qgsproviderregistry.h"
 
-#include <q3toolbar.h>
+#include <qtoolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
 #include <q3popupmenu.h>
@@ -35,7 +35,7 @@
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
-#include <q3filedialog.h>
+#include <QFileDialog>
 #include <qfileinfo.h>
 #include <qsettings.h>
 #include <qregexp.h>
@@ -166,10 +166,8 @@ void QgsGrassPlugin::initGui()
     //    "cannot be used.\nPlease select your GISBASE.\nGISBASE is full path to the\n"
     //    "directory where GRASS is installed." );
     // XXX Need to subclass this and add explantory message above to left side
-    gisBase = Q3FileDialog::getExistingDirectory(
-        gisBase, qgisMainWindowPointer,
-        "get GISBASE" ,
-        "Choose GISBASE ...", TRUE );
+    gisBase = QFileDialog::getExistingDirectory(
+        qgisMainWindowPointer, "Choose GISBASE ...", gisBase);
     if (gisBase == QString::null)
     {
       // User pressed cancel. No GRASS for you!
@@ -261,8 +259,9 @@ void QgsGrassPlugin::initGui()
   mNewVectorAction->addTo(pluginMenu);
 
   // Add the toolbar
-  toolBarPointer = new Q3ToolBar((Q3MainWindow *) qgisMainWindowPointer, "GRASS");
+  toolBarPointer = new QToolBar((Q3MainWindow *) qgisMainWindowPointer, "GRASS");
   toolBarPointer->setLabel(tr("GRASS"));
+  toolBarPointer->setIconSize(QSize(24,24));
 
   // Add to the toolbar
   mAddVectorAction->addTo(toolBarPointer);

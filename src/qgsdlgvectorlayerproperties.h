@@ -16,22 +16,19 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
+
 #ifndef QGSDLGVECTORLAYERPROPERTIES
 #define QGSDLGVECTORLAYERPROPERTIES
-#ifdef WIN32
-#include "qgsdlgvectorlayerpropertiesbase.h"
-#else
-#include "qgsdlgvectorlayerpropertiesbase.uic.h"
-#endif
+
+#include "ui_qgsdlgvectorlayerpropertiesbase.h"
 #include "qgsrenderer.h"
-#include "qpixmap.h"
-#include "qlineedit.h"
 
-class QgsVectorLayer;
-class QgsLabelDialog;
 class QgsAttributeActionDialog;
+class QgsLabelDialog;
+class QgsVectorLayer;
 
-class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
+
+class QgsDlgVectorLayerProperties : public QDialog, private Ui::QgsDlgVectorLayerPropertiesBase{
   Q_OBJECT
   public:
   QgsDlgVectorLayerProperties(QgsVectorLayer *lyr =0,QWidget *parent=0, const char *name=0, bool modal=true);
@@ -66,13 +63,13 @@ class QgsDlgVectorLayerProperties : public QgsDlgVectorLayerPropertiesBase{
   //
 
 
-  void pbnCancel_clicked();
-  void pbnOK_clicked();
-  void pbnApply_clicked();
-  void btnHelp_clicked();
-  void pbnQueryBuilder_clicked();
-  void pbnIndex_clicked();
-  void pbnChangeSpatialRefSys_clicked();
+  void on_pbnCancel_clicked();
+  void on_pbnOK_clicked();
+  void on_pbnApply_clicked();
+  void on_btnHelp_clicked();
+  void on_pbnQueryBuilder_clicked();
+  void on_pbnIndex_clicked();
+  void on_pbnChangeSpatialRefSys_clicked();
 
   protected:
   QgsVectorLayer *layer;

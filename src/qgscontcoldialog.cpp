@@ -18,30 +18,19 @@
  /* $Id$ */
 
 #include "qgscontcoldialog.h"
-
-#include <cfloat>
-#include <iostream>
-
-#include <qcolordialog.h>
-#include <QComboBox>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qspinbox.h>
-#include <qtoolbutton.h>
- 
 #include "qgscontinuouscolrenderer.h"
-#include "qgsdlgvectorlayerproperties.h"
 #include "qgsfield.h"
-#include "qgslegenditem.h"
+#include "qgssymbol.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgssymbol.h"
+
+#include <QColorDialog>
 
 
 QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer)
-    : QgsContColDialogBase(), mVectorLayer(layer)
+    : QDialog(), mVectorLayer(layer)
 {
+    setupUi(this);
 #ifdef QGISDEBUG
     qWarning("constructor QgsContColDialog");
 #endif
@@ -102,6 +91,7 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer)
 
 QgsContColDialog::QgsContColDialog()
 {
+    setupUi(this);
 #ifdef QGISDEBUG
     qWarning("constructor QgsContColDialog");
 #endif

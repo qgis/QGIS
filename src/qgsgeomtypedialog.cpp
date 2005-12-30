@@ -16,19 +16,15 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include "qgsaddattrdialog.h"
 #include "qgsgeomtypedialog.h"
-#include <QComboBox>
-#include <q3listview.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
+#include "qgsaddattrdialog.h"
 
-QgsGeomTypeDialog::QgsGeomTypeDialog(): QgsGeomTypeDialogBase()
+QgsGeomTypeDialog::QgsGeomTypeDialog(): QDialog()
 {
-    QObject::connect((QObject*)mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
-    QObject::connect((QObject*)mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-    QObject::connect((QObject*)mAddAttributeButton, SIGNAL(clicked()), this, SLOT(addAttribute()));
-    QObject::connect((QObject*)mRemoveAttributeButton, SIGNAL(clicked()), this, SLOT(removeAttribute()));
+    setupUi(this);
+    connect(mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
+    connect(mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+
     mPointRadioButton->setChecked(true);
     mAttributeView->removeColumn(0);
     mAttributeView->addColumn(tr("Name"));
@@ -62,7 +58,7 @@ QGis::WKBTYPE QgsGeomTypeDialog::selectedType() const
     return QGis::WKBUnknown;
 }
 
-void QgsGeomTypeDialog::addAttribute()
+void QgsGeomTypeDialog::on_mAddAttributeButton_clicked()
 {
     std::list<QString> types;
     types.push_back("Real");
@@ -79,7 +75,7 @@ void QgsGeomTypeDialog::addAttribute()
     }
 }
 
-void QgsGeomTypeDialog::removeAttribute()
+void QgsGeomTypeDialog::on_mRemoveAttributeButton_clicked()
 {
     delete(mAttributeView->currentItem());
     if(mAttributeView->childCount()==0)

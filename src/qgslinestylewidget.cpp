@@ -18,7 +18,7 @@
 #include "qgslinestylewidget.h"
 
 QgsLineStyleWidget::QgsLineStyleWidget( QWidget *parent, const char * name, Qt::WFlags f)
-           :QgsLineStyleWidgetBase( parent, name, f)
+           :QgsLineStyleWidgetBase( )
 {
 }
 

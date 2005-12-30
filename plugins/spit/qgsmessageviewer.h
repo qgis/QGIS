@@ -17,10 +17,11 @@
 
 #include <qwidget.h>
 #include <qstring.h>
+#include <QDialog>
 #include <q3textedit.h>
-#include "qgsmessageviewerbase.h"
+#include "ui_qgsmessageviewerbase.h"
  
-class QgsMessageViewer: public QgsMessageViewerBase{
+class QgsMessageViewer : public QDialog, private Ui::QgsMessageViewerBase{
   public:
   QgsMessageViewer(QWidget *parent=0, const char *name=0);
   ~QgsMessageViewer();

@@ -17,27 +17,34 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include "qgsaddattrdialog.h"
-#include "qgsattributetable.h"
 #include "qgsattributetabledisplay.h"
-#include "qgsdelattrdialog.h"
-#include "qgsadvancedattrsearch.h"
-#include "qgsvectorlayer.h"
-#include "qgssearchtreenode.h"
-#include "qgsfeature.h"
-#include <qlayout.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <q3popupmenu.h>
-#include <qpushbutton.h> 
-#include <qtoolbutton.h> 
-#include <QComboBox>
-#include <qlineedit.h>
-#include <q3textedit.h>
-#include <qapplication.h>
 
-QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer):QgsAttributeTableBase(), mLayer(layer)
+#include "qgsaddattrdialog.h"
+#include "qgsadvancedattrsearch.h"
+#include "qgsdelattrdialog.h"
+#include "qgsfeature.h"
+#include "qgssearchtreenode.h"
+#include "qgsvectorlayer.h"
+
+#include <QMessageBox>
+
+QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer)
+: QDialog(), mLayer(layer)
 {
+  setupUi(this);
+  connect(mRemoveSelectionButton, SIGNAL(clicked()), this, SLOT(removeSelection()));
+  connect(mSelectedToTopButton, SIGNAL(clicked()), this, SLOT(selectedToTop()));
+  connect(mInvertSelectionButton, SIGNAL(clicked()), this, SLOT(invertSelection()));
+  connect(mCopySelectedRowsButton, SIGNAL(clicked()), this, SLOT(copySelectedRowsToClipboard()));
+  connect(mAddAttributeButton, SIGNAL(clicked()), this, SLOT(addAttribute()));
+  connect(mDeleteAttributeButton, SIGNAL(clicked()), this, SLOT(deleteAttributes()));
+  connect(btnStartEditing, SIGNAL(clicked()), this, SLOT(startEditing()));
+  connect(btnStopEditing, SIGNAL(clicked()), this, SLOT(stopEditing()));
+  connect(mSearchButton, SIGNAL(clicked()), this, SLOT(search()));
+  connect(mSearchShowResults, SIGNAL(activated(int)), this, SLOT(searchShowResultsChanged(int)));
+  connect(btnAdvancedSearch, SIGNAL(clicked()), this, SLOT(advancedSearch()));
+  connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
+
   mAddAttributeButton->setEnabled(false);
   mDeleteAttributeButton->setEnabled(false);
 
@@ -231,7 +238,7 @@ void QgsAttributeTableDisplay::advancedSearch()
   QgsAdvancedAttrSearch* searchDlg = new QgsAdvancedAttrSearch(this);
   if (searchDlg->exec())
   {
-    doSearch(searchDlg->mSearchString->text());
+    doSearch(searchDlg->searchString());
   }
   delete searchDlg;
 }
@@ -322,4 +329,11 @@ void QgsAttributeTableDisplay::doSearch(const QString& searchString)
     str = tr("No matching features found.");
   QMessageBox::information(this, tr("Search results"), str);
 
+}
+
+void QgsAttributeTableDisplay::closeEvent(QCloseEvent* ev)
+{
+  ev->ignore();
+  emit deleted();
+  delete this;
 }

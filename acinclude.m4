@@ -237,9 +237,14 @@ if test $QT_MAJOR = "4" ; then
     AC_MSG_ERROR([*** moc must be in path])
   fi
   # uic3 is the Qt user interface compiler in Qt3 legacy mode
-  AC_PATH_PROG(UIC, uic3, , [$PATH:$QTDIR/bin])
+  AC_PATH_PROG(UIC, uic, , [$PATH:$QTDIR/bin])
   if test x$UIC = x ; then
-    AC_MSG_ERROR([*** uic3 must be in path])
+    AC_MSG_ERROR([*** uic must be in path])
+  fi
+  # check for rcc
+  AC_PATH_PROG(RCC, rcc, , [$PATH:$QTDIR/bin])
+  if test x$RCC = x ; then
+    AC_MSG_ERROR([*** rcc must be in path])
   fi
 fi
 

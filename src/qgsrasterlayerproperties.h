@@ -19,20 +19,17 @@
 /* $Id$ */
 #ifndef QGSRASTERLAYERPROPERTIES_H
 #define QGSRASTERLAYERPROPERTIES_H
-#ifdef WIN32
-#include "qgsrasterlayerpropertiesbase.h"
-#else
-#include "qgsrasterlayerpropertiesbase.uic.h"
-#endif
-#include "qgsmaplayer.h"
-#include "qgsrasterlayer.h"
+#include "ui_qgsrasterlayerpropertiesbase.h"
+#include <QDialog>
+class QgsMapLayer;
+class QgsRasterLayer;
 
 
 /**Property sheet for a raster map layer
   *@author Tim Sutton
   */
 
-class QgsRasterLayerProperties : public QgsRasterLayerPropertiesBase  
+class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPropertiesBase  
 {
   Q_OBJECT
     public:
@@ -42,45 +39,29 @@ class QgsRasterLayerProperties : public QgsRasterLayerPropertiesBase
         QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *parent=0, const char *name=0, bool modal=true);
         /** \brief Destructor */
         ~QgsRasterLayerProperties();
+
+        /** synchronize state with associated raster layer */
+        void sync();
+
+    public slots:
         /** \brief Applies the settings made in the dialog without closing the box */
         void apply();
         /** \bried Apply the settings made and close the dialog. */
         void accept();
         /** \brief slot executed when the transparency level changes. */ 
-	void sliderTransparency_valueChanged( int );
+        void sliderTransparency_valueChanged( int );
         /** \brief slot executed when the max red level changes. */
-        void sliderMaxRed_valueChanged( int );
-        /** \brief slot executed when the min red level changes. */
-        void sliderMinRed_valueChanged( int );
-        /** \brief slot executed when the max blue level changes. */
-        void sliderMaxBlue_valueChanged( int );
-        /** \brief slot executed when the max blue level changes. */
-        void sliderMinBlue_valueChanged( int );
-        /** \brief slot executed when the max green level changes. */
-        void sliderMaxGreen_valueChanged( int );
-        /** \brief slot executed when the min green level changes. */
-        void sliderMinGreen_valueChanged( int );
-        /** \brief slot executed when the max gray level changes. */
-        void sliderMaxGray_valueChanged( int );
-        /** \brief slot executed when the min gray level changes. */
-        void sliderMinGray_valueChanged( int );
-        /** \brief slot executed when the single band radio button is pressed. */
-        void rbtnSingleBand_toggled( bool );
+        void on_rbtnSingleBand_toggled( bool );
         /** \brief slot executed when the three band radio button is pressed. */
-        void rbtnThreeBand_toggled( bool );
+        void on_rbtnThreeBand_toggled( bool );
+        /** \brief this slot asks the rasterlayer to construct pyramids */
+        void on_buttonBuildPyramids_clicked();
         /** \brief slot executed when user wishes to refresh raster histogram */
-        void QgsRasterLayerProperties::pbnHistRefresh_clicked();
+        void on_pbnHistRefresh_clicked();
         /** Override the SRS specified when the layer was loaded */
-        void pbnChangeSpatialRefSys_clicked();
-
-        /** synchronize state with associated raster layer */
-        void sync();
+        void on_pbnChangeSpatialRefSys_clicked();
         
     private:
-        /** \brief this slot asks the rasterlayer to construct pyramids */
-        void buttonBuildPyramids_clicked();
-        /** \brief This function makes a pixmap to display in the color box */
-        void makeScalePreview(QString theColor);
         /** \brief Pointer to the raster layer that this property dilog changes the behaviour of. */
         QgsRasterLayer * rasterLayer;
 };

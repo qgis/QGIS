@@ -20,16 +20,18 @@
 
 //standard includes
 
-QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui() : QgsCopyrightLabelPluginGuiBase()
+QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui() : QDialog()
 {
+  setupUi(this);
   //programmatically hide orientation selection for now
   cboOrientation->hide();
   textLabel15->hide();
 }
 
 QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
-: QgsCopyrightLabelPluginGuiBase( parent, name, modal, fl )
+: QDialog(parent, name, modal, fl )
 {
+  setupUi(this);
   //programmatically hide orientation selection for now
   cboOrientation->hide();
   textLabel15->hide();
@@ -38,7 +40,7 @@ QgsCopyrightLabelPluginGui::~QgsCopyrightLabelPluginGui()
 {
 }
 
-void QgsCopyrightLabelPluginGui::pbnOK_clicked()
+void QgsCopyrightLabelPluginGui::on_pbnOK_clicked()
 {
   //hide the dialog before we send all our signals
   hide();
@@ -51,7 +53,7 @@ void QgsCopyrightLabelPluginGui::pbnOK_clicked()
   
   done(1);
 } 
-void QgsCopyrightLabelPluginGui::pbnCancel_clicked()
+void QgsCopyrightLabelPluginGui::on_pbnCancel_clicked()
 {
  close(1);
 }

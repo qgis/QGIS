@@ -17,34 +17,33 @@
  /* $Id$ */
 #ifndef QGSBOOKMARKS_H
 #define QGSBOOKMARKS_H
-#ifdef WIN32
-#include "qgsbookmarksbase.h"
-#else
-#include "qgsbookmarksbase.uic.h"
-#endif
+#include "ui_qgsbookmarksbase.h"
+#include <QDialog>
 class QString;
 class QDir;
 class QWidget;
 class Q3ListViewItem;
 class sqlite3;
-class QgsBookmarks : public QgsBookmarksBase{
+class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
+{
   Q_OBJECT
 public:
  QgsBookmarks(QWidget *parent=0, const char *name=0);
  ~QgsBookmarks();
  static bool createDatabase();
 public slots:
- void deleteBookmark();
- void zoomToBookmark();
- void zoomViaDoubleClick(Q3ListViewItem *);
- int connectDb();
+ void on_btnDelete_clicked();
+ void on_btnZoomTo_clicked();
+ void on_lstBookmarks_doubleClicked(Q3ListViewItem *);
+ void on_btnHelp_clicked();
  void refreshBookmarks();
- void showHelp();
 
 private:
  QWidget *mParent;
  static bool makeDir(QDir &theQDir);
  void initialise();
+ int connectDb();
+ void zoomToBookmark();
  QString mUserDbPath;
  QString mQGisSettingsDir;
  sqlite3 *db;

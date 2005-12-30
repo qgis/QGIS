@@ -50,7 +50,9 @@ extern "C" {
 
 QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools, 
     QWidget * parent, const char * name  ):
-    QgsGrassShellBase(parent,name), mTools(tools)
+    //QgsGrassShellBase(parent,name), mTools(tools)
+    //Tim disabled params during qt4 ui port FIXME
+    QgsGrassShellBase(), mTools(tools)
 {
     mValid = false;
 

@@ -19,13 +19,10 @@
 #ifndef QGSLUDIALOG_H
 #define QGSLUDIALOG_H
 
-#ifdef WIN32
-#include "qgsludialogbase.h"
-#else
-#include "qgsludialogbase.uic.h"
-#endif
+#include "ui_qgsludialogbase.h"
 
-class QgsLUDialog: public QgsLUDialogBase
+
+class QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
 {
     Q_OBJECT
  public:

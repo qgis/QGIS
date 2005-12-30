@@ -23,30 +23,25 @@ WIDGETPATH=../widgets
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.moc.uic.cpp: %.uic.h
-	$(MOC) -o $@ $<
-
-if HAVE_QT3
-%.uic.h: %.ui 
+ui_%.h: %.ui 
 	$(UIC) -o $@ $<
-endif
+	
+## %.moc.uic.cpp: %.uic.h
+##	$(MOC) -o $@ $<
 
-if HAVE_QT4
-%.uic.h: %.ui 
-	$(UIC) -o $@ $<
-	../tools/qgis-qt3to4.pl -uic $@
-endif
+## %.uic.h: %.ui 
+##	$(UIC) -o $@ $<
 
-if !NO_UIC_IMPLEMENTATIONS
-%.uic.cpp: %.ui
-	$(UIC) -o $@ -impl $*.uic.h $<
-endif
+## if !NO_UIC_IMPLEMENTATIONS
+## %.uic.cpp: %.ui
+##	$(UIC) -o $@ -impl $*.uic.h $<
+## endif
 
 
 ## main app
 if HAVE_QTMAC
-# Qt/Mac binary must be in MacOS directory within bundle, not in bin subdirectory
-# (configure ensures that prefix ends in qgis.app/Contents/MacOS)
+## Qt/Mac binary must be in MacOS directory within bundle, not in bin subdirectory
+## (configure ensures that prefix ends in qgis.app/Contents/MacOS)
 macbindir = $(exec_prefix)
 macbin_PROGRAMS = qgis
 else
@@ -62,6 +57,7 @@ qgisHEADERS =	\
 		qgis.h						\
 		qgisiface.h					\
 		qgisinterface.h					\
+		qgsabout.h				\
 		qgsaddattrdialog.h				\
 		qgsadvancedattrsearch.h				\
 		qgsattributeactiondialog.h			\
@@ -70,7 +66,6 @@ qgisHEADERS =	\
 		qgsattributetable.h				\
 		qgsbookmarks.h			\
 		qgsbookmarkitem.h			\
-		qgscoordinatetransform.h			\
 		qgsclipboard.h					\
 		qgscontexthelp.h				\
 		qgscontcoldialog.h				\
@@ -102,7 +97,6 @@ qgisHEADERS =	\
 		qgsmarkerdialog.h				\
 		qgsmeasure.h					\
 		qgsnewhttpconnection.h				\
-		qgsnumericsortlistviewitem.h			\
 		qgsoptions.h					\
 		qgspastetransformations.h			\
 		qgspatterndialog.h				\
@@ -125,8 +119,7 @@ qgisHEADERS =	\
 		qgssymbologyutils.h				\
 		qgsuvaldialog.h					\
 		qgslayerprojectionselector.h \
-		$(WIDGETPATH)/projectionselector/qgsprojectionselector.h \
-		splashscreen.h
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.h 
 
 
 ## qt designer files for all the GUI stuff
@@ -164,38 +157,136 @@ qgis_UIC =	\
 		qgssisydialogbase.ui			\
 		qgsuvaldialogbase.ui			\
 		qgslayerprojectionselectorbase.ui \
+		qgscustomprojectiondialogbase.ui \
+		qgscomposerbase.ui \
+		qgscompositionbase.ui \
+		qgsgeomtypedialogbase.ui \
+		qgspastetransformationsbase.ui \
+		qgscomposermapbase.ui \
+		qgscomposerlabelbase.ui \
+		qgscomposerpicturebase.ui \
+		qgscomposerscalebarbase.ui \
+		qgscomposervectorlegendbase.ui \
+		qgscontcoldialogbase.ui \
+		qgsattributedialogbase.ui \
+		qgsfillstylewidgetbase.ui \
+		qgsgrasydialogbase.ui \
+		qgslabeldialogbase.ui \
+		qgslinestylewidgetbase.ui \
+		qgsmeasurebase.ui \
+		qgspointstylewidgetbase.ui \
+		qgsidentifyresultsbase.ui \
+		qgsuvaldialogbase.ui \
+		qgsattributetabledisplaybase.ui \
+		qgsaddattrdialogbase.ui \
+		qgsadvancedattrsearch.ui \
+		qgsattributeactiondialogbase.ui \
+		qgsdelattrdialogbase.ui \
+		qgspgquerybuilderbase.ui \
+		qgsludialogbase.ui \
+		qgspatterndialogbase.ui \
+		qgslinestyledialogbase.ui \
+		qgsmarkerdialogbase.ui \
+		qgsnewhttpconnectionbase.ui \
+		qgsnewconnectionbase.ui \
 		$(WIDGETPATH)/projectionselector/qgsprojectionselectorbase.ui
 
 ## all the ui files generate a corresponding header file
-qgis_UIHEADERS = $(qgis_UIC:.ui=.uic.h)
+## qgis_UIHEADERS = $(qgis_UIC:.ui=.uic.h)
+qgis_UIHEADERS = ui_qgisappbase.h \
+		ui_qgsabout.h				\
+		ui_qgsaddattrdialogbase.h			\
+		ui_qgsadvancedattrsearchbase.h		\
+		ui_qgsattributedialogbase.h		\
+		ui_qgsattributeactiondialogbase.h		\
+		ui_qgsattributetablebase.h		\
+		ui_qgsbookmarksbase.h		\
+		ui_qgscontcoldialogbase.h			\
+		ui_qgsdelattrdialogbase.h			\
+		ui_qgsdlgvectorlayerpropertiesbase.h	\
+		ui_qgsgeomtypedialogbase.h		\
+		ui_qgsgrasydialogbase.h			\
+		ui_qgshelpviewerbase.h			\
+		ui_qgsidentifyresultsbase.h		\
+		ui_qgslabeldialogbase.h			\
+		ui_qgslinestyledialogbase.h		\
+		ui_qgsludialogbase.h			\
+		ui_qgsmapserverexportbase.h		\
+		ui_qgsmarkerdialogbase.h			\
+		ui_qgsmessageviewer.h			\
+		ui_qgsmeasurebase.h			\
+		ui_qgsnewhttpconnectionbase.h		\
+		ui_qgsoptionsbase.h			\
+		ui_qgspastetransformationsbase.h		\
+		ui_qgspatterndialogbase.h			\
+		ui_qgspluginmanagerbase.h			\
+		ui_qgsprojectpropertiesbase.h		\
+		ui_qgsrasterlayerpropertiesbase.h		\
+		ui_qgsserversourceselectbase.h		\
+		ui_qgssisydialogbase.h			\
+		ui_qgsuvaldialogbase.h			\
+		ui_qgslayerprojectionselectorbase.h \
+		ui_qgscustomprojectiondialogbase.h \
+		ui_qgscomposerbase.h \
+		ui_qgscompositionbase.h \
+		ui_qgsgeomtypedialogbase.h \
+		ui_qgspastetransformationsbase.h \
+		ui_qgscomposermapbase.h \
+		ui_qgscomposerlabelbase.h \
+		ui_qgscomposerpicturebase.h \
+		ui_qgscomposerscalebarbase.h \
+		ui_qgscomposervectorlegendbase.h \
+		ui_qgscontcoldialogbase.h \
+		ui_qgsattributedialogbase.h \
+		ui_qgsfillstylewidgetbase.h \
+		ui_qgsgrasydialogbase.h \
+		ui_qgslabeldialogbase.h \
+		ui_qgslinestylewidgetbase.h \
+		ui_qgsmeasurebase.h \
+		ui_qgspointstylewidgetbase.h \
+		ui_qgsidentifyresultsbase.h \
+		ui_qgsaddattrdialogbase.h \
+		ui_qgsadvancedattrsearchbase.h \
+		ui_qgsattributeactiondialogbase.h \
+		ui_qgsdelattrdialogbase.h \
+		ui_qgspgquerybuilderbase.h \
+		ui_qgsludialogbase.h \
+		ui_qgspatterndialogbase.h \
+		ui_qgslinestyledialogbase.h \
+		ui_qgsmarkerdialogbase.h \
+		ui_qgsuvaldialogbase.h \
+		ui_qgsnewhttpconnectionbase.h \
+		ui_qgsnewconnectionbase.h \
+		$(WIDGETPATH)/projectionselector/ui_qgsprojectionselectorbase.h
 
-if !NO_UIC_IMPLEMENTATIONS
+## if !NO_UIC_IMPLEMENTATIONS
 ## similarly all the ui files generate a corresponding implementation file
-qgis_UISOURCES = $(qgis_UIC:.ui=.uic.cpp)
-endif
+## qgis_UISOURCES = $(qgis_UIC:.ui=.uic.cpp)
+## endif
 
 ## these are optional ancillary user-defined qtdesigner-based headers
-qgis_UIH =	\
-		qgsabout.ui.h				\
-		qgsattributetablebase.ui.h		\
-		qgshelpviewerbase.ui.h			\
-		qgsmapserverexportbase.ui.h		\
-		qgsmessageviewer.ui.h			\
-		qgsoptionsbase.ui.h			\
-		qgsrasterlayerpropertiesbase.ui.h	\
-		qgsserversourceselectbase.ui.h		\
-		qgslabeldialogbase.ui.h			\
-		qgslayerprojectionselectorbase.ui.h \
-		qgsprojectpropertiesbase.ui.h
+#qgis_UIH =	\
+#		qgsabout.ui.h				\
+#		qgsattributetablebase.ui.h		\
+#		qgshelpviewerbase.ui.h			\
+#		qgsmapserverexportbase.ui.h		\
+#		qgsmessageviewer.ui.h			\
+#		qgsoptionsbase.ui.h			\
+#		qgsrasterlayerpropertiesbase.ui.h	\
+#		qgsserversourceselectbase.ui.h		\
+#		qgslabeldialogbase.ui.h			\
+#		qgslayerprojectionselectorbase.ui.h \
+#		qgsprojectpropertiesbase.ui.h
 
 ## these generated files need MOC files, too
-qgis_UIMOC = $(qgis_UIC:.ui=.moc.uic.cpp)
+#qgis_UIMOC = $(qgis_UIC:.ui=.moc.uic.cpp)
 
 
 ## non-uic files generated from MOC
 
 qgis_MOC =	\
 		qgisinterface.moc.cpp			\
+		qgsabout.moc.cpp		\
 		qgsaddattrdialog.moc.cpp		\
 		qgsadvancedattrsearch.moc.cpp		\
 		qgsattributeactiondialog.moc.cpp	\
@@ -205,7 +296,6 @@ qgis_MOC =	\
 		qgsbookmarks.moc.cpp		\
 		qgscontcoldialog.moc.cpp		\
 		qgscontexthelp.moc.cpp			\
-		qgscoordinatetransform.moc.cpp			\
 		qgsdelattrdialog.moc.cpp		\
 		qgsdlgvectorlayerproperties.moc.cpp	\
 		qgsencodingfiledialog.moc.cpp		\
@@ -232,12 +322,12 @@ qgis_MOC =	\
 		qgsserversourceselect.moc.cpp		\
 		qgssisydialog.moc.cpp			\
 		qgsuvaldialog.moc.cpp			\
-		splashscreen.moc.cpp		\
 		$(WIDGETPATH)/projectionselector/qgsprojectionselector.moc.cpp
 
 qgis_SOURCES =	main.cpp			\
 		qgisiface.cpp			\
 		qgisinterface.cpp		\
+		qgsabout.cpp		\
 		qgsaddattrdialog.cpp		\
 		qgsadvancedattrsearch.cpp	\
 		qgsattributeactiondialog.cpp	\
@@ -249,7 +339,6 @@ qgis_SOURCES =	main.cpp			\
 		qgsclipboard.cpp		\
 		qgscontcoldialog.cpp		\
 		qgscontexthelp.cpp		\
-		qgscoordinatetransform.cpp			\
 		qgscustomsymbol.cpp		\
 		qgsdatasource.cpp		\
 		qgsdelattrdialog.cpp		\
@@ -272,7 +361,6 @@ qgis_SOURCES =	main.cpp			\
 		qgsmarkerdialog.cpp		\
 		qgsmeasure.cpp			\
 		qgsnewhttpconnection.cpp	\
-		qgsnumericsortlistviewitem.cpp	\
 		qgsoptions.cpp			\
 		qgspastetransformations.cpp	\
 		qgspatterndialog.cpp		\
@@ -286,16 +374,15 @@ qgis_SOURCES =	main.cpp			\
 		qgsprovidermetadata.cpp		\
 		qgsrasterdataprovider.cpp	\
 		qgsrasterlayerproperties.cpp	\
-                qgssearchstring.cpp             \
-                qgssearchtreenode.cpp		\
-                qgssearchstringlexer.ll		\
-                qgssearchstringparser.yy	\
+        qgssearchstring.cpp             \
+        qgssearchtreenode.cpp		\
+        qgssearchstringlexer.ll		\
+        qgssearchstringparser.yy	\
 		qgsserversourceselect.cpp	\
 		qgssisydialog.cpp		\
 		qgssvgcache.cpp			\
 		qgssymbologyutils.cpp		\
 		qgsuvaldialog.cpp		\
-		splashscreen.cpp \
 		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp
 
 AM_YFLAGS       = -d
@@ -317,12 +404,15 @@ postgresUIH     =
 postgresLIBHEADERS = qgspgutil.h
 postgresLIBSOURCES = qgspgutil.cpp
 
+postgresUIHEADERS     = ui_qgsdbsourceselectbase.h	\
+		  ui_qgsnewconnectionbase.h		\
+		  ui_qgspgquerybuilderbase.h	
 if HAVE_POSTGRESQL
-postgresUIHEADERS = $(postgresUIC:.ui=.uic.h)
-if !NO_UIC_IMPLEMENTATIONS
-postgresUISOURCES = $(postgresUIC:.ui=.uic.cpp)
-endif
-postgresUIMOC     = $(postgresUIC:.ui=.moc.uic.cpp)
+## postgresUIHEADERS = $(postgresUIC:.ui=.uic.h)
+## if !NO_UIC_IMPLEMENTATIONS
+## postgresUISOURCES = $(postgresUIC:.ui=.uic.cpp)
+## endif
+## postgresUIMOC     = $(postgresUIC:.ui=.moc.uic.cpp)
 
 postgresMOC       = $(postgresHEADERS:.h=.moc.cpp)
 
@@ -330,15 +420,17 @@ qgis_SOURCES     += $(postgresSOURCES)
 endif
 
 
-nodist_qgis_SOURCES = $(qgis_MOC) $(qgis_UISOURCES) $(qgis_UIMOC) \
+## nodist_qgis_SOURCES = $(qgis_MOC) $(qgis_UISOURCES) $(qgis_UIMOC) \
+nodist_qgis_SOURCES = $(qgis_MOC) \
                       $(postgresMOC) $(postgresUISOURCES) $(postgresUIMOC)
 
 
-BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) $(qgis_YACC) \
+## BUILT_SOURCES = $(qgis_MOC) $(qgis_UIMOC) $(qgis_UIHEADERS) $(qgis_UISOURCES) $(qgis_YACC) \
+BUILT_SOURCES = $(qgis_MOC) $(qgis_UIHEADERS) $(qgis_YACC) \
 					$(postgresMOC) $(postgresUIMOC) $(postgresUIHEADERS) $(postgresUISOURCES)
 
 
-qgis_LDADD = $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) $(PYTHON_LIB) -lproj -lsqlite3 libqgis.la 
+qgis_LDADD = raster/libqgsraster.la legend/libqgis_legend.la $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) $(PYTHON_LIB) -lproj -lsqlite3 libqgis.la 
 if HAVE_QTMAC
 qgis_LDFLAGS = -framework ApplicationServices
 else
@@ -392,7 +484,6 @@ libqgisHEADERS =							\
 		qgsproviderextentcalcevent.h		\
 		qgsproviderregistry.h				\
 		qgsrangerenderitem.h				\
-		qgsrasterlayer.h					\
 		qgsrect.h							\
 		qgsrenderer.h						\
 		qgsrenderitem.h						\
@@ -424,11 +515,12 @@ libqgis_la_UIC =							\
 		qgspointstylewidgetbase.ui
 
 ## all the ui files generate a corresponding header file
-libqgis_la_UIHEADERS = $(libqgis_la_UIC:.ui=.uic.h)
+## libqgis_la_UIHEADERS = $(libqgis_la_UIC:.ui=.uic.h)
+#libqgis_la_UIHEADERS = $(libqgis_la_UIC:.ui=ui_%.h)
 
 if !NO_UIC_IMPLEMENTATIONS
 ## similarly all the ui files generate a corresponding implementation file
-libqgis_la_UISOURCES = $(libqgis_la_UIC:.ui=.uic.cpp)
+## libqgis_la_UISOURCES = $(libqgis_la_UIC:.ui=.uic.cpp)
 endif
 
 ## these are optional ancillary user-defined qtdesigner-based headers
@@ -437,7 +529,7 @@ libqgis_la_UIH =							\
 		qgscustomprojectiondialogbase.ui.h
 
 ## these generated files need MOC files, too
-libqgis_la_UIMOC = $(libqgis_la_UIC:.ui=.moc.uic.cpp)
+## libqgis_la_UIMOC = $(libqgis_la_UIC:.ui=.moc.uic.cpp)
 
 ## non-uic files generated from MOC
 libqgis_la_MOC =							\
@@ -460,7 +552,6 @@ libqgis_la_MOC =							\
 		qgsmaplayerregistry.moc.cpp			\
 		qgsmapoverviewcanvas.moc.cpp		\
 		qgspointstylewidget.moc.cpp			\
-		qgsrasterlayer.moc.cpp				\
 		qgsrunprocess.moc.cpp				\
 		qgsvectorlayer.moc.cpp \
 		omggdal.moc.cpp 
@@ -511,7 +602,6 @@ libqgis_la_SOURCES =						\
 		qgsproviderextentcalcevent.cpp		\
 		qgsproviderregistry.cpp				\
 		qgsrangerenderitem.cpp				\
-		qgsrasterlayer.cpp					\
 		qgsrect.cpp							\
 		qgsrenderer.cpp						\
 		qgsrenderitem.cpp					\
@@ -533,7 +623,8 @@ endif
 
 nodist_libqgis_la_SOURCES = $(libqgis_la_MOC) $(libqgis_la_UISOURCES) $(libqgis_la_UIMOC)
 
-BUILT_SOURCES += $(libqgis_la_MOC) $(libqgis_la_UIMOC) $(libqgis_la_UIHEADERS) $(libqgis_la_UISOURCES)
+## BUILT_SOURCES += $(libqgis_la_MOC) $(libqgis_la_UIMOC) $(libqgis_la_UIHEADERS) $(libqgis_la_UISOURCES)
+BUILT_SOURCES += $(libqgis_la_MOC) $(libqgis_la_UIHEADERS) 
 
 
 libqgis_la_LIBADD = raster/libqgsraster.la legend/libqgis_legend.la $(QT_LDADD) $(GEOS_LDADD) $(GDAL_LDADD) $(PYTHON_LIB) -lsqlite3

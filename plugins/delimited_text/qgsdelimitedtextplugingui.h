@@ -13,13 +13,15 @@
 #ifndef PLUGINGUI_H
 #define PLUGINGUI_H
 
-#include "qgsdelimitedtextpluginguibase.h"
+#include "ui_qgsdelimitedtextpluginguibase.h"
+
+#include <QDialog>
 class QgisIface;
 
 /**
  * \class QgsDelimitedTextPluginGui
  */
-class QgsDelimitedTextPluginGui : public QgsDelimitedTextPluginGuiBase
+class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPluginGuiBase
 {
   Q_OBJECT
   public:
@@ -27,7 +29,10 @@ class QgsDelimitedTextPluginGui : public QgsDelimitedTextPluginGuiBase
     QgsDelimitedTextPluginGui( QgisIface * _qI, QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~QgsDelimitedTextPluginGui();
     public slots:
-    void pbnOK_clicked();
+    void on_pbnOK_clicked();
+    void on_pbnHelp_clicked();
+    void on_btnBrowseForFile_clicked();
+    void on_pbnParse_clicked();
     void updateFieldLists();
     void getOpenFileName();
     void enableButtons();

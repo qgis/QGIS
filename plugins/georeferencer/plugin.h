@@ -51,7 +51,7 @@
 //QT Includes
 //
 #include <qwidget.h>
-
+#include <Q3ToolBar>
 
 /**
 * \class Plugin

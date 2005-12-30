@@ -20,12 +20,19 @@ QgsScaleBarPluginGui::QgsScaleBarPluginGui() : QgsScaleBarPluginGuiBase()
 }
 
 QgsScaleBarPluginGui::QgsScaleBarPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
-: QgsScaleBarPluginGuiBase( parent, name, modal, fl )
+//: QgsScaleBarPluginGuiBase( parent, name, modal, fl )
+//Tim removed params during qt4 ui port - FIXME
+: QgsScaleBarPluginGuiBase(  )
 {
    
 }  
 QgsScaleBarPluginGui::~QgsScaleBarPluginGui()
 {
+}
+
+QSpinBox * QgsScaleBarPluginGui::getSpinSize()
+{
+    return spnSize;
 }
 
 void QgsScaleBarPluginGui::pbnOK_clicked()

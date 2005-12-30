@@ -16,7 +16,7 @@
 #include <iostream>
 #include <qdir.h>
 #include <qfile.h>
-#include <q3filedialog.h> 
+#include <QFileDialog> 
 #include <qsettings.h>
 #include <qpixmap.h>
 #include <q3listbox.h>
@@ -428,8 +428,8 @@ QStringList QgsGrassSelect::vectorLayers ( QString gisdbase,
 void QgsGrassSelect::getGisdbase()
 {
     
-    QString Gisdbase = Q3FileDialog::getExistingDirectory( egisdbase->text(), this, 
-	                            "get existing GISDBASE" , "Choose existing GISDBASE", TRUE );
+    QString Gisdbase = QFileDialog::getExistingDirectory( this,
+                                 "Choose existing GISDBASE", egisdbase->text() );
     egisdbase->setText ( Gisdbase );
 }
 

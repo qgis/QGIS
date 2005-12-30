@@ -14,53 +14,32 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qdir.h>
-#include <qprinter.h>
-#include <qpainter.h>
-#include <qmatrix.h>
-#include <qlayout.h>
-#include <qfile.h>
-#include <qstring.h>
-#include <qmessagebox.h>
-#include <qtabwidget.h>
-#include <qpoint.h>
-#include <QComboBox>
-#include <qobject.h>
-#include <q3paintdevicemetrics.h>
-#include <qdom.h>
-#include <qsettings.h>
-#include <qdesktopwidget.h>
-#include <qapplication.h>
-#include <qevent.h>
-#include <q3valuelist.h>
-#include <qsplitter.h>
-#include <qregexp.h>
-#include <qpixmap.h>
-#include <qimage.h>
-#include <q3picture.h>
-#include <q3filedialog.h>
-#include <qglobal.h>
+#include "qgscomposer.h"
 
 #include "qgisapp.h"
+#include "qgscomposerview.h"
+#include "qgscomposition.h"
+#include "qgsexception.h"
 #include "qgsproject.h"
 
-#include "qgscomposerview.h"
-#include "qgscomposer.h"
-#include "qgscomposition.h"
-#include "qgscomposeritem.h"
-#include "qgscomposermap.h"
-
-#include "qgsexception.h"
-//Added by qt3to4:
-#include <QResizeEvent>
-#include <QMoveEvent>
-#include <QGridLayout>
-#include <QPictureIO>
+#include <QDesktopWidget>
+#include <QFileDialog>
+#include <QMatrix>
+#include <QMessageBox>
+#include <Q3PaintDeviceMetrics>
+#include <QPainter>
+#include <Q3Picture>
+#include <QPrinter>
+#include <QSettings>
 
 #include <iostream>
 
-QgsComposer::QgsComposer( QgisApp *qgis): QgsComposerBase()
+QgsComposer::QgsComposer( QgisApp *qgis): Q3MainWindow()
 {
+  setupUi(this);
+  connect(fileOpenAction, SIGNAL(activated()), this, SLOT(fileOpen()));
+  connect(fileSaveAsAction, SIGNAL(activated()), this, SLOT(fileSaveAs()));
+
   mQgis = qgis;
   mFirstTime = true;
 
@@ -210,7 +189,12 @@ void QgsComposer::zoomFull(void)
   mView->repaintContents();
 }
 
-void QgsComposer::zoomIn(void)
+void QgsComposer::on_actionZoomFull_activated(void)
+{
+  zoomFull();
+}
+
+void QgsComposer::on_actionZoomIn_activated(void)
 {
   QMatrix m = mView->worldMatrix();
   m.scale( 2.0, 2.0 );
@@ -218,7 +202,7 @@ void QgsComposer::zoomIn(void)
   mView->repaintContents();
 }
 
-void QgsComposer::zoomOut(void)
+void QgsComposer::on_actionZoomOut_activated(void)
 {
   QMatrix m = mView->worldMatrix();
   m.scale( 0.5, 0.5 );
@@ -226,13 +210,13 @@ void QgsComposer::zoomOut(void)
   mView->repaintContents();
 }
 
-void QgsComposer::refresh(void)
+void QgsComposer::on_actionRefresh_activated(void)
 {
   mComposition->refresh();
   mView->repaintContents();
 }
 
-void QgsComposer::print(void)
+void QgsComposer::on_actionPrint_activated(void)
 {
   /* Uff!!! It is impossible to set a custom page size for QPrinter.
    * Only the sizes hardcoded in Qt library can be used.
@@ -491,7 +475,7 @@ void QgsComposer::print(void)
   }
 }
 
-void QgsComposer::image(void)
+void QgsComposer::on_actionImage_activated(void)
 {
   // Image size 
   int width = (int) (mComposition->resolution() * mComposition->paperWidth() / 25.4); 
@@ -553,22 +537,21 @@ void QgsComposer::image(void)
 #endif
 
   //create a file dialog using the the filter list generated above
-  std::auto_ptr < Q3FileDialog > myQFileDialog(
-      new Q3FileDialog(
+  std::auto_ptr < QFileDialog > myQFileDialog(
+      new QFileDialog(
+        this,
+        tr("Choose a filename to save the map image as"),
         "",
-        myFilters,
-        0,
-        "Save mapcomposer file dialog"
+        myFilters
         )
       );
-  myQFileDialog->setCaption(tr("Choose a filename to save the map image as"));
-  myQFileDialog->setSelection ( myLastUsedFile );
+  myQFileDialog->selectFile( myLastUsedFile );
 
   // allow for selection of more than one file
-  myQFileDialog->setMode(Q3FileDialog::AnyFile);
+  myQFileDialog->setMode(QFileDialog::AnyFile);
 
   // set the filter to the last one used
-  myQFileDialog->setSelectedFilter(myLastUsedFilter);
+  myQFileDialog->selectFilter(myLastUsedFilter);
 
   //prompt the user for a filename
   QString myOutputFileNameQString; // = myQFileDialog->getSaveFileName(); //delete this
@@ -611,18 +594,18 @@ void QgsComposer::image(void)
   pixmap.save ( myOutputFileNameQString, myFilterMap[myFilterString].toLocal8Bit().data() );
 }
 
-void QgsComposer::svg(void)
+void QgsComposer::on_actionSvg_activated(void)
 {
   QSettings myQSettings;
   QString myLastUsedFile = myQSettings.readEntry("/UI/lastSaveAsSvgFile","qgis.svg");
 
-  Q3FileDialog *myQFileDialog = new Q3FileDialog( "", "SVG Format (*.svg *SVG)", 0,
-                                                "Save svg file dialog");
+  QFileDialog *myQFileDialog = new QFileDialog( this, "Save svg file dialog",
+                                                "", "SVG Format (*.svg *SVG)" );
   
   myQFileDialog->setCaption(tr("Choose a filename to save the map as"));
 
-  myQFileDialog->setSelection ( myLastUsedFile );
-  myQFileDialog->setMode(Q3FileDialog::AnyFile);
+  myQFileDialog->selectFile( myLastUsedFile );
+  myQFileDialog->setMode(QFileDialog::AnyFile);
 
   int result = myQFileDialog->exec();
   raise ();
@@ -670,35 +653,40 @@ void QgsComposer::selectItem(void)
   actionSelectItem->setOn ( true );
 }
 
-void QgsComposer::addMap(void)
+void QgsComposer::on_actionSelectItem_activated(void)
+{
+  selectItem();
+}
+
+void QgsComposer::on_actionAddMap_activated(void)
 {
   mComposition->setTool ( QgsComposition::AddMap );
   setToolActionsOff();
   actionAddMap->setOn ( true );
 }
 
-void QgsComposer::addVectorLegend(void)
+void QgsComposer::on_actionAddVectorLegend_activated(void)
 {
   mComposition->setTool ( QgsComposition::AddVectorLegend );
   setToolActionsOff();
   actionAddVectorLegend->setOn ( true );
 }
 
-void QgsComposer::addLabel(void)
+void QgsComposer::on_actionAddLabel_activated(void)
 {
   mComposition->setTool ( QgsComposition::AddLabel );
   setToolActionsOff();
   actionAddLabel->setOn ( true );
 }
 
-void QgsComposer::addScalebar(void)
+void QgsComposer::on_actionAddScalebar_activated(void)
 {
   mComposition->setTool ( QgsComposition::AddScalebar );
   setToolActionsOff();
   actionAddScalebar->setOn ( true );
 }
 
-void QgsComposer::addPicture(void)
+void QgsComposer::on_actionAddPicture_activated(void)
 {
   mComposition->setTool ( QgsComposition::AddPicture );
   setToolActionsOff();

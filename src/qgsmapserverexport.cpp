@@ -14,31 +14,30 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 /* $Id$ */
 
-#include <qgsconfig.h>
+#include "qgsmapserverexport.h"
+
+#include "qgis.h"
+#include "qgsdatasourceuri.h"
+#include "qgshelpviewer.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsrect.h"
+#include "qgsvectorlayer.h"
+
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QMessageBox>
 
 #include <iostream>
 #include <fstream>
-#include <q3filedialog.h>
-#include <qfileinfo.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
-#include <QComboBox>
-#include <qmessagebox.h>
-#include <qcolor.h>
-#include <qregexp.h>
-#include <qstring.h>
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsmapcanvas.h"
-#include "qgsrect.h"
-#include "qgsmapserverexport.h"
-#include "qgshelpviewer.h"
-#include "qgis.h"
-#include "qgsdatasourceuri.h"
 
 // constructor
-QgsMapserverExport::QgsMapserverExport(QgsMapCanvas * _map, QWidget * parent, const char *name, bool modal, Qt::WFlags fl):QgsMapserverExportBase(parent, name, modal, fl), map(_map)
+QgsMapserverExport::QgsMapserverExport(QgsMapCanvas * _map, QWidget * parent, const char *name, bool modal, Qt::WFlags fl)
+  :QDialog(parent, name, modal, fl), map(_map)
 {
+  setupUi(this);
+  connect(buttonOk, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 // Default destructor
@@ -342,7 +341,25 @@ void QgsMapserverExport::writeMapFile()
   {
   }
 }
-void QgsMapserverExport::showHelp()
+
+void QgsMapserverExport::on_chkExpLayersOnly_clicked()
+{
+  // disable inputs if only layer objects are being written
+  grpMap->setEnabled(!chkExpLayersOnly->isChecked());
+  grpWeb->setEnabled(!chkExpLayersOnly->isChecked());
+}
+
+void QgsMapserverExport::on_btnChooseFile_clicked()
+{
+  QString s = QFileDialog::getSaveFileName(
+                    this,
+                    "Choose a filename for the exported map file",
+                    "./",
+                    "Mapserver files (*.map)" );
+  txtMapFilePath->setText(s);
+}
+
+void QgsMapserverExport::on_buttonHelp_clicked()
 {
   //QMessageBox::information(this, "Help","Help");
   QgsHelpViewer *hv = new QgsHelpViewer(this);

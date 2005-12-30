@@ -28,8 +28,9 @@
 #include "../../src/qgisiface.h"
 
 QgsDlgPgBuffer::QgsDlgPgBuffer( QgisIface * _qI, QWidget * parent, const char *name)
-:QgsDlgPgBufferBase(parent, name),qI(_qI)
+:QDialog(parent, name),qI(_qI)
 {
+  setupUi(this);
   // set the validator
   distanceValidator = new QDoubleValidator(0, 9e9, 6, this);
   txtBufferDistance->setValidator(distanceValidator);
@@ -102,7 +103,7 @@ void QgsDlgPgBuffer::setGeometryColumn(QString name)
 {
     txtGeometryColumn->setText(name);
 }
-void QgsDlgPgBuffer::help()
+void QgsDlgPgBuffer::on_buttonHelp_clicked()
 {
    qI->openURL("plugins/geoprocessing/buffer/index.html",true);
 }

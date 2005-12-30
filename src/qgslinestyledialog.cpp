@@ -21,8 +21,9 @@
 #include <iostream>
 #include "qgssymbologyutils.h"
 
-QgsLineStyleDialog::QgsLineStyleDialog(QWidget * parent, const char *name, bool modal, Qt::WFlags fl):QgsLineStyleDialogBase(parent, name, modal,
-                       fl)
+QgsLineStyleDialog::QgsLineStyleDialog(QWidget * parent, const char *name, bool modal, Qt::WFlags fl):
+  //params disabled during qt4 gui port - Fixme!!
+  QgsLineStyleDialogBase()
 {
   //load the icons stored in QgsSymbologyUtils.cpp (to avoid redundancy)
   solid->setPixmap(QgsSymbologyUtils::char2LinePixmap("SolidLine"));

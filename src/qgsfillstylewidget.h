@@ -16,13 +16,10 @@
 #ifndef QGSFILLSTYLEWIDGET_H
 #define QGSFILLSTYLEWIDGET_H
 
-#ifdef WIN32
-#include "qgsfillstylewidgetbase.h"
-#else
-#include "qgsfillstylewidgetbase.uic.h"
-#endif
+#include "ui_qgsfillstylewidgetbase.h"
+#include <QDialog>
 
-class QgsFillStyleWidget:public QgsFillStyleWidgetBase
+class QgsFillStyleWidget:public QDialog, Ui::QgsFillStyleWidgetBase
 {
   Q_OBJECT;
   public:

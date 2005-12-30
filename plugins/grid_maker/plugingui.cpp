@@ -14,7 +14,7 @@
 //qt includes
 #include <qpushbutton.h>
 #include <qlineedit.h>
-#include <q3filedialog.h>
+#include <QFileDialog>
 #include <qmessagebox.h>
 #include <qfile.h>
 #include <qradiobutton.h>
@@ -26,7 +26,9 @@ QgsGridMakerPluginGui::QgsGridMakerPluginGui() : QgsGridMakerPluginGuiBase()
 {
 }
 QgsGridMakerPluginGui::QgsGridMakerPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
-    : QgsGridMakerPluginGuiBase( parent, name, modal, fl )
+    //: QgsGridMakerPluginGuiBase( parent, name, modal, fl )
+    //tim disabled params during qt4 ui port - FIXME
+    : QgsGridMakerPluginGuiBase( )
 {
 }
 QgsGridMakerPluginGui::~QgsGridMakerPluginGui()
@@ -157,12 +159,11 @@ void QgsGridMakerPluginGui::pbnOK_clicked()
 void QgsGridMakerPluginGui::pbnSelectOutputFile_clicked()
 {
   std::cout << " Gps File Importer Gui::pbnSelectOutputFile_clicked() " << std::endl;
-  QString myOutputFileNameQString = Q3FileDialog::getSaveFileName(
-          ".",
-          "ESRI Shapefile (*.shp)",
+  QString myOutputFileNameQString = QFileDialog::getSaveFileName(
           this,
-          "save file dialog"
-          "Choose a filename to save under" );
+          "Choose a filename to save under",
+          ".",
+          "ESRI Shapefile (*.shp)");
 
   if (myOutputFileNameQString.right(4) != ".shp")
     myOutputFileNameQString += ".shp";

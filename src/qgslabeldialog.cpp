@@ -15,50 +15,26 @@
  ***************************************************************************/
 /* $Id$ */
 #include <iostream>
-
-//#include <qobject.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qpoint.h>
-#include "qpixmap.h"
-#include <qwidget.h>
-#include <qlayout.h>
-#include <qtoolbutton.h>
-#include <qlabel.h>
-#include <q3table.h>
-#include <qlineedit.h>
-#include <QComboBox>
-#include <qfontdatabase.h>
-#include <qradiobutton.h> 
-#include <qfont.h>
-#include <qpushbutton.h>
-#include <qspinbox.h>
-#include <qcolor.h>
-#include <qcolordialog.h>
-#include <qfontdatabase.h>
-#include <qfontdialog.h>
-#include <qcheckbox.h>
-
-#include "qgsfield.h"
-#include "qgspatterndialog.h"
-#include "qgslinestyledialog.h"
-
-#include "qgslabelattributes.h"
-#include "qgslabel.h"
 #include "qgslabeldialog.h"
+#include "qgsfield.h"
+#include "qgslabel.h"
+#include "qgslabelattributes.h"
 
+#include <QColorDialog>
+#include <QFontDialog>
 
 
 const int PIXMAP_WIDTH = 200;
 const int PIXMAP_HEIGHT = 20;
 
 QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent ) 
-    : QgsLabelDialogBase (parent),
+    : QWidget(parent),
       mLabel(label),
       mFontColor(Qt::black),
       mBufferColor(Qt::black),
       mFont("Helvetica")
 {
+    setupUi(this);
 #ifdef QGISDEBUG
     std::cerr << __FILE__ << ":" << __LINE__
               << "QgsLabelDialog::QgsLabelDialog()\n";
@@ -67,6 +43,29 @@ QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent )
     Q_ASSERT( label );
 
     init();
+
+    connect( sliderFontTransparency, SIGNAL(sliderMoved(int)),
+        spinFontTransparency, SLOT(setValue(int)) );
+    connect( spinFontTransparency, SIGNAL(valueChanged(int)),
+        sliderFontTransparency, SLOT(setValue(int)) );
+    connect( sliderAngle, SIGNAL(valueChanged(int)),
+        spinAngle, SLOT(setValue(int)) );
+    connect( spinAngle, SIGNAL(valueChanged(int)),
+        sliderAngle, SLOT(setValue(int)) );
+    connect( sliderBufferTransparency, SIGNAL(sliderMoved(int)),
+        spinBufferTransparency, SLOT(setValue(int)) );
+    connect( spinBufferTransparency, SIGNAL(valueChanged(int)),
+        sliderBufferTransparency, SLOT(setValue(int)) );
+    connect( btnDefaultFont, SIGNAL(clicked()),
+        this, SLOT(changeFont()) );
+    connect( pbnDefaultBufferColor_2, SIGNAL(clicked()),
+        this, SLOT(changeBufferColor()) );
+    connect( pbnDefaultFontColor, SIGNAL(clicked()),
+        this, SLOT(changeFontColor()) );
+    connect( chkUseBuffer, SIGNAL(toggled(bool)),
+        this, SLOT(chkUseBuffer_toggled(bool)) );
+    connect( cbxUseCollisionDetection, SIGNAL(toggled(bool)),
+        this, SLOT(cbxUseCollisionDetection_toggled(bool)) );
 }
 
 

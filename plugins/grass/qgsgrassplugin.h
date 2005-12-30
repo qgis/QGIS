@@ -25,7 +25,7 @@
 #include <vector>
 
 class QgsGrassTools;
-
+class QToolBar;
 /**
 * \class QgsGrassPlugin
 * \brief OpenModeller plugin for QGIS
@@ -115,7 +115,7 @@ private:
   //! Id of the plugin's menu. Used for unloading
   std::vector<int> menuId;
   //! Pointer to our toolbar
-  Q3ToolBar *toolBarPointer;
+  QToolBar *toolBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object

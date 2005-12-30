@@ -16,66 +16,35 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
-#include <qstring.h>
-#include <qlineedit.h>
-#include <q3textedit.h>
-#include <qlabel.h>
-#include <q3listview.h>
-#include <QComboBox>
-#include <qcheckbox.h>
-#include <qtextstream.h>
-#include <q3table.h>
-#include <qlayout.h>
-#include <qmessagebox.h>
-#include <qspinbox.h>
-#include <q3widgetstack.h>
-#include <qpushbutton.h>
-#include <qwidget.h>
-#include <q3groupbox.h>
-#include <q3whatsthis.h>
-#include <qregexp.h>
-#include <qtabwidget.h>
 
-#include "qgis.h"
-#include "qgsrect.h"
-#include "qgsfield.h"
 #include "qgsdlgvectorlayerproperties.h"
-#include "qgsvectordataprovider.h"
-//Added by qt3to4:
-#include <QVBoxLayout>
-#ifdef HAVE_POSTGRESQL
-#include "../providers/postgres/qgspostgresprovider.h"
-#endif
-#include "qgsvectorlayer.h"
-#include "qgssinglesymrenderer.h"
-#include "qgsgraduatedsymrenderer.h"
-#include "qgscontinuouscolrenderer.h"
-#include "qgsuniquevalrenderer.h"
-#include "qgslegenditem.h"
-#include "qgssisydialog.h"
-#include "qgsgrasydialog.h"
-#include "qgscontcoldialog.h"
-#include "qgsuvaldialog.h"
-#include "qobject.h"
-#include "qgslabelattributes.h"
-#include "qgslabel.h"
-#include "qgslabeldialog.h"
 #include "qgsattributeactiondialog.h"
+#include "qgscontcoldialog.h"
+#include "qgsgrasydialog.h"
+#include "qgslabeldialog.h"
+#include "qgslayerprojectionselector.h"
+#include "qgssisydialog.h"
+#include "qgsuvaldialog.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #ifdef HAVE_POSTGRESQL
 #include "qgspgquerybuilder.h"
+#include "../providers/postgres/qgspostgresprovider.h"
 #endif
-#include "qgslayerprojectionselector.h"
-#include <qapplication.h>
+
+#include <QMessageBox>
+#include <Q3WhatsThis>
 
 
 QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, 
                                                          QWidget * parent, 
                                                          const char *name, 
                                                          bool modal)
-    : QgsDlgVectorLayerPropertiesBase(parent, name, modal), 
+: QDialog(parent, name, modal),
       layer(lyr), 
       mRendererDialog(0)
 {
+  setupUi(this);
   // Create the Label dialog tab
   QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
   labelDialog = new QgsLabelDialog ( layer->label(), labelOptionsFrame);
@@ -269,21 +238,21 @@ void QgsDlgVectorLayerProperties::reset( void )
 // methods reimplemented from qt designer base class
 //
 
-void QgsDlgVectorLayerProperties::pbnCancel_clicked()
+void QgsDlgVectorLayerProperties::on_pbnCancel_clicked()
 {
  reject();
 }
-void QgsDlgVectorLayerProperties::btnHelp_clicked()
+void QgsDlgVectorLayerProperties::on_btnHelp_clicked()
 {
 
 }
-void QgsDlgVectorLayerProperties::pbnOK_clicked()
+void QgsDlgVectorLayerProperties::on_pbnOK_clicked()
 {
-  pbnApply_clicked();
+  on_pbnApply_clicked();
   layer->setLayerProperties(0);
   close(true);
 }
-void QgsDlgVectorLayerProperties::pbnApply_clicked()
+void QgsDlgVectorLayerProperties::on_pbnApply_clicked()
 {
   //
   // Set up sql subset query if applicable
@@ -341,7 +310,7 @@ void QgsDlgVectorLayerProperties::pbnApply_clicked()
 
 }
 
-void QgsDlgVectorLayerProperties::pbnQueryBuilder_clicked()
+void QgsDlgVectorLayerProperties::on_pbnQueryBuilder_clicked()
 {
 #ifdef HAVE_POSTGRESQL
   // launch the query builder using the PostgreSQL connection
@@ -376,7 +345,7 @@ void QgsDlgVectorLayerProperties::pbnQueryBuilder_clicked()
 #endif
 }
 
-void QgsDlgVectorLayerProperties::pbnIndex_clicked()
+void QgsDlgVectorLayerProperties::on_pbnIndex_clicked()
 {
     QgsVectorDataProvider* pr=layer->getDataProvider();
     if(pr)
@@ -586,7 +555,7 @@ QString QgsDlgVectorLayerProperties::getMetadata()
 
 
 
-void QgsDlgVectorLayerProperties::pbnChangeSpatialRefSys_clicked()
+void QgsDlgVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 {
     
 

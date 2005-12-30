@@ -37,7 +37,9 @@ QgsNorthArrowPluginGui::QgsNorthArrowPluginGui() : QgsNorthArrowPluginGuiBase()
 }
 
 QgsNorthArrowPluginGui::QgsNorthArrowPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
-: QgsNorthArrowPluginGuiBase( parent, name, modal, fl )
+//: QgsNorthArrowPluginGuiBase( parent, name, modal, fl )
+//Tim removed params during qt4 ui port - FIXME!
+: QgsNorthArrowPluginGuiBase(  )
 {
   //temporary hack until this is implemented
   tabNorthArrowOptions->removePage( tabIcon );

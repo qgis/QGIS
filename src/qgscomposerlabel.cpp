@@ -14,43 +14,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <math.h>
-#include <iostream>
-#include <typeinfo>
-#include <map>
-
-#include <qwidget.h>
-#include <qrect.h>
-#include <QComboBox>
-#include <qdom.h>
-#include <q3canvas.h>
-#include <qpainter.h>
-#include <qstring.h>
-#include <qpixmap.h>
-#include <qimage.h>
-#include <qlineedit.h>
-#include <q3pointarray.h>
-#include <qfont.h>
-#include <qfontmetrics.h>
-#include <qfontdialog.h>
-#include <qpen.h>
-#include <qrect.h>
-#include <qcheckbox.h>
-
-#include "qgsrect.h"
-#include "qgsmaptopixel.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsdlgvectorlayerproperties.h"
-#include "qgscomposition.h"
-#include "qgscomposermap.h"
 #include "qgscomposerlabel.h"
+
+#include "qgsproject.h"
+#include <QFontDialog>
+#include <QPainter>
+#include <iostream>
 
 QgsComposerLabel::QgsComposerLabel ( QgsComposition *composition, int id, 
 	                                            int x, int y, QString text, int fontSize )
-    : Q3CanvasPolygonalItem(0), mBox(false)
+    : QWidget(composition), Q3CanvasPolygonalItem(0), mBox(false)
 {
+    setupUi(this);
+
     std::cout << "QgsComposerLabel::QgsComposerLabel()" << std::endl;
 
     mComposition = composition;
@@ -201,7 +177,7 @@ void QgsComposerLabel::draw ( QPainter & painter )
     }
 }
 
-void QgsComposerLabel::changeFont ( void ) 
+void QgsComposerLabel::on_mFontButton_clicked() 
 {
     bool result;
 
@@ -218,7 +194,7 @@ void QgsComposerLabel::changeFont ( void )
     writeSettings();
 }
 
-void QgsComposerLabel::boxChanged ()
+void QgsComposerLabel::on_mBoxCheckBox_clicked()
 {
     QRect r = boundingRect();
     
@@ -280,7 +256,7 @@ void QgsComposerLabel::setOptions ( void )
     
 }
 
-void QgsComposerLabel::textChanged ( void )
+void QgsComposerLabel::on_mTextLineEdit_returnPressed()
 { 
     QRect r = boundingRect();
     mText = mTextLineEdit->text();

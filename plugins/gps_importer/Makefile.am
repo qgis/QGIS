@@ -20,22 +20,8 @@ plugin_LTLIBRARIES = gpsimporterplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui 
+ui_%.h: %.ui 
 	$(UIC) -o $@ $<
-if HAVE_QT4
-	../../tools/qgis-qt3to4.pl -uic $@
-endif
-
-if !NO_UIC_IMPLEMENTATIONS
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
-endif
-
-# %.h: %.ui
-# 	$(UIC) -o $@ $<
-#
-# %.cpp: %.ui
-# 	$(UIC) -o $@ -impl $*.h $<
 
 
 gpsimporterplugin_la_SOURCES = \
@@ -51,24 +37,19 @@ gpsimporterplugin_la_SOURCES = \
 
 plugin_MOC = \
 	qgsgpsplugin.moc.cpp \
+	qgsbabelformat.moc.cpp \
+	qgsgpsdevice.moc.cpp \
 	qgsgpsplugingui.moc.cpp \
-	qgsgpspluginguibase.moc.cpp \
-	qgsgpsdevicedialogbase.moc.cpp \
 	qgsgpsdevicedialog.moc.cpp
 
 plugin_UI = \
-	qgsgpspluginguibase.h \
-	qgsgpspluginguibase.cpp \
-	qgsgpsdevicedialogbase.h \
-	qgsgpsdevicedialogbase.cpp
+	ui_qgsgpspluginguibase.h \
+	ui_qgsgpsdevicedialogbase.h 
 
 plugin_UIC = \
 	qgsgpspluginguibase.ui \
 	qgsgpsdevicedialogbase.ui
 
-# UI dependencies      
-qgsgpspluginguibase.cpp: qgsgpspluginguibase.h qgsgpspluginguibase.ui
-qgsgpsdevicedialogbase.cpp: qgsgpsdevicedialogbase.h qgsgpsdevicedialogbase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
@@ -84,9 +65,9 @@ CLEANFILES = $(BUILT_SOURCES)
 ##
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm \
-	qgsgpspluginguibase.h \
-	qgsgpsdevicedialogbase.h \
-	qgsgpsplugingui.h \
+	ui_qgsgpspluginguibase.h \
+	ui_qgsgpsdevicedialogbase.h \
+	ui_qgsgpsplugingui.h \
 	qgsgpsplugin.h \
 	qgsgpsdevicedialog.h
 

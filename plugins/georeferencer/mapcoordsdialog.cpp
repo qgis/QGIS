@@ -12,7 +12,9 @@ MapCoordsDialog::MapCoordsDialog() {
 MapCoordsDialog::MapCoordsDialog(const QgsPoint& pixelCoords,
 				 QWidget* parent, const char* name, 
 				 bool modal, Qt::WFlags fl) 
-  : MapCoordsDialogBase(parent, name, modal, fl) {
+  : MapCoordsDialogBase() {
+   // commented out params during qt4 port - FIXME tim 
+  //: MapCoordsDialogBase(parent, name, modal, fl) {
   mPixelCoords = pixelCoords;
   leXCoord->setValidator(new QDoubleValidator(this));
   leYCoord->setValidator(new QDoubleValidator(this));

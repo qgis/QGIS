@@ -1,7 +1,8 @@
 #ifndef QGSEDITRESERVEDWORDSDIALOG_H
 #define QGSEDITRESERVEDWORDSDIALOG_H
-#include "qgseditreservedwordsbase.h"
-class QgsEditReservedWordsDialog : public QgsEditReservedWordsBase
+#include "ui_qgseditreservedwordsbase.h"
+#include <QDialog>
+class QgsEditReservedWordsDialog : public QDialog, private Ui::QgsEditReservedWordsBase
 {
     Q_OBJECT
 public:

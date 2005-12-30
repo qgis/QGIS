@@ -22,7 +22,9 @@
 
 QgsGPSDeviceDialog::QgsGPSDeviceDialog(std::map<QString, QgsGPSDevice*>& 
 				       devices) : 
-     QgsGPSDeviceDialogBase(0, 0, true ), //ensure dialog is openened modal
+     //QgsGPSDeviceDialogBase(0, 0, true ), //ensure dialog is openened modal
+     //params disabled during qt4 port by Tim FIXME
+     QgsGPSDeviceDialogBase(), 
      mDevices(devices)
   
 {

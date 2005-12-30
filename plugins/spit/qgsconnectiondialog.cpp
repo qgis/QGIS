@@ -29,7 +29,9 @@ extern "C"
 #include "qgsmessageviewer.h"
 
 QgsConnectionDialog::QgsConnectionDialog (QWidget* parent, QString connName, bool modal, Qt::WFlags fl)
-	: QgsConnectionDialogBase(parent,(const char *)connName,modal,fl)
+	//: QgsConnectionDialogBase(parent,(const char *)connName,modal,fl)
+    //Tim commented out params during qt4 ui port - FIXME
+	: QgsConnectionDialogBase()
 {
 	if (!connName.isEmpty()) {
 		QSettings settings("QuantumGIS", "qgis");

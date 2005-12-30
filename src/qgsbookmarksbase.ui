@@ -1,183 +1,130 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>QgsBookmarksBase</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>QgsBookmarksBase</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>344</width>
-            <height>263</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Geospatial Bookmarks</string>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QListView" row="0" column="0">
-            <column>
-                <property name="text">
-                    <string>Name</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Project</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Extent</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Id</string>
-                </property>
-                <property name="clickable">
-                    <bool>false</bool>
-                </property>
-                <property name="resizable">
-                    <bool>false</bool>
-                </property>
-            </column>
-            <property name="name">
-                <cstring>lstBookmarks</cstring>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="0" column="1">
-            <property name="name">
-                <cstring>layout3</cstring>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>btnZoomTo</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Zoom To</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Zoom to the currently selected bookmark</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>btnDelete</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Delete</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Delete the currently selected bookmark</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>btnClose</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Close</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Close the dialog</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>btnHelp</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Help</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Close the dialog</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer1</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>100</height>
-                        </size>
-                    </property>
-                </spacer>
-            </vbox>
-        </widget>
-    </grid>
-</widget>
-<connections>
-    <connection>
-        <sender>btnClose</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsBookmarksBase</receiver>
-        <slot>reject()</slot>
-    </connection>
-    <connection>
-        <sender>btnDelete</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsBookmarksBase</receiver>
-        <slot>deleteBookmark()</slot>
-    </connection>
-    <connection>
-        <sender>btnZoomTo</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsBookmarksBase</receiver>
-        <slot>zoomToBookmark()</slot>
-    </connection>
-    <connection>
-        <sender>btnHelp</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsBookmarksBase</receiver>
-        <slot>showHelp()</slot>
-    </connection>
-    <connection>
-        <sender>lstBookmarks</sender>
-        <signal>doubleClicked(QListViewItem*)</signal>
-        <receiver>QgsBookmarksBase</receiver>
-        <slot>zoomViaDoubleClick(QListViewItem*)</slot>
-    </connection>
-</connections>
-<slots>
-    <slot>deleteBookmark()</slot>
-    <slot>zoomToBookmark()</slot>
-    <slot>showHelp()</slot>
-    <slot>zoomViaDoubleClick(QListViewItem*)</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>QgsBookmarksBase</class>
+ <widget class="QDialog" name="QgsBookmarksBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>344</width>
+    <height>263</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Geospatial Bookmarks</string>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>10</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="0" >
+    <widget class="Q3ListView" name="lstBookmarks" >
+     <column>
+      <property name="text" >
+       <string>Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Project</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Extent</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Id</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <layout class="QVBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="btnZoomTo" >
+       <property name="toolTip" >
+        <string>Zoom to the currently selected bookmark</string>
+       </property>
+       <property name="text" >
+        <string>Zoom To</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnDelete" >
+       <property name="toolTip" >
+        <string>Delete the currently selected bookmark</string>
+       </property>
+       <property name="text" >
+        <string>Delete</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnClose" >
+       <property name="toolTip" >
+        <string>Close the dialog</string>
+       </property>
+       <property name="text" >
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnHelp" >
+       <property name="toolTip" >
+        <string>Close the dialog</string>
+       </property>
+       <property name="text" >
+        <string>Help</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>100</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3ListView</class>
+   <extends></extends>
+   <header>q3listview.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

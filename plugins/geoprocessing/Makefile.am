@@ -15,16 +15,8 @@ plugindir = ${pkglibdir}
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui 
+ui_%.h: %.ui
 	$(UIC) -o $@ $<
-if HAVE_QT4
-	../../tools/qgis-qt3to4.pl -uic $@
-endif
-
-if !NO_UIC_IMPLEMENTATIONS
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
-endif
 
 # %.h: %.ui
 # 	$(UIC) -o $@ $<
@@ -37,11 +29,9 @@ plugin_LTLIBRARIES = pggeoprocessingplugin.la
 
 
 pggeoprocessing_MOC = 	qgspggeoprocessing.moc.cpp \
-		        qgsdlgpgbufferbase.moc.cpp \
 		        qgsdlgpgbuffer.moc.cpp
 
-pggeoprocessing_UI = qgsdlgpgbufferbase.h \
-                     qgsdlgpgbufferbase.cpp 
+pggeoprocessing_UI = ui_qgsdlgpgbufferbase.h 
 
 pggeoprocessing_UIC = qgsdlgpgbufferbase.ui
 

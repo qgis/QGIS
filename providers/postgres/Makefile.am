@@ -16,11 +16,6 @@ postgresprovider_la_SOURCES =					\
 		qgspostgresprovider.cpp				\
 		qgspostgresprovider.moc.cpp			\
 		qgspostgresprovider.h				\
-		../../src/qgsfeature.cpp			\
-		../../src/qgsfeatureattribute.cpp		\
-		../../src/qgsrect.cpp				\
-		../../src/qgspoint.cpp				\
-		../../src/qgsfield.cpp				\
 		qgspostgisbox2d.cpp				\
 		qgspostgisbox2d.h				\
 		qgspostgisbox3d.cpp				\
@@ -32,7 +27,7 @@ postgresprovider_la_SOURCES =					\
 
 BUILT_SOURCES = $(postgresprovider_MOC)
                                 
-postgresprovider_la_LIBADD = $(QT_LDADD) $(PG_LIB) $(GEOS_LDADD)
+postgresprovider_la_LIBADD = $(QT_LDADD) $(PG_LIB) $(GEOS_LDADD) ../../src/libqgis.la
 postgresprovider_la_LDFLAGS = -avoid-version -module
 postgresprovider_la_CXXFLAGS = $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(GDAL_CFLAGS)
 

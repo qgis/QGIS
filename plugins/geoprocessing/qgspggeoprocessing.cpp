@@ -85,19 +85,14 @@ void QgsPgGeoprocessing::initGui()
       "A new layer is created in the database with the buffered features.");
 
   // Create the action for tool
-#if QT_VERSION < 0x040000
-  bufferAction = new QAction("Buffer features", QIcon(icon_buffer), "&Buffer",
-      0, this, "buffer");
+  bufferAction = new QAction(QIcon(icon_buffer), "Buffer features", this);
   bufferAction->setWhatsThis("Create a buffer for a PostgreSQL layer. "
       "A new layer is created in the database with the buffered features.");
-  // Connect the action to the zoomPrevous slot
+  // Connect the action to the buffer slot
   connect(bufferAction, SIGNAL(activated()), this, SLOT(buffer()));
 
   // Add the icon to the toolbar
   qI->addToolBarIcon(bufferAction);
-#else
-// TODO: Refactor QAction for Qt4 use
-#endif
 
 }
 

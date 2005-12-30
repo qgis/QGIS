@@ -16,16 +16,17 @@
 #ifndef QGSENCODINGFILEDIALOG_H
 #define QGSENCODINGFILEDIALOG_H
 
-#include "qgsvectordataprovider.h"
-#include <QComboBox>
-#include <q3filedialog.h>
+#include <QFileDialog>
+class QComboBox;
 
 /**A file dialog which lets the user select the prefered encoding type for a data provider*/
-class QgsEncodingFileDialog: public Q3FileDialog
+class QgsEncodingFileDialog: public QFileDialog
 {
     Q_OBJECT
  public:
-  QgsEncodingFileDialog(const QString & dirName, const QString& filter, QWidget * parent, const QString name, const QString currentencoding=QTextCodec::codecForLocale()->name());
+    QgsEncodingFileDialog::QgsEncodingFileDialog(QWidget * parent = 0,
+        const QString & caption = QString(), const QString & directory = QString(),
+        const QString & filter = QString(), const QString & encoding = QString());
     ~QgsEncodingFileDialog();
     /**Returns a string describing the choosen encoding*/
     QString encoding() const;

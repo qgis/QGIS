@@ -28,7 +28,7 @@
 
 
 #include <qeventloop.h>
-#include <q3filedialog.h>
+#include <QFileDialog>
 #include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
@@ -168,9 +168,8 @@ void QgsGPSPlugin::run()
 
 void QgsGPSPlugin::createGPX() {
   QString fileName = 
-    Q3FileDialog::getSaveFileName("." , "GPS eXchange file (*.gpx)",
-				  mMainWindowPointer, "OpenFileDialog",
-				 "Save new GPX file as...");
+    QFileDialog::getSaveFileName(mMainWindowPointer,
+                 "Save new GPX file as...", "." , "GPS eXchange file (*.gpx)");
   if (!fileName.isEmpty()) {
     QFileInfo fileInfo(fileName);
     std::ofstream ofs((const char*)fileName);

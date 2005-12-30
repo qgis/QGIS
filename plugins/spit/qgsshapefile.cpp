@@ -24,10 +24,13 @@
 #include <fstream>
 #include <cstdio>
 
+#include <QProgressDialog>
+#include <QString>
+#include <QLabel>
+
 #include "qgsdbfbase.h"
 #include "cpl_error.h"
 #include "qgsshapefile.h"
-#include "qgsscangeometries.h"
 #include "../../src/qgis.h"
 
 // for htonl
@@ -74,8 +77,12 @@ bool QgsShapeFile::scanGeometries()
 {
   int progressThreshold = 5;
   int progressCount = 0;
-  QgsScanGeometries *sg = new QgsScanGeometries();
-  sg->setFileInfo("Scanning " + filename);
+  QProgressDialog *sg = new QProgressDialog();
+  sg->setMinimum(0);
+  sg->setMaximum(0);
+  QString label = "Scanning ";
+  label += filename;
+  sg->setLabel(new QLabel(label));
   sg->show();
   qApp->processEvents();
 
@@ -84,15 +91,7 @@ bool QgsShapeFile::scanGeometries()
   bool multi = false;
   while((feat = ogrLayer->GetNextFeature()))
   {
-// update the progress counter
-//    if(++progressCount == progressThreshold)
-//    {
-//      progressCount = 0;
-//      sg->setStatus(0);
       qApp->processEvents();
-//    }
-
- 
 
     //    feat->DumpReadable(NULL);
     OGRGeometry *geom = feat->GetGeometryRef();

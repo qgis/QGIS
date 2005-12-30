@@ -28,14 +28,9 @@ grassprovider_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(GRA
 libqgisgrass_la_SOURCES = qgsgrassprovider.cpp \
 			qgsgrassprovider.h \
 			qgsgrass.cpp \
-			qgsgrass.h \
-			../../src/qgsfeature.cpp \
-			../../src/qgsfeatureattribute.cpp \
-			../../src/qgsrect.cpp \
-			../../src/qgspoint.cpp \
-			../../src/qgsfield.cpp
+			qgsgrass.h
 
-libqgisgrass_la_LIBADD = $(QT_LDADD) $(GRASS_LIB)
+libqgisgrass_la_LIBADD = $(QT_LDADD) $(GRASS_LIB) ../../src/libqgis.la
 libqgisgrass_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
 libqgisgrass_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(GRASS_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(GDAL_CFLAGS)
 if HAVE_POSTGRESQL

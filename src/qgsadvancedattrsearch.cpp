@@ -18,11 +18,16 @@
  /* $Id$ */
 
 #include "qgsadvancedattrsearch.h"
-#include <qmessagebox.h>
+#include <QMessageBox>
+
 
 QgsAdvancedAttrSearch::QgsAdvancedAttrSearch(QWidget *parent, const char *name)
-    :QgsAdvancedAttrSearchBase(parent, name)
+    :QDialog(parent)
 {
+  setupUi(this);
+  connect(btnShowHelp, SIGNAL(clicked()), this, SLOT(showHelp()));
+  connect(btnSearch, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 void QgsAdvancedAttrSearch::showHelp()
@@ -44,3 +49,7 @@ Short overview of syntax:\n\
   
 }
 
+QString QgsAdvancedAttrSearch::searchString()
+{
+  return mSearchString->text();
+}

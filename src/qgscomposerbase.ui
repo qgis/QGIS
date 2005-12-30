@@ -1,655 +1,489 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>QgsComposerBase</class>
-<widget class="QMainWindow">
-    <property name="name">
-        <cstring>QgsComposerBase</cstring>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>QgsComposerBase</class>
+ <widget class="Q3MainWindow" name="QgsComposerBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>725</width>
+    <height>526</height>
+   </rect>
+  </property>
+  <property name="mouseTracking" >
+   <bool>false</bool>
+  </property>
+  <property name="focusPolicy" >
+   <enum>Qt::ClickFocus</enum>
+  </property>
+  <property name="windowTitle" >
+   <string>Map Composer</string>
+  </property>
+  <widget class="QWidget" name="widget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>38</y>
+     <width>725</width>
+     <height>488</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" >
+    <property name="margin" >
+     <number>8</number>
     </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>725</width>
-            <height>526</height>
-        </rect>
+    <property name="spacing" >
+     <number>6</number>
     </property>
-    <property name="caption">
-        <string>Map Composer</string>
-    </property>
-    <property name="mouseTracking">
-        <bool>false</bool>
-    </property>
-    <property name="focusPolicy">
-        <enum>ClickFocus</enum>
-    </property>
-    <hbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QSplitter">
-            <property name="name">
-                <cstring>mSplitter</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>7</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="focusPolicy">
-                <enum>ClickFocus</enum>
-            </property>
-            <property name="lineWidth">
-                <number>1</number>
-            </property>
-            <property name="midLineWidth">
-                <number>0</number>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <widget class="QFrame">
-                <property name="name">
-                    <cstring>mViewFrame</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>7</hsizetype>
-                        <vsizetype>7</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>10</width>
-                        <height>10</height>
-                    </size>
-                </property>
-                <property name="focusPolicy">
-                    <enum>ClickFocus</enum>
-                </property>
-                <property name="frameShape">
-                    <enum>StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                    <enum>Raised</enum>
-                </property>
-                <property name="lineWidth">
-                    <number>1</number>
-                </property>
-            </widget>
-            <widget class="QTabWidget">
-                <property name="name">
-                    <cstring>mOptionsTabWidget</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>7</hsizetype>
-                        <vsizetype>7</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>150</width>
-                        <height>10</height>
-                    </size>
-                </property>
-                <property name="maximumSize">
-                    <size>
-                        <width>300</width>
-                        <height>32767</height>
-                    </size>
-                </property>
-                <widget class="QWidget">
-                    <property name="name">
-                        <cstring>tab</cstring>
-                    </property>
-                    <attribute name="title">
-                        <string>General</string>
-                    </attribute>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QComboBox" row="0" column="1">
-                            <property name="name">
-                                <cstring>mCompositionNameComboBox</cstring>
-                            </property>
-                            <property name="enabled">
-                                <bool>false</bool>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>7</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>7</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>Composition</string>
-                            </property>
-                        </widget>
-                        <widget class="QFrame" row="1" column="0" rowspan="1" colspan="2">
-                            <property name="name">
-                                <cstring>mCompositionOptionsFrame</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>7</hsizetype>
-                                    <vsizetype>7</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="frameShape">
-                                <enum>StyledPanel</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Plain</enum>
-                            </property>
-                            <property name="lineWidth">
-                                <number>0</number>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget class="QWidget">
-                    <property name="name">
-                        <cstring>tab</cstring>
-                    </property>
-                    <attribute name="title">
-                        <string>Item</string>
-                    </attribute>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QFrame" row="0" column="0">
-                            <property name="name">
-                                <cstring>mItemOptionsFrame</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>7</hsizetype>
-                                    <vsizetype>7</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="frameShape">
-                                <enum>StyledPanel</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Plain</enum>
-                            </property>
-                            <property name="lineWidth">
-                                <number>0</number>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-            </widget>
-        </widget>
-    </hbox>
-</widget>
-<toolbars>
-    <toolbar dock="2">
-        <property name="name">
-            <cstring>Toolbar_2</cstring>
-        </property>
-        <property name="label">
-            <string>Toolbar_2</string>
-        </property>
-        <action name="actionSelectItem"/>
-        <action name="actionAddMap"/>
-        <action name="actionAddVectorLegend"/>
-        <action name="actionAddScalebar"/>
-        <action name="actionAddLabel"/>
-        <action name="actionAddPicture"/>
-    </toolbar>
-    <toolbar dock="2">
-        <property name="name">
-            <cstring>Toolbar</cstring>
-        </property>
-        <property name="label">
-            <string>Toolbar</string>
-        </property>
-        <action name="actionZoomIn"/>
-        <action name="actionZoomOut"/>
-        <action name="actionZoomFullExtent"/>
-        <action name="actionRefresh"/>
-    </toolbar>
-    <toolbar dock="2">
-        <property name="name">
-            <cstring>toolBar</cstring>
-        </property>
-        <property name="label">
-            <string>Tools</string>
-        </property>
-        <action name="actionPrint"/>
-        <action name="actionImage"/>
-        <action name="actionSvg"/>
-    </toolbar>
-</toolbars>
-<actions>
-    <action>
-        <property name="name">
-            <cstring>fileOpenAction</cstring>
-        </property>
-        <property name="enabled">
+    <item row="0" column="0" >
+     <widget class="QSplitter" name="mSplitter" >
+      <property name="sizePolicy" >
+       <sizepolicy>
+        <hsizetype>7</hsizetype>
+        <vsizetype>7</vsizetype>
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="focusPolicy" >
+       <enum>Qt::ClickFocus</enum>
+      </property>
+      <property name="lineWidth" >
+       <number>1</number>
+      </property>
+      <property name="midLineWidth" >
+       <number>0</number>
+      </property>
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="Q3Frame" name="mViewFrame" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>7</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>10</width>
+         <height>10</height>
+        </size>
+       </property>
+       <property name="focusPolicy" >
+        <enum>Qt::ClickFocus</enum>
+       </property>
+       <property name="frameShape" >
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow" >
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="lineWidth" >
+        <number>1</number>
+       </property>
+      </widget>
+      <widget class="QTabWidget" name="mOptionsTabWidget" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>7</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>150</width>
+         <height>10</height>
+        </size>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>300</width>
+         <height>32767</height>
+        </size>
+       </property>
+       <widget class="QWidget" name="tab" >
+        <attribute name="title" >
+         <string>General</string>
+        </attribute>
+        <layout class="QGridLayout" >
+         <property name="margin" >
+          <number>8</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item row="1" column="0" colspan="2" >
+          <widget class="Q3Frame" name="mCompositionOptionsFrame" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>7</hsizetype>
+             <vsizetype>7</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="frameShape" >
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow" >
+            <enum>QFrame::Plain</enum>
+           </property>
+           <property name="lineWidth" >
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" >
+          <widget class="QLabel" name="textLabel1" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>7</hsizetype>
+             <vsizetype>5</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Composition</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" >
+          <widget class="QComboBox" name="mCompositionNameComboBox" >
+           <property name="enabled" >
             <bool>false</bool>
-        </property>
-        <property name="iconSet">
-            <iconset>image0</iconset>
-        </property>
-        <property name="text">
-            <string>Open Template</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Open Template ...</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+O</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>fileSaveAsAction</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="iconSet">
-            <iconset>image1</iconset>
-        </property>
-        <property name="text">
-            <string>Save Template As</string>
-        </property>
-        <property name="menuText">
-            <string>Save Template &amp;As...</string>
-        </property>
-        <property name="accel">
-            <string></string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>actionPrint</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image2</iconset>
-        </property>
-        <property name="text">
-            <string>Print</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Print...</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+P</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>actionZoomFullExtent</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image3</iconset>
-        </property>
-        <property name="text">
-            <string>Zoom to full extent</string>
-        </property>
-        <property name="menuText">
-            <string>Action</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>actionZoomIn</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image4</iconset>
-        </property>
-        <property name="text">
-            <string>Zoom in</string>
-        </property>
-        <property name="menuText">
-            <string>Action</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>actionZoomOut</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image5</iconset>
-        </property>
-        <property name="text">
-            <string>Zoom out</string>
-        </property>
-        <property name="menuText">
-            <string>Action</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>actionAddMap</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="iconSet">
-            <iconset>image6</iconset>
-        </property>
-        <property name="text">
-            <string>Add new map</string>
-        </property>
-        <property name="menuText">
-            <string>Add new map</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>actionAddLabel</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="iconSet">
-            <iconset>image7</iconset>
-        </property>
-        <property name="text">
-            <string>Add new label</string>
-        </property>
-        <property name="menuText">
-            <string>Add new label</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>actionAddVectorLegend</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="iconSet">
-            <iconset>image8</iconset>
-        </property>
-        <property name="text">
-            <string>Add new vect legend</string>
-        </property>
-        <property name="menuText">
-            <string>Add new vect legend</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>actionSelectItem</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="iconSet">
-            <iconset>image9</iconset>
-        </property>
-        <property name="text">
-            <string>Select/Move item</string>
-        </property>
-        <property name="menuText">
-            <string>Select/Move item</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>actionImage</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image10</iconset>
-        </property>
-        <property name="text">
-            <string>Export as image</string>
-        </property>
-        <property name="menuText">
-            <string>Export as image</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>actionSvg</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image11</iconset>
-        </property>
-        <property name="text">
-            <string>Export as SVG</string>
-        </property>
-        <property name="menuText">
-            <string>Export as SVG</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>actionAddScalebar</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="iconSet">
-            <iconset>image12</iconset>
-        </property>
-        <property name="text">
-            <string>Add new scalebar</string>
-        </property>
-        <property name="menuText">
-            <string>Add new scalebar</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>actionRefresh</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image13</iconset>
-        </property>
-        <property name="text">
-            <string>Refresh view</string>
-        </property>
-        <property name="menuText">
-            <string>Refresh view</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>actionAddPicture</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="iconSet">
-            <iconset>image14</iconset>
-        </property>
-        <property name="text">
-            <string>Add new picture</string>
-        </property>
-    </action>
-</actions>
-<images>
-    <image name="image0">
-        <data format="PNG" length="740">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000002ab49444154388da592cf6b145910c73ffdfaf5cce89828665d59041161452ffe020fba882e48b25e04f1a4a010d69b9e16140f8282272f8207ff020fde1c903d854571573c040c0839c4433022318a4163764d4fbfd7af6a0f3d3f75263158f0e55515af3f555dafa2837766b55a8929c786dc077227e42ee01b67ee04bfc299bb40f0828440c8fe45dc22b65a8919d9bf99cc4156877a06f57a4329a47548d3863afd14c480537001d40040142d821bc3ae2959b20c9c2be41d78df500e790e2134d4e14b8754695b9c1051c20e26ca2f3fb53fc873c81b90bc43bed3f7edd37b25045055542138e5ee7d835d5f86a35b59b5a916301141441151541597290f9f188c76fdc7f7419b3eaa186475e036547b428b188cae02dc0d95afa0aa4a104155b1fd4631bcb0b72bbe171e52ad56b1364144ba8a140fd72e58807b743cbcb0974bf195aedcbe07bb787c789c4d9b7e2449929e1d778ea26fc713e93fbcc8265bf1b15f77728373f0f1ebbb7f3d9a627c78aa5150971f851747163200dee7cbbfc3ce43db38f7df6fad78e30d7a8f02c089c305cf27b55cd83ccaac9fee0b9e4bfee46ce5562bbef8ea7aff8eebe2580a1918cbe4d204c684bee01465bef4b22b67fbedb1138f37558e0cec615117a03f97a520bc2fcf007067ee316ffff81dfb65c3d228b494a7addc5c36db9f0ab84c98283d6d775b19c2aa4817b4099e9179f6affd99f1cfe3cb4201a8075eccbfe58319e2fcb3abdc348295a0789f17fb188a056fdad8ebbf5786362d0dfc300483831b800f4407ae4deaf68d31c107421e083e905e1c65f7d4114eef3843260e804a5ca66ccaac4b0648a284c494581357498cc54609c7a70ff1e6c229ecba2d4cbf8bb1b74716a32f8b5f036d42cba6d482af64f3cf8b951babd522dbebc2d483394e72e2dbc700b8cb457fb55a2d02e8096e5e5aad35a100ff030bb5220fa834d6220000000049454e44ae426082</data>
-    </image>
-    <image name="image1">
-        <data format="PNG" length="1042">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000003d949444154388db595cb6f55551487bf73ee39b78fdb963e2896f250032889e023c6181b7560d4908803fc0f4c1c189dab2307cefc07706a629ce8cc1812626270c01582107c10838ab708a58596dede7bcf39fb9cbdd6dedb416b95b61a18b8266b6765e5cb6fffd6ce5e51b3d9e46ee3a1733321994e71a3efd099edd19bbdccadb327697cd08c36f626774d05e241183810a86fbfced8e137e8b4e6084e597c7f266c8427dd5e1ae25a8c8a274d623add9cca2a4e1d69524355b1565175f881233cb3ed245cfb94a8f715034b8f723b2ff82c1ce3f58d8ad37acafe03bb896b31bba7c678f7c3cfb156b96f7284f7de7c65bd314886fde96d621f4309743ccb7f2cf05d7a94f3eda54de0b8aa84a2b4949505e0f4f95f5958ec604afb8fb680b63ea6be7d1eba8320dbf0bd617e2ef661771ec27bb7c9b6c48a62c511d60adbc78638b86f270fee9d5c6ff2f90d082788c228547d500ed059aaf3cbc0d374ba0556640bb055ac28d19af5475f789cbdd313ec98185e131bf0ed53c47d2dc8c6c1d770d908baeb0916af4fd1e9b451dd4ab115ac28ce7bdadd82d78e3c49088110028bcb3d70866dbd2fa98f0dc1720daa3e7a799d2b8dc3ace40e5394ff0656441cddace4dc0f2d541daa0e518f3ac7a4bfc0f387e6c08c0101a4c1a539e18b4a59ce7b94558573ffa1d894165187885bcdea0892f3d8d4199291695812700945db71eae64e6e440e6b2dc6dc099e99792bac0dcf61c5e17da0315047d355a555a58cf03dbbee0f6087000b3ac4efd7e6e98c1c64c8a5dccc0baacae29c5f07ae2bae2ac18a303cd4cfcbcf3e82739eb2b498ac437fe7348df149e859080df2b643f6bcc8ab4f3d8715c7479f9ca0280c22968d11cbda73fbcbdb3c37e47989942bf4452da2681418043fceed76442fdd83292ddd6e469e1798c26ced715509228ea2a868b596b875ab878852d33613d353201310d5711af3e335c3ec508c2967e9ef4f30a6c45a8b777e8be189525616b596380e0c0e26880492ac8bf7fba0fe304ee6695dfc9a85bec31079d23426048f5841ace0fd16e0aa127a5941bd169365259d4e8188d2b7b248363e4a54445c39d3e2ecfc03ac24c368665075a4698cb582d5cde066f37894185351e4069f268828ce39bc776499e5db6fce3358bbc86fdd51cce02ebc28de3b9c734451c039c53b251068368fdff16dc6c6541863294b8baa1282c77b8fb74a397795ab760a3bbc9b10c2bab224a951afa738ef11755b5b618a926ca58b4d62f2bc8b8822a2d8c60eaafd2f116a0d525160f5262180aac3980ad3eb5215f9d6c35b5c5866f6ca1c22c2a50b97f17e5599737efdfc77beb3b670b54d5529de6fda4c44f7b2f3ee25e2ff850afc0914fabffac08630830000000049454e44ae426082</data>
-    </image>
-    <image name="image2">
-        <data format="PNG" length="709">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000028c49444154388d8d95af7bdb301086dfec0938319bc530b061350c2cf458cb5a18b83f6181a363a3851debd8020b1dd6b01a0adacc62772c03b21de7d7b38a28962eef7dbaef2c4fcab2e4d268db762f22a4697ab46e6600a82a0021049224c1393719c74d2f52011121cff30174ba371280f7fe2ce62a18a0aaaa33d8692255c539f779f02580999d25e8e753f8972bdcbd990dc1ce399c7347f5eeeb2f2267f5bdaa5855499284b66d1191c1a8f1b874fccf28c6ccce3a620ced935d32f7aae25ecd25a5e375553dea90ff82ebba663e9f9365d955786fe476bb2584b01749c8b274a8f5115855f7de7baa5d851482880c80d3b957dad62d6559d284869b9b9b7d5114a4693a99f46f9eaaeeabca13ea063580cb4a019ca408020e7ced797fdfd13435aac6623167b55a45c5bdd2e2ee0e97a6a81a9872668b1920946c79e32f4b5bb2fcc8a9aa1da8e1808ff70f7ee933d3086d78f8fa40324baeaaec4745c54f7ee0f1ecd8f1222f14fe9e97f699ba0e1846e33dd3d0049e9eeeafba7b3a5252ee5852221414dcdede9248466b35cf2fbf092190ce52a606785fc77e340311628e9848041c2e56dc14c4f1cdbe738f27b38c1d1598916659dcefdc99b6758d1789f53463f0cd4174b13b89335001e29a00de1a8c7887f8aa1a3c7174edd62f580fc486a650a229b19d87c8a173a4f7743414658a80b5a33f6827761c688028d8e98ec3aca53b677f36f27cc9176ca47210abf1d1baf908eafab00eda01bb72ce663356aba7a8d87bdf5b0562100408d139b388915e951d601c6a8e1922b05eafc9b26c329dcfe7bc6ddef8b3d9a06ac4fb47386a3e193dcb01399cb3eba6f57a4d9ee71380e195aeeb7afffabaa1e9be5f8a76a61c9c397c3540b58dbf83912f731e1f1f592c16c325f40f010f7cb0f1b5c3040000000049454e44ae426082</data>
-    </image>
-    <image name="image3">
-        <data format="PNG" length="1036">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000003d349444154388d9d955d6c935518c77fcfe9fb767dfbf68bad74b45d2633412210d73a241ab8f18e3ba33341054d0c7283098944b9e88d5ef01143162398104988d1184504168d89a20971260e932d9841600c47c62619fb820e46dfb6efb61e2fdac136b42cfe937373729edf73f23fff3c473a3b3b99d3e0e05dad9430a903dcc3a6a86a88aabbf84b398c924b63634858a20c80d4fb2f6b8014408dc9813dbd848382df10721ab2331a736c987bfd57356e91356b620b1a341f7a43ebbf6fa3c7f330a3b9f8e559510bda042d8eecbd423ca6088714b65ff09a10ab5344d736524c6f226ffae8ee1ed4f3cb7a767d21521f4296d5dcdf531d1d7d1ad30375016479889d5f6d26193748c40ca2cb3c589650c86b1048242dec741ab7b4d09196dfdbb48ad721cb0310f196c1c56211a90b72f8dd1e884591588ccd27df26690bd3aea62969128978b07c822848ac8ae26d4872e64c8f067846f76a922b91449c9ecc095151bb0cceba06fb76746159c24feffc88c4128cbe79843830a3c12e692261456d58110a28fc5ea161fd2a1ca70040973c292afe38e79fcf0840cf07a704c0c861b3c25298a6a03c7069db47c481b182261850d886302de557568006128db1fb6080ae9af44369318ade30a6014ac1e8c42cd9ec2cd72d85c727acb0153e017f253e9e0a7816c8e78bd5e3363b3581f2085a4338a0f0790505d4fb15b50aa6000bf0ce03bb80e3e4ab82557e6400d7d5181e181e9dc529684c5370154c56803ecab7b62b4dc6aedd209f2f54e3a272e3c38c5cbe0280ed17dc1998aea4d453b1c0a8c0e7c0bf9cf8f9915628d79de1ea0fa771f29a5050611855cfd3df37c485eecb3435355407efdfbf5d9cb161ce1dfd8c9c5322680b42396ab3c04c6515808b7d43b4ed3b4a2ab59a50c8ae0a96b92194c91cd3e16403cf6e6d65dda6b504fc82a5ca16f880b3c7cfd0f1fdafa49a5793482c47dfe9a7f1c6c714f22e91574f3e1437993fdd3299631a20148b12ac0de3518212b87ea91f808d1b9fa6582c1251633ce1b4b32115243bd04fef4d8b956f9d92ff042f55170eb7ead6dddbb103619c9ed35c3bdfcbf9218be65d0fe06a7151cb5f5febc57b8b95cbc3b9f6efa85916c1ffd40ba4d66e635dc2a1e340ebfd5a050fe671faf86eadc76ed232d85e15fedc9e53d2d53dceb7070fe1f963103d3acc7a33c586c77234b76dd550b1620e4c348024eaf9b3f5c325fd14dfbcf7924ea563bce20b51ba3509d92974d6614fd1b3c88a897b4b86026c39785a7eeb1ce5f3a92918bf83be95434f16d0ca7cd8e3d4de2d8ff478be767cd22eafdf9840dfcea1b305989ac64e6dfb7fa9f8377dbaf3456d590a63cd6b0c8c14f807d6406ba62ab0be6f0000000049454e44ae426082</data>
-    </image>
-    <image name="image4">
-        <data format="PNG" length="990">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000003a549444154388d8d944d4c5c5518869f73ee9d61eedcf983c10166909694b6169b76686815ea8e75352d2b7fe2a676638c494d74416a178db60bd3187f36a2c44537fe15d2624cd060c4c4210d84488d051a1a0a2148079281d2b933739999e362069cd8f6d22fb9c9cdcdfd9ef3e639e77c229148b055f3f3f795948235e5e30126395945adbc8fb798462fda343505044f58fad6cbf47452ad1066bd7a375a384cd02ff0ea82b482545ee14a2ef160f6b6c2ced1da1ad97101914824181f9f5749f7d36cb6b411a995181e81cb55eab56d85d72bd0a464632d4b71e20fd47a8af6f65d8e70393232a392c520f69e36a20d1a75119d58834e34a2535bad6118826c46818068ccc06c6bc32eee6c44e67239b275fb08574b6a821af56149cc2f8999824d5bd11c73110a69181e819010dd5b8bbb31c6d0d0a47204a76c1d4fac01c310f8bc82a04b10011a80bc02b3a8080525354149c027f1ba058ded7bb1acac63623d8d49bd2171b90452030d7001c9acc2ef9398ba6053947659020a8836457606e7dc415c3a4809f7560ba45205ee1a12cd23a837251e015e4a60ad0c2e00994cce195cd858456a02a520e89378dc0209d4792535123600037057806dc0b2328e6099599ec3b615ba064bf70a585985cb25b025ac95811e4aa9cdf222c93b8b6432ce2a647a6589e55bd300985e819d87cdf27e6b65057a19be05fee5bb9f7754216d3bcfed1ffbb1328a805fa2eb8eff333bb3c0cdf15b3437373a832f5e3c2dace412a3bd5f93b68af84d81a074d40a40befc6481bf6616b8fc612ff1f87e0201d3112cb686504f4f9f0ac61a79fed56e0ebef02c3eafc09025051ee0d76f8618b9fe1bf1c3fb89469f42adcfd2b4f809d98c4de8e51f1eba8aa272baf5f4f4298040a4167f4d104d0aa480bb7fcf0270fcf81172b91c2199649f35c0b1b89fd4dc2c53ff18ec7ee3aa7824b88bceed2b3a4cc27118dcfcac5b75bf731ad317c49aece7cec414130b0687dffe0f2e2b1b065bcec3a8a33a00d219181db846557508efa197d873e40007a3162397bab7c3c92e3a55655a80aed14ed535daf9d821d3f1de553136bec2f71f7d4a553882f7d08b1c38fa0cc776a5b97eee940210460235d872fea1e613572e30dce1ace4db774fa9785b84d7df3f4b6e75096bf21a63bf4f31f8a789302e534ad6515271e2ca85edc69dc0005fbe75523d77b49e331f9c25b7bcc8ea583f97be5a410e7724c4ff018ffaf6b83af3f98018bdb14cefb98fc91b35f4fd0466fcb58a5351e1f449a195f5c59b27956148f4d657985bcef22ffa4c57dc5c79cf100000000049454e44ae426082</data>
-    </image>
-    <image name="image5">
-        <data format="PNG" length="944">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000037749444154388dad944d685c5518869f73eebdd3b9f7cecc9dfc7492ccc4d8d03f4cab4d4ab495ba77a5d20617b6d04d154144885091802252db5516e2cadae2c28d8aa6d60a128b62844e160dc154cc4f494913424c2691499ace9db93733735ccc8c166b6eaaf8c281b338df733edeef9c57a4d3696a9a9dbda3a414acaa0877b1f1e4361ae51dac720ebdecd3d616133ca0f4da667232a3966960ad6e075a43034e5460e9829c826c51616416b83b7d53e17b747424b6bc40a4d3694646665526f4101bbbba48344accb0c0302ab5beafb02c812625ebab05caa3d7506b59babb1f0e84cba1a12995293bf83bbb48b668342574522d3ac9844e639d86690a0a790502922913bbab0bbfbcb523d2f33c0a4d7b68a893d43b1acd0d92545492b2051bbea23d65108f6b9861819090dcdd48a835c5e0e0980a04677d9d70aa05d314442c81630812400b5054609715714752ef486211891512b476efc6750b811deb396c9a4d896108a4061a60009982221a91d8ba604354a62c010524db125b83bd9083a18394b0b452229b2d71db94686141b32d090bb0a880b52ab804e4f35e30b8b4be82d4044a811391844302093459927a09eb800984ee01fb80ebe603c132bf3883ef2b740d16964ab8058561087c09ab5560984ad776f592ccad79f2f9602b646e7981c5f149006c4be01761a33a6fad6a815e85d7c0573fff6e4b2ba4ef17b9f9cd006e5e118b4a743df03cd35373dc1819a7bdbd35187cf6ec29e16616183eff3139b74cd416082a4fad0414abab00fc323547ff7be7e9ecdc4b2c660782452d84fafa2e2a27d5cae1133dec7f6a1f114b60ca8a0561e0874f0719fafa473a0fec2599dc8e5a9ba66dfe7d0a799ff80b5fdcf715c5bde9d6d7775101c4128d44eb1d342990026eff3a0dc0912307f13c8fb8ccb0c7bdc4139d51b233d34cfc66b2e3c52fc5a6e007d58d0f7a54cfeba7b0230eeed800b74627189d3339f0da5f70f9afa9402e0fc3972eb3ad2e8ef5d873ec3cf808fb932e43e77afecc0f61a6f9e7301986ef9f4c6f1a63dfbe734ced7b743bcfbfd18bf7fb12eed8578c5d9be0eab8c5b367068430d3a82bbbdebeaff0994fde0d04037c76fa98eaec4a70f2ad5ebc9505dcb1cb5cff69822b3fdb08b37f938e09eeb8a68f5e3daa0e3ddecc4b677af116e759b93ec0b90bcbff6d787fd787af1c55870f3573e2f4cbf4bf79815ce2e9ff075c839ba644ef38cecc62813f009dff4681b20b14760000000049454e44ae426082</data>
-    </image>
-    <image name="image6">
-        <data format="PNG" length="610">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000022949444154388db5943f68136118c67f7749b4491aa3fd0336041c04971844c4417110d2c12d8b84888320084e595c747113cca85b1504b7201d9a451c5a9241424550ac4585965a9b104369af4d9ae472492e9f835c12739726adfa4c77df7df77b9ff7f9ee5e2993c9f03f64ef5d482693e26fa1e17058328101cedf796c5a8be62412fee16a269fdf17966003646858a0a1783c8e3c086adcf7c2a339c9b4af5b968e137eb1ef4bddcf7af719062c1d5b15ea07ea676820f8a0f90e747c5060af4c192ba50afac7391697d7b899bbcb2bf536635e0fd3f79eb40b1aed1ac58dc3ed3e6413d8e974619bf071edfa596cb2830f9fbe92997d69eac6ea73eceed2041e75b91871bb71b8dce4f6eaac961b6437b243b5df5dcc94f1c9291fb2dd4ea1da205fadb155aeb2b69ee561f8028f22974c2efba9edf8ddd28ab878e532e7ae4e932fabacab55545dd0946c8cde7ac076a502efe7f78519c5e6a2373a60cf310feee327d828d728483a454d4313a0fa4f511f19a7a9d6682e2d0e8ca3b8f08c4020d089e2a7a2b0b253e1cb6e1521cbd8649952bdc5a4f308134e07764982feff461b9a4aa50885429de9f666e12dcb9a0ba521981af3b033e9e3fb5e0d6ffe075ebd457dbb88aa6cf685eececf904ea789c56212806435e8a3739f8576fa0caa2e38bafa0d31fb144d2d532d2ab41a2a42fc797091488460304828146af76439844ab53a2dfdf7cb8da6ceebc48b0121986509165b9bc885f1f6f5616419c5bfd05063f330fa05b6deeee72e66477e0000000049454e44ae426082</data>
-    </image>
-    <image name="image7">
-        <data format="PNG" length="547">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000001ea49444154388db5954f6bd3601cc73f495a5dd3759ddb0aae08de7a127c05c2500fbe000f43104550212c10040fbe066f16725444100f3b78122fdea4cc8be01c7aa8ccb94a2d65cb6c6d93a669f27890859274a571ebf7f4fcfdf0fd7d797e3c52a552611a92a7420552c313dff785aeeb0094cb6514459100344d1387670cc3a0542ac5d6014cd3944682755d0f37354d13a669c62e8d5b1f669d5814c36e638ec7e9d0916118139d8f81a325451d45a3384ab1284cd394a2654da2a8a1634771548552b4419ebd7829562e5f61636b1beb6715c77159c8e7b8737335511531c7998c8ab254e4daf50b28729a8f9fbe52597f9e84098cc878565599c96649ab59ea1e7ceb78d4766bc7079f5d2e22a752346c8fbadd63af63b3bd53e3f6dd35717fedc1c83cc7823f6c56453057101757aed2f57c76da36dd41c0405298bdf588fd4b37a84bf3133b0e33cecde5c8ce9f61b7d3a321f9b45c17578073ee3cfd9945064e8fc1e6c6c4e0d0f12fcba27ad0e5cb6f1b21cb28b24cbb1f50c89c62299326254990e05d848edfbe7bcf96ab627982e5851c078522dffff4c8d77f90f703fafb2d1cab991cfcf8e1bdd0cfeaebcfc215391c5f70bad942ac3fc1753ab82d2b397858ed5e9fc0fff700bc81cf9b574f13b7f848b0d86b223716c3f1ff28d6d227a5a9fd797f014413d4bc623ea5470000000049454e44ae426082</data>
-    </image>
-    <image name="image8">
-        <data format="PNG" length="514">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000001c949444154388dd5944f6b134118c67fb3d934cda6dbd4b6011b046f39098217695028eac10fe041bc78f31b78f00b782978285ebc282288871e3c89176fb2ad17c15a1436526b233184766b62b27fb27fc683b8c46c28d960119fd33bc3cbc333bf79678461181c8794711b4dd394a669caa3ea41a9838be56a35d1b06118227dde21e3494d4649fcdf8cabcb49c6c6c65f603ca9c9281d1b637578e3d193a772e5d26536b777b0bed6701c8ff9a2ce85f3e700a8542ae237d3e1fa48e37c5e23b358e6eab53364942c6fdf7dc4587f9c3a71622a66348de94281ac56a0e1c3a7ae4f7daf9eda3891f8e45219455569da3e0ddb65bf6bb3b35be7eeea1ab9dc140feedffbe3d8c3081289df6cd564345b926757aed0f343763b36bd20221019666edee1e0e20d1a620e4839c7faac4e61ee047b5d97a608697b1e9e04e7d469fad30b048e4bb0b539368a38f137cba276d8e3c3771ba9286414854e3fa2949f62319f451502524c799cf8e5abd76c7b1a962f599ad7392c95f9fcc3a5d8f842318ce81fb471ac16c0588c63e3d5dbb7e286ebcfdf4b4fea38a124d76a23d7d7f09c2e5edb4a9f78501db74f14feba0f3f0879f1ec61eaa73ed258eeb7509a0b713d89fefd7f9c563f014fc9ecaa3445923d0000000049454e44ae426082</data>
-    </image>
-    <image name="image9">
-        <data format="PNG" length="619">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000023249444154388d9d95c18ed2401cc6bfd9b4225dc1333c850909a53d981e3d686cc381e730247334e0918b8f4138901e3c1163241e5ae0e423684c7a585936b22bbba5edfc3dd476a17485fa25cd4cfb9ffce6ebf49b0e334d93f0579c73861c0d0683c263a4dda2a6696459166cdbc66e9b0564ebb66d1f4cc412c779c5a24a4c70ce19731c079aa61100f47abdff021211badd2eaad52a5cd76500202533258e1b8d46617014f8906519966581738e149c5d06c3304e868ac0c7e74f1f512e9761db365cd705009c258eb3aa542a47aff37209e78f1f414401b29cb33cc727398d0288c087087d501422cb9192fc1d83abaa0a0098cd66105108b1bd8da1810fda774c9c737656c4e57c3e47abd5c2faea12bfae2ee1ffbe4614dc4184c1c1d842e004fee2e56bfcf8fe0dcb9f17b8bbb98608b707e324ce394b725c04aeaa2adebfe3089f3ec1d6bf85102249054b1de7a5e214f89bb703789e879bf51abeefc334cd7bc7c0f10f97c4e921e7af9e3fc372b9c4703884a228e4380e3bea9844040afc7f3afff0e52b3ccf4b39baae53aee3e9741a434940840128cc073376ff075dad56e8f7fb984c26f103d334c9344d3aa666b399f601ecf5c7e331d9b64d9aa69161180480d2b825af916d3b9d0e00a05eaf4355d574a36425cb324aa5527abf9763d77519e79cedb6a3d128add76a352c168bbd652022b4db6d30c6404490a4f8ec608ee3e43ad895a669e4ba2ed3757d2feff14ac493288a82cd6693d64e02ef2a0b7f4885b7b4e338b98769567f00cbbc5e7d3a9f16810000000049454e44ae426082</data>
-    </image>
-    <image name="image10">
-        <data format="PNG" length="613">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000022c49444154388dc593c16a13511486bfb9b9e9049228cd14dac1086aac8b6e440aedc282f8060a2aeebb2df806ee2ae253742b8a3e8048174204250b49a49b5aa7602c6d1c934c3386cebd738f8bd090bd0b0f1ccee6fcffe1fce73f5eb3d9e45f42fd131af0e6e7e7a5d16850afd749d394288a0010118220606b6b0bdff7514ae1791ece398a5a8108cf9ebf406f6f6fb3b9b989b516630c699a62adc55a4b9665846188d61a6b2de3f11fb22ca7d52de1e1b1bafa1ebdbcbcccdcdc1c00c69869f36834220c433ccf234d539c73586b89e3dfc47d9f4aa9486e0d7a3018d0ed764992842ccbc8b28c344d69341af87e89bdbdaf44dfbf51ae5c606929a45c2e73e7aaa1522df1ce09badfefd3e974180e87d335b4d6acafaf7374f49357afdff2e163874b8b151e3dbc47a3711da5146a2e0791c91544642a9c738e5aad86738e64d0e3cd6e979b8f5ff239aad0fad4c418c3d9d919711c4f86e5798e736e9a799e936519d65acae52a37ae2d60dc0fae5cae500b6a88085114717878c8f1f131fa1c345b7bbd1ea3d188eac580a74f1ef0a5bdcbddfbb7a8050b186388e3186b2d223221b0d692e739799e2322244942bbdd66656585c5c5256e57aa0c9321ce09272727c4718cd61a002d22ccae212228a5e8743a38e708c310630c9ea7e8f77f71707040a150a0582ca29442d7eb75363636383d3d9d1ae83c27408f42a180effb0441c0dadadad4c6ed761bbdb3b3c3fefe3ee3f178aac3ac26e764b3428b082242abd5c2fbefdff817a3ac73c317fdec860000000049454e44ae426082</data>
-    </image>
-    <image name="image11">
-        <data format="PNG" length="215">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000009e49444154388da593510ec3200c43ed6a9722f79773aceca34a17681168f50f0285273b044ac21b1daf6e03f8ec1499b5a87bc9397560cdba62b316921341484ec959811da09945f05cbbcb831e1d34b370890cc0252664a55b04b968ed84d55872dd9c009b4dbc40257bc6b81cecd8ce26d6b32e424232c6cafe0d303a797a8151af07690ac8187211f229fc007e83f30459b963fec60aa933b00df8575f5abe68f9f98eace90000000049454e44ae426082</data>
-    </image>
-    <image name="image12">
-        <data format="PNG" length="508">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000001c349444154388dbd944d6b135114869f3b996833e934b56dc006c13f20f80b84524b709945174510455061e84a70e16f70e7224b450471d145562281ee24b41bc15aea22526b233184766a62321f998feb423b548d98318cefea9e732ecf7db9f79c2b6ab51a494849840aa8d56a551e07c562518c131fe70044a2576118c64fa78e1bc30fc7c30a71552e97c5c9581d56300c43964aa56853a552f96bfdbf394eecf1d45f138f9f3e930b8b97d9d8dec5fc54c7b65d66723a37afad88618091c1998c466aaec095e50ba49434afdfbca3b6f624b6e3df266f52d398c866496b599a1ebcef7934f61be383cfce1750549596e5d1b41c0e7a16bb7b0d6edc5a957756ef8efcc8117873ab2ec3a9bcbcb8b044df0bd8eb5af4fd105fa498bc7e9fc34b57698ae9911d4777ac4fe964a7cfb0df736889808eebe24ab0cf9d6730318b6f3bf85b1b238323c79f4d93fa519f9d2f16525148290add41483e738ab94c1a550888d11791e397ebafd876354c4f323fa373942ff0e1ab43aef9915c103238ec609bedf8e007f76e477e562a6fa52b75ec4072badd41ae3dc4b57bb81d333ef8a4bace8030f8de009e1ff0e2f9a358c3f147b03c68a3b466a3f5bf28d98f3e097d034063d83520f09d160000000049454e44ae426082</data>
-    </image>
-    <image name="image13">
-        <data format="PNG" length="1201">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000047849444154388d7d95c96b5e5518c67fe79c7bef370ff9f2654e87b4a413a4d442a07b11eab051bad34d08960a0617fd0fdc4bd7a690b64ad18d2b178a54b00841a5b6d2a666d181a6f397e11bf24d773cc7c54d5263525f387039f0feeecbf33ef7b9627e7e9ed7d5a75f670c18408331c4cf068cc60e57b8305d12afeb95ff0fdd2821412541a540281092c01e60e6b230172f5e34bbf58bff4e1c0305289b6c26cd6039cf406f92c3e526293be24135cba365cdeaca0ad546171d76b14d8ba3fe579c3d7b56ec0ade823a794e1c48f1ce648e893d86fea28d92718f016acd90872f037eb8e9f2eb9d1a7e779d84ae32ee5ee5dcb973621b78139acde7393d59e0bd930ea59c4208f0fc10630c4a2994924811bfa4ed46cc2f76f8f6972acb6b759ca8ca58eb0a333333c27a25820127c75b270bbcfb868d6d095eacb6890217c796a412365e10a1b1b16c07db928061723c451096b8724dd369466432196667678d154f9b3042d91c1f4b716a5cd0f5355dcfa7988c181a2d914eda5896c20f42c2c870e7918bf0349b5b3b326a73ea5891ebb77c16bc334cd8dfa16ed99f18805c2ec79b2732f464a1db75192a180e8ff591702ca48ccda3944429c9bd675d3a9ec10be2e3061a47f93cac68da6e880a1b6c4991cf172826436aeb86e1a2e6e0de3e005add889bf75bd49a11b9b4446bc3b3d5807432d6bad208b9f1a440ad9da649164d9d75b177032c24e55c2c41c232ec1f4c612949bd15f2fd6f555c5f03b05c8f5d91542183a53c9387b2241dc9d497b0d2062c2bf6b97236c03241da0ea8b7358e65e82f650078bae2b3de8ed01b62f6380d260e0d52ce5b8cf467777e1442804c2034afa458776d2a0d43ca614bd36a47f2fb52062f94bc7dacce47a78fec80696d0081101b2607041a0b0c688f4a3b453b4ad29fd3546a3e7bfa5394f31691b0a87414eb41b0030a506f87f8a14288d87e442ec284488c0613d1e8681a5e92c735873fee0544da7074d4e2f3331113a386bb2f523c78dad801aeb522b436d8127cdf031321751bcb0e5708ec01f0aad8f9610c8a1fef2699180b39346c737028c1171f86acb702ca3d859d13b7223012c702e1af61e152344bc80bd325217448e435b0a31a7de93681e732f77397bf1f7b743d8d635b947b7218032d57b3b41cd0f535c6c05a5393b13ad8510dedd64846150a6a355ede4933c79fe1c734eb2becefed216109a200beb9dee5c8a8cd486f1c425d5ff36c35e0fecb9023231623bd0e8b4f3cd22aa459afa1fd0687e5b578819b21f4d965df689961a43fc3f103591cfb558c08111fad372fe2dc971b0175fb618be79506a5f036fbe40de05f763b61aeb210bdcff3654318861cdd5760a8d789bdb94b196378b1e6b3b8d46079ad455f788b51f91700535353625b1e5fba74c92cf0019e28924927192e2739386851ee49a3a40220d211abb50e0f5e863c5f75e9b49bf4eac5ad49a7a6a6b6e7f166cdcdcd19800571865066d1d84829c8a56270b31ba1238d854b32aa30ce4f68ad9152323d3dbdfb1f64b36667670dc08a3f405b0c628442260a48e5c4e6d76d8a6609c77f82d61acff3387ffefc36cdfe01b007280f13a5adbc0000000049454e44ae426082</data>
-    </image>
-    <image name="image14">
-        <data format="PNG" length="637">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000024449444154388dd5943f68137114c7bfbfbb4bd3fc3326a66282e86245ac53a18b08065d5c05a1e0e22428140721838ba09360a72e2e2e8e62d15d45ab8804420bd6a2d24a1b9b10cffcb91893dc2f97cbddeb903fbd241725b7f9e0861fefdee77deef17e07fc6fc19c1612817a1036cc191b6c050ec12c0d8471c17df1627e646a2ce33e5b2bf4f2d37d60c7da99f1a0a98db933b0c5d0f6ec248840bde7f93c59cfd6f786667cfde602c52f5c4472631b4a760b9c6b08070378fc688975c1a39a5ab7421a4c7a3c5e8891182e5d3903517061edd3577c5c7e3254fcaf3deecd9888442292fc5e2f267d3eb8bc3ee474e07b4d476637636bc7ded9437bc677ef3f08dfb895b83773fa9470241a83204990551d39b581624dc5763a839333b3e4764fe0f35ad27e45572c238a834900303d7d221c3a1c5d983d7716061391ab71a4b90a6e105a4c84ffda1d94ea7520f5da9639d2d824d3081c08c0773084dd5a03323350d1346804f0a3c7d19c3c84166fa0b59eb4a70cd8029d19a752abfca7a260ab5cc797df2a4810200a02fe344d4c792610f1b82031667f4f57ecb7440280576f3f5024fd0b1b9a178a4e888603284fc5b0536d2098fb81a061a259aa802bf936283ed062f0dc05978a25b550282ceeacafa2a135cffbafde9ed328006e10dcf90a6879091aaf41ab28fb965d980db4072e66bf55012400c0153af6d06c34e74ca3fd857acb40bdaa2eeae56ca25333f28258c3f65f41c53c04598620cba062be3fd9351c31db3e636b30c636f99b672fd97b57bb494b07636cd309dc79fc05bc07fce0025862dcd8f20000000049454e44ae426082</data>
-    </image>
-</images>
-<connections>
-    <connection>
-        <sender>actionZoomFullExtent</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>zoomFull()</slot>
-    </connection>
-    <connection>
-        <sender>fileOpenAction</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>fileOpen()</slot>
-    </connection>
-    <connection>
-        <sender>fileSaveAsAction</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>fileSaveAs()</slot>
-    </connection>
-    <connection>
-        <sender>actionZoomOut</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>zoomOut()</slot>
-    </connection>
-    <connection>
-        <sender>actionZoomIn</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>zoomIn()</slot>
-    </connection>
-    <connection>
-        <sender>actionPrint</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>print()</slot>
-    </connection>
-    <connection>
-        <sender>actionAddMap</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>addMap()</slot>
-    </connection>
-    <connection>
-        <sender>actionAddVectorLegend</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>addVectorLegend()</slot>
-    </connection>
-    <connection>
-        <sender>actionAddLabel</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>addLabel()</slot>
-    </connection>
-    <connection>
-        <sender>actionSelectItem</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>selectItem()</slot>
-    </connection>
-    <connection>
-        <sender>actionSvg</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>svg()</slot>
-    </connection>
-    <connection>
-        <sender>actionImage</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>image()</slot>
-    </connection>
-    <connection>
-        <sender>actionAddScalebar</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>addScalebar()</slot>
-    </connection>
-    <connection>
-        <sender>actionRefresh</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>refresh()</slot>
-    </connection>
-    <connection>
-        <sender>actionAddPicture</sender>
-        <signal>activated()</signal>
-        <receiver>QgsComposerBase</receiver>
-        <slot>addPicture()</slot>
-    </connection>
-</connections>
-<slots>
-    <slot>fileNew()</slot>
-    <slot>fileOpen()</slot>
-    <slot>fileSave()</slot>
-    <slot>fileSaveAs()</slot>
-    <slot>filePrint()</slot>
-    <slot>fileExit()</slot>
-    <slot>zoomFull()</slot>
-    <slot>zoomIn()</slot>
-    <slot>zoomOut()</slot>
-    <slot>print()</slot>
-    <slot>addMap()</slot>
-    <slot>addLabel()</slot>
-    <slot>addVectorLegend()</slot>
-    <slot>selectItem()</slot>
-    <slot>image()</slot>
-    <slot>svg()</slot>
-    <slot>addScalebar()</slot>
-    <slot>refresh()</slot>
-    <slot>addPicture()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+           </property>
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>7</hsizetype>
+             <vsizetype>0</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab" >
+        <attribute name="title" >
+         <string>Item</string>
+        </attribute>
+        <layout class="QGridLayout" >
+         <property name="margin" >
+          <number>8</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item row="0" column="0" >
+          <widget class="Q3Frame" name="mItemOptionsFrame" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>7</hsizetype>
+             <vsizetype>7</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="frameShape" >
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow" >
+            <enum>QFrame::Plain</enum>
+           </property>
+           <property name="lineWidth" >
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="Q3ToolBar" name="Toolbar_2" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>223</width>
+     <height>38</height>
+    </rect>
+   </property>
+   <property name="label" >
+    <string>Toolbar_2</string>
+   </property>
+   <addaction name="actionSelectItem" />
+   <addaction name="actionAddMap" />
+   <addaction name="actionAddVectorLegend" />
+   <addaction name="actionAddScalebar" />
+   <addaction name="actionAddLabel" />
+   <addaction name="actionAddPicture" />
+  </widget>
+  <widget class="Q3ToolBar" name="Toolbar" >
+   <property name="geometry" >
+    <rect>
+     <x>223</x>
+     <y>0</y>
+     <width>155</width>
+     <height>38</height>
+    </rect>
+   </property>
+   <property name="label" >
+    <string>Toolbar</string>
+   </property>
+   <addaction name="actionZoomIn" />
+   <addaction name="actionZoomOut" />
+   <addaction name="actionZoomFullExtent" />
+   <addaction name="actionRefresh" />
+  </widget>
+  <widget class="Q3ToolBar" name="toolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>378</x>
+     <y>0</y>
+     <width>121</width>
+     <height>38</height>
+    </rect>
+   </property>
+   <property name="label" >
+    <string>Tools</string>
+   </property>
+   <addaction name="actionPrint" />
+   <addaction name="actionImage" />
+   <addaction name="actionSvg" />
+  </widget>
+  <action name="fileOpenAction" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset>themes/default/mActionFileOpen.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Open Template ...</string>
+   </property>
+   <property name="iconText" >
+    <string>Open Template</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="fileSaveAsAction" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset>themes/default/mActionFileSave.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Save Template &amp;As...</string>
+   </property>
+   <property name="iconText" >
+    <string>Save Template As</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="actionPrint" >
+   <property name="icon" >
+    <iconset>themes/default/mActionFilePrint.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Print...</string>
+   </property>
+   <property name="iconText" >
+    <string>Print</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionZoomFullExtent" >
+   <property name="icon" >
+    <iconset>themes/default/mActionZoomFullExtent.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Zoom All</string>
+   </property>
+   <property name="iconText" >
+    <string>Zoom to full extent</string>
+   </property>
+  </action>
+  <action name="actionZoomIn" >
+   <property name="icon" >
+    <iconset>themes/default/mActionZoomIn.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Zoom In</string>
+   </property>
+   <property name="iconText" >
+    <string>Zoom in</string>
+   </property>
+  </action>
+  <action name="actionZoomOut" >
+   <property name="icon" >
+    <iconset>themes/default/mActionZoomOut.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Zoom Out</string>
+   </property>
+   <property name="iconText" >
+    <string>Zoom out</string>
+   </property>
+  </action>
+  <action name="actionAddMap" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset>themes/default/mActionAddNonDbLayer.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Add new map</string>
+   </property>
+   <property name="iconText" >
+    <string>Add new map</string>
+   </property>
+  </action>
+  <action name="actionAddLabel" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset>themes/default/mActionLabel.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Add new label</string>
+   </property>
+   <property name="iconText" >
+    <string>Add new label</string>
+   </property>
+  </action>
+  <action name="actionAddVectorLegend" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset>themes/default/mActionAddLegend.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Add new vect legend</string>
+   </property>
+   <property name="iconText" >
+    <string>Add new vect legend</string>
+   </property>
+  </action>
+  <action name="actionSelectItem" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset>themes/default/mActionSelect.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Select/Move item</string>
+   </property>
+   <property name="iconText" >
+    <string>Select/Move item</string>
+   </property>
+  </action>
+  <action name="actionImage" >
+   <property name="icon" >
+    <iconset>themes/default/mActionExportMapServer.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Export as image</string>
+   </property>
+   <property name="iconText" >
+    <string>Export as image</string>
+   </property>
+  </action>
+  <action name="actionSvg" >
+   <property name="icon" >
+    <iconset>themes/default/mActionSaveAsSVG.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Export as SVG</string>
+   </property>
+   <property name="iconText" >
+    <string>Export as SVG</string>
+   </property>
+  </action>
+  <action name="actionAddScalebar" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset>themes/default/mActionMeasure.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Add new scalebar</string>
+   </property>
+   <property name="iconText" >
+    <string>Add new scalebar</string>
+   </property>
+  </action>
+  <action name="actionRefresh" >
+   <property name="icon" >
+    <iconset>themes/default/mActionDraw.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Refresh view</string>
+   </property>
+   <property name="iconText" >
+    <string>Refresh view</string>
+   </property>
+  </action>
+  <action name="actionAddPicture" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset>themes/default/mActionAddRasterLayer.png</iconset>
+   </property>
+   <property name="iconText" >
+    <string>Add new picture</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends></extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Q3ToolBar</class>
+   <extends></extends>
+   <header>q3listview.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Q3MainWindow</class>
+   <extends></extends>
+   <header>q3mainwindow.h</header>
+   <container>1</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

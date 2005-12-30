@@ -83,18 +83,13 @@ void QgsSpitPlugin::initGui()
         "The schema and field names can be customized on import"); 
 
      // Create the action for tool
-#if QT_VERSION < 0x040000
-    spitAction = new QAction("Import Shapefiles to PostgreSQL", QIcon(spitIcon), "&SPIT",
-                                              0, this, "spit");
+    spitAction = new QAction(QIcon(spitIcon), "Import Shapefiles to PostgreSQL", this);
     spitAction->setWhatsThis("Import shapefiles into a PostGIS-enabled PostgreSQL database. "
         "The schema and field names can be customized on import"); 
     // Connect the action to the spit slot
     connect(spitAction, SIGNAL(activated()), this, SLOT(spit()));
      // Add the icon to the toolbar
     qI->addToolBarIcon(spitAction); 
-#else
-// TODO: Refactor QAction for Qt4 use
-#endif
 
 }
 

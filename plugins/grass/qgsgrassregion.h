@@ -25,7 +25,8 @@ class QgisIface;
 class QgsMapCanvas;
 class Q3ButtonGroup;
 class QgsPoint;
-#include "qgsgrassregionbase.h"
+#include "ui_qgsgrassregionbase.h"
+#include <QDialog>
 
 extern "C" {
 #include <gis.h>
@@ -35,7 +36,7 @@ extern "C" {
  *  \brief GRASS attributes.
  *
  */
-class QgsGrassRegion: public QgsGrassRegionBase
+class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
 {
     Q_OBJECT;
 

@@ -20,10 +20,11 @@
  /*  $Id$ */
 #ifndef QGSDLGPGBUFFER_H
 #define QGSDLGPGBUFFER_H
-#include "qgsdlgpgbufferbase.h"
+#include "ui_qgsdlgpgbufferbase.h"
+#include <QDialog>
 class QgisIface;
 class QDoubleValidator;
-class QgsDlgPgBuffer:public QgsDlgPgBufferBase
+class QgsDlgPgBuffer:public QDialog, private Ui::QgsDlgPgBufferBase
 {
   Q_OBJECT public:
   //! Constructor
@@ -57,7 +58,7 @@ class QgsDlgPgBuffer:public QgsDlgPgBufferBase
     //! Set the geometry column on the dialog
     void setGeometryColumn(QString name);
     public slots:
-    void help();
+    void on_buttonHelp_clicked();
     private:
       //! Pointer to the QGIS interface object
     QgisIface *qI;

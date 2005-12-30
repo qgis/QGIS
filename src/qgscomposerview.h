@@ -22,6 +22,7 @@
 //Added by qt3to4:
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <Q3CanvasView>
 
 class QgsComposer;
 

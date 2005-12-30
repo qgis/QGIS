@@ -26,7 +26,6 @@
 #include <qtextstream.h>
 #include <qstringlist.h>
 #include <qmessagebox.h>
-#include <q3filedialog.h>
 #include <qsettings.h>
 #include <qregexp.h>
 #include <q3url.h>
@@ -757,15 +756,14 @@ bool QgsDelimitedTextProvider::saveAsShapefile()
     QString filter =  QString("Shapefiles (*.shp)");
     QString dirName = settings.readEntry("/Plugin-DelimitedText/text_path", "./");
 
-    QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog(dirName,
+    QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog(0,
+                                                                      tr("Save layer as..."),
+                                                                      dirName,
                                                                       filter,
-                                                                      0,
-                                                                      QString("save file dialog"),
                                                                       QString("UTF-8"));
 
     // allow for selection of more than one file
-    openFileDialog->setMode(Q3FileDialog::AnyFile);
-    openFileDialog->setCaption(tr("Save layer as..."));
+    openFileDialog->setMode(QFileDialog::AnyFile);
 
 
     if (openFileDialog->exec() == QDialog::Accepted)

@@ -17,16 +17,13 @@
  /* $Id$ */
 #ifndef QGSNEWCONNECTION_H
 #define QGSNEWCONNECTION_H
-#ifdef WIN32
-#include "qgsnewconnectionbase.h"
-#else
-#include "qgsnewconnectionbase.uic.h"
-#endif
+#include "ui_qgsnewconnectionbase.h"
+#include <QDialog>
 /*! \class QgsNewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for a PostgresQl database
  */
-class QgsNewConnection : public QgsNewConnectionBase 
+class QgsNewConnection : public QDialog, private Ui::QgsNewConnectionBase 
 {
   Q_OBJECT
   public:
@@ -38,8 +35,13 @@ class QgsNewConnection : public QgsNewConnectionBase
     void testConnection();
     //! Saves the connection to ~/.qt/qgisrc
     void saveConnection();
-  public slots:
+    //! Display the context help
     void helpInfo();
+  public slots:
+    void on_btnOk_clicked();
+    void on_btnCancel_clicked();
+    void on_btnHelp_clicked();
+    void on_btnConnect_clicked();
   private:
     static const int context_id = 821572257;
 };

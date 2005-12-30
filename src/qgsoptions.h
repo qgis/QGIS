@@ -18,17 +18,13 @@
 /* $Id$ */
 #ifndef QGSOPTIONS_H
 #define QGSOPTIONS_H
-class QString;
-#ifdef WIN32
-#include "qgsoptionsbase.h"
-#else
-#include "qgsoptionsbase.uic.h"
-#endif
+#include "ui_qgsoptionsbase.h"
 /**
  * \class QgsOptions
  * \brief Set user options and preferences
  */
-class QgsOptions :public QgsOptionsBase{
+class QgsOptions :public QDialog, private Ui::QgsOptionsBase
+{
   Q_OBJECT;
   public:
     /**
@@ -51,11 +47,11 @@ class QgsOptions :public QgsOptionsBase{
       // activates or highlights a theme name in the drop-down list
       void themeChanged(const QString &);
       //! Slot called when user chooses to change the project wide projection.
-      void pbnSelectProjection_clicked();
-      void findBrowser();
+      void on_pbnSelectProjection_clicked();
+      void on_btnFindBrowser_clicked();
       void setCurrentTheme();
       void addTheme(QString item);
-      void cbxHideSplash_toggled( bool );
+      void on_cbxHideSplash_toggled( bool );
       void saveOptions();
       
     /**

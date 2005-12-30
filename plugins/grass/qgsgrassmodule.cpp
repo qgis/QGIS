@@ -18,7 +18,6 @@
 #include <qapplication.h>
 #include <qdir.h>
 #include <qfile.h>
-#include <q3filedialog.h> 
 #include <qsettings.h>
 #include <qpixmap.h>
 #include <q3listbox.h>
@@ -86,7 +85,9 @@ extern "C" {
 
 QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIface *iface, 
 	                     QString path, QWidget * parent, const char * name, Qt::WFlags f )
-             :QgsGrassModuleBase ( parent, name, f )
+             //:QgsGrassModuleBase ( parent, name, f )
+             //tim removed params during qt4 ui port - FIXME
+             :QgsGrassModuleBase ( )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModule()" << std::endl;

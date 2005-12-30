@@ -37,6 +37,8 @@
 #include <iostream>
 #include <QTreeWidgetItem>
 #include <Q3PopupMenu>
+#include <QFont>
+#include <QHeaderView>
 
 static const char *const ident_ = "$Id$";
 
@@ -59,6 +61,14 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
   setSortingEnabled(false);
   setDragEnabled(false);
   setAutoScroll(true);
+  QFont f("Arial", 10, QFont::Normal);
+  setFont(f);
+  setBackgroundColor(QColor(192, 192, 192));
+  setColumnCount(1);
+  QStringList myList("Layers");
+  setHeaderLabels(myList);
+  //added by Tim to hide the header - header is unneccessary
+  header()->setHidden(1);
 }
 
 

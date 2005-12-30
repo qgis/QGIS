@@ -50,14 +50,15 @@ class QgsGrassMapcalcFunction;
 class QgsGrassMapcalcItem;
 class QgsGrassMapcalcObject;
 class QgsGrassMapcalcConnector;
-#include "qgsgrassmapcalcbase.h"
+#include "ui_qgsgrassmapcalcbase.h"
+#include <QDialog>
 #include "qgsgrassmodule.h"
 
 /*! 
  *  \class QgsGrassMapcalc
  *  \brief Interface for r.mapcalc
  */
-class QgsGrassMapcalc: public QgsGrassMapcalcBase, public QgsGrassModuleOptions
+class QgsGrassMapcalc: public QDialog, private Ui::QgsGrassMapcalcBase, public QgsGrassModuleOptions
 {
    Q_OBJECT
 

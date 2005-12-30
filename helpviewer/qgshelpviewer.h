@@ -1,9 +1,9 @@
 #ifndef QGSHELPVIEWER_H
 #define QGSHELPVIEWER_H
-# include "qgshelpviewerbase.h"
+# include "ui_qgshelpviewerbase.h"
 class QString;
 class sqlite3;
-class QgsHelpViewer : public QgsHelpViewerBase
+class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
 {
   Q_OBJECT
   public:

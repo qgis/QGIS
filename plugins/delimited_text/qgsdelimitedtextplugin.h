@@ -21,7 +21,7 @@
 #define PLUGIN
 #include "../qgisplugin.h"
 #include <qwidget.h>
-
+#include "ui_qgsdelimitedtextpluginguibase.h"
 #include "../../src/qgisapp.h"
 
 /**
@@ -29,7 +29,7 @@
 * \brief OpenModeller plugin for QGIS
 *
 */
-class QgsDelimitedTextPlugin:public QObject, public QgisPlugin
+class QgsDelimitedTextPlugin:public QObject, public QgisPlugin, private Ui::QgsDelimitedTextPluginGuiBase
 {
   Q_OBJECT public:
       /** 

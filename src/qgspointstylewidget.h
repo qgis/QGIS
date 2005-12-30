@@ -16,13 +16,11 @@
 #ifndef QGSPOINTSTYLE_H
 #define QGSPOINTSTYLE_H
 
-#ifdef WIN32
-#include "qgspointstylewidgetbase.h"
-#else
-#include "qgspointstylewidgetbase.uic.h"
-#endif
+#include "ui_qgspointstylewidgetbase.h"
+#include <QDialog>
 
-class QgsPointStyleWidget:public QgsPointStyleWidgetBase
+
+class QgsPointStyleWidget:public QDialog, private Ui::QgsPointStyleWidgetBase
 {
   Q_OBJECT;
   public:

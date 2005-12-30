@@ -17,13 +17,13 @@
 
 #include "qgsaddattrdialog.h"
 #include "qgsvectordataprovider.h"
-#include <QComboBox>
-#include <qlineedit.h>
 
-QgsAddAttrDialog::QgsAddAttrDialog(QgsVectorDataProvider* provider): QgsAddAttrDialogBase(), mDataProvider(provider)
+QgsAddAttrDialog::QgsAddAttrDialog(QgsVectorDataProvider* provider)
+: QDialog(), mDataProvider(provider)
 {
-    QObject::connect((QObject*)mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
-    QObject::connect((QObject*)mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    setupUi(this);
+    connect(mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
+    connect(mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
     //fill data types into the combo box
     const std::list<QString>& numlist=mDataProvider->numericalTypes();
@@ -39,10 +39,13 @@ QgsAddAttrDialog::QgsAddAttrDialog(QgsVectorDataProvider* provider): QgsAddAttrD
     }
 }
 
-QgsAddAttrDialog::QgsAddAttrDialog(const std::list<QString>& typelist): QgsAddAttrDialogBase(), mDataProvider(0)
+QgsAddAttrDialog::QgsAddAttrDialog(const std::list<QString>& typelist)
+: QDialog(), mDataProvider(0)
 {
-    QObject::connect((QObject*)mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
-    QObject::connect((QObject*)mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    setupUi(this);
+    connect(mOkButton, SIGNAL(clicked()), this, SLOT(accept()));
+    connect(mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+
     for(std::list<QString>::const_iterator iter=typelist.begin();iter!=typelist.end();++iter)
     {
 	mTypeBox->insertItem(*iter);
