@@ -226,6 +226,8 @@ this item may be moved back to the original position with resetToInitialPosition
   void handleItemChange(QTreeWidgetItem* item, int row);
   /**Calls openPersistentEditor for the current item*/
   void openEditor();
+  /**Removes the current item and inserts it as a toplevel item at the end of the legend*/
+  void makeToTopLevelItem();
 
 private:
 

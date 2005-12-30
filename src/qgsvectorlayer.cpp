@@ -1442,7 +1442,7 @@ QgsDlgVectorLayerProperties *QgsVectorLayer::propertiesDialog()
 
 void QgsVectorLayer::initContextMenu_(QgisApp * app)
 {
-  myPopupLabel->setText( tr("<center><b>Vector Layer</b></center>") );
+  myPopupLabel->setText( tr("Vector Layer") );
 
   popMenu->addAction(tr("&Open attribute table"), app, SLOT(attributeTable()));
 
