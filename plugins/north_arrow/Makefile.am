@@ -43,7 +43,7 @@ BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 northarrowplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/libqgis.la
 northarrowplugin_la_LDFLAGS = -avoid-version -module
-northarrowplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) $(PKGDATAPATH) -I../../src
+northarrowplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) $(PKGDATAPATH) -I../../src -I../../src/ui
 
 CLEANFILES = $(BUILT_SOURCES)
 
