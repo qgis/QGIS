@@ -714,8 +714,8 @@ void QgisApp::createToolBars()
   mLayerToolBar->addAction(mActionInOverview);
   mLayerToolBar->addAction(mActionAddAllToOverview);
   mLayerToolBar->addAction(mActionRemoveAllFromOverview);
-  mLayerToolBar->addAction(mActionHideAllLayers);
   mLayerToolBar->addAction(mActionShowAllLayers);
+  mLayerToolBar->addAction(mActionHideAllLayers);
   //
   // Help Toolbar
   mHelpToolBar = addToolBar(tr("Help"));
