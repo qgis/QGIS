@@ -18,9 +18,10 @@
 #ifndef QGSCONNECTIONDIALOG_H
 #define QGSCONNECTIONDIALOG_H
 
-#include "qgsconnectiondialogbase.h"
+#include "ui_qgsconnectiondialogbase.h"
+#include <QDialog>
 
-class QgsConnectionDialog : public QgsConnectionDialogBase
+class QgsConnectionDialog : public QDialog, private Ui::QgsConnectionDialogBase
 {
  public:
 

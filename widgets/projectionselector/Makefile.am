@@ -10,7 +10,7 @@
 #
 # $Id$
 
-plugindir = ${pkglibdir}
+selectordir = ${pkglibdir}
 if !HAVE_QTMAC
 PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
 endif
@@ -18,41 +18,25 @@ endif
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui 
+ui_%.h: %.ui
 	$(UIC) -o $@ $<
-if HAVE_QT4
-	../../tools/qgis-qt3to4.pl -uic $@
-endif
-
-if !NO_UIC_IMPLEMENTATIONS
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
-endif
-
-# %.h: %.ui
-# 	$(UIC) -o $@ $<
-#
-# %.cpp: %.ui
-# 	$(UIC) -o $@ -impl $*.h $<
-
 
 # name of the qgis library widget
-plugin_LTLIBRARIES = libqgsprojectionselector.la
+selector_LTLIBRARIES = libqgsprojectionselector.la
 
-plugin_MOC = qgsprojectionselector.moc.cpp		\
-	     qgsprojectionselectorbase.moc.cpp
+selector_MOC = qgsprojectionselector.moc.cpp		
 
-plugin_UI = qgsprojectionselectorbase.h \
-	    qgsprojectionselectorbase.cpp
+selector_UIC = qgsprojectionselectorbase.ui 
 
-plugin_UIC = qgsprojectionselectorbase.ui \
-	qgsprojectionselectorbase.h 
+selector_UI = ui_qgsprojectionselectorbase.h 
 
-libqgsprojectionselector_la_SOURCES =  qgsprojectionselector.cpp	\
-			         $(plugin_UI)			\
-			         $(plugin_MOC)
 
-BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
+libqgsprojectionselector_la_SOURCES =  qgsprojectionselector.cpp \
+			         $(selector_UI) \
+			         $(selector_UIC) \
+			         $(selector_MOC) 
+
+BUILT_SOURCES = $(selector_MOC) $(selector_UI) 
 
 CLEANFILES = $(BUILT_SOURCES)
 
@@ -61,4 +45,4 @@ libqgsprojectionselector_la_LIBADD =  ../../src/libqgis.la $(LDADD) $(QT_LDADD) 
 libqgsprojectionselector_la_LDFLAGS = -avoid-version 
 libqgsprojectionselector_la_CXXFLAGS = $(PKGDATAPATH) $(CXXFLAGS) $(GDAL_CFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src/
 
-EXTRA_DIST = $(plugin_UIC)
+EXTRA_DIST = $(selector_UIC)

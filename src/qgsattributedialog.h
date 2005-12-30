@@ -18,16 +18,14 @@
 #ifndef QGSATTRIBUTEDIALOG_H
 #define QGSATTRIBUTEDIALOG_H
 
-#ifdef WIN32
-#include "qgsattributedialogbase.h"
-#else
-#include "qgsattributedialogbase.uic.h"
-#endif //WIN32
+#include "ui_qgsattributedialogbase.h"
 
 #include "qgsfeatureattribute.h"
 #include <vector>
 
-class QgsAttributeDialog: public QgsAttributeDialogBase
+class QDialog;
+
+class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
 {
     Q_OBJECT
 	public:

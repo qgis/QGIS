@@ -17,49 +17,25 @@
 #ifndef QGSCOMPOSERLABEL_H
 #define QGSCOMPOSERLABEL_H
 
-#include <qwidget.h>
-#include <q3canvas.h>
-#include <qobject.h>
-
-#include "qgsrect.h"
-
-#include "qgscomposer.h"
-#include "qgscomposition.h"
+#include "ui_qgscomposerlabelbase.h"
 #include "qgscomposeritem.h"
-//Added by qt3to4:
-#include <QPixmap>
+#include <Q3CanvasPolygonalItem>
+#include <QFont>
+#include <QPen>
 #include <Q3PointArray>
+#include <QRect>
+#include <QString>
 
-#ifdef WIN32
-#include "qgscomposerlabelbase.h"
-#else
-#include "qgscomposerlabelbase.uic.h"
-#endif
-
-class Q3CanvasItem;
-class Q3CanvasRectangle;
-class QPainter;
-class QWidget;
+class QgsComposition;
 class QDomNode;
 class QDomDocument;
-class QPixmap;
-class QImage;
-class QFont;
-class QPen;
-class QRect;
-
-
-class QgsMapCanvas;
-class QgsRect;
-class QgsMapToPixel;
-class QgsComposition;
 
 /** \class QgsComposerLabel 
  *  \brief Object representing label. 
  */
 // NOTE: QgsComposerLabelBase must be first, otherwise does not compile
 //class QgsComposerLabel : public QgsComposerLabelBase, public QCanvasRectangle, public QgsComposerItem
-class QgsComposerLabel : public QgsComposerLabelBase, public Q3CanvasPolygonalItem, public QgsComposerItem
+class QgsComposerLabel : public QWidget, private Ui::QgsComposerLabelBase, public Q3CanvasPolygonalItem, public QgsComposerItem
 {
     Q_OBJECT
 
@@ -100,12 +76,12 @@ public:
 
 public slots:
     // Open font dialog
-    void changeFont ( void );
+    void on_mFontButton_clicked();
 
-    void textChanged ( void );
+    void on_mTextLineEdit_returnPressed();
 
     // Box settings changed
-    void boxChanged ( void );
+    void on_mBoxCheckBox_clicked();
     
 private:
     // Pointer to composition

@@ -14,10 +14,10 @@
 
 #include "qgsimagewarper.h"
 
-#include "qgsgeorefwarpoptionsdialogbase.uic.h"
+#include "ui_qgsgeorefwarpoptionsdialogbase.h"
+#include <QDialog>
 
-
-class QgsGeorefWarpOptionsDialog : public QgsGeorefWarpOptionsDialogBase 
+class QgsGeorefWarpOptionsDialog : public QDialog, private Ui::QgsGeorefWarpOptionsDialogBase 
 {
 Q_OBJECT
 public:

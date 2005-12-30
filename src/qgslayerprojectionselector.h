@@ -18,17 +18,13 @@
 /* $Id$ */
 #ifndef QGSLAYERPROJECTIONSELECTOR_H
 #define QGSLAYERPROJECTIONSELECTOR_H
-class QString;
-#ifdef WIN32
-#include "qgslayerprojectionselectorbase.h"
-#else
-#include "qgslayerprojectionselectorbase.uic.h"
-#endif
+#include "ui_qgslayerprojectionselectorbase.h"
 /**
  * \class QgsLayerProjectionSelector
  * \brief Set Projection system for a layer
  */
-class QgsLayerProjectionSelector :public QgsLayerProjectionSelectorBase{
+class QgsLayerProjectionSelector :public QDialog, private Ui::QgsLayerProjectionSelectorBase
+{
   Q_OBJECT;
   public:
     /**
@@ -39,7 +35,6 @@ class QgsLayerProjectionSelector :public QgsLayerProjectionSelectorBase{
     ~QgsLayerProjectionSelector();
 
  public slots:
-      void pbnOK_clicked();
       QString getCurrentProj4String();
       long getCurrentSRSID();
       void setSelectedSRSName(QString theName);

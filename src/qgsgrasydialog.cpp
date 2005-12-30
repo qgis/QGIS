@@ -15,30 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include <iostream>
 
 #include "qgsgrasydialog.h"
-#include "qspinbox.h"
-#include "qpushbutton.h"
-#include <QComboBox>
-#include <q3listbox.h>
-#include "qgssymbologyutils.h"
-#include "qgsrangerenderitem.h"
-#include "qlineedit.h"
-#include "qgsludialog.h"
-#include "qgsgraduatedsymrenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgslegenditem.h"
-#include "qgsvectordataprovider.h"
 #include "qgsfield.h"
-#include "q3scrollview.h"
-#include <qlayout.h>
-#include <q3widgetstack.h>
+#include "qgsgraduatedsymrenderer.h"
+#include "qgsludialog.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
-QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVectorLayer(layer), sydialog(layer)
+
+QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(layer), sydialog(layer)
 {
-
-
+    setupUi(this);
 #ifdef QGISDEBUG
     qWarning("constructor QgsGraSyDialog");
 #endif
@@ -129,8 +117,9 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer):QgsGraSyDialogBase(), mVe
     mClassBreakBox->setCurrentItem(0);
 }
 
-QgsGraSyDialog::QgsGraSyDialog(): QgsGraSyDialogBase(), mVectorLayer(0), sydialog(0)
+QgsGraSyDialog::QgsGraSyDialog(): QDialog(), mVectorLayer(0), sydialog(0)
 {
+    setupUi(this);
 #ifdef QGISDEBUG
     qWarning("constructor QgsGraSyDialog");
 #endif

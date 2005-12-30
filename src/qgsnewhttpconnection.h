@@ -17,16 +17,13 @@
  /* $Id$ */
 #ifndef QGSNEWHTTPCONNECTION_H
 #define QGSNEWHTTPCONNECTION_H
-#ifdef WIN32
-#include "qgsnewhttpconnectionbase.h"
-#else
-#include "qgsnewhttpconnectionbase.uic.h"
-#endif
+#include "ui_qgsnewhttpconnectionbase.h"
+#include <QDialog>
 /*! 
  * \brief Dialog to allow the user to configure and save connection
  * information for an HTTP Server for WMS, etc.
  */
-class QgsNewHttpConnection : public QgsNewHttpConnectionBase 
+class QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpConnectionBase 
 {
   Q_OBJECT
  public:
@@ -36,6 +33,7 @@ class QgsNewHttpConnection : public QgsNewHttpConnectionBase
     ~QgsNewHttpConnection();
     //! Tests the connection using the parameters supplied
     void testConnection();
+ public slots:
     //! Saves the connection to ~/.qt/qgisrc
     void saveConnection();
 };

@@ -26,7 +26,8 @@ class Q3Table;
 
 class QgsGrassProvider;
 class QgsGrassEdit;
-#include "qgsgrassattributesbase.h"
+#include "ui_qgsgrassattributesbase.h"
+#include <QDialog>
 
 class QgsGrassAttributesKeyPress : public QObject
 {
@@ -48,7 +49,7 @@ private:
  *  \brief GRASS attributes.
  *
  */
-class QgsGrassAttributes: public QgsGrassAttributesBase
+class QgsGrassAttributes: public QDialog, private Ui::QgsGrassAttributesBase
 {
     Q_OBJECT;
 

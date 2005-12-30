@@ -1255,10 +1255,52 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
     static_cast<int>(myRasterViewPort->bottomRightPoint.x() + 0.5) -
     static_cast<int>(myRasterViewPort->topLeftPoint    .x() + 0.5);
 
+
+*/
+
+// get dimensions of clipped raster image in raster pixel space/ RasterIO will do the scaling for us.
+// So for example, if the user is zoomed in a long way, there may only be e.g. 5x5 pixels retrieved from
+// the raw raster data, but rasterio will seamlessly scale the up to whatever the screen coordinats are
+// e.g. a 600x800 display window (see next section below)
+myRasterViewPort->clippedXMinDouble = (myRasterExtent.xMin() - adfGeoTransform[0]) / adfGeoTransform[1];
+myRasterViewPort->clippedXMaxDouble = (myRasterExtent.xMax() - adfGeoTransform[0]) / adfGeoTransform[1];
+myRasterViewPort->clippedYMinDouble = (myRasterExtent.yMin() - adfGeoTransform[3]) / adfGeoTransform[5];
+myRasterViewPort->clippedYMaxDouble = (myRasterExtent.yMax() - adfGeoTransform[3]) / adfGeoTransform[5];
+myRasterViewPort->clippedWidthInt =
+abs(static_cast < int >(myRasterViewPort->clippedXMaxDouble - myRasterViewPort->clippedXMinDouble));
+myRasterViewPort->clippedHeightInt =
+abs(static_cast < int >(myRasterViewPort->clippedYMaxDouble - myRasterViewPort->clippedYMinDouble));
+
+// Add one to the raster dimensions to guard against the integer truncation
+// effects of static_cast<int>
+// TODO: Can we get rid of this now that we are rounding at the point of the static_cast?
+myRasterViewPort->clippedWidthInt++;
+myRasterViewPort->clippedHeightInt++;
+
+// make sure we don't exceed size of raster, otherwise GDAL RasterIO doesn't like it
+if (myRasterViewPort->clippedWidthInt > rasterXDimInt)
+{
+  myRasterViewPort->clippedWidthInt = rasterXDimInt;
+}
+if (myRasterViewPort->clippedHeightInt > rasterYDimInt)
+{
+  myRasterViewPort->clippedHeightInt = rasterYDimInt;
+}
+
+// get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
+myRasterViewPort->topLeftPoint = theQgsMapToPixel->transform(myRasterExtent.xMin(), myRasterExtent.yMax());
+myRasterViewPort->bottomRightPoint = theQgsMapToPixel->transform(myRasterExtent.xMax(), myRasterExtent.yMin());
+
+// Since GDAL's RasterIO can't handle floating point, we have to round to
+// the nearest pixel.  Add 0.5 to get rounding instead of truncation
+// out of static_cast<int>.
+myRasterViewPort->drawableAreaXDimInt =
+static_cast<int>(myRasterViewPort->bottomRightPoint.x() + 0.5) -
+static_cast<int>(myRasterViewPort->topLeftPoint    .x() + 0.5);
+
   myRasterViewPort->drawableAreaYDimInt =
     static_cast<int>(myRasterViewPort->bottomRightPoint.y() + 0.5) -
     static_cast<int>(myRasterViewPort->topLeftPoint    .y() + 0.5);
-*/
 
 #ifdef QGISDEBUG
     std::cout << "QgsRasterLayer::draw: mapUnitsPerPixel      = " << theQgsMapToPixel->mapUnitsPerPixel() << std::endl; 
@@ -1389,7 +1431,7 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
 }
 
 void QgsRasterLayer::draw (QPainter * theQPainter, 
-                           QgsRasterViewPort * myRasterViewPort,
+                           QgsRasterViewPort * theRasterViewPort,
                            QgsMapToPixel * theQgsMapToPixel)
 {
 #ifdef QGISDEBUG
@@ -1414,7 +1456,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
     }
     else
     {
-      drawSingleBandGray(theQPainter, myRasterViewPort,
+      drawSingleBandGray(theQPainter, theRasterViewPort,
                          theQgsMapToPixel, getRasterBandNumber(grayBandNameQString));
       break;
     }
@@ -1427,7 +1469,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
     }
     else
     {
-      drawSingleBandPseudoColor(theQPainter, myRasterViewPort, 
+      drawSingleBandPseudoColor(theQPainter, theRasterViewPort, 
                                 theQgsMapToPixel, getRasterBandNumber(grayBandNameQString));
       break;
     }
@@ -1445,7 +1487,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
 #endif
 
       int myBandNoInt = 1;
-      drawPalettedSingleBandGray(theQPainter, myRasterViewPort, 
+      drawPalettedSingleBandGray(theQPainter, theRasterViewPort, 
                                  theQgsMapToPixel, myBandNoInt, grayBandNameQString);
 
       break;
@@ -1461,13 +1503,13 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
     {
 
       int myBandNoInt = 1;
-      drawPalettedSingleBandPseudoColor(theQPainter, myRasterViewPort,
+      drawPalettedSingleBandPseudoColor(theQPainter, theRasterViewPort,
                                         theQgsMapToPixel, myBandNoInt, grayBandNameQString);
       break;
     }
     //a "Palette" image where the bands contains 24bit color info and 8 bits is pulled out per color
   case PALETTED_MULTI_BAND_COLOR:
-    drawPalettedMultiBandColor(theQPainter, myRasterViewPort,
+    drawPalettedMultiBandColor(theQPainter, theRasterViewPort,
                                theQgsMapToPixel, 1);
     break;
     // a layer containing 2 or more bands, but using only one band to produce a grayscale image
@@ -1489,7 +1531,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
     {
 
       //get the band number for the mapped gray band
-      drawMultiBandSingleBandGray(theQPainter, myRasterViewPort,
+      drawMultiBandSingleBandGray(theQPainter, theRasterViewPort,
                                   theQgsMapToPixel, getRasterBandNumber(grayBandNameQString));
       break;
     }
@@ -1503,14 +1545,14 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
     else
     {
 
-      drawMultiBandSingleBandPseudoColor(theQPainter, myRasterViewPort,
+      drawMultiBandSingleBandPseudoColor(theQPainter, theRasterViewPort,
                                          theQgsMapToPixel, getRasterBandNumber(grayBandNameQString));
       break;
     }
     //a layer containing 2 or more bands, mapped to the three RGBcolors.
     //In the case of a multiband with only two bands, one band will have to be mapped to more than one color
   case MULTI_BAND_COLOR:
-    drawMultiBandColor(theQPainter, myRasterViewPort,
+    drawMultiBandColor(theQPainter, theRasterViewPort,
                        theQgsMapToPixel);
     break;
 
@@ -1522,7 +1564,7 @@ void QgsRasterLayer::draw (QPainter * theQPainter,
   //see if debug info is wanted
   if (showDebugOverlayFlag)
   {
-    showDebugOverlay(theQPainter, myRasterViewPort);
+    showDebugOverlay(theQPainter, theRasterViewPort);
   };
 
 }                               //end of draw method
@@ -1604,7 +1646,6 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
             << "." << std::endl;
 #endif
 
-  //part of the experimental transparency support
   theQPainter->drawImage(static_cast<int>(theRasterViewPort->topLeftPoint.x() + 0.5),
                          static_cast<int>(theRasterViewPort->topLeftPoint.y() + 0.5),
                          myQImage,

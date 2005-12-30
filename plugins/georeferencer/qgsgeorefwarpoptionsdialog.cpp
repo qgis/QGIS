@@ -1,13 +1,17 @@
 #include <iostream>
 
 #include <qcheckbox.h>
-#include <q3combobox.h>
+#include <QComboBox>
 
 #include "qgsgeorefwarpoptionsdialog.h"
 
 
 QgsGeorefWarpOptionsDialog::QgsGeorefWarpOptionsDialog(QWidget* parent)
-  : QgsGeorefWarpOptionsDialogBase(parent, NULL, TRUE, 0) {
+  : QgsGeorefWarpOptionsDialogBase() 
+  // commented out during qt4 port - FIXME
+  //: QgsGeorefWarpOptionsDialogBase(parent, NULL, TRUE, 0) 
+
+{
 
 }
 

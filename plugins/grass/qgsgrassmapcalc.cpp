@@ -68,7 +68,9 @@ QgsGrassMapcalc::QgsGrassMapcalc (
            QgisApp *qgisApp, QgisIface *iface, 
            QWidget * parent, const char * name, Qt::WFlags f )
        : QgsGrassModuleOptions( tools, module, qgisApp, iface),
-         QgsGrassMapcalcBase ( parent, name, f ),
+         //QgsGrassMapcalcBase ( parent, name, f ),
+         //Tim removed params during qt4 ui port - FIXME
+         QgsGrassMapcalcBase ( ),
 	 mObject(0), mConnector(0), mTool(-1)
 {
     #ifdef QGISDEBUG
@@ -76,7 +78,7 @@ QgsGrassMapcalc::QgsGrassMapcalc (
     #endif
 
     mActionSave->setEnabled(false);
-    statusBar()->hide();
+    //statusBar()->hide();
     mStartMoveConnectorPoints.resize(2);
     mNextId = 0;
 

@@ -6,7 +6,8 @@
 #include <q3cstring.h>
 
 #include "qgsgrasstools.h"
-#include "qgsgrassshellbase.h"
+#include "ui_qgsgrassshellbase.h"
+#include <QDialog>
 //Added by qt3to4:
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -53,7 +54,7 @@ extern "C" {
  * are transformed to appropriate output written to QTextEdit.
  */
 
-class QgsGrassShell: public QgsGrassShellBase
+class QgsGrassShell: public QDialog, private Ui::QgsGrassShellBase
 {
     Q_OBJECT;
 

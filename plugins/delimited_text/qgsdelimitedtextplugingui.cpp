@@ -13,7 +13,7 @@
  ***************************************************************************/
 /* $Id$ */
 #include <iostream>
-#include <q3filedialog.h>
+#include <QFileDialog>
 #include <qlineedit.h>
 #include <q3textedit.h>
 #include <qfile.h>
@@ -28,13 +28,16 @@
 #include <QTextStream>
 #include "../../src/qgisiface.h"
 
-QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui() : QgsDelimitedTextPluginGuiBase()
+QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui() : QDialog()
 {
+  setupUi(this);
 
 }
 
-QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisIface * _qI, QWidget* parent , const char* name , bool modal , Qt::WFlags fl  ) : QgsDelimitedTextPluginGuiBase( parent, name, modal, fl ), qI(_qI)
+QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisIface * _qI, QWidget* parent , const char* name , bool modal , Qt::WFlags fl  ) 
+: QDialog(parent, name, modal, fl  ), qI(_qI)
 {
+  setupUi(this);
   // at startup, fetch the last used delimiter and directory from
   // settings
   QSettings settings("QuantumGIS", "qgis");
@@ -45,8 +48,20 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisIface * _qI, QWidget* 
 QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
 {
 }
-
-void QgsDelimitedTextPluginGui::pbnOK_clicked()
+/** Autoconnected slots **/
+void QgsDelimitedTextPluginGui::on_pbnHelp_clicked()
+{
+  help();
+}
+void QgsDelimitedTextPluginGui::on_btnBrowseForFile_clicked()
+{
+  getOpenFileName();
+}
+void QgsDelimitedTextPluginGui::on_pbnParse_clicked()
+{
+  updateFieldLists();
+}
+void QgsDelimitedTextPluginGui::on_pbnOK_clicked()
 {
   if(txtLayerName->text().length() > 0)
   {
@@ -147,12 +162,11 @@ void QgsDelimitedTextPluginGui::getOpenFileName()
   // Set inital dir to last used
   QSettings settings("QuantumGIS", "qgis");
 
-  QString s = Q3FileDialog::getOpenFileName(
+  QString s = QFileDialog::getOpenFileName(
+      this,
+      tr("Choose a delimited text file to open"),
       settings.readEntry("/Plugin-DelimitedText/text_path","./"),
-      "Text files (*.txt)",
-      0,
-      "open file dialog",
-      tr("Choose a delimited text file to open") );
+      "Text files (*.txt)");
 
   // set path
   txtFilePath->setText(s);

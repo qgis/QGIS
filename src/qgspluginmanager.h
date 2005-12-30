@@ -19,18 +19,15 @@
 #ifndef QGSPLUGINMANAGER_H
 #define QGSPLUGINMANAGER_H
 #include <vector>
-#ifdef WIN32
-#include "qgspluginmanagerbase.h"
-#else
-#include "qgspluginmanagerbase.uic.h"
-#endif
+#include "ui_qgspluginmanagerbase.h"
+#include <QDialog>
 
 class QgsPluginItem;
 /*!
  * \brief Plugin manager for loading/unloading plugins
 @author Gary Sherman
 */
-class QgsPluginManager : public QgsPluginManagerBase
+class QgsPluginManager : public QDialog, private Ui::QgsPluginManagerBase
 {
   Q_OBJECT
   public:
@@ -38,8 +35,6 @@ class QgsPluginManager : public QgsPluginManagerBase
     QgsPluginManager(QWidget *parent=0, const char *name=0);
     //! Destructor
     ~QgsPluginManager();
-    //! Browse to a location (directory) containing QGIS plugins
-    void browseFiles();
     //! Get description of plugins (name, etc)
     void getPluginDescriptions();
     //! Unload the selected plugins
@@ -48,11 +43,16 @@ class QgsPluginManager : public QgsPluginManagerBase
     std::vector<QgsPluginItem> getSelectedPlugins();
     public slots:
     //! Load selected plugins and close the dialog
-    void apply();
+    void on_btnOk_clicked();
     //! Select all plugins by setting their checkbox on
-    void selectAll();
+    void on_btnSelectAll_clicked();
     //! Clear all selections by clearing the plugins checkbox
-    void clearAll();
+    void on_btnClearAll_clicked();
+    //! Browse to a location (directory) containing QGIS plugins
+    void on_btnBrowse_clicked();
+    //! Close the dialog
+    void on_btnClose_clicked();
+
 };
 
 #endif

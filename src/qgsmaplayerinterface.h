@@ -19,13 +19,13 @@
 * Interface class for map layer plugins
 */
 #include <qobject.h>
-
+#include "qgisapp.h"
 class Q3MainWindow;
 
 class QgsMapLayerInterface: public QObject{
 	Q_OBJECT
 public:
-virtual void setQgisMainWindow(Q3MainWindow *qgis) = 0;
+virtual void setQgisMainWindow(QgisApp *qgis) = 0;
 // a test function to return an int
 virtual int getInt()=0;
 // setup the plugin's GUI

@@ -21,15 +21,17 @@
 #include "qgspgquerybuilder.h"
 // default constructor
   QgsPgQueryBuilder::QgsPgQueryBuilder(QWidget *parent, const char *name, bool modal)
-: QgsPgQueryBuilderBase(parent, name, modal)
+: QgsPgQueryBuilderBase()
 {
+  setupUi(this);
 }
 // constructor used when the query builder must make its own
 // connection to the database
 QgsPgQueryBuilder::QgsPgQueryBuilder(QgsDataSourceURI *uri, 
     QWidget *parent, const char *name, bool modal)
-: QgsPgQueryBuilderBase(parent, name, modal), mUri(uri)
+: QgsPgQueryBuilderBase(), mUri(uri)
 {
+  setupUi(this);
   // The query builder must make its own connection to the database when
   // using this constructor
   QString connInfo = QString("host=%1 dbname=%2 port=%3 user=%4 password=%5")
@@ -68,8 +70,9 @@ QgsPgQueryBuilder::QgsPgQueryBuilder(QgsDataSourceURI *uri,
 // parsed out and populated in the mURI structure prior to performing any operations against the database.
 QgsPgQueryBuilder::QgsPgQueryBuilder(QString tableName, PGconn *con, 
     QWidget *parent, const char *name, bool modal)
-: QgsPgQueryBuilderBase(parent, name, modal), mPgConnection(con)
+: QgsPgQueryBuilderBase(), mPgConnection(con)
 {
+  setupUi(this);
   mOwnConnection = false; // we don't own this connection since it was passed to us
   mUri = new QgsDataSourceURI();
   QString datasource = QString(tr("Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>"))
@@ -151,7 +154,7 @@ void QgsPgQueryBuilder::populateFields()
   PQclear(result);
 }
 
-void QgsPgQueryBuilder::getSampleValues()
+void QgsPgQueryBuilder::on_btnSampleValues_clicked()
 {
   QString sql = "select distinct \"" + lstFields->currentText() 
       + "\" from \"" + mUri->schema + "\".\"" + mUri->table + "\" order by \"" + lstFields->currentText()
@@ -187,7 +190,7 @@ void QgsPgQueryBuilder::getSampleValues()
   PQclear(result);
 }
 
-void QgsPgQueryBuilder::getAllValues()
+void QgsPgQueryBuilder::on_btnGetAllValues_clicked()
 {
   QString sql = "select distinct \"" + lstFields->currentText() 
     + "\" from \"" + mUri->schema + "\".\"" + mUri->table + "\" order by \"" + lstFields->currentText() + "\"";
@@ -224,30 +227,39 @@ void QgsPgQueryBuilder::getAllValues()
   PQclear(result);
 }
 
-void QgsPgQueryBuilder::testSql()
+void QgsPgQueryBuilder::on_btnTest_clicked()
 {
   // test the sql statement to see if it works
   // by counting the number of records that would be
   // returned
-  QString numRows;
-  QString sql = "select count(*) from \"" + mUri->schema + "\".\"" + mUri->table
-      + "\" where " + txtSQL->text();
-  PGresult *result = PQexec(mPgConnection, (const char *)(sql.utf8()));
-  if (PQresultStatus(result) == PGRES_TUPLES_OK) 
+
+  // if there is no sql, issue a warning
+  if(txtSQL->text().isEmpty())
   {
-    numRows = QString::fromUtf8(PQgetvalue(result, 0, 0));
-    QMessageBox::information(this, tr("Query Result"), 
-        tr("The where clause returned ") 
-        + numRows + tr(" rows."));
+    QMessageBox::information(this, "No Query", "You must create a query before you can test it");
   }
   else
-  {
-    QMessageBox::warning(this, tr("Query Failed"), 
-        tr("An error occurred when executing the query:") 
-        + "\n" + QString(PQresultErrorMessage(result)));
+  { 
+    QString numRows;
+    QString sql = "select count(*) from \"" + mUri->schema + "\".\"" + mUri->table
+      + "\" where " + txtSQL->text();
+    PGresult *result = PQexec(mPgConnection, (const char *)(sql.utf8()));
+    if (PQresultStatus(result) == PGRES_TUPLES_OK) 
+    {
+      numRows = QString::fromUtf8(PQgetvalue(result, 0, 0));
+      QMessageBox::information(this, tr("Query Result"), 
+          tr("The where clause returned ") 
+          + numRows + tr(" rows."));
+    }
+    else
+    {
+      QMessageBox::warning(this, tr("Query Failed"), 
+          tr("An error occurred when executing the query:") 
+          + "\n" + QString(PQresultErrorMessage(result)));
+    }
+    // free the result set
+    PQclear(result);
   }
-  // free the result set
-  PQclear(result);
 }
 // This method tests the number of records that would be returned by the
 // query
@@ -281,7 +293,7 @@ void QgsPgQueryBuilder::setConnection(PGconn *con)
   mPgConnection = con;
 }
 
-void QgsPgQueryBuilder::accept()
+void QgsPgQueryBuilder::on_btnOk_clicked()
 {
   // if user hits Ok and there is no query, skip the validation
   if(txtSQL->text().stripWhiteSpace().length() > 0)
@@ -301,47 +313,47 @@ void QgsPgQueryBuilder::accept()
       }
       else
       {
-        QgsPgQueryBuilderBase::accept();
+        this->accept();
       }
     }
   }
   else
   {
-    QgsPgQueryBuilderBase::accept();
+    this->accept();
   }
 }
 
-void QgsPgQueryBuilder::insEqual()
+void QgsPgQueryBuilder::on_btnEqual_clicked()
 {
   txtSQL->insert(" = ");
 }
 
-void QgsPgQueryBuilder::insLt()
+void QgsPgQueryBuilder::on_btnLessThan_clicked()
 {
   txtSQL->insert(" < ");
 }
 
-void QgsPgQueryBuilder::insGt()
+void QgsPgQueryBuilder::on_btnGreaterThan_clicked()
 {
   txtSQL->insert(" > ");
 }
 
-void QgsPgQueryBuilder::insPct()
+void QgsPgQueryBuilder::on_btnPct_clicked()
 {
   txtSQL->insert(" % ");
 }
 
-void QgsPgQueryBuilder::insIn()
+void QgsPgQueryBuilder::on_btnIn_clicked()
 {
   txtSQL->insert(" IN ");
 }
 
-void QgsPgQueryBuilder::insNotIn()
+void QgsPgQueryBuilder::on_btnNotIn_clicked()
 {
   txtSQL->insert(" NOT IN ");
 }
 
-void QgsPgQueryBuilder::insLike()
+void QgsPgQueryBuilder::on_btnLike_clicked()
 {
   txtSQL->insert(" LIKE ");
 }
@@ -356,52 +368,52 @@ void QgsPgQueryBuilder::setSql( QString sqlStatement)
   txtSQL->setText(sqlStatement);
 }
 
-void QgsPgQueryBuilder::fieldDoubleClick( Q3ListBoxItem *item )
+void QgsPgQueryBuilder::on_lstFields_doubleClicked( Q3ListBoxItem *item )
 {
   txtSQL->insert("\"" + item->text() + "\"");
 }
 
-void QgsPgQueryBuilder::valueDoubleClick( Q3ListBoxItem *item )
+void QgsPgQueryBuilder::on_lstValues_doubleClicked( Q3ListBoxItem *item )
 {
   txtSQL->insert(item->text());
 }
 
-void QgsPgQueryBuilder::insLessThanEqual()
+void QgsPgQueryBuilder::on_btnLessEqual_clicked()
 {
   txtSQL->insert(" <= ");
 }
 
-void QgsPgQueryBuilder::insGreaterThanEqual()
+void QgsPgQueryBuilder::on_btnGreaterEqual_clicked()
 {
   txtSQL->insert(" >= ");
 }
 
-void QgsPgQueryBuilder::insNotEqual()
+void QgsPgQueryBuilder::on_btnNotEqual_clicked()
 {
   txtSQL->insert(" != ");
 }
 
-void QgsPgQueryBuilder::insAnd()
+void QgsPgQueryBuilder::on_btnAnd_clicked()
 {
   txtSQL->insert(" AND ");
 }
 
-void QgsPgQueryBuilder::insNot()
+void QgsPgQueryBuilder::on_btnNot_clicked()
 {
   txtSQL->insert(" NOT ");
 }
 
-void QgsPgQueryBuilder::insOr()
+void QgsPgQueryBuilder::on_btnOr_clicked()
 {
   txtSQL->insert(" OR ");
 }
 
-void QgsPgQueryBuilder::clearSQL()
+void QgsPgQueryBuilder::on_btnClear_clicked()
 {
   txtSQL->clear();
 }
 
-void QgsPgQueryBuilder::insIlike()
+void QgsPgQueryBuilder::on_btnILike_clicked()
 {
   txtSQL->insert(" ILIKE ");
 }

@@ -17,44 +17,24 @@
 #ifndef QGSCOMPOSERMAP_H
 #define QGSCOMPOSERMAP_H
 
-#include <qwidget.h>
-#include <q3canvas.h>
-#include <qobject.h>
-
-#include "qgsrect.h"
-
-#include "qgscomposer.h"
-#include "qgscomposition.h"
+#include "ui_qgscomposermapbase.h"
 #include "qgscomposeritem.h"
-//Added by qt3to4:
+#include "qgsrect.h"
+#include <Q3CanvasRectangle>
 #include <QPixmap>
 
-#ifdef WIN32
-#include "qgscomposermapbase.h"
-#else
-#include "qgscomposermapbase.uic.h"
-#endif
-
-class Q3CanvasItem;
-class Q3CanvasRectangle;
-class QPainter;
-class QWidget;
+class QgsComposition;
+class QgsMapCanvas;
+class QgsMapToPixel;
 class QDomNode;
 class QDomDocument;
-class QPixmap;
-class QImage;
-
-
-class QgsMapCanvas;
-class QgsRect;
-class QgsMapToPixel;
-class QgsComposition;
+class QPainter;
 
 /** \class QgsComposerMap 
  *  \brief Object representing map window. 
  */
 // NOTE: QgsComposerMapBase must be first, otherwise does not compile
-class QgsComposerMap : public QgsComposerMapBase, public Q3CanvasRectangle, public QgsComposerItem
+class QgsComposerMap : public QWidget, private Ui::QgsComposerMapBase, public Q3CanvasRectangle, public QgsComposerItem
 {
     Q_OBJECT
 
@@ -124,35 +104,44 @@ public:
     /** \brief Scale */
     double scale ( void );
 
-public slots:
-    // Called by GUI if with or height was changed 
-    void sizeChanged ( void );
-    
-    // Set User extent to current map extent
-    void setCurrentExtent ( void );
-
-    // Called by GUI if calculate has changed 
-    void calculateChanged ( void );
-    
-    // Called by GUI if map scale has changed 
-    void mapScaleChanged ( void );
-    
-    // Called by GUI if with  scale was changed 
-    void scaleChanged ( void );
-    
-    // Frame settings changed 
-    void frameChanged ( void );
-    
-    // Called by GUI if preview style was changed
-    void previewModeChanged ( int i );
-    
-    // Called if map canvas has changed
-    void mapCanvasChanged ( );
-    
     // Set cache outdated
     void setCacheUpdated ( bool u = false );
 
+public slots:
+    // Called by GUI if with or height was changed 
+    void on_mWidthLineEdit_returnPressed ( void );
+    void on_mHeightLineEdit_returnPressed ( void );
+
+    // Set User extent to current map extent
+    void on_mSetCurrentExtentButton_clicked ( void );
+
+    // Called by GUI if calculate has changed 
+    void on_mCalculateComboBox_activated ( int i );
+
+    // Called by GUI if map scale has changed 
+    void on_mScaleLineEdit_returnPressed ( void );
+
+    // Called by GUI if with  scale was changed 
+    void on_mFontScaleLineEdit_returnPressed ( void );
+    void on_mSymbolScaleLineEdit_returnPressed ( void );
+    void on_mWidthScaleLineEdit_returnPressed ( void );
+
+    // Frame settings changed 
+    void on_mFrameCheckBox_clicked ( void );
+
+    // Called by GUI if preview style was changed
+    void on_mPreviewModeComboBox_activated ( int i );
+
+    // Called if map canvas has changed
+    void mapCanvasChanged ( );
+
 private:
+    // Called by GUI if with or height was changed 
+    void sizeChanged ( void );
+    
+    // Called by GUI if with  scale was changed 
+    void scaleChanged ( void );
+
     // Pointer to composition
     QgsComposition *mComposition;
     

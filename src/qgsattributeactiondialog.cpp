@@ -21,25 +21,28 @@ back to QgsVectorLayer.
  ***************************************************************************/
 /* $Id$ */
 
-#include <iostream>
-#include <vector>
-
-#include <q3table.h>
-#include <qlineedit.h>
-#include <qstring.h>
-#include <qcheckbox.h>
-#include <QComboBox>
-#include <q3filedialog.h>
-
 #include "qgsattributeactiondialog.h"
 #include "qgsattributeaction.h"
-#include "qgsfield.h"
+
+#include <QFileDialog>
+
 
 QgsAttributeActionDialog::QgsAttributeActionDialog(QgsAttributeAction* actions,
 						   const std::vector<QgsField>& fields,
 						   QWidget* parent):
-  QgsAttributeActionDialogBase(parent), mActions(actions)
+  QWidget(parent), mActions(actions)
 {
+  setupUi(this);
+  connect(attributeActionTable, SIGNAL(clicked(int,int,int,const QPoint&)),
+    this, SLOT(rowSelected(int,int,int,const QPoint&)));
+  connect(moveUpButton, SIGNAL(clicked()), this, SLOT(moveUp()));
+  connect(moveDownButton, SIGNAL(clicked()), this, SLOT(moveDown()));
+  connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
+  connect(browseButton, SIGNAL(clicked()), this, SLOT(browse()));
+  connect(insertButton, SIGNAL(clicked()), this, SLOT(insert()));
+  connect(updateButton, SIGNAL(clicked()), this, SLOT(update()));
+  connect(insertFieldButton, SIGNAL(clicked()), this, SLOT(insertField()));
+
   init();
   // Populate the combo box with the field names. Will the field names
   // change? If so, they need to be passed into the init() call, or
@@ -131,9 +134,8 @@ void QgsAttributeActionDialog::browse()
   // Popup a file browser and place the results into the actionName
   // widget 
 
-  QString action = Q3FileDialog::getOpenFileName(
-	QString::null, QString::null, this, 
-	"Select action dialog", "Select an action");
+  QString action = QFileDialog::getOpenFileName(
+    this, "Select an action");
 
   if (!action.isNull())
     actionAction->insert(action);    

@@ -46,11 +46,6 @@
 #include <qgsmaplayer.h>
 #include <qgsrasterlayer.h>
 #include "plugin.h"
-
-//
-// Required QT includes
-//
-
 #include <q3toolbar.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
@@ -59,7 +54,7 @@
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcursor.h>
-
+#include <QMenu>
 //
 //non qt includes
 //
@@ -118,7 +113,7 @@ void QgsGeorefPlugin::initGui()
 {
   QIcon iconset(qembed_findImage("icon"));
 
-  Q3PopupMenu *pluginMenu = mQGisIface->getPluginMenu("&Georeferencer");
+  QMenu *pluginMenu = mQGisIface->getPluginMenu("&Georeferencer");
   mMenuId = pluginMenu->insertItem(QIcon(iconset),"&Georeferencer", this, SLOT(run()));
 
   // Create the action for tool

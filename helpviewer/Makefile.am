@@ -17,27 +17,16 @@ PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
 
 
 %.moc.cpp: %.h
-	$(MOC) -o $@ $<
+		$(MOC) -o $@ $<
 
-%.h: %.ui
-	$(UIC) -o $@ $<
-if HAVE_QT4
-	../tools/qgis-qt3to4.pl -uic $@
-endif
-
-if !NO_UIC_IMPLEMENTATIONS
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
-endif
-
+ui_%.h: %.ui 
+		$(UIC) -o $@ $<
 
 
 qgis_help_MOC = qgshelpserver.moc.cpp \
-								qgshelpviewer.moc.cpp \
-								qgshelpviewerbase.moc.cpp
+				qgshelpviewer.moc.cpp 
 
-qgis_help_UI = qgshelpviewerbase.h \
-							 qgshelpviewerbase.cpp
+qgis_help_UI = ui_qgshelpviewerbase.h 
 
 qgis_help_UIC = qgshelpviewerbase.ui
 

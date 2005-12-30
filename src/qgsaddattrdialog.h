@@ -18,15 +18,12 @@
 #ifndef QGSADDATTRDIALOG_H
 #define QGSADDATTRDIALOG_H
 
-#ifdef WIN32
-#include "qgsaddattrdialogbase.h"
-#else
-#include "qgsaddattrdialogbase.uic.h"
-#endif
+#include "ui_qgsaddattrdialogbase.h"
+#include <QDialog>
 
 class QgsVectorDataProvider;
 
-class QgsAddAttrDialog: public QgsAddAttrDialogBase
+class QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogBase
 {
     Q_OBJECT
  public:

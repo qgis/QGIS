@@ -16,7 +16,7 @@
 #include "qgsproject.h"
 
 //qt includes
-#include <q3filedialog.h>
+#include <QFileDialog>
 #include <qlineedit.h>
 #include <qmessagebox.h>
 #include <qpushbutton.h>
@@ -30,7 +30,11 @@ QgsGeorefPluginGui::QgsGeorefPluginGui() : QgsGeorefPluginGuiBase()
 }
 
 QgsGeorefPluginGui::QgsGeorefPluginGui(QWidget* parent, const char* name, bool modal, 
-		     Qt::WFlags fl) : QgsGeorefPluginGuiBase(parent, name, modal, fl) {
+		     Qt::WFlags fl) : 
+  //params commented out by tim during qt4 ui port FIXME
+  //QgsGeorefPluginGuiBase(parent, name, modal, fl) 
+  QgsGeorefPluginGuiBase() 
+{
   connect(pbnEnterWorldCoords, SIGNAL(clicked()), 
 	  this, SLOT(openPointDialog()));
 }  
@@ -59,11 +63,10 @@ void QgsGeorefPluginGui::pbnSelectRaster_clicked() {
   if (dir.isEmpty())
     dir = ".";
   QString filename = 
-    Q3FileDialog::getOpenFileName(dir,
-				 "Raster files (*.*)",
-				 this,
-				 "Choose raster file"
-				 "Choose a raster file");
+    QFileDialog::getOpenFileName(this,
+				 "Choose a raster file",
+                 dir,
+				 "Raster files (*.*)");
   leSelectRaster->setText(filename);
 }
 

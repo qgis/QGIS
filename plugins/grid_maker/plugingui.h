@@ -12,12 +12,13 @@
 #ifndef QGSGRIDMAKERPLUGINGUI_H
 #define QGSGRIDMAKERPLUGINGUI_H
 
-#include <pluginguibase.h>
+#include <ui_pluginguibase.h>
+#include <QDialog>
 
 /**
 @author Tim Sutton
 */
-class QgsGridMakerPluginGui : public QgsGridMakerPluginGuiBase
+class QgsGridMakerPluginGui : public QDialog, private Ui::QgsGridMakerPluginGuiBase
 {
   Q_OBJECT
 public:

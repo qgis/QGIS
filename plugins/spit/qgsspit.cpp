@@ -25,7 +25,7 @@
 #include <qspinbox.h>
 #include <qcheckbox.h>
 #include <qinputdialog.h>
-#include <q3filedialog.h>
+#include <QFileDialog>
 #include <q3progressdialog.h>
 #include <q3memarray.h>
 #include <qapplication.h>
@@ -55,8 +55,9 @@ int Q3TableItem::alignment() const
   return ( num ? Qt::AlignLeft : Qt::AlignLeft ) | Qt::AlignVCenter;
 }
 
-QgsSpit::QgsSpit( QWidget *parent, const char *name ) : QgsSpitBase( parent, name )
+QgsSpit::QgsSpit( QWidget *parent, const char *name ) : QDialog( parent, name )
 {
+  setupUi(this);
   QPixmap icon;
   icon = QPixmap( spitIcon );
   setIcon( icon );
@@ -150,8 +151,10 @@ void QgsSpit::addFile()
   bool is_error = false;
   QSettings settings("QuantumGIS", "qgis");
 
-  QStringList files = Q3FileDialog::getOpenFileNames(
-                        "Shapefiles (*.shp)|All files (*.*)", settings.readEntry( "/Plugin-Spit/last_directory" ), this, "add file dialog", "Add Shapefiles" );
+  QStringList files = QFileDialog::getOpenFileNames(this,
+                        "Add Shapefiles",
+                        settings.readEntry( "/Plugin-Spit/last_directory" ),
+                        "Shapefiles (*.shp)|All files (*.*)" );
   if ( files.size() > 0 )
   {
     // Save the directory for future use

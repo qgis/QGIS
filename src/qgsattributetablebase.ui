@@ -1,441 +1,291 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>QgsAttributeTableBase</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>QgsAttributeTableBase</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>686</width>
-            <height>547</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Attribute Table</string>
-    </property>
-    <property name="icon">
-        <pixmap>image0</pixmap>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout4</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>mRemoveSelectionButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>image1</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Remove selection</string>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>mSelectedToTopButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="accel">
-                        <string>Ctrl+T</string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>image2</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Move selected to top</string>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>mInvertSelectionButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="accel">
-                        <string>Ctrl+S</string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>image3</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Invert selection</string>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>mCopySelectedRowsButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="accel">
-                        <string>Ctrl+C</string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>image4</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Copy selected rows to clipboard (Ctrl+C)</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Copies the selected rows to the clipboard</string>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>mAddAttributeButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="accel">
-                        <string>Ctrl+N</string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>image5</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>New attribute</string>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>mDeleteAttributeButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="accel">
-                        <string>Ctrl+X</string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>image6</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Delete attribute</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer3_2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>210</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>btnStartEditing</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Start editing</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>btnStopEditing</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Stop editin&amp;g</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+G</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QgsAttributeTable">
-            <property name="name">
-                <cstring>tblAttributes</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>7</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout10</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Search for:</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>mSearchText</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>in</string>
-                    </property>
-                </widget>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>mSearchColumns</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>mSearchButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Search</string>
-                    </property>
-                </widget>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>mSearchShowResults</cstring>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>btnAdvancedSearch</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Adva&amp;nced...</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+N</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer4</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>70</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>btnClose</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Close</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+C</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-    </vbox>
-</widget>
-<customwidgets>
-    <customwidget>
-        <class>QgsAttributeTable</class>
-        <header location="local">qgsattributetable.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>-1</height>
-        </sizehint>
-        <container>0</container>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>QgsAttributeTableBase</class>
+ <widget class="QDialog" name="QgsAttributeTableBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>686</width>
+    <height>547</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Attribute Table</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset/>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>10</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QToolButton" name="mRemoveSelectionButton" >
+       <property name="toolTip" >
+        <string>Remove selection</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset>image1</iconset>
+       </property>
+       <property name="shortcut" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mSelectedToTopButton" >
+       <property name="toolTip" >
+        <string>Move selected to top</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset>image2</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Ctrl+T</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mInvertSelectionButton" >
+       <property name="toolTip" >
+        <string>Invert selection</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset>image3</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Ctrl+S</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mCopySelectedRowsButton" >
+       <property name="toolTip" >
+        <string>Copy selected rows to clipboard (Ctrl+C)</string>
+       </property>
+       <property name="whatsThis" >
+        <string>Copies the selected rows to the clipboard</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset>image4</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Ctrl+C</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mAddAttributeButton" >
+       <property name="toolTip" >
+        <string>New attribute</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset>image5</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Ctrl+N</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mDeleteAttributeButton" >
+       <property name="toolTip" >
+        <string>Delete attribute</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset>image6</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Ctrl+X</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>210</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnStartEditing" >
+       <property name="text" >
+        <string>Start editing</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnStopEditing" >
+       <property name="text" >
+        <string>Stop editin&amp;g</string>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+G</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QgsAttributeTable" name="tblAttributes" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>7</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="textLabel1" >
+       <property name="text" >
+        <string>Search for:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mSearchText" />
+     </item>
+     <item>
+      <widget class="QLabel" name="textLabel2" >
+       <property name="text" >
+        <string>in</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mSearchColumns" >
+       <property name="sizePolicy" >
         <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
+         <hsizetype>7</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image7</pixmap>
-    </customwidget>
-</customwidgets>
-<images>
-    <image name="image0">
-        <data format="PNG" length="651">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000025249444154388d8d935d48536118c77f679ba673f991df5186d887695b88d0c5b988cacca032a8209408cc20f022ba8c82a08b4008c1c88bbae922508c50b22f2856328bd345503ad1fc4a9142749b9b9aba73b69df376315496337cef9ef7799edffbffc3fb97144561b3e764972cccd9f0e711f43c552400cb6616ab9ecbc2b21dcc39a04f43646cad678ab750543422cacb8745724aa7b0a5b5890795a708f749e853a0cfc4ceae0394954d88ccac59de757771ec680b4dcd1fd8b7670ba965668c59080fff0760b70f0a4be224bfe67ae9e81c22e0576975fee0ea8bf7e8f350bfd3813461de1890943487676994a5e530e3a30b00582fc0b4b1c899c4ddd4d515d370c51e1f1008b48a88e425a88508693a9e9920b6063065c25e4f16d7ce1fc0b6358182425b7c4069a9400b2fac3642ba8e390f0c2f9ccddd4f7e7e4a549175030b6eb79f085af4d224b1a32283ca623b155a09976bcb912409009f578b0fa8ae6ec717500148b65aa872ec22b1dbe07a4d09e9d916228681a6e97cfbea8d0f501445faf2c9831a8c6032490c0c4dd1f67880c2826d04821e42611da5671ae7dbdf284af417c6000ed7cae286dbc9fdaeeff8bc416aaaf7e238984d4e66060083fd7e9a1bddcccf6bb85c0f450ca0a24916492740f74247df08f5773fd2df3bcbad3b87f839a9a21b068b8b11fc3e1d557dc2b2ea5bb520ad8449966501603d07ba0fb49ee8c02be7698a1da90064a5e4f2e6f50475975ee2727d8e0dd38aafe32db210da5a7df3f64571a4328fb4f404c6c7fae9681f271c365615ac4be3721b9873d7eac67bcfa41575ff3e06f017ba4af70a9400e8650000000049454e44ae426082</data>
-    </image>
-    <image name="image1">
-        <data format="PNG" length="711">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af40000028e494441545885c5573d6fd440107debf3457024020928101125151252040889867f430d75b828a6828682bf80f829270a241a44118902ca882a51e2b377661e853fcef69d89ed5c744f5acdae7766e779f6d9ab75b3d90c9b4408006fbedd274da1c91ca60a538389c124ef57c76230cbac8ac294a05816578951559810a69acd973e1ef6fd150060369b39f7fcd31fba6084bb37b7a06250cfcce64d7cd127d41b440c5a3cf3061196fd9abf27a44c6ca019cc0b2c39069363e0c7ebac022e18e1e9c35bd8bd3d81f780f7409ad65b52ed270d9b0269928dcb7e0a78077802e6008cf37a9bc1c55fc12d965b10005824978c800820ba685a6966805a66cd00cb9f19eb960690a82308e078675903699a25f552b72af5e42509cd48d408e932a125026d227c71aff206c5a2ba58781589a2352b240579255401e62c3243247f27f8f0a54a80c0cb071733ed0a922001338224c6e351c363b7462060973a0d481e8641993c8e7d6b4cb82e02cd374f53a98ddb09d862328aa256c7e974dac9af4b7c0dcf3efee66560665435a66771e718ec7d260002e0a53440127a1623081cc6936b83d608aa5bd037b9730ee1f664507c819a08fb682014811f353fb1761c1c1cac9ed87bffabe79e93aad6d95f4e4ed6a70132dff724e91c33dad9f9ef7c808e1a289293c4f8fa30c1ad42670decefbf2d091c1e1ef64ed4aa81c7ef8ed6bae75dd05903d5b25f152e20c02502f379fbc13204bdcf029288a2a877555a35f068fa73698f548d224aef85692a9ccf3de338bd120d84cd5f71717c92441876ffd30d454d03d5e457a8bb1a421a717a7a0e3383196166606eb3316b73ab7cbc78dcd80e061220f1243a2a2f10260a6dde74aa379eea8da931676abd09386462d81886d56d8d709bbe1d6fbc02ff0020bb76e2deb639600000000049454e44ae426082</data>
-    </image>
-    <image name="image2">
-        <data format="PNG" length="1330">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af4000004f9494441545885c5975d6c544514c77f73b7bbed6e5bb61fac69692188b180a131102418c5484a4244830f12e3077e441351a3067910a3d8441213e141447ce001c410427c91c893318ac6974254f005500143a8a4d46e816d77bbf4ee9d99e3c3dddddebb2dfd48309c647266ee9c99ff7fce9c397347f5f4f4703ba50a60cb6f6d22d660dc51ac315863b1da6275b11e6c6b8bb5be36da608d20dafae302638c31582d5863fcfeb28d87fd7d13003d3d3d4aaddcd32bca89904ac630da623cf175b168af54178c67d1da624adf3c8bd652ae87ec3d4197812d622dd6d35877007107e0f4dbbe079413e1be8e06da9b13781e781e140ae1e206eb6e852e40c1f5dbe57a013c059e805540b4e86f6b51374e2031296f81038c816b9f80d6a0cd583181622d18eb6b6bc116bf59096bb12042581c0725b3c7c740a1e0837a3aac8d0e839749189f448890194f681c819b05e103ad811594263563134f44a2542a3da44be48d600c489185af047730c1cec34102020fcf9b9ae974454410016ba5589762ddef1b1e8a870838321d3fcd8840185c8a5b11241394aa5b4dc071148ea326eccbe546b1d65610083252130f04c2113599dd24e3fd9353412034f174bd11b02bb979d4b59cb934c23f691711614e7394456d71625185885057b4bda55b20228c8c5af67f3bc091e359f2b68eb98d1e89a8e6af811ae2aa9faece18cfae9e4dca946260b22d9821f8e09066d3ee8b8c52cfebebdb7970718459890800ae279cba50c717c772bcb2e7121f3e3d9b2577263166120f6cdfbefda680dddddd213b2d55fc7c6d351d1d1d6c7eac86fa780463e1e8f1eb65bb873a67f1d17331f67fa7e83e3cc8be37aac779402ddbf1b79c7c67c10c56eeaffed3237dfc70c6e1fd0db5c463feaacff6e679fcfe26ea8b5e38742ccd3df3125811761dcd7057538e275744e97cf1049cda08cc300f94c0dd82e1e88961d62e8d911b35a4870b9cedcdb36e4543191c6063578ab3bd7906873c562d56fc78da703d3b1a9ad3619a31104c26672ee52990a0316e486734e98c66cdb2244df5d171e33676a5f8e97c2d874eb6e1aa24e7fa0aa1fe69c7c0b66d1f9409ec3df0354d756b480f6b224ab16155132d8d31002ea75dda53d5009ceff3b87b4e941dcfc478f34bf8e58f1a06325e0581404c04036da2954b31993cb2ee51f67eafe9bd1a2156a528183f316dfbca65c95c87a752fed897f645f9ec79583a1f50a00019770c27898189c04b496628eff1e755ff6e7fed0008062b5116b43aa139de3ae827ce8802a35d1a6ac3185310180f2e222c6a8f53a3fa71548bbfaca2783a0c5ee50855118ba3fc3f9f82c930bf399cc6438968b218d8baf5bd32813dbb77d2ca6272ee2cdaef4884ec52891a200e404773a6fcfdf2409e950b3c92b5b13081605e2fc540e5751abedb61cb96ad64f31eaf7e7e9198d53425c7261dcc5820cec57e97967affc85d1b2a60f2d759bf2646752cec01a732154f061e8c89da9a081fbfd0466fff1057d22324e38a86844326abd975e45fbee9c9908c2baea447b8d07b8dcd6b1d5a530d384e2484178a81a9c02bdb2d4d357cf2721b078fa5f9eed7015a1aab68a8f78f6026eb72e5aa4767bbf0eefa6a5a530dc462d520d90a0256c866f3586bb1d6bfada4a8fdb684fa26b279627984ae858a737d37480fe7106b59d80ef3ef55246b7db7e7b239902c9ed6e33db07cfbb9f203c26a83a97ce9045f3cc11753459f35e1333e1d51c0adfd279ba138539bfcbfa26ef7ebf8b67be03f2ea12f6123e6fd580000000049454e44ae426082</data>
-    </image>
-    <image name="image3">
-        <data format="PNG" length="1433">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af400000560494441545885c5976d885cd519c77ff7cefbec9dddedec6e24d9acae049b178435d69a340a5d2c51ab82151384a2224468fac1405a42da92a804634b04a154a59f0485e6834d51f48b52a311ed46a926be849880286b9a4637fbe2eeccce9d9973cef3f4c3dd9d9d3bd9dd6e14cc0387739e7bcf39fffff93fcf3d338f373434c4a5b424c06fdeef551587ab5511e710278815c4ce8c9b7d2b8844bdb30e718a5a89d635ad71ce215611e7a2f78d390639fe2b008686863c6fe35fbe54cf4fd0d391c659c1198dfa9966cdec587146b05670b3cf8c60ad36c6b1f946b10d604145106391da085a1b81133b23053c3fc18f7fd8c9caae3cc6803150afc75bad795c6be9eb50af41b50e3503692b18a394c304b60ace0352337a8be085efa2698d87a0016e2302d6827573cd3535117012f522d1dcd008c562c815fd69d62eabd1990e79ffeb22a74f859c3c95a756f14101dfc7d36ef0be8813a8d7a38d8c8df7cec6c11b245c44a26660a222fc7cdd041b5767b8aad7a3900b80801baf143ebfc2e3c5f6310e1ded41ab8b24e10dcb4174e654b3a79c019179083807136538f49ed0179c6774d2f2cce180d0fa5cd931c6eae570f98a0e32a936365d9d60221ca7abad8355dd501bcd73e060330185c1cb2ffef3d9fb8261744ab86753175b362458bddc23e1c3e9fffe80973f105e3c5a66e5b202c53c789976828261c79d3e36ccc509a8eac2288bd8bf3eadf2d76d7936ad4e904e46cf5495ae007eb64e393392e2cd5396be9e2c55031f0d1b3efcc282514817be3b81371e29c47c55a56694e78f84ecfb8785543b859c477b05b26918a9e4b8fb69250c81eeb58d75be4a1301cf5bb835db3cef3ddf279b493076ec69d607431452157adac1382885506c836505e1babe328c7e3aa700cd0a2c558da679aa8a2a8828aaca3e55a62aca9e8353bc745c287606a8c2c4b4d01f9c67ef1dc26dff2ccd11f8b621980f7cd60fb2f0f0d63682cc14cf1f55ea92a12733ce13f7e6e90dcab13de221f816e073c073be88d291f7d8717b811bfacb74a746d9b735cdda95499c8be3c515688d751c3136cf036667271658d206ac7b783f6b2ef3d93cf010be0722d242402e2e0754419d344eda7af2567f578bdf4ac06f56c0094c8450ae2d021e937c71f0f97c6909b9cfcc0327f0ea09d8f65c955d7f378c9517078f36bc38f028615b4330a3c0276760ffdfbee2bec13c9f7d65b8efd18f1968fb37b944f42bb267cfde06f8e38fefffbfa16ab5eddb774664dc0539001f0d2b7b5f30dcbc3e4f32536055af7076f227845d83fc7e8b4790693e39ecdefd87799558aa32b1104c5792ec3e6849798691b09de3c31e27ce26e80892bc7552f8e34b86f353d2008f878105c117cc9116659267ff53e09ca7b4076d2c1b8315c5e84fc899b124e36578eab53ac53cfc7a739a54a2157cfe9c584c89564bf6aef88643db3b29550df73f798e54b28f940fdf94aaf4eb7b5cbbfc24a31f4c93ba756763f33f1d38c099e9cb38f2f5753cb0ea9525e5c0b66d3b22f95b4824b319c3407f924a4d19bca6c891d38ece2049479063b8b4813baf1de0f61f65b14eb14e387dd652efdfce3bef56d9329865c75dbb96acc4bc2198bd8872698fbbaff7397ca2c264a5403ae1d196cff1e7d77d9e3d324d909846f099ace7192fc12fd6fb3c7853eea2c05bef0068ba883c0f360f64f9edad96caf4246353756a0672d90c3659e4bcebe35cd88d71091eb8d1f2d82f3be869f7969480cdef5b1321a9a2944a1544041165eb069f42aac6736f871c1bf6709a02942063d9d8efb8e56ac74fd7f8d44be38c4c466b44a571cdce8234609ac3ae8ab13646c05bf3bb8fb551f1b8a8b2691426461b55913a3b53d9b8b98ac9ba0b2aa825dbb17b23025c9097dfaff997121cc0bbd4d5f12557e07fb39aee2c0ec7acc40000000049454e44ae426082</data>
-    </image>
-    <image name="image4">
-        <data format="PNG" length="1604">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af40000060b494441545885c597cb8f1d5711c67fa7bbef7b5e9e97676ccf64fc8eb10d9ec490102244100ba448241bfe00566c9022b220120b0b5962c30ed8222fd9001b362cd8a0b0004642264388272619c7ced89ef7ebcedc7bbbfb9c2a16a7efbd7d271e8f59404a3aaa3a7dbabbbeaefaaa4e1fa3aa7c9e62005efec5fd591577ccc5ad409c439c2056109bd9f9b91544bc76d6214e512b88733dcf38e710ab88737ebd734fba2db7bf7f1b1040cdcbbf7cf03d1384b7c6068b382bb854bdce864ddbb6e252c15ac1b5afa582b5dab17bee4f15db712ca808925a245e45e3d5b778ff87bf025a9109c25b5fbe30c4a9912a690a690a49d23be2bc1d1fd00924b19f77ec045203a98218a090c55b04d3fc2b5ad49f03bf079603a0ebdc7a00d68275dde17243049c782d02925d13edd52af0197a05014647dbb351a01c81ff126b3d80bc76b6d7790784f3207a00b9cf023a82df45208c00be3699fb82f64b5df7c5070158abb45a099bcb8fc03509ca2314ab2340e4a367c139c539685799574abc5ee567bfeea28850f8c6f4b397cdc67683858fd7d12a5c7de504f39fac32d15f606b6b19278e8b6746191aa822a2a8fae16d0f6677a7d2032078963ea0aa6cef3679776e91fb0fd778e1f228af5e3fc9605f91e7a74758f87483d9cb939c9818e2d6effec1e3d5ed8e73cd5291079397e828008d66c2dc7b4b846193eb5747a9968b601c100311c76a45361a2d7efba705aad522afbd7a96bfddbecfebdfbc0c989e4878007200400ed1cd9b373bb628346c3fe79ebfc89bdf3ecdf8701f60010575400446088390efbc3243b554a6184504c6b0b7bdcf8d9ffc945a25405531c6f0f6db3fca2ae700803c556fdcb8d1b16ffd668e4b67535efad200410090009963c40f158c8918ac18b676f6d9da4dd96b58a2a8c8d597de60fac4308fd7eb9c9eacf9d2fc6f5270edd271fafb1e1298c417b5e93ab7ce3237bfc7ca862395884ab5ccd8701f93a37d9c3d5ea65208f9eaec298c31cc7fb246b29f72e7a3c79c9f197f7a0af2f2c54b53fcf1cf1b4c4dc4948b0e34fb72e38090a50dc7b5172f502b17880243680c9131040138e33799d040a514a289303834c4ed0f96981aab1e1e813c07c037a4faee15befbfa38c6884f81464441c4707f0a6140ec04a71e800b0c4e0d2e0311a9b2b51ff360699b172e4cb05eb76c6f3d3a3c02790eb465eebd7b2cad2c3235d14e81031c27471c2b1b0d4647aa38853000a7da0591019a9e1862b05666733fe6b99963fcf3ef6b3d2df2c83e30fb8569e6174a8826f8d2f37a6a12965776889d108b903821162576d910a5e58452a9c089b1012e9f1ee7daf909a240811c000ee1405b0a85907333e7b9b398749c4342b562495b7592b6d336880c50ec8444b4e75a8ad2572af400782a07da220a5ff9fab7b838b34614f8fa37c6510a1ab49c109976d8217a422a22034efd7b0686870870480740ae2a9ec481761bbdf3d1328b0f56b83013833a0c117da59046e22815828c7ca64b4805673220c610a95fab8e0c100596a49d82a77120dfc3cf3d37ca87f706506c968a844ab14523b69d9cfbfc0b89b4c3dee5444bfc5aa5bf46b9d0f57104806e0f3726e0f8e81996960dbe12126aa598469c7a67eddce738d17bddaf156b256ae520c78143f68283f2ce3b3fe6ccd418f30b35a626ea80522da5b4762da59afa90e7c21ea941b27ee0d4f704310602435f2dec0278d25ed0bb8375e7b56a91466b92c4ee518c94524189534bec84b0d384b2fc07fac4066514aa6503d91f7970b0151fe6bc3d3f7d72920fef053881f7ff6d68258e382bb76eeea593fb44327e646ba92a95522e02790e1ce55c44393539c01fdeede7cedd06ce1e271c0f70aa4896025f8620811fd60a384553074e090c44fe4fd0743850af37101144fc0f8366dacfb5674d4419ef9fa05a0e486cc872865f812475d4775b3437f768ae6e93d41b84d6523042b960a81442c210fef5f14e6f04aedfbcdb39408875b883279dfc892767d7c2941fbc7585cdf5c72c7eb0ccbdbbeb3c7ad460bbee68a621890440014ce03fd898cc6d1ff89f0a0c30004c01838796c021323e7565f8e499d917ef2ffce5eeeee6c3359b365b59309ee5c0b9037cda3eb754e89e5ffe5f92024df3799f8e83a36ff9dfca7f008b18075d0bdc49150000000049454e44ae426082</data>
-    </image>
-    <image name="image5">
-        <data format="PNG" length="1052">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af4000003e3494441545885c597df6b1c5514c73fb389e96c1ba9f80b445790d05a5b5821200812f12fe84b84481312cc8b0fdb1705c180f1c13c88824f765fd540a34d9ffc1384c2d207492458ab8520989792da40b3893bb373ef397d98bbb3333b3bd9441b3d70b9bfcebddfeffd9e3373b95ea3d1e0ffb461800f7e7a5e552c360c106b112b8811c4b876ba6f0491b8b6c622565123f1bad41a6b2d6214b1369e4f7c2264fd3d001a8d86e7bdfed59fea958678e6f408d60836d2b876c5449db66223c118c176c622c1184dda19ff483109b0a022486490701b0db7e197f76305bcd210af9d7d82179e3a4914411441bb9d2d61ba1df6d46d6887713f69b721f22052100f78cce92d82d7ba898e68128212d00537310163c0d86eb1a9220256e25a04c48d89666b1550256ba5129e3e9dcf81763b068d4cb6b6260b9e90b031890c219b2794235094846f3c973a416753dbddb81f894ee955c874c85bc55a50c722ae94f0af937cf15d9a80c25b2f0e667a5853555441445d5b5d3b9edb7d50ce1028e96174fa17e0ea42912693b64746a0083cdb574424b36e58538c969797fb6e3e373797e917f91d64939353eecbe921904ed55ea0224bfb15cbae3d79c0a30fc151c1fb85a0a4f2cf08a4c18ac1c9f9589bc51b4e2b701c3930b5b7c8eae812172fbeedd4ca2ac0f8e79b7a141351b556d418abedb6d1308c3408226db5dababf1feade5ea0cd66a0bbbb2d6d5da9a82adaba52d1fbf7f7f4debda6fe7aeb0f65fcaa020ae89172202f7991ecf964ebcce7929043e6402f78faefd60fbc7bb0f36ebdf60dc1a1726076762e03beb27235e733b5b708c0eae852776c02e0024cdcec92b3426b7e01e62b942f6fe1bdba74477ffef8cc114e9e5762e8db33f8b52de00441fdd964ad5f9b064e0021417d2535beedc62a59058e0e1efb44b377a07e16bf66f16b63041b9b6e87978153c03e4c38f0ea186009ea43942f6f0d223008bcdb0fa67f83fa39fcda69fceab4031f039e0476f0ab9f02bf03b7137038e45d70e9d24c06ecfaf5effb331e5d62aabe08136bf8d52f1df805e01670976063056e6497f4bd0b0ebad1446072f29d4225b8b658a868c7ca5f7f06cce41518043e28274e5d3b8f5f1b075e01f6811d77fa1d603f0e4df5362d1628af3905d2393008fc203231f836f020961a5cdcef02fb041b9fb8b131fcda362d2a2e09456936ff464410896f2b7575dcd7cc5c3f9f977e7cd37d8610d437930351fd011801da49ec831b9bf8b510bfb6458b0adeb98f363479f1d8f865637b5f3ae9174ffac5949a6bce7cd81363687db3805f7d9c60a349f95d3736bf90cb093dae92be8c8a7c4a393affb10d371a0defd8765f9b4a32bc08e75815581f5ff5827a85f5f1d5c2433e0408b53ab378bd0d870000000049454e44ae426082</data>
-    </image>
-    <image name="image6">
-        <data format="PNG" length="1365">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af40000051c494441545885c5975b6c54551486bf33a773e9b433bd514a6da5e1a5d0c83508690413a554437c5113638c064413697800ac46d49426541f888a821853224aea830f4431f062300ac4c44a8c142397848a896d436387a1b7296dcf9c7df1e1cc4ccf995e6895a42bd9596b9f7df9ffbdd6da7b9f6db4b7b7339f9203d0f85b85d64a22ad71949428a95042a144ca76d7854229474b215152a38572c6b9c648295142a3a474da337d6cd4a51d00b4b7b71b46ed916e6df84c4a0b0248a190b67674aa083b6d6ba4ad104221d3df6c85103a637bfadb1a91015668a550b6405931b415832baf3a1e307c26ebaa0ba92c0963db60db904c7a8be5b6ad2c9d84a4e5d43376126c036c0dca00fc297f2b853176011dd09910f8800970e1101002849c28d2559402a91cad14a8d437a5bd5a2bd01aaff87c187ac1e41c48261d505b78b5145ef00c09e990f0109293094d22305d126e2877ad203da99c98782a12e992ed2191262f3552824eb17094c68a8779ef2b37010d8f2cbe3bd3d98ad61aad41299db275ca76da8687723d047c7a367efa1fe03a150a3719b7dc3302d3817beb1aa594675c8e76316a69699916a0b9b97956fda693c6c637523b278b803b55dd203389bb5f7aa572dc62f4ea35c67b7ad05ae3bfaf82e0b2a51881606ae54c19829cff1302ad35f2ce18b1cfbf60e4e4b7e48d8e22eeaf4484c3843a3b898572c9a9db44d1f35bf19796de3d047305b7e3b7f9bb612791f1712a7736606edc80198d38ed5692fc8e4b8c1c6fa3f7959729dcff0e91e52b9072060fcc25077284e0d19f7ea6baba9ad09e5d246ff692ab24727030d32f54b314fdd28b18e7cf73abb909ffb1e3538440cd2d07b486a6a67df41efa185f5e3efe6d5bb16ff612a95d4fe2c2aff8171467fadaf17e22b5eb0128e9eaa6bfad0dfdcc739ef9e6b40dd3fb595a168953a7093e568f1c19216fed1acc4884bcb56b48c6e2246371ec783f85f575989108664114e3e18d70f607c60707bc1e609639e03e4c46af5e259c4c228b0a51f13883df9da160f326026565e4ad5ec9e81f5728acaf03e0f6a9d3e41f3d46c570026d59243aaf7b09cc36079a9af665089c6c6d65737131221ec7304df0f9b87de26b8a9f7a9260650581fa3200129f7c4af8c773041377c080906922fbfa80321701d7ae982a07dc2b4fefe72d5b9e40b51ec5eceac1080430020142f15bd0178377f73b032ffd4ee4c4378e6d00da0718283d87a3782af0f421a3868628b9de49f1e52b145dec201c8d127481b366351c3e982260408e89a504baa8682e0426836bad092d5b4a2214c2300c0cd387b17a25e6fb079c41bb1a61f76b1912fac847c8702e321462d01f40552df160ccfa2ed8bbf7ed0c8183470e5153be90e8c818e1ca4af2b76fc30412070f212c0b6a9641eb67e437eec6bf6a25a39beb183e7b8eb1da87f0470b81deccbcc6f2e66bfaf2fe1a0fd84c375ada137662989e861d142c5e4c60410981aa2a925d5d938807aaaa18b9d841ff9f37d06f35a3c211d6357440c70ba910646dc399afd389309879f92c3cf00143dddddcb9d98bdd3f802f1af514231265a0fd17fa6ffc85d8f33af9e595f87c6656085c397037f0ec7a70d1224a3f3cccc0976df49df91e7f7919c14227c9acc101ecde7fb057acc2f7e6760aca2b090482a013937320911845298552ce6da553daa96b4fdb547dc4d3cf92dcf438a39dd751b76228add1d50fa0aa96e08f16120c8518498c804e600b31d9030fb674661e104a4864f64bc7fde271bf98b2da9434701f324eb2f5329318c0bdfb29fc0fe29b4f700063be5fc7f3ee817f01a283666e27750abb0000000049454e44ae426082</data>
-    </image>
-    <image name="image7">
-        <data format="XBM.GZ" length="79">789c534e494dcbcc4b554829cdcdad8c2fcf4c29c95030e0524611cd48cd4ccf28010a1797249664262b2467241641a592324b8aa363156c15aab914146aadb90067111b1f</data>
-    </image>
-</images>
-<connections>
-    <connection>
-        <sender>btnClose</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsAttributeTableBase</receiver>
-        <slot>close()</slot>
-    </connection>
-    <connection>
-        <sender>btnStartEditing</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsAttributeTableBase</receiver>
-        <slot>startEditing()</slot>
-    </connection>
-    <connection>
-        <sender>btnStopEditing</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsAttributeTableBase</receiver>
-        <slot>stopEditing()</slot>
-    </connection>
-    <connection>
-        <sender>mSelectedToTopButton</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsAttributeTableBase</receiver>
-        <slot>selectedToTop()</slot>
-    </connection>
-    <connection>
-        <sender>mInvertSelectionButton</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsAttributeTableBase</receiver>
-        <slot>invertSelection()</slot>
-    </connection>
-    <connection>
-        <sender>mAddAttributeButton</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsAttributeTableBase</receiver>
-        <slot>addAttribute()</slot>
-    </connection>
-    <connection>
-        <sender>mDeleteAttributeButton</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsAttributeTableBase</receiver>
-        <slot>deleteAttributes()</slot>
-    </connection>
-    <connection>
-        <sender>mRemoveSelectionButton</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsAttributeTableBase</receiver>
-        <slot>removeSelection()</slot>
-    </connection>
-    <connection>
-        <sender>mSearchButton</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsAttributeTableBase</receiver>
-        <slot>search()</slot>
-    </connection>
-    <connection>
-        <sender>btnAdvancedSearch</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsAttributeTableBase</receiver>
-        <slot>advancedSearch()</slot>
-    </connection>
-    <connection>
-        <sender>mSearchShowResults</sender>
-        <signal>activated(int)</signal>
-        <receiver>QgsAttributeTableBase</receiver>
-        <slot>searchShowResultsChanged(int)</slot>
-    </connection>
-    <connection>
-        <sender>mCopySelectedRowsButton</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsAttributeTableBase</receiver>
-        <slot>copySelectedRowsToClipboard()</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>btnStartEditing</tabstop>
-    <tabstop>btnStopEditing</tabstop>
-    <tabstop>mSearchText</tabstop>
-    <tabstop>mSearchColumns</tabstop>
-    <tabstop>mSearchButton</tabstop>
-    <tabstop>btnAdvancedSearch</tabstop>
-    <tabstop>btnClose</tabstop>
-</tabstops>
-<includes>
-    <include location="local" impldecl="in implementation">qgsattributetablebase.ui.h</include>
-</includes>
-<signals>
-    <signal>deleted()</signal>
-</signals>
-<slots>
-    <slot access="protected">deleteAttributes()</slot>
-    <slot access="protected">addAttribute()</slot>
-    <slot access="protected">startEditing()</slot>
-    <slot access="protected">stopEditing()</slot>
-    <slot access="protected">invertSelection()</slot>
-    <slot access="protected">selectedToTop()</slot>
-    <slot>removeSelection()</slot>
-    <slot access="protected">search()</slot>
-    <slot access="protected">advancedSearch()</slot>
-    <slot access="protected">searchShowResultsChanged( int )</slot>
-    <slot access="protected">copySelectedRowsToClipboard()</slot>
-</slots>
-<functions>
-    <function access="protected" specifier="non
-    virtual">closeEvent( QCloseEvent * ev )</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>qgsattributetable.h</includehint>
-</includehints>
-</UI>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mSearchButton" >
+       <property name="text" >
+        <string>Search</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mSearchShowResults" />
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnAdvancedSearch" >
+       <property name="text" >
+        <string>Adva&amp;nced...</string>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+N</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>70</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnClose" >
+       <property name="text" >
+        <string>&amp;Close</string>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+C</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>QgsAttributeTable</class>
+   <extends></extends>
+   <header>qgsattributetable.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>btnStartEditing</tabstop>
+  <tabstop>btnStopEditing</tabstop>
+  <tabstop>mSearchText</tabstop>
+  <tabstop>mSearchColumns</tabstop>
+  <tabstop>mSearchButton</tabstop>
+  <tabstop>btnAdvancedSearch</tabstop>
+  <tabstop>btnClose</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

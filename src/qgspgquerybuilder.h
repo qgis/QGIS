@@ -21,11 +21,8 @@ extern "C"
 #include <libpq-fe.h>
 }
 
-#ifdef WIN32
-#include "qgspgquerybuilderbase.h"
-#else
-#include "qgspgquerybuilderbase.uic.h"
-#endif
+#include "ui_qgspgquerybuilderbase.h"
+#include <QDialog>
 #include "qgsfield.h"
 #include "qgsdatasourceuri.h"
 /*!
@@ -39,7 +36,7 @@ extern "C"
  * will be returned.
  *
  */
-class QgsPgQueryBuilder : public QgsPgQueryBuilderBase { 
+class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase { 
    Q_OBJECT 
   public:
   //! Default constructor - not very useful
@@ -77,26 +74,44 @@ class QgsPgQueryBuilder : public QgsPgQueryBuilderBase {
   void setConnection(PGconn *con); 
 
   public slots:
-    void insEqual();
-    void accept();
-    void insLt();
-    void insGt();
-    void insPct();
-    void insIn();
-    void insNotIn();
-    void insLike();
+    void on_btnEqual_clicked();
+    void on_btnOk_clicked();
+    void on_btnLessThan_clicked();
+    void on_btnGreaterThan_clicked();
+    void on_btnPct_clicked();
+    void on_btnIn_clicked();
+    void on_btnNotIn_clicked();
+    void on_btnLike_clicked();
+    void on_btnILike_clicked();
     QString sql();
     void setSql( QString sqlStatement);
-    void fieldDoubleClick( Q3ListBoxItem *item );
-    void valueDoubleClick( Q3ListBoxItem *item );
-    void insLessThanEqual();
-    void insGreaterThanEqual();
-    void insNotEqual();
-    void insAnd();
-    void insNot();
-    void insOr();
-    void clearSQL();
-    void insIlike();
+    void on_lstFields_doubleClicked( Q3ListBoxItem *item );
+    void on_lstValues_doubleClicked( Q3ListBoxItem *item );
+    void on_btnLessEqual_clicked();
+    void on_btnGreaterEqual_clicked();
+    void on_btnNotEqual_clicked();
+    void on_btnAnd_clicked();
+    void on_btnNot_clicked();
+    void on_btnOr_clicked();
+    void on_btnClear_clicked();
+  /*! Test the constructed sql statement to see if the database likes it.
+   * The number of rows that would be returned is displayed in a message box.
+   * The test uses a "select count(*) from ..." query to test the SQL 
+   * statement.
+   * @param showResults If true, the results are displayed in a QMessageBox
+   */
+    void on_btnTest_clicked();
+  /*! 
+   * Get all distinct values for the field. Values are inserted
+   * into the value list box
+   */
+    void on_btnGetAllValues_clicked();
+  /*! 
+   * Get sample distinct values for the selected field. The sample size is
+   * limited to an arbitrary value (currently set to 25). The values
+   * are inserted into the values list box.
+   */
+    void on_btnSampleValues_clicked();
     void setDatasourceDescription(QString uri);
   private:
   /*! 
@@ -104,26 +119,7 @@ class QgsPgQueryBuilder : public QgsPgQueryBuilderBase {
    */ 
   void populateFields();
 
-  /*! 
-   * Get sample distinct values for the selected field. The sample size is
-   * limited to an arbitrary value (currently set to 25). The values
-   * are inserted into the values list box.
-   */
-  void getSampleValues();
   
-  /*! 
-   * Get all distinct values for the field. Values are inserted
-   * into the value list box
-   */
-  void getAllValues();
-  
-  /*! Test the constructed sql statement to see if the database likes it.
-   * The number of rows that would be returned is displayed in a message box.
-   * The test uses a "select count(*) from ..." query to test the SQL 
-   * statement.
-   * @param showResults If true, the results are displayed in a QMessageBox
-   */
-  void testSql();
 
   /*! Get the number of records that would be returned by the current SQL
    * @return Number of records or -1 if an error was encountered

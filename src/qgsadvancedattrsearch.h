@@ -20,14 +20,17 @@
 #ifndef QGSADVANCEDATTRSEARCH_H
 #define QGSADVANCEDATTRSEARCH_H
 
-#include "qgsadvancedattrsearchbase.uic.h"
+#include "ui_qgsadvancedattrsearchbase.h"
+#include <QDialog>
 
-class QgsAdvancedAttrSearch : public QgsAdvancedAttrSearchBase
+class QString;
+class QgsAdvancedAttrSearch : public QDialog, private Ui::QgsAdvancedAttrSearchBase
 {
   Q_OBJECT
       
   public:
     QgsAdvancedAttrSearch(QWidget *parent = 0, const char *name = 0);
+    QString searchString();
 
   public slots:
     virtual void showHelp();

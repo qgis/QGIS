@@ -18,21 +18,16 @@
 
 /* $Id$ */
 
-#ifdef WIN32
-#include <qgsprojectpropertiesbase.h>
-#else
-#include <qgsprojectpropertiesbase.uic.h>
-#endif
-
-#include <qgsscalecalculator.h>
+#include "ui_qgsprojectpropertiesbase.h"
 #include "qgis.h"
   
+
 /*!  Dialog to set project level properties
 
   @note actual state is stored in QgsProject singleton instance
 
  */
-class QgsProjectProperties : public QgsProjectPropertiesBase
+class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBase
 {
   Q_OBJECT
 public:
@@ -82,9 +77,19 @@ public slots:
   void showProjectionsTab();
   
   /*!
+   * Slot to select the digitizing line colour
+   */
+  void on_pbnDigitisedLineColour_clicked();
+
+  /*!
+   * Slot to select the map selection colour
+   */
+  void on_pbnSelectionColour_clicked();
+
+  /*!
    * Slot to show the context help for this dialog
    */
-  void pbnHelp_clicked();
+  void on_pbnHelp_clicked();
 
 signals:
   /*! This signal is used to notify all coordinateTransform objects to update

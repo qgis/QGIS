@@ -1,9 +1,9 @@
 /***************************************************************************
-                          qgsmapcanvas.cpp  -  description
-                             -------------------
-    begin                : Sun Jun 30 2002
-    copyright            : (C) 2002 by Gary E.Sherman
-    email                : sherman at mrcc.com
+  qgsmapcanvas.cpp  -  description
+  -------------------
+begin                : Sun Jun 30 2002
+copyright            : (C) 2002 by Gary E.Sherman
+email                : sherman at mrcc.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -112,17 +112,17 @@ QgsMapCanvas::QgsMapCanvas()
 {}
 
 
-QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
-    : QWidget(parent, name),
-    mCanvasProperties( new CanvasProperties(width(), height()) ),
-    mUserInteractionAllowed(true), // by default we allow a user to interact with the canvas
-    mLineEditing(false), mPolygonEditing(false)
+  QgsMapCanvas::QgsMapCanvas(QWidget * parent, const char *name)
+: QWidget(parent, name),
+  mCanvasProperties( new CanvasProperties(width(), height()) ),
+  mUserInteractionAllowed(true), // by default we allow a user to interact with the canvas
+  mLineEditing(false), mPolygonEditing(false)
 {
   // by default, the canvas is rendered
   mRenderFlag = true;
-  
+
   mIsOverviewCanvas = false;
-  
+
   setEraseColor(mCanvasProperties->bgColor);
 
   setMouseTracking(true);
@@ -189,7 +189,7 @@ void QgsMapCanvas::addLayer(QgsMapLayerInterface * lyr)
 
 #ifdef QGISDEBUG
   std::cerr << __FILE__ << ":" << __LINE__
-  << "  QgsMapCanvas::addLayer() invoked\n";
+    << "  QgsMapCanvas::addLayer() invoked\n";
 #endif
 
 } // addlayer
@@ -218,19 +218,19 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
     // Adding the first layer. Set the previousOutputSRS to the output
     // SRS for the layer.
 
-      if ( ! lyr->coordinateTransform() )
-      {
-          QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
-      }
-      else
-      {
-	// Adding the first layer. Set the previousOutputSRS to the output
-	// SRS for the layer.
-	mCanvasProperties->previousOutputSRS = lyr->coordinateTransform()->destSRS();
-	// Set the map units from the dest SRS because any existing map
-	// units applied to previously loaded layers, not this one.
-	setMapUnits(lyr->coordinateTransform()->destSRS().mapUnits());
-      }
+    if ( ! lyr->coordinateTransform() )
+    {
+      QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
+    }
+    else
+    {
+      // Adding the first layer. Set the previousOutputSRS to the output
+      // SRS for the layer.
+      mCanvasProperties->previousOutputSRS = lyr->coordinateTransform()->destSRS();
+      // Set the map units from the dest SRS because any existing map
+      // units applied to previously loaded layers, not this one.
+      setMapUnits(lyr->coordinateTransform()->destSRS().mapUnits());
+    }
   }
 
   mCanvasProperties->layers[lyr->getLayerID()] = lyr;
@@ -239,31 +239,31 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
   if (mCanvasProperties->layers.size() == 1)
   {
     // if only 1 layer, set the full extent to its extent
-    
+
     // the layer extent must be projected to the same coordinate
     // system as the map canvas prior to updating the canvas extents
     if(projectionsEnabled())
     {
       try
       {
-          if ( ! lyr->coordinateTransform() )
-          {
-              QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
-          }
-          else
-          {
-              QgsRect tRect = lyr->coordinateTransform()->transformBoundingBox(lyr->extent());
-              mCanvasProperties->fullExtent = tRect;
-          }
+        if ( ! lyr->coordinateTransform() )
+        {
+          QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
+        }
+        else
+        {
+          QgsRect tRect = lyr->coordinateTransform()->transformBoundingBox(lyr->extent());
+          mCanvasProperties->fullExtent = tRect;
+        }
       }
       catch(QgsCsException &cse)
       {
 #ifdef QGISDEBUG
-	std::cout << "Caught transform error in QgsMapCanvas::addLayer(). "
-		  << "Setting extents to untransformed extents" << std::endl;
+        std::cout << "Caught transform error in QgsMapCanvas::addLayer(). "
+          << "Setting extents to untransformed extents" << std::endl;
 #endif	
-	mCanvasProperties->fullExtent = lyr->extent();
-	mCanvasProperties->fullExtent.scale(1.1);
+        mCanvasProperties->fullExtent = lyr->extent();
+        mCanvasProperties->fullExtent.scale(1.1);
       }
     }
     else
@@ -281,20 +281,20 @@ void QgsMapCanvas::addLayer(QgsMapLayer * lyr)
       // project the layer extent and pass it off to update the full extent
       try 
       {
-          if ( ! lyr->coordinateTransform() )
-          {
-              QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
-          }
-          else
-          {
-                  updateFullExtent(lyr->coordinateTransform()->transformBoundingBox(lyr->extent()));
-          }
+        if ( ! lyr->coordinateTransform() )
+        {
+          QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
+        }
+        else
+        {
+          updateFullExtent(lyr->coordinateTransform()->transformBoundingBox(lyr->extent()));
+        }
       }
       catch(QgsCsException &cse)
       {
 #ifdef QGISDEBUG
-	std::cout << "Caught transform error in QgsMapCanvas::addLayer(). "
-		  << "Ignoring this layer in map extents calculation." << std::endl;
+        std::cout << "Caught transform error in QgsMapCanvas::addLayer(). "
+          << "Ignoring this layer in map extents calculation." << std::endl;
 #endif	
       }
     }
@@ -344,22 +344,22 @@ void QgsMapCanvas::removeAcetateObject(const QString& key)
 
 void QgsMapCanvas::removeDigitizingLines(bool norepaint)
 {
-    bool rpaint = false;
-    if(!norepaint)
-    {
-	rpaint = (mCaptureList.size()>0) ? true : false;
-    }
-    mCaptureList.clear();
-    mLineEditing=false;
-    mPolygonEditing=false;
-    if(rpaint)
-    {
-      clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of this widget.
-//      render();
-      update();
-    }
+  bool rpaint = false;
+  if(!norepaint)
+  {
+    rpaint = (mCaptureList.size()>0) ? true : false;
+  }
+  mCaptureList.clear();
+  mLineEditing=false;
+  mPolygonEditing=false;
+  if(rpaint)
+  {
+    clear();
+    // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+    // paint event loop of this widget.
+    //      render();
+    update();
+  }
 }
 
 QgsMapLayer *QgsMapCanvas::getZpos(int idx)
@@ -385,13 +385,13 @@ void QgsMapCanvas::setZOrderFromLegend(QgsLegend * lv)
 #ifdef QGISDEBUG
   qWarning("in QgsMapCanvas::setZOrderFromLegend");
 #endif
-    mCanvasProperties->zOrder.clear();
-    std::deque<QString> layers = lv->layerIDs();
-    for(std::deque<QString>::iterator it = layers.begin(); it != layers.end(); ++it)
-      {
-	mCanvasProperties->zOrder.push_back(*it);
-      }
-    refresh();
+  mCanvasProperties->zOrder.clear();
+  std::deque<QString> layers = lv->layerIDs();
+  for(std::deque<QString>::iterator it = layers.begin(); it != layers.end(); ++it)
+  {
+    mCanvasProperties->zOrder.push_back(*it);
+  }
+  refresh();
 #ifdef QGISDEBUG
   qWarning("leaving QgsMapCanvas::setZOrderFromLegend");
 #endif
@@ -409,9 +409,9 @@ QgsMapLayer *QgsMapCanvas::layerByName(QString name)
 void QgsMapCanvas::refresh()
 {
   clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of this widget.
-//  render();
+  // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+  // paint event loop of this widget.
+  //  render();
   update();
 } // refresh
 
@@ -430,65 +430,65 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
     // Get a map layer. Any layer should do, so just grab the first one.
 
     if(mCanvasProperties->layers.size() == 0) //prevent a crash if there is no maplayer at all
-      {
-	return;
-      }
+    {
+      return;
+    }
 
     std::map<QString, QgsMapLayer*>::const_iterator 
       i = mCanvasProperties->layers.begin();
-    
+
     if(i->second == 0)
-      {
-	//this should not happen...
-	return;
-      }
+    {
+      //this should not happen...
+      return;
+    }
 
     if ( ! i->second->coordinateTransform() )
-      {
-	QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
-	
-	return;                 // XXX KLUDGY HACK, but necessary to underscore problem
-                                // XXX with layers NOT HAVING DEFAULT COORDINATE TRANSFORMS
-      }
-    
+    {
+      QgsDebug( "NO COORDINATE TRANSFORM FOUND FOR LAYER" );
+
+      return;                 // XXX KLUDGY HACK, but necessary to underscore problem
+      // XXX with layers NOT HAVING DEFAULT COORDINATE TRANSFORMS
+    }
+
     const QgsSpatialRefSys& currentOutputSRS = 
       i->second->coordinateTransform()->destSRS();
-    
+
     if (!(mCanvasProperties->previousOutputSRS == currentOutputSRS))
+    {
+#ifdef QGISDEBUG
+      std::cerr << "The previous output projection is different to the "
+        << "current output projection, so the map extents are "
+        << "begin reprojected.\n";
+#endif
+
+      QgsCoordinateTransform transform(mCanvasProperties->previousOutputSRS, currentOutputSRS);
+
+      try
       {
-#ifdef QGISDEBUG
-	std::cerr << "The previous output projection is different to the "
-		  << "current output projection, so the map extents are "
-		  << "begin reprojected.\n";
-#endif
-	
-	QgsCoordinateTransform transform(mCanvasProperties->previousOutputSRS, currentOutputSRS);
-	
-	try
-	  {
-	    mCanvasProperties->currentExtent = 
-	      transform.transformBoundingBox(mCanvasProperties->currentExtent);
-	  }
-	catch(QgsCsException &cse)
-	  {
-	    qWarning(tr("Error when projecting the view extent, you may need to manually zoom to the region of interest.").toLocal8Bit().data());
-#ifdef QGISDEBUG
-	    std::cerr << "Attempted to transform the view extent from\n"
-		      << mCanvasProperties->previousOutputSRS 
-		      << "\nto\n" << currentOutputSRS;
-	    std::cerr << "The view extent was: " 
-		      << mCanvasProperties->currentExtent
-		      << '\n';
-#endif
-	  }
-	
-	mCanvasProperties->previousOutputSRS = currentOutputSRS;
+        mCanvasProperties->currentExtent = 
+          transform.transformBoundingBox(mCanvasProperties->currentExtent);
       }
+      catch(QgsCsException &cse)
+      {
+        qWarning(tr("Error when projecting the view extent, you may need to manually zoom to the region of interest.").toLocal8Bit().data());
+#ifdef QGISDEBUG
+        std::cerr << "Attempted to transform the view extent from\n"
+          << mCanvasProperties->previousOutputSRS 
+          << "\nto\n" << currentOutputSRS;
+        std::cerr << "The view extent was: " 
+          << mCanvasProperties->currentExtent
+          << '\n';
+#endif
+      }
+
+      mCanvasProperties->previousOutputSRS = currentOutputSRS;
+    }
 #ifdef QGISDEBUG
     else
       std::cerr << "The previous output projection is the same as the "
-                << "current output projection, so the map extents are "
-                << "not begin reprojected.\n";
+        << "current output projection, so the map extents are "
+        << "not begin reprojected.\n";
 #endif
   }
 
@@ -524,8 +524,8 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       // Go back to the previous extent
       mCanvasProperties->currentExtent = 
         mCanvasProperties->previousExtent; 
-// Don't do this any more, it causes a paint event loop in Qt4.
-//      repaint();
+      // Don't do this any more, it causes a paint event loop in Qt4.
+      //      repaint();
       return;
     }
   }
@@ -621,18 +621,18 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 #ifdef QGISDEBUG
 
       std::cout
-      << "QgsMapCanvas::render:" << std::endl
-      << "Paint device width : " << myWidth << std::endl
-      << "Paint device height : " << myHeight << std::endl
-      << "Canvas current extent height : " << mCanvasProperties->currentExtent.height()  << std::endl
-      << "Canvas current extent width : " << mCanvasProperties->currentExtent.width()  << std::endl
-      << "muppY: " << muppY << std::endl
-      << "muppX: " << muppX << std::endl
-      << "dxmin: " << dxmin << std::endl
-      << "dxmax: " << dxmax << std::endl
-      << "dymin: " << dymin << std::endl
-      << "dymax: " << dymax << std::endl
-      << "whitespace: " << whitespace << std::endl;
+        << "QgsMapCanvas::render:" << std::endl
+        << "Paint device width : " << myWidth << std::endl
+        << "Paint device height : " << myHeight << std::endl
+        << "Canvas current extent height : " << mCanvasProperties->currentExtent.height()  << std::endl
+        << "Canvas current extent width : " << mCanvasProperties->currentExtent.width()  << std::endl
+        << "muppY: " << muppY << std::endl
+        << "muppX: " << muppX << std::endl
+        << "dxmin: " << dxmin << std::endl
+        << "dxmax: " << dxmax << std::endl
+        << "dymin: " << dymin << std::endl
+        << "dymax: " << dymax << std::endl
+        << "whitespace: " << whitespace << std::endl;
 #endif
 
       mCanvasProperties->coordXForm->setParameters(mCanvasProperties->m_mupp, dxmin, dymin, myHeight);
@@ -656,7 +656,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         emit extentsChanged(mCanvasProperties->currentExtent);
       }
       int myRenderCounter=1;
-      
+
 #ifdef QGISDEBUG
       std::cout << "QgsMapCanvas::render: Will render if '" << mRenderFlag << "' is true." << std::endl;
 #endif
@@ -678,9 +678,9 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         while (li != mCanvasProperties->zOrder.end())
         {
 #ifdef QGISDEBUG
-        std::cout << "QgsMapCanvas::render: at layer item '" << (*li).toLocal8Bit().data() << "'." << std::endl;
+          std::cout << "QgsMapCanvas::render: at layer item '" << (*li).toLocal8Bit().data() << "'." << std::endl;
 #endif
-          
+
           emit setProgress(myRenderCounter++,mCanvasProperties->zOrder.size());
           QgsMapLayer *ml = mCanvasProperties->layers[*li];
 
@@ -711,8 +711,8 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
             if (ml->visible())
             {
               if ((ml->scaleBasedVisibility() && 
-                   ml->minScale() < mCanvasProperties->mScale 
-                   && ml->maxScale() > mCanvasProperties->mScale)
+                    ml->minScale() < mCanvasProperties->mScale 
+                    && ml->maxScale() > mCanvasProperties->mScale)
                   || (!ml->scaleBasedVisibility()))
               {
                 QgsRect r1 = mCanvasProperties->currentExtent, r2;
@@ -723,7 +723,9 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                 //
                 ml->draw(paint, &r1, mCanvasProperties->coordXForm, this);
                 if (split)
+                {
                   ml->draw(paint, &r2,mCanvasProperties->coordXForm, this);
+                }
               }
 #ifdef QGISDEBUG
               else
@@ -762,18 +764,18 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                 //only make labels if the layer is visible
                 //after scale dep viewing settings are checked
                 if ((ml->scaleBasedVisibility() && 
-                     ml->minScale() < mCanvasProperties->mScale 
-                     && ml->maxScale() > mCanvasProperties->mScale)
+                      ml->minScale() < mCanvasProperties->mScale 
+                      && ml->maxScale() > mCanvasProperties->mScale)
                     || (!ml->scaleBasedVisibility()))
                 {
                   QgsRect r1 = mCanvasProperties->currentExtent, r2;
                   bool split = ml->projectExtent(r1, r2);
 
                   ml->drawLabels(paint, &r1, mCanvasProperties->coordXForm, 
-                                 this);
+                      this);
                   if (split)
                     ml->drawLabels(paint, &r2, mCanvasProperties->coordXForm, 
-                                   this);
+                        this);
                 }
               }
               li++;
@@ -799,7 +801,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
           try
           {
 
-          acObj->draw(paint, mCanvasProperties->coordXForm);
+            acObj->draw(paint, mCanvasProperties->coordXForm);
           }
           catch(QgsException &e)
           {
@@ -840,7 +842,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         //and also the connection to mDigitMovePoint
         if((mLineEditing || mPolygonEditing) && mCaptureList.size()>0)
         {
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+          // TODO: Qt4 will have to do this a different way, using QRubberBand ...
 #if QT_VERSION < 0x040000
           paint->setRasterOp(Qt::XorROP);
           try
@@ -866,7 +868,7 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
 #endif
         }
       }
-				      
+
 
       // notify any listeners that rendering is complete
       //note that pmCanvas is not draw to gui yet
@@ -878,8 +880,8 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
     }
     mCanvasProperties->dirty = false;
 
-// Don't do this any more, it causes a paint event loop in Qt4.
-//    repaint();
+    // Don't do this any more, it causes a paint event loop in Qt4.
+    //    repaint();
   }
 
 } // render
@@ -905,20 +907,20 @@ void QgsMapCanvas::currentScale(int thePrecision)
   std::cout << "------------------------------------------ " << std::endl;
 
   std::cout << "Current extent is " 
-      << mCanvasProperties->currentExtent.stringRep().toLocal8Bit().data() << std::endl;
+    << mCanvasProperties->currentExtent.stringRep().toLocal8Bit().data() << std::endl;
   std::cout << "MuppX is: " << muppX << "\n"
-      << "MuppY is: " << muppY << std::endl;
+    << "MuppY is: " << muppY << std::endl;
   std::cout << "Canvas width: " << width() 
-      << ", height: " << height() << std::endl;
+    << ", height: " << height() << std::endl;
   std::cout << "Extent width: " 
-      << mCanvasProperties->currentExtent.width() << ", height: "
-      << mCanvasProperties->currentExtent.height() << std::endl;
+    << mCanvasProperties->currentExtent.width() << ", height: "
+    << mCanvasProperties->currentExtent.height() << std::endl;
 
   Q3PaintDeviceMetrics pdm(this);
   std::cout << "dpiX " << pdm.logicalDpiX() 
-      << ", dpiY " << pdm.logicalDpiY() << std::endl;
+    << ", dpiY " << pdm.logicalDpiY() << std::endl;
   std::cout << "widthMM " << pdm.widthMM() 
-      << ", heightMM " << pdm.heightMM() << std::endl;
+    << ", heightMM " << pdm.heightMM() << std::endl;
 
 #endif
   // calculate the actual extent of the mapCanvas
@@ -945,14 +947,14 @@ void QgsMapCanvas::currentScale(int thePrecision)
 #ifdef QGISDEBUG
 
   std::cout << "Scale (assuming meters as map units) = 1:"
-      << mCanvasProperties->mScale << std::endl;
+    << mCanvasProperties->mScale << std::endl;
 #endif
   // return scale based on geographic
   //
 
   //@todo return a proper value
   QString myScaleString("Scale ");
-  
+
   if (mCanvasProperties->mScale == 0)
     myScaleString = "";
   else if (mCanvasProperties->mScale >= 1)
@@ -993,7 +995,7 @@ void QgsMapCanvas::saveAsImage(QString theFileName, QPixmap * theQPixmap, QStrin
 void QgsMapCanvas::paintEvent(QPaintEvent * ev)
 {
 #ifdef QGISDEBUG
-//  std::cout << "QgsMapCanvas::paintEvent: entering." << std::endl;
+  //  std::cout << "QgsMapCanvas::paintEvent: entering." << std::endl;
 #endif
 
   // If a map is in the process of being panned, panAction() will end up calling this through repaint().
@@ -1001,23 +1003,23 @@ void QgsMapCanvas::paintEvent(QPaintEvent * ev)
   if (mCanvasProperties->panning)
   {
 #ifdef QGISDEBUG
-//   std::cout << "QgsMapCanvas::paintEvent: about to drawPixmap with " << mCanvasProperties->pan_dx << 
-//                                                              " and " << mCanvasProperties->pan_dy << "." << std::endl;
+    //   std::cout << "QgsMapCanvas::paintEvent: about to drawPixmap with " << mCanvasProperties->pan_dx << 
+    //                                                              " and " << mCanvasProperties->pan_dy << "." << std::endl;
 #endif
 
     QPainter paint(this);
     paint.drawPixmap(
-                       mCanvasProperties->pan_delta,
-                     *(mCanvasProperties->pmCanvas)
-                    );
+        mCanvasProperties->pan_delta,
+        *(mCanvasProperties->pmCanvas)
+        );
 
 #ifdef QGISDEBUG
-//  std::cout << "QgsMapCanvas::paintEvent: finished drawPixmap." << std::endl;
+    //  std::cout << "QgsMapCanvas::paintEvent: finished drawPixmap." << std::endl;
 #endif
   }
   else if (!mCanvasProperties->drawing)
   {
-    
+
     if (mCanvasProperties->dirty)
     {
       // rebuild, from source datasets, the pixmap we want to copy onto the canvas.
@@ -1029,16 +1031,16 @@ void QgsMapCanvas::paintEvent(QPaintEvent * ev)
     {
       QPainter paint(this);
       paint.drawPixmap(
-                        ev->rect().topLeft(),
-                      *(mCanvasProperties->pmCanvas),
-                        ev->rect()
-                      );
-  //    // just bit blit the image to the canvas
-  //    bitBlt(this, ev->rect().topLeft(), mCanvasProperties->pmCanvas, ev->rect());
+          ev->rect().topLeft(),
+          *(mCanvasProperties->pmCanvas),
+          ev->rect()
+          );
+      //    // just bit blit the image to the canvas
+      //    bitBlt(this, ev->rect().topLeft(), mCanvasProperties->pmCanvas, ev->rect());
     }
   }
 #ifdef QGISDEBUG
-//  std::cout << "QgsMapCanvas::paintEvent: exiting." << std::endl;
+  //  std::cout << "QgsMapCanvas::paintEvent: exiting." << std::endl;
 #endif
 } // paintEvent
 
@@ -1066,8 +1068,8 @@ void QgsMapCanvas::clear()
   // Indicate to the next paint event that we need to rebuild the canvas contents
   mCanvasProperties->dirty = TRUE;
 
-// Obsolete in Qt4; double buffering should take care of it
-//  erase();
+  // Obsolete in Qt4; double buffering should take care of it
+  //  erase();
 } // clear
 
 
@@ -1078,9 +1080,9 @@ void QgsMapCanvas::zoomFullExtent()
   mCanvasProperties->currentExtent = mCanvasProperties->fullExtent;
 
   clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of this widget.
-//  render();
+  // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+  // paint event loop of this widget.
+  //  render();
   update();
   emit extentsChanged(mCanvasProperties->currentExtent);
 } // zoomFullExtent
@@ -1095,9 +1097,9 @@ void QgsMapCanvas::zoomPreviousExtent()
     mCanvasProperties->currentExtent = mCanvasProperties->previousExtent;
     mCanvasProperties->previousExtent = tempRect;
     clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of this widget.
-//    render();
+    // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+    // paint event loop of this widget.
+    //    render();
     update();
     emit extentsChanged(mCanvasProperties->currentExtent);
   }
@@ -1139,9 +1141,9 @@ void QgsMapCanvas::zoomToSelected()
         if ( ! lyr->coordinateTransform() )
         {
 #ifdef QGISDEBUG 
-            std::cout << "Throwing exception "<< __FILE__ << __LINE__ << std::endl; 
+          std::cout << "Throwing exception "<< __FILE__ << __LINE__ << std::endl; 
 #endif
-            throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+          throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
         }
 
         rect = lyr->coordinateTransform()->transformBoundingBox(lyr->bBoxOfSelected());
@@ -1160,7 +1162,7 @@ void QgsMapCanvas::zoomToSelected()
     //or two point features with the same x- or y-coordinates
     if(rect.isEmpty())
     {
-  return;
+      return;
     }
     //zoom to an area
     else
@@ -1172,9 +1174,9 @@ void QgsMapCanvas::zoomToSelected()
       mCanvasProperties->currentExtent.setYmax(rect.yMax());
       emit extentsChanged(mCanvasProperties->currentExtent);
       clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of this widget.
-//      render();
+      // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+      // paint event loop of this widget.
+      //      render();
       update();
       return;
     }
@@ -1187,7 +1189,7 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
 #ifdef QGISDEBUG
   qDebug("keyPress event at line %d in %s",  __LINE__, __FILE__);
 #endif
-  
+
   if (!mUserInteractionAllowed || mCanvasProperties->mouseButtonDown
       || mCanvasProperties->panSelectorDown)
     return;
@@ -1205,96 +1207,96 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
 
     switch ( e->key() ) 
     {
-    case Qt::Key_Left:
+      case Qt::Key_Left:
 #ifdef QGISDEBUG
-	    std::cout << "Pan left" << std::endl;
+        std::cout << "Pan left" << std::endl;
 #endif
 
-	    mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+        mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
 
-	    mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() - dx);
-	    mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() - dx);
-	    
-	    clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of this widget.
-//            render();
-            update();
-	    emit extentsChanged(mCanvasProperties->currentExtent);
-	    break;
+        mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() - dx);
+        mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() - dx);
 
-    case Qt::Key_Right:
+        clear();
+        // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+        // paint event loop of this widget.
+        //            render();
+        update();
+        emit extentsChanged(mCanvasProperties->currentExtent);
+        break;
+
+      case Qt::Key_Right:
 #ifdef QGISDEBUG
-	    std::cout << "Pan right" << std::endl;
+        std::cout << "Pan right" << std::endl;
 #endif
 
-	    mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+        mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
 
-	    mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() + dx);
-	    mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() + dx);
+        mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() + dx);
+        mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() + dx);
 
-	    clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of this widget.
-//            render();
-            update();
-	    emit extentsChanged(mCanvasProperties->currentExtent);
-	    break;
+        clear();
+        // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+        // paint event loop of this widget.
+        //            render();
+        update();
+        emit extentsChanged(mCanvasProperties->currentExtent);
+        break;
 
-    case Qt::Key_Up:
+      case Qt::Key_Up:
 #ifdef QGISDEBUG
-	    std::cout << "Pan up" << std::endl;
+        std::cout << "Pan up" << std::endl;
 #endif
 
-	    mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+        mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
 
-	    mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() + dy);
-	    mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() + dy);
+        mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() + dy);
+        mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() + dy);
 
-	    clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of this widget.
-//            render();
-            update();
-	    emit extentsChanged(mCanvasProperties->currentExtent);
-	    break;
+        clear();
+        // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+        // paint event loop of this widget.
+        //            render();
+        update();
+        emit extentsChanged(mCanvasProperties->currentExtent);
+        break;
 
-    case Qt::Key_Down:
+      case Qt::Key_Down:
 #ifdef QGISDEBUG
-	    std::cout << "Pan down" << std::endl;
+        std::cout << "Pan down" << std::endl;
 #endif
-	    mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+        mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
 
-	    mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() - dy);
-	    mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() - dy);
+        mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() - dy);
+        mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() - dy);
 
-	    clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of this widget.
-//            render();
-            update();
-	    emit extentsChanged(mCanvasProperties->currentExtent);
-	    break;
+        clear();
+        // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+        // paint event loop of this widget.
+        //            render();
+        update();
+        emit extentsChanged(mCanvasProperties->currentExtent);
+        break;
 
-    case Qt::Key_Space:
+      case Qt::Key_Space:
 #ifdef QGISDEBUG
-	    std::cout << "Pressing pan selector" << std::endl;
+        std::cout << "Pressing pan selector" << std::endl;
 #endif
-	    //mCanvasProperties->dragging = true;
-	    if ( ! e->isAutoRepeat() )
-	    {
-	      mCanvasProperties->panSelectorDown = true;
-	      mCanvasProperties->rubberStartPoint = mCanvasProperties->mouseLastXY;
-	    }
-	    break;
+        //mCanvasProperties->dragging = true;
+        if ( ! e->isAutoRepeat() )
+        {
+          mCanvasProperties->panSelectorDown = true;
+          mCanvasProperties->rubberStartPoint = mCanvasProperties->mouseLastXY;
+        }
+        break;
 
-    default:
-	    // Pass it on
-	    e->ignore();
+      default:
+        // Pass it on
+        e->ignore();
 #ifdef QGISDEBUG
-	    qDebug("Ignoring key (%d)", e->key());
+        qDebug("Ignoring key (%d)", e->key());
 #endif
-	      
+
 
     }
   }
@@ -1306,7 +1308,7 @@ void QgsMapCanvas::keyReleaseEvent(QKeyEvent * e)
 #ifdef QGISDEBUG
   qDebug("keyRelease event at line %d in %s",  __LINE__, __FILE__);
 #endif
-  
+
   if (!mUserInteractionAllowed)
     return;
   switch( e->key() )
@@ -1315,11 +1317,11 @@ void QgsMapCanvas::keyReleaseEvent(QKeyEvent * e)
       if ( !e->isAutoRepeat() && mCanvasProperties->panSelectorDown)
       {
 #ifdef QGISDEBUG
-	std::cout << "Releaseing pan selector" << std::endl;
+        std::cout << "Releaseing pan selector" << std::endl;
 #endif
-      // mCanvasProperties->dragging = false;
-	mCanvasProperties->panSelectorDown = false;
-	panActionEnd(mCanvasProperties->mouseLastXY);
+        // mCanvasProperties->dragging = false;
+        mCanvasProperties->panSelectorDown = false;
+        panActionEnd(mCanvasProperties->mouseLastXY);
       }
       break;
 
@@ -1339,16 +1341,16 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
 
   // right button was pressed in zoom tool, return to previous non zoom tool
   if ( e->button() == Qt::RightButton &&
-       ( mCanvasProperties->mapTool == QGis::ZoomIn || mCanvasProperties->mapTool == QGis::ZoomOut
-   || mCanvasProperties->mapTool == QGis::Pan ) )
+      ( mCanvasProperties->mapTool == QGis::ZoomIn || mCanvasProperties->mapTool == QGis::ZoomOut
+        || mCanvasProperties->mapTool == QGis::Pan ) )
   {
-      //emit stopZoom();
-      return;
+    //emit stopZoom();
+    return;
   }
-  
+
   mCanvasProperties->mouseButtonDown = true;
   mCanvasProperties->rubberStartPoint = e->pos();
-  
+
 #if QT_VERSION < 0x040000
   QPainter paint;
   QPen pen(Qt::gray);
@@ -1364,350 +1366,350 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
     case QGis::Distance:
       //              distanceEndPoint = e->pos();
       break;
-  
+
     case QGis::AddVertex:
-    {
-      // Find the closest line segment to the mouse position
-      // Then set up the rubber band to its endpoints
-
-      //QgsPoint segStart;
-      //QgsPoint segStop;
-      QgsGeometryVertexIndex beforeVertex;
-      int atFeatureId;
-      QgsGeometry atGeometry;
-      double x1, y1;
-      double x2, y2;
-  
-
-          
-      QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-
-      QgsVectorLayer* vlayer =
-        dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
-        
-  
-  #ifdef QGISDEBUG
-    std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex." << std::endl;
-  #endif
-          
-      // TODO: Find nearest segment of the selected line, move that node to the mouse location
-      if (!vlayer->snapSegmentWithContext(
-                                          point,
-                                          beforeVertex,
-                                          atFeatureId,
-                                          atGeometry,
-                                          QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0)
-                                         )
-         )
       {
-        QMessageBox::warning(0, "Error", "Could not snap segment. Have you set the tolerance?",
-                             QMessageBox::Ok, Qt::NoButton);
-      }
-      else
-      {
+        // Find the closest line segment to the mouse position
+        // Then set up the rubber band to its endpoints
+
+        //QgsPoint segStart;
+        //QgsPoint segStop;
+        QgsGeometryVertexIndex beforeVertex;
+        int atFeatureId;
+        QgsGeometry atGeometry;
+        double x1, y1;
+        double x2, y2;
+
+
+
+        QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+
+        QgsVectorLayer* vlayer =
+          dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+
 
 #ifdef QGISDEBUG
-      std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex: Snapped to segment fid " 
-                << atFeatureId 
-//                << " and beforeVertex " << beforeVertex
-                << "." << std::endl;
+        std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex." << std::endl;
 #endif
 
-        // Save where we snapped to
-        mCanvasProperties->snappedBeforeVertex = beforeVertex;
-        mCanvasProperties->snappedAtFeatureId  = atFeatureId;
-        mCanvasProperties->snappedAtGeometry   = atGeometry;
-        
-        // Get the endpoint of the snapped-to segment
-        atGeometry.vertexAt(x2, y2, beforeVertex);
-        
-        // Get the startpoint of the snapped-to segment
-        beforeVertex.decrement_back();
-        atGeometry.vertexAt(x1, y1, beforeVertex);
-  
-                                            
-  #ifdef QGISDEBUG
-        std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex: Snapped to segment "
-                  << x1 << ", " << y1 << "; "
-                  << x2 << ", " << y2
-                  << "." << std::endl;
-  #endif
-        
-        // Convert to canvas screen coordinates for rubber band
-        mCanvasProperties->coordXForm->transformInPlace(x1, y1);
-        mCanvasProperties->rubberStartPoint.setX( static_cast<int>( round(x1) ) );
-        mCanvasProperties->rubberStartPoint.setY( static_cast<int>( round(y1) ) );
-        
-        mCanvasProperties->rubberMidPoint = e->pos();
-        
-        mCanvasProperties->coordXForm->transformInPlace(x2, y2);
-        mCanvasProperties->rubberStopPoint.setX( static_cast<int>( round(x2) ) );
-        mCanvasProperties->rubberStopPoint.setY( static_cast<int>( round(y2) ) );
-  
-        
-  #ifdef QGISDEBUG
-        std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex: Transformed to widget "
-                  << x1 << ", " << y1 << "; "
-                  << x2 << ", " << y2
-                  << "." << std::endl;
-  #endif
-                                    
-        
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
-        // Draw initial rubber band
-        paint.begin(this);
-        paint.setPen(pen);
-        paint.setRasterOp(Qt::XorROP);
-        
-        paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
-        paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
-        
-        paint.end();
-#endif
-      } // if snapSegmentWithContext
-
-      break;
-    }
-
-    case QGis::MoveVertex:
-    {
-  #ifdef QGISDEBUG
-    std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex." << std::endl;
-  #endif
-
-      // TODO: Find nearest node of the selected line, move that node to the mouse location
-
-      // Find the closest line segment to the mouse position
-      // Then set up the rubber band to its endpoints
-
-      QgsGeometryVertexIndex atVertex;
-      int atFeatureId;
-      QgsGeometry atGeometry;
-      double x1, y1;
-      double x2, y2;
-
-      QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-
-      QgsVectorLayer* vlayer =
-        dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
-
-  #ifdef QGISDEBUG
-    std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex." << std::endl;
-  #endif
-
-      // TODO: Find nearest segment of the selected line, move that node to the mouse location
-      if (!vlayer->snapVertexWithContext(
-                                         point,
-                                         atVertex,
-                                         atFeatureId,
-                                         atGeometry,
-                                         QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0)
-                                        )
-         )
-      {
-        QMessageBox::warning(0, "Error", "Could not snap vertex. Have you set the tolerance?",
-                             QMessageBox::Ok, Qt::NoButton);
-      }
-      else
-      {
-
-#ifdef QGISDEBUG
-      std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex: Snapped to segment fid " 
-                << atFeatureId 
-//                << " and beforeVertex " << beforeVertex
-                << "." << std::endl;
-#endif
-
-        // Save where we snapped to
-        mCanvasProperties->snappedAtVertex     = atVertex;
-        mCanvasProperties->snappedAtFeatureId  = atFeatureId;
-        mCanvasProperties->snappedAtGeometry   = atGeometry;
-
-        // Get the startpoint of the rubber band, as the previous vertex to the snapped-to one.
-        atVertex.decrement_back();
-        mCanvasProperties->rubberStartPointIsValid = atGeometry.vertexAt(x1, y1, atVertex);
-
-        // Get the endpoint of the rubber band, as the following vertex to the snapped-to one.
-        atVertex.increment_back();
-        atVertex.increment_back();
-        mCanvasProperties->rubberStopPointIsValid = atGeometry.vertexAt(x2, y2, atVertex);
-
-
-  #ifdef QGISDEBUG
-        std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex: Snapped to vertex "
-                  << "(valid = " << mCanvasProperties->rubberStartPointIsValid << ") " << x1 << ", " << y1 << "; "
-                  << "(valid = " << mCanvasProperties->rubberStopPointIsValid  << ") " << x2 << ", " << y2
-                  << "." << std::endl;
-  #endif
-
-        // Convert to canvas screen coordinates for rubber band
-        if (mCanvasProperties->rubberStartPointIsValid)
+        // TODO: Find nearest segment of the selected line, move that node to the mouse location
+        if (!vlayer->snapSegmentWithContext(
+              point,
+              beforeVertex,
+              atFeatureId,
+              atGeometry,
+              QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0)
+              )
+           )
         {
+          QMessageBox::warning(0, "Error", "Could not snap segment. Have you set the tolerance?",
+              QMessageBox::Ok, Qt::NoButton);
+        }
+        else
+        {
+
+#ifdef QGISDEBUG
+          std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex: Snapped to segment fid " 
+            << atFeatureId 
+            //                << " and beforeVertex " << beforeVertex
+            << "." << std::endl;
+#endif
+
+          // Save where we snapped to
+          mCanvasProperties->snappedBeforeVertex = beforeVertex;
+          mCanvasProperties->snappedAtFeatureId  = atFeatureId;
+          mCanvasProperties->snappedAtGeometry   = atGeometry;
+
+          // Get the endpoint of the snapped-to segment
+          atGeometry.vertexAt(x2, y2, beforeVertex);
+
+          // Get the startpoint of the snapped-to segment
+          beforeVertex.decrement_back();
+          atGeometry.vertexAt(x1, y1, beforeVertex);
+
+
+#ifdef QGISDEBUG
+          std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex: Snapped to segment "
+            << x1 << ", " << y1 << "; "
+            << x2 << ", " << y2
+            << "." << std::endl;
+#endif
+
+          // Convert to canvas screen coordinates for rubber band
           mCanvasProperties->coordXForm->transformInPlace(x1, y1);
           mCanvasProperties->rubberStartPoint.setX( static_cast<int>( round(x1) ) );
           mCanvasProperties->rubberStartPoint.setY( static_cast<int>( round(y1) ) );
-        }
 
-        mCanvasProperties->rubberMidPoint = e->pos();
+          mCanvasProperties->rubberMidPoint = e->pos();
 
-        if (mCanvasProperties->rubberStopPointIsValid)
-        {
           mCanvasProperties->coordXForm->transformInPlace(x2, y2);
           mCanvasProperties->rubberStopPoint.setX( static_cast<int>( round(x2) ) );
           mCanvasProperties->rubberStopPoint.setY( static_cast<int>( round(y2) ) );
-        }
 
-  #ifdef QGISDEBUG
-        std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex: Transformed to widget "
-                  << x1 << ", " << y1 << "; "
-                  << x2 << ", " << y2
-                  << "." << std::endl;
-  #endif
-
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
-        // Draw initial rubber band
-        paint.begin(this);
-        paint.setPen(pen);
-        paint.setRasterOp(Qt::XorROP);
-
-        if (mCanvasProperties->rubberStartPointIsValid)
-        {
-          paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
-        }
-        if (mCanvasProperties->rubberStopPointIsValid)
-        {
-          paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
-        }
-
-        paint.end();
-#endif
-      } // if snapVertexWithContext
-
-
-      break;
-    }
-
-    case QGis::DeleteVertex:
-    {
-  #ifdef QGISDEBUG
-    std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex." << std::endl;
-  #endif
-
-      // TODO: Find nearest node of the selected line, show a big X symbol
-
-      QgsGeometryVertexIndex atVertex;
-      int atFeatureId;
-      QgsGeometry atGeometry;
-      double x1, y1;
-
-      QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-
-      QgsVectorLayer* vlayer =
-        dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
-
-  #ifdef QGISDEBUG
-    std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex." << std::endl;
-  #endif
-
-      // TODO: Find nearest segment of the selected line, move that node to the mouse location
-      if (!vlayer->snapVertexWithContext(
-                                         point,
-                                         atVertex,
-                                         atFeatureId,
-                                         atGeometry,
-                                         QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0)
-                                        )
-      // TODO: What if there is no snapped vertex?
-         )
-      {
-        QMessageBox::warning(0, "Error", "Could not snap vertex. Have you set the tolerance?",
-                             QMessageBox::Ok, Qt::NoButton);
-      }
-      else
-      {
 
 #ifdef QGISDEBUG
-      std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex: Snapped to segment fid " 
-                << atFeatureId 
-//                << " and beforeVertex " << beforeVertex
-                << "." << std::endl;
+          std::cout << "QgsMapCanvas::mousePressEvent: QGis::AddVertex: Transformed to widget "
+            << x1 << ", " << y1 << "; "
+            << x2 << ", " << y2
+            << "." << std::endl;
 #endif
 
-        // Save where we snapped to
-        mCanvasProperties->snappedAtVertex     = atVertex;
-        mCanvasProperties->snappedAtFeatureId  = atFeatureId;
-        mCanvasProperties->snappedAtGeometry   = atGeometry;
 
-        // Get the point of the snapped-to vertex
-        atGeometry.vertexAt(x1, y1, atVertex);
-
-  #ifdef QGISDEBUG
-        std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex: Snapped to vertex "
-                  << x1 << ", " << y1
-                  << "." << std::endl;
-  #endif
-
-        // Convert to canvas screen coordinates
-        mCanvasProperties->coordXForm->transformInPlace(x1, y1);
-        mCanvasProperties->rubberMidPoint.setX( static_cast<int>( round(x1) ) );
-        mCanvasProperties->rubberMidPoint.setY( static_cast<int>( round(y1) ) );
-
-  #ifdef QGISDEBUG
-        std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex: Transformed to widget "
-                  << x1 << ", " << y1
-                  << "." << std::endl;
-  #endif
-
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+          // TODO: Qt4 will have to do this a different way, using QRubberBand ...
 #if QT_VERSION < 0x040000
-        // Draw X symbol - people can feel free to pretty this up if they like
-        paint.begin(this);
-        paint.setPen(pen);
-        paint.setRasterOp(Qt::XorROP);
+          // Draw initial rubber band
+          paint.begin(this);
+          paint.setPen(pen);
+          paint.setRasterOp(Qt::XorROP);
 
-        // TODO: Make the following a static member or something
-        int crossSize = 10;
+          paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
+          paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
 
-        paint.drawLine( mCanvasProperties->rubberMidPoint.x() - crossSize,
-                        mCanvasProperties->rubberMidPoint.y() - crossSize,
-                        mCanvasProperties->rubberMidPoint.x() + crossSize,
-                        mCanvasProperties->rubberMidPoint.y() + crossSize  );
-
-        paint.drawLine( mCanvasProperties->rubberMidPoint.x() - crossSize,
-                        mCanvasProperties->rubberMidPoint.y() + crossSize,
-                        mCanvasProperties->rubberMidPoint.x() + crossSize,
-                        mCanvasProperties->rubberMidPoint.y() - crossSize  );
-
-        paint.end();
+          paint.end();
 #endif
-      } // if snapVertexWithContext
+        } // if snapSegmentWithContext
+
+        break;
+      }
+
+    case QGis::MoveVertex:
+      {
+#ifdef QGISDEBUG
+        std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex." << std::endl;
+#endif
+
+        // TODO: Find nearest node of the selected line, move that node to the mouse location
+
+        // Find the closest line segment to the mouse position
+        // Then set up the rubber band to its endpoints
+
+        QgsGeometryVertexIndex atVertex;
+        int atFeatureId;
+        QgsGeometry atGeometry;
+        double x1, y1;
+        double x2, y2;
+
+        QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+
+        QgsVectorLayer* vlayer =
+          dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+
+#ifdef QGISDEBUG
+        std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex." << std::endl;
+#endif
+
+        // TODO: Find nearest segment of the selected line, move that node to the mouse location
+        if (!vlayer->snapVertexWithContext(
+              point,
+              atVertex,
+              atFeatureId,
+              atGeometry,
+              QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0)
+              )
+           )
+        {
+          QMessageBox::warning(0, "Error", "Could not snap vertex. Have you set the tolerance?",
+              QMessageBox::Ok, Qt::NoButton);
+        }
+        else
+        {
+
+#ifdef QGISDEBUG
+          std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex: Snapped to segment fid " 
+            << atFeatureId 
+            //                << " and beforeVertex " << beforeVertex
+            << "." << std::endl;
+#endif
+
+          // Save where we snapped to
+          mCanvasProperties->snappedAtVertex     = atVertex;
+          mCanvasProperties->snappedAtFeatureId  = atFeatureId;
+          mCanvasProperties->snappedAtGeometry   = atGeometry;
+
+          // Get the startpoint of the rubber band, as the previous vertex to the snapped-to one.
+          atVertex.decrement_back();
+          mCanvasProperties->rubberStartPointIsValid = atGeometry.vertexAt(x1, y1, atVertex);
+
+          // Get the endpoint of the rubber band, as the following vertex to the snapped-to one.
+          atVertex.increment_back();
+          atVertex.increment_back();
+          mCanvasProperties->rubberStopPointIsValid = atGeometry.vertexAt(x2, y2, atVertex);
 
 
-      break;
-    }
+#ifdef QGISDEBUG
+          std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex: Snapped to vertex "
+            << "(valid = " << mCanvasProperties->rubberStartPointIsValid << ") " << x1 << ", " << y1 << "; "
+            << "(valid = " << mCanvasProperties->rubberStopPointIsValid  << ") " << x2 << ", " << y2
+            << "." << std::endl;
+#endif
+
+          // Convert to canvas screen coordinates for rubber band
+          if (mCanvasProperties->rubberStartPointIsValid)
+          {
+            mCanvasProperties->coordXForm->transformInPlace(x1, y1);
+            mCanvasProperties->rubberStartPoint.setX( static_cast<int>( round(x1) ) );
+            mCanvasProperties->rubberStartPoint.setY( static_cast<int>( round(y1) ) );
+          }
+
+          mCanvasProperties->rubberMidPoint = e->pos();
+
+          if (mCanvasProperties->rubberStopPointIsValid)
+          {
+            mCanvasProperties->coordXForm->transformInPlace(x2, y2);
+            mCanvasProperties->rubberStopPoint.setX( static_cast<int>( round(x2) ) );
+            mCanvasProperties->rubberStopPoint.setY( static_cast<int>( round(y2) ) );
+          }
+
+#ifdef QGISDEBUG
+          std::cout << "QgsMapCanvas::mousePressEvent: QGis::MoveVertex: Transformed to widget "
+            << x1 << ", " << y1 << "; "
+            << x2 << ", " << y2
+            << "." << std::endl;
+#endif
+
+          // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
+          // Draw initial rubber band
+          paint.begin(this);
+          paint.setPen(pen);
+          paint.setRasterOp(Qt::XorROP);
+
+          if (mCanvasProperties->rubberStartPointIsValid)
+          {
+            paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
+          }
+          if (mCanvasProperties->rubberStopPointIsValid)
+          {
+            paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
+          }
+
+          paint.end();
+#endif
+        } // if snapVertexWithContext
+
+
+        break;
+      }
+
+    case QGis::DeleteVertex:
+      {
+#ifdef QGISDEBUG
+        std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex." << std::endl;
+#endif
+
+        // TODO: Find nearest node of the selected line, show a big X symbol
+
+        QgsGeometryVertexIndex atVertex;
+        int atFeatureId;
+        QgsGeometry atGeometry;
+        double x1, y1;
+
+        QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+
+        QgsVectorLayer* vlayer =
+          dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+
+#ifdef QGISDEBUG
+        std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex." << std::endl;
+#endif
+
+        // TODO: Find nearest segment of the selected line, move that node to the mouse location
+        if (!vlayer->snapVertexWithContext(
+              point,
+              atVertex,
+              atFeatureId,
+              atGeometry,
+              QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0)
+              )
+            // TODO: What if there is no snapped vertex?
+           )
+        {
+          QMessageBox::warning(0, "Error", "Could not snap vertex. Have you set the tolerance?",
+              QMessageBox::Ok, Qt::NoButton);
+        }
+        else
+        {
+
+#ifdef QGISDEBUG
+          std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex: Snapped to segment fid " 
+            << atFeatureId 
+            //                << " and beforeVertex " << beforeVertex
+            << "." << std::endl;
+#endif
+
+          // Save where we snapped to
+          mCanvasProperties->snappedAtVertex     = atVertex;
+          mCanvasProperties->snappedAtFeatureId  = atFeatureId;
+          mCanvasProperties->snappedAtGeometry   = atGeometry;
+
+          // Get the point of the snapped-to vertex
+          atGeometry.vertexAt(x1, y1, atVertex);
+
+#ifdef QGISDEBUG
+          std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex: Snapped to vertex "
+            << x1 << ", " << y1
+            << "." << std::endl;
+#endif
+
+          // Convert to canvas screen coordinates
+          mCanvasProperties->coordXForm->transformInPlace(x1, y1);
+          mCanvasProperties->rubberMidPoint.setX( static_cast<int>( round(x1) ) );
+          mCanvasProperties->rubberMidPoint.setY( static_cast<int>( round(y1) ) );
+
+#ifdef QGISDEBUG
+          std::cout << "QgsMapCanvas::mousePressEvent: QGis::DeleteVertex: Transformed to widget "
+            << x1 << ", " << y1
+            << "." << std::endl;
+#endif
+
+          // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
+          // Draw X symbol - people can feel free to pretty this up if they like
+          paint.begin(this);
+          paint.setPen(pen);
+          paint.setRasterOp(Qt::XorROP);
+
+          // TODO: Make the following a static member or something
+          int crossSize = 10;
+
+          paint.drawLine( mCanvasProperties->rubberMidPoint.x() - crossSize,
+              mCanvasProperties->rubberMidPoint.y() - crossSize,
+              mCanvasProperties->rubberMidPoint.x() + crossSize,
+              mCanvasProperties->rubberMidPoint.y() + crossSize  );
+
+          paint.drawLine( mCanvasProperties->rubberMidPoint.x() - crossSize,
+              mCanvasProperties->rubberMidPoint.y() + crossSize,
+              mCanvasProperties->rubberMidPoint.x() + crossSize,
+              mCanvasProperties->rubberMidPoint.y() - crossSize  );
+
+          paint.end();
+#endif
+        } // if snapVertexWithContext
+
+
+        break;
+      }
 
     case QGis::EmitPoint: 
-    {
-      QgsPoint  idPoint = mCanvasProperties->coordXForm->
-        toMapCoordinates(e->x(), e->y());
-      emit xyClickCoordinates(idPoint);
-      emit xyClickCoordinates(idPoint,e->button());
-      break;
-    }
-    
-    case QGis::MeasureDist:
-    case QGis::MeasureArea:
-    {
-      if (mMeasure && e->button() == Qt::LeftButton)
       {
         QgsPoint  idPoint = mCanvasProperties->coordXForm->
-            toMapCoordinates(e->x(), e->y());
-        mMeasure->mousePress(idPoint);
+          toMapCoordinates(e->x(), e->y());
+        emit xyClickCoordinates(idPoint);
+        emit xyClickCoordinates(idPoint,e->button());
+        break;
       }
-      break;
-    }
+
+    case QGis::MeasureDist:
+    case QGis::MeasureArea:
+      {
+        if (mMeasure && e->button() == Qt::LeftButton)
+        {
+          QgsPoint  idPoint = mCanvasProperties->coordXForm->
+            toMapCoordinates(e->x(), e->y());
+          mMeasure->mousePress(idPoint);
+        }
+        break;
+      }
   }
 } // mousePressEvent
 
@@ -1722,11 +1724,11 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
   // right button was pressed in zoom tool, return to previous non zoom tool
   if ( e->button() == Qt::RightButton &&
-       ( mCanvasProperties->mapTool == QGis::ZoomIn || mCanvasProperties->mapTool == QGis::ZoomOut
-   || mCanvasProperties->mapTool == QGis::Pan ) )
+      ( mCanvasProperties->mapTool == QGis::ZoomIn || mCanvasProperties->mapTool == QGis::ZoomOut
+        || mCanvasProperties->mapTool == QGis::Pan ) )
   {
-      emit stopZoom();
-      return;
+    emit stopZoom();
+    return;
   }
 
 #if QT_VERSION < 0x040000
@@ -1741,43 +1743,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 
     switch (mCanvasProperties->mapTool)
     {
-    case QGis::ZoomIn:
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
-      // erase the rubber band box
-      paint.begin(this);
-      paint.setPen(pen);
-      paint.setRasterOp(Qt::XorROP);
-      paint.drawRect(mCanvasProperties->zoomBox);
-      paint.end();
-#else
-      delete mRubberBand;
-#endif
-      // store the rectangle
-      mCanvasProperties->zoomBox.setRight(e->pos().x());
-      mCanvasProperties->zoomBox.setBottom(e->pos().y());
-      // set the extent to the zoomBox
-
-      ll = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.left(), mCanvasProperties->zoomBox.bottom());
-      ur = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.right(), mCanvasProperties->zoomBox.top());
-      mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
-      //QgsRect newExtent(ll.x(), ll.y(), ur.x(), ur.y());
-      mCanvasProperties->currentExtent.setXmin(ll.x());
-      mCanvasProperties->currentExtent.setYmin(ll.y());
-      mCanvasProperties->currentExtent.setXmax(ur.x());
-      mCanvasProperties->currentExtent.setYmax(ur.y());
-      mCanvasProperties->currentExtent.normalize();
-      clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of this widget.
-//      render();
-      update();
-      emit extentsChanged(mCanvasProperties->currentExtent);
-
-      break;
-    case QGis::ZoomOut:
-      {
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+      case QGis::ZoomIn:
+        // TODO: Qt4 will have to do this a different way, using QRubberBand ...
 #if QT_VERSION < 0x040000
         // erase the rubber band box
         paint.begin(this);
@@ -1791,101 +1758,136 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         // store the rectangle
         mCanvasProperties->zoomBox.setRight(e->pos().x());
         mCanvasProperties->zoomBox.setBottom(e->pos().y());
-        // scale the extent so the current view fits inside the zoomBox
+        // set the extent to the zoomBox
+
         ll = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.left(), mCanvasProperties->zoomBox.bottom());
         ur = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.right(), mCanvasProperties->zoomBox.top());
         mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
-        QgsRect tempRect = mCanvasProperties->currentExtent;
+        //QgsRect newExtent(ll.x(), ll.y(), ur.x(), ur.y());
         mCanvasProperties->currentExtent.setXmin(ll.x());
         mCanvasProperties->currentExtent.setYmin(ll.y());
         mCanvasProperties->currentExtent.setXmax(ur.x());
         mCanvasProperties->currentExtent.setYmax(ur.y());
         mCanvasProperties->currentExtent.normalize();
+        clear();
+        // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+        // paint event loop of this widget.
+        //      render();
+        update();
+        emit extentsChanged(mCanvasProperties->currentExtent);
 
-        QgsPoint cer = mCanvasProperties->currentExtent.center();
+        break;
+      case QGis::ZoomOut:
+        {
+          // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
+          // erase the rubber band box
+          paint.begin(this);
+          paint.setPen(pen);
+          paint.setRasterOp(Qt::XorROP);
+          paint.drawRect(mCanvasProperties->zoomBox);
+          paint.end();
+#else
+          delete mRubberBand;
+#endif
+          // store the rectangle
+          mCanvasProperties->zoomBox.setRight(e->pos().x());
+          mCanvasProperties->zoomBox.setBottom(e->pos().y());
+          // scale the extent so the current view fits inside the zoomBox
+          ll = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.left(), mCanvasProperties->zoomBox.bottom());
+          ur = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.right(), mCanvasProperties->zoomBox.top());
+          mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
+          QgsRect tempRect = mCanvasProperties->currentExtent;
+          mCanvasProperties->currentExtent.setXmin(ll.x());
+          mCanvasProperties->currentExtent.setYmin(ll.y());
+          mCanvasProperties->currentExtent.setXmax(ur.x());
+          mCanvasProperties->currentExtent.setYmax(ur.y());
+          mCanvasProperties->currentExtent.normalize();
 
-        /* std::cout << "Current extent rectangle is " << tempRect << std::endl;
-           std::cout << "Center of zoom out rectangle is " << cer << std::endl;
-           std::cout << "Zoom out rectangle should have ll of " << ll << " and ur of " << ur << std::endl;
-           std::cout << "Zoom out rectangle is " << mCanvasProperties->currentExtent << std::endl;
-           */
-        double sf;
-        if (mCanvasProperties->zoomBox.width() > mCanvasProperties->zoomBox.height())
-        {
-          sf = tempRect.width() / mCanvasProperties->currentExtent.width();
-        }
-        else
-        {
-          sf = tempRect.height() / mCanvasProperties->currentExtent.height();
-        }
-        //center = new QgsPoint(zoomRect->center());
-        //  delete zoomRect;
-        mCanvasProperties->currentExtent.expand(sf);
+          QgsPoint cer = mCanvasProperties->currentExtent.center();
+
+          /* std::cout << "Current extent rectangle is " << tempRect << std::endl;
+             std::cout << "Center of zoom out rectangle is " << cer << std::endl;
+             std::cout << "Zoom out rectangle should have ll of " << ll << " and ur of " << ur << std::endl;
+             std::cout << "Zoom out rectangle is " << mCanvasProperties->currentExtent << std::endl;
+             */
+          double sf;
+          if (mCanvasProperties->zoomBox.width() > mCanvasProperties->zoomBox.height())
+          {
+            sf = tempRect.width() / mCanvasProperties->currentExtent.width();
+          }
+          else
+          {
+            sf = tempRect.height() / mCanvasProperties->currentExtent.height();
+          }
+          //center = new QgsPoint(zoomRect->center());
+          //  delete zoomRect;
+          mCanvasProperties->currentExtent.expand(sf);
 #ifdef QGISDEBUG
 
-        std::cout << "Extent scaled by " << sf << " to " << mCanvasProperties->currentExtent << std::endl;
-        std::cout << "Center of currentExtent after scaling is " << mCanvasProperties->currentExtent.center() << std::endl;
+          std::cout << "Extent scaled by " << sf << " to " << mCanvasProperties->currentExtent << std::endl;
+          std::cout << "Center of currentExtent after scaling is " << mCanvasProperties->currentExtent.center() << std::endl;
 #endif
 
-        clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of this widget.
-//      render();
-      update();
-        emit extentsChanged(mCanvasProperties->currentExtent);
-      }
-      break;
-
-    case QGis::Pan:
-      panActionEnd(e->pos());
-      break;
-      
-    case QGis::Select:
-      {
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
-      // erase the rubber band box
-      paint.begin(this);
-      paint.setPen(pen);
-      paint.setRasterOp(Qt::XorROP);
-      paint.drawRect(mCanvasProperties->zoomBox);
-      paint.end();
-#else
-      delete mRubberBand;
-#endif
-
-      QgsMapLayer *lyr = mCanvasProperties->mapLegend->currentLayer();
-
-      if (lyr)
-      {
-        QgsPoint ll, ur;
-
-        // store the rectangle
-        mCanvasProperties->zoomBox.setRight(e->pos().x());
-        mCanvasProperties->zoomBox.setBottom(e->pos().y());
-
-        ll = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.left(), mCanvasProperties->zoomBox.bottom());
-        ur = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.right(), mCanvasProperties->zoomBox.top());
-
-        QgsRect *search = new QgsRect(ll.x(), ll.y(), ur.x(), ur.y());
-
-        if ( e->state() == (Qt::LeftButton + Qt::ControlModifier) )
-        {
-          lyr->select(search, true);
-        } else
-        {
-          lyr->select(search, false);
+          clear();
+          // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+          // paint event loop of this widget.
+          //      render();
+          update();
+          emit extentsChanged(mCanvasProperties->currentExtent);
         }
-        delete search;
-      }
-      else
-      {
-        QMessageBox::warning(this,
-                             tr("No active layer"),
-                             tr("To select features, you must choose an layer active by clicking on its name in the legend"));
-      }
-      }
-      break;
+        break;
+
+      case QGis::Pan:
+        panActionEnd(e->pos());
+        break;
+
+      case QGis::Select:
+        {
+          // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
+          // erase the rubber band box
+          paint.begin(this);
+          paint.setPen(pen);
+          paint.setRasterOp(Qt::XorROP);
+          paint.drawRect(mCanvasProperties->zoomBox);
+          paint.end();
+#else
+          delete mRubberBand;
+#endif
+
+          QgsMapLayer *lyr = mCanvasProperties->mapLegend->currentLayer();
+
+          if (lyr)
+          {
+            QgsPoint ll, ur;
+
+            // store the rectangle
+            mCanvasProperties->zoomBox.setRight(e->pos().x());
+            mCanvasProperties->zoomBox.setBottom(e->pos().y());
+
+            ll = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.left(), mCanvasProperties->zoomBox.bottom());
+            ur = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->zoomBox.right(), mCanvasProperties->zoomBox.top());
+
+            QgsRect *search = new QgsRect(ll.x(), ll.y(), ur.x(), ur.y());
+
+            if ( e->state() == (Qt::LeftButton + Qt::ControlModifier) )
+            {
+              lyr->select(search, true);
+            } else
+            {
+              lyr->select(search, false);
+            }
+            delete search;
+          }
+          else
+          {
+            QMessageBox::warning(this,
+                tr("No active layer"),
+                tr("To select features, you must choose an layer active by clicking on its name in the legend"));
+          }
+        }
+        break;
     }
   }
   else // not dragging
@@ -1895,501 +1897,501 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
     {
 
       case QGis::ZoomIn:
-      {
-        // change to zoom in by the default multiple
-        zoomByScale(e->x(), e->y(), (1/scaleDefaultMultiple) );
-        break;
-      }
-      
+        {
+          // change to zoom in by the default multiple
+          zoomByScale(e->x(), e->y(), (1/scaleDefaultMultiple) );
+          break;
+        }
+
       case QGis::ZoomOut:
-      {
-        // change to zoom out by the default multiple
-        zoomByScale(e->x(), e->y(), scaleDefaultMultiple );
-        break;
-      }
-      
+        {
+          // change to zoom out by the default multiple
+          zoomByScale(e->x(), e->y(), scaleDefaultMultiple );
+          break;
+        }
+
       case QGis::Identify:
-      {
-        // call identify method for selected layer
-        QgsMapLayer * lyr = mCanvasProperties->mapLegend->currentLayer();
-
-        if (lyr)
         {
+          // call identify method for selected layer
+          QgsMapLayer * lyr = mCanvasProperties->mapLegend->currentLayer();
 
-          // create the search rectangle
-          double searchRadius = extent().width() * calculateSearchRadiusValue();
-          QgsRect * search = new QgsRect();
-          // convert screen coordinates to map coordinates
-          QgsPoint idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-          search->setXmin(idPoint.x() - searchRadius);
-          search->setXmax(idPoint.x() + searchRadius);
-          search->setYmin(idPoint.y() - searchRadius);
-          search->setYmax(idPoint.y() + searchRadius);
-
-          lyr->identify(search);
-
-          delete search;
-        }
-        else
-        {
-          QMessageBox::warning(this,
-                               tr("No active layer"),
-                               tr("To identify features, you must choose an layer active by clicking on its name in the legend"));
-        }
-      }
-      break;
-
-    case QGis::CapturePoint:
-      {
-        QgsVectorLayer* vlayer =
-          dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
-  
-        if (vlayer)
-        {
-  
-          QgsPoint  idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-          emit xyClickCoordinates(idPoint);
-          
-          //only do the rest for provider with feature addition support
-          //note that for the grass provider, this will return false since
-          //grass provider has its own mechanism of feature addition
-          if(vlayer->getDataProvider()->capabilities()&QgsVectorDataProvider::AddFeatures)
+          if (lyr)
           {
-            if(!vlayer->isEditable() )
+
+            // create the search rectangle
+            double searchRadius = extent().width() * calculateSearchRadiusValue();
+            QgsRect * search = new QgsRect();
+            // convert screen coordinates to map coordinates
+            QgsPoint idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+            search->setXmin(idPoint.x() - searchRadius);
+            search->setXmax(idPoint.x() + searchRadius);
+            search->setYmin(idPoint.y() - searchRadius);
+            search->setYmax(idPoint.y() + searchRadius);
+
+            lyr->identify(search);
+
+            delete search;
+          }
+          else
+          {
+            QMessageBox::warning(this,
+                tr("No active layer"),
+                tr("To identify features, you must choose an layer active by clicking on its name in the legend"));
+          }
+        }
+        break;
+
+      case QGis::CapturePoint:
+        {
+          QgsVectorLayer* vlayer =
+            dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+
+          if (vlayer)
+          {
+
+            QgsPoint  idPoint = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+            emit xyClickCoordinates(idPoint);
+
+            //only do the rest for provider with feature addition support
+            //note that for the grass provider, this will return false since
+            //grass provider has its own mechanism of feature addition
+            if(vlayer->getDataProvider()->capabilities()&QgsVectorDataProvider::AddFeatures)
             {
+              if(!vlayer->isEditable() )
+              {
                 QMessageBox::information(0,"Layer not editable",
+                    "Cannot edit the vector layer. Use 'Start editing' in the legend item menu",
+                    QMessageBox::Ok);
+                break;
+              }
+
+              //snap point to points within the vector layer snapping tolerance
+              vlayer->snapPoint(idPoint,QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0));
+
+              QgsFeature* f = new QgsFeature(0,"WKBPoint");
+              int size=5+2*sizeof(double);
+              unsigned char *wkb = new unsigned char[size];
+              int wkbtype=QGis::WKBPoint;
+              QgsPoint savePoint = maybeInversePoint(idPoint, "adding point");
+              double x = savePoint.x();
+              double y = savePoint.y();
+              memcpy(&wkb[1],&wkbtype, sizeof(int));
+              memcpy(&wkb[5], &x, sizeof(double));
+              memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
+              f->setGeometryAndOwnership(&wkb[0],size);
+
+              //add the fields to the QgsFeature
+              std::vector<QgsField> fields=vlayer->fields();
+              for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
+              {
+                f->addAttribute((*it).name(), vlayer->getDefaultValue(it->name(),f));
+              }
+
+              //show the dialog to enter attribute values
+              if(f->attributeDialog())
+              {
+                vlayer->addFeature(f);
+              }
+              refresh();
+            }
+          }
+          else
+          {
+            QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
+          }
+
+          break;
+        }  
+
+      case QGis::CaptureLine:
+      case QGis::CapturePolygon:
+        {
+
+          if (mCanvasProperties->rubberStartPoint != mCanvasProperties->rubberStopPoint)
+          {
+            // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
+            // XOR-out the old line
+            paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberStopPoint);
+#endif
+          }
+
+          mCanvasProperties->rubberStopPoint = e->pos();
+
+
+          QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+
+          if(vlayer)
+          {
+            if(!vlayer->isEditable())// && (vlayer->providerType().lower() != "grass"))
+            {
+              QMessageBox::information(0,"Layer not editable",
                   "Cannot edit the vector layer. Use 'Start editing' in the legend item menu",
                   QMessageBox::Ok);
-                break;
+              break;
             }
-        
-            //snap point to points within the vector layer snapping tolerance
-            vlayer->snapPoint(idPoint,QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0));
-        
-            QgsFeature* f = new QgsFeature(0,"WKBPoint");
-            int size=5+2*sizeof(double);
-            unsigned char *wkb = new unsigned char[size];
-            int wkbtype=QGis::WKBPoint;
-            QgsPoint savePoint = maybeInversePoint(idPoint, "adding point");
-            double x = savePoint.x();
-            double y = savePoint.y();
-            memcpy(&wkb[1],&wkbtype, sizeof(int));
-            memcpy(&wkb[5], &x, sizeof(double));
-            memcpy(&wkb[5]+sizeof(double), &y, sizeof(double));
+          }
+          else
+          {
+            QMessageBox::information(0,"Not a vector layer",
+                "The current layer is not a vector layer",
+                QMessageBox::Ok);
+            return;
+          }
+
+          //prevent clearing of the line between the first and the second polygon vertex
+          //during the next mouse move event
+          if(mCaptureList.size() == 1 && mCanvasProperties->mapTool == QGis::CapturePolygon)
+          {
+            QPainter paint(mCanvasProperties->pmCanvas);
+            drawLineToDigitisingCursor(&paint);
+          }
+
+          mDigitMovePoint.setX(e->x());
+          mDigitMovePoint.setY(e->y());
+          mDigitMovePoint=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+          QgsPoint digitisedpoint=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+          vlayer->snapPoint(digitisedpoint,QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0));
+          mCaptureList.push_back(digitisedpoint);
+          if(mCaptureList.size()>1)
+          {
+            QPainter paint(this);
+            QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),
+                QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),
+                QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
+            paint.setPen(QPen(digitcolor,QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",1),Qt::SolidLine));
+            std::list<QgsPoint>::iterator it=mCaptureList.end();
+            --it;
+            --it;
+
+            try
+            {
+              QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
+              QgsPoint endpoint = mCanvasProperties->coordXForm->transform(digitisedpoint.x(),digitisedpoint.y());
+              paint.drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),
+                  static_cast<int>(endpoint.x()),static_cast<int>(endpoint.y()));
+            }
+            catch(QgsException &e)
+            {
+              // ignore this 
+              // we need it to keep windows quiet
+            }
+            repaint();
+          }
+
+          if (e->button() == Qt::RightButton)
+          {
+            // End of string
+
+            mCanvasProperties->capturing = FALSE;
+
+            //create QgsFeature with wkb representation
+            QgsFeature* f=new QgsFeature(0,"WKBLineString");
+            unsigned char* wkb;
+            int size;
+            if(mCanvasProperties->mapTool==QGis::CaptureLine)
+            {
+              size=1+2*sizeof(int)+2*mCaptureList.size()*sizeof(double);
+              wkb= new unsigned char[size];
+              int wkbtype=QGis::WKBLineString;
+              int length=mCaptureList.size();
+              memcpy(&wkb[1],&wkbtype, sizeof(int));
+              memcpy(&wkb[5],&length, sizeof(int));
+              int position=1+2*sizeof(int);
+              double x,y;
+              for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
+              {
+                QgsPoint savePoint = maybeInversePoint(*it, "adding line");
+                x = savePoint.x();
+                y = savePoint.y();
+
+                memcpy(&wkb[position],&x,sizeof(double));
+                position+=sizeof(double);
+
+                memcpy(&wkb[position],&y,sizeof(double));
+                position+=sizeof(double);
+              }
+            }
+            else//polygon
+            {
+              size=1+3*sizeof(int)+2*(mCaptureList.size()+1)*sizeof(double);
+              wkb= new unsigned char[size];
+              int wkbtype=QGis::WKBPolygon;
+              int length=mCaptureList.size()+1;//+1 because the first point is needed twice
+              int numrings=1;
+              memcpy(&wkb[1],&wkbtype, sizeof(int));
+              memcpy(&wkb[5],&numrings,sizeof(int));
+              memcpy(&wkb[9],&length, sizeof(int));
+              int position=1+3*sizeof(int);
+              double x,y;
+              std::list<QgsPoint>::iterator it;
+              for(it=mCaptureList.begin();it!=mCaptureList.end();++it)
+              {
+                QgsPoint savePoint = maybeInversePoint(*it, "adding poylgon");
+                x = savePoint.x();
+                y = savePoint.y();
+
+                memcpy(&wkb[position],&x,sizeof(double));
+                position+=sizeof(double);
+
+                memcpy(&wkb[position],&y,sizeof(double));
+                position+=sizeof(double);
+              }
+              //close the polygon
+              it=mCaptureList.begin();
+              QgsPoint savePoint = maybeInversePoint(*it, "closing polygon");
+              x = savePoint.x();
+              y = savePoint.y();
+
+              memcpy(&wkb[position],&x,sizeof(double));
+              position+=sizeof(double);
+
+              memcpy(&wkb[position],&y,sizeof(double));
+            }
             f->setGeometryAndOwnership(&wkb[0],size);
-        
+
             //add the fields to the QgsFeature
             std::vector<QgsField> fields=vlayer->fields();
             for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
             {
-              f->addAttribute((*it).name(), vlayer->getDefaultValue(it->name(),f));
+              f->addAttribute((*it).name(),vlayer->getDefaultValue(it->name(), f));
             }
-        
-            //show the dialog to enter attribute values
+
             if(f->attributeDialog())
             {
               vlayer->addFeature(f);
             }
+
+            // delete the elements of mCaptureList
+            mCaptureList.clear();
             refresh();
-          }
-        }
-        else
-        {
-            QMessageBox::information(0,"Not a vector layer","The current layer is not a vector layer",QMessageBox::Ok);
-        }
-  
-        break;
-      }  
-  
-      case QGis::CaptureLine:
-      case QGis::CapturePolygon:
-      {
-        
-        if (mCanvasProperties->rubberStartPoint != mCanvasProperties->rubberStopPoint)
-        {
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
-          // XOR-out the old line
-          paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberStopPoint);
-#endif
-        }
 
-        mCanvasProperties->rubberStopPoint = e->pos();
-        
-  
-        QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
-        
-        if(vlayer)
-        {
-          if(!vlayer->isEditable())// && (vlayer->providerType().lower() != "grass"))
+          }
+          else if (e->button() == Qt::LeftButton)
           {
-            QMessageBox::information(0,"Layer not editable",
-                                      "Cannot edit the vector layer. Use 'Start editing' in the legend item menu",
-                                      QMessageBox::Ok);
-            break;
+            mCanvasProperties->capturing = TRUE;
           }
-        }
-        else
-        {
-          QMessageBox::information(0,"Not a vector layer",
-                                    "The current layer is not a vector layer",
-                                    QMessageBox::Ok);
-          return;
-        }
+          break;
+        }  
 
-	//prevent clearing of the line between the first and the second polygon vertex
-	//during the next mouse move event
-	if(mCaptureList.size() == 1 && mCanvasProperties->mapTool == QGis::CapturePolygon)
-	  {
-	    QPainter paint(mCanvasProperties->pmCanvas);
-	    drawLineToDigitisingCursor(&paint);
-	  }
+        /*      case QGis::Measure:
+                {
+                QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
 
-	mDigitMovePoint.setX(e->x());
-	mDigitMovePoint.setY(e->y());
-	mDigitMovePoint=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-        QgsPoint digitisedpoint=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-        vlayer->snapPoint(digitisedpoint,QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0));
-        mCaptureList.push_back(digitisedpoint);
-        if(mCaptureList.size()>1)
-        {
-          QPainter paint(this);
-          QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),
-                QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),
-                QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
-          paint.setPen(QPen(digitcolor,QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",1),Qt::SolidLine));
-          std::list<QgsPoint>::iterator it=mCaptureList.end();
-          --it;
-          --it;
-          
-          try
-	      {
-          QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
-          QgsPoint endpoint = mCanvasProperties->coordXForm->transform(digitisedpoint.x(),digitisedpoint.y());
-          paint.drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),
-            static_cast<int>(endpoint.x()),static_cast<int>(endpoint.y()));
-	      }
-	      catch(QgsException &e)
-	      {
-		    // ignore this 
-		    // we need it to keep windows quiet
-	      }
-          repaint();
-        }
-        
-        if (e->button() == Qt::RightButton)
-        {
-          // End of string
-          
-          mCanvasProperties->capturing = FALSE;
-          
-          //create QgsFeature with wkb representation
-          QgsFeature* f=new QgsFeature(0,"WKBLineString");
-          unsigned char* wkb;
-          int size;
-          if(mCanvasProperties->mapTool==QGis::CaptureLine)
-          {
-            size=1+2*sizeof(int)+2*mCaptureList.size()*sizeof(double);
-            wkb= new unsigned char[size];
-            int wkbtype=QGis::WKBLineString;
-            int length=mCaptureList.size();
-            memcpy(&wkb[1],&wkbtype, sizeof(int));
-            memcpy(&wkb[5],&length, sizeof(int));
-            int position=1+2*sizeof(int);
-            double x,y;
-            for(std::list<QgsPoint>::iterator it=mCaptureList.begin();it!=mCaptureList.end();++it)
-            {
-              QgsPoint savePoint = maybeInversePoint(*it, "adding line");
-              x = savePoint.x();
-              y = savePoint.y();
+                if ( !mMeasure ) {
+                mMeasure = new QgsMeasure(this, topLevelWidget() );
+                }
+                mMeasure->addPoint(point);
+                mMeasure->show();
+                break;
+                }*/
 
-              memcpy(&wkb[position],&x,sizeof(double));
-              position+=sizeof(double);
-
-              memcpy(&wkb[position],&y,sizeof(double));
-              position+=sizeof(double);
-            }
-          }
-          else//polygon
-          {
-            size=1+3*sizeof(int)+2*(mCaptureList.size()+1)*sizeof(double);
-            wkb= new unsigned char[size];
-            int wkbtype=QGis::WKBPolygon;
-            int length=mCaptureList.size()+1;//+1 because the first point is needed twice
-            int numrings=1;
-            memcpy(&wkb[1],&wkbtype, sizeof(int));
-            memcpy(&wkb[5],&numrings,sizeof(int));
-            memcpy(&wkb[9],&length, sizeof(int));
-            int position=1+3*sizeof(int);
-            double x,y;
-            std::list<QgsPoint>::iterator it;
-            for(it=mCaptureList.begin();it!=mCaptureList.end();++it)
-            {
-              QgsPoint savePoint = maybeInversePoint(*it, "adding poylgon");
-              x = savePoint.x();
-              y = savePoint.y();
-
-              memcpy(&wkb[position],&x,sizeof(double));
-              position+=sizeof(double);
-
-              memcpy(&wkb[position],&y,sizeof(double));
-              position+=sizeof(double);
-            }
-            //close the polygon
-            it=mCaptureList.begin();
-            QgsPoint savePoint = maybeInversePoint(*it, "closing polygon");
-            x = savePoint.x();
-            y = savePoint.y();
-
-            memcpy(&wkb[position],&x,sizeof(double));
-            position+=sizeof(double);
-
-            memcpy(&wkb[position],&y,sizeof(double));
-          }
-          f->setGeometryAndOwnership(&wkb[0],size);
-          
-          //add the fields to the QgsFeature
-          std::vector<QgsField> fields=vlayer->fields();
-          for(std::vector<QgsField>::iterator it=fields.begin();it!=fields.end();++it)
-          {
-            f->addAttribute((*it).name(),vlayer->getDefaultValue(it->name(), f));
-          }
-          
-          if(f->attributeDialog())
-          {
-            vlayer->addFeature(f);
-          }
-          
-          // delete the elements of mCaptureList
-          mCaptureList.clear();
-          refresh();
-          
-        }
-        else if (e->button() == Qt::LeftButton)
-        {
-          mCanvasProperties->capturing = TRUE;
-        }
-        break;
-      }  
-  
-/*      case QGis::Measure:
-      {
-        QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-  
-        if ( !mMeasure ) {
-            mMeasure = new QgsMeasure(this, topLevelWidget() );
-        }
-        mMeasure->addPoint(point);
-        mMeasure->show();
-        break;
-    }*/
-      
     } // switch mapTool
-    
+
   } // if dragging / else
 
   // map tools that don't care if clicked or dragged
   switch (mCanvasProperties->mapTool)
   {
     case QGis::AddVertex:
-    {
-      QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-
-      QgsVectorLayer* vlayer =
-        dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
-        
-      
-#ifdef QGISDEBUG
-  std::cout << "QgsMapCanvas::mouseReleaseEvent: QGis::AddVertex." << std::endl;
-#endif
-      
-      // TODO: Find nearest line portion of the selected line, add a node at the mouse location
-
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
-      // Undraw rubber band
-      paint.begin(this);
-      paint.setPen(pen);
-      paint.setRasterOp(Qt::XorROP);
-      
-      // XOR-out the old line
-      paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
-      paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
-      paint.end();
-#endif
-
-      // Add the new vertex
-
-#ifdef QGISDEBUG
-  std::cout << "QgsMapCanvas::mouseReleaseEvent: About to vlayer->insertVertexBefore." << std::endl;
-#endif
-            
-      if (vlayer)
       {
+        QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
 
-        // only do the rest for provider with geometry modification support
-        // TODO: Move this test earlier into the workflow, maybe by triggering just after the user selects "Add Vertex" or even by graying out the menu option.
-        if (vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries)
-        {
-          if ( !vlayer->isEditable() )
-          {
-            QMessageBox::information(0,"Layer not editable",
-              "Cannot edit the vector layer. Use 'Start editing' in the legend item menu",
-              QMessageBox::Ok);
-            break;
-          }
-      
-          vlayer->insertVertexBefore(
-            point.x(), point.y(), 
-            mCanvasProperties->snappedAtFeatureId,
-            mCanvasProperties->snappedBeforeVertex);
+        QgsVectorLayer* vlayer =
+          dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
 
-                            
+
 #ifdef QGISDEBUG
-  std::cout << "QgsMapCanvas::mouseReleaseEvent: Completed vlayer->insertVertexBefore." << std::endl;
+        std::cout << "QgsMapCanvas::mouseReleaseEvent: QGis::AddVertex." << std::endl;
 #endif
+
+        // TODO: Find nearest line portion of the selected line, add a node at the mouse location
+
+        // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
+        // Undraw rubber band
+        paint.begin(this);
+        paint.setPen(pen);
+        paint.setRasterOp(Qt::XorROP);
+
+        // XOR-out the old line
+        paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
+        paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
+        paint.end();
+#endif
+
+        // Add the new vertex
+
+#ifdef QGISDEBUG
+        std::cout << "QgsMapCanvas::mouseReleaseEvent: About to vlayer->insertVertexBefore." << std::endl;
+#endif
+
+        if (vlayer)
+        {
+
+          // only do the rest for provider with geometry modification support
+          // TODO: Move this test earlier into the workflow, maybe by triggering just after the user selects "Add Vertex" or even by graying out the menu option.
+          if (vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries)
+          {
+            if ( !vlayer->isEditable() )
+            {
+              QMessageBox::information(0,"Layer not editable",
+                  "Cannot edit the vector layer. Use 'Start editing' in the legend item menu",
+                  QMessageBox::Ok);
+              break;
+            }
+
+            vlayer->insertVertexBefore(
+                point.x(), point.y(), 
+                mCanvasProperties->snappedAtFeatureId,
+                mCanvasProperties->snappedBeforeVertex);
+
+
+#ifdef QGISDEBUG
+            std::cout << "QgsMapCanvas::mouseReleaseEvent: Completed vlayer->insertVertexBefore." << std::endl;
+#endif
+          }
         }
-      }
-       
-      // TODO: Redraw?  
-      break;
-    }  
-    
+
+        // TODO: Redraw?  
+        break;
+      }  
+
     case QGis::MoveVertex:
-    {
-#ifdef QGISDEBUG
-  std::cout << "QgsMapCanvas::mouseReleaseEvent: QGis::MoveVertex." << std::endl;
-#endif
-      QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
-
-      QgsVectorLayer* vlayer =
-        dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
-
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
-      // Undraw rubber band
-      paint.begin(this);
-      paint.setPen(pen);
-      paint.setRasterOp(Qt::XorROP);
-
-      // XOR-out the old line
-      paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
-      paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
-      paint.end();
-#endif
-
-      // Move the vertex
-
-#ifdef QGISDEBUG
-  std::cout << "QgsMapCanvas::mouseReleaseEvent: About to vlayer->moveVertexAt." << std::endl;
-#endif
-
-      if (vlayer)
       {
-        // TODO: Move this test earlier into the workflow, maybe by triggering just after the user selects "Move Vertex" or even by graying out the menu option.
-        if (vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries)
-        {
-          if ( !vlayer->isEditable() )
-          {
-            QMessageBox::information(0,"Layer not editable",
-              "Cannot edit the vector layer. Use 'Start editing' in the legend item menu",
-              QMessageBox::Ok);
-            break;
-          }
+#ifdef QGISDEBUG
+        std::cout << "QgsMapCanvas::mouseReleaseEvent: QGis::MoveVertex." << std::endl;
+#endif
+        QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
 
-          vlayer->moveVertexAt(
-            point.x(), point.y(),
-            mCanvasProperties->snappedAtFeatureId,
-            mCanvasProperties->snappedAtVertex);
+        QgsVectorLayer* vlayer =
+          dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
+
+        // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
+        // Undraw rubber band
+        paint.begin(this);
+        paint.setPen(pen);
+        paint.setRasterOp(Qt::XorROP);
+
+        // XOR-out the old line
+        paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
+        paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
+        paint.end();
+#endif
+
+        // Move the vertex
 
 #ifdef QGISDEBUG
-  std::cout << "QgsMapCanvas::mouseReleaseEvent: Completed vlayer->moveVertexAt." << std::endl;
+        std::cout << "QgsMapCanvas::mouseReleaseEvent: About to vlayer->moveVertexAt." << std::endl;
 #endif
-        }
-      }
-      // TODO: Redraw?  
 
-      break;
-    }  
+        if (vlayer)
+        {
+          // TODO: Move this test earlier into the workflow, maybe by triggering just after the user selects "Move Vertex" or even by graying out the menu option.
+          if (vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries)
+          {
+            if ( !vlayer->isEditable() )
+            {
+              QMessageBox::information(0,"Layer not editable",
+                  "Cannot edit the vector layer. Use 'Start editing' in the legend item menu",
+                  QMessageBox::Ok);
+              break;
+            }
+
+            vlayer->moveVertexAt(
+                point.x(), point.y(),
+                mCanvasProperties->snappedAtFeatureId,
+                mCanvasProperties->snappedAtVertex);
+
+#ifdef QGISDEBUG
+            std::cout << "QgsMapCanvas::mouseReleaseEvent: Completed vlayer->moveVertexAt." << std::endl;
+#endif
+          }
+        }
+        // TODO: Redraw?  
+
+        break;
+      }  
 
     case QGis::DeleteVertex:
-    {
-#ifdef QGISDEBUG
-  std::cout << "QgsMapCanvas::mouseReleaseEvent: QGis::DeleteVertex." << std::endl;
-#endif
-      QgsVectorLayer* vlayer =
-        dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
-
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
-      // Undraw X symbol - people can feel free to pretty this up if they like
-      paint.begin(this);
-      paint.setPen(pen);
-      paint.setRasterOp(Qt::XorROP);
-
-      // TODO: Make the following a static member or something
-      int crossSize = 10;
-
-      paint.drawLine( mCanvasProperties->rubberMidPoint.x() - crossSize,
-                      mCanvasProperties->rubberMidPoint.y() - crossSize,
-                      mCanvasProperties->rubberMidPoint.x() + crossSize,
-                      mCanvasProperties->rubberMidPoint.y() + crossSize  );
-
-      paint.drawLine( mCanvasProperties->rubberMidPoint.x() - crossSize,
-                      mCanvasProperties->rubberMidPoint.y() + crossSize,
-                      mCanvasProperties->rubberMidPoint.x() + crossSize,
-                      mCanvasProperties->rubberMidPoint.y() - crossSize  );
-
-      paint.end();
-#endif
-
-      if (vlayer)
       {
-        // TODO: Move this test earlier into the workflow, maybe by triggering just after the user selects "Delete Vertex" or even by graying out the menu option.
-        if (vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries)
-        {
-          if ( !vlayer->isEditable() )
-          {
-            QMessageBox::information(0,"Layer not editable",
-              "Cannot edit the vector layer. Use 'Start editing' in the legend item menu",
-              QMessageBox::Ok);
-            break;
-          }
+#ifdef QGISDEBUG
+        std::cout << "QgsMapCanvas::mouseReleaseEvent: QGis::DeleteVertex." << std::endl;
+#endif
+        QgsVectorLayer* vlayer =
+          dynamic_cast<QgsVectorLayer*>(mCanvasProperties->mapLegend->currentLayer());
 
-          vlayer->deleteVertexAt(
-            mCanvasProperties->snappedAtFeatureId,
-            mCanvasProperties->snappedAtVertex);
+        // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
+        // Undraw X symbol - people can feel free to pretty this up if they like
+        paint.begin(this);
+        paint.setPen(pen);
+        paint.setRasterOp(Qt::XorROP);
+
+        // TODO: Make the following a static member or something
+        int crossSize = 10;
+
+        paint.drawLine( mCanvasProperties->rubberMidPoint.x() - crossSize,
+            mCanvasProperties->rubberMidPoint.y() - crossSize,
+            mCanvasProperties->rubberMidPoint.x() + crossSize,
+            mCanvasProperties->rubberMidPoint.y() + crossSize  );
+
+        paint.drawLine( mCanvasProperties->rubberMidPoint.x() - crossSize,
+            mCanvasProperties->rubberMidPoint.y() + crossSize,
+            mCanvasProperties->rubberMidPoint.x() + crossSize,
+            mCanvasProperties->rubberMidPoint.y() - crossSize  );
+
+        paint.end();
+#endif
+
+        if (vlayer)
+        {
+          // TODO: Move this test earlier into the workflow, maybe by triggering just after the user selects "Delete Vertex" or even by graying out the menu option.
+          if (vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries)
+          {
+            if ( !vlayer->isEditable() )
+            {
+              QMessageBox::information(0,"Layer not editable",
+                  "Cannot edit the vector layer. Use 'Start editing' in the legend item menu",
+                  QMessageBox::Ok);
+              break;
+            }
+
+            vlayer->deleteVertexAt(
+                mCanvasProperties->snappedAtFeatureId,
+                mCanvasProperties->snappedAtVertex);
 
 #ifdef QGISDEBUG
-  std::cout << "QgsMapCanvas::mouseReleaseEvent: Completed vlayer->deleteVertexAt." << std::endl;
+            std::cout << "QgsMapCanvas::mouseReleaseEvent: Completed vlayer->deleteVertexAt." << std::endl;
 #endif
+          }
         }
-      }
-      // TODO: Redraw?  
+        // TODO: Redraw?  
 
-      break;
-    }
+        break;
+      }
 
     case QGis::MeasureDist:
     case QGis::MeasureArea:
-    {
-   
-      QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+      {
 
-      if(e->button()==Qt::RightButton && (e->state() & Qt::LeftButton) == 0) // restart
-      {
-            if ( mMeasure )
-            {   
-                mMeasure->restart();
-            }
-      } 
-      else if (e->button() == Qt::LeftButton)
-      {
-        mMeasure->addPoint(point);
-        mMeasure->show();
+        QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
+
+        if(e->button()==Qt::RightButton && (e->state() & Qt::LeftButton) == 0) // restart
+        {
+          if ( mMeasure )
+          {   
+            mMeasure->restart();
+          }
+        } 
+        else if (e->button() == Qt::LeftButton)
+        {
+          mMeasure->addPoint(point);
+          mMeasure->show();
+        }
+        break;
       }
-      break;
-    }
 
   }
 } // mouseReleaseEvent
@@ -2416,7 +2418,7 @@ void QgsMapCanvas::wheelEvent(QWheelEvent *e)
   {
     scaleFactor = 1/scaleFactor;
   }
-  
+
   zoomByScale(e->x(), e->y(), scaleFactor);
 
 }
@@ -2433,7 +2435,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
     panAction(e);
   }
   else if (e->state() == Qt::LeftButton || e->state() == 513)
-  // XXX magic numbers BAD -- 513?
+    // XXX magic numbers BAD -- 513?
   {
     // this is a drag-type operation (zoom, pan or other maptool)
 
@@ -2444,154 +2446,149 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 
     switch (mCanvasProperties->mapTool)
     {
-    case QGis::Select:
-    case QGis::ZoomIn:
-    case QGis::ZoomOut:
-      // draw the rubber band box as the user drags the mouse
+      case QGis::Select:
+      case QGis::ZoomIn:
+      case QGis::ZoomOut:
+        // draw the rubber band box as the user drags the mouse
 #if QT_VERSION < 0x040000
-      mCanvasProperties->dragging = true;
-
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
-      paint.begin(this);
-      paint.setPen(pen);
-      paint.setRasterOp(Qt::XorROP);
-      paint.drawRect(mCanvasProperties->zoomBox);
-
-      mCanvasProperties->zoomBox.setLeft(mCanvasProperties->rubberStartPoint.x());
-      mCanvasProperties->zoomBox.setTop(mCanvasProperties->rubberStartPoint.y());
-      mCanvasProperties->zoomBox.setRight(e->pos().x());
-      mCanvasProperties->zoomBox.setBottom(e->pos().y());
-
-      paint.drawRect(mCanvasProperties->zoomBox);
-      paint.end();
-#else
-      if (!mCanvasProperties->dragging)
-      {
         mCanvasProperties->dragging = true;
-        mRubberBand = new QRubberBand(QRubberBand::Rectangle, this);
-        mCanvasProperties->zoomBox.setTopLeft(mCanvasProperties->rubberStartPoint);
-      }
-      mCanvasProperties->zoomBox.setBottomRight(e->pos());
-#ifdef Q_OS_MACX
-      mRubberBand->setGeometry(mCanvasProperties->zoomBox);
+
+        // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+        paint.begin(this);
+        paint.setPen(pen);
+        paint.setRasterOp(Qt::XorROP);
+        paint.drawRect(mCanvasProperties->zoomBox);
+
+        mCanvasProperties->zoomBox.setLeft(mCanvasProperties->rubberStartPoint.x());
+        mCanvasProperties->zoomBox.setTop(mCanvasProperties->rubberStartPoint.y());
+        mCanvasProperties->zoomBox.setRight(e->pos().x());
+        mCanvasProperties->zoomBox.setBottom(e->pos().y());
+
+        paint.drawRect(mCanvasProperties->zoomBox);
+        paint.end();
 #else
-      mRubberBand->setGeometry(QRect(mapToGlobal(mCanvasProperties->zoomBox.topLeft()),
-        mapToGlobal(mCanvasProperties->zoomBox.bottomRight())).normalize());
-#endif
-      mRubberBand->show();
+        if (!mCanvasProperties->dragging)
+        {
+          mCanvasProperties->dragging = true;
+          mRubberBand = new QRubberBand(QRubberBand::Rectangle, this);
+          mCanvasProperties->zoomBox.setTopLeft(mCanvasProperties->rubberStartPoint);
+        }
+        mCanvasProperties->zoomBox.setBottomRight(e->pos());
+        mRubberBand->setGeometry(mCanvasProperties->zoomBox);
+        mRubberBand->show();
 #endif
 
-      break;
-    case QGis::Pan:
-      // show the pmCanvas as the user drags the mouse
-      mCanvasProperties->dragging = true;
-      panAction(e);
+        break;
+      case QGis::Pan:
+        // show the pmCanvas as the user drags the mouse
+        mCanvasProperties->dragging = true;
+        panAction(e);
 
-      break;
-      
-    case QGis::MeasureDist:
-    case QGis::MeasureArea:
-      if (mMeasure && (e->state() & Qt::LeftButton))
-      {
-        QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->pos().x(), e->pos().y());
-        mMeasure->mouseMove(point);
-      }
-      break;
-      
-    case QGis::AddVertex:
-    case QGis::MoveVertex:
-    
-      // TODO: Redraw rubber band
-      
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+        break;
+
+      case QGis::MeasureDist:
+      case QGis::MeasureArea:
+        if (mMeasure && (e->state() & Qt::LeftButton))
+        {
+          QgsPoint point = mCanvasProperties->coordXForm->toMapCoordinates(e->pos().x(), e->pos().y());
+          mMeasure->mouseMove(point);
+        }
+        break;
+
+      case QGis::AddVertex:
+      case QGis::MoveVertex:
+
+        // TODO: Redraw rubber band
+
+        // TODO: Qt4 will have to do this a different way, using QRubberBand ...
 #if QT_VERSION < 0x040000
-      paint.begin(this);
-      paint.setPen(pen);
-      paint.setRasterOp(Qt::XorROP);
-      
-      // XOR-out the old line
-      paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
-      paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
+        paint.begin(this);
+        paint.setPen(pen);
+        paint.setRasterOp(Qt::XorROP);
 
-      mCanvasProperties->rubberMidPoint = e->pos();
-      
-      // XOR-in the new line
-      paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
-      paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
-      
-      paint.end();
+        // XOR-out the old line
+        paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
+        paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
+
+        mCanvasProperties->rubberMidPoint = e->pos();
+
+        // XOR-in the new line
+        paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
+        paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
+
+        paint.end();
 #endif
 
-      break;
+        break;
 
     } // case
   } // if left button
 
   // Some tools require us to do some stuff whether we are dragging or not
- 
+
   switch (mCanvasProperties->mapTool)
   {
-  case QGis::CapturePoint:
-  case QGis::CaptureLine:
-  case QGis::CapturePolygon:
-    
-    if (mCanvasProperties->capturing)
-    {
-  
-      // show the rubber-band from the last click
-  
-      QPainter paint;
-      QPen pen(Qt::gray);
+    case QGis::CapturePoint:
+    case QGis::CaptureLine:
+    case QGis::CapturePolygon:
 
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
-      paint.begin(this);
-      paint.setPen(pen);
-      paint.setRasterOp(Qt::XorROP);
-      
-      if (mCanvasProperties->rubberStartPoint != mCanvasProperties->rubberStopPoint)
+      if (mCanvasProperties->capturing)
       {
-        // XOR-out the old line
+
+        // show the rubber-band from the last click
+
+        QPainter paint;
+        QPen pen(Qt::gray);
+
+        // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
+        paint.begin(this);
+        paint.setPen(pen);
+        paint.setRasterOp(Qt::XorROP);
+
+        if (mCanvasProperties->rubberStartPoint != mCanvasProperties->rubberStopPoint)
+        {
+          // XOR-out the old line
+          paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberStopPoint);
+        }  
+
+        mCanvasProperties->rubberStopPoint = e->pos();
+
         paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberStopPoint);
-      }  
-  
-      mCanvasProperties->rubberStopPoint = e->pos();
-  
-      paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberStopPoint);
-      paint.end();
+        paint.end();
 #endif
-    
-    }
-    
-    break;
+
+      }
+
+      break;
   }          
 
   //draw a line to the cursor position in line/polygon editing mode
   if ( mCanvasProperties->mapTool == QGis::CaptureLine || mCanvasProperties->mapTool == QGis::CapturePolygon )
   {
     if(mCaptureList.size()>0)
-	      {
-		  QPainter paint(mCanvasProperties->pmCanvas);
-		  QPainter paint2(this);
+    {
+      QPainter paint(mCanvasProperties->pmCanvas);
+      QPainter paint2(this);
 
-		  drawLineToDigitisingCursor(&paint);
-		  drawLineToDigitisingCursor(&paint2);
-		  if(mCanvasProperties->mapTool == QGis::CapturePolygon && mCaptureList.size()>1)
-		  {
-		      drawLineToDigitisingCursor(&paint, false);
-		      drawLineToDigitisingCursor(&paint2, false);
-		  }
-		  QgsPoint digitmovepoint(e->pos().x(), e->pos().y());
-		  mDigitMovePoint=mCanvasProperties->coordXForm->toMapCoordinates(e->pos().x(), e->pos().y());
+      drawLineToDigitisingCursor(&paint);
+      drawLineToDigitisingCursor(&paint2);
+      if(mCanvasProperties->mapTool == QGis::CapturePolygon && mCaptureList.size()>1)
+      {
+        drawLineToDigitisingCursor(&paint, false);
+        drawLineToDigitisingCursor(&paint2, false);
+      }
+      QgsPoint digitmovepoint(e->pos().x(), e->pos().y());
+      mDigitMovePoint=mCanvasProperties->coordXForm->toMapCoordinates(e->pos().x(), e->pos().y());
 
-		  drawLineToDigitisingCursor(&paint);
-		  drawLineToDigitisingCursor(&paint2);
-		  if(mCanvasProperties->mapTool == QGis::CapturePolygon && mCaptureList.size()>1)
-		  {
-		      drawLineToDigitisingCursor(&paint, false);
-		      drawLineToDigitisingCursor(&paint2, false);
-		  }
-	      }
+      drawLineToDigitisingCursor(&paint);
+      drawLineToDigitisingCursor(&paint2);
+      if(mCanvasProperties->mapTool == QGis::CapturePolygon && mCaptureList.size()>1)
+      {
+        drawLineToDigitisingCursor(&paint, false);
+        drawLineToDigitisingCursor(&paint2, false);
+      }
+    }
   }
 
   // show x y on status bar
@@ -2602,28 +2599,28 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 
 void QgsMapCanvas::drawLineToDigitisingCursor(QPainter* paint, bool last)
 {
-   QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),\
-			    QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),\
-			    QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
-   paint->setPen(QPen(digitcolor,QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",1),Qt::SolidLine));
+  QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),\
+      QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),\
+      QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
+  paint->setPen(QPen(digitcolor,QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",1),Qt::SolidLine));
 
-// TODO: Qt4 will have to do this a different way, using QRubberBand ...
+  // TODO: Qt4 will have to do this a different way, using QRubberBand ...
 #if QT_VERSION < 0x040000
-   paint->setRasterOp(Qt::XorROP);
-   std::list<QgsPoint>::iterator it;
-   if(last)
-   {
-       it=mCaptureList.end();
-       --it;
-   }
-   else
-   {
-       it=mCaptureList.begin();
-   }
-   QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
-   QgsPoint digitpoint = mCanvasProperties->coordXForm->transform(mDigitMovePoint.x(), mDigitMovePoint.y());
-   paint->drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),\
-		  static_cast<int>(digitpoint.x()), static_cast<int>(digitpoint.y()));
+  paint->setRasterOp(Qt::XorROP);
+  std::list<QgsPoint>::iterator it;
+  if(last)
+  {
+    it=mCaptureList.end();
+    --it;
+  }
+  else
+  {
+    it=mCaptureList.begin();
+  }
+  QgsPoint lastpoint = mCanvasProperties->coordXForm->transform(it->x(),it->y());
+  QgsPoint digitpoint = mCanvasProperties->coordXForm->transform(mDigitMovePoint.x(), mDigitMovePoint.y());
+  paint->drawLine(static_cast<int>(lastpoint.x()),static_cast<int>(lastpoint.y()),\
+      static_cast<int>(digitpoint.x()), static_cast<int>(digitpoint.y()));
 #endif
 
 }
@@ -2637,9 +2634,9 @@ void QgsMapCanvas::zoomByScale(int x, int y, double scaleFactor)
   QgsPoint center  = mCanvasProperties->coordXForm->toMapPoint(x, y);
   mCanvasProperties->currentExtent.scale(scaleFactor, &center);
   clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of this widget.
-//  render();
+  // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+  // paint event loop of this widget.
+  //  render();
   update();
   emit extentsChanged(mCanvasProperties->currentExtent);
 }
@@ -2648,38 +2645,38 @@ void QgsMapCanvas::zoomByScale(int x, int y, double scaleFactor)
 /** Sets the map tool currently being used on the canvas */
 void QgsMapCanvas::setMapTool(int tool)
 {
-    mCanvasProperties->mapTool = tool;
-    if ( tool == QGis::EmitPoint ) {
-  setCursor ( Qt::CrossCursor );
-    }
-    if(tool == QGis::CapturePoint)
+  mCanvasProperties->mapTool = tool;
+  if ( tool == QGis::EmitPoint ) {
+    setCursor ( Qt::CrossCursor );
+  }
+  if(tool == QGis::CapturePoint)
+  {
+    mLineEditing=false;
+    mPolygonEditing=false;
+  }
+  else if (tool == QGis::CaptureLine)
+  {
+    mLineEditing=true;
+    mPolygonEditing=false;
+  }
+  else if (tool == QGis::CapturePolygon)
+  {
+    mLineEditing=false;
+    mPolygonEditing=true;
+  }
+  else if (tool == QGis::MeasureDist || tool == QGis::MeasureArea)
+  {
+    bool measureArea = (tool == QGis::MeasureArea);
+    if (!mMeasure)
     {
-	mLineEditing=false;
-	mPolygonEditing=false;
+      mMeasure = new QgsMeasure(measureArea, this, topLevelWidget());
     }
-    else if (tool == QGis::CaptureLine)
+    else if (mMeasure && mMeasure->measureArea() != measureArea)
     {
-	mLineEditing=true;
-	mPolygonEditing=false;
+      // tell window that the tool has been changed
+      mMeasure->setMeasureArea(measureArea);
     }
-    else if (tool == QGis::CapturePolygon)
-    {
-	mLineEditing=false;
-	mPolygonEditing=true;
-    }
-    else if (tool == QGis::MeasureDist || tool == QGis::MeasureArea)
-    {
-      bool measureArea = (tool == QGis::MeasureArea);
-      if (!mMeasure)
-      {
-        mMeasure = new QgsMeasure(measureArea, this, topLevelWidget());
-      }
-      else if (mMeasure && mMeasure->measureArea() != measureArea)
-      {
-        // tell window that the tool has been changed
-        mMeasure->setMeasureArea(measureArea);
-      }
-    }
+  }
 } // setMapTool
 
 
@@ -2735,9 +2732,9 @@ void QgsMapCanvas::layerStateChange()
   if (!mCanvasProperties->frozen)
   {
     clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of this widget.
-//    render();
+    // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+    // paint event loop of this widget.
+    //    render();
     update();
   }
 } // layerStateChange
@@ -2755,8 +2752,8 @@ bool QgsMapCanvas::isFrozen()
 } // freeze
 
 
-void QgsMapCanvas::remove
-  (QString key)
+  void QgsMapCanvas::remove
+(QString key)
 {
   // XXX As a safety precaution, shouldn't we check to see if the 'key' is
   // XXX in 'layers'?  Theoretically it should be ok to skip this check since
@@ -2772,9 +2769,9 @@ void QgsMapCanvas::remove
   QgsMapLayer * layer = mCanvasProperties->layers[key];
 
   if(!layer)
-    {
-      return;
-    }
+  {
+    return;
+  }
   //Q_ASSERT( layer );
 
   // disconnect layer signals
@@ -2837,16 +2834,14 @@ void QgsMapCanvas::removeAll()
   // first disconnnect all layer signals from this canvas
   //while ( mi != mCanvasProperties->layers.end() )
   //{
-    // save the current key
-    //current_key = mi->first;
+  // save the current key
+  //current_key = mi->first;
+  //QgsMapLayer * layer = mCanvasProperties->layers[current_key];
 
-    //QgsMapLayer * layer = mCanvasProperties->layers[current_key];
-
-    // disconnect layer signals
-    //QObject::disconnect(layer, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
-    //QObject::disconnect(layer, SIGNAL(repaintRequested()), this, SLOT(refresh()));
-      
-    //++mi;
+  // disconnect layer signals
+  //QObject::disconnect(layer, SIGNAL(visibilityChanged()), this, SLOT(layerStateChange()));
+  //QObject::disconnect(layer, SIGNAL(repaintRequested()), this, SLOT(refresh()));
+  //++mi;
   //}
 
   // then empty all the other state containers
@@ -3105,13 +3100,13 @@ void QgsMapCanvas::panActionEnd(QPoint releasePoint)
   // use start and end box points to calculate the extent
   QgsPoint start = mCanvasProperties->coordXForm->toMapCoordinates(mCanvasProperties->rubberStartPoint);
   QgsPoint end = mCanvasProperties->coordXForm->toMapCoordinates(releasePoint);
-  
+
   double dx = fabs(end.x() - start.x());
   double dy = fabs(end.y() - start.y());
-  
+
   // modify the extent
   mCanvasProperties->previousExtent = mCanvasProperties->currentExtent;
-  
+
   if (end.x() < start.x())
   {
     mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() + dx);
@@ -3122,24 +3117,24 @@ void QgsMapCanvas::panActionEnd(QPoint releasePoint)
     mCanvasProperties->currentExtent.setXmin(mCanvasProperties->currentExtent.xMin() - dx);
     mCanvasProperties->currentExtent.setXmax(mCanvasProperties->currentExtent.xMax() - dx);
   }
-  
+
   if (end.y() < start.y())
   {
     mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() + dy);
     mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() + dy);
-    
+
   }
   else
   {
     mCanvasProperties->currentExtent.setYmax(mCanvasProperties->currentExtent.yMax() - dy);
     mCanvasProperties->currentExtent.setYmin(mCanvasProperties->currentExtent.yMin() - dy);
-    
+
   }
   clear();
 
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of the overview canvas widget.
-//  render();
+  // For Qt4, deprecate direct calling of render().  Let render() be called by the 
+  // paint event loop of the overview canvas widget.
+  //  render();
   update();
 
   emit extentsChanged(mCanvasProperties->currentExtent);
@@ -3149,59 +3144,59 @@ void QgsMapCanvas::panAction(QMouseEvent * e)
 {
 
 #ifdef QGISDEBUG
-//  std::cout << "QgsMapCanvas::panAction: entering." << std::endl;
+  //  std::cout << "QgsMapCanvas::panAction: entering." << std::endl;
 #endif
 
   mCanvasProperties->panning = TRUE;
 
   // bitBlt the pixmap on the screen, offset by the
   // change in mouse coordinates
-//  double dx = e->pos().x() - mCanvasProperties->rubberStartPoint.x();
-//  double dy = e->pos().y() - mCanvasProperties->rubberStartPoint.y();
-//  mCanvasProperties->pan_dx = e->pos().x() - mCanvasProperties->rubberStartPoint.x();
-//  mCanvasProperties->pan_dy = e->pos().y() - mCanvasProperties->rubberStartPoint.y();
+  //  double dx = e->pos().x() - mCanvasProperties->rubberStartPoint.x();
+  //  double dy = e->pos().y() - mCanvasProperties->rubberStartPoint.y();
+  //  mCanvasProperties->pan_dx = e->pos().x() - mCanvasProperties->rubberStartPoint.x();
+  //  mCanvasProperties->pan_dy = e->pos().y() - mCanvasProperties->rubberStartPoint.y();
   mCanvasProperties->pan_delta = e->pos() - mCanvasProperties->rubberStartPoint;
 
-/*
-Do we still need this in Qt4?
+  /*
+     Do we still need this in Qt4?
   //erase only the necessary parts to avoid flickering
   if (dx > 0)
   {
-    erase(0, 0, (int)dx, height());
+  erase(0, 0, (int)dx, height());
   }
   else
   {
-    erase(width() + (int)dx, 0, -(int)dx, height());
+  erase(width() + (int)dx, 0, -(int)dx, height());
   }
   if (dy > 0)
   {
-    erase(0, 0, width(), (int)dy);
+  erase(0, 0, width(), (int)dy);
   }
   else
   {
-    erase(0, height() + (int)dy, width(), -(int)dy);
+  erase(0, height() + (int)dy, width(), -(int)dy);
   }
-*/
+  */
 
 #ifdef QGISDEBUG
-//  std::cout << "QgsMapCanvas::panAction: about to update with " << mCanvasProperties->pan_dx << 
-//                                                        " and " << mCanvasProperties->pan_dy << "." << std::endl;
+  //  std::cout << "QgsMapCanvas::panAction: about to update with " << mCanvasProperties->pan_dx << 
+  //                                                        " and " << mCanvasProperties->pan_dy << "." << std::endl;
 #endif
 
-// void bitBlt ( QPaintDevice * dst, int dx, int dy, const QPaintDevice * src, int sx, int sy, int sw, int sh, Qt::RasterOp rop, bool ignoreMask ) 
+  // void bitBlt ( QPaintDevice * dst, int dx, int dy, const QPaintDevice * src, int sx, int sy, int sw, int sh, Qt::RasterOp rop, bool ignoreMask ) 
 
-//  bitBlt(this, (int)dx, (int)dy, mCanvasProperties->pmCanvas);
+  //  bitBlt(this, (int)dx, (int)dy, mCanvasProperties->pmCanvas);
 
-/*
-Qt4 prefers:
-void QPainter::drawPixmap ( const QRect & targetRect, const QPixmap & pixmap, const QRect & sourceRect )
-This is an overloaded member function, provided for convenience. It behaves essentially like the above function.
-Draws the rectangular portion sourceRect of the pixmap pixmap in the rectangle targetRect.
-*/
+  /*
+     Qt4 prefers:
+     void QPainter::drawPixmap ( const QRect & targetRect, const QPixmap & pixmap, const QRect & sourceRect )
+     This is an overloaded member function, provided for convenience. It behaves essentially like the above function.
+     Draws the rectangular portion sourceRect of the pixmap pixmap in the rectangle targetRect.
+     */
 
-//  QPainter paint(this);
-//  paint.drawPixmap( (int)dx, (int)dy, *(mCanvasProperties->pmCanvas));
-//  paint.end();
+  //  QPainter paint(this);
+  //  paint.drawPixmap( (int)dx, (int)dy, *(mCanvasProperties->pmCanvas));
+  //  paint.end();
 
   // Since in Qt4 you normally cannot paint outside of a paint event,
   // let the widget fire one off by calling repaint() 
@@ -3209,7 +3204,7 @@ Draws the rectangular portion sourceRect of the pixmap pixmap in the rectangle t
   repaint();
 
 #ifdef QGISDEBUG
-//  std::cout << "QgsMapCanvas::panAction: exiting." << std::endl;
+  //  std::cout << "QgsMapCanvas::panAction: exiting." << std::endl;
 #endif
 
 }
@@ -3231,7 +3226,7 @@ QgsPoint QgsMapCanvas::maybeInversePoint(QgsPoint point, const char whenmsg[])
     {
       //#ifdef QGISDEBUG
       std::cout << "Caught transform error when " << whenmsg <<"." 
-                << "Setting untransformed values." << std::endl;
+        << "Setting untransformed values." << std::endl;
       //#endif	
       // Transformation failed,. Bail out with original rectangle.
       return point;

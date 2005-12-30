@@ -2,8 +2,8 @@
 
 #include <qtoolbutton.h>
 #include <qpushbutton.h>
-#include <q3combobox.h>
-#include <q3filedialog.h>
+#include <qcombobox.h>
+#include <QFileDialog>
 #include <q3frame.h>
 #include <qlayout.h>
 #include <qlineedit.h>
@@ -11,7 +11,8 @@
 //Added by qt3to4:
 #include <QPixmap>
 #include <QTextStream>
-#include <Q3HBoxLayout>
+#include <QHBoxLayout>
+//#include <Q3HBoxLayout>
 
 #include "datapointacetate.h"
 #include "qgspointdialog.h"
@@ -32,13 +33,15 @@ QgsPointDialog::QgsPointDialog() {
 
 QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, QWidget* parent, 
 			       const char* name, bool modal, Qt::WFlags fl) 
-  : QgsPointDialogBase(parent, name, modal, fl), 
+  : QgsPointDialogBase(), 
+  // commented out during qt4 port - FIXME tim
+  //: QgsPointDialogBase(parent, name, modal, fl), 
     mCursor(NULL),
     mLayer(layer)
 {
   
   // set up the canvas
-  Q3HBoxLayout* layout = new Q3HBoxLayout(canvasFrame);
+  QHBoxLayout* layout = new QHBoxLayout(canvasFrame);
   layout->setAutoAdd(true);
   mCanvas = new QgsMapCanvas(canvasFrame, "georefCanvas");
   mCanvas->setBackgroundColor(Qt::white);
@@ -76,9 +79,9 @@ QgsPointDialog::~QgsPointDialog() {
 
 
 void QgsPointDialog::handleCanvasClick(QgsPoint& pixelCoords) {
-  if (tbnAddPoint->state() == QCheckBox::On)
+  if (tbnAddPoint->isChecked())
     showCoordDialog(pixelCoords);
-  else if (tbnDeletePoint->state() == QCheckBox::On)
+  else if (tbnDeletePoint->isChecked())
     deleteDataPoint(pixelCoords);
 }
 
@@ -126,22 +129,18 @@ void QgsPointDialog::pbnGenerateAndLoad_clicked() {
 
 void QgsPointDialog::pbnSelectWorldFile_clicked() {
   QString filename = 
-    Q3FileDialog::getSaveFileName(".",
-				 NULL,
-				 this,
-				 "Save world file"
-				 "Choose a name for the world file");
+    QFileDialog::getSaveFileName(this,
+				 "Choose a name for the world file",
+                 ".");
   leSelectWorldFile->setText(filename);
 }
 
 
 void QgsPointDialog::pbnSelectModifiedRaster_clicked() {
   QString filename = 
-    Q3FileDialog::getSaveFileName(".",
-				 NULL,
-				 this,
-				 "Save modified raster file"
-				 "Choose a name for the world file");
+    QFileDialog::getSaveFileName(this,
+				 "Choose a name for the world file",
+                 ".");
   if (filename.right(4) != ".tif")
     filename += ".tif";
   leSelectModifiedRaster->setText(filename);

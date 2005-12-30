@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>copyright.png</file>
+    </qresource>
+</RCC>

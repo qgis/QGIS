@@ -20,10 +20,10 @@
 
 #include "qgsrasterlayer.h"
 
-#include <qgspointdialogbase.uic.h>
+#include <ui_qgspointdialogbase.h>
+#include <QDialog>
 
-
-class QgsPointDialog : public QgsPointDialogBase
+class QgsPointDialog : public QDialog, private Ui::QgsPointDialogBase
 {
 Q_OBJECT
 public:

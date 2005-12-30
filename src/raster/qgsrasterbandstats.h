@@ -1,3 +1,26 @@
+/***************************************************************************
+                        qgsrasterbandstats.h  -  description
+                              -------------------
+	begin                : Fri Jun 28 2002
+	copyright            : (C) 2005 by T.Sutton
+	email                : tim@linfiniti.com
+***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+/* $Id: qgsrasterlayer.h 4380 2005-12-26 23:37:50Z timlinux $ */
+
+/** \file qgsrasterbandstats
+ *  \brief This class provides statistics for a given raster band.
+ *  
+ *  The qgsrasterbandstats holds various stats relating to a given raster band.
+ */
 #ifndef QGSRASTERBANDSTATS
 #define QGSRASTERBANDSTATS
 

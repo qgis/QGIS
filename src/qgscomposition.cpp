@@ -13,36 +13,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
-
-#include <qwidget.h>
-#include <QComboBox>
-#include <qlineedit.h>
-#include <q3canvas.h>
-#include <qevent.h>
-#include <qpoint.h>
-#include <qrect.h>
-#include <qmatrix.h>
-#include <qobject.h>
-#include <qdom.h>
-#include <qstringlist.h>
-#include <qmessagebox.h>
-
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
+#include "qgscomposition.h"
 
 #include "qgscomposer.h"
 #include "qgscomposeritem.h"
-#include "qgscomposerview.h"
-#include "qgscomposition.h"
-#include "qgscomposermap.h"
-#include "qgscomposervectorlegend.h"
 #include "qgscomposerlabel.h"
-#include "qgscomposerscalebar.h"
+#include "qgscomposermap.h"
 #include "qgscomposerpicture.h"
-//Added by qt3to4:
-#include <QKeyEvent>
-#include <QMouseEvent>
+#include "qgscomposerscalebar.h"
+#include "qgscomposervectorlegend.h"
+#include "qgscomposerview.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+
+#include <Q3CanvasRectangle>
+#include <QMatrix>
+#include <QMessageBox>
+
+#include <iostream>
 
 QgsCompositionPaper::QgsCompositionPaper ( QString name, int w, int h, bool c) 
   :mName(name), mWidth(w), mHeight(h), mCustom(c)
@@ -56,6 +44,13 @@ QgsCompositionPaper::~QgsCompositionPaper ( )
 
 QgsComposition::QgsComposition( QgsComposer *c, int id ) 
 {
+  setupUi(this);
+  connect(mPaperWidthLineEdit, SIGNAL(returnPressed()), this, SLOT(paperSizeChanged()));
+  connect(mPaperHeightLineEdit, SIGNAL(returnPressed()), this, SLOT(paperSizeChanged()));
+  connect(mPaperOrientationComboBox, SIGNAL(activated(int)), this, SLOT(paperSizeChanged()));
+  connect(mPaperSizeComboBox, SIGNAL(activated(int)), this, SLOT(paperSizeChanged()));
+  connect(mResolutionLineEdit, SIGNAL(returnPressed()), this, SLOT(resolutionChanged()));
+
 #ifdef QGISDEBUG
   std::cerr << "QgsComposition::QgsComposition()" << std::endl;
 #endif

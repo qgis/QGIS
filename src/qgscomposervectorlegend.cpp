@@ -14,61 +14,28 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <math.h>
-#include <iostream>
-#include <typeinfo>
-#include <map>
-#include <vector>
-
-#include <qwidget.h>
-#include <qrect.h>
-#include <QComboBox>
-#include <qcheckbox.h>
-#include <qdom.h>
-#include <q3canvas.h>
-#include <qpainter.h>
-#include <qstring.h>
-#include <qpixmap.h>
-#include <q3picture.h>
-#include <qimage.h>
-#include <qlineedit.h>
-#include <q3pointarray.h>
-#include <qfont.h>
-#include <qfontmetrics.h>
-#include <qfontdialog.h>
-#include <qpen.h>
-#include <qrect.h>
-#include <q3listview.h>
-#include <q3popupmenu.h>
-#include <qlabel.h>
-
-#include "qgsrect.h"
-#include "qgsmaptopixel.h"
+#include "qgscomposervectorlegend.h"
+#include "qgscomposermap.h"
+#include "qgscontinuouscolrenderer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsdlgvectorlayerproperties.h"
-#include "qgscomposition.h"
-#include "qgscomposermap.h"
-#include "qgscomposervectorlegend.h"
-
-#include "qgssymbol.h"
-
 #include "qgsrenderer.h"
-#include "qgsrenderitem.h"
-#include "qgsrangerenderitem.h"
+#include "qgssymbol.h"
+#include "qgsvectorlayer.h"
 
-#include "qgscontinuouscolrenderer.h"
-#include "qgsgraduatedsymrenderer.h"
-#include "qgssinglesymrenderer.h"
-#include "qgsuniquevalrenderer.h"
-#include "qgssvgcache.h"
-#include "qgsmarkercatalogue.h"
+#include <QFontDialog>
+#include <QPainter>
+#include <Q3PopupMenu>
+
+#include <iostream>
+#include <vector>
 
 QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, int id, 
                                               int x, int y, int fontSize )
-    : Q3CanvasRectangle(x,y,10,10,0)
+    : QWidget(composition), Q3CanvasRectangle(x,y,10,10,0)
 {
+    setupUi(this);
+
     std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
 
     mComposition = composition;
@@ -572,7 +539,7 @@ void QgsComposerVectorLegend::draw ( QPainter & painter )
     }
 }
 
-void QgsComposerVectorLegend::changeFont ( void ) 
+void QgsComposerVectorLegend::on_mFontButton_clicked ( void ) 
 {
     bool result;
 
@@ -586,7 +553,7 @@ void QgsComposerVectorLegend::changeFont ( void )
     }
 }
 
-void QgsComposerVectorLegend::titleChanged (  )
+void QgsComposerVectorLegend::on_mTitleLineEdit_returnPressed ( void )
 {
     mTitle = mTitleLineEdit->text();
     recalculate();
@@ -595,14 +562,14 @@ void QgsComposerVectorLegend::titleChanged (  )
     writeSettings();
 }
 
-void QgsComposerVectorLegend::previewModeChanged ( int i )
+void QgsComposerVectorLegend::on_mPreviewModeComboBox_activated ( int i )
 {
     mPreviewMode = (PreviewMode) i;
     std::cout << "mPreviewMode = " << mPreviewMode << std::endl;
     writeSettings();
 }
 
-void QgsComposerVectorLegend::mapSelectionChanged ( int i )
+void QgsComposerVectorLegend::on_mMapComboBox_activated ( int i )
 {
     mMap = mMaps[i];
     recalculate();
@@ -620,7 +587,7 @@ void QgsComposerVectorLegend::mapChanged ( int id )
     Q3CanvasRectangle::canvas()->update();
 }
 
-void QgsComposerVectorLegend::frameChanged ( )
+void QgsComposerVectorLegend::on_mFrameCheckBox_stateChanged ( int )
 {
     mFrame = mFrameCheckBox->isChecked();
 

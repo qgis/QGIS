@@ -17,38 +17,31 @@ plugin_LTLIBRARIES = copyrightlabelplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui 
+ui_%.h: %.ui 
 	$(UIC) -o $@ $<
-if HAVE_QT4
-	../../tools/qgis-qt3to4.pl -uic $@
-endif
 
-if !NO_UIC_IMPLEMENTATIONS
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
-endif
-
-# %.h: %.ui
-# 	$(UIC) -o $@ $<
-#
-# %.cpp: %.ui
-# 	$(UIC) -o $@ -impl $*.h $<
+%.qrc.cpp: %.qrc
+	$(RCC) -o $@ $<
 
 copyrightlabelplugin_la_SOURCES =  plugin.cpp \
-			      plugin.h \
-			      plugingui.cpp \
-			      plugingui.h \
-			      $(plugin_UI)\
-			      $(plugin_MOC)
+						plugin.h \
+						plugingui.cpp \
+						plugingui.h \
+						$(plugin_UI)\
+						$(plugin_MOC) \
+						$(plugin_QRC) \
+						$(plugin_RES)
 
 plugin_MOC = plugin.moc.cpp \
-	     plugingui.moc.cpp \
-	     pluginguibase.moc.cpp
+			 plugingui.moc.cpp 
 
-plugin_UI = pluginguibase.h \
-	    pluginguibase.cpp 
+plugin_UI = ui_pluginguibase.h 
 
 plugin_UIC = pluginguibase.ui
+
+plugin_RES = copyright_plugin.qrc.cpp
+
+plugin_QRC = copyright_plugin.qrc
 
 # UI dependencies      
 pluginguibase.cpp: pluginguibase.h pluginguibase.ui
@@ -63,4 +56,4 @@ copyrightlabelplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) 
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = $(plugin_UIC) icon.xpm \
-	pluginguibase.ui.h
+	ui_pluginguibase.h

@@ -2377,6 +2377,9 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
   mapLayerNode.setAttribute( "type", "vector" );
 
+  // set the geometry type
+  mapLayerNode.setAttribute( "geometry", QGis::qgisVectorGeometryType[vectorType()]);
+
   // add provider node
 
   QDomElement provider  = document.createElement( "provider" );

@@ -28,7 +28,7 @@ email                : sbr00pwb@users.sourceforge.net
 
 
 #include "../../src/qgisapp.h"
-
+class QToolBar;
 /**
 * \class Plugin
 * \brief OpenModeller plugin for QGIS
@@ -44,7 +44,6 @@ class QgsScaleBarPlugin:public QObject, public QgisPlugin
        * @param qI Pointer to the QgisIface object.
        */
       QgsScaleBarPlugin(QgisApp * , QgisIface * );
-
 
 
   //! Destructor
@@ -98,7 +97,7 @@ class QgsScaleBarPlugin:public QObject, public QgisPlugin
   QColor mColour;
 
   //! Pointer to our toolbar
-  Q3ToolBar *toolBarPointer;
+  QToolBar *toolBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object

@@ -1,86 +1,82 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
-<class>QgsMessageViewer</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>QgsMessageViewer</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>499</width>
-            <height>283</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>QGIS Message</string>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QTextEdit" row="0" column="0" rowspan="1" colspan="3">
-            <property name="name">
-                <cstring>txtMessage</cstring>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="1" column="1">
-            <property name="name">
-                <cstring>btnClose</cstring>
-            </property>
-            <property name="text">
-                <string>Close</string>
-            </property>
-        </widget>
-        <spacer row="1" column="0">
-            <property name="name">
-                <cstring>spacer1</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>191</width>
-                    <height>31</height>
-                </size>
-            </property>
-        </spacer>
-        <spacer row="1" column="2">
-            <property name="name">
-                <cstring>spacer1_2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>191</width>
-                    <height>31</height>
-                </size>
-            </property>
-        </spacer>
-    </grid>
-</widget>
-<connections>
-    <connection>
-        <sender>btnClose</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsMessageViewer</receiver>
-        <slot>reject()</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="local" impldecl="in implementation">qgsmessageviewer.ui.h</include>
-</includes>
-<slots>
-    <slot>setMessage( QString msg )</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>QgsMessageViewer</class>
+ <widget class="QDialog" name="QgsMessageViewer" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>499</width>
+    <height>283</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>QGIS Message</string>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>10</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="0" colspan="3" >
+    <widget class="Q3TextEdit" name="txtMessage" />
+   </item>
+   <item row="1" column="1" >
+    <widget class="QPushButton" name="btnClose" >
+     <property name="text" >
+      <string>Close</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>191</width>
+       <height>31</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="2" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>191</width>
+       <height>31</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3TextEdit</class>
+   <extends></extends>
+   <header>q3textedit.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

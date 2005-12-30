@@ -7,8 +7,9 @@
 
 #include "qgseditreservedwordsdialog.h"
 QgsEditReservedWordsDialog::QgsEditReservedWordsDialog(QWidget *parent, const char *name)
-  : QgsEditReservedWordsBase(parent, name)
+  : QDialog(parent, name)
 {
+  setupUi(this);
   // set focus indicator to span all columns
  lvColumns->setAllColumnsShowFocus(true);
 }

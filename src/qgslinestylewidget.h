@@ -16,13 +16,10 @@
 #ifndef QGSLINESTYLE_H
 #define QGSLINESTYLE_H
 
-#ifdef WIN32
-#include "qgslinestylewidgetbase.h"
-#else
-#include "qgslinestylewidgetbase.uic.h"
-#endif
+#include "ui_qgslinestylewidgetbase.h"
+#include <QDialog>
 
-class QgsLineStyleWidget:public QgsLineStyleWidgetBase
+class QgsLineStyleWidget: public QDialog, private Ui::QgsLineStyleWidgetBase
 {
   Q_OBJECT;
   public:

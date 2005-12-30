@@ -26,7 +26,9 @@
 #include <qtooltip.h>
 #include <q3whatsthis.h>
 #include "qgshelpviewer.h"
-QgsHelpViewer::QgsHelpViewer(QWidget * parent, const char *name, bool modal, Qt::WFlags fl):QgsHelpViewerBase(parent, name, modal, fl)
+QgsHelpViewer::QgsHelpViewer(QWidget * parent, const char *name, bool modal, Qt::WFlags fl):
+  //tim removed parameters during qt4 ui port - FIXME !!!
+  QgsHelpViewerBase()
 {
 
 }

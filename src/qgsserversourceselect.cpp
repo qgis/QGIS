@@ -16,41 +16,27 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <iostream>
-#include <cassert>
-#include <qsettings.h>
-#include <qpixmap.h>
-#include <q3listbox.h>
-#include <q3listview.h>
-#include <qstringlist.h>
-#include <QComboBox>
-#include <qpushbutton.h>
-#include <qmessagebox.h>
-#include <qinputdialog.h>
-#include <q3groupbox.h>
-#include <q3buttongroup.h>
-#include <qradiobutton.h>
-#include <qlayout.h>
-#include <QPicture>
-
-#include "xpm/point_layer.xpm"
-#include "xpm/line_layer.xpm"
-#include "xpm/polygon_layer.xpm"
-
 #include "qgsserversourceselect.h"
+
 #include "qgsnewhttpconnection.h"
-
-#include "qgsproviderregistry.h"
 #include "qgsnumericsortlistviewitem.h"
-
+#include "qgsproviderregistry.h"
 #include "../providers/wms/qgswmsprovider.h"
 
-#include "qgisapp.h"
+#include <Q3ListView>
+#include <QMessageBox>
+#include <QPicture>
+#include <QSettings>
+
+#include <iostream>
 
 QgsServerSourceSelect::QgsServerSourceSelect(QgisApp * app, QWidget * parent, const char *name)
-  : QgsServerSourceSelectBase(parent, name),
+  : QDialog(parent),
     qgisApp(app)
 {
+  setupUi(this);
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+
   btnAdd->setEnabled(false);
   populateConnectionList();
   // connect the double-click signal to the addSingleLayer slot in the parent
@@ -76,7 +62,7 @@ void QgsServerSourceSelect::populateConnectionList()
     ++it;
   }
 }
-void QgsServerSourceSelect::addNewConnection()
+void QgsServerSourceSelect::on_btnNew_clicked()
 {
 
   QgsNewHttpConnection *nc = new QgsNewHttpConnection();
@@ -87,7 +73,7 @@ void QgsServerSourceSelect::addNewConnection()
   }
 }
 
-void QgsServerSourceSelect::editConnection()
+void QgsServerSourceSelect::on_btnEdit_clicked()
 {
 
   QgsNewHttpConnection *nc = new QgsNewHttpConnection(cmbConnections->currentText());
@@ -98,7 +84,7 @@ void QgsServerSourceSelect::editConnection()
   }
 }
 
-void QgsServerSourceSelect::deleteConnection()
+void QgsServerSourceSelect::on_btnDelete_clicked()
 {
   QSettings settings;
   QString key = "/Qgis/connections-wms/" + cmbConnections->currentText();
@@ -240,7 +226,7 @@ void QgsServerSourceSelect::populateImageEncodingGroup(QgsWmsProvider* wmsProvid
 }
 
 
-void QgsServerSourceSelect::serverConnect()
+void QgsServerSourceSelect::on_btnConnect_clicked()
 {
   // populate the table list
   QSettings settings;
@@ -289,7 +275,7 @@ void QgsServerSourceSelect::serverConnect()
 
 }
 
-void QgsServerSourceSelect::addLayers()
+void QgsServerSourceSelect::on_btnAdd_clicked()
 {
   if (m_selectedLayers.empty() == TRUE)
   {
@@ -308,7 +294,7 @@ void QgsServerSourceSelect::addLayers()
  * 2. Ensure that only one style is selected per layer.
  *    If more than one is found, the most recently selected style wins.
  */
-void QgsServerSourceSelect::layerSelectionChanged()
+void QgsServerSourceSelect::on_lstLayers_selectionChanged()
 {
   QString layerName = "";
 

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>org.qgis</string>
+	<string>org.qgis.qgis</string>
 	<key>CFBundleExecutable</key>
 	<string>qgis</string>
 	<key>CFBundlePackageType</key>
@@ -177,13 +177,18 @@
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
+		<string>cs_CZ</string>
 		<string>de</string>
 		<string>fr</string>
+		<string>id</string>
 		<string>it</string>
+		<string>ja</string>
+		<string>lv</string>
 		<string>nl</string>
 		<string>pl_PL</string>
 		<string>pt_BR</string>
 		<string>ru</string>
+		<string>sk</string>
 		<string>sv</string>
 		<string>zh_CN</string>
 	</array>

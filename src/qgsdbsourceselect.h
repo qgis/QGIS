@@ -17,11 +17,8 @@
 /* $Id$ */
 #ifndef QGSDBSOURCESELECT_H
 #define QGSDBSOURCESELECT_H
-#ifdef WIN32
-#include "qgsdbsourceselectbase.h"
-#else
-#include "qgsdbsourceselectbase.uic.h"
-#endif
+#include "ui_qgsdbsourceselectbase.h"
+#include <QDialog>
 extern "C"
 {
 #include <libpq-fe.h>
@@ -39,13 +36,13 @@ class QgisApp;
  * for PostGIS enabled PostgresQL databases. The user can then connect and add 
  * tables from the database to the map canvas.
  */
-class QgsDbSourceSelect : public QgsDbSourceSelectBase 
+class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase 
 {
   Q_OBJECT
  public:
 
     //! Constructor
-    QgsDbSourceSelect(QgisApp *app = 0, const char *name = 0, bool modal = true);
+    QgsDbSourceSelect(QgisApp *app = 0, QWidget *parent=0, const char *name = 0, bool modal = true);
     //! Destructor
     ~QgsDbSourceSelect();
     //! Opens the create connection dialog to build a new connection
@@ -57,11 +54,7 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
 	//! Populate the connection list combo box
 	void populateConnectionList();
     //! Determines the tables the user selected and closes the dialog
-    void addTables();
-    /*! Connects to the database using the stored connection parameters. 
-    * Once connected, available layers are displayed.
-    */
-    void dbConnect();
+      void addTables();
     //! String list containing the selected tables
     QStringList selectedTables();
     //! Connection info (database, host, user, password)
@@ -73,8 +66,17 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     // Store the selected database
     void dbChanged();
     public slots:
+    /*! Connects to the database using the stored connection parameters. 
+    * Once connected, available layers are displayed.
+    */
+      void on_btnConnect_clicked();
+      void on_btnAdd_clicked();
+      void on_btnNew_clicked();
+      void on_btnEdit_clicked();
+      void on_btnDelete_clicked();
+      void on_lstTables_doubleClicked(Q3ListViewItem *);
       void setSql(Q3ListViewItem *);
-      void showHelp();
+      void on_btnHelp_clicked();
  private:
 
     typedef std::pair<QString, QString> geomPair;
@@ -85,6 +87,8 @@ class QgsDbSourceSelect : public QgsDbSourceSelectBase
     // Set the position of the database connection list to the last
     // used one. 
     void setConnectionListPosition();
+    // Show the context help for the dialog
+    void showHelp();
 
     QString m_connInfo;
     QStringList m_selectedTables;

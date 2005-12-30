@@ -6,7 +6,7 @@
 ** init() function in place of a constructor, and a destroy() function in
 ** place of a destructor.
 *****************************************************************************/
-#include <q3filedialog.h>
+#include <QFileDialog>
 
 void QgsMapserverExportBase::exportLayersOnly()
 {
@@ -17,12 +17,11 @@ void QgsMapserverExportBase::exportLayersOnly()
 
 void QgsMapserverExportBase::chooseMapFile()
 {
-QString s = Q3FileDialog::getSaveFileName(
-                    "./",
-                    "Mapserver files (*.map)",
+QString s = QFileDialog::getSaveFileName(
                     this,
-                    "save file dialog",
-                    "Choose a filename for the exported map file" );
+                    "Choose a filename for the exported map file",
+                    "./",
+                    "Mapserver files (*.map)" );
 txtMapFilePath->setText(s);
 }
 

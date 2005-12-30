@@ -26,11 +26,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
-#ifdef WIN32
-#include "qgshelpviewerbase.h"
-#else
-#include "qgshelpviewerbase.uic.h"
-#endif
+#include "ui_qgshelpviewerbase.h"
+#include <QDialog>
 
 class Q3VBoxLayout;
 class Q3HBoxLayout;
@@ -38,7 +35,7 @@ class Q3GridLayout;
 class QPushButton;
 class Q3TextBrowser;
 class QString;
-class QgsHelpViewer : public QgsHelpViewerBase
+class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
 {
     Q_OBJECT
 

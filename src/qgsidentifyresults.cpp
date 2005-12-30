@@ -16,30 +16,30 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include <iostream>
-#include <qapplication.h>
-#include <q3listview.h>
-#include <qsettings.h>
-#include <qpoint.h>
-#include <qsize.h>
-#include <qevent.h>
-#include <qlabel.h>
-#include <q3popupmenu.h>
-#include <qglobal.h>
 
 #include "qgsidentifyresults.h"
-//Added by qt3to4:
-#include <QPixmap>
 #include <QCloseEvent>
+#include <QCoreApplication>
+#include <QLabel>
+#include <Q3ListView>
+#include <QPixmap>
+#include <Q3PopupMenu>
+#include <QSettings>
 
-QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& aa, QWidget *parent, 
-    const char * name, Qt::WFlags f) :
-  QgsIdentifyResultsBase ( parent, name, f),
-  mActions(aa), mClickedOnValue(0), mActionPopup(0)
+QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& actions,
+    QWidget *parent, Qt::WFlags f)
+: QWidget(parent, f),
+  mActions(actions), mClickedOnValue(0), mActionPopup(0)
 {
+  setupUi(this);
   lstResults->setResizeMode(Q3ListView::AllColumns);
 
-  connect ( lstResults, SIGNAL(clicked(Q3ListViewItem *)), this, SLOT(clicked(Q3ListViewItem *)));
+  connect( buttonCancel, SIGNAL(clicked()),
+      this, SLOT(close()) );
+  connect( lstResults, SIGNAL(clicked(Q3ListViewItem *)),
+      this, SLOT(clicked(Q3ListViewItem *)) );
+  connect( lstResults, SIGNAL(contextMenuRequested(Q3ListViewItem *, const QPoint &, int)),
+      this, SLOT(popupContextMenu(Q3ListViewItem *, const QPoint &, int)) );
 }
 
 QgsIdentifyResults::~QgsIdentifyResults()
@@ -143,7 +143,7 @@ void QgsIdentifyResults::restorePosition()
   //std::cerr << "Setting geometry: " << wx << ", " << wy << ", " << ww << ", " << wh << std::endl;
   resize(ww,wh);
   move(wx,wy);
-  QgsIdentifyResultsBase::show();
+  show();
   //std::cerr << "Current geometry: " << x() << ", " << y() << ", " << width() << ", " << height() << std::endl; 
 }
 // Save the current window location (store in ~/.qt/qgisrc)
@@ -173,7 +173,7 @@ void QgsIdentifyResults::addAction(Q3ListViewItem * fnode, int id, QString field
 
   QString appDir;
 #if defined(WIN32) || defined(Q_OS_MACX)
-  appDir = qApp->applicationDirPath();
+  appDir = QCoreApplication::applicationDirPath();
 #else
   appDir = PREFIX;
 #endif

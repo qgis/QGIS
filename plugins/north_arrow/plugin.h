@@ -25,7 +25,7 @@
 
 
 #include "../../src/qgisapp.h"
-
+class QToolBar;
 /**
 * \class Plugin
 * \brief North Arrow plugin for QGIS
@@ -90,7 +90,7 @@ class QgsNorthArrowPlugin:public QObject, public QgisPlugin
   //! Id of the plugin's menu. Used for unloading
   int menuId;
   //! Pointer to our toolbar
-  Q3ToolBar *toolBarPointer;
+  QToolBar *toolBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *qgisMainWindowPointer;
   //! Pointer to the QGIS interface object

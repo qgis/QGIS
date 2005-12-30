@@ -12,7 +12,8 @@
 #ifndef QGSNORTHARROWPLUGINGUI_H
 #define QGSNORTHARROWPLUGINGUI_H
 
-#include <pluginguibase.h>
+#include <ui_pluginguibase.h>
+#include <QDialog>
 //Added by qt3to4:
 #include <QResizeEvent>
 #include <QPaintEvent>
@@ -20,7 +21,7 @@
 /**
 @author Tim Sutton
 */
-class QgsNorthArrowPluginGui : public QgsNorthArrowPluginGuiBase
+class QgsNorthArrowPluginGui : public QDialog, private Ui::QgsNorthArrowPluginGuiBase
 {
 Q_OBJECT
 public:

@@ -1,6 +1,3 @@
-//Added by qt3to4:
-#include <QPixmap>
-#include <QCloseEvent>
 /***************************************************************************
                                 qgsmeasure.h 
                                ------------------
@@ -19,24 +16,20 @@
 #ifndef QGSMEASURE_H
 #define QGSMEASURE_H
 
+#include "ui_qgsmeasurebase.h"
+#include <QWidget>
+#include "qgspoint.h"
+#include <vector>
+
+class QgsDistanceArea;
+class QgsMapCanvas;
+
 class QCloseEvent;
 class QPainter;
 class QPixmap;
 
-class QgsMapCanvas;
-class QgsDistanceArea;
 
-#include <vector>
-#include "qgspoint.h"
-
-#ifdef WIN32
-#include "qgsmeasurebase.h"
-#else
-#include "qgsmeasurebase.uic.h"
-#endif
-
-
-class QgsMeasure:public QgsMeasureBase
+class QgsMeasure:public QWidget, private Ui::QgsMeasureBase
 {
   Q_OBJECT;
   public:

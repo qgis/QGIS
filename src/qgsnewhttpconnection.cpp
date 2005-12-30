@@ -15,16 +15,17 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
-#include <iostream>
-#include <qsettings.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
-#include <qmessagebox.h>
 #include "qgsnewhttpconnection.h"
+#include <QSettings>
 
 QgsNewHttpConnection::QgsNewHttpConnection(QString connName)
-                    : QgsNewHttpConnectionBase()
+                    : QDialog()
 {
+  setupUi(this);
+  connect(btnHelp, SIGNAL(clicked()), this, SLOT(helpInfo()));
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(btnOk, SIGNAL(clicked()), this, SLOT(saveConnection()));
+
   if (!connName.isEmpty())
     {
       // populate the dialog with the information stored for the connection

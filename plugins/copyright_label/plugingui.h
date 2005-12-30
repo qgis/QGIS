@@ -12,26 +12,27 @@
 #ifndef QGSCOPYRIGHTLABELPLUGINGUI_H
 #define QGSCOPYRIGHTLABELPLUGINGUI_H
 
-#include <pluginguibase.h>
+#include <ui_pluginguibase.h>
+#include <QDialog>
 #include <qfont.h>
 #include <qcolor.h>
 
 /**
 @author Tim Sutton
 */
-class QgsCopyrightLabelPluginGui : public QgsCopyrightLabelPluginGuiBase
+class QgsCopyrightLabelPluginGui : public QDialog, private Ui::QgsCopyrightLabelPluginGuiBase
 {
-Q_OBJECT
+Q_OBJECT;
 public:
     QgsCopyrightLabelPluginGui();
     QgsCopyrightLabelPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~QgsCopyrightLabelPluginGui();
-    void pbnOK_clicked();
-    void pbnCancel_clicked();    
     void setText(QString);
     void setPlacement(QString);
 
 public slots:
+    void on_pbnOK_clicked();
+    void on_pbnCancel_clicked();    
     void setEnabled(bool); 
      
 private:

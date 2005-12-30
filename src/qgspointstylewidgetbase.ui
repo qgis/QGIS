@@ -1,76 +1,83 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
-<class>QgsPointStyleWidgetBase</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>QgsPointStyleWidgetBase</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>180</width>
-            <height>141</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Form3</string>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>QgsPointStyleWidgetBase</class>
+ <widget class="QWidget" name="QgsPointStyleWidgetBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>180</width>
+    <height>141</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form3</string>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>10</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="0" >
+    <widget class="Q3GroupBox" name="grpSymbol" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>7</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title" >
+      <string>Symbol Style</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>10</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="txtSymbolScale" >
+        <property name="text" >
+         <string>Scale</string>
         </property>
-        <widget class="QGroupBox" row="0" column="0">
-            <property name="name">
-                <cstring>grpSymbol</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>7</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="title">
-                <string>Symbol Style</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>txtSymbolScale</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Scale</string>
-                    </property>
-                </widget>
-                <widget class="QSpinBox" row="2" column="0">
-                    <property name="name">
-                        <cstring>spbSymbolScale</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>42</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="0" column="0">
-                    <property name="name">
-                        <cstring>comboBox8</cstring>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-    </grid>
-</widget>
-<includes>
-    <include location="local" impldecl="in implementation">qgspointstylewidgetbase.ui.h</include>
-</includes>
-<slots>
-    <slot>btnSymbolFirstColour_clicked()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QSpinBox" name="spbSymbolScale" >
+        <property name="minimumSize" >
+         <size>
+          <width>42</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QComboBox" name="comboBox8" />
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3GroupBox</class>
+   <extends></extends>
+   <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

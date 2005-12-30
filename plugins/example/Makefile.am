@@ -13,7 +13,7 @@ plugin_LTLIBRARIES = exampleplugin.la
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui
+ui_%.h: %.ui
 	$(UIC) -o $@ $<
 
 %.cpp: %.ui

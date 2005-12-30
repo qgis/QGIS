@@ -12,12 +12,12 @@
 #ifndef PLUGINGUI_H
 #define PLUGINGUI_H
 
-#include <pluginguibase.uic.h>
-
+#include <ui_pluginguibase.h>
+#include <QDialog>
 /**
 @author Tim Sutton
 */
-class QgsGeorefPluginGui : public QgsGeorefPluginGuiBase
+class QgsGeorefPluginGui : public QDialog, private Ui::QgsGeorefPluginGuiBase
 {
 Q_OBJECT
 public:

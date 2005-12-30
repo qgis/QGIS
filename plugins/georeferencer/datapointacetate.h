@@ -17,15 +17,16 @@ public:
 				     const QgsPoint& mapCoords)
   // UGLY!
     : QgsAcetateObject(const_cast<QgsPoint&>(pixelCoords)),
-      mCoords(mapCoords) {
+      mCoords(mapCoords) 
+  {
     
   }
 
   virtual void draw(QPainter* painter, QgsMapToPixel* cXf = 0) {
     if (cXf) {
       QgsPoint pixelOrigin = cXf->transform(origin());
-      int x(pixelOrigin.x());
-      int y(pixelOrigin.y());
+      int x(static_cast<int>(pixelOrigin.x()));
+      int y(static_cast<int>(pixelOrigin.y()));
       QFont font;
       painter->setFont(QFont("helvetica", 9));
       painter->setPen(Qt::black);

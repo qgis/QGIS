@@ -47,13 +47,13 @@ class QgsGrassTools;
 class QgsGrassModuleItem;
 class QgsGrassModuleOptions; 
 class QgsGrassModuleStandardOptions; 
-#include "qgsgrassmodulebase.h"
-
+#include "ui_qgsgrassmodulebase.h"
+#include <QDialog>
 /*! \class QgsGrassModule
  *  \brief Interface to GRASS modules.
  *
  */
-class QgsGrassModule: public QgsGrassModuleBase 
+class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase 
 {
     Q_OBJECT;
 

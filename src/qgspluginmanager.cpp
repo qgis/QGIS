@@ -17,7 +17,7 @@
 /* $Id$ */
 #include <iostream>
 #include <qapplication.h>
-#include <q3filedialog.h>
+#include <QFileDialog>
 #include <qlineedit.h>
 #include <q3listview.h>
 #include <qmessagebox.h>
@@ -39,8 +39,9 @@
 #include <dlfcn.h>
 #endif
 #endif
-QgsPluginManager::QgsPluginManager(QWidget * parent, const char *name):QgsPluginManagerBase(parent, name)
+QgsPluginManager::QgsPluginManager(QWidget * parent, const char *name):QDialog(parent, name)
 {
+  setupUi(this);
   // set the default lib dir to the qgis install directory/lib (this info is
   // available from the provider registry so we use it here)
   QgsProviderRegistry *pr = QgsProviderRegistry::instance();
@@ -59,9 +60,9 @@ QgsPluginManager::~QgsPluginManager()
 {
 }
 
-void QgsPluginManager::browseFiles()
+void QgsPluginManager::on_btnBrowse_clicked()
 {
-  QString s = Q3FileDialog::getExistingDirectory(0, this, "get existing directory", tr("Choose a directory"), TRUE);
+  QString s = QFileDialog::getExistingDirectory(this, tr("Choose a directory"));
   txtPluginDir->setText(s);
   getPluginDescriptions();
 }
@@ -177,7 +178,7 @@ sharedLibExtension = "*.so*";
         }
     }
 }
-void QgsPluginManager::apply()
+void QgsPluginManager::on_btnOk_clicked()
 {
   unload();
   accept();
@@ -231,7 +232,7 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
     }
   return pis;
 }
-void QgsPluginManager::selectAll()
+void QgsPluginManager::on_btnSelectAll_clicked()
 {
   // select all plugins
   Q3CheckListItem *child = dynamic_cast<Q3CheckListItem *>(lstPlugins->firstChild());
@@ -243,7 +244,7 @@ void QgsPluginManager::selectAll()
 
 }
 
-void QgsPluginManager::clearAll()
+void QgsPluginManager::on_btnClearAll_clicked()
 {
   // clear all selection checkboxes 
   Q3CheckListItem *child = dynamic_cast<Q3CheckListItem *>(lstPlugins->firstChild());
@@ -252,4 +253,9 @@ void QgsPluginManager::clearAll()
     child->setOn(false);
     child = dynamic_cast<Q3CheckListItem *>(child->nextSibling());
   }
+}
+
+void QgsPluginManager::on_btnClose_clicked()
+{
+  reject();
 }

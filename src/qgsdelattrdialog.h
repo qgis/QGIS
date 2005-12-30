@@ -18,17 +18,13 @@
 #ifndef QGSDELATTRDIALOG_H
 #define QGSDELATTRDIALOG_H
 
-#ifdef WIN32
-#include "qgsdelattrdialogbase.h"
-#else
-#include "qgsdelattrdialogbase.uic.h"
-#endif
-
+#include "ui_qgsdelattrdialogbase.h"
+#include <QDialog>
 #include <list>
 
 class Q3Header;
 
-class QgsDelAttrDialog: public QgsDelAttrDialogBase
+class QgsDelAttrDialog: public QDialog, private Ui::QgsDelAttrDialogBase
 {
     Q_OBJECT
  public:

@@ -15,36 +15,34 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
+#include "qgsbookmarks.h"
+#include "qgisapp.h"
+#include "qgscontexthelp.h"
+#include "qgsmapcanvas.h"
+ 
+#include <QDir>
+#include <QFileInfo>
+#include <QMessageBox>
+
 //standard includes
 #include <iostream>
 #include <cassert>
 #include <sqlite3.h>
 #include <fstream>
 
-#include <qfileinfo.h>
-#include <qstring.h>
-#include <qdir.h>
-#include <q3listview.h>
-#include <qapplication.h>
-#include <qmessagebox.h>
-
-#include "qgsbookmarks.h"
-#include "qgisapp.h"
-#include "qgsrect.h"
-#include "qgisiface.h"
-#include "qgsmapcanvas.h"
-#include "qgscontexthelp.h"
-
 QgsBookmarks::QgsBookmarks(QWidget *parent, const char *name)
 #ifdef Q_OS_MACX
   // Mac modeless dialog dosn't have correct window type if parent is specified
-  : QgsBookmarksBase(NULL, name),
+  : QDialog(NULL),
 #else
   // Specifying parent suppresses separate taskbar entry for dialog
-  : QgsBookmarksBase(parent, name),
+  : QDialog(parent),
 #endif
   mParent(parent)
 {
+  setupUi(this);
+  connect(btnClose, SIGNAL(clicked()), this, SLOT(reject()));
+
   // make sure the users database for bookmarks exists
   mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
   mUserDbPath = mQGisSettingsDir + "qgis.db";
@@ -146,7 +144,7 @@ bool QgsBookmarks::makeDir(QDir &theQDir)
   return myBaseDir.mkdir(myTempFileInfo.fileName());
 }
 
-void QgsBookmarks::deleteBookmark()
+void QgsBookmarks::on_btnDelete_clicked()
 {
   // get the current item
   Q3ListViewItem *lvi = lstBookmarks->currentItem();
@@ -194,10 +192,16 @@ void QgsBookmarks::deleteBookmark()
   }
 }
 
-void QgsBookmarks::zoomViaDoubleClick(Q3ListViewItem *lvi)
+void QgsBookmarks::on_btnZoomTo_clicked()
 {
   zoomToBookmark();
 }
+
+void QgsBookmarks::on_lstBookmarks_doubleClicked(Q3ListViewItem *lvi)
+{
+  zoomToBookmark();
+}
+
 void QgsBookmarks::zoomToBookmark()
 {
 	// Need to fetch the extent for the selected bookmark and then redraw
@@ -320,7 +324,7 @@ bool QgsBookmarks::createDatabase()
   return true;
 }
 
-void QgsBookmarks::showHelp()
+void QgsBookmarks::on_btnHelp_clicked()
 {
   QgsContextHelp::run(context_id);
 }

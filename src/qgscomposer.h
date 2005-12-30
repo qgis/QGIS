@@ -17,18 +17,12 @@
 /* $Id$ */
 #ifndef QGSCOMPOSER_H
 #define QGSCOMPOSER_H
-#ifdef WIN32
-#include "qgscomposerbase.h"
-#else
-#include "qgscomposerbase.uic.h"
-#endif
+#include "ui_qgscomposerbase.h"
 
-#include "qgscomposerview.h"
-#include "qgscomposition.h"
-//Added by qt3to4:
-#include <QGridLayout>
-#include <QMoveEvent>
-#include <QResizeEvent>
+class QgisApp;
+class QgsComposerView;
+class QgsComposition;
+class QgsMapCanvas;
 
 class QGridLayout;
 class QPrinter;
@@ -36,8 +30,6 @@ class QDomNode;
 class QDomDocument;
 class QMoveEvent;
 class QResizeEvent;
-class QgisApp;
-class QgsComposerItem;
 
 /* The constructor creates empty composer, without compositions and mFirstTime set to true. 
  * - if signal projectRead() is recieved all old compositions are deleted and
@@ -52,7 +44,7 @@ class QgsComposerItem;
  * If open() is called and mFirstTime == true, a new default composition is created.
  *
  */
-class QgsComposer: public QgsComposerBase
+class QgsComposer: public Q3MainWindow, private Ui::QgsComposerBase
 {
     Q_OBJECT
 
@@ -66,14 +58,8 @@ public:
     //! Zoom to full extent of the paper
     void zoomFull();
 
-    //! Zoom in
-    void zoomIn();
-
-    //! Zoom out 
-    void zoomOut();
-
-    //! Refresh view 
-    void refresh();
+    //! Select item
+    void selectItem();
 
     //! Return pointer to map canvas
     QgsMapCanvas *mapCanvas( void );
@@ -115,32 +101,44 @@ public:
     void resizeEvent ( QResizeEvent * );
 
 public slots:
+    //! Zoom to full extent of the paper
+    void on_actionZoomFull_activated(void);
+
+    //! Zoom in
+    void on_actionZoomIn_activated(void);
+
+    //! Zoom out 
+    void on_actionZoomOut_activated(void);
+
+    //! Refresh view 
+    void on_actionRefresh_activated(void);
+
     //! Print the composition
-    void print(void);
+    void on_actionPrint_activated(void);
     
     //! Print as image
-    void image(void);
+    void on_actionImage_activated(void);
     
     //! Print as SVG
-    void svg(void);
+    void on_actionSvg_activated(void);
     
     //! Select item
-    void selectItem(void);
+    void on_actionSelectItem_activated(void);
     
     //! Add new map
-    void addMap(void);
+    void on_actionAddMap_activated(void);
 
     //! Add new vector legend
-    void addVectorLegend(void);
+    void on_actionAddVectorLegend_activated(void);
     
     //! Add new label
-    void addLabel(void);
+    void on_actionAddLabel_activated(void);
     
     //! Add new scalebar
-    void addScalebar(void);
+    void on_actionAddScalebar_activated(void);
     
     //! Add new picture
-    void addPicture(void);
+    void on_actionAddPicture_activated(void);
 
     //! read project
     void projectRead();

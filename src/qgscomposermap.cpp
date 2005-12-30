@@ -14,37 +14,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <math.h>
-#include <iostream>
-
-#include <qwidget.h>
-#include <qrect.h>
-#include <QComboBox>
-#include <qdom.h>
-#include <q3canvas.h>
-#include <qpainter.h>
-#include <qstring.h>
-#include <qpixmap.h>
-#include <qimage.h>
-#include <qlineedit.h>
-#include <q3pointarray.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
-#include <qglobal.h>
-
-#include "qgis.h"
-#include "qgsproject.h"
-#include "qgsrect.h"
-#include "qgsmaptopixel.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgscomposition.h"
 #include "qgscomposermap.h"
 
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsmaptopixel.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+#include <QPainter>
+#include <iostream>
+
 QgsComposerMap::QgsComposerMap ( QgsComposition *composition, int id, int x, int y, int width, int height )
-    : Q3CanvasRectangle(x,y,width,height,0)
+    : QWidget(), Q3CanvasRectangle(x,y,width,height,0)
 {
+    setupUi(this);
+
     mComposition = composition;
     mId = id;
     mMapCanvas = mComposition->mapCanvas();
@@ -337,7 +321,10 @@ void QgsComposerMap::sizeChanged ( void )
     writeSettings();
 }
 
-void QgsComposerMap::calculateChanged ( void ) 
+void QgsComposerMap::on_mWidthLineEdit_returnPressed ( void ) { sizeChanged(); }
+void QgsComposerMap::on_mHeightLineEdit_returnPressed ( void ) { sizeChanged(); }
+
+void QgsComposerMap::on_mCalculateComboBox_activated( int )
 {
     mCalculate = mCalculateComboBox->currentItem();
     
@@ -392,9 +379,9 @@ double QgsComposerMap::userScaleFromScale ( double s )
     return us;
 }
 
-void QgsComposerMap::mapScaleChanged ( void ) 
+void QgsComposerMap::on_mScaleLineEdit_returnPressed()
 {
-    std::cout << "QgsComposerMap::mapScaleChanged" << std::endl;
+    std::cout << "QgsComposerMap::on_mScaleLineEdit_returnPressed" << std::endl;
 
     mCalculate = mCalculateComboBox->currentItem();
 
@@ -428,6 +415,10 @@ void QgsComposerMap::scaleChanged ( void )
     mComposition->emitMapChanged ( mId );
 }
 
+void QgsComposerMap::on_mFontScaleLineEdit_returnPressed ( void ) { scaleChanged(); }
+void QgsComposerMap::on_mSymbolScaleLineEdit_returnPressed ( void ) { scaleChanged(); }
+void QgsComposerMap::on_mWidthScaleLineEdit_returnPressed ( void ) { scaleChanged(); }
+
 void QgsComposerMap::mapCanvasChanged ( void ) 
 {
     std::cout << "QgsComposerMap::canvasChanged" << std::endl;
@@ -436,7 +427,7 @@ void QgsComposerMap::mapCanvasChanged ( void )
     Q3CanvasRectangle::canvas()->setChanged( Q3CanvasRectangle::boundingRect() );
 }
 
-void QgsComposerMap::previewModeChanged ( int i )
+void QgsComposerMap::on_mPreviewModeComboBox_activated ( int i )
 {
     mPreviewMode = (PreviewMode) i;
     writeSettings();
@@ -494,7 +485,7 @@ void QgsComposerMap::recalculate ( void )
     mCacheUpdated = false;
 }
 
-void QgsComposerMap::frameChanged ( )
+void QgsComposerMap::on_mFrameCheckBox_clicked ( )
 {
     mFrame = mFrameCheckBox->isChecked();
 
@@ -542,7 +533,7 @@ void QgsComposerMap::setOptions ( void )
     mPreviewModeComboBox->setCurrentItem( mPreviewMode );
 }
 
-void QgsComposerMap::setCurrentExtent ( void )
+void QgsComposerMap::on_mSetCurrentExtentButton_clicked ( void )
 { 
     mUserExtent = mMapCanvas->extent();
     recalculate();

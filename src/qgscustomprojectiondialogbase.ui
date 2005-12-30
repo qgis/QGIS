@@ -1,422 +1,319 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>QgsCustomProjectionDialogBase</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>QgsCustomProjectionDialogBase</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>533</width>
-            <height>299</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Custom Projection Definition</string>
-    </property>
-    <property name="icon">
-        <pixmap>image0</pixmap>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QTabWidget" row="0" column="0">
-            <property name="name">
-                <cstring>tabWidget2</cstring>
-            </property>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Define</string>
-                </attribute>
-                <grid>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>textLabel5</cstring>
-                        </property>
-                        <property name="font">
-                            <font>
-                                <pointsize>18</pointsize>
-                                <bold>1</bold>
-                            </font>
-                        </property>
-                        <property name="text">
-                            <string>Custom Projection Definition</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit" row="3" column="1">
-                        <property name="name">
-                            <cstring>leParameters</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="3" column="0">
-                        <property name="name">
-                            <cstring>textLabel3_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Parameters:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLayoutWidget" row="4" column="0" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>layout2</cstring>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>pbnFirst</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>|&lt;</string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>pbnPrevious</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;</string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel">
-                                <property name="name">
-                                    <cstring>lblRecordNo</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>1 of 1</string>
-                                </property>
-                                <property name="alignment">
-                                    <set>AlignCenter</set>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>pbnNext</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&gt;</string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>pbnLast</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&gt;|</string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>pbnNew</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>New</string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>pbnSave</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Save</string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>pbnDelete</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Delete</string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>pbnClose</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Close</string>
-                                </property>
-                            </widget>
-                        </hbox>
-                    </widget>
-                    <widget class="QLabel" row="2" column="0">
-                        <property name="name">
-                            <cstring>textLabel1</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Name:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit" row="2" column="1">
-                        <property name="name">
-                            <cstring>leName</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QTextBrowser" row="1" column="0" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>textBrowser1_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.</string>
-                        </property>
-                    </widget>
-                </grid>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Test</string>
-                </attribute>
-                <grid>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QLabel" row="0" column="0" rowspan="1" colspan="4">
-                        <property name="name">
-                            <cstring>textLabel1_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Transform from WGS84 to the chosen projection</string>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton" row="6" column="0" rowspan="1" colspan="4">
-                        <property name="name">
-                            <cstring>pbnCalculate</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Calculate</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="3" column="3">
-                        <property name="name">
-                            <cstring>textLabel2_3</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Projected Corrdinate System</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="4" column="3">
-                        <property name="name">
-                            <cstring>projectedX</cstring>
-                        </property>
-                        <property name="enabled">
-                            <bool>true</bool>
-                        </property>
-                        <property name="frameShape">
-                            <enum>Box</enum>
-                        </property>
-                        <property name="text">
-                            <string></string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="3" column="2">
-                        <property name="name">
-                            <cstring>textLabel1_3</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Geographic / WGS84</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit" row="4" column="2">
-                        <property name="name">
-                            <cstring>northWGS84</cstring>
-                        </property>
-                        <property name="enabled">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="4" column="0" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>textLabel2_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>North:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="5" column="0" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>textLabel2_2_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>East:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit" row="5" column="2">
-                        <property name="name">
-                            <cstring>eastWGS84</cstring>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="5" column="3">
-                        <property name="name">
-                            <cstring>projectedY</cstring>
-                        </property>
-                        <property name="enabled">
-                            <bool>true</bool>
-                        </property>
-                        <property name="frameShape">
-                            <enum>Box</enum>
-                        </property>
-                        <property name="margin">
-                            <number>1</number>
-                        </property>
-                        <property name="text">
-                            <string></string>
-                        </property>
-                    </widget>
-                    <spacer row="3" column="0" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>spacer1</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>41</width>
-                                <height>21</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <widget class="QTextBrowser" row="1" column="0" rowspan="1" colspan="4">
-                        <property name="name">
-                            <cstring>textBrowser1</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="2" column="0">
-                        <property name="name">
-                            <cstring>textLabel3_2_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Parameters:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>leTestParameters</cstring>
-                        </property>
-                    </widget>
-                </grid>
-            </widget>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>QgsCustomProjectionDialogBase</class>
+ <widget class="QDialog" name="QgsCustomProjectionDialogBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>533</width>
+    <height>299</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Custom Projection Definition</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset/>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>10</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="0" >
+    <widget class="QTabWidget" name="tabWidget2" >
+     <widget class="QWidget" name="tab" >
+      <attribute name="title" >
+       <string>Define</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="0" column="0" colspan="2" >
+        <widget class="QLabel" name="textLabel5" >
+         <property name="font" >
+          <font>
+           <family></family>
+           <pointsize>18</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+           <underline>false</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text" >
+          <string>Custom Projection Definition</string>
+         </property>
         </widget>
-    </grid>
-</widget>
-<images>
-    <image name="image0">
-        <data format="PNG" length="651">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000025249444154388d8d935d48536118c77f679ba673f991df5186d887695b88d0c5b988cacca032a8209408cc20f022ba8c82a08b4008c1c88bbae922508c50b22f2856328bd345503ad1fc4a9142749b9b9aba73b69df376315496337cef9ef7799edffbffc3fb97144561b3e764972cccd9f0e711f43c552400cb6616ab9ecbc2b21dcc39a04f43646cad678ab750543422cacb8745724aa7b0a5b5890795a708f749e853a0cfc4ceae0394954d88ccac59de757771ec680b4dcd1fd8b7670ba965668c59080fff0760b70f0a4be224bfe67ae9e81c22e0576975fee0ea8bf7e8f350bfd3813461de1890943487676994a5e530e3a30b00582fc0b4b1c899c4ddd4d515d370c51e1f1008b48a88e425a88508693a9e9920b6063065c25e4f16d7ce1fc0b6358182425b7c4069a9400b2fac3642ba8e390f0c2f9ccddd4f7e7e4a549175030b6eb79f085af4d224b1a32283ca623b155a09976bcb912409009f578b0fa8ae6ec717500148b65aa872ec22b1dbe07a4d09e9d916228681a6e97cfbea8d0f501445faf2c9831a8c6032490c0c4dd1f67880c2826d04821e42611da5671ae7dbdf284af417c6000ed7cae286dbc9fdaeeff8bc416aaaf7e238984d4e66060083fd7e9a1bddcccf6bb85c0f450ca0a24916492740f74247df08f5773fd2df3bcbad3b87f839a9a21b068b8b11fc3e1d557dc2b2ea5bb520ad8449966501603d07ba0fb49ee8c02be7698a1da90064a5e4f2e6f50475975ee2727d8e0dd38aafe32db210da5a7df3f64571a4328fb4f404c6c7fae9681f271c365615ac4be3721b9873d7eac67bcfa41575ff3e06f017ba4af70a9400e8650000000049454e44ae426082</data>
-    </image>
-</images>
-<connections>
-    <connection>
-        <sender>pbnFirst</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsCustomProjectionDialogBase</receiver>
-        <slot>pbnFirst_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>pbnPrevious</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsCustomProjectionDialogBase</receiver>
-        <slot>pbnPrevious_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>pbnNext</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsCustomProjectionDialogBase</receiver>
-        <slot>pbnNext_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>pbnLast</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsCustomProjectionDialogBase</receiver>
-        <slot>pbnLast_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>pbnNew</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsCustomProjectionDialogBase</receiver>
-        <slot>pbnNew_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>pbnSave</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsCustomProjectionDialogBase</receiver>
-        <slot>pbnSave_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>pbnClose</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsCustomProjectionDialogBase</receiver>
-        <slot>pbnClose_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>pbnDelete</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsCustomProjectionDialogBase</receiver>
-        <slot>pbnDelete_clicked()</slot>
-    </connection>
-    <connection>
-        <sender>pbnCalculate</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsCustomProjectionDialogBase</receiver>
-        <slot>pbnCalculate_clicked()</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>leName</tabstop>
-    <tabstop>leParameters</tabstop>
-    <tabstop>pbnFirst</tabstop>
-    <tabstop>pbnPrevious</tabstop>
-    <tabstop>pbnNext</tabstop>
-    <tabstop>pbnLast</tabstop>
-    <tabstop>pbnNew</tabstop>
-    <tabstop>pbnSave</tabstop>
-    <tabstop>pbnDelete</tabstop>
-    <tabstop>pbnClose</tabstop>
-    <tabstop>leTestParameters</tabstop>
-    <tabstop>northWGS84</tabstop>
-    <tabstop>eastWGS84</tabstop>
-    <tabstop>pbnCalculate</tabstop>
-    <tabstop>tabWidget2</tabstop>
-    <tabstop>textBrowser1_2</tabstop>
-    <tabstop>textBrowser1</tabstop>
-</tabstops>
-<includes>
-    <include location="local" impldecl="in implementation">qgscustomprojectiondialogbase.ui.h</include>
-</includes>
-<slots>
-    <slot>pbnCancel_clicked()</slot>
-    <slot>pbnApply_clicked()</slot>
-    <slot>pbnHelp_clicked()</slot>
-    <slot>cboProjectionFamily_textChanged( const QString &amp; )</slot>
-    <slot>cboProjectionFamily_activated( const QString &amp; )</slot>
-    <slot>cboProjectionFamily_highlighted( const QString &amp; )</slot>
-    <slot>pbnFirst_clicked()</slot>
-    <slot>pbnPrevious_clicked()</slot>
-    <slot>pbnNext_clicked()</slot>
-    <slot>pbnLast_clicked()</slot>
-    <slot>pbnNew_clicked()</slot>
-    <slot>pbnSave_clicked()</slot>
-    <slot>pbnClose_clicked()</slot>
-    <slot>pbnDelete_clicked()</slot>
-    <slot>pbnCalculate_clicked()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+       </item>
+       <item row="3" column="1" >
+        <widget class="QLineEdit" name="leParameters" />
+       </item>
+       <item row="3" column="0" >
+        <widget class="QLabel" name="textLabel3_2" >
+         <property name="text" >
+          <string>Parameters:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="2" >
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="pbnFirst" >
+           <property name="text" >
+            <string>|&lt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbnPrevious" >
+           <property name="text" >
+            <string>&lt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblRecordNo" >
+           <property name="text" >
+            <string>1 of 1</string>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbnNext" >
+           <property name="text" >
+            <string>></string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbnLast" >
+           <property name="text" >
+            <string>>|</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbnNew" >
+           <property name="text" >
+            <string>New</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbnSave" >
+           <property name="text" >
+            <string>Save</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbnDelete" >
+           <property name="text" >
+            <string>Delete</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbnClose" >
+           <property name="text" >
+            <string>Close</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0" >
+        <widget class="QLabel" name="textLabel1" >
+         <property name="text" >
+          <string>Name:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" >
+        <widget class="QLineEdit" name="leName" />
+       </item>
+       <item row="1" column="0" colspan="2" >
+        <widget class="Q3TextBrowser" name="textBrowser1_2" />
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab" >
+      <attribute name="title" >
+       <string>Test</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="0" column="0" colspan="4" >
+        <widget class="QLabel" name="textLabel1_2" >
+         <property name="text" >
+          <string>Transform from WGS84 to the chosen projection</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0" colspan="4" >
+        <widget class="QPushButton" name="pbnCalculate" >
+         <property name="text" >
+          <string>Calculate</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3" >
+        <widget class="QLabel" name="textLabel2_3" >
+         <property name="text" >
+          <string>Projected Corrdinate System</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="3" >
+        <widget class="QLabel" name="projectedX" >
+         <property name="enabled" >
+          <bool>true</bool>
+         </property>
+         <property name="frameShape" >
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text" >
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2" >
+        <widget class="QLabel" name="textLabel1_3" >
+         <property name="text" >
+          <string>Geographic / WGS84</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2" >
+        <widget class="QLineEdit" name="northWGS84" >
+         <property name="enabled" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="2" >
+        <widget class="QLabel" name="textLabel2_2" >
+         <property name="text" >
+          <string>North:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="2" >
+        <widget class="QLabel" name="textLabel2_2_2" >
+         <property name="text" >
+          <string>East:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2" >
+        <widget class="QLineEdit" name="eastWGS84" />
+       </item>
+       <item row="5" column="3" >
+        <widget class="QLabel" name="projectedY" >
+         <property name="enabled" >
+          <bool>true</bool>
+         </property>
+         <property name="frameShape" >
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text" >
+          <string/>
+         </property>
+         <property name="margin" >
+          <number>1</number>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>41</width>
+           <height>21</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0" colspan="4" >
+        <widget class="Q3TextBrowser" name="textBrowser1" />
+       </item>
+       <item row="2" column="0" >
+        <widget class="QLabel" name="textLabel3_2_2" >
+         <property name="text" >
+          <string>Parameters:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" colspan="3" >
+        <widget class="QLineEdit" name="leTestParameters" />
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3TextBrowser</class>
+   <extends>QWidget</extends>
+   <header>q3textbrowser.h</header>
+   <container>1</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>leName</tabstop>
+  <tabstop>leParameters</tabstop>
+  <tabstop>pbnFirst</tabstop>
+  <tabstop>pbnPrevious</tabstop>
+  <tabstop>pbnNext</tabstop>
+  <tabstop>pbnLast</tabstop>
+  <tabstop>pbnNew</tabstop>
+  <tabstop>pbnSave</tabstop>
+  <tabstop>pbnDelete</tabstop>
+  <tabstop>pbnClose</tabstop>
+  <tabstop>leTestParameters</tabstop>
+  <tabstop>northWGS84</tabstop>
+  <tabstop>eastWGS84</tabstop>
+  <tabstop>pbnCalculate</tabstop>
+  <tabstop>tabWidget2</tabstop>
+  <tabstop>textBrowser1_2</tabstop>
+  <tabstop>textBrowser1</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

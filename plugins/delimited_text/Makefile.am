@@ -16,47 +16,37 @@ plugindir = ${pkglibdir}
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-%.h: %.ui 
+ui_%.h: %.ui 
 	$(UIC) -o $@ $<
-if HAVE_QT4
-	../../tools/qgis-qt3to4.pl -uic $@
-endif
 
-if !NO_UIC_IMPLEMENTATIONS
-%.cpp: %.ui
-	$(UIC) -o $@ -impl $*.h $<
-endif
-
-# %.h: %.ui
-# 	$(UIC) -o $@ $<
-#
-# %.cpp: %.ui
-# 	$(UIC) -o $@ -impl $*.h $<
-
+%.qrc.cpp: %.qrc
+	$(RCC) -o $@ $<
 
 # DelimitedTextLayer below to be replaced with the name of the plugin
 plugin_LTLIBRARIES = delimitedtextplugin.la
 
 plugin_MOC = qgsdelimitedtextplugin.moc.cpp		\
-	     qgsdelimitedtextplugingui.moc.cpp		\
-	     qgsdelimitedtextpluginguibase.moc.cpp
+	     qgsdelimitedtextplugingui.moc.cpp		
 
-plugin_UI = qgsdelimitedtextpluginguibase.h \
-	    qgsdelimitedtextpluginguibase.cpp 
+plugin_UI = ui_qgsdelimitedtextpluginguibase.h 
 
 plugin_UIC = qgsdelimitedtextpluginguibase.ui
+
+plugin_QRC = delimited_text.qrc
+ 
+plugin_RES = delimited_text.qrc.cpp
 
 delimitedtextplugin_la_SOURCES =  qgsdelimitedtextplugin.cpp	\
 			      	       qgsdelimitedtextplugin.h		\
 				       qgsdelimitedtextplugingui.cpp	\
 				       qgsdelimitedtextplugingui.h	\
 				       $(plugin_UI)			\
-				       $(plugin_MOC)
+				       $(plugin_MOC) \
+							 $(plugin_QRC) \
+							 $(plugin_RES)
 
-qgsdelimitedtextpluginguibase.cpp: qgsdelimitedtextpluginguibase.h qgsdelimitedtextpluginguibase.ui
 
-
-BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
+BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
 
 

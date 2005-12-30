@@ -14,37 +14,25 @@
 #include <iostream>
 #include <cassert>
 #include <sqlite3.h>
-#include <cstdlib>
 
 //qgis includes
-#include "qgscsexception.h"
-#include "qgsconfig.h"
-#include <qgis.h> //magick numbers here
+#include "qgis.h" //magick numbers here
 
 //qt includes
-#include <qapplication.h>
-#include <qfile.h>
-#include <q3textedit.h>
-#include <q3buttongroup.h>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-#include <qregexp.h>
-#include <q3progressdialog.h>
-#include <qfileinfo.h>
-#include <qdir.h>
-#include <qtextstream.h>
-#include <qstring.h>
-#include <qradiobutton.h>
-//gdal and ogr includes
-// XXX DO WE NEED THESE?
-#include <ogr_api.h>
-#include <ogr_spatialref.h>
-#include <cpl_error.h>
+#include <QDir>
+#include <QFileInfo>
+#include <Q3ProgressDialog>
+#include <QTextStream>
 
 
 QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name , Qt::WFlags fl  )
-    : QgsProjectionSelectorBase( parent, "Projection Selector", fl )
+    : QWidget(parent, fl)
 {
+  setupUi(this);
+  connect(lstCoordinateSystems, SIGNAL(currentChanged(Q3ListViewItem*)),
+      this, SLOT(coordinateSystemSelected(Q3ListViewItem*)));
+  connect(leSearch, SIGNAL(returnPressed()), pbnFind, SLOT(animateClick()));
+
   // Get the package data path and set the full path name to the sqlite3 spatial reference
   // database.
 #if defined(Q_OS_MACX) || defined(WIN32)
@@ -566,7 +554,7 @@ void QgsProjectionSelector::coordinateSystemSelected( Q3ListViewItem * theItem )
   teProjection->setText(myDescription);
 }
 
-void QgsProjectionSelector::pbnFind_clicked()
+void QgsProjectionSelector::on_pbnFind_clicked()
 {
 
 #ifdef QGISDEBUG

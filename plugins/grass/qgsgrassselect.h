@@ -15,12 +15,13 @@
  ***************************************************************************/
 #ifndef QGSGRASSSELECT_H
 #define QGSGRASSSELECT_H
-#include "qgsgrassselectbase.h"
+#include "ui_qgsgrassselectbase.h"
+#include <QDialog>
 /*! \class QgsGrassSelect
  * \brief Dialog to select GRASS layer.
  *
  */
-class QgsGrassSelect: public QgsGrassSelectBase
+class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
 {
     Q_OBJECT;
 

@@ -16,41 +16,23 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <math.h>
-#include <iostream>
-#include <typeinfo>
-
-#include <qwidget.h>
-#include <qrect.h>
-#include <QComboBox>
-#include <qcheckbox.h>
-#include <qdom.h>
-#include <q3canvas.h>
-#include <qpainter.h>
-#include <qstring.h>
-#include <qpixmap.h>
-#include <q3picture.h>
-#include <qimage.h>
-#include <qlineedit.h>
-#include <q3pointarray.h>
-#include <qpen.h>
-#include <qrect.h>
-#include <qlabel.h>
-#include <q3filedialog.h>
-#include <qmessagebox.h>
-
-#include "qgsproject.h"
-#include "qgscomposition.h"
 #include "qgscomposerpicture.h"
-//Added by qt3to4:
-#include <QPictureIO>
+#include "qgsproject.h"
+
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QPainter>
 #include <Q3StrList>
+
+#include <cmath>
+#include <iostream>
 
 #define PI 3.14159265358979323846
 
 QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition, 
 					int id, QString file ) 
-    : Q3CanvasPolygonalItem(0),
+    : QWidget(composition),
+      Q3CanvasPolygonalItem(0),
       mPicturePath ( file ),
       mPictureValid(false),
       mCX(-10), mCY(-10),
@@ -59,6 +41,8 @@ QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition,
       mAreaPoints(4),
       mBoundingRect(0,0,0,0)
 {
+    setupUi(this);
+
 #ifdef QGISDEBUG
     std::cout << "QgsComposerPicture::QgsComposerPicture()" << std::endl;
 #endif
@@ -79,6 +63,7 @@ QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition,
 }
 
 QgsComposerPicture::QgsComposerPicture ( QgsComposition *composition, int id ) :
+    QWidget(),
     Q3CanvasPolygonalItem(0),
     mFrame(false),
     mAreaPoints(4),
@@ -359,7 +344,7 @@ Q3PointArray QgsComposerPicture::areaPoints() const
 }
 
 
-void QgsComposerPicture::frameChanged ( )
+void QgsComposerPicture::on_mFrameCheckBox_stateChanged ( int )
 {
     mFrame = mFrameCheckBox->isChecked();
 
@@ -369,10 +354,10 @@ void QgsComposerPicture::frameChanged ( )
     writeSettings();
 }
 
-void QgsComposerPicture::angleChanged ( )
+void QgsComposerPicture::on_mAngleLineEdit_returnPressed ( )
 {
 #ifdef QGISDEBUG
-    std::cout << "QgsComposerPicture::angleChanged()" << std::endl;
+    std::cout << "QgsComposerPicture::on_mAngleLineEdit_returnPressed()" << std::endl;
 #endif
 
     mAngle = mAngleLineEdit->text().toDouble();
@@ -382,10 +367,10 @@ void QgsComposerPicture::angleChanged ( )
     writeSettings();
 }
 
-void QgsComposerPicture::widthChanged ( )
+void QgsComposerPicture::on_mWidthLineEdit_returnPressed ( )
 {
 #ifdef QGISDEBUG
-    std::cout << "QgsComposerPicture::widthChanged()" << std::endl;
+    std::cout << "QgsComposerPicture::on_mWidthLineEdit_returnPressed()" << std::endl;
 #endif
 
     mWidth = mComposition->fromMM ( mWidthLineEdit->text().toDouble() );
@@ -399,10 +384,10 @@ void QgsComposerPicture::widthChanged ( )
     writeSettings();
 }
 
-void QgsComposerPicture::browsePicture ( )
+void QgsComposerPicture::on_mPictureBrowseButton_clicked ( )
 {
 #ifdef QGISDEBUG
-    std::cout << "QgsComposerPicture::browsePicture()" << std::endl;
+    std::cout << "QgsComposerPicture::on_mPictureBrowseButton_clicked()" << std::endl;
 #endif
  
     QString file = QgsComposerPicture::pictureDialog();
@@ -435,6 +420,11 @@ void QgsComposerPicture::pictureChanged ( )
         setOptions();
         recalculate();
     }
+}
+
+void QgsComposerPicture::on_mPictureLineEdit_returnPressed ( )
+{
+  pictureChanged();
 }
 
 void QgsComposerPicture::adjustPictureSize ( )
@@ -499,12 +489,11 @@ QString QgsComposerPicture::pictureDialog ( void )
     }
     filters += " )";
 
-    QString file = Q3FileDialog::getOpenFileName(
-                    ".",
-                    filters,
+    QString file = QFileDialog::getOpenFileName(
                     0,
-                    "open picture dialog",
-                    "Choose a file" );
+                    "Choose a file",
+                    ".",
+                    filters );
 
     return file; 
 }

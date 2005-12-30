@@ -12,12 +12,13 @@
 #ifndef QGSSCALEBARPLUGINGUI_H
 #define QGSSCALEBARPLUGINGUI_H
 
-#include <pluginguibase.h>
+#include <ui_pluginguibase.h>
+#include <QDialog>
 
 /**
 @author Peter Brewer
 */
-class QgsScaleBarPluginGui : public QgsScaleBarPluginGuiBase
+class QgsScaleBarPluginGui : public QDialog, private Ui::QgsScaleBarPluginGuiBase
 {
 Q_OBJECT;
 public:
@@ -34,6 +35,8 @@ public:
     void setColour(QColor);
 
     
+   //accessor for getting a pointer to the size spin widget
+   QSpinBox * getSpinSize();
     
 private:
     

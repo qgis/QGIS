@@ -11,36 +11,19 @@
 //
 #include "qgscustomprojectiondialog.h"
 
-//standard includes
-#include <iostream>
-#include <cassert>
-#include <sqlite3.h>
-#include <fstream>
-
 //qgis includes
 #include "qgis.h" //<--magick numbers
-#include "qgscsexception.h"
-#include "qgsconfig.h"
 
 //qt includes
-#include <qapplication.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <q3textedit.h>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-#include <qregexp.h>
-#include <qstring.h>
-#include <q3urloperator.h>
-#include <QComboBox>
-#include <q3progressdialog.h>
-#include <qpushbutton.h>
-#include <qmessagebox.h>
-#include <qregexp.h>
+#include <QDir>
+#include <QFileInfo>
+#include <QMessageBox>
 
 //stdc++ includes
-#include <cstdlib>
-#include <string.h>
+#include <cassert>
+#include <fstream>
+#include <iostream>
+#include <sqlite3.h>
 
 //proj4 includes
 extern "C"{
@@ -51,12 +34,17 @@ extern "C"{
 QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const char* name , Qt::WFlags fl  )
 #ifdef Q_OS_MACX
   // Mac modeless dialog dosn't have correct window type if parent is specified
-  : QgsCustomProjectionDialogBase( NULL, name, false, fl)
+  : QDialog(NULL, name, false, fl)
 #else
   // Specifying parent suppresses separate taskbar entry for dialog
-  : QgsCustomProjectionDialogBase( parent, name, false, fl)
+  : QDialog(parent, name, false, fl)
 #endif
 {
+  setupUi(this);
+  //XXX Initialize here because Qt4 Designer doesn't provide access to Q3TextBrowser properties.
+  textBrowser1_2->setText("You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.");
+  textBrowser1->setText("Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.");
+
   mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
   // first we look for ~/.qgis/qgis.db
   // if it doesnt exist we copy it in from the global resources dir
@@ -119,7 +107,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
   //getProjList();
   //getEllipsoidList();
   mRecordCountLong=getRecordCount();
-  pbnFirst_clicked();
+  on_pbnFirst_clicked();
 }
 
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
@@ -199,12 +187,12 @@ void QgsCustomProjectionDialog::getEllipsoidList()
   sqlite3_close(myDatabase);
 }
 */
-void QgsCustomProjectionDialog::pbnHelp_clicked()
+void QgsCustomProjectionDialog::on_pbnHelp_clicked()
 {
 
 }
 
-void QgsCustomProjectionDialog::pbnDelete_clicked()
+void QgsCustomProjectionDialog::on_pbnDelete_clicked()
 {
 
   if (QMessageBox::Yes!=QMessageBox::warning(
@@ -248,25 +236,25 @@ void QgsCustomProjectionDialog::pbnDelete_clicked()
   --mRecordCountLong;
   if (mRecordCountLong < 1)
   {
-    pbnNew_clicked();
+    on_pbnNew_clicked();
   }
   else if (mCurrentRecordLong==1)
   {
-    pbnFirst_clicked();
+    on_pbnFirst_clicked();
   }
   else if (mCurrentRecordLong>mRecordCountLong)
   {
-    pbnLast_clicked();
+    on_pbnLast_clicked();
   }
   else
   {
     mCurrentRecordLong=mCurrentRecordLong-2;
-    pbnNext_clicked();
+    on_pbnNext_clicked();
   }
   return ;
 }
 
-void QgsCustomProjectionDialog::pbnClose_clicked()
+void QgsCustomProjectionDialog::on_pbnClose_clicked()
 {
  close(); 
 }
@@ -432,10 +420,10 @@ QString QgsCustomProjectionDialog::getEllipsoidAcronym(QString theEllipsoidName)
 
 }
 
-void QgsCustomProjectionDialog::pbnFirst_clicked()
+void QgsCustomProjectionDialog::on_pbnFirst_clicked()
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsCustomProjectionDialog::pbnFirst_clicked()" << std::endl;
+  std::cout << "QgsCustomProjectionDialog::on_pbnFirst_clicked()" << std::endl;
 #endif
   sqlite3      *myDatabase;
   const char   *myTail;
@@ -496,10 +484,10 @@ void QgsCustomProjectionDialog::pbnFirst_clicked()
 }
 
 
-void QgsCustomProjectionDialog::pbnPrevious_clicked()
+void QgsCustomProjectionDialog::on_pbnPrevious_clicked()
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsCustomProjectionDialog::pbnPrevious_clicked()" << std::endl;
+  std::cout << "QgsCustomProjectionDialog::on_pbnPrevious_clicked()" << std::endl;
 #endif
   if (mCurrentRecordLong <= 1) 
   {
@@ -573,10 +561,10 @@ void QgsCustomProjectionDialog::pbnPrevious_clicked()
 }
 
 
-void QgsCustomProjectionDialog::pbnNext_clicked()
+void QgsCustomProjectionDialog::on_pbnNext_clicked()
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsCustomProjectionDialog::pbnNext_clicked()" << std::endl;
+  std::cout << "QgsCustomProjectionDialog::on_pbnNext_clicked()" << std::endl;
 #endif
   if (mCurrentRecordLong >= mRecordCountLong)
   {
@@ -651,10 +639,10 @@ void QgsCustomProjectionDialog::pbnNext_clicked()
 }
 
 
-void QgsCustomProjectionDialog::pbnLast_clicked()
+void QgsCustomProjectionDialog::on_pbnLast_clicked()
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsCustomProjectionDialog::pbnLast_clicked()" << std::endl;
+  std::cout << "QgsCustomProjectionDialog::on_pbnLast_clicked()" << std::endl;
 #endif
   sqlite3      *myDatabase;
   const char   *myTail;
@@ -715,16 +703,16 @@ void QgsCustomProjectionDialog::pbnLast_clicked()
 }
 
 
-void QgsCustomProjectionDialog::pbnNew_clicked()
+void QgsCustomProjectionDialog::on_pbnNew_clicked()
 {
 #ifdef QGISDEBUG
   if (pbnNew->text()==tr("Abort")) 
   {
-    std::cout << "QgsCustomProjectionDialog::pbnNew_clicked() - abort requested" << std::endl;
+    std::cout << "QgsCustomProjectionDialog::on_pbnNew_clicked() - abort requested" << std::endl;
   }
   else
   {
-   std::cout << "QgsCustomProjectionDialog::pbnNew_clicked() - new requested" << std::endl;
+   std::cout << "QgsCustomProjectionDialog::on_pbnNew_clicked() - new requested" << std::endl;
   }
 #endif
   if (pbnNew->text()==tr("Abort")) 
@@ -734,12 +722,12 @@ void QgsCustomProjectionDialog::pbnNew_clicked()
     //get back to the last used record before insert was pressed
    if (mCurrentRecordId.isEmpty())
    {
-      pbnFirst_clicked();
+      on_pbnFirst_clicked();
     }
     else
     {
       mCurrentRecordLong=mLastRecordLong;
-      pbnNext_clicked();
+      on_pbnNext_clicked();
     }
   }
   else
@@ -764,10 +752,10 @@ void QgsCustomProjectionDialog::pbnNew_clicked()
 }
 
 
-void QgsCustomProjectionDialog::pbnSave_clicked()
+void QgsCustomProjectionDialog::on_pbnSave_clicked()
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsCustomProjectionDialog::pbnSave_clicked()" << std::endl;
+  std::cout << "QgsCustomProjectionDialog::on_pbnSave_clicked()" << std::endl;
 #endif
  
   QString myName = leName->text();
@@ -907,17 +895,17 @@ void QgsCustomProjectionDialog::pbnSave_clicked()
     //get to the newly inserted record 
     ++mRecordCountLong;
     mCurrentRecordLong=mRecordCountLong-1;
-    pbnLast_clicked();
+    on_pbnLast_clicked();
   }
 
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
 }
 
-void QgsCustomProjectionDialog::pbnCalculate_clicked()
+void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsCustomProjectionDialog::pbnCalculate_clicked()" << std::endl;
+  std::cout << "QgsCustomProjectionDialog::on_pbnCalculate_clicked()" << std::endl;
 #endif
 
 

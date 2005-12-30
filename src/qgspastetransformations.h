@@ -18,12 +18,8 @@
  /* $Id$ */
 #ifndef QGSPASTETRANSFORMATIONS_H
 #define QGSPASTETRANSFORMATIONS_H
-#ifdef WIN32
-#include "qgspastetransformationsbase.h"
-#else
-#include "qgspastetransformationsbase.uic.h"
-#endif
-
+#include "ui_qgspastetransformationsbase.h"
+#include <QDialog>
 #include <qstring.h>
 
 #include "qgsmaplayer.h"
@@ -31,9 +27,9 @@
 /*! 
  * \brief Dialog to allow the user to set up how source fields are transformed to destination fields in copy/paste operations
  */
-class QgsPasteTransformations : public QgsPasteTransformationsBase
+class QgsPasteTransformations : public QDialog, private Ui::QgsPasteTransformationsBase
 {
-  Q_OBJECT
+  Q_OBJECT;
  public:
     //! Constructor
     QgsPasteTransformations();

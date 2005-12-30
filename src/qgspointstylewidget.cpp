@@ -18,7 +18,7 @@
 #include "qgspointstylewidget.h"
 
 QgsPointStyleWidget::QgsPointStyleWidget( QWidget *parent, const char * name, Qt::WFlags f)
-           :QgsPointStyleWidgetBase( parent, name, f)
+           :QgsPointStyleWidgetBase( )
 {
 }
 

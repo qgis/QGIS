@@ -1,687 +1,613 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>QgsOptionsBase</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>QgsOptionsBase</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>554</width>
-            <height>401</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>QGIS Options</string>
-    </property>
-    <property name="icon">
-        <pixmap>image0</pixmap>
-    </property>
-    <property name="sizeGripEnabled">
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>QgsOptionsBase</class>
+ <widget class="QDialog" name="QgsOptionsBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>554</width>
+    <height>401</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>QGIS Options</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset/>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>11</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="1" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonOk" >
+       <property name="text" >
+        <string>&amp;Ok</string>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+O</string>
+       </property>
+       <property name="autoDefault" >
         <bool>true</bool>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <property name="margin">
-            <number>11</number>
-        </property>
-        <property name="spacing">
-            <number>6</number>
-        </property>
-        <widget class="QLayoutWidget" row="1" column="0">
-            <property name="name">
-                <cstring>Layout1</cstring>
+       </property>
+       <property name="default" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonCancel" >
+       <property name="text" >
+        <string>&amp;Cancel</string>
+       </property>
+       <property name="shortcut" >
+        <string/>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0" >
+    <widget class="QTabWidget" name="tabWidget" >
+     <widget class="QWidget" name="tabAppearance" >
+      <attribute name="title" >
+       <string>&amp;Appearance</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="0" column="0" >
+        <widget class="Q3GroupBox" name="groupBox2" >
+         <property name="title" >
+          <string>&amp;Splash Screen</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>10</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="QCheckBox" name="cbxHideSplash" >
+            <property name="text" >
+             <string>Hide splash screen at startup</string>
             </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <spacer>
-                    <property name="name">
-                        <cstring>Horizontal Spacing2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>buttonOk</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Ok</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+O</string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>buttonCancel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Cancel</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </hbox>
+           </widget>
+          </item>
+         </layout>
         </widget>
-        <widget class="QTabWidget" row="0" column="0">
-            <property name="name">
-                <cstring>tabWidget</cstring>
+       </item>
+       <item row="1" column="0" >
+        <widget class="Q3GroupBox" name="groupBox3" >
+         <property name="title" >
+          <string>&amp;Icon Theme</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>10</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="1" >
+           <widget class="QComboBox" name="cmbTheme" >
+            <property name="duplicatesEnabled" >
+             <bool>false</bool>
             </property>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tabAppearance</cstring>
-                </property>
-                <attribute name="title">
-                    <string>&amp;Appearance</string>
-                </attribute>
-                <grid>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QGroupBox" row="0" column="0">
-                        <property name="name">
-                            <cstring>groupBox2</cstring>
-                        </property>
-                        <property name="title">
-                            <string>&amp;Splash Screen</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QCheckBox" row="0" column="0">
-                                <property name="name">
-                                    <cstring>cbxHideSplash</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Hide splash screen at startup</string>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QGroupBox" row="1" column="0">
-                        <property name="name">
-                            <cstring>groupBox3</cstring>
-                        </property>
-                        <property name="title">
-                            <string>&amp;Icon Theme</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QComboBox" row="0" column="1">
-                                <item>
-                                    <property name="text">
-                                        <string></string>
-                                    </property>
-                                </item>
-                                <property name="name">
-                                    <cstring>cmbTheme</cstring>
-                                </property>
-                                <property name="duplicatesEnabled">
-                                    <bool>false</bool>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="0" column="0">
-                                <property name="name">
-                                    <cstring>textLabel1_4</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>0</hsizetype>
-                                        <vsizetype>5</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="text">
-                                    <string>Theme</string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
-                                <property name="name">
-                                    <cstring>textLabel1_5</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;b&gt;Note: &lt;/b&gt;Theme changes take effect the next time QGIS is started</string>
-                                </property>
-                                <property name="alignment">
-                                    <set>WordBreak|AlignVCenter</set>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QGroupBox" row="2" column="0">
-                        <property name="name">
-                            <cstring>groupBox5</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>7</hsizetype>
-                                <vsizetype>7</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="title">
-                            <string>SVG Options</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLabel" row="0" column="0">
-                                <property name="name">
-                                    <cstring>textLabel1_7</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>SVG oversampling factor</string>
-                                </property>
-                            </widget>
-                            <widget class="QSpinBox" row="0" column="1">
-                                <property name="name">
-                                    <cstring>spbSVGOversampling</cstring>
-                                </property>
-                                <property name="minValue">
-                                    <number>1</number>
-                                </property>
-                            </widget>
-                            <spacer row="0" column="2">
-                                <property name="name">
-                                    <cstring>spacer2</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>180</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget class="QLabel" row="1" column="0" rowspan="1" colspan="3">
-                                <property name="name">
-                                    <cstring>textLabel1_5_2</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;b&gt;Note: &lt;/b&gt;A higher value gives smoother SVG symbols, but can slow down rendering</string>
-                                </property>
-                                <property name="alignment">
-                                    <set>WordBreak|AlignVCenter</set>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                </grid>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>TabPage</cstring>
-                </property>
-                <attribute name="title">
-                    <string>&amp;Rendering</string>
-                </attribute>
-                <grid>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QGroupBox" row="0" column="0">
-                        <property name="name">
-                            <cstring>groupBox4</cstring>
-                        </property>
-                        <property name="title">
-                            <string>&amp;Update During Drawing</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLayoutWidget" row="0" column="0">
-                                <property name="name">
-                                    <cstring>layout2</cstring>
-                                </property>
-                                <hbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>textLabel1_6</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Update display after reading</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QSpinBox">
-                                        <property name="name">
-                                            <cstring>spinBoxUpdateThreshold</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="toolTip" stdset="0">
-                                            <string>Map display will be updated (drawn) after this many features have been read from the data source</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>textLabel2_2</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>features</string>
-                                        </property>
-                                    </widget>
-                                </hbox>
-                            </widget>
-                            <widget class="QLabel" row="1" column="0">
-                                <property name="name">
-                                    <cstring>textLabel3</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>(Set to 0 to not update the display until all features have been read)</string>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QGroupBox" row="1" column="0">
-                        <property name="name">
-                            <cstring>groupBox6</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Initial Visibility</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QCheckBox" row="0" column="0">
-                                <property name="name">
-                                    <cstring>chkAddedVisibility</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>New la&amp;yers added to the map are not displayed</string>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                </grid>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tabMap</cstring>
-                </property>
-                <attribute name="title">
-                    <string>&amp;Selection &amp;&amp; Measuring</string>
-                </attribute>
-                <vbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QGroupBox">
-                        <property name="name">
-                            <cstring>groupBox3_2</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Search Radius</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QSpinBox" row="0" column="1">
-                                <property name="name">
-                                    <cstring>spinBoxIdentifyValue</cstring>
-                                </property>
-                                <property name="maxValue">
-                                    <number>100</number>
-                                </property>
-                                <property name="minValue">
-                                    <number>1</number>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="0" column="0">
-                                <property name="name">
-                                    <cstring>textLabel1_3</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Search Radius for Identifying Features</string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
-                                <property name="name">
-                                    <cstring>textLabel2</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;html&gt;
+            <item>
+             <property name="text" >
+              <string/>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="textLabel1_4" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Theme</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2" >
+           <widget class="QLabel" name="textLabel1_5" >
+            <property name="text" >
+             <string>&lt;b>Note: &lt;/b>Theme changes take effect the next time QGIS is started</string>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0" >
+        <widget class="Q3GroupBox" name="groupBox5" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>7</hsizetype>
+           <vsizetype>7</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title" >
+          <string>SVG Options</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>10</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="textLabel1_7" >
+            <property name="text" >
+             <string>SVG oversampling factor</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QSpinBox" name="spbSVGOversampling" >
+            <property name="minimum" >
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>180</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0" colspan="3" >
+           <widget class="QLabel" name="textLabel1_5_2" >
+            <property name="text" >
+             <string>&lt;b>Note: &lt;/b>A higher value gives smoother SVG symbols, but can slow down rendering</string>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="TabPage" >
+      <attribute name="title" >
+       <string>&amp;Rendering</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="0" column="0" >
+        <widget class="Q3GroupBox" name="groupBox4" >
+         <property name="title" >
+          <string>&amp;Update During Drawing</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>10</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="textLabel1_6" >
+              <property name="text" >
+               <string>Update display after reading</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spinBoxUpdateThreshold" >
+              <property name="toolTip" >
+               <string>Map display will be updated (drawn) after this many features have been read from the data source</string>
+              </property>
+              <property name="maximum" >
+               <number>1000000</number>
+              </property>
+              <property name="value" >
+               <number>1000</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="textLabel2_2" >
+              <property name="text" >
+               <string>features</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="textLabel3" >
+            <property name="text" >
+             <string>(Set to 0 to not update the display until all features have been read)</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="Q3GroupBox" name="groupBox6" >
+         <property name="title" >
+          <string>Initial Visibility</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>10</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="QCheckBox" name="chkAddedVisibility" >
+            <property name="text" >
+             <string>New la&amp;yers added to the map are not displayed</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabMap" >
+      <attribute name="title" >
+       <string>&amp;Selection &amp;&amp; Measuring</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="Q3GroupBox" name="groupBox3_2" >
+         <property name="title" >
+          <string>Search Radius</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>10</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="1" >
+           <widget class="QSpinBox" name="spinBoxIdentifyValue" >
+            <property name="maximum" >
+             <number>100</number>
+            </property>
+            <property name="minimum" >
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="textLabel1_3" >
+            <property name="text" >
+             <string>Search Radius for Identifying Features</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2" >
+           <widget class="QLabel" name="textLabel2" >
+            <property name="text" >
+             <string>&lt;html>
 
-&lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;
+&lt;b>Note:&lt;/b> Specify the value in thousandths.  The search radius is calculated as:&lt;br>
 
-&amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
+&amp;nbsp;&amp;nbsp;&lt;i>(Map View Width) * ( Value/1000.0)&lt;/i>
 
-&lt;br&gt;
+&lt;br>
 
 By default QGIS uses a value of 5. Increase the value if you have trouble
 
 identifying features without zooming in very close.
 
-&lt;/html&gt;</string>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QGroupBox">
-                        <property name="name">
-                            <cstring>groupBox7</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Measure tool</string>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLabel">
-                                <property name="name">
-                                    <cstring>textLabel1_8</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Ellipsoid for distance calculations:</string>
-                                </property>
-                            </widget>
-                            <widget class="QComboBox">
-                                <property name="name">
-                                    <cstring>cmbEllipsoid</cstring>
-                                </property>
-                            </widget>
-                        </hbox>
-                    </widget>
-                </vbox>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>TabPage</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Pro&amp;jection</string>
-                </attribute>
-                <grid>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QPushButton" row="1" column="0">
-                        <property name="name">
-                            <cstring>pbnSelectProjection</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Select Global Default ...</string>
-                        </property>
-                    </widget>
-                    <widget class="QButtonGroup" row="0" column="0">
-                        <property name="name">
-                            <cstring>grpProjectionBehaviour</cstring>
-                        </property>
-                        <property name="title">
-                            <string>When layer is loaded that has no projection information:</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QTextBrowser" row="1" column="0">
-                                <property name="name">
-                                    <cstring>txtGlobalWKT</cstring>
-                                </property>
-                                <property name="frameShape">
-                                    <enum>LineEditPanel</enum>
-                                </property>
-                                <property name="frameShadow">
-                                    <enum>Plain</enum>
-                                </property>
-                            </widget>
-                            <widget class="QLayoutWidget" row="0" column="0">
-                                <property name="name">
-                                    <cstring>layout9</cstring>
-                                </property>
-                                <vbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QRadioButton">
-                                        <property name="name">
-                                            <cstring>radPromptForProjection</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Prompt for projection.</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QRadioButton">
-                                        <property name="name">
-                                            <cstring>radUseProjectProjection</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Project wide default projection will be used.</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QRadioButton">
-                                        <property name="name">
-                                            <cstring>radUseGlobalProjection</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Global default projection displa&amp;yed below will be used.</string>
-                                        </property>
-                                    </widget>
-                                </vbox>
-                            </widget>
-                        </grid>
-                    </widget>
-                </grid>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tabHelpBrowser</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Help &amp;Browser</string>
-                </attribute>
-                <grid>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="Line" row="1" column="0" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>line3</cstring>
-                        </property>
-                        <property name="frameShape">
-                            <enum>HLine</enum>
-                        </property>
-                        <property name="frameShadow">
-                            <enum>Sunken</enum>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="2" column="0" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>textLabel1_2</cstring>
-                        </property>
-                        <property name="text">
-                            <string>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify &lt;br&gt;the full path above</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="0" column="0">
-                        <property name="name">
-                            <cstring>textLabel1</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Open help documents with</string>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="0" column="1">
-                        <item>
-                            <property name="text">
-                                <string>epiphany</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>firefox</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>mozilla-firefox</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>galeon</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>konqueror</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>mozilla</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>opera</string>
-                            </property>
-                        </item>
-                        <property name="name">
-                            <cstring>cmbBrowser</cstring>
-                        </property>
-                        <property name="editable">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton" row="0" column="2">
-                        <property name="name">
-                            <cstring>btnFindBrowser</cstring>
-                        </property>
-                        <property name="maximumSize">
-                            <size>
-                                <width>21</width>
-                                <height>21</height>
-                            </size>
-                        </property>
-                        <property name="text">
-                            <string>...</string>
-                        </property>
-                    </widget>
-                </grid>
-            </widget>
+&lt;/html></string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
-    </grid>
-</widget>
-<images>
-    <image name="image0">
-        <data format="PNG" length="2411">89504e470d0a1a0a0000000d49484452000000300000003008060000005702f98700000932494441546881d5994f681cd71dc73f5be6f05b58c31b58c30cac61076cf0181bba2281684b0e16cda1825c6c7ca8631f82e582897369840f5eb7d010e510d4f6d09a406327072dd6c1583914e483a9757090020e9621a11b88610416cc8017e68117f67718981e6625f9bf56921da73f58766779efcdeffb7bbff7fdfd79a5c5c545fe9fe557af5b81e7c9a52f8ee7edd956bed9b85f2480235f34f3c8b168cfdd74acf333e833b41cff7b335ff1801e90c2d4c793a5cde6fc2200b4675af91516b0b5c11f0fc045869afb5a011cffb4995b1f6c65f08752581f86d6ecb500f8e8b3661eed86640f506143691d68948167fca1d6fad9014c7f762a975d1e7a3f29deee3ea145563cdb2c1d6abd9f9d8526cf5d2e4d9d992b359c10e3c2baab3b8f7c3ba0990eb5de2bd981f66c2bd70c64e00e8542c5f389df4f9500a6ce5f2e8dcd3673d6f4d4c1672069cf0ef5ae970aa03dd3caed7d8bd9072335434a826b84b4078261f96ec2b5abd3795f53e6740135030d144881558a33b105cd4a2f239568cfb672ed59c6df12dc3d315e0d6c0fc429631df02a82a2084294c095a5882b89ddb07a0fe8802786203074d2154461c41ce6c2f9a917c6821defc0b5abd339197cf421b8d50855e1ceed32496288ad602a3e38962010dc5a845b8d593416ba6cb8cc03904c08bd10f7a10b991667638873b02300edd9564e0617fe94a092925a97f9eb42742f000c64c2f2ed15c8fa2cef16c2fd214bd261a507acb9f803a00b41d5a38c8b17f4993c39576a9dff20af879b07b36d0358b3fcf4d408c83512eb33ffb590dc0bb13de5ec9989a7b6fea38f8fe49d43fa38ef77417ad03834823129274e0e0ef9a717374d23609b34da9e6de541cde393bfbc0712a1c0e277605703a238e1ec99b3cf7c79e426d88c8299d60eae8570afe0d7d26d99735b00ac85d1c38ac81c38113681f8a780d8c2e4b90bcfb55c521dfcc806df5df00c9c7a5f187f57c1d93cfb7c52b60ca03dd3ca9bfb01e6515d24e946442b65a255904afcdc79639f37731c0adfcf8018e8c1d8288c1f06538f68be51acff4a0194c5456a096e45212bd823fa4928abb71ea49e94237f6ee6786ce43a0f8104ea1538feb64132081c30bb22fc6ab8257db604a03ddbcad3ac43782825150503294aaae6b991f3d24c2bb701a85258bec73a858e351ab875410ca8a3f8f514f12cc35462db02400623070da60ae208710fc0a0ea22629e39655e978a883b98cfc302c0683d64e48d06a6ea830366374855f17783ed0e7f16b606c001e35b5c03380a0ad18aa25d50a7f3d4f0f66c2b4f8c6e445b0512308ee0ef0e49ad62ad8223d83eb815402282dab38db16300495709ea0228be11c8407b2e692f65e2e4d3fe3fa70b45445df3fdb4e0fca01a107810ad580403aa1847900c4c05521d2e13dd3200afea028a38854f97056cafff4cfe6ecfb4f2c4b0c13a96c2fa62f01d8fa3c7264b28d86eb143d62a9a29b66b8b5d791500c8fa984ca00722d0cf4070712b8f33477ba6957fc9c206df67142983c248b5417ddfc65823060a3e28d61decc82b01a01924aa685658ac2c10a7e963e5777ba695cfd90574cd757aacd36668ead4f7b19e2ee0f451b15015ac005550c722325c41bf6500458152f8be41a00b6e06f691acb12c2e498df5da16012c1811c23d0736940734b3988a42a61829c61b31486578005bcb3e1c8812080f0aaa034b1945a400d09e6de5f3ba80d4c173e0404de8036a04df0685fb3d22aa8acd527c07ac16c659b90fe5e750f2ce016490de37682fc678426cc1db03f13de5d2e7ffcc933462fc1d0f3f54c66a839daa142ead3d585e4eb9f48f4ff2890f8b7c29a809be23d02b88a1730ffadd80b83b5c39095b74a11327a74a4b772da9baa882eb0099e21ba5f956c091770ed00c856655b8791b2e5e858b3342bcea2226e6f06844f3b72997be9ace01c23af4b14517a20769d725ea8231cfcfa99e942d27b0413520fa3125a8f6d1aec575203131580fa9c40415e5f27565eeba6257958617820d187fdbe3c0de0ea3a3318acf7faeb7f3c66170bda2dcc4113a91878b4f9a0d0f60cbc9dcd16393a5a55b10dd2b4345a0aa846fc6a49525fc43291d0bf3b7149b28e2087ed583accfdc0d25c585aa253cd4c1dfbf42b0374529586df13b17ed067456a3c70efa66b2ad8aacdf83683584ca1d8c23941d65eced41419214144b0641cd23dce716410be8ac9ccac7ea42b996e2797ddc8a05843b3f0ad172486c85a0f6e2773f29db2a684e9c9c2a7df96544e7864f74978242acc5ed29faa0e83e1811824ab0ae3c401441dc03314ab952f87e670596177ce2ae013a8f8d1f46b65d1387fb026ede4d69567d5c8909aa02aa8cbe291cf9c1801d21891f6f0f4a6610ed17b98f08d12adcb91510af06680f26ce0cef3a6bb2a3bed0f1f363b96d288d83c2070dc3489d82f7bb42e79e4fdc1196be8de02184fbca8cfeba4f99042f04aa42e747c3cd1b0748ee0b93e7b666f935d951576225507060e15ba573cf3256138e37027c93d23868f16bd01c75499314dfeb63130bb721fa4e71f71611bcac86c973cf6e02bc1200ed9956be102dd0d9439181594021f95e99bba1d86f60fcad26542c02a4daa79c199623f045090e77f0ef2bd15dc51805799c32db575bb94d400ccf4cd17704a03dd3cae7b205927030f3d180d903543084dc5cb0047e9d3e051b5955fc8a410e5a46f75bfc37c03f0ce92ad825a53dd3ca4f9c9c2a5dbbf141fede49585e0ef8efb7de503a0d0d60fcb366aefea01b68070a0f5ae16bb56e603cc4c49cfdf0d9966b5ffd24b756f03d03a2f806bcfb116e1272e9ab56fede69414c8c10e056cb2f0fc0f4e7477241b01d457490ae3b149de43d050071c054dc176efb8963174afdee748e2afe2ee8a38c1c52fc5d09543c44626ce21227820e990e0d150726cfcc9546caa38c4a8320abd390904625a45e91f506ad02feeecdb3c8f91b31d61ad23e94cb021e04fb635c6f9972a62cde024d84943b430118da852e3cc32d4efd713c9740d17ed1a510d97cdb8fbefbd7d2fc8d563efe3b1fc1e2ef2ed3973e2673b9f90dd82424ee2913a7878b093bba62bafcb7f9923ca028ee5134eb0f356f249c2a5dfbda65f987803bdf1b3af702e6fe6d58be1590aa30717a785addf1fdc0a94347b8d8992b6a8521af85007ed3b850baf4c5741eee6d164c6521eea64c9c7ebaabfd22d93180a3c7264bd7fe309f5b47e1e1f0c538c0c4fbdb8bbe8fca4bb9a5bcf2af9ba586d47119be147c59f252eec85ea7fc0f1bb414938c1751210000000049454e44ae426082</data>
-    </image>
-</images>
-<connections>
-    <connection>
-        <sender>buttonCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsOptionsBase</receiver>
-        <slot>reject()</slot>
-    </connection>
-    <connection>
-        <sender>buttonOk</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsOptionsBase</receiver>
-        <slot>saveOptions()</slot>
-    </connection>
-    <connection>
-        <sender>cmbTheme</sender>
-        <signal>highlighted(const QString&amp;)</signal>
-        <receiver>QgsOptionsBase</receiver>
-        <slot>themeChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>cmbTheme</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>QgsOptionsBase</receiver>
-        <slot>themeChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>cmbTheme</sender>
-        <signal>activated(const QString&amp;)</signal>
-        <receiver>QgsOptionsBase</receiver>
-        <slot>themeChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>btnFindBrowser</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsOptionsBase</receiver>
-        <slot>findBrowser()</slot>
-    </connection>
-    <connection>
-        <sender>pbnSelectProjection</sender>
-        <signal>clicked()</signal>
-        <receiver>QgsOptionsBase</receiver>
-        <slot>pbnSelectProjection_clicked()</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="local" impldecl="in implementation">qgsoptionsbase.ui.h</include>
-</includes>
-<slots>
-    <slot>saveOptions()</slot>
-    <slot>cbxHideSplash_toggled( bool )</slot>
-    <slot>addTheme( QString item )</slot>
-    <slot>themeChanged( const QString &amp; )</slot>
-    <slot>setCurrentTheme()</slot>
-    <slot>findBrowser()</slot>
-    <slot>pbnSelectProjection_clicked()</slot>
-</slots>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+       </item>
+       <item>
+        <widget class="Q3GroupBox" name="groupBox7" >
+         <property name="title" >
+          <string>Measure tool</string>
+         </property>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>10</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="textLabel1_8" >
+            <property name="text" >
+             <string>Ellipsoid for distance calculations:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cmbEllipsoid" />
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="TabPage" >
+      <attribute name="title" >
+       <string>Pro&amp;jection</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="1" column="0" >
+        <widget class="QPushButton" name="pbnSelectProjection" >
+         <property name="text" >
+          <string>Select Global Default ...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" >
+        <widget class="Q3ButtonGroup" name="grpProjectionBehaviour" >
+         <property name="title" >
+          <string>When layer is loaded that has no projection information:</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>10</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="1" column="0" >
+           <widget class="Q3TextBrowser" name="txtGlobalWKT" />
+          </item>
+          <item row="0" column="0" >
+           <layout class="QVBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QRadioButton" name="radPromptForProjection" >
+              <property name="text" >
+               <string>Prompt for projection.</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radUseProjectProjection" >
+              <property name="text" >
+               <string>Project wide default projection will be used.</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radUseGlobalProjection" >
+              <property name="text" >
+               <string>Global default projection displa&amp;yed below will be used.</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabHelpBrowser" >
+      <attribute name="title" >
+       <string>Help &amp;Browser</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="1" column="0" colspan="3" >
+        <widget class="Line" name="line3" >
+         <property name="frameShape" >
+          <enum>QFrame::HLine</enum>
+         </property>
+         <property name="frameShadow" >
+          <enum>QFrame::Sunken</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="3" >
+        <widget class="QLabel" name="textLabel1_2" >
+         <property name="text" >
+          <string>&lt;b>Note:&lt;/b> The browser must be in your PATH or you can specify &lt;br>the full path above</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" >
+        <widget class="QLabel" name="textLabel1" >
+         <property name="text" >
+          <string>Open help documents with</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" >
+        <widget class="QComboBox" name="cmbBrowser" >
+         <property name="editable" >
+          <bool>true</bool>
+         </property>
+         <item>
+          <property name="text" >
+           <string>epiphany</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>firefox</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>mozilla-firefox</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>galeon</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>konqueror</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>mozilla</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>opera</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="0" column="2" >
+        <widget class="QPushButton" name="btnFindBrowser" >
+         <property name="maximumSize" >
+          <size>
+           <width>21</width>
+           <height>21</height>
+          </size>
+         </property>
+         <property name="text" >
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3GroupBox</class>
+   <extends></extends>
+   <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Q3ButtonGroup</class>
+   <extends></extends>
+   <header>Qt3Support/Q3ButtonGroup</header>
+   <container>1</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Q3TextBrowser</class>
+   <extends>QWidget</extends>
+   <header>q3textbrowser.h</header>
+   <container>1</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

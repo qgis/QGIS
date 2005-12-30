@@ -29,13 +29,14 @@ class QDomElement;
 #include "../../src/qgisiface.h"
 
 class QgsGrassProvider;
-#include "qgsgrasstoolsbase.h"
+#include "ui_qgsgrasstoolsbase.h"
+#include <QDialog>
 
 /*! \class QgsGrassTools
  *  \brief Interface to GRASS modules.
  *
  */
-class QgsGrassTools: public QgsGrassToolsBase
+class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
 {
     Q_OBJECT;
 
