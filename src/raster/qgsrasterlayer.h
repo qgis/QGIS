@@ -725,8 +725,6 @@ public:
      */
     void initContextMenu_(QgisApp *);
 
-    /** \brief Accessor for the superclass's popmenu var - implements the pure virtual funtion. */
-    Q3PopupMenu *contextMenu();
     /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();
     /** \brief Obtain GDAL Metadata for this layer */

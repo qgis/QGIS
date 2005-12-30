@@ -26,10 +26,6 @@
 #include <qpixmap.h>
 #include <qglobal.h>
 
-#if QT_VERSION >= 0x040000
-#include <QAction>
-#endif
-
 #include <qgsrect.h>
 #include <qgis.h>
 #include <qgsfield.h>
@@ -39,8 +35,9 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include <QLabel>
-#include <Q3PopupMenu>
+#include <QMenu>
 
+class QAction;
 class QgisApp;
 class QgsMapToPixel;
 class QgsFeature;
@@ -158,7 +155,7 @@ public:
     virtual const int &featureType();
 
     /** Return the context menu for the layer */
-    virtual Q3PopupMenu *contextMenu() = 0;
+    virtual QMenu* contextMenu(){return popMenu;}
 
     /**
      * Returns the sublayers of this layer
@@ -414,18 +411,13 @@ protected:
     QString internalName;
 
     //! context menu
-    Q3PopupMenu *popMenu;
+    QMenu* popMenu;
 
-#if QT_VERSION < 0x040000
-    //! label for popMenu
-    QLabel * myPopupLabel;
-#else
     //! header for popMenu
     QAction * myPopupLabel;
-#endif
 
-    //! checkable item id in popmenu that sets overview status
-    int mShowInOverviewItemId;
+    //! the action in popmenu that sets overview status
+    QAction* mShowInOverviewAction;
 
     /** Whether this layer is to be shown in the overview map or not */
     bool mShowInOverview;
