@@ -24,7 +24,6 @@
 #include "qgspoint.h"
 #include "qgsfeature.h"
 #include <iostream>
-#include "qgsdlgvectorlayerproperties.h"
 
 class QgsSymbol;
 

@@ -33,7 +33,6 @@ class QgsMapToPixel;
 class QgsData;
 class QgsRenderer;
 class QgsLegendItem;
-class QgsDlgVectorLayerProperties;
 class QgsGeometry;
 class QgsIdentifyResults;
 class QgsLabel;
@@ -49,7 +48,7 @@ class QgsLabel;
 #include "qgsgeometry.h"
 #include "qgsgeometryvertexindex.h"
 #include "qgsvectordataprovider.h"
-
+#include "qgsvectorlayerproperties.h"
 class QgsAttributeTableDisplay;
 
 /*! \class QgsVectorLayer
@@ -182,11 +181,11 @@ public:
   /**Sets the renderer. If a renderer is already present, it is deleted*/
   void setRenderer(QgsRenderer * r);
   /**Sets m_propertiesDialog*/
-  void setLayerProperties(QgsDlgVectorLayerProperties * properties);
+  void setLayerProperties(QgsVectorLayerProperties * properties);
   /**Returns point, line or polygon*/
   QGis::VectorType vectorType() const;
   /**Returns a pointer to the properties dialog*/
-  QgsDlgVectorLayerProperties *propertiesDialog();
+  QgsVectorLayerProperties *propertiesDialog();
   /**Returns the bounding box of the selected features. If there is no selection, QgsRect(0,0,0,0) is returned*/
   virtual QgsRect bBoxOfSelected();
   //! Return the provider type for this layer
@@ -445,7 +444,7 @@ protected:
   /**Display labels */
   bool mLabelOn;
   /**Dialog to set the properties*/
-  QgsDlgVectorLayerProperties *m_propertiesDialog;
+  QgsVectorLayerProperties *m_propertiesDialog;
   /**Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature)*/
   int findFreeId();
   /**Writes the changes to disk*/

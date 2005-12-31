@@ -25,7 +25,6 @@
 #include "qgspoint.h"
 #include <qpainter.h>
 #include "qgsmaptopixel.h"
-#include "qgsdlgvectorlayerproperties.h"
 class QgsFeature;
 
 /**Render class to display all the features with a single QgsSymbol*/
