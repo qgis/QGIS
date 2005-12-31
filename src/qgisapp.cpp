@@ -805,7 +805,9 @@ void QgisApp::createStatusBar()
   // For Qt/Mac 3.3, the default toolbutton height is 30 and labels were expanding to match
   mOnTheFlyProjectionStatusButton->setMaximumHeight(mScaleLabel->height());
   QPixmap myProjPixmap;
-  myProjPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection_disabled.png"));
+  QString myIconPath = mAppDir +"/share/qgis/themes/" + mThemeName;
+  myProjPixmap.load(myIconPath+"/mIconProjectionDisabled.png");
+  qDebug ("Icon disabled projection icon to: " + myIconPath.toLocal8Bit()+"/mIconProjectionDisabled.png");
   mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
   assert(!myProjPixmap.isNull());
   QWhatsThis::add(mOnTheFlyProjectionStatusButton, tr("This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour."));
@@ -4904,19 +4906,21 @@ void QgisApp::removePluginToolBarIcon(QAction *qAction)
 
 void QgisApp::projectionsEnabled(bool theFlag)
 {
-#if defined(WIN32) || defined(Q_OS_MACX)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
+  QString myIconPath = mAppDir +"/share/qgis/themes/" + mThemeName;
   if (theFlag)
   {
     QPixmap myProjPixmap;
-    myProjPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection.png"));
+    myProjPixmap.load(myIconPath+"/mIconProjectionEnabled.png");
+    qDebug ("Icon disabled projection icon to: " + myIconPath.toLocal8Bit()+"/mIconProjectionEnabled.png");
+    assert(!myProjPixmap.isNull());
     mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
   }
   else
   {
     QPixmap myProjPixmap;
-    myProjPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/icon_projection_disabled.png"));
+    myProjPixmap.load(myIconPath+"/mIconProjectionDisabled.png");
+    qDebug ("Icon disabled projection icon to: " + myIconPath.toLocal8Bit()+"/mIconProjectionDisabled.png");
+    assert(!myProjPixmap.isNull());
     mOnTheFlyProjectionStatusButton->setPixmap(myProjPixmap);
   }
 }
