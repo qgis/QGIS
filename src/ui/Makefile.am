@@ -25,7 +25,7 @@ qgis_ui_UIC =	\
 		qgsbookmarksbase.ui		\
 		qgscontcoldialogbase.ui			\
 		qgsdelattrdialogbase.ui			\
-		qgsdlgvectorlayerpropertiesbase.ui	\
+		qgsvectorlayerpropertiesbase.ui	\
 		qgsgeomtypedialogbase.ui		\
 		qgsgrasydialogbase.ui			\
 		qgshelpviewerbase.ui			\
@@ -93,7 +93,7 @@ qgis_ui_UIHEADERS = ui_qgisappbase.h \
 		ui_qgsbookmarksbase.h		\
 		ui_qgscontcoldialogbase.h			\
 		ui_qgsdelattrdialogbase.h			\
-		ui_qgsdlgvectorlayerpropertiesbase.h	\
+		ui_qgsvectorlayerpropertiesbase.h	\
 		ui_qgsgeomtypedialogbase.h		\
 		ui_qgsgrasydialogbase.h			\
 		ui_qgshelpviewerbase.h			\
