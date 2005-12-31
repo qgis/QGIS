@@ -537,8 +537,6 @@ void QgisApp::createActions()
   mActionIdentify->setStatusTip(tr("Click on features to identify them"));
   connect(mActionIdentify, SIGNAL(triggered()), this, SLOT(identify()));
   //
-  // ------- checked till here
-  //
   mActionSelect= new QAction(QIcon(iconPath+"/mActionSelect.png"), tr("Select Features"), this);
   mActionSelect->setStatusTip(tr("Select Features"));
   connect(mActionSelect, SIGNAL(triggered()), this, SLOT(select()));
