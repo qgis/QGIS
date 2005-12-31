@@ -17,7 +17,7 @@
  ***************************************************************************/
  /* $Id$ */
 
-#include "qgsdlgvectorlayerproperties.h"
+#include "qgsvectorlayerproperties.h"
 #include "qgsattributeactiondialog.h"
 #include "qgscontcoldialog.h"
 #include "qgsgrasydialog.h"
@@ -36,7 +36,7 @@
 #include <Q3WhatsThis>
 
 
-QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr, 
+QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr, 
                                                          QWidget * parent, 
                                                          const char *name, 
                                                          bool modal)
@@ -74,14 +74,14 @@ QgsDlgVectorLayerProperties::QgsDlgVectorLayerProperties(QgsVectorLayer * lyr,
       leSpatialRefSys->setText(layer->coordinateTransform()->sourceSRS().proj4String());
   }
 
-} // QgsDlgVectorLayerProperties ctor
+} // QgsVectorLayerProperties ctor
 
-QgsDlgVectorLayerProperties::~QgsDlgVectorLayerProperties()
+QgsVectorLayerProperties::~QgsVectorLayerProperties()
 {
     
 }
 
-void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & dialogString)
+void QgsVectorLayerProperties::alterLayerDialog(const QString & dialogString)
 {
 
     widgetStackRenderers->removeWidget(mRendererDialog);
@@ -107,28 +107,28 @@ void QgsDlgVectorLayerProperties::alterLayerDialog(const QString & dialogString)
     widgetStackRenderers->raiseWidget(mRendererDialog);  
 }
 
-QDialog *QgsDlgVectorLayerProperties::getBufferDialog()
+QDialog *QgsVectorLayerProperties::getBufferDialog()
 {
     //return bufferDialog;
 }
 
-QgsRenderer *QgsDlgVectorLayerProperties::getBufferRenderer()
+QgsRenderer *QgsVectorLayerProperties::getBufferRenderer()
 {
     //return bufferRenderer;
 }
 
-void QgsDlgVectorLayerProperties::setLegendType(QString type)
+void QgsVectorLayerProperties::setLegendType(QString type)
 {
   legendtypecombobox->setCurrentText(type);
 }
 
-void QgsDlgVectorLayerProperties::setDisplayField(QString name)
+void QgsVectorLayerProperties::setDisplayField(QString name)
 {
   displayFieldComboBox->setCurrentText(name);
 }
 
 //! @note in raster props, this metho d is called sync()
-void QgsDlgVectorLayerProperties::reset( void )
+void QgsVectorLayerProperties::reset( void )
 {
   // populate the general information
   QString source = layer->source();
@@ -238,21 +238,21 @@ void QgsDlgVectorLayerProperties::reset( void )
 // methods reimplemented from qt designer base class
 //
 
-void QgsDlgVectorLayerProperties::on_pbnCancel_clicked()
+void QgsVectorLayerProperties::on_pbnCancel_clicked()
 {
  reject();
 }
-void QgsDlgVectorLayerProperties::on_btnHelp_clicked()
+void QgsVectorLayerProperties::on_btnHelp_clicked()
 {
 
 }
-void QgsDlgVectorLayerProperties::on_pbnOK_clicked()
+void QgsVectorLayerProperties::on_pbnOK_clicked()
 {
   on_pbnApply_clicked();
   layer->setLayerProperties(0);
   close(true);
 }
-void QgsDlgVectorLayerProperties::on_pbnApply_clicked()
+void QgsVectorLayerProperties::on_pbnApply_clicked()
 {
   //
   // Set up sql subset query if applicable
@@ -310,7 +310,7 @@ void QgsDlgVectorLayerProperties::on_pbnApply_clicked()
 
 }
 
-void QgsDlgVectorLayerProperties::on_pbnQueryBuilder_clicked()
+void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
 {
 #ifdef HAVE_POSTGRESQL
   // launch the query builder using the PostgreSQL connection
@@ -345,7 +345,7 @@ void QgsDlgVectorLayerProperties::on_pbnQueryBuilder_clicked()
 #endif
 }
 
-void QgsDlgVectorLayerProperties::on_pbnIndex_clicked()
+void QgsVectorLayerProperties::on_pbnIndex_clicked()
 {
     QgsVectorDataProvider* pr=layer->getDataProvider();
     if(pr)
@@ -365,7 +365,7 @@ void QgsDlgVectorLayerProperties::on_pbnIndex_clicked()
     }
 }
 
-QString QgsDlgVectorLayerProperties::getMetadata()
+QString QgsVectorLayerProperties::getMetadata()
 {
   QString myMetadataQString = "<html><body>";
   myMetadataQString += "<table width=\"100%\">";
@@ -555,7 +555,7 @@ QString QgsDlgVectorLayerProperties::getMetadata()
 
 
 
-void QgsDlgVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
+void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 {
     
 

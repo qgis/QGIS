@@ -17,10 +17,10 @@
  ***************************************************************************/
  /* $Id$ */
 
-#ifndef QGSDLGVECTORLAYERPROPERTIES
-#define QGSDLGVECTORLAYERPROPERTIES
+#ifndef QGSVECTORLAYERPROPERTIES
+#define QGSVECTORLAYERPROPERTIES
 
-#include "ui_qgsdlgvectorlayerpropertiesbase.h"
+#include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgsrenderer.h"
 
 class QgsAttributeActionDialog;
@@ -28,11 +28,11 @@ class QgsLabelDialog;
 class QgsVectorLayer;
 
 
-class QgsDlgVectorLayerProperties : public QDialog, private Ui::QgsDlgVectorLayerPropertiesBase{
+class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPropertiesBase{
   Q_OBJECT
   public:
-  QgsDlgVectorLayerProperties(QgsVectorLayer *lyr =0,QWidget *parent=0, const char *name=0, bool modal=true);
-  ~QgsDlgVectorLayerProperties();
+  QgsVectorLayerProperties(QgsVectorLayer *lyr =0,QWidget *parent=0, const char *name=0, bool modal=true);
+  ~QgsVectorLayerProperties();
   /**Sets the legend type to "single symbol", "graduated symbol" or "continuous color"*/
   void setLegendType(QString type);
   /**Returns the display name entered in the dialog*/
@@ -86,18 +86,18 @@ class QgsDlgVectorLayerProperties : public QDialog, private Ui::QgsDlgVectorLaye
 };
 
 
-inline void QgsDlgVectorLayerProperties::setBufferDialog(QDialog* dialog)
+inline void QgsVectorLayerProperties::setBufferDialog(QDialog* dialog)
 {
     //bufferDialog=dialog;
 }
 
-inline QPixmap* QgsDlgVectorLayerProperties::getBufferPixmap()
+inline QPixmap* QgsVectorLayerProperties::getBufferPixmap()
 {
     //return &bufferPixmap;
     return 0;
 }
 
-inline QString QgsDlgVectorLayerProperties::displayName()
+inline QString QgsVectorLayerProperties::displayName()
 {
     return txtDisplayName->text();
 }

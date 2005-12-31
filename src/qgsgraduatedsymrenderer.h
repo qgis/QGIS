@@ -28,7 +28,6 @@
 #include "qgsmaptopixel.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
-#include "qgsdlgvectorlayerproperties.h"
 
 /**This class contains the information for graduate symbol rendering*/
 class QgsGraduatedSymRenderer: public QgsRenderer

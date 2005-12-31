@@ -63,7 +63,7 @@ qgisHEADERS =	\
 		qgsdatasourceuri.h				\
 		qgsdelattrdialog.h				\
 		qgsdistancearea.h				\
-		qgsdlgvectorlayerproperties.h			\
+		qgsvectorlayerproperties.h			\
 		qgsexception.h					\
 		qgsfile.h					\
 		qgscsexception.h				\
@@ -120,7 +120,7 @@ qgis_MOC =	\
 		qgscontcoldialog.moc.cpp		\
 		qgscontexthelp.moc.cpp			\
 		qgsdelattrdialog.moc.cpp		\
-		qgsdlgvectorlayerproperties.moc.cpp	\
+		qgsvectorlayerproperties.moc.cpp	\
 		qgsencodingfiledialog.moc.cpp		\
 		qgsgeomtypedialog.moc.cpp		\
 		qgsgrasydialog.moc.cpp			\
@@ -166,7 +166,7 @@ qgis_SOURCES =	main.cpp			\
 		qgsdatasource.cpp		\
 		qgsdelattrdialog.cpp		\
 		qgsdistancearea.cpp			\
-		qgsdlgvectorlayerproperties.cpp	\
+		qgsvectorlayerproperties.cpp	\
 		qgsencodingfiledialog.cpp	\
 		qgsfile.cpp			\
 		qgsgeomtypedialog.cpp		\
