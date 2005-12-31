@@ -308,8 +308,7 @@ libqgisHEADERS =							\
 		qgsuniquevalrenderer.h				\
 		qgsvectordataprovider.h				\
 		qgsvectorfilewriter.h				\
-		qgsvectorlayer.h \
-		omggdal.h
+		qgsvectorlayer.h 
 
 
 ## all the ui files generate a corresponding header file
@@ -351,8 +350,7 @@ libqgis_la_MOC =							\
 		qgsmapoverviewcanvas.moc.cpp		\
 		qgspointstylewidget.moc.cpp			\
 		qgsrunprocess.moc.cpp				\
-		qgsvectorlayer.moc.cpp \
-		omggdal.moc.cpp 
+		qgsvectorlayer.moc.cpp 
 
 libqgis_la_SOURCES =						\
 		qgisapp.cpp							\
@@ -411,8 +409,7 @@ libqgis_la_SOURCES =						\
 		qgsuniquevalrenderer.cpp			\
 		qgsvectordataprovider.cpp			\
 		qgsvectorfilewriter.cpp				\
-		qgsvectorlayer.cpp \
-		omggdal.cpp 
+		qgsvectorlayer.cpp 
 
 if HAVE_POSTGRESQL
 libqgis_la_SOURCES += $(postgresLIBSOURCES)

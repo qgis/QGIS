@@ -58,6 +58,9 @@
             <property name="text" >
              <string>Transparency:</string>
             </property>
+            <property name="buddy" >
+             <cstring>sliderTransparency</cstring>
+            </property>
            </widget>
           </item>
           <item row="4" column="4" >
@@ -1073,20 +1076,85 @@
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
-   <class>Q3ListBox</class>
-   <extends></extends>
-   <header>q3listbox.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
    <class>Q3TextBrowser</class>
    <extends>QWidget</extends>
    <header>q3textbrowser.h</header>
    <container>1</container>
    <pixmap></pixmap>
   </customwidget>
+  <customwidget>
+   <class>Q3ListBox</class>
+   <extends></extends>
+   <header>q3listbox.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>rbtnThreeBand</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>grpBoxGrayscale</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>80</x>
+     <y>93</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>260</x>
+     <y>251</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbtnThreeBand</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>grpBoxRGB</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>41</x>
+     <y>84</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>44</x>
+     <y>247</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbtnSingleBand</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>grpBoxRGB</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>178</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>178</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rbtnSingleBand</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>grpBoxGrayscale</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>137</x>
+     <y>82</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>284</x>
+     <y>238</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

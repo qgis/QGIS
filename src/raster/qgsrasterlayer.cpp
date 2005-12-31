@@ -66,7 +66,6 @@ wish to see edbug messages printed to stdout.
 //Added by qt3to4:
 #include <Q3Frame>
 #include <QPixmap>
-#include "omggdal.h"
 
 #include <cstdio>
 #include <cmath>
@@ -3784,28 +3783,6 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
   popMenu->addAction(tr("&Convert to..."), this, SLOT(convertTo()));
 } // QgsRasterLayer::initContextMenu
 
-/**
-
-void const QgsRasterLayer::convertTo()
-{
-  //qDebug("Converting to tiff!");
-  OmgGdal myOmgGdal;
-  //connect(&myOmgGdal, SIGNAL(updateProgress(int, int )), this, SLOT(updateProgress(int, int )));
-  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
-  // Iterate through file list and process
-  //if (cboOutputFileType->currentText()=="GeoTiff")
-  //{
-    myOmgGdal.convert(source(), "/tmp/", OmgGdal::GeoTiff);
-  //}
-  //else
-  //{
-  //  myOmgGdal.convert(layerName, "/tmp", OmgGdal::ArcInfoAscii);
-  //}
-  emit setProgress (0,0);
-  QApplication::restoreOverrideCursor();
-}
-*/
 void QgsRasterLayer::updateProgress(int theProgress, int theMax)
 {
   //simply propogate it on!
