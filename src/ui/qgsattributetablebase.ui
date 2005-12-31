@@ -42,7 +42,7 @@
         <string/>
        </property>
        <property name="icon" >
-        <iconset>image1</iconset>
+        <iconset>../xpm/remove_selection.xpm</iconset>
        </property>
        <property name="shortcut" >
         <string/>
@@ -58,7 +58,7 @@
         <string/>
        </property>
        <property name="icon" >
-        <iconset>image2</iconset>
+        <iconset>../xpm/selected_to_top.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Ctrl+T</string>
@@ -74,7 +74,7 @@
         <string/>
        </property>
        <property name="icon" >
-        <iconset>image3</iconset>
+        <iconset>../xpm/switch_selection.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Ctrl+S</string>
@@ -93,7 +93,7 @@
         <string/>
        </property>
        <property name="icon" >
-        <iconset>image4</iconset>
+        <iconset>../xpm/copy_selection.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Ctrl+C</string>
@@ -109,7 +109,7 @@
         <string/>
        </property>
        <property name="icon" >
-        <iconset>image5</iconset>
+        <iconset>../xpm/new_attribute.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Ctrl+N</string>
@@ -125,7 +125,7 @@
         <string/>
        </property>
        <property name="icon" >
-        <iconset>image6</iconset>
+        <iconset>../xpm/delete_attribute.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Ctrl+X</string>
