@@ -29,9 +29,9 @@ email                : sherman at mrcc.com
 #include <qinputdialog.h>
 #include <q3groupbox.h>
 #include <QTextOStream>
-#include "xpm/point_layer.xpm"
-#include "xpm/line_layer.xpm"
-#include "xpm/polygon_layer.xpm"
+#include "themes/default/point_layer.xpm"
+#include "themes/default/line_layer.xpm"
+#include "themes/default/polygon_layer.xpm"
 #include "qgsdbsourceselect.h"
 #include "qgsnewconnection.h"
 #include "qgspgquerybuilder.h"
