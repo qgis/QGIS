@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include "qgsdlgvectorlayerproperties.h"
 #include "qgsuniquevalrenderer.h"
 #include "qgsuvaldialog.h"
 #include "qgsfeatureattribute.h"

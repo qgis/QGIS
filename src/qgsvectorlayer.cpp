@@ -72,7 +72,7 @@
 #include "qgslegenditem.h"
 #include "qgslegendvectorsymbologyitem.h"
 #include "qgslegendsymbologygroup.h"
-#include "qgsdlgvectorlayerproperties.h"
+#include "qgsvectorlayerproperties.h"
 #include "qgsrenderer.h"
 #include "qgssinglesymrenderer.h"
 #include "qgsgraduatedsymrenderer.h"
@@ -1363,9 +1363,9 @@ void QgsVectorLayer::showLayerProperties()
 
   
 #ifdef QGISDEBUG
-    std::cerr << "Creating new QgsDlgVectorLayerProperties object\n";
+    std::cerr << "Creating new QgsVectorLayerProperties object\n";
 #endif
-    m_propertiesDialog = new QgsDlgVectorLayerProperties(this);
+    m_propertiesDialog = new QgsVectorLayerProperties(this);
     // Make sure that the UI starts out with the correct display
     // field value
 #ifdef QGISDEBUG
@@ -1434,7 +1434,7 @@ QGis::VectorType QgsVectorLayer::vectorType() const
   }
 }
 
-QgsDlgVectorLayerProperties *QgsVectorLayer::propertiesDialog()
+QgsVectorLayerProperties *QgsVectorLayer::propertiesDialog()
 {
   return m_propertiesDialog;
 }
@@ -1498,7 +1498,7 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
   return retval;
 }
 
-void QgsVectorLayer::setLayerProperties(QgsDlgVectorLayerProperties * properties)
+void QgsVectorLayer::setLayerProperties(QgsVectorLayerProperties * properties)
 {
     m_propertiesDialog = properties;
   // Make sure that the UI gets the correct display
