@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>192</width>
-    <height>143</height>
+    <width>219</width>
+    <height>111</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -17,64 +17,24 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
    <item row="0" column="0" >
-    <widget class="Q3GroupBox" name="grpFill" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>7</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+    <widget class="QGroupBox" name="grpFill" >
      <property name="title" >
       <string>Fill Style</string>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
-       <number>10</number>
+       <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="1" column="0" colspan="2" >
-       <widget class="QComboBox" name="fptFillPattern" >
-        <item>
-         <property name="text" >
-          <string>PolyStyleWidget</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2" >
-       <widget class="QLabel" name="txtFillColour" >
-        <property name="text" >
-         <string>Colour:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>90</width>
-          <height>21</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="3" column="0" >
+      <item row="1" column="1" >
        <widget class="QPushButton" name="colFillColour" >
         <property name="sizePolicy" >
          <sizepolicy>
@@ -95,6 +55,22 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="txtFillColour" >
+        <property name="text" >
+         <string>Colour:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2" >
+       <widget class="QComboBox" name="fptFillPattern" >
+        <item>
+         <property name="text" >
+          <string>PolyStyleWidget</string>
+         </property>
+        </item>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -102,15 +78,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends></extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
