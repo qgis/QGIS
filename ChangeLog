@@ -1,6 +1,13 @@
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
 Version 0.8 'Joesephine' .... development version
+2006-01-01 [timlinux] 0.7.9.5
+** removed community reg plugin and exampl plugins
+** refactored composer code into its own lib in src/composer
+** renamed libqgsraster to libqgis_raster
+** rearranged src/Makefile so app target uses only main.cpp in SOURCES and
+links to a new very monolithic lib. Lib will be broken up into smaller bits
+over time,
 2005-11-30 [timlinux] 0.7.9.4
 ** Refactored all src/*.ui into src/ui/ dir for cleaner separation of ui's
 2005-12-29 [gsherman] 0.7.9.3
