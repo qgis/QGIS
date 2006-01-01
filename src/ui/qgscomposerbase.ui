@@ -3,36 +3,22 @@
  <comment></comment>
  <exportmacro></exportmacro>
  <class>QgsComposerBase</class>
- <widget class="Q3MainWindow" name="QgsComposerBase" >
+ <widget class="QMainWindow" name="QgsComposerBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>725</width>
-    <height>526</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
-  <property name="mouseTracking" >
-   <bool>false</bool>
-  </property>
-  <property name="focusPolicy" >
-   <enum>Qt::ClickFocus</enum>
-  </property>
   <property name="windowTitle" >
-   <string>Map Composer</string>
+   <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="widget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>38</y>
-     <width>725</width>
-     <height>488</height>
-    </rect>
-   </property>
+  <widget class="QWidget" name="centralwidget" >
    <layout class="QGridLayout" >
     <property name="margin" >
-     <number>8</number>
+     <number>9</number>
     </property>
     <property name="spacing" >
      <number>6</number>
@@ -172,7 +158,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="tab" >
+       <widget class="QWidget" name="tab_2" >
         <attribute name="title" >
          <string>Item</string>
         </attribute>
@@ -211,275 +197,168 @@
     </item>
    </layout>
   </widget>
-  <widget class="Q3ToolBar" name="Toolbar_2" >
+  <widget class="QStatusBar" name="statusbar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>0</y>
-     <width>223</width>
-     <height>38</height>
+     <y>578</y>
+     <width>800</width>
+     <height>22</height>
     </rect>
    </property>
-   <property name="label" >
-    <string>Toolbar_2</string>
-   </property>
-   <addaction name="actionSelectItem" />
-   <addaction name="actionAddMap" />
-   <addaction name="actionAddVectorLegend" />
-   <addaction name="actionAddScalebar" />
-   <addaction name="actionAddLabel" />
-   <addaction name="actionAddPicture" />
   </widget>
-  <widget class="Q3ToolBar" name="Toolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>223</x>
-     <y>0</y>
-     <width>155</width>
-     <height>38</height>
-    </rect>
+  <widget class="QToolBar" name="toolBar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
    </property>
-   <property name="label" >
-    <string>Toolbar</string>
-   </property>
-   <addaction name="actionZoomIn" />
-   <addaction name="actionZoomOut" />
-   <addaction name="actionZoomFullExtent" />
-   <addaction name="actionRefresh" />
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="mActionOpenTemplate" />
+   <addaction name="mActionSaveTemplateAs" />
+   <addaction name="mActionExportAsImage" />
+   <addaction name="mActionExportAsSVG" />
+   <addaction name="mActionPrint" />
+   <addaction name="separator" />
+   <addaction name="mActionZoomAll" />
+   <addaction name="mActionZoomIn" />
+   <addaction name="mActionZoomOut" />
+   <addaction name="mActionRefreshView" />
+   <addaction name="separator" />
+   <addaction name="mActionAddNewMap" />
+   <addaction name="mActionAddNewLabel" />
+   <addaction name="mActionAddImage" />
+   <addaction name="mActionAddNewVectLegend" />
+   <addaction name="mActionAddNewScalebar" />
+   <addaction name="mActionSelectMoveItem" />
   </widget>
-  <widget class="Q3ToolBar" name="toolBar" >
-   <property name="geometry" >
-    <rect>
-     <x>378</x>
-     <y>0</y>
-     <width>121</width>
-     <height>38</height>
-    </rect>
-   </property>
-   <property name="label" >
-    <string>Tools</string>
-   </property>
-   <addaction name="actionPrint" />
-   <addaction name="actionImage" />
-   <addaction name="actionSvg" />
-  </widget>
-  <action name="fileOpenAction" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
+  <action name="mActionOpenTemplate" >
    <property name="icon" >
-    <iconset>themes/default/mActionFileOpen.png</iconset>
+    <iconset>../themes/default/mActionFileOpen.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open Template ...</string>
    </property>
-   <property name="iconText" >
-    <string>Open Template</string>
-   </property>
-   <property name="shortcut" >
-    <string>Ctrl+O</string>
-   </property>
   </action>
-  <action name="fileSaveAsAction" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
+  <action name="mActionSaveTemplateAs" >
    <property name="icon" >
-    <iconset>themes/default/mActionFileSave.png</iconset>
+    <iconset>../themes/default/mActionFileSaveAs.png</iconset>
    </property>
    <property name="text" >
     <string>Save Template &amp;As...</string>
    </property>
-   <property name="iconText" >
-    <string>Save Template As</string>
-   </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
-  <action name="actionPrint" >
+  <action name="mActionPrint" >
    <property name="icon" >
-    <iconset>themes/default/mActionFilePrint.png</iconset>
+    <iconset>../themes/default/mActionFilePrint.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Print...</string>
    </property>
-   <property name="iconText" >
-    <string>Print</string>
-   </property>
-   <property name="shortcut" >
-    <string>Ctrl+P</string>
-   </property>
   </action>
-  <action name="actionZoomFullExtent" >
+  <action name="mActionZoomAll" >
    <property name="icon" >
-    <iconset>themes/default/mActionZoomFullExtent.png</iconset>
+    <iconset>../themes/default/mActionZoomFullExtent.png</iconset>
    </property>
    <property name="text" >
     <string>Zoom All</string>
    </property>
-   <property name="iconText" >
-    <string>Zoom to full extent</string>
-   </property>
   </action>
-  <action name="actionZoomIn" >
+  <action name="mActionZoomIn" >
    <property name="icon" >
-    <iconset>themes/default/mActionZoomIn.png</iconset>
+    <iconset>../themes/default/mActionZoomIn.png</iconset>
    </property>
    <property name="text" >
     <string>Zoom In</string>
    </property>
-   <property name="iconText" >
-    <string>Zoom in</string>
-   </property>
   </action>
-  <action name="actionZoomOut" >
+  <action name="mActionZoomOut" >
    <property name="icon" >
-    <iconset>themes/default/mActionZoomOut.png</iconset>
+    <iconset>../themes/default/mActionZoomOut.png</iconset>
    </property>
    <property name="text" >
     <string>Zoom Out</string>
    </property>
-   <property name="iconText" >
-    <string>Zoom out</string>
-   </property>
   </action>
-  <action name="actionAddMap" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
+  <action name="mActionAddNewMap" >
    <property name="icon" >
-    <iconset>themes/default/mActionAddNonDbLayer.png</iconset>
+    <iconset>../themes/default/mActionAddRasterLayer.png</iconset>
    </property>
    <property name="text" >
     <string>Add new map</string>
    </property>
-   <property name="iconText" >
-    <string>Add new map</string>
-   </property>
   </action>
-  <action name="actionAddLabel" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
+  <action name="mActionAddNewLabel" >
    <property name="icon" >
-    <iconset>themes/default/mActionLabel.png</iconset>
+    <iconset>../themes/default/mActionLabel.png</iconset>
    </property>
    <property name="text" >
     <string>Add new label</string>
    </property>
-   <property name="iconText" >
-    <string>Add new label</string>
-   </property>
   </action>
-  <action name="actionAddVectorLegend" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
+  <action name="mActionAddNewVectLegend" >
    <property name="icon" >
-    <iconset>themes/default/mActionAddLegend.png</iconset>
+    <iconset>../themes/default/mActionAddLegend.png</iconset>
    </property>
    <property name="text" >
     <string>Add new vect legend</string>
    </property>
-   <property name="iconText" >
-    <string>Add new vect legend</string>
-   </property>
   </action>
-  <action name="actionSelectItem" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
+  <action name="mActionSelectMoveItem" >
    <property name="icon" >
-    <iconset>themes/default/mActionSelect.png</iconset>
+    <iconset>../themes/default/mActionPan.png</iconset>
    </property>
    <property name="text" >
     <string>Select/Move item</string>
    </property>
-   <property name="iconText" >
-    <string>Select/Move item</string>
-   </property>
   </action>
-  <action name="actionImage" >
+  <action name="mActionExportAsImage" >
    <property name="icon" >
-    <iconset>themes/default/mActionExportMapServer.png</iconset>
+    <iconset>../themes/default/mActionExportMapServer.png</iconset>
    </property>
    <property name="text" >
     <string>Export as image</string>
    </property>
-   <property name="iconText" >
-    <string>Export as image</string>
-   </property>
   </action>
-  <action name="actionSvg" >
+  <action name="mActionExportAsSVG" >
    <property name="icon" >
-    <iconset>themes/default/mActionSaveAsSVG.png</iconset>
+    <iconset>../themes/default/mActionSaveAsSVG.png</iconset>
    </property>
    <property name="text" >
     <string>Export as SVG</string>
    </property>
-   <property name="iconText" >
-    <string>Export as SVG</string>
-   </property>
   </action>
-  <action name="actionAddScalebar" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
+  <action name="mActionAddNewScalebar" >
    <property name="icon" >
-    <iconset>themes/default/mActionMeasure.png</iconset>
+    <iconset>../../plugins/scale_bar/icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Add new scalebar</string>
    </property>
-   <property name="iconText" >
-    <string>Add new scalebar</string>
-   </property>
   </action>
-  <action name="actionRefresh" >
+  <action name="mActionRefreshView" >
    <property name="icon" >
-    <iconset>themes/default/mActionDraw.png</iconset>
+    <iconset>../themes/default/mActionDraw.png</iconset>
    </property>
    <property name="text" >
     <string>Refresh view</string>
    </property>
-   <property name="iconText" >
-    <string>Refresh view</string>
-   </property>
   </action>
-  <action name="actionAddPicture" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
+  <action name="mActionAddImage" >
    <property name="icon" >
-    <iconset>themes/default/mActionAddRasterLayer.png</iconset>
+    <iconset>../themes/default/mActionSaveMapAsImage.png</iconset>
    </property>
-   <property name="iconText" >
-    <string>Add new picture</string>
+   <property name="text" >
+    <string>Add Image</string>
    </property>
   </action>
  </widget>
- <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>Q3Frame</class>
    <extends></extends>
    <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3ToolBar</class>
-   <extends></extends>
-   <header>q3listview.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3MainWindow</class>
-   <extends></extends>
-   <header>q3mainwindow.h</header>
    <container>1</container>
    <pixmap></pixmap>
   </customwidget>

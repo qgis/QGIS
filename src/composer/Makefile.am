@@ -11,6 +11,7 @@
 # $Id: Makefile.am 4416 2005-12-30 17:30:36Z timlinux $
 
 if !HAVE_QTMAC
+PREFIX=-DPREFIX=\"$(prefix)\"
 PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
 endif
 
@@ -53,7 +54,7 @@ libqgis_composer_la_LIBFLAGS = $(QT_LDADD)
 
 libqgis_composer_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
 libqgis_composer_la_CXXFLAGS = $(PKGDATAPATH) -I.. -I../ui/ \
-				$(CXXFLAGS) $(EXTRA_CXXFLAGS) \
+				$(PREFIX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) \
 				$(GDAL_CFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GEOS_CFLAGS)
 
 
