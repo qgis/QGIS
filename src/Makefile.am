@@ -38,175 +38,9 @@ endif
 ## Changed by Tim so lib builds first then app
 lib_LTLIBRARIES = libqgis.la
 
-qgisHEADERS =	\
-		qgis.h						\
-		qgisiface.h					\
-		qgisinterface.h					\
-		qgsabout.h				\
-		qgsaddattrdialog.h				\
-		qgsadvancedattrsearch.h				\
-		qgsattributeactiondialog.h			\
-		qgsattributedialog.h				\
-		qgsattributetabledisplay.h			\
-		qgsattributetable.h				\
-		qgsbookmarks.h			\
-		qgsbookmarkitem.h			\
-		qgsclipboard.h					\
-		qgscontexthelp.h				\
-		qgscontcoldialog.h				\
-		qgsencodingfiledialog.h				\
-		qgsmaptopixel.h					\
-		qgscustomsymbol.h				\
-		qgsdatamanager.h				\
-		qgsdataprovider.h				\
-		qgsdatasource.h					\
-		qgsdatasourceuri.h				\
-		qgsdelattrdialog.h				\
-		qgsdistancearea.h				\
-		qgsvectorlayerproperties.h			\
-		qgsexception.h					\
-		qgsfile.h					\
-		qgscsexception.h				\
-		qgsgeomtypedialog.h				\
-		qgsgrasydialog.h				\
-		qgshelpviewer.h					\
-		qgsidentifyresults.h				\
-		qgslabelattributes.h				\
-		qgslabeldialog.h				\
-		qgsline.h					\
-		qgslinestyledialog.h				\
-		qgslinesymbol.h					\
-		qgsludialog.h					\
-		qgsmaplayerinterface.h				\
-		qgsmapserverexport.h				\
-		qgsmarkerdialog.h				\
-		qgsmeasure.h					\
-		qgsnewhttpconnection.h				\
-		qgsoptions.h					\
-		qgspastetransformations.h			\
-		qgspatterndialog.h				\
-		qgspluginitem.h					\
-		qgspluginmanager.h				\
-		qgspluginmetadata.h				\
-		qgspluginregistry.h				\
-		qgspolygonsymbol.h				\
-		qgsproject.h					\
-		qgsprojectproperties.h			\
-		qgsprovidermetadata.h			\
-		qgsrasterdataprovider.h			\
-		qgsrasterlayerproperties.h		\
-        qgssearchstring.h				\
-        qgssearchtreenode.h				\
-		qgsserversourceselect.h				\
-		qgssisydialog.h					\
-		qgssvgcache.h					\
-		qgsmarkercatalogue.h				\
-		qgssymbologyutils.h				\
-		qgsuvaldialog.h					\
-		qgslayerprojectionselector.h \
-		$(WIDGETPATH)/projectionselector/qgsprojectionselector.h 
 
-## non-uic files generated from MOC
-qgis_MOC =	\
-		qgisinterface.moc.cpp			\
-		qgsabout.moc.cpp		\
-		qgsaddattrdialog.moc.cpp		\
-		qgsadvancedattrsearch.moc.cpp		\
-		qgsattributeactiondialog.moc.cpp	\
-		qgsattributedialog.moc.cpp		\
-		qgsattributetabledisplay.moc.cpp		\
-		qgsattributetable.moc.cpp		\
-		qgsbookmarks.moc.cpp		\
-		qgscontcoldialog.moc.cpp		\
-		qgscontexthelp.moc.cpp			\
-		qgsdelattrdialog.moc.cpp		\
-		qgsvectorlayerproperties.moc.cpp	\
-		qgsencodingfiledialog.moc.cpp		\
-		qgsgeomtypedialog.moc.cpp		\
-		qgsgrasydialog.moc.cpp			\
-		qgshelpviewer.moc.cpp			\
-		qgsidentifyresults.moc.cpp		\
-		qgslabeldialog.moc.cpp			\
-		qgslayerprojectionselector.moc.cpp \
-		qgslinestyledialog.moc.cpp		\
-		qgsludialog.moc.cpp			\
-		qgsmaplayerinterface.moc.cpp		\
-		qgsmapserverexport.moc.cpp		\
-		qgsmarkerdialog.moc.cpp			\
-		qgsmeasure.moc.cpp			\
-		qgsnewhttpconnection.moc.cpp		\
-		qgsoptions.moc.cpp			\
-		qgspastetransformations.moc.cpp		\
-		qgspatterndialog.moc.cpp		\
-		qgspluginmanager.moc.cpp		\
-		qgsprojectproperties.moc.cpp		\
-		qgsrasterdataprovider.moc.cpp		\
-		qgsrasterlayerproperties.moc.cpp	\
-		qgsserversourceselect.moc.cpp		\
-		qgssisydialog.moc.cpp			\
-		qgsuvaldialog.moc.cpp			\
-		$(WIDGETPATH)/projectionselector/qgsprojectionselector.moc.cpp
 
-qgis_SOURCES =	main.cpp			\
-		qgisiface.cpp			\
-		qgisinterface.cpp		\
-		qgsabout.cpp		\
-		qgsaddattrdialog.cpp		\
-		qgsadvancedattrsearch.cpp	\
-		qgsattributeactiondialog.cpp	\
-		qgsattributedialog.cpp		\
-		qgsattributetable.cpp		\
-		qgsattributetabledisplay.cpp	\
-		qgsbookmarks.cpp	\
-		qgsbookmarkitem.cpp	\
-		qgsclipboard.cpp		\
-		qgscontcoldialog.cpp		\
-		qgscontexthelp.cpp		\
-		qgscustomsymbol.cpp		\
-		qgsdatasource.cpp		\
-		qgsdelattrdialog.cpp		\
-		qgsdistancearea.cpp			\
-		qgsvectorlayerproperties.cpp	\
-		qgsencodingfiledialog.cpp	\
-		qgsfile.cpp			\
-		qgsgeomtypedialog.cpp		\
-		qgsgrasydialog.cpp		\
-		qgshelpviewer.cpp		\
-		qgsidentifyresults.cpp		\
-		qgslabelattributes.cpp		\
-		qgslabeldialog.cpp		\
-		qgslayerprojectionselector.cpp \
-		qgsline.cpp			\
-		qgslinestyledialog.cpp		\
-		qgslinesymbol.cpp		\
-		qgsludialog.cpp			\
-		qgsmapserverexport.cpp		\
-		qgsmarkerdialog.cpp		\
-		qgsmeasure.cpp			\
-		qgsnewhttpconnection.cpp	\
-		qgsoptions.cpp			\
-		qgspastetransformations.cpp	\
-		qgspatterndialog.cpp		\
-		qgspluginitem.cpp		\
-		qgspluginmanager.cpp		\
-		qgspluginmetadata.cpp		\
-		qgspluginregistry.cpp		\
-		qgspolygonsymbol.cpp		\
-		qgsproject.cpp			\
-		qgsprojectproperties.cpp	\
-		qgsprovidermetadata.cpp		\
-		qgsrasterdataprovider.cpp	\
-		qgsrasterlayerproperties.cpp	\
-        qgssearchstring.cpp             \
-        qgssearchtreenode.cpp		\
-        qgssearchstringlexer.ll		\
-        qgssearchstringparser.yy	\
-		qgsserversourceselect.cpp	\
-		qgssisydialog.cpp		\
-		qgssvgcache.cpp			\
-		qgssymbologyutils.cpp		\
-		qgsuvaldialog.cpp		\
-		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp
+qgis_SOURCES =	main.cpp			
 
 AM_YFLAGS       = -d
 qgis_YACC       = qgssearchstringparser.h
@@ -230,7 +64,7 @@ if HAVE_POSTGRESQL
 
 postgresMOC       = $(postgresHEADERS:.h=.moc.cpp)
 
-qgis_SOURCES     += $(postgresSOURCES)
+qgis_SOURCES     = $(postgresSOURCES)
 endif
 
 
@@ -299,7 +133,72 @@ libqgisHEADERS =							\
 		qgsuniquevalrenderer.h				\
 		qgsvectordataprovider.h				\
 		qgsvectorfilewriter.h				\
-		qgsvectorlayer.h 
+		qgis.h						\
+		qgisiface.h					\
+		qgisinterface.h					\
+		qgsabout.h				\
+		qgsaddattrdialog.h				\
+		qgsadvancedattrsearch.h				\
+		qgsattributeactiondialog.h			\
+		qgsattributedialog.h				\
+		qgsattributetabledisplay.h			\
+		qgsattributetable.h				\
+		qgsbookmarks.h			\
+		qgsbookmarkitem.h			\
+		qgsclipboard.h					\
+		qgscontexthelp.h				\
+		qgscontcoldialog.h				\
+		qgsencodingfiledialog.h				\
+		qgsmaptopixel.h					\
+		qgscustomsymbol.h				\
+		qgsdatamanager.h				\
+		qgsdataprovider.h				\
+		qgsdatasource.h					\
+		qgsdatasourceuri.h				\
+		qgsdelattrdialog.h				\
+		qgsdistancearea.h				\
+		qgsvectorlayerproperties.h			\
+		qgsexception.h					\
+		qgsfile.h					\
+		qgscsexception.h				\
+		qgsgeomtypedialog.h				\
+		qgsgrasydialog.h				\
+		qgshelpviewer.h					\
+		qgsidentifyresults.h				\
+		qgslabelattributes.h				\
+		qgslabeldialog.h				\
+		qgsline.h					\
+		qgslinestyledialog.h				\
+		qgslinesymbol.h					\
+		qgsludialog.h					\
+		qgsmaplayerinterface.h				\
+		qgsmapserverexport.h				\
+		qgsmarkerdialog.h				\
+		qgsmeasure.h					\
+		qgsnewhttpconnection.h				\
+		qgsoptions.h					\
+		qgspastetransformations.h			\
+		qgspatterndialog.h				\
+		qgspluginitem.h					\
+		qgspluginmanager.h				\
+		qgspluginmetadata.h				\
+		qgspluginregistry.h				\
+		qgspolygonsymbol.h				\
+		qgsproject.h					\
+		qgsprojectproperties.h			\
+		qgsprovidermetadata.h			\
+		qgsrasterdataprovider.h			\
+		qgsrasterlayerproperties.h		\
+        qgssearchstring.h				\
+        qgssearchtreenode.h				\
+		qgsserversourceselect.h				\
+		qgssisydialog.h					\
+		qgssvgcache.h					\
+		qgsmarkercatalogue.h				\
+		qgssymbologyutils.h				\
+		qgsuvaldialog.h					\
+		qgslayerprojectionselector.h \
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.h 
 
 
 ## all the ui files generate a corresponding header file
@@ -333,7 +232,45 @@ libqgis_la_MOC =							\
 		qgsmapoverviewcanvas.moc.cpp		\
 		qgspointstylewidget.moc.cpp			\
 		qgsrunprocess.moc.cpp				\
-		qgsvectorlayer.moc.cpp 
+		qgsvectorlayer.moc.cpp \
+		qgisinterface.moc.cpp			\
+		qgsabout.moc.cpp		\
+		qgsaddattrdialog.moc.cpp		\
+		qgsadvancedattrsearch.moc.cpp		\
+		qgsattributeactiondialog.moc.cpp	\
+		qgsattributedialog.moc.cpp		\
+		qgsattributetabledisplay.moc.cpp		\
+		qgsattributetable.moc.cpp		\
+		qgsbookmarks.moc.cpp		\
+		qgscontcoldialog.moc.cpp		\
+		qgscontexthelp.moc.cpp			\
+		qgsdelattrdialog.moc.cpp		\
+		qgsvectorlayerproperties.moc.cpp	\
+		qgsencodingfiledialog.moc.cpp		\
+		qgsgeomtypedialog.moc.cpp		\
+		qgsgrasydialog.moc.cpp			\
+		qgshelpviewer.moc.cpp			\
+		qgsidentifyresults.moc.cpp		\
+		qgslabeldialog.moc.cpp			\
+		qgslayerprojectionselector.moc.cpp \
+		qgslinestyledialog.moc.cpp		\
+		qgsludialog.moc.cpp			\
+		qgsmaplayerinterface.moc.cpp		\
+		qgsmapserverexport.moc.cpp		\
+		qgsmarkerdialog.moc.cpp			\
+		qgsmeasure.moc.cpp			\
+		qgsnewhttpconnection.moc.cpp		\
+		qgsoptions.moc.cpp			\
+		qgspastetransformations.moc.cpp		\
+		qgspatterndialog.moc.cpp		\
+		qgspluginmanager.moc.cpp		\
+		qgsprojectproperties.moc.cpp		\
+		qgsrasterdataprovider.moc.cpp		\
+		qgsrasterlayerproperties.moc.cpp	\
+		qgsserversourceselect.moc.cpp		\
+		qgssisydialog.moc.cpp			\
+		qgsuvaldialog.moc.cpp			\
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.moc.cpp
 
 libqgis_la_SOURCES =						\
 		qgisapp.cpp							\
@@ -383,7 +320,66 @@ libqgis_la_SOURCES =						\
 		qgsuniquevalrenderer.cpp			\
 		qgsvectordataprovider.cpp			\
 		qgsvectorfilewriter.cpp				\
-		qgsvectorlayer.cpp 
+		qgsvectorlayer.cpp \
+		qgisiface.cpp			\
+		qgisinterface.cpp		\
+		qgsabout.cpp		\
+		qgsaddattrdialog.cpp		\
+		qgsadvancedattrsearch.cpp	\
+		qgsattributeactiondialog.cpp	\
+		qgsattributedialog.cpp		\
+		qgsattributetable.cpp		\
+		qgsattributetabledisplay.cpp	\
+		qgsbookmarks.cpp	\
+		qgsbookmarkitem.cpp	\
+		qgsclipboard.cpp		\
+		qgscontcoldialog.cpp		\
+		qgscontexthelp.cpp		\
+		qgscustomsymbol.cpp		\
+		qgsdatasource.cpp		\
+		qgsdelattrdialog.cpp		\
+		qgsdistancearea.cpp			\
+		qgsvectorlayerproperties.cpp	\
+		qgsencodingfiledialog.cpp	\
+		qgsfile.cpp			\
+		qgsgeomtypedialog.cpp		\
+		qgsgrasydialog.cpp		\
+		qgshelpviewer.cpp		\
+		qgsidentifyresults.cpp		\
+		qgslabelattributes.cpp		\
+		qgslabeldialog.cpp		\
+		qgslayerprojectionselector.cpp \
+		qgsline.cpp			\
+		qgslinestyledialog.cpp		\
+		qgslinesymbol.cpp		\
+		qgsludialog.cpp			\
+		qgsmapserverexport.cpp		\
+		qgsmarkerdialog.cpp		\
+		qgsmeasure.cpp			\
+		qgsnewhttpconnection.cpp	\
+		qgsoptions.cpp			\
+		qgspastetransformations.cpp	\
+		qgspatterndialog.cpp		\
+		qgspluginitem.cpp		\
+		qgspluginmanager.cpp		\
+		qgspluginmetadata.cpp		\
+		qgspluginregistry.cpp		\
+		qgspolygonsymbol.cpp		\
+		qgsproject.cpp			\
+		qgsprojectproperties.cpp	\
+		qgsprovidermetadata.cpp		\
+		qgsrasterdataprovider.cpp	\
+		qgsrasterlayerproperties.cpp	\
+        qgssearchstring.cpp             \
+        qgssearchtreenode.cpp		\
+        qgssearchstringlexer.ll		\
+        qgssearchstringparser.yy	\
+		qgsserversourceselect.cpp	\
+		qgssisydialog.cpp		\
+		qgssvgcache.cpp			\
+		qgssymbologyutils.cpp		\
+		qgsuvaldialog.cpp		\
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp
 
 if HAVE_POSTGRESQL
 libqgis_la_SOURCES += $(postgresLIBSOURCES)
