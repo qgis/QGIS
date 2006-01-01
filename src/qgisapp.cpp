@@ -818,6 +818,11 @@ void QgisApp::createStatusBar()
   statusBar()->showMessage(tr("Ready"));
 }
 
+QString QgisApp::themePath()
+{
+  return mAppDir +"/share/qgis/themes/" + mThemeName + "/";
+}
+
 
 void QgisApp::setTheme(QString theThemeName)
 {

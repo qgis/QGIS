@@ -147,6 +147,8 @@ public slots:
     void newProject();
 
 private:
+    //! Set teh pixmap / icons on the toolbar buttons
+    void setupTheme(QString thePath);
     //! remove widget childrens
     void removeWidgetChildren ( QWidget *w );
 

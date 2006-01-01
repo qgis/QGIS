@@ -173,6 +173,8 @@ public slots:
   void about();
   //! Add a raster layer to the map (will prompt user for filename using dlg )
   void addRasterLayer();
+  //! Get the path to the active theme dir
+  QString themePath();
   //#ifdef HAVE_POSTGRESQL
   //! Add a databaselayer to the map
   void addDatabaseLayer();
