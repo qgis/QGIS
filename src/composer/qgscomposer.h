@@ -44,7 +44,7 @@ class QResizeEvent;
  * If open() is called and mFirstTime == true, a new default composition is created.
  *
  */
-class QgsComposer: public Q3MainWindow, private Ui::QgsComposerBase
+class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 {
     Q_OBJECT
 
@@ -102,43 +102,43 @@ public:
 
 public slots:
     //! Zoom to full extent of the paper
-    void on_actionZoomFull_activated(void);
+    void on_mActionZoomAll_activated(void);
 
     //! Zoom in
-    void on_actionZoomIn_activated(void);
+    void on_mActionZoomIn_activated(void);
 
     //! Zoom out 
-    void on_actionZoomOut_activated(void);
+    void on_mActionZoomOut_activated(void);
 
     //! Refresh view 
-    void on_actionRefresh_activated(void);
+    void on_mActionRefreshView_activated(void);
 
     //! Print the composition
-    void on_actionPrint_activated(void);
+    void on_mActionPrint_activated(void);
     
     //! Print as image
-    void on_actionImage_activated(void);
+    void on_mActionExportAsImage_activated(void);
     
     //! Print as SVG
-    void on_actionSvg_activated(void);
+    void on_mActionExportAsSVG_activated(void);
     
     //! Select item
-    void on_actionSelectItem_activated(void);
+    void on_mActionSelectMoveItem_activated(void);
     
     //! Add new map
-    void on_actionAddMap_activated(void);
+    void on_mActionAddNewMap_activated(void);
 
     //! Add new vector legend
-    void on_actionAddVectorLegend_activated(void);
+    void on_mActionAddNewVectLegend_activated(void);
     
     //! Add new label
-    void on_actionAddLabel_activated(void);
+    void on_mActionAddNewLabel_activated(void);
     
     //! Add new scalebar
-    void on_actionAddScalebar_activated(void);
+    void on_mActionAddNewScalebar_activated(void);
     
     //! Add new picture
-    void on_actionAddPicture_activated(void);
+    void on_mActionAddImage_activated(void);
 
     //! read project
     void projectRead();
@@ -148,7 +148,7 @@ public slots:
 
 private:
     //! Set teh pixmap / icons on the toolbar buttons
-    void setupTheme(QString thePath);
+    void setupTheme();
     //! remove widget childrens
     void removeWidgetChildren ( QWidget *w );
 
