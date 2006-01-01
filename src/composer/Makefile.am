@@ -57,6 +57,6 @@ libqgis_composer_la_CXXFLAGS = $(PKGDATAPATH) -I.. -I../ui/ \
 				$(GDAL_CFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GEOS_CFLAGS)
 
 
-BUILT_SOURCES = $(qgis_MOC)
+BUILT_SOURCES = $(libqgis_composer_MOC)
 
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES) 
