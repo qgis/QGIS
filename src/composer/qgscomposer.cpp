@@ -31,12 +31,15 @@
 #include <Q3Picture>
 #include <QPrinter>
 #include <QSettings>
-
+#include <QIcon>
+#include <QPixmap>
+#include <QToolBar>
 #include <iostream>
 
 QgsComposer::QgsComposer( QgisApp *qgis): Q3MainWindow()
 {
   setupUi(this);
+  setupTheme(qgis->themePath());
   connect(fileOpenAction, SIGNAL(activated()), this, SLOT(fileOpen()));
   connect(fileSaveAsAction, SIGNAL(activated()), this, SLOT(fileSaveAs()));
 
@@ -77,6 +80,25 @@ QgsComposer::QgsComposer( QgisApp *qgis): Q3MainWindow()
 
 QgsComposer::~QgsComposer()
 {
+}
+
+void QgsComposer::setupTheme(QString thePath)
+{
+  /**
+  actionZoomFull->setIconSet(QIcon(QPixmap(thePath + "/mActionFileNew.png")));
+  actionZoomIn->setIconSet(QIcon(QPixmap(thePath + "/mActionFileNew.png")));
+  actionZoomOut->setIconSet(QIcon(QPixmap(thePath + "/mActionFileNew.png")));
+  actionRefresh->setIconSet(QIcon(QPixmap(thePath + "/mActionFileNew.png")));
+  actionPrint->setIconSet(QIcon(QPixmap(thePath + "/mActionFileNew.png")));
+  actionImage->setIconSet(QIcon(QPixmap(thePath + "/mActionFileNew.png")));
+  actionSvg->setIconSet(QIcon(QPixmap(thePath + "/mActionFileNew.png")));
+  actionSelectItem->setIconSet(QIcon(QPixmap(thePath + "/mActionFileNew.png")));
+  actionAddMap->setIconSet(QIcon(QPixmap(thePath + "/mActionFileNew.png")));
+  actionAddVectorLegend->setIconSet(QIcon(QPixmap(thePath + "/mActionFileNew.png")));
+  actionAddLabel->setIconSet(QIcon(QPixmap(thePath + "/mActionFileNew.png")));
+  actionAddScalebar->setIconSet(QIcon(QPixmap(thePath + "/mActionFileNew.png")));
+  actionAddPicture->setIconSet(QIcon(QPixmap(thePath + "/mActionFileNew.png")));
+  */
 }
 
 void QgsComposer::open ( void )
@@ -828,3 +850,4 @@ bool QgsComposer::readXML( QDomNode & node )
 
   return true;
 }
+
