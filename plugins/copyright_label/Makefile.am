@@ -46,7 +46,7 @@ plugin_QRC = copyright_plugin.qrc
 # UI dependencies      
 pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 
-BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
+BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
 
 copyrightlabelplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/libqgis.la
