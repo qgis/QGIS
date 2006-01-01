@@ -29,3 +29,5 @@ libqgis_raster_la_CXXFLAGS = $(PREFIX) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS)
 EXTRA_DIST = \
 	qgsrasterbandstats.h \
 	qgsrasterpyramid.h 
+
+CLEANFILES = $(libqgis_raster_la_MOC)
