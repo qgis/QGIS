@@ -18,242 +18,243 @@
   <property name="sizeGripEnabled" >
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>7</number>
+  <widget class="QTabWidget" name="tabWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>9</x>
+     <y>9</y>
+     <width>496</width>
+     <height>322</height>
+    </rect>
    </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
-   <item row="1" column="0" >
-    <layout class="QHBoxLayout" >
+   <widget class="QWidget" name="Widget2" >
+    <attribute name="title" >
+     <string>About</string>
+    </attribute>
+    <layout class="QGridLayout" >
      <property name="margin" >
-      <number>0</number>
+      <number>9</number>
      </property>
      <property name="spacing" >
       <number>6</number>
      </property>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
+     <item row="1" column="0" >
+      <widget class="QLabel" name="lblVersion" >
+       <property name="text" >
+        <string>Version</string>
        </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
+       <property name="alignment" >
+        <set>Qt::AlignCenter</set>
        </property>
-       <property name="sizeHint" >
+      </widget>
+     </item>
+     <item row="2" column="0" >
+      <widget class="QPushButton" name="btnQgisUser" >
+       <property name="text" >
+        <string>Subscribe to the QGIS-User mailing list</string>
+       </property>
+       <property name="flat" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" >
+      <widget class="QPushButton" name="btnQgisHome" >
+       <property name="text" >
+        <string>QGIS Home Page</string>
+       </property>
+       <property name="flat" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" >
+      <widget class="Q3TextEdit" name="lblUrls" >
+       <property name="enabled" >
+        <bool>true</bool>
+       </property>
+       <property name="maximumSize" >
         <size>
-         <width>20</width>
-         <height>0</height>
+         <width>32767</width>
+         <height>70</height>
         </size>
        </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonCancel" >
+       <property name="frameShadow" >
+        <enum>QFrame::Sunken</enum>
+       </property>
        <property name="text" >
-        <string>Ok</string>
+        <string>&lt;p align="center">Quantum GIS is licensed under the GNU General Public License&lt;p>
+&lt;p align="center">http://www.gnu.org/licenses&lt;/p></string>
        </property>
-       <property name="shortcut" >
-        <string/>
+       <property name="wordWrap" >
+        <enum>Q3TextEdit::WidgetWidth</enum>
        </property>
-       <property name="autoDefault" >
+       <property name="readOnly" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" >
+      <widget class="QLabel" name="TextLabel4" >
+       <property name="text" >
+        <string>&lt;h2>Quantum GIS (qgis)&lt;/h2></string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="Widget3" >
+    <attribute name="title" >
+     <string>What's New</string>
+    </attribute>
+    <layout class="QGridLayout" >
+     <property name="margin" >
+      <number>9</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item row="0" column="0" >
+      <widget class="Q3TextEdit" name="txtWhatsNew" >
+       <property name="readOnly" >
         <bool>true</bool>
        </property>
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="0" column="0" >
-    <widget class="QTabWidget" name="tabWidget" >
-     <widget class="QWidget" name="Widget2" >
-      <attribute name="title" >
-       <string>About</string>
-      </attribute>
-      <layout class="QGridLayout" >
+   </widget>
+   <widget class="QWidget" name="tab" >
+    <attribute name="title" >
+     <string>Developers</string>
+    </attribute>
+    <layout class="QGridLayout" >
+     <property name="margin" >
+      <number>9</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item row="0" column="0" colspan="2" >
+      <widget class="QLabel" name="textLabel1" >
+       <property name="text" >
+        <string>&lt;h2>QGIS Developers&lt;/h2></string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="Q3Frame" name="picMugShot" >
+       <property name="minimumSize" >
+        <size>
+         <width>180</width>
+         <height>225</height>
+        </size>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>180</width>
+         <height>225</height>
+        </size>
+       </property>
+       <property name="frameShape" >
+        <enum>QFrame::Box</enum>
+       </property>
+       <property name="frameShadow" >
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth" >
+        <number>1</number>
+       </property>
        <property name="margin" >
         <number>0</number>
        </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item row="0" column="0" >
-        <widget class="QLabel" name="TextLabel4" >
-         <property name="text" >
-          <string>&lt;h2>Quantum GIS (qgis)&lt;/h2></string>
-         </property>
-         <property name="alignment" >
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0" >
-        <widget class="Q3TextEdit" name="lblUrls" >
-         <property name="enabled" >
-          <bool>true</bool>
-         </property>
-         <property name="maximumSize" >
-          <size>
-           <width>32767</width>
-           <height>70</height>
-          </size>
-         </property>
-         <property name="frameShadow" >
-          <enum>QFrame::Sunken</enum>
-         </property>
-         <property name="text" >
-          <string>&lt;p align=&quot;center&quot;>Quantum GIS is licensed under the GNU General Public License&lt;p>
-&lt;p align=&quot;center&quot;>http://www.gnu.org/licenses&lt;/p></string>
-         </property>
-         <property name="wordWrap" >
-          <enum>Q3TextEdit::WidgetWidth</enum>
-         </property>
-         <property name="readOnly" >
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0" >
-        <widget class="QPushButton" name="btnQgisHome" >
-         <property name="text" >
-          <string>QGIS Home Page</string>
-         </property>
-         <property name="flat" >
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" >
-        <widget class="QPushButton" name="btnQgisUser" >
-         <property name="text" >
-          <string>Subscribe to the QGIS-User mailing list</string>
-         </property>
-         <property name="flat" >
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="lblVersion" >
-         <property name="text" >
-          <string>Version</string>
-         </property>
-         <property name="alignment" >
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="Widget3" >
-      <attribute name="title" >
-       <string>What's New</string>
-      </attribute>
-      <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>11</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item row="0" column="0" >
-        <widget class="Q3TextEdit" name="txtWhatsNew" >
-         <property name="readOnly" >
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab" >
-      <attribute name="title" >
-       <string>Developers</string>
-      </attribute>
-      <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>0</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item row="0" column="0" colspan="2" >
-        <widget class="QLabel" name="textLabel1" >
-         <property name="text" >
-          <string>&lt;h2>QGIS Developers&lt;/h2></string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" >
-        <widget class="Q3ListBox" name="listBox1" >
-         <property name="currentItem" >
-          <number>-1</number>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" >
-        <widget class="Q3Frame" name="picMugShot" >
-         <property name="minimumSize" >
-          <size>
-           <width>180</width>
-           <height>225</height>
-          </size>
-         </property>
-         <property name="maximumSize" >
-          <size>
-           <width>180</width>
-           <height>225</height>
-          </size>
-         </property>
-         <property name="frameShape" >
-          <enum>QFrame::Box</enum>
-         </property>
-         <property name="frameShadow" >
-          <enum>QFrame::Plain</enum>
-         </property>
-         <property name="lineWidth" >
-          <number>1</number>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>10</number>
+       <layout class="QGridLayout" >
+        <property name="margin" >
+         <number>10</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item row="0" column="0" >
+         <widget class="QLabel" name="pixAuthorMug" >
+          <property name="pixmap" >
+           <pixmap/>
           </property>
-          <property name="spacing" >
-           <number>6</number>
+          <property name="scaledContents" >
+           <bool>false</bool>
           </property>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="pixAuthorMug" >
-            <property name="pixmap" >
-             <pixmap/>
-            </property>
-            <property name="scaledContents" >
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="TabPage" >
-      <attribute name="title" >
-       <string>Providers</string>
-      </attribute>
-      <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>0</number>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="0" >
+      <widget class="Q3ListBox" name="listBox1" >
+       <property name="currentItem" >
+        <number>-1</number>
        </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item row="0" column="0" >
-        <widget class="Q3TextBrowser" name="txtBrowserPlugins" />
-       </item>
-      </layout>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="TabPage" >
+    <attribute name="title" >
+     <string>Providers</string>
+    </attribute>
+    <layout class="QGridLayout" >
+     <property name="margin" >
+      <number>9</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item row="0" column="0" >
+      <widget class="Q3TextBrowser" name="txtBrowserPlugins" />
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="" >
+   <layout class="QHBoxLayout" >
+    <property name="margin" >
+     <number>0</number>
+    </property>
+    <property name="spacing" >
+     <number>6</number>
+    </property>
+    <item>
+     <spacer>
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType" >
+       <enum>QSizePolicy::Expanding</enum>
+      </property>
+      <property name="sizeHint" >
+       <size>
+        <width>20</width>
+        <height>0</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="buttonCancel" >
+      <property name="text" >
+       <string>Ok</string>
+      </property>
+      <property name="shortcut" >
+       <string/>
+      </property>
+      <property name="autoDefault" >
+       <bool>true</bool>
+      </property>
      </widget>
-    </widget>
-   </item>
-  </layout>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
@@ -266,17 +267,17 @@
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
-   <class>Q3ListBox</class>
-   <extends></extends>
-   <header>q3listbox.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
    <class>Q3Frame</class>
    <extends></extends>
    <header>Qt3Support/Q3Frame</header>
    <container>1</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Q3ListBox</class>
+   <extends></extends>
+   <header>q3listbox.h</header>
+   <container>0</container>
    <pixmap></pixmap>
   </customwidget>
   <customwidget>

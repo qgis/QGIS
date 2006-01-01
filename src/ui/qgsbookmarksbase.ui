@@ -17,12 +17,28 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="0" >
+   <item row="4" column="1" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>85</width>
+       <height>109</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item rowspan="5" row="0" column="0" >
     <widget class="Q3ListView" name="lstBookmarks" >
      <column>
       <property name="text" >
@@ -46,71 +62,45 @@
      </column>
     </widget>
    </item>
+   <item row="3" column="1" >
+    <widget class="QPushButton" name="btnHelp" >
+     <property name="toolTip" >
+      <string>Close the dialog</string>
+     </property>
+     <property name="text" >
+      <string>Help</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QPushButton" name="btnClose" >
+     <property name="toolTip" >
+      <string>Close the dialog</string>
+     </property>
+     <property name="text" >
+      <string>Close</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" >
+    <widget class="QPushButton" name="btnDelete" >
+     <property name="toolTip" >
+      <string>Delete the currently selected bookmark</string>
+     </property>
+     <property name="text" >
+      <string>Delete</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="1" >
-    <layout class="QVBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
+    <widget class="QPushButton" name="btnZoomTo" >
+     <property name="toolTip" >
+      <string>Zoom to the currently selected bookmark</string>
      </property>
-     <property name="spacing" >
-      <number>6</number>
+     <property name="text" >
+      <string>Zoom To</string>
      </property>
-     <item>
-      <widget class="QPushButton" name="btnZoomTo" >
-       <property name="toolTip" >
-        <string>Zoom to the currently selected bookmark</string>
-       </property>
-       <property name="text" >
-        <string>Zoom To</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnDelete" >
-       <property name="toolTip" >
-        <string>Delete the currently selected bookmark</string>
-       </property>
-       <property name="text" >
-        <string>Delete</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnClose" >
-       <property name="toolTip" >
-        <string>Close the dialog</string>
-       </property>
-       <property name="text" >
-        <string>Close</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnHelp" >
-       <property name="toolTip" >
-        <string>Close the dialog</string>
-       </property>
-       <property name="text" >
-        <string>Help</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>20</width>
-         <height>100</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
+    </widget>
    </item>
   </layout>
  </widget>

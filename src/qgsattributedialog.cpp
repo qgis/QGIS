@@ -16,22 +16,21 @@
  ***************************************************************************/
 
 #include "qgsattributedialog.h"
-#include <q3header.h>
-#include <q3table.h>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 
 QgsAttributeDialog::QgsAttributeDialog(std::vector<QgsFeatureAttribute>* attributes): QgsAttributeDialogBase()
 {
-    Q3Header* header=mTable->horizontalHeader();
-    header->setLabel(0,"field");
-    header->setLabel(1,"value");
-    mTable->setNumRows(attributes->size());
+    mTable->setRowCount(attributes->size());
 
     int index=0;
     for(std::vector<QgsFeatureAttribute>::iterator it=attributes->begin();it!=attributes->end();++it)
     {
-	mTable->setText(index,0,(*it).fieldName());
-	mTable->setText(index,1,(*it).fieldValue());
-	++index;
+      QTableWidgetItem * myFieldItem = new QTableWidgetItem((*it).fieldName());
+      mTable->setItem(index, 0, myFieldItem);
+      QTableWidgetItem * myValueItem = new QTableWidgetItem((*it).fieldValue());
+      mTable->setItem(index, 1, myValueItem);
+      ++index;
     }
 
     QObject::connect((QObject*)mOkButton, SIGNAL(clicked()), this, SLOT(accept()));//why is this cast necessary????
@@ -45,5 +44,5 @@ QgsAttributeDialog::~QgsAttributeDialog()
 
 QString QgsAttributeDialog::value(int row)
 {
-    return mTable->text(row,1);
+    return mTable->item(row,1)->text();
 }
