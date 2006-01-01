@@ -12,9 +12,6 @@ if HAVE_GRASS
 GRASS = grass
 endif
 
-if WITH_COMMUNITY
-COMMUNITY = community_reg_plugin
-endif
 
 SUBDIRS = $(GEOPROCESSING) \
 		$(SPIT) \
@@ -27,19 +24,7 @@ SUBDIRS = $(GEOPROCESSING) \
 		copyright_label \
 		scale_bar
 		
-# georefencer was removed from the SUBDIRS list until Qt4 UI issues are resolved
-
 EXTRA_DIST = \
-		example/exampleplugin.cpp \
-		example/exampleplugin.h \
-		example/Makefile.am \
-		example/Makefile.in \
-		example/matrix1.xpm \
-		maplayer/Makefile.am \
-		maplayer/Makefile.in \
-		maplayer/maplayertest.cpp \
-		maplayer/maplayertest.h \
-		maplayer/matrix1.xpm \
 		plugin_builder.pl \
 		plugin_template/icon.xpm \
 		plugin_template/Makefile.am \

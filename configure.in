@@ -437,6 +437,7 @@ AC_CONFIG_FILES([
   src/legend/Makefile
   src/ui/Makefile
   src/raster/Makefile
+  src/composer/Makefile
   src/svg/Makefile
   src/svg/biology/Makefile
   src/svg/geometric/Makefile
@@ -464,10 +465,8 @@ AC_CONFIG_FILES([
   providers/gpx/Makefile
   providers/wms/Makefile
   plugins/Makefile
-  plugins/community_reg_plugin/Makefile
   plugins/copyright_label/Makefile
   plugins/delimited_text/Makefile
-  plugins/example/Makefile
   plugins/geoprocessing/Makefile
   plugins/georeferencer/Makefile
   plugins/gps_importer/Makefile

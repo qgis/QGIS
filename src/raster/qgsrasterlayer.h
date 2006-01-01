@@ -191,8 +191,8 @@ The [type] part of the variable should be the type class of the variable written
 #include "qgsmaplayer.h"
 #include "qgscolortable.h"
 #include "qgsrasterlayer.h"
-#include "raster/qgsrasterbandstats.h"
-#include "raster/qgsrasterpyramid.h"
+#include "qgsrasterbandstats.h"
+#include "qgsrasterpyramid.h"
 
 /*
  * 
