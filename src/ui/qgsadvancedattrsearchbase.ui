@@ -15,24 +15,14 @@
   <property name="windowTitle" >
    <string>Advanced search</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item>
-    <widget class="QLabel" name="textLabel1" >
-     <property name="text" >
-      <string>Search string:</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QTextEdit" name="mSearchString" />
-   </item>
-   <item>
+   <item row="2" column="0" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
@@ -87,6 +77,16 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QTextEdit" name="mSearchString" />
+   </item>
+   <item row="0" column="0" >
+    <widget class="QLabel" name="textLabel1" >
+     <property name="text" >
+      <string>Search string:</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

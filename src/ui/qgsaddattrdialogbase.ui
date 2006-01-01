@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>323</width>
-    <height>194</height>
+    <width>303</width>
+    <height>171</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -17,31 +17,11 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="QLabel" name="textLabel1" >
-     <property name="text" >
-      <string>Name:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" >
-    <widget class="QLineEdit" name="mNameEdit" />
-   </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="textLabel2" >
-     <property name="text" >
-      <string>Type:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" >
-    <widget class="QComboBox" name="mTypeBox" />
-   </item>
    <item row="2" column="0" colspan="2" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
@@ -97,6 +77,26 @@
       </spacer>
      </item>
     </layout>
+   </item>
+   <item row="1" column="1" >
+    <widget class="QComboBox" name="mTypeBox" />
+   </item>
+   <item row="1" column="0" >
+    <widget class="QLabel" name="textLabel2" >
+     <property name="text" >
+      <string>Type:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QLineEdit" name="mNameEdit" />
+   </item>
+   <item row="0" column="0" >
+    <widget class="QLabel" name="textLabel1" >
+     <property name="text" >
+      <string>Name:</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
