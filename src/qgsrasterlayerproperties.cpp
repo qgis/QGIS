@@ -20,7 +20,7 @@ email                : tim@linfiniti.com
 #include "qgslayerprojectionselector.h"
 #include "qgsproject.h"
 #include "qgsrasterbandstats.h"
-#include "qgsrasterlayer.h"
+#include <qgsrasterlayer.h>
 
 #include <QPainter>
 #include <Q3PointArray>

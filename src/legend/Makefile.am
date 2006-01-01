@@ -14,7 +14,7 @@ if !HAVE_QTMAC
 PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
 endif
 
-noinst_LTLIBRARIES = libqgis_legend.la
+lib_LTLIBRARIES = libqgis_legend.la
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
