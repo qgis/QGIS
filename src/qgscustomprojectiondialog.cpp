@@ -41,9 +41,6 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
 #endif
 {
   setupUi(this);
-  //XXX Initialize here because Qt4 Designer doesn't provide access to Q3TextBrowser properties.
-  textBrowser1_2->setText("You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.");
-  textBrowser1->setText("Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.");
 
   mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
   // first we look for ~/.qgis/qgis.db
