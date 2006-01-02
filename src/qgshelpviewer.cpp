@@ -42,6 +42,6 @@ QgsHelpViewer::~QgsHelpViewer()
 }
 void QgsHelpViewer::showContent(QString path, QString doc)
 {
-  textBrowser->mimeSourceFactory()->addFilePath(path);
-  textBrowser->setSource(doc);
+  //textBrowser->mimeSourceFactory()->addFilePath(path);
+  //textBrowser->setSource(doc);
 }
