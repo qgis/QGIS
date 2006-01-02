@@ -84,5 +84,22 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>QgsHelpViewerBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>455</x>
+     <y>393</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>256</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

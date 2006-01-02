@@ -9,7 +9,9 @@
 #include "qgshelpviewer.h"
 QgsHelpViewer::QgsHelpViewer(const QString &contextId, QWidget *parent, 
     const char *name)
+: QDialog(parent)
 {
+  setupUi(this);
   loadContext(contextId);
 }
 QgsHelpViewer::~QgsHelpViewer()
