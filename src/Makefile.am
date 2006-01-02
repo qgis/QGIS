@@ -134,6 +134,7 @@ libqgisHEADERS =							\
 		qgsmarkerdialog.h				\
 		qgsmarkersymbol.h					\
 		qgsmeasure.h					\
+		qgsmessageviewer.h					\
 		qgsnewhttpconnection.h				\
 		qgsnumericsortlistviewitem.h			\
 		qgsoptions.h					\
@@ -294,6 +295,7 @@ libqgis_la_SOURCES =						\
 		qgsmarkerdialog.cpp		\
 		qgsmarkersymbol.cpp					\
 		qgsmeasure.cpp			\
+		qgsmessageviewer.cpp				\
 		qgsnewhttpconnection.cpp	\
 		qgsnumericsortlistviewitem.cpp			\
 		qgsoptions.cpp			\

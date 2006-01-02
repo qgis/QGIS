@@ -21,11 +21,9 @@
 
 #include "qgsrunprocess.h"
 
-#include "ui_qgsmessageviewer.h"
-#include <qstring.h>
-#include <qmessagebox.h>
-#include <q3process.h>
-#include <q3textedit.h>
+#include "qgsmessageviewer.h"
+#include <QMessageBox>
+#include <Q3Process>
 
 QgsRunProcess::QgsRunProcess(const QStringList& args,
 			     bool capture) : mProcess(NULL), mLogViewer(NULL)
@@ -60,22 +58,17 @@ QgsRunProcess::QgsRunProcess(const QStringList& args,
   }
   else if (capture)
   {
-    //
-    // Temporarily disabled by Tim during qt4 ui porting FIXME!!!
-    //
-    /*
     // Create a dialog box to display the output. Use the
     // QgsMessageViewer dialog, but tweak its behaviour to suit our
     // needs. It will delete itself when the dialog box is closed.
     mLogViewer = new QgsMessageViewer(0, "", false, Qt::WDestructiveClose);
-    mLogViewer->txtMessage->setTextFormat(Qt::LogText);
+    mLogViewer->setTextFormat(Qt::LogText);
     mLogViewer->setCaption(whole_cmd);
-    mLogViewer->txtMessage->append( "<b>" + tr("Starting") + " " + whole_cmd + "...</b>" );
+    mLogViewer->appendMessage( "<b>" + tr("Starting") + " " + whole_cmd + "...</b>" );
     mLogViewer->show();
     // Be told when the dialog box is closed (it gets destroyed when
     // closed because of the Qt flag used when it was created above).
     connect(mLogViewer, SIGNAL(destroyed()), this, SLOT(dialogGone()));
-    */
   }
   else
     // We're not capturing the output from the process, so we don't
@@ -101,9 +94,7 @@ void QgsRunProcess::stdoutAvailable()
     QString line;
     while ((line = mProcess->readLineStdout()) != QString::null)
     {
-       //Tim disabled log viewer during qt4 ui port - FIXME!
-       assert(1==0);
-      // mLogViewer->txtMessage->append(line);
+      mLogViewer->appendMessage(line);
     }
   }
 }
@@ -114,14 +105,12 @@ void QgsRunProcess::stderrAvailable()
   if (mProcess->canReadLineStderr())
   {
     QString line;
-    //mLogViewer->txtMessage->append("<font color=red>");
+    mLogViewer->appendMessage("<font color=red>");
     while ((line = mProcess->readLineStderr()) != QString::null)
     {
-       //Tim disabled log viewer during qt4 ui port - FIXME!
-       assert(1==0);
-      // mLogViewer->txtMessage->append(line);
+      mLogViewer->appendMessage(line);
     }
-   // mLogViewer->txtMessage->append("</font>");
+    mLogViewer->appendMessage("</font>");
   }
 }
 
@@ -135,11 +124,9 @@ void QgsRunProcess::processExit()
   // test against 0 is for).
 
   if (mLogViewer != 0)
-    {
-       //Tim disabled log viewer during qt4 ui port - FIXME!
-       assert(1==0);
-       //mLogViewer->txtMessage->append( "<b>" + tr("Done") + "</b>" );
-    }
+  {
+    mLogViewer->appendMessage( "<b>" + tr("Done") + "</b>" );
+  }
 
   // Since the dialog box takes care of deleting itself, and the
   // process has gone, there's no need for this instance to stay
