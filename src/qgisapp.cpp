@@ -101,6 +101,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmapserverexport.h"
+#include "qgsmessageviewer.h"
 #include "qgsoptions.h"
 #include "qgspastetransformations.h"
 #include "qgspluginitem.h"
@@ -136,8 +137,6 @@
 #include <memory>
 #include <vector>
 
-//The next one needs to be sublassed!
-//#include "qgsmessageviewer.ui"
 //#include "qgssisydialog.h"
 // XXX deprecated?? #include "qgslegenditem.h"
 
@@ -450,17 +449,16 @@ void QgisApp::createActions()
   //
   // Settings Menu Related Items
   //
-  // FIXME - causes segfault when invoked
   mActionProjectProperties= new QAction(QIcon(iconPath+"/mActionProjectProperties.png"), tr("Project Properties"), this);
   mActionProjectProperties->setShortcut(tr("Alt+P"));
   mActionProjectProperties->setStatusTip(tr("Set project properties"));
   connect(mActionProjectProperties, SIGNAL(triggered()), this, SLOT(projectProperties()));
-  // FIXME - causes segfault when invoked
+  //
   mActionOptions= new QAction(QIcon(iconPath+"/mActionOptions.png"), tr("QGIS Options"), this);
   mActionOptions->setShortcut(tr("Alt+O"));
   mActionOptions->setStatusTip(tr("Change various QGIS options"));
   connect(mActionOptions, SIGNAL(triggered()), this, SLOT(options()));
-  // FIXME - causes segfault when invoked
+  //
   mActionCustomProjection= new QAction(QIcon(iconPath+"/mActionCustomProjection.png"), tr("Custom Projection"), this);
   mActionCustomProjection->setShortcut(tr("Alt+I"));
   mActionCustomProjection->setStatusTip(tr("Manage custom projections"));
@@ -577,7 +575,7 @@ void QgisApp::createActions()
   connect(mActionInOverview, SIGNAL(triggered()), this, SLOT(inOverview()));
   //
   // Plugin Menu Related Items
-  // FIXME - segfalts when run...
+  //
   mActionShowPluginManager= new QAction(QIcon(iconPath+"/mActionShowPluginManager.png"), tr("Plugin Manager"), this);
   mActionShowPluginManager->setShortcut(tr("Ctrl+P"));
   mActionShowPluginManager->setStatusTip(tr("Open the plugin manager"));
@@ -4440,12 +4438,11 @@ void QgisApp::socketConnectionClosed()
       int result = QMessageBox::information(this, tr("QGIS Version Information"), versionInfo, tr("Yes"), tr("No"));
       if (result == 0)
       {
-        //!NOTE Tim disabled for now (QT4 port) - this needs to be revisited
         // show more info
-        //QgsMessageViewer *mv = new QgsMessageViewer(this);
-        //mv->setCaption(tr("QGIS - Changes in CVS Since Last Release"));
-        //mv->setMessage(parts[2]);
-        //mv->exec();
+        QgsMessageViewer *mv = new QgsMessageViewer(this);
+        mv->setCaption(tr("QGIS - Changes in CVS Since Last Release"));
+        mv->setMessage(parts[2]);
+        mv->exec();
       }
     }
     else
