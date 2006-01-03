@@ -367,7 +367,7 @@ qgis_YACC       = qgssearchstringparser.h
 
 nodist_libqgis_la_SOURCES = $(libqgis_la_MOC)  
 
-BUILT_SOURCES = $(libqgis_la_MOC) $(qgis_YACC) 
+BUILT_SOURCES = $(libqgis_la_MOC) $(qgis_YACC)  $(postgresMOC)
 
 
 libqgis_la_LIBADD = raster/libqgis_raster.la legend/libqgis_legend.la composer/libqgis_composer.la $(QT_LDADD) $(GEOS_LDADD) $(GDAL_LDADD) $(PYTHON_LIB) -lsqlite3
