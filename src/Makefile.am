@@ -78,6 +78,7 @@ libqgisHEADERS =							\
 		qgsacetaterectangle.h				\
 		qgsaddattrdialog.h				\
 		qgsadvancedattrsearch.h				\
+		qgsapplication.h				\
 		qgsattributeactiondialog.h			\
 		qgsattributeaction.h				\
 		qgsattributedialog.h				\
@@ -242,6 +243,7 @@ libqgis_la_SOURCES =						\
 		qgsacetaterectangle.cpp				\
 		qgsaddattrdialog.cpp		\
 		qgsadvancedattrsearch.cpp	\
+		qgsapplication.cpp	\
 		qgsattributeaction.cpp				\
 		qgsattributeactiondialog.cpp	\
 		qgsattributedialog.cpp		\
