@@ -26,8 +26,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <QCoreApplication>
-#include <qapplication.h>
 #include <qdir.h>
 #include <qfont.h>
 #include <qfile.h>
@@ -47,6 +45,7 @@
 #endif
 
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgsexception.h"
 #include "qgsproject.h"
 
@@ -341,7 +340,7 @@ int main(int argc, char *argv[])
     std::cerr << "QGIS starting in non-interactive mode not supported.\n You are seeing this message most likely because you have no DISPLAY environment variable set." << std::endl;
     exit(1); //exit for now until a version of qgis is capabable of running non interactive
   }
-  QApplication a(argc, argv, myUseGuiFlag );
+  QgsApplication a(argc, argv, myUseGuiFlag );
   //  
   // Set up the QSettings environment must be done after qapp is created
   QCoreApplication::setOrganizationName("QuantumGIS");
@@ -367,7 +366,7 @@ int main(int argc, char *argv[])
 #if defined(Q_OS_MACX) || defined(WIN32)
   QString appPath = qApp->applicationFilePath();
   QString appDir = qApp->applicationDirPath();
-  QString testFile = "Makefile";
+  QString testFile = "libqgis.la";
 #else
   QString appPath = argv[0];
   QString appDir = appPath.left(appPath.findRev("/"));
@@ -392,11 +391,7 @@ int main(int argc, char *argv[])
   
   // a.setFont(QFont("helvetica", 11));
 
-#if defined(Q_OS_MACX) || defined(WIN32)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-
-  QString i18nPath = QString(PKGDATAPATH) + "/i18n";
+  QString i18nPath = QgsApplication::i18nPath();
   if (myTranslationCode.isEmpty())
   {
     myTranslationCode = QTextCodec::locale();
@@ -426,14 +421,10 @@ int main(int argc, char *argv[])
   }
 
     //set up masking
-#if defined(WIN32) || defined(Q_OS_MACX)
-  QString myPath = qApp->applicationDirPath() + "/share/qgis";
-#else
-  QString myPath= PKGDATAPATH;
-#endif
-  QPixmap myPixmap(myPath+QString("/images/splash/splash.png"));
+  QString mySplashPath(QgsApplication::splashPath());
+  QPixmap myPixmap(mySplashPath+QString("splash.png"));
   QSplashScreen *mypSplash = new QSplashScreen(myPixmap);
-  QPixmap myMaskPixmap(myPath+QString("/images/splash/splash_mask.png"), 0, Qt::ThresholdDither |   Qt::ThresholdAlphaDither | Qt::AvoidDither );
+  QPixmap myMaskPixmap(mySplashPath+QString("splash_mask.png"), 0, Qt::ThresholdDither | Qt::ThresholdAlphaDither | Qt::AvoidDither );
   mypSplash->setMask( myMaskPixmap.createHeuristicMask() );
   mypSplash->show();
 
