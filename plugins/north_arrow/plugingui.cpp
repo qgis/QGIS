@@ -10,6 +10,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "plugingui.h"
+#include "../../src/qgsapplication.h"
 
 #include <QPainter>
 #include <cmath>
@@ -95,10 +96,7 @@ void QgsNorthArrowPluginGui::on_sliderRotation_valueChanged( int theInt)
 void QgsNorthArrowPluginGui::rotatePixmap(int theRotationInt)
 {
   QPixmap myQPixmap;
-#if defined(WIN32) || defined(Q_OS_MACX)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-  QString myFileNameQString = QString(PKGDATAPATH) + QString("/images/north_arrows/default.png");
+  QString myFileNameQString = QgsApplication::pkgDataPath() + "/images/north_arrows/default.png";
   //std::cout << "Trying to load " << myFileNameQString << std::cout;
   if (myQPixmap.load(myFileNameQString))
   {

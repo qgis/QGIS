@@ -27,6 +27,7 @@ email                : tim@linfiniti.com
 #include "plugin.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "../../src/qgsapplication.h"
 
 // qt includes
 #include <QPainter>
@@ -161,11 +162,10 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
   if (mEnable)
   {
     QPixmap myQPixmap; //to store the north arrow image in
-#if defined(WIN32) || defined(Q_OS_MACX)
-    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-    QString myFileNameQString = QString(PKGDATAPATH) +
-                                QString("/images/north_arrows/default.png");
+
+    QString myFileNameQString = QgsApplication::pkgDataPath() +
+                                "/images/north_arrows/default.png";
+
     //std::cout << "Trying to load " << myFileNameQString << std::cout;
     if (myQPixmap.load(myFileNameQString))
     {
