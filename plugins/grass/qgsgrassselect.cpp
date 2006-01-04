@@ -40,6 +40,9 @@ QgsGrassSelect::QgsGrassSelect(int type):QgsGrassSelectBase()
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassSelect() type = " << type << std::endl;
 #endif
+
+  setupUi(this);
+
   if ( first ) {
     if ( QgsGrass::activeMode() ) {
       lastGisdbase = QgsGrass::getDefaultGisdbase();
@@ -222,7 +225,7 @@ void QgsGrassSelect::setMapsets()
 	    idx++;
 	}
     }
-    if ( idx >= 0 ) {
+    if ( sel >= 0 ) {
 	emapset->setCurrentItem(sel);
     }
 
@@ -307,11 +310,15 @@ void QgsGrassSelect::setMaps()
 	    idx++;
 	}
     }
-    if ( idx >= 0 ) {
+    if ( sel >= 0 ) {
 	emap->setCurrentItem(sel);
-    } else {
-	emap->clearEdit(); // set box line empty
+    } 
+    /*
+    else 
+    {
+    	emap->clearEdit(); // set box line empty
     }
+    */
 
     setLayers();
 }
@@ -340,7 +347,7 @@ void QgsGrassSelect::setLayers()
 	idx++;
     }
 	
-    if ( idx >= 0 ) {
+    if ( sel >= 0 ) {
         elayer->setCurrentItem(sel);
     } else {
 	elayer->clearEdit(); // set box line empty
@@ -392,6 +399,10 @@ QStringList QgsGrassSelect::vectorLayers ( QString gisdbase,
 	QString fs;
 	fs.sprintf("%d",field);
 
+        #ifdef QGISDEBUG
+        std::cerr << "i = " << i << " layer = " << field << std::endl;
+        #endif
+
 	/* Points */
 	int npoints = Vect_cidx_get_type_count ( &map, field, GV_POINT);
 	if ( npoints > 0 ) {
@@ -425,15 +436,19 @@ QStringList QgsGrassSelect::vectorLayers ( QString gisdbase,
     return list;
 }
 
-void QgsGrassSelect::getGisdbase()
+void QgsGrassSelect::on_GisdbaseBrowse_clicked()
 {
     
     QString Gisdbase = QFileDialog::getExistingDirectory( this,
                                  "Choose existing GISDBASE", egisdbase->text() );
-    egisdbase->setText ( Gisdbase );
+
+    if ( !Gisdbase.isNull() ) 
+    {
+        egisdbase->setText ( Gisdbase );
+    }
 }
 
-void QgsGrassSelect::accept()
+void QgsGrassSelect::on_ok_clicked()
 {
     saveWindowLocation();
 
@@ -482,7 +497,7 @@ void QgsGrassSelect::accept()
     QDialog::accept();
 }
 
-void QgsGrassSelect::reject()
+void QgsGrassSelect::on_cancel_clicked()
 {
     saveWindowLocation();
     QDialog::reject();
