@@ -11,36 +11,23 @@
  ***************************************************************************/
 #include "plugingui.h"
 
-//qt includes
-#include <qapplication.h>
-#include <qpainter.h>
-#include <qlabel.h>
-#include <qglobal.h>
-//Added by qt3to4:
-#include <QPixmap>
-#include <QResizeEvent>
-#include <QPaintEvent>
-#include <iostream>
-#include <qspinbox.h>
-#include <qslider.h>
-#include <qtabwidget.h>
-#include <QComboBox>
-#include <qcheckbox.h>
-//standard includes
-#include <math.h>
+#include <QPainter>
+#include <cmath>
 
-QgsNorthArrowPluginGui::QgsNorthArrowPluginGui() : QgsNorthArrowPluginGuiBase()
+#include <iostream>
+
+QgsNorthArrowPluginGui::QgsNorthArrowPluginGui() : QDialog()
 {
+  setupUi(this);
   //temporary hack until this is implemented
   tabNorthArrowOptions->removePage( tabIcon );
   rotatePixmap(0);
 }
 
 QgsNorthArrowPluginGui::QgsNorthArrowPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
-//: QgsNorthArrowPluginGuiBase( parent, name, modal, fl )
-//Tim removed params during qt4 ui port - FIXME!
-: QgsNorthArrowPluginGuiBase(  )
+: QDialog( parent, name, modal, fl )
 {
+  setupUi(this);
   //temporary hack until this is implemented
   tabNorthArrowOptions->removePage( tabIcon );
 }  
@@ -49,7 +36,7 @@ QgsNorthArrowPluginGui::~QgsNorthArrowPluginGui()
 {
 }
 
-void QgsNorthArrowPluginGui::pbnOK_clicked()
+void QgsNorthArrowPluginGui::on_pbnOK_clicked()
 {
   // Hide the dialog
   hide();
@@ -62,7 +49,7 @@ void QgsNorthArrowPluginGui::pbnOK_clicked()
 
   done(1);
 }
-void QgsNorthArrowPluginGui::pbnCancel_clicked()
+void QgsNorthArrowPluginGui::on_pbnCancel_clicked()
 {
   close(1);
 }
@@ -94,14 +81,13 @@ void QgsNorthArrowPluginGui::setAutomaticDisabled()
 }
 
 
-//overides function byt the same name created in .ui
-void QgsNorthArrowPluginGui::spinSize_valueChanged( int theInt)
+//overides function by the same name created in .ui
+void QgsNorthArrowPluginGui::on_spinAngle_valueChanged( int theInt)
 {
 
 }
 
-//overides function byt the same name created in .ui
-void QgsNorthArrowPluginGui::sliderRotation_valueChanged( int theInt)
+void QgsNorthArrowPluginGui::on_sliderRotation_valueChanged( int theInt)
 {
   rotatePixmap(theInt);
 }
@@ -120,6 +106,8 @@ void QgsNorthArrowPluginGui::rotatePixmap(int theRotationInt)
     myPainterPixmap.fill();
     QPainter myQPainter;
     myQPainter.begin(&myPainterPixmap);	
+
+    myQPainter.setRenderHint(QPainter::SmoothPixmapTransform);
 
     double centerXDouble = myQPixmap.width()/2;
     double centerYDouble = myQPixmap.height()/2;
@@ -142,27 +130,14 @@ void QgsNorthArrowPluginGui::rotatePixmap(int theRotationInt)
                 (centerYDouble * cos(myRadiansDouble))
                 ) - centerYDouble);	
 
-
-
     //draw the pixmap in the proper position
-    myQPainter.drawPixmap(xShift,yShift,myQPixmap);	
+    myQPainter.drawPixmap(xShift,yShift,myQPixmap);
 
-
-    //unrotate the canvase again
+    //unrotate the canvas again
     myQPainter.restore();
     myQPainter.end();
 
-    //determine the center of the canvas given that we will bitblt form the origin of the narrow
-    int myCenterXInt = static_cast<int>((pixmapLabel->width()-myQPixmap.width())/2);
-    int myCenterYInt = static_cast<int>((pixmapLabel->height()-myQPixmap.height())/2);
-#if QT_VERSION < 0x040000
-    bitBlt ( pixmapLabel, myCenterXInt,myCenterYInt, &myPainterPixmap, 0, 0, -1 , -1, Qt::CopyROP, false);
-#else
-// TODO: Qt4 uses QPainter::drawPixmap instead; need to refactor
-#endif
-
-
-    //pixmapLabel1->setPixmap(myPainterPixmap);            
+    pixmapLabel->setPixmap(myPainterPixmap);
   }
   else
   {

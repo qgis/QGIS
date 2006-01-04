@@ -8,7 +8,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
+    <width>457</width>
     <height>422</height>
    </rect>
   </property>
@@ -20,75 +20,11 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item rowspan="2" row="0" column="0" >
-    <widget class="QLabel" name="pixmapLabel2" >
-     <property name="maximumSize" >
-      <size>
-       <width>150</width>
-       <height>32767</height>
-      </size>
-     </property>
-     <property name="pixmap" >
-      <pixmap/>
-     </property>
-     <property name="scaledContents" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item rowspan="2" row="0" column="1" >
-    <widget class="Line" name="line1" >
-     <property name="maximumSize" >
-      <size>
-       <width>2</width>
-       <height>32767</height>
-      </size>
-     </property>
-     <property name="frameShape" >
-      <enum>QFrame::VLine</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Sunken</enum>
-     </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2" >
-    <widget class="QLabel" name="txtHeading" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>5</hsizetype>
-       <vsizetype>1</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="font" >
-      <font>
-       <family></family>
-       <pointsize>24</pointsize>
-       <weight>50</weight>
-       <italic>false</italic>
-       <bold>false</bold>
-       <underline>false</underline>
-       <strikeout>false</strikeout>
-      </font>
-     </property>
-     <property name="text" >
-      <string>North Arrow Plugin</string>
-     </property>
-     <property name="alignment" >
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="2" >
     <widget class="QTabWidget" name="tabNorthArrowOptions" >
      <property name="enabled" >
@@ -234,7 +170,10 @@
             <enum>QFrame::Box</enum>
            </property>
            <property name="scaledContents" >
-            <bool>true</bool>
+            <bool>false</bool>
+           </property>
+           <property name="alignment" >
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -294,8 +233,8 @@
        </property>
        <property name="sizeHint" >
         <size>
-         <width>326</width>
-         <height>21</height>
+         <width>351</width>
+         <height>31</height>
         </size>
        </property>
       </spacer>
@@ -322,6 +261,64 @@
      </item>
     </layout>
    </item>
+   <item row="0" column="2" >
+    <widget class="QLabel" name="txtHeading" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>1</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font" >
+      <font>
+       <family>Sans Serif</family>
+       <pointsize>24</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
+      </font>
+     </property>
+     <property name="text" >
+      <string>North Arrow Plugin</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item rowspan="2" row="0" column="1" >
+    <widget class="Line" name="line1" >
+     <property name="maximumSize" >
+      <size>
+       <width>2</width>
+       <height>32767</height>
+      </size>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::VLine</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item rowspan="2" row="0" column="0" >
+    <widget class="QLabel" name="label" >
+     <property name="text" >
+      <string/>
+     </property>
+     <property name="pixmap" >
+      <pixmap resource="northarrow_plugin.qrc" >:/northarrow.png</pixmap>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
@@ -335,6 +332,41 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
- <resources/>
- <connections/>
+ <resources>
+  <include location="northarrow_plugin.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>sliderRotation</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>spinAngle</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>374</x>
+     <y>257</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>527</x>
+     <y>259</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinAngle</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>sliderRotation</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>524</x>
+     <y>244</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>351</x>
+     <y>263</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

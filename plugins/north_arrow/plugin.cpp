@@ -28,21 +28,8 @@ email                : tim@linfiniti.com
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 
-#include <q3toolbar.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <q3popupmenu.h>
-#include <qlineedit.h>
-#include <qaction.h>
-#include <qapplication.h>
-#include <qcursor.h>
-#include <qpixmap.h>
-#include <qpainter.h>
-#include <qfont.h>
-#include <q3picture.h>
-#include <q3pointarray.h>
-#include <q3paintdevicemetrics.h>
-#include <qglobal.h>
+// qt includes
+#include <QPainter>
 
 //non qt includes
 #include <iostream>
@@ -106,11 +93,7 @@ void QgsNorthArrowPlugin::initGui()
   pluginMenu->setWhatsThis(menuId, "Creates a north arrow that is displayed on the map canvas");
 
   // Create the action for tool
-#if QT_VERSION < 0x040000
-  myQActionPointer = new QAction("North Arrow", QIcon(icon), "&Wmi",0, this, "run");
-#else
   myQActionPointer = new QAction(QIcon(icon), "North Arrow", this);
-#endif
   myQActionPointer->setWhatsThis("Creates a north arrow that is displayed on the map canvas");
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
@@ -213,9 +196,8 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
                                     ) - centerYDouble);
 
       // need width/height of paint device
-      Q3PaintDeviceMetrics myMetrics( theQPainter->device() );
-      int myHeight = myMetrics.height();
-      int myWidth = myMetrics.width();
+      int myHeight = theQPainter->device()->height();
+      int myWidth = theQPainter->device()->width();
 
 #ifdef QGISDEBUG
       std::cout << "Rendering n-arrow at " << mPlacement.toLocal8Bit().data() << std::endl;
@@ -241,14 +223,12 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
       }
       //rotate the canvas by the north arrow rotation amount
       theQPainter->rotate( mRotationInt );
-      //Now we can actually do the drawing
+      //Now we can actually do the drawing, and draw a smooth north arrow even when rotated
+      theQPainter->setRenderHint(QPainter::SmoothPixmapTransform);
       theQPainter->drawPixmap(xShift,yShift,myQPixmap);
 
-      //unrotate the canvase again
+      //unrotate the canvas again
       theQPainter->restore();
-
-      //bitBlt ( qGisInterface->getMapCanvas()->canvasPixmap(), 0, 0, &myPainterPixmap, 0, 0, -1 , -1, Qt::CopyROP, false);
-
     }
     else
     {
