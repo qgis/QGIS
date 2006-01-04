@@ -156,7 +156,7 @@
      <item>
       <widget class="QLabel" name="textLabel2" >
        <property name="text" >
-        <string>&lt;p align=&quot;right&quot;>X field&lt;/p></string>
+        <string>&lt;p align="right">X field&lt;/p></string>
        </property>
       </widget>
      </item>
@@ -190,7 +190,7 @@
      <item>
       <widget class="QLabel" name="textLabel2_2" >
        <property name="text" >
-        <string>&lt;p align=&quot;right&quot;>Y field&lt;/p></string>
+        <string>&lt;p align="right">Y field&lt;/p></string>
        </property>
       </widget>
      </item>
@@ -228,6 +228,9 @@
      <property name="title" >
       <string>Sample text</string>
      </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
      <layout class="QGridLayout" >
       <property name="margin" >
        <number>10</number>
@@ -254,8 +257,8 @@
    <item row="2" column="2" >
     <widget class="Q3TextEdit" name="teInstructions" >
      <property name="text" >
-      <string>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;>
-&lt;p style=&quot;margin-top:16px&quot;>&lt;span style=&quot;font-size:16pt;font-weight:600&quot;>Description&lt;/span>&lt;/p>
+      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:12pt;font-family:Arial">
+&lt;p style="margin-top:16px">&lt;span style="font-size:16pt;font-weight:600">Description&lt;/span>&lt;/p>
 &lt;p>Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p>
 &lt;p>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, commar or tab). Note this box accepts regular expressions so use \t for tab and so on. After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.&lt;/p>
 &lt;/body>&lt;/html>
@@ -273,7 +276,7 @@
     <widget class="QLabel" name="txtHeading" >
      <property name="font" >
       <font>
-       <family></family>
+       <family>Sans Serif</family>
        <pointsize>20</pointsize>
        <weight>50</weight>
        <italic>false</italic>
@@ -414,17 +417,17 @@
  <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3GroupBox</class>
-   <extends></extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
    <class>Q3TextEdit</class>
    <extends></extends>
    <header>q3textedit.h</header>
    <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Q3GroupBox</class>
+   <extends></extends>
+   <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
