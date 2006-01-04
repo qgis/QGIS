@@ -11,20 +11,18 @@
  ***************************************************************************/
 #include "plugingui.h"
 #include <QComboBox>
-#include <qspinbox.h> 
-#include <qcheckbox.h> 
+#include <QColorDialog>
 
-QgsScaleBarPluginGui::QgsScaleBarPluginGui() : QgsScaleBarPluginGuiBase()
+QgsScaleBarPluginGui::QgsScaleBarPluginGui() : QDialog()
 {
-  
+  setupUi(this);
+
 }
 
 QgsScaleBarPluginGui::QgsScaleBarPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
-//: QgsScaleBarPluginGuiBase( parent, name, modal, fl )
-//Tim removed params during qt4 ui port - FIXME
-: QgsScaleBarPluginGuiBase(  )
+: QDialog(parent, name, modal, fl)
 {
-   
+  setupUi(this);
 }  
 QgsScaleBarPluginGui::~QgsScaleBarPluginGui()
 {
@@ -35,7 +33,7 @@ QSpinBox * QgsScaleBarPluginGui::getSpinSize()
     return spnSize;
 }
 
-void QgsScaleBarPluginGui::pbnOK_clicked()
+void QgsScaleBarPluginGui::on_pbnOK_clicked()
 {
   hide();
   emit changePlacement(cboPlacement->currentText());
@@ -43,11 +41,19 @@ void QgsScaleBarPluginGui::pbnOK_clicked()
   emit changeSnapping(chkSnapping->isChecked());
   emit changeEnabled(chkEnable->isChecked());
   emit changeStyle(cboStyle->currentText());
-  emit changeColour(frameColour->paletteBackgroundColor());
+  emit changeColour(pbnChangeColour->palette().color(QPalette::Button));
   emit refreshCanvas();
   done(1);
 } 
-void QgsScaleBarPluginGui::pbnCancel_clicked()
+void QgsScaleBarPluginGui::on_pbnChangeColour_clicked()
+{
+  QColor colour = QColorDialog::getColor(
+		   pbnChangeColour->palette().color(QPalette::Button), this);
+  
+  if (colour.isValid())
+    setColour(colour);
+}
+void QgsScaleBarPluginGui::on_pbnCancel_clicked()
 {
  close(1);
 }
@@ -93,5 +99,7 @@ void QgsScaleBarPluginGui::setStyle(QString theStyleQString)
 
 void QgsScaleBarPluginGui::setColour(QColor theQColor)
 {
-  frameColour->setPaletteBackgroundColor(theQColor);
+  QPalette palette;
+  palette.setColor(QPalette::Button, theQColor);
+  pbnChangeColour->setPalette(palette);
 }

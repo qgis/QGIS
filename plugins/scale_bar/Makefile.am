@@ -20,12 +20,17 @@ plugin_LTLIBRARIES = libScaleBarplugin.la
 ui_%.h: %.ui 
 	$(UIC) -o $@ $<
 
+%.qrc.cpp: %.qrc
+	$(RCC) -o $@ $<
+
 libScaleBarplugin_la_SOURCES =  plugin.cpp \
 			      plugin.h \
 			      plugingui.cpp \
 			      plugingui.h \
 			      $(plugin_UI)\
-			      $(plugin_MOC)
+			      $(plugin_MOC) \
+			      $(plugin_QRC) \
+			      $(plugin_RES)
 
 plugin_MOC = plugin.moc.cpp \
 	     plugingui.moc.cpp 
@@ -34,8 +39,14 @@ plugin_UI = ui_pluginguibase.h
 
 plugin_UIC = pluginguibase.ui
 
+plugin_RES = scalebar_plugin.qrc.cpp
 
-BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
+plugin_QRC = scalebar_plugin.qrc
+
+# UI dependencies
+pluginguibase.cpp: pluginguibase.h pluginguibase.ui
+
+BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
 
 libScaleBarplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la

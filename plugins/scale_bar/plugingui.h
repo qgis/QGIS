@@ -25,8 +25,6 @@ public:
     QgsScaleBarPluginGui();
     QgsScaleBarPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~QgsScaleBarPluginGui();
-    void pbnOK_clicked();
-    void pbnCancel_clicked();
     void setPlacement(QString);
     void setPreferredSize(int);
     void setSnapping(bool);
@@ -37,6 +35,11 @@ public:
     
    //accessor for getting a pointer to the size spin widget
    QSpinBox * getSpinSize();
+
+public slots:
+    void on_pbnOK_clicked();
+    void on_pbnCancel_clicked();
+    void on_pbnChangeColour_clicked();
     
 private:
     
