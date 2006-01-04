@@ -41,27 +41,6 @@ public:
 	MAPCALC // file in $MAPSET/mapcalc directory (used by QgsGrassMapcalc)
     };
 
-    //! OK 
-    void accept (void);
-
-    //! Cancel
-    void reject (void);
-    
-    //! Open dialog for Gisdbase
-    void getGisdbase(void);
- 
-    //! Reset combobox of locations for current Gisdbase
-    void setLocations (void );
-    
-    //! Reset combobox of mapsets for current Location
-    void setMapsets (void );
-
-    //! Reset combobox of maps for current Gisdbase + Location
-    void setMaps (void );
-
-    //! Reset combobox of layers for current Gisdbase + Location + Map
-    void setLayers (void );
-
     //! Get list of vector layer
     static QStringList vectorLayers ( QString, QString, QString, QString );
 
@@ -71,6 +50,33 @@ public:
     QString  map;
     QString  layer;
     int      selectedType;  // RASTER or GROUP
+
+public slots:
+    //! OK 
+    void on_ok_clicked();
+
+    //! Cancel
+    void on_cancel_clicked();
+    
+    //! Open dialog for Gisdbase
+    void on_GisdbaseBrowse_clicked();
+ 
+    //! Reset combobox of locations for current Gisdbase
+    void on_egisdbase_textChanged() { setLocations(); }
+    void setLocations();
+    
+    //! Reset combobox of mapsets for current Location
+    void on_elocation_activated() { setMapsets(); }
+    void setMapsets();
+
+    //! Reset combobox of maps for current Gisdbase + Location
+    void on_emapset_activated() { setMaps(); }
+    void setMaps();
+
+    //! Reset combobox of layers for current Gisdbase + Location + Map
+    void on_emap_activated() { setLayers(); }
+    void setLayers();
+
 
 private:
     int type; // map type (mapset element)
