@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/" >
-        <file>icon.xpm</file>
+        <file>scalebar.png</file>
     </qresource>
 </RCC>
-
