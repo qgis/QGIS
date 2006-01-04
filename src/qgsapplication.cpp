@@ -16,7 +16,10 @@
 
 #include "qgsapplication.h"
 
+QString QgsApplication::mPrefixPath;
+QString QgsApplication::mPluginPath;
 QString QgsApplication::mPkgDataPath;
+QString QgsApplication::mThemePath;
 
 /*!
   \class QgsApplication
@@ -35,17 +38,59 @@ QgsApplication::QgsApplication(int & argc, char ** argv, bool GUIenabled)
 : QApplication(argc, argv, GUIenabled)
 {
 #if defined(Q_WS_MACX) || defined(Q_WS_WIN32)
-  mPkgDataPath = QCoreApplication::applicationDirPath() + QString("/share/qgis");
+  mPrefixPath = applicationDirPath();
+  mPluginPath = mPrefixPath + QString("/lib/qgis");
+  mPkgDataPath = mPrefixPath + QString("/share/qgis");
 #else
+  mPrefixPath = PREFIX;
+  mPluginPath = PLUGINPATH;
   mPkgDataPath = PKGDATAPATH;
 #endif
+  mThemePath = mPkgDataPath + QString("/themes/default/");
 }
 
 QgsApplication::~QgsApplication()
 {}
 
 /*!
-  Returns the path to the translation files.
+  Set the theme path to the specified theme.
+*/
+void QgsApplication::selectTheme(const QString& theThemeName)
+{
+  mThemePath = mPkgDataPath + QString("/themes/") + theThemeName + QString("/");
+}
+
+/*!
+  Returns the path to the authors file.
+*/
+const QString QgsApplication::authorsFilePath()
+{
+  return mPkgDataPath + QString("/doc/AUTHORS");
+}
+
+/*!
+  Returns the path to the developer image directory.
+*/
+const QString QgsApplication::developerPath()
+{
+  return mPkgDataPath + QString("/images/developers/");
+}
+
+/*!
+  Returns the path to the help application.
+*/
+const QString QgsApplication::helpAppPath()
+{
+  QString helpAppPath = applicationDirPath(); 
+#ifdef Q_OS_MACX
+  helpAppPath += "/bin/qgis_help.app/Contents/MacOS";
+#endif
+  helpAppPath += "/qgis_help";
+  return helpAppPath;
+}
+
+/*!
+  Returns the path to the translation directory.
 */
 const QString QgsApplication::i18nPath()
 {
@@ -53,7 +98,15 @@ const QString QgsApplication::i18nPath()
 }
 
 /*!
-  Returns the path to the splash screen images.
+  Returns the path to the master qgis.db file.
+*/
+const QString QgsApplication::qgisMasterDbFilePath()
+{
+  return mPkgDataPath + QString("/resources/qgis.db");
+}
+
+/*!
+  Returns the path to the splash screen image directory.
 */
 const QString QgsApplication::splashPath()
 {
@@ -61,9 +114,17 @@ const QString QgsApplication::splashPath()
 }
 
 /*!
-  Returns the path to the theme images.
+  Returns the path to the srs.db file.
 */
-const QString QgsApplication::themePath()
+const QString QgsApplication::srsDbFilePath()
 {
-  return mPkgDataPath + QString("/themes/");
+  return mPkgDataPath + QString("/resources/srs.db");
+}
+
+/*!
+  Returns the path to the svg directory.
+*/
+const QString QgsApplication::svgPath()
+{
+  return mPkgDataPath + QString("/svg/");
 }

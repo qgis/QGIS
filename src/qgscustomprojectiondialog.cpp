@@ -13,6 +13,7 @@
 
 //qgis includes
 #include "qgis.h" //<--magick numbers
+#include "qgsapplication.h"
 
 //qt includes
 #include <QDir>
@@ -56,13 +57,8 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const ch
     myUserQGisDir.setPath(myPath);
     //now make sure the users .qgis dir exists 
     makeDir(myUserQGisDir);
-    // Get the package data path and set the full path name to the sqlite3 spatial reference
-    // database.
-#if defined(Q_OS_MACX) || defined(WIN32)
-    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-    QString myMasterDatabaseFileName = PKGDATAPATH;
-    myMasterDatabaseFileName += "/resources/qgis.db";
+    // Get the full path name to the sqlite3 spatial reference database.
+    QString myMasterDatabaseFileName = QgsApplication::qgisMasterDbFilePath();
     //now copy the master file into the users .qgis dir
     std::ifstream myInputStream(myMasterDatabaseFileName.toLocal8Bit().data() );
 

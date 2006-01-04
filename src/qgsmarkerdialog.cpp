@@ -17,6 +17,7 @@
 /* $Id$ */
 
 #include "qgsmarkerdialog.h"
+#include "qgsapplication.h"
 #include "qgssvgcache.h"
 #include <qdir.h>
 #include <QFileDialog>
@@ -25,7 +26,6 @@
 #include <q3picture.h>
 #include <qpushbutton.h>
 #include <qpainter.h>
-#include <qapplication.h>
 #include "qgsconfig.h"
 //Added by qt3to4:
 #include <QPixmap>
@@ -104,10 +104,7 @@ QString QgsMarkerDialog::defaultDir()
 	//qgis install
 	QString dir = "Foo";
 #else
-#ifdef Q_OS_MACX
-    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-    QString dir = QString(PKGDATAPATH)+"/svg"; 
+    QString dir = QgsApplication::svgPath(); 
 #endif
     return dir;
 }

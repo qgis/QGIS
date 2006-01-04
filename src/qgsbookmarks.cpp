@@ -17,6 +17,7 @@
  /* $Id$ */
 #include "qgsbookmarks.h"
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgscontexthelp.h"
 #include "qgsmapcanvas.h"
  
@@ -287,13 +288,8 @@ bool QgsBookmarks::createDatabase()
 #endif 
     //now make sure the users .qgis dir exists 
     makeDir(myUserQGisDir);
-    // Get the package data path and set the full path name to the sqlite3 spatial reference
-    // database.
-#if defined(Q_OS_MACX) || defined(WIN32)
-    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-    QString myMasterDatabaseFileName = PKGDATAPATH;
-    myMasterDatabaseFileName += "/resources/qgis.db";
+    // Get the full path name to the sqlite3 spatial reference database.
+    QString myMasterDatabaseFileName = QgsApplication::qgisMasterDbFilePath();
     //now copy the master file into the users .qgis dir
     std::ifstream myInputStream(myMasterDatabaseFileName.toLocal8Bit().data() );
 

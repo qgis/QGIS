@@ -17,6 +17,7 @@
 /* $Id:$ */
 
 #include "qgsabout.h"
+#include "qgsapplication.h"
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
 #else
@@ -49,13 +50,7 @@ void QgsAbout::init()
   //read the authors file to populate the contributors list
   QStringList lines;
 
-#if defined(Q_OS_MACX) || defined(WIN32)
-  QString appPath = QCoreApplication::applicationDirPath() + "/share/qgis";
-#else
-  QString appPath = QString(PKGDATAPATH);
-#endif
-
-  QFile file(appPath + "/doc/AUTHORS" );
+  QFile file(QgsApplication::authorsFilePath());
 #ifdef QGISDEBUG
   printf (("Reading authors file " + file.name() +
       ".............................................\n").toLocal8Bit().data());
@@ -123,18 +118,12 @@ void QgsAbout::on_listBox1_currentChanged(Q3ListBoxItem *theItem)
 #ifdef QGISDEBUG 
   printf ("Loading mug: "); 
 #endif 
-#if defined(Q_OS_MACX) || defined(WIN32)
-  QString appPath = qApp->applicationDirPath() + "/share/qgis";
-#else
-  QString appPath = QString(PKGDATAPATH);
-#endif
-
   QString myString = listBox1->currentText();
   myString = myString.replace(" ","_");
 #ifdef QGISDEBUG 
   printf ("Loading mug: %s", (const char *)myString.toLocal8Bit().data()); 
 #endif 
-  myString =QString(appPath + "/images/developers/") + myString + QString(".jpg");
+  myString = QgsApplication::developerPath() + myString + QString(".jpg");
 #ifdef QGISDEBUG 
   printf ("Loading mug: %s\n", (const char *)myString.toLocal8Bit().data()); 
 #endif 
