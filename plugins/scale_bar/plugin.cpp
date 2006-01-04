@@ -90,6 +90,7 @@ QgsScaleBarPlugin::QgsScaleBarPlugin(QgisApp * theQGisApp,
   mStyle = "Tick Down";
   mEnabled = true;
   mSnapping = true;
+  mColour = Qt::black;
 }
 
 QgsScaleBarPlugin::~QgsScaleBarPlugin()
@@ -157,6 +158,7 @@ void QgsScaleBarPlugin::run()
   myPluginGui->setEnabled(mEnabled);
   myPluginGui->setStyle(mStyle);
   myPluginGui->setColour(mColour);
+
   connect(myPluginGui, SIGNAL(changePreferredSize(int)), this, SLOT(setPreferredSize(int)));
   connect(myPluginGui, SIGNAL(changeSnapping(bool)), this, SLOT(setSnapping(bool)));
   connect(myPluginGui, SIGNAL(changePlacement(QString)), this, SLOT(setPlacement(QString)));
@@ -165,7 +167,6 @@ void QgsScaleBarPlugin::run()
   connect(myPluginGui, SIGNAL(changeColour(QColor)), this, SLOT(setColour(QColor)));
   connect(myPluginGui, SIGNAL(refreshCanvas()), this, SLOT(refreshCanvas()));
   myPluginGui->show();
-
   //set the map units in the spin box
   int myUnits=qGisInterface->getMapCanvas()->mapUnits();
   switch (myUnits)
