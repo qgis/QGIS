@@ -21,8 +21,8 @@
 #include <qdir.h>
 #include <q3process.h>
 #include <q3socket.h>
-#include <qapplication.h>
 #include "qgscontexthelp.h"
+#include "qgsapplication.h"
 //Added by qt3to4:
 #include <QTextStream>
 
@@ -71,13 +71,8 @@ QgsContextHelp::~QgsContextHelp()
 
 Q3Process *QgsContextHelp::start(int contextId)
 {
-  // Assume minimum Qt 3.2 version and use the API to get the path
-  // path to the help viewer
-  QString helpPath = qApp->applicationDirPath(); 
-#ifdef Q_OS_MACX
-  helpPath += "/bin/qgis_help.app/Contents/MacOS";
-#endif
-  helpPath += "/qgis_help";
+  // Get the path to the help viewer
+  QString helpPath = QgsApplication::helpAppPath(); 
 #ifdef QGISDEBUG
   std::cout << "Help path is " << helpPath.toLocal8Bit().data() << std::endl; 
 #endif

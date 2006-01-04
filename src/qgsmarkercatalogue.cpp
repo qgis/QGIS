@@ -16,7 +16,6 @@
 #include <cmath>
 #include <iostream>
 
-#include <qapplication.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qimage.h>
@@ -27,6 +26,7 @@
 #include <q3pointarray.h>
 #include <qdir.h>
 
+#include "qgsapplication.h"
 #include "qgssvgcache.h"
 #include "qgsmarkercatalogue.h"
 
@@ -44,28 +44,23 @@ QgsMarkerCatalogue::QgsMarkerCatalogue()
     mList.append ( "hard:cross2" );
 
     // SVG
-    QString appdir;
-#if defined(WIN32) || defined(Q_OS_MACX)
-    appdir = qApp->applicationDirPath();
-#else
-    appdir = PREFIX;
-#endif
+    QString svgPath = QgsApplication::svgPath();
 
     // TODO recursiv ?
-    QDir dir ( appdir + "/share/qgis/svg/" );
+    QDir dir ( svgPath );
     
     QStringList dl = dir.entryList(QDir::Dirs);
     
     for ( QStringList::iterator it = dl.begin(); it != dl.end(); ++it ) {
 	if ( *it == "." || *it == ".." ) continue;
 
-	QDir dir2 ( appdir + "/share/qgis/svg/" + *it );
+	QDir dir2 ( svgPath + *it );
 
 	QStringList dl2 = dir2.entryList("*.svg",QDir::Files);
 	
 	for ( QStringList::iterator it2 = dl2.begin(); it2 != dl2.end(); ++it2 ) {
 	    // TODO test if it is correct SVG
-	    mList.append ( "svg:" + appdir + "/share/qgis/svg/" + *it + "/" + *it2 );
+	    mList.append ( "svg:" + svgPath + *it + "/" + *it2 );
 	}
     }
 }

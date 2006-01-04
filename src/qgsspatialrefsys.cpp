@@ -5,13 +5,13 @@
 #include <iostream>
 #include <sqlite3.h>
 #include <qsettings.h>
-#include <qapplication.h>
 #include <qregexp.h>
 #include <qfileinfo.h>
 #include <qdir.h>
 #include <projects.h>
 #include <qdom.h>
 
+#include <qgsapplication.h>
 #include <qgslayerprojectionselector.h>
 #include <qgsproject.h>
 #include <qgis.h> //const vals declared here
@@ -191,13 +191,8 @@ bool QgsSpatialRefSys::createFromSrid(long theSrid)
 #endif
 
 
-  // Get the package data path and set the full path name to the sqlite3 spatial reference
-  // database.
-#if defined(Q_OS_MACX) || defined(WIN32)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-  QString myDatabaseFileName = PKGDATAPATH;
-  myDatabaseFileName += "/resources/srs.db";
+  // Get the full path name to the sqlite3 spatial reference database.
+  QString myDatabaseFileName = QgsApplication::srsDbFilePath();
 
 
   sqlite3      *myDatabase;
@@ -315,13 +310,8 @@ bool QgsSpatialRefSys::createFromEpsg(long theEpsg)
 #ifdef QGISDEBUG
   std::cout << " QgsSpatialRefSys::createFromEpsg" << std::endl;
 #endif
-  // Get the package data path and set the full path name to the sqlite3 spatial reference
-  // database.
-#if defined(Q_OS_MACX) || defined(WIN32)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-  QString myDatabaseFileName = PKGDATAPATH;
-  myDatabaseFileName += "/resources/srs.db";
+  // Get the full path name to the sqlite3 spatial reference database.
+  QString myDatabaseFileName = QgsApplication::srsDbFilePath();
 
 
   sqlite3      *myDatabase;
@@ -404,13 +394,8 @@ bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
   }
   else //must be  a system projection then
   {
-    // Get the package data path and set the full path name to the sqlite3 spatial reference
-    // database.
-#if defined(Q_OS_MACX) || defined(WIN32)
-    QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-    myDatabaseFileName = PKGDATAPATH;
-    myDatabaseFileName += "/resources/srs.db";
+    // Get the full path name to the sqlite3 spatial reference database.
+    myDatabaseFileName = QgsApplication::srsDbFilePath();
   }
 
 
@@ -613,13 +598,8 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
   std::cout << " QgsSpatialRefSys::getRecord...running query:\n"<< theSql.toLocal8Bit().data() << "\n" << std::endl;
   std::cout << " QgsSpatialRefSys::getRecord...trying system srs.db" << std::endl;
 #endif
-  // Get the package data path and set the full path name to the sqlite3 spatial reference
-  // database.
-#if defined(Q_OS_MACX) || defined(WIN32)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-  myDatabaseFileName = PKGDATAPATH;
-  myDatabaseFileName += "/resources/srs.db";
+  // Get the full path name to the sqlite3 spatial reference database.
+  myDatabaseFileName = QgsApplication::srsDbFilePath();
 
 
   //check the db is available
@@ -952,13 +932,8 @@ long QgsSpatialRefSys::findMatchingProj()
  // std::cout << "QgsSpatialRefSys::findMatchingProj list sql\n" << mySql.toLocal8Bit().data() << std::endl;
  // std::cout << " QgsSpatialRefSys::findMatchingProj...trying system srs.db" << std::endl;
 #endif
-  // Get the package data path and set the full path name to the sqlite3 spatial reference
-  // database.
-#if defined(Q_OS_MACX) || defined(WIN32)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-  QString myDatabaseFileName = PKGDATAPATH;
-  myDatabaseFileName += "/resources/srs.db";
+  // Get the full path name to the sqlite3 spatial reference database.
+  QString myDatabaseFileName = QgsApplication::srsDbFilePath();
 
 
   //check the db is available
@@ -1276,11 +1251,7 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
       }
       else //must be  a system projection then
       {
-#if defined(Q_OS_MACX) || defined(WIN32)
-        QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-        myDatabaseFileName = PKGDATAPATH;
-        myDatabaseFileName += "/resources/srs.db";
+        myDatabaseFileName = QgsApplication::srsDbFilePath();
       }
       std::cout << "QgsSpatialRefSys::getProj4FromSrsId db = " << myDatabaseFileName.toLocal8Bit().data() << std::endl;
 

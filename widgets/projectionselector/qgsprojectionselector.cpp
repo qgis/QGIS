@@ -17,6 +17,7 @@
 
 //qgis includes
 #include "qgis.h" //magick numbers here
+#include "qgsapplication.h"
 
 //qt includes
 #include <QDir>
@@ -33,13 +34,8 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name
       this, SLOT(coordinateSystemSelected(Q3ListViewItem*)));
   connect(leSearch, SIGNAL(returnPressed()), pbnFind, SLOT(animateClick()));
 
-  // Get the package data path and set the full path name to the sqlite3 spatial reference
-  // database.
-#if defined(Q_OS_MACX) || defined(WIN32)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-  mSrsDatabaseFileName = PKGDATAPATH;
-  mSrsDatabaseFileName += "/resources/srs.db";
+  // Get the full path name to the sqlite3 spatial reference database.
+  mSrsDatabaseFileName = QgsApplication::srsDbFilePath();
   // Populate the projection list view
   getProjList();
   getUserProjList();

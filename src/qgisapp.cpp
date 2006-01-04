@@ -82,6 +82,7 @@
 #include "qgis.h"
 #include "qgsabout.h"
 #include "qgsacetaterectangle.h"
+#include "qgsapplication.h"
 #include "qgsbookmarkitem.h"
 #include "qgsbookmarks.h"
 #include "qgscomposer.h"
@@ -266,11 +267,7 @@ static void setTitleBarText_( QWidget & qgisApp )
   // Create the plugin registry and load plugins
   //
   // Get pointer to the provider registry singleton
-#if defined(WIN32) || defined(Q_OS_MACX)
-  QString plib = mAppDir + "/lib/qgis";
-#else
-  QString plib = PLUGINPATH;
-#endif
+  QString plib = QgsApplication::pluginPath();
   // set the provider plugin path
   mProviderRegistry = QgsProviderRegistry::instance(plib);
 #ifdef QGISDEBUG
@@ -319,11 +316,7 @@ QgisApp::~QgisApp()
 void QgisApp::readSettings()
 {
   // get the application dir
-#if defined(WIN32) || defined(Q_OS_MACX)
-  mAppDir = qApp->applicationDirPath();
-#else
-  mAppDir = PREFIX;
-#endif
+  mAppDir = QgsApplication::prefixPath();
 
   QSettings settings;
   // get the users theme preference from the settings
@@ -764,9 +757,6 @@ void QgisApp::createStatusBar()
   // Add a panel to the status bar for the scale, coords and progress
   // And also rendering suppression checkbox
   //
-#if defined(WIN32) || defined(Q_OS_MACX)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
   mProgressBar = new QProgressBar(statusBar());
   mProgressBar->setMaximumWidth(100);
   QWhatsThis::add(mProgressBar, tr("Progress bar that displays the status of rendering layers and other time-intensive operations"));
@@ -1067,11 +1057,7 @@ void QgisApp::createDB()
   if (!qgisPrivateDbFile.exists())
   {
     // if it doesnt exist we copy it in from the global resources dir
-#if defined(Q_OS_MACX) || defined(WIN32)
-    QString PKGDATAPATH(qApp->applicationDirPath() + "/share/qgis");
-#endif
-    QString qgisMasterDbFileName = PKGDATAPATH;
-    qgisMasterDbFileName += "/resources/qgis.db";
+    QString qgisMasterDbFileName = QgsApplication::qgisMasterDbFilePath();
 
     // Must be sure there is destination directory ~/.qgis
     // @todo XXX REPLACE with recursive dir creator, but first define QgsDir class and
