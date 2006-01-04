@@ -19,12 +19,10 @@
  /*  $Id$ */
 #ifndef QGSNORTHARROWPLUGIN
 #define QGSNORTHARROWPLUGIN
+
 #include "../qgisplugin.h"
-#include <qwidget.h>
-#include <qpainter.h>
-
-
 #include "../../src/qgisapp.h"
+
 class QToolBar;
 /**
 * \class Plugin

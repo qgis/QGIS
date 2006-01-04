@@ -13,10 +13,6 @@
 #define QGSNORTHARROWPLUGINGUI_H
 
 #include <ui_pluginguibase.h>
-#include <QDialog>
-//Added by qt3to4:
-#include <QResizeEvent>
-#include <QPaintEvent>
 
 /**
 @author Tim Sutton
@@ -28,8 +24,10 @@ public:
     QgsNorthArrowPluginGui();
     QgsNorthArrowPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~QgsNorthArrowPluginGui();
-    void pbnOK_clicked();
-    void pbnCancel_clicked();
+
+public slots:
+    void on_pbnOK_clicked();
+    void on_pbnCancel_clicked();
 
 private:
     void rotatePixmap(int theRotationInt);
@@ -53,10 +51,8 @@ public slots:
     void setAutomaticDisabled();
 
 private slots:
-    //overides function byt the same name created in .ui
-    void spinSize_valueChanged( int theInt);
-    //overides function byt the same name created in .ui
-    void sliderRotation_valueChanged( int theInt);
+    void on_spinAngle_valueChanged( int theInt);
+    void on_sliderRotation_valueChanged( int theInt);
 };
 
 #endif

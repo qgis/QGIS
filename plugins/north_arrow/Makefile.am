@@ -23,12 +23,17 @@ plugin_LTLIBRARIES = northarrowplugin.la
 ui_%.h: %.ui 
 	$(UIC) -o $@ $<
 
+%.qrc.cpp: %.qrc
+	$(RCC) -o $@ $<
+
 northarrowplugin_la_SOURCES =  plugin.cpp \
 			      plugin.h \
 			      plugingui.cpp \
 			      plugingui.h \
 			      $(plugin_UI)\
-			      $(plugin_MOC)
+			      $(plugin_MOC) \
+			      $(plugin_QRC) \
+			      $(plugin_RES)
 
 plugin_MOC = plugin.moc.cpp \
 	     plugingui.moc.cpp 
@@ -37,8 +42,12 @@ plugin_UI = ui_pluginguibase.h
 
 plugin_UIC = pluginguibase.ui
 
+plugin_RES = northarrow_plugin.qrc.cpp
 
-BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
+plugin_QRC = northarrow_plugin.qrc
+
+
+BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
 
 northarrowplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/libqgis.la
