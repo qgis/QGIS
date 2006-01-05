@@ -23,6 +23,8 @@ plugin_LTLIBRARIES = gpsimporterplugin.la
 ui_%.h: %.ui 
 	$(UIC) -o $@ $<
 
+%.qrc.cpp: %.qrc
+	$(RCC) -o $@ $<
 
 gpsimporterplugin_la_SOURCES = \
 	qgsgpsplugin.cpp \
@@ -33,7 +35,9 @@ gpsimporterplugin_la_SOURCES = \
 	qgsgpsplugingui.cpp \
 	qgsgpsdevicedialog.cpp \
 	$(plugin_UI)\
-	$(plugin_MOC)
+	$(plugin_MOC) \
+	$(plugin_QRC) \
+	$(plugin_RES)
 
 plugin_MOC = \
 	qgsgpsplugin.moc.cpp \
@@ -50,6 +54,9 @@ plugin_UIC = \
 	qgsgpspluginguibase.ui \
 	qgsgpsdevicedialogbase.ui
 
+plugin_RES = qgsgps_plugin.qrc.cpp
+
+plugin_QRC = qgsgps_plugin.qrc
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
