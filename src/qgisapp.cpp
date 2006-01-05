@@ -777,7 +777,7 @@ void QgisApp::createStatusBar()
   mCoordsLabel->setFont(myFont);
   QWhatsThis::add(mCoordsLabel, tr("Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved."));
   statusBar()->addWidget(mCoordsLabel, 0, true);
-  //render suppression status bar widget
+  // render suppression status bar widget
   mRenderSuppressionCBox = new QCheckBox(tr("Render"),statusBar());
   mRenderSuppressionCBox->setChecked(true);
   mRenderSuppressionCBox->setFont(myFont);
@@ -1710,7 +1710,10 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
   qApp->processEvents();       // XXX why does this need to be called manually?
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the map canvas widget.
-  //    mMapCanvas->render();       // XXX eh, wot?
+  // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+  // [gsherman]
+  mMapCanvas->render();       // XXX eh, wot? -- without this nothing is drawn when
+                              //                 the layer is intially added
   mMapCanvas->update();
 
   QApplication::restoreOverrideCursor();
@@ -1846,7 +1849,9 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
   mMapCanvas->freeze(false);
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the map canvas widget.
-  //  mMapCanvas->render();
+  // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+  // [gsherman]
+  mMapCanvas->render();
   mMapCanvas->update();
   QApplication::restoreOverrideCursor();
   statusBar()->message(mMapCanvas->extent().stringRep(2));
@@ -1963,7 +1968,9 @@ void QgisApp::addDatabaseLayer()
   mMapCanvas->freeze(false);
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the map canvas widget.
-  //  mMapCanvas->render();
+  // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+  // [gsherman]
+  mMapCanvas->render();
   mMapCanvas->update();
   QApplication::restoreOverrideCursor();
 } // QgisApp::addDatabaseLayer()
@@ -3168,7 +3175,9 @@ void QgisApp::addAllToOverview()
   mOverviewCanvas->freeze(false);
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the overview canvas widget.
-  //    mOverviewCanvas->render();
+  // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+  // [gsherman]
+  mOverviewCanvas->render();
   mOverviewCanvas->update();
 
   // notify the project we've made a change
@@ -3194,7 +3203,9 @@ void QgisApp::removeAllFromOverview()
   mOverviewCanvas->freeze(false);
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the overview canvas widget.
-  //    mOverviewCanvas->render();
+  // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+  // [gsherman]
+  mOverviewCanvas->render();
   mOverviewCanvas->update();
 
   // notify the project we've made a change
@@ -3230,11 +3241,15 @@ void QgisApp::hideAllLayers()
   mOverviewCanvas->freeze(false);
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the map canvas widget.
-  //    mMapCanvas->render();
+  // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+  // [gsherman]
+  mMapCanvas->render();
   mMapCanvas->update();
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the overview canvas widget.
-  //    mOverviewCanvas->render();
+  // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+  // [gsherman]
+  mOverviewCanvas->render();
   mOverviewCanvas->update();
 
   // notify the project we've made a change
@@ -3270,11 +3285,15 @@ void QgisApp::showAllLayers()
   mOverviewCanvas->freeze(false);
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the map canvas widget.
-  //    mMapCanvas->render();
+  // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+  // [gsherman]
+  mMapCanvas->render();
   mMapCanvas->update();
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the overview canvas widget.
-  //    mOverviewCanvas->render();
+  // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+  // [gsherman]
+  mOverviewCanvas->render();
   mOverviewCanvas->update();
 
   // notify the project we've made a change
@@ -3721,7 +3740,9 @@ void QgisApp::drawLayers()
   mMapCanvas->setDirty(true);
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the map canvas widget.
-  //    mMapCanvas->render();
+  // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+  // [gsherman]
+  mMapCanvas->render();
   mMapCanvas->update();
 
 }
@@ -3800,8 +3821,9 @@ void QgisApp::inOverview( bool in_overview )
 
     // For Qt4, deprecate direct calling of render().  Let render() be called by the 
     // paint event loop of the overview canvas widget.
-
     //but adding a layer to overview canvas does only work at the moment when calling render()...
+    // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+    // [gsherman]
     mOverviewCanvas->render();
     //mOverviewCanvas->update();
   }
@@ -3835,7 +3857,9 @@ void QgisApp::removeLayer()
       mOverviewCanvas->clear();
       // For Qt4, deprecate direct calling of render().  Let render() be called by the 
       // paint event loop of the overview canvas widget.
-      //        mOverviewCanvas->render();
+      // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+      // [gsherman]
+      mOverviewCanvas->render();
       mOverviewCanvas->update();
       mMapCanvas->freeze(false);
 
@@ -3846,7 +3870,9 @@ void QgisApp::removeLayer()
       mMapCanvas->clear();
       // For Qt4, deprecate direct calling of render().  Let render() be called by the 
       // paint event loop of the map canvas widget.
-      //        mMapCanvas->render();
+      // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+      // [gsherman]
+      mMapCanvas->render();
       mMapCanvas->update();
     }
     else if(ll)
@@ -3907,7 +3933,9 @@ void QgisApp::zoomToLayerExtent()
       mMapCanvas->clear();
       // For Qt4, deprecate direct calling of render().  Let render() be called by the 
       // paint event loop of the map canvas widget.
-      //        mMapCanvas->render();
+      // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+      // [gsherman]
+      mMapCanvas->render();
       mMapCanvas->update();
 
       // notify the project we've made a change
@@ -4696,7 +4724,9 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
   mMapCanvas->freeze(false);
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the map canvas widget.
-  //        mMapCanvas->render();
+  // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+  // [gsherman]
+  mMapCanvas->render();
   mMapCanvas->update();
   QApplication::restoreOverrideCursor();
 
@@ -4736,7 +4766,9 @@ void QgisApp::addMapLayer(QgsMapLayer *theMapLayer)
   mMapCanvas->freeze(false);
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the map canvas widget.
-  //    mMapCanvas->render();
+  // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+  // [gsherman]
+  mMapCanvas->render();
   mMapCanvas->update();
   QApplication::restoreOverrideCursor();
 
@@ -4957,7 +4989,9 @@ void QgisApp::showExtents(QgsRect theExtents)
     mOverviewCanvas->clear();
     // For Qt4, deprecate direct calling of render().  Let render() be called by the 
     // paint event loop of the overview canvas widget.
-    //      mOverviewCanvas->render();
+    // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+    // [gsherman]
+    mOverviewCanvas->render();
     mOverviewCanvas->update();
   }
 
@@ -5339,7 +5373,9 @@ bool QgisApp::addRasterLayer(QgsRasterLayer * theRasterLayer, bool theForceRedra
     mMapCanvas->freeze(false);
     // For Qt4, deprecate direct calling of render().  Let render() be called by the 
     // paint event loop of the map canvas widget.
-    //        mMapCanvas->render();
+    // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+    // [gsherman]
+    mMapCanvas->render();
     mMapCanvas->update();
   }
   return true;
@@ -5490,7 +5526,9 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
   mMapCanvas->freeze(false);
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
   // paint event loop of the map canvas widget.
-  //    mMapCanvas->render();
+  // XXX - this doesn't work -- or nobody implemented it so render() is still enabled
+  // [gsherman]
+  mMapCanvas->render();
   mMapCanvas->update();
   QApplication::restoreOverrideCursor();
 
