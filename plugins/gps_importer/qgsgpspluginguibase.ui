@@ -64,9 +64,9 @@
        <item row="0" column="0" colspan="2" >
         <widget class="Q3TextEdit" name="teGPXInstructions" >
          <property name="text" >
-          <string>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;>
-&lt;p style=&quot;margin-top:16px&quot;>&lt;span style=&quot;font-size:17pt;font-weight:600&quot;>Description&lt;/span>&lt;/p>
-&lt;p>GPX is the &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;>GPS eXchange file format&lt;/a>, which is used to store information about waypoints, routes, and tracks.&lt;/p>
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:12pt;font-family:Arial">
+&lt;p style="margin-top:16px">&lt;span style="font-size:17pt;font-weight:600">Description&lt;/span>&lt;/p>
+&lt;p>GPX is the &lt;a href="http://www.topografix.com/gpx.asp">GPS eXchange file format&lt;/a>, which is used to store information about waypoints, routes, and tracks.&lt;/p>
 &lt;p>Select a GPX file and then select the feature types that you want to load.&lt;/p>
 &lt;/body>&lt;/html>
 </string>
@@ -158,10 +158,10 @@
        <item row="0" column="0" colspan="4" >
         <widget class="Q3TextEdit" name="teGPXInstructions_2" >
          <property name="text" >
-          <string>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;>
-&lt;p style=&quot;margin-top:16px&quot;>&lt;span style=&quot;font-size:17pt;font-weight:600&quot;>Description&lt;/span>&lt;/p>
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:12pt;font-family:Arial">
+&lt;p style="margin-top:16px">&lt;span style="font-size:17pt;font-weight:600">Description&lt;/span>&lt;/p>
 &lt;p>QGIS can only load GPX files by itself, but many other formats 
-can be converted to GPX using GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;>
+can be converted to GPX using GPSBabel (&lt;a href="http://gpsbabel.sf.net">
 http://gpsbabel.sf.net&lt;/a>). This requires that you have GPSBabel installed where 
 QGIS can find it.&lt;/p>
 &lt;p>Select a GPS file format and the file that you want to import, the feature type 
@@ -230,14 +230,14 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p>
         <widget class="QLineEdit" name="leIMPOutput" />
        </item>
        <item row="1" column="3" >
-        <widget class="QPushButton" name="pbIMPInput" >
+        <widget class="QPushButton" name="pbnIMPInput" >
          <property name="text" >
           <string>...</string>
          </property>
         </widget>
        </item>
        <item row="3" column="3" >
-        <widget class="QPushButton" name="pbIMPOutput" >
+        <widget class="QPushButton" name="pbnIMPOutput" >
          <property name="text" >
           <string>...</string>
          </property>
@@ -269,14 +269,14 @@ tracks, so some feature types may be disabled for some file formats.&lt;/p>
        <item row="0" column="0" colspan="5" >
         <widget class="Q3TextEdit" name="teDLInstructions" >
          <property name="text" >
-          <string>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;>
-&lt;p style=&quot;margin-top:16px&quot;>&lt;span style=&quot;font-size:17pt;font-weight:600&quot;>Description&lt;/span>&lt;/p>
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:12pt;font-family:Arial">
+&lt;p style="margin-top:16px">&lt;span style="font-size:17pt;font-weight:600">Description&lt;/span>&lt;/p>
 &lt;p>This tool will help you download data from a GPS device. Choose your 
 GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, 
 and the GPX file where you want to store the data. If your device isn't listed, or if 
 you want to change some settings, you can also edit the devices.&lt;/p>
 &lt;p>This tool uses the program GPSBabel 
-(&lt;a href=&quot;http://gpsbabel.sf.net&quot;>http://gpsbabel.sf.net&lt;/a>) to transfer the data. If you 
+(&lt;a href="http://gpsbabel.sf.net">http://gpsbabel.sf.net&lt;/a>) to transfer the data. If you 
 don't have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p>
 &lt;/body>&lt;/html>
 </string>
@@ -290,7 +290,7 @@ don't have GPSBabel installed where QGIS can find it, this tool will not work.&l
         </widget>
        </item>
        <item row="3" column="4" >
-        <widget class="QPushButton" name="pbDLOutput" >
+        <widget class="QPushButton" name="pbnDLOutput" >
          <property name="text" >
           <string>...</string>
          </property>
@@ -417,14 +417,14 @@ don't have GPSBabel installed where QGIS can find it, this tool will not work.&l
        <item row="0" column="0" colspan="5" >
         <widget class="Q3TextEdit" name="teDLInstructions_2" >
          <property name="text" >
-          <string>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;>
-&lt;p style=&quot;margin-top:16px&quot;>&lt;span style=&quot;font-size:17pt;font-weight:600&quot;>Description&lt;/span>&lt;/p>
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:12pt;font-family:Arial">
+&lt;p style="margin-top:16px">&lt;span style="font-size:17pt;font-weight:600">Description&lt;/span>&lt;/p>
 &lt;p>This tool will help you upload data from a GPX layer to a GPS device. 
 Choose the layer you want to upload, the device you want to upload it to, and the port 
 your device is connected to. 
 If your device isn't listed, or if you want to change some settings, you can also 
 edit the devices.&lt;/p>
-&lt;p>This tool uses the program GPSBabel (&lt;a href=&quot;http://gpsbabel.sf.net&quot;>http://gpsbabel.sf.net&lt;/a>) 
+&lt;p>This tool uses the program GPSBabel (&lt;a href="http://gpsbabel.sf.net">http://gpsbabel.sf.net&lt;/a>) 
 to transfer the data. If you don't have GPSBabel installed where QGIS can find it, this tool will not work.&lt;/p>
 &lt;/body>&lt;/html>
 </string>

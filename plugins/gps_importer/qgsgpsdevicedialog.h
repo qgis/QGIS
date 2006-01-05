@@ -13,7 +13,6 @@
 #define QGSGPSDEVICEDIALOG_H
 
 #include "ui_qgsgpsdevicedialogbase.h"
-#include <QDialog>
 #include "qgsgpsdevice.h"
 
 #include <qstring.h>
@@ -26,9 +25,10 @@ public:
   QgsGPSDeviceDialog(std::map<QString, QgsGPSDevice*>& devices);
 
 public slots:
-  void slotNewDevice();
-  void slotDeleteDevice();
-  void slotUpdateDevice();
+  void on_pbnNewDevice_clicked();
+  void on_pbnDeleteDevice_clicked();
+  void on_pbnUpdateDevice_clicked();
+  void on_pbnClose_clicked();
   void slotUpdateDeviceList(const QString& selection = "");
   void slotSelectionChanged();
 
