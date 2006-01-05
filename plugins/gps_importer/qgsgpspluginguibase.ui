@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>370</height>
+    <width>650</width>
+    <height>395</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -20,33 +20,59 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="1" >
-    <widget class="Line" name="line1" >
-     <property name="frameShape" >
-      <enum>QFrame::VLine</enum>
+   <item row="1" column="0" colspan="3" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
      </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Sunken</enum>
+     <property name="spacing" >
+      <number>6</number>
      </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" >
-    <widget class="QLabel" name="pixmapLabel1" >
-     <property name="pixmap" >
-      <pixmap/>
-     </property>
-     <property name="scaledContents" >
-      <bool>true</bool>
-     </property>
-    </widget>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>550</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnOK" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="text" >
+        <string>&amp;OK</string>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+O</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnCancel" >
+       <property name="text" >
+        <string>&amp;Cancel</string>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+C</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item row="0" column="2" >
     <widget class="QTabWidget" name="tabWidget" >
@@ -494,54 +520,31 @@ to transfer the data. If you don't have GPSBabel installed where QGIS can find i
      </widget>
     </widget>
    </item>
-   <item row="1" column="0" colspan="3" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
+   <item row="0" column="1" >
+    <widget class="Line" name="line1" >
+     <property name="frameShape" >
+      <enum>QFrame::VLine</enum>
      </property>
-     <property name="spacing" >
-      <number>6</number>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
      </property>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>550</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnOK" >
-       <property name="enabled" >
-        <bool>false</bool>
-       </property>
-       <property name="text" >
-        <string>&amp;OK</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+O</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnCancel" >
-       <property name="text" >
-        <string>&amp;Cancel</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+C</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" >
+    <widget class="QLabel" name="label" >
+     <property name="text" >
+      <string/>
+     </property>
+     <property name="pixmap" >
+      <pixmap resource="qgsgps_plugin.qrc" >:/gps.xpm</pixmap>
+     </property>
+     <property name="scaledContents" >
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -556,6 +559,8 @@ to transfer the data. If you don't have GPSBabel installed where QGIS can find i
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="qgsgps_plugin.qrc" />
+ </resources>
  <connections/>
 </ui>

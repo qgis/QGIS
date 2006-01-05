@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>gps.xpm</file>
+    </qresource>
+</RCC>
