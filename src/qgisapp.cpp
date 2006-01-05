@@ -219,13 +219,18 @@ static void setTitleBarText_( QWidget & qgisApp )
 
 
 // constructor starts here
-  QgisApp::QgisApp(QWidget * parent, Qt::WFlags fl)
+  QgisApp::QgisApp(QSplashScreen *splash, QWidget * parent, Qt::WFlags fl)
 : QMainWindow(parent,fl),
-  mMapTool(QGis::NoTool)
+  mMapTool(QGis::NoTool),
+  mSplash(splash)
 {
 
   setupUi(this);
+  mSplash->showMessage("Reading settings", Qt::AlignHCenter | Qt::AlignBottom);
+  qApp->processEvents();
   readSettings();
+  mSplash->showMessage("Setting up the GUI", Qt::AlignHCenter | Qt::AlignBottom);
+  qApp->processEvents();
   createActions();
   createMenus();
   createToolBars();
@@ -236,6 +241,9 @@ static void setTitleBarText_( QWidget & qgisApp )
   createCanvas();
   createOverview();
   createLegend();
+
+  mSplash->showMessage("Checking database", Qt::AlignHCenter | Qt::AlignBottom);
+  qApp->processEvents();
   createDB();    
 
   // register all GDAL and OGR plug-ins
@@ -274,6 +282,8 @@ static void setTitleBarText_( QWidget & qgisApp )
   std::cout << "Plugins and providers are installed in " << plib.toLocal8Bit().data() << std::endl;
 #endif
   // load any plugins that were running in the last session
+  mSplash->showMessage("Restoring loaded plugins", Qt::AlignHCenter | Qt::AlignBottom);
+  qApp->processEvents();
   restoreSessionPlugins(plib);
 
   /* Delete this I think - Tim - FIXME 
@@ -292,6 +302,8 @@ static void setTitleBarText_( QWidget & qgisApp )
   // Map composer
   mComposer = new QgsComposer(this);
 
+  mSplash->showMessage("Initializing file filters", Qt::AlignHCenter | Qt::AlignBottom);
+  qApp->processEvents();
   // now build vector file filter
   buildSupportedVectorFileFilter_( mVectorFileFilter );
 
@@ -304,7 +316,12 @@ static void setTitleBarText_( QWidget & qgisApp )
   // Please make sure this is the last thing the ctor does so that we can ensure teh 
   // widgets are all initialised before trying to restore their state.
   //
+  mSplash->showMessage("Restoring window state", Qt::AlignHCenter | Qt::AlignBottom);
+  qApp->processEvents();
   restoreWindowState();
+
+  mSplash->showMessage("QGIS Ready!", Qt::AlignHCenter | Qt::AlignBottom);
+  qApp->processEvents();
 } // QgisApp ctor
 
 

@@ -25,6 +25,7 @@
 #include <QEvent>
 #include <QPixmap>
 #include <QLabel>
+#include <QSplashScreen>
 class QCanvas;
 class QRect;
 class QCanvasView;
@@ -73,7 +74,7 @@ class QgisApp : public QMainWindow, public Ui::QgisAppBase
   Q_OBJECT;
   public:
   //! Constructor
-  QgisApp(QWidget * parent = 0, Qt::WFlags fl = Qt::WType_TopLevel);
+  QgisApp(QSplashScreen *splash, QWidget * parent = 0, Qt::WFlags fl = Qt::WType_TopLevel);
   //! Destructor
   ~QgisApp();
   /*
@@ -408,6 +409,7 @@ private:
   void pasteTransformations();
   //! check to see if file is dirty and if so, prompt the user th save it
   int saveDirty();
+  //! Set the pointer to the splash screen so status messages can be
 
 
   /// QgisApp aren't copyable
@@ -549,6 +551,7 @@ private:
   QgisIface *mQgisInterface;
   QTcpSocket *mSocket;
   QString mVersionMessage;
+  QSplashScreen *mSplash;
   friend class QgisIface;
   QgsProviderRegistry *mProviderRegistry;
   //! application directory
