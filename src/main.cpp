@@ -431,7 +431,7 @@ int main(int argc, char *argv[])
 
 
 
-  QgisApp *qgis = new QgisApp; // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp(mypSplash); // "QgisApp" used to find canonical instance
   qgis->setName( "QgisApp" );
 
   /////////////////////////////////////////////////////////////////////
@@ -559,6 +559,7 @@ int main(int argc, char *argv[])
   qgis->show();
   a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 
+  mypSplash->finish(qgis);
   delete mypSplash;
   return a.exec();
 
