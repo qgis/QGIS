@@ -20,13 +20,12 @@
 
 #include "../../src/qgsvectorlayer.h"
 #include "ui_qgsgpspluginguibase.h"
-#include <QDialog>
 #include "qgsbabelformat.h"
 #include "qgsgpsdevice.h"
 
 #include <vector>
 
-#include <qstring.h>
+#include <QString>
 
 
 /**
@@ -44,24 +43,22 @@ public:
 
 public slots:
 
-  void slotOpenDeviceEditor();
-  void slotDevicesUpdated();
+  void openDeviceEditor();
+  void devicesUpdated();
+  
+  void on_pbnGPXSelectFile_clicked();
+  
+  void on_pbnIMPInput_clicked();
+  void on_pbnIMPOutput_clicked();
+  
+  void on_pbnDLOutput_clicked();
+  
+  void on_pbnCancel_clicked();
+  void on_pbnOK_clicked();
   
 private:
   
-  void pbnSelectInputFile_clicked();
-  void pbnSelectOutputFile_clicked();
-  
-  void pbnGPXSelectFile_clicked();
-  
-  void pbnIMPInput_clicked();
-  void pbnIMPOutput_clicked();
-  
-  void pbnDLOutput_clicked();
-  
   void enableRelevantControls();
-  void pbnCancel_clicked();
-  void pbnOK_clicked();
   
   void populateDeviceComboBox();
   void populateULLayerComboBox();

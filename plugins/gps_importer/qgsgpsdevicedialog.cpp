@@ -14,25 +14,21 @@
 
 #include <iostream>
 
-#include <q3listbox.h>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-#include <qsettings.h>
+#include <QMessageBox>
+#include <QSettings>
 
 
 QgsGPSDeviceDialog::QgsGPSDeviceDialog(std::map<QString, QgsGPSDevice*>& 
 				       devices) : 
-     //QgsGPSDeviceDialogBase(0, 0, true ), //ensure dialog is openened modal
-     //params disabled during qt4 port by Tim FIXME
-     QgsGPSDeviceDialogBase(), 
-     mDevices(devices)
+  QDialog(0, 0, true), mDevices(devices)
   
 {
+  setupUi(this);
   slotUpdateDeviceList();
 }
 
 
-void QgsGPSDeviceDialog::slotNewDevice() {
+void QgsGPSDeviceDialog::on_pbnNewDevice_clicked() {
   std::map<QString, QgsGPSDevice*>::const_iterator iter = mDevices.begin();
   QString deviceName = "New device %1";
   int i;
@@ -46,7 +42,7 @@ void QgsGPSDeviceDialog::slotNewDevice() {
 }
 
 
-void QgsGPSDeviceDialog::slotDeleteDevice() {
+void QgsGPSDeviceDialog::on_pbnDeleteDevice_clicked() {
   if (QMessageBox::warning(this, "Are you sure?", 
 			   "Are you sure that you want to delete this device?",
 			   QMessageBox::Ok, QMessageBox::Cancel) == 
@@ -62,7 +58,7 @@ void QgsGPSDeviceDialog::slotDeleteDevice() {
 }
 
 
-void QgsGPSDeviceDialog::slotUpdateDevice() {
+void QgsGPSDeviceDialog::on_pbnUpdateDevice_clicked() {
   std::map<QString, QgsGPSDevice*>::iterator iter = 
     mDevices.find(lbDeviceList->selectedItem()->text());
   delete iter->second;
@@ -149,4 +145,9 @@ void QgsGPSDeviceDialog::writeDeviceSettings() {
     settings.writeEntry(devPath.arg(iter->first) + "/trkupload", trkUpload);
   }
   settings.writeEntry("/Plugin-GPS/devicelist", deviceNames);
+}
+
+void QgsGPSDeviceDialog::on_pbnClose_clicked()
+{
+  close(1);
 }

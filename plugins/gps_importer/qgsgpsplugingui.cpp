@@ -15,21 +15,8 @@
 #include "../../src/qgsdataprovider.h"
 
 //qt includes
-#include <qapplication.h>
-#include <qcheckbox.h>
-#include <QComboBox>
-#include <qeventloop.h>
-#include <qfileinfo.h>
-#include <q3process.h>
-#include <q3progressdialog.h>
-#include <qpushbutton.h>
-#include <qtabwidget.h>
-#include <qlineedit.h>
-#include <qspinbox.h>
 #include <QFileDialog>
-#include <qmessagebox.h>
-#include <qfile.h>
-#include <qsettings.h>
+#include <QSettings>
 
 //standard includes
 #include <cassert>
@@ -42,11 +29,10 @@ QgsGPSPluginGui::QgsGPSPluginGui(const BabelMap& importers,
 				 std::vector<QgsVectorLayer*> gpxMapLayers, 
 				 QWidget* parent, const char* name, 
 				 bool modal, Qt::WFlags fl)
-  //: QgsGPSPluginGuiBase(parent, name, modal, fl), mGPXLayers(gpxMapLayers),
-  //params disabled by Tim during qt4 ui port - FIXME
-  : QgsGPSPluginGuiBase(), mGPXLayers(gpxMapLayers),
+  : QDialog(parent, name, modal, fl), mGPXLayers(gpxMapLayers),
     mImporters(importers), mDevices(devices) 
 {
+  setupUi(this);
   populatePortComboBoxes();
   populateULLayerComboBox();
   populateIMPBabelFormats();
@@ -58,7 +44,7 @@ QgsGPSPluginGui::~QgsGPSPluginGui()
 {
 }
 
-void QgsGPSPluginGui::pbnOK_clicked()
+void QgsGPSPluginGui::on_pbnOK_clicked()
 {
   
   // what should we do?
@@ -123,7 +109,7 @@ void QgsGPSPluginGui::pbnOK_clicked()
 } 
 
 
-void QgsGPSPluginGui::pbnDLOutput_clicked()
+void QgsGPSPluginGui::on_pbnDLOutput_clicked()
 {
   QString myFileNameQString = 
     QFileDialog::getSaveFileName(this, //parent dialog
@@ -189,13 +175,13 @@ void QgsGPSPluginGui::enableRelevantControls()
 }
 
 
-void QgsGPSPluginGui::pbnCancel_clicked()
+void QgsGPSPluginGui::on_pbnCancel_clicked()
 {
  close(1);
 }
 
 
-void QgsGPSPluginGui::pbnGPXSelectFile_clicked()
+void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
 {
   std::cout << " Gps File Importer::pbnGPXSelectFile_clicked() " << std::endl;
   QString myFileTypeQString;
@@ -215,7 +201,7 @@ void QgsGPSPluginGui::pbnGPXSelectFile_clicked()
 }
 
 
-void QgsGPSPluginGui::pbnIMPInput_clicked() {
+void QgsGPSPluginGui::on_pbnIMPInput_clicked() {
   QString myFileType;
   QString myFileName = QFileDialog::getOpenFileName(
           this, //parent dialog
@@ -244,7 +230,7 @@ void QgsGPSPluginGui::pbnIMPInput_clicked() {
 }
 
 
-void QgsGPSPluginGui::pbnIMPOutput_clicked() {
+void QgsGPSPluginGui::on_pbnIMPOutput_clicked() {
   QString myFileNameQString = 
     QFileDialog::getSaveFileName(this, //parent dialog
 				 "Choose a filename to save under",
@@ -368,14 +354,14 @@ void QgsGPSPluginGui::populateIMPBabelFormats() {
 }
 
 
-void QgsGPSPluginGui::slotOpenDeviceEditor() {
+void QgsGPSPluginGui::openDeviceEditor() {
   QgsGPSDeviceDialog* dlg = new QgsGPSDeviceDialog(mDevices);
   dlg->show();
-  connect(dlg, SIGNAL(devicesChanged()), this, SLOT(slotDevicesUpdated()));
+  connect(dlg, SIGNAL(devicesChanged()), this, SLOT(devicesUpdated()));
 }
 
 
-void QgsGPSPluginGui::slotDevicesUpdated() {
+void QgsGPSPluginGui::devicesUpdated() {
   populateIMPBabelFormats();
 }
 
