@@ -108,12 +108,8 @@ void QgsGPSPlugin::initGui()
   pluginMenu->setWhatsThis(mMenuIdGPX, "Creates a new GPX layer and displays it on the map canvas");
 
   // add an action to the toolbar
-#if QT_VERSION < 0x040000
-  mQActionPointer = new QAction("Gps Tools", QIcon(icon), "&Wmi",0, 
-				this, "run");
-#else
   mQActionPointer = new QAction(QIcon(icon), "Gps Tools", this);
-#endif
+
   mQActionPointer->setWhatsThis( "Creates a new GPX layer and displays it on the map canvas");
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   mQGisInterface->addToolBarIcon(mQActionPointer);
@@ -465,7 +461,7 @@ void QgsGPSPlugin::setupBabel() {
   
   // where is gpsbabel?
   QSettings settings;
-  mBabelPath = settings.readEntry("/Plugin-GPS/gpsbabelpath");
+  mBabelPath = settings.value("/Plugin-GPS/gpsbabelpath", "").toString();
   if (mBabelPath.isEmpty())
     mBabelPath = "gpsbabel";
   // the importable formats
@@ -536,21 +532,30 @@ void QgsGPSPlugin::setupBabel() {
 		     "%babel -r -i gpx -o garmin %in %out",
 		     "%babel -t -i garmin -o gpx %in %out",
 		     "%babel -t -i gpx -o garmin %in %out");
-  QStringList deviceNames = settings.readListEntry("/Plugin-GPS/devicelist");
-  QStringList::iterator iter;
+  QStringList deviceNames = settings.value("/Plugin-GPS/devicelist").
+                             toStringList();
+
+  QStringList::const_iterator iter;
+
   for (iter = deviceNames.begin(); iter != deviceNames.end(); ++iter) {
     QString wptDownload = settings.
-      readEntry(QString("/Plugin-GPS/devices/%1/wptdownload").arg(*iter), "");
+      value(QString("/Plugin-GPS/devices/%1/wptdownload").
+       arg(*iter), "").toString();
     QString wptUpload = settings.
-      readEntry(QString("/Plugin-GPS/devices/%1/wptupload").arg(*iter), "");
+      value(QString("/Plugin-GPS/devices/%1/wptupload").arg(*iter), "").
+       toString();
     QString rteDownload = settings.
-      readEntry(QString("/Plugin-GPS/devices/%1/rtedownload").arg(*iter), "");
+      value(QString("/Plugin-GPS/devices/%1/rtedownload").arg(*iter), "").
+       toString();
     QString rteUpload = settings.
-      readEntry(QString("/Plugin-GPS/devices/%1/rteupload").arg(*iter), "");
+      value(QString("/Plugin-GPS/devices/%1/rteupload").arg(*iter), "").
+       toString();
     QString trkDownload = settings.
-      readEntry(QString("/Plugin-GPS/devices/%1/trkdownload").arg(*iter), "");
+      value(QString("/Plugin-GPS/devices/%1/trkdownload").arg(*iter), "").
+       toString();
     QString trkUpload = settings.
-      readEntry(QString("/Plugin-GPS/devices/%1/trkupload").arg(*iter), "");
+      value(QString("/Plugin-GPS/devices/%1/trkupload").arg(*iter), "").
+       toString();
     mDevices[*iter] = new QgsGPSDevice(wptDownload, wptUpload,
 				       rteDownload, rteUpload,
 				       trkDownload, trkUpload);
