@@ -99,7 +99,7 @@
       <enum>Qt::PlainText</enum>
      </property>
      <property name="text" >
-      <string>© QGIS 2004</string>
+      <string>© QGIS 20056</string>
      </property>
      <property name="wordWrap" >
       <enum>Q3TextEdit::WidgetWidth</enum>
