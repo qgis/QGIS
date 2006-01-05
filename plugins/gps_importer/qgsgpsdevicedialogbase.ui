@@ -26,234 +26,253 @@
   <property name="modal" >
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
+  <widget class="QTextEdit" name="textEdit" >
+   <property name="geometry" >
+    <rect>
+     <x>175</x>
+     <y>298</y>
+     <width>331</width>
+     <height>91</height>
+    </rect>
    </property>
-   <property name="spacing" >
-    <number>6</number>
+   <property name="html" >
+    <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;span style=" font-style:italic;">%babel&lt;/span> - the path to GPSBabel&lt;br />&lt;span style=" font-style:italic;">%in&lt;/span> - the GPX filename when uploading or the port when downloading&lt;br />&lt;span style=" font-style:italic;">%out&lt;/span> - the port when uploading or the GPX filename when downloading&lt;/p>&lt;/body>&lt;/html></string>
    </property>
-   <item rowspan="3" row="0" column="0" >
-    <widget class="Q3ListBox" name="lbDeviceList" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>5</hsizetype>
-       <vsizetype>7</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" >
-    <widget class="QPushButton" name="pbnNewDevice" >
-     <property name="text" >
-      <string>New device</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2" >
-    <widget class="QLabel" name="textLabel3" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>1</hsizetype>
-       <vsizetype>5</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
-      <string>Device name:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0" colspan="4" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>370</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="6" column="4" >
-    <widget class="QPushButton" name="pbnClose" >
-     <property name="text" >
-      <string>Close</string>
-     </property>
-     <property name="default" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3" colspan="2" >
-    <widget class="QLineEdit" name="leDeviceName" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>2</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="toolTip" >
-      <string>This is the name of the device as it will appear in the lists</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2" colspan="3" >
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
-      <string>Commands</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
+  </widget>
+  <widget class="Line" name="line2" >
+   <property name="geometry" >
+    <rect>
+     <x>160</x>
+     <y>10</y>
+     <width>16</width>
+     <height>380</height>
+    </rect>
+   </property>
+   <property name="frameShape" >
+    <enum>QFrame::VLine</enum>
+   </property>
+   <property name="frameShadow" >
+    <enum>QFrame::Sunken</enum>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pbnUpdateDevice" >
+   <property name="geometry" >
+    <rect>
+     <x>9</x>
+     <y>358</y>
+     <width>151</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Update device</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pbnDeleteDevice" >
+   <property name="geometry" >
+    <rect>
+     <x>9</x>
+     <y>321</y>
+     <width>151</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Delete device</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pbnNewDevice" >
+   <property name="geometry" >
+    <rect>
+     <x>9</x>
+     <y>284</y>
+     <width>151</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>New device</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pbnClose" >
+   <property name="geometry" >
+    <rect>
+     <x>421</x>
+     <y>395</y>
+     <width>85</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>Close</string>
+   </property>
+   <property name="default" >
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox" >
+   <property name="geometry" >
+    <rect>
+     <x>175</x>
+     <y>44</y>
+     <width>331</width>
+     <height>247</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Commands</string>
+   </property>
+   <layout class="QGridLayout" >
+    <property name="margin" >
+     <number>9</number>
+    </property>
+    <property name="spacing" >
+     <number>6</number>
+    </property>
+    <item row="5" column="1" >
+     <widget class="QLineEdit" name="leTrkUp" >
+      <property name="toolTip" >
+       <string>The command that is used to upload tracks to the device</string>
       </property>
-      <property name="spacing" >
-       <number>6</number>
+     </widget>
+    </item>
+    <item row="5" column="0" >
+     <widget class="QLabel" name="textLabel1_2_5_2" >
+      <property name="text" >
+       <string>Track upload:</string>
       </property>
-      <item row="5" column="1" >
-       <widget class="QLineEdit" name="leTrkUp" >
-        <property name="toolTip" >
-         <string>The command that is used to upload tracks to the device</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0" >
-       <widget class="QLabel" name="textLabel1_2_5_2" >
-        <property name="text" >
-         <string>Track upload:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1" >
-       <widget class="QLineEdit" name="leTrkDown" >
-        <property name="toolTip" >
-         <string>The command that is used to download tracks from the device</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" >
-       <widget class="QLabel" name="textLabel1_2_5" >
-        <property name="text" >
-         <string>Track download:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1" >
-       <widget class="QLineEdit" name="leRteUp" >
-        <property name="toolTip" >
-         <string>The command that is used to upload routes to the device</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="textLabel1_2_4" >
-        <property name="text" >
-         <string>Route upload:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="textLabel1_2_2" >
-        <property name="text" >
-         <string>Waypoint upload:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" >
-       <widget class="QLineEdit" name="leRteDown" >
-        <property name="toolTip" >
-         <string>The command that is used to download routes from the device</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="QLineEdit" name="leWptUp" >
-        <property name="toolTip" >
-         <string>The command that is used to upload waypoints to the device</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" >
-       <widget class="QLineEdit" name="leWptDown" >
-        <property name="toolTip" >
-         <string>The command that is used to download waypoints from the device</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="textLabel1_2_3" >
-        <property name="text" >
-         <string>Route download:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="textLabel1_2" >
-        <property name="text" >
-         <string>Waypoint download:</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item rowspan="4" row="2" column="2" colspan="3" >
-    <widget class="QTextEdit" name="textEdit" >
-     <property name="html" >
-      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;span style=" font-style:italic;">%babel&lt;/span> - the path to GPSBabel&lt;br />&lt;span style=" font-style:italic;">%in&lt;/span> - the GPX filename when uploading or the port when downloading&lt;br />&lt;span style=" font-style:italic;">%out&lt;/span> - the port when uploading or the GPX filename when downloading&lt;/p>&lt;/body>&lt;/html></string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" >
-    <widget class="QPushButton" name="pbnUpdateDevice" >
-     <property name="text" >
-      <string>Update device</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" >
-    <widget class="QPushButton" name="pbnDeleteDevice" >
-     <property name="text" >
-      <string>Delete device</string>
-     </property>
-    </widget>
-   </item>
-   <item rowspan="6" row="0" column="1" >
-    <widget class="Line" name="line2" >
-     <property name="frameShape" >
-      <enum>QFrame::VLine</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Sunken</enum>
-     </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-   </item>
-  </layout>
+     </widget>
+    </item>
+    <item row="4" column="1" >
+     <widget class="QLineEdit" name="leTrkDown" >
+      <property name="toolTip" >
+       <string>The command that is used to download tracks from the device</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0" >
+     <widget class="QLabel" name="textLabel1_2_5" >
+      <property name="text" >
+       <string>Track download:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1" >
+     <widget class="QLineEdit" name="leRteUp" >
+      <property name="toolTip" >
+       <string>The command that is used to upload routes to the device</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" >
+     <widget class="QLabel" name="textLabel1_2_4" >
+      <property name="text" >
+       <string>Route upload:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" >
+     <widget class="QLabel" name="textLabel1_2_2" >
+      <property name="text" >
+       <string>Waypoint upload:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1" >
+     <widget class="QLineEdit" name="leRteDown" >
+      <property name="toolTip" >
+       <string>The command that is used to download routes from the device</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" >
+     <widget class="QLineEdit" name="leWptUp" >
+      <property name="toolTip" >
+       <string>The command that is used to upload waypoints to the device</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" >
+     <widget class="QLineEdit" name="leWptDown" >
+      <property name="toolTip" >
+       <string>The command that is used to download waypoints from the device</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0" >
+     <widget class="QLabel" name="textLabel1_2_3" >
+      <property name="text" >
+       <string>Route download:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" >
+     <widget class="QLabel" name="textLabel1_2" >
+      <property name="text" >
+       <string>Waypoint download:</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="textLabel3" >
+   <property name="geometry" >
+    <rect>
+     <x>180</x>
+     <y>10</y>
+     <width>80</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="sizePolicy" >
+    <sizepolicy>
+     <hsizetype>1</hsizetype>
+     <vsizetype>5</vsizetype>
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text" >
+    <string>Device name:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="leDeviceName" >
+   <property name="geometry" >
+    <rect>
+     <x>280</x>
+     <y>10</y>
+     <width>221</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="sizePolicy" >
+    <sizepolicy>
+     <hsizetype>7</hsizetype>
+     <vsizetype>0</vsizetype>
+     <horstretch>2</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="toolTip" >
+    <string>This is the name of the device as it will appear in the lists</string>
+   </property>
+  </widget>
+  <widget class="QListWidget" name="lbDeviceList" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>20</y>
+     <width>151</width>
+     <height>261</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ListBox</class>
-   <extends></extends>
-   <header>q3listbox.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

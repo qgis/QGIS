@@ -24,15 +24,17 @@ QgsGPSDeviceDialog::QgsGPSDeviceDialog(std::map<QString, QgsGPSDevice*>&
   
 {
   setupUi(this);
+  QObject::connect(lbDeviceList, SIGNAL(itemSelectionChanged()), 
+		   this, SLOT(slotSelectionChanged()));
   slotUpdateDeviceList();
 }
 
 
 void QgsGPSDeviceDialog::on_pbnNewDevice_clicked() {
   std::map<QString, QgsGPSDevice*>::const_iterator iter = mDevices.begin();
-  QString deviceName = "New device %1";
-  int i;
-  for (i = 1; iter != mDevices.end(); ++i)
+  QString deviceName = tr("New device %1");
+  int i = 1;
+  for (; iter != mDevices.end(); ++i)
     iter = mDevices.find(deviceName.arg(i));
   deviceName = deviceName.arg(i - 1);
   mDevices[deviceName] = new QgsGPSDevice;
@@ -43,12 +45,12 @@ void QgsGPSDeviceDialog::on_pbnNewDevice_clicked() {
 
 
 void QgsGPSDeviceDialog::on_pbnDeleteDevice_clicked() {
-  if (QMessageBox::warning(this, "Are you sure?", 
-			   "Are you sure that you want to delete this device?",
-			   QMessageBox::Ok, QMessageBox::Cancel) == 
-      QMessageBox::Ok) {
+  if (QMessageBox::warning(this, tr("Are you sure?"), 
+		   tr("Are you sure that you want to delete this device?"),
+       QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
+
     std::map<QString, QgsGPSDevice*>::iterator iter = 
-      mDevices.find(lbDeviceList->selectedItem()->text());
+      mDevices.find(lbDeviceList->currentItem()->text());
     delete iter->second;
     mDevices.erase(iter);
     writeDeviceSettings();
@@ -60,7 +62,7 @@ void QgsGPSDeviceDialog::on_pbnDeleteDevice_clicked() {
 
 void QgsGPSDeviceDialog::on_pbnUpdateDevice_clicked() {
   std::map<QString, QgsGPSDevice*>::iterator iter = 
-    mDevices.find(lbDeviceList->selectedItem()->text());
+    mDevices.find(lbDeviceList->currentItem()->text());
   delete iter->second;
   mDevices.erase(iter);
   mDevices[leDeviceName->text()] =
@@ -76,7 +78,7 @@ void QgsGPSDeviceDialog::on_pbnUpdateDevice_clicked() {
 void QgsGPSDeviceDialog::slotUpdateDeviceList(const QString& selection) {
   QString selected;
   if (selection == "") {
-    Q3ListBoxItem* item = lbDeviceList->selectedItem();
+    QListWidgetItem* item = lbDeviceList->currentItem();
     selected = (item ? item->text() : "");
   }
   else {
@@ -85,21 +87,22 @@ void QgsGPSDeviceDialog::slotUpdateDeviceList(const QString& selection) {
   lbDeviceList->clear();
   std::map<QString, QgsGPSDevice*>::const_iterator iter;
   for (iter = mDevices.begin(); iter != mDevices.end(); ++iter) {
-    Q3ListBoxText* item = new Q3ListBoxText(iter->first);
-    lbDeviceList->insertItem(item);
-    if (iter->first == selected)
-      lbDeviceList->setSelected(item, true);
+    QListWidgetItem* item = new QListWidgetItem(iter->first, lbDeviceList);
+    if (iter->first == selected) {
+      lbDeviceList->setCurrentItem(item);
+    }
   }
-  if (lbDeviceList->selectedItem() == NULL)
-    lbDeviceList->setSelected(0, true);
+  if (lbDeviceList->currentItem() == NULL)
+    lbDeviceList->setCurrentRow(0);
 }
 
 
 void QgsGPSDeviceDialog::slotSelectionChanged() {
-  QString devName = lbDeviceList->selectedItem()->text();
+  QString devName = lbDeviceList->currentItem()->text();
+
   leDeviceName->setText(devName);
   QgsGPSDevice* device = mDevices[devName];
-  QStringList tmpList;
+
   leWptDown->setText(device->
 		     importCommand("%babel", "-w", "%in", "%out").join(" "));
   leWptUp->setText(device->
@@ -119,6 +122,8 @@ void QgsGPSDeviceDialog::writeDeviceSettings() {
   QStringList deviceNames;
   QSettings settings("QuantumGIS", "qgis");
   QString devPath = "/Plugin-GPS/devices/%1";
+  settings.remove("/Plugin-GPS/devices");
+
   std::map<QString, QgsGPSDevice*>::const_iterator iter;
   for (iter = mDevices.begin(); iter != mDevices.end(); ++iter) {
     deviceNames.append(iter->first);
@@ -134,17 +139,17 @@ void QgsGPSDeviceDialog::writeDeviceSettings() {
       iter->second->importCommand("%babel","-t","%in","%out").join(" ");
     QString trkUpload = 
       iter->second->exportCommand("%babel","-t","%in","%out").join(" ");
-    settings.writeEntry(devPath.arg(iter->first) + "/wptdownload", 
+    settings.setValue(devPath.arg(iter->first) + "/wptdownload", 
 			wptDownload);
-    settings.writeEntry(devPath.arg(iter->first) + "/wptupload", wptUpload);
-    settings.writeEntry(devPath.arg(iter->first) + "/rtedownload", 
+    settings.setValue(devPath.arg(iter->first) + "/wptupload", wptUpload);
+    settings.setValue(devPath.arg(iter->first) + "/rtedownload", 
 			rteDownload);
-    settings.writeEntry(devPath.arg(iter->first) + "/rteupload", rteUpload);
-    settings.writeEntry(devPath.arg(iter->first) + "/trkdownload", 
+    settings.setValue(devPath.arg(iter->first) + "/rteupload", rteUpload);
+    settings.setValue(devPath.arg(iter->first) + "/trkdownload", 
 			trkDownload);
-    settings.writeEntry(devPath.arg(iter->first) + "/trkupload", trkUpload);
+    settings.setValue(devPath.arg(iter->first) + "/trkupload", trkUpload);
   }
-  settings.writeEntry("/Plugin-GPS/devicelist", deviceNames);
+  settings.setValue("/Plugin-GPS/devicelist", deviceNames);
 }
 
 void QgsGPSDeviceDialog::on_pbnClose_clicked()
