@@ -80,7 +80,7 @@ qgis_ui_UIC =	\
 		qgsmarkerdialogbase.ui \
 		qgsnewhttpconnectionbase.ui \
 		qgsnewconnectionbase.ui \
-		$(WIDGETPATH)/projectionselector/qgsprojectionselectorbase.ui
+		../widgets/projectionselector/qgsprojectionselectorbase.ui
 
 ## all the ui files generate a corresponding header file
 qgis_ui_UIHEADERS = ui_qgisappbase.h \
@@ -147,7 +147,7 @@ qgis_ui_UIHEADERS = ui_qgisappbase.h \
 		ui_qgsuvaldialogbase.h \
 		ui_qgsnewhttpconnectionbase.h \
 		ui_qgsnewconnectionbase.h \
-		$(WIDGETPATH)/projectionselector/ui_qgsprojectionselectorbase.h
+		../widgets/projectionselector/ui_qgsprojectionselectorbase.h
 
 
 postgresUIHEADERS = ui_qgsdbsourceselectbase.h	\

@@ -41,8 +41,8 @@ BUILT_SOURCES = $(selector_MOC) $(selector_UI)
 CLEANFILES = $(BUILT_SOURCES)
 
 
-libqgsprojectionselector_la_LIBADD =  ../../src/libqgis.la $(LDADD) $(QT_LDADD) $(GDAL_LDADD) -lsqlite3
+libqgsprojectionselector_la_LIBADD =  ../../libqgis.la $(LDADD) $(QT_LDADD) $(GDAL_LDADD) -lsqlite3
 libqgsprojectionselector_la_LDFLAGS = -avoid-version 
-libqgsprojectionselector_la_CXXFLAGS = $(PKGDATAPATH) $(CXXFLAGS) $(GDAL_CFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../src/
+libqgsprojectionselector_la_CXXFLAGS = $(PKGDATAPATH) $(CXXFLAGS) $(GDAL_CFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../../
 
 EXTRA_DIST = $(selector_UIC)
