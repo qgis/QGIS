@@ -24,17 +24,17 @@
 
 QgsGridMakerPluginGui::QgsGridMakerPluginGui() : QgsGridMakerPluginGuiBase()
 {
+  setupUi(this);
 }
 QgsGridMakerPluginGui::QgsGridMakerPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
-    //: QgsGridMakerPluginGuiBase( parent, name, modal, fl )
-    //tim disabled params during qt4 ui port - FIXME
-    : QgsGridMakerPluginGuiBase( )
+  : QDialog( parent, name, modal, fl )
 {
+  setupUi(this);
 }
 QgsGridMakerPluginGui::~QgsGridMakerPluginGui()
 {}
 
-void QgsGridMakerPluginGui::pbnOK_clicked()
+void QgsGridMakerPluginGui::on_pbnOK_clicked()
 {
   //check input file exists
   //
@@ -156,7 +156,7 @@ void QgsGridMakerPluginGui::pbnOK_clicked()
 }
 
 
-void QgsGridMakerPluginGui::pbnSelectOutputFile_clicked()
+void QgsGridMakerPluginGui::on_pbnSelectOutputFile_clicked()
 {
   std::cout << " Gps File Importer Gui::pbnSelectOutputFile_clicked() " << std::endl;
   QString myOutputFileNameQString = QFileDialog::getSaveFileName(
@@ -180,7 +180,7 @@ void QgsGridMakerPluginGui::pbnSelectOutputFile_clicked()
 }
 
 
-void QgsGridMakerPluginGui::pbnCancel_clicked()
+void QgsGridMakerPluginGui::on_pbnCancel_clicked()
 {
   close(1);
 }

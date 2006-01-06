@@ -27,11 +27,11 @@ public:
                          bool modal , Qt::WFlags );
   ~QgsGridMakerPluginGui();
 
-private:
-
-  void pbnSelectOutputFile_clicked();
-  void pbnCancel_clicked();
-  void pbnOK_clicked();
+public slots:
+  
+  void on_pbnSelectOutputFile_clicked();
+  void on_pbnCancel_clicked();
+  void on_pbnOK_clicked();
 
 signals:
   void drawRasterLayer(QString);

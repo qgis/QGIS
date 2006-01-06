@@ -28,6 +28,9 @@ bin_PROGRAMS = gridmaker
 ui_%.h: %.ui 
 	$(UIC) -o $@ $<
 
+%.qrc.cpp: %.qrc
+	$(RCC) -o $@ $<
+
 ##
 ##  For plugin lib
 ##
@@ -41,7 +44,9 @@ gridmakerplugin_la_SOURCES = plugin.cpp \
 	shapefile.h \
 	plugingui.cpp \
 	$(plugin_UI)\
-	$(plugin_MOC)
+	$(plugin_MOC)\
+	$(plugin_QRC) \
+	$(plugin_RES)
 
 	     
 plugin_MOC = plugin.moc.cpp \
@@ -51,8 +56,11 @@ plugin_UI = ui_pluginguibase.h
 
 plugin_UIC = pluginguibase.ui
 
+plugin_RES = gridmaker_plugin.qrc.cpp
 
-BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
+plugin_QRC = gridmaker_plugin.qrc
+
+BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
 gridmakerplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/libqgis.la
 gridmakerplugin_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
