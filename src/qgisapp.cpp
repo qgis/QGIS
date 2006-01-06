@@ -232,6 +232,7 @@ static void setTitleBarText_( QWidget & qgisApp )
   mSplash->showMessage("Setting up the GUI", Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
   createActions();
+  createActionGroups();
   createMenus();
   createToolBars();
   createStatusBar();
@@ -611,6 +612,33 @@ void QgisApp::createActions()
   mActionCapturePolygon->setShortcut(tr("Ctrl+/"));
   mActionCapturePolygon->setStatusTip(tr("Capture Polygons"));
   connect(mActionCapturePolygon, SIGNAL(triggered()), this, SLOT(capturePolygon()));
+}
+
+void QgisApp::createActionGroups()
+{
+  //
+  // Map Tool Group
+  mMapToolGroup = new QActionGroup(this);
+  mActionPan->setCheckable(true);
+  mMapToolGroup->addAction(mActionPan);
+  mActionZoomIn->setCheckable(true);
+  mMapToolGroup->addAction(mActionZoomIn);
+  mActionZoomOut->setCheckable(true);
+  mMapToolGroup->addAction(mActionZoomOut);
+  mActionIdentify->setCheckable(true);
+  mMapToolGroup->addAction(mActionIdentify);
+  mActionSelect->setCheckable(true);
+  mMapToolGroup->addAction(mActionSelect);
+  mActionMeasure->setCheckable(true);
+  mMapToolGroup->addAction(mActionMeasure);
+  mActionMeasureArea->setCheckable(true);
+  mMapToolGroup->addAction(mActionMeasureArea);
+  mActionCaptureLine->setCheckable(true);
+  mMapToolGroup->addAction(mActionCaptureLine);
+  mActionCapturePoint->setCheckable(true);
+  mMapToolGroup->addAction(mActionCapturePoint);
+  mActionCapturePolygon->setCheckable(true);
+  mMapToolGroup->addAction(mActionCapturePolygon);
 }
 
 void QgisApp::createMenus()

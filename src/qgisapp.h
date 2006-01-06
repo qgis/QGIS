@@ -420,6 +420,7 @@ private:
   void readSettings();
   void writeSettings();
   void createActions();
+  void createActionGroups();
   void createMenus();
   void createToolBars();
   void createStatusBar();
@@ -486,6 +487,9 @@ private:
   QAction *mActionAddWmsLayer;
   QAction *mActionInOverview;
   QAction *mActionDraw;
+  //
+  //tool groups -------------------------------------
+  QActionGroup *mMapToolGroup;
   //
   //menus   -----------------------------------------
   QMenu *mFileMenu;
