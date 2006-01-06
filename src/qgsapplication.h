@@ -4,7 +4,7 @@
     Date                 : 02-Jan-2006
     Copyright            : (C) 2006 by Tom Elwertowski
     Email                : telwertowski at users dot sourceforge dot net
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *

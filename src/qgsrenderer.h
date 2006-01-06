@@ -46,6 +46,8 @@ class QgsRenderer
  public:
     /** Default ctor sets up selection colour from project properties */
     QgsRenderer();
+    /** Virtual destructor because we have virtual methods... */
+    virtual ~QgsRenderer() {};
     /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter
      @param p the painter storing brush and pen
      @param f a pointer to the feature to be rendered

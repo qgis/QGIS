@@ -41,6 +41,9 @@ public:
     /** means of accessing canonical single instance
      */
     static QgsProviderRegistry* instance(QString pluginPath = QString::null);
+    
+    /** Virtual dtor */
+    virtual ~QgsProviderRegistry() {};
 
     QString library(QString const & providerKey) const;
 

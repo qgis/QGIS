@@ -43,7 +43,7 @@ class QgsRenderItem {
     */
     QgsRenderItem(QgsSymbol* symbol, QString _value, QString _label);
     /**Destructor*/
-    ~QgsRenderItem();
+    virtual ~QgsRenderItem();
     /** Gets the symbol associated with this render item
      * @return QgsSymbol pointer
      */

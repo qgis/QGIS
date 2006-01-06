@@ -111,7 +111,7 @@ class QgsAttributeAction
     { return mActions.end(); }
 
   //! Returns the number of stored actions
-  int size() const { mActions.size(); }
+  int size() const { return mActions.size(); }
 
   //! Expands the given action, replacing all %'s with the value as
   // given.  
