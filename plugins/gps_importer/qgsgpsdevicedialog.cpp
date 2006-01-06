@@ -24,6 +24,13 @@ QgsGPSDeviceDialog::QgsGPSDeviceDialog(std::map<QString, QgsGPSDevice*>&
   
 {
   setupUi(this);
+  // Manually set the relative size of the two main parts of the
+  // device dialog box. 
+  QList<int> split;
+  split.append(120);
+  split.append(340);
+  splitter->setSizes(split);
+
   QObject::connect(lbDeviceList, SIGNAL(itemSelectionChanged()), 
 		   this, SLOT(slotSelectionChanged()));
   slotUpdateDeviceList();
@@ -51,29 +58,37 @@ void QgsGPSDeviceDialog::on_pbnDeleteDevice_clicked() {
 
     std::map<QString, QgsGPSDevice*>::iterator iter = 
       mDevices.find(lbDeviceList->currentItem()->text());
-    delete iter->second;
-    mDevices.erase(iter);
-    writeDeviceSettings();
-    slotUpdateDeviceList();
-    emit devicesChanged();
+    if (iter != mDevices.end())
+    {
+      delete iter->second;
+      mDevices.erase(iter);
+      writeDeviceSettings();
+      slotUpdateDeviceList();
+      emit devicesChanged();
+    }
   }
 }
 
 
 void QgsGPSDeviceDialog::on_pbnUpdateDevice_clicked() {
-  std::map<QString, QgsGPSDevice*>::iterator iter = 
-    mDevices.find(lbDeviceList->currentItem()->text());
-  delete iter->second;
-  mDevices.erase(iter);
-  mDevices[leDeviceName->text()] =
-    new QgsGPSDevice(leWptDown->text(), leWptUp->text(),
-		     leRteDown->text(), leRteUp->text(),
-		     leTrkDown->text(), leTrkUp->text());
-  writeDeviceSettings();
-  slotUpdateDeviceList(leDeviceName->text());
-  emit devicesChanged();
+  if (lbDeviceList->count() > 0)
+  {
+    std::map<QString, QgsGPSDevice*>::iterator iter = 
+      mDevices.find(lbDeviceList->currentItem()->text());
+    if (iter != mDevices.end())
+    {
+      delete iter->second;
+      mDevices.erase(iter);
+      mDevices[leDeviceName->text()] =
+	new QgsGPSDevice(leWptDown->text(), leWptUp->text(),
+			 leRteDown->text(), leRteUp->text(),
+			 leTrkDown->text(), leTrkUp->text());
+      writeDeviceSettings();
+      slotUpdateDeviceList(leDeviceName->text());
+      emit devicesChanged();
+    }
+  }
 }
-
 
 void QgsGPSDeviceDialog::slotUpdateDeviceList(const QString& selection) {
   QString selected;
@@ -84,6 +99,12 @@ void QgsGPSDeviceDialog::slotUpdateDeviceList(const QString& selection) {
   else {
     selected = selection;
   }
+
+  // We're going to be changing the selected item, so disable our
+  // notificaton of that.
+  QObject::disconnect(lbDeviceList, SIGNAL(itemSelectionChanged()), 
+		   this, SLOT(slotSelectionChanged()));
+
   lbDeviceList->clear();
   std::map<QString, QgsGPSDevice*>::const_iterator iter;
   for (iter = mDevices.begin(); iter != mDevices.end(); ++iter) {
@@ -92,29 +113,36 @@ void QgsGPSDeviceDialog::slotUpdateDeviceList(const QString& selection) {
       lbDeviceList->setCurrentItem(item);
     }
   }
-  if (lbDeviceList->currentItem() == NULL)
+
+  if (lbDeviceList->currentItem() == NULL && lbDeviceList->count() > 0)
     lbDeviceList->setCurrentRow(0);
+
+  // Update the display and reconnect the selection changed signal
+  slotSelectionChanged();
+  QObject::connect(lbDeviceList, SIGNAL(itemSelectionChanged()), 
+		   this, SLOT(slotSelectionChanged()));
 }
 
 
 void QgsGPSDeviceDialog::slotSelectionChanged() {
-  QString devName = lbDeviceList->currentItem()->text();
-
-  leDeviceName->setText(devName);
-  QgsGPSDevice* device = mDevices[devName];
-
-  leWptDown->setText(device->
-		     importCommand("%babel", "-w", "%in", "%out").join(" "));
-  leWptUp->setText(device->
-		   exportCommand("%babel", "-w", "%in", "%out").join(" "));
-  leRteDown->setText(device->
-		     importCommand("%babel", "-r", "%in", "%out").join(" "));
-  leRteUp->setText(device->
-		   exportCommand("%babel", "-r", "%in", "%out").join(" "));
-  leTrkDown->setText(device->
-		     importCommand("%babel", "-t", "%in", "%out").join(" "));
-  leTrkUp->setText(device->
-		   exportCommand("%babel", "-t", "%in", "%out").join(" "));
+  if (lbDeviceList->count() > 0)
+  {
+    QString devName = lbDeviceList->currentItem()->text();
+    leDeviceName->setText(devName);
+    QgsGPSDevice* device = mDevices[devName];
+    leWptDown->setText(device->
+		       importCommand("%babel", "-w", "%in", "%out").join(" "));
+    leWptUp->setText(device->
+		     exportCommand("%babel", "-w", "%in", "%out").join(" "));
+    leRteDown->setText(device->
+		       importCommand("%babel", "-r", "%in", "%out").join(" "));
+    leRteUp->setText(device->
+		     exportCommand("%babel", "-r", "%in", "%out").join(" "));
+    leTrkDown->setText(device->
+		       importCommand("%babel", "-t", "%in", "%out").join(" "));
+    leTrkUp->setText(device->
+		     exportCommand("%babel", "-t", "%in", "%out").join(" "));
+  }
 }
 
 
