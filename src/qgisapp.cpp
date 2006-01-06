@@ -2475,6 +2475,7 @@ void QgisApp::newVectorLayer()
   //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
   QString ogrlib = pReg->library("ogr");
+  // This var is not used...remove? TS FIXME
   const char *cOgrLib = (const char *) ogrlib;
   // load the data provider
   QLibrary* myLib = new QLibrary((const char *) ogrlib);
@@ -4901,7 +4902,7 @@ int QgisApp::addPluginMenu(QString menuText, QMenu *menu)
 
 QMenu* QgisApp::getPluginMenu(QString menuName)
 {
-  for (int i = 0; i < mPluginMenu->count(); ++i)
+  for (unsigned int i = 0; i < mPluginMenu->count(); ++i)
     if (mPluginMenu->text(mPluginMenu->idAt(i)) == menuName)
     {
       QMenuItem* item = mPluginMenu->findItem(mPluginMenu->idAt(i));
@@ -4943,7 +4944,7 @@ void QgisApp::removePluginToolBarIcon(QAction *qAction)
 
 void QgisApp::projectionsEnabled(bool theFlag)
 {
-  QString myIconPath = mAppDir +"/share/qgis/themes/" + mThemeName;
+  QString myIconPath = QgsApplication::themePath();
   if (theFlag)
   {
     QPixmap myProjPixmap;

@@ -168,7 +168,7 @@ inline void QgsMapToPixel::transformInPlace(std::vector<double>& x,
 					    std::vector<double>& y)
 {
   assert(x.size() == y.size());
-  for (int i = 0; i < x.size(); ++i)
+  for (unsigned int i = 0; i < x.size(); ++i)
     transformInPlace(x[i], y[i]);
 }
 #endif // QGSMAPTOPIXEL
