@@ -175,7 +175,7 @@ fi
 AC_MSG_CHECKING([Qt version])
 QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTVERTEST/qglobal.h | perl -p -e 's/\D//g'`
 case "${QT_VER}" in
-  41*|40*)
+  41*)
     QT_MAJOR="4"
     case "${host}" in
     *-darwin*)
@@ -210,7 +210,7 @@ case "${QT_VER}" in
 #    QT_MAJOR="3"
 #    ;;
   *)
-    AC_MSG_ERROR([*** Qt version 4.0.1 or higher is required])
+    AC_MSG_ERROR([*** Qt version 4.1 or higher is required])
     ;;
 esac
 AC_MSG_RESULT([$QT_VER ($QT_MAJOR)])
