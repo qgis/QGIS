@@ -23,7 +23,7 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>8</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
@@ -36,75 +36,48 @@
       </attribute>
       <layout class="QGridLayout" >
        <property name="margin" >
-        <number>8</number>
+        <number>9</number>
        </property>
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="4" column="0" >
-        <widget class="QGroupBox" name="groupBox" >
+       <item row="1" column="0" >
+        <widget class="QGroupBox" name="btnGrpMapUnits" >
          <property name="title" >
-          <string>Map Appearance</string>
+          <string>Map Units</string>
          </property>
-         <layout class="QGridLayout" >
+         <layout class="QHBoxLayout" >
           <property name="margin" >
-           <number>8</number>
+           <number>9</number>
           </property>
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="textLabel1" >
+          <item>
+           <widget class="QRadioButton" name="radMeters" >
             <property name="text" >
-             <string>Selection Color:</string>
+             <string>Meters</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>21</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="2" >
-           <widget class="QToolButton" name="pbnSelectionColour" >
-            <property name="minimumSize" >
-             <size>
-              <width>120</width>
-              <height>22</height>
-             </size>
-            </property>
+          <item>
+           <widget class="QRadioButton" name="radFeet" >
             <property name="text" >
-             <string/>
+             <string>Feet</string>
             </property>
            </widget>
           </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="3" column="0" >
-        <widget class="QGroupBox" name="grpDigitizing" >
-         <property name="title" >
-          <string>Digitizing</string>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>8</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="3" column="1" >
+          <item>
+           <widget class="QRadioButton" name="radDecimalDegrees" >
+            <property name="text" >
+             <string>Decimal degrees</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer>
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
@@ -116,83 +89,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item rowspan="2" row="1" column="1" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="1" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="textLabel1_2_2" >
-            <property name="text" >
-             <string>Line Width:</string>
-            </property>
-           </widget>
-          </item>
-          <item rowspan="2" row="2" column="0" >
-           <widget class="QLabel" name="textLabel1_2" >
-            <property name="text" >
-             <string>Line Colour:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="textLabel1_2_2_2" >
-            <property name="text" >
-             <string>Snapping Tolerance:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" >
-           <widget class="QLineEdit" name="leSnappingTolerance" >
-            <property name="maximumSize" >
-             <size>
-              <width>120</width>
-              <height>32767</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2" >
-           <widget class="QToolButton" name="pbnDigitisedLineColour" >
-            <property name="minimumSize" >
-             <size>
-              <width>0</width>
-              <height>22</height>
-             </size>
-            </property>
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item rowspan="2" row="1" column="2" >
-           <widget class="QSpinBox" name="spinDigitisedLineWidth" >
-            <property name="minimum" >
-             <number>1</number>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>
@@ -202,52 +98,14 @@
          <property name="title" >
           <string>Precision</string>
          </property>
-         <layout class="QGridLayout" >
+         <layout class="QHBoxLayout" >
           <property name="margin" >
-           <number>8</number>
+           <number>9</number>
           </property>
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="0" column="3" >
-           <widget class="QLabel" name="textLabel3" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>1</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>decimal places</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QRadioButton" name="radManual" >
-            <property name="toolTip" >
-             <string>Sets the number of decimal places to use for the mouse position display</string>
-            </property>
-            <property name="whatsThis" >
-             <string>Sets the number of decimal places to use for the mouse position display</string>
-            </property>
-            <property name="text" >
-             <string>Manual</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" >
-           <widget class="QSpinBox" name="spinBoxDP" >
-            <property name="toolTip" >
-             <string>The number of decimal places for the manual option</string>
-            </property>
-            <property name="whatsThis" >
-             <string>The number of decimal places for the manual option</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
+          <item>
            <widget class="QRadioButton" name="radAutomatic" >
             <property name="toolTip" >
              <string>Automatically sets the number of decimal places in the mouse position display</string>
@@ -263,44 +121,163 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QRadioButton" name="radManual" >
+            <property name="toolTip" >
+             <string>Sets the number of decimal places to use for the mouse position display</string>
+            </property>
+            <property name="whatsThis" >
+             <string>Sets the number of decimal places to use for the mouse position display</string>
+            </property>
+            <property name="text" >
+             <string>Manual</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBoxDP" >
+            <property name="toolTip" >
+             <string>The number of decimal places for the manual option</string>
+            </property>
+            <property name="whatsThis" >
+             <string>The number of decimal places for the manual option</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="textLabel3" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>1</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>decimal places</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
          </layout>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QGroupBox" name="btnGrpMapUnits" >
+       <item row="3" column="0" >
+        <widget class="QGroupBox" name="grpDigitizing" >
          <property name="title" >
-          <string>Map Units</string>
+          <string>Digitizing</string>
          </property>
-         <layout class="QGridLayout" >
+         <layout class="QHBoxLayout" >
           <property name="margin" >
-           <number>8</number>
+           <number>9</number>
           </property>
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="0" column="1" >
-           <widget class="QRadioButton" name="radFeet" >
-            <property name="text" >
-             <string>Feet</string>
+          <item>
+           <layout class="QVBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
             </property>
-           </widget>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="textLabel1_2_2_2" >
+              <property name="text" >
+               <string>Snapping Tolerance:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="textLabel1_2_2" >
+              <property name="text" >
+               <string>Line Width:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="textLabel1_2" >
+              <property name="text" >
+               <string>Line Colour:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
-          <item row="0" column="2" >
-           <widget class="QRadioButton" name="radDecimalDegrees" >
-            <property name="text" >
-             <string>Decimal degrees</string>
+          <item>
+           <layout class="QVBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
             </property>
-           </widget>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLineEdit" name="leSnappingTolerance" >
+              <property name="maximumSize" >
+               <size>
+                <width>120</width>
+                <height>32767</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spinDigitisedLineWidth" >
+              <property name="minimum" >
+               <number>1</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="pbnDigitisedLineColour" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>5</hsizetype>
+                <vsizetype>5</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize" >
+               <size>
+                <width>0</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="text" >
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
-          <item row="0" column="0" >
-           <widget class="QRadioButton" name="radMeters" >
-            <property name="text" >
-             <string>Meters</string>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
             </property>
-            <property name="checked" >
-             <bool>true</bool>
+            <property name="sizeHint" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
             </property>
-           </widget>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -327,6 +304,57 @@
          </layout>
         </widget>
        </item>
+       <item row="4" column="0" >
+        <widget class="QGroupBox" name="groupBox" >
+         <property name="title" >
+          <string>Map Appearance</string>
+         </property>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="textLabel1" >
+            <property name="text" >
+             <string>Selection Color:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="pbnSelectionColour" >
+            <property name="minimumSize" >
+             <size>
+              <width>120</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>21</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab" >
@@ -335,20 +363,20 @@
       </attribute>
       <layout class="QGridLayout" >
        <property name="margin" >
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="spacing" >
         <number>6</number>
        </property>
+       <item row="1" column="0" >
+        <widget class="QgsProjectionSelector" name="projectionSelector" />
+       </item>
        <item row="0" column="0" >
         <widget class="QCheckBox" name="cbxProjectionEnabled" >
          <property name="text" >
           <string>Enable on the fly projection</string>
          </property>
         </widget>
-       </item>
-       <item row="1" column="0" >
-        <widget class="QgsProjectionSelector" name="projectionSelector" />
        </item>
       </layout>
      </widget>
