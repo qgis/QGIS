@@ -1,0 +1,13 @@
+Makefile
+Makefile.in
+*.la
+*.lo
+*.moc.cpp
+*.moc.uic.cpp
+*.uic.h
+*.uic.cpp
+qgsprojectionselectorbase.h
+qgsprojectionselectorbase.cpp
+.libs
+.deps
+

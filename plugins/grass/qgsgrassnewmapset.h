@@ -30,7 +30,7 @@ class QCloseEvent;
 #include "../../src/qgisiface.h"
 #include "../../src/qgspoint.h"
 #include "../../src/qgsspatialrefsys.h"
-#include "../../src/widgets/projectionselector/qgsprojectionselector.h"
+#include "../../widgets/projectionselector/qgsprojectionselector.h"
 
 class QgsGrassProvider;
 #include "qgsgrassplugin.h"
