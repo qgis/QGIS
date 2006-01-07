@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id:$ */
+/* $Id$ */
 
 #include "qgsabout.h"
 #include "qgsapplication.h"
@@ -22,7 +22,7 @@
 #include <ApplicationServices/ApplicationServices.h>
 #else
 #include <QInputDialog>
-#include <Q3Process>
+#include <QProcess>
 #include <QSettings>
 #endif
 #include <QFile>
@@ -70,6 +70,7 @@ void QgsAbout::init()
       QStringList myTokens = QStringList::split("\t",line);
       //printf ("Added contributor name to listbox: %s ",myTokens[0]);
       lines += myTokens[0];
+
       // add the image to the map
       /* Uncomment this block to preload the images (takes time at initial startup)
       QString authorName = myTokens[0].replace(" ","_");
@@ -82,7 +83,11 @@ void QgsAbout::init()
     }
     file.close();
     listBox1->clear();
-    listBox1->insertStringList(lines,0);
+    listBox1->insertItems(0, lines);
+
+    // Load in the image for the first author
+    if (listBox1->count() > 0)
+      listBox1->setCurrentRow(0);
   }
 
 }
@@ -112,13 +117,13 @@ void QgsAbout::on_buttonCancel_clicked()
   reject();
 }
 
-void QgsAbout::on_listBox1_currentChanged(Q3ListBoxItem *theItem)
+void QgsAbout::on_listBox1_currentItemChanged(QListWidgetItem *theItem)
 {
   //replace spaces in author name
 #ifdef QGISDEBUG 
   printf ("Loading mug: "); 
 #endif 
-  QString myString = listBox1->currentText();
+  QString myString = listBox1->currentItem()->text();
   myString = myString.replace(" ","_");
 #ifdef QGISDEBUG 
   printf ("Loading mug: %s", (const char *)myString.toLocal8Bit().data()); 
@@ -166,10 +171,11 @@ void QgsAbout::openUrl(QString url)
   {
     // ask user for browser and use it
     bool ok;
-    QString text = QInputDialog::getText("QGIS Browser Selection",
-        "Enter the name of a web browser to use (eg. konqueror).\n"
-        "Enter the full path if the browser is not in your PATH.\n"
-        "You can change this option later by selection Options from the Tools menu.",
+    QString text = QInputDialog::getText(tr("QGIS Browser Selection"),
+	 tr("Enter the name of a web browser to use (eg. konqueror).\n"
+	    "Enter the full path if the browser is not in your PATH.\n"
+            "You can change this option later by selection Options from"
+	    " the Tools menu."),
         QLineEdit::Normal,
         QString::null, &ok, this);
     if (ok && !text.isEmpty())
@@ -188,10 +194,8 @@ void QgsAbout::openUrl(QString url)
     // find the installed location of the help files
     // open index.html using browser
     //XXX for debug on win32    QMessageBox::information(this, "Help opening...", browser + " - " + url);
-    Q3Process *helpProcess = new Q3Process(this);
-    helpProcess->addArgument(browser);
-    helpProcess->addArgument(url);
-    helpProcess->start();
+    QProcess *helpProcess = new QProcess(this);
+    helpProcess->start(browser, QStringList() << url);
   }
 #endif
   /*  mHelpViewer = new QgsHelpViewer(this,"helpviewer",false);

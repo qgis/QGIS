@@ -19,7 +19,6 @@
 #define QGSABOUT_H
 
 #include "ui_qgsabout.h"
-#include <QDialog>
 
 class QgsAbout : public QDialog, private Ui::QgsAbout
 {
@@ -38,7 +37,7 @@ class QgsAbout : public QDialog, private Ui::QgsAbout
 
   private slots:
     void on_buttonCancel_clicked();
-    void on_listBox1_currentChanged(Q3ListBoxItem *theItem);
+    void on_listBox1_currentItemChanged(QListWidgetItem *theItem);
     void on_btnQgisUser_clicked();
     void on_btnQgisHome_clicked();
 };
