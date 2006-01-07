@@ -10,4 +10,4 @@
 #
 # $Id$
 
-SUBDIRS = north_arrows splash icons developers
+SUBDIRS = north_arrows splash icons developers themes svg

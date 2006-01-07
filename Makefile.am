@@ -35,7 +35,7 @@ SUBDIRS = src providers plugins doc tools i18n designer_plugins helpviewer
 endif
 
 if HAVE_QT4
-SUBDIRS = src providers plugins doc tools i18n helpviewer
+SUBDIRS = src providers plugins doc tools i18n helpviewer resources images
 endif
 
 pkginclude_HEADERS = qgsconfig.h

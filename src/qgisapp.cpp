@@ -119,7 +119,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "../plugins/qgisplugin.h"
-#include "themes/default/qgis.xpm"
+#include "../images/themes/default/qgis.xpm"
 
 //
 // Gdal/Ogr includes

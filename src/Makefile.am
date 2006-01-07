@@ -17,7 +17,7 @@ if HAVE_QTMAC
 MAC = mac
 endif
 
-SUBDIRS = ui legend svg images themes resources raster composer widgets $(MAC)
+SUBDIRS = ui legend raster composer widgets $(MAC)
 
 if !HAVE_QTMAC
 PREFIX=-DPREFIX=\"$(prefix)\"
