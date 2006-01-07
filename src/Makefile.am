@@ -17,14 +17,14 @@ if HAVE_QTMAC
 MAC = mac
 endif
 
-SUBDIRS = ui legend svg images themes resources raster composer widgets $(MAC)
+SUBDIRS = ui legend svg images themes resources raster composer $(MAC)
 
 if !HAVE_QTMAC
 PREFIX=-DPREFIX=\"$(prefix)\"
 PLUGINPATH=-DPLUGINPATH=\"$(pkglibdir)\"
 PKGDATAPATH=-DPKGDATAPATH=\"$(pkgdatadir)\"
 endif
-
+WIDGETPATH=../widgets
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
@@ -53,13 +53,13 @@ lib_LTLIBRARIES = libqgis.la
 
 qgis_SOURCES =	main.cpp
 
-qgis_LDADD = raster/libqgis_raster.la legend/libqgis_legend.la composer/libqgis_composer.la $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) $(PYTHON_LIB) -lproj -lsqlite3 libqgis.la
+qgis_LDADD = raster/libqgis_raster.la legend/libqgis_legend.la composer/libqgis_composer.la $(LDADD) $(QT_LDADD) $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) $(PYTHON_LIB) -lproj -lsqlite3 libqgis.la 
 if HAVE_QTMAC
 qgis_LDFLAGS = -framework ApplicationServices
 else
 qgis_LDFLAGS = -rdynamic
 endif
-qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS)  $(HAVE_PYTHON) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) -I./ui/ -I./widgets/projectionselector/ -I./legend/ -I./raster/ -I./composer/
+qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS)  $(HAVE_PYTHON) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) -I./ui/ -I../widgets/projectionselector/ -I./legend/ -I./raster/ -I./composer/
 
 ##
 ## ----------------------------------------------------------------------
@@ -176,7 +176,8 @@ libqgisHEADERS =							\
 		qgsuvaldialog.h					\
 		qgsvectordataprovider.h				\
 		qgsvectorfilewriter.h				\
-		qgsvectorlayerproperties.h			
+		qgsvectorlayerproperties.h			\
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.h 
 
 ## files generated from MOC
 libqgis_la_MOC =							\
@@ -229,7 +230,8 @@ libqgis_la_MOC =							\
 		qgssisydialog.moc.cpp			\
 		qgsuvaldialog.moc.cpp			\
 		qgsvectorlayer.moc.cpp \
-		qgsvectorlayerproperties.moc.cpp	
+		qgsvectorlayerproperties.moc.cpp	\
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.moc.cpp
 
 libqgis_la_SOURCES =						\
 		qgisapp.cpp							\
@@ -339,7 +341,8 @@ libqgis_la_SOURCES =						\
 		qgsvectordataprovider.cpp			\
 		qgsvectorfilewriter.cpp				\
 		qgsvectorlayer.cpp \
-		qgsvectorlayerproperties.cpp	
+		qgsvectorlayerproperties.cpp	\
+		$(WIDGETPATH)/projectionselector/qgsprojectionselector.cpp
 
 if HAVE_POSTGRESQL
 postgresHEADERS = qgsdbsourceselect.h		\
@@ -369,10 +372,10 @@ nodist_libqgis_la_SOURCES = $(libqgis_la_MOC)
 BUILT_SOURCES = $(libqgis_la_MOC) $(qgis_YACC)  $(postgresMOC)
 
 
-libqgis_la_LIBADD = raster/libqgis_raster.la legend/libqgis_legend.la composer/libqgis_composer.la widgets/projectionselector/libqgsprojectionselector.la $(QT_LDADD) $(GEOS_LDADD) $(GDAL_LDADD) $(PYTHON_LIB) -lsqlite3
+libqgis_la_LIBADD = raster/libqgis_raster.la legend/libqgis_legend.la composer/libqgis_composer.la $(QT_LDADD) $(GEOS_LDADD) $(GDAL_LDADD) $(PYTHON_LIB) -lsqlite3
 libqgis_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
 
-libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) $(HAVE_PYTHON) -I./ui/ -I./widgets/projectionselector/ -I./legend/ -I./raster/ -I./composer/
+libqgis_la_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(PYTHON_INCLUDE_DIR) $(HAVE_PYTHON) -I./ui/ -I../widgets/projectionselector/ -I./legend/ -I./raster/ -I./composer/
 
 ## for installing headers in $(includedir)/qgis
 pkginclude_HEADERS = $(qgisHEADERS) 

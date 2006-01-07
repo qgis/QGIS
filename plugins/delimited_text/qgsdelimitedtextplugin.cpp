@@ -116,11 +116,7 @@ void QgsDelimitedTextPlugin::initGui()
       "X and Y fields are required and must contain coordinates in decimal units.");
 
   // Create the action for tool
-#if QT_VERSION < 0x040000
-  myQActionPointer = new QAction("Add Delimited Text Layer", QIcon(icon), "&Wmi",0, this, "run");
-#else
   myQActionPointer = new QAction(QIcon(icon), "Add Delimited Text Layer", this);
-#endif
 
   myQActionPointer->setWhatsThis("Add a delimited text file as a map layer. "
       "The file must have a header row containing the field names. "
