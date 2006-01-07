@@ -457,6 +457,8 @@ AC_CONFIG_FILES([
   src/mac/Makefile
   src/mac/Contents/Makefile
   src/mac/Contents/Resources/Makefile
+  src/widgets/Makefile
+  src/widgets/projectionselector/Makefile
   providers/Makefile 
   providers/ogr/Makefile
   providers/postgres/Makefile
@@ -490,8 +492,6 @@ AC_CONFIG_FILES([
   tools/Makefile
   tools/qgis_config/Makefile
   tools/mapserver_export/Makefile
-  widgets/Makefile
-  widgets/projectionselector/Makefile
   designer_plugins/Makefile
   i18n/Makefile
   helpviewer/Makefile
