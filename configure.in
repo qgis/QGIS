@@ -433,68 +433,68 @@ AC_SUBST(DEBUG_QGIS)
 
 AC_CONFIG_FILES([
   Makefile 
-  src/Makefile 
-  src/legend/Makefile
-  src/ui/Makefile
-  src/raster/Makefile
-  src/composer/Makefile
-  src/svg/Makefile
-  src/svg/biology/Makefile
-  src/svg/geometric/Makefile
-  src/svg/gpsicons/Makefile
-  src/svg/icon/Makefile
-  src/svg/north_arrows/Makefile
-  src/svg/symbol/Makefile
-  src/images/Makefile
-  src/images/north_arrows/Makefile
-  src/images/splash/Makefile
-  src/images/icons/Makefile
-  src/images/developers/Makefile
-  src/resources/Makefile
-  src/themes/Makefile
-  src/themes/default/Makefile
-  src/themes/nkids/Makefile
-  src/mac/Makefile
-  src/mac/Contents/Makefile
-  src/mac/Contents/Resources/Makefile
-  src/widgets/Makefile
-  src/widgets/projectionselector/Makefile
-  providers/Makefile 
-  providers/ogr/Makefile
-  providers/postgres/Makefile
-  providers/delimitedtext/Makefile
-  providers/grass/Makefile
-  providers/gpx/Makefile
-  providers/wms/Makefile
+  designer_plugins/Makefile
+  doc/Makefile
+  doc/images/Makefile
+  doc/install_guide/Makefile
+  doc/plugins/delimited_text/Makefile
+  doc/plugins/geoprocessing/buffer/Makefile
+  doc/plugins/geoprocessing/Makefile
+  doc/plugins/Makefile
+  helpviewer/Makefile
+  i18n/Makefile
+  images/Makefile
+  images/developers/Makefile
+  images/icons/Makefile
+  images/north_arrows/Makefile
+  images/splash/Makefile
+  images/svg/biology/Makefile
+  images/svg/geometric/Makefile
+  images/svg/gpsicons/Makefile
+  images/svg/icon/Makefile
+  images/svg/Makefile
+  images/svg/north_arrows/Makefile
+  images/svg/symbol/Makefile
+  images/themes/default/Makefile
+  images/themes/Makefile
+  images/themes/nkids/Makefile
   plugins/Makefile
   plugins/copyright_label/Makefile
   plugins/delimited_text/Makefile
   plugins/geoprocessing/Makefile
   plugins/georeferencer/Makefile
   plugins/gps_importer/Makefile
-  plugins/grid_maker/Makefile
-  plugins/grass/Makefile
   plugins/grass/config/Makefile
+  plugins/grass/Makefile
   plugins/grass/modules/Makefile
-  plugins/grass/themes/Makefile
   plugins/grass/themes/default/Makefile
+  plugins/grass/themes/Makefile
+  plugins/grid_maker/Makefile
   plugins/maplayer/Makefile
   plugins/north_arrow/Makefile
   plugins/scale_bar/Makefile
   plugins/spit/Makefile
-  doc/Makefile
-  doc/install_guide/Makefile
-  doc/images/Makefile
-  doc/plugins/Makefile
-  doc/plugins/geoprocessing/Makefile
-  doc/plugins/geoprocessing/buffer/Makefile
-  doc/plugins/delimited_text/Makefile
+  providers/Makefile 
+  providers/delimitedtext/Makefile
+  providers/gpx/Makefile
+  providers/grass/Makefile
+  providers/ogr/Makefile
+  providers/postgres/Makefile
+  providers/wms/Makefile
+  resources/Makefile
+  src/Makefile 
+  src/composer/Makefile
+  src/legend/Makefile
+  src/mac/Contents/Makefile
+  src/mac/Contents/Resources/Makefile
+  src/mac/Makefile
+  src/raster/Makefile
+  src/ui/Makefile
+  src/widgets/Makefile
+  src/widgets/projectionselector/Makefile
   tools/Makefile
-  tools/qgis_config/Makefile
   tools/mapserver_export/Makefile
-  designer_plugins/Makefile
-  i18n/Makefile
-  helpviewer/Makefile
+  tools/qgis_config/Makefile
   qgis.spec
 ])
 
