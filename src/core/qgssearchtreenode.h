@@ -1,0 +1,183 @@
+/***************************************************************************
+                          qgssearchtreenode.h 
+            Definition of node for parsed tree of search string
+                          --------------------
+    begin                : 2005-07-26
+    copyright            : (C) 2005 by Martin Dobias
+    email                : won.der at centrum.sk
+***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+ /* $Id$ */
+
+#ifndef QGSSEARCHTREENODE_H
+#define QGSSEARCHTREENODE_H
+
+#include <qstring.h>
+#include <vector>
+#include "qgsfeatureattribute.h"
+
+// forward declaration due recursive declaration
+class QgsFeatureAttribute;
+
+class QgsSearchTreeValue;
+
+/**
+ * QgsSearchTreeNode
+ *
+ * node in tree of parsed search string
+ * node is terminal (has no children) if it's a number, column ref or string
+ * non-terminal is only node with operator - with 1 or 2 children
+ */
+class QgsSearchTreeNode
+{
+public:
+
+    //! defines possible types of node
+    enum Type
+    {
+      tOperator = 1,
+      tNumber,
+      tColumnRef,
+      tString
+    };
+
+    //! possible operators
+    enum Operator
+    {
+      // binary
+      opAND = 1,
+      opOR,
+      opNOT,
+
+      // arithmetic
+      opPLUS,
+      opMINUS,
+      opMUL,
+      opDIV,
+
+      // comparison
+      opEQ,   // =
+      opNE,   // != resp. <>
+      opGT,   // >
+      opLT,   // <
+      opGE,   // >=
+      opLE,   // <=
+      opRegexp, // ~
+      opLike, // LIKE
+    };
+
+    //! constructors
+    QgsSearchTreeNode(double number);
+    QgsSearchTreeNode(Operator op, QgsSearchTreeNode* left, QgsSearchTreeNode* right);
+    QgsSearchTreeNode(QString text, bool isColumnRef);
+
+    //! copy contructor - copies whole tree!
+    QgsSearchTreeNode(const QgsSearchTreeNode& node);
+
+    //! destructor - deletes children nodes (if any)
+    ~QgsSearchTreeNode();
+
+    //! returns type of current node
+    Type type()   { return mType; }
+    
+    //! node value getters
+    Operator op();
+    double number() { return mNumber; }
+    QString columnRef() { return mText; }
+    QString string() { return mText; }
+
+    //! node value setters (type is set also)
+    void setOp(Operator op)         { mType = tOperator;  mOp = op; }
+    void setNumber(double number)   { mType = tNumber;    mNumber = number; }
+    void setColumnRef(QString& str) { mType = tColumnRef; mText = str; }
+    void setString(QString& str)    { mType = tString;    mText = str; stripText(); }
+
+    //! children
+    QgsSearchTreeNode* Left()  { return mLeft;  }
+    QgsSearchTreeNode* Right() { return mRight; }
+    void setLeft (QgsSearchTreeNode* left ) { mLeft = left;   }
+    void setRight(QgsSearchTreeNode* right) { mRight = right; }
+
+    //! returns search string that should be equal to original parsed string
+    QString makeSearchString();
+
+    //! checks whether the node tree is valid against supplied attributes
+    bool checkAgainst(const std::vector<QgsFeatureAttribute>& attributes);
+    
+    //! checks if there were errors during evaluation
+    bool hasError() { return (!mError.isEmpty()); }
+    
+    //! returns error message
+    const QString& errorMsg() { return mError; }
+
+protected:
+
+    //! returns scalar value of node
+    QgsSearchTreeValue valueAgainst(const std::vector<QgsFeatureAttribute>& attributes);
+    
+    //! wrapper around valueAgainst()
+    bool getValue(QgsSearchTreeValue& value, QgsSearchTreeNode* node,
+                  const std::vector<QgsFeatureAttribute>& attributes);
+
+    //! strips mText when node is of string type
+    void stripText();
+    
+private:
+    
+    //! node type
+    Type mType;
+
+    //! data
+    Operator mOp;
+    double mNumber;
+    QString mText;
+
+    QString mError;
+
+    //! children
+    QgsSearchTreeNode* mLeft;
+    QgsSearchTreeNode* mRight;
+};
+
+// TODO: poslat do zvlast suboru
+class QgsSearchTreeValue
+{
+public:
+
+  enum Type
+  {
+    valError,
+    valString,
+    valNumber
+  };
+
+  QgsSearchTreeValue() { }
+  QgsSearchTreeValue(QString string) { mType = valString; mString = string; }
+  QgsSearchTreeValue(double number) { mType = valNumber; mNumber = number; }
+  QgsSearchTreeValue(int error, QString errorMsg) { mType = valError; mNumber = error; mString = errorMsg; }
+
+  static int compare(QgsSearchTreeValue& value1, QgsSearchTreeValue& value2);
+
+  bool isNumeric() { return mType == valNumber; }
+  bool isError() { return mType == valError; }
+
+  QString& string() { return mString; }
+  double number() { return mNumber; }
+
+private:
+  Type mType;
+  QString mString;
+  double mNumber;
+
+};
+
+#endif
+
