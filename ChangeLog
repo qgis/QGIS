@@ -1,6 +1,8 @@
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
 Version 0.8 'Joesephine' .... development version
+2006-01-08 [timlinux] 0.7.9.6
+** refactored libqgis into core and gui libs.
 2006-01-01 [timlinux] 0.7.9.5
 ** removed community reg plugin and exampl plugins
 ** refactored composer code into its own lib in src/composer

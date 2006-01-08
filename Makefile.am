@@ -30,10 +30,6 @@ docdatadir = $(datadir)/$(PACKAGE)/doc
 
 docdata_DATA = AUTHORS
 
-if HAVE_QT3
-SUBDIRS = src providers plugins doc tools i18n designer_plugins helpviewer
-endif
-
 if HAVE_QT4
 SUBDIRS = src providers plugins doc tools i18n helpviewer resources images
 endif
