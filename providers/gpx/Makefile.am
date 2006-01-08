@@ -2,7 +2,7 @@
 
 if HAVE_EXPAT
 
-INCLUDES = -I../../src/core
+INCLUDES = -I../../src/core -I../../src
 
 plugindir = ${pkglibdir}
 plugin_LTLIBRARIES = gpxprovider.la 
