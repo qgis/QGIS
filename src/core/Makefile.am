@@ -96,7 +96,6 @@ libqgis_coreHEADERS =				\
 
 ## files generated from MOC                             
 libqgis_core_la_MOC =							\
-		qgscoordinatetransform.moc.cpp		\
 		qgscontexthelp.moc.cpp			\
 		qgsdataprovider.moc.cpp				\
 		qgsrasterdataprovider.moc.cpp		
