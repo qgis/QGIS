@@ -22,7 +22,7 @@
 #include "../qgisplugin.h"
 #include <qwidget.h>
 #include "ui_qgsdelimitedtextpluginguibase.h"
-#include "../../src/qgisapp.h"
+#include "qgisapp.h"
 
 /**
 * \class QgsDelimitedTextPlugin

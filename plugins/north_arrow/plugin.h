@@ -21,7 +21,7 @@
 #define QGSNORTHARROWPLUGIN
 
 #include "../qgisplugin.h"
-#include "../../src/qgisapp.h"
+#include "qgisapp.h"
 
 class QToolBar;
 /**

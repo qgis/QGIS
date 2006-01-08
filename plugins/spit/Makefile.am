@@ -52,7 +52,7 @@ spitplugin_la_SOURCES =  $(common_sources) \
 	qgsspitplugin.cpp \
 	qgsspitplugin.h
 
-spit_SOURCES = ../../src/qgsmessageviewer.cpp ../../src/qgspgutil.cpp $(common_sources) main.cpp $(SPIT_UIC) $(spit_MOC)
+spit_SOURCES = ../../src/gui/qgsmessageviewer.cpp ../../src/gui/qgspgutil.cpp $(common_sources) main.cpp $(SPIT_UIC) $(spit_MOC)
 
 nodist_spitplugin_la_SOURCES = $(spitplugin_la_MOC)
 
@@ -67,12 +67,12 @@ BUILT_SOURCES = $(spit_MOC) $(spit_UI) $(spitplugin_la_MOC)
 
 spitplugin_la_LIBADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD) ../../src/core/libqgis_core.la
 spitplugin_la_LDFLAGS = -avoid-version -module
-spitplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(GEOS_CFLAGS) -I../../src -I../../src/ui -I../../src/core
+spitplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(GEOS_CFLAGS) -I../../src/gui -I../../src/ui -I../../src/core
 
 
 spit_LDADD = $(QT_LDADD)  $(PG_LIB) $(GDAL_LDADD)
 #spit_LDFLAGS = -avoid-version -module
-spit_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PG_INC)  -I../../src -I../../src/ui -I../../src/core
+spit_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PG_INC)  -I../../src/gui -I../../src/ui -I../../src/core
 
 CLEANFILES = $(BUILT_SOURCES)
 

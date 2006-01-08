@@ -37,7 +37,7 @@ class Q3PopupMenu;
 class QAction;
 
 //#include "qgsworkerclass.h"
-#include "../../src/qgisapp.h"
+#include "qgisapp.h"
 
 /**
 * \class QgsPgGeoprocessing

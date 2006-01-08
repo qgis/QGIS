@@ -1,4 +1,4 @@
-INCLUDES = -I../../core/ -I../../
+INCLUDES = -I../../core/ -I../../gui/
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -27,7 +27,7 @@ postgresprovider_la_SOURCES =					\
 
 BUILT_SOURCES = $(postgresprovider_MOC)
                                 
-postgresprovider_la_LIBADD = $(QT_LDADD) $(PG_LIB) $(GEOS_LDADD) ../../core/libqgis_core.la ../../libqgis_gui.la
+postgresprovider_la_LIBADD = $(QT_LDADD) $(PG_LIB) $(GEOS_LDADD) ../../core/libqgis_core.la ../../gui/libqgis_gui.la
 postgresprovider_la_LDFLAGS = -avoid-version -module
 postgresprovider_la_CXXFLAGS = $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(GDAL_CFLAGS)
 

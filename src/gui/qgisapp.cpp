@@ -94,7 +94,7 @@
 #include "qgshelpviewer.h"
 #include "qgslegend.h"
 #include "qgslegendlayerfile.h"
-#include "legend/qgslegendlayerfile.h"
+#include "qgslegendlayerfile.h"
 #include "qgslegendlayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -118,8 +118,8 @@
 #include "qgssinglesymrenderer.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
-#include "../plugins/qgisplugin.h"
-#include "../images/themes/default/qgis.xpm"
+#include "../../plugins/qgisplugin.h"
+#include "../../images/themes/default/qgis.xpm"
 
 //
 // Gdal/Ogr includes

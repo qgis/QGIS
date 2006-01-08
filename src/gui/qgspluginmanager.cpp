@@ -23,7 +23,7 @@
 #include <qmessagebox.h>
 #include <qlibrary.h>
 #include <qsettings.h>
-#include "../plugins/qgisplugin.h"
+#include "qgisplugin.h"
 #include "qgspluginmanager.h"
 #include "qgspluginitem.h"
 #include "qgsproviderregistry.h"

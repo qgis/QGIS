@@ -25,8 +25,8 @@ class QDomNode;
 class QDomElement;
 
 // Must be here, so that it is included to moc file
-#include "../../src/qgisapp.h"
-#include "../../src/qgisiface.h"
+#include "qgisapp.h"
+#include "qgisiface.h"
 
 class QgsGrassProvider;
 #include "ui_qgsgrasstoolsbase.h"

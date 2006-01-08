@@ -34,7 +34,7 @@
 #include <qsettings.h>
 #include <qpixmap.h>
 #include <iostream>
-#include "../../src/qgspgutil.h"
+#include "qgspgutil.h"
 #include "qgsspit.h"
 #include "qgsconnectiondialog.h"
 #include "qgseditreservedwordsdialog.h"
