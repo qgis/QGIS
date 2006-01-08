@@ -88,7 +88,6 @@ libqgis_guiHEADERS =							\
 		qgscsexception.h				\
 		qgscoordinatetransform.h	\
 		qgscustomprojectiondialog.h			\
-		qgsdatasourceuri.h				\
 		qgsdelattrdialog.h				\
 		qgsencodingfiledialog.h				\
 		qgsfeature.h						\
@@ -298,4 +297,3 @@ pkginclude_HEADERS += $(postgresHEADERS) \
 		$(libqgisHEADERS) 
 endif
 
-noinst_HEADERS = qgsdatasourceuri.h
