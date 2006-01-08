@@ -29,7 +29,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=7
 MICRO_VERSION=9
-EXTRA_VERSION=5
+EXTRA_VERSION=6
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
@@ -433,7 +433,6 @@ AC_SUBST(DEBUG_QGIS)
 
 AC_CONFIG_FILES([
   Makefile 
-  designer_plugins/Makefile
   doc/Makefile
   doc/images/Makefile
   doc/install_guide/Makefile
@@ -484,6 +483,8 @@ AC_CONFIG_FILES([
   resources/Makefile
   src/Makefile 
   src/composer/Makefile
+  src/core/Makefile
+  src/designer/Makefile
   src/legend/Makefile
   src/mac/Contents/Makefile
   src/mac/Contents/Resources/Makefile
