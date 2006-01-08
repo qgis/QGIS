@@ -24,8 +24,8 @@
 #include <map>
 #include <vector>
 
-#include "../../src/qgsrasterdataprovider.h"
-#include "../../src/qgsrect.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrect.h"
 
 #include "qgsdatasourceuri.h"
 

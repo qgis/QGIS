@@ -34,11 +34,11 @@
 #include <qstringlist.h>
 #include <qrect.h>
 
-#include "../../src/qgis.h"
-#include "../../src/qgsdataprovider.h"
-#include "../../src/qgsfeature.h"
-#include "../../src/qgsfield.h"
-#include "../../src/qgsrect.h"
+#include "qgis.h"
+#include "qgsdataprovider.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgsrect.h"
 #include "qgsgpxprovider.h"
 #include "gpsdata.h"
 

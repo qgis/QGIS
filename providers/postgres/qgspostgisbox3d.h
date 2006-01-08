@@ -24,7 +24,7 @@
 
 #include <qstring.h>
 
-#include "../../src/qgsrect.h"
+#include "qgsrect.h"
 
 /*!
  * \brief   PostgreSQL/PostGIS "box3d" representation and transformation

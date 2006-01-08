@@ -25,8 +25,8 @@ extern "C"
 {
 #include <libpq-fe.h>
 }
-#include "../../src/qgsvectordataprovider.h"
-#include "../../src/qgsrect.h"
+#include "qgsvectordataprovider.h"
+#include "qgsrect.h"
 #include <list>
 #include <queue>
 #include <fstream>

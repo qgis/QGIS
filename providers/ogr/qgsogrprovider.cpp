@@ -51,11 +51,11 @@ email                : sherman at mrcc.com
 #endif 
 
 
-#include "../../src/qgssearchtreenode.h"
-#include "../../src/qgsdataprovider.h"
-#include "../../src/qgsfeature.h"
-#include "../../src/qgsfield.h"
-#include "../../src/qgis.h"
+#include "qgssearchtreenode.h"
+#include "qgsdataprovider.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgis.h"
 
 
 #ifdef WIN32

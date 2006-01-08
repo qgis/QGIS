@@ -33,11 +33,11 @@
 
 #include <ogrsf_frmts.h>
 
-#include "../../src/qgsdataprovider.h"
-#include "../../src/qgsencodingfiledialog.h"
-#include "../../src/qgsfeature.h"
-#include "../../src/qgsfield.h"
-#include "../../src/qgsrect.h"
+#include "qgsdataprovider.h"
+#include "qgsencodingfiledialog.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgsrect.h"
 
 
 #ifdef WIN32

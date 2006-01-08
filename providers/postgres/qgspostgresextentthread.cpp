@@ -23,9 +23,9 @@
 //Added by qt3to4:
 #include <QCustomEvent>
 
-#include "../../src/qgis.h"
-#include "../../src/qgsrect.h"
-#include "../../src/qgsmapcanvas.h"
+#include "qgis.h"
+#include "qgsrect.h"
+#include "qgsmapcanvas.h"
 
 
 #include "qgspostgresextentthread.h"

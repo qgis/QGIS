@@ -1,4 +1,4 @@
-INCLUDES = -I../../src -I../../src/raster
+INCLUDES = -I../../src -I../../src/raster -I../../src/core
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -10,11 +10,11 @@ plugin_LTLIBRARIES     = wmsprovider.la
 ## non-uic files generated from MOC
 
 wmsprovider_MOC =	qgswmsprovider.moc.cpp			\
-			qgshttptransaction.moc.cpp
+			qgshttptransaction.moc.cpp \
+		../../src/core/qgsdataprovider.moc.cpp		\
+		../../src/core/qgsrasterdataprovider.moc.cpp		
                 
 wmsprovider_la_SOURCES =					\
-		../../src/qgsdataprovider.moc.cpp		\
-		../../src/qgsrasterdataprovider.moc.cpp		\
 		qgswmsprovider.cpp				\
 		qgswmsprovider.moc.cpp				\
 		qgswmsprovider.h				\

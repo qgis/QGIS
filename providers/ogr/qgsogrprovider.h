@@ -16,8 +16,8 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 /* $Id$ */
 
-#include "../../src/qgsrect.h"
-#include "../../src/qgsvectordataprovider.h"
+#include "qgsrect.h"
+#include "qgsvectordataprovider.h"
 #include <geos.h>
 
 #include <ogr_spatialref.h>

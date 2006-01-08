@@ -21,7 +21,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "../../src/qgsrect.h"
+#include "qgsrect.h"
 #include "qgshttptransaction.h"
 
 #include "qgswmsprovider.h"

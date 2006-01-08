@@ -30,7 +30,7 @@
 #include <qstring.h>
 #include <qtextstream.h>
 
-#include "../../src/qgsrect.h"
+#include "qgsrect.h"
 
 
 /** This is the parent class for all GPS data classes (except tracksegment).
