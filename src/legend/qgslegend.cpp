@@ -661,6 +661,7 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
     QDomElement legendpropertynode;
     QDomElement legendlayerfilenode;
     QgsLegendLayerFile* llf;
+    Qt::CheckState cstate; //check state for legend layers
 
     QTreeWidgetItem* currentItem = firstItem();
     while(currentItem) 
@@ -706,6 +707,19 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 		    {
 			legendlayernode.setAttribute("open","false");
 		    }
+		    cstate = item->checkState(0);
+		    if(cstate == Qt::Checked)
+		      {
+			legendlayernode.setAttribute("checked","Qt::Checked");
+		      }
+		    else if(cstate == Qt::Unchecked)
+		      {
+			legendlayernode.setAttribute("checked","Qt::Unchecked");
+		      }
+		    else if(cstate == Qt::PartiallyChecked)
+		      {
+			legendlayernode.setAttribute("checked","Qt::PartiallyChecked");
+		      }
 		    legendlayernode.setAttribute("name", item->text(0));
 		    legendnode.appendChild(legendlayernode);
 		    break;
@@ -769,6 +783,132 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
     return true;
 }
 
+bool QgsLegend::readXML(QDomNode& legendnode)
+{
+  QDomElement childelem;
+  QDomNode child;
+  QgsLegendGroup* lastGroup = 0; //pointer to the last inserted group
+  QgsLegendLayer* lastLayer = 0; //pointer to the last inserted legendlayer
+  QgsLegendLayerFileGroup* lastLayerFileGroup = 0; //pointer to the last inserted layerfilegroup
+  
+  child = legendnode.firstChild();
+
+  if(!child.isNull())
+    {
+      clear(); //remove all items first
+      mStateOfCheckBoxes.clear();
+
+      do
+	{
+	  QDomElement childelem = child.toElement();
+	  QString name = childelem.attribute("name");
+
+	  //test every possibility of element...
+	  if(childelem.tagName()=="legendgroup")
+	    {
+	      QgsLegendGroup* theGroup = new QgsLegendGroup(this, name);
+	      childelem.attribute("open") == "true" ? expandItem(theGroup) : collapseItem(theGroup);
+	      lastGroup = theGroup;
+	    }
+	  else if(childelem.tagName()=="legendlayer")
+	    {
+	      //add the legendlayer to the legend (but no legendlayerfile yet, follows later)
+	      //if childelem is in a legendgroup element, add the layer to the group
+	      QgsLegendLayer* theLayer;
+	      if(child.parentNode().toElement().tagName() == "legendgroup")
+		{
+		  theLayer = new QgsLegendLayer(lastGroup, name);
+		}
+	      else
+		{
+		  theLayer = new QgsLegendLayer(this, name);
+		  lastGroup = 0;
+		}
+	      childelem.attribute("open") == "true" ? expandItem(theLayer) : collapseItem(theLayer);
+	      
+	      //set the checkbox of the legend layer to the right state
+	      blockSignals(true);
+	      QString checked = childelem.attribute("checked");
+	      if(checked == "Qt::Checked")
+		{
+		  theLayer->setCheckState(0, Qt::Checked);
+		  mStateOfCheckBoxes.insert(std::make_pair(theLayer, Qt::Checked));
+		}
+	      else if(checked == "Qt::Unchecked")
+		{
+		  theLayer->setCheckState(0, Qt::Unchecked);
+		  mStateOfCheckBoxes.insert(std::make_pair(theLayer, Qt::Unchecked));
+		}
+	      else if(checked == "Qt::PartiallyChecked")
+		{
+		  theLayer->setCheckState(0, Qt::PartiallyChecked);
+		  mStateOfCheckBoxes.insert(std::make_pair(theLayer, Qt::PartiallyChecked));
+		}
+	      blockSignals(false);
+
+	      lastLayer = theLayer;
+	    }
+	  else if(childelem.tagName()=="legendlayerfile")
+	    {
+	      //find out the legendlayer
+	      std::map<QString,QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+	      std::map<QString, QgsMapLayer*>::const_iterator iter = mapLayers.find(childelem.attribute("layerid"));
+	      if(iter != mapLayers.end() && lastLayerFileGroup)
+		{
+		  QgsMapLayer* theMapLayer = iter->second;
+		  QgsLegendLayerFile* theLegendLayerFile = new QgsLegendLayerFile(lastLayerFileGroup, QgsLegendLayerFile::nameFromLayer(theMapLayer), theMapLayer);
+		  //set the check state
+		  blockSignals(true);
+		  if(theMapLayer->visible())
+		    {
+		      mStateOfCheckBoxes.insert(std::make_pair(theLegendLayerFile, Qt::Checked));
+		      theLegendLayerFile->setCheckState(0, Qt::Checked);
+		    }
+		  else
+		    {
+		      mStateOfCheckBoxes.insert(std::make_pair(theLegendLayerFile, Qt::Unchecked));
+		      theLegendLayerFile->setCheckState(0, Qt::Unchecked);
+		    }
+		  blockSignals(false);
+
+		}
+	    }
+	  else if(childelem.tagName()=="filegroup")
+	    {
+	      QgsLegendLayerFileGroup* theFileGroup = new QgsLegendLayerFileGroup(lastLayer, "Files");
+	      childelem.attribute("open") == "true" ? expandItem(theFileGroup) : collapseItem(theFileGroup);
+	      lastLayerFileGroup = theFileGroup;
+	    }
+	  else if(childelem.tagName() == "symbolgroup")
+	    {
+	      QgsLegendSymbologyGroup* theSymbologyGroup = new QgsLegendSymbologyGroup(lastLayer, "Symbology");
+	      childelem.attribute("open") == "true" ? expandItem(theSymbologyGroup) : collapseItem(theSymbologyGroup);
+	      //set symbology parent for all layers
+	      std::list<QgsMapLayer*> layerList = lastLayer->mapLayers();
+	      for(std::list<QgsMapLayer*>::iterator iter = layerList.begin(); iter != layerList.end(); ++iter)
+		{
+		  (*iter)->setLegendSymbologyGroupParent(theSymbologyGroup);
+		}
+	      //render the legend
+	      if(lastLayer->firstMapLayer())
+		{
+		  lastLayer->firstMapLayer()->refreshLegend();
+		}
+	    }
+	  else if(childelem.tagName() == "propertygroup")
+	    {
+	      QgsLegendPropertyGroup* thePropertyGroup = new QgsLegendPropertyGroup(lastLayer, "Properties");
+	      childelem.attribute("open") == "true" ? expandItem(thePropertyGroup) : collapseItem(thePropertyGroup);
+	    }
+	  
+	  child = nextDomNode(child);
+	}
+      while(!(child.isNull()));
+    }
+  return true;
+}
+
+#if 0
 bool QgsLegend::readXML(QDomNode& legendnode)
 {
     QString open;
@@ -995,6 +1135,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
     }
     return true;
 }
+#endif //0
 
 void QgsLegend::storeInitialPosition(QTreeWidgetItem* li)
 {
@@ -1130,6 +1271,31 @@ QTreeWidgetItem* QgsLegend::previousSibling(QTreeWidgetItem* item)
   else
     {
       return 0;
+    }
+}
+
+QDomNode QgsLegend::nextDomNode(const QDomNode& theNode)
+{
+  if(!theNode.firstChild().isNull())
+    {
+      return (theNode.firstChild());
+    }
+  else if(!theNode.nextSibling().isNull())
+    {
+      return (theNode.nextSibling());
+    }
+  else if(!theNode.parentNode().isNull() && !theNode.parentNode().nextSibling().isNull())
+    {
+      return (theNode.parentNode().nextSibling());
+    }
+  else if(!theNode.parentNode().isNull() && !theNode.parentNode().parentNode().isNull() && !theNode.parentNode().parentNode().nextSibling().isNull())
+    {
+      return (theNode.parentNode().parentNode().nextSibling());
+    }
+  else
+    {
+      QDomNode nullNode;
+      return nullNode;
     }
 }
 
