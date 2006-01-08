@@ -10,7 +10,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "plugingui.h"
-#include "../../src/qgsapplication.h"
+#include "qgsapplication.h"
 
 #include <QPainter>
 #include <cmath>

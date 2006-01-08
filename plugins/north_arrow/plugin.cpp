@@ -27,7 +27,7 @@ email                : tim@linfiniti.com
 #include "plugin.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
-#include "../../src/qgsapplication.h"
+#include "qgsapplication.h"
 
 // qt includes
 #include <QPainter>

@@ -39,13 +39,13 @@
 //Added by qt3to4:
 #include <QKeyEvent>
 
-#include "../../src/qgis.h"
-#include "../../src/qgsmapcanvas.h"
-#include "../../src/qgsmaplayer.h"
-#include "../../src/qgsvectorlayer.h"
-#include "../../src/qgsdataprovider.h"
-#include "../../src/qgsmaptopixel.h"
-#include "../../src/qgsfeatureattribute.h"
+#include "qgis.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsdataprovider.h"
+#include "qgsmaptopixel.h"
+#include "qgsfeatureattribute.h"
 
 extern "C" {
 #include <gis.h>

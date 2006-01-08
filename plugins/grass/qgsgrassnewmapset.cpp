@@ -46,12 +46,12 @@
 #include <QCloseEvent>
 #include <Q3Wizard>
 
-#include "../../src/qgis.h"
-#include "../../src/qgsmapcanvas.h"
-#include "../../src/qgsproject.h"
-#include "../../src/qgsrect.h"
-#include "../../src/qgscoordinatetransform.h"
-#include "../../src/qgsspatialrefsys.h"
+#include "qgis.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgsrect.h"
+#include "qgscoordinatetransform.h"
+#include "qgsspatialrefsys.h"
 #include "../../src/widgets/projectionselector/qgsprojectionselector.h"
 
 #include "../../providers/grass/qgsgrass.h"

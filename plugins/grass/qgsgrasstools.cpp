@@ -50,13 +50,13 @@
 //Added by qt3to4:
 #include <QCloseEvent>
 
-#include "../../src/qgis.h"
-#include "../../src/qgsmapcanvas.h"
-#include "../../src/qgsmaplayer.h"
-#include "../../src/qgsvectorlayer.h"
-#include "../../src/qgsdataprovider.h"
-#include "../../src/qgsfield.h"
-#include "../../src/qgsfeatureattribute.h"
+#include "qgis.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsdataprovider.h"
+#include "qgsfield.h"
+#include "qgsfeatureattribute.h"
 
 extern "C" {
 #include <gis.h>

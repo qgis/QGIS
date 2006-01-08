@@ -41,15 +41,15 @@
 #include <qspinbox.h>
 #include <qglobal.h>
 
-#include "../../src/qgis.h"
-#include "../../src/qgisapp.h"
-#include "../../src/qgsmaplayer.h"
 #include <qgsrasterlayer.h>
-#include "../../src/qgsvectorlayer.h"
-#include "../../src/qgisiface.h"
-#include "../../src/qgsmapcanvas.h"
-#include "../../src/qgsmaptopixel.h"
-#include "../../src/qgspoint.h"
+#include "qgis.h"
+#include "qgisapp.h"
+#include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
+#include "qgisiface.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptopixel.h"
+#include "qgspoint.h"
 
 extern "C" {
 #include <gis.h>

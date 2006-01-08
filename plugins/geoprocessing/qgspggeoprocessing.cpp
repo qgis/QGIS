@@ -23,11 +23,11 @@ email                : sherman at mrcc.com
 // includes
 #include <iostream>
 #include <vector>
-#include "../../src/qgisapp.h"
-#include "../../src/qgsmaplayer.h"
-#include "../../src/qgsvectorlayer.h"
-#include "../../src/qgsvectordataprovider.h"
-#include "../../src/qgsfield.h"
+#include "qgisapp.h"
+#include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsfield.h"
 
 #include <q3toolbar.h>
 #include <qmenubar.h>

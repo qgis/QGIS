@@ -49,9 +49,9 @@ pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
 
-libScaleBarplugin_la_LIBADD = $(QT_LDADD) ../../src/libqgis.la
+libScaleBarplugin_la_LIBADD = $(QT_LDADD) ../../src/core/libqgis_core.la
 libScaleBarplugin_la_LDFLAGS = -avoid-version -module
-libScaleBarplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src -I../../src/ui
+libScaleBarplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src -I../../src/ui -I../../src/core 
 
 CLEANFILES = $(BUILT_SOURCES)
 

@@ -11,8 +11,8 @@
  ***************************************************************************/
 #include "qgsgpsplugingui.h"
 #include "qgsgpsdevicedialog.h"
-#include "../../src/qgsmaplayer.h"
-#include "../../src/qgsdataprovider.h"
+#include "qgsmaplayer.h"
+#include "qgsdataprovider.h"
 
 //qt includes
 #include <QFileDialog>
