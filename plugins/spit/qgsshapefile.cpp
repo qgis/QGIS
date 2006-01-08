@@ -31,7 +31,7 @@
 #include "qgsdbfbase.h"
 #include "cpl_error.h"
 #include "qgsshapefile.h"
-#include "../../src/qgis.h"
+#include "qgis.h"
 
 // for htonl
 #ifdef WIN32
