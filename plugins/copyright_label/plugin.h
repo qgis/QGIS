@@ -20,7 +20,7 @@
 #ifndef QGSCOPYRIGHTLABELPLUGIN
 #define QGSCOPYRIGHTLABELPLUGIN
 #include "../qgisplugin.h"
-#include "../../src/qgisapp.h"
+#include "qgisapp.h"
 #include <qwidget.h>
 #include <qfont.h>
 #include <qcolor.h>

@@ -18,7 +18,7 @@
 
 /* First attribute in the table is always field, second attribute is category */
 
-#include "../../src/qgsidentifyresults.h"
+#include "qgsidentifyresults.h"
 //Added by qt3to4:
 #include <QEvent>
 

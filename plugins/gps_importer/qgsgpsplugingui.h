@@ -18,7 +18,7 @@
 #ifndef QGSGPSPLUGINGUI_H
 #define QGSGPSPLUGINGUI_H
 
-#include "../../src/qgsvectorlayer.h"
+#include "qgsvectorlayer.h"
 #include "ui_qgsgpspluginguibase.h"
 #include "qgsbabelformat.h"
 #include "qgsgpsdevice.h"

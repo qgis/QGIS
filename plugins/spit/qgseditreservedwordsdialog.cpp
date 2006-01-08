@@ -2,7 +2,7 @@
 #include <qpixmap.h>
 #include <q3listview.h>
 #include <q3textedit.h>
-#include "../../src/qgspgutil.h"
+#include "qgspgutil.h"
 #include "spit_icons.h"
 
 #include "qgseditreservedwordsdialog.h"

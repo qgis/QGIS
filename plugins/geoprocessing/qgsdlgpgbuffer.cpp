@@ -25,7 +25,7 @@
 #include <qvalidator.h>
 #include "qgsdlgpgbuffer.h"
 #include <qspinbox.h>
-#include "../../src/qgisiface.h"
+#include "qgisiface.h"
 
 QgsDlgPgBuffer::QgsDlgPgBuffer( QgisIface * _qI, QWidget * parent, const char *name)
 :QDialog(parent, name),qI(_qI)

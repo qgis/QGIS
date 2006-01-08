@@ -26,7 +26,7 @@
 #include "qgsdelimitedtextplugingui.h"
 //Added by qt3to4:
 #include <QTextStream>
-#include "../../src/qgisiface.h"
+#include "qgisiface.h"
 
 QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui() : QDialog()
 {

@@ -1,6 +1,8 @@
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
 Version 0.8 'Joesephine' .... development version
+2006-01-08 [timlinux] 0.7.9.8
+** moved all sources for gui lib into src/gui
 2006-01-08 [gsherman] 0.7.9.7
 ** Moved providers to the src directory
 2006-01-08 [timlinux] 0.7.9.6

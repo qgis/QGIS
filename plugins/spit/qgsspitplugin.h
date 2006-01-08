@@ -35,7 +35,7 @@ class QMenuBar;
 class Q3PopupMenu;
 
 //#include "qgsworkerclass.h"
-#include "../../src/qgisapp.h"
+#include "qgisapp.h"
 
 /**
 * \class QgsSpitPlugin

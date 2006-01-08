@@ -62,9 +62,9 @@ plugin_QRC = gridmaker_plugin.qrc
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
-gridmakerplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/core/libqgis_core.la ../../src/libqgis_gui.la
+gridmakerplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/core/libqgis_core.la ../../src/gui/libqgis_gui.la
 gridmakerplugin_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
-gridmakerplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src/core -I../../src/ui -I../../src 
+gridmakerplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src/core -I../../src/ui -I../../src/gui 
 gridmakerplugin_la_LDFLAGS = -avoid-version -module
 
 ##
@@ -83,7 +83,7 @@ gridmaker_SOURCES = main.cpp \
 
 gridmaker_LDADD = $(QT_LDADD) 
 gridmaker_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
-gridmaker_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PKGDATAPATH) $(DEBUG_QGIS) -I../../src -I../../src/ui -I../../src/core
+gridmaker_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PKGDATAPATH) $(DEBUG_QGIS) -I../../src/gui -I../../src/ui -I../../src/core
 
 standalone_MOC = plugingui.moc.cpp 
 

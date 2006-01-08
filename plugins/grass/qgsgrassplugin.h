@@ -20,7 +20,7 @@
 #include <qwidget.h>
 #include <qpen.h>
 
-#include "../../src/qgisapp.h"
+#include "qgisapp.h"
 
 #include <vector>
 

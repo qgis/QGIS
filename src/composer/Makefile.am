@@ -53,7 +53,7 @@ libqgis_composer_la_SOURCES =  qgscomposer.cpp\
 libqgis_composer_la_LIBFLAGS = $(QT_LDADD)
 
 libqgis_composer_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
-libqgis_composer_la_CXXFLAGS = $(PKGDATAPATH) -I.. -I../ui/ -I../core/ \
+libqgis_composer_la_CXXFLAGS = $(PKGDATAPATH) -I../gui/ -I../ui/ -I../core/ \
 				$(PREFIX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) \
 				$(GDAL_CFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GEOS_CFLAGS)
 

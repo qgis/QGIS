@@ -27,7 +27,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include <q3pointarray.h>
 
 
-#include "../../src/qgisapp.h"
+#include "qgisapp.h"
 class QToolBar;
 /**
 * \class Plugin

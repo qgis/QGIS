@@ -21,7 +21,7 @@
 // includes
 #include <iostream>
 #include <vector>
-#include "../../src/qgisapp.h"
+#include "qgisapp.h"
 
 #include <q3toolbar.h>
 #include <qmenubar.h>
