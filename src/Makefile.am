@@ -70,7 +70,6 @@ qgis_CXXFLAGS = $(PREFIX) $(PLUGINPATH) $(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS
 
 libqgis_guiHEADERS =							\
 		qgisapp.h							\
-		qgis.h						\
 		qgisiface.h					\
 		qgisinterface.h \
 		qgsabout.h				\
