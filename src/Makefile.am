@@ -143,6 +143,7 @@ libqgis_gui_la_MOC =							\
 		qgsattributetable.moc.cpp		\
 		qgsbookmarks.moc.cpp		\
 		qgscontcoldialog.moc.cpp		\
+		qgscoordinatetransform.moc.cpp		\
 		qgscustomprojectiondialog.moc.cpp 	\
 		qgsdelattrdialog.moc.cpp		\
 		qgsencodingfiledialog.moc.cpp		\
