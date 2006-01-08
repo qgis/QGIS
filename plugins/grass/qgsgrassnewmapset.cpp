@@ -54,7 +54,7 @@
 #include "qgsspatialrefsys.h"
 #include "../../src/widgets/projectionselector/qgsprojectionselector.h"
 
-#include "../../providers/grass/qgsgrass.h"
+#include "../../src/providers/grass/qgsgrass.h"
 #include "qgsgrassnewmapset.h"
 
 bool QgsGrassNewMapset::mRunning = false;

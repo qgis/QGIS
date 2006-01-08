@@ -16,8 +16,13 @@
 if HAVE_QTMAC
 MAC = mac
 endif
-
-SUBDIRS = core ui legend raster composer widgets  $(MAC)
+# NOTE - the order of the SUBDIRS is important. Currently the providers
+#        depend on the existence of libqgis_gui. Since the gui classes
+#        have not been moved into their own directory, the current directory
+#        (.) must be specified immediately before the providers
+#        subdirectory. Once the gui subdirectory is implemented, there is
+#        no need for the current directory to be in the SUBDIRS list
+SUBDIRS =  core ui legend raster composer widgets . providers $(MAC) 
 
 if !HAVE_QTMAC
 PREFIX=-DPREFIX=\"$(prefix)\"

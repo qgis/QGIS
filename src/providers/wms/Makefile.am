@@ -1,4 +1,4 @@
-INCLUDES = -I../../src -I../../src/raster -I../../src/core
+INCLUDES = -I../../ -I../../raster -I../../core
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -11,8 +11,8 @@ plugin_LTLIBRARIES     = wmsprovider.la
 
 wmsprovider_MOC =	qgswmsprovider.moc.cpp			\
 			qgshttptransaction.moc.cpp \
-		../../src/core/qgsdataprovider.moc.cpp		\
-		../../src/core/qgsrasterdataprovider.moc.cpp		
+		../../core/qgsdataprovider.moc.cpp		\
+		../../core/qgsrasterdataprovider.moc.cpp		
                 
 wmsprovider_la_SOURCES =					\
 		qgswmsprovider.cpp				\
