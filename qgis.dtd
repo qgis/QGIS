@@ -122,7 +122,7 @@ outlinecolor,outlinestyle,outlinewidth,fillcolor,fillpattern) >
 <!ELEMENT legendgroup>
 <!ATTLIST legendgroup open (1|0|true|false) "false" name CDATA> #open or closed
 <!ELEMENT legendlayer>
-<!ATTLIST legendlayer open (1|0|true|false) "false"> #open or closed
+<!ATTLIST legendlayer open (1|0|true|false) "false" checked (Qt::Checked|Qt::Unchecked|Qt::PartiallyChecked) "Qt::Checked"> #open or closed
 <!ELEMENT legendlayerfilegroup>
 <!ATTLIST legendlayerfile open (1|0|true|false) "false"> #open or closed
 <!ELEMENT legendlayerfile>

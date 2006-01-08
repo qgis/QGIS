@@ -120,6 +120,9 @@ class QgsLegend : public QTreeWidget
   /**Returns the previous sibling of an item or 0 if there is none*/
   QTreeWidgetItem* previousSibling(QTreeWidgetItem* item);
 
+  /**Finds the next dom node. This function is used by QgsLegend, but probably its not a good place here*/
+  static QDomNode nextDomNode(const QDomNode& theNode);
+
   /**Moves an item after another one*/
   void moveItem(QTreeWidgetItem* move, QTreeWidgetItem* after);
 
