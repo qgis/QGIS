@@ -76,14 +76,17 @@ libqgis_guiHEADERS =							\
 		qgsabout.h				\
 		qgsaddattrdialog.h				\
 		qgsadvancedattrsearch.h				\
+		qgsattributeaction.h		\
 		qgsattributeactiondialog.h			\
 		qgsattributedialog.h				\
 		qgsattributetabledisplay.h			\
 		qgsattributetable.h				\
 		qgsbookmarks.h			\
+		qgsclipboard.h				\
 		qgscontcoldialog.h				\
 		qgscontinuouscolrenderer.h			\
 		qgscsexception.h				\
+		qgscoordinatetransform.h	\
 		qgscustomprojectiondialog.h			\
 		qgsdatasourceuri.h				\
 		qgsdelattrdialog.h				\
@@ -185,12 +188,15 @@ libqgis_gui_la_SOURCES =						\
 		qgsabout.cpp		\
 		qgsaddattrdialog.cpp		\
 		qgsadvancedattrsearch.cpp	\
+	   	qgsattributeaction.cpp				\
 		qgsattributeactiondialog.cpp	\
 		qgsattributedialog.cpp		\
 		qgsattributetable.cpp		\
 		qgsattributetabledisplay.cpp	\
 		qgsbookmarks.cpp	\
+		qgsclipboard.cpp		\
 		qgscontcoldialog.cpp		\
+		qgscoordinatetransform.cpp			\
 		qgscontinuouscolrenderer.cpp		\
 		qgscustomprojectiondialog.cpp			\
 		qgsdelattrdialog.cpp		\
