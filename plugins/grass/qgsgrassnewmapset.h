@@ -26,11 +26,11 @@ class QCloseEvent;
 #include <qlabel.h>
 
 // Must be here, so that it is included to moc file
-#include "../../src/qgisapp.h"
-#include "../../src/qgisiface.h"
-#include "../../src/qgspoint.h"
-#include "../../src/qgsspatialrefsys.h"
-#include "../../src/widgets/projectionselector/qgsprojectionselector.h"
+#include "qgisapp.h"
+#include "qgisiface.h"
+#include "qgspoint.h"
+#include "qgsspatialrefsys.h"
+#include "widgets/projectionselector/qgsprojectionselector.h"
 
 class QgsGrassProvider;
 #include "qgsgrassplugin.h"

@@ -19,11 +19,11 @@
 
 // includes
 
-#include "../../src/qgisapp.h"
-#include "../../src/qgsmaplayerregistry.h"
-#include "../../src/qgsmaplayer.h"
-#include "../../src/qgsvectorlayer.h"
-#include "../../src/qgsdataprovider.h"
+#include "qgisapp.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsdataprovider.h"
 #include "qgsgpsplugin.h"
 
 

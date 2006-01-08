@@ -12,7 +12,7 @@
 
 SUBDIRS = config modules themes
 
-INCLUDES = -I../../src
+INCLUDES = -I../../src -I../../src/core
 
 DEFS=-DGRASS_BASE=\"$(GRASS_BASE)\" -DHAVE_OPENPTY=$(HAVE_OPENPTY) 
 if !HAVE_QTMAC
@@ -114,9 +114,9 @@ qgsgrassregionbase.h: qgsgrassregionbase.ui
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI)
 
 
-grassplugin_la_LIBADD = $(QT_LDADD) ../../providers/grass/libqgisgrass.la $(GRASS_LIB) $(PG_LIB) $(GDAL_LDADD) ../../src/libqgis.la ../../src/raster/libqgis_raster.la
+grassplugin_la_LIBADD = $(QT_LDADD) ../../providers/grass/libqgisgrass.la $(GRASS_LIB) $(PG_LIB) $(GDAL_LDADD) ../../src/libqgis_gui.la ../../src/core/libqgis_core.la ../../src/raster/libqgis_raster.la
 grassplugin_la_LDFLAGS = -avoid-version -module
-grassplugin_la_CXXFLAGS = $(PREFIX) $(CXXFLAGS) -I$(GRASS_INC) $(DEFS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I$(PG_INC)  $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src/legend/ -I../../src/raster -I../../src/ui
+grassplugin_la_CXXFLAGS = $(PREFIX) $(CXXFLAGS) -I$(GRASS_INC) $(DEFS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I$(PG_INC)  $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src/legend/ -I../../src/raster -I../../src/ui 
 
 CLEANFILES = $(BUILT_SOURCES)
 

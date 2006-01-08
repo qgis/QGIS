@@ -16,16 +16,16 @@
 /*  $Id$ */
 
 // includes
-#include "../../src/qgisapp.h"
-#include "../../src/qgsmaplayer.h"
+#include "qgisapp.h"
+#include "qgsmaplayer.h"
+#include "qgisiface.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsdataprovider.h"
+#include "qgsfeatureattribute.h"
+#include "qgsproviderregistry.h"
 #include <qgsrasterlayer.h>
-#include "../../src/qgisiface.h"
-#include "../../src/qgsmapcanvas.h"
-#include "../../src/qgsmaplayer.h"
-#include "../../src/qgsvectorlayer.h"
-#include "../../src/qgsdataprovider.h"
-#include "../../src/qgsfeatureattribute.h"
-#include "../../src/qgsproviderregistry.h"
 
 #include <qtoolbar.h>
 #include <qmenubar.h>

@@ -30,10 +30,10 @@ class QCloseEvent;
 #include <qpainter.h>
 
 // Must be here, so that it is included to moc file
-#include "../../src/qgisapp.h"
-#include "../../src/qgspoint.h"
-#include "../../src/qgisiface.h"
-#include "../../src/qgsmaptopixel.h"
+#include "qgisapp.h"
+#include "qgspoint.h"
+#include "qgisiface.h"
+#include "qgsmaptopixel.h"
 
 class QgsGrassProvider;
 #include "ui_qgsgrasseditbase.h"

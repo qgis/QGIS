@@ -50,9 +50,9 @@ BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
 
 
-delimitedtextplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/libqgis.la
+delimitedtextplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/libqgis_gui.la ../../src/core/libqgis_core.la
 delimitedtextplugin_la_LDFLAGS = -avoid-version -module
-delimitedtextplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src/ -I../../src/ui
+delimitedtextplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src/core -I../../src/ -I../../src/ui
 
 CLEANFILES = $(BUILT_SOURCES)
 
