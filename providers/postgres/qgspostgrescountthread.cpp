@@ -21,11 +21,11 @@
 #include <qevent.h>
 #include <qapplication.h>
 
-#include "../../src/qgis.h"
-#include "../../src/qgsrect.h"
-#include "../../src/qgsmapcanvas.h"
+#include "qgis.h"
+#include "qgsrect.h"
+#include "qgsmapcanvas.h"
 
-#include "../../src/qgsprovidercountcalcevent.h"
+#include "qgsprovidercountcalcevent.h"
 
 #include "qgspostgrescountthread.h"
 

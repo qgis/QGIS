@@ -19,7 +19,7 @@
 
 #include <map>
 
-#include "../../src/qgsvectordataprovider.h"
+#include "qgsvectordataprovider.h"
 #include "gpsdata.h"
 
 

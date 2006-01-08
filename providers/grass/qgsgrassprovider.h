@@ -19,7 +19,7 @@
 class QgsFeature;
 class QgsField;
 #include <qdatetime.h>
-#include "../../src/qgsvectordataprovider.h"
+#include "qgsvectordataprovider.h"
 
 /* Update.
  * Vectors are updated (reloaded) if:

@@ -21,7 +21,7 @@
 
 #include <qstring.h>
 
-#include "../../src/qgsrect.h"
+#include "qgsrect.h"
 
 #include "qgspostgisbox3d.h"
 

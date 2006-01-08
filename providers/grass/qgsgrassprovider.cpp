@@ -29,12 +29,12 @@
 //Added by qt3to4:
 #include <Q3CString>
 
-#include "../../src/qgis.h"
-#include "../../src/qgsdataprovider.h"
-#include "../../src/qgsfeature.h"
-#include "../../src/qgsfield.h"
-#include "../../src/qgsrect.h"
-#include "../../src/qgsfeatureattribute.h"
+#include "qgis.h"
+#include "qgsdataprovider.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgsrect.h"
+#include "qgsfeatureattribute.h"
 
 extern "C" {
 #include <gprojects.h>

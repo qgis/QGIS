@@ -25,11 +25,11 @@
 #include <qdatetime.h>
 #include <qmessagebox.h>
 
-#include "../../src/qgis.h"
-#include "../../src/qgsdataprovider.h"
-#include "../../src/qgsfeature.h"
-#include "../../src/qgsfield.h"
-#include "../../src/qgsrect.h"
+#include "qgis.h"
+#include "qgsdataprovider.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgsrect.h"
 
 extern "C" {
 #include <gis.h>

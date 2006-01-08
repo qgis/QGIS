@@ -38,13 +38,13 @@
 #include <netinet/in.h>
 #endif
 
-#include "../../src/qgis.h"
-#include "../../src/qgsfeature.h"
-#include "../../src/qgsfield.h"
-#include "../../src/qgsrect.h"
+#include "qgis.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgsrect.h"
 
-#include "../../src/qgsprovidercountcalcevent.h"
-#include "../../src/qgsproviderextentcalcevent.h"
+#include "qgsprovidercountcalcevent.h"
+#include "qgsproviderextentcalcevent.h"
 
 #include "qgspostgresprovider.h"
 
