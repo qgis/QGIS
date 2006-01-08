@@ -29,7 +29,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=7
 MICRO_VERSION=9
-EXTRA_VERSION=6
+EXTRA_VERSION=7
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
@@ -473,13 +473,6 @@ AC_CONFIG_FILES([
   plugins/north_arrow/Makefile
   plugins/scale_bar/Makefile
   plugins/spit/Makefile
-  providers/Makefile 
-  providers/delimitedtext/Makefile
-  providers/gpx/Makefile
-  providers/grass/Makefile
-  providers/ogr/Makefile
-  providers/postgres/Makefile
-  providers/wms/Makefile
   resources/Makefile
   src/Makefile 
   src/composer/Makefile
@@ -493,6 +486,13 @@ AC_CONFIG_FILES([
   src/ui/Makefile
   src/widgets/Makefile
   src/widgets/projectionselector/Makefile
+  src/providers/Makefile 
+  src/providers/delimitedtext/Makefile
+  src/providers/gpx/Makefile
+  src/providers/grass/Makefile
+  src/providers/ogr/Makefile
+  src/providers/postgres/Makefile
+  src/providers/wms/Makefile
   tools/Makefile
   tools/mapserver_export/Makefile
   tools/qgis_config/Makefile

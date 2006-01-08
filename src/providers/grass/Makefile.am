@@ -2,7 +2,7 @@
 ## $Id$
 ##
 
-INCLUDES = -I../../src/core -I../../src
+INCLUDES = -I../../core -I../../
 
 lib_LTLIBRARIES = libqgisgrass.la
 
@@ -30,7 +30,7 @@ libqgisgrass_la_SOURCES = qgsgrassprovider.cpp \
 			qgsgrass.cpp \
 			qgsgrass.h
 
-libqgisgrass_la_LIBADD = $(QT_LDADD) $(GRASS_LIB) ../../src/core/libqgis_core.la ../../src/libqgis_gui.la
+libqgisgrass_la_LIBADD = $(QT_LDADD) $(GRASS_LIB) ../../core/libqgis_core.la ../../libqgis_gui.la
 libqgisgrass_la_LDFLAGS = -version-info $(INTERFACE_VERSION)
 libqgisgrass_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) -I$(GRASS_INC) $(DEBUG_QGIS) $(GEOS_CFLAGS) $(GDAL_CFLAGS)
 if HAVE_POSTGRESQL
