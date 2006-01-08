@@ -172,9 +172,6 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
     // store the connection for future use
     connection = pd;
 
-#ifdef QGISDEBUG
-    std::cerr << "Checking for select permission on the relation\n";
-#endif
     //set client encoding to unicode because QString uses UTF-8 anyway
 #ifdef QGISDEBUG
     qWarning("setting client encoding to UNICODE");
@@ -195,27 +192,9 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
     }
 #endif
 
-
-    //set client encoding to unicode because QString uses UTF-8 anyway
 #ifdef QGISDEBUG
-    qWarning("setting client encoding to UNICODE");
+    std::cerr << "Checking for select permission on the relation\n";
 #endif
-    errcode=PQsetClientEncoding(connection, "UNICODE");
-#ifdef QGISDEBUG
-    if(errcode==0)
-    {
-        qWarning("encoding successfully set");
-    }
-    else if(errcode==-1)
-    {
-        qWarning("error in setting encoding");
-    }
-    else
-    {
-        qWarning("undefined return value from encoding setting");
-    }
-#endif
-
     // Check that we can read from the table (i.e., we have
     // select permission).
     QString sql = "select * from " + mSchemaTableName + " limit 1";
