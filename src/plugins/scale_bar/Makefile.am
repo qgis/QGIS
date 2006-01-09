@@ -11,8 +11,8 @@
 # $Id$
 
 plugindir = ${pkglibdir}
-#CopyrightLabel below to be replaced with the name of the plugin
-plugin_LTLIBRARIES = copyrightlabelplugin.la
+#ScaleBar below to be replaced with the name of the plugin
+plugin_LTLIBRARIES = libScaleBarplugin.la
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
@@ -23,37 +23,38 @@ ui_%.h: %.ui
 %.qrc.cpp: %.qrc
 	$(RCC) -o $@ $<
 
-copyrightlabelplugin_la_SOURCES =  plugin.cpp \
-						plugin.h \
-						plugingui.cpp \
-						plugingui.h \
-						$(plugin_UI)\
-						$(plugin_MOC) \
-						$(plugin_QRC) \
-						$(plugin_RES)
+libScaleBarplugin_la_SOURCES =  plugin.cpp \
+			      plugin.h \
+			      plugingui.cpp \
+			      plugingui.h \
+			      $(plugin_UI)\
+			      $(plugin_MOC) \
+			      $(plugin_QRC) \
+			      $(plugin_RES)
 
 plugin_MOC = plugin.moc.cpp \
-			 plugingui.moc.cpp 
+	     plugingui.moc.cpp 
 
 plugin_UI = ui_pluginguibase.h 
 
 plugin_UIC = pluginguibase.ui
 
-plugin_RES = copyright_plugin.qrc.cpp
+plugin_RES = scalebar_plugin.qrc.cpp
 
-plugin_QRC = copyright_plugin.qrc
+plugin_QRC = scalebar_plugin.qrc
 
-# UI dependencies      
+# UI dependencies
 pluginguibase.cpp: pluginguibase.h pluginguibase.ui
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
 
-copyrightlabelplugin_la_LIBADD = $(QT_LDADD) $(GDAL_LDADD) ../../src/gui/libqgis_gui.la ../../src/core/libqgis_core.la
-copyrightlabelplugin_la_LDFLAGS = -avoid-version -module
-copyrightlabelplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src/gui -I../../src/ui -I../../src/core
+libScaleBarplugin_la_LIBADD = $(QT_LDADD) ../../core/libqgis_core.la
+libScaleBarplugin_la_LDFLAGS = -avoid-version -module
+libScaleBarplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../gui -I../../ui -I../../core 
 
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(plugin_UIC) icon.xpm \
+EXTRA_DIST = $(plugin_UIC) \
+	icon.xpm \
 	ui_pluginguibase.h

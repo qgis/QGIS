@@ -29,7 +29,7 @@ dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
 MINOR_VERSION=7
 MICRO_VERSION=9
-EXTRA_VERSION=8
+EXTRA_VERSION=9
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
@@ -457,22 +457,6 @@ AC_CONFIG_FILES([
   images/themes/default/Makefile
   images/themes/Makefile
   images/themes/nkids/Makefile
-  plugins/Makefile
-  plugins/copyright_label/Makefile
-  plugins/delimited_text/Makefile
-  plugins/geoprocessing/Makefile
-  plugins/georeferencer/Makefile
-  plugins/gps_importer/Makefile
-  plugins/grass/config/Makefile
-  plugins/grass/Makefile
-  plugins/grass/modules/Makefile
-  plugins/grass/themes/default/Makefile
-  plugins/grass/themes/Makefile
-  plugins/grid_maker/Makefile
-  plugins/maplayer/Makefile
-  plugins/north_arrow/Makefile
-  plugins/scale_bar/Makefile
-  plugins/spit/Makefile
   resources/Makefile
   src/Makefile 
   src/composer/Makefile
@@ -483,6 +467,22 @@ AC_CONFIG_FILES([
   src/mac/Contents/Makefile
   src/mac/Contents/Resources/Makefile
   src/mac/Makefile
+  src/plugins/Makefile
+  src/plugins/copyright_label/Makefile
+  src/plugins/delimited_text/Makefile
+  src/plugins/geoprocessing/Makefile
+  src/plugins/georeferencer/Makefile
+  src/plugins/gps_importer/Makefile
+  src/plugins/grass/config/Makefile
+  src/plugins/grass/Makefile
+  src/plugins/grass/modules/Makefile
+  src/plugins/grass/themes/default/Makefile
+  src/plugins/grass/themes/Makefile
+  src/plugins/grid_maker/Makefile
+  src/plugins/maplayer/Makefile
+  src/plugins/north_arrow/Makefile
+  src/plugins/scale_bar/Makefile
+  src/plugins/spit/Makefile
   src/providers/Makefile 
   src/providers/delimitedtext/Makefile
   src/providers/gpx/Makefile
