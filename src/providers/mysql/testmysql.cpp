@@ -9,7 +9,7 @@ int main(int argc, char **argv)
   // init mysql 
   MYSQL db;
   MYSQL *res = mysql_init(&db);
-  MYSQL *con = mysql_real_connect(&db, "localhost", "sherman", "javado", "teZZt", 0, NULL, 0);
+  MYSQL *con = mysql_real_connect(&db, "localhost", "gsherman", 0, "test", 0, NULL, 0);
   if(con)
   {
     std::cout << "Connection successful" << std::endl; 
