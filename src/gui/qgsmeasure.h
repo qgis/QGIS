@@ -23,10 +23,9 @@
 
 class QgsDistanceArea;
 class QgsMapCanvas;
+class QgsRubberBand;
 
 class QCloseEvent;
-class QPainter;
-class QPixmap;
 
 
 class QgsMeasure:public QWidget, private Ui::QgsMeasureBase
@@ -69,11 +68,11 @@ public slots:
   //! Close event
   void closeEvent(QCloseEvent *e);
 
-  //! Connected to canvas renderComplete
-  void draw(QPainter *); 
+  //! Redraw lines to match current state of canvas
+  void mapCanvasChanged(); 
 
   //! Show the help for the dialog 
-  void showHelp();
+  void on_btnHelp_clicked();
   
 private:
   
@@ -87,8 +86,6 @@ private:
   void updateUi();
   
   QgsMapCanvas *mMapCanvas;
-
-  QPixmap *mPixmap;
   
   //! distance/area calculator
   QgsDistanceArea* mCalc;
@@ -97,17 +94,8 @@ private:
 
   double mTotal;
 
-  //! Dynamic line from last point to current position was drawn
-  bool mDynamic;
-
-  //! Dynamic line
-  QgsPoint mDynamicPoints[2];
-
-  //! Draw current points with XOR
-  void drawLine(bool erase = false); 
-  
-  //! Draw current dynamic line
-  void drawDynamicLine(void); 
+  //! Rubberband widget tracking the lines being drawn
+  QgsRubberBand *mRubberBand;
 
   //! Help context id
   static const int context_id = 940759457;

@@ -13,11 +13,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
+
 #include "qgsmeasure.h"
 
 #include "qgscontexthelp.h"
 #include "qgsdistancearea.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptopixel.h"
+#include "qgsrubberband.h"
 
 #include <QSettings>
 #include <iostream>
@@ -27,14 +31,11 @@ QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, QWidget *parent, cons
   : QWidget(parent, name, f)
 {
     setupUi(this);
-    connect(btnHelp, SIGNAL(clicked()), this, SLOT(showHelp()));
     connect(mRestartButton, SIGNAL(clicked()), this, SLOT(restart()));
     connect(mCloseButton, SIGNAL(clicked()), this, SLOT(close()));
 
     mMeasureArea = measureArea;
     mMapCanvas = mc;
-    mDynamic = false;
-    mPixmap = mMapCanvas->canvasPixmap();
     mTotal = 0.;
 
     mTable->setLeftMargin(0); // hide row labels
@@ -58,20 +59,21 @@ QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, QWidget *parent, cons
 
     updateUi();
     
-    connect ( mMapCanvas, SIGNAL(renderComplete(QPainter*)), this, SLOT(draw(QPainter*)) );
+    connect( mMapCanvas, SIGNAL(renderComplete(QPainter*)), this, SLOT(mapCanvasChanged()) );
     restorePosition();
     
     mCalc = new QgsDistanceArea;
-    
+
+    mRubberBand = new QgsRubberBand(mMapCanvas, mMeasureArea);
+    mRubberBand->show();
 }
 
 
 void QgsMeasure::setMeasureArea(bool measureArea)
 {
   saveWindowLocation();
-  restart();
   mMeasureArea = measureArea;
-  updateUi();
+  restart();
   restorePosition();
 }
 
@@ -79,24 +81,18 @@ void QgsMeasure::setMeasureArea(bool measureArea)
 QgsMeasure::~QgsMeasure()
 {
   delete mCalc;
+  delete mRubberBand;
 }
 
 void QgsMeasure::restart(void )
 {
-    // Delete old line
-    drawLine();
-    
     mPoints.resize(0);
     mTable->setNumRows(0);
     mTotal = 0.;
     
     updateUi();
-        
-    if ( mDynamic ) { 
-	drawDynamicLine();
-        mDynamic = false;
-    }
-    
+
+    mRubberBand->reset(mMeasureArea);
 }
 
 void QgsMeasure::addPoint(QgsPoint &point)
@@ -104,15 +100,6 @@ void QgsMeasure::addPoint(QgsPoint &point)
 #ifdef QGISDEBUG
     std::cout << "QgsMeasure::addPoint" << point.x() << ", " << point.y() << std::endl;
 #endif
-
-    // Delete dynamic
-    if ( mDynamic ) { 
-	drawDynamicLine();
-        mDynamic = false;
-    }
-
-    // Delete old line
-    drawLine(true);
 
     // don't add points with the same coordinates
     if (mPoints.size() > 0 && point == mPoints[0])
@@ -153,8 +140,9 @@ void QgsMeasure::addPoint(QgsPoint &point)
       mTable->ensureCellVisible(row,0);
     }
 
-    // Draw new line
-    drawLine();
+    QgsMapToPixel *trans = mMapCanvas->getCoordinateTransform();
+    QgsPoint ppnt = trans->transform(point);
+    mRubberBand->addPoint(QPoint(int(ppnt.x()), int(ppnt.y())));
 }
 
 void QgsMeasure::mousePress(QgsPoint &point)
@@ -166,29 +154,6 @@ void QgsMeasure::mousePress(QgsPoint &point)
   }
   
   mouseMove(point);
-
-  if (mMeasureArea && mPoints.size() > 2)
-  {
-    // delete old line which connect 1. and last point
-    
- // TODO: Qt4 uses "QRubberBand"s - need to refactor.
-#if QT_VERSION < 0x040000
-    QPainter p;
-    p.begin(mPixmap);
-    QPen pen(Qt::gray, 2);
-    p.setPen(pen);
-    p.setRasterOp(Qt::XorROP);
-
-    QgsMapToPixel *trans = mMapCanvas->getCoordinateTransform();
-    QgsPoint ppnt = trans->transform(mPoints[mPoints.size()-1]);
-    p.moveTo(static_cast<int>(ppnt.x()), static_cast<int>(ppnt.y()));
-    ppnt = trans->transform(mPoints[0]);
-    p.lineTo(static_cast<int>(ppnt.x()), static_cast<int>(ppnt.y()));
-    p.end();
-#endif
-    mMapCanvas->repaint(false);
-  }
-  
 }
 
 void QgsMeasure::mouseMove(QgsPoint &point)
@@ -197,92 +162,24 @@ void QgsMeasure::mouseMove(QgsPoint &point)
     //std::cout << "QgsMeasure::mouseMove" << point.x() << ", " << point.y() << std::endl;
 #endif
 
-    if ( mDynamic ) { 
-	drawDynamicLine(); // delete old
-    }
-    
-    if ( mPoints.size() > 0 ) {
-	mDynamicPoints[0] = mPoints[mPoints.size()-1];
-	mDynamicPoints[1] = point;
-	drawDynamicLine();
-	mDynamic = true;
-    }
+  QgsMapToPixel *trans = mMapCanvas->getCoordinateTransform();
+  QgsPoint ppnt = trans->transform(point);
+  mRubberBand->movePoint(QPoint(int(ppnt.x()), int(ppnt.y())));
 }
 
-void QgsMeasure::draw(QPainter *p)
+void QgsMeasure::mapCanvasChanged()
 {
 #ifdef QGISDEBUG
-    std::cout << "QgsMeasure::draw" << std::endl;
+  std::cout << "QgsMeasure::mapCanvasChanged" << std::endl;
 #endif
-
-    drawLine();
-    mDynamic = false;
-}
-
-void QgsMeasure::drawLine(bool erase)
-{
-#ifdef QGISDEBUG
-    std::cout << "QgsMeasure::drawLine" << std::endl;
-#endif
-
-// TODO: Qt4 uses "QRubberBand"s - need to refactor.
-#if QT_VERSION < 0x040000
-    QPainter p;
-    p.begin(mPixmap);
-    QPen pen(Qt::gray, 2);
-    p.setPen(pen);
-    p.setRasterOp(Qt::XorROP);
-
-    QgsMapToPixel *trans = mMapCanvas->getCoordinateTransform();
-    for ( int i = 0; i < mPoints.size(); i++ ) {
-        QgsPoint ppnt = trans->transform(mPoints[i]);
-	if ( i == 0 ) {
-	    p.moveTo(static_cast<int>(ppnt.x()), static_cast<int>(ppnt.y()));
-	} else {
-	    p.lineTo(static_cast<int>(ppnt.x()), static_cast<int>(ppnt.y()));
-	}
-    }
-    
-    if (!erase && mMeasureArea && mPoints.size() > 2) // draw the last point of the polygon
-    {
-      QgsPoint ppnt = trans->transform(mPoints[0]);
-      p.lineTo(static_cast<int>(ppnt.x()), static_cast<int>(ppnt.y()));
-    }
-    
-    p.end();
-#endif
-    mMapCanvas->repaint(false);
-}
-
-void QgsMeasure::drawDynamicLine( void )
-{
-#ifdef QGISDEBUG
-    //std::cout << "QgsMeasure::drawDynamicLine" << std::endl;
-#endif
-
-// TODO: Qt4 uses "QRubberBand"s and "QPainterPath"s - need to refactor.
-#if QT_VERSION < 0x040000
-    QPainter p;
-    p.begin(mPixmap);
-    QPen pen(Qt::gray, 2);
-    p.setPen(pen);
-    p.setRasterOp(Qt::XorROP);
-
-    QgsMapToPixel *trans = mMapCanvas->getCoordinateTransform();
-    QgsPoint ppnt = trans->transform(mDynamicPoints[0]);
-    p.moveTo(static_cast<int>(ppnt.x()), static_cast<int>(ppnt.y()));
-    QgsPoint ppnt2 = trans->transform(mDynamicPoints[1]);
-    p.lineTo(static_cast<int>(ppnt2.x()), static_cast<int>(ppnt2.y()));
-    
-    if (mMeasureArea && mPoints.size() >= 2)
-    {
-      ppnt = trans->transform(mPoints[0]);
-      p.lineTo(static_cast<int>(ppnt.x()), static_cast<int>(ppnt.y()));
-    }
-    
-    p.end();
-#endif
-    mMapCanvas->repaint(false);
+  mRubberBand->setGeometry(mMapCanvas->rect());
+  mRubberBand->reset(mMeasureArea);
+  QgsMapToPixel *trans = mMapCanvas->getCoordinateTransform();
+  for (std::vector<QgsPoint>::iterator it = mPoints.begin(); it != mPoints.end(); ++it)
+  {
+    QgsPoint ppnt = trans->transform(*it);
+    mRubberBand->addPoint(QPoint(int(ppnt.x()), int(ppnt.y())));
+  }
 }
 
 void QgsMeasure::close(void)
@@ -331,7 +228,7 @@ void QgsMeasure::saveWindowLocation()
     settings.writeEntry("/Windows/Measure/h", s.height());
 } 
 
-void QgsMeasure::showHelp()
+void QgsMeasure::on_btnHelp_clicked()
 {
   QgsContextHelp::run(context_id);
 }
