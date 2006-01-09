@@ -125,6 +125,7 @@ libqgis_guiHEADERS =							\
 		qgsprojectproperties.h			\
 		qgsrangerenderitem.h				\
 		qgsrasterlayerproperties.h		\
+		qgsrubberband.h						\
 		qgsrunprocess.h						\
 		qgsserversourceselect.h				\
 		qgssisydialog.h					\
@@ -235,6 +236,7 @@ libqgis_gui_la_SOURCES =						\
 		qgsproject.cpp			\
 		qgsprojectproperties.cpp	\
 		qgsrasterlayerproperties.cpp	\
+		qgsrubberband.cpp					\
 		qgsrunprocess.cpp					\
 		qgsserversourceselect.cpp	\
 		qgssinglesymrenderer.cpp			\
