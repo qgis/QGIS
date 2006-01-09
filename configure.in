@@ -440,7 +440,6 @@ AC_CONFIG_FILES([
   doc/plugins/geoprocessing/buffer/Makefile
   doc/plugins/geoprocessing/Makefile
   doc/plugins/Makefile
-  helpviewer/Makefile
   i18n/Makefile
   images/Makefile
   images/developers/Makefile
@@ -462,6 +461,7 @@ AC_CONFIG_FILES([
   src/composer/Makefile
   src/core/Makefile
   src/designer/Makefile
+  src/helpviewer/Makefile
   src/gui/Makefile
   src/legend/Makefile
   src/mac/Contents/Makefile

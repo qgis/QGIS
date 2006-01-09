@@ -25,7 +25,7 @@ qgisdesignerwidgets_la_SOURCES =  qgsdesignerwidgets.cpp \
 
 qgisdesignerwidgets_la_MOC = qgsprojectionselectorplugin.moc.cpp
 
-projectionselector_la_LIBADD =  ../src/gui/libqgis_gui.la $(QT_LDADD)  
+#projectionselector_la_LIBADD =  ../src/gui/libqgis_gui.la $(QT_LDADD)  
 #qgisdesignerwidgets_la_LIBADD =  $(QT_LDADD) ../widgets/projectionselector/libqgsprojectionselector.la
 qgisdesignerwidgets_la_LDFLAGS = -avoid-version -module
 qgisdesignerwidgets_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../gui/ -I../legend
