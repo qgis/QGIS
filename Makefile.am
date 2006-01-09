@@ -31,7 +31,7 @@ docdatadir = $(datadir)/$(PACKAGE)/doc
 docdata_DATA = AUTHORS
 
 if HAVE_QT4
-SUBDIRS = src plugins doc tools i18n helpviewer resources images
+SUBDIRS = src doc tools i18n helpviewer resources images
 endif
 
 pkginclude_HEADERS = qgsconfig.h

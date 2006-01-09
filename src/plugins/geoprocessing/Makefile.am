@@ -51,9 +51,9 @@ qgsdlgpgbufferbase.h: qgsdlgpgbufferbase.ui
 BUILT_SOURCES = $(pggeoprocessing_MOC) $(pggeoprocessing_UI)
 
 
-pggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(GDAL_LDADD) $(PG_LIB) ../../src/core/libqgis_core.la ../../src/gui/libqgis_gui.la
+pggeoprocessingplugin_la_LIBADD = $(QT_LDADD)  $(GDAL_LDADD) $(PG_LIB) ../../core/libqgis_core.la ../../gui/libqgis_gui.la
 pggeoprocessingplugin_la_LDFLAGS = -avoid-version -module
-pggeoprocessingplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../src/ui -I../../src/gui -I../../src/core
+pggeoprocessingplugin_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(PG_INC) $(DEBUG_QGIS) $(GDAL_CFLAGS) $(GEOS_CFLAGS) -I../../ui -I../../gui -I../../core
 
 CLEANFILES = $(BUILT_SOURCES)
 
