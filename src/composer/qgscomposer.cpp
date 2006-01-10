@@ -17,6 +17,7 @@
 #include "qgscomposer.h"
 
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgscomposerview.h"
 #include "qgscomposition.h"
 #include "qgsexception.h"
@@ -84,14 +85,7 @@ QgsComposer::~QgsComposer()
 void QgsComposer::setupTheme()
 {
   //calculate the active theme path
-  QSettings mySettings;
-#if defined(WIN32) || defined(Q_OS_MACX)
-  QString myAppDir = qApp->applicationDirPath();
-#else
-  QString myAppDir = PREFIX;
-#endif
-  QString myThemeName = mySettings.readEntry("/Themes","default");
-  QString myThemePath= myAppDir + "/share/qgis/themes/" + myThemeName;
+  QString myThemePath= QgsApplication::themePath();
   
 
   //now set all the icons
