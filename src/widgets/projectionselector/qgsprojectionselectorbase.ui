@@ -9,7 +9,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>478</height>
+    <height>498</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -20,34 +20,36 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
    <item row="0" column="0" >
-    <widget class="Q3ButtonGroup" name="buttonGroup2" >
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>1</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title" >
       <string>Projection</string>
      </property>
-     <layout class="QGridLayout" >
+     <layout class="QVBoxLayout" >
       <property name="margin" >
-       <number>10</number>
+       <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="0" column="0" >
-       <widget class="Q3ListView" name="lstCoordinateSystems" >
-        <property name="showSortIndicator" >
-         <bool>true</bool>
-        </property>
-        <property name="rootIsDecorated" >
-         <bool>true</bool>
-        </property>
+      <item>
+       <widget class="QTreeWidget" name="lstCoordinateSystems" >
         <column>
          <property name="text" >
-          <string>Coordinate Systems</string>
+          <string>Coordinate System</string>
          </property>
         </column>
         <column>
@@ -57,43 +59,50 @@
         </column>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="Q3TextEdit" name="teProjection" >
+      <item>
+       <widget class="QTextEdit" name="teProjection" >
         <property name="sizePolicy" >
          <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>7</vsizetype>
+          <hsizetype>5</hsizetype>
+          <vsizetype>1</vsizetype>
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="maximumSize" >
-         <size>
-          <width>32767</width>
-          <height>76</height>
-         </size>
+        <property name="autoFormatting" >
+         <set>QTextEdit::AutoBulletList</set>
         </property>
         <property name="readOnly" >
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="Q3ButtonGroup" name="buttonGroup2_2" >
+      <item>
+       <widget class="QGroupBox" name="groupBox" >
         <property name="title" >
          <string>Search</string>
         </property>
         <layout class="QGridLayout" >
          <property name="margin" >
-          <number>10</number>
+          <number>9</number>
          </property>
          <property name="spacing" >
           <number>6</number>
          </property>
-         <item row="0" column="4" >
-          <widget class="QLineEdit" name="leSearch" />
+         <item row="1" column="5" >
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
-         <item row="0" column="5" >
+         <item row="1" column="3" colspan="2" >
           <widget class="QPushButton" name="pbnFind" >
            <property name="text" >
             <string>Find</string>
@@ -102,6 +111,9 @@
             <bool>true</bool>
            </property>
           </widget>
+         </item>
+         <item row="1" column="0" colspan="3" >
+          <widget class="QLineEdit" name="leSearch" />
          </item>
          <item row="0" column="0" >
           <widget class="QRadioButton" name="radSRID" >
@@ -120,19 +132,32 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="2" >
+         <item row="0" column="2" colspan="2" >
           <widget class="QRadioButton" name="radSRSID" >
            <property name="text" >
             <string>QGIS SRSID</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="3" >
+         <item row="0" column="4" >
           <widget class="QRadioButton" name="radName" >
            <property name="text" >
             <string>Name</string>
            </property>
           </widget>
+         </item>
+         <item row="0" column="5" >
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>
@@ -144,29 +169,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends></extends>
-   <header>q3listview.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends></extends>
-   <header>q3textedit.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3ButtonGroup</class>
-   <extends></extends>
-   <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

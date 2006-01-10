@@ -51,11 +51,11 @@ class QgsProjectionSelector: public QWidget, private Ui::QgsProjectionSelectorBa
 
       // List view nodes for the tree view of projections
       //! User defined projections node
-      Q3ListViewItem *mUserProjList;
+      QTreeWidgetItem *mUserProjList;
       //! GEOGCS node
-      Q3ListViewItem *mGeoList;
+      QTreeWidgetItem *mGeoList;
       //! PROJCS node
-      Q3ListViewItem *mProjList;
+      QTreeWidgetItem *mProjList;
       //! Users custom coordinate system file
       QString mCustomCsFile;
       //! File name of the sqlite3 database
@@ -70,7 +70,7 @@ class QgsProjectionSelector: public QWidget, private Ui::QgsProjectionSelectorBa
       /**private handler for when user selects a cs
        *it will cause wktSelected and sridSelected events to be spawned
        */
-      void coordinateSystemSelected(Q3ListViewItem*);
+      void coordinateSystemSelected(QTreeWidgetItem*);
 
     signals:
       void sridSelected(QString theSRID);
