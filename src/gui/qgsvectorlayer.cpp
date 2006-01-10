@@ -286,7 +286,8 @@ void QgsVectorLayer::setDisplayField(QString fldName)
   }
   else
   {
-    for (int j = 0; j < fields.size(); j++)
+    int fieldsSize = fields.size();
+    for (int j = 0; j < fieldsSize; j++)
     {
 
       QString fldName = fields[j].name();
@@ -464,7 +465,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   std::vector<double> z(nPoints, 0.0);
 
   // Extract the points from the WKB format into the x and y vectors. 
-  for (unsigned int i = 0; i < nPoints; ++i)
+  for (register unsigned int i = 0; i < nPoints; ++i)
   {
     x[i] = *((double *) ptr);
     ptr += sizeof(double);
@@ -490,7 +491,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   // Look through the x and y coordinates and see if there are any
   // that need trimming. If one is found, there's no need to look at
   // the rest of them so end the loop at that point. 
-  for (int i = 0; i < nPoints; ++i)
+  for (register int i = 0; i < nPoints; ++i)
     if (std::abs(x[i]) > QgsClipper::maxX ||
 	std::abs(y[i]) > QgsClipper::maxY)
     {
@@ -506,16 +507,16 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   // doubles?), so this loop may become unnecessary (but may still need
   // the double* versions for the OGR coordinate transformation).
   Q3PointArray pa(nPoints);
-  for (int i = 0; i < nPoints; ++i)
-#ifdef WIN32
-	   // vc++ doesn't have a round function so we fake it
-	 pa.setPoint(i, static_cast<int>(floor(x[i] + 0.5)),
-       static_cast<int>(floor(y[i] + 0.5)));
-#else
-    pa.setPoint(i, static_cast<int>(round(x[i])),
-       static_cast<int>(round(y[i])));
-#endif
+  for (register int i = 0; i < nPoints; ++i)
+  {
+    // Here we assume that a static cast is as fast as a C style case
+    // since type checking is done at compile time rather than
+    // runtime.
+    pa.setPoint(i, static_cast<int>(x[i] + 0.5),
+        static_cast<int>(y[i] + 0.5));
+  }
 #ifdef QGISDEBUGVERBOSE
+  // this is only used for verbose debug output
   for (int i = 0; i < pa.size(); ++i)
     std::cerr << pa.point(i).x() << ", " << pa.point(i).y()
 	      << '\n';
@@ -554,7 +555,7 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
   // Set pointer to the first ring
   unsigned char* ptr = feature + 1 + 2 * sizeof(int); 
 
-  for (unsigned int idx = 0; idx < numRings; idx++)
+  for (register unsigned int idx = 0; idx < numRings; idx++)
   {
     int nPoints = *((int*)ptr);
 
@@ -572,7 +573,7 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
         << nPoints << " points)\n";
       #endif
     */
-    for (unsigned int jdx = 0; jdx < nPoints; jdx++)
+    for (register unsigned int jdx = 0; jdx < nPoints; jdx++)
     {
       ring->first[jdx] = *((double *) ptr);
       ptr += sizeof(double);
@@ -589,7 +590,9 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     // Anyway, this check prevents a crash
     if (nPoints < 1) 
     {
+#ifdef QGISDEBUG 
       std::cout << "Ring has only " << nPoints << " points! Skipping this ring." << std::endl;
+#endif 
       continue;
     }
 
@@ -610,7 +613,7 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     // Look through the x and y coordinates and see if there are any
     // that need trimming. If one is found, there's no need to look at
     // the rest of them so end the loop at that point. 
-    for (int i = 0; i < nPoints; ++i)
+    for (register int i = 0; i < nPoints; ++i)
     {
       if (std::abs(ring->first[i]) > QgsClipper::maxX ||
           std::abs(ring->second[i]) > QgsClipper::maxY)
@@ -659,28 +662,28 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
     // QPainter::drawpolygon() call. The size is the sum of points in
     // the polygon plus one extra point for each ring except for the
     // first ring.
-    Q3PointArray pa(total_points + rings.size() - 1);
 
-    for (int i = 0; i < rings.size(); ++i)
+    // Store size here and use it in the loop to avoid penalty of
+    // multiple calls to size()
+    int numRings = rings.size();
+    Q3PointArray pa(total_points + numRings - 1);
+    for (register int i = 0; i < numRings; ++i)
     {
       // Store the pointer in a variable with a short name so as to make
       // the following code easier to type and read.
       ringTypePtr r = rings[i];
+      // only do this once to avoid penalty of additional calls
+      unsigned ringSize = r->first.size();
 
       // Store the start index of this ring, and the number of
       // points in the ring.
-      ringDetails.push_back(std::make_pair(ii, r->first.size()));
+      ringDetails.push_back(std::make_pair(ii, ringSize));
 
       // Transfer points to the QPointArray
-      for (int j = 0; j != r->first.size(); ++j)
-#ifdef WIN32
-		  // vc++ doesn't have a round function so we fake it
-		  pa.setPoint(ii++, static_cast<int>(floor(r->first[j] + 0.5)),
-                    static_cast<int>(floor(r->second[j] + 0.5)));
-#else
-        pa.setPoint(ii++, static_cast<int>(round(r->first[j])),
-                    static_cast<int>(round(r->second[j])));
-#endif
+      for (register int j = 0; j != ringSize; ++j)
+		  pa.setPoint(ii++, static_cast<int>(r->first[j] + 0.5),
+                    static_cast<int>(r->second[j] + 0.5));
+      
       // Store the last point of the first ring, and insert it at
       // the end of all other rings. This makes all the other rings
       // appear as holes in the first ring.
@@ -698,6 +701,8 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
 
     
 #ifdef QGISDEBUGVERBOSE
+    // this is only for verbose debug output -- no optimzation is 
+    // needed :)
     std::cerr << "Pixel points are:\n";
     for (int i = 0; i < pa.size(); ++i)
       std::cerr << i << ": " << pa.point(i).x() << ", " 
@@ -1009,7 +1014,9 @@ void QgsVectorLayer::identify(QgsRect * r)
       Q3ListViewItem *featureNode = ir->addNode("foo");
       featureNode->setText(0, fieldIndex);
       std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
-      for (int i = 0; i < attr.size(); i++)
+      // Do this only once rather than each pass through the loop
+      int attrSize = attr.size();
+      for (register int i = 0; i < attrSize; i++)
       {
 #ifdef QGISDEBUG
     std::cout << attr[i].fieldName().toLocal8Bit().data() << " == " << fieldIndex.toLocal8Bit().data() << std::endl;
@@ -1040,7 +1047,7 @@ void QgsVectorLayer::identify(QgsRect * r)
       // Add actions 
 
       QgsAttributeAction::aIter iter = mActions.begin();
-      for (int i = 0; iter != mActions.end(); ++iter, ++i)
+      for (register int i = 0; iter != mActions.end(); ++iter, ++i)
       {
         ir->addAction( featureNode, i, tr("action"), iter->name() );
       }
@@ -1114,8 +1121,10 @@ ir->show();
 
     if ( ad.exec()==QDialog::Accepted ) {
         std::map<QString,QString> attr;
-        for(int i=0;i<old.size();++i) {
-      attr.insert ( std::make_pair( old[i].fieldName(), ad.value(i) ) );
+        // Do this only once rather than each pass through the loop
+        int oldSize = old.size();
+        for(register int i= 0; i < oldSize; ++i) {
+          attr.insert ( std::make_pair( old[i].fieldName(), ad.value(i) ) );
         }
         // Remove old if exists
         it = mChangedAttributes.find(fet->featureId());
@@ -2884,8 +2893,9 @@ bool QgsVectorLayer::isSymbologyCompatible(const QgsMapLayer& other) const
 
      std::set<QString>::const_iterator thisiter;
      std::set<QString>::const_iterator otheriter;
+     int fieldsThisSize = fieldsThis.size();
 
-     for(int i = 0; i < fieldsThis.size(); ++i)
+     for(register int i = 0; i < fieldsThisSize; ++i)
        {
 	 if(fieldsThis[i].name() != fieldsOther[i].name())//field names need to be the same
 	   {
@@ -3312,7 +3322,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
     p->save();
     p->scale(markerScaleFactor, markerScaleFactor);
 
-    for (int i = 0; i < nPoints; ++i)
+    for (register int i = 0; i < nPoints; ++i)
     {
       ptr += 5;
       double x = *((double *) ptr);
@@ -3357,7 +3367,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
     unsigned int numLineStrings = *((int*)ptr);
     ptr = feature + 9;
 
-    for (int jdx = 0; jdx < numLineStrings; jdx++)
+    for (register int jdx = 0; jdx < numLineStrings; jdx++)
     {
       ptr = drawLineString(ptr, p, theMapToPixelTransform,
                            projectionsEnabledFlag);
@@ -3375,7 +3385,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
     unsigned char *ptr = feature + 5;
     unsigned int numPolygons = *((int*)ptr);
     ptr = feature + 9;
-    for (int kdx = 0; kdx < numPolygons; kdx++)
+    for (register int kdx = 0; kdx < numPolygons; kdx++)
       ptr = drawPolygon(ptr, p, theMapToPixelTransform, 
                         projectionsEnabledFlag);
     break;
