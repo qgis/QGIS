@@ -29,9 +29,7 @@ email                : sherman at mrcc.com
 #include <qinputdialog.h>
 #include <q3groupbox.h>
 #include <QTextOStream>
-#include "../../images/themes/default/point_layer.xpm"
-#include "../../images/themes/default/line_layer.xpm"
-#include "../../images/themes/default/polygon_layer.xpm"
+#include "qgsapplication.h"
 #include "qgsdbsourceselect.h"
 #include "qgsnewconnection.h"
 #include "qgspgquerybuilder.h"
@@ -268,9 +266,11 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
     if (PQstatus(pd) == CONNECTION_OK)
     {
       // create the pixmaps for the layer types
-      QPixmap pxPoint(point_layer_xpm);
-      QPixmap pxLine(line_layer_xpm);
-      QPixmap pxPoly(polygon_layer_xpm);
+      QString myThemePath = QgsApplication::themePath();
+      QPixmap pxPoint(myThemePath+"/mIconPointLayer.png");
+      QPixmap pxLine(myThemePath+"/mIconLineLayer.png");
+      QPixmap pxPoly(myThemePath+"/mIconPolygonLayer.png");
+      assert (!pxPoint.isNull());
       //qDebug("Connection succeeded");
       // tell the DB that we want text encoded in UTF8
       PQsetClientEncoding(pd, "UNICODE");
