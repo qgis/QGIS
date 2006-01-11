@@ -160,6 +160,10 @@ if test -f $QTDIR/include/qt/qglobal.h; then
 elif test -f $QTDIR/include/qt3/qglobal.h; then
   QTINC=$QTDIR/include/qt3
   QTVERTEST=$QTDIR/include/qt3
+elif test -f $QTDIR/include/Qt/qglobal.h -a -f $QTDIR/src/corelib/global/qglobal.h; then
+  # Windows: $QTDIR/include/Qt/qglobal.h includes $QTDIR/src/corelib/global/qglobal.h
+  QTINC=$QTDIR/include
+  QTVERTEST=$QTDIR/src/corelib/global/
 elif test -f $QTDIR/include/Qt/qglobal.h; then
   QTINC=$QTDIR/include
   QTVERTEST=$QTDIR/include/Qt
@@ -232,10 +236,18 @@ if test $QT_MAJOR = "4" ; then
   # Hard code things for the moment
 
   # Check that moc is in path
-  AC_CHECK_PROG(MOC, moc, $QTDIR/bin/moc, , $QTDIR/bin)
-  if test x$MOC = x ; then
-    AC_MSG_ERROR([*** moc must be in path])
+  if test $cross_compiling = "yes" ; then # MinGW
+      AC_CHECK_PROG(MOC, moc, moc)
+      if test x$MOC = x ; then
+	AC_MSG_ERROR([*** moc must be in path])
+      fi
+  else
+      AC_CHECK_PROG(MOC, moc, $QTDIR/bin/moc, , $QTDIR/bin)
+      if test x$MOC = x ; then
+	AC_MSG_ERROR([*** moc must be in path])
+      fi
   fi
+
   # uic3 is the Qt user interface compiler in Qt3 legacy mode
   AC_PATH_PROG(UIC, uic, , [$PATH:$QTDIR/bin])
   if test x$UIC = x ; then
@@ -373,6 +385,9 @@ AC_MSG_RESULT([$QT_IS_EMBEDDED])
 QT_GUILINK=""
 QASSISTANTCLIENT_LDADD="-lqassistantclient"
 case "${host}" in
+  *-mingw*)
+     QT_LIBS="-lQtCore4 -lQt3Support4 -lQtGui4 -lQtNetwork4 -lQtXml4"
+    ;;
   *irix*)
     QT_LIBS="$QT_LIB"
     if test $QT_IS_STATIC = yes ; then
@@ -453,7 +468,14 @@ if test x"$QT_IS_MT" = "xyes" ; then
   QT_CXXFLAGS="$QT_CXXFLAGS -D_REENTRANT -DQT_THREAD_SUPPORT"
 fi
 
-QT_LDADD="-L$QTDIR/${_lib} $QT_LIBS"
+case "${host}" in
+  *-mingw*)
+    QT_LDADD="-L$QTDIR/${_lib} $QT_LIBS"
+    ;;
+  *)
+    QT_LDADD="-L$QTDIR/${_lib} $QT_LIBS"
+    ;;
+esac
 
 if test x$QT_IS_STATIC = xyes ; then
   OLDLIBS="$LIBS"
