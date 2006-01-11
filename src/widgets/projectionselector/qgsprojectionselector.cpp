@@ -22,7 +22,6 @@
 //qt includes
 #include <QDir>
 #include <QFileInfo>
-#include <Q3ProgressDialog>
 #include <QTextStream>
 #include <QHeaderView>
 #include <QResizeEvent>
@@ -398,9 +397,9 @@ void QgsProjectionSelector::getProjList()
   rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
   assert(rc == SQLITE_OK);
   sqlite3_step(ppStmt);
-  // Set the max for the progress dialog to the number of entries in the srs_name table
-  int myEntriesCount = sqlite3_column_int(ppStmt, 0);
+
 #ifdef QGISDEBUG
+  int myEntriesCount = sqlite3_column_int(ppStmt, 0);
   std::cout << "Projection entries found in srs.db: " << myEntriesCount << std::endl;
 #endif
   sqlite3_finalize(ppStmt);
@@ -421,24 +420,13 @@ void QgsProjectionSelector::getProjList()
 #endif
 
     QTreeWidgetItem *newItem;
-    // set up the progress dialog
-    int myProgress = 1;
-    Q3ProgressDialog myProgressBar( tr("Building Projections List..."), 0, myEntriesCount,
-                                   this, "progress", TRUE );
     // Cache some stuff to speed up creating of the list of projected
     // spatial reference systems
     QString previousSrsType("");
     QTreeWidgetItem* previousSrsTypeNode = NULL;
 
-    // set initial value to 1
-    myProgressBar.setProgress(myProgress);
     while(sqlite3_step(ppStmt) == SQLITE_ROW)
     {
-      // only update the progress dialog every 200 records
-      if((myProgress++ % 200) == 0)
-      {
-        myProgressBar.setProgress(myProgress++);
-      }
       // check to see if the srs is geographic
       int isGeo = sqlite3_column_int(ppStmt, 2);
       if(isGeo)
@@ -488,9 +476,6 @@ void QgsProjectionSelector::getProjList()
       //updateProjAndEllipsoidAcronyms(QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 1)).toLong(),
       //                               QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 4)))  ;
     }
-    // update the progress bar to 100% -- just for eye candy purposes (some people hate to
-    // see a progress dialog end at 99%)
-    myProgressBar.setProgress(myEntriesCount);
   }
 #ifdef QGISDEBUG
   std::cout << "Size of projection list widget : " << sizeof(*lstCoordinateSystems) << std::endl;
