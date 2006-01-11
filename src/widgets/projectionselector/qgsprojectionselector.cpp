@@ -61,7 +61,10 @@ void QgsProjectionSelector::setSelectedSRSName(QString theSRSNAme)
   QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems(theSRSNAme, Qt::MatchExactly|Qt::MatchRecursive, 0);
 
   if (nodes.count() == 1)
+  {
     lstCoordinateSystems->setCurrentItem(nodes.first());
+    lstCoordinateSystems->scrollToItem(nodes.first());
+  }
   else // unselect the selected item to avoid confusing the user
   { 
     if (lstCoordinateSystems->currentItem() != NULL)
@@ -77,7 +80,10 @@ void QgsProjectionSelector::setSelectedSRSID(long theSRSID)
   QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems(mySRSIDString, Qt::MatchExactly|Qt::MatchRecursive, 1);
 
   if (nodes.count() == 1)
+  {
     lstCoordinateSystems->setCurrentItem(nodes.first());
+    lstCoordinateSystems->scrollToItem(nodes.first());
+  }
   else // unselect the selected item to avoid confusing the user
   { 
     if (lstCoordinateSystems->currentItem() != NULL)
@@ -407,7 +413,7 @@ void QgsProjectionSelector::getProjList()
   // Set up the query to retreive the projection information needed to populate the list
   //note I am giving the full field names for clarity here and in case someown
   //changes the underlying view TS
-  sql = "select description,srs_id,is_geo, name,parameters from vw_srs";
+  sql = "select description,srs_id,is_geo, name,parameters from vw_srs order by name, description";
 #ifdef QGISDEBUG
   std::cout << "SQL for projection list:\n" << sql.toLocal8Bit().data() << std::endl;
 #endif
@@ -565,6 +571,8 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem)
       myDescription+=(myProjString);
     }
     teProjection->setText(myDescription);
+    // This call seems not to work???? 
+    lstCoordinateSystems->scrollToItem(theItem);
   }
   else
     teProjection->setText("");
