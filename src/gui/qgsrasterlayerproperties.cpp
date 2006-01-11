@@ -502,9 +502,6 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 */
 void QgsRasterLayerProperties::sync()
 {
-  // XXX Remove the advanced symbology widget and debug overlay for 0.1 release
-
-  tabSymbology->removePage(TabPage);
   cboxShowDebugInfo->hide();
 
   //get the thumbnail for the layer
