@@ -63,6 +63,9 @@ class QgsAttributeTableDisplay:public QDialog, private Ui::QgsAttributeTableBase
 
   signals:
     void deleted();
+  private:
+    /** Set the icon theme for this dialog */
+    void setTheme();
 };
 
 #endif

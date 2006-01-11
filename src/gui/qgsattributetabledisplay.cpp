@@ -19,6 +19,7 @@
 
 #include "qgsattributetabledisplay.h"
 
+#include "qgsapplication.h"
 #include "qgsaddattrdialog.h"
 #include "qgsadvancedattrsearch.h"
 #include "qgsdelattrdialog.h"
@@ -27,11 +28,15 @@
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QIcon>
+#include <QPixmap>
+#include <QToolButton>
 
 QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer)
 : QDialog(), mLayer(layer)
 {
   setupUi(this);
+  setTheme();
   connect(mRemoveSelectionButton, SIGNAL(clicked()), this, SLOT(removeSelection()));
   connect(mSelectedToTopButton, SIGNAL(clicked()), this, SLOT(selectedToTop()));
   connect(mInvertSelectionButton, SIGNAL(clicked()), this, SLOT(invertSelection()));
@@ -85,6 +90,17 @@ QgsAttributeTableDisplay::~QgsAttributeTableDisplay()
 QgsAttributeTable *QgsAttributeTableDisplay::table()
 {
   return tblAttributes;
+}
+void QgsAttributeTableDisplay::setTheme()
+{
+  QString myIconPath = QgsApplication::themePath();
+  mAddAttributeButton->setPixmap(QPixmap(myIconPath+"/mActionNewAttribute.png"));
+  mRemoveSelectionButton->setPixmap(QPixmap(myIconPath+"/mActionUnselectAttributes.png"));
+  mSelectedToTopButton->setPixmap(QPixmap(myIconPath+"/mActionSelectedToTop.png"));
+  mInvertSelectionButton->setPixmap(QPixmap(myIconPath+"/mActionInvertSelection.png"));
+  mCopySelectedRowsButton->setPixmap(QPixmap(myIconPath+"/mActionCopySelected.png"));
+  mAddAttributeButton->setPixmap(QPixmap(myIconPath+"/mActionNewAttribute.png"));
+  mDeleteAttributeButton->setPixmap(QPixmap(myIconPath+"/mActionDeleteAttribute.png"));
 }
 
 void QgsAttributeTableDisplay::setTitle(QString title)
