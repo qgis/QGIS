@@ -111,6 +111,7 @@ wish to see edbug messages printed to stdout.
 
 #include "qgsrect.h"
 #include "qgisapp.h"
+#include "qgsapplication.h"
 //#include "qgscolortable.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsproject.h"
@@ -538,12 +539,8 @@ QgsRasterLayer::readFile( QString const & fileName )
   buildRasterPyramidList();
 
   //load  up the pyramid icons
-#if defined(WIN32) || defined(Q_OS_MACX)
-  QString PKGDATAPATH = qApp->applicationDirPath() + "/share/qgis";
-#endif
-
-  mPyramidPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/pyramid.png"));
-  mNoPyramidPixmap.load(QString(PKGDATAPATH) + QString("/images/icons/no_pyramid.png"));
+  mPyramidPixmap.load( QgsApplication::pkgDataPath() + QString("/images/icons/pyramid.png"));
+  mNoPyramidPixmap.load( QgsApplication::pkgDataPath() + QString("/images/icons/no_pyramid.png"));
 
   // Get the layer's projection info and set up the
   // QgsCoordinateTransform for this layer
