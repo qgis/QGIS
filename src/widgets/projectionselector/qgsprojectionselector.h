@@ -12,6 +12,7 @@
 
 #include "ui_qgsprojectionselectorbase.h"
 
+class QResizeEvent;
 
 /**
   @author Tim Sutton
@@ -48,7 +49,8 @@ class QgsProjectionSelector: public QWidget, private Ui::QgsProjectionSelectorBa
       void on_pbnFind_clicked();
 
     private:
-
+      /** Used to manage column sizes */
+      void resizeEvent ( QResizeEvent * theEvent );
       // List view nodes for the tree view of projections
       //! User defined projections node
       QTreeWidgetItem *mUserProjList;

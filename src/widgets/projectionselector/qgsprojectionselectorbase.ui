@@ -8,7 +8,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
+    <width>512</width>
     <height>498</height>
    </rect>
   </property>
@@ -38,46 +38,14 @@
      <property name="title" >
       <string>Projection</string>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QGridLayout" >
       <property name="margin" >
        <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item>
-       <widget class="QTreeWidget" name="lstCoordinateSystems" >
-        <column>
-         <property name="text" >
-          <string>Coordinate System</string>
-         </property>
-        </column>
-        <column>
-         <property name="text" >
-          <string>Spatial Reference Id</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-      <item>
-       <widget class="QTextEdit" name="teProjection" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>5</hsizetype>
-          <vsizetype>1</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="autoFormatting" >
-         <set>QTextEdit::AutoBulletList</set>
-        </property>
-        <property name="readOnly" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
+      <item row="2" column="0" >
        <widget class="QGroupBox" name="groupBox" >
         <property name="title" >
          <string>Search</string>
@@ -89,21 +57,21 @@
          <property name="spacing" >
           <number>6</number>
          </property>
-         <item row="1" column="5" >
-          <spacer>
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
+         <item row="0" column="2" >
+          <widget class="QRadioButton" name="radSRSID" >
+           <property name="text" >
+            <string>QGIS SRSID</string>
            </property>
-           <property name="sizeHint" >
+          </widget>
+         </item>
+         <item row="1" column="3" >
+          <widget class="QPushButton" name="pbnFind" >
+           <property name="maximumSize" >
             <size>
-             <width>40</width>
-             <height>20</height>
+             <width>100</width>
+             <height>16777215</height>
             </size>
            </property>
-          </spacer>
-         </item>
-         <item row="1" column="3" colspan="2" >
-          <widget class="QPushButton" name="pbnFind" >
            <property name="text" >
             <string>Find</string>
            </property>
@@ -132,34 +100,67 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="2" colspan="2" >
-          <widget class="QRadioButton" name="radSRSID" >
-           <property name="text" >
-            <string>QGIS SRSID</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="4" >
+         <item row="0" column="3" >
           <widget class="QRadioButton" name="radName" >
            <property name="text" >
             <string>Name</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="5" >
-          <spacer>
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" >
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
         </layout>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QTreeWidget" name="lstCoordinateSystems" >
+        <property name="alternatingRowColors" >
+         <bool>true</bool>
+        </property>
+        <property name="uniformRowHeights" >
+         <bool>true</bool>
+        </property>
+        <property name="columnCount" >
+         <number>2</number>
+        </property>
+        <column>
+         <property name="text" >
+          <string>Spatial Reference System</string>
+         </property>
+        </column>
+        <column>
+         <property name="text" >
+          <string>Id</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QTextEdit" name="teProjection" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>1</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>16777215</width>
+          <height>80</height>
+         </size>
+        </property>
+        <property name="autoFormatting" >
+         <set>QTextEdit::AutoBulletList</set>
+        </property>
+        <property name="readOnly" >
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
      </layout>
