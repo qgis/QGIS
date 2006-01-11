@@ -24,6 +24,8 @@
 #include <QFileInfo>
 #include <Q3ProgressDialog>
 #include <QTextStream>
+#include <QHeaderView>
+#include <QResizeEvent>
 
 #define QGISDEBUG
 
@@ -37,6 +39,7 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name
 
   // Get the full path name to the sqlite3 spatial reference database.
   mSrsDatabaseFileName = QgsApplication::srsDbFilePath();
+  lstCoordinateSystems->header()->setResizeMode(1,QHeaderView::Stretch);
   // Populate the projection list view
   getProjList();
   getUserProjList();
@@ -44,6 +47,12 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name
 
 QgsProjectionSelector::~QgsProjectionSelector()
 {}
+void QgsProjectionSelector::resizeEvent ( QResizeEvent * theEvent )
+{
+
+  lstCoordinateSystems->header()->resizeSection(0,(theEvent->size().width()-120));
+  lstCoordinateSystems->header()->resizeSection(1,120);
+}
 void QgsProjectionSelector::setSelectedSRSName(QString theSRSNAme)
 {
   //get the srid given the wkt so we can pick the correct list item
