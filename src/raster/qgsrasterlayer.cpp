@@ -539,8 +539,9 @@ QgsRasterLayer::readFile( QString const & fileName )
   buildRasterPyramidList();
 
   //load  up the pyramid icons
-  mPyramidPixmap.load( QgsApplication::pkgDataPath() + QString("/images/icons/pyramid.png"));
-  mNoPyramidPixmap.load( QgsApplication::pkgDataPath() + QString("/images/icons/no_pyramid.png"));
+  QString myThemePath = QgsApplication::themePath();
+  QPixmap myPyramidPixmap(myThemePath + "/mIconPyramid.png");
+  QPixmap myNoPyramidPixmap(myThemePath + "/mIconNoPyramid.png");
 
   // Get the layer's projection info and set up the
   // QgsCoordinateTransform for this layer
