@@ -65,6 +65,7 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
   QFont f("Arial", 10, QFont::Normal);
   setFont(f);
   setBackgroundColor(QColor(192, 192, 192));
+  setIconSize(QSize(30, 30));
   setColumnCount(1);
   QStringList myList("Layers");
   setHeaderLabels(myList);
