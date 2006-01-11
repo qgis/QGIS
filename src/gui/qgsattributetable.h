@@ -144,7 +144,6 @@ signals:
     void repaintRequested();
 
   private:
-
     // Data to do with providing a popup menu of actions that
     std::vector<std::pair<QString, QString> > mActionValues;
     int mClickedOnValue;
