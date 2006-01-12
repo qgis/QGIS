@@ -1,0 +1,56 @@
+CXX = @CXX@
+STRIP = @STRIP@
+INSTALL = @INSTALL@
+prefix = @prefix@
+
+QT_LDADD = @QT_LDADD@
+
+GDAL_LDADD = @GDAL_LDADD@
+GEOS_LDADD = @GEOS_LDADD@
+GRASS_LIB = @GRASS_LIB@
+PROJ_LIB = @PROJ_LIB@
+
+# The order is significant
+QGLIBS = $(QGTOP)/src/raster/.libs/libqgis_raster.a \
+      $(QGTOP)/src/composer/.libs/libqgis_composer.a \
+      $(QGTOP)/src/widgets/projectionselector/.libs/libqgsprojectionselector.a \
+      $(QGTOP)/src/core/.libs/libqgis_core.a \
+      $(QGTOP)/src/legend/.libs/libqgis_legend.a \
+      $(QGTOP)/src/gui/.libs/libqgis_gui.a 
+
+# For qgis.exe the QGIS libs must be twice because of circular references
+QGIS_LIBS = $(QGLIBS) $(QGLIBS) \
+      $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD)  \
+      -lproj -lsqlite3 \
+      $(QT_LDADD) -lwsock32
+
+# And for plugins even 3 times (maybe it would be possible to save 
+# something changing the order?) 
+PLUGIN_LIBS = $(QGLIBS) $(QGLIBS) $(QGLIBS) \
+      $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD)  \
+      -lproj -lsqlite3 \
+      $(QT_LDADD) -lwsock32
+
+# Rule for subdirs using standard build system (make -f Makefile)
+stdsubdirs:
+	@list='$(STDSUBDIRS)'; \
+	for subdir in $$list; do \
+	    echo $$subdir ; \
+	    $(MAKE) -C $$subdir ; \
+        done
+
+# Rule for subdirs using standard win system (make -f Makefile.win)
+winsubdirs:
+	@list='$(WINSUBDIRS)'; \
+	for subdir in $$list; do \
+	    echo $$subdir ; \
+	    $(MAKE) -C $$subdir -f Makefile.win ; \
+        done
+
+# Rule instalation (using WINSUBDIRS)
+instsubdirs:
+	@list='$(WINSUBDIRS)'; \
+	for subdir in $$list; do \
+	    echo $$subdir ; \
+	    $(MAKE) -C $$subdir -f Makefile.win install ; \
+        done
