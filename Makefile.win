@@ -1,0 +1,7 @@
+WINSUBDIRS = src src/providers/ogr
+
+all: winsubdirs
+
+install: instsubdirs
+
+include ./Makefile.win.rules
