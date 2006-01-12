@@ -436,6 +436,7 @@ AC_SUBST(DEBUG_QGIS)
 
 AC_CONFIG_FILES([
   Makefile 
+  Makefile.win.rules 
   doc/Makefile
   doc/images/Makefile
   doc/install_guide/Makefile
