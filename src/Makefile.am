@@ -8,6 +8,9 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+if HAVE_QTMAC
+MAC = mac
+endif
 # NOTE - the order of the SUBDIRS is important. Currently the providers
 #        depend on the existence of libqgis_gui. 
 #        gui *must* be specified immediately before the providers

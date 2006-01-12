@@ -11,7 +11,7 @@
 	<key>CFBundleSignature</key>
 	<string>QGIS</string>
 	<key>CFBundleGetInfoString</key>
-	<string>QGIS @VERSION, © 2002-2005 QGIS Development Team</string>
+	<string>QGIS @VERSION, © 2002-2006 QGIS Development Team</string>
 	<key>CFBundleShortVersionString</key>
 	<string>@SHORTVERSION</string>
 	<key>CFBundleVersion</key>
