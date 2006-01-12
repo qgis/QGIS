@@ -60,6 +60,7 @@ class QgsLegend;
 class QgsLegendView;
 class QgsAcetateObject;
 class QgsMeasure;
+class QgsRubberBand;
 
 
 /*! \class QgsMapCanvas
@@ -421,6 +422,9 @@ private:
 
     //! Rubberband used when selecting
     QRubberBand *mRubberBand;
+
+    //! Rubberband used when drawing
+    QgsRubberBand *mRubberBand2;
 
     //! Measure tool
     QgsMeasure *mMeasure;

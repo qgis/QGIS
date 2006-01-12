@@ -100,6 +100,7 @@ email                : sherman at mrcc.com
 #include "qgsproject.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmeasure.h"
+#include "qgsrubberband.h"
 
 #include "qgsmapcanvasproperties.h"
 
@@ -814,6 +815,8 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         ai++;
       }
 
+      // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
       //draw mCaptureList with color and width stored in QgsProject
       QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),
           QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),
@@ -845,8 +848,6 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         //and also the connection to mDigitMovePoint
         if((mLineEditing || mPolygonEditing) && mCaptureList.size()>0)
         {
-          // TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
           paint->setRasterOp(Qt::XorROP);
           try
           {
@@ -868,9 +869,28 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
             // we need this to keep windows from wanted to send
             // a bug report to Bill
           }
-#endif
         }
       }
+#else
+      if(mCaptureList.size() > 0)
+      {
+        mRubberBand2->setGeometry(rect());
+        mRubberBand2->reset(mPolygonEditing);
+        try
+        {
+          for (std::list<QgsPoint>::iterator it = mCaptureList.begin(); it != mCaptureList.end(); ++it)
+          {
+            QgsPoint point = mCanvasProperties->coordXForm->transform(*it);
+            mRubberBand2->addPoint(QPoint(int(point.x()), int(point.y())));
+          }
+        }
+        catch(QgsException &e)
+        {
+          // ignore this exception at present
+          std::cout << "QgsException: " << __FILE__ << __LINE__ << std::endl; 
+        }
+      }
+#endif
 
 
       // notify any listeners that rendering is complete
@@ -2010,14 +2030,14 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
       case QGis::CapturePolygon:
         {
 
+          // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
           if (mCanvasProperties->rubberStartPoint != mCanvasProperties->rubberStopPoint)
           {
-            // TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
             // XOR-out the old line
             paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberStopPoint);
-#endif
           }
+#endif
 
           mCanvasProperties->rubberStopPoint = e->pos();
 
@@ -2042,6 +2062,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             return;
           }
 
+          // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
           //prevent clearing of the line between the first and the second polygon vertex
           //during the next mouse move event
           if(mCaptureList.size() == 1 && mCanvasProperties->mapTool == QGis::CapturePolygon)
@@ -2049,6 +2071,13 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             QPainter paint(mCanvasProperties->pmCanvas);
             drawLineToDigitisingCursor(&paint);
           }
+#else
+          if (mCaptureList.size() == 0)
+          {
+            mRubberBand2 = new QgsRubberBand(this, mPolygonEditing);
+            mRubberBand2->show();
+          }
+#endif
 
           mDigitMovePoint.setX(e->x());
           mDigitMovePoint.setY(e->y());
@@ -2056,6 +2085,8 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
           QgsPoint digitisedpoint=mCanvasProperties->coordXForm->toMapCoordinates(e->x(), e->y());
           vlayer->snapPoint(digitisedpoint,QgsProject::instance()->readDoubleEntry("Digitizing","/Tolerance",0));
           mCaptureList.push_back(digitisedpoint);
+          // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
           if(mCaptureList.size()>1)
           {
             QPainter paint(this);
@@ -2081,12 +2112,18 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             }
             repaint();
           }
+#else
+          mRubberBand2->addPoint(e->pos());
+#endif
 
           if (e->button() == Qt::RightButton)
           {
             // End of string
 
             mCanvasProperties->capturing = FALSE;
+#if !(QT_VERSION < 0x040000)
+            delete mRubberBand2;
+#endif
 
             //create QgsFeature with wkb representation
             QgsFeature* f=new QgsFeature(0,"WKBLineString");
@@ -2453,10 +2490,10 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
       case QGis::ZoomIn:
       case QGis::ZoomOut:
         // draw the rubber band box as the user drags the mouse
+        // TODO: Qt4 will have to do this a different way, using QRubberBand ...
 #if QT_VERSION < 0x040000
         mCanvasProperties->dragging = true;
 
-        // TODO: Qt4 will have to do this a different way, using QRubberBand ...
         paint.begin(this);
         paint.setPen(pen);
         paint.setRasterOp(Qt::XorROP);
@@ -2540,11 +2577,11 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 
         // show the rubber-band from the last click
 
+        // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
         QPainter paint;
         QPen pen(Qt::gray);
 
-        // TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
         paint.begin(this);
         paint.setPen(pen);
         paint.setRasterOp(Qt::XorROP);
@@ -2559,6 +2596,8 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 
         paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberStopPoint);
         paint.end();
+#else
+        mRubberBand2->movePoint(e->pos());
 #endif
 
       }
@@ -2566,6 +2605,8 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
       break;
   }          
 
+  // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
   //draw a line to the cursor position in line/polygon editing mode
   if ( mCanvasProperties->mapTool == QGis::CaptureLine || mCanvasProperties->mapTool == QGis::CapturePolygon )
   {
@@ -2593,6 +2634,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
       }
     }
   }
+#endif
 
   // show x y on status bar
   QPoint xy = e->pos();
@@ -2602,13 +2644,13 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
 
 void QgsMapCanvas::drawLineToDigitisingCursor(QPainter* paint, bool last)
 {
+  // TODO: Qt4 will have to do this a different way, using QRubberBand ...
+#if QT_VERSION < 0x040000
   QColor digitcolor(QgsProject::instance()->readNumEntry("Digitizing","/LineColorRedPart",255),\
       QgsProject::instance()->readNumEntry("Digitizing","/LineColorGreenPart",0),\
       QgsProject::instance()->readNumEntry("Digitizing","/LineColorBluePart",0));
   paint->setPen(QPen(digitcolor,QgsProject::instance()->readNumEntry("Digitizing","/LineWidth",1),Qt::SolidLine));
 
-  // TODO: Qt4 will have to do this a different way, using QRubberBand ...
-#if QT_VERSION < 0x040000
   paint->setRasterOp(Qt::XorROP);
   std::list<QgsPoint>::iterator it;
   if(last)
