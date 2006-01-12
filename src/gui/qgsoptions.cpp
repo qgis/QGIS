@@ -99,6 +99,9 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name, bool modal) :
   }
   // set the theme combo
   cmbTheme->setCurrentText(settings.readEntry("/Themes","default"));
+  //set teh state of the antialiasing checkbox
+  chkAntiAliasing->setChecked(settings.value("/qgis/enable_anti_aliasing").toBool());
+  chkAddedVisibility->setChecked(!settings.value("/qgis/new_layers_visible").toBool());
 }
 
 //! Destructor
