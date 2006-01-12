@@ -563,10 +563,11 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       if ( ! theQPaintDevice )  //painting to mapCanvas->pixmap
       {
         mCanvasProperties->pmCanvas->fill(mCanvasProperties->bgColor);
-        std::cout << (QString ("R: %i G: %i B: %i for canvas background").arg(
-              mCanvasProperties->bgColor.red(),
-              mCanvasProperties->bgColor.red(),
-              mCanvasProperties->bgColor.red())).toLocal8Bit().data() << std::endl;
+        QColor myColor = mCanvasProperties->bgColor;
+        std::cout << "Canvas background R: ";
+        std::cout <<  myColor.red() << " G: ";
+        std::cout << myColor.green() << " B: ";
+        std::cout << myColor.blue() << std::endl;
         paint->begin(mCanvasProperties->pmCanvas);
         if (mCanvasProperties->mAntiAliasFlag)
         {
@@ -2745,10 +2746,16 @@ void QgsMapCanvas::setMapTool(int tool)
 
 
 /** Write property of QColor bgColor. */
-void QgsMapCanvas::setCanvasColor(const QColor & _newVal)
+void QgsMapCanvas::setCanvasColor(const QColor & theColor)
 {
-  mCanvasProperties->bgColor = _newVal;
-  setEraseColor(_newVal);
+  mCanvasProperties->bgColor = theColor;
+  setEraseColor(theColor);
+  QColor myColor = mCanvasProperties->bgColor;
+  std::cout << "Setting Canvas background R: ";
+  std::cout << myColor.red() << " G: ";
+  std::cout << myColor.green() << " B: ";
+  std::cout << myColor.blue() << std::endl;
+
 } // setCanvasColor
 
 
