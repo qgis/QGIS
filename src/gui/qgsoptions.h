@@ -43,16 +43,14 @@ class QgsOptions :public QDialog, private Ui::QgsOptionsBase
     QString theme();
 
     public slots:
-      //! Slot to change the theme this is handled when the user 
-      // activates or highlights a theme name in the drop-down list
-      void themeChanged(const QString &);
       //! Slot called when user chooses to change the project wide projection.
       void on_pbnSelectProjection_clicked();
       void on_btnFindBrowser_clicked();
-      void setCurrentTheme();
-      void addTheme(QString item);
       void on_cbxHideSplash_toggled( bool );
       void saveOptions();
+    //! Slot to change the theme this is handled when the user 
+    // activates or highlights a theme name in the drop-down list
+    void themeChanged(const QString &);
       
     /**
      * Return the desired state of newly added layers. If a layer
@@ -66,7 +64,6 @@ class QgsOptions :public QDialog, private Ui::QgsOptionsBase
     
     QString getEllipsoidAcronym(QString theEllipsoidName);
     QString getEllipsoidName(QString theEllipsoidAcronym);
-    QString mQGisSettingsDir;
 
   private:
     //! Pointer to our parent

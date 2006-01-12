@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+#include "qgsapplication.h"
 #include "qgsoptions.h"
 #include "qgis.h"
 #include "qgisapp.h"
@@ -82,10 +83,22 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name, bool modal) :
   txtGlobalWKT->setText(myProjString);
   
   // populate combo box with ellipsoids
-  mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
   getEllipsoidList();
   QString myEllipsoidId = settings.readEntry("/qgis/measure/ellipsoid", "WGS84");
   cmbEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
+  // add the themes to the combo box on the option dialog
+  QDir myThemeDir(QgsApplication::themePath());
+  myThemeDir.setFilter(QDir::Dirs);
+  QStringList myDirList = myThemeDir.entryList("*");
+  for(int i=0; i < myDirList.count(); i++)
+  {
+    if(myDirList[i] != "." && myDirList[i] != "..")
+    {
+      cmbTheme->insertItem(myDirList[i]);
+    }
+  }
+  // set the theme combo
+  cmbTheme->setCurrentText(settings.readEntry("/Themes","default"));
 }
 
 //! Destructor
@@ -110,6 +123,7 @@ void QgsOptions::saveOptions()
   settings.writeEntry("/Map/identifyRadius", spinBoxIdentifyValue->value());
   settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
   settings.writeEntry("/qgis/new_layers_visible",!chkAddedVisibility->isChecked());
+  settings.writeEntry("/qgis/enable_anti_aliasing",chkAntiAliasing->isChecked());
   if(cmbTheme->currentText().length() == 0)
   {
     settings.writeEntry("/Themes", "default");
@@ -150,18 +164,9 @@ void QgsOptions::on_cbxHideSplash_toggled( bool )
 
 }
 
-void QgsOptions::addTheme(QString item)
-{
-  cmbTheme->insertItem(item);
-}
 
 
 
-void QgsOptions::setCurrentTheme()
-{
-  QSettings settings;
-  cmbTheme->setCurrentText(settings.readEntry("/Themes","default"));
-}
 
 void QgsOptions::on_btnFindBrowser_clicked()
 {
@@ -228,7 +233,7 @@ void QgsOptions::getEllipsoidList()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(QgsApplication::srsDbFilePath()+"qgis.db").latin1(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -261,7 +266,7 @@ QString QgsOptions::getEllipsoidAcronym(QString theEllipsoidName)
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(QgsApplication::srsDbFilePath()+"qgis.db").latin1(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -293,7 +298,7 @@ QString QgsOptions::getEllipsoidName(QString theEllipsoidAcronym)
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open((QgsApplication::srsDbFilePath()+"qgis.db").latin1(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 

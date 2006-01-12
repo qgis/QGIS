@@ -71,6 +71,8 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
   setHeaderLabels(myList);
   //added by Tim to hide the header - header is unneccessary
   header()->setHidden(1);
+  setRootIsDecorated(true);
+
 }
 
 
