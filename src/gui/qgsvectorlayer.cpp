@@ -736,6 +736,18 @@ std::cerr << i << ": " << ring->first[i]
     std::cerr << "Smallest Y coordinate was " << smallestY << '\n';
     */
 
+    //preserve a copy f the brush before we start fiddling with it
+    QBrush brush = p->brush(); //to be kept as original
+    QBrush myTransparentBrush = p->brush();
+    QColor myColor = brush.color();
+    //experimental alpha transparency
+    //255 = opaque
+    //I have hardcoded it to opaque  out for now 
+    //until I make it user configurable
+    //and hopefully work out how to improve performance
+    myColor.setAlpha(255);
+    myTransparentBrush.setColor(myColor);
+    p->setBrush(myTransparentBrush);
     // draw the polygon fill
     QPen pen = p->pen(); // store current pen
     p->setPen ( Qt::NoPen ); // no boundary
@@ -744,7 +756,6 @@ std::cerr << i << ": " << ring->first[i]
 
     // draw the polygon outline. Draw each ring as a separate
     // polygon to avoid the lines associated with the outerRingPt.
-    QBrush brush = p->brush();
     p->setBrush ( Qt::NoBrush );
 
     ringDetailType::const_iterator ri = ringDetails.begin();

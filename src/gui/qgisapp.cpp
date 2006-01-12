@@ -3004,6 +3004,12 @@ void QgisApp::openProject(int pathIndex)
 #else
     addProject(mRecentProjectPaths.at(pathIndex));
 #endif
+    int  myRedInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorRedPart",255);
+    int  myGreenInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorGreenPart",255);
+    int  myBlueInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorBluePart",255);
+    QColor myColor = QColor(myRedInt,myGreenInt,myBlueInt);
+    mMapCanvas->setCanvasColor(myColor);
+                        
   }
   //set the projections enabled icon in the status bar
   int myProjectionEnabledFlag =
@@ -5142,13 +5148,19 @@ void QgisApp::projectProperties()
   bool wasProjected = pp->isProjected();
 
   // Display the modal dialog box.
-  pp->exec();
-
-  // If the canvas projection settings changed, we need to recalculate the extents in the
-  // new coordinate system
-  if(pp->isProjected() != wasProjected)
+  if (pp->exec())
   {
-    mMapCanvas->recalculateExtents();
+    // If the canvas projection settings changed, we need to recalculate the extents in the
+    // new coordinate system
+    if(pp->isProjected() != wasProjected)
+    {
+      mMapCanvas->recalculateExtents();
+    }
+    int  myRedInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorRedPart",255);
+    int  myGreenInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorGreenPart",255);
+    int  myBlueInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorBluePart",255);
+    QColor myColor = QColor(myRedInt,myGreenInt,myBlueInt);
+    mMapCanvas->setCanvasColor(myColor);
   }
   // Set the window title.
   setTitleBarText_( *this );
