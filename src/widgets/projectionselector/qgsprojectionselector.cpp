@@ -26,8 +26,6 @@
 #include <QHeaderView>
 #include <QResizeEvent>
 
-#define QGISDEBUG
-
 QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name , Qt::WFlags fl  )
     : QWidget(parent, fl)
 {
@@ -60,15 +58,14 @@ void QgsProjectionSelector::setSelectedSRSName(QString theSRSNAme)
 #endif
   QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems(theSRSNAme, Qt::MatchExactly|Qt::MatchRecursive, 0);
 
-  if (nodes.count() == 1)
+  if (nodes.count() > 0)
   {
     lstCoordinateSystems->setCurrentItem(nodes.first());
     lstCoordinateSystems->scrollToItem(nodes.first());
   }
   else // unselect the selected item to avoid confusing the user
   { 
-    if (lstCoordinateSystems->currentItem() != NULL)
-      lstCoordinateSystems->setItemSelected(lstCoordinateSystems->currentItem(), false);
+    lstCoordinateSystems->clearSelection();
     teProjection->setText("");
   }
 }
@@ -79,15 +76,14 @@ void QgsProjectionSelector::setSelectedSRSID(long theSRSID)
 
   QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems(mySRSIDString, Qt::MatchExactly|Qt::MatchRecursive, 1);
 
-  if (nodes.count() == 1)
+  if (nodes.count() > 0)
   {
     lstCoordinateSystems->setCurrentItem(nodes.first());
     lstCoordinateSystems->scrollToItem(nodes.first());
   }
   else // unselect the selected item to avoid confusing the user
   { 
-    if (lstCoordinateSystems->currentItem() != NULL)
-      lstCoordinateSystems->setItemSelected(lstCoordinateSystems->currentItem(), false);
+    lstCoordinateSystems->clearSelection();
     teProjection->setText("");
   }
 }
@@ -291,7 +287,9 @@ long QgsProjectionSelector::getCurrentSRID()
 
 long QgsProjectionSelector::getCurrentSRSID()
 {
-  if(lstCoordinateSystems->currentItem()->text(1).length() > 0)
+  QTreeWidgetItem* item = lstCoordinateSystems->currentItem();
+
+  if(item != NULL && item->text(1).length() > 0)
   {
     return lstCoordinateSystems->currentItem()->text(1).toLong();
   }
@@ -560,7 +558,7 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem)
 {
   // If the item has children, it's not an end node in the tree, and
   // hence is just a grouping thingy, not an actual SRS.
-  if (theItem->childCount() == 0)
+  if (theItem != NULL && theItem->childCount() == 0)
   {
     QString myDescription = tr("QGIS SRSID: ") + QString::number(getCurrentSRSID()) +"\n";
     myDescription        += tr("PostGIS SRID: ") + QString::number(getCurrentSRID()) +"\n";
@@ -570,9 +568,8 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem)
     {
       myDescription+=(myProjString);
     }
-    teProjection->setText(myDescription);
-    // This call seems not to work???? 
     lstCoordinateSystems->scrollToItem(theItem);
+    teProjection->setText(myDescription);
   }
   else
     teProjection->setText("");
