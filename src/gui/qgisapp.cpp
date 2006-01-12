@@ -1923,9 +1923,9 @@ bool QgisApp::isValidVectorFileName(QString * theFileNameQString)
   return isValidVectorFileName(*theFileNameQString);
 }
 
-
-
-#ifdef HAVE_POSTGRESQL
+#ifndef HAVE_POSTGRESQL
+void QgisApp::addDatabaseLayer(){}
+#else
 void QgisApp::addDatabaseLayer()
 {
   // only supports postgis layers at present
