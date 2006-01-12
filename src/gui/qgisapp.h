@@ -292,6 +292,14 @@ public slots:
   void showBookmarks();
   //! Create a new spatial bookmark
   void newBookmark();
+  //! activates the capture point tool
+  void capturePoint();
+  //! activates the capture line tool
+  void captureLine();
+  //! activates the capture polygon tool
+  void capturePolygon();
+  //! activates the selection tool
+  void select();
 
 public slots:
   void showProgress(int theProgress, int theTotalSteps);
@@ -385,14 +393,6 @@ private:
   void drawLayers();
   //! test function
   void testButton();
-  //! activates the capture point tool
-  void capturePoint();
-  //! activates the capture line tool
-  void captureLine();
-  //! activates the capture polygon tool
-  void capturePolygon();
-  //! activates the selection tool
-  void select();
   //! activates the add vertex tool
   void addVertex();
   //! activates the move vertex tool
