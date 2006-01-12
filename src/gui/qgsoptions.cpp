@@ -46,17 +46,10 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name, bool modal) :
   QSettings settings;
   QString browser = settings.readEntry("/qgis/browser");
   cmbBrowser->setCurrentText(browser);
-  // set the show splash option
   std::cout << "Standard Identify radius setting: " << QGis::DEFAULT_IDENTIFY_RADIUS << std::endl;
   int identifyValue = settings.readNumEntry("/Map/identifyRadius",QGis::DEFAULT_IDENTIFY_RADIUS);
   std::cout << "Standard Identify radius setting read from settings file: " << identifyValue << std::endl;
   spinBoxIdentifyValue->setValue(identifyValue);
-  bool hideSplashFlag = false;
-  if (settings.readEntry("/Splash/hideSplash")=="true")
-  {
-    hideSplashFlag =true;
-  }
-  cbxHideSplash->setChecked(hideSplashFlag);
 
   // set the current theme
   cmbTheme->setCurrentText(settings.readEntry("/Themes"));
@@ -99,9 +92,10 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name, bool modal) :
   }
   // set the theme combo
   cmbTheme->setCurrentText(settings.readEntry("/Themes","default"));
-  //set teh state of the antialiasing checkbox
+  //set teh state of the checkboxes
   chkAntiAliasing->setChecked(settings.value("/qgis/enable_anti_aliasing").toBool());
   chkAddedVisibility->setChecked(!settings.value("/qgis/new_layers_visible").toBool());
+  cbxHideSplash->setChecked(settings.value("/qgis/hideSplash").toBool());
 }
 
 //! Destructor
@@ -162,10 +156,6 @@ void QgsOptions::saveOptions()
 }
 
 
-void QgsOptions::on_cbxHideSplash_toggled( bool )
-{
-
-}
 
 
 

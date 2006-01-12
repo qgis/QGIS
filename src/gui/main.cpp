@@ -16,7 +16,23 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <qgsconfig.h>
+//qt includes
+#include <QBitmap>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QFont>
+#include <QMessageBox>
+#include <QPixmap>
+#include <QPixmap>
+#include <QSettings>
+#include <QSplashScreen>
+#include <QString>
+#include <QStringList> 
+#include <QStyle>
+#include <QTextCodec>
+#include <QTranslator>
+
 
 #include <iostream>
 #include <cstdio>
@@ -26,26 +42,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <qdir.h>
-#include <qfont.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <qmessagebox.h>
-#include <qstring.h>
-#include <qtextcodec.h>
-#include <qtranslator.h>
-#include <qstyle.h>
-#include <qpixmap.h>
-#include <qstringlist.h> 
-#include <QSplashScreen>
-#include <QPixmap>
-#include <QBitmap>
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include <qgsconfig.h>
 #include "qgsexception.h"
 #include "qgsproject.h"
 
@@ -420,19 +423,28 @@ int main(int argc, char *argv[])
     a.installTranslator(&qgistor);
   }
 
-    //set up masking
+  //set up splash screen 
   QString mySplashPath(QgsApplication::splashPath());
   QPixmap myPixmap(mySplashPath+QString("splash.png"));
   QSplashScreen *mypSplash = new QSplashScreen(myPixmap);
-  QPixmap myMaskPixmap(mySplashPath+QString("splash_mask.png"), 0, Qt::ThresholdDither | Qt::ThresholdAlphaDither | Qt::AvoidDither );
-  mypSplash->setMask( myMaskPixmap.createHeuristicMask() );
-  mypSplash->show();
+  QSettings mySettings;
+  if (mySettings.value("/qgis/hideSplash").toBool())
+  {
+    //splash screen hidden
+  }
+  else
+  {
+    QPixmap myMaskPixmap(mySplashPath+QString("splash_mask.png"), 0, Qt::ThresholdDither | Qt::ThresholdAlphaDither | Qt::AvoidDither );
+    mypSplash->setMask( myMaskPixmap.createHeuristicMask() );
+    mypSplash->show();
+  }
 
 
 
 
   QgisApp *qgis = new QgisApp(mypSplash); // "QgisApp" used to find canonical instance
   qgis->setName( "QgisApp" );
+  
 
   /////////////////////////////////////////////////////////////////////
   // If no --project was specified, parse the args to look for a     //
