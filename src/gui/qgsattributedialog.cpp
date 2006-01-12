@@ -14,13 +14,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #include "qgsattributedialog.h"
-#include <QTableWidget>
 #include <QTableWidgetItem>
 
-QgsAttributeDialog::QgsAttributeDialog(std::vector<QgsFeatureAttribute>* attributes): QgsAttributeDialogBase()
+QgsAttributeDialog::QgsAttributeDialog(std::vector<QgsFeatureAttribute>* attributes)
+: QDialog()
 {
+    setupUi(this);
     mTable->setRowCount(attributes->size());
 
     int index=0;
@@ -32,9 +33,6 @@ QgsAttributeDialog::QgsAttributeDialog(std::vector<QgsFeatureAttribute>* attribu
       mTable->setItem(index, 1, myValueItem);
       ++index;
     }
-
-    QObject::connect((QObject*)mOkButton, SIGNAL(clicked()), this, SLOT(accept()));//why is this cast necessary????
-    QObject::connect((QObject*)mCancelButton, SIGNAL(clicked()), this, SLOT(reject()));//why is this cast necessary????
 }
 
 QgsAttributeDialog::~QgsAttributeDialog()

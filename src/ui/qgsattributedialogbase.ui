@@ -79,5 +79,38 @@
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>mOkButton</sender>
+   <signal>clicked()</signal>
+   <receiver>QgsAttributeDialogBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>130</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>133</x>
+     <y>142</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mCancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>QgsAttributeDialogBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>217</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>133</x>
+     <y>142</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
