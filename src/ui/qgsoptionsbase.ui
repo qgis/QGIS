@@ -41,7 +41,7 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="2" column="0" >
+       <item row="3" column="0" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
@@ -54,10 +54,10 @@
          </property>
         </spacer>
        </item>
-       <item row="0" column="0" >
-        <widget class="QGroupBox" name="groupBox" >
+       <item row="2" column="0" >
+        <widget class="QGroupBox" name="groupBox_9" >
          <property name="title" >
-          <string>&amp;Splash screen</string>
+          <string>Default Map Appearance (Overridden by project properties)</string>
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
@@ -66,10 +66,43 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="0" column="0" >
-           <widget class="QCheckBox" name="cbxHideSplash" >
+          <item row="0" column="2" >
+           <widget class="QLabel" name="label" >
             <property name="text" >
-             <string>Hide splash screen at startup</string>
+             <string>Background Color:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>pbnCanvasColor</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" >
+           <widget class="QToolButton" name="pbnCanvasColor" >
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QToolButton" name="pbnSelectionColour" >
+            <property name="minimumSize" >
+             <size>
+              <width>10</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="textLabel1_9" >
+            <property name="text" >
+             <string>Selection Color:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>pbnSelectionColour</cstring>
             </property>
            </widget>
           </item>
@@ -137,6 +170,28 @@
              </size>
             </property>
            </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="0" >
+        <widget class="QGroupBox" name="groupBox" >
+         <property name="title" >
+          <string>&amp;Splash screen</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="QCheckBox" name="cbxHideSplash" >
+            <property name="text" >
+             <string>Hide splash screen at startup</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

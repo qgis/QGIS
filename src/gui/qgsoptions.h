@@ -57,6 +57,15 @@ class QgsOptions :public QDialog, private Ui::QgsOptionsBase
      * true.
      */
     bool newVisible();
+  /*!
+   * Slot to select the default map selection colour
+   */
+  void on_pbnSelectionColour_clicked();
+  
+  /*!
+   * Slot to select the default map selection colour
+   */
+  void on_pbnCanvasColor_clicked();
   protected:
     //! Populates combo box with ellipsoids
     void getEllipsoidList();
