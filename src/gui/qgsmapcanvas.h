@@ -185,7 +185,8 @@ class QgsMapCanvas : public QWidget
     //! true if canvas currently drawing
     bool isDrawing();
 
-  
+    //used to determine if anti-aliasing is enabled or not
+    void enableAntiAliasing(bool theFlag);
 public slots:
 
     /*! Adds a layer to the map canvas.

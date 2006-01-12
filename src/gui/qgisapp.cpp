@@ -270,6 +270,8 @@ static void setTitleBarText_( QWidget & qgisApp )
   mQgisInterface = new QgisIface(this);
   // set the legend control for the map canvas
   mMapCanvas->setLegend(mMapLegend);
+  QSettings mySettings;
+  mMapCanvas->enableAntiAliasing(mySettings.value("/qgis/enable_anti_aliasing").toBool());
 
 
   //
@@ -4558,6 +4560,8 @@ void QgisApp::options()
     setupToolbarPopups(optionsDialog->theme());
     // set the visible flag for new layers
     mAddedLayersHidden = optionsDialog->newVisible();
+    QSettings mySettings;
+    mMapCanvas->enableAntiAliasing(mySettings.value("/qgis/enable_anti_aliasing").toBool());
   }
 }
 
