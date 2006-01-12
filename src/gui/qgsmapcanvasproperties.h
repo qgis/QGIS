@@ -251,7 +251,9 @@ class QgsMapCanvas::CanvasProperties
 
   //! Map scale of the canvas at its current zool level
              double mScale;
-
+  
+  //! Whether to anti-alias map line drawing
+  bool mAntiAliasFlag;
   private:
 
   /** not copyable

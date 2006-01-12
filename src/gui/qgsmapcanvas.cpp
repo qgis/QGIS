@@ -143,6 +143,10 @@ QgsMapCanvas::~QgsMapCanvas()
   // CanvasProperties struct has its own dtor for freeing resources
 } // dtor
 
+void QgsMapCanvas::enableAntiAliasing(bool theFlag)
+{
+  mCanvasProperties->mAntiAliasFlag= theFlag;
+} // anti aliasing
 
 
 void QgsMapCanvas::setLegend(QgsLegend * legend)
@@ -555,7 +559,10 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       {
         mCanvasProperties->pmCanvas->fill(mCanvasProperties->bgColor);
         paint->begin(mCanvasProperties->pmCanvas);
-        paint->setRenderHint(QPainter::Antialiasing);
+        if (mCanvasProperties->mAntiAliasFlag)
+        {
+          paint->setRenderHint(QPainter::Antialiasing);
+        }
         myHeight=height();
         myWidth=width();
       }
@@ -576,7 +583,10 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
         }
         //initialise the painter
         paint->begin(theQPaintDevice);
-        paint->setRenderHint(QPainter::Antialiasing);
+        if (mCanvasProperties->mAntiAliasFlag)
+        {
+          paint->setRenderHint(QPainter::Antialiasing);
+        }
       }
       // hardwire the current extent for projection testing
       //     mCanvasProperties->currentExtent.setXmin(-156.00);
