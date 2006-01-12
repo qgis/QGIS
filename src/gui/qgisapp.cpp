@@ -4551,29 +4551,14 @@ void QgisApp::socketReadyRead()
 void QgisApp::options()
 {
   QgsOptions *optionsDialog = new QgsOptions(this);
-
-  // add the themes to the combo box on the option dialog
-  QDir themeDir(mAppDir + "/share/qgis/themes");
-  themeDir.setFilter(QDir::Dirs);
-  QStringList dirs = themeDir.entryList("*");
-  for(int i=0; i < dirs.count(); i++)
-  {
-    if(dirs[i] != "." && dirs[i] != "..")
-    {
-      optionsDialog->addTheme(dirs[i]);
-    }
-  }
-  optionsDialog->setCurrentTheme();
   if(optionsDialog->exec())
   {
     // set the theme if it changed
     setTheme(optionsDialog->theme());
     setupToolbarPopups(optionsDialog->theme());
-
     // set the visible flag for new layers
     mAddedLayersHidden = optionsDialog->newVisible();
   }
-
 }
 
 void QgisApp::helpContents()
