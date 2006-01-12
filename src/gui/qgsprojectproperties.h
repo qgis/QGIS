@@ -20,7 +20,7 @@
 
 #include "ui_qgsprojectpropertiesbase.h"
 #include "qgis.h"
-  
+class QColor; 
 
 /*!  Dialog to set project level properties
 
@@ -55,7 +55,7 @@ public:
   /*! Accessor for projection */
   QString projectionWKT();
   /*! Indicates that the projection switch is on */
-  bool QgsProjectProperties::isProjected();
+  bool isProjected();
 public slots:
   /*! 
    * Slot called when a new button (unit) is selected
@@ -85,6 +85,11 @@ public slots:
    * Slot to select the map selection colour
    */
   void on_pbnSelectionColour_clicked();
+  
+  /*!
+   * Slot to select the map selection colour
+   */
+  void on_pbnCanvasColor_clicked();
 
   /*!
    * Slot to show the context help for this dialog

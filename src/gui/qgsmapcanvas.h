@@ -123,7 +123,7 @@ class QgsMapCanvas : public QWidget
     int mapTool();
 
     /** Write property of QColor bgColor. */
-    virtual void setbgColor(const QColor & _newVal);
+    virtual void setCanvasColor(const QColor & _newVal);
 
     /** Updates the full extent to include the mbr of the rectangle r */
     void updateFullExtent(QgsRect const & r);

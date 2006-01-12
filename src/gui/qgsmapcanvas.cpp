@@ -124,7 +124,12 @@ QgsMapCanvas::QgsMapCanvas()
 
   mIsOverviewCanvas = false;
 
-  setEraseColor(mCanvasProperties->bgColor);
+  int myRedInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorRedPart",255);
+  int myGreenInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorGreenPart",255);
+  int myBlueInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorBluePart",255);
+  QColor myColor = QColor(myRedInt,myGreenInt,myBlueInt);
+  mCanvasProperties->bgColor=myColor;        
+  setEraseColor(myColor);
 
   setMouseTracking(true);
   setFocusPolicy(Qt::StrongFocus);
@@ -558,6 +563,10 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       if ( ! theQPaintDevice )  //painting to mapCanvas->pixmap
       {
         mCanvasProperties->pmCanvas->fill(mCanvasProperties->bgColor);
+        std::cout << (QString ("R: %i G: %i B: %i for canvas background").arg(
+              mCanvasProperties->bgColor.red(),
+              mCanvasProperties->bgColor.red(),
+              mCanvasProperties->bgColor.red())).toLocal8Bit().data() << std::endl;
         paint->begin(mCanvasProperties->pmCanvas);
         if (mCanvasProperties->mAntiAliasFlag)
         {
@@ -2736,11 +2745,11 @@ void QgsMapCanvas::setMapTool(int tool)
 
 
 /** Write property of QColor bgColor. */
-void QgsMapCanvas::setbgColor(const QColor & _newVal)
+void QgsMapCanvas::setCanvasColor(const QColor & _newVal)
 {
   mCanvasProperties->bgColor = _newVal;
   setEraseColor(_newVal);
-} // setbgColor
+} // setCanvasColor
 
 
 /** Updates the full extent to include the mbr of the rectangle r */

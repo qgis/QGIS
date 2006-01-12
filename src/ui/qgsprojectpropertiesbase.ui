@@ -41,6 +41,89 @@
        <property name="spacing" >
         <number>6</number>
        </property>
+       <item row="3" column="0" >
+        <widget class="QGroupBox" name="grpDigitizing" >
+         <property name="title" >
+          <string>Digitizing</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="textLabel1_2_2" >
+            <property name="text" >
+             <string>Line Width:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>spinDigitisedLineWidth</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QSpinBox" name="spinDigitisedLineWidth" >
+            <property name="minimum" >
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QToolButton" name="pbnDigitisedLineColour" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>5</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>0</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" >
+           <widget class="QLabel" name="textLabel1_2_2_2" >
+            <property name="text" >
+             <string>Snapping Tolerance:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>leSnappingTolerance</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" >
+           <widget class="QLineEdit" name="leSnappingTolerance" >
+            <property name="maximumSize" >
+             <size>
+              <width>120</width>
+              <height>32767</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="textLabel1_2" >
+            <property name="text" >
+             <string>Line Colour:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>pbnDigitisedLineColour</cstring>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item row="1" column="0" >
         <widget class="QGroupBox" name="btnGrpMapUnits" >
          <property name="title" >
@@ -175,113 +258,6 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0" >
-        <widget class="QGroupBox" name="grpDigitizing" >
-         <property name="title" >
-          <string>Digitizing</string>
-         </property>
-         <layout class="QHBoxLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item>
-           <layout class="QVBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="textLabel1_2_2_2" >
-              <property name="text" >
-               <string>Snapping Tolerance:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="textLabel1_2_2" >
-              <property name="text" >
-               <string>Line Width:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="textLabel1_2" >
-              <property name="text" >
-               <string>Line Colour:</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QLineEdit" name="leSnappingTolerance" >
-              <property name="maximumSize" >
-               <size>
-                <width>120</width>
-                <height>32767</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="spinDigitisedLineWidth" >
-              <property name="minimum" >
-               <number>1</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="pbnDigitisedLineColour" >
-              <property name="sizePolicy" >
-               <sizepolicy>
-                <hsizetype>5</hsizetype>
-                <vsizetype>5</vsizetype>
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize" >
-               <size>
-                <width>0</width>
-                <height>22</height>
-               </size>
-              </property>
-              <property name="text" >
-               <string/>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
        <item row="0" column="0" >
         <widget class="QGroupBox" name="titleBox" >
          <property name="title" >
@@ -309,25 +285,35 @@
          <property name="title" >
           <string>Map Appearance</string>
          </property>
-         <layout class="QHBoxLayout" >
+         <layout class="QGridLayout" >
           <property name="margin" >
            <number>9</number>
           </property>
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item>
-           <widget class="QLabel" name="textLabel1" >
+          <item row="0" column="2" >
+           <widget class="QLabel" name="label" >
             <property name="text" >
-             <string>Selection Color:</string>
+             <string>Background Color:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>pbnCanvasColor</cstring>
             </property>
            </widget>
           </item>
-          <item>
+          <item row="0" column="3" >
+           <widget class="QToolButton" name="pbnCanvasColor" >
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
            <widget class="QToolButton" name="pbnSelectionColour" >
             <property name="minimumSize" >
              <size>
-              <width>120</width>
+              <width>10</width>
               <height>22</height>
              </size>
             </property>
@@ -336,21 +322,15 @@
             </property>
            </widget>
           </item>
-          <item>
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="textLabel1" >
+            <property name="text" >
+             <string>Selection Color:</string>
             </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
+            <property name="buddy" >
+             <cstring>pbnSelectionColour</cstring>
             </property>
-            <property name="sizeHint" >
-             <size>
-              <width>21</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
+           </widget>
           </item>
          </layout>
         </widget>
