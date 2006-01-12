@@ -1,0 +1,8 @@
+STDSUBDIRS = core ui legend raster composer widgets helpviewer
+#providers plugins
+
+WINSUBDIRS = gui
+
+all: stdsubdirs winsubdirs
+
+include ../Makefile.win.rules
