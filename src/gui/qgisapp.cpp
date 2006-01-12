@@ -5156,12 +5156,12 @@ void QgisApp::projectProperties()
     {
       mMapCanvas->recalculateExtents();
     }
+  }
     int  myRedInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorRedPart",255);
     int  myGreenInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorGreenPart",255);
     int  myBlueInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorBluePart",255);
     QColor myColor = QColor(myRedInt,myGreenInt,myBlueInt);
     mMapCanvas->setCanvasColor(myColor);
-  }
   // Set the window title.
   setTitleBarText_( *this );
   // delete the property sheet object
