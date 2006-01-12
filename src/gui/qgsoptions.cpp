@@ -24,6 +24,7 @@
 #include "qgssvgcache.h"
 #include <QFileDialog>
 #include <QSettings>
+#include <QColorDialog>
 #include <cassert>
 #include <iostream>
 #include <sqlite3.h>
@@ -96,11 +97,38 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name, bool modal) :
   chkAntiAliasing->setChecked(settings.value("/qgis/enable_anti_aliasing").toBool());
   chkAddedVisibility->setChecked(!settings.value("/qgis/new_layers_visible").toBool());
   cbxHideSplash->setChecked(settings.value("/qgis/hideSplash").toBool());
+  //set the colour for selections
+  int myRed = settings.value("/qgis/default_selection_color_red",255).toInt();
+  int myGreen = settings.value("/qgis/default_selection_color_green",255).toInt();
+  int myBlue = settings.value("/qgis/default_selection_color_blue",255).toInt();
+  pbnSelectionColour->setPaletteBackgroundColor(QColor(myRed,myGreen,myBlue));
+  //set teh default color for canvas background
+  myRed = settings.value("/qgis/default_canvas_color_red",255).toInt();
+  myGreen = settings.value("/qgis/default_canvas_color_green",255).toInt();
+  myBlue = settings.value("/qgis/default_canvas_color_blue",255).toInt();
+  pbnCanvasColor->setPaletteBackgroundColor(QColor(myRed,myGreen,myBlue));
 }
 
 //! Destructor
 QgsOptions::~QgsOptions(){}
 
+void QgsOptions::on_pbnSelectionColour_clicked()
+{
+  QColor color = QColorDialog::getColor(pbnSelectionColour->paletteBackgroundColor(),this);
+  if (color.isValid())
+  {
+    pbnSelectionColour->setPaletteBackgroundColor(color);
+  }
+}
+
+void QgsOptions::on_pbnCanvasColor_clicked()
+{
+  QColor color = QColorDialog::getColor(pbnCanvasColor->paletteBackgroundColor(),this);
+  if (color.isValid())
+  {
+    pbnCanvasColor->setPaletteBackgroundColor(color);
+  }
+}
 void QgsOptions::themeChanged(const QString &newThemeName)
 {
   // Slot to change the theme as user scrolls through the choices
@@ -150,6 +178,16 @@ void QgsOptions::saveOptions()
   settings.writeEntry("/Projections/defaultProjectionSRSID",(int)mGlobalSRSID);
 
   settings.writeEntry("/qgis/measure/ellipsoid", getEllipsoidAcronym(cmbEllipsoid->currentText()));
+  //set the colour for selections
+  QColor myColor = pbnSelectionColour->paletteBackgroundColor();
+  int myRed = settings.writeEntry("/qgis/default_selection_color_red",myColor.red());
+  int myGreen = settings.writeEntry("/qgis/default_selection_color_green",myColor.green());
+  int myBlue = settings.writeEntry("/qgis/default_selection_color_blue",myColor.blue());
+  //set teh default color for canvas background
+  myColor = pbnCanvasColor->paletteBackgroundColor();
+  myRed = settings.writeEntry("/qgis/default_canvas_color_red",myColor.red());
+  myGreen = settings.writeEntry("/qgis/default_canvas_color_green",myColor.green());
+  myBlue = settings.writeEntry("/qgis/default_canvas_color_blue",myColor.blue());
   
   //all done
   accept();
