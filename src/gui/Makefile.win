@@ -1,0 +1,25 @@
+QGTOP=../../
+
+LDADD = $(QGIS_LIBS)
+
+OBJECTS = qgis-main.o
+
+all: libs objects qgis.exe
+
+objects:
+	$(MAKE) -f Makefile qgis-main.o
+
+libs:
+	$(MAKE) -f Makefile libqgis_gui.la
+	
+qgis.exe:
+	$(CXX) -o $@ $(OBJECTS) $(LDADD)
+	$(STRIP) $@
+
+install: all
+	$(MAKE) -C i18n -f Makefile install
+	$(MAKE) -C images -f Makefile install
+	$(MAKE) -C resources -f Makefile install
+	$(INSTALL) -m 755 qgis.exe $(prefix)/bin/qgis.exe
+
+include ../../Makefile.win.rules

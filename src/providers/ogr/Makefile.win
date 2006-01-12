@@ -1,0 +1,19 @@
+QGTOP=../../../
+
+LDADD = $(PLUGIN_LIBS) 
+
+OBJECTS = ogrprovider_la-qgsogrprovider.o
+
+all: objects .libs/ogrprovider.dll
+
+objects:
+	$(MAKE) -f Makefile ogrprovider_la-qgsogrprovider.o
+
+.libs/ogrprovider.dll: $(OBJECTS)
+	$(CXX) -shared -o  $@ $(OBJECTS) $(LDADD)
+	$(STRIP) $@ 
+
+install: all
+	$(INSTALL) -m 755 .libs/ogrprovider.dll $(prefix)/lib/qgis/ogrprovider.dll
+
+include ../../../Makefile.win.rules
