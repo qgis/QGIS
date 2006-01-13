@@ -60,7 +60,7 @@ public:
     static void setMapset( QString gisdbase, QString location, QString mapset);
 
     //! Error codes returned by GetError() 
-    enum ERROR { OK, /*!< OK. No error. */  
+    enum GERROR { OK, /*!< OK. No error. */  
 	         WARNING, /*!< Warning, non fatal error. Should be printed by application. */ 
 		 FATAL /*!< Fatal error. Function faild. */ 
                };
@@ -95,7 +95,7 @@ private:
     static QString defaultMapset;
 
     /* last error in GRASS libraries */
-    static ERROR error;         // static, because used in constructor
+    static GERROR error;         // static, because used in constructor
     static QString error_message;
 
     static int error_routine ( char *msg, int fatal); // static because pointer to this function is set later

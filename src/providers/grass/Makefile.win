@@ -1,0 +1,21 @@
+QGTOP=../../../
+
+LDADD = .libs/libqgisgrass.a $(PLUGIN_LIBS) $(GRASS_LIB)
+
+OBJECTS = grassprovider_la-provider.o
+
+PROVIDER = .libs/grassprovider.dll
+
+all: objects $(PROVIDER)
+
+objects:
+	$(MAKE) -f Makefile 
+
+$(PROVIDER): $(OBJECTS)
+	$(CXX) -shared -o  $@ $(OBJECTS) $(LDADD)
+	$(STRIP) $@ 
+
+install: all
+	$(INSTALL) -m 755 $(PROVIDER) $(prefix)/lib/qgis/grassprovider.dll
+
+include ../../../Makefile.win.rules
