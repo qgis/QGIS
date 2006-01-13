@@ -17,9 +17,6 @@ qgis.exe:
 	$(STRIP) $@
 
 install: all
-	$(MAKE) -C i18n -f Makefile install
-	$(MAKE) -C images -f Makefile install
-	$(MAKE) -C resources -f Makefile install
 	$(INSTALL) -m 755 qgis.exe $(prefix)/bin/qgis.exe
 
 include ../../Makefile.win.rules

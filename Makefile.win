@@ -1,7 +1,13 @@
-WINSUBDIRS = src src/providers/ogr
+WINSUBDIRS = src src/providers/ogr src/providers/grass \
+	src/plugins/grass
 
 all: winsubdirs
 
-install: instsubdirs
+install: all
+	$(MAKE) -C i18n -f Makefile install
+	$(MAKE) -C images -f Makefile install
+	$(MAKE) -C resources -f Makefile install
+	$(MAKE) -C src -f Makefile.win install
+
 
 include ./Makefile.win.rules
