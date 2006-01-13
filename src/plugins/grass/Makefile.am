@@ -14,7 +14,8 @@ SUBDIRS = config modules themes
 
 INCLUDES = -I../../gui -I../../core
 
-DEFS=-DGRASS_BASE=\"$(GRASS_BASE)\" -DHAVE_OPENPTY=$(HAVE_OPENPTY) 
+DEFS=-DGRASS_BASE=\"$(GRASS_BASE)\" -DHAVE_OPENPTY=$(HAVE_OPENPTY)
+
 if !HAVE_QTMAC
 PREFIX=-DPREFIX=\"$(prefix)\"
 endif

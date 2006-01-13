@@ -36,7 +36,8 @@ class QgsGrassProvider;
  *  \brief Interface to GRASS modules.
  *
  */
-class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
+//class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
+class QgsGrassTools: public Q3MainWindow, private Ui::QgsGrassToolsBase
 {
     Q_OBJECT;
 

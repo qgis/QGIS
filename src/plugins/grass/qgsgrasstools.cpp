@@ -51,6 +51,7 @@
 #include <QCloseEvent>
 
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
@@ -74,11 +75,13 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
 	                     QWidget * parent, const char * name, Qt::WFlags f )
              //:QgsGrassToolsBase ( parent, name, f )
              //commented out params during Qt4 Ui port - FIXME
-             :QgsGrassToolsBase ( )
+             :QgsGrassToolsBase ( ), Q3MainWindow()
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassTools()" << std::endl;
     #endif
+
+    setupUi(this);
 
     mQgisApp = qgisApp;
     mIface = iface;
@@ -95,17 +98,22 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
     connect( mModulesListView, SIGNAL(clicked(Q3ListViewItem *)), 
 		         this, SLOT(moduleClicked( Q3ListViewItem *)) );
 
+    QString title = "GRASS Tools: " + QgsGrass::getDefaultLocation()
+                + "/" + QgsGrass::getDefaultMapset();
+    setCaption(title);
+
+    // Warning: QgsApplication initialized in main.cpp
+    //          is not valid here (static libraries / linking)
+
 #if defined(WIN32) || defined(Q_OS_MACX)
     mAppDir = qApp->applicationDirPath();
 #else
     mAppDir = PREFIX;
 #endif
 
-    QString title = "GRASS Tools: " + QgsGrass::getDefaultLocation()
-                + "/" + QgsGrass::getDefaultMapset();
-    setCaption(title);
-
+    //QString conf = QgsApplication::pkgDataPath() + "/grass/config/default.qgc";
     QString conf = mAppDir + "/share/qgis/grass/config/default.qgc";
+
     loadConfig ( conf );
     //statusBar()->hide();
     restorePosition();
@@ -113,6 +121,9 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
 
 void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
 {
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassTools::moduleClicked()" << std::endl;
+    #endif
     if ( !item ) return;
 
     QString name = item->text(1);
@@ -120,17 +131,28 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
     
     if ( name.length() == 0 ) return;  // Section
     
+    //QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
     QString path = mAppDir + "/share/qgis/grass/modules/" + name;
+    #ifdef QGISDEBUG
+    std::cerr << "path = " << path.ascii() << std::endl;
+    #endif
     QWidget *m;
     QgsGrassShell *sh = 0;
     if ( name == "shell" )
     {
-#ifdef HAVE_OPENPTY
+#ifdef WIN32
+	 QMessageBox::warning( 0, "Warning",
+             "GRASS Shell is not supported on Windows." );
+#else 
+
+    #ifdef HAVE_OPENPTY
         sh = new QgsGrassShell(this, mTabWidget);
         m = dynamic_cast<QWidget *> ( sh );
-#else
+    #else
 	QMessageBox::warning( 0, "Warning", "GRASS Shell is not compiled." );
-#endif
+    #endif // HAVE_OPENPTY
+
+#endif // ! WIN32
     }
     else
     {
@@ -148,7 +170,9 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
      
     // We must call resize to reset COLUMNS enviroment variable
     // used by bash !!!
+#ifndef WIN32
     if ( sh ) sh->resizeTerminal();
+#endif
 }
 
 bool QgsGrassTools::loadConfig(QString filePath)
@@ -233,6 +257,7 @@ void QgsGrassTools::addModules (  Q3ListViewItem *parent, QDomElement &element )
 		QString name = e.attribute("name");
 	        std::cout << "name = " << name.toLocal8Bit().data() << std::endl;
 
+                //QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
                 QString path = mAppDir + "/share/qgis/grass/modules/" + name;
                 QString label = QgsGrassModule::label ( path );
 		QPixmap pixmap = QgsGrassModule::pixmap ( path, 25 ); 
@@ -270,6 +295,7 @@ QgsGrassTools::~QgsGrassTools()
 
 QString QgsGrassTools::appDir(void)
 {
+    //return QgsApplication::applicationDirPath();
     return mAppDir;
 }
 
