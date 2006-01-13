@@ -53,7 +53,11 @@ QgsAttributeActionDialog::QgsAttributeActionDialog(QgsAttributeAction* actions,
 
 void QgsAttributeActionDialog::init()
 {
-  // Can these be moved to the .ui file?
+  Q3Header* header = attributeActionTable->horizontalHeader();
+  header->setLabel(0, "Name");
+  header->setLabel(1, "Action");
+  header->setLabel(2, "Capture");
+
   attributeActionTable->setColumnStretchable(0, true);
   attributeActionTable->setColumnStretchable(1, true);
   attributeActionTable->setColumnStretchable(2, true);
