@@ -61,7 +61,7 @@ extern "C" {
 
 bool QgsGrassRegion::mRunning = false;
 
-QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, QgisIface *interface,
+QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, QgisIface *iface,
         QWidget * parent, const char * name, Qt::WFlags f ) 
         //:QgsGrassRegionBase ( parent, name, f )
         //Tim removed params durint qt4 ui port - FIXME
@@ -74,7 +74,7 @@ QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, Qgis
     mRunning = true;
     mPlugin = plugin;
     mQgisApp = qgisApp;
-    mInterface = interface;
+    mInterface = iface;
     mCanvas = mInterface->getMapCanvas();
     restorePosition();
     mDraw = false;

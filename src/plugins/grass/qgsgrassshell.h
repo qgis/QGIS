@@ -12,7 +12,7 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QResizeEvent>
-    
+
 class QgsGrassShellText;
 
 extern "C" {
