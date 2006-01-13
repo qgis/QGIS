@@ -5,4 +5,7 @@ WINSUBDIRS = gui
 
 all: stdsubdirs winsubdirs
 
+install: all
+	$(MAKE) -C gui -f Makefile.win install
+
 include ../Makefile.win.rules
