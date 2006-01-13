@@ -94,9 +94,9 @@ QgsOptions::QgsOptions(QWidget *parent, const char *name, bool modal) :
   // set the theme combo
   cmbTheme->setCurrentText(settings.readEntry("/Themes","default"));
   //set teh state of the checkboxes
-  chkAntiAliasing->setChecked(settings.value("/qgis/enable_anti_aliasing").toBool());
-  chkAddedVisibility->setChecked(!settings.value("/qgis/new_layers_visible").toBool());
-  cbxHideSplash->setChecked(settings.value("/qgis/hideSplash").toBool());
+  chkAntiAliasing->setChecked(settings.value("/qgis/enable_anti_aliasing",false).toBool());
+  chkAddedVisibility->setChecked(!settings.value("/qgis/new_layers_visible",false).toBool());
+  cbxHideSplash->setChecked(settings.value("/qgis/hideSplash",false).toBool());
   //set the colour for selections
   int myRed = settings.value("/qgis/default_selection_color_red",255).toInt();
   int myGreen = settings.value("/qgis/default_selection_color_green",255).toInt();

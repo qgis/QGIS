@@ -270,8 +270,6 @@ static void setTitleBarText_( QWidget & qgisApp )
   mQgisInterface = new QgisIface(this);
   // set the legend control for the map canvas
   mMapCanvas->setLegend(mMapLegend);
-  QSettings mySettings;
-  mMapCanvas->enableAntiAliasing(mySettings.value("/qgis/enable_anti_aliasing").toBool());
 
 
   //
@@ -1059,7 +1057,17 @@ void QgisApp::createCanvas()
   // "theMapCanvas" used to find this canonical instance later
   mMapCanvas = new QgsMapCanvas(NULL, "theMapCanvas" );
   QWhatsThis::add(mMapCanvas, tr("Map canvas. This is where raster and vector layers are displayed when added to the map"));
-  mMapCanvas->setBackgroundColor(Qt::white); //QColor (220, 235, 255));
+  //set the canvas to the default background colour
+  //the default can be set in qgisoptions 
+  //use project properties to override the colour on a per project basis
+  QSettings mySettings;
+  int myRed = mySettings.value("/qgis/default_canvas_color_red",255).toInt();
+  int myGreen = mySettings.value("/qgis/default_canvas_color_green",255).toInt();
+  int myBlue = mySettings.value("/qgis/default_canvas_color_blue",255).toInt();
+  mMapCanvas->setCanvasColor(QColor(myRed,myGreen,myBlue));  // this is the fill co;our when rendering
+  mMapCanvas->setBackgroundColor(QColor(myRed,myGreen,myBlue)); // this is for the widget itself
+  
+  mMapCanvas->enableAntiAliasing(mySettings.value("/qgis/enable_anti_aliasing",false).toBool());
   mMapCanvas->setMinimumWidth(400);
   QVBoxLayout *myCanvasLayout = new QVBoxLayout;
   myCanvasLayout->addWidget(mMapCanvas);
@@ -3008,8 +3016,8 @@ void QgisApp::openProject(int pathIndex)
     int  myGreenInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorGreenPart",255);
     int  myBlueInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorBluePart",255);
     QColor myColor = QColor(myRedInt,myGreenInt,myBlueInt);
-    mMapCanvas->setCanvasColor(myColor);
-                        
+    mMapCanvas->setCanvasColor(myColor); //this is fill colour before rendering starts
+    mMapCanvas->setBackgroundColor(myColor); // this is for the widget itself
   }
   //set the projections enabled icon in the status bar
   int myProjectionEnabledFlag =
@@ -5161,7 +5169,8 @@ void QgisApp::projectProperties()
     int  myGreenInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorGreenPart",255);
     int  myBlueInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorBluePart",255);
     QColor myColor = QColor(myRedInt,myGreenInt,myBlueInt);
-    mMapCanvas->setCanvasColor(myColor);
+    mMapCanvas->setCanvasColor(myColor); //this is fil colour before rendering onto canvas
+    mMapCanvas->setBackgroundColor(myColor); // this is for the widget itself
   // Set the window title.
   setTitleBarText_( *this );
   // delete the property sheet object
