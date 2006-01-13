@@ -56,12 +56,18 @@ void QgsGrass::init( void ) {
 
         // Add path to GRASS modules
         // TODO: do that portable
+#ifdef WIN32
+        QString sep = ";";
+#else
+        QString sep = ":";
+
+#endif
         QString gisBase = getenv("GISBASE");
         QString path = "PATH=" + gisBase + "/bin";
-        path.append ( ":" + gisBase + "/scripts" );
+        path.append ( sep + gisBase + "/scripts" );
 
         QString p = getenv ("PATH");
-        path.append ( ":" + p );
+        path.append ( sep + p );
 
 	#ifdef QGISDEBUG
 	std::cerr << "set PATH: " << path.toLocal8Bit().data() << std::endl;
@@ -135,7 +141,7 @@ int QgsGrass::initialized = 0;
 
 bool QgsGrass::active = 0;
 
-QgsGrass::ERROR QgsGrass::error = QgsGrass::OK;
+QgsGrass::GERROR QgsGrass::error = QgsGrass::OK;
 
 QString QgsGrass::error_message;
 
@@ -208,13 +214,17 @@ QString QgsGrass::openMapset ( QString gisdbase, QString location, QString mapse
 #ifdef QGISDEBUG
     std::cerr << "status = " << status << std::endl;
 #endif
+
+// TODO WIN32 (lock.exe does not work properly?)
+#ifndef WIN32
     if ( status > 0 ) return "Mapset is already in use.";
+#endif
 
     // Create temporary directory
     QFileInfo info ( mapsetPath );
     QString user = info.owner();
 
-    mTmp = "/tmp/grass6-" + user + "-" + QString::number(pid);
+    mTmp = QDir::tempPath () + "/grass6-" + user + "-" + QString::number(pid);
     QDir dir ( mTmp );
     if ( dir.exists() )
     {
