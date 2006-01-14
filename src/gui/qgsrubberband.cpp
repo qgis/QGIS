@@ -27,10 +27,30 @@ QgsRubberBand::QgsRubberBand(QWidget * parent, bool isPolygon)
 {
   setGeometry(parent->rect()); // this widget is same size as parent
   mPoints.append(QPoint()); // addPoint assumes an initial allocated point
+  setColor(QColor(Qt::lightGray));
 }
 
 QgsRubberBand::~QgsRubberBand()
 {}
+
+/*!
+  Set the outline and fill color.
+*/
+void QgsRubberBand::setColor(const QColor & color)
+{
+  mPen.setColor(color);
+  QColor fillColor(color.red(), color.green(), color.blue(), 63);
+  mBrush.setColor(fillColor);
+  mBrush.setStyle(Qt::SolidPattern);
+}
+
+/*!
+  Set the outline width.
+*/
+void QgsRubberBand::setWidth(int width)
+{
+  mPen.setWidth(width);
+}
 
 /*!
   Remove all points from the shape being created.
@@ -69,8 +89,8 @@ void QgsRubberBand::paintEvent(QPaintEvent * event)
   if (mPoints.count() > 1)
   {
     QPainter p(this);
-    p.setPen(Qt::lightGray);
-    p.setBrush(QBrush(Qt::lightGray, Qt::Dense6Pattern));
+    p.setPen(mPen);
+    p.setBrush(mBrush);
     if (mIsPolygon)
     {
       p.drawPolygon(mPoints);

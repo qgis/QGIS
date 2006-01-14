@@ -17,6 +17,8 @@
 #define QGSRUBBERBAND_H
 
 #include <QWidget>
+#include <QBrush>
+#include <QPen>
 #include <QPolygon>
 class QPaintEvent;
 
@@ -25,7 +27,10 @@ class QgsRubberBand: public QWidget
   public:
     QgsRubberBand(QWidget * parent, bool isPolygon = false);
     ~QgsRubberBand();
-    
+
+    void setColor(const QColor & color);
+    void setWidth(int width);
+
     void reset(bool isPolygon = false);
     void addPoint(const QPoint & p);
     void movePoint(const QPoint & p);
@@ -34,6 +39,8 @@ class QgsRubberBand: public QWidget
     virtual void paintEvent(QPaintEvent * event);
 
   private:
+    QBrush mBrush;
+    QPen mPen;
     QPolygon mPoints;
     bool mIsPolygon;
 };
