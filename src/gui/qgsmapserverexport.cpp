@@ -38,6 +38,14 @@ QgsMapserverExport::QgsMapserverExport(QgsMapCanvas * _map, QWidget * parent, co
   setupUi(this);
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(accept()));
   connect(buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
+  // These values shouldn't be translated, the units should be in english in the map file
+  // Qt designer adds translate() by default
+  cmbMapUnits->addItem(QString::fromUtf8("dd"));
+  cmbMapUnits->addItem(QString::fromUtf8("feet"));
+  cmbMapUnits->addItem(QString::fromUtf8("meters"));
+  cmbMapUnits->addItem(QString::fromUtf8("miles"));
+  cmbMapUnits->addItem(QString::fromUtf8("inches"));
+  cmbMapUnits->addItem(QString::fromUtf8("kilometers"));
 }
 
 // Default destructor
