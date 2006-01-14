@@ -19,14 +19,13 @@
 #ifndef QGSSERVERSOURCESELECT_H
 #define QGSSERVERSOURCESELECT_H
 #include "ui_qgsserversourceselectbase.h"
-#include <QDialog>
 
 #include <vector>
 #include <map>
 
 class QgisApp;
 class QgsWmsProvider;
-
+class QButtonGroup;
 /*!
  * \brief   Dialog to create connections and add layers from WMS, etc.
  *
@@ -102,6 +101,9 @@ private:
 
     //! Pointer to the qgis application mainwindow
     QgisApp *qgisApp;
+
+    //! The widget that controls the image format radio buttons
+    QButtonGroup* m_imageFormatBtns;
 };
 
 

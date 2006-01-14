@@ -23,10 +23,10 @@
 #include "qgsproviderregistry.h"
 #include "../providers/wms/qgswmsprovider.h"
 
-#include <Q3ListView>
 #include <QMessageBox>
 #include <QPicture>
 #include <QSettings>
+#include <QButtonGroup>
 
 #include <iostream>
 
@@ -36,6 +36,23 @@ QgsServerSourceSelect::QgsServerSourceSelect(QgisApp * app, QWidget * parent, co
 {
   setupUi(this);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+
+  // Qt Designer 4.1 doesn't let us use a QButtonGroup, so it has to
+  // be done manually... Unless I'm missing something, it's a whole
+  // lot harder to do groups of radio buttons in Qt4 than Qt3.
+  m_imageFormatBtns = new QButtonGroup;
+  // Populate it with a couple of buttons
+  QRadioButton* btn1 = new QRadioButton(tr("PNG"));
+  QRadioButton* btn2 = new QRadioButton(tr("JPEG"));
+  m_imageFormatBtns->addButton(btn1, 1);
+  m_imageFormatBtns->addButton(btn2, 2);
+  btn1->setChecked(true);
+  // And lay then out horizontally
+  QHBoxLayout *hbox = new QHBoxLayout;
+  hbox->addWidget(btn1);
+  hbox->addWidget(btn2);
+  hbox->addStretch();
+  btnGrpImageEncoding->setLayout(hbox);
 
   btnAdd->setEnabled(false);
   populateConnectionList();
@@ -170,9 +187,12 @@ void QgsServerSourceSelect::populateImageEncodingGroup(QgsWmsProvider* wmsProvid
   //
   // Remove old group of buttons
   //
-  for (int i = 1; i <= btnGrpImageEncoding->count(); i++)
+  QList<QAbstractButton*> btns = m_imageFormatBtns->buttons();
+  QList<QAbstractButton*>::const_iterator iter = btns.begin();
+  for (; iter != btns.end(); ++iter)
   {
-    btnGrpImageEncoding->remove( btnGrpImageEncoding->find(i) );
+    m_imageFormatBtns->removeButton(*iter);
+    // Should the buttons be deleted too?
   }
 
   m_MimeTypeForButtonId.clear();
@@ -203,7 +223,8 @@ void QgsServerSourceSelect::populateImageEncodingGroup(QgsWmsProvider* wmsProvid
   std::cout << "QgsServerSourceSelect::populateImageEncodingGroup: got image format " << (*format).toLocal8Bit().data() << "." << std::endl;
 #endif
 
-    QRadioButton* radioButton = new QRadioButton(btnGrpImageEncoding);
+    QRadioButton* radioButton = new QRadioButton;
+    m_imageFormatBtns->addButton(radioButton, i);
 
     if      ((*format) == "image/png")
     {
@@ -214,9 +235,7 @@ void QgsServerSourceSelect::populateImageEncodingGroup(QgsWmsProvider* wmsProvid
       radioButton->setText(tr("JPEG"));
     }
 
-    /* Qt4 in Qt3 compat mode seems to clobber custom layout variable names */
-//    layoutImageEncoding->addWidget(radioButton);
-    hboxLayout3->addWidget(radioButton);
+    m_imageFormatBtns->addButton(radioButton);
 
     m_MimeTypeForButtonId[i] = (*format);
 
@@ -381,16 +400,14 @@ QString QgsServerSourceSelect::selectedImageEncoding()
 {
   // TODO: Match this hard coded list to the list of formats Qt reports it can actually handle.
 
-  if      (btnGrpImageEncoding->selected() == (QRadioButton *) radioButtonPng)
-  {
-    return "image/png";
-  }
-  else if (btnGrpImageEncoding->selected() == (QRadioButton *) radioButtonJpeg)
-  {
-    return "image/jpeg";
-  }
+  QAbstractButton* checked = m_imageFormatBtns->checkedButton();
 
-  // Worst-case scenario - fall back to PNG
-  return "image/png";
+  if (checked->text() == tr("PNG"))
+    return "image/png";
+  else if (checked->text() == tr("JPEG"))
+    return "image/jpeg";
+  else // Worst-case scenario - fall back to PNG
+    return "image/png";
+
 }
 
