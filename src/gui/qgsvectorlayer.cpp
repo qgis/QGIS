@@ -745,7 +745,7 @@ std::cerr << i << ": " << ring->first[i]
     //I have hardcoded it to opaque  out for now 
     //until I make it user configurable
     //and hopefully work out how to improve performance
-    myColor.setAlpha(255);
+    myColor.setAlpha(transparencyLevelInt);
     myTransparentBrush.setColor(myColor);
     p->setBrush(myTransparentBrush);
     // draw the polygon fill
@@ -3609,3 +3609,12 @@ inline void QgsVectorLayer::transformPoints(
   // position on map canvas
   mtp->transformInPlace(x, y);
 }
+unsigned int QgsVectorLayer::getTransparency()
+{
+  return transparencyLevelInt;
+}
+//should be between 0 and 255
+void QgsVectorLayer::setTransparency(int theInt)
+{
+  transparencyLevelInt=theInt;
+} //  QgsRasterLayer::setTransparency(int theInt)

@@ -50,6 +50,7 @@
 QgsMapLayer::QgsMapLayer(int type,
                          QString lyrname,
                          QString source) :
+        transparencyLevelInt(255), // 0 is completely transparent
         valid(true), // assume the layer is valid (data source exists and 
                      // can be used) until we learn otherwise
         dataSource(source),

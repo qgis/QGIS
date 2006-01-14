@@ -383,8 +383,6 @@ public:
     bool hasBand(QString const &  theBandName);
     /** \brief accessor for transparency level.  */
     unsigned int getTransparency();
-    /** \brief Mutator for transparency level. Should be between 0 and 255 */
-    void setTransparency(int); //
     /** \brief Call any inline image manipulation filters */
     void filterLayer(QImage * theQImage);
     /** \brief Accessor for red band name (allows alternate mappings e.g. map blue as red colour). */
@@ -754,6 +752,8 @@ public:
     bool isSymbologyCompatible(const QgsMapLayer& other) const {return false;} //todo
 
 public slots:    
+    /** \brief Mutator for transparency level. Should be between 0 and 255 */
+    void setTransparency(int); //
     /**
      * Convert this raster to another format
      */
@@ -956,8 +956,6 @@ private:
      * The typedef for this is defined above before class declaration
      */
     RasterStatsVector rasterStatsVector;
-    /** \brief Transparency level for this layer should be 0-255.  */
-    unsigned int transparencyLevelInt;
     /** \brief The band to be associated with the color red - usually 1.  */
     QString redBandNameQString;
     /** \brief The band to be associated with the color green - usually 2.  */
