@@ -122,6 +122,9 @@
      <property name="title" >
       <string>Map</string>
      </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
      <layout class="QGridLayout" >
       <property name="margin" >
        <number>10</number>
@@ -147,38 +150,7 @@
        </widget>
       </item>
       <item row="1" column="1" colspan="2" >
-       <widget class="QComboBox" name="cmbMapUnits" >
-        <item>
-         <property name="text" >
-          <string>dd</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>feet</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>meters</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>miles</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>inches</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>kilometers</string>
-         </property>
-        </item>
-       </widget>
+       <widget class="QComboBox" name="cmbMapUnits" />
       </item>
       <item row="1" column="0" >
        <widget class="QLabel" name="textLabel3" >
@@ -280,6 +252,9 @@
     <widget class="Q3GroupBox" name="grpWeb" >
      <property name="title" >
       <string>Web Interface Definition</string>
+     </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
