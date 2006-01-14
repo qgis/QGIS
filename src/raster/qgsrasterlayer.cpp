@@ -455,7 +455,6 @@ QgsRasterLayer::QgsRasterLayer(QString const & path, QString const & baseName)
     showDebugOverlayFlag(false),
     invertHistogramFlag(false),
     stdDevsToPlotDouble(0),
-    transparencyLevelInt(255), // 0 is completely transparent
     mTransparencySlider(0x0),
     mLayerProperties(0x0),
     mIdentifyResults(0),
@@ -4964,7 +4963,6 @@ QgsRasterLayer::QgsRasterLayer(int dummy,
     showDebugOverlayFlag(false),
     invertHistogramFlag(false),
     stdDevsToPlotDouble(0),
-    transparencyLevelInt(255), // 0 is completely transparent
     mTransparencySlider(0x0),
     mLayerProperties(0x0),
     mIdentifyResults(0),

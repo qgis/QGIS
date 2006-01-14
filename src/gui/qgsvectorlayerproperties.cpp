@@ -73,6 +73,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr,
   {
       leSpatialRefSys->setText(layer->coordinateTransform()->sourceSRS().proj4String());
   }
+  connect(sliderTransparency, SIGNAL(valueChanged(int)), this, SLOT(sliderTransparency_valueChanged(int)));
 
 } // QgsVectorLayerProperties ctor
 
@@ -80,6 +81,12 @@ QgsVectorLayerProperties::~QgsVectorLayerProperties()
 {
     
 }
+void QgsVectorLayerProperties::sliderTransparency_valueChanged(int theValue)
+{
+  //set the transparency percentage label to a suitable value
+  int myInt = static_cast < int >((theValue / 255.0) * 100);  //255.0 to prevent integer division
+  lblTransparencyPercent->setText(tr("Transparency: ") + QString::number(myInt) + "%");
+}//sliderTransparency_valueChanged
 
 void QgsVectorLayerProperties::alterLayerDialog(const QString & dialogString)
 {
@@ -230,6 +237,10 @@ void QgsVectorLayerProperties::reset( void )
   actionDialog->init();
   labelDialog->init();
   labelCheckBox->setChecked(layer->labelOn());
+  //set the transparency slider
+  sliderTransparency->setValue(255 - layer->getTransparency());
+  //update the transparency percentage label
+  sliderTransparency_valueChanged(255 - layer->getTransparency());
 
 } // reset()
 
@@ -305,6 +316,7 @@ void QgsVectorLayerProperties::on_pbnApply_clicked()
   {
       udialog->apply();
   }
+  layer->setTransparency(static_cast < unsigned int >(255 - sliderTransparency->value()));
   
   layer->triggerRepaint();
 

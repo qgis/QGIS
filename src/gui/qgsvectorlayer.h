@@ -67,6 +67,9 @@ public:
   //! Destructor
   virtual ~QgsVectorLayer();
 
+  /** \brief accessor for transparency level.  */
+  unsigned int getTransparency();
+
   /**
    *   Returns the permanent storage type for this layer as a friendly name.
    */
@@ -163,6 +166,9 @@ signals:
   void selectionChanged(); 
   
 public slots:
+
+  /** \brief Mutator for transparency level. Should be between 0 and 255 */
+  void setTransparency(int); //
 
   void inOverview( bool );
 
