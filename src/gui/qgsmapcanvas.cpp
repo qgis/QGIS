@@ -2095,6 +2095,14 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
           if (mCaptureList.size() == 0)
           {
             mRubberBand2 = new QgsRubberBand(this, mPolygonEditing);
+            QgsProject * project = QgsProject::instance();
+            QColor color(
+                project->readNumEntry("Digitizing", "/LineColorRedPart", 255),
+                project->readNumEntry("Digitizing", "/LineColorGreenPart", 0),
+                project->readNumEntry("Digitizing", "/LineColorBluePart", 0));
+            mRubberBand2->setColor(color);
+            int width = project->readNumEntry("Digitizing", "/LineWidth", 1);
+            mRubberBand2->setWidth(width);
             mRubberBand2->show();
           }
 #endif
