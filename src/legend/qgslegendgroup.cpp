@@ -27,7 +27,7 @@ QgsLegendGroup::QgsLegendGroup(QTreeWidgetItem * theItem ,QString theName)
 {
   mType=LEGEND_GROUP;
   setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-  QIcon myIcon(QgsApplication::themePath()+"mActionFolder.png");
+  QIcon myIcon(QgsApplication::themePath()+"/mActionFolder.png");
   setIcon(0, myIcon);
 }
 QgsLegendGroup::QgsLegendGroup(QTreeWidget* theListView, QString theString)
@@ -35,7 +35,7 @@ QgsLegendGroup::QgsLegendGroup(QTreeWidget* theListView, QString theString)
 {
   mType=LEGEND_GROUP;
   setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-  QIcon myIcon(QgsApplication::themePath()+"mActionFolder.png");
+  QIcon myIcon(QgsApplication::themePath()+"/mActionFolder.png");
   setIcon(0, myIcon);
 }
 
@@ -43,7 +43,7 @@ QgsLegendGroup::QgsLegendGroup(QString name): QgsLegendItem()
 {
   mType=LEGEND_GROUP;
   setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-  QIcon myIcon(QgsApplication::themePath()+"mActionFolder.png");
+  QIcon myIcon(QgsApplication::themePath()+"/mActionFolder.png");
   setText(0, name);
   setIcon(0, myIcon);
 }

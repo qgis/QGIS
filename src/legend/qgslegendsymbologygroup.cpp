@@ -29,7 +29,7 @@ QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(QTreeWidgetItem * theItem, QStr
     : QgsLegendItem( theItem, theString)
 {
   mType = LEGEND_SYMBOL_GROUP;
-  QIcon myIcon(QgsApplication::themePath()+"mIconSymbology.png");
+  QIcon myIcon(QgsApplication::themePath()+"/mIconSymbology.png");
   setText(0, theString);
   setIcon(0,myIcon);
 }
