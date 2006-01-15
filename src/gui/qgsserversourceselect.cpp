@@ -22,6 +22,7 @@
 #include "qgsnumericsortlistviewitem.h"
 #include "qgsproviderregistry.h"
 #include "../providers/wms/qgswmsprovider.h"
+#include "qgscontexthelp.h"
 
 #include <QMessageBox>
 #include <QPicture>
@@ -115,6 +116,12 @@ void QgsServerSourceSelect::on_btnDelete_clicked()
   }
 }
 
+void QgsServerSourceSelect::on_btnHelp_clicked()
+{
+  
+  QgsContextHelp::run(context_id);
+
+}
 
 void QgsServerSourceSelect::populateLayerList(QgsWmsProvider* wmsProvider)
 {

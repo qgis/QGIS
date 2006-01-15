@@ -36,6 +36,10 @@ class QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpConnectionBas
  public slots:
     //! Saves the connection to ~/.qt/qgisrc
     void saveConnection();
+    //! Show context help
+    void on_btnHelp_clicked();
+ private:
+    static const int context_id = 308026563;
 };
 
 #endif //  QGSNEWHTTPCONNECTION_H

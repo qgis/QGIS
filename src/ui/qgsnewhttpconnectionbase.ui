@@ -38,6 +38,9 @@
        <property name="title" >
         <string>Connection Information</string>
        </property>
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
        <layout class="QVBoxLayout" >
         <property name="margin" >
          <number>11</number>
@@ -191,7 +194,7 @@
        <item>
         <widget class="QPushButton" name="btnHelp" >
          <property name="enabled" >
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="text" >
           <string>Help</string>
