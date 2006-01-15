@@ -19,6 +19,7 @@
 #define QGSGEOMTYPEDIALOG_H
 
 #include "ui_qgsgeomtypedialogbase.h"
+#include "qgscontexthelp.h"
 #include <QDialog>
 
 #include "qgis.h"
@@ -39,6 +40,9 @@ class QgsGeomTypeDialog: public QDialog, private Ui::QgsGeomTypeDialogBase
   protected slots:
   void on_mAddAttributeButton_clicked();
   void on_mRemoveAttributeButton_clicked();
+  void on_btnHelp_clicked();
+  private:
+  static const int context_id = 165149618;
   
 };
 
