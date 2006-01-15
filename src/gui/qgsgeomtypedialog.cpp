@@ -85,6 +85,10 @@ void QgsGeomTypeDialog::on_mRemoveAttributeButton_clicked()
     
 }
 
+void QgsGeomTypeDialog::on_btnHelp_clicked()
+{
+  QgsContextHelp::run(context_id);
+}
 void QgsGeomTypeDialog::attributes(std::list<std::pair<QString, QString> >& at) const
 {
     Q3ListViewItemIterator it(mAttributeView);
