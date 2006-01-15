@@ -86,7 +86,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFile::accept(const QgsLegendItem* li) c
 
 QPixmap QgsLegendLayerFile::getOriginalPixmap() const
 {
-    QPixmap myPixmap(QgsApplication::themePath()+"mActionFileNew.png");
+    QPixmap myPixmap(QgsApplication::themePath()+"mActionFileSmall.png");
     return myPixmap;
 }
 

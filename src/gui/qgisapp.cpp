@@ -2751,6 +2751,13 @@ bool QgisApp::addProject(QString projectFile)
     if ( QgsProject::instance()->read( projectFile ) )
     {
       setTitleBarText_( *this );
+      int  myRedInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorRedPart",255);
+      int  myGreenInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorGreenPart",255);
+      int  myBlueInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorBluePart",255);
+      QColor myColor = QColor(myRedInt,myGreenInt,myBlueInt);
+      mMapCanvas->setCanvasColor(myColor); //this is fill colour before rendering starts
+      mMapCanvas->setBackgroundColor(myColor); // this is for the widget itself
+      qDebug("Canvas bacground color restored...");
 
       emit projectRead(); // let plug-ins know that we've read in a new
       // project so that they can check any project
@@ -3012,12 +3019,6 @@ void QgisApp::openProject(int pathIndex)
 #else
     addProject(mRecentProjectPaths.at(pathIndex));
 #endif
-    int  myRedInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorRedPart",255);
-    int  myGreenInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorGreenPart",255);
-    int  myBlueInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorBluePart",255);
-    QColor myColor = QColor(myRedInt,myGreenInt,myBlueInt);
-    mMapCanvas->setCanvasColor(myColor); //this is fill colour before rendering starts
-    mMapCanvas->setBackgroundColor(myColor); // this is for the widget itself
   }
   //set the projections enabled icon in the status bar
   int myProjectionEnabledFlag =
@@ -3044,6 +3045,9 @@ void QgisApp::openProject(const QString & fileName)
 #ifdef QGISDEBUG
         std::cerr << "unable to load project " << fileName.toLocal8Bit().data() << "\n";
 #endif
+      }
+      else
+      {
       }
     }
     catch ( QgsIOException & io_exception )
