@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>443</width>
-    <height>444</height>
+    <width>413</width>
+    <height>453</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -67,6 +67,12 @@
         <property name="text" >
          <string/>
         </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
         <property name="checkable" >
          <bool>true</bool>
         </property>
@@ -100,6 +106,12 @@
         <property name="text" >
          <string/>
         </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
         <property name="checkable" >
          <bool>true</bool>
         </property>
@@ -118,6 +130,12 @@
         </property>
         <property name="text" >
          <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>
@@ -152,6 +170,12 @@
         <property name="text" >
          <string/>
         </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
         <property name="checkable" >
          <bool>true</bool>
         </property>
@@ -171,6 +195,12 @@
         <property name="text" >
          <string/>
         </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
         <property name="checkable" >
          <bool>true</bool>
         </property>
@@ -189,6 +219,12 @@
         </property>
         <property name="text" >
          <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>
@@ -217,6 +253,12 @@
         <property name="text" >
          <string/>
         </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
         <property name="checkable" >
          <bool>true</bool>
         </property>
@@ -236,6 +278,12 @@
         <property name="text" >
          <string/>
         </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
         <property name="checkable" >
          <bool>true</bool>
         </property>
@@ -254,6 +302,12 @@
         </property>
         <property name="text" >
          <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>
@@ -282,6 +336,12 @@
         <property name="text" >
          <string/>
         </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
         <property name="checkable" >
          <bool>true</bool>
         </property>
@@ -301,6 +361,12 @@
         <property name="text" >
          <string/>
         </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
         <property name="checkable" >
          <bool>true</bool>
         </property>
@@ -319,6 +385,12 @@
         </property>
         <property name="text" >
          <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>
@@ -347,6 +419,12 @@
         <property name="text" >
          <string/>
         </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
+        </property>
         <property name="checkable" >
          <bool>true</bool>
         </property>
@@ -365,6 +443,12 @@
         </property>
         <property name="text" >
          <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>
@@ -392,6 +476,12 @@
         </property>
         <property name="text" >
          <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>50</width>
+          <height>20</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>
@@ -743,6 +833,12 @@
         <property name="text" >
          <string/>
         </property>
+        <property name="iconSize" >
+         <size>
+          <width>60</width>
+          <height>26</height>
+         </size>
+        </property>
         <property name="checkable" >
          <bool>true</bool>
         </property>
@@ -761,6 +857,12 @@
         </property>
         <property name="text" >
          <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>60</width>
+          <height>26</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>
@@ -781,6 +883,12 @@
         <property name="text" >
          <string/>
         </property>
+        <property name="iconSize" >
+         <size>
+          <width>60</width>
+          <height>26</height>
+         </size>
+        </property>
         <property name="checkable" >
          <bool>true</bool>
         </property>
@@ -799,6 +907,12 @@
         </property>
         <property name="text" >
          <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>60</width>
+          <height>26</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>
@@ -819,6 +933,12 @@
         <property name="text" >
          <string/>
         </property>
+        <property name="iconSize" >
+         <size>
+          <width>60</width>
+          <height>26</height>
+         </size>
+        </property>
         <property name="checkable" >
          <bool>true</bool>
         </property>
@@ -837,6 +957,12 @@
         </property>
         <property name="text" >
          <string/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>60</width>
+          <height>26</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>
