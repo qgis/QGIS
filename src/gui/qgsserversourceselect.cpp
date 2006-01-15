@@ -110,7 +110,7 @@ void QgsServerSourceSelect::on_btnDelete_clicked()
   int result = QMessageBox::information(this, tr("Confirm Delete"), msg, tr("Yes"), tr("No"));
   if (result == 0)
   {
-    settings.removeEntry(key + "/url");
+    settings.remove(key);
     cmbConnections->removeItem(cmbConnections->currentItem());  // populateConnectionList();
   }
 }

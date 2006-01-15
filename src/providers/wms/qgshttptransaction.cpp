@@ -83,8 +83,8 @@ QByteArray QgsHttpTransaction::getSynchronously(int redirections)
   http = new Q3Http( httphost, httpport );
 
 #ifdef QGISDEBUG
-//  std::cout << "QgsHttpTransaction::getSynchronously: qurl.host() is '" << qurl.host() << "'." << std::endl;
-//  std::cout << "QgsHttpTransaction::getSynchronously: qurl.encodedPathAndQuery() is '" << qurl.encodedPathAndQuery() << "'." << std::endl;
+  qWarning("QgsHttpTransaction::getSynchronously: qurl.host() is '"+qurl.host()+ "'.");
+  qWarning("QgsHttpTransaction::getSynchronously: qurl.encodedPathAndQuery() is '"+qurl.encodedPathAndQuery()+"'.");
 #endif
   
 
@@ -154,12 +154,6 @@ QByteArray QgsHttpTransaction::getSynchronously(int redirections)
     return httprecurse.getSynchronously( (redirections + 1) );
     
   }
-
-
-  
-#ifdef QGISDEBUG
-  std::cout << "QgsHttpTransaction::getSynchronously: exiting." << std::endl;
-#endif
 
   return httpresponse;
 

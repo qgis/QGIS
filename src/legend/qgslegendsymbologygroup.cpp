@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "qgsapplication.h"
 #include "qgslegendlayerfile.h"
 #include "qgslegendlayerfilegroup.h"
 #include "qgslegendsymbologygroup.h"
@@ -28,12 +29,7 @@ QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(QTreeWidgetItem * theItem, QStr
     : QgsLegendItem( theItem, theString)
 {
   mType = LEGEND_SYMBOL_GROUP;
-#if defined(Q_OS_MACX) || defined(WIN32)
-  QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
-#else
-  QString pkgDataPath(PKGDATAPATH);
-#endif
-  QIcon myIcon(pkgDataPath+QString("/images/icons/symbology.png"));
+  QIcon myIcon(QgsApplication::themePath()+"mIconSymbology.png");
   setText(0, theString);
   setIcon(0,myIcon);
 }
