@@ -4632,10 +4632,6 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   myElement = snode.toElement();
   setStdDevsToPlot(myElement.text().toDouble());
 
-  snode = mnl.namedItem("transparencyLevelInt");
-  myElement = snode.toElement();
-  setTransparency(myElement.text().toInt());
-
   snode = mnl.namedItem("redBandNameQString");
   myElement = snode.toElement();
   setRedBandName(myElement.text());
@@ -4733,13 +4729,6 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   rasterPropertiesElement.appendChild( stdDevsToPlotDoubleElement );
 
 
-  // <transparencyLevelInt>
-  QDomElement transparencyLevelIntElement = document.createElement( "transparencyLevelInt" );
-  QDomText    transparencyLevelIntText    = document.createTextNode( QString::number(getTransparency()) );
-
-  transparencyLevelIntElement.appendChild( transparencyLevelIntText );
-
-  rasterPropertiesElement.appendChild( transparencyLevelIntElement );
 
 
   // <redBandNameQString>

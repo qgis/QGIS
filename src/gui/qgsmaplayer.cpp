@@ -255,6 +255,12 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
        mCoordinateTransform=new QgsCoordinateTransform();
        mCoordinateTransform->readXML(srsNode);
     }
+    
+    //read transparency level
+    QDomNode transparencyNode = layer_node.namedItem("transparencyLevelInt");
+    QDomElement myElement = transparencyNode.toElement();
+    setTransparency(myElement.text().toInt());
+
 
     // now let the children grab what they need from the DOM node.
     return readXML_( layer_node );
@@ -338,6 +344,11 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
     //write the projection 
     mCoordinateTransform->writeXML(maplayer,document);
 
+    // <transparencyLevelInt>
+    QDomElement transparencyLevelIntElement = document.createElement( "transparencyLevelInt" );
+    QDomText    transparencyLevelIntText    = document.createTextNode( QString::number(getTransparency()) );
+    transparencyLevelIntElement.appendChild( transparencyLevelIntText );
+    maplayer.appendChild( transparencyLevelIntElement );
     // now append layer node to map layer node
 
     layer_node.appendChild( maplayer );
