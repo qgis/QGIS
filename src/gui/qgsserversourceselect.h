@@ -79,6 +79,9 @@ public slots:
     //! Determines the layers the user selected and closes the dialog
     void on_btnAdd_clicked();
 
+    //! Opens help application
+    void on_btnHelp_clicked();
+
     //! Signaled when a layer selection is changed.  Ensures that only one style is selected per layer.
     void on_lstLayers_selectionChanged();
 
@@ -105,6 +108,8 @@ private:
 
     //! The widget that controls the image format radio buttons
     QButtonGroup* m_imageFormatBtns;
+
+    static const int context_id = 710979116;
 };
 
 
