@@ -30,12 +30,12 @@ QgsLegendLayerFile::QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString 
   mType = LEGEND_LAYER_FILE;
   QPixmap originalPixmap = getOriginalPixmap();
   //ensure the overview glasses is painted if necessary
-  /*if(mLayer->showInOverviewStatus())
+  if(mLayer->showInOverviewStatus())
   {
-      QPixmap inOverviewPixmap(QgsApplication::themePath()+...);
+      QPixmap inOverviewPixmap(QgsApplication::themePath()+"/mActionInOverview.png");
       QPainter p(&originalPixmap);
       p.drawPixmap(0,0,inOverviewPixmap);
-      }*/
+  }
   setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   QIcon originalIcon(originalPixmap);
   setCheckState (0, Qt::Checked );
@@ -49,12 +49,12 @@ QgsLegendLayerFile::QgsLegendLayerFile(QString theString, QgsMapLayer* theLayer)
   mType = LEGEND_LAYER_FILE;
   QPixmap originalPixmap = getOriginalPixmap();
   //ensure the overview glasses is painted if necessary
-  /*if(mLayer->showInOverviewStatus())
+  if(mLayer->showInOverviewStatus())
   {
-    QPixmap inOverviewPixmap(QgsApplication::themePath()+...);
+    QPixmap inOverviewPixmap(QgsApplication::themePath()+"/mActionInOverview.png");
     QPainter p(&originalPixmap);
     p.drawPixmap(0,0,inOverviewPixmap);
-    }*/
+  }
   setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   QIcon originalIcon(originalPixmap);
   setCheckState (0, Qt::Checked );

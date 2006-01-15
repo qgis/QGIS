@@ -26,7 +26,7 @@ QgsLegendPropertyGroup::QgsLegendPropertyGroup(QTreeWidgetItem* theLegendItem, Q
     : QgsLegendItem(theLegendItem,theString )
 {
   mType=LEGEND_PROPERTY_GROUP;
-  QIcon myIcon(QgsApplication::themePath()+"mIconProperties.png");
+  QIcon myIcon(QgsApplication::themePath()+"/mIconProperties.png");
   setText(0, theString);
   setIcon(0,myIcon);
 }
