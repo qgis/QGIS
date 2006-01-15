@@ -742,6 +742,9 @@ public:
     /** Return time stamp for given file name */
     static QDateTime lastModified ( QString const &  name );
 
+    /**Returns the path to an icon which characterises the type of layer*/
+    QString layerTypeIconPath();
+
     /**Refresh the symbology part of the legend
      by adding a child item to mLegendSymbologyGroupParent*/
     void refreshLegend();

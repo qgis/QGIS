@@ -22,6 +22,7 @@
 
 //#include <qobject.h>
 #include <qgslegenditem.h>
+#include <QFileInfo>
 
 class QgsLegendLayer;
 class QgsLegendLayerFile;
@@ -41,6 +42,9 @@ public:
     QgsLegendLayer(QTreeWidget* ,QString);
     QgsLegendLayer(QString name);
     ~QgsLegendLayer();
+    /**Sets an icon characterising the type of layer(s) it contains.
+     Note: cannot be in the constructor because layers are added after creation*/
+    void setLayerTypeIcon();
     bool isLeafNode();
     QgsLegendItem::DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
     QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;

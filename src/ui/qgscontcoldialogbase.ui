@@ -89,6 +89,9 @@
        <height>22</height>
       </size>
      </property>
+     <property name="autoFillBackground" >
+      <bool>true</bool>
+     </property>
      <property name="frameShape" >
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -153,6 +156,9 @@
        <width>50</width>
        <height>22</height>
       </size>
+     </property>
+     <property name="autoFillBackground" >
+      <bool>true</bool>
      </property>
      <property name="frameShape" >
       <enum>QFrame::StyledPanel</enum>

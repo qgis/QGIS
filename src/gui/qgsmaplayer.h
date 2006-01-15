@@ -273,6 +273,9 @@ public:
     // also sets the contents of the r2 parameter
     bool projectExtent(QgsRect& extent, QgsRect& r2);
 
+    /**Returns the path to an icon which characterises the type of layer*/
+    virtual QString layerTypeIconPath() = 0;
+
     void setLegendSymbologyGroupParent(QgsLegendSymbologyGroup* item) {mLegendSymbologyGroupParent = item;}
     const QgsLegendSymbologyGroup* legendSymbologyGroupParent() {return mLegendSymbologyGroupParent;}
 
