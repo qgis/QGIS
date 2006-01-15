@@ -19,8 +19,8 @@
 #include "qgsmessageviewer.h"
 
 
-QgsMessageViewer::QgsMessageViewer(QWidget *parent, const char *name, bool modal, Qt::WFlags f)
-: QDialog(parent, name, modal, f)
+QgsMessageViewer::QgsMessageViewer(QWidget *parent, Qt::WFlags fl)
+: QDialog(parent, fl)
 {
   setupUi(this);
 }

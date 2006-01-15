@@ -20,7 +20,7 @@
 #ifndef QGSMAPSERVEREXPORT_H
 #define QGSMAPSERVEREXPORT_H
 #include "ui_qgsmapserverexportbase.h"
-#include <QDialog>
+#include "qgisgui.h"
 class QgsMapCanvas;
 
 /*! \class QgsMapServerExport
@@ -31,7 +31,7 @@ class QgsMapserverExport:public QDialog, private Ui::QgsMapserverExportBase
 Q_OBJECT
 public:
   QgsMapserverExport(QgsMapCanvas *map=0, QWidget* parent = 0, 
-	const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
+	Qt::WFlags fl = QgisGui::ModalDialogFlags);
   ~QgsMapserverExport();
   //! Read the file and create the map
   bool read();

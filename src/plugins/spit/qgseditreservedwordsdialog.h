@@ -1,12 +1,12 @@
 #ifndef QGSEDITRESERVEDWORDSDIALOG_H
 #define QGSEDITRESERVEDWORDSDIALOG_H
 #include "ui_qgseditreservedwordsbase.h"
-#include <QDialog>
+#include "qgisgui.h"
 class QgsEditReservedWordsDialog : public QDialog, private Ui::QgsEditReservedWordsBase
 {
     Q_OBJECT
 public:
-    QgsEditReservedWordsDialog(QWidget *parent=0, const char *name=0);
+    QgsEditReservedWordsDialog(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     ~QgsEditReservedWordsDialog();
     void addColumn(QString column, bool isReserved, int index);
     void setReservedWords(const QStringList &);

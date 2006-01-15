@@ -11,6 +11,7 @@
  ***************************************************************************/
 
 #include "qgsgpsdevicedialog.h"
+#include "qgisgui.h"
 
 #include <iostream>
 
@@ -20,7 +21,7 @@
 
 QgsGPSDeviceDialog::QgsGPSDeviceDialog(std::map<QString, QgsGPSDevice*>& 
 				       devices) : 
-  QDialog(0, 0, true), mDevices(devices)
+  QDialog(0, QgisGui::ModalDialogFlags), mDevices(devices)
   
 {
   setupUi(this);

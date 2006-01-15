@@ -19,6 +19,7 @@
 #ifndef QGSSERVERSOURCESELECT_H
 #define QGSSERVERSOURCESELECT_H
 #include "ui_qgsserversourceselectbase.h"
+#include "qgisgui.h"
 
 #include <vector>
 #include <map>
@@ -42,7 +43,7 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
 public:
 
     //! Constructor
-    QgsServerSourceSelect(QgisApp *app=0, QWidget *parent = 0, const char *name = 0);
+    QgsServerSourceSelect(QgisApp *app, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     //! Destructor
     ~QgsServerSourceSelect();
     //! Populate the connection list combo box

@@ -20,7 +20,6 @@ email                : sherman at mrcc.com
 #include "qgsdbsourceselect.h"
 
 #include "qgisapp.h"
-#include "qgisgui.h"
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"
 #include "qgsnewconnection.h"
@@ -33,8 +32,8 @@ email                : sherman at mrcc.com
 #include <cassert>
 #include <iostream>
 
-QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app)
-: QDialog(app, QgisGui::ModalDialogFlags), qgisApp(app)
+QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, Qt::WFlags fl)
+: QDialog(app, fl), qgisApp(app)
 {
   setupUi(this);
   btnAdd->setEnabled(false);

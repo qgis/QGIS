@@ -5709,7 +5709,7 @@ void QgisApp::customProjection()
   // Create an instance of the Custom Projection Designer modeless dialog.
   // Autodelete the dialog when closing since a pointer is not retained.
   QgsCustomProjectionDialog * myDialog = new QgsCustomProjectionDialog(this,
-      "Projection Designer", Qt::WDestructiveClose);
+      Qt::WDestructiveClose);
   myDialog->show();
 }
 void QgisApp::showBookmarks()

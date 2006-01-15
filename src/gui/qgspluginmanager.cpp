@@ -39,7 +39,8 @@
 #include <dlfcn.h>
 #endif
 #endif
-QgsPluginManager::QgsPluginManager(QWidget * parent, const char *name):QDialog(parent, name)
+QgsPluginManager::QgsPluginManager(QWidget * parent, Qt::WFlags fl)
+: QDialog(parent, fl)
 {
   setupUi(this);
   // set the default lib dir to the qgis install directory/lib (this info is

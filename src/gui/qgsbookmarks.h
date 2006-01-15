@@ -28,7 +28,7 @@ class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
 {
   Q_OBJECT
 public:
- QgsBookmarks(QWidget *parent=0, const char *name=0);
+ QgsBookmarks(QWidget *parent = 0, Qt::WFlags fl = 0);
  ~QgsBookmarks();
  static bool createDatabase();
 public slots:

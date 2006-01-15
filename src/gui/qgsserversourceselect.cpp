@@ -30,8 +30,8 @@
 
 #include <iostream>
 
-QgsServerSourceSelect::QgsServerSourceSelect(QgisApp * app, QWidget * parent, const char *name)
-  : QDialog(parent),
+QgsServerSourceSelect::QgsServerSourceSelect(QgisApp * app, QWidget * parent, Qt::WFlags fl)
+  : QDialog(parent, fl),
     qgisApp(app)
 {
   setupUi(this);
@@ -82,7 +82,7 @@ void QgsServerSourceSelect::populateConnectionList()
 void QgsServerSourceSelect::on_btnNew_clicked()
 {
 
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection();
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection(this);
 
   if (nc->exec())
   {
@@ -93,7 +93,7 @@ void QgsServerSourceSelect::on_btnNew_clicked()
 void QgsServerSourceSelect::on_btnEdit_clicked()
 {
 
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection(cmbConnections->currentText());
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection(this, cmbConnections->currentText());
 
   if (nc->exec())
   {

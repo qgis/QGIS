@@ -38,9 +38,8 @@
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr, 
                                                          QWidget * parent, 
-                                                         const char *name, 
-                                                         bool modal)
-: QDialog(parent, name, modal),
+                                                         Qt::WFlags fl)
+: QDialog(parent, fl),
       layer(lyr), 
       mRendererDialog(0)
 {

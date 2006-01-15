@@ -26,8 +26,8 @@ extern "C"
 {
 #include <libpq-fe.h>
 }
-QgsNewConnection::QgsNewConnection(QWidget *parent, const QString& connName, bool modal)
-: QgsNewConnectionBase()
+QgsNewConnection::QgsNewConnection(QWidget *parent, const QString& connName, Qt::WFlags fl)
+: QDialog(parent, fl)
 {
   setupUi(this);
   if (!connName.isEmpty())

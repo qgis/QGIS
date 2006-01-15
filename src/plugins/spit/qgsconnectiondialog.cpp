@@ -28,11 +28,10 @@ extern "C"
 #include "qgsconnectiondialog.h"
 #include "qgsmessageviewer.h"
 
-QgsConnectionDialog::QgsConnectionDialog (QWidget* parent, QString connName, bool modal, Qt::WFlags fl)
-	//: QgsConnectionDialogBase(parent,(const char *)connName,modal,fl)
-    //Tim commented out params during qt4 ui port - FIXME
-	: QgsConnectionDialogBase()
+QgsConnectionDialog::QgsConnectionDialog(QWidget *parent, const QString& connName, Qt::WFlags fl)
+	: QDialog(parent, fl)
 {
+    setupUi(this);
 	if (!connName.isEmpty()) {
 		QSettings settings("QuantumGIS", "qgis");
 		QString key = "/PostgreSQL/connections/" + connName;
@@ -104,7 +103,7 @@ void QgsConnectionDialog::saveConnection()
 
 void QgsConnectionDialog::helpInfo(){
   QString message = "General Interface Help:\n\n";
-  QgsMessageViewer * e = new QgsMessageViewer(this, "HelpMessage");
+  QgsMessageViewer * e = new QgsMessageViewer(this);
   e->setMessage(message);
   e->exec();
 }

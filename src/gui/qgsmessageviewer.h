@@ -19,12 +19,12 @@
 #define QGSMESSAGEVIEWER_H
 
 #include "ui_qgsmessageviewer.h"
-#include <QDialog>
+#include "qgisgui.h"
 
 class QgsMessageViewer: public QDialog, private Ui::QgsMessageViewer
 {
   public:
-    QgsMessageViewer(QWidget *parent, const char *name = 0, bool modal = false, Qt::WFlags f = 0);
+    QgsMessageViewer(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     ~QgsMessageViewer();
     void setTextFormat(Qt::TextFormat f);
     void setMessage(const QString& msg);

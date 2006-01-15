@@ -23,9 +23,8 @@
  * \class QgsLayerProjectionSelector - Set user layerprojectionselector and preferences
  * Constructor
  */
-QgsLayerProjectionSelector::QgsLayerProjectionSelector(QWidget *parent, 
-    const char * name, bool modal) 
-  : QDialog(parent, name, modal)
+QgsLayerProjectionSelector::QgsLayerProjectionSelector(QWidget *parent, Qt::WFlags fl)
+  : QDialog(parent, fl)
 {
   setupUi(this);
   connect(pbnOK, SIGNAL(clicked()), this, SLOT( accept()));

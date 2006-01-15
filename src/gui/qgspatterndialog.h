@@ -21,14 +21,14 @@
 
 class qnamespace;
 #include "ui_qgspatterndialogbase.h"
-#include <QDialog>
+#include "qgisgui.h"
 
 /**A dialog class to query the fill pattern.*/
 class QgsPatternDialog: public QDialog, private Ui::QgsPatternDialogBase
 {
     Q_OBJECT
  public:
-    QgsPatternDialog(QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = Qt::WStyle_StaysOnTop);
+    QgsPatternDialog(QWidget * parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     ~QgsPatternDialog();
     Qt::BrushStyle pattern();
  protected:

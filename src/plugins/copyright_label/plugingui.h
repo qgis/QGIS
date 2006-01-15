@@ -25,7 +25,7 @@ class QgsCopyrightLabelPluginGui : public QDialog, private Ui::QgsCopyrightLabel
 Q_OBJECT;
 public:
     QgsCopyrightLabelPluginGui();
-    QgsCopyrightLabelPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
+    QgsCopyrightLabelPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsCopyrightLabelPluginGui();
     void setText(QString);
     void setPlacement(QString);

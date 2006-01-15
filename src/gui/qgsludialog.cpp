@@ -19,8 +19,8 @@
 #include "qgsludialog.h"
 
 
-QgsLUDialog::QgsLUDialog(QWidget *parent, const char *name, bool modal)
-: QDialog(parent, name, modal)
+QgsLUDialog::QgsLUDialog(QWidget *parent, Qt::WFlags fl)
+: QDialog(parent, fl)
 {
     setupUi(this);
     connect(mOkButton, SIGNAL(clicked()), this, SLOT(accept()));

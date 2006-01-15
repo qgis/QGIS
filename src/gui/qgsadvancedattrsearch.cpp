@@ -21,8 +21,8 @@
 #include <QMessageBox>
 
 
-QgsAdvancedAttrSearch::QgsAdvancedAttrSearch(QWidget *parent, const char *name)
-    :QDialog(parent)
+QgsAdvancedAttrSearch::QgsAdvancedAttrSearch(QWidget *parent, Qt::WFlags fl)
+    :QDialog(parent, fl)
 {
   setupUi(this);
   connect(btnShowHelp, SIGNAL(clicked()), this, SLOT(showHelp()));

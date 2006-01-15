@@ -24,6 +24,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include <cmath>
 
 #include <qgisapp.h>
+#include "qgisgui.h"
 #include <qgsmaplayer.h>
 #include "plugin.h"
 #include "qgsproject.h"
@@ -151,7 +152,7 @@ void QgsScaleBarPlugin::help()
 // Slot called when the  menu item is activated
 void QgsScaleBarPlugin::run()
 {
-  QgsScaleBarPluginGui *myPluginGui=new QgsScaleBarPluginGui(qgisMainWindowPointer,"Scale Bar",true,0);
+  QgsScaleBarPluginGui *myPluginGui=new QgsScaleBarPluginGui(qgisMainWindowPointer, QgisGui::ModalDialogFlags);
   myPluginGui->setPreferredSize(mPreferredSize);
   myPluginGui->setSnapping(mSnapping);
   myPluginGui->setPlacement(mPlacement);

@@ -20,7 +20,7 @@
 #ifndef QGSRASTERLAYERPROPERTIES_H
 #define QGSRASTERLAYERPROPERTIES_H
 #include "ui_qgsrasterlayerpropertiesbase.h"
-#include <QDialog>
+#include "qgisgui.h"
 class QgsMapLayer;
 class QgsRasterLayer;
 
@@ -36,7 +36,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
         /** \brief Constructor
          * @param ml Map layer for which properties will be displayed
          */
-        QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *parent=0, const char *name=0, bool modal=true);
+        QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *parent = 0, Qt::WFlags = QgisGui::ModalDialogFlags);
         /** \brief Destructor */
         ~QgsRasterLayerProperties();
 

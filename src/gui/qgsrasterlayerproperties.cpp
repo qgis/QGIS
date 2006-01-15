@@ -31,8 +31,8 @@ const char * const ident =
   "$Id$";
 
 
-QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *parent, const char *name, bool modal)
-: QDialog(parent, name, modal), 
+QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *parent, Qt::WFlags fl)
+: QDialog(parent, fl), 
   rasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
 {
   setupUi(this);

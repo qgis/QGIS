@@ -19,13 +19,13 @@
 #define QGSCONNECTIONDIALOG_H
 
 #include "ui_qgsconnectiondialogbase.h"
-#include <QDialog>
+#include "qgisgui.h"
 
 class QgsConnectionDialog : public QDialog, private Ui::QgsConnectionDialogBase
 {
  public:
 
-    QgsConnectionDialog(QWidget* parent = 0, QString connName=QString::null, bool modal = true, Qt::WFlags fl = 0);
+    QgsConnectionDialog(QWidget *parent = 0, const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     ~QgsConnectionDialog();
     void testConnection();
     void saveConnection();

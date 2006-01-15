@@ -31,15 +31,12 @@ QgsPointDialog::QgsPointDialog() {
 }
 
 
-QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, QWidget* parent, 
-			       const char* name, bool modal, Qt::WFlags fl) 
-  : QgsPointDialogBase(), 
-  // commented out during qt4 port - FIXME tim
-  //: QgsPointDialogBase(parent, name, modal, fl), 
+QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, QWidget* parent, Qt::WFlags fl) 
+    : QDialog(parent, fl), 
     mCursor(NULL),
     mLayer(layer)
 {
-  
+  setupUi(this);
   // set up the canvas
   QHBoxLayout* layout = new QHBoxLayout(canvasFrame);
   layout->setAutoAdd(true);

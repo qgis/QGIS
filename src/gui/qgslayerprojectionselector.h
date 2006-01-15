@@ -19,18 +19,19 @@
 #ifndef QGSLAYERPROJECTIONSELECTOR_H
 #define QGSLAYERPROJECTIONSELECTOR_H
 #include "ui_qgslayerprojectionselectorbase.h"
+#include "qgisgui.h"
 /**
  * \class QgsLayerProjectionSelector
  * \brief Set Projection system for a layer
  */
-class QgsLayerProjectionSelector :public QDialog, private Ui::QgsLayerProjectionSelectorBase
+class QgsLayerProjectionSelector : public QDialog, private Ui::QgsLayerProjectionSelectorBase
 {
   Q_OBJECT;
   public:
     /**
      * Constructor
      */
-    QgsLayerProjectionSelector(QWidget *parent=0, const char *name=0, bool modal=true);
+    QgsLayerProjectionSelector(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     //! Destructor
     ~QgsLayerProjectionSelector();
 

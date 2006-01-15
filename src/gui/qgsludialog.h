@@ -20,13 +20,14 @@
 #define QGSLUDIALOG_H
 
 #include "ui_qgsludialogbase.h"
+#include "qgisgui.h"
 
 
 class QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
 {
     Q_OBJECT
  public:
-    QgsLUDialog(QWidget *parent=0, const char *name=0, bool modal=true);
+    QgsLUDialog(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     ~QgsLUDialog();
     QString lowerValue() const;
     void setLowerValue(QString val);

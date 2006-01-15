@@ -18,8 +18,8 @@
 #include "qgsnewhttpconnection.h"
 #include <QSettings>
 
-QgsNewHttpConnection::QgsNewHttpConnection(QString connName)
-                    : QDialog()
+QgsNewHttpConnection::QgsNewHttpConnection(QWidget *parent, const QString& connName, Qt::WFlags fl)
+                    : QDialog(parent, fl)
 {
   setupUi(this);
   connect(btnHelp, SIGNAL(clicked()), this, SLOT(helpInfo()));

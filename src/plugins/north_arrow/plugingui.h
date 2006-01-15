@@ -22,7 +22,7 @@ class QgsNorthArrowPluginGui : public QDialog, private Ui::QgsNorthArrowPluginGu
 Q_OBJECT
 public:
     QgsNorthArrowPluginGui();
-    QgsNorthArrowPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
+    QgsNorthArrowPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsNorthArrowPluginGui();
 
 public slots:

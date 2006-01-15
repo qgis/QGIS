@@ -31,14 +31,8 @@
 #include <sqlite3.h>
 #include <fstream>
 
-QgsBookmarks::QgsBookmarks(QWidget *parent, const char *name)
-#ifdef Q_OS_MACX
-  // Mac modeless dialog dosn't have correct window type if parent is specified
-  : QDialog(NULL),
-#else
-  // Specifying parent suppresses separate taskbar entry for dialog
-  : QDialog(parent),
-#endif
+QgsBookmarks::QgsBookmarks(QWidget *parent, Qt::WFlags fl)
+  : QDialog(parent, fl),
   mParent(parent)
 {
   setupUi(this);

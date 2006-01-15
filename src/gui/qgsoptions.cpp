@@ -32,8 +32,8 @@
  * \class QgsOptions - Set user options and preferences
  * Constructor
  */
-QgsOptions::QgsOptions(QWidget *parent, const char *name, bool modal) :
-  QDialog(parent, name, modal)
+QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
+  QDialog(parent, fl)
 {
   setupUi(this);
   connect(cmbTheme, SIGNAL(activated(const QString&)), this, SLOT(themeChanged(const QString&)));

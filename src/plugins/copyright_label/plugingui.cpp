@@ -28,8 +28,8 @@ QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui() : QDialog()
   textLabel15->hide();
 }
 
-QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
-: QDialog(parent, name, modal, fl )
+QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui(QWidget* parent, Qt::WFlags fl)
+: QDialog(parent, fl)
 {
   setupUi(this);
   //programmatically hide orientation selection for now

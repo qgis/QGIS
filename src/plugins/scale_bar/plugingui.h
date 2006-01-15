@@ -23,7 +23,7 @@ class QgsScaleBarPluginGui : public QDialog, private Ui::QgsScaleBarPluginGuiBas
 Q_OBJECT;
 public:
     QgsScaleBarPluginGui();
-    QgsScaleBarPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
+    QgsScaleBarPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsScaleBarPluginGui();
     void setPlacement(QString);
     void setPreferredSize(int);
