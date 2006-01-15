@@ -16,6 +16,7 @@
  ***************************************************************************/
  /* $Id$ */
 #include "qgsnewhttpconnection.h"
+#include "qgscontexthelp.h"
 #include <QSettings>
 
 QgsNewHttpConnection::QgsNewHttpConnection(QWidget *parent, const QString& connName, Qt::WFlags fl)
@@ -73,3 +74,7 @@ void QgsNewHttpConnection::saveConnection()
   accept();
 }
 
+void QgsNewHttpConnection::on_btnHelp_clicked()
+{
+  QgsContextHelp::run(context_id);
+}
