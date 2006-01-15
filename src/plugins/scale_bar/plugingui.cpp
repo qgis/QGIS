@@ -19,8 +19,8 @@ QgsScaleBarPluginGui::QgsScaleBarPluginGui() : QDialog()
 
 }
 
-QgsScaleBarPluginGui::QgsScaleBarPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
-: QDialog(parent, name, modal, fl)
+QgsScaleBarPluginGui::QgsScaleBarPluginGui(QWidget* parent, Qt::WFlags fl)
+: QDialog(parent, fl)
 {
   setupUi(this);
 }  

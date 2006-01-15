@@ -22,8 +22,7 @@ Q_OBJECT
 public:
   MapCoordsDialog();
   MapCoordsDialog(const QgsPoint& pixelCoords,
-		  QWidget* parent = 0, const char* name = 0, 
-		  bool modal = FALSE, Qt::WFlags fl = 0);
+		  QWidget* parent = 0, Qt::WFlags fl = 0);
   ~MapCoordsDialog();
   
 public slots:

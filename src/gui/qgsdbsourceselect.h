@@ -18,7 +18,7 @@
 #ifndef QGSDBSOURCESELECT_H
 #define QGSDBSOURCESELECT_H
 #include "ui_qgsdbsourceselectbase.h"
-#include <QDialog>
+#include "qgisgui.h"
 extern "C"
 {
 #include <libpq-fe.h>
@@ -42,7 +42,7 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
  public:
 
     //! Constructor
-    QgsDbSourceSelect(QgisApp *app);
+    QgsDbSourceSelect(QgisApp *app, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     //! Destructor
     ~QgsDbSourceSelect();
     //! Opens the create connection dialog to build a new connection

@@ -25,25 +25,25 @@
 namespace QgisGui
 {
 
-/*!
- * /var ModalDialogFlags
- * /brief Flags used to create a modal dialog (adapted from QMessageBox).
- *
- * Using these flags for all modal dialogs throughout QGIS ensures that
- * for platforms such as the Mac where modal and modeless dialogs have
- * different looks, QGIS modal dialogs will look the same as Qt modal
- * dialogs and all modal dialogs will look distinct from modeless dialogs.
- * Althought not the standard Mac modal look, it does lack the minimize
- * control which makes sense only for modeless dislogs.
- *
- * The Qt3 method of creating a true Mac modal dialog is deprecated in Qt4
- * and should not be used due to conflicts with QMessageBox style dialogs.
- *
- * Qt::WindowMaximizeButtonHint is included but will be ignored if
- * the dialog is a fixed size and does not have a size grip.
- */
-Qt::WFlags ModalDialogFlags =
-    Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMaximizeButtonHint;
+  /*!
+   * /var ModalDialogFlags
+   * /brief Flags used to create a modal dialog (adapted from QMessageBox).
+   *
+   * Using these flags for all modal dialogs throughout QGIS ensures that
+   * for platforms such as the Mac where modal and modeless dialogs have
+   * different looks, QGIS modal dialogs will look the same as Qt modal
+   * dialogs and all modal dialogs will look distinct from modeless dialogs.
+   * Althought not the standard Mac modal look, it does lack the minimize
+   * control which makes sense only for modeless dislogs.
+   *
+   * The Qt3 method of creating a true Mac modal dialog is deprecated in Qt4
+   * and should not be used due to conflicts with QMessageBox style dialogs.
+   *
+   * Qt::WindowMaximizeButtonHint is included but will be ignored if
+   * the dialog is a fixed size and does not have a size grip.
+   */
+  static const Qt::WFlags ModalDialogFlags =
+      Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMaximizeButtonHint;
 
 }
 

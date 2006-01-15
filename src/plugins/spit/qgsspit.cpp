@@ -55,7 +55,7 @@ int Q3TableItem::alignment() const
   return ( num ? Qt::AlignLeft : Qt::AlignLeft ) | Qt::AlignVCenter;
 }
 
-QgsSpit::QgsSpit( QWidget *parent, const char *name ) : QDialog( parent, name )
+QgsSpit::QgsSpit( QWidget *parent, Qt::WFlags fl ) : QDialog( parent, fl )
 {
   setupUi(this);
   QPixmap icon;
@@ -280,7 +280,7 @@ void QgsSpit::addFile()
       error2 += "----------------------------------------------------------------------------------------";
       error2 += "\n" + tr("REASON: One or both of the Shapefile files (*.dbf, *.shx) missing") + "\n\n";
     }
-    QgsMessageViewer * e = new QgsMessageViewer( this, "error" );
+    QgsMessageViewer * e = new QgsMessageViewer( this );
     e->setMessage( message + error1 + error2 );
     e->exec();
   }
@@ -388,7 +388,7 @@ void QgsSpit::helpInfo()
                tr("[Import] - import the current shapefiles in the list") + "\n" ) + QString(
                tr("[Quit] - quit the program\n") ) + QString(
                tr("[Help] - display this help dialog") + "\n\n" );
-  QgsMessageViewer * e = new QgsMessageViewer( this, "HelpMessage" );
+  QgsMessageViewer * e = new QgsMessageViewer( this );
   e->setMessage( message );
   e->exec();
 }

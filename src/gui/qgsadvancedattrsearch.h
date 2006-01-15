@@ -21,7 +21,7 @@
 #define QGSADVANCEDATTRSEARCH_H
 
 #include "ui_qgsadvancedattrsearchbase.h"
-#include <QDialog>
+#include "qgisgui.h"
 
 class QString;
 class QgsAdvancedAttrSearch : public QDialog, private Ui::QgsAdvancedAttrSearchBase
@@ -29,7 +29,7 @@ class QgsAdvancedAttrSearch : public QDialog, private Ui::QgsAdvancedAttrSearchB
   Q_OBJECT
       
   public:
-    QgsAdvancedAttrSearch(QWidget *parent = 0, const char *name = 0);
+    QgsAdvancedAttrSearch(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     QString searchString();
 
   public slots:

@@ -27,8 +27,8 @@
 #include <qspinbox.h>
 #include "qgisiface.h"
 
-QgsDlgPgBuffer::QgsDlgPgBuffer( QgisIface * _qI, QWidget * parent, const char *name)
-:QDialog(parent, name),qI(_qI)
+QgsDlgPgBuffer::QgsDlgPgBuffer( QgisIface * _qI, QWidget * parent, Qt::WFlags fl)
+:QDialog(parent, fl),qI(_qI)
 {
   setupUi(this);
   // set the validator

@@ -18,7 +18,7 @@
 #ifndef QGSNEWHTTPCONNECTION_H
 #define QGSNEWHTTPCONNECTION_H
 #include "ui_qgsnewhttpconnectionbase.h"
-#include <QDialog>
+#include "qgisgui.h"
 /*! 
  * \brief Dialog to allow the user to configure and save connection
  * information for an HTTP Server for WMS, etc.
@@ -28,7 +28,7 @@ class QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpConnectionBas
   Q_OBJECT
  public:
     //! Constructor
-    QgsNewHttpConnection(QString connName = QString::null);
+    QgsNewHttpConnection(QWidget *parent = 0, const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     //! Destructor
     ~QgsNewHttpConnection();
     //! Tests the connection using the parameters supplied

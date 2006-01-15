@@ -20,6 +20,7 @@
 // includes
 
 #include "qgisapp.h"
+#include "qgisgui.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
@@ -138,7 +139,7 @@ void QgsGPSPlugin::run()
   
   QgsGPSPluginGui *myPluginGui = 
     new QgsGPSPluginGui(mImporters, mDevices, gpxLayers, mMainWindowPointer, 
-			"GPS Tools", true, 0);
+			QgisGui::ModalDialogFlags);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), 
 	  this, SLOT(drawRasterLayer(QString)));

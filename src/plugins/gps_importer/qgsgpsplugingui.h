@@ -37,8 +37,8 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
 public:
   QgsGPSPluginGui(const BabelMap& importers, 
 		  std::map<QString, QgsGPSDevice*>& devices, 
-		  std::vector<QgsVectorLayer*> gpxMapLayers, QWidget* parent, 
-		  const char* name , bool modal , Qt::WFlags);
+		  std::vector<QgsVectorLayer*> gpxMapLayers,
+		  QWidget* parent, Qt::WFlags);
   ~QgsGPSPluginGui();
 
 public slots:

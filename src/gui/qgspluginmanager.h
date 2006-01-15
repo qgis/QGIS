@@ -20,7 +20,7 @@
 #define QGSPLUGINMANAGER_H
 #include <vector>
 #include "ui_qgspluginmanagerbase.h"
-#include <QDialog>
+#include "qgisgui.h"
 
 class QgsPluginItem;
 /*!
@@ -32,7 +32,7 @@ class QgsPluginManager : public QDialog, private Ui::QgsPluginManagerBase
   Q_OBJECT
   public:
     //! Constructor
-    QgsPluginManager(QWidget *parent=0, const char *name=0);
+    QgsPluginManager(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     //! Destructor
     ~QgsPluginManager();
     //! Get description of plugins (name, etc)

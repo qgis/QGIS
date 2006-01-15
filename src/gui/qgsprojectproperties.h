@@ -20,6 +20,7 @@
 
 #include "ui_qgsprojectpropertiesbase.h"
 #include "qgis.h"
+#include "qgisgui.h"
 class QColor; 
 
 /*!  Dialog to set project level properties
@@ -32,7 +33,7 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
   Q_OBJECT
 public:
     //! Constructor
-  QgsProjectProperties(QWidget *parent = 0, const char * name = 0, bool modal = true);
+  QgsProjectProperties(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
 
   //! Destructor
   ~QgsProjectProperties();

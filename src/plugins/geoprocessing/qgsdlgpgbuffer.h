@@ -21,14 +21,14 @@
 #ifndef QGSDLGPGBUFFER_H
 #define QGSDLGPGBUFFER_H
 #include "ui_qgsdlgpgbufferbase.h"
-#include <QDialog>
+#include "qgisgui.h"
 class QgisIface;
 class QDoubleValidator;
 class QgsDlgPgBuffer:public QDialog, private Ui::QgsDlgPgBufferBase
 {
   Q_OBJECT public:
   //! Constructor
-    QgsDlgPgBuffer( QgisIface * _qI = 0, QWidget * parent = 0, const char *name = 0);
+    QgsDlgPgBuffer( QgisIface * _qI = 0, QWidget * parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     //! Destructor
     QgsDlgPgBuffer::~QgsDlgPgBuffer();
     //! Set the information label in the dialog

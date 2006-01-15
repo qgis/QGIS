@@ -21,10 +21,11 @@
 #include <iostream>
 #include "qgssymbologyutils.h"
 
-QgsLineStyleDialog::QgsLineStyleDialog(QWidget * parent, const char *name, bool modal, Qt::WFlags fl):
-  //params disabled during qt4 gui port - Fixme!!
-  QgsLineStyleDialogBase()
+QgsLineStyleDialog::QgsLineStyleDialog(QWidget * parent, Qt::WFlags fl):
+  QDialog(parent, fl)
 {
+  setupUi(this);
+
   //load the icons stored in QgsSymbologyUtils.cpp (to avoid redundancy)
   solid->setPixmap(QgsSymbologyUtils::char2LinePixmap("SolidLine"));
   dash->setPixmap(QgsSymbologyUtils::char2LinePixmap("DashLine"));

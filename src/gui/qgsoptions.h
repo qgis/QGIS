@@ -19,6 +19,7 @@
 #ifndef QGSOPTIONS_H
 #define QGSOPTIONS_H
 #include "ui_qgsoptionsbase.h"
+#include "qgisgui.h"
 /**
  * \class QgsOptions
  * \brief Set user options and preferences
@@ -33,7 +34,7 @@ class QgsOptions :public QDialog, private Ui::QgsOptionsBase
      * @param name name for the widget
      * @param modal true for modal dialog
      */
-    QgsOptions(QWidget *parent=0, const char *name=0, bool modal=true);
+    QgsOptions(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     //! Destructor
     ~QgsOptions();
     /**

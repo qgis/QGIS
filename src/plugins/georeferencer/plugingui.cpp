@@ -29,12 +29,10 @@ QgsGeorefPluginGui::QgsGeorefPluginGui() : QgsGeorefPluginGuiBase()
   
 }
 
-QgsGeorefPluginGui::QgsGeorefPluginGui(QWidget* parent, const char* name, bool modal, 
-		     Qt::WFlags fl) : 
-  //params commented out by tim during qt4 ui port FIXME
-  //QgsGeorefPluginGuiBase(parent, name, modal, fl) 
-  QgsGeorefPluginGuiBase() 
+QgsGeorefPluginGui::QgsGeorefPluginGui(QWidget* parent, Qt::WFlags fl)
+: QDialog(parent, fl)
 {
+  setupUi(this);
   connect(pbnEnterWorldCoords, SIGNAL(clicked()), 
 	  this, SLOT(openPointDialog()));
 }  

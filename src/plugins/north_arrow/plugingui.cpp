@@ -25,8 +25,8 @@ QgsNorthArrowPluginGui::QgsNorthArrowPluginGui() : QDialog()
   rotatePixmap(0);
 }
 
-QgsNorthArrowPluginGui::QgsNorthArrowPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
-: QDialog( parent, name, modal, fl )
+QgsNorthArrowPluginGui::QgsNorthArrowPluginGui(QWidget* parent, Qt::WFlags fl)
+: QDialog(parent, fl)
 {
   setupUi(this);
   //temporary hack until this is implemented

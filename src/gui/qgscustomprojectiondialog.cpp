@@ -32,14 +32,8 @@ extern "C"{
 }
 
 
-QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget* parent , const char* name , Qt::WFlags fl  )
-#ifdef Q_OS_MACX
-  // Mac modeless dialog dosn't have correct window type if parent is specified
-  : QDialog(NULL, name, false, fl)
-#else
-  // Specifying parent suppresses separate taskbar entry for dialog
-  : QDialog(parent, name, false, fl)
-#endif
+QgsCustomProjectionDialog::QgsCustomProjectionDialog(QWidget *parent, Qt::WFlags fl)
+  : QDialog(parent, fl)
 {
   setupUi(this);
 

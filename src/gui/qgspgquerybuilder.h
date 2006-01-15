@@ -22,7 +22,7 @@ extern "C"
 }
 
 #include "ui_qgspgquerybuilderbase.h"
-#include <QDialog>
+#include "qgisgui.h"
 #include "qgsfield.h"
 #include "qgsdatasourceuri.h"
 /*!
@@ -40,7 +40,7 @@ class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase {
    Q_OBJECT 
   public:
   //! Default constructor - not very useful
-  QgsPgQueryBuilder(QWidget *parent = 0, const char *name=0, bool modal=true);
+  QgsPgQueryBuilder(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
 
   /*! Constructor which also takes the table name and PG connection pointer.
   * This constructor is used when adding layers to the map from a PG database since
@@ -51,7 +51,7 @@ class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase {
   * @param name Name of the widget
   */
   QgsPgQueryBuilder(QString tableName, PGconn *con, QWidget *parent = 0,
-      const char *name=0, bool modal=true);
+      Qt::WFlags fl = QgisGui::ModalDialogFlags);
   
   /*! Constructor that uses a data source URI to create its own connection to the 
   * PG database. This constructor should be used when a layer's own PG connection
@@ -63,7 +63,7 @@ class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase {
    * @param name Name of the widget
    */
   QgsPgQueryBuilder(QgsDataSourceURI *uri, QWidget *parent = 0,
-      const char *name=0, bool modal=true); 
+      Qt::WFlags fl = QgisGui::ModalDialogFlags); 
   
   ~QgsPgQueryBuilder(); 
  

@@ -1,3 +1,22 @@
+/***************************************************************************
+                             qgshelpviewer.cpp 
+                             Simple help browser
+                             -------------------
+    begin                : 2005-07-02
+    copyright            : (C) 2005 by Gary E.Sherman
+    email                : sherman at mrcc.com
+***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+ /* $Id$ */
+
 #include <cassert>
 #include <iostream>
 #include <qstring.h>
@@ -8,8 +27,8 @@
 #include <sqlite3.h>
 #include "qgshelpviewer.h"
 QgsHelpViewer::QgsHelpViewer(const QString &contextId, QWidget *parent, 
-    const char *name)
-: QDialog(parent)
+    Qt::WFlags fl)
+: QDialog(parent, fl)
 {
   setupUi(this);
   loadContext(contextId);

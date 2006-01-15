@@ -23,6 +23,7 @@ email                : tim@linfiniti.com
 // includes
 
 #include "qgisapp.h"
+#include "qgisgui.h"
 #include "qgsmaplayer.h"
 #include "plugin.h"
 
@@ -134,7 +135,7 @@ void QgsGridMakerPlugin::help()
 // Slot called when the buffer menu item is activated
 void QgsGridMakerPlugin::run()
 {
-  QgsGridMakerPluginGui *myPluginGui=new QgsGridMakerPluginGui(qgisMainWindowPointer,"Graticule Builder",true,0);
+  QgsGridMakerPluginGui *myPluginGui=new QgsGridMakerPluginGui(qgisMainWindowPointer, QgisGui::ModalDialogFlags);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));

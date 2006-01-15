@@ -32,7 +32,8 @@ email                : sherman at mrcc.com
 
 
 // constructor
-QgsMapserverExport::QgsMapserverExport(QWidget * parent, const char *name, bool modal, Qt::WFlags fl):QDialog(parent, name, modal, fl)  
+QgsMapserverExport::QgsMapserverExport(QWidget * parent, Qt::WFlags fl)
+: QDialog(parent, fl)  
 {
 //   initialize python
   initPy();

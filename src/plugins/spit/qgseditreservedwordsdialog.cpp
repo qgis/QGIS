@@ -6,8 +6,8 @@
 #include "spit_icons.h"
 
 #include "qgseditreservedwordsdialog.h"
-QgsEditReservedWordsDialog::QgsEditReservedWordsDialog(QWidget *parent, const char *name)
-  : QDialog(parent, name)
+QgsEditReservedWordsDialog::QgsEditReservedWordsDialog(QWidget *parent, Qt::WFlags fl)
+  : QDialog(parent, fl)
 {
   setupUi(this);
   // set focus indicator to span all columns

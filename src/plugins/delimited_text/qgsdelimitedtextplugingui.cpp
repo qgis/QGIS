@@ -34,8 +34,8 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui() : QDialog()
 
 }
 
-QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisIface * _qI, QWidget* parent , const char* name , bool modal , Qt::WFlags fl  ) 
-: QDialog(parent, name, modal, fl  ), qI(_qI)
+QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui(QgisIface * _qI, QWidget * parent, Qt::WFlags fl) 
+: QDialog(parent, fl), qI(_qI)
 {
   setupUi(this);
   // at startup, fetch the last used delimiter and directory from

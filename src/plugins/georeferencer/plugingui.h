@@ -22,7 +22,7 @@ class QgsGeorefPluginGui : public QDialog, private Ui::QgsGeorefPluginGuiBase
 Q_OBJECT
 public:
     QgsGeorefPluginGui();
-    QgsGeorefPluginGui( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
+    QgsGeorefPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsGeorefPluginGui();
     void pbnOK_clicked();
     void pbnCancel_clicked();

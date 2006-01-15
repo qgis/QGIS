@@ -23,6 +23,7 @@ Functions:
 // includes
 
 #include "qgisapp.h"
+#include "qgisgui.h"
 #include "qgsmaplayer.h"
 #include "qgsdelimitedtextplugin.h"
 
@@ -137,7 +138,7 @@ void QgsDelimitedTextPlugin::run()
 {
   QgsDelimitedTextPluginGui *myQgsDelimitedTextPluginGui=
     new QgsDelimitedTextPluginGui(qGisInterface, qgisMainWindowPointer,
-        "Add Delimited Text Layer",true,0);
+        QgisGui::ModalDialogFlags);
   //listen for when the layer has been made so we can draw it
   connect(myQgsDelimitedTextPluginGui, 
       SIGNAL(drawRasterLayer(QString)), 

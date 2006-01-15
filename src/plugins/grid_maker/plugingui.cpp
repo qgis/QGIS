@@ -26,8 +26,8 @@ QgsGridMakerPluginGui::QgsGridMakerPluginGui() : QgsGridMakerPluginGuiBase()
 {
   setupUi(this);
 }
-QgsGridMakerPluginGui::QgsGridMakerPluginGui( QWidget* parent , const char* name , bool modal , Qt::WFlags fl  )
-  : QDialog( parent, name, modal, fl )
+QgsGridMakerPluginGui::QgsGridMakerPluginGui(QWidget* parent, Qt::WFlags fl)
+  : QDialog(parent, fl)
 {
   setupUi(this);
 }

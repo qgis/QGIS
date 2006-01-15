@@ -21,13 +21,13 @@
 
 class qnamespace;
 #include "ui_qgslinestyledialogbase.h"
-#include <QDialog>
+#include "qgisgui.h"
 /**Dialog class to query line styles*/
 class QgsLineStyleDialog: public QDialog, private Ui::QgsLineStyleDialogBase
 {
   Q_OBJECT
  public:
-    QgsLineStyleDialog(QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = Qt::WStyle_StaysOnTop);
+    QgsLineStyleDialog(QWidget * parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     ~QgsLineStyleDialog();
     Qt::PenStyle style();
  protected:

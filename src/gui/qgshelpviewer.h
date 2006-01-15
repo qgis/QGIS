@@ -40,7 +40,7 @@ class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
     Q_OBJECT
 
 public:
-    QgsHelpViewer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
+    QgsHelpViewer( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsHelpViewer();
     void showContent(QString path, QString doc);
 

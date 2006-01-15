@@ -32,8 +32,8 @@ email                : sherman at mrcc.com
 #include <fstream>
 
 // constructor
-QgsMapserverExport::QgsMapserverExport(QgsMapCanvas * _map, QWidget * parent, const char *name, bool modal, Qt::WFlags fl)
-  :QDialog(parent, name, modal, fl), map(_map)
+QgsMapserverExport::QgsMapserverExport(QgsMapCanvas * _map, QWidget * parent, Qt::WFlags fl)
+  : QDialog(parent, fl), map(_map)
 {
   setupUi(this);
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(accept()));
