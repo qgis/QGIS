@@ -17,7 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
+#include "qgsapplication.h"
 #include "qgslegend.h"
 #include "qgslegendlayerfile.h"
 #include "qgsmaplayer.h"
@@ -30,17 +30,12 @@ QgsLegendLayerFile::QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString 
   mType = LEGEND_LAYER_FILE;
   QPixmap originalPixmap = getOriginalPixmap();
   //ensure the overview glasses is painted if necessary
-  if(mLayer->showInOverviewStatus())
+  /*if(mLayer->showInOverviewStatus())
   {
-#if defined(Q_OS_MACX) || defined(WIN32) 
-      QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
-#else
-      QString pkgDataPath(PKGDATAPATH);
-#endif  
-      QPixmap inOverviewPixmap(pkgDataPath+QString("/images/icons/inoverview.png"));
+      QPixmap inOverviewPixmap(QgsApplication::themePath()+...);
       QPainter p(&originalPixmap);
       p.drawPixmap(0,0,inOverviewPixmap);
-  }
+      }*/
   setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   QIcon originalIcon(originalPixmap);
   setCheckState (0, Qt::Checked );
@@ -54,17 +49,12 @@ QgsLegendLayerFile::QgsLegendLayerFile(QString theString, QgsMapLayer* theLayer)
   mType = LEGEND_LAYER_FILE;
   QPixmap originalPixmap = getOriginalPixmap();
   //ensure the overview glasses is painted if necessary
-  if(mLayer->showInOverviewStatus())
+  /*if(mLayer->showInOverviewStatus())
   {
-#if defined(Q_OS_MACX) || defined(WIN32) 
-      QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
-#else
-      QString pkgDataPath(PKGDATAPATH);
-#endif  
-      QPixmap inOverviewPixmap(pkgDataPath+QString("/images/icons/inoverview.png"));
-      QPainter p(&originalPixmap);
-      p.drawPixmap(0,0,inOverviewPixmap);
-  }
+    QPixmap inOverviewPixmap(QgsApplication::themePath()+...);
+    QPainter p(&originalPixmap);
+    p.drawPixmap(0,0,inOverviewPixmap);
+    }*/
   setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   QIcon originalIcon(originalPixmap);
   setCheckState (0, Qt::Checked );
@@ -96,12 +86,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFile::accept(const QgsLegendItem* li) c
 
 QPixmap QgsLegendLayerFile::getOriginalPixmap() const
 {
-#if defined(Q_OS_MACX) || defined(WIN32)
-    QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
-#else
-    QString pkgDataPath(PKGDATAPATH);
-#endif
-    QPixmap myPixmap(pkgDataPath+QString("/images/icons/file.png"));
+    QPixmap myPixmap(QgsApplication::themePath()+"mActionFileNew.png");
     return myPixmap;
 }
 

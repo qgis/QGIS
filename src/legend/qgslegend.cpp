@@ -19,6 +19,7 @@
 /* $Id$ */
 
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgslegend.h"
 #include "qgslegendgroup.h"
 #include "qgslegendlayer.h"
@@ -371,12 +372,7 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
 {
   QMenu theMenu;
 
-#if defined(Q_OS_MACX) || defined(WIN32)
-  QString iconsPath(QCoreApplication::applicationDirPath()+QString("/share/qgis/images/icons/"));
-#else
-  QString iconsPath(PKGDATAPATH);
-  iconsPath+="/images/icons/";
-#endif
+  QString iconsPath = QgsApplication::themePath();
 
   if(mMapCanvas->isDrawing())
     {
@@ -394,9 +390,9 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
       else if(li->type() == QgsLegendItem::LEGEND_LAYER)
 	{
 	  theMenu.addAction(tr("&Properties"), this, SLOT(legendLayerShowProperties()));
-	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("inoverview.png"))), tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
-	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("remove_from_overview.png"))), tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
-	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("remove.png"))), tr("&Remove"), this, SLOT(legendLayerRemove()));
+	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("mActionAddAllToOverview.png"))), tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
+	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("mActionRemoveAllFromOverview.png"))), tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
+	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("mActionRemove.png"))), tr("&Remove"), this, SLOT(legendLayerRemove()));
 	  if(li->parent())
 	    {
 	      theMenu.addAction(tr("&Make to toplevel item"), this, SLOT(makeToTopLevelItem()));
@@ -404,7 +400,7 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
 	}
       else if(li->type() == QgsLegendItem::LEGEND_GROUP)
 	{
-	  theMenu.addAction(QPixmap(iconsPath+QString("remove.png")), tr("&Remove"), this, SLOT(legendGroupRemove()));
+	  theMenu.addAction(QPixmap(iconsPath+QString("mActionRemove.png")), tr("&Remove"), this, SLOT(legendGroupRemove()));
 	}
 
       if(li->type() == QgsLegendItem::LEGEND_LAYER || li->type() == QgsLegendItem::LEGEND_GROUP)
@@ -416,8 +412,8 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
     }
 
   theMenu.addAction(QIcon(QPixmap(iconsPath+QString("folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
-  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("expand_tree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
-  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("collapse_tree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
+  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("mActionExpandTree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
+  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("mActionCollapseTree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
   
   theMenu.exec(position);
 }

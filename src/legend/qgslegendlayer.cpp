@@ -27,47 +27,26 @@
 QgsLegendLayer::QgsLegendLayer(QTreeWidgetItem* parent,QString name)
     : QObject(), QgsLegendItem(parent, name)
 {
-    mType=LEGEND_LAYER;
-#if defined(Q_OS_MACX) || defined(WIN32)
-    QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
-#else
-    QString pkgDataPath(PKGDATAPATH);
-#endif
-    setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-    QIcon myIcon(pkgDataPath+QString("/images/icons/layer.png"));
-    setCheckState (0, Qt::Checked);
-    setText(0, name);
-    setIcon(0, myIcon);
+  mType=LEGEND_LAYER;
+  setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  setCheckState (0, Qt::Checked);
+  setText(0, name);
 }
 
 QgsLegendLayer::QgsLegendLayer(QTreeWidget* parent, QString name): QObject(), QgsLegendItem(parent, name)
 {
-    mType=LEGEND_LAYER;
-#if defined(Q_OS_MACX) || defined(WIN32)
-    QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
-#else
-    QString pkgDataPath(PKGDATAPATH);
-#endif
-    setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-    setCheckState (0, Qt::Checked);
-    QIcon myIcon(pkgDataPath+QString("/images/icons/layer.png"));
-    setText(0, name);
-    setIcon(0, myIcon);
+  mType=LEGEND_LAYER;
+  setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  setCheckState (0, Qt::Checked);
+  setText(0, name);
 }
 
 QgsLegendLayer::QgsLegendLayer(QString name): QObject(), QgsLegendItem()
 {
   mType=LEGEND_LAYER;
-#if defined(Q_OS_MACX) || defined(WIN32)
-    QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
-#else
-    QString pkgDataPath(PKGDATAPATH);
-#endif
-    setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-    setCheckState (0, Qt::Checked);
-    QIcon myIcon(pkgDataPath+QString("/images/icons/layer.png"));
-    setText(0, name);
-    setIcon(0, myIcon);
+  setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  setCheckState (0, Qt::Checked);
+  setText(0, name);
 }
 
 QgsLegendLayer::~QgsLegendLayer()

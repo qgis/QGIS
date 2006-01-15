@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "qgsapplication.h"
 #include "qgslegendpropertygroup.h"
 #include <QCoreApplication>
 #include <QIcon>
@@ -25,12 +26,7 @@ QgsLegendPropertyGroup::QgsLegendPropertyGroup(QTreeWidgetItem* theLegendItem, Q
     : QgsLegendItem(theLegendItem,theString )
 {
   mType=LEGEND_PROPERTY_GROUP;
-#if defined(Q_OS_MACX) || defined(WIN32)
-  QString pkgDataPath(QCoreApplication::applicationDirPath()+QString("/share/qgis"));
-#else
-  QString pkgDataPath(PKGDATAPATH);
-#endif
-  QIcon myIcon(pkgDataPath+QString("/images/icons/properties.png"));
+  QIcon myIcon(QgsApplication::themePath()+"mIconProperties.png");
   setText(0, theString);
   setIcon(0,myIcon);
 }

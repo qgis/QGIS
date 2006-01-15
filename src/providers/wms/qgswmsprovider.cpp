@@ -460,7 +460,7 @@ void QgsWmsProvider::retrieveServerCapabilities()
   if ( httpcapabilitiesresponse.isNull() )
   {
   
-    QString uri = httpuri + "SERVICE=WMS&REQUEST=GetCapabilities";
+    QString uri = httpuri + "?SERVICE=WMS&REQUEST=GetCapabilities";
 
     QgsHttpTransaction http(uri, httpproxyhost, httpproxyport);
 
@@ -550,6 +550,10 @@ void QgsWmsProvider::parseCapabilities(QByteArray  const & xml, QgsWmsCapabiliti
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseCapabilities: entering." << std::endl;
+
+  //test the content of the QByteArray
+  QString responsestring(xml);
+  qWarning("QgsWmsProvider::parseCapabilities, received the following data: "+responsestring);
   
   QFile file( "/tmp/qgis-wmsprovider-capabilities.xml" );
   if ( file.open( QIODevice::WriteOnly ) ) 
@@ -560,7 +564,12 @@ void QgsWmsProvider::parseCapabilities(QByteArray  const & xml, QgsWmsCapabiliti
 #endif
   
   // Convert completed document into a DOM
-  capabilitiesDOM.setContent(xml);
+  QString errormsg;
+  bool contentsuccess = capabilitiesDOM.setContent(xml, false, &errormsg);
+
+#ifdef QGISDEBUG
+  qWarning("errormessage is: "+errormsg);
+#endif
 
   QDomElement docElem = capabilitiesDOM.documentElement();
 
