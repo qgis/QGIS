@@ -444,6 +444,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
     mStateOfCheckBoxes.insert(std::make_pair(llayer, Qt::Checked)); //insert the check state into the map to query for changes later
     QgsLegendLayerFileGroup * llfgroup = new QgsLegendLayerFileGroup(llayer,QString("Files"));
     QgsLegendLayerFile * llfile = new QgsLegendLayerFile(llfgroup, QgsLegendLayerFile::nameFromLayer(layer), layer);
+    llayer->setLayerTypeIcon();
     
     //set the correct check state
     blockSignals(true);

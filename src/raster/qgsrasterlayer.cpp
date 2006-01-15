@@ -5194,6 +5194,11 @@ void QgsRasterLayer::showStatusMessage(QString const & theMessage)
     emit setStatus(theMessage);
 }
 
+QString QgsRasterLayer::layerTypeIconPath()
+{
+  return (QgsApplication::themePath()+"/mIconLayer.png");
+}
+
 void QgsRasterLayer::refreshLegend()
 {
     if(mLegendSymbologyGroupParent)

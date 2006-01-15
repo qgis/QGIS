@@ -145,6 +145,9 @@ const QString displayField() const { return fieldIndex; }
    */
   bool addFeatures(std::vector<QgsFeature*>* features, bool makeSelected = TRUE);
 
+  /**Returns the path to an icon which characterises the type of layer*/
+  QString layerTypeIconPath();
+
   /**Fill the pixmaps and labels of the renderers into the treeview legend*/
   void refreshLegend();
 

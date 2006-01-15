@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>330</width>
-    <height>391</height>
+    <width>443</width>
+    <height>444</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -37,10 +37,10 @@
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
-       <number>8</number>
+       <number>4</number>
       </property>
       <property name="spacing" >
-       <number>6</number>
+       <number>4</number>
       </property>
       <item row="0" column="4" >
        <widget class="QToolButton" name="bdiag" >
@@ -54,8 +54,8 @@
         </property>
         <property name="minimumSize" >
          <size>
-          <width>60</width>
-          <height>23</height>
+          <width>0</width>
+          <height>0</height>
          </size>
         </property>
         <property name="maximumSize" >
@@ -87,8 +87,8 @@
         </property>
         <property name="minimumSize" >
          <size>
-          <width>60</width>
-          <height>23</height>
+          <width>0</width>
+          <height>0</height>
          </size>
         </property>
         <property name="maximumSize" >
@@ -139,8 +139,8 @@
         </property>
         <property name="minimumSize" >
          <size>
-          <width>60</width>
-          <height>23</height>
+          <width>0</width>
+          <height>0</height>
          </size>
         </property>
         <property name="maximumSize" >
@@ -602,6 +602,9 @@
           <height>22</height>
          </size>
         </property>
+        <property name="autoFillBackground" >
+         <bool>true</bool>
+        </property>
         <property name="frameShape" >
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -680,6 +683,9 @@
           <width>64</width>
           <height>22</height>
          </size>
+        </property>
+        <property name="autoFillBackground" >
+         <bool>true</bool>
         </property>
         <property name="frameShape" >
          <enum>QFrame::StyledPanel</enum>

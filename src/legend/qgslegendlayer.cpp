@@ -75,6 +75,20 @@ QgsLegendLayer::~QgsLegendLayer()
   mType=LEGEND_LAYER;
 }
 
+void QgsLegendLayer::setLayerTypeIcon()
+{
+  QgsMapLayer* firstLayer = firstMapLayer();
+  if(firstLayer)
+    {
+      QFileInfo file(firstLayer->layerTypeIconPath());
+      if(file.exists())
+	{
+	  QIcon myIcon(file.absoluteFilePath());
+	  setIcon(0, myIcon);
+	}
+    }
+}
+
 bool QgsLegendLayer::isLeafNode()
 {
   return false;

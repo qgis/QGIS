@@ -59,6 +59,7 @@
 #include <qwidget.h>
 #include <qglobal.h>
 
+#include "qgsapplication.h"
 #include "qgisapp.h"
 #include "qgsproject.h"
 #include "qgsrect.h"
@@ -2815,6 +2816,24 @@ bool QgsVectorLayer::addFeatures(std::vector<QgsFeature*>* features, bool makeSe
   return true;
 }
 
+QString QgsVectorLayer::layerTypeIconPath()
+{
+  QString myThemePath = QgsApplication::themePath();
+  switch(vectorType())
+    {
+    case Point:
+      return (myThemePath+"/mIconPointLayer.png");
+      break;
+    case Line:
+      return (myThemePath+"/mIconLineLayer.png");
+      break;
+    case Polygon:
+      return (myThemePath+"/mIconPolygonLayer.png");
+    default:
+      return (myThemePath+"/mIconLayer.png");
+    }
+}
+
 void QgsVectorLayer::refreshLegend()
 {
   if(mLegendSymbologyGroupParent && m_renderer)
@@ -2874,11 +2893,18 @@ bool QgsVectorLayer::copySymbologySettings(const QgsMapLayer& other)
 
 bool QgsVectorLayer::isSymbologyCompatible(const QgsMapLayer& other) const
 {
-  //vector layers are symbology compatible if they have the same sequence of numerical/ non numerical fields and the same field names
+  //vector layers are symbology compatible if they have the same type, the same sequence of numerical/ non numerical fields and the same field names
+
 
   const QgsVectorLayer* otherVectorLayer = dynamic_cast<const QgsVectorLayer*>(&other);
   if(otherVectorLayer)
   {
+
+    if(otherVectorLayer->vectorType() != vectorType())
+      {
+	return false;
+      }
+
     const std::vector<QgsField> fieldsThis = dataProvider->fields();
     const std::vector<QgsField> fieldsOther = otherVectorLayer ->dataProvider->fields();
 
