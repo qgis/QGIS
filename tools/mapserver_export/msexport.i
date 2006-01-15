@@ -12,7 +12,7 @@
 class QgsMapserverExport:public QDialog, private Ui::QgsMapserverExportBase
 {
 public:
-  QgsMapserverExport(QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
+  QgsMapserverExport(QWidget* parent = 0,  Qt::WFlags fl = 0 );
   ~QgsMapserverExport();
   //! Read the file and create the map
   //bool read();
