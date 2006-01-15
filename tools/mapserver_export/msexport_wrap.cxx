@@ -1363,48 +1363,18 @@ static swig_type_info *swig_types[10];
 #include "qgsmapserverexport.h"
 
 
-/* returns SWIG_OLDOBJ if the input is a raw char*, SWIG_PYSTR if is a PyString */
-SWIGINTERN int
-SWIG_AsCharPtrAndSize(PyObject *obj, char** cptr, size_t* psize)
+SWIGINTERNSHORT PyObject*
+  SWIG_From_bool(bool value)
 {
-  static swig_type_info* pchar_info = 0;
-  char* vptr = 0;
-  if (!pchar_info) pchar_info = SWIG_TypeQuery("char *");
-  if (SWIG_ConvertPtr(obj, (void**)&vptr, pchar_info, 0) != -1) {
-    if (cptr) *cptr = vptr;
-    if (psize) *psize = vptr ? (strlen(vptr) + 1) : 0;
-    return SWIG_OLDOBJ;
-  } else {
-    PyErr_Clear();
-    if (PyString_Check(obj)) {
-      if (cptr) {
-	*cptr = PyString_AS_STRING(obj);
-	if (psize) {
-	  *psize = PyString_GET_SIZE(obj) + 1;
-	}
-      }
-      return SWIG_PYSTR;
-    }
-  }
-  if (cptr) {
-    SWIG_type_error("char *", obj);
-  }
-  return 0;
+  PyObject *obj = value ? Py_True : Py_False;
+  Py_INCREF(obj);
+  return obj;
 }
 
 
-SWIGINTERNSHORT int
-SWIG_AsCharPtr(PyObject *obj, char **val)
-{
-  if (SWIG_AsCharPtrAndSize(obj, val, (size_t*)(0))) {
-    return 1;
-  }
-  if (val) {
-    PyErr_Clear();
-    SWIG_type_error("char *", obj);
-  }
-  return 0;
-}
+  /*@/usr/share/swig1.3/python/pymacros.swg,66,SWIG_define@*/
+#define SWIG_From_int PyInt_FromLong
+/*@@*/
 
 
 #include <limits.h>
@@ -1532,56 +1502,31 @@ SWIG_Check_bool(PyObject* obj)
   return SWIG_AsVal_bool(obj, (bool*)0);
 }
 
-
-SWIGINTERNSHORT PyObject*
-  SWIG_From_bool(bool value)
-{
-  PyObject *obj = value ? Py_True : Py_False;
-  Py_INCREF(obj);
-  return obj;
-}
-
-
-  /*@/usr/share/swig1.3/python/pymacros.swg,66,SWIG_define@*/
-#define SWIG_From_int PyInt_FromLong
-/*@@*/
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 static PyObject *_wrap_new_QgsMapserverExport__SWIG_0(PyObject *, PyObject *args) {
     PyObject *resultobj;
     QWidget *arg1 = (QWidget *) 0 ;
-    char *arg2 = (char *) 0 ;
-    bool arg3 ;
-    Qt::WFlags arg4 ;
+    Qt::WFlags arg2 ;
     QgsMapserverExport *result;
     PyObject * obj0 = 0 ;
     PyObject * obj1 = 0 ;
-    PyObject * obj2 = 0 ;
-    PyObject * obj3 = 0 ;
     
-    if(!PyArg_ParseTuple(args,(char *)"OOOO:new_QgsMapserverExport",&obj0,&obj1,&obj2,&obj3)) goto fail;
+    if(!PyArg_ParseTuple(args,(char *)"OO:new_QgsMapserverExport",&obj0,&obj1)) goto fail;
     SWIG_Python_ConvertPtr(obj0, (void **)&arg1, SWIGTYPE_p_QWidget, SWIG_POINTER_EXCEPTION | 0);
     if (SWIG_arg_fail(1)) SWIG_fail;
-    if (!SWIG_AsCharPtr(obj1, (char**)&arg2)) {
-        SWIG_arg_fail(2);SWIG_fail;
-    }
-    {
-        arg3 = (bool)(SWIG_As_bool(obj2)); 
-        if (SWIG_arg_fail(3)) SWIG_fail;
-    }
     {
         Qt::WFlags * argp;
-        SWIG_Python_ConvertPtr(obj3, (void **)&argp, SWIGTYPE_p_Qt__WFlags, SWIG_POINTER_EXCEPTION);
-        if (SWIG_arg_fail(4)) SWIG_fail;
+        SWIG_Python_ConvertPtr(obj1, (void **)&argp, SWIGTYPE_p_Qt__WFlags, SWIG_POINTER_EXCEPTION);
+        if (SWIG_arg_fail(2)) SWIG_fail;
         if (argp == NULL) {
             SWIG_null_ref("Qt::WFlags");
         }
-        if (SWIG_arg_fail(4)) SWIG_fail;
-        arg4 = *argp;
+        if (SWIG_arg_fail(2)) SWIG_fail;
+        arg2 = *argp;
     }
-    result = (QgsMapserverExport *)new QgsMapserverExport(arg1,(char const *)arg2,arg3,arg4);
+    result = (QgsMapserverExport *)new QgsMapserverExport(arg1,arg2);
     
     resultobj = SWIG_NewPointerObj((void*)(result), SWIGTYPE_p_QgsMapserverExport, 1);
     return resultobj;
@@ -1591,58 +1536,6 @@ static PyObject *_wrap_new_QgsMapserverExport__SWIG_0(PyObject *, PyObject *args
 
 
 static PyObject *_wrap_new_QgsMapserverExport__SWIG_1(PyObject *, PyObject *args) {
-    PyObject *resultobj;
-    QWidget *arg1 = (QWidget *) 0 ;
-    char *arg2 = (char *) 0 ;
-    bool arg3 ;
-    QgsMapserverExport *result;
-    PyObject * obj0 = 0 ;
-    PyObject * obj1 = 0 ;
-    PyObject * obj2 = 0 ;
-    
-    if(!PyArg_ParseTuple(args,(char *)"OOO:new_QgsMapserverExport",&obj0,&obj1,&obj2)) goto fail;
-    SWIG_Python_ConvertPtr(obj0, (void **)&arg1, SWIGTYPE_p_QWidget, SWIG_POINTER_EXCEPTION | 0);
-    if (SWIG_arg_fail(1)) SWIG_fail;
-    if (!SWIG_AsCharPtr(obj1, (char**)&arg2)) {
-        SWIG_arg_fail(2);SWIG_fail;
-    }
-    {
-        arg3 = (bool)(SWIG_As_bool(obj2)); 
-        if (SWIG_arg_fail(3)) SWIG_fail;
-    }
-    result = (QgsMapserverExport *)new QgsMapserverExport(arg1,(char const *)arg2,arg3);
-    
-    resultobj = SWIG_NewPointerObj((void*)(result), SWIGTYPE_p_QgsMapserverExport, 0);
-    return resultobj;
-    fail:
-    return NULL;
-}
-
-
-static PyObject *_wrap_new_QgsMapserverExport__SWIG_2(PyObject *, PyObject *args) {
-    PyObject *resultobj;
-    QWidget *arg1 = (QWidget *) 0 ;
-    char *arg2 = (char *) 0 ;
-    QgsMapserverExport *result;
-    PyObject * obj0 = 0 ;
-    PyObject * obj1 = 0 ;
-    
-    if(!PyArg_ParseTuple(args,(char *)"OO:new_QgsMapserverExport",&obj0,&obj1)) goto fail;
-    SWIG_Python_ConvertPtr(obj0, (void **)&arg1, SWIGTYPE_p_QWidget, SWIG_POINTER_EXCEPTION | 0);
-    if (SWIG_arg_fail(1)) SWIG_fail;
-    if (!SWIG_AsCharPtr(obj1, (char**)&arg2)) {
-        SWIG_arg_fail(2);SWIG_fail;
-    }
-    result = (QgsMapserverExport *)new QgsMapserverExport(arg1,(char const *)arg2);
-    
-    resultobj = SWIG_NewPointerObj((void*)(result), SWIGTYPE_p_QgsMapserverExport, 0);
-    return resultobj;
-    fail:
-    return NULL;
-}
-
-
-static PyObject *_wrap_new_QgsMapserverExport__SWIG_3(PyObject *, PyObject *args) {
     PyObject *resultobj;
     QWidget *arg1 = (QWidget *) 0 ;
     QgsMapserverExport *result;
@@ -1660,7 +1553,7 @@ static PyObject *_wrap_new_QgsMapserverExport__SWIG_3(PyObject *, PyObject *args
 }
 
 
-static PyObject *_wrap_new_QgsMapserverExport__SWIG_4(PyObject *, PyObject *args) {
+static PyObject *_wrap_new_QgsMapserverExport__SWIG_2(PyObject *, PyObject *args) {
     PyObject *resultobj;
     QgsMapserverExport *result;
     
@@ -1676,15 +1569,15 @@ static PyObject *_wrap_new_QgsMapserverExport__SWIG_4(PyObject *, PyObject *args
 
 static PyObject *_wrap_new_QgsMapserverExport(PyObject *self, PyObject *args) {
     int argc;
-    PyObject *argv[5];
+    PyObject *argv[3];
     int ii;
     
     argc = PyObject_Length(args);
-    for (ii = 0; (ii < argc) && (ii < 4); ii++) {
+    for (ii = 0; (ii < argc) && (ii < 2); ii++) {
         argv[ii] = PyTuple_GetItem(args,ii);
     }
     if (argc == 0) {
-        return _wrap_new_QgsMapserverExport__SWIG_4(self,args);
+        return _wrap_new_QgsMapserverExport__SWIG_2(self,args);
     }
     if (argc == 1) {
         int _v;
@@ -1698,7 +1591,7 @@ static PyObject *_wrap_new_QgsMapserverExport(PyObject *self, PyObject *args) {
             }
         }
         if (_v) {
-            return _wrap_new_QgsMapserverExport__SWIG_3(self,args);
+            return _wrap_new_QgsMapserverExport__SWIG_1(self,args);
         }
     }
     if (argc == 2) {
@@ -1713,62 +1606,17 @@ static PyObject *_wrap_new_QgsMapserverExport(PyObject *self, PyObject *args) {
             }
         }
         if (_v) {
-            _v = SWIG_AsCharPtr(argv[1], (char **)(0));
-            if (_v) {
-                return _wrap_new_QgsMapserverExport__SWIG_2(self,args);
-            }
-        }
-    }
-    if (argc == 3) {
-        int _v;
-        {
-            void *ptr;
-            if (SWIG_ConvertPtr(argv[0], &ptr, SWIGTYPE_p_QWidget, 0) == -1) {
-                _v = 0;
-                PyErr_Clear();
-            } else {
-                _v = 1;
-            }
-        }
-        if (_v) {
-            _v = SWIG_AsCharPtr(argv[1], (char **)(0));
-            if (_v) {
-                _v = SWIG_Check_bool(argv[2]);
-                if (_v) {
-                    return _wrap_new_QgsMapserverExport__SWIG_1(self,args);
+            {
+                void *ptr = 0;
+                if (SWIG_ConvertPtr(argv[1], &ptr, SWIGTYPE_p_Qt__WFlags, 0) == -1) {
+                    _v = 0;
+                    PyErr_Clear();
+                } else {
+                    _v = (ptr != 0);
                 }
             }
-        }
-    }
-    if (argc == 4) {
-        int _v;
-        {
-            void *ptr;
-            if (SWIG_ConvertPtr(argv[0], &ptr, SWIGTYPE_p_QWidget, 0) == -1) {
-                _v = 0;
-                PyErr_Clear();
-            } else {
-                _v = 1;
-            }
-        }
-        if (_v) {
-            _v = SWIG_AsCharPtr(argv[1], (char **)(0));
             if (_v) {
-                _v = SWIG_Check_bool(argv[2]);
-                if (_v) {
-                    {
-                        void *ptr = 0;
-                        if (SWIG_ConvertPtr(argv[3], &ptr, SWIGTYPE_p_Qt__WFlags, 0) == -1) {
-                            _v = 0;
-                            PyErr_Clear();
-                        } else {
-                            _v = (ptr != 0);
-                        }
-                    }
-                    if (_v) {
-                        return _wrap_new_QgsMapserverExport__SWIG_0(self,args);
-                    }
-                }
+                return _wrap_new_QgsMapserverExport__SWIG_0(self,args);
             }
         }
     }
