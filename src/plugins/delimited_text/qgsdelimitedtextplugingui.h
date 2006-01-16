@@ -40,6 +40,7 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
 
   private:
     QgisIface * qI;
+    static const int context_id = -1033030847;
 signals:
     void drawRasterLayer(QString);
     void drawVectorLayer(QString,QString,QString);

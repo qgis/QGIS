@@ -24,6 +24,7 @@
 #include <qregexp.h>
 #include <qmessagebox.h>
 #include "qgsdelimitedtextplugingui.h"
+#include "qgscontexthelp.h"
 //Added by qt3to4:
 #include <QTextStream>
 #include "qgisiface.h"
@@ -51,7 +52,7 @@ QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
 /** Autoconnected slots **/
 void QgsDelimitedTextPluginGui::on_pbnHelp_clicked()
 {
-  help();
+  QgsContextHelp::run(context_id);
 }
 void QgsDelimitedTextPluginGui::on_btnBrowseForFile_clicked()
 {
