@@ -264,7 +264,7 @@ void QgsOptions::getEllipsoidList()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(QgsApplication::srsDbFilePath()+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -297,7 +297,7 @@ QString QgsOptions::getEllipsoidAcronym(QString theEllipsoidName)
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open(QString(QgsApplication::srsDbFilePath()+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -329,7 +329,7 @@ QString QgsOptions::getEllipsoidName(QString theEllipsoidAcronym)
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open((QgsApplication::srsDbFilePath()+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 

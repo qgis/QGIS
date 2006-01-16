@@ -16,6 +16,8 @@
 
 #include "qgsapplication.h"
 
+#include <QDir>
+
 QString QgsApplication::mPrefixPath;
 QString QgsApplication::mPluginPath;
 QString QgsApplication::mPkgDataPath;
@@ -103,6 +105,14 @@ const QString QgsApplication::i18nPath()
 const QString QgsApplication::qgisMasterDbFilePath()
 {
   return mPkgDataPath + QString("/resources/qgis.db");
+}
+
+/*!
+  Returns the path to the user qgis.db file.
+*/
+const QString QgsApplication::qgisUserDbFilePath()
+{
+  return QDir::homeDirPath() + QString("/.qgis/qgis.db");
 }
 
 /*!
