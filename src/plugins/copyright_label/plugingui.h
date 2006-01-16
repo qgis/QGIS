@@ -33,9 +33,11 @@ public:
 public slots:
     void on_pbnOK_clicked();
     void on_pbnCancel_clicked();    
+    void on_pbnHelp_clicked();
     void setEnabled(bool); 
      
 private:
+    static const int context_id = 732921842;
     
 signals:
    //void drawRasterLayer(QString);
