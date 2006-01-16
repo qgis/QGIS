@@ -58,11 +58,14 @@ class QgsDlgPgBuffer:public QDialog, private Ui::QgsDlgPgBufferBase
     //! Set the geometry column on the dialog
     void setGeometryColumn(QString name);
     public slots:
-    void on_buttonHelp_clicked();
+    void on_btnHelp_clicked();
     private:
       //! Pointer to the QGIS interface object
     QgisIface *qI;
     //! Input validator for the buffer distance
     QDoubleValidator *distanceValidator;
+    //! Context help id
+    static const int context_id = 272873129;
+
 };
 #endif // QGSDLGPGBUFFER_H

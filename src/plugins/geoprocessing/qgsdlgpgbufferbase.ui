@@ -247,7 +247,7 @@
       <number>6</number>
      </property>
      <item>
-      <widget class="QPushButton" name="buttonHelp" >
+      <widget class="QPushButton" name="btnHelp" >
        <property name="text" >
         <string>&amp;Help</string>
        </property>
