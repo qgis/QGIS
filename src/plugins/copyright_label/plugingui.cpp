@@ -10,6 +10,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "plugingui.h"
+#include "qgscontexthelp.h"
 #include <q3textedit.h>
 #include <q3simplerichtext.h>
 #include <QComboBox>
@@ -58,6 +59,10 @@ void QgsCopyrightLabelPluginGui::on_pbnCancel_clicked()
  close(1);
 }
 
+void QgsCopyrightLabelPluginGui::on_pbnHelp_clicked()
+{
+  QgsContextHelp::run(context_id);
+}
 void QgsCopyrightLabelPluginGui::setEnabled(bool theBool)
 {
   cboxEnabled->setChecked(theBool);
