@@ -24,6 +24,7 @@
 #include <QComboBox>
 #include <qvalidator.h>
 #include "qgsdlgpgbuffer.h"
+#include "qgscontexthelp.h"
 #include <qspinbox.h>
 #include "qgisiface.h"
 
@@ -103,7 +104,8 @@ void QgsDlgPgBuffer::setGeometryColumn(QString name)
 {
     txtGeometryColumn->setText(name);
 }
-void QgsDlgPgBuffer::on_buttonHelp_clicked()
+void QgsDlgPgBuffer::on_btnHelp_clicked()
 {
-   qI->openURL("plugins/geoprocessing/buffer/index.html",true);
+  QgsContextHelp::run(context_id);
+// Old call to open help in browser  qI->openURL("plugins/geoprocessing/buffer/index.html",true);
 }
