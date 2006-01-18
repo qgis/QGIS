@@ -27,6 +27,7 @@ class Q3ButtonGroup;
 class QgsPoint;
 #include "ui_qgsgrassregionbase.h"
 #include <QDialog>
+#include <QRubberBand>
 
 extern "C" {
 #include <gis.h>
@@ -43,8 +44,7 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
 public:
     //! Constructor
     QgsGrassRegion ( QgsGrassPlugin *plugin, QgisApp *qgisApp, QgisIface *iface, 
-	             QWidget * parent = 0, const char * name = 0, 
-		     Qt::WFlags f = 0 );
+	             QWidget * parent = 0, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassRegion();
@@ -54,9 +54,11 @@ public:
 
 public slots:
     //! OK
+    void on_acceptButton_clicked() { accept(); }
     void accept ( void );
 
     //! Close
+    void on_rejectButton_clicked() { reject(); }
     void reject ( void );
 
     //! Called when rendering is finished
@@ -114,9 +116,6 @@ private:
     //! Region was displayed 
     bool mDisplayed;
 
-    //! Old displayed region points
-    Q3PointArray mPointArray;
-
     //! Draw region
     void draw ( double x1, double y1, double x2, double y2 );
 
@@ -141,6 +140,8 @@ private:
 
     // Format N, S, E, W value
     QString formatEdge ( double v );
+
+    QRubberBand *mRubberBand;
 };
 
 #endif // QGSGRASSREGION_H

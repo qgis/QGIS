@@ -188,41 +188,26 @@ void QgsGrassPlugin::initGui()
   mCanvas = qGisInterface->getMapCanvas();
 
   // Create the action for tool
-#if QT_VERSION < 0x040000
-  mOpenMapsetAction = new QAction( "Open mapset", 0, this );
-  mNewMapsetAction = new QAction( "New mapset", 0, this );
-  mCloseMapsetAction = new QAction( "Close mapset", 0, this );
-  mAddVectorAction = new QAction("Add GRASS vector layer", QIcon(icon_add_vector), 
-      "Add GRASS vector layer",0, this, "addVector");
-  mAddRasterAction = new QAction("Add GRASS raster layer", QIcon(icon_add_raster), 
-      "Add GRASS raster layer",0, this, "addRaster");
-  mOpenToolsAction = new QAction("Open GRASS tools", QIcon(icon_grass_tools), 
-      "Open GRASS tools",0, this, "openTools");
-  mRegionAction = new QAction("Display Current Grass Region", QIcon(icon_grass_region), 
-      "Display Current Grass Region",0, this, "region", true);
-  mEditRegionAction = new QAction("Edit Current Grass Region", QIcon(icon_grass_region_edit), 
-      "Edit Current Grass Region",0, this, "editRegion");
-  mEditAction = new QAction("Edit Grass Vector layer", QIcon(icon_grass_edit), 
-      "Edit Grass Vector layer",0, this, "edit");
-  mNewVectorAction = new QAction("Create new Grass Vector", 0, this);
-#else
   mOpenMapsetAction = new QAction( "Open mapset", this );
   mNewMapsetAction = new QAction( "New mapset", this );
   mCloseMapsetAction = new QAction( "Close mapset", this );
+
   mAddVectorAction = new QAction(QIcon(icon_add_vector),
       "Add GRASS vector layer", this);
   mAddRasterAction = new QAction(QIcon(icon_add_raster),
       "Add GRASS raster layer", this);
   mOpenToolsAction = new QAction(QIcon(icon_grass_tools),
       "Open GRASS tools", this);
+
   mRegionAction = new QAction(QIcon(icon_grass_region),
       "Display Current Grass Region", this);
+  mRegionAction->setCheckable(true);     
+
   mEditRegionAction = new QAction(QIcon(icon_grass_region_edit),
       "Edit Current Grass Region", this);
   mEditAction = new QAction(QIcon(icon_grass_edit),
       "Edit Grass Vector layer", this);
   mNewVectorAction = new QAction("Create new Grass Vector", this);
-#endif
 
   mAddVectorAction->setWhatsThis("Adds a GRASS vector layer to the map canvas");
   mAddRasterAction->setWhatsThis("Adds a GRASS raster layer to the map canvas");
@@ -700,8 +685,7 @@ void QgsGrassPlugin::changeRegion(void)
   }
 
   QgsGrassRegion *reg = new QgsGrassRegion(this, qgisMainWindowPointer, qGisInterface, 
-      qgisMainWindowPointer, 0, 
-      Qt::WType_Dialog );
+      qgisMainWindowPointer, Qt::WType_Dialog );
 
   reg->show();
 }
