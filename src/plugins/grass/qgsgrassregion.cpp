@@ -27,7 +27,7 @@
 #include <qinputdialog.h>
 #include <qpainter.h>
 #include <qpen.h>
-#include <q3pointarray.h>
+#include <qpoint.h>
 #include <qcursor.h>
 #include <qnamespace.h>
 #include <qsettings.h>
@@ -40,6 +40,8 @@
 #include <qcolordialog.h>
 #include <qspinbox.h>
 #include <qglobal.h>
+
+#include <QRubberBand>
 
 #include <qgsrasterlayer.h>
 #include "qgis.h"
@@ -62,14 +64,14 @@ extern "C" {
 bool QgsGrassRegion::mRunning = false;
 
 QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, QgisIface *iface,
-        QWidget * parent, const char * name, Qt::WFlags f ) 
-        //:QgsGrassRegionBase ( parent, name, f )
-        //Tim removed params durint qt4 ui port - FIXME
-        :QgsGrassRegionBase ( )
+        QWidget * parent, Qt::WFlags f ) 
+        :QDialog(parent, f), QgsGrassRegionBase ( )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassRegion()" << std::endl;
     #endif
+
+    setupUi(this);
 
     mRunning = true;
     mPlugin = plugin;
@@ -80,7 +82,6 @@ QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, Qgis
     mDraw = false;
     mUpdatingGui = false;
     mDisplayed = false;
-    mPointArray.resize(5);
 
     // Set input validators
     QDoubleValidator *dv = new QDoubleValidator(0);
@@ -156,6 +157,9 @@ QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, Qgis
     mWidthSpinBox->setValue( pen.width() );
     connect( mWidthSpinBox, SIGNAL(valueChanged(int)), this, SLOT(changeWidth()));
 
+    mRubberBand = new QRubberBand ( QRubberBand::Rectangle, mCanvas );
+
+    setAttribute ( Qt::WA_DeleteOnClose );
     displayRegion();
 }
 
@@ -211,6 +215,7 @@ void QgsGrassRegion::setGuiValues( bool north, bool south, bool east, bool west,
 
 QgsGrassRegion::~QgsGrassRegion ()
 {
+    delete mRubberBand;
     mRunning = false;
 }
 
@@ -336,10 +341,14 @@ void QgsGrassRegion::mouseEventReceiverClick( QgsPoint & point )
         draw ( mX, mY, point.x(), point.y() );
 	mDraw = false; 
     }
+    mRubberBand->show();
 }
 
 void QgsGrassRegion::mouseEventReceiverMove( QgsPoint & point )
 {
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassRegion::mouseEventReceiverMove()" << std::endl;
+    #endif
     if ( !mDraw ) return;
     draw ( mX, mY, point.x(), point.y() );
 }
@@ -378,44 +387,20 @@ void QgsGrassRegion::displayRegion()
     std::cerr << "QgsGrassRegion::displayRegion()" << std::endl;
     #endif
 
-#if QT_VERSION < 0x040000
-    QPainter *painter = new QPainter();
-    QPixmap *pixmap = mCanvas->canvasPixmap();
-    painter->begin(pixmap);
-    painter->setRasterOp(Qt::XorROP);
-    painter->setPen ( QColor(125,125,125) );
-
-    if ( mDisplayed ) { // delete old
-        painter->drawPolyline ( mPointArray );
-    }
-
-    std::vector<QgsPoint> points;
-    points.resize(5);
-    
-    points[0].setX(mWindow.west); points[0].setY(mWindow.south);
-    points[1].setX(mWindow.east); points[1].setY(mWindow.south);
-    points[2].setX(mWindow.east); points[2].setY(mWindow.north);
-    points[3].setX(mWindow.west); points[3].setY(mWindow.north);
-    points[4].setX(mWindow.west); points[4].setY(mWindow.south);
+    QgsPoint ul(mWindow.west, mWindow.north);
+    QgsPoint lr(mWindow.east, mWindow.south);
     
     QgsMapToPixel *transform = mCanvas->getCoordinateTransform();
 
-    for ( int i = 0; i < 5; i++ ) {
-        transform->transform( &(points[i]) );
-        mPointArray.setPoint( i, static_cast<int>(points[i].x()), 
-                                 static_cast<int>(points[i].y()) );
-    }
-    
-    painter->drawPolyline ( mPointArray );
+    transform->transform( &ul );
+    transform->transform( &lr );
 
-    painter->end();
-    mCanvas->repaint(false);
-    delete painter;
+    QPoint qul ( static_cast<int>(ul.x()), static_cast<int>(ul.y()) );
+    QPoint qlr ( static_cast<int>(lr.x()), static_cast<int>(lr.y()) );
+    
+    mRubberBand->setGeometry ( QRect(qul,qlr));
 
     mDisplayed = true;
-#else
-// TODO: Qt4 uses QRubberBand, need to refactor.
-#endif
 
 }
 
@@ -453,15 +438,19 @@ void QgsGrassRegion::accept()
     }
 
     saveWindowLocation();
+    mRubberBand->hide();
+    mRunning = false;
     close();
-    delete this;
+    //delete this;
 }
 
 void QgsGrassRegion::reject()
 {
     saveWindowLocation();
+    mRubberBand->hide();
+    mRunning = false;
     close();
-    delete this;
+    //delete this;
 }
 
 void QgsGrassRegion::restorePosition()
