@@ -80,9 +80,11 @@ public:
 
 public slots:
     //! Browse database
+    void on_mDatabaseButton_clicked() { browseDatabase(); }
     void browseDatabase();
 
     //! Database changed
+    void on_mDatabaseLineEdit_returnPressed() { databaseChanged(); }
     void databaseChanged();
     
     /***************** LOCATION *****************/
@@ -93,12 +95,17 @@ public slots:
     void setLocations ( );
 
     //! Location radio switched
+    void on_mCreateLocationRadioButton_clicked() { locationRadioSwitched(); }
+    void on_mSelectLocationRadioButton_clicked() { locationRadioSwitched(); }
     void locationRadioSwitched ( );
 
     //! Existing location selection
+    void on_mLocationComboBox_textChanged(const QString &txt) {
+            existingLocationChanged ( txt ); }
     void existingLocationChanged(const QString&);
 
     //! New location name has changed
+    void on_mLocationLineEdit_returnPressed() { newLocationChanged(); }
     void newLocationChanged();
 
     //! Check location
@@ -113,6 +120,8 @@ public slots:
     void projectionSelected();
 
     //! Location radio switched
+    void on_mNoProjRadioButton_clicked() { projRadioSwitched(); }
+    void on_mProjRadioButton_clicked() { projRadioSwitched(); }
     void projRadioSwitched ( );
 
     //! Set GRASS projection structures for currently selected projection
@@ -127,12 +136,18 @@ public slots:
     void setGrassRegionDefaults();
 
     //! Region Changed
+    void on_mNorthLineEdit_returnPressed() { regionChanged(); }
+    void on_mSouthLineEdit_returnPressed() { regionChanged(); }
+    void on_mEastLineEdit_returnPressed() { regionChanged(); }
+    void on_mWestLineEdit_returnPressed() { regionChanged(); }
     void regionChanged();
 
     //! Set current QGIS region
+    void on_mCurrentRegionButton_clicked() { setCurrentRegion(); }
     void setCurrentRegion();
 
     //! Set region selected in combo box
+    void on_mRegionButton_clicked() { setSelectedRegion(); }
     void setSelectedRegion();
 
     //! Draw current region on map
@@ -144,6 +159,7 @@ public slots:
     void setMapsets();
 
     //! Mapset name changed
+    void on_mMapsetLineEdit_returnPressed() { mapsetChanged(); }
     void mapsetChanged();
 
     /******************** FINISH ******************/

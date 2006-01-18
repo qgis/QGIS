@@ -23,7 +23,7 @@ endif
 plugindir = ${pkglibdir}
 
 grassdatadir = ${pkgdatadir}/grass/
-grassdata_DATA = *.gml
+grassdata_DATA = *.gml images/world.png
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<

@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>490</width>
-    <height>534</height>
+    <width>633</width>
+    <height>465</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -28,130 +28,18 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>478</width>
-     <height>456</height>
+     <width>621</width>
+     <height>450</height>
     </rect>
    </property>
    <layout class="QGridLayout" >
     <property name="margin" >
-     <number>0</number>
+     <number>9</number>
     </property>
     <property name="spacing" >
      <number>6</number>
     </property>
-    <item row="0" column="0" colspan="3" >
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="textLabel1" >
-        <property name="text" >
-         <string>Select existing directory or create a new one:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>241</width>
-          <height>16</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item row="1" column="0" colspan="3" >
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="textLabel2" >
-        <property name="text" >
-         <string>Database:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="mDatabaseLineEdit" />
-      </item>
-      <item>
-       <widget class="QPushButton" name="mDatabaseButton" >
-        <property name="text" >
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="3" column="0" colspan="3" >
-     <widget class="Line" name="line1" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>7</hsizetype>
-        <vsizetype>0</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize" >
-       <size>
-        <width>0</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="frameShape" >
-       <enum>QFrame::HLine</enum>
-      </property>
-      <property name="frameShadow" >
-       <enum>QFrame::Sunken</enum>
-      </property>
-     </widget>
-    </item>
-    <item rowspan="2" row="4" column="0" colspan="2" >
-     <widget class="Q3TextBrowser" name="mDatabaseText" >
-      <property name="minimumSize" >
-       <size>
-        <width>250</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="focusPolicy" >
-       <enum>Qt::NoFocus</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="2" >
-     <widget class="QLabel" name="textLabel1_2" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>5</hsizetype>
-        <vsizetype>5</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text" >
-       <string>Example directory tree:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="2" >
+    <item row="5" column="1" >
      <widget class="Q3ListView" name="mTreeListView" >
       <property name="sizePolicy" >
        <sizepolicy>
@@ -186,6 +74,52 @@
       </column>
      </widget>
     </item>
+    <item row="4" column="1" >
+     <widget class="QLabel" name="textLabel1_2" >
+      <property name="sizePolicy" >
+       <sizepolicy>
+        <hsizetype>5</hsizetype>
+        <vsizetype>5</vsizetype>
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text" >
+       <string>Example directory tree:</string>
+      </property>
+     </widget>
+    </item>
+    <item rowspan="2" row="4" column="0" >
+     <widget class="QTextBrowser" name="mDatabaseText" >
+      <property name="html" >
+       <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">GRASS data are stored in tree directory structure.&amp;lt;br&amp;gt;&lt;/p>&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">The GRASS database is the top-level directory in this tree structure.&lt;/p>&lt;/body>&lt;/html></string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" colspan="2" >
+     <widget class="Line" name="line1" >
+      <property name="sizePolicy" >
+       <sizepolicy>
+        <hsizetype>7</hsizetype>
+        <vsizetype>0</vsizetype>
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize" >
+       <size>
+        <width>0</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="frameShape" >
+       <enum>QFrame::HLine</enum>
+      </property>
+      <property name="frameShadow" >
+       <enum>QFrame::Sunken</enum>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="0" >
      <widget class="QLabel" name="mDatabaseErrorLabel" >
       <property name="sizePolicy" >
@@ -201,7 +135,7 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="1" colspan="2" >
+    <item row="2" column="1" >
      <spacer>
       <property name="orientation" >
        <enum>Qt::Horizontal</enum>
@@ -217,6 +151,66 @@
       </property>
      </spacer>
     </item>
+    <item row="1" column="0" colspan="2" >
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="textLabel2" >
+        <property name="text" >
+         <string>Database:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="mDatabaseLineEdit" />
+      </item>
+      <item>
+       <widget class="QPushButton" name="mDatabaseButton" >
+        <property name="text" >
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="0" colspan="2" >
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="textLabel1" >
+        <property name="text" >
+         <string>Select existing directory or create a new one:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>241</width>
+          <height>16</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="WizardPage" >
@@ -224,13 +218,13 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>100</width>
-     <height>30</height>
+     <width>621</width>
+     <height>339</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" >
     <property name="margin" >
-     <number>0</number>
+     <number>9</number>
     </property>
     <property name="spacing" >
      <number>6</number>
@@ -240,7 +234,7 @@
       <property name="sizePolicy" >
        <sizepolicy>
         <hsizetype>7</hsizetype>
-        <vsizetype>5</vsizetype>
+        <vsizetype>1</vsizetype>
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -313,7 +307,30 @@
      </widget>
     </item>
     <item>
-     <widget class="Q3TextBrowser" name="mLocationText" />
+     <widget class="QTextBrowser" name="mLocationText" >
+      <property name="maximumSize" >
+       <size>
+        <width>16777215</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="html" >
+       <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">The GRASS location is a collection of maps for a particular territory or project.&lt;/p>&lt;/body>&lt;/html></string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer>
+      <property name="orientation" >
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" >
+       <size>
+        <width>20</width>
+        <height>61</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
@@ -322,75 +339,17 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>100</width>
-     <height>30</height>
+     <width>621</width>
+     <height>385</height>
     </rect>
    </property>
    <layout class="QGridLayout" >
     <property name="margin" >
-     <number>0</number>
+     <number>9</number>
     </property>
     <property name="spacing" >
      <number>6</number>
     </property>
-    <item row="0" column="0" >
-     <widget class="Q3ButtonGroup" name="buttonGroup3" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>7</hsizetype>
-        <vsizetype>7</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="title" >
-       <string>Coordinate system</string>
-      </property>
-      <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>10</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item>
-        <widget class="QRadioButton" name="mNoProjRadioButton" >
-         <property name="text" >
-          <string>Not defined</string>
-         </property>
-         <property name="checked" >
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="mProjRadioButton" >
-         <property name="text" >
-          <string>Projection</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="Q3Frame" name="mProjectionFrame" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>7</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="frameShape" >
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow" >
-          <enum>QFrame::Plain</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
     <item row="1" column="0" >
      <widget class="QLabel" name="mProjErrorLabel" >
       <property name="sizePolicy" >
@@ -406,6 +365,70 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="0" >
+     <widget class="Q3ButtonGroup" name="buttonGroup3" >
+      <property name="sizePolicy" >
+       <sizepolicy>
+        <hsizetype>7</hsizetype>
+        <vsizetype>7</vsizetype>
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="title" >
+       <string>Coordinate system</string>
+      </property>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>5</number>
+       </property>
+       <item row="1" column="0" >
+        <widget class="QRadioButton" name="mProjRadioButton" >
+         <property name="text" >
+          <string>Projection</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" >
+        <widget class="QRadioButton" name="mNoProjRadioButton" >
+         <property name="text" >
+          <string>Not defined</string>
+         </property>
+         <property name="checked" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" >
+        <widget class="Q3Frame" name="mProjectionFrame" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>7</hsizetype>
+           <vsizetype>7</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize" >
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="frameShape" >
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow" >
+          <enum>QFrame::Plain</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="WizardPage" >
@@ -413,17 +436,40 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>100</width>
-     <height>30</height>
+     <width>621</width>
+     <height>385</height>
     </rect>
    </property>
    <layout class="QGridLayout" >
     <property name="margin" >
-     <number>0</number>
+     <number>9</number>
     </property>
     <property name="spacing" >
      <number>6</number>
     </property>
+    <item row="5" column="2" >
+     <spacer>
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType" >
+       <enum>QSizePolicy::Expanding</enum>
+      </property>
+      <property name="sizeHint" >
+       <size>
+        <width>86</width>
+        <height>36</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="6" column="0" colspan="3" >
+     <widget class="QTextBrowser" name="mRegionText" >
+      <property name="html" >
+       <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. &amp;lt;br&amp;gt;&lt;/p>&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">It is possible to change the default location region later.&lt;/p>&lt;/body>&lt;/html></string>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0" colspan="3" >
      <layout class="QHBoxLayout" >
       <property name="margin" >
@@ -778,7 +824,7 @@
        </size>
       </property>
       <property name="pixmap" >
-       <pixmap/>
+       <pixmap>images/world.png</pixmap>
       </property>
       <property name="scaledContents" >
        <bool>true</bool>
@@ -801,25 +847,6 @@
       </property>
      </spacer>
     </item>
-    <item row="5" column="2" >
-     <spacer>
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeType" >
-       <enum>QSizePolicy::Expanding</enum>
-      </property>
-      <property name="sizeHint" >
-       <size>
-        <width>86</width>
-        <height>36</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="6" column="0" colspan="3" >
-     <widget class="Q3TextBrowser" name="mRegionText" />
-    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="WizardPage" >
@@ -827,13 +854,13 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>100</width>
-     <height>30</height>
+     <width>621</width>
+     <height>385</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" >
     <property name="margin" >
-     <number>0</number>
+     <number>9</number>
     </property>
     <property name="spacing" >
      <number>6</number>
@@ -901,7 +928,7 @@
         <number>10</number>
        </property>
        <property name="spacing" >
-        <number>6</number>
+        <number>1</number>
        </property>
        <item>
         <widget class="Line" name="line4" >
@@ -930,7 +957,7 @@
           </sizepolicy>
          </property>
          <property name="text" >
-          <string>&lt;p align=&quot;center&quot;>Existing masets&lt;/p></string>
+          <string>&lt;p align="center">Existing masets&lt;/p></string>
          </property>
         </widget>
        </item>
@@ -978,14 +1005,30 @@
      </widget>
     </item>
     <item>
-     <widget class="Q3TextBrowser" name="mMapsetText" >
-      <property name="minimumSize" >
+     <widget class="QTextBrowser" name="mMapsetText" >
+      <property name="maximumSize" >
        <size>
-        <width>0</width>
-        <height>80</height>
+        <width>16777215</width>
+        <height>100</height>
        </size>
       </property>
+      <property name="html" >
+       <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">The GRASS mapset is a collection of maps used by one user. &lt;/p>&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">A user can read maps from all mapsets in the location but &lt;/p>&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">he can open for writing only his mapset (owned by user).&lt;/p>&lt;/body>&lt;/html></string>
+      </property>
      </widget>
+    </item>
+    <item>
+     <spacer>
+      <property name="orientation" >
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" >
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
@@ -994,8 +1037,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>100</width>
-     <height>30</height>
+     <width>621</width>
+     <height>385</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" >
@@ -1091,6 +1134,13 @@
  <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
+   <class>Q3Frame</class>
+   <extends></extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
    <class>Q3Wizard</class>
    <extends></extends>
    <header>q3wizard.h</header>
@@ -1101,20 +1151,6 @@
    <class>Q3ButtonGroup</class>
    <extends></extends>
    <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends></extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextBrowser</class>
-   <extends>QWidget</extends>
-   <header>q3textbrowser.h</header>
    <container>1</container>
    <pixmap></pixmap>
   </customwidget>
