@@ -479,7 +479,14 @@ void QgsGrassSelect::on_ok_clicked()
 	return;
     }
 
-    if ( type == QgsGrassSelect::VECTOR ) {
+    if ( type == QgsGrassSelect::VECTOR ) 
+    {
+        if ( elayer->count() == 0 ) 
+        { 
+	    QMessageBox::warning(0, "No layer", 
+                    "No layers available in this map");
+            return;
+        }
         lastVectorMap = map;
 	layer = elayer->currentText().stripWhiteSpace();
 	lastLayer = layer;
