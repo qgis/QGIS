@@ -47,6 +47,7 @@
 #include <Q3Wizard>
 
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsrect.h"
@@ -70,13 +71,24 @@ QgsGrassNewMapset::QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface,
   std::cerr << "QgsGrassNewMapset()" << std::endl;
 #endif
 
+    setupUi(this);
+
     mRunning = true;
     mQgisApp = qgisApp;
     mIface = iface;
     mProjectionSelector = 0;
     mPreviousPage = -1;
     mRegionModified = false;
-    mPixmap = QPixmap( *(mRegionMap->pixmap()) );
+    
+    QString mapPath = QgsApplication::pkgDataPath() + "/grass/world.png";
+#ifdef QGISDEBUG
+    std::cerr << "mapPath = " << mapPath.ascii() << std::endl;
+#endif
+    
+    //mPixmap = QPixmap( *(mRegionMap->pixmap()) );
+    mPixmap.load ( mapPath );
+    std::cerr << "mPixmap.isNull() = " << mPixmap.isNull() << std::endl;
+     
     mRegionsInited = false;
     mPlugin = plugin;
     
@@ -808,9 +820,21 @@ void QgsGrassNewMapset::loadRegions()
         if ( coorNodes.item(0).isNull() ) continue;
         QDomElement coorElem = coorNodes.item(0).toElement();
         if ( coorElem.text().isNull() ) continue;
+
         QStringList coor = QStringList::split ( " ", coorElem.text() );
+        if ( coor.size() != 2 )
+        {
+            std::cerr << "Cannot parse coordinates: " << coorElem.text().ascii() << std::endl;
+            continue;
+        }
+
         QStringList ll = QStringList::split ( ",", coor[0] );
         QStringList ur = QStringList::split ( ",", coor[1] );
+        if ( ll.size() != 2 || ur.size() != 2 )
+        {
+            std::cerr << "Cannot parse coordinates: " << coorElem.text().ascii() << std::endl;
+            continue;
+        }
 
         // Add region
         mRegionsComboBox->insertItem ( nameElem.text() );
@@ -1019,6 +1043,7 @@ void QgsGrassNewMapset::drawRegion()
 
     if ( mCellHead.proj == PROJECTION_XY ) return; 
 
+    std::cerr << "pm.isNull() = " << pm.isNull() << std::endl;
     QPainter p ( &pm );
     p.setPen( QPen(QColor(255,0,0),3) );
 
@@ -1154,13 +1179,10 @@ void QgsGrassNewMapset::drawRegion()
 			 180+shift+(int)x2, 90-(int)points[i+1].y() );
 	}
     }
-    std::cerr << "<<<<<<<<<<" << std::endl;
 
     p.end();
-    std::cerr << "<<<<<<<<<<" << std::endl;
 
     mRegionMap->setPixmap( pm );
-    std::cerr << "<<<<<<<<<<" << std::endl;
 }
 
 /**************************** MAPSET ********************************/

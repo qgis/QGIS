@@ -977,7 +977,7 @@
  <gml:featureMember>
    <gml:name>Tanzania United Republic of</gml:name>
      <gml:Envelope>
-      <gml:coordinates>,-0.54 28.96,41.23</gml:coordinates>
+      <gml:coordinates>0,-0.54 28.96,41.23</gml:coordinates>
      </gml:Envelope>
  </gml:featureMember>
  <gml:featureMember>
