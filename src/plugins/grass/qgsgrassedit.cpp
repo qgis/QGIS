@@ -38,10 +38,13 @@
 #include <q3table.h>
 #include <qstatusbar.h>
 #include <qglobal.h>
-//Added by qt3to4:
+
+#include <QActionGroup>
 #include <QCloseEvent>
+#include <QToolBar>
 
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
@@ -63,14 +66,14 @@ extern "C" {
 bool QgsGrassEdit::mRunning = false;
 
 QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
-    QWidget * parent, const char * name, Qt::WFlags f )
-//:QgsGrassEditBase (parent,f) //commented out by Tim during ui port FIXME
-:QgsGrassEditBase ()
+    QWidget * parent, Qt::WFlags f )
+    :QMainWindow(parent,f), QgsGrassEditBase ()
 {
-  setupUi(this);
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit()" << std::endl;
 #endif
+
+  setupUi(this);
 
   mRunning = true;
   mValid = false;
@@ -114,15 +117,115 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
   //TODO dynamic_cast ?
   mProvider = (QgsGrassProvider *) vector->getDataProvider();
 
+  QString myIconPath = QgsApplication::themePath() + "/grass/";
+
+  QActionGroup *ag = new QActionGroup ( this );
+
+  QToolBar *tb = addToolBar(tr("Edit tools"));
+
+  QAction *mNewPointAction = new QAction(
+          QIcon(myIconPath+"grass_new_point.png"), tr("New point"), this);
+  mNewPointAction->setCheckable ( true );
+  mNewPointAction->setShortcut ( QKeySequence(Qt::Key_F1) ); 
+  ag->addAction ( mNewPointAction );
+  tb->addAction ( mNewPointAction );
+  connect ( mNewPointAction, SIGNAL(triggered()), this, SLOT(newPoint()) );
+
+  QAction *mNewLineAction = new QAction(
+          QIcon(myIconPath+"grass_new_line.png"), tr("New line"), this);
+  mNewLineAction->setCheckable ( true );
+  mNewLineAction->setShortcut ( QKeySequence(Qt::Key_F2) ); 
+  ag->addAction ( mNewLineAction );
+  tb->addAction ( mNewLineAction );
+  connect ( mNewLineAction, SIGNAL(triggered()), this, SLOT(newLine()) );
+
+  QAction *mNewBoundaryAction = new QAction(
+          QIcon(myIconPath+"grass_new_boundary.png"), tr("New boundary"), this);
+  mNewBoundaryAction->setCheckable ( true );
+  mNewBoundaryAction->setShortcut ( QKeySequence(Qt::Key_F3) ); 
+  ag->addAction ( mNewBoundaryAction );
+  tb->addAction ( mNewBoundaryAction );
+  connect ( mNewBoundaryAction, SIGNAL(triggered()), this, SLOT(newBoundary()) );
+
+  QAction *mNewCentroidAction = new QAction(
+          QIcon(myIconPath+"grass_new_centroid.png"), tr("New centroid"), this);
+  mNewCentroidAction->setCheckable ( true );
+  mNewCentroidAction->setShortcut ( QKeySequence(Qt::Key_F4) ); 
+  ag->addAction ( mNewCentroidAction );
+  tb->addAction ( mNewCentroidAction );
+  connect ( mNewCentroidAction, SIGNAL(triggered()), this, SLOT(newCentroid()) );
+
+  QAction *mMoveVertexAction = new QAction(
+          QIcon(myIconPath+"grass_move_vertex.png"), tr("Move vertex"), this);
+  mMoveVertexAction->setCheckable ( true );
+  mMoveVertexAction->setShortcut ( QKeySequence(Qt::Key_F5) ); 
+  ag->addAction ( mMoveVertexAction );
+  tb->addAction ( mMoveVertexAction );
+  connect ( mMoveVertexAction, SIGNAL(triggered()), this, SLOT(moveVertex()) );
+
+  QAction *mAddVertexAction = new QAction(
+          QIcon(myIconPath+"grass_add_vertex.png"), tr("Add vertex"), this);
+  mAddVertexAction->setCheckable ( true );
+  mAddVertexAction->setShortcut ( QKeySequence(Qt::Key_F6) ); 
+  ag->addAction ( mAddVertexAction );
+  tb->addAction ( mAddVertexAction );
+  connect ( mAddVertexAction, SIGNAL(triggered()), this, SLOT(addVertex()) );
+
+  QAction *mDeleteVertexAction = new QAction(
+          QIcon(myIconPath+"grass_delete_vertex.png"), tr("Delete vertex"), this);
+  mDeleteVertexAction->setCheckable ( true );
+  mDeleteVertexAction->setShortcut ( QKeySequence(Qt::Key_F7) ); 
+  ag->addAction ( mDeleteVertexAction );
+  tb->addAction ( mDeleteVertexAction );
+  connect ( mDeleteVertexAction, SIGNAL(triggered()), this, SLOT(deleteVertex()) );
+
+  QAction *mMoveLineAction = new QAction(
+          QIcon(myIconPath+"grass_move_line.png"), tr("Split line"), this);
+  mMoveLineAction->setCheckable ( true );
+  mMoveLineAction->setShortcut ( QKeySequence(Qt::Key_F9) ); 
+  ag->addAction ( mMoveLineAction );
+  tb->addAction ( mMoveLineAction );
+  connect ( mMoveLineAction, SIGNAL(triggered()), this, SLOT(moveLine()) );
+
+  QAction *mSplitLineAction = new QAction(
+          QIcon(myIconPath+"grass_split_line.png"), tr("Move line"), this);
+  mSplitLineAction->setCheckable ( true );
+  mSplitLineAction->setShortcut ( QKeySequence(Qt::Key_F10) ); 
+  ag->addAction ( mSplitLineAction );
+  tb->addAction ( mSplitLineAction );
+  connect ( mSplitLineAction, SIGNAL(triggered()), this, SLOT(splitLine()) );
+
+  QAction *mDeleteLineAction = new QAction(
+          QIcon(myIconPath+"grass_delete_line.png"), tr("Delete line"), this);
+  mDeleteLineAction->setCheckable ( true );
+  mDeleteLineAction->setShortcut ( QKeySequence(Qt::Key_F11) ); 
+  ag->addAction ( mDeleteLineAction );
+  tb->addAction ( mDeleteLineAction );
+  connect ( mDeleteLineAction, SIGNAL(triggered()), this, SLOT(deleteLine()) );
+
+  QAction *mEditAttributesAction = new QAction(
+          QIcon(myIconPath+"grass_edit_attributes.png"), tr("Edit attributes"), this);
+  mEditAttributesAction->setCheckable ( true );
+  ag->addAction ( mEditAttributesAction );
+  tb->addAction ( mEditAttributesAction );
+  connect ( mEditAttributesAction, SIGNAL(triggered()), this, SLOT(editAttributes()) );
+
+  QAction *mCloseEditAction = new QAction(
+          QIcon(myIconPath+"grass_close_edit.png"), tr("Close"), this);
+  mCloseEditAction->setCheckable ( true );
+  tb->addAction ( mCloseEditAction );
+  connect ( mCloseEditAction, SIGNAL(triggered()), this, SLOT(closeEdit()) );
+
   init();
+
+  mNewPointAction->setOn(true);
+  startTool(QgsGrassEdit::NEW_POINT);
 }
 
 QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
     QgsGrassProvider *provider,
-    QWidget * parent, const char * name, Qt::WFlags f )
-  //:QgsGrassEditBase ( parent, name, f )
-  //commented out params duting qt4 ui port FIXME - Tim
-:QgsGrassEditBase ()
+    QWidget * parent, Qt::WFlags f )
+    :QMainWindow(parent, 0, f), QgsGrassEditBase ()
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit()" << std::endl;
@@ -211,7 +314,7 @@ void QgsGrassEdit::init()
   mSymbName.resize(SYMB_COUNT);
   mSymbName[SYMB_BACKGROUND]    = "Background";
   mSymbName[SYMB_HIGHLIGHT]     = "Highlight";
-  mSymbName[SYMB_DYNAMIC]       = "Dynamic (XOR mode)";
+  mSymbName[SYMB_DYNAMIC]       = "Dynamic";
   mSymbName[SYMB_POINT]         = "Point";
   mSymbName[SYMB_LINE]          = "Line";
   mSymbName[SYMB_BOUNDARY_0]    = "Boundary (no area)";
@@ -334,6 +437,7 @@ void QgsGrassEdit::init()
   connect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(postRender(QPainter *)));
 
   mPixmap = mCanvas->canvasPixmap();
+  mBackgroundPixmap = new QPixmap ( *mPixmap );
 
   // Init GUI values
   mCatModeBox->insertItem( "Next not used", CAT_MODE_NEXT );
@@ -696,6 +800,8 @@ QgsGrassEdit::~QgsGrassEdit()
 
   if ( mValid ) 
     eraseDynamic();
+
+  delete mBackgroundPixmap;
 
   saveWindowLocation();
   mRunning = false;
@@ -1776,6 +1882,9 @@ void QgsGrassEdit::postRender(QPainter *painter)
 
   displayMap();
 
+  delete mBackgroundPixmap;
+  mBackgroundPixmap = new QPixmap ( *mPixmap );
+
   // Redisplay highlighted
   if ( mSelectedLine ) {
     displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
@@ -1795,7 +1904,7 @@ void QgsGrassEdit::displayMap (void)
 
 
   QPainter *painter = new QPainter();
-  painter->begin(mPixmap);
+  painter->begin ( mBackgroundPixmap );
 
   // Display lines
   int nlines = mProvider->numLines(); 
@@ -1820,6 +1929,9 @@ void QgsGrassEdit::displayMap (void)
   }
 
   painter->end();
+  painter->begin(mPixmap);
+  painter->drawPixmap ( 0, 0, *mBackgroundPixmap );
+
   mCanvas->repaint(false);
 }
 
@@ -1832,7 +1944,7 @@ void QgsGrassEdit::displayUpdated (void)
   mTransform = mCanvas->getCoordinateTransform();
 
   QPainter *painter = new QPainter();
-  painter->begin(mPixmap);
+  painter->begin(mBackgroundPixmap);
 
   // Display lines
   int nlines = mProvider->numUpdatedLines();
@@ -1854,6 +1966,9 @@ void QgsGrassEdit::displayUpdated (void)
   }
 
   painter->end();
+  painter->begin(mPixmap);
+  painter->drawPixmap ( 0, 0, *mBackgroundPixmap );
+
   mCanvas->repaint(false);
 }
 
@@ -1871,7 +1986,7 @@ void QgsGrassEdit::displayElement ( int line, const QPen & pen, int size, QPaint
   QPainter *myPainter;
   if ( !painter ) {
     myPainter = new QPainter();
-    myPainter->begin(mPixmap);
+    myPainter->begin(mBackgroundPixmap);
   } else {
     myPainter = painter;
   }
@@ -1896,6 +2011,9 @@ void QgsGrassEdit::displayElement ( int line, const QPen & pen, int size, QPaint
 
   if ( !painter ) {
     myPainter->end();
+    myPainter->begin(mPixmap);
+    myPainter->drawPixmap ( 0, 0, *mBackgroundPixmap );
+
     mCanvas->repaint(false);
     delete myPainter;
   }
@@ -1978,14 +2096,14 @@ void QgsGrassEdit::displayLastDynamic ( void )
   std::cerr << "QgsGrassEdit::displayLastDynamic" << std::endl;
 #endif
 
-#if QT_VERSION < 0x040000
   QPainter myPainter;
   myPainter.begin(mPixmap);
 
-  // Use of XOR can result in repeated :
-  //  'QPainter: Internal error; no available GC '
-  // which is probably only false warning, see qt/src/kernel/qpainter_x11.cpp
-  myPainter.setRasterOp(Qt::XorROP);  // Must be after begin()
+  // Note: QPainter.setCompositionMode only works for QImage device
+
+  // Redraw background
+  myPainter.drawPixmap ( 0, 0, *mBackgroundPixmap );
+
   myPainter.setPen ( mSymb[SYMB_DYNAMIC] );
 
   Q3PointArray pa ( mLastDynamicPoints->n_points );
@@ -2004,9 +2122,6 @@ void QgsGrassEdit::displayLastDynamic ( void )
   }
 
   myPainter.end();
-#else
-// TODO: Qt4 uses QRubberBand, need to refactor.
-#endif
 
 }
 
@@ -2046,7 +2161,7 @@ void QgsGrassEdit::displayIcon ( double x, double y, const QPen & pen,
   QPainter *myPainter;
   if ( !painter ) {
     myPainter = new QPainter();
-    myPainter->begin(mPixmap);
+    myPainter->begin(mBackgroundPixmap);
   } else {
     myPainter = painter;
   }
@@ -2085,6 +2200,8 @@ void QgsGrassEdit::displayIcon ( double x, double y, const QPen & pen,
 
   if ( !painter ) {
     myPainter->end();
+    myPainter->begin(mPixmap);
+    myPainter->drawPixmap ( 0, 0, *mBackgroundPixmap );
     mCanvas->repaint(false);
     delete myPainter;
   }

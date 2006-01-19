@@ -83,14 +83,13 @@ bool QgsGrassAttributesKeyPress::eventFilter( QObject *o, QEvent *e )
 
 QgsGrassAttributes::QgsGrassAttributes ( QgsGrassEdit *edit, QgsGrassProvider *provider, int line, 
         QWidget * parent, const char * name, Qt::WFlags f ) 
-
-    //:QgsGrassAttributesBase ( parent, name, f)
-    //Tim disabled params during qt4 ui port - FIXME
-    :QgsGrassAttributesBase ( )
+    : QDialog(parent, f ), QgsGrassAttributesBase ()
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassAttributes()" << std::endl;
     #endif
+
+    setupUi(this);
 
     mEdit = edit;
     mProvider = provider;
@@ -120,6 +119,9 @@ QgsGrassAttributes::~QgsGrassAttributes ()
 
 void QgsGrassAttributes::restorePosition()
 {
+  #ifdef QGISDEBUG
+  std::cerr << "QgsGrassAttributes::restorePosition()" << std::endl;
+  #endif
   QSettings settings("QuantumGIS", "qgis");
   int ww = settings.readNumEntry("/GRASS/windows/attributes/w", 250);
   int wh = settings.readNumEntry("/GRASS/windows/attributes/h", 350);
@@ -131,6 +133,9 @@ void QgsGrassAttributes::restorePosition()
 
 void QgsGrassAttributes::saveWindowLocation()
 {
+  #ifdef QGISDEBUG
+  std::cerr << "QgsGrassAttributes::saveWindowLocation()" << std::endl;
+  #endif
   QSettings settings("QuantumGIS", "qgis");
   QPoint p = this->pos();
   QSize s = this->size();
