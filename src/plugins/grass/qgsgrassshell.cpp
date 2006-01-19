@@ -49,13 +49,9 @@ extern "C" {
 #endif //!WIN32
 }
 
-#define QGISDEBUG 1
-
 QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools, 
     QWidget * parent, const char * name  ):
-    //QgsGrassShellBase(parent,name), mTools(tools)
-    //Tim disabled params during qt4 ui port FIXME
-    QgsGrassShellBase(), mTools(tools)
+    QDialog(parent), QgsGrassShellBase(), mTools(tools)
 {
     mValid = false;
 
@@ -64,6 +60,8 @@ QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools,
               "GRASS Shell is not supported on Windows." );
     return;
 #else 
+
+    setupUi(this);
 
     QGridLayout *layout = new QGridLayout( mTextFrame, 1, 1 );
     mText = new QgsGrassShellText( this, mTextFrame);
