@@ -82,13 +82,16 @@ public:
 
 public slots:
     //! Update DB for current tab
-    void updateAttributes ( void );
+    void on_updateButton_clicked() { updateAttributes(); }
+    void updateAttributes();
 
     //! Add new category
-    void addCat ( void );
+    void on_newButton_clicked() { addCat(); }
+    void addCat();
 
     //! Add new category
-    void deleteCat ( void );
+    void on_deleteButton_clicked() { deleteCat(); }
+    void deleteCat();
 
     //! Called if tab is changed
     void tabChanged ( QWidget *widget );

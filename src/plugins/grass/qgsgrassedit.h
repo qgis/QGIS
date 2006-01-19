@@ -20,6 +20,7 @@
 //Added by qt3to4:
 #include <QPixmap>
 #include <QCloseEvent>
+#include <QAction>
 
 class QString;
 class QCloseEvent;
@@ -50,7 +51,7 @@ typedef struct {
  *  \brief GRASS vector edit.
  *
  */
-class QgsGrassEdit: public Q3MainWindow, private Ui::QgsGrassEditBase
+class QgsGrassEdit: public QMainWindow, private Ui::QgsGrassEditBase
 {
     Q_OBJECT;
 
@@ -107,11 +108,11 @@ public:
 
     //! Constructor
     QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
-	           QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
+	           QWidget * parent = 0, Qt::WFlags f = 0 );
 
     QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
                    QgsGrassProvider *provider,
-	           QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
+	           QWidget * parent = 0, Qt::WFlags f = 0 );
 
     // Shared by constructors
     void init ();
@@ -167,13 +168,15 @@ public slots:
     void editAttributes (void); // edit element attributes
 
     //! Category mode was changed
-    void catModeChanged ( void );
+    void on_mCatModeBox_activated() { catModeChanged(); }
+    void catModeChanged();
 
     //! Field was changed
-    void fieldChanged ( void );
+    void on_mFieldBox_activated() { fieldChanged(); }
+    void fieldChanged();
 
     //! Close editing
-    void closeEdit (void); 
+    void closeEdit(); 
 
     void changeSymbology( Q3ListViewItem * item, const QPoint & pnt, int col );
 
@@ -292,6 +295,9 @@ private:
     //! Canvas pixmap
     QPixmap *mPixmap;
 
+    //! Copy of background from canvas pixmap before any draw
+    QPixmap *mBackgroundPixmap;
+
     //! Transformation
     QgsMapToPixel *mTransform;
 
@@ -367,13 +373,16 @@ private:
     void setAttributeTable(int field);
 
     // Change attribute table
-    void attributeTableFieldChanged(void);
+    void on_mTableField_activated() { attributeTableFieldChanged(); }
+    void attributeTableFieldChanged();
 
     // Add column
-    void addColumn(void);
+    void on_mAddColumnButton_clicked() { addColumn(); }
+    void addColumn();
 
     // Alter table
-    void alterTable(void);
+    void on_mAlterTableButton_clicked() { alterTable(); }
+    void alterTable();
 
     // Pront which should be displayed in status bar when mouse is in canvas
     QString mCanvasPrompt;
@@ -383,6 +392,20 @@ private:
 
     // New map, add new layers on exit
     bool mNewMap;
+
+    // Actions 
+    QAction *mNewPointAction;
+    QAction *mNewLineAction;
+    QAction *mNewBoundarytAction;
+    QAction *mNewCentroidAction;
+    QAction *mMoveVertexAction;
+    QAction *mAddVertexAction;
+    QAction *mDeleteVertexAction;
+    QAction *mMoveLineAction;
+    QAction *mSplitLineAction;
+    QAction *mDeleteLineAction;
+    QAction *mEditAttributesAction;
+    QAction *mCloseEditAction;
 };
 
 #endif // QGSGRASSEDIT_H

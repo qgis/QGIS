@@ -3,35 +3,27 @@
  <comment></comment>
  <exportmacro></exportmacro>
  <class>QgsGrassEditBase</class>
- <widget class="Q3MainWindow" name="QgsGrassEditBase" >
+ <widget class="QMainWindow" name="QgsGrassEditBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>462</width>
-    <height>272</height>
+    <width>529</width>
+    <height>345</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>GRASS Edit</string>
   </property>
-  <widget class="QWidget" name="widget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>72</y>
-     <width>462</width>
-     <height>200</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" >
+  <widget class="QWidget" name="centralwidget" >
+   <layout class="QGridLayout" >
     <property name="margin" >
-     <number>5</number>
+     <number>9</number>
     </property>
     <property name="spacing" >
-     <number>5</number>
+     <number>6</number>
     </property>
-    <item>
+    <item row="0" column="0" >
      <widget class="QTabWidget" name="tabWidget" >
       <property name="sizePolicy" >
        <sizepolicy>
@@ -47,29 +39,34 @@
        </attribute>
        <layout class="QGridLayout" >
         <property name="margin" >
-         <number>0</number>
+         <number>9</number>
         </property>
         <property name="spacing" >
          <number>6</number>
         </property>
-        <item row="0" column="0" >
-         <widget class="QLabel" name="textLabel3" >
-          <property name="text" >
-           <string>Mode</string>
+        <item row="1" column="3" >
+         <widget class="QComboBox" name="mFieldBox" >
+          <property name="minimumSize" >
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="editable" >
+           <bool>true</bool>
+          </property>
+          <property name="duplicatesEnabled" >
+           <bool>false</bool>
           </property>
          </widget>
         </item>
-        <item row="1" column="0" >
-         <widget class="QLabel" name="catLabel" >
-          <property name="text" >
-           <string>Category</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2" >
-         <widget class="QLabel" name="textLabel2" >
-          <property name="text" >
-           <string>Field (layer)</string>
+        <item row="1" column="1" >
+         <widget class="QLineEdit" name="mCatEntry" >
+          <property name="minimumSize" >
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -80,22 +77,30 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1" >
-         <widget class="QLineEdit" name="mCatEntry" />
-        </item>
-        <item row="1" column="3" >
-         <widget class="QComboBox" name="mFieldBox" >
-          <property name="editable" >
-           <bool>true</bool>
+        <item row="1" column="2" >
+         <widget class="QLabel" name="textLabel2" >
+          <property name="text" >
+           <string>Field (layer)</string>
           </property>
-          <property name="duplicatesEnabled" >
-           <bool>false</bool>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="catLabel" >
+          <property name="text" >
+           <string>Category</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" >
+         <widget class="QLabel" name="textLabel3" >
+          <property name="text" >
+           <string>Mode</string>
           </property>
          </widget>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab" >
+      <widget class="QWidget" name="tab_2" >
        <attribute name="title" >
         <string>Settings</string>
        </attribute>
@@ -122,7 +127,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab" >
+      <widget class="QWidget" name="tab_3" >
        <attribute name="title" >
         <string>Symbology</string>
        </attribute>
@@ -164,7 +169,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab" >
+      <widget class="QWidget" name="tab_4" >
        <attribute name="title" >
         <string>Table</string>
        </attribute>
@@ -330,240 +335,26 @@
     </item>
    </layout>
   </widget>
-  <widget class="Q3ToolBar" name="newToolBar" >
-   <property name="label" >
-    <string>Tools</string>
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>323</y>
+     <width>529</width>
+     <height>22</height>
+    </rect>
    </property>
-   <addaction name="newPointAction" />
-   <addaction name="newLineAction" />
-   <addaction name="newBoundaryAction" />
-   <addaction name="newCentroidAction" />
   </widget>
-  <widget class="Q3ToolBar" name="editVertexToolBar" >
-   <property name="label" >
-    <string>Toolbar</string>
-   </property>
-   <addaction name="moveVertexAction" />
-   <addaction name="addVertexAction" />
-   <addaction name="deleteVertexAction" />
-  </widget>
-  <widget class="Q3ToolBar" name="editLineToolBar" >
-   <property name="label" >
-    <string>Toolbar</string>
-   </property>
-   <addaction name="moveLineAction" />
-   <addaction name="splitLineAction" />
-   <addaction name="deleteLineAction" />
-   <addaction name="separator" />
-   <addaction name="editAttributesAction" />
-  </widget>
-  <widget class="Q3ToolBar" name="mainToolBar" >
-   <property name="label" >
-    <string>Toolbar</string>
-   </property>
-   <addaction name="closeEditAction" />
-  </widget>
-  <action name="closeEditAction" >
-   <property name="icon" >
-    <iconset>image0</iconset>
-   </property>
-   <property name="text" >
-    <string>Close</string>
-   </property>
-   <property name="iconText" >
-    <string>Close</string>
-   </property>
-  </action>
-  <actiongroup name="actionToolsGroup" >
-   <action name="newLineAction" >
-    <property name="checkable" >
-     <bool>true</bool>
-    </property>
-    <property name="icon" >
-     <iconset>image1</iconset>
-    </property>
-    <property name="text" >
-     <string>New line</string>
-    </property>
-    <property name="iconText" >
-     <string>New line</string>
-    </property>
-    <property name="shortcut" >
-     <string>F2</string>
-    </property>
-   </action>
-   <action name="newPointAction" >
-    <property name="checkable" >
-     <bool>true</bool>
-    </property>
-    <property name="icon" >
-     <iconset>image2</iconset>
-    </property>
-    <property name="text" >
-     <string>New point</string>
-    </property>
-    <property name="iconText" >
-     <string>New point</string>
-    </property>
-    <property name="shortcut" >
-     <string>F1</string>
-    </property>
-   </action>
-   <action name="newBoundaryAction" >
-    <property name="checkable" >
-     <bool>true</bool>
-    </property>
-    <property name="icon" >
-     <iconset>image3</iconset>
-    </property>
-    <property name="text" >
-     <string>New boundary</string>
-    </property>
-    <property name="iconText" >
-     <string>New boundary</string>
-    </property>
-    <property name="shortcut" >
-     <string>F3</string>
-    </property>
-   </action>
-   <action name="newCentroidAction" >
-    <property name="checkable" >
-     <bool>true</bool>
-    </property>
-    <property name="icon" >
-     <iconset>image4</iconset>
-    </property>
-    <property name="text" >
-     <string>New centroid</string>
-    </property>
-    <property name="iconText" >
-     <string>New centroid</string>
-    </property>
-    <property name="shortcut" >
-     <string>F4</string>
-    </property>
-   </action>
-   <action name="moveVertexAction" >
-    <property name="checkable" >
-     <bool>true</bool>
-    </property>
-    <property name="icon" >
-     <iconset>image5</iconset>
-    </property>
-    <property name="text" >
-     <string>Move vertex</string>
-    </property>
-    <property name="iconText" >
-     <string>Move vertex</string>
-    </property>
-    <property name="shortcut" >
-     <string>F5</string>
-    </property>
-   </action>
-   <action name="addVertexAction" >
-    <property name="checkable" >
-     <bool>true</bool>
-    </property>
-    <property name="icon" >
-     <iconset>image6</iconset>
-    </property>
-    <property name="text" >
-     <string>Add vertex</string>
-    </property>
-    <property name="iconText" >
-     <string>Add vertex</string>
-    </property>
-    <property name="shortcut" >
-     <string>F6</string>
-    </property>
-   </action>
-   <action name="deleteVertexAction" >
-    <property name="checkable" >
-     <bool>true</bool>
-    </property>
-    <property name="icon" >
-     <iconset>image7</iconset>
-    </property>
-    <property name="text" >
-     <string>Delete vertex</string>
-    </property>
-    <property name="iconText" >
-     <string>Delete vertex</string>
-    </property>
-    <property name="shortcut" >
-     <string>F7</string>
-    </property>
-   </action>
-   <action name="splitLineAction" >
-    <property name="checkable" >
-     <bool>true</bool>
-    </property>
-    <property name="icon" >
-     <iconset>image8</iconset>
-    </property>
-    <property name="text" >
-     <string>Split line</string>
-    </property>
-    <property name="iconText" >
-     <string>Split line</string>
-    </property>
-    <property name="shortcut" >
-     <string>F10</string>
-    </property>
-   </action>
-   <action name="moveLineAction" >
-    <property name="checkable" >
-     <bool>true</bool>
-    </property>
-    <property name="icon" >
-     <iconset>image9</iconset>
-    </property>
-    <property name="text" >
-     <string>Move line</string>
-    </property>
-    <property name="iconText" >
-     <string>Move line</string>
-    </property>
-    <property name="shortcut" >
-     <string>F9</string>
-    </property>
-   </action>
-   <action name="deleteLineAction" >
-    <property name="checkable" >
-     <bool>true</bool>
-    </property>
-    <property name="icon" >
-     <iconset>image10</iconset>
-    </property>
-    <property name="text" >
-     <string>Delete line</string>
-    </property>
-    <property name="iconText" >
-     <string>Delete line</string>
-    </property>
-    <property name="shortcut" >
-     <string>F11</string>
-    </property>
-   </action>
-   <action name="editAttributesAction" >
-    <property name="checkable" >
-     <bool>true</bool>
-    </property>
-    <property name="icon" >
-     <iconset>image11</iconset>
-    </property>
-    <property name="text" >
-     <string>Edit attributes</string>
-    </property>
-    <property name="iconText" >
-     <string>Edit attributes</string>
-    </property>
-   </action>
-  </actiongroup>
  </widget>
- <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
  <customwidgets>
+  <customwidget>
+   <class>Q3ListView</class>
+   <extends></extends>
+   <header>q3listview.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
   <customwidget>
    <class>Q3Frame</class>
    <extends></extends>
@@ -575,27 +366,6 @@
    <class>Q3Table</class>
    <extends></extends>
    <header>q3table.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3MainWindow</class>
-   <extends></extends>
-   <header>q3mainwindow.h</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends></extends>
-   <header>q3listview.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3ToolBar</class>
-   <extends></extends>
-   <header>q3listview.h</header>
    <container>0</container>
    <pixmap></pixmap>
   </customwidget>

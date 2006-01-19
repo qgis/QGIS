@@ -458,7 +458,7 @@ void QgsGrassPlugin::edit()
     return;
   }
 
-  QgsGrassEdit *ed = new QgsGrassEdit( qgisMainWindowPointer, qGisInterface, qgisMainWindowPointer, 0, Qt::WType_Dialog );
+  QgsGrassEdit *ed = new QgsGrassEdit( qgisMainWindowPointer, qGisInterface, qgisMainWindowPointer, Qt::WType_Dialog );
 
   if ( ed->isValid() ) {
     ed->show();
@@ -564,7 +564,7 @@ void QgsGrassPlugin::newVector()
 
     QgsGrassEdit *ed = new QgsGrassEdit( qgisMainWindowPointer, 
                qGisInterface, provider, qgisMainWindowPointer, 
-               0, Qt::WType_Dialog );
+               Qt::WType_Dialog );
 
     if ( ed->isValid() ) {
         ed->show();
