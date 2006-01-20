@@ -1,9 +1,3 @@
-//Added by qt3to4:
-#include <QMouseEvent>
-#include <Q3Frame>
-#include <QKeyEvent>
-#include <QCloseEvent>
-#include <QPixmap>
 /**********************************************************************
                            qgsgrassmapcalc.h 
                              -------------------
@@ -19,6 +13,13 @@
  *************************************************************************/
 #ifndef QGSGRASSMAPCALC_H
 #define QGSGRASSMAPCALC_H
+
+#include <QMouseEvent>
+#include <Q3Frame>
+#include <QKeyEvent>
+#include <QCloseEvent>
+#include <QPixmap>
+#include <QAction>
 
 class QCloseEvent;
 class QString;
@@ -51,14 +52,14 @@ class QgsGrassMapcalcItem;
 class QgsGrassMapcalcObject;
 class QgsGrassMapcalcConnector;
 #include "ui_qgsgrassmapcalcbase.h"
-#include <QDialog>
 #include "qgsgrassmodule.h"
 
 /*! 
  *  \class QgsGrassMapcalc
  *  \brief Interface for r.mapcalc
  */
-class QgsGrassMapcalc: public QDialog, private Ui::QgsGrassMapcalcBase, public QgsGrassModuleOptions
+class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase, 
+                       public QgsGrassModuleOptions
 {
    Q_OBJECT
 
@@ -138,12 +139,15 @@ public slots:
     void setTool ( int );
 
     //! Map selection changed
+    void on_mMapComboBox_activated() { mapChanged(); }
     void mapChanged();
 
     //! Constant changed
+    void on_mConstantLineEdit_textChanged() { constantChanged(); }
     void constantChanged();
 
     //! Function selection changed
+    void on_mFunctionComboBox_activated() { functionChanged(); }
     void functionChanged();
 
     //! Save current state to file
@@ -205,6 +209,18 @@ private:
 
     //! Background
     Q3CanvasRectangle *mPaper;
+
+    // Actions
+    QAction *mActionAddMap;    
+    QAction *mActionAddConstant;    
+    QAction *mActionAddFunction;    
+    QAction *mActionAddConnection;    
+    QAction *mActionSelectItem;    
+    QAction *mActionDeleteItem;    
+
+    QAction *mActionLoad;    
+    QAction *mActionSave;    
+    QAction *mActionSaveAs;    
 };
 
 /* 
