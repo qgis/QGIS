@@ -66,7 +66,7 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
   QFont f("Arial", 10, QFont::Normal);
   setFont(f);
   setBackgroundColor(QColor(192, 192, 192));
-  setIconSize(QSize(30, 30));
+  //setIconSize(QSize(30, 30));
   setColumnCount(1);
   QStringList myList("Layers");
   setHeaderLabels(myList);
@@ -870,7 +870,12 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		      theLegendLayerFile->setCheckState(0, Qt::Unchecked);
 		    }
 		  blockSignals(false);
-
+		  
+		  //set the layer type icon if this legendlayerfile is the last in the file group
+		  if(child.nextSibling().isNull())
+		  {
+		    static_cast<QgsLegendLayer*>(theLegendLayerFile->parent()->parent())->setLayerTypeIcon();
+		  }
 		}
 	    }
 	  else if(childelem.tagName()=="filegroup")

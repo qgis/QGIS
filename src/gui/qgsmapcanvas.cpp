@@ -1219,7 +1219,7 @@ void QgsMapCanvas::zoomToSelected()
       clear();
       // For Qt4, deprecate direct calling of render().  Let render() be called by the 
       // paint event loop of this widget.
-      //      render();
+      render();
       update();
       return;
     }
