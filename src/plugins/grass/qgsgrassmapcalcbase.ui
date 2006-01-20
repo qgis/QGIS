@@ -3,48 +3,80 @@
  <comment></comment>
  <exportmacro></exportmacro>
  <class>QgsGrassMapcalcBase</class>
- <widget class="Q3MainWindow" name="QgsGrassMapcalcBase" >
+ <widget class="QMainWindow" name="QgsGrassMapcalcBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>461</width>
-    <height>354</height>
+    <width>525</width>
+    <height>412</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>7</hsizetype>
-    <vsizetype>7</vsizetype>
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
-  <property name="minimumSize" >
-   <size>
-    <width>299</width>
-    <height>145</height>
-   </size>
-  </property>
   <property name="windowTitle" >
-   <string>Mapcalc</string>
+   <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="widget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>36</y>
-     <width>461</width>
-     <height>318</height>
-    </rect>
-   </property>
+  <widget class="QWidget" name="centralwidget" >
    <layout class="QGridLayout" >
     <property name="margin" >
-     <number>10</number>
+     <number>9</number>
     </property>
     <property name="spacing" >
      <number>6</number>
     </property>
+    <item row="2" column="0" >
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="textLabel1_2" >
+        <property name="text" >
+         <string>Output</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="mOutputLineEdit" />
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>200</width>
+          <height>16</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="0" >
+     <widget class="Q3Frame" name="mViewFrame" >
+      <property name="sizePolicy" >
+       <sizepolicy>
+        <hsizetype>7</hsizetype>
+        <vsizetype>7</vsizetype>
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape" >
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow" >
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0" >
      <widget class="Q3Frame" name="mInputFrame" >
       <property name="sizePolicy" >
@@ -66,6 +98,9 @@
       </property>
       <property name="frameShadow" >
        <enum>QFrame::Plain</enum>
+      </property>
+      <property name="margin" >
+       <number>0</number>
       </property>
       <layout class="QHBoxLayout" >
        <property name="margin" >
@@ -101,192 +136,25 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="0" >
-     <widget class="Q3Frame" name="mViewFrame" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>7</hsizetype>
-        <vsizetype>7</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="frameShape" >
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow" >
-       <enum>QFrame::Raised</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0" >
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="textLabel1" >
-        <property name="text" >
-         <string>Output</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="mOutputLineEdit" />
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>200</width>
-          <height>16</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
    </layout>
   </widget>
-  <widget class="Q3ToolBar" name="toolBar" >
-   <property name="label" >
-    <string>Tools</string>
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>390</y>
+     <width>525</width>
+     <height>22</height>
+    </rect>
    </property>
-   <addaction name="mActionAddMap" />
-   <addaction name="mActionAddConstant" />
-   <addaction name="mActionAddFunction" />
-   <addaction name="mActionAddConnection" />
-   <addaction name="mActionSelectItem" />
-   <addaction name="mActionDeleteItem" />
-   <addaction name="separator" />
-   <addaction name="mActionLoad" />
-   <addaction name="mActionSave" />
-   <addaction name="mActionSaveAs" />
   </widget>
-  <action name="mActionSelectItem" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="icon" >
-    <iconset>image0</iconset>
-   </property>
-   <property name="iconText" >
-    <string>Select item</string>
-   </property>
-  </action>
-  <action name="mActionAddMap" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="checked" >
-    <bool>true</bool>
-   </property>
-   <property name="icon" >
-    <iconset>image1</iconset>
-   </property>
-   <property name="iconText" >
-    <string>Add new map</string>
-   </property>
-  </action>
-  <action name="mActionAddConstant" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="icon" >
-    <iconset>image2</iconset>
-   </property>
-   <property name="iconText" >
-    <string>Add new constant value</string>
-   </property>
-  </action>
-  <action name="mActionAddFunction" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="icon" >
-    <iconset>image3</iconset>
-   </property>
-   <property name="iconText" >
-    <string>Add new operator or function</string>
-   </property>
-  </action>
-  <action name="mActionDeleteItem" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
-   <property name="icon" >
-    <iconset>image4</iconset>
-   </property>
-   <property name="iconText" >
-    <string>Delete selected item</string>
-   </property>
-  </action>
-  <action name="mActionAddConnection" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="icon" >
-    <iconset>image5</iconset>
-   </property>
-   <property name="iconText" >
-    <string>Add new connector</string>
-   </property>
-  </action>
-  <action name="mActionSave" >
-   <property name="icon" >
-    <iconset>image6</iconset>
-   </property>
-   <property name="iconText" >
-    <string>Save</string>
-   </property>
-  </action>
-  <action name="mActionSaveAs" >
-   <property name="icon" >
-    <iconset>image7</iconset>
-   </property>
-   <property name="iconText" >
-    <string>Save as</string>
-   </property>
-  </action>
-  <action name="mActionLoad" >
-   <property name="icon" >
-    <iconset>image8</iconset>
-   </property>
-   <property name="iconText" >
-    <string>Open</string>
-   </property>
-  </action>
  </widget>
- <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>Q3Frame</class>
    <extends></extends>
    <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3ToolBar</class>
-   <extends></extends>
-   <header>q3listview.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3MainWindow</class>
-   <extends></extends>
-   <header>q3mainwindow.h</header>
    <container>1</container>
    <pixmap></pixmap>
   </customwidget>
