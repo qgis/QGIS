@@ -199,6 +199,7 @@ case "${QT_VER}" in
       QT4_OPENGLINC=$QTDIR/include/QtOpenGL
       QT4_SQLINC=$QTDIR/include/QtSql
       QT4_XMLINC=$QTDIR/include/QtXml
+      QT4_SVGINC=$QTDIR/include/QtSvg
       ;;
     esac
     QT4_DESIGNERINC=$QTDIR/include/QtDesigner
@@ -269,7 +270,7 @@ if test $QT_MAJOR = "3" ; then
 QT_CXXFLAGS="-I$QTINC"
 fi
 if test $QT_MAJOR = "4" ; then
-QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QTINC"
+QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QTINC -I$QT4_SVGINC"
 fi
 QT_IS_EMBEDDED="no"
 # On unix, figure out if we're doing a static or dynamic link
@@ -331,7 +332,7 @@ case "${host}" in
       QT_IS_EMBEDDED="yes"
     elif test "x`ls $QTDIR/lib/QtCore.framework/QtCore 2> /dev/null`" != x ; then
       QT_LIB="-Xlinker -F$QTDIR/lib -framework QtCore -framework Qt3Support -framework QtGui -framework QtNetwork -framework QtXml"
-      QT_CXXFLAGS="-DQT3_SUPPORT -F$QTDIR/lib -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC"
+      QT_CXXFLAGS="-DQT3_SUPPORT -F$QTDIR/lib -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QT4_SVGINC"
       QT_IS_MT="yes"
     fi
     ;;
@@ -368,8 +369,8 @@ case "${host}" in
       QT_IS_MT="yes"
       QT_IS_EMBEDDED="yes"
     elif test "x`ls $QTDIR/${_lib}/libQtCore.* /usr/lib/libQtCore.* 2> /dev/null`" != x ; then
-      QT_LIB="-lQtCore -lQt3Support -lQtGui -lQtNetwork"
-QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QTINC"
+      QT_LIB="-lQtCore -lQt3Support -lQtGui -lQtNetwork -lQtSvg"
+QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QTINC -I$QT4_SVGINC"
       QT_IS_MT="yes"
     fi
     ;;
