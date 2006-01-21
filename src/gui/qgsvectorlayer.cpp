@@ -526,7 +526,20 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
 
   // The default pen gives bevelled joins between segements of the
   // polyline, which is good enough for the moment.
+  //preserve a copy of the pen before we start fiddling with it
+  QPen pen = p->pen(); // to be kept original
+  //
+  // experimental alpha transparency
+  // 255 = opaque
+  //
+  QPen myTransparentPen = p->pen(); // store current pen
+  QColor myColor = myTransparentPen.color();
+  myColor.setAlpha(transparencyLevelInt);
+  myTransparentPen.setColor(myColor);
+  p->setPen(myTransparentPen);
   p->drawPolyline(pa);
+  //restore the pen
+  p->setPen(pen);
 
   return ptr;
 }
