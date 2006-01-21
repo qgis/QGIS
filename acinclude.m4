@@ -190,6 +190,7 @@ case "${QT_VER}" in
       QT4_OPENGLINC=$QTDIR/lib/QtOpenGL.framework/Headers
       QT4_SQLINC=$QTDIR/lib/QtSql.framework/Headers
       QT4_XMLINC=$QTDIR/lib/QtXml.framework/Headers
+      QT4_SVGINC=$QTDIR/lib/QtSvg.framework/Headers
 	  ;;
     *)
       QT4_3SUPPORTINC=$QTDIR/include/Qt3Support
@@ -331,7 +332,7 @@ case "${host}" in
       QT_IS_MT="yes"
       QT_IS_EMBEDDED="yes"
     elif test "x`ls $QTDIR/lib/QtCore.framework/QtCore 2> /dev/null`" != x ; then
-      QT_LIB="-Xlinker -F$QTDIR/lib -framework QtCore -framework Qt3Support -framework QtGui -framework QtNetwork -framework QtXml"
+      QT_LIB="-Xlinker -F$QTDIR/lib -framework QtCore -framework Qt3Support -framework QtGui -framework QtNetwork -framework QtXml -framework QtSvg"
       QT_CXXFLAGS="-DQT3_SUPPORT -F$QTDIR/lib -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QT4_SVGINC"
       QT_IS_MT="yes"
     fi
@@ -387,7 +388,7 @@ QT_GUILINK=""
 QASSISTANTCLIENT_LDADD="-lqassistantclient"
 case "${host}" in
   *-mingw*)
-     QT_LIBS="-lQtCore4 -lQt3Support4 -lQtGui4 -lQtNetwork4 -lQtXml4"
+     QT_LIBS="-lQtCore4 -lQt3Support4 -lQtGui4 -lQtNetwork4 -lQtXml4 -lQtSvg4"
     ;;
   *irix*)
     QT_LIBS="$QT_LIB"
