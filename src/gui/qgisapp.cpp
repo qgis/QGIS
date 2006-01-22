@@ -612,6 +612,22 @@ void QgisApp::createActions()
   mActionCapturePolygon->setShortcut(tr("Ctrl+/"));
   mActionCapturePolygon->setStatusTip(tr("Capture Polygons"));
   connect(mActionCapturePolygon, SIGNAL(triggered()), this, SLOT(capturePolygon()));
+  //
+  mActionDeleteSelected = new QAction(QIcon(myIconPath+"/mActionDeleteSelected.png"), tr("Delete Seleced"), this);
+  mActionDeleteSelected->setStatusTip(tr("Delete Selected"));
+  connect(mActionDeleteSelected, SIGNAL(triggered()), this, SLOT(deleteSelected()));
+  //
+  mActionAddVertex = new QAction(QIcon(myIconPath+"/mActionAddVertex.png"), tr("Add Vertex"), this);
+  mActionAddVertex->setStatusTip(tr("Add Vertex"));
+  connect(mActionAddVertex, SIGNAL(triggered()), this, SLOT(addVertex()));
+  //
+  mActionDeleteVertex = new QAction(QIcon(myIconPath+"/mActionDeleteVertex.png"), tr("Delete Vertex"), this);
+  mActionDeleteVertex->setStatusTip(tr("Delete Vertex"));
+  connect(mActionDeleteVertex, SIGNAL(triggered()), this, SLOT(deleteVertex()));
+  //
+  mActionMoveVertex = new QAction(QIcon(myIconPath+"/mActionMoveVertex.png"), tr("Move Vertex"), this);
+  mActionMoveVertex->setStatusTip(tr("Move Vertex"));
+  connect(mActionMoveVertex, SIGNAL(triggered()), this, SLOT(moveVertex()));
 }
 
 void QgisApp::createActionGroups()
@@ -639,6 +655,13 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction(mActionCapturePoint);
   mActionCapturePolygon->setCheckable(true);
   mMapToolGroup->addAction(mActionCapturePolygon);
+  mMapToolGroup->addAction(mActionDeleteSelected);
+  mActionAddVertex->setCheckable(true);
+  mMapToolGroup->addAction(mActionAddVertex);
+  mActionDeleteVertex->setCheckable(true);
+  mMapToolGroup->addAction(mActionDeleteVertex);
+  mActionMoveVertex->setCheckable(true);
+  mMapToolGroup->addAction(mActionMoveVertex);
 }
 
 void QgisApp::createMenus()
@@ -764,6 +787,10 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction(mActionCapturePoint);
   mDigitizeToolBar->addAction(mActionCaptureLine);
   mDigitizeToolBar->addAction(mActionCapturePolygon);
+  mDigitizeToolBar->addAction(mActionDeleteSelected);
+  mDigitizeToolBar->addAction(mActionAddVertex);
+  mDigitizeToolBar->addAction(mActionDeleteVertex);
+  mDigitizeToolBar->addAction(mActionMoveVertex);
   //
   // Map Navigation Toolbar
   mMapNavToolBar = addToolBar(tr("Map Navigation"));
@@ -3670,6 +3697,7 @@ void QgisApp::addVertex()
     delete mMapCursor;
     mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
     mMapCanvas->setCursor(*mMapCursor);
+    mActionAddVertex->setOn(true);
   }
 }
 
@@ -3688,6 +3716,7 @@ void QgisApp::moveVertex()
     delete mMapCursor;
     mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
     mMapCanvas->setCursor(*mMapCursor);
+    mActionMoveVertex->setOn(true);
   }
 }
 
@@ -3707,6 +3736,7 @@ void QgisApp::deleteVertex()
     delete mMapCursor;
     mMapCursor = new QCursor(mySelectQPixmap, 8, 8);
     mMapCanvas->setCursor(*mMapCursor);
+    mActionDeleteVertex->setOn(true);
   }
 }
 
