@@ -11,11 +11,6 @@
  ***************************************************************************/
 #include "plugingui.h"
 #include "qgscontexthelp.h"
-#include <q3textedit.h>
-#include <q3simplerichtext.h>
-#include <QComboBox>
-#include <qcheckbox.h>
-#include <qlabel.h>
 
 //qt includes
 
@@ -70,7 +65,7 @@ void QgsCopyrightLabelPluginGui::setEnabled(bool theBool)
 
 void QgsCopyrightLabelPluginGui::setText(QString theTextQString)
 {
-  txtCopyrightText->setText(theTextQString);
+  txtCopyrightText->setPlainText(theTextQString);
 }
 
 void QgsCopyrightLabelPluginGui::setPlacement(QString thePlacementQString)

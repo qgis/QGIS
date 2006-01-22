@@ -13,7 +13,6 @@
 #define QGSCOPYRIGHTLABELPLUGINGUI_H
 
 #include <ui_pluginguibase.h>
-#include <QDialog>
 #include <qfont.h>
 #include <qcolor.h>
 

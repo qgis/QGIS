@@ -21,11 +21,9 @@
 #define QGSCOPYRIGHTLABELPLUGIN
 #include "../qgisplugin.h"
 #include "qgisapp.h"
-#include <qwidget.h>
-#include <qfont.h>
-#include <qcolor.h>
-#include <q3simplerichtext.h>
-#include <qpainter.h>
+
+class QPainter;
+
 /**
 * \class Plugin
 * \brief OpenModeller plugin for QGIS
