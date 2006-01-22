@@ -138,6 +138,8 @@ QgsMapCanvas::QgsMapCanvas()
   mCanvasProperties->initMetrics(pdm);
   delete pdm;
 
+  mRubberBand = 0;
+  mRubberBand2 = 0;
   mMeasure = 0;
 } // QgsMapCanvas ctor
 

@@ -28,6 +28,7 @@ QgsRubberBand::QgsRubberBand(QWidget * parent, bool isPolygon)
   setGeometry(parent->rect()); // this widget is same size as parent
   mPoints.append(QPoint()); // addPoint assumes an initial allocated point
   setColor(QColor(Qt::lightGray));
+  setMouseTracking(true);
 }
 
 QgsRubberBand::~QgsRubberBand()
