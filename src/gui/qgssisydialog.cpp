@@ -56,7 +56,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(la
     QStringList ml = QgsMarkerCatalogue::instance()->list();
     mMarkers.clear();
 
-    int size = 29;
+    int size = 100;
     int maxwidth = 0;
     QPen pen (QColor(0,0,255));
     QBrush brush ( QColor(220,220,220), Qt::SolidPattern );

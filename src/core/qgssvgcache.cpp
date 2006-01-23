@@ -96,7 +96,7 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor)
   }
   
   QPixmap myPixmap = QPixmap(width,height);
-  myPixmap.fill(QColor(255,255,255.0)); //transparent
+  myPixmap.fill(QColor(255,255,255,0)); //transparent
   QPainter myPainter(&myPixmap);
   mySVG.render(&myPainter);  
   pixmapMap[std::pair<QString, double>(filename, scaleFactor)] = myPixmap;
