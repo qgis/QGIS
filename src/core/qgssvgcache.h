@@ -51,23 +51,6 @@ class QgsSVGCache {
       has changed and you want to get rid of cached lower-quality pixmaps. */
   void clear();
   
-  /** When a pixmap is requested and it is not in the cache, it will be 
-      loaded using a QPicture and rendered to a QPixmap. Since Qt does not do
-      any kind of anti-aliasing or smoothing, the QPicture is first rendered
-      to a pixmap that is larger than the requested size, and then it's scaled
-      down using QImage::smoothScale() to smooth out sharp edges and lines.
-      The oversampling factor determins how much larger the first pixmap is -
-      the larger this factor is the smoother the final pixmap will look, but
-      it will also take longer time to render and scale the image. This
-      function sets the oversampling factor. It should be larger than or equal
-      to 1. 
-  */
-  void setOversampling(int oversamplingFactor);
-  
-  /** This function returns the oversampling factor.
-      @see setOversampling()
-  */
-  int getOversampling() const;
   
   /** This function returns a reference to the singleton object. */
   static inline QgsSVGCache& instance();
@@ -78,7 +61,6 @@ class QgsSVGCache {
   PictureMap pictureMap;
   typedef std::map<std::pair<QString, double>,QPixmap> PixmapMap;
   PixmapMap pixmapMap;
-  int oversampling;
   std::queue<std::pair<QString, double> > fifo;
   int pixelLimit;
   int totalPixels;

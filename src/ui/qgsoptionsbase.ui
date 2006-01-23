@@ -210,9 +210,22 @@
         <number>6</number>
        </property>
        <item row="3" column="0" >
-        <widget class="QGroupBox" name="groupBox_3" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="0" >
+        <widget class="QGroupBox" name="groupBox_8" >
          <property name="title" >
-          <string>&amp;SVG Options</string>
+          <string>Anti-aliasing</string>
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
@@ -221,46 +234,32 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="0" column="2" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>180</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="0" colspan="3" >
-           <widget class="QLabel" name="textLabel1_5_2" >
-            <property name="text" >
-             <string>&lt;b>Note: &lt;/b>A higher value gives smoother SVG symbols, but can slow down rendering</string>
-            </property>
-            <property name="alignment" >
-             <set>Qt::AlignVCenter</set>
-            </property>
-            <property name="wordWrap" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QSpinBox" name="spbSVGOversampling" >
-            <property name="minimum" >
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0" >
-           <widget class="QLabel" name="textLabel1_7" >
+           <widget class="QCheckBox" name="chkAntiAliasing" >
             <property name="text" >
-             <string>SVG oversampling factor</string>
+             <string>Make lines appear less jagged at the expense of some drawing performance</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QGroupBox" name="groupBox_4" >
+         <property name="title" >
+          <string>Initial Visibility</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="QCheckBox" name="chkAddedVisibility" >
+            <property name="text" >
+             <string>New la&amp;yers added to the map are not displayed</string>
             </property>
            </widget>
           </item>
@@ -310,50 +309,6 @@
            <widget class="QLabel" name="textLabel3" >
             <property name="text" >
              <string>(Set to 0 to not update the display until all features have been read)</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="0" >
-        <widget class="QGroupBox" name="groupBox_4" >
-         <property name="title" >
-          <string>Initial Visibility</string>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="0" column="0" >
-           <widget class="QCheckBox" name="chkAddedVisibility" >
-            <property name="text" >
-             <string>New la&amp;yers added to the map are not displayed</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="2" column="0" >
-        <widget class="QGroupBox" name="groupBox_8" >
-         <property name="title" >
-          <string>Anti-aliasing</string>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="0" column="0" >
-           <widget class="QCheckBox" name="chkAntiAliasing" >
-            <property name="text" >
-             <string>Make lines appear less jagged at the expense of some drawing performance</string>
             </property>
            </widget>
           </item>

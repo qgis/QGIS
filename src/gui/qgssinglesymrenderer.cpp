@@ -86,11 +86,11 @@ void QgsSingleSymRenderer::addSymbol(QgsSymbol* sy)
 }
 
 void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixmap* pic, 
-	         double* scalefactor, bool selected, int oversampling, double widthScale)
+	         double* scalefactor, bool selected, double widthScale)
 {
 	// Point 
 	if ( pic && mVectorType == QGis::Point) {
-	    *pic = mSymbol->getPointSymbolAsPixmap( oversampling, widthScale, 
+	    *pic = mSymbol->getPointSymbolAsPixmap(  widthScale, 
 					 selected, mSelectionColor );
 	    
 	    if ( scalefactor ) *scalefactor = 1;

@@ -73,7 +73,7 @@ void QgsContinuousColRenderer::setMaximumSymbol(QgsSymbol* sy)
 }
 
 void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixmap* pic, 
-	double* scalefactor, bool selected, int oversampling, double widthScale)
+	double* scalefactor, bool selected, double widthScale)
 {
   if ((mMinimumSymbol && mMaximumSymbol))
   {
@@ -135,9 +135,8 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixm
       }
       brush.setStyle ( Qt::SolidPattern );
 
-      // Always with oversampling 0
       *pic = QgsMarkerCatalogue::instance()->marker ( mMinimumSymbol->pointSymbolName(), mMinimumSymbol->pointSize(),
-          pen, brush, 0 );
+          pen, brush);
 
       if ( scalefactor ) *scalefactor = 1;
     } 

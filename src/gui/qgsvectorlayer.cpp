@@ -795,14 +795,11 @@ std::cerr << i << ": " << ring->first[i]
 
 void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst)
 {
-  QSettings settings;
-  int oversampling = settings.readNumEntry("/qgis/svgoversampling", 1);
-
-  draw ( p, viewExtent, theMapToPixelTransform, dst, 1., 1., oversampling );
+  draw ( p, viewExtent, theMapToPixelTransform, dst, 1., 1.);
 }
 
 void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, 
-    QPaintDevice* dst, double widthScale, double symbolScale, int oversampling)
+    QPaintDevice* dst, double widthScale, double symbolScale)
 {
   if ( /*1 == 1 */ m_renderer)
   {
@@ -930,7 +927,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 
             bool sel=mSelected.find(fet->featureId()) != mSelected.end();
             m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
-                sel, oversampling, widthScale );
+                sel, widthScale );
 
             double scale = markerScaleFactor * symbolScale;
             drawFeature(p,fet,theMapToPixelTransform,&marker, scale, 
@@ -954,7 +951,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
       {
         bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
         m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
-            sel, oversampling, widthScale);
+            sel, widthScale);
         double scale = markerScaleFactor * symbolScale;
         drawFeature(p,*it,theMapToPixelTransform,&marker,scale, 
             projectionsEnabledFlag);

@@ -99,7 +99,7 @@ int QgsUniqueValRenderer::classificationField()
 }
     
 void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPixmap* pic, 
-	double* scalefactor, bool selected, int oversampling, double widthScale)
+	double* scalefactor, bool selected, double widthScale)
 {
     std::vector < QgsFeatureAttribute > vec = f->attributeMap();
     QString value = vec[0].fieldValue();
@@ -110,8 +110,8 @@ void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPixmap* pic
 
 	// Point 
 	if ( pic && mVectorType == QGis::Point ) {
-	    *pic = symbol->getPointSymbolAsPixmap( oversampling, widthScale,
-		                                             selected, mSelectionColor );
+	    *pic = symbol->getPointSymbolAsPixmap(  widthScale,
+		                                       selected, mSelectionColor );
 	    
 	    if ( scalefactor ) *scalefactor = 1;
 	} 

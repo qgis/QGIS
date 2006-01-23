@@ -406,7 +406,7 @@ public:
    *  \param widthScale line width scale
    *  \param symbolScale symbol scale
    */
-  void draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst, double widthScale, double symbolScale, int oversampling = 1);
+  void draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst, double widthScale, double symbolScale);
 
   /** \brief Draws the layer labels using coordinate transformation
    *  \param scale size scale, applied to all values in pixels

@@ -122,7 +122,7 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
 	widthScale *= mComposition->viewScale();
 	  }
 	  double symbolScale = mSymbolScale * mComposition->scale();
-	  vector->draw( painter, extent, transform, device, widthScale, symbolScale, 0 );
+	  vector->draw( painter, extent, transform, device, widthScale, symbolScale);
 
       } else { 
 	  // raster
