@@ -72,49 +72,49 @@ void QgsContinuousColRenderer::setMaximumSymbol(QgsSymbol* sy)
   mMaximumSymbol = sy;
 }
 
-void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, Q3Picture* pic, 
+void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixmap* pic, 
 	double* scalefactor, bool selected, int oversampling, double widthScale)
 {
-    if ((mMinimumSymbol && mMaximumSymbol))
-    {
-  //first find out the value for the classification attribute
-  std::vector < QgsFeatureAttribute > vec = f->attributeMap();
-  double fvalue = vec[0].fieldValue().toDouble();
-  
-  //double fvalue = vec[mClassificationField].fieldValue().toDouble();
-  double minvalue = mMinimumSymbol->lowerValue().toDouble();
-  double maxvalue = mMaximumSymbol->lowerValue().toDouble();
-  
-  QColor mincolor, maxcolor;
-  
-  if ( mVectorType == QGis::Line || mVectorType == QGis::Point )
+  if ((mMinimumSymbol && mMaximumSymbol))
   {
+    //first find out the value for the classification attribute
+    std::vector < QgsFeatureAttribute > vec = f->attributeMap();
+    double fvalue = vec[0].fieldValue().toDouble();
+
+    //double fvalue = vec[mClassificationField].fieldValue().toDouble();
+    double minvalue = mMinimumSymbol->lowerValue().toDouble();
+    double maxvalue = mMaximumSymbol->lowerValue().toDouble();
+
+    QColor mincolor, maxcolor;
+
+    if ( mVectorType == QGis::Line || mVectorType == QGis::Point )
+    {
       mincolor = mMinimumSymbol->pen().color();
       maxcolor = mMaximumSymbol->pen().color();
-  } 
-  else                    //if polygon
-  {
+    } 
+    else                    //if polygon
+    {
       p->setPen(mMinimumSymbol->pen());
       mincolor = mMinimumSymbol->fillColor();
       maxcolor = mMaximumSymbol->fillColor();
-  }
+    }
 
-  int red,green,blue;
+    int red,green,blue;
 
-  if((maxvalue - minvalue)!=0)
-  {
+    if((maxvalue - minvalue)!=0)
+    {
       red = int (maxcolor.red() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.red() * (maxvalue - fvalue) / (maxvalue - minvalue));
       green = int (maxcolor.green() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.green() * (maxvalue - fvalue) / (maxvalue - minvalue));
       blue =  int (maxcolor.blue() * (fvalue - minvalue) / (maxvalue - minvalue) + mincolor.blue() * (maxvalue - fvalue) / (maxvalue - minvalue));
-  }
-  else
-  {
+    }
+    else
+    {
       red = int (mincolor.red());
       green = int (mincolor.green());
       blue = int (mincolor.blue());
-  }
-      
-  if ( mVectorType == QGis::Point && pic) {
+    }
+
+    if ( mVectorType == QGis::Point && pic) {
       // TODO we must get always new marker -> slow, but continuous color for points 
       // probably is not used frequently
 
@@ -128,40 +128,38 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, Q3Pic
       QBrush brush = mMinimumSymbol->brush();
 
       if ( selected ) {
-          pen.setColor ( mSelectionColor );
-          brush.setColor ( mSelectionColor );
+        pen.setColor ( mSelectionColor );
+        brush.setColor ( mSelectionColor );
       } else {
-          brush.setColor ( QColor(red, green, blue) );
+        brush.setColor ( QColor(red, green, blue) );
       }
       brush.setStyle ( Qt::SolidPattern );
-      
+
       // Always with oversampling 0
       *pic = QgsMarkerCatalogue::instance()->marker ( mMinimumSymbol->pointSymbolName(), mMinimumSymbol->pointSize(),
-	                                      pen, brush, 0 );
+          pen, brush, 0 );
 
       if ( scalefactor ) *scalefactor = 1;
-  } 
-  else if ( mVectorType == QGis::Line )
-  {
+    } 
+    else if ( mVectorType == QGis::Line )
+    {
       p->setPen( QPen(QColor(red, green, blue),
-		 (int)(widthScale*mMinimumSymbol->pen().width()) ));//make sure the correct line width is used
-  } 
-  else
-        {
+            (int)(widthScale*mMinimumSymbol->pen().width()) ));//make sure the correct line width is used
+    } 
+    else
+    {
       p->setBrush(QColor(red, green, blue));
-        }
-  if(selected)
-  {
-       QPen pen=mMinimumSymbol->pen();
-       pen.setColor(mSelectionColor);
-       QBrush brush=mMinimumSymbol->brush();
-       brush.setColor(mSelectionColor);
-       p->setPen(pen);
-       p->setBrush(brush);
-  }
     }
-    
-    
+    if(selected)
+    {
+      QPen pen=mMinimumSymbol->pen();
+      pen.setColor(mSelectionColor);
+      QBrush brush=mMinimumSymbol->brush();
+      brush.setColor(mSelectionColor);
+      p->setPen(pen);
+      p->setBrush(brush);
+    }
+  }
 }
 
 void QgsContinuousColRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)

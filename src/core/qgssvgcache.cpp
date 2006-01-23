@@ -27,6 +27,7 @@
 #include "qgssvgcache.h"
 //Added by qt3to4:
 #include <QPixmap>
+#include <QSvgRenderer>
 
 
 QgsSVGCache::QgsSVGCache() {
@@ -35,60 +36,55 @@ QgsSVGCache::QgsSVGCache() {
   pixelLimit = settings.readNumEntry("/qgis/svgcachesize", 200000);
   totalPixels = 0;
 }
-
-Q3Picture QgsSVGCache::getPicture(QString filename) 
+QgsSVGCache::~QgsSVGCache() 
 {
-    PictureMap::const_iterator iter;
-    PictureMap::key_type key(filename);
+  //QMapIterator<QString, QSvgRenderer *> i(pictureMap);
+  //while (i.hasNext()) {
+  //  i.next();
+  //  delete i.value() ;
+  //}
+  //pictureMap.clear();
+}
 
-    iter = pictureMap.find(key);
+QSvgRenderer *  QgsSVGCache::getPicture(QString filename) 
+{
 
-    if (iter != pictureMap.end()) {
-#if QGISDEBUG > 2
-        std::cerr<<"SVGCACHE: " << filename << " is already loaded"<<std::endl;
-#endif
-	return iter->second;
-    }
+  PictureMap::const_iterator i = pictureMap.find(filename);
+  while (i != pictureMap.end()) 
+  {
+    return  (*i).second ;
+  }
 
-#if QGISDEBUG > 2
-        std::cerr<<"SVGCACHE: loading " << filename << std::endl;
-#endif
+  QSvgRenderer * mySVG;
+  mySVG->load(filename);
 
-    Q3Picture pic;
-    pic.load(filename,"svg");
-    
-    pictureMap[key] = pic;
+  pictureMap[filename] = mySVG;
 
-    return pic;
+  return mySVG;
 }  
 
-QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
+QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) 
+{
   
   // make the symbols smaller
   scaleFactor *= 0.30;
-  
-  PixmapMap::const_iterator iter;
-  PixmapMap::key_type key(filename, scaleFactor);
-  iter = pixmapMap.find(key);
-  
-  // if we already have the pixmap, return it
-  if (iter != pixmapMap.end()) {
-#if QGISDEBUG > 2
-    std::cerr<<"SVGCACHE: "<<filename<<"["<<scaleFactor
-	     <<"] is already loaded"<<std::endl;
-#endif
-    return iter->second;
+  std::pair<QString, double> myPair(filename, scaleFactor) ;
+  PixmapMap::iterator i = pixmapMap.find(myPair);
+  while (i != pixmapMap.end()) 
+  {
+    QPixmap myPixmap =  i->second ;
+    return myPixmap;
   }
   
   // if not, try to load it
 #if QGISDEBUG > 2
   std::cerr<<"SVGCACHE: loading "<<filename<<"["<<scaleFactor<<"]"<<std::endl;
 #endif
-  Q3Picture pic;
-  pic.load(filename,"svg");
-  int width=pic.boundingRect().width();
+  QSvgRenderer mySVG;
+  mySVG.load(filename);
+  int width=mySVG.defaultSize().width();
   width=static_cast<int>(static_cast<double>(width)*scaleFactor);
-  int height=pic.boundingRect().height();
+  int height=mySVG.defaultSize().height();
   height=static_cast<int>(static_cast<double>(height)*scaleFactor);
   
   //prevent 0 width or height, which would cause a crash
@@ -99,63 +95,18 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor) {
     height = 1;
   }
   
-  // render and rescale it (with smoothing)
-  QPixmap osPixmap(oversampling*width,oversampling*height);
-  osPixmap.fill(QColor(qRgb(255, 255, 0)));
-  QPainter p(&osPixmap);
-  p.scale(scaleFactor*oversampling,scaleFactor*oversampling);
-  p.drawPicture(0,0,pic);
-  QImage osImage = osPixmap.convertToImage();
-  // set a mask - this is probably terribly inefficient
-  osImage.setAlphaBuffer(true);
-  for (int i = 0; i < osImage.width(); ++i) {
-    for (int j = 0; j < osImage.height(); ++j) {
-#ifdef Q_OS_MACX
-      // set opaque since pixels are transparent by default
-      QRgb pixel = osImage.pixel(i, j);
-      if (pixel != qRgba(255, 255, 0, 0)) {
-        osImage.setPixel(i, j, qRgba(qRed(pixel), qGreen(pixel), qBlue(pixel), 255));
-      }
-#else
-      // set transparent since pixels are opaque by default
-      if (osImage.pixel(i, j) == qRgb(255, 255, 0)) {
-        osImage.setPixel(i, j, qRgba(255, 255, 0, 0));
-      }
-#endif
-    }
-  }
-  if (oversampling != 1)
-    osImage = osImage.smoothScale(width, height);
-  QPixmap pixmap = QPixmap(osImage);
- 
-  // cache it if possible, and remove other pixmaps from the cache
-  // if it grows too large
-  if (width * height < pixelLimit) {
-#if QGISDEBUG > 2
-    std::cerr<<"SVGCACHE: Caching "<<filename<<"["<<scaleFactor<<"]"
-	     <<std::endl;
-#endif
-    pixmapMap[key] = pixmap;
-    fifo.push(key);
-    totalPixels += width * height;
-    while (totalPixels > pixelLimit) {
-#if QGISDEBUG > 2
-      std::cerr<<"SVGCACHE: Deleting "<<fifo.front().first<<"["
-	       <<fifo.front().second<<"] from cache"<<std::endl;
-#endif
-      QPixmap& oldPM(pixmapMap[fifo.front()]);
-      fifo.pop();
-      totalPixels -= oldPM.width() * oldPM.height();
-    }
-  }
-  
-  return pixmap;
+  QPixmap myPixmap = QPixmap(width,height);
+  myPixmap.fill(QColor(255,255,255.0)); //transparent
+  QPainter myPainter(&myPixmap);
+  mySVG.render(&myPainter);  
+  pixmapMap[std::pair<QString, double>(filename, scaleFactor)] = myPixmap;
+  return myPixmap;
 }
   
 
 void QgsSVGCache::clear() {
   pixmapMap.clear();
-  fifo = std::queue<PixmapMap::key_type>();
+  fifo = std::queue<std::pair<QString, double> >();
   totalPixels = 0;
 }
 

@@ -25,7 +25,6 @@
 #include <qbrush.h>
 #include <qpen.h>
 #include <qpixmap.h>
-#include <q3picture.h>
 #include <qdom.h>
 
 class QString;
@@ -85,21 +84,18 @@ class QgsSymbol{
     //! Destructor
     virtual ~QgsSymbol();
 
-    //! Get a little icon / image representation of point symbol with current settings
-    virtual QPixmap getPointSymbolAsPixmap(int oversampling = 1);
-
     //! Get a little icon for the legend
     virtual QPixmap getLineSymbolAsPixmap();
 
     //! Get a little icon for the legend
     virtual QPixmap getPolygonSymbolAsPixmap();
     
-    /** Get QPicture representation of point symbol with current settings
+    /** Get QPixmap representation of point symbol with current settings
       * \param oversampling oversampling factor
-      *        >= 1 -> returns mPointSymbolPicture, widthScale ignored
-      *        0    -> returns mPointSymbolPicture2, with widthScale
+      *        >= 1 -> returns mPointSymbolPixmap, widthScale ignored
+      *        0    -> returns mPointSymbolPixmap2, with widthScale
       */
-    virtual Q3Picture getPointSymbolAsPicture(int oversampling = 1, double widthScale = 1., 
+    virtual QPixmap getPointSymbolAsPixmap(int oversampling = 1, double widthScale = 1., 
 	               bool selected = false, QColor selectionColor = Qt::yellow );
 
     /**Writes the contents of the symbol to a configuration file
@@ -130,33 +126,32 @@ class QgsSymbol{
     /* TODO Because for printing we always need a symbol without oversampling but with line width scale, 
      *      we keep also separate picture with line width scale */
 
-    /* Oversampling used for current mPointSymbolPixmap and mPointSymbolPicture */
+    /* Oversampling used for current mPointSymbolPixmap and mPointSymbolPixmap */
     int mOversampling;
      
     /* Point symbol cache with oversampling mOversampling  */
     QPixmap mPointSymbolPixmap;
 
     /* Point symbol cache with oversampling mOversampling (but vector if mOversampling == 1) */
-    Q3Picture mPointSymbolPicture;
-    Q3Picture mPointSymbolPictureSelected;
+    QPixmap mPointSymbolPixmapSelected;
 
-    /* Current line width scale used by mPointSymbolVectorPicture */
+    /* Current line width scale used by mPointSymbolVectorPixmap */
     double mWidthScale;
     
     /* Point symbol cache without oversampling (always vector picture) but with line width scale mWidthScale */
-    Q3Picture mPointSymbolPicture2;
-    Q3Picture mPointSymbolPictureSelected2;
+    QPixmap mPointSymbolPixmap2;
+    QPixmap mPointSymbolPixmapSelected2;
     
-    /* Create point symbol mPointSymbolPixmap/mPointSymbolPicture cache */
+    /* Create point symbol mPointSymbolPixmap/mPointSymbolPixmap cache */
     void cache( int oversampling, QColor selectionColor );
 
-    /* Create point symbol mPointSymbolPicture2 cache */
+    /* Create point symbol mPointSymbolPixmap2 cache */
     void cache2( double widthScale, QColor selectionColor );
 
-    /* mPointSymbolPixmap/mPointSymbolPicture cache updated */
+    /* mPointSymbolPixmap/mPointSymbolPixmap cache updated */
     bool mCacheUpToDate;
 
-    /* mPointSymbolPicture2 cache updated */
+    /* mPointSymbolPixmap2 cache updated */
     bool mCacheUpToDate2;
 
     /* Selection color used in cache */

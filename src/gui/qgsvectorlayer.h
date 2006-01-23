@@ -41,7 +41,7 @@ class QgsLabel;
 #include <vector>
 
 #include "q3valuevector.h"
-#include <Q3Picture>
+#include <QPixmap>
 
 #include "qgsmaplayer.h"
 #include "qgsattributeaction.h"
@@ -475,7 +475,7 @@ private:                       // Private attributes
 
   //! Draws features. May cause projections exceptions to be generated
   // (i.e., code that calls this function needs to catch them
-  void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, Q3Picture* marker, double markerScaleFactor, bool projectionsEnabledFlag );
+  void drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * cXf, QPixmap* marker, double markerScaleFactor, bool projectionsEnabledFlag );
 
 private:                       // Private attributes
 
