@@ -243,22 +243,31 @@ if test $QT_MAJOR = "4" ; then
       if test x$MOC = x ; then
 	AC_MSG_ERROR([*** moc must be in path])
       fi
+      # uic is the Qt user interface compiler
+      AC_CHECK_PROG(UIC, uic, uic)
+      if test x$UIC = x ; then
+	AC_MSG_ERROR([*** uic must be in path])
+      fi
+      # check for rcc
+      AC_CHECK_PROG(RCC, rcc, rcc)
+      if test x$RCC = x ; then
+	AC_MSG_ERROR([*** rcc must be in path])
+      fi
   else
       AC_CHECK_PROG(MOC, moc, $QTDIR/bin/moc, , $QTDIR/bin)
       if test x$MOC = x ; then
 	AC_MSG_ERROR([*** moc must be in path])
       fi
-  fi
-
-  # uic is the Qt user interface compiler
-  AC_CHECK_PROG(UIC, uic, $QTDIR/bin/uic, , $QTDIR/bin)
-  if test x$UIC = x ; then
-    AC_MSG_ERROR([*** uic must be in path])
-  fi
-  # check for rcc
-  AC_CHECK_PROG(RCC, rcc, $QTDIR/bin/rcc, , $QTDIR/bin)
-  if test x$RCC = x ; then
-    AC_MSG_ERROR([*** rcc must be in path])
+      # uic is the Qt user interface compiler
+      AC_CHECK_PROG(UIC, uic, $QTDIR/bin/uic, , $QTDIR/bin)
+      if test x$UIC = x ; then
+	AC_MSG_ERROR([*** uic must be in path])
+      fi
+      # check for rcc
+      AC_CHECK_PROG(RCC, rcc, $QTDIR/bin/rcc, , $QTDIR/bin)
+      if test x$RCC = x ; then
+	AC_MSG_ERROR([*** rcc must be in path])
+      fi
   fi
 fi
 
