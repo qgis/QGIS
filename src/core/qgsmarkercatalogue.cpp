@@ -25,6 +25,7 @@
 #include <qrect.h>
 #include <q3pointarray.h>
 #include <qdir.h>
+#include <QPicture>
 
 #include "qgsapplication.h"
 #include "qgssvgcache.h"
@@ -83,60 +84,39 @@ QgsMarkerCatalogue *QgsMarkerCatalogue::instance()
     return QgsMarkerCatalogue::mMarkerCatalogue;
 }
 
-Q3Picture QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrush brush, int oversampling, bool qtBug )
+QPixmap QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrush brush, int oversampling, bool qtBug )
 {
     //std::cerr << "QgsMarkerCatalogue::marker" << std::endl;
-    Q3Picture picture;
-    
     if ( fullName.left(5) == "hard:" ) {
-        return hardMarker ( fullName.mid(5), size, pen, brush, oversampling, qtBug ); 
+        QPicture myPicture = hardMarker ( fullName.mid(5), size, pen, brush, oversampling, qtBug ); 
+        QPixmap myPixmap = QPixmap (myPicture.width(),myPicture.height());
+        QPainter myPainter(&myPixmap);
+        myPainter.drawPicture(0,0,myPicture);
+        return myPixmap;
     } else if ( fullName.left(4) == "svg:" ) {
         return svgMarker ( fullName.mid(4), size, oversampling ); 
     }
 
-    return picture; // empty
+    return QPixmap(); // empty
 }
 
-Q3Picture QgsMarkerCatalogue::svgMarker ( QString name, int s, int oversampling )
+QPixmap QgsMarkerCatalogue::svgMarker ( QString name, int s, int oversampling )
 {
-    Q3Picture picture;
-    QPainter painter;
-    painter.begin(&picture);
-
-    if ( oversampling <= 1 ) 
-    {
-	Q3Picture pic = QgsSVGCache::instance().getPicture(name);
-
-	QRect br = pic.boundingRect();
-
-	double scale = 1. * s / ( ( br.width() + br.height() ) / 2 ) ;
-
-	painter.scale ( scale, scale );
-	painter.drawPicture ( 0, 0, pic );
-
-    } 
-    else
-    {
 	QPixmap pixmap = QgsSVGCache::instance().getPixmap(name,1.);
 	
 	double scale = 1. * s / ( ( pixmap.width() + pixmap.height() ) / 2 ) ;
 	
 	pixmap = QgsSVGCache::instance().getPixmap(name,scale);
 
-	painter.drawPixmap ( 0, 0, pixmap );
-
-    }
-    painter.end();
-
-    return picture;
+    return pixmap;
 }
 
-Q3Picture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush brush, int oversampling, bool qtBug )
+QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush brush, int oversampling, bool qtBug )
 {
     // Size of polygon symbols is calculated so that the area is equal to circle with 
     // diameter mPointSize
     
-    Q3Picture picture;
+    QPicture picture;
     
     // Size for circle
     int half = (int)floor(s/2.0); // number of points from center

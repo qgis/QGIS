@@ -88,7 +88,9 @@ QgsSymbol::QgsSymbol(QColor c)
 {}
 
 QgsSymbol::~QgsSymbol()
-{}
+{
+
+}
 
 
 QColor QgsSymbol::color() const
@@ -162,14 +164,6 @@ int QgsSymbol::pointSize() const
     return mPointSize;
 }
 
-QPixmap QgsSymbol::getPointSymbolAsPixmap( int oversampling )
-{
-    if ( !mCacheUpToDate || oversampling != mOversampling ) 
-    {
-	cache( oversampling, mSelectionColor );
-    }
-    return mPointSymbolPixmap;
-}
 
 QPixmap QgsSymbol::getLineSymbolAsPixmap()
 {
@@ -192,13 +186,13 @@ QPixmap QgsSymbol::getPolygonSymbolAsPixmap()
     return pix; //this is ok because of qts sharing mechanism 
 }
 
-Q3Picture QgsSymbol::getPointSymbolAsPicture( int oversampling, double widthScale,
+QPixmap QgsSymbol::getPointSymbolAsPixmap( int oversampling, double widthScale,
                bool selected, QColor selectionColor )
 {
-    //std::cerr << "QgsSymbol::getPointSymbolAsPicture oversampling = " << oversampling <<
+    //std::cerr << "QgsSymbol::getPointSymbolAsPixmap oversampling = " << oversampling <<
     //	         " widthScale = " << widthScale << std::endl;
 
-    if ( oversampling >= 1 )  // called for canvas -> mPointSymbolPicture
+    if ( oversampling >= 1 )  // called for canvas -> mPointSymbolPixmap
     {
 	if ( !mCacheUpToDate || oversampling != mOversampling 
 	     || ( selected && mSelectionColor != selectionColor ) )
@@ -210,12 +204,12 @@ Q3Picture QgsSymbol::getPointSymbolAsPicture( int oversampling, double widthScal
 	    }
 	}
 	if ( selected ) {
-	    return mPointSymbolPictureSelected;
+	    return mPointSymbolPixmapSelected;
 	}
-        return mPointSymbolPicture;
+        return mPointSymbolPixmap;
     }
 
-    // called by composer -> mPointSymbolPicture2
+    // called by composer -> mPointSymbolPixmap2
     if ( !mCacheUpToDate2 || widthScale != mWidthScale 
 	 || ( selected && mSelectionColor2 != selectionColor ) )
     {
@@ -226,9 +220,9 @@ Q3Picture QgsSymbol::getPointSymbolAsPicture( int oversampling, double widthScal
 	}
     }
     if ( selected ) {
-	return mPointSymbolPictureSelected2;
+	return mPointSymbolPixmapSelected2;
     }
-    return mPointSymbolPicture2;
+    return mPointSymbolPixmap2;
 }
 
 void QgsSymbol::cache( int oversampling, QColor selectionColor )
@@ -238,22 +232,11 @@ void QgsSymbol::cache( int oversampling, QColor selectionColor )
     QBrush brush = mBrush;
     brush.setColor ( selectionColor ); 
 
-    mPointSymbolPicture = QgsMarkerCatalogue::instance()->marker ( mPointSymbolName, mPointSize,
+    mPointSymbolPixmap = QgsMarkerCatalogue::instance()->marker ( mPointSymbolName, mPointSize,
 	                        mPen, mBrush, oversampling );
     
-    mPointSymbolPictureSelected = QgsMarkerCatalogue::instance()->marker ( 
+    mPointSymbolPixmapSelected = QgsMarkerCatalogue::instance()->marker ( 
 	     mPointSymbolName, mPointSize, pen, brush, oversampling );
-
-    QRect br = mPointSymbolPicture.boundingRect();
-    mPointSymbolPixmap.resize ( br.width(), br.height() );
-
-    // TODO - this is not correct, the background must be transparent
-    mPointSymbolPixmap.fill ( QColor(255,255,255) );
-
-    QPainter pixpainter;
-    pixpainter.begin(&mPointSymbolPixmap);
-    pixpainter.drawPicture ( -br.x(), -br.y(), mPointSymbolPicture );
-    pixpainter.end();
 
     mOversampling = oversampling;
     mSelectionColor = selectionColor;
@@ -269,14 +252,14 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor )
     pen.setWidth ( (int) ( widthScale * pen.width() ) );
 
     
-    mPointSymbolPicture2 = QgsMarkerCatalogue::instance()->marker ( mPointSymbolName, mPointSize,
+    mPointSymbolPixmap2 = QgsMarkerCatalogue::instance()->marker ( mPointSymbolName, mPointSize,
 	                        pen, mBrush, 1, false );
 
     QBrush brush = mBrush;
     brush.setColor ( selectionColor ); 
     pen.setColor ( selectionColor ); 
 
-    mPointSymbolPictureSelected2 = QgsMarkerCatalogue::instance()->marker ( 
+    mPointSymbolPixmapSelected2 = QgsMarkerCatalogue::instance()->marker ( 
 	               mPointSymbolName, mPointSize, pen, brush, 1, false );
 
     mSelectionColor2 = selectionColor;

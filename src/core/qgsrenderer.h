@@ -23,7 +23,7 @@ class QgsMapToPixel;
 class QgsVectorLayer;
 class QPainter;
 class QgsDlgVectorLayerProperties;
-class Q3Picture;
+class QPixmap;
 class QDomNode;
 class QColor;
 
@@ -53,7 +53,7 @@ class QgsRenderer
      @param f a pointer to the feature to be rendered
      @param pic pointer to a marker from SVG (is only used by marker renderers)
      @param scalefactor pointer to the scale factor for the marker image*/
-    virtual void renderFeature(QPainter* p, QgsFeature* f,Q3Picture* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.)=0;
+    virtual void renderFeature(QPainter* p, QgsFeature* f,QPixmap* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.)=0;
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
      @param vl the vector layer which will be associated with the renderer*/

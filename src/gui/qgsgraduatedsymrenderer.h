@@ -19,6 +19,7 @@
 #ifndef QGSGRADUATEDSYMRENDERER_H
 #define QGSGRADUATEDSYMRENDERER_H
 
+#include <QPixmap>
 #include "qgsrenderer.h"
 #include "qgsrangerenderitem.h"
 #include <list>
@@ -48,7 +49,7 @@ class QgsGraduatedSymRenderer: public QgsRenderer
      \param p a painter (usually the one from the current map canvas)
      \param f a pointer to a feature to render
      \param t the transform object containing the information how to transform the map coordinates to screen coordinates*/
-    void renderFeature(QPainter* p, QgsFeature* f, Q3Picture* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.);
+    void renderFeature(QPainter* p, QgsFeature* f, QPixmap* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.);
     /**Sets the number of the classicifation field
     \param field the number of the field to classify*/
     void setClassificationField(int field);

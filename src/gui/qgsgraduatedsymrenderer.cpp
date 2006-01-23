@@ -83,62 +83,62 @@ void QgsGraduatedSymRenderer::removeSymbols()
     mSymbols.clear();
 }
 
-void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, Q3Picture* pic, 
+void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixmap* pic, 
 	double* scalefactor, bool selected, int oversampling, double widthScale)
 {
-    //first find out the value for the classification attribute
-    std::vector < QgsFeatureAttribute > vec = f->attributeMap();
-    double value = vec[0].fieldValue().toDouble();
+  //first find out the value for the classification attribute
+  std::vector < QgsFeatureAttribute > vec = f->attributeMap();
+  double value = vec[0].fieldValue().toDouble();
 
-    std::list < QgsSymbol* >::iterator it;
-    //find the first render item which contains the feature
-    for (it = mSymbols.begin(); it != mSymbols.end(); ++it)
+  std::list < QgsSymbol* >::iterator it;
+  //find the first render item which contains the feature
+  for (it = mSymbols.begin(); it != mSymbols.end(); ++it)
+  {
+    if (value >= (*it)->lowerValue().toDouble() && value <= (*it)->upperValue().toDouble())
     {
-	if (value >= (*it)->lowerValue().toDouble() && value <= (*it)->upperValue().toDouble())
-        {
-	    break;
-        }
+      break;
     }
-    
-    if (it == mSymbols.end())      //value is contained in no item
+  }
+
+  if (it == mSymbols.end())      //value is contained in no item
+  {
+    std::cout << "Warning, value is contained in no class" << std::endl << std::flush;
+    return;
+  } 
+  else
+  {
+    //set the qpen and qpainter to the right values
+    // Point 
+    if ( pic && mVectorType == QGis::Point ) 
     {
-	std::cout << "Warning, value is contained in no class" << std::endl << std::flush;
-	return;
+      *pic = (*it)->getPointSymbolAsPixmap( oversampling, widthScale,
+          selected, mSelectionColor );
+
+      if ( scalefactor ) *scalefactor = 1;
     } 
-    else
-    {
-	//set the qpen and qpainter to the right values
-	// Point 
-	if ( pic && mVectorType == QGis::Point ) 
-	{
-	    *pic = (*it)->getPointSymbolAsPicture( oversampling, widthScale,
-		                                             selected, mSelectionColor );
-	    
-	    if ( scalefactor ) *scalefactor = 1;
-	} 
 
-        // Line, polygon
- 	if ( mVectorType != QGis::Point )
-	{
-	    if( !selected ) 
-	    {
-		QPen pen=(*it)->pen();
-		pen.setWidth ( (int) (widthScale * pen.width()) );
-		p->setPen(pen);
-		p->setBrush((*it)->brush());
-	    }
-	    else
-	    {
-		QPen pen=(*it)->pen();
-		pen.setColor(mSelectionColor);
-		pen.setWidth ( (int) (widthScale * pen.width()) );
-		QBrush brush=(*it)->brush();
-		brush.setColor(mSelectionColor);
-		p->setPen(pen);
-		p->setBrush(brush);
-	    }
-	}
+    // Line, polygon
+    if ( mVectorType != QGis::Point )
+    {
+      if( !selected ) 
+      {
+        QPen pen=(*it)->pen();
+        pen.setWidth ( (int) (widthScale * pen.width()) );
+        p->setPen(pen);
+        p->setBrush((*it)->brush());
+      }
+      else
+      {
+        QPen pen=(*it)->pen();
+        pen.setColor(mSelectionColor);
+        pen.setWidth ( (int) (widthScale * pen.width()) );
+        QBrush brush=(*it)->brush();
+        brush.setColor(mSelectionColor);
+        p->setPen(pen);
+        p->setBrush(brush);
+      }
     }
+  }
 }
 
 void QgsGraduatedSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)

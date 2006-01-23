@@ -64,12 +64,11 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(la
     // Get maximum symbol width - this is probably slow
     for ( QStringList::iterator it = ml.begin(); it != ml.end(); ++it ) {
     
-      Q3Picture pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
+      QPixmap pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
       	                pen, brush, QgsSVGCache::instance().getOversampling() );
 
-      QRect br = pic.boundingRect();
 
-      if ( br.width() > maxwidth ) maxwidth = br.width();
+      if ( pic.width() > maxwidth ) maxwidth = pic.width();
 
       if (layer->vectorType() != QGis::Point)
 	break;
@@ -78,16 +77,15 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(la
     for ( QStringList::iterator it = ml.begin(); it != ml.end(); ++it ) {
       mMarkers.push_back ( *it );
 
-      Q3Picture pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
+      QPixmap pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
 		      pen, brush, QgsSVGCache::instance().getOversampling() );
 
-      QRect br = pic.boundingRect();
 
-      QPixmap pm( 10+maxwidth, 10+br.height() );
+      QPixmap pm( 10+maxwidth, 10+pic.height() );
       pm.fill(QColor(255,255,255));
       QPainter p;
       p.begin(&pm);
-      p.drawPicture ( 5-br.x()+(maxwidth-br.width())/2 , 5-br.y(), pic);
+      p.drawPixmap ( 5-pic.width()+(maxwidth-pic.width())/2 , 5-pic.height(), pic);
       p.end();
       mPointSymbolComboBox->insertItem ( pm );
 

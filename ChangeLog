@@ -1,6 +1,9 @@
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
 Version 0.8 'Joesephine' .... development version
+2006-01-23 [timlinux] 0.7.9.10
+** Dropped use of qpicture and resampling for point markers in favour of
+qt4.1 qsvgrenderer new goodies
 2006-01-09 [timlinux] 0.7.9.8
 ** Moved plugins into src/plugins
 2006-01-08 [timlinux] 0.7.9.8

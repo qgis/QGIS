@@ -816,7 +816,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 
     QPen pen;
     /*Pointer to a marker image*/
-    Q3Picture marker;
+    QPixmap marker;
     /*Scale factor of the marker image*/
     double markerScaleFactor=1.;
 
@@ -3326,7 +3326,7 @@ bool QgsVectorLayer::snapSegmentWithContext(QgsPoint& point,
 
 
 void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * theMapToPixelTransform, 
-    Q3Picture* marker, double markerScaleFactor, bool projectionsEnabledFlag)
+    QPixmap * marker, double markerScaleFactor, bool projectionsEnabledFlag)
 {
   // Only have variables, etc outside the switch() statement that are
   // used in all cases of the statement (otherwise they may get
@@ -3361,12 +3361,12 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 
         p->save();
         p->scale(markerScaleFactor,markerScaleFactor);
-        p->drawPicture(static_cast<int>(x / markerScaleFactor 
-              - marker->boundingRect().x() 
-              - marker->boundingRect().width() / 2),
+        p->drawPixmap(static_cast<int>(x / markerScaleFactor 
+              - marker->width() 
+              - marker->width() / 2),
             static_cast<int>(y / markerScaleFactor 
-              - marker->boundingRect().y() 
-              - marker->boundingRect().height() / 2),
+              - marker->height() 
+              - marker->height() / 2),
             *marker);
         p->restore();
 
@@ -3402,12 +3402,12 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
             needToTrim = true;
           else
 #endif
-            p->drawPicture(static_cast<int>(x / markerScaleFactor 
-                  - marker->boundingRect().x() 
-                  - marker->boundingRect().width() / 2),
+            p->drawPixmap(static_cast<int>(x / markerScaleFactor 
+                  - marker->width() 
+                  - marker->width() / 2),
                 static_cast<int>(y / markerScaleFactor 
-                  - marker->boundingRect().y() 
-                  - marker->boundingRect().height() / 2),
+                  - marker->height() 
+                  - marker->height() / 2),
                 *marker);
         }
         p->restore();
