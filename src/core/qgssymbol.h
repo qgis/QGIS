@@ -91,11 +91,8 @@ class QgsSymbol{
     virtual QPixmap getPolygonSymbolAsPixmap();
     
     /** Get QPixmap representation of point symbol with current settings
-      * \param oversampling oversampling factor
-      *        >= 1 -> returns mPointSymbolPixmap, widthScale ignored
-      *        0    -> returns mPointSymbolPixmap2, with widthScale
       */
-    virtual QPixmap getPointSymbolAsPixmap(int oversampling = 1, double widthScale = 1., 
+    virtual QPixmap getPointSymbolAsPixmap( double widthScale = 1., 
 	               bool selected = false, QColor selectionColor = Qt::yellow );
 
     /**Writes the contents of the symbol to a configuration file
@@ -126,24 +123,30 @@ class QgsSymbol{
     /* TODO Because for printing we always need a symbol without oversampling but with line width scale, 
      *      we keep also separate picture with line width scale */
 
-    /* Oversampling used for current mPointSymbolPixmap and mPointSymbolPixmap */
-    int mOversampling;
-     
-    /* Point symbol cache with oversampling mOversampling  */
+    //
+    //
+    // NOTE THE LOGIC OF THESE MEMBER VARS NEED TO BE REVISITED NOW THAT
+    // I HAVE REMOVED SVG OVERSAMPLING (NEEDED IN QT3 WITH POOR SVG SUPPORT)
+    // Tim Sutton 2006 XXX FIXME
+    //
+    //
+
+    
+    /* Point symbol cache  */
     QPixmap mPointSymbolPixmap;
 
-    /* Point symbol cache with oversampling mOversampling (but vector if mOversampling == 1) */
+    /* Point symbol cache  */
     QPixmap mPointSymbolPixmapSelected;
 
     /* Current line width scale used by mPointSymbolVectorPixmap */
     double mWidthScale;
     
-    /* Point symbol cache without oversampling (always vector picture) but with line width scale mWidthScale */
+    /* Point symbol cache but with line width scale mWidthScale */
     QPixmap mPointSymbolPixmap2;
     QPixmap mPointSymbolPixmapSelected2;
     
     /* Create point symbol mPointSymbolPixmap/mPointSymbolPixmap cache */
-    void cache( int oversampling, QColor selectionColor );
+    void cache(  QColor selectionColor );
 
     /* Create point symbol mPointSymbolPixmap2 cache */
     void cache2( double widthScale, QColor selectionColor );

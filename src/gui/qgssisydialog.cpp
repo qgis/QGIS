@@ -65,7 +65,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(la
     for ( QStringList::iterator it = ml.begin(); it != ml.end(); ++it ) {
     
       QPixmap pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
-      	                pen, brush, QgsSVGCache::instance().getOversampling() );
+      	                pen, brush );
 
 
       if ( pic.width() > maxwidth ) maxwidth = pic.width();
@@ -78,16 +78,10 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(la
       mMarkers.push_back ( *it );
 
       QPixmap pic = QgsMarkerCatalogue::instance()->marker ( *it, size,
-		      pen, brush, QgsSVGCache::instance().getOversampling() );
+		      pen, brush );
 
 
-      QPixmap pm( 10+maxwidth, 10+pic.height() );
-      pm.fill(QColor(255,255,255));
-      QPainter p;
-      p.begin(&pm);
-      p.drawPixmap ( 5-pic.width()+(maxwidth-pic.width())/2 , 5-pic.height(), pic);
-      p.end();
-      mPointSymbolComboBox->insertItem ( pm );
+      mPointSymbolComboBox->insertItem ( pic );
 
       if (layer->vectorType() != QGis::Point)
 	break;

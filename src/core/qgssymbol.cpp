@@ -40,7 +40,6 @@ QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString
       mType(t),
       mPointSymbolName( "hard:circle" ),
       mPointSize( 6 ),
-      mOversampling(1),
       mPointSymbolPixmap(1,1),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
@@ -57,7 +56,6 @@ QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString
       mBrush( c ),
       mPointSymbolName( "hard:circle" ),
       mPointSize( 6 ),
-      mOversampling(1),
       mPointSymbolPixmap(1,1),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
@@ -67,7 +65,6 @@ QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString
 QgsSymbol::QgsSymbol()
     : mPointSymbolName( "hard:circle" ),
       mPointSize( 6 ),
-      mOversampling(1),
       mPointSymbolPixmap(1,1),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
@@ -80,7 +77,6 @@ QgsSymbol::QgsSymbol(QColor c)
       mBrush( c ),
       mPointSymbolName( "hard:circle" ),
       mPointSize( 6 ),
-      mOversampling(1),
       mPointSymbolPixmap(1,1),
       mWidthScale(1.0),
       mCacheUpToDate( false ),
@@ -186,46 +182,27 @@ QPixmap QgsSymbol::getPolygonSymbolAsPixmap()
     return pix; //this is ok because of qts sharing mechanism 
 }
 
-QPixmap QgsSymbol::getPointSymbolAsPixmap( int oversampling, double widthScale,
+QPixmap QgsSymbol::getPointSymbolAsPixmap(  double widthScale,
                bool selected, QColor selectionColor )
 {
-    //std::cerr << "QgsSymbol::getPointSymbolAsPixmap oversampling = " << oversampling <<
-    //	         " widthScale = " << widthScale << std::endl;
 
-    if ( oversampling >= 1 )  // called for canvas -> mPointSymbolPixmap
-    {
-	if ( !mCacheUpToDate || oversampling != mOversampling 
+	if ( !mCacheUpToDate 
 	     || ( selected && mSelectionColor != selectionColor ) )
 	{
 	    if ( selected ) {
-	        cache( oversampling, selectionColor );
+	        cache(  selectionColor );
 	    } else {
-	        cache( oversampling, mSelectionColor );
+	        cache(  mSelectionColor );
 	    }
 	}
 	if ( selected ) {
 	    return mPointSymbolPixmapSelected;
 	}
         return mPointSymbolPixmap;
-    }
 
-    // called by composer -> mPointSymbolPixmap2
-    if ( !mCacheUpToDate2 || widthScale != mWidthScale 
-	 || ( selected && mSelectionColor2 != selectionColor ) )
-    {
-	if ( selected ) {
-	    cache2( widthScale, selectionColor );
-	} else {
-	    cache2( widthScale, mSelectionColor );
-	}
-    }
-    if ( selected ) {
-	return mPointSymbolPixmapSelected2;
-    }
-    return mPointSymbolPixmap2;
 }
 
-void QgsSymbol::cache( int oversampling, QColor selectionColor )
+void QgsSymbol::cache(  QColor selectionColor )
 {
     QPen pen = mPen;
     pen.setColor ( selectionColor ); 
@@ -233,12 +210,11 @@ void QgsSymbol::cache( int oversampling, QColor selectionColor )
     brush.setColor ( selectionColor ); 
 
     mPointSymbolPixmap = QgsMarkerCatalogue::instance()->marker ( mPointSymbolName, mPointSize,
-	                        mPen, mBrush, oversampling );
+	                        mPen, mBrush );
     
     mPointSymbolPixmapSelected = QgsMarkerCatalogue::instance()->marker ( 
-	     mPointSymbolName, mPointSize, pen, brush, oversampling );
+	     mPointSymbolName, mPointSize, pen, brush );
 
-    mOversampling = oversampling;
     mSelectionColor = selectionColor;
     mCacheUpToDate = true;
 }
@@ -247,20 +223,19 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor )
 {
     //std::cerr << "QgsSymbol::cache2 widthScale = " << widthScale << std::endl;
 
-    // Vector without oversampling with width scale */
     QPen pen = mPen;
     pen.setWidth ( (int) ( widthScale * pen.width() ) );
 
     
     mPointSymbolPixmap2 = QgsMarkerCatalogue::instance()->marker ( mPointSymbolName, mPointSize,
-	                        pen, mBrush, 1, false );
+	                        pen, mBrush, false );
 
     QBrush brush = mBrush;
     brush.setColor ( selectionColor ); 
     pen.setColor ( selectionColor ); 
 
     mPointSymbolPixmapSelected2 = QgsMarkerCatalogue::instance()->marker ( 
-	               mPointSymbolName, mPointSize, pen, brush, 1, false );
+	               mPointSymbolName, mPointSize, pen, brush,  false );
 
     mSelectionColor2 = selectionColor;
     

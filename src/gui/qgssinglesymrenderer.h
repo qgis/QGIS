@@ -41,7 +41,7 @@ class QgsSingleSymRenderer: public QgsRenderer
     /*Returns a pointer to mSymbol*/
     const QgsSymbol* symbol() const;
     /**Renders an OGRFeature*/
-    void renderFeature(QPainter* p, QgsFeature* f, QPixmap* pic, double* scalefactor, bool selected, int oversampling = 1, double widthScale = 1.);
+    void renderFeature(QPainter* p, QgsFeature* f, QPixmap* pic, double* scalefactor, bool selected, double widthScale = 1.);
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
      @param vl the vector layer which will be associated with the renderer*/

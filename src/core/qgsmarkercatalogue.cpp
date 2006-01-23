@@ -84,23 +84,23 @@ QgsMarkerCatalogue *QgsMarkerCatalogue::instance()
     return QgsMarkerCatalogue::mMarkerCatalogue;
 }
 
-QPixmap QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrush brush, int oversampling, bool qtBug )
+QPixmap QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrush brush, bool qtBug )
 {
     //std::cerr << "QgsMarkerCatalogue::marker" << std::endl;
     if ( fullName.left(5) == "hard:" ) {
-        QPicture myPicture = hardMarker ( fullName.mid(5), size, pen, brush, oversampling, qtBug ); 
+        QPicture myPicture = hardMarker ( fullName.mid(5), size, pen, brush, qtBug ); 
         QPixmap myPixmap = QPixmap (myPicture.width(),myPicture.height());
         QPainter myPainter(&myPixmap);
         myPainter.drawPicture(0,0,myPicture);
         return myPixmap;
     } else if ( fullName.left(4) == "svg:" ) {
-        return svgMarker ( fullName.mid(4), size, oversampling ); 
+        return svgMarker ( fullName.mid(4), size ); 
     }
 
     return QPixmap(); // empty
 }
 
-QPixmap QgsMarkerCatalogue::svgMarker ( QString name, int s, int oversampling )
+QPixmap QgsMarkerCatalogue::svgMarker ( QString name, int s)
 {
 	QPixmap pixmap = QgsSVGCache::instance().getPixmap(name,1.);
 	
@@ -111,7 +111,7 @@ QPixmap QgsMarkerCatalogue::svgMarker ( QString name, int s, int oversampling )
     return pixmap;
 }
 
-QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush brush, int oversampling, bool qtBug )
+QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush brush, bool qtBug )
 {
     // Size of polygon symbols is calculated so that the area is equal to circle with 
     // diameter mPointSize
@@ -194,52 +194,6 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
     if ( name == "cross" || name == "cross2" ) {
         picture.setBoundingRect ( box ); 
     }
-
-    // If oversampling > 1 create pixmap 
-    
-    // Hardcoded symbols are not oversampled at present, because the problem is especially 
-    // with SVG markers (I am not sure why)
-    /*
-    if ( oversampling > 1 ) {
-	QRect br = picture.boundingRect();
-	QPixmap pixmap ( oversampling * br.width(), oversampling * br.height() );
-
-	// Find bg color (must differ from line and fill)
-	QColor transparent;
-	for ( int i = 0; i < 255; i++ ) {
-	    if ( pen.color().red() != i &&  brush.color().red() != i ) {
-		transparent = QColor ( i, 0, 0 );
-		break;
-	    }
-	}
-	
-	pixmap.fill( transparent );
-	QPainter pixpainter;
-	pixpainter.begin(&pixmap);
-	pixpainter.scale ( oversampling, oversampling );
-	pixpainter.drawPicture ( -br.x(), -br.y(), picture );
-	pixpainter.end();
-
-	QImage img = pixmap.convertToImage();
-	img.setAlphaBuffer(true);
-	for ( int i = 0; i < img.width(); i++ ) {
-	    for ( int j = 0; j < img.height(); j++ ) {
-		QRgb pixel = img.pixel(i, j);
-		int alpha = 255;
-		if ( qRed(pixel) == transparent.red() ) {
-		    alpha = 0;
-		}
-		img.setPixel ( i, j, qRgba(qRed(pixel), qGreen(pixel), qBlue(pixel), alpha) );
-	    }
-	}
-	img = img.smoothScale( br.width(), br.height());
-	pixmap.convertFromImage ( img );
-
-        picpainter.begin(&picture);
-	picpainter.drawPixmap ( 0, 0, pixmap );
-	picpainter.end();
-    } 
-    */
 
     return picture;
 }

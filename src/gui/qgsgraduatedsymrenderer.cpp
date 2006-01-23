@@ -84,7 +84,7 @@ void QgsGraduatedSymRenderer::removeSymbols()
 }
 
 void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixmap* pic, 
-	double* scalefactor, bool selected, int oversampling, double widthScale)
+	double* scalefactor, bool selected, double widthScale)
 {
   //first find out the value for the classification attribute
   std::vector < QgsFeatureAttribute > vec = f->attributeMap();
@@ -111,7 +111,7 @@ void QgsGraduatedSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixma
     // Point 
     if ( pic && mVectorType == QGis::Point ) 
     {
-      *pic = (*it)->getPointSymbolAsPixmap( oversampling, widthScale,
+      *pic = (*it)->getPointSymbolAsPixmap(  widthScale,
           selected, mSelectionColor );
 
       if ( scalefactor ) *scalefactor = 1;

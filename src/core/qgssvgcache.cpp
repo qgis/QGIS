@@ -32,7 +32,6 @@
 
 QgsSVGCache::QgsSVGCache() {
   QSettings settings;
-  oversampling = settings.readNumEntry("/qgis/svgoversampling", 4);
   pixelLimit = settings.readNumEntry("/qgis/svgcachesize", 200000);
   totalPixels = 0;
 }
@@ -98,6 +97,7 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor)
   QPixmap myPixmap = QPixmap(width,height);
   myPixmap.fill(QColor(255,255,255,0)); //transparent
   QPainter myPainter(&myPixmap);
+  myPainter.setRenderHint(QPainter::Antialiasing);
   mySVG.render(&myPainter);  
   pixmapMap[std::pair<QString, double>(filename, scaleFactor)] = myPixmap;
   return myPixmap;
@@ -111,11 +111,3 @@ void QgsSVGCache::clear() {
 }
 
 
-void QgsSVGCache::setOversampling(int oversamplingFactor) {
-  oversampling = oversamplingFactor;
-}
-  
-
-int QgsSVGCache::getOversampling() const {
-  return oversampling;
-}

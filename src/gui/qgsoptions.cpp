@@ -54,8 +54,6 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
 
   // set the current theme
   cmbTheme->setCurrentText(settings.readEntry("/Themes"));
-  // set the SVG oversampling factor
-  spbSVGOversampling->setValue(QgsSVGCache::instance().getOversampling());
   // set the display update threshold
   spinBoxUpdateThreshold->setValue(settings.readNumEntry("/Map/updateThreshold"));
   //set the default projection behaviour radio buttongs
@@ -156,8 +154,6 @@ void QgsOptions::saveOptions()
     settings.writeEntry("/Themes",cmbTheme->currentText());
   }
   settings.writeEntry("/Map/updateThreshold", spinBoxUpdateThreshold->value());
-  QgsSVGCache::instance().setOversampling(spbSVGOversampling->value());
-  settings.writeEntry("/qgis/svgoversampling", spbSVGOversampling->value());
   //check behaviour so default projection when new layer is added with no
   //projection defined...
   if (radPromptForProjection->isChecked())
