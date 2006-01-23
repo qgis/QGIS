@@ -90,6 +90,7 @@ QPixmap QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrus
     if ( fullName.left(5) == "hard:" ) {
         QPicture myPicture = hardMarker ( fullName.mid(5), size, pen, brush, qtBug ); 
         QPixmap myPixmap = QPixmap (myPicture.width(),myPicture.height());
+        myPixmap.fill(QColor(255,255,255,0)); //transparent
         QPainter myPainter(&myPixmap);
         myPainter.drawPicture(0,0,myPicture);
         return myPixmap;
@@ -126,6 +127,7 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
     // Picture
     QPainter picpainter;
     picpainter.begin(&picture);
+    picpainter.setRenderHint(QPainter::Antialiasing);
     
     // Also width must be odd otherwise there are discrepancies visible in canvas!
     int lw = (int)(2*floor((double)pen.width()/2)+1); // -> lw > 0
