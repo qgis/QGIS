@@ -3358,12 +3358,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 
         p->save();
         p->scale(markerScaleFactor,markerScaleFactor);
-        p->drawPixmap(static_cast<int>(x / markerScaleFactor 
-              - marker->width() 
-              - marker->width() / 2),
-            static_cast<int>(y / markerScaleFactor 
-              - marker->height() 
-              - marker->height() / 2),
+        p->drawPixmap(static_cast<int>(x-(marker->width()/2)) ,
+            static_cast<int>(y-(marker->height()/2) ),
             *marker);
         p->restore();
 
@@ -3399,12 +3395,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
             needToTrim = true;
           else
 #endif
-            p->drawPixmap(static_cast<int>(x / markerScaleFactor 
-                  - marker->width() 
-                  - marker->width() / 2),
-                static_cast<int>(y / markerScaleFactor 
-                  - marker->height() 
-                  - marker->height() / 2),
+          p->drawPixmap(static_cast<int>(x-(marker->width()/2)) ,
+                static_cast<int>(y-(marker->height()/2) ),
                 *marker);
         }
         p->restore();
