@@ -428,15 +428,15 @@ void QgisApp::createActions()
 //#endif
   assert(connect(mActionAddLayer, SIGNAL(triggered()), this, SLOT(addDatabaseLayer())));
   //
-  mActionRemoveLayer= new QAction(QIcon(myIconPath+"/mActionRemoveLayer.png"), tr("Remove Layer"), this);
-  mActionRemoveLayer->setShortcut(tr("Ctrl+D"));
-  mActionRemoveLayer->setStatusTip(tr("Remove a Layer"));
-  connect(mActionRemoveLayer, SIGNAL(triggered()), this, SLOT(removeLayer()));
-  //
   mActionNewVectorLayer= new QAction(QIcon(myIconPath+"/mActionNewVectorLayer.png"), tr("New Vector Layer"), this);
   mActionNewVectorLayer->setShortcut(tr("N"));
   mActionNewVectorLayer->setStatusTip(tr("Create a New Vector Layer"));
   connect(mActionNewVectorLayer, SIGNAL(triggered()), this, SLOT(newVectorLayer()));
+  //
+  mActionRemoveLayer= new QAction(QIcon(myIconPath+"/mActionRemoveLayer.png"), tr("Remove Layer"), this);
+  mActionRemoveLayer->setShortcut(tr("Ctrl+D"));
+  mActionRemoveLayer->setStatusTip(tr("Remove a Layer"));
+  connect(mActionRemoveLayer, SIGNAL(triggered()), this, SLOT(removeLayer()));
   //
   mActionAddAllToOverview= new QAction(QIcon(myIconPath+"/mActionAddAllToOverview.png"), tr("Add All To Overview"), this);
   mActionAddAllToOverview->setShortcut(tr("+"));
@@ -766,8 +766,8 @@ void QgisApp::createToolBars()
   mLayerToolBar->addAction(mActionAddLayer);
 #endif
   mLayerToolBar->addAction(mActionAddWmsLayer);
-  mLayerToolBar->addAction(mActionRemoveLayer);
   mLayerToolBar->addAction(mActionNewVectorLayer);
+  mLayerToolBar->addAction(mActionRemoveLayer);
   mLayerToolBar->addAction(mActionInOverview);
   mLayerToolBar->addAction(mActionAddAllToOverview);
   mLayerToolBar->addAction(mActionRemoveAllFromOverview);
