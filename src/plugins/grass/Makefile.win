@@ -1,7 +1,5 @@
 QGTOP=../../../
 
-LDADD = ../../providers/grass/.libs/libqgisgrass.a $(PLUGIN_LIBS) $(GRASS_LIB)
-
 OBJECTS = $(wildcard *.o) 
 
 PLUGIN = .libs/grassplugin.dll
@@ -12,8 +10,17 @@ objects:
 	$(MAKE) -f Makefile 
 
 $(PLUGIN): $(OBJECTS)
-	$(CXX) -shared -o  $@ $(OBJECTS) $(LDADD)
+	$(CXX) -shared -o $@ \
+		-Wl,--export-all-symbols \
+		-Wl,--enable-auto-import \
+		-Wl,--whole-archive $(OBJECTS) \
+		-Wl,--no-whole-archive \
+			-L ../../providers/grass/.libs/ -lqgis_grass \
+			$(PLUGIN_LIBS) \
+			$(GRASS_LIB) 
 	$(STRIP) $@ 
+
+#			../../providers/grass/.libs/libqgisgrass.a \
 
 install: all
 	$(INSTALL) -m 755 $(PLUGIN) $(prefix)/lib/qgis/grassplugin.dll
