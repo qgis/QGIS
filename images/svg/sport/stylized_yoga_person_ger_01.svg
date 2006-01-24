@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 10.0, SVG Export Plug-In . SVG Version: 3.0.0 Build 77)  --><svg enable-background="new 0 0 383.456 435.549" height="435.549" i:pageBounds="0 792 612 0" i:rulerOrigin="0 0" i:viewOrigin="113 613" overflow="visible" space="preserve" viewBox="0 0 383.456 435.549" width="383.456" xmlns="http://www.w3.org/2000/svg" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" xmlns:graph="http://ns.adobe.com/Graphs/1.0/" xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:x="http://ns.adobe.com/Extensibility/1.0/" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <metadata>
+    <rdf:RDF xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <cc:Work rdf:about="">
+        <dc:title>Stylized Yoga Person</dc:title>
+        <dc:description></dc:description>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>people</rdf:li>
+            <rdf:li>sports</rdf:li>
+            <rdf:li>yoga</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://www.openclipart.org/">
+            <dc:title>Open Clip Art Library</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Gerald G.</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Gerald G.</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date></dc:date>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://web.resource.org/cc/PublicDomain"/>
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/Distribution"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g i:dimmedPercent="50" i:layer="yes" i:rgbTrio="#4F008000FFFF" id="Layer_1">
+    <g>
+      <switch a:adobe-blending-mode="multiply" a:adobe-opacity-share="1" i:objectNS="http://ns.adobe.com/ImageReplacement/1.0/" i:objectType="replaceable-image" id="XMLID_2_" opacity="0.75" transform="matrix(1 0 0 1 -8 -8)">
+        <foreignObject height="466" opacity="0.75" overflow="visible" requiredExtensions="http://ns.adobe.com/ImageReplacement/1.0/" width="414" x="0" y="0">
+          <imageReplacement align="center" height="466" opacity="0.75" placementMethod="ratio" refHeight="466" refWidth="414" valign="middle" width="414" x="0" xmlns="http://ns.adobe.com/ImageReplacement/1.0/" y="0"></imageReplacement>
+          <x:targetRef xlink:href="#XMLID_1_"/>
+        </foreignObject>
+        <image height="466" i:alphaIsShape="yes" i:knockout="Off" id="XMLID_1_" opacity="0.75" width="414" xlink:href="529064AC.png"/>
+      </switch>
+      <g>
+        <g>
+          <path clip-rule="evenodd" d="       M152.563,238.179c-0.216-2.592-0.108-12.275,2.844-17.1c2.988-4.932,8.208-6.984,14.832-11.988       c6.444-5.184,16.74-11.268,23.939-18.252c7.057-6.948,13.465-12.708,18.828-23.4c5.221-10.836,11.449-37.44,13.141-41.076       c1.619-3.564-0.684,11.016-2.881,19.404c-2.268,8.28-3.42,20.124-10.26,30.24c-6.984,10.08-21.779,22.14-30.779,29.664       c-9.072,7.272-18.432,9.108-22.824,14.256c-4.392,5.112-2.34,13.356-3.42,16.524       C154.758,239.547,152.599,240.591,152.563,238.179z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M108.643,379.623c-0.576,2.124,2.124,19.368,2.268,27.972c-0.072,8.353-3.888,18.036-1.728,22.248       c2.16,3.96,9,2.124,14.832,2.269c5.688,0.144,11.232-1.765,19.404-1.152c8.208,0.576,26.784,4.644,29.088,4.572       c2.016-0.288-10.44-4.356-16.524-5.688c-6.192-1.368-13.032-2.088-19.98-2.304c-7.128-0.36-17.964,2.376-21.672,0.576       c-3.6-1.944-0.036-5.94,0-11.412c-0.108-5.58,0.252-14.832-0.576-21.096C112.747,389.271,109.146,377.643,108.643,379.623z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M155.407,421.851c-0.396,0.9-8.928-1.548-11.988-4.571c-3.024-3.024-4.968-4.284-6.264-13.104       c-1.476-9.072-3.168-23.076-2.304-39.924c0.828-17.064,4.968-43.38,7.416-60.48c2.268-17.172,6.408-40.68,6.876-41.075       c0.36-0.108-2.268,22.932-3.996,39.384c-1.728,16.308-5.4,41.472-6.3,57.6c-1.008,15.984-0.54,28.908,0.576,37.656       c0.972,8.604,3.024,9.468,5.724,13.68C147.739,415.155,155.694,420.663,155.407,421.851z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M106.915,344.271c-0.792-1.548-0.252-38.375-1.152-57.023c-1.044-18.612-5.328-54.828-4.536-53.64       c0.792,1.439,7.992,42.3,9.108,61.056C111.163,313.347,107.707,345.207,106.915,344.271z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M86.395,219.927c-1.368,0.469-24.804-4.86-38.232-6.84c-13.536-2.124-33.948,0.504-41.652-5.148       c-7.56-5.688-8.424-13.104-3.996-28.512c4.32-15.588,22.68-49.428,29.664-63.9c6.804-14.292,7.92-14.76,11.412-22.248       c3.42-7.452,8.604-22.32,9.144-22.248c0.432,0.36-2.268,13.248-6.3,23.4c-4.176,10.26-11.88,23.868-18.252,37.08       c-6.516,13.284-16.128,30.276-19.944,41.652c-3.816,11.16-4.716,19.476-2.844,25.092c1.764,5.4,6.012,6.12,14.256,7.992       c8.316,1.944,24.084,1.008,35.352,3.42C66.09,211.863,87.475,219.351,86.395,219.927z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M68.143,74.451c0.612,2.988,1.044,8.856,2.268,13.716c1.08,5.076,6.264,11.088,4.572,15.948       c-1.872,4.896-10.98,6.732-14.832,13.14c-3.888,6.696-5.076,16.704-7.992,25.668c-3.024,8.82-9.216,28.224-9.684,26.82       c-0.504-1.8,4.176-26.28,6.84-35.964c2.556-9.612,5.22-16.272,8.532-21.096c3.168-4.572,9.648-1.62,10.836-6.84       c1.08-5.292-3.672-18.468-3.996-24.516c-0.36-5.976,1.008-9.54,1.728-10.836C66.955,69.447,67.387,71.463,68.143,74.451z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M169.663,47.667c-2.628-6.192-5.904-12.816-10.26-20.556c-4.608-7.704-10.08-21.024-15.984-25.092       c-5.796-3.888-11.232-2.016-18.828,1.728c-7.848,3.96-19.98,15.984-27.36,21.096c-7.416,5.184-11.124,6.66-16.56,9.144       c-5.508,2.52-12.96,2.016-15.984,5.688c-3.06,3.816-3.492,12.708-2.268,16.524c1.188,3.852,8.352,6.552,9.144,6.3       c0.54-0.18-4.464-3.672-5.148-7.416c-0.756-3.636-1.62-11.16,1.152-14.256c2.736-2.844,9.72-1.116,15.408-3.42       c5.688-2.232,10.944-5.112,18.252-10.296c7.164-5.148,18.252-16.668,24.516-20.52c6.084-3.744,7.308-4.644,11.988-1.728       c4.464,3.132,9.216,10.116,15.372,19.979c6.3,10.008,18.756,35.532,21.672,39.348       C177.438,67.935,172.218,54.003,169.663,47.667z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M87.51,51.087c-0.576-0.216,5.364-6.696,11.988-10.26c6.588-3.384,26.028-10.368,26.82-10.26       c0.396,0.288-16.848,7.92-23.4,11.376C96.258,45.435,88.159,51.303,87.51,51.087z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M136.002,34.527c2.988,6.264,5.508,12.636,7.416,19.404c1.908,6.876,1.62,14.508,3.996,21.096       c2.232,6.66,5.508,12.564,9.684,18.252c-3.6-8.136-6.3-15.732-7.956-23.364c-1.8-7.488-0.108-15.732-2.304-21.672       C144.606,42.303,141.042,37.875,136.002,34.527z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M159.402,110.991c-1.62,3.024-3.96,20.34-8.568,27.36c-4.752,6.84-19.692,12.096-19.404,13.14       c0.324,0.828,16.164-3.132,21.132-7.992c4.86-5.148,6.732-16.128,7.956-21.672       C161.707,116.355,160.878,108.399,159.402,110.991z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M119.479,153.759c-0.432-0.648-14.04,2.592-19.98,5.688c-6.012,3.096-6.984,9.648-15.408,12.564       c-8.604,2.7-31.86,2.916-34.776,3.996c-2.88,0.936,10.188,2.988,17.676,2.268c7.524-0.828,20.952-4.356,26.82-6.84       c5.652-2.592,3.132-5.076,7.416-7.992C105.51,160.419,119.694,154.371,119.479,153.759z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M221.574,87.591c0.107-0.72,20.412,5.112,30.24,4.572c9.684-0.504,16.813-6.444,27.359-7.416       c10.404-0.72,17.748,1.656,34.813,2.268c17.209,0.576,57.924,0.684,66.744,1.152c8.352,0.612-3.924,1.872-15.984,2.268       c-12.383,0.54-42.229,1.008-56.484,0.576c-14.076-0.396-18.576-3.708-27.936-2.844c-9.539,1.08-18.719,8.64-28.512,8.532       C241.807,96.591,221.682,88.419,221.574,87.591z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M238.098,116.679c10.369-2.916,19.262-5.4,26.82-7.992c7.561-2.484,13.5-4.716,18.252-6.84       c-6.66,5.544-13.5,9.54-21.096,11.988C254.443,116.355,246.594,117.255,238.098,116.679z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M303.15,104.691c0.973-0.756,10.691-1.332,17.1-2.844c6.373-1.44,15.949-5.184,21.096-5.688       c5.041-0.252,3.924,3.384,9.145,3.42c5.221-0.036,21.709-3.672,21.672-3.42c-0.324,0.468-17.459,5.148-22.824,5.688       c-5.436,0.684-3.203-2.988-9.143-2.268c-6.014,0.828-19.98,5.976-26.209,6.84C307.65,107.283,302.143,105.555,303.15,104.691z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M211.854,2.595c-0.898-0.612-13.643-3.636-19.367-2.268c-5.868,1.62-11.412,7.236-14.832,11.412       c-3.456,4.212-5.4,6.228-5.148,13.68c0.252,7.668,6.048,31.68,6.84,31.356c0.72-0.432-3.276-25.848-2.844-33.624       c0.252-7.596,1.08-8.676,4.572-11.988c3.42-3.204,10.728-5.904,15.947-7.416C202.207,2.343,212.467,3.207,211.854,2.595z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M223.23,14.835c-0.539,0.468,2.916,7.092,3.42,11.412c0.289,4.392-1.764,10.44-1.152,14.256c0.648,3.96,4.068,9.18,4.572,8.568       c0.252-0.72-2.268-8.244-2.305-12.564c0-4.212,2.988-8.856,2.305-12.564C229.17,20.379,223.879,14.475,223.23,14.835z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M223.842,52.671c-0.215,0.216-0.756,3.96-1.043,6.084c-0.289,2.16,1.584,4.536-0.504,6.3c-2.232,1.8-11.736,3.888-12.133,4.32       c-0.287,0.576,6.984-0.396,9.865-1.26c2.699-0.72,5.65-1.908,6.336-3.564c0.539-1.62-2.484-3.96-2.809-6.048       C223.086,56.487,223.879,52.743,223.842,52.671z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M222.547,34.455c-1.369-0.288-7.092-0.072-7.596,0.504c-0.469,0.684,3.455,3.024,4.824,3.276c1.15,0.288,2.088-0.504,2.52-1.26       C222.727,36.435,223.734,34.815,222.547,34.455z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M203.574,35.967c-0.072-0.648-3.492-3.06-4.824-2.52c-1.475,0.756-2.951,3.132-3.023,6.3       c-0.107,3.204,2.268,12.852,2.809,12.42c0.432-0.432-0.648-11.808,0.215-14.688C199.578,34.779,203.502,36.723,203.574,35.967z       " fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M218.01,11.163c-0.576-0.144-3.275,5.652-6.84,8.1c-3.6,2.52-14.615,6.696-14.184,6.84c0.469,0.216,13.068-2.988,16.705-5.58       C217.111,17.967,218.371,11.559,218.01,11.163z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M137.407,159.015c-0.72,0.144,3.852,16.632,8.712,22.644c4.824,6.048,19.188,12.996,20.052,13.068       c0.684-0.252-10.98-7.956-15.696-13.932C145.542,174.747,138.126,158.871,137.407,159.015z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+          <path clip-rule="evenodd" d="       M185.323,69.267c0.036-0.792,3.024,6.696,5.22,8.712c1.944,2.088,3.348,2.232,6.985,3.492       c3.563,1.476,15.947,3.996,14.795,4.356c-1.225,0.324-17.279,0.144-21.78-2.628C185.97,80.427,185.25,70.275,185.323,69.267z" fill-rule="evenodd" i:knockout="Off" stroke="#000000" stroke-miterlimit="10" stroke-width="0.036"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

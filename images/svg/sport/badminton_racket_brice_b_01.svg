@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) --><svg height="1052.3622047" id="svg10612" inkscape:version="0.42.2" sodipodi:docbase="/home/bruce/ens" sodipodi:docname="badminton_racket_bw.svg" sodipodi:version="0.32" width="744.09448819" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg">
+  <metadata>
+    <rdf:RDF xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <cc:Work rdf:about="">
+        <dc:title>Badminton Racket</dc:title>
+        <dc:description></dc:description>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>racket</rdf:li>
+            <rdf:li>sports</rdf:li>
+            <rdf:li>badminton</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://www.openclipart.org/">
+            <dc:title>Open Clip Art Library</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Brice Boyer</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Brice Boyer</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date></dc:date>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://web.resource.org/cc/PublicDomain"/>
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/Distribution"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <defs id="defs10614"/>
+  <sodipodi:namedview bordercolor="#ffffff" borderopacity="0.0" id="base" inkscape:current-layer="layer1" inkscape:cx="-146.71177" inkscape:cy="770.87243" inkscape:document-units="px" inkscape:guide-bbox="true" inkscape:pageopacity="0.0" inkscape:pageshadow="0" inkscape:window-height="747" inkscape:window-width="1022" inkscape:window-x="0" inkscape:window-y="0" inkscape:zoom="0.98994949" pagecolor="#ffffff" showguides="true"/>
+  <g id="layer1" inkscape:groupmode="layer" inkscape:label="Layer 1">
+    <g id="g15173" transform="translate(-10.10153,-62.62945)">
+      <path d="M -235.98183,423.39031 C -239.97928,419.60413 -258.91078,401.53007 -270.25816,389.67012 C -282.80876,376.95939 -305.59193,350.81194 -316.89039,335.56244 C -350.65991,300.85960 -373.06203,280.93317 -407.39519,246.95072 C -414.94960,240.53276 -424.13636,229.13701 -433.62414,231.28573 C -456.64787,246.13296 -486.21504,252.48277 -511.75865,239.02676 C -543.53333,223.98248 -567.92923,193.00669 -575.07550,158.58757 C -578.09005,137.18499 -576.50230,112.92444 -559.85713,97.077868 C -539.71762,75.789795 -506.64031,74.390056 -480.38362,83.450702 C -464.97106,88.064256 -454.80000,95.880211 -443.79655,103.97907 C -419.23917,123.70868 -403.62229,153.97974 -408.35899,187.57479 C -412.50978,214.68188 -428.57515,215.78712 -417.45746,228.76660 C -382.94990,263.90357 -348.52836,298.09049 -313.19076,331.70849 C -297.58511,344.31226 -279.99114,355.16598 -266.37374,368.43956 C -259.84421,374.63427 -258.83849,375.69962 -250.55146,383.21933 C -241.26678,391.77289 -225.00259,404.86963 -219.64255,408.91152 C -208.31015,416.92213 -194.14038,424.62065 -204.18329,437.54679 C -216.45707,449.98098 -229.83464,430.96994 -235.98183,423.39031 z M -477.14288,240.86218 C -460.89064,239.57700 -439.41964,230.23431 -433.13779,219.05721 C -421.95613,210.77956 -417.06900,199.90279 -414.53236,187.14354 C -410.52838,170.85076 -414.64661,153.93497 -421.02941,139.35707 C -426.61379,127.70865 -436.75712,118.31296 -445.37452,108.95903 C -452.65448,104.11733 -456.07752,101.63924 -467.06416,94.773241 C -476.39134,90.489338 -481.51925,87.750687 -492.17453,85.271723 C -505.52109,82.120502 -521.40011,82.835472 -534.44969,87.605753 C -544.12727,90.896436 -552.00643,96.656436 -558.73536,104.60469 C -563.37774,112.29122 -569.16926,120.88570 -570.06069,131.86219 C -572.30788,146.18582 -570.09535,159.69894 -566.19516,172.16705 C -562.03988,182.97663 -554.37324,194.75446 -549.95935,200.42695 C -542.47632,208.11199 -538.88279,214.41821 -529.15693,221.31660 C -519.62805,230.27220 -508.37989,234.68449 -497.07989,238.82517 C -490.70870,240.02201 -483.46473,242.03059 -477.14288,240.86218 z M -418.59921,232.32187 C -427.17996,228.57257 -421.44114,209.55481 -428.72252,223.25101 C -442.30853,228.91862 -423.95763,224.76323 -418.59921,232.32187 z " id="path10767" sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccc" style="fill:#000000"/>
+      <path d="M -411.38462,188.68176 C -411.38462,188.76593 -411.38462,188.85011 -411.38462,188.68176 z " id="path10772" style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"/>
+      <path d="M -231.39713,403.70957 C -232.87460,411.39666 -236.28760,420.42026 -235.91034,417.75220 C -234.90724,410.65849 -234.50760,410.30355 -231.39713,403.70957 z " id="path10807" sodipodi:nodetypes="csc" style="fill:#ffffff;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"/>
+      <path d="M -241.81149,393.50837 C -243.61755,401.86391 -247.78959,411.67218 -247.32842,408.77211 C -246.10224,401.06155 -245.61372,400.67575 -241.81149,393.50837 z " id="path11535" sodipodi:nodetypes="csc" style="fill:#ffffff;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"/>
+      <path d="M -253.93332,382.45761 C -255.73938,390.81315 -259.91142,400.62142 -259.45025,397.72135 C -258.22407,390.01079 -257.73555,389.62499 -253.93332,382.45761 z " id="path11537" sodipodi:nodetypes="csc" style="fill:#ffffff;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"/>
+      <path d="M -265.93332,370.45761 C -267.73938,378.81315 -271.91142,388.62142 -271.45025,385.72135 C -270.22407,378.01079 -269.73555,377.62499 -265.93332,370.45761 z " id="path11539" sodipodi:nodetypes="csc" style="opacity:1.0000000;color:#000000;fill:#ffffff;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;visibility:visible;display:inline;overflow:visible"/>
+      <path d="M -277.28865,361.35481 C -278.60183,368.64082 -281.63531,377.19362 -281.30000,374.66476 C -280.40844,367.94117 -280.05324,367.60475 -277.28865,361.35481 z " id="path11541" sodipodi:nodetypes="csc" style="fill:#ffffff;fill-opacity:1.0000000;fill-rule:nonzero;stroke:none;stroke-width:1.0000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"/>
+    </g>
+  </g>
+</svg>

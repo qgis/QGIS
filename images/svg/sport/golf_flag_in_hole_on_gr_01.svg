@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) --><svg height="297mm" id="svg2" inkscape:version="0.40+cvs" sodipodi:docbase="C:\Documents and Settings\andrewz\Desktop" sodipodi:docname="golf.svg" sodipodi:version="0.32" width="210mm" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg">
+  <metadata>
+    <rdf:RDF xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <cc:Work rdf:about="">
+        <dc:title>Golf flag in hole on green</dc:title>
+        <dc:description></dc:description>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>green</rdf:li>
+            <rdf:li>sports</rdf:li>
+            <rdf:li>golf</rdf:li>
+            <rdf:li>flag</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://www.openclipart.org">
+            <dc:title>Open Clip Art Library</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Andrew Z</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Andrew Z</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date></dc:date>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://web.resource.org/cc/PublicDomain"/>
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/Distribution"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <defs id="defs3">
+    <marker id="Dot_l" inkscape:stockid="Dot_l" orient="auto" refX="0.0" refY="0.0" style="overflow:visible">
+      <path d="M -2.5,-1.0 C -2.5,1.7600000 -4.7400000,4.0 -7.5,4.0 C -10.260000,4.0 -12.5,1.7600000 -12.5,-1.0 C -12.5,-3.7600000 -10.260000,-6.0 -7.5,-6.0 C -4.7400000,-6.0 -2.5,-3.7600000 -2.5,-1.0 z " id="path41" style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;marker-end:none" transform="scale(0.8) translate(7.125493, 1)"/>
+    </marker>
+    <marker id="Arrow1Lstart" inkscape:stockid="Arrow1Lstart" orient="auto" refX="0.0" refY="0.0" style="overflow:visible">
+      <path d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z " id="path3701" sodipodi:nodetypes="ccccc" style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none" transform="scale(0.8)"/>
+    </marker>
+  </defs>
+  <sodipodi:namedview bordercolor="#666666" borderopacity="1.0" id="base" inkscape:current-layer="layer1" inkscape:cx="375.00002" inkscape:cy="775.97537" inkscape:document-units="px" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="721" inkscape:window-width="1024" inkscape:window-x="-4" inkscape:window-y="-4" inkscape:zoom="0.70710678" pagecolor="#ffffff"/>
+  <g id="layer1" inkscape:groupmode="layer" inkscape:label="Layer 1">
+    <path d="M 28.571429,585.21933 C 382.85714,352.36219 232.85713,560.93362 510.00000,586.64790" id="path1291" sodipodi:nodetypes="cc" style="stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000;stroke-linejoin:miter;stroke-linecap:butt;stroke-width:7.4000000;stroke:#000000;fill-rule:evenodd;fill-opacity:0.37297297;fill:#00ff00"/>
+    <path d="M 257.16768,478.93362 C 257.16768,63.222302 257.16768,63.222302 257.16768,63.222302" id="path2060" style="stroke-miterlimit:4.0000000;stroke-dasharray:none;stroke-opacity:1.0000000;stroke-linejoin:miter;stroke-linecap:round;stroke-width:10.000000;stroke:#000000;fill-rule:evenodd;fill-opacity:0.75000000;fill:none"/>
+    <path d="M 258.00000,64.362183 C 304.00000,117.36218 417.00000,106.36218 479.00000,99.362180 C 417.00000,226.36218 258.00000,202.86218 258.00000,202.86218" id="path2062" sodipodi:nodetypes="ccc" style="fill:#ff0000;fill-opacity:0.35135135;fill-rule:evenodd;stroke:#000000;stroke-width:4.0000000;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1.0000000;stroke-dasharray:none;stroke-miterlimit:4.0000000;marker-start:none"/>
+  </g>
+</svg>
