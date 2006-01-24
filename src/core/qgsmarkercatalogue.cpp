@@ -86,8 +86,9 @@ QgsMarkerCatalogue *QgsMarkerCatalogue::instance()
 
 QPixmap QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrush brush, bool qtBug )
 {
-    //std::cerr << "QgsMarkerCatalogue::marker" << std::endl;
-    if ( fullName.left(5) == "hard:" ) {
+    //std::cerr << "QgsMarkerCatalogue::marker " << fullName.toLocal8Bit().data() << " sice:" << size << std::endl;
+    if ( fullName.left(5) == "hard:" ) 
+    {
         QPicture myPicture = hardMarker ( fullName.mid(5), size, pen, brush, qtBug ); 
         QPixmap myPixmap = QPixmap (myPicture.width(),myPicture.height());
         myPixmap.fill(QColor(255,255,255,0)); //transparent
@@ -103,11 +104,7 @@ QPixmap QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrus
 
 QPixmap QgsMarkerCatalogue::svgMarker ( QString name, int s)
 {
-	QPixmap pixmap = QgsSVGCache::instance().getPixmap(name,1.);
-	
-	double scale = 1. * s / ( ( pixmap.width() + pixmap.height() ) / 2 ) ;
-	
-	pixmap = QgsSVGCache::instance().getPixmap(name,scale);
+	QPixmap pixmap = QgsSVGCache::instance().getPixmap(name,s);
 
     return pixmap;
 }

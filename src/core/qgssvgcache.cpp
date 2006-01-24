@@ -66,7 +66,6 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor)
 {
   
   // make the symbols smaller
-  scaleFactor *= 0.30;
   std::pair<QString, double> myPair(filename, scaleFactor) ;
   PixmapMap::iterator i = pixmapMap.find(myPair);
   while (i != pixmapMap.end()) 
@@ -81,11 +80,14 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor)
 #endif
   QSvgRenderer mySVG;
   mySVG.load(filename);
+  
+  // TODO Change this logic so width is scaleFactor and height is same
+  // proportion of scale factor as in oritignal SVG TS XXX
+  /*
   int width=mySVG.defaultSize().width();
   width=static_cast<int>(static_cast<double>(width)*scaleFactor);
   int height=mySVG.defaultSize().height();
   height=static_cast<int>(static_cast<double>(height)*scaleFactor);
-  
   //prevent 0 width or height, which would cause a crash
   if (width == 0) {
     width = 1;
@@ -93,8 +95,11 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor)
   if (height == 0) {
     height = 1;
   }
+  */
+  if (scaleFactor < 1) scaleFactor=1;
   
-  QPixmap myPixmap = QPixmap(width,height);
+  //QPixmap myPixmap = QPixmap(width,height);
+  QPixmap myPixmap = QPixmap(scaleFactor,scaleFactor);
   myPixmap.fill(QColor(255,255,255,0)); //transparent
   QPainter myPainter(&myPixmap);
   myPainter.setRenderHint(QPainter::Antialiasing);
