@@ -1,0 +1,26 @@
+QGTOP=../../..
+
+DLL=qgis_projsel.dll
+
+all: libs $(DLL)
+
+libs:
+	$(MAKE) -f Makefile libqgsprojectionselector.la
+
+$(DLL):
+	$(CXX) -shared -o $(DLL) \
+		-Wl,--out-implib=lib$(DLL).a \
+		-Wl,--export-all-symbols \
+		-Wl,--enable-auto-import \
+		-Wl,--whole-archive .libs/libqgsprojectionselector.a \
+		-Wl,--no-whole-archive \
+			$(CORE_A) \
+			-lsqlite3 \
+			$(QT_LDADD) \
+			-lmingw32
+	$(STRIP) $@
+
+install: all
+	$(INSTALL) -m 755 $(DLL) $(prefix)/bin/$(DLL)
+
+include $(QGTOP)/Makefile.win.rules
