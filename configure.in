@@ -457,6 +457,7 @@ AC_CONFIG_FILES([
   images/svg/Makefile
   images/svg/north_arrows/Makefile
   images/svg/symbol/Makefile
+  images/svg/sport/Makefile
   images/themes/default/Makefile
   images/themes/Makefile
   images/themes/nkids/Makefile

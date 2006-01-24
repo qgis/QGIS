@@ -8,6 +8,10 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
-# $Id$
+# $Id: Makefile.am 1249 2004-04-23 14:17:01Z jobi $
 
-SUBDIRS = icon symbol geometric biology north_arrows gpsicons sport
+svgdir = ${pkgdatadir}/svg/sport
+
+svg_DATA = *.svg
+
+EXTRA_DIST = $(svg_DATA)

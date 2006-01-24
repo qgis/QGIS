@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!-- Created with Inkscape (http://www.inkscape.org/) --><svg height="297mm" id="svg1" inkscape:version="0.40" sodipodi:docbase="/home/cgoerner/workspace/openclipart" sodipodi:docname="cricket-bat.svg" sodipodi:version="0.32" width="210mm" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <metadata>
+    <rdf:RDF xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <cc:Work rdf:about="">
+        <dc:title>Cricket Bat</dc:title>
+        <dc:description></dc:description>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li></rdf:li>
+            <rdf:li>sports</rdf:li>
+            <rdf:li>cricket</rdf:li>
+            <rdf:li>recreation</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://www.openclipart.org">
+            <dc:title>Chris Goerner</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Chris Goerner</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Chris Goerner</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:date></dc:date>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://web.resource.org/cc/PublicDomain"/>
+        <dc:language>en</dc:language>
+      </cc:Work>
+      <cc:License rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits rdf:resource="http://web.resource.org/cc/Reproduction"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/Distribution"/>
+        <cc:permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <defs id="defs3">
+    <linearGradient id="linearGradient1738">
+      <stop id="stop1739" offset="0.0000000" style="stop-color:#ca3030;stop-opacity:1.0000000;"/>
+      <stop id="stop1740" offset="1.0000000" style="stop-color:#a52727;stop-opacity:1.0000000;"/>
+    </linearGradient>
+    <linearGradient id="linearGradient1734">
+      <stop id="stop1735" offset="0.0000000" style="stop-color:#826b35;stop-opacity:1.0000000;"/>
+      <stop id="stop1737" offset="0.50000000" style="stop-color:#bfad62;stop-opacity:1.0000000;"/>
+      <stop id="stop1736" offset="1.0000000" style="stop-color:#b1a855;stop-opacity:1.0000000;"/>
+    </linearGradient>
+    <linearGradient gradientTransform="matrix(0.503640,0.153907,-0.554940,1.815962,268.7479,30.13204)" gradientUnits="userSpaceOnUse" id="linearGradient1733" inkscape:collect="always" x1="284.05496" x2="622.53253" xlink:href="#linearGradient1734" y1="298.13403" y2="345.06760"/>
+    <linearGradient gradientTransform="matrix(0.347622,0.106230,-0.804006,2.630995,271.1388,30.86267)" gradientUnits="userSpaceOnUse" id="linearGradient1741" inkscape:collect="always" x1="611.54202" x2="729.05195" xlink:href="#linearGradient1738" y1="125.26135" y2="125.26135"/>
+  </defs>
+  <sodipodi:namedview bordercolor="#666666" borderopacity="1.0" id="base" inkscape:current-layer="svg1" inkscape:cx="192.03153" inkscape:cy="484.73340" inkscape:guide-bbox="true" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="696" inkscape:window-width="1024" inkscape:window-x="0" inkscape:window-y="25" inkscape:zoom="0.30699632" pagecolor="#ffffff" showguides="true"/>
+  <g id="layer1" inkscape:groupmode="layer" inkscape:label="Layer 1"/>
+  <g id="layer2" inkscape:groupmode="layer" inkscape:label="kjh"/>
+  <path d="M 321.46162,484.58939 L 363.83077,481.73150 L 403.15916,493.74987 L 440.22706,520.88294 L 318.85189,918.06570 C 297.52507,919.35400 277.50783,927.43996 255.39730,920.20972 C 229.07586,912.26331 218.34811,895.15830 200.08646,881.77215 L 321.46162,484.58939 z " id="rect1104" sodipodi:nodetypes="cccccccc" style="fill:url(#linearGradient1733);fill-opacity:1.0000000;stroke:#473b18;stroke-width:1.0000000pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"/>
+  <path d="M 430.66258,271.57585 L 470.33012,283.69786 L 405.96122,494.33583 L 356.37863,585.62354 L 366.29367,482.21382 L 430.66258,271.57585 z " id="rect1106" sodipodi:nodetypes="cccccc" style="fill:url(#linearGradient1741);fill-opacity:1.0000000;stroke:#7b0505;stroke-width:0.98828926pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000"/>
+  <path d="M 263.08085 183.76350 A 19.074261 13.495939 0 1 1  224.93233,183.76350 A 19.074261 13.495939 0 1 1  263.08085 183.76350 z" id="path1108" sodipodi:cx="244.00659" sodipodi:cy="183.76350" sodipodi:rx="19.074261" sodipodi:ry="13.495939" sodipodi:type="arc" style="fill:#bd1e1e;fill-opacity:1.0000000;stroke:#810404;stroke-width:1.0000000pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" transform="matrix(1.042164,0.318475,-0.229092,0.749672,238.5056,61.47454)"/>
+</svg>
