@@ -1,7 +1,7 @@
 QGTOP=../../
 
 #LDADD = $(QGIS_LIBS)
-LDADD = $(GUI_DLL) $(RASTER_DLL) $(LEGEND_DLL) $(COMPOSER_A) \
+LDADD = $(GUI_DLL) $(RASTER_DLL) $(LEGEND_DLL) $(COMPOSER_DLL) \
 	$(PROJSEL_DLL) \
         $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) -lproj -lsqlite3 \
         $(QT_LDADD) -lwsock32
