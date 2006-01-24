@@ -1,21 +1,44 @@
 QGTOP=../../../
 
-LDADD = .libs/libqgisgrass.a $(PLUGIN_LIBS) $(GRASS_LIB)
-
 OBJECTS = grassprovider_la-provider.o
+
+GRASS_DLL = .libs/qgis_grass.dll
 
 PROVIDER = .libs/grassprovider.dll
 
-all: objects $(PROVIDER)
+all: objects $(GRASS_DLL) $(PROVIDER)
 
 objects:
 	$(MAKE) -f Makefile 
 
+$(GRASS_DLL): 
+	$(CXX) -shared -o $(GRASS_DLL) \
+		-Wl,--out-implib=.libs/libqgis_grass.dll.a \
+		-Wl,--export-all-symbols \
+		-Wl,--enable-auto-import \
+		-Wl,--whole-archive .libs/libqgisgrass.a \
+		-Wl,--no-whole-archive \
+			$(CORE_A) $(GUI_A) $(CORE_A) \
+			$(GRASS_LIB) \
+			$(QT_LDADD) \
+			-lwsock32 -lmingw32
+	$(STRIP) $@ 
+
 $(PROVIDER): $(OBJECTS)
-	$(CXX) -shared -o  $@ $(OBJECTS) $(LDADD)
+	$(CXX) -shared -o $@ \
+		-Wl,--export-all-symbols \
+		-Wl,--enable-auto-import \
+		-Wl,--whole-archive grassprovider_la-provider.o \
+		-Wl,--no-whole-archive \
+			.libs/libqgisgrass.a \
+			$(CORE_A) $(GUI_A) $(CORE_A) \
+			$(GRASS_LIB) \
+			$(QT_LDADD) \
+			-lwsock32 -lmingw32
 	$(STRIP) $@ 
 
 install: all
+	$(INSTALL) -m 755 $(GRASS_DLL) $(prefix)/bin/qgis_grass.dll
 	$(INSTALL) -m 755 $(PROVIDER) $(prefix)/lib/qgis/grassprovider.dll
 
 include ../../../Makefile.win.rules
