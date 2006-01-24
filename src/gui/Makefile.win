@@ -1,16 +1,35 @@
 QGTOP=../../
 
-LDADD = $(QGIS_LIBS)
+#LDADD = $(QGIS_LIBS)
+LDADD = $(GUI_DLL) $(RASTER_DLL) $(LEGEND_DLL) $(COMPOSER_A) \
+	$(PROJSEL_DLL) \
+        $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD) -lproj -lsqlite3 \
+        $(QT_LDADD) -lwsock32
+
+DLL=qgis_gui.dll
 
 OBJECTS = qgis-main.o
 
-all: libs objects qgis.exe
+all: libs $(DLL) objects qgis.exe
 
 objects:
 	$(MAKE) -f Makefile qgis-main.o
 
 libs:
 	$(MAKE) -f Makefile libqgis_gui.la
+
+$(DLL):
+	$(CXX) -shared -o $(DLL) \
+		-Wl,--out-implib=lib$(DLL).a \
+		-Wl,--export-all-symbols \
+		-Wl,--enable-auto-import \
+		-Wl,--whole-archive .libs/libqgis_gui.a \
+		-Wl,--no-whole-archive \
+			$(CORE_A) $(COMPOSER_A) $(LEGEND_A) $(RASTER_A) \
+			$(GUI_A)  $(PROJSEL_A) \
+			-lsqlite3 -lgeos -lproj -lgdal \
+			$(QT_LDADD) \
+			-lwsock32 -lmingw32
 	
 qgis.exe:
 	$(CXX) -o $@ $(OBJECTS) $(LDADD)
@@ -18,5 +37,6 @@ qgis.exe:
 
 install: all
 	$(INSTALL) -m 755 qgis.exe $(prefix)/bin/qgis.exe
+	$(INSTALL) -m 755 $(DLL) $(prefix)/bin/$(DLL)
 
-include ../../Makefile.win.rules
+include $(QGTOP)/Makefile.win.rules
