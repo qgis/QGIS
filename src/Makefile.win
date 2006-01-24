@@ -1,11 +1,23 @@
+# We have to run first standard build system (stdsubdirs) which 
+# creates static libraries (.libs/libqgis_xxx.a)
+# then we run win32 specific makefiles which generates DLL
+
 STDSUBDIRS = core ui legend raster composer widgets helpviewer
 #providers plugins
 
-WINSUBDIRS = gui
+WINSUBDIRS = core legend raster composer \
+	     widgets/projectionselector gui
 
-all: stdsubdirs winsubdirs
+all: stdsubdirs guilib winsubdirs
+
+guilib:
+	$(MAKE) -C gui -f Makefile libqgis_gui.la
 
 install: all
-	$(MAKE) -C gui -f Makefile.win install
+	@list='$(WINSUBDIRS)'; \
+	for subdir in $$list; do \
+	    echo $$subdir ; \
+	    $(MAKE) -C $$subdir -f Makefile.win install ; \
+	done
 
 include ../Makefile.win.rules
