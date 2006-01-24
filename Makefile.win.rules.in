@@ -6,17 +6,28 @@ prefix = @prefix@
 QT_LDADD = @QT_LDADD@
 
 GDAL_LDADD = @GDAL_LDADD@
+#GDAL_LDADD = -lgdal
 GEOS_LDADD = @GEOS_LDADD@
 GRASS_LIB = @GRASS_LIB@
 PROJ_LIB = @PROJ_LIB@
 
+
+RASTER_A = $(QGTOP)/src/raster/.libs/libqgis_raster.a
+COMPOSER_A = $(QGTOP)/src/composer/.libs/libqgis_composer.a
+PROJSEL_A = $(QGTOP)/src/widgets/projectionselector/.libs/libqgsprojectionselector.a
+CORE_A = $(QGTOP)/src/core/.libs/libqgis_core.a
+LEGEND_A = $(QGTOP)/src/legend/.libs/libqgis_legend.a
+GUI_A = $(QGTOP)/src/gui/.libs/libqgis_gui.a
+
+RASTER_DLL = -L $(QGTOP)/src/raster/ -lqgis_raster
+COMPOSER_DLL = -L $(QGTOP)/src/composer/ -lqgis_composer
+PROJSEL_DLL = -L $(QGTOP)/src/widgets/projectionselector/ -lqgis_projsel.dll
+CORE_DLL = -L $(QGTOP)/src/core/ -lqgis_core
+LEGEND_DLL = -L $(QGTOP)/src/legend/ -lqgis_legend
+GUI_DLL = -L $(QGTOP)/src/gui -lqgis_gui
+
 # The order is significant
-QGLIBS = $(QGTOP)/src/raster/.libs/libqgis_raster.a \
-      $(QGTOP)/src/composer/.libs/libqgis_composer.a \
-      $(QGTOP)/src/widgets/projectionselector/.libs/libqgsprojectionselector.a \
-      $(QGTOP)/src/core/.libs/libqgis_core.a \
-      $(QGTOP)/src/legend/.libs/libqgis_legend.a \
-      $(QGTOP)/src/gui/.libs/libqgis_gui.a 
+QGLIBS = $(RASTER_A) $(COMPOSER_A) $(PROJSEL_A) $(CORE_A) $(LEGEND_A) $(GUI_A)
 
 # For qgis.exe the QGIS libs must be twice because of circular references
 QGIS_LIBS = $(QGLIBS) $(QGLIBS) \
