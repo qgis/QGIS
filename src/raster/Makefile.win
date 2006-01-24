@@ -1,0 +1,27 @@
+QGTOP=../../
+
+DLL=qgis_raster.dll
+
+all: libs $(DLL)
+
+libs:
+	$(MAKE) -f Makefile libqgis_raster.la
+
+$(DLL):
+	$(CXX) -shared -o $(DLL) \
+		-Wl,--out-implib=lib$(DLL).a \
+		-Wl,--export-all-symbols \
+		-Wl,--enable-auto-import \
+		-Wl,--whole-archive .libs/libqgis_raster.a /gene0/ssi/blazek/win/i586-mingw32msvc/lib/libgdal.a \
+		-Wl,--no-whole-archive \
+			$(GUI_A) $(CORE_A) $(LEGEND_A) $(PROJSEL_A) \
+			$(GUI_A) $(CORE_A) $(COMPOSER_A) $(GUI_A) \
+			$(GDAL_LDADD) -lproj -lsqlite3 \
+			$(QT_LDADD) \
+			-lwsock32 -lmingw32
+	$(STRIP) $@
+
+install: all
+	$(INSTALL) -m 755 $(DLL) $(prefix)/bin/$(DLL)
+
+include $(QGTOP)/Makefile.win.rules

@@ -1,0 +1,25 @@
+QGTOP=../../
+
+DLL=qgis_composer.dll
+
+all: libs $(DLL)
+
+libs:
+	$(MAKE) -f Makefile libqgis_composer.la
+
+$(DLL):
+	$(CXX) -shared -o $(DLL) \
+		-Wl,--out-implib=lib$(DLL).a \
+		-Wl,--export-all-symbols \
+		-Wl,--enable-auto-import \
+		-Wl,--whole-archive .libs/libqgis_composer.a \
+		-Wl,--no-whole-archive \
+			$(CORE_A) \
+			$(QT_LDADD) \
+			-lmingw32
+	$(STRIP) $@
+
+install: all
+	$(INSTALL) -m 755 $(DLL) $(prefix)/bin/$(DLL)
+
+include $(QGTOP)/Makefile.win.rules
