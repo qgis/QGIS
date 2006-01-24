@@ -37,10 +37,11 @@ QGIS_LIBS = $(QGLIBS) $(QGLIBS) \
 
 # And for plugins even 3 times (maybe it would be possible to save 
 # something changing the order?) 
-PLUGIN_LIBS = $(QGLIBS) $(QGLIBS) $(QGLIBS) \
-      $(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD)  \
-      -lproj -lsqlite3 \
-      $(QT_LDADD) -lwsock32
+PLUGIN_LIBS =   $(GUI_DLL) $(RASTER_DLL) $(LEGEND_DLL) \
+		$(COMPOSER_DLL) $(PROJSEL_DLL) \
+      		$(GDAL_LDADD) $(PG_LIB) $(GEOS_LDADD)  \
+      		-lproj -lsqlite3 \
+      		$(QT_LDADD) -lwsock32
 
 # Rule for subdirs using standard build system (make -f Makefile)
 stdsubdirs:
