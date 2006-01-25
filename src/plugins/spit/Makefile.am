@@ -22,10 +22,17 @@ bin_PROGRAMS = spit
 ui_%.h: %.ui 
 	$(UIC) -o $@ $<
 
+%.qrc.cpp: %.qrc
+	$(RCC) -o $@ $<
+
 spit_MOC = qgsspit.moc.cpp \
 	qgsshapefile.moc.cpp \
-	qgseditreservedwordsdialog.moc.cpp 
+	qgseditreservedwordsdialog.moc.cpp \
+	qgsconnectiondialog.moc.cpp
 
+spit_RES = spit.qrc.cpp
+
+spit_QRC = spit.qrc
 
 spitplugin_la_MOC = $(spit_MOC) qgsspitplugin.moc.cpp
 
@@ -46,7 +53,9 @@ common_sources =  qgsspit.cpp \
 	qgsshapefile.h \
 	qgseditreservedwordsdialog.h \
 	qgseditreservedwordsdialog.cpp \
-	$(spit_UI)
+	$(spit_UI) \
+	$(spit_QRC) \
+	$(spit_RES)
 
 spitplugin_la_SOURCES =  $(common_sources) \
 	qgsspitplugin.cpp \

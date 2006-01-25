@@ -21,18 +21,10 @@
 // includes
 #include <iostream>
 #include <vector>
+
+#include <QAction>
+
 #include "qgisapp.h"
-
-#include <q3toolbar.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <q3popupmenu.h>
-#include <qlineedit.h>
-#include <qaction.h>
-#include <qapplication.h>
-#include <qcursor.h>
-#include <qglobal.h>
-
 #include "qgsspitplugin.h"
 #include "qgsspit.h"
 // xpm for creating the toolbar icon
@@ -77,15 +69,15 @@ QgsSpitPlugin::~QgsSpitPlugin()
 void QgsSpitPlugin::initGui()
 {
     QMenu *pluginMenu = qI->getPluginMenu("&Spit");
-    menuId = pluginMenu->insertItem(QIcon(spitIcon),"&Import Shapefiles to PostgreSQL", this, SLOT(spit()));
+    menuId = pluginMenu->insertItem(QIcon(spitIcon),tr("&Import Shapefiles to PostgreSQL"), this, SLOT(spit()));
 
-    pluginMenu->setWhatsThis(menuId,"Import shapefiles into a PostGIS-enabled PostgreSQL database. "
-        "The schema and field names can be customized on import"); 
+    pluginMenu->setWhatsThis(menuId,tr("Import shapefiles into a PostGIS-enabled PostgreSQL database. "
+        "The schema and field names can be customized on import")); 
 
      // Create the action for tool
-    spitAction = new QAction(QIcon(spitIcon), "Import Shapefiles to PostgreSQL", this);
-    spitAction->setWhatsThis("Import shapefiles into a PostGIS-enabled PostgreSQL database. "
-        "The schema and field names can be customized on import"); 
+    spitAction = new QAction(QIcon(spitIcon), tr("Import Shapefiles to PostgreSQL"), this);
+    spitAction->setWhatsThis(tr("Import shapefiles into a PostGIS-enabled PostgreSQL database. "
+        "The schema and field names can be customized on import")); 
     // Connect the action to the spit slot
     connect(spitAction, SIGNAL(activated()), this, SLOT(spit()));
      // Add the icon to the toolbar

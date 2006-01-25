@@ -1,5 +1,8 @@
 #ifndef QGSEDITRESERVEDWORDSDIALOG_H
 #define QGSEDITRESERVEDWORDSDIALOG_H
+
+// $Id:$
+
 #include "ui_qgseditreservedwordsbase.h"
 #include "qgisgui.h"
 class QgsEditReservedWordsDialog : public QDialog, private Ui::QgsEditReservedWordsBase
@@ -14,10 +17,12 @@ public:
     //! Set the description displayed in the dialog
     void setDescription(const QString &description);
 public slots:
-    void checkWord(Q3ListViewItem *, int , const QString&);
-    void editWord(Q3ListViewItem *);
+    void checkWord(QTableWidgetItem *);
 
-
+    void on_buttonOk_clicked()     { done(1); }
+    void on_buttonCancel_clicked() { done(1); }
+    void on_buttonHelp_clicked() {};
+    void on_lvColumns_itemChanged(QTableWidgetItem* item) { checkWord(item); }
 
 };
 #endif //QGSEDITRESERVEDWORDSDIALOG_H

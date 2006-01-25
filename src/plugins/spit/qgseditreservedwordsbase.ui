@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>343</width>
-    <height>351</height>
+    <width>497</width>
+    <height>468</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -20,15 +20,27 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
    <item row="1" column="0" >
-    <widget class="Q3ListView" name="lvColumns" >
-     <property name="defaultRenameAction" >
-      <enum>Q3ListView::Accept</enum>
+    <widget class="QTableWidget" name="lvColumns" >
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="toolTip" >
+      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Double click the Column Name column to change the name of the column.&lt;/p>&lt;/body>&lt;/html></string>
+     </property>
+     <property name="selectionMode" >
+      <enum>QAbstractItemView::NoSelection</enum>
+     </property>
+     <property name="selectionBehavior" >
+      <enum>QAbstractItemView::SelectRows</enum>
      </property>
      <column>
       <property name="text" >
@@ -37,7 +49,7 @@
      </column>
      <column>
       <property name="text" >
-       <string>Column name</string>
+       <string>Column Name</string>
       </property>
      </column>
      <column>
@@ -45,22 +57,6 @@
        <string>Index</string>
       </property>
      </column>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="2" >
-    <widget class="Q3TextEdit" name="txtExplanation" >
-     <property name="maximumSize" >
-      <size>
-       <width>32676</width>
-       <height>75</height>
-      </size>
-     </property>
-     <property name="text" >
-      <string>This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used. You may also change any column name if desired.</string>
-     </property>
-     <property name="readOnly" >
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
    <item row="2" column="0" colspan="2" >
@@ -131,24 +127,56 @@
      </item>
     </layout>
    </item>
+   <item row="0" column="0" colspan="2" >
+    <widget class="QTextEdit" name="txtExplanation" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize" >
+      <size>
+       <width>16777215</width>
+       <height>101</height>
+      </size>
+     </property>
+     <property name="readOnly" >
+      <bool>true</bool>
+     </property>
+     <property name="html" >
+      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used (double click the Column Name column to edit). You may also change any column name if desired.&lt;/p>&lt;/body>&lt;/html></string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="1" >
-    <widget class="Q3GroupBox" name="groupBox1" >
+    <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
       <string>Reserved Words</string>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
-       <number>10</number>
+       <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
       <item row="0" column="0" >
-       <widget class="Q3ListBox" name="lstReservedWords" >
+       <widget class="QListWidget" name="lstReservedWords" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>7</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="maximumSize" >
          <size>
-          <width>120</width>
-          <height>32767</height>
+          <width>140</width>
+          <height>16777215</height>
          </size>
         </property>
        </widget>
@@ -160,36 +188,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends></extends>
-   <header>q3listview.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends></extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends></extends>
-   <header>q3textedit.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListBox</class>
-   <extends></extends>
-   <header>q3listbox.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

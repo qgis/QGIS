@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>689</width>
-    <height>484</height>
+    <width>662</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="baseSize" >
@@ -26,7 +26,7 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
@@ -43,7 +43,7 @@
      </property>
      <property name="font" >
       <font>
-       <family></family>
+       <family>Sans Serif</family>
        <pointsize>20</pointsize>
        <weight>50</weight>
        <italic>false</italic>
@@ -60,81 +60,25 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="3" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="btnHelp" >
-       <property name="text" >
-        <string>Help</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>361</width>
-         <height>21</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnImport" >
-       <property name="toolTip" >
-        <string>Import the defined shapefiles to PostGIS</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Import the defined shapefiles to PostGIS</string>
-       </property>
-       <property name="text" >
-        <string>Import</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnQuit" >
-       <property name="text" >
-        <string>Close</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item rowspan="3" row="0" column="0" >
-    <widget class="QLabel" name="pixmapLabel1" >
-     <property name="pixmap" >
-      <pixmap/>
-     </property>
-     <property name="scaledContents" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="2" >
-    <widget class="Q3GroupBox" name="groupBox1" >
+    <widget class="QGroupBox" name="groupBox_2" >
      <property name="title" >
       <string>Shapefile List</string>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
-       <number>10</number>
+       <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
+      <item row="5" column="0" >
+       <widget class="QTableWidget" name="tblShapefiles" >
+        <property name="selectionBehavior" >
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0" >
        <layout class="QHBoxLayout" >
         <property name="margin" >
@@ -200,89 +144,8 @@
         </item>
        </layout>
       </item>
-      <item row="5" column="0" >
-       <widget class="Q3Table" name="tblShapefiles" >
-        <property name="numRows" >
-         <number>0</number>
-        </property>
-        <property name="numCols" >
-         <number>5</number>
-        </property>
-        <property name="showGrid" >
-         <bool>true</bool>
-        </property>
-        <property name="readOnly" >
-         <bool>false</bool>
-        </property>
-        <property name="selectionMode" >
-         <enum>Q3Table::MultiRow</enum>
-        </property>
-        <property name="focusStyle" >
-         <enum>Q3Table::FollowStyle</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" >
-       <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item>
-         <spacer>
-          <property name="orientation" >
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType" >
-           <enum>QSizePolicy::Expanding</enum>
-          </property>
-          <property name="sizeHint" >
-           <size>
-            <width>140</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" >
-          <property name="margin" >
-           <number>0</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="textLabel1_4" >
-            <property name="text" >
-             <string>Global Schema</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="cmbSchema" >
-            <property name="minimumSize" >
-             <size>
-              <width>200</width>
-              <height>24</height>
-             </size>
-            </property>
-            <property name="toolTip" >
-             <string/>
-            </property>
-            <property name="duplicatesEnabled" >
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-      <item row="3" column="0" >
-       <widget class="Line" name="line3" >
+      <item row="1" column="0" >
+       <widget class="Line" name="line1" >
         <property name="frameShape" >
          <enum>QFrame::HLine</enum>
         </property>
@@ -416,8 +279,8 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="0" >
-       <widget class="Line" name="line1" >
+      <item row="3" column="0" >
+       <widget class="Line" name="line3" >
         <property name="frameShape" >
          <enum>QFrame::HLine</enum>
         </property>
@@ -429,17 +292,76 @@
         </property>
        </widget>
       </item>
+      <item row="4" column="0" >
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>140</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="textLabel1_4" >
+            <property name="text" >
+             <string>Global Schema</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cmbSchema" >
+            <property name="minimumSize" >
+             <size>
+              <width>200</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="toolTip" >
+             <string/>
+            </property>
+            <property name="duplicatesEnabled" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
    </item>
    <item row="1" column="2" >
-    <widget class="Q3GroupBox" name="groupBox8" >
+    <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
       <string>PostgreSQL Connections</string>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
-       <number>10</number>
+       <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
@@ -516,6 +438,69 @@
      </layout>
     </widget>
    </item>
+   <item row="3" column="0" colspan="3" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="btnHelp" >
+       <property name="text" >
+        <string>Help</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>361</width>
+         <height>21</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnImport" >
+       <property name="toolTip" >
+        <string>Import the defined shapefiles to PostGIS</string>
+       </property>
+       <property name="whatsThis" >
+        <string>Import the defined shapefiles to PostGIS</string>
+       </property>
+       <property name="text" >
+        <string>Import</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnQuit" >
+       <property name="text" >
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item rowspan="3" row="0" column="0" >
+    <widget class="QLabel" name="pixmapLabel1" >
+     <property name="pixmap" >
+      <pixmap resource="spit.qrc" >:/spit.png</pixmap>
+     </property>
+     <property name="scaledContents" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
    <item rowspan="3" row="0" column="1" >
     <widget class="Line" name="line12" >
      <property name="frameShape" >
@@ -533,22 +518,8 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends></extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3Table</class>
-   <extends></extends>
-   <header>q3table.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
- <resources/>
+ <resources>
+  <include location="spit.qrc" />
+ </resources>
  <connections/>
 </ui>
