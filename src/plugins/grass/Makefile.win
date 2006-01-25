@@ -22,7 +22,12 @@ $(PLUGIN): $(OBJECTS)
 
 #			../../providers/grass/.libs/libqgisgrass.a \
 
-install: all
+install: all 
 	$(INSTALL) -m 755 $(PLUGIN) $(prefix)/lib/qgis/grassplugin.dll
+	$(MAKE) -C themes install
+	$(MAKE) -C modules install
+	$(MAKE) -C config install
+	$(INSTALL) -m 755 images/world.png $(prefix)/share/qgis/grass
+	$(INSTALL) -m 755 locations.gml $(prefix)/share/qgis/grass
 
-include ../../../Makefile.win.rules
+include $(QGTOP)/Makefile.win.rules
