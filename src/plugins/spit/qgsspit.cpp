@@ -232,7 +232,7 @@ void QgsSpit::addFile()
           bool hasReservedWords = false;
           // if a reserved word is found, set the flag so the "adjustment"
           // dialog can be presented to the user
-	  hasReservedWords = true;
+	  hasReservedWords = false;
           for ( int i = 0; i < file->column_names.size(); i++ )
           {
             if ( pgu->isReserved( file->column_names[ i ] ) )
