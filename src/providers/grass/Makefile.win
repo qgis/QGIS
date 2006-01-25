@@ -30,8 +30,9 @@ $(PROVIDER): $(OBJECTS)
 		-Wl,--enable-auto-import \
 		-Wl,--whole-archive grassprovider_la-provider.o \
 		-Wl,--no-whole-archive \
+			-L .libs/ -lqgis_grass \
 			.libs/libqgisgrass.a \
-			$(CORE_A) $(GUI_A) $(CORE_A) \
+			$(CORE_DLL) $(GUI_DLL) $(CORE_DLL) \
 			$(GRASS_LIB) \
 			$(QT_LDADD) \
 			-lwsock32 -lmingw32
@@ -41,4 +42,4 @@ install: all
 	$(INSTALL) -m 755 $(GRASS_DLL) $(prefix)/bin/qgis_grass.dll
 	$(INSTALL) -m 755 $(PROVIDER) $(prefix)/lib/qgis/grassprovider.dll
 
-include ../../../Makefile.win.rules
+include $(QGTOP)/Makefile.win.rules
