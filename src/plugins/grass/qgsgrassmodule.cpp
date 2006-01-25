@@ -1106,6 +1106,10 @@ void QgsGrassModuleInput::updateQgisLayers()
 	}
     }
 
+    // Note: QDir::cleanPath is using '/' also on Windows
+    //QChar sep = QDir::separator();
+    QChar sep = '/';
+
     int nlayers = canvas->layerCount();
     for ( int i = 0; i < nlayers; i++ ) {
 	QgsMapLayer *layer = canvas->getZpos(i);
@@ -1137,10 +1141,6 @@ void QgsGrassModuleInput::updateQgisLayers()
             #ifdef QGISDEBUG
             std::cerr << "source = " << source.ascii() << std::endl;
             #endif
-
-            // Note: QDir::cleanPath is using '/' also on Windows
-	    //QChar sep = QDir::separator();
-	    QChar sep = '/';
 	    
 	    // Check GISBASE and LOCATION
 	    QStringList split = QStringList::split ( sep, source );
@@ -1204,7 +1204,6 @@ void QgsGrassModuleInput::updateQgisLayers()
 	    // Check if it is GRASS raster
 	    QString source = QDir::cleanDirPath ( layer->source() ); 
 
-	    QChar sep = QDir::separator();
 	    if ( source.contains( "cellhd" ) == 0 ) continue;
 	    
 	    // Most probably GRASS layer, check GISBASE and LOCATION
