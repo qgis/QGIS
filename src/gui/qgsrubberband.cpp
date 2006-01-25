@@ -82,6 +82,12 @@ void QgsRubberBand::movePoint(const QPoint & p)
   update();
 }
 
+void QgsRubberBand::movePoint(int index, const QPoint& p)
+{
+  mPoints.setPoint(index, p);
+  update();
+}
+
 /*!
   Draw the shape in response to an update event.
 */

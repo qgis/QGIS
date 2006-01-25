@@ -34,6 +34,7 @@ class QgsRubberBand: public QWidget
     void reset(bool isPolygon = false);
     void addPoint(const QPoint & p);
     void movePoint(const QPoint & p);
+    void movePoint(int index, const QPoint& p);
 
   protected:
     virtual void paintEvent(QPaintEvent * event);

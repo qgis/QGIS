@@ -1629,9 +1629,25 @@ void QgsMapCanvas::mousePressEvent(QMouseEvent * e)
           }
 
           paint.end();
+#else
+#ifdef QGISDEBUG
+	  qWarning("Creating rubber band for moveVertex");
 #endif
+	  mRubberBand2 = new QgsRubberBand(this, mPolygonEditing);
+	  mRubberBand2->addPoint(QPoint(static_cast<int>(round(x1)), static_cast<int>(round(y1))));
+	  mRubberBand2->addPoint(e->pos());
+	  mRubberBand2->addPoint(QPoint(static_cast<int>(round(x2)), static_cast<int>(round(y2))));
+	  QgsProject * project = QgsProject::instance();
+	  QColor color(
+                project->readNumEntry("Digitizing", "/LineColorRedPart", 255),
+                project->readNumEntry("Digitizing", "/LineColorGreenPart", 0),
+                project->readNumEntry("Digitizing", "/LineColorBluePart", 0));
+	  mRubberBand2->setColor(color);
+	  int width = project->readNumEntry("Digitizing", "/LineWidth", 1);
+	  mRubberBand2->setWidth(width);
+	  mRubberBand2->show();
         } // if snapVertexWithContext
-
+#endif
 
         break;
       }
@@ -1799,6 +1815,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         paint.end();
 #else
         delete mRubberBand;
+	mRubberBand = 0;
 #endif
         // store the rectangle
         mCanvasProperties->zoomBox.setRight(e->pos().x());
@@ -1834,6 +1851,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
           paint.end();
 #else
           delete mRubberBand;
+	  mRubberBand = 0;
 #endif
           // store the rectangle
           mCanvasProperties->zoomBox.setRight(e->pos().x());
@@ -1899,6 +1917,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
           paint.end();
 #else
           delete mRubberBand;
+	  mRubberBand = 0;
 #endif
 
           QgsMapLayer *lyr = mCanvasProperties->mapLegend->currentLayer();
@@ -2153,6 +2172,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
             mCanvasProperties->capturing = FALSE;
 #if !(QT_VERSION < 0x040000)
             delete mRubberBand2;
+	    mRubberBand2 = 0;
 #endif
 
             //create QgsFeature with wkb representation
@@ -2348,6 +2368,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
         paint.drawLine(mCanvasProperties->rubberStartPoint, mCanvasProperties->rubberMidPoint);
         paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
         paint.end();
+#else
+	delete mRubberBand2;
+	mRubberBand2 = 0;
 #endif
 
         // Move the vertex
@@ -2373,14 +2396,14 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                 point.x(), point.y(),
                 mCanvasProperties->snappedAtFeatureId,
                 mCanvasProperties->snappedAtVertex);
+	    render();
+	    update();
 
 #ifdef QGISDEBUG
             std::cout << "QgsMapCanvas::mouseReleaseEvent: Completed vlayer->moveVertexAt." << std::endl;
 #endif
           }
-        }
-        // TODO: Redraw?  
-
+        }  
         break;
       }  
 
@@ -2587,6 +2610,14 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
         paint.drawLine(mCanvasProperties->rubberMidPoint, mCanvasProperties->rubberStopPoint);
 
         paint.end();
+#else
+	  if(mRubberBand2)
+	    {
+#ifdef QGISDEBUG
+	      qWarning("Moving rubber band for moveVertex");
+#endif
+	      mRubberBand2->movePoint(1, e->pos());
+	    }
 #endif
 
         break;
