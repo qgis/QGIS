@@ -1,7 +1,10 @@
-#include <q3listbox.h>
-#include <qpixmap.h>
-#include <q3listview.h>
-#include <q3textedit.h>
+
+// $Id:$
+
+#include <QIcon>
+#include <QPixmap>
+#include <QTableWidgetItem>
+
 #include "qgspgutil.h"
 #include "spit_icons.h"
 
@@ -10,8 +13,13 @@ QgsEditReservedWordsDialog::QgsEditReservedWordsDialog(QWidget *parent, Qt::WFla
   : QDialog(parent, fl)
 {
   setupUi(this);
-  // set focus indicator to span all columns
- lvColumns->setAllColumnsShowFocus(true);
+  // buggered if I know why setting the columns and their labels in
+  // designer doesn't last until here, hence it's done manually...
+  lvColumns->setColumnCount(3);
+  QStringList headerText;
+  headerText << tr("Status") << tr("Column Name") << tr("Index");
+  lvColumns->setHorizontalHeaderLabels(headerText);
+  lvColumns->resizeColumnsToContents();
 }
 
 QgsEditReservedWordsDialog::~QgsEditReservedWordsDialog()
@@ -19,60 +27,73 @@ QgsEditReservedWordsDialog::~QgsEditReservedWordsDialog()
 }
 void QgsEditReservedWordsDialog::setReservedWords(const QStringList &words)
 {
-  lstReservedWords->insertStringList(words);
+  lstReservedWords->addItems(words);
 }
-void QgsEditReservedWordsDialog::checkWord(Q3ListViewItem *lvi, int col, const QString &word)
+void QgsEditReservedWordsDialog::checkWord(QTableWidgetItem* item)
 {
+  // Column 1 is the one that the user can edit. However we can get
+  // itemChanged signals from any item in the table, so ignore other
+  // columns.
+  if (lvColumns->column(item) != 1)
+    return;
+
   QgsPgUtil *pgu = QgsPgUtil::instance();
-  if(pgu->isReserved(word))
+  int row = lvColumns->row(item);
+
+  // Column 0 is the one with the tick/cross pixmap
+  if(pgu->isReserved(item->text()))
   {
-    lvi->setPixmap(0, QPixmap(icon_reserved));
+    lvColumns->item(row, 0)->setIcon(QIcon(QPixmap(icon_reserved)));
   }
   else
   {
-    lvi->setPixmap(0, QPixmap(icon_ok));
+    lvColumns->item(row, 0)->setIcon(QIcon(QPixmap(icon_ok)));
   }
-
 }
 void QgsEditReservedWordsDialog::addColumn(QString column, bool isReserved, int index)
 {
   QString indexNumber;
   indexNumber = indexNumber.setNum(index);
-  Q3ListViewItem *lvi = new Q3ListViewItem(lvColumns,"",column, indexNumber);
-//  lvi-setText(1, column);
-  lvi->setRenameEnabled(1, true);
+
+  QTableWidgetItem *reservedItem = new QTableWidgetItem();
+  QTableWidgetItem *nameItem = new QTableWidgetItem(column);
+  QTableWidgetItem *indexItem = new QTableWidgetItem(indexNumber);
+
+  // Two of the columns shouldn't be editable
+  reservedItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+  indexItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+  // Set the appropriate icon
   if(isReserved)
   {
-    lvi->setPixmap(0, QPixmap(icon_reserved));
+    reservedItem->setIcon(QIcon(QPixmap(icon_reserved)));
   }
   else
   {
-    lvi->setPixmap(0, QPixmap(icon_ok));
-  }
-}
-void QgsEditReservedWordsDialog::editWord(Q3ListViewItem *lvi)
-{
-  if(lvi)
-  {
-    lvi->startRename(1);
+    reservedItem->setIcon(QIcon(QPixmap(icon_ok)));
   }
 
+  // Insert a new row into the table
+  int rows = lvColumns->rowCount();
+  lvColumns->insertRow(rows);
+  lvColumns->setItem(rows, 0, reservedItem);
+  lvColumns->setItem(rows, 1, nameItem);
+  lvColumns->setItem(rows, 2, indexItem);
 }
 QStringList QgsEditReservedWordsDialog::columnNames()
 {
+  // Extract and return the renamed columns from the table
   QStringList cols;
-  lvColumns->setSorting(2);
-  lvColumns->sort();
-  Q3ListViewItem *lvi = lvColumns->firstChild();
-  while(lvi)
+  lvColumns->sortItems(2);
+
+  for (int i = 0; i < lvColumns->rowCount(); ++i)
   {
-    cols << lvi->text(1); 
-    lvi = lvi->nextSibling();
+    cols << lvColumns->item(0, 2)->text();
   }
   return QStringList(cols);
 }
 void QgsEditReservedWordsDialog::setDescription(const QString &description)
 {
-  txtExplanation->setText(description);
+  txtExplanation->setPlainText(description);
 }
 

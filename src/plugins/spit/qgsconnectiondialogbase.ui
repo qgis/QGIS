@@ -9,7 +9,7 @@
     <x>0</x>
     <y>0</y>
     <width>348</width>
-    <height>303</height>
+    <height>332</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -18,25 +18,49 @@
   <property name="sizeGripEnabled" >
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" >
+  <layout class="QVBoxLayout" >
    <property name="margin" >
-    <number>11</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="Q3GroupBox" name="GroupBox1" >
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
       <string>Connection Information</string>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
-       <number>11</number>
+       <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
+      <item row="1" column="0" >
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QCheckBox" name="chkStorePassword" >
+          <property name="text" >
+           <string>Save Password</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnConnect" >
+          <property name="text" >
+           <string>Test Connect</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
       <item row="0" column="0" >
        <layout class="QHBoxLayout" >
         <property name="margin" >
@@ -57,7 +81,7 @@
            <widget class="QLabel" name="TextLabel1_2" >
             <property name="font" >
              <font>
-              <family></family>
+              <family>Sans Serif</family>
               <pointsize>11</pointsize>
               <weight>50</weight>
               <italic>false</italic>
@@ -75,7 +99,7 @@
            <widget class="QLabel" name="TextLabel1" >
             <property name="font" >
              <font>
-              <family></family>
+              <family>Sans Serif</family>
               <pointsize>11</pointsize>
               <weight>50</weight>
               <italic>false</italic>
@@ -93,7 +117,7 @@
            <widget class="QLabel" name="TextLabel2" >
             <property name="font" >
              <font>
-              <family></family>
+              <family>Sans Serif</family>
               <pointsize>11</pointsize>
               <weight>50</weight>
               <italic>false</italic>
@@ -111,7 +135,7 @@
            <widget class="QLabel" name="TextLabel2_2" >
             <property name="font" >
              <font>
-              <family></family>
+              <family>Sans Serif</family>
               <pointsize>11</pointsize>
               <weight>50</weight>
               <italic>false</italic>
@@ -129,7 +153,7 @@
            <widget class="QLabel" name="TextLabel3" >
             <property name="font" >
              <font>
-              <family></family>
+              <family>Sans Serif</family>
               <pointsize>11</pointsize>
               <weight>50</weight>
               <italic>false</italic>
@@ -147,7 +171,7 @@
            <widget class="QLabel" name="TextLabel3_2" >
             <property name="font" >
              <font>
-              <family></family>
+              <family>Sans Serif</family>
               <pointsize>11</pointsize>
               <weight>50</weight>
               <italic>false</italic>
@@ -205,34 +229,10 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="0" >
-       <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item>
-         <widget class="QCheckBox" name="chkStorePassword" >
-          <property name="text" >
-           <string>Save Password</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnConnect" >
-          <property name="text" >
-           <string>Test Connect</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" >
+   <item>
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
@@ -304,15 +304,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends></extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>txtName</tabstop>
   <tabstop>txtHost</tabstop>

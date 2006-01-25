@@ -18,8 +18,9 @@
 /* $Id$ */
 #include <vector>
 #include <algorithm>
-#include <qstringlist.h>
-#include <qsettings.h>
+
+#include <QStringList>
+
 #include "qgsshapefile.h"
 #include "ui_qgsspitbase.h"
 extern "C"
@@ -36,7 +37,7 @@ public:
   //! Populate the list of available database connections
   void populateConnectionList();
   //! Connect to the selected database
-  void dbConnect();
+  void dbConnect() {};
   //! Return a list of selected tables
   QStringList selectedTables();
   //! Return the connection info
@@ -68,6 +69,19 @@ public:
   void editColumns( int, int, int, const QPoint & );
   //! Edit import properties of a shapefile in the queue
   void editShapefile( int, int, int, const QPoint & );
+
+public slots:
+
+  void on_btnConnect_clicked()    { dbConnect();        }
+  void on_btnEdit_clicked()       { editConnection();   }
+  void on_btnNew_clicked()        { newConnection();    }
+  void on_btnRemove_clicked()     { removeConnection(); }
+  void on_btnImport_clicked()     { import();           } 
+  void on_btnHelp_clicked()       { helpInfo();         }
+  void on_btnQuit_clicked()       { close(1);           }
+  void on_btnAddFile_clicked()    { addFile();          }
+  void on_btnRemoveAll_clicked()  { removeAllFiles();   }
+  void on_btnRemoveFile_clicked() { removeFile();       }
 
 private:
 

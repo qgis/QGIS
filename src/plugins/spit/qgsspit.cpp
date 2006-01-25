@@ -16,24 +16,19 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <q3listbox.h>
 #include <q3table.h>
-#include <qstringlist.h>
-#include <qmessagebox.h>
+#include <QMessageBox>
 #include <QComboBox>
-#include <qpushbutton.h>
-#include <qspinbox.h>
-#include <qcheckbox.h>
-#include <qinputdialog.h>
 #include <QFileDialog>
 #include <q3progressdialog.h>
 #include <q3memarray.h>
-#include <qapplication.h>
-#include <qregexp.h>
-#include <qfile.h>
-#include <qsettings.h>
-#include <qpixmap.h>
+#include <QRegExp>
+#include <QFile>
+#include <QSettings>
+#include <QPixmap>
+
 #include <iostream>
+
 #include "qgspgutil.h"
 #include "qgsspit.h"
 #include "qgsconnectiondialog.h"
@@ -62,19 +57,23 @@ QgsSpit::QgsSpit( QWidget *parent, Qt::WFlags fl ) : QDialog( parent, fl )
   icon = QPixmap( spitIcon );
   setIcon( icon );
 
+  // Set up the table column headers
+  tblShapefiles->setColumnCount(5);
+  QStringList headerText;
+  headerText << tr("File Name") << tr("Feature Class") << tr("Features") 
+	     << tr("DB Relation Name") << tr("Schema");
+  tblShapefiles->setHorizontalHeaderLabels(headerText);
+  tblShapefiles->resizeColumnsToContents();
+
+  //  tblShapefiles->verticalHeader()->hide();
+  //  //tblShapefiles->adjustColumn(3);
+  //  tblShapefiles->setLeftMargin(0);
+
   populateConnectionList();
   defSrid = -1;
   defGeom = "the_geom";
   total_features = 0;
   //setFixedSize(QSize(605, 612));
-
-  tblShapefiles->verticalHeader()->hide();
-  //tblShapefiles->adjustColumn(3);
-  tblShapefiles->setLeftMargin(0);
- 
-  // Set read only colums, the rest is editable
-  tblShapefiles->setColumnReadOnly( ColFILENAME, true );
-  tblShapefiles->setColumnReadOnly( ColFEATURECOUNT, true );
 
   chkUseDefaultSrid->setChecked( true );
   chkUseDefaultGeom->setChecked( true );
@@ -154,7 +153,7 @@ void QgsSpit::addFile()
   QStringList files = QFileDialog::getOpenFileNames(this,
                         "Add Shapefiles",
                         settings.readEntry( "/Plugin-Spit/last_directory" ),
-                        "Shapefiles (*.shp)|All files (*.*)" );
+                        "Shapefiles (*.shp);;All files (*.*)" );
   if ( files.size() > 0 )
   {
     // Save the directory for future use
@@ -166,13 +165,13 @@ void QgsSpit::addFile()
   {
     exist = false;
     is_error = false;
-    for ( int n = 0; n < tblShapefiles->numRows(); n++ )
+
+    // Check to ensure that we don't insert the same file twice
+    QList<QTableWidgetItem*> items = tblShapefiles->findItems(*it, 
+							Qt::MatchExactly);
+    if (items.count() > 0)
     {
-      if ( tblShapefiles->text( n, 0 ) == *it )
-      {
-        exist = true;
-        break;
-      }
+      exist = true;
     }
 
     if ( !exist )
@@ -198,18 +197,33 @@ void QgsSpit::addFile()
            * something else
            */
           QString featureClass = file->getFeatureClass();
-          int row = tblShapefiles->numRows();
           fileList.push_back( file );
-          tblShapefiles->insertRows( row );
-          tblShapefiles->setText( row, ColFILENAME, name );
-          tblShapefiles->setText( row, ColFEATURECLASS, featureClass );
-          tblShapefiles->setText( row, ColFEATURECOUNT, QString( "%1" ).arg( file->getFeatureCount() ) );
+
+	  QTableWidgetItem *filenameItem       = new QTableWidgetItem( name );
+	  QTableWidgetItem *featureClassItem   = new QTableWidgetItem( featureClass );
+	  QTableWidgetItem *featureCountItem   = new QTableWidgetItem( QString( "%1" ).arg( file->getFeatureCount() ) );
           // Sanitize the relation name to make it pg friendly
           QString relName = file->getTable().replace(QRegExp("\\s"), "_");
-          tblShapefiles->setText( row, ColDBRELATIONNAME, relName );
-          Q3ComboTableItem* schema = new Q3ComboTableItem( tblShapefiles, schema_list );
-          schema->setCurrentItem( cmbSchema->currentText() );
-          tblShapefiles->setItem( row, ColDBSCHEMA, schema );
+	  QTableWidgetItem *dbRelationNameItem = new QTableWidgetItem( relName );
+          //Q3ComboTableItem* schema = new Q3ComboTableItem( tblShapefiles, schema_list );
+	  QTableWidgetItem *schemaItem         = new QTableWidgetItem();
+
+	  // All items are editable except for these two
+	  filenameItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+	  featureCountItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+          int row = tblShapefiles->rowCount();
+          tblShapefiles->insertRow( row );
+	  tblShapefiles->setItem( row, ColFILENAME, filenameItem );
+	  tblShapefiles->setItem( row, ColFEATURECLASS, featureClassItem );
+	  tblShapefiles->setItem( row, ColFEATURECOUNT, featureCountItem );
+	  tblShapefiles->setItem( row, ColDBRELATIONNAME, dbRelationNameItem );
+
+	    // FIXME
+	    //Q3ComboTableItem* schema = new Q3ComboTableItem( tblShapefiles, schema_list );
+	    //schema->setCurrentItem( cmbSchema->currentText() );
+	  tblShapefiles->setItem( row, ColDBSCHEMA, schemaItem );
+
           total_features += file->getFeatureCount();
 
           // check for postgresql reserved words
@@ -218,6 +232,7 @@ void QgsSpit::addFile()
           bool hasReservedWords = false;
           // if a reserved word is found, set the flag so the "adjustment"
           // dialog can be presented to the user
+	  hasReservedWords = true;
           for ( int i = 0; i < file->column_names.size(); i++ )
           {
             if ( pgu->isReserved( file->column_names[ i ] ) )
@@ -285,10 +300,13 @@ void QgsSpit::addFile()
     e->exec();
   }
 
+  /*
+    not necessary (set elsewhere)
   for (int i = 0; i < tblShapefiles->numCols(); i++)
   {
     tblShapefiles->adjustColumn( i );
-  }  
+  } 
+  */ 
 //   tblShapefiles->adjustColumn( 0 );
 //   tblShapefiles->adjustColumn( 1 );
 //   tblShapefiles->adjustColumn( 2 );
@@ -300,12 +318,12 @@ void QgsSpit::addFile()
 void QgsSpit::removeFile()
 {
   std::vector <int> temp;
-  for ( int n = 0; n < tblShapefiles->numRows(); n++ )
-    if ( tblShapefiles->isRowSelected( n ) )
+  for ( int n = 0; n < tblShapefiles->rowCount(); n++ )
+    if ( tblShapefiles->isItemSelected( tblShapefiles->item( n, 0 ) ) )
     {
       for ( std::vector<QgsShapeFile *>::iterator vit = fileList.begin(); vit != fileList.end(); vit++ )
       {
-        if ( ( *vit ) ->getName() == tblShapefiles->text( n, 0 ) )
+        if ( ( *vit ) ->getName() == tblShapefiles->item( n, 0 )->text() )
         {
           total_features -= ( *vit ) ->getFeatureCount();
           fileList.erase( vit );
@@ -316,20 +334,16 @@ void QgsSpit::removeFile()
     }
   Q3MemArray<int> array( temp.size() );
   for ( int i = 0; i < temp.size(); i++ )
-    array[ i ] = temp[ i ];
-  tblShapefiles->removeRows( array );
+    tblShapefiles->removeRow( temp[ i ] );
+
   tblShapefiles->setCurrentCell( -1, 0 );
 }
 
 void QgsSpit::removeAllFiles()
 {
-  Q3MemArray<int> array( tblShapefiles->numRows() );
-  for ( int n = 0; n < tblShapefiles->numRows(); n++ )
-    array[ n ] = n;
-
+  tblShapefiles->clear();
   fileList.clear();
   total_features = 0;
-  tblShapefiles->removeRows( array );
 }
 
 void QgsSpit::useDefaultSrid()
@@ -450,13 +464,14 @@ void QgsSpit::getSchema()
   }
 
   // update the schemas in the combo of all the shapefiles
-  for ( int i = 0; i < tblShapefiles->numRows(); i++ )
+  for ( int i = 0; i < tblShapefiles->rowCount(); i++ )
   {
-    tblShapefiles->clearCell( i, 4 );
+    // FIXME update the widget with latest schema stuff
+    /*
     Q3ComboTableItem* temp_schemas = new Q3ComboTableItem( tblShapefiles, schema_list );
     temp_schemas->setCurrentItem( "public" );
     tblShapefiles->setItem( i, 4, temp_schemas );
-
+    */
   }
 
   cmbSchema->clear();
@@ -466,12 +481,15 @@ void QgsSpit::getSchema()
 
 void QgsSpit::updateSchema()
 {
-  for ( int i = 0; i < tblShapefiles->numRows(); i++ )
+  for ( int i = 0; i < tblShapefiles->rowCount(); i++ )
   {
+    /*
+    // FIXME update the widget with latest schema stuff
     tblShapefiles->clearCell( i, 4 );
     Q3ComboTableItem* temp_schemas = new Q3ComboTableItem( tblShapefiles, schema_list );
     temp_schemas->setCurrentItem( cmbSchema->currentText() );
     tblShapefiles->setItem( i, 4, temp_schemas );
+    */
 
   }
 }
@@ -505,15 +523,15 @@ void QgsSpit::import()
     for ( int i = 0; i < fileList.size() ; i++ )
     {
       QString error = tr("Problem inserting features from file:") + "\n" + 
-                      tblShapefiles->text( i, ColFILENAME );
+                      tblShapefiles->item( i, ColFILENAME )->text();
                       
       // if a name starts with invalid character
-      if ( !( tblShapefiles->text( i, ColDBRELATIONNAME ) ) [ 0 ].isLetter() )
+      if ( ! tblShapefiles->item( i, ColDBRELATIONNAME )->text()[ 0 ].isLetter() )
       {
         QMessageBox::warning( pro, tr("Import Shapefiles"), 
                              error + "\n" + tr("Invalid table name.") );
         pro->setProgress( pro->progress() 
-                        + ( tblShapefiles->text( i, ColFEATURECOUNT ) ).toInt() );
+                        + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
 
@@ -523,7 +541,7 @@ void QgsSpit::import()
         QMessageBox::warning( pro, tr("Import Shapefiles"), 
                             error + "\n" + tr("No fields detected.") );
         pro->setProgress( pro->progress() + 
-                        ( tblShapefiles->text( i, ColFEATURECOUNT ) ).toInt() );
+                          tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
 
@@ -546,27 +564,27 @@ void QgsSpit::import()
       {
         QMessageBox::warning( pro, tr("Import Shapefiles"), error +
                               "\n" + tr("The following fields are duplicates:") + "\n" + dupl );
-        pro->setProgress( pro->progress() + ( tblShapefiles->text( i, ColFEATURECOUNT ) ).toInt() );
+        pro->setProgress( pro->progress() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
 
       // Check and set destination table 
-      fileList[ i ] ->setTable( tblShapefiles->text( i, ColDBRELATIONNAME ) );
+      fileList[ i ] ->setTable( tblShapefiles->item( i, ColDBRELATIONNAME )->text() );
       pro->setLabelText( tr("Importing files") + "\n" 
-                      + tblShapefiles->text(i, ColFILENAME) );
+                      + tblShapefiles->item(i, ColFILENAME)->text() );
       bool rel_exists1 = false;
       bool rel_exists2 = false;
       query = "SELECT f_table_name FROM geometry_columns WHERE f_table_name=\'" 
-              + tblShapefiles->text( i, ColDBRELATIONNAME ) +
+              + tblShapefiles->item( i, ColDBRELATIONNAME )->text() +
               "\' AND f_table_schema=\'" 
-              + tblShapefiles->text( i, ColDBSCHEMA ) + "\'";
+              + tblShapefiles->item( i, ColDBSCHEMA )->text() + "\'";
       res = PQexec( pd, ( const char * ) query );
       rel_exists1 = ( PQntuples( res ) > 0 );
       if ( PQresultStatus( res ) != PGRES_TUPLES_OK )
       {
         qWarning( PQresultErrorMessage( res ) );
         QMessageBox::warning( pro, tr("Import Shapefiles"), error );
-        pro->setProgress( pro->progress() + ( tblShapefiles->text( i, ColFEATURECOUNT ) ).toInt() );
+        pro->setProgress( pro->progress() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
       else
@@ -574,8 +592,8 @@ void QgsSpit::import()
         PQclear( res );
       }
 
-      query = "SELECT tablename FROM pg_tables WHERE tablename=\'" + tblShapefiles->text( i, ColDBRELATIONNAME ) + "\' AND schemaname=\'" +
-              tblShapefiles->text( i, ColDBSCHEMA ) + "\'";
+      query = "SELECT tablename FROM pg_tables WHERE tablename=\'" + tblShapefiles->item( i, ColDBRELATIONNAME )->text() + "\' AND schemaname=\'" +
+              tblShapefiles->item( i, ColDBSCHEMA )->text() + "\'";
       res = PQexec( pd, ( const char * ) query );
       qWarning( query );
       rel_exists2 = ( PQntuples( res ) > 0 );
@@ -583,7 +601,7 @@ void QgsSpit::import()
       {
         qWarning( PQresultErrorMessage( res ) );
         QMessageBox::warning( pro, tr("Import Shapefiles"), error );
-        pro->setProgress( pro->progress() + ( tblShapefiles->text( i, ColFEATURECOUNT ) ).toInt() );
+        pro->setProgress( pro->progress() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
       else
@@ -598,7 +616,7 @@ void QgsSpit::import()
       {
         qWarning( PQresultErrorMessage( res ) );
         QMessageBox::warning( pro, tr("Import Shapefiles"), error );
-        pro->setProgress( pro->progress() + ( tblShapefiles->text( i, ColFEATURECOUNT ) ).toInt() );
+        pro->setProgress( pro->progress() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
       else
@@ -607,10 +625,10 @@ void QgsSpit::import()
       }
 
       query = "SET SEARCH_PATH TO \'";
-      if ( tblShapefiles->text( i, ColDBSCHEMA ) == "public" )
+      if ( tblShapefiles->item( i, ColDBSCHEMA )->text() == "public" )
         query += "public\'";
       else
-        query += tblShapefiles->text( i, ColDBSCHEMA ) + "\', \'public\'";
+        query += tblShapefiles->item( i, ColDBSCHEMA )->text() + "\', \'public\'";
       res = PQexec( pd, query );
       qWarning( query );
       if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
@@ -618,7 +636,7 @@ void QgsSpit::import()
         qWarning( PQresultErrorMessage( res ) );
         qWarning( PQresStatus( PQresultStatus( res ) ) );
         QMessageBox::warning( pro, tr("Import Shapefiles"), error );
-        pro->setProgress( pro->progress() + ( tblShapefiles->text( i, ColFEATURECOUNT ) ).toInt() );
+        pro->setProgress( pro->progress() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         continue;
       }
       else
@@ -630,10 +648,10 @@ void QgsSpit::import()
       if ( rel_exists1 || rel_exists2 )
       {
         del_confirm = new QMessageBox( tr("Import Shapefiles - Relation Exists"),
-                                       tr("The Shapefile:" ) + "\n" + tblShapefiles->text( i, 0 ) + "\n" + tr("will use [") +
-                                       tblShapefiles->text( i, ColDBRELATIONNAME ) + tr("] relation for its data,") + "\n" + tr("which already exists and possibly contains data.") + "\n" +
+                                       tr("The Shapefile:" ) + "\n" + tblShapefiles->item( i, 0 )->text() + "\n" + tr("will use [") +
+                                       tblShapefiles->item( i, ColDBRELATIONNAME )->text() + tr("] relation for its data,") + "\n" + tr("which already exists and possibly contains data.") + "\n" +
                                        tr("To avoid data loss change the \"DB Relation Name\"") + "\n" + tr("for this Shapefile in the main dialog file list.") + "\n\n" +
-                                       tr("Do you want to overwrite the [") + tblShapefiles->text( i, ColDBRELATIONNAME ) + tr("] relation?"),
+                                       tr("Do you want to overwrite the [") + tblShapefiles->item( i, ColDBRELATIONNAME )->text() + tr("] relation?"),
                                        QMessageBox::Warning,
                                        QMessageBox::Yes | QMessageBox::Default,
                                        QMessageBox::No | QMessageBox::Escape,
@@ -646,14 +664,14 @@ void QgsSpit::import()
         {
           if ( rel_exists2 )
           {
-            query = "DROP TABLE " + tblShapefiles->text( i, ColDBRELATIONNAME );
+            query = "DROP TABLE " + tblShapefiles->item( i, ColDBRELATIONNAME )->text();
             qWarning( query );
             res = PQexec( pd, ( const char * ) query );
             if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
             {
               qWarning( PQresultErrorMessage( res ) );
               QMessageBox::warning( pro, tr("Import Shapefiles"), error );
-              pro->setProgress( pro->progress() + ( tblShapefiles->text( i, ColFEATURECOUNT ) ).toInt() );
+              pro->setProgress( pro->progress() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
               continue;
             }
             else
@@ -666,15 +684,15 @@ void QgsSpit::import()
           {
             /*query = "SELECT DropGeometryColumn(\'"+QString(settings.readEntry(key + "/database"))+"\', \'"+
               fileList[i]->getTable()+"\', \'"+txtGeomName->text()+"')";*/
-            query = "DELETE FROM geometry_columns WHERE f_table_schema=\'" + tblShapefiles->text( i, ColDBSCHEMA ) + "\' AND " +
-                    "f_table_name=\'" + tblShapefiles->text( i, ColDBRELATIONNAME ) + "\'";
+            query = "DELETE FROM geometry_columns WHERE f_table_schema=\'" + tblShapefiles->item( i, ColDBSCHEMA )->text() + "\' AND " +
+                    "f_table_name=\'" + tblShapefiles->item( i, ColDBRELATIONNAME )->text() + "\'";
             qWarning( query );
             res = PQexec( pd, ( const char * ) query );
             if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
             {
               qWarning( PQresultErrorMessage( res ) );
               QMessageBox::warning( pro, tr("Import Shapefiles"), error );
-              pro->setProgress( pro->progress() + ( tblShapefiles->text( i, ColFEATURECOUNT ) ).toInt() );
+              pro->setProgress( pro->progress() + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
               continue;
             }
             else
@@ -696,7 +714,7 @@ void QgsSpit::import()
           {
             PQclear( res );
           }
-          pro->setProgress( pro->progress() + ( tblShapefiles->text( i, 2 ) ).toInt() );
+          pro->setProgress( pro->progress() + tblShapefiles->item( i, 2 )->text().toInt() );
           continue;
         }
       }
@@ -704,7 +722,7 @@ void QgsSpit::import()
       // importing file here
       int temp_progress = pro->progress();
       cancelled = false;
-      if ( fileList[ i ] ->insertLayer( settings.readEntry( gl_key + connName + "/database" ), tblShapefiles->text( i, ColDBSCHEMA ),
+      if ( fileList[ i ] ->insertLayer( settings.readEntry( gl_key + connName + "/database" ), tblShapefiles->item( i, ColDBSCHEMA )->text(),
                                         txtGeomName->text(), QString( "%1" ).arg( spinSrid->value() ), pd, pro, cancelled ) && !cancelled )
       { // if file has been imported successfully
         query = "COMMIT";
@@ -721,9 +739,9 @@ void QgsSpit::import()
         }
 
         // remove file
-        for ( int j = 0; j < tblShapefiles->numRows(); j++ )
+        for ( int j = 0; j < tblShapefiles->rowCount(); j++ )
         {
-          if ( tblShapefiles->text( j, ColFILENAME ) == QString( fileList[ i ] ->getName() ) )
+          if ( tblShapefiles->item( j, ColFILENAME )->text() == QString( fileList[ i ] ->getName() ) )
           {
             tblShapefiles->selectRow( j );
             removeFile();
@@ -735,7 +753,7 @@ void QgsSpit::import()
       }
       else if ( !cancelled )
       { // if problem importing file occured
-        pro->setProgress( temp_progress + ( tblShapefiles->text( i, ColFEATURECOUNT ) ).toInt() );
+        pro->setProgress( temp_progress + tblShapefiles->item( i, ColFEATURECOUNT )->text().toInt() );
         QMessageBox::warning( this, tr("Import Shapefiles"), error );
         query = "ROLLBACK";
         res = PQexec( pd, query );
@@ -789,8 +807,11 @@ void QgsSpit::editColumns( int row, int col, int button, const QPoint &mousePos 
 
 void QgsSpit::editShapefile(int row, int col, int button, const QPoint& mousePos)
 {
+  // FIXME Is this necessary any more?
+  /*
   if (ColFEATURECLASS == col || ColDBRELATIONNAME == col)
   {
     tblShapefiles->editCell(row, col, FALSE);
   }
+  */
 }
