@@ -1,7 +1,7 @@
 #ifndef QGSEDITRESERVEDWORDSDIALOG_H
 #define QGSEDITRESERVEDWORDSDIALOG_H
 
-// $Id:$
+// $Id$
 
 #include "ui_qgseditreservedwordsbase.h"
 #include "qgisgui.h"
@@ -23,6 +23,8 @@ public slots:
     void on_buttonCancel_clicked() { done(1); }
     void on_buttonHelp_clicked() {};
     void on_lvColumns_itemChanged(QTableWidgetItem* item) { checkWord(item); }
+    void on_lvColumns_itemClicked(QTableWidgetItem* item) 
+      { lvColumns->editItem(item); }
 
 };
 #endif //QGSEDITRESERVEDWORDSDIALOG_H
