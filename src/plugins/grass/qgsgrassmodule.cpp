@@ -84,6 +84,38 @@ extern "C" {
 #include "qgsgrassmapcalc.h"
 #include "qgsgrasstools.h"
 
+bool QgsGrassModule::mExecPathInited = 0;
+QStringList QgsGrassModule::mExecPath;
+
+bool QgsGrassModule::inExecPath ( QString file )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModule::inExecPath()" << std::endl;
+    #endif
+    // Init mExecPath 
+    // Windows searches first in current directory
+    if ( !mExecPathInited ) 
+    {
+        QString path = getenv("PATH");
+        std::cerr << "path = " << path.ascii() << std::endl;
+
+        mExecPath = path.split ( ";" );
+        mExecPath.prepend ( QgsApplication::applicationDirPath() );
+        mExecPathInited = true;
+    }
+ 
+    // Search for module
+    for ( QStringList::iterator it = mExecPath.begin(); 
+          it != mExecPath.end(); ++it ) 
+    {
+        if ( QFile::exists ( *it + "/" + file ) ) 
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIface *iface, 
 	                     QString path, QWidget * parent, const char * name, Qt::WFlags f )
              //:QgsGrassModuleBase ( parent, name, f )
@@ -133,9 +165,31 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     QDomElement qDocElem = qDoc.documentElement();
 
     // Read GRASS module description
-    mXName = qDocElem.attribute("module");
+    QString xName = qDocElem.attribute("module");
+
+    // Binary modules on windows has .exe extension
+    // but not all modules have to be binary (can be scripts)
+    // => test if the module is in path and if it is not 
+    // add .exe and test again
+#ifdef WIN32
+    if ( inExecPath ( xName ) ) 
+    {
+        mXName = xName;
+    }
+    else if ( inExecPath ( xName + ".exe" ) )
+    {
+        mXName = xName + ".exe";
+    }
+    else 
+    {
+        std::cerr << "Module " << xName.ascii() << " not found" << std::endl;
+        return;
+    }
+#else
+    mXName = xName;
+#endif
     
-    if ( mXName == "r.mapcalc" )
+    if ( xName == "r.mapcalc" )
     {
         QGridLayout *layout = new QGridLayout ( mTabWidget->page(0), 1, 1 );
 
@@ -156,7 +210,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
                                 
     // Create manual if available
     QString gisBase = getenv("GISBASE");
-    QString manPath = gisBase + "/docs/html/" + mXName + ".html";
+    QString manPath = gisBase + "/docs/html/" + xName + ".html";
     QFile manFile ( manPath );
     if ( manFile.exists() ) {
 	mManualTextBrowser->setSource ( manPath );
