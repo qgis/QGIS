@@ -417,7 +417,9 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
 #ifdef QGISDEBUG
     std::cerr << "Total features processed is " << featureCount << std::endl;
 #endif
-    qApp->processEvents();
+    // XXX Something in our draw event is triggering an additional draw event when resizing [TE 01/26/06]
+    // XXX Calling this will begin processing the next draw event causing image havoc and recursion crashes.
+    //qApp->processEvents();
 
   }
 }
@@ -876,7 +878,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
         //      std::cout << "QgsVectorLayer::draw: got " << fet->featureId() << std::endl; 
 #endif
 
-        qApp->processEvents(); //so we can trap for esc press
+        // XXX Something in our draw event is triggering an additional draw event when resizing [TE 01/26/06]
+        // XXX Calling this will begin processing the next draw event causing image havoc and recursion crashes.
+        //qApp->processEvents(); //so we can trap for esc press
         if (mDrawingCancelled) return;
         // If update threshold is greater than 0, check to see if
         // the threshold has been exceeded
@@ -968,7 +972,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 #ifdef QGISDEBUG
     std::cerr << "Total features processed is " << featureCount << std::endl;
 #endif
-    qApp->processEvents();
+    // XXX Something in our draw event is triggering an additional draw event when resizing [TE 01/26/06]
+    // XXX Calling this will begin processing the next draw event causing image havoc and recursion crashes.
+    //qApp->processEvents();
   }
   else
   {
