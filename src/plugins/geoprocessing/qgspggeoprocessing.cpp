@@ -29,15 +29,9 @@ email                : sherman at mrcc.com
 #include "qgsvectordataprovider.h"
 #include "qgsfield.h"
 
-#include <q3toolbar.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <q3popupmenu.h>
-#include <qlineedit.h>
-#include <qaction.h>
-#include <qapplication.h>
-#include <qcursor.h>
-#include <qglobal.h>
+#include <QMessageBox>
+#include <QAction>
+#include <QApplication>
 
 #include "qgsdlgpgbuffer.h"
 #include "qgspggeoprocessing.h"
