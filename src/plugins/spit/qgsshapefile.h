@@ -20,11 +20,12 @@
 #define QGSSHAPEFILE_H
 
 #include <vector>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qobject.h>
+#include <QString>
+#include <QStringList>
+#include <QObject>
 #include <ogrsf_frmts.h>
-#include <q3progressdialog.h>
+
+class QProgressDialog;
 
 class OGRLayer;
 class OGRDataSource;
@@ -43,7 +44,7 @@ class QgsShapeFile : public QObject
   ~QgsShapeFile();
   int getFeatureCount();
   QString getFeatureClass();
-  bool insertLayer(QString dbname, QString schema, QString geom_col, QString srid, PGconn * conn, Q3ProgressDialog * pro, bool &fin);
+  bool insertLayer(QString dbname, QString schema, QString geom_col, QString srid, PGconn * conn, QProgressDialog& pro, bool &fin);
     
   bool is_valid();
   QString getName();

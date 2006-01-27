@@ -1,3 +1,5 @@
+#ifndef QGSSPIT_H
+#define QGSSPIT_H
 /***************************************************************************
                         qgsspit.h  -  description
                            -------------------
@@ -20,9 +22,14 @@
 #include <algorithm>
 
 #include <QStringList>
+#include <QString>
+#include <QItemDelegate>
 
 #include "qgsshapefile.h"
 #include "ui_qgsspitbase.h"
+
+class QTableWidgetItem;
+
 extern "C"
 {
 #include <libpq-fe.h>
@@ -72,16 +79,25 @@ public:
 
 public slots:
 
+  // In porting from Qt3 to Qt4 it was easier to have these small
+  // redirects for the widget signals rather than rename the existing
+  // functions (which would be been connected to the widgets using the
+  // Qt3 designer signal/slot connection mechanism), in case you were
+  // wondering. 
   void on_btnConnect_clicked()    { dbConnect();        }
   void on_btnEdit_clicked()       { editConnection();   }
   void on_btnNew_clicked()        { newConnection();    }
   void on_btnRemove_clicked()     { removeConnection(); }
   void on_btnImport_clicked()     { import();           } 
   void on_btnHelp_clicked()       { helpInfo();         }
-  void on_btnQuit_clicked()       { close(1);           }
+  void on_btnQuit_clicked()       { close();           }
   void on_btnAddFile_clicked()    { addFile();          }
   void on_btnRemoveAll_clicked()  { removeAllFiles();   }
   void on_btnRemoveFile_clicked() { removeFile();       }
+  void on_tblShapefiles_itemClicked(QTableWidgetItem* item) 
+    { tblShapefiles->editItem(item); }
+  // When the user changes the selected connection, update the schema list
+  void on_cmbConnections_activated(int) { getSchema(); }
 
 private:
 
@@ -106,3 +122,34 @@ private:
   QString defaultGeomValue;
   QString gl_key;
 };
+
+// We want to provide combo boxes in the table of shape files to
+// load. Qt4 doesn't provide an 'out-of-the-box' way to do this
+// (unlike Qt3), so we have to use the Qt4 delegate technique to
+// provide combo boxes for the table, hence this class...
+
+class ShapefileTableDelegate : public QItemDelegate
+{
+  Q_OBJECT;
+
+ public:
+  ShapefileTableDelegate(QObject *parent, QStringList& schema_list) :
+    mSchemaList(schema_list) {}
+
+  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                        const QModelIndex &index) const;
+
+  void setEditorData(QWidget *editor, const QModelIndex &index) const;
+  void setModelData(QWidget *editor, QAbstractItemModel *model,
+                    const QModelIndex &index) const;
+
+  void updateEditorGeometry(QWidget *editor,
+             const QStyleOptionViewItem &option, const QModelIndex &index) const;
+  void updateSchemaList(QStringList& schema_list, QString currentSchema);
+
+ private:
+  QStringList mSchemaList;
+  int mCurrentIndex;
+};
+
+#endif

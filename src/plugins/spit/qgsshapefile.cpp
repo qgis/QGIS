@@ -16,7 +16,7 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <qapplication.h>
+#include <QApplication>
 #include <ogrsf_frmts.h>
 #include <ogr_geometry.h>
 #include <string>
@@ -249,8 +249,8 @@ void QgsShapeFile::setColumnNames(QStringList columns)
   }
 }
 
-bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col, QString srid, PGconn * conn, Q3ProgressDialog * pro, bool &fin){
-  connect(pro, SIGNAL(cancelled()), this, SLOT(cancelImport()));
+bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col, QString srid, PGconn * conn, QProgressDialog& pro, bool &fin){
+  connect(&pro, SIGNAL(cancelled()), this, SLOT(cancelImport()));
   import_cancelled = false;
   bool result = true;
   // Mangle the table name to make it PG compliant by replacing spaces with 
@@ -291,7 +291,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
     PQclear(res);
   }
 
-  query = "SELECT AddGeometryColumn(\'" + dbname + "\', \'" + table_name + "\', \'"+geom_col+"\', " + srid +
+  query = "SELECT AddGeometryColumn(\'" + schema + "\', \'" + table_name + "\', \'"+geom_col+"\', " + srid +
     ", \'" + geom_type + "\', 2)";            
   if(result) res = PQexec(conn, (const char *)query);
   if(PQresultStatus(res)!=PGRES_TUPLES_OK){
@@ -365,7 +365,7 @@ bool QgsShapeFile::insertLayer(QString dbname, QString schema, QString geom_col,
           PQclear(res);
         }
 
-        pro->setProgress(pro->progress()+1);
+        pro.setValue(pro.value()+1);
         qApp->processEvents();
         delete[] geo_temp;
       }

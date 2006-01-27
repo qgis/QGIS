@@ -74,6 +74,9 @@
       </property>
       <item row="5" column="0" >
        <widget class="QTableWidget" name="tblShapefiles" >
+        <property name="selectionMode" >
+         <enum>QAbstractItemView::MultiSelection</enum>
+        </property>
         <property name="selectionBehavior" >
          <enum>QAbstractItemView::SelectRows</enum>
         </property>
