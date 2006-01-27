@@ -357,9 +357,9 @@ void QgsPgGeoprocessing::buffer()
       }
     } else {
       QMessageBox::critical(0, tr("Not a PostgreSQL/PosGIS Layer"),
-                            QString("%1").arg(lyr->name()) +
-                            tr(" is not a PostgreSQL/PosGIS layer. Geoprocessing functions "
-                               "are only available for PostgreSQL/PosGIS Layers"));
+                   QString("%1").arg(lyr->name()) +
+                   tr(" is not a PostgreSQL/PosGIS layer.\n") +
+                   tr("Geoprocessing functions are only available for PostgreSQL/PosGIS Layers"));
     }
   } else {
     QMessageBox::warning(0, tr("No Active Layer"), 
