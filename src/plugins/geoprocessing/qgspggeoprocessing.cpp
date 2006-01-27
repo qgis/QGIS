@@ -78,16 +78,16 @@ QgsPgGeoprocessing::~QgsPgGeoprocessing()
  */
 void QgsPgGeoprocessing::initGui()
 {
-  QMenu *pluginMenu = qI->getPluginMenu("&Geoprocessing");
-  menuId = pluginMenu->insertItem(QIcon(icon_buffer),"&Buffer Features", this, SLOT(buffer()));
+  QMenu *pluginMenu = qI->getPluginMenu(tr("&Geoprocessing"));
+  menuId = pluginMenu->insertItem(QIcon(icon_buffer),tr("&Buffer Features"), this, SLOT(buffer()));
 
-  pluginMenu->setWhatsThis(menuId, "Create a buffer for a PostgreSQL layer. "
-      "A new layer is created in the database with the buffered features.");
+  pluginMenu->setWhatsThis(menuId, tr("Create a buffer for a PostgreSQL layer. "
+      "A new layer is created in the database with the buffered features."));
 
   // Create the action for tool
-  bufferAction = new QAction(QIcon(icon_buffer), "Buffer features", this);
-  bufferAction->setWhatsThis("Create a buffer for a PostgreSQL layer. "
-      "A new layer is created in the database with the buffered features.");
+  bufferAction = new QAction(QIcon(icon_buffer), tr("Buffer features"), this);
+  bufferAction->setWhatsThis(tr("Create a buffer for a PostgreSQL layer. "
+      "A new layer is created in the database with the buffered features."));
   // Connect the action to the buffer slot
   connect(bufferAction, SIGNAL(activated()), this, SLOT(buffer()));
 
@@ -339,14 +339,15 @@ void QgsPgGeoprocessing::buffer()
             }
             else
             {
-              QMessageBox::critical(0, "Unable to add geometry column",
-                  QString("Unable to add geometry column to the output table %1-%2")
-                  .arg(bb->bufferLayerName()).arg(PQerrorMessage(conn)));
+              QMessageBox::critical(0, tr("Unable to add geometry column"),
+                  QString(tr("Unable to add geometry column to the output table ") +
+                      QString("%1-%2").arg(bb->bufferLayerName()).arg(PQerrorMessage(conn))));
 
             }
             } else {
-              QMessageBox::critical(0, "Unable to create table",
-                  QString("Failed to create the output table %1").arg(bb->bufferLayerName()));
+              QMessageBox::critical(0, tr("Unable to create table"),
+                  QString(tr("Failed to create the output table ") +
+                          QString("%1").arg(bb->bufferLayerName())));
             }
             QApplication::restoreOverrideCursor();
           }
@@ -357,16 +358,18 @@ void QgsPgGeoprocessing::buffer()
           QMessageBox::critical(0, err, PQerrorMessage(conn));
         }
       }else{
-        QMessageBox::critical(0,"No GEOS support","Buffer function requires GEOS support in PostGIS");
+        QMessageBox::critical(0,tr("No GEOS support"),
+                              tr("Buffer function requires GEOS support in PostGIS"));
       }
     } else {
-      QMessageBox::critical(0, "Not a PostgreSQL/PosGIS Layer",
-          QString
-          ("%1 is not a PostgreSQL/PosGIS layer. Geoprocessing functions are only available for PostgreSQL/PosGIS Layers").
-          arg(lyr->name()));
+      QMessageBox::critical(0, tr("Not a PostgreSQL/PosGIS Layer"),
+                            QString("%1").arg(lyr->name()) +
+                            tr(" is not a PostgreSQL/PosGIS layer. Geoprocessing functions "
+                               "are only available for PostgreSQL/PosGIS Layers"));
     }
   } else {
-    QMessageBox::warning(0, "No Active Layer", "You must select a layer in the legend to buffer");
+    QMessageBox::warning(0, tr("No Active Layer"), 
+                         tr("You must select a layer in the legend to buffer"));
   }
 }
 /* Functions for determining available features in postGIS */
@@ -419,7 +422,7 @@ bool QgsPgGeoprocessing::hasPROJ(PGconn *connection){
 void QgsPgGeoprocessing::unload()
 {
   // remove the GUI
-  qI->removePluginMenuItem("&Geoprocessing",menuId);
+  qI->removePluginMenuItem(tr("&Geoprocessing"),menuId);
   qI->removeToolBarIcon(bufferAction);
   delete bufferAction;
 }
