@@ -22,8 +22,10 @@
 #define QGSDLGPGBUFFER_H
 #include "ui_qgsdlgpgbufferbase.h"
 #include "qgisgui.h"
+
 class QgisIface;
 class QDoubleValidator;
+
 class QgsDlgPgBuffer:public QDialog, private Ui::QgsDlgPgBufferBase
 {
   Q_OBJECT public:

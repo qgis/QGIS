@@ -18,11 +18,8 @@
  *                                                                         *
  ***************************************************************************/
  /*  $Id$ */
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
-#include <QComboBox>
-#include <qvalidator.h>
+#include <QValidator>
+
 #include "qgsdlgpgbuffer.h"
 #include "qgscontexthelp.h"
 #include <qspinbox.h>
