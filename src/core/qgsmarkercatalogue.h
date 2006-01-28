@@ -18,14 +18,12 @@
 
 #include <iostream>
 
-#include <qbrush.h>
-#include <qpen.h>
-#include <qpixmap.h>
-#include <qpicture.h>
-#include <qdom.h>
-#include <qstringlist.h>
-
 class QString;
+class QStringList;
+class QPicture;
+class QPixmap;
+class QPen;
+class QBrush;
 
 /** Catalogue of point symbols */
 class QgsMarkerCatalogue{

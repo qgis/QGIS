@@ -16,15 +16,15 @@
 #include <cmath>
 #include <iostream>
 
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qimage.h>
-#include <qbitmap.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qrect.h>
-#include <q3pointarray.h>
-#include <qdir.h>
+#include <QPen>
+#include <QBrush>
+#include <QPainter>
+#include <QPixmap>
+#include <QString>
+#include <QStringList>
+#include <QRect>
+#include <QPolygon>
+#include <QDir>
 #include <QPicture>
 
 #include "qgsapplication.h"
@@ -145,7 +145,7 @@ QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush 
     else if ( name == "diamond" ) 
     {
 	half = (int) ( sqrt(area/2.) );
-	Q3PointArray pa(4);
+	QPolygon pa(4);
 	pa.setPoint ( 0, 0, half);
 	pa.setPoint ( 1, half, 2*half);
 	pa.setPoint ( 2, 2*half, half);
