@@ -1408,29 +1408,38 @@ void QgsVectorLayer::showLayerProperties()
   qApp->setOverrideCursor(QCursor(Qt::WaitCursor));
 
 
+  if (!m_propertiesDialog)
+  {
 #ifdef QGISDEBUG
-  std::cerr << "Creating new QgsVectorLayerProperties object\n";
+    std::cerr << "Creating new QgsVectorLayerProperties object\n";
 #endif
-  m_propertiesDialog = new QgsVectorLayerProperties(this);
-  // Make sure that the UI starts out with the correct display
-  // field value
+    m_propertiesDialog = new QgsVectorLayerProperties(this);
+    // Make sure that the UI starts out with the correct display
+    // field value
 #ifdef QGISDEBUG
-  std::cerr << "Setting display field in prop dialog\n";
+    std::cerr << "Setting display field in prop dialog\n";
 #endif
-  m_propertiesDialog->setDisplayField(displayField());
+    m_propertiesDialog->setDisplayField(displayField());
 
 #ifdef QGISDEBUG
-  std::cerr << "Resetting prop dialog\n";
+    std::cerr << "Resetting prop dialog\n";
 #endif
-  m_propertiesDialog->reset();
+    m_propertiesDialog->reset();
 #ifdef QGISDEBUG
-  std::cerr << "Raising prop dialog\n";
+    std::cerr << "Raising prop dialog\n";
 #endif
-  m_propertiesDialog->raise();
+    m_propertiesDialog->raise();
 #ifdef QGISDEBUG
-  std::cerr << "Showing prop dialog\n";
+    std::cerr << "Showing prop dialog\n";
 #endif
-  m_propertiesDialog->show();
+    m_propertiesDialog->show();
+  }
+  else
+  {
+    m_propertiesDialog->show();
+    m_propertiesDialog->raise();
+  }
+
   // restore normal cursor
   qApp->restoreOverrideCursor();
 }
