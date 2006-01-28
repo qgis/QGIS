@@ -65,12 +65,12 @@ QgsSpit::QgsSpit( QWidget *parent, Qt::WFlags fl ) : QDialog( parent, fl )
 	     << tr("DB Relation Name") << tr("Schema");
   tblShapefiles->setHorizontalHeaderLabels(headerText);
   tblShapefiles->verticalHeader()->hide();
+  tblShapefiles->horizontalHeader()->setStretchLastSection(true);
 
   populateConnectionList();
   defSrid = -1;
   defGeom = "the_geom";
   total_features = 0;
-  //setFixedSize(QSize(605, 612));
 
   chkUseDefaultSrid->setChecked( true );
   chkUseDefaultGeom->setChecked( true );
