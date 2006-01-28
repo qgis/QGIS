@@ -18,8 +18,9 @@
 /* $Id$ */
 
 #include "qgsidentifyresults.h"
+#include "qgsapplication.h"
+
 #include <QCloseEvent>
-#include <QCoreApplication>
 #include <QLabel>
 #include <Q3ListView>
 #include <QPixmap>
@@ -171,16 +172,7 @@ void QgsIdentifyResults::addAction(Q3ListViewItem * fnode, int id, QString field
 {
   Q3ListViewItem *item = new Q3ListViewItem(fnode, field, value, "action", QString::number(id) );
 
-  QString appDir;
-#if defined(WIN32) || defined(Q_OS_MACX)
-  appDir = QCoreApplication::applicationDirPath();
-#else
-  appDir = PREFIX;
-#endif
-
-  QString img = appDir + "/share/themes/default/action.png";
-
-  QPixmap pm ( img );
+  QPixmap pm ( QgsApplication::themePath() + "/action.png" );
   item->setPixmap ( 0, pm ); 
 }
 
@@ -192,7 +184,7 @@ Q3ListViewItem *QgsIdentifyResults::addNode(QString label)
 
 void QgsIdentifyResults::setTitle(QString title)
 {
-  setWindowTitle("Identify Results - " + title);
+  setWindowTitle(tr("Identify Results - ") + title);
 }
 
 void QgsIdentifyResults::setColumnText ( int column, const QString & label )
