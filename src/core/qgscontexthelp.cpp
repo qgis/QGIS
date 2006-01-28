@@ -17,14 +17,15 @@
  ***************************************************************************/
 /* $Id$ */
 #include <iostream>
-#include <qstring.h>
-#include <qdir.h>
-#include <q3process.h>
-#include <q3socket.h>
+
+#include <QString>
+#include <QProcess>
+#include <QTcpSocket>
+#include <QTextStream>
+
 #include "qgscontexthelp.h"
 #include "qgsapplication.h"
-//Added by qt3to4:
-#include <QTextStream>
+
 
 // Note: QGSCONTEXTHELP_REUSE must be defined (or not) in qgscontexthelp.h.
 // The flag determines if an existing viewer process should be reused or
@@ -50,8 +51,8 @@ QgsContextHelp::QgsContextHelp(int contextId)
   mProcess = start(contextId);
 #ifdef QGSCONTEXTHELP_REUSE
   // Create socket to communicate with process
-  mSocket = new Q3Socket(this);
-  connect(mProcess, SIGNAL(readyReadStdout()), SLOT(readPort()));
+  mSocket = new QTcpSocket(this);
+  connect(mProcess, SIGNAL(readyReadStandardoutput()), SLOT(readPort()));
 #else
   // Placeholder for new process if terminating and restarting
   mNextProcess = NULL;
@@ -69,7 +70,7 @@ QgsContextHelp::~QgsContextHelp()
   delete mProcess;
 }
 
-Q3Process *QgsContextHelp::start(int contextId)
+QProcess *QgsContextHelp::start(int contextId)
 {
   // Get the path to the help viewer
   QString helpPath = QgsApplication::helpAppPath(); 
@@ -77,14 +78,14 @@ Q3Process *QgsContextHelp::start(int contextId)
   std::cout << "Help path is " << helpPath.toLocal8Bit().data() << std::endl; 
 #endif
 
-  Q3Process *process = new Q3Process(helpPath);
   QString arg1;
   arg1.setNum(contextId);
-  process->addArgument(arg1);
-  process->start();
+  QProcess *process = new QProcess;
+  process->start(helpPath, QStringList(arg1));
 
   // Delete this object if the process terminates
-  connect(process, SIGNAL(processExited()), SLOT(processExited()));
+  connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), 
+                   SLOT(processExited()));
 
   // Delete the process if the application quits
   connect(qApp, SIGNAL(aboutToQuit()), process, SLOT(tryTerminate()));
@@ -96,10 +97,11 @@ void QgsContextHelp::readPort()
 {
 #ifdef QGSCONTEXTHELP_REUSE
   // Get port and connect socket to process
-  QString p = mProcess->readLineStdout();
+  QString p = mProcess->readAllStandardOutput();
   Q_UINT16 port = p.toUShort();
   mSocket->connectToHost("localhost", port);
-  disconnect(mProcess, SIGNAL(readyReadStdout()), this, SLOT(readPort()));
+  disconnect(mProcess, SIGNAL(readyReadStandardOutput()), this, 
+                       SLOT(readPort()));
 #endif
 }
 
@@ -120,7 +122,7 @@ void QgsContextHelp::showContext(int contextId)
   // Start new help viewer process (asynchronous)
   mNextProcess = start(contextId);
   // Terminate existing help viewer process (asynchronous)
-  mProcess->tryTerminate();
+  mProcess->terminate();
 #endif
 }
 
