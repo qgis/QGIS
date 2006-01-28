@@ -33,8 +33,6 @@
 #endif
 
 #include <QMessageBox>
-#include <Q3WhatsThis>
-
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr, 
                                                          QWidget * parent, 
@@ -142,9 +140,9 @@ void QgsVectorLayerProperties::reset( void )
   lblSource->setText(source);
   txtDisplayName->setText(layer->name());
   // set whats this stuff
-  Q3WhatsThis::add(lblSource, tr("The source of the data (path name or database connection information)"));
-  Q3WhatsThis::add(pbnQueryBuilder, tr("This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer"));
-  Q3WhatsThis::add(txtSubsetSQL, tr("The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button"));
+  lblSource->setWhatsThis(tr("The source of the data (path name or database connection information)"));
+  pbnQueryBuilder->setWhatsThis(tr("This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer"));
+  txtSubsetSQL->setWhatsThis(tr("The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button"));
 
   //we are dealing with a pg layer here so that we can enable the sql box
   QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
