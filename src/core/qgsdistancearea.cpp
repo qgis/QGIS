@@ -166,8 +166,20 @@ bool QgsDistanceArea::setEllipsoid(const QString& ellipsoid)
 
 bool QgsDistanceArea::setDefaultEllipsoid()
 {
+  QString defEll("WGS84");
+  QString ellKey("/qgis/measure/ellipsoid");
   QSettings settings;
-  QString ellipsoid = settings.readEntry("/qgis/measure/ellipsoid", "WGS84");
+  QString ellipsoid = settings.readEntry(ellKey, defEll);
+
+  // Somehow/sometimes the settings file can have a blank ellipsoid
+  // value. This is undesirable, so force a valid default value in
+  // that case, and fix the problem by writing a valid value.
+  if (ellipsoid.isEmpty())
+  {
+    ellipsoid = defEll;
+    settings.writeEntry(ellKey, ellipsoid);
+  }
+
   return setEllipsoid(ellipsoid);
 }
 
@@ -300,7 +312,7 @@ unsigned char* QgsDistanceArea::measurePolygon(unsigned char* feature, double* a
     
       points[jdx] = mCoordTransform->transform(QgsPoint(x,y));
     }
-  
+
     if (points.size() > 2)
     {
       areaTmp = computePolygonArea(points);
