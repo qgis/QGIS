@@ -172,7 +172,7 @@ void QgsIdentifyResults::addAction(Q3ListViewItem * fnode, int id, QString field
 {
   Q3ListViewItem *item = new Q3ListViewItem(fnode, field, value, "action", QString::number(id) );
 
-  QPixmap pm ( QgsApplication::themePath() + "/action.png" );
+  QPixmap pm ( QgsApplication::themePath() + "/mAction.png" );
   item->setPixmap ( 0, pm ); 
 }
 
