@@ -24,14 +24,8 @@
 #include "qgssvgcache.h"
 #include "qgsmarkercatalogue.h"
 
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qimage.h>
-#include <qbitmap.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qrect.h>
-#include <q3pointarray.h>
+#include <QPainter>
+#include <QString>
 
 QgsSymbol::QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString label) : 
       mLowerValue(lvalue),
