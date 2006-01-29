@@ -27,6 +27,7 @@ class QLibrary;
 class QgsMapToPixel;
 class OGRLayer;
 class OGRDataSource;
+class QPixmap;
 
 class QgisApp;
 class QgsMapToPixel;
@@ -39,9 +40,6 @@ class QgsLabel;
 
 #include <map>
 #include <vector>
-
-#include "q3valuevector.h"
-#include <QPixmap>
 
 #include "qgsmaplayer.h"
 #include "qgsattributeaction.h"
