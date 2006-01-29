@@ -19,9 +19,8 @@
 #ifndef QGISIFACE_H
 #define QGISIFACE_H
 #include "qgisinterface.h"
-//Added by qt3to4:
-#include <QMenu>
 
+class QMenu;
 class QgsMapCanvas;
 class QgsMapLayer;
 /** \class QgisIface

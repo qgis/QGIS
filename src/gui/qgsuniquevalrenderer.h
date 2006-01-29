@@ -19,10 +19,11 @@
 #define QGSUNIQUEVALRENDERER_H
 
 #include "qgsrenderer.h"
-#include <qcolor.h>
 #include <map>
 
 class QgsSymbol;
+class QPixmap;
+class QPainter;
 
 class QgsUniqueValRenderer: public QgsRenderer
 {

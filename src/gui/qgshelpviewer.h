@@ -20,21 +20,10 @@
 #ifndef QGSHELPVIEWER_H
 #define QGSHELPVIEWER_H
 
-#include <qvariant.h>
-#include <qdialog.h>
-//Added by qt3to4:
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
 #include "ui_qgshelpviewerbase.h"
-#include <QDialog>
 
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-class Q3GridLayout;
-class QPushButton;
-class Q3TextBrowser;
 class QString;
+
 class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
 {
     Q_OBJECT

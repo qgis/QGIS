@@ -20,8 +20,6 @@
 #ifndef QGSMARKERDIALOG_H
 #define QGSMARKERDIALOG_H
 #include "ui_qgsmarkerdialogbase.h"
-#include <QDialog>
-#include <qdir.h>
 
 /**A class for choosing marker images by clicking icons*/
 class QgsMarkerDialog: public QDialog, private Ui::QgsMarkerDialogBase

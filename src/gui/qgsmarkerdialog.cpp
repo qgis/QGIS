@@ -19,22 +19,20 @@
 #include "qgsmarkerdialog.h"
 #include "qgsapplication.h"
 #include "qgssvgcache.h"
-#include <qdir.h>
+
+#include <QDir>
 #include <QFileDialog>
 #include <q3iconview.h>
-#include <qlineedit.h>
-#include <q3picture.h>
-#include <qpushbutton.h>
-#include <qpainter.h>
-#include "qgsconfig.h"
-//Added by qt3to4:
 #include <QPixmap>
+
+#include "qgsconfig.h"
 
 QgsMarkerDialog::QgsMarkerDialog(QString startdir): 
   //paramters removed by Tim during qt4 ui port - FIXME!!!
   //QgsMarkerDialogBase(0,0,true,Qt::WStyle_StaysOnTop), mCurrentDir(startdir)
   QgsMarkerDialogBase(), mCurrentDir(startdir)
 {
+  setupUi(this);
     QObject::connect(mOkButton,SIGNAL(clicked()),this,SLOT(accept()));
     QObject::connect(mCancelButton,SIGNAL(clicked()),this,SLOT(reject()));
     QObject::connect(mBrowseDirectoriesButton,SIGNAL(clicked()),this,SLOT(changeDirectory()));

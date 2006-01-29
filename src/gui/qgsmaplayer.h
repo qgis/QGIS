@@ -21,33 +21,25 @@
 
 #include <vector>
 
-#include <qwidget.h>
-#include <qobject.h>
-#include <qpixmap.h>
-#include <qglobal.h>
+#include <QObject>
+#include <QPixmap>
 
 #include <qgsrect.h>
 #include <qgis.h>
 #include <qgsfield.h>
 
 #include <qgscoordinatetransform.h>
-//Added by qt3to4:
-#include <QEvent>
-#include <QKeyEvent>
-#include <QLabel>
-#include <QMenu>
 
 class QAction;
 class QgisApp;
 class QgsMapToPixel;
 class QgsFeature;
-class Q3PopupMenu;
 class QgsLegendLayerFile;
 class QgsLegendSymbologyGroup;
 class QDomNode;
 class QDomDocument;
-class QEvent;
-class QLabel;
+class QKeyEvent;
+class QMenu;
 
 /** \class QgsMapLayer
  * \brief Base class for all map layer types.

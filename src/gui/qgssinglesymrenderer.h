@@ -23,9 +23,10 @@
 #include "qgsrenderitem.h"
 #include "qgssymbol.h"
 #include "qgspoint.h"
-#include <qpainter.h>
-#include <QPixmap>
 #include "qgsmaptopixel.h"
+
+class QPainter;
+class QPixmap;
 class QgsFeature;
 
 /**Render class to display all the features with a single QgsSymbol*/

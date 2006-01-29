@@ -16,8 +16,6 @@
  ***************************************************************************/
 
 #include "qgsproject.h"
-//Added by qt3to4:
-#include <QTextStream>
 
 #include <memory>
 #include <cassert>
@@ -37,14 +35,12 @@ using namespace std;
 #include "qgsprojectproperty.h"
 #include "qgsmapcanvas.h"
 
-#include <qapplication.h>
-#include <qfileinfo.h>
-#include <qdom.h>
-#include <q3dict.h>
-#include <qmessagebox.h>
-#include <qwidget.h>
-#include <qglobal.h>
-#include <qobject.h>
+#include <QApplication>
+#include <QFileInfo>
+#include <QDomNode>
+#include <QWidget>
+#include <QObject>
+#include <QTextStream>
 
 
 

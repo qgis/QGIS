@@ -48,7 +48,6 @@
 #include <QPolygon>
 #include <QString>
 #include <QMessageBox>
-#include <q3popupmenu.h>
 #include <QProgressDialog>
 #include <QSettings>
 #include <QWidget>

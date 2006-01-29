@@ -24,10 +24,6 @@
 
 #include <memory>
 
-#include <qmap.h>
-#include <q3valuelist.h>
-#include <qvariant.h>
-
 #include <qgsscalecalculator.h>
 
 

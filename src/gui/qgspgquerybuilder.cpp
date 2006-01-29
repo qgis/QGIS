@@ -15,9 +15,7 @@
 /* $Id$ */
 #include <iostream>
 #include <q3listbox.h>
-#include <qmessagebox.h>
-#include <q3textedit.h>
-#include <qlabel.h>
+#include <QMessageBox>
 #include "qgspgquerybuilder.h"
 // default constructor
 QgsPgQueryBuilder::QgsPgQueryBuilder(QWidget *parent, Qt::WFlags fl)
