@@ -41,23 +41,18 @@
 #endif
 
 #include <QAction>
-#include <qapplication.h>
-#include <qcursor.h>
+#include <QApplication>
+#include <QCursor>
 #include <q3listview.h>
-#include <qpainter.h>
-#include <q3pointarray.h>
-#include <qstring.h>
-#include <qmessagebox.h>
+#include <QPainter>
+#include <QPolygon>
+#include <QString>
+#include <QMessageBox>
 #include <q3popupmenu.h>
-#include <qlabel.h>
-#include <q3listview.h>
-#include <qlibrary.h>
-#include <q3picture.h>
-#include <q3progressdialog.h>
-#include <qsettings.h>
-#include <qwidget.h>
-#include <qwidget.h>
-#include <qglobal.h>
+#include <QProgressDialog>
+#include <QSettings>
+#include <QWidget>
+#include <QPixmap>
 
 #include "qgsapplication.h"
 #include "qgisapp.h"
@@ -509,7 +504,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   // calls to drawPolyline with a QPointArray holding floats (or
   // doubles?), so this loop may become unnecessary (but may still need
   // the double* versions for the OGR coordinate transformation).
-  Q3PointArray pa(nPoints);
+  QPolygon pa(nPoints);
   for (register int i = 0; i < nPoints; ++i)
   {
     // Here we assume that a static cast is as fast as a C style case
@@ -682,7 +677,7 @@ std::cerr << i << ": " << ring->first[i]
     // Store size here and use it in the loop to avoid penalty of
     // multiple calls to size()
     int numRings = rings.size();
-    Q3PointArray pa(total_points + numRings - 1);
+    QPolygon pa(total_points + numRings - 1);
     for (register int i = 0; i < numRings; ++i)
     {
       // Store the pointer in a variable with a short name so as to make
@@ -1341,13 +1336,12 @@ void QgsVectorLayer::invertSelection()
 
   if(tabledisplay)
   {
-    //todo: show progress dialog
-    Q3ProgressDialog progress( "Invert Selection...", "Abort", mSelected.size(), 0, "progress", TRUE );
+    QProgressDialog progress( tr("Invert Selection..."), tr("Abort"), 0, mSelected.size(), tabledisplay);
     int i=0;
     for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
     {
       ++i;
-      progress.setProgress(i);
+      progress.setValue(i);
       qApp->processEvents();
       if(progress.wasCanceled())
       {
@@ -2071,7 +2065,9 @@ void QgsVectorLayer::startEditing()
   {
     if(!(dataProvider->capabilities()&QgsVectorDataProvider::AddFeatures))
     {
-      QMessageBox::information(0,"Start editing failed","Provider cannot be opened for editing",QMessageBox::Ok);
+      QMessageBox::information(0,tr("Start editing failed"),
+                               tr("Provider cannot be opened for editing"),
+                               QMessageBox::Ok);
     }
     else
     {
@@ -2101,7 +2097,7 @@ void QgsVectorLayer::stopEditing()
       {
         if(!commitChanges())
         {
-          QMessageBox::information(0,"Error","Could not commit changes",QMessageBox::Ok);
+          QMessageBox::information(0,tr("Error"),tr("Could not commit changes"),QMessageBox::Ok);
         }
         else
         {
@@ -2119,8 +2115,8 @@ void QgsVectorLayer::stopEditing()
       {
         if(!rollBack())
         {
-          QMessageBox::information(0,"Error",
-              "Problems during roll back",QMessageBox::Ok);
+          QMessageBox::information(0,tr("Error"),
+              tr("Problems during roll back"),QMessageBox::Ok);
         }
         //hide and delete the table because it is not up to date any more
         if (tabledisplay)
@@ -2647,7 +2643,7 @@ bool QgsVectorLayer::commitChanges()
     {
       if ( !dataProvider->changeAttributeValues ( mChangedAttributes ) ) 
       {
-        QMessageBox::warning(0,"Warning","Could not change attributes");
+        QMessageBox::warning(0,tr("Warning"),tr("Could not change attributes"));
       }
       mChangedAttributes.clear();
     }
@@ -2661,7 +2657,7 @@ bool QgsVectorLayer::commitChanges()
     {
       if ( !dataProvider->changeGeometryValues ( mChangedGeometries ) ) 
       {
-        QMessageBox::warning(0,"Error","Could not commit changes to geometries");
+        QMessageBox::warning(0,tr("Error"),tr("Could not commit changes to geometries"));
       }
       mChangedGeometries.clear();
     }
