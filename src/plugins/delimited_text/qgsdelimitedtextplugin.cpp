@@ -28,16 +28,8 @@ Functions:
 #include "qgsdelimitedtextplugin.h"
 
 
-#include <q3toolbar.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <q3popupmenu.h>
-#include <qlineedit.h>
-#include <qaction.h>
-#include <qapplication.h>
-#include <qcursor.h>
-#include <q3whatsthis.h>
-#include <qglobal.h>
+#include <QMenu>
+#include <QAction>
 
 //non qt includes
 #include <iostream>
@@ -117,11 +109,7 @@ void QgsDelimitedTextPlugin::initGui()
       "X and Y fields are required and must contain coordinates in decimal units.");
 
   // Create the action for tool
-#if QT_VERSION < 0x040000
-  myQActionPointer = new QAction("Add Delimited Text Layer", QIcon(icon), "&Wmi",0, this, "run");
-#else
   myQActionPointer = new QAction(QIcon(icon), "Add Delimited Text Layer", this);
-#endif
 
   myQActionPointer->setWhatsThis("Add a delimited text file as a map layer. "
       "The file must have a header row containing the field names. "

@@ -13,21 +13,19 @@
  ***************************************************************************/
 /* $Id$ */
 #include <iostream>
-#include <QFileDialog>
-#include <qlineedit.h>
-#include <q3textedit.h>
-#include <qfile.h>
-#include <QComboBox>
-#include <qpushbutton.h>
-#include <qsettings.h>
-#include <qfileinfo.h>
-#include <qregexp.h>
-#include <qmessagebox.h>
 #include "qgsdelimitedtextplugingui.h"
 #include "qgscontexthelp.h"
-//Added by qt3to4:
-#include <QTextStream>
+
 #include "qgisiface.h"
+
+#include <QFileDialog>
+#include <QFile>
+#include <QComboBox>
+#include <QSettings>
+#include <QFileInfo>
+#include <QRegExp>
+#include <QMessageBox>
+#include <QTextStream>
 
 QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui() : QDialog()
 {

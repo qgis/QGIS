@@ -22,7 +22,6 @@
 
 #include "qgsdlgpgbuffer.h"
 #include "qgscontexthelp.h"
-#include <qspinbox.h>
 #include "qgisiface.h"
 
 QgsDlgPgBuffer::QgsDlgPgBuffer( QgisIface * _qI, QWidget * parent, Qt::WFlags fl)
