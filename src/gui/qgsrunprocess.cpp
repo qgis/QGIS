@@ -62,7 +62,6 @@ QgsRunProcess::QgsRunProcess(const QStringList& args,
     // QgsMessageViewer dialog, but tweak its behaviour to suit our
     // needs. It will delete itself when the dialog box is closed.
     mLogViewer = new QgsMessageViewer(0, Qt::WDestructiveClose);
-    mLogViewer->setTextFormat(Qt::LogText);
     mLogViewer->setCaption(whole_cmd);
     mLogViewer->appendMessage( "<b>" + tr("Starting") + " " + whole_cmd + "...</b>" );
     mLogViewer->show();

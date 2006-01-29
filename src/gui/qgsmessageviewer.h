@@ -26,7 +26,6 @@ class QgsMessageViewer: public QDialog, private Ui::QgsMessageViewer
   public:
     QgsMessageViewer(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     ~QgsMessageViewer();
-    void setTextFormat(Qt::TextFormat f);
     void setMessage(const QString& msg);
     void appendMessage(const QString& msg);
 };
