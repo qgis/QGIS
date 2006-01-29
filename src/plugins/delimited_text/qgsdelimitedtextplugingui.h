@@ -15,7 +15,6 @@
 
 #include "ui_qgsdelimitedtextpluginguibase.h"
 
-#include <QDialog>
 class QgisIface;
 
 /**
