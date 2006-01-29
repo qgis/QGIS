@@ -17,15 +17,13 @@
  ***************************************************************************/
 /* $Id$ */
 #include <iostream>
-#include <qstring.h>
-#include <qmenubar.h>
-#include <qglobal.h>
+#include <QString>
+#include <QMenu>
+
 #include "qgisinterface.h"
 #include "qgisapp.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
-//Added by qt3to4:
-#include <Q3PopupMenu>
 
 QgisIface::QgisIface(QgisApp * _qgis, const char *name):qgis(_qgis)
 {

@@ -25,10 +25,10 @@
 #include "qgslegenditem.h"
 #include "qgssymbologyutils.h"
 #include "qgssvgcache.h"
-#include <qdom.h>
-#include <qpainter.h>
-#include <q3picture.h>
-#include <qpixmap.h>
+
+#include <QDomNode>
+#include <QPainter>
+#include <QPixmap>
 
 QgsSingleSymRenderer::QgsSingleSymRenderer(QGis::VectorType type)
 {

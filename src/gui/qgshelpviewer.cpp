@@ -17,15 +17,10 @@
  ***************************************************************************/
  /* $Id$ */
 
-
-
-#include <qvariant.h>
-#include <qpushbutton.h>
-#include <q3textbrowser.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <q3whatsthis.h>
 #include "qgshelpviewer.h"
+
+#include <QString>
+
 QgsHelpViewer::QgsHelpViewer(QWidget * parent, Qt::WFlags fl)
 : QDialog(parent, fl)
 {

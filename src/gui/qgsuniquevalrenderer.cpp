@@ -24,10 +24,9 @@
 #include "qgssymbologyutils.h"
 #include "qgsuvaldialog.h"
 #include "qgssvgcache.h"
-#include <qdom.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <q3picture.h>
+#include <QDomNode>
+#include <QPainter>
+#include <QPixmap>
 #include <vector>
 
 QgsUniqueValRenderer::QgsUniqueValRenderer(QGis::VectorType type): mClassificationField(0)
