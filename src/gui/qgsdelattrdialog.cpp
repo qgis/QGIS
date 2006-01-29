@@ -18,7 +18,6 @@
 #include "qgsdelattrdialog.h"
 #include "qgsfield.h"
 #include <q3header.h>
-#include <q3listbox.h>
 
 QgsDelAttrDialog::QgsDelAttrDialog(Q3Header* header): QgsDelAttrDialogBase()
 {
