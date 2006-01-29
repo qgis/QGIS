@@ -18,16 +18,12 @@
 
 #include <iostream>
 
-#include <qimage.h>
-#include <qpainter.h>
-#include <q3picture.h>
-#include <qsettings.h>
-#include <qmessagebox.h>
-
-#include "qgssvgcache.h"
-//Added by qt3to4:
+#include <QPainter>
+#include <QSettings>
 #include <QPixmap>
 #include <QSvgRenderer>
+
+#include "qgssvgcache.h"
 
 
 QgsSVGCache::QgsSVGCache() {

@@ -22,7 +22,7 @@
 #include <map>
 #include <queue>
 
-#include <qpixmap.h>
+#include <QPixmap>
 #include <QSvgRenderer>
 
 /** This class is a singleton that does all the SVG rendering in QGIS.

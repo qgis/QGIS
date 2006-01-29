@@ -22,10 +22,10 @@
 #include <iostream>
 
 #include "qgis.h"
-#include <qbrush.h>
-#include <qpen.h>
-#include <qpixmap.h>
-#include <qdom.h>
+#include <QBrush>
+#include <QPen>
+#include <QPixmap>
+#include <QDomNode>
 
 class QString;
 
