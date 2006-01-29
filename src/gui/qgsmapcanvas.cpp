@@ -2567,7 +2567,7 @@ void QgsMapCanvas::mouseMoveEvent(QMouseEvent * e)
           mCanvasProperties->zoomBox.setTopLeft(mCanvasProperties->rubberStartPoint);
         }
         mCanvasProperties->zoomBox.setBottomRight(e->pos());
-        mRubberBand->setGeometry(mCanvasProperties->zoomBox);
+        mRubberBand->setGeometry(mCanvasProperties->zoomBox.normalized());
         mRubberBand->show();
 #endif
 
