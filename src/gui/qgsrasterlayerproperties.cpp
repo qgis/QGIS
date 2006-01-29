@@ -24,7 +24,7 @@ email                : tim@linfiniti.com
 #include <qgsrasterlayer.h>
 
 #include <QPainter>
-#include <Q3PointArray>
+#include <QPolygon>
 #include <iostream>
 
 const char * const ident = 
@@ -821,7 +821,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   if (rasterLayer->getRasterLayerType()
           == QgsRasterLayer::PALETTE) //paletted layers have hard coded color entries
   {
-    Q3PointArray myPointArray(myLastBinWithData);
+    QPolygon myPointArray(myLastBinWithData);
     QgsColorTable *myColorTable=rasterLayer->colorTable(1);
 #ifdef QGISDEBUG
     std::cout << "Making paletted image histogram....computing band stats" << std::endl;
@@ -903,7 +903,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
       if ( myItem->isSelected() )
       {
 
-        Q3PointArray myPointArray(myLastBinWithData);
+        QPolygon myPointArray(myLastBinWithData);
         for (int myBin = 0; myBin <myLastBinWithData; myBin++)
         {
           double myBinValue = myRasterBandStats.histogramVector->at(myBin);
@@ -1022,7 +1022,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   myPainter.setPen( Qt::gray );
   for (int i=0;i<myXDivisions;++i)
   {
-    Q3PointArray myPointArray(4);
+    QPolygon myPointArray(4);
     myPointArray.setPoint(0,(i*myXDivisions)+myYGutterWidth , myImageHeight-myXGutterHeight);
     myPointArray.setPoint(1,(i*myXDivisions)+myYGutterWidth , myImageHeight-(myXGutterHeight-5));
     myPointArray.setPoint(2,(i*myXDivisions)+myYGutterWidth , myImageHeight-myXGutterHeight);
@@ -1037,7 +1037,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   for (int i=myYDivisions;i>0;--i)
   {
 
-    Q3PointArray myPointArray(4);
+    QPolygon myPointArray(4);
     int myYOrigin = myImageHeight-myXGutterHeight;
     myPointArray.setPoint(0,myYGutterWidth,myYOrigin-(i*myYDivisions ));
     myPointArray.setPoint(1,myYGutterWidth-5,myYOrigin-(i*myYDivisions ));
