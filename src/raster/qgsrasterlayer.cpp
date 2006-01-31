@@ -59,8 +59,8 @@ When compiling you can make sure DEBUG is defined by including -DDEBUG in the gc
 wish to see edbug messages printed to stdout.
  
 */
-#include "qgslegendsymbologygroup.h"
-#include "qgslegendsymbologyitem.h"
+#include "qgslegend.h"
+#include "qgslegendlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsmaptopixel.h"
 //Added by qt3to4:
@@ -5201,17 +5201,12 @@ QString QgsRasterLayer::layerTypeIconPath()
 
 void QgsRasterLayer::refreshLegend()
 {
-    if(mLegendSymbologyGroupParent)
+  if(mLegend)
     {
-	//first remove the existing child item (currently there is always one for rasterlayers)
-	QTreeWidgetItem* myChild = mLegendSymbologyGroupParent->child(0);
-	delete myChild;
-
-	QgsLegendSymbologyItem* item = new QgsLegendSymbologyItem(mLegendSymbologyGroupParent, "");
-	QIcon theIcon(getLegendQPixmap(true));
-	item->setIcon(0, theIcon);
-	//copy the symbology changes for the other layers in the same symbology group
-	mLegendSymbologyGroupParent->updateLayerSymbologySettings(this);
+      std::list< std::pair<QString, QIcon*> > itemList;
+      QIcon* theIcon = new QIcon(getLegendQPixmap(true));
+      itemList.push_back(std::make_pair("", theIcon));
+      mLegend->changeSymbologySettings(getLayerID(), &itemList);
     }
 }
 

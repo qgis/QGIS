@@ -34,8 +34,8 @@ class QAction;
 class QgisApp;
 class QgsMapToPixel;
 class QgsFeature;
+class QgsLegend;
 class QgsLegendLayerFile;
-class QgsLegendSymbologyGroup;
 class QDomNode;
 class QDomDocument;
 class QKeyEvent;
@@ -268,8 +268,8 @@ public:
     /**Returns the path to an icon which characterises the type of layer*/
     virtual QString layerTypeIconPath() = 0;
 
-    void setLegendSymbologyGroupParent(QgsLegendSymbologyGroup* item) {mLegendSymbologyGroupParent = item;}
-    const QgsLegendSymbologyGroup* legendSymbologyGroupParent() {return mLegendSymbologyGroupParent;}
+    void setLegend(QgsLegend* legend) {mLegend = legend;}
+    const QgsLegend* legend() {return mLegend;}
 
     /**Refresh the symbology part of the legend. Specific implementations have to be provided by subclasses*/
     virtual void refreshLegend() = 0;
@@ -438,9 +438,8 @@ protected:
     //! A QgsCoordinateTransform is used for on the fly reprojection of map layers
     QgsCoordinateTransform * mCoordinateTransform; 
 
-    /**Pointer to the symbology group item of the legend. This pointer is used if refreshLegend() 
-       is called by a subclass*/
-    QgsLegendSymbologyGroup* mLegendSymbologyGroupParent;
+    /**Pointer to the legend layer item of the legend*/
+    QgsLegend* mLegend;
 
     /**Pointer to the legend layer file of the legend. It is used to modify the pixmap with overview
      glasses, editing or pyramid symbols*/

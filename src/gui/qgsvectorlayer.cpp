@@ -64,9 +64,7 @@
 #include "qgsattributetable.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
-#include "qgslegenditem.h"
-#include "qgslegendvectorsymbologyitem.h"
-#include "qgslegendsymbologygroup.h"
+#include "qgslegend.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsrenderer.h"
 #include "qgssinglesymrenderer.h"
@@ -2865,9 +2863,27 @@ QString QgsVectorLayer::layerTypeIconPath()
 
 void QgsVectorLayer::refreshLegend()
 {
-  if(mLegendSymbologyGroupParent && m_renderer)
+  if(mLegend && m_renderer)
+    {
+      std::list< std::pair<QString, QIcon*> > itemList;
+      m_renderer->refreshLegend(&itemList);
+      if(m_renderer->needsAttributes()) //create an item for each classification field (only one for most renderers)
+	{
+	  std::list<int> classfieldlist = m_renderer->classificationAttributes();
+	  for(std::list<int>::iterator it = classfieldlist.begin(); it!=classfieldlist.end(); ++it)
+	    {
+	      const QgsField theField = (dataProvider->fields())[*it];
+	      QString classfieldname = theField.name();
+	      itemList.push_front(std::make_pair(classfieldname, (QIcon*)0));
+	    }
+	}
+      mLegend->changeSymbologySettings(getLayerID(), &itemList);
+    }
+
+#if 0
+  if(mLegendLayer && m_renderer)
   {
-    m_renderer->refreshLegend(mLegendSymbologyGroupParent);
+    m_renderer->refreshLegend(mLegendLayer);
   }
 
   //create an item for each classification field (currently only one for all renderers)
@@ -2882,15 +2898,16 @@ void QgsVectorLayer::refreshLegend()
         QString classfieldname = theField.name();
         QgsLegendSymbologyItem* item = new QgsLegendSymbologyItem();
         item->setText(0, classfieldname);
-        mLegendSymbologyGroupParent->insertChild(0, item);
+        static_cast<QTreeWidgetItem*>(mLegendLayer)->insertChild(0, item);
       }
     }
   }
-  if(mLegendSymbologyGroupParent)
+  if(mLegendLayer)
   {
     //copy the symbology changes for the other layers in the same symbology group
-    mLegendSymbologyGroupParent->updateLayerSymbologySettings(this);
+    mLegendLayer->updateLayerSymbologySettings(this);
   }
+#endif
 }
 
 bool QgsVectorLayer::copySymbologySettings(const QgsMapLayer& other)

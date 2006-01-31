@@ -24,7 +24,7 @@
 #include "qgslegendgroup.h"
 #include "qgslegendlayer.h"
 #include "qgslegendpropertygroup.h"
-#include "qgslegendsymbologygroup.h"
+#include "qgslegendsymbologyitem.h"
 #include "qgslegendlayerfile.h"
 #include "qgslegendlayerfilegroup.h"
 #include "qgsmapcanvas.h"
@@ -52,7 +52,7 @@ const int AUTOSCROLL_MARGIN = 16;
    set mItemBeingMoved pointer to 0 to prevent SuSE 9.0 crash
 */
 QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
-    : QTreeWidget(parent), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0)
+  : QTreeWidget(parent), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0), mShowLegendLayerFiles(false)
 {
   connect( this, SIGNAL(selectionChanged(QTreeWidgetItem *)),
            this, SLOT(updateLegendItem(QTreeWidgetItem *)) );
@@ -270,10 +270,8 @@ void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
 	if(originType == QgsLegendItem::LEGEND_LAYER_FILE && destType == QgsLegendItem::LEGEND_LAYER_FILE_GROUP)
 	  {
 	    QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
-	    
-	    if(origLayer->legendSymbologyGroupParent() != dest->nextSibling())
+	      if(1) //todo: find a test to avoid that symbology settings are copied if an item is moved within the same legend layer  
 	      {
-		origLayer->setLegendSymbologyGroupParent((QgsLegendSymbologyGroup*)(dest->nextSibling()));
 		if(dest->childCount() > 1)
 		  {
 		    //find the first layer in the legend layer group != origLayer and copy its settings
@@ -296,11 +294,11 @@ void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
 	  {
 	    QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
 	    QgsMapLayer* destLayer = ((QgsLegendLayerFile*)(dest))->layer();
+
 	    if(dest == origin)//origin item has been moved in mouseMoveEvent such that it is under the mouse cursor now
 	      {
-		if(origLayer->legendSymbologyGroupParent() != origin->parent())
-		  {
-		    origLayer->setLegendSymbologyGroupParent((QgsLegendSymbologyGroup*)(dynamic_cast<QgsLegendItem*>(origin->parent())->nextSibling()));
+		if(1) //todo: find a test to avoid that symbology settings are copied if an item is moved within the same legend layer  
+		{
 		    if(origin->parent()->childCount() > 1)
 		      {
 			//find the first layer in the legend layer group != origLayer and copy its settings
@@ -324,7 +322,7 @@ void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
 		QgsMapLayer* origLayer = ((QgsLegendLayerFile*)(origin))->layer();
 		QgsMapLayer* destLayer = ((QgsLegendLayerFile*)(dest))->layer();
 		origLayer->copySymbologySettings(*destLayer);
-		origLayer->setLegendSymbologyGroupParent((QgsLegendSymbologyGroup*)(dynamic_cast<QgsLegendItem*>(dest->parent())->nextSibling()));
+		origLayer->setLegend((QgsLegend*)(dynamic_cast<QgsLegendItem*>(dest->parent())->nextSibling()));
 	      }
 	  }
 	emit zOrderChanged(this);
@@ -414,7 +412,11 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
   theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
   theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionExpandTree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
   theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionCollapseTree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
-  
+  QAction* showFileGroupsAction = theMenu.addAction(tr("Show file groups"), this, SLOT(showLegendLayerFileGroups(bool)));
+  showFileGroupsAction->setCheckable(true);
+  showFileGroupsAction->blockSignals(true);
+  showFileGroupsAction->setChecked(mShowLegendLayerFiles);
+  showFileGroupsAction->blockSignals(false);
   theMenu.exec(position);
 }
 
@@ -456,18 +458,20 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
       }
     blockSignals(false);
    
-    QgsLegendSymbologyGroup * lsgroup = new QgsLegendSymbologyGroup(llayer,QString("Symbology"));
-    layer->setLegendSymbologyGroupParent(lsgroup);
-    QgsLegendPropertyGroup * lpgroup = new QgsLegendPropertyGroup(llayer,QString("Properties"));
+    layer->setLegend(this);
+    //QgsLegendPropertyGroup * lpgroup = new QgsLegendPropertyGroup(llayer,QString("Properties"));
     layer->setLegendLayerFile(llfile);
     layer->initContextMenu(mApp);
 
     insertTopLevelItem(0, llayer);
     
-    setExpanded(indexFromItem(llayer), false);
-    setExpanded(indexFromItem(lpgroup), true);
-    setExpanded(indexFromItem(lsgroup), true);
-    setExpanded(indexFromItem(llfgroup), true);
+    setExpanded(indexFromItem(llayer), true);
+    setExpanded(indexFromItem(llfgroup), false);
+    //todo: only if qsetting for 'legend layer file visible' is not set
+    if(!mShowLegendLayerFiles)
+      {
+	setItemHidden(llfgroup, true);
+      }
 }
 
 QgsMapLayer* QgsLegend::currentLayer()
@@ -650,6 +654,7 @@ void QgsLegend::collapseAll()
 
 bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 {
+#if 0
     QDomElement legendnode = document.createElement("legend");
     layer_node.appendChild(legendnode);
 
@@ -780,11 +785,13 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 	}
 	currentItem = nextItem(currentItem);
     }
+#endif
     return true;
 }
 
 bool QgsLegend::readXML(QDomNode& legendnode)
 {
+#if 0
   QDomElement childelem;
   QDomNode child;
   QgsLegendGroup* lastGroup = 0; //pointer to the last inserted group
@@ -910,6 +917,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	}
       while(!(child.isNull()));
     }
+#endif
   return true;
 }
 
@@ -1193,6 +1201,30 @@ void QgsLegend::resetToInitialPosition(QTreeWidgetItem* li)
     }
 }
 
+QgsLegendLayer* QgsLegend::findLegendLayer(const QString& layerKey)
+{
+  QgsLegendLayer* theLegendLayer = 0;
+  std::list<QgsMapLayer*> theMapLayers;
+  QTreeWidgetItem* theItem = firstItem();
+  do
+    {
+      theLegendLayer = dynamic_cast<QgsLegendLayer*>(theItem);
+      if(theLegendLayer) //item is a legend layer
+	{
+	  theMapLayers = theLegendLayer->mapLayers();
+	  for(std::list<QgsMapLayer*>::iterator it = theMapLayers.begin(); it != theMapLayers.end(); ++it)
+	    {
+	      if((*it)->getLayerID() == layerKey)
+		{
+		  return theLegendLayer;
+		}
+	    }
+	}
+    }
+  while(theItem = nextItem(theItem));
+  return 0;
+}
+
 bool QgsLegend::yCoordAboveCenter(QgsLegendItem* it, int ycoord)
 {
   QRect rect = visualItemRect(it);
@@ -1363,6 +1395,49 @@ std::deque<QString> QgsLegend::layerIDs()
   return layers;
 }
 
+void QgsLegend::changeSymbologySettings(const QString& key, const std::list< std::pair<QString, QIcon*> >* newSymbologyItems)
+{
+  QgsMapLayer* theMapLayer = QgsMapLayerRegistry::instance()->mapLayer(key);
+  if(!theMapLayer)
+    {
+      return;
+    }
+  QgsLegendLayer* theLegendLayer = findLegendLayer(key);
+  QgsLegendSymbologyItem* theSymbologyItem = 0;
+  if(!theLegendLayer)
+    {
+      return;
+    }
+  
+  //remove the symbology items under the legend layer
+  for(int i = theLegendLayer->childCount(); i >= 0; --i)
+    {
+      theSymbologyItem = dynamic_cast<QgsLegendSymbologyItem*>((theLegendLayer)->child(i));
+      if(theSymbologyItem)
+	{
+	  theLegendLayer->takeChild(i);
+	}
+    }
+
+  //add the new symbology items
+  if(newSymbologyItems)
+    {
+      int childposition = 0; //position to insert the items
+      for(std::list< std::pair<QString, QIcon*> >::const_iterator it= newSymbologyItems->begin(); it != newSymbologyItems->end(); ++it)
+	{
+	  QgsLegendSymbologyItem* theItem = new QgsLegendSymbologyItem();
+	  theItem->setText(0, it->first);
+	  theItem->setIcon(0, *(it->second));
+	  theLegendLayer->insertChild(childposition, theItem);
+	  delete (it->second);//free the memory for the QIcon*
+	  ++childposition;
+	}
+    }
+
+  //copy the legend settings for the other layer files in the same legend layer
+  theLegendLayer->updateLayerSymbologySettings(theMapLayer);
+}
+
 void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 {
   closePersistentEditor(item, row);
@@ -1461,4 +1536,20 @@ void QgsLegend::makeToTopLevelItem()
       removeItem(theItem);
       addTopLevelItem(theItem);
     }
+}
+
+void QgsLegend::showLegendLayerFileGroups(bool show)
+{
+  QgsLegendLayerFileGroup* theFileGroup = 0;
+  QTreeWidgetItem* theItem = firstItem();
+  do
+    {
+      theFileGroup = dynamic_cast<QgsLegendLayerFileGroup*>(theItem);
+      if(theFileGroup)
+	{
+	  setItemHidden(theFileGroup, !show);
+	}
+    }
+  while(theItem = nextItem(theItem));
+  mShowLegendLayerFiles = show;
 }

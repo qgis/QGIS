@@ -2340,10 +2340,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 #ifdef QGISDEBUG
             std::cout << "QgsMapCanvas::mouseReleaseEvent: Completed vlayer->insertVertexBefore." << std::endl;
 #endif
+	    refresh();
           }
-        }
-
-        // TODO: Redraw?  
+        }  
         break;
       }  
 
@@ -2396,8 +2395,7 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
                 point.x(), point.y(),
                 mCanvasProperties->snappedAtFeatureId,
                 mCanvasProperties->snappedAtVertex);
-	    render();
-	    update();
+	    refresh();
 
 #ifdef QGISDEBUG
             std::cout << "QgsMapCanvas::mouseReleaseEvent: Completed vlayer->moveVertexAt." << std::endl;
@@ -2458,10 +2456,9 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
 #ifdef QGISDEBUG
             std::cout << "QgsMapCanvas::mouseReleaseEvent: Completed vlayer->deleteVertexAt." << std::endl;
 #endif
+	    refresh();
           }
-        }
-        // TODO: Redraw?  
-
+        }  
         break;
       }
 

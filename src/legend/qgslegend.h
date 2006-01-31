@@ -25,6 +25,7 @@
 #include <QTreeWidget>
 
 class QgisApp;
+class QgsLegendLayer;
 class QgsLegendItem;
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -132,6 +133,10 @@ class QgsLegend : public QTreeWidget
   /**Returns the ids of the layers contained in this legend. The order is bottom->top*/
   std::deque<QString> layerIDs();
 
+  /**Removes the symbology items of a layer and adds new ones. If other files are in the same legend layer, the new symbology settings are copied.
+   Note: the QIcon* are deleted and therefore need to be allocated by calling functions using operator new*/
+  void changeSymbologySettings(const QString& key, const std::list< std::pair<QString, QIcon*> >* newSymbologyItems);
+
 public slots:
 
     /*!Adds a new layer group with the maplayer to the canvas*/
@@ -209,6 +214,9 @@ this item may be moved back to the original position with resetToInitialPosition
   /**Moves an item back to the position where storeInitialPosition has been called*/
   void resetToInitialPosition(QTreeWidgetItem* li);
 
+  /**Returns the legend layer to which a map layer gelongs*/
+  QgsLegendLayer* findLegendLayer(const QString& layerKey);
+
   private slots:
 
   /**Calls 'handleRightClickEvent' on the item*/
@@ -231,7 +239,8 @@ this item may be moved back to the original position with resetToInitialPosition
   void openEditor();
   /**Removes the current item and inserts it as a toplevel item at the end of the legend*/
   void makeToTopLevelItem();
-
+  /**Show/ Hide the legend layer file groups*/
+  void showLegendLayerFileGroups(bool show);
 private:
 
   /**Pointer to QGisApp, needed for signal/slot reasons*/
@@ -277,6 +286,8 @@ private:
     };
   HIERARCHY_POSITION_TYPE mRestoreInformation;
   QTreeWidgetItem* mRestoreItem;
+
+  bool mShowLegendLayerFiles;
 
   /*!
    * A fuction sed to determin how far down in the list an item is (starting with one for the first Item.

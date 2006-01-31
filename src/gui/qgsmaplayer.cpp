@@ -37,7 +37,6 @@
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 #include "qgslegendlayerfile.h"
-#include "qgslegendsymbologygroup.h"
 
 
 
@@ -52,7 +51,7 @@ QgsMapLayer::QgsMapLayer(int type,
         mShowInOverviewAction(0),
         mShowInOverview(false),
         mCoordinateTransform(0),
-        mLegendSymbologyGroupParent(0),
+        mLegend(0),
         mLegendLayerFile(0),
         ID(""),
         layerType(type),
