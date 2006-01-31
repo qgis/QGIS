@@ -19,13 +19,14 @@
  ***************************************************************************/
 #include "qgslegendlayer.h"
 #include "qgslegendlayerfile.h"
+#include "qgslegendlayerfilegroup.h"
 #include "qgsmaplayer.h"
 #include <iostream>
 #include <QCoreApplication>
 #include <QIcon>
 
 QgsLegendLayer::QgsLegendLayer(QTreeWidgetItem* parent,QString name)
-    : QObject(), QgsLegendItem(parent, name)
+    : QgsLegendItem(parent, name)
 {
   mType=LEGEND_LAYER;
   setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -33,7 +34,7 @@ QgsLegendLayer::QgsLegendLayer(QTreeWidgetItem* parent,QString name)
   setText(0, name);
 }
 
-QgsLegendLayer::QgsLegendLayer(QTreeWidget* parent, QString name): QObject(), QgsLegendItem(parent, name)
+QgsLegendLayer::QgsLegendLayer(QTreeWidget* parent, QString name): QgsLegendItem(parent, name)
 {
   mType=LEGEND_LAYER;
   setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -41,7 +42,7 @@ QgsLegendLayer::QgsLegendLayer(QTreeWidget* parent, QString name): QObject(), Qg
   setText(0, name);
 }
 
-QgsLegendLayer::QgsLegendLayer(QString name): QObject(), QgsLegendItem()
+QgsLegendLayer::QgsLegendLayer(QString name): QgsLegendItem()
 {
   mType=LEGEND_LAYER;
   setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -103,12 +104,23 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(const QgsLegendItem* li) const
 
 QgsMapLayer* QgsLegendLayer::firstMapLayer()
 {
-  QTreeWidgetItem* llfgroup = QTreeWidgetItem::child(0); //the legend layer file group
-  if(!llfgroup)
+  //first find the legend layer file group
+  QgsLegendLayerFileGroup* llfg = 0;
+  for(int i = 0; i < childCount(); ++i)
+    {
+      llfg = dynamic_cast<QgsLegendLayerFileGroup*>(child(i));
+      if(llfg)
+	{
+	  break;
+	}
+    }
+
+  if(!llfg)
     {
       return 0;
     }
-  QTreeWidgetItem* llf = llfgroup->child(0);
+
+  QTreeWidgetItem* llf = llfg->child(0);
   if(!llf)
     {
       return 0;
@@ -133,54 +145,51 @@ std::list<QgsMapLayer*> QgsLegendLayer::mapLayers()
 	list.push_back((*it)->layer());
       }
     return list;
-
-#if 0
-    QTreeWidgetItem* llfgroup = QTreeWidgetItem::child(0); //the legend layer file group
-    if(!llfgroup)
-    {
-	return list;
-    }
-    QgsLegendItem* llf = dynamic_cast<QgsLegendItem*>(llfgroup->child(0));
-    if(!llf)
-    {
-	return list;
-    }
-    QgsLegendLayerFile* legendlayerfile = 0;
-    do
-    {
-	legendlayerfile = dynamic_cast<QgsLegendLayerFile*>(llf);
-	if(legendlayerfile)
-	{
-	    list.push_back(legendlayerfile->layer());
-	}
-    }
-    while(llf = llf->nextSibling());
-    return list;
-#endif
 }
 
 std::list<QgsLegendLayerFile*> QgsLegendLayer::legendLayerFiles()
 {
   std::list<QgsLegendLayerFile*> list;
-  QTreeWidgetItem* llfgroup = QTreeWidgetItem::child(0); //the legend layer file group
-  if(!llfgroup)
+  
+  //find the layer file group
+  QgsLegendLayerFileGroup* theLayerGroup = 0;
+  for(int i = 0; i < childCount(); ++i)
     {
-      return list;
-    }
-  QgsLegendItem* llf = dynamic_cast<QgsLegendItem*>(llfgroup->child(0));
-  if(!llf)
-    {
-      return list;
-    }
-  QgsLegendLayerFile* legendlayerfile = 0;
-  do
-    {
-      legendlayerfile = dynamic_cast<QgsLegendLayerFile*>(llf);
-      if(legendlayerfile)
+      theLayerGroup = dynamic_cast<QgsLegendLayerFileGroup*>(child(i));
+      if(theLayerGroup)
 	{
-	  list.push_back(legendlayerfile);
+	  break;
 	}
     }
-  while(llf = llf->nextSibling());
+
+  //add all the legend layer files in the group
+  if(theLayerGroup)
+    {
+      QgsLegendLayerFile* theFile = 0;
+      for(int i = 0; i < theLayerGroup->childCount(); ++i)
+	{
+	  theFile = dynamic_cast<QgsLegendLayerFile*>(theLayerGroup->child(i));
+	  if(theFile)
+	    {
+	      list.push_back(theFile);
+	    }
+	}
+    }
   return list;
+}
+
+void QgsLegendLayer::updateLayerSymbologySettings(const QgsMapLayer* mapLayer)
+{
+  if(mapLayer)
+    {
+      //find all layers
+      std::list<QgsMapLayer*> theMapLayers = mapLayers();
+      for(std::list<QgsMapLayer*>::iterator it = theMapLayers.begin(); it != theMapLayers.end(); ++it)
+	{
+	  if((*it) != mapLayer)
+	    {
+	      (*it)->copySymbologySettings(*mapLayer);
+	    }
+	}
+    }
 }

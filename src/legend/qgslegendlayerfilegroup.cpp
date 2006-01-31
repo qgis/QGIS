@@ -84,7 +84,7 @@ bool QgsLegendLayerFileGroup::insert(QgsLegendItem* newItem, bool changesettings
 	    }
 	  QgsMapLayer* newLayer = (dynamic_cast<QgsLegendLayerFile*>(newItem))->layer();
 	  QTreeWidgetItem* nexts = nextSibling();
-	  if(nexts)
+	  /*if(nexts)
 	    {
 	      QgsLegendSymbologyGroup* sg = dynamic_cast<QgsLegendSymbologyGroup*>(nexts);
 	      if(sg)
@@ -92,7 +92,7 @@ bool QgsLegendLayerFileGroup::insert(QgsLegendItem* newItem, bool changesettings
 		  newLayer->setLegendSymbologyGroupParent(sg);
 		  newLayer->refreshLegend();
 		}
-	    }
+		}*/
 	  return true;
 	}
       //if there are already legend layer files, copy the symbology settings if the two layers are
@@ -130,14 +130,14 @@ bool QgsLegendLayerFileGroup::insert(QgsLegendItem* newItem, bool changesettings
 	      return true;
 	    }
 	  QTreeWidgetItem* nexts = nextSibling();
-	  if(nexts)
+	  /*if(nexts)
 	    {
 	      QgsLegendSymbologyGroup* sg = dynamic_cast<QgsLegendSymbologyGroup*>(nexts);
 	      if(sg)
 		{
 		  newLayer->setLegendSymbologyGroupParent(sg);
 		}
-	    }
+		}*/
 	  return true;
 	}
       else
@@ -151,3 +151,16 @@ bool QgsLegendLayerFileGroup::insert(QgsLegendItem* newItem, bool changesettings
     }
 }
 
+bool QgsLegendLayerFileGroup::containsLegendLayerFile(const QgsLegendLayerFile* llf) const
+{
+  bool result = false;
+  for(int i = 0; i < childCount(); ++i)
+    {
+      if(llf == child(i))
+	{
+	  result = true;
+	  break;
+	}
+    }
+  return result;
+}

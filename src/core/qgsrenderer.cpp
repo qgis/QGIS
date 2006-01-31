@@ -13,24 +13,16 @@ QgsRenderer::QgsRenderer()
 
 }
 
-void QgsRenderer::refreshLegend(QTreeWidgetItem* legendparent) const
+void QgsRenderer::refreshLegend(std::list< std::pair<QString, QIcon*> >* symbologyList) const
 {
-    if(legendparent)
+    if(symbologyList)
     {
-	
-      //first remove the existing childs
-      //legendparent->takeChildren();
-      dynamic_cast<QgsLegendItem*>(legendparent)->removeAllChildren();
-
       //add the new items
       QString lw, uv, label;
       const std::list<QgsSymbol*> sym = symbols();
 	
       for(std::list<QgsSymbol*>::const_iterator it=sym.begin(); it!=sym.end(); ++it)
 	{
-	  QgsLegendVectorSymbologyItem* item = new QgsLegendVectorSymbologyItem(legendparent, "");
-	  item->addSymbol(*it);
-
 	  QPixmap pix;
 	  if((*it)->type() == QGis::Point)
 	    {
@@ -45,8 +37,8 @@ void QgsRenderer::refreshLegend(QTreeWidgetItem* legendparent) const
 	      pix = (*it)->getPolygonSymbolAsPixmap();
 	    }
 	  
-	  QIcon theIcon(pix);
-	  item->setIcon(0, theIcon);
+	  QIcon* theIcon = new QIcon(pix);
+ 
 	  QString values;
 	  lw = (*it)->lowerValue();
 	  if(!lw.isEmpty())
@@ -65,7 +57,7 @@ void QgsRenderer::refreshLegend(QTreeWidgetItem* legendparent) const
 	      values += " ";
 	      values += label;
 	    }
-	  item->setText(0, values);
+	  symbologyList->push_back(std::make_pair(values, theIcon));
 	}
     }
 }

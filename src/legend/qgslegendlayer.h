@@ -35,7 +35,7 @@ Container for layer, including layer file(s), symbology class breaks and propert
 
 @author Tim Sutton
 */
-class QgsLegendLayer : public QgsLegendItem, public QObject //for signal/ slot
+class QgsLegendLayer : public QgsLegendItem
 {
 public:
     QgsLegendLayer(QTreeWidgetItem * ,QString);
@@ -55,6 +55,10 @@ public:
     std::list<QgsMapLayer*> mapLayers();
     /**Returns the legend layer file items associated with this legend layer*/
     std::list<QgsLegendLayerFile*> legendLayerFiles();
+    /**Copies the symbology settings of the layer to all maplayers in the QgsLegendLayerFileGroup.
+   This method should be called whenever a layer in this group changes it symbology settings
+  (normally from QgsMapLayer::refreshLegend)*/
+  void updateLayerSymbologySettings(const QgsMapLayer* mapLayer);
 };
 
 #endif
