@@ -58,7 +58,10 @@ void QgsNorthArrowPluginGui::on_pbnCancel_clicked()
 void QgsNorthArrowPluginGui::setRotation(int theInt)
 {
   rotatePixmap(theInt);
-  sliderRotation->setValue(theInt);
+  //sliderRotation->setValue(theInt);
+  // signal/slot connection defined in 'designer' causes the slider to
+  // be moved to reflect the change in the spinbox.
+  spinAngle->setValue(theInt);
 }
 
 void QgsNorthArrowPluginGui::setPlacement(QString thePlacementQString)
@@ -146,7 +149,7 @@ void QgsNorthArrowPluginGui::rotatePixmap(int theRotationInt)
     QFont myQFont("time", 18, QFont::Bold);
     myQPainter.setFont(myQFont);
     myQPainter.setPen(Qt::red);
-    myQPainter.drawText(10, 20, QString("Pixmap Not Found"));
+    myQPainter.drawText(10, 20, tr("Pixmap Not Found"));
     myQPainter.end();
     pixmapLabel->setPixmap(myPainterPixmap);    
   }

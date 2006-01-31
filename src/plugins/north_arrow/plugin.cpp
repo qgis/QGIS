@@ -89,14 +89,14 @@ QgsNorthArrowPlugin::~QgsNorthArrowPlugin()
  */
 void QgsNorthArrowPlugin::initGui()
 {
-  QMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
-  menuId = pluginMenu->insertItem(QIcon(icon),"&NorthArrow", this, SLOT(run()));
+  QMenu *pluginMenu = qGisInterface->getPluginMenu(tr("&Decorations"));
+  menuId = pluginMenu->insertItem(QIcon(icon),tr("&NorthArrow"), this, SLOT(run()));
 
-  pluginMenu->setWhatsThis(menuId, "Creates a north arrow that is displayed on the map canvas");
+  pluginMenu->setWhatsThis(menuId, tr("Creates a north arrow that is displayed on the map canvas"));
 
   // Create the action for tool
-  myQActionPointer = new QAction(QIcon(icon), "North Arrow", this);
-  myQActionPointer->setWhatsThis("Creates a north arrow that is displayed on the map canvas");
+  myQActionPointer = new QAction(QIcon(icon), tr("North Arrow"), this);
+  myQActionPointer->setWhatsThis(tr("Creates a north arrow that is displayed on the map canvas"));
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   //render the arrow each time the map is rendered
@@ -236,7 +236,7 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
       QFont myQFont("time", 32, QFont::Bold);
       theQPainter->setFont(myQFont);
       theQPainter->setPen(Qt::black);
-      theQPainter->drawText(10, 20, QString("Pixmap Not Found"));
+      theQPainter->drawText(10, 20, QString(tr("Pixmap Not Found")));
     }
   }
 
@@ -245,7 +245,7 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
 void QgsNorthArrowPlugin::unload()
 {
   // remove the GUI
-  qGisInterface->removePluginMenuItem("&Decorations",menuId);
+  qGisInterface->removePluginMenuItem(tr("&Decorations"),menuId);
   qGisInterface->removeToolBarIcon(myQActionPointer);
   // remove the northarrow from the canvas
   disconnect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)),
