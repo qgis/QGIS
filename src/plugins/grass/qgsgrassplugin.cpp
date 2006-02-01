@@ -132,58 +132,7 @@ void QgsGrassPlugin::initGui()
 
   QSettings settings("QuantumGIS", "qgis");
 
-  // Require GISBASE to be set. This should point to the location of
-  // the GRASS installation. The GRASS libraries use it to know
-  // where to look for things.
-
-  // Look first to see if GISBASE env var is already set.
-  // This is set when QGIS is run from within GRASS
-  // or when set explicitly by the user.
-  // This value should always take precedence.
-  QString gisBase = getenv("GISBASE");
-#ifdef QGISDEBUG
-  qDebug( "%s:%d GRASS gisBase from GISBASE env var is: %s", __FILE__, __LINE__, (const char*)gisBase );
-#endif
-  if ( !isValidGrassBaseDir(gisBase) ) {
-    // Look for gisbase in QSettings
-    gisBase = settings.readEntry("/GRASS/gisbase", "");
-#ifdef QGISDEBUG
-    qDebug( "%s:%d GRASS gisBase from QSettings is: %s", __FILE__, __LINE__, (const char*)gisBase );
-#endif
-  }
-
-  if ( !isValidGrassBaseDir(gisBase) ) {
-    // Use the location specified --with-grass during configure
-    gisBase = GRASS_BASE;
-#ifdef QGISDEBUG
-    qDebug( "%s:%d GRASS gisBase from configure is: %s", __FILE__, __LINE__, (const char*)gisBase );
-#endif
-  }
-
-  while ( !isValidGrassBaseDir(gisBase) ) {
-    // Keep asking user for GISBASE until we get a valid one
-    //QMessageBox::warning( 0, "Warning", "QGIS can't find your GRASS installation,\nGRASS data "
-    //    "cannot be used.\nPlease select your GISBASE.\nGISBASE is full path to the\n"
-    //    "directory where GRASS is installed." );
-    // XXX Need to subclass this and add explantory message above to left side
-    gisBase = QFileDialog::getExistingDirectory(
-        qgisMainWindowPointer, "Choose GISBASE ...", gisBase);
-    if (gisBase == QString::null)
-    {
-      // User pressed cancel. No GRASS for you!
-      return;
-    }
-  }
-
-#ifdef QGISDEBUG
-  qDebug( "%s:%d Valid GRASS gisBase is: %s", __FILE__, __LINE__, (const char*)gisBase );
-#endif
-  QString gisBaseEnv = "GISBASE=" + gisBase;
-  /* _Correct_ putenv() implementation is not making copy! */ 
-  char *gisBaseEnvChar = new char[gisBaseEnv.length()+1];
-  strcpy ( gisBaseEnvChar, const_cast<char *>(gisBaseEnv.ascii()) ); 
-  putenv( gisBaseEnvChar );
-  settings.writeEntry("/GRASS/gisbase", gisBase);
+  QgsGrass::init();
 
   mCanvas = qGisInterface->getMapCanvas();
 
@@ -297,24 +246,6 @@ void QgsGrassPlugin::mapsetChanged ()
             mTools->mapsetChanged();
         }    
     }
-}
-
-/*
- * Check if given directory contains a GRASS installation
- */
-bool QgsGrassPlugin::isValidGrassBaseDir(QString const gisBase)
-{
-  if ( gisBase.isEmpty() )
-  {
-    return FALSE;
-  }
-
-  QFileInfo gbi ( gisBase + "/etc/element_list" );
-  if ( gbi.exists() ) {
-    return TRUE;
-  } else {
-    return FALSE;
-  }
 }
 
 // Slot called when the "Add GRASS vector layer" menu item is activated
