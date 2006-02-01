@@ -86,10 +86,20 @@ void QgsGrass::init( void )
   }
 
   if ( !isValidGrassBaseDir(gisBase) ) {
+#ifdef WIN32
+    // Use the applicationDirPath()/grass
+    gisBase = QCoreApplication::applicationDirPath() + "/grass";
+#ifdef QGISDEBUG
+    std::cerr << "GRASS gisBase = " << gisBase.ascii() << std::endl;
+#endif
+
+#else
     // Use the location specified --with-grass during configure
     gisBase = GRASS_BASE;
 #ifdef QGISDEBUG
     qDebug( "%s:%d GRASS gisBase from configure is: %s", __FILE__, __LINE__, (const char*)gisBase );
+#endif
+
 #endif
   }
 
