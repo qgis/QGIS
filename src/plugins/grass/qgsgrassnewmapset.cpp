@@ -58,6 +58,9 @@
 #include "../../src/providers/grass/qgsgrass.h"
 #include "qgsgrassnewmapset.h"
 
+// For bug in GPJ_osr_to_grass()
+#include "grass/version.h"
+
 bool QgsGrassNewMapset::mRunning = false;
 
 QgsGrassNewMapset::QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface, 
@@ -471,8 +474,27 @@ void QgsGrassNewMapset::setGrassProjection()
 	    // Note: GPJ_osr_to_grass() defaults in PROJECTION_XY if projection
 	    //       cannot be set
 
-	    int ret = GPJ_osr_to_grass ( &mCellHead, &mProjInfo, &mProjUnits, 
-				    &hSRS, 0);
+            // There was a bug in GRASS, 
+            // fixed Fri Jan 27 18:21:15 2006 UTC in HEAD(>=6.1)
+            // it is present in 6.0.x line
+            // G_version cannot be used as it was also buggy in 6.0.x
+            int major = QString( GRASS_VERSION_MAJOR ).toInt();
+            int minor = QString( GRASS_VERSION_MINOR ).toInt();
+#ifdef QGISDEBUG
+            std::cerr << "major = " << major << " minor = " << minor << std::endl;
+#endif
+	    int ret;
+
+            if ( major == 6 && minor == 0 ) 
+            {
+                // Buggy version:
+		ret = GPJ_osr_to_grass ( &mCellHead, &mProjInfo, 
+                          &mProjUnits, (void **)hSRS, 0);
+
+            } else {
+                ret = GPJ_osr_to_grass ( &mCellHead, &mProjInfo, 
+                          &mProjUnits, &hSRS, 0);
+            }
 	    
 	    // Note: I seems that GPJ_osr_to_grass()returns always 1, 
 	    // 	 -> test if mProjInfo was set
