@@ -86,10 +86,14 @@ public:
      */
     static QString closeMapset ();
 
+    //! Check if given directory contains a GRASS installation
+    static bool isValidGrassBaseDir(QString const gisBase);
+
+    static void init (void); 
+
 private:
     static int initialized; // Set to 1 after initialization 
     static bool active; // is active mode
-    static void init (void); 
     static QString defaultGisdbase;
     static QString defaultLocation;
     static QString defaultMapset;

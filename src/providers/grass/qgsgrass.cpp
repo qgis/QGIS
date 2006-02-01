@@ -21,63 +21,151 @@
 #include "q3process.h"
 #include "qfile.h"
 #include "qfileinfo.h"
+#include "qfiledialog.h"
 #include "qdir.h"
 #include "qtextstream.h"
+#include "qsettings.h"
+
+//#include "qgsapplication.h"
+#include <QCoreApplication>
 #include "qgsgrass.h"
 
 extern "C" {
 #include <unistd.h>
 }
 
-void QgsGrass::init( void ) {
-    if ( !initialized ) {
-        // Is it active mode ?
-	if ( getenv ("GISRC") ) {
-	    active = true; 
-	    // Store default values
-	    defaultGisdbase = G_gisdbase();
-	    defaultLocation = G_location();
-            defaultMapset = G_mapset();
-	} else {
-	    active = false;
-	}
-	
-        // Don't use GISRC file and read/write GRASS variables (from location G_VAR_GISRC) to memory only.
-        G_set_gisrc_mode ( G_GISRC_MODE_MEMORY ); 
+void QgsGrass::init( void ) 
+{
+    if ( initialized ) return;
 
-        // Init GRASS libraries (required)
-	G_no_gisinit();  // Doesn't check write permissions for mapset compare to G_gisinit("libgrass++"); 
+    QSettings settings("QuantumGIS", "qgis");
 
-        // Set error function
-        G_set_error_routine ( &error_routine );
+    // Is it active mode ?
+    if ( getenv ("GISRC") ) {
+	active = true; 
+	// Store default values
+	defaultGisdbase = G_gisdbase();
+	defaultLocation = G_location();
+	defaultMapset = G_mapset();
+    } else {
+	active = false;
+    }
+    
+    // Don't use GISRC file and read/write GRASS variables (from location G_VAR_GISRC) to memory only.
+    G_set_gisrc_mode ( G_GISRC_MODE_MEMORY ); 
 
-	// Set program name
-	G_set_program_name ("QGIS");
+    // Init GRASS libraries (required)
+    G_no_gisinit();  // Doesn't check write permissions for mapset compare to G_gisinit("libgrass++"); 
 
-        // Add path to GRASS modules
-        // TODO: do that portable
+    // Set error function
+    G_set_error_routine ( &error_routine );
+
+    // Set program name
+    G_set_program_name ("QGIS");
+
+
+  // Require GISBASE to be set. This should point to the location of
+  // the GRASS installation. The GRASS libraries use it to know
+  // where to look for things.
+
+  // Look first to see if GISBASE env var is already set.
+  // This is set when QGIS is run from within GRASS
+  // or when set explicitly by the user.
+  // This value should always take precedence.
+  QString gisBase = getenv("GISBASE");
+  std::cerr << "gisBase = " << gisBase.toLocal8Bit().data() << std::endl;
+#ifdef QGISDEBUG
+  qDebug( "%s:%d GRASS gisBase from GISBASE env var is: %s", __FILE__, __LINE__, (const char*)gisBase );
+#endif
+  if ( !isValidGrassBaseDir(gisBase) ) {
+    // Look for gisbase in QSettings
+    gisBase = settings.readEntry("/GRASS/gisbase", "");
+#ifdef QGISDEBUG
+    qDebug( "%s:%d GRASS gisBase from QSettings is: %s", __FILE__, __LINE__, (const char*)gisBase );
+#endif
+  }
+
+  if ( !isValidGrassBaseDir(gisBase) ) {
+    // Use the location specified --with-grass during configure
+    gisBase = GRASS_BASE;
+#ifdef QGISDEBUG
+    qDebug( "%s:%d GRASS gisBase from configure is: %s", __FILE__, __LINE__, (const char*)gisBase );
+#endif
+  }
+
+  while ( !isValidGrassBaseDir(gisBase) ) {
+    // Keep asking user for GISBASE until we get a valid one
+    //QMessageBox::warning( 0, "Warning", "QGIS can't find your GRASS installation,\nGRASS data "
+    //    "cannot be used.\nPlease select your GISBASE.\nGISBASE is full path to the\n"
+    //    "directory where GRASS is installed." );
+    // XXX Need to subclass this and add explantory message above to left side
+    gisBase = QFileDialog::getExistingDirectory(
+	0, "Choose GISBASE ...", gisBase);
+    if (gisBase == QString::null)
+    {
+      // User pressed cancel. No GRASS for you!
+      return;
+    }
+  }
+
+#ifdef QGISDEBUG
+  qDebug( "%s:%d Valid GRASS gisBase is: %s", __FILE__, __LINE__, (const char*)gisBase );
+#endif
+  QString gisBaseEnv = "GISBASE=" + gisBase;
+  /* _Correct_ putenv() implementation is not making copy! */ 
+  char *gisBaseEnvChar = new char[gisBaseEnv.length()+1];
+  strcpy ( gisBaseEnvChar, const_cast<char *>(gisBaseEnv.ascii()) ); 
+  putenv( gisBaseEnvChar );
+  settings.writeEntry("/GRASS/gisbase", gisBase);
+
+    // Add path to GRASS modules
 #ifdef WIN32
-        QString sep = ";";
+    QString sep = ";";
 #else
-        QString sep = ":";
+    QString sep = ":";
 
 #endif
-        QString gisBase = getenv("GISBASE");
-        QString path = "PATH=" + gisBase + "/bin";
-        path.append ( sep + gisBase + "/scripts" );
+    QString path = "PATH=" + gisBase + "/bin";
+    path.append ( sep + gisBase + "/scripts" );
 
-        QString p = getenv ("PATH");
-        path.append ( sep + p );
+    // On windows the GRASS libraries are in 
+    // QgsApplication::prefixPath(), we have to add them
+    // to PATH to enable running of GRASS modules 
+    // and database drivers
+#ifdef WIN32
+    // It seems that QgsApplication::prefixPath() 
+    // is not initialized at this point
+    path.append ( sep + QCoreApplication::applicationDirPath() );
+#endif
+    QString p = getenv ("PATH");
+    path.append ( sep + p );
 
-	#ifdef QGISDEBUG
-	std::cerr << "set PATH: " << path.toLocal8Bit().data() << std::endl;
-	#endif
-	char *pathEnvChar = new char[path.length()+1];
-	strcpy ( pathEnvChar, const_cast<char *>(path.ascii()) );
-	putenv( pathEnvChar );
+    #ifdef QGISDEBUG
+    std::cerr << "set PATH: " << path.toLocal8Bit().data() << std::endl;
+    #endif
+    char *pathEnvChar = new char[path.length()+1];
+    strcpy ( pathEnvChar, const_cast<char *>(path.ascii()) );
+    putenv( pathEnvChar );
 
-	initialized = 1;
-    }
+    initialized = 1;
+}
+
+/*
+ * Check if given directory contains a GRASS installation
+ */
+bool QgsGrass::isValidGrassBaseDir(QString const gisBase)
+{
+  if ( gisBase.isEmpty() )
+  {
+    return FALSE;
+  }
+
+  QFileInfo gbi ( gisBase + "/etc/element_list" );
+  if ( gbi.exists() ) {
+    return TRUE;
+  } else {
+    return FALSE;
+  }
 }
 
 bool QgsGrass::activeMode( void )

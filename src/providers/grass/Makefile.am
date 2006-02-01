@@ -4,6 +4,8 @@
 
 INCLUDES = -I../../core -I../../gui
 
+DEFS=-DGRASS_BASE=\"$(GRASS_BASE)\"
+
 lib_LTLIBRARIES = libqgisgrass.la
 
 plugindir = ${pkglibdir}
