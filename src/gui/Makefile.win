@@ -30,6 +30,7 @@ $(DLL): .libs/libqgis_gui.a
 			-lsqlite3 -lgeos -lproj -lgdal \
 			$(QT_LDADD) \
 			-lwsock32 -lmingw32
+	$(STRIP) $@
 	
 qgis.exe:
 	$(CXX) -o $@ $(OBJECTS) $(LDADD)
