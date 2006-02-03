@@ -18,7 +18,7 @@ objects:
 libs:
 	$(MAKE) -f Makefile libqgis_gui.la
 
-$(DLL):
+$(DLL): .libs/libqgis_gui.a
 	$(CXX) -shared -o $(DLL) \
 		-Wl,--out-implib=lib$(DLL).a \
 		-Wl,--export-all-symbols \

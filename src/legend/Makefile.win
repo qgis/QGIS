@@ -7,7 +7,7 @@ all: libs $(DLL)
 libs:
 	$(MAKE) -f Makefile libqgis_legend.la
 
-$(DLL):
+$(DLL): .libs/libqgis_legend.a
 	$(CXX) -shared -o $(DLL) \
 		-Wl,--out-implib=lib$(DLL).a \
 		-Wl,--export-all-symbols \

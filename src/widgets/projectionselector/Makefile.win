@@ -7,7 +7,7 @@ all: libs $(DLL)
 libs:
 	$(MAKE) -f Makefile libqgsprojectionselector.la
 
-$(DLL):
+$(DLL): .libs/libqgsprojectionselector.a
 	$(CXX) -shared -o $(DLL) \
 		-Wl,--out-implib=lib$(DLL).a \
 		-Wl,--export-all-symbols \
