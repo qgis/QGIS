@@ -11,7 +11,7 @@ all: objects $(GRASS_DLL) $(PROVIDER)
 objects:
 	$(MAKE) -f Makefile 
 
-$(GRASS_DLL): 
+$(GRASS_DLL): .libs/libqgisgrass.a
 	$(CXX) -shared -o $(GRASS_DLL) \
 		-Wl,--out-implib=.libs/libqgis_grass.dll.a \
 		-Wl,--export-all-symbols \
