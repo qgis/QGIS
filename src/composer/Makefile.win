@@ -7,16 +7,19 @@ all: libs $(DLL)
 libs:
 	$(MAKE) -f Makefile libqgis_composer.la
 
-$(DLL):
+$(DLL): .libs/libqgis_composer.a
 	$(CXX) -shared -o $(DLL) \
 		-Wl,--out-implib=lib$(DLL).a \
 		-Wl,--export-all-symbols \
 		-Wl,--enable-auto-import \
 		-Wl,--whole-archive .libs/libqgis_composer.a \
 		-Wl,--no-whole-archive \
-			$(CORE_A) \
+			$(GUI_A) $(CORE_A) $(RASTER_A) $(LEGEND_A) \
+			$(PROJSEL_A) $(CORE_A) $(GUI_A) $(CORE_A) \
+			$(GUI_A) \
+			-lproj -lgdal -lsqlite3 \
 			$(QT_LDADD) \
-			-lmingw32
+			-lwsock32 -lmingw32
 	$(STRIP) $@
 
 install: all
