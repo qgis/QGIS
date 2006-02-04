@@ -234,7 +234,7 @@ void QgsLegend::mouseMoveEvent(QMouseEvent * e)
 #ifdef QGISDEBUG
 	      qWarning("mouseMoveEvent::NO_ACTION");
 #endif
-	      if(mItemBeingMovedOrigPos != getItemPos(mItemBeingMoved))
+	      if(origin->type() == QgsLegendItem::LEGEND_LAYER_FILE && mItemBeingMovedOrigPos != getItemPos(mItemBeingMoved))
 		{
 		  resetToInitialPosition(mItemBeingMoved);
 		}
@@ -654,7 +654,6 @@ void QgsLegend::collapseAll()
 
 bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 {
-#if 0
     QDomElement legendnode = document.createElement("legend");
     layer_node.appendChild(legendnode);
 
@@ -760,12 +759,21 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 		    layerfilegroupnode = document.createElement("filegroup");
 		    if(isItemExpanded(item))
 		    {
-			layerfilegroupnode.setAttribute("open", "true");
+		      layerfilegroupnode.setAttribute("open", "true");
 		    }
 		    else
 		    {
-			layerfilegroupnode.setAttribute("open", "false");
+		      layerfilegroupnode.setAttribute("open", "false");
 		    }
+		    if(isItemHidden(item))
+		    {
+		      layerfilegroupnode.setAttribute("hidden", "true");
+		    }
+		    else
+		    {
+		      layerfilegroupnode.setAttribute("hidden", "false");
+		    }
+		       
 		    legendlayernode.appendChild(layerfilegroupnode);
 		    break;
 	    
@@ -785,7 +793,6 @@ bool QgsLegend::writeXML( QDomNode & layer_node, QDomDocument & document )
 	}
 	currentItem = nextItem(currentItem);
     }
-#endif
     return true;
 }
 
@@ -1338,6 +1345,7 @@ QDomNode QgsLegend::nextDomNode(const QDomNode& theNode)
 
 void QgsLegend::moveItem(QTreeWidgetItem* move, QTreeWidgetItem* after)
 {
+  static_cast<QgsLegendItem*>(move)->storeAppearanceSettings();//store settings in the moved item and its childern
   if(move->parent())
     {
       move->parent()->takeChild(move->parent()->indexOfChild(move));
@@ -1354,6 +1362,7 @@ void QgsLegend::moveItem(QTreeWidgetItem* move, QTreeWidgetItem* after)
     {
       insertTopLevelItem(indexOfTopLevelItem(after)+1, move);
     }
+  static_cast<QgsLegendItem*>(move)->restoreAppearanceSettings();//apply the settings again
 }
 
 void QgsLegend::removeItem(QTreeWidgetItem* item)

@@ -89,9 +89,19 @@ public:
     /**Removes all the children of this item. This function is for qt-4.0.1 compatibility, where
      'takeChildren()' does not yet exist*/
     void removeAllChildren();
+    /**Stores the current appearance settings (expanded, hidden). The purpose of this is that if an item is removed 
+     from its position and insert into another position, these settings can be restored after insertion. storeAppearanceSettings is 
+    also called for all childs*/
+    void storeAppearanceSettings();
+    /**Restore appearanc settings (expanded and hidden) e.g. after being inserted into a new place in the tree widget*/
+    void restoreAppearanceSettings();
 protected:
    bool mLeafNodeFlag;
-   LEGEND_ITEM_TYPE mType; 
+   LEGEND_ITEM_TYPE mType;
+   /**Stores expanded property when storeAppearanceSettings is called*/
+   bool mExpanded;
+   /**Stores hidden property when storeAppearanceSettings is called*/
+   bool mHidden;
 };
 
 #endif

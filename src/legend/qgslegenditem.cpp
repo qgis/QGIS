@@ -99,3 +99,25 @@ void QgsLegendItem::removeAllChildren()
       takeChild(0);
     }
 }
+
+void QgsLegendItem::storeAppearanceSettings()
+{
+  mExpanded = treeWidget()->isItemExpanded(this);
+  mHidden = treeWidget()->isItemHidden(this);
+  //call recursively for all subitems
+  for(int i = 0; i < childCount(); ++i)
+    {
+      static_cast<QgsLegendItem*>(child(i))->storeAppearanceSettings();
+    }
+}
+
+void QgsLegendItem::restoreAppearanceSettings()
+{
+  treeWidget()->setItemExpanded(this, mExpanded);
+  treeWidget()->setItemHidden(this, mHidden);
+  //call recursively for all subitems
+  for(int i = 0; i < childCount(); ++i)
+    {
+      static_cast<QgsLegendItem*>(child(i))->restoreAppearanceSettings();
+    }
+}

@@ -119,19 +119,16 @@ outlinecolor,outlinestyle,outlinewidth,fillcolor,fillpattern) >
 
 <!ELEMENT legend (legendgroup* | legendlayer*) >
 <!ATTLIST legend open (1|0|true|false) "false"> #open or closed
-<!ELEMENT legendgroup>
+<!ELEMENT legendgroup (legendlayer*) >
 <!ATTLIST legendgroup open (1|0|true|false) "false" name CDATA> #open or closed
-<!ELEMENT legendlayer>
+<!ELEMENT legendlayer (legendsymbologyitem+, legendlayerfilegroup>
 <!ATTLIST legendlayer open (1|0|true|false) "false" checked (Qt::Checked|Qt::Unchecked|Qt::PartiallyChecked) "Qt::Checked"> #open or closed
-<!ELEMENT legendlayerfilegroup>
-<!ATTLIST legendlayerfile open (1|0|true|false) "false"> #open or closed
+<!ELEMENT legendlayerfilegroup (legendlayerfile*) >
+<!ATTLIST legendlayerfilegroup open (1|0|true|false) "false" > #open or closed
+<!ATTLIST legendlayerfilegroup hidden(1|0|true|false) "false"> #hidden or shown
 <!ELEMENT legendlayerfile>
 <!ATTLIST legendlayerfile id CDATA> #unique layer id of the associated layer
 <!ATTLIST legendlayerfile open (1|0|true|false) "false"> #open or closed
-<!ELEMENT legendsymbologygroup>
-<!ATTLIST legendsymbologygroup open (1|0|true|false) "false"> #open or closed
 <!ELEMENT legendsymbologyitem>
 <!ATTLIST legendsymbologyitem open (1|0|true|false) "false"> #open or closed
-<!ELEMENT legenpropertygroup>
-<!ATTLIST legendpropertygroup open (1|0|true|false) "false"> #open or closed
 
