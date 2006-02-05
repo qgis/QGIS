@@ -672,6 +672,10 @@ void QgisApp::createMenus()
   mFileMenu->addAction(mActionFileNew);
   mFileMenu->addAction(mActionFileOpen);
   mRecentProjectsMenu = mFileMenu->addMenu("&Open Recent Projects");
+  // Connect once for the entire submenu.
+  connect(mRecentProjectsMenu, SIGNAL(triggered(QAction *)),
+          this, SLOT(openProject(QAction *)));
+
   mFileMenu->addSeparator();
   mFileMenu->addAction(mActionFileSave);
   mFileMenu->addAction(mActionFileSaveAs);
@@ -1162,25 +1166,28 @@ void QgisApp::createDB()
 // Update file menu with the current list of recently accessed projects
 void QgisApp::updateRecentProjectPaths()
 {
-  if (mRecentProjectPaths.size() > 0)
+  // Remove existing paths from the recent projects menu
+  int i;
+
+  int menusize = mRecentProjectsMenu->actions().size();
+
+  for(i = menusize; i < mRecentProjectPaths.size(); i++)
   {
-    uint myId= 1;
-    for ( QStringList::Iterator it = mRecentProjectPaths.begin();
-        it != mRecentProjectPaths.end();
-        ++it )
-    {
-      myId++;
-      mRecentProjectsMenu->insertItem((*it), this, SLOT(openProject(int)),0, myId,myId);
-      // This parameter corresponds to this path's index
-      // in mRecentProjectPaths
-      mFileMenu->setItemParameter(myId, myId - 1);
-      // Disable this menu item if the file has been removed
-      if (!QFile::exists((*it)))
-      {
-        mFileMenu->setItemEnabled(myId, FALSE);
-      }
-    }
+    mRecentProjectsMenu->addAction("Dummy text");
   }
+
+  QList<QAction *> menulist = mRecentProjectsMenu->actions();
+
+  assert(menulist.size() == mRecentProjectPaths.size());
+
+  for (i = 0; i < mRecentProjectPaths.size(); i++)
+    {
+      menulist.at(i)->setText(mRecentProjectPaths.at(i));
+
+      // Disable this menu item if the file has been removed, if not enable it
+      menulist.at(i)->setEnabled(QFile::exists((mRecentProjectPaths.at(i))));
+
+    }
 } // QgisApp::updateRecentProjectPaths
 
 // add this file to the recently opened/saved projects list
@@ -1191,7 +1198,7 @@ void QgisApp::saveRecentProjectPath(QString projectPath, QSettings & settings)
   projectPath = myFileInfo.absFilePath();
 
   // If this file is already in the list, remove it
-  mRecentProjectPaths.remove(projectPath);
+  mRecentProjectPaths.removeAll(projectPath);
 
   // Prepend this file to the list
   mRecentProjectPaths.prepend(projectPath);
@@ -1205,12 +1212,7 @@ void QgisApp::saveRecentProjectPath(QString projectPath, QSettings & settings)
   // Persist the list
   settings.writeEntry("/UI/recentProjectsList", mRecentProjectPaths);
 
-  // Remove existing paths from the recent projects menu
-  for (uint i=mRecentProjectPaths.count();i>0;i--)
-  {
-    mRecentProjectsMenu->removeItemAt(i);
-  }
-  // Add back in the updated list of paths
+  // Update menu list of paths
   updateRecentProjectPaths();
 
 } // QgisApp::saveRecentProjectPath
@@ -3033,19 +3035,20 @@ void QgisApp::fileSaveAs()
 
 // Open the project file corresponding to the
 // path at the given index in mRecentProjectPaths
-void QgisApp::openProject(int pathIndex)
+void QgisApp::openProject(QAction *action)
 {
-  // possibly save any pending work before opening a different project
-  int answer = saveDirty();
 
+  // possibly save any pending work before opening a different project
+  QString debugme;
+  assert(action != NULL);
+
+  debugme = action->text();
+
+  int answer = saveDirty();
   if (answer != QMessageBox::Cancel)
   {
-#if QT_VERSION < 0x040000
-    QStringList::Iterator it = mRecentProjectPaths.at(pathIndex);
-    addProject((*it));
-#else
-    addProject(mRecentProjectPaths.at(pathIndex));
-#endif
+    addProject(debugme);
+
   }
   //set the projections enabled icon in the status bar
   int myProjectionEnabledFlag =
