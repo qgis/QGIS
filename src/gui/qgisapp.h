@@ -229,8 +229,8 @@ public slots:
   //! Save project as
   void fileSaveAs();
   //! Open the project file corresponding to the
-  //! path at the given index in mRecentProjectPaths
-  void openProject(int pathIndex);
+  //! text)= of the given action.
+  void openProject(QAction *action);
   //! Save the map view as an image - user is prompted for image name using a dialog
   void saveMapAsImage();
   //! Open a project
