@@ -401,12 +401,12 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
 #endif
 
 #ifdef QGISDEBUG
-  QFile file( "/tmp/qgis-wmsprovider-draw-raw.png" );
-  if ( file.open( QIODevice::WriteOnly ) ) 
-  {
-    file.writeBlock(imagesource);
-    file.close();
-  }
+  //QFile file( "/tmp/qgis-wmsprovider-draw-raw.png" );
+  //if ( file.open( QIODevice::WriteOnly ) ) 
+  //{
+  //  file.writeBlock(imagesource);
+  //  file.close();
+  //}
 #endif
 
   // Load into the final QImage.
@@ -566,12 +566,12 @@ void QgsWmsProvider::parseCapabilities(QByteArray  const & xml, QgsWmsCapabiliti
   QString responsestring(xml);
   qWarning("QgsWmsProvider::parseCapabilities, received the following data: "+responsestring);
   
-  QFile file( "/tmp/qgis-wmsprovider-capabilities.xml" );
-  if ( file.open( QIODevice::WriteOnly ) ) 
-  {
-    file.writeBlock(xml);
-    file.close();
-  }
+  //QFile file( "/tmp/qgis-wmsprovider-capabilities.xml" );
+  //if ( file.open( QIODevice::WriteOnly ) ) 
+  //{
+  //  file.writeBlock(xml);
+  //  file.close();
+  //}
 #endif
   
   // Convert completed document into a DOM
