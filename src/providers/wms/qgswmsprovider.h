@@ -576,7 +576,8 @@ private:
 
   //! parse the WMS Layer XML element
   // TODO: Make recursable
-  void parseLayer(QDomElement const & e, QgsWmsLayerProperty& layerProperty);
+  void parseLayer(QDomElement const & e, QgsWmsLayerProperty& layerProperty,
+                  QgsWmsLayerProperty *parentProperty=0);
 
   //! calculates the combined extent of the layers selected by layersDrawn  
   void calculateExtent();

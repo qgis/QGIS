@@ -1107,7 +1107,8 @@ void QgsWmsProvider::parseStyle(QDomElement const & e, QgsWmsStyleProperty& styl
 }
 
 
-void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& layerProperty)
+void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& layerProperty,
+                                QgsWmsLayerProperty *parentProperty)
 {
 #ifdef QGISDEBUG
 //  std::cout << "QgsWmsProvider::parseLayer: entering." << std::endl;
@@ -1149,7 +1150,7 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
             subLayerProperty.crs   = layerProperty.crs;
             // TODO
 
-            parseLayer(e1, subLayerProperty);
+            parseLayer(e1, subLayerProperty, &layerProperty );
 
             layerProperty.layer.push_back(subLayerProperty);
 
@@ -1270,6 +1271,19 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
     std::cout << " QgsWmsProvider::parseLayer:  title is: '" << layerProperty.title.toLocal8Bit().data() << "'." << std::endl;
 //    std::cout << "QgsWmsProvider::parseLayer:   srs is: '" << layerProperty.srs << "'." << std::endl;
 //    std::cout << "QgsWmsProvider::parseLayer:   bbox is: '" << layerProperty.latlonbbox.stringRep() << "'." << std::endl;
+
+    // inherit SRS and BoundingBox if not defined but available in parent 
+    if ( parentProperty ) 
+    {
+        if ( layerProperty.crs.size() == 0 )
+        {
+            layerProperty.crs = parentProperty->crs;
+        }
+        if ( layerProperty.boundingBox.size() == 0 )
+        {
+            layerProperty.boundingBox = parentProperty->boundingBox;
+        }
+    }
 
     // Store the extent so that it can be combined with others later
     // in calculateExtent()
