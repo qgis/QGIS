@@ -1277,11 +1277,14 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
     //extentForLayer[ layerProperty.name ] = layerProperty.ex_GeographicBoundingBox;
     if ( layerProperty.crs.size() > 0 ) 
     {
-        // TODO: find the correct bounding box
-        if ( layerProperty.boundingBox.size() > 0 ) 
+        for ( int i = 0; i < layerProperty.boundingBox.size(); i++ ) 
         {
-            extentForLayer[ layerProperty.name ] = 
-               layerProperty.boundingBox[0].box;
+            std::set<QString>::iterator it = layerProperty.crs.begin();
+            if ( layerProperty.boundingBox[i].crs == *it )
+            {
+                extentForLayer[ layerProperty.name ] = 
+                        layerProperty.boundingBox[i].box;
+            }
         }
     }
 
