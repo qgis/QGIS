@@ -280,7 +280,7 @@
     QString                                     title;
     QString                                     abstract;
     QStringList                                 keywordList;
-    std::set<QString>                           crs;        // coord ref sys
+    std::vector<QString>                        crs;        // coord ref sys
     QgsRect                                     ex_GeographicBoundingBox;
     std::vector<QgsWmsBoundingBoxProperty>      boundingBox;
     std::vector<QgsWmsDimensionProperty>        dimension;
@@ -585,6 +585,9 @@ private:
   
   //! Data source URI of the WMS for this layer
   QString httpuri;
+
+  //! URL part of URI (httpuri)
+  QString url;
 
   //! HTTP proxy host name for the WMS for this layer
   QString httpproxyhost;

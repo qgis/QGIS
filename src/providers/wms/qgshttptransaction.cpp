@@ -74,22 +74,29 @@ QByteArray QgsHttpTransaction::getSynchronously(int redirections)
 #endif
 
   Q3Url qurl(httpurl);
+  QString path;
   
   if (httphost.isEmpty())
   {
     // No proxy was specified - connect directly to host in URI
     httphost = qurl.host();
+    path = qurl.encodedPathAndQuery();
   }  
+  else
+  {
+    // Proxy -> send complete URL
+    path = httpurl;
+  }
   http = new Q3Http( httphost, httpport );
 
 #ifdef QGISDEBUG
   qWarning("QgsHttpTransaction::getSynchronously: qurl.host() is '"+qurl.host()+ "'.");
   qWarning("QgsHttpTransaction::getSynchronously: qurl.encodedPathAndQuery() is '"+qurl.encodedPathAndQuery()+"'.");
+  std::cout << "path = " << path.ascii() << std::endl;
 #endif
   
-
   httpresponse.truncate(0);
-  httpid = http->get( qurl.encodedPathAndQuery() );
+  httpid = http->get( path );
   httpactive = TRUE;
  
   connect(http, SIGNAL( requestStarted ( int ) ), 
