@@ -33,15 +33,20 @@
 #include <QTextCodec>
 #include <QTranslator>
 
-
 #include <iostream>
 #include <cstdio>
-#ifndef WIN32
-#include <getopt.h>
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef WIN32
+ // Open files in binary mode
+ #include <fcntl.h> /*  _O_BINARY */
+ #undef _fmode
+ int _fmode = _O_BINARY;
+#else
+ #include <getopt.h>
+#endif
+
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
 #endif
