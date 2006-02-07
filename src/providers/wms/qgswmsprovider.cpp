@@ -69,16 +69,60 @@ QgsWmsProvider::QgsWmsProvider(QString const & uri)
   // assume this is a valid layer until we determine otherwise
   valid = true;
   
-  /* GetCapabilities routine.
-     Once proven, we'll move to its own function
-  */   
+  // Examples:
   //httpuri = "http://ims.cr.usgs.gov:80/servlet/com.esri.wms.Esrimap/USGS_EDC_Trans_BTS_Roads?SERVICE=WMS&REQUEST=GetCapabilities";
-
   //httpuri = "http://www.ga.gov.au/bin/getmap.pl?dataset=national&";
   
+  // URI is in form: URL[ proxyhost[ [proxyport]]
+
+  // Split proxy from the provider-encoded uri  
+  QStringList drawuriparts = QStringList::split(" ", httpuri, TRUE);
+  
+  url = drawuriparts.front();
+  drawuriparts.pop_front();
+  
+  if (drawuriparts.count())
+  {
+    httpproxyhost = drawuriparts.front();
+    drawuriparts.pop_front();
+    
+    if (drawuriparts.count())
+    {
+      bool ushortConversionOK;
+      httpproxyport = drawuriparts.front().toUShort(&ushortConversionOK);
+      drawuriparts.pop_front();
+      
+      if (!ushortConversionOK)
+      {
+        httpproxyport = 80;  // standard HTTP port
+      }
+    }
+    else
+    {
+      httpproxyport = 80;  // standard HTTP port
+    }
+  }    
+
+  // URL can be in 3 forms:
+  // 1) http://xxx.xxx.xx/yyy/yyy
+  // 2) http://xxx.xxx.xx/yyy/yyy?
+  // 3) http://xxx.xxx.xx/yyy/yyy?zzz=www
+  
+  // Prepare the URI so that we can later simply append param=value
+  if ( !(url.contains("?")) ) 
+  {  
+    url.append("?");
+  }
+  else if ( url.right(1) != "?" ) 
+  {
+    url.append("&");
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "url = " << url.toLocal8Bit().data() << std::endl;
+#endif
 
   getServerCapabilities();
-  
 
   //httpuri = "http://www.ga.gov.au/bin/getmap.pl?dataset=national&Service=WMS&Version=1.1.0&Request=GetMap&"
   //      "BBox=130,-40,160,-10&SRS=EPSG:4326&Width=400&Height=400&Layers=railways&Format=image/png";
@@ -260,35 +304,6 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
   QString height;
   height = height.setNum(pixelHeight);
 
-  // Split proxy from the provider-encoded uri  
-  //   ( url ( + " " + proxyhost + " " + proxyport) )
-  
-  QStringList drawuriparts = QStringList::split(" ", httpuri, TRUE);
-  
-  QString drawuri = drawuriparts.front();
-  drawuriparts.pop_front();
-  
-  if (drawuriparts.count())
-  {
-    httpproxyhost = drawuriparts.front();
-    drawuriparts.pop_front();
-    
-    if (drawuriparts.count())
-    {
-      bool * ushortConversionOK;
-      httpproxyport = drawuriparts.front().toUShort(ushortConversionOK);
-      drawuriparts.pop_front();
-      
-      if (!(*ushortConversionOK))
-      {
-        httpproxyport = 80;  // standard HTTP port
-      }
-    }
-    else
-    {
-      httpproxyport = 80;  // standard HTTP port
-    }
-  }    
   
   // Calculate active layers that are also visible.
 
@@ -335,40 +350,37 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
 
   // compose the URL query string for the WMS server.
 
-  drawuri += "?Service=WMS";
-  drawuri += "&";
-  drawuri += "Version=1.1.0";
-  drawuri += "&";
-  drawuri += "Request=GetMap";
-  drawuri += "&";
-  drawuri += "BBox=" + bbox;
-  //drawuri += "&";
-  //drawuri += "SRS=EPSG:4326";
+  url += "Service=WMS";
+  url += "&";
+  url += "Version=1.1.0";
+  url += "&";
+  url += "Request=GetMap";
+  url += "&";
+  url += "BBox=" + bbox;
   // TODO: for now use the first SRS of the first layer
   if ( layersSupported.size() > 0 && 
        layersSupported[0].crs.size() )
   {
-    std::set<QString>::iterator it = layersSupported[0].crs.begin();
-    drawuri += "&";
-    drawuri += "SRS=" + *it;
+    url += "&";
+    url += "SRS=" + layersSupported[0].crs[0];
   }
-  drawuri += "&";
-  drawuri += "Width=" + width;
-  drawuri += "&";
-  drawuri += "Height=" + height;
-  drawuri += "&";
-  drawuri += "Layers=" + layers;
-  drawuri += "&";
-  drawuri += "Styles=" + styles;
-  drawuri += "&";
-  drawuri += "Format=" + imageMimeType;
-  drawuri += "&";
-  drawuri += "Transparent=true";
+  url += "&";
+  url += "Width=" + width;
+  url += "&";
+  url += "Height=" + height;
+  url += "&";
+  url += "Layers=" + layers;
+  url += "&";
+  url += "Styles=" + styles;
+  url += "&";
+  url += "Format=" + imageMimeType;
+  url += "&";
+  url += "Transparent=true";
 
   emit setStatus( QString("Test from QgsWmsProvider") );
 
   
-  QgsHttpTransaction http(drawuri, httpproxyhost, httpproxyport);
+  QgsHttpTransaction http(url, httpproxyhost, httpproxyport);
   
   
   // Do a passthrough for the status bar text
@@ -465,13 +477,17 @@ void QgsWmsProvider::getServerCapabilities()
 
 void QgsWmsProvider::retrieveServerCapabilities()
 {
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::retrieveServerCapabilities: entering." << std::endl;
+#endif
 
   // TODO: Smarter caching - need to refresh if demanded.
 
   if ( httpcapabilitiesresponse.isNull() )
   {
   
-    QString uri = httpuri + "?SERVICE=WMS&REQUEST=GetCapabilities";
+    QString uri = url + "SERVICE=WMS&REQUEST=GetCapabilities";
+  std::cout << "uri = " << uri.ascii() << std::endl;
 
     QgsHttpTransaction http(uri, httpproxyhost, httpproxyport);
 
@@ -1148,6 +1164,7 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
             //   Ref: 7.2.4.8 Inheritance of layer properties
             subLayerProperty.style = layerProperty.style;
             subLayerProperty.crs   = layerProperty.crs;
+            subLayerProperty.boundingBox = layerProperty.boundingBox;
             // TODO
 
             parseLayer(e1, subLayerProperty, &layerProperty );
@@ -1177,7 +1194,7 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
                    (e1.tagName() == "SRS")        // legacy from earlier versions of WMS
                   )
           {
-            layerProperty.crs.insert(e1.text());
+            layerProperty.crs.push_back(e1.text());
           }
           else if (
                    (e1.tagName() == "EX_GeographicBoundingBox")  ||
@@ -1199,7 +1216,7 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
           }
           else if (e1.tagName() == "BoundingBox")
           {
-            // TODO
+              // TODO: overwrite inherited
               QgsWmsBoundingBoxProperty bbox;
               bbox.box = QgsRect ( e1.attribute("minx").toDouble(),
                                    e1.attribute("miny").toDouble(),
@@ -1272,29 +1289,16 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
 //    std::cout << "QgsWmsProvider::parseLayer:   srs is: '" << layerProperty.srs << "'." << std::endl;
 //    std::cout << "QgsWmsProvider::parseLayer:   bbox is: '" << layerProperty.latlonbbox.stringRep() << "'." << std::endl;
 
-    // inherit SRS and BoundingBox if not defined but available in parent 
-    if ( parentProperty ) 
-    {
-        if ( layerProperty.crs.size() == 0 )
-        {
-            layerProperty.crs = parentProperty->crs;
-        }
-        if ( layerProperty.boundingBox.size() == 0 )
-        {
-            layerProperty.boundingBox = parentProperty->boundingBox;
-        }
-    }
-
     // Store the extent so that it can be combined with others later
     // in calculateExtent()
     // For now use extent in the first SRS defined for the layer
     //extentForLayer[ layerProperty.name ] = layerProperty.ex_GeographicBoundingBox;
+
     if ( layerProperty.crs.size() > 0 ) 
     {
         for ( int i = 0; i < layerProperty.boundingBox.size(); i++ ) 
         {
-            std::set<QString>::iterator it = layerProperty.crs.begin();
-            if ( layerProperty.boundingBox[i].crs == *it )
+            if ( layerProperty.boundingBox[i].crs == layerProperty.crs[0] )
             {
                 extentForLayer[ layerProperty.name ] = 
                         layerProperty.boundingBox[i].box;
@@ -1608,15 +1612,13 @@ QString QgsWmsProvider::getMetadata()
 
 
     // Layer Coordinate Reference Systems
-    for ( std::set<QString>::const_iterator it  = layersSupported[i].crs.begin(); 
-                                            it != layersSupported[i].crs.end(); 
-                                          ++it )
+    for ( int j = 0; j < layersSupported[i].crs.size(); j++ )
     {
       myMetadataQString += "<tr><td bgcolor=\"gray\">";
       myMetadataQString += tr("Available in CRS");
       myMetadataQString += "</td>";
       myMetadataQString += "<td bgcolor=\"gray\">";
-      myMetadataQString += (*it);
+      myMetadataQString += layersSupported[i].crs[j];
       myMetadataQString += "</td></tr>";
     }
 
@@ -1681,15 +1683,13 @@ QString QgsWmsProvider::getMetadata()
 
 
     // Layer Coordinate Reference Systems
-    for ( std::set<QString>::const_iterator it  = layersSupported[i].crs.begin(); 
-                                            it != layersSupported[i].crs.end(); 
-                                          ++it )
+    for ( int j = 0; j < layersSupported[i].crs.size(); j++ )
     {
       myMetadataQString += "<tr><td bgcolor=\"gray\">";
       myMetadataQString += tr("Available in CRS");
       myMetadataQString += "</td>";
       myMetadataQString += "<td bgcolor=\"gray\">";
-      myMetadataQString += (*it);
+      myMetadataQString += layersSupported[i].crs[j];
       myMetadataQString += "</td></tr>";
     }
 
