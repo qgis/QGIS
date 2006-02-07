@@ -64,7 +64,7 @@ void QgsDistanceArea::setProjectAsSourceSRS()
   // is still applied if all else fails.
 
   int srsid = QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
-0
+
   setSourceSRS(srsid);
 }
 
