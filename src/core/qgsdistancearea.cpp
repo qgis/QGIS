@@ -55,12 +55,16 @@ void QgsDistanceArea::setSourceSRS(long srsid)
 
 void QgsDistanceArea::setProjectAsSourceSRS()
 {
-  int projEnabled = QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
-  long srsid = GEOSRS_ID;
-  if (projEnabled)
-  {
-    srsid = QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
-  }
+  // This function used to only get the /ProjectSRSID if on-the-fly
+  // projection was enabled (and used a default value in all other
+  // cases). However, even if it was not, a valid value for
+  // /ProjectSRSID is most likely available, and we now use it in all
+  // cases (as it gives correct distances and areas even when
+  // on-the-fly projection is turned off). The default of GEOSRS_ID
+  // is still applied if all else fails.
+
+  int srsid = QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectSRSID",GEOSRS_ID);
+0
   setSourceSRS(srsid);
 }
 
