@@ -16,16 +16,17 @@
  ***************************************************************************/
 /* $Id$ */
 #include "qgsattributedialog.h"
+#include "qgsfeature.h"
 #include <QTableWidgetItem>
 
-QgsAttributeDialog::QgsAttributeDialog(std::vector<QgsFeatureAttribute>* attributes)
+QgsAttributeDialog::QgsAttributeDialog(const std::vector<QgsFeatureAttribute>* attributes)
 : QDialog()
 {
     setupUi(this);
     mTable->setRowCount(attributes->size());
 
     int index=0;
-    for(std::vector<QgsFeatureAttribute>::iterator it=attributes->begin();it!=attributes->end();++it)
+    for(std::vector<QgsFeatureAttribute>::const_iterator it=attributes->begin();it!=attributes->end();++it)
     {
       QTableWidgetItem * myFieldItem = new QTableWidgetItem((*it).fieldName());
       mTable->setItem(index, 0, myFieldItem);
@@ -43,4 +44,22 @@ QgsAttributeDialog::~QgsAttributeDialog()
 QString QgsAttributeDialog::value(int row)
 {
     return mTable->item(row,1)->text();
+}
+
+bool QgsAttributeDialog::queryAttributes(QgsFeature& f)
+{
+  const std::vector<QgsFeatureAttribute> featureAttributes = f.attributeMap();
+  QgsAttributeDialog attdialog(&featureAttributes);
+  if(attdialog.exec()==QDialog::Accepted)
+    {
+      for(int i=0;i<featureAttributes.size();++i)
+	{
+	  f.changeAttributeValue(featureAttributes[i].fieldName(), attdialog.value(i));
+	}
+      return true;
+    }
+  else
+    {
+      return false;
+    }
 }

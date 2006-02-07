@@ -24,15 +24,20 @@
 #include <vector>
 
 class QDialog;
+class QgsFeature;
 
 class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
 {
     Q_OBJECT
 	public:
-    QgsAttributeDialog(std::vector<QgsFeatureAttribute>* attributes);
+    QgsAttributeDialog(const std::vector<QgsFeatureAttribute>* attributes);
     ~QgsAttributeDialog();
     /**Returns the field value of a row*/
     QString value(int row);
+    /**Opens an attribute dialog and queries the attributes for a given feature. The
+     attribute values are set to the feature if the dialog is accepted.
+    Returns true if accepted and false if canceled*/
+    static bool queryAttributes(QgsFeature& f);
 };
 
 #endif

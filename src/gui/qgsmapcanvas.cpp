@@ -2052,10 +2052,10 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
               }
 
               //show the dialog to enter attribute values
-              if(f->attributeDialog())
-              {
-                vlayer->addFeature(f);
-              }
+	      if(QgsAttributeDialog::queryAttributes(*f))
+	      {
+		vlayer->addFeature(f);
+	      }
               refresh();
             }
           }
@@ -2247,10 +2247,11 @@ void QgsMapCanvas::mouseReleaseEvent(QMouseEvent * e)
               f->addAttribute((*it).name(),vlayer->getDefaultValue(it->name(), f));
             }
 
-            if(f->attributeDialog())
-            {
-              vlayer->addFeature(f);
-            }
+	    //show the dialog to enter attribute values
+	    if(QgsAttributeDialog::queryAttributes(*f))
+	    {
+	      vlayer->addFeature(f);
+	    }
 
             // delete the elements of mCaptureList
             mCaptureList.clear();

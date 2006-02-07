@@ -205,10 +205,6 @@ class QgsFeature {
      *  to the given coordinates
      */
 /*    bool vertexAt(double &x, double &y, int atVertex = 0, int atRing = 0, int atItem = 0) const;*/
-    
-    /**Shows a popup dialog to change attribute values
-     @return true if dialog is accepted, false if rejected*/
-    bool attributeDialog();
 
 //     /**Test for intersection with a rectangle (uses GEOS)*/
 //     bool intersects(QgsRect* r) const;
