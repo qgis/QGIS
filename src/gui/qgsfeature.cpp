@@ -15,7 +15,6 @@ email                : sherman at mrcc.com
 /* $Id$ */
 
 #include "qgsfeature.h"
-#include "qgsattributedialog.h"
 #include "qgsrect.h"
 #include <iostream>
 #include <cfloat>
@@ -810,24 +809,6 @@ bool QgsFeature::isDirty() const
 void QgsFeature::resetDirty()
 {
   mDirty = FALSE;
-}
-
-
-bool QgsFeature::attributeDialog()
-{
-    QgsAttributeDialog attdialog(&attributes);
-    if(attdialog.exec()==QDialog::Accepted)
-    {
-	for(int i=0;i<attributes.size();++i)
-	{
-	    attributes[i].setFieldValue(attdialog.value(i));
-	}
-	return true;
-    }
-    else
-    {
-	return false;
-    }
 }
 
 // bool QgsFeature::intersects(QgsRect* r) const
