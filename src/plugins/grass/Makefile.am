@@ -47,7 +47,6 @@ plugin_MOC = qgsgrassplugin.moc.cpp \
 
 plugin_UI = ui_qgsgrassselectbase.h \
 	    ui_qgsgrasseditbase.h \
-	    ui_qgsgrasstoolsbase.h \
 	    ui_qgsgrassmapcalcbase.h \
 	    ui_qgsgrassmodulebase.h \
 	    ui_qgsgrassnewmapsetbase.h \
@@ -58,7 +57,6 @@ plugin_UI = ui_qgsgrassselectbase.h \
 plugin_UIC = qgsgrassselectbase.ui \
 	     qgsgrassselectbase.ui.h \
 	     qgsgrasseditbase.ui \
-	     qgsgrasstoolsbase.ui \
 	     qgsgrassmapcalcbase.ui \
 	     qgsgrassmodulebase.ui \
 	     qgsgrassnewmapsetbase.ui \
@@ -97,8 +95,6 @@ qgsgrassselectbase.cpp: ui_qgsgrassselectbase.h qgsgrassselectbase.ui
 qgsgrassselectbase.h: qgsgrassselectbase.ui
 qgsgrasseditbase.cpp: ui_qgsgrasseditbase.h qgsgrasseditbase.ui
 qgsgrasseditbase.h: qgsgrasseditbase.ui
-qgsgrasstoolsbase.cpp: ui_qgsgrasstoolsbase.h qgsgrasstoolsbase.ui
-qgsgrasstoolsbase.h: qgsgrasstoolsbase.ui
 qgsgrassmapcalcbase.cpp: ui_qgsgrassmapcalcbase.h qgsgrassmapcalcbase.ui
 qgsgrassmapcalcbase.h: qgsgrassmapcalcbase.ui
 qgsgrassmodulebase.cpp: ui_qgsgrassmodulebase.h qgsgrassmodulebase.ui
