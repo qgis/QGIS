@@ -29,15 +29,26 @@ class QDomElement;
 #include "qgisiface.h"
 
 class QgsGrassProvider;
-#include "ui_qgsgrasstoolsbase.h"
 #include <QDialog>
+#include <QTabBar>
+
+class QgsGrassToolsTabWidget: public QTabWidget
+{
+    Q_OBJECT;
+
+public:
+    //! Constructor
+    QgsGrassToolsTabWidget ( QWidget * parent = 0 );
+
+    //! Destructor
+    ~QgsGrassToolsTabWidget();
+};
 
 /*! \class QgsGrassTools
  *  \brief Interface to GRASS modules.
  *
  */
-//class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
-class QgsGrassTools: public Q3MainWindow, private Ui::QgsGrassToolsBase
+class QgsGrassTools: public QDialog
 {
     Q_OBJECT;
 
@@ -89,6 +100,9 @@ private:
 
     //! QGIS directory
     QString mAppDir;
+
+    QgsGrassToolsTabWidget *mTabWidget;
+    Q3ListView *mModulesListView;
 };
 
 #endif // QGSGRASSTOOLS_H

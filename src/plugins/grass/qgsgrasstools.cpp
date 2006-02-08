@@ -49,6 +49,8 @@
 #include <qicon.h>
 //Added by qt3to4:
 #include <QCloseEvent>
+#include <QTabBar>
+#include <QListView>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -71,22 +73,37 @@ extern "C" {
 #include "qgsgrassmodule.h"
 #include "qgsgrassshell.h"
 
+QgsGrassToolsTabWidget::QgsGrassToolsTabWidget( QWidget * parent ): 
+        QTabWidget(parent)
+{
+    tabBar()->setIconSize( QSize(125,25) );
+}
+
+QgsGrassToolsTabWidget::~QgsGrassToolsTabWidget() {}
+
 QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface, 
 	                     QWidget * parent, const char * name, Qt::WFlags f )
-             //:QgsGrassToolsBase ( parent, name, f )
-             //commented out params during Qt4 Ui port - FIXME
-             :QgsGrassToolsBase ( ), Q3MainWindow()
+             :QDialog ( parent )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassTools()" << std::endl;
     #endif
 
-    setupUi(this);
+   setWindowTitle ( "GRASS Tools" );
+//    setupUi(this);
 
     mQgisApp = qgisApp;
     mIface = iface;
     mCanvas = mIface->getMapCanvas();
 
+    mTabWidget = new QgsGrassToolsTabWidget (this);
+    QVBoxLayout *layout1 = new QVBoxLayout(this);
+    layout1->addWidget(mTabWidget);
+
+    mModulesListView = new Q3ListView();
+    mTabWidget->addTab( mModulesListView, "Modules" );
+    mModulesListView->addColumn("col1",0);
+    
     // Set list view
     mModulesListView->setColumnText(0,"Modules");
     mModulesListView->clear();
@@ -160,11 +177,12 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
                                       mQgisApp, mIface, path, mTabWidget ) );
     }
     
-    //mTabWidget->addTab ( m, item->text(0) );
     QPixmap pixmap = QgsGrassModule::pixmap ( path, 25 ); 
     QIcon is;
-    is.setPixmap ( pixmap, QIcon::Small, QIcon::Normal );
+    is.addPixmap ( pixmap );
     mTabWidget->addTab ( m, is, "" );
+
+   QgsGrassToolsTabWidget tw;
 		
     mTabWidget->setCurrentPage ( mTabWidget->count()-1 );
      
