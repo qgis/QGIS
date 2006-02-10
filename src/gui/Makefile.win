@@ -37,7 +37,7 @@ qgis.exe:
 	$(STRIP) $@
 
 install: all
-	$(INSTALL) -m 755 qgis.exe $(prefix)/bin/qgis.exe
-	$(INSTALL) -m 755 $(DLL) $(prefix)/bin/$(DLL)
+	$(INSTALL) -m 755 qgis.exe $(BINDIR)/qgis.exe
+	$(INSTALL) -m 755 $(DLL) $(DLLDIR)/$(DLL)
 
 include $(QGTOP)/Makefile.win.rules
