@@ -85,6 +85,7 @@ public slots:
 
     //! Database changed
     void on_mDatabaseLineEdit_returnPressed() { databaseChanged(); }
+    void on_mDatabaseLineEdit_textChanged() { databaseChanged(); }
     void databaseChanged();
     
     /***************** LOCATION *****************/
@@ -106,6 +107,7 @@ public slots:
 
     //! New location name has changed
     void on_mLocationLineEdit_returnPressed() { newLocationChanged(); }
+    void on_mLocationLineEdit_textChanged() { newLocationChanged(); }
     void newLocationChanged();
 
     //! Check location
@@ -137,9 +139,13 @@ public slots:
 
     //! Region Changed
     void on_mNorthLineEdit_returnPressed() { regionChanged(); }
+    void on_mNorthLineEdit_textChanged() { regionChanged(); }
     void on_mSouthLineEdit_returnPressed() { regionChanged(); }
+    void on_mSouthLineEdit_textChanged() { regionChanged(); }
     void on_mEastLineEdit_returnPressed() { regionChanged(); }
+    void on_mEastLineEdit_textChanged() { regionChanged(); }
     void on_mWestLineEdit_returnPressed() { regionChanged(); }
+    void on_mWestLineEdit_textChanged() { regionChanged(); }
     void regionChanged();
 
     //! Set current QGIS region
@@ -160,6 +166,7 @@ public slots:
 
     //! Mapset name changed
     void on_mMapsetLineEdit_returnPressed() { mapsetChanged(); }
+    void on_mMapsetLineEdit_textChanged() { mapsetChanged(); }
     void mapsetChanged();
 
     /******************** FINISH ******************/

@@ -129,6 +129,7 @@ void QgsGrassPlugin::initGui()
 {
   toolBarPointer = 0;
   mTools = 0;
+  mNewMapset = 0;
 
   QSettings settings("QuantumGIS", "qgis");
 
@@ -678,16 +679,14 @@ void QgsGrassPlugin::closeMapset()
 
 void QgsGrassPlugin::newMapset()
 {
-    if ( QgsGrassNewMapset::isRunning() )
+    if ( !QgsGrassNewMapset::isRunning() )
     {
-        QMessageBox::warning( 0, "Warning", 
-           "New GRASS Mapset wizard is already running." );
-        return;
+        mNewMapset = new QgsGrassNewMapset ( 
+	                    qgisMainWindowPointer, qGisInterface, 
+                            this, qgisMainWindowPointer );
     }
-
-    QgsGrassNewMapset *nm = new QgsGrassNewMapset ( 
-	qgisMainWindowPointer, qGisInterface, this, qgisMainWindowPointer );
-    nm->show();
+    mNewMapset->show();
+    mNewMapset->raise();
 }
 
 // Unload the plugin by cleaning up the GUI
