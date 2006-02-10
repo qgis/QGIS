@@ -42,7 +42,7 @@ $(PROVIDER): $(OBJECTS)
 install: all
 	mkdir -p $(prefix)/bin/
 	mkdir -p $(prefix)/lib/qgis/
-	$(INSTALL) -m 755 $(GRASS_DLL) $(prefix)/bin/qgis_grass.dll
+	$(INSTALL) -m 755 $(GRASS_DLL) $(DLLDIR)/qgis_grass.dll
 	$(INSTALL) -m 755 $(PROVIDER) $(prefix)/lib/qgis/grassprovider.dll
 
 include $(QGTOP)/Makefile.win.rules
