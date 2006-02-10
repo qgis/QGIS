@@ -52,6 +52,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsfield.h"
 #include "qgsfeatureattribute.h"
+#include "qgslegend.h"
 
 extern "C" {
 #include <gis.h>
@@ -86,7 +87,10 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
   mCanvas = mIface->getMapCanvas();
 
   // TODO QGIS: crash if canvas is empty
-  QgsMapLayer *layer = (QgsMapLayer *) mIface->activeLayer();
+
+  // At moment QgisIface::activeLayer() does not work
+  //QgsMapLayer *layer = (QgsMapLayer *) mIface->activeLayer();
+  QgsMapLayer *layer = (QgsMapLayer *) mCanvas->getLegend()->currentLayer();
 
   if ( !layer ) {
     std::cerr << "No layer is selected." << std::endl;
