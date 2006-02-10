@@ -101,6 +101,13 @@ QgsGrassNewMapset::QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface,
     setHelpEnabled ( page(MAPSET), false );
     setHelpEnabled ( page(FINISH), false );
 
+    setTitle ( page(DATABASE), "GRASS database" );
+    setTitle ( page(LOCATION), "GRASS location" );
+    setTitle ( page(PROJECTION), "Projection" );
+    setTitle ( page(REGION), "Default GRASS Region" );
+    setTitle ( page(MAPSET), "Mapset" );
+    setTitle ( page(FINISH), "Create New Mapset" );
+
     setError ( mDatabaseErrorLabel, "" );
     setError ( mLocationErrorLabel, "" );
     setError ( mProjErrorLabel, "" );
@@ -134,18 +141,18 @@ QgsGrassNewMapset::QgsGrassNewMapset ( QgisApp *qgisApp, QgisIface *iface,
     dbi->setOpen(true);
     
     // First inserted is last in the view
-    Q3ListViewItem *l = new Q3ListViewItem( dbi, "New Zealand", "Location 1" );
+    Q3ListViewItem *l = new Q3ListViewItem( dbi, "New Zealand", "Location 2" );
     l->setOpen(true);
-    Q3ListViewItem *m = new Q3ListViewItem( l, "Klima", "User's mapset");
+    Q3ListViewItem *m = new Q3ListViewItem( l, "Cimrman", "User's mapset");
     m->setOpen(true);
     m = new Q3ListViewItem( l, "PERMANENT", "System mapset" );
     m->setOpen(true);
     
-    l = new Q3ListViewItem( dbi, "Mexico", "Location 2" );
+    l = new Q3ListViewItem( dbi, "Mexico", "Location 1" );
     m->setOpen(true);
-    m = new Q3ListViewItem( l, "Jirovec", "User's mapset");
+    m = new Q3ListViewItem( l, "Juan", "User's mapset");
     l->setOpen(true);
-    m = new Q3ListViewItem( l, "Cimrman", "User's mapset");
+    m = new Q3ListViewItem( l, "Alejandra", "User's mapset");
     m->setOpen(true);
     m = new Q3ListViewItem( l, "PERMANENT", "System mapset" );
     m->setOpen(true);
@@ -197,48 +204,52 @@ void QgsGrassNewMapset::databaseChanged()
     QSettings settings("QuantumGIS", "qgis");
     settings.writeEntry("/GRASS/lastGisdbase", mDatabaseLineEdit->text() );
 
+    setNextEnabled ( page(DATABASE), false );
     setError ( mDatabaseErrorLabel, "" );
+
+    QString database = mDatabaseLineEdit->text().trimmed();
+
+    if ( database.length() == 0 ) 
+    {
+        setError ( mDatabaseErrorLabel, "Enter path to GRASS database");
+        return;
+    }
+
     QFileInfo databaseInfo ( mDatabaseLineEdit->text() );
 
-    if ( databaseInfo.exists() )
-    {	
-        // Check if at least one writable location exists or 
-        // database is writable
-        bool locationExists = false;
-	QDir d ( mDatabaseLineEdit->text() );
-	for ( int i = 0; i < d.count(); i++ ) 
-	{
-	    if ( d[i] == "." || d[i] == ".." ) continue; 
+    if ( !databaseInfo.exists() )
+    {
+	setError ( mDatabaseErrorLabel, "The directory doesn't exist!");
+        return;
+    }
 
-	    QString windName = mDatabaseLineEdit->text() + "/" + d[i] + "/PERMANENT/DEFAULT_WIND";
-	    QString locationName = mDatabaseLineEdit->text() + "/" + d[i];
-	    QFileInfo locationInfo ( locationName );
+    // Check if at least one writable location exists or 
+    // database is writable
+    bool locationExists = false;
+    QDir d ( mDatabaseLineEdit->text() );
+    for ( int i = 0; i < d.count(); i++ ) 
+    {
+	if ( d[i] == "." || d[i] == ".." ) continue; 
 
-	    if ( QFile::exists ( windName ) && locationInfo.isWritable () ) 
-	    {
- 		locationExists = true;
-	        break;
-	    }
-	}
+	QString windName = mDatabaseLineEdit->text() + "/" + d[i] + "/PERMANENT/DEFAULT_WIND";
+	QString locationName = mDatabaseLineEdit->text() + "/" + d[i];
+	QFileInfo locationInfo ( locationName );
 
-	if ( locationExists || databaseInfo.isWritable()  )
+	if ( QFile::exists ( windName ) && locationInfo.isWritable () ) 
 	{
-            setNextEnabled ( page(DATABASE), true );
+	    locationExists = true;
+	    break;
 	}
-	else
-	{
-            setNextEnabled ( page(DATABASE), false );
-            setError ( mDatabaseErrorLabel, "No writable "
-                "locations, the database not writable!");
-	}
+    }
+
+    if ( locationExists || databaseInfo.isWritable()  )
+    {
+	setNextEnabled ( page(DATABASE), true );
     }
     else
     {
-        setNextEnabled ( page(DATABASE), false );
-	if ( mDatabaseLineEdit->text().stripWhiteSpace().length() > 0 )
-	{
-            setError ( mDatabaseErrorLabel, "The directory doesn't exist!");
-	}
+	setError ( mDatabaseErrorLabel, "No writable "
+	    "locations, the database not writable!");
     }
 }
 
@@ -331,13 +342,16 @@ void QgsGrassNewMapset::checkLocation()
     {
 	// TODO?: Check spaces in the name
 	
-	QString location = mLocationLineEdit->text().stripWhiteSpace();
+	QString location = mLocationLineEdit->text().trimmed();
 	
-	if ( location.length() > 0 )
+	if ( location.length() ==  0 )
 	{
+	    setNextEnabled ( page(LOCATION), false );
+            setError ( mLocationErrorLabel, "Enter location name!");
+	}
+        else
+        {
 	    QDir d ( mDatabaseLineEdit->text() );
-
-	    setNextEnabled ( page(LOCATION), true );
 
 	    for ( int i = 0; i < d.count(); i++ ) 
 	    {
@@ -350,11 +364,7 @@ void QgsGrassNewMapset::checkLocation()
 		    break;
 		}
 	    }
-	}
-	else
-	{
-	    setNextEnabled ( page(LOCATION), false );
-	}
+        }
     }
 }
 
@@ -381,6 +391,7 @@ void QgsGrassNewMapset::setProjectionPage()
 #ifdef QGISDEBUG
     std::cerr << "QgsGrassNewMapset::setProjectionPage()" << std::endl;
 #endif
+    setGrassProjection();
 }
 
 void QgsGrassNewMapset::sridSelected(QString theSRID)
@@ -618,6 +629,7 @@ void QgsGrassNewMapset::setRegionPage()
 	mCurrentRegionButton->hide();
         mRegionsComboBox->hide();
         mRegionButton->hide();
+        mSetRegionFrame->hide();
     } 
     else 
     {
@@ -625,6 +637,7 @@ void QgsGrassNewMapset::setRegionPage()
 	mCurrentRegionButton->show();
         mRegionsComboBox->show();
         mRegionButton->show();
+        mSetRegionFrame->show();
 
 	QgsRect ext = mQgisApp->getMapCanvas()->extent();
 
@@ -635,7 +648,11 @@ void QgsGrassNewMapset::setRegionPage()
     }
     
     checkRegion();
-    drawRegion();
+
+    if ( !mNoProjRadioButton->isChecked() )
+    {
+        drawRegion();
+    }
 }
 
 void QgsGrassNewMapset::setGrassRegionDefaults()
@@ -1254,43 +1271,42 @@ void QgsGrassNewMapset::mapsetChanged()
     setNextEnabled ( page(MAPSET), false );
     setError ( mMapsetErrorLabel, "");
     
-    QString mapset = mMapsetLineEdit->text().stripWhiteSpace();
+    QString mapset = mMapsetLineEdit->text().trimmed();
     
     // TODO?: Check spaces in the name
-    if ( mapset.length() > 0 )
+    if ( mapset.length() == 0 )
     {
-	// Check if exists
-	if ( mSelectLocationRadioButton->isChecked() ) 
+    	setError ( mMapsetErrorLabel, "Enter mapset name.");
+        return;
+    }
+
+    // Check if exists
+    if ( mSelectLocationRadioButton->isChecked() ) 
+    {
+	bool exists = false;
+	QString locationPath = mDatabaseLineEdit->text() + "/" + mLocationComboBox->currentText();
+	QDir d ( locationPath );
+
+	for ( int i = 0; i < d.count(); i++ ) 
 	{
-	    bool exists = false;
-       	    QString locationPath = mDatabaseLineEdit->text() + "/" + mLocationComboBox->currentText();
-            QDir d ( locationPath );
+	    if ( d[i] == "." || d[i] == ".." ) continue; 
 
-	    for ( int i = 0; i < d.count(); i++ ) 
+	    if ( d[i] == mapset ) 
 	    {
-		if ( d[i] == "." || d[i] == ".." ) continue; 
-
-	        if ( d[i] == mapset ) 
-		{
-    		    setError ( mMapsetErrorLabel, "The mapset already exists");
-		    exists = true;
-		    break;
-		}
-	    }
-
-	    if ( !exists )
-	    {
-                setNextEnabled ( page(MAPSET), true );
+		setError ( mMapsetErrorLabel, "The mapset already exists");
+		exists = true;
+		break;
 	    }
 	}
-	else
+
+	if ( !exists )
 	{
-            setNextEnabled ( page(MAPSET), true );
+	    setNextEnabled ( page(MAPSET), true );
 	}
     }
     else
     {
-        setNextEnabled ( page(MAPSET), false );
+	setNextEnabled ( page(MAPSET), true );
     }
 }
 

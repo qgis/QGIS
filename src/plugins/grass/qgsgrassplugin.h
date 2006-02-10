@@ -25,6 +25,7 @@
 #include <vector>
 
 class QgsGrassTools;
+class QgsGrassNewMapset;
 class QToolBar;
 /**
 * \class QgsGrassPlugin
@@ -126,6 +127,8 @@ private:
   QPen mRegionPen;
   //! GRASS tools
   QgsGrassTools *mTools;
+  //! Pointer to QgsGrassNewMapset
+  QgsGrassNewMapset *mNewMapset;
 
   // Actions
   QAction *mOpenMapsetAction;
