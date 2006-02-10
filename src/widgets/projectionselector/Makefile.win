@@ -21,6 +21,6 @@ $(DLL): .libs/libqgsprojectionselector.a
 	$(STRIP) $@
 
 install: all
-	$(INSTALL) -m 755 $(DLL) $(prefix)/bin/$(DLL)
+	$(INSTALL) -m 755 $(DLL) $(DLLDIR)/$(DLL)
 
 include $(QGTOP)/Makefile.win.rules
