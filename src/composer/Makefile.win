@@ -17,12 +17,12 @@ $(DLL): .libs/libqgis_composer.a
 			$(GUI_A) $(CORE_A) $(RASTER_A) $(LEGEND_A) \
 			$(PROJSEL_A) $(CORE_A) $(GUI_A) $(CORE_A) \
 			$(GUI_A) \
-			-lproj -lgdal -lsqlite3 \
+			-lproj -lgdal -lsqlite3 -lgeos \
 			$(QT_LDADD) \
 			-lwsock32 -lmingw32
 	$(STRIP) $@
 
 install: all
-	$(INSTALL) -m 755 $(DLL) $(prefix)/bin/$(DLL)
+	$(INSTALL) -m 755 $(DLL) $(DLLDIR)/$(DLL)
 
 include $(QGTOP)/Makefile.win.rules
