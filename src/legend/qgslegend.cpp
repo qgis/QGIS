@@ -482,18 +482,26 @@ QgsMapLayer* QgsLegend::currentLayer()
 	QgsLegendLayerFile* llf=dynamic_cast<QgsLegendLayerFile*>(citem);
 	if(llf)
 	{
-	    return llf->layer();
+	  return llf->layer(); //the current item is itself a legend layer file
 	}
 	else
 	{
 	    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(citem);
 	    if(ll)
 	    {
-		return ll->firstMapLayer();
+	      return ll->firstMapLayer(); //the current item is a legend layer, so return its first layer
 	    }
 	    else
 	    {
-		return 0;
+	      QgsLegendLayer* lpl = dynamic_cast<QgsLegendLayer*>(citem->parent());
+	      if(lpl)
+		{
+		  return lpl->firstMapLayer(); //the parent of the current item is a legend layer, return its first layer
+		}
+	      else
+		{
+		  return 0;
+		}
 	    }
 	}
     }
