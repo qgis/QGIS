@@ -472,11 +472,19 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
       {
 	setItemHidden(llfgroup, true);
       }
+    setCurrentItem(llayer);
 }
 
 QgsMapLayer* QgsLegend::currentLayer()
 {
-    QgsLegendItem* citem=dynamic_cast<QgsLegendItem*>(currentItem());
+    QList<QTreeWidgetItem*> selItems = selectedItems();
+    if(selItems.size() > 1)
+      {
+	return 0;
+      }
+    QList<QTreeWidgetItem*>::iterator it = selItems.begin();
+    QgsLegendItem* citem=dynamic_cast<QgsLegendItem*>(*it);
+
     if(citem)
     {
 	QgsLegendLayerFile* llf=dynamic_cast<QgsLegendLayerFile*>(citem);
