@@ -24,6 +24,9 @@
   <property name="windowIcon" >
    <iconset/>
   </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
   <layout class="QGridLayout" >
    <property name="margin" >
     <number>9</number>
