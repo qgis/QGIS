@@ -151,15 +151,9 @@ void QgsContColDialog::apply()
 	maxsymbol->setBrush(QBrush(lblMaxValue->paletteBackgroundColor()));
 	maxsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
     }
-    
-    //set the render items to the buffer renderer of the property dialog (if there is one)
-    QgsContinuousColRenderer *renderer = dynamic_cast < QgsContinuousColRenderer * >(mVectorLayer->propertiesDialog()->getBufferRenderer());
-    
-    if(!renderer)
-    {
-	renderer = new QgsContinuousColRenderer(mVectorLayer->vectorType());
-	mVectorLayer->setRenderer(renderer);
-    }
+  
+    QgsContinuousColRenderer* renderer = new QgsContinuousColRenderer(mVectorLayer->vectorType());
+    mVectorLayer->setRenderer(renderer);
     
     renderer->setMinimumSymbol(minsymbol);
     renderer->setMaximumSymbol(maxsymbol);

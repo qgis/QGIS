@@ -43,6 +43,7 @@
 #include <QAction>
 #include <QApplication>
 #include <QCursor>
+#include <QLibrary>
 #include <q3listview.h>
 #include <QPainter>
 #include <QPolygon>

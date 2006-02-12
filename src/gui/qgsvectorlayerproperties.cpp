@@ -111,16 +111,6 @@ void QgsVectorLayerProperties::alterLayerDialog(const QString & dialogString)
     widgetStackRenderers->raiseWidget(mRendererDialog);  
 }
 
-QDialog *QgsVectorLayerProperties::getBufferDialog()
-{
-    //return bufferDialog;
-}
-
-QgsRenderer *QgsVectorLayerProperties::getBufferRenderer()
-{
-    //return bufferRenderer;
-}
-
 void QgsVectorLayerProperties::setLegendType(QString type)
 {
   legendtypecombobox->setCurrentText(type);
@@ -187,36 +177,31 @@ void QgsVectorLayerProperties::reset( void )
 	  legendtypecombobox->insertItem(tr("Continuous Color"));
 	  legendtypecombobox->insertItem(tr("Unique Value"));
       }
-      if( layer->vectorType()==QGis::Point )
-	{
-	  legendtypecombobox->insertItem(tr("Single Marker"));
-	  if(myFields.size()>0)
-	  {
-	      legendtypecombobox->insertItem(tr("Graduated Marker"));
-	      legendtypecombobox->insertItem(tr("Unique Value Marker"));
-	  }
-	}
     }
 
-  //todo: find out the type of renderer in the vectorlayer, create a dialog with these settings and add it to the form
+  //find out the type of renderer in the vectorlayer, create a dialog with these settings and add it to the form
   delete mRendererDialog;
   mRendererDialog=0;
   QString rtype=layer->renderer()->name();
   if(rtype=="Single Symbol")
   {
       mRendererDialog=new QgsSiSyDialog(layer);
+      legendtypecombobox->setCurrentIndex(0);
   }
   else if(rtype=="Graduated Symbol")
   {
       mRendererDialog=new QgsGraSyDialog(layer);
+      legendtypecombobox->setCurrentIndex(1);
   }
   else if(rtype=="Continuous Color")
   {
       mRendererDialog=new QgsContColDialog(layer);
+      legendtypecombobox->setCurrentIndex(2);
   }
   else if(rtype == "Unique Value")
   {
       mRendererDialog=new QgsUValDialog(layer);
+      legendtypecombobox->setCurrentIndex(3);
   }
   
   if(mRendererDialog)

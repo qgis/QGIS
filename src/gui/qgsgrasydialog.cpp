@@ -215,7 +215,6 @@ void QgsGraSyDialog::apply()
 	    {
 		delete sy;
 	    }
-	    //++i;
         }
 	
 	std::map<QString,int>::iterator iter=mFieldMap.find(classificationComboBox->currentText());
