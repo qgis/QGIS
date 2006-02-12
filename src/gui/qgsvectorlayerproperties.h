@@ -41,15 +41,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
   void setRendererDirty(bool){}
   /**Sets the attribute that is used in the Identify Results dialog box*/
   void setDisplayField(QString name);
-  /**Returns a pointer to the bufferDialog*/
-  QDialog* getBufferDialog();
-  /**Sets the buffer dialog*/
-  void setBufferDialog(QDialog* dialog);
-  /**Returns a pointer to the buffer pixmap*/
-  QPixmap* getBufferPixmap();
-  /**Returns a pointer to the buffer renderer*/
-  QgsRenderer* getBufferRenderer();
-
 
   public slots:
   void alterLayerDialog(const QString& string);
@@ -86,18 +77,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
   /**Buffer pixmap which takes the picture of renderers before they are assigned to the vector layer*/
   //QPixmap bufferPixmap;
 };
-
-
-inline void QgsVectorLayerProperties::setBufferDialog(QDialog* dialog)
-{
-    //bufferDialog=dialog;
-}
-
-inline QPixmap* QgsVectorLayerProperties::getBufferPixmap()
-{
-    //return &bufferPixmap;
-    return 0;
-}
 
 inline QString QgsVectorLayerProperties::displayName()
 {
