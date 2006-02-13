@@ -30,7 +30,7 @@ class QgsPoint;
 #include <QRubberBand>
 
 extern "C" {
-#include <gis.h>
+#include <grass/gis.h>
 }
 
 /*! \class QgsGrassRegion

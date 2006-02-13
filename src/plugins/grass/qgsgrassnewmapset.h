@@ -40,9 +40,9 @@ class QgsGrassProvider;
 #include "qgsgrassattributes.h"
 
 extern "C" {
-#include <gis.h>
-#include <gprojects.h>
-#include <Vect.h>
+#include <grass/gis.h>
+#include <grass/gprojects.h>
+#include <grass/Vect.h>
 }
 
 /*! \class QgsGrassNewMapset
