@@ -18,8 +18,8 @@
 
 // GRASS header files
 extern "C" {
-#include <gis.h>
-#include <form.h>
+#include <grass/gis.h>
+#include <grass/form.h>
 }
 
 /*!
