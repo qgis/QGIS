@@ -37,10 +37,10 @@
 #include "qgsfeatureattribute.h"
 
 extern "C" {
-#include <gprojects.h>
-#include <gis.h>
-#include <dbmi.h>
-#include <Vect.h>
+#include <grass/gprojects.h>
+#include <grass/gis.h>
+#include <grass/dbmi.h>
+#include <grass/Vect.h>
 }
 
 #include "qgsgrass.h"
