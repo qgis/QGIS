@@ -4,16 +4,27 @@ LDADD = $(PLUGIN_LIBS)
 
 OBJECTS = ogrprovider_la-qgsogrprovider.o
 
-all: objects .libs/ogrprovider.dll
+PROVIDER = .libs/ogrprovider.dll
+
+all: objects $(PROVIDER)
 
 objects:
-	$(MAKE) -f Makefile ogrprovider_la-qgsogrprovider.o
+	$(MAKE) -f Makefile
 
-.libs/ogrprovider.dll: $(OBJECTS)
-	$(CXX) -shared -o  $@ $(OBJECTS) $(LDADD)
+$(PROVIDER): $(OBJECTS)
+	$(CXX) -shared -o $@ \
+		-Wl,--export-all-symbols \
+		-Wl,--enable-auto-import \
+		-Wl,--whole-archive ogrprovider_la-qgsogrprovider.o \
+		-Wl,--no-whole-archive \
+                        $(CORE_A) $(GUI_A) $(CORE_A) \
+			-lgdal -lgeos \
+                        $(QT_LDADD) \
+                        -lwsock32 -lmingw32
 	$(STRIP) $@ 
 
 install: all
+	mkdir -p $(prefix)/lib/qgis/
 	$(INSTALL) -m 755 .libs/ogrprovider.dll $(prefix)/lib/qgis/ogrprovider.dll
 
 include ../../../Makefile.win.rules
