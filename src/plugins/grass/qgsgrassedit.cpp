@@ -122,6 +122,38 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
   //TODO dynamic_cast ?
   mProvider = (QgsGrassProvider *) vector->getDataProvider();
 
+  init();
+
+}
+
+QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
+    QgsGrassProvider *provider,
+    QWidget * parent, Qt::WFlags f )
+    :QMainWindow(parent, 0, f), QgsGrassEditBase ()
+{
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrassEdit()" << std::endl;
+#endif
+
+  setupUi(this);
+
+  mRunning = true;
+  mValid = false;
+  mTool = QgsGrassEdit::NONE;
+  mSuspend = false;
+  mQgisApp = qgisApp;
+  mIface = iface;
+  mNewMap = true;
+
+  mCanvas = mIface->getMapCanvas();
+
+  mProvider = provider;
+
+  init();
+}
+
+void QgsGrassEdit::init()
+{
   QString myIconPath = QgsApplication::themePath() + "/grass/";
 
   QActionGroup *ag = new QActionGroup ( this );
@@ -221,38 +253,6 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
   tb->addAction ( mCloseEditAction );
   connect ( mCloseEditAction, SIGNAL(triggered()), this, SLOT(closeEdit()) );
 
-  init();
-
-  mNewPointAction->setOn(true);
-  startTool(QgsGrassEdit::NEW_POINT);
-}
-
-QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
-    QgsGrassProvider *provider,
-    QWidget * parent, Qt::WFlags f )
-    :QMainWindow(parent, 0, f), QgsGrassEditBase ()
-{
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit()" << std::endl;
-#endif
-
-  mRunning = true;
-  mValid = false;
-  mTool = QgsGrassEdit::NONE;
-  mSuspend = false;
-  mQgisApp = qgisApp;
-  mIface = iface;
-  mNewMap = true;
-
-  mCanvas = mIface->getMapCanvas();
-
-  mProvider = provider;
-
-  init();
-}
-
-void QgsGrassEdit::init()
-{
   if ( !(mProvider->isGrassEditable()) ) {
     QMessageBox::warning( 0, "Warning", "You are not owner of the mapset, "
         "cannot open the vector for editing." );
@@ -452,6 +452,8 @@ void QgsGrassEdit::init()
   catModeChanged ( );
 
   // TODO: how to get keyboard events from canvas (shortcuts)
+
+  mNewPointAction->setOn(true); // Start NEW_POINT tool
 
   restorePosition();
 
