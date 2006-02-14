@@ -35,6 +35,7 @@ class QCloseEvent;
 #include "qgspoint.h"
 #include "qgisiface.h"
 #include "qgsmaptopixel.h"
+class QgsRubberBand;
 
 class QgsGrassProvider;
 #include "ui_qgsgrasseditbase.h"
@@ -196,9 +197,6 @@ private:
     //! Display all lines and nodes
     void displayMap (void); 
 
-    //! Set point array to icon
-    void setIconPoints ( Q3PointArray &points, int type, int size ); 
-
     /** 
      *  Display icon 
      *  @param x x coordinate in map units
@@ -207,15 +205,6 @@ private:
      *  @param size size in pixels, should be odd number
      */
     void displayIcon (double x, double y, const QPen & pen, int type, int size, QPainter *painter = 0); 
-
-    //! Last dynamicaly drawn points
-    struct line_pnts *mLastDynamicPoints;
-    //QPointArray mLastDynamicPoints;
-
-    //! Last dynamicaly drawn icon type
-    int mLastDynamicIcon;
-    double mLastDynamicIconX;
-    double mLastDynamicIconY;
 
     /** 
      *  Display dynamic drawing (XOR)
@@ -230,9 +219,6 @@ private:
 
     /* Display dynamic points + icon */
     void displayDynamic ( struct line_pnts *Points, double x, double y, int type, int size ); 
-
-    /* Display last dynamic points + icon */
-    void displayLastDynamic ( void ) ;
 
     /** Erase dynamic */
     void eraseDynamic ( void ); 
@@ -296,7 +282,7 @@ private:
     QPixmap *mPixmap;
 
     //! Copy of background from canvas pixmap before any draw
-    QPixmap *mBackgroundPixmap;
+    //QPixmap *mBackgroundPixmap;
 
     //! Transformation
     QgsMapToPixel *mTransform;
@@ -406,6 +392,10 @@ private:
     QAction *mDeleteLineAction;
     QAction *mEditAttributesAction;
     QAction *mCloseEditAction;
+
+    // Rubber band
+    QgsRubberBand *mRubberBandLine;
+    QgsRubberBand *mRubberBandIcon;
 };
 
 #endif // QGSGRASSEDIT_H
