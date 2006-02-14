@@ -176,6 +176,18 @@ public slots:
     void on_mFieldBox_activated() { fieldChanged(); }
     void fieldChanged();
 
+    // Change attribute table
+    void on_mTableField_activated() { attributeTableFieldChanged(); }
+    void attributeTableFieldChanged();
+
+    // Add column
+    void on_mAddColumnButton_clicked() { addColumn(); }
+    void addColumn();
+
+    // Alter table
+    void on_mAlterTableButton_clicked() { alterTable(); }
+    void alterTable();
+
     //! Close editing
     void closeEdit(); 
 
@@ -357,18 +369,6 @@ private:
 
     // Set attribute table
     void setAttributeTable(int field);
-
-    // Change attribute table
-    void on_mTableField_activated() { attributeTableFieldChanged(); }
-    void attributeTableFieldChanged();
-
-    // Add column
-    void on_mAddColumnButton_clicked() { addColumn(); }
-    void addColumn();
-
-    // Alter table
-    void on_mAlterTableButton_clicked() { alterTable(); }
-    void alterTable();
 
     // Pront which should be displayed in status bar when mouse is in canvas
     QString mCanvasPrompt;
