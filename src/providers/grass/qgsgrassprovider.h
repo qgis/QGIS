@@ -226,10 +226,12 @@ public:
   bool startEdit();
 
   /** Close editing. Rebuild topology, GMAP.update = false 
+   *   @param newMap set to true if a new map was created
+   *          and it is not yet used as layer 
    *   @return true success
    *   @return false failed to close vector or vector was not in update mode
    */
-  bool closeEdit();
+  bool closeEdit( bool newMap=false );
 
   /** Get current number of lines. 
    *   @return number of lines
