@@ -344,7 +344,7 @@ if test -n "$with_grass" -a x"$with_grass" != "xno"; then
       GRASS_LIB="$GRASS_LIB -lutil"
     fi
 
-    GISINC=`ls $with_grass/include/gis.h`
+    GISINC=`ls $with_grass/include/grass/gis.h`
     if test ! -f "$GISINC"; then
   AC_MSG_ERROR( [GRASS headers not found] )
     fi
