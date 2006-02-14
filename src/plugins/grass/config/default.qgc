@@ -65,9 +65,11 @@
 		<grass name="r.to.vect.line"/>
 		<grass name="r.to.vect.area"/>
 	</section>
-        <section label="Visualization">
+	<!-- nviz is not available on Windows, commented until
+	     a 'platform' option added to QgsGrassModule -->
+        <!--section label="Visualization">
                 <grass name="nviz"/>
-        </section>
+        </section-->
 	<section label="General">
 		<grass name="shell"/>
 		<grass name="g.gisenv"/>
