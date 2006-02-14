@@ -1375,7 +1375,7 @@ bool QgsGrassProvider::startEdit ( void )
     return true;
 }
 
-bool QgsGrassProvider::closeEdit ( void )
+bool QgsGrassProvider::closeEdit ( bool newMap )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassProvider::closeEdit" << std::endl;
@@ -1402,6 +1402,16 @@ bool QgsGrassProvider::closeEdit ( void )
     
     Vect_build_partial ( map->map, GV_BUILD_NONE, NULL);
     Vect_build ( map->map, stderr );
+
+    // If a new map was created close the map and return
+    if ( newMap )
+    {
+        std::cerr << "mLayers.size() = " << mLayers.size() << std::endl;
+        map->update = false;
+        closeLayer( mLayerId );
+        return true;
+    }
+
     Vect_close ( map->map );
 
     QFileInfo di ( mGisdbase + "/" + mLocation + "/" + mMapset + "/vector/" + mMapName );
@@ -1413,6 +1423,7 @@ bool QgsGrassProvider::closeEdit ( void )
     // Reopen vector
     QgsGrass::resetError(); // to "catch" error after Vect_open_old()
     Vect_set_open_level (2);
+
     Vect_open_old ( map->map, (char *) map->mapName.ascii(), (char *) map->mapset.ascii());
 
     if ( QgsGrass::getError() == QgsGrass::FATAL ) {
