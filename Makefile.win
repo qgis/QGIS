@@ -1,5 +1,4 @@
-WINSUBDIRS = src src/providers/ogr src/providers/grass \
-	src/plugins/grass
+WINSUBDIRS = src 
 
 all: winsubdirs
 
