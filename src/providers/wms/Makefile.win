@@ -1,0 +1,30 @@
+QGTOP=../../../
+
+LDADD = $(PLUGIN_LIBS) 
+
+PROVIDER = .libs/wmsprovider.dll
+
+all: objects $(PROVIDER)
+
+objects:
+	$(MAKE) -f Makefile
+
+$(PROVIDER): .libs/wmsprovider.a
+	$(CXX) -shared -o $@ \
+		-Wl,--export-all-symbols \
+		-Wl,--enable-auto-import \
+		-Wl,--whole-archive .libs/wmsprovider.a \
+		-Wl,--no-whole-archive \
+			$(CORE_A) $(GUI_A) $(CORE_A) \
+			$(RASTER_A) $(PROJSEL_A) $(LEGEND_A) \
+			$(GUI_A) $(CORE_A) $(COMPOSER_A) $(GUI_A) \
+			-lgdal -lgeos -lsqlite3 -lproj \
+                        $(QT_LDADD) \
+                        -lwsock32 -lmingw32
+	$(STRIP) $@ 
+
+install: all
+	mkdir -p $(prefix)/lib/qgis/
+	$(INSTALL) -m 755 .libs/wmsprovider.dll $(prefix)/lib/qgis/wmsprovider.dll
+
+include ../../../Makefile.win.rules
