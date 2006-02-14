@@ -154,6 +154,17 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
 
 void QgsGrassEdit::init()
 {
+  if ( !(mProvider->isGrassEditable()) ) {
+    QMessageBox::warning( 0, "Warning", "You are not owner of the mapset, "
+        "cannot open the vector for editing." );
+    return;
+  }
+
+  if ( !(mProvider->startEdit()) ) {
+    QMessageBox::warning( 0, "Warning", "Cannot open vector for update." );
+    return;
+  }
+
   QString myIconPath = QgsApplication::themePath() + "/grass/";
 
   QActionGroup *ag = new QActionGroup ( this );
@@ -252,17 +263,6 @@ void QgsGrassEdit::init()
   mCloseEditAction->setCheckable ( true );
   tb->addAction ( mCloseEditAction );
   connect ( mCloseEditAction, SIGNAL(triggered()), this, SLOT(closeEdit()) );
-
-  if ( !(mProvider->isGrassEditable()) ) {
-    QMessageBox::warning( 0, "Warning", "You are not owner of the mapset, "
-        "cannot open the vector for editing." );
-    return;
-  }
-
-  if ( !(mProvider->startEdit()) ) {
-    QMessageBox::warning( 0, "Warning", "Cannot open vector for update." );
-    return;
-  }
 
   mEditPoints = Vect_new_line_struct ();
   mPoints = Vect_new_line_struct ();
@@ -462,6 +462,9 @@ void QgsGrassEdit::init()
 
 void QgsGrassEdit::attributeTableFieldChanged ( void )
 {
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrassEdit::attributeTableFieldChanged" << std::endl;
+#endif
   int field = mTableField->currentText().toInt();
 
   setAttributeTable ( field );
@@ -518,6 +521,9 @@ void QgsGrassEdit::setAttributeTable ( int field )
 
 void QgsGrassEdit::addColumn ( void )
 {
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrassEdit::addColumn()" << std::endl;
+#endif
   int r = mAttributeTable->numRows();
   mAttributeTable->setNumRows( r+1 );
   mAttributeTable->setRowReadOnly ( r, false );
@@ -890,6 +896,9 @@ void QgsGrassEdit::closeEvent(QCloseEvent *e)
 
 void QgsGrassEdit::catModeChanged ( void )
 {
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrassEdit::catModeChanged()" << std::endl;
+#endif
   int mode = mCatModeBox->currentItem();
 
   int field = mFieldBox->currentText().toInt();
@@ -917,6 +926,9 @@ void QgsGrassEdit::catModeChanged ( void )
 
 void QgsGrassEdit::fieldChanged ( void )
 {
+#ifdef QGISDEBUG
+  std::cerr << "QgsGrassEdit::fieldChanged()" << std::endl;
+#endif
   int mode = mCatModeBox->currentItem();
   int field = mFieldBox->currentText().toInt();
 
