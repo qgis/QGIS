@@ -846,15 +846,18 @@ void QgsGrassEdit::closeEdit(void)
     delete mAttributes;
   }
 
-  mProvider->closeEdit();
+  mProvider->closeEdit(mNewMap);
 
   hide();
 
   // Add new layers
   if ( mNewMap )
   {
-     QString uri = mProvider->getDataSourceUri();
-     QChar sep = QDir::separator();
+     QString uri = QDir::cleanDirPath ( mProvider->getDataSourceUri() );
+     std::cerr << "uri = " << uri.ascii() << std::endl;
+     // Note: QDir::cleanPath is using '/' also on Windows
+     //QChar sep = QDir::separator();
+     QChar sep = '/';
 
      QStringList split = QStringList::split ( sep, uri );
      split.pop_back(); // layer
