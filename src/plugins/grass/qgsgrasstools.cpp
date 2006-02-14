@@ -51,6 +51,7 @@
 #include <QCloseEvent>
 #include <QTabBar>
 #include <QListView>
+#include <QProcess>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -160,6 +161,10 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
 #ifdef WIN32
 	 QMessageBox::warning( 0, "Warning",
              "GRASS Shell is not supported on Windows." );
+
+         // This does not work: 
+         //QProcess *proc = new QProcess();
+         //proc->start ("cmd.exe");
 #else 
 
     #ifdef HAVE_OPENPTY
