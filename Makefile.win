@@ -53,7 +53,7 @@ pkg:
 	@ echo "Creating binary package $(BINPKG)"
 	mkdir -p -m 755 $(BINPKG)
 	cp -r $(prefix)/* $(BINPKG)
-	echo zip -r $(BINPKG).zip $(BINPKG)
+	zip -r $(BINPKG).zip $(BINPKG)
 	
 	
 
