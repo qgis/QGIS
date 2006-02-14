@@ -4,10 +4,58 @@ WINSUBDIRS = src src/providers/ogr src/providers/grass \
 all: winsubdirs
 
 install: all
+	mkdir -p -m 755 $(prefix)
 	$(MAKE) -C i18n -f Makefile install
 	$(MAKE) -C images -f Makefile install
 	$(MAKE) -C resources -f Makefile install
 	$(MAKE) -C src -f Makefile.win install
 
+# Copy GRASS to QGIS 
+cpgrass:
+	mkdir -p -m 755 $(prefix)/grass/docs
+	cp    $(GRASS_BASE)/COPYING $(prefix)/grass
+	cp    $(GRASS_BASE)/AUTHORS $(prefix)/grass
+	cp    $(GRASS_BASE)/README $(prefix)/grass
+	cp -r $(GRASS_BASE)/etc $(prefix)/grass
+	cp -r $(GRASS_BASE)/driver $(prefix)/grass
+	cp -r $(GRASS_BASE)/bin $(prefix)/grass
+	cp -r $(GRASS_BASE)/scripts $(prefix)/grass
+	cp -r $(GRASS_BASE)/lib/*.dll $(prefix)
+	cp -r $(GRASS_BASE)/docs/html $(prefix)/docs
+	@list=`ls $(prefix)/grass_*.dll`; \
+	for f in $$list; do \
+		$(STRIP) $$f; \
+	done
+	@list=`ls $(prefix)/grass/bin/*.exe`; \
+	for f in $$list; do \
+		$(STRIP) $$f; \
+	done
+	@list=`ls $(prefix)/grass/driver/db/*.exe`; \
+	for f in $$list; do \
+		$(STRIP) $$f; \
+	done
+
+# Copy libraries
+# TODO: this is not correct, we believe that all DLL are in the same 
+#       directory and there are no DLL which we don't want to distribute
+cplibs:
+	@ldir=`echo $(LDFLAGS) | tr ' ' '\n' | grep '\-L' | sed 1q | sed 's/-L//'`; \
+	cp $$ldir/../bin/*.dll $(prefix)
+	@ldir=`echo $(QT_LDADD) | tr ' ' '\n' | grep '\-L' | sed 's/-L//'`; \
+	cp $$ldir/../bin/*.dll $(prefix)
+
+
+# Create binary package 
+DATE=`date '+%y%m%d'`
+VERSION=$(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)
+BINPKG=qgis-$(VERSION)-win32-$(DATE)
+
+pkg:
+	@ echo "Creating binary package $(BINPKG)"
+	mkdir -p -m 755 $(BINPKG)
+	cp -r $(prefix)/* $(BINPKG)
+	echo zip -r $(BINPKG).zip $(BINPKG)
+	
+	
 
 include ./Makefile.win.rules
