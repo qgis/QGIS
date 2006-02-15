@@ -132,9 +132,13 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
     //QString conf = QgsApplication::pkgDataPath() + "/grass/config/default.qgc";
     QString conf = mAppDir + "/share/qgis/grass/config/default.qgc";
 
+    restorePosition();
+
+    // Show before loadConfig() so that user can see loading
+    mModulesListView->show(); 
+
     loadConfig ( conf );
     //statusBar()->hide();
-    restorePosition();
 }
 
 void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
@@ -159,12 +163,24 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
     if ( name == "shell" )
     {
 #ifdef WIN32
-	 QMessageBox::warning( 0, "Warning",
-             "GRASS Shell is not supported on Windows." );
+         // Run MSYS if available
+         // Note: I was not able to run cmd.exe and command.com
+         //       with QProcess
 
-         // This does not work: 
-         //QProcess *proc = new QProcess();
-         //proc->start ("cmd.exe");
+         QString msysPath = mAppDir + "/msys/msys.bat";
+         QFile file ( msysPath );
+
+         if ( !file.exists() ) 
+         {
+	     QMessageBox::warning( 0, "Warning",
+                 "Cannot find MSYS (" + msysPath + ")" );
+         } 
+         else
+         {
+             QProcess *proc = new QProcess(this);
+             proc->start (msysPath);
+         }
+         return;
 #else 
 
     #ifdef HAVE_OPENPTY
