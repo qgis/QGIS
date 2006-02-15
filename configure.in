@@ -235,30 +235,48 @@ AC_ARG_WITH(postgresql,
                  [PostgreSQL (PostGIS) Support (full path to pg_config)]))
 
 AC_MSG_CHECKING([for PostgreSQL])
-if test x"$with_postgresql" = "xyes" -o x"$with_postgresql" = "x" ; then
-  AC_MSG_RESULT([yes])
-  AC_PATH_PROG([PG_CONFIG], [pg_config], [no])
-elif test x"$with_postgresql" = "xno" ; then
-  AC_MSG_RESULT([no])
-  PG_CONFIG=no
-else
-  AC_MSG_RESULT([yes])
-  PG_CONFIG="$with_postgresql/pg_config"
-fi
 
-if test x"$PG_CONFIG" != "xno" ; then
-  PG_LIB="-L`$PG_CONFIG --libdir` -lpq"
-  PG_INC="-I`$PG_CONFIG --includedir`"
-  AC_MSG_CHECKING([for postgreSQL libs])
-  AC_MSG_RESULT([$PG_LIB])
-  AC_DEFINE([HAVE_POSTGRESQL],1,
-    [Define to 1 if PostgreSQL is available])
-  ac_postgresql="yes"
-  ac_postgresql_version=`$PG_CONFIG --version | sed -e 's#PostgreSQL ##'`
-  postgresql_version_string="(Version $ac_postgresql_version)"
-else
-  ac_postgresql="no"
-fi
+# pg_config cannot be used with cross compiler
+# we expect that libs and header files are in standard dirs
+case "${host}" in
+  *-mingw*)
+    if test x"$with_postgresql" = "xyes" -o x"$with_postgresql" = "x" ; then
+      AC_MSG_RESULT([yes])
+      PG_LIB="-lpq"
+      PG_INC=""
+      AC_DEFINE([HAVE_POSTGRESQL],1,
+	[Define to 1 if PostgreSQL is available])
+      ac_postgresql="yes"
+    fi
+    ;;
+
+  *)
+    if test x"$with_postgresql" = "xyes" -o x"$with_postgresql" = "x" ; then
+      AC_MSG_RESULT([yes])
+      AC_PATH_PROG([PG_CONFIG], [pg_config], [no])
+    elif test x"$with_postgresql" = "xno" ; then
+      AC_MSG_RESULT([no])
+      PG_CONFIG=no
+    else
+      AC_MSG_RESULT([yes])
+      PG_CONFIG="$with_postgresql/pg_config"
+    fi
+
+    if test x"$PG_CONFIG" != "xno" ; then
+      PG_LIB="-L`$PG_CONFIG --libdir` -lpq"
+      PG_INC="-I`$PG_CONFIG --includedir`"
+      AC_MSG_CHECKING([for postgreSQL libs])
+      AC_MSG_RESULT([$PG_LIB])
+      AC_DEFINE([HAVE_POSTGRESQL],1,
+	[Define to 1 if PostgreSQL is available])
+      ac_postgresql="yes"
+      ac_postgresql_version=`$PG_CONFIG --version | sed -e 's#PostgreSQL ##'`
+      postgresql_version_string="(Version $ac_postgresql_version)"
+    else
+      ac_postgresql="no"
+    fi
+    ;;
+esac
 
 AC_SUBST(PG_INC)
 AC_SUBST(PG_LIB)
