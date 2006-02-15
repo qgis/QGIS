@@ -20,6 +20,8 @@ GRASS_BASE = @GRASS_BASE@
 GRASS_LIB = @GRASS_LIB@
 PROJ_LIB = @PROJ_LIB@
 
+PG_LIB = @PG_LIB@
+PG_INC = @PG_INC@
 
 RASTER_A = $(QGTOP)/src/raster/.libs/libqgis_raster.a
 COMPOSER_A = $(QGTOP)/src/composer/.libs/libqgis_composer.a
