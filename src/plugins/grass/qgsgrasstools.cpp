@@ -77,7 +77,16 @@ extern "C" {
 QgsGrassToolsTabWidget::QgsGrassToolsTabWidget( QWidget * parent ): 
         QTabWidget(parent)
 {
-    tabBar()->setIconSize( QSize(125,25) );
+    // Default height seems to be too small for our purpose
+    int height = 1.5 * tabBar()->iconSize().height();
+    // Max width (see QgsGrassModule::pixmap for hardcoded sizes)
+    int width = 3*height + 28 + 29;
+    tabBar()->setIconSize( QSize(width,height) );
+}
+
+QSize QgsGrassToolsTabWidget::iconSize()
+{
+    return tabBar()->iconSize();
 }
 
 QgsGrassToolsTabWidget::~QgsGrassToolsTabWidget() {}
@@ -198,9 +207,21 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
                                       mQgisApp, mIface, path, mTabWidget ) );
     }
     
-    QPixmap pixmap = QgsGrassModule::pixmap ( path, 25 ); 
+    int height = mTabWidget->iconSize().height();
+    QPixmap pixmap = QgsGrassModule::pixmap ( path, height ); 
+    
+    // Icon size in QT4 does not seem to be variable
+    // -> put smaller icons in the middle
+    QPixmap pixmap2 ( mTabWidget->iconSize() );
+    QPalette pal;
+    pixmap2.fill ( pal.color(QPalette::Window) );
+    QPainter painter(&pixmap2);
+    int x = (int) ( (mTabWidget->iconSize().width()-pixmap.width())/2 );
+    painter.drawPixmap ( x, 0, pixmap );
+    painter.end();
+
     QIcon is;
-    is.addPixmap ( pixmap );
+    is.addPixmap ( pixmap2 );
     mTabWidget->addTab ( m, is, "" );
 
    QgsGrassToolsTabWidget tw;

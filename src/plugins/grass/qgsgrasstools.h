@@ -31,6 +31,7 @@ class QDomElement;
 class QgsGrassProvider;
 #include <QDialog>
 #include <QTabBar>
+class QSize;
 
 class QgsGrassToolsTabWidget: public QTabWidget
 {
@@ -42,6 +43,8 @@ public:
 
     //! Destructor
     ~QgsGrassToolsTabWidget();
+
+    QSize iconSize();
 };
 
 /*! \class QgsGrassTools
