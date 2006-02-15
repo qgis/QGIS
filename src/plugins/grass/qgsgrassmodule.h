@@ -163,6 +163,11 @@ public:
     //! Get module options as list of arguments for QProcess
     virtual QStringList arguments();
 
+    //! Check if output exists
+    // return empty list
+    // return list of existing output maps
+    virtual QStringList checkOutput() { return QStringList() ; }
+
 protected:
     //! QGIS application
     QgisApp *mQgisApp;
@@ -208,6 +213,8 @@ public:
 
     // ! Get item by ID
     QgsGrassModuleItem *item(QString id);
+
+    QStringList checkOutput();
 
 private:
     //! Name of module executable 
@@ -299,7 +306,13 @@ public:
     
     //! Retruns list of options which will be passed to module
     virtual QStringList options(); 
-    
+   
+    //! True if this option is output
+    bool isOutput() { return mIsOutput; } 
+
+    //! If output, check if current output exists
+    // Returns emppty string or name of existing output
+    QString outputExists();
 
 private:
     //! Control type
@@ -316,6 +329,12 @@ private:
     
     //! Line
     QLineEdit *mLineEdit;
+
+    //! True if this option is GRASS output
+    bool mIsOutput;
+
+    //! Output element
+    QString mOutputElement;
 };
 /********************** QgsGrassModuleFlag ************************/
 /*! \class QgsGrassModuleFlag
