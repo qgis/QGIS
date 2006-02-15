@@ -611,9 +611,25 @@ void QgsGrassModule::run()
 	
 	if ( mProcess.isRunning() ) {
 	}
+
 	mProcess.clearArguments();
 	mProcess.addArgument( mXName );
 	command = mXName;
+
+        // Check if output exists
+        QStringList outputExists = mOptions->checkOutput();
+        if ( outputExists.size() > 0 )
+        {
+            int ret = QMessageBox::question ( 0, "Warning", 
+                          "Output " + outputExists.join(",")
+                          + " exists! Overwrite?",  
+                          QMessageBox::Yes,  QMessageBox::No );
+
+            if ( ret == QMessageBox::No ) return;
+
+	    mProcess.addArgument( "--o" );
+	    command.append ( " --o" );
+        }
   
         QStringList list = mOptions->arguments();
 
@@ -764,7 +780,8 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
 	                                   QWidget * parent)
                     : Q3GroupBox ( 1, Qt::Vertical, parent ),
-                      QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode )
+                      QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
+	mIsOutput(false)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModuleOption::QgsGrassModuleOption" << std::endl;
@@ -781,6 +798,19 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
     }
 	    
     setTitle ( " " + tit + " " );
+
+    // Is it output?
+    QDomNode promptNode = gnode.namedItem ( "gisprompt" );
+    if ( !promptNode.isNull() ) {
+	QDomElement promptElem = promptNode.toElement();
+	QString element = promptElem.attribute("element"); 
+	QString age = promptElem.attribute("age"); 
+	if ( age == "new" )
+        {
+            mOutputElement = element;
+            mIsOutput = true;
+	}
+    } 
 	
     // String without options 
     if ( !mHidden ) 
@@ -857,6 +887,34 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 	    }
 	}
     }
+}
+
+QString QgsGrassModuleOption::outputExists()
+{
+    std::cerr << "QgsGrassModuleOption::outputExists()" << std::endl;
+
+    if ( !mIsOutput ) return QString();
+
+    QString value = mLineEdit->text().trimmed();
+    std::cerr << "mKey = " << mKey.ascii() << std::endl;
+    std::cerr << "value = " << value.ascii() << std::endl;
+    std::cerr << "mOutputElement = " << mOutputElement.ascii() << std::endl;
+
+    if ( value.length() == 0 ) return QString();
+
+    QString path = QgsGrass::getDefaultGisdbase() + "/"
+                 + QgsGrass::getDefaultLocation() + "/"
+                 + QgsGrass::getDefaultMapset() + "/" 
+                 + mOutputElement + "/" + value;
+
+    QFileInfo fi(path);
+
+    if ( fi.exists() )
+    {
+        return (mLineEdit->text());
+    }
+
+    return QString();
 }
 
 QStringList QgsGrassModuleOption::options()
@@ -1086,6 +1144,36 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
     
     // Fill in QGIS layers 
     updateQgisLayers();
+}
+
+QStringList QgsGrassModuleStandardOptions::checkOutput()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleStandardOptions::checkOutput()" << std::endl;
+    #endif
+    QStringList list;
+
+    for ( int i = 0; i < mItems.size(); i++ ) 
+    {
+	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleOption) ) {
+	    continue;
+	}
+	QgsGrassModuleOption *opt = 
+	      dynamic_cast<QgsGrassModuleOption *> ( mItems[i] );
+    
+        std::cerr << "opt->key() = " << opt->key().ascii() << std::endl;
+
+	if ( opt->isOutput() )
+	{
+            QString out = opt->outputExists();
+            if ( !out.isNull() ) 
+            {
+	        list.append ( opt->key()+ ":" + out );
+            }
+	}
+    } 
+
+    return list;
 }
 
 void QgsGrassModuleInput::updateQgisLayers()
