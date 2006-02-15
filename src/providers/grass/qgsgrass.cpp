@@ -63,7 +63,6 @@ void QgsGrass::init( void )
     // Set program name
     G_set_program_name ("QGIS");
 
-
   // Require GISBASE to be set. This should point to the location of
   // the GRASS installation. The GRASS libraries use it to know
   // where to look for things.
@@ -86,6 +85,9 @@ void QgsGrass::init( void )
   }
 
   if ( !isValidGrassBaseDir(gisBase) ) {
+    // Erase gisbase from settings because it does not exists 
+    settings.writeEntry("/GRASS/gisbase", "");
+
 #ifdef WIN32
     // Use the applicationDirPath()/grass
     gisBase = QCoreApplication::applicationDirPath() + "/grass";
@@ -103,19 +105,27 @@ void QgsGrass::init( void )
 #endif
   }
 
+  bool userGisbase = false;
   while ( !isValidGrassBaseDir(gisBase) ) {
     // Keep asking user for GISBASE until we get a valid one
     //QMessageBox::warning( 0, "Warning", "QGIS can't find your GRASS installation,\nGRASS data "
     //    "cannot be used.\nPlease select your GISBASE.\nGISBASE is full path to the\n"
     //    "directory where GRASS is installed." );
     // XXX Need to subclass this and add explantory message above to left side
+    userGisbase = true;
     gisBase = QFileDialog::getExistingDirectory(
 	0, "Choose GISBASE ...", gisBase);
     if (gisBase == QString::null)
     {
       // User pressed cancel. No GRASS for you!
-      return;
+      userGisbase = false;
+      break;
     }
+  }
+
+  if ( userGisbase )
+  {
+      settings.writeEntry("/GRASS/gisbase", gisBase);
   }
 
 #ifdef QGISDEBUG
@@ -126,7 +136,6 @@ void QgsGrass::init( void )
   char *gisBaseEnvChar = new char[gisBaseEnv.length()+1];
   strcpy ( gisBaseEnvChar, const_cast<char *>(gisBaseEnv.ascii()) ); 
   putenv( gisBaseEnvChar );
-  settings.writeEntry("/GRASS/gisbase", gisBase);
 
     // Add path to GRASS modules
 #ifdef WIN32
