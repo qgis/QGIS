@@ -30,6 +30,7 @@
 #include <qinputdialog.h>
 #include <qsettings.h>
 #include <qpainter.h>
+#include <q3painter.h>
 #include <qpixmap.h>
 #include <qpen.h>
 #include <q3pointarray.h>
@@ -501,12 +502,17 @@ QPixmap QgsGrassModule::pixmap ( QString path, int height )
 	    QRect br = pic.boundingRect();
 
 	    double scale = 1. * height / br.height();
+
 	    int width = (int) ( scale * br.width() );
             if ( width <= 0 ) width = height; //should not happen
 	    QPixmap pixmap ( width, height );
 	    pixmap.fill ( QColor(255,255,255) );
 	    QPainter painter ( &pixmap );
+
+            // I am not sure if this factor is OK
+            scale *= 72.0 / pixmap.logicalDpiX() ;
 	    painter.scale ( scale, scale );
+            
 	    painter.drawPicture ( -br.x(), -br.y(), pic );
 	    painter.end();
 	    
