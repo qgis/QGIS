@@ -508,6 +508,7 @@ QPixmap QgsGrassModule::pixmap ( QString path, int height )
 	    QPixmap pixmap ( width, height );
 	    pixmap.fill ( QColor(255,255,255) );
 	    QPainter painter ( &pixmap );
+            painter.setRenderHint(QPainter::Antialiasing);
 
             // I am not sure if this factor is OK
             scale *= 72.0 / pixmap.logicalDpiX() ;
@@ -559,28 +560,31 @@ QPixmap QgsGrassModule::pixmap ( QString path, int height )
     pixmap.fill(QColor(255,255,255));
     QPainter painter ( &pixmap );
 
-    QPen pen(QColor(180,180,180),3);
-    painter.setPen(pen);
+    QColor color(200,200,200);
+    painter.setBrush(QBrush(color));
 
-    QBrush brush(QColor(180,180,180));
-    painter.setBrush(brush);
+    painter.setRenderHint(QPainter::Antialiasing);
     
     int pos = 0;
     for ( int i = 0; i < pixmaps.size(); i++ ) {
 	if ( i == 1 && pixmaps.size() == 3 ) { // +
 	    pos += buffer;
-	    painter.drawLine ( pos, height/2, pos+plusWidth+1, height/2 );
-	    painter.drawLine ( pos+plusWidth/2, height/2-plusWidth/2, pos+plusWidth/2, height/2+plusWidth/2+1 );
+    
+            painter.setPen( QPen(color,3) );
+	    painter.drawLine ( pos, height/2, pos+plusWidth, height/2 );
+	    painter.drawLine ( pos+plusWidth/2, height/2-plusWidth/2, pos+plusWidth/2, height/2+plusWidth/2 );
 	    pos += buffer + plusWidth;
 	}
 	if ( (i == 1 && pixmaps.size() == 2) || (i == 2 && pixmaps.size() == 3)  ) { // ->
 	    pos += buffer;
-	    painter.drawLine ( pos, height/2, pos+arrowWidth, height/2 );
+            painter.setPen( QPen(color,3) );
+	    painter.drawLine ( pos, height/2, pos+arrowWidth-arrowWidth/2, height/2 );
 
 	    Q3PointArray pa(3);
-	    pa.setPoint(0, pos+arrowWidth/2+1, height/2-arrowWidth/4);
+	    pa.setPoint(0, pos+arrowWidth/2+1, height/2-arrowWidth/2);
 	    pa.setPoint(1, pos+arrowWidth, height/2 );
-	    pa.setPoint(2, pos+arrowWidth/2+1, height/2+arrowWidth/4);
+	    pa.setPoint(2, pos+arrowWidth/2+1, height/2+arrowWidth/2);
+            painter.setPen( QPen(color,1) );
 	    painter.drawPolygon ( pa );
 	    
 	    pos += buffer + arrowWidth;
