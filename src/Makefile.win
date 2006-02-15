@@ -8,6 +8,7 @@ STDSUBDIRS = core ui legend raster composer widgets helpviewer
 WINSUBDIRS = core legend raster composer \
 	     widgets/projectionselector gui \
 	providers/ogr providers/grass providers/wms \
+	providers/postgres \
 	plugins/grass
 
 all: stdsubdirs guilib winsubdirs
