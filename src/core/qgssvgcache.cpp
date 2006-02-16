@@ -96,7 +96,27 @@ QPixmap QgsSVGCache::getPixmap(QString filename, double scaleFactor)
   
   //QPixmap myPixmap = QPixmap(width,height);
   QPixmap myPixmap = QPixmap(scaleFactor,scaleFactor);
-  myPixmap.fill(QColor(255,255,255,0)); //transparent
+
+  // The following is window-system-conditional since (at least)
+  // the combination of Qt 4.1.0 and RealVNC's Xvnc 4.1
+  // will result in the pixmap becoming invisible if it is filled
+  // with a non-opaque colour.
+  // This is probably because Xvnc 4.1 doesn't have the RENDER
+  // extension compiled into it.
+#if defined(Q_WS_X11)
+  // Do a runtime test to see if the X RENDER extension is available
+  if ( myPixmap.x11PictureHandle() )
+  {
+#endif
+    myPixmap.fill(QColor(255,255,255,0)); // transparent
+#if defined(Q_WS_X11)
+  }
+  else
+  {
+    myPixmap.fill(QColor(255,255,255)); // opaque
+  }
+#endif
+
   QPainter myPainter(&myPixmap);
   myPainter.setRenderHint(QPainter::Antialiasing);
   mySVG.render(&myPainter);  
