@@ -2442,6 +2442,17 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   encoding.appendChild( encodingText );
   layer_node.appendChild( encoding );
 
+  //classification field(s)
+  std::list<int> attributes=m_renderer->classificationAttributes();
+  const std::vector<QgsField> providerFields = dataProvider->fields();
+  for(std::list<int>::const_iterator it = attributes.begin(); it != attributes.end(); ++it)
+    {
+      QDomElement classificationElement = document.createElement("classificationattribute");
+      QDomText classificationText = document.createTextNode(providerFields[*it].name());
+      classificationElement.appendChild(classificationText);
+      layer_node.appendChild(classificationElement);
+    }
+
   // add the display field
 
   QDomElement dField  = document.createElement( "displayfield" );
