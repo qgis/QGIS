@@ -504,7 +504,7 @@ void QgsGrassNewMapset::setGrassProjection()
 
             } else {
                 ret = GPJ_osr_to_grass ( &mCellHead, &mProjInfo, 
-                          &mProjUnits, &hSRS, 0);
+                          &mProjUnits, hSRS, 0);
             }
 	    
 	    // Note: I seems that GPJ_osr_to_grass()returns always 1, 
