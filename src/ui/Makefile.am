@@ -126,7 +126,7 @@ qgis_ui_UIHEADERS = ui_qgisappbase.h \
 		ui_qgscomposerpicturebase.h \
 		ui_qgscomposerscalebarbase.h \
 		ui_qgscomposervectorlegendbase.h \
-		ui_qgscontcoldialogbase.h \
+		ui_qgscontinuouscolordialogbase.h \
 		ui_qgsattributedialogbase.h \
 		ui_qgsfillstylewidgetbase.h \
 		ui_qgsgrasydialogbase.h \
