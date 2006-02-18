@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgscontinuouscolrenderer.h  -  description
+                         qgscontinuouscolorrenderer.h  -  description
                              -------------------
     begin                : Nov 2003
     copyright            : (C) 2003 by Marco Hugentobler
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#ifndef QGSCONTINUOUSCOLRENDERER_H
-#define QGSCONTINUOUSCOLRENDERER_H
+#ifndef QGSCONTINUOUSCOLORRENDERER_H
+#define QGSCONTINUOUSCOLORRENDERER_H
 
 #include "qgsrenderer.h"
 #include <qpainter.h>
@@ -29,13 +29,13 @@
 class QgsSymbol;
 
 /**Renderer class which interpolates rgb values linear between the minimum and maximum value of the classification field*/
-class QgsContinuousColRenderer: public QgsRenderer
+class QgsContinuousColorRenderer: public QgsRenderer
 {
  public:
-    QgsContinuousColRenderer(QGis::VectorType type);
-    QgsContinuousColRenderer(const QgsContinuousColRenderer& other);
-    QgsContinuousColRenderer& operator=(const QgsContinuousColRenderer& other);
-    virtual ~QgsContinuousColRenderer();
+    QgsContinuousColorRenderer(QGis::VectorType type);
+    QgsContinuousColorRenderer(const QgsContinuousColorRenderer& other);
+    QgsContinuousColorRenderer& operator=(const QgsContinuousColorRenderer& other);
+    virtual ~QgsContinuousColorRenderer();
     /**Renders the feature using the minimum and maximum value of the classification field*/
     void renderFeature(QPainter* p, QgsFeature* f, QPixmap* pic, double* scalefactor, bool selected,  double widthScale = 1.);
     /**Returns the number of the classification field*/
@@ -75,27 +75,27 @@ class QgsContinuousColRenderer: public QgsRenderer
     QgsSymbol* mMaximumSymbol;
 };
 
-inline int QgsContinuousColRenderer::classificationField() const
+inline int QgsContinuousColorRenderer::classificationField() const
 {
     return mClassificationField;
 }
 
-inline void QgsContinuousColRenderer::setClassificationField(int id)
+inline void QgsContinuousColorRenderer::setClassificationField(int id)
 {
     mClassificationField=id;
 }
 
-inline const QgsSymbol* QgsContinuousColRenderer::minimumSymbol() const
+inline const QgsSymbol* QgsContinuousColorRenderer::minimumSymbol() const
 {
     return mMinimumSymbol;
 }
 
-inline const QgsSymbol* QgsContinuousColRenderer::maximumSymbol() const
+inline const QgsSymbol* QgsContinuousColorRenderer::maximumSymbol() const
 {
     return mMaximumSymbol;
 }
 
-inline bool QgsContinuousColRenderer::needsAttributes() const
+inline bool QgsContinuousColorRenderer::needsAttributes() const
 {
   return true;
 }

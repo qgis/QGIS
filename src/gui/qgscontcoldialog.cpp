@@ -18,7 +18,7 @@
  /* $Id$ */
 
 #include "qgscontcoldialog.h"
-#include "qgscontinuouscolrenderer.h"
+#include "qgscontinuouscolorrenderer.h"
 #include "qgsfield.h"
 #include "qgssymbol.h"
 #include "qgsvectordataprovider.h"
@@ -67,7 +67,7 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer)
     
     //restore the correct colors for minimum and maximum values
     
-    const QgsContinuousColRenderer* renderer = dynamic_cast < const QgsContinuousColRenderer * >(layer->renderer());;
+    const QgsContinuousColorRenderer* renderer = dynamic_cast < const QgsContinuousColorRenderer * >(layer->renderer());;
     
     if (renderer)
     {
@@ -152,7 +152,7 @@ void QgsContColDialog::apply()
 	maxsymbol->setPen(QPen(QColor(0, 0, 0), outlinewidthspinbox->value()));
     }
   
-    QgsContinuousColRenderer* renderer = new QgsContinuousColRenderer(mVectorLayer->vectorType());
+    QgsContinuousColorRenderer* renderer = new QgsContinuousColorRenderer(mVectorLayer->vectorType());
     mVectorLayer->setRenderer(renderer);
     
     renderer->setMinimumSymbol(minsymbol);
