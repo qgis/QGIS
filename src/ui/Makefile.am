@@ -27,7 +27,7 @@ qgis_ui_UIC =	\
 		qgsdelattrdialogbase.ui			\
 		qgsvectorlayerpropertiesbase.ui	\
 		qgsgeomtypedialogbase.ui		\
-		qgsgrasydialogbase.ui			\
+		qgsgraduatedsymboldialogbase.ui			\
 		qgshelpviewerbase.ui			\
 		qgsidentifyresultsbase.ui		\
 		qgslabeldialogbase.ui			\
@@ -61,7 +61,7 @@ qgis_ui_UIC =	\
 		qgscontcoldialogbase.ui \
 		qgsattributedialogbase.ui \
 		qgsfillstylewidgetbase.ui \
-		qgsgrasydialogbase.ui \
+		qgsgraduatedsymboldialogbase.ui \
 		qgslabeldialogbase.ui \
 		qgslinestylewidgetbase.ui \
 		qgsmeasurebase.ui \
@@ -95,7 +95,7 @@ qgis_ui_UIHEADERS = ui_qgisappbase.h \
 		ui_qgsdelattrdialogbase.h			\
 		ui_qgsvectorlayerpropertiesbase.h	\
 		ui_qgsgeomtypedialogbase.h		\
-		ui_qgsgrasydialogbase.h			\
+		ui_qgsgraduatedsymboldialogbase.h			\
 		ui_qgshelpviewerbase.h			\
 		ui_qgsidentifyresultsbase.h		\
 		ui_qgslabeldialogbase.h			\

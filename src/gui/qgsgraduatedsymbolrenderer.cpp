@@ -19,7 +19,6 @@
 #include "qgis.h"
 #include "qgsfeature.h"
 #include "qgsgraduatedsymbolrenderer.h"
-#include "qgsgrasydialog.h"
 #include "qgslegendsymbologyitem.h"
 #include "qgssymbologyutils.h"
 #include "qgssvgcache.h"
