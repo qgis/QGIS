@@ -118,6 +118,7 @@ libqgis_guiHEADERS =							\
 		qgsrubberband.h						\
 		qgsrunprocess.h						\
 		qgsserversourceselect.h				\
+		qgssinglesymbolrenderer.h			\
 		qgssisydialog.h					\
 		qgsspatialrefsys.h					\
 		qgsuniquevalrenderer.h				\
@@ -228,7 +229,7 @@ libqgis_gui_la_SOURCES =						\
 		qgsrubberband.cpp					\
 		qgsrunprocess.cpp					\
 		qgsserversourceselect.cpp	\
-		qgssinglesymrenderer.cpp			\
+		qgssinglesymbolrenderer.cpp			\
 		qgssisydialog.cpp		\
 		qgsspatialrefsys.cpp				\
 		qgsuniquevalrenderer.cpp			\

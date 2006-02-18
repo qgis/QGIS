@@ -115,7 +115,7 @@
 #include "qgsrasterlayerproperties.h"
 #include "qgsrect.h"
 #include "qgsserversourceselect.h"
-#include "qgssinglesymrenderer.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "../../plugins/qgisplugin.h"
@@ -1725,7 +1725,7 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
     // XXX QgsProject::read() (If layers added via that.)
 
     //add single symbol renderer as default
-    QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());
+    QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer(layer->vectorType());
 
     Q_CHECK_PTR( renderer );
 
@@ -1861,7 +1861,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
       // XXX now taken care of in legend layer->initContextMenu(this);
 
       //add single symbol renderer as default
-      QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());
+      QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer(layer->vectorType());
 
       Q_CHECK_PTR( renderer );
 
@@ -2002,7 +2002,7 @@ void QgisApp::addDatabaseLayer()
         layer->setVisible(mAddedLayersHidden);
 
         // give it a random color
-        QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());  // add single symbol renderer as default
+        QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer(layer->vectorType());  // add single symbol renderer as default
         layer->setRenderer(renderer);
 
         // register this layer with the central layers registry
@@ -4744,7 +4744,7 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
     // now taken care of in legend layer->initContextMenu(this);
 
     // give it a random color
-    QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(layer->vectorType());  //add single symbol renderer as default
+    QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer(layer->vectorType());  //add single symbol renderer as default
     layer->setRenderer(renderer);
     // add it to the mapcanvas collection
     // mMapCanvas->addLayer(layer); No longer necessary since adding to registry will add to canvas

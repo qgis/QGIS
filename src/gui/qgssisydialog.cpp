@@ -18,7 +18,7 @@
 
 #include "qgssisydialog.h"
 #include "qgsmarkercatalogue.h"
-#include "qgssinglesymrenderer.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgssvgcache.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
@@ -105,7 +105,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(la
 
     if (mVectorLayer)
     {
-        const QgsSingleSymRenderer *renderer=dynamic_cast<const QgsSingleSymRenderer*>(mVectorLayer->renderer());
+        const QgsSingleSymbolRenderer *renderer=dynamic_cast<const QgsSingleSymbolRenderer*>(mVectorLayer->renderer());
 
         if (renderer)
         {
@@ -301,7 +301,7 @@ void QgsSiSyDialog::apply()
     QgsSymbol* sy = new QgsSymbol(mVectorLayer->vectorType());
     apply(sy);
 
-    QgsSingleSymRenderer *renderer = new QgsSingleSymRenderer(mVectorLayer->vectorType());
+    QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer(mVectorLayer->vectorType());
     renderer->addSymbol(sy);
     mVectorLayer->setRenderer(renderer);
     mVectorLayer->refreshLegend();
