@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgscontcoldialog.h 
+                          qgscontinuouscolordialog.h 
                         Continuous color renderer dialog
                              -------------------
     begin                : 2004-02-12
@@ -17,21 +17,21 @@
  ***************************************************************************/
  /* $Id$ */
 
-#ifndef QGSCONTCOLDIALOG_H
-#define QGSCONTCOLDIALOG_H
+#ifndef QGSCONTINUOUSCOLORDIALOG_H
+#define QGSCONTINUOUSCOLORDIALOG_H
 
-#include "ui_qgscontcoldialogbase.h"
+#include "ui_qgscontinuouscolordialogbase.h"
 #include <map>
 
 class QgsVectorLayer;
 
 
-class QgsContColDialog: public QDialog, private Ui::QgsContColDialogBase
+class QgsContinuousColorDialog: public QDialog, private Ui::QgsContinuousColorDialogBase
 {
     Q_OBJECT
  public: 
-    QgsContColDialog(QgsVectorLayer* layer);
-    ~QgsContColDialog();
+    QgsContinuousColorDialog(QgsVectorLayer* layer);
+    ~QgsContinuousColorDialog();
  public slots:
     void apply();	
  protected slots:
@@ -42,7 +42,7 @@ class QgsContColDialog: public QDialog, private Ui::QgsContColDialogBase
     /**Stores the names and numbers of the fields with numeric values*/
      std::map<QString,int> mFieldMap;
  private:
-    QgsContColDialog();
+    QgsContinuousColorDialog();
 };
 
 #endif

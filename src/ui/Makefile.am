@@ -23,7 +23,7 @@ qgis_ui_UIC =	\
 		qgsattributeactiondialogbase.ui		\
 		qgsattributetablebase.ui		\
 		qgsbookmarksbase.ui		\
-		qgscontcoldialogbase.ui			\
+		qgscontinuouscolordialogbase.ui			\
 		qgsdelattrdialogbase.ui			\
 		qgsvectorlayerpropertiesbase.ui	\
 		qgsgeomtypedialogbase.ui		\
@@ -58,7 +58,7 @@ qgis_ui_UIC =	\
 		qgscomposerpicturebase.ui \
 		qgscomposerscalebarbase.ui \
 		qgscomposervectorlegendbase.ui \
-		qgscontcoldialogbase.ui \
+		qgscontinuouscolordialogbase.ui \
 		qgsattributedialogbase.ui \
 		qgsfillstylewidgetbase.ui \
 		qgsgraduatedsymboldialogbase.ui \
@@ -91,7 +91,7 @@ qgis_ui_UIHEADERS = ui_qgisappbase.h \
 		ui_qgsattributeactiondialogbase.h		\
 		ui_qgsattributetablebase.h		\
 		ui_qgsbookmarksbase.h		\
-		ui_qgscontcoldialogbase.h			\
+		ui_qgscontinuouscolordialogbase.h			\
 		ui_qgsdelattrdialogbase.h			\
 		ui_qgsvectorlayerpropertiesbase.h	\
 		ui_qgsgeomtypedialogbase.h		\
