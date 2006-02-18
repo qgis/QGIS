@@ -24,7 +24,7 @@
 #include "qgslabeldialog.h"
 #include "qgslayerprojectionselector.h"
 #include "qgssinglesymboldialog.h"
-#include "qgsuvaldialog.h"
+#include "qgsuniquevaluedialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #ifdef HAVE_POSTGRESQL
@@ -105,7 +105,7 @@ void QgsVectorLayerProperties::alterLayerDialog(const QString & dialogString)
     }
     else if(dialogString == tr("Unique Value"))
     {
-	mRendererDialog = new QgsUValDialog(layer);
+	mRendererDialog = new QgsUniqueValueDialog(layer);
     }
     widgetStackRenderers->addWidget(mRendererDialog);
     widgetStackRenderers->raiseWidget(mRendererDialog);  
@@ -200,7 +200,7 @@ void QgsVectorLayerProperties::reset( void )
   }
   else if(rtype == "Unique Value")
   {
-      mRendererDialog=new QgsUValDialog(layer);
+      mRendererDialog=new QgsUniqueValueDialog(layer);
       legendtypecombobox->setCurrentIndex(3);
   }
   
@@ -280,7 +280,7 @@ void QgsVectorLayerProperties::on_pbnApply_clicked()
   QgsSingleSymbolDialog *sdialog = dynamic_cast < QgsSingleSymbolDialog * >(widgetStackRenderers->visibleWidget());
   QgsGraduatedSymbolDialog *gdialog = dynamic_cast < QgsGraduatedSymbolDialog * >(widgetStackRenderers->visibleWidget());
   QgsContinuousColorDialog *cdialog = dynamic_cast < QgsContinuousColorDialog * >(widgetStackRenderers->visibleWidget());
-  QgsUValDialog* udialog = dynamic_cast< QgsUValDialog * >(widgetStackRenderers->visibleWidget()); 
+  QgsUniqueValueDialog* udialog = dynamic_cast< QgsUniqueValueDialog * >(widgetStackRenderers->visibleWidget()); 
 
   if (sdialog)
     {

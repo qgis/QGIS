@@ -16,13 +16,11 @@
  ***************************************************************************/
 /* $Id$ */
 #include "qgsuniquevaluerenderer.h"
-#include "qgsuvaldialog.h"
 #include "qgsfeatureattribute.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
-#include "qgsuvaldialog.h"
 #include "qgssvgcache.h"
 #include <QDomNode>
 #include <QPainter>

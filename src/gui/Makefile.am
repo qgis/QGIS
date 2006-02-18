@@ -122,7 +122,7 @@ libqgis_guiHEADERS =							\
 		qgssinglesymbolrenderer.h			\
 		qgsspatialrefsys.h					\
 		qgsuniquevaluerenderer.h				\
-		qgsuvaldialog.h					\
+		qgsuniquevaluedialog.h					\
 		qgsvectorfilewriter.h				\
 		qgsvectorlayerproperties.h			
 
@@ -172,7 +172,7 @@ libqgis_gui_la_MOC =							\
 		qgsrunprocess.moc.cpp				\
 		qgsserversourceselect.moc.cpp		\
 		qgssinglesymboldialog.moc.cpp			\
-		qgsuvaldialog.moc.cpp			\
+		qgsuniquevaluedialog.moc.cpp			\
 		qgsvectorlayer.moc.cpp \
 		qgsvectorlayerproperties.moc.cpp	
 
@@ -233,7 +233,7 @@ libqgis_gui_la_SOURCES =						\
 		qgssinglesymbolrenderer.cpp			\
 		qgsspatialrefsys.cpp				\
 		qgsuniquevaluerenderer.cpp			\
-		qgsuvaldialog.cpp		\
+		qgsuniquevaluedialog.cpp		\
 		qgsvectorfilewriter.cpp				\
 		qgsvectorlayer.cpp \
 		qgsvectorlayerproperties.cpp	
