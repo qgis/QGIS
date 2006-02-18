@@ -71,7 +71,7 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgscontinuouscolorrenderer.h"
-#include "qgsuniquevalrenderer.h"
+#include "qgsuniquevaluerenderer.h"
 #include "qgsrenderitem.h"
 #include "qgsproviderregistry.h"
 #include "qgsrect.h"
@@ -2277,7 +2277,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
   }
   else if (!uniquevaluenode.isNull())
   {
-    renderer = new QgsUniqueValRenderer(vectorType());
+    renderer = new QgsUniqueValueRenderer(vectorType());
     renderer->readXML(uniquevaluenode, *this);
   }
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsuniquevalrenderer.cpp  -  description
+                         qgsuniquevaluerenderer.cpp  -  description
                              -------------------
     begin                : July 2004
     copyright            : (C) 2004 by Marco Hugentobler
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include "qgsuniquevalrenderer.h"
+#include "qgsuniquevaluerenderer.h"
 #include "qgsuvaldialog.h"
 #include "qgsfeatureattribute.h"
 #include "qgsfeature.h"
@@ -29,7 +29,7 @@
 #include <QPixmap>
 #include <vector>
 
-QgsUniqueValRenderer::QgsUniqueValRenderer(QGis::VectorType type): mClassificationField(0)
+QgsUniqueValueRenderer::QgsUniqueValueRenderer(QGis::VectorType type): mClassificationField(0)
 {
     mVectorType = type;
 
@@ -38,7 +38,7 @@ QgsUniqueValRenderer::QgsUniqueValRenderer(QGis::VectorType type): mClassificati
 
 }
 
-QgsUniqueValRenderer::QgsUniqueValRenderer(const QgsUniqueValRenderer& other)
+QgsUniqueValueRenderer::QgsUniqueValueRenderer(const QgsUniqueValueRenderer& other)
 {
     mVectorType = other.mVectorType;
     mClassificationField = other.mClassificationField;
@@ -49,7 +49,7 @@ QgsUniqueValRenderer::QgsUniqueValRenderer(const QgsUniqueValRenderer& other)
     }
 }
 
-QgsUniqueValRenderer& QgsUniqueValRenderer::operator=(const QgsUniqueValRenderer& other)
+QgsUniqueValueRenderer& QgsUniqueValueRenderer::operator=(const QgsUniqueValueRenderer& other)
 {
     if(this != &other)
     {
@@ -64,7 +64,7 @@ QgsUniqueValRenderer& QgsUniqueValRenderer::operator=(const QgsUniqueValRenderer
     }
 }
 
-QgsUniqueValRenderer::~QgsUniqueValRenderer()
+QgsUniqueValueRenderer::~QgsUniqueValueRenderer()
 {
     for(std::map<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
     {
@@ -72,7 +72,7 @@ QgsUniqueValRenderer::~QgsUniqueValRenderer()
     }
 }
 
-const std::list<QgsSymbol*> QgsUniqueValRenderer::symbols() const
+const std::list<QgsSymbol*> QgsUniqueValueRenderer::symbols() const
 {
     std::list <QgsSymbol*> symbollist;
     for(std::map<QString, QgsSymbol*>::const_iterator it = mSymbols.begin(); it!=mSymbols.end(); ++it)
@@ -82,22 +82,22 @@ const std::list<QgsSymbol*> QgsUniqueValRenderer::symbols() const
     return symbollist;
 }
 
-void QgsUniqueValRenderer::insertValue(QString name, QgsSymbol* symbol)
+void QgsUniqueValueRenderer::insertValue(QString name, QgsSymbol* symbol)
 {
     mSymbols.insert(std::make_pair(name, symbol));
 }
 
-void QgsUniqueValRenderer::setClassificationField(int field)
+void QgsUniqueValueRenderer::setClassificationField(int field)
 {
     mClassificationField=field;
 }
 
-int QgsUniqueValRenderer::classificationField()
+int QgsUniqueValueRenderer::classificationField()
 {
     return mClassificationField;
 }
     
-void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPixmap* pic, 
+void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature* f,QPixmap* pic, 
 	double* scalefactor, bool selected, double widthScale)
 {
     std::vector < QgsFeatureAttribute > vec = f->attributeMap();
@@ -140,13 +140,13 @@ void QgsUniqueValRenderer::renderFeature(QPainter* p, QgsFeature* f,QPixmap* pic
     else
     {
 #ifdef QGISDEBUG
-	qWarning("Warning, no render item found in QgsUniqueValRenderer::renderFeature");
+	qWarning("Warning, no render item found in QgsUniqueValueRenderer::renderFeature");
 #endif
     }
     
 }
 
-void QgsUniqueValRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
+void QgsUniqueValueRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
     mVectorType = vl.vectorType();
     QDomNode classnode = rnode.namedItem("classificationfield");
@@ -164,7 +164,7 @@ void QgsUniqueValRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     }
 }
 
-void QgsUniqueValRenderer::clearValues()
+void QgsUniqueValueRenderer::clearValues()
 {
     for(std::map<QString,QgsSymbol*>::iterator it=mSymbols.begin();it!=mSymbols.end();++it)
     {
@@ -173,19 +173,19 @@ void QgsUniqueValRenderer::clearValues()
     mSymbols.clear();
 }
 
-QString QgsUniqueValRenderer::name() const
+QString QgsUniqueValueRenderer::name() const
 {
     return "Unique Value";
 }
 
-std::list<int> QgsUniqueValRenderer::classificationAttributes() const
+std::list<int> QgsUniqueValueRenderer::classificationAttributes() const
 {
     std::list<int> list;
     list.push_back(mClassificationField);
     return list;
 }
 
-bool QgsUniqueValRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
+bool QgsUniqueValueRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
 {
     bool returnval=true;
     QDomElement uniquevalue=document.createElement("uniquevalue");
@@ -204,8 +204,8 @@ bool QgsUniqueValRenderer::writeXML( QDomNode & layer_node, QDomDocument & docum
     return returnval;
 }
 
-QgsRenderer* QgsUniqueValRenderer::clone() const
+QgsRenderer* QgsUniqueValueRenderer::clone() const
 {
-    QgsUniqueValRenderer* r = new QgsUniqueValRenderer(*this);
+    QgsUniqueValueRenderer* r = new QgsUniqueValueRenderer(*this);
     return r;
 }
