@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgssinglesymrenderer.h  -  description
+                         qgssinglesymbolrenderer.h  -  description
                              -------------------
     begin                : Oct 2003
     copyright            : (C) 2003 by Marco Hugentobler
@@ -16,8 +16,8 @@
  ***************************************************************************/
 /* $Id$ */
 
-#ifndef QGSSINGLESYMRENDERER_H
-#define QGSSINGLESYMRENDERER_H
+#ifndef QGSSINGLESYMBOLRENDERER_H
+#define QGSSINGLESYMBOLRENDERER_H
 
 #include "qgsrenderer.h"
 #include "qgsrenderitem.h"
@@ -30,13 +30,13 @@ class QPixmap;
 class QgsFeature;
 
 /**Render class to display all the features with a single QgsSymbol*/
-class QgsSingleSymRenderer: public QgsRenderer
+class QgsSingleSymbolRenderer: public QgsRenderer
 {
  public:
-    QgsSingleSymRenderer(QGis::VectorType type);
-    QgsSingleSymRenderer(const QgsSingleSymRenderer& other);
-    QgsSingleSymRenderer& operator=(const QgsSingleSymRenderer& other);
-    virtual ~QgsSingleSymRenderer();
+    QgsSingleSymbolRenderer(QGis::VectorType type);
+    QgsSingleSymbolRenderer(const QgsSingleSymbolRenderer& other);
+    QgsSingleSymbolRenderer& operator=(const QgsSingleSymbolRenderer& other);
+    virtual ~QgsSingleSymbolRenderer();
     /**Replaces the current mSymbol by sy*/
     void addSymbol(QgsSymbol* sy);
     /*Returns a pointer to mSymbol*/
@@ -67,12 +67,12 @@ class QgsSingleSymRenderer: public QgsRenderer
     QgsSymbol* mSymbol;
 };
 
-inline const QgsSymbol* QgsSingleSymRenderer::symbol() const
+inline const QgsSymbol* QgsSingleSymbolRenderer::symbol() const
 {
     return mSymbol;
 }
 
-inline bool QgsSingleSymRenderer::needsAttributes() const
+inline bool QgsSingleSymbolRenderer::needsAttributes() const
 {
   return false;
 }

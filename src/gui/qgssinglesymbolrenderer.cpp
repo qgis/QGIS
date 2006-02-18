@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgssinglesymrenderer.cpp  -  description
+                         qgssinglesymbolrenderer.cpp  -  description
                              -------------------
     begin                : Oct 2003
     copyright            : (C) 2003 by Marco Hugentobler
@@ -16,7 +16,7 @@
  ***************************************************************************/
 /* $Id$ */
 #include "qgis.h"
-#include "qgssinglesymrenderer.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgsfeature.h"
 #include "qgis.h"
 #include "qgsvectorlayer.h"
@@ -30,7 +30,7 @@
 #include <QPainter>
 #include <QPixmap>
 
-QgsSingleSymRenderer::QgsSingleSymRenderer(QGis::VectorType type)
+QgsSingleSymbolRenderer::QgsSingleSymbolRenderer(QGis::VectorType type)
 {
     mVectorType=type;
     //call superclass method to set up selection colour
@@ -58,13 +58,13 @@ QgsSingleSymRenderer::QgsSingleSymRenderer(QGis::VectorType type)
     mSymbol=sy;
 }
 
-QgsSingleSymRenderer::QgsSingleSymRenderer(const QgsSingleSymRenderer& other)
+QgsSingleSymbolRenderer::QgsSingleSymbolRenderer(const QgsSingleSymbolRenderer& other)
 {
     mVectorType = other.mVectorType;
     mSymbol = new QgsSymbol(*other.mSymbol);
 }
 
-QgsSingleSymRenderer& QgsSingleSymRenderer::operator=(const QgsSingleSymRenderer& other)
+QgsSingleSymbolRenderer& QgsSingleSymbolRenderer::operator=(const QgsSingleSymbolRenderer& other)
 {
     if(this!=&other)
     {
@@ -74,18 +74,18 @@ QgsSingleSymRenderer& QgsSingleSymRenderer::operator=(const QgsSingleSymRenderer
     }
 }
 
-QgsSingleSymRenderer::~QgsSingleSymRenderer()
+QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer()
 {
     delete mSymbol;
 }
 
-void QgsSingleSymRenderer::addSymbol(QgsSymbol* sy)
+void QgsSingleSymbolRenderer::addSymbol(QgsSymbol* sy)
 {
     delete mSymbol;
     mSymbol=sy;
 }
 
-void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixmap* pic, 
+void QgsSingleSymbolRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixmap* pic, 
 	         double* scalefactor, bool selected, double widthScale)
 {
 	// Point 
@@ -119,7 +119,7 @@ void QgsSingleSymRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixmap* 
 	}
 }
 
-void QgsSingleSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
+void QgsSingleSymbolRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
     mVectorType = vl.vectorType();
     QgsSymbol* sy = new QgsSymbol(mVectorType);
@@ -141,7 +141,7 @@ void QgsSingleSymRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
     vl.setRenderer(this);
 }
 
-bool QgsSingleSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
+bool QgsSingleSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
 {
   bool returnval=false;
   QDomElement singlesymbol=document.createElement("singlesymbol");
@@ -154,26 +154,26 @@ bool QgsSingleSymRenderer::writeXML( QDomNode & layer_node, QDomDocument & docum
 }
 
 
-std::list<int> QgsSingleSymRenderer::classificationAttributes() const
+std::list<int> QgsSingleSymbolRenderer::classificationAttributes() const
 {
   std::list<int> list;
   return list;//return an empty list
 }
 
-QString QgsSingleSymRenderer::name() const
+QString QgsSingleSymbolRenderer::name() const
 {
   return "Single Symbol";
 }
 
-const std::list<QgsSymbol*> QgsSingleSymRenderer::symbols() const
+const std::list<QgsSymbol*> QgsSingleSymbolRenderer::symbols() const
 {
     std::list<QgsSymbol*> list;
     list.push_back(mSymbol);
     return list;
 }
 
-QgsRenderer* QgsSingleSymRenderer::clone() const
+QgsRenderer* QgsSingleSymbolRenderer::clone() const
 {
-    QgsSingleSymRenderer* r = new QgsSingleSymRenderer(*this);
+    QgsSingleSymbolRenderer* r = new QgsSingleSymbolRenderer(*this);
     return r;
 }

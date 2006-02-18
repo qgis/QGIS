@@ -68,7 +68,7 @@
 #include "qgslegend.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsrenderer.h"
-#include "qgssinglesymrenderer.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgsgraduatedsymrenderer.h"
 #include "qgscontinuouscolrenderer.h"
 #include "qgsuniquevalrenderer.h"
@@ -2263,7 +2263,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 
   if (!singlenode.isNull())
   {
-    renderer = new QgsSingleSymRenderer(vectorType());
+    renderer = new QgsSingleSymbolRenderer(vectorType());
     renderer->readXML(singlenode, *this);
   }
   else if (!graduatednode.isNull())
