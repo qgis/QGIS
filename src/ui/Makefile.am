@@ -129,7 +129,7 @@ qgis_ui_UIHEADERS = ui_qgisappbase.h \
 		ui_qgscontinuouscolordialogbase.h \
 		ui_qgsattributedialogbase.h \
 		ui_qgsfillstylewidgetbase.h \
-		ui_qgsgrasydialogbase.h \
+		ui_qgsgraduatedsymboldialogbase.h \
 		ui_qgslabeldialogbase.h \
 		ui_qgslinestylewidgetbase.h \
 		ui_qgsmeasurebase.h \
