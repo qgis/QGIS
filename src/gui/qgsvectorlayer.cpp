@@ -73,7 +73,6 @@
 #include "qgscontinuouscolrenderer.h"
 #include "qgsuniquevalrenderer.h"
 #include "qgsrenderitem.h"
-#include "qgssisydialog.h"
 #include "qgsproviderregistry.h"
 #include "qgsrect.h"
 #include "qgslabelattributes.h"

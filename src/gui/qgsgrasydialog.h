@@ -20,7 +20,7 @@
 #define QGSGRASYDIALOG_H
 
 #include "ui_qgsgrasydialogbase.h"
-#include "qgssisydialog.h"
+#include "qgssinglesymboldialog.h"
 #include <map>
 
 class QgsVectorLayer;
@@ -55,7 +55,7 @@ class QgsGraSyDialog: public QDialog, private Ui::QgsGraSyDialogBase
      /**Stores the classes*/
      std::map<QString,QgsSymbol*> mEntries;
      /**Dialog which shows the settings of the activated class*/
-     QgsSiSyDialog sydialog;
+     QgsSingleSymbolDialog sydialog;
      int mClassificationField;
  private:
      /**Default constructor is privat to not use is*/

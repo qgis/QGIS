@@ -21,7 +21,6 @@
 #include "qgis.h"
 #include "qgsvectorlayer.h"
 #include "qstring.h"
-#include "qgssisydialog.h"
 #include "qgslegenditem.h"
 #include "qgssymbologyutils.h"
 #include "qgssvgcache.h"

@@ -20,7 +20,7 @@
 #define QGSUVALDIALOG_H
 
 #include "ui_qgsuvaldialogbase.h"
-#include "qgssisydialog.h"
+#include "qgssinglesymboldialog.h"
 #include <map>
 
 class QgsVectorLayer;
@@ -41,7 +41,7 @@ class QgsUValDialog: public QDialog, private Ui::QgsUValDialogBase
     QgsVectorLayer* mVectorLayer;
     /**Set to store the already entered values*/
     std::map<QString,QgsSymbol*> mValues;
-    QgsSiSyDialog sydialog;
+    QgsSingleSymbolDialog sydialog;
     /**Value for which symbology settings are displayed*/
     QString currentValue;
 

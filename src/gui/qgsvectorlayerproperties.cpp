@@ -23,7 +23,7 @@
 #include "qgsgrasydialog.h"
 #include "qgslabeldialog.h"
 #include "qgslayerprojectionselector.h"
-#include "qgssisydialog.h"
+#include "qgssinglesymboldialog.h"
 #include "qgsuvaldialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -93,7 +93,7 @@ void QgsVectorLayerProperties::alterLayerDialog(const QString & dialogString)
     mRendererDialog=0;
     if(dialogString == tr("Single Symbol"))
     {
-	mRendererDialog = new QgsSiSyDialog(layer);
+	mRendererDialog = new QgsSingleSymbolDialog(layer);
     }
     else if(dialogString == tr("Graduated Symbol"))
     {
@@ -185,7 +185,7 @@ void QgsVectorLayerProperties::reset( void )
   QString rtype=layer->renderer()->name();
   if(rtype=="Single Symbol")
   {
-      mRendererDialog=new QgsSiSyDialog(layer);
+      mRendererDialog=new QgsSingleSymbolDialog(layer);
       legendtypecombobox->setCurrentIndex(0);
   }
   else if(rtype=="Graduated Symbol")
@@ -277,7 +277,7 @@ void QgsVectorLayerProperties::on_pbnApply_clicked()
   layer->setLayerName(displayName());
 
 
-  QgsSiSyDialog *sdialog = dynamic_cast < QgsSiSyDialog * >(widgetStackRenderers->visibleWidget());
+  QgsSingleSymbolDialog *sdialog = dynamic_cast < QgsSingleSymbolDialog * >(widgetStackRenderers->visibleWidget());
   QgsGraSyDialog *gdialog = dynamic_cast < QgsGraSyDialog * >(widgetStackRenderers->visibleWidget());
   QgsContColDialog *cdialog = dynamic_cast < QgsContColDialog * >(widgetStackRenderers->visibleWidget());
   QgsUValDialog* udialog = dynamic_cast< QgsUValDialog * >(widgetStackRenderers->visibleWidget()); 

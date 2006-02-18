@@ -45,7 +45,7 @@ qgis_ui_UIC =	\
 		qgsprojectpropertiesbase.ui		\
 		qgsrasterlayerpropertiesbase.ui		\
 		qgsserversourceselectbase.ui		\
-		qgssisydialogbase.ui			\
+		qgssinglesymboldialogbase.ui			\
 		qgsuvaldialogbase.ui			\
 		qgslayerprojectionselectorbase.ui \
 		qgscustomprojectiondialogbase.ui \
@@ -113,7 +113,7 @@ qgis_ui_UIHEADERS = ui_qgisappbase.h \
 		ui_qgsprojectpropertiesbase.h		\
 		ui_qgsrasterlayerpropertiesbase.h		\
 		ui_qgsserversourceselectbase.h		\
-		ui_qgssisydialogbase.h			\
+		ui_qgssinglesymboldialogbase.h			\
 		ui_qgsuvaldialogbase.h			\
 		ui_qgslayerprojectionselectorbase.h \
 		ui_qgscustomprojectiondialogbase.h \

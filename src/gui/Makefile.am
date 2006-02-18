@@ -118,8 +118,8 @@ libqgis_guiHEADERS =							\
 		qgsrubberband.h						\
 		qgsrunprocess.h						\
 		qgsserversourceselect.h				\
+		qgssinglesymboldialog.h				\
 		qgssinglesymbolrenderer.h			\
-		qgssisydialog.h					\
 		qgsspatialrefsys.h					\
 		qgsuniquevalrenderer.h				\
 		qgsuvaldialog.h					\
@@ -171,7 +171,7 @@ libqgis_gui_la_MOC =							\
 		qgsrasterlayerproperties.moc.cpp	\
 		qgsrunprocess.moc.cpp				\
 		qgsserversourceselect.moc.cpp		\
-		qgssisydialog.moc.cpp			\
+		qgssinglesymboldialog.moc.cpp			\
 		qgsuvaldialog.moc.cpp			\
 		qgsvectorlayer.moc.cpp \
 		qgsvectorlayerproperties.moc.cpp	
@@ -229,8 +229,8 @@ libqgis_gui_la_SOURCES =						\
 		qgsrubberband.cpp					\
 		qgsrunprocess.cpp					\
 		qgsserversourceselect.cpp	\
+		qgssinglesymboldialog.cpp	\
 		qgssinglesymbolrenderer.cpp			\
-		qgssisydialog.cpp		\
 		qgsspatialrefsys.cpp				\
 		qgsuniquevalrenderer.cpp			\
 		qgsuvaldialog.cpp		\

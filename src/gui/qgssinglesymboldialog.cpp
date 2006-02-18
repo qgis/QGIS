@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgssisydialog.cpp  -  description
+                         qgssinglesymboldialog.cpp  -  description
                              -------------------
     begin                : Oct 2003
     copyright            : (C) 2003 by Marco Hugentobler
@@ -16,7 +16,7 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include "qgssisydialog.h"
+#include "qgssinglesymboldialog.h"
 #include "qgsmarkercatalogue.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssvgcache.h"
@@ -28,19 +28,19 @@
 #include <QPainter>
 
 
-QgsSiSyDialog::QgsSiSyDialog(): QDialog(), mVectorLayer(0)
+QgsSingleSymbolDialog::QgsSingleSymbolDialog(): QDialog(), mVectorLayer(0)
 {
     setupUi(this);
 #ifdef QGISDEBUG
-    qWarning("constructor QgsSiSyDialog called WITHOUT a layer");
+    qWarning("constructor QgsSingleSymbolDialog called WITHOUT a layer");
 #endif
 }
 
-QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(layer)
+QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(layer)
 {
     setupUi(this);
 #ifdef QGISDEBUG
-    qWarning("constructor QgsSiSyDialog called WITH a layer");
+    qWarning("constructor QgsSingleSymbolDialog called WITH a layer");
 #endif
 
     //
@@ -129,7 +129,7 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(la
     }
     else
     {
-        qWarning("Warning, layer is a null pointer in QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer)");
+        qWarning("Warning, layer is a null pointer in QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer)");
     }
 
      //do the signal/slot connections
@@ -166,14 +166,14 @@ QgsSiSyDialog::QgsSiSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(la
 
 }
 
-QgsSiSyDialog::~QgsSiSyDialog()
+QgsSingleSymbolDialog::~QgsSingleSymbolDialog()
 {
 #ifdef QGISDEBUG
-    qWarning("destructor QgsSiSyDialog");
+    qWarning("destructor QgsSingleSymbolDialog");
 #endif
 }
 
-void QgsSiSyDialog::selectOutlineColor()
+void QgsSingleSymbolDialog::selectOutlineColor()
 {
     QColor c = QColorDialog::getColor(lblOutlineColor->paletteBackgroundColor(),this);
     
@@ -185,7 +185,7 @@ void QgsSiSyDialog::selectOutlineColor()
     setActiveWindow();
 }
 
-void QgsSiSyDialog::selectFillColor()
+void QgsSingleSymbolDialog::selectFillColor()
 {
     QColor c = QColorDialog::getColor(lblFillColor->paletteBackgroundColor(),this);
 
@@ -197,7 +197,7 @@ void QgsSiSyDialog::selectFillColor()
     setActiveWindow();
 }
 
-void QgsSiSyDialog::apply( QgsSymbol *sy )
+void QgsSingleSymbolDialog::apply( QgsSymbol *sy )
 {
     //query the values of the widgets and set the symbology of the vector layer
     sy->setFillColor(lblFillColor->paletteBackgroundColor());
@@ -296,7 +296,7 @@ void QgsSiSyDialog::apply( QgsSymbol *sy )
     sy->setLabel(mLabelEdit->text());
 }
 
-void QgsSiSyDialog::apply()
+void QgsSingleSymbolDialog::apply()
 {
     QgsSymbol* sy = new QgsSymbol(mVectorLayer->vectorType());
     apply(sy);
@@ -307,7 +307,7 @@ void QgsSiSyDialog::apply()
     mVectorLayer->refreshLegend();
 }
 
-void QgsSiSyDialog::set ( const QgsSymbol *sy ) 
+void QgsSingleSymbolDialog::set ( const QgsSymbol *sy ) 
 {
 	// Set point symbol
         for ( int i = 0; i < mMarkers.size(); i++ ) {
@@ -411,12 +411,12 @@ void QgsSiSyDialog::set ( const QgsSymbol *sy )
 	}
 }
 
-void QgsSiSyDialog::setOutlineColor(QColor& c)
+void QgsSingleSymbolDialog::setOutlineColor(QColor& c)
 {
     lblOutlineColor->setPaletteBackgroundColor(c);
 }
 
-void QgsSiSyDialog::setOutlineStyle(Qt::PenStyle pstyle)
+void QgsSingleSymbolDialog::setOutlineStyle(Qt::PenStyle pstyle)
 {
     // XXX use switch() instead
     if (pstyle==Qt::NoPen)
@@ -433,12 +433,12 @@ void QgsSiSyDialog::setOutlineStyle(Qt::PenStyle pstyle)
         (pbnLineSolid->setOn(true)); //default to solid
 }
 
-void QgsSiSyDialog::setFillColor(QColor& c)
+void QgsSingleSymbolDialog::setFillColor(QColor& c)
 {
     lblFillColor->setPaletteBackgroundColor(c);
 }
 
-void QgsSiSyDialog::setFillStyle(Qt::BrushStyle fstyle)
+void QgsSingleSymbolDialog::setFillStyle(Qt::BrushStyle fstyle)
 {
 #ifdef QGISDEBUG
     qWarning(("Setting fill style: "+QgsSymbologyUtils::brushStyle2QString(fstyle)).toLocal8Bit().data());
@@ -477,17 +477,17 @@ void QgsSiSyDialog::setFillStyle(Qt::BrushStyle fstyle)
         (nopen->setOn(true)); //default to no brush
 }
 
-void QgsSiSyDialog::setOutlineWidth(int width)
+void QgsSingleSymbolDialog::setOutlineWidth(int width)
 {
     outlinewidthspinbox->setValue(width);
 }
 
-QColor QgsSiSyDialog::getOutlineColor()
+QColor QgsSingleSymbolDialog::getOutlineColor()
 {
     return lblOutlineColor->paletteBackgroundColor();
 }
 
-Qt::PenStyle QgsSiSyDialog::getOutlineStyle()
+Qt::PenStyle QgsSingleSymbolDialog::getOutlineStyle()
 {
     if  (pbnLineNoPen->isOn())
         return Qt::NoPen;
@@ -504,17 +504,17 @@ Qt::PenStyle QgsSiSyDialog::getOutlineStyle()
 
 }
 
-int QgsSiSyDialog::getOutlineWidth()
+int QgsSingleSymbolDialog::getOutlineWidth()
 {
     return outlinewidthspinbox->value();
 }
 
-QColor QgsSiSyDialog::getFillColor()
+QColor QgsSingleSymbolDialog::getFillColor()
 {
     return lblFillColor->paletteBackgroundColor();
 }
 
-Qt::BrushStyle QgsSiSyDialog::getFillStyle()
+Qt::BrushStyle QgsSingleSymbolDialog::getFillStyle()
 {
     if (solid->isOn())
     {
@@ -577,17 +577,17 @@ Qt::BrushStyle QgsSiSyDialog::getFillStyle()
 
 }
 
-void QgsSiSyDialog::resendSettingsChanged()
+void QgsSingleSymbolDialog::resendSettingsChanged()
 {
     emit settingsChanged();
 }
 
-QString QgsSiSyDialog::label()
+QString QgsSingleSymbolDialog::label()
 {
     return mLabelEdit->text();
 }
 
-void QgsSiSyDialog::setLabel(QString label)
+void QgsSingleSymbolDialog::setLabel(QString label)
 {
     mLabelEdit->setText(label);
 }
