@@ -144,7 +144,7 @@ qgis_ui_UIHEADERS = ui_qgisappbase.h \
 		ui_qgspatterndialogbase.h \
 		ui_qgslinestyledialogbase.h \
 		ui_qgsmarkerdialogbase.h \
-		ui_qgsuvaldialogbase.h \
+		ui_qgsuniquevaluedialogbase.h \
 		ui_qgsnewhttpconnectionbase.h \
 		ui_qgsnewconnectionbase.h \
 		../widgets/projectionselector/ui_qgsprojectionselectorbase.h
