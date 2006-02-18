@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgscontinuouscolrenderer.cpp  -  description
+                         qgscontinuouscolorrenderer.cpp  -  description
                              -------------------
     begin                : Nov 2003
     copyright            : (C) 2003 by Marco Hugentobler
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include "qgscontinuouscolrenderer.h"
+#include "qgscontinuouscolorrenderer.h"
 #include "qgis.h"
 #include "qgsvectorlayer.h"
 #include <cfloat>
@@ -26,14 +26,14 @@
 #include "qgssymbol.h"
 #include <qdom.h>
 
-QgsContinuousColRenderer::QgsContinuousColRenderer(QGis::VectorType type): mMinimumSymbol(0), mMaximumSymbol(0)
+QgsContinuousColorRenderer::QgsContinuousColorRenderer(QGis::VectorType type): mMinimumSymbol(0), mMaximumSymbol(0)
 {
     mVectorType = type;
     //call superclass method to set up selection colour
     initialiseSelectionColor();
 }
 
-QgsContinuousColRenderer::QgsContinuousColRenderer(const QgsContinuousColRenderer& other)
+QgsContinuousColorRenderer::QgsContinuousColorRenderer(const QgsContinuousColorRenderer& other)
 {
     mVectorType = other.mVectorType;
     mClassificationField = other.mClassificationField;
@@ -41,7 +41,7 @@ QgsContinuousColRenderer::QgsContinuousColRenderer(const QgsContinuousColRendere
     mMaximumSymbol = new QgsSymbol(*other.mMaximumSymbol);
 }
 
-QgsContinuousColRenderer& QgsContinuousColRenderer::operator=(const QgsContinuousColRenderer& other)
+QgsContinuousColorRenderer& QgsContinuousColorRenderer::operator=(const QgsContinuousColorRenderer& other)
 {
     if(this != &other)
     {
@@ -54,25 +54,25 @@ QgsContinuousColRenderer& QgsContinuousColRenderer::operator=(const QgsContinuou
     }
 }
 
-QgsContinuousColRenderer::~QgsContinuousColRenderer()
+QgsContinuousColorRenderer::~QgsContinuousColorRenderer()
 {
   delete mMinimumSymbol;
   delete mMaximumSymbol;
 }
 
-void QgsContinuousColRenderer::setMinimumSymbol(QgsSymbol* sy)
+void QgsContinuousColorRenderer::setMinimumSymbol(QgsSymbol* sy)
 {
   delete mMinimumSymbol;
   mMinimumSymbol = sy;
 }
 
-void QgsContinuousColRenderer::setMaximumSymbol(QgsSymbol* sy)
+void QgsContinuousColorRenderer::setMaximumSymbol(QgsSymbol* sy)
 {
   delete mMaximumSymbol;
   mMaximumSymbol = sy;
 }
 
-void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixmap* pic, 
+void QgsContinuousColorRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixmap* pic, 
 	double* scalefactor, bool selected, double widthScale)
 {
   if ((mMinimumSymbol && mMaximumSymbol))
@@ -161,7 +161,7 @@ void QgsContinuousColRenderer::renderFeature(QPainter * p, QgsFeature * f, QPixm
   }
 }
 
-void QgsContinuousColRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
+void QgsContinuousColorRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 {
     mVectorType = vl.vectorType();
     QDomNode classnode = rnode.namedItem("classificationfield");
@@ -188,19 +188,19 @@ void QgsContinuousColRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl
     vl.setRenderer(this);
 }
 
-std::list<int> QgsContinuousColRenderer::classificationAttributes() const
+std::list<int> QgsContinuousColorRenderer::classificationAttributes() const
 {
     std::list<int> list;
     list.push_back(mClassificationField);
     return list;
 }
 
-QString QgsContinuousColRenderer::name() const
+QString QgsContinuousColorRenderer::name() const
 {
     return "Continuous Color";
 }
 
-bool QgsContinuousColRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
+bool QgsContinuousColorRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
 {
     bool returnval=true;
 #ifndef WIN32
@@ -226,7 +226,7 @@ bool QgsContinuousColRenderer::writeXML( QDomNode & layer_node, QDomDocument & d
     return returnval;
 }
 
-const std::list<QgsSymbol*> QgsContinuousColRenderer::symbols() const
+const std::list<QgsSymbol*> QgsContinuousColorRenderer::symbols() const
 {
     std::list<QgsSymbol*> list;
     list.push_back(mMinimumSymbol);
@@ -234,8 +234,8 @@ const std::list<QgsSymbol*> QgsContinuousColRenderer::symbols() const
     return list;
 }
 
-QgsRenderer* QgsContinuousColRenderer::clone() const
+QgsRenderer* QgsContinuousColorRenderer::clone() const
 {
-    QgsContinuousColRenderer* r = new QgsContinuousColRenderer(*this);
+    QgsContinuousColorRenderer* r = new QgsContinuousColorRenderer(*this);
     return r;
 }

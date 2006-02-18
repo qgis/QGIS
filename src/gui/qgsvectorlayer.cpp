@@ -70,7 +70,7 @@
 #include "qgsrenderer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsgraduatedsymbolrenderer.h"
-#include "qgscontinuouscolrenderer.h"
+#include "qgscontinuouscolorrenderer.h"
 #include "qgsuniquevalrenderer.h"
 #include "qgsrenderitem.h"
 #include "qgsproviderregistry.h"
@@ -2272,7 +2272,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
   }
   else if (!continuousnode.isNull())
   {
-    renderer = new QgsContinuousColRenderer(vectorType());
+    renderer = new QgsContinuousColorRenderer(vectorType());
     renderer->readXML(continuousnode, *this);
   }
   else if (!uniquevaluenode.isNull())

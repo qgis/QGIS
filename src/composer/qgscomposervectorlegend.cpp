@@ -16,7 +16,7 @@
  ***************************************************************************/
 #include "qgscomposervectorlegend.h"
 #include "qgscomposermap.h"
-#include "qgscontinuouscolrenderer.h"
+#include "qgscontinuouscolorrenderer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsrenderer.h"
@@ -265,9 +265,9 @@ QRect QgsComposerVectorLegend::render ( QPainter *p )
 	    QgsVectorLayer *vector = dynamic_cast <QgsVectorLayer*> (layer2);
 	    const QgsRenderer *renderer = vector->renderer();
 
-	    // QgsContinuousColRenderer is not supported yet
+	    // QgsContinuousColorRenderer is not supported yet
 	    // QgsSiMaRenderer, QgsGraduatedMaRenderer, QgsUValMaRenderer no more
-	    if ( typeid (*renderer) == typeid(QgsContinuousColRenderer) )
+	    if ( typeid (*renderer) == typeid(QgsContinuousColorRenderer) )
 	    { 
 		continue;
 	    }
