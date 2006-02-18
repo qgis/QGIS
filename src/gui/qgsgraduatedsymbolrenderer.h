@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsgraduatedsymrenderer.h  -  description
+                         qgsgraduatedsymbolrenderer.h  -  description
                              -------------------
     begin                : Oct 2003
     copyright            : (C) 2003 by Marco Hugentobler
@@ -16,8 +16,8 @@
  ***************************************************************************/
 /* $Id$ */
 
-#ifndef QGSGRADUATEDSYMRENDERER_H
-#define QGSGRADUATEDSYMRENDERER_H
+#ifndef QGSGRADUATEDSYMBOLRENDERER_H
+#define QGSGRADUATEDSYMBOLRENDERER_H
 
 #include <QPixmap>
 #include "qgsrenderer.h"
@@ -31,13 +31,13 @@
 #include "qgsvectorlayer.h"
 
 /**This class contains the information for graduate symbol rendering*/
-class QgsGraduatedSymRenderer: public QgsRenderer
+class QgsGraduatedSymbolRenderer: public QgsRenderer
 {
  public:
-    QgsGraduatedSymRenderer(QGis::VectorType type);
-    QgsGraduatedSymRenderer(const QgsGraduatedSymRenderer& other);
-    QgsGraduatedSymRenderer& operator=(const QgsGraduatedSymRenderer& other);
-    virtual ~QgsGraduatedSymRenderer();
+    QgsGraduatedSymbolRenderer(QGis::VectorType type);
+    QgsGraduatedSymbolRenderer(const QgsGraduatedSymbolRenderer& other);
+    QgsGraduatedSymbolRenderer& operator=(const QgsGraduatedSymbolRenderer& other);
+    virtual ~QgsGraduatedSymbolRenderer();
     /**Adds a new item
     \param sy a pointer to the QgsSymbol to be inserted. It has to be created using the new operator and is automatically destroyed when 'removeItems' is called or when this object is destroyed*/
     void addSymbol(QgsSymbol* sy);
@@ -78,22 +78,22 @@ class QgsGraduatedSymRenderer: public QgsRenderer
     
 };
 
-inline void QgsGraduatedSymRenderer::addSymbol(QgsSymbol* sy)
+inline void QgsGraduatedSymbolRenderer::addSymbol(QgsSymbol* sy)
 {
     mSymbols.push_back(sy);
 }
 
-inline int QgsGraduatedSymRenderer::classificationField() const
+inline int QgsGraduatedSymbolRenderer::classificationField() const
 {
     return mClassificationField;
 }
 
-inline void QgsGraduatedSymRenderer::setClassificationField(int field)
+inline void QgsGraduatedSymbolRenderer::setClassificationField(int field)
 {
     mClassificationField=field;
 }
 
-inline bool QgsGraduatedSymRenderer::needsAttributes() const
+inline bool QgsGraduatedSymbolRenderer::needsAttributes() const
 {
     return true;
 }
