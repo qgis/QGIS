@@ -59,6 +59,7 @@ libqgis_coreHEADERS =				\
 		qgsdatasourceuri.h			\
 		qgsdistancearea.h			\
 		qgsexception.h				\
+		qgsfeature.h				\
 		qgsfeatureattribute.h		\
 		qgsfield.h					\
 		qgsfile.h					\
@@ -114,6 +115,7 @@ libqgis_core_la_SOURCES =\
 		qgsdatasource.cpp		\
 		qgsdistancearea.cpp			\
 		qgsexception.cpp				\
+		qgsfeature.cpp					\
 		qgsfeatureattribute.cpp				\
 		qgsfield.cpp						\
 		qgsfile.cpp			\

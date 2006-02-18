@@ -84,7 +84,6 @@ libqgis_guiHEADERS =							\
 		qgscustomprojectiondialog.h			\
 		qgsdelattrdialog.h				\
 		qgsencodingfiledialog.h				\
-		qgsfeature.h						\
 		qgsfillstylewidget.h				\
 		qgsgeomtypedialog.h				\
 		qgsgraduatedsymrenderer.h			\
@@ -196,7 +195,6 @@ libqgis_gui_la_SOURCES =						\
 		qgscustomprojectiondialog.cpp			\
 		qgsdelattrdialog.cpp		\
 		qgsencodingfiledialog.cpp	\
-		qgsfeature.cpp					\
 		qgsfillstylewidget.cpp				\
 		qgsgeomtypedialog.cpp		\
 		qgsgraduatedsymrenderer.cpp			\
