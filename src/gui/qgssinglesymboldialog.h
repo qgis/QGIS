@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgssisydialog.h  -  description
+                         qgssinglesymboldialog.h  -  description
                              -------------------
     begin                : Oct 2003
     copyright            : (C) 2003 by Marco Hugentobler
@@ -16,23 +16,23 @@
  ***************************************************************************/
 /* $Id$ */
 
-#ifndef QGSSISYDIALOG_H
-#define QGSSISYDIALOG_H
+#ifndef QGSSINGLESYMBOLDIALOG_H
+#define QGSSINGLESYMBOLDIALOG_H
 
-#include "ui_qgssisydialogbase.h"
+#include "ui_qgssinglesymboldialogbase.h"
 #include <vector>
 
 class QgsSymbol;
 class QgsVectorLayer;
 
 
-/**QgsSiSyDialog is a dialog to set symbology for the legend type 'single symbol'*/
-class QgsSiSyDialog: public QDialog, private Ui::QgsSiSyDialogBase
+/**QgsSingleSymbolDialog is a dialog to set symbology for the legend type 'single symbol'*/
+class QgsSingleSymbolDialog: public QDialog, private Ui::QgsSingleSymbolDialogBase
 {
     Q_OBJECT
 public:
-    QgsSiSyDialog(QgsVectorLayer* layer);
-    ~QgsSiSyDialog();
+    QgsSingleSymbolDialog(QgsVectorLayer* layer);
+    ~QgsSingleSymbolDialog();
     QColor getOutlineColor();
     Qt::PenStyle getOutlineStyle();
     int getOutlineWidth();
@@ -64,7 +64,7 @@ protected slots:
     void selectFillColor();
 private:
     /**Default constructor is privat to not use is*/
-    QgsSiSyDialog();
+    QgsSingleSymbolDialog();
 
     /** vector of marker names for combo items */
     std::vector<QString> mMarkers;
