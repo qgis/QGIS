@@ -77,7 +77,7 @@ libqgis_guiHEADERS =							\
 		qgsattributetable.h				\
 		qgsbookmarks.h			\
 		qgsclipboard.h				\
-		qgscontcoldialog.h				\
+		qgscontinuouscolordialog.h				\
 		qgscontinuouscolorrenderer.h			\
 		qgscsexception.h				\
 		qgscoordinatetransform.h	\
@@ -138,7 +138,7 @@ libqgis_gui_la_MOC =							\
 		qgsattributetabledisplay.moc.cpp		\
 		qgsattributetable.moc.cpp		\
 		qgsbookmarks.moc.cpp		\
-		qgscontcoldialog.moc.cpp		\
+		qgscontinuouscolordialog.moc.cpp		\
 		qgscoordinatetransform.moc.cpp		\
 		qgscustomprojectiondialog.moc.cpp 	\
 		qgsdelattrdialog.moc.cpp		\
@@ -190,7 +190,7 @@ libqgis_gui_la_SOURCES =						\
 		qgsattributetabledisplay.cpp	\
 		qgsbookmarks.cpp	\
 		qgsclipboard.cpp		\
-		qgscontcoldialog.cpp		\
+		qgscontinuouscolordialog.cpp		\
 		qgscoordinatetransform.cpp			\
 		qgscontinuouscolorrenderer.cpp		\
 		qgscustomprojectiondialog.cpp			\

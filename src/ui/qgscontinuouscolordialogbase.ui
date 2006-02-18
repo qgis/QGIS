@@ -2,7 +2,7 @@
  <author></author>
  <comment></comment>
  <exportmacro></exportmacro>
- <class>QgsContColDialogBase</class>
+ <class>QgsContinuousColorDialogBase</class>
  <widget class="QDialog" name="QgsContColDialogBase" >
   <property name="geometry" >
    <rect>

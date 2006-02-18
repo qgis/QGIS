@@ -20,7 +20,6 @@
 #include "qgsvectorlayer.h"
 #include <cfloat>
 #include "qgslegenditem.h"
-#include "qgscontcoldialog.h"
 #include "qgssymbologyutils.h"
 #include "qgsmarkercatalogue.h"
 #include "qgssymbol.h"

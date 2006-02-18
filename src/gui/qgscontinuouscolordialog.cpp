@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgscontcoldialog.cpp 
+                          qgscontinuouscolordialog.cpp 
  Continuous color renderer dialog
                              -------------------
     begin                : 2004-02-11
@@ -17,7 +17,7 @@
  ***************************************************************************/
  /* $Id$ */
 
-#include "qgscontcoldialog.h"
+#include "qgscontinuouscolordialog.h"
 #include "qgscontinuouscolorrenderer.h"
 #include "qgsfield.h"
 #include "qgssymbol.h"
@@ -27,12 +27,12 @@
 #include <QColorDialog>
 
 
-QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer)
+QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
     : QDialog(), mVectorLayer(layer)
 {
     setupUi(this);
 #ifdef QGISDEBUG
-    qWarning("constructor QgsContColDialog");
+    qWarning("constructor QgsContinuousColorDialog");
 #endif
 
     QObject::connect(btnMinValue, SIGNAL(clicked()), this, SLOT(selectMinimumColor()));
@@ -61,7 +61,7 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer)
     } 
     else
     {
-	qWarning("Warning, data provider is null in QgsContColDialog::QgsContColDialog(...)");
+	qWarning("Warning, data provider is null in QgsContinuousColorDialog::QgsContinuousColorDialog(...)");
 	return;
     }
     
@@ -89,22 +89,22 @@ QgsContColDialog::QgsContColDialog(QgsVectorLayer * layer)
     }
 }
 
-QgsContColDialog::QgsContColDialog()
+QgsContinuousColorDialog::QgsContinuousColorDialog()
 {
     setupUi(this);
 #ifdef QGISDEBUG
-    qWarning("constructor QgsContColDialog");
+    qWarning("constructor QgsContinuousColorDialog");
 #endif
 }
 
-QgsContColDialog::~QgsContColDialog()
+QgsContinuousColorDialog::~QgsContinuousColorDialog()
 {
 #ifdef QGISDEBUG
-    qWarning("destructor QgsContColDialog");
+    qWarning("destructor QgsContinuousColorDialog");
 #endif
 }
 
-void QgsContColDialog::apply()
+void QgsContinuousColorDialog::apply()
 {
     QString fieldstring = classificationComboBox->currentText();
     if (fieldstring.isEmpty())    //don't do anything, it there is no classification field
@@ -162,7 +162,7 @@ void QgsContColDialog::apply()
     mVectorLayer->refreshLegend();
 }
 
-void QgsContColDialog::selectMinimumColor()
+void QgsContinuousColorDialog::selectMinimumColor()
 {
     QColor mincolor = QColorDialog::getColor(QColor(Qt::black), this);
     if(mincolor.isValid())
@@ -172,7 +172,7 @@ void QgsContColDialog::selectMinimumColor()
     setActiveWindow();
 }
 
-void QgsContColDialog::selectMaximumColor()
+void QgsContinuousColorDialog::selectMaximumColor()
 {
     QColor maxcolor = QColorDialog::getColor(QColor(Qt::black), this);
     if(maxcolor.isValid())
