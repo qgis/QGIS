@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsuniquevalrenderer.h  -  description
+                         qgsuniquevaluerenderer.h  -  description
                              -------------------
     begin                : July 2004
     copyright            : (C) 2004 by Marco Hugentobler
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#ifndef QGSUNIQUEVALRENDERER_H
-#define QGSUNIQUEVALRENDERER_H
+#ifndef QGSUNIQUEVALUERENDERER_H
+#define QGSUNIQUEVALUERENDERER_H
 
 #include "qgsrenderer.h"
 #include <map>
@@ -25,13 +25,13 @@ class QgsSymbol;
 class QPixmap;
 class QPainter;
 
-class QgsUniqueValRenderer: public QgsRenderer
+class QgsUniqueValueRenderer: public QgsRenderer
 {
  public:
-    QgsUniqueValRenderer(QGis::VectorType type);
-    QgsUniqueValRenderer(const QgsUniqueValRenderer& other);
-    QgsUniqueValRenderer& operator=(const QgsUniqueValRenderer& other);
-    virtual ~QgsUniqueValRenderer();
+    QgsUniqueValueRenderer(QGis::VectorType type);
+    QgsUniqueValueRenderer(const QgsUniqueValueRenderer& other);
+    QgsUniqueValueRenderer& operator=(const QgsUniqueValueRenderer& other);
+    virtual ~QgsUniqueValueRenderer();
     void renderFeature(QPainter* p, QgsFeature* f,QPixmap* pic, double* scalefactor, bool selected, double widthScale = 1.);
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
@@ -64,7 +64,7 @@ class QgsUniqueValRenderer: public QgsRenderer
     std::map<QString, QgsSymbol*> mSymbols;
 };
 
-inline bool QgsUniqueValRenderer::needsAttributes() const
+inline bool QgsUniqueValueRenderer::needsAttributes() const
 {
     return true;
 }

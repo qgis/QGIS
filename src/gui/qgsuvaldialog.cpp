@@ -20,7 +20,7 @@
 #include "qgsfeature.h"
 #include "qgsfeatureattribute.h"
 #include "qgssymbol.h"
-#include "qgsuniquevalrenderer.h"
+#include "qgsuniquevaluerenderer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
@@ -58,7 +58,7 @@ QgsUValDialog::QgsUValDialog(QgsVectorLayer* vl): QDialog(), mVectorLayer(vl), s
     mSymbolWidgetStack->addWidget(&sydialog);
     mSymbolWidgetStack->raiseWidget(&sydialog);
 
-    const QgsUniqueValRenderer* renderer = dynamic_cast < const QgsUniqueValRenderer * >(mVectorLayer->renderer());
+    const QgsUniqueValueRenderer* renderer = dynamic_cast < const QgsUniqueValueRenderer * >(mVectorLayer->renderer());
     
     if (renderer)
     {
@@ -112,7 +112,7 @@ QgsUValDialog::~QgsUValDialog()
 
 void QgsUValDialog::apply()
 {
-    QgsUniqueValRenderer *renderer = new QgsUniqueValRenderer(mVectorLayer->vectorType());
+    QgsUniqueValueRenderer *renderer = new QgsUniqueValueRenderer(mVectorLayer->vectorType());
 
     //go through mValues and add the entries to the renderer
     for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
