@@ -2,7 +2,7 @@
  <author></author>
  <comment></comment>
  <exportmacro></exportmacro>
- <class>QgsGraSyDialogBase</class>
+ <class>QgsGraduatedSymbolDialogBase</class>
  <widget class="QDialog" name="QgsGraSyDialogBase" >
   <property name="geometry" >
    <rect>

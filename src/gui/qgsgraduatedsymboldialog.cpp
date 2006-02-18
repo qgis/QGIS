@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsgrasydialog.cpp  -  description
+                         qgsgraduatedsymboldialog.cpp  -  description
                              -------------------
     begin                : Oct 2003
     copyright            : (C) 2003 by Marco Hugentobler
@@ -16,7 +16,7 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include "qgsgrasydialog.h"
+#include "qgsgraduatedsymboldialog.h"
 #include "qgsfield.h"
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgsludialog.h"
@@ -24,11 +24,11 @@
 #include "qgsvectorlayer.h"
 
 
-QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(layer), sydialog(layer)
+QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(layer), sydialog(layer)
 {
     setupUi(this);
 #ifdef QGISDEBUG
-    qWarning("constructor QgsGraSyDialog");
+    qWarning("constructor QgsGraduatedSymbolDialog");
 #endif
 
     setOrientation(Qt::Vertical);
@@ -59,7 +59,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(
     } 
     else
     {
-	qWarning("Warning, data provider is null in QgsGraSyDialog::QgsGraSyDialog(...)");
+	qWarning("Warning, data provider is null in QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(...)");
 	return;
     }
 
@@ -117,22 +117,22 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(
     mClassBreakBox->setCurrentItem(0);
 }
 
-QgsGraSyDialog::QgsGraSyDialog(): QDialog(), mVectorLayer(0), sydialog(0)
+QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(): QDialog(), mVectorLayer(0), sydialog(0)
 {
     setupUi(this);
 #ifdef QGISDEBUG
-    qWarning("constructor QgsGraSyDialog");
+    qWarning("constructor QgsGraduatedSymbolDialog");
 #endif
 }
 
-QgsGraSyDialog::~QgsGraSyDialog()
+QgsGraduatedSymbolDialog::~QgsGraduatedSymbolDialog()
 {
 #ifdef QGISDEBUG
-    qWarning("destructor QgsGraSyDialog");
+    qWarning("destructor QgsGraduatedSymbolDialog");
 #endif
 }
 
-void QgsGraSyDialog::adjustNumberOfClasses()
+void QgsGraduatedSymbolDialog::adjustNumberOfClasses()
 {
     //find out the number of the classification field
     QString fieldstring = classificationComboBox->currentText();
@@ -147,7 +147,7 @@ void QgsGraSyDialog::adjustNumberOfClasses()
     int field = iter->second;
 }
 
-void QgsGraSyDialog::apply()
+void QgsGraduatedSymbolDialog::apply()
 {
 	if (classificationComboBox->currentText().isEmpty())  //don't do anything, it there is no classification field
         {
@@ -226,7 +226,7 @@ void QgsGraSyDialog::apply()
 	mVectorLayer->refreshLegend();
 }
 
-void QgsGraSyDialog::adjustClassification()
+void QgsGraduatedSymbolDialog::adjustClassification()
 {
     mClassBreakBox->clear();
     QGis::VectorType m_type = mVectorLayer->vectorType();
@@ -259,7 +259,7 @@ void QgsGraSyDialog::adjustClassification()
 	    minimum = provider->minValue(field).toDouble();
 	    maximum = provider->maxValue(field).toDouble();
 	} 
-	else                    //don't waste performance if mMode is QgsGraSyDialog::EMPTY
+	else                    //don't waste performance if mMode is QgsGraduatedSymbolDialog::EMPTY
 	{
 	    minimum = 0;
 	    maximum = 0;
@@ -334,7 +334,7 @@ void QgsGraSyDialog::adjustClassification()
     mClassBreakBox->setCurrentItem(0);
 }
 
-void QgsGraSyDialog::changeCurrentValue()
+void QgsGraduatedSymbolDialog::changeCurrentValue()
 {
     sydialog.blockSignals(true);//block signals to prevent sydialog from changing the current QgsRenderItem
     Q3ListBoxItem* item=mClassBreakBox->selectedItem();
@@ -351,7 +351,7 @@ void QgsGraSyDialog::changeCurrentValue()
     sydialog.blockSignals(false);
 }
 
-void QgsGraSyDialog::applySymbologyChanges()
+void QgsGraduatedSymbolDialog::applySymbologyChanges()
 {
     Q3ListBoxItem* item=mClassBreakBox->selectedItem();
     if(item)
@@ -366,7 +366,7 @@ void QgsGraSyDialog::applySymbologyChanges()
     }
 }
 
-void QgsGraSyDialog::changeClass(Q3ListBoxItem* item)
+void QgsGraduatedSymbolDialog::changeClass(Q3ListBoxItem* item)
 {
     QString currenttext=item->text();
     QgsSymbol* symbol=0;

@@ -87,7 +87,7 @@ libqgis_guiHEADERS =							\
 		qgsfillstylewidget.h				\
 		qgsgeomtypedialog.h				\
 		qgsgraduatedsymbolrenderer.h			\
-		qgsgrasydialog.h				\
+		qgsgraduatedsymboldialog.h				\
 		qgshelpviewer.h					\
 		qgsidentifyresults.h				\
 		qgslabeldialog.h				\
@@ -145,7 +145,7 @@ libqgis_gui_la_MOC =							\
 		qgsencodingfiledialog.moc.cpp		\
 		qgsfillstylewidget.moc.cpp			\
 		qgsgeomtypedialog.moc.cpp		\
-		qgsgrasydialog.moc.cpp			\
+		qgsgraduatedsymboldialog.moc.cpp			\
 		qgshelpviewer.moc.cpp			\
 		qgsidentifyresults.moc.cpp		\
 		qgslabeldialog.moc.cpp			\
@@ -199,7 +199,7 @@ libqgis_gui_la_SOURCES =						\
 		qgsfillstylewidget.cpp				\
 		qgsgeomtypedialog.cpp		\
 		qgsgraduatedsymbolrenderer.cpp			\
-		qgsgrasydialog.cpp		\
+		qgsgraduatedsymboldialog.cpp		\
 		qgshelpviewer.cpp		\
 		qgsidentifyresults.cpp		\
 		qgslabel.cpp						\
