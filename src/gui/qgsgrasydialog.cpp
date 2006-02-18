@@ -18,7 +18,7 @@
 
 #include "qgsgrasydialog.h"
 #include "qgsfield.h"
-#include "qgsgraduatedsymrenderer.h"
+#include "qgsgraduatedsymbolrenderer.h"
 #include "qgsludialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -67,7 +67,7 @@ QgsGraSyDialog::QgsGraSyDialog(QgsVectorLayer * layer): QDialog(), mVectorLayer(
     modeComboBox->insertItem("Equal Interval");
     
     //restore the correct settings
-    const QgsGraduatedSymRenderer* renderer = dynamic_cast < const QgsGraduatedSymRenderer * >(layer->renderer());
+    const QgsGraduatedSymbolRenderer* renderer = dynamic_cast < const QgsGraduatedSymbolRenderer * >(layer->renderer());
     
     if (renderer)
     {
@@ -154,7 +154,7 @@ void QgsGraSyDialog::apply()
 	    return;
         }
 	
-	QgsGraduatedSymRenderer* renderer = new QgsGraduatedSymRenderer(mVectorLayer->vectorType());
+	QgsGraduatedSymbolRenderer* renderer = new QgsGraduatedSymbolRenderer(mVectorLayer->vectorType());
 
 	for (int item=0;item<mClassBreakBox->count();++item)
         {

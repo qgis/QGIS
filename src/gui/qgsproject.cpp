@@ -27,7 +27,6 @@ using namespace std;
 #include "qgsrect.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
-#include "qgsgraduatedsymrenderer.h"
 #include "qgscontinuouscolrenderer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsexception.h"
