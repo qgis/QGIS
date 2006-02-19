@@ -45,6 +45,7 @@ public slots:
 
   void openDeviceEditor();
   void devicesUpdated();
+  void enableRelevantControls();
   
   void on_pbnGPXSelectFile_clicked();
   
@@ -55,10 +56,8 @@ public slots:
   
   void on_pbnCancel_clicked();
   void on_pbnOK_clicked();
-  
+
 private:
-  
-  void enableRelevantControls();
   
   void populateDeviceComboBox();
   void populateULLayerComboBox();

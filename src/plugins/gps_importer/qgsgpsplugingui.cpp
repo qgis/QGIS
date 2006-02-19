@@ -38,6 +38,25 @@ QgsGPSPluginGui::QgsGPSPluginGui(const BabelMap& importers,
   
   connect(pbULEditDevices, SIGNAL(clicked()), this, SLOT(openDeviceEditor()));
   connect(pbDLEditDevices, SIGNAL(clicked()), this, SLOT(openDeviceEditor()));
+  
+  // make sure that the OK button is enabled only when it makes sense to
+  // click it
+  connect(leGPXFile, SIGNAL(textChanged(const QString&)), 
+   this, SLOT(enableRelevantControls()));
+  connect(leIMPInput, SIGNAL(textChanged(const QString&)), 
+   this, SLOT(enableRelevantControls()));
+  connect(leIMPOutput, SIGNAL(textChanged(const QString&)), 
+   this, SLOT(enableRelevantControls()));
+  connect(leIMPLayer, SIGNAL(textChanged(const QString&)), 
+   this, SLOT(enableRelevantControls()));
+  connect(leDLOutput, SIGNAL(textChanged(const QString&)), 
+   this, SLOT(enableRelevantControls()));
+  connect(leDLBasename, SIGNAL(textChanged(const QString&)), 
+   this, SLOT(enableRelevantControls()));
+  connect(cmbULLayer, SIGNAL(textChanged(QString)), 
+   this, SLOT(enableRelevantControls()));
+  connect(tabWidget, SIGNAL(currentChanged(int)), 
+   this, SLOT(enableRelevantControls()));
 } 
 QgsGPSPluginGui::~QgsGPSPluginGui()
 {
