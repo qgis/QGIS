@@ -886,6 +886,8 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 		{
 		  QgsMapLayer* theMapLayer = iter->second;
 		  QgsLegendLayerFile* theLegendLayerFile = new QgsLegendLayerFile(lastLayerFileGroup, QgsLegendLayerFile::nameFromLayer(theMapLayer), theMapLayer);
+		  theMapLayer->setLegendLayerFile(theLegendLayerFile);
+
 		  //set the check state
 		  blockSignals(true);
 		  if(theMapLayer->visible())
