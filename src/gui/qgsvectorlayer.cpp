@@ -946,7 +946,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
       for(; it != mAddedFeatures.end(); ++it)
       {
         bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
-        m_renderer->renderFeature(p, fet, &marker, &markerScaleFactor, 
+        m_renderer->renderFeature(p, *it, &marker, &markerScaleFactor, 
             sel, widthScale);
         double scale = markerScaleFactor * symbolScale;
         drawFeature(p,*it,theMapToPixelTransform,&marker,scale, 
