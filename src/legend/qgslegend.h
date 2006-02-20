@@ -240,7 +240,7 @@ this item may be moved back to the original position with resetToInitialPosition
   /**Removes the current item and inserts it as a toplevel item at the end of the legend*/
   void makeToTopLevelItem();
   /**Show/ Hide the legend layer file groups*/
-  void showLegendLayerFileGroups(bool show);
+  void showLegendLayerFileGroups();
 private:
 
   /**Pointer to QGisApp, needed for signal/slot reasons*/

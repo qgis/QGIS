@@ -412,7 +412,7 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
   theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/folder_new.png"))), tr("&Add group"), this, SLOT(addGroup()));
   theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionExpandTree.png"))), tr("&Expand all"), this, SLOT(expandAll()));
   theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionCollapseTree.png"))), tr("&Collapse all"), this, SLOT(collapseAll()));
-  QAction* showFileGroupsAction = theMenu.addAction(tr("Show file groups"), this, SLOT(showLegendLayerFileGroups(bool)));
+  QAction* showFileGroupsAction = theMenu.addAction(tr("Show file groups"), this, SLOT(showLegendLayerFileGroups()));
   showFileGroupsAction->setCheckable(true);
   showFileGroupsAction->blockSignals(true);
   showFileGroupsAction->setChecked(mShowLegendLayerFiles);
@@ -1325,8 +1325,11 @@ void QgsLegend::makeToTopLevelItem()
     }
 }
 
-void QgsLegend::showLegendLayerFileGroups(bool show)
+void QgsLegend::showLegendLayerFileGroups()
 {
+  // Toggle the boolean associated with the checkbox
+  mShowLegendLayerFiles = !mShowLegendLayerFiles;
+
   QgsLegendLayerFileGroup* theFileGroup = 0;
   QTreeWidgetItem* theItem = firstItem();
   do
@@ -1334,9 +1337,8 @@ void QgsLegend::showLegendLayerFileGroups(bool show)
       theFileGroup = dynamic_cast<QgsLegendLayerFileGroup*>(theItem);
       if(theFileGroup)
 	{
-	  setItemHidden(theFileGroup, !show);
+	  setItemHidden(theFileGroup, !mShowLegendLayerFiles);
 	}
     }
   while(theItem = nextItem(theItem));
-  mShowLegendLayerFiles = show;
 }
