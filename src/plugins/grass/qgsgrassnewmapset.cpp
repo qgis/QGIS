@@ -482,32 +482,22 @@ void QgsGrassNewMapset::setGrassProjection()
 	        std::cerr << "wkt = " << wkt << std::endl;
 	    }
 #endif
+
+            int ret;
 	    // Note: GPJ_osr_to_grass() defaults in PROJECTION_XY if projection
 	    //       cannot be set
 
-            // There was a bug in GRASS, 
-            // fixed Fri Jan 27 18:21:15 2006 UTC in HEAD(>=6.1)
-            // it is present in 6.0.x line
-            // G_version cannot be used as it was also buggy in 6.0.x
-            int major = QString( GRASS_VERSION_MAJOR ).toInt();
-            int minor = QString( GRASS_VERSION_MINOR ).toInt();
-#ifdef QGISDEBUG
-            std::cerr << "major = " << major << " minor = " << minor << std::endl;
+            // There was a bug in GRASS, it is present in 6.0.x line
+#if GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 1
+	    ret = GPJ_osr_to_grass ( &mCellHead, &mProjInfo, 
+		      &mProjUnits, hSRS, 0);
+#else
+	    // Buggy version:
+	    ret = GPJ_osr_to_grass ( &mCellHead, &mProjInfo, 
+		      &mProjUnits, (void **)hSRS, 0);
 #endif
-	    int ret;
-
-            if ( major == 6 && minor == 0 ) 
-            {
-                // Buggy version:
-		ret = GPJ_osr_to_grass ( &mCellHead, &mProjInfo, 
-                          &mProjUnits, (void **)hSRS, 0);
-
-            } else {
-                ret = GPJ_osr_to_grass ( &mCellHead, &mProjInfo, 
-                          &mProjUnits, hSRS, 0);
-            }
 	    
-	    // Note: I seems that GPJ_osr_to_grass()returns always 1, 
+	    // Note: It seems that GPJ_osr_to_grass()returns always 1, 
 	    // 	 -> test if mProjInfo was set
 	    
 #ifdef QGISDEBUG
