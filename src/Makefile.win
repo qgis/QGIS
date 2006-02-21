@@ -20,7 +20,7 @@ install: all
 	@list='$(WINSUBDIRS)'; \
 	for subdir in $$list; do \
 	    echo $$subdir ; \
-	    $(MAKE) -C $$subdir -f Makefile.win install ; \
+	    $(MAKE) -C $$subdir -f Makefile.win install || exit 1 ; \
 	done
 
 include ../Makefile.win.rules
