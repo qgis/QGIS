@@ -82,6 +82,7 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   QDir myThemeDir( QgsApplication::pkgDataPath()+"/themes/" );
   myThemeDir.setFilter(QDir::Dirs);
   QStringList myDirList = myThemeDir.entryList("*");
+  cmbTheme->clear();
   for(int i=0; i < myDirList.count(); i++)
   {
     if(myDirList[i] != "." && myDirList[i] != "..")
