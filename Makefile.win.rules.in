@@ -59,7 +59,7 @@ stdsubdirs:
 	@list='$(STDSUBDIRS)'; \
 	for subdir in $$list; do \
 	    echo $$subdir ; \
-	    $(MAKE) -C $$subdir ; \
+	    $(MAKE) -C $$subdir || exit 1 ; \
         done
 
 # Rule for subdirs using standard win system (make -f Makefile.win)
@@ -67,7 +67,7 @@ winsubdirs:
 	@list='$(WINSUBDIRS)'; \
 	for subdir in $$list; do \
 	    echo $$subdir ; \
-	    $(MAKE) -C $$subdir -f Makefile.win ; \
+	    $(MAKE) -C $$subdir -f Makefile.win || exit 1 ; \
         done
 
 # Rule instalation (using WINSUBDIRS)
@@ -75,5 +75,5 @@ instsubdirs:
 	@list='$(WINSUBDIRS)'; \
 	for subdir in $$list; do \
 	    echo $$subdir ; \
-	    $(MAKE) -C $$subdir -f Makefile.win install ; \
+	    $(MAKE) -C $$subdir -f Makefile.win install || exit1 ; \
         done
