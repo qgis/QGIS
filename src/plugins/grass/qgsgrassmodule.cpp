@@ -1325,6 +1325,7 @@ void QgsGrassModuleInput::updateQgisLayers()
 	    //QDir locDir ( sep + split.join ( QString(sep) ) ) ;
 	    //QString loc = locDir.canonicalPath();
             QString loc =  source.remove ( QRegExp("/[^/]+/[^/]+/[^/]+$") ); 
+            loc = QDir(loc).canonicalPath();
 
 	    QDir curlocDir ( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );
 	    QString curloc = curlocDir.canonicalPath();
