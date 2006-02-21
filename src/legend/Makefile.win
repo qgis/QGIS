@@ -16,7 +16,7 @@ $(DLL): .libs/libqgis_legend.a
 		-Wl,--no-whole-archive \
 			$(CORE_A) $(GUI_A) $(CORE_A) $(RASTER_A) \
 			$(COMPOSER_A) $(PROJSEL_A) $(GUI_A) \
-			$(GDAL_LDADD) -lproj -lsqlite3 \
+			$(GDAL_LDADD) -lproj -lsqlite3 $(PG_LIB) \
 			$(QT_LDADD) \
 			-lwsock32 -lmingw32
 	$(STRIP) $@
