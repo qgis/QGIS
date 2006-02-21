@@ -20,7 +20,7 @@ $(PROVIDER): $(OBJECTS)
 			$(CORE_A) $(GUI_A) $(CORE_A) \
 			$(RASTER_A) $(PROJSEL_A) $(LEGEND_A) \
 			$(GUI_A) $(CORE_A) $(COMPOSER_A) $(GUI_A) \
-			-lgdal -lgeos -lsqlite3 -lproj \
+			-lgdal -lgeos -lsqlite3 -lproj $(PG_LIB) \
                         $(QT_LDADD) \
                         -lwsock32 -lmingw32
 	$(STRIP) $@ 
