@@ -4786,27 +4786,22 @@ void QgsRasterLayer::identify(QgsRect * r)
   if( !mIdentifyResults)
   {
 
-// TODO: Doesn't work in Qt4 (list is now just a QWidgetList, not a pointer to one)
-#if QT_VERSION < 0x040000
-    // TODO it is necessary to pass topLevelWidget()as parent, but there is no QWidget availabl
-    QWidgetList *list = QApplication::topLevelWidgets ();
-    QWidgetListIt it( *list );
-    QWidget *w;
+    // Win32 doesn't like this approach to creating the window and seems
+    // to work fine without it [gsherman]
     QWidget *top = 0;
-    while ( (w=it.current()) != 0 )
+#ifndef WIN32
+    foreach (QWidget *w, QApplication::topLevelWidgets())
     {
-      ++it;
-      if ( typeid(*w) == typeid(QgisApp) )
-      {
-        top = w;
-        break;
-      }
+        if ( typeid(*w) == typeid(QgisApp) )
+        {
+          top = w;
+          break;
+        }
     }
-    delete list;
+#endif
     QgsAttributeAction aa;
     mIdentifyResults = new QgsIdentifyResults(aa, top);
     mIdentifyResults->restorePosition();
-#endif
   }
   else
   {
