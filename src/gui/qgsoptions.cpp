@@ -79,7 +79,7 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   QString myEllipsoidId = settings.readEntry("/qgis/measure/ellipsoid", "WGS84");
   cmbEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
   // add the themes to the combo box on the option dialog
-  QDir myThemeDir(QgsApplication::themePath());
+  QDir myThemeDir( QgsApplication::pkgDataPath()+"/themes/" );
   myThemeDir.setFilter(QDir::Dirs);
   QStringList myDirList = myThemeDir.entryList("*");
   for(int i=0; i < myDirList.count(); i++)
