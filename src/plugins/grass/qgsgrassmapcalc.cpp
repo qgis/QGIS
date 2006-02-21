@@ -486,6 +486,32 @@ QStringList QgsGrassMapcalc::arguments()
     return QStringList ( cmd );
 }
 
+QStringList QgsGrassMapcalc::checkOutput()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassMapcalc::checkOutput()" << std::endl;
+    #endif
+    QStringList list;
+
+    QString value = mOutputLineEdit->text().trimmed();
+
+    if ( value.length() == 0 ) return QStringList();
+
+    QString path = QgsGrass::getDefaultGisdbase() + "/"
+                 + QgsGrass::getDefaultLocation() + "/"
+                 + QgsGrass::getDefaultMapset()
+                 + "/cell/" + value;
+
+    QFileInfo fi(path);
+
+    if ( fi.exists() )
+    {
+        return ( QStringList(value) );
+    }
+
+    return QStringList();
+}
+
 QgsGrassMapcalc::~QgsGrassMapcalc()
 {
 }

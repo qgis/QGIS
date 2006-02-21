@@ -85,6 +85,10 @@ public:
     //! Get module options as list of arguments for QProcess
     QStringList arguments();
 
+    //! Check if output exists, reimplemented method from
+    //  QgsGrassModuleOptions
+    QStringList checkOutput();
+
     /** \brief recieves contentsMousePressEvent from view */
     void contentsMousePressEvent(QMouseEvent*);
 

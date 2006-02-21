@@ -627,8 +627,12 @@ void QgsGrassModule::run()
 
             if ( ret == QMessageBox::No ) return;
 
-	    mProcess.addArgument( "--o" );
-	    command.append ( " --o" );
+            // r.mapcalc does not use standard parser
+            if ( typeid(*mOptions) != typeid(QgsGrassMapcalc) )
+            {
+	        mProcess.addArgument( "--o" );
+	        command.append ( " --o" );
+            }
         }
   
         QStringList list = mOptions->arguments();
@@ -1168,7 +1172,7 @@ QStringList QgsGrassModuleStandardOptions::checkOutput()
             QString out = opt->outputExists();
             if ( !out.isNull() ) 
             {
-	        list.append ( opt->key()+ ":" + out );
+	        list.append ( out );
             }
 	}
     } 
@@ -1255,6 +1259,7 @@ void QgsGrassModuleInput::updateQgisLayers()
 	    //QDir locDir ( sep + split.join ( QString(sep) ) ) ;
 	    //QString loc = locDir.canonicalPath();
             QString loc =  source.remove ( QRegExp("/[^/]+/[^/]+/[^/]+$") ); 
+            loc = QDir(loc).canonicalPath();
 
 	    QDir curlocDir ( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );
 	    QString curloc = curlocDir.canonicalPath();
@@ -1267,7 +1272,7 @@ void QgsGrassModuleInput::updateQgisLayers()
             #endif
             
 	    if ( loc != curloc ) continue;
-
+             
 	    if ( mUpdate && mapset != QgsGrass::getDefaultMapset() ) continue;
 
 	    // Check if it comes from source map if necessary
