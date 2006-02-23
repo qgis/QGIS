@@ -86,7 +86,7 @@ public slots:
   // The following methods are provided to demonstrate how you can 
   // load a vector or raster layer into the main gui. Please delete
   // if you are not intending to use these. Note also that there are
-  // ways in which layers can be loaded.
+  // other ways in which layers can be loaded.
   //
   
   //!draw a raster layer in the qui
@@ -98,7 +98,7 @@ private:
 
   ////////////////////////////////////////////////////////////////////
   //
-  // MANDATORY PLUGIN MEMBER DECLARATIONS  .....
+  // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
   //
   ////////////////////////////////////////////////////////////////////
   
@@ -115,7 +115,7 @@ private:
   QAction * mQActionPointer;
   ////////////////////////////////////////////////////////////////////
   //
-  // ADD YOUR OWN MEMBER DECLARATIONS AFTER THIS POINT.....
+  // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
   //
   ////////////////////////////////////////////////////////////////////
 };
