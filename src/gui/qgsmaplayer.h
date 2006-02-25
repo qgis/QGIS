@@ -99,7 +99,10 @@ public:
 
 
     virtual void draw(QPainter *, QgsRect *, int);
-    virtual void draw(QPainter *, QgsRect *, QgsMapToPixel * ,QPaintDevice *);
+
+    //! Returns FALSE if an error occurred during drawing
+    virtual bool draw(QPainter *, QgsRect *, QgsMapToPixel *, QPaintDevice *);
+
     virtual void drawLabels(QPainter *, QgsRect *, QgsMapToPixel * ,QPaintDevice *);
     /*! Identify the feature(s) in this layer that are contained in the search rectangle
      */
@@ -284,6 +287,25 @@ public:
 
     /** \brief accessor for transparency level.  */
     virtual unsigned int getTransparency()=0;
+
+
+    /**
+     * If an operation returns 0 (e.g. draw()), this function
+     * returns the text of the error associated with the failure.
+     * Interactive users of this provider can then, for example,
+     * call a QMessageBox to display the contents.
+     */
+    QString errorCaptionString();
+  
+    /**
+     * If an operation returns 0 (e.g. draw()), this function
+     * returns the text of the error associated with the failure.
+     * Interactive users of this provider can then, for example,
+     * call a QMessageBox to display the contents.
+     */
+    QString errorString();
+
+
 public  slots:
     /** \brief Mutator for transparency level. Should be between 0 and 255 */
     virtual void setTransparency(int)=0; //

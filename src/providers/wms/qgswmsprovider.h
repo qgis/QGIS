@@ -461,6 +461,22 @@ public:
    */
   QString getMetadata();
 
+  /**
+   * If an operation returns 0 (e.g. draw()), this function
+   * returns the text of the error associated with the failure.
+   * Interactive users of this provider can then, for example,
+   * call a QMessageBox to display the contents.
+   */
+  QString errorCaptionString();
+
+  /**
+   * If an operation returns 0 (e.g. draw()), this function
+   * returns the text of the error associated with the failure.
+   * Interactive users of this provider can then, for example,
+   * call a QMessageBox to display the contents.
+   */
+  QString errorString();
+
     /** return a provider name
 
     Essentially just returns the provider key.  Should be used to build file
@@ -519,11 +535,9 @@ private:
 
 
   //! Test function: see if we can download a WMS' capabilites
-  void downloadCapabilitiesURI(QString const &  uri);
+  //! \return FALSE if the download failed in some way
+  bool downloadCapabilitiesURI(QString const &  uri);
 
-  //! Test function: see if we can download a map from a WMS
-  void drawTest(QString const & uri);
-  
   //! Test function: see if we can parse a WMS' capabilites
   void parseCapabilities(QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty);
   
@@ -587,7 +601,7 @@ private:
   QString httpuri;
 
   //! URL part of URI (httpuri)
-  QString url;
+  QString baseUrl;
 
   //! HTTP proxy host name for the WMS for this layer
   QString httpproxyhost;
@@ -631,7 +645,7 @@ private:
   std::vector<QgsWmsLayerProperty> layersSupported;
 
   /**
-   * extents per layer
+   * extents per layer (in WMS CRS:84 datum)
    */
   std::map<QString, QgsRect> extentForLayer;
   
@@ -675,6 +689,18 @@ private:
    */
   int cachedPixelHeight;
 
+  /**
+   * The error caption associated with the last WMS error.
+   */
+  QString mErrorCaption;
+
+  /**
+   * The error message associated with the last WMS error.
+   */
+  QString mError;
+
 };
 
 #endif
+
+// ENDS

@@ -63,7 +63,7 @@ void QgsHttpTransaction::getAsynchronously()
   
 }
 
-QByteArray QgsHttpTransaction::getSynchronously(int redirections)
+bool QgsHttpTransaction::getSynchronously(QByteArray &respondedContent, int redirections)
 {
 
   httpredirections = redirections;
@@ -151,20 +151,20 @@ QByteArray QgsHttpTransaction::getSynchronously(int redirections)
 #endif
 
     QgsHttpTransaction httprecurse(httpredirecturl, httphost, httpport);
-    
+
     // Do a passthrough for the status bar text
     connect(
             &httprecurse, SIGNAL(setStatus(QString)),
              this,        SIGNAL(setStatus(QString))
            );
 
-    return httprecurse.getSynchronously( (redirections + 1) );
-    
+    httprecurse.getSynchronously( respondedContent, (redirections + 1) );
+    return TRUE;
+
   }
 
-  return httpresponse;
-
-
+  respondedContent = httpresponse;
+  return TRUE;
 
 }
 
@@ -262,6 +262,7 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
   if (error)
   {
     std::cout << "QgsHttpTransaction::dataFinished - however there was an error." << std::endl;
+    std::cout << "QgsHttpTransaction::dataFinished - " << http->errorString().toLocal8Bit().data() << std::endl;
   } else
   {
     std::cout << "QgsHttpTransaction::dataFinished - no error." << std::endl;
@@ -339,4 +340,9 @@ void QgsHttpTransaction::dataStateChanged( int state )
 }
 
 
+QString QgsHttpTransaction::errorString()
+{
+  return mError;
+}
 
+// ENDS

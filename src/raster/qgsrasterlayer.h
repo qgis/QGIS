@@ -308,7 +308,7 @@ public:
      QPixmap getPaletteAsPixmap();
      
     /** \brief This is called when the view on the rasterlayer needs to be refreshed (redrawn).  */
-    void draw(QPainter * theQPainter, QgsRect * theViewExtent, 
+    bool draw(QPainter * theQPainter, QgsRect * theViewExtent, 
               QgsMapToPixel * theQgsMapToPixel, QPaintDevice* dst);
 
     /** \brief This is an overloaded version of the above function that is called by both draw above and drawThumbnail */
@@ -754,6 +754,23 @@ public:
 
     bool isSymbologyCompatible(const QgsMapLayer& other) const {return false;} //todo
 
+    /**
+     * If an operation returns 0 (e.g. draw()), this function
+     * returns the text of the error associated with the failure.
+     * Interactive users of this provider can then, for example,
+     * call a QMessageBox to display the contents.
+     */
+    QString errorCaptionString();
+  
+    /**
+     * If an operation returns 0 (e.g. draw()), this function
+     * returns the text of the error associated with the failure.
+     * Interactive users of this provider can then, for example,
+     * call a QMessageBox to display the contents.
+     */
+    QString errorString();
+
+
 public slots:    
     /** \brief Mutator for transparency level. Should be between 0 and 255 */
     void setTransparency(int); //
@@ -1054,9 +1071,19 @@ private:
   /**Flag indicating wheter the layer has been modified since the last commit*/
   bool mModified;
 
+  //! Timestamp, the last modified time of the data source when the layer was created
+  QDateTime mLastModified;
 
-    //! Timestamp, the last modified time of the data source when the layer was created
-    QDateTime mLastModified;
+  /**
+   * The error caption associated with the last error.
+   */
+  QString mErrorCaption;
+
+  /**
+   * The error message associated with the last error.
+   */
+  QString mError;
+
 };
 
 #endif

@@ -87,7 +87,23 @@ public:
      */
     virtual QString getMetadata() = 0;
 
-        
+    /**
+     * If an operation returns 0 (e.g. draw()), this function
+     * returns the text of the error associated with the failure.
+     * Interactive users of this provider can then, for example,
+     * call a QMessageBox to display the contents.
+     */
+    virtual QString errorCaptionString() = 0;
+
+    /**
+     * If an operation returns 0 (e.g. draw()), this function
+     * returns the text of the error associated with the failure.
+     * Interactive users of this provider can then, for example,
+     * call a QMessageBox to display the contents.
+     */
+    virtual QString errorString() = 0;
+
+
 protected:
 
 };
