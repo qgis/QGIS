@@ -53,11 +53,28 @@ public:
   
   void getAsynchronously();
   
-  QByteArray getSynchronously(int redirections = 0);
+  //! Gets the response synchronously.  Note that signals will still be emitted
+  //! while in this function.
+
+  /*!
+      The function returns FALSE if there is an error while getting the response.
+      \param[out] respondedContent is replaced with the new content.
+      \param[in]  redirections     is used to measure how many http redirections we've been through.
+                                   Clients typically don't need to set this.
+   */
+  bool getSynchronously(QByteArray &respondedContent, int redirections = 0);
 
   QString responseContentType();
-  
-  
+
+  /**
+   * If an operation returns 0 (e.g. getSynchronously()), this function
+   * returns the text of the error associated with the failure.
+   * Interactive users of this provider can then, for example,
+   * call a QMessageBox to display the contents.
+   */
+  QString errorString();
+
+
 public slots:
 
   void dataStarted( int id );
@@ -142,8 +159,14 @@ private:
    *
    */
   int httpredirections;
-  
-  
+
+  /**
+   * The error message associated with the last HTTP error.
+   */
+  QString mError;
+
 };
 
 #endif
+
+// ENDS

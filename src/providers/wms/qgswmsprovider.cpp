@@ -29,7 +29,6 @@
 #include <q3network.h>
 #include <q3http.h>
 #include <q3url.h>
-#include <qmessagebox.h>
 
 #include <qglobal.h>
 #if QT_VERSION >= 0x040000
@@ -49,6 +48,8 @@
 
 static QString WMS_KEY = "wms";
 static QString WMS_DESCRIPTION = "OGC Web Map Service version 1.3 data provider";
+
+static QString DEFAULT_LATLON_CRS = "CRS:84";
 
 
 QgsWmsProvider::QgsWmsProvider(QString const & uri)
@@ -78,7 +79,7 @@ QgsWmsProvider::QgsWmsProvider(QString const & uri)
   // Split proxy from the provider-encoded uri  
   QStringList drawuriparts = QStringList::split(" ", httpuri, TRUE);
   
-  url = drawuriparts.front();
+  baseUrl = drawuriparts.front();
   drawuriparts.pop_front();
   
   if (drawuriparts.count())
@@ -109,17 +110,17 @@ QgsWmsProvider::QgsWmsProvider(QString const & uri)
   // 3) http://xxx.xxx.xx/yyy/yyy?zzz=www
   
   // Prepare the URI so that we can later simply append param=value
-  if ( !(url.contains("?")) ) 
+  if ( !(baseUrl.contains("?")) ) 
   {  
-    url.append("?");
+    baseUrl.append("?");
   }
-  else if ( url.right(1) != "?" ) 
+  else if ( baseUrl.right(1) != "?" ) 
   {
-    url.append("&");
+    baseUrl.append("&");
   }
 
 #ifdef QGISDEBUG
-  std::cout << "url = " << url.toLocal8Bit().data() << std::endl;
+  std::cout << "baseUrl = " << baseUrl.toLocal8Bit().data() << std::endl;
 #endif
 
   getServerCapabilities();
@@ -350,13 +351,15 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
 
   // compose the URL query string for the WMS server.
 
-  url += "Service=WMS";
+  QString url = baseUrl;
+
+  url += "SERVICE=WMS";
   url += "&";
-  url += "Version=1.1.0";
+  url += "VERSION=1.1.0";
   url += "&";
-  url += "Request=GetMap";
+  url += "REQUEST=GetMap";
   url += "&";
-  url += "BBox=" + bbox;
+  url += "BBOX=" + bbox;
   // TODO: for now use the first SRS of the first layer
   if ( layersSupported.size() > 0 && 
        layersSupported[0].crs.size() )
@@ -365,17 +368,17 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
     url += "SRS=" + layersSupported[0].crs[0];
   }
   url += "&";
-  url += "Width=" + width;
+  url += "WIDTH=" + width;
   url += "&";
-  url += "Height=" + height;
+  url += "HEIGHT=" + height;
   url += "&";
-  url += "Layers=" + layers;
+  url += "LAYERS=" + layers;
   url += "&";
-  url += "Styles=" + styles;
+  url += "STYLES=" + styles;
   url += "&";
-  url += "Format=" + imageMimeType;
+  url += "FORMAT=" + imageMimeType;
   url += "&";
-  url += "Transparent=true";
+  url += "TRANSPARENT=TRUE";
 
   emit setStatus( QString("Test from QgsWmsProvider") );
 
@@ -388,26 +391,31 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
           &http, SIGNAL(setStatus        (QString)),
            this,   SLOT(showStatusMessage(QString))
          );
-  
 
+  QByteArray imagesource;
+  bool httpOk;
 
-  // TODO: Check Content-Type is correct
-  QByteArray imagesource = http.getSynchronously();
-  
-  // TODO: Bail gracefully if we get a "application/vnd.ogc.se_xml" error
-  
+  httpOk = http.getSynchronously(imagesource);
+
+  if (!httpOk)
+  {
+    // We had an HTTP exception
+
+    mErrorCaption = tr("HTTP Exception");
+    mError = http.errorString();
+    return 0;
+  }
+
   if (http.responseContentType() == "application/vnd.ogc.se_xml")
   {
     // We had a Service Exception from the WMS
-    
-    QMessageBox::critical(0,
-      "WMS Service Exception",
-      imagesource);
 
-    
+    mErrorCaption = tr("WMS Service Exception");
+    mError = imagesource;
+    return 0;
   }
-  
-  
+
+
 #ifdef QGISDEBUG
     std::cout << "QgsWmsProvider::draw: Response received." << std::endl;
 #endif
@@ -486,12 +494,11 @@ void QgsWmsProvider::retrieveServerCapabilities()
   if ( httpcapabilitiesresponse.isNull() )
   {
   
-    QString uri = url + "SERVICE=WMS&REQUEST=GetCapabilities";
-  std::cout << "uri = " << uri.ascii() << std::endl;
+    QString url = baseUrl + "SERVICE=WMS&REQUEST=GetCapabilities";
 
-    QgsHttpTransaction http(uri, httpproxyhost, httpproxyport);
+    QgsHttpTransaction http(url, httpproxyhost, httpproxyport);
 
-    httpcapabilitiesresponse = http.getSynchronously();
+    http.getSynchronously(httpcapabilitiesresponse);
 
   
 #ifdef QGISDEBUG
@@ -509,7 +516,7 @@ void QgsWmsProvider::retrieveServerCapabilities()
 }
 
 // private
-void QgsWmsProvider::downloadCapabilitiesURI(QString const & uri)
+bool QgsWmsProvider::downloadCapabilitiesURI(QString const & uri)
 {
 
 #ifdef QGISDEBUG
@@ -518,7 +525,18 @@ void QgsWmsProvider::downloadCapabilitiesURI(QString const & uri)
 
   QgsHttpTransaction http(uri, httpproxyhost, httpproxyport);
 
-  httpcapabilitiesresponse = http.getSynchronously();
+  bool httpOk;
+
+  httpOk = http.getSynchronously(httpcapabilitiesresponse);
+
+  if (!httpOk)
+  {
+    // We had an HTTP exception
+
+    mErrorCaption = tr("HTTP Exception");
+    mError = http.errorString();
+    return FALSE;
+  }
 
   
 #ifdef QGISDEBUG
@@ -533,42 +551,7 @@ void QgsWmsProvider::downloadCapabilitiesURI(QString const & uri)
   std::cout << "QgsWmsProvider::downloadCapabilitiesURI: exiting." << std::endl;
 #endif
 
-}
-
-
-// private
-void QgsWmsProvider::drawTest(QString const & uri)
-{
-
-/*
-
-Example URL (?):
-"http://www.ga.gov.au/bin/getmap.pl?dataset=national&VERSION=1.3.0&REQUEST=GetMap&LAYERS=d02&STYLES=&CRS=EPSG:3112&BBOX=151,-28,153,-26&WIDTH=400&HEIGHT=400&FORMAT=image/png"
-
-Example URL (works!)
-"http://www.ga.gov.au/bin/getmap.pl?dataset=national&Service=WMS&Version=1.1.0&Request=GetMap&BBox=130,-40,160,-10&SRS=EPSG:4326&Width=400&Height=400&Layers=railways&Format=image/png"
-
-*/
-
-#ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::drawTest: Entered with '" << uri.toLocal8Bit().data() << "'" << std::endl;
-#endif
-  
-  QgsHttpTransaction http(uri, httpproxyhost, httpproxyport);
-
-  http.getSynchronously();
-
-  
-#ifdef QGISDEBUG
-    std::cout << "QgsWmsProvider::drawTest: Response received." << std::endl;
-#endif
-//   
-
-
-  
-#ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::downloadMapURI: exiting." << std::endl;
-#endif
+  return TRUE;
 
 }
 
@@ -1281,37 +1264,28 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
     // We have all the information we need to properly evaluate a layer definition
     // TODO: Save this somewhere
 
-#ifdef QGISDEBUG
-//    std::cout << "QgsWmsProvider::parseLayer: A layer definition is complete." << std::endl;
 
-    std::cout << "QgsWmsProvider::parseLayer:   name is: '" << layerProperty.name.toLocal8Bit().data() << "'." << std::endl;
-    std::cout << " QgsWmsProvider::parseLayer:  title is: '" << layerProperty.title.toLocal8Bit().data() << "'." << std::endl;
-//    std::cout << "QgsWmsProvider::parseLayer:   srs is: '" << layerProperty.srs << "'." << std::endl;
-//    std::cout << "QgsWmsProvider::parseLayer:   bbox is: '" << layerProperty.latlonbbox.stringRep() << "'." << std::endl;
-
-    // Store the extent so that it can be combined with others later
+    // Store the WGS84 (CRS:84) extent so that it can be combined with others later
     // in calculateExtent()
-    // For now use extent in the first SRS defined for the layer
-    //extentForLayer[ layerProperty.name ] = layerProperty.ex_GeographicBoundingBox;
 
+    // Apply the coarse bounding box first
+    extentForLayer[ layerProperty.name ] = layerProperty.ex_GeographicBoundingBox;
+
+    // see if we can refine the bounding box with the CRS-specific bounding boxes
     if ( layerProperty.crs.size() > 0 ) 
     {
         for ( int i = 0; i < layerProperty.boundingBox.size(); i++ ) 
         {
-            if ( layerProperty.boundingBox[i].crs == layerProperty.crs[0] )
+            if ( layerProperty.boundingBox[i].crs == DEFAULT_LATLON_CRS )
             {
                 extentForLayer[ layerProperty.name ] = 
                         layerProperty.boundingBox[i].box;
-            }
+             }
         }
     }
 
     // Insert into the local class' registry
     layersSupported.push_back(layerProperty);
-
-
-#endif
-
   }
 
 #ifdef QGISDEBUG
@@ -1749,6 +1723,18 @@ QString QgsWmsProvider::getMetadata()
 #endif
 
   return myMetadataQString;
+}
+
+
+QString QgsWmsProvider::errorCaptionString()
+{
+  return mErrorCaption;
+}
+
+
+QString QgsWmsProvider::errorString()
+{
+  return mError;
 }
 
 

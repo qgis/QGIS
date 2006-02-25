@@ -339,6 +339,9 @@ private:
      */
     QgsMapCanvas();
 
+    //! show whatever error is exposed by the QgsMapLayer.
+    void showError(QgsMapLayer * mapLayer);
+
     /**
        List to store the points of digitised lines and polygons
 

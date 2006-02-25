@@ -1692,7 +1692,8 @@ void QgisApp::addLayer()
 bool QgisApp::addLayer(QFileInfo const & vectorFile)
 {
   // let the user know we're going to possibly be taking a while
-  QApplication::setOverrideCursor(Qt::WaitCursor);
+// Let render() do its own cursor management
+//  QApplication::setOverrideCursor(Qt::WaitCursor);
 
   mMapCanvas->freeze();         // XXX why do we do this?
 
@@ -1732,7 +1733,8 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
     if ( ! renderer )
     {
       mMapCanvas->freeze(false);
-      QApplication::restoreOverrideCursor();
+// Let render() do its own cursor management
+//      QApplication::restoreOverrideCursor();
 
       // XXX should we also delete the layer?
 
@@ -1784,7 +1786,9 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
     delete layer;
 
     mMapCanvas->freeze(false);
-    QApplication::restoreOverrideCursor();
+
+// Let render() do its own cursor management
+//    QApplication::restoreOverrideCursor();
 
     return false;
   }
@@ -1800,7 +1804,8 @@ bool QgisApp::addLayer(QFileInfo const & vectorFile)
                               //                 the layer is intially added
   mMapCanvas->update();
 
-  QApplication::restoreOverrideCursor();
+// Let render() do its own cursor management
+//  QApplication::restoreOverrideCursor();
 
   statusBar()->message(mMapCanvas->extent().stringRep(2));
 
@@ -1822,8 +1827,8 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
 {
   mMapCanvas->freeze();
 
-  QApplication::setOverrideCursor(Qt::WaitCursor);
-
+// Let render() do its own cursor management
+//  QApplication::setOverrideCursor(Qt::WaitCursor);
 
   for ( QStringList::ConstIterator it = theLayerQStringList.begin();
       it != theLayerQStringList.end();
@@ -1846,7 +1851,9 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
     if ( ! layer )
     {
       mMapCanvas->freeze(false);
-      QApplication::restoreOverrideCursor();
+
+// Let render() do its own cursor management
+//      QApplication::restoreOverrideCursor();
 
       // XXX insert meaningful whine to the user here
       return false;
@@ -1868,7 +1875,9 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
       if ( ! renderer )
       {
         mMapCanvas->freeze(false);
-        QApplication::restoreOverrideCursor();
+
+// Let render() do its own cursor management
+//        QApplication::restoreOverrideCursor();
 
         // XXX insert meaningful whine to the user here
         return false;
@@ -1937,7 +1946,10 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
   // [gsherman]
   mMapCanvas->render();
   mMapCanvas->update();
-  QApplication::restoreOverrideCursor();
+
+// Let render() do its own cursor management
+//  QApplication::restoreOverrideCursor();
+
   statusBar()->message(mMapCanvas->extent().stringRep(2));
 
 
@@ -1975,7 +1987,8 @@ void QgisApp::addDatabaseLayer()
 
   if (dbs->exec())
   {
-    QApplication::setOverrideCursor(Qt::WaitCursor);
+// Let render() do its own cursor management
+//    QApplication::setOverrideCursor(Qt::WaitCursor);
 
 
     // repaint the canvas if it was covered by the dialog
@@ -2056,7 +2069,10 @@ void QgisApp::addDatabaseLayer()
   // [gsherman]
   mMapCanvas->render();
   mMapCanvas->update();
-  QApplication::restoreOverrideCursor();
+
+// Let render() do its own cursor management
+//  QApplication::restoreOverrideCursor();
+
 } // QgisApp::addDatabaseLayer()
 #endif
 
@@ -4719,7 +4735,10 @@ QString QgisApp::activeLayerSource()
 void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)
 {
   mMapCanvas->freeze();
-  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+// Let render() do its own cursor management
+//  QApplication::setOverrideCursor(Qt::WaitCursor);
+
   // create the layer
   QgsVectorLayer *layer;
   /* Eliminate the need to instantiate the layer based on provider type.
@@ -4796,7 +4815,9 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
   // [gsherman]
   mMapCanvas->render();
   mMapCanvas->update();
-  QApplication::restoreOverrideCursor();
+
+// Let render() do its own cursor management
+//  QApplication::restoreOverrideCursor();
 
 } // QgisApp::addVectorLayer
 
@@ -4805,7 +4826,10 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
 void QgisApp::addMapLayer(QgsMapLayer *theMapLayer)
 {
   mMapCanvas->freeze();
-  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+// Let render() do its own cursor management
+//  QApplication::setOverrideCursor(Qt::WaitCursor);
+
   if(theMapLayer->isValid())
   {
     // Register this layer with the layers registry
@@ -4838,7 +4862,9 @@ void QgisApp::addMapLayer(QgsMapLayer *theMapLayer)
   // [gsherman]
   mMapCanvas->render();
   mMapCanvas->update();
-  QApplication::restoreOverrideCursor();
+
+// Let render() do its own cursor management
+//  QApplication::restoreOverrideCursor();
 
 }
 
@@ -5476,7 +5502,10 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile, bool guiWarning)
   if (!addRasterLayer(layer))
   {
     mMapCanvas->freeze(false);
-    QApplication::restoreOverrideCursor();
+
+// Let render() do its own cursor management
+//    QApplication::restoreOverrideCursor();
+
     if(guiWarning)
     {
       // don't show the gui warning (probably because we are loading from command line)
@@ -5491,7 +5520,10 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile, bool guiWarning)
     statusBar()->message(mMapCanvas->extent().stringRep(2));
     mMapCanvas->freeze(false);
     mOverviewCanvas->freeze(false);
-    QApplication::restoreOverrideCursor();
+
+// Let render() do its own cursor management
+//    QApplication::restoreOverrideCursor();
+
     return true;
   }
 
@@ -5522,7 +5554,10 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
 #endif
 
   mMapCanvas->freeze();
-  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+// Let render() do its own cursor management
+//  QApplication::setOverrideCursor(Qt::WaitCursor);
+
   // create the layer
   QgsRasterLayer *layer;
   /* Eliminate the need to instantiate the layer based on provider type.
@@ -5605,7 +5640,9 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
   // [gsherman]
   mMapCanvas->render();
   mMapCanvas->update();
-  QApplication::restoreOverrideCursor();
+
+// Let render() do its own cursor management
+//  QApplication::restoreOverrideCursor();
 
 } // QgisApp::addRasterLayer
 
@@ -5627,7 +5664,9 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList, bool gui
   mMapCanvas->freeze(true);
   mOverviewCanvas->freeze(true);
 
-  QApplication::setOverrideCursor(Qt::WaitCursor);
+// Let render() do its own cursor management
+//  QApplication::setOverrideCursor(Qt::WaitCursor);
+
   // this is messy since some files in the list may be rasters and others may
   // be ogr layers. We'll set returnValue to false if one or more layers fail
   // to load.
@@ -5682,7 +5721,9 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList, bool gui
   statusBar()->message(mMapCanvas->extent().stringRep(2));
   mMapCanvas->freeze(false);
   mOverviewCanvas->freeze(false);
-  QApplication::restoreOverrideCursor();
+
+// Let render() do its own cursor management
+//  QApplication::restoreOverrideCursor();
 
   return returnValue;
 

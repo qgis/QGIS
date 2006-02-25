@@ -787,9 +787,11 @@ std::cerr << i << ": " << ring->first[i]
 }
 
 
-void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst)
+bool QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst)
 {
   draw ( p, viewExtent, theMapToPixelTransform, dst, 1., 1.);
+
+  return TRUE; // Assume success always
 }
 
 void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, 

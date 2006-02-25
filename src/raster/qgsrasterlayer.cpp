@@ -1080,7 +1080,7 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
 
 
 
-void QgsRasterLayer::draw(QPainter * theQPainter,
+bool QgsRasterLayer::draw(QPainter * theQPainter,
                           QgsRect * theViewExtent,
                           QgsMapToPixel * theQgsMapToPixel,
                           QPaintDevice* dst)
@@ -1092,7 +1092,7 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
 
   //Dont waste time drawing if transparency is at 0 (completely transparent)
   if (transparencyLevelInt == 0)
-    return;
+    return TRUE;
 
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::draw(4 arguments): checking timestamp." << std::endl;
@@ -1119,7 +1119,7 @@ void QgsRasterLayer::draw(QPainter * theQPainter,
   if (myRasterExtent.isEmpty())
   {
     // nothing to do
-    return;
+    return TRUE;
   }
   
 #ifdef QGISDEBUG
@@ -1360,6 +1360,16 @@ static_cast<int>(myRasterViewPort->topLeftPoint    .x() + 0.5);
                          myRasterViewPort->drawableAreaYDimInt
                         );
 
+    if (!image)
+    {
+      // An error occurred.
+      mErrorCaption = dataProvider->errorCaptionString();
+      mError        = dataProvider->errorString();
+
+      delete myRasterViewPort;
+      return FALSE;
+    }
+
 #ifdef QGISDEBUG
     std::cout << "QgsRasterLayer::draw: Done dataProvider->draw." << std::endl; 
 #endif
@@ -1421,8 +1431,10 @@ static_cast<int>(myRasterViewPort->topLeftPoint    .x() + 0.5);
   delete myRasterViewPort;
 
 #ifdef QGISDEBUG
-    std::cout << "QgsRasterLayer::draw: exiting." << std::endl; 
+    std::cout << "QgsRasterLayer::draw: exiting." << std::endl;
 #endif
+
+  return TRUE;
 
 }
 
@@ -5205,6 +5217,17 @@ void QgsRasterLayer::refreshLegend()
     }
 }
 
+
+QString QgsRasterLayer::errorCaptionString()
+{
+  return mErrorCaption;
+}
+
+
+QString QgsRasterLayer::errorString()
+{
+  return mError;
+}
 
 
 // ENDS

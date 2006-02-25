@@ -80,7 +80,7 @@ email                : sherman at mrcc.com
 #include <qcursor.h>
 
 #include <QRubberBand>
-
+#include <QApplication>
 
 #include "qgis.h"
 #include "qgsrect.h"
@@ -558,6 +558,10 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
   {
     if (!mCanvasProperties->drawing)
     {
+
+      // Tell the user we're going to be a while
+      QApplication::setOverrideCursor(Qt::WaitCursor);
+
       mCanvasProperties->drawing = true;
       QPainter *paint = new QPainter();
 
@@ -747,10 +751,16 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
                 // Now do the call to the layer that actually does
                 // the rendering work!
                 //
-                ml->draw(paint, &r1, mCanvasProperties->coordXForm, this);
+                if (!ml->draw(paint, &r1, mCanvasProperties->coordXForm, this))
+                {
+                  showError(ml);
+                }
                 if (split)
                 {
-                  ml->draw(paint, &r2,mCanvasProperties->coordXForm, this);
+                  if (!ml->draw(paint, &r2, mCanvasProperties->coordXForm, this))
+                  {
+                    showError(ml);
+                  }
                 }
               }
 #ifdef QGISDEBUG
@@ -922,6 +932,9 @@ void QgsMapCanvas::render(QPaintDevice * theQPaintDevice)
       paint->end();
       mCanvasProperties->drawing = false;
       delete paint;
+
+      // Tell the user we've finished going to be a while
+      QApplication::restoreOverrideCursor();
     }
     mCanvasProperties->dirty = false;
 
@@ -3345,3 +3358,17 @@ QgsPoint QgsMapCanvas::maybeInversePoint(QgsPoint point, const char whenmsg[])
   }
   return point;
 }
+
+
+void QgsMapCanvas::showError(QgsMapLayer * mapLayer)
+{
+  QMessageBox::warning(
+    this,
+    mapLayer->errorCaptionString(),
+    tr("Could not draw") + " " + mapLayer->name() + " " + tr("because") + ":\n" +
+      mapLayer->errorCaptionString()
+  );
+
+}
+
+// ENDS

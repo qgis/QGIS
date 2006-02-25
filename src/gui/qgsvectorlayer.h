@@ -509,13 +509,18 @@ private:                       // Private attributes
   void initContextMenu_(QgisApp *);
 
   //! Draws the layer using coordinate transformation
-  void draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst);
+  //! Returns FALSE if an error occurred during drawing
+  bool draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * cXf,  QPaintDevice * dst);
+
   //! Pointer to data provider derived from the abastract base class QgsDataProvider
   QgsVectorDataProvider *dataProvider;
+
   //! index of the primary label field
   QString fieldIndex;
+
   //! Data provider key
   QString providerKey;
+
   //! Flag to indicate if this is a valid layer
   bool valid;
   bool registered;

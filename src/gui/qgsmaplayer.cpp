@@ -153,7 +153,7 @@ void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
-void QgsMapLayer::draw(QPainter *, QgsRect *, QgsMapToPixel *,QPaintDevice * )
+bool QgsMapLayer::draw(QPainter *, QgsRect *, QgsMapToPixel *,QPaintDevice * )
 {
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
@@ -498,6 +498,16 @@ std::vector<QgsField> const & QgsMapLayer::fields() const
 
     return bogus;
 } // QgsMapLayer::fields()
+
+QString QgsMapLayer::errorCaptionString()
+{
+  return QString();
+}
+
+QString QgsMapLayer::errorString()
+{
+  return QString();
+}
 
 void QgsMapLayer::connectNotify( const char * signal )
 {
