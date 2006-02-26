@@ -123,7 +123,7 @@ QgsWmsProvider::QgsWmsProvider(QString const & uri)
   std::cout << "baseUrl = " << baseUrl.toLocal8Bit().data() << std::endl;
 #endif
 
-  getServerCapabilities();
+//  getServerCapabilities();
 
   //httpuri = "http://www.ga.gov.au/bin/getmap.pl?dataset=national&Service=WMS&Version=1.1.0&Request=GetMap&"
   //      "BBox=130,-40,160,-10&SRS=EPSG:4326&Width=400&Height=400&Layers=railways&Format=image/png";
@@ -380,6 +380,9 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
   url += "&";
   url += "TRANSPARENT=TRUE";
 
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::draw: emitting setStatus(Test from QgsWmsProvider)." << std::endl;
+#endif
   emit setStatus( QString("Test from QgsWmsProvider") );
 
   
@@ -464,7 +467,7 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
 
 }
 
-
+/*
 void QgsWmsProvider::getServerCapabilities()
 {
   
@@ -481,9 +484,9 @@ void QgsWmsProvider::getServerCapabilities()
 #endif
 
 }
+*/
 
-
-void QgsWmsProvider::retrieveServerCapabilities()
+bool QgsWmsProvider::retrieveServerCapabilities(bool forceRefresh)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::retrieveServerCapabilities: entering." << std::endl;
@@ -491,12 +494,19 @@ void QgsWmsProvider::retrieveServerCapabilities()
 
   // TODO: Smarter caching - need to refresh if demanded.
 
-  if ( httpcapabilitiesresponse.isNull() )
+  if ( httpcapabilitiesresponse.isNull() or
+       forceRefresh )
   {
   
     QString url = baseUrl + "SERVICE=WMS&REQUEST=GetCapabilities";
 
     QgsHttpTransaction http(url, httpproxyhost, httpproxyport);
+
+    // Do a passthrough for the status bar text
+    connect(
+            &http, SIGNAL(setStatus        (QString)),
+             this,   SLOT(showStatusMessage(QString))
+           );
 
     http.getSynchronously(httpcapabilitiesresponse);
 
@@ -505,7 +515,12 @@ void QgsWmsProvider::retrieveServerCapabilities()
     std::cout << "QgsWmsProvider::getServerCapabilities: Converting to DOM." << std::endl;
 #endif
   
-    parseCapabilities(httpcapabilitiesresponse, capabilities);
+    bool parseSuccess = parseCapabilities(httpcapabilitiesresponse, capabilities);
+
+    if (!parseSuccess)
+    {
+      // TODO
+    }
 
   }
   
@@ -524,6 +539,12 @@ bool QgsWmsProvider::downloadCapabilitiesURI(QString const & uri)
 #endif
 
   QgsHttpTransaction http(uri, httpproxyhost, httpproxyport);
+
+  // Do a passthrough for the status bar text
+  connect(
+          &http, SIGNAL(setStatus        (QString)),
+           this,   SLOT(showStatusMessage(QString))
+         );
 
   bool httpOk;
 
@@ -556,7 +577,7 @@ bool QgsWmsProvider::downloadCapabilitiesURI(QString const & uri)
 }
 
 
-void QgsWmsProvider::parseCapabilities(QByteArray  const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty)
+bool QgsWmsProvider::parseCapabilities(QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseCapabilities: entering." << std::endl;
@@ -564,6 +585,7 @@ void QgsWmsProvider::parseCapabilities(QByteArray  const & xml, QgsWmsCapabiliti
   //test the content of the QByteArray
   QString responsestring(xml);
   qWarning("QgsWmsProvider::parseCapabilities, received the following data: "+responsestring);
+  
   
   //QFile file( "/tmp/qgis-wmsprovider-capabilities.xml" );
   //if ( file.open( QIODevice::WriteOnly ) ) 
@@ -574,12 +596,26 @@ void QgsWmsProvider::parseCapabilities(QByteArray  const & xml, QgsWmsCapabiliti
 #endif
   
   // Convert completed document into a DOM
-  QString errormsg;
-  bool contentsuccess = capabilitiesDOM.setContent(xml, false, &errormsg);
+  QString errorMsg;
+  int errorLine;
+  int errorColumn;
+  bool contentSuccess = capabilitiesDOM.setContent(xml, false, &errorMsg, &errorLine, &errorColumn);
+
+  if (!contentSuccess)
+  {
+    mErrorCaption = tr("DOM Exception");
+    mError = QString(tr("Could not get WMS capabilities at %1: %2 at line %3 column %4")
+                .arg(baseUrl)
+                .arg(errorMsg)
+                .arg(errorLine)
+                .arg(errorColumn) );
 
 #ifdef QGISDEBUG
-  qWarning("errormessage is: "+errormsg);
+  qWarning("DOM Exception: "+mError);
 #endif
+
+    return FALSE;
+  }
 
   QDomElement docElem = capabilitiesDOM.documentElement();
 
@@ -613,6 +649,8 @@ void QgsWmsProvider::parseCapabilities(QByteArray  const & xml, QgsWmsCapabiliti
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::parseCapabilities: exiting." << std::endl;
 #endif
+
+  return TRUE;
 }
 
 
@@ -1172,24 +1210,32 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
           {
             parseKeywordList(e1, layerProperty.keywordList);
           }
-          else if (
-                   (e1.tagName() == "CRS")  ||
-                   (e1.tagName() == "SRS")        // legacy from earlier versions of WMS
-                  )
+          else if (e1.tagName() == "CRS")
           {
             layerProperty.crs.push_back(e1.text());
+          }
+          else if (e1.tagName() == "SRS")        // legacy from earlier versions of WMS
+          {
+            // SRS can contain several definitions separated by whitespace
+            QStringList srsList = e1.text().split(QRegExp("\\s+"));
+
+            QStringList::const_iterator i;
+            for (i = srsList.constBegin(); i != srsList.constEnd(); ++i)
+            {
+              layerProperty.crs.push_back(*i);
+            }
           }
           else if (
                    (e1.tagName() == "EX_GeographicBoundingBox")  ||
                    (e1.tagName() == "LatLonBoundingBox")        // legacy from earlier versions of WMS
                   )
           {
-            
+
 //            std::cout << "      LLBB is: '" << e1.attribute("minx") << "'." << std::endl;
 //            std::cout << "      LLBB is: '" << e1.attribute("miny") << "'." << std::endl;
 //            std::cout << "      LLBB is: '" << e1.attribute("maxx") << "'." << std::endl;
 //            std::cout << "      LLBB is: '" << e1.attribute("maxy") << "'." << std::endl;
-            
+
             layerProperty.ex_GeographicBoundingBox = QgsRect( 
                                                 e1.attribute("minx").toDouble(),
                                                 e1.attribute("miny").toDouble(),
@@ -1272,17 +1318,24 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
     extentForLayer[ layerProperty.name ] = layerProperty.ex_GeographicBoundingBox;
 
     // see if we can refine the bounding box with the CRS-specific bounding boxes
-    if ( layerProperty.crs.size() > 0 ) 
+    for ( int i = 0; i < layerProperty.boundingBox.size(); i++ ) 
     {
-        for ( int i = 0; i < layerProperty.boundingBox.size(); i++ ) 
-        {
-            if ( layerProperty.boundingBox[i].crs == DEFAULT_LATLON_CRS )
-            {
-                extentForLayer[ layerProperty.name ] = 
-                        layerProperty.boundingBox[i].box;
-             }
-        }
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseLayer: testing bounding box CRS which is " 
+            << layerProperty.boundingBox[i].crs.toLocal8Bit().data() << "." << std::endl;
+#endif
+      if ( layerProperty.boundingBox[i].crs == DEFAULT_LATLON_CRS )
+      {
+        extentForLayer[ layerProperty.name ] = 
+                layerProperty.boundingBox[i].box;
+      }
     }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseLayer: extent for " 
+            << layerProperty.name.toLocal8Bit().data() << " is "
+            << extentForLayer[ layerProperty.name ].stringRep(3).toLocal8Bit().data() << "." << std::endl;
+#endif
 
     // Insert into the local class' registry
     layersSupported.push_back(layerProperty);
@@ -1361,11 +1414,6 @@ int QgsWmsProvider::capabilities() const
 
 void QgsWmsProvider::showStatusMessage(QString const & theMessage)
 {
-
-#ifdef QGISDEBUG
-//  std::cout << "QgsWmsProvider::showStatusMessage: entered with '" << theMessage << "'." << std::endl;
-#endif
-
     // Pass-through
     // TODO: See if we can connect signal-to-signal.  This is a kludge according to the Qt doc.
     emit setStatus(theMessage);
@@ -1378,6 +1426,9 @@ void QgsWmsProvider::calculateExtent()
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::calculateExtent: entered." << std::endl;
 #endif
+
+  // Make sure we know what extents are available
+  retrieveServerCapabilities();
 
   for ( QStringList::Iterator it  = activeSubLayers.begin(); 
                               it != activeSubLayers.end(); 
