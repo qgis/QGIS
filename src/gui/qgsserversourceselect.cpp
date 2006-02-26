@@ -55,7 +55,6 @@ QgsServerSourceSelect::QgsServerSourceSelect(QgisApp * app, QWidget * parent, Qt
   hbox->addStretch();
   btnGrpImageEncoding->setLayout(hbox);
 
-  btnAdd->setEnabled(false);
   populateConnectionList();
   // connect the double-click signal to the addSingleLayer slot in the parent
 
@@ -78,6 +77,21 @@ void QgsServerSourceSelect::populateConnectionList()
   {
     cmbConnections->insertItem(*it);
     ++it;
+  }
+
+  if (keys.begin() != keys.end())
+  {
+    // Connections available - enable various buttons
+    btnConnect->setEnabled(TRUE);
+    btnEdit->setEnabled(TRUE);
+    btnDelete->setEnabled(TRUE);
+  }
+  else
+  {
+    // No connections available - disable various buttons
+    btnConnect->setEnabled(FALSE);
+    btnEdit->setEnabled(FALSE);
+    btnDelete->setEnabled(FALSE);
   }
 }
 void QgsServerSourceSelect::on_btnNew_clicked()
