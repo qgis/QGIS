@@ -311,6 +311,8 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
   QgsWmsProvider* wmsProvider = 
     (QgsWmsProvider*) pReg->getProvider( "wms", m_connInfo );
 
+  connect(wmsProvider, SIGNAL(setStatus(QString)), this, SLOT(showStatusMessage(QString)));
+
   populateLayerList(wmsProvider);
 
 }
@@ -431,4 +433,15 @@ QString QgsServerSourceSelect::selectedImageEncoding()
     return "image/png";
 
 }
+
+void QgsServerSourceSelect::showStatusMessage(QString const & theMessage)
+{
+  labelStatus->setText(theMessage);
+
+  // update the display of this widget
+  this->update();
+}
+
+
+
 

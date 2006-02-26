@@ -250,7 +250,6 @@ void QgsHttpTransaction::dataProgress( int done, int total )
   }
 
   emit setStatus( status );
-
 }
 
 void QgsHttpTransaction::dataFinished( int id, bool error )  
@@ -283,60 +282,71 @@ void QgsHttpTransaction::dataStateChanged( int state )
   std::cout << "QgsHttpTransaction::dataStateChanged to " << state << "." << std::endl << "  ";
 #endif
 
-#ifdef QGISDEBUG
   switch (state)
   {
     case Q3Http::Unconnected:
-//      std::cout << "There is no connection to the host." << std::endl;
-  
+#ifdef QGISDEBUG
+      std::cout << "There is no connection to the host." << std::endl;
+#endif
+
       emit setStatus( QString("Not connected") );
       break;
-      
+
     case Q3Http::HostLookup:
-//      std::cout << "A host name lookup is in progress." << std::endl;
-  
+#ifdef QGISDEBUG
+      std::cout << "A host name lookup is in progress." << std::endl;
+#endif
+
       emit setStatus( QString("Looking up '%1'")
                          .arg(httphost) );
       break;
-      
+
     case Q3Http::Connecting:
-//      std::cout << "An attempt to connect to the host is in progress." << std::endl;
-  
+#ifdef QGISDEBUG
+      std::cout << "An attempt to connect to the host is in progress." << std::endl;
+#endif
+
       emit setStatus( QString("Connecting to '%1'")
                          .arg(httphost) );
       break;
-      
+
     case Q3Http::Sending:
-//      std::cout << "The client is sending its request to the server." << std::endl;
-  
+#ifdef QGISDEBUG
+      std::cout << "The client is sending its request to the server." << std::endl;
+#endif
+
       emit setStatus( QString("Sending request '%1'")
                          .arg(httpurl) );
       break;
-      
+
     case Q3Http::Reading:
-//      std::cout << "The client's request has been sent and the client "
-//                   "is reading the server's response." << std::endl;
-  
+#ifdef QGISDEBUG
+      std::cout << "The client's request has been sent and the client "
+                   "is reading the server's response." << std::endl;
+#endif
+
       emit setStatus( QString("Receiving reply") );
       break;
-      
+
     case Q3Http::Connected:
-//      std::cout << "The connection to the host is open, but the client "
-//                   "is neither sending a request, nor waiting for a response." << std::endl;
-  
+#ifdef QGISDEBUG
+      std::cout << "The connection to the host is open, but the client "
+                   "is neither sending a request, nor waiting for a response." << std::endl;
+#endif
+
       emit setStatus( QString("Response is complete") );
       break;
-      
+
     case Q3Http::Closing:
-//      std::cout << "The connection is closing down, but is not yet closed. "
-//                   "(The state will be Unconnected when the connection is closed.)" << std::endl;
-  
+#ifdef QGISDEBUG
+      std::cout << "The connection is closing down, but is not yet closed. "
+                   "(The state will be Unconnected when the connection is closed.)" << std::endl;
+#endif
+
       emit setStatus( QString("Closing down connection") );
       break;
-  }      
+  }
 
-#endif
-  
 }
 
 

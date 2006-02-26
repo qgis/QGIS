@@ -85,6 +85,10 @@ public slots:
     //! Signaled when a layer selection is changed.  Ensures that only one style is selected per layer.
     void on_lstLayers_selectionChanged();
 
+    //! Set status message to theMessage
+    void showStatusMessage(QString const & theMessage);
+
+
 private:
 
     //! Populate the layer list - private for now.
