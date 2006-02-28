@@ -35,8 +35,10 @@ plugin_LTLIBRARIES = grassplugin.la
 
 plugin_MOC = qgsgrassplugin.moc.cpp \
 	     qgsgrassselect.moc.cpp \
+	     qgsgrassbrowser.moc.cpp \
 	     qgsgrassedit.moc.cpp \
 	     qgsgrasstools.moc.cpp \
+	     qgsgrassmodel.moc.cpp \
 	     qgsgrassmapcalc.moc.cpp \
 	     qgsgrassmodule.moc.cpp \
 	     qgsgrassnewmapset.moc.cpp \
@@ -68,10 +70,14 @@ grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 			 qgsgrassplugin.h \
 			 qgsgrassselect.cpp \
 			 qgsgrassselect.h \
+			 qgsgrassbrowser.cpp \
+			 qgsgrassbrowser.h \
 			 qgsgrassedit.cpp \
 			 qgsgrassedit.h \
 			 qgsgrasstools.cpp \
 			 qgsgrasstools.h \
+			 qgsgrassmodel.cpp \
+			 qgsgrassmodel.h \
 			 qgsgrassmapcalc.cpp \
 			 qgsgrassmapcalc.h \
 			 qgsgrassmodule.cpp \
