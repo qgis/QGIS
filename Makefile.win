@@ -4,10 +4,11 @@ all: winsubdirs
 
 install: all
 	mkdir -p -m 755 $(prefix)
-	$(MAKE) -C i18n -f Makefile install
-	$(MAKE) -C images -f Makefile install
-	$(MAKE) -C resources -f Makefile install
-	$(MAKE) -C src -f Makefile.win install
+	$(MAKE) -C i18n -f Makefile install || exit 1
+	$(MAKE) -C images -f Makefile install || exit 1
+	$(MAKE) -C resources -f Makefile install || exit 1
+	$(MAKE) -C src -f Makefile.win install || exit 1
+	$(MAKE) -C doc -f Makefile install || exit 1
 
 # Copy GRASS to QGIS 
 cpgrass:
@@ -20,7 +21,7 @@ cpgrass:
 	cp -r $(GRASS_BASE)/bin $(prefix)/grass
 	cp -r $(GRASS_BASE)/scripts $(prefix)/grass
 	cp -r $(GRASS_BASE)/lib/*.dll $(prefix)
-	cp -r $(GRASS_BASE)/docs/html $(prefix)/docs
+	cp -r $(GRASS_BASE)/docs/html $(prefix)/grass/docs
 	@list=`ls $(prefix)/grass_*.dll`; \
 	for f in $$list; do \
 		$(STRIP) $$f; \
