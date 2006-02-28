@@ -158,10 +158,6 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
     // displayed over the browser
     QgsGrassBrowser *browser = new QgsGrassBrowser ( mIface, this );
     mTabWidget->addTab( browser, "Browser" );
-
-    // Debug
-    mTabWidget->setCurrentIndex(1);
-    
 }
 
 void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
