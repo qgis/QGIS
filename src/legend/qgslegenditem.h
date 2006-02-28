@@ -76,7 +76,7 @@ public:
        If false, such settings don't change (e.g. during mouse drags). If true, the layers and/or map canvas
        settings are allowed to change (e.g. if the mouse button is released).
        @return true in case of success and false if theItem cannot be inserted*/
-    virtual bool insert(QgsLegendItem* theItem, bool changesettings = true) {return false;}
+    virtual bool insert(QgsLegendItem* theItem) {return false;}
     void print(QgsLegendItem * theItem);
     /**Returns a pointer to the first child or 0 if there is none*/
     QgsLegendItem* firstChild();

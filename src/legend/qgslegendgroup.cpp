@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "qgsapplication.h"
 #include "qgslegendgroup.h"
+#include "qgslegendlayer.h"
+#include "qgslegendlayerfile.h"
 #include <QCoreApplication>
 #include <QIcon>
 
@@ -26,7 +28,8 @@ QgsLegendGroup::QgsLegendGroup(QTreeWidgetItem * theItem ,QString theName)
     : QgsLegendItem(theItem,theName)
 {
   mType=LEGEND_GROUP;
-  setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  setCheckState (0, Qt::Checked);
   QIcon myIcon(QgsApplication::themePath()+"/mActionFolder.png");
   setIcon(0, myIcon);
 }
@@ -34,7 +37,8 @@ QgsLegendGroup::QgsLegendGroup(QTreeWidget* theListView, QString theString)
     : QgsLegendItem(theListView,theString)
 {
   mType=LEGEND_GROUP;
-  setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  setCheckState (0, Qt::Checked);
   QIcon myIcon(QgsApplication::themePath()+"/mActionFolder.png");
   setIcon(0, myIcon);
 }
@@ -42,7 +46,8 @@ QgsLegendGroup::QgsLegendGroup(QTreeWidget* theListView, QString theString)
 QgsLegendGroup::QgsLegendGroup(QString name): QgsLegendItem()
 {
   mType=LEGEND_GROUP;
-  setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  setCheckState (0, Qt::Checked);
   QIcon myIcon(QgsApplication::themePath()+"/mActionFolder.png");
   setText(0, name);
   setIcon(0, myIcon);
@@ -90,10 +95,52 @@ QgsLegendItem::DRAG_ACTION QgsLegendGroup::accept(const QgsLegendItem* li) const
   return NO_ACTION;
 }
 
-bool QgsLegendGroup::insert(QgsLegendItem* theItem, bool changesettings)
+bool QgsLegendGroup::insert(QgsLegendItem* theItem)
 {
     if(theItem->type() == LEGEND_LAYER)
     {
 	addChild(theItem);
+    }
+}
+
+std::list<QgsLegendLayerFile*> QgsLegendGroup::legendLayerFiles()
+{
+  std::list<QgsLegendLayerFile*> result;
+  for(int i = 0; i < childCount(); ++i)
+    {
+      QgsLegendLayer* childItem = dynamic_cast<QgsLegendLayer*>(child(i));
+      if(childItem)
+	{
+	  std::list<QgsLegendLayerFile*> childList = childItem->legendLayerFiles();
+	  result.splice(result.end(), childList);
+	}
+    }
+  return result;
+}
+
+void QgsLegendGroup::updateCheckState()
+{
+  std::list<QgsLegendLayerFile*> llfiles = legendLayerFiles();
+  if(llfiles.size() < 1)
+    {
+      return;
+    }
+
+  std::list<QgsLegendLayerFile*>::iterator iter = llfiles.begin();
+  Qt::CheckState theState = (*iter)->checkState(0);
+  for(; iter != llfiles.end(); ++iter)
+    {
+      if(theState != (*iter)->checkState(0))
+	{
+	  theState = Qt::PartiallyChecked;
+	  break;
+	}
+    }
+
+  if(theState != checkState(0))
+    {
+      treeWidget()->blockSignals(true);
+      setCheckState(0, theState);
+      treeWidget()->blockSignals(false);
     }
 }

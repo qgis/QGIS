@@ -70,7 +70,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept(const QgsLegendItem* 
   return NO_ACTION;
 }
 
-bool QgsLegendLayerFileGroup::insert(QgsLegendItem* newItem, bool changesettings)
+bool QgsLegendLayerFileGroup::insert(QgsLegendItem* newItem)
 {
   if ( newItem->type() == LEGEND_LAYER_FILE )
     {
@@ -78,25 +78,9 @@ bool QgsLegendLayerFileGroup::insert(QgsLegendItem* newItem, bool changesettings
       if(!oldItem)//this item is the first child
 	{
 	  insertChild(0, newItem);
-	  if(!changesettings)
-	    {
-	      return true;
-	    }
-	  QgsMapLayer* newLayer = (dynamic_cast<QgsLegendLayerFile*>(newItem))->layer();
-	  QTreeWidgetItem* nexts = nextSibling();
-	  /*if(nexts)
-	    {
-	      QgsLegendSymbologyGroup* sg = dynamic_cast<QgsLegendSymbologyGroup*>(nexts);
-	      if(sg)
-		{
-		  newLayer->setLegendSymbologyGroupParent(sg);
-		  newLayer->refreshLegend();
-		}
-		}*/
 	  return true;
 	}
-      //if there are already legend layer files, copy the symbology settings if the two layers are
-      //symbology compatible (the same number and type of attributes)
+      //there are already legend layer files
       
       //find the lowest sibling
       while(oldItem->nextSibling() != 0)
@@ -117,27 +101,7 @@ bool QgsLegendLayerFileGroup::insert(QgsLegendItem* newItem, bool changesettings
       QgsMapLayer* newLayer = (dynamic_cast<QgsLegendLayerFile*>(newItem))->layer();
       if(newLayer->isSymbologyCompatible(*thelayer))
 	{	
-	  if(changesettings)
-	    {
-	      if(!newLayer->copySymbologySettings(*thelayer))
-		{
-		  return false;
-		}
-	    }
 	  insertChild(childCount(), newItem);
-	  if(!changesettings)
-	    {
-	      return true;
-	    }
-	  QTreeWidgetItem* nexts = nextSibling();
-	  /*if(nexts)
-	    {
-	      QgsLegendSymbologyGroup* sg = dynamic_cast<QgsLegendSymbologyGroup*>(nexts);
-	      if(sg)
-		{
-		  newLayer->setLegendSymbologyGroupParent(sg);
-		}
-		}*/
 	  return true;
 	}
       else

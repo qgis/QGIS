@@ -26,7 +26,7 @@ class QgsLegendLayerFileGroup: public QgsLegendItem
     bool isLeafNode() {return false;}
     DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
     QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
-    bool insert(QgsLegendItem* theItem, bool changesettings = true);
+    bool insert(QgsLegendItem* theItem);
     /**Returns true if llf is a childelement*/
     bool containsLegendLayerFile(const QgsLegendLayerFile* llf) const;
 };
