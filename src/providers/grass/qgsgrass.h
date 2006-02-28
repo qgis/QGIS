@@ -89,6 +89,23 @@ public:
     //! Check if given directory contains a GRASS installation
     static bool isValidGrassBaseDir(QString const gisBase);
 
+    //! Returns list of locations in given gisbase
+    static QStringList locations(QString gisbase);
+    
+    //! Returns list of mapsets in location
+    static QStringList mapsets(QString gisbase, QString locationName);
+    static QStringList mapsets(QString locationPath);
+
+    //! List of vectors and rasters
+    static QStringList vectors(QString gisbase, QString locationName,
+	                       QString mapsetName);
+    static QStringList vectors(QString mapsetPath);
+
+    static QStringList rasters(QString gisbase, QString locationName,
+	                       QString mapsetName);
+    static QStringList rasters(QString mapsetPath);
+
+
     static void init (void); 
 
 private:
