@@ -8,7 +8,7 @@
   </clipPath>
   <g style="clip-path:url(#clip1)" >
    <polygon points="34 466 34 34 466 34 466 466 34 466" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
-   <polygon points="34 466 34 34 466 34 466 466 34 466" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="34 466 34 34 466 34 466 466 34 466" style="stroke:rgb(0,0,255);stroke-width:155;fill:none;" />
   </g>
  </g>
 </svg>

@@ -8,11 +8,11 @@
   </clipPath>
   <g style="clip-path:url(#clip1)" >
    <polygon points="409 261 238 240 155 117 409 261" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
-   <polygon points="409 261 238 240 155 117 409 261" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="409 261 238 240 155 117 409 261" style="stroke:rgb(0,0,255);stroke-width:155;fill:none;" />
    <polygon points="238 240 409 261 92 372 238 240" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
-   <polygon points="238 240 409 261 92 372 238 240" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="238 240 409 261 92 372 238 240" style="stroke:rgb(0,0,255);stroke-width:155;fill:none;" />
    <polygon points="238 240 92 372 155 117 238 240" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
-   <polygon points="238 240 92 372 155 117 238 240" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="238 240 92 372 155 117 238 240" style="stroke:rgb(0,0,255);stroke-width:155;fill:none;" />
   </g>
  </g>
 </svg>
