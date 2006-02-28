@@ -52,6 +52,7 @@
 #include <QTabBar>
 #include <QListView>
 #include <QProcess>
+#include <QHeaderView>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -73,12 +74,14 @@ extern "C" {
 #include "qgsgrasstools.h"
 #include "qgsgrassmodule.h"
 #include "qgsgrassshell.h"
+#include "qgsgrassmodel.h"
+#include "qgsgrassbrowser.h"
 
 QgsGrassToolsTabWidget::QgsGrassToolsTabWidget( QWidget * parent ): 
         QTabWidget(parent)
 {
     // Default height seems to be too small for our purpose
-    int height = 1.5 * tabBar()->iconSize().height();
+    int height = (int)(1.5 * tabBar()->iconSize().height());
     // Max width (see QgsGrassModule::pixmap for hardcoded sizes)
     int width = 3*height + 28 + 29;
     tabBar()->setIconSize( QSize(width,height) );
@@ -109,6 +112,7 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
     mTabWidget = new QgsGrassToolsTabWidget (this);
     QVBoxLayout *layout1 = new QVBoxLayout(this);
     layout1->addWidget(mTabWidget);
+
 
     mModulesListView = new Q3ListView();
     mTabWidget->addTab( mModulesListView, "Modules" );
@@ -148,6 +152,16 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
 
     loadConfig ( conf );
     //statusBar()->hide();
+
+    // Add map browser 
+    // Warning: if browser is on the first page modules are 
+    // displayed over the browser
+    QgsGrassBrowser *browser = new QgsGrassBrowser ( mIface, this );
+    mTabWidget->addTab( browser, "Browser" );
+
+    // Debug
+    mTabWidget->setCurrentIndex(1);
+    
 }
 
 void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
