@@ -198,6 +198,12 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
          {
              QProcess *proc = new QProcess(this);
              proc->start (msysPath);
+             proc->waitForStarted();
+             if ( proc->state() != QProcess::Running )
+             {
+	         QMessageBox::warning( 0, "Warning",
+                 "Cannot start MSYS (" + msysPath + ")" );
+             }
          }
          return;
 #else 
