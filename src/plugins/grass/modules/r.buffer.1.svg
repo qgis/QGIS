@@ -8,15 +8,15 @@
   </clipPath>
   <g style="clip-path:url(#clip1)" >
    <polygon points="381 126 381 86 421 86 421 126 381 126" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
-   <polygon points="381 126 381 86 421 86 421 126 381 126" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="381 126 381 86 421 86 421 126 381 126" style="stroke:rgb(0,0,255);stroke-width:155;fill:none;" />
    <polygon points="342 206 342 126 381 126 381 206 342 206" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
-   <polygon points="342 206 342 126 381 126 381 206 342 206" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="342 206 342 126 381 126 381 206 342 206" style="stroke:rgb(0,0,255);stroke-width:155;fill:none;" />
    <polygon points="147 286 147 246 264 246 264 206 342 206 342 246 303 246 303 286 147 286" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
-   <polygon points="147 286 147 246 264 246 264 206 342 206 342 246 303 246 303 286 147 286" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="147 286 147 246 264 246 264 206 342 206 342 246 303 246 303 286 147 286" style="stroke:rgb(0,0,255);stroke-width:155;fill:none;" />
    <polygon points="108 367 108 286 147 286 147 367 108 367" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
-   <polygon points="108 367 108 286 147 286 147 367 108 367" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="108 367 108 286 147 286 147 367 108 367" style="stroke:rgb(0,0,255);stroke-width:155;fill:none;" />
    <polygon points="108 367 108 407 68 407 68 367 108 367" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
-   <polygon points="108 367 108 407 68 407 68 367 108 367" style="stroke:rgb(0,0,255);stroke-width:1;fill:none;" />
+   <polygon points="108 367 108 407 68 407 68 367 108 367" style="stroke:rgb(0,0,255);stroke-width:155;fill:none;" />
   </g>
  </g>
 </svg>
