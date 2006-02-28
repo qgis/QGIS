@@ -7,7 +7,7 @@
    <rect width="500" x="0" y="0" height="500" />
   </clipPath>
   <g style="clip-path:url(#clip1)" >
-   <polyline points="72 423 87 386 104 354 126 322 159 296 215 277 283 260 334 239 366 209 415 156 436 109 451 78 458 58" style="stroke:rgb(0,0,255);stroke-width:155;fill:none;" />
+   <polyline points="72 423 87 386 104 354 126 322 159 296 215 277 283 260 334 239 366 209 415 156 436 109 451 78 458 58" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
   </g>
  </g>
 </svg>
