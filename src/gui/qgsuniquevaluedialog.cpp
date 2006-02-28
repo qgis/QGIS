@@ -52,12 +52,6 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
 	return;
     }
 
-    QObject::connect(mClassificationComboBox, SIGNAL(activated(int)), this, SLOT(changeClassificationAttribute(int)));
-    QObject::connect(mClassBreakBox, SIGNAL(selectionChanged()), this, SLOT(changeCurrentValue()));
-    QObject::connect(&sydialog, SIGNAL(settingsChanged()), this, SLOT(applySymbologyChanges()));
-    mSymbolWidgetStack->addWidget(&sydialog);
-    mSymbolWidgetStack->raiseWidget(&sydialog);
-
     const QgsUniqueValueRenderer* renderer = dynamic_cast < const QgsUniqueValueRenderer * >(mVectorLayer->renderer());
     
     if (renderer)
@@ -66,11 +60,6 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
 	std::list<int>::iterator iter=renderer->classificationAttributes().begin();
 	int classattr=*iter;
 	mClassificationComboBox->setCurrentItem(classattr);
-	
-	if(renderer->symbols().size()>0)
-	{
-	    changeClassificationAttribute(classattr);
-	}
 
 	const std::list<QgsSymbol*> list = renderer->symbols();
 	//fill the items of the renderer into mValues
@@ -83,7 +72,6 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
 	    sym->setBrush(symbol->brush());
 	    sym->setNamedPointSymbol(symbol->pointSymbolName());
 	    sym->setPointSize(symbol->pointSize());
-	    
 	    mValues.insert(std::make_pair(symbolvalue,sym));
 	    mClassBreakBox->insertItem(symbolvalue);
 	}
@@ -92,6 +80,13 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
     {
 	changeClassificationAttribute(0);	
     }
+
+    QObject::connect(mClassificationComboBox, SIGNAL(activated(int)), this, SLOT(changeClassificationAttribute(int)));
+    QObject::connect(mClassBreakBox, SIGNAL(selectionChanged()), this, SLOT(changeCurrentValue()));
+    QObject::connect(&sydialog, SIGNAL(settingsChanged()), this, SLOT(applySymbologyChanges()));
+    mSymbolWidgetStack->addWidget(&sydialog);
+    mSymbolWidgetStack->raiseWidget(&sydialog);
+    
     mClassBreakBox->setCurrentItem(0);
 }
 
@@ -118,9 +113,6 @@ void QgsUniqueValueDialog::apply()
     for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
     {
 	QgsSymbol* symbol=it->second;
-#ifdef QGISDEBUG
-	qWarning("apply: lower value is "+symbol->lowerValue());
-#endif
 	QgsSymbol* newsymbol=new QgsSymbol(mVectorLayer->vectorType(), symbol->lowerValue(), symbol->upperValue(), symbol->label());
 	newsymbol->setPen(symbol->pen());
 	newsymbol->setBrush(symbol->brush());

@@ -1415,10 +1415,6 @@ void QgsVectorLayer::showLayerProperties()
     m_propertiesDialog->setDisplayField(displayField());
 
 #ifdef QGISDEBUG
-    std::cerr << "Resetting prop dialog\n";
-#endif
-    m_propertiesDialog->reset();
-#ifdef QGISDEBUG
     std::cerr << "Raising prop dialog\n";
 #endif
     m_propertiesDialog->raise();
