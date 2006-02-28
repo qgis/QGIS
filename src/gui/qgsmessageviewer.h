@@ -18,15 +18,22 @@
 #ifndef QGSMESSAGEVIEWER_H
 #define QGSMESSAGEVIEWER_H
 
-#include "ui_qgsmessageviewer.h"
-#include "qgisgui.h"
+#include <ui_qgsmessageviewer.h>
+#include <qgisgui.h>
 
 class QgsMessageViewer: public QDialog, private Ui::QgsMessageViewer
 {
   public:
     QgsMessageViewer(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     ~QgsMessageViewer();
-    void setMessage(const QString& msg);
+    // Call one of the setMessage...() functions first.
+    // Subsequent calls to appendMessage use the format as determined
+    // by the call to setMessage...()
+
+    // Treats the given text as html.
+    void setMessageAsHtml(const QString& msg);
+    // Treats the given text as plain text
+    void setMessageAsPlainText(const QString& msg);
     void appendMessage(const QString& msg);
 };
 

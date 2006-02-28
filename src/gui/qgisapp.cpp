@@ -4567,8 +4567,8 @@ void QgisApp::socketConnectionClosed()
       {
         // show more info
         QgsMessageViewer *mv = new QgsMessageViewer(this);
-        mv->setCaption(tr("QGIS - Changes in CVS Since Last Release"));
-        mv->setMessage(parts[2]);
+        mv->setCaption(tr("QGIS - Changes in SVN Since Last Release"));
+        mv->setMessageAsPlainText(parts[2]);
         mv->exec();
       }
     }

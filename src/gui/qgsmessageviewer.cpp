@@ -29,9 +29,14 @@ QgsMessageViewer::~QgsMessageViewer()
 {
 }
 
-void QgsMessageViewer::setMessage(const QString& msg)
+void QgsMessageViewer::setMessageAsHtml(const QString& msg)
 {
   txtMessage->setHtml(msg);
+}
+
+void QgsMessageViewer::setMessageAsPlainText(const QString& msg)
+{
+  txtMessage->setPlainText(msg);
 }
 
 void QgsMessageViewer::appendMessage(const QString& msg)

@@ -1,4 +1,4 @@
-INCLUDES = -I../../core/ -I../../gui/
+INCLUDES = -I../../core/ -I../../gui/ -I../../ui/
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
