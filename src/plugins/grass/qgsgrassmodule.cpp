@@ -184,6 +184,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     else 
     {
         std::cerr << "Module " << xName.ascii() << " not found" << std::endl;
+	QMessageBox::warning( 0, "Warning", "Module " + xName + " not found" );
         return;
     }
 #else
