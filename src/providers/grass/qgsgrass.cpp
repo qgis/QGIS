@@ -476,3 +476,128 @@ QString QgsGrass::closeMapset ( )
 
     return NULL;
 }
+
+QStringList QgsGrass::locations ( QString gisbase )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrass::locations gisbase = " 
+	      << gisbase.ascii() << std::endl;
+    #endif
+
+    QStringList list;
+
+    if ( gisbase.isEmpty() ) return list;
+    
+    QDir d = QDir( gisbase );
+    d.setFilter(QDir::NoDotAndDotDot|QDir::Dirs);
+
+    for ( int i = 0; i < d.count(); i++ ) 
+    {
+        if ( QFile::exists ( gisbase + "/" + d[i] 
+		             + "/PERMANENT/DEFAULT_WIND" ) )
+	{
+    	    list.append(QString(d[i]));
+	}
+    }
+    return list;
+}
+
+QStringList QgsGrass::mapsets ( QString gisbase, QString locationName )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrass::mapsets gisbase = " << gisbase.ascii() 
+	      << " locationName = " << locationName.ascii() << std::endl;
+    #endif
+    
+    if ( gisbase.isEmpty() || locationName.isEmpty() )
+	return QStringList();
+
+    return QgsGrass::mapsets ( gisbase + "/" + locationName );
+}
+
+QStringList QgsGrass::mapsets ( QString locationPath )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrass::mapsets locationPath = " 
+	      << locationPath.ascii() << std::endl;
+    #endif
+
+    QStringList list;
+
+    if ( locationPath.isEmpty() ) return list;
+    
+    QDir d = QDir( locationPath );
+    d.setFilter(QDir::NoDotAndDotDot|QDir::Dirs);
+
+    for ( int i = 0; i < d.count(); i++ ) 
+    {
+        if ( QFile::exists ( locationPath + "/" + d[i] + "/WIND" ) )
+	{
+    	    list.append(d[i]);
+	}
+    }
+    return list;
+}
+
+QStringList QgsGrass::vectors ( QString gisbase, QString locationName,
+	                         QString mapsetName)
+{
+    if ( gisbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
+	return QStringList();
+
+    return QgsGrass::vectors ( gisbase + "/" + locationName + "/" + mapsetName );
+}
+
+QStringList QgsGrass::vectors ( QString mapsetPath )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrass::vectors mapsetPath = " 
+	      << mapsetPath.ascii() << std::endl;
+    #endif
+
+    QStringList list;
+
+    if ( mapsetPath.isEmpty() ) return list;
+    
+    QDir d = QDir( mapsetPath + "/vector" );
+    d.setFilter(QDir::NoDotAndDotDot|QDir::Dirs);
+
+    for ( int i = 0; i < d.count(); i++ ) 
+    {
+        if ( QFile::exists ( mapsetPath + "/vector/" + d[i] + "/head" ) )
+	{
+    	    list.append(d[i]);
+	}
+    }
+    return list;
+}
+
+QStringList QgsGrass::rasters ( QString gisbase, QString locationName,
+	                         QString mapsetName)
+{
+    if ( gisbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
+	return QStringList();
+
+    return QgsGrass::rasters ( gisbase + "/" + locationName + "/" + mapsetName );
+}
+
+QStringList QgsGrass::rasters ( QString mapsetPath )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrass::rasters mapsetPath = " 
+	      << mapsetPath.ascii() << std::endl;
+    #endif
+
+    QStringList list;
+
+    if ( mapsetPath.isEmpty() ) return list;
+    
+    QDir d = QDir( mapsetPath + "/cellhd" );
+    d.setFilter(QDir::Files);
+
+    for ( int i = 0; i < d.count(); i++ ) 
+    {
+        list.append(d[i]);
+    }
+    return list;
+}
