@@ -707,6 +707,7 @@ void QgsGrassModule::readStderr()
 
     QString line;
     QRegExp rxpercent ( "GRASS_INFO_PERCENT: (\\d+)" );
+    QRegExp rxmessage ( "GRASS_INFO_MESSAGE\\(\\d+,\\d+\\): (.*)" );
     QRegExp rxwarning ( "GRASS_INFO_WARNING\\(\\d+,\\d+\\): (.*)" );
     QRegExp rxerror ( "GRASS_INFO_ERROR\\(\\d+,\\d+\\): (.*)" );
     QRegExp rxend ( "GRASS_INFO_END\\(\\d+,\\d+\\)" );
@@ -719,6 +720,8 @@ void QgsGrassModule::readStderr()
 	if ( rxpercent.search ( line ) != -1 ) {
 	    int progress = rxpercent.cap(1).toInt();
 	    mProgressBar->setProgress ( progress, 100 );
+	} else if ( rxmessage.search ( line ) != -1 ) {
+	    mOutputTextBrowser->append ( rxmessage.cap(1) );
 	} else if ( rxwarning.search ( line ) != -1 ) {
 	    QString warn = rxwarning.cap(1);
 	    QString img = mAppDir + "/share/qgis/themes/default/grass/grass_module_warning.png";
