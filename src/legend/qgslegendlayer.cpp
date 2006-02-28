@@ -193,3 +193,30 @@ void QgsLegendLayer::updateLayerSymbologySettings(const QgsMapLayer* mapLayer)
 	}
     }
 }
+
+void QgsLegendLayer::updateCheckState()
+{
+  std::list<QgsLegendLayerFile*> llfiles = legendLayerFiles();
+  if(llfiles.size() < 1)
+    {
+      return;
+    }
+
+  std::list<QgsLegendLayerFile*>::iterator iter = llfiles.begin();
+  Qt::CheckState theState = (*iter)->checkState(0);
+  for(; iter != llfiles.end(); ++iter)
+    {
+      if(theState != (*iter)->checkState(0))
+	{
+	  theState = Qt::PartiallyChecked;
+	  break;
+	}
+    }
+
+  if(theState != checkState(0))
+    {
+      treeWidget()->blockSignals(true);
+      setCheckState(0, theState);
+      treeWidget()->blockSignals(false);
+    }
+}

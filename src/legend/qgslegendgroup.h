@@ -20,7 +20,10 @@
 #ifndef QGSLEGENDGROUP_H
 #define QGSLEGENDGROUP_H
 
+#include <list>
 #include <qgslegenditem.h>
+
+class QgsLegendLayerFile;
 
 /**
 This is a specialised version of QLegendItem that specifies that the items below this point will be treated as a group. For example hiding this node will hide all layers below that are members of the group.
@@ -38,7 +41,11 @@ public:
     QgsLegendItem::DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
     QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
     bool isLeafNode();
-    bool insert(QgsLegendItem* theItem, bool changesettings = true);
+    bool insert(QgsLegendItem* theItem);
+    /**Returns all legend layer files under this group*/
+    std::list<QgsLegendLayerFile*> legendLayerFiles();
+    /**Goes through all the legendlayerfiles and sets check state to checked/partially checked/unchecked*/
+    void updateCheckState();
 };
 
 #endif

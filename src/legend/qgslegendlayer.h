@@ -58,7 +58,9 @@ public:
     /**Copies the symbology settings of the layer to all maplayers in the QgsLegendLayerFileGroup.
    This method should be called whenever a layer in this group changes it symbology settings
   (normally from QgsMapLayer::refreshLegend)*/
-  void updateLayerSymbologySettings(const QgsMapLayer* mapLayer);
+    void updateLayerSymbologySettings(const QgsMapLayer* mapLayer);
+    /**Goes through all the legendlayerfiles and sets check state to checked/partially checked/unchecked*/
+    void updateCheckState();
 };
 
 #endif

@@ -124,7 +124,12 @@ class QgsLegend : public QTreeWidget
   /**Finds the next dom node. This function is used by QgsLegend, but probably its not a good place here*/
   static QDomNode nextDomNode(const QDomNode& theNode);
 
-  /**Moves an item after another one*/
+  /**Inserts an item into another one. Stores the item specific settings of the moved item (and its subitems)
+   and applies it afterwards again*/
+  void insertItem(QTreeWidgetItem* move, QTreeWidgetItem* into);
+
+  /**Moves an item after another one. Stores the item specific settings of the moved item (and its subitems)
+   and applies it afterwards again*/
   void moveItem(QTreeWidgetItem* move, QTreeWidgetItem* after);
 
   /**Removes an item from the legend. This is e.g. necessary before shifting it to another place*/
