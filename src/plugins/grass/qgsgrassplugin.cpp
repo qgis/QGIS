@@ -368,7 +368,10 @@ void QgsGrassPlugin::addRaster()
     QString name = uri.right( uri.length() - pos - 1 );
     name.replace('/', ' ');
 
-    qGisInterface->addRasterLayer( uri );
+    //qGisInterface->addRasterLayer( uri );
+    QgsRasterLayer *layer = new QgsRasterLayer( uri, sel->map );
+    qGisInterface->addRasterLayer(layer);
+
     mCanvas->refresh(); 
   }
 }
