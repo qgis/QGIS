@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
  
-// $Id:$
+// $Id$
 
 #include <iostream>
 
@@ -106,6 +106,6 @@ void QgsConnectionDialog::saveConnection()
 void QgsConnectionDialog::helpInfo(){
   QString message = tr("General Interface Help:\n\n");
   QgsMessageViewer * e = new QgsMessageViewer(this);
-  e->setMessage(message);
+  e->setMessageAsPlainText(message);
   e->exec();
 }

@@ -30,9 +30,8 @@ extern "C"
 #include <list>
 #include <queue>
 #include <fstream>
-#include <qstring.h>
-#include <qobject.h>
-//#include <qmutex.h>
+
+class QString;
 
 class OGRDataSource;
 class OGRLayer;
@@ -367,7 +366,6 @@ class QgsPostgresProvider:public QgsVectorDataProvider
   private:
 
     std::vector < QgsFeature > features;
-    std::vector < bool > *selected;
     std::vector < QgsField > attributeFields;
     std::map < int, int > attributeFieldsIdMap;
 
@@ -464,6 +462,13 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     bool deduceEndian();
     bool getGeometryDetails();
 
+    PGresult* executeDbCommand(PGconn* connection, const QString& sql);
+
+    // Produces a QMessageBox with the given title and text. Doesn't
+    // return until the user has dismissed the dialog box.
+    void showMessageBox(const QString& title, const QString& text);
+    void showMessageBox(const QString& title, const QStringList& text);
+
     // A simple class to store the rows of the sql executed in the
     // findColumns() function.
     class TT
@@ -482,14 +487,14 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     };
 
 
-    // A simple class to store three strings
+    // A simple class to store four strings
     class SRC 
     { 
     public:
       SRC() {};
-      SRC(QString s, QString r, QString c) :
-	schema(s), relation(r), column(c) {};
-      QString schema, relation, column; 
+      SRC(QString s, QString r, QString c, QString t) :
+	schema(s), relation(r), column(c), type(t) {};
+      QString schema, relation, column, type; 
     };
 
     // A structure to store the underlying schema.table.column for

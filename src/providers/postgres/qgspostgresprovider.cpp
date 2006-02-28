@@ -21,15 +21,12 @@
 #include <iostream>
 #include <cassert>
 
-#include <qtextstream.h>
-#include <qstringlist.h>
-#include <qapplication.h>
-#include <qmessagebox.h>
-#include <qcursor.h>
-#include <qobject.h>
-//Added by qt3to4:
+#include <QStringList>
+#include <QApplication>
+#include <QMessageBox>
 #include <QEvent>
 #include <QCustomEvent>
+#include <QTextOStream>
 
 // for ntohl
 #ifdef WIN32
@@ -38,10 +35,11 @@
 #include <netinet/in.h>
 #endif
 
-#include "qgis.h"
-#include "qgsfeature.h"
-#include "qgsfield.h"
-#include "qgsrect.h"
+#include <qgis.h>
+#include <qgsfeature.h>
+#include <qgsfield.h>
+#include <qgsrect.h>
+#include <qgsmessageviewer.h>
 
 #include "qgsprovidercountcalcevent.h"
 #include "qgsproviderextentcalcevent.h"
@@ -59,6 +57,7 @@
 #define QGISEXTERN extern "C"
 #endif
 
+#define QGISDEBUG
 
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
@@ -201,13 +200,11 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
     PGresult* testAccess = PQexec(pd, (const char*)(sql.utf8()));
     if (PQresultStatus(testAccess) != PGRES_TUPLES_OK)
     {
-      QApplication::restoreOverrideCursor();
-      QMessageBox::warning(0, tr("Unable to access relation"),
+      showMessageBox(tr("Unable to access relation"),
           tr("Unable to access the ") + mSchemaTableName + 
           tr(" relation.\nThe error message from the database was:\n") +
           QString(PQresultErrorMessage(testAccess)) + ".\n" + 
           "SQL: " + sql);
-      QApplication::setOverrideCursor(Qt::waitCursor);
       PQclear(testAccess);
       valid = false;
       return;
@@ -221,12 +218,11 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
 #endif
     if(!hasGEOS(pd))
     {
-      QApplication::restoreOverrideCursor();
-      QMessageBox::warning(0, tr("No GEOS Support!"),
-          tr("Your PostGIS installation has no GEOS support.\nFeature selection and "
-            "identification will not work properly.\nPlease install PostGIS with " 
-            "GEOS support (http://geos.refractions.net)"));
-      QApplication::setOverrideCursor(Qt::waitCursor);
+      showMessageBox(tr("No GEOS Support!"),
+		     tr("Your PostGIS installation has no GEOS support.\n"
+			"Feature selection and identification will not "
+			"work properly.\nPlease install PostGIS with " 
+			"GEOS support (http://geos.refractions.net)"));
     }
     //--std::cout << "Connection to the database was successful\n";
 
@@ -290,7 +286,7 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
 
       // set the primary key
       getPrimaryKey();
-
+  
       // Set the postgresql message level so that we don't get the
       // 'there is no transaction in progress' warning.
 #ifndef QGISDEBUG
@@ -338,15 +334,6 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
     //--std::cout << "Connection to database failed\n";
   }
 
-  //create a boolean vector and set every entry to false
-
-  /*  if (valid) {
-      selected = new std::vector < bool > (ogrLayer->GetFeatureCount(), false);
-      } else {
-      selected = 0;
-      } */
-  //  tabledisplay=0;
-
   //fill type names into lists
   mNumericalTypes.push_back("double precision");
   mNumericalTypes.push_back("int4");
@@ -354,6 +341,10 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
   mNonNumericalTypes.push_back("text");
   mNonNumericalTypes.push_back("varchar(30)");
 
+  if (primaryKey.isEmpty())
+  {
+    valid = false;
+  }
 }
 
 QgsPostgresProvider::~QgsPostgresProvider()
@@ -853,39 +844,31 @@ QString QgsPostgresProvider::endianString()
 
 QString QgsPostgresProvider::getPrimaryKey()
 {
-  // check to see if there is a primary key on the relation
-  /*
-     Process to determine the fields used in a primary key for a table:
+  // check to see if there is an unique index on the relation, which
+  // can be used as a key into the table. Primary keys are always
+  // unique indices, so we catch them as well.
 
-     test=# select indkey from pg_index where indisprimary = 't' 
-     and indrelid = 
-     (select oid from pg_class where relname = 'earthquakes';
-     indkey
-     --------
-     1 5
-     (1 row)
-
-     Primary key is composed of fields 1 and 5
-     */
-  QString sql = "select indkey from pg_index where indisprimary = 't' and "
+  QString sql = "select indkey from pg_index where indisunique = 't' and "
     "indrelid = (select oid from pg_class where relname = '"
     + mTableName + "' and relnamespace = (select oid from pg_namespace where "
     "nspname = '" + mSchemaName + "'))";
 
 #ifdef QGISDEBUG
-  std::cerr << "Getting primary key using '" << sql.toLocal8Bit().data() << "'\n";
+  std::cerr << "Getting unique index using '" << sql.toLocal8Bit().data() << "'\n";
 #endif
-  // XXX Do we need the utf8 here ?? Couldn't tell when doing the merge... -ges
-  PGresult *pk = PQexec(connection,(const char *)(sql.utf8()));
+  PGresult *pk = executeDbCommand(connection, sql);
+
 #ifdef QGISDEBUG
   std::cerr << "Got " << PQntuples(pk) << " rows.\n";
 #endif
 
-  // if we got no tuples we ain't go no pk :)
-  if( PQntuples(pk) == 0 )
+  QStringList log;
+
+  // if we got no tuples we ain't got no unique index :)
+  if (PQntuples(pk) == 0)
   {
 #ifdef QGISDEBUG
-    std::cerr << "Relation has no primary key -- "
+    std::cerr << "Relation has no unique index -- "
       << "investigating alternatives\n";
 #endif
 
@@ -894,14 +877,14 @@ QString QgsPostgresProvider::getPrimaryKey()
     // If the relation is a view try to find a suitable column to use as
     // the primary key.
 
-    primaryKey = "";
-
     sql = "select relkind from pg_class where relname = '" + mTableName + 
       "' and relnamespace = (select oid from pg_namespace where "
       "nspname = '" + mSchemaName + "')";
-    PGresult* tableType = PQexec(connection, (const char*) (sql.utf8()));
+    PGresult* tableType = executeDbCommand(connection, sql);
     QString type = PQgetvalue(tableType, 0, 0);
     PQclear(tableType);
+
+    primaryKey = "";
 
     if (type == "r") // the relation is a table
     {
@@ -909,28 +892,31 @@ QString QgsPostgresProvider::getPrimaryKey()
       std::cerr << "Relation is a table. Checking to see if it has an "
         << "oid column.\n";
 #endif
-      sql = "select oid from " + mSchemaTableName + " limit 1";
-      PGresult* oidPresent = PQexec(connection, (const char*)(sql.utf8()));
+      // If there is an oid on the table, use that instead,
+      // otherwise give up
+      sql = "select attname from pg_attribute where attname = 'oid' and "
+	"attrelid = (select oid from pg_class where relname = '" +
+	mTableName + "' and relnamespace = (select oid from pg_namespace "
+	"where nspname = '" + mSchemaName + "'))";
+      PGresult* oidCheck = executeDbCommand(connection, sql);
 
-      if (PQntuples(oidPresent) == 0)
-      {
-        valid = false;
-        QApplication::restoreOverrideCursor();
-        QMessageBox::warning(0, QObject::tr("No oid column in table"),
-            QObject::tr("The table has no primary key nor oid column. \n"
-              "Qgis requires that the table either has a primary key \n"
-              "or has a column containing the PostgreSQL oid.\n"
-              "For better performance the column should be indexed\n"));
-        QApplication::setOverrideCursor(Qt::waitCursor);
-      }
-      else
+      if (PQntuples(oidCheck) != 0)
       {
         // Could warn the user here that performance will suffer if
         // oid isn't indexed (and that they may want to add a
         // primary key to the table)
-        primaryKey = "oid";
+	primaryKey = "oid";
+	primaryKeyType = "int4";
       }
-      PQclear(oidPresent);
+      else
+      {
+        showMessageBox(tr("No suitable key column in table"),
+            tr("The table has no column suitable for use as a key.\n\n"
+	       "Qgis requires that the table either has a column of type\n"
+               "int4 with a unique constraint on it (which includes the\n"
+               "primary key) or has a PostgreSQL oid column.\n"));
+      }
+      PQclear(oidCheck);
     }
     else if (type == "v") // the relation is a view
     {
@@ -938,86 +924,127 @@ QString QgsPostgresProvider::getPrimaryKey()
       // could be used as the primary key.
       tableCols cols;
       // Given a schema.view, populate the cols variable with the
-      // schema.table.column's  that underly the view columns.
+      // schema.table.column's that underly the view columns.
       findColumns(cols);
       // From the view columns, choose one for which the underlying
       // column is suitable for use as a key into the view.
       primaryKey = chooseViewColumn(cols);
-
-      if (primaryKey.isEmpty())
-      {
-        valid = false;
-        QApplication::restoreOverrideCursor();
-        QMessageBox::warning(0, QObject::tr("No suitable key column in view"),
-            QObject::tr("The view has no column suitable for use as a "
-              "unique key.\n\n"
-              "Qgis requires that the view has a column that can be\n"
-              "used as a unique key. It should be derived from a column\n"
-              "of type int4 and be either a primary key or have\n"
-              "a unique constraint on it (an indexed column will\n"
-              "give better performance)."));
-        QApplication::setOverrideCursor(Qt::waitCursor);
-      }
     }
     else
       qWarning("Unexpected relation type of '" + type + "'.");
   }
-  else
+  else // have some unique indices on the table. Now choose one...
   {
-    // store the key column
-    QString keyString = PQgetvalue(pk,0,0);
-    QStringList columns = QStringList::split(" ", keyString);
-    if (columns.count() > 1)
+    // choose which (if more than one) unique index to use
+    std::vector<std::pair<QString, QString> > suitableKeyColumns;
+    for (int i = 0; i < PQntuples(pk); ++i)
     {
-      valid = false;
-      QApplication::restoreOverrideCursor();
-      QMessageBox::warning(0, QObject::tr("No primary key column in table"),
-          QObject::tr("The table has a primary key that is composed of \n"
-            "more than one column. Qgis does not currently \n"
-            "support this."));
-      QApplication::setOverrideCursor(Qt::waitCursor);
-      //TODO concatenated key -- can we use this?
-#ifdef QGISDEBUG
-      std::cerr << "Table has a concatenated primary key\n";
-#endif
+      QString col = PQgetvalue(pk, i, 0);
+      QStringList columns = QStringList::split(" ", col);
+      if (columns.count() == 1)
+      {
+	// Get the column name and data type
+	sql = "select attname, pg_type.typname from pg_attribute, pg_type where "
+	  "atttypid = pg_type.oid and attnum = " +
+	  col + " and attrelid = (select oid from pg_class where " +
+	  "relname = '" + mTableName + "' and relnamespace = (select oid "
+	  "from pg_namespace where nspname = '" + mSchemaName + "'))";
+	PGresult* types = executeDbCommand(connection, sql);
+
+	assert(PQntuples(types) > 0); // should never happen
+
+	QString columnName = PQgetvalue(types, 0, 0);
+	QString columnType = PQgetvalue(types, 0, 1);
+
+	if (columnType != "int4")
+	  log.append(tr("The unique index on column") + 
+                     " '" + columnName + "' " +
+		     tr("is unsuitable because Qgis does not currently support"
+                        " non-int4 type columns as a key into the table.\n"));
+	else
+	  suitableKeyColumns.push_back(std::make_pair(columnName, columnType));
+	  
+	PQclear(types);
+      }
+      else
+      {
+        std::cerr << col.local8Bit().data() << '\n';
+	sql = "select attname from pg_attribute, pg_type where "
+	  "atttypid = pg_type.oid and attnum in (" +
+	  col.replace(" ", ",") 
+          + ") and attrelid = (select oid from pg_class where " +
+	  "relname = '" + mTableName + "' and relnamespace = (select oid "
+	  "from pg_namespace where nspname = '" + mSchemaName + "'))";
+	PGresult* types = executeDbCommand(connection, sql);
+        QString colNames;
+        int numCols = PQntuples(types);
+        for (int j = 0; j < numCols; ++j)
+        {
+          if (j == numCols-1)
+            colNames += tr("and ");
+          colNames += "'" + QString(PQgetvalue(types, j, 0)) 
+            + (j < numCols-2 ? "', " : "' ");
+        }
+
+	log.append(tr("The unique index based on columns ") + colNames + 
+		   tr(" is unsuitable because Qgis does not currently support"
+                      " multiple columns as a key into the table.\n"));
+      }
     }
-    int primaryKeyIndex = attributeFieldsIdMap[columns[0].toInt()];
-    QgsField fld = attributeFields[primaryKeyIndex];
-    // if the primary key is 4-byte integer we use it
-    if (fld.type() == "int4")
+
+    // suitableKeyColumns now contains the name of columns (and their
+    // data type) that
+    // are suitable for use as a key into the table. If there is
+    // more than one we need to choose one. For the moment, just
+    // choose the first in the list.
+
+    if (suitableKeyColumns.size() > 0)
     {
-      primaryKey = fld.name();
-      primaryKeyType = fld.type();
+      primaryKey = suitableKeyColumns[0].first;
+      primaryKeyType = suitableKeyColumns[0].second;
     }
     else
     {
-      // key is not a 4-byte int -- use the oid instead (if one exists);
-      sql = "select oid from " + mSchemaTableName + " limit 1";
-      PGresult* oidPresent = PQexec(connection, (const char*)(sql.utf8()));
-      if (PQntuples(oidPresent) == 0)
+      // If there is an oid on the table, use that instead,
+      // otherwise give up
+      sql = "select attname from pg_attribute where attname = 'oid' and "
+	"attrelid = (select oid from pg_class where relname = '" +
+	mTableName + "' and relnamespace = (select oid from pg_namespace "
+	"where nspname = '" + mSchemaName + "'))";
+      PGresult* oidCheck = executeDbCommand(connection, sql);
+
+      if (PQntuples(oidCheck) != 0)
       {
-	valid = false;
-        QApplication::restoreOverrideCursor();
-        QMessageBox::warning(0, QObject::tr("Unsupported key column type"),
-            QObject::tr("Qgis currently does not support key columns of type " + fld.type() + ",\n"
-			"and there is no oid on this table that could be used instead.\n"
-			"Qgis currently only supports type int4. You can either change the\n"
-			"key column to type int4 or add an oid to the table."));
-        QApplication::setOverrideCursor(Qt::waitCursor);
+	primaryKey = "oid";
+	primaryKeyType = "int4";
       }
       else
-	primaryKey = "oid";
-      PQclear(oidPresent);
+      {
+	log.prepend("There were no columns in the table that were suitable "
+		   "as a qgis key into the table (either a column with a "
+		   "unique index and type int4 or a PostgreSQL oid column.\n");
+      }
+      PQclear(oidCheck);
+    }
+
+    // Either primaryKey has been set by the above code, or it
+    // hasn't. If not, present some info to the user to give them some
+    // idea of why not.
+    if (primaryKey.isEmpty())
+    {
+      // Give some info to the user about why things didn't work out.
+      valid = false;
+      showMessageBox(tr("Unable to find a key column"), log);
     }
   }
   PQclear(pk);
 
-  //#ifdef QGISDEBUG
+#ifdef QGISDEBUG
   if (primaryKey.length() > 0)
     std::cerr << "Qgis row key is " << primaryKey.toLocal8Bit().data() << '\n';
   else
     std::cerr << "Qgis row key was not set.\n";
-  //#endif
+#endif
 
   return primaryKey;
 }
@@ -1034,6 +1061,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
   // entries in the map which can be used as the key.
 
   QString sql, key;
+  QStringList log;
   tableCols suitable;
   // Cache of relation oid's
   std::map<QString, QString> relOid;
@@ -1046,6 +1074,7 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
     QString schemaName = iter->second.schema;
     QString tableName = iter->second.relation;
     QString tableCol  = iter->second.column;
+    QString colType   = iter->second.type;
 
     // Get the oid from pg_class for the given schema.relation for use
     // in subsequent queries.
@@ -1062,7 +1091,8 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
     }
     else
       {
-	std::cerr << "Relation " << schemaName.toLocal8Bit().data() << '.' << tableName.toLocal8Bit().data()
+	std::cerr << "Relation " << schemaName.toLocal8Bit().data() << '.' 
+                  << tableName.toLocal8Bit().data()
 		  << " doesn't exist in the pg_class table. This "
 		  << "shouldn't happen and is odd.\n";
 	assert(0);
@@ -1079,23 +1109,34 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
     //    it isn't a constraint over multiple columns.
     sql = "select * from pg_constraint where conkey[1] = "
       "(select attnum from pg_attribute where attname = '" + tableCol + "' "
-      "and attrelid = " + rel_oid + 
-      "and atttypid = (select oid from pg_type where typname = 'int4')) "
+      "and attrelid = " + rel_oid + ")"
       "and conrelid = " + rel_oid + " "
       "and (contype = 'p' or contype = 'u') "
       "and array_dims(conkey) = '[1:1]'";
 
     result = PQexec(connection, (const char*)(sql.utf8()));
-    if (PQntuples(result) == 1)
+    if (PQntuples(result) == 1 && colType == "int4")
       suitable[viewCol] = iter->second;
 
-#ifdef QGISDEBUG
-    if (PQntuples(result) == 1)
-      std::cerr << "Column " << viewCol.toLocal8Bit().data() << " from " 
-		<< schemaName.toLocal8Bit().data() << "." << tableName.toLocal8Bit().data() 
-		<< "." << tableCol.toLocal8Bit().data()
-		<< " is suitable.\n";
-#endif
+    QString details = "'" + viewCol + "'" + tr(" derives from ") 
+      + "'" + schemaName + "." + tableName + "." + tableCol + "' ";
+
+    if (PQntuples(result) == 1 && colType == "int4")
+    {
+      details += tr("and is suitable.");
+    }
+    else
+    {
+      details += tr("and is not suitable ");
+      details += "(" + tr("type is ") + colType;
+      if (PQntuples(result) == 1)
+        details += tr(" and has a suitable constraint)");
+      else
+        details += tr(" and does not have a suitable constraint)");
+    }
+
+    log << details;
+
     PQclear(result);
     if (tableCol == "oid")
       oids.push_back(iter);
@@ -1177,7 +1218,8 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
           << " columns with indices to choose from\n.";
 #endif
       }
-      // else choose the first one in the container
+      // else choose the first one in the container, ensuring that it
+      // contains unique data
       else if (uniqueData(mSchemaName, mTableName, suitable.begin()->first))
       {
         key = suitable.begin()->first;
@@ -1189,6 +1231,24 @@ QString QgsPostgresProvider::chooseViewColumn(const tableCols& cols)
 #endif
       }
     }
+  }
+
+  if (key.isEmpty())
+  {
+    valid = false;
+    // Successive prepends means that the text appears in the dialog
+    // box in the reverse order to that seen here.
+    log.prepend(tr("The view you selected has the following columns, none "
+                   "of which satisfy the above conditions:"));
+    log.prepend(tr("Qgis requires that the view has a column that can be used "
+                   "as a unique key. Such a column should be derived from "
+                   "a table column of type int4 and be a primary key, "
+                   "have a unique constraint on it, or be a PostgreSQL "
+                   "oid column. To improve "
+                   "performance the column should also be indexed.\n"));
+    log.prepend(tr("The view ") + "'" + mSchemaName + mTableName + "'" +
+                tr("has no column suitable for use as a unique key.\n"));
+    showMessageBox(tr("No suitable key column in view"), log);
   }
 
   return key;
@@ -1244,14 +1304,14 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
     temp.column_type      = PQgetvalue(result, i, 7);
 
 #ifdef QGISDEBUG
-    std::cout << temp.view_schema.data() << "." 
-	      << temp.view_name.data() << "."
-	      << temp.view_column_name.data() << " <- "
-	      << temp.table_schema.data() << "."
-	      << temp.table_name.data() << "."
-	      << temp.column_name.data() << " is a '"
-	      << temp.table_type.data() << "' of type "
-	      << temp.column_type.data() << '\n';
+    std::cout << temp.view_schema.local8Bit().data() << "." 
+	      << temp.view_name.local8Bit().data() << "."
+	      << temp.view_column_name.local8Bit().data() << " <- "
+	      << temp.table_schema.local8Bit().data() << "."
+	      << temp.table_name.local8Bit().data() << "."
+	      << temp.column_name.local8Bit().data() << " is a '"
+	      << temp.table_type.local8Bit().data() << "' of type "
+	      << temp.column_type.local8Bit().data() << '\n';
 #endif
     columnRelations[temp.view_schema + '.' +
 		    temp.view_name + '.' +
@@ -1288,9 +1348,10 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
     {
 #ifdef QGISDEBUG
       std::cerr << "Searching for the column that " 
-		<< ii->second.table_schema.data()  << '.'
-		<< ii->second.table_name.data() << "."
-		<< ii->second.column_name.data() << " refers to.\n";
+		<< ii->second.table_schema.local8Bit().data()  << '.'
+		<< ii->second.table_name.local8Bit().data() << "."
+		<< ii->second.column_name.local8Bit().data() 
+                << " refers to.\n";
 #endif
 
       ii = columnRelations.find(QString(ii->second.table_schema + '.' +
@@ -1303,24 +1364,25 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
     if (count >= max_loops)
     {
       std::cerr << "  Search for the underlying table.column for view column "
-		<< ii->second.table_schema.data() << '.' 
-		<< ii->second.table_name.data() << '.'
-		<< ii->second.column_name.data() << " failed: exceeded maximum "
+		<< ii->second.table_schema.local8Bit().data() << '.' 
+		<< ii->second.table_name.local8Bit().data() << '.'
+		<< ii->second.column_name.local8Bit().data() << " failed: exceeded maximum "
 		<< "interation limit (" << max_loops << ").\n";
-      cols[ii->second.view_column_name] = SRC("","","");
+      cols[ii->second.view_column_name] = SRC("","","","");
     }
     else
     {
       cols[ii->second.view_column_name] = 
 	SRC(ii->second.table_schema, 
 	    ii->second.table_name, 
-	    ii->second.column_name);
+	    ii->second.column_name, 
+            ii->second.column_type);
 
 #ifdef QGISDEBUG
       std::cerr << "  " << PQgetvalue(result, i, 0) << " derives from " 
-		<< ii->second.table_schema.data() << "."
-		<< ii->second.table_name.data() << "."
-		<< ii->second.column_name.data() << '\n';
+		<< ii->second.table_schema.local8Bit().data() << "."
+		<< ii->second.table_name.local8Bit().data() << "."
+		<< ii->second.column_name.local8Bit().data() << '\n';
 #endif
     }
   }
@@ -2375,8 +2437,10 @@ bool QgsPostgresProvider::deduceEndian()
 
 bool QgsPostgresProvider::getGeometryDetails()
 {
-  QString fType;
+  QString fType("");
+  srid = "";
   valid = false;
+  QStringList log;
 
   QString sql = "select f_geometry_column,type,srid from geometry_columns"
     " where f_table_name='" + mTableName + "' and f_geometry_column = '" + 
@@ -2386,26 +2450,19 @@ bool QgsPostgresProvider::getGeometryDetails()
   std::cerr << "Getting geometry column: " << sql.toLocal8Bit().data() << std::endl;
 #endif
 
-  PGresult *result = PQexec(connection, (const char *) (sql.utf8()));
+  PGresult *result = executeDbCommand(connection, sql);
+
+#ifdef QGISDEBUG
+  std::cerr << "geometry column query returned " 
+	    << PQntuples(result) << std::endl;
+  std::cerr << "column number of srid is " 
+	    << PQfnumber(result, "srid") << std::endl;
+#endif
 
   if (PQntuples(result) > 0)
   {
-    valid = true;
-#ifdef QGISDEBUG
-    std::cout << "geometry column query returned " 
-      << PQntuples(result) << std::endl;
-    std::cout << "column number of srid is " 
-      << PQfnumber(result, "srid") << std::endl;
-#endif
     srid = PQgetvalue(result, 0, PQfnumber(result, "srid"));
-
     fType = PQgetvalue(result, 0, PQfnumber(result, "type"));
-    if (fType == "POINT" || fType == "MULTIPOINT")
-      geomType = QGis::WKBPoint;
-    else if (fType == "LINESTRING" || fType == "MULTILINESTRING")
-      geomType = QGis::WKBLineString;
-    else if (fType == "POLYGON" || fType == "MULTIPOLYGON")
-      geomType = QGis::WKBPolygon;
     PQclear(result);
   }
   else
@@ -2413,28 +2470,48 @@ bool QgsPostgresProvider::getGeometryDetails()
     // Didn't find what we need in the geometry_columns table, so
     // get stuff from the relevant column instead. This may (will?) 
     // fail if there is no data in the relevant table.
-    PQclear(result);
-
+    PQclear(result); // for the query just before the if() statement
     sql = "select "
       "srid("         + geometryColumn + "), "
       "geometrytype(" + geometryColumn + ") from " + 
       mSchemaTableName + " limit 1";
 
-    result = PQexec(connection, (const char*) (sql.utf8()));
+    result = executeDbCommand(connection, sql);
 
     if (PQntuples(result) > 0)
     {
-      valid = true;
       srid = PQgetvalue(result, 0, PQfnumber(result, "srid"));
       fType = PQgetvalue(result, 0, PQfnumber(result, "geometrytype"));
-      if (fType == "POINT" || fType == "MULTIPOINT")
-        geomType = QGis::WKBPoint;
-      else if (fType == "LINESTRING" || fType == "MULTILINESTRING")
-        geomType = QGis::WKBLineString;
-      else if (fType == "POLYGON" || fType == "MULTIPOLYGON")
-        geomType = QGis::WKBPolygon;
     }
     PQclear(result);
+  }
+
+  if (!srid.isEmpty() && !fType.isEmpty())
+  {
+    valid = true;
+    if (fType == "POINT" || fType == "MULTIPOINT")
+      geomType = QGis::WKBPoint;
+    else if (fType == "LINESTRING" || fType == "MULTILINESTRING")
+      geomType = QGis::WKBLineString;
+    else if (fType == "POLYGON" || fType == "MULTIPOLYGON")
+      geomType = QGis::WKBPolygon;
+    else
+    {
+      showMessageBox(tr("Unknown geometry type"), 
+	tr("Column ") + geometryColumn + tr(" in ") +
+	   mSchemaTableName + tr(" has a geometry type of ") +
+	   QString::number(geomType) + 
+	   tr(", which Qgis does not currently support."));
+      valid = false;
+    }
+  }
+  else // something went wrong...
+  {
+    log.prepend(tr("Qgis was unable to determine the type and srid of "
+		   "column " + geometryColumn + tr(" in ") +
+		   mSchemaTableName + 
+		   tr(". The database communication log was:\n")));
+    showMessageBox(tr("Unable to get feature type and srid"), log);
   }
 
 #ifdef QGISDEBUG
@@ -2444,7 +2521,38 @@ bool QgsPostgresProvider::getGeometryDetails()
     << "Feature type name is " 
     << QGis::qgisFeatureTypes[geomType] << std::endl;
 #endif
+
   return valid;
+}
+
+PGresult* QgsPostgresProvider::executeDbCommand(PGconn* connection, 
+                                                const QString& sql)
+{
+  PGresult *result = PQexec(connection, (const char *) (sql.utf8()));
+#ifdef QGISDEBUG
+  std::cout << "Executed SQL: " << sql.local8Bit().data() << '\n';
+  if (PQresultStatus(result) == PGRES_TUPLES_OK)
+    std::cout << "Command was successful.";
+  else
+    std::cout << "Command was unsuccessful. The error message was: "
+              << PQresultErrorMessage(result) << ".\n";
+#endif
+  return result;
+}
+
+void QgsPostgresProvider::showMessageBox(const QString& title, 
+					 const QString& text)
+{
+  QgsMessageViewer* message = new QgsMessageViewer();
+  message->setCaption(title);
+  message->setMessageAsPlainText(text);
+  message->exec(); // modal
+}
+
+void QgsPostgresProvider::showMessageBox(const QString& title, 
+					 const QStringList& text)
+{
+  showMessageBox(title, text.join("\n"));
 }
 
 int QgsPostgresProvider::getSrid()

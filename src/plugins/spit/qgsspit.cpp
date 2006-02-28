@@ -301,7 +301,7 @@ void QgsSpit::addFile()
       error2 += "\n" + tr("REASON: One or both of the Shapefile files (*.dbf, *.shx) missing") + "\n\n";
     }
     QgsMessageViewer * e = new QgsMessageViewer( this );
-    e->setMessage( message + error1 + error2 );
+    e->setMessageAsPlainText( message + error1 + error2 );
     e->exec();
   }
 }
@@ -397,7 +397,7 @@ void QgsSpit::helpInfo()
                tr("[Quit] - quit the program\n") ) + QString(
                tr("[Help] - display this help dialog") + "\n\n" );
   QgsMessageViewer * e = new QgsMessageViewer( this );
-  e->setMessage( message );
+  e->setMessageAsPlainText( message );
   e->exec();
 }
 
