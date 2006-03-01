@@ -222,6 +222,7 @@ this item may be moved back to the original position with resetToInitialPosition
   /**Returns the legend layer to which a map layer gelongs*/
   QgsLegendLayer* findLegendLayer(const QString& layerKey);
 
+
   private slots:
 
   /**Calls 'handleRightClickEvent' on the item*/
@@ -293,6 +294,10 @@ private:
   QTreeWidgetItem* mRestoreItem;
 
   bool mShowLegendLayerFiles;
+
+  /**Stores the layer ordering before a mouse Move. After the move, this is used to
+   decide if the mapcanvas really has to be refreshed*/
+  std::deque<QString> mLayersPriorToMove;
 
   /*!
    * A fuction sed to determin how far down in the list an item is (starting with one for the first Item.

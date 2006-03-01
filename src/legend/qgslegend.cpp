@@ -242,7 +242,6 @@ void QgsLegend::mouseMoveEvent(QMouseEvent * e)
 	    }
 	}     
     }
-    //QTreeWidget::mouseMoveEvent(e);
 }
 
 void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
@@ -325,7 +324,13 @@ void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
 		origLayer->setLegend((QgsLegend*)(dynamic_cast<QgsLegendItem*>(dest->parent())->nextSibling()));
 	      }
 	  }
-	emit zOrderChanged(this);
+	
+	std::deque<QString> layersAfterRelease = layerIDs(); //test if canvas redraw is really necessary
+	if(layersAfterRelease != mLayersPriorToMove)
+	  {
+	    emit zOrderChanged(this);
+	  }
+
       }
   }
   mMousePressedFlag = false;
@@ -989,6 +994,7 @@ void QgsLegend::storeInitialPosition(QTreeWidgetItem* li)
       mRestoreInformation = YOUNGER_SIBLING;
       mRestoreItem = ((QgsLegendItem*)(li))->findYoungerSibling();
     }
+  mLayersPriorToMove = layerIDs();
 }
 
 void QgsLegend::resetToInitialPosition(QTreeWidgetItem* li)
