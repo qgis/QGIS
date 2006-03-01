@@ -161,7 +161,6 @@ void QgsLegend::mouseMoveEvent(QMouseEvent * e)
 
 	// remember item we've pressed as the one being moved
 	// and where it was originally
-	//QTreeWidgetItem* item = itemAt(contentsToViewport(mLastPressPos));
 	QTreeWidgetItem* item = itemAt(mLastPressPos);
 	if(item)
 	{
