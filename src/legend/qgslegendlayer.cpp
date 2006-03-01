@@ -78,12 +78,12 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(LEGEND_ITEM_TYPE type)
 {
     if ( type == LEGEND_LAYER || type == LEGEND_GROUP)
     {
-	return REORDER;
+      return REORDER;
     }
     else
-    {
+      {
 	return NO_ACTION;
-    }
+      }
 }
 
 QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(const QgsLegendItem* li) const
@@ -94,7 +94,14 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(const QgsLegendItem* li) const
   if(li && li != this)
     {
       LEGEND_ITEM_TYPE type = li->type();
-      if ( type == LEGEND_LAYER || type == LEGEND_GROUP)
+      if ( type == LEGEND_LAYER)
+	{
+	  if(parent() == li->parent())
+	    {
+	      return REORDER;
+	    }
+	}
+      else if(type == LEGEND_GROUP)
 	{
 	  return REORDER;
 	}
