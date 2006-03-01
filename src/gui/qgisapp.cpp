@@ -402,7 +402,7 @@ void QgisApp::createActions()
   mActionFileExit= new QAction(QIcon(myIconPath+"/mActionFileExit.png"), tr("Exit"), this);
   mActionFileExit->setShortcut(tr("Ctrl+Q"));
   mActionFileExit->setStatusTip(tr("Exit QGIS"));
-  connect(mActionFileExit, SIGNAL(triggered()), qApp, SLOT(quit()));
+  connect(mActionFileExit, SIGNAL(triggered()), this, SLOT(fileExit()));
   //
   // Layer Menu Related Items
   //
@@ -2061,6 +2061,7 @@ void QgisApp::addDatabaseLayer()
     statusBar()->message(mMapCanvas->extent().stringRep(2));
   }
 
+  delete dbs;
   qApp->processEvents();
   mMapCanvas->freeze(false);
   // For Qt4, deprecate direct calling of render().  Let render() be called by the 
@@ -2410,7 +2411,7 @@ findLayers_( QString const & fileFilters, list<QDomNode> const & layerNodes )
 void QgisApp::fileExit()
 {
   removeAllLayers();
-  QApplication::exit();
+  qApp->exit(0);
 }
 
 
