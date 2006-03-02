@@ -17,9 +17,9 @@ $(PROVIDER): $(OBJECTS)
 		-Wl,--enable-auto-import \
 		-Wl,--whole-archive ogrprovider_la-qgsogrprovider.o \
 		-Wl,--no-whole-archive \
-			$(CORE_A) $(GUI_A) $(CORE_A) \
-			$(RASTER_A) $(PROJSEL_A) $(LEGEND_A) \
-			$(GUI_A) $(CORE_A) $(COMPOSER_A) $(GUI_A) \
+			$(CORE_DLL) $(GUI_DLL) $(CORE_DLL) \
+			$(RASTER_DLL) $(PROJSEL_DLL) $(LEGEND_DLL) \
+			$(GUI_DLL) $(CORE_DLL) $(COMPOSER_DLL) $(GUI_DLL) \
 			-lgdal -lgeos -lsqlite3 -lproj $(PG_LIB) \
                         $(QT_LDADD) \
                         -lwsock32 -lmingw32
