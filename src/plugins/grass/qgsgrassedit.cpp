@@ -1279,7 +1279,14 @@ void QgsGrassEdit::mouseEventReceiverClick( QgsPoint & point, Qt::ButtonState bu
           // Delete previously selected line 
           if ( mSelectedLine > 0 ) {
             eraseElement ( mSelectedLine );
+            mProvider->readLine ( NULL, mCats, mSelectedLine );
             mProvider->deleteLine ( mSelectedLine );
+
+            // Check orphan records
+            for ( int i = 0 ; i < mCats->n_cats; i++ ) {
+                checkOrphan ( mCats->field[i], mCats->cat[i] );
+            }
+
             updateSymb();
             displayUpdated();
           }
@@ -1702,6 +1709,39 @@ void QgsGrassEdit::mouseEventReceiverClick( QgsPoint & point, Qt::ButtonState bu
 
 }
 
+void QgsGrassEdit::checkOrphan ( int field, int cat )
+{
+  #ifdef QGISDEBUG
+  std::cerr << "QgsGrassEdit::checkOrphan field = " << field
+               << " cat = " << cat << std::endl;
+  #endif
+
+  int orphan;
+  QString *error = mProvider->isOrphan ( field, cat, &orphan );
+
+  if ( !error->isEmpty() ) {
+      QMessageBox::warning( 0, "Warning", "Cannot check orphan record: "
+                + *error );
+      return;
+  }
+  if ( !orphan ) return;
+
+  int ret = QMessageBox::question ( 0, "Warning", 
+	      "Orphan record was left in attribute table. "
+	      "<br>Delete the record?",  
+	      QMessageBox::Yes,  QMessageBox::No );
+
+  if ( ret == QMessageBox::No ) return;
+
+  // Delete record
+  error = mProvider->deleteAttributes ( field, cat );
+  if ( !error->isEmpty() ) {
+      QMessageBox::warning( 0, "Warning", "Cannot delete orphan record: "
+                + *error );
+      return;
+  }
+}
+
 void QgsGrassEdit::addAttributes ( int field, int cat )
 {
   QString *key = mProvider->key ( field );
@@ -1804,6 +1844,10 @@ void QgsGrassEdit::deleteCat ( int line, int field, int cat )
 
   line = mProvider->rewriteLine ( line, type, mPoints, mCats );
   if ( mAttributes ) mAttributes->setLine ( line );
+
+  // Check orphan record
+  checkOrphan ( field, cat );
+
   updateSymb();
 }
 
@@ -2002,7 +2046,7 @@ void QgsGrassEdit::displayUpdated (void)
 
 void QgsGrassEdit::displayElement ( int line, const QPen & pen, int size, QPainter *painter)
 {
-#if QGISDEBUG > 3
+#if QGISDEBUG
   std::cerr << "QgsGrassEdit::displayElement() line = " << line << std::endl;
 #endif
 
@@ -2020,7 +2064,7 @@ void QgsGrassEdit::displayElement ( int line, const QPen & pen, int size, QPaint
   }
 
   if ( type & GV_POINTS ) {
-    displayIcon ( mPoints->x[0], mPoints->y[0], pen, QgsGrassEdit::ICON_CROSS, size, painter );
+    displayIcon ( mPoints->x[0], mPoints->y[0], pen, QgsGrassEdit::ICON_CROSS, size, myPainter );
   } else { // line
     QgsPoint point;
     Q3PointArray pointArray(mPoints->n_points);
@@ -2151,7 +2195,7 @@ void QgsGrassEdit::displayDynamic ( struct line_pnts *Points, double x, double y
 
 void QgsGrassEdit::displayNode ( int node, const QPen & pen, int size, QPainter *painter )
 {
-#if QGISDEBUG > 3
+#if QGISDEBUG
   std::cerr << "QgsGrassEdit::displayNode() node = " << node << std::endl;
 #endif
 
@@ -2167,7 +2211,7 @@ void QgsGrassEdit::displayNode ( int node, const QPen & pen, int size, QPainter 
 void QgsGrassEdit::displayIcon ( double x, double y, const QPen & pen, 
     int type, int size, QPainter *painter )
 {
-#if QGISDEBUG > 3
+#if QGISDEBUG
   std::cerr << "QgsGrassEdit::displayIcon()" << std::endl;
 #endif
 
