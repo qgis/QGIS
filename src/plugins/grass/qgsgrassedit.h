@@ -142,6 +142,9 @@ public:
     //! Increase max cat
     void increaseMaxCat ( void );
 
+    //! Check orphan database records
+    void checkOrphan ( int field, int cat );
+
 public slots:
     // TODO: once available in QGIS, use only one reciver for all signals
     
