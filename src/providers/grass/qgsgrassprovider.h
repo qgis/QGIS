@@ -385,6 +385,13 @@ public:
    */
   int dbLinkField ( int link );
 
+  /** Execute SQL statement 
+   *   @param field
+   *   @param sql 
+   *   @return empty string or error message 
+   */
+  QString *executeSql ( int field, const QString &sql );
+
   /** Update attributes 
    *   @param field
    *   @param cat
@@ -399,6 +406,22 @@ public:
    *   @return empty string or error message 
    */
   QString *insertAttributes ( int field, int cat );
+
+  /** Delete attributes from the table 
+   *   @param field
+   *   @param cat
+   *   @return empty string or error message 
+   */
+  QString *deleteAttributes ( int field, int cat );
+
+  /** Check if a database row exists and it is orphan (no more lines with
+   *  that category)  
+   *   @param field
+   *   @param cat
+   *   @param orphan set to true if a record exits and it is orphan
+   *   @return empty string or error message 
+   */
+  QString *isOrphan ( int field, int cat, int *orphan);
 
   /** Create table and link vector to this table
    *   @param field
