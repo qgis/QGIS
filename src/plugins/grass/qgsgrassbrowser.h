@@ -44,6 +44,9 @@ public slots:
     // Add selected map to canvas
     void addMap();
 
+    // Delete selected map
+    void deleteMap();
+
     // Refresh model
     void refresh();
 
@@ -71,6 +74,7 @@ private:
 
     //! Actions
     QAction *mActionAddMap;
+    QAction *mActionDeleteMap;
     QAction *mActionRefresh;
 };
 

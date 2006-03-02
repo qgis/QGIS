@@ -74,6 +74,12 @@ public:
     // Name
     QString itemName(const QModelIndex &index);
 
+    // Item mapset (raster and vector)
+    QString itemMapset(const QModelIndex &index);
+
+    // Item map (raster and vector)
+    QString itemMap(const QModelIndex &index);
+
     // Get info in HTML format
     QString itemInfo(const QModelIndex &index);
 
