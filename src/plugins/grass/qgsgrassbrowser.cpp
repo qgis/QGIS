@@ -35,6 +35,7 @@
 #include <QAction>
 #include <QTextBrowser>
 #include <QSplitter>
+#include <QProcess>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -67,6 +68,14 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisIface *iface,
     ag->addAction ( mActionAddMap );
     tb->addAction ( mActionAddMap );
     connect ( mActionAddMap, SIGNAL(triggered()), this, SLOT(addMap()) );
+
+    mActionDeleteMap = new QAction( 
+	                     QIcon(myIconPath+"grass_delete_map.png"), 
+	                     tr("Delete selected map"), this);
+    mActionDeleteMap->setEnabled(false); 
+    ag->addAction ( mActionDeleteMap );
+    tb->addAction ( mActionDeleteMap );
+    connect ( mActionDeleteMap, SIGNAL(triggered()), this, SLOT(deleteMap()) );
 
     mActionRefresh = new QAction( 
 	                     QIcon(myIconPath+"grass_refresh.png"), 
@@ -147,6 +156,55 @@ void QgsGrassBrowser::addMap()
     }
 }
 
+void QgsGrassBrowser::deleteMap()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassBrowser::deleteMap()" << std::endl;
+    #endif
+    
+    QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
+    bool mapSelected = false;
+
+    QList<QModelIndex>::const_iterator it = indexes.begin();
+    for (; it != indexes.end(); ++it)
+    {
+	int type = mModel->itemType(*it);
+	QString mapset = mModel->itemMapset(*it);
+	QString map = mModel->itemMap(*it);
+
+        QString typeName;
+        if ( type == QgsGrassModel::Raster ) typeName = "rast";
+        else if ( type == QgsGrassModel::Vector ) typeName = "vect";
+
+	if ( mapset != QgsGrass::getDefaultMapset() ) 
+	{
+            continue; // should not happen
+        }
+         
+        int ret = QMessageBox::question ( 0, "Warning",
+              "Delete map <b>" + map + "</b>",
+              QMessageBox::Yes,  QMessageBox::No );
+
+        if ( ret == QMessageBox::No ) continue;
+
+        QString module = "g.remove";
+#ifdef WIN32
+	module.append(".exe");
+#endif
+        QProcess process(this);
+        process.start(module, QStringList( typeName + "=" + map ) );
+        if ( !process.waitForFinished() )
+        {
+            QMessageBox::warning( 0, "Warning", "Cannot delete map "
+                                  + map ); 
+        }
+        else
+        {
+            refresh();
+        }
+    }
+}
+
 void QgsGrassBrowser::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
 {
     #ifdef QGISDEBUG
@@ -154,6 +212,7 @@ void QgsGrassBrowser::selectionChanged(const QItemSelection & selected, const QI
     #endif
 
     mActionAddMap->setEnabled(false);
+    mActionDeleteMap->setEnabled(false);
     
     QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
 
@@ -169,8 +228,15 @@ void QgsGrassBrowser::selectionChanged(const QItemSelection & selected, const QI
 	{
 	    mActionAddMap->setEnabled(true);
 	}
+        if ( type == QgsGrassModel::Raster || type == QgsGrassModel::Vector )
+	{
+	    QString mapset = mModel->itemMapset(*it);
+            if ( mapset == QgsGrass::getDefaultMapset() ) 
+            {
+	        mActionDeleteMap->setEnabled(true);
+            }
+	}
     }
-
 }
 
 void QgsGrassBrowser::currentChanged(const QModelIndex & current, const QModelIndex & previous)

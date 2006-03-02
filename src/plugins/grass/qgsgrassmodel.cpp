@@ -615,6 +615,26 @@ QString QgsGrassModel::itemName ( const QModelIndex &index)
     return item->name();
 }
 
+QString QgsGrassModel::itemMapset ( const QModelIndex &index)
+{
+    if (!index.isValid()) { return QString(); } 
+
+    QgsGrassModelItem *item;
+    item = static_cast<QgsGrassModelItem*>(index.internalPointer());
+
+    return item->mMapset;
+}
+
+QString QgsGrassModel::itemMap ( const QModelIndex &index)
+{
+    if (!index.isValid()) { return QString(); } 
+
+    QgsGrassModelItem *item;
+    item = static_cast<QgsGrassModelItem*>(index.internalPointer());
+
+    return item->mMap;
+}
+
 QString QgsGrassModel::itemInfo ( const QModelIndex &index)
 {
     if (!index.isValid()) { return QString(); } 
