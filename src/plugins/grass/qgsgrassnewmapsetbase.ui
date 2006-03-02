@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>633</width>
-    <height>587</height>
+    <width>312</width>
+    <height>359</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -29,7 +29,7 @@
      <x>0</x>
      <y>0</y>
      <width>621</width>
-     <height>385</height>
+     <height>507</height>
     </rect>
    </property>
    <layout class="QGridLayout" >
@@ -484,7 +484,7 @@
      <x>0</x>
      <y>0</y>
      <width>621</width>
-     <height>385</height>
+     <height>507</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" >
@@ -869,8 +869,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>621</width>
-     <height>385</height>
+     <width>300</width>
+     <height>279</height>
     </rect>
    </property>
    <layout class="QGridLayout" >
@@ -1231,8 +1231,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>621</width>
-     <height>507</height>
+     <width>301</width>
+     <height>246</height>
     </rect>
    </property>
    <layout class="QGridLayout" >
@@ -1674,8 +1674,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>621</width>
-     <height>385</height>
+     <width>100</width>
+     <height>30</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" >
@@ -2122,8 +2122,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>621</width>
-     <height>385</height>
+     <width>100</width>
+     <height>30</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" >
