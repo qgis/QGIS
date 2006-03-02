@@ -24,6 +24,8 @@
 #include <map>
 #include <vector>
 
+#include <QSet>
+
 #include "qgsrasterdataprovider.h"
 #include "qgsrect.h"
 
@@ -356,9 +358,17 @@ public:
   virtual ~QgsWmsProvider();
 
   // TODO: Document this better, make static
-  /** \brief   Returns a list of the supported layers of this WMS
+  /** \brief   Returns a list of the supported layers of the WMS server
    */
   virtual std::vector<QgsWmsLayerProperty> supportedLayers();
+
+  // TODO: Document this better
+  /** \brief   Returns a list of the supported CRSs of the given layers
+   *  \note    Since WMS can specify CRSs per layer, this may change depending 
+               on which layers are specified!  The "lowest common denominator" between
+               all specified layers is returned.
+   */
+  virtual QSet<QString> supportedCrsForLayers(QStringList const & layers);
 
   /**
    * Add the list of WMS layer names to be rendered by this server
@@ -380,17 +390,22 @@ public:
    * (in order from bottom to top)
    * \note   layers must have been previously added.
    */
-  void setLayerOrder(QStringList  const & layers);
+  void setLayerOrder(QStringList const & layers);
 
   /**
    * Set the visibility of the given sublayer name
    */
-  void setSubLayerVisibility(QString const &  name, bool vis);
+  void setSubLayerVisibility(QString const & name, bool vis);
 
   /**
    * Set the image encoding (as a MIME type) used in the transfer from the WMS server
    */
-  void setImageEncoding(QString  const & mimeType);
+  void setImageEncoding(QString const & mimeType);
+
+  /**
+   * Set the image projection (in WMS CRS format) used in the transfer from the WMS server
+   */
+  void setImageCrs(QString const & crs);
 
   // TODO: Document this better.
   /** \brief   Renders the layer as an image
@@ -654,7 +669,12 @@ private:
    * extents per layer (in WMS CRS:84 datum)
    */
   std::map<QString, QgsRect> extentForLayer;
-  
+
+  /**
+   * available CRSs per layer
+   */
+  std::map<QString, std::vector<QString> > crsForLayer;
+
   /**
    * Active sublayers managed by this provider in a draw function, in order from bottom to top
    * (some may not be visible in a draw function, cf. activeSubLayerVisibility)
@@ -672,6 +692,11 @@ private:
    * MIME type of the image encoding used from the WMS server
    */
   QString imageMimeType;
+
+  /**
+   * WMS CRS type of the image CRS used from the WMS server
+   */
+  QString imageCrs;
 
   /**
    * The previously retrieved image from the WMS server.

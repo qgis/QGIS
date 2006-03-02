@@ -23,6 +23,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 
 class QgisApp;
 class QgsWmsProvider;
@@ -62,6 +63,10 @@ public:
     //! String containing the MIME type of the preferred image encoding
     QString selectedImageEncoding();
 
+    //! String containing the selected WMS-format CRS
+    QString selectedCrs();
+
+
 public slots:
 
     //! Opens the create connection dialog to build a new connection
@@ -78,6 +83,9 @@ public slots:
 
     //! Determines the layers the user selected and closes the dialog
     void on_btnAdd_clicked();
+
+    //! Opens the Spatial Reference System dialog.
+    void on_btnChangeSpatialRefSys_clicked();
 
     //! Opens help application
     void on_btnHelp_clicked();
@@ -97,10 +105,14 @@ private:
     //! Populate the image encoding button group - private for now.
     void populateImageEncodingGroup(QgsWmsProvider* wmsProvider);
 
+    //! Returns the common CRSs for the selected layers.
+    std::set<QString> crsForSelection();
+
     QString m_connName;
     QString m_connInfo;
     QStringList m_selectedLayers;
     QStringList m_selectedStylesForSelectedLayers;
+    long m_Epsg;
 
     std::map<QString, QString> m_selectedStyleIdForLayer;
 
@@ -112,6 +124,9 @@ private:
 
     //! The widget that controls the image format radio buttons
     QButtonGroup* m_imageFormatBtns;
+
+    //! The WMS provider that retreives information for this dialog
+    QgsWmsProvider * wmsProvider;
 
     static const int context_id = 710979116;
 };

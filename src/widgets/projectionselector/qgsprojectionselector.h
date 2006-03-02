@@ -12,6 +12,8 @@
 
 #include "ui_qgsprojectionselectorbase.h"
 
+#include <QSet>
+
 class QResizeEvent;
 
 /**
@@ -21,13 +23,36 @@ class QgsProjectionSelector: public QWidget, private Ui::QgsProjectionSelectorBa
 {
   Q_OBJECT
     public:
-      QgsProjectionSelector( QWidget* parent , const char* name="", Qt::WFlags fl =0  );
+      QgsProjectionSelector(QWidget* parent,
+                            const char * name = "",
+                            Qt::WFlags fl = 0);
+
       ~QgsProjectionSelector();
-      //! Populate the proj tree view with  user defined projection names...
-      void getUserProjList();
-      //! Populate the proj tree view with system projection names...
-      void getProjList();
-      void updateProjAndEllipsoidAcronyms(int theSrsid,QString theProj4String);
+
+      /**
+       * \brief Populate the proj tree view with user defined projection names...
+       *
+       * \param crsFilter a list of OGC Coordinate Reference Systems to filter the 
+       *                  list of projections by.  This is useful in (e.g.) WMS situations
+       *                  where you just want to offer what the WMS server can support.
+       *
+       * \todo Should this be public?
+       */
+      void applyUserProjList(QSet<QString> * crsFilter = 0);
+
+      /**
+       * \brief Populate the proj tree view with system projection names...
+       *
+       * \param crsFilter a list of OGC Coordinate Reference Systems to filter the 
+       *                  list of projections by.  This is useful in (e.g.) WMS situations
+       *                  where you just want to offer what the WMS server can support.
+       *
+       * \todo Should this be public?
+       */
+      void applyProjList(QSet<QString> * crsFilter = 0);
+
+      void updateProjAndEllipsoidAcronyms(int theSrsid, QString theProj4String);
+
       /*!
        * \brief Make the string safe for use in SQL statements.
        *  This involves escaping single quotes, double quotes, backslashes,
@@ -39,18 +64,87 @@ class QgsProjectionSelector: public QWidget, private Ui::QgsProjectionSelectorBa
        */
       const QString stringSQLSafe(const QString theSQL);
 
+      //! Gets the current EPSG-style projection identifier
+      long getCurrentEpsg();
+
     public slots:
       void setSelectedSRSName(QString theSRSName);
+
       QString getSelectedName();
+
       void setSelectedSRSID(long theSRSID);
+
       QString getCurrentProj4String();
-      long getCurrentSRID(); //posgis style projection identifier
-      long getCurrentSRSID();//qgis projection identfier
+
+      //! Gets the current PostGIS-style projection identifier
+      long getCurrentSRID();
+
+      //! Gets the current QGIS projection identfier
+      long getCurrentSRSID();
+
+      /**
+       * \brief filters this widget by the given CRSs
+       *
+       * Sets this widget to filter the available projections to those listed
+       * by the given Coordinate Reference Systems.
+       *
+       * \param crsFilter a list of OGC Coordinate Reference Systems to filter the 
+       *                  list of projections by.  This is useful in (e.g.) WMS situations
+       *                  where you just want to offer what the WMS server can support.
+       *
+       * \note This function only deals with EPSG labels only at this time.
+       *
+       * \warning This function's behaviour is undefined if it is called after the widget is shown.
+       */
+      void setOgcWmsCrsFilter(QSet<QString> crsFilter);
+
       void on_pbnFind_clicked();
+
+    protected:
+      /** Used to ensure the projection list view is actually populated */
+      void showEvent ( QShowEvent * theEvent );
 
     private:
       /** Used to manage column sizes */
       void resizeEvent ( QResizeEvent * theEvent );
+
+      /**
+       * \brief converts the CRS group to a SQL expression fragment
+       *
+       * Converts the given Coordinate Reference Systems to a format suitable
+       * for use in SQL for querying against the QGIS SRS database.
+       *
+       * \param crsFilter a list of OGC Coordinate Reference Systems to filter the 
+       *                  list of projections by.  This is useful in (e.g.) WMS situations
+       *                  where you just want to offer what the WMS server can support.
+       *
+       * \note This function only deals with EPSG labels only at this time.
+       */
+      QString ogcWmsCrsFilterAsSqlExpression(QSet<QString> * crsFilter);
+
+      /**
+       * \brief does the legwork of applying the SRS Name Selection
+       *
+       * \warning This function does nothing unless getUserList() and getUserProjList()
+       *          Have already been called
+       */
+      void applySRSNameSelection();
+
+      /**
+       * \brief does the legwork of applying the SRS ID Selection
+       *
+       * \warning This function does nothing unless getUserList() and getUserProjList()
+       *          Have already been called
+       */
+      void applySRSIDSelection();
+
+      /**
+       * \brief gets an arbitrary sqlite3 attribute of type "long" from the selection
+       *
+       * \param attributeName   The sqlite3 column name, typically "srid" or "epsg"
+       */
+      long getCurrentLongAttribute(QString attributeName);
+
       // List view nodes for the tree view of projections
       //! User defined projections node
       QTreeWidgetItem *mUserProjList;
@@ -58,6 +152,7 @@ class QgsProjectionSelector: public QWidget, private Ui::QgsProjectionSelectorBa
       QTreeWidgetItem *mGeoList;
       //! PROJCS node
       QTreeWidgetItem *mProjList;
+
       //! Users custom coordinate system file
       QString mCustomCsFile;
       //! File name of the sqlite3 database
@@ -67,6 +162,27 @@ class QgsProjectionSelector: public QWidget, private Ui::QgsProjectionSelectorBa
        * Utility method used in conjunction with name based searching tool 
        */
       long getLargestSRSIDMatch(QString theSql);
+
+      //! Has the Projection List been populated?
+      bool mProjListDone;
+
+      //! Has the User Projection List been populated?
+      bool mUserProjListDone;
+
+      //! Is there a pending selection to be made by SRS Name?
+      bool mSRSNameSelectionPending;
+
+      //! Is there a pending selection to be made by SRS ID?
+      bool mSRSIDSelectionPending;
+
+      //! The SRS Name that wants to be selected on this widget
+      QString mSRSNameSelection;
+
+      //! The SRS ID that wants to be selected on this widget
+      long mSRSIDSelection;
+
+      //! The set of OGC WMS CRSs that want to be applied to this widget
+      QSet<QString> mCrsFilter;
 
     private slots:
       /**private handler for when user selects a cs

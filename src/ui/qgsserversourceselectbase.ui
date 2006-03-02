@@ -9,7 +9,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>400</height>
+    <height>505</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -240,6 +240,21 @@
      </layout>
     </widget>
    </item>
+   <item row="5" column="0" colspan="4" >
+    <widget class="QLabel" name="labelStatus" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>5</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Ready</string>
+     </property>
+    </widget>
+   </item>
    <item row="3" column="0" colspan="4" >
     <widget class="QGroupBox" name="btnGrpSrs" >
      <property name="title" >
@@ -253,9 +268,16 @@
        <number>6</number>
       </property>
       <item>
+       <widget class="QLabel" name="labelSpatialRefSys" >
+        <property name="text" >
+         <string>CRS is </string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QRadioButton" name="radioButtonEspg4326" >
         <property name="text" >
-         <string>ESPG:4326</string>
+         <string>EPSG:4326</string>
         </property>
        </widget>
       </item>
@@ -275,22 +297,17 @@
         </property>
        </spacer>
       </item>
+      <item>
+       <widget class="QPushButton" name="btnChangeSpatialRefSys" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Change ...</string>
+        </property>
+       </widget>
+      </item>
      </layout>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="4" >
-    <widget class="QLabel" name="labelStatus" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>5</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
-      <string>Ready</string>
-     </property>
     </widget>
    </item>
   </layout>
