@@ -10,6 +10,7 @@
 #include <qdir.h>
 #include <projects.h>
 #include <qdom.h>
+#include <QMessageBox>
 
 #include <qgsapplication.h>
 #include <qgslayerprojectionselector.h>
@@ -200,13 +201,10 @@ bool QgsSpatialRefSys::createFromSrid(long theSrid)
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
+  myResult = openDb(myDatabaseFileName, &myDatabase);
   if(myResult)
   {
-    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    assert(myResult == 0);
+      return false;
   }
 
   /*
@@ -319,13 +317,10 @@ bool QgsSpatialRefSys::createFromEpsg(long theEpsg)
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
+  myResult = openDb(myDatabaseFileName, &myDatabase);
   if(myResult)
   {
-    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    assert(myResult == 0);
+      return false;
   }
 
   /*
@@ -404,13 +399,10 @@ bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
+  myResult = openDb(myDatabaseFileName, &myDatabase);
   if(myResult)
   {
-    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    assert(myResult == 0);
+      return false;
   }
 
   /*
@@ -601,17 +593,12 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
   // Get the full path name to the sqlite3 spatial reference database.
   myDatabaseFileName = QgsApplication::srsDbFilePath();
 
-
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
+  myResult = openDb(myDatabaseFileName, &myDatabase);
   if(myResult)
   {
-    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    assert(myResult == 0);
+    return myMap;
   }
-
 
   myResult = sqlite3_prepare(myDatabase, theSql.utf8(), theSql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -644,15 +631,11 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
     }
 
     //check the db is available
-    myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
+    myResult = openDb(myDatabaseFileName, &myDatabase);
     if(myResult)
     {
-      std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
-      // XXX This will likely never happen since on open, sqlite creates the
-      //     database if it does not exist.
-      assert(myResult == 0);
+      return myMap;
     }
-
 
     myResult = sqlite3_prepare(myDatabase, theSql.utf8(), theSql.length(), &myPreparedStatement, &myTail);
     // XXX Need to free memory from the error msg if one is set
@@ -937,13 +920,10 @@ long QgsSpatialRefSys::findMatchingProj()
 
 
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
+  myResult = openDb(myDatabaseFileName, &myDatabase);
   if(myResult)
   {
-    std::cout <<  "QgsSpatialRefSys::findMatchingProj Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    assert(myResult == 0);
+    return 0;
   }
 
   myResult = sqlite3_prepare(myDatabase, mySql.utf8(), mySql.length(), &myPreparedStatement, &myTail);
@@ -979,10 +959,9 @@ long QgsSpatialRefSys::findMatchingProj()
 
   myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
   //check the db is available
-  myResult = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &myDatabase);
+  myResult = openDb(myDatabaseFileName, &myDatabase);
   if(myResult)
   {
-    std::cout <<  "QgsSpatialRefSys::findMatchingProj Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
     std::cout <<  "This is a non critical error" << std::endl;
     return 0;
   }
@@ -1258,13 +1237,10 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
 
       sqlite3 *db;
       int rc;
-      rc = sqlite3_open(myDatabaseFileName.toLocal8Bit().data(), &db);
+      rc = openDb(myDatabaseFileName, &db);
       if(rc)
       {
-        std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
-        // XXX This will likely never happen since on open, sqlite creates the
-        //     database if it does not exist.
-        assert(rc == 0);
+	return QString();
       }
       // prepare the sql statement
       const char *pzTail;
@@ -1287,4 +1263,26 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
 
       //assert(myProjString.length() > 0);
       return myProjString;
+}
+
+int QgsSpatialRefSys::openDb(QString path, sqlite3 **db)
+{
+#ifdef QGISDEBUG
+  std::cout <<  "QgsSpatialRefSys::openDb path = " <<  path.toLocal8Bit().data() << std::endl;
+#endif
+  int myResult = sqlite3_open(path.toLocal8Bit().data(), db);
+
+  if(myResult)
+  {
+    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(*db) << std::endl;
+
+    // XXX This will likely never happen since on open, sqlite creates the
+    //     database if it does not exist.
+    // ... unfortunately it happens on Windows
+    QMessageBox::warning(0,"Error","Could not open SRS database "
+                + path + "<br>Error(" + QString::number(myResult)
+                + "): " + QString(sqlite3_errmsg(*db)) ); 
+    
+  }
+  return myResult;
 }

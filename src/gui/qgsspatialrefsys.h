@@ -13,6 +13,8 @@
 class QDomNode;
 class QDomDocument;
 
+#include <sqlite3.h>
+
 //qgis includes
 #include <qgis.h>
 
@@ -305,6 +307,10 @@ class QgsSpatialRefSys
          */
         void setEllipsoidAcronym(QString theEllipsoidAcronym);
     private:
+        // Open SQLite db and show message if ccannot be opened
+        // returns the same code as sqlite3_open
+        static int openDb ( QString path, sqlite3 **db ); 
+
         //!The internal sqlite3 srs.db primary key for this srs 
         long    mSrsId;
         //!A textual description of the srs.
