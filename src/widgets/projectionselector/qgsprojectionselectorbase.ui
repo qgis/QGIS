@@ -8,9 +8,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>512</width>
-    <height>498</height>
+    <width>468</width>
+    <height>389</height>
    </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>7</hsizetype>
+    <vsizetype>5</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle" >
    <string>Projection Selector</string>
@@ -29,8 +37,8 @@
     <widget class="QGroupBox" name="groupBox_2" >
      <property name="sizePolicy" >
       <sizepolicy>
-       <hsizetype>5</hsizetype>
-       <vsizetype>1</vsizetype>
+       <hsizetype>7</hsizetype>
+       <vsizetype>7</vsizetype>
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -47,6 +55,14 @@
       </property>
       <item row="2" column="0" >
        <widget class="QGroupBox" name="groupBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>3</hsizetype>
+          <vsizetype>1</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="title" >
          <string>Search</string>
         </property>
@@ -137,8 +153,8 @@
        <widget class="QTextEdit" name="teProjection" >
         <property name="sizePolicy" >
          <sizepolicy>
-          <hsizetype>5</hsizetype>
-          <vsizetype>1</vsizetype>
+          <hsizetype>7</hsizetype>
+          <vsizetype>7</vsizetype>
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
