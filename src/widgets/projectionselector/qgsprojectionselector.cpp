@@ -26,8 +26,15 @@
 #include <QHeaderView>
 #include <QResizeEvent>
 
-QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name , Qt::WFlags fl  )
-    : QWidget(parent, fl)
+QgsProjectionSelector::QgsProjectionSelector(QWidget* parent,
+                                             const char * name,
+                                             Qt::WFlags fl)
+    : QWidget(parent, fl),
+      mProjListDone(FALSE),
+      mUserProjListDone(FALSE),
+      mSRSNameSelectionPending(FALSE),
+      mSRSIDSelectionPending(FALSE)
+
 {
   setupUi(this);
   connect(lstCoordinateSystems, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
@@ -37,56 +44,176 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent , const char* name
   // Get the full path name to the sqlite3 spatial reference database.
   mSrsDatabaseFileName = QgsApplication::srsDbFilePath();
   lstCoordinateSystems->header()->setResizeMode(1,QHeaderView::Stretch);
-  // Populate the projection list view
-  getProjList();
-  getUserProjList();
 }
+
 
 QgsProjectionSelector::~QgsProjectionSelector()
 {}
+
+
 void QgsProjectionSelector::resizeEvent ( QResizeEvent * theEvent )
 {
 
   lstCoordinateSystems->header()->resizeSection(0,(theEvent->size().width()-120));
   lstCoordinateSystems->header()->resizeSection(1,120);
 }
-void QgsProjectionSelector::setSelectedSRSName(QString theSRSNAme)
-{
-  //get the srid given the wkt so we can pick the correct list item
-#ifdef QGISDEBUG
-  std::cout << "QgsProjectionSelector::setSelectedSRSName called with \n" << theSRSNAme.toLocal8Bit().data() << std::endl;
-#endif
-  QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems(theSRSNAme, Qt::MatchExactly|Qt::MatchRecursive, 0);
 
-  if (nodes.count() > 0)
+void QgsProjectionSelector::showEvent ( QShowEvent * theEvent )
+{
+  // ensure the projection list view is actually populated
+  // before we show this widget
+
+  if (!mProjListDone)
   {
-    lstCoordinateSystems->setCurrentItem(nodes.first());
-    lstCoordinateSystems->scrollToItem(nodes.first());
+    applyProjList(&mCrsFilter);
   }
-  else // unselect the selected item to avoid confusing the user
-  { 
-    lstCoordinateSystems->clearSelection();
-    teProjection->setText("");
+
+  if (!mUserProjListDone)
+  {
+    applyUserProjList(&mCrsFilter);
   }
+
+  // Pass up the inheritance heirarchy
+  QWidget::showEvent(theEvent);
 }
+
+QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression(QSet<QString> * crsFilter)
+{
+  QString sqlExpression = "1";             // it's "SQL" for "true"
+  QStringList epsgParts = QStringList();
+
+  if (!crsFilter)
+  {
+    return sqlExpression;
+  }
+
+  /*
+     Ref: WMS 1.3.0, section 6.7.3 "Layer CRS":
+
+     Every Layer CRS has an identifier that is a character string. Two types of
+     Layer CRS identifiers are permitted: "label" and "URL" identifiers:
+
+     Label: The identifier includes a namespace prefix, a colon, a numeric or
+        string code, and in some instances a comma followed by additional
+        parameters. This International Standard defines three namespaces: 
+        CRS, EPSG and AUTO2 [...]
+
+     URL: The identifier is a fully-qualified Uniform Resource Locator that 
+        references a publicly-accessible file containing a definition of the CRS
+        that is compliant with ISO 19111.
+  */
+
+  // iterate through all incoming CRSs
+
+  QSet<QString>::const_iterator i = crsFilter->begin();
+  while (i != crsFilter->end())
+  {
+    QStringList parts = i->split(":");
+
+    if (parts.at(0) == "EPSG")
+    {
+      epsgParts.push_back( parts.at(1) );
+    }
+
+    ++i;
+  }
+
+//   for ( int i = 0; i < crsFilter->size(); i++ ) 
+//   {
+//     QStringList parts = crsFilter->at(i).split(":");
+// 
+//     if (parts.at(0) == "EPSG")
+//     {
+//       epsgParts.push_back( parts.at(1) );
+//     }
+//   }
+
+  if (epsgParts.size())
+  {
+    sqlExpression = "epsg in (";
+    sqlExpression += epsgParts.join(",");
+    sqlExpression += ")";
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsProjectionSelector::crsFilterAsSqlExpression: exiting with '"
+            << sqlExpression.toLocal8Bit().data() << "'." << std::endl;
+#endif
+
+  return sqlExpression;
+}
+
+
+void QgsProjectionSelector::setSelectedSRSName(QString theSRSName)
+{
+  mSRSNameSelection = theSRSName;
+  mSRSNameSelectionPending = TRUE;
+}
+
 
 void QgsProjectionSelector::setSelectedSRSID(long theSRSID)
 {
-  QString mySRSIDString=QString::number(theSRSID);
+  mSRSIDSelection = theSRSID;
+  mSRSIDSelectionPending = TRUE;
+}
 
-  QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems(mySRSIDString, Qt::MatchExactly|Qt::MatchRecursive, 1);
 
-  if (nodes.count() > 0)
+void QgsProjectionSelector::applySRSNameSelection()
+{
+  if (
+      (mSRSNameSelectionPending) and
+      (mProjListDone) and
+      (mUserProjListDone)
+     )
   {
-    lstCoordinateSystems->setCurrentItem(nodes.first());
-    lstCoordinateSystems->scrollToItem(nodes.first());
-  }
-  else // unselect the selected item to avoid confusing the user
-  { 
-    lstCoordinateSystems->clearSelection();
-    teProjection->setText("");
+    //get the srid given the wkt so we can pick the correct list item
+#ifdef QGISDEBUG
+    std::cout << "QgsProjectionSelector::applySRSNameSelection called with \n" << mSRSNameSelection.toLocal8Bit().data() << std::endl;
+#endif
+    QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems(mSRSNameSelection, Qt::MatchExactly|Qt::MatchRecursive, 0);
+  
+    if (nodes.count() > 0)
+    {
+      lstCoordinateSystems->setCurrentItem(nodes.first());
+      lstCoordinateSystems->scrollToItem(nodes.first());
+    }
+    else // unselect the selected item to avoid confusing the user
+    { 
+      lstCoordinateSystems->clearSelection();
+      teProjection->setText("");
+    }
+
+    mSRSNameSelectionPending = FALSE;
   }
 }
+
+void QgsProjectionSelector::applySRSIDSelection()
+{
+  if (
+      (mSRSIDSelectionPending) and
+      (mProjListDone) and
+      (mUserProjListDone)
+     )
+  {
+    QString mySRSIDString = QString::number(mSRSIDSelection);
+  
+    QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems(mySRSIDString, Qt::MatchExactly|Qt::MatchRecursive, 1);
+  
+    if (nodes.count() > 0)
+    {
+      lstCoordinateSystems->setCurrentItem(nodes.first());
+      lstCoordinateSystems->scrollToItem(nodes.first());
+    }
+    else // unselect the selected item to avoid confusing the user
+    { 
+      lstCoordinateSystems->clearSelection();
+      teProjection->setText("");
+    }
+
+    mSRSIDSelectionPending = FALSE;
+  }
+}
+
 
 //note this line just returns the projection name!
 QString QgsProjectionSelector::getSelectedName()
@@ -198,10 +325,10 @@ QString QgsProjectionSelector::getCurrentProj4String()
 
 }
 
-long QgsProjectionSelector::getCurrentSRID()
+long QgsProjectionSelector::getCurrentLongAttribute(QString attributeName)
 {
-  // Only return the projection if there is a node in the tree
-  // selected that has an srid. This prevents error if the user
+  // Only return the attribute if there is a node in the tree
+  // selected that has an srs_id.  This prevents error if the user
   // selects a top-level node rather than an actual coordinate
   // system
   //
@@ -210,7 +337,6 @@ long QgsProjectionSelector::getCurrentSRID()
   if(lvi)
   {
     // Make sure the selected node is a srs and not a top-level projection node
-    //TODO - blast this outta here: std::cout << lvi->text(1).toLocal8Bit().data() << std::endl;
     if(lvi->text(1).length() > 0)
     {
       QString myDatabaseFileName;
@@ -251,11 +377,13 @@ long QgsProjectionSelector::getCurrentSRID()
       // prepare the sql statement
       const char *pzTail;
       sqlite3_stmt *ppStmt;
-      QString sql = "select srid from tbl_srs where srs_id = ";
+      QString sql = "select ";
+      sql += attributeName;
+      sql += " from tbl_srs where srs_id = ";
       sql += lvi->text(1);
 
 #ifdef QGISDEBUG
-      std::cout << "Finding selected srid using : " <<  sql.toLocal8Bit().data() << std::endl;
+      std::cout << "Finding selected attribute using : " <<  sql.toLocal8Bit().data() << std::endl;
 #endif
       rc = sqlite3_prepare(db, sql.utf8(), sql.length(), &ppStmt, &pzTail);
       // XXX Need to free memory from the error msg if one is set
@@ -285,6 +413,19 @@ long QgsProjectionSelector::getCurrentSRID()
 
 }
 
+
+long QgsProjectionSelector::getCurrentSRID()
+{
+  return getCurrentLongAttribute("srid");
+}
+
+
+long QgsProjectionSelector::getCurrentEpsg()
+{
+  return getCurrentLongAttribute("epsg");
+}
+
+
 long QgsProjectionSelector::getCurrentSRSID()
 {
   QTreeWidgetItem* item = lstCoordinateSystems->currentItem();
@@ -299,13 +440,30 @@ long QgsProjectionSelector::getCurrentSRSID()
   }
 }
 
-void QgsProjectionSelector::getUserProjList()
+
+void QgsProjectionSelector::setOgcWmsCrsFilter(QSet<QString> crsFilter)
+{
+  mCrsFilter = crsFilter;
+}
+
+
+void QgsProjectionSelector::applyUserProjList(QSet<QString> * crsFilter)
 {
 #ifdef QGISDEBUG
   std::cout << "Fetching user projection list..." << std::endl;
 #endif
+
+  // convert our Coordinate Reference System filter into the SQL expression
+  QString sqlFilter = ogcWmsCrsFilterAsSqlExpression(crsFilter);
+
   // User defined coordinate system node
-  mUserProjList = new QTreeWidgetItem(lstCoordinateSystems,QStringList("User Defined Coordinate System"));
+  // Make in an italic font to distinguish them from real projections
+  mUserProjList = new QTreeWidgetItem(lstCoordinateSystems,QStringList("User Defined Coordinate Systems"));
+
+  QFont fontTemp = mUserProjList->font(0);
+  fontTemp.setItalic(TRUE);
+  mUserProjList->setFont(0, fontTemp);
+
   //determine where the user proj database lives for this user. If none is found an empty
   //now only will be shown
   QString myQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
@@ -319,6 +477,8 @@ void QgsProjectionSelector::getUserProjList()
 #ifdef QGISDEBUG
     std::cout << "Users qgis.db not found...skipping" << std::endl;
 #endif
+
+    mUserProjListDone = TRUE;
     return;
   }
 
@@ -339,7 +499,10 @@ void QgsProjectionSelector::getUserProjList()
   }
 
   // Set up the query to retreive the projection information needed to populate the list
-  QString mySql = "select description,srs_id,is_geo, name,parameters from vw_srs";
+  QString mySql = "select description, srs_id, is_geo, name, parameters from vw_srs ";
+  mySql += "where ";
+  mySql += sqlFilter;
+
 #ifdef QGISDEBUG
   std::cout << "User projection list sql" << mySql.toLocal8Bit().data() << std::endl;
 #endif
@@ -358,16 +521,31 @@ void QgsProjectionSelector::getUserProjList()
   // close the sqlite3 statement
   sqlite3_finalize(myPreparedStatement);
   sqlite3_close(myDatabase);
+
+  mUserProjListDone = TRUE;
 }
 
-void QgsProjectionSelector::getProjList()
+void QgsProjectionSelector::applyProjList(QSet<QString> * crsFilter)
 {
+  // convert our Coordinate Reference System filter into the SQL expression
+  QString sqlFilter = ogcWmsCrsFilterAsSqlExpression(crsFilter);
+
   // Create the top-level nodes for the list view of projections
+  // Make in an italic font to distinguish them from real projections
   //
   // Geographic coordinate system node
-  mGeoList = new QTreeWidgetItem(lstCoordinateSystems,QStringList("Geographic Coordinate System"));
+  mGeoList = new QTreeWidgetItem(lstCoordinateSystems,QStringList("Geographic Coordinate Systems"));
+
+  QFont fontTemp = mGeoList->font(0);
+  fontTemp.setItalic(TRUE);
+  mGeoList->setFont(0, fontTemp);
+
   // Projected coordinate system node
-  mProjList = new QTreeWidgetItem(lstCoordinateSystems,QStringList("Projected Coordinate System"));
+  mProjList = new QTreeWidgetItem(lstCoordinateSystems,QStringList("Projected Coordinate Systems"));
+
+  fontTemp = mProjList->font(0);
+  fontTemp.setItalic(TRUE);
+  mProjList->setFont(0, fontTemp);
 
   //bail out in case the projections db does not exist
   //this is neccessary in case the pc is running linux with a
@@ -378,6 +556,7 @@ void QgsProjectionSelector::getProjList()
   myFileInfo.setFile(mSrsDatabaseFileName);
   if ( !myFileInfo.exists( ) )
   {
+    mProjListDone = TRUE;
     return;
   }
 
@@ -411,7 +590,11 @@ void QgsProjectionSelector::getProjList()
   // Set up the query to retreive the projection information needed to populate the list
   //note I am giving the full field names for clarity here and in case someown
   //changes the underlying view TS
-  sql = "select description,srs_id,is_geo, name,parameters from vw_srs order by name, description";
+  sql = "select description, srs_id, is_geo, name, parameters from vw_srs ";
+  sql += "where ";
+  sql += sqlFilter;
+  sql += " order by name, description";
+
 #ifdef QGISDEBUG
   std::cout << "SQL for projection list:\n" << sql.toLocal8Bit().data() << std::endl;
 #endif
@@ -460,7 +643,12 @@ void QgsProjectionSelector::getProjList()
 	  if(nodes.count() == 0)
 	  {
 	    // the node doesn't exist -- create it
+            // Make in an italic font to distinguish them from real projections
 	    node = new QTreeWidgetItem(mProjList, QStringList(srsType));
+
+            QFont fontTemp = node->font(0);
+            fontTemp.setItalic(TRUE);
+            node->setFont(0, fontTemp);
 	  }
 	  else
 	  {
@@ -488,6 +676,8 @@ void QgsProjectionSelector::getProjList()
   sqlite3_finalize(ppStmt);
   // close the database
   sqlite3_close(db);
+
+  mProjListDone = TRUE;
 }
 
 //this is a little helper function to populate the (well give you a sql script to populate)
@@ -560,6 +750,7 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem)
   // hence is just a grouping thingy, not an actual SRS.
   if (theItem != NULL && theItem->childCount() == 0)
   {
+    // Found a real SRS
     QString myDescription = tr("QGIS SRSID: ") + QString::number(getCurrentSRSID()) +"\n";
     myDescription        += tr("PostGIS SRID: ") + QString::number(getCurrentSRID()) +"\n";
     emit sridSelected(QString::number(getCurrentSRSID()));
@@ -572,7 +763,11 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem)
     teProjection->setText(myDescription);
   }
   else
+  {
+    // Not an SRS - remove the highlight so the user doesn't get too confused
+    lstCoordinateSystems->setItemSelected(theItem, FALSE);  // TODO - make this work.
     teProjection->setText("");
+  }
 }
 
 void QgsProjectionSelector::on_pbnFind_clicked()

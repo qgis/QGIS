@@ -183,15 +183,44 @@ std::vector<QgsWmsLayerProperty> QgsWmsProvider::supportedLayers()
 }
 
 
+QSet<QString> QgsWmsProvider::supportedCrsForLayers(QStringList const & layers)
+{
+  QSet<QString> crsCandidates;
 
+  QStringList::const_iterator i;
+  for (i = layers.constBegin(); i != layers.constEnd(); ++i)
+  {
+    std::vector<QString> crsVector = crsForLayer[*i];
+    QSet<QString>    crsSet;
+
+    // convert std::vector to std::set for set comparisons
+    for (int j = 0; j < crsVector.size(); j++)
+    {
+      crsSet.insert( crsVector[j] );
+    }
+
+    // first time through?
+    if ( i == layers.constBegin() )
+    {
+      // do initial population of set
+      crsCandidates = crsSet;
+    }
+    else
+    {
+      // do lowest common denominator (set intersection)
+      crsCandidates.intersect(crsSet);
+    }
+
+  }
+
+  return crsCandidates;
+}
 
 
 size_t QgsWmsProvider::layerCount() const
 {
     return 1;                   // XXX properly return actual number of layers
 } // QgsWmsProvider::layerCount()
-
-
 
 
 void QgsWmsProvider::addLayers(QStringList const &  layers,
@@ -258,6 +287,16 @@ void QgsWmsProvider::setImageEncoding(QString const & mimeType)
                std::endl;
 #endif
   imageMimeType = mimeType;
+}
+
+
+void QgsWmsProvider::setImageCrs(QString const & crs)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::setImageCrs: Setting image CRS to " << crs.toLocal8Bit().data() << "." <<
+               std::endl;
+#endif
+  imageCrs = crs;
 }
 
 
@@ -1310,6 +1349,10 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
     // We have all the information we need to properly evaluate a layer definition
     // TODO: Save this somewhere
 
+
+    // Store the available Coordinate Reference Systems for the layer so that it
+    // can be combined with others later in supportedCrsForLayers()
+    crsForLayer[ layerProperty.name ] = layerProperty.crs;
 
     // Store the WGS84 (CRS:84) extent so that it can be combined with others later
     // in calculateExtent()

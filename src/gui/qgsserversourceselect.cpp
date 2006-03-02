@@ -18,11 +18,15 @@
 
 #include "qgsserversourceselect.h"
 
+#include "qgslayerprojectionselector.h"
+
 #include "qgsnewhttpconnection.h"
 #include "qgsnumericsortlistviewitem.h"
 #include "qgsproviderregistry.h"
 #include "../providers/wms/qgswmsprovider.h"
 #include "qgscontexthelp.h"
+
+#include "qgsproject.h"
 
 #include <QMessageBox>
 #include <QPicture>
@@ -33,7 +37,9 @@
 
 QgsServerSourceSelect::QgsServerSourceSelect(QgisApp * app, QWidget * parent, Qt::WFlags fl)
   : QDialog(parent, fl),
-    qgisApp(app)
+    qgisApp(app),
+    wmsProvider(0),
+    m_Epsg(0)
 {
   setupUi(this);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -153,7 +159,7 @@ void QgsServerSourceSelect::populateLayerList(QgsWmsProvider* wmsProvider)
   {
 
 #ifdef QGISDEBUG
-  std::cout << "QgsServerSourceSelect::populateLayerList: got layer name " << layer->name.toLocal8Bit().data() << " and title '" << layer->title.toLocal8Bit().data() << "'." << std::endl;
+//  std::cout << "QgsServerSourceSelect::populateLayerList: got layer name " << layer->name.toLocal8Bit().data() << " and title '" << layer->title.toLocal8Bit().data() << "'." << std::endl;
 #endif
 
     layerAndStyleCount++;
@@ -266,6 +272,36 @@ void QgsServerSourceSelect::populateImageEncodingGroup(QgsWmsProvider* wmsProvid
 }
 
 
+std::set<QString> QgsServerSourceSelect::crsForSelection()
+{
+  std::set<QString> crsCandidates;;
+
+  QStringList::const_iterator i;
+  for (i = m_selectedLayers.constBegin(); i != m_selectedLayers.constEnd(); ++i)
+  {
+/*    
+
+    for ( int j = 0; j < ilayerProperty.boundingBox.size(); i++ ) 
+    {
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseLayer: testing bounding box CRS which is " 
+            << layerProperty.boundingBox[i].crs.toLocal8Bit().data() << "." << std::endl;
+#endif
+      if ( layerProperty.boundingBox[i].crs == DEFAULT_LATLON_CRS )
+      {
+        extentForLayer[ layerProperty.name ] = 
+                layerProperty.boundingBox[i].box;
+      }
+    }
+
+
+    if
+      cout << (*i).ascii() << endl;*/
+  }
+
+}
+
+
 void QgsServerSourceSelect::on_btnConnect_clicked()
 {
   // populate the table list
@@ -301,19 +337,26 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
 #ifdef QGISDEBUG
   std::cout << "QgsServerSourceSelect::serverConnect: Connection info: '" << m_connInfo.toLocal8Bit().data() << "'." << std::endl;
 #endif
-    
-    
+
+
   // TODO: Create and bind to data provider
-  
+
   // load the server data provider plugin
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  
-  QgsWmsProvider* wmsProvider = 
+
+  wmsProvider = 
     (QgsWmsProvider*) pReg->getProvider( "wms", m_connInfo );
 
-  connect(wmsProvider, SIGNAL(setStatus(QString)), this, SLOT(showStatusMessage(QString)));
+  if (wmsProvider)
+  {
+    connect(wmsProvider, SIGNAL(setStatus(QString)), this, SLOT(showStatusMessage(QString)));
 
-  populateLayerList(wmsProvider);
+    populateLayerList(wmsProvider);
+  }
+  else
+  {
+    // TODO: Let user know we couldn't initialise the WMS provider
+  }
 
 }
 
@@ -327,6 +370,43 @@ void QgsServerSourceSelect::on_btnAdd_clicked()
   {
     accept();
   }
+}
+
+
+void QgsServerSourceSelect::on_btnChangeSpatialRefSys_clicked()
+{
+  if (!wmsProvider)
+  {
+    return;
+  }
+
+  QSet<QString> crsFilter = wmsProvider->supportedCrsForLayers(m_selectedLayers);
+
+  QgsLayerProjectionSelector * mySelector =
+    new QgsLayerProjectionSelector(this);
+
+  mySelector->setOgcWmsCrsFilter(crsFilter);
+
+  long myDefaultSRS = QgsProject::instance()->readNumEntry("SpatialRefSys", "/ProjectSRSID", GEOSRS_ID);
+
+  mySelector->setSelectedSRSID(myDefaultSRS);
+
+  if (mySelector->exec())
+  {
+    // TODO: assign EPSG back to the WMS provider
+    m_Epsg = mySelector->getCurrentEpsg();
+  }
+  else
+  {
+    // NOOP
+  }
+
+  labelSpatialRefSys->setText( mySelector->getCurrentProj4String() );
+
+  delete mySelector;
+
+  // update the display of this widget
+  this->update();
 }
 
 
@@ -347,10 +427,9 @@ void QgsServerSourceSelect::on_lstLayers_selectionChanged()
 
   // Iterate through the layers
   Q3ListViewItemIterator it( lstLayers );
-  while ( it.current() ) 
+  while ( it.current() )
   {
     Q3ListViewItem *item = it.current();
-    ++it;
 
     // save the name of the layer (in case only one of its styles was
     // selected)
@@ -391,6 +470,18 @@ void QgsServerSourceSelect::on_lstLayers_selectionChanged()
 #endif
     
     }
+
+    ++it;
+  }
+
+  // If we got some selected items, let the user play with projections
+  if (newSelectedLayers.count() > 0)
+  {
+    btnChangeSpatialRefSys->setEnabled(TRUE);
+  }
+  else
+  {
+    btnChangeSpatialRefSys->setEnabled(FALSE);
   }
 
   m_selectedLayers                  = newSelectedLayers;
@@ -434,6 +525,19 @@ QString QgsServerSourceSelect::selectedImageEncoding()
 
 }
 
+QString QgsServerSourceSelect::selectedCrs()
+{
+  if (m_Epsg)
+  {
+    return QString("EPSG:%1")
+              .arg(m_Epsg);
+  }
+  else
+  {
+    return QString();
+  }
+}
+
 void QgsServerSourceSelect::showStatusMessage(QString const & theMessage)
 {
   labelStatus->setText(theMessage);
@@ -443,5 +547,4 @@ void QgsServerSourceSelect::showStatusMessage(QString const & theMessage)
 }
 
 
-
-
+// ENDS

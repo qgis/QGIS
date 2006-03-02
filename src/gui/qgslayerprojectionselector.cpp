@@ -23,7 +23,8 @@
  * \class QgsLayerProjectionSelector - Set user layerprojectionselector and preferences
  * Constructor
  */
-QgsLayerProjectionSelector::QgsLayerProjectionSelector(QWidget *parent, Qt::WFlags fl)
+QgsLayerProjectionSelector::QgsLayerProjectionSelector(QWidget *parent, 
+                                                       Qt::WFlags fl)
   : QDialog(parent, fl)
 {
   setupUi(this);
@@ -40,10 +41,12 @@ void QgsLayerProjectionSelector::setSelectedSRSName(QString theName)
 {
   projectionSelector->setSelectedSRSName(theName);
 }
+
 void QgsLayerProjectionSelector::setSelectedSRSID(long theID)
 {
   projectionSelector->setSelectedSRSID(theID);
 }
+
 QString QgsLayerProjectionSelector::getCurrentProj4String()
 {
   //@NOTE dont use getSelectedWKT as that just returns the name part!
@@ -55,3 +58,14 @@ long QgsLayerProjectionSelector::getCurrentSRSID()
   //@NOTE dont use getSelectedWKT as that just returns the name part!
   return projectionSelector->getCurrentSRSID();
 }
+
+long QgsLayerProjectionSelector::getCurrentEpsg()
+{
+  return projectionSelector->getCurrentEpsg();
+}
+
+void QgsLayerProjectionSelector::setOgcWmsCrsFilter(QSet<QString> crsFilter)
+{
+  projectionSelector->setOgcWmsCrsFilter(crsFilter);
+}
+
