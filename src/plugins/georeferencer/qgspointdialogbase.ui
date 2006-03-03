@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>531</width>
-    <height>416</height>
+    <width>592</width>
+    <height>403</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -54,10 +54,13 @@
       </sizepolicy>
      </property>
      <property name="frameShape" >
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="frameShadow" >
       <enum>QFrame::Raised</enum>
+     </property>
+     <property name="margin" >
+      <number>0</number>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
@@ -75,7 +78,13 @@
          <string/>
         </property>
         <property name="icon" >
-         <iconset>image0</iconset>
+         <iconset/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>
@@ -91,7 +100,13 @@
          <string/>
         </property>
         <property name="icon" >
-         <iconset>image1</iconset>
+         <iconset/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>
@@ -107,7 +122,13 @@
          <string/>
         </property>
         <property name="icon" >
-         <iconset>image2</iconset>
+         <iconset/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>false</bool>
@@ -123,7 +144,13 @@
          <string/>
         </property>
         <property name="icon" >
-         <iconset>image3</iconset>
+         <iconset/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>
@@ -144,10 +171,13 @@
       </sizepolicy>
      </property>
      <property name="frameShape" >
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="frameShadow" >
       <enum>QFrame::Raised</enum>
+     </property>
+     <property name="margin" >
+      <number>0</number>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
@@ -165,7 +195,13 @@
          <string/>
         </property>
         <property name="icon" >
-         <iconset>image4</iconset>
+         <iconset/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>
@@ -184,7 +220,13 @@
          <string/>
         </property>
         <property name="icon" >
-         <iconset>image5</iconset>
+         <iconset/>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
         </property>
         <property name="checkable" >
          <bool>true</bool>

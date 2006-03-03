@@ -40,19 +40,25 @@
 #include <netinet/in.h>
 #endif
 
+#include <Q3ListView>
+#include <Q3Picture>
+#include <Q3PopupMenu>
+#include <Q3ProgressDialog>
+
 #include <QAction>
 #include <QApplication>
 #include <QCursor>
+#include <QLabel>
 #include <QLibrary>
-#include <q3listview.h>
-#include <QPainter>
 #include <QPolygon>
-#include <QString>
 #include <QMessageBox>
+#include <QPainter>
+#include <QPixmap>
+#include <QPolygonF>
 #include <QProgressDialog>
+#include <QString>
 #include <QSettings>
 #include <QWidget>
-#include <QPixmap>
 
 #include "qgsapplication.h"
 #include "qgisapp.h"
@@ -61,7 +67,6 @@
 #include "qgspoint.h"
 #include "qgsmaptopixel.h"
 #include "qgsvectorlayer.h"
-#include "qgsidentifyresults.h"
 #include "qgsattributetable.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
@@ -113,7 +118,6 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
   providerKey(providerKey),
   valid(false),
   myLib(0),
-  ir(0),                    // initialize the identify results pointer
   updateThreshold(0),       // XXX better default value?
   mMinimumScale(0),
   mMaximumScale(0),
@@ -178,11 +182,6 @@ QgsVectorLayer::~QgsVectorLayer()
   delete popMenu;
   // delete the provider lib pointer
   delete myLib;
-
-  if ( ir )
-  {
-    delete ir;
-  }
 
   // Destroy and cached geometries and clear the references to them
   for (std::map<int, QgsGeometry*>::iterator it  = mCachedGeometries.begin(); 
@@ -338,15 +337,15 @@ void QgsVectorLayer::setDisplayField(QString fldName)
   }
 }
 
-void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst)
+void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform)
 {
-  drawLabels(p, viewExtent, theMapToPixelTransform, dst, 1.);
+  drawLabels(p, viewExtent, theMapToPixelTransform, 1.);
 }
 
 // NOTE this is a temporary method added by Tim to prevent label clipping
 // which was occurring when labeller was called in the main draw loop
 // This method will probably be removed again in the near future!
-void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst, double scale)
+void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, double scale)
 {
 #ifdef QGISDEBUG
   qWarning("Starting draw of labels");
@@ -384,7 +383,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
             bool sel=mSelected.find(fet->featureId()) != mSelected.end();
             mLabel->renderLabel ( p, viewExtent, *mCoordinateTransform, 
                 projectionsEnabledFlag,
-                theMapToPixelTransform, dst, fet, sel, 0, scale);
+                theMapToPixelTransform, fet, sel, 0, scale);
           }
         }
         delete fet;
@@ -397,7 +396,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
       {
         bool sel=mSelected.find((*it)->featureId()) != mSelected.end();
         mLabel->renderLabel ( p, viewExtent, *mCoordinateTransform, projectionsEnabledFlag,
-            theMapToPixelTransform, dst, *it, sel, 0, scale);
+            theMapToPixelTransform, *it, sel, 0, scale);
       }
     }
     catch (QgsCsException &e)
@@ -471,13 +470,6 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   // Transform the points into map coordinates (and reproject if
   // necessary)
 
-  double oldx = x[0];
-  double oldy = y[0];
-
-#ifdef QGISDEBUG 
-  //std::cout <<"...WKBLineString start at (" << oldx << ", " << oldy << ")" <<std::endl;
-#endif
-
   transformPoints(x, y, z, mtp, projectionsEnabledFlag);
 
 #if defined(Q_WS_X11)
@@ -486,7 +478,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   // Look through the x and y coordinates and see if there are any
   // that need trimming. If one is found, there's no need to look at
   // the rest of them so end the loop at that point. 
-  for (register int i = 0; i < nPoints; ++i)
+  for (register unsigned int i = 0; i < nPoints; ++i)
     if (std::abs(x[i]) > QgsClipper::maxX ||
         std::abs(y[i]) > QgsClipper::maxY)
     {
@@ -496,20 +488,14 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
     }
 #endif
 
-  // Cast points to int and put into the appropriate storage for the
-  // call to QPainter::drawFeature(). Apparently QT 4 will allow
-  // calls to drawPolyline with a QPointArray holding floats (or
-  // doubles?), so this loop may become unnecessary (but may still need
-  // the double* versions for the OGR coordinate transformation).
-  QPolygon pa(nPoints);
-  for (register int i = 0; i < nPoints; ++i)
+  // set up QPolygonF class with transformed points
+  QPolygonF pa(nPoints);
+  for (register unsigned int i = 0; i < nPoints; ++i)
   {
-    // Here we assume that a static cast is as fast as a C style case
-    // since type checking is done at compile time rather than
-    // runtime.
-    pa.setPoint(i, static_cast<int>(x[i] + 0.5),
-        static_cast<int>(y[i] + 0.5));
+    pa[i].setX(x[i]);
+    pa[i].setY(y[i]);
   }
+  
 #ifdef QGISDEBUGVERBOSE
   // this is only used for verbose debug output
   for (int i = 0; i < pa.size(); ++i)
@@ -534,7 +520,7 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
   p->drawPolyline(pa);
   //restore the pen
   p->setPen(pen);
-
+  
   return ptr;
 }
 
@@ -565,7 +551,7 @@ unsigned char* QgsVectorLayer::drawPolygon(unsigned char* feature,
 
   for (register unsigned int idx = 0; idx < numRings; idx++)
   {
-    int nPoints = *((int*)ptr);
+    unsigned int nPoints = *((int*)ptr);
 
     ringTypePtr ring = new ringType(std::vector<double>(nPoints),
         std::vector<double>(nPoints));
@@ -604,15 +590,6 @@ std::cerr << jdx << ": "
       continue;
     }
 
-    // Transform the points into map coordinates (and reproject if
-    // necessary)
-    double oldx = ring->first[0];
-    double oldy = ring->second[0];
-
-#ifdef QGISDEBUG 
-    //std::cout <<"...WKBLineString start at (" << oldx << ", " << oldy << ")" <<std::endl;
-#endif
-
     transformPoints(ring->first, ring->second, zVector, mtp, projectionsEnabledFlag);
 
 #if defined(Q_WS_X11)
@@ -621,7 +598,7 @@ std::cerr << jdx << ": "
     // Look through the x and y coordinates and see if there are any
     // that need trimming. If one is found, there's no need to look at
     // the rest of them so end the loop at that point. 
-    for (register int i = 0; i < nPoints; ++i)
+    for (register unsigned int i = 0; i < nPoints; ++i)
     {
       if (std::abs(ring->first[i]) > QgsClipper::maxX ||
           std::abs(ring->second[i]) > QgsClipper::maxY)
@@ -659,14 +636,14 @@ std::cerr << i << ": " << ring->first[i]
   if (total_points > 0)
   {
     int ii = 0;
-    QPoint outerRingPt;
+    QPointF outerRingPt;
 
     // Stores the start index of each ring (first) and the number
     // of points in each ring (second).
     typedef std::vector<std::pair<unsigned int, unsigned int> > ringDetailType;
     ringDetailType ringDetails;
 
-    // Need to copy the polygon vertices into a QPointArray for the
+    // Need to copy the polygon vertices into a QPologynF for the
     // QPainter::drawpolygon() call. The size is the sum of points in
     // the polygon plus one extra point for each ring except for the
     // first ring.
@@ -674,7 +651,7 @@ std::cerr << i << ": " << ring->first[i]
     // Store size here and use it in the loop to avoid penalty of
     // multiple calls to size()
     int numRings = rings.size();
-    QPolygon pa(total_points + numRings - 1);
+    QPolygonF pa(total_points + numRings - 1);
     for (register int i = 0; i < numRings; ++i)
     {
       // Store the pointer in a variable with a short name so as to make
@@ -687,34 +664,39 @@ std::cerr << i << ": " << ring->first[i]
       // points in the ring.
       ringDetails.push_back(std::make_pair(ii, ringSize));
 
-      // Transfer points to the QPointArray
-      for (register int j = 0; j != ringSize; ++j)
-        pa.setPoint(ii++, static_cast<int>(r->first[j] + 0.5),
-            static_cast<int>(r->second[j] + 0.5));
+      // Transfer points to the array of QPointF
+      for (register unsigned int j = 0; j != ringSize; ++j, ++ii)
+      {
+        // there is maybe a bug in Qt4.1: when using doubles without rounding,
+        // I've experienced crashes (broken pipe) when drawing polygon
+        // with more than 3000 vertices  [MD]
+        pa[ii].setX(static_cast<int>(r->first[j] + 0.5));
+        pa[ii].setY(static_cast<int>(r->second[j] + 0.5));
+//        pa[ii].setX(r->first[j]);
+//        pa[ii].setY(r->second[j]);
+      }
 
       // Store the last point of the first ring, and insert it at
       // the end of all other rings. This makes all the other rings
       // appear as holes in the first ring.
       if (i == 0)
       {
-        outerRingPt.setX(pa.point(ii-1).x());
-        outerRingPt.setY(pa.point(ii-1).y());
+        outerRingPt.setX(pa[ii-1].x());
+        outerRingPt.setY(pa[ii-1].y());
       }
       else
-        pa.setPoint(ii++, outerRingPt);
+        pa[ii++] = outerRingPt;
 
       // Tidy up the pointed to pairs of vectors as we finish with them
       delete rings[i];
     }
-
 
 #ifdef QGISDEBUGVERBOSE
     // this is only for verbose debug output -- no optimzation is 
     // needed :)
     std::cerr << "Pixel points are:\n";
     for (int i = 0; i < pa.size(); ++i)
-      std::cerr << i << ": " << pa.point(i).x() << ", " 
-        << pa.point(i).y() << '\n';
+      std::cerr << i << ": " << pa[i].x() << ", " << pa[i].y() << '\n';
     std::cerr << "Ring positions are:\n";
     for (int i = 0; i < ringDetails.size(); ++i)
       std::cerr << ringDetails[i].first << ", "
@@ -774,28 +756,29 @@ std::cerr << i << ": " << ring->first[i]
     ringDetailType::const_iterator ri = ringDetails.begin();
 
     for (; ri != ringDetails.end(); ++ri)
-      p->drawPolygon(pa, FALSE, ri->first, ri->second);
+      p->drawPolygon(pa.constData() + ri->first, ri->second, Qt::OddEvenFill);
     
     //
     //restore brush and pen to original
     //
     p->setBrush ( brush );
     p->setPen ( pen );
-  }
-
+  
+  } // totalPoints > 0
+  
   return ptr;
 }
 
 
-bool QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, QPaintDevice* dst)
+bool QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform)
 {
-  draw ( p, viewExtent, theMapToPixelTransform, dst, 1., 1.);
+  draw ( p, viewExtent, theMapToPixelTransform, 1., 1.);
 
   return TRUE; // Assume success always
 }
 
 void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, 
-    QPaintDevice* dst, double widthScale, double symbolScale)
+    double widthScale, double symbolScale)
 {
   if ( /*1 == 1 */ m_renderer)
   {
@@ -845,6 +828,8 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     mCachedGeometries.clear();
 
     dataProvider->select(viewExtent);
+    dataProvider->updateFeatureCount();
+    int totalFeatures = dataProvider->featureCount();
     int featureCount = 0;
     //  QgsFeature *ftest = dataProvider->getFirstFeature();
 #ifdef QGISDEBUG
@@ -871,7 +856,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 #ifdef QGISDEBUG
         //      std::cout << "QgsVectorLayer::draw: got " << fet->featureId() << std::endl; 
 #endif
-
+    
         // XXX Something in our draw event is triggering an additional draw event when resizing [TE 01/26/06]
         // XXX Calling this will begin processing the next draw event causing image havoc and recursion crashes.
         //qApp->processEvents(); //so we can trap for esc press
@@ -880,14 +865,9 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
         // the threshold has been exceeded
         if(updateThreshold > 0)
         {
-          //copy the drawing buffer every updateThreshold elements
+          // signal progress in drawing
           if(0 == featureCount % updateThreshold)
-#if QT_VERSION < 0x040000
-            bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::CopyROP,false);
-#else
-          // TODO: Double check if this is appropriate for Qt4 - probably better to use QPainter::drawPixmap().
-          bitBlt(dst,0,0,p->device(),0,0,-1,-1,Qt::AutoColor);
-#endif
+            emit drawingProgress(featureCount, totalFeatures);
         }
 
         if (fet == 0)
@@ -997,180 +977,6 @@ QgsVectorLayer::endian_t QgsVectorLayer::endian()
   return (htonl(1) == 1) ? QgsVectorLayer::XDR : QgsVectorLayer::NDR ;
 }
 
-void QgsVectorLayer::identify(QgsRect * r)
-{
-  QApplication::setOverrideCursor(Qt::WaitCursor);
-
-  QgsRect pr = inverseProjectRect(*r);
-  dataProvider->select(&pr, true);
-  int featureCount = 0;
-  QgsFeature *fet;
-
-  QgsDistanceArea calc;
-  calc.setSourceSRS(mCoordinateTransform->sourceSRS().srsid());
-
-  if ( !isEditable() ) {
-    // display features falling within the search radius
-    if( !ir )
-    {
-      // It is necessary to pass topLevelWidget()as parent, but there is no QWidget available.
-      //
-      // Win32 doesn't like this approach to creating the window and seems
-      // to work fine without it [gsherman]
-      QWidget *top = 0;
-#ifndef WIN32
-      foreach (QWidget *w, QApplication::topLevelWidgets())
-      {
-        if ( typeid(*w) == typeid(QgisApp) )
-        {
-          top = w;
-          break;
-        }
-      }
-#endif
-      ir = new QgsIdentifyResults(mActions, top);
-
-      // restore the identify window position and show it
-      ir->restorePosition();
-    } else {
-      ir->raise();
-      ir->clear();
-      ir->setActions ( mActions );
-    }
-
-    while ((fet = dataProvider->getNextFeature(true)))
-    {
-      featureCount++;
-
-      Q3ListViewItem *featureNode = ir->addNode("foo");
-      featureNode->setText(0, fieldIndex);
-      std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
-      // Do this only once rather than each pass through the loop
-      int attrSize = attr.size();
-      for (register int i = 0; i < attrSize; i++)
-      {
-#ifdef QGISDEBUG
-        std::cout << attr[i].fieldName().toLocal8Bit().data() << " == " << fieldIndex.toLocal8Bit().data() << std::endl;
-#endif
-        if (attr[i].fieldName().lower() == fieldIndex)
-        {
-          featureNode->setText(1, attr[i].fieldValue());
-        }
-        ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
-      }
-
-      // measure distance or area
-      if (vectorType() == QGis::Line)
-      {
-        double dist = calc.measure(fet->geometry());
-        QString str = QString::number(dist/1000, 'f', 3);
-        str += " km";
-        ir->addAttribute(featureNode, ".Length", str);
-      }
-      else if (vectorType() == QGis::Polygon)
-      {
-        double area = calc.measure(fet->geometry());
-        QString str = QString::number(area/1000000, 'f', 3);
-        str += " km2";
-        ir->addAttribute(featureNode, ".Area", str);
-      }
-
-      // Add actions 
-
-      QgsAttributeAction::aIter iter = mActions.begin();
-      for (register int i = 0; iter != mActions.end(); ++iter, ++i)
-      {
-        ir->addAction( featureNode, i, tr("action"), iter->name() );
-      }
-
-      delete fet;
-    }
-
-#ifdef QGISDEBUG
-    std::cout << "Feature count on identify: " << featureCount << std::endl;
-#endif
-
-    //also test the not commited features //todo: eliminate copy past code
-    /*for(std::list<QgsFeature*>::iterator it=mAddedFeatures.begin();it!=mAddedFeatures.end();++it)
-      {
-      if((*it)->intersects(r))
-      {
-      featureCount++;
-      if (featureCount == 1)
-      {
-      ir = new QgsIdentifyResults(mActions);
-      }
-
-      QListViewItem *featureNode = ir->addNode("foo");
-      featureNode->setText(0, fieldIndex);
-      std::vector < QgsFeatureAttribute > attr = (*it)->attributeMap();
-      for (int i = 0; i < attr.size(); i++)
-      {
-#ifdef QGISDEBUG
-std::cout << attr[i].fieldName() << " == " << fieldIndex << std::endl;
-#endif
-if (attr[i].fieldName().lower() == fieldIndex)
-{
-featureNode->setText(1, attr[i].fieldValue());
-}
-ir->addAttribute(featureNode, attr[i].fieldName(), attr[i].fieldValue());
-} 
-}
-}*/
-
-    ir->setTitle(name() + " - " + QString::number(featureCount) + tr(" features found"));
-if (featureCount == 1) 
-{
-  ir->showAllAttributes();
-  ir->setTitle(name() + " - " + tr(" 1 feature found") );
-}
-if (featureCount == 0)
-{
-  //QMessageBox::information(0, tr("No features found"), tr("No features were found in the active layer at the point you clicked"));
-
-  ir->setTitle(name() + " - " + tr("No features found") );
-  ir->setMessage ( tr("No features found"), tr("No features were found in the active layer at the point you clicked") );
-}
-ir->show();
-} 
-else { // Edit attributes 
-  // TODO: what to do if more features were selected? - nearest?
-  if ( (fet = dataProvider->getNextFeature(true)) ) {
-    // Was already changed?
-    std::map<int,std::map<QString,QString> >::iterator it = mChangedAttributes.find(fet->featureId());
-
-    std::vector < QgsFeatureAttribute > old;
-    if ( it != mChangedAttributes.end() ) {
-      std::map<QString,QString> oldattr = (*it).second;
-      for( std::map<QString,QString>::iterator ait = oldattr.begin(); ait!=oldattr.end(); ++ait ) {
-        old.push_back ( QgsFeatureAttribute ( (*ait).first, (*ait).second ) );
-      }
-    } else {
-      old = fet->attributeMap();
-    }
-    QgsAttributeDialog ad( &old );
-
-    if ( ad.exec()==QDialog::Accepted ) {
-      std::map<QString,QString> attr;
-      // Do this only once rather than each pass through the loop
-      int oldSize = old.size();
-      for(register int i= 0; i < oldSize; ++i) {
-        attr.insert ( std::make_pair( old[i].fieldName(), ad.value(i) ) );
-      }
-      // Remove old if exists
-      it = mChangedAttributes.find(fet->featureId());
-
-      if ( it != mChangedAttributes.end() ) { // found
-        mChangedAttributes.erase ( it );
-      }
-
-      mChangedAttributes.insert ( std::make_pair( fet->featureId(), attr ) );
-      mModified=true;
-    }
-  }
-}
-QApplication::restoreOverrideCursor();
-}
 
 void QgsVectorLayer::table()
 {
@@ -3391,12 +3197,11 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 #endif
 
         transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
+        QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
 
         p->save();
         p->scale(markerScaleFactor,markerScaleFactor);
-        p->drawPixmap(static_cast<int>(x-(marker->width()/2)) ,
-            static_cast<int>(y-(marker->height()/2) ),
-            *marker);
+        p->drawPixmap(pt, *marker);
         p->restore();
 
         break;
@@ -3410,7 +3215,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
         p->save();
         p->scale(markerScaleFactor, markerScaleFactor);
 
-        for (register int i = 0; i < nPoints; ++i)
+        for (register unsigned int i = 0; i < nPoints; ++i)
         {
           ptr += 5;
           double x = *((double *) ptr);
@@ -3423,7 +3228,8 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
 #endif
 
           transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
-
+          QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
+          
 #if defined(Q_WS_X11)
           // Work around a +/- 32768 limitation on coordinates in X11
           if (std::abs(x) > QgsClipper::maxX ||
@@ -3431,9 +3237,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
             needToTrim = true;
           else
 #endif
-          p->drawPixmap(static_cast<int>(x-(marker->width()/2)) ,
-                static_cast<int>(y-(marker->height()/2) ),
-                *marker);
+          p->drawPixmap(pt, *marker);
         }
         p->restore();
 
@@ -3451,7 +3255,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
         unsigned int numLineStrings = *((int*)ptr);
         ptr = feature + 9;
 
-        for (register int jdx = 0; jdx < numLineStrings; jdx++)
+        for (register unsigned int jdx = 0; jdx < numLineStrings; jdx++)
         {
           ptr = drawLineString(ptr, p, theMapToPixelTransform,
               projectionsEnabledFlag);
@@ -3469,7 +3273,7 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
         unsigned char *ptr = feature + 5;
         unsigned int numPolygons = *((int*)ptr);
         ptr = feature + 9;
-        for (register int kdx = 0; kdx < numPolygons; kdx++)
+        for (register unsigned int kdx = 0; kdx < numPolygons; kdx++)
           ptr = drawPolygon(ptr, p, theMapToPixelTransform, 
               projectionsEnabledFlag);
         break;

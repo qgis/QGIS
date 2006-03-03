@@ -22,7 +22,6 @@
 #include <qfontmetrics.h>
 
 #include <qpainter.h>
-#include <qpaintdevice.h>
 #include <qmatrix.h>
 #include <qdom.h>
 
@@ -85,8 +84,7 @@ QString QgsLabel::fieldValue ( int attr, QgsFeature *feature )
 
 void QgsLabel::renderLabel( QPainter * painter, QgsRect *viewExtent,
                             const QgsCoordinateTransform& coordTransform,
-                            bool doCoordTransform,
-                            QgsMapToPixel *transform, QPaintDevice* device,
+                            bool doCoordTransform, QgsMapToPixel *transform,
                             QgsFeature *feature, bool selected, QgsLabelAttributes *classAttributes,
        			    double sizeScale )
 {

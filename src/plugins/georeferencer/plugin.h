@@ -93,17 +93,6 @@ public slots:
   //                  END OF MANDATORY PLUGIN METHODS
   //
   //////////////////////////////////////////////////////////////////////
-  //
-  // The following methods are provided to demonstrate how you can 
-  // load a vector or raster layer into the main gui. Please delete
-  // if you are not intending to use these. Note also that there are
-  // ways in which layers can be loaded.
-  //
-  
-  //!draw a raster layer in the qui
-  void drawRasterLayer(QString);
-  //! Add a vector layer given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-  void drawVectorLayer(QString,QString,QString);
   
 private:
 

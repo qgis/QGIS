@@ -36,6 +36,8 @@ class QCloseEvent;
 #include "qgisiface.h"
 #include "qgsmaptopixel.h"
 class QgsRubberBand;
+class QgsVertexMarker;
+class QgsGrassEditLayer;
 
 class QgsGrassProvider;
 #include "ui_qgsgrasseditbase.h"
@@ -73,14 +75,6 @@ public:
 	EDIT_CATS,
 	EDIT_ATTRIBUTES
     }; 
-
-    //! Icons
-    enum Icons {     
-	ICON_NONE,
-	ICON_CROSS,
-	ICON_X,
-	ICON_BOX
-    };
 
     // Symbology codes */
     enum SymbCode {
@@ -396,9 +390,10 @@ private:
     QAction *mEditAttributesAction;
     QAction *mCloseEditAction;
 
-    // Rubber band
+    // Canvas items
     QgsRubberBand *mRubberBandLine;
-    QgsRubberBand *mRubberBandIcon;
+    QgsVertexMarker *mRubberBandIcon;
+    QgsGrassEditLayer* mCanvasEdit;
 };
 
 #endif // QGSGRASSEDIT_H

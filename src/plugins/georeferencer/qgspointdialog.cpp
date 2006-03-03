@@ -1,42 +1,118 @@
 #include <cmath>
 
-#include <qtoolbutton.h>
-#include <qpushbutton.h>
-#include <qcombobox.h>
+#include <Q3Frame>
+#include <QPushButton>
+#include <QComboBox>
 #include <QFileDialog>
-#include <q3frame.h>
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-//Added by qt3to4:
-#include <QPixmap>
-#include <QTextStream>
 #include <QHBoxLayout>
-//#include <Q3HBoxLayout>
+#include <QLayout>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QTextStream>
+#include <QToolButton>
 
-#include "datapointacetate.h"
+#include "qgisiface.h"
+#include "qgsapplication.h"
 #include "qgspointdialog.h"
 #include "mapcoordsdialog.h"
 #include "qgsleastsquares.h"
 #include "qgsimagewarper.h"
 #include "qgsgeorefwarpoptionsdialog.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsmaptoolemitpoint.h"
+#include "qgsmaptoolzoom.h"
+#include "qgsmaptoolpan.h"
+#include "qgsgeorefdatapoint.h"
 
-#include "zoom_in.xpm"
-#include "zoom_out.xpm"
-#include "pan.xpm"
-#include "add_point.xpm"
+class QgsGeorefTool : public QgsMapTool
+{
+  public:
+    
+    QgsGeorefTool(QgsMapCanvas* canvas, QgsPointDialog* dlg, bool addPoint)
+      : QgsMapTool(canvas), mDlg(dlg), mAddPoint(addPoint)
+    {
+    }    
 
-QgsPointDialog::QgsPointDialog() {
-  
-}
+    //! Mouse press event for overriding
+    virtual void canvasPressEvent(QMouseEvent * e)
+    {
+      QgsPoint pnt = toMapCoords(e->pos());
+      
+      if (mAddPoint)
+        mDlg->showCoordDialog(pnt);
+      else
+        mDlg->deleteDataPoint(pnt);
+    }
+
+    virtual void canvasMoveEvent(QMouseEvent * e) { }
+    virtual void canvasReleaseEvent(QMouseEvent * e) { }
+    
+  private:
+    QgsPointDialog* mDlg;
+    bool mAddPoint;
+};
 
 
-QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, QWidget* parent, Qt::WFlags fl) 
-    : QDialog(parent, fl), 
-    mCursor(NULL),
-    mLayer(layer)
+QgsPointDialog::QgsPointDialog(QString layerPath, QgisIface* theQgisInterface,
+                                QWidget* parent, Qt::WFlags fl) 
+  : QDialog(parent, fl), mIface(theQgisInterface)
 {
   setupUi(this);
+  
+  QString myIconPath = QgsApplication::themePath();
+  
+  // setup actions
+  //
+  mActionZoomIn= new QAction(QIcon(myIconPath+"/mActionZoomIn.png"), tr("Zoom In"), this);
+  mActionZoomIn->setShortcut(tr("z"));
+  mActionZoomIn->setStatusTip(tr("Zoom In"));
+  connect(mActionZoomIn, SIGNAL(triggered()), this, SLOT(zoomIn()));
+  //
+  mActionZoomOut= new QAction(QIcon(myIconPath+"/mActionZoomOut.png"), tr("Zoom Out"), this);
+  mActionZoomOut->setShortcut(tr("Z"));
+  mActionZoomOut->setStatusTip(tr("Zoom Out"));
+  connect(mActionZoomOut, SIGNAL(triggered()), this, SLOT(zoomOut()));
+  //
+  mActionZoomToLayer= new QAction(QIcon(myIconPath+"/mActionZoomToLayer.png"), tr("Zoom To Layer"), this);
+  //mActionZoomToLayer->setShortcut(tr("Ctrl+O"));
+  mActionZoomToLayer->setStatusTip(tr("Zoom to Layer"));
+  connect(mActionZoomToLayer, SIGNAL(triggered()), this, SLOT(zoomToLayer()));
+  //
+  mActionPan= new QAction(QIcon(myIconPath+"/mActionPan.png"), tr("Pan Map"), this);
+  mActionPan->setStatusTip(tr("Pan the map"));
+  connect(mActionPan, SIGNAL(triggered()), this, SLOT(pan()));
+  //
+  mActionAddPoint= new QAction(QIcon(myIconPath+"/mActionCapturePoint.png"), tr("Add Point"), this);
+  mActionAddPoint->setShortcut(tr("."));
+  mActionAddPoint->setStatusTip(tr("Capture Points"));
+  connect(mActionAddPoint, SIGNAL(triggered()), this, SLOT(addPoint()));
+  //
+  mActionDeletePoint = new QAction(QIcon(myIconPath+"/mActionDeleteSelected.png"), tr("Delete Point"), this);
+  mActionDeletePoint->setStatusTip(tr("Delete Selected"));
+  connect(mActionDeletePoint, SIGNAL(triggered()), this, SLOT(deletePoint()));
+  
+  // Map Tool Group
+  mMapToolGroup = new QActionGroup(this);
+  mActionPan->setCheckable(true);
+  mMapToolGroup->addAction(mActionPan);
+  mActionZoomIn->setCheckable(true);
+  mMapToolGroup->addAction(mActionZoomIn);
+  mActionZoomOut->setCheckable(true);
+  mMapToolGroup->addAction(mActionZoomOut);
+  mMapToolGroup->addAction(mActionZoomToLayer);
+  mActionAddPoint->setCheckable(true);
+  mMapToolGroup->addAction(mActionAddPoint);
+  mActionDeletePoint->setCheckable(true);
+  mMapToolGroup->addAction(mActionDeletePoint);
+  
+  // set appopriate actions for tool buttons
+  tbnZoomIn->setDefaultAction(mActionZoomIn);
+  tbnZoomOut->setDefaultAction(mActionZoomOut);
+  tbnZoomToLayer->setDefaultAction(mActionZoomToLayer);
+  tbnPan->setDefaultAction(mActionPan);
+  tbnAddPoint->setDefaultAction(mActionAddPoint);
+  tbnDeletePoint->setDefaultAction(mActionDeletePoint);
+  
   // set up the canvas
   QHBoxLayout* layout = new QHBoxLayout(canvasFrame);
   layout->setAutoAdd(true);
@@ -44,8 +120,20 @@ QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, QWidget* parent, Qt::WFlag
   mCanvas->setBackgroundColor(Qt::white);
   mCanvas->setMinimumWidth(400);
   mCanvas->freeze(true);
-  mCanvas->addLayer(mLayer);
-  tbnAddPoint->setOn(true);
+  
+  // open raster layer
+  QgsRasterLayer* layer = new QgsRasterLayer(layerPath, "Raster");
+  mLayer = layer;
+  
+  // add to map layer registry, do not signal addition
+  // so layer is not added to legend
+  QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
+  registry->addMapLayer(layer, FALSE);  
+  
+  // add layer to map canvas
+  std::deque<QString> layers;
+  layers.push_back(layer->getLayerID());
+  mCanvas->setLayerSet(layers);
   
   // load previously added points
   QFile pointFile(mLayer->source() + ".points");
@@ -64,80 +152,87 @@ QgsPointDialog::QgsPointDialog(QgsRasterLayer* layer, QWidget* parent, Qt::WFlag
   
   mCanvas->setExtent(mLayer->extent());
   mCanvas->freeze(false);
-  connect(mCanvas, SIGNAL(xyClickCoordinates(QgsPoint&)),
-	  this, SLOT(handleCanvasClick(QgsPoint&)));
-  leSelectWorldFile->setText(guessWorldFileName(mLayer->source()));
-}
-
-
-QgsPointDialog::~QgsPointDialog() {
   
-}
+  leSelectWorldFile->setText(guessWorldFileName(mLayer->source()));
 
-
-void QgsPointDialog::handleCanvasClick(QgsPoint& pixelCoords) {
-  if (tbnAddPoint->isChecked())
-    showCoordDialog(pixelCoords);
-  else if (tbnDeletePoint->isChecked())
-    deleteDataPoint(pixelCoords);
-}
-
-
-void QgsPointDialog::addPoint(const QgsPoint& pixelCoords, 
-			      const QgsPoint& mapCoords) {
-  mPixelCoords.push_back(pixelCoords);
-  mMapCoords.push_back(mapCoords);
-  static int acetateCounter = 0;
-  mAcetateIDs.push_back(QString("%1").arg(++acetateCounter));
-  mCanvas->addAcetateObject(mAcetateIDs[mAcetateIDs.size() - 1],
-			    new DataPointAcetate(pixelCoords, mapCoords));
+  // set adding points as default tool
+  addPoint();
+  
   mCanvas->refresh();
 }
 
 
-void QgsPointDialog::pbnCancel_clicked() {
-  delete mCanvas;
-  delete mLayer;
+QgsPointDialog::~QgsPointDialog()
+{
+  // delete layer (and don't signal it as it's our private layer)
+  if (mLayer)
+  {
+    QgsMapLayerRegistry::instance()->removeMapLayer(mLayer->getLayerID(), FALSE);
+  }
+}
+
+
+
+void QgsPointDialog::addPoint(const QgsPoint& pixelCoords, const QgsPoint& mapCoords)
+{           
+  static int acetateCounter = 0;
+  QgsGeorefDataPoint* pnt = new QgsGeorefDataPoint(mCanvas,
+                        acetateCounter++, pixelCoords, mapCoords);
+  pnt->show();
+  mPoints.push_back(pnt);
+  
+  mCanvas->refresh();
+}
+
+
+void QgsPointDialog::on_pbnCancel_clicked()
+{
   reject();
 }
 
 
-void QgsPointDialog::pbnGenerateWorldFile_clicked() {
-  if (generateWorldFile()) {
-    delete mCanvas;
-    delete mLayer;
+void QgsPointDialog::on_pbnGenerateWorldFile_clicked()
+{
+  if (generateWorldFile())
+  {
     accept();
   }
 }
 
 
-void QgsPointDialog::pbnGenerateAndLoad_clicked() {
-  if (generateWorldFile()) {
-    delete mCanvas;
+void QgsPointDialog::on_pbnGenerateAndLoad_clicked()
+{
+  if (generateWorldFile())
+  {
+    QString source = mLayer->source();
+    
+    // delete layer before it's loaded again (otherwise it segfaults)
+    QgsMapLayerRegistry::instance()->removeMapLayer(mLayer->getLayerID(), FALSE);
+    mLayer = 0;
+    
+    // load raster to the main map canvas of QGIS
     if (cmbTransformType->currentItem() == 0)
-      emit loadLayer(mLayer->source());
+      mIface->addRasterLayer(source);
     else 
-      emit loadLayer(leSelectModifiedRaster->text());
-    delete mLayer;
+      mIface->addRasterLayer(leSelectModifiedRaster->text());
+
     accept();
   }
 }
 
 
-void QgsPointDialog::pbnSelectWorldFile_clicked() {
-  QString filename = 
-    QFileDialog::getSaveFileName(this,
-				 "Choose a name for the world file",
-                 ".");
+void QgsPointDialog::on_pbnSelectWorldFile_clicked()
+{
+  QString filename = QFileDialog::getSaveFileName(this,
+              "Choose a name for the world file", ".");
   leSelectWorldFile->setText(filename);
 }
 
 
-void QgsPointDialog::pbnSelectModifiedRaster_clicked() {
-  QString filename = 
-    QFileDialog::getSaveFileName(this,
-				 "Choose a name for the world file",
-                 ".");
+void QgsPointDialog::on_pbnSelectModifiedRaster_clicked()
+{
+  QString filename = QFileDialog::getSaveFileName(this,
+              "Choose a name for the world file", ".");
   if (filename.right(4) != ".tif")
     filename += ".tif";
   leSelectModifiedRaster->setText(filename);
@@ -145,19 +240,32 @@ void QgsPointDialog::pbnSelectModifiedRaster_clicked() {
 }
 
 
-bool QgsPointDialog::generateWorldFile() {
+bool QgsPointDialog::generateWorldFile()
+{
   QgsPoint origin(0, 0);
   double pixelSize = 1;
   double rotation = 0;
   
+  // create arrays with points from mPoints
+  std::vector<QgsPoint> pixelCoords, mapCoords;
+  for (unsigned int i = 0; i < mPoints.size(); i++)
+  {
+    QgsGeorefDataPoint* pt = mPoints[i];
+    pixelCoords.push_back(pt->pixelCoords());
+    mapCoords.push_back(pt->mapCoords());
+  }
+  
   // compute the parameters using the least squares method 
   // (might throw std::domain_error)
-  try {
+  try
+  {
     if (cmbTransformType->currentItem() == 0)
-      QgsLeastSquares::linear(mMapCoords, mPixelCoords, origin, pixelSize);
-    else if (cmbTransformType->currentItem() == 1) {
-      int res = 
-	QMessageBox::warning(this, "Warning",
+    {
+      QgsLeastSquares::linear(mapCoords, pixelCoords, origin, pixelSize);
+    }
+    else if (cmbTransformType->currentItem() == 1)
+    {
+      int res = QMessageBox::warning(this, "Warning",
 			     "A Helmert transform requires modifications in "
 			     "the raster layer.\nThe modifed raster will be "
 			     "saved in a new file and a world file will be "
@@ -165,11 +273,11 @@ bool QgsPointDialog::generateWorldFile() {
 			     "sure that this is what you want?",
 			     QMessageBox::No, QMessageBox::Yes);
       if (res == QMessageBox::No)
-	return false;
-      QgsLeastSquares::helmert(mMapCoords, mPixelCoords, 
-			       origin, pixelSize, rotation);
+	       return false;
+      QgsLeastSquares::helmert(mapCoords, pixelCoords, origin, pixelSize, rotation);
     }
-    else if (cmbTransformType->currentItem() == 2) {
+    else if (cmbTransformType->currentItem() == 2)
+    {
       QMessageBox::critical(this, "Not implemented!",
 			    "An affine transform requires changing the "
 			    "original raster file. This is not yet "
@@ -177,14 +285,16 @@ bool QgsPointDialog::generateWorldFile() {
       return false;
     }
   }
-  catch (std::domain_error& e) {
+  catch (std::domain_error& e)
+  {
     QMessageBox::critical(this, "Error", QString(e.what()));
     return false;
   }
 
   // warp the raster if needed
   double xOffset, yOffset;
-  if (rotation != 0) {
+  if (rotation != 0)
+  {
     QgsGeorefWarpOptionsDialog d(this);
     d.exec();
     bool useZeroForTrans;
@@ -192,14 +302,15 @@ bool QgsPointDialog::generateWorldFile() {
     QgsImageWarper warper(-rotation);
     d.getWarpOptions(resampling, useZeroForTrans);
     warper.warp(mLayer->source(), leSelectModifiedRaster->text(), 
-		xOffset, yOffset, resampling, useZeroForTrans);
+		            xOffset, yOffset, resampling, useZeroForTrans);
   }
   
   // write the world file
   QFile file(leSelectWorldFile->text());
-  if (!file.open(QIODevice::WriteOnly)) {
+  if (!file.open(QIODevice::WriteOnly))
+  {
     QMessageBox::critical(this, "Error", 
-			  "Could not write to " + leSelectWorldFile->text());
+         "Could not write to " + leSelectWorldFile->text());
     return false;
   }
   QTextStream stream(&file);
@@ -212,117 +323,96 @@ bool QgsPointDialog::generateWorldFile() {
   
   // write the data points in case we need them later
   QFile pointFile(mLayer->source() + ".points");
-  if (pointFile.open(QIODevice::WriteOnly)) {
+  if (pointFile.open(QIODevice::WriteOnly))
+  {
     QTextStream points(&pointFile);
     points<<"mapX\tmapY\tpixelX\tpixelY"<<endl;
-    for (int i = 0; i < mMapCoords.size(); ++i) {
+    for (unsigned int i = 0; i < mapCoords.size(); ++i)
+    {
       points<<(QString("%1\t%2\t%3\t%4").
-	       arg(mMapCoords[i].x()).arg(mMapCoords[i].y()).
-	       arg(mPixelCoords[i].x()).arg(mPixelCoords[i].y()))<<endl;
+	       arg(mapCoords[i].x()).arg(mapCoords[i].y()).
+	       arg(pixelCoords[i].x()).arg(pixelCoords[i].y()))<<endl;
     }
   }
   return true;
 }
 
 
-void QgsPointDialog::tbnZoomIn_changed(int state) {
-  if (state == QCheckBox::On) {
-    tbnZoomOut->setOn(false);
-    tbnPan->setOn(false);
-    tbnAddPoint->setOn(false);
-    tbnDeletePoint->setOn(false);
-    mCanvas->setMapTool(QGis::ZoomIn);
-    delete mCursor;
-    QPixmap pix((const char **)zoom_in2);
-    mCursor = new QCursor(pix, 7, 7);
-    mCanvas->setCursor(*mCursor);
-  }
+void QgsPointDialog::zoomIn()
+{
+  QgsMapToolZoom* tool = new QgsMapToolZoom(mCanvas, FALSE /* zoomOut */); 
+  tool->setAction(mActionZoomIn);
+  mCanvas->setMapTool(tool);
 }
 
 
-void QgsPointDialog::tbnZoomOut_changed(int state) {
-  if (state == QCheckBox::On) {
-    tbnZoomIn->setOn(false);
-    tbnPan->setOn(false);
-    tbnAddPoint->setOn(false);
-    tbnDeletePoint->setOn(false);
-    mCanvas->setMapTool(QGis::ZoomOut);
-    delete mCursor;
-    QPixmap pix((const char **)zoom_out);
-    mCursor = new QCursor(pix, 7, 7);
-    mCanvas->setCursor(*mCursor);
-  }
+void QgsPointDialog::zoomOut()
+{
+  QgsMapToolZoom* tool = new QgsMapToolZoom(mCanvas, TRUE /* zoomOut */); 
+  tool->setAction(mActionZoomOut);
+  mCanvas->setMapTool(tool);
 }
 
 
-void QgsPointDialog::tbnZoomToLayer_clicked() {
+void QgsPointDialog::zoomToLayer()
+{
   mCanvas->setExtent(mLayer->extent());
   mCanvas->refresh();
 }
 
 
-void QgsPointDialog::tbnPan_changed(int state) {
-  if (state == QCheckBox::On) {
-    tbnZoomIn->setOn(false);
-    tbnZoomOut->setOn(false);
-    tbnAddPoint->setOn(false);
-    tbnDeletePoint->setOn(false);
-    mCanvas->setMapTool(QGis::Pan);
-    delete mCursor;
-    QPixmap pix((const char **)pan);
-    mCursor = new QCursor(pix, 7, 7);
-    mCanvas->setCursor(*mCursor);
-  }
+void QgsPointDialog::pan()
+{
+  QgsMapToolPan* tool = new QgsMapToolPan(mCanvas); 
+  tool->setAction(mActionPan);
+  mCanvas->setMapTool(tool);
 }
 
 
-void QgsPointDialog::tbnAddPoint_changed(int state) {
-  if (state == QCheckBox::On) {
-    tbnZoomIn->setOn(false);
-    tbnZoomOut->setOn(false);
-    tbnPan->setOn(false);
-    tbnDeletePoint->setOn(false);
-    mCanvas->setMapTool(QGis::EmitPoint);
-    delete mCursor;
-    QPixmap pix((const char **)add_point);
-    mCursor = new QCursor(pix, 7, 7);
-    mCanvas->setCursor(*mCursor);
-  }
+void QgsPointDialog::addPoint()
+{
+  QgsGeorefTool* tool = new QgsGeorefTool(mCanvas, this, TRUE /* addPoint */); 
+  tool->setAction(mActionAddPoint);
+  mCanvas->setMapTool(tool);
 }
 
 
-void QgsPointDialog::tbnDeletePoint_changed(int state) {
-  if (state == QCheckBox::On) {
-    tbnZoomIn->setOn(false);
-    tbnZoomOut->setOn(false);
-    tbnPan->setOn(false);
-    tbnAddPoint->setOn(false);
-    mCanvas->setMapTool(QGis::EmitPoint);
-  }
+void QgsPointDialog::deletePoint()
+{
+  QgsGeorefTool* tool = new QgsGeorefTool(mCanvas, this, FALSE /* addPoint */); 
+  tool->setAction(mActionDeletePoint);
+  mCanvas->setMapTool(tool);
 }
 
 
-void QgsPointDialog::showCoordDialog(QgsPoint& pixelCoords) {
-  MapCoordsDialog* mcd = new MapCoordsDialog(pixelCoords, this, NULL, true);
+void QgsPointDialog::showCoordDialog(QgsPoint& pixelCoords)
+{
+  MapCoordsDialog* mcd = new MapCoordsDialog(pixelCoords, this);
   connect(mcd, SIGNAL(pointAdded(const QgsPoint&, const QgsPoint&)),
-	  this, SLOT(addPoint(const QgsPoint&, const QgsPoint&)));
+          this, SLOT(addPoint(const QgsPoint&, const QgsPoint&)));
   mcd->show();
 }
 
 
-void QgsPointDialog::deleteDataPoint(QgsPoint& pixelCoords) {
-  std::vector<QgsPoint>::iterator pixIter = mPixelCoords.begin();
-  std::vector<QgsPoint>::iterator mapIter = mMapCoords.begin();
-  std::vector<QString>::iterator idIter = mAcetateIDs.begin();
-
-  for ( ; pixIter != mPixelCoords.end(); ++pixIter, ++mapIter, ++idIter) {
-    if (std::sqrt(std::pow(pixIter->x() - pixelCoords.x(), 2) +
-		  std::pow(pixIter->y() - pixelCoords.y(), 2)) < 
-	5 * mCanvas->mupp()) {
-      mCanvas->removeAcetateObject(*idIter);
-      mAcetateIDs.erase(idIter);
-      mPixelCoords.erase(pixIter);
-      mMapCoords.erase(mapIter);
+void QgsPointDialog::deleteDataPoint(QgsPoint& coords)
+{
+  std::vector<QgsGeorefDataPoint*>::iterator it = mPoints.begin();
+  
+  double maxDistSqr = (5 * mCanvas->mupp())*(5 * mCanvas->mupp());
+//#ifdef QGISDEBUG
+  std::cout << "deleteDataPoint! maxDistSqr: " << maxDistSqr << std::endl;
+//#endif
+  for ( ; it != mPoints.end(); it++)
+  {
+    QgsGeorefDataPoint* pt = *it;
+    double x = pt->pixelCoords().x() - coords.x();
+    double y = pt->pixelCoords().y() - coords.y();
+//#ifdef QGISDEBUG
+  std::cout << "deleteDataPoint! test: " << (x*x+y*y) << std::endl;
+//#endif
+    if ((x*x + y*y) < maxDistSqr)
+    {
+      mPoints.erase(it);
       mCanvas->refresh();
       break;
     }
@@ -330,12 +420,15 @@ void QgsPointDialog::deleteDataPoint(QgsPoint& pixelCoords) {
 }
 
 
-void QgsPointDialog::enableRelevantControls() {
-  if (cmbTransformType->currentItem() == 0) {
+void QgsPointDialog::enableRelevantControls()
+{
+  if (cmbTransformType->currentItem() == 0)
+  {
     leSelectModifiedRaster->setEnabled(false);
     pbnSelectModifiedRaster->setEnabled(false);
   }
-  else {
+  else
+  {
     leSelectModifiedRaster->setEnabled(true);
     pbnSelectModifiedRaster->setEnabled(true);
   }
@@ -343,18 +436,21 @@ void QgsPointDialog::enableRelevantControls() {
   if ((cmbTransformType->currentItem() == 0 &&
        !leSelectWorldFile->text().isEmpty()) ||
       (!leSelectWorldFile->text().isEmpty() &&
-       !leSelectModifiedRaster->text().isEmpty())) {
+       !leSelectModifiedRaster->text().isEmpty()))
+  {
     pbnGenerateWorldFile->setEnabled(true);
     pbnGenerateAndLoad->setEnabled(true);
   }
-  else {
+  else
+  {
     pbnGenerateWorldFile->setEnabled(false);
     pbnGenerateAndLoad->setEnabled(false);
   }
 }
 
 
-QString QgsPointDialog::guessWorldFileName(const QString& raster) {
+QString QgsPointDialog::guessWorldFileName(const QString& raster)
+{
   int point = raster.findRev('.');
   QString worldfile = "";
   if (point != -1 && point != raster.length() - 1) {

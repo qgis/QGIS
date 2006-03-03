@@ -56,8 +56,12 @@ public:
     @note
 
     As a side-effect QgsProject is made dirty.
+ 
+    Emits signal that layer has been added only if theEmitSignal is true (by default).
+    Not emitting signal is useful when you want to use registry also for layers
+    which won't be used in main map canvas but will be used in a special one
  */
- QgsMapLayer *  addMapLayer(QgsMapLayer * theMapLayer);
+ QgsMapLayer *  addMapLayer(QgsMapLayer * theMapLayer, bool theEmitSignal = TRUE);
 
  /** Remove a layer from qgis
 
@@ -66,8 +70,10 @@ public:
     As a side-effect QgsProject is made dirty.
 
     Any canvases using that layer will need to remove it
+ 
+    theEmitSignal - see addMapLayer()
  */
- void removeMapLayer(QString theLayerId);
+ void removeMapLayer(QString theLayerId, bool theEmitSignal = TRUE);
 
  /** Remove all registered layers 
 

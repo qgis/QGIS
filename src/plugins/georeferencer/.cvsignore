@@ -5,6 +5,6 @@ Makefile.in
 *.la
 *.lo
 *.moc.cpp
-*.uic.cpp
-*.uic.h
+ui_*.h
+*.qrc.cpp
 

@@ -20,15 +20,15 @@
 #define QGSMAPLAYER_H
 
 #include <vector>
+#include <map>
 
 #include <QObject>
 #include <QPixmap>
 
-#include <qgsrect.h>
-#include <qgis.h>
-#include <qgsfield.h>
-
-#include <qgscoordinatetransform.h>
+#include "qgis.h"
+#include "qgsrect.h"
+#include "qgsfield.h"
+#include "qgscoordinatetransform.h"
 
 class QAction;
 class QgisApp;
@@ -36,6 +36,7 @@ class QgsMapToPixel;
 class QgsFeature;
 class QgsLegend;
 class QgsLegendLayerFile;
+
 class QDomNode;
 class QDomDocument;
 class QKeyEvent;
@@ -101,14 +102,8 @@ public:
     virtual void draw(QPainter *, QgsRect *, int);
 
     //! Returns FALSE if an error occurred during drawing
-    virtual bool draw(QPainter *, QgsRect *, QgsMapToPixel *, QPaintDevice *);
-
-    virtual void drawLabels(QPainter *, QgsRect *, QgsMapToPixel * ,QPaintDevice *);
-    /*! Identify the feature(s) in this layer that are contained in the search rectangle
-     */
-    virtual void identify(QgsRect *)
-    {}
-    ;
+    virtual bool draw(QPainter *, QgsRect *, QgsMapToPixel *);
+    virtual void drawLabels(QPainter *, QgsRect *, QgsMapToPixel *);
 
     /*!Select features on the map canvas by dragging a rectangle */
     virtual void select(QgsRect *, bool )
@@ -150,7 +145,7 @@ public:
     virtual const int &featureType();
 
     /** Return the context menu for the layer */
-    virtual QMenu* contextMenu(){return popMenu;}
+    virtual QMenu* contextMenu();
 
     /**
      * Returns the sublayers of this layer

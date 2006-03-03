@@ -82,6 +82,7 @@ libqgis_guiHEADERS =							\
 		qgscsexception.h				\
 		qgscoordinatetransform.h	\
 		qgscustomprojectiondialog.h			\
+		qgscursors.h			\
 		qgsdelattrdialog.h				\
 		qgsencodingfiledialog.h				\
 		qgsfillstylewidget.h				\
@@ -96,11 +97,23 @@ libqgis_guiHEADERS =							\
 		qgslinestyledialog.h				\
 		qgsludialog.h					\
 		qgsmapcanvas.h						\
+		qgsmapcanvasitem.h			\
+		qgsmapcanvasmap.h			\
 		qgsmaplayer.h						\
 		qgsmaplayerinterface.h				\
 		qgsmaplayerregistry.h				\
+		qgsmaplayerset.h			\
 		qgsmapoverviewcanvas.h				\
 		qgsmapserverexport.h				\
+		qgsmaptool.h						\
+		qgsmaptoolcapture.h				\
+		qgsmaptoolemitpoint.h			\
+		qgsmaptoolidentify.h			\
+		qgsmaptoolpan.h					\
+		qgsmaptoolselect.h				\
+		qgsmaptoolvertexedit.h			\
+		qgsmaptoolzoom.h					\
+		qgsmaprender.h				\
 		qgsmarkerdialog.h				\
 		qgsmeasure.h					\
 		qgsmessageviewer.h					\
@@ -124,7 +137,8 @@ libqgis_guiHEADERS =							\
 		qgsuniquevaluerenderer.h				\
 		qgsuniquevaluedialog.h					\
 		qgsvectorfilewriter.h				\
-		qgsvectorlayerproperties.h			
+		qgsvectorlayerproperties.h			\
+		qgsvertexmarker.h
 
 ## files generated from MOC
 libqgis_gui_la_MOC =							\
@@ -154,10 +168,13 @@ libqgis_gui_la_MOC =							\
 		qgslinestylewidget.moc.cpp			\
 		qgsludialog.moc.cpp			\
 		qgsmapcanvas.moc.cpp				\
+		qgsmapcanvasitem.moc.cpp			\
+		qgsmapcanvasmap.moc.cpp			\
 		qgsmaplayerinterface.moc.cpp		\
 		qgsmaplayer.moc.cpp					\
 		qgsmaplayerregistry.moc.cpp			\
 		qgsmapoverviewcanvas.moc.cpp		\
+		qgsmaprender.moc.cpp			\
 		qgsmapserverexport.moc.cpp		\
 		qgsmarkerdialog.moc.cpp			\
 		qgsmeasure.moc.cpp			\
@@ -193,6 +210,7 @@ libqgis_gui_la_SOURCES =						\
 		qgscontinuouscolordialog.cpp		\
 		qgscoordinatetransform.cpp			\
 		qgscontinuouscolorrenderer.cpp		\
+		qgscursors.cpp		\
 		qgscustomprojectiondialog.cpp			\
 		qgsdelattrdialog.cpp		\
 		qgsencodingfiledialog.cpp	\
@@ -209,10 +227,22 @@ libqgis_gui_la_SOURCES =						\
 		qgslinestylewidget.cpp				\
 		qgsludialog.cpp			\
 		qgsmapcanvas.cpp					\
+		qgsmapcanvasitem.cpp				\
+		qgsmapcanvasmap.cpp				\
 		qgsmaplayer.cpp						\
 		qgsmaplayerregistry.cpp				\
+		qgsmaplayerset.cpp			\
 		qgsmapoverviewcanvas.cpp			\
 		qgsmapserverexport.cpp		\
+		qgsmaptool.cpp			\
+		qgsmaptoolcapture.cpp			\
+		qgsmaptoolemitpoint.cpp			\
+		qgsmaptoolidentify.cpp		\
+		qgsmaptoolpan.cpp				\
+		qgsmaptoolselect.cpp			\
+		qgsmaptoolvertexedit.cpp		\
+		qgsmaptoolzoom.cpp			\
+		qgsmaprender.cpp			\
 		qgsmarkerdialog.cpp		\
 		qgsmeasure.cpp			\
 		qgsmessageviewer.cpp				\
@@ -236,7 +266,8 @@ libqgis_gui_la_SOURCES =						\
 		qgsuniquevaluedialog.cpp		\
 		qgsvectorfilewriter.cpp				\
 		qgsvectorlayer.cpp \
-		qgsvectorlayerproperties.cpp	
+		qgsvectorlayerproperties.cpp		\
+		qgsvertexmarker.cpp
 
 if HAVE_POSTGRESQL
 postgresHEADERS = qgsdbsourceselect.h		\

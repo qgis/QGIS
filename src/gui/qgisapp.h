@@ -47,7 +47,6 @@ class QTcpSocket;
 class QgsProviderRegistry;
 class QgsHelpViewer;
 class QgsMapCanvas;
-class QgsMapOverviewCanvas;
 class QgsMapLayerRegistry;
 class QgsRasterLayer;
 class QCheckBox;
@@ -81,11 +80,6 @@ class QgisApp : public QMainWindow, public Ui::QgisAppBase
    * Get the plugin interface from the application
    */
   QgisIface *getInterface();
-  /** \brief Set the Z order of both mapcanvas and overview
-   * canvas. Typically this will be called by projectio when loading a
-   * stored project.
-   */
-  void setZOrder (std::list<QString>);
   /*
    * Add a vector layer to the canvas
    */
@@ -187,7 +181,7 @@ public slots:
     */
   /* virtual */ void menubar_highlighted( int i );
   /** toggles whether the current selected layer is in overview or not */
-  void inOverview(bool);
+  void inOverview();
   //! Slot to show the map coordinate position of the mouse cursor
   void showMouseCoordinate(QgsPoint &);
   //copy the click coord to clipboard and let the user know its there
@@ -308,19 +302,16 @@ public slots:
   void deleteVertex();
   //! activates the selection tool
   void select();
+  //! refresh map canvas
+  void refreshMapCanvas();
 
 public slots:
   void showProgress(int theProgress, int theTotalSteps);
   void showExtents(QgsRect theExtents);
   void showStatusMessage(QString theMessage);
-  void setLayerOverviewStatus(QString theLayerId, bool theVisibilityFlag);
-  void drawExtentRectangle(QPainter *);
   void updateMouseCoordinatePrecision();
   void projectionsEnabled(bool theFlag);
   //    void debugHook();
-  void stopZoom();
-  /** Used to (re)set the zordering of the overview map*/
-  void setOverviewZOrder(QgsLegend * );
   //! Add a vector layer to the map
   void addLayer();
   //! Exit Qgis
@@ -393,10 +384,6 @@ private:
   void updateRecentProjectPaths();
   //! Read Well Known Binary stream from PostGIS
   //void readWKB(const char *, QStringList tables);
-  //! Draw a point on the map canvas
-  void drawPoint(double x, double y);
-  //! draw layers
-  void drawLayers();
   //! test function
   void testButton();
   //! cuts selected features on the active layer to the clipboard
@@ -536,20 +523,14 @@ private:
   QgsMapCanvas *mMapCanvas;
   //! Map layer registry
   // use instance() now QgsMapLayerRegistry *mLayerRegistry;
-  //! Overview canvas where the map overview is shown
-  QgsMapOverviewCanvas * mOverviewCanvas;
   //! Table of contents (legend) for the map
   QgsLegend *mMapLegend;
-  //! Cursor for the map
-  QCursor *mMapCursor;
   //! Cursor for the overview map
   QCursor *mOverviewMapCursor;
   //! scale factor
   double mScaleFactor;
   //! Current map window extent in real-world coordinates
   QRect *mMapWindow;
-  //! Current map tool
-  int mMapTool;
   //! The previously selected non zoom map tool.
   int mPreviousNonZoomMapTool;
   //QCursor *mCursorZoomIn; //doesnt seem to be used anymore (TS)

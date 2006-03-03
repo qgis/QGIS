@@ -18,7 +18,7 @@
 #ifndef QGSCONNECTIONDIALOG_H
 #define QGSCONNECTIONDIALOG_H
 
-// $Id:$
+// $Id$
 
 #include "ui_qgsconnectiondialogbase.h"
 #include "qgisgui.h"

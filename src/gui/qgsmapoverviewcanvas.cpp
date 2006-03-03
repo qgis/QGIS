@@ -17,12 +17,12 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include "qgsmapcanvas.h"
+#include "qgsmaprender.h"
 #include "qgsmapoverviewcanvas.h"
-#include "qgsmapcanvasproperties.h"
+#include "qgsmaptopixel.h"
 
-#include <qpainter.h>
-//Added by qt3to4:
-#include <QWheelEvent>
+#include <QPainter>
 #include <QPaintEvent>
 #include <QResizeEvent>
 #include <QMouseEvent>
@@ -64,69 +64,25 @@ public:
 
 
 QgsMapOverviewCanvas::QgsMapOverviewCanvas(QWidget * parent, QgsMapCanvas* mapCanvas)
-  : QgsMapCanvas(parent, "theOverviewCanvas"), mMapCanvas(mapCanvas)
+  : QWidget(parent, "theOverviewCanvas"), mMapCanvas(mapCanvas)
 {
-  mIsOverviewCanvas = true;
-  
   mPanningWidget = new QgsPanningWidget(this);
+  
+  mMapRender = new QgsMapRender;
+  mMapRender->setOverview();
+  setbgColor(Qt::white);
 }
 
-
-void QgsMapOverviewCanvas::addLayer(QgsMapLayer * lyr)
+QgsMapOverviewCanvas::~QgsMapOverviewCanvas()
 {
-  Q_CHECK_PTR( lyr );
-
-  if ( ! lyr )
-  {
-    return;
-  }
-
-  // regardless of what happens, we need to be in communication with this
-  // layer to possibly add it to overview canvas; however, we only want to
-  // make this connection once, so we first check to see if we already
-  // know about the layer
-  if ( mCanvasProperties->layers.end() ==
-       mCanvasProperties->layers.find(lyr->getLayerID() )  )
-  {
-    QObject::connect(lyr, SIGNAL(showInOverview(QgsMapLayer *, bool)),
-                     this, SLOT(showInOverview( QgsMapLayer *, bool )));
-  }
-
-  if ( ! lyr->showInOverviewStatus() )
-  {
-#ifdef QGISDEBUG
-      qDebug( lyr->name() + " not in overview, so skipping in addLayer()" );
-#endif
-  }
-  else
-  {
-#ifdef QGISDEBUG
-      qDebug( lyr->name() + " in overview, invoking addLayer()" );
-#endif
-    QgsMapCanvas::addLayer(lyr);
-  }
+  delete mMapRender;
 }
 
-
-void QgsMapOverviewCanvas::showInOverview( QgsMapLayer * maplayer, bool visible )
+void QgsMapOverviewCanvas::resizeEvent(QResizeEvent* e)
 {
-  std::map < QString, QgsMapLayer * >::iterator found =
-      mCanvasProperties->layers.find(maplayer->getLayerID());
-
-  // if it's visible, and we already know about it, then do nothing;
-  // otherwise, we need to add it if "visible" says so
-  if ( found == mCanvasProperties->layers.end() &&
-       visible )
-  {
-    addLayer( maplayer );
-  } // if we have it and it's supposed to be removed, remove it
-  else if ( found != mCanvasProperties->layers.end() &&
-            ! visible )
-  {
-    remove
-        ( maplayer->getLayerID() );
-  }
-
+  mPixmap = QPixmap(e->size());
+  mMapRender->setOutputSize(e->size(), mPixmap.logicalDpiX());
+  refresh();
 }
 
 
@@ -144,7 +100,7 @@ void QgsMapOverviewCanvas::reflectChangedExtent()
     return;
   }
   
-  QgsMapToPixel* cXf = getCoordinateTransform();
+  QgsMapToPixel* cXf = mMapRender->coordXForm();
   QgsPoint ll(extent.xMin(), extent.yMin());
   QgsPoint ur(extent.xMax(), extent.yMax());
   if(cXf)
@@ -219,7 +175,7 @@ void QgsMapOverviewCanvas::mouseReleaseEvent(QMouseEvent * e)
   if ((e->state() && Qt::LeftButton) == Qt::LeftButton)
   {
     // set new extent
-    QgsMapToPixel* cXf = getCoordinateTransform();
+    QgsMapToPixel* cXf = mMapRender->coordXForm();
     QRect rect = mPanningWidget->geometry();
     
     QgsPoint center = cXf->toMapCoordinates(rect.center());
@@ -236,12 +192,7 @@ void QgsMapOverviewCanvas::mouseReleaseEvent(QMouseEvent * e)
 #endif
 
     mMapCanvas->setExtent(ext);
-    mMapCanvas->clear();
-
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of the map canvas widget.
-//    mMapCanvas->render();
-    mMapCanvas->repaint();
+    mMapCanvas->refresh();
   }
 }
 
@@ -256,11 +207,6 @@ void QgsMapOverviewCanvas::mouseMoveEvent(QMouseEvent * e)
 }
 
 
-void QgsMapOverviewCanvas::wheelEvent(QWheelEvent * e)
-{
-}
-
-
 void QgsMapOverviewCanvas::updatePanningWidget(const QPoint& pos)
 {
 //  if (mPanningWidget->isHidden())
@@ -270,8 +216,55 @@ void QgsMapOverviewCanvas::updatePanningWidget(const QPoint& pos)
 }
 
 
-void QgsMapOverviewCanvas::render(QPaintDevice * theQPaintDevice)
+void QgsMapOverviewCanvas::paintEvent(QPaintEvent * pe)
 {
-  QgsMapCanvas::render(theQPaintDevice);
+  QPainter paint(this);
+  paint.drawPixmap(pe->rect().topLeft(), mPixmap, pe->rect());
+}
+
+
+void QgsMapOverviewCanvas::refresh()
+{
+  mPixmap.fill(mBgColor); //palette().color(backgroundRole());
+
+  QPainter painter;
+  painter.begin(&mPixmap);
+  
+  // antialiasing
+  if (mAntiAliasing)
+    painter.setRenderHint(QPainter::Antialiasing);
+  
+  // render image
+  mMapRender->setExtent(mMapCanvas->fullExtent());
+  mMapRender->render(&painter);
+  
+  painter.end();
+  
+  // schedule repaint
+  update();
+  
+  // update panning widget
   reflectChangedExtent();
+}
+
+
+void QgsMapOverviewCanvas::setbgColor(const QColor& color)
+{
+  mBgColor = color;
+  
+  // set erase color
+  QPalette palette;
+  palette.setColor(backgroundRole(), color);
+  setPalette(palette);
+}
+
+void QgsMapOverviewCanvas::setLayerSet(std::deque<QString>& layerSet)
+{
+  QgsMapLayerSet& layers = mMapRender->layers();
+  layers.setLayerSet(layerSet);
+}
+
+void QgsMapOverviewCanvas::updateFullExtent()
+{
+  mMapRender->layers().updateFullExtent();
 }

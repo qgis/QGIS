@@ -13,14 +13,15 @@
 #include "qgsleastsquares.h"
 #include "qgspointdialog.h"
 #include "qgsrasterlayer.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 
 //qt includes
 #include <QFileDialog>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-#include <qpushbutton.h>
-#include <qsettings.h>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QSettings>
 
 //standard includes
 
@@ -29,12 +30,11 @@ QgsGeorefPluginGui::QgsGeorefPluginGui() : QgsGeorefPluginGuiBase()
   
 }
 
-QgsGeorefPluginGui::QgsGeorefPluginGui(QWidget* parent, Qt::WFlags fl)
-: QDialog(parent, fl)
+QgsGeorefPluginGui::QgsGeorefPluginGui(QgisIface* theQgisInterface,
+                                       QWidget* parent, Qt::WFlags fl)
+  : QDialog(parent, fl), mIface(theQgisInterface)
 {
   setupUi(this);
-  connect(pbnEnterWorldCoords, SIGNAL(clicked()), 
-	  this, SLOT(openPointDialog()));
 }  
 
 
@@ -43,19 +43,13 @@ QgsGeorefPluginGui::~QgsGeorefPluginGui()
 }
 
 
-void QgsGeorefPluginGui::pbnOK_clicked()
-{
-  done(1);
-} 
-
-
-void QgsGeorefPluginGui::pbnCancel_clicked()
+void QgsGeorefPluginGui::on_pbnClose_clicked()
 {
  close(1);
 }
 
 
-void QgsGeorefPluginGui::pbnSelectRaster_clicked() {
+void QgsGeorefPluginGui::on_pbnSelectRaster_clicked() {
   QSettings settings("QuantumGIS", "qgis");
   QString dir = settings.readEntry("/Plugin-GeoReferencer/rasterdirectory");
   if (dir.isEmpty())
@@ -69,7 +63,7 @@ void QgsGeorefPluginGui::pbnSelectRaster_clicked() {
 }
 
 
-void QgsGeorefPluginGui::openPointDialog() {
+void QgsGeorefPluginGui::on_pbnEnterWorldCoords_clicked() {
   
   // do we think that this is a valid raster?
   if (!QgsRasterLayer::isValidRasterFileName(leSelectRaster->text())) {
@@ -111,33 +105,20 @@ void QgsGeorefPluginGui::openPointDialog() {
   // XXX This is horrible, but it works and I'm tired / ll
   {
     QSettings settings("QuantumGIS", "qgis");
+    QgsProject* prj = QgsProject::instance();
     mProjBehaviour = settings.readEntry("/Projections/defaultBehaviour");
-    mProjectSRS = QgsProject::instance()->
-      readEntry("SpatialRefSys", "/ProjectSRSProj4String");
-    mProjectSRSID = QgsProject::instance()->
-      readNumEntry("SpatialRefSys", "/ProjectSRSID");
+    mProjectSRS = prj->readEntry("SpatialRefSys", "/ProjectSRSProj4String");
+    mProjectSRSID = prj->readNumEntry("SpatialRefSys", "/ProjectSRSID");
+    
     settings.writeEntry("/Projections/defaultBehaviour", "useProject");
-    QgsProject::instance()->
-      writeEntry("SpatialRefSys", "/ProjectSRSProj4String", GEOPROJ4);
-    QgsProject::instance()->
-    writeEntry("SpatialRefSys", "/ProjectSRSID", int(GEOSRS_ID));
-  }
-  QgsRasterLayer* layer = new QgsRasterLayer(raster, "Raster");
-  {
-    QSettings settings("QuantumGIS", "qgis");
+    prj->writeEntry("SpatialRefSys", "/ProjectSRSProj4String", GEOPROJ4);
+    prj->writeEntry("SpatialRefSys", "/ProjectSRSID", int(GEOSRS_ID));
+    
     settings.writeEntry("/Projections/defaultBehaviour", mProjBehaviour);
-    QgsProject::instance()->
-      writeEntry("SpatialRefSys", "/ProjectSRSProj4String", mProjectSRS);
-    QgsProject::instance()->
-      writeEntry("SpatialRefSys", "/ProjectSRSID", mProjectSRSID);
+    prj->writeEntry("SpatialRefSys", "/ProjectSRSProj4String", mProjectSRS);
+    prj->writeEntry("SpatialRefSys", "/ProjectSRSID", mProjectSRSID);
   }
   
-  QgsPointDialog* dlg = new QgsPointDialog(layer, this, NULL, true);
-  connect(dlg, SIGNAL(loadLayer(QString)), this, SLOT(loadLayer(QString)));
+  QgsPointDialog* dlg = new QgsPointDialog(raster, mIface, this);
   dlg->show();
-}
-
-
-void QgsGeorefPluginGui::loadLayer(QString str) {
-  emit drawRasterLayer(str);
 }

@@ -153,12 +153,12 @@ void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
-bool QgsMapLayer::draw(QPainter *, QgsRect *, QgsMapToPixel *,QPaintDevice * )
+bool QgsMapLayer::draw(QPainter *, QgsRect *, QgsMapToPixel *)
 {
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
 
-void QgsMapLayer::drawLabels(QPainter *, QgsRect *, QgsMapToPixel *,QPaintDevice * )
+void QgsMapLayer::drawLabels(QPainter *, QgsRect *, QgsMapToPixel *)
 {
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
@@ -251,8 +251,13 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     
     //read transparency level
     QDomNode transparencyNode = layer_node.namedItem("transparencyLevelInt");
-    QDomElement myElement = transparencyNode.toElement();
-    setTransparency(myElement.text().toInt());
+    if ( ! transparencyNode.isNull() )
+    {
+      // set transparency level only if it's in project
+      // (otherwise it sets the layer transparent)
+      QDomElement myElement = transparencyNode.toElement();
+      setTransparency(myElement.text().toInt());
+    }
 
 
     // now let the children grab what they need from the DOM node.
@@ -526,7 +531,7 @@ void QgsMapLayer::initContextMenu(QgisApp * app)
     popMenu->addAction(myPopupLabel);
 
     popMenu->addAction(tr("&Zoom to extent of selected layer"), app, SLOT(zoomToLayerExtent()));
-    mShowInOverviewAction = popMenu->addAction(tr("Toggle in Overview"), app, SLOT(inOverview(bool)));
+    mShowInOverviewAction = popMenu->addAction(tr("Toggle in Overview"), app, SLOT(inOverview()));
     mShowInOverviewAction->setCheckable(true);
     popMenu->addSeparator();
     popMenu->addSeparator();
@@ -692,4 +697,9 @@ QgsRect QgsMapLayer::calcProjectedBoundingBox(QgsRect& extent)
   bb_extent.set(xmin, ymin, xmax, ymax);
 
   return bb_extent;
+}
+
+QMenu* QgsMapLayer::contextMenu()
+{
+  return popMenu;
 }

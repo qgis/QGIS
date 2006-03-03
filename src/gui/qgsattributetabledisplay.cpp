@@ -26,6 +26,7 @@
 #include "qgsfeature.h"
 #include "qgssearchtreenode.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 
 #include <QMessageBox>
 #include <QIcon>

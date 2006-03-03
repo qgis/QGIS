@@ -22,35 +22,43 @@ plugindir    = ${prefix}/lib/qgis
 ui_%.h: %.ui 
 	$(UIC) -o $@ $<
 
+%.qrc.cpp: %.qrc
+	$(RCC) -o $@ $<
+
 ## target plug-in 
 plugin_LTLIBRARIES = georefplugin.la
 
 ## qt designer user-interface files
-plugin_UI = pluginguibase.ui qgspointdialogbase.ui mapcoordsdialogbase.ui qgsgeorefwarpoptionsdialogbase.ui
+plugin_UIC = pluginguibase.ui \
+             qgspointdialogbase.ui \
+             mapcoordsdialogbase.ui \
+             qgsgeorefwarpoptionsdialogbase.ui
 
 ## uic created headers
-plugin_UIHEADERS = ui_pluginguibase.h \
-    ui_qgspointdialogbase.h \
-	ui_qgsgeorefwarpoptionsdialogbase.h \
-	ui_mapcoordsdialogbase.h 
-
-## uic created source files
-plugin_UISOURCES = pluginguibase.ui \
-    qgspointdialogbase.ui \
-	qgsgeorefwarpoptionsdialogbase.ui \
-	mapcoordsdialogbase.ui
+plugin_UI = ui_pluginguibase.h \
+            ui_qgspointdialogbase.h \
+            ui_qgsgeorefwarpoptionsdialogbase.h \
+            ui_mapcoordsdialogbase.h 
 
 ## MOC files
-plugin_MOC = plugin.moc.cpp plugingui.moc.cpp qgspointdialog.moc.cpp mapcoordsdialog.moc.cpp qgsgeorefwarpoptionsdialog.moc.cpp
+plugin_MOC = plugin.moc.cpp \
+             plugingui.moc.cpp \
+             qgspointdialog.moc.cpp \
+             mapcoordsdialog.moc.cpp \
+             qgsgeorefwarpoptionsdialog.moc.cpp
+
+
+plugin_RES = georeferencer.qrc.cpp
+
+plugin_QRC = georeferencer.qrc
 
 
 georefplugin_la_SOURCES = plugin.cpp \
-	datapointacetate.h \
-	datapointacetate.cpp \
+	qgsgeorefdatapoint.h \
+	qgsgeorefdatapoint.cpp \
 	plugin.h \
 	plugingui.cpp \
 	plugingui.h \
-	icon.h \
 	qgsimagewarper.h \
 	qgsimagewarper.cpp \
 	qgsleastsquares.h \
@@ -60,17 +68,20 @@ georefplugin_la_SOURCES = plugin.cpp \
 	qgsgeorefwarpoptionsdialog.h \
 	qgsgeorefwarpoptionsdialog.cpp \
 	mapcoordsdialog.h \
-	mapcoordsdialog.cpp
+	mapcoordsdialog.cpp \
+	$(plugin_UI) \
+	$(plugin_RES)
 
-nodist_georefplugin_la_SOURCES = $(plugin_MOC) $(plugin_UIHEADERS) $(plugin_UISOURCES) 
+nodist_georefplugin_la_SOURCES = $(plugin_MOC) $(plugin_UI)
 
-georefplugin_la_CXXFLAGS = -I../ -I../../ui -I../../raster -I../../gui -I../../core $(GDAL_CFLAGS) $(GSL_CFLAGS) $(QT_CXXFLAGS) $(GEOS_CFLAGS)
+georefplugin_la_CXXFLAGS = -I../ -I../../ui -I../../raster -I../../gui -I../../core $(GDAL_CFLAGS) $(GSL_CFLAGS) $(QT_CXXFLAGS) $(GEOS_CFLAGS) $(DEBUG_QGIS)
 georefplugin_la_LDFLAGS = -avoid-version -module $(GDAL_LDADD) $(GSL_LIBS) $(QT_LDADD)  ../../gui/libqgis_gui.la ../../core/libqgis_core.la
 
-BUILT_SOURCES = $(plugin_UIHEADERS) $(plugin_UISOURCES) $(plugin_MOC)
+BUILT_SOURCES = $(plugin_UI) $(plugin_MOC) $(plugin_RES)
+
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(plugin_UI) zoom_in.xpm zoom_out.xpm pan.xpm add_point.xpm
+EXTRA_DIST = $(plugin_UIC) zoom_in.xpm zoom_out.xpm pan.xpm add_point.xpm
 
 
 endif

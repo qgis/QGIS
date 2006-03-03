@@ -5,6 +5,8 @@ Version 0.8 'Joesephine' .... development version
 ** Dropped use of qpicture and resampling for point markers in favour of
 qt4.1 qsvgrenderer new goodies
 2006-01-09 [timlinux] 0.7.9.8
+** Started Mapcanvas branch for Martin
+2006-01-09 [timlinux] 0.7.9.8
 ** Moved plugins into src/plugins
 2006-01-08 [timlinux] 0.7.9.8
 ** moved all sources for gui lib into src/gui

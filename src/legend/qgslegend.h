@@ -34,6 +34,7 @@ class QDomNode;
 class QMouseEvent;
 class QTreeWidgetItem;
 class Q3PopupMenu;
+class Q3ListViewItem;
 
 /**
    \class QgsLegend
@@ -137,6 +138,9 @@ class QgsLegend : public QTreeWidget
 
   /**Returns the ids of the layers contained in this legend. The order is bottom->top*/
   std::deque<QString> layerIDs();
+  
+  /**Updates layer set of map canvas*/
+  void updateMapCanvasLayerSet();
 
   /**Removes the symbology items of a layer and adds new ones. If other files are in the same legend layer, the new symbology settings are copied.
    Note: the QIcon* are deleted and therefore need to be allocated by calling functions using operator new*/
@@ -241,6 +245,8 @@ this item may be moved back to the original position with resetToInitialPosition
   void collapseAll();
   /**Just for a test*/
   void handleItemChange(QTreeWidgetItem* item, int row);
+  /** delegates current layer to map canvas */
+  void handleCurrentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
   /**Calls openPersistentEditor for the current item*/
   void openEditor();
   /**Removes the current item and inserts it as a toplevel item at the end of the legend*/
