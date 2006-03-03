@@ -156,17 +156,16 @@ QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
                     QgsDebug( QString("No vector file filters for " + pKey()).ascii() );
                   }
                 }
-                else
-                {
-                  QgsDebug( "Unable to invoke fileVectorFilters()" );
-                }
               } 
               else
               {
-                cout << myLib->library().data()
-                     << " Unable to find one of the required provider functions:\n\tproviderKey() or description()" 
-                     << endl;
+                QgsDebug( "Unable to invoke fileVectorFilters()" );
               }
+            }
+            else
+            {
+              cout << "Unable to find one of the required provider functions (providerKey() or description()) in "
+                   << myLib->library().toLocal8Bit().data() << endl;
             }
           }
           else
@@ -176,9 +175,10 @@ QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
         } 
         else
         {
-          cout << myLib->library().data()
-               << " Unable to find one of the required provider functions:\n\tproviderKey() or description()" 
-               << endl;
+#ifdef QGISDEBUG
+          cout << myLib->library().toLocal8Bit().data()
+               << " is not a provider" << std::endl;
+#endif
         }
       }
 
