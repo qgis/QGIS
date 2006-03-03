@@ -32,6 +32,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrasterlayerproperties.h"
+#include <float.h>
 #include <QCoreApplication>
 #include <QPixmap>
 #include <QMouseEvent>
@@ -403,6 +404,7 @@ void QgsLegend::handleRightClickEvent(QTreeWidgetItem* item, const QPoint& posit
       else if(li->type() == QgsLegendItem::LEGEND_LAYER)
 	{
 	  theMenu.addAction(tr("&Properties"), this, SLOT(legendLayerShowProperties()));
+	  theMenu.addAction(tr("&Zoom to layer extent"), this, SLOT(zoomToLayerExtent()));
 	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionAddAllToOverview.png"))), tr("&Add to overview"), this, SLOT(legendLayerAddToOverview()));
 	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionRemoveAllFromOverview.png"))), tr("&Remove from overview"), this, SLOT(legendLayerRemoveFromOverview()));
 	  theMenu.addAction(QIcon(QPixmap(iconsPath+QString("/mActionRemove.png"))), tr("&Remove"), this, SLOT(legendLayerRemove()));
@@ -1539,4 +1541,71 @@ void QgsLegend::showLegendLayerFileGroups()
 	}
     }
   while(theItem = nextItem(theItem));
+}
+
+void QgsLegend::zoomToLayerExtent()
+{
+  //find current Layer
+  QgsLegendLayer* currentLayer=dynamic_cast<QgsLegendLayer*>(currentItem());
+  if(!currentLayer)
+    {
+      return;
+    }
+
+  std::list<QgsLegendLayerFile*> layerFiles = currentLayer->legendLayerFiles();
+  if(layerFiles.size() == 0)
+    {
+      return;
+    }
+
+  double xmin = DBL_MAX;
+  double ymin = DBL_MAX;
+  double xmax = -DBL_MAX;
+  double ymax = -DBL_MAX;
+
+  QgsRect transformedExtent;
+  QgsRect layerExtent;
+  QgsCoordinateTransform *ct;
+  QgsMapLayer* theLayer;
+
+  for(std::list<QgsLegendLayerFile*>::iterator it= layerFiles.begin(); it != layerFiles.end(); ++it)
+    {
+      theLayer = (*it)->layer();
+      if(theLayer)
+	{
+	  layerExtent = theLayer->extent();
+	  ct = theLayer->coordinateTransform();
+	  if(ct)
+	    {
+	      //transform layer extent to canvas coordinate system
+	      transformedExtent = ct->transform(layerExtent);
+	    }
+	  else
+	    {
+	      transformedExtent = layerExtent;
+	    }
+
+	  if(transformedExtent.xMin() < xmin)
+	    {
+	      xmin = transformedExtent.xMin();
+	    }
+	  if(transformedExtent.yMin() < ymin)
+	    {
+	      ymin = transformedExtent.yMin();
+	    }
+	  if(transformedExtent.xMax() > xmax)
+	    {
+	      xmax = transformedExtent.xMax();
+	    }
+	  if(transformedExtent.yMax() > ymax)
+	    {
+	      ymax = transformedExtent.yMax();
+	    }
+	}
+    }
+
+  //zoom to bounding box
+  mMapCanvas->setExtent(QgsRect(xmin, ymin, xmax, ymax));
+  mMapCanvas->render();
+  mMapCanvas->refresh();
 }

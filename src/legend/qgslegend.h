@@ -253,6 +253,10 @@ this item may be moved back to the original position with resetToInitialPosition
   void makeToTopLevelItem();
   /**Show/ Hide the legend layer file groups*/
   void showLegendLayerFileGroups();
+  /**Zooms to extent of the current legend layer (considers there may be several
+   legend layer files*/
+  void zoomToLayerExtent();
+
 private:
 
   /**Pointer to QGisApp, needed for signal/slot reasons*/
