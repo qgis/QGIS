@@ -3464,14 +3464,14 @@ void QgisApp::capturePoint()
 
 void QgisApp::captureLine()
 {
-  QgsMapTool* t = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CapturePoint);
+  QgsMapTool* t = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CaptureLine);
   t->setAction(mActionCaptureLine);
   mMapCanvas->setMapTool(t);
 }
 
 void QgisApp::capturePolygon()
 {
-  QgsMapTool* t = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CapturePoint);
+  QgsMapTool* t = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CapturePolygon);
   t->setAction(mActionCapturePolygon);
   mMapCanvas->setMapTool(t);
 }
