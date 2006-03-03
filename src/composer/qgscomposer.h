@@ -88,9 +88,6 @@ public:
     //! Sets state from DOM document
     bool readXML( QDomNode & node );
 
-    //! Save window state
-    void saveWindowState();
-
     //! Restore the window and toolbar state
     void restoreWindowState();
 
@@ -145,6 +142,9 @@ public slots:
 
     //! New project
     void newProject();
+
+    //! Save window state
+    void saveWindowState();
 
 private:
     //! Set teh pixmap / icons on the toolbar buttons

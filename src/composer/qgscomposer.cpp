@@ -69,8 +69,7 @@ QgsComposer::QgsComposer( QgisApp *qgis): QMainWindow()
     qDebug( "unable to connect to newProject" );
   }
 
-  // Doesn't work, there is not such signal I think (copy from QgisApp)
-  if ( ! connect(mQgis, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()) ) ) { 
+  if ( ! connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()) ) ) { 
     qDebug( "unable to connect to aboutToQuit" );
   }
   restoreWindowState();
