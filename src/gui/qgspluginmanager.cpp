@@ -106,41 +106,44 @@ sharedLibExtension = "*.so*";
 
           } else
             {
-              std::cout << "dlopen suceeded" << std::endl;
+              std::cout << "dlopen suceeded for " << lib.toLocal8Bit().data() << std::endl;
               dlclose(handle);
             }
 #endif //#ifndef WIN32 && Q_OS_MACX
 #endif //#ifdef TESTLIB
 
 
-          std::cout << "Examining " << txtPluginDir->text().toLocal8Bit().data() << "/" << pluginDir[i].toLocal8Bit().data() << std::endl;
-          QLibrary *myLib = new QLibrary(txtPluginDir->text() + "/" + pluginDir[i]);
+          std::cout << "Examining " << lib.toLocal8Bit().data() << std::endl;
+          QLibrary *myLib = new QLibrary(lib);
           bool loaded = myLib->load();
           if (loaded)
             {
               std::cout << "Loaded " << myLib->library().toLocal8Bit().data() << std::endl;
-              name_t *pName = (name_t *) myLib->resolve("name");
-              description_t *pDesc = (description_t *) myLib->resolve("description");
-              version_t *pVersion = (version_t *) myLib->resolve("version");
+              // Don't bother with libraries that are providers
+              if (!myLib->resolve("isProvider"))
+              {
+                name_t *pName = (name_t *) myLib->resolve("name");
+                description_t *pDesc = (description_t *) myLib->resolve("description");
+                version_t *pVersion = (version_t *) myLib->resolve("version");
 #ifdef QGISDEBUG
-              // show the values (or lack of) for each function
-              if(pName){
-                std::cout << "Plugin name: " << pName().toLocal8Bit().data() << std::endl;
-              }else{
-                std::cout << "Plugin name not returned when queried\n";
-              }
-               if(pDesc){
-                std::cout << "Plugin description: " << pDesc().toLocal8Bit().data() << std::endl;
-              }else{
-                std::cout << "Plugin description not returned when queried\n";
-              }
-             if(pVersion){
-                std::cout << "Plugin version: " << pVersion().toLocal8Bit().data() << std::endl;
-              }else{
-                std::cout << "Plugin version not returned when queried\n";
-              }
+                // show the values (or lack of) for each function
+                if(pName){
+                  std::cout << "Plugin name: " << pName().toLocal8Bit().data() << std::endl;
+                }else{
+                  std::cout << "Plugin name not returned when queried\n";
+                }
+                if(pDesc){
+                  std::cout << "Plugin description: " << pDesc().toLocal8Bit().data() << std::endl;
+                }else{
+                  std::cout << "Plugin description not returned when queried\n";
+                }
+                if(pVersion){
+                  std::cout << "Plugin version: " << pVersion().toLocal8Bit().data() << std::endl;
+                }else{
+                  std::cout << "Plugin version not returned when queried\n";
+                }
 #endif
-              if (pName && pDesc && pVersion)
+                if (pName && pDesc && pVersion)
                 {
                   Q3CheckListItem *pl = new Q3CheckListItem(lstPlugins, pName(), Q3CheckListItem::CheckBox); //, pDesc(), pluginDir[i])
                   pl->setText(1, pVersion());
@@ -158,24 +161,27 @@ sharedLibExtension = "*.so*";
 #endif
                   QString libName = pRegistry->library(pName());
                   if (libName.length() > 0)
-                    {
+                  {
 #ifdef QGISDEBUG
-                      std::cout << "Found library name in the registry" << std::endl;
+                    std::cout << "Found library name in the registry" << std::endl;
 #endif
-                      if (libName == myLib->library())
-                        {
-                          // set the checkbox
-                          pl->setOn(true);
-                        }
+                    if (libName == myLib->library())
+                    {
+                      // set the checkbox
+                      pl->setOn(true);
                     }
-              } else
+                  }
+                } 
+                else
                 {
                   std::cout << "Failed to get name, description, or type for " << myLib->library().toLocal8Bit().data() << std::endl;
                 }
-          } else
-            {
-              std::cout << "Failed to load " << myLib->library().toLocal8Bit().data() << std::endl;
+              } 
             }
+          else
+          {
+            std::cout << "Failed to load " << myLib->library().toLocal8Bit().data() << std::endl;
+          }
         }
     }
 }
