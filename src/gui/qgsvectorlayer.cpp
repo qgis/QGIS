@@ -1030,6 +1030,7 @@ void QgsVectorLayer::table()
 void QgsVectorLayer::select(int number)
 {
   mSelected.insert(number);
+  emit selectionChanged();
 }
 
 void QgsVectorLayer::select(QgsRect * rect, bool lock)
@@ -1174,6 +1175,7 @@ void QgsVectorLayer::invertSelection()
 void QgsVectorLayer::removeSelection()
 {
   mSelected.clear();
+  emit selectionChanged();
 }
 
 void QgsVectorLayer::triggerRepaint()
