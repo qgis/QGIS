@@ -1039,7 +1039,9 @@ void QgsMapCanvas::moveCanvasContents(bool reset)
   QPoint pnt(0,0);
   if (!reset)
     pnt += mCanvasProperties->mouseLastXY - mCanvasProperties->rubberStartPoint;
+#ifdef QGISDEWBUG
   std::cout << "moveCanvasContents: pnt " << pnt.x() << "," << pnt.y() << std::endl;
+#endif
   
   mMap->setPanningOffset(pnt);
   
