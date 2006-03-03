@@ -31,42 +31,23 @@
 
 #include <qevent.h>
 
-namespace QGis
+class QGis
 { 
+public:
   // Version constants
   //
   // Version string 
-  static const char *qgisVersion = VERSION;
+  static const char* qgisVersion;
   // Version number used for comparing versions using the "Check QGIS Version" function
-  static const int qgisVersionInt =703;
+  static const int qgisVersionInt;
   // Release name
-  static const char *qgisReleaseName = "Seamus";
+  static const char* qgisReleaseName;
 
   // Enumerations
   //
-  // Maptool enumeration
-  enum MapTools
-  {
-    NoTool,
-    ZoomIn,
-    ZoomOut,
-    Pan,
-    Distance,
-    Identify,
-    Table,
-    Select,
-    CapturePoint,
-    CaptureLine,
-    CapturePolygon,
-    EmitPoint,
-    MeasureDist,
-    MeasureArea,
-    AddVertex,
-    MoveVertex,
-    DeleteVertex
-  };
+
   //! Used for symbology operations
-  // Featuure types
+  // Feature types
   enum WKBTYPE
   {
     WKBPoint = 1,
@@ -83,23 +64,10 @@ namespace QGis
     Line,
     Polygon
   };
-  static const char *qgisVectorGeometryType[] =
-  {
-    "Point",
-    "Line",
-    "Polygon"
-  };
-  //! description strings for feature types
-  static const char *qgisFeatureTypes[] = 
-  {
-    "Null",
-    "WKBPoint",
-    "WKBLineString",
-    "WKBPolygon",
-    "WKBMultiPoint",
-    "WKBMultiLineString",
-    "WKBMultiPolygon" 
-  };
+  static const char *qgisVectorGeometryType[];
+  
+ //! description strings for feature types
+  static const char *qgisFeatureTypes[];
 
   //! map units that qgis supports
   typedef enum 
@@ -122,8 +90,8 @@ namespace QGis
     ProviderCountCalcEvent
   };
   
-  const int DEFAULT_IDENTIFY_RADIUS=5;
-}
+  static const int DEFAULT_IDENTIFY_RADIUS;
+};
   /** WKT string that represents a geographic coord sys */
   const  QString GEOWKT =
       "GEOGCS[\"WGS 84\", "

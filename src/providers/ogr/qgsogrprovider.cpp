@@ -37,6 +37,7 @@ email                : sherman at mrcc.com
 
 #include <QtDebug>
 #include <QFile>
+#include <QFileInfo>
 #include <QMessageBox>
 #include <QMap>
 #include <QString>
@@ -1526,7 +1527,7 @@ const std::list<std::pair<QString, QString> >& attributes)
     }
 
     OGRLayer* layer;	
-    layer = dataSource->CreateLayer(NULL, reference, (OGRwkbGeometryType)vectortype, NULL);
+    layer = dataSource->CreateLayer(QFileInfo(uri).baseName(), reference, (OGRwkbGeometryType)vectortype, NULL);
     if(layer == NULL)
     {
 	return false;

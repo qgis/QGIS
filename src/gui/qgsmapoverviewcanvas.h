@@ -20,40 +20,50 @@
 #ifndef QGSMAPOVERVIEWCANVAS_H
 #define QGSMAPOVERVIEWCANVAS_H
 
-#include "qgsmapcanvas.h"
-//Added by qt3to4:
+
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <QWidget>
+#include <deque>
+#include <QPixmap>
 
+class QgsMapCanvas;
+class QgsMapRender;
 class QgsPanningWidget; // defined in .cpp
 
-class QgsMapOverviewCanvas : public QgsMapCanvas
+class QgsMapOverviewCanvas : public QWidget
 {
   Q_OBJECT;
   
   public:
     QgsMapOverviewCanvas(QWidget * parent = 0, QgsMapCanvas* mapCanvas = NULL);
+    
+    ~QgsMapOverviewCanvas();
   
     //! used for overview canvas to reflect changed extent in main map canvas
     void reflectChangedExtent();
 
-  public slots:
-
-    /** possibly add or remove the given layer from the overview map canvas
+    //! renders overview and updates panning widget
+    void refresh();
   
-      @param maplayer is layer to be possibly added or removed from overview canvas
-      @param b is true if visible in over view
-    */
-    void showInOverview( QgsMapLayer * maplayer, bool visible );
-
-    //! reimplemented from QgsMapCanvas
-    void addLayer(QgsMapLayer * lyr);
-
-    //! renders overview (using QgsMapCanvas) and updates panning widget
-    void render(QPaintDevice * theQPaintDevice=0);
-  
+    //! changes background color
+    void setbgColor(const QColor& color);
+        
+    //! updates layer set for overview
+    void setLayerSet(std::deque<QString>& layerSet);
+    
+    void enableAntiAliasing(bool flag) { mAntiAliasing = flag; }
+    
+    void updateFullExtent();
+    
   protected:
   
+    //! Overridden paint event
+    void paintEvent(QPaintEvent * pe);
+
+    //! Overridden resize event
+    void resizeEvent(QResizeEvent * e);
+
     //! Overridden mouse move event
     void mouseMoveEvent(QMouseEvent * e);
 
@@ -66,9 +76,6 @@ class QgsMapOverviewCanvas : public QgsMapCanvas
     //! called when panning to reflect mouse movement
     void updatePanningWidget(const QPoint& pos);
     
-    //! wheel event - does nothing in overview
-    void wheelEvent(QWheelEvent * e);
-        
     //! widget for panning map in overview
     QgsPanningWidget* mPanningWidget;
     
@@ -77,7 +84,18 @@ class QgsMapOverviewCanvas : public QgsMapCanvas
   
     //! main map canvas - used to get/set extent
     QgsMapCanvas* mMapCanvas;
-        
+    
+    //! for rendering overview
+    QgsMapRender* mMapRender;
+    
+    //! pixmap where the map is stored
+    QPixmap mPixmap;
+    
+    //! background color
+    QColor mBgColor;
+
+    //! indicates whether antialiasing will be used for rendering
+    bool mAntiAliasing;
 };
 
 #endif

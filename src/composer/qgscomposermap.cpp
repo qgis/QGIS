@@ -94,9 +94,7 @@ void QgsComposerMap::init ()
     Q3CanvasRectangle::setZ(20);
     setActive(true);
 
-    connect ( mMapCanvas, SIGNAL(addedLayer(QgsMapLayer *)), this, SLOT(mapCanvasChanged()) );
-    connect ( mMapCanvas, SIGNAL(removedLayer(QString)), this, SLOT(mapCanvasChanged()) );
-    connect ( mMapCanvas, SIGNAL(removedAll()), this, SLOT(mapCanvasChanged()) );
+    connect ( mMapCanvas, SIGNAL(layersChanged()), this, SLOT(mapCanvasChanged()) );
 }
 
 QgsComposerMap::~QgsComposerMap()
@@ -104,7 +102,7 @@ QgsComposerMap::~QgsComposerMap()
      std::cerr << "QgsComposerMap::~QgsComposerMap" << std::endl;
 }
 
-void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *transform, QPaintDevice *device )
+void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *transform)
 {
     mMapCanvas->freeze(true);  // necessary ?
     int nlayers = mMapCanvas->layerCount();
@@ -122,7 +120,7 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
 	widthScale *= mComposition->viewScale();
 	  }
 	  double symbolScale = mSymbolScale * mComposition->scale();
-	  vector->draw( painter, extent, transform, device, widthScale, symbolScale);
+	  vector->draw( painter, extent, transform, widthScale, symbolScale);
 
       } else { 
 	  // raster
@@ -139,13 +137,13 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
               painter->save();
 	      painter->scale( 1./multip, 1./multip);
 
-	      layer->draw( painter, extent, &trans, device );
+	      layer->draw( painter, extent, &trans);
               
 	      painter->restore();
 	  } 
 	  else 
 	  {
-	      layer->draw( painter, extent, transform, device );
+	      layer->draw( painter, extent, transform);
 	  }
       }
     }
@@ -164,7 +162,7 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
 	      if ( plotStyle() == QgsComposition::Postscript ) {
 		  fontScale = QgsComposition::psFontScaleFactor() * 72.0 / mComposition->resolution();
 	      }
-	      vector->drawLabels (  painter, extent, transform, device, fontScale );
+	      vector->drawLabels (  painter, extent, transform, fontScale );
 	  }
 
       }
@@ -214,7 +212,7 @@ void QgsComposerMap::cache ( void )
 
     QPainter p(&mCachePixmap);
     
-    draw( &p, &mCacheExtent, &transform, &mCachePixmap );
+    draw( &p, &mCacheExtent, &transform);
     p.end();
 
     mNumCachedLayers = mMapCanvas->layerCount();
@@ -271,7 +269,7 @@ void QgsComposerMap::draw ( QPainter & painter )
       painter.setClipRect ( 0, 0, Q3CanvasRectangle::width(), Q3CanvasRectangle::height() );
 #endif
 
-      draw( &painter, &mExtent, &transform, painter.device() );
+      draw( &painter, &mExtent, &transform);
       painter.restore();
     } 
 

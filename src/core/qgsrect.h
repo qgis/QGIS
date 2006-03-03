@@ -110,6 +110,9 @@ class QgsRect
      * @param r1 QgsRect to assign from
      */
     QgsRect & operator=(const QgsRect &r1);
+    
+    /** updates rectangle to include passed argument */
+    void unionRect(const QgsRect& rect);
  
 protected:
 

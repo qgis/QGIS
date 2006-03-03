@@ -65,10 +65,6 @@
 //
 #include "plugingui.h"
 
-//
-// xpm for creating the toolbar icon
-// 
-#include "icon.h"
 
 #ifdef WIN32
 #define QGISEXTERN extern "C" __declspec( dllexport )
@@ -111,17 +107,17 @@ QgsGeorefPlugin::~QgsGeorefPlugin()
  */
 void QgsGeorefPlugin::initGui()
 {
-  QIcon iconset(qembed_findImage("icon"));
-
-  QMenu *pluginMenu = mQGisIface->getPluginMenu("&Georeferencer");
-  mMenuId = pluginMenu->insertItem(QIcon(iconset),"&Georeferencer", this, SLOT(run()));
-
   // Create the action for tool
-  //mQActionPointer = new QAction("Georeferencer", iconset, "&icon",0, this, "run");
-  mQActionPointer = new QAction(iconset, "&icon",0, this, "run");
+  mQActionPointer = new QAction(QIcon(":/icon.png"), "&Georeferencer", this);
+
   // Connect the action to the run
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
-  // Add the to the toolbar
+  
+  // add to the plugin menu
+  QMenu *pluginMenu = mQGisIface->getPluginMenu("&Georeferencer");
+  pluginMenu->addAction(mQActionPointer);
+
+  // Add to the toolbar
   mQGisIface->addToolBarIcon(mQActionPointer);
 
 }
@@ -134,16 +130,14 @@ void QgsGeorefPlugin::help()
 // Slot called when the buffer menu item is activated
 void QgsGeorefPlugin::run()
 {
-  QgsGeorefPluginGui *myPluginGui=new QgsGeorefPluginGui(mQGisApp,"Georeferencer",true,0);
-  //listen for when the layer has been made so we can draw it
-  connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
-  connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
+  QgsGeorefPluginGui *myPluginGui=new QgsGeorefPluginGui(mQGisIface, mQGisApp);
   myPluginGui->show();
 }
 
 // Unload the plugin by cleaning up the GUI
 void QgsGeorefPlugin::unload()
 {
+  // TODO: make it work in Qt4 way
   // remove the GUI
   mQGisIface->removePluginMenuItem("&Georeferencer",mMenuId);
   mQGisIface->removeToolBarIcon(mQActionPointer);
@@ -155,27 +149,7 @@ void QgsGeorefPlugin::unload()
 //                  END OF MANDATORY PLUGIN METHODS
 //
 //////////////////////////////////////////////////////////////////////
-//
-// The following methods are provided to demonstrate how you can 
-// load a vector or raster layer into the main gui. Please delete
-// if you are not intending to use these. Note also that there are
-// ways in which layers can be loaded.
-//
 
-//!draw a raster layer in the qui - intended to respond to signal sent by diolog when it as finished creating
-//layer
-void QgsGeorefPlugin::drawRasterLayer(QString theQString)
-{
-  mQGisIface->addRasterLayer(theQString);
-}
-
-//!draw a vector layer in the qui - intended to respond to signal sent by 
-// dialog when it as finished creating a layer. It needs to be given 
-// vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-void QgsGeorefPlugin::drawVectorLayer(QString thePathNameQString, QString theBaseNameQString, QString theProviderQString)
-{
-  mQGisIface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString);
-}
 
 
 //////////////////////////////////////////////////////////////////////////

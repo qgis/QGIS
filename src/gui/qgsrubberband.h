@@ -16,33 +16,37 @@
 #ifndef QGSRUBBERBAND_H
 #define QGSRUBBERBAND_H
 
-#include <QWidget>
+#include "qgsmapcanvasitem.h"
+#include <deque>
 #include <QBrush>
 #include <QPen>
 #include <QPolygon>
 class QPaintEvent;
 
-class QgsRubberBand: public QWidget
+class QgsRubberBand: public QgsMapCanvasItem
 {
   public:
-    QgsRubberBand(QWidget * parent, bool isPolygon = false);
+    QgsRubberBand(QgsMapCanvas* mapCanvas, bool isPolygon = false);
     ~QgsRubberBand();
 
     void setColor(const QColor & color);
     void setWidth(int width);
 
     void reset(bool isPolygon = false);
-    void addPoint(const QPoint & p);
-    void movePoint(const QPoint & p);
-    void movePoint(int index, const QPoint& p);
+    void addPoint(const QgsPoint & p);
+    void movePoint(const QgsPoint & p);
+    void movePoint(int index, const QgsPoint& p);
 
   protected:
-    virtual void paintEvent(QPaintEvent * event);
+    virtual void drawShape(QPainter & p);
+    
+    //! recalculates needed rectangle
+    void updateRect();
 
   private:
     QBrush mBrush;
     QPen mPen;
-    QPolygon mPoints;
+    std::deque<QgsPoint> mPoints;
     bool mIsPolygon;
 };
 

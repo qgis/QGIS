@@ -18,6 +18,7 @@
 
 #include "ui_qgsmeasurebase.h"
 #include <QWidget>
+#include "qgsmaptool.h"
 #include "qgspoint.h"
 #include <vector>
 
@@ -28,13 +29,15 @@ class QgsRubberBand;
 class QCloseEvent;
 
 
-class QgsMeasure:public QWidget, private Ui::QgsMeasureBase
+class QgsMeasure:public QWidget, public QgsMapTool, private Ui::QgsMeasureBase
 {
   Q_OBJECT;
   public:
 
   //! Constructor
-  QgsMeasure(bool measureArea, QgsMapCanvas *, QWidget *parent = 0, const char * name = 0, Qt::WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WType_Dialog | Qt::WStyle_Tool );
+  QgsMeasure(bool measureArea, QgsMapCanvas *, const char * name = 0,
+             Qt::WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder |
+                            Qt::WStyle_Title | Qt::WType_Dialog | Qt::WStyle_Tool );
 
   ~QgsMeasure();
 
@@ -58,6 +61,20 @@ class QgsMeasure:public QWidget, private Ui::QgsMeasureBase
   //! sets whether we're measuring area (and restarts)
   void setMeasureArea(bool measureArea);
 
+public:
+  
+  // Inherited from QgsMapTool
+  
+  //! Mouse move event for overriding
+  virtual void canvasMoveEvent(QMouseEvent * e);
+
+  //! Mouse press event for overriding
+  virtual void canvasPressEvent(QMouseEvent * e);
+
+  //! Mouse release event for overriding
+  virtual void canvasReleaseEvent(QMouseEvent * e);
+
+  
 public slots:
   //! Close
   void close ( void);

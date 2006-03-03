@@ -8,23 +8,98 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>486</width>
-    <height>249</height>
+    <width>542</width>
+    <height>258</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Georeferencer</string>
   </property>
   <property name="windowIcon" >
-   <iconset/>
+   <iconset resource="georeferencer.qrc" >:/icon.png</iconset>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
+   <item row="1" column="3" >
+    <widget class="QLineEdit" name="leSelectRaster" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="4" >
+    <widget class="QPushButton" name="pbnSelectRaster" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>0</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3" colspan="2" >
+    <widget class="QPushButton" name="pbnEnterWorldCoords" >
+     <property name="text" >
+      <string>Enter world coordinates</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" colspan="3" >
+    <widget class="Q3TextEdit" name="teInstructions_2" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>7</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>6</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style="font-size:11pt;font-family:Tahoma">
+&lt;p style="margin-top:16px" dir="ltr">&lt;span style="font-size:14pt;font-weight:600">Description&lt;/span>&lt;/p>
+&lt;p dir="ltr">This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p>
+&lt;/body>&lt;/html>
+</string>
+     </property>
+     <property name="wordWrap" >
+      <enum>Q3TextEdit::WidgetWidth</enum>
+     </property>
+    </widget>
+   </item>
+   <item rowspan="3" row="0" column="1" >
+    <widget class="Line" name="line1" >
+     <property name="maximumSize" >
+      <size>
+       <width>2</width>
+       <height>32767</height>
+      </size>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::VLine</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
    <item row="3" column="0" colspan="5" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
@@ -58,61 +133,6 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="4" >
-    <widget class="QPushButton" name="pbnSelectRaster" >
-     <property name="text" >
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2" >
-    <widget class="QLabel" name="textLabel1" >
-     <property name="text" >
-      <string>Raster file:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2" colspan="3" >
-    <widget class="Q3TextEdit" name="teInstructions_2" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>7</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>6</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
-      <string>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;>
-&lt;p style=&quot;margin-top:16px&quot; dir=&quot;ltr&quot;>&lt;span style=&quot;font-size:13pt;font-weight:600&quot;>Description&lt;/span>&lt;/p>
-&lt;p dir=&quot;ltr&quot;>This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p>
-&lt;/body>&lt;/html>
-</string>
-     </property>
-     <property name="wordWrap" >
-      <enum>Q3TextEdit::WidgetWidth</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3" >
-    <widget class="QLineEdit" name="leSelectRaster" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3" colspan="2" >
-    <widget class="QPushButton" name="pbnEnterWorldCoords" >
-     <property name="text" >
-      <string>Enter world coordinates</string>
-     </property>
-    </widget>
-   </item>
    <item rowspan="3" row="0" column="0" >
     <widget class="QLabel" name="pixmapLabel2" >
      <property name="maximumSize" >
@@ -122,29 +142,17 @@
       </size>
      </property>
      <property name="pixmap" >
-      <pixmap/>
+      <pixmap resource="georeferencer.qrc" >:/georef.png</pixmap>
      </property>
      <property name="scaledContents" >
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item rowspan="3" row="0" column="1" >
-    <widget class="Line" name="line1" >
-     <property name="maximumSize" >
-      <size>
-       <width>2</width>
-       <height>32767</height>
-      </size>
-     </property>
-     <property name="frameShape" >
-      <enum>QFrame::VLine</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Sunken</enum>
-     </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
+   <item row="1" column="2" >
+    <widget class="QLabel" name="textLabel1" >
+     <property name="text" >
+      <string>Raster file:</string>
      </property>
     </widget>
    </item>
@@ -161,6 +169,8 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="georeferencer.qrc" />
+ </resources>
  <connections/>
 </ui>

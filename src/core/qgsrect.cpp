@@ -274,3 +274,12 @@ QgsRect & QgsRect::operator=(const QgsRect & r)
 
   return *this;
 }
+
+
+void QgsRect::unionRect(const QgsRect& r)
+{
+  if (r.xMin() < xMin()) setXmin(r.xMin());
+  if (r.xMax() > xMax()) setXmax(r.xMax());
+  if (r.yMin() < yMin()) setYmin(r.yMin());
+  if (r.yMax() > yMax()) setYmax(r.yMax());
+}

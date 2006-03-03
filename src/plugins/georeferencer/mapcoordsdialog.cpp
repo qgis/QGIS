@@ -24,7 +24,7 @@ MapCoordsDialog::~MapCoordsDialog() {
 }
 
 
-void MapCoordsDialog::pbnOK_clicked() {
+void MapCoordsDialog::on_buttonOk_clicked() {
   QgsPoint mapCoords(leXCoord->text().toDouble(), leYCoord->text().toDouble());
   emit pointAdded(mPixelCoords, mapCoords);
   accept();

@@ -23,49 +23,58 @@
 #include <ui_qgspointdialogbase.h>
 #include <QDialog>
 
+class QAction;
+class QActionGroup;
+class QgsGeorefDataPoint;
+class QgisIface;
+
 class QgsPointDialog : public QDialog, private Ui::QgsPointDialogBase
 {
 Q_OBJECT
 public:
-  QgsPointDialog();
-  QgsPointDialog(QgsRasterLayer* layer, QWidget* parent = 0, Qt::WFlags fl = 0);
+  QgsPointDialog(QString layerPath, QgisIface* theQgisInterface,
+                 QWidget* parent = 0, Qt::WFlags fl = 0);
   ~QgsPointDialog();
-
-public slots:
-  
-  void handleCanvasClick(QgsPoint& pixelCoords);
-  void addPoint(const QgsPoint& pixelCoords, const QgsPoint& mapCoords);
-  void pbnCancel_clicked();
-  void pbnGenerateWorldFile_clicked();
-  void pbnGenerateAndLoad_clicked();
-  void pbnSelectWorldFile_clicked();
-  void pbnSelectModifiedRaster_clicked();
-  void tbnZoomIn_changed(int);
-  void tbnZoomOut_changed(int);
-  void tbnZoomToLayer_clicked();
-  void tbnPan_changed(int);
-  void tbnAddPoint_changed(int);
-  void tbnDeletePoint_changed(int);
-  void enableRelevantControls(void);
-  
-signals:
-  
-  void loadLayer(QString);
-  
-private:
 
   void showCoordDialog(QgsPoint& pixelCoords);
   void deleteDataPoint(QgsPoint& pixelCoords);
+
+public slots:
+  
+  void addPoint(const QgsPoint& pixelCoords, const QgsPoint& mapCoords);
+  void on_pbnCancel_clicked();
+  void on_pbnGenerateWorldFile_clicked();
+  void on_pbnGenerateAndLoad_clicked();
+  void on_pbnSelectWorldFile_clicked();
+  void on_pbnSelectModifiedRaster_clicked();
+  void zoomIn();
+  void zoomOut();
+  void zoomToLayer();
+  void pan();
+  void addPoint();
+  void deletePoint();
+  void enableRelevantControls(void);
+   
+private:
+
   bool generateWorldFile();
   QString guessWorldFileName(const QString& raster);
   
+  QActionGroup* mMapToolGroup;
+  QAction* mActionZoomIn;
+  QAction* mActionZoomOut;
+  QAction* mActionZoomToLayer;
+  QAction* mActionPan;
+  QAction* mActionAddPoint;
+  QAction* mActionDeletePoint;
+  
   QgsMapCanvas* mCanvas;
-  QCursor* mCursor;
   QgsRasterLayer* mLayer;
   
-  std::vector<QgsPoint> mPixelCoords, mMapCoords;
-  std::vector<QString> mAcetateIDs;
-
+//  std::vector<QgsPoint> mPixelCoords, mMapCoords;
+//  std::vector<QString> mAcetateIDs;
+  std::vector<QgsGeorefDataPoint*> mPoints;
+  QgisIface* mIface;
 };
 
 #endif

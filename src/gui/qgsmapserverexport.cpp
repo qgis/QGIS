@@ -23,6 +23,7 @@ email                : sherman at mrcc.com
 #include "qgsmaplayer.h"
 #include "qgsrect.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 
 #include <QFileDialog>
 #include <QFileInfo>

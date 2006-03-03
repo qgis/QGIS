@@ -22,7 +22,8 @@
 //#include <qtextstream.h>
 #include <iostream>
 //#include <qfileinfo.h>
-#include <qstring.h>
+#include <QString>
+#include <QTextCodec>
 
 // Includes for ogr shaprewriting
 //#include "gdal.h"

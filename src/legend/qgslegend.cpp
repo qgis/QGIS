@@ -41,6 +41,7 @@
 #include <QMenu>
 #include <QFont>
 #include <QHeaderView>
+#include <Q3ListViewItem>
 
 static const char *const ident_ = "$Id$";
 
@@ -59,6 +60,9 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
   
   connect( this, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
 	   this, SLOT(handleItemChange(QTreeWidgetItem*, int)));
+  
+  connect( this, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+           this, SLOT(handleCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
 
   setSortingEnabled(false);
   setDragEnabled(false);
@@ -80,6 +84,12 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
 
 QgsLegend::~QgsLegend()
 {}
+
+
+void QgsLegend::handleCurrentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+{
+  mMapCanvas->setCurrentLayer(currentLayer());
+}   
 
 void QgsLegend::addGroup()
 {
@@ -104,6 +114,7 @@ void QgsLegend::removeAll()
 {
   mStateOfCheckBoxes.clear();
   clear();
+  updateMapCanvasLayerSet();
 }
 
 void QgsLegend::removeLayer(QString layer_key)
@@ -131,8 +142,8 @@ void QgsLegend::removeLayer(QString layer_key)
 	}
 	theItem = nextItem(theItem);
     }
-    //update the overview canvas
-    mApp->setOverviewZOrder(this);
+
+    updateMapCanvasLayerSet();
 }
 
 void QgsLegend::mousePressEvent(QMouseEvent * e)
@@ -324,12 +335,12 @@ void QgsLegend::mouseReleaseEvent(QMouseEvent * e)
 	      }
 	  }
 	
-	std::deque<QString> layersAfterRelease = layerIDs(); //test if canvas redraw is really necessary
-	if(layersAfterRelease != mLayersPriorToMove)
-	  {
-	    emit zOrderChanged(this);
-	  }
-
+	 std::deque<QString> layersAfterRelease = layerIDs(); //test if canvas redraw is really necessary
+   if(layersAfterRelease != mLayersPriorToMove)
+   {
+     // z-order has changed - update layer set
+     updateMapCanvasLayerSet();
+   }
       }
   }
   mMousePressedFlag = false;
@@ -476,18 +487,29 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
       {
 	setItemHidden(llfgroup, true);
       }
+    
+    updateMapCanvasLayerSet();
+    
+    // first layer?
+    if (mMapCanvas->layerCount() == 1)
+      mMapCanvas->zoomFullExtent();
+    
     setCurrentItem(llayer);
 }
 
 QgsMapLayer* QgsLegend::currentLayer()
 {
-    QList<QTreeWidgetItem*> selItems = selectedItems();
+  QgsLegendItem* citem=dynamic_cast<QgsLegendItem*>(currentItem());
+  /*
+  // XXX commented out because QGIS crashed when switching projects [MD]
+  QList<QTreeWidgetItem*> selItems = selectedItems();
     if(selItems.size() > 1)
       {
 	return 0;
       }
     QList<QTreeWidgetItem*>::iterator it = selItems.begin();
     QgsLegendItem* citem=dynamic_cast<QgsLegendItem*>(*it);
+  */
 
     if(citem)
     {
@@ -570,16 +592,9 @@ void QgsLegend::legendLayerRemove()
 
    if(maplayers.size()>0)
    {
-     mMapCanvas->removeDigitizingLines();
-     mMapCanvas->clear();
-// For Qt4, deprecate direct calling of render().  Let render() be called by the 
-// paint event loop of the map canvas widget.
-//     mMapCanvas->render();
-     mMapCanvas->update();
+     mMapCanvas->refresh();
    }
    removeItem(ll);
-   //update the overview canvas
-   mApp->setOverviewZOrder(this);
 }
 
 void QgsLegend::legendLayerAddToOverview()
@@ -600,11 +615,7 @@ void QgsLegend::legendLayerAddToOverview()
        }
    }
 
-   if(maplayers.size()>0)
-   {
-       //update the overview canvas
-       mApp->setOverviewZOrder(this);
-   } 
+   mMapCanvas->updateOverview();
 }
 
 void QgsLegend::legendLayerRemoveFromOverview()
@@ -625,11 +636,7 @@ void QgsLegend::legendLayerRemoveFromOverview()
        }
    }
 
-   if(maplayers.size()>0)
-   {
-       //update the overview canvas
-       mApp->setOverviewZOrder(this);
-   } 
+   mMapCanvas->updateOverview();
 }
 
 void QgsLegend::legendLayerShowProperties()
@@ -1204,6 +1211,12 @@ void QgsLegend::removeItem(QTreeWidgetItem* item)
     {
       takeTopLevelItem(indexOfTopLevelItem(item));
     }
+}
+
+void QgsLegend::updateMapCanvasLayerSet()
+{ 
+  std::deque<QString> layers = layerIDs();
+  mMapCanvas->setLayerSet(layers);
 }
 
 std::deque<QString> QgsLegend::layerIDs()

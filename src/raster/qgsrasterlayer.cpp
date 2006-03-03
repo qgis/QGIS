@@ -115,7 +115,6 @@ wish to see edbug messages printed to stdout.
 //#include "qgscolortable.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsproject.h"
-#include "qgsidentifyresults.h"
 #include "qgsattributeaction.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsspatialrefsys.h"
@@ -457,7 +456,6 @@ QgsRasterLayer::QgsRasterLayer(QString const & path, QString const & baseName)
     stdDevsToPlotDouble(0),
     mTransparencySlider(0x0),
     mLayerProperties(0x0),
-    mIdentifyResults(0),
     dataProvider(0)
 
 {
@@ -1082,8 +1080,7 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
 
 bool QgsRasterLayer::draw(QPainter * theQPainter,
                           QgsRect * theViewExtent,
-                          QgsMapToPixel * theQgsMapToPixel,
-                          QPaintDevice* dst)
+                          QgsMapToPixel * theQgsMapToPixel)
 {
 
 #ifdef QGISDEBUG
@@ -4793,38 +4790,11 @@ void QgsRasterLayer::inOverview( bool b )
   QgsMapLayer::inOverview( b );
 } // QgsRasterLayer::inOverview( bool )
 
-void QgsRasterLayer::identify(QgsRect * r)
+
+void QgsRasterLayer::identify(const QgsPoint& point, std::map<QString,QString>& results)
 {
-  if( !mIdentifyResults)
-  {
-
-    // Win32 doesn't like this approach to creating the window and seems
-    // to work fine without it [gsherman]
-    QWidget *top = 0;
-#ifndef WIN32
-    foreach (QWidget *w, QApplication::topLevelWidgets())
-    {
-        if ( typeid(*w) == typeid(QgisApp) )
-        {
-          top = w;
-          break;
-        }
-    }
-#endif
-    QgsAttributeAction aa;
-    mIdentifyResults = new QgsIdentifyResults(aa, top);
-    mIdentifyResults->restorePosition();
-  }
-  else
-  {
-    mIdentifyResults->clear();
-  }
-
-  mIdentifyResults->setTitle( name() );
-  mIdentifyResults->setColumnText ( 0, tr("Band") );
-
-  double x = ( r->xMin() + r->xMax() ) / 2;
-  double y = ( r->yMin() + r->yMax() ) / 2;
+  double x = point.x();
+  double y = point.y();
 
 #ifdef QGISDEBUG
   std::cout << "QgsRasterLayer::identify: " << x << ", " << y << std::endl;
@@ -4835,7 +4805,7 @@ void QgsRasterLayer::identify(QgsRect * r)
     // Outside the raster
     for ( int i = 1; i <= gdalDataset->GetRasterCount(); i++ )
     {
-      mIdentifyResults->addAttribute ( tr("Band") + QString::number(i), tr("out of extent") );
+      results[tr("Band") + QString::number(i)] = tr("out of extent");
     }
   }
   else
@@ -4875,16 +4845,13 @@ void QgsRasterLayer::identify(QgsRect * r)
       {
         v.setNum ( value );
       }
-      mIdentifyResults->addAttribute ( tr("Band") + QString::number(i), v );
+      results[tr("Band") + QString::number(i)] = v;
 
       free (data);
     }
   }
 
-  mIdentifyResults->showAllAttributes();
-  mIdentifyResults->show();
-
-} // void QgsRasterLayer::identify(QgsRect * r)
+} // void QgsRasterLayer::identify
 
 
 void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool theIgnoreOutOfRangeFlag,bool theHistogramEstimatedFlag)
@@ -4961,7 +4928,6 @@ QgsRasterLayer::QgsRasterLayer(int dummy,
     stdDevsToPlotDouble(0),
     mTransparencySlider(0x0),
     mLayerProperties(0x0),
-    mIdentifyResults(0),
     providerKey(providerKey),
     dataProvider(0),
     mEditable(false),

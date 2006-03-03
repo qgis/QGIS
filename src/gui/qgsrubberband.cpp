@@ -22,13 +22,11 @@
   \brief The QgsRubberBand class provides a transparent overlay widget
   for tracking the mouse while drawing polylines or polygons.
 */
-QgsRubberBand::QgsRubberBand(QWidget * parent, bool isPolygon)
-: QWidget(parent), mIsPolygon(isPolygon)
+QgsRubberBand::QgsRubberBand(QgsMapCanvas* mapCanvas, bool isPolygon)
+: QgsMapCanvasItem(mapCanvas), mIsPolygon(isPolygon)
 {
-  setGeometry(parent->rect()); // this widget is same size as parent
-  mPoints.append(QPoint()); // addPoint assumes an initial allocated point
+  mPoints.push_back(QgsPoint());
   setColor(QColor(Qt::lightGray));
-  setMouseTracking(true);
 }
 
 QgsRubberBand::~QgsRubberBand()
@@ -60,51 +58,78 @@ void QgsRubberBand::reset(bool isPolygon)
 {
   mPoints.resize(1); // addPoint assumes an initial allocated point
   mIsPolygon = isPolygon;
-  update();
+  updateRect();
+  updateCanvas();
 }
 
 /*!
   Add a point to the shape being created.
 */
-void QgsRubberBand::addPoint(const QPoint & p)
+void QgsRubberBand::addPoint(const QgsPoint & p)
 {
-  mPoints.last() = p; // Current mouse position becomes added point
-  mPoints.append(p); // Allocate new point to continue tracking current mouse position
-  update();
+  mPoints[mPoints.size()-1] = p; // Current mouse position becomes added point
+  mPoints.push_back(p); // Allocate new point to continue tracking current mouse position
+  updateRect();
+  updateCanvas();
 }
 
 /*!
   Update the line between the last added point and the mouse position.
 */
-void QgsRubberBand::movePoint(const QPoint & p)
+void QgsRubberBand::movePoint(const QgsPoint & p)
 {
-  mPoints.last() = p; // Update current mouse position
-  update();
+  mPoints[mPoints.size()-1] = p; // Update current mouse position
+  updateRect();
+  updateCanvas();
 }
 
-void QgsRubberBand::movePoint(int index, const QPoint& p)
+void QgsRubberBand::movePoint(int index, const QgsPoint& p)
 {
-  mPoints.setPoint(index, p);
-  update();
+  mPoints[index] = p;
+  updateRect();
+  updateCanvas();
 }
 
 /*!
   Draw the shape in response to an update event.
 */
-void QgsRubberBand::paintEvent(QPaintEvent * event)
+void QgsRubberBand::drawShape(QPainter & p)
 {
-  if (mPoints.count() > 1)
+  if (mPoints.size() > 1)
   {
-    QPainter p(this);
+    QPolygon pts;
+    int i;
+    for (i = 0; i < mPoints.size(); i++)
+      pts.append(toCanvasCoords(mPoints[i]));
+    
     p.setPen(mPen);
     p.setBrush(mBrush);
     if (mIsPolygon)
     {
-      p.drawPolygon(mPoints);
+      p.drawPolygon(pts);
     }
     else
     {
-      p.drawPolyline(mPoints);
+      p.drawPolyline(pts);
     }
   }
+}
+
+void QgsRubberBand::updateRect()
+{
+  if (mPoints.size() > 0)
+  {
+    QgsRect r(mPoints[0], mPoints[0]);
+    int i;
+    for (i = 1; i < mPoints.size(); i++)
+      r.combineExtentWith(mPoints[i].x(), mPoints[i].y());
+    setRect(r);
+  }
+  else
+  {
+    // set empty rect
+    setRect(QgsRect());
+  }
+  
+  setVisible(mPoints.size() > 1);
 }

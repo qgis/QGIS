@@ -154,9 +154,10 @@ void QgsCopyrightLabelPlugin::renderLabel(QPainter * theQPainter)
         Q3PaintDeviceMetrics myMetrics( theQPainter->device() );
         int myHeight = myMetrics.height();
         int myWidth = myMetrics.width();
-        //hard coded cludge for getting a colorgroup.  Needs to be replaced
+        // FIXME: hard coded cludge for getting a colorgroup.  Needs to be replaced
         Q3Button * myQButton =new Q3Button();
         QColorGroup myQColorGroup = myQButton->colorGroup();
+        delete myQButton;
 
         Q3SimpleRichText myQSimpleText(mLabelQString, mQFont);
         myQSimpleText.setWidth( theQPainter, myWidth-10 );

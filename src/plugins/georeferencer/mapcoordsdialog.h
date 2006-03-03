@@ -27,7 +27,7 @@ public:
   
 public slots:
   
-  void pbnOK_clicked();
+  void on_buttonOk_clicked();
   
 private:
   

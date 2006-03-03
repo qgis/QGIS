@@ -75,8 +75,7 @@ public:
      */
     void renderLabel ( QPainter* painter, QgsRect* viewExtent, 
                        const QgsCoordinateTransform& coordTransform,
-                       bool doCoordTransform,
-	               QgsMapToPixel *transform, QPaintDevice *device,
+                       bool doCoordTransform, QgsMapToPixel *transform,
 		       QgsFeature *feature, bool selected, QgsLabelAttributes *classAttributes=0, double sizeScale = 1.);
     
     /** Reads the renderer configuration from an XML file

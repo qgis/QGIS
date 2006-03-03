@@ -1133,8 +1133,7 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
     
     // Connect to canvas 
     QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
-    connect ( canvas, SIGNAL(addedLayer(QgsMapLayer *)), this, SLOT(updateQgisLayers()) );
-    connect ( canvas, SIGNAL(removedLayer(QString)), this, SLOT(updateQgisLayers()) );
+    connect ( canvas, SIGNAL(layersChanged()), this, SLOT(updateQgisLayers()) );
 
     connect ( mLayerComboBox, SIGNAL(activated(int)), this, SLOT(changed(int)) );
 

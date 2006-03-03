@@ -72,7 +72,7 @@ public:
     bool readXML( QDomNode & node );
      
     /** \brief Draw to paint device */
-    void draw(QPainter *painter, QgsRect *extent, QgsMapToPixel *transform, QPaintDevice *device);
+    void draw(QPainter *painter, QgsRect *extent, QgsMapToPixel *transform);
 
     /** \brief Reimplementation of QCanvasItem::draw - draw on canvas */
     void draw ( QPainter & painter );

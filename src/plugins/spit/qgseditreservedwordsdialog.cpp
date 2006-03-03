@@ -1,5 +1,5 @@
 
-// $Id:$
+// $Id$
 
 #include <QIcon>
 #include <QPixmap>

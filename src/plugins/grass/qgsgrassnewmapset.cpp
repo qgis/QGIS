@@ -496,7 +496,7 @@ void QgsGrassNewMapset::setGrassProjection()
 	    ret = GPJ_osr_to_grass ( &mCellHead, &mProjInfo, 
 		      &mProjUnits, (void **)hSRS, 0);
 #endif
-	    
+
 	    // Note: It seems that GPJ_osr_to_grass()returns always 1, 
 	    // 	 -> test if mProjInfo was set
 	    
