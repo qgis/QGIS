@@ -16,13 +16,13 @@
  ***************************************************************************/
 /* $Id$ */
 #include <iostream>
-#include <qapplication.h>
+#include <QApplication>
 #include <QFileDialog>
-#include <qlineedit.h>
+#include <QLineEdit>
 #include <q3listview.h>
-#include <qmessagebox.h>
-#include <qlibrary.h>
-#include <qsettings.h>
+#include <QMessageBox>
+#include <QLibrary>
+#include <QSettings>
 #include "qgisplugin.h"
 #include "qgspluginmanager.h"
 #include "qgspluginitem.h"
