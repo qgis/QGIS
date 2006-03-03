@@ -46,7 +46,9 @@ QgsComposer::QgsComposer( QgisApp *qgis): QMainWindow()
   mQgis = qgis;
   mFirstTime = true;
 
+#ifdef QGISDEBUG
   std::cout << "QgsComposer::QgsComposer" << std::endl;
+#endif
 
   mView = new QgsComposerView ( this, mViewFrame);
   mPrinter = 0;
@@ -117,23 +119,10 @@ void QgsComposer::open ( void )
 
 void QgsComposer::removeWidgetChildren ( QWidget *w )
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposer::removeWidgetChildren" << std::endl;
+#endif
 
-#if QT_VERSION < 0x040000
-  const QObjectList *ol = mItemOptionsFrame->children();
-  if ( ol ) {
-    QObjectListIt olit( *ol );
-    QObject *ob;
-    while( (ob = olit.current()) ) {
-      ++olit;
-      if( ob->isWidgetType() ) {
-        QWidget *ow = (QWidget *) ob;
-        w->removeChild ( ob );
-        ow->hide ();
-      }
-    }
-  }
-#else
   const QObjectList ol = mItemOptionsFrame->children();
   if ( !ol.isEmpty() ) 
   {
@@ -150,12 +139,12 @@ void QgsComposer::removeWidgetChildren ( QWidget *w )
       }
     }
   }
-#endif
 }
 
 void QgsComposer::showCompositionOptions ( QWidget *w ) {
+#ifdef QGISDEBUG
   std::cout << "QgsComposer::showCompositionOptions" << std::endl;
-
+#endif
   removeWidgetChildren ( mCompositionOptionsFrame );
 
   if ( w ) { 
@@ -166,8 +155,9 @@ void QgsComposer::showCompositionOptions ( QWidget *w ) {
 
 void QgsComposer::showItemOptions ( QWidget *w )
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposer::showItemOptions" << std::endl;
-
+#endif
   removeWidgetChildren ( mItemOptionsFrame );
 
   // NOTE: It is better to leave there the tab with item options if w is NULL
@@ -732,7 +722,9 @@ void QgsComposer::resizeEvent ( QResizeEvent *e ) { saveWindowState(); }
 
 void QgsComposer::saveWindowState()
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposer::saveWindowState" << std::endl;
+#endif
   QSettings settings;
 
   QPoint p = this->pos();
@@ -775,8 +767,9 @@ void QgsComposer::restoreWindowState()
 
 void QgsComposer::projectRead(void)
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposer::projectRead" << std::endl;
-
+#endif
   if ( mComposition ) delete mComposition;
   mComposition  = new QgsComposition( this, 1 );
 
@@ -809,8 +802,9 @@ void QgsComposer::projectRead(void)
 
 void QgsComposer::newProject(void)
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposer::newProject" << std::endl;
-
+#endif
   if ( mComposition ) delete mComposition;
 
   mComposition  = new QgsComposition( this, 1 );
@@ -847,8 +841,9 @@ bool QgsComposer::readSettings ( void )
 
 bool QgsComposer::writeXML( QDomNode & node, QDomDocument & doc )
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposer::writeXML" << std::endl;
-
+#endif
   QDomElement compositionsNode = doc.createElement("compositions");
 
   node.appendChild( compositionsNode );
@@ -858,8 +853,9 @@ bool QgsComposer::writeXML( QDomNode & node, QDomDocument & doc )
 
 bool QgsComposer::readXML( QDomNode & node )
 {
+#ifdef QGISDEBUG
   std::cout << "QgsComposer::readXML" << std::endl;
-
+#endif
   return true;
 }
 
