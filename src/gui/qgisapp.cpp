@@ -319,7 +319,18 @@ static void setTitleBarText_( QWidget & qgisApp )
 
   // now build raster file filter
   QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
-
+  
+  // Set the background colour for toolbox and overview as they default to 
+  // white instead of the window color
+  QPalette myPalette = toolBox->palette();
+  myPalette.setColor(QPalette::Button, myPalette.window().color());
+  toolBox->setPalette(myPalette);
+  //do the same for legend control
+  myPalette = toolBox->palette();
+  myPalette.setColor(QPalette::Button, myPalette.window().color());
+  mMapLegend->setPalette(myPalette);
+  //and for overview control this is done in createOverView method
+  
   // Do this last in the ctor to ensure that all members are instantiated properly
   setupConnections();
   //
@@ -1112,6 +1123,7 @@ void QgisApp::createOverview()
   // overview canvas
   QgsMapOverviewCanvas* overviewCanvas = new QgsMapOverviewCanvas(NULL, mMapCanvas);
   QWhatsThis::add(overviewCanvas, tr("Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas."));
+        
   QBitmap overviewPanBmp(16, 16, pan_bits, true);
   QBitmap overviewPanBmpMask(16, 16, pan_mask_bits, true);
   mOverviewMapCursor = new QCursor(overviewPanBmp, overviewPanBmpMask, 5, 5);
