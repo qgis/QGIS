@@ -1383,8 +1383,10 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
       bool loaded = myLib->load();
       if (loaded)
       {
+#ifdef QGISDEBUG
         //purposely leaving this one to stdout!
         std::cout << "Loaded " << myLib->library().toLocal8Bit().data() << std::endl;
+#endif
         name_t * myName =(name_t *) myLib->resolve("name");
         description_t *  myDescription = (description_t *)  myLib->resolve("description");
         version_t *  myVersion =  (version_t *) myLib->resolve("version");
