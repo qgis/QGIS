@@ -88,6 +88,8 @@ sharedLibExtension = "*.so*";
       std::cout << "PLUGIN MANAGER:" << std::endl;
       for (unsigned i = 0; i < pluginDir.count(); i++)
         {
+          QString lib = QString("%1/%2").arg(txtPluginDir->text()).arg(pluginDir[i]);
+
 #ifdef TESTLIB
           // This doesn't work on WIN32 and causes problems with plugins
           // on OS X (the code doesn't cause a problem but including dlfcn.h
@@ -97,7 +99,7 @@ sharedLibExtension = "*.so*";
           // This doesn't work on WIN32 and causes problems with plugins
           // on OS X (the code doesn't cause a problem but including dlfcn.h
           // renders plugins unloadable)
-          QString lib = QString("%1/%2").arg(txtPluginDir->text()).arg(pluginDir[i]);
+
 //          void *handle = dlopen((const char *) lib, RTLD_LAZY);
           void *handle = dlopen(lib.toLocal8Bit().data(), RTLD_LAZY | RTLD_GLOBAL);
           if (!handle)
