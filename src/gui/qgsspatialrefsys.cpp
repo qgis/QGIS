@@ -69,6 +69,35 @@ void QgsSpatialRefSys::createFromId(const long theId, SRS_TYPE theType)
 
 }
 
+
+bool QgsSpatialRefSys::createFromOgcWmsCrs(QString theCrs)
+{
+  QStringList parts = theCrs.split(":");
+
+  if (parts.at(0) == "EPSG")
+  {
+    createFromEpsg( parts.at(1).toLong() );
+  }
+  else if (parts.at(0) == "CRS")
+  {
+    if (parts.at(1) == "84")
+    {
+      //! \todo - CRS:84 is hardcoded to EPSG:4326 - see if this is appropriate
+      /**
+       *  See WMS 1.3 standard appendix B3 for details
+       */
+      createFromEpsg( 4326 );
+    }
+  }
+  else
+  {
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+
 // Assignment operator
 QgsSpatialRefSys& QgsSpatialRefSys::operator=(const QgsSpatialRefSys& srs)
 {
@@ -306,7 +335,7 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
 bool QgsSpatialRefSys::createFromEpsg(long theEpsg)
 {
 #ifdef QGISDEBUG
-  std::cout << " QgsSpatialRefSys::createFromEpsg" << std::endl;
+  std::cout << "QgsSpatialRefSys::createFromEpsg with " << theEpsg << std::endl;
 #endif
   // Get the full path name to the sqlite3 spatial reference database.
   QString myDatabaseFileName = QgsApplication::srsDbFilePath();

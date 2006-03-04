@@ -58,9 +58,9 @@ class QgsCoordinateTransform: public QObject
     /*! Default constructor. Make sure you use initialised() manually if you use this one! */
     QgsCoordinateTransform() ;
 
-  /* Constructs a QgsCoordinateTransform using QgsSpatialRefSys objects.
-   * @param theSource SRS of the layer's coordinate system
-   * @param theDest SRS of the map canvas coordinate system
+  /** Constructs a QgsCoordinateTransform using QgsSpatialRefSys objects.
+   * @param theSource SRS, typically of the layer's coordinate system
+   * @param theDest SRS, typically of the map canvas coordinate system
    */
   QgsCoordinateTransform(const QgsSpatialRefSys& theSource, 
                          const QgsSpatialRefSys& theDest);
@@ -68,10 +68,11 @@ class QgsCoordinateTransform: public QObject
     /*!
      * Constructs a QgsCoordinateTransform using the Well Known Text representation
      * of the layer and map canvas coordinate systems
-     * @param theSourceWKT WKT of the layer's coordinate system
-     * @param theSourceWKT WKT of the map canvas coordinate system
+     * @param theSourceWKT WKT, typically of the layer's coordinate system
+     * @param theDestWKT WKT, typically of the map canvas coordinate system
      */
     QgsCoordinateTransform(QString theSourceWKT, QString theDestWKT  );
+
     /*!
      * Constructs a QgsCoordinateTransform using a Spatial Reference Id
      * of the layer and map canvas coordinate system as Wkt
@@ -82,12 +83,14 @@ class QgsCoordinateTransform: public QObject
     QgsCoordinateTransform(long theSourceSrid,  
                            QString theDestWKT,
                            QgsSpatialRefSys::SRS_TYPE theSourceSRSType = QgsSpatialRefSys::POSTGIS_SRID  );
+
      //! destructor
     ~QgsCoordinateTransform();
+
     //! Enum used to indicate the direction (forward or inverse) of the transform
     enum TransformDirection{
-      FORWARD,
-      INVERSE
+      FORWARD,     /*!< Transform from source to destination SRS. */
+      INVERSE      /*!< Transform from destination to source SRS. */
     };
     
     /*! 
@@ -95,21 +98,25 @@ class QgsCoordinateTransform: public QObject
      * @param theSRS QgsSpatialRefSys representation of the layer's coordinate system
      */
     void setSourceSRS(const QgsSpatialRefSys& theSRS);
+
     /*! 
      * Mutator for dest QgsSpatialRefSys 
      * @param theSRS of the destination coordinate system
      */
-    void setDestSRS(const QgsSpatialRefSys& theSRS);    
+    void setDestSRS(const QgsSpatialRefSys& theSRS);
+
     /*!
      * Get the QgsSpatialRefSys representation of the layer's coordinate system
      * @return QgsSpatialRefSys of the layer's coordinate system
      */
     QgsSpatialRefSys& sourceSRS() { return mSourceSRS; }
+
     /*! 
      * Get the QgsSpatialRefSys representation of the map canvas coordinate system
      * @return QgsSpatialRefSys of the map canvas coordinate system
      */
     QgsSpatialRefSys& destSRS() { return mDestSRS; }
+
     /*! Transform the point from Source Coordinate System to Destination Coordinate System
     * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
     * otherwise points are transformed from map canvas CS to layerCS.
@@ -118,6 +125,7 @@ class QgsCoordinateTransform: public QObject
     * @return QgsPoint in Destination Coordinate System
      */    
    QgsPoint transform(const QgsPoint p,TransformDirection direction=FORWARD);
+
     /*! Transform the point specified by x,y from Source Coordinate System to Destination Coordinate System
     * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
     * otherwise points are transformed from map canvas CS to layerCS.
@@ -166,15 +174,18 @@ class QgsCoordinateTransform: public QObject
     * @return QgsRect in Destination Coordinate System
      */        
    void transformCoords( const int &numPoint, double *x, double *y, double *z,TransformDirection direction=FORWARD);
+
   /*! 
    * Flag to indicate whether the coordinate systems have been initialised
    * @return true if initialised, otherwise false
    */
    bool isInitialised() {return mInitialisedFlag;};
+
    /*! See if the transform short circuits because src and dest are equivalent
     * @return bool True if it short circuits
     */
     bool isShortCircuited() {return mShortCircuit;};
+
  public slots:
     /*! Change the destination coordinate system by passing it a qgis srsid
     * A QGIS srsid is a unique key value to an entry on the tbl_srs in the
@@ -186,6 +197,7 @@ class QgsCoordinateTransform: public QObject
     * to check if short circuiting is needed or not etc.
     * @param theSRSID -  A long representing the srsid of the srs to be used */
     void setDestSRSID (long theSRSID);
+
     //!initialise is used to actually create the Transformer instance
     void initialise();
 
@@ -194,6 +206,7 @@ class QgsCoordinateTransform: public QObject
     * @return bool True on success, False on failure
     */
     bool readXML( QDomNode & theNode );
+
     /*! Stores state to the given DOM node in the given document
     * @param theNode The node in which state will be restored
     * @param theDom The document in which state will be stored
@@ -212,22 +225,27 @@ class QgsCoordinateTransform: public QObject
      * equal and not transformation needs to be done
      */
     bool mShortCircuit;
+
     /*!
      * flag to show whether the transform is properly initialised or not
      */
     bool mInitialisedFlag;
+
     /*! 
      * QgsSpatialRefSys of the source (layer) coordinate system 
      */
     QgsSpatialRefSys mSourceSRS;
+
     /*! 
      * QgsSpatialRefSys of the destination (map canvas) coordinate system 
      */
     QgsSpatialRefSys mDestSRS;
+
     /*!
      * Proj4 data structure of the source projection (layer coordinate system)
      */
     projPJ mSourceProjection;
+
     /*!
      * Proj4 data structure of the destination projection (map canvas coordinate system)
      */

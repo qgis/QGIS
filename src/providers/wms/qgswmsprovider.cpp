@@ -18,13 +18,15 @@
 
 /* $Id$ */
 
+#include "qgswmsprovider.h"
+
 #include <fstream>
 #include <iostream>
 
 #include "qgsrect.h"
-#include "qgshttptransaction.h"
+#include "qgsspatialrefsys.h"
 
-#include "qgswmsprovider.h"
+#include "qgshttptransaction.h"
 
 #include <q3network.h>
 #include <q3http.h>
@@ -61,7 +63,10 @@ QgsWmsProvider::QgsWmsProvider(QString const & uri)
     cachedImage(0),
     cachedViewExtent(0),
     cachedPixelWidth(0),
-    cachedPixelHeight(0)
+    cachedPixelHeight(0),
+    mCoordinateTransform(0),
+    extentDirty(TRUE),
+    imageCrs(DEFAULT_LATLON_CRS)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider: constructing with uri '" << uri.toLocal8Bit().data() << "'." << std::endl;
@@ -161,6 +166,11 @@ QgsWmsProvider::~QgsWmsProvider()
     delete cachedImage;
   }
 
+  if (mCoordinateTransform)
+  {
+    delete mCoordinateTransform;
+  }
+
 }
 
 
@@ -252,7 +262,7 @@ void QgsWmsProvider::addLayers(QStringList const &  layers,
   }
 
   // now that the layers have changed, the extent will as well.
-  calculateExtent();
+  extentDirty = TRUE;
 
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::addLayers: Exiting." << std::endl;
@@ -296,7 +306,20 @@ void QgsWmsProvider::setImageCrs(QString const & crs)
   std::cout << "QgsWmsProvider::setImageCrs: Setting image CRS to " << crs.toLocal8Bit().data() << "." <<
                std::endl;
 #endif
-  imageCrs = crs;
+
+  if (crs != imageCrs)
+  {
+    // delete old coordinate transform as it is no longer valid
+    if (mCoordinateTransform)
+    {
+      delete mCoordinateTransform;
+    }
+
+    extentDirty = TRUE;
+
+    imageCrs = crs;
+  }
+
 }
 
 
@@ -399,13 +422,8 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
   url += "REQUEST=GetMap";
   url += "&";
   url += "BBOX=" + bbox;
-  // TODO: for now use the first SRS of the first layer
-  if ( layersSupported.size() > 0 && 
-       layersSupported[0].crs.size() )
-  {
-    url += "&";
-    url += "SRS=" + layersSupported[0].crs[0];
-  }
+  url += "&";
+  url += "SRS=" + imageCrs;
   url += "&";
   url += "WIDTH=" + width;
   url += "&";
@@ -1412,6 +1430,12 @@ void QgsWmsProvider::setURI(QgsDataSourceURI * uri)
 
 QgsRect *QgsWmsProvider::extent()
 {
+  if (extentDirty)
+  {
+    calculateExtent();
+    extentDirty = FALSE;
+  }
+
   return &layerExtent;
 }
 
@@ -1465,6 +1489,7 @@ void QgsWmsProvider::showStatusMessage(QString const & theMessage)
 
 void QgsWmsProvider::calculateExtent()
 {
+  //! \todo Make this handle non-geographic CRSs (e.g. floor plans) as per WMS spec
 
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::calculateExtent: entered." << std::endl;
@@ -1473,14 +1498,35 @@ void QgsWmsProvider::calculateExtent()
   // Make sure we know what extents are available
   retrieveServerCapabilities();
 
+  // Set up the coordinate transform from the WMS standard CRS:84 bounding
+  // box to the user's selected CRS
+  if (!mCoordinateTransform)
+  {
+    QgsSpatialRefSys qgisSrsSource;
+    QgsSpatialRefSys qgisSrsDest;
+
+    qgisSrsSource.createFromOgcWmsCrs(DEFAULT_LATLON_CRS);
+    qgisSrsDest  .createFromOgcWmsCrs(imageCrs);
+
+    mCoordinateTransform = new QgsCoordinateTransform(qgisSrsSource, qgisSrsDest);
+  }
+
   for ( QStringList::Iterator it  = activeSubLayers.begin(); 
                               it != activeSubLayers.end(); 
                             ++it ) 
   {
-  
+
     // This is the extent for the layer name in *it
     QgsRect extent = extentForLayer.find( *it )->second;
-    
+
+    // Convert to the user's CRS as required
+    extent =
+      mCoordinateTransform->transformBoundingBox(
+        extent,
+        QgsCoordinateTransform::FORWARD
+      );
+
+    // add to the combined extent of all the active sublayers
     if ( it == activeSubLayers.begin() )
     {
       layerExtent = extent;

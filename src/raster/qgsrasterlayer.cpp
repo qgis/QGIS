@@ -4914,12 +4914,13 @@ void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool
  
  
 QgsRasterLayer::QgsRasterLayer(int dummy,
-                               QString const &  rasterLayerPath,
-                               QString const &  baseName,
-                               QString const &  providerKey,
-                               QStringList const &  layers,
-                               QStringList const &  styles,
-                               QString  const & format )
+                               QString const & rasterLayerPath,
+                               QString const & baseName,
+                               QString const & providerKey,
+                               QStringList const & layers,
+                               QStringList const & styles,
+                               QString const & format,
+                               QString const & crs )
     : QgsMapLayer(RASTER, baseName, rasterLayerPath),
     rasterXDimInt( std::numeric_limits<int>::max() ),
     rasterYDimInt( std::numeric_limits<int>::max() ),
@@ -4940,6 +4941,7 @@ QgsRasterLayer::QgsRasterLayer(int dummy,
                   " with layer list of " << layers.join(", ").toLocal8Bit().data() <<
                    " and style list of " << styles.join(", ").toLocal8Bit().data() <<
                    " and format of " << format.toLocal8Bit().data() <<
+                   " and CRS of " << crs.toLocal8Bit().data() <<
                   std::endl;
 #endif
 
@@ -4954,7 +4956,7 @@ QgsRasterLayer::QgsRasterLayer(int dummy,
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! providerKey.isEmpty() )
   {
-    setDataProvider( providerKey, layers, styles, format );
+    setDataProvider( providerKey, layers, styles, format, crs );
   }
 
   // Default for the popup menu
@@ -4995,9 +4997,10 @@ typedef QgsDataProvider * classFactoryFunction_t( const QString * );
  *  TODO: Make it work in the raster environment
  */
 void QgsRasterLayer::setDataProvider( QString const & provider,
-                                      QStringList  const & layers,
-                                      QStringList  const & styles,
-                                      QString  const & format )
+                                      QStringList const & layers,
+                                      QStringList const & styles,
+                                      QString const & format,
+                                      QString const & crs )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -5066,6 +5069,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
                   " with layer list of " << layers.join(", ").toLocal8Bit().data() <<
                    " and style list of " << styles.join(", ").toLocal8Bit().data() <<
                    " and format of " << format.toLocal8Bit().data() <<
+                   " and CRS of " << crs.toLocal8Bit().data() <<
                   std::endl;
 #endif
         if (dataProvider->isValid())
@@ -5074,6 +5078,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
 
           dataProvider->addLayers(layers, styles);
           dataProvider->setImageEncoding(format);
+          dataProvider->setImageCrs(crs);
 
           // get the extent
           QgsRect *mbr = dataProvider->extent();
