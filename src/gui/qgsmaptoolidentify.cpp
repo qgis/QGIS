@@ -311,4 +311,5 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
     else
       QApplication::restoreOverrideCursor();
   }
+  dataProvider->reset();
 }
