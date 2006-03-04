@@ -34,11 +34,10 @@ email                : sbr00pwb@users.sourceforge.net
 #include <QPainter>
 #include <QAction>
 #include <QPen>
-#include <q3pointarray.h>
+#include <QPolygon>
 #include <QString>
 #include <QFontMetrics>
 #include <QFont>
-#include <q3paintdevicemetrics.h>
 #include <QColor>
 
 //non qt includes
@@ -184,9 +183,8 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
   int myBufferSize=1; //softcode this later
 
   //Get canvas dimensions
-  Q3PaintDeviceMetrics myMetrics( theQPainter->device() );
-  int myCanvasHeight = myMetrics.height();
-  int myCanvasWidth = myMetrics.width();
+  int myCanvasHeight = theQPainter->device()->height();
+  int myCanvasWidth = theQPainter->device()->width();
 
   //Get map units per pixel. This can be negative at times (to do with
   //projections) and that just confuses the rest of the code in this
@@ -330,7 +328,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     //Create array of vertices for scale bar depending on style
     if (mStyle==tr("Tick Down"))
     {
-      Q3PointArray myTickDownArray(4);
+      QPolygon myTickDownArray(4);
       //draw a buffer first so bar shows up on dark images
       theQPainter->setPen( myBackgroundPen );
       myTickDownArray.putPoints(0,4,
@@ -352,7 +350,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     }
     else if (mStyle==tr("Tick Up"))
     {
-      Q3PointArray myTickUpArray(4);
+      QPolygon myTickUpArray(4);
       //draw a buffer first so bar shows up on dark images
       theQPainter->setPen( myBackgroundPen );
       myTickUpArray.putPoints(0,4,
@@ -374,7 +372,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     }
     else if (mStyle==tr("Bar"))
     {
-      Q3PointArray myBarArray(2);
+      QPolygon myBarArray(2);
       //draw a buffer first so bar shows up on dark images
       theQPainter->setPen( myBackgroundPen );
       myBarArray.putPoints(0,2,
@@ -392,7 +390,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     }
     else if (mStyle==tr("Box"))
     {
-      Q3PointArray myBoxArray(5);
+      QPolygon myBoxArray(5);
       //draw a buffer first so bar shows up on dark images
       theQPainter->setPen( myBackgroundPen );
       myBoxArray.putPoints(0,5,
