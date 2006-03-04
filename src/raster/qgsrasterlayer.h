@@ -1029,17 +1029,19 @@ public:
   // TODO Rename into a general constructor when the old raster interface is retired
   // \param  dummy  is just there to distinguish this function signature from the old non-provider one.
   QgsRasterLayer(int dummy, 
-                 QString const & baseName = QString::null,
-                 QString const & path = QString::null,
-                 QString const & providerLib = QString::null,
+                 QString const & baseName = QString(),
+                 QString const & path = QString(),
+                 QString const & providerLib = QString(),
                  QStringList const & layers = QStringList(),
                  QStringList const & styles = QStringList(),
-                 QString const & format = QString::null);
+                 QString const & format = QString(),
+                 QString const & crs = QString());
 
   void setDataProvider( QString const & provider,
                         QStringList const & layers,
                         QStringList const & styles,
-                        QString const & format );
+                        QString const & format,
+                        QString const & crs );
 
   //! Does this layer use a provider for setting/retrieving data?
   bool usesProvider();

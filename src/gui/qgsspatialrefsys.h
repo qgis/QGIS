@@ -75,8 +75,19 @@ class QgsSpatialRefSys
 
         // Misc helper functions -----------------------
 
-         void createFromId(const long theId, SRS_TYPE theType=POSTGIS_SRID);
-        
+        void createFromId(const long theId, SRS_TYPE theType=POSTGIS_SRID);
+
+        /**
+         * \brief Set up this SRS from the given OGC CRS
+         *
+         * Sets this SRS to the given OGC WMS-format Coordinate Reference Systems.
+         *
+         * \note This function only deals with EPSG labels only at this time.
+         *
+         * \retval FALSE if not given an EPSG label
+         */
+        bool createFromOgcWmsCrs(QString theCrs);
+
         /*! Set up this srs by fetching the appropriate information from the 
          * sqlite backend. First the system level read only srs.db will be checked
          * and then the users ~/.qgis/qgis.db database will be checked for a match.
@@ -84,6 +95,7 @@ class QgsSpatialRefSys
          * @param theSrid The postgis SRID for the desired spatial reference system.
          */
         bool createFromSrid(const long theSrid);
+
         /*! Set up this srs using a WKT spatial ref sys definition. 
          * The wkt will be converted to a proj4 string using OGR helper
          * functions. After this the srs databasses will be searched for matches.
@@ -95,6 +107,7 @@ class QgsSpatialRefSys
          * @return bool TRUE if sucess else false
          */
         bool createFromWkt(const QString theWkt);
+
         /*! Set up this srs by fetching the appropriate information from the 
          * sqlite backend. First the system level read only srs.db will be checked
          * and then the users ~/.qgis/qgis.db database will be checked for a match.
@@ -103,6 +116,7 @@ class QgsSpatialRefSys
          * @return bool TRUE if sucess else false
          */
         bool createFromEpsg(const long theEpsg);
+
         /*! Set up this srs by fetching the appropriate information from the 
          * sqlite backend. If the srsid is < 100000, only the system srs.db 
          * will be checked. If the srsid > 100000 the srs will be retrieved from 

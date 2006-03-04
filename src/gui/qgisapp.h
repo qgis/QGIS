@@ -111,16 +111,19 @@ class QgisApp : public QMainWindow, public Ui::QgisAppBase
     It's much better to try to just open one file at a time.
     */
   bool addRasterLayer(QStringList const & theLayerQStringList, bool guiWarning=true);
+
   /** Open a raster layer using the Raster Data Provider.
    *  Note this is included to support WMS layers only at this stage,
    *  GDAL layer support via a Provider is not yet implemented.
-   */        
-  void addRasterLayer(QString const & rasterLayerPath, 
-      QString const & baseName, 
+   */
+  void addRasterLayer(QString const & rasterLayerPath,
+      QString const & baseName,
       QString const & providerKey,
       QStringList const & layers,
       QStringList const & styles,
-      QString const & format);
+      QString const & format,
+      QString const & crs);
+
   /** open a raster layer for the given file
     @returns false if unable to open a raster layer for rasterFile
     @note

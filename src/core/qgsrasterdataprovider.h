@@ -66,6 +66,12 @@ public:
      * Set the image encoding (as a MIME type) used in the transfer from (e.g.) the WMS server
      */
     virtual void setImageEncoding(QString  const & mimeType) = 0;
+ 
+    /**
+     * Set the image projection (in WMS CRS format) used in the transfer from (e.g.) the WMS server
+     */
+    virtual void setImageCrs(QString const & crs) = 0;
+
 
     // TODO: Document this better.
     /** \brief   Renders the layer as an image

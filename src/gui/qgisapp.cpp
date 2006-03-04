@@ -2055,12 +2055,14 @@ void QgisApp::addWmsLayer()
   if (wmss->exec())
   {
 
-    addRasterLayer(wmss->connInfo(), 
-        wmss->connName(), 
+    addRasterLayer(wmss->connInfo(),
+        wmss->connName(),
         "wms",
         wmss->selectedLayers(),
         wmss->selectedStylesForSelectedLayers(),
-        wmss->selectedImageEncoding() );
+        wmss->selectedImageEncoding(),
+        wmss->selectedCrs()
+        );
   }
 }
 
@@ -5053,12 +5055,13 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile, bool guiWarning)
   \note   Copied from the equivalent addVectorLayer function in this file
   TODO    Make it work for rasters specifically.
   */
-void QgisApp::addRasterLayer(QString const & rasterLayerPath, 
-    QString const & baseName, 
-    QString const & providerKey, 
+void QgisApp::addRasterLayer(QString const & rasterLayerPath,
+    QString const & baseName,
+    QString const & providerKey,
     QStringList const & layers,
     QStringList const & styles,
-    QString const & format)
+    QString const & format,
+    QString const & crs)
 {
 
 #ifdef QGISDEBUG
@@ -5083,11 +5086,12 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
     " and layer list of " << layers.join(", ").toLocal8Bit().data() <<
     " and style list of " << styles.join(", ").toLocal8Bit().data() <<
     " and format of " << format.toLocal8Bit().data() <<
-    " and providerKey of " << providerKey.toLocal8Bit().data() << std::endl;
+    " and providerKey of " << providerKey.toLocal8Bit().data() <<
+    " and CRS of " << crs.toLocal8Bit().data() << std::endl;
 #endif
 
   // TODO: Remove the 0 when the raster layer becomes a full provider gateway.
-  layer = new QgsRasterLayer(0, rasterLayerPath, baseName, providerKey, layers, styles, format);
+  layer = new QgsRasterLayer(0, rasterLayerPath, baseName, providerKey, layers, styles, format, crs);
 
 #ifdef QGISDEBUG
   std::cout << "QgisApp::addRasterLayer: Constructed new layer." << std::endl;

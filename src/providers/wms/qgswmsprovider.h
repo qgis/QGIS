@@ -29,6 +29,8 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrect.h"
 
+#include <qgscoordinatetransform.h>
+
 #include "qgsdatasourceuri.h"
 
 #include <qstring.h>
@@ -729,6 +731,12 @@ private:
    * The error message associated with the last WMS error.
    */
   QString mError;
+
+  //! A QgsCoordinateTransform is used for transformation of WMS layer extents
+  QgsCoordinateTransform * mCoordinateTransform;
+
+  //! See if calculateExtents() needs to be called before extent() returns useful data
+  bool extentDirty;
 
 };
 
