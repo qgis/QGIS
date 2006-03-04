@@ -390,6 +390,9 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     }
     else if (mStyle==tr("Box"))
     {
+      // Want square corners for a box
+      myBackgroundPen.setJoinStyle( Qt::MiterJoin );
+      myForegroundPen.setJoinStyle( Qt::MiterJoin );
       QPolygon myBoxArray(5);
       //draw a buffer first so bar shows up on dark images
       theQPainter->setPen( myBackgroundPen );
@@ -403,14 +406,26 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
       theQPainter->drawPolyline(myBoxArray);
       //now draw the bar itself in user selected color
       theQPainter->setPen( myForegroundPen );
+      theQPainter->setBrush( QBrush( mColour, Qt::SolidPattern) );
+      int midPointX = myScaleBarWidthInt/2 + myOriginX; 
       myBoxArray.putPoints(0,5,
               myOriginX                    ,  myOriginY,
-              (myScaleBarWidthInt + myOriginX),  myOriginY,
-              (myScaleBarWidthInt + myOriginX), (myOriginY+myMajorTickSize),
+              midPointX,  myOriginY,
+              midPointX, (myOriginY+myMajorTickSize),
               myOriginX                    , (myOriginY+myMajorTickSize),
               myOriginX                    ,  myOriginY
               );
-      theQPainter->drawPolyline(myBoxArray);
+      theQPainter->drawPolygon(myBoxArray);
+
+      theQPainter->setBrush( Qt::NoBrush );
+      myBoxArray.putPoints(0,5,
+              midPointX                    ,  myOriginY,
+              (myScaleBarWidthInt + myOriginX),  myOriginY,
+              (myScaleBarWidthInt + myOriginX), (myOriginY+myMajorTickSize),
+              midPointX                    , (myOriginY+myMajorTickSize),
+              midPointX                    ,  myOriginY
+              );
+      theQPainter->drawPolygon(myBoxArray);
     }
 
     //Do actual drawing of scale bar
