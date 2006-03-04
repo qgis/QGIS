@@ -22,13 +22,10 @@ email                : sbr00pwb@users.sourceforge.net
 #ifndef QGSCALEBARPLUGIN
 #define QGSCALEBARPLUGIN
 #include "../qgisplugin.h"
-#include <qwidget.h>
-#include <qpainter.h>
-#include <q3pointarray.h>
-
 
 #include "qgisapp.h"
 class QToolBar;
+class QPainter;
 /**
 * \class Plugin
 * \brief OpenModeller plugin for QGIS

@@ -21,7 +21,6 @@ email                : sbr00pwb@users.sourceforge.net
 /*  $Id$ */
 
 // includes
-#include <cmath>
 
 #include <qgisapp.h>
 #include "qgisgui.h"
@@ -29,30 +28,22 @@ email                : sbr00pwb@users.sourceforge.net
 #include "plugin.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
-
-#include <qtoolbar.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <q3popupmenu.h>
-#include <qlineedit.h>
-#include <qaction.h>
-#include <qapplication.h>
-#include <qcursor.h>
-#include <qpen.h>
 #include <qgspoint.h>
-#include <q3pointarray.h>
 #include <qgsmaptopixel.h>
-#include <qstring.h>
-#include <qfontmetrics.h>
-#include <qfont.h>
+
+#include <QPainter>
+#include <QAction>
+#include <QPen>
+#include <q3pointarray.h>
+#include <QString>
+#include <QFontMetrics>
+#include <QFont>
 #include <q3paintdevicemetrics.h>
-#include <qspinbox.h>
-#include <qcolor.h>
-#include <qcolordialog.h>
-#include <qglobal.h>
+#include <QColor>
 
 //non qt includes
 #include <iostream>
+#include <cmath>
 
 //the gui subclass
 #include "plugingui.h"
