@@ -117,7 +117,11 @@ const QString displayField() const { return fieldIndex; }
   //! Setup the coordinate system tranformation for the layer
   void setCoordinateSystem();
 
+  /**Returns the data provider*/
   QgsVectorDataProvider* getDataProvider();
+
+  /**Returns the data provider in a const-correct manner*/
+  const QgsVectorDataProvider* getDataProvider() const;
 
   /**Sets the textencoding of the data provider*/
   void setProviderEncoding(const QString& encoding);

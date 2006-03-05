@@ -65,7 +65,7 @@ public:
     /*! Get the type of the layer
      * @return Integer matching a value in the LAYERS enum
      */
-    const int type();
+    int type() const;
 
     /*! Get this layer's unique ID */
     QString const & getLayerID() const;
