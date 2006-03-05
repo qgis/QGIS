@@ -4842,6 +4842,91 @@ QgsClipboard * QgisApp::clipboard()
   return &mInternalClipboard;
 }
 
+void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
+{
+  if(!layer)
+    {
+      return;
+    }
+  if(layer->type() == QgsMapLayer::VECTOR || layer->type() == QgsMapLayer::DATABASE)
+    {
+      mActionSelect->setEnabled(true);
+      mActionOpenTable->setEnabled(true);
+      const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>(layer);
+      const QgsVectorDataProvider* dprovider = vlayer->getDataProvider();
+      if(vlayer)
+	{
+	  //does provider allow deleting of features?
+	  if(dprovider->capabilities() | QgsVectorDataProvider::DeleteFeatures)
+	    {
+	      mActionDeleteSelected->setEnabled(true);
+	    }
+	  else
+	    {
+	      mActionDeleteSelected->setEnabled(false);
+	    }
+
+
+	  if(vlayer->vectorType() == QGis::Point)
+	    {
+	      if(dprovider->capabilities() | QgsVectorDataProvider::AddFeatures)
+		{
+		  mActionCapturePoint->setEnabled(true);
+		}
+	      else
+		{
+		  mActionCapturePoint->setEnabled(false);
+		}
+	      mActionCaptureLine->setEnabled(false);
+	      mActionCapturePolygon->setEnabled(false);
+	      mActionAddVertex->setEnabled(false);
+	      mActionDeleteVertex->setEnabled(false);
+	      mActionMoveVertex->setEnabled(false);
+	      return;
+	    }
+	  else if(vlayer->vectorType() == QGis::Line)
+	    {
+	      mActionCaptureLine->setEnabled(true);
+	      mActionCapturePoint->setEnabled(false);
+	      mActionCapturePolygon->setEnabled(false);
+	    }
+	  else if(vlayer->vectorType() == QGis::Polygon)
+	    {
+	      mActionCapturePolygon->setEnabled(true);
+	      mActionCapturePoint->setEnabled(false);
+	      mActionCaptureLine->setEnabled(false);
+	    }
+
+	  //are add/delete/move vertex supported?
+	  if(dprovider->capabilities() | QgsVectorDataProvider::ChangeGeometries)
+	    {
+	      mActionAddVertex->setEnabled(true);
+	      mActionMoveVertex->setEnabled(true);
+	      mActionDeleteVertex->setEnabled(true);
+	    }
+	  else
+	    {
+	      mActionAddVertex->setEnabled(false);
+	      mActionMoveVertex->setEnabled(false);
+	      mActionDeleteVertex->setEnabled(false);
+	    }
+	  return;
+	}
+    }
+  else if(layer->type() == QgsMapLayer::RASTER)
+    {
+      mActionSelect->setEnabled(false);
+      mActionOpenTable->setEnabled(false);
+      mActionCapturePoint->setEnabled(false);
+      mActionCaptureLine->setEnabled(false);
+      mActionCapturePolygon->setEnabled(false);
+      mActionDeleteSelected->setEnabled(false);
+      mActionAddVertex->setEnabled(false);
+      mActionDeleteVertex->setEnabled(false);
+      mActionMoveVertex->setEnabled(false);
+    }
+}
+
 
 //copy the click coord to clipboard and let the user know its there
 void QgisApp::showCapturePointCoordinate(QgsPoint & theQgsPoint)

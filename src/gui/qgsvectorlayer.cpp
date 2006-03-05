@@ -1193,6 +1193,11 @@ QgsVectorDataProvider* QgsVectorLayer::getDataProvider()
   return dataProvider;
 }
 
+const QgsVectorDataProvider* QgsVectorLayer::getDataProvider() const
+{
+  return dataProvider;
+}
+
 void QgsVectorLayer::setProviderEncoding(const QString& encoding)
 {
   if(dataProvider)

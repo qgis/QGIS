@@ -95,7 +95,8 @@ QgsMapLayer::~QgsMapLayer()
 {
     //delete mCoordinateTransform; //crash when removing layers. Why?
 }
-const int QgsMapLayer::type()
+
+int QgsMapLayer::type() const
 {
     return layerType;
 }
