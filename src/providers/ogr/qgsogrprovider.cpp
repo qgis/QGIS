@@ -1413,6 +1413,14 @@ QGISEXTERN QString fileVectorFilters()
             myFileFilters += createFileFilter_( "Geography Markup Language",
                                                 "*.gml" );
         }
+        else if (driverName.startsWith("CSV"))
+        {
+            // XXX needs file filter extension
+        }
+        else if (driverName.startsWith("PostgreSQL"))
+        {
+            // XXX needs file filter extension
+        }
         else
         {
             // NOP, we don't know anything about the current driver
@@ -1426,8 +1434,9 @@ QGISEXTERN QString fileVectorFilters()
 
     myFileFilters += "All files (*.*)";
 
+#ifdef QGISDEBUG
     qDebug() << myFileFilters;
-
+#endif
     return myFileFilters;
 
 } // fileVectorFilters() const
