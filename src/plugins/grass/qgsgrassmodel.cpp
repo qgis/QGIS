@@ -74,6 +74,8 @@ public:
     QVariant data (int role = Qt::DisplayRole);
     QString name();
     QString info();
+    QString htmlTableRow ( QString s1, QString s2 );
+    QString htmlTableRow ( QStringList  list );
 
     int mType;
 
@@ -151,14 +153,17 @@ QString QgsGrassModelItem::info()
 	    }
 	    else
 	    {
-		str += QString::number(head.rows) + " rows" + nl;
-		str += QString::number(head.cols) + " columns" + nl;
-		str += QString::number(head.ns_res) + " N-S resolution" + nl;
-		str += QString::number(head.ew_res) + " E-W resolution" + nl;
-		str += QString::number(head.north) + " noth" + nl;
-		str += QString::number(head.south) + " south" + nl;
-		str += QString::number(head.east) + " east" + nl;
-		str += QString::number(head.west) + " west" + nl;
+		//str += QString::number(head.rows) + " rows" + nl;
+		str += "<table border=1 cellspacing=1 cellpadding=1>";
+		str += htmlTableRow ( "rows", QString::number(head.rows));
+		str += htmlTableRow ( "columns", QString::number(head.cols) );
+		str += htmlTableRow ( "N-S resolution", QString::number(head.ns_res) );
+		str += htmlTableRow ( "E-W resolution", QString::number(head.ew_res) );
+		str += htmlTableRow ( "north", QString::number(head.north) );
+		str += htmlTableRow ( "south", QString::number(head.south) );
+		str += htmlTableRow ( "east", QString::number(head.east) );
+		str += htmlTableRow ( "west", QString::number(head.west) );
+		str += "</table>";
 		
 	        int rasterType = G_raster_map_type( mMap.toLocal8Bit().data(),
 		                                mMapset.toLocal8Bit().data() );
@@ -217,6 +222,24 @@ QString QgsGrassModelItem::info()
 	    break;
     }
     return QString();
+}
+
+QString QgsGrassModelItem::htmlTableRow ( QString s1, QString s2 )
+{ 
+    QStringList sl (s1);
+    sl.append (s2);
+    return htmlTableRow (sl);
+}
+
+QString QgsGrassModelItem::htmlTableRow ( QStringList list )
+{ 
+    QString s = "<tr>";
+    for ( int i = 0; i < list.size(); i++ )
+    {
+        s.append ( "<td>" + list.at(i) + "</td>" );
+    }
+    s.append ( "</tr>" );
+    return s;
 }
 
 QString QgsGrassModelItem::name() 
