@@ -54,6 +54,9 @@ public slots:
     void selectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
     void currentChanged(const QModelIndex & current, const QModelIndex & previous);
 
+    // Double click
+    void doubleClicked(const QModelIndex & index);
+
 private:
     QgisIface *mIface;
     

@@ -108,6 +108,9 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisIface *iface,
     connect ( mTree->selectionModel(), 
 	      SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 	      this, SLOT(currentChanged(QModelIndex,QModelIndex)) );
+
+    connect ( mTree, SIGNAL(doubleClicked(QModelIndex)),
+	      this, SLOT(doubleClicked(QModelIndex)) );
 }
 
 QgsGrassBrowser::~QgsGrassBrowser() { }
@@ -154,6 +157,15 @@ void QgsGrassBrowser::addMap()
 	    mapSelected = true;
 	}
     }
+}
+
+void QgsGrassBrowser::doubleClicked(const QModelIndex & index)
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassBrowser::doubleClicked()" << std::endl;
+    #endif
+
+    addMap();
 }
 
 void QgsGrassBrowser::deleteMap()
