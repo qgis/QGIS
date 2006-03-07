@@ -290,7 +290,7 @@ public:
      * Interactive users of this provider can then, for example,
      * call a QMessageBox to display the contents.
      */
-    QString errorCaptionString();
+    virtual QString errorCaptionString();
   
     /**
      * If an operation returns 0 (e.g. draw()), this function
@@ -298,7 +298,7 @@ public:
      * Interactive users of this provider can then, for example,
      * call a QMessageBox to display the contents.
      */
-    QString errorString();
+    virtual QString errorString();
 
 
 public  slots:

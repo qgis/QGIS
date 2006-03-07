@@ -35,11 +35,14 @@
 
 #include <iostream>
 
+static long DEFAULT_WMS_EPSG = 4326;  // WGS 84
+
+
 QgsServerSourceSelect::QgsServerSourceSelect(QgisApp * app, QWidget * parent, Qt::WFlags fl)
   : QDialog(parent, fl),
     qgisApp(app),
-    wmsProvider(0),
-    m_Epsg(0)
+    mWmsProvider(0),
+    m_Epsg(DEFAULT_WMS_EPSG)
 {
   setupUi(this);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -61,12 +64,11 @@ QgsServerSourceSelect::QgsServerSourceSelect(QgisApp * app, QWidget * parent, Qt
   hbox->addStretch();
   btnGrpImageEncoding->setLayout(hbox);
 
+  // set up the WMS connections we already know about
   populateConnectionList();
-  // connect the double-click signal to the addSingleLayer slot in the parent
 
-  //disable the 'where clause' box for 0.4 release
-  //  groupBox3->hide();
-
+  // set up the default WMS Coordinate Reference System
+  labelCoordRefSys->setText( descriptionForEpsg(m_Epsg) );
 }
 
 QgsServerSourceSelect::~QgsServerSourceSelect()
@@ -143,11 +145,14 @@ void QgsServerSourceSelect::on_btnHelp_clicked()
 
 }
 
-void QgsServerSourceSelect::populateLayerList(QgsWmsProvider* wmsProvider)
+bool QgsServerSourceSelect::populateLayerList(QgsWmsProvider* wmsProvider)
 {
   std::vector<QgsWmsLayerProperty> layers;
 
-  layers = wmsProvider->supportedLayers();
+  if (!wmsProvider->supportedLayers(layers))
+  {
+    return FALSE;
+  }
 
   lstLayers->clear();
 
@@ -202,6 +207,8 @@ void QgsServerSourceSelect::populateLayerList(QgsWmsProvider* wmsProvider)
   {
     btnAdd->setEnabled(FALSE);
   }
+
+  return TRUE;
 }
 
 
@@ -344,18 +351,26 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
   // load the server data provider plugin
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
 
-  wmsProvider = 
+  mWmsProvider = 
     (QgsWmsProvider*) pReg->getProvider( "wms", m_connInfo );
 
-  if (wmsProvider)
+  if (mWmsProvider)
   {
-    connect(wmsProvider, SIGNAL(setStatus(QString)), this, SLOT(showStatusMessage(QString)));
+    connect(mWmsProvider, SIGNAL(setStatus(QString)), this, SLOT(showStatusMessage(QString)));
 
-    populateLayerList(wmsProvider);
+    if (!populateLayerList(mWmsProvider))
+    {
+      showError(mWmsProvider);
+    }
   }
   else
   {
-    // TODO: Let user know we couldn't initialise the WMS provider
+    // Let user know we couldn't initialise the WMS provider
+    QMessageBox::warning(
+      this,
+      tr("WMS Provider"),
+      tr("Could not open the WMS Provider")
+    );
   }
 
 }
@@ -375,12 +390,12 @@ void QgsServerSourceSelect::on_btnAdd_clicked()
 
 void QgsServerSourceSelect::on_btnChangeSpatialRefSys_clicked()
 {
-  if (!wmsProvider)
+  if (!mWmsProvider)
   {
     return;
   }
 
-  QSet<QString> crsFilter = wmsProvider->supportedCrsForLayers(m_selectedLayers);
+  QSet<QString> crsFilter = mWmsProvider->supportedCrsForLayers(m_selectedLayers);
 
   QgsLayerProjectionSelector * mySelector =
     new QgsLayerProjectionSelector(this);
@@ -393,7 +408,6 @@ void QgsServerSourceSelect::on_btnChangeSpatialRefSys_clicked()
 
   if (mySelector->exec())
   {
-    // TODO: assign EPSG back to the WMS provider
     m_Epsg = mySelector->getCurrentEpsg();
   }
   else
@@ -401,7 +415,8 @@ void QgsServerSourceSelect::on_btnChangeSpatialRefSys_clicked()
     // NOOP
   }
 
-  labelSpatialRefSys->setText( mySelector->getCurrentProj4String() );
+  labelCoordRefSys->setText( descriptionForEpsg(m_Epsg) );
+//  labelCoordRefSys->setText( mySelector->getCurrentProj4String() );
 
   delete mySelector;
 
@@ -477,6 +492,18 @@ void QgsServerSourceSelect::on_lstLayers_selectionChanged()
   // If we got some selected items, let the user play with projections
   if (newSelectedLayers.count() > 0)
   {
+    // Determine how many CRSs there are to play with
+    if (mWmsProvider)
+    {
+      QSet<QString> crsFilter = mWmsProvider->supportedCrsForLayers(newSelectedLayers);
+
+      gbCRS->setTitle(
+                       QString( tr("Coordinate Reference System (%1 available)") )
+                          .arg( crsFilter.count() )
+                     );
+
+    }
+
     btnChangeSpatialRefSys->setEnabled(TRUE);
   }
   else
@@ -510,6 +537,7 @@ QStringList QgsServerSourceSelect::selectedStylesForSelectedLayers()
   return m_selectedStylesForSelectedLayers;
 }
 
+
 QString QgsServerSourceSelect::selectedImageEncoding()
 {
   // TODO: Match this hard coded list to the list of formats Qt reports it can actually handle.
@@ -525,6 +553,7 @@ QString QgsServerSourceSelect::selectedImageEncoding()
 
 }
 
+
 QString QgsServerSourceSelect::selectedCrs()
 {
   if (m_Epsg)
@@ -538,12 +567,37 @@ QString QgsServerSourceSelect::selectedCrs()
   }
 }
 
+
 void QgsServerSourceSelect::showStatusMessage(QString const & theMessage)
 {
   labelStatus->setText(theMessage);
 
   // update the display of this widget
   this->update();
+}
+
+
+void QgsServerSourceSelect::showError(QgsWmsProvider * wms)
+{
+  QMessageBox::warning(
+    this,
+    wms->errorCaptionString(),
+    tr("Could not understand the response.  The") + " " + wms->name() + " " +
+      tr("provider said") + ":\n" +
+      wms->errorString()
+  );
+
+}
+
+
+QString QgsServerSourceSelect::descriptionForEpsg(long epsg)
+{
+  // We'll assume this function isn't called very often,
+  // so please forgive the lack of caching of results
+
+  QgsSpatialRefSys qgisSrs = QgsSpatialRefSys(epsg, QgsSpatialRefSys::EPSG);
+
+  return qgisSrs.description();
 }
 
 

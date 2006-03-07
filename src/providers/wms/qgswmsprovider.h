@@ -359,10 +359,17 @@ public:
   //! Destructor
   virtual ~QgsWmsProvider();
 
-  // TODO: Document this better, make static
-  /** \brief   Returns a list of the supported layers of the WMS server
+  /**
+   * \brief   Returns a list of the supported layers of the WMS server
+   *
+   * \param[out] layers   The list of layers will be placed here.
+   *
+   * \retval FALSE if the layers could not be retreived or parsed -
+   *         see errorString() for more info
+   *
+   * \todo Document this better, make static
    */
-  virtual std::vector<QgsWmsLayerProperty> supportedLayers();
+  virtual bool supportedLayers(std::vector<QgsWmsLayerProperty> & layers);
 
   // TODO: Document this better
   /** \brief   Returns a list of the supported CRSs of the given layers
@@ -406,18 +413,26 @@ public:
 
   /**
    * Set the image projection (in WMS CRS format) used in the transfer from the WMS server
+   *
+   * \note an empty crs value will result in the previous CRS being retained.
    */
   void setImageCrs(QString const & crs);
 
   // TODO: Document this better.
   /** \brief   Renders the layer as an image
+   *
    *  \return  A QImage - if the attempt to retrieve data for the draw was unsuccessful, returns 0
    *           and more information can be found in errorString() and errorCaptionString()
-   * TODO: Add pixel depth parameter (intended to match the display or printer device)
-   * Ownership of the returned QImage remains with this provider and its lifetime
-   * is guaranteed only until the next call to draw() or destruction of this provider.
+   *
+   *  \todo    Add pixel depth parameter (intended to match the display or printer device)
+   *
+   *  \note    Ownership of the returned QImage remains with this provider and its lifetime
+   *           is guaranteed only until the next call to draw() or destruction of this provider.
+   *
+   *  \warning A pointer to an QImage is used, as a plain QImage seems to have difficulty being
+   *           shared across library boundaries
    */
-  QImage* draw(QgsRect const &  viewExtent, int pixelWidth, int pixelHeight);
+  QImage * draw(QgsRect const &  viewExtent, int pixelWidth, int pixelHeight);
 
   
 //  /** Experimental function only **/
@@ -481,6 +496,8 @@ public:
   QString getMetadata();
 
   /**
+   * \brief   Returns the caption error text for the last error in this provider
+   *
    * If an operation returns 0 (e.g. draw()), this function
    * returns the text of the error associated with the failure.
    * Interactive users of this provider can then, for example,
@@ -489,11 +506,14 @@ public:
   QString errorCaptionString();
 
   /**
+   * \brief   Returns the verbose error text for the last error in this provider
+   *
    * If an operation returns 0 (e.g. draw()), this function
    * returns the text of the error associated with the failure.
    * Interactive users of this provider can then, for example,
    * call a QMessageBox to display the contents.
    */
+
   QString errorString();
 
     /** return a provider name
@@ -547,7 +567,8 @@ private:
    * Retrieve and parse the (cached) Capabilities document from the server
    * \param forceRefresh  if true, ignores any previous response cached in memory
    *                      and always contact the server for a new copy.
-   * \return FALSE if the capabilities document could not be retreived or parsed - see errorString() for more info
+   * \retval FALSE if the capabilities document could not be retreived or parsed - 
+   *         see errorString() for more info
    *
    * When this returns, "layers" will make sense.
    *
@@ -555,14 +576,14 @@ private:
    */
   bool retrieveServerCapabilities(bool forceRefresh = FALSE);
 
-
+/*
   //! Test function: see if we can download a WMS' capabilites
-  //! \return FALSE if the download failed in some way
+  //! \retval FALSE if the download failed in some way
   bool downloadCapabilitiesURI(QString const &  uri);
+*/
 
-  //! Test function: see if we can parse a WMS' capabilites
   //! \return FALSE if the capabilities document could not be parsed - see errorString() for more info
-  bool parseCapabilities(QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty);
+  bool parseCapabilitiesDOM(QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty);
 
   //! parse the WMS Service XML element
   void parseService(QDomElement const & e, QgsWmsServiceProperty& serviceProperty);
@@ -616,10 +637,26 @@ private:
   void parseLayer(QDomElement const & e, QgsWmsLayerProperty& layerProperty,
                   QgsWmsLayerProperty *parentProperty=0);
 
-  //! calculates the combined extent of the layers selected by layersDrawn  
-  void calculateExtent();
+  /**
+   * \brief parse the full WMS ServiceExceptionReport XML document
+   *
+   * \note mErrorCaption and mError are updated to suit the results of this function.
+   */
+  bool parseServiceExceptionReportDOM(QByteArray const & xml);
 
-  
+  //! parse the WMS ServiceException XML element
+  void parseServiceException(QDomElement const & e);
+
+
+  /**
+   * \brief Calculates the combined extent of the layers selected by layersDrawn
+   *
+   * \retval FALSE if the capabilities document could not be retreived or parsed - 
+   *         see errorString() for more info
+   */
+  bool calculateExtent();
+
+
   //! Data source URI of the WMS for this layer
   QString httpuri;
 
@@ -656,6 +693,11 @@ private:
    * Capabilities of the WMS Server
    */
   QDomDocument capabilitiesDOM;
+
+  /**
+   * Last Service Exception Report from the WMS Server
+   */
+  QDomDocument serviceExceptionReportDOM;
 
   /**
    * Parsed capabilities of the WMS Server
