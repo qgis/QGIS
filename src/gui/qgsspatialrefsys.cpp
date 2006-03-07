@@ -26,9 +26,16 @@
 
 //--------------------------
 
-QgsSpatialRefSys::QgsSpatialRefSys() : mMapUnits(QGis::UNKNOWN) {}
+QgsSpatialRefSys::QgsSpatialRefSys()
+  : mMapUnits(QGis::UNKNOWN),
+    mIsValidFlag(0)
+{
+  // NOOP
+}
 
-QgsSpatialRefSys::QgsSpatialRefSys(QString theWkt) : mMapUnits(QGis::UNKNOWN)
+QgsSpatialRefSys::QgsSpatialRefSys(QString theWkt)
+  : mMapUnits(QGis::UNKNOWN),
+    mIsValidFlag(0)
 {
   createFromWkt(theWkt);
 }
@@ -41,10 +48,15 @@ QgsSpatialRefSys::QgsSpatialRefSys(long theSrsId,
                                    long theSRID,
                                    long theEpsg, 
                                    bool theGeoFlag)
-    : mMapUnits(QGis::UNKNOWN)
-{}
+  : mMapUnits(QGis::UNKNOWN),
+    mIsValidFlag(0)
+{
+  // NOOP
+}
 
-QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType) : mMapUnits(QGis::UNKNOWN)
+QgsSpatialRefSys::QgsSpatialRefSys(const long theId, SRS_TYPE theType)
+  : mMapUnits(QGis::UNKNOWN),
+    mIsValidFlag(0)
 {
   createFromId(theId, theType);
 }

@@ -96,17 +96,29 @@ public slots:
     //! Set status message to theMessage
     void showStatusMessage(QString const & theMessage);
 
+    //! show whatever error is exposed by the QgsWmsProvider.
+    void showError(QgsWmsProvider * wms);
+
 
 private:
 
-    //! Populate the layer list - private for now.
-    void populateLayerList(QgsWmsProvider* wmsProvider);
+    /**
+     * \brief Populate the layer list - private for now.
+     *
+     * \retval FALSE if the layers could not be retreived or parsed - 
+     *         see mWmsProvider->errorString() for more info
+     */
+    bool populateLayerList(QgsWmsProvider* wmsProvider);
 
     //! Populate the image encoding button group - private for now.
     void populateImageEncodingGroup(QgsWmsProvider* wmsProvider);
 
     //! Returns the common CRSs for the selected layers.
     std::set<QString> crsForSelection();
+
+    //! Returns a textual description for the EPSG number
+    QString descriptionForEpsg(long epsg);
+
 
     QString m_connName;
     QString m_connInfo;
@@ -126,7 +138,7 @@ private:
     QButtonGroup* m_imageFormatBtns;
 
     //! The WMS provider that retreives information for this dialog
-    QgsWmsProvider * wmsProvider;
+    QgsWmsProvider * mWmsProvider;
 
     static const int context_id = 710979116;
 };

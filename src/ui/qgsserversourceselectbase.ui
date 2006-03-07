@@ -256,9 +256,9 @@
     </widget>
    </item>
    <item row="3" column="0" colspan="4" >
-    <widget class="QGroupBox" name="btnGrpSrs" >
+    <widget class="QGroupBox" name="gbCRS" >
      <property name="title" >
-      <string>Spatial Reference System</string>
+      <string>Coordinate Reference System</string>
      </property>
      <layout class="QHBoxLayout" >
       <property name="margin" >
@@ -268,16 +268,9 @@
        <number>6</number>
       </property>
       <item>
-       <widget class="QLabel" name="labelSpatialRefSys" >
+       <widget class="QLabel" name="labelCoordRefSys" >
         <property name="text" >
-         <string>CRS is </string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radioButtonEspg4326" >
-        <property name="text" >
-         <string>EPSG:4326</string>
+         <string/>
         </property>
        </widget>
       </item>

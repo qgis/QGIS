@@ -174,7 +174,7 @@ QgsWmsProvider::~QgsWmsProvider()
 }
 
 
-std::vector<QgsWmsLayerProperty> QgsWmsProvider::supportedLayers()
+bool QgsWmsProvider::supportedLayers(std::vector<QgsWmsLayerProperty> & layers)
 {
 
 #ifdef QGISDEBUG
@@ -182,14 +182,18 @@ std::vector<QgsWmsLayerProperty> QgsWmsProvider::supportedLayers()
 #endif
 
   // Allow the provider to collect the capabilities first.
-  retrieveServerCapabilities();
+  if (!retrieveServerCapabilities())
+  {
+    return FALSE;
+  }
 
-  return layersSupported;
+  layers = layersSupported;
 
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::supportedLayers: Exiting." << std::endl;
 #endif
 
+  return TRUE;
 }
 
 
@@ -307,7 +311,11 @@ void QgsWmsProvider::setImageCrs(QString const & crs)
                std::endl;
 #endif
 
-  if (crs != imageCrs)
+  if (
+      (crs != imageCrs)
+      and
+      (! crs.isEmpty() )
+     )
   {
     // delete old coordinate transform as it is no longer valid
     if (mCoordinateTransform)
@@ -463,6 +471,9 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
 
     mErrorCaption = tr("HTTP Exception");
     mError = http.errorString();
+
+    mError += "\n" + tr("Tried URL: ") + url;
+
     return 0;
   }
 
@@ -470,8 +481,22 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
   {
     // We had a Service Exception from the WMS
 
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::draw: got Service Exception as:\n" << QString(imagesource).toLocal8Bit().data() << std::endl;
+#endif
+
     mErrorCaption = tr("WMS Service Exception");
-    mError = imagesource;
+
+    // set mError with the following:
+    parseServiceExceptionReportDOM(imagesource);
+
+    mError += "\n" + tr("Tried URL: ") + url;
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::draw: composed error message '" 
+            << mError.toLocal8Bit().data() << "'." << std::endl;
+#endif
+
     return 0;
   }
 
@@ -549,12 +574,10 @@ bool QgsWmsProvider::retrieveServerCapabilities(bool forceRefresh)
   std::cout << "QgsWmsProvider::retrieveServerCapabilities: entering." << std::endl;
 #endif
 
-  // TODO: Smarter caching - need to refresh if demanded.
-
   if ( httpcapabilitiesresponse.isNull() or
        forceRefresh )
   {
-  
+
     QString url = baseUrl + "SERVICE=WMS&REQUEST=GetCapabilities";
 
     QgsHttpTransaction http(url, httpproxyhost, httpproxyport);
@@ -565,29 +588,60 @@ bool QgsWmsProvider::retrieveServerCapabilities(bool forceRefresh)
              this,   SLOT(showStatusMessage(QString))
            );
 
+    bool httpOk;
+    httpOk = http.getSynchronously(httpcapabilitiesresponse);
+
+    if (!httpOk)
+    {
+      // We had an HTTP exception
+
+      mErrorCaption = tr("HTTP Exception");
+      mError = http.errorString();
+
+      mError += "\n" + tr("Tried URL: ") + url;
+
+#ifdef QGISDEBUG
+    std::cout << "QgsWmsProvider::getServerCapabilities: !httpOK: " << 
+                mError.toLocal8Bit().data() << std::endl;
+#endif
+
+      return FALSE;
+    }
     http.getSynchronously(httpcapabilitiesresponse);
 
-  
+
 #ifdef QGISDEBUG
     std::cout << "QgsWmsProvider::getServerCapabilities: Converting to DOM." << std::endl;
 #endif
-  
-    bool parseSuccess = parseCapabilities(httpcapabilitiesresponse, capabilities);
 
-    if (!parseSuccess)
+    bool domOK;
+    domOK = parseCapabilitiesDOM(httpcapabilitiesresponse, capabilities);
+
+    if (!domOK)
     {
-      // TODO
+      // We had an DOM exception - 
+      // mErrorCaption and mError are pre-filled by parseCapabilitiesDOM
+
+      mError += "\n" + tr("Tried URL: ") + url;
+
+#ifdef QGISDEBUG
+    std::cout << "QgsWmsProvider::getServerCapabilities: !domOK: " << 
+                mError.toLocal8Bit().data() << std::endl;
+#endif
+
+      return FALSE;
     }
 
   }
-  
+
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::getServerCapabilities: exiting." << std::endl;
 #endif
 
 }
 
-// private
+// deprecated
+/*
 bool QgsWmsProvider::downloadCapabilitiesURI(QString const & uri)
 {
 
@@ -604,7 +658,6 @@ bool QgsWmsProvider::downloadCapabilitiesURI(QString const & uri)
          );
 
   bool httpOk;
-
   httpOk = http.getSynchronously(httpcapabilitiesresponse);
 
   if (!httpOk)
@@ -613,18 +666,39 @@ bool QgsWmsProvider::downloadCapabilitiesURI(QString const & uri)
 
     mErrorCaption = tr("HTTP Exception");
     mError = http.errorString();
+
+    mError += "\n" + tr("Tried URL: ") + uri;
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::downloadCapabilitiesURI: !httpOK: " << 
+               mError.toLocal8Bit().data() << std::endl;
+#endif
+
     return FALSE;
   }
 
-  
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::downloadCapabilitiesURI: Converting to DOM." << std::endl;
 #endif
-  
-  parseCapabilities(httpcapabilitiesresponse, capabilities);
 
+  bool domOK;
+  domOK = parseCapabilitiesDOM(httpcapabilitiesresponse, capabilities);
 
-  
+  if (!domOK)
+  {
+    // We had an DOM exception - 
+    // mErrorCaption and mError are pre-filled by parseCapabilitiesDOM
+
+    mError += "\n" + tr("Tried URL: ") + uri;
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::downloadCapabilitiesURI: !domOK: " << 
+               mError.toLocal8Bit().data() << std::endl;
+#endif
+
+    return FALSE;
+  }
+
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::downloadCapabilitiesURI: exiting." << std::endl;
 #endif
@@ -632,16 +706,16 @@ bool QgsWmsProvider::downloadCapabilitiesURI(QString const & uri)
   return TRUE;
 
 }
+*/
 
-
-bool QgsWmsProvider::parseCapabilities(QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty)
+bool QgsWmsProvider::parseCapabilitiesDOM(QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty)
 {
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::parseCapabilities: entering." << std::endl;
+  std::cout << "QgsWmsProvider::parseCapabilitiesDOM: entering." << std::endl;
 
   //test the content of the QByteArray
   QString responsestring(xml);
-  qWarning("QgsWmsProvider::parseCapabilities, received the following data: "+responsestring);
+  qWarning("QgsWmsProvider::parseCapabilitiesDOM, received the following data: "+responsestring);
   
   
   //QFile file( "/tmp/qgis-wmsprovider-capabilities.xml" );
@@ -661,11 +735,12 @@ bool QgsWmsProvider::parseCapabilities(QByteArray const & xml, QgsWmsCapabilitie
   if (!contentSuccess)
   {
     mErrorCaption = tr("DOM Exception");
-    mError = QString(tr("Could not get WMS capabilities at %1: %2 at line %3 column %4")
-                .arg(baseUrl)
+    mError = QString(tr("Could not get WMS capabilities: %1 at line %2 column %3")
                 .arg(errorMsg)
                 .arg(errorLine)
                 .arg(errorColumn) );
+
+    mError += "\n" + tr("This is probably due to an incorrect WMS Server URL.");
 
 #ifdef QGISDEBUG
   qWarning("DOM Exception: "+mError);
@@ -676,7 +751,35 @@ bool QgsWmsProvider::parseCapabilities(QByteArray const & xml, QgsWmsCapabilitie
 
   QDomElement docElem = capabilitiesDOM.documentElement();
 
-  // TODO: Assert the docElem.tagName() is "WMS_Capabilities"
+  // Assert that the DTD is what we expected (i.e. a WMS Capabilities document)
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseCapabilitiesDOM: testing tagName " 
+            << docElem.tagName().toLocal8Bit().data() << std::endl;
+#endif
+
+  if (!
+      (
+       (docElem.tagName() == "WMS_Capabilities")     // (1.3 vintage)
+       or
+       (docElem.tagName() == "WMT_MS_Capabilities")  // (1.1.1 vintage)
+      )
+     )
+  {
+    mErrorCaption = tr("DOM Exception");
+    mError = QString(tr("Could not get WMS capabilities in the "
+                        "expected format (DTD): no %1 or %2 found")
+                .arg("WMS_Capabilities")
+                .arg("WMT_MS_Capabilities")
+             );
+
+    mError += "\n" + tr("This is probably due to an incorrect WMS Server URL.");
+
+#ifdef QGISDEBUG
+  qWarning("DOM Exception: "+mError);
+#endif
+
+    return FALSE;
+  }
 
   capabilitiesProperty.version = docElem.attribute("version");
 
@@ -704,7 +807,7 @@ bool QgsWmsProvider::parseCapabilities(QByteArray const & xml, QgsWmsCapabilitie
   }
 
 #ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::parseCapabilities: exiting." << std::endl;
+  std::cout << "QgsWmsProvider::parseCapabilitiesDOM: exiting." << std::endl;
 #endif
 
   return TRUE;
@@ -1132,8 +1235,8 @@ void QgsWmsProvider::parseLegendUrl(QDomElement const & e, QgsWmsLegendUrlProper
   std::cout << "QgsWmsProvider::parseLegendUrl: entering." << std::endl;
 #endif
 
-  legendUrlProperty.width  = e.attribute("width").toUInt();;
-  legendUrlProperty.height = e.attribute("height").toUInt();;
+  legendUrlProperty.width  = e.attribute("width").toUInt();
+  legendUrlProperty.height = e.attribute("height").toUInt();
 
   QDomNode n1 = e.firstChild();
   while( !n1.isNull() ) {
@@ -1274,6 +1377,7 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
           else if (e1.tagName() == "SRS")        // legacy from earlier versions of WMS
           {
             // SRS can contain several definitions separated by whitespace
+            // though this was deprecated in WMS 1.1.1
             QStringList srsList = e1.text().split(QRegExp("\\s+"));
 
             QStringList::const_iterator i;
@@ -1408,6 +1512,154 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
 }
 
 
+bool QgsWmsProvider::parseServiceExceptionReportDOM(QByteArray const & xml)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseServiceExceptionReportDOM: entering." << std::endl;
+
+  //test the content of the QByteArray
+  QString responsestring(xml);
+  qWarning("QgsWmsProvider::parseServiceExceptionReportDOM, received the following data: "+responsestring);
+#endif
+
+  // Convert completed document into a DOM
+  QString errorMsg;
+  int errorLine;
+  int errorColumn;
+  bool contentSuccess = serviceExceptionReportDOM.setContent(xml, false, &errorMsg, &errorLine, &errorColumn);
+
+  if (!contentSuccess)
+  {
+    mErrorCaption = tr("DOM Exception");
+    mError = QString(tr("Could not get WMS Service Exception at %1: %2 at line %3 column %4")
+                .arg(baseUrl)
+                .arg(errorMsg)
+                .arg(errorLine)
+                .arg(errorColumn) );
+
+#ifdef QGISDEBUG
+  qWarning("DOM Exception: "+mError);
+#endif
+
+    return FALSE;
+  }
+
+  QDomElement docElem = serviceExceptionReportDOM.documentElement();
+
+  // TODO: Assert the docElem.tagName() is "ServiceExceptionReport"
+
+  // serviceExceptionProperty.version = docElem.attribute("version");
+
+  // Start walking through XML.
+  QDomNode n = docElem.firstChild();
+
+  while( !n.isNull() ) {
+      QDomElement e = n.toElement(); // try to convert the node to an element.
+      if( !e.isNull() ) {
+          //std::cout << e.tagName() << std::endl; // the node really is an element.
+
+          if      (e.tagName() == "ServiceException")
+          {
+            std::cout << "  ServiceException." << std::endl;
+            parseServiceException(e);
+          }
+
+      }
+      n = n.nextSibling();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseServiceExceptionReportDOM: exiting." << std::endl;
+#endif
+
+  return TRUE;
+}
+
+
+void QgsWmsProvider::parseServiceException(QDomElement const & e)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseServiceException: entering." << std::endl;
+#endif
+
+  QString seCode = e.attribute("code");
+  QString seText = e.text();
+
+  // set up friendly descriptions for the service exception
+  if      (seCode == "InvalidFormat")
+  {
+    mError = tr("Request contains a Format not offered by the server.");
+  }
+  else if (seCode == "InvalidCRS")
+  {
+    mError = tr("Request contains a CRS not offered by the server for one or more of the Layers in the request.");
+  }
+  else if (seCode == "InvalidSRS")  // legacy WMS < 1.3.0
+  {
+    mError = tr("Request contains a SRS not offered by the server for one or more of the Layers in the request.");
+  }
+  else if (seCode == "LayerNotDefined")
+  {
+    mError = tr("GetMap request is for a Layer not offered by the server, "
+                "or GetFeatureInfo request is for a Layer not shown on the map.");
+  }
+  else if (seCode == "StyleNotDefined")
+  {
+    mError = tr("Request is for a Layer in a Style not offered by the server.");
+  }
+  else if (seCode == "LayerNotQueryable")
+  {
+    mError = tr("GetFeatureInfo request is applied to a Layer which is not declared queryable.");
+  }
+  else if (seCode == "InvalidPoint")
+  {
+    mError = tr("GetFeatureInfo request contains invalid X or Y value.");
+  }
+  else if (seCode == "CurrentUpdateSequence")
+  {
+    mError = tr("Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to "
+                "current value of service metadata update sequence number.");
+  }
+  else if (seCode == "InvalidUpdateSequence")
+  {
+    mError = tr("Value of (optional) UpdateSequence parameter in GetCapabilities request is greater "
+                "than current value of service metadata update sequence number.");
+  }
+  else if (seCode == "MissingDimensionValue")
+  {
+    mError = tr("Request does not include a sample dimension value, and the server did not declare a "
+                "default value for that dimension.");
+  }
+  else if (seCode == "InvalidDimensionValue")
+  {
+    mError = tr("Request contains an invalid sample dimension value.");
+  }
+  else if (seCode == "OperationNotSupported")
+  {
+    mError = tr("Request is for an optional operation that is not supported by the server.");
+  }
+  else
+  {
+    mError = tr("(Unknown error code from a post-1.3 WMS server)");
+  }
+
+  mError += "\n" + tr("The WMS vendor also reported: ");
+  mError += seText;
+
+  mError += "\n" + tr("This is probably due to a bug in the QGIS program.  Please report this error.");
+
+  // TODO = e.attribute("locator");
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseServiceException: composed error message '" << mError.toLocal8Bit().data() << "'." << std::endl;
+#endif
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::parseServiceException: exiting." << std::endl;
+#endif
+}
+
+
 QgsDataSourceURI * QgsWmsProvider::getURI()
 {
 
@@ -1432,8 +1684,10 @@ QgsRect *QgsWmsProvider::extent()
 {
   if (extentDirty)
   {
-    calculateExtent();
-    extentDirty = FALSE;
+    if (calculateExtent())
+    {
+      extentDirty = FALSE;
+    }
   }
 
   return &layerExtent;
@@ -1487,7 +1741,7 @@ void QgsWmsProvider::showStatusMessage(QString const & theMessage)
 }
 
 
-void QgsWmsProvider::calculateExtent()
+bool QgsWmsProvider::calculateExtent()
 {
   //! \todo Make this handle non-geographic CRSs (e.g. floor plans) as per WMS spec
 
@@ -1496,7 +1750,10 @@ void QgsWmsProvider::calculateExtent()
 #endif
 
   // Make sure we know what extents are available
-  retrieveServerCapabilities();
+  if (!retrieveServerCapabilities())
+  {
+    return FALSE;
+  }
 
   // Set up the coordinate transform from the WMS standard CRS:84 bounding
   // box to the user's selected CRS
@@ -1546,6 +1803,8 @@ void QgsWmsProvider::calculateExtent()
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::calculateExtent: exiting with '" << layerExtent.stringRep().toLocal8Bit().data() << "'." << std::endl;
 #endif
+
+  return TRUE;
 
 }
 
@@ -1874,6 +2133,10 @@ QString QgsWmsProvider::errorCaptionString()
 
 QString QgsWmsProvider::errorString()
 {
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::errorString: returning '" 
+            << mError.toLocal8Bit().data() << "'." << std::endl;
+#endif
   return mError;
 }
 
