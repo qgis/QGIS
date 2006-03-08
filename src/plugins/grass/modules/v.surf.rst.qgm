@@ -5,7 +5,7 @@
 	<option key="input" layeroption="layer" typemask="point,line" id="input" />
 	<field key="zcolumn" layerid="input" type="integer,double" label="Attribute field (interpolated values)" />
 	<option key="tension" />
-	<option key="smooth" />
+	<!--option key="smooth" /-->
 	<option key="elev" />
 	<option key="dmax" answer="5" hidden="yes" />
 	<option key="dmin" answer="2" hidden="yes" />
