@@ -453,6 +453,15 @@ public:
   /** Returns GRASS layer number */
   int grassLayer();
 
+  /** Returns GRASS layer number for given layer name or -1 if cannot 
+   *  get layer number
+   */
+  static int grassLayer(QString);
+
+  /** Returns GRASS layer type (GV_POINT, GV_LINES, GV_AREA) for 
+   *  given layer name or -1 if cannot get layer type
+   */
+  static int grassLayerType(QString);
 
     /** return a provider name
 

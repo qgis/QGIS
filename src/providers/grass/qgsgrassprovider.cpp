@@ -101,30 +101,25 @@ QgsGrassProvider::QgsGrassProvider(QString const & uri)
         mLayerType = CENTROID;
 	mGrassType = GV_CENTROID;
     } else {
-	// Get field number
-	int pos = mLayer.find('_');
-
-	if ( pos == -1 ) {
+        mLayerField = grassLayer ( mLayer );
+        if ( mLayerField == -1 ) {
 	    std::cerr << "Invalid layer name, no underscore found: " << mLayer.toLocal8Bit().data() << std::endl;
 	    return;
-	}
+        }
 
-	mLayerField = mLayer.left(pos).toInt();
-
-	QString ts = mLayer.right( mLayer.length() - pos - 1 );
-	if ( ts.compare("point") == 0 ) {
+        mGrassType = grassLayerType ( mLayer );
+        
+	if ( mGrassType == GV_POINT ) {
 	    mLayerType = POINT;
-	    mGrassType = GV_POINT; // ?! centroids may be points
-	} else if ( ts.compare("line") == 0 ) {
+	} else if ( mGrassType == GV_LINES ) {
 	    mLayerType = LINE;
-	    mGrassType = GV_LINE | GV_BOUNDARY; 
-	} else if ( ts.compare("polygon") == 0 ) {
+	} else if ( mGrassType == GV_AREA ) {
 	    mLayerType = POLYGON;
-	    mGrassType = GV_AREA; 
 	} else {
-	    std::cerr << "Invalid layer name, wrong type: " << ts.toLocal8Bit().data() << std::endl;
+	    std::cerr << "Invalid layer name, wrong type: " << mLayer.toLocal8Bit().data() << std::endl;
 	    return;
 	}
+        
     }
     #ifdef QGISDEBUG
     std::cerr << "mLayerField: " << mLayerField << std::endl;
@@ -1271,6 +1266,38 @@ QString QgsGrassProvider::getProjectionWKT(void)
 int QgsGrassProvider::grassLayer()
 {
 	return mLayerField;
+}
+
+int QgsGrassProvider::grassLayer(QString name)
+{
+    // Get field number
+    int pos = name.find('_');
+
+    if ( pos == -1 ) {
+	return -1;
+    }
+
+    return name.left(pos).toInt();
+}
+
+int QgsGrassProvider::grassLayerType(QString name)
+{
+    int pos = name.find('_');
+
+    if ( pos == -1 ) {
+	return -1;
+    }
+
+    QString ts = name.right( name.length() - pos - 1 );
+    if ( ts.compare("point") == 0 ) {
+	return GV_POINT; // ?! centroids may be points
+    } else if ( ts.compare("line") == 0 ) {
+	return GV_LINES; 
+    } else if ( ts.compare("polygon") == 0 ) {
+	return GV_AREA; 
+    }
+
+    return -1;
 }
 
 //-----------------------------------------  Edit -------------------------------------------------------
