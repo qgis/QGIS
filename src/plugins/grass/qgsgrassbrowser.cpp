@@ -36,6 +36,7 @@
 #include <QTextBrowser>
 #include <QSplitter>
 #include <QProcess>
+#include <QScrollBar>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -234,6 +235,7 @@ void QgsGrassBrowser::selectionChanged(const QItemSelection & selected, const QI
     for (; it != indexes.end(); ++it)
     {
         mTextBrowser->append ( mModel->itemInfo(*it) );
+        mTextBrowser->verticalScrollBar()->setValue(0);
 	
 	int type = mModel->itemType(*it);
         if ( type == QgsGrassModel::Raster || type == QgsGrassModel::VectorLayer )
