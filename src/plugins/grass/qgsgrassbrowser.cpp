@@ -49,6 +49,7 @@ extern "C" {
 #include "../../src/providers/grass/qgsgrass.h"
 #include "qgsgrassmodel.h"
 #include "qgsgrassbrowser.h"
+#include "qgsgrassselect.h"
 
 QgsGrassBrowser::QgsGrassBrowser ( QgisIface *iface, 
 	 QWidget * parent, Qt::WFlags f )
@@ -148,13 +149,24 @@ void QgsGrassBrowser::addMap()
 	}
 	else if ( type == QgsGrassModel::VectorLayer )
 	{
+            QString map = mModel->itemMap(*it);
+            QString name = map;
+
+            QStringList list = QgsGrassSelect::vectorLayers(
+                                   QgsGrass::getDefaultGisdbase(),
+                                   QgsGrass::getDefaultLocation(),
+                          mModel->itemMapset(*it), map );
+
 	    // TODO: common method for vector names
 	    QStringList split = QStringList::split ( '/', uri );
 	    QString layer = split.last();
-	    split.pop_back(); // map
-	    QString vector = split.last();
-	    mIface->addVectorLayer( uri, layer, "grass");
-            std::cerr << "add vector: " << uri.ascii() << std::endl;
+
+            if ( list.size() > 1 ) 
+            {
+                 name += " " + layer;
+            }
+            
+	    mIface->addVectorLayer( uri, name, "grass");
 	    mapSelected = true;
 	}
     }
