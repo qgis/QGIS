@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>731</width>
-    <height>688</height>
+    <width>604</width>
+    <height>391</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -25,6 +25,14 @@
     </property>
     <item row="0" column="0" >
      <widget class="QSplitter" name="canvasLegendSplit" >
+      <property name="sizePolicy" >
+       <sizepolicy>
+        <hsizetype>7</hsizetype>
+        <vsizetype>7</vsizetype>
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="frameShape" >
        <enum>QFrame::NoFrame</enum>
       </property>
@@ -38,9 +46,17 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="QSplitter" name="legendOverviewSplit" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>7</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize" >
         <size>
-         <width>200</width>
+         <width>0</width>
          <height>0</height>
         </size>
        </property>
@@ -73,8 +89,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>624</width>
-           <height>581</height>
+           <width>341</width>
+           <height>237</height>
           </rect>
          </property>
          <attribute name="label" >
