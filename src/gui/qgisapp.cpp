@@ -865,13 +865,17 @@ void QgisApp::createStatusBar()
   statusBar()->setFont(myFont);
   mScaleLabel = new QLabel(QString("Scale"),statusBar());
   mScaleLabel->setFont(myFont);
-  mScaleLabel->setMinimumWidth(100);
+  mScaleLabel->setMinimumWidth(10);
+  mScaleLabel->setMargin(3);
+  mScaleLabel->setAlignment(Qt::AlignCenter);
   QWhatsThis::add(mScaleLabel, tr("Displays the current map scale"));
   statusBar()->addWidget(mScaleLabel, 0,true);
   //coords status bar widget
   mCoordsLabel = new QLabel(QString("Coordinates:"), statusBar());
-  mCoordsLabel->setMinimumWidth(200);
+  mCoordsLabel->setMinimumWidth(10);
   mCoordsLabel->setFont(myFont);
+  mCoordsLabel->setMargin(3);
+  mCoordsLabel->setAlignment(Qt::AlignCenter);
   QWhatsThis::add(mCoordsLabel, tr("Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved."));
   statusBar()->addWidget(mCoordsLabel, 0, true);
   // render suppression status bar widget
@@ -1108,7 +1112,7 @@ void QgisApp::createCanvas()
   int myBlue = mySettings.value("/qgis/default_canvas_color_blue",255).toInt();
   mMapCanvas->setCanvasColor(QColor(myRed,myGreen,myBlue));  // this is the fill co;our when rendering
   
-  mMapCanvas->setMinimumWidth(400);
+  mMapCanvas->setMinimumWidth(10);
   QVBoxLayout *myCanvasLayout = new QVBoxLayout;
   myCanvasLayout->addWidget(mMapCanvas);
   tabWidget->widget(0)->setLayout(myCanvasLayout);
@@ -3413,18 +3417,24 @@ void QgisApp::measureArea()
 }
 
 
+
 void QgisApp::attributeTable()
 {
+  std::cerr << ">> = " << std::endl;
   QgsMapLayer *layer = mMapLegend->currentLayer();
+  std::cerr << ">> = " << std::endl;
   if (layer)
   {
+  std::cerr << ">>> = " << std::endl;
     layer->table();
+  std::cerr << ">>> = " << std::endl;
   }
   else
   {
     QMessageBox::information(this, tr("No Layer Selected"),
         tr("To open an attribute table, you must select a layer in the legend"));
   }
+  std::cerr << ">> = " << std::endl;
 }
 
 void QgisApp::deleteSelected()
@@ -3608,11 +3618,21 @@ void QgisApp::refreshMapCanvas()
 void QgisApp::showMouseCoordinate(QgsPoint & p)
 {
   mCoordsLabel->setText(p.stringRep(mMousePrecisionDecimalPlaces));
+  // Set minimum necessary width
+  if ( mCoordsLabel->width() > mCoordsLabel->minimumWidth() )
+  {
+    mCoordsLabel->setMinimumWidth(mCoordsLabel->width());
+  }
 }
 
 void QgisApp::showScale(QString theScale)
 {
   mScaleLabel->setText(theScale);
+  // Set minimum necessary width
+  if ( mScaleLabel->width() > mScaleLabel->minimumWidth() )
+  {
+    mScaleLabel->setMinimumWidth(mScaleLabel->width());
+  }
 }
 
 void QgisApp::testButton()
