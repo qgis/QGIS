@@ -91,9 +91,9 @@ public:
        write()
      */
     //@{
-    bool QgsProject::dirty() const;
+    bool dirty() const;
 
-    void QgsProject::dirty( bool b );
+    void dirty( bool b );
     //@}
 
 

@@ -90,7 +90,7 @@ public:
     void addRequiredFields ( std::list<int> *fields );
 
     //! Available vector fields
-    std::vector<QgsField> & QgsLabel::fields ( void );
+    std::vector<QgsField> & fields ( void );
 
     //! Pointer to default attributes
     QgsLabelAttributes *layerAttributes ( void );

@@ -68,8 +68,8 @@ class QgsPasteTransformations : public QDialog, private Ui::QgsPasteTransformati
     //! Common subfunction to sourceChanged() and destinationChanged()
     void layerChanged(const QString& layerName, std::vector<QString>* fields);
 
-    void QgsPasteTransformations::restoreTransfers(const QString& sourceSelectedFieldName,
-                                                   const QString& destinationSelectedFieldName);
+    void restoreTransfers(const QString& sourceSelectedFieldName,
+                          const QString& destinationSelectedFieldName);
 
 
     std::map<QString, QgsMapLayer*> mMapNameLookup;
