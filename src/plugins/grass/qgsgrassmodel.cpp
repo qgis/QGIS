@@ -265,7 +265,11 @@ QString QgsGrassModelItem::info()
                 char buffer[100];
 
                 Vect_get_map_box (&Map, &box );
-                int proj = Vect_get_proj(&Map);
+	    
+		QgsGrass::setMapset( mGisbase, mLocation, mMapset );
+                struct Cell_head window;
+                G_get_window (&window);
+                int proj = window.proj;
 
                 G_format_northing (box.N, buffer, proj);
 		str += htmlTableRow ( "North", QString(buffer) );
