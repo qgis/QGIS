@@ -32,7 +32,7 @@ class QgsDlgPgBuffer:public QDialog, private Ui::QgsDlgPgBufferBase
   //! Constructor
     QgsDlgPgBuffer( QgisIface * _qI = 0, QWidget * parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     //! Destructor
-    QgsDlgPgBuffer::~QgsDlgPgBuffer();
+    ~QgsDlgPgBuffer();
     //! Set the information label in the dialog
     void setBufferLabel(QString & lbl);
     //! Get the buffer distance

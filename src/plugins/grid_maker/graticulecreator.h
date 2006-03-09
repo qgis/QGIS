@@ -40,8 +40,8 @@ class GraticuleCreator
     private:
         DBFHandle mDbfHandle; 
         SHPHandle mShapeHandle;
-        void GraticuleCreator::createDbf (QString theDbfName ) ;
-        void GraticuleCreator::createShapeFile(QString theFileNamei, ShapeType theType ); 
+        void createDbf (QString theDbfName ) ;
+        void createShapeFile(QString theFileNamei, ShapeType theType ); 
         void writeDbfRecord ( int theRecordIdInt, QString theLabel) ;
         void writePoint(int theRecordInt, double theXDouble, double y ); 
         //! Writes a WGS 84 .prj file for the generated grid

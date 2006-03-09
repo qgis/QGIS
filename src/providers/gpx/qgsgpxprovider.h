@@ -147,7 +147,7 @@ public:
 			     const std::map<QString, QString>& attrs);
   
   /** Adds one feature (used by addFeatures()) */
-  bool QgsGPXProvider::addFeature(QgsFeature* f);
+  bool addFeature(QgsFeature* f);
   
   /**Returns the default value for attribute @c attr for feature @c f. */
   QString getDefaultValue(const QString& attr, QgsFeature* f);
