@@ -22,7 +22,7 @@
 
 #include <QDir>
 #include <QFileDialog>
-#include <q3iconview.h>
+#include <Q3IconView>
 #include <QPixmap>
 
 #include "qgsconfig.h"

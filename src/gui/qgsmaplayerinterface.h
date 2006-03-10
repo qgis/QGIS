@@ -18,7 +18,7 @@
 /** 
 * Interface class for map layer plugins
 */
-#include <qobject.h>
+#include <QObject>
 #include "qgisapp.h"
 class Q3MainWindow;
 

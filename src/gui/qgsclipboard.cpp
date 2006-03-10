@@ -20,10 +20,10 @@
 #include <fstream>
 #include <iostream>
 
-#include <qapplication.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qclipboard.h>
+#include <QApplication>
+#include <QString>
+#include <QStringList>
+#include <QClipboard>
 
 #include "qgsclipboard.h"
 

@@ -20,11 +20,11 @@
 #include "qgsfeature.h"
 #include "qgis.h"
 #include "qgsvectorlayer.h"
-#include "qstring.h"
 #include "qgslegenditem.h"
 #include "qgssymbologyutils.h"
 #include "qgssvgcache.h"
 
+#include <QString>
 #include <QDomNode>
 #include <QPainter>
 #include <QPixmap>

@@ -4,12 +4,13 @@
 #include <cmath>
 #include <iostream>
 #include <sqlite3.h>
-#include <qsettings.h>
-#include <qregexp.h>
-#include <qfileinfo.h>
-#include <qdir.h>
+#include <QSettings>
+#include <QRegExp>
+#include <QFileInfo>
+#include <QDir>
 #include <projects.h>
-#include <qdom.h>
+#include <QDomNode>
+#include <QDomElement>
 #include <QMessageBox>
 
 #include <qgsapplication.h>

@@ -26,8 +26,8 @@
 #include <iostream>
 #include <vector>
 
-#include <qstringlist.h>
-#include <qdom.h>
+#include <QStringList>
+#include <QDomElement>
 
 #include "qgsattributeaction.h"
 #include "qgsrunprocess.h"

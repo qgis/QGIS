@@ -19,7 +19,7 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QLineEdit>
-#include <q3listview.h>
+#include <Q3ListView>
 #include <QMessageBox>
 #include <QLibrary>
 #include <QSettings>

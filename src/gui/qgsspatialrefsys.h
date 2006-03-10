@@ -6,10 +6,8 @@
 #include <istream>
 
 //qt includes
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qregexp.h>
-#include <qmap.h>
+#include <QString>
+#include <QMap>
 class QDomNode;
 class QDomDocument;
 

@@ -16,10 +16,10 @@
  ***************************************************************************/
  /* $Id$ */
 #include <iostream>
-#include <qsettings.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
-#include <qmessagebox.h>
+
+#include <QSettings>
+#include <QMessageBox>
+
 #include "qgsnewconnection.h"
 #include "qgscontexthelp.h"
 extern "C"

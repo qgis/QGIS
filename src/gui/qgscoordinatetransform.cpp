@@ -19,7 +19,8 @@
 #include "qgscoordinatetransform.h"
 
 //qt includes
-#include <qdom.h>
+#include <QDomNode>
+#include <QDomElement>
 
 // Qt4-only includes to go here
 #include <QTextOStream>

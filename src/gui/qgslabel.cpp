@@ -17,13 +17,13 @@
 #include <fstream>
 #include <math.h> //needed for win32 build (ts)
 
-#include <qstring.h>
-#include <qfont.h>
-#include <qfontmetrics.h>
+#include <QString>
+#include <QFont>
+#include <QFontMetrics>
 
-#include <qpainter.h>
-#include <qmatrix.h>
-#include <qdom.h>
+#include <QPainter>
+#include <QDomNode>
+#include <QDomElement>
 
 #include "qgis.h"
 #include "qgsfeature.h"

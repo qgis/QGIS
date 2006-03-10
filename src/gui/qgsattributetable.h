@@ -19,18 +19,17 @@
 #ifndef QGSATTRIBUTETABLE_H
 #define QGSATTRIBUTETABLE_H
 
-#include <q3table.h>
-#include <qmap.h>
-//Added by qt3to4:
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <Q3PopupMenu>
+#include <Q3Table>
+#include <QMap>
+
 #include <map>
 #include <set>
 
 class Q3PopupMenu;
 class QgsVectorLayer;
 class QgsFeature;
+class QMouseEvent;
+class QKeyEvent;
 
 #include "qgsattributeaction.h"
 

@@ -23,8 +23,7 @@
 #include "qgsvectorlayer.h"
 
 //qt includes
-#include <qstring.h>
-#include <qfile.h>
+#include <QString>
 
 // OGR Includes
 #include "ogr_api.h"

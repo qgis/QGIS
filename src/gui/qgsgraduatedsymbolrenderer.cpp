@@ -22,9 +22,9 @@
 #include "qgslegendsymbologyitem.h"
 #include "qgssymbologyutils.h"
 #include "qgssvgcache.h"
-#include <qdom.h>
-#include <qpixmap.h>
-#include <q3picture.h>
+#include <QDomNode>
+#include <QDomElement>
+#include <QPixmap>
 
 
 QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer(QGis::VectorType type)

@@ -25,8 +25,8 @@
 #ifndef QGSATTRIBUTEACTION_H
 #define QGSATTRIBUTEACTION_H
 
-#include <qstring.h>
-#include <qobject.h>
+#include <QString>
+#include <QObject>
 
 #include <list>
 #include <vector>

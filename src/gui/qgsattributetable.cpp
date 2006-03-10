@@ -16,22 +16,21 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include <qapplication.h>
-#include <qcursor.h>
-#include <q3popupmenu.h>
-#include <qlabel.h>
-#include <qfont.h>
-#include <qglobal.h>
-#include <qclipboard.h>
+#include <QApplication>
+#include <QMouseEvent>
+#include <Q3PopupMenu>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QFont>
+#include <QClipboard>
+#include <Q3ValueList>
+
 #include "qgsattributetable.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-//Added by qt3to4:
-#include <QKeyEvent>
-#include <Q3ValueList>
-#include <QMouseEvent>
+
 #include <iostream>
 #include <stdlib.h>
 
