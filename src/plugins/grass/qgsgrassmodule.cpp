@@ -62,6 +62,8 @@
 //Added by qt3to4:
 #include <QVBoxLayout>
 #include <QGridLayout>
+#include <QIntValidator>
+#include <QDoubleValidator>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -789,7 +791,7 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 	                                   QWidget * parent)
                     : Q3GroupBox ( 1, Qt::Vertical, parent ),
                       QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
-	mIsOutput(false)
+	mIsOutput(false), mValueType(String)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModuleOption::QgsGrassModuleOption" << std::endl;
@@ -823,14 +825,17 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
     // String without options 
     if ( !mHidden ) 
     {
-	
+        QDomElement gelem = gnode.toElement();
+
 	// Predefined values ?
 	QDomNode valuesNode = gnode.namedItem ( "values" );
+	QDomElement valuesElem = valuesNode.toElement(); // null if valuesNode is null
 	
-	if ( !valuesNode.isNull() ) // predefined values -> ComboBox or CheckBox
+	if ( !valuesNode.isNull() && valuesNode.childNodes().count() > 1 ) 
 	{
+            // predefined values -> ComboBox or CheckBox
+
 	    // one or many?
-	    QDomElement gelem = gnode.toElement();
    	    if ( gelem.attribute("multiple") == "yes" ) {
 		mControlType = CheckBoxes;
 	    } else {
@@ -841,7 +846,6 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 	    // List of values to be excluded 
 	    QStringList exclude = QStringList::split ( ',', qdesc.attribute("exclude") );
 
-	    QDomElement valuesElem = valuesNode.toElement();
 	    QDomNode valueNode = valuesElem.firstChild();
 
 	    while( !valueNode.isNull() ) {
@@ -892,6 +896,39 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 		QDomElement e = n.toElement();
 		QString def = e.text().stripWhiteSpace();
 		mLineEdit->setText ( def );
+	    }
+
+            QStringList minMax;
+	    if ( valuesNode.childNodes().count() == 1 )
+            { 
+	        QDomNode valueNode = valuesElem.firstChild();
+
+		QDomNode n = valueNode.namedItem ( "name" );
+		if ( !n.isNull() ) {
+		    QDomElement e = n.toElement();
+		    QString val = e.text().stripWhiteSpace();
+                    minMax = val.split("-");
+                }
+            }
+   	    if ( gelem.attribute("type") == "integer" ) 
+            {
+		mValueType = Integer;
+                if ( minMax.size() == 2 ) {
+		    mValidator = new QIntValidator( minMax.at(0).toInt(),
+                                             minMax.at(1).toInt(), this );
+                } else {
+		    mValidator = new QIntValidator( this );
+                }
+                mLineEdit->setValidator ( mValidator );
+	    } else if ( gelem.attribute("type") == "float" ) {
+		mValueType = Double;
+                if ( minMax.size() == 2 ) {
+		    mValidator = new QDoubleValidator( minMax.at(0).toDouble(),
+                                             minMax.at(1).toDouble(), 10, this );
+                } else {
+		    mValidator = new QDoubleValidator( this );
+                }
+                mLineEdit->setValidator ( mValidator );
 	    }
 	}
     }
