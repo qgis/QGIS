@@ -28,6 +28,8 @@
 
 #include "qgsproject.h"
 
+#include "qgsmessageviewer.h"
+
 #include <QMessageBox>
 #include <QPicture>
 #include <QSettings>
@@ -579,14 +581,23 @@ void QgsServerSourceSelect::showStatusMessage(QString const & theMessage)
 
 void QgsServerSourceSelect::showError(QgsWmsProvider * wms)
 {
-  QMessageBox::warning(
-    this,
-    wms->errorCaptionString(),
-    tr("Could not understand the response.  The") + " " + wms->name() + " " +
-      tr("provider said") + ":\n" +
-      wms->errorString()
-  );
+//   QMessageBox::warning(
+//     this,
+//     wms->errorCaptionString(),
+//     tr("Could not understand the response.  The") + " " + wms->name() + " " +
+//       tr("provider said") + ":\n" +
+//       wms->errorString()
+//   );
 
+  QgsMessageViewer * mv = new QgsMessageViewer(this);
+  mv->setCaption( wms->errorCaptionString() );
+  mv->setMessageAsPlainText(
+    tr("Could not understand the response.  The") + " " + wms->name() + " " +
+    tr("provider said") + ":\n" +
+    wms->errorString()
+  );
+  mv->exec();
+  delete mv;
 }
 
 

@@ -78,9 +78,9 @@ public:
 public slots:
 
   void dataStarted( int id );
-  
+
   void dataHeaderReceived( const Q3HttpResponseHeader& resp );
-  
+
   void dataReceived( const Q3HttpResponseHeader& resp );
 
   void dataProgress( int done, int total );
@@ -89,7 +89,8 @@ public slots:
 
   void dataStateChanged( int state );
 
-  
+  void networkTimedOut();
+
 signals:
 
     /** \brief emit a signal to notify of a progress event */
@@ -159,6 +160,11 @@ private:
    *
    */
   int httpredirections;
+
+  /**
+   * Indicates the associated QTimer object - used to detect network timeouts
+   */
+  QTimer * mWatchdogTimer;
 
   /**
    * The error message associated with the last HTTP error.
