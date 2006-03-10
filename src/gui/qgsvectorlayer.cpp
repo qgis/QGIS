@@ -40,17 +40,8 @@
 #include <netinet/in.h>
 #endif
 
-#include <Q3ListView>
-#include <Q3Picture>
-#include <Q3PopupMenu>
-#include <Q3ProgressDialog>
-
-#include <QAction>
 #include <QApplication>
 #include <QCursor>
-#include <QLabel>
-#include <QLibrary>
-#include <QPolygon>
 #include <QMessageBox>
 #include <QPainter>
 #include <QPixmap>
@@ -58,7 +49,6 @@
 #include <QProgressDialog>
 #include <QString>
 #include <QSettings>
-#include <QWidget>
 
 #include "qgsapplication.h"
 #include "qgisapp.h"
