@@ -39,6 +39,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include <QFontMetrics>
 #include <QFont>
 #include <QColor>
+#include <QMenu>
 
 //non qt includes
 #include <iostream>

@@ -25,6 +25,7 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsdataprovider.h"
+#include "qgsvectordataprovider.h"
 #include "qgsgpsplugin.h"
 
 
