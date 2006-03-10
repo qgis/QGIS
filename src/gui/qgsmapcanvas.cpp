@@ -23,7 +23,7 @@ email                : sherman at mrcc.com
 #include <QApplication>
 #include <QCursor>
 #include <QKeyEvent>
-#include <QMessageBox>
+//#include <QMessageBox>
 #include <QMouseEvent>
 #include <QPaintDevice>
 #include <QPainter>
@@ -47,6 +47,8 @@ email                : sherman at mrcc.com
 #include "qgsmaprender.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
+
+#include "qgsmessageviewer.h"
 
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolpan.h"
@@ -1085,12 +1087,21 @@ void QgsMapCanvas::updateMap()
 
 void QgsMapCanvas::showError(QgsMapLayer * mapLayer)
 {
-  QMessageBox::warning(
-    this,
-    mapLayer->errorCaptionString(),
+//   QMessageBox::warning(
+//     this,
+//     mapLayer->errorCaptionString(),
+//     tr("Could not draw") + " " + mapLayer->name() + " " + tr("because") + ":\n" +
+//       mapLayer->errorString()
+//   );
+
+  QgsMessageViewer * mv = new QgsMessageViewer(this);
+  mv->setCaption( mapLayer->errorCaptionString() );
+  mv->setMessageAsPlainText(
     tr("Could not draw") + " " + mapLayer->name() + " " + tr("because") + ":\n" +
-      mapLayer->errorCaptionString()
+    mapLayer->errorString()
   );
+  mv->exec();
+  delete mv;
 
 }
 
