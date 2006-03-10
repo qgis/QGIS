@@ -23,7 +23,10 @@
 #include "qgssymbologyutils.h"
 #include "qgsmarkercatalogue.h"
 #include "qgssymbol.h"
-#include <qdom.h>
+
+#include <QDomElement>
+#include <QPainter>
+#include <QPixmap>
 
 QgsContinuousColorRenderer::QgsContinuousColorRenderer(QGis::VectorType type): mMinimumSymbol(0), mMaximumSymbol(0)
 {

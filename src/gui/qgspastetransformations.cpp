@@ -19,9 +19,7 @@
 
 #include <iostream>
 
-#include <qsettings.h>
-#include <qlayout.h>
-#include <qlabel.h>
+#include <QSettings>
 #include <QComboBox>
 #include <qglobal.h>
 
@@ -137,15 +135,9 @@ void QgsPasteTransformations::addTransfer(const QString& sourceSelectedFieldName
 
 // TODO: Do not add the transfer if neither the sourceSelectedFieldName nor the destinationSelectedFieldName could be found.
 
-  // Build a Transfer row at the end of the grid layout.
-#if QT_VERSION < 0x040000
-  QComboBox* newSourceFields      = new QComboBox(FALSE, transferLayout->mainWidget() );
-  QComboBox* newDestinationFields = new QComboBox(FALSE, transferLayout->mainWidget() );
-#else
   // For some reason Qt4's uic3 only outputs generic names for layout items
   QComboBox* newSourceFields      = new QComboBox(FALSE, gridLayout->mainWidget() );
   QComboBox* newDestinationFields = new QComboBox(FALSE, gridLayout->mainWidget() );
-#endif
 
   int count = 0;
 

@@ -19,44 +19,35 @@
 #ifndef QGISAPP_H
 #define QGISAPP_H
 
-//Added by qt3to4:
-#include <QMenu>
-#include <QKeyEvent>
-#include <QEvent>
-#include <QPixmap>
-#include <QLabel>
-#include <QSplashScreen>
-class QCanvas;
 class QRect;
-class QCanvasView;
 class QStringList;
-class QScrollView;
-class QgsPoint;
-class QgsLegend;
-class QgsLegendView;
-class QVBox;
 class QCursor;
 class QLabel;
-class QListView;
 class Q3ListViewItem;
 class QProgressBar;
 class QFileInfo;
-class QgsMapLayer;
 class QSettings;
 class QTcpSocket;
+class QCheckBox;
+class QToolButton;
+class QKeyEvent;
+class QMenu;
+class QPixmap;
+class QSplashScreen;
+
+class QgsPoint;
+class QgsLegend;
+class QgsMapLayer;
 class QgsProviderRegistry;
 class QgsHelpViewer;
 class QgsMapCanvas;
 class QgsMapLayerRegistry;
 class QgsRasterLayer;
-class QCheckBox;
-class QEvent;
 class QgsComposer;
-class QPushButton;
-class QToolButton;
+
 #include "qgisiface.h"
-#include "qgsconfig.h"
-#include "qgsvectordataprovider.h"
+//#include "qgsconfig.h"
+
 #include "qgsclipboard.h"
 
 #include <map>
@@ -522,9 +513,6 @@ private:
   QMenu *toolPopupDisplay;
   //! Popup menu for the capture tools
   QMenu *toolPopupCapture;
-  //! Legend list view control
-  //doesnt see to be used...(TS)
-  //QgsLegendView *mLegendView;
   //! Map canvas
   QgsMapCanvas *mMapCanvas;
   //! Map layer registry

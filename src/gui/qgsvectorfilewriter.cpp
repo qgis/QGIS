@@ -18,10 +18,7 @@
 /* $Id$ */
 #include "qgsvectorfilewriter.h"
 
-//#include <stdio.h>
-//#include <qtextstream.h>
 #include <iostream>
-//#include <qfileinfo.h>
 #include <QString>
 #include <QTextCodec>
 

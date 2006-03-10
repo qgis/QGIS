@@ -25,7 +25,6 @@
 #include <QAction>
 #include <QApplication>
 #include <QBitmap>
-#include <QByteArray>
 #include <QCheckBox>
 #include <QClipboard>
 #include <QColor>
@@ -33,19 +32,13 @@
 #include <QDesktopWidget>
 #include <QDialog>
 #include <QDir>
-#include <QErrorMessage>
 #include <QEvent>
 #include <QFile>
 #include <QFileInfo>
-#include <QGridLayout>
-#include <QImage>
 #include <QInputDialog>
 #include <QKeyEvent>
 #include <QLabel>
-#include <QLayout>
 #include <QLibrary>
-#include <QListView>
-#include <QMatrix>
 #include <QMenu>
 #include <QMenuBar>
 #include <QMenuItem>
@@ -57,24 +50,15 @@
 #include <QPrinter>
 #include <QProcess>
 #include <QProgressBar>
-#include <QPushButton>
-#include <QRect>
-#include <QRegExp>
-#include <QScrollArea>
 #include <QSettings>
-#include <QSplitter>
-#include <QStatusBar>
-#include <QStatusBar>
 #include <QStringList>
 #include <QTcpSocket>
 #include <QTextStream>
-#include <QTimer>
-#include <QToolBar>
-#include <QToolBox>
 #include <QToolButton>
 #include <QToolTip>
 #include <QVBoxLayout>
 #include <QWhatsThis>
+#include <QSplashScreen>
 //
 // QGIS Specific Includes
 //
@@ -119,6 +103,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgisplugin.h"
+#include "qgsvectordataprovider.h"
 #include "../../images/themes/default/qgis.xpm"
 
 //
@@ -149,11 +134,6 @@
 #include "qgsmaptoolvertexedit.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmeasure.h"
-
-
-//#include "qgssisydialog.h"
-// XXX deprecated?? #include "qgslegenditem.h"
-
 
 //
 // Conditional Includes

@@ -22,6 +22,7 @@
 #include "qgisapp.h"
 #include "qgslayerprojectionselector.h"
 #include "qgssvgcache.h"
+#include "qgsspatialrefsys.h"
 #include <QFileDialog>
 #include <QSettings>
 #include <QColorDialog>

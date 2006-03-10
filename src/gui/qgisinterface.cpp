@@ -17,7 +17,6 @@
  ****************************************************************************/
  /* $Id$ */
 
-#include <iostream>
 #include "qgisinterface.h"
 #include "qgisapp.h"
 

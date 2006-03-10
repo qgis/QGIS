@@ -19,15 +19,13 @@
 #ifndef QGISINTERFACE_H
 #define QGISINTERFACE_H
 
-#include <qaction.h> 
+#include <QAction> 
+#include <QWidget>
 
-#include <qwidget.h>
-//Added by qt3to4:
-#include <Q3PopupMenu>
 #include <map>
+
 class QgisApp;
 class QgsMapLayer;
-class Q3PopupMenu;
 class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsMapLayerRegistry;

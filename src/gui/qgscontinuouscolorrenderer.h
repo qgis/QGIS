@@ -19,14 +19,13 @@
 #define QGSCONTINUOUSCOLORRENDERER_H
 
 #include "qgsrenderer.h"
-#include <qpainter.h>
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsfeature.h"
-#include <QPixmap>
-#include <iostream>
 
 class QgsSymbol;
+class QPainter;
+class QPixmap;
 
 /**Renderer class which interpolates rgb values linear between the minimum and maximum value of the classification field*/
 class QgsContinuousColorRenderer: public QgsRenderer

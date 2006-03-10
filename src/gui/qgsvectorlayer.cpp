@@ -87,6 +87,7 @@
 #include "qgsattributedialog.h"
 #include "qgsattributetabledisplay.h"
 #include "qgsdistancearea.h"
+#include "qgsvectordataprovider.h"
 #ifdef Q_WS_X11
 #include "qgsclipper.h"
 #endif

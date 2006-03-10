@@ -22,7 +22,7 @@
 #ifndef QGSRUNPROCESS_H
 #define QGSRUNPROCESS_H
 
-#include <qobject.h>
+#include <QObject>
 
 class Q3Process;
 class QgsMessageViewer;
