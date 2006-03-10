@@ -23,10 +23,6 @@
 #include <set>
 #include <vector>
 
-#include <QPixmap>
-#include <Q3PopupMenu>
-#include <Q3ValueVector>
-
 #include "qgsmaplayer.h"
 #include "qgsattributeaction.h"
 #include "qgsgeometry.h"

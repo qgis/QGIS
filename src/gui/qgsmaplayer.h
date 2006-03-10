@@ -24,6 +24,8 @@
 
 #include <QObject>
 #include <QPixmap>
+#include <QMenu> // not forward declared because other .h files
+                 // inherit from us and we're being nice to them.
 
 #include "qgis.h"
 #include "qgsrect.h"
@@ -40,7 +42,6 @@ class QgsLegendLayerFile;
 class QDomNode;
 class QDomDocument;
 class QKeyEvent;
-class QMenu;
 
 /** \class QgsMapLayer
  * \brief Base class for all map layer types.
