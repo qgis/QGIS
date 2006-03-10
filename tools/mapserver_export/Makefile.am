@@ -17,7 +17,7 @@ bin_PROGRAMS = msexport
 	$(MOC) -o $@ $<
 
 ui_%.h: %.ui
-	uic -o $@ $<
+	$(UIC) -o $@ $<
 
 #uic $< -o $@
 
