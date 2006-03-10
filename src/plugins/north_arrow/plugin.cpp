@@ -32,6 +32,7 @@ email                : tim@linfiniti.com
 
 // qt includes
 #include <QPainter>
+#include <QMenu>
 
 //non qt includes
 #include <iostream>

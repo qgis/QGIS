@@ -33,6 +33,7 @@ email                : tim@linfiniti.com
 #include <Q3PaintDeviceMetrics>
 #include <Q3SimpleRichText>
 #include <QPainter>
+#include <QMenu>
 
 //non qt includes
 #include <iostream>

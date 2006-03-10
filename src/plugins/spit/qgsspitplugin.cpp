@@ -23,6 +23,7 @@
 #include <vector>
 
 #include <QAction>
+#include <QMenu>
 
 #include "qgisapp.h"
 #include "qgsspitplugin.h"
