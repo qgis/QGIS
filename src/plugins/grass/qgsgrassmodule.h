@@ -31,6 +31,7 @@ class QDomElement;
 class QComboBox;
 class QLineEdit;
 class QPixmap;
+class QValidator;
 
 #include <vector>
 #include <q3groupbox.h>
@@ -303,6 +304,9 @@ public:
 
     //! Control option
     enum ControlType { LineEdit, ComboBox, SpinBox, CheckBoxes };
+
+    //! Control option
+    enum ValueType { Double, Integer, String };
     
     //! Retruns list of options which will be passed to module
     virtual QStringList options(); 
@@ -317,6 +321,9 @@ public:
 private:
     //! Control type
     ControlType mControlType;
+
+    //! Value type
+    ValueType mValueType;
     
     //! Combobox
     QComboBox *mComboBox;
@@ -335,6 +342,9 @@ private:
 
     //! Output element
     QString mOutputElement;
+
+    //! Line input validator
+    QValidator *mValidator;
 };
 /********************** QgsGrassModuleFlag ************************/
 /*! \class QgsGrassModuleFlag
