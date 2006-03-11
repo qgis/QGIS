@@ -3352,10 +3352,6 @@ void QgisApp::pan()
   QgsMapTool* tool = new QgsMapToolPan(mMapCanvas);
   tool->setAction(mActionPan);
   mMapCanvas->setMapTool(tool);
-
-  // notify the project we've made a change
-  QgsProject::instance()->dirty(true);
-  
 }
 
 void QgisApp::zoomFull()
