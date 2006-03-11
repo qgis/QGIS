@@ -841,9 +841,6 @@ void QgsMapCanvas::setCanvasColor(const QColor & theColor)
   
   // background of Q3Canvas
   mCanvas->setBackgroundColor(theColor);
-  
-  if (mMapOverview)
-    mMapOverview->setbgColor(theColor);
 } // setbgColor
 
 
