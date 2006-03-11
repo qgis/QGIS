@@ -70,7 +70,8 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas(QWidget * parent, QgsMapCanvas* mapCa
   
   mMapRender = new QgsMapRender;
   mMapRender->setOverview();
-  setbgColor(Qt::white);
+  
+  setbgColor(palette().window().color());
 }
 
 QgsMapOverviewCanvas::~QgsMapOverviewCanvas()
