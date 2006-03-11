@@ -55,6 +55,9 @@ Load the specified
 project file. The layers specified in the project file are loaded, the layers
 are symbolized, and the view extent is restored.
 .TP
+.B \--extent xmin,ymin,xmax,ymax
+Set initial map extent by passing coordinates of that rectangle.
+.TP
 .B \--help 
 .br 
 Display brief usage help.
