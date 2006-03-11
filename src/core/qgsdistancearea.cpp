@@ -26,6 +26,7 @@
 #include "qgsspatialrefsys.h"
 #include "qgsgeometry.h"
 #include "qgsdistancearea.h"
+#include "qgsapplication.h"
 
 #define DEG2RAD(x)    ((x)*M_PI/180)
 
@@ -75,13 +76,12 @@ bool QgsDistanceArea::setEllipsoid(const QString& ellipsoid)
   //
   // SQLITE3 stuff - get parameters for selected ellipsoid
   //
-  QString mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
   sqlite3      *myDatabase;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").latin1(), &myDatabase);
+  myResult = sqlite3_open(QString(QgsApplication::qgisUserDbFilePath()).latin1(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 

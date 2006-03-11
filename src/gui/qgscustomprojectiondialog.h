@@ -27,7 +27,6 @@ public:
     QgsCustomProjectionDialog(QWidget *parent = 0, Qt::WFlags fl = 0);
     ~QgsCustomProjectionDialog();
     //a recursive function to make a directory and its ancestors
-    bool makeDir(QDir &theQDir);
 public slots:    
     void on_pbnCalculate_clicked();
     void on_pbnHelp_clicked();
@@ -66,7 +65,6 @@ private:
     //so that we can return to it if the record insert is aborted
     long mLastRecordLong;
     long mRecordCountLong;
-    QString mQGisSettingsDir;
     const QString stringSQLSafe(const QString theSQL);
 
 };

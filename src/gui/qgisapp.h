@@ -412,7 +412,7 @@ private:
   void createLegend();
   void createOverview();
   void createCanvas();
-  void createDB();
+  bool createDB();
   //toolbars ----------------------------------------
   QToolBar *mFileToolBar;
   QToolBar *mLayerToolBar;

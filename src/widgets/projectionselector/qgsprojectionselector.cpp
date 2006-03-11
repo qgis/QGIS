@@ -255,7 +255,7 @@ QString QgsProjectionSelector::getCurrentProj4String()
       //
       if (mySrsId.toLong() >= USER_PROJECTION_START_ID)
       {
-        myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+        myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
         QFileInfo myFileInfo;
         myFileInfo.setFile(myDatabaseFileName);
         if ( !myFileInfo.exists( ) ) //its unlikely that this condition will ever be reached
@@ -346,7 +346,7 @@ long QgsProjectionSelector::getCurrentLongAttribute(QString attributeName)
       //
       if (lvi->text(1).toLong() >= USER_PROJECTION_START_ID)
       {
-        myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+        myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
         QFileInfo myFileInfo;
         myFileInfo.setFile(myDatabaseFileName);
         if ( !myFileInfo.exists( ) )
@@ -466,11 +466,11 @@ void QgsProjectionSelector::applyUserProjList(QSet<QString> * crsFilter)
 
   //determine where the user proj database lives for this user. If none is found an empty
   //now only will be shown
-  QString myQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
+  QString myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
   // first we look for ~/.qgis/qgis.db
   // if it doesnt exist we copy it in from the global resources dir
   QFileInfo myFileInfo;
-  myFileInfo.setFile(myQGisSettingsDir+"qgis.db");
+  myFileInfo.setFile(myDatabaseFileName);
   //return straight away if the user has not created any custom projections
   if ( !myFileInfo.exists( ) )
   {
@@ -487,7 +487,7 @@ void QgsProjectionSelector::applyUserProjList(QSet<QString> * crsFilter)
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(myQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QString(myDatabaseFileName).toLocal8Bit().data(), &myDatabase);
   if(myResult)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl;
@@ -859,7 +859,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     }
   }
   //search the users db
-  QString myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+  QString myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
   QFileInfo myFileInfo;
   myFileInfo.setFile(myDatabaseFileName);
   if ( !myFileInfo.exists( ) ) //its not critical if this happens
@@ -905,7 +905,7 @@ long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
   // first we search the users db as any srsid there will be definition be greater than in sys db
 
   //check the db is available
-  QString myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+  QString myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
   QFileInfo myFileInfo;
   myFileInfo.setFile(myDatabaseFileName);
   if ( myFileInfo.exists( ) ) //only bother trying to open if the file exists

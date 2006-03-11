@@ -19,8 +19,8 @@
 #define QGSBOOKMARKS_H
 #include "ui_qgsbookmarksbase.h"
 #include <QDialog>
+
 class QString;
-class QDir;
 class QWidget;
 class Q3ListViewItem;
 class sqlite3;
@@ -30,7 +30,6 @@ class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
 public:
  QgsBookmarks(QWidget *parent = 0, Qt::WFlags fl = 0);
  ~QgsBookmarks();
- static bool createDatabase();
 public slots:
  void on_btnDelete_clicked();
  void on_btnZoomTo_clicked();
@@ -40,12 +39,9 @@ public slots:
 
 private:
  QWidget *mParent;
- static bool makeDir(QDir &theQDir);
  void initialise();
  int connectDb();
  void zoomToBookmark();
- QString mUserDbPath;
- QString mQGisSettingsDir;
  sqlite3 *db;
  static const int context_id = 85340544;
 

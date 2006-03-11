@@ -72,7 +72,6 @@
 #include <qgscursors.h>
 #include "qgscustomprojectiondialog.h"
 #include "qgsencodingfiledialog.h"
-#include "qgsfile.h"
 #include "qgsgeomtypedialog.h"
 #include "qgshelpviewer.h"
 #include "qgslegend.h"
@@ -1134,34 +1133,34 @@ void QgisApp::createLegend()
   toolBox->widget(0)->setLayout(myLegendLayout);
   return;
 }
-void QgisApp::createDB()
+
+bool QgisApp::createDB()
 {
   // Check qgis.db and make private copy if necessary
-  QString qgisSettingsDirPath(QDir::homeDirPath () + "/.qgis/");
-  QgsFile qgisPrivateDbFile(qgisSettingsDirPath + "qgis.db");
+  QFile qgisPrivateDbFile(QgsApplication::qgisUserDbFilePath());
 
   // first we look for ~/.qgis/qgis.db
   if (!qgisPrivateDbFile.exists())
   {
     // if it doesnt exist we copy it in from the global resources dir
     QString qgisMasterDbFileName = QgsApplication::qgisMasterDbFilePath();
+    QFile masterFile(qgisMasterDbFileName);
 
     // Must be sure there is destination directory ~/.qgis
-    // @todo XXX REPLACE with recursive dir creator, but first define QgsDir class and
-    // move i.e. makeDir from QgsBookmarks to QgsDir
-    QDir destDir;
-    destDir.mkdir(qgisSettingsDirPath, TRUE);
+    QDir().mkpath(QgsApplication::qgisSettingsDirPath());
 
     //now copy the master file into the users .qgis dir
-    bool isDbFileCopied = QgsFile::copy(qgisMasterDbFileName, qgisPrivateDbFile.name());
+    bool isDbFileCopied = masterFile.copy(qgisPrivateDbFile.name());
 
 #ifdef QGISDEBUG
     if (!isDbFileCopied)
     {
       std::cout << "[ERROR] Can not make qgis.db private copy" << std::endl;
+      return FALSE;
     }
 #endif
   }
+  return TRUE;
 }
 
 // Update file menu with the current list of recently accessed projects
@@ -5384,13 +5383,12 @@ void QgisApp::newBookmark()
       QString::null, &ok, this);
   if( ok && !bookmarkName.isEmpty())
   {
-    // Make sure the database exists
-    if(QgsBookmarks::createDatabase())
+    if (createDB())
     {
       // create the bookmark
       QgsBookmarkItem *bmi = new QgsBookmarkItem(bookmarkName, 
           QgsProject::instance()->title(), mMapCanvas->extent(), -1,
-          QDir::homeDirPath () + "/.qgis/qgis.db");
+          QgsApplication::qgisUserDbFilePath());
       bmi->store();
       delete bmi;
       // emit a signal to indicate that the bookmark was added

@@ -38,11 +38,17 @@ QgsBookmarks::QgsBookmarks(QWidget *parent, Qt::WFlags fl)
   setupUi(this);
   connect(btnClose, SIGNAL(clicked()), this, SLOT(reject()));
 
-  // make sure the users database for bookmarks exists
-  mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
-  mUserDbPath = mQGisSettingsDir + "qgis.db";
-  // create the database (if it exists - no problem)
-  createDatabase(); 
+  // user database is created at QGIS startup in QgisApp::createDB
+  // we just check whether there is our database [MD]
+  QFileInfo myFileInfo;
+  myFileInfo.setFile(QgsApplication::qgisSettingsDirPath());
+  if ( !myFileInfo.exists( ) )
+  {
+#ifdef QGISDEBUG 
+    std::cout << "The qgis.db does not exist" << std::endl; 
+#endif 
+  }
+  
   // Note proper queens english on next line
   initialise();
 
@@ -109,35 +115,6 @@ void QgsBookmarks::initialise()
   }
 }
 
-// A recursive function to make a directory and its ancestors
-// XXX Note we use this function in two places, one more and we
-// XXX should consider making a utility class to contain this and
-// XXX other, if any functions that are used across the application.
-bool QgsBookmarks::makeDir(QDir &theQDir)
-{
-  if (theQDir.isRoot ())
-  {
-    //cannot create a root dir
-    return (false);
-  }
-
-  QDir myBaseDir;
-  QFileInfo myTempFileInfo;
-
-  myTempFileInfo.setFile(theQDir.path());
-  myBaseDir = myTempFileInfo.dir();
-
-  if(!myBaseDir.exists() && !makeDir(myBaseDir))
-  {
-    return FALSE;
-  }
-
-  qDebug("attempting to create directory %s in %s", 
-          (const char *)myTempFileInfo.fileName().toLocal8Bit().data(),
-          (const char *)myBaseDir.path().toLocal8Bit().data());
-
-  return myBaseDir.mkdir(myTempFileInfo.fileName());
-}
 
 void QgsBookmarks::on_btnDelete_clicked()
 {
@@ -248,7 +225,7 @@ int QgsBookmarks::connectDb()
 {
 
   int rc;
-  rc = sqlite3_open(mUserDbPath.toLocal8Bit().data(), &db);
+  rc = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &db);
   if(rc)
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
@@ -258,60 +235,6 @@ int QgsBookmarks::connectDb()
     assert(rc == 0);
   }
   return rc;
-}
-bool QgsBookmarks::createDatabase()
-{
-  // make sure the users database for bookmarks exists
-  QString qgisSettingsDir = QDir::homeDirPath () + "/.qgis/";
-  // first we look for ~/.qgis/qgis.db
-  // if it doesnt exist we copy it in from the global resources dir
-  QFileInfo myFileInfo;
-  myFileInfo.setFile(qgisSettingsDir + "qgis.db");
-  if ( !myFileInfo.exists( ) )
-  {
-#ifdef QGISDEBUG 
-    std::cout << "The qgis.db does not exist in $HOME/.qgis" << std::endl; 
-#endif 
-    // make sure the ~/.qgis dir exists first
-    QDir myUserQGisDir;
-    QString myPath = QDir::homeDirPath();
-    myPath += "/.qgis";
-    myUserQGisDir.setPath(myPath);
-#ifdef QGISDEBUG 
-    std::cout << "Using " << myPath.toLocal8Bit().data() << " as path for qgis.db" << std::endl; 
-#endif 
-    //now make sure the users .qgis dir exists 
-    makeDir(myUserQGisDir);
-    // Get the full path name to the sqlite3 spatial reference database.
-    QString myMasterDatabaseFileName = QgsApplication::qgisMasterDbFilePath();
-    //now copy the master file into the users .qgis dir
-    std::ifstream myInputStream(myMasterDatabaseFileName.toLocal8Bit().data() );
-
-    if (! myInputStream)
-    {
-      std::cerr << "unable to open input file: "
-        << myMasterDatabaseFileName.toLocal8Bit().data() << " --bailing out! \n";
-      //XXX Do better error handling
-      return false;
-    }
-
-    std::ofstream myOutputStream(QString(qgisSettingsDir+"qgis.db").toLocal8Bit().data());
-
-    if (! myOutputStream)
-    {
-      std::cerr << "cannot open " << QString(qgisSettingsDir+"qgis.db").toLocal8Bit().data()  << "  for output\n";
-      //XXX Do better error handling
-      return false;
-    }
-
-    char myChar;
-    while (myInputStream.get(myChar))
-    {
-      myOutputStream.put(myChar);
-    }
-
-  }
-  return true;
 }
 
 void QgsBookmarks::on_btnHelp_clicked()

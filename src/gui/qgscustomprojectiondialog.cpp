@@ -37,48 +37,15 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog(QWidget *parent, Qt::WFlags
 {
   setupUi(this);
 
-  mQGisSettingsDir = QDir::homeDirPath () + "/.qgis/";
-  // first we look for ~/.qgis/qgis.db
-  // if it doesnt exist we copy it in from the global resources dir
+  // user database is created at QGIS startup in QgisApp::createDB
+  // we just check whether there is our database [MD]
   QFileInfo myFileInfo;
-  myFileInfo.setFile(mQGisSettingsDir+"qgis.db");
+  myFileInfo.setFile(QgsApplication::qgisSettingsDirPath());
   if ( !myFileInfo.exists( ) )
   {
-    // make sure the ~/.qgis dir exists first
-    QDir myUserQGisDir;
-    QString myPath = QDir::homeDirPath();
-    myPath += "/.qgis";
-    myUserQGisDir.setPath(myPath);
-    //now make sure the users .qgis dir exists 
-    makeDir(myUserQGisDir);
-    // Get the full path name to the sqlite3 spatial reference database.
-    QString myMasterDatabaseFileName = QgsApplication::qgisMasterDbFilePath();
-    //now copy the master file into the users .qgis dir
-    std::ifstream myInputStream(myMasterDatabaseFileName.toLocal8Bit().data() );
-
-    if (! myInputStream)
-    {
-      std::cerr << "unable to open input file: "
-          << myMasterDatabaseFileName.toLocal8Bit().data() << " --bailing out! \n";
-      //XXX Do better error handling
-      return ;
-    }
-
-    std::ofstream myOutputStream(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data());
-
-    if (! myOutputStream)
-    {
-      std::cerr << "cannot open " << QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data()  << "  for output\n";
-      //XXX Do better error handling
-      return ;
-    }
-
-    char myChar;
-    while (myInputStream.get(myChar))
-    {
-      myOutputStream.put(myChar);
-    }
-
+#ifdef QGISDEBUG 
+    std::cout << "The qgis.db does not exist" << std::endl; 
+#endif 
   }
 
   //
@@ -114,7 +81,7 @@ void QgsCustomProjectionDialog::getProjList ()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -149,7 +116,7 @@ void QgsCustomProjectionDialog::getEllipsoidList()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -197,7 +164,7 @@ void QgsCustomProjectionDialog::on_pbnDelete_clicked()
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -257,7 +224,7 @@ long QgsCustomProjectionDialog::getRecordCount()
   int           myResult;
   long          myRecordCount=0;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -290,7 +257,7 @@ QString QgsCustomProjectionDialog::getProjectionFamilyName(QString theProjection
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -321,7 +288,7 @@ QString QgsCustomProjectionDialog::getEllipsoidName(QString theEllipsoidAcronym)
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -352,7 +319,7 @@ QString QgsCustomProjectionDialog::getProjectionFamilyAcronym(QString theProject
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -383,7 +350,7 @@ QString QgsCustomProjectionDialog::getEllipsoidAcronym(QString theEllipsoidName)
   int           myResult;
   QString       myName;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -417,7 +384,7 @@ void QgsCustomProjectionDialog::on_pbnFirst_clicked()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -485,7 +452,7 @@ void QgsCustomProjectionDialog::on_pbnPrevious_clicked()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -562,7 +529,7 @@ void QgsCustomProjectionDialog::on_pbnNext_clicked()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -636,7 +603,7 @@ void QgsCustomProjectionDialog::on_pbnLast_clicked()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -852,12 +819,12 @@ void QgsCustomProjectionDialog::on_pbnSave_clicked()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << 
         " /n please notify  QGIS developers of this error \n " << 
-        QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data() << " (file name) "
+        QgsApplication::qgisUserDbFilePath().toLocal8Bit().data() << " (file name) "
         << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
@@ -980,7 +947,7 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open(QString(mQGisSettingsDir+"qgis.db").toLocal8Bit().data(), &myDatabase);
+  myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath(), &myDatabase);
   if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
@@ -1011,33 +978,6 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
   sqlite3_close(myDatabase);
 }
 */
-
-//a recursive function to make a directory and its ancestors
-bool QgsCustomProjectionDialog::makeDir(QDir &theQDir)
-{
-  if (theQDir.isRoot ())
-  {
-    //cannot create a root dir
-    return (false);
-  }
-
-  QDir myBaseDir;
-  QFileInfo myTempFileInfo;
-
-  myTempFileInfo.setFile(theQDir.path());
-  myBaseDir = myTempFileInfo.dir();
-
-  if(!myBaseDir.exists() && !makeDir(myBaseDir))
-  {
-    return FALSE;
-  }
-
-  qDebug("attempting to create directory %s in %s", 
-          (const char *)myTempFileInfo.fileName().toLocal8Bit().data(),
-          (const char *)myBaseDir.path().toLocal8Bit().data());
-
-  return myBaseDir.mkdir(myTempFileInfo.fileName());
-}
 
 
 QString QgsCustomProjectionDialog::getProjFromParameters()
@@ -1111,7 +1051,3 @@ const QString QgsCustomProjectionDialog::stringSQLSafe(const QString theSQL)
     return myRetval;
 }
   
-
-
-
-

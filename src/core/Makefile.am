@@ -59,7 +59,6 @@ libqgis_coreHEADERS =				\
 		qgsfeature.h				\
 		qgsfeatureattribute.h		\
 		qgsfield.h					\
-		qgsfile.h					\
 		qgsgeometry.h				\
 		qgsgeometryvertexindex.h	\
 		qgslabelattributes.h		\
@@ -113,7 +112,6 @@ libqgis_core_la_SOURCES =\
 		qgsfeature.cpp					\
 		qgsfeatureattribute.cpp				\
 		qgsfield.cpp						\
-		qgsfile.cpp			\
 		qgsgeometry.cpp						\
 		qgsgeometryvertexindex.cpp			\
 		qgslabelattributes.cpp		\

@@ -419,7 +419,7 @@ bool QgsSpatialRefSys::createFromSrsId (long theSrsId)
   //
   if (theSrsId>= USER_PROJECTION_START_ID)
   {
-    myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+    myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
     QFileInfo myFileInfo;
     myFileInfo.setFile(myDatabaseFileName);
     if ( !myFileInfo.exists( ) )
@@ -663,7 +663,7 @@ QgsSpatialRefSys::RecordMap QgsSpatialRefSys::getRecord(QString theSql)
     sqlite3_finalize(myPreparedStatement);
     sqlite3_close(myDatabase);
 
-    myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+    myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
     QFileInfo myFileInfo;
     myFileInfo.setFile(myDatabaseFileName);
     if ( !myFileInfo.exists( ) )
@@ -999,7 +999,7 @@ long QgsSpatialRefSys::findMatchingProj()
   // Try the users db now
   //
 
-  myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+  myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
   //check the db is available
   myResult = openDb(myDatabaseFileName, &myDatabase);
   if(myResult)
@@ -1261,7 +1261,7 @@ QString QgsSpatialRefSys::getProj4FromSrsId(const int theSrsId)
       //
       if (theSrsId >= USER_PROJECTION_START_ID)
       {
-        myDatabaseFileName = QDir::homeDirPath () + "/.qgis/qgis.db";
+        myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
         QFileInfo myFileInfo;
         myFileInfo.setFile(myDatabaseFileName);
         if ( !myFileInfo.exists( ) ) //its unlikely that this condition will ever be reached

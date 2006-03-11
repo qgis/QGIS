@@ -108,11 +108,19 @@ const QString QgsApplication::qgisMasterDbFilePath()
 }
 
 /*!
+  Returns the path to the settings directory in user's home dir
+ */
+const QString QgsApplication::qgisSettingsDirPath()
+{
+  return QDir::homeDirPath() + QString("/.qgis/");
+}
+
+/*!
   Returns the path to the user qgis.db file.
 */
 const QString QgsApplication::qgisUserDbFilePath()
 {
-  return QDir::homeDirPath() + QString("/.qgis/qgis.db");
+  return qgisSettingsDirPath() + QString("qgis.db");
 }
 
 /*!
