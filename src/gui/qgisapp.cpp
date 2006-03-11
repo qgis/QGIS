@@ -233,6 +233,8 @@ static void setTitleBarText_( QWidget & qgisApp )
   createCanvas();
   createOverview();
   createLegend();
+  
+  fileNew(); // prepare empty project
 
   mSplash->showMessage("Checking database", Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
@@ -1082,14 +1084,6 @@ void QgisApp::createCanvas()
   // "theMapCanvas" used to find this canonical instance later
   mMapCanvas = new QgsMapCanvas(this, "theMapCanvas" );
   QWhatsThis::add(mMapCanvas, tr("Map canvas. This is where raster and vector layers are displayed when added to the map"));
-  //set the canvas to the default background colour
-  //the default can be set in qgisoptions 
-  //use project properties to override the colour on a per project basis
-  QSettings mySettings;
-  int myRed = mySettings.value("/qgis/default_canvas_color_red",255).toInt();
-  int myGreen = mySettings.value("/qgis/default_canvas_color_green",255).toInt();
-  int myBlue = mySettings.value("/qgis/default_canvas_color_blue",255).toInt();
-  mMapCanvas->setCanvasColor(QColor(myRed,myGreen,myBlue));  // this is the fill co;our when rendering
   
   mMapCanvas->setMinimumWidth(10);
   QVBoxLayout *myCanvasLayout = new QVBoxLayout;
@@ -1097,7 +1091,6 @@ void QgisApp::createCanvas()
   tabWidget->widget(0)->setLayout(myCanvasLayout);
   // set the focus to the map canvas
   mMapCanvas->setFocus();
-  pan(); // set map tool - panning
 }
 
 void QgisApp::createOverview()
@@ -2364,62 +2357,82 @@ void QgisApp::fileExit()
 
 void QgisApp::fileNew()
 {
-  int answer = saveDirty();
-
-  if (answer != QMessageBox::Cancel)
-  {
-    mMapCanvas->freeze(true);
-    QgsMapLayerRegistry::instance()->removeAllMapLayers();
-    mMapCanvas->clear();
-
-
-    QgsProject::instance()->title( QString::null );
-    QgsProject::instance()->filename( QString::null );
-
-#ifdef QGISDEBUG
-    std::cout << "Clearing project properties" << std::endl;
-#endif
-    QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
-    QgsProject::instance()->dirty(false);
-
-    setTitleBarText_( *this );
-#ifdef QGISDEBUG
-    std::cout << "emiting new project signal" << std::endl ;
-#endif
-    //note by Tim: I did some casual egrepping and this signal doesnt actually
-    //seem to be connected to anything....why is it here? Just for future needs?
-    emit newProject();
-
-    mMapCanvas->freeze(false);
-  }
-  //set the projections enabled icon in the status bar
-  int myProjectionEnabledFlag =
-    QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
-  projectionsEnabled(myProjectionEnabledFlag);
+  fileNew(TRUE); // prompts whether to save project
 } // fileNew()
 
 
 //as file new but accepts flags to indicate whether we should prompt to save
 void QgisApp::fileNew(bool thePromptToSaveFlag)
-{
+{ 
   if (thePromptToSaveFlag)
   {
-    //just delegate this out
-    fileNew();
+    int answer = saveDirty();
+
+    if (answer == QMessageBox::Cancel)
+    {
+      return;
+    }
   }
-  else
-  {
-//    mMapCanvas->clear();
+  
+#ifdef QGISDEBUG
+    std::cout << "erasing project" << std::endl;
+#endif
+  
+  mMapCanvas->freeze(true);
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  mMapCanvas->clear();
 
-    QgsProject::instance()->title( QString::null );
-    QgsProject::instance()->filename( QString::null );
-    QgsProject::instance()->clearProperties(); // why carry over properties from previous projects?
-    QgsProject::instance()->dirty(false);
+  QgsProject* prj = QgsProject::instance();
+  prj->title( QString::null );
+  prj->filename( QString::null );
+  prj->clearProperties(); // why carry over properties from previous projects?
+  
+  QSettings settings;
+  
+  //set the colour for selections
+  //the default can be set in qgisoptions 
+  //use project properties to override the colour on a per project basis
+  int myRed = settings.value("/qgis/default_selection_color_red",255).toInt();
+  int myGreen = settings.value("/qgis/default_selection_color_green",255).toInt();
+  int myBlue = settings.value("/qgis/default_selection_color_blue",0).toInt();
+  prj->writeEntry("Gui","/SelectionColorRedPart",myRed);
+  prj->writeEntry("Gui","/SelectionColorGreenPart",myGreen);
+  prj->writeEntry("Gui","/SelectionColorBluePart",myBlue); 
+  QgsRenderer::mSelectionColor=QColor(myRed,myGreen,myBlue);
 
-    setTitleBarText_( *this );
+  //set the canvas to the default background colour
+  //the default can be set in qgisoptions 
+  //use project properties to override the colour on a per project basis
+  myRed = settings.value("/qgis/default_canvas_color_red",255).toInt();
+  myGreen = settings.value("/qgis/default_canvas_color_green",255).toInt();
+  myBlue = settings.value("/qgis/default_canvas_color_blue",255).toInt();
+  prj->writeEntry("Gui","/CanvasColorRedPart",myRed);
+  prj->writeEntry("Gui","/CanvasColorGreenPart",myGreen);
+  prj->writeEntry("Gui","/CanvasColorBluePart",myBlue);  
+  mMapCanvas->setCanvasColor(QColor(myRed,myGreen,myBlue));
+    
+  prj->dirty(false);
 
-    emit newProject();
-  }
+  setTitleBarText_( *this );
+    
+#ifdef QGISDEBUG
+  std::cout << "emiting new project signal" << std::endl ;
+#endif
+
+  //note by Tim: I did some casual egrepping and this signal doesnt actually
+  //seem to be connected to anything....why is it here? Just for future needs?
+  //note by Martin: actually QgsComposer does use it
+  emit newProject();
+
+  mMapCanvas->freeze(false);
+  mMapCanvas->refresh();
+  
+  //set the projections enabled icon in the status bar
+  int myProjectionEnabledFlag = prj->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
+  projectionsEnabled(myProjectionEnabledFlag);  
+  
+  pan(); // set map tool - panning
+
 } // QgisApp::fileNew(bool thePromptToSaveFlag)
 
 
