@@ -4073,7 +4073,13 @@ QString QgsRasterLayer::getMetadata()
 
   if (providerKey.isEmpty())
   {
-    if (gdalDataset->GetGeoTransform(adfGeoTransform) == CE_None)
+    if (gdalDataset->GetGeoTransform(adfGeoTransform) != CE_None)
+    {
+      // if the raster does not have a valid transform we need to use
+      // a pixel size of (1,-1), but GDAL returns (1,1)
+      adfGeoTransform[5] = -1;
+    }
+    else
     {
       myMetadataQString += "<tr><td bgcolor=\"gray\">";
       myMetadataQString += tr("Origin:");
