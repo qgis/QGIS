@@ -41,6 +41,7 @@ QgsMapRender::QgsMapRender()
   mMapUnits = QGis::METERS;
   mScaleCalculator->setMapUnits(mMapUnits);
 
+  mSize = QSize(0,0);
 }
 
 QgsMapRender::~QgsMapRender()
