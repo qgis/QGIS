@@ -100,7 +100,7 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   //set the colour for selections
   int myRed = settings.value("/qgis/default_selection_color_red",255).toInt();
   int myGreen = settings.value("/qgis/default_selection_color_green",255).toInt();
-  int myBlue = settings.value("/qgis/default_selection_color_blue",255).toInt();
+  int myBlue = settings.value("/qgis/default_selection_color_blue",0).toInt();
   pbnSelectionColour->setPaletteBackgroundColor(QColor(myRed,myGreen,myBlue));
   //set teh default color for canvas background
   myRed = settings.value("/qgis/default_canvas_color_red",255).toInt();

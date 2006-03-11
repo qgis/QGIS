@@ -113,12 +113,6 @@ QgsMapCanvas::QgsMapCanvas()
   // create map canvas item which will show the map
   mMap = new QgsMapCanvasMap(mCanvas, mMapRender);
   mMap->show();
-
-  int myRedInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorRedPart",255);
-  int myGreenInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorGreenPart",255);
-  int myBlueInt = QgsProject::instance()->readNumEntry("Gui","/CanvasColorBluePart",255);
-  QColor myColor = QColor(myRedInt,myGreenInt,myBlueInt);
-  setCanvasColor(myColor);
   
   moveCanvasContents(TRUE);
   
