@@ -29,7 +29,7 @@
 
 %}
 
-white       [ \t\n]+
+white       [ \t\r\n]+
 
 col_first    [A-Za-z_]
 col_next     [A-Za-z0-9_]
@@ -43,22 +43,11 @@ number  {num1}|{num2}
 str_char    ('')|(\\.)|[^'\\]
 string      "'"{str_char}*"'"
 
-
-comparison    (">="|"<="|"<"|">"|"="|"!="|"<>"|"~"|"LIKE")
-
-arithmetic    [+-/*]
-
 %%
 
-{white}    /* skip blanks and tabs */
-
-[()]      { return yytext[0]; }
-
-{number}  { yylval.number  = atof(yytext); return NUMBER; }
-
-"NOT "    { return NOT; }
-" AND "   { return AND;  }
-" OR "    { return OR; }
+"NOT"    { return NOT; }
+"AND"   { return AND;  }
+"OR"    { return OR; }
 
 "="   {  yylval.op = QgsSearchTreeNode::opEQ; return COMPARISON; }
 "!="  {  yylval.op = QgsSearchTreeNode::opNE; return COMPARISON; }
@@ -70,11 +59,17 @@ arithmetic    [+-/*]
 "~"   {  yylval.op = QgsSearchTreeNode::opRegexp; return COMPARISON; }
 "LIKE" { yylval.op = QgsSearchTreeNode::opLike; return COMPARISON; }
 
-{arithmetic}    { return yytext[0]; }
+[+-/*]    { return yytext[0]; }
+
+[()]      { return yytext[0]; }
+
+{number}  { yylval.number  = atof(yytext); return NUMBER; }
 
 {string}  { return STRING; }
 
 {column_ref}   { return COLUMN_REF; }
+
+{white}    /* skip blanks and tabs */
 
 .       { return UNKNOWN_CHARACTER; }
 
