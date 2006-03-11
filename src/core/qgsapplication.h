@@ -42,6 +42,9 @@ class QgsApplication: public QApplication
     //! Returns the path to the master qgis.db file.
     static const QString qgisMasterDbFilePath();
 
+    //! Returns the path to the settings directory in user's home dir
+    static const QString qgisSettingsDirPath();
+    
     //! Returns the path to the user qgis.db file.
     static const QString qgisUserDbFilePath();
 
