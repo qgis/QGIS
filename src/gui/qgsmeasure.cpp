@@ -48,15 +48,6 @@ QgsMeasure::QgsMeasure(bool measureArea, QgsMapCanvas *mc, const char * name, Qt
     //mTable->setColumnStretchable ( 1, true );
     //mTable->setColumnStretchable ( 2, true );
 
-    // Widget font properties should normally be set in the ui file.
-    // This is here to work around the following bug in Qt 4.0.1:
-    // Setting another font attribute while using the default font size will
-    // cause uic3 to generate code setting the font size to 0.
-    // This causes text not to be drawn with Qt/X11 and a crash with Qt/Mac.
-    QFont font(lblTotal->font());
-    font.setBold(true);
-    lblTotal->setFont(font);
-
     updateUi();
     
     connect( mMapCanvas, SIGNAL(renderComplete(QPainter*)), this, SLOT(mapCanvasChanged()) );
@@ -120,7 +111,7 @@ void QgsMeasure::addPoint(QgsPoint &point)
     if (mMeasureArea && mPoints.size() > 2)
     {
       double area = mCalc->measurePolygon(mPoints);
-      lblTotal->setText(formatArea(area));
+      editTotal->setText(formatArea(area));
     }
     else if (!mMeasureArea && mPoints.size() > 1)
     {
@@ -131,7 +122,7 @@ void QgsMeasure::addPoint(QgsPoint &point)
       double d = mCalc->measureLine(p1,p2);
             
       mTotal += d;
-      lblTotal->setText(formatDistance(mTotal));
+      editTotal->setText(formatDistance(mTotal));
 	
     	mTable->setNumRows ( mPoints.size()-1 );
 
@@ -163,6 +154,25 @@ void QgsMeasure::mouseMove(QgsPoint &point)
 #endif
 
   mRubberBand->movePoint(point);
+  
+  // show current distance/area while moving the point
+  // by creating a temporary copy of point array
+  // and adding moving point at the end
+  std::vector<QgsPoint> tmpPoints = mPoints;
+  tmpPoints.push_back(point);
+  if (mMeasureArea && tmpPoints.size() > 2)
+  {
+    double area = mCalc->measurePolygon(tmpPoints);
+    editTotal->setText(formatArea(area));
+  }
+  else if (!mMeasureArea && tmpPoints.size() > 1)
+  {
+    int last = tmpPoints.size()-2;
+    QgsPoint p1 = tmpPoints[last], p2 = tmpPoints[last+1];
+
+    double d = mCalc->measureLine(p1,p2);
+    editTotal->setText(formatDistance(mTotal + d));
+  }
 }
 
 void QgsMeasure::mapCanvasChanged()
@@ -243,12 +253,12 @@ QString QgsMeasure::formatArea(double area)
   if (area < 1000)
   {
     txt = QString::number(area,'f',0);
-    txt += " m<sup>2</sup>";
+    txt += " m2";
   }
   else
   {
     txt = QString::number(area/1000000,'f',3);
-    txt += " km<sup>2</sup>";
+    txt += " km2";
   }
   return txt;
 }
@@ -258,12 +268,12 @@ void QgsMeasure::updateUi()
   if (mMeasureArea)
   {
     mTable->hide();
-    lblTotal->setText(formatArea(0));
+    editTotal->setText(formatArea(0));
   }
   else
   {
     mTable->show();
-    lblTotal->setText(formatDistance(0));
+    editTotal->setText(formatDistance(0));
   }
   
 }
