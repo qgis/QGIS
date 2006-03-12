@@ -508,6 +508,98 @@ AC_SUBST(QTDIR)
 ])
 
 
+dnl ------------------------------------------------------------------------
+dnl
+dnl improved Qt4 check
+dnl - uses pkgconfig by default
+dnl - can be overridden by -with-qtdir=....
+dnl
+dnl ------------------------------------------------------------------------
+
+AC_DEFUN([AQ_CHECK_QT4],[
+    
+  AC_ARG_WITH([qtdir], AC_HELP_STRING([--with-qtdir=DIR],[Qt4 installation directory]),
+              QTDIR="$withval", QTDIR="")
+
+  QT_MIN_VER=4.1.0
+  
+  if test "x$QTDIR" == "x" ; then
+  
+    dnl ---------------------------------------------------------------------------
+    dnl we will use PKGCONFIG, check that all needed Qt4 components are there
+    dnl ---------------------------------------------------------------------------
+    
+    PKG_CHECK_MODULES(QTCORE, QtCore     >= $QT_MIN_VER)
+    PKG_CHECK_MODULES(QTGUI,  QtGui      >= $QT_MIN_VER)
+    PKG_CHECK_MODULES(QT3SUP, Qt3Support >= $QT_MIN_VER)
+    PKG_CHECK_MODULES(QTNET,  QtNetwork  >= $QT_MIN_VER)
+    PKG_CHECK_MODULES(QTXML,  QtXml      >= $QT_MIN_VER)
+    PKG_CHECK_MODULES(QTSVG,  QtSvg      >= $QT_MIN_VER)
+
+    dnl check for Qt binaries needed for compilation: moc,uic,rcc
+    dnl (we could also check for moc and uic versions)
+    
+    AC_CHECK_PROG(MOC, moc, moc)
+    if test x$MOC = x ; then
+      AC_MSG_ERROR([*** moc must be in path])
+    fi
+    AC_CHECK_PROG(UIC, uic, uic)
+    if test x$UIC = x ; then
+      AC_MSG_ERROR([*** uic must be in path])
+    fi
+    AC_CHECK_PROG(RCC, rcc, rcc)
+    if test x$RCC = x ; then
+      AC_MSG_ERROR([*** rcc must be in path])
+    fi
+
+    dnl set and display variables
+    
+    QT_CXXFLAGS="-DQT3_SUPPORT $QTCORE_CFLAGS $QTGUI_CFLAGS $QT3SUP_CFLAGS $QTNET_CFLAGS $QTXML_CFLAGS $QTSVG_CFLAGS"
+    AC_MSG_CHECKING([QT_CXXFLAGS])
+    AC_MSG_RESULT([$QT_CXXFLAGS])
+    AC_SUBST([$QT_CXXFLAGS])
+
+    QT_LDADD="$QTCORE_LIBS $QTGUI_LIBS $QT3SUP_LIBS $QTNET_LIBS $QTXML_LIBS $QTSVG_LIBS"
+    AC_MSG_CHECKING([QT_LDADD])
+    AC_MSG_RESULT([$QT_LDADD])
+    AC_SUBST([$QT_LDADD])
+
+    QTDIR="no_qtdir"
+    AC_SUBST([$QTDIR])
+
+    QT_MAJOR=4
+
+  else
+  
+    dnl ---------------------------------------------------------------------------
+    dnl let's use old code for detection
+    dnl it needs cleanups since there is still Qt3 detection stuff
+    dnl ---------------------------------------------------------------------------
+    AQ_CHECK_QT
+
+    dnl ---------------------------------------------------------------------------
+    dnl Qt/Mac check (install everything into application bundle)
+    dnl ---------------------------------------------------------------------------
+    if test x$QTDIR != x -a -f "$QTDIR/mkspecs/default/Info.plist.app"; then
+      have_qtmac=yes
+      bundle_suffix=$PACKAGE.app/Contents/MacOS
+      if test `expr "$prefix" : ".*$bundle_suffix$"` -eq 0; then
+        prefix="$prefix/$bundle_suffix"
+      fi
+    fi
+
+  fi
+  
+  dnl do we still need this? [MD]
+  dnl Assume for the moment that Qt4 installations will still compile against uic3
+  dnl AM_CONDITIONAL([NO_UIC_IMPLEMENTATIONS], [test "$QT_MAJOR" = "4"])
+  AM_CONDITIONAL([NO_UIC_IMPLEMENTATIONS], [test "$QT_MAJOR" = "0"])
+  AM_CONDITIONAL([HAVE_QT3], [test "$QT_MAJOR" = "3"])
+  AM_CONDITIONAL([HAVE_QT4], [test "$QT_MAJOR" = "4"])
+
+  AM_CONDITIONAL([HAVE_QTMAC], [test "$have_qtmac" = "yes"])
+])
+
 
 # Configure path for the GNU Scientific Library
 # Christopher R. Gabriel <cgabriel@linux.it>, April 2000

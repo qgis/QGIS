@@ -84,26 +84,7 @@ AQ_CHECK_LIB64
 dnl ---------------------------------------------------------------------------
 dnl Qt check
 dnl ---------------------------------------------------------------------------
-AQ_CHECK_QT
-
-dnl Assume for the moment that Qt4 installations will still compile against uic3
-dnl AM_CONDITIONAL([NO_UIC_IMPLEMENTATIONS], [test "$QT_MAJOR" = "4"])
-AM_CONDITIONAL([NO_UIC_IMPLEMENTATIONS], [test "$QT_MAJOR" = "0"])
-
-AM_CONDITIONAL([HAVE_QT3], [test "$QT_MAJOR" = "3"])
-AM_CONDITIONAL([HAVE_QT4], [test "$QT_MAJOR" = "4"])
-
-dnl ---------------------------------------------------------------------------
-dnl Qt/Mac check (install everything into application bundle)
-dnl ---------------------------------------------------------------------------
-if test x$QTDIR != x -a -f "$QTDIR/mkspecs/default/Info.plist.app"; then
-  have_qtmac=yes
-  bundle_suffix=$PACKAGE.app/Contents/MacOS
-  if test `expr "$prefix" : ".*$bundle_suffix$"` -eq 0; then
-    prefix="$prefix/$bundle_suffix"
-  fi
-fi
-AM_CONDITIONAL([HAVE_QTMAC], [test "$have_qtmac" = "yes"])
+AQ_CHECK_QT4
 
 dnl ---------------------------------------------------------------------------
 dnl Python
