@@ -902,17 +902,12 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
             drawFeature(p,fet,theMapToPixelTransform,&marker, scale, 
                 projectionsEnabledFlag);
 
-            //test for geos performance
-            //geos::Geometry* g=fet->geosGeometry();
-            //delete g;
             ++featureCount;
             delete fet;
           }
         }
 
       }
-
-      //std::cerr << "Time to draw was " << t.elapsed() << '\n';
 
       //also draw the not yet commited features
       std::vector<QgsFeature*>::iterator it = mAddedFeatures.begin();
@@ -2692,35 +2687,6 @@ void QgsVectorLayer::refreshLegend()
 	}
       mLegend->changeSymbologySettings(getLayerID(), &itemList);
     }
-
-#if 0
-  if(mLegendLayer && m_renderer)
-  {
-    m_renderer->refreshLegend(mLegendLayer);
-  }
-
-  //create an item for each classification field (currently only one for all renderers)
-  if(m_renderer)
-  {
-    if(m_renderer->needsAttributes())
-    {
-      std::list<int> classfieldlist = m_renderer->classificationAttributes();
-      for(std::list<int>::reverse_iterator it = classfieldlist.rbegin(); it!=classfieldlist.rend(); ++it)
-      {
-        const QgsField theField = (dataProvider->fields())[*it];
-        QString classfieldname = theField.name();
-        QgsLegendSymbologyItem* item = new QgsLegendSymbologyItem();
-        item->setText(0, classfieldname);
-        static_cast<QTreeWidgetItem*>(mLegendLayer)->insertChild(0, item);
-      }
-    }
-  }
-  if(mLegendLayer)
-  {
-    //copy the symbology changes for the other layers in the same symbology group
-    mLegendLayer->updateLayerSymbologySettings(this);
-  }
-#endif
 }
 
 bool QgsVectorLayer::copySymbologySettings(const QgsMapLayer& other)
