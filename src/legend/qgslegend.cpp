@@ -63,9 +63,10 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
 	   this, SLOT(handleItemChange(QTreeWidgetItem*, int)));
   
   connect( this, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-           this, SLOT(handleCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+	   this, SLOT(handleCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+  
 
-  setSortingEnabled(false);
+ setSortingEnabled(false);
   setDragEnabled(false);
   setAutoScroll(true);
   QFont f("Arial", 10, QFont::Normal);
@@ -509,32 +510,22 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
 QgsMapLayer* QgsLegend::currentLayer()
 {
   QgsLegendItem* citem=dynamic_cast<QgsLegendItem*>(currentItem());
-  /*
-  // XXX commented out because QGIS crashed when switching projects [MD]
-  QList<QTreeWidgetItem*> selItems = selectedItems();
-    if(selItems.size() > 1)
-      {
-	return 0;
-      }
-    QList<QTreeWidgetItem*>::iterator it = selItems.begin();
-    QgsLegendItem* citem=dynamic_cast<QgsLegendItem*>(*it);
-  */
-
-    if(citem)
+  
+  if(citem)
     {
-	QgsLegendLayerFile* llf=dynamic_cast<QgsLegendLayerFile*>(citem);
-	if(llf)
+      QgsLegendLayerFile* llf=dynamic_cast<QgsLegendLayerFile*>(citem);
+      if(llf)
 	{
 	  return llf->layer(); //the current item is itself a legend layer file
 	}
-	else
+      else
 	{
-	    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(citem);
-	    if(ll)
+	  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(citem);
+	  if(ll)
 	    {
 	      return ll->firstMapLayer(); //the current item is a legend layer, so return its first layer
 	    }
-	    else
+	  else
 	    {
 	      QgsLegendLayer* lpl = dynamic_cast<QgsLegendLayer*>(citem->parent());
 	      if(lpl)
@@ -548,9 +539,9 @@ QgsMapLayer* QgsLegend::currentLayer()
 	    }
 	}
     }
-    else
+  else
     {
-	return 0;
+      return 0;
     }
 }
 
@@ -1268,6 +1259,9 @@ void QgsLegend::changeSymbologySettings(const QString& key, const std::list< std
     {
       return;
     }
+
+  //store the current item
+  QTreeWidgetItem* theCurrentItem = currentItem();
   
   //remove the symbology items under the legend layer
   for(int i = theLegendLayer->childCount(); i >= 0; --i)
@@ -1296,6 +1290,9 @@ void QgsLegend::changeSymbologySettings(const QString& key, const std::list< std
 
   //copy the legend settings for the other layer files in the same legend layer
   theLegendLayer->updateLayerSymbologySettings(theMapLayer);
+
+  //restore the current item again
+  setCurrentItem(theCurrentItem);
 }
 
 void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
