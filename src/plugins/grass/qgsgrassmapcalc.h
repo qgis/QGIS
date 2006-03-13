@@ -89,6 +89,8 @@ public:
     //  QgsGrassModuleOptions
     QStringList checkOutput();
 
+    QStringList ready() { return QStringList() ; }
+
     /** \brief recieves contentsMousePressEvent from view */
     void contentsMousePressEvent(QMouseEvent*);
 
