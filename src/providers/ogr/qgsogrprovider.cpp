@@ -620,7 +620,7 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
   // spatial query to select features
   std::cerr << "Selection rectangle is " << *rect << std::endl;
   OGRGeometry *filter = 0;
-  filter = new OGRPolygon();
+  filter = OGRGeometryFactory::createGeometry(wkbPolygon);
   QString wktExtent = QString("POLYGON ((%1))").arg(rect->asPolygon());
   const char *wktText = (const char *)wktExtent;
 
@@ -651,9 +651,7 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
     assert(result==OGRERR_NONE);
 #endif
   }
-  
-  delete filter;
-  
+  OGRGeometryFactory::destroyGeometry(filter);  
 } // QgsOgrProvider::select
 
 
