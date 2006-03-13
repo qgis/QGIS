@@ -1586,8 +1586,9 @@ void QgsRasterLayer::drawSingleBandGray(QPainter * theQPainter, QgsRasterViewPor
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
-  myQImage.fill(0);
+  //myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
+  myQImage.fill(qRgba(255,255,255,0 )); // fill transparent
 
   double myRangeDouble = myRasterBandStats.rangeDouble;
 
@@ -1675,8 +1676,9 @@ void QgsRasterLayer::drawSingleBandPseudoColor(QPainter * theQPainter,
   void *myGdalScanData = readData ( myGdalBand, theRasterViewPort );
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
-  myQImage.fill(0);
+  //myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
+  myQImage.fill(qRgba(255,255,255,0 )); // fill transparent
 
   //calculate the adjusted matrix stats - which come into affect if the user has chosen
   QgsRasterBandStats myAdjustedRasterBandStats = getRasterBandStats(theBandNoInt);
@@ -1897,8 +1899,9 @@ void QgsRasterLayer::drawPalettedSingleBandColor(QPainter * theQPainter, QgsRast
   QgsColorTable *myColorTable = colorTable ( theBandNoInt );
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
-  myQImage.fill(0);
+  //myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
+  myQImage.fill(qRgba(255,255,255,0 )); // fill transparent
 
   for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
   {
@@ -1989,8 +1992,9 @@ void QgsRasterLayer::drawPalettedSingleBandGray(QPainter * theQPainter, QgsRaste
   QgsColorTable *myColorTable = &(myRasterBandStats.colorTable);
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
-  myQImage.fill(0);
+  //myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
+  myQImage.fill(qRgba(255,255,255,0 )); // fill transparent
 
   for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
   {
@@ -2096,8 +2100,9 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor(QPainter * theQPainter, Q
   QgsColorTable *myColorTable = &(myRasterBandStats.colorTable);
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
-  myQImage.fill(0);
+  //myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
+  myQImage.fill(qRgba(255,255,255,0 )); // fill transparent
 
   int myRedInt = 0;
   int myGreenInt = 0;
@@ -2335,8 +2340,9 @@ void QgsRasterLayer::drawPalettedMultiBandColor(QPainter * theQPainter, QgsRaste
   QgsColorTable *myColorTable = colorTable ( theBandNoInt );
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
-  myQImage.fill(0);
+  //myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
+  myQImage.fill(qRgba(255,255,255,0 )); // fill transparent
 
   for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
   {
@@ -2473,8 +2479,9 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
   void *myGdalBlueData = readData ( myGdalBlueBand, theRasterViewPort );
 
   QImage myQImage = QImage(theRasterViewPort->drawableAreaXDimInt, theRasterViewPort->drawableAreaYDimInt, 32);
-  myQImage.fill(0);
+  //myQImage.fill(0);
   myQImage.setAlphaBuffer(true);
+  myQImage.fill(qRgba(255,255,255,0 )); // fill transparent
   for (int myColumnInt = 0; myColumnInt < theRasterViewPort->drawableAreaYDimInt; ++myColumnInt)
   {
     for (int myRowInt = 0; myRowInt < theRasterViewPort->drawableAreaXDimInt; ++myRowInt)
