@@ -37,6 +37,9 @@ class QValidator;
 #include <q3groupbox.h>
 #include <qcheckbox.h>
 #include <q3process.h>
+#include <QGroupBox>
+//#include <QLayout>
+#include <QVBoxLayout>
 
 // Must be here, so that it is included to moc file
 #include "qgisapp.h"
@@ -169,6 +172,10 @@ public:
     // return list of existing output maps
     virtual QStringList checkOutput() { return QStringList() ; }
 
+    //! Check if otpion is ready
+    //  Returns empty string or error message
+    virtual QStringList ready() { return QStringList() ; }
+
 protected:
     //! QGIS application
     QgisApp *mQgisApp;
@@ -217,6 +224,8 @@ public:
 
     QStringList checkOutput();
 
+    QStringList ready() ;
+
 private:
     //! Name of module executable 
     QString mXName;
@@ -258,6 +267,10 @@ public:
     //! Item's id
     QString id() { return mId; } 
 
+    //! Check if otpion is ready
+    //  Returns empty string or error message
+    virtual QString ready() { return QString() ; }
+
 protected:
 
     //! Pointer to GRASS module
@@ -286,7 +299,7 @@ private:
 /*! \class QgsGrassModuleOption
  *  \brief  GRASS option 
  */
-class QgsGrassModuleOption: public Q3GroupBox, public QgsGrassModuleItem
+class QgsGrassModuleOption: public QGroupBox, public QgsGrassModuleItem
 {
     Q_OBJECT;
 
@@ -318,12 +331,28 @@ public:
     // Returns emppty string or name of existing output
     QString outputExists();
 
+    QString ready() ;
+
+public slots:
+    // Add new line edit for multiple options
+    void addLineEdit();
+
+    // Remove one line edit for multiple options
+    void removeLineEdit();
+
 private:
     //! Control type
     ControlType mControlType;
 
     //! Value type
     ValueType mValueType;
+
+    //! If have defined value limits
+    bool mHaveLimits;
+    double mMin, mMax;
+    
+    //! Default value
+    QString mDefault;
     
     //! Combobox
     QComboBox *mComboBox;
@@ -335,7 +364,7 @@ private:
     std::vector<QCheckBox*> mCheckBoxes;
     
     //! Line
-    QLineEdit *mLineEdit;
+    std::vector<QLineEdit*> mLineEdits;
 
     //! True if this option is GRASS output
     bool mIsOutput;
@@ -345,6 +374,9 @@ private:
 
     //! Line input validator
     QValidator *mValidator;
+
+    // Layout inside box
+    QVBoxLayout *mLayout;
 };
 /********************** QgsGrassModuleFlag ************************/
 /*! \class QgsGrassModuleFlag
@@ -404,6 +436,8 @@ public:
     QgsMapLayer * currentLayer();
 
     QString currentMap();
+
+    QString ready() ;
 
 public slots:
     //! Fill combobox with currently available maps in QGIS canvas

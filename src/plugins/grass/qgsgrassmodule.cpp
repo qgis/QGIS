@@ -61,9 +61,12 @@
 #include <qimage.h>
 //Added by qt3to4:
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QGridLayout>
 #include <QIntValidator>
 #include <QDoubleValidator>
+#include <QPushButton>
+#include <QGroupBox>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -405,9 +408,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
 	n = n.nextSibling();
     }
 
-    QSpacerItem *si = new QSpacerItem ( 10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding );
-    layout->addItem ( si );
-
+    layout->addStretch();
 }
 
 QStringList QgsGrassModuleStandardOptions::arguments()
@@ -444,6 +445,55 @@ QgsGrassModuleItem *QgsGrassModuleStandardOptions::item ( QString id )
 
     QMessageBox::warning( 0, "Warning", "Item with id " + id + " not found" );
     return 0;
+}
+
+QStringList QgsGrassModuleStandardOptions::checkOutput()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleStandardOptions::checkOutput()" << std::endl;
+    #endif
+    QStringList list;
+
+    for ( int i = 0; i < mItems.size(); i++ ) 
+    {
+	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleOption) ) {
+	    continue;
+	}
+	QgsGrassModuleOption *opt = 
+	      dynamic_cast<QgsGrassModuleOption *> ( mItems[i] );
+    
+        std::cerr << "opt->key() = " << opt->key().ascii() << std::endl;
+
+	if ( opt->isOutput() )
+	{
+            QString out = opt->outputExists();
+            if ( !out.isNull() ) 
+            {
+	        list.append ( out );
+            }
+	}
+    } 
+
+    return list;
+}
+
+QStringList QgsGrassModuleStandardOptions::ready()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleStandardOptions::ready()" << std::endl;
+    #endif
+    QStringList list;
+
+    for ( int i = 0; i < mItems.size(); i++ ) 
+    {
+	QString err = mItems[i]->ready();
+	if ( !err.isNull() ) 
+	{
+	    list.append ( err );
+	}
+    } 
+
+    return list;
 }
 
 QgsGrassModuleStandardOptions::~QgsGrassModuleStandardOptions()
@@ -619,6 +669,19 @@ void QgsGrassModule::run()
 	mProcess.addArgument( mXName );
 	command = mXName;
 
+        // Check if options are ready
+        QStringList readyErrors = mOptions->ready();
+        if ( readyErrors.size() > 0 )
+        {
+            QString err;
+            for ( int i = 0; i < readyErrors.size(); i++ ) 
+            {
+                err.append ( readyErrors.at(i) + "<br>" );
+            }
+            QMessageBox::warning ( 0, "Warning", err );
+            return;
+        }
+
         // Check if output exists
         QStringList outputExists = mOptions->checkOutput();
         if ( outputExists.size() > 0 )
@@ -789,16 +852,18 @@ QDomNode QgsGrassModule::nodeByKey ( QDomElement elem, QString key )
 QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key, 
 	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
 	                                   QWidget * parent)
-                    : Q3GroupBox ( 1, Qt::Vertical, parent ),
+                    : QGroupBox ( parent ),
                       QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
-	mIsOutput(false), mValueType(String)
+	mIsOutput(false), mValueType(String), mHaveLimits(false)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModuleOption::QgsGrassModuleOption" << std::endl;
     #endif
-    setSizePolicy ( QSizePolicy::Preferred, QSizePolicy::Minimum );
+    setSizePolicy ( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
     
     if ( mHidden ) hide();
+    
+    mLayout = new QVBoxLayout ();
 
     QString tit;
     if ( mDescription.length() > 40 ) {
@@ -833,6 +898,7 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 	
 	if ( !valuesNode.isNull() && valuesNode.childNodes().count() > 1 ) 
 	{
+            setLayout(mLayout);
             // predefined values -> ComboBox or CheckBox
 
 	    // one or many?
@@ -841,6 +907,7 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 	    } else {
 	        mControlType = ComboBox;
 		mComboBox = new QComboBox ( this );
+                mLayout->addWidget ( mComboBox );
 	    }
 
 	    // List of values to be excluded 
@@ -875,6 +942,7 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 			    } else {
 				QCheckBox *cb = new QCheckBox ( desc, this );
 				mCheckBoxes.push_back ( cb );
+                                mLayout->addWidget ( cb );
 			    }
 			    
 			    mValues.push_back ( val );
@@ -890,12 +958,17 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 	    // Line edit
 	    mControlType = LineEdit;
 
-	    mLineEdit = new QLineEdit ( this );
 	    QDomNode n = gnode.namedItem ( "default" );
 	    if ( !n.isNull() ) {
 		QDomElement e = n.toElement();
-		QString def = e.text().stripWhiteSpace();
-		mLineEdit->setText ( def );
+		mDefault = e.text().stripWhiteSpace();
+	    }
+
+   	    if ( gelem.attribute("type") == "integer" ) 
+            {
+		mValueType = Integer;
+	    } else if ( gelem.attribute("type") == "float" ) {
+		mValueType = Double;
 	    }
 
             QStringList minMax;
@@ -908,30 +981,80 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 		    QDomElement e = n.toElement();
 		    QString val = e.text().stripWhiteSpace();
                     minMax = val.split("-");
+                    if ( minMax.size() == 2 ) 
+                    {
+                        mHaveLimits = true;
+                        mMin = minMax.at(0).toDouble();
+                        mMax = minMax.at(1).toDouble();
+                    }
                 }
             }
-   	    if ( gelem.attribute("type") == "integer" ) 
+
+            addLineEdit();
+
+            // add/delete buttons for multiple options
+   	    if ( gelem.attribute("multiple") == "yes" ) 
             {
-		mValueType = Integer;
-                if ( minMax.size() == 2 ) {
-		    mValidator = new QIntValidator( minMax.at(0).toInt(),
-                                             minMax.at(1).toInt(), this );
-                } else {
-		    mValidator = new QIntValidator( this );
-                }
-                mLineEdit->setValidator ( mValidator );
-	    } else if ( gelem.attribute("type") == "float" ) {
-		mValueType = Double;
-                if ( minMax.size() == 2 ) {
-		    mValidator = new QDoubleValidator( minMax.at(0).toDouble(),
-                                             minMax.at(1).toDouble(), 10, this );
-                } else {
-		    mValidator = new QDoubleValidator( this );
-                }
-                mLineEdit->setValidator ( mValidator );
-	    }
+                QHBoxLayout *l = new QHBoxLayout (this);
+                QVBoxLayout *vl = new QVBoxLayout ();
+                l->insertLayout( -1, mLayout );
+                l->insertLayout( -1, vl );
+
+                // TODO: how to keep both buttons on the top?
+                QPushButton *b = new QPushButton ( "+", this);
+                connect( b, SIGNAL(clicked()), this, SLOT(addLineEdit()) );
+                vl->addWidget ( b, 0, Qt::AlignTop );
+
+                b = new QPushButton ( "-", this);
+                connect( b, SIGNAL(clicked()), this, SLOT(removeLineEdit()) );
+                vl->addWidget ( b, 0, Qt::AlignTop );
+        
+                // Dont enable this, it makes the group box expanding
+                // vl->addStretch();
+            }
+            else 
+            {
+                setLayout ( mLayout );
+            }  
 	}
     }
+}
+
+void QgsGrassModuleOption::addLineEdit()
+{
+    std::cerr << "QgsGrassModuleOption::addLineEdit()" << std::endl;
+
+    // TODO make the widget growing with new lines. HOW???!!!
+    QLineEdit *lineEdit = new QLineEdit ( this );
+    mLineEdits.push_back (lineEdit );
+    lineEdit->setText ( mDefault );
+
+    if ( mValueType == Integer ) 
+    {
+	if ( mHaveLimits ) {
+	    mValidator = new QIntValidator( (int)mMin, (int)mMax, this );
+	} else {
+	    mValidator = new QIntValidator( this );
+	}
+	lineEdit->setValidator ( mValidator );
+    } else if ( mValueType == Double ) {
+	if ( mHaveLimits ) {
+	    mValidator = new QDoubleValidator( mMin, mMax, 10, this );
+	} else {
+	    mValidator = new QDoubleValidator( this );
+	}
+	lineEdit->setValidator ( mValidator );
+    }
+
+    mLayout->addWidget ( lineEdit );
+}
+
+void QgsGrassModuleOption::removeLineEdit()
+{
+    std::cerr << "QgsGrassModuleOption::removeLineEdit()" << std::endl;
+    if ( mLineEdits.size() < 2 ) return;
+    delete mLineEdits.at(mLineEdits.size()-1);
+    mLineEdits.pop_back(); 
 }
 
 QString QgsGrassModuleOption::outputExists()
@@ -940,7 +1063,8 @@ QString QgsGrassModuleOption::outputExists()
 
     if ( !mIsOutput ) return QString();
 
-    QString value = mLineEdit->text().trimmed();
+    QLineEdit *lineEdit = mLineEdits.at(0);
+    QString value = lineEdit->text().trimmed();
     std::cerr << "mKey = " << mKey.ascii() << std::endl;
     std::cerr << "value = " << value.ascii() << std::endl;
     std::cerr << "mOutputElement = " << mOutputElement.ascii() << std::endl;
@@ -956,7 +1080,7 @@ QString QgsGrassModuleOption::outputExists()
 
     if ( fi.exists() )
     {
-        return (mLineEdit->text());
+        return (lineEdit->text());
     }
 
     return QString();
@@ -970,7 +1094,17 @@ QStringList QgsGrassModuleOption::options()
         list.push_back( mKey + "=" + mAnswer );
     } else {
 	if ( mControlType == LineEdit ) {
-            list.push_back( mKey + "=" + mLineEdit->text() );
+            QString vals; 
+            for ( int i = 0; i < mLineEdits.size(); i++ ) 
+            {
+                QLineEdit *lineEdit = mLineEdits.at(i);
+                if( lineEdit->text().trimmed().length() > 0 )
+                {
+                    if ( vals.length() > 0 ) vals.append (",");
+                    vals.append ( lineEdit->text().trimmed() );
+                }
+            }
+            list.push_back( mKey + "=" + vals );
 	} else if ( mControlType == ComboBox ) {
             list.push_back( mKey + "=" + mValues[mComboBox->currentItem()] );
 	} else if ( mControlType == CheckBoxes ) {
@@ -986,6 +1120,24 @@ QStringList QgsGrassModuleOption::options()
 	}
     }
     return list;
+}
+
+QString QgsGrassModuleOption::ready()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleOption::ready()" << std::endl;
+    #endif
+
+    QString error;
+
+    if ( mControlType == LineEdit )
+    { 
+       if ( mLineEdits.at(0)->text().trimmed().length() == 0 )
+       {
+           error.append ( title() + ":&nbsp;missing value" );
+       }
+    }
+    return error;
 }
 
 QgsGrassModuleOption::~QgsGrassModuleOption()
@@ -1188,36 +1340,6 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
     
     // Fill in QGIS layers 
     updateQgisLayers();
-}
-
-QStringList QgsGrassModuleStandardOptions::checkOutput()
-{
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrassModuleStandardOptions::checkOutput()" << std::endl;
-    #endif
-    QStringList list;
-
-    for ( int i = 0; i < mItems.size(); i++ ) 
-    {
-	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleOption) ) {
-	    continue;
-	}
-	QgsGrassModuleOption *opt = 
-	      dynamic_cast<QgsGrassModuleOption *> ( mItems[i] );
-    
-        std::cerr << "opt->key() = " << opt->key().ascii() << std::endl;
-
-	if ( opt->isOutput() )
-	{
-            QString out = opt->outputExists();
-            if ( !out.isNull() ) 
-            {
-	        list.append ( out );
-            }
-	}
-    } 
-
-    return list;
 }
 
 void QgsGrassModuleInput::updateQgisLayers()
@@ -1467,6 +1589,22 @@ QString QgsGrassModuleInput::currentMap()
 void QgsGrassModuleInput::changed(int i)
 {
     emit valueChanged();
+}
+
+QString QgsGrassModuleInput::ready()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleInput::ready()" << std::endl;
+    #endif
+
+    QString error;
+
+    std::cerr << "count = " << mLayerComboBox->count() << std::endl;
+    if ( mLayerComboBox->count() == 0 )
+    {
+       error.append ( title() + ":&nbsp;no input" );
+    }
+    return error;
 }
 
 QgsGrassModuleInput::~QgsGrassModuleInput()
