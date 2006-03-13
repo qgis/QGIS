@@ -49,18 +49,16 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void addNewConnection();
     //! Opens a dialog to edit an existing connection
     void editConnection();
-	//! Deletes the selected connection
-	void deleteConnection();
-	//! Populate the connection list combo box
-	void populateConnectionList();
+    //! Deletes the selected connection
+    void deleteConnection();
+    //! Populate the connection list combo box
+    void populateConnectionList();
     //! Determines the tables the user selected and closes the dialog
-      void addTables();
+    void addTables();
     //! String list containing the selected tables
     QStringList selectedTables();
     //! Connection info (database, host, user, password)
     QString connInfo();
-    //! Add the layer selected when user double-clicks the mouse
-    void addLayer(Q3ListBoxItem *item);
     //! Return the name of the selected encoding (e.g. UTf-8, ISO-8559-1, etc/)
     QString encoding();
     // Store the selected database
@@ -74,8 +72,8 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
       void on_btnNew_clicked();
       void on_btnEdit_clicked();
       void on_btnDelete_clicked();
-      void on_lstTables_doubleClicked(Q3ListViewItem *);
-      void setSql(Q3ListViewItem *);
+      void on_lstTables_itemDoubleClicked(QTableWidgetItem *);
+      void setSql(QTableWidgetItem *);
       void on_btnHelp_clicked();
  private:
 
