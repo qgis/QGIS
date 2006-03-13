@@ -293,14 +293,14 @@ void QgsComposerPicture::recalculate()
     
     // Angle between vertical in picture space and the vector 
     // from center to upper left corner of the picture
-    double anglePicture = atan2 ( box.width(), box.height() );
+    double anglePicture = atan2 ( (double)box.width(), (double)box.height() );
 
     // Angle (clockwise) between horizontal in paper space
     // and the vector from center to upper left corner of the picture
     double anglePaper = PI / 2 - anglePicture - angle;
 
     // Distance from center to upper left corner in canvas units
-    double r = sqrt ( mWidth*mWidth/4 + mHeight*mHeight/4 );
+    double r = sqrt ((double)(mWidth*mWidth/4 + mHeight*mHeight/4) );
 
     // Position of upper left corner in map
     int dx = (int) ( r * cos ( anglePaper ) );
