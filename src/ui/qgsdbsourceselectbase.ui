@@ -122,12 +122,24 @@
        <number>6</number>
       </property>
       <item row="0" column="0" >
-       <widget class="Q3ListView" name="lstTables" >
-        <property name="selectionMode" >
-         <enum>Q3ListView::Multi</enum>
-        </property>
-        <property name="allColumnsShowFocus" >
+       <widget class="QTableWidget" name="lstTables" >
+        <property name="mouseTracking" >
          <bool>true</bool>
+        </property>
+        <property name="editTriggers" >
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="selectionMode" >
+         <enum>QAbstractItemView::MultiSelection</enum>
+        </property>
+        <property name="selectionBehavior" >
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="showGrid" >
+         <bool>false</bool>
+        </property>
+        <property name="gridStyle" >
+         <enum>Qt::SolidLine</enum>
         </property>
         <column>
          <property name="text" >
@@ -199,15 +211,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends></extends>
-   <header>q3listview.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>cmbConnections</tabstop>
   <tabstop>btnConnect</tabstop>

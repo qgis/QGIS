@@ -29,6 +29,10 @@ email                : sherman at mrcc.com
 #include <QMessageBox>
 #include <QSettings>
 #include <QTextOStream>
+#include <QTableWidgetItem>
+#include <QIcon>
+#include <QHeaderView>
+
 #include <cassert>
 #include <iostream>
 
@@ -98,6 +102,13 @@ QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, Qt::WFlags fl)
     {
       mEncodingComboBox->setCurrentText(lastUsedEncoding);
     }
+
+  // Do some things that couldn't be done in designer
+  lstTables->horizontalHeader()->setStretchLastSection(true);
+  QStringList labels;
+  labels += tr("Type"); labels += tr("Name"); labels += tr("Sql");
+  lstTables->setHorizontalHeaderLabels(labels);
+  lstTables->verticalHeader()->hide();
 }
 /** Autoconnected SLOTS **/
 // Slot for adding a new connection
@@ -117,7 +128,7 @@ void QgsDbSourceSelect::on_btnAdd_clicked()
 }
 
 // Slot for opening the query builder when a layer is double clicked
-void QgsDbSourceSelect::on_lstTables_doubleClicked(Q3ListViewItem *item)
+void QgsDbSourceSelect::on_lstTables_itemDoubleClicked(QTableWidgetItem *item)
 {
   setSql(item);
 }
@@ -199,15 +210,16 @@ void QgsDbSourceSelect::deleteConnection()
 void QgsDbSourceSelect::addTables()
 {
   //store the table info
-  Q3ListViewItemIterator it( lstTables );
-  while ( it.current() ) 
-  {
-    Q3ListViewItem *item = it.current();
-    ++it;
 
-    if ( item->isSelected() )
+  for (int i = 0; i < lstTables->rowCount(); ++i)
+  {
+    if (lstTables->isItemSelected(lstTables->item(i, 0)))
     {
-      m_selectedTables += item->text(1) + " sql=" + item->text(2);
+      QString table = lstTables->item(i,1)->text() + " sql=";
+      QTableWidgetItem* sqlItem = lstTables->item(i,2);
+      if (sqlItem)
+        table += sqlItem->text();
+      m_selectedTables += table;
     }
   }
 
@@ -264,9 +276,12 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
     {
       // create the pixmaps for the layer types
       QString myThemePath = QgsApplication::themePath();
-      QPixmap pxPoint(myThemePath+"/mIconPointLayer.png");
-      QPixmap pxLine(myThemePath+"/mIconLineLayer.png");
-      QPixmap pxPoly(myThemePath+"/mIconPolygonLayer.png");
+      QIcon pxPoint(myThemePath+"/mIconPointLayer.png");
+      QIcon pxLine(myThemePath+"/mIconLineLayer.png");
+      QIcon pxPoly(myThemePath+"/mIconPolygonLayer.png");
+      QIcon pxWaiting(myThemePath+"/mIconWaitingForLayerType.png");
+      QIcon pxUnknown(myThemePath+"/mIconUnknownLayerType.png");
+
       assert (!pxPoint.isNull());
       //qDebug("Connection succeeded");
       // tell the DB that we want text encoded in UTF8
@@ -281,26 +296,73 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
         geomCol::const_iterator iter = details.begin();
         for (; iter != details.end(); ++iter)
         {
-          QPixmap *p = 0;
-          if (iter->second == "POINT" || iter->second == "MULTIPOINT")
-            p = &pxPoint;
-          else if (iter->second == "MULTIPOLYGON" || iter->second == "POLYGON")
-            p = &pxPoly;
-          else if (iter->second == "LINESTRING" || iter->second == "MULTILINESTRING")
-            p = &pxLine;
-
-          if (p != 0)
+          QString toolTipText;
+          QIcon *p = 0;
+          if (iter->second == "POINT")
           {
-            Q3ListViewItem *lItem = new Q3ListViewItem(lstTables);
-            lItem->setText(1,iter->first);
-            lItem->setPixmap(0,*p);
-            lstTables->insertItem(lItem);
+            p = &pxPoint;
+            toolTipText = tr("Point layer");
+          }
+          else if (iter->second == "MULTIPOINT")
+          {
+            p = &pxPoint;
+            toolTipText = tr("Multi-point layer");
+          }
+          else if (iter->second == "MULTIPOLYGON")
+          {
+            p = &pxPoly;
+            toolTipText = tr("Multi-polygon layer");
+          }
+          else if  (iter->second == "POLYGON")
+          {
+            p = &pxPoly;
+            toolTipText = tr("Polygon layer");
+          }
+          else if (iter->second == "LINESTRING")
+          {
+            p = &pxLine;
+            toolTipText = tr("Linestring layer");
+          }
+          else if (iter->second == "MULTILINESTRING")
+          {
+            p = &pxLine;
+            toolTipText = tr("Multi-linestring layer");
+          }
+          else if (iter->second == "WAITING")
+          {
+            p = &pxWaiting;
+            toolTipText = tr("Waiting for layer type");
           }
           else
           {
             qDebug(("Unknown geometry type of " + iter->second).toLocal8Bit().data());
+            toolTipText = tr("Unknown layer type");
+            p = &pxUnknown;
+          }
+
+          if (p != 0)
+          {
+            QTableWidgetItem *iconItem = new QTableWidgetItem();
+            iconItem->setIcon(*p);
+            iconItem->setToolTip(toolTipText);
+            QTableWidgetItem *textItem = new QTableWidgetItem(iter->first);
+            int row = lstTables->rowCount();
+            lstTables->setRowCount(row+1);
+            lstTables->setItem(row, 0, iconItem);
+            lstTables->setItem(row, 1, textItem);
           }
         }
+        // For some reason not clear to me, the table header labels
+        // set in the constructor have reverted to '1', '2', and '3'
+        // by here. Hence we reset them. This seems like a bug in Qt
+        // (4.1.1).
+        QStringList labels;
+        labels += tr("Type"); labels += tr("Name"); labels += tr("Sql");
+        lstTables->setHorizontalHeaderLabels(labels);
+
+        // And tidy up the columns & rows
+        lstTables->resizeColumnsToContents();
+        lstTables->resizeRowsToContents();
       }
       else
       {
@@ -309,7 +371,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
       }
       // BEGIN CHANGES ECOS
       if (cmbConnections->count() > 0)
-  btnAdd->setEnabled(true);
+        btnAdd->setEnabled(true);
       // END CHANGES ECOS
     } else
     {
@@ -330,15 +392,22 @@ QString QgsDbSourceSelect::connInfo()
 {
   return m_connInfo;
 }
-void QgsDbSourceSelect::setSql(Q3ListViewItem *item)
+void QgsDbSourceSelect::setSql(QTableWidgetItem *item)
 {
+  int row = lstTables->row(item);
+  QString tableText = lstTables->item(row, 1)->text();
+
+  QTableWidgetItem* sqlItem = lstTables->item(row, 2);
+  QString sqlText;
+  if (sqlItem)
+    sqlText = sqlItem->text();
   // Parse out the table name
-  QString table = item->text(1).left(item->text(1).find("("));
+  QString table = tableText.left(tableText.find("("));
   assert(pd != 0);
   // create a query builder object
   QgsPgQueryBuilder * pgb = new QgsPgQueryBuilder(table, pd, this);
   // set the current sql in the query builder sql box
-  pgb->setSql(item->text(2));
+  pgb->setSql(sqlText);
   // set the PG connection object so it can be used to fetch the
   // fields for the table, get sample values, and test the query
   pgb->setConnection(pd);
@@ -347,15 +416,19 @@ void QgsDbSourceSelect::setSql(Q3ListViewItem *item)
   {
     // if user accepts, store the sql for the layer so it can be used
     // if and when the layer is added to the map
-    item->setText(2, pgb->sql());
+    if (!sqlItem)
+    {
+      sqlItem = new QTableWidgetItem();
+      lstTables->setItem(row, 2, sqlItem);
+    }
+    sqlItem->setText(pgb->sql());
+    // Ensure that the current row remains selected
+    lstTables->setItemSelected(lstTables->item(row,0), true);
+    lstTables->setItemSelected(lstTables->item(row,1), true);
+    lstTables->setItemSelected(lstTables->item(row,2), true);
   }
   // delete the query builder object
   delete pgb;
-}
-void QgsDbSourceSelect::addLayer(Q3ListBoxItem * item)
-{
-  qgisApp->addVectorLayer(m_connInfo, item->text(), "postgres");
-  //  lstTables->setSelected(item, false);
 }
 
 bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg, 
@@ -390,23 +463,23 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
 
       PGresult* exists = PQexec(pg, sql.toLocal8Bit().data());
       if (PQntuples(exists) == 1)
-  {
-    QString v = "";
+      {
+        QString v = "";
 
-    if (schemaName.length() > 0)
-    {
-      v += schemaName;
-      v += ".";
-    }
+        if (schemaName.length() > 0)
+        {
+          v += schemaName;
+          v += ".";
+        }
 
-    v += tableName;
-    v += " (";
-    v += PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
-    v += ")";
+        v += tableName;
+        v += " (";
+        v += PQgetvalue(result, idx, PQfnumber(result, "f_geometry_column"));
+        v += ")";
 
-    QString type = PQgetvalue(result, idx, PQfnumber(result, "type"));
-    details.push_back(geomPair(v, type));
-  }
+        QString type = PQgetvalue(result, idx, PQfnumber(result, "type"));
+        details.push_back(geomPair(v, type));
+      }
       PQclear(exists);
     }
     ok = true;
@@ -417,7 +490,8 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
   // geometry_columns table. This code is specific to postgresql,
   // but an equivalent query should be possible in other
   // databases.
-  sql = "select pg_class.relname, pg_namespace.nspname, pg_attribute.attname from "
+  sql = "select pg_class.relname, pg_namespace.nspname, pg_attribute.attname, "
+    "pg_class.relkind from "
     "pg_attribute, pg_class, pg_type, pg_namespace where pg_type.typname = 'geometry' and "
     "pg_attribute.atttypid = pg_type.oid and pg_attribute.attrelid = pg_class.oid "
     "and cast(pg_class.relname as character varying) not in "
@@ -436,34 +510,46 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     // Make the assumption that the geometry type for the first
     // row is the same as for all other rows. 
 
-    // Flag these not geometry_columns table tables so that the UI
-    // can indicate this????
     QString table  = PQgetvalue(result, i, 0); // relname
     QString schema = PQgetvalue(result, i, 1); // nspname
     QString column = PQgetvalue(result, i, 2); // attname
+    QString relkind = PQgetvalue(result, i, 3); // relation kind
 
-    QString query = "select GeometryType(" + column + ") from ";
-    if (schema.length() > 0)
-      query += "\"" + schema + "\".";
-    query += "\"" + table + "\" where " + column + " is not null limit 1";
-
-    PGresult* gresult = PQexec(pg, query.toLocal8Bit().data());
-    if (PQresultStatus(gresult) != PGRES_TUPLES_OK)
+    QString type = "WAITING";
+    if (relkind == "r" || relkind == "v")
     {
-      QString myError = (tr("Access to relation ") + table + tr(" using sql;\n") + query +
-       tr("\nhas failed. The database said:\n"));
-      qDebug(myError + QString(PQresultErrorMessage(gresult)));
-    }
-    else
-    {
-      QString type = PQgetvalue(gresult, 0, 0); // GeometryType
-      QString full_desc = "";
+      QString query = "select GeometryType(" + column + ") from ";
       if (schema.length() > 0)
-  full_desc = schema + ".";
-      full_desc += table + " (" + column + ")";
-      details.push_back(geomPair(full_desc, type));
+        query += "\"" + schema + "\".";
+      query += "\"" + table + "\" where " + column + " is not null limit 1";
+
+      PGresult* gresult = PQexec(pg, query.toLocal8Bit().data());
+      if (PQresultStatus(gresult) != PGRES_TUPLES_OK)
+        {
+          QString myError = (tr("Access to relation ") + table + tr(" using sql;\n") + query +
+                             tr("\nhas failed. The database said:\n"));
+          qDebug(myError + QString(PQresultErrorMessage(gresult)));
+          type = "UNKNOWN";
+        }
+      else
+        type = PQgetvalue(gresult, 0, 0); // GeometryType
+      PQclear(gresult);
     }
-    PQclear(gresult);
+    /*
+      // Commented out temporarily...
+    else // view
+    {
+      // store the column details and do the query in a thread
+      std::cout << "Doing " << (schema+'.'+table+'.'+column).toLocal8Bit().data() 
+                << " later" << std::endl;
+    }
+    */
+
+    QString full_desc = "";
+    if (schema.length() > 0)
+      full_desc = schema + ".";
+    full_desc += table + " (" + column + ")";
+    details.push_back(geomPair(full_desc, type));
   }
   ok = true;
 
