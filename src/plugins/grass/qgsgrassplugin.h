@@ -100,6 +100,11 @@ public slots:
   void mapsetChanged(); 
   //! Create new vector
   void newVector();
+  //! Read project
+  void projectRead();
+  //! New project
+  void newProject();
+
 
 private:
   //! Name of the plugin
@@ -115,7 +120,7 @@ private:
   //! Pointer to our toolbar
   QToolBar *toolBarPointer;
   //! Pionter to QGIS main application object
-  QgisApp *qgisMainWindowPointer;
+  QgisApp *mQgis;
   //! Pointer to the QGIS interface object
   QgisIface *qGisInterface;
   //! Pointer to canvas
