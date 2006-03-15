@@ -27,7 +27,7 @@ extern "C"
 #include <vector>
 #include <utility>
 
-class Q3ListBoxItem;
+class QTableWidgetItem;
 class QgisApp;
 /*! \class QgsDbSourceSelect
  * \brief Dialog to create connections and add tables from PostgresQL.
