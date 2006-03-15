@@ -105,6 +105,10 @@ public slots:
     void on_mCloseButton_clicked() { close(); }
     void close ();
 
+    //! Show output in map view
+    void on_mViewButton_clicked() { viewOutput(); }
+    void viewOutput ();
+
     //! Running process finished
     void finished ();
 
@@ -147,6 +151,15 @@ private:
 
     //! Pointer to options widget
     QgsGrassModuleOptions *mOptions; 
+
+    //! Last raster output
+    QStringList mOutputRaster;
+
+    //! Last vector output
+    QStringList mOutputVector;
+
+    //! True if the module successfully finished
+    bool mSuccess;
 };
 
 /*! \class QgsGrassModuleOptions
@@ -175,6 +188,9 @@ public:
     //! Check if otpion is ready
     //  Returns empty string or error message
     virtual QStringList ready() { return QStringList() ; }
+
+    //! Get list of current output maps
+    virtual QStringList output(int type) { return QStringList() ; }
 
 protected:
     //! QGIS application
@@ -222,9 +238,10 @@ public:
     // ! Get item by ID
     QgsGrassModuleItem *item(QString id);
 
+    // Reimplemented methods from QgsGrassModuleOptions
     QStringList checkOutput();
-
     QStringList ready() ;
+    QStringList output(int type);
 
 private:
     //! Name of module executable 
@@ -320,18 +337,27 @@ public:
 
     //! Control option
     enum ValueType { Double, Integer, String };
+
+    //! Output type
+    enum OutputType { None, Vector, Raster };
     
     //! Retruns list of options which will be passed to module
     virtual QStringList options(); 
    
     //! True if this option is output
     bool isOutput() { return mIsOutput; } 
+   
+    //! Returns output type
+    int outputType() { return mOutputType; } 
 
     //! If output, check if current output exists
     // Returns emppty string or name of existing output
     QString outputExists();
 
     QString ready() ;
+
+    //! Current value
+    QString value();
 
 public slots:
     // Add new line edit for multiple options
@@ -346,6 +372,9 @@ private:
 
     //! Value type
     ValueType mValueType;
+
+    //! Output type
+    OutputType mOutputType;
 
     //! If have defined value limits
     bool mHaveLimits;
