@@ -66,6 +66,7 @@ extern "C" {
 #include "../../src/providers/grass/qgsgrassprovider.h"
 #include "qgsgrassattributes.h"
 #include "qgsgrassedit.h"
+#include "qgsgrassutils.h"
 
 #include "qgsmapcanvasitem.h"
 
@@ -923,22 +924,9 @@ void QgsGrassEdit::closeEdit(void)
      split.pop_back(); // map
      QString mapset = split.last();
 
-     QStringList layers = QgsGrassSelect::vectorLayers ( 
-           QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(),
-           mapset, map );
-
-     for ( int i = 0; i < layers.count(); i++ )
-     {
-         uri = QgsGrass::getDefaultGisdbase() + "/"
-               + QgsGrass::getDefaultLocation() + "/"
-               + mapset + "/" + map + "/" + layers[i]; 
-
-#ifdef QGISDEBUG
-         std::cerr << "layer = " << layers[i].local8Bit().data() << std::endl;
-         std::cerr << "uri = " << uri.local8Bit().data() << std::endl;
-#endif
-         mIface->addVectorLayer( uri, layers[i], "grass");
-     }
+     QgsGrassUtils::addVectorLayers ( mIface, QgsGrass::getDefaultGisdbase(), 
+                                      QgsGrass::getDefaultLocation(),
+				      mapset, map );
   }
 
   delete this; 
