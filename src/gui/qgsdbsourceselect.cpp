@@ -105,6 +105,8 @@ QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, Qt::WFlags fl)
 
   // Do some things that couldn't be done in designer
   lstTables->horizontalHeader()->setStretchLastSection(true);
+  // Set the column count to 3 for the type, name, and sql
+  lstTables->setColumnCount(3);
   QStringList labels;
   labels += tr("Type"); labels += tr("Name"); labels += tr("Sql");
   lstTables->setHorizontalHeaderLabels(labels);
