@@ -347,6 +347,11 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
             iconItem->setToolTip(toolTipText);
             QTableWidgetItem *textItem = new QTableWidgetItem(iter->first);
             int row = lstTables->rowCount();
+            std::cerr << "Adding database table with name '" 
+                      << iter->first.toLocal8Bit().data()
+                      << "' and tooltip '"
+                      << toolTipText.toLocal8Bit().data()
+                      << "' at row " << row+1 << ".\n";
             lstTables->setRowCount(row+1);
             lstTables->setItem(row, 0, iconItem);
             lstTables->setItem(row, 1, textItem);
