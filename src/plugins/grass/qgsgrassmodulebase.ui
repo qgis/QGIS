@@ -17,7 +17,7 @@
   </property>
   <layout class="QVBoxLayout" >
    <property name="margin" >
-    <number>10</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
@@ -77,9 +77,12 @@
      <property name="lineWidth" >
       <number>0</number>
      </property>
+     <property name="margin" >
+      <number>0</number>
+     </property>
      <layout class="QHBoxLayout" >
       <property name="margin" >
-       <number>10</number>
+       <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
@@ -94,8 +97,8 @@
         </property>
         <property name="sizeHint" >
          <size>
-          <width>40</width>
-          <height>21</height>
+          <width>21</width>
+          <height>31</height>
          </size>
         </property>
        </spacer>
@@ -117,8 +120,28 @@
         </property>
         <property name="sizeHint" >
          <size>
-          <width>135</width>
-          <height>26</height>
+          <width>31</width>
+          <height>31</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="mViewButton" >
+        <property name="text" >
+         <string>View output</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>31</width>
+          <height>20</height>
          </size>
         </property>
        </spacer>
@@ -140,8 +163,8 @@
         </property>
         <property name="sizeHint" >
          <size>
-          <width>40</width>
-          <height>26</height>
+          <width>21</width>
+          <height>31</height>
          </size>
         </property>
        </spacer>
@@ -155,16 +178,16 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3ProgressBar</class>
-   <extends>QWidget</extends>
-   <header>q3progressbar.h</header>
+   <class>Q3Frame</class>
+   <extends></extends>
+   <header>Qt3Support/Q3Frame</header>
    <container>1</container>
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
-   <class>Q3Frame</class>
-   <extends></extends>
-   <header>Qt3Support/Q3Frame</header>
+   <class>Q3ProgressBar</class>
+   <extends>QWidget</extends>
+   <header>q3progressbar.h</header>
    <container>1</container>
    <pixmap></pixmap>
   </customwidget>

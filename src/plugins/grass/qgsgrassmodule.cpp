@@ -73,6 +73,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
+#include <qgsrasterlayer.h>
 #include "qgsdataprovider.h"
 #include "qgsfield.h"
 #include "qgsfeature.h"
@@ -89,6 +90,7 @@ extern "C" {
 #include "qgsgrassmodule.h"
 #include "qgsgrassmapcalc.h"
 #include "qgsgrasstools.h"
+#include "qgsgrassselect.h"
 
 bool QgsGrassModule::mExecPathInited = 0;
 QStringList QgsGrassModule::mExecPath;
@@ -124,9 +126,7 @@ bool QgsGrassModule::inExecPath ( QString file )
 
 QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIface *iface, 
 	                     QString path, QWidget * parent, const char * name, Qt::WFlags f )
-             //:QgsGrassModuleBase ( parent, name, f )
-             //tim removed params during qt4 ui port - FIXME
-             :QgsGrassModuleBase ( )
+             :QgsGrassModuleBase ( ), mSuccess(false)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModule()" << std::endl;
@@ -214,6 +214,14 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
         mOptions = new QgsGrassModuleStandardOptions ( mTools, this,
                mQgisApp, mIface, mXName, qDocElem, mTabWidget->page(0) );
     }
+
+    // Hide display if there is no output
+    if ( mOptions->output(QgsGrassModuleOption::Vector).size() == 0
+         && mOptions->output(QgsGrassModuleOption::Raster).size() == 0 )
+    {
+        mViewButton->hide();
+    }
+    mViewButton->setEnabled(false);
                                 
     // Create manual if available
     QString gisBase = getenv("GISBASE");
@@ -477,6 +485,36 @@ QStringList QgsGrassModuleStandardOptions::checkOutput()
     return list;
 }
 
+QStringList QgsGrassModuleStandardOptions::output(int type )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleStandardOptions::output()" << std::endl;
+    #endif
+    QStringList list;
+
+    for ( int i = 0; i < mItems.size(); i++ ) 
+    {
+	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleOption) ) {
+	    continue;
+	}
+	QgsGrassModuleOption *opt = 
+	      dynamic_cast<QgsGrassModuleOption *> ( mItems[i] );
+    
+        std::cerr << "opt->key() = " << opt->key().ascii() << std::endl;
+
+	if ( opt->isOutput() )
+	{
+	    if ( opt->outputType() == type )
+	    {
+                QString out = opt->value();
+	        list.append ( out );
+            }
+	}
+    } 
+
+    return list;
+}
+
 QStringList QgsGrassModuleStandardOptions::ready()
 {
     #ifdef QGISDEBUG
@@ -700,6 +738,14 @@ void QgsGrassModule::run()
 	        command.append ( " --o" );
             }
         }
+
+        // Remember output maps
+        mOutputVector = mOptions->output(QgsGrassModuleOption::Vector);
+        std::cerr << "mOutputVector.size() = " << mOutputVector.size() << std::endl;
+        mOutputRaster = mOptions->output(QgsGrassModuleOption::Raster);
+        std::cerr << "mOutputRaster.size() = " << mOutputRaster.size() << std::endl;
+        mSuccess = false;
+        mViewButton->setEnabled(false);
   
         QStringList list = mOptions->arguments();
 
@@ -742,6 +788,8 @@ void QgsGrassModule::finished()
 	if ( mProcess.exitStatus () == 0 ) {
 	    mOutputTextBrowser->append( "<B>Successfully finished</B>" );
 	    mProgressBar->setProgress ( 100, 100 ); 
+            mSuccess = true;
+            mViewButton->setEnabled(true);
 	} else {
 	    mOutputTextBrowser->append( "<B>Finished with error</B>" );
 	}
@@ -814,6 +862,50 @@ void QgsGrassModule::close()
     delete this;
 }
 
+void QgsGrassModule::viewOutput()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModule::viewOutput()" << std::endl;
+    #endif
+
+    if ( !mSuccess ) return;
+
+    for (int i = 0; i < mOutputVector.size(); i++ ) 
+    {
+        QString map = mOutputVector.at(i);
+
+        QStringList layers = QgsGrassSelect::vectorLayers (
+			   QgsGrass::getDefaultGisdbase(), 
+			   QgsGrass::getDefaultLocation(),
+			   QgsGrass::getDefaultMapset(), map );
+
+         // TODO common method for add all layers
+         for ( int j = 0; j < layers.count(); j++ )
+         {
+             QString uri = QgsGrass::getDefaultGisdbase() + "/"
+		       + QgsGrass::getDefaultLocation() + "/"
+		       + QgsGrass::getDefaultMapset() + "/" 
+		       + map + "/" + layers[i];
+
+             // TODO vector layer name
+             mIface->addVectorLayer( uri, layers[i], "grass");
+         }
+    }
+
+    for (int i = 0; i < mOutputRaster.size(); i++ ) 
+    {
+        QString map = mOutputRaster.at(i);
+
+	QString uri = QgsGrass::getDefaultGisdbase() + "/"
+		   + QgsGrass::getDefaultLocation() + "/"
+		   + QgsGrass::getDefaultMapset() 
+                   + "/cellhd/" + map;
+
+        QgsRasterLayer *layer = new QgsRasterLayer( uri, map );
+        mIface->addRasterLayer(layer);
+    }
+}
+
 QgisIface *QgsGrassModule::qgisIface() { return mIface; }
 QgisApp *QgsGrassModule::qgisApp() { return mQgisApp; }
 
@@ -854,7 +946,7 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 	                                   QWidget * parent)
                     : QGroupBox ( parent ),
                       QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
-	mIsOutput(false), mValueType(String), mHaveLimits(false)
+	mIsOutput(false), mValueType(String), mHaveLimits(false), mOutputType(None)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModuleOption::QgsGrassModuleOption" << std::endl;
@@ -880,10 +972,20 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 	QDomElement promptElem = promptNode.toElement();
 	QString element = promptElem.attribute("element"); 
 	QString age = promptElem.attribute("age"); 
+        
 	if ( age == "new" )
         {
             mOutputElement = element;
             mIsOutput = true;
+
+            if ( element == "vector" ) 
+            {
+                mOutputType = Vector;
+            } 
+            else if ( element == "cell" )
+            {
+                mOutputType = Raster;
+            }
 	}
     } 
 	
@@ -1086,6 +1188,38 @@ QString QgsGrassModuleOption::outputExists()
     return QString();
 }
 
+QString QgsGrassModuleOption::value()
+{
+    QString value;
+
+    if ( mControlType == LineEdit ) {
+	for ( int i = 0; i < mLineEdits.size(); i++ ) 
+	{
+	    QLineEdit *lineEdit = mLineEdits.at(i);
+	    if( lineEdit->text().trimmed().length() > 0 )
+	    {
+		if ( value.length() > 0 ) value.append (",");
+		value.append ( lineEdit->text().trimmed() );
+	    }
+	}
+    } 
+    else if ( mControlType == ComboBox ) 
+    {
+	value = mValues[mComboBox->currentItem()];
+    } 
+    else if ( mControlType == CheckBoxes ) 
+    {
+	int cnt = 0;
+	for ( int i = 0; i < mCheckBoxes.size(); i++ ) {
+	    if ( mCheckBoxes[i]->isChecked() ) {
+		if ( cnt > 0 ) value.append ( "," );
+		value.append ( mValues[i] );
+	    }
+	}
+    }
+    return value;
+}
+
 QStringList QgsGrassModuleOption::options()
 {
     QStringList list;
@@ -1093,31 +1227,7 @@ QStringList QgsGrassModuleOption::options()
     if ( mHidden ) {
         list.push_back( mKey + "=" + mAnswer );
     } else {
-	if ( mControlType == LineEdit ) {
-            QString vals; 
-            for ( int i = 0; i < mLineEdits.size(); i++ ) 
-            {
-                QLineEdit *lineEdit = mLineEdits.at(i);
-                if( lineEdit->text().trimmed().length() > 0 )
-                {
-                    if ( vals.length() > 0 ) vals.append (",");
-                    vals.append ( lineEdit->text().trimmed() );
-                }
-            }
-            list.push_back( mKey + "=" + vals );
-	} else if ( mControlType == ComboBox ) {
-            list.push_back( mKey + "=" + mValues[mComboBox->currentItem()] );
-	} else if ( mControlType == CheckBoxes ) {
-	    QString opt = mKey + "=";
-	    int cnt = 0;
-	    for ( int i = 0; i < mCheckBoxes.size(); i++ ) {
-		if ( mCheckBoxes[i]->isChecked() ) {
-		    if ( cnt > 0 ) opt.append ( "," );
-		    opt.append ( mValues[i] );
-		}
-	    }
-	    list.push_back( opt );
-	}
+        list.push_back( mKey + "=" + value() );
     }
     return list;
 }
