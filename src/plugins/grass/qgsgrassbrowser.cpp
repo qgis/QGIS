@@ -40,6 +40,7 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsrasterlayer.h"
 
 extern "C" {
 #include <grass/gis.h>
@@ -50,6 +51,7 @@ extern "C" {
 #include "qgsgrassmodel.h"
 #include "qgsgrassbrowser.h"
 #include "qgsgrassselect.h"
+#include "qgsgrassutils.h"
 
 QgsGrassBrowser::QgsGrassBrowser ( QgisIface *iface, 
 	 QWidget * parent, Qt::WFlags f )
@@ -141,16 +143,24 @@ void QgsGrassBrowser::addMap()
     {
 	int type = mModel->itemType(*it);
 	QString uri = mModel->uri(*it);
+        QString mapset = mModel->itemMapset(*it);
+        QString map = mModel->itemMap(*it);
         if ( type == QgsGrassModel::Raster )
 	{
             std::cerr << "add raster: " << uri.ascii() << std::endl;
-	    mIface->addRasterLayer( uri );
+            QgsRasterLayer *layer = new QgsRasterLayer( uri, map );
+            mIface->addRasterLayer(layer);
 	    mapSelected = true;
 	}
+	else if ( type == QgsGrassModel::Vector )
+	{
+            QgsGrassUtils::addVectorLayers ( mIface, 
+                                QgsGrass::getDefaultGisdbase(),
+                                QgsGrass::getDefaultLocation(),
+                                mapset, map );
+        } 
 	else if ( type == QgsGrassModel::VectorLayer )
 	{
-            QString map = mModel->itemMap(*it);
-            QString name = map;
 
             QStringList list = QgsGrassSelect::vectorLayers(
                                    QgsGrass::getDefaultGisdbase(),
@@ -161,10 +171,8 @@ void QgsGrassBrowser::addMap()
 	    QStringList split = QStringList::split ( '/', uri );
 	    QString layer = split.last();
 
-            if ( list.size() > 1 ) 
-            {
-                 name += " " + layer;
-            }
+            QString name = QgsGrassUtils::vectorLayerName ( 
+                                map, layer, list.size() );
             
 	    mIface->addVectorLayer( uri, name, "grass");
 	    mapSelected = true;
@@ -250,7 +258,9 @@ void QgsGrassBrowser::selectionChanged(const QItemSelection & selected, const QI
         mTextBrowser->verticalScrollBar()->setValue(0);
 	
 	int type = mModel->itemType(*it);
-        if ( type == QgsGrassModel::Raster || type == QgsGrassModel::VectorLayer )
+        if ( type == QgsGrassModel::Raster || 
+             type == QgsGrassModel::Vector || 
+             type == QgsGrassModel::VectorLayer )
 	{
 	    mActionAddMap->setEnabled(true);
 	}
