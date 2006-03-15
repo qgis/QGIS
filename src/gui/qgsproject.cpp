@@ -776,7 +776,8 @@ static QgsLegend * _findLegend()
   QWidgetList wlist = QApplication::topLevelWidgets();
   foreach (QWidget *widget, QApplication::topLevelWidgets()) 
   {
-    theLegend = dynamic_cast <QgsLegend *>(widget->child(canonicalLegendName.toLocal8Bit().data(), 0, true)); 
+    //theLegend = dynamic_cast <QgsLegend *>(widget->child(canonicalLegendName.toLocal8Bit().data(), 0, true)); 
+    theLegend = widget->findChild<QgsLegend*>("theMapLegend");
     if(theLegend)
       break;
   }

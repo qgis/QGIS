@@ -299,16 +299,16 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 	}
 	    //set default symbology
 
-	    //apply a nice color range from blue to red as default
+	    //apply a nice color range from red to green as default
 	    if (i == 0)
 	    {
 		if (m_type == QGis::Line)
 		{
-		    pen.setColor(QColor(0, 0, 255));
+		    pen.setColor(QColor(255, 0, 0));
 		} 
 		else                //point or polygon
 		{
-		    brush.setColor(QColor(0, 0, 255));
+		    brush.setColor(QColor(255, 0, 0));
 		    pen.setColor(Qt::black);
 		}
 	    } 
@@ -316,12 +316,12 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 	    {
 		if (m_type == QGis::Line)
 		{
-		    pen.setColor(QColor(255 / numberofclassesspinbox->value() * (i+1), 0, 255 - (255 / numberofclassesspinbox->value() * (i+1))));
+		  pen.setColor(QColor(255 - (255 / numberofclassesspinbox->value() * (i+1)), 255 / numberofclassesspinbox->value() * (i+1), 0));
 		} 
 		else                //point or polygon
 		{
-		    brush.setColor(QColor(255 / numberofclassesspinbox->value() * (i+1), 0, 255 - (255 / numberofclassesspinbox->value() * (i+1))));
-		    pen.setColor(Qt::black);
+		  brush.setColor(QColor(255 - (255 / numberofclassesspinbox->value() * (i+1)), 255 / numberofclassesspinbox->value() * (i+1), 0));  
+		  pen.setColor(Qt::black);
 		}
 	    }
 	    pen.setWidth(1);

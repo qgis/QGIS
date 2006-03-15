@@ -164,15 +164,15 @@ void QgsUniqueValueDialog::changeClassificationAttribute(int nr)
 
 	//set symbology for all QgsSiSyDialogs
 	QColor thecolor;
-	double number=0;
 	double frac;
 
 	for(std::map<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
 	{
-	    ++number;
-	    //color range from blue to red
-	    frac=number/mValues.size();
-	    thecolor.setRgb(int(255*frac),0,int(255-(255*frac)));
+	    //insert a random color
+	    int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+	    int green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+	    int blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
+	    thecolor.setRgb(red, green, blue);
 	    mClassBreakBox->insertItem(it->first);
 	    QgsSymbol* sym=it->second;
 	    QPen pen;
