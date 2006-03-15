@@ -48,6 +48,8 @@
 //non qt includes
 #include <iostream>
 
+#include <qgsproject.h>
+
 extern "C" {
 #include <grass/gis.h>
 #include <grass/Vect.h>
@@ -81,7 +83,7 @@ static const char *pluginVersion = "0.1";
  * @param theQgisInterFace Pointer to the QGIS interface object
  */
 QgsGrassPlugin::QgsGrassPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterFace):
-  qgisMainWindowPointer(theQGisApp), qGisInterface(theQgisInterFace)
+  mQgis(theQGisApp), qGisInterface(theQgisInterFace)
 {
   /** Initialize the plugin and set the required attributes */
   pluginNameQString = "GrassVector";
@@ -136,6 +138,10 @@ void QgsGrassPlugin::initGui()
   QgsGrass::init();
 
   mCanvas = qGisInterface->getMapCanvas();
+
+  // Connect project
+  connect( mQgis, SIGNAL( projectRead() ), this, SLOT( projectRead()));
+  connect( mQgis, SIGNAL( newProject() ), this, SLOT(newProject()));
 
   // Create the action for tool
   mOpenMapsetAction = new QAction( "Open mapset", this );
@@ -194,7 +200,7 @@ void QgsGrassPlugin::initGui()
   mNewVectorAction->addTo(pluginMenu);
 
   // Add the toolbar to the main window
-  toolBarPointer = qgisMainWindowPointer->addToolBar("GRASS"); 
+  toolBarPointer = mQgis->addToolBar("GRASS"); 
   toolBarPointer->setLabel(tr("GRASS"));
   toolBarPointer->setIconSize(QSize(24,24));
 
@@ -247,6 +253,16 @@ void QgsGrassPlugin::mapsetChanged ()
             mTools->mapsetChanged();
         }    
     }
+
+    // Save working mapset in project file
+    QgsProject::instance()->writeEntry("GRASS","/WorkingGisdbase", 
+			    QgsGrass::getDefaultGisdbase() );
+
+    QgsProject::instance()->writeEntry("GRASS","/WorkingLocation", 
+			    QgsGrass::getDefaultLocation() );
+
+    QgsProject::instance()->writeEntry("GRASS","/WorkingMapset", 
+			    QgsGrass::getDefaultMapset() );
 }
 
 // Slot called when the "Add GRASS vector layer" menu item is activated
@@ -380,7 +396,7 @@ void QgsGrassPlugin::addRaster()
 void QgsGrassPlugin::openTools()
 {
   if ( !mTools ) 
-    mTools = new QgsGrassTools ( qgisMainWindowPointer, qGisInterface, qgisMainWindowPointer, 0, Qt::WType_Dialog );
+    mTools = new QgsGrassTools ( mQgis, qGisInterface, mQgis, 0, Qt::WType_Dialog );
 
   mTools->show();
 }
@@ -394,7 +410,7 @@ void QgsGrassPlugin::edit()
     return;
   }
 
-  QgsGrassEdit *ed = new QgsGrassEdit( qgisMainWindowPointer, qGisInterface, qgisMainWindowPointer, Qt::WType_Dialog );
+  QgsGrassEdit *ed = new QgsGrassEdit( mQgis, qGisInterface, mQgis, Qt::WType_Dialog );
 
   if ( ed->isValid() ) {
     ed->show();
@@ -498,8 +514,8 @@ void QgsGrassPlugin::newVector()
         return;
     }
 
-    QgsGrassEdit *ed = new QgsGrassEdit( qgisMainWindowPointer, 
-               qGisInterface, provider, qgisMainWindowPointer, 
+    QgsGrassEdit *ed = new QgsGrassEdit( mQgis, 
+               qGisInterface, provider, mQgis, 
                Qt::WType_Dialog );
 
     if ( ed->isValid() ) {
@@ -620,8 +636,8 @@ void QgsGrassPlugin::changeRegion(void)
     return;
   }
 
-  QgsGrassRegion *reg = new QgsGrassRegion(this, qgisMainWindowPointer, qGisInterface, 
-      qgisMainWindowPointer, Qt::WType_Dialog );
+  QgsGrassRegion *reg = new QgsGrassRegion(this, mQgis, qGisInterface, 
+      mQgis, Qt::WType_Dialog );
 
   reg->show();
 }
@@ -686,11 +702,55 @@ void QgsGrassPlugin::newMapset()
     if ( !QgsGrassNewMapset::isRunning() )
     {
         mNewMapset = new QgsGrassNewMapset ( 
-	                    qgisMainWindowPointer, qGisInterface, 
-                            this, qgisMainWindowPointer );
+	                    mQgis, qGisInterface, 
+                            this, mQgis );
     }
     mNewMapset->show();
     mNewMapset->raise();
+}
+
+void QgsGrassPlugin::projectRead()
+{
+#ifdef QGISDEBUG
+    std::cout << "QgsGrassPlugin::projectRead" << std::endl;
+#endif
+    QString err = QgsGrass::closeMapset ();
+    if ( !err.isNull() )
+    {
+	QMessageBox::warning( 0, "Warning", 
+		 "Cannot close current mapset. " + err );
+	return;
+    }
+
+    bool ok;
+    QString gisdbase = QgsProject::instance()->readEntry( 
+		   "GRASS", "/WorkingGisdbase", "", &ok).trimmed(); 
+    QString location = QgsProject::instance()->readEntry( 
+		   "GRASS", "/WorkingLocation", "", &ok).trimmed(); 
+    QString mapset = QgsProject::instance()->readEntry( 
+		   "GRASS", "/WorkingMapset", "", &ok).trimmed(); 
+
+    if ( gisdbase.length() > 0 && location.length() > 0 && 
+	 mapset.length() > 0 )
+    {
+	err = QgsGrass::openMapset ( gisdbase, location, mapset );
+
+	if ( !err.isNull() )
+	{
+	    QMessageBox::warning( 0, "Warning", "Cannot open GRASS mapset. " + err );
+	    return;
+	}
+
+    }
+    mapsetChanged();
+}
+
+void QgsGrassPlugin::newProject()
+{
+#ifdef QGISDEBUG
+    std::cout << "QgsGrassPlugin::newProject" << std::endl;
+#endif
+    
 }
 
 // Unload the plugin by cleaning up the GUI
