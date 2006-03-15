@@ -860,7 +860,7 @@ QgsGrassEdit::~QgsGrassEdit()
   std::cerr << "QgsGrassEdit::~QgsGrassEdit()" << std::endl;
 #endif
 
-  if ( mValid ) { 
+  if (mCanvasEdit) {
     eraseDynamic();
     mRubberBandLine->hide();
     mRubberBandIcon->hide();
