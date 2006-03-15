@@ -293,6 +293,12 @@ QString QgsGrass::openMapset ( QString gisdbase, QString location, QString mapse
     // Check if the mapset is in use
     QString gisBase = getenv("GISBASE");
     if ( gisBase.isNull() ) return "GISBASE is not set.";
+     
+    QFileInfo fi( mapsetPath+ "/WIND" );
+    if ( !fi.exists() )
+    {
+        return mapsetPath + " is not a GRASS mapset.";
+    }
     
     QString lock = mapsetPath + "/.gislock";
     QFile lockFile ( lock );
