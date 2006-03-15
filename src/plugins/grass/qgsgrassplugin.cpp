@@ -714,14 +714,6 @@ void QgsGrassPlugin::projectRead()
 #ifdef QGISDEBUG
     std::cout << "QgsGrassPlugin::projectRead" << std::endl;
 #endif
-    QString err = QgsGrass::closeMapset ();
-    if ( !err.isNull() )
-    {
-	QMessageBox::warning( 0, "Warning", 
-		 "Cannot close current mapset. " + err );
-	return;
-    }
-
     bool ok;
     QString gisdbase = QgsProject::instance()->readEntry( 
 		   "GRASS", "/WorkingGisdbase", "", &ok).trimmed(); 
@@ -730,18 +722,43 @@ void QgsGrassPlugin::projectRead()
     QString mapset = QgsProject::instance()->readEntry( 
 		   "GRASS", "/WorkingMapset", "", &ok).trimmed(); 
 
-    if ( gisdbase.length() > 0 && location.length() > 0 && 
-	 mapset.length() > 0 )
-    {
-	err = QgsGrass::openMapset ( gisdbase, location, mapset );
-
-	if ( !err.isNull() )
-	{
-	    QMessageBox::warning( 0, "Warning", "Cannot open GRASS mapset. " + err );
-	    return;
-	}
-
+    if ( gisdbase.length() == 0 || location.length() == 0 ||
+	 mapset.length() == 0 )
+    {    
+         // Mapset not specified
+         return;
     }
+
+    QString currentPath = QgsGrass::getDefaultGisdbase() + "/" 
+                        + QgsGrass::getDefaultLocation() + "/" 
+                        + QgsGrass::getDefaultMapset(); 
+
+    QString newPath = gisdbase + "/" + location + "/" + mapset; 
+
+    if ( QFileInfo(currentPath).canonicalPath() ==
+         QFileInfo(newPath).canonicalPath() )
+    {
+         // The same mapset is already open
+         return;
+    }
+
+    QString err = QgsGrass::closeMapset ();
+    if ( !err.isNull() )
+    {
+	QMessageBox::warning( 0, "Warning", 
+		 "Cannot close current mapset. " + err );
+	return;
+    }
+    mapsetChanged();
+
+    err = QgsGrass::openMapset ( gisdbase, location, mapset );
+
+    if ( !err.isNull() )
+    {
+	QMessageBox::warning( 0, "Warning", "Cannot open GRASS mapset. " + err );
+	return;
+    }
+
     mapsetChanged();
 }
 
