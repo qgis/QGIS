@@ -90,6 +90,8 @@ grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 			 qgsgrassattributes.h \
 			 qgsgrassregion.cpp \
 			 qgsgrassregion.h \
+			 qgsgrassutils.cpp \
+			 qgsgrassutils.h \
 			 ../../providers/grass/qgsgrass.h \
 			 ../../providers/grass/qgsgrassprovider.h \
 			 $(plugin_UI)
