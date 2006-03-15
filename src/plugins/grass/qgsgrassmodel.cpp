@@ -146,6 +146,7 @@ QString QgsGrassModelItem::info()
 	    str += htmlTableRow("<b>Raster</b>", "<b>" + mMap + "</b>" );
 	    
 	    struct Cell_head head;
+            int rasterType = -1;
 	    QgsGrass::setLocation( mGisbase, mLocation );
 	    
 	    if( G_get_cellhd( mMap.toLocal8Bit().data(), 
@@ -164,7 +165,7 @@ QString QgsGrassModelItem::info()
 		str += htmlTableRow ( "East", QString::number(head.east) );
 		str += htmlTableRow ( "West", QString::number(head.west) );
 		
-	        int rasterType = G_raster_map_type( mMap.toLocal8Bit().data(),
+	        rasterType = G_raster_map_type( mMap.toLocal8Bit().data(),
 		                                mMapset.toLocal8Bit().data() );
 
                 QString format;
@@ -188,6 +189,7 @@ QString QgsGrassModelItem::info()
                 str += htmlTableRow ( "Format", format );
 	    }
 
+            // Range of values
 	    struct FPRange range;
 	    if ( G_read_fp_range( mMap.toLocal8Bit().data(),
                            mMapset.toLocal8Bit().data(), &range ) != -1 )
@@ -198,8 +200,8 @@ QString QgsGrassModelItem::info()
 		str += htmlTableRow ( "Minimum value", QString::number(min));
 		str += htmlTableRow ( "Maximum value", QString::number(max));
 	    }
-
 	    
+            // History
 	    struct History hist;
 	    if ( G_read_history( mMap.toLocal8Bit().data(),
   			         mMapset.toLocal8Bit().data(), &hist) >= 0 )
@@ -224,6 +226,29 @@ QString QgsGrassModelItem::info()
 		    str += htmlTableRow ( "Comments", h);
                 }
 	    }
+
+            // Categories
+            if ( rasterType == CELL_TYPE ) 
+            {
+		struct Categories Cats;
+		int ret = G_read_cats( mMap.toLocal8Bit().data(),
+			       mMapset.toLocal8Bit().data(), &Cats);
+
+                if ( ret == 0 )
+                {
+		    if ( Cats.ncats > 0 )
+		    {
+			str += "<tr><td colspan=2>Categories</td></tr>";
+			for ( int i = 0; i < Cats.ncats; i++) 
+			{
+			    str += htmlTableRow ( 
+				     QString::number((int)Cats.q.table[i].dLow),
+				     QString(Cats.labels[i]));
+			}
+                    }
+                    G_free_cats(&Cats);
+                }
+            }
 	    str += "</table>";
 						
 	    return str; 
