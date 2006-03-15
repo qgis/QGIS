@@ -204,7 +204,7 @@ private:
     int mSize;
 
     //! Display all lines and nodes
-    void displayMap (QPainter *painter); 
+    void displayMap (); 
 
     /** 
      *  Display icon 

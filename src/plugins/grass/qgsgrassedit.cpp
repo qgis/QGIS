@@ -2004,7 +2004,7 @@ void QgsGrassEdit::postRender(QPainter *)
 
   if ( !mValid ) return;
 
-  displayMap(NULL);
+  displayMap();
 
   // Redisplay highlighted
   if ( mSelectedLine ) {
@@ -2012,7 +2012,7 @@ void QgsGrassEdit::postRender(QPainter *)
   }
 }
 
-void QgsGrassEdit::displayMap (QPainter *painter)
+void QgsGrassEdit::displayMap ()
 {
 #ifdef QGISDEBUG
   std::cerr << "QgsGrassEdit::displayMap" << std::endl;
@@ -2020,6 +2020,9 @@ void QgsGrassEdit::displayMap (QPainter *painter)
 
   mTransform = mCanvas->getCoordinateTransform();
 
+  QPainter *painter = new QPainter();
+  painter->begin(mPixmap);
+  
   // Display lines
   int nlines = mProvider->numLines(); 
 
@@ -2042,6 +2045,9 @@ void QgsGrassEdit::displayMap (QPainter *painter)
     }
   }
 
+  painter->end();
+  delete painter;
+  
   mCanvas->updateContents();
 //  mCanvas->repaint(false);
 }
@@ -2077,6 +2083,7 @@ void QgsGrassEdit::displayUpdated (void)
   }
 
   painter->end();
+  delete painter;
 
   mCanvas->updateContents();
 //  mCanvas->repaint(false);
