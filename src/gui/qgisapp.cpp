@@ -1118,7 +1118,8 @@ void QgisApp::createOverview()
 void QgisApp::createLegend()
 {
   //legend
-  mMapLegend = new QgsLegend(this,NULL, "theMapLegend");
+  //mMapLegend = new QgsLegend(this,NULL, "theMapLegend");
+  mMapLegend = new QgsLegend(this, this, "theMapLegend");
   mMapLegend->setMapCanvas(mMapCanvas);
   QWhatsThis::add(mMapLegend, tr("Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties."));
   QVBoxLayout *myLegendLayout = new QVBoxLayout;
