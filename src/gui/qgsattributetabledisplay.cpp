@@ -21,9 +21,9 @@
 
 #include "qgsapplication.h"
 #include "qgsaddattrdialog.h"
-#include "qgsadvancedattrsearch.h"
 #include "qgsdelattrdialog.h"
 #include "qgsfeature.h"
+#include "qgssearchquerybuilder.h"
 #include "qgssearchtreenode.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -252,12 +252,12 @@ void QgsAttributeTableDisplay::search()
 
 void QgsAttributeTableDisplay::advancedSearch()
 {
-  QgsAdvancedAttrSearch* searchDlg = new QgsAdvancedAttrSearch(this);
-  if (searchDlg->exec())
+  QgsSearchQueryBuilder dlg(mLayer, this);
+  dlg.setSearchString(mSearchString);
+  if (dlg.exec())
   {
-    doSearch(searchDlg->searchString());
+    doSearch(dlg.searchString());
   }
-  delete searchDlg;
 }
 
 
@@ -287,6 +287,8 @@ void QgsAttributeTableDisplay::searchShowResultsChanged(int item)
 
 void QgsAttributeTableDisplay::doSearch(const QString& searchString)
 {
+  mSearchString = searchString;
+
   // parse search string (and build parsed tree)
   QgsSearchString search;
   if (!search.setString(searchString))
@@ -314,7 +316,7 @@ void QgsAttributeTableDisplay::doSearch(const QString& searchString)
   QgsVectorDataProvider* provider = mLayer->getDataProvider();
   provider->reset();
   mSearchIds.clear();
-  while (fet = provider->getNextFeature(true))
+  while ((fet = provider->getNextFeature(true)))
   {
     if (searchTree->checkAgainst(fet->attributeMap()))
     {

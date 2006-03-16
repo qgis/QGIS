@@ -16,8 +16,11 @@
  *                                                                         *
  ***************************************************************************/
  /* $Id$ */
- 
-#include <qstring.h>
+
+#ifndef QGSSEARCHSTRING_H
+#define QGSSEARCHSTRING_H
+
+#include <QString>
 
 class QgsSearchTreeNode;
 
@@ -75,3 +78,4 @@ private:
   QString               mParserErrorMsg;
 };
 
+#endif

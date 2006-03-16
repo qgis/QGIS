@@ -18,7 +18,6 @@ WIDGETPATH=../../widgets
 qgis_ui_UIC =	\
 		qgsabout.ui				\
 		qgsaddattrdialogbase.ui			\
-		qgsadvancedattrsearchbase.ui		\
 		qgsattributedialogbase.ui		\
 		qgsattributeactiondialogbase.ui		\
 		qgsattributetablebase.ui		\
@@ -70,7 +69,6 @@ qgis_ui_UIC =	\
 		qgsuniquevaluedialogbase.ui \
 		qgsattributetabledisplaybase.ui \
 		qgsaddattrdialogbase.ui \
-		qgsadvancedattrsearch.ui \
 		qgsattributeactiondialogbase.ui \
 		qgsdelattrdialogbase.ui \
 		qgspgquerybuilderbase.ui \
@@ -86,7 +84,6 @@ qgis_ui_UIC =	\
 qgis_ui_UIHEADERS = ui_qgisappbase.h \
 		ui_qgsabout.h				\
 		ui_qgsaddattrdialogbase.h			\
-		ui_qgsadvancedattrsearchbase.h		\
 		ui_qgsattributedialogbase.h		\
 		ui_qgsattributeactiondialogbase.h		\
 		ui_qgsattributetablebase.h		\
@@ -136,7 +133,6 @@ qgis_ui_UIHEADERS = ui_qgisappbase.h \
 		ui_qgspointstylewidgetbase.h \
 		ui_qgsidentifyresultsbase.h \
 		ui_qgsaddattrdialogbase.h \
-		ui_qgsadvancedattrsearchbase.h \
 		ui_qgsattributeactiondialogbase.h \
 		ui_qgsdelattrdialogbase.h \
 		ui_qgspgquerybuilderbase.h \

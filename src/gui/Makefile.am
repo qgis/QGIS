@@ -69,7 +69,6 @@ libqgis_guiHEADERS =							\
 		qgisinterface.h \
 		qgsabout.h				\
 		qgsaddattrdialog.h				\
-		qgsadvancedattrsearch.h				\
 		qgsattributeaction.h		\
 		qgsattributeactiondialog.h			\
 		qgsattributedialog.h				\
@@ -130,6 +129,7 @@ libqgis_guiHEADERS =							\
 		qgsrasterlayerproperties.h		\
 		qgsrubberband.h						\
 		qgsrunprocess.h						\
+		qgssearchquerybuilder.h			\
 		qgsserversourceselect.h				\
 		qgssinglesymboldialog.h				\
 		qgssinglesymbolrenderer.h			\
@@ -146,7 +146,6 @@ libqgis_gui_la_MOC =							\
 		qgisinterface.moc.cpp	\
 		qgsabout.moc.cpp		\
 		qgsaddattrdialog.moc.cpp		\
-		qgsadvancedattrsearch.moc.cpp		\
 		qgsattributeactiondialog.moc.cpp	\
 		qgsattributedialog.moc.cpp		\
 		qgsattributetabledisplay.moc.cpp		\
@@ -187,6 +186,7 @@ libqgis_gui_la_MOC =							\
 		qgsprojectproperties.moc.cpp		\
 		qgsrasterlayerproperties.moc.cpp	\
 		qgsrunprocess.moc.cpp				\
+		qgssearchquerybuilder.moc.cpp	\
 		qgsserversourceselect.moc.cpp		\
 		qgssinglesymboldialog.moc.cpp			\
 		qgsuniquevaluedialog.moc.cpp			\
@@ -199,8 +199,7 @@ libqgis_gui_la_SOURCES =						\
 		qgisinterface.cpp	\
 		qgsabout.cpp		\
 		qgsaddattrdialog.cpp		\
-		qgsadvancedattrsearch.cpp	\
-	   	qgsattributeaction.cpp				\
+	  qgsattributeaction.cpp				\
 		qgsattributeactiondialog.cpp	\
 		qgsattributedialog.cpp		\
 		qgsattributetable.cpp		\
@@ -258,6 +257,7 @@ libqgis_gui_la_SOURCES =						\
 		qgsrasterlayerproperties.cpp	\
 		qgsrubberband.cpp					\
 		qgsrunprocess.cpp					\
+		qgssearchquerybuilder.cpp		\
 		qgsserversourceselect.cpp	\
 		qgssinglesymboldialog.cpp	\
 		qgssinglesymbolrenderer.cpp			\
