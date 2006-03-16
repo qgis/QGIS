@@ -522,19 +522,14 @@ AC_DEFUN([AQ_CHECK_QT4],[
               QTDIR="$withval", QTDIR="")
 
   QT_MIN_VER=4.1.0
-  
-  if test "x$QTDIR" == "x" ; then
+
+  if test "x$QTDIR" = "x" ; then
   
     dnl ---------------------------------------------------------------------------
     dnl we will use PKGCONFIG, check that all needed Qt4 components are there
     dnl ---------------------------------------------------------------------------
     
-    PKG_CHECK_MODULES(QTCORE, QtCore     >= $QT_MIN_VER)
-    PKG_CHECK_MODULES(QTGUI,  QtGui      >= $QT_MIN_VER)
-    PKG_CHECK_MODULES(QT3SUP, Qt3Support >= $QT_MIN_VER)
-    PKG_CHECK_MODULES(QTNET,  QtNetwork  >= $QT_MIN_VER)
-    PKG_CHECK_MODULES(QTXML,  QtXml      >= $QT_MIN_VER)
-    PKG_CHECK_MODULES(QTSVG,  QtSvg      >= $QT_MIN_VER)
+    PKG_CHECK_MODULES(QT, QtCore QtGui Qt3Support QtNetwork QtXml QtSvg >= $QT_MIN_VER)
 
     dnl check for Qt binaries needed for compilation: moc,uic,rcc
     dnl (we could also check for moc and uic versions)
@@ -554,12 +549,12 @@ AC_DEFUN([AQ_CHECK_QT4],[
 
     dnl set and display variables
     
-    QT_CXXFLAGS="-DQT3_SUPPORT $QTCORE_CFLAGS $QTGUI_CFLAGS $QT3SUP_CFLAGS $QTNET_CFLAGS $QTXML_CFLAGS $QTSVG_CFLAGS"
+    QT_CXXFLAGS="-DQT3_SUPPORT $QT_CFLAGS"
     AC_MSG_CHECKING([QT_CXXFLAGS])
     AC_MSG_RESULT([$QT_CXXFLAGS])
     AC_SUBST([$QT_CXXFLAGS])
 
-    QT_LDADD="$QTCORE_LIBS $QTGUI_LIBS $QT3SUP_LIBS $QTNET_LIBS $QTXML_LIBS $QTSVG_LIBS"
+    QT_LDADD="$QT_LIBS"
     AC_MSG_CHECKING([QT_LDADD])
     AC_MSG_RESULT([$QT_LDADD])
     AC_SUBST([$QT_LDADD])
