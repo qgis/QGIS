@@ -66,6 +66,8 @@ class QgsAttributeTableDisplay:public QDialog, private Ui::QgsAttributeTableBase
   private:
     /** Set the icon theme for this dialog */
     void setTheme();
+    
+    QString mSearchString;
 };
 
 #endif
