@@ -30,14 +30,13 @@ email                : sherman at mrcc.com
 #include <QSettings>
 #include <QTextOStream>
 #include <QTableWidgetItem>
-#include <QIcon>
 #include <QHeaderView>
 
 #include <cassert>
 #include <iostream>
 
 QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, Qt::WFlags fl)
-: QDialog(app, fl), qgisApp(app)
+  : QDialog(app, fl), qgisApp(app), mColumnTypeThread(NULL)
 {
   setupUi(this);
   btnAdd->setEnabled(false);
@@ -105,9 +104,9 @@ QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, Qt::WFlags fl)
 
   // Do some things that couldn't be done in designer
   lstTables->horizontalHeader()->setStretchLastSection(true);
+  QStringList labels;
   // Set the column count to 3 for the type, name, and sql
   lstTables->setColumnCount(3);
-  QStringList labels;
   labels += tr("Type"); labels += tr("Name"); labels += tr("Sql");
   lstTables->setHorizontalHeaderLabels(labels);
   lstTables->verticalHeader()->hide();
@@ -147,6 +146,59 @@ void QgsDbSourceSelect::on_btnHelp_clicked()
   showHelp();
 }
 /** End Autoconnected SLOTS **/
+
+void QgsDbSourceSelect::setLayerType(QString schema, 
+                                     QString table, QString column,
+                                     QString type)
+{
+#ifdef QGISDEBUG
+  std::cerr << "Received layer type of " << type.toLocal8Bit().data()
+            << " for " 
+            << (schema+'.'+table+'.'+column).toLocal8Bit().data() 
+            << '\n';
+#endif
+
+  // Find the right row in the table by searching for the text that
+  // was put into the Name column.
+  QString full_desc = fullDescription(schema, table, column);
+
+  QList<QTableWidgetItem*> ii = lstTables->findItems(full_desc,
+                                                     Qt::MatchExactly);
+
+  if (ii.count() > 0)
+  {
+    int row = lstTables->row(ii.at(0)); // just use the first one
+    QTableWidgetItem* iconItem = lstTables->item(row, 0);
+
+    // Get the icon and tooltip text 
+    const QIcon* p;
+    QString toolTipText;
+    if (mLayerIcons.contains(type))
+    {
+      p = &(mLayerIcons.value(type).second);
+      toolTipText = mLayerIcons.value(type).first;
+    }
+    else
+    {
+      qDebug(("Unknown geometry type of " + type).toLocal8Bit().data());
+      p = &(mLayerIcons.value("UNKNOWN").second);
+      toolTipText = mLayerIcons.value("UNKNOWN").first;
+    }
+
+    iconItem->setIcon(*p);
+    iconItem->setToolTip(toolTipText);
+  }
+}
+
+QString QgsDbSourceSelect::makeGeomQuery(QString schema, 
+                                                QString table, QString column)
+{
+  QString query = "select GeometryType(" + column + ") from ";
+  if (schema.length() > 0)
+    query += "\"" + schema + "\".";
+  query += "\"" + table + "\" where " + column + " is not null limit 1";
+  return query;
+}
 
 QgsDbSourceSelect::~QgsDbSourceSelect()
 {
@@ -278,13 +330,31 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
     {
       // create the pixmaps for the layer types
       QString myThemePath = QgsApplication::themePath();
-      QIcon pxPoint(myThemePath+"/mIconPointLayer.png");
-      QIcon pxLine(myThemePath+"/mIconLineLayer.png");
-      QIcon pxPoly(myThemePath+"/mIconPolygonLayer.png");
-      QIcon pxWaiting(myThemePath+"/mIconWaitingForLayerType.png");
-      QIcon pxUnknown(myThemePath+"/mIconUnknownLayerType.png");
+      mLayerIcons.insert(QString("POINT"),
+                         qMakePair(tr("Point layer"), 
+                                   QIcon(myThemePath+"/mIconPointLayer.png")));
+      mLayerIcons.insert(QString("MULTIPOINT"),
+                         qMakePair(tr("Multi-point layer"), 
+                                   QIcon(myThemePath+"/mIconPointLayer.png")));
+      mLayerIcons.insert(QString("LINESTRING"),
+                         qMakePair(tr("Linestring layer"), 
+                                   QIcon(myThemePath+"/mIconLineLayer.png")));
+      mLayerIcons.insert(QString("MULTILINESTRING"),
+                         qMakePair(tr("Multi-linestring layer"), 
+                                   QIcon(myThemePath+"/mIconLineLayer.png")));
+      mLayerIcons.insert(QString("POLYGON"),
+                         qMakePair(tr("Polygon layer"), 
+                                   QIcon(myThemePath+"/mIconPolygonLayer.png")));
+      mLayerIcons.insert(QString("MULTIPOLYGON"),
+                         qMakePair(tr("Multi-polygon layer"), 
+                                   QIcon(myThemePath+"/mIconPolygonLayer.png")));
+      mLayerIcons.insert(QString("WAITING"),
+                         qMakePair(tr("Waiting for layer type"), 
+                                   QIcon(myThemePath+"/mIconWaitingForLayerType.png")));
+      mLayerIcons.insert(QString("UNKNOWN"),
+                         qMakePair(tr("Unknown layer type"), 
+                                   QIcon(myThemePath+"/mIconUnknownLayerType.png")));
 
-      assert (!pxPoint.isNull());
       //qDebug("Connection succeeded");
       // tell the DB that we want text encoded in UTF8
       PQsetClientEncoding(pd, "UNICODE");
@@ -299,47 +369,18 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
         for (; iter != details.end(); ++iter)
         {
           QString toolTipText;
-          QIcon *p = 0;
-          if (iter->second == "POINT")
+          const QIcon* p;
+
+          if (mLayerIcons.contains(iter->second))
           {
-            p = &pxPoint;
-            toolTipText = tr("Point layer");
-          }
-          else if (iter->second == "MULTIPOINT")
-          {
-            p = &pxPoint;
-            toolTipText = tr("Multi-point layer");
-          }
-          else if (iter->second == "MULTIPOLYGON")
-          {
-            p = &pxPoly;
-            toolTipText = tr("Multi-polygon layer");
-          }
-          else if  (iter->second == "POLYGON")
-          {
-            p = &pxPoly;
-            toolTipText = tr("Polygon layer");
-          }
-          else if (iter->second == "LINESTRING")
-          {
-            p = &pxLine;
-            toolTipText = tr("Linestring layer");
-          }
-          else if (iter->second == "MULTILINESTRING")
-          {
-            p = &pxLine;
-            toolTipText = tr("Multi-linestring layer");
-          }
-          else if (iter->second == "WAITING")
-          {
-            p = &pxWaiting;
-            toolTipText = tr("Waiting for layer type");
+            p = &(mLayerIcons.value(iter->second).second);
+            toolTipText = mLayerIcons.value(iter->second).first;
           }
           else
           {
             qDebug(("Unknown geometry type of " + iter->second).toLocal8Bit().data());
-            toolTipText = tr("Unknown layer type");
-            p = &pxUnknown;
+            p = &(mLayerIcons.value("UNKNOWN").second);
+            toolTipText = mLayerIcons.value("UNKNOWN").first;
           }
 
           if (p != 0)
@@ -349,11 +390,6 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
             iconItem->setToolTip(toolTipText);
             QTableWidgetItem *textItem = new QTableWidgetItem(iter->first);
             int row = lstTables->rowCount();
-            std::cerr << "Adding database table with name '" 
-                      << iter->first.toLocal8Bit().data()
-                      << "' and tooltip '"
-                      << toolTipText.toLocal8Bit().data()
-                      << "' at row " << row+1 << ".\n";
             lstTables->setRowCount(row+1);
             lstTables->setItem(row, 0, iconItem);
             lstTables->setItem(row, 1, textItem);
@@ -370,6 +406,25 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
         // And tidy up the columns & rows
         lstTables->resizeColumnsToContents();
         lstTables->resizeRowsToContents();
+
+        // Start the thread that gets the geometry type for relations that
+        // may take a long time to return
+        if (mColumnTypeThread != NULL)
+        {
+            connect(mColumnTypeThread, 
+                    SIGNAL(setLayerType(QString,QString,QString,QString)),
+                    this, 
+                    SLOT(setLayerType(QString,QString,QString,QString)));
+            // Do it in a thread. Does not yet cope correctly with the
+            // layer selection dialog box closing before the thread
+            // completes, nor the qgis process ending before the
+            // thread completes, nor does the thread know to stop working
+            // when the user chooses a layer.
+            // mColumnTypeThread->run();
+
+            // do it in this process for the moment. 
+            mColumnTypeThread->getLayerTypes();
+        }
       }
       else
       {
@@ -522,40 +577,35 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
     QString column = PQgetvalue(result, i, 2); // attname
     QString relkind = PQgetvalue(result, i, 3); // relation kind
 
-    QString type = "WAITING";
-    if (relkind == "r" || relkind == "v")
-    {
-      QString query = "select GeometryType(" + column + ") from ";
-      if (schema.length() > 0)
-        query += "\"" + schema + "\".";
-      query += "\"" + table + "\" where " + column + " is not null limit 1";
+    QString full_desc = fullDescription(schema, table, column);
 
+    QString type = "UNKNOWN";
+    if (relkind == "r")
+    {
+      QString query = makeGeomQuery(schema, table, column);
       PGresult* gresult = PQexec(pg, query.toLocal8Bit().data());
       if (PQresultStatus(gresult) != PGRES_TUPLES_OK)
         {
           QString myError = (tr("Access to relation ") + table + tr(" using sql;\n") + query +
                              tr("\nhas failed. The database said:\n"));
           qDebug(myError + QString(PQresultErrorMessage(gresult)));
-          type = "UNKNOWN";
         }
       else
         type = PQgetvalue(gresult, 0, 0); // GeometryType
       PQclear(gresult);
     }
-    /*
-      // Commented out temporarily...
     else // view
     {
       // store the column details and do the query in a thread
-      std::cout << "Doing " << (schema+'.'+table+'.'+column).toLocal8Bit().data() 
-                << " later" << std::endl;
+      if (mColumnTypeThread == NULL)
+      {
+        mColumnTypeThread = new QgsGeomColumnTypeThread();
+        mColumnTypeThread->setConnInfo(m_connInfo);
+      }
+      mColumnTypeThread->setGeometryColumn(schema, table, column);
+      type = "WAITING";
     }
-    */
 
-    QString full_desc = "";
-    if (schema.length() > 0)
-      full_desc = schema + ".";
-    full_desc += table + " (" + column + ")";
     details.push_back(geomPair(full_desc, type));
   }
   ok = true;
@@ -572,6 +622,15 @@ void QgsDbSourceSelect::showHelp()
 {
   QgsContextHelp::run(context_id);
 }
+QString QgsDbSourceSelect::fullDescription(QString schema, QString table, 
+                                           QString column)
+{
+  QString full_desc = "";
+  if (schema.length() > 0)
+    full_desc = schema + ".";
+  full_desc += table + " (" + column + ")";
+  return full_desc;
+}
 void QgsDbSourceSelect::dbChanged()
 {
   // Remember which database was selected.
@@ -579,6 +638,7 @@ void QgsDbSourceSelect::dbChanged()
   settings.writeEntry("/PostgreSQL/connections/selected", 
 		      cmbConnections->currentText());
 }
+
 void QgsDbSourceSelect::setConnectionListPosition()
 {
   QSettings settings;
@@ -608,4 +668,42 @@ void QgsDbSourceSelect::setConnectionListPosition()
     else
       cmbConnections->setCurrentItem(cmbConnections->count()-1);
   }
+}
+
+void QgsGeomColumnTypeThread::setConnInfo(QString s)
+{
+  mConnInfo = s;
+}
+
+void QgsGeomColumnTypeThread::setGeometryColumn(QString schema, QString table, QString column)
+{
+  schemas.push_back(schema);
+  tables.push_back(table);
+  columns.push_back(column);
+}
+
+void QgsGeomColumnTypeThread::getLayerTypes()
+{
+  PGconn *pd = PQconnectdb(mConnInfo.toLocal8Bit().data());
+  if (PQstatus(pd) == CONNECTION_OK)
+  {
+    PQsetClientEncoding(pd, "UNICODE");
+
+    for (int i = 0; i < schemas.size(); ++i)
+    {
+      QString query = QgsDbSourceSelect::makeGeomQuery(schemas[i],
+                                                       tables[i],
+                                                       columns[i]);
+      PGresult* gresult = PQexec(pd, query.toLocal8Bit().data());
+      QString type;
+      if (PQresultStatus(gresult) == PGRES_TUPLES_OK)
+        type = PQgetvalue(gresult, 0, 0);
+      PQclear(gresult);
+
+      // Now tell the layer list dialog box...
+      emit setLayerType(schemas[i], tables[i], columns[i], type);
+    }
+  }
+
+  PQfinish(pd);
 }

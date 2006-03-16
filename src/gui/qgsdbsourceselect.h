@@ -24,10 +24,17 @@ extern "C"
 #include <libpq-fe.h>
 }
 
+#include <QThread>
+
 #include <vector>
 #include <utility>
 
+#include <QMap>
+#include <QPair>
+#include <QIcon>
+
 class QTableWidgetItem;
+class QgsGeomColumnTypeThread;
 class QgisApp;
 /*! \class QgsDbSourceSelect
  * \brief Dialog to create connections and add tables from PostgresQL.
@@ -63,6 +70,10 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QString encoding();
     // Store the selected database
     void dbChanged();
+    // Utility function to construct the query for finding out the
+    // geometry type of a column
+    static QString makeGeomQuery(QString schema, QString table, QString column);
+
     public slots:
     /*! Connects to the database using the stored connection parameters. 
     * Once connected, available layers are displayed.
@@ -75,6 +86,8 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
       void on_lstTables_itemDoubleClicked(QTableWidgetItem *);
       void setSql(QTableWidgetItem *);
       void on_btnHelp_clicked();
+      void setLayerType(QString schema, QString table, QString column,
+                        QString type);
  private:
 
     typedef std::pair<QString, QString> geomPair;
@@ -87,14 +100,51 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void setConnectionListPosition();
     // Show the context help for the dialog
     void showHelp();
-
+    // Combine the schema, table and column data into a single string
+    // useful for display to the user
+    QString fullDescription(QString schema, QString table, QString column);
+    // Our thread for doing long running queries
+    QgsGeomColumnTypeThread* mColumnTypeThread;
     QString m_connInfo;
     QStringList m_selectedTables;
+    // Storage for the range of layer type icons
+    QMap<QString, QPair<QString, QIcon> > mLayerIcons;
     //! Pointer to the qgis application mainwindow
     QgisApp *qgisApp;
     PGconn *pd;
     static const int context_id = 1244423922;
 };
 
+
+// Perhaps this class should be in its own file??
+//
+// A class that determines the geometry type of a given database 
+// schema.table.column, with the option of doing so in a separate
+// thread.
+
+class QgsGeomColumnTypeThread : public QThread
+{
+  Q_OBJECT
+ public:
+
+  void setConnInfo(QString s);
+  void setGeometryColumn(QString schema, QString table, QString column);
+
+  // These functions get the layer types and pass that information out
+  // by emitting the setLayerType() signal. The getLayerTypes()
+  // function does the actual work, but use the run() function if you
+  // want the work to be done as a separate thread from the calling
+  // process. 
+  virtual void run() { getLayerTypes(); }
+  void getLayerTypes();
+
+  signals:
+  void setLayerType(QString schema, QString table, QString column,
+                    QString type);
+
+ private:
+  QString mConnInfo;
+  std::vector<QString> schemas, tables, columns;
+};
 
 #endif // QGSDBSOURCESELECT_H
