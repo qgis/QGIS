@@ -38,7 +38,8 @@ using namespace std;
 #include <QWidget>
 #include <QObject>
 #include <QTextStream>
-
+#include <QToolBox>
+#include <QSplitter>
 
 
 static const char *const ident_ = "$Id$";
@@ -771,15 +772,16 @@ static QgsMapCanvas * _findMapCanvas(QString const &canonicalMapCanvasName)
 static QgsLegend * _findLegend()
 {
   QString canonicalLegendName = "theMapLegend";
-  QgsLegend* theLegend = NULL;
+  QgsLegend* theLegend = 0;
 
   QWidgetList wlist = QApplication::topLevelWidgets();
   foreach (QWidget *widget, QApplication::topLevelWidgets()) 
   {
-    //theLegend = dynamic_cast <QgsLegend *>(widget->child(canonicalLegendName.toLocal8Bit().data(), 0, true)); 
-    theLegend = widget->findChild<QgsLegend*>("theMapLegend");
+    theLegend = dynamic_cast <QgsLegend *>(widget->child(canonicalLegendName.toLocal8Bit().data(), 0, true)); 
     if(theLegend)
-      break;
+      {
+	break;
+      }
   }
   
   return theLegend;
