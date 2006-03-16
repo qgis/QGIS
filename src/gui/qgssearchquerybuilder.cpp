@@ -31,6 +31,14 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder(QgsVectorLayer* layer,
 {
   setupUi(this);
   
+  // disable unsupported operators
+  btnIn->setEnabled(false);
+  btnNotIn->setEnabled(false);
+  btnPct->setEnabled(false);
+  
+  // change to ~
+  btnILike->setText("~");
+  
   lblDataUri->setText(layer->name());
   populateFields();
 }
@@ -286,6 +294,7 @@ void QgsSearchQueryBuilder::on_btnClear_clicked()
 
 void QgsSearchQueryBuilder::on_btnILike_clicked()
 {
-  txtSQL->insert(" ILIKE ");
+  //txtSQL->insert(" ILIKE ");
+  txtSQL->insert(" ~ ");
 }
 
