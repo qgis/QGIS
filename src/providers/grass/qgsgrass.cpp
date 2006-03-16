@@ -570,10 +570,13 @@ QStringList QgsGrass::vectors ( QString mapsetPath )
 
     for ( int i = 0; i < d.count(); i++ ) 
     {
+        /*
         if ( QFile::exists ( mapsetPath + "/vector/" + d[i] + "/head" ) )
 	{
     	    list.append(d[i]);
 	}
+        */
+    	list.append(d[i]);
     }
     return list;
 }
