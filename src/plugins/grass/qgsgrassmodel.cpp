@@ -484,6 +484,13 @@ QgsGrassModel::QgsGrassModel ( QObject * parent )
 		       + "/" + QgsGrass::getDefaultLocation();
 
     mIconFile = QIcon(style->standardPixmap(QStyle::SP_FileIcon));
+
+    QString iconPath = QgsApplication::themePath();
+    mIconPointLayer = QIcon ( iconPath+"/mIconPointLayer.png" );
+    mIconLineLayer = QIcon ( iconPath+"/mIconLineLayer.png" );
+    mIconPolygonLayer = QIcon ( iconPath+"/mIconPolygonLayer.png" );
+    mIconVectorLayer = QIcon ( iconPath+"/grass/grass_browser_vector_layer.png" );
+    mIconRasterLayer = QIcon ( iconPath+"/grass/grass_browser_raster_layer.png" );
     
     mRoot = new QgsGrassModelItem();
     mRoot->mType = QgsGrassModel::Location;
@@ -784,10 +791,37 @@ QVariant QgsGrassModel::data ( const QModelIndex &index, int role ) const
 
     if ( role == Qt::DecorationRole ) 
     {
-	if ( item->type() == QgsGrassModel::Raster ||
-	     item->type() == QgsGrassModel::VectorLayer )
-	{
-	        return mIconFile;
+        switch ( item->type() )
+        {
+             case QgsGrassModel::Vector :
+                 return mIconVectorLayer;
+                 break;
+
+             case QgsGrassModel::Raster :
+                 return mIconRasterLayer;
+                 break;
+
+             case QgsGrassModel::VectorLayer :
+                 if ( item->mLayer.contains("point") )
+                 {
+                     return mIconPointLayer;
+                 } 
+                 else if ( item->mLayer.contains("line") )
+                 {
+                     return mIconLineLayer;
+                 }
+                 else if ( item->mLayer.contains("polygon") )
+                 {
+                     return mIconPolygonLayer;
+                 }
+                 else
+                 {
+                     return mIconFile; 
+                 }
+                 break;
+             
+             default:
+                 return mIconDirectory; 
 	}
         return mIconDirectory;
     }
