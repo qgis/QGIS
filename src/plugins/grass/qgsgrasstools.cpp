@@ -158,6 +158,9 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
     // displayed over the browser
     QgsGrassBrowser *browser = new QgsGrassBrowser ( mIface, this );
     mTabWidget->addTab( browser, "Browser" );
+
+    connect( browser, SIGNAL(regionChanged()), 
+		         this, SLOT(emitRegionChanged()) );
 }
 
 void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
@@ -412,5 +415,10 @@ void QgsGrassTools::saveWindowLocation()
     settings.writeEntry("/GRASS/windows/tools/h", s.height());
 }
 
-
-
+void QgsGrassTools::emitRegionChanged()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassTools::emitRegionChanged()" << std::endl;
+    #endif
+    emit regionChanged();
+}
