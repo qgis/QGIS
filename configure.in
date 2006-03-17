@@ -27,13 +27,13 @@ dnl number. This means that development work on 0.8 will be versioned as
 dnl 0.7devel1, 0.7devel2, etc.
 dnl ---------------------------------------------------------------------------
 MAJOR_VERSION=0
-MINOR_VERSION=7
-MICRO_VERSION=9
-EXTRA_VERSION=10
+MINOR_VERSION=8
+MICRO_VERSION=0
+EXTRA_VERSION=0
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
 else
-   VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}devel${EXTRA_VERSION}
+   VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}-Preview-${EXTRA_VERSION}
 fi
 
 dnl ---------------------------------------------------------------------------
