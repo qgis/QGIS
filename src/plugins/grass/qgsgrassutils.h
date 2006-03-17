@@ -16,6 +16,11 @@
 #ifndef QGSGRASSUTILS_H
 #define QGSGRASSUTILS_H
 
+#include <QObject>
+class QDialog;
+class QLineEdit;
+class QLabel;
+class QPushButton;
 #include "qgisiface.h"
 
 /*! \class QgsGrassUtils
@@ -38,6 +43,41 @@ public:
     // Add all vector layers to QGIS view
     static void QgsGrassUtils::addVectorLayers ( QgisIface *iface,
         QString gisbase, QString location, QString mapset, QString map);
+
+    // Check if element exists in current mapset
+    static bool QgsGrassUtils::itemExists ( QString element, QString item);
+
+};
+
+/*! \class QgsGrassElementDialog
+ *  \brief Get name for new element
+ */
+class QgsGrassElementDialog: public QObject
+{
+    Q_OBJECT;
+
+public:
+    //! Constructor
+    QgsGrassElementDialog();
+
+    //! Destructor
+    ~QgsGrassElementDialog();
+
+public:
+    // Get a name for new GRASS element (map)
+    QString getItem ( QString element, 
+                       QString text, bool * ok );
+
+public slots:
+    void textChanged();
+
+private:
+    QString mElement;
+    QDialog *mDialog;
+    QLineEdit *mLineEdit;
+    QLabel *mErrorLabel;
+    QPushButton *mOkButton;
+    QPushButton *mCancelButton;
 };
 
 #endif // QGSGRASSUTILS_H

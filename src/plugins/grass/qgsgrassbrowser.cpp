@@ -73,6 +73,22 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisIface *iface,
     tb->addAction ( mActionAddMap );
     connect ( mActionAddMap, SIGNAL(triggered()), this, SLOT(addMap()) );
 
+    mActionCopyMap = new QAction( 
+	                     QIcon(myIconPath+"grass_copy_map.png"), 
+	                     tr("Copy selected map"), this);
+    mActionCopyMap->setEnabled(false); 
+    ag->addAction ( mActionCopyMap );
+    tb->addAction ( mActionCopyMap );
+    connect ( mActionCopyMap, SIGNAL(triggered()), this, SLOT(copyMap()) );
+
+    mActionRenameMap = new QAction( 
+	                     QIcon(myIconPath+"grass_rename_map.png"), 
+	                     tr("Rename selected map"), this);
+    mActionRenameMap->setEnabled(false); 
+    ag->addAction ( mActionRenameMap );
+    tb->addAction ( mActionRenameMap );
+    connect ( mActionRenameMap, SIGNAL(triggered()), this, SLOT(renameMap()) );
+
     mActionDeleteMap = new QAction( 
 	                     QIcon(myIconPath+"grass_delete_map.png"), 
 	                     tr("Delete selected map"), this);
@@ -197,6 +213,73 @@ void QgsGrassBrowser::doubleClicked(const QModelIndex & index)
     addMap();
 }
 
+void QgsGrassBrowser::copyMap()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassBrowser::copyMap()" << std::endl;
+    #endif
+    
+    QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
+
+    QList<QModelIndex>::const_iterator it = indexes.begin();
+    for (; it != indexes.end(); ++it)
+    {
+	int type = mModel->itemType(*it);
+	QString mapset = mModel->itemMapset(*it);
+	QString map = mModel->itemMap(*it);
+
+        QString typeName;
+        QString element;
+        if ( type == QgsGrassModel::Raster ) 
+        {
+           element = "cell";
+           typeName = "rast";
+        } 
+        else if ( type == QgsGrassModel::Vector )
+        {
+            element = "vector";
+            typeName = "vect";
+        }
+        else if ( type == QgsGrassModel::Region ) 
+        {
+            element = "windows";
+            typeName = "region";
+        }
+
+        QgsGrassElementDialog *ed = new QgsGrassElementDialog();
+        bool ok;
+        QString newName = ed->getItem ( element, map, &ok );
+        delete ed;
+
+        if ( !ok ) return;
+         
+        QString module = "g.copy";
+#ifdef WIN32
+	module.append(".exe");
+#endif
+        QProcess process(this);
+        process.start(module, QStringList( typeName + "=" + map + "@" + mapset + "," + newName ) );
+        if ( !process.waitForFinished() )
+        {
+            QMessageBox::warning( 0, "Warning", "Cannot copy map "
+                                  + map ); 
+        }
+        else
+        {
+            refresh();
+        }
+    }
+}
+
+void QgsGrassBrowser::renameMap()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassBrowser::renameMap()" << std::endl;
+    #endif
+
+    QMessageBox::warning ( 0, "Warning", "Not yet implemented" );
+}
+
 void QgsGrassBrowser::deleteMap()
 {
     #ifdef QGISDEBUG
@@ -204,7 +287,6 @@ void QgsGrassBrowser::deleteMap()
     #endif
     
     QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
-    bool mapSelected = false;
 
     QList<QModelIndex>::const_iterator it = indexes.begin();
     for (; it != indexes.end(); ++it)
@@ -339,6 +421,8 @@ void QgsGrassBrowser::selectionChanged(const QItemSelection & selected, const QI
     #endif
 
     mActionAddMap->setEnabled(false);
+    mActionCopyMap->setEnabled(false);
+    mActionRenameMap->setEnabled(false);
     mActionDeleteMap->setEnabled(false);
     mActionSetRegion->setEnabled(false);
     
@@ -362,11 +446,13 @@ void QgsGrassBrowser::selectionChanged(const QItemSelection & selected, const QI
         if ( type == QgsGrassModel::Raster || type == QgsGrassModel::Vector || type == QgsGrassModel::Region )
 	{
             mActionSetRegion->setEnabled(true);
+            mActionCopyMap->setEnabled(true);
 
 	    QString mapset = mModel->itemMapset(*it);
             if ( mapset == QgsGrass::getDefaultMapset() ) 
             {
 	        mActionDeleteMap->setEnabled(true);
+	        mActionRenameMap->setEnabled(true);
             }
 	}
     }
