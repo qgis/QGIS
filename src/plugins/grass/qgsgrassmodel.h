@@ -112,6 +112,11 @@ private:
     //! Icons
     QIcon mIconDirectory;
     QIcon mIconFile;
+    QIcon mIconRasterLayer;
+    QIcon mIconVectorLayer;
+    QIcon mIconPointLayer;
+    QIcon mIconLineLayer;
+    QIcon mIconPolygonLayer;
 };
 
 #endif // QGSGRASSMODEL_H
