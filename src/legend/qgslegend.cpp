@@ -969,8 +969,7 @@ bool QgsLegend::readXML(QDomNode& legendnode)
 	    {
 	      QgsLegendPropertyGroup* thePropertyGroup = new QgsLegendPropertyGroup(lastLayer, "Properties");
 	      childelem.attribute("open") == "true" ? expandItem(thePropertyGroup) : collapseItem(thePropertyGroup);
-	    }
-	  
+	    }	  
 	  child = nextDomNode(child);
 	}
       while(!(child.isNull()));
@@ -1142,6 +1141,7 @@ QTreeWidgetItem* QgsLegend::previousSibling(QTreeWidgetItem* item)
 
 QDomNode QgsLegend::nextDomNode(const QDomNode& theNode)
 {
+  //todo: generalise this for arbitrary deep trees
   if(!theNode.firstChild().isNull())
     {
       return (theNode.firstChild());
@@ -1157,6 +1157,10 @@ QDomNode QgsLegend::nextDomNode(const QDomNode& theNode)
   else if(!theNode.parentNode().isNull() && !theNode.parentNode().parentNode().isNull() && !theNode.parentNode().parentNode().nextSibling().isNull())
     {
       return (theNode.parentNode().parentNode().nextSibling());
+    }
+  else if(!theNode.parentNode().isNull() && !theNode.parentNode().parentNode().isNull() && !theNode.parentNode().parentNode().parentNode().isNull() && !theNode.parentNode().parentNode().parentNode().nextSibling().isNull())
+    {
+      return (theNode.parentNode().parentNode().parentNode().nextSibling());
     }
   else
     {
@@ -1335,6 +1339,7 @@ void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 		    }
 		}
 	      mStateOfCheckBoxes[item] = item->checkState(0);
+	      mMapCanvas->setRenderFlag(true);
 	      return;
 	    }
 	  
