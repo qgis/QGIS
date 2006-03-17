@@ -44,7 +44,8 @@ plugin_MOC = qgsgrassplugin.moc.cpp \
 	     qgsgrassnewmapset.moc.cpp \
 	     qgsgrassshell.moc.cpp \
 	     qgsgrassattributes.moc.cpp \
-	     qgsgrassregion.moc.cpp
+	     qgsgrassregion.moc.cpp \
+	     qgsgrassutils.moc.cpp
 
 
 plugin_UI = ui_qgsgrassselectbase.h \
