@@ -8,10 +8,10 @@
 const char* QGis::qgisVersion = VERSION;
   
 // Version number used for comparing versions using the "Check QGIS Version" function
-const int QGis::qgisVersionInt =703;
+const int QGis::qgisVersionInt =800;
   
 // Release name
-const char* QGis::qgisReleaseName = "Seamus";
+const char* QGis::qgisReleaseName = "Titan - Preview 1";
 
 const char* QGis::qgisVectorGeometryType[] =
 {
