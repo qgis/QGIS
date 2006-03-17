@@ -24,6 +24,8 @@
 
 #include <vector>
 
+class QgsRubberBand;
+
 class QgsGrassTools;
 class QgsGrassNewMapset;
 class QToolBar;
@@ -81,11 +83,13 @@ public slots:
   //! show the help document
   void help();
   //! Display current region
-  void displayRegion(QPainter *painter);
+  void displayRegion();
   //! Switch region on/off
   void switchRegion(bool on);
   //! Change region
   void changeRegion(void);
+  //! Redraw region
+  void redrawRegion(void);
   //! Post render
   void postRender(QPainter *);
   //! Open tools 
@@ -130,6 +134,8 @@ private:
   QAction *mRegionAction;
   //! Region width
   QPen mRegionPen;
+  // Region rubber band
+  QgsRubberBand *mRegion;
   //! GRASS tools
   QgsGrassTools *mTools;
   //! Pointer to QgsGrassNewMapset

@@ -81,6 +81,14 @@ QgsGrassBrowser::QgsGrassBrowser ( QgisIface *iface,
     tb->addAction ( mActionDeleteMap );
     connect ( mActionDeleteMap, SIGNAL(triggered()), this, SLOT(deleteMap()) );
 
+    mActionSetRegion = new QAction( 
+	                     QIcon(myIconPath+"grass_set_region.png"), 
+	                     tr("Set current region to selected map"), this);
+    mActionSetRegion->setEnabled(false); 
+    ag->addAction ( mActionSetRegion );
+    tb->addAction ( mActionSetRegion );
+    connect ( mActionSetRegion, SIGNAL(triggered()), this, SLOT(setRegion()) );
+
     mActionRefresh = new QAction( 
 	                     QIcon(myIconPath+"grass_refresh.png"), 
 	                     tr("Refresh"), this);
@@ -238,6 +246,80 @@ void QgsGrassBrowser::deleteMap()
     }
 }
 
+void QgsGrassBrowser::setRegion()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassBrowser::setRegion()" << std::endl;
+    #endif
+
+    struct Cell_head window;
+    
+    QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
+
+    QgsGrass::setLocation( QgsGrass::getDefaultGisdbase(),
+                         QgsGrass::getDefaultLocation() );
+
+    // TODO multiple selection - extent region to all maps
+    QList<QModelIndex>::const_iterator it = indexes.begin();
+    for (; it != indexes.end(); ++it)
+    {
+	int type = mModel->itemType(*it);
+	QString uri = mModel->uri(*it);
+        QString mapset = mModel->itemMapset(*it);
+        QString map = mModel->itemMap(*it);
+
+        if ( type == QgsGrassModel::Raster )
+	{
+
+            if ( G_get_cellhd ( map.toLocal8Bit().data(), 
+                          mapset.toLocal8Bit().data(), &window) < 0 )
+            {
+                QMessageBox::warning( 0, "Warning", 
+                         "Cannot read raster map region" ); 
+                return;
+            }
+	}
+	else if ( type == QgsGrassModel::Vector )
+	{
+            G_get_window ( &window ); // get current resolution
+
+            struct Map_info Map;
+
+            int level = Vect_open_old_head ( &Map, 
+                  map.toLocal8Bit().data(), mapset.toLocal8Bit().data());
+
+            if ( level < 2 ) 
+            { 
+                QMessageBox::warning( 0, "Warning", 
+                         "Cannot read vector map region" ); 
+                return;
+            }
+
+            BOUND_BOX box;
+            Vect_get_map_box (&Map, &box );
+	    window.north = box.N;
+	    window.south = box.S;
+	    window.west  = box.W;
+	    window.east  = box.E;
+            
+            Vect_close (&Map);
+        } 
+    }
+
+    // Reset mapset (selected maps could be in a different one)
+    QgsGrass::setMapset( QgsGrass::getDefaultGisdbase(),
+                         QgsGrass::getDefaultLocation(),
+                         QgsGrass::getDefaultMapset() );
+
+    if ( G_put_window ( &window ) == -1 )
+    { 
+	QMessageBox::warning( 0, "Warning", 
+		 "Cannot write new region" ); 
+        return;
+    }
+    emit regionChanged();
+}
+
 void QgsGrassBrowser::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
 {
     #ifdef QGISDEBUG
@@ -246,6 +328,7 @@ void QgsGrassBrowser::selectionChanged(const QItemSelection & selected, const QI
 
     mActionAddMap->setEnabled(false);
     mActionDeleteMap->setEnabled(false);
+    mActionSetRegion->setEnabled(false);
     
     QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
 
@@ -266,6 +349,8 @@ void QgsGrassBrowser::selectionChanged(const QItemSelection & selected, const QI
 	}
         if ( type == QgsGrassModel::Raster || type == QgsGrassModel::Vector )
 	{
+            mActionSetRegion->setEnabled(true);
+
 	    QString mapset = mModel->itemMapset(*it);
             if ( mapset == QgsGrass::getDefaultMapset() ) 
             {

@@ -47,6 +47,9 @@ public slots:
     // Delete selected map
     void deleteMap();
 
+    // Set current region to selected map
+    void setRegion();
+
     // Refresh model
     void refresh();
 
@@ -56,6 +59,10 @@ public slots:
 
     // Double click
     void doubleClicked(const QModelIndex & index);
+
+signals:
+    // emited when something in GRASS Tools changed region
+    void regionChanged();
 
 private:
     QgisIface *mIface;
@@ -78,6 +85,7 @@ private:
     //! Actions
     QAction *mActionAddMap;
     QAction *mActionDeleteMap;
+    QAction *mActionSetRegion;
     QAction *mActionRefresh;
 };
 
