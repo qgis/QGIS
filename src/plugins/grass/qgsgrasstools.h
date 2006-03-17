@@ -91,6 +91,13 @@ public slots:
 
     //! Current mapset changed
     void mapsetChanged();
+
+    // Emits regionChanged
+    void emitRegionChanged();
+
+signals:
+    void regionChanged();
+
 private:
     //! QGIS application
     QgisApp *mQgisApp;
