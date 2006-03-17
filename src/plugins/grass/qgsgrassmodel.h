@@ -45,7 +45,7 @@ public:
 
     //! Item types
     enum ItemType { None, Gisbase, Location, Mapset, Rasters, Vectors, Raster,
-                Vector, VectorLayer };
+                Vector, VectorLayer, Regions, Region };
 
     //! Set GISBASE and LOCATION_NAME
     void setLocation ( const QString &gisbase, const QString &location );

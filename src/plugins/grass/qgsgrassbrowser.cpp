@@ -216,6 +216,7 @@ void QgsGrassBrowser::deleteMap()
         QString typeName;
         if ( type == QgsGrassModel::Raster ) typeName = "rast";
         else if ( type == QgsGrassModel::Vector ) typeName = "vect";
+        else if ( type == QgsGrassModel::Region ) typeName = "region";
 
 	if ( mapset != QgsGrass::getDefaultMapset() ) 
 	{
@@ -304,6 +305,17 @@ void QgsGrassBrowser::setRegion()
             
             Vect_close (&Map);
         } 
+        else if ( type == QgsGrassModel::Region )
+	{
+            if (  G__get_window (&window, "windows", 
+                      map.toLocal8Bit().data(), 
+                      mapset.toLocal8Bit().data() ) != NULL )
+            {
+                QMessageBox::warning( 0, "Warning", 
+                         "Cannot read region" ); 
+                return;
+            }
+	}
     }
 
     // Reset mapset (selected maps could be in a different one)
@@ -347,7 +359,7 @@ void QgsGrassBrowser::selectionChanged(const QItemSelection & selected, const QI
 	{
 	    mActionAddMap->setEnabled(true);
 	}
-        if ( type == QgsGrassModel::Raster || type == QgsGrassModel::Vector )
+        if ( type == QgsGrassModel::Raster || type == QgsGrassModel::Vector || type == QgsGrassModel::Region )
 	{
             mActionSetRegion->setEnabled(true);
 
