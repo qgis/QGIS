@@ -44,6 +44,12 @@ public slots:
     // Add selected map to canvas
     void addMap();
 
+    // Copy selected map
+    void copyMap();
+
+    // Rename selected map
+    void renameMap();
+
     // Delete selected map
     void deleteMap();
 
@@ -85,6 +91,8 @@ private:
     //! Actions
     QAction *mActionAddMap;
     QAction *mActionDeleteMap;
+    QAction *mActionCopyMap;
+    QAction *mActionRenameMap;
     QAction *mActionSetRegion;
     QAction *mActionRefresh;
 };

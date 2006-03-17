@@ -15,6 +15,13 @@
 #include <vector>
 
 #include <QApplication>
+#include <QDialog>
+#include <QLineEdit>
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFileInfo>
 
 //#include "qgis.h"
 //#include "qgsapplication.h"
@@ -62,4 +69,73 @@ void QgsGrassUtils::addVectorLayers ( QgisIface *iface,
 
 	iface->addVectorLayer( uri, name, "grass");
     }
+}
+
+bool QgsGrassUtils::itemExists ( QString element, QString item )
+{
+    QString path = QgsGrass::getDefaultGisdbase() + "/"
+                  + QgsGrass::getDefaultLocation() + "/"
+                  + QgsGrass::getDefaultMapset() + "/"
+                  + "/" + element + "/" + item;
+
+    QFileInfo fi(path);
+    return fi.exists(); 
+}
+
+QgsGrassElementDialog::QgsGrassElementDialog() : QObject() 
+{
+}
+QgsGrassElementDialog::~QgsGrassElementDialog() {}
+
+QString QgsGrassElementDialog::getItem ( QString element,
+                       QString text, bool * ok )
+{
+#ifdef QGISDEBUG
+    std::cerr << "QgsGrassElementDialog::getItem" << std::endl;
+#endif
+    *ok = false;
+    mElement = element;
+    mDialog = new QDialog ();
+    QVBoxLayout *layout = new QVBoxLayout ( mDialog );
+    QHBoxLayout *buttonLayout = new QHBoxLayout ( );
+
+    mLineEdit = new QLineEdit ( text );
+    layout->addWidget( mLineEdit );
+    mErrorLabel = new QLabel ( );
+    layout->addWidget( mErrorLabel );
+
+    mOkButton = new QPushButton ( "Ok" );
+    mCancelButton = new QPushButton ( "Cancel" );
+     
+    layout->insertLayout( -1, buttonLayout );
+    buttonLayout->addWidget( mOkButton );
+    buttonLayout->addWidget( mCancelButton );
+
+    connect ( mLineEdit, SIGNAL(textChanged(QString)), this, SLOT(textChanged() ) );
+    connect ( mOkButton, SIGNAL(clicked()), mDialog, SLOT(accept() ) );
+    connect ( mCancelButton, SIGNAL(clicked()), mDialog, SLOT(reject() ) );
+
+    textChanged ();
+    if ( mDialog->exec() == QDialog::Accepted )
+    {
+        *ok = true;
+    }
+
+    QString name = mLineEdit->text();
+    delete mDialog;
+
+    return name;
+}
+
+void QgsGrassElementDialog::textChanged ()
+{
+#ifdef QGISDEBUG
+    std::cerr << "QgsGrassElementDialog::textChanged" << std::endl;
+#endif
+
+   mErrorLabel->setText ( "" );
+   if ( QgsGrassUtils::itemExists( mElement, mLineEdit->text() ) )
+   {
+       mErrorLabel->setText ( "Exists!" );
+   }
 }
