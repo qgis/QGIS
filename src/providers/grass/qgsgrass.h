@@ -105,6 +105,11 @@ public:
 	                       QString mapsetName);
     static QStringList rasters(QString mapsetPath);
 
+    //! List of elements
+    static QStringList elements(QString gisbase, QString locationName,
+	                       QString mapsetName, QString element);
+    static QStringList elements(QString mapsetPath, QString element);
+
 
     static void init (void); 
 

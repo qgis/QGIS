@@ -610,3 +610,34 @@ QStringList QgsGrass::rasters ( QString mapsetPath )
     }
     return list;
 }
+
+QStringList QgsGrass::elements ( QString gisbase, QString locationName,
+	                         QString mapsetName, QString element)
+{
+    if ( gisbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
+	return QStringList();
+
+    return QgsGrass::elements ( gisbase + "/" + locationName + "/" + mapsetName, 
+                                element );
+}
+
+QStringList QgsGrass::elements ( QString mapsetPath, QString element )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrass::elements mapsetPath = " 
+	      << mapsetPath.ascii() << std::endl;
+    #endif
+
+    QStringList list;
+
+    if ( mapsetPath.isEmpty() ) return list;
+    
+    QDir d = QDir( mapsetPath + "/" + element );
+    d.setFilter(QDir::Files);
+
+    for ( int i = 0; i < d.count(); i++ ) 
+    {
+        list.append(d[i]);
+    }
+    return list;
+}
