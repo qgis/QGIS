@@ -33,6 +33,7 @@ extern "C"
 #include <QPair>
 #include <QIcon>
 
+class QStringList;
 class QTableWidgetItem;
 class QgsGeomColumnTypeThread;
 class QgisApp;
@@ -103,6 +104,8 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     // Combine the schema, table and column data into a single string
     // useful for display to the user
     QString fullDescription(QString schema, QString table, QString column);
+    // The column labels
+    QStringList mColumnLabels;
     // Our thread for doing long running queries
     QgsGeomColumnTypeThread* mColumnTypeThread;
     QString m_connInfo;

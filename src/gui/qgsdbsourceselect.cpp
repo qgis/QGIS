@@ -31,12 +31,13 @@ email                : sherman at mrcc.com
 #include <QTextOStream>
 #include <QTableWidgetItem>
 #include <QHeaderView>
+#include <QStringList>
 
 #include <cassert>
 #include <iostream>
 
 QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, Qt::WFlags fl)
-  : QDialog(app, fl), qgisApp(app), mColumnTypeThread(NULL)
+  : QDialog(app, fl), qgisApp(app), mColumnTypeThread(NULL), pd(0)
 {
   setupUi(this);
   btnAdd->setEnabled(false);
@@ -104,11 +105,12 @@ QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, Qt::WFlags fl)
 
   // Do some things that couldn't be done in designer
   lstTables->horizontalHeader()->setStretchLastSection(true);
-  QStringList labels;
   // Set the column count to 3 for the type, name, and sql
   lstTables->setColumnCount(3);
-  labels += tr("Type"); labels += tr("Name"); labels += tr("Sql");
-  lstTables->setHorizontalHeaderLabels(labels);
+  mColumnLabels += tr("Type"); 
+  mColumnLabels += tr("Name"); 
+  mColumnLabels += tr("Sql");
+  lstTables->setHorizontalHeaderLabels(mColumnLabels);
   lstTables->verticalHeader()->hide();
 }
 /** Autoconnected SLOTS **/
@@ -324,43 +326,65 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
   {
     m_connInfo = connString;  //host + " " + database + " " + username + " " + password;
     //qDebug(m_connInfo);
+    // Tidy up an existing connection if one exists.
+    if (pd != 0)
+      PQfinish(pd);
+
     pd = PQconnectdb(m_connInfo.toLocal8Bit().data());
     //  std::cout << pd->ErrorMessage();
     if (PQstatus(pd) == CONNECTION_OK)
     {
-      // create the pixmaps for the layer types
-      QString myThemePath = QgsApplication::themePath();
-      mLayerIcons.insert(QString("POINT"),
-                         qMakePair(tr("Point layer"), 
-                                   QIcon(myThemePath+"/mIconPointLayer.png")));
-      mLayerIcons.insert(QString("MULTIPOINT"),
-                         qMakePair(tr("Multi-point layer"), 
-                                   QIcon(myThemePath+"/mIconPointLayer.png")));
-      mLayerIcons.insert(QString("LINESTRING"),
-                         qMakePair(tr("Linestring layer"), 
-                                   QIcon(myThemePath+"/mIconLineLayer.png")));
-      mLayerIcons.insert(QString("MULTILINESTRING"),
-                         qMakePair(tr("Multi-linestring layer"), 
-                                   QIcon(myThemePath+"/mIconLineLayer.png")));
-      mLayerIcons.insert(QString("POLYGON"),
-                         qMakePair(tr("Polygon layer"), 
-                                   QIcon(myThemePath+"/mIconPolygonLayer.png")));
-      mLayerIcons.insert(QString("MULTIPOLYGON"),
-                         qMakePair(tr("Multi-polygon layer"), 
-                                   QIcon(myThemePath+"/mIconPolygonLayer.png")));
-      mLayerIcons.insert(QString("WAITING"),
-                         qMakePair(tr("Waiting for layer type"), 
-                                   QIcon(myThemePath+"/mIconWaitingForLayerType.png")));
-      mLayerIcons.insert(QString("UNKNOWN"),
-                         qMakePair(tr("Unknown layer type"), 
-                                   QIcon(myThemePath+"/mIconUnknownLayerType.png")));
+      // create the pixmaps for the layer types if we haven't already
+      // done so.
+      if (mLayerIcons.count() == 0)
+      {
+        QString myThemePath = QgsApplication::themePath();
+        mLayerIcons.insert("POINT",
+                           qMakePair(tr("Point layer"), 
+                            QIcon(myThemePath+"/mIconPointLayer.png")));
+        mLayerIcons.insert("MULTIPOINT", 
+                           qMakePair(tr("Multi-point layer"), 
+                            mLayerIcons.value("POINT").second));
 
+        mLayerIcons.insert("LINESTRING",
+                           qMakePair(tr("Linestring layer"), 
+                            QIcon(myThemePath+"/mIconLineLayer.png")));
+        mLayerIcons.insert("MULTILINESTRING",
+                           qMakePair(tr("Multi-linestring layer"), 
+                            mLayerIcons.value("LINESTRING").second));
+
+        mLayerIcons.insert("POLYGON",
+                           qMakePair(tr("Polygon layer"), 
+                            QIcon(myThemePath+"/mIconPolygonLayer.png")));
+        mLayerIcons.insert("MULTIPOLYGON",
+                           qMakePair(tr("Multi-polygon layer"),
+                            mLayerIcons.value("POLYGON").second));
+
+        mLayerIcons.insert("GEOMETRY",
+                           qMakePair(tr("Mixed geometry layer"), 
+                            QIcon(myThemePath+"/mIconGeometryLayer.png")));
+        mLayerIcons.insert("GEOMETRYCOLLECTION",
+                           qMakePair(tr("Geometry collection layer"), 
+                            mLayerIcons.value("GEOMETRY").second));
+
+        mLayerIcons.insert("WAITING",
+                           qMakePair(tr("Waiting for layer type"), 
+                            QIcon(myThemePath+"/mIconWaitingForLayerType.png")));
+        mLayerIcons.insert("UNKNOWN",
+                           qMakePair(tr("Unknown layer type"), 
+                            QIcon(myThemePath+"/mIconUnknownLayerType.png")));
+      }
       //qDebug("Connection succeeded");
       // tell the DB that we want text encoded in UTF8
       PQsetClientEncoding(pd, "UNICODE");
 
-      // clear the existing entries
+      // Here's an annoying thing... calling clear() removes the
+      // header items too, so we need to reinstate them after calling
+      // clear(). 
       lstTables->clear();
+      lstTables->setRowCount(0);
+      lstTables->setHorizontalHeaderLabels(mColumnLabels);
+
       // get the list of suitable tables and columns and populate the UI
       geomCol details;
       if (getGeometryColumnInfo(pd, details))
@@ -395,13 +419,6 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
             lstTables->setItem(row, 1, textItem);
           }
         }
-        // For some reason not clear to me, the table header labels
-        // set in the constructor have reverted to '1', '2', and '3'
-        // by here. Hence we reset them. This seems like a bug in Qt
-        // (4.1.1).
-        QStringList labels;
-        labels += tr("Type"); labels += tr("Name"); labels += tr("Sql");
-        lstTables->setHorizontalHeaderLabels(labels);
 
         // And tidy up the columns & rows
         lstTables->resizeColumnsToContents();
@@ -420,7 +437,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
             // completes, nor the qgis process ending before the
             // thread completes, nor does the thread know to stop working
             // when the user chooses a layer.
-            // mColumnTypeThread->run();
+            //mColumnTypeThread->start();
 
             // do it in this process for the moment. 
             mColumnTypeThread->getLayerTypes();
