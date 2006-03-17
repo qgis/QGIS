@@ -108,7 +108,8 @@ public slots:
   void projectRead();
   //! New project
   void newProject();
-
+  //! Save mapset to project
+  void saveMapset();
 
 private:
   //! Name of the plugin

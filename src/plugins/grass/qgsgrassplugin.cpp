@@ -266,6 +266,14 @@ void QgsGrassPlugin::mapsetChanged ()
         }    
     }
 
+}
+
+void QgsGrassPlugin::saveMapset()
+{
+#ifdef QGISDEBUG
+    std::cerr << "QgsGrassPlugin::addVector()" << std::endl;
+#endif
+
     // Save working mapset in project file
     QgsProject::instance()->writeEntry("GRASS","/WorkingGisdbase", 
 			    QgsGrass::getDefaultGisdbase() );
@@ -688,6 +696,7 @@ void QgsGrassPlugin::openMapset()
         return;
     }
         
+    saveMapset();
     mapsetChanged();
 }
 
@@ -705,6 +714,7 @@ void QgsGrassPlugin::closeMapset()
         return;
     }
         
+    saveMapset();
     mapsetChanged();
 }
 
