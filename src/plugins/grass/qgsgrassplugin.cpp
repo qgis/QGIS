@@ -49,6 +49,7 @@
 #include <iostream>
 
 #include <qgsproject.h>
+#include <qgsrubberband.h>
 
 extern "C" {
 #include <grass/gis.h>
@@ -143,6 +144,11 @@ void QgsGrassPlugin::initGui()
   connect( mQgis, SIGNAL( projectRead() ), this, SLOT( projectRead()));
   connect( mQgis, SIGNAL( newProject() ), this, SLOT(newProject()));
 
+  // Create region rubber band
+  mRegion = new QgsRubberBand(mCanvas, 1);
+  mRegion->setZ(20);
+  mRegion->hide();
+
   // Create the action for tool
   mOpenMapsetAction = new QAction( "Open mapset", this );
   mNewMapsetAction = new QAction( "New mapset", this );
@@ -218,6 +224,8 @@ void QgsGrassPlugin::initGui()
   // Init Region symbology
   mRegionPen.setColor( QColor ( settings.readEntry ("/GRASS/region/color", "#ff0000" ) ) );
   mRegionPen.setWidth( settings.readNumEntry ("/GRASS/region/width", 0 ) );
+  mRegion->setColor ( mRegionPen.color() );
+  mRegion->setWidth ( mRegionPen.width() );
 
   mapsetChanged();
 }
@@ -228,6 +236,7 @@ void QgsGrassPlugin::mapsetChanged ()
         mOpenToolsAction->setEnabled(false);
 	mRegionAction->setEnabled(false);
 	mEditRegionAction->setEnabled(false);
+        mRegion->hide();
         mCloseMapsetAction->setEnabled(false);
         mNewVectorAction->setEnabled(false);
 
@@ -247,6 +256,9 @@ void QgsGrassPlugin::mapsetChanged ()
         QSettings settings("QuantumGIS", "qgis");
 	bool on = settings.readBoolEntry ("/GRASS/region/on", true );
 	mRegionAction->setOn(on);
+        if ( on ) {
+            mRegion->show();
+        }
 
         if ( mTools ) 
         {
@@ -395,8 +407,13 @@ void QgsGrassPlugin::addRaster()
 // Open tools
 void QgsGrassPlugin::openTools()
 {
-  if ( !mTools ) 
-    mTools = new QgsGrassTools ( mQgis, qGisInterface, mQgis, 0, Qt::WType_Dialog );
+  if ( !mTools ) { 
+      mTools = new QgsGrassTools ( mQgis, qGisInterface, mQgis, 0, Qt::WType_Dialog );
+    
+      std::cout << "connect = " <<
+      connect( mTools, SIGNAL( regionChanged() ), this, SLOT( redrawRegion()) )
+         << "connect" << std::endl;
+  }
 
   mTools->show();
 }
@@ -540,17 +557,15 @@ void QgsGrassPlugin::postRender(QPainter *painter)
   std::cout << "QgsGrassPlugin::postRender()" << std::endl;
 #endif
 
-  if ( QgsGrass::activeMode() && mRegionAction->isEnabled() && mRegionAction->isOn() ) {
-    displayRegion(painter);
-  }
 }
 
-void QgsGrassPlugin::displayRegion(QPainter *painter)
+void QgsGrassPlugin::displayRegion()
 {
 #ifdef QGISDEBUG
   std::cout << "QgsGrassPlugin::displayRegion()" << std::endl;
 #endif
 
+  mRegion->reset();
 
   // Display region of current mapset if in active mode
   if ( !QgsGrass::activeMode() ) return;
@@ -584,18 +599,10 @@ void QgsGrassPlugin::displayRegion(QPainter *painter)
   points[3].setX(window.west); points[3].setY(window.north);
   points[4].setX(window.west); points[4].setY(window.south);
 
-  QgsMapToPixel *transform = mCanvas->getCoordinateTransform();
-  Q3PointArray pointArray(5);
-
-  for ( int i = 0; i < 5; i++ ) {
-    transform->transform( &(points[i]) );
-    pointArray.setPoint( i, 
-        static_cast<int>(points[i].x()), 
-        static_cast<int>(points[i].y()) );
+  for ( int i = 0; i < 5; i++ ) 
+  {
+      mRegion->addPoint( points[i] );    
   }
-
-  painter->setPen ( mRegionPen );
-  painter->drawPolyline ( pointArray );
 }
 
 void QgsGrassPlugin::switchRegion(bool on)
@@ -607,22 +614,23 @@ void QgsGrassPlugin::switchRegion(bool on)
   QSettings settings("QuantumGIS", "qgis");
   settings.writeEntry ("/GRASS/region/on", on );
 
-  QPixmap *pixmap = mCanvas->canvasPixmap();
-  QPainter p;
-  p.begin(pixmap);
-
   if ( on ) {
-    displayRegion(&p);
+    displayRegion();
+    mRegion->show();
   } else {
-    // This is not perfect, but user can see reaction and it is fast
-    QPen pen = mRegionPen;
-    mRegionPen.setColor( QColor(255,255,255) ); // TODO: background color
-    displayRegion(&p);
-    mRegionPen = pen;
+    mRegion->hide();
   }
+}
 
-  p.end();
-  mCanvas->repaint(false);
+void QgsGrassPlugin::redrawRegion()
+{
+#ifdef QGISDEBUG
+    std::cout << "QgsGrassPlugin::redrawRegion()" << std::endl;
+#endif
+    if ( mRegionAction->isOn() )
+    {
+        displayRegion();
+    }
 }
 
 void QgsGrassPlugin::changeRegion(void)
@@ -650,6 +658,9 @@ QPen & QgsGrassPlugin::regionPen()
 void QgsGrassPlugin::setRegionPen(QPen & pen)
 {
   mRegionPen = pen;
+
+  mRegion->setColor ( mRegionPen.color() );
+  mRegion->setWidth ( mRegionPen.width() );
 
   QSettings settings("QuantumGIS", "qgis");
   settings.writeEntry ("/GRASS/region/color", mRegionPen.color().name() );
