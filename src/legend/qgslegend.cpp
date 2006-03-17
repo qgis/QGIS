@@ -1141,32 +1141,24 @@ QTreeWidgetItem* QgsLegend::previousSibling(QTreeWidgetItem* item)
 
 QDomNode QgsLegend::nextDomNode(const QDomNode& theNode)
 {
-  //todo: generalise this for arbitrary deep trees
   if(!theNode.firstChild().isNull())
     {
       return (theNode.firstChild());
     }
-  else if(!theNode.nextSibling().isNull())
+  
+  QDomNode currentNode = theNode;
+  do
     {
-      return (theNode.nextSibling());
+      if(!currentNode.nextSibling().isNull())
+	{
+	  return currentNode.nextSibling();
+	}
+      currentNode = currentNode.parentNode();
     }
-  else if(!theNode.parentNode().isNull() && !theNode.parentNode().nextSibling().isNull())
-    {
-      return (theNode.parentNode().nextSibling());
-    }
-  else if(!theNode.parentNode().isNull() && !theNode.parentNode().parentNode().isNull() && !theNode.parentNode().parentNode().nextSibling().isNull())
-    {
-      return (theNode.parentNode().parentNode().nextSibling());
-    }
-  else if(!theNode.parentNode().isNull() && !theNode.parentNode().parentNode().isNull() && !theNode.parentNode().parentNode().parentNode().isNull() && !theNode.parentNode().parentNode().parentNode().nextSibling().isNull())
-    {
-      return (theNode.parentNode().parentNode().parentNode().nextSibling());
-    }
-  else
-    {
-      QDomNode nullNode;
-      return nullNode;
-    }
+  while(!currentNode.isNull());
+  
+  QDomNode nullNode;
+  return nullNode;
 }
 
 void QgsLegend::insertItem(QTreeWidgetItem* move, QTreeWidgetItem* into)
