@@ -424,8 +424,12 @@ QString QgsGrassModelItem::name()
 	case QgsGrassModel::Rasters:
 	    return "raster";
 	    break;
+	case QgsGrassModel::Regions:
+	    return "region";
+	    break;
 	case QgsGrassModel::Vector:
 	case QgsGrassModel::Raster:
+	case QgsGrassModel::Region:
 	    return mMap;
 	    break;
 	case QgsGrassModel::VectorLayer:
@@ -606,9 +610,11 @@ void QgsGrassModel::addItems(QgsGrassModelItem *item, QStringList list, int type
 		    break;
 		case QgsGrassModel::Vectors:
 		case QgsGrassModel::Rasters:
+		case QgsGrassModel::Regions:
 		    break;
 		case QgsGrassModel::Vector:
 		case QgsGrassModel::Raster:
+		case QgsGrassModel::Region:
 		    newItem->mMap = name;
 		    break;
 		case QgsGrassModel::VectorLayer:
@@ -643,10 +649,14 @@ void QgsGrassModel::refreshItem(QgsGrassModelItem *item)
 		                     item->mLocation, item->mMapset );
 	    QStringList rasters = QgsGrass::rasters ( item->mGisbase, 
 		                     item->mLocation, item->mMapset );
+	    QStringList regions = QgsGrass::elements ( item->mGisbase, 
+		                     item->mLocation, item->mMapset,
+                                     "windows" );
 
 	    QStringList list;
 	    if ( vectors.count() > 0 ) list.append("vector");
 	    if ( rasters.count() > 0 ) list.append("raster");
+	    if ( regions.count() > 0 ) list.append("region");
 
             removeItems(item, list);
 	    
@@ -656,11 +666,15 @@ void QgsGrassModel::refreshItem(QgsGrassModelItem *item)
 	    if ( rasters.count() > 0 )
                 addItems(item, QStringList("raster"), QgsGrassModel::Rasters );
 
+	    if ( regions.count() > 0 )
+                addItems(item, QStringList("region"), QgsGrassModel::Regions );
+
 	  }
 	  break;
 
 	case QgsGrassModel::Vectors:
 	case QgsGrassModel::Rasters:
+	case QgsGrassModel::Regions:
 	  {
 	    QStringList list;
 	    int type;
@@ -670,11 +684,17 @@ void QgsGrassModel::refreshItem(QgsGrassModelItem *item)
 			                   item->mMapset );
 		type = QgsGrassModel::Vector;
 	    }
-	    else
+	    else if ( item->mType == QgsGrassModel::Rasters )
 	    {
 	        list = QgsGrass::rasters ( item->mGisbase, item->mLocation, 
 			                   item->mMapset );
 		type = QgsGrassModel::Raster;
+	    }
+	    else if ( item->mType == QgsGrassModel::Regions )
+	    {
+	        list = QgsGrass::elements ( item->mGisbase, item->mLocation, 
+			                   item->mMapset, "windows" );
+		type = QgsGrassModel::Region;
 	    }
 
             removeItems(item, list);
@@ -696,6 +716,9 @@ void QgsGrassModel::refreshItem(QgsGrassModelItem *item)
 	    break;
 
 	case QgsGrassModel::Raster:
+	    break;
+
+	case QgsGrassModel::Region:
 	    break;
 
 	case QgsGrassModel::VectorLayer:
@@ -799,6 +822,10 @@ QVariant QgsGrassModel::data ( const QModelIndex &index, int role ) const
 
              case QgsGrassModel::Raster :
                  return mIconRasterLayer;
+                 break;
+
+             case QgsGrassModel::Region :
+                 return mIconFile;
                  break;
 
              case QgsGrassModel::VectorLayer :
