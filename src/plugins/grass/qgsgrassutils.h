@@ -64,17 +64,22 @@ public:
     ~QgsGrassElementDialog();
 
 public:
-    // Get a name for new GRASS element (map)
+    //! Get a name for new GRASS element (map)
+    // \param source local source 
     QString getItem ( QString element, 
-                       QString text, bool * ok );
+                       QString title, QString label,
+                       QString text, QString source = 0, 
+                       bool * ok = 0 );
 
 public slots:
     void textChanged();
 
 private:
     QString mElement;
+    QString mSource;
     QDialog *mDialog;
     QLineEdit *mLineEdit;
+    QLabel *mLabel;
     QLabel *mErrorLabel;
     QPushButton *mOkButton;
     QPushButton *mCancelButton;

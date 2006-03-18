@@ -201,6 +201,12 @@ void QgsGrassBrowser::addMap()
 	    mIface->addVectorLayer( uri, name, "grass");
 	    mapSelected = true;
 	}
+	else if ( type == QgsGrassModel::Region )
+	{
+	    struct Cell_head window;
+            if ( !getItemRegion (*it, &window) ) continue;
+	    writeRegion ( &window );
+        }
     }
 }
 
@@ -246,10 +252,20 @@ void QgsGrassBrowser::copyMap()
             typeName = "region";
         }
 
-        QgsGrassElementDialog *ed = new QgsGrassElementDialog();
+        QgsGrassElementDialog ed;
         bool ok;
-        QString newName = ed->getItem ( element, map, &ok );
-        delete ed;
+        QString source;
+        QString suggest;
+        if ( mapset == QgsGrass::getDefaultMapset() )
+        {
+            source = map;
+        } 
+        else
+        {
+            suggest = map;
+        }
+        QString newName = ed.getItem ( element, "New name",
+                          "New name", suggest, source, &ok );
 
         if ( !ok ) return;
          
@@ -262,7 +278,7 @@ void QgsGrassBrowser::copyMap()
         if ( !process.waitForFinished() )
         {
             QMessageBox::warning( 0, "Warning", "Cannot copy map "
-                                  + map ); 
+                                  + map + "@" + mapset ); 
         }
         else
         {
@@ -277,7 +293,57 @@ void QgsGrassBrowser::renameMap()
     std::cerr << "QgsGrassBrowser::renameMap()" << std::endl;
     #endif
 
-    QMessageBox::warning ( 0, "Warning", "Not yet implemented" );
+    QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
+
+    QList<QModelIndex>::const_iterator it = indexes.begin();
+    for (; it != indexes.end(); ++it)
+    {
+	int type = mModel->itemType(*it);
+	QString mapset = mModel->itemMapset(*it);
+	QString map = mModel->itemMap(*it);
+
+	if ( mapset != QgsGrass::getDefaultMapset() ) continue; // should not happen
+
+        QString typeName;
+        QString element;
+        if ( type == QgsGrassModel::Raster ) 
+        {
+           element = "cell";
+           typeName = "rast";
+        } 
+        else if ( type == QgsGrassModel::Vector )
+        {
+            element = "vector";
+            typeName = "vect";
+        }
+        else if ( type == QgsGrassModel::Region ) 
+        {
+            element = "windows";
+            typeName = "region";
+        }
+
+        QgsGrassElementDialog ed;
+        bool ok;
+        QString newName = ed.getItem ( element, "New name",
+                          "New name", "", map, &ok );
+
+        if ( !ok ) return;
+         
+        QString module = "g.rename";
+#ifdef WIN32
+	module.append(".exe");
+#endif
+        QProcess process(this);
+        process.start(module, QStringList( typeName + "=" + map + "," + newName ) );
+        if ( !process.waitForFinished() )
+        {
+            QMessageBox::warning( 0, "Warning", "Cannot rename map " + map ); 
+        }
+        else
+        {
+            refresh();
+        }
+    }
 }
 
 void QgsGrassBrowser::deleteMap()
@@ -336,82 +402,99 @@ void QgsGrassBrowser::setRegion()
     #endif
 
     struct Cell_head window;
-    
-    QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
 
-    QgsGrass::setLocation( QgsGrass::getDefaultGisdbase(),
-                         QgsGrass::getDefaultLocation() );
+    QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
 
     // TODO multiple selection - extent region to all maps
     QList<QModelIndex>::const_iterator it = indexes.begin();
     for (; it != indexes.end(); ++it)
     {
-	int type = mModel->itemType(*it);
-	QString uri = mModel->uri(*it);
-        QString mapset = mModel->itemMapset(*it);
-        QString map = mModel->itemMap(*it);
-
-        if ( type == QgsGrassModel::Raster )
-	{
-
-            if ( G_get_cellhd ( map.toLocal8Bit().data(), 
-                          mapset.toLocal8Bit().data(), &window) < 0 )
-            {
-                QMessageBox::warning( 0, "Warning", 
-                         "Cannot read raster map region" ); 
-                return;
-            }
-	}
-	else if ( type == QgsGrassModel::Vector )
-	{
-            G_get_window ( &window ); // get current resolution
-
-            struct Map_info Map;
-
-            int level = Vect_open_old_head ( &Map, 
-                  map.toLocal8Bit().data(), mapset.toLocal8Bit().data());
-
-            if ( level < 2 ) 
-            { 
-                QMessageBox::warning( 0, "Warning", 
-                         "Cannot read vector map region" ); 
-                return;
-            }
-
-            BOUND_BOX box;
-            Vect_get_map_box (&Map, &box );
-	    window.north = box.N;
-	    window.south = box.S;
-	    window.west  = box.W;
-	    window.east  = box.E;
-            
-            Vect_close (&Map);
-        } 
-        else if ( type == QgsGrassModel::Region )
-	{
-            if (  G__get_window (&window, "windows", 
-                      map.toLocal8Bit().data(), 
-                      mapset.toLocal8Bit().data() ) != NULL )
-            {
-                QMessageBox::warning( 0, "Warning", 
-                         "Cannot read region" ); 
-                return;
-            }
-	}
+        if ( !getItemRegion (*it, &window) ) return;
     }
+    writeRegion ( &window );
+}
 
-    // Reset mapset (selected maps could be in a different one)
+void QgsGrassBrowser::writeRegion(struct Cell_head *window )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassBrowser::writeRegion()" << std::endl;
+    #endif
+
     QgsGrass::setMapset( QgsGrass::getDefaultGisdbase(),
                          QgsGrass::getDefaultLocation(),
                          QgsGrass::getDefaultMapset() );
 
-    if ( G_put_window ( &window ) == -1 )
+    if ( G_put_window ( window ) == -1 )
     { 
 	QMessageBox::warning( 0, "Warning", 
 		 "Cannot write new region" ); 
         return;
     }
     emit regionChanged();
+}
+
+bool QgsGrassBrowser::getItemRegion( QModelIndex index, struct Cell_head *window )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassBrowser::setRegion()" << std::endl;
+    #endif
+
+    QgsGrass::setLocation( QgsGrass::getDefaultGisdbase(),
+                         QgsGrass::getDefaultLocation() );
+
+    int type = mModel->itemType(index);
+    QString uri = mModel->uri(index);
+    QString mapset = mModel->itemMapset(index);
+    QString map = mModel->itemMap(index);
+
+    if ( type == QgsGrassModel::Raster )
+    {
+
+	if ( G_get_cellhd ( map.toLocal8Bit().data(), 
+		      mapset.toLocal8Bit().data(), window) < 0 )
+	{
+	    QMessageBox::warning( 0, "Warning", 
+		     "Cannot read raster map region" ); 
+	    return false;
+	}
+    }
+    else if ( type == QgsGrassModel::Vector )
+    {
+	G_get_window ( window ); // get current resolution
+
+	struct Map_info Map;
+
+	int level = Vect_open_old_head ( &Map, 
+	      map.toLocal8Bit().data(), mapset.toLocal8Bit().data());
+
+	if ( level < 2 ) 
+	{ 
+	    QMessageBox::warning( 0, "Warning", 
+		     "Cannot read vector map region" ); 
+	    return false;
+	}
+
+	BOUND_BOX box;
+	Vect_get_map_box (&Map, &box );
+	window->north = box.N;
+	window->south = box.S;
+	window->west  = box.W;
+	window->east  = box.E;
+	
+	Vect_close (&Map);
+    } 
+    else if ( type == QgsGrassModel::Region )
+    {
+	if (  G__get_window (window, "windows", 
+		  map.toLocal8Bit().data(), 
+		  mapset.toLocal8Bit().data() ) != NULL )
+	{
+	    QMessageBox::warning( 0, "Warning", 
+		     "Cannot read region" ); 
+	    return false;
+	}
+    }
+    return true;
 }
 
 void QgsGrassBrowser::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
