@@ -275,10 +275,13 @@ void QgsGrassBrowser::copyMap()
 #endif
         QProcess process(this);
         process.start(module, QStringList( typeName + "=" + map + "@" + mapset + "," + newName ) );
-        if ( !process.waitForFinished() )
+        if ( !process.waitForFinished() || process.exitCode() != 0 )
         {
+            QString output ( process.readAllStandardOutput () );
+            QString error ( process.readAllStandardError () );
             QMessageBox::warning( 0, "Warning", "Cannot copy map "
-                                  + map + "@" + mapset ); 
+              + map + "@" + mapset + "<br>" + output.replace("\n","<br>")
+                                   + "<br>" + error.replace("\n","<br>") ); 
         }
         else
         {
@@ -335,9 +338,13 @@ void QgsGrassBrowser::renameMap()
 #endif
         QProcess process(this);
         process.start(module, QStringList( typeName + "=" + map + "," + newName ) );
-        if ( !process.waitForFinished() )
+        if ( !process.waitForFinished() || process.exitCode() != 0 )
         {
-            QMessageBox::warning( 0, "Warning", "Cannot rename map " + map ); 
+            QString output ( process.readAllStandardOutput () );
+            QString error ( process.readAllStandardError () );
+            QMessageBox::warning( 0, "Warning", "Cannot rename map "
+              	             + map + "<br>" + output.replace("\n","<br>")
+                                   + "<br>" + error.replace("\n","<br>") ); 
         }
         else
         {
@@ -383,10 +390,13 @@ void QgsGrassBrowser::deleteMap()
 #endif
         QProcess process(this);
         process.start(module, QStringList( typeName + "=" + map ) );
-        if ( !process.waitForFinished() )
+        if ( !process.waitForFinished() || process.exitCode() != 0 )
         {
+            QString output ( process.readAllStandardOutput () );
+            QString error ( process.readAllStandardError () );
             QMessageBox::warning( 0, "Warning", "Cannot delete map "
-                                  + map ); 
+                             + map + "<br>" + output.replace("\n","<br>")
+                                   + "<br>" + error.replace("\n","<br>") ); 
         }
         else
         {
