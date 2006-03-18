@@ -54,6 +54,7 @@ QgsContinuousColorRenderer& QgsContinuousColorRenderer::operator=(const QgsConti
 	mMinimumSymbol = new QgsSymbol(*other.mMinimumSymbol);
 	mMaximumSymbol = new QgsSymbol(*other.mMaximumSymbol);
     }
+    return *this;
 }
 
 QgsContinuousColorRenderer::~QgsContinuousColorRenderer()

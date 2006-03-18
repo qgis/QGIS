@@ -99,8 +99,11 @@ bool QgsLegendGroup::insert(QgsLegendItem* theItem)
 {
     if(theItem->type() == LEGEND_LAYER)
     {
-	addChild(theItem);
+        addChild(theItem);
     }
+    // XXX - mloskot - I don't know what to return
+    // but this function must return a value
+    return true;
 }
 
 std::list<QgsLegendLayerFile*> QgsLegendGroup::legendLayerFiles()

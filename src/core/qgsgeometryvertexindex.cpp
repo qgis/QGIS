@@ -31,6 +31,7 @@ QgsGeometryVertexIndex::QgsGeometryVertexIndex( QgsGeometryVertexIndex const & r
 QgsGeometryVertexIndex & QgsGeometryVertexIndex::operator=( QgsGeometryVertexIndex const & rhs )
 {
   mIndex = rhs.mIndex;
+  return *this;
 }
 
 QgsGeometryVertexIndex::~QgsGeometryVertexIndex()

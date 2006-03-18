@@ -49,15 +49,17 @@ QgsGraduatedSymbolRenderer& QgsGraduatedSymbolRenderer::operator=(const QgsGradu
 {
     if(this != &other)
     {
-	mVectorType = other.mVectorType; 
-	mClassificationField = other.mClassificationField;
-	removeSymbols();
-	const std::list<QgsSymbol*> s = other.symbols();
-	for(std::list<QgsSymbol*>::const_iterator it=s.begin(); it!=s.end(); ++it)
-	{
-	    addSymbol(new QgsSymbol(**it));
-	}
+        mVectorType = other.mVectorType; 
+        mClassificationField = other.mClassificationField;
+        removeSymbols();
+        const std::list<QgsSymbol*> s = other.symbols();
+        for(std::list<QgsSymbol*>::const_iterator it=s.begin(); it!=s.end(); ++it)
+        {
+            addSymbol(new QgsSymbol(**it));
+        }
     }
+
+    return *this;
 }
 
 QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()

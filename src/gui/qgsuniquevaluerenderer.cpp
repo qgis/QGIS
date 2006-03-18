@@ -51,15 +51,16 @@ QgsUniqueValueRenderer& QgsUniqueValueRenderer::operator=(const QgsUniqueValueRe
 {
     if(this != &other)
     {
-	mVectorType = other.mVectorType;
-	mClassificationField = other.mClassificationField;
-	clearValues();
-	for(std::map<QString, QgsSymbol*>::iterator it=mSymbols.begin(); it!=mSymbols.end(); ++it)
-	{
-	    QgsSymbol* s = new QgsSymbol(*(it->second));
-	    insertValue(it->first, s);
-	}
+        mVectorType = other.mVectorType;
+        mClassificationField = other.mClassificationField;
+        clearValues();
+        for(std::map<QString, QgsSymbol*>::iterator it=mSymbols.begin(); it!=mSymbols.end(); ++it)
+        {
+            QgsSymbol* s = new QgsSymbol(*(it->second));
+            insertValue(it->first, s);
+        }
     }
+    return *this;
 }
 
 QgsUniqueValueRenderer::~QgsUniqueValueRenderer()

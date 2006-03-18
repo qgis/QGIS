@@ -157,6 +157,7 @@ void QgsMapLayer::draw(QPainter *, QgsRect * viewExtent, int yTransform)
 bool QgsMapLayer::draw(QPainter *, QgsRect *, QgsMapToPixel *)
 {
     //  std::cout << "In QgsMapLayer::draw" << std::endl;
+    return false;
 }
 
 void QgsMapLayer::drawLabels(QPainter *, QgsRect *, QgsMapToPixel *)
