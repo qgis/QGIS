@@ -373,22 +373,33 @@ void QgsGrassEdit::init()
   mSymbName[SYMB_NODE_2]        = "Node (2 lines)";
 
   // Restore symbology
+  QString spath = "/GRASS/edit/symb/";
   QSettings settings("QuantumGIS", "qgis");
+
+  mLineWidth = settings.readNumEntry (
+                 spath + "lineWidth", 1 );
+  mSize = settings.readNumEntry (
+                 spath + "markerSize", 9 );
+  mLineWidthSpinBox->setValue(mLineWidth);
+  mMarkerSizeSpinBox->setValue(mSize);
+
   for ( int i = 0; i < SYMB_COUNT; i++ ) {
     bool ok;
-    QString sn;
-    sn.sprintf( "/GRASS/edit/symb/display/%d", i );
-    bool displ = settings.readBoolEntry (sn, true, &ok );
+    bool displ = settings.readBoolEntry ( 
+                  spath + "display/" + QString::number(i), 
+                  true, &ok );
     if ( ok ) {
       mSymbDisplay[i] = displ;
     }
 
-    sn.sprintf( "/GRASS/edit/symb/color/%d", i );
-    QString colorName = settings.readEntry (sn, "", &ok );
+    QString colorName = settings.readEntry (
+                 spath + "color/" + QString::number(i), 
+                 "", &ok );
     if ( ok ) {
       QColor color( colorName );
       mSymb[i].setColor( color );
     }
+    mSymb[i].setWidth( mLineWidth );
   }
 
   // Set Symbology in dialog
@@ -458,7 +469,6 @@ void QgsGrassEdit::init()
   connect( mAttributeTable, SIGNAL(valueChanged(int,int)), this, SLOT(columnTypeChanged(int,int)) );
 
   // Set variables
-  mSize = 9;
   mSelectedLine = 0;
   mAttributes = 0;
 
@@ -727,6 +737,33 @@ void QgsGrassEdit::changeSymbology(Q3ListViewItem * item, const QPoint & pnt, in
     sn.sprintf( "/GRASS/edit/symb/color/%d", index );
     settings.writeEntry ( sn, mSymb[index].color().name() );
   }
+}
+
+void QgsGrassEdit::lineWidthChanged()
+{
+#ifdef QGISDEBUG
+    std::cerr << "QgsGrassEdit::lineWidthChanged()" << std::endl;
+#endif
+    QSettings settings("QuantumGIS", "qgis");
+    mLineWidth = mLineWidthSpinBox->value();
+
+    for ( int i = 0; i < SYMB_COUNT; i++ ) {
+        mSymb[i].setWidth( mLineWidth );
+    }
+ 
+    QString spath = "/GRASS/edit/symb/";
+    settings.writeEntry ( spath + "lineWidth", mLineWidth );
+}
+
+void QgsGrassEdit::markerSizeChanged()
+{
+#ifdef QGISDEBUG
+    std::cerr << "QgsGrassEdit::markerSizeChanged()" << std::endl;
+#endif
+    QSettings settings("QuantumGIS", "qgis");
+    mSize = mMarkerSizeSpinBox->value();
+    QString spath = "/GRASS/edit/symb/";
+    settings.writeEntry ( spath + "markerSize", mSize );
 }
 
 void QgsGrassEdit::restorePosition()
