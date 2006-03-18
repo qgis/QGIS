@@ -88,23 +88,33 @@ QgsGrassElementDialog::QgsGrassElementDialog() : QObject()
 QgsGrassElementDialog::~QgsGrassElementDialog() {}
 
 QString QgsGrassElementDialog::getItem ( QString element,
-                       QString text, bool * ok )
+                       QString title, QString label,
+                       QString text, QString source, bool * ok )
 {
 #ifdef QGISDEBUG
     std::cerr << "QgsGrassElementDialog::getItem" << std::endl;
 #endif
-    *ok = false;
+    if ( ok ) *ok = false;
     mElement = element;
+    mSource = source;
     mDialog = new QDialog ();
+    mDialog->setWindowTitle(title);
     QVBoxLayout *layout = new QVBoxLayout ( mDialog );
     QHBoxLayout *buttonLayout = new QHBoxLayout ( );
 
+    mLabel = new QLabel ( label );
+    layout->addWidget( mLabel );
+
     mLineEdit = new QLineEdit ( text );
     layout->addWidget( mLineEdit );
-    mErrorLabel = new QLabel ( );
-    layout->addWidget( mErrorLabel );
 
-    mOkButton = new QPushButton ( "Ok" );
+    mErrorLabel = new QLabel ( "X" );
+    layout->addWidget( mErrorLabel );
+    // Intention: keep fixed size - but it does not help
+    mErrorLabel->adjustSize();
+    mErrorLabel->setMinimumHeight ( mErrorLabel->height()+5 );
+
+    mOkButton = new QPushButton ( );
     mCancelButton = new QPushButton ( "Cancel" );
      
     layout->insertLayout( -1, buttonLayout );
@@ -116,7 +126,7 @@ QString QgsGrassElementDialog::getItem ( QString element,
     connect ( mCancelButton, SIGNAL(clicked()), mDialog, SLOT(reject() ) );
 
     textChanged ();
-    if ( mDialog->exec() == QDialog::Accepted )
+    if ( ok && mDialog->exec() == QDialog::Accepted )
     {
         *ok = true;
     }
@@ -133,9 +143,34 @@ void QgsGrassElementDialog::textChanged ()
     std::cerr << "QgsGrassElementDialog::textChanged" << std::endl;
 #endif
 
-   mErrorLabel->setText ( "" );
-   if ( QgsGrassUtils::itemExists( mElement, mLineEdit->text() ) )
+   QString text = mLineEdit->text().trimmed();
+
+   mErrorLabel->setText ( "   " );
+   mOkButton->setText ("Ok");
+   mOkButton->setEnabled ( true );
+
+   if ( text.length() == 0 )
    {
-       mErrorLabel->setText ( "Exists!" );
+       mErrorLabel->setText ( "<font color='red'>Enter a name!</font>" );
+       mOkButton->setEnabled ( false );
+       return;
+   }
+
+#ifdef WIN32
+   if ( !mSource.isNull() && text.toLower() == mSource.toLower() )
+#else
+   if ( !mSource.isNull() && text == mSource )
+#endif
+   {
+       mErrorLabel->setText ( "<font color='red'>This is name of the source!</font>" );
+       mOkButton->setEnabled ( false );
+       return;
+   }
+   if ( QgsGrassUtils::itemExists( mElement, text ) )
+   {
+       mErrorLabel->setText ( "<font color='red'>Exists!</font>" );
+       mOkButton->setText ("Overwrite");
+       return;
    }
 }
+

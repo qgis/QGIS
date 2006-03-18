@@ -56,6 +56,12 @@ public slots:
     // Set current region to selected map
     void setRegion();
 
+    // Get item's region
+    bool getItemRegion(QModelIndex index, struct Cell_head *window);
+
+    // Write region 
+    void writeRegion ( struct Cell_head *window );
+
     // Refresh model
     void refresh();
 
