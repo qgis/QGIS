@@ -161,8 +161,8 @@ void QgsProjectionSelector::setSelectedSRSID(long theSRSID)
 void QgsProjectionSelector::applySRSNameSelection()
 {
   if (
-      (mSRSNameSelectionPending) and
-      (mProjListDone) and
+      (mSRSNameSelectionPending) &&
+      (mProjListDone) &&
       (mUserProjListDone)
      )
   {
@@ -190,8 +190,8 @@ void QgsProjectionSelector::applySRSNameSelection()
 void QgsProjectionSelector::applySRSIDSelection()
 {
   if (
-      (mSRSIDSelectionPending) and
-      (mProjListDone) and
+      (mSRSIDSelectionPending) &&
+      (mProjListDone) &&
       (mUserProjListDone)
      )
   {

@@ -67,10 +67,11 @@ QgsSingleSymbolRenderer& QgsSingleSymbolRenderer::operator=(const QgsSingleSymbo
 {
     if(this!=&other)
     {
-	mVectorType = other.mVectorType;
-	delete mSymbol;
-	mSymbol = new QgsSymbol(*other.mSymbol);
+        mVectorType = other.mVectorType;
+        delete mSymbol;
+        mSymbol = new QgsSymbol(*other.mSymbol);
     }
+    return *this;
 }
 
 QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer()

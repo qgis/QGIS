@@ -283,7 +283,10 @@ void QgsServerSourceSelect::populateImageEncodingGroup(QgsWmsProvider* wmsProvid
 
 std::set<QString> QgsServerSourceSelect::crsForSelection()
 {
-  std::set<QString> crsCandidates;;
+  std::set<QString> crsCandidates;
+
+  // XXX - mloskot - temporary solution, function must return a value
+  return crsCandidates;
 
   QStringList::const_iterator i;
   for (i = m_selectedLayers.constBegin(); i != m_selectedLayers.constEnd(); ++i)
