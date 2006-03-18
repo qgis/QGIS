@@ -190,6 +190,12 @@ public slots:
 
     void changeSymbology( Q3ListViewItem * item, const QPoint & pnt, int col );
 
+    //! width/size changed
+    void lineWidthChanged();
+    void markerSizeChanged();
+    void on_mLineWidthSpinBox_valueChanged() { lineWidthChanged(); }
+    void on_mMarkerSizeSpinBox_valueChanged() { markerSizeChanged(); }
+
     // The type of column was changed
     void columnTypeChanged ( int row, int col );
 
@@ -322,6 +328,12 @@ private:
 
     //! Symbology name
     std::vector<QString> mSymbName;
+
+    //! Line width
+    int mLineWidth;
+
+    //! Marker size
+    int mMarkerSize;
 
     /** 
      *  Read line symbology from map
