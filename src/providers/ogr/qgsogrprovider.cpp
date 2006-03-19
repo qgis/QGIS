@@ -1159,6 +1159,25 @@ bool QgsOgrProvider::createSpatialIndex()
     }
 }
 
+bool QgsOgrProvider::deleteFeatures(std::list<int> const & id)
+{
+  bool returnvalue=true;
+  for(std::list<int>::const_iterator it=id.begin();it!=id.end();++it)
+  {
+    if(!deleteFeature(*it))
+    {
+      returnvalue=false;
+    }
+  }
+  return returnvalue;
+}
+
+bool QgsOgrProvider::deleteFeature(int id)
+{
+  OGRErr res = ogrLayer->DeleteFeature(id);
+  return (res == OGRERR_NONE);
+}
+
 int QgsOgrProvider::capabilities() const
 {
   int ability = NoCapabilities;
@@ -1183,6 +1202,12 @@ int QgsOgrProvider::capabilities() const
     // TRUE if the CreateFeature() method works for this layer.
     {
       ability |= QgsVectorDataProvider::AddFeatures;
+    }
+
+    if (ogrLayer->TestCapability("DeleteFeature"))
+    // TRUE if this layer can delete its features
+    {
+      ability |= DeleteFeatures;
     }
 
     if (ogrLayer->TestCapability("RandomWrite"))
@@ -1232,9 +1257,10 @@ int QgsOgrProvider::capabilities() const
     {
       // No use required for this QGIS release.
     }
-
+    
 #ifdef QGISDEBUG
-  std::cout << "QgsOgrProvider::capabilities: GDAL Version Num is 'GDAL_VERSION_NUM'." << std::endl;
+  std::cout << "QgsOgrProvider::capabilities: GDAL Version Num is '" <<
+    GDAL_VERSION_NUM << "'." << std::endl;
 #endif
 
     if (1)

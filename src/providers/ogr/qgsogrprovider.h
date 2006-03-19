@@ -147,6 +147,9 @@ class QgsOgrProvider:public QgsVectorDataProvider
     /**Writes a list of features to the file*/
     bool addFeatures(std::list<QgsFeature*> const flist);
 
+    /**Deletes a feature*/
+    bool deleteFeatures(std::list<int> const & id);
+    
     /**Adds new attributess. Unfortunately not supported for layers with features in it*/
     bool addAttributes(std::map<QString,QString> const & name);
 
@@ -260,6 +263,8 @@ class QgsOgrProvider:public QgsVectorDataProvider
     OGRPolygon * mSelectionRectangle;
     /**Adds one feature*/
     bool addFeature(QgsFeature* f);
+    /**Deletes one feature*/
+    bool deleteFeature(int id);
     //! The geometry factory
     geos::GeometryFactory *geometryFactory;
     //! The well known text reader
