@@ -294,8 +294,22 @@ public:
     //                                      const char *theMessageCharArray,
     //                                      void *theData);
 
-    /** \brief Identify raster value(s) found on the point position */
+    /** \brief Identify raster value(s) found on the point position 
+     *
+     * \param point[in]  a coordinate in the CRS of this layer.
+     */
     void identify(const QgsPoint& point, std::map<QString,QString>& results);
+
+    /** \brief Identify arbitrary details from the WMS server found on the point position
+     *
+     * \param point[in]  an image pixel coordinate in the last requested extent of layer.
+     *
+     * \retval  An HTML document containing the return from the WMS server
+     *
+     * \note  The arbitraryness of the returned document is enforced by WMS standards
+     *        up to at least v1.3.0
+     */
+    QString identifyAsHtml(const QgsPoint& point);
 
     /** \brief Query gdal to find out the WKT projection string for this layer. This implements the virtual method of the same name defined in QgsMapLayer*/
     QString getProjectionWKT();
@@ -1045,17 +1059,19 @@ public:
 
   //! Does this layer use a provider for setting/retrieving data?
   bool usesProvider();
-  
-  
+
+  //! Which provider is being used for this Raster Layer?
+  QString providerKey();
+
 public slots:
-  
+
   void showStatusMessage(QString const & theMessage);
-  
-   
+
+
 private:
 
   //! Data provider key
-  QString providerKey;
+  QString mProviderKey;
   
   //! pointer for loading the provider library
   QLibrary *myLib;

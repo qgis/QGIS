@@ -57,8 +57,8 @@ static QString DEFAULT_LATLON_CRS = "CRS:84";
 QgsWmsProvider::QgsWmsProvider(QString const & uri)
   : QgsRasterDataProvider(uri),
     httpuri(uri),
-    httpproxyhost(0),
-    httpproxyport(80),
+    mHttpproxyhost(0),
+    mHttpproxyport(80),
     httpcapabilitiesresponse(0),
     cachedImage(0),
     cachedViewExtent(0),
@@ -66,7 +66,8 @@ QgsWmsProvider::QgsWmsProvider(QString const & uri)
     cachedPixelHeight(0),
     mCoordinateTransform(0),
     extentDirty(TRUE),
-    imageCrs(DEFAULT_LATLON_CRS)
+    imageCrs(DEFAULT_LATLON_CRS),
+    mGetFeatureInfoUrlBase(0)
 {
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider: constructing with uri '" << uri.toLocal8Bit().data() << "'." << std::endl;
@@ -89,23 +90,23 @@ QgsWmsProvider::QgsWmsProvider(QString const & uri)
   
   if (drawuriparts.count())
   {
-    httpproxyhost = drawuriparts.front();
+    mHttpproxyhost = drawuriparts.front();
     drawuriparts.pop_front();
     
     if (drawuriparts.count())
     {
       bool ushortConversionOK;
-      httpproxyport = drawuriparts.front().toUShort(&ushortConversionOK);
+      mHttpproxyport = drawuriparts.front().toUShort(&ushortConversionOK);
       drawuriparts.pop_front();
       
       if (!ushortConversionOK)
       {
-        httpproxyport = 80;  // standard HTTP port
+        mHttpproxyport = 80;  // standard HTTP port
       }
     }
     else
     {
-      httpproxyport = 80;  // standard HTTP port
+      mHttpproxyport = 80;  // standard HTTP port
     }
   }    
 
@@ -445,22 +446,48 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
   url += "&";
   url += "TRANSPARENT=TRUE";
 
-#ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::draw: emitting setStatus(Test from QgsWmsProvider)." << std::endl;
-#endif
-  emit setStatus( QString("Test from QgsWmsProvider") );
+  // cache some details for if the user wants to do an identifyAsHtml() later
+  mGetFeatureInfoUrlBase = baseUrl;
+  mGetFeatureInfoUrlBase += "SERVICE=WMS";
+  mGetFeatureInfoUrlBase += "&";
+  mGetFeatureInfoUrlBase += "VERSION=1.1.0";
+  mGetFeatureInfoUrlBase += "&";
+  mGetFeatureInfoUrlBase += "REQUEST=GetFeatureInfo";
+  mGetFeatureInfoUrlBase += "&";
+  mGetFeatureInfoUrlBase += "BBOX=" + bbox;
+  mGetFeatureInfoUrlBase += "&";
+  mGetFeatureInfoUrlBase += "SRS=" + imageCrs;
+  mGetFeatureInfoUrlBase += "&";
+  mGetFeatureInfoUrlBase += "WIDTH=" + width;
+  mGetFeatureInfoUrlBase += "&";
+  mGetFeatureInfoUrlBase += "HEIGHT=" + height;
+  mGetFeatureInfoUrlBase += "&";
+  mGetFeatureInfoUrlBase += "LAYERS=" + layers;
+  mGetFeatureInfoUrlBase += "&";
+  mGetFeatureInfoUrlBase += "STYLES=" + styles;
+  mGetFeatureInfoUrlBase += "&";
+  mGetFeatureInfoUrlBase += "FORMAT=" + imageMimeType;
+  mGetFeatureInfoUrlBase += "&";
+  mGetFeatureInfoUrlBase += "TRANSPARENT=TRUE";
 
-  
+
+  QByteArray imagesource;
+  imagesource = retrieveUrl(url);
+
+  if (imagesource.isEmpty())
+  {
+    return 0;
+  }
+
+/*
   QgsHttpTransaction http(url, httpproxyhost, httpproxyport);
-  
-  
+
   // Do a passthrough for the status bar text
   connect(
           &http, SIGNAL(setStatus        (QString)),
            this,   SLOT(showStatusMessage(QString))
          );
 
-  QByteArray imagesource;
   bool httpOk;
 
   httpOk = http.getSynchronously(imagesource);
@@ -499,7 +526,7 @@ QImage* QgsWmsProvider::draw(QgsRect  const & viewExtent, int pixelWidth, int pi
 
     return 0;
   }
-
+*/
 
 #ifdef QGISDEBUG
     std::cout << "QgsWmsProvider::draw: Response received." << std::endl;
@@ -580,6 +607,13 @@ bool QgsWmsProvider::retrieveServerCapabilities(bool forceRefresh)
 
     QString url = baseUrl + "SERVICE=WMS&REQUEST=GetCapabilities";
 
+    httpcapabilitiesresponse = retrieveUrl(url);
+
+    if (httpcapabilitiesresponse.isEmpty())
+    {
+      return FALSE;
+    }
+/*
     QgsHttpTransaction http(url, httpproxyhost, httpproxyport);
 
     // Do a passthrough for the status bar text
@@ -607,8 +641,7 @@ bool QgsWmsProvider::retrieveServerCapabilities(bool forceRefresh)
 
       return FALSE;
     }
-    http.getSynchronously(httpcapabilitiesresponse);
-
+*/
 
 #ifdef QGISDEBUG
     std::cout << "QgsWmsProvider::getServerCapabilities: Converting to DOM." << std::endl;
@@ -638,6 +671,61 @@ bool QgsWmsProvider::retrieveServerCapabilities(bool forceRefresh)
   std::cout << "QgsWmsProvider::getServerCapabilities: exiting." << std::endl;
 #endif
 
+}
+
+
+QByteArray QgsWmsProvider::retrieveUrl(QString url)
+{
+  QgsHttpTransaction http(url, mHttpproxyhost, mHttpproxyport);
+
+  // Do a passthrough for the status bar text
+  connect(
+          &http, SIGNAL(setStatus        (QString)),
+           this,   SLOT(showStatusMessage(QString))
+         );
+
+  QByteArray httpResponse;
+  bool httpOk;
+
+  httpOk = http.getSynchronously(httpResponse);
+
+  if (!httpOk)
+  {
+    // We had an HTTP exception
+
+    mErrorCaption = tr("HTTP Exception");
+    mError = http.errorString();
+
+    mError += "\n" + tr("Tried URL: ") + url;
+
+    return 0;
+  }
+
+  if (http.responseContentType() == "application/vnd.ogc.se_xml")
+  {
+    // We had a Service Exception from the WMS
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::retrieveUrl: got Service Exception as:\n"
+            << QString(httpResponse).toLocal8Bit().data() << std::endl;
+#endif
+
+    mErrorCaption = tr("WMS Service Exception");
+
+    // set mError with the following:
+    parseServiceExceptionReportDOM(httpResponse);
+
+    mError += "\n" + tr("Tried URL: ") + url;
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::retrieveUrl: composed error message '"
+            << mError.toLocal8Bit().data() << "'." << std::endl;
+#endif
+
+    return 0;
+  }
+
+  return httpResponse;
 }
 
 // deprecated
@@ -1906,6 +1994,14 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += capabilities.capability.request.getMap.format.join("<br />");
   myMetadataQString += "</td></tr>";
 
+  // GetFeatureInfo Request Formats
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr("Identify Formats");
+  myMetadataQString += "</td>";
+  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += capabilities.capability.request.getFeatureInfo.format.join("<br />");
+  myMetadataQString += "</td></tr>";
+
   // Layer Count (as managed by this provider)
   myMetadataQString += "<tr><td bgcolor=\"gray\">";
   myMetadataQString += tr("Layer Count");
@@ -1982,78 +2078,53 @@ QString QgsWmsProvider::getMetadata()
     myMetadataQString += layersSupported[i].abstract;
     myMetadataQString += "</td></tr>";
   
-
-
-    // Layer Coordinate Reference Systems
-    for ( int j = 0; j < layersSupported[i].crs.size(); j++ )
-    {
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
-      myMetadataQString += tr("Available in CRS");
-      myMetadataQString += "</td>";
-      myMetadataQString += "<td bgcolor=\"gray\">";
-      myMetadataQString += layersSupported[i].crs[j];
-      myMetadataQString += "</td></tr>";
-    }
-
-    // Layer Styles
-    for (int j = 0; j < layersSupported[i].style.size(); j++)
-    {
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
-      myMetadataQString += tr("Available in style");
-      myMetadataQString += "</td>";
-      myMetadataQString += "<td bgcolor=\"gray\">";
-      myMetadataQString += layersSupported[i].style[j].name;
-      myMetadataQString += "</td></tr>";
-
-    myMetadataQString += "<table width=\"100%\">";
-  
-    // Table header
-    myMetadataQString += "<tr><th bgcolor=\"black\">";
-    myMetadataQString += "<font color=\"white\">" + tr("Property") + "</font>";
-    myMetadataQString += "</th>";
-    myMetadataQString += "<th bgcolor=\"black\">";
-    myMetadataQString += "<font color=\"white\">" + tr("Value") + "</font>";
-    myMetadataQString += "</th><tr>";
-  
-    // Layer Selectivity (as managed by this provider)
+    // Layer Queryability
     myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr("Selected");
+    myMetadataQString += tr("Can Identify");
     myMetadataQString += "</td>";
     myMetadataQString += "<td bgcolor=\"gray\">";
-    myMetadataQString += (activeSubLayers.findIndex(layerName) >= 0) ?
-                           tr("Yes") : tr("No");
+    myMetadataQString += ((layersSupported[i].queryable) ? tr("Yes") : tr("No"));
     myMetadataQString += "</td></tr>";
-  
-    // Layer Visibility (as managed by this provider)
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr("Visibility");
-    myMetadataQString += "</td>";
-    myMetadataQString += "<td bgcolor=\"gray\">";
-    myMetadataQString += (activeSubLayers.findIndex(layerName) >= 0) ?
-                           (
-                            (activeSubLayerVisibility.find(layerName)->second) ?
-                            tr("Visible") : tr("Hidden")
-                           ) :
-                           tr("n/a");
-    myMetadataQString += "</td></tr>";
-  
-    // Layer Title
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr("Title");
-    myMetadataQString += "</td>";
-    myMetadataQString += "<td bgcolor=\"gray\">";
-    myMetadataQString += layersSupported[i].title;
-    myMetadataQString += "</td></tr>";
-  
-    // Layer Abstract
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr("Abstract");
-    myMetadataQString += "</td>";
-    myMetadataQString += "<td bgcolor=\"gray\">";
-    myMetadataQString += layersSupported[i].abstract;
-    myMetadataQString += "</td></tr>";
-  
 
+    // Layer Opacity
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Can be Transparent");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += ((layersSupported[i].opaque) ? tr("No") : tr("Yes"));
+    myMetadataQString += "</td></tr>";
+
+    // Layer Subsetability
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Can Zoom In");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += ((layersSupported[i].noSubsets) ? tr("No") : tr("Yes"));
+    myMetadataQString += "</td></tr>";
+
+    // Layer Server Cascade Count
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Cascade Count");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += layersSupported[i].cascaded;
+    myMetadataQString += "</td></tr>";
+
+    // Layer Fixed Width
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Fixed Width");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += layersSupported[i].fixedWidth;
+    myMetadataQString += "</td></tr>";
+
+    // Layer Fixed Height
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("Fixed Height");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += layersSupported[i].fixedHeight;
+    myMetadataQString += "</td></tr>";
 
     // Layer Coordinate Reference Systems
     for ( int j = 0; j < layersSupported[i].crs.size(); j++ )
@@ -2109,19 +2180,78 @@ QString QgsWmsProvider::getMetadata()
     // Close the nested table
     myMetadataQString += "</table>";
     myMetadataQString += "</td></tr>";
-    }
 
-    // Close the nested table
-    myMetadataQString += "</table>";
-    myMetadataQString += "</td></tr>";
-
-  }
+  } // for each layer
 
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider::getMetadata: exiting with '" << myMetadataQString.toLocal8Bit().data() << "'." << std::endl;
 #endif
 
   return myMetadataQString;
+}
+
+
+QString QgsWmsProvider::identifyAsHtml(const QgsPoint& point)
+{
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::identifyAsHtml: entering." << std::endl;
+#endif
+
+  // Collect which layers to query on
+
+  QStringList visibleLayers = QStringList();
+
+  for ( QStringList::Iterator it  = activeSubLayers.begin(); 
+                              it != activeSubLayers.end(); 
+                            ++it ) 
+  {
+    if (TRUE == activeSubLayerVisibility.find( *it )->second)
+    {
+      visibleLayers += *it;
+    }
+  }
+
+  QString layers = visibleLayers.join(",");
+  Q3Url::encode( layers );
+
+  // Compose request to WMS server
+
+  QString requestUrl = mGetFeatureInfoUrlBase;
+
+  requestUrl += "&";
+  requestUrl += "QUERY_LAYERS=" + layers;
+  requestUrl += "&";
+   //! \todo Need to tie this into the options provided by GetCapabilities
+  requestUrl += "INFO_FORMAT=text/plain";
+
+// X,Y in WMS 1.1.1; I,J in WMS 1.3.0
+
+//   requestUrl += "&";
+//   requestUrl += QString( "I=%1" )
+//                    .arg( point.x() );
+//   requestUrl += "&";
+//   requestUrl += QString( "J=%1" )
+//                    .arg( point.y() );
+
+  requestUrl += "&";
+  requestUrl += QString( "X=%1" )
+                   .arg( point.x() );
+  requestUrl += "&";
+  requestUrl += QString( "Y=%1" )
+                   .arg( point.y() );
+
+  QString html = retrieveUrl(requestUrl);
+
+  if (html.isEmpty())
+  {
+    return QString();
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::identifyAsHtml: exiting with '"
+            << html.toLocal8Bit().data() << "'." << std::endl;
+#endif
+  return html;
 }
 
 

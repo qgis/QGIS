@@ -131,7 +131,8 @@ wish to see edbug messages printed to stdout.
 /*
  * END
  */
- 
+
+#include "../providers/wms/qgswmsprovider.h"
 
 #include <gdal_priv.h>
 
@@ -496,7 +497,7 @@ QgsRasterLayer::QgsRasterLayer(QString const & path, QString const & baseName)
 QgsRasterLayer::~QgsRasterLayer()
 {
 
-  if (providerKey.isEmpty())
+  if (mProviderKey.isEmpty())
   {
     GDALClose(gdalDataset);
   }  
@@ -978,7 +979,7 @@ void QgsRasterLayer::drawThumbnail(QPixmap * theQPixmap)
   theQPixmap->fill(); //defaults to white
 
   // Raster providers are disabled (for the moment)
-  if (providerKey.isEmpty())
+  if (mProviderKey.isEmpty())
   {
     QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
     myRasterViewPort->rectXOffsetInt = 0;
@@ -1014,7 +1015,7 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
   // Only do this for the non-provider (hard-coded GDAL) scenario...
   // Maybe WMS can do this differently using QImage::numColors and QImage::color()
   if (
-      (providerKey.isEmpty()) &&
+      (mProviderKey.isEmpty()) &&
       (hasBand("Palette") ) //dont tr() this its a gdal word!
      )
   {
@@ -1097,11 +1098,11 @@ bool QgsRasterLayer::draw(QPainter * theQPainter,
 
 /* TODO: Re-enable this for providers    
   // Check timestamp
-  if ( !providerKey )
+  if ( !mProviderKey )
   {
 
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer::draw(4 arguments): checking timestamp with no providerKey." << std::endl;
+  std::cout << "QgsRasterLayer::draw(4 arguments): checking timestamp with no mProviderKey." << std::endl;
 #endif
     
     if ( !update() )
@@ -1342,13 +1343,13 @@ static_cast<int>(myRasterViewPort->topLeftPoint    .x() + 0.5);
     std::cout << "QgsRasterLayer::draw: Checking for provider key." << std::endl; 
 #endif
   
-  if (!providerKey.isEmpty())
+  if (!mProviderKey.isEmpty())
   {
 #ifdef QGISDEBUG
-    std::cout << "QgsRasterLayer::draw: Wanting a '" << providerKey.toLocal8Bit().data() << "' provider to draw this." << std::endl; 
+    std::cout << "QgsRasterLayer::draw: Wanting a '" << mProviderKey.toLocal8Bit().data() << "' provider to draw this." << std::endl; 
 #endif
 
-  emit setStatus(QString("Retrieving using ")+providerKey);
+  emit setStatus(QString("Retrieving using ")+mProviderKey);
     
     QImage* image = 
       dataProvider->draw(
@@ -3225,10 +3226,10 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
   QPainter myQPainter; 
  
 
-  if (!providerKey.isEmpty())
+  if (!mProviderKey.isEmpty())
   {
 #ifdef QGISDEBUG
-  std::cout << "QgsRasterLayer::getLegendQPixmap called with provider Key (" << providerKey.toLocal8Bit().data() << ")" << std::endl;
+  std::cout << "QgsRasterLayer::getLegendQPixmap called with provider Key (" << mProviderKey.toLocal8Bit().data() << ")" << std::endl;
 #endif
     
     myLegendQPixmap = QPixmap(3, 1);
@@ -3906,7 +3907,7 @@ QString QgsRasterLayer::getMetadata()
   myMetadataQString += tr("Driver:");
   myMetadataQString += "</td></tr>";
   myMetadataQString += "<tr><td bgcolor=\"white\">";
-  if (providerKey.isEmpty())
+  if (mProviderKey.isEmpty())
   {
     myMetadataQString += QString(gdalDataset->GetDriver()->GetDescription());
     myMetadataQString += "<br>";
@@ -3918,7 +3919,7 @@ QString QgsRasterLayer::getMetadata()
   }
   myMetadataQString += "</td></tr>";
 
-  if (!providerKey.isEmpty())
+  if (!mProviderKey.isEmpty())
   {
     // Insert provider-specific (e.g. WMS-specific) metadata
     myMetadataQString += dataProvider->getMetadata();
@@ -4060,7 +4061,7 @@ QString QgsRasterLayer::getMetadata()
       }
     }
     myMetadataQString += "</td></tr>";
-  }  // if (providerKey.isEmpty())
+  }  // if (mProviderKey.isEmpty())
 
 
    myMetadataQString += "<tr><td bgcolor=\"gray\">";
@@ -4078,7 +4079,7 @@ QString QgsRasterLayer::getMetadata()
   myMetadataQString +=  mCoordinateTransform->destSRS().proj4String();
   myMetadataQString += "</td></tr>";
 
-  if (providerKey.isEmpty())
+  if (mProviderKey.isEmpty())
   {
     if (gdalDataset->GetGeoTransform(adfGeoTransform) != CE_None)
     {
@@ -4233,7 +4234,7 @@ QString QgsRasterLayer::getMetadata()
     }
     myMetadataQString += "</table>"; //end of nested table
     myMetadataQString += "</td></tr>"; //end of stats container table row
-  } // if (providerKey.isEmpty())
+  } // if (mProviderKey.isEmpty())
 
   //
   // Close the table
@@ -4867,6 +4868,17 @@ void QgsRasterLayer::identify(const QgsPoint& point, std::map<QString,QString>& 
 } // void QgsRasterLayer::identify
 
 
+QString QgsRasterLayer::identifyAsHtml(const QgsPoint& point)
+{
+  if (mProviderKey != "wms")
+  {
+    // Currently no meaning for anything other than OGC WMS layers
+    return QString();
+  }
+
+  return (dataProvider->identifyAsHtml(point));
+}
+
 void QgsRasterLayer::populateHistogram(int theBandNoInt, int theBinCountInt,bool theIgnoreOutOfRangeFlag,bool theHistogramEstimatedFlag)
 {
 
@@ -4942,7 +4954,7 @@ QgsRasterLayer::QgsRasterLayer(int dummy,
     stdDevsToPlotDouble(0),
     mTransparencySlider(0x0),
     mLayerProperties(0x0),
-    providerKey(providerKey),
+    mProviderKey(providerKey),
     dataProvider(0),
     mEditable(false),
     mModified(false)
@@ -5018,7 +5030,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
 
-  providerKey = provider;     // XXX is this necessary?  Usually already set
+  mProviderKey = provider;     // XXX is this necessary?  Usually already set
   // XXX when execution gets here.
 
   // load the plugin
@@ -5164,13 +5176,26 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
 
 bool QgsRasterLayer::usesProvider()
 {
-  if (providerKey.isEmpty())
+  if (mProviderKey.isEmpty())
   {
     return FALSE;
   }
   else
   {
     return TRUE;
+  }
+}
+
+
+QString QgsRasterLayer::providerKey()
+{
+  if (mProviderKey.isEmpty())
+  {
+    return QString();
+  }
+  else
+  {
+    return mProviderKey;
   }
 }
 
