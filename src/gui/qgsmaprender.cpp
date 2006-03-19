@@ -26,7 +26,7 @@
 #include <QPixmap>
 #include <QPainter>
 #include <Q3PaintDeviceMetrics>
-
+#include <QTime>
 
 
 QgsMapRender::QgsMapRender()
@@ -191,7 +191,9 @@ void QgsMapRender::render(QPainter* painter)
   int myRenderCounter = 0;
   
 #ifdef QGISDEBUG
-  std::cout << "QgsMapCanvas::render: Starting to render layer stack." << std::endl;
+  std::cout << "QgsMapRender::render: Starting to render layer stack." << std::endl;
+  QTime renderTime;
+  renderTime.start();
 #endif
   // render all layers in the stack, starting at the base
   std::deque<QString> layers = mLayers.layerSet();
@@ -274,7 +276,7 @@ void QgsMapRender::render(QPainter* painter)
   } // while (li != end)
       
 #ifdef QGISDEBUG
-  std::cout << "QgsMapRender::render: Done rendering map layers...emitting renderComplete(paint)\n";
+  std::cout << "QgsMapRender::render: Done rendering map layers" << std::endl;
 #endif
 
   if (!mOverview)
@@ -309,12 +311,9 @@ void QgsMapRender::render(QPainter* painter)
   emit setProgress(1,1);      
       
 #ifdef QGISDEBUG
-  std::cout << "QgsMapCanvas::render: Done rendering map labels...emitting renderComplete(paint)\n";
+  std::cout << "QgsMapRender::render: Rendering done in " <<
+               renderTime.elapsed() / 1000.0 << " seconds" << std::endl;
 #endif
-
-  // notify any listeners that rendering is complete
-  //note that pmCanvas is not draw to gui yet
-  // TODO: emit renderComplete(paint);
 
   mDrawing = false;
 
