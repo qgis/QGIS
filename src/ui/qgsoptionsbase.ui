@@ -259,7 +259,7 @@
           <item row="0" column="0" >
            <widget class="QCheckBox" name="chkAddedVisibility" >
             <property name="text" >
-             <string>New la&amp;yers added to the map are not displayed</string>
+             <string>By default new la&amp;yers added to the map should be displayed</string>
             </property>
            </widget>
           </item>

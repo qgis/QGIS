@@ -95,7 +95,7 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   cmbTheme->setCurrentText(settings.readEntry("/Themes","default"));
   //set teh state of the checkboxes
   chkAntiAliasing->setChecked(settings.value("/qgis/enable_anti_aliasing",false).toBool());
-  chkAddedVisibility->setChecked(!settings.value("/qgis/new_layers_visible",false).toBool());
+  chkAddedVisibility->setChecked(settings.value("/qgis/new_layers_visible",true).toBool());
   cbxHideSplash->setChecked(settings.value("/qgis/hideSplash",false).toBool());
   //set the colour for selections
   int myRed = settings.value("/qgis/default_selection_color_red",255).toInt();
@@ -147,7 +147,7 @@ void QgsOptions::saveOptions()
   settings.writeEntry("/qgis/browser", cmbBrowser->currentText());
   settings.writeEntry("/Map/identifyRadius", spinBoxIdentifyValue->value());
   settings.writeEntry("/qgis/hideSplash",cbxHideSplash->isChecked());
-  settings.writeEntry("/qgis/new_layers_visible",!chkAddedVisibility->isChecked());
+  settings.writeEntry("/qgis/new_layers_visible",chkAddedVisibility->isChecked());
   settings.writeEntry("/qgis/enable_anti_aliasing",chkAntiAliasing->isChecked());
   if(cmbTheme->currentText().length() == 0)
   {
@@ -247,7 +247,7 @@ void QgsOptions::on_pbnSelectProjection_clicked()
 
 bool QgsOptions::newVisible()
 {
-  return !chkAddedVisibility->isChecked();
+  return chkAddedVisibility->isChecked();
 }
 
 void QgsOptions::getEllipsoidList()

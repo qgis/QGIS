@@ -347,7 +347,7 @@ void QgisApp::readSettings()
   // layers when they are added to the map. This is useful when adding
   // many layers and the user wants to adjusty symbology, etc prior to
   // actually viewing the layer.
-  mAddedLayersHidden = settings.readBoolEntry("/qgis/new_layers_visible", true);
+  mAddedLayersVisible = settings.readBoolEntry("/qgis/new_layers_visible", 1);
 
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.readListEntry("/UI/recentProjectsList");
@@ -1821,7 +1821,7 @@ bool QgisApp::addLayer(QStringList const &theLayerQStringList, const QString& en
     Q_CHECK_PTR( layer );
     // set the visibility based on user preference for newly added
     // layers
-    layer->setVisible(mAddedLayersHidden);
+    layer->setVisible(mAddedLayersVisible);
 
     if ( ! layer )
     {
@@ -1967,7 +1967,7 @@ void QgisApp::addDatabaseLayer()
       if (layer->isValid())
       {
         // set initial visibility based on user preference
-        layer->setVisible(mAddedLayersHidden);
+        layer->setVisible(mAddedLayersVisible);
 
         // give it a random color
         QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer(layer->vectorType());  // add single symbol renderer as default
@@ -4323,7 +4323,7 @@ void QgisApp::options()
     setTheme(optionsDialog->theme());
     setupToolbarPopups(optionsDialog->theme());
     // set the visible flag for new layers
-    mAddedLayersHidden = optionsDialog->newVisible();
+    mAddedLayersVisible = optionsDialog->newVisible();
     QSettings mySettings;
     mMapCanvas->enableAntiAliasing(mySettings.value("/qgis/enable_anti_aliasing").toBool());
   }
@@ -5286,7 +5286,7 @@ bool QgisApp::addRasterLayer(QStringList const &theFileNameQStringList, bool gui
       QgsRasterLayer *layer = new QgsRasterLayer(*myIterator, myBaseNameQString);
 
       // set initial visibility based on user preference
-      layer->setVisible(mAddedLayersHidden);
+      layer->setVisible(mAddedLayersVisible);
 
       addRasterLayer(layer);
       layer->refreshLegend();
