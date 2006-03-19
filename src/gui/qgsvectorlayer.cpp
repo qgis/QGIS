@@ -78,9 +78,6 @@
 #include "qgsattributetabledisplay.h"
 #include "qgsdistancearea.h"
 #include "qgsvectordataprovider.h"
-#ifdef Q_WS_X11
-#include "qgsclipper.h"
-#endif
 #include "qgssvgcache.h"
 #include "qgsspatialrefsys.h"
 #include "qgis.h" //for globals
@@ -463,22 +460,6 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
 
   transformPoints(x, y, z, mtp, projectionsEnabledFlag);
 
-#if defined(Q_WS_X11)
-  // Work around a +/- 32768 limitation on coordinates in X11
-
-  // Look through the x and y coordinates and see if there are any
-  // that need trimming. If one is found, there's no need to look at
-  // the rest of them so end the loop at that point. 
-  for (register unsigned int i = 0; i < nPoints; ++i)
-    if (std::abs(x[i]) > QgsClipper::maxX ||
-        std::abs(y[i]) > QgsClipper::maxY)
-    {
-      QgsClipper::trimFeature(x, y, true); // true = polyline
-      nPoints = x.size(); // trimming may change nPoints.
-      break;
-    }
-#endif
-
   // set up QPolygonF class with transformed points
   QPolygonF pa(nPoints);
   for (register unsigned int i = 0; i < nPoints; ++i)
@@ -583,33 +564,6 @@ std::cerr << jdx << ": "
 
     transformPoints(ring->first, ring->second, zVector, mtp, projectionsEnabledFlag);
 
-#if defined(Q_WS_X11)
-    // Work around a +/- 32768 limitation on coordinates in X11
-
-    // Look through the x and y coordinates and see if there are any
-    // that need trimming. If one is found, there's no need to look at
-    // the rest of them so end the loop at that point. 
-    for (register unsigned int i = 0; i < nPoints; ++i)
-    {
-      if (std::abs(ring->first[i]) > QgsClipper::maxX ||
-          std::abs(ring->second[i]) > QgsClipper::maxY)
-      {
-        QgsClipper::trimFeature(ring->first, ring->second, false);
-        /*
-#ifdef QGISDEBUG
-std::cerr << "Trimmed points (" << ring->first.size() << ")\n";
-for (int i = 0; i < ring->first.size(); ++i)
-std::cerr << i << ": " << ring->first[i] 
-<< ", " << ring->second[i] << '\n';
-#endif
-*/
-        break;
-      }
-      //std::cout << "POLYGONTRANSFORM: " << ring->first[i] << ", " << ring->second[i] << std::endl; 
-    }
-
-#endif
-
     // Don't bother keeping the ring if it has been trimmed out of
     // existence.
     if (ring->first.size() == 0)
@@ -695,27 +649,6 @@ std::cerr << i << ": " << ring->first[i]
     std::cerr << "Outer ring point is " << outerRingPt.x()
       << ", " << outerRingPt.y() << '\n';
 #endif
-
-    /*
-    // A bit of code to aid in working out what values of
-    // QgsClipper::minX, etc cause the X11 zoom bug.
-    int largestX  = -std::numeric_limits<int>::max();
-    int smallestX = std::numeric_limits<int>::max();
-    int largestY  = -std::numeric_limits<int>::max();
-    int smallestY = std::numeric_limits<int>::max();
-
-    for (int i = 0; i < pa.size(); ++i)
-    {
-    largestX  = std::max(largestX,  pa.point(i).x());
-    smallestX = std::min(smallestX, pa.point(i).x());
-    largestY  = std::max(largestY,  pa.point(i).y());
-    smallestY = std::min(smallestY, pa.point(i).y());
-    }
-    std::cerr << "Largest  X coordinate was " << largestX  << '\n';
-    std::cerr << "Smallest X coordinate was " << smallestX << '\n';
-    std::cerr << "Largest  Y coordinate was " << largestY  << '\n';
-    std::cerr << "Smallest Y coordinate was " << smallestY << '\n';
-    */
 
     //preserve a copy of the brush and pen before we start fiddling with it
     QBrush brush = p->brush(); //to be kept as original
@@ -3194,13 +3127,6 @@ void QgsVectorLayer::drawFeature(QPainter* p, QgsFeature* fet, QgsMapToPixel * t
           transformPoint(x, y, theMapToPixelTransform, projectionsEnabledFlag);
           QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
           
-#if defined(Q_WS_X11)
-          // Work around a +/- 32768 limitation on coordinates in X11
-          if (std::abs(x) > QgsClipper::maxX ||
-              std::abs(y) > QgsClipper::maxY)
-            needToTrim = true;
-          else
-#endif
           p->drawPixmap(pt, *marker);
         }
         p->restore();
