@@ -543,7 +543,7 @@ private:
   QgsHelpViewer *mHelpViewer;
   //! Flag to indicate that newly added layers are not shown on
   //  the map
-  bool mAddedLayersHidden;
+  bool mAddedLayersVisible;
   //! menu map (key is name, value is menu id)
   std::map<QString, int>mMenuMapByName;
   //! menu map (key is menu id, value is name)
