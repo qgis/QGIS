@@ -23,12 +23,14 @@
 #define MapTool_Identify  "identify"
 
 class QgsIdentifyResults;
+class QgsMessageViewer;
+class QgsMapLayer;
 class QgsRasterLayer;
 class QgsVectorLayer;
 
 /**
   \brief Map tool for identifying features in current layer
-             
+
   after selecting a point shows dialog with identification results
   - for raster layers shows value of underlying pixel
   - for vector layers shows feature attributes within search radius
@@ -38,31 +40,56 @@ class QgsMapToolIdentify : public QgsMapTool
 {
   public:
     QgsMapToolIdentify(QgsMapCanvas* canvas);
-    
+
     ~QgsMapToolIdentify();
-    
+
     //! Overridden mouse move event
     virtual void canvasMoveEvent(QMouseEvent * e);
-  
+
     //! Overridden mouse press event
     virtual void canvasPressEvent(QMouseEvent * e);
-  
+
     //! Overridden mouse release event
     virtual void canvasReleaseEvent(QMouseEvent * e);
-    
+
     virtual QString toolName() { return MapTool_Identify; }
-    
+
   private:
-    
-    //! function for identifying raster layer
+
+    /**
+     * \brief function for identifying pixel values at a coordinate in a non-OGC-WMS raster layer
+     *
+     * \param point[in]  The coordinate (as the CRS of the raster layer)
+     */
     void identifyRasterLayer(QgsRasterLayer* layer, const QgsPoint& point);
-    
-    //! function for identifying vector layer
+
+    /**
+     * \brief function for identifying a pixel in a OGC WMS raster layer
+     *
+     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
+     *
+     * \note WMS Servers prefer to receive coordinates in image space not CRS space, therefore
+     *       this special variant of identifyRasterLayer.
+     */
+    void identifyRasterWmsLayer(QgsRasterLayer* layer, const QgsPoint& point);
+
+    /**
+     * \brief function for identifying features at a coordinate in a vector layer
+     *
+     * \param point[in]  The coordinate (as the CRS of the vector layer)
+     */
     void identifyVectorLayer(QgsVectorLayer* layer, const QgsPoint& point);
 
-    //! Pointer to the identify results dialog
+    //! show whatever error is exposed by the QgsMapLayer.
+    void showError(QgsMapLayer * mapLayer);
+
+
+    //! Pointer to the identify results dialog for name/value pairs
     QgsIdentifyResults *mResults;
-    
+
+    //! Pointer to the identify results dialog for WMS XML files
+    QgsMessageViewer * mViewer;
+
 };
 
 #endif

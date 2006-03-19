@@ -496,6 +496,21 @@ public:
   QString getMetadata();
 
   /**
+   * \brief Identify details from a WMS Server from the last screen update
+   *
+   * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
+   *
+   * \retval  An HTML document containing the return from the WMS server
+   *
+   * \note WMS Servers prefer to receive coordinates in image space, therefore
+   *       this function expects coordinates in that format.
+   *
+   * \note  The arbitraryness of the returned document is enforced by WMS standards
+   *        up to at least v1.3.0
+   */
+  QString identifyAsHtml(const QgsPoint& point);
+
+  /**
    * \brief   Returns the caption error text for the last error in this provider
    *
    * If an operation returns 0 (e.g. draw()), this function
@@ -564,7 +579,8 @@ public slots:
 private:
 
   /**
-   * Retrieve and parse the (cached) Capabilities document from the server
+   * \brief Retrieve and parse the (cached) Capabilities document from the server
+   *
    * \param forceRefresh  if true, ignores any previous response cached in memory
    *                      and always contact the server for a new copy.
    * \retval FALSE if the capabilities document could not be retreived or parsed - 
@@ -575,6 +591,14 @@ private:
    * TODO: Make network-timeout tolerant
    */
   bool retrieveServerCapabilities(bool forceRefresh = FALSE);
+
+  /**
+   * \brief Common URL retreival code for the differing WMS request types
+   *
+   * \retval 0 if an error occured - use errorString() and errorCaptionString() for details
+   *
+   */
+  QByteArray retrieveUrl(QString url);
 
 /*
   //! Test function: see if we can download a WMS' capabilites
@@ -664,10 +688,10 @@ private:
   QString baseUrl;
 
   //! HTTP proxy host name for the WMS for this layer
-  QString httpproxyhost;
+  QString mHttpproxyhost;
 
   //! HTTP proxy port number for the WMS for this layer
-  Q_UINT16 httpproxyport;
+  Q_UINT16 mHttpproxyport;
 
   /**
    * Flag indicating if the layer data source is a valid WMS layer
@@ -780,6 +804,8 @@ private:
   //! See if calculateExtents() needs to be called before extent() returns useful data
   bool extentDirty;
 
+  //! Base URL for WMS GetFeatureInfo requests
+  QString mGetFeatureInfoUrlBase;
 };
 
 #endif

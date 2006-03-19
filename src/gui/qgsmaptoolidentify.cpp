@@ -14,6 +14,7 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include "qgsmessageviewer.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectordataprovider.h"
@@ -30,10 +31,13 @@
 #include <QMessageBox>
 #include <QCursor>
 #include <QPixmap>
+#include <QObject>
 
 
 QgsMapToolIdentify::QgsMapToolIdentify(QgsMapCanvas* canvas)
-  : QgsMapTool(canvas), mResults(NULL)
+  : QgsMapTool(canvas),
+    mResults(0),
+    mViewer(0)
 {
   // set cursor
   QPixmap myIdentifyQPixmap = QPixmap((const char **) identify_cursor);
@@ -42,7 +46,15 @@ QgsMapToolIdentify::QgsMapToolIdentify(QgsMapCanvas* canvas)
     
 QgsMapToolIdentify::~QgsMapToolIdentify()
 {
-  delete mResults;
+  if (mResults)
+  {
+    delete mResults;
+  }
+
+  if (mViewer)
+  {
+    delete mViewer;
+  }
 }
 
 void QgsMapToolIdentify::canvasMoveEvent(QMouseEvent * e)
@@ -61,24 +73,38 @@ void QgsMapToolIdentify::canvasReleaseEvent(QMouseEvent * e)
 
   if (layer)
   {
-    // convert screen coordinates to map coordinates
-    QgsPoint idPoint = mCanvas->getCoordinateTransform()->toMapCoordinates(e->x(), e->y());
-    
-    if (layer->type() == QgsMapLayer::VECTOR)
+    // In the special case of the WMS provider,
+    // coordinates are sent back to the server as pixel coordinates
+    // not the layer's native CRS.  So identify on screen coordinates!
+    if (
+        (layer->type() == QgsMapLayer::RASTER)
+        &&
+        (dynamic_cast<QgsRasterLayer*>(layer)->providerKey() == "wms")
+       )
     {
-      identifyVectorLayer(dynamic_cast<QgsVectorLayer*>(layer), idPoint);
-    }
-    else if (layer->type() == QgsMapLayer::RASTER)
-    {
-      identifyRasterLayer(dynamic_cast<QgsRasterLayer*>(layer), idPoint);
+      identifyRasterWmsLayer(dynamic_cast<QgsRasterLayer*>(layer), QgsPoint(e->x(), e->y()) );
     }
     else
     {
+      // convert screen coordinates to map coordinates
+      QgsPoint idPoint = mCanvas->getCoordinateTransform()->toMapCoordinates(e->x(), e->y());
+
+      if (layer->type() == QgsMapLayer::VECTOR)
+      {
+        identifyVectorLayer(dynamic_cast<QgsVectorLayer*>(layer), idPoint);
+      }
+      else if (layer->type() == QgsMapLayer::RASTER)
+      {
+        identifyRasterLayer(dynamic_cast<QgsRasterLayer*>(layer), idPoint);
+      }
+      else
+      {
 #ifdef QGISDEBUG
-      std::cout << "identify: unknown layer type!" << std::endl;
+        std::cout << "QgsMapToolIdentify::canvasReleaseEvent: unknown layer type!" << std::endl;
 #endif
+      }
     }
-    
+
   }
   else
   {
@@ -123,6 +149,34 @@ void QgsMapToolIdentify::identifyRasterLayer(QgsRasterLayer* layer, const QgsPoi
   mResults->show();
 }
 
+
+void QgsMapToolIdentify::identifyRasterWmsLayer(QgsRasterLayer* layer, const QgsPoint& point)
+{
+  if (!layer)
+  {
+    return;
+  }
+
+  QString html = layer->identifyAsHtml(point);
+
+  if (html.isEmpty())
+  {
+    showError(layer);
+    return;
+  }
+
+  if (!mViewer)
+  {
+    mViewer = new QgsMessageViewer();
+  }
+
+  mViewer->setCaption( layer->name() );
+  mViewer->setMessageAsPlainText( html );
+//  mViewer->setMessageAsHtml( html );
+
+//  mViewer->exec();
+  mViewer->show();
+}
 
 
 void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoint& point)
@@ -313,3 +367,26 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
   }
   dataProvider->reset();
 }
+
+
+void QgsMapToolIdentify::showError(QgsMapLayer * mapLayer)
+{
+//   QMessageBox::warning(
+//     this,
+//     mapLayer->errorCaptionString(),
+//     tr("Could not draw") + " " + mapLayer->name() + " " + tr("because") + ":\n" +
+//       mapLayer->errorString()
+//   );
+
+  QgsMessageViewer * mv = new QgsMessageViewer();
+  mv->setCaption( mapLayer->errorCaptionString() );
+  mv->setMessageAsPlainText(
+    QObject::tr("Could not identify objects on") + " " + mapLayer->name() + " " + QObject::tr("because") + ":\n" +
+    mapLayer->errorString()
+  );
+  mv->exec();
+  delete mv;
+
+}
+
+// ENDS
