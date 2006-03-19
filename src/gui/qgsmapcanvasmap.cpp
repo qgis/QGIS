@@ -42,9 +42,13 @@ void QgsMapCanvasMap::resize(QSize size)
 
 void QgsMapCanvasMap::render()
 {
-  mPixmap.fill(mBgColor);
+  // use temporary image for rendering
+  QImage image(size(), QImage::Format_RGB32);
   
-  QPainter paint(&mPixmap);
+  image.fill(mBgColor.rgb());
+
+  QPainter paint;
+  paint.begin(&image);
 
   // antialiasing
   if (mAntiAliasing)
@@ -52,4 +56,8 @@ void QgsMapCanvasMap::render()
   
   mRender->render(&paint);
 
+  paint.end();
+  
+  // convert QImage to QPixmap to acheive faster drawing on screen
+  mPixmap = QPixmap::fromImage(image);
 }
