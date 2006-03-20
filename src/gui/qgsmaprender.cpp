@@ -211,8 +211,9 @@ void QgsMapRender::render(QPainter* painter)
     // passed into this function), as Qt produces a number of errors
     // when try to do so. I'm (Gavin) not sure how to fix this, but
     // added these comments and debug statement to help others...
-    std::cerr << "If there is a QPaintEngine here, it is caused by an emit "
-      "call just after line " << __LINE__ << " in file " << __FILE__ << ".\n";
+    std::cerr << "If there is a QPaintEngine error here, it is caused by an"
+              << " emit call just after line " << __LINE__ 
+              << " in file " << __FILE__ << ".\n";
 
     emit setProgress(myRenderCounter++,layers.size());
     QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer(*li);
