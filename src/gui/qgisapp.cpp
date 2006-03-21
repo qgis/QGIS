@@ -4857,6 +4857,8 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
     {
       return;
     }
+
+  /***********Vector layers****************/
   if(layer->type() == QgsMapLayer::VECTOR || layer->type() == QgsMapLayer::DATABASE)
     {
       mActionSelect->setEnabled(true);
@@ -4866,7 +4868,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
       if(vlayer)
 	{
 	  //does provider allow deleting of features?
-	  if(dprovider->capabilities() | QgsVectorDataProvider::DeleteFeatures)
+	  if(dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures)
 	    {
 	      mActionDeleteSelected->setEnabled(true);
 	    }
@@ -4878,7 +4880,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
 
 	  if(vlayer->vectorType() == QGis::Point)
 	    {
-	      if(dprovider->capabilities() | QgsVectorDataProvider::AddFeatures)
+	      if(dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
 		{
 		  mActionCapturePoint->setEnabled(true);
 		}
@@ -4895,19 +4897,33 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
 	    }
 	  else if(vlayer->vectorType() == QGis::Line)
 	    {
-	      mActionCaptureLine->setEnabled(true);
+	      if(dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
+		{
+		  mActionCaptureLine->setEnabled(true);
+		}
+	      else
+		{
+		  mActionCaptureLine->setEnabled(false);
+		}
 	      mActionCapturePoint->setEnabled(false);
 	      mActionCapturePolygon->setEnabled(false);
 	    }
 	  else if(vlayer->vectorType() == QGis::Polygon)
 	    {
-	      mActionCapturePolygon->setEnabled(true);
+	      if(dprovider->capabilities() & QgsVectorDataProvider::AddFeatures)
+		{
+		  mActionCapturePolygon->setEnabled(true);
+		}
+	      else
+		{
+		  mActionCapturePolygon->setEnabled(false);
+		}
 	      mActionCapturePoint->setEnabled(false);
 	      mActionCaptureLine->setEnabled(false);
 	    }
 
 	  //are add/delete/move vertex supported?
-	  if(dprovider->capabilities() | QgsVectorDataProvider::ChangeGeometries)
+	  if(dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries)
 	    {
 	      mActionAddVertex->setEnabled(true);
 	      mActionMoveVertex->setEnabled(true);
@@ -4922,6 +4938,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
 	  return;
 	}
     }
+  /*************Raster layers*************/
   else if(layer->type() == QgsMapLayer::RASTER)
     {
       mActionSelect->setEnabled(false);
