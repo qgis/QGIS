@@ -22,7 +22,8 @@
 #ifndef QGSHTTPTRANSACTION_H
 #define QGSHTTPTRANSACTION_H
 
-#include <q3http.h>
+#include <QHttp>
+#include <QTimer>
 #include <qstring.h>
 
 /**
@@ -46,7 +47,11 @@ public:
   /**
   * Constructor.
   */
-  QgsHttpTransaction( QString uri, QString proxyHost = 0, Q_UINT16 proxyPort = 80 );
+  QgsHttpTransaction( QString uri,
+                      QString proxyHost = QString(),
+                      int     proxyPort = 80,
+                      QString proxyUser = QString(),
+                      QString proxyPass = QString() );
 
   //! Destructor
   virtual ~QgsHttpTransaction();
@@ -79,9 +84,9 @@ public slots:
 
   void dataStarted( int id );
 
-  void dataHeaderReceived( const Q3HttpResponseHeader& resp );
+  void dataHeaderReceived( const QHttpResponseHeader& resp );
 
-  void dataReceived( const Q3HttpResponseHeader& resp );
+  void dataReceived( const QHttpResponseHeader& resp );
 
   void dataProgress( int done, int total );
 
@@ -109,7 +114,7 @@ private:
    *        but strange things were happening with the signals -
    *        therefore we use the "pointer to" instead.
    */
-  Q3Http* http;
+  QHttp* http;
 
   /**
    * Indicates the QHttp ID
@@ -144,8 +149,18 @@ private:
   /**
    * The port being used for this transaction
    */
-  Q_UINT16 httpport;
-  
+  int httpport;
+
+  /**
+   * The username being used for this transaction
+   */
+  QString httpuser;
+
+  /**
+   * The password being used for this transaction
+   */
+  QString httppass;
+
   /**
    * If not empty, indicates that the QHttp is a redirect
    * to the contents of this variable

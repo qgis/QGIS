@@ -57,8 +57,10 @@ static QString DEFAULT_LATLON_CRS = "CRS:84";
 QgsWmsProvider::QgsWmsProvider(QString const & uri)
   : QgsRasterDataProvider(uri),
     httpuri(uri),
-    mHttpproxyhost(0),
-    mHttpproxyport(80),
+    mHttpProxyHost(0),
+    mHttpProxyPort(80),
+    mHttpProxyUser(0),
+    mHttpProxyPass(0),
     httpcapabilitiesresponse(0),
     cachedImage(0),
     cachedViewExtent(0),
@@ -72,55 +74,80 @@ QgsWmsProvider::QgsWmsProvider(QString const & uri)
 #ifdef QGISDEBUG
   std::cout << "QgsWmsProvider: constructing with uri '" << uri.toLocal8Bit().data() << "'." << std::endl;
 #endif
-  
+
   // assume this is a valid layer until we determine otherwise
   valid = true;
-  
-  // Examples:
-  //httpuri = "http://ims.cr.usgs.gov:80/servlet/com.esri.wms.Esrimap/USGS_EDC_Trans_BTS_Roads?SERVICE=WMS&REQUEST=GetCapabilities";
-  //httpuri = "http://www.ga.gov.au/bin/getmap.pl?dataset=national&";
-  
-  // URI is in form: URL[ proxyhost[ [proxyport]]
+
+  // URI is in form: URL[ proxyhost[ proxyport[ proxyuser[ proxypass]]]
 
   // Split proxy from the provider-encoded uri  
   QStringList drawuriparts = QStringList::split(" ", httpuri, TRUE);
-  
+
   baseUrl = drawuriparts.front();
   drawuriparts.pop_front();
-  
+
   if (drawuriparts.count())
   {
-    mHttpproxyhost = drawuriparts.front();
+    mHttpProxyHost = drawuriparts.front();
     drawuriparts.pop_front();
-    
+
     if (drawuriparts.count())
     {
-      bool ushortConversionOK;
-      mHttpproxyport = drawuriparts.front().toUShort(&ushortConversionOK);
-      drawuriparts.pop_front();
-      
-      if (!ushortConversionOK)
+      bool conversionOK;
+      mHttpProxyPort = drawuriparts.front().toInt(&conversionOK);
+      if (!conversionOK)
       {
-        mHttpproxyport = 80;  // standard HTTP port
+        mHttpProxyPort = 80;  // standard HTTP port
+      }
+
+      drawuriparts.pop_front();
+
+      if (drawuriparts.count())
+      {
+        bool conversionOK;
+        mHttpProxyUser = drawuriparts.front();
+
+        drawuriparts.pop_front();
+
+        if (drawuriparts.count())
+        {
+          bool conversionOK;
+          mHttpProxyPass = drawuriparts.front();
+
+          drawuriparts.pop_front();
+
+        }
+        else
+        {
+          mHttpProxyPass = QString();  // none
+        }
+      }
+      else
+      {
+        mHttpProxyUser = QString();  // anonymous
       }
     }
     else
     {
-      mHttpproxyport = 80;  // standard HTTP port
+      mHttpProxyPort = 80;  // standard HTTP port
     }
-  }    
+  }
 
   // URL can be in 3 forms:
   // 1) http://xxx.xxx.xx/yyy/yyy
   // 2) http://xxx.xxx.xx/yyy/yyy?
   // 3) http://xxx.xxx.xx/yyy/yyy?zzz=www
-  
+
   // Prepare the URI so that we can later simply append param=value
   if ( !(baseUrl.contains("?")) ) 
-  {  
+  {
     baseUrl.append("?");
   }
-  else if ( baseUrl.right(1) != "?" ) 
+  else if (
+           (baseUrl.right(1) != "?" )
+           &&
+           (baseUrl.right(1) != "&" )
+          )
   {
     baseUrl.append("&");
   }
@@ -676,7 +703,12 @@ bool QgsWmsProvider::retrieveServerCapabilities(bool forceRefresh)
 
 QByteArray QgsWmsProvider::retrieveUrl(QString url)
 {
-  QgsHttpTransaction http(url, mHttpproxyhost, mHttpproxyport);
+  QgsHttpTransaction http(
+    url,
+    mHttpProxyHost,
+    mHttpProxyPort,
+    mHttpProxyUser,
+    mHttpProxyPass);
 
   // Do a passthrough for the status bar text
   connect(
@@ -1431,9 +1463,10 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
 
             // Inherit things into the sublayer
             //   Ref: 7.2.4.8 Inheritance of layer properties
-            subLayerProperty.style = layerProperty.style;
-            subLayerProperty.crs   = layerProperty.crs;
-            subLayerProperty.boundingBox = layerProperty.boundingBox;
+            subLayerProperty.style                    = layerProperty.style;
+            subLayerProperty.crs                      = layerProperty.crs;
+            subLayerProperty.boundingBox              = layerProperty.boundingBox;
+            subLayerProperty.ex_GeographicBoundingBox = layerProperty.ex_GeographicBoundingBox;
             // TODO
 
             parseLayer(e1, subLayerProperty, &layerProperty );
@@ -2124,6 +2157,14 @@ QString QgsWmsProvider::getMetadata()
     myMetadataQString += "</td>";
     myMetadataQString += "<td bgcolor=\"gray\">";
     myMetadataQString += layersSupported[i].fixedHeight;
+    myMetadataQString += "</td></tr>";
+
+    // Layer Fixed Height
+    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += tr("WGS 84 Bounding Box");
+    myMetadataQString += "</td>";
+    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += extentForLayer[ layerName ].stringRep().toLocal8Bit().data();
     myMetadataQString += "</td></tr>";
 
     // Layer Coordinate Reference Systems
