@@ -365,7 +365,7 @@ void QgisApp::createActions()
   //
   // File Menu Related Items
   //
-  mActionFileNew= new QAction(QIcon(myIconPath+"/mActionFileNew.png"), tr("&New Project..."), this);
+  mActionFileNew= new QAction(QIcon(myIconPath+"/mActionFileNew.png"), tr("&New Project"), this);
   mActionFileNew->setShortcut(tr("Ctrl+N"));
   mActionFileNew->setStatusTip(tr("New Project"));
   connect(mActionFileNew, SIGNAL(triggered()), this, SLOT(fileNew()));
@@ -385,17 +385,17 @@ void QgisApp::createActions()
   mActionFileSaveAs->setStatusTip(tr("Save Project under a new name"));
   connect(mActionFileSaveAs, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
   //
-  mActionFilePrint= new QAction(QIcon(myIconPath+"/mActionFilePrint.png"), tr("&Print"), this);
+  mActionFilePrint= new QAction(QIcon(myIconPath+"/mActionFilePrint.png"), tr("&Print..."), this);
   mActionFilePrint->setShortcut(tr("Ctrl+P"));
   mActionFilePrint->setStatusTip(tr("Print"));
   connect(mActionFilePrint, SIGNAL(triggered()), this, SLOT(filePrint()));
   //
-  mActionSaveMapAsImage= new QAction(QIcon(myIconPath+"/mActionSaveMapAsImage.png"), tr("Save as Image"), this);
+  mActionSaveMapAsImage= new QAction(QIcon(myIconPath+"/mActionSaveMapAsImage.png"), tr("Save as Image..."), this);
   mActionSaveMapAsImage->setShortcut(tr("I"));
   mActionSaveMapAsImage->setStatusTip(tr("Save map as image"));
   connect(mActionSaveMapAsImage, SIGNAL(triggered()), this, SLOT(saveMapAsImage()));
   //
-  mActionExportMapServer= new QAction(QIcon(myIconPath+"/mActionExportMapServer.png"), tr("Export to MapServer Map"), this);
+  mActionExportMapServer= new QAction(QIcon(myIconPath+"/mActionExportMapServer.png"), tr("Export to MapServer Map..."), this);
   mActionExportMapServer->setShortcut(tr("M"));
   mActionExportMapServer->setStatusTip(tr("Export as MapServer .map file"));
   connect(mActionExportMapServer, SIGNAL(triggered()), this, SLOT(exportMapServer()));
@@ -407,17 +407,17 @@ void QgisApp::createActions()
   //
   // Layer Menu Related Items
   //
-  mActionAddNonDbLayer= new QAction(QIcon(myIconPath+"/mActionAddNonDbLayer.png"), tr("Add a Vector Layer"), this);
+  mActionAddNonDbLayer= new QAction(QIcon(myIconPath+"/mActionAddNonDbLayer.png"), tr("Add a Vector Layer..."), this);
   mActionAddNonDbLayer->setShortcut(tr("V"));
   mActionAddNonDbLayer->setStatusTip(tr("Add a Vector Layer"));
   connect(mActionAddNonDbLayer, SIGNAL(triggered()), this, SLOT(addLayer()));
   //
-  mActionAddRasterLayer= new QAction(QIcon(myIconPath+"/mActionAddRasterLayer.png"), tr("Add a Raster Layer"), this);
+  mActionAddRasterLayer= new QAction(QIcon(myIconPath+"/mActionAddRasterLayer.png"), tr("Add a Raster Layer..."), this);
   mActionAddRasterLayer->setShortcut(tr("R"));
   mActionAddRasterLayer->setStatusTip(tr("Add a Raster Layer"));
   assert(connect(mActionAddRasterLayer, SIGNAL(triggered()), this, SLOT(addRasterLayer())));
   //
-  mActionAddLayer= new QAction(QIcon(myIconPath+"/mActionAddLayer.png"), tr("Add a PostGIS Layer"), this);
+  mActionAddLayer= new QAction(QIcon(myIconPath+"/mActionAddLayer.png"), tr("Add a PostGIS Layer..."), this);
   mActionAddLayer->setShortcut(tr("D"));
   mActionAddLayer->setStatusTip(tr("Add a PostGIS Layer"));
 //#ifdef HAVE_POSTGRESQL
@@ -429,7 +429,7 @@ void QgisApp::createActions()
 //#endif
   assert(connect(mActionAddLayer, SIGNAL(triggered()), this, SLOT(addDatabaseLayer())));
   //
-  mActionNewVectorLayer= new QAction(QIcon(myIconPath+"/mActionNewVectorLayer.png"), tr("New Vector Layer"), this);
+  mActionNewVectorLayer= new QAction(QIcon(myIconPath+"/mActionNewVectorLayer.png"), tr("New Vector Layer..."), this);
   mActionNewVectorLayer->setShortcut(tr("N"));
   mActionNewVectorLayer->setStatusTip(tr("Create a New Vector Layer"));
   connect(mActionNewVectorLayer, SIGNAL(triggered()), this, SLOT(newVectorLayer()));
@@ -461,17 +461,17 @@ void QgisApp::createActions()
   //
   // Settings Menu Related Items
   //
-  mActionProjectProperties= new QAction(QIcon(myIconPath+"/mActionProjectProperties.png"), tr("Project Properties"), this);
+  mActionProjectProperties= new QAction(QIcon(myIconPath+"/mActionProjectProperties.png"), tr("Project Properties..."), this);
   mActionProjectProperties->setShortcut(tr("Alt+P"));
   mActionProjectProperties->setStatusTip(tr("Set project properties"));
   connect(mActionProjectProperties, SIGNAL(triggered()), this, SLOT(projectProperties()));
   //
-  mActionOptions= new QAction(QIcon(myIconPath+"/mActionOptions.png"), tr("QGIS Options"), this);
+  mActionOptions= new QAction(QIcon(myIconPath+"/mActionOptions.png"), tr("Options..."), this);
   mActionOptions->setShortcut(tr("Alt+O"));
   mActionOptions->setStatusTip(tr("Change various QGIS options"));
   connect(mActionOptions, SIGNAL(triggered()), this, SLOT(options()));
   //
-  mActionCustomProjection= new QAction(QIcon(myIconPath+"/mActionCustomProjection.png"), tr("Custom Projection"), this);
+  mActionCustomProjection= new QAction(QIcon(myIconPath+"/mActionCustomProjection.png"), tr("Custom Projection..."), this);
   mActionCustomProjection->setShortcut(tr("Alt+I"));
   mActionCustomProjection->setStatusTip(tr("Manage custom projections"));
   connect(mActionCustomProjection, SIGNAL(triggered()), this, SLOT(customProjection()));
@@ -566,17 +566,17 @@ void QgisApp::createActions()
   mActionMeasureArea->setStatusTip(tr("Measure an Area"));
   connect(mActionMeasureArea, SIGNAL(triggered()), this, SLOT(measureArea()));
   //
-  mActionShowBookmarks= new QAction(QIcon(myIconPath+"/mActionShowBookmarks.png"), tr("Show Bookmark"), this);
+  mActionShowBookmarks= new QAction(QIcon(myIconPath+"/mActionShowBookmarks.png"), tr("Show Bookmarks"), this);
   mActionShowBookmarks->setShortcut(tr("Ctrl+B"));
   mActionShowBookmarks->setStatusTip(tr("Show Bookmarks"));
   connect(mActionShowBookmarks, SIGNAL(triggered()), this, SLOT(showBookmarks()));
   //
-  mActionNewBookmark= new QAction(QIcon(myIconPath+"/mActionNewBookmark.png"), tr("New Bookmark"), this);
+  mActionNewBookmark= new QAction(QIcon(myIconPath+"/mActionNewBookmark.png"), tr("New Bookmark..."), this);
   mActionNewBookmark->setShortcut(tr("Alt+B"));
   mActionNewBookmark->setStatusTip(tr("New Bookmark"));
   connect(mActionNewBookmark, SIGNAL(triggered()), this, SLOT(newBookmark()));
   //
-  mActionAddWmsLayer= new QAction(QIcon(myIconPath+"/mActionAddWmsLayer.png"), tr("Add Wms Layer"), this);
+  mActionAddWmsLayer= new QAction(QIcon(myIconPath+"/mActionAddWmsLayer.png"), tr("Add WMS Layer..."), this);
   mActionAddWmsLayer->setShortcut(tr("Ctrl+M"));
   mActionAddWmsLayer->setStatusTip(tr("Add Web Mapping Server Layer"));
   connect(mActionAddWmsLayer, SIGNAL(triggered()), this, SLOT(addWmsLayer()));
@@ -588,7 +588,7 @@ void QgisApp::createActions()
   //
   // Plugin Menu Related Items
   //
-  mActionShowPluginManager= new QAction(QIcon(myIconPath+"/mActionShowPluginManager.png"), tr("Plugin Manager"), this);
+  mActionShowPluginManager= new QAction(QIcon(myIconPath+"/mActionShowPluginManager.png"), tr("Plugin Manager..."), this);
   mActionShowPluginManager->setShortcut(tr("Ctrl+P"));
   mActionShowPluginManager->setStatusTip(tr("Open the plugin manager"));
   connect(mActionShowPluginManager, SIGNAL(triggered()), this, SLOT(showPluginManager()));
