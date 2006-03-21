@@ -341,10 +341,31 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
 #endif
       connStringParts += part;
     }
+    else
+    {
+      connStringParts += "80";   // well-known http port
+    }
+
+    if ( ! ( (part = settings.readEntry(key + "/proxyuser")).isEmpty() ) )
+    {
+#ifdef QGISDEBUG
+  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxyuser - '" << part.toLocal8Bit().data() << "'." << std::endl;
+#endif
+      connStringParts += part;
+
+      if ( ! ( (part = settings.readEntry(key + "/proxypass")).isEmpty() ) )
+      {
+#ifdef QGISDEBUG
+  std::cout << "QgsServerSourceSelect::serverConnect: Got a proxypass - '" << part.toLocal8Bit().data() << "'." << std::endl;
+#endif
+        connStringParts += part;
+      }
+    }
   }  
 
   m_connName = cmbConnections->currentText();
-  m_connInfo = connStringParts.join(" ");  // url ( + " " + proxyhost + " " + proxyport)
+  // setup 'url ( + " " + proxyhost + " " + proxyport + " " + proxyuser + " " + proxypass)'
+  m_connInfo = connStringParts.join(" ");
 
 #ifdef QGISDEBUG
   std::cout << "QgsServerSourceSelect::serverConnect: Connection info: '" << m_connInfo.toLocal8Bit().data() << "'." << std::endl;

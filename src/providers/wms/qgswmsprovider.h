@@ -688,10 +688,16 @@ private:
   QString baseUrl;
 
   //! HTTP proxy host name for the WMS for this layer
-  QString mHttpproxyhost;
+  QString mHttpProxyHost;
 
   //! HTTP proxy port number for the WMS for this layer
-  Q_UINT16 mHttpproxyport;
+  int mHttpProxyPort;
+
+  //! HTTP proxy username for the WMS for this layer
+  QString mHttpProxyUser;
+
+  //! HTTP proxy password for the WMS for this layer
+  QString mHttpProxyPass;
 
   /**
    * Flag indicating if the layer data source is a valid WMS layer
