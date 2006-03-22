@@ -65,6 +65,7 @@
 #include <QGridLayout>
 #include <QIntValidator>
 #include <QDoubleValidator>
+#include <QRegExpValidator>
 #include <QPushButton>
 #include <QGroupBox>
 #include <QFileDialog>
@@ -1151,6 +1152,19 @@ void QgsGrassModuleOption::addLineEdit()
 	} else {
 	    mValidator = new QDoubleValidator( this );
 	}
+	lineEdit->setValidator ( mValidator );
+    } else if ( mIsOutput ) {
+        QRegExp rx; 
+        if ( mOutputType == Vector ) 
+        {
+            rx.setPattern("[A-Za-z_][A-Za-z0-9_]+");
+        }
+        else
+        {
+            rx.setPattern("[A-Za-z0-9_.]+");
+        }
+	mValidator = new QRegExpValidator( rx, this );
+
 	lineEdit->setValidator ( mValidator );
     }
 
@@ -2247,3 +2261,4 @@ QString QgsGrassModuleFile::ready()
 QgsGrassModuleFile::~QgsGrassModuleFile()
 {
 }
+
