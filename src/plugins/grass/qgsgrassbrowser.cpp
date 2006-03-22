@@ -449,62 +449,27 @@ bool QgsGrassBrowser::getItemRegion( QModelIndex index, struct Cell_head *window
     std::cerr << "QgsGrassBrowser::setRegion()" << std::endl;
     #endif
 
-    QgsGrass::setLocation( QgsGrass::getDefaultGisdbase(),
-                         QgsGrass::getDefaultLocation() );
-
     int type = mModel->itemType(index);
-    QString uri = mModel->uri(index);
     QString mapset = mModel->itemMapset(index);
     QString map = mModel->itemMap(index);
 
-    if ( type == QgsGrassModel::Raster )
-    {
-
-	if ( G_get_cellhd ( map.toLocal8Bit().data(), 
-		      mapset.toLocal8Bit().data(), window) < 0 )
-	{
-	    QMessageBox::warning( 0, "Warning", 
-		     "Cannot read raster map region" ); 
-	    return false;
-	}
+    int mapType;
+    switch (type) {
+        case QgsGrassModel::Raster :
+	    mapType = QgsGrass::Raster;
+            break;
+        case QgsGrassModel::Vector :
+	    mapType = QgsGrass::Vector;
+            break;
+        case QgsGrassModel::Region :
+	    mapType = QgsGrass::Region;
+            break;
+	default:
+            break;
     }
-    else if ( type == QgsGrassModel::Vector )
-    {
-	G_get_window ( window ); // get current resolution
-
-	struct Map_info Map;
-
-	int level = Vect_open_old_head ( &Map, 
-	      map.toLocal8Bit().data(), mapset.toLocal8Bit().data());
-
-	if ( level < 2 ) 
-	{ 
-	    QMessageBox::warning( 0, "Warning", 
-		     "Cannot read vector map region" ); 
-	    return false;
-	}
-
-	BOUND_BOX box;
-	Vect_get_map_box (&Map, &box );
-	window->north = box.N;
-	window->south = box.S;
-	window->west  = box.W;
-	window->east  = box.E;
-	
-	Vect_close (&Map);
-    } 
-    else if ( type == QgsGrassModel::Region )
-    {
-	if (  G__get_window (window, "windows", 
-		  map.toLocal8Bit().data(), 
-		  mapset.toLocal8Bit().data() ) != NULL )
-	{
-	    QMessageBox::warning( 0, "Warning", 
-		     "Cannot read region" ); 
-	    return false;
-	}
-    }
-    return true;
+     
+    return QgsGrass::mapRegion ( mapType, QgsGrass::getDefaultGisdbase(),
+            QgsGrass::getDefaultLocation(), mapset, map, window ); 
 }
 
 void QgsGrassBrowser::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
