@@ -65,6 +65,9 @@ public:
 		 FATAL /*!< Fatal error. Function faild. */ 
                };
 
+    //! Map type
+    enum MapType { Raster, Vector, Region };
+
     //! Reset error code (to OK). Call this before a piece of code where an error is expected 
     static void resetError ( void ); // reset error status
 
@@ -110,6 +113,10 @@ public:
 	                       QString mapsetName, QString element);
     static QStringList elements(QString mapsetPath, QString element);
 
+    // ! Get map region
+    static bool QgsGrass::mapRegion( int type, QString gisbase,
+           QString location, QString mapset, QString map,
+           struct Cell_head *window );
 
     static void init (void); 
 

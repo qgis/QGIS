@@ -25,13 +25,14 @@
 #include "qdir.h"
 #include "qtextstream.h"
 #include "qsettings.h"
-
-//#include "qgsapplication.h"
+#include <QMessageBox>
 #include <QCoreApplication>
 #include "qgsgrass.h"
 
 extern "C" {
 #include <unistd.h>
+#include <grass/gis.h>
+#include <grass/Vect.h>
 }
 
 void QgsGrass::init( void ) 
@@ -641,3 +642,65 @@ QStringList QgsGrass::elements ( QString mapsetPath, QString element )
     }
     return list;
 }
+
+
+bool QgsGrass::mapRegion( int type, QString gisbase, 
+           QString location, QString mapset, QString map,
+           struct Cell_head *window )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrass::mapRegion()" << std::endl;
+    #endif
+
+    QgsGrass::setLocation( gisbase, location );
+
+    if ( type == Raster )
+    {
+
+	if ( G_get_cellhd ( map.toLocal8Bit().data(), 
+		      mapset.toLocal8Bit().data(), window) < 0 )
+	{
+	    QMessageBox::warning( 0, "Warning", 
+		     "Cannot read raster map region" ); 
+	    return false;
+	}
+    }
+    else if ( type == Vector )
+    {
+	G_get_window ( window ); // get current resolution
+
+	struct Map_info Map;
+
+	int level = Vect_open_old_head ( &Map, 
+	      map.toLocal8Bit().data(), mapset.toLocal8Bit().data());
+
+	if ( level < 2 ) 
+	{ 
+	    QMessageBox::warning( 0, "Warning", 
+		     "Cannot read vector map region" ); 
+	    return false;
+	}
+
+	BOUND_BOX box;
+	Vect_get_map_box (&Map, &box );
+	window->north = box.N;
+	window->south = box.S;
+	window->west  = box.W;
+	window->east  = box.E;
+	
+	Vect_close (&Map);
+    } 
+    else if ( type == Region )
+    {
+	if (  G__get_window (window, "windows", 
+		  map.toLocal8Bit().data(), 
+		  mapset.toLocal8Bit().data() ) != NULL )
+	{
+	    QMessageBox::warning( 0, "Warning", 
+		     "Cannot read region" ); 
+	    return false;
+	}
+    }
+    return true;
+}
+
