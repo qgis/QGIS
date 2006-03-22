@@ -70,6 +70,11 @@
         <!--section label="Visualization">
                 <grass name="nviz"/>
         </section-->
+	<section label="Export">
+		<grass name="v.out.ogr.shape"/>
+		<grass name="v.out.ogr.gml"/>
+		<grass name="r.out.gdal.gtiff"/>
+	</section>
 	<section label="General">
 		<grass name="shell"/>
 		<grass name="g.gisenv"/>
