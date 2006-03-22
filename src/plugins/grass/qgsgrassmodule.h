@@ -307,6 +307,7 @@ protected:
 
     //! Predefined answer from config
     QString mAnswer;
+
 private:
 
 };
@@ -333,7 +334,7 @@ public:
     ~QgsGrassModuleOption();
 
     //! Control option
-    enum ControlType { LineEdit, ComboBox, SpinBox, CheckBoxes };
+    enum ControlType { NoControl, LineEdit, ComboBox, SpinBox, CheckBoxes };
 
     //! Control option
     enum ValueType { Double, Integer, String };
@@ -379,9 +380,6 @@ private:
     //! If have defined value limits
     bool mHaveLimits;
     double mMin, mMax;
-    
-    //! Default value
-    QString mDefault;
     
     //! Combobox
     QComboBox *mComboBox;
@@ -665,6 +663,60 @@ private:
     
     //! Line
     QLineEdit *mLineEdit;
+};
+
+/*********************** QgsGrassModuleFile **********************/
+
+/*! \class QgsGrassModuleSelection
+ *  \brief Input/output file.
+ */
+class QgsGrassModuleFile: public QGroupBox, public QgsGrassModuleItem
+{
+    Q_OBJECT;
+
+public:
+    /*! \brief Constructor
+     * \param qdesc option element in QGIS module description XML file
+     * \param gdesc GRASS module XML description file
+     */
+    QgsGrassModuleFile ( QgsGrassModule *module, 
+	    		  QString key,
+	                  QDomElement &qdesc, QDomElement &gdesc, 
+			  QDomNode &gnode, 
+			  QWidget * parent = 0 );
+
+    //! Destructor
+    ~QgsGrassModuleFile();
+
+    //! File type
+    enum Type { Old, New };
+
+    // Reimplemented methods from QgsGrassModuleOptions
+    QStringList options(); 
+    QString ready() ;
+
+public slots:
+    // browse files
+    void browse();
+
+private:
+    // ! File type (New, Old)
+    int mType;
+
+    // ! Optionaly split file to dir and file path
+    QString mFileOption;
+
+    // ! Default suffix
+    QString mSuffix;
+    
+    //! Line
+    QLineEdit *mLineEdit;
+
+    //! Browse button
+    QPushButton *mBrowseButton;
+
+    //! File filters
+    QStringList mFilters;
 };
 
 #endif // QGSGRASSMODULE_H

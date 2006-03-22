@@ -67,6 +67,7 @@
 #include <QDoubleValidator>
 #include <QPushButton>
 #include <QGroupBox>
+#include <QFileDialog>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -332,7 +333,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
 	QDomElement e = n.toElement();
 	if( !e.isNull() ) {
 	    QString optionType = e.tagName();
-	    //std::cout << "optionType = " << optionType << std::endl;
+	    std::cout << "optionType = " << optionType.toLocal8Bit().data() << std::endl;
 
 	    QString key = e.attribute("key");
 	    std::cout << "key = " << key.toLocal8Bit().data() << std::endl;
@@ -401,6 +402,13 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
 		QgsGrassModuleSelection *mi = new QgsGrassModuleSelection ( 
 		       mModule, this, key, e, 
 		       gDocElem, gnode, mParent );
+		layout->addWidget ( mi );
+		mItems.push_back(mi);
+	    } 
+	    else if ( optionType == "file" ) 
+	    {
+		QgsGrassModuleFile *mi = new QgsGrassModuleFile ( 
+		       mModule, key, e, gDocElem, gnode, mParent );
 		layout->addWidget ( mi );
 		mItems.push_back(mi);
 	    } 
@@ -946,7 +954,7 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 	                                   QWidget * parent)
                     : QGroupBox ( parent ),
                       QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
-	mIsOutput(false), mValueType(String), mHaveLimits(false), mOutputType(None)
+	mIsOutput(false), mValueType(String), mHaveLimits(false), mOutputType(None), mControlType(NoControl)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModuleOption::QgsGrassModuleOption" << std::endl;
@@ -1041,6 +1049,10 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 
 			    if ( mControlType == ComboBox ) {
 				mComboBox->insertItem ( desc );
+                                if ( mAnswer.length() > 0 && desc == mAnswer )
+                                {
+				    mComboBox->setCurrentIndex(mComboBox->count()-1);
+                                }
 			    } else {
 				QCheckBox *cb = new QCheckBox ( desc, this );
 				mCheckBoxes.push_back ( cb );
@@ -1059,12 +1071,6 @@ QgsGrassModuleOption::QgsGrassModuleOption ( QgsGrassModule *module, QString key
 	{
 	    // Line edit
 	    mControlType = LineEdit;
-
-	    QDomNode n = gnode.namedItem ( "default" );
-	    if ( !n.isNull() ) {
-		QDomElement e = n.toElement();
-		mDefault = e.text().stripWhiteSpace();
-	    }
 
    	    if ( gelem.attribute("type") == "integer" ) 
             {
@@ -1129,7 +1135,7 @@ void QgsGrassModuleOption::addLineEdit()
     // TODO make the widget growing with new lines. HOW???!!!
     QLineEdit *lineEdit = new QLineEdit ( this );
     mLineEdits.push_back (lineEdit );
-    lineEdit->setText ( mDefault );
+    lineEdit->setText ( mAnswer );
 
     if ( mValueType == Integer ) 
     {
@@ -1729,7 +1735,20 @@ QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
 	mHidden(false), 
 	mModule(module)
 { 
-    mAnswer = qdesc.attribute("answer", "");
+    //mAnswer = qdesc.attribute("answer", "");
+
+    if ( !qdesc.attribute("answer").isNull() )
+    {
+	mAnswer = qdesc.attribute("answer").trimmed();
+    }
+    else
+    {
+	QDomNode n = gnode.namedItem ( "default" );
+	if ( !n.isNull() ) {
+	    QDomElement e = n.toElement();
+	    mAnswer = e.text().trimmed();
+	}
+    }
     
     if ( qdesc.attribute("hidden") == "yes" ) {
 	mHidden = true;
@@ -2081,5 +2100,150 @@ QStringList QgsGrassModuleSelection::options()
 }
 
 QgsGrassModuleSelection::~QgsGrassModuleSelection()
+{
+}
+
+/***************** QgsGrassModuleFile *********************/
+
+QgsGrassModuleFile::QgsGrassModuleFile ( 
+	QgsGrassModule *module, 
+       	QString key, QDomElement &qdesc, 
+	QDomElement &gdesc, QDomNode &gnode, QWidget * parent)
+      : QGroupBox ( parent ),
+        QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
+	mType(Old)
+{
+    QString tit;
+    if ( mDescription.isEmpty() ) 
+    {
+	tit = "File";
+    } 
+    else 
+    {
+	if ( mDescription.length() > 40 ) {
+	    tit = mDescription.left(40) + " ...";
+	} else {
+	    tit = mDescription;
+	}
+    }
+	    
+    setTitle ( " " + tit + " " );
+
+    QDomNode promptNode = gnode.namedItem ( "gisprompt" );
+    QDomElement promptElem = promptNode.toElement();
+    QString element = promptElem.attribute("element"); 
+
+    if ( qdesc.attribute("type").toLower() == "new" )
+    {
+        mType = New;
+    }
+
+    if ( !qdesc.attribute("filters").isNull() )
+    {
+        mFilters = qdesc.attribute("filters").split(";;");
+
+        if ( mFilters.size() > 0 )
+        {
+	    QRegExp rx ( ".*\\( *..([^ )]*).*" );
+	    QString ext;
+	    if ( rx.search(mFilters.at(0)) == 0 )
+	    {
+		mSuffix = rx.cap(1);
+	    }
+        }
+    }
+
+    mFileOption = qdesc.attribute("fileoption");
+
+    QHBoxLayout *l = new QHBoxLayout (this);
+    mLineEdit = new QLineEdit ();
+    mBrowseButton = new QPushButton ( "..." );
+    l->addWidget ( mLineEdit );
+    l->addWidget ( mBrowseButton );
+
+    connect ( mBrowseButton, SIGNAL(clicked()), 
+              this, SLOT(browse()) );
+}
+
+QStringList QgsGrassModuleFile::options()
+{
+    QStringList list;
+    QString path = mLineEdit->text().trimmed();
+
+    if ( mFileOption.isNull() )
+    {
+	QString opt(mKey + "=" + path );
+	list.push_back( opt );
+    }
+    else
+    {
+	QFileInfo fi(path);
+
+	QString opt(mKey + "=" + fi.dirPath() );
+	list.push_back( opt );
+
+	opt = mFileOption + "=" + fi.baseName();
+	list.push_back( opt );
+    }
+
+    return list;
+}
+
+void QgsGrassModuleFile::browse()
+{
+    // TODO: unfortunately QFileDialog does not support 'new' directory
+    QFileDialog *fd = new QFileDialog ( this, NULL, mLineEdit->text() );
+ 
+    fd->setDirectory ( QDir::current() );
+
+    fd->setMode ( QFileDialog::AnyFile );
+
+    if ( mType == New )
+    {
+        fd->setAcceptMode ( QFileDialog::AcceptSave );
+    }
+    else
+    {
+        fd->setAcceptMode ( QFileDialog::AcceptOpen );
+    }
+
+    if ( mFilters.size() > 0 )
+    {
+        fd->setFilters ( mFilters );
+    }
+    fd->setDefaultSuffix ( mSuffix );
+
+    if ( fd->exec() == QDialog::Accepted )
+    {
+        mLineEdit->setText( fd->selectedFile() );
+    }
+}
+
+QString QgsGrassModuleFile::ready()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleFile::ready()" << std::endl;
+    #endif
+
+    QString error;
+    QString path = mLineEdit->text().trimmed();
+    
+
+    if ( path.length() == 0 )
+    {
+        error.append ( title() + ":&nbsp;missing value" );
+        return error;
+    }
+
+    QFileInfo fi(path);
+    if ( !fi.dir().exists() )
+    {
+        error.append ( title() + ":&nbsp;directory does not exist" );
+    }
+    
+    return error;
+}
+
+QgsGrassModuleFile::~QgsGrassModuleFile()
 {
 }
