@@ -118,6 +118,11 @@ public:
            QString location, QString mapset, QString map,
            struct Cell_head *window );
 
+    // ! Read current mapset region
+    static bool QgsGrass::region( QString gisbase,
+           QString location, QString mapset,
+           struct Cell_head *window );
+
     static void init (void); 
 
 private:
