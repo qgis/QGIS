@@ -783,6 +783,19 @@ public:
      */
     QString errorString();
 
+    /** Returns the data provider
+     *
+     *  \retval 0 if not using the data provider model (i.e. directly using GDAL)
+     */
+    QgsRasterDataProvider* getDataProvider();
+
+    /** Returns the data provider in a const-correct manner
+     *
+     *  \retval 0 if not using the data provider model (i.e. directly using GDAL)
+     */
+    const QgsRasterDataProvider* getDataProvider() const;
+
+
 
 public slots:    
     /** \brief Mutator for transparency level. Should be between 0 and 255 */

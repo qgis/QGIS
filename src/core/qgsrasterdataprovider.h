@@ -43,8 +43,16 @@ class QgsRasterDataProvider : public QgsDataProvider
 {
  
   Q_OBJECT
-     
+
 public:
+
+    //! If you add to this, please also add to capabilitiesString()
+    enum Capability
+    {
+      NoCapabilities =              0,
+      Identify =                    1
+//      Capability2 =           1 <<  1,    , etc
+    };
 
 
     QgsRasterDataProvider();
@@ -78,9 +86,21 @@ public:
      */
     virtual QImage* draw(QgsRect  const & viewExtent, int pixelWidth, int pixelHeight) = 0;
 
-    
-    
-        
+    /** Returns a bitmask containing the supported capabilities
+        Note, some capabilities may change depending on whether
+        a spatial filter is active on this provider, so it may
+        be prudent to check this value per intended operation.
+      */
+    virtual int capabilities() const 
+    {
+      return QgsRasterDataProvider::NoCapabilities;
+    }
+
+    /**
+     *  Returns the above in friendly format.
+     */
+    QString capabilitiesString() const;
+
 
     // TODO: Get the supported formats by this provider
     

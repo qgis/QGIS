@@ -30,3 +30,24 @@ QgsRasterDataProvider::QgsRasterDataProvider( QString const & uri )
 }
 
 
+QString QgsRasterDataProvider::capabilitiesString() const
+{
+  QStringList abilitiesList;
+
+  int abilities = capabilities();
+
+  if (abilities & QgsRasterDataProvider::Identify)
+  {
+    abilitiesList += "Identify";
+#ifdef QGISDEBUG
+        std::cerr << "QgsRasterDataProvider::capabilitiesString "
+          << "Identify" << std::endl;
+#endif
+
+  }
+
+  return abilitiesList.join(", ");
+}
+
+
+// ENDS

@@ -486,14 +486,19 @@ public:
   
   // TODO: Get the table name associated with this provider instance
 
-  /**Returns a bitmask containing the supported capabilities*/
-  // int capabilities() const;
+  /** Returns a bitmask containing the supported capabilities
+      Note, some capabilities may change depending on which
+      sublayers are visible on this provider, so it may
+      be prudent to check this value per intended operation.
+    */
+  int capabilities() const;
 
   /**
    * Get metadata in a format suitable for feeding directly
    * into a subset of the GUI raster properties "Metadata" tab.
    */
   QString getMetadata();
+
 
   /**
    * \brief Identify details from a WMS Server from the last screen update
@@ -732,7 +737,7 @@ private:
   /**
    * Parsed capabilities of the WMS Server
    */
-  QgsWmsCapabilitiesProperty capabilities;
+  QgsWmsCapabilitiesProperty mCapabilities;
   
   /**
    * layers hosted by the WMS Server
@@ -748,6 +753,12 @@ private:
    * available CRSs per layer
    */
   std::map<QString, std::vector<QString> > crsForLayer;
+
+  /**
+   * WMS "queryable" per layer
+   * Used in determining if the Identify map tool can be useful on the rendered WMS map layer.
+   */
+  std::map<QString, bool> mQueryableForLayer;
 
   /**
    * Active sublayers managed by this provider in a draw function, in order from bottom to top
