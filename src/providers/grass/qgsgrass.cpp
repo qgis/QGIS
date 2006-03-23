@@ -33,6 +33,7 @@ extern "C" {
 #include <unistd.h>
 #include <grass/gis.h>
 #include <grass/Vect.h>
+#include <grass/version.h>
 }
 
 void QgsGrass::init( void ) 
@@ -643,6 +644,43 @@ QStringList QgsGrass::elements ( QString mapsetPath, QString element )
     return list;
 }
 
+QString QgsGrass::regionString( struct Cell_head *window )
+{
+    QString reg;
+    int fmt;
+    char buf[1024];
+
+    fmt = window->proj;    
+
+    // TODO 3D
+
+    reg = "proj:" + QString::number(window->proj) + ";" ;
+    reg += "zone:" + QString::number(window->zone) + ";" ;
+
+    G_format_northing (window->north,buf,fmt);
+    reg += "north:" + QString(buf) + ";" ;
+
+    G_format_northing (window->south,buf,fmt);
+    reg += "south:" + QString(buf) + ";" ;
+
+    G_format_easting (window->east,buf,fmt);
+    reg += "east:" + QString(buf) + ";" ;
+
+    G_format_easting (window->west,buf,fmt);
+    reg += "west:" + QString(buf) + ";" ;
+
+    reg += "cols:" + QString::number(window->cols) + ";" ;
+    reg += "rows:" + QString::number(window->rows) + ";" ;
+
+    G_format_resolution (window->ew_res,buf,fmt);
+    reg += "e-w resol:" + QString(buf) + ";" ;
+
+    G_format_resolution (window->ns_res,buf,fmt);
+    reg += "n-s resol:" + QString(buf) + ";" ;
+
+    return reg;
+}
+
 bool QgsGrass::region( QString gisbase, 
            QString location, QString mapset,
            struct Cell_head *window )
@@ -654,6 +692,66 @@ bool QgsGrass::region( QString gisbase,
         return false;
     }
     return true;
+}
+
+bool QgsGrass::writeRegion( QString gisbase, 
+           QString location, QString mapset,
+           struct Cell_head *window )
+{
+    std::cerr << "QgsGrass::writeRegion()" << std::endl;
+    std::cerr << "n = " << window->north << " s = " << window->south << std::endl;
+    std::cerr << "e = " << window->east << " w = " << window->west << std::endl;
+
+    QgsGrass::setMapset( gisbase, location, mapset );
+
+    if ( G_put_window(window) == -1 ) {
+        return false;
+    }
+
+    return true;
+}
+
+void QgsGrass::copyRegionExtent( struct Cell_head *source,
+           struct Cell_head *target )
+{
+    target->north = source->north;
+    target->south = source->south;
+    target->east = source->east;
+    target->west = source->west;
+    target->top = source->top;
+    target->bottom = source->bottom;
+}
+
+void QgsGrass::copyRegionResolution( struct Cell_head *source,
+           struct Cell_head *target )
+{
+    target->ns_res = source->ns_res;
+    target->ew_res = source->ew_res;
+    target->tb_res = source->tb_res;
+    target->ns_res3 = source->ns_res3;
+    target->ew_res3 = source->ew_res3;
+}
+
+void QgsGrass::extendRegion( struct Cell_head *source,
+           struct Cell_head *target )
+{
+    if ( source->north > target->north )
+	target->north = source->north;
+
+    if ( source->south < target->south )
+	target->south = source->south;
+
+    if ( source->east > target->east )
+	target->east = source->east;
+
+    if ( source->west < target->west )
+	target->west = source->west;
+
+    if ( source->top > target->top )
+	target->top = source->top;
+
+    if ( source->bottom < target->bottom )
+	target->bottom = source->bottom;
 }
 
 bool QgsGrass::mapRegion( int type, QString gisbase, 
@@ -734,4 +832,14 @@ bool QgsGrass::mapRegion( int type, QString gisbase,
     }
     return true;
 }
+
+int QgsGrass::versionMajor()
+{
+    return QString(GRASS_VERSION_MAJOR).toInt();
+}
+int QgsGrass::versionMinor()
+{
+    return QString(GRASS_VERSION_MINOR).toInt();
+}
+
 

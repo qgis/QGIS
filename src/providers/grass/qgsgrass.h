@@ -118,12 +118,36 @@ public:
            QString location, QString mapset, QString map,
            struct Cell_head *window );
 
+    // ! String representation of region
+    static QString QgsGrass::regionString( struct Cell_head *window );
+
     // ! Read current mapset region
     static bool QgsGrass::region( QString gisbase,
            QString location, QString mapset,
            struct Cell_head *window );
 
+    // ! Write current mapset region
+    static bool QgsGrass::writeRegion( QString gisbase,
+           QString location, QString mapset,
+           struct Cell_head *window );
+
+    // ! Set (copy) region extent, resolution is not changed 
+    static void QgsGrass::copyRegionExtent( struct Cell_head *source,
+           struct Cell_head *target );
+
+    // ! Set (copy) region resolution, extent is not changed 
+    static void QgsGrass::copyRegionResolution( struct Cell_head *source,
+           struct Cell_head *target );
+
+    // ! Extend region in target to source 
+    static void QgsGrass::extendRegion( struct Cell_head *source,
+           struct Cell_head *target );
+
     static void init (void); 
+
+    //! Library version
+    static int QgsGrass::versionMajor();
+    static int QgsGrass::versionMinor();
 
 private:
     static int initialized; // Set to 1 after initialization 
