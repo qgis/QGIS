@@ -643,6 +643,18 @@ QStringList QgsGrass::elements ( QString mapsetPath, QString element )
     return list;
 }
 
+bool QgsGrass::region( QString gisbase, 
+           QString location, QString mapset,
+           struct Cell_head *window )
+{
+    QgsGrass::setLocation( gisbase, location );
+
+    if ( G__get_window ( window, "", "WIND", mapset.toLocal8Bit().data() ) )
+    {
+        return false;
+    }
+    return true;
+}
 
 bool QgsGrass::mapRegion( int type, QString gisbase, 
            QString location, QString mapset, QString map,
@@ -650,6 +662,8 @@ bool QgsGrass::mapRegion( int type, QString gisbase,
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrass::mapRegion()" << std::endl;
+    std::cerr << "map = " << map.toLocal8Bit().data() << std::endl;
+    std::cerr << "mapset = " << mapset.toLocal8Bit().data() << std::endl;
     #endif
 
     QgsGrass::setLocation( gisbase, location );
@@ -667,7 +681,8 @@ bool QgsGrass::mapRegion( int type, QString gisbase,
     }
     else if ( type == Vector )
     {
-	G_get_window ( window ); // get current resolution
+        // Get current projection
+        region( gisbase, location, mapset, window );
 
 	struct Map_info Map;
 
@@ -687,6 +702,22 @@ bool QgsGrass::mapRegion( int type, QString gisbase,
 	window->south = box.S;
 	window->west  = box.W;
 	window->east  = box.E;
+	window->top  = box.T;
+	window->bottom  = box.B;
+
+        // Is this optimal ?
+        window->ns_res = (window->north-window->south)/1000;
+        window->ew_res = window->ns_res;
+        if ( window->top > window->bottom ) 
+        { 
+            window->tb_res = (window->top-window->bottom)/10;
+        }
+        else
+        {
+            window->top = window->bottom + 1;
+            window->tb_res = 1;
+        }
+        G_adjust_Cell_head3 ( window, 0, 0, 0 );
 	
 	Vect_close (&Map);
     } 
