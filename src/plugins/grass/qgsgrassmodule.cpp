@@ -580,9 +580,13 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
 		break;
         }
 
+        QStringList mm = item->currentMap().split("@");
+        QString map = mm.at(0);
+        QString mapset = QgsGrass::getDefaultMapset();
+        if  ( mm.size() > 1 ) mapset = mm.at(1);
         if ( !QgsGrass::mapRegion ( mapType, 
                 QgsGrass::getDefaultGisdbase(),
-                QgsGrass::getDefaultLocation(), "", item->currentMap(),
+                QgsGrass::getDefaultLocation(), mapset, map,
                 &window ) )
         {
 	    QMessageBox::warning( 0, "Warning", "Cannot check region "
@@ -623,12 +627,12 @@ bool QgsGrassModuleStandardOptions::inputRegion ( struct Cell_head *window, bool
 	    continue;
 	}
 
-        // TODO all flag
-
         struct Cell_head mapWindow;
 
         QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>
 			(mItems[i]);
+
+        if  ( !all && !item->useRegion() ) continue;
 
         int mapType;
         switch ( item->type() ) {
@@ -640,9 +644,13 @@ bool QgsGrassModuleStandardOptions::inputRegion ( struct Cell_head *window, bool
 		break;
         }
 
+        QStringList mm = item->currentMap().split("@");
+        QString map = mm.at(0);
+        QString mapset = QgsGrass::getDefaultMapset();
+        if  ( mm.size() > 1 ) mapset = mm.at(1);
         if ( !QgsGrass::mapRegion ( mapType, 
                 QgsGrass::getDefaultGisdbase(),
-                QgsGrass::getDefaultLocation(), "", item->currentMap(),
+                QgsGrass::getDefaultLocation(), mapset, map,
                 &mapWindow ) )
         {
 	    QMessageBox::warning( 0, "Warning", "Cannot set region "
@@ -674,6 +682,26 @@ bool QgsGrassModuleStandardOptions::inputRegion ( struct Cell_head *window, bool
     G_adjust_Cell_head3 ( window, 0, 0, 0 );
 
     return true;
+}
+
+bool QgsGrassModuleStandardOptions::requestsRegion()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleStandardOptions::requestsRegion()" << std::endl;
+    #endif
+
+    for ( int i = 0; i < mItems.size(); i++ ) 
+    {
+	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleInput) ) {
+	    continue;
+	}
+
+        QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>
+			(mItems[i]);
+
+        if ( item->useRegion() ) return true;
+    }
+    return false;
 }
 
 bool QgsGrassModuleStandardOptions::usesRegion ()
@@ -1559,10 +1587,11 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
        					   QgsGrassModuleStandardOptions *options, QString key,
 	                                   QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
 	                                   QWidget * parent)
-                    : Q3GroupBox ( 1, Qt::Vertical, parent ),
+                    : QGroupBox ( parent ),
                       QgsGrassModuleItem ( module, key, qdesc, gdesc, gnode ),
 		      mModuleStandardOptions(options),
-		      mUpdate(false), mVectorTypeOption(0), mVectorLayerOption(0)
+		      mUpdate(false), mVectorTypeOption(0), mVectorLayerOption(0),
+		      mRegionButton(0)
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModuleInput::QgsGrassModuleInput" << std::endl;
@@ -1692,7 +1721,26 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
 	mUpdate = true;
     }
 
-    mLayerComboBox = new QComboBox ( this );
+    QHBoxLayout *l = new QHBoxLayout (this);
+    mLayerComboBox = new QComboBox ();
+    mLayerComboBox->setSizePolicy (QSizePolicy::Expanding, 
+                                      QSizePolicy:: Preferred );
+    l->addWidget ( mLayerComboBox );
+
+    if ( mType == Raster  && 
+         QgsGrass::versionMajor() >= 6 && QgsGrass::versionMinor() >= 1 )
+    {
+        QString iconPath = QgsApplication::themePath() + "/grass/";
+        
+        mRegionButton = new QPushButton( 
+                    QIcon(iconPath+"grass_set_region.png"), "" );
+
+        mRegionButton->setToolTip ( "Use region of this map" );
+        mRegionButton->setCheckable ( true );
+        mRegionButton->setSizePolicy (QSizePolicy::Minimum, 
+                                      QSizePolicy:: Preferred );
+        l->addWidget ( mRegionButton );
+    }
 
     // Of course, activated(int) is not enough, but there is no signal BEFORE the cobo is opened
     //connect ( mLayerComboBox, SIGNAL( activated(int) ), this, SLOT(updateQgisLayers()) );
@@ -1717,6 +1765,19 @@ QgsGrassModuleInput::QgsGrassModuleInput ( QgsGrassModule *module,
     
     // Fill in QGIS layers 
     updateQgisLayers();
+}
+
+bool QgsGrassModuleInput::useRegion()
+{
+    std::cerr << "QgsGrassModuleInput::useRegion()" << std::endl;
+
+    if ( mType == Raster && mRegionButton &&
+         mRegionButton->isChecked() )
+    {
+        return true;
+    }
+
+    return false;
 }
 
 void QgsGrassModuleInput::updateQgisLayers()

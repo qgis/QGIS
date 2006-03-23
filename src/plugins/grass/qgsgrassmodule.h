@@ -197,7 +197,7 @@ public:
     virtual bool usesRegion() { return false; }
 
     //! One or more input maps were swithched on to be used as region
-    bool requestsRegion() { return false; }
+    virtual bool requestsRegion() { return false; }
 
     //! Check region
     // return empty list
@@ -261,7 +261,7 @@ public:
     QStringList output(int type);
     QStringList checkRegion();
     bool usesRegion();
-    bool requestsRegion() { return false; } // TODO
+    bool requestsRegion();
     bool inputRegion( struct Cell_head *window, bool all );
 
 private:
@@ -455,7 +455,7 @@ private:
 /*! \class QgsGrassModuleInput
  *  \brief Class representing raster or vector module input
  */
-class QgsGrassModuleInput: public Q3GroupBox, public QgsGrassModuleItem
+class QgsGrassModuleInput: public QGroupBox, public QgsGrassModuleItem
 {
     Q_OBJECT;
 
@@ -486,6 +486,9 @@ public:
     QString currentMap();
 
     QString ready() ;
+
+    //! Should be used region of this input
+    bool useRegion();
 
     int type() { return mType; }
 
@@ -518,6 +521,9 @@ private:
     
     //! Combobox for QGIS layers
     QComboBox *mLayerComboBox;
+
+    //! Region button
+    QPushButton *mRegionButton;
 
     //! Optional map option id, if defined, only the layers from the
     //  map currently selected in that option are available.
