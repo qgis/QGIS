@@ -40,6 +40,7 @@ class QValidator;
 #include <QGroupBox>
 //#include <QLayout>
 #include <QVBoxLayout>
+#include <QProcess>
 
 // Must be here, so that it is included to moc file
 #include "qgisapp.h"
@@ -110,7 +111,7 @@ public slots:
     void viewOutput ();
 
     //! Running process finished
-    void finished ();
+    void finished (int exitCode, QProcess::ExitStatus exitStatus );
 
     //! Read module's standard output
     void readStdout();
@@ -144,7 +145,7 @@ private:
     QWidget *mParent;
 
     //! Running GRASS module
-    Q3Process mProcess;
+    QProcess mProcess;
 
     //! QGIS directory
     QString mAppDir;
@@ -191,6 +192,22 @@ public:
 
     //! Get list of current output maps
     virtual QStringList output(int type) { return QStringList() ; }
+
+    //! Has raster input or output
+    virtual bool usesRegion() { return false; }
+
+    //! One or more input maps were swithched on to be used as region
+    bool requestsRegion() { return false; }
+
+    //! Check region
+    // return empty list
+    // return list of input maps (both raster and vector) outside region
+    virtual QStringList checkRegion() { return QStringList() ; }
+
+    //! Get region covering all input maps
+    // \param all true all input maps
+    // \param all false only the mas which were switched on
+    virtual bool inputRegion( struct Cell_head *window, bool all ) { return false; }
 
 protected:
     //! QGIS application
@@ -242,6 +259,10 @@ public:
     QStringList checkOutput();
     QStringList ready() ;
     QStringList output(int type);
+    QStringList checkRegion();
+    bool usesRegion();
+    bool requestsRegion() { return false; } // TODO
+    bool inputRegion( struct Cell_head *window, bool all );
 
 private:
     //! Name of module executable 
@@ -465,6 +486,8 @@ public:
     QString currentMap();
 
     QString ready() ;
+
+    int type() { return mType; }
 
 public slots:
     //! Fill combobox with currently available maps in QGIS canvas

@@ -69,6 +69,7 @@
 #include <QPushButton>
 #include <QGroupBox>
 #include <QFileDialog>
+#include <QProcess>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -233,10 +234,9 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
 	mManualTextBrowser->setSource ( manPath );
     }
     
-    connect ( &mProcess, SIGNAL(readyReadStdout()), this, SLOT(readStdout()));
-    connect ( &mProcess, SIGNAL(readyReadStderr()), this, SLOT(readStderr()));
-    connect ( &mProcess, SIGNAL(launchFinished()), this, SLOT(finished()));
-    connect ( &mProcess, SIGNAL(processExited()), this, SLOT(finished()));
+    connect ( &mProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(readStdout()));
+    connect ( &mProcess, SIGNAL(readyReadStandardError()), this, SLOT(readStderr()));
+    connect ( &mProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
 
     char *env = "GRASS_MESSAGE_FORMAT=gui";
     char *envstr = new char[strlen(env)+1];
@@ -543,6 +543,172 @@ QStringList QgsGrassModuleStandardOptions::ready()
     return list;
 }
 
+QStringList QgsGrassModuleStandardOptions::checkRegion()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleStandardOptions::checkRegion()" << std::endl;
+    #endif
+    QStringList list;
+
+    struct Cell_head currentWindow;
+    if  ( !QgsGrass::region ( QgsGrass::getDefaultGisdbase(), 
+                    QgsGrass::getDefaultLocation(), 
+                    QgsGrass::getDefaultMapset(), &currentWindow ) )
+    {
+        QMessageBox::warning( 0, "Warning", "Cannot get current region" );
+        return list;
+    }
+
+    for ( int i = 0; i < mItems.size(); i++ ) 
+    {
+	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleInput) ) {
+	    continue;
+	}
+
+        struct Cell_head window;
+
+        QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>
+			(mItems[i]);
+
+        int mapType;
+        switch ( item->type() ) {
+            case QgsGrassModuleInput::Raster :
+		mapType = QgsGrass::Raster;
+		break;
+            case QgsGrassModuleInput::Vector :
+		mapType = QgsGrass::Vector;
+		break;
+        }
+
+        if ( !QgsGrass::mapRegion ( mapType, 
+                QgsGrass::getDefaultGisdbase(),
+                QgsGrass::getDefaultLocation(), "", item->currentMap(),
+                &window ) )
+        {
+	    QMessageBox::warning( 0, "Warning", "Cannot check region "
+                                  "of map " + item->currentMap() );
+            continue;
+        }
+
+        if ( G_window_overlap ( &currentWindow ,
+              window.north, window.south, window.east, window.west) == 0 )
+        {
+            list.append ( item->currentMap() );
+        }
+    } 
+
+    return list;
+}
+
+bool QgsGrassModuleStandardOptions::inputRegion ( struct Cell_head *window, bool all )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleStandardOptions::inputRegion()" << std::endl;
+    #endif
+
+    // Get current resolution 
+    if  ( !QgsGrass::region ( QgsGrass::getDefaultGisdbase(), 
+                    QgsGrass::getDefaultLocation(), 
+                    QgsGrass::getDefaultMapset(), window ) )
+    {
+        QMessageBox::warning( 0, "Warning", "Cannot get current region" );
+        return false;
+    }
+
+    int rasterCount = 0;
+    int vectorCount = 0;
+    for ( int i = 0; i < mItems.size(); i++ ) 
+    {
+	if ( typeid(*(mItems[i])) != typeid (QgsGrassModuleInput) ) {
+	    continue;
+	}
+
+        // TODO all flag
+
+        struct Cell_head mapWindow;
+
+        QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>
+			(mItems[i]);
+
+        int mapType;
+        switch ( item->type() ) {
+            case QgsGrassModuleInput::Raster :
+		mapType = QgsGrass::Raster;
+		break;
+            case QgsGrassModuleInput::Vector :
+		mapType = QgsGrass::Vector;
+		break;
+        }
+
+        if ( !QgsGrass::mapRegion ( mapType, 
+                QgsGrass::getDefaultGisdbase(),
+                QgsGrass::getDefaultLocation(), "", item->currentMap(),
+                &mapWindow ) )
+        {
+	    QMessageBox::warning( 0, "Warning", "Cannot set region "
+                                  "of map " + item->currentMap() );
+            return false;
+        }
+
+        // TODO: best way to set resolution ?
+        if ( item->type() == QgsGrassModuleInput::Raster
+		&& rasterCount == 0 ) 
+        {
+            QgsGrass::copyRegionResolution ( &mapWindow, window );
+        }
+        if ( rasterCount + vectorCount == 0 ) 
+        {
+            QgsGrass::copyRegionExtent ( &mapWindow, window );
+        }
+	else
+	{
+            QgsGrass::extendRegion ( &mapWindow, window );
+	}
+
+        if ( item->type() == QgsGrassModuleInput::Raster ) 
+	    rasterCount++;
+        else if ( item->type() == QgsGrassModuleInput::Vector )
+	    vectorCount++;
+    } 
+
+    G_adjust_Cell_head3 ( window, 0, 0, 0 );
+
+    return true;
+}
+
+bool QgsGrassModuleStandardOptions::usesRegion ()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleStandardOptions::usesRegion()" << std::endl;
+    #endif
+
+    for ( int i = 0; i < mItems.size(); i++ ) 
+    {
+	if ( typeid(*(mItems[i])) == typeid (QgsGrassModuleInput) )
+        {
+            QgsGrassModuleInput *item = 
+                    dynamic_cast<QgsGrassModuleInput *>(mItems[i]);
+
+            if ( item->type() == QgsGrassModuleInput::Raster ) 
+                return true;
+	}
+
+	if ( typeid(*(mItems[i])) == typeid (QgsGrassModuleOption) ) 
+        {
+	     QgsGrassModuleOption *item = 
+	            dynamic_cast<QgsGrassModuleOption *> ( mItems[i] );
+    
+             if ( item->isOutput() 
+                  && item->outputType() == QgsGrassModuleOption::Raster )
+             {
+                 return true;
+             }
+	}
+    }
+
+    return false;
+}
+
 QgsGrassModuleStandardOptions::~QgsGrassModuleStandardOptions()
 {
 }
@@ -703,18 +869,16 @@ void QgsGrassModule::run()
     std::cerr << "QgsGrassModule::run()" << std::endl;
     #endif
 
-    if ( mProcess.isRunning() ) {
+    if ( mProcess.state() == QProcess::Running ) {
 	mProcess.kill();
 	mRunButton->setText( tr("Run") );
     } else { 
-	QString command;
+	//QString command;
+        QStringList arguments;
 	
-	if ( mProcess.isRunning() ) {
-	}
-
-	mProcess.clearArguments();
-	mProcess.addArgument( mXName );
-	command = mXName;
+	//mProcess.clearArguments();
+	//mProcess.addArgument( mXName );
+	//command = mXName;
 
         // Check if options are ready
         QStringList readyErrors = mOptions->ready();
@@ -727,6 +891,55 @@ void QgsGrassModule::run()
             }
             QMessageBox::warning ( 0, "Warning", err );
             return;
+        }
+
+        // Check/set region
+        struct Cell_head tempWindow;
+        bool resetRegion = false;
+        if ( mOptions->requestsRegion() )
+        {
+	    if ( !mOptions->inputRegion ( &tempWindow, false ) )
+            {
+		QMessageBox::warning ( 0, "Warning", "Cannot get input region" );
+		return;
+            }
+            resetRegion = true;
+        }
+        else if ( mOptions->usesRegion() )
+        {
+	    QStringList outsideRegion = mOptions->checkRegion();
+	    if ( outsideRegion.size() > 0 )
+	    {
+                if  ( QgsGrass::versionMajor() >= 6 && QgsGrass::versionMinor() >= 1 )
+                {
+		    int ret = QMessageBox::question ( 0, "Warning", 
+				  "Input " + outsideRegion.join(",")
+				  + " outside current region!",  
+				"Use input region", "Continue", "Cancel" );
+
+		    if ( ret == 2 ) return;
+		    if ( ret == 0 ) resetRegion = true;
+                }
+                else 
+                {
+		    int ret = QMessageBox::question ( 0, "Warning", 
+				  "Input " + outsideRegion.join(",")
+				  + " outside current region!",  
+				  "Continue", "Cancel" );
+
+		    if ( ret == 1 ) return;
+                }
+
+                if ( resetRegion ) 
+                {
+		    if ( !mOptions->inputRegion ( &tempWindow, true ) )
+		    {
+			QMessageBox::warning ( 0, "Warning", 
+                                     "Cannot get input region" );
+			return;
+		    }
+                }
+	    }
         }
 
         // Check if output exists
@@ -743,8 +956,9 @@ void QgsGrassModule::run()
             // r.mapcalc does not use standard parser
             if ( typeid(*mOptions) != typeid(QgsGrassMapcalc) )
             {
-	        mProcess.addArgument( "--o" );
-	        command.append ( " --o" );
+		arguments.append ( "--o" );
+	        //mProcess.addArgument( "--o" );
+	        //command.append ( " --o" );
             }
         }
 
@@ -760,8 +974,9 @@ void QgsGrassModule::run()
 
 	for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it ) {
 	    std::cerr << "option: " << (*it).toLocal8Bit().data() << std::endl;
-	    command.append ( " " + *it );
-	    mProcess.addArgument( *it );
+	    //command.append ( " " + *it );
+	    arguments.append ( *it );
+	    //mProcess.addArgument( *it );
 	}
 
 	/* WARNING - TODO: there was a bug in GRASS 6.0.0 / 6.1.CVS (< 2005-04-29):
@@ -773,28 +988,53 @@ void QgsGrassModule::run()
 	 */
 	putenv ( "GISRC_MODE_MEMORY" );  // unset
 	
-	mProcess.start( );
-	
-	std::cerr << "command" << command.toLocal8Bit().data() << std::endl;
 	mOutputTextBrowser->clear();
 
-	command.replace ( "&", "&amp;" );
-	command.replace ( "<", "&lt;" );
-	command.replace ( ">", "&gt;" );
-	mOutputTextBrowser->append( "<B>" +  command + "</B>" );
+        QString commandHtml = mXName + " " + arguments.join(" ");
+
+	std::cerr << "command: " << commandHtml.toLocal8Bit().data() << std::endl;
+	commandHtml.replace ( "&", "&amp;" );
+	commandHtml.replace ( "<", "&lt;" );
+	commandHtml.replace ( ">", "&gt;" );
+	mOutputTextBrowser->append( "<B>" +  commandHtml + "</B>" );
+
+        // Warning: it is not useful to write requested region to WIND file and 
+        //          reset then to original beacuse it is reset before 
+        //          the region is read by a module even if waitForStarted() is used
+        //          -> necessary to pass region as enviroment variable
+        //             but the feature is available in GRASS 6.1 only since 23.3.2006
+
+        QStringList env;
+
+        if ( resetRegion )
+        {
+            env = QProcess::systemEnvironment();
+            QString reg = QgsGrass::regionString( &tempWindow );
+	    std::cerr << "reg: " << reg.ascii() << std::endl;
+            env.append ( "GRASS_REGION=" + reg );
+        }
+        mProcess.setEnvironment ( env );
+
+	mProcess.start( mXName, arguments );
+
+        if ( resetRegion )
+        {
+        }
+
 	mTabWidget->setCurrentPage(1);
 	mRunButton->setText( tr("Stop") );
     }
 }
 
-void QgsGrassModule::finished()
+void QgsGrassModule::finished(int exitCode, QProcess::ExitStatus exitStatus )
 {
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModule::finished()" << std::endl;
     #endif
 
-    if ( mProcess.normalExit() ) {
-	if ( mProcess.exitStatus () == 0 ) {
+    std::cerr << "exitCode = " << exitCode << std::endl;
+    if ( exitStatus == QProcess::NormalExit ) {
+	if ( exitCode == 0 ) {
 	    mOutputTextBrowser->append( "<B>Successfully finished</B>" );
 	    mProgressBar->setProgress ( 100, 100 ); 
             mSuccess = true;
@@ -815,8 +1055,11 @@ void QgsGrassModule::readStdout()
     #endif
 
     QString line;
-    while ( mProcess.canReadLineStdout() ) {
-       	line = QString::fromLocal8Bit( mProcess.readLineStdout().ascii() );
+    mProcess.setReadChannel ( QProcess::StandardOutput );
+    while ( mProcess.canReadLine() ) {
+       	//line = QString::fromLocal8Bit( mProcess.readLineStdout().ascii() );
+        QByteArray ba = mProcess.readLine();
+       	line = QString::fromLocal8Bit( QString(ba).ascii() );
 	mOutputTextBrowser->append ( line );
     }
 }
@@ -827,6 +1070,8 @@ void QgsGrassModule::readStderr()
     std::cerr << "QgsGrassModule::readStderr()" << std::endl;
     #endif
 
+    mProcess.setReadChannel ( QProcess::StandardError );
+
     QString line;
     QRegExp rxpercent ( "GRASS_INFO_PERCENT: (\\d+)" );
     QRegExp rxmessage ( "GRASS_INFO_MESSAGE\\(\\d+,\\d+\\): (.*)" );
@@ -835,8 +1080,10 @@ void QgsGrassModule::readStderr()
     QRegExp rxend ( "GRASS_INFO_END\\(\\d+,\\d+\\)" );
         
 
-    while ( mProcess.canReadLineStderr() ) {
-       	line = QString::fromLocal8Bit( mProcess.readLineStderr().ascii() );
+    while ( mProcess.canReadLine() ) {
+       	//line = QString::fromLocal8Bit( mProcess.readLineStderr().ascii() );
+        QByteArray ba = mProcess.readLine();
+       	line = QString::fromLocal8Bit( QString(ba).ascii() );
         //std::cerr << "stderr: " << line << std::endl;
 
 	if ( rxpercent.search ( line ) != -1 ) {
