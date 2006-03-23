@@ -4863,6 +4863,8 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
     {
       mActionSelect->setEnabled(true);
       mActionOpenTable->setEnabled(true);
+      mActionIdentify->setEnabled(true);
+
       const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>(layer);
       const QgsVectorDataProvider* dprovider = vlayer->getDataProvider();
       if(vlayer)
@@ -4950,6 +4952,21 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
       mActionAddVertex->setEnabled(false);
       mActionDeleteVertex->setEnabled(false);
       mActionMoveVertex->setEnabled(false);
+
+      const QgsRasterLayer* vlayer = dynamic_cast<const QgsRasterLayer*> (layer);
+      const QgsRasterDataProvider* dprovider = vlayer->getDataProvider();
+      if (vlayer)
+      {
+        // does provider allow the identify map tool?
+        if (dprovider->capabilities() & QgsRasterDataProvider::Identify)
+        {
+          mActionIdentify->setEnabled(TRUE);
+        }
+        else
+        {
+          mActionIdentify->setEnabled(FALSE);
+        }
+      }
     }
 }
 

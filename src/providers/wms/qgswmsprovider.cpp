@@ -675,7 +675,7 @@ bool QgsWmsProvider::retrieveServerCapabilities(bool forceRefresh)
 #endif
 
     bool domOK;
-    domOK = parseCapabilitiesDOM(httpcapabilitiesresponse, capabilities);
+    domOK = parseCapabilitiesDOM(httpcapabilitiesresponse, mCapabilities);
 
     if (!domOK)
     {
@@ -1592,6 +1592,8 @@ void QgsWmsProvider::parseLayer(QDomElement const & e, QgsWmsLayerProperty& laye
     // We have all the information we need to properly evaluate a layer definition
     // TODO: Save this somewhere
 
+    // Store if the layer is queryable
+    mQueryableForLayer[ layerProperty.name ] = layerProperty.queryable;
 
     // Store the available Coordinate Reference Systems for the layer so that it
     // can be combined with others later in supportedCrsForLayers()
@@ -1832,7 +1834,7 @@ QString QgsWmsProvider::wmsVersion()
 
 QStringList QgsWmsProvider::supportedImageEncodings()
 {
-  return capabilities.capability.request.getMap.format;
+  return mCapabilities.capability.request.getMap.format;
 } 
 
   
@@ -1840,18 +1842,6 @@ QStringList QgsWmsProvider::subLayers()
 {
   return activeSubLayers;
 }
-
-
-/*
-int QgsWmsProvider::capabilities() const
-{
-    return ( QgsVectorDataProvider::AddFeatures | 
-	     QgsVectorDataProvider::DeleteFeatures |
-	     QgsVectorDataProvider::ChangeAttributeValues |
-	     QgsVectorDataProvider::AddAttributes |
-	     QgsVectorDataProvider::DeleteAttributes );
-}
-*/
 
 
 void QgsWmsProvider::showStatusMessage(QString const & theMessage)
@@ -1929,6 +1919,48 @@ bool QgsWmsProvider::calculateExtent()
 
 }
 
+
+int QgsWmsProvider::capabilities() const
+{
+  int capability = 0;
+  bool canIdentify = FALSE;
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::capabilities: entering." << std::endl;
+#endif
+
+  // Test for the ability to use the Identify map tool
+  for ( QStringList::const_iterator it  = activeSubLayers.begin(); 
+                                    it != activeSubLayers.end(); 
+                                  ++it )
+  {
+    // Is sublayer visible?
+    if (TRUE == activeSubLayerVisibility.find( *it )->second)
+    {
+      // Is sublayer queryable?
+      if (TRUE == mQueryableForLayer.find( *it )->second)
+      {
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::capabilities: '" << (*it).toLocal8Bit().data() << "' is queryable." << std::endl;
+#endif
+        canIdentify = TRUE;
+      }
+    }
+  }
+
+  // Collect all the test results into one bitmask
+  if (canIdentify)
+  {
+    capability = (capability | QgsRasterDataProvider::Identify);
+  }
+
+#ifdef QGISDEBUG
+  std::cout << "QgsWmsProvider::capabilities: exiting with '" << capability << "'." << std::endl;
+#endif
+  return capability;
+}
+
+
 QString QgsWmsProvider::getMetadata()
 {
 
@@ -1956,7 +1988,7 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += tr("WMS Version");
   myMetadataQString += "</td>";
   myMetadataQString += "<td bgcolor=\"gray\">";
-  myMetadataQString += capabilities.version;
+  myMetadataQString += mCapabilities.version;
   myMetadataQString += "</td></tr>";
 
   // Service Title
@@ -1964,7 +1996,7 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += tr("Title");
   myMetadataQString += "</td>";
   myMetadataQString += "<td bgcolor=\"gray\">";
-  myMetadataQString += capabilities.service.title;
+  myMetadataQString += mCapabilities.service.title;
   myMetadataQString += "</td></tr>";
 
   // Service Abstract
@@ -1972,7 +2004,7 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += tr("Abstract");
   myMetadataQString += "</td>";
   myMetadataQString += "<td bgcolor=\"gray\">";
-  myMetadataQString += capabilities.service.abstract;
+  myMetadataQString += mCapabilities.service.abstract;
   myMetadataQString += "</td></tr>";
 
   // Service Keywords
@@ -1980,7 +2012,7 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += tr("Keywords");
   myMetadataQString += "</td>";
   myMetadataQString += "<td bgcolor=\"gray\">";
-  myMetadataQString += capabilities.service.keywordList.join("<br />");
+  myMetadataQString += mCapabilities.service.keywordList.join("<br />");
   myMetadataQString += "</td></tr>";
 
   // Service Online Resource
@@ -1996,11 +2028,11 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += tr("Contact Person");
   myMetadataQString += "</td>";
   myMetadataQString += "<td bgcolor=\"gray\">";
-  myMetadataQString += capabilities.service.contactInformation.contactPersonPrimary.contactPerson;
+  myMetadataQString += mCapabilities.service.contactInformation.contactPersonPrimary.contactPerson;
   myMetadataQString += "<br />";
-  myMetadataQString += capabilities.service.contactInformation.contactPosition;
+  myMetadataQString += mCapabilities.service.contactInformation.contactPosition;
   myMetadataQString += "<br />";
-  myMetadataQString += capabilities.service.contactInformation.contactPersonPrimary.contactOrganization;
+  myMetadataQString += mCapabilities.service.contactInformation.contactPersonPrimary.contactOrganization;
   myMetadataQString += "</td></tr>";
 
   // Service Fees
@@ -2008,7 +2040,7 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += tr("Fees");
   myMetadataQString += "</td>";
   myMetadataQString += "<td bgcolor=\"gray\">";
-  myMetadataQString += capabilities.service.fees;
+  myMetadataQString += mCapabilities.service.fees;
   myMetadataQString += "</td></tr>";
 
   // Service Access Constraints
@@ -2016,7 +2048,7 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += tr("Access Constraints");
   myMetadataQString += "</td>";
   myMetadataQString += "<td bgcolor=\"gray\">";
-  myMetadataQString += capabilities.service.accessConstraints;
+  myMetadataQString += mCapabilities.service.accessConstraints;
   myMetadataQString += "</td></tr>";
 
   // GetMap Request Formats
@@ -2024,7 +2056,7 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += tr("Image Formats");
   myMetadataQString += "</td>";
   myMetadataQString += "<td bgcolor=\"gray\">";
-  myMetadataQString += capabilities.capability.request.getMap.format.join("<br />");
+  myMetadataQString += mCapabilities.capability.request.getMap.format.join("<br />");
   myMetadataQString += "</td></tr>";
 
   // GetFeatureInfo Request Formats
@@ -2032,7 +2064,7 @@ QString QgsWmsProvider::getMetadata()
   myMetadataQString += tr("Identify Formats");
   myMetadataQString += "</td>";
   myMetadataQString += "<td bgcolor=\"gray\">";
-  myMetadataQString += capabilities.capability.request.getFeatureInfo.format.join("<br />");
+  myMetadataQString += mCapabilities.capability.request.getFeatureInfo.format.join("<br />");
   myMetadataQString += "</td></tr>";
 
   // Layer Count (as managed by this provider)

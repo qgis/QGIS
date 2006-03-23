@@ -5239,4 +5239,16 @@ QString QgsRasterLayer::errorString()
 }
 
 
+QgsRasterDataProvider* QgsRasterLayer::getDataProvider()
+{
+  return dataProvider;
+}
+
+const QgsRasterDataProvider* QgsRasterLayer::getDataProvider() const
+{
+  return dataProvider;
+}
+
+
+
 // ENDS
