@@ -161,12 +161,13 @@ private:
     static QString error_message;
 
     static int error_routine ( char *msg, int fatal); // static because pointer to this function is set later
-};
+
     // Current mapset lock file path
     static QString mMapsetLock;  
     // Current mapset GISRC file path
     static QString mGisrc;  
     // Temporary directory where GISRC and sockets are stored
     static QString mTmp;  
+};
 
 #endif // QGSGRASS_H

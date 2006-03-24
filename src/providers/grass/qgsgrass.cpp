@@ -38,6 +38,13 @@ extern "C" {
 
 void QgsGrass::init( void ) 
 {
+    // Warning!!! 
+    // G_set_error_routine() once called from plugin
+    // is not valid in provider -> call it always 
+
+    // Set error function
+    G_set_error_routine ( &error_routine );
+
     if ( initialized ) return;
 
     QSettings settings("QuantumGIS", "qgis");
@@ -58,9 +65,6 @@ void QgsGrass::init( void )
 
     // Init GRASS libraries (required)
     G_no_gisinit();  // Doesn't check write permissions for mapset compare to G_gisinit("libgrass++"); 
-
-    // Set error function
-    G_set_error_routine ( &error_routine );
 
     // Set program name
     G_set_program_name ("QGIS");
@@ -257,6 +261,10 @@ QString QgsGrass::error_message;
 QString QgsGrass::defaultGisdbase;
 QString QgsGrass::defaultLocation;
 QString QgsGrass::defaultMapset;
+
+QString QgsGrass::mMapsetLock;
+QString QgsGrass::mGisrc;
+QString QgsGrass::mTmp;
 
 int QgsGrass::error_routine ( char *msg, int fatal) {
     std::cerr << "error_routine (fatal = " << fatal << "): " << msg << std::endl;
