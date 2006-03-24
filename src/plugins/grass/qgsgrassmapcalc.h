@@ -85,11 +85,14 @@ public:
     //! Get module options as list of arguments for QProcess
     QStringList arguments();
 
-    //! Check if output exists, reimplemented method from
-    //  QgsGrassModuleOptions
+    // Reimplemented methods
     QStringList checkOutput();
-
     QStringList ready() { return QStringList() ; }
+    bool requestsRegion() { return false; }
+    bool usesRegion() { return true; }
+    QStringList checkRegion();
+    bool inputRegion( struct Cell_head *window, bool all );
+    QStringList output(int type);
 
     /** \brief recieves contentsMousePressEvent from view */
     void contentsMousePressEvent(QMouseEvent*);
