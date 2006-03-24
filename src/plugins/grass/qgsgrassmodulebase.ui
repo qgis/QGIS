@@ -41,7 +41,7 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="Q3TextBrowser" name="mOutputTextBrowser" />
+        <widget class="QTextBrowser" name="mOutputTextBrowser" />
        </item>
       </layout>
      </widget>
@@ -178,9 +178,9 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3Frame</class>
-   <extends></extends>
-   <header>Qt3Support/Q3Frame</header>
+   <class>Q3TextBrowser</class>
+   <extends>QWidget</extends>
+   <header>q3textbrowser.h</header>
    <container>1</container>
    <pixmap></pixmap>
   </customwidget>
@@ -192,9 +192,9 @@
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
-   <class>Q3TextBrowser</class>
-   <extends>QWidget</extends>
-   <header>q3textbrowser.h</header>
+   <class>Q3Frame</class>
+   <extends></extends>
+   <header>Qt3Support/Q3Frame</header>
    <container>1</container>
    <pixmap></pixmap>
   </customwidget>
