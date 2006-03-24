@@ -202,6 +202,11 @@ public slots:
     // ! Close event
     void closeEvent(QCloseEvent *e);
 
+    static bool isEditable ( QgsMapLayer *layer );
+
+signals:
+    void finished(); 
+
 private:
     //! Editing is already running
     static bool mRunning;

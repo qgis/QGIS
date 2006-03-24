@@ -135,18 +135,27 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
   // At moment QgisIface::activeLayer() does not work
   QgsMapLayer *layer = (QgsMapLayer *) mIface->activeLayer();
 
-  if ( !layer ) {
-    std::cerr << "No layer is selected." << std::endl;
-    QMessageBox::warning( 0, "Warning", "No layer is selected." );
-    return;
-  }
+  if ( !isEditable(layer) ) return;
+
+  //TODO dynamic_cast ?
+  QgsVectorLayer *vector = (QgsVectorLayer*)layer;
+
+  //TODO dynamic_cast ?
+  mProvider = (QgsGrassProvider *) vector->getDataProvider();
+
+  init();
+
+}
+
+bool QgsGrassEdit::isEditable ( QgsMapLayer *layer )
+{
+  if ( !layer ) return false;
 
   std::cerr << "layer name: " << layer->name().toLocal8Bit().data() << std::endl;
 
   if ( layer->type() != QgsMapLayer::VECTOR ) {
     std::cerr << "The selected layer is not vector." << std::endl;
-    QMessageBox::warning( 0, "Warning", "The selected layer is not vector." );
-    return;
+    return false;
   }
 
   //TODO dynamic_cast ?
@@ -155,17 +164,11 @@ QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface,
   std::cerr << "Vector layer type: " << vector->providerType().toLocal8Bit().data() << std::endl;
 
   if ( vector->providerType() != "grass" ) {
-    QMessageBox::warning( 0, "Warning", "The selected vector is not in GRASS format." );
-    return;
+    std::cerr << "The selected layer is not GRASS." << std::endl;
+    return false;
   }
-   
-  std::cerr << "Vector layer type: " << vector->providerType().toLocal8Bit().data() << std::endl;
 
-  //TODO dynamic_cast ?
-  mProvider = (QgsGrassProvider *) vector->getDataProvider();
-
-  init();
-
+  return true;
 }
 
 QgsGrassEdit::QgsGrassEdit ( QgisApp *qgisApp, QgisIface *iface, 
@@ -897,7 +900,7 @@ QgsGrassEdit::~QgsGrassEdit()
   std::cerr << "QgsGrassEdit::~QgsGrassEdit()" << std::endl;
 #endif
 
-  if (mCanvasEdit) {
+  if ( mValid && mCanvasEdit) {
     eraseDynamic();
     mRubberBandLine->hide();
     mRubberBandIcon->hide();
@@ -965,7 +968,7 @@ void QgsGrassEdit::closeEdit(void)
                                       QgsGrass::getDefaultLocation(),
 				      mapset, map );
   }
-
+  emit finished();
   delete this; 
 }
 

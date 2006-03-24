@@ -110,7 +110,8 @@ public slots:
   void newProject();
   //! Save mapset to project
   void saveMapset();
-
+  //! Set edit action
+  void setEditAction();
 private:
   //! Name of the plugin
   QString pluginNameQString;
