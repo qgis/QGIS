@@ -62,6 +62,8 @@ QgsGrassProvider::QgsGrassProvider(QString const & uri)
     std::cerr << "QgsGrassProvider URI: " << uri.toLocal8Bit().data() << std::endl;
 #endif
 
+    QgsGrass::init();
+
     QTime time;
     time.start();
 
