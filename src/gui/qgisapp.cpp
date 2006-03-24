@@ -4954,9 +4954,9 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
       mActionMoveVertex->setEnabled(false);
 
       const QgsRasterLayer* vlayer = dynamic_cast<const QgsRasterLayer*> (layer);
-      const QgsRasterDataProvider* dprovider = vlayer->getDataProvider();
       if (vlayer)
       {
+        const QgsRasterDataProvider* dprovider = vlayer->getDataProvider();
         // does provider allow the identify map tool?
         if (dprovider->capabilities() & QgsRasterDataProvider::Identify)
         {
