@@ -105,6 +105,7 @@ QgsGrassAttributes::QgsGrassAttributes ( QgsGrassEdit *edit, QgsGrassProvider *p
     // TODO: does not work: 
     connect( tabCats, SIGNAL(void currentChanged(QWidget *)), this, SLOT(tabChanged(QWidget *)));
 
+    resetButtons();
     restorePosition();
 }
 
@@ -173,6 +174,8 @@ int QgsGrassAttributes::addTab ( const QString & label )
     QgsGrassAttributesKeyPress *ef = new QgsGrassAttributesKeyPress ( tb );
     tb->installEventFilter( ef );
 
+    resetButtons();
+
     return ( tabCats->count() - 1 );
 }
 
@@ -224,6 +227,8 @@ void QgsGrassAttributes::addAttribute ( int tab, const QString &name, const QStr
     // because QgsGrassProvider::attributes is using mEncoding->toUnicode() 
     tb->setText ( row, 1, QString::fromLocal8Bit(value) );
     tb->setText ( row, 2, type );
+
+    resetButtons();
 }
 
 void QgsGrassAttributes::addTextRow ( int tab, const QString &text )
@@ -246,6 +251,8 @@ void QgsGrassAttributes::updateAttributes ( )
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassAttributes::updateAttributes()" << std::endl;
     #endif
+
+    if ( tabCats->count() == 0 ) return;
 
     Q3Table *tb = (Q3Table *) tabCats->currentPage();
 
@@ -307,6 +314,7 @@ void QgsGrassAttributes::addCat ( )
     // Select new tab
     tabCats->setCurrentPage( tabCats->count()-1 );
     
+    resetButtons();
 }
 
 void QgsGrassAttributes::deleteCat ( )
@@ -314,6 +322,8 @@ void QgsGrassAttributes::deleteCat ( )
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassAttributes::deleteCat()" << std::endl;
     #endif
+
+    if ( tabCats->count() == 0 ) return;
     
     Q3Table *tb = (Q3Table *) tabCats->currentPage();
 
@@ -324,6 +334,7 @@ void QgsGrassAttributes::deleteCat ( )
 
     tabCats->removePage( tb );
     delete tb;
+    resetButtons();
 }
 
 void QgsGrassAttributes::tabChanged ( QWidget *widget )
@@ -340,4 +351,18 @@ void QgsGrassAttributes::tabChanged ( QWidget *widget )
 void QgsGrassAttributes::setLine ( int line )
 {
     mLine = line;
+}
+
+void QgsGrassAttributes::resetButtons ( )
+{
+    if ( tabCats->count() == 0 )
+    {
+        deleteButton->setEnabled(false);
+        updateButton->setEnabled(false);
+    }
+    else
+    {
+        deleteButton->setEnabled(true);
+        updateButton->setEnabled(true);
+    }
 }
