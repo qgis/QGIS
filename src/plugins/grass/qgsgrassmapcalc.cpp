@@ -512,6 +512,139 @@ QStringList QgsGrassMapcalc::checkOutput()
     return QStringList();
 }
 
+QStringList QgsGrassMapcalc::checkRegion()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassMapcalc::checkRegion()" << std::endl;
+    #endif
+    QStringList list;
+
+    Q3CanvasItemList l = mCanvas->allItems();
+
+    struct Cell_head currentWindow;
+    if  ( !QgsGrass::region ( QgsGrass::getDefaultGisdbase(),
+                    QgsGrass::getDefaultLocation(),
+                    QgsGrass::getDefaultMapset(), &currentWindow ) )
+    {
+        QMessageBox::warning( 0, "Warning", "Cannot get current region" );
+        return list;
+    }
+
+    for ( Q3CanvasItemList::Iterator it=l.fromLast(); it!=l.end(); --it) 
+    {
+        if (! (*it)->isActive() ) continue;
+    
+	if ( typeid (**it) != typeid (QgsGrassMapcalcObject) ) continue;
+
+	QgsGrassMapcalcObject *obj = 
+	    dynamic_cast <QgsGrassMapcalcObject *> (*it);
+
+	if ( obj->type() != QgsGrassMapcalcObject::Map ) continue;
+
+        struct Cell_head window;
+	    
+        QStringList mm = obj->value().split("@");
+        if ( mm.size() < 1 ) continue;
+
+        QString map = mm.at(0);
+        QString mapset = QgsGrass::getDefaultMapset();
+        if  ( mm.size() > 1 ) mapset = mm.at(1);
+
+        if ( !QgsGrass::mapRegion ( QgsGrass::Raster,
+                QgsGrass::getDefaultGisdbase(),
+                QgsGrass::getDefaultLocation(), mapset, map,
+                &window ) )
+        {
+            QMessageBox::warning( 0, "Warning", "Cannot check region "
+                                  "of map " + obj->value() );
+            continue;
+        }
+
+        if ( G_window_overlap ( &currentWindow ,
+              window.north, window.south, window.east, window.west) == 0 )
+        {
+            list.append ( obj->value() );
+        }
+    }
+    return list;
+}
+
+bool QgsGrassMapcalc::inputRegion ( struct Cell_head *window, bool all )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "gsGrassMapcalc::inputRegion" << std::endl;
+    #endif
+
+    if  ( !QgsGrass::region ( QgsGrass::getDefaultGisdbase(),
+                    QgsGrass::getDefaultLocation(),
+                    QgsGrass::getDefaultMapset(), window ) )
+    {
+        QMessageBox::warning( 0, "Warning", "Cannot get current region" );
+        return false;
+    }
+
+    Q3CanvasItemList l = mCanvas->allItems();
+
+    int count = 0;
+    for ( Q3CanvasItemList::Iterator it=l.fromLast(); it!=l.end(); --it) 
+    {
+        if (! (*it)->isActive() ) continue;
+    
+	if ( typeid (**it) != typeid (QgsGrassMapcalcObject) ) continue;
+
+	QgsGrassMapcalcObject *obj = 
+	    dynamic_cast <QgsGrassMapcalcObject *> (*it);
+
+	if ( obj->type() != QgsGrassMapcalcObject::Map ) continue;
+
+        struct Cell_head mapWindow;
+	    
+        QStringList mm = obj->value().split("@");
+        if ( mm.size() < 1 ) continue;
+
+        QString map = mm.at(0);
+        QString mapset = QgsGrass::getDefaultMapset();
+        if  ( mm.size() > 1 ) mapset = mm.at(1);
+
+        if ( !QgsGrass::mapRegion ( QgsGrass::Raster,
+                QgsGrass::getDefaultGisdbase(),
+                QgsGrass::getDefaultLocation(), mapset, map,
+                &mapWindow ) )
+        {
+            QMessageBox::warning( 0, "Warning", "Cannot get region "
+                                  "of map " + obj->value() );
+            return false;
+        }
+       
+        // TODO: best way to set resolution ?
+        if ( count == 0)
+        {
+            QgsGrass::copyRegionExtent ( &mapWindow, window );
+            QgsGrass::copyRegionResolution ( &mapWindow, window );
+        }
+        else
+        {
+            QgsGrass::extendRegion ( &mapWindow, window );
+        }
+        count++;
+    }
+
+    return true;
+}
+
+QStringList QgsGrassMapcalc::output ( int type )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "gsGrassMapcalc::output" << std::endl;
+    #endif
+    QStringList list;
+    if ( type == QgsGrassModuleOption::Raster ) 
+    {
+        list.append ( mOutputLineEdit->text() );
+    }
+    return list;
+}
+
 QgsGrassMapcalc::~QgsGrassMapcalc()
 {
 }
