@@ -222,6 +222,9 @@ void QgsGrassPlugin::initGui()
   // Connect display region
   connect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(postRender(QPainter *)));
 
+ 
+  connect ( mCanvas, SIGNAL(layersChanged()), this, SLOT(setEditAction()) );
+
   // Init Region symbology
   mRegionPen.setColor( QColor ( settings.readEntry ("/GRASS/region/color", "#ff0000" ) ) );
   mRegionPen.setWidth( settings.readNumEntry ("/GRASS/region/width", 0 ) );
@@ -436,14 +439,38 @@ void QgsGrassPlugin::edit()
     return;
   }
 
+  mEditAction->setEnabled(false);
   QgsGrassEdit *ed = new QgsGrassEdit( mQgis, qGisInterface, mQgis, Qt::WType_Dialog );
 
   if ( ed->isValid() ) {
     ed->show();
     mCanvas->refresh();
+    connect(ed, SIGNAL(finished()), this, SLOT(setEditAction()));
   } else {
     delete ed;
+    mEditAction->setEnabled(true);
   }
+}
+
+void QgsGrassPlugin::setEditAction()
+{
+#ifdef QGISDEBUG
+    std::cout << "QgsGrassPlugin::setEditAction()" << std::endl;
+#endif
+
+    QgsMapLayer *layer = (QgsMapLayer *) qGisInterface->activeLayer();
+
+    if ( QgsGrassEdit::isEditable(layer) )
+    {
+        mEditAction->setEnabled(true);
+    }
+    else
+    {
+        mEditAction->setEnabled(false);
+    }
+
+    // TODO connect to currentItemChanged()? and disable this:
+    mEditAction->setEnabled(true);
 }
 
 void QgsGrassPlugin::newVector()
