@@ -1041,15 +1041,54 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
     di.setFile ( gisdbase + "/" + location + "/" + mapset + "/vector/" + mapName + "/dbln" );
     map.lastAttributesModified = di.lastModified();
 
+    // Do we have topology and cidx (level2)
+    int level = 2;
+    QgsGrass::resetError();
+    Vect_set_open_level (2);
+    Vect_open_old_head ( map.map, (char *) mapName.ascii(), (char *) mapset.ascii());
+    if ( QgsGrass::getError() == QgsGrass::FATAL ) {
+	std::cerr << "Cannot open GRASS vector head on level2: " 
+                  << QgsGrass::getErrorMessage().toLocal8Bit().data() << std::endl;
+        level = 1;
+    }
+    else
+    {
+        Vect_close ( map.map );
+    }
+
+    if ( level == 1 )
+    {
+        int ret = QMessageBox::question ( 0, "Warning",
+                      "GRASS vector map " + mapName + 
+                      + " does not have topology. Build topology?",
+                      QMessageBox::Yes,  QMessageBox::No );
+
+        if ( ret == QMessageBox::No ) return -1;
+    }
+
     // Open vector
     QgsGrass::resetError(); // to "catch" error after Vect_open_old()
-    Vect_set_open_level (2);
+    Vect_set_open_level (level);
     Vect_open_old ( map.map, (char *) mapName.ascii(), (char *) mapset.ascii());
 
     if ( QgsGrass::getError() == QgsGrass::FATAL ) {
 	std::cerr << "Cannot open GRASS vector: " << QgsGrass::getErrorMessage().toLocal8Bit().data() << std::endl;
 	return -1;
     }
+ 
+    if ( level == 1 )
+    {
+        QgsGrass::resetError();
+	Vect_build ( map.map, stderr );
+
+	if ( QgsGrass::getError() == QgsGrass::FATAL ) {
+	    std::cerr << "Cannot build topology: " 
+                      << QgsGrass::getErrorMessage().toLocal8Bit().data() 
+                      << std::endl;
+	    return -1;
+	}
+    }
+
     #ifdef QGISDEBUG
     std::cerr << "GRASS map successfully opened" << std::endl;
     #endif
