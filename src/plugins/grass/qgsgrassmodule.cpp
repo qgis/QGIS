@@ -1882,23 +1882,31 @@ void QgsGrassModuleInput::updateQgisLayers()
 	         if ( sourceMap != cm ) continue;
 	    }
 
-	    mLayerComboBox->insertItem( layer->name() );
-	    if ( layer->name() == current ) mLayerComboBox->setCurrentText ( current );
-
 	    mMaps.push_back ( map + "@" + mapset );
 
+            QString type;
 	    if ( geomType == QGis::WKBPoint ) {
-	        mVectorTypes.push_back ( "point" );
+	        type = "point";
 	    } else if ( geomType == QGis::WKBLineString ) {
-	        mVectorTypes.push_back ( "line" );
+	        type = "line";
 	    } else if ( geomType == QGis::WKBPolygon ) {
-	        mVectorTypes.push_back ( "area" );
+	        type = "area";
 	    } else {
-	        mVectorTypes.push_back ( "unknown" );
+	        type = "unknown";
 	    }
 
+            mVectorTypes.push_back ( type );
+
+            QString grassLayer = QString::number(provider->grassLayer());
+
+            QString label = layer->name() + " ( " + map + "@" + mapset 
+                            + " " + grassLayer + " " + type + " )";  
+
+	    mLayerComboBox->insertItem( label );
+	    if ( label == current ) mLayerComboBox->setCurrentText ( current );
+
 	    mMapLayers.push_back ( vector );
-	    mVectorLayerNames.push_back ( QString::number(provider->grassLayer()) );
+	    mVectorLayerNames.push_back ( grassLayer );
             std::vector<QgsField> fields = vector->fields();
 	    mVectorFields.push_back ( fields );
 	} 
@@ -1934,9 +1942,12 @@ void QgsGrassModuleInput::updateQgisLayers()
 
 	    if ( mUpdate && mapset != QgsGrass::getDefaultMapset() ) continue;
 
-	    mLayerComboBox->insertItem( layer->name() );
-	    if ( layer->name() == current ) mLayerComboBox->setCurrentText ( current );
 	    mMaps.push_back ( map + "@" + mapset );
+
+            QString label = layer->name() + " ( " + map + "@" + mapset + " )"; 
+
+	    mLayerComboBox->insertItem( label );
+	    if ( label == current ) mLayerComboBox->setCurrentText ( current );
 	}
     }
 }
