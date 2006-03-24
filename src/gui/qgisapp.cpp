@@ -4958,7 +4958,7 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
       {
         const QgsRasterDataProvider* dprovider = vlayer->getDataProvider();
         // does provider allow the identify map tool?
-        if (dprovider->capabilities() & QgsRasterDataProvider::Identify)
+        if ( dprovider && (dprovider->capabilities() & QgsRasterDataProvider::Identify))
         {
           mActionIdentify->setEnabled(TRUE);
         }
