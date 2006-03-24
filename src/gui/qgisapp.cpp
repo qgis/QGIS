@@ -4867,7 +4867,8 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
 
       const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>(layer);
       const QgsVectorDataProvider* dprovider = vlayer->getDataProvider();
-      if(vlayer)
+
+      if (dprovider)
 	{
 	  //does provider allow deleting of features?
 	  if(dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures)
@@ -4954,11 +4955,11 @@ void QgisApp::activateDeactivateLayerRelatedActions(const QgsMapLayer* layer)
       mActionMoveVertex->setEnabled(false);
 
       const QgsRasterLayer* vlayer = dynamic_cast<const QgsRasterLayer*> (layer);
-      if (vlayer)
+      const QgsRasterDataProvider* dprovider = vlayer->getDataProvider();
+      if (dprovider)
       {
-        const QgsRasterDataProvider* dprovider = vlayer->getDataProvider();
         // does provider allow the identify map tool?
-        if ( dprovider && (dprovider->capabilities() & QgsRasterDataProvider::Identify))
+        if (dprovider->capabilities() & QgsRasterDataProvider::Identify)
         {
           mActionIdentify->setEnabled(TRUE);
         }
