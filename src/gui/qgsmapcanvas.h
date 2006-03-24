@@ -194,7 +194,6 @@ class QgsMapCanvas : public Q3CanvasView
     void panActionEnd(QPoint releasePoint);
     //! Called when mouse is moving and pan is activated
     void panAction(QMouseEvent * event);
-
   
   public slots:
 

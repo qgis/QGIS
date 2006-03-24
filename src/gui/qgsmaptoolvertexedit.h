@@ -38,6 +38,8 @@ class QgsMapToolVertexEdit : public QgsMapTool
   
     //! constructor
     QgsMapToolVertexEdit(QgsMapCanvas* canvas, enum Tool tool);
+
+    virtual ~QgsMapToolVertexEdit();
     
     //! Overridden mouse move event
     virtual void canvasMoveEvent(QMouseEvent * e);
@@ -49,7 +51,9 @@ class QgsMapToolVertexEdit : public QgsMapTool
     virtual void canvasReleaseEvent(QMouseEvent * e);
 
     virtual QString toolName() { return MapTool_VertexEdit; }
-    
+
+    virtual void deactivate();
+
   private:
     
     //! create instance of rubber band

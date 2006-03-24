@@ -41,6 +41,9 @@ class QgsMapToolCapture : public QgsMapTool
     //! constructor
     QgsMapToolCapture(QgsMapCanvas* canvas, enum CaptureTool tool);
 
+    //! destructor
+    virtual ~QgsMapToolCapture();
+
     //! Overridden mouse move event
     virtual void canvasMoveEvent(QMouseEvent * e);
   
@@ -54,6 +57,8 @@ class QgsMapToolCapture : public QgsMapTool
     virtual void renderComplete();
     
     virtual QString toolName() { return MapTool_Capture; }
+
+    virtual void deactivate();
   
   protected:
     

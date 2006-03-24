@@ -30,12 +30,18 @@
 
 
 QgsMapToolCapture::QgsMapToolCapture(QgsMapCanvas* canvas, enum CaptureTool tool)
-  : QgsMapTool(canvas), mTool(tool)
+  : QgsMapTool(canvas), mTool(tool), mRubberBand(0)
 {
   mCapturing = FALSE;
   
   QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
   mCursor = QCursor(mySelectQPixmap, 8, 8);
+}
+
+QgsMapToolCapture::~QgsMapToolCapture()
+{
+  delete mRubberBand;
+  mRubberBand = 0;
 }
 
 
@@ -279,4 +285,10 @@ void QgsMapToolCapture::canvasPressEvent(QMouseEvent * e)
 
 void QgsMapToolCapture::renderComplete()
 {
+}
+
+void QgsMapToolCapture::deactivate()
+{
+  delete mRubberBand;
+  mRubberBand = 0;
 }
