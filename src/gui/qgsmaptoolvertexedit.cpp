@@ -29,11 +29,17 @@
 
 
 QgsMapToolVertexEdit::QgsMapToolVertexEdit(QgsMapCanvas* canvas, enum Tool tool)
-  : QgsMapTool(canvas), mTool(tool)
+  : QgsMapTool(canvas), mTool(tool), mRubberBand(0)
 {
   // TODO - select a real cursor
   QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
   mCursor = QCursor(mySelectQPixmap, 8, 8);
+}
+
+QgsMapToolVertexEdit::~QgsMapToolVertexEdit()
+{
+  delete mRubberBand;
+  mRubberBand = 0;
 }
 
 
@@ -239,7 +245,7 @@ void QgsMapToolVertexEdit::canvasReleaseEvent(QMouseEvent * e)
     return;
   }
   
-  if (vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries)
+  if (!(vlayer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries))
   {
     QMessageBox::information(0,"Change geometry",
                              "Data provider of the current layer doesn't allow changing geometries",
@@ -309,5 +315,11 @@ void QgsMapToolVertexEdit::createRubberBand()
                 project->readNumEntry("Digitizing", "/LineColorBluePart", 0));
   mRubberBand->setColor(color);
   mRubberBand->setWidth(project->readNumEntry("Digitizing", "/LineWidth", 1));
+}
+
+void QgsMapToolVertexEdit::deactivate()
+{
+  delete mRubberBand;
+  mRubberBand = 0;
 }
 

@@ -174,7 +174,6 @@ QgsMapLayer* QgsMapCanvas::getZpos(int index)
 void QgsMapCanvas::setCurrentLayer(QgsMapLayer* layer)
 {
   mCurrentLayer = layer;
-  std::cout << "QgsMapCanvas::setCurrentLayer" << std::endl;
 }
 
 double QgsMapCanvas::getScale()
@@ -1025,7 +1024,6 @@ void QgsMapCanvas::panAction(QMouseEvent * e)
   // update canvas
   updateContents();
 }
-
 
 void QgsMapCanvas::moveCanvasContents(bool reset)
 {
