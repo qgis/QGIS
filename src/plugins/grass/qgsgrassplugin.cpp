@@ -61,6 +61,7 @@ extern "C" {
 #include "../../src/providers/grass/qgsgrassprovider.h"
 
 //the gui subclass
+#include "qgsgrassutils.h"
 #include "qgsgrassattributes.h"
 #include "qgsgrassselect.h"
 #include "qgsgrassedit.h"
@@ -459,47 +460,11 @@ void QgsGrassPlugin::newVector()
     bool ok;
     QString name;
 
-    while (1)
-    {
-        name = QInputDialog::getText( "New GRASS vector",
-                "Enter new GRASS vector name:", QLineEdit::Normal,
-                name, &ok);
+    QgsGrassElementDialog dialog;
+    name = dialog.getItem ( "vector", "New vector name", 
+                        "New vector name", "", "", &ok );
 
-        if ( !ok ) return;
-
-        // Check if the name is valid
-        name = name.stripWhiteSpace();
-
-        if ( name.isEmpty() ) {
-            QMessageBox::warning( 0, "Warning", "Enter vector name" );
-            continue;
-        }
-
-        if ( Vect_legal_filename ( (char *) name.ascii() ) != 1 )
-        {
-	    QMessageBox::warning( 0, "Warning", "The name is not valid. "
-                        "A vector name can contain letters, digits and underscores "
-                        "and it must start with letter." );
-            continue;
-        } 
-
-        // Check if exists
-        QString head = QgsGrass::getDefaultGisdbase() + "/" 
-                       + QgsGrass::getDefaultLocation() + "/"
-		       + QgsGrass::getDefaultMapset() + "/vector/" 
-		       + name + "/head"; 
-
-        QFile file(head);
-        if ( file.exists() )
-        {
-             int ret = QMessageBox::question ( 0, "Warning", "The vector exists. "
-			  "Overwrite? ",  QMessageBox::Yes,  QMessageBox::No );
-             
-             if ( ret == QMessageBox::No ) continue;
-        }
-
-        break;
-    }
+    if ( !ok ) return;
     
     // Create new map
     QgsGrass::setMapset ( QgsGrass::getDefaultGisdbase(), 

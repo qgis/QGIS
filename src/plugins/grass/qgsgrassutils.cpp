@@ -22,9 +22,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFileInfo>
-
-//#include "qgis.h"
-//#include "qgsapplication.h"
+#include <QRegExpValidator>
+#include <QRegExp>
 
 extern "C" {
 #include <grass/gis.h>
@@ -106,6 +105,18 @@ QString QgsGrassElementDialog::getItem ( QString element,
     layout->addWidget( mLabel );
 
     mLineEdit = new QLineEdit ( text );
+    QRegExp rx;
+    if ( element == "vector" )
+    {
+	rx.setPattern("[A-Za-z_][A-Za-z0-9_]+");
+    }
+    else
+    {
+	rx.setPattern("[A-Za-z0-9_.]+");
+    }
+    QRegExpValidator *val = new QRegExpValidator( rx, this );
+    mLineEdit->setValidator ( val );
+
     layout->addWidget( mLineEdit );
 
     mErrorLabel = new QLabel ( "X" );
