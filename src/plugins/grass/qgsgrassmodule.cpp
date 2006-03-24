@@ -77,6 +77,7 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include <qgsrasterlayer.h>
+#include "qgsdatasourceuri.h"
 #include "qgsdataprovider.h"
 #include "qgsfield.h"
 #include "qgsfeature.h"
@@ -2122,7 +2123,7 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput (
     QString tit;
     if ( mDescription.isEmpty() ) 
     {
-	tit = "OGR/GDAL Input";
+	tit = "OGR/PostGIS/GDAL Input";
     } 
     else 
     {
@@ -2189,14 +2190,46 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
 	if (  mType == Ogr && layer->type() == QgsMapLayer::VECTOR ) 
 	{
 	    QgsVectorLayer *vector = (QgsVectorLayer*)layer;
-	    if ( vector->providerType() != "ogr" ) continue;
+	    if ( vector->providerType() != "ogr"
+                 && vector->providerType() != "postgres" ) continue;
 
 	    QgsDataProvider *provider = vector->getDataProvider();
-	    QString uri = provider->getDataSourceUri();
+
+            QString uri;
+            QString ogrLayer;
+            if ( vector->providerType() == "postgres" ) 
+            {
+                // Construct OGR DSN
+                QgsDataSourceURI *dsUri = provider->getURI();
+                uri = "PG:host=" + dsUri->host 
+                      + " dbname=" + dsUri->database; 
+
+                if ( dsUri->port.length() > 0 ) 
+		    uri += " port=" + dsUri->port;
+
+                if ( dsUri->username.length() > 0 ) 
+		    uri += " user=" + dsUri->username;
+
+                if ( dsUri->password.length() > 0 ) 
+		    uri += " password=" + dsUri->password;
+
+                ogrLayer = dsUri->schema + "." + dsUri->table;
+            }
+            else
+            {
+	        uri = provider->getDataSourceUri();
+                ogrLayer = "";
+            }
+
+            std::cerr << "uri = " << uri.ascii() << std::endl;
+            std::cerr << "ogrLayer = " << ogrLayer.ascii() << std::endl;
 
 	    mLayerComboBox->insertItem( layer->name() );
 	    if ( layer->name() == current ) mLayerComboBox->setCurrentText ( current );
+
 	    mUri.push_back ( uri );
+
+            mOgrLayers.push_back ( ogrLayer );
 	} 
 	else if ( mType == Gdal && layer->type() == QgsMapLayer::RASTER ) 
 	{
@@ -2216,20 +2249,52 @@ QStringList QgsGrassModuleGdalInput::options()
 
     QString opt(mKey + "=");
 
-    if ( current <  mUri.size() ) {
+    if ( current >=0 && current <  mUri.size() ) {
 	opt.append ( mUri[current] );
     }
     list.push_back( opt );
 
-    // TODO
-    /*
-    if ( !mOgrLayerOption.isNull() ) 
+    if ( !mOgrLayerOption.isNull() && mOgrLayers[current].length() > 0 ) 
     {
-	opt = mOgrLayerOption + "=" ;
+        opt = mOgrLayerOption + "=";
+
+        // OGR does not support schemas !!!
+        if ( current >=0 && current <  mUri.size() ) { 
+	    QStringList l = mOgrLayers[current].split("."); 
+	    opt += l.at(1);
+
+	    // Currently only PostGIS is using layer
+            //  -> layer -> PostGIS -> warning
+	    if  ( mOgrLayers[current].length() > 0 )
+	    {
+	         QMessageBox::warning( 0, "Warning", 
+                       "PostGIS driver in OGR does not support schemas!<br>"
+                       "Only the table name will be used.<br>"
+                       "It can result in wrong input if more tables of the same name<br>"
+                       "are present in the database." );
+	    }
+        }
+
 	list.push_back( opt );
     }
-    */
+
     return list;
+}
+
+QString QgsGrassModuleGdalInput::ready()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassModuleGdalInput::ready()" << std::endl;
+    #endif
+
+    QString error;
+
+    std::cerr << "count = " << mLayerComboBox->count() << std::endl;
+    if ( mLayerComboBox->count() == 0 )
+    {
+       error.append ( title() + ":&nbsp;no input" );
+    }
+    return error;
 }
 
 QgsGrassModuleGdalInput::~QgsGrassModuleGdalInput()

@@ -572,8 +572,9 @@ public:
 
     enum Type { Gdal, Ogr };
 
-    //! Retruns list of options which will be passed to module
-    virtual QStringList options(); 
+    //! Reimplemented
+    QStringList options(); 
+    QString ready();
 
 public slots:
     //! Fill combobox with currently available maps in QGIS canvas
