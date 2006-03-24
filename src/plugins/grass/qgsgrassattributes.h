@@ -80,6 +80,9 @@ public:
     //! Set Line (must be used if the line is rewritten)
     void setLine ( int line );
 
+    //! Reset buttons
+    void resetButtons();
+
 public slots:
     //! Update DB for current tab
     void on_updateButton_clicked() { updateAttributes(); }
