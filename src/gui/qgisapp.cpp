@@ -4463,6 +4463,7 @@ void QgisApp::addVectorLayer(QString vectorLayerPath, QString baseName, QString 
     // give it a random color
     QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer(layer->vectorType());  //add single symbol renderer as default
     layer->setRenderer(renderer);
+    layer->refreshLegend();
     // add it to the mapcanvas collection
     // mMapCanvas->addLayer(layer); No longer necessary since adding to registry will add to canvas
 
@@ -5162,6 +5163,7 @@ bool QgisApp::addRasterLayer(QFileInfo const & rasterFile, bool guiWarning)
   else
   {
     statusBar()->message(mMapCanvas->extent().stringRep(2));
+    layer->refreshLegend();
     mMapCanvas->freeze(false);
 
 // Let render() do its own cursor management
