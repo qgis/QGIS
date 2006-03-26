@@ -30,7 +30,10 @@ QgsGeometryVertexIndex::QgsGeometryVertexIndex( QgsGeometryVertexIndex const & r
 
 QgsGeometryVertexIndex & QgsGeometryVertexIndex::operator=( QgsGeometryVertexIndex const & rhs )
 {
-  mIndex = rhs.mIndex;
+  if(&rhs != this)
+  {
+    mIndex = rhs.mIndex;
+  }
   return *this;
 }
 
