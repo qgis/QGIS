@@ -92,8 +92,10 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
     createRubberBand();
 
     if (mStartPointValid)
-      mRubberBand->addPoint(QgsPoint(x1,y1));
-    mRubberBand->addPoint(point);
+      {
+	mRubberBand->addPoint(QgsPoint(x1,y1));
+      }
+    mRubberBand->addPoint(toMapCoords(e->pos()));
     mRubberBand->addPoint(QgsPoint(x2,y2));
 
   }
@@ -128,10 +130,14 @@ void QgsMapToolVertexEdit::canvasPressEvent(QMouseEvent * e)
     createRubberBand();
     
     if (mStartPointValid)
-      mRubberBand->addPoint(QgsPoint(x1,y1));
+      {
+	mRubberBand->addPoint(QgsPoint(x1,y1));
+      }
     mRubberBand->addPoint(toMapCoords(e->pos()));
     if (mStopPointValid)
-      mRubberBand->addPoint(QgsPoint(x2,y2));
+      {
+	mRubberBand->addPoint(QgsPoint(x2,y2));
+      }
           
   }
   else if (mTool == DeleteVertex)
