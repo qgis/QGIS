@@ -23,7 +23,6 @@ class QRect;
 class QStringList;
 class QCursor;
 class QLabel;
-class Q3ListViewItem;
 class QProgressBar;
 class QFileInfo;
 class QSettings;
@@ -185,8 +184,6 @@ public slots:
   void showCapturePointCoordinate(QgsPoint &);
   //! Slot to show current map scale;
   void showScale(QString theScale);
-  //! Disable/enable toolbar buttons as appropriate for selected layer
-  void currentLayerChanged(Q3ListViewItem *);
   //! Remove a layer from the map and legend
   void removeLayer();
   //! zoom to extent of layer

@@ -21,6 +21,7 @@
 class QCloseEvent;
 class QString;
 class Q3ListView;
+class Q3ListViewItem;
 class QDomNode;
 class QDomElement;
 

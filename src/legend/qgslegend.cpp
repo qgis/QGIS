@@ -56,9 +56,6 @@ const int AUTOSCROLL_MARGIN = 16;
 QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
   : QTreeWidget(parent), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0), mShowLegendLayerFiles(false)
 {
-  connect( this, SIGNAL(selectionChanged(QTreeWidgetItem *)),
-           this, SLOT(updateLegendItem(QTreeWidgetItem *)) );
-  
   connect( this, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
 	   this, SLOT(handleItemChange(QTreeWidgetItem*, int)));
   
@@ -106,18 +103,6 @@ void QgsLegend::addGroup()
     mStateOfCheckBoxes.insert(std::make_pair(group, Qt::Checked)); //insert the check state into the map to query for changes later
     setExpanded(indexFromItem(group), true);
 }
-
-void QgsLegend::updateLegendItem( QTreeWidgetItem * li )
-{
-  QgsLegendItem * qli = dynamic_cast<QgsLegendItem*>(li);
-
-  if ( ! qli )
-  {
-    qDebug( "QgsLegend::updateLegendItem(): couldn't get QgsLegendItem" );
-    return;
-  }
-
-} 
 
 void QgsLegend::removeAll()
 {

@@ -1074,15 +1074,13 @@ void QgisApp::setupConnections()
   connect(mMapCanvas, SIGNAL(extentsChanged(QgsRect )),this,SLOT(showExtents(QgsRect )));
   connect(mMapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(showScale(QString)));
   connect(mMapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(updateMouseCoordinatePrecision()));
-  
-  connect(mMapLegend, SIGNAL(currentChanged(Q3ListViewItem *)), this, SLOT(currentLayerChanged(Q3ListViewItem *)));
 
   connect(mRenderSuppressionCBox, SIGNAL(toggled(bool )), mMapCanvas, SLOT(setRenderFlag(bool)));
 }
 void QgisApp::createCanvas()
 {
   // "theMapCanvas" used to find this canonical instance later
-  mMapCanvas = new QgsMapCanvas(this, "theMapCanvas" );
+  mMapCanvas = new QgsMapCanvas(NULL, "theMapCanvas" );
   QWhatsThis::add(mMapCanvas, tr("Map canvas. This is where raster and vector layers are displayed when added to the map"));
   
   mMapCanvas->setMinimumWidth(10);
@@ -3775,81 +3773,6 @@ void QgisApp::zoomToLayerExtent()
       }
   }
 } // QgisApp::zoomToLayerExtent()
-
-
-
-void QgisApp::currentLayerChanged(Q3ListViewItem * lvi)
-{
-#ifdef QGISDEBUG
-  std::cout << "QgisApp::currentLayerChanged()" << std::endl;
-#endif
-  if (lvi)
-  {
-    // disable/enable toolbar buttons as appropriate based on selected
-    // layer type
-
-    toolPopupCapture->setItemEnabled(0,FALSE);
-    toolPopupCapture->setItemEnabled(1,FALSE);
-    toolPopupCapture->setItemEnabled(2,FALSE);
-    toolPopupCapture->setItemEnabled(3,FALSE);
-
-
-    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
-    if(llf)
-    {
-      QgsMapLayer *layer = llf->layer();
-      if (layer->type() == QgsMapLayer::RASTER)
-      {
-        //actionIdentify->setEnabled(FALSE);
-        mActionSelect->setEnabled(FALSE);
-        mActionOpenTable->setEnabled(FALSE);
-      }
-      else
-      {
-        //vector layer editing buttons
-        QgsMapLayer* mlayer=llf->layer();
-        if(mlayer)
-        {
-          QgsVectorLayer* vlayer=dynamic_cast<QgsVectorLayer*>(mlayer);
-          if(vlayer)
-          {
-            const QgsVectorDataProvider* provider=vlayer->getDataProvider();
-            if(provider)
-            {
-              int cap=vlayer->getDataProvider()->capabilities();
-              if(cap&QgsVectorDataProvider::DeleteFeatures)
-              {
-                toolPopupCapture->setItemEnabled(3,TRUE);
-              }
-              if(cap&QgsVectorDataProvider::AddFeatures)
-              {
-                if(vlayer->vectorType()==QGis::Point)
-                {
-                  toolPopupCapture->setItemEnabled(0,TRUE);
-                }
-                else if(vlayer->vectorType()==QGis::Line)
-                {
-                  toolPopupCapture->setItemEnabled(1,TRUE);
-                }
-                else if(vlayer->vectorType()==QGis::Polygon)
-                {
-                  toolPopupCapture->setItemEnabled(2,TRUE);
-                }
-              }
-            }
-          }
-
-          mActionIdentify->setEnabled(TRUE);
-          mActionSelect->setEnabled(TRUE);
-          mActionOpenTable->setEnabled(TRUE);
-        }
-
-        // notify the project we've made a change
-        QgsProject::instance()->dirty(true);
-      }
-    }
-  }
-} // QgisApp::currentLayerChanged
 
 
 QgisIface *QgisApp::getInterface()

@@ -34,7 +34,6 @@ class QDomNode;
 class QMouseEvent;
 class QTreeWidgetItem;
 class Q3PopupMenu;
-class Q3ListViewItem;
 
 /**
    \class QgsLegend
@@ -153,9 +152,6 @@ public slots:
 
     void setMapCanvas(QgsMapCanvas * canvas){mMapCanvas = canvas;}
 
-
- void updateLegendItem( QTreeWidgetItem* li );
- 
  /*!
    * Slot called to clear the tree of all items
    * @note Usually connected to a QgsMapCanvas that will ask its legend to clear itself.
