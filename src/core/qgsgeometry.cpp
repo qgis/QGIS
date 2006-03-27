@@ -771,106 +771,117 @@ bool QgsGeometry::vertexAt(double &x, double &y,
                 << "." << std::endl;
 #endif
 
-    if(mGeometry)
-    {
-        int wkbType;
+      if(mGeos)//try to find the vertex from the Geos geometry (it present)
+	{
+	  geos::CoordinateSequence* cs = mGeos->getCoordinates();
+	  if(cs)
+	    {
+	      const geos::Coordinate& coord = cs->getAt(atVertex.back());
+	      x = coord.x;
+	      y = coord.y;
+	      delete cs;
+	      return true;
+	    }
+	}
 
-        memcpy(&wkbType, (mGeometry+1), sizeof(int));
-        switch (wkbType)
-        {
+      else if(mGeometry)
+	{
+	  int wkbType;
+
+	  memcpy(&wkbType, (mGeometry+1), sizeof(int));
+	  switch (wkbType)
+	    {
             case QGis::WKBPoint:
-            {
+	      {
                 // TODO
                 return FALSE;
                 break;
-            }
+	      }
             case QGis::WKBLineString:
-            {
+	      {
                 unsigned char *ptr;
                 int *nPoints;
-
+		
                 // get number of points in the line
                 ptr = mGeometry + 5;     // now at mGeometry.numPoints
                 nPoints = (int *) ptr;
-
+		
 #ifdef QGISDEBUG
-      std::cout << "QgsGeometry::vertexAt: Number of points in WKBLineString is " << *nPoints
-                << "." << std::endl;
+		std::cout << "QgsGeometry::vertexAt: Number of points in WKBLineString is " << *nPoints
+			  << "." << std::endl;
 #endif
                 // return error if underflow
                 if (0 > atVertex.back())
-                {
-                  return FALSE;
-                }
+		  {
+		    return FALSE;
+		  }
                 // return error if overflow
                 if (*nPoints <= atVertex.back())
-                {
-                  return FALSE;
-                }
-
+		  {
+		    return FALSE;
+		  }
+		
                 // copy the vertex coordinates                      
                 ptr = mGeometry + 9 + (atVertex.back() * 16);
                 memcpy(&x, ptr, 8);
                 ptr += 8;
                 memcpy(&y, ptr, 8);
-
+		
 #ifdef QGISDEBUG
-      std::cout << "QgsGeometry::vertexAt: Point is (" << x << ", " << y << ")"
-                << "." << std::endl;
+		std::cout << "QgsGeometry::vertexAt: Point is (" << x << ", " << y << ")"
+			  << "." << std::endl;
 #endif
-                      
+		
                 break;
-            }
+	      }
             case QGis::WKBPolygon:
-            {
+	      {
                 // TODO
                 return false;
                 break;
-            }
+	      }
             case QGis::WKBMultiPoint:
-            {
+	      {
                 // TODO
                 return false;
                 break;
-            }
-
+	      }
+	      
             case QGis::WKBMultiLineString:
-            {
+	      {
                 // TODO
                 return false;
                 break;
-            }
-
+	      }
+	      
             case QGis::WKBMultiPolygon:
-            {
-                 // TODO
+	      {
+		// TODO
                 return false;
                 break;
-             }
+	      }
             default:
 #ifdef QGISDEBUG
-                qWarning("error: mGeometry type not recognized in QgsGeometry::vertexAt");
+	      qWarning("error: mGeometry type not recognized in QgsGeometry::vertexAt");
 #endif
-                return false;
-                break;
-        }
-        
+	      return false;
+	      break;
+	    }
+	  
 #ifdef QGISDEBUG
-      std::cout << "QgsGeometry::vertexAt: Exiting TRUE." << std::endl;
+	  std::cout << "QgsGeometry::vertexAt: Exiting TRUE." << std::endl;
 #endif
-        
-        return true;
-        
-    }
-    else
-    {
+	  
+	  return true;
+	  
+	}
+      else
+	{
 #ifdef QGISDEBUG
-        qWarning("error: no mGeometry pointer in QgsGeometry::vertexAt");
+	  qWarning("error: no mGeometry pointer in QgsGeometry::vertexAt");
 #endif
-        return false;
-    }
-
-    
+	  return false;
+	}     
 }
 
 
