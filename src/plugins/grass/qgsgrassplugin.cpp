@@ -207,9 +207,9 @@ void QgsGrassPlugin::initGui()
   mNewVectorAction->addTo(pluginMenu);
 
   // Add the toolbar to the main window
-  toolBarPointer = mQgis->addToolBar("GRASS"); 
-  toolBarPointer->setLabel(tr("GRASS"));
+  toolBarPointer = mQgis->addToolBar(tr("GRASS")); 
   toolBarPointer->setIconSize(QSize(24,24));
+  toolBarPointer->setObjectName("GRASS");
 
   // Add to the toolbar
   mAddVectorAction->addTo(toolBarPointer);
