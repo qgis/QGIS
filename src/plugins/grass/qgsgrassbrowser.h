@@ -101,6 +101,9 @@ private:
     QAction *mActionRenameMap;
     QAction *mActionSetRegion;
     QAction *mActionRefresh;
+
+    //! Escape HTML tags and convert \n to <br> 
+    QString formatMessage ( QString msg );
 };
 
 #endif // QGSGRASSBROWSER_H
