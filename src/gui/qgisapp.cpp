@@ -2823,6 +2823,8 @@ void QgisApp::fileSave()
         lastUsedDir, QObject::tr("QGis files (*.qgs)")) );
 
     saveFileDialog->setMode(QFileDialog::AnyFile);
+    saveFileDialog->setAcceptMode(QFileDialog::AcceptSave); 
+    saveFileDialog->setConfirmOverwrite( true ); 
 
     if (saveFileDialog->exec() == QDialog::Accepted)
     {
@@ -2845,28 +2847,6 @@ void QgisApp::fileSave()
       fullPath.setFile( newFilePath );
     }
 
-    //  Check to see if the file exists before just blasting it into
-    //  oblivion; abort saving the project if the user does not want to
-    //  over-write an existing file.
-
-    if ( fullPath.exists() )
-    {
-      if ( QMessageBox::No == QMessageBox::warning( 0x0, 
-            tr("Project file exists."),
-            tr("The given project file exists.  Do you wish to over-write it with a new one?"),
-            QMessageBox::Yes | QMessageBox::Default,
-            QMessageBox::No  | QMessageBox::Escape,
-            Qt::NoButton ) )
-      {
-        return;         // abort saving the file since the user
-        // doesn't want to over-write
-      }
-
-    }
-    else
-    {
-      QgsDebug( " project file does not already exist" );
-    }
 
 #ifdef QGISDEBUG
     const char* filePathStr = fullPath.filePath().ascii(); // debugger probe
