@@ -87,14 +87,16 @@ QgsLegend::~QgsLegend()
 
 void QgsLegend::handleCurrentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
+  QgsMapLayer *layer = currentLayer();
   if(mApp)
     {
-      mApp->activateDeactivateLayerRelatedActions(currentLayer());
+      mApp->activateDeactivateLayerRelatedActions( layer );
     }
   if(mMapCanvas)
     {
-      mMapCanvas->setCurrentLayer(currentLayer());
+      mMapCanvas->setCurrentLayer( layer );
     }
+  emit currentLayerChanged ( layer );
 }   
 
 void QgsLegend::addGroup()

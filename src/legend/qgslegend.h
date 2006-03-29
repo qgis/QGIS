@@ -327,5 +327,8 @@ private:
 signals:
   void zOrderChanged(QgsLegend * lv);
 
+  //! Emited whenever current (selected) layer changes
+  //  the pointer to layer can be null if no layer is selected
+  void currentLayerChanged ( QgsMapLayer * layer );
 };
 #endif
