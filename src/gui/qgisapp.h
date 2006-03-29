@@ -298,6 +298,8 @@ public slots:
   void select();
   //! refresh map canvas
   void refreshMapCanvas();
+  //! returns pointer to map legend
+  QgsLegend *legend() { return mMapLegend; }
 
 public slots:
   void showProgress(int theProgress, int theTotalSteps);
