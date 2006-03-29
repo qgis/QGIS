@@ -219,6 +219,11 @@ void QgsGrassBrowser::doubleClicked(const QModelIndex & index)
     addMap();
 }
 
+QString QgsGrassBrowser::formatMessage( QString msg )
+{
+    return msg.replace("<","&lt;").replace(">","&gt;").replace("\n","<br>");
+}
+
 void QgsGrassBrowser::copyMap()
 {
     #ifdef QGISDEBUG
@@ -274,14 +279,17 @@ void QgsGrassBrowser::copyMap()
 	module.append(".exe");
 #endif
         QProcess process(this);
-        process.start(module, QStringList( typeName + "=" + map + "@" + mapset + "," + newName ) );
+        QStringList args(typeName + "=" + map + "@" + mapset + "," + newName );
+        process.start(module, args );
         if ( !process.waitForFinished() || process.exitCode() != 0 )
         {
             QString output ( process.readAllStandardOutput () );
             QString error ( process.readAllStandardError () );
             QMessageBox::warning( 0, "Warning", "Cannot copy map "
-              + map + "@" + mapset + "<br>" + output.replace("\n","<br>")
-                                   + "<br>" + error.replace("\n","<br>") ); 
+                       + map + "@" + mapset 
+                       + "<br>command: " + module + " " + args.join(" ")
+                       + "<br>" + formatMessage(output)
+                       + "<br>" + formatMessage(error) ); 
         }
         else
         {
@@ -337,14 +345,17 @@ void QgsGrassBrowser::renameMap()
 	module.append(".exe");
 #endif
         QProcess process(this);
+        QStringList args(typeName + "=" + map + "," + newName );
         process.start(module, QStringList( typeName + "=" + map + "," + newName ) );
         if ( !process.waitForFinished() || process.exitCode() != 0 )
         {
             QString output ( process.readAllStandardOutput () );
             QString error ( process.readAllStandardError () );
             QMessageBox::warning( 0, "Warning", "Cannot rename map "
-              	             + map + "<br>" + output.replace("\n","<br>")
-                                   + "<br>" + error.replace("\n","<br>") ); 
+                       + map  
+                       + "<br>command: " + module + " " + args.join(" ")
+                       + "<br>" + formatMessage(output)
+                       + "<br>" + formatMessage(error) ); 
         }
         else
         {
@@ -389,14 +400,17 @@ void QgsGrassBrowser::deleteMap()
 	module.append(".exe");
 #endif
         QProcess process(this);
+        QStringList args(typeName + "=" + map );
         process.start(module, QStringList( typeName + "=" + map ) );
         if ( !process.waitForFinished() || process.exitCode() != 0 )
         {
             QString output ( process.readAllStandardOutput () );
             QString error ( process.readAllStandardError () );
             QMessageBox::warning( 0, "Warning", "Cannot delete map "
-                             + map + "<br>" + output.replace("\n","<br>")
-                                   + "<br>" + error.replace("\n","<br>") ); 
+                       + map  
+                       + "<br>command: " + module + " " + args.join(" ")
+                       + "<br>" + formatMessage(output)
+                       + "<br>" + formatMessage(error) ); 
         }
         else
         {
