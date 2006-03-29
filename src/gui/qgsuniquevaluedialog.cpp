@@ -57,8 +57,11 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
     if (renderer)
     {
 	mClassBreakBox->clear();
-	std::list<int>::iterator iter=renderer->classificationAttributes().begin();
-	int classattr=*iter;
+	
+	// XXX - mloskot - fix for Ticket #31 (bug)
+	std::list<int> attributes = renderer->classificationAttributes();
+	std::list<int>::iterator iter = attributes.begin();
+	int classattr = *iter;
 	mClassificationComboBox->setCurrentItem(classattr);
 
 	const std::list<QgsSymbol*> list = renderer->symbols();
