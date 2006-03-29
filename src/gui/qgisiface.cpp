@@ -24,9 +24,12 @@
 #include "qgisapp.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
+#include "qgslegend.h"
 
 QgisIface::QgisIface(QgisApp * _qgis, const char *name):qgis(_qgis)
 {
+    connect ( qgis->legend(), SIGNAL(currentLayerChanged(QgsMapLayer *)),
+              this, SLOT(emitCurrentLayerChanged(QgsMapLayer *)) );
 
 }
 
@@ -136,3 +139,9 @@ QgisIface::app()
 {
     return qgis;
 } // QgisIface::app()
+
+void QgisIface::emitCurrentLayerChanged ( QgsMapLayer * layer )
+{
+    // Does not compile
+    //emit currentLayerChanged ( layer );
+}
