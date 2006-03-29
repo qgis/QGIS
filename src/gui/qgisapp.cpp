@@ -2915,10 +2915,14 @@ void QgisApp::fileSaveAs()
   QString lastUsedDir = settings.readEntry("/UI/lastProjectDir", ".");
 
   auto_ptr<QFileDialog> saveFileDialog( new QFileDialog(this,
-      tr("Choose a QGIS project file"),
+      tr("Choose a filename to save the QGIS project file as"),
       lastUsedDir, QObject::tr("QGis files (*.qgs)")) );
 
   saveFileDialog->setMode(QFileDialog::AnyFile);
+
+  saveFileDialog->setAcceptMode(QFileDialog::AcceptSave);
+
+  saveFileDialog->setConfirmOverwrite( true );
 
   // if we don't have a filename, then obviously we need to get one; note
   // that the project file name is reset to null in fileNew()
@@ -2949,29 +2953,6 @@ void QgisApp::fileSaveAs()
     const char* filePathStr = newFilePath.ascii(); // debugger probe
 #endif
     fullPath.setFile( newFilePath );
-  }
-
-
-  //  Check to see if the file exists before just blasting it into
-  //  oblivion; abort saving the project if the user does not want to
-  //  over-write an existing file.
-
-  if ( fullPath.exists() )
-  {
-    if ( QMessageBox::No == QMessageBox::warning( 0x0, 
-          tr("Project file exists."),
-          tr("The given project file exists.  Do you wish to over-write it with a new one?"),
-          QMessageBox::Yes | QMessageBox::Default,
-          QMessageBox::No  | QMessageBox::Escape,
-          Qt::NoButton ) )
-    {
-      return;             // abort saving the file since the user
-      // doesn't want to over-write
-    }
-  }
-  else
-  {
-    QgsDebug( " project file does not already exist" );
   }
 
 
@@ -3164,6 +3145,11 @@ void QgisApp::saveMapAsImage()
 
   // allow for selection of more than one file
   myQFileDialog->setMode(QFileDialog::AnyFile);
+
+  myQFileDialog->setAcceptMode(QFileDialog::AcceptSave);
+
+  myQFileDialog->setConfirmOverwrite( true );
+
 
   if (!myLastUsedFilter.isEmpty())       // set the filter to the last one used
   {
