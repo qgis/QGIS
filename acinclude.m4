@@ -6,7 +6,8 @@ dnl   _lib
 dnl ------------------------------------------------------------------------
 AC_DEFUN([AQ_CHECK_LIB64],
 [
-if test `echo ${libdir} | sed -e 's#.*lib64.*#64#'` = "64"; then
+if test "`echo ${libdir} | sed -e 's#.*lib64.*#64#'`" = "64" -o \
+        "`uname -i | sed -e 's#.*x86.*#64#'`" = "64" ; then
   _lib="lib64"
 else
   _lib="lib"
