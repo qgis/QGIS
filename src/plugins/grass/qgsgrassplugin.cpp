@@ -18,6 +18,7 @@
 // includes
 #include "qgisapp.h"
 #include "qgsmaplayer.h"
+#include "qgslegend.h"
 #include "qgisiface.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -222,8 +223,11 @@ void QgsGrassPlugin::initGui()
   // Connect display region
   connect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(postRender(QPainter *)));
 
- 
-  connect ( mCanvas, SIGNAL(layersChanged()), this, SLOT(setEditAction()) );
+  setEditAction();
+  //connect ( qGisInterface, SIGNAL(currentLayerChanged(QgsMapLayer *)),
+  //          this, SLOT(setEditAction()) );
+  connect ( mQgis->legend(), SIGNAL(currentLayerChanged(QgsMapLayer *)),
+            this, SLOT(setEditAction()) );
 
   // Init Region symbology
   mRegionPen.setColor( QColor ( settings.readEntry ("/GRASS/region/color", "#ff0000" ) ) );
@@ -468,9 +472,6 @@ void QgsGrassPlugin::setEditAction()
     {
         mEditAction->setEnabled(false);
     }
-
-    // TODO connect to currentItemChanged()? and disable this:
-    mEditAction->setEnabled(true);
 }
 
 void QgsGrassPlugin::newVector()
