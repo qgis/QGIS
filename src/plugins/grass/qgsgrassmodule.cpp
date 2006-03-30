@@ -294,24 +294,20 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
     mXName = xname;
     mParent = parent;
 
-    Q3Process *process = new Q3Process( this );
-    process->addArgument( mXName );
-    process->addArgument( "--interface-description" );
+    QProcess process( this );
+    process.start ( mXName, QStringList ( "--interface-description") );
 
-    // Attention: if a binary has the .exe extention it must be 
-    // also in mXName but we cannot append it here because 
-    // the modules can also be a script => ???
-    // For now create in GISBASE/bin copy of each module without 
-    // .exe extension
-    if ( !process->start( ) ) {
+    // ? Does binary on Win need .exe extention ?
+    // Return code 255 (-1) was correct in GRASS < 6.1.0
+    if ( !process.waitForFinished() 
+         || (process.exitCode() != 0 && process.exitCode() != 255) )
+    {
+        std::cerr << "process.exitCode() = " <<  process.exitCode() << std::endl;
 	QMessageBox::warning( 0, "Warning", "Cannot start module " + mXName );
 	return;
     }
-    while ( process->isRunning () ) { // TODO: check time, if it is not running too long
-    }
-    QByteArray gDescArray = process->readStdout();
-    QByteArray errArray = process->readStderr();
-    delete process;
+    QByteArray gDescArray = process.readAllStandardOutput();
+    QByteArray errArray = process.readAllStandardError();
 
     QDomDocument gDoc ( "task" );
     QString err;
