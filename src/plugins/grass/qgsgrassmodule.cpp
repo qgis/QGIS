@@ -99,11 +99,12 @@ extern "C" {
 bool QgsGrassModule::mExecPathInited = 0;
 QStringList QgsGrassModule::mExecPath;
 
-bool QgsGrassModule::inExecPath ( QString file )
+QString QgsGrassModule::findExec ( QString file )
 {
     #ifdef QGISDEBUG
-    std::cerr << "QgsGrassModule::inExecPath()" << std::endl;
+    std::cerr << "QgsGrassModule::findExec()" << std::endl;
     #endif
+
     // Init mExecPath 
     // Windows searches first in current directory
     if ( !mExecPathInited ) 
@@ -115,17 +116,40 @@ bool QgsGrassModule::inExecPath ( QString file )
         mExecPath.prepend ( QgsApplication::applicationDirPath() );
         mExecPathInited = true;
     }
+
+    if ( QFile::exists ( file ) ) return file; // full path
  
     // Search for module
     for ( QStringList::iterator it = mExecPath.begin(); 
           it != mExecPath.end(); ++it ) 
     {
-        if ( QFile::exists ( *it + "/" + file ) ) 
+        QString full = *it + "/" + file;
+        if ( QFile::exists ( full ) ) 
         {
-            return true;
+            return full;
         }
     }
-    return false;
+
+    // Not found try with .exe
+#ifdef WIN32
+    for ( QStringList::iterator it = mExecPath.begin(); 
+          it != mExecPath.end(); ++it ) 
+    {
+        QString full = *it + "/" + file + ".exe";
+        if ( QFile::exists ( full ) ) 
+        {
+            return full;
+        }
+    }
+#endif
+
+    return QString();
+}
+
+bool QgsGrassModule::inExecPath ( QString file )
+{
+    if ( findExec(file).isNull() ) return false;
+    return true;
 }
 
 QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIface *iface, 
@@ -182,7 +206,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     // => test if the module is in path and if it is not 
     // add .exe and test again
 #ifdef WIN32
-    if ( inExecPath ( xName ) ) 
+    if ( inExecPath ( xName ) )
     {
         mXName = xName;
     }
@@ -190,7 +214,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIfa
     {
         mXName = xName + ".exe";
     }
-    else 
+    else
     {
         std::cerr << "Module " << xName.ascii() << " not found" << std::endl;
 	QMessageBox::warning( 0, "Warning", "Module " + xName + " not found" );
@@ -291,11 +315,53 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
     std::cerr << "PATH = " <<  getenv ("PATH") << std::endl;
     #endif
 
+    // Attention!: sh.exe (MSYS) sets $0 in scripts to file name
+    // without full path. Strange because when run from msys.bat
+    // $0 is set to full path. GRASS scripts call
+    // exec g.parser "$0" "$@"
+    // and it fails -> find and run with full path
+
     mXName = xname;
     mParent = parent;
+    
+    QString exe;
+
+#if defined(WIN32)
+    exe = QgsGrassModule::findExec ( xname );
+    if ( exe.isNull() )
+    {
+	QMessageBox::warning( 0, "Warning", "Cannot find module " 
+                                  + xname );
+        return;
+    }
+#else
+    exe = mXName;
+#endif
+
+    QString cmd;
+    QStringList arguments;
+
+#if defined(WIN32)
+    QFileInfo fi ( exe );
+    if ( fi.isExecutable() )
+    {
+        cmd = exe;
+    }
+    else // script
+    {
+	cmd = QgsApplication::applicationDirPath() + "/msys/bin/sh";
+
+	// Important! Otherwise it does not find DLL even if it is in PATH
+	arguments.append ( "--login" ); 
+	arguments.append ( exe );
+    }
+#else
+    cmd = exe;
+#endif
+    arguments.append ( "--interface-description" );
 
     QProcess process( this );
-    process.start ( mXName, QStringList ( "--interface-description") );
+    process.start ( cmd, arguments );
 
     // ? Does binary on Win need .exe extention ?
     // Return code 255 (-1) was correct in GRASS < 6.1.0
@@ -303,7 +369,10 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
          || (process.exitCode() != 0 && process.exitCode() != 255) )
     {
         std::cerr << "process.exitCode() = " <<  process.exitCode() << std::endl;
-	QMessageBox::warning( 0, "Warning", "Cannot start module " + mXName );
+	QMessageBox::warning( 0, "Warning", "Cannot start module " + mXName + "<br>"
+		  + cmd + " " + arguments.join(" ") + "<br>"
+                  + QString(process.readAllStandardOutput()) + "<br>"
+                  + QString(process.readAllStandardError()) );
 	return;
     }
     QByteArray gDescArray = process.readAllStandardOutput();
