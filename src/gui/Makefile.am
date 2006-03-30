@@ -144,6 +144,7 @@ libqgis_guiHEADERS =							\
 libqgis_gui_la_MOC =							\
 		qgisapp.moc.cpp						\
 		qgisinterface.moc.cpp	\
+		qgisiface.moc.cpp \
 		qgsabout.moc.cpp		\
 		qgsaddattrdialog.moc.cpp		\
 		qgsattributeactiondialog.moc.cpp	\
