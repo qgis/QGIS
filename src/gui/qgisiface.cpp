@@ -142,6 +142,5 @@ QgisIface::app()
 
 void QgisIface::emitCurrentLayerChanged ( QgsMapLayer * layer )
 {
-    // Does not compile
-    //emit currentLayerChanged ( layer );
+    emit currentLayerChanged ( layer );
 }
