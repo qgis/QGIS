@@ -27,6 +27,8 @@
 #include "qsettings.h"
 #include <QMessageBox>
 #include <QCoreApplication>
+
+#include "qgsapplication.h"
 #include "qgsgrass.h"
 
 extern "C" {
@@ -148,7 +150,6 @@ void QgsGrass::init( void )
     QString sep = ";";
 #else
     QString sep = ":";
-
 #endif
     QString path = "PATH=" + gisBase + "/bin";
     path.append ( sep + gisBase + "/scripts" );
@@ -162,6 +163,14 @@ void QgsGrass::init( void )
     // is not initialized at this point
     path.append ( sep + QCoreApplication::applicationDirPath() );
 #endif
+
+#ifdef WIN32
+    // Add path to MSYS bin
+    // Warning: MSYS sh.exe will translate this path to '/bin'
+    path.append ( sep + QCoreApplication::applicationDirPath() 
+                  + "/msys/bin/" );
+#endif
+
     QString p = getenv ("PATH");
     path.append ( sep + p );
 
