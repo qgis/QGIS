@@ -94,8 +94,13 @@ public:
     static QStringList mExecPath;
     static bool mExecPathInited;
     
+    // ! Find in exec path
+    //   returns full path or null string
+    //   appends automaticaly .exe on Windows
+    static QString findExec ( QString file );
+
     // ! Check if file is in mExecPath
-    bool inExecPath ( QString file );
+    static bool inExecPath ( QString file );
 
 public slots:
     //! Run the module with current options
