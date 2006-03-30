@@ -224,9 +224,7 @@ void QgsGrassPlugin::initGui()
   connect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(postRender(QPainter *)));
 
   setEditAction();
-  //connect ( qGisInterface, SIGNAL(currentLayerChanged(QgsMapLayer *)),
-  //          this, SLOT(setEditAction()) );
-  connect ( mQgis->legend(), SIGNAL(currentLayerChanged(QgsMapLayer *)),
+  connect ( qGisInterface, SIGNAL(currentLayerChanged(QgsMapLayer *)),
             this, SLOT(setEditAction()) );
 
   // Init Region symbology
