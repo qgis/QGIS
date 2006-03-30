@@ -30,7 +30,10 @@ class QgsMapLayer;
  * Only those functions "exposed" by QgisIface can be called from within a
  * plugin.
  */
-class QgisIface : public QgisInterface{
+class QgisIface : public QgisInterface
+{
+    Q_OBJECT;
+
     public:
         /**
          * Constructor.
