@@ -15,7 +15,6 @@ libqgis_raster_la_SOURCES = qgsrasterbandstats.h \
 	qgsrasterpyramid.h \
 	qgsrasterlayer.cpp \
 	qgsrasterlayer.h \
-	qgsrasterrendererif.h \
 	qgsrasterviewport.h \
 	$(libqgis_raster_la_MOC) 
 BUILT_SOURCES = $(libqgis_raster_la_MOC) $(libqgis_raster_la_SOURCES)
