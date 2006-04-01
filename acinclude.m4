@@ -157,9 +157,9 @@ QTDIR=`echo $QTDIR | perl -p -e 's/\\\\/\\//g'`
 if test -f $QTDIR/include/qt/qglobal.h; then
   QTINC=$QTDIR/include/qt
   QTVERTEST=$QTDIR/include/qt
-elif test -f $QTDIR/include/qt3/qglobal.h; then
-  QTINC=$QTDIR/include/qt3
-  QTVERTEST=$QTDIR/include/qt3
+elif test -f $QTDIR/include/qt4/Qt/qglobal.h; then
+  QTINC=$QTDIR/include/qt4
+  QTVERTEST=$QTDIR/include/qt4/Qt
 elif test -f $QTDIR/include/Qt/qglobal.h -a -f $QTDIR/src/corelib/global/qglobal.h; then
   # Windows: $QTDIR/include/Qt/qglobal.h includes $QTDIR/src/corelib/global/qglobal.h
   QTINC=$QTDIR/include
@@ -176,7 +176,7 @@ else
 fi
 
 # Figure out which version of Qt we are using
-AC_MSG_CHECKING([Qt version])
+AC_MSG_CHECKING([Qt version in $QTVERTEST])
 QT_VER=`grep 'define.*QT_VERSION_STR\W' $QTVERTEST/qglobal.h | perl -p -e 's/\D//g'`
 case "${QT_VER}" in
   41*)
@@ -191,30 +191,23 @@ case "${QT_VER}" in
       QT4_SQLINC=$QTDIR/lib/QtSql.framework/Headers
       QT4_XMLINC=$QTDIR/lib/QtXml.framework/Headers
       QT4_SVGINC=$QTDIR/lib/QtSvg.framework/Headers
+      QT4_SVGINC=$QTDIR/lib/QtTest.framework/Headers
 	  ;;
     *)
-      QT4_3SUPPORTINC=$QTDIR/include/Qt3Support
-      QT4_COREINC=$QTDIR/include/QtCore
-      QT4_GUIINC=$QTDIR/include/QtGui
-      QT4_NETWORKINC=$QTDIR/include/QtNetwork
-      QT4_OPENGLINC=$QTDIR/include/QtOpenGL
-      QT4_SQLINC=$QTDIR/include/QtSql
-      QT4_XMLINC=$QTDIR/include/QtXml
-      QT4_SVGINC=$QTDIR/include/QtSvg
+      QT4_3SUPPORTINC=$QTINC/Qt3Support
+      QT4_COREINC=$QTINC/QtCore
+      QT4_GUIINC=$QTINC/QtGui
+      QT4_NETWORKINC=$QTINC/QtNetwork
+      QT4_OPENGLINC=$QTINC/QtOpenGL
+      QT4_SQLINC=$QTINC/QtSql
+      QT4_XMLINC=$QTINC/QtXml
+      QT4_SVGINC=$QTINC/QtSvg
+      QT4_SVGINC=$QTINC/QtTest
       ;;
     esac
-    QT4_DESIGNERINC=$QTDIR/include/QtDesigner
+    QT4_DESIGNERINC=$QTINC/QtDesigner
     QT4_DEFAULTINC=$QTDIR/mkspecs/default
     ;;
-#  33*)
-#    QT_MAJOR="3"
-#    ;;
-#  32*)
-#    QT_MAJOR="3"
-#    ;;
-#  31*)
-#    QT_MAJOR="3"
-#    ;;
   *)
     AC_MSG_ERROR([*** Qt version 4.1 or higher is required])
     ;;
@@ -379,6 +372,7 @@ case "${host}" in
       QT_IS_MT="yes"
       QT_IS_EMBEDDED="yes"
     elif test "x`ls $QTDIR/${_lib}/libQtCore.* /usr/lib/libQtCore.* 2> /dev/null`" != x ; then
+AC_MSG_RESULT([libQtCore found])
       QT_LIB="-lQtCore -lQt3Support -lQtGui -lQtNetwork -lQtSvg"
 QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QTINC -I$QT4_SVGINC"
       QT_IS_MT="yes"
@@ -407,7 +401,7 @@ case "${host}" in
     ;;
 
   *linux*)
-    QT_LIBS="$QT_LIB"
+    QT_LIBS="$QT_LIB -lQtCore -lQt3Support -lQtGui -lQtNetwork -lQtXml -lQtSvg -lQTest"
     if test $QT_IS_STATIC = yes && test $QT_IS_EMBEDDED = no; then
       QT_LIBS="$QT_LIBS -L$x_libraries -lXext -lX11 -lm -lSM -lICE -ldl -ljpeg"
     fi
