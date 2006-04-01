@@ -76,8 +76,7 @@ class QgsGrassEditLayer : public QgsMapCanvasItem
     
     QgsGrassEditLayer(QgsMapCanvas* mapCanvas):QgsMapCanvasItem(mapCanvas)
     {
-      setResizeType(ResizeManual);
-      updatePositionManual();
+      updatePosition();
     }
     
     virtual void drawShape(QPainter & p)
@@ -85,7 +84,7 @@ class QgsGrassEditLayer : public QgsMapCanvasItem
       p.drawPixmap(0,0, mPixmap);
     }
     
-    virtual void updatePositionManual()
+    virtual void updatePosition()
     {
       int width = mMapCanvas->size().width();
       int height = mMapCanvas->size().height();
