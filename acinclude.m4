@@ -191,7 +191,7 @@ case "${QT_VER}" in
       QT4_SQLINC=$QTDIR/lib/QtSql.framework/Headers
       QT4_XMLINC=$QTDIR/lib/QtXml.framework/Headers
       QT4_SVGINC=$QTDIR/lib/QtSvg.framework/Headers
-      QT4_SVGINC=$QTDIR/lib/QtTest.framework/Headers
+      QT4_TESINC=$QTDIR/lib/QtTest.framework/Headers
 	  ;;
     *)
       QT4_3SUPPORTINC=$QTINC/Qt3Support
@@ -202,7 +202,7 @@ case "${QT_VER}" in
       QT4_SQLINC=$QTINC/QtSql
       QT4_XMLINC=$QTINC/QtXml
       QT4_SVGINC=$QTINC/QtSvg
-      QT4_SVGINC=$QTINC/QtTest
+      QT4_TESTINC=$QTINC/QtTest
       ;;
     esac
     QT4_DESIGNERINC=$QTINC/QtDesigner
@@ -273,7 +273,7 @@ if test $QT_MAJOR = "3" ; then
 QT_CXXFLAGS="-I$QTINC"
 fi
 if test $QT_MAJOR = "4" ; then
-QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QTINC -I$QT4_SVGINC"
+QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QTINC -I$QT4_SVGINC -I$QT4_TESTINC"
 fi
 QT_IS_EMBEDDED="no"
 # On unix, figure out if we're doing a static or dynamic link
@@ -335,7 +335,7 @@ case "${host}" in
       QT_IS_EMBEDDED="yes"
     elif test "x`ls $QTDIR/lib/QtCore.framework/QtCore 2> /dev/null`" != x ; then
       QT_LIB="-Xlinker -F$QTDIR/lib -framework QtCore -framework Qt3Support -framework QtGui -framework QtNetwork -framework QtXml -framework QtSvg"
-      QT_CXXFLAGS="-DQT3_SUPPORT -F$QTDIR/lib -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QT4_SVGINC"
+      QT_CXXFLAGS="-DQT3_SUPPORT -F$QTDIR/lib -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QT4_SVGINC -I$QT4_TESTINC"
       QT_IS_MT="yes"
     fi
     ;;
@@ -374,7 +374,7 @@ case "${host}" in
     elif test "x`ls $QTDIR/${_lib}/libQtCore.* /usr/lib/libQtCore.* 2> /dev/null`" != x ; then
 AC_MSG_RESULT([libQtCore found])
       QT_LIB="-lQtCore -lQt3Support -lQtGui -lQtNetwork -lQtSvg"
-QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QTINC -I$QT4_SVGINC"
+QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QTINC -I$QT4_SVGINC -I$QT4_TESTINC"
       QT_IS_MT="yes"
     fi
     ;;
