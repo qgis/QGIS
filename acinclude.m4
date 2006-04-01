@@ -391,7 +391,7 @@ QT_GUILINK=""
 QASSISTANTCLIENT_LDADD="-lqassistantclient"
 case "${host}" in
   *-mingw*)
-     QT_LIBS="-lQtCore4 -lQt3Support4 -lQtGui4 -lQtNetwork4 -lQtXml4 -lQtSvg4"
+     QT_LIBS="-lQtCore4 -lQt3Support4 -lQtGui4 -lQtNetwork4 -lQtXml4 -lQtSvg4 -lQtTest"
     ;;
   *irix*)
     QT_LIBS="$QT_LIB"
@@ -401,7 +401,7 @@ case "${host}" in
     ;;
 
   *linux*)
-    QT_LIBS="$QT_LIB -lQtCore -lQt3Support -lQtGui -lQtNetwork -lQtXml -lQtSvg -lQTest"
+    QT_LIBS="$QT_LIB -lQtCore -lQt3Support -lQtGui -lQtNetwork -lQtXml -lQtSvg -lQtTest"
     if test $QT_IS_STATIC = yes && test $QT_IS_EMBEDDED = no; then
       QT_LIBS="$QT_LIBS -L$x_libraries -lXext -lX11 -lm -lSM -lICE -ldl -ljpeg"
     fi
