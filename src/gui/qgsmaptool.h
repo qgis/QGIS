@@ -46,10 +46,16 @@ class QgsMapTool
     //! Called when rendering has finished
     virtual void renderComplete() {}
     
+    /** Use this to associate a button, toolbutton, menu entry etc
+     * that inherits qaction to this maptool. Then when the setMapTool
+     * method of mapcanvas is called the action state will be set to on.
+     * Usually this will cause e.g. a toolbutton to appear pressed in and
+     * the previously used toolbutton to pop out. */
     void setAction(QAction* action) { mAction = action; }
     
     QAction* action() { return mAction; }
     
+    /** TODO change this method name to bool isZoomTool() ???? */
     virtual QString toolName() { return "generic tool"; }
     
     //! called when set as currently active map tool
