@@ -44,9 +44,8 @@ class QgsVertexMarker : public QgsMapCanvasItem
     void setIconSize(int iconSize);
     
     void drawShape(QPainter & p);
-    
-    //! handler for manual updating of position and size
-    void updatePositionManual();
+
+    void updatePosition();
     
   protected:
     

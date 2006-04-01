@@ -25,7 +25,7 @@
 
 QgsMapCanvasItem::QgsMapCanvasItem(QgsMapCanvas* mapCanvas)
   : Q3CanvasRectangle(mapCanvas->canvas()), mMapCanvas(mapCanvas),
-    mResizeType(ResizeAuto), mPanningOffset(0,0)
+    mPanningOffset(0,0)
 {
   //setCanvas(mapCanvas->canvas());
 }
@@ -65,43 +65,23 @@ void QgsMapCanvasItem::setRect(const QgsRect& r)
 
 void QgsMapCanvasItem::updatePosition()
 {
-  if (mResizeType == ResizeAuto)
+  QRect r; // empty rect by default
+  if (!mRect.isEmpty())
   {
-    QRect r; // empty rect by default
-    if (!mRect.isEmpty())
-    {
-      r = QRect(toCanvasCoords(QgsPoint(mRect.xMin(), mRect.yMin())),
-                toCanvasCoords(QgsPoint(mRect.xMax(), mRect.yMax())));
-      r = r.normalized();
-    }
-    move(r.left(), r.top());
-    setSize(r.width(), r.height());
+    r = QRect(toCanvasCoords(QgsPoint(mRect.xMin(), mRect.yMin())),
+        toCanvasCoords(QgsPoint(mRect.xMax(), mRect.yMax())));
+    r = r.normalized();
   }
-  else
-  {
-    updatePositionManual();
-  }
+  move(r.left(), r.top());
+  setSize(r.width(), r.height());
 
 #ifdef QGISDEBUG
-    std::cout << "QgsMapCanvasItem::updatePosition: " << (mResizeType == ResizeAuto ? "<AUTO>" : "<MANUAL>")
-      << " [" << (int) x() << "," << (int) y() << "]-[" << width() << "x" << height() << "]" << std::endl;
+  std::cout << "QgsMapCanvasItem::updatePosition: "  << " [" << (int) x() 
+    << "," << (int) y() << "]-[" << width() << "x" << height() << "]" << std::endl;
 #endif
 }
 
 
-void QgsMapCanvasItem::drawShape(QPainter & p)
-{
-#ifdef QGISDEBUG
-  std::cout << "drawShape: WARNING: this function should be reimplemented in child class!" << std::endl;
-#endif
-}
-
-void QgsMapCanvasItem::updatePositionManual()
-{
-#ifdef QGISDEBUG
-  std::cout << "updatePositionManual: WARNING: this function should be reimplemented in child class!" << std::endl;
-#endif
-}
 
 void QgsMapCanvasItem::updateCanvas()
 {
@@ -109,10 +89,6 @@ void QgsMapCanvasItem::updateCanvas()
   mMapCanvas->canvas()->update(); //Contents();
 }
 
-void QgsMapCanvasItem::setResizeType(ResizeType type)
-{
-  mResizeType = type;
-}
 
 void QgsMapCanvasItem::setPanningOffset(const QPoint& point)
 {

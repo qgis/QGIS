@@ -25,7 +25,7 @@ class QPainter;
 
 class QgsMapCanvasItem : public QObject, public Q3CanvasRectangle
 {
-  Q_OBJECT
+  Q_OBJECT;
   
   protected:
     
@@ -35,15 +35,11 @@ class QgsMapCanvasItem : public QObject, public Q3CanvasRectangle
     virtual ~QgsMapCanvasItem();
     
     //! function to be implemented by derived classes
-    virtual void drawShape(QPainter & p);
-    
-    //! handler for manual updating of position and size
-    virtual void updatePositionManual();
+    virtual void drawShape(QPainter & p)=0;
     
     //! schedules map canvas for repaint
     void updateCanvas();
     
-    enum ResizeType { ResizeAuto, ResizeManual };
   
   public:
     
@@ -62,13 +58,13 @@ class QgsMapCanvasItem : public QObject, public Q3CanvasRectangle
     //! transformation from map coordinates to screen coordinates
     QPoint toCanvasCoords(const QgsPoint& point);
     
-    //! changes position updating policy
-    void setResizeType(ResizeType type);
     
     
   public slots:
     
-    //! called on changed extents or changed item rectangle
+    /** called on changed extents or changed item rectangle
+     * Override this in your subclass if you wish to have custom
+     * behaviour for when the canvas area of interest is changed */
     void updatePosition();
 
   protected:
@@ -78,9 +74,6 @@ class QgsMapCanvasItem : public QObject, public Q3CanvasRectangle
     
     //! canvas item rectangle (in map coordinates)
     QgsRect mRect;
-    
-    //! determines which position updating policy will be used
-    ResizeType mResizeType;
 
     //! offset from normal position due current panning operation,
     //! used when converting map coordinates to move map canvas items

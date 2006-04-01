@@ -24,7 +24,6 @@ QgsVertexMarker::QgsVertexMarker(QgsMapCanvas* mapCanvas)
 {
   mIconSize = 10;
   mIconType = ICON_X;
-  mResizeType = ResizeManual;
 }
 
 void QgsVertexMarker::setIconType(int type)
@@ -79,7 +78,7 @@ void QgsVertexMarker::drawShape(QPainter & p)
 }
     
 
-void QgsVertexMarker::updatePositionManual()
+void QgsVertexMarker::updatePosition()
 {
   QPoint pt = toCanvasCoords(mCenter);
   int s = (mIconSize - 1) / 2;
