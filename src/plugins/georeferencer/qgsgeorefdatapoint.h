@@ -15,7 +15,7 @@ class QgsGeorefDataPoint : public QgsMapCanvasItem
     virtual void drawShape(QPainter & p);
         
     //! handler for manual updating of position and size
-    virtual void updatePositionManual();
+    virtual void updatePosition();
     
     //! returns coordinates of the point
     QgsPoint pixelCoords() { return mPixelCoords; }

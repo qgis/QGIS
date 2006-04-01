@@ -8,7 +8,6 @@ QgsGeorefDataPoint::QgsGeorefDataPoint(QgsMapCanvas* mapCanvas, int id,
  : QgsMapCanvasItem(mapCanvas), mId(id),
    mPixelCoords(pixelCoords), mMapCoords(mapCoords)
 {
-  mResizeType = ResizeManual;
   updatePosition();
 }
 
@@ -35,14 +34,14 @@ void QgsGeorefDataPoint::drawShape(QPainter & p)
   setSize(textBounds.width() + 6, textBounds.height() + 6);
 }
 
-void QgsGeorefDataPoint::updatePositionManual()
+void QgsGeorefDataPoint::updatePosition()
 {
   QPoint pt = toCanvasCoords(mPixelCoords);
   move(pt.x() - 2, pt.y() - 2);
   show();
 
 //#ifdef QGISDEBUG
-  std::cout << "georefDataPoint::updatePositionManual: " << pt.x() << "," << pt.y() << std::endl;
+  std::cout << "georefDataPoint::updatePosition: " << pt.x() << "," << pt.y() << std::endl;
 //#endif
 
 }
