@@ -557,12 +557,66 @@ bool QgsGeometry::moveVertexAt(double x, double y,
                 << "." << std::endl;
 #endif
 
-  // Do just-in-time conversion to GEOS
-  // TODO: This should be more of a "import to GEOS" since GEOS will be the home geometry.
   exportWkbToGeos();
 
   if (mGeos)
   {
+    geos::CoordinateSequence* old_sequence = mGeos->getCoordinates();
+    geos::CoordinateSequence* new_sequence;
+    if(moveVertexAt(x, y, atVertex.back(), old_sequence, &new_sequence))
+      {
+	switch (mGeos->getGeometryTypeId())
+	  {
+	  case geos::GEOS_POINT:
+	    {
+	      delete new_sequence;
+	      return false;
+	    }  
+	  case geos::GEOS_LINESTRING:
+	    {
+	      setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(new_sequence) ) );
+	      break;
+	    } 
+	  case geos::GEOS_POLYGON:
+	    {
+	      //make sure the ring is closed if the first/last point is moved
+	      if(atVertex.back() == 0)
+		{
+		  new_sequence->setAt(geos::Coordinate(x, y), new_sequence->getSize()-1);
+		}
+	      else if(atVertex.back() == new_sequence->getSize()-1)
+		{
+		  new_sequence->setAt(geos::Coordinate(x, y), 0);
+		}
+#ifdef QGISDEBUG
+	      for(int i = 0; i < new_sequence->getSize(); ++i)
+		{
+		  qWarning(QString::number(new_sequence->getAt(i).x)+"//"+QString::number(new_sequence->getAt(i).y));
+		}
+#endif
+		geos::LinearRing* theRing;	
+		try
+		  {
+		    theRing = geosGeometryFactory->createLinearRing(new_sequence);
+		  }
+		catch(geos::IllegalArgumentException* e)
+		  {
+		    return false;
+		  }
+	      std::vector<geos::Geometry*>* holes = new std::vector<geos::Geometry*>(); //no holes
+	      setGeos(static_cast<geos::Geometry*>(geosGeometryFactory->createPolygon(theRing, holes)));
+	      break;
+	    }
+	  }
+	delete old_sequence;
+	mDirtyWkb = true;
+	return true;
+      }
+    else
+      {
+	return false;
+      }
+#if 0
     switch (mGeos->getGeometryTypeId())
     {
       case geos::GEOS_POINT:                 // a point
@@ -630,7 +684,7 @@ bool QgsGeometry::moveVertexAt(double x, double y,
       } // case geos::GEOS_GEOMETRYCOLLECTION
   
     } // switch (mGeos->getGeometryTypeId())
-
+#endif //0
   } // if (mGeos)
 
   return FALSE;
@@ -908,6 +962,21 @@ QgsPoint QgsGeometry::closestVertexWithContext(QgsPoint& point,
 
   if (mGeos)
   {
+    geos::CoordinateSequence* sequence = mGeos->getCoordinates();
+	if(sequence)
+	  {
+	    for(int i = 0; i < sequence->getSize(); ++i)
+	      {
+		double testDist = point.sqrDist(sequence->getAt(i).x, sequence->getAt(i).y);
+		if(testDist < sqrDist)
+		  {
+		    closestVertexIndex = i;
+		    sqrDist = testDist;
+		  }
+	      }
+	  }
+	atVertex.push_back(closestVertexIndex);
+#if 0
     switch (mGeos->getGeometryTypeId())
     {
       case geos::GEOS_POINT:                 // a point
@@ -957,7 +1026,20 @@ QgsPoint QgsGeometry::closestVertexWithContext(QgsPoint& point,
   
       case geos::GEOS_POLYGON:               // a polygon
       {
-        // TODO
+	geos::CoordinateSequence* sequence = mGeos->getCoordinates();
+	if(sequence)
+	  {
+	    for(int i = 0; i < sequence->getSize(); ++i)
+	      {
+		double testDist = point.sqrDist(sequence->getAt(i).x, sequence->getAt(i).y);
+		if(testDist < sqrDist)
+		  {
+		    closestVertexIndex = i;
+		    sqrDist = testDist;
+		  }
+	      }
+	  }
+	atVertex.push_back(closestVertexIndex);
         break;
       } // case geos::GEOS_POLYGON
   
@@ -985,7 +1067,7 @@ QgsPoint QgsGeometry::closestVertexWithContext(QgsPoint& point,
         break;
       } // case geos::GEOS_GEOMETRYCOLLECTION
     }
-
+#endif
   } // if (mGeos)
 
   return minDistPoint;
@@ -1850,10 +1932,6 @@ bool QgsGeometry::exportWkbToGeos() const
 bool QgsGeometry::exportGeosToWkb() const
 // TODO: Make this work
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsGeometry::exportGeosToWkb: entered." << std::endl;
-#endif
-
   if (!mDirtyWkb)
   {
     // No need to convert again
@@ -1875,11 +1953,6 @@ bool QgsGeometry::exportGeosToWkb() const
 
   // set up byteOrder
   char byteOrder = 1;   // TODO
-
-#ifdef QGISDEBUG
-  std::cout << "QgsGeometry::exportGeosToWkb: Testing mGeos->getGeometryTypeId() = '"
-            << mGeos->getGeometryTypeId() << "'." << std::endl;
-#endif
 
   switch (mGeos->getGeometryTypeId())
   {
@@ -1943,10 +2016,9 @@ bool QgsGeometry::exportGeosToWkb() const
       }
 
       mDirtyWkb = FALSE;
+      return true;
 
       // TODO: Deal with endian-ness
-
-      break;
     } // case geos::GEOS_LINESTRING
 
     case geos::GEOS_LINEARRING:            // a linear ring (linestring with 1st point == last point)
@@ -1957,7 +2029,96 @@ bool QgsGeometry::exportGeosToWkb() const
 
     case geos::GEOS_POLYGON:               // a polygon
     {
-      // TODO
+      int geometrySize;
+      double x, y; //point coordinates
+      geos::Polygon* thePolygon = dynamic_cast<geos::Polygon*>(mGeos);
+      const geos::LineString* theRing = 0;
+      int nPointsInRing = 0;
+
+      if(thePolygon)
+	{
+	  //first calculate the geometry size
+	  geometrySize = 1 + 2*sizeof(int); //endian, type, number of rings
+	  theRing = thePolygon->getExteriorRing();
+	  if(theRing)
+	    {
+	      geometrySize += sizeof(int);
+	      geometrySize += theRing->getNumPoints()*2*sizeof(double);
+	    }
+	  for(int i = 0; i < thePolygon->getNumInteriorRing(); ++i)
+	    {
+	      geometrySize += sizeof(int); //number of points in ring
+	      theRing = thePolygon->getInteriorRingN(i);
+	      if(theRing)
+		{
+		  geometrySize += theRing->getNumPoints()*2*sizeof(double);
+		}
+	    }
+    
+	    mGeometry = new unsigned char[geometrySize];
+
+	    //then fill the geometry itself into the wkb
+	    int position = 0;
+	    // assign byteOrder
+	    memcpy(mGeometry, &byteOrder, 1);
+	    position += 1;
+	    //endian flag must be added by QgsVectorLayer
+	    int wkbtype=QGis::WKBPolygon;
+	    memcpy(&mGeometry[position],&wkbtype, sizeof(int));
+	    position += sizeof(int);
+	    int nRings = thePolygon->getNumInteriorRing()+1;
+	    memcpy(&mGeometry[position], &nRings, sizeof(int));
+	    position += sizeof(int);
+
+	    //exterior ring first
+	    theRing = thePolygon->getExteriorRing();
+	    if(theRing)
+	      {
+		nPointsInRing = theRing->getNumPoints();
+		memcpy(&mGeometry[position], &nPointsInRing, sizeof(int));
+		position += sizeof(int);
+		const geos::CoordinateSequence* ringSequence = theRing->getCoordinatesRO();
+		//for(int j = 0; j < nPointsInRing; ++j)
+		for(int j = 0; j <ringSequence->getSize(); ++j)
+		      {
+			//x = theRing->getPointN(j)->getX();
+			x = ringSequence->getAt(j).x;
+			memcpy(&mGeometry[position], &x, sizeof(double));
+			position += sizeof(double);
+			//y = theRing->getPointN(j)->getY();
+			y = ringSequence->getAt(j).y;
+			memcpy(&mGeometry[position], &y, sizeof(double));
+			position += sizeof(double);
+		      }
+	      }
+
+	    //interior rings after
+	    for(int i = 0; i < thePolygon->getNumInteriorRing(); ++i)
+	      {
+		theRing = thePolygon->getInteriorRingN(i);
+		if(theRing)
+		  {
+		    nPointsInRing = theRing->getNumPoints();
+		    memcpy(&mGeometry[position], &nPointsInRing, sizeof(int));
+		    position += sizeof(int);
+		    for(int j = 0; j < nPointsInRing; ++j)
+		      {
+			x = theRing->getPointN(j)->getX();
+			memcpy(&mGeometry[position], &x, sizeof(double));
+			position += sizeof(double);
+			y = theRing->getPointN(j)->getY();
+			memcpy(&mGeometry[position], &y, sizeof(double));
+			position += sizeof(double);
+		      }
+		  }
+	      }
+	    mDirtyWkb = FALSE;
+	    return true;
+	}
+      else
+	{
+	  //error
+	}
       break;
     } // case geos::GEOS_POLYGON
 

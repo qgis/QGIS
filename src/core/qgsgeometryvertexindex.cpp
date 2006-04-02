@@ -49,6 +49,12 @@ void QgsGeometryVertexIndex::push_back(int& i)
 
 int QgsGeometryVertexIndex::back()
 {
+#ifdef QGISDEBUG
+  for(std::vector<int>::iterator it = mIndex.begin(); it != mIndex.end(); ++it)
+    {
+      qWarning("mIndex contains: "+QString::number(*it));
+    }
+#endif
   return mIndex.back();
 }
 
