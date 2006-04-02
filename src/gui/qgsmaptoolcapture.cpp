@@ -212,8 +212,8 @@ void QgsMapToolCapture::canvasReleaseEvent(QMouseEvent * e)
         int length=mCaptureList.size()+1;//+1 because the first point is needed twice
         int numrings=1;
         memcpy(&wkb[1],&wkbtype, sizeof(int));
-        memcpy(&wkb[5],&numrings,sizeof(int));
-        memcpy(&wkb[9],&length, sizeof(int));
+        memcpy(&wkb[1+sizeof(int)],&numrings,sizeof(int));
+        memcpy(&wkb[1+2*sizeof(int)],&length, sizeof(int));
         int position=1+3*sizeof(int);
         double x,y;
         std::list<QgsPoint>::iterator it;

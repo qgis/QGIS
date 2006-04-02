@@ -279,9 +279,8 @@ void QgsMapToolVertexEdit::canvasReleaseEvent(QMouseEvent * e)
     delete mRubberBand;
     mRubberBand = 0;
   
-    // TODO: Find nearest line portion of the selected line, add a node at the mouse location
-  
     // Add the new vertex
+    //todo: snap to nearest vertex of vectorlayer
     vlayer->insertVertexBefore(point.x(), point.y(), mSnappedAtFeatureId, mSnappedBeforeVertex);
     mCanvas->refresh();
   }
@@ -293,7 +292,7 @@ void QgsMapToolVertexEdit::canvasReleaseEvent(QMouseEvent * e)
 
     delete mRubberBand;
     mRubberBand = 0;
-  
+    //todo: snap to nearest vertex of vectorlayer
     vlayer->moveVertexAt(point.x(), point.y(), mSnappedAtFeatureId, mSnappedAtVertex);
     mCanvas->refresh();
   }
