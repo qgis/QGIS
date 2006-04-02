@@ -10,22 +10,49 @@
 #
 # $Id: Makefile.am 4490 2006-01-07 01:09:27Z timlinux $
 
+##
+## ----------------------------------------------------------------------
+##      Define Targets
+## ----------------------------------------------------------------------
+##
+lib_LTLIBRARIES= libqgis_designerwidgets.la
+## TODO change this so it installs into ${QTDIR}/plugins/designer
+libqgis_designerwidgetsdir = ${pkglibdir}/designer
 
-plugindir = ${pkglibdir}/designer
+##
+## ----------------------------------------------------------------------
+##        get Qt4 to run moc and rcc where required... 
+## ----------------------------------------------------------------------
+##
 
+#run moc on files
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
-# name of the designer plugin
-plugin_LTLIBRARIES = qgisdesignerwidgets.la
+#qt resources
+%.qrc.cpp: %.qrc
+	$(RCC) -o $@ $<
 
-qgisdesignerwidgets_la_SOURCES =  qgsdesignerwidgets.cpp \
-		qgsdesignerwidgets.h \
-		$(projectionselector_la_MOC)
+libqgis_designerwidgets_la_MOC = qgsprojectionselectorwidget.moc.cpp
 
-qgisdesignerwidgets_la_MOC = qgsprojectionselectorplugin.moc.cpp
+libqgis_designerwidgets_RES = qgisdesignerwidgets.qrc.cpp
 
-#projectionselector_la_LIBADD =  ../src/gui/libqgis_gui.la $(QT_LDADD)  
-#qgisdesignerwidgets_la_LIBADD =  $(QT_LDADD) ../widgets/projectionselector/libqgsprojectionselector.la
-qgisdesignerwidgets_la_LDFLAGS = -avoid-version -module
-qgisdesignerwidgets_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../gui/ -I../legend
+libqgis_designerwidgets_QRC = qgisdesignerwidgets.qrc
+
+
+##		$(libqgis_designerwidgets_la_MOC) \
+libqgis_designerwidgets_la_SOURCES =  qgsprojectionselectorwidget.cpp \
+		$(libqgis_designerwidgets_QRC) \
+		$(libqgis_designerwidgets_RES)
+
+
+libqgis_designerwidgets_la_LIBADD =  $(QT_LDADD) ../widgets/projectionselector/libqgsprojectionselector.la
+libqgis_designerwidgets_la_LDFLAGS = -avoid-version -module
+libqgis_designerwidgets_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAGS) $(DEBUG_QGIS) -I../gui/ -I../legend -I../core -I../widgets/projectionselector/
+
+##
+## ----------------------------------------------------------------------
+##         additional files that need to be installed go here
+## ----------------------------------------------------------------------
+##
+libqgis_designerwidgets_HEADERS =  qgsprojectionselectorwidget.h 
