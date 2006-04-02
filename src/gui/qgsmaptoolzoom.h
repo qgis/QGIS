@@ -20,7 +20,6 @@
 #include "qgsmaptool.h"
 #include <QRect>
 
-#define MapTool_Zoom "zoom"
 
 class QRubberBand;
 
@@ -39,7 +38,7 @@ class QgsMapToolZoom : public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent(QMouseEvent * e);
 
-    virtual QString toolName() { return MapTool_Zoom; }
+    virtual bool isZoomTool() { return true; }
     
   protected:
     //! stores actual zoom rect

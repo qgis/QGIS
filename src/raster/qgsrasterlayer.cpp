@@ -3768,8 +3768,6 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
 #if 0 //In qt4, inserting a slider in QMenu seems difficult
   popMenu->setCheckable ( true );
 
-  myPopupLabel->setText( tr("<center><b>Raster Layer</b></center>") );
-
   QLabel * myTransparencyLabel = new QLabel( popMenu );
 
   myTransparencyLabel->setFrameStyle( Q3Frame::Panel | Q3Frame::Raised );
@@ -3793,7 +3791,6 @@ void QgsRasterLayer::initContextMenu_(QgisApp * theApp)
 
 #endif //0
 
-  myPopupLabel->setText( tr("Raster Layer") );
   popMenu->addAction(tr("&Convert to..."), this, SLOT(convertTo()));
 } // QgsRasterLayer::initContextMenu
 

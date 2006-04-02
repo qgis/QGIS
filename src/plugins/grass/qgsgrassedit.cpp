@@ -1931,7 +1931,7 @@ void QgsGrassEdit::mouseEventReceiverMove ( QgsPoint & newPoint )
   std::cerr << "QgsGrassEdit::mouseEventReceiverMove() mTool = " << mTool << std::endl;
 #endif
 
-  if ( mCanvas->mapTool()->toolName() != MapTool_EmitPoint) return;
+  if (!dynamic_cast<QgsMapToolEmitPoint *> (mCanvas->mapTool())) return;
 
   statusBar()->message(mCanvasPrompt);
 

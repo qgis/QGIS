@@ -666,8 +666,7 @@ void QgsMapCanvas::contentsMouseReleaseEvent(QMouseEvent * e)
     mMapTool->canvasReleaseEvent(e);
     
     // right button was pressed in zoom tool? return to previous non zoom tool
-    QString name = mMapTool->toolName();
-    if (e->button() == Qt::RightButton && (name == MapTool_Zoom || name == MapTool_Pan))
+    if (e->button() == Qt::RightButton && mMapTool->isZoomTool())
     {
 #ifdef QGISDEBUG
       std::cout << "Right click in map tool zoom or pan, last tool is " << (mLastNonZoomMapTool ? "not null." : "null.") <<  std::endl;
@@ -786,17 +785,13 @@ void QgsMapCanvas::setMapTool(QgsMapTool* tool)
   if (mMapTool)
     mMapTool->deactivate();
   
-#ifdef QGISDEBUG
-  std::cout << "setMapTool: using tool " <<
-      (tool ? tool->toolName().toLocal8Bit().data() : "null") << std::endl;
-#endif
   
-  if (tool && (tool->toolName() == MapTool_Zoom || tool->toolName() == MapTool_Pan))
+  if (tool && tool->isZoomTool() )
   {        
     // if zoom or pan tool will be active, save old tool
     // to bring it back on right click
     // (but only if it wasn't also zoom or pan tool)
-    if (mMapTool && mMapTool->toolName() != MapTool_Zoom && mMapTool->toolName() != MapTool_Pan)
+    if (mMapTool && !mMapTool->isZoomTool())
     {
       delete mLastNonZoomMapTool;
       mLastNonZoomMapTool = mMapTool;

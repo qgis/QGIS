@@ -529,9 +529,6 @@ void QgsMapLayer::initContextMenu(QgisApp * app)
     popMenu = new QMenu();
 
     // Initialise and insert Qt4 QAction
-    myPopupLabel = new QAction( popMenu );
-    popMenu->addAction(myPopupLabel);
-
     popMenu->addAction(tr("&Zoom to extent of selected layer"), app, SLOT(zoomToLayerExtent()));
     mShowInOverviewAction = popMenu->addAction(tr("Toggle in Overview"), app, SLOT(inOverview()));
     mShowInOverviewAction->setCheckable(true);
