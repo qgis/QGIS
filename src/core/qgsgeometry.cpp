@@ -1345,7 +1345,7 @@ bool QgsGeometry::intersects(QgsRect* r) const
     geos::Geometry *geosRect = wktReader->read( qstrdup(rectwkt) );
     if(geosGeom->intersects(geosRect))
     {
-	returnval=true;
+      returnval=true;
     }
  
     delete geosGeom;

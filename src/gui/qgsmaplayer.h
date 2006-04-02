@@ -432,9 +432,6 @@ protected:
     //! context menu
     QMenu* popMenu;
 
-    //! header for popMenu
-    QAction * myPopupLabel;
-
     //! the action in popmenu that sets overview status
     QAction* mShowInOverviewAction;
 

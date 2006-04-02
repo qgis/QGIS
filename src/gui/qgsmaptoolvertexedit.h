@@ -23,8 +23,6 @@
 class QgsRubberBand;
 class QgsVertexMarker;
 
-#define MapTool_VertexEdit "vertex edit"
-
 class QgsMapToolVertexEdit : public QgsMapTool
 {
   public:
@@ -49,8 +47,6 @@ class QgsMapToolVertexEdit : public QgsMapTool
   
     //! Overridden mouse release event
     virtual void canvasReleaseEvent(QMouseEvent * e);
-
-    virtual QString toolName() { return MapTool_VertexEdit; }
 
     virtual void deactivate();
 

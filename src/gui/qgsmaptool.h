@@ -55,8 +55,10 @@ class QgsMapTool
     
     QAction* action() { return mAction; }
     
-    /** TODO change this method name to bool isZoomTool() ???? */
-    virtual QString toolName() { return "generic tool"; }
+    /** Check whether this MapTool performs a zoom or pan operation.
+     * If it does, we will be able to perform the zoom  and then 
+     * resume operations with the original / previously used tool.*/
+    virtual bool isZoomTool() { return false;}
     
     //! called when set as currently active map tool
     virtual void activate();

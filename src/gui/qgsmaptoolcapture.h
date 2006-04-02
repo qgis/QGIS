@@ -20,7 +20,6 @@
 #include "qgsmaptool.h"
 #include "qgspoint.h"
 
-#define MapTool_Capture  "capture"
 
 class QgsRubberBand;
 
@@ -56,7 +55,6 @@ class QgsMapToolCapture : public QgsMapTool
     //! Resize rubber band
     virtual void renderComplete();
     
-    virtual QString toolName() { return MapTool_Capture; }
 
     virtual void deactivate();
   

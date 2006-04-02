@@ -20,7 +20,6 @@
 #include "qgsmaptool.h"
 class QgsMapCanvas;
 
-#define MapTool_Pan  "pan"
 
 class QgsMapToolPan : public QgsMapTool
 {
@@ -37,7 +36,7 @@ class QgsMapToolPan : public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent(QMouseEvent * e);
     
-    virtual QString toolName() { return MapTool_Pan; }
+    virtual bool isZoomTool() { return true; }
     
   private:
     

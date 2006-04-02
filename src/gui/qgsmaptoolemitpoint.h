@@ -19,7 +19,6 @@
 
 #include "qgsmaptool.h"
 
-#define MapTool_EmitPoint  "emit point"
 
 class QgsMapCanvas;
 
@@ -38,7 +37,6 @@ class QgsMapToolEmitPoint : public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent(QMouseEvent * e);
 
-    virtual QString toolName() { return MapTool_EmitPoint; }
 };
 
 #endif

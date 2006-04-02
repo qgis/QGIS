@@ -20,8 +20,6 @@
 #include "qgsmaptool.h"
 #include "qgspoint.h"
 
-#define MapTool_Identify  "identify"
-
 class QgsIdentifyResults;
 class QgsMessageViewer;
 class QgsMapLayer;
@@ -52,7 +50,6 @@ class QgsMapToolIdentify : public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent(QMouseEvent * e);
 
-    virtual QString toolName() { return MapTool_Identify; }
 
   private:
 
