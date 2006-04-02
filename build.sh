@@ -24,7 +24,7 @@ then
    export CXXFLAGS="-g -Wall"
  fi
   
- export QTDIR=/usr/local/Trolltech/Qt-4.1.0/
+ export QTDIR=/usr/local/Trolltech/Qt-4.1.0
  export PATH=$QTDIR/bin:$PATH
  export LD_LIBRARY_PATH=$QTDIR/lib
  ./autogen.sh $AUTOGEN_FLAGS --prefix=${1} --with-qtdir=$QTDIR --with-grass=/usr/lib/grass && make && make install
