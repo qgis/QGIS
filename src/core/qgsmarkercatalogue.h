@@ -43,6 +43,8 @@ public:
      */
     QPixmap marker ( QString fullName, int size, QPen pen, QBrush brush, bool qtBug = true );
 
+    /* Returns a pixmap given a filename of a svg marker */
+    static QPixmap svgMarker ( QString name, int size );
 private:
 
     /**Constructor*/
@@ -56,8 +58,6 @@ private:
     /** Hard coded */
     QPicture hardMarker ( QString name, int size, QPen pen, QBrush brush, bool qtBug = true );
 
-    /** Hard coded */
-    QPixmap svgMarker ( QString name, int size );
 };
     
 #endif // QGSMARKERCATALOGUE_H

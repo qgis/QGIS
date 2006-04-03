@@ -21,7 +21,6 @@
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgslegendsymbologyitem.h"
 #include "qgssymbologyutils.h"
-#include "qgssvgcache.h"
 #include <QDomNode>
 #include <QDomElement>
 #include <QPixmap>

@@ -19,7 +19,6 @@
 #include "qgssinglesymboldialog.h"
 #include "qgsmarkercatalogue.h"
 #include "qgssinglesymbolrenderer.h"
-#include "qgssvgcache.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
 #include "qgsvectorlayer.h"

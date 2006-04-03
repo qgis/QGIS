@@ -26,9 +26,9 @@
 #include <QPolygon>
 #include <QDir>
 #include <QPicture>
+#include <QSvgRenderer>
 
 #include "qgsapplication.h"
-#include "qgssvgcache.h"
 #include "qgsmarkercatalogue.h"
 
 QgsMarkerCatalogue *QgsMarkerCatalogue::mMarkerCatalogue = 0;
@@ -122,11 +122,42 @@ QPixmap QgsMarkerCatalogue::marker ( QString fullName, int size, QPen pen, QBrus
     return QPixmap(); // empty
 }
 
-QPixmap QgsMarkerCatalogue::svgMarker ( QString name, int s)
+QPixmap QgsMarkerCatalogue::svgMarker ( QString filename, int scaleFactor)
 {
-	QPixmap pixmap = QgsSVGCache::instance().getPixmap(name,s);
+  QSvgRenderer mySVG;
+  mySVG.load(filename);
 
-    return pixmap;
+  // TODO Change this logic so width is scaleFactor and height is same
+  // proportion of scale factor as in oritignal SVG TS XXX
+  if (scaleFactor < 1) scaleFactor=1;
+
+  //QPixmap myPixmap = QPixmap(width,height);
+  QPixmap myPixmap = QPixmap(scaleFactor,scaleFactor);
+
+  // The following is window-system-conditional since (at least)
+  // the combination of Qt 4.1.0 and RealVNC's Xvnc 4.1
+  // will result in the pixmap becoming invisible if it is filled
+  // with a non-opaque colour.
+  // This is probably because Xvnc 4.1 doesn't have the RENDER
+  // extension compiled into it.
+#if defined(Q_WS_X11)
+  // Do a runtime test to see if the X RENDER extension is available
+  if ( myPixmap.x11PictureHandle() )
+  {
+#endif
+    myPixmap.fill(QColor(255,255,255,0)); // transparent
+#if defined(Q_WS_X11)
+  }
+  else
+  {
+    myPixmap.fill(QColor(255,255,255)); // opaque
+  }
+#endif
+  QPainter myPainter(&myPixmap);
+  myPainter.setRenderHint(QPainter::Antialiasing);
+  mySVG.render(&myPainter);
+
+  return myPixmap;
 }
 
 QPicture QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush brush, bool qtBug )

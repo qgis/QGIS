@@ -21,7 +21,6 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
-#include "qgssvgcache.h"
 #include <QDomNode>
 #include <QPainter>
 #include <QPixmap>
