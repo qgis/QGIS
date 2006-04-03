@@ -40,8 +40,8 @@ libqgis_designerwidgets_RES = qgisdesignerwidgets.qrc.cpp
 libqgis_designerwidgets_QRC = qgisdesignerwidgets.qrc
 
 
-##		$(libqgis_designerwidgets_la_MOC) \
 libqgis_designerwidgets_la_SOURCES =  qgsprojectionselectorwidget.cpp \
+		$(libqgis_designerwidgets_la_MOC) \
 		$(libqgis_designerwidgets_QRC) \
 		$(libqgis_designerwidgets_RES)
 
