@@ -56,7 +56,7 @@ private:
     QStringList mList;
 
     /** Hard coded */
-    QPicture hardMarker ( QString name, int size, QPen pen, QBrush brush, bool qtBug = true );
+    QPixmap hardMarker ( QString name, int size, QPen pen, QBrush brush, bool qtBug = true );
 
 };
     
