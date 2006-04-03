@@ -22,7 +22,6 @@
 #include "qgsvectorlayer.h"
 #include "qgslegenditem.h"
 #include "qgssymbologyutils.h"
-#include "qgssvgcache.h"
 
 #include <QString>
 #include <QDomNode>

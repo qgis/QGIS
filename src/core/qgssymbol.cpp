@@ -21,7 +21,6 @@
 
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
-#include "qgssvgcache.h"
 #include "qgsmarkercatalogue.h"
 
 #include <QPainter>

@@ -64,8 +64,6 @@ QgsLabelDialog::QgsLabelDialog ( QgsLabel *label,  QWidget *parent )
         this, SLOT(changeFontColor()) );
     connect( chkUseBuffer, SIGNAL(toggled(bool)),
         this, SLOT(chkUseBuffer_toggled(bool)) );
-    connect( cbxUseCollisionDetection, SIGNAL(toggled(bool)),
-        this, SLOT(cbxUseCollisionDetection_toggled(bool)) );
 }
 
 
