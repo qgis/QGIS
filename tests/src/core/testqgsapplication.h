@@ -1,6 +1,6 @@
 #ifndef TESTQGSAPPLICATION_H
 #define TESTQGSAPPLICATION_H
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 
 class TestQgsApplication: public QObject
