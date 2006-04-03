@@ -35,13 +35,13 @@ class QgsMapTool
     virtual ~QgsMapTool();
     
     //! Mouse move event for overriding
-    virtual void canvasMoveEvent(QMouseEvent * e) = 0;
+    virtual void canvasMoveEvent(QMouseEvent * e) { }
 
     //! Mouse press event for overriding
-    virtual void canvasPressEvent(QMouseEvent * e) = 0;
+    virtual void canvasPressEvent(QMouseEvent * e) { }
 
     //! Mouse release event for overriding
-    virtual void canvasReleaseEvent(QMouseEvent * e) = 0;
+    virtual void canvasReleaseEvent(QMouseEvent * e) { }
     
     //! Called when rendering has finished
     virtual void renderComplete() {}
