@@ -228,7 +228,6 @@ static void setTitleBarText_( QWidget & qgisApp )
   createToolBars();
   createStatusBar();
   setTheme(mThemeName);
-  setupToolbarPopups(mThemeName);
   updateRecentProjectPaths();
   createCanvas();
   createOverview();
@@ -966,90 +965,6 @@ void QgisApp::setTheme(QString theThemeName)
   mActionCustomProjection->setIconSet(QIcon(QPixmap(myIconPath + "/mActionCustomProjection.png")));
   mActionAddWmsLayer->setIconSet(QIcon(QPixmap(myIconPath + "/mActionAddWmsLayer.png")));
   mActionInOverview->setIconSet(QIcon(QPixmap(myIconPath + "/mActionInOverview.png")));
-}
-void QgisApp::setupToolbarPopups(QString mThemeName)
-{
-  // Disabled by Tim for now during qt4 port - FIXME!!!!
-  // 
-  // Additional note by Tim. Popup tool icons are not nice UI
-  // they are confusing for the user. We should get rid of using them
-  // 
-
-  //   23:25 < timlinux> I'm also proposing to do away with popup toolicons
-  //   23:25 < timlinux> they are yuk from a ui perspective
-  //   23:25 < timlinux> imho
-  //   23:25 < gsherman> what are they?
-  //   23:25 < timlinux> e.g. digitising tool icon
-  //   23:25 < timlinux> where you have to hold and choose sub icon
-  //   23:25 < timlinux> ala ffox back button
-  //   23:26 < gsherman> that will clutter the ui to have all those floating around
-  //   23:28 < timlinux> but they are no better than using menus to select the same actions
-  //   23:28 < timlinux> .e.g. show / hide all in overview
-  //   23:29 < timlinux> 2 clicks to achieve action from toolicon popup
-  //   23:29 < timlinux> 2 clicks from menu
-  //   23:29 < timlinux> so having it on icon bar offers no advantage
-  //   23:29 < timlinux> be better to juditiously remove stuff from the icon bars imho
-  //   23:30 < timlinux> ditto for show / hide all layers icon group
-  //   23:31 < timlinux> and digitising icon should simply be changed based on the context
-  //   23:31 < timlinux> e.g. if you start digitising a line layer, the digitising icon should reflect that lines will be digitised if line layer is active
-  //   23:32 < timlinux> point and poly icons are then extraneaous
-
-
-  /*
-  // setup the toolbar popup menus that create a single toolbar icon
-  // and a menu that is popped up when the mouse is held down (ala
-  // the famous web browser Back button)
-  QString myIconPath = mAppDir +"/share/qgis/themes/" + mThemeName;
-
-  // Setup the overview tools
-  // the toolbutton for the overview group:
-  tbtnOverviewTools->setIconSet(QIcon(QPixmap(myIconPath + "/mActionAddAllToOverview.png")));
-  toolPopupOverviews = new Q3PopupMenu();
-  toolPopupOverviews->insertItem(QIcon(QPixmap(myIconPath + "/mActionAddAllToOverview.png")),
-  tr("Add all layers to the overview map"),
-  this, SLOT(addAllToOverview()));
-  toolPopupOverviews->insertItem(QIcon(QPixmap(myIconPath + "/mActionRemoveAllFromOverview.png")),
-  tr("Remove all layers from the overview map"),
-  this, SLOT(removeAllFromOverview()));
-  tbtnOverviewTools->setMenu(toolPopupOverviews);
-  tbtnOverviewTools->setPopupMode(QToolButton::MenuButtonPopup);
-  // connect the top overview tool to the appropriate slot
-  connect(tbtnOverviewTools, SIGNAL(clicked()), this, SLOT(addAllToOverview()));
-
-  // setup the add/remove all tools
-  // the toolbutton for the display group:
-  tbtnDisplayTools->setIconSet(QIcon(QPixmap(myIconPath + "/mActionShowAllLayers.png")));
-  toolPopupDisplay = new Q3PopupMenu();
-  toolPopupDisplay->insertItem(QIcon(QPixmap(myIconPath + "/mActionShowAllLayers.png")),
-  tr("Show all layers"),
-  this, SLOT(showAllLayers()));
-  toolPopupDisplay->insertItem(QIcon(QPixmap(myIconPath + "/mActionHideAllLayers.png")),
-  tr("Hide all layers"),
-  this, SLOT(hideAllLayers()));
-  tbtnDisplayTools->setMenu(toolPopupDisplay);
-  tbtnDisplayTools->setPopupMode(QToolButton::MenuButtonPopup);
-  // connect the top overview tool to the appropriate slot
-  connect(tbtnDisplayTools, SIGNAL(clicked()), this, SLOT(showAllLayers()));
-
-  // setup the capture (digitize) tools
-  // the toolbutton for the capture group:
-  tbtnCaptureTools->setIconSet(QIcon(QPixmap(myIconPath + "/mActionCapturePoint.png")));
-  toolPopupCapture = new Q3PopupMenu();
-  toolPopupCapture->insertItem(QIcon(QPixmap(myIconPath + "/mActionCapturePoint.png")),
-  tr("Capture points"),
-  this, SLOT(capturePoint()),0,0);
-  toolPopupCapture->insertItem(QIcon(QPixmap(myIconPath + "/mActionCaptureLine.png")),
-  tr("Capture lines"),
-  this, SLOT(captureLine()),0,1);
-  toolPopupCapture->insertItem(QIcon(QPixmap(myIconPath + "/mActionCapturePolygon.png")),
-  tr("Capture polygons"),
-  this, SLOT(capturePolygon()),0,2);
-  toolPopupCapture->insertItem(QIcon(QPixmap(myIconPath + "/delete_selected.png")),
-  tr("Delete selection"),
-  this, SLOT(deleteSelected()),0,3);
-  tbtnCaptureTools->setMenu(toolPopupCapture);
-  tbtnCaptureTools->setPopupMode(QToolButton::MenuButtonPopup);
-  */
 }
 
 void QgisApp::setupConnections()
@@ -4210,7 +4125,6 @@ void QgisApp::options()
   {
     // set the theme if it changed
     setTheme(optionsDialog->theme());
-    setupToolbarPopups(optionsDialog->theme());
     // set the visible flag for new layers
     mAddedLayersVisible = optionsDialog->newVisible();
     QSettings mySettings;
