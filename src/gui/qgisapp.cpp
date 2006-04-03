@@ -2394,6 +2394,8 @@ void QgisApp::newVectorLayer()
 
   // allow for selection of more than one file
   openFileDialog->setMode(QFileDialog::AnyFile);
+  openFileDialog->setAcceptMode(QFileDialog::AcceptSave); 
+  openFileDialog->setConfirmOverwrite( true ); 
 
   if (haveLastUsedFilter)       // set the filter to the last one used
   {
