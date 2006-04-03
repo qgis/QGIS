@@ -501,6 +501,9 @@ AC_CONFIG_FILES([
   tools/Makefile
   tools/mapserver_export/Makefile
   tools/qgis_config/Makefile
+  tests/Makefile
+  tests/src/Makefile
+  tests/src/core/Makefile
   qgis.spec
 ])
 
