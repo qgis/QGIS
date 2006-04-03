@@ -286,7 +286,7 @@ void QgsMapCanvas::drawContents(QPainter * p, int cx, int cy, int cw, int ch)
   std::cout << "QgsMapCanvas::drawContents" << std::endl;
 #endif
   
-  if (mDirty)
+  if (mDirty && !mFrozen)
   {
     render();
     
