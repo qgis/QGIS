@@ -3574,34 +3574,7 @@ void QgisApp::inOverview()
 
 void QgisApp::removeLayer()
 {
-#ifdef QGISDEBUG
-  std::cout << "QGisApp Removing layer" << std::endl;
-#endif
-  //make sure canvase is not rendering first by faking an escape keypress
-  emit keyPressEvent(new QKeyEvent(QEvent::KeyPress ,Qt::Key_Escape,Qt::Key_Escape,0 ));
-  mMapCanvas->freeze();
-  QTreeWidgetItem *lvi = mMapLegend->currentItem();
-  if(lvi)
-  {
-    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(lvi);
-    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(lvi);
-    if(llf)
-    {
-      QgsMapLayer *layer = llf->layer();
-      //call the registry to unregister the layer. It will in turn
-      //fire a qt signal to notify any objects using that layer that they should
-      //remove it immediately
-      QgsMapLayerRegistry::instance()->removeMapLayer(layer->getLayerID());
-      mMapCanvas->freeze(false);
-
-      // draw the map
-      mMapCanvas->refresh();
-    }
-    else if(ll)
-    {
-      mMapLegend->legendLayerRemove();
-    }
-  }
+  mMapLegend->legendLayerRemove();
 }
 
 
