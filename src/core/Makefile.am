@@ -86,7 +86,6 @@ libqgis_coreHEADERS =				\
 		qgssearchstring.h			\
         qgssearchtreenode.h			\
 		qgssinglesymrenderer.h		\
-		qgssvgcache.h				\
 		qgssymbol.h					\
 		qgssymbologyutils.h			\
 		qgsvectordataprovider.h		
@@ -140,7 +139,6 @@ libqgis_core_la_SOURCES =\
 		qgssearchstringlexer.ll		\
 		qgssearchstringparser.yy	\
 		qgssearchtreenode.cpp		\
-		qgssvgcache.cpp			\
 		qgssymbol.cpp						\
 		qgssymbologyutils.cpp		\
 		qgsvectordataprovider.cpp			
