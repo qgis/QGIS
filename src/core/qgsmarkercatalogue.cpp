@@ -139,6 +139,8 @@ QPixmap QgsMarkerCatalogue::svgMarker ( QString filename, int scaleFactor)
 
 QPixmap QgsMarkerCatalogue::hardMarker ( QString name, int s, QPen pen, QBrush brush, bool qtBug )
 {
+  //Note teh +1 offset below is required because the 
+  //scaling to odd numbers below will cause clipping otherwise
   QPixmap myPixmap = QPixmap (s+1,s+1);
 
   // The following is window-system-conditional since (at least)
