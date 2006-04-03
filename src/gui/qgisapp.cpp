@@ -2678,6 +2678,8 @@ bool QgisApp::addProject(QString projectFile)
     }
     else
     {
+      mMapCanvas->freeze(false);
+      mMapCanvas->refresh();
       return false;
     }
   }
@@ -2708,9 +2710,13 @@ bool QgisApp::addProject(QString projectFile)
         tr("Unable to open project"), e.what(), QMessageBox::Ok, 
         Qt::NoButton );
 
+    mMapCanvas->freeze(false);
+    mMapCanvas->refresh();
     return false;
   }
 
+  mMapCanvas->freeze(false);
+  mMapCanvas->refresh();
   return true;
 } // QgisApp::addProject(QString projectFile)
 
