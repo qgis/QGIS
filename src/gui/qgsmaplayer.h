@@ -304,7 +304,7 @@ public:
 
 public  slots:
     /** \brief Mutator for transparency level. Should be between 0 and 255 */
-    virtual void setTransparency(int)=0; //
+    virtual void setTransparency(unsigned int)=0;
    //! event handler for when a coordinate transofrm fails due to bad vertex error
    virtual void invalidTransformInput();
 

@@ -3448,12 +3448,15 @@ inline void QgsVectorLayer::transformPoints(
   // position on map canvas
   mtp->transformInPlace(x, y);
 }
+
 unsigned int QgsVectorLayer::getTransparency()
 {
   return transparencyLevelInt;
 }
+
 //should be between 0 and 255
-void QgsVectorLayer::setTransparency(int theInt)
+void QgsVectorLayer::setTransparency(unsigned int theInt)
 {
   transparencyLevelInt=theInt;
-} //  QgsRasterLayer::setTransparency(int theInt)
+} //  QgsRasterLayer::setTransparency(unsigned int theInt)
+

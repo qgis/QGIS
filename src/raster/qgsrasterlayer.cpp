@@ -3822,7 +3822,7 @@ void QgsRasterLayer::popupTransparencySliderMoved(int theInt)
 
 
 //should be between 0 and 255
-void QgsRasterLayer::setTransparency(int theInt)
+void QgsRasterLayer::setTransparency(unsigned int theInt)
 {
 #ifdef QGISDEBUG
   std::cout << "Set transparency called with : " << theInt << std::endl;
@@ -3834,7 +3834,7 @@ void QgsRasterLayer::setTransparency(int theInt)
     mTransparencySlider->setValue(255-theInt);    
   }
   transparencyLevelInt=theInt;
-} //  QgsRasterLayer::setTransparency(int theInt)
+} //  QgsRasterLayer::setTransparency(unsigned int theInt)
 
 
 

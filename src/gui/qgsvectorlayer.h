@@ -172,7 +172,7 @@ signals:
 public slots:
 
   /** \brief Mutator for transparency level. Should be between 0 and 255 */
-  void setTransparency(int); //
+  void setTransparency(unsigned int);
 
   void inOverview( bool );
 
