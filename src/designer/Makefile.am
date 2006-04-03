@@ -15,7 +15,7 @@
 ##      Define Targets
 ## ----------------------------------------------------------------------
 ##
-lib_LTLIBRARIES= libqgis_designerwidgets.la
+lib_LTLIBRARIES = libqgis_designerwidgets.la
 ## TODO change this so it installs into ${QTDIR}/plugins/designer
 libqgis_designerwidgetsdir = ${pkglibdir}/designer
 
@@ -55,4 +55,4 @@ libqgis_designerwidgets_la_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(QT_CXXFLAG
 ##         additional files that need to be installed go here
 ## ----------------------------------------------------------------------
 ##
-libqgis_designerwidgets_HEADERS =  qgsprojectionselectorwidget.h 
+# designer plugin header not needed by designer

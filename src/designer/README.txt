@@ -33,3 +33,14 @@ plugins at startup:
 
    Note that the 'designer' directory is ommitted from the path.
 
+   Its probably a good idea to add the above export clause to 
+   your ~/.bash_profile or ~/.bashrc if you plan to use the 
+   designer plugins frequently.
+
+
+Additional Notes:
+
+If you built Qt4 in debug mode then the designer plugins must also 
+be build in debug mode or they will be ignored. The converse is also
+true.
+
