@@ -74,17 +74,15 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
   # its a go -- create the plugin and modify the build files
   #
   # create the new plugin directory
-  system("cp -r plugin_template $pluginDir");
-  # remove the README file 
-  system("rm -rf $pluginDir/README");
-  # remove the subversion directory 
-  system("rm -rf $pluginDir/.svn");
+  system("mkdir $pluginDir");
   # copy files to appropriate names
-  system("cp $pluginDir/plugin.cpp $pluginDir/$pluginLCaseName.cpp");
-  system("cp $pluginDir/plugin.h $pluginDir/$pluginLCaseName.h");
-  #todo sort out copying these next items properly
-  system("cp $pluginDir/pluginbase.cpp $pluginDir/$pluginLCaseName.cpp");
-  system("cp $pluginDir/plugin.cpp $pluginDir/$pluginLCaseName.cpp");
+  system("cp plugin_template/Makefile.am $pluginDir/");
+  system("cp plugin_template/plugin.cpp $pluginDir/$pluginLCaseName.cpp");
+  system("cp plugin_template/plugin.h $pluginDir/$pluginLCaseName.h");
+  system("cp plugin_template/plugingui.cpp $pluginDir/${pluginLCaseName}gui.cpp");
+  system("cp plugin_template/plugingui.h $pluginDir/${pluginLCaseName}gui.h");
+  system("cp plugin_template/pluginguibase.ui $pluginDir/${pluginLCaseName}guibase.ui");
+  system("cp plugin_template/pluginguibase.ui.h $pluginDir/${pluginLCaseName}guibase.ui.h");
   
   # Substitute the plugin specific vars in the various files
   # This is a brute force approach but its quick and dirty :)
