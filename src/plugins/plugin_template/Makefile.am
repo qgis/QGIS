@@ -42,7 +42,7 @@ ui_%.h: %.ui
 ##  For plugin lib
 ##
 
-[pluginlcasename]_la_SOURCES = [pluginlcasename].cpp \
+libqgis_plugin_[pluginlcasename]_la_SOURCES = [pluginlcasename].cpp \
 	[pluginlcasename]gui.cpp \
 	$(plugin_UI)\
 	$(plugin_MOC)\
@@ -63,12 +63,12 @@ plugin_QRC = [pluginlcasename].qrc
 
 BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 
-[pluginlcasename]_la_LIBADD = $(QT_LDADD) \
+libqgis_plugin_[pluginlcasename]_la_LIBADD = $(QT_LDADD) \
 			    $(GDAL_LDADD) \
 			    ../../core/libqgis_core.la \
 			    ../../gui/libqgis_gui.la
-[pluginlcasename]_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
-[pluginlcasename]_la_CXXFLAGS = $(CXXFLAGS) \
+libqgis_plugin_[pluginlcasename]_la_CFLAGS = $(CFLAGS) $(EXTRA_CFLAGS) $(DEBUG_QGIS)
+libqgis_plugin_[pluginlcasename]_la_CXXFLAGS = $(CXXFLAGS) \
 			      $(EXTRA_CXXFLAGS) \
 			      $(QT_CXXFLAGS) \
 			      $(DEBUG_QGIS) \
@@ -77,4 +77,4 @@ BUILT_SOURCES = $(plugin_MOC) $(plugin_UI) $(plugin_RES)
 			      -I../../core \
 			      -I../../ui \
 			      -I../../gui 
-[pluginlcasename]_la_LDFLAGS = -avoid-version -module
+libqgis_plugin_[pluginlcasename]_la_LDFLAGS = -avoid-version -module

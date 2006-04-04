@@ -77,6 +77,8 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
   system("mkdir $pluginDir");
   # copy files to appropriate names
   system("cp plugin_template/Makefile.am $pluginDir/");
+  system("cp plugin_template/plugin.qrc $pluginDir/$pluginLCaseName.qrc");
+  system("cp plugin_template/plugin.png $pluginDir/$pluginLCaseName.png");
   system("cp plugin_template/plugin.cpp $pluginDir/$pluginLCaseName.cpp");
   system("cp plugin_template/plugin.h $pluginDir/$pluginLCaseName.h");
   system("cp plugin_template/plugingui.cpp $pluginDir/${pluginLCaseName}gui.cpp");
@@ -88,7 +90,7 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
   # This is a brute force approach but its quick and dirty :)
   #
   # replace [pluginlcasename] in template with the new plugin name
-  system("perl -pi -e 's/\\\[pluginlcasename\\\]/$pluginLCaseName/g' $pluginDir/*.cpp $pluginDir/*.h $pluginDir/*.am $pluginDir/*.ui");
+  system("perl -pi -e 's/\\\[pluginlcasename\\\]/$pluginLCaseName/g' $pluginDir/*.qrc $pluginDir/*.cpp $pluginDir/*.h $pluginDir/*.am $pluginDir/*.ui");
   # replace [pluginname] in template with the new plugin name
   system("perl -pi -e 's/\\\[pluginname\\\]/$pluginName/g' $pluginDir/*.cpp $pluginDir/*.h $pluginDir/*.am $pluginDir/*.ui");
   # replace [plugindescription] in template with the description
