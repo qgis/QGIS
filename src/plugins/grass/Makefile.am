@@ -75,6 +75,8 @@ grassplugin_la_SOURCES = qgsgrassplugin.cpp \
 			 qgsgrassbrowser.h \
 			 qgsgrassedit.cpp \
 			 qgsgrassedit.h \
+			 qgsgrassedittools.cpp \
+			 qgsgrassedittools.h \
 			 qgsgrasstools.cpp \
 			 qgsgrasstools.h \
 			 qgsgrassmodel.cpp \
