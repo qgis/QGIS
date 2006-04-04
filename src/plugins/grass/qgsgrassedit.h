@@ -418,6 +418,8 @@ private:
     QgsVertexMarker *mRubberBandIcon;
     QgsGrassEditLayer* mCanvasEdit;
     
+    // edit tools are friend classes so they can
+    // access proteced/private members of QgsGrassEdit
     friend class QgsGrassEditTool;
     friend class QgsGrassEditNewPoint;
     friend class QgsGrassEditNewLine;
