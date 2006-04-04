@@ -140,7 +140,7 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
       if($inConfigFile){
         if(/^\s*\]\)*/){
           # write our entry 
-          print CONFIGUREINMOD "\tplugins/$pluginDir/Makefile\n";
+          print CONFIGUREINMOD "\tsrc/plugins/$pluginDir/Makefile\n";
           $inConfigFile = 0;
         }
       }
