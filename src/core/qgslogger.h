@@ -22,7 +22,11 @@
 #include <sstream>
 #include <QString>
 
+#ifdef QGISDEBUG
 #define QgsDebugMsg(str) QgsLogger::debug(QString(str), 1, __FILE__, __FUNCTION__, __LINE__);
+#else
+#define QgsDebugMsg(str) 
+#endif
 
 /**QgsLogger is a class to print debug/warning/error messages to the console. The advantage of this class over std::cout, std::cerr & co. is that the output can be controlled with environment variables:
 

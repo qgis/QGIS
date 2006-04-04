@@ -56,6 +56,7 @@ email                : sherman at mrcc.com
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
+#include "qgslogger.h"
 #include "qgis.h"
 
 
@@ -84,9 +85,9 @@ QgsOgrProvider::QgsOgrProvider(QString const & uri)
   // set the selection rectangle pointer to 0
   mSelectionRectangle = 0;
   // make connection to the data source
-#ifdef QGISDEBUG
-  std::cerr << "Data source uri is " << uri.toLocal8Bit().data() << std::endl;
-#endif
+
+  QgsDebugMsg("Data source uri is " + uri);
+
   // try to open for update
   ogrDataSource = OGRSFDriverRegistrar::Open((const char *) uri.toLocal8Bit().data(), TRUE, &ogrDriver);
   if(ogrDataSource == NULL)
@@ -99,10 +100,10 @@ QgsOgrProvider::QgsOgrProvider(QString const & uri)
     // TODO: capabilities() should now reflect this; need to test.
   }
   if (ogrDataSource != NULL) {
-#ifdef QGISDEBUG
-    std::cerr << "Data source is valid" << std::endl;
-    std::cerr << "OGR Driver was " << ogrDriver->GetName() << std::endl;
-#endif
+
+    QgsDebugMsg("Data source is valid");
+    QgsDebugMsg("OGR Driver was " + QString(ogrDriver->GetName()));
+
     valid = true;
 
     ogrDriverName = ogrDriver->GetName();
@@ -110,32 +111,25 @@ QgsOgrProvider::QgsOgrProvider(QString const & uri)
     ogrLayer = ogrDataSource->GetLayer(0);
 
     // get the extent_ (envelope) of the layer
-#ifdef QGISDEBUG
-    std::cerr << "Starting get extent\n";
-#endif
+
+    QgsDebugMsg("Starting get extent\n");
+
     extent_ = new OGREnvelope();
     ogrLayer->GetExtent(extent_);
-#ifdef QGISDEBUG
-    std::cerr << "Finished get extent\n";
-#endif
+
+    QgsDebugMsg("Finished get extent\n");
+
     // getting the total number of features in the layer
     numberFeatures = ogrLayer->GetFeatureCount();   
     // check the validity of the layer
-#ifdef QGISDEBUG
-    std::cerr << "checking validity\n";
-#endif
 
+    QgsDebugMsg("checking validity\n");
     loadFields();
-
-#ifdef QGISDEBUG
-    std::cerr << "Done checking validity\n";
-#endif
+    QgsDebugMsg("Done checking validity\n");
   } else {
-    std::cerr << "Data source is invalid" << std::endl;
-#ifdef QGISDEBUG
+    QgsLogger::critical("Data source is invalid");
     const char *er = CPLGetLastErrorMsg();
-    std::cerr << er << std::endl;
-#endif
+    QgsLogger::critical(er);
     valid = false;
   }
 
@@ -204,38 +198,28 @@ void QgsOgrProvider::loadFields()
 
 QString QgsOgrProvider::getProjectionWKT()
 { 
-#ifdef QGISDEBUG 
-    std::cerr << "QgsOgrProvider::getProjectionWKT()" << std::endl; 
-#endif 
+  QgsDebugMsg("QgsOgrProvider::getProjectionWKT()");
   OGRSpatialReference * mySpatialRefSys = ogrLayer->GetSpatialRef();
   if (mySpatialRefSys == NULL)
   {
-#ifdef QGISDEBUG 
-    std::cerr << "QgsOgrProvider::getProjectionWKT() --- no wkt found..returning null" << std::endl; 
-#endif 
+    QgsLogger::critical("QgsOgrProvider::getProjectionWKT() --- no wkt found..returning null"); 
     return NULL;
   }
   else
   {
     // if appropriate, morph the projection from ESRI form
     QString fileName = ogrDataSource->GetName();
-#ifdef QGISDEBUG 
-    std::cerr << "Data source file name is : " << fileName.toLocal8Bit().data() << std::endl; 
-#endif 
+    QgsDebugMsg("Data source file name is : " + fileName); 
     if(fileName.contains(".shp"))
     {
-#ifdef QGISDEBUG 
-      std::cerr << "Morphing " << fileName.toLocal8Bit().data() << " WKT from ESRI" << std::endl; 
-#endif 
+      QgsDebugMsg("Morphing " + fileName + " WKT from ESRI"); 
       // morph it
       mySpatialRefSys->morphFromESRI();
     }
     // get the proj4 text
     char * ppszProj4;
     mySpatialRefSys->exportToProj4   ( &ppszProj4 );
-    std::cout << "vvvvvvvvvvvvvvvvv PROJ4 TEXT vvvvvvvvvvvvvvv" << std::endl; 
-    std::cout << ppszProj4 << std::endl; 
-    std::cout << "^^^^^^^^^^^^^^^^^ PROJ4 TEXT ^^^^^^^^^^^^^^^" << std::endl; 
+    QgsDebugMsg(ppszProj4); 
     char    *pszWKT = NULL;
     mySpatialRefSys->exportToWkt( &pszWKT );
     QString myWKTString = QString(pszWKT);
@@ -262,9 +246,7 @@ QgsFeature * QgsOgrProvider::getFirstFeature(bool fetchAttributes)
 
   if(valid)
   {
-#ifdef QGISDEBUG
-    std::cerr << "getting first feature\n";
-#endif
+    QgsDebugMsg("getting first feature");
     ogrLayer->ResetReading();
 
     OGRFeature * feat = ogrLayer->GetNextFeature();
@@ -273,16 +255,11 @@ QgsFeature * QgsOgrProvider::getFirstFeature(bool fetchAttributes)
 
     if(feat)
     {
-#ifdef QGISDEBUG
-      std::cerr << "First feature is not null\n";
-#endif
+      QgsDebugMsg("First feature is not null");
     }
     else
     {
-#ifdef QGISDEBUG
-      std::cerr << "First feature is null\n";
-
-#endif
+      QgsLogger::warning("First feature is null");
       return 0x0;               // so return a null feature indicating that we got a null feature
     }
 
@@ -357,7 +334,7 @@ bool QgsOgrProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
       returnValue = true;
     }else{
 #ifdef QGISDEBUG
-      std::cerr << "Feature is null\n";
+      QgsLogger::warning("Feature is null");
       f.setValid(false);
       returnValue = false;
 #endif
@@ -367,9 +344,7 @@ bool QgsOgrProvider::getNextFeature(QgsFeature &f, bool fetchAttributes)
 
 
   }else{
-#ifdef QGISDEBUG    
-    std::cerr << "Read attempt on an invalid shapefile data source\n";
-#endif
+    QgsLogger::critical("Read attempt on an invalid shapefile data source");
   }
   return returnValue;
 }
@@ -383,7 +358,7 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
 {
    if(!valid)
    {
-       std::cerr << "Read attempt on an invalid shapefile data source\n";
+       QgsLogger::critical("Read attempt on an invalid shapefile data source");
        return 0;
    }
    
@@ -429,18 +404,14 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
 	       assert(geosRect != 0);
 	       if(geosGeom->intersects(geosRect))
 	       {
-#ifdef QGISDEBUG
-		   qWarning("intersection found");
-#endif
+		   QgsDebugMsg("intersection found");
 		   delete[] sWkt;
 		   delete geosGeom;
 		   break;
 	       }
 	       else
 	       {
-#ifdef QGISDEBUG
-		   qWarning("no intersection found");
-#endif
+		   QgsDebugMsg("no intersection found");
 		   delete[] sWkt;
 		   delete geosGeom;
 		   delete f;
@@ -464,14 +435,13 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
  */
 /*QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
 {
-
   QgsFeature *f = 0;
   if(valid){
     OGRFeature *fet;
     OGRGeometry *geom;
     while ((fet = ogrLayer->GetNextFeature()) != NULL) {
       if (fet->GetGeometryRef())
-      {
+	{
         if(mUseIntersect)
         {
           geom  =  fet->GetGeometryRef();
@@ -479,7 +449,7 @@ QgsFeature *QgsOgrProvider::getNextFeature(bool fetchAttributes)
           geom->exportToWkt(&wkt);
           geos::Geometry *geosGeom = wktReader->read(wkt);
           assert(geosGeom != 0);
-          std::cerr << "Geometry type of geos object is : " << geosGeom->getGeometryType() << std::endl; 
+          QgsDebugMsg("Geometry type of geos object is : " + geosGeom->getGeometryType()); 
           // get the selection rectangle and create a geos geometry from it
           char *sWkt = new char[2 * mSelectionRectangle->WkbSize()];
           mSelectionRectangle->exportToWkt(&sWkt);
@@ -555,15 +525,11 @@ QgsFeature *QgsOgrProvider::getNextFeature(std::list<int> const& attlist, int fe
         {
           // test this geometry to see if it should be
           // returned 
-#ifdef QGISDEBUG2 
-          std::cerr << "Testing geometry using intersect" << std::endl; 
-#endif 
+	  QgsDebugMsg("Testing geometry using intersect");
         }
         else
         {
-#ifdef QGISDEBUG2 
-          std::cerr << "Testing geometry using mbr" << std::endl; 
-#endif 
+	  QgsDebugMsg("Testing geometry using mbr");
           break;
         }
       }
@@ -589,18 +555,14 @@ QgsFeature *QgsOgrProvider::getNextFeature(std::list<int> const& attlist, int fe
     }
     else
     {
-#ifdef QGISDEBUG
-      std::cerr << "Feature is null\n";
-#endif  
+      QgsDebugMsg("Feature is null");  
       // probably should reset reading here
       ogrLayer->ResetReading();
     }
   }
   else
   {
-#ifdef QGISDEBUG    
-    std::cerr << "Read attempt on an invalid shapefile data source\n";
-#endif    
+    QgsLogger::warning("Read attempt on an invalid shapefile data source");
   }
   return f;
 }
@@ -618,7 +580,9 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
 {
   mUseIntersect = useIntersect;
   // spatial query to select features
-  std::cerr << "Selection rectangle is " << *rect << std::endl;
+#ifdef QGISDEBUG
+  QgsLogger::debug<QgsRect>("Selection rectangle is: ", *rect, __FILE__, __FUNCTION__, __LINE__, 1);
+#endif
   OGRGeometry *filter = 0;
   filter = OGRGeometryFactory::createGeometry(wkbPolygon);
   QString wktExtent = QString("POLYGON ((%1))").arg(rect->asPolygon());
@@ -642,12 +606,12 @@ void QgsOgrProvider::select(QgsRect *rect, bool useIntersect)
   //TODO   about it. If setting the filter fails, all records will be returned
   if (result == OGRERR_NONE) 
   {
-    std::cerr << "Setting spatial filter using " << wktExtent.toLocal8Bit().data() << std::endl;
+    QgsDebugMsg("Setting spatial filter using " + wktExtent);
     ogrLayer->SetSpatialFilter(filter);
     //ogrLayer->SetSpatialFilterRect(rect->xMin(), rect->yMin(), rect->xMax(), rect->yMax());
   }else{
 #ifdef QGISDEBUG    
-    std::cerr << "Setting spatial filter failed!" << std::endl;
+    QgsLogger::warning("Setting spatial filter failed!");
     assert(result==OGRERR_NONE);
 #endif
   }
@@ -727,8 +691,7 @@ void QgsOgrProvider::getFeatureAttribute(OGRFeature * ogrFet, QgsFeature * f, in
 
   if ( ! fldDef )
   {
-    qDebug( "%s:%d ogrFet->GetFieldDefnRef(attindex) returns NULL", 
-        __FILE__, __LINE__ );
+    QgsDebugMsg("ogrFet->GetFieldDefnRef(attindex) returns NULL");
     return;
   }
 
@@ -783,7 +746,9 @@ QString QgsOgrProvider::minValue(int position)
 {
   if(position>=fieldCount())
   {
-    std::cerr << "Warning: access requested to invalid position in QgsOgrProvider::minValue(..)" << std::endl;
+#ifdef QGISDEBUG
+    QgsLogger::warning("Warning: access requested to invalid position in QgsOgrProvider::minValue(..)");
+#endif
   }
   if(minmaxcachedirty)
   {
@@ -797,7 +762,9 @@ QString QgsOgrProvider::maxValue(int position)
 {
   if(position>=fieldCount())
   {
-    std::cerr << "Warning: access requested to invalid position in QgsOgrProvider::maxValue(..)" << std::endl;
+#ifdef QGISDEBUG
+    QgsLogger::warning("Warning: access requested to invalid position in QgsOgrProvider::maxValue(..)");
+#endif    
   }
   if(minmaxcachedirty)
   {
@@ -846,9 +813,6 @@ bool QgsOgrProvider::isValid()
 
 bool QgsOgrProvider::addFeature(QgsFeature* f)
 { 
-#ifdef QGISDEBUG
-  qWarning("in add Feature");
-#endif
   bool returnValue = true;
   OGRFeatureDefn* fdef=ogrLayer->GetLayerDefn();
   OGRFeature* feature=new OGRFeature(fdef);
@@ -957,53 +921,35 @@ bool QgsOgrProvider::addFeature(QgsFeature* f)
         break;
       }
   }
+
   //add possible attribute information
-#ifdef QGISDEBUG
-  qWarning("before attribute commit section");
-#endif
   for(int i=0;i<f->attributeMap().size();++i)
   {
     QString s=(f->attributeMap())[i].fieldValue();
-#ifdef QGISDEBUG
-    qWarning("adding attribute: "+s);
-#endif
     if(!s.isEmpty())
     {
       if(fdef->GetFieldDefn(i)->GetType()==OFTInteger)
       {
         feature->SetField(i,s.toInt());
-#ifdef QGISDEBUG
-        qWarning("OFTInteger, attribute value: "+s.toInt());
-#endif
       }
       else if(fdef->GetFieldDefn(i)->GetType()==OFTReal)
       {
         feature->SetField(i,s.toDouble());
-#ifdef QGISDEBUG
-        qWarning("OFTReal, attribute value: "+QString::number(s.toDouble(),'f',3));
-#endif
       }
       else if(fdef->GetFieldDefn(i)->GetType()==OFTString)
       {
 	  feature->SetField(i,s.ascii());
-#ifdef QGISDEBUG
-        qWarning("OFTString, attribute value: "+QString(s.ascii()));
-#endif
       }
       else
       {
-#ifdef QGISDEBUG
-        qWarning("no type found");
-#endif
+        QgsLogger::warning("QgsOgrProvider::addFeature, no type found");
       }
     }
   }
 
   if(ogrLayer->CreateFeature(feature)!=OGRERR_NONE)
   {
-    //writing failed
-    QMessageBox::warning (0, "Warning", "Writing of the feature failed",
-        QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
+    QgsLogger::warning("Writing of the feature failed");
     returnValue = false;
   }
   ++numberFeatures;
@@ -1036,9 +982,7 @@ bool QgsOgrProvider::addAttributes(std::map<QString,QString> const & name)
 	    OGRFieldDefn fielddefn(iter->first,OFTInteger);
 	    if(ogrLayer->CreateField(&fielddefn)!=OGRERR_NONE)
 	    {
-#ifdef QGISDEBUG
-		qWarning("QgsOgrProvider.cpp: writing of the field failed");	
-#endif
+		QgsLogger::warning("QgsOgrProvider.cpp: writing of OFTInteger field failed");	
 		returnvalue=false;
 	    }
 	}
@@ -1047,9 +991,7 @@ bool QgsOgrProvider::addAttributes(std::map<QString,QString> const & name)
 	    OGRFieldDefn fielddefn(iter->first,OFTReal);
 	    if(ogrLayer->CreateField(&fielddefn)!=OGRERR_NONE)
 	    {
-#ifdef QGISDEBUG
-		qWarning("QgsOgrProvider.cpp: writing of the field failed");
-#endif
+		QgsLogger::warning("QgsOgrProvider.cpp: writing of OFTReal field failed");
 		returnvalue=false;
 	    }
 	}
@@ -1058,17 +1000,13 @@ bool QgsOgrProvider::addAttributes(std::map<QString,QString> const & name)
 	    OGRFieldDefn fielddefn(iter->first,OFTString);
 	    if(ogrLayer->CreateField(&fielddefn)!=OGRERR_NONE)
 	    {
-#ifdef QGISDEBUG
-		qWarning("QgsOgrProvider.cpp: writing of the field failed");
-#endif
+		QgsLogger::warning("QgsOgrProvider.cpp: writing of OFTString field failed");
 		returnvalue=false;
 	    }
 	}
 	else
 	{
-#ifdef QGISDEBUG
-	    qWarning("QgsOgrProvider.cpp: type not found");
-#endif
+	    QgsLogger::warning("QgsOgrProvider::addAttributes, type not found");
 	    returnvalue=false;
 	}
     }
@@ -1076,11 +1014,7 @@ bool QgsOgrProvider::addAttributes(std::map<QString,QString> const & name)
 }
 
 bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString> > const & attr_map)
-{
-#ifdef QGISDEBUG
-  std::cerr << "QgsOgrProvider::changeAttributeValues()" << std::endl;
-#endif
-    
+{   
   std::map<int,std::map<QString,QString> > am = attr_map; // stupid, but I don't know other way to convince gcc to compile
   for( std::map<int,std::map<QString,QString> >::iterator it=am.begin();it!=am.end();++it)
   {
@@ -1089,8 +1023,8 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
     OGRFeature *of = ogrLayer->GetFeature ( fid );
 
     if ( !of ) {
-        QMessageBox::warning (0, "Warning", "Cannot read feature, cannot change attributes" );
-	return false;
+      QgsLogger::warning("QgsOgrProvider::changeAttributeValues, Cannot read feature, cannot change attributes");
+      return false;
     }
 
     std::map<QString,QString> attr = (*it).second;
@@ -1106,10 +1040,6 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
 	    
 	    if ( name.compare( fd->GetNameRef() ) == 0 ) {
 		OGRFieldType type = fd->GetType();
-
-#ifdef QGISDEBUG
-		std::cerr << "set field " << f << " : " << name.toLocal8Bit().data() << " to " << value.toLocal8Bit().data() << std::endl;
-#endif
 		switch ( type ) {
 		    case OFTInteger:
 		        of->SetField ( f, value.toInt() );
@@ -1121,7 +1051,8 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
 		        of->SetField ( f, value.ascii() );
 			break;
 		    default:
-                        QMessageBox::warning (0, "Warning", "Unknown field type, cannot change attribute" );
+			QgsLogger::warning("QgsOgrProvider::changeAttributeValues, Unknown field type,\
+cannot change attribute");
 			break;
 		}
 
@@ -1139,12 +1070,11 @@ bool QgsOgrProvider::changeAttributeValues(std::map<int,std::map<QString,QString
 
 bool QgsOgrProvider::createSpatialIndex()
 {
-    //experimental, try to create a spatial index
-    QString filename=getDataSourceUri().section('/',-1,-1);//todo: find out the filename from the uri
+    QString filename=getDataSourceUri().section('/',-1,-1);//find out the filename from the uri
     QString layername=filename.section('.',0,0);
     QString sql="CREATE SPATIAL INDEX ON "+layername;
     ogrDataSource->ExecuteSQL (sql.ascii(), ogrLayer->GetSpatialFilter(),"");
-    //todo: find out, if the .qix file is there
+    //find out, if the .qix file is there
     QString indexname = getDataSourceUri();
     indexname.truncate(getDataSourceUri().length()-filename.length());
     indexname=indexname+layername+".qix";
@@ -1257,11 +1187,6 @@ int QgsOgrProvider::capabilities() const
     {
       // No use required for this QGIS release.
     }
-    
-#ifdef QGISDEBUG
-  std::cout << "QgsOgrProvider::capabilities: GDAL Version Num is '" <<
-    GDAL_VERSION_NUM << "'." << std::endl;
-#endif
 
     if (1)
     {
@@ -1344,7 +1269,7 @@ QGISEXTERN QString fileVectorFilters()
 
     if (!driverRegistrar)
     {
-        QMessageBox::warning(0,"OGR Driver Manager","unable to get OGRDriverManager");
+	QgsLogger::warning("OGR Driver Manager, unable to get OGRDriverManager");
         return "";              // XXX good place to throw exception if we
     }                           // XXX decide to do exceptions
 
@@ -1362,8 +1287,7 @@ QGISEXTERN QString fileVectorFilters()
     // driver for them, the user will have to use the "All Files" to
     // open datasets with no explicitly defined file name extension.
 #ifdef QGISDEBUG
-
-    std::cerr << "Driver count: " << driverRegistrar->GetDriverCount() << std::endl;
+    QgsLogger::debug("Driver count: ", driverRegistrar->GetDriverCount(), 1, __FILE__, __FUNCTION__, __LINE__);
 #endif
 
     for (int i = 0; i < driverRegistrar->GetDriverCount(); ++i)
@@ -1374,7 +1298,7 @@ QGISEXTERN QString fileVectorFilters()
 
         if (!driver)
         {
-            qWarning("unable to get driver %d", i);
+	    QgsLogger::warning("unable to get driver " + QString::number(i));
             continue;
         }
 
@@ -1449,7 +1373,7 @@ QGISEXTERN QString fileVectorFilters()
         {
             // NOP, we don't know anything about the current driver
             // with regards to a proper file filter string
-            qDebug( "%s:%d unknown driver %s", __FILE__, __LINE__, (const char *)driverName.local8Bit() );
+	    QgsLogger::warning("fileVectorFilters, unknown driver: " + driverName);
         }
 
     }                           // each loaded GDAL driver
@@ -1550,9 +1474,7 @@ const std::list<std::pair<QString, QString> >& attributes)
     }
     else
     {
-#ifdef QGISDEBUG
-	qWarning("createEmptyDataSource: export of srs to wkt failed");
-#endif
+	QgsLogger::warning("createEmptyDataSource: export of srs to wkt failed");
     }
     if( !myWKT.isNull()  &&  myWKT.length() != 0 )
     {
@@ -1574,9 +1496,7 @@ const std::list<std::pair<QString, QString> >& attributes)
 	    OGRFieldDefn field(it->first, OFTReal);
 	    if(layer->CreateField(&field) != OGRERR_NONE)
 	    {
-#ifdef QGISDEBUG
-		qWarning("creation of OFTReal field failed");
-#endif
+		QgsLogger::warning("creation of OFTReal field failed");
 	    }
 	}
 	else if(it->second == "Integer")
@@ -1584,9 +1504,7 @@ const std::list<std::pair<QString, QString> >& attributes)
 	    OGRFieldDefn field(it->first, OFTInteger);
 	    if(layer->CreateField(&field) != OGRERR_NONE)
 	    {
-#ifdef QGISDEBUG
-		qWarning("creation of OFTInteger field failed");
-#endif
+		QgsLogger::warning("creation of OFTInteger field failed");
 	    }
 	}
 	else if(it->second == "String")
@@ -1594,16 +1512,16 @@ const std::list<std::pair<QString, QString> >& attributes)
 	    OGRFieldDefn field(it->first, OFTString);
 	    if(layer->CreateField(&field) != OGRERR_NONE)
 	    {
-#ifdef QGISDEBUG
-		qWarning("creation of OFTString field failed");
-#endif
+	      QgsLogger::warning("creation of OFTString field failed");
 	    }
 	}
     }
 
     OGRDataSource::DestroyDataSource(dataSource);
 
-    qWarning("GDAL Version number is: "+QString::number(GDAL_VERSION_NUM));
+#ifdef QGISDEBUG
+    QgsLogger::debug("GDAL Version number", GDAL_VERSION_NUM, __FILE__, __FUNCTION__, __LINE__);
+#endif
 #if GDAL_VERSION_NUM >= 1310
     if(reference)
     {
