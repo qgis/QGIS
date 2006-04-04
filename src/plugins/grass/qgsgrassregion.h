@@ -25,6 +25,7 @@ class QgisIface;
 class QgsMapCanvas;
 class Q3ButtonGroup;
 class QgsPoint;
+class QgsGrassRegionEdit;
 #include "ui_qgsgrassregionbase.h"
 #include <QDialog>
 #include <QRubberBand>
@@ -119,9 +120,6 @@ private:
     //! Draw region
     void draw ( double x1, double y1, double x2, double y2 );
 
-    //! Status of input from canvas 
-    bool mDraw;
-
     //! First corner coordinates
     double mX;
     double mY;
@@ -141,7 +139,9 @@ private:
     // Format N, S, E, W value
     QString formatEdge ( double v );
 
-    QRubberBand *mRubberBand;
+    QgsGrassRegionEdit* mRegionEdit;
+    
+    friend class QgsGrassRegionEdit;
 };
 
 #endif // QGSGRASSREGION_H

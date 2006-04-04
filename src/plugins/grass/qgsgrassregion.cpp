@@ -64,6 +64,88 @@ extern "C" {
 
 bool QgsGrassRegion::mRunning = false;
 
+/** map tool which uses rubber band for changing grass region */
+class QgsGrassRegionEdit : public QgsMapTool
+{
+  public:
+    QgsGrassRegionEdit(QgsGrassRegion* reg)
+      : QgsMapTool(reg->mCanvas), mRegion(reg)
+    {
+      mDraw = false;
+      mRubberBand = new QRubberBand ( QRubberBand::Rectangle, mCanvas );
+    }
+    
+    ~QgsGrassRegionEdit()
+    {
+      delete mRubberBand;
+    }
+    
+    //! mouse click in map canvas
+    void canvasPressEvent(QMouseEvent * event)
+    {
+      QgsPoint point = toMapCoords(event->pos());
+      double x = point.x();
+      double y = point.y();
+    
+  #ifdef QGISDEBUG
+      std::cerr << "QgsGrassRegionEdit::canvasPressEvent()" << std::endl;
+  #endif
+
+      if ( !mDraw ) { // first corner
+        mRegion->mX = x;
+        mRegion->mY = y;
+              
+        mRegion->draw ( x, y, x, y );
+        mDraw = true; 
+      } else { 
+        mRegion->draw ( mRegion->mX, mRegion->mY, x, y );
+        mDraw = false; 
+      }
+      mRubberBand->show();
+    }
+    
+    //! mouse movement in map canvas
+    void canvasMoveEvent(QMouseEvent * event)
+    {
+      QgsPoint point = toMapCoords(event->pos());
+    
+    #ifdef QGISDEBUG
+      std::cerr << "QgsGrassRegionEdit::canvasMoveEvent()" << std::endl;
+    #endif
+    
+      if ( !mDraw ) return;
+      mRegion->draw ( mRegion->mX, mRegion->mY, point.x(), point.y() );
+    }
+    
+    //! called when map tool is about to get inactive
+    void deactivate()
+    { 
+      mRubberBand->hide();
+      
+      QgsMapTool::deactivate();
+    }
+
+    void setRegion(const QgsPoint& ul, const QgsPoint& lr)
+    {
+      QPoint qul = toCanvasCoords(ul);
+      QPoint qlr = toCanvasCoords(lr);    
+      mRubberBand->setGeometry ( QRect(qul,qlr));
+    }
+    
+
+  private:
+    //! Rubber band for selecting grass region
+    QRubberBand* mRubberBand;
+    
+    //! Status of input from canvas 
+    bool mDraw;
+
+    QgsGrassRegion* mRegion;
+};
+
+
+
+
 QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, QgisIface *iface,
         QWidget * parent, Qt::WFlags f ) 
         :QDialog(parent, f), QgsGrassRegionBase ( )
@@ -80,7 +162,6 @@ QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, Qgis
     mInterface = iface;
     mCanvas = mInterface->getMapCanvas();
     restorePosition();
-    mDraw = false;
     mUpdatingGui = false;
     mDisplayed = false;
 
@@ -131,8 +212,6 @@ QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, Qgis
 	
     setGuiValues();
 
-    connect( mCanvas, SIGNAL(xyClickCoordinates(QgsPoint &)), this, SLOT(mouseEventReceiverClick(QgsPoint &)));
-    connect( mCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(mouseEventReceiverMove(QgsPoint &)));
     connect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(postRender(QPainter *)));
 
     // Connect entries
@@ -145,8 +224,6 @@ QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, Qgis
     connect( mRows, SIGNAL(textChanged(const QString &)), this, SLOT(rowsChanged(const QString &)));
     connect( mCols, SIGNAL(textChanged(const QString &)), this, SLOT(colsChanged(const QString &)));
 
-    mCanvas->setMapTool(new QgsMapToolEmitPoint(mCanvas));
-
     // Symbology
     QPen pen = mPlugin->regionPen();
     QPalette palette = mColorButton->palette();
@@ -157,7 +234,8 @@ QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, Qgis
     mWidthSpinBox->setValue( pen.width() );
     connect( mWidthSpinBox, SIGNAL(valueChanged(int)), this, SLOT(changeWidth()));
 
-    mRubberBand = new QRubberBand ( QRubberBand::Rectangle, mCanvas );
+    mRegionEdit = new QgsGrassRegionEdit(this); // will be deleted by map canvas
+    mCanvas->setMapTool(mRegionEdit);
 
     setAttribute ( Qt::WA_DeleteOnClose );
     displayRegion();
@@ -215,7 +293,6 @@ void QgsGrassRegion::setGuiValues( bool north, bool south, bool east, bool west,
 
 QgsGrassRegion::~QgsGrassRegion ()
 {
-    delete mRubberBand;
     mRunning = false;
 }
 
@@ -325,33 +402,7 @@ void QgsGrassRegion::radioChanged()
         mCols->setEnabled(false);
     }
 }
-void QgsGrassRegion::mouseEventReceiverClick( QgsPoint & point )
-{
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrassRegion::mouseEventReceiverClick()" << std::endl;
-    #endif
 
-    if ( !mDraw ) { // first corner
-        mX = point.x();
-	mY = point.y();
-        
-	draw ( mX, mY, mX, mY );
-	mDraw = true; 
-    } else { 
-        draw ( mX, mY, point.x(), point.y() );
-	mDraw = false; 
-    }
-    mRubberBand->show();
-}
-
-void QgsGrassRegion::mouseEventReceiverMove( QgsPoint & point )
-{
-    #ifdef QGISDEBUG
-    std::cerr << "QgsGrassRegion::mouseEventReceiverMove()" << std::endl;
-    #endif
-    if ( !mDraw ) return;
-    draw ( mX, mY, point.x(), point.y() );
-}
 
 void QgsGrassRegion::draw ( double x1, double y1, double x2, double y2 ) 
 {
@@ -390,15 +441,7 @@ void QgsGrassRegion::displayRegion()
     QgsPoint ul(mWindow.west, mWindow.north);
     QgsPoint lr(mWindow.east, mWindow.south);
     
-    QgsMapToPixel *transform = mCanvas->getCoordinateTransform();
-
-    transform->transform( &ul );
-    transform->transform( &lr );
-
-    QPoint qul ( static_cast<int>(ul.x()), static_cast<int>(ul.y()) );
-    QPoint qlr ( static_cast<int>(lr.x()), static_cast<int>(lr.y()) );
-    
-    mRubberBand->setGeometry ( QRect(qul,qlr));
+    mRegionEdit->setRegion(ul, lr);
 
     mDisplayed = true;
 
@@ -438,7 +481,7 @@ void QgsGrassRegion::accept()
     }
 
     saveWindowLocation();
-    mRubberBand->hide();
+    mQgisApp->pan(); // change to pan tool
     mRunning = false;
     close();
     //delete this;
@@ -447,7 +490,7 @@ void QgsGrassRegion::accept()
 void QgsGrassRegion::reject()
 {
     saveWindowLocation();
-    mRubberBand->hide();
+    mQgisApp->pan(); // change to pan tool
     mRunning = false;
     close();
     //delete this;
