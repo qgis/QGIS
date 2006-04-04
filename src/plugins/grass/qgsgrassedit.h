@@ -45,6 +45,18 @@ class QgsGrassProvider;
 #include <QMainWindow>
 #include "qgsgrassselect.h"
 
+// forward declaration of edit tools
+class QgsGrassEditTool;
+class QgsGrassEditNewPoint;
+class QgsGrassEditNewLine;
+class QgsGrassEditMoveVertex;
+class QgsGrassEditAddVertex;
+class QgsGrassEditDeleteVertex;
+class QgsGrassEditMoveLine;
+class QgsGrassEditDeleteLine;
+class QgsGrassEditSplitLine;
+class QgsGrassEditAttributes;
+
 typedef struct {
     int field;
     int maxCat;
@@ -141,12 +153,6 @@ public:
 
 public slots:
     // TODO: once available in QGIS, use only one reciver for all signals
-    
-    //! Mouse event receiver
-    void mouseEventReceiverMove ( QgsPoint & ); 
-    
-    //! Mouse event receiver
-    void mouseEventReceiverClick ( QgsPoint &p, Qt::ButtonState button ); 
     
     //! Called when rendering is finished
     void postRender ( QPainter * ); 
@@ -411,6 +417,17 @@ private:
     QgsRubberBand *mRubberBandLine;
     QgsVertexMarker *mRubberBandIcon;
     QgsGrassEditLayer* mCanvasEdit;
+    
+    friend class QgsGrassEditTool;
+    friend class QgsGrassEditNewPoint;
+    friend class QgsGrassEditNewLine;
+    friend class QgsGrassEditMoveVertex;
+    friend class QgsGrassEditAddVertex;
+    friend class QgsGrassEditDeleteVertex;
+    friend class QgsGrassEditMoveLine;
+    friend class QgsGrassEditDeleteLine;
+    friend class QgsGrassEditSplitLine;
+    friend class QgsGrassEditAttributes;
 };
 
 #endif // QGSGRASSEDIT_H
