@@ -29,7 +29,7 @@ print "4) clevertool.h, clevertool.cpp  etc. <- the filenames used to hold the a
 print "Plugin name: " ;
 $pluginName = <STDIN>;
 chop $pluginName;
-$pluginLCaseName = $pluginName; #todo convert to lower case 
+$pluginLCaseName = lc($pluginName); #todo convert to lower case 
 
 print "\n\nEnter a short description (typically one line)\n";
 print "e.g. The clever plugin does clever stuff in QGIS\n";
@@ -108,10 +108,9 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
   # read through Makefile.am and write each line to Makefile.am.mod
   while(<MAKEFILE>){
     if(/^\s*SUBDIRS =*/){
-      # add our plugin dir to the SUBDIRS line
-      chop;
+      # add our plugin dir to the next line after SUBDIRS line
       print MAKEFILEMOD;
-      print MAKEFILEMOD " $pluginDir\n";
+      print MAKEFILEMOD "\t\t$pluginDir \\\n";
     }else{
       print MAKEFILEMOD;
     }
