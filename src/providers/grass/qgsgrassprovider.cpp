@@ -886,22 +886,24 @@ void QgsGrassProvider::loadAttributes ( GLAYER &layer )
 			    #endif
 
 			    layer.attributes[layer.nAttributes].values[i] = strdup ( db_get_string(&dbstr) );
-
-			    double dbl;
-			    if ( ctype == DB_C_TYPE_INT ) {
-				dbl = db_get_value_int ( value );
-			    } else if ( ctype == DB_C_TYPE_DOUBLE ) {
-				dbl = db_get_value_double ( value );
-			    } else {
-				dbl = 0;
-			    }
-			    
-			    if ( dbl < layer.minmax[i][0] ) {
-				layer.minmax[i][0] = dbl;
-			    }
-			    if ( dbl > layer.minmax[i][1] ) {
-				layer.minmax[i][1] = dbl;
-			    }
+			    if ( !db_test_value_isnull(value) )
+                            {
+				double dbl;
+				if ( ctype == DB_C_TYPE_INT ) {
+				    dbl = db_get_value_int ( value );
+				} else if ( ctype == DB_C_TYPE_DOUBLE ) {
+				    dbl = db_get_value_double ( value );
+				} else {
+				    dbl = 0;
+				}
+				
+				if ( dbl < layer.minmax[i][0] ) {
+				    layer.minmax[i][0] = dbl;
+				}
+				if ( dbl > layer.minmax[i][1] ) {
+				    layer.minmax[i][1] = dbl;
+				}
+                            }
 			}
 			layer.nAttributes++;
 		    }
