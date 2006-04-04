@@ -64,6 +64,7 @@ libqgis_coreHEADERS =				\
 		qgslabelattributes.h		\
 		qgsline.h					\
 		qgslinesymbol.h				\
+		qgslogger.h				\
 		qgsmaptopixel.h				\
 		qgsmarkercatalogue.h		\
 		qgsmarkersymbol.h			\
@@ -116,6 +117,7 @@ libqgis_core_la_SOURCES =\
 		qgslabelattributes.cpp		\
 		qgsline.cpp			\
 		qgslinesymbol.cpp		\
+		qgslogger.cpp			\
 		qgsmaptopixel.cpp					\
 		qgsmarkercatalogue.cpp				\
 		qgsmarkersymbol.cpp					\
