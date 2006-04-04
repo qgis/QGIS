@@ -44,7 +44,6 @@ email                : tim@linfiniti.com
 #include "plugingui.h"
 
 // xpm for creating the toolbar icon
-#include "icon.xpm"
 #ifdef WIN32
 #define QGISEXTERN extern "C" __declspec( dllexport )
 #else
@@ -88,7 +87,8 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 void [pluginname]::initGui()
 {
   Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&[menuname]");
-  menuId = pluginMenu->insertItem(QIcon(icon),"&[menuitemname]", this, SLOT(run()));
+  //set teh icon from the resource file
+  menuId = pluginMenu->insertItem(QIcon(":/[pluginlcasename]/[pluginlcasename].png"),"&[menuitemname]", this, SLOT(run()));
 
   pluginMenu->setWhatsThis(menuId, tr("Replace this with a short description of the what the plugin does"));
 
