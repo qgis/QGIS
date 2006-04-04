@@ -16,6 +16,7 @@
 
 #include "qgsgrassedittools.h"
 #include "qgsgrassedit.h"
+#include "qgsgrassattributes.h"
 #include "../../src/providers/grass/qgsgrassprovider.h"
 #include "qgsvertexmarker.h"
 
