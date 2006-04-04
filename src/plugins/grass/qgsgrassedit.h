@@ -38,12 +38,12 @@ class QCloseEvent;
 class QgsRubberBand;
 class QgsVertexMarker;
 class QgsGrassEditLayer;
+class QgsGrassAttributes;
 
 class QgsGrassProvider;
 #include "ui_qgsgrasseditbase.h"
 #include <QMainWindow>
 #include "qgsgrassselect.h"
-#include "qgsgrassattributes.h"
 
 typedef struct {
     int field;
