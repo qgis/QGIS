@@ -1,4 +1,4 @@
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <qgsapplication.h>
 #include "testqgsapplication.h"
 #include <QObject>
@@ -10,10 +10,12 @@ TestQgsApplication::TestQgsApplication() : QObject()
 
 }
 
+
 TestQgsApplication::~TestQgsApplication()
 {
 
 }
+
 
 void TestQgsApplication::authorsFilePath()
 {

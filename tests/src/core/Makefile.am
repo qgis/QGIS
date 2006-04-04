@@ -11,12 +11,15 @@
 bin_PROGRAMS = testqgsapplication
 
 
-%.moc.cpp: %.cpp
+%.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
 testqgsapplication_MOC = testqgsapplication.moc.cpp
-testqgsapplication_SOURCES = $(testqgsapplication_MOC) testqgsapplication.h testqgsapplication.cpp 
+testqgsapplication_SOURCES = testqgsapplication.cpp 
 
-testqgsapplication_LDADD = $(QT_LDADD) $(PG_LIB) $(GDAL_LDADD) -lproj ../../../src/core/libqgis_core.la ../../../src/gui/libqgis_gui.la 
+testqgsapplication_LDADD = $(QT_LDADD) $(PG_LIB) $(GDAL_LDADD) -lproj ../../../src/core/libqgis_core.la ../../../src/gui/libqgis_gui.la  -lQtTest
 testqgsapplication_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PG_INC)  -I../../../src/core
 
+BUILT_SOURCES = $(testqgsapplication_MOC)
+
+CLEANFILES = $(BUILT_SOURCES)
