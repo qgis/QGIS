@@ -75,6 +75,8 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
   #
   # create the new plugin directory
   system("cp -r plugin_template $pluginDir");
+  # remove the README file 
+  system("rm -rf $pluginDir/README");
   # remove the subversion directory 
   system("rm -rf $pluginDir/.svn");
   # copy files to appropriate names
@@ -128,8 +130,8 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
   # Add an entry to qgis/configure.in
   # Do we really want to do this or add a message telling the user how to do
   # it?
-  open CONFIGUREIN, "<../configure.in" || die 'Unable to open ../configure.in';
-  open CONFIGUREINMOD, ">../configure.in.mod" || die 'Unable to create ../configure.in.mod';
+  open CONFIGUREIN, "<../../configure.in" || die 'Unable to open ../../configure.in';
+  open CONFIGUREINMOD, ">../../configure.in.mod" || die 'Unable to create ../../configure.in.mod';
   # read through configure.in until we find the AC_CONFIG_FILES section
    while(<CONFIGUREIN>){
     if(/^\s*AC_CONFIG_FILES*/){
@@ -152,11 +154,11 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
   close CONFIGUREINMOD;
   
    # save configure.in in case we die before done moving things around
-  system("mv ../configure.in ../configure.in.save");
+  system("mv ../../configure.in ../../configure.in.save");
   # move the new configure.in to where it belongs
-  system("mv ../configure.in.mod ../configure.in");
+  system("mv ../../configure.in.mod ../../configure.in");
   # delete the original configure.in
-  unlink("../configure.in.save");
+  unlink("../../configure.in.save");
   
 # print out some end of processing info
 print << "EOP";
