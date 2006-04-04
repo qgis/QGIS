@@ -48,13 +48,15 @@ void QgsMapTool::activate()
 {
   // make action active
   if (mAction)
-    mAction->setOn(true);
+    mAction->setChecked(true);
   
-  // set cursor (map tools usually set it in constructor
+  // set cursor (map tools usually set it in constructor)
   mCanvas->setCursor(mCursor);
 }
     
 
 void QgsMapTool::deactivate()
 {
+  if (mAction)
+    mAction->setChecked(false);
 }

@@ -57,15 +57,11 @@ class QgsMapCanvasItem : public QObject, public Q3CanvasRectangle
     
     //! transformation from map coordinates to screen coordinates
     QPoint toCanvasCoords(const QgsPoint& point);
-    
-    
-    
-  public slots:
-    
+
     /** called on changed extents or changed item rectangle
      * Override this in your subclass if you wish to have custom
      * behaviour for when the canvas area of interest is changed */
-    void updatePosition();
+    virtual void updatePosition();
 
   protected:
     
