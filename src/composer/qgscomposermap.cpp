@@ -120,8 +120,16 @@ void QgsComposerMap::draw ( QPainter *painter, QgsRect *extent, QgsMapToPixel *t
 	widthScale *= mComposition->viewScale();
 	  }
 	  double symbolScale = mSymbolScale * mComposition->scale();
-	  vector->draw( painter, extent, transform, widthScale, symbolScale);
 
+          QgsRect r1, r2;
+          r1 = *extent;
+          bool split = layer->projectExtent(r1, r2);
+	  vector->draw( painter, &r1, transform, widthScale, symbolScale);
+
+          if ( split )
+          {
+	      vector->draw( painter, &r2, transform, widthScale, symbolScale);
+          }
       } else { 
 	  // raster
           if ( plotStyle() == QgsComposition::Print || plotStyle() == QgsComposition::Postscript ) {
