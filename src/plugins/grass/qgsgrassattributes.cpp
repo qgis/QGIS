@@ -176,6 +176,18 @@ int QgsGrassAttributes::addTab ( const QString & label )
 
     resetButtons();
 
+    QSettings settings("QuantumGIS", "qgis");
+    QString path = "/GRASS/windows/attributes/columnWidth/";
+    for ( int i = 0; i < 2; i++ ) 
+    {
+        bool ok;
+	int cw = settings.readNumEntry( path+QString::number(i), 30, &ok);
+	if ( ok ) tb->setColumnWidth (i, cw );
+    }
+
+    connect ( tb->horizontalHeader(), SIGNAL(sizeChange(int,int,int)),
+	      this, SLOT(columnSizeChanged(int,int,int)) );
+
     return ( tabCats->count() - 1 );
 }
 
@@ -365,4 +377,13 @@ void QgsGrassAttributes::resetButtons ( )
         deleteButton->setEnabled(true);
         updateButton->setEnabled(true);
     }
+}
+
+void QgsGrassAttributes::columnSizeChanged ( int section, int oldSize, int newSize )
+{
+    QSettings settings("QuantumGIS", "qgis");
+    QString path = "/GRASS/windows/attributes/columnWidth/"
+                   + QString::number(section);
+    std::cerr << "path = " << path.ascii() << " newSize = " << newSize << std::endl;
+    settings.writeEntry( path, newSize);
 }

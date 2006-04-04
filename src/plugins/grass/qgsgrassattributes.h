@@ -99,6 +99,9 @@ public slots:
     //! Called if tab is changed
     void tabChanged ( QWidget *widget );
 
+    //! Column size changed 
+    void columnSizeChanged ( int section, int oldSize, int newSize );
+
 private:
     //! Pointer to vector provider 
     QgsGrassProvider *mProvider;
