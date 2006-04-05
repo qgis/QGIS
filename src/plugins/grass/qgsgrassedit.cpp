@@ -71,12 +71,6 @@ extern "C" {
 #include "qgsmapcanvasitem.h"
 #include "qgsmaptoolpan.h"
 
-// FIXME: when using mNewLineAction it segfaults because of illegal pointer!
-// but when using gNewLineAction (pointer to the same QAction) it works
-// This problem is with all QAction pointers in QgsGrassEdit
-// what is causing that? I couldn't find the reason [MD]
-QAction* gNewLineAction;
-
 class QgsGrassEditLayer : public QgsMapCanvasItem
 {
   public:
@@ -308,8 +302,6 @@ void QgsGrassEdit::init()
   ag->addAction ( mDeleteLineAction );
   ag->addAction ( mEditAttributesAction );
   
-  gNewLineAction = mNewLineAction;  // FIXME
-
   mEditPoints = Vect_new_line_struct ();
   mPoints = Vect_new_line_struct ();
   mCats = Vect_new_cats_struct ();
@@ -1185,57 +1177,57 @@ void QgsGrassEdit::startTool(int tool)
   {
     case NEW_POINT:
       t = new QgsGrassEditNewPoint(this, false);
-      //t->setAction(mNewPointAction);
+      t->setAction(mNewPointAction);
       break;
       
     case NEW_CENTROID:
       t = new QgsGrassEditNewPoint(this, true);
-      //t->setAction(mNewCentroidAction);
+      t->setAction(mNewCentroidAction);
       break;
       
     case NEW_LINE:
       t = new QgsGrassEditNewLine(this, false);
-      t->setAction(gNewLineAction); // FIXME: test of action as global
+      t->setAction(mNewLineAction);
       break;
   
     case NEW_BOUNDARY:
       t = new QgsGrassEditNewLine(this, true);
-      //t->setAction(mNewBoundaryAction);
+      t->setAction(mNewBoundaryAction);
       break;
       
     case MOVE_VERTEX:
       t = new QgsGrassEditMoveVertex(this);
-      //t->setAction(mMoveVertexAction);
+      t->setAction(mMoveVertexAction);
       break;
       
     case ADD_VERTEX:
       t = new QgsGrassEditAddVertex(this);
-      //t->setAction(mAddVertexAction);
+      t->setAction(mAddVertexAction);
       break;
       
     case DELETE_VERTEX:
       t = new QgsGrassEditDeleteVertex(this);
-      //t->setAction(mDeleteVertexAction);
+      t->setAction(mDeleteVertexAction);
       break;
       
     case MOVE_LINE:
       t = new QgsGrassEditMoveLine(this);
-      //t->setAction(mMoveLineAction);
+      t->setAction(mMoveLineAction);
       break;
       
     case DELETE_LINE:
       t = new QgsGrassEditDeleteLine(this);
-      //t->setAction(mDeleteLineAction);
+      t->setAction(mDeleteLineAction);
       break;
       
     case SPLIT_LINE:
       t = new QgsGrassEditSplitLine(this);
-      //t->setAction(mSplitLineAction);
+      t->setAction(mSplitLineAction);
       break;
       
     case EDIT_ATTRIBUTES:
       t = new QgsGrassEditAttributes(this);
-      //t->setAction(mEditAttributesAction);
+      t->setAction(mEditAttributesAction);
       break;
       
     case EDIT_CATS:
