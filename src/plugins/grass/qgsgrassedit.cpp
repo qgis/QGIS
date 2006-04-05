@@ -250,7 +250,7 @@ void QgsGrassEdit::init()
   connect ( mDeleteVertexAction, SIGNAL(triggered()), this, SLOT(deleteVertex()) );
 
   mMoveLineAction = new QAction(
-          QIcon(myIconPath+"grass_move_line.png"), tr("Move line"), this);
+          QIcon(myIconPath+"grass_move_line.png"), tr("Move element"), this);
   mMoveLineAction->setShortcut ( QKeySequence(Qt::Key_F9) ); 
   tb->addAction ( mMoveLineAction );
   connect ( mMoveLineAction, SIGNAL(triggered()), this, SLOT(moveLine()) );
@@ -262,7 +262,7 @@ void QgsGrassEdit::init()
   connect ( mSplitLineAction, SIGNAL(triggered()), this, SLOT(splitLine()) );
 
   mDeleteLineAction = new QAction(
-          QIcon(myIconPath+"grass_delete_line.png"), tr("Delete line"), this);
+          QIcon(myIconPath+"grass_delete_line.png"), tr("Delete element"), this);
   mDeleteLineAction->setShortcut ( QKeySequence(Qt::Key_F11) ); 
   tb->addAction ( mDeleteLineAction );
   connect ( mDeleteLineAction, SIGNAL(triggered()), this, SLOT(deleteLine()) );
