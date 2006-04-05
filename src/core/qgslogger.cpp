@@ -38,15 +38,15 @@ void QgsLogger::debug(const QString& msg, int debuglevel, const char* file, cons
 	}
       else if(function == NULL)
 	{
-	  qDebug("File: %s, Message: %s", file, msg.toLocal8Bit().data());
+	  qDebug("%s: %s", file, msg.toLocal8Bit().data());
 	}
       else if(line == -1)
 	{
-	  qDebug("File: %s, Function: %s, Message: %s", file, function, msg.toLocal8Bit().data());
+	  qDebug("%s: (%s) %s", file, function, msg.toLocal8Bit().data());
 	}
       else
 	{
-	  qDebug("File: %s, Function: %s, Line: %d, Message: %s", file, function, line, msg.toLocal8Bit().data());
+	  qDebug("%s: %d: (%s) %s", file, line, function, msg.toLocal8Bit().data());
 	}
     }
 }
@@ -67,19 +67,19 @@ void QgsLogger::debug(const QString& var, int val, int debuglevel, const char* f
     {
       if(file == NULL)
 	{
-	  qDebug("Variable: %s, Value: %d", var.toLocal8Bit().data(), val);
+	  qDebug("%s: %d", var.toLocal8Bit().data(), val);
 	}
       else if(function == NULL)
 	{
-	  qDebug("File: %s, Variable: %s, Value: %d", file, var.toLocal8Bit().data(), val);
+	  qDebug("%s: %s: %d", file, var.toLocal8Bit().data(), val);
 	}
       else if(line == -1)
 	{
-	  qDebug("File: %s, Function: %s, Variable: %s, Value: %d", file, function, var.toLocal8Bit().data(), val);
+	  qDebug("%s: (%s): %s: %d", file, function, var.toLocal8Bit().data(), val);
 	}
       else
 	{
-	  qDebug("File: %s, Function: %s, Line: %d, Variable: %s, Value: %d", file, function, line, var.toLocal8Bit().data(), val);
+	  qDebug("%s: %d: (%s), %s: %d", file, line, function, var.toLocal8Bit().data(), val);
 	}
     }
 }
@@ -100,19 +100,19 @@ void QgsLogger::debug(const QString& var, double val, int debuglevel, const char
     {
       if(file == NULL)
 	{
-	  qDebug("Variable: %s, Value: %f", var.toLocal8Bit().data(), val);
+	  qDebug("%s: %f", var.toLocal8Bit().data(), val);
 	}
       else if(function == NULL)
 	{
-	  qDebug("File: %s, Variable: %s, Value: %f", file, var.toLocal8Bit().data(), val);
+	  qDebug("%s: %s: %f", file, var.toLocal8Bit().data(), val);
 	}
       else if(line == -1)
 	{
-	  qDebug("File: %s, Function: %s, Variable: %s, Value: %f", file, function, var.toLocal8Bit().data(), val);
+	  qDebug("%s: (%s): %s: %f", file, function, var.toLocal8Bit().data(), val);
 	}
       else
 	{
-	  qDebug("File: %s, Function: %s, Line: %d, Variable: %s, Value: %f", file, function, line, var.toLocal8Bit().data(), val);
+	  qDebug("%s: %d: (%s), %s: %d", file, line, function, var.toLocal8Bit().data(), val);
 	}
     }
 }
