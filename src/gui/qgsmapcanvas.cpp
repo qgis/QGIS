@@ -1054,13 +1054,6 @@ void QgsMapCanvas::moveCanvasContents(bool reset)
 }
 
 
-void QgsMapCanvas::emitPointEvent(QgsPoint& point, Qt::ButtonState state)
-{
-  emit xyClickCoordinates(point);
-  emit xyClickCoordinates(point,state);
-}
-
-
 void QgsMapCanvas::updateMap()
 {
   // XXX updating is not possible since we're already in paint loop

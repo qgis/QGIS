@@ -19,7 +19,6 @@
 #include "qgsimagewarper.h"
 #include "qgsgeorefwarpoptionsdialog.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaptoolemitpoint.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolpan.h"
 #include "qgsgeorefdatapoint.h"

@@ -57,6 +57,13 @@ class QgsMapToolCapture : public QgsMapTool
     
 
     virtual void deactivate();
+
+    /*
+    // FIXME: is this still actual or something old that's not used anymore?
+  signals:
+    //! emits mouse position when the canvas is clicked
+    void xyClickCoordinates(QgsPoint &p);
+    */
   
   protected:
     

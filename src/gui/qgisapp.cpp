@@ -126,7 +126,6 @@
 // Map tools
 //
 #include "qgsmaptoolcapture.h"
-#include "qgsmaptoolemitpoint.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolpan.h"
@@ -984,7 +983,6 @@ void QgisApp::setupConnections()
   //signal when mouse moved over window (coords display in status bar)
   connect(mMapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
   //signal when mouse in capturePoint mode and mouse clicked on canvas
-  connect(mMapCanvas, SIGNAL(xyClickCoordinates(QgsPoint &)), this, SLOT(showCapturePointCoordinate(QgsPoint &)));
   connect(mMapCanvas->mapRender(), SIGNAL(setProgress(int,int)), this, SLOT(showProgress(int,int)));
   connect(mMapCanvas, SIGNAL(extentsChanged(QgsRect )),this,SLOT(showExtents(QgsRect )));
   connect(mMapCanvas, SIGNAL(scaleChanged(QString)), this, SLOT(showScale(QString)));
@@ -3349,6 +3347,9 @@ void QgisApp::capturePoint()
   QgsMapTool* t = new QgsMapToolCapture(mMapCanvas, QgsMapToolCapture::CapturePoint);
   t->setAction(mActionCapturePoint);
   mMapCanvas->setMapTool(t);
+  
+  // FIXME: is this still actual or something old that's not used anymore?
+  //connect(t, SIGNAL(xyClickCoordinates(QgsPoint &)), this, SLOT(showCapturePointCoordinate(QgsPoint &)));
 }
 
 void QgisApp::captureLine()

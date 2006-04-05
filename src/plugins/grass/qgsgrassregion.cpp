@@ -50,7 +50,7 @@
 #include "qgsvectorlayer.h"
 #include "qgisiface.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptoolemitpoint.h"
+#include "qgsmaptool.h"
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 

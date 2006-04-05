@@ -98,7 +98,8 @@ void QgsMapToolCapture::canvasReleaseEvent(QMouseEvent * e)
 
     QgsPoint idPoint = toMapCoords(e->pos());
     
-    // why emit a signal? [MD]
+    // emit signal - QgisApp can catch it and save point position to clipboard
+    // FIXME: is this still actual or something old that's not used anymore?
     //emit xyClickCoordinates(idPoint);
 
     //only do the rest for provider with feature addition support

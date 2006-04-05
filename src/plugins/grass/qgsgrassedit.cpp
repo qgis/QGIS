@@ -47,7 +47,6 @@
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsmaptoolemitpoint.h"
 #include "qgsvectorlayer.h"
 #include "qgsdataprovider.h"
 #include "qgsmaptopixel.h"
