@@ -72,13 +72,11 @@ class QgsLogger
       os << var.toLocal8Bit().data() << " = " << val;
       if(line == -1)
 	{
-	  qDebug("File: %s\nFunction: %s\nMessage: %s",
-		 file, function, os.str().c_str());
+	  qDebug("%s: (%s) %s", file, function, os.str().c_str());
 	}
       else
 	{
-	  qDebug("File: %s\nFunction: %s\nLine: %s\nMessage: %s", file, function, \
-		 QString::number(line).toLocal8Bit().data(), os.str().c_str());
+	  qDebug("%s: %d: (%s) %s", file, line, function, os.str().c_str());
 	}
     }
 

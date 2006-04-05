@@ -31,6 +31,7 @@
 #include <QMenu>
 
 #include "qgisapp.h"
+#include "qgslogger.h"
 #include "qgsmaptopixel.h"
 #include "qgsrect.h"
 #include "qgsproject.h"
@@ -58,16 +59,11 @@ QgsMapLayer::QgsMapLayer(int type,
         m_visible(true)
 
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsMapLayer::QgsMapLayer - lyrname is '" << lyrname.toLocal8Bit().data() << "'."<< std::endl;
-#endif
+  QgsDebugMsg("QgsMapLayer::QgsMapLayer - lyrname is '" + lyrname);
 
     // Set the display name = internal name
     layerName = internalName;
-
-#ifdef QGISDEBUG
-  std::cout << "QgsMapLayer::QgsMapLayer - layerName is '" << layerName.toLocal8Bit().data() << "'."<< std::endl;
-#endif
+    QgsDebugMsg("QgsMapLayer::QgsMapLayer - layerName is '" + layerName);
 
     // Generate the unique ID of this layer
     QDateTime dt = QDateTime::currentDateTime();
@@ -84,9 +80,6 @@ QgsMapLayer::QgsMapLayer(int type,
     mMinScale = 0;
     mMaxScale = 100000000;
     mScaleBasedVisibility = false;
-    
-
-
 }
 
 
@@ -110,19 +103,15 @@ QString const & QgsMapLayer::getLayerID() const
 /** Write property of QString layerName. */
 void QgsMapLayer::setLayerName(const QString & _newVal)
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsMapLayer::setLayerName: new name is '" << _newVal.toLocal8Bit().data() << "'."<< std::endl;
-#endif
-    layerName = _newVal;
+  QgsDebugMsg("QgsMapLayer::setLayerName: new name is '" + _newVal);
+  layerName = _newVal;
 }
 
 /** Read property of QString layerName. */
 QString const & QgsMapLayer::name() const
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsMapLayer::name: returning name '" << layerName.toLocal8Bit().data() << "'."<< std::endl;
-#endif
-    return layerName;
+  QgsDebugMsg("QgsMapLayer::name: returning name '" + layerName);
+  return layerName;
 }
 
 QString const & QgsMapLayer::source() const
@@ -464,9 +453,7 @@ void QgsMapLayer::updateItemPixmap()
 
 void QgsMapLayer::invalidTransformInput()
 {
-#ifdef QGISDEBUG
-  std::cout << " QgsMapLayer::invalidTransformInput() called" << std::endl;
-#endif
+  QgsLogger::warning("QgsMapLayer::invalidTransformInput() called");
     if (mLegendLayerFile)             // XXX should we know about our legend?
     {
         QPixmap pix=mLegendLayerFile->getOriginalPixmap();
@@ -518,9 +505,7 @@ QString QgsMapLayer::errorString()
 
 void QgsMapLayer::connectNotify( const char * signal )
 {
-#ifdef QGISDEBUG
-    std::cerr << "QgsMapLayer connected to " << signal << "\n";
-#endif
+    QgsDebugMsg("QgsMapLayer connected to " + QString(signal));
 } //  QgsMapLayer::connectNotify
 
 
@@ -561,14 +546,14 @@ void QgsMapLayer::keyPressed ( QKeyEvent * e )
 QgsCoordinateTransform * QgsMapLayer::coordinateTransform() 
 {
 #ifdef QGISDEBUG
- std::cout << "Maplayer asked for coordinateTransform which is...." ;
+ QgsDebugMsg("Maplayer asked for coordinateTransform which is....");
  if (!mCoordinateTransform)
  {
-   std::cout << "*NOT* valid" << std::endl;
+   QgsDebugMsg("*NOT* valid");
  }
  else
  {
-   std::cout << "valid" << std::endl;
+   QgsDebugMsg("valid");
  }
  
 #endif
@@ -597,8 +582,8 @@ bool QgsMapLayer::projectExtent(QgsRect& extent, QgsRect& r2)
     try
     {
 #ifdef QGISDEBUG
-      std::cerr << "Getting extent of canvas in layers CS. Canvas is " 
-                << extent << '\n'; 
+      QgsLogger::debug<QgsRect>("Getting extent of canvas in layers CS. Canvas is ", extent, __FILE__,\
+				__FUNCTION__, __LINE__);
 #endif
       // Split the extent into two if the source SRS is
       // geographic and the extent crosses the split in
@@ -633,8 +618,7 @@ bool QgsMapLayer::projectExtent(QgsRect& extent, QgsRect& r2)
     }
     catch (QgsCsException &cse)
       {
-        qDebug( "Transform error caught in %s line %d:\n%s", 
-                __FILE__, __LINE__, cse.what());
+	QgsLogger::warning("Transform error caught in " + QString(__FILE__) + ", line " + QString::number(__LINE__));
         extent = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
         r2     = QgsRect(-DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX);
       }
