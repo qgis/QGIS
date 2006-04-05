@@ -1519,8 +1519,8 @@ void QgsGrassEdit::displayElement ( int line, const QPen & pen, int size, QPaint
       point.setX(mPoints->x[i]);
       point.setY(mPoints->y[i]);
       mTransform->transform(&point);
-      pointArray.setPoint( i, static_cast<int>(point.x()), 
-          static_cast<int>(point.y()) ); 
+      pointArray.setPoint( i, static_cast<int>(round(point.x())), 
+          static_cast<int>(round(point.y())) ); 
     }
 
     myPainter->setPen ( pen );
@@ -1634,8 +1634,8 @@ void QgsGrassEdit::displayIcon ( double x, double y, const QPen & pen,
   point.setY(y);
   mTransform->transform(&point);
 
-  int px = static_cast<int>(point.x());
-  int py = static_cast<int>(point.y());
+  int px = static_cast<int>(round(point.x()));
+  int py = static_cast<int>(round(point.y()));
   int m = (size-1)/2;
 
   QPainter *myPainter;
