@@ -402,7 +402,7 @@ private:
     // Actions 
     QAction *mNewPointAction;
     QAction *mNewLineAction;
-    QAction *mNewBoundarytAction;
+    QAction *mNewBoundaryAction;
     QAction *mNewCentroidAction;
     QAction *mMoveVertexAction;
     QAction *mAddVertexAction;
