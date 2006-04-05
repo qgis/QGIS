@@ -286,7 +286,7 @@ void QgsMapCanvas::drawContents(QPainter * p, int cx, int cy, int cw, int ch)
   std::cout << "QgsMapCanvas::drawContents" << std::endl;
 #endif
   
-  if (mDirty && !mFrozen)
+  if (mDirty && mRenderFlag && !mFrozen)
   {
     render();
     
@@ -304,35 +304,27 @@ void QgsMapCanvas::render()
 {
   
 #ifdef QGISDEBUG
-  QString msg = mFrozen ? "frozen" : "thawed";
-  std::cout << "QgsMapCanvas::render: canvas is " << msg.toLocal8Bit().data() << std::endl;
+  std::cout << "QgsMapCanvas::render" << std::endl;
 #endif
 
-  if (!mFrozen)
-  {
-    if (mRenderFlag && mDirty)
-    {
-      // Tell the user we're going to be a while
-      QApplication::setOverrideCursor(Qt::WaitCursor);
+  // Tell the user we're going to be a while
+  QApplication::setOverrideCursor(Qt::WaitCursor);
 
-      mMap->render();
-      mDirty = false;
-    
-      // notify any listeners that rendering is complete
-      QPainter p;
-      p.begin(&mMap->pixmap());
-      emit renderComplete(&p);
-      p.end();
-      
-      // notifies current map tool
-      if (mMapTool)
-        mMapTool->renderComplete();
+  mMap->render();
+  mDirty = false;
 
-      // Tell the user we've finished going to be a while
-      QApplication::restoreOverrideCursor();
-    }
+  // notify any listeners that rendering is complete
+  QPainter p;
+  p.begin(&mMap->pixmap());
+  emit renderComplete(&p);
+  p.end();
+  
+  // notifies current map tool
+  if (mMapTool)
+    mMapTool->renderComplete();
 
-  }
+  // Tell the user we've finished going to be a while
+  QApplication::restoreOverrideCursor();
 
 } // render
 
