@@ -21,11 +21,12 @@
 /*!  \mainpage Quantum GIS
 *
 *  \section about  About QGIS
-* QGIS aims to be an easy to use desktop GIS tool. Initial focus is on viewing spatial
-* and tabular data from common data stores, including rasters, Shapefiles and PostGIS.
+* Quantum GIS (QGIS) is a user friendly Open Source Geographic Information
+* System (GIS) that runs on Linux, Unix, Mac OSX, and Windows. QGIS supports
+* vector, raster, and database formats. QGIS is licensed under the GNU Public
+* License.
 *
 * This API documentation provides information about all classes that make up QGIS.
-*
 */
 #include "qgsconfig.h"
 
