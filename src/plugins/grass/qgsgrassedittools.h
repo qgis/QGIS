@@ -63,6 +63,7 @@ class QgsGrassEditNewLine : public QgsGrassEditTool
   public:
     QgsGrassEditNewLine(QgsGrassEdit* edit, bool newBoundary);
     
+    virtual void activate();
     virtual void deactivate();
         
     virtual void mouseClick(QgsPoint & point, Qt::ButtonState button);
