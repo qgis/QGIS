@@ -18,6 +18,7 @@
 #include <algorithm>
 
 #include "qgscolortable.h"
+#include "qgslogger.h"
 
 /* compare ramps */
 bool compareRampSort ( const RAMP &a, const RAMP &b) 
@@ -36,10 +37,7 @@ bool compareRampSearch ( const RAMP &a, const RAMP &b)
 
 QgsColorTable::QgsColorTable ( int interp ) 
 {
-    #ifdef QGISDEBUG
-    std::cerr << "QgsColorTable::QgsColorTable()" << std::endl;
-    #endif
-
+    QgsDebugMsg("QgsColorTable::QgsColorTable()");
     mInterp = interp;
 }
 
@@ -49,9 +47,9 @@ QgsColorTable::~QgsColorTable()
 
 void QgsColorTable::add ( int index, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4 )
 {
-    #ifdef QGISDEBUG
-    std::cerr << "QgsColorTable::add() index = " << index << std::endl;
-    #endif
+#ifdef QGISDEBUG
+    QgsLogger::debug("QgsColorTable::add() index", index, 1, __FILE__, __FUNCTION__, __LINE__);
+#endif
 
     if ( mDiscrete.size() == 0 ) {
 	mMin = index;
@@ -73,9 +71,7 @@ void QgsColorTable::add ( int index, unsigned char c1, unsigned char c2, unsigne
 
 void QgsColorTable::clear()
 {
-    #ifdef QGISDEBUG
-    std::cerr << "QgsColorTable::clear() called " << std::endl;
-    #endif
+    QgsDebugMsg("QgsColorTable::clear() called ");
     mDiscrete.clear();
     mRamp.clear();
     mMax=0;
@@ -87,11 +83,11 @@ void QgsColorTable::add ( double min,  double max,
                   unsigned char min_c1, unsigned char min_c2, unsigned char min_c3, unsigned char min_c4,
 		  unsigned char max_c1, unsigned char max_c2, unsigned char max_c3, unsigned char max_c4 )
 {
-    RAMP ramp;
-    
-    #ifdef QGISDEBUG
-    std::cerr << "QgsColorTable::add() min = " << min << " max = " << max << std::endl;
-    #endif
+    RAMP ramp;    
+#ifdef QGISDEBUG
+    QgsLogger::debug("QgsColorTable::add() min", min, 1, __FILE__, __FUNCTION__, __LINE__);
+    QgsLogger::debug("QgsColorTable::add() max", max, 1, __FILE__, __FUNCTION__, __LINE__);
+#endif
 
     if ( mRamp.size() == 0 ) {
 	mMin = min;
@@ -186,21 +182,32 @@ double QgsColorTable::rmax ( void )
 
 void QgsColorTable::print ( void )
 {
-    std::cerr << "******** Color table ********" << std::endl;
+#ifdef QGISDEBUG
+    QgsLogger::debug("******** Color table ********", 1, __FILE__, __FUNCTION__,  __LINE__);
+    QgsLogger::debug("Discrete table size", (int)mDiscrete.size(), 1, __FILE__, __FUNCTION__,  __LINE__);
 
-    std::cerr << "Discrete table size = " << mDiscrete.size() << std::endl;
     for ( int i = 0; i < mDiscrete.size(); i++ ) {
-        std::cerr << "  i = " << i << " c1 = " << (int) mDiscrete[i].c1 << " c2 = " << (int)mDiscrete[i].c2 
-	          << " c3 = " << (int)mDiscrete[i].c3 << std::endl;
+	QgsLogger::debug("i", i, 2, __FILE__, __FUNCTION__,  __LINE__);
+	QgsLogger::debug("c1", (int) mDiscrete[i].c1, 2, __FILE__, __FUNCTION__,  __LINE__);
+	QgsLogger::debug("c2", (int) mDiscrete[i].c2, 2, __FILE__, __FUNCTION__,  __LINE__);
+	QgsLogger::debug("c3", (int) mDiscrete[i].c3, 2, __FILE__, __FUNCTION__,  __LINE__);
     }
 
-    std::cerr << "Ramp table size = " << mRamp.size() << std::endl;
+    QgsLogger::debug("Ramp table size", (int)mRamp.size(), 1, __FILE__, __FUNCTION__,  __LINE__);
     for ( int i = 0; i < mRamp.size(); i++ ) {
         std::cerr << "  min = " << mRamp[i].min << " max = " << mRamp[i].max 
 	          << " min_c1 = " << (int)mRamp[i].min_c1 << " min_c2 = " << (int)mRamp[i].min_c2 
 	          << " min_c3 = " << (int)mRamp[i].min_c3 << " max_c1 = " << (int)mRamp[i].max_c1
 		  << " max_c2 = " << (int)mRamp[i].max_c2 << " max_c3 = " << (int)mRamp[i].max_c3 
 		  << std::endl;
+	QgsLogger::debug("min", mRamp[i].min, 2, __FILE__, __FUNCTION__,  __LINE__);
+	QgsLogger::debug("min_c1", (int)mRamp[i].min_c1, 2, __FILE__, __FUNCTION__,  __LINE__);
+	QgsLogger::debug("min_c2", (int)mRamp[i].min_c2, 2, __FILE__, __FUNCTION__,  __LINE__);
+	QgsLogger::debug("min_c3", (int)mRamp[i].min_c3, 2, __FILE__, __FUNCTION__,  __LINE__);
+	QgsLogger::debug("max_c1", (int)mRamp[i].max_c1, 2, __FILE__, __FUNCTION__,  __LINE__);
+	QgsLogger::debug("max_c2", (int)mRamp[i].max_c2, 2, __FILE__, __FUNCTION__,  __LINE__);
+	QgsLogger::debug("max_c3", (int)mRamp[i].max_c3, 2, __FILE__, __FUNCTION__,  __LINE__);
     }
+#endif
 }
 
