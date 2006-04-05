@@ -61,7 +61,7 @@ wish to see edbug messages printed to stdout.
 */
 #include "qgslegend.h"
 #include "qgslegendlayer.h"
-#include "qgslogger.h"
+#include <qgslogger.h>
 #include "qgsrasterlayer.h"
 #include "qgsmaptopixel.h"
 //Added by qt3to4:
@@ -119,6 +119,7 @@ wish to see edbug messages printed to stdout.
 #include "qgsattributeaction.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsspatialrefsys.h"
+#include "qgslogger.h"
 
 /*
  * 
