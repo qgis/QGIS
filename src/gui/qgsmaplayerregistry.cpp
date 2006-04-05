@@ -19,6 +19,7 @@
 #include <iostream>
 
 #include "qgsmaplayerregistry.h"
+#include "qgslogger.h"
 #include "qgsproject.h"
 
 
@@ -41,9 +42,7 @@ QgsMapLayerRegistry *QgsMapLayerRegistry::instance()
 
 QgsMapLayerRegistry::QgsMapLayerRegistry(QObject *parent, const char *name) : QObject(parent,name) 
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsMapLayerRegistry created!" << std::endl;
-#endif
+  QgsDebugMsg("QgsMapLayerRegistry created!");
   // constructor does nothing
 }
 // get the layer count (number of registered layers)
@@ -93,9 +92,7 @@ QgsMapLayer * QgsMapLayerRegistry::mapLayer(QString theLayerId)
 QgsMapLayer *
   QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer, bool theEmitSignal )
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsMapLayerRegistry::addMaplayer - '" << theMapLayer->name().toLocal8Bit().data() << "'."<< std::endl;
-#endif
+  QgsDebugMsg("QgsMapLayerRegistry::addMaplayer - '" + theMapLayer->name());
   //check the layer is not already registered!
   std::map<QString,QgsMapLayer*>::iterator myIterator = mMapLayers.find(theMapLayer->getLayerID());
   //if myIterator returns mMapLayers.end() then it does not exist in registry and its safe to add it
@@ -113,10 +110,7 @@ QgsMapLayer *
   }
   else
   {
-
-#ifdef QGISDEBUG
-    std::cout << "addMaplayer - " << theMapLayer->name().toLocal8Bit().data() << " already registered" << std::endl;
-#endif
+    QgsDebugMsg("addMaplayer - " + theMapLayer->name() + " already registered");
     return 0x0;
   }
 } //  QgsMapLayerRegistry::addMapLayer
@@ -125,31 +119,21 @@ QgsMapLayer *
 
 void QgsMapLayerRegistry::removeMapLayer(QString theLayerId, bool theEmitSignal)
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsMapLayerRegistry::removemaplayer - emitting signal to notify all users of this layer to release it." << std::endl;
-#endif
+  QgsDebugMsg("QgsMapLayerRegistry::removemaplayer - emitting signal to notify all users of this layer to release it.");
   if (theEmitSignal)
     emit layerWillBeRemoved(theLayerId); 
-#ifdef QGISDEBUG
-  std::cout << "QgsMapLayerRegistry::removemaplayer - deleting map layer." << std::endl;
-#endif
+  QgsDebugMsg("QgsMapLayerRegistry::removemaplayer - deleting map layer.");
   delete mMapLayers[theLayerId]; 
-#ifdef QGISDEBUG
-  std::cout << "QgsMapLayerRegistry::removemaplayer - unregistering map layer." << std::endl;
-#endif
+  QgsDebugMsg("QgsMapLayerRegistry::removemaplayer - unregistering map layer.");
   mMapLayers.erase(theLayerId);
-#ifdef QGISDEBUG
-  std::cout << "QgsMapLayerRegistry::removemaplayer - operation complete." << std::endl;
-#endif
+  QgsDebugMsg("QgsMapLayerRegistry::removemaplayer - operation complete.");
   // notify the project we've made a change
   QgsProject::instance()->dirty(true);
 }
 
 void QgsMapLayerRegistry::removeAllMapLayers()
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsMapLayerRegistry::removeAllMapLayers"<< std::endl;
-#endif
+  QgsDebugMsg("QgsMapLayerRegistry::removeAllMapLayers");
   
   // moved before physically removing the layers
   emit removedAll();            // now let all canvas Observers know to clear
@@ -175,10 +159,7 @@ void QgsMapLayerRegistry::removeAllMapLayers()
 
 std::map<QString,QgsMapLayer*> & QgsMapLayerRegistry::mapLayers()
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsMapLayerRegistry::mapLayers"<< std::endl;
-#endif
-  
+  QgsDebugMsg("QgsMapLayerRegistry::mapLayers");
   return mMapLayers;
 }
 
@@ -186,7 +167,5 @@ std::map<QString,QgsMapLayer*> & QgsMapLayerRegistry::mapLayers()
 
 void QgsMapLayerRegistry::connectNotify( const char * signal )
 {
-#ifdef QGISDEBUG
-    std::cerr << "QgsMapLayerRegistry connected to " << signal << "\n";
-#endif
+    QgsDebugMsg("QgsMapLayerRegistry connected to " + QString(signal));
 } //  QgsMapLayerRegistry::connectNotify

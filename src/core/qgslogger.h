@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLOGGER
-#define QGSLOGGER
+#ifndef QGSLOGGER_H
+#define QGSLOGGER_H
 
 #include <iostream>
 #include <sstream>
@@ -24,8 +24,11 @@
 
 #ifdef QGISDEBUG
 #define QgsDebugMsg(str) QgsLogger::debug(QString(str), 1, __FILE__, __FUNCTION__, __LINE__);
+#define QgsDebugMsgLevel(str, level) QgsLogger::debug(QString(str), level,\
+__FILE__, __FUNCTION__, __LINE__);
 #else
-#define QgsDebugMsg(str) 
+#define QgsDebugMsg(str)
+#define QgsDebugMsgVal(str, val, level) 
 #endif
 
 /**QgsLogger is a class to print debug/warning/error messages to the console. The advantage of this class over std::cout, std::cerr & co. is that the output can be controlled with environment variables:

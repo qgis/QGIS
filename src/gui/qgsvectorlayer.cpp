@@ -42,6 +42,7 @@
 
 #include <QApplication>
 #include <QCursor>
+#include <QLibrary>
 #include <QMessageBox>
 #include <QPainter>
 #include <QPixmap>
@@ -65,6 +66,7 @@
 #include "qgslabel.h"
 #include "qgslabelattributes.h"
 #include "qgslegend.h"
+#include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
@@ -142,9 +144,7 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
 
 QgsVectorLayer::~QgsVectorLayer()
 {
-#ifdef QGISDEBUG
-  std::cerr << "In QgsVectorLayer destructor" << std::endl;
-#endif
+  QgsDebugMsg("In QgsVectorLayer destructor");
 
   valid=false;
 
@@ -208,9 +208,7 @@ int QgsVectorLayer::getProjectionSrid()
   //delegate to the provider
   if (valid)
   {
-#ifdef QGISDEBUG    
-    std::cout << "Getting srid from provider..." << std::endl;
-#endif
+    QgsDebugMsg("Getting srid from provider...");
     return dataProvider->getSrid();
   }
   else
@@ -273,9 +271,8 @@ void QgsVectorLayer::setDisplayField(QString fldName)
     {
 
       QString fldName = fields[j].name();
-#ifdef QGISDEBUG
-      std::cerr << "Checking field " << fldName.toLocal8Bit().data() << " of " << fields.size() << " total" << std::endl;
-#endif
+      QgsDebugMsg("Checking field " + fldName + " of " + QString::number(fields.size()) + " total");
+      
       // Check the fields and keep the first one that matches.
       // We assume that the user has organized the data with the
       // more "interesting" field names first. As such, name should
@@ -337,9 +334,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
 // This method will probably be removed again in the near future!
 void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * theMapToPixelTransform, double scale)
 {
-#ifdef QGISDEBUG
-  qWarning("Starting draw of labels");
-#endif
+  QgsDebugMsg("Starting draw of labels");
 
   if ( /*1 == 1 */ m_renderer && mLabelOn)
   {
@@ -348,9 +343,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
     // Add fields required for labels
     mLabel->addRequiredFields ( &attributes );
 
-#ifdef QGISDEBUG
-    qWarning("Selecting features based on view extent");
-#endif
+    QgsDebugMsg("Selecting features based on view extent");
 
     int featureCount = 0;
     // select the records in the extent. The provider sets a spatial filter
@@ -391,13 +384,13 @@ void QgsVectorLayer::drawLabels(QPainter * p, QgsRect * viewExtent, QgsMapToPixe
     }
     catch (QgsCsException &e)
     {
-      qDebug("Error projecting label locations, caught in %s, line %d:\n%s",
-          __FILE__, __LINE__, e.what());
+      QgsLogger::critical("Error projecting label locations, caught in " + QString(__FILE__) + ", line " +QString(__LINE__));
     }
 
 #ifdef QGISDEBUG
-    std::cerr << "Total features processed is " << featureCount << std::endl;
+    QgsLogger::debug("Total features processed", featureCount, 1, __FILE__, __FUNCTION__, __LINE__);
 #endif
+    
     // XXX Something in our draw event is triggering an additional draw event when resizing [TE 01/26/06]
     // XXX Calling this will begin processing the next draw event causing image havoc and recursion crashes.
     //qApp->processEvents();
@@ -417,18 +410,17 @@ QgsRect QgsVectorLayer::inverseProjectRect(const QgsRect& r) const
       QgsPoint p2 = mCoordinateTransform->transform(r.xMax(), r.yMax(), 
           QgsCoordinateTransform::INVERSE);
 #ifdef QGISDEBUG
-      std::cerr << "Projections are enabled\n";
-      std::cerr << "Rectangle was: " << r.stringRep(true).toLocal8Bit().data() << '\n';
+      QgsDebugMsg("Projections are enabled");
+      QgsDebugMsg("Rectangle was: "+r.stringRep(true));
       QgsRect tt(p1, p2);
-      std::cerr << "Inverse transformed to: " << tt.stringRep(true).toLocal8Bit().data() << '\n';
+      QgsDebugMsg("Inverse transformed to: "+tt.stringRep(true))
 #endif
       return QgsRect(p1, p2);
 
     }
     catch (QgsCsException &e)
     {
-      qDebug("Inverse transform error in %s line %d:\n%s",
-          __FILE__, __LINE__, e.what());
+      QgsLogger::critical("Inverse transform error in " + QString(__FILE__) + ", line " + QString(__LINE__));
     }
   }
   // fall through for all failures
@@ -489,9 +481,10 @@ unsigned char* QgsVectorLayer::drawLineString(unsigned char* feature,
 #ifdef QGISDEBUGVERBOSE
   // this is only used for verbose debug output
   for (int i = 0; i < pa.size(); ++i)
-    std::cerr << pa.point(i).x() << ", " << pa.point(i).y()
-      << '\n';
-  std::cerr << '\n';
+    {
+      QgsDebugMsgLevel("pa" + QString::number(pa.point(i).x()), 2);
+      QgsDebugMsgLevel("pa" + QString::number(pa.point(i).y()), 2);
+    }
 #endif
 
   // The default pen gives bevelled joins between segements of the
@@ -574,9 +567,7 @@ std::cerr << jdx << ": "
     // Anyway, this check prevents a crash
     if (nPoints < 1) 
     {
-#ifdef QGISDEBUG 
-      std::cout << "Ring has only " << nPoints << " points! Skipping this ring." << std::endl;
-#endif 
+      QgsDebugMsg("Ring has only " + QString::number(nPoints) + " points! Skipping this ring.");
       continue;
     }
 
@@ -684,15 +675,21 @@ std::cerr << i << ": " << ring->first[i]
 #ifdef QGISDEBUGVERBOSE
     // this is only for verbose debug output -- no optimzation is 
     // needed :)
-    std::cerr << "Pixel points are:\n";
+    QgsDebugMsg("Pixel points are:");
     for (int i = 0; i < pa.size(); ++i)
-      std::cerr << i << ": " << pa[i].x() << ", " << pa[i].y() << '\n';
+      {
+	QgsDebugMsgLevel("i" + QString::number(i), 2);
+	QgsDebugMsgLevel("pa[i].x()" + QString::number(pa[i].x()), 2);
+	QgsDebugMsgLevel("pa[i].y()" + QString::number(pa[i].y()), 2);
+      }
     std::cerr << "Ring positions are:\n";
+    QgsDebugMsg("Ring positions are:");
     for (int i = 0; i < ringDetails.size(); ++i)
-      std::cerr << ringDetails[i].first << ", "
-        << ringDetails[i].second << "\n";      
-    std::cerr << "Outer ring point is " << outerRingPt.x()
-      << ", " << outerRingPt.y() << '\n';
+      {
+	QgsDebugMsgLevel("ringDetails[i].first" + QString::number(ringDetails[i].first), 2);
+	QgsDebugMsgLevel("ringDetails[i].second" + QString::number(ringDetails[i].second), 2);
+      }
+    QgsDebugMsg("Outer ring point is " + QString::number(outerRingPt.x()) + ", " + QString::number(outerRingPt.y()));
 #endif
 
     /*
@@ -788,33 +785,20 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 
     // select the records in the extent. The provider sets a spatial filter
     // and sets up the selection set for retrieval
-#ifdef QGISDEBUG
-    qWarning("Selecting features based on view extent");
-#endif
+    QgsDebugMsg("Selecting features based on view extent");
     dataProvider->reset();
 
     // Destroy all cached geometries and clear the references to them
-#ifdef QGISDEBUG
-    std::cout << "QgsVectorLayer::draw: Destroying all cached geometries"
-      << "." << std::endl;
-#endif
+    QgsDebugMsg("QgsVectorLayer::draw: Destroying all cached geometries.");
 
     // TODO: This area has suspect memory management
     for (std::map<int, QgsGeometry*>::iterator it  = mCachedGeometries.begin(); 
         it != mCachedGeometries.end();
         ++it )
     {
-#ifdef QGISDEBUG
-      //      std::cout << "QgsVectorLayer::draw: deleting cached geometry ID "
-      //                << (*it).first
-      //                << "." << std::endl;
-#endif
       delete (*it).second;
     }
-#ifdef QGISDEBUG
-    std::cout << "QgsVectorLayer::draw: Clearing all cached geometries"
-      << "." << std::endl;
-#endif
+    QgsDebugMsg("QgsVectorLayer::draw: Clearing all cached geometries.");
     mCachedGeometries.clear();
 
     dataProvider->select(viewExtent);
@@ -822,9 +806,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
     int totalFeatures = dataProvider->featureCount();
     int featureCount = 0;
     //  QgsFeature *ftest = dataProvider->getFirstFeature();
-#ifdef QGISDEBUG
-    qWarning("Starting draw of features");
-#endif
+    QgsDebugMsg("Starting draw of features");
     QgsFeature *fet;
 
     bool projectionsEnabledFlag = projectionsEnabled();
@@ -842,11 +824,6 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
       while (fet = dataProvider->getNextFeature(attributes, updateThreshold))
         //      while((fet = dataProvider->getNextFeature(attributes)))
       {
-
-#ifdef QGISDEBUG
-        //      std::cout << "QgsVectorLayer::draw: got " << fet->featureId() << std::endl; 
-#endif
-    
         // XXX Something in our draw event is triggering an additional draw event when resizing [TE 01/26/06]
         // XXX Calling this will begin processing the next draw event causing image havoc and recursion crashes.
         //qApp->processEvents(); //so we can trap for esc press
@@ -862,9 +839,7 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
 
         if (fet == 0)
         {
-#ifdef QGISDEBUG
-          std::cerr << "get next feature returned null\n";
-#endif
+	  QgsDebugMsg("get next feature returned null");
         }
         else
         {
