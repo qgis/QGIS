@@ -110,30 +110,31 @@ QgsGrassEditNewLine::QgsGrassEditNewLine(QgsGrassEdit* edit, bool newBoundary)
 
 void QgsGrassEditNewLine::deactivate()
 {
-  // Write the line to vector
+  // Delete last segment
   if ( e->mEditPoints->n_points > 1 ) {
-    int type;
-
-    if ( mNewBoundary ) // boundary or line?
-      type = GV_BOUNDARY;
-    else
-      type = GV_LINE;
-
-    int line;
-    line = e->writeLine ( type, e->mEditPoints );
-    e->updateSymb();
-    e->displayUpdated();
-
-    if ( e->mAttributes ) delete e->mAttributes;
-    e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, line, e->mQgisApp );
-    for ( int i = 0; i < e->mCats->n_cats; i++ ) {
-      e->addAttributes ( e->mCats->field[i], e->mCats->cat[i] );
-    }
-    e->mAttributes->show();
+      Vect_reset_line ( e->mPoints );
+      Vect_append_points ( e->mPoints, e->mEditPoints, GV_FORWARD );
+      e->displayDynamic ( e->mPoints );
   }
   e->setCanvasPropmt( QObject::tr("New vertex"), "", "");
   
   QgsGrassEditTool::deactivate(); // call default bahivour
+}
+
+void QgsGrassEditNewLine::activate()
+{
+  std::cerr << "QgsGrassEditNewLine::activate()" << std::endl;
+
+  // Display dynamic segment
+  if ( e->mEditPoints->n_points > 0 ) {
+      Vect_reset_line ( e->mPoints );
+      Vect_append_points ( e->mPoints, e->mEditPoints, GV_FORWARD );
+      // TODO: how to get mouse position?
+      //Vect_append_point ( e->mPoints, newPoint.x(), newPoint.y(), 0.0 );
+      e->displayDynamic ( e->mPoints );
+  }
+  
+  QgsGrassEditTool::activate(); // call default bahivour
 }
 
 void QgsGrassEditNewLine::mouseClick(QgsPoint & point, Qt::ButtonState button)
@@ -190,7 +191,7 @@ void QgsGrassEditNewLine::mouseMove(QgsPoint & newPoint)
         // Draw the line with new segment
       Vect_reset_line ( e->mPoints );
       Vect_append_points ( e->mPoints, e->mEditPoints, GV_FORWARD );
-      Vect_append_point ( e->mPoints, newPoint.x(), newPoint.y(), 0.0 ); // FIXME: [MD] cast to int was here... any reason?
+      Vect_append_point ( e->mPoints, newPoint.x(), newPoint.y(), 0.0 );
       e->displayDynamic ( e->mPoints );
     }
 }
