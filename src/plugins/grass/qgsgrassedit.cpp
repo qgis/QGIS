@@ -213,72 +213,72 @@ void QgsGrassEdit::init()
 
   QToolBar *tb = addToolBar(tr("Edit tools"));
 
-  QAction *mNewPointAction = new QAction(
+  mNewPointAction = new QAction(
           QIcon(myIconPath+"grass_new_point.png"), tr("New point"), this);
   mNewPointAction->setShortcut ( QKeySequence(Qt::Key_F1) ); 
   tb->addAction ( mNewPointAction );
   connect ( mNewPointAction, SIGNAL(triggered()), this, SLOT(newPoint()) );
 
-  QAction *mNewLineAction = new QAction(
+  mNewLineAction = new QAction(
           QIcon(myIconPath+"grass_new_line.png"), tr("New line"), this);
   mNewLineAction->setShortcut ( QKeySequence(Qt::Key_F2) ); 
   tb->addAction ( mNewLineAction );
   connect ( mNewLineAction, SIGNAL(triggered()), this, SLOT(newLine()) );
 
-  QAction *mNewBoundaryAction = new QAction(
+  mNewBoundaryAction = new QAction(
           QIcon(myIconPath+"grass_new_boundary.png"), tr("New boundary"), this);
   mNewBoundaryAction->setShortcut ( QKeySequence(Qt::Key_F3) ); 
   tb->addAction ( mNewBoundaryAction );
   connect ( mNewBoundaryAction, SIGNAL(triggered()), this, SLOT(newBoundary()) );
 
-  QAction *mNewCentroidAction = new QAction(
+  mNewCentroidAction = new QAction(
           QIcon(myIconPath+"grass_new_centroid.png"), tr("New centroid"), this);
   mNewCentroidAction->setShortcut ( QKeySequence(Qt::Key_F4) ); 
   tb->addAction ( mNewCentroidAction );
   connect ( mNewCentroidAction, SIGNAL(triggered()), this, SLOT(newCentroid()) );
 
-  QAction *mMoveVertexAction = new QAction(
+  mMoveVertexAction = new QAction(
           QIcon(myIconPath+"grass_move_vertex.png"), tr("Move vertex"), this);
   mMoveVertexAction->setShortcut ( QKeySequence(Qt::Key_F5) ); 
   tb->addAction ( mMoveVertexAction );
   connect ( mMoveVertexAction, SIGNAL(triggered()), this, SLOT(moveVertex()) );
 
-  QAction *mAddVertexAction = new QAction(
+  mAddVertexAction = new QAction(
           QIcon(myIconPath+"grass_add_vertex.png"), tr("Add vertex"), this);
   mAddVertexAction->setShortcut ( QKeySequence(Qt::Key_F6) ); 
   tb->addAction ( mAddVertexAction );
   connect ( mAddVertexAction, SIGNAL(triggered()), this, SLOT(addVertex()) );
 
-  QAction *mDeleteVertexAction = new QAction(
+  mDeleteVertexAction = new QAction(
           QIcon(myIconPath+"grass_delete_vertex.png"), tr("Delete vertex"), this);
   mDeleteVertexAction->setShortcut ( QKeySequence(Qt::Key_F7) ); 
   tb->addAction ( mDeleteVertexAction );
   connect ( mDeleteVertexAction, SIGNAL(triggered()), this, SLOT(deleteVertex()) );
 
-  QAction *mMoveLineAction = new QAction(
+  mMoveLineAction = new QAction(
           QIcon(myIconPath+"grass_move_line.png"), tr("Move line"), this);
   mMoveLineAction->setShortcut ( QKeySequence(Qt::Key_F9) ); 
   tb->addAction ( mMoveLineAction );
   connect ( mMoveLineAction, SIGNAL(triggered()), this, SLOT(moveLine()) );
 
-  QAction *mSplitLineAction = new QAction(
+  mSplitLineAction = new QAction(
           QIcon(myIconPath+"grass_split_line.png"), tr("Split line"), this);
   mSplitLineAction->setShortcut ( QKeySequence(Qt::Key_F10) ); 
   tb->addAction ( mSplitLineAction );
   connect ( mSplitLineAction, SIGNAL(triggered()), this, SLOT(splitLine()) );
 
-  QAction *mDeleteLineAction = new QAction(
+  mDeleteLineAction = new QAction(
           QIcon(myIconPath+"grass_delete_line.png"), tr("Delete line"), this);
   mDeleteLineAction->setShortcut ( QKeySequence(Qt::Key_F11) ); 
   tb->addAction ( mDeleteLineAction );
   connect ( mDeleteLineAction, SIGNAL(triggered()), this, SLOT(deleteLine()) );
 
-  QAction *mEditAttributesAction = new QAction(
+  mEditAttributesAction = new QAction(
           QIcon(myIconPath+"grass_edit_attributes.png"), tr("Edit attributes"), this);
   tb->addAction ( mEditAttributesAction );
   connect ( mEditAttributesAction, SIGNAL(triggered()), this, SLOT(editAttributes()) );
 
-  QAction *mCloseEditAction = new QAction(
+  mCloseEditAction = new QAction(
           QIcon(myIconPath+"grass_close_edit.png"), tr("Close"), this);
   tb->addAction ( mCloseEditAction );
   connect ( mCloseEditAction, SIGNAL(triggered()), this, SLOT(closeEdit()) );
