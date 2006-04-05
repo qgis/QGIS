@@ -185,9 +185,6 @@ class QgsMapCanvas : public Q3CanvasView
     //! used to determine if anti-aliasing is enabled or not
     void enableAntiAliasing(bool theFlag);
     
-    //! called from QgsMapToolEmitPoint to emit appopriate signal (temporary, should be sorted out)
-    void emitPointEvent(QgsPoint& point, Qt::ButtonState state);
-
     // following 2 methods should be moved elsewhere or changed to private
     // currently used by pan map tool
     //! Ends pan action and redraws the canvas.
@@ -231,9 +228,6 @@ signals:
     void setProgress(int,int);
     /** emits current mouse position */
     void xyCoordinates(QgsPoint & p);
-    /** emits mouse position when the canvas is clicked */
-    void xyClickCoordinates(QgsPoint &p);
-    void xyClickCoordinates(QgsPoint &p, Qt::ButtonState button);
 
     //! Emitted when the scale of the map changes
     void scaleChanged(QString);
