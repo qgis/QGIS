@@ -1264,6 +1264,10 @@ QgsGrassModule::~QgsGrassModule()
     #ifdef QGISDEBUG
     std::cerr << "QgsGrassModule::~QgsGrassModule()" << std::endl;
     #endif
+    if ( mProcess.state() == QProcess::Running ) 
+    {
+	mProcess.kill();
+    }
 }
 
 QDomNode QgsGrassModule::nodeByKey ( QDomElement elem, QString key )
