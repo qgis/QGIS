@@ -77,6 +77,7 @@ if(($createIt eq 'y') || ($createIt eq 'Y')){
   system("mkdir $pluginDir");
   # copy files to appropriate names
   system("cp plugin_template/Makefile.am $pluginDir/");
+  system("cp plugin_template/README.whatnext $pluginDir/README");
   system("cp plugin_template/plugin.qrc $pluginDir/$pluginLCaseName.qrc");
   system("cp plugin_template/plugin.png $pluginDir/$pluginLCaseName.png");
   system("cp plugin_template/plugin.cpp $pluginDir/$pluginLCaseName.cpp");
@@ -166,6 +167,9 @@ Your plugin ($pluginName) has been created in $pluginDir.
 Makefile.am and configure.in have been modified.
 To build the plugin, you must change to the top level of the source tree and
 run autoreconf, configure, then make.
+
+Once your plugin has successfully built, please see $pluginDir/README for 
+hints on how to get started.
 
 EOP
 
