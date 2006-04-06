@@ -393,7 +393,7 @@ QT_GUILINK=""
 QASSISTANTCLIENT_LDADD="-lqassistantclient"
 case "${host}" in
   *-mingw*)
-     QT_LIBS="-lQtCore4 -lQt3Support4 -lQtGui4 -lQtNetwork4 -lQtXml4 -lQtSvg4 -lQtTest -lQtDesigner"
+     QT_LIBS="-lQtCore4 -lQt3Support4 -lQtGui4 -lQtNetwork4 -lQtXml4 -lQtSvg4 -lQtTest4 -lQtDesigner4"
     ;;
   *irix*)
     QT_LIBS="$QT_LIB"
