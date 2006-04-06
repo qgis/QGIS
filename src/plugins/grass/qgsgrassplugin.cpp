@@ -239,8 +239,6 @@ void QgsGrassPlugin::initGui()
 
 void QgsGrassPlugin::mapsetChanged ()
 {
-    if ( mTools ) mTools->closeTools();
-
     if ( !QgsGrass::activeMode() )  {
         mOpenToolsAction->setEnabled(false);
 	mRegionAction->setEnabled(false);
@@ -274,7 +272,6 @@ void QgsGrassPlugin::mapsetChanged ()
             mTools->mapsetChanged();
         }    
     }
-
 }
 
 void QgsGrassPlugin::saveMapset()

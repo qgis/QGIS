@@ -913,8 +913,12 @@ QString QgsGrassModel::uri ( const QModelIndex &index ) const
 
 void QgsGrassModel::setLocation( const QString &gisbase, const QString &location ) 
 { 
+    removeItems(mRoot, QStringList());
     mGisbase = gisbase;
     mLocation = location;
+    mRoot->mGisbase = gisbase;
+    mRoot->mLocation = location;
+    refreshItem(mRoot);
 }
 
 QVariant QgsGrassModel::headerData(int section, 

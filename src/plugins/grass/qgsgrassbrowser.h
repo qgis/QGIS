@@ -62,6 +62,9 @@ public slots:
     // Write region 
     void writeRegion ( struct Cell_head *window );
 
+    // Set Location
+    void setLocation ( const QString &gisbase, const QString &location );
+
     // Refresh model
     void refresh();
 

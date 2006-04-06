@@ -159,10 +159,10 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
     // Add map browser 
     // Warning: if browser is on the first page modules are 
     // displayed over the browser
-    QgsGrassBrowser *browser = new QgsGrassBrowser ( mIface, this );
-    mTabWidget->addTab( browser, "Browser" );
+    mBrowser = new QgsGrassBrowser ( mIface, this );
+    mTabWidget->addTab( mBrowser, "Browser" );
 
-    connect( browser, SIGNAL(regionChanged()), 
+    connect( mBrowser, SIGNAL(regionChanged()), 
 		         this, SLOT(emitRegionChanged()) );
 }
 
@@ -385,7 +385,8 @@ void QgsGrassTools::mapsetChanged()
                 + "/" + QgsGrass::getDefaultMapset();
     setCaption(title);
 
-    // TODO: Close opened tools (tabs) ?
+    closeTools();
+    mBrowser->setLocation( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
 }
 
 QgsGrassTools::~QgsGrassTools()
