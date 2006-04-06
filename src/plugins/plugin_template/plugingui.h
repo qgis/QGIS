@@ -12,12 +12,13 @@
 #ifndef [pluginname]GUI_H
 #define [pluginname]GUI_H
 
-#include <pluginguibase.h>
+#include <QDialog>
+#include <ui[pluginname]guibase.h>
 
 /**
 @author Tim Sutton
 */
-class [pluginname]Gui : public [pluginname]GuiBase
+class [pluginname]Gui : public QDialog, private Ui::[pluginname]GuiBase
 {
 Q_OBJECT
 public:

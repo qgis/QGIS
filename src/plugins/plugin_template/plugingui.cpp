@@ -17,13 +17,13 @@
 
 [pluginname]Gui::[pluginname]Gui() : [pluginname]GuiBase()
 {
-  
+  setupUi(this);
 }
 
 [pluginname]Gui::[pluginname]Gui( QWidget* parent, Qt::WFlags fl )
 : [pluginname]GuiBase( parent, fl )
 {
-   
+  setupUi(this);
 }  
 [pluginname]Gui::~[pluginname]Gui()
 {

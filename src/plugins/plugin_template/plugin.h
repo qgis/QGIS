@@ -39,7 +39,7 @@
 #include "../qgisplugin.h"
 #include <qwidget.h>
 
-#include "../../src/qgisapp.h"
+#include "../../gui/qgisapp.h"
 
 
 /**
