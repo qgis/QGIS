@@ -1,16 +1,13 @@
 /***************************************************************************
-  plugin.cpp 
-  Import tool for various worldmap analysis output files
-Functions:
+  [pluginlcasename].cpp 
+  [plugindescription]
 
--------------------
-begin                : Jan 21, 2004
-copyright            : (C) 2004 by Tim Sutton
-email                : tim@linfiniti.com
+  -------------------
+         begin                : [PluginDate]
+         copyright            : [(C) Your Name and Date]
+         email                : [Your Email]
 
- ***************************************************************************/
-
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,30 +17,35 @@ email                : tim@linfiniti.com
  ***************************************************************************/
 /*  $Id$ */
 
-// includes
+//
+// QGIS Specific includes
+//
 
 #include <qgisapp.h>
+#include <qgisgui.h>
 #include <qgsmaplayer.h>
 #include <qgsrasterlayer.h>
 #include "[pluginlcasename].h"
+//the gui subclass
+#include "[pluginlcasename]gui.h"
 
+//
+// Qt4 Related Includes
+//
 
-#include <q3toolbar.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <q3popupmenu.h>
-#include <qlineedit.h>
-#include <qaction.h>
-#include <qapplication.h>
-#include <qcursor.h>
+#include <QToolBar>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QMenu>
+#include <QLineEdit>
+#include <QAction>
+#include <QApplication>
+#include <QCursor>
 
 //non qt includes
 #include <iostream>
 
-//the gui subclass
-#include "[pluginlcasename]gui.h"
 
-// xpm for creating the toolbar icon
 #ifdef WIN32
 #define QGISEXTERN extern "C" __declspec( dllexport )
 #else
@@ -70,9 +72,9 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  */
 [pluginname]::[pluginname](QgisApp * theQGisApp, 
 				       QgisIface * theQgisInterface):
+                 QgisPlugin(sName,sDescription,sPluginVersion,sPluginType),
                  mQGisApp(theQGisApp), 
-                 mQGisIface(theQgisInterface),
-                 QgisPlugin(sName,sDescription,sPluginVersion,sPluginType)
+                 mQGisIface(theQgisInterface)
 {
 }
 
@@ -86,18 +88,18 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  */
 void [pluginname]::initGui()
 {
-  Q3PopupMenu *pluginMenu = qGisInterface->getPluginMenu("&[menuname]");
+  QMenu *pluginMenu = mQGisIface->getPluginMenu("&[menuname]");
   //set teh icon from the resource file
-  menuId = pluginMenu->insertItem(QIcon(":/[pluginlcasename]/[pluginlcasename].png"),"&[menuitemname]", this, SLOT(run()));
+  mMenuId = pluginMenu->insertItem(QIcon(":/[pluginlcasename]/[pluginlcasename].png"),"&[menuitemname]", this, SLOT(run()));
 
-  pluginMenu->setWhatsThis(menuId, tr("Replace this with a short description of the what the plugin does"));
+  pluginMenu->setWhatsThis(mMenuId, tr("Replace this with a short description of the what the plugin does"));
 
   // Create the action for tool
-  mQActionPointer = new QAction("[menuitemname]", QIcon(icon), "&icon",0, this, "run");
+  mQActionPointer = new QAction(QIcon(":/[pluginlcasename]/[pluginlcasename].png"),"[menuitemname]", this);
   // Connect the action to the run
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the toolbar
-  mToolBarPointer = new Q3ToolBar((Q3MainWindow *) mQGisApp, "[menuname]");
+  mToolBarPointer = new QToolBar((QMainWindow *) mQGisApp, "[menuname]");
   mToolBarPointer->setLabel("[menuitemname]");
   // Add the to the toolbar
   mQGisIface->addToolBarIcon(mQActionPointer);
@@ -112,7 +114,7 @@ void [pluginname]::help()
 // Slot called when the buffer menu item is activated
 void [pluginname]::run()
 {
-  [pluginname]Gui *myPluginGui=new [pluginname]Gui(mQGisApp,"[menuitemname]",true,0);
+  [pluginname]Gui *myPluginGui=new [pluginname]Gui(mQGisApp, QgisGui::ModalDialogFlags);
   //listen for when the layer has been made so we can draw it
   connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
   connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
@@ -123,7 +125,7 @@ void [pluginname]::run()
 void [pluginname]::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenuItem("&[menuname]",menuId);
+  mQGisIface->removePluginMenuItem("&[menuname]",mMenuId);
   mQGisIface->removeToolBarIcon(mQActionPointer);
   delete mQActionPointer;
 }

@@ -13,7 +13,7 @@
 #define [pluginname]GUI_H
 
 #include <QDialog>
-#include <ui[pluginname]guibase.h>
+#include <ui_[pluginlcasename]guibase.h>
 
 /**
 @author Tim Sutton
