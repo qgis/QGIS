@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmapcanvas.h"
 #include "qgsgrassedittools.h"
 #include "qgsgrassedit.h"
 #include "qgsgrassattributes.h"
@@ -129,8 +130,8 @@ void QgsGrassEditNewLine::activate()
   if ( e->mEditPoints->n_points > 0 ) {
       Vect_reset_line ( e->mPoints );
       Vect_append_points ( e->mPoints, e->mEditPoints, GV_FORWARD );
-      // TODO: how to get mouse position?
-      //Vect_append_point ( e->mPoints, newPoint.x(), newPoint.y(), 0.0 );
+      QgsPoint point = toMapCoords( e->mCanvas->mouseLastXY() );
+      Vect_append_point ( e->mPoints, point.x(), point.y(), 0.0 );
       e->displayDynamic ( e->mPoints );
   }
   
