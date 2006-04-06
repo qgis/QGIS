@@ -721,28 +721,28 @@ static QString _getVersion(QDomDocument const &doc)
 */
 static QgsMapCanvas * _findMapCanvas(QString const &canonicalMapCanvasName)
 {
-    QgsMapCanvas * theMapCanvas = 0x0;
+  QgsMapCanvas * theMapCanvas = 0x0;
 
-    QWidgetList wlist = QApplication::topLevelWidgets();
-    foreach (QWidget *widget, QApplication::topLevelWidgets()) 
-      {
-            theMapCanvas = dynamic_cast <QgsMapCanvas *>(widget->child(canonicalMapCanvasName)); 
-	    if(theMapCanvas)
-	      {
-		break;
-	      }
-      }
-
+  QWidgetList wlist = QApplication::topLevelWidgets();
+  foreach (QWidget *widget, QApplication::topLevelWidgets()) 
+  {
+    theMapCanvas = dynamic_cast <QgsMapCanvas *>(widget->child(canonicalMapCanvasName)); 
     if (theMapCanvas)
     {
-        return theMapCanvas;
-    } else
-    {
-        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).toLocal8Bit().data());
-
-        return 0x0;                 // XXX some sort of error value? Exception?
+      break;
     }
+  }
 
+  if (theMapCanvas)
+  {
+    return theMapCanvas;
+  } 
+  else
+  {
+    qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).toLocal8Bit().data());
+
+    return 0x0;                 // XXX some sort of error value? Exception?
+  }
 } // _findMapCanvas
 
 
@@ -1125,9 +1125,7 @@ bool QgsProject::read()
 
     // ensure that overview map canvas is set to *entire* extent
     QgsRect mapCanvasFullExtent = _getFullExtent("theMapCanvas");
-    std::cerr <<__FILE__<<__LINE__<<'\n';
     _setCanvasExtent("theOverviewCanvas", mapCanvasFullExtent);
-    std::cerr <<__FILE__<<__LINE__<<'\n';
     // now restore the extent for the main canvas
     _setCanvasExtent("theMapCanvas", savedExtent);
 
