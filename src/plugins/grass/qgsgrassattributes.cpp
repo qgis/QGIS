@@ -102,6 +102,8 @@ QgsGrassAttributes::QgsGrassAttributes ( QgsGrassEdit *edit, QgsGrassProvider *p
         tabCats->removePage( tabCats->currentPage() );
     }
 
+    connect ( this, SIGNAL(destroyed()), mEdit, SLOT(attributesClosed()) );
+
     // TODO: does not work: 
     connect( tabCats, SIGNAL(void currentChanged(QWidget *)), this, SLOT(tabChanged(QWidget *)));
 
@@ -349,6 +351,21 @@ void QgsGrassAttributes::deleteCat ( )
 
     tabCats->removePage( tb );
     delete tb;
+    resetButtons();
+}
+
+void QgsGrassAttributes::clear ( )
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassAttributes::clear()" << std::endl;
+    #endif
+
+    while ( tabCats->count() > 0 )
+    {
+        Q3Table *tb = (Q3Table *) tabCats->currentPage();
+        tabCats->removePage( tb );
+        delete tb;
+    }
     resetButtons();
 }
 

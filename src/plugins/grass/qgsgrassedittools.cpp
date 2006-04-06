@@ -90,12 +90,19 @@ void QgsGrassEditNewPoint::mouseClick(QgsPoint & point, Qt::ButtonState button)
     e->updateSymb();
     e->displayUpdated();
 
-    if ( e->mAttributes ) delete e->mAttributes;
-    e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, line, e->mQgisApp );
+    if ( e->mAttributes ) 
+    {
+        e->mAttributes->clear();
+    }
+    else
+    {
+        e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, line, e->mQgisApp );
+    }
     for ( int i = 0; i < e->mCats->n_cats; i++ ) {
       e->addAttributes ( e->mCats->field[i], e->mCats->cat[i] );
     }
     e->mAttributes->show();
+    e->mAttributes->raise();
 }
 
 
@@ -170,12 +177,19 @@ void QgsGrassEditNewLine::mouseClick(QgsPoint & point, Qt::ButtonState button)
         e->updateSymb();
         e->displayUpdated();
 
-        if ( e->mAttributes ) delete e->mAttributes;
-        e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, line, e->mQgisApp );
+	if ( e->mAttributes ) 
+	{
+	    e->mAttributes->clear();
+	}
+	else
+	{
+	    e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, line, e->mQgisApp );
+	}
         for ( int i = 0; i < e->mCats->n_cats; i++ ) {
           e->addAttributes ( e->mCats->field[i], e->mCats->cat[i] );
         }
         e->mAttributes->show();
+        e->mAttributes->raise();
       }
       Vect_reset_line ( e->mEditPoints );
       break;
@@ -756,9 +770,10 @@ void QgsGrassEditAttributes::mouseClick(QgsPoint & point, Qt::ButtonState button
       std::cerr << "mSelectedLine = " << e->mSelectedLine << std::endl;
 #endif
 
-  if ( e->mAttributes ) {
-    delete e->mAttributes;
-    e->mAttributes = 0;
+  if ( e->mAttributes ) 
+  {
+      e->mAttributes->clear();
+      e->mAttributes->raise();
   }
 
   if ( e->mSelectedLine ) { // highlite
@@ -766,11 +781,15 @@ void QgsGrassEditAttributes::mouseClick(QgsPoint & point, Qt::ButtonState button
 
     e->mProvider->readLine ( NULL, e->mCats, e->mSelectedLine );
 
-    e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, e->mSelectedLine, e->mQgisApp );
+    if ( !e->mAttributes ) 
+    {
+        e->mAttributes = new QgsGrassAttributes ( e, e->mProvider, e->mSelectedLine, e->mQgisApp );
+    }
     for ( int i = 0; i < e->mCats->n_cats; i++ ) {
       e->addAttributes ( e->mCats->field[i], e->mCats->cat[i] );
     }
     e->mAttributes->show();
+    e->mAttributes->raise();
   }
 
 }
