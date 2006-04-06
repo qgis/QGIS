@@ -28,6 +28,7 @@ class QgsRubberBand;
 
 class QgsGrassTools;
 class QgsGrassNewMapset;
+class QgsGrassRegion;
 class QToolBar;
 /**
 * \class QgsGrassPlugin
@@ -88,6 +89,8 @@ public slots:
   void switchRegion(bool on);
   //! Change region
   void changeRegion(void);
+  //! Region dialog closed
+  void regionClosed();
   //! Redraw region
   void redrawRegion(void);
   //! Post render
@@ -136,8 +139,10 @@ private:
   QAction *mRegionAction;
   //! Region width
   QPen mRegionPen;
+  //! Region dialog
+  QgsGrassRegion *mRegion;
   // Region rubber band
-  QgsRubberBand *mRegion;
+  QgsRubberBand *mRegionBand;
   //! GRASS tools
   QgsGrassTools *mTools;
   //! Pointer to QgsGrassNewMapset
