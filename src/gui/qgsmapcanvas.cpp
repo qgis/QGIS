@@ -1074,4 +1074,7 @@ void QgsMapCanvas::showError(QgsMapLayer * mapLayer)
 
 }
 
-// ENDS
+QPoint QgsMapCanvas::mouseLastXY()
+{
+  return mCanvasProperties->mouseLastXY;
+}
