@@ -64,8 +64,9 @@ public:
 
 
 QgsMapOverviewCanvas::QgsMapOverviewCanvas(QWidget * parent, QgsMapCanvas* mapCanvas)
-  : QWidget(parent, "theOverviewCanvas"), mMapCanvas(mapCanvas)
+  : QWidget(parent), mMapCanvas(mapCanvas)
 {
+  setObjectName("theOverviewCanvas");
   mPanningWidget = new QgsPanningWidget(this);
   
   mMapRender = new QgsMapRender;

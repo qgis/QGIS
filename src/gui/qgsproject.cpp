@@ -723,37 +723,15 @@ static QgsMapCanvas * _findMapCanvas(QString const &canonicalMapCanvasName)
 {
     QgsMapCanvas * theMapCanvas = 0x0;
 
-// TODO: Need to refactor for Qt4 - uses QWidgetList only (no pointer-to)
-#if QT_VERSION < 0x040000
-    QWidgetList *list = QApplication::topLevelWidgets();
-    QWidgetListIt it(*list);      // iterate over the widgets
-    QWidget *w;
-
-    while ((w = it.current()) != 0)
-    {                             // for each top level widget...
-        ++it;
-        theMapCanvas =
-            dynamic_cast <QgsMapCanvas *>(w->child(canonicalMapCanvasName.toLocal8Bit().data(), 0, true));
-
-        if (theMapCanvas)
-        {
-            break;
-        }
-    }
-
-    delete list;                  // delete the list, not the widgets
-#else
     QWidgetList wlist = QApplication::topLevelWidgets();
     foreach (QWidget *widget, QApplication::topLevelWidgets()) 
       {
-            theMapCanvas = dynamic_cast <QgsMapCanvas *>(widget->child(canonicalMapCanvasName.toLocal8Bit().data(), 0, true)); 
+            theMapCanvas = dynamic_cast <QgsMapCanvas *>(widget->child(canonicalMapCanvasName)); 
 	    if(theMapCanvas)
 	      {
 		break;
 	      }
       }
-#endif //QT_VERSION < 0x040000
-
 
     if (theMapCanvas)
     {
@@ -1123,6 +1101,7 @@ bool QgsProject::read()
 
     // now set the map units; note, alters QgsProject::instance().
     _getMapUnits(*doc);
+    _findMapCanvas("theMapCanvas")->setMapUnits(mapUnits());
 
     // get the map layers
     pair< bool, list<QDomNode> > getMapLayersResults =  _getMapLayers(*doc);
