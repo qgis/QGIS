@@ -282,7 +282,7 @@ void QgsGPSPlugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer
   // did we get any data?
   if (babelProcess.exitStatus() != 0) {
     QString babelError(babelProcess.readStderr());
-    QString errorMsg(QString(tr("Could not import data from %1!\n\n"))
+    QString errorMsg(tr("Could not import data from %1!\n\n")
 		     .arg(inputFilename));
     errorMsg += babelError;
     QMessageBox::warning(NULL, tr("Error importing data"), errorMsg);
