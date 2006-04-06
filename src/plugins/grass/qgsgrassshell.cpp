@@ -46,6 +46,8 @@ extern "C" {
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <signal.h>
+#include <sys/wait.h>
 #endif //!WIN32
 }
 
@@ -219,6 +221,8 @@ QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools,
 	exit(1);
     }
 
+    mPid = pid;
+
     // Create socket notifier
     mOutNotifier = new QSocketNotifier ( mFdMaster, QSocketNotifier::Read, this);
 
@@ -239,6 +243,34 @@ QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools,
 
 QgsGrassShell::~QgsGrassShell()
 {
+#ifdef QGISDEBUG
+    std::cerr << "QgsGrassShell::~QgsGrassShell()" << std::endl;
+#endif
+
+    // TODO: find signal to write history before exit
+    //       instead of sending 'exit'
+
+    int ret = write( mFdMaster, "exit\015\012", 6);
+    int status;
+
+    while ( 1 ) 
+    {
+	readStdout(0);
+        if ( waitpid ( mPid, &status, WNOHANG ) > 0 ) break;
+
+        struct timespec t, r;
+        t.tv_sec = 0;
+        t.tv_nsec = 10000000; // 0.01 s
+        nanosleep ( &t, &r );
+    }
+
+    /* 
+    std::cerr << "kill shell pid = " << mPid << std::endl;
+    if ( kill(mPid,SIGTERM ) == -1 )
+    {
+        std::cerr << "cannot kill shell pid = " << mPid << std::endl;
+    }
+     */
 }
 
 void QgsGrassShell::keyPressEvent( QKeyEvent * e  )

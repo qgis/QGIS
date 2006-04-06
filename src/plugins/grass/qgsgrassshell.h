@@ -153,6 +153,9 @@ private:
     // Buffer for data read form shell stderr
     Q3CString mStderrBuffer; 
 
+    // Shell process PID
+    int mPid;
+
     // Modes
     bool mMode[ModeCount];
 
