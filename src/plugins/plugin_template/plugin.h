@@ -34,13 +34,18 @@
  *   DON'T: separate variable names using underscores: my_variable_name (NO!)
  *
  * **************************************************************************/
-#ifndef [pluginname]
-#define [pluginname]
+#ifndef [pluginname]_H
+#define [pluginname]_H
+
+//QT4 includes
+#include <QObject>
+
+//QGIS includes
+#include <qgisapp.h>
 #include "../qgisplugin.h"
-#include <qwidget.h>
 
-#include "../../gui/qgisapp.h"
-
+//forward declarations
+class QToolBar;
 
 /**
 * \class Plugin
@@ -49,7 +54,8 @@
 */
 class [pluginname]:public QObject, public QgisPlugin
 {
-  Q_OBJECT public:
+  Q_OBJECT;
+  public:
       
   //////////////////////////////////////////////////////////////////////
   //
@@ -63,9 +69,9 @@ class [pluginname]:public QObject, public QgisPlugin
   * @param Pointer to the QgisApp object
   * @param Pointer to the QgisIface object. 
    */
-  [pluginname](QgisApp * , QgisIface * );
+  [pluginname](QgisApp * theApplication, QgisIface * theInterface);
   //! Destructor
-  virtual ~ [pluginname]();
+  virtual ~[pluginname]();
 
 public slots:
   //! init the gui
@@ -106,7 +112,7 @@ private:
   //! Id of the plugin's menu. Used for unloading
   int mMenuId;
   //! Pointer to our toolbar
-  Q3ToolBar *mToolBarPointer;
+  QToolBar *mToolBarPointer;
   //! Pionter to QGIS main application object
   QgisApp *mQGisApp;
   //! Pointer to the QGIS interface object
@@ -120,4 +126,4 @@ private:
   ////////////////////////////////////////////////////////////////////
 };
 
-#endif
+#endif //[pluginname]_H

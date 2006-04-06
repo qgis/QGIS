@@ -9,7 +9,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#include "plugingui.h"
+#include "[pluginlcasename]gui.h"
 
 //qt includes
 
@@ -21,7 +21,7 @@
 }
 
 [pluginname]Gui::[pluginname]Gui( QWidget* parent, Qt::WFlags fl )
-: [pluginname]GuiBase( parent, fl )
+: QDialog ( parent, fl )
 {
   setupUi(this);
 }  

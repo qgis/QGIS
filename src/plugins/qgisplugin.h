@@ -46,74 +46,74 @@ class QgisPlugin
        };
 
        @todo XXX this may be a hint that there should be subclasses
-    */
+       */
     typedef enum PLUGINTYPE
-        {
-            UI = 1,                         /* user interface plug-in */
-            MAPLAYER                    /* map layer plug-in */
-        };
+    {
+      UI = 1,                     /* user interface plug-in */
+      MAPLAYER                    /* map layer plug-in */
+    };
 
 
     QgisPlugin ( QString const & name = "", 
-                 QString const & description = "",
-                 QString const & version = "",
-                 PLUGINTYPE const & type = MAPLAYER )
-        : mName(name), 
-          mDescription(description),
-          mVersion(version),
-          mType(type)
-        {}
+        QString const & description = "",
+        QString const & version = "",
+        PLUGINTYPE const & type = MAPLAYER )
+      : mName(name), 
+      mDescription(description),
+      mVersion(version),
+      mType(type)
+      {}
 
     virtual ~QgisPlugin()
-        {}
+    {}
 
     //! Get the name of the plugin
     QString const & name() const
-        {
-            return mName;
-        }
+    {
+      return mName;
+    }
 
     QString       & name() 
-        {
-            return mName;
-        }
+    {
+      return mName;
+    }
 
     //! Version of the plugin
     QString const & version() const
-        {
-            return mVersion;
-        }
+    {
+      return mVersion;
+    }
 
     //! Version of the plugin
-    QString       & version() 
-        {
-            return mVersion;
-        }
+    QString & version() 
+    {
+      return mVersion;
+    }
 
     //! A brief description of the plugin
     QString const & description() const
-        { 
-            return mDescription;
-        }
+    { 
+      return mDescription;
+    }
 
     //! A brief description of the plugin
     QString       & description()
-        { 
-            return mDescription;
-        }
+    { 
+      return mDescription;
+    }
 
     //! Plugin type, either UI or map layer
     QgisPlugin::PLUGINTYPE const & type() const
-        {
-            return mType;
-        }
+    {
+      return mType;
+    }
 
 
     //! Plugin type, either UI or map layer
     QgisPlugin::PLUGINTYPE       & type() 
-        {
-            return mType;
-        }
+    {
+      return mType;
+    }
 
     /// function to initialize connection to GUI
     virtual void initGui() = 0;
@@ -134,9 +134,9 @@ class QgisPlugin
 
     /// UI or MAPLAYER plug-in
     /**
-       @todo Really, might be indicative that this needs to split into 
-       maplayer vs. ui plug-in vs. other kind of plug-in
-    */
+      @todo Really, might be indicative that this needs to split into 
+      maplayer vs. ui plug-in vs. other kind of plug-in
+      */
     PLUGINTYPE mType;
 
 }; // class QgisPlugin
