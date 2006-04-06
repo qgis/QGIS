@@ -128,6 +128,9 @@ void QgsGrassAttributes::restorePosition()
   int wh = settings.readNumEntry("/GRASS/windows/attributes/h", 350);
   int wx = settings.readNumEntry("/GRASS/windows/attributes/x", 100);
   int wy = settings.readNumEntry("/GRASS/windows/attributes/y", 100);
+  #ifdef QGISDEBUG
+  std::cerr << "wx = " << wx << " wy = " << wy << std::endl;
+  #endif
   resize(ww,wh);
   move(wx,wy);
 }
