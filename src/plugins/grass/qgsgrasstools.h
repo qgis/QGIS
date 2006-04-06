@@ -30,6 +30,7 @@ class QDomElement;
 #include "qgisiface.h"
 
 class QgsGrassProvider;
+class QgsGrassBrowser;
 #include <QDialog>
 #include <QTabBar>
 class QSize;
@@ -114,6 +115,9 @@ private:
 
     //! QGIS directory
     QString mAppDir;
+
+    //! Browser
+    QgsGrassBrowser *mBrowser;
 
     QgsGrassToolsTabWidget *mTabWidget;
     Q3ListView *mModulesListView;

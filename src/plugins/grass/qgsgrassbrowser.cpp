@@ -537,3 +537,7 @@ void QgsGrassBrowser::currentChanged(const QModelIndex & current, const QModelIn
     #endif
 }
 
+void QgsGrassBrowser::setLocation( const QString &gisbase, const QString &location )
+{
+    mModel->setLocation(gisbase, location);
+}
