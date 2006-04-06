@@ -79,14 +79,14 @@ QgsCopyrightLabelPlugin::~QgsCopyrightLabelPlugin()
  */
 void QgsCopyrightLabelPlugin::initGui()
 {
-    QMenu *pluginMenu = qGisInterface->getPluginMenu("&Decorations");
-    menuId = pluginMenu->insertItem(QIcon(icon),"&CopyrightLabel", this, SLOT(run()));
+    QMenu *pluginMenu = qGisInterface->getPluginMenu(tr("&Decorations"));
+    menuId = pluginMenu->insertItem(QIcon(icon),tr("&CopyrightLabel"), this, SLOT(run()));
 
-    pluginMenu->setWhatsThis(menuId, "Creates a copyright label that is displayed on the map canvas.");
+    pluginMenu->setWhatsThis(menuId, tr("Creates a copyright label that is displayed on the map canvas."));
 
     // Create the action for tool
-    myQActionPointer = new QAction(QIcon(icon), "Copyright Label", this);
-    myQActionPointer->setWhatsThis("Creates a copyright label that is displayed on the map canvas.");
+    myQActionPointer = new QAction(QIcon(icon), tr("Copyright Label"), this);
+    myQActionPointer->setWhatsThis(tr("Creates a copyright label that is displayed on the map canvas."));
     // Connect the action to the run
     connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
     // This calls the renderer everytime the cnavas has drawn itself
@@ -204,7 +204,7 @@ void QgsCopyrightLabelPlugin::renderLabel(QPainter * theQPainter)
 void QgsCopyrightLabelPlugin::unload()
 {
     // remove the GUI
-    qGisInterface->removePluginMenuItem("&Decorations",menuId); 
+    qGisInterface->removePluginMenuItem(tr("&Decorations"),menuId); 
     qGisInterface->removeToolBarIcon(myQActionPointer);
     // remove the copyright from the canvas
     disconnect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)),

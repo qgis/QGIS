@@ -108,13 +108,13 @@ QgsGeorefPlugin::~QgsGeorefPlugin()
 void QgsGeorefPlugin::initGui()
 {
   // Create the action for tool
-  mQActionPointer = new QAction(QIcon(":/icon.png"), "&Georeferencer", this);
+  mQActionPointer = new QAction(QIcon(":/icon.png"), tr("&Georeferencer"), this);
 
   // Connect the action to the run
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   
   // add to the plugin menu
-  QMenu *pluginMenu = mQGisIface->getPluginMenu("&Georeferencer");
+  QMenu *pluginMenu = mQGisIface->getPluginMenu(tr("&Georeferencer"));
   pluginMenu->addAction(mQActionPointer);
 
   // Add to the toolbar
@@ -139,7 +139,7 @@ void QgsGeorefPlugin::unload()
 {
   // TODO: make it work in Qt4 way
   // remove the GUI
-  mQGisIface->removePluginMenuItem("&Georeferencer",mMenuId);
+  mQGisIface->removePluginMenuItem(tr("&Georeferencer"),mMenuId);
   mQGisIface->removeToolBarIcon(mQActionPointer);
   delete mQActionPointer;
 }

@@ -131,9 +131,9 @@ void QgsGPSPluginGui::on_pbnDLOutput_clicked()
 {
   QString myFileNameQString = 
     QFileDialog::getSaveFileName(this, //parent dialog
-				 "Choose a filename to save under",
+				 tr("Choose a filename to save under"),
                  "." , //initial dir
-				 "GPS eXchange format (*.gpx)");
+				 tr("GPS eXchange format (*.gpx)"));
   leDLOutput->setText(myFileNameQString);
 }
 
@@ -210,7 +210,7 @@ void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
     dir = ".";
   QString myFileNameQString = QFileDialog::getOpenFileName(
           this, //parent dialog
-          "Select GPX file", //caption
+          tr("Select GPX file"), //caption
           dir, //initial dir
           myFilterString, //filters to select
           &myFileTypeQString); //the pointer to store selected filter
@@ -223,7 +223,7 @@ void QgsGPSPluginGui::on_pbnIMPInput_clicked() {
   QString myFileType;
   QString myFileName = QFileDialog::getOpenFileName(
           this, //parent dialog
-          "Select file and format to import", //caption
+          tr("Select file and format to import"), //caption
           ".", //initial dir
           mBabelFilter,
           &myFileType); //the pointer to store selected filter
@@ -251,9 +251,9 @@ void QgsGPSPluginGui::on_pbnIMPInput_clicked() {
 void QgsGPSPluginGui::on_pbnIMPOutput_clicked() {
   QString myFileNameQString = 
     QFileDialog::getSaveFileName(this, //parent dialog
-				 "Choose a filename to save under",
+				 tr("Choose a filename to save under"),
                  ".", //initial dir
-				 "GPS eXchange format (*.gpx)");
+				 tr("GPS eXchange format (*.gpx)"));
   leIMPOutput->setText(myFileNameQString);
 }
 

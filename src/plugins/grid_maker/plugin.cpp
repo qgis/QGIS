@@ -107,18 +107,18 @@ int QgsGridMakerPlugin::type()
  */
 void QgsGridMakerPlugin::initGui()
 {
-  QMenu *pluginMenu = qGisInterface->getPluginMenu("&Graticules");
-  menuId = pluginMenu->insertItem(QIcon(icon),"&GraticuleMaker", this, SLOT(run()));
+  QMenu *pluginMenu = qGisInterface->getPluginMenu(tr("&Graticules"));
+  menuId = pluginMenu->insertItem(QIcon(icon),tr("&GraticuleMaker"), this, SLOT(run()));
 
-  pluginMenu->setWhatsThis(menuId, "Creates a graticule (grid) and stores the result as a shapefile");
+  pluginMenu->setWhatsThis(menuId, tr("Creates a graticule (grid) and stores the result as a shapefile"));
 
   // Create the action for tool
 #if QT_VERSION < 0x040000
-  myQActionPointer = new QAction("Graticule Creator", QIcon(icon), "&Wmi",0, this, "run");
+  myQActionPointer = new QAction(tr("Graticule Creator"), QIcon(icon), "&Wmi",0, this, "run");
 #else
-  myQActionPointer = new QAction(QIcon(icon), "Graticule Creator", this);
+  myQActionPointer = new QAction(QIcon(icon), tr("Graticule Creator"), this);
 #endif
-  myQActionPointer->setWhatsThis("Creates a graticule (grid) and stores the result as a shapefile");
+  myQActionPointer->setWhatsThis(tr("Creates a graticule (grid) and stores the result as a shapefile"));
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
 
@@ -158,7 +158,7 @@ void QgsGridMakerPlugin::drawVectorLayer(QString thePathNameQString, QString the
 void QgsGridMakerPlugin::unload()
 {
   // remove the GUI
-  qGisInterface->removePluginMenuItem("&Graticules",menuId);
+  qGisInterface->removePluginMenuItem(tr("&Graticules"),menuId);
   qGisInterface->removeToolBarIcon(myQActionPointer);
   delete myQActionPointer;
 }
