@@ -62,8 +62,6 @@ extern "C" {
 #include "qgsgrassplugin.h"
 #include "qgsgrassregion.h"
 
-bool QgsGrassRegion::mRunning = false;
-
 /** map tool which uses rubber band for changing grass region */
 class QgsGrassRegionEdit : public QgsMapTool
 {
@@ -156,7 +154,6 @@ QgsGrassRegion::QgsGrassRegion ( QgsGrassPlugin *plugin,  QgisApp *qgisApp, Qgis
 
     setupUi(this);
 
-    mRunning = true;
     mPlugin = plugin;
     mQgisApp = qgisApp;
     mInterface = iface;
@@ -293,12 +290,6 @@ void QgsGrassRegion::setGuiValues( bool north, bool south, bool east, bool west,
 
 QgsGrassRegion::~QgsGrassRegion ()
 {
-    mRunning = false;
-}
-
-bool QgsGrassRegion::isRunning(void)
-{
-    return mRunning;
 }
 
 void QgsGrassRegion::northChanged(const QString &str)
@@ -482,18 +473,14 @@ void QgsGrassRegion::accept()
 
     saveWindowLocation();
     mQgisApp->pan(); // change to pan tool
-    mRunning = false;
-    close();
-    //delete this;
+    delete this;
 }
 
 void QgsGrassRegion::reject()
 {
     saveWindowLocation();
     mQgisApp->pan(); // change to pan tool
-    mRunning = false;
-    close();
-    //delete this;
+    delete this;
 }
 
 void QgsGrassRegion::restorePosition()

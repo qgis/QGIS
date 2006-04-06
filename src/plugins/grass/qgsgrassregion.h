@@ -50,9 +50,6 @@ public:
     //! Destructor
     ~QgsGrassRegion();
 
-    //! Is Running
-    static bool isRunning (void);
-
 public slots:
     //! OK
     void on_acceptButton_clicked() { accept(); }
@@ -89,10 +86,9 @@ public slots:
     void changeColor ( void ) ;
     void changeWidth ( void ) ;
 
+    void restorePosition(void);
+
 private:
-    //! Editing is already running
-    static bool mRunning;
-    
     //! Pointer to plugin 
     QgsGrassPlugin *mPlugin;
 
@@ -131,8 +127,6 @@ private:
     void setGuiValues( bool north = true, bool south = true, bool east = true, bool west = true, 
 	               bool nsres = true, bool ewres = true, bool rows = true, bool cols = true );
 
-
-    void restorePosition(void);
     
     void saveWindowLocation(void);
 

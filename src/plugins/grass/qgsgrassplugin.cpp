@@ -136,6 +136,7 @@ void QgsGrassPlugin::initGui()
   toolBarPointer = 0;
   mTools = 0;
   mNewMapset = 0;
+  mRegion = 0; 
 
   QSettings settings("QuantumGIS", "qgis");
 
@@ -148,9 +149,9 @@ void QgsGrassPlugin::initGui()
   connect( mQgis, SIGNAL( newProject() ), this, SLOT(newProject()));
 
   // Create region rubber band
-  mRegion = new QgsRubberBand(mCanvas, 1);
-  mRegion->setZ(20);
-  mRegion->hide();
+  mRegionBand = new QgsRubberBand(mCanvas, 1);
+  mRegionBand->setZ(20);
+  mRegionBand->hide();
 
   // Create the action for tool
   mOpenMapsetAction = new QAction( "Open mapset", this );
@@ -231,8 +232,8 @@ void QgsGrassPlugin::initGui()
   // Init Region symbology
   mRegionPen.setColor( QColor ( settings.readEntry ("/GRASS/region/color", "#ff0000" ) ) );
   mRegionPen.setWidth( settings.readNumEntry ("/GRASS/region/width", 0 ) );
-  mRegion->setColor ( mRegionPen.color() );
-  mRegion->setWidth ( mRegionPen.width() );
+  mRegionBand->setColor ( mRegionPen.color() );
+  mRegionBand->setWidth ( mRegionPen.width() );
 
   mapsetChanged();
 }
@@ -264,7 +265,7 @@ void QgsGrassPlugin::mapsetChanged ()
 	bool on = settings.readBoolEntry ("/GRASS/region/on", true );
 	mRegionAction->setOn(on);
         if ( on ) {
-            mRegion->show();
+            mRegionBand->show();
         }
 
         if ( mTools ) 
@@ -564,7 +565,7 @@ void QgsGrassPlugin::displayRegion()
   std::cout << "QgsGrassPlugin::displayRegion()" << std::endl;
 #endif
 
-  mRegion->reset();
+  mRegionBand->reset();
 
   // Display region of current mapset if in active mode
   if ( !QgsGrass::activeMode() ) return;
@@ -600,7 +601,7 @@ void QgsGrassPlugin::displayRegion()
 
   for ( int i = 0; i < 5; i++ ) 
   {
-      mRegion->addPoint( points[i] );    
+      mRegionBand->addPoint( points[i] );    
   }
 }
 
@@ -615,9 +616,9 @@ void QgsGrassPlugin::switchRegion(bool on)
 
   if ( on ) {
     displayRegion();
-    mRegion->show();
+    mRegionBand->show();
   } else {
-    mRegion->hide();
+    mRegionBand->hide();
   }
 }
 
@@ -638,15 +639,23 @@ void QgsGrassPlugin::changeRegion(void)
   std::cout << "QgsGrassPlugin::changeRegion()" << std::endl;
 #endif
 
-  if ( QgsGrassRegion::isRunning() ) {
-    QMessageBox::warning( 0, "Warning", "The Region tool is already running." );
-    return;
+  if ( mRegion ) { // running
+     mRegion->show();
+     return; 
   }
 
-  QgsGrassRegion *reg = new QgsGrassRegion(this, mQgis, qGisInterface, 
-      mQgis, Qt::WType_Dialog );
+  // Warning: don't use Qt::WType_Dialog, it would ignore restorePosition
+  mRegion = new QgsGrassRegion(this, mQgis, qGisInterface, 
+      mQgis, Qt::Window );
 
-  reg->show();
+  connect ( mRegion, SIGNAL(destroyed(QObject *)), this, SLOT( regionClosed() ));
+
+  mRegion->show();
+}
+
+void QgsGrassPlugin::regionClosed() 
+{
+    mRegion = 0;
 }
 
 QPen & QgsGrassPlugin::regionPen()
@@ -658,8 +667,8 @@ void QgsGrassPlugin::setRegionPen(QPen & pen)
 {
   mRegionPen = pen;
 
-  mRegion->setColor ( mRegionPen.color() );
-  mRegion->setWidth ( mRegionPen.width() );
+  mRegionBand->setColor ( mRegionPen.color() );
+  mRegionBand->setWidth ( mRegionPen.width() );
 
   QSettings settings("QuantumGIS", "qgis");
   settings.writeEntry ("/GRASS/region/color", mRegionPen.color().name() );
