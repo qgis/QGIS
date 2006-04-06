@@ -84,14 +84,16 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 }
 
 /*
- * Initialize the GUI interface for the plugin 
+ * Initialize the GUI interface for the plugin - this is only called once when the plugin is 
+ * added to the plugin registry in the QGIS application.
  */
 void [pluginname]::initGui()
 {
+  // we create a single menu entry for this plugin - though you can easily add more here if you need to
   QMenu *pluginMenu = mQGisIface->getPluginMenu("&[menuname]");
-  //set teh icon from the resource file
+  //set the icon from the resource file
   mMenuId = pluginMenu->insertItem(QIcon(":/[pluginlcasename]/[pluginlcasename].png"),"&[menuitemname]", this, SLOT(run()));
-
+  //create a tooltip for the menu entry 
   pluginMenu->setWhatsThis(mMenuId, tr("Replace this with a short description of the what the plugin does"));
 
   // Create the action for tool
@@ -111,7 +113,10 @@ void [pluginname]::help()
   //implement me!
 }
 
-// Slot called when the buffer menu item is activated
+// Slot called when the menu item is activated
+// If you created more menu items / toolbar buttons in initiGui, you should 
+// create a separate handler for each action - this single run() method will
+// not be enough
 void [pluginname]::run()
 {
   [pluginname]Gui *myPluginGui=new [pluginname]Gui(mQGisApp, QgisGui::ModalDialogFlags);
