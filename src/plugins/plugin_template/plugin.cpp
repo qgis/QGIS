@@ -25,7 +25,7 @@ email                : tim@linfiniti.com
 #include <qgisapp.h>
 #include <qgsmaplayer.h>
 #include <qgsrasterlayer.h>
-#include "plugin.h"
+#include "[pluginlcasename].h"
 
 
 #include <q3toolbar.h>
@@ -41,7 +41,7 @@ email                : tim@linfiniti.com
 #include <iostream>
 
 //the gui subclass
-#include "plugingui.h"
+#include "[pluginlcasename]gui.h"
 
 // xpm for creating the toolbar icon
 #ifdef WIN32
