@@ -1693,3 +1693,8 @@ void QgsGrassEdit::setCanvasPropmt( QString left, QString mid, QString rigth)
   if ( mid.length() > 0 ) mCanvasPrompt.append ( tr("Middle: ") + mid + "   " );
   if ( rigth.length() > 0 ) mCanvasPrompt.append ( tr("Rigth: ") + rigth );
 }
+
+void QgsGrassEdit::attributesClosed()
+{
+    mAttributes = 0;
+}

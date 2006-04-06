@@ -210,6 +210,9 @@ public slots:
 
     static bool isEditable ( QgsMapLayer *layer );
 
+    //! Window with attributes closed
+    void attributesClosed();
+
 signals:
     void finished(); 
 

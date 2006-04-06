@@ -57,7 +57,8 @@ public:
     //! Constructor
     QgsGrassAttributes ( QgsGrassEdit *edit, QgsGrassProvider *provider, int line, 
                    QWidget * parent = 0, const char * name = 0, 
-       Qt::WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WType_Dialog | Qt::WStyle_Tool);
+                   Qt::WFlags f = Qt::Window );
+       //Qt::WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WType_Dialog | Qt::WStyle_Tool);
 
     //! Destructor
     ~QgsGrassAttributes();
@@ -101,6 +102,9 @@ public slots:
 
     //! Column size changed 
     void columnSizeChanged ( int section, int oldSize, int newSize );
+
+    //! Remove all tabs
+    void clear();
 
 private:
     //! Pointer to vector provider 
