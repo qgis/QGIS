@@ -50,8 +50,8 @@ void QgsGridMakerPluginGui::on_pbnOK_clicked()
 
   if (leOutputShapeFile->text().isEmpty())
   {
-    QMessageBox::warning( 0, "QGIS - Grid Maker",
-            QString("Please enter the file name before pressing OK!." ));
+    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
+            QString(tr("Please enter the file name before pressing OK!.") ));
     return;
   }
 
@@ -60,48 +60,48 @@ void QgsGridMakerPluginGui::on_pbnOK_clicked()
   double myLongitudeInterval =  leLongitudeInterval->text().toDouble(&myFlag);
   if (!myFlag)
   {
-    QMessageBox::warning( 0, "QGIS - Grid Maker",
-            QString("Longitude Interval is invalid - please correct and try again." ));
+    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
+            QString(tr("Longitude Interval is invalid - please correct and try again." )));
     return;
   }
   myFlag=false;//reset test flag
   double myLatitudeInterval =  leLatitudeInterval->text().toDouble(&myFlag);
   if (!myFlag)
   {
-    QMessageBox::warning( 0, "QGIS - Grid Maker",
-            QString("Latitude Interval is invalid - please correct and try again." ));
+    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
+            QString(tr("Latitude Interval is invalid - please correct and try again." )));
     return;
   }
   myFlag=false;//reset test flag
   double myLongitudeOrigin =  leOriginLongitude->text().toDouble(&myFlag);
   if (!myFlag)
   {
-    QMessageBox::warning( 0, "QGIS - Grid Maker",
-            QString("Longitude Origin is invalid - please correct and try again.." ));
+    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
+            QString(tr("Longitude Origin is invalid - please correct and try again.." )));
     return;
   }
   myFlag=false;//reset test flag
   double myLatitudeOrigin =  leOriginLatitude->text().toDouble(&myFlag);
   if (!myFlag)
   {
-    QMessageBox::warning( 0, "QGIS - Grid Maker",
-            QString("Latitude Origin is invalid - please correct and try again." ));
+    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
+            QString(tr("Latitude Origin is invalid - please correct and try again." )));
     return;
   }
   myFlag=false;//reset test flag
   double myEndPointLongitude = leEndPointLongitude->text().toDouble(&myFlag);
   if (!myFlag)
   {
-    QMessageBox::warning( 0, "QGIS - Grid Maker",
-            QString("End Point Longitude is invalid - please correct and try again." ));
+    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
+            QString(tr("End Point Longitude is invalid - please correct and try again." )));
     return;
   }
   myFlag=false;//reset test flag
   double myEndPointLatitude = leEndPointLatitude->text().toDouble(&myFlag);
   if (!myFlag)
   {
-    QMessageBox::warning( 0, "QGIS - Grid Maker",
-            QString("End Point Latitude is invalid - please correct and try again." ));
+    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
+            QString(tr("End Point Latitude is invalid - please correct and try again." )));
     return;
   }
 
@@ -161,9 +161,9 @@ void QgsGridMakerPluginGui::on_pbnSelectOutputFile_clicked()
   std::cout << " Gps File Importer Gui::pbnSelectOutputFile_clicked() " << std::endl;
   QString myOutputFileNameQString = QFileDialog::getSaveFileName(
           this,
-          "Choose a filename to save under",
+          tr("Choose a filename to save under"),
           ".",
-          "ESRI Shapefile (*.shp)");
+          tr("ESRI Shapefile (*.shp)"));
 
   if (myOutputFileNameQString.right(4) != ".shp")
     myOutputFileNameQString += ".shp";

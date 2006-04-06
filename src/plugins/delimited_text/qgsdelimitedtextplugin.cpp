@@ -101,19 +101,19 @@ void QgsDelimitedTextPlugin::help()
  */
 void QgsDelimitedTextPlugin::initGui()
 {
-  QMenu *pluginMenu = qGisInterface->getPluginMenu("&Delimited text");
-  menuId = pluginMenu->insertItem(QIcon(icon),"&Add Delimited Text Layer", this, SLOT(run()));
+  QMenu *pluginMenu = qGisInterface->getPluginMenu(tr("&Delimited text"));
+  menuId = pluginMenu->insertItem(QIcon(icon),tr("&Add Delimited Text Layer"), this, SLOT(run()));
 
-  pluginMenu->setWhatsThis(menuId, "Add a delimited text file as a map layer. "
-      "The file must have a header row containing the field names. "
-      "X and Y fields are required and must contain coordinates in decimal units.");
+  pluginMenu->setWhatsThis(menuId, tr("Add a delimited text file as a map layer. ")+
+      tr("The file must have a header row containing the field names. ")+
+      tr("X and Y fields are required and must contain coordinates in decimal units."));
 
   // Create the action for tool
-  myQActionPointer = new QAction(QIcon(icon), "Add Delimited Text Layer", this);
+  myQActionPointer = new QAction(QIcon(icon), tr("Add Delimited Text Layer"), this);
 
-  myQActionPointer->setWhatsThis("Add a delimited text file as a map layer. "
-      "The file must have a header row containing the field names. "
-      "X and Y fields are required and must contain coordinates in decimal units.");
+  myQActionPointer->setWhatsThis(tr("Add a delimited text file as a map layer. ")+
+      tr("The file must have a header row containing the field names. ")+
+      tr("X and Y fields are required and must contain coordinates in decimal units."));
   // Connect the action to the run
   connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
   // Add the icon to the toolbar
@@ -154,7 +154,7 @@ void QgsDelimitedTextPlugin::drawVectorLayer(QString thePathNameQString,
 void QgsDelimitedTextPlugin::unload()
 {
   // remove the GUI
-  qGisInterface->removePluginMenuItem("&Delimited text",menuId);
+  qGisInterface->removePluginMenuItem(tr("&Delimited text"),menuId);
   qGisInterface->removeToolBarIcon(myQActionPointer); 
   delete myQActionPointer;
 }

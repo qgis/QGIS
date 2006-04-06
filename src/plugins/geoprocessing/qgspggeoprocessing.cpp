@@ -75,13 +75,13 @@ void QgsPgGeoprocessing::initGui()
   QMenu *pluginMenu = qI->getPluginMenu(tr("&Geoprocessing"));
   menuId = pluginMenu->insertItem(QIcon(icon_buffer),tr("&Buffer Features"), this, SLOT(buffer()));
 
-  pluginMenu->setWhatsThis(menuId, tr("Create a buffer for a PostgreSQL layer. "
-      "A new layer is created in the database with the buffered features."));
+  pluginMenu->setWhatsThis(menuId, tr("Create a buffer for a PostgreSQL layer. " +
+      tr("A new layer is created in the database with the buffered features.")));
 
   // Create the action for tool
   bufferAction = new QAction(QIcon(icon_buffer), tr("Buffer features"), this);
-  bufferAction->setWhatsThis(tr("Create a buffer for a PostgreSQL layer. "
-      "A new layer is created in the database with the buffered features."));
+  bufferAction->setWhatsThis(tr("Create a buffer for a PostgreSQL layer. " +
+      tr("A new layer is created in the database with the buffered features.")));
   // Connect the action to the buffer slot
   connect(bufferAction, SIGNAL(activated()), this, SLOT(buffer()));
 

@@ -56,9 +56,9 @@ void QgsGeorefPluginGui::on_pbnSelectRaster_clicked() {
     dir = ".";
   QString filename = 
     QFileDialog::getOpenFileName(this,
-				 "Choose a raster file",
+				 tr("Choose a raster file"),
                  dir,
-				 "Raster files (*.*)");
+				 tr("Raster files (*.*)"));
   leSelectRaster->setText(filename);
 }
 
@@ -67,8 +67,8 @@ void QgsGeorefPluginGui::on_pbnEnterWorldCoords_clicked() {
   
   // do we think that this is a valid raster?
   if (!QgsRasterLayer::isValidRasterFileName(leSelectRaster->text())) {
-    QMessageBox::critical(this, "Error", 
-			  "The selected file is not a valid raster file.");
+    QMessageBox::critical(this, tr("Error"), 
+			  tr("The selected file is not a valid raster file."));
     return;
   }
   
@@ -94,10 +94,10 @@ void QgsGeorefPluginGui::on_pbnEnterWorldCoords_clicked() {
   // check if there already is a world file
   if (!worldfile.isEmpty()) {
     if (QFile::exists(worldfile)) {
-      QMessageBox::critical(this, "Error",
-			    "The selected file already seems to have a "
-			    "world file! If you want to replace it with a "
-			    "new world file, remove the old one first.");
+      QMessageBox::critical(this, tr("Error"),
+			    tr("The selected file already seems to have a ")+
+			    tr("world file! If you want to replace it with a ")+
+			    tr("new world file, remove the old one first."));
       return;
     }
   }

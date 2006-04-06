@@ -216,10 +216,10 @@ static void setTitleBarText_( QWidget & qgisApp )
 {
 
   setupUi(this);
-  mSplash->showMessage("Reading settings", Qt::AlignHCenter | Qt::AlignBottom);
+  mSplash->showMessage(tr("Reading settings"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
   readSettings();
-  mSplash->showMessage("Setting up the GUI", Qt::AlignHCenter | Qt::AlignBottom);
+  mSplash->showMessage(tr("Setting up the GUI"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
   createActions();
   createActionGroups();
@@ -234,7 +234,7 @@ static void setTitleBarText_( QWidget & qgisApp )
   
   fileNew(); // prepare empty project
 
-  mSplash->showMessage("Checking database", Qt::AlignHCenter | Qt::AlignBottom);
+  mSplash->showMessage(tr("Checking database"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
   createDB();    
 
@@ -271,7 +271,7 @@ static void setTitleBarText_( QWidget & qgisApp )
   std::cout << "Plugins and providers are installed in " << plib.toLocal8Bit().data() << std::endl;
 #endif
   // load any plugins that were running in the last session
-  mSplash->showMessage("Restoring loaded plugins", Qt::AlignHCenter | Qt::AlignBottom);
+  mSplash->showMessage(tr("Restoring loaded plugins"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
   restoreSessionPlugins(plib);
 
@@ -291,7 +291,7 @@ static void setTitleBarText_( QWidget & qgisApp )
   // Map composer
   mComposer = new QgsComposer(this);
 
-  mSplash->showMessage("Initializing file filters", Qt::AlignHCenter | Qt::AlignBottom);
+  mSplash->showMessage(tr("Initializing file filters"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
   // now build vector file filter
   buildSupportedVectorFileFilter_( mVectorFileFilter );
@@ -316,11 +316,11 @@ static void setTitleBarText_( QWidget & qgisApp )
   // Please make sure this is the last thing the ctor does so that we can ensure teh 
   // widgets are all initialised before trying to restore their state.
   //
-  mSplash->showMessage("Restoring window state", Qt::AlignHCenter | Qt::AlignBottom);
+  mSplash->showMessage(tr("Restoring window state"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
   restoreWindowState();
 
-  mSplash->showMessage("QGIS Ready!", Qt::AlignHCenter | Qt::AlignBottom);
+  mSplash->showMessage(tr("QGIS Ready!"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
 } // QgisApp ctor
 
@@ -670,7 +670,7 @@ void QgisApp::createMenus()
   mFileMenu = menuBar()->addMenu(tr("&File"));
   mFileMenu->addAction(mActionFileNew);
   mFileMenu->addAction(mActionFileOpen);
-  mRecentProjectsMenu = mFileMenu->addMenu("&Open Recent Projects");
+  mRecentProjectsMenu = mFileMenu->addMenu(tr("&Open Recent Projects"));
   // Connect once for the entire submenu.
   connect(mRecentProjectsMenu, SIGNAL(triggered(QAction *)),
           this, SLOT(openProject(QAction *)));
@@ -1366,7 +1366,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 
   if (!driverRegistrar)
   {
-    QMessageBox::warning(0,"OGR Driver Manager","unable to get OGRDriverManager");
+    QMessageBox::warning(0,tr("OGR Driver Manager"),tr("unable to get OGRDriverManager"));
     return;                 // XXX good place to throw exception if we
   }                           // XXX decide to do exceptions
 
@@ -5054,8 +5054,8 @@ void QgisApp::addRasterLayer(QString const & rasterLayerPath,
   }
   else
   {
-    QMessageBox::critical(this,"Layer is not valid",
-        "The layer is not a valid layer and can not be added to the map");
+    QMessageBox::critical(this,tr("Layer is not valid"),
+        tr("The layer is not a valid layer and can not be added to the map"));
   }
 
   qApp->processEvents();
