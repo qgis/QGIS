@@ -191,6 +191,9 @@ class QgsMapCanvas : public Q3CanvasView
     void panActionEnd(QPoint releasePoint);
     //! Called when mouse is moving and pan is activated
     void panAction(QMouseEvent * event);
+    
+    //! returns last position of mouse cursor
+    QPoint mouseLastXY();
   
   public slots:
 
