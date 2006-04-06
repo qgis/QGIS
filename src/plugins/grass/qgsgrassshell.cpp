@@ -250,12 +250,14 @@ QgsGrassShell::~QgsGrassShell()
     // TODO: find signal to write history before exit
     //       instead of sending 'exit'
 
-    int ret = write( mFdMaster, "exit\015\012", 6);
-    int status;
+    write( mFdMaster, "exit\015\012", 6);
 
+#ifndef WIN32
     while ( 1 ) 
     {
 	readStdout(0);
+
+        int status;
         if ( waitpid ( mPid, &status, WNOHANG ) > 0 ) break;
 
         struct timespec t, r;
@@ -263,6 +265,7 @@ QgsGrassShell::~QgsGrassShell()
         t.tv_nsec = 10000000; // 0.01 s
         nanosleep ( &t, &r );
     }
+#endif
 
     /* 
     std::cerr << "kill shell pid = " << mPid << std::endl;
