@@ -912,9 +912,9 @@ static void _setCanvasExtent(QString const &canonicalMapCanvasName,
 
     if (!theMapCanvas)
     {
-        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).toLocal8Bit().data());
-
-        return;                     // XXX some sort of error value? Exception?
+      // Don't produce an error message here because _findMapCanvas
+      // does one already.
+      return;                     // XXX some sort of error value? Exception?
     }
 
     theMapCanvas->setExtent(newExtent);
@@ -1125,8 +1125,9 @@ bool QgsProject::read()
 
     // ensure that overview map canvas is set to *entire* extent
     QgsRect mapCanvasFullExtent = _getFullExtent("theMapCanvas");
+    std::cerr <<__FILE__<<__LINE__<<'\n';
     _setCanvasExtent("theOverviewCanvas", mapCanvasFullExtent);
-
+    std::cerr <<__FILE__<<__LINE__<<'\n';
     // now restore the extent for the main canvas
     _setCanvasExtent("theMapCanvas", savedExtent);
 
