@@ -63,10 +63,10 @@ public slots:
     void postRender ( QPainter * );
 
     //! Mouse event receiver
-    void mouseEventReceiverMove ( QgsPoint & );
+    //void mouseEventReceiverMove ( QgsPoint & );
 
     //! Mouse event receiver
-    void mouseEventReceiverClick ( QgsPoint & );
+    //void mouseEventReceiverClick ( QgsPoint & );
 
     //! Calculate region, called if any value is changed
     void adjust ( void );
