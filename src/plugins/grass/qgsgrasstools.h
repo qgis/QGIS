@@ -96,6 +96,9 @@ public slots:
     // Emits regionChanged
     void emitRegionChanged();
 
+    //! Close open tabs with tools
+    void closeTools();
+
 signals:
     void regionChanged();
 
