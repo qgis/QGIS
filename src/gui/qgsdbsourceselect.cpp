@@ -517,7 +517,7 @@ bool QgsDbSourceSelect::getGeometryColumnInfo(PGconn *pg,
 
   QString sql = "select * from geometry_columns";
   // where f_table_schema ='" + settings.readEntry(key + "/database") + "'";
-  sql += " order by f_table_name";
+  sql += " order by f_table_schema,f_table_name";
   //qDebug("Fetching tables using: " + sql);
   PGresult *result = PQexec(pg, sql.toLocal8Bit().data());
   if (result)
