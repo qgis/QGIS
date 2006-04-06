@@ -20,6 +20,7 @@
 #include <QCursor>
 #include <QString>
 
+class QgsMapLayer;
 class QgsMapCanvas;
 class QMouseEvent;
 class QgsPoint;
@@ -73,6 +74,9 @@ class QgsMapTool
         
     //! transformation from screen coordinates to map coordinates
     QgsPoint toMapCoords(const QPoint& point);
+    
+    //! transformation from screen coordinates to layer's coordinates
+    QgsPoint toLayerCoords(QgsMapLayer* layer, const QPoint& point);
     
     //! transformation from map coordinates to screen coordinates
     QPoint toCanvasCoords(const QgsPoint& point);
