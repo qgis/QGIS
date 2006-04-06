@@ -454,5 +454,6 @@ void QgsGrassTools::closeTools()
     for ( int i = mTabWidget->count()-1; i > 1; i-- )
     {
          delete mTabWidget->widget(i);
+         mTabWidget->removeTab(i);
     }
 }

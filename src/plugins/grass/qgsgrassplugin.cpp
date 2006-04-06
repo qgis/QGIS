@@ -96,6 +96,7 @@ QgsGrassPlugin::QgsGrassPlugin(QgisApp * theQGisApp, QgisIface * theQgisInterFac
 
 QgsGrassPlugin::~QgsGrassPlugin()
 {
+    if ( mTools ) mTools->closeTools();
     QString err = QgsGrass::closeMapset();
 }
 
@@ -238,6 +239,8 @@ void QgsGrassPlugin::initGui()
 
 void QgsGrassPlugin::mapsetChanged ()
 {
+    if ( mTools ) mTools->closeTools();
+
     if ( !QgsGrass::activeMode() )  {
         mOpenToolsAction->setEnabled(false);
 	mRegionAction->setEnabled(false);
