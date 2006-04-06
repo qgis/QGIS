@@ -109,6 +109,9 @@ QgsGrassTools::QgsGrassTools ( QgisApp *qgisApp, QgisIface *iface,
     mIface = iface;
     mCanvas = mIface->getMapCanvas();
 
+    connect( qApp, SIGNAL(aboutToQuit()), 
+		         this, SLOT(closeTools()) );
+
     mTabWidget = new QgsGrassToolsTabWidget (this);
     QVBoxLayout *layout1 = new QVBoxLayout(this);
     layout1->addWidget(mTabWidget);
@@ -184,6 +187,25 @@ void QgsGrassTools::moduleClicked( Q3ListViewItem * item )
     QgsGrassShell *sh = 0;
     if ( name == "shell" )
     {
+         // Set history file
+         QString mapsetPath = QgsGrass::getDefaultGisdbase() + "/"
+			+ QgsGrass::getDefaultLocation() + "/"
+			+ QgsGrass::getDefaultMapset();
+
+         // bash
+         QString hist = "HISTFILE=" + mapsetPath + "/.bash_history";
+         char *histChar = new char[hist.length()+1];
+         strcpy ( histChar, const_cast<char *>(hist.ascii()) );
+         putenv( histChar );
+
+         // csh/tcsh
+#ifndef WIN32
+         hist = "histfile=" + mapsetPath + "/.history";
+         histChar = new char[hist.length()+1];
+         strcpy ( histChar, const_cast<char *>(hist.ascii()) );
+         putenv( histChar );
+#endif
+
 #ifdef WIN32
          // Run MSYS if available
          // Note: I was not able to run cmd.exe and command.com
@@ -421,4 +443,16 @@ void QgsGrassTools::emitRegionChanged()
     std::cerr << "QgsGrassTools::emitRegionChanged()" << std::endl;
     #endif
     emit regionChanged();
+}
+
+void QgsGrassTools::closeTools()
+{
+    #ifdef QGISDEBUG
+    std::cerr << "QgsGrassTools::closeTools()" << std::endl;
+    #endif
+
+    for ( int i = mTabWidget->count()-1; i > 1; i-- )
+    {
+         delete mTabWidget->widget(i);
+    }
 }
