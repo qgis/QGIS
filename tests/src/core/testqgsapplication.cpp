@@ -1,4 +1,4 @@
-#include <QtTest/QtTest>
+#include <QtTest>
 #include <qgsapplication.h>
 #include "testqgsapplication.h"
 #include <QObject>
