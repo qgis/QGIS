@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+use Cwd;
 
 #####################################################
 # A script to automate creation of a new QGIS plugin
@@ -8,6 +9,18 @@
 #####################################################
 # $Id$ #
 
+#make sure we are in a the plugins directory otherwise the changes this script will make will 
+#wreak havoc....
+$myDir = fastgetcwd;
+print "\n\nChecking that we are in the <qgis dir>/src/plugins/ directory....";
+if ($myDir =~ m/src\/plugins$/) {
+  print "yes\n";
+}else {
+  print "no\n";
+  print $myDir;
+  print "\nPlease relocate to the plugins directory before attempting to run this script.\n";
+  exit;
+}
 # get the needed information from the user
 print "\n\nEnter the directory name under qgis/src/plugins/ where your new plugin will be created.\n";
 print "We suggest using a lowercase underscore separated name e.g. clever_plugin\n";
