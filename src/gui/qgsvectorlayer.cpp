@@ -902,19 +902,14 @@ void QgsVectorLayer::draw(QPainter * p, QgsRect * viewExtent, QgsMapToPixel * th
       msg += cse.what();
       qWarning(msg.toLocal8Bit().data());
     }
-
-#ifdef QGISDEBUG
-    std::cerr << "Total features processed is " << featureCount << std::endl;
-#endif
+    QgsDebugMsg("Total features processed is " + QString::number(featureCount));
     // XXX Something in our draw event is triggering an additional draw event when resizing [TE 01/26/06]
     // XXX Calling this will begin processing the next draw event causing image havoc and recursion crashes.
     //qApp->processEvents();
   }
   else
   {
-#ifdef QGISDEBUG
-    qWarning("Warning, QgsRenderer is null in QgsVectorLayer::draw()");
-#endif
+    QgsLogger::warning("QgsRenderer is null in QgsVectorLayer::draw()");
   }
 }
 
@@ -2120,9 +2115,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
       // show the extent
       QString s = mbr->stringRep();
-#ifdef QGISDEBUG
-      std::cout << "Extent of layer: " << s.toLocal8Bit().data() << std::endl;
-#endif
+      QgsDebugMsg("Extent of layer: " +  s);
       // store the extent
       layerExtent.setXmax(mbr->xMax());
       layerExtent.setXmin(mbr->xMin());
@@ -2138,16 +2131,11 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
       if (providerKey == "postgres")
       {
-#ifdef QGISDEBUG
-        std::cout << "Beautifying layer name " << layerName.toLocal8Bit().data() << std::endl;
-#endif
+	QgsDebugMsg("Beautifying layer name " + layerName);
         // adjust the display name for postgres layers
         layerName = layerName.mid(layerName.find(".") + 1);
         layerName = layerName.left(layerName.find("(") - 1);   // Take one away, to avoid a trailing space
-#ifdef QGISDEBUG
-        std::cout << "Beautified name is " << layerName.toLocal8Bit().data() << std::endl;
-#endif
-
+	QgsDebugMsg("Beautifying layer name " + layerName);
       }
 
       // upper case the first letter of the layer name
@@ -3238,10 +3226,8 @@ void QgsVectorLayer::setCoordinateSystem()
   //slot is defined inthe maplayer superclass
   connect(mCoordinateTransform, SIGNAL(invalidTransformInput()), this, SLOT(invalidTransformInput()));
 
-#ifdef QGISDEBUG
-  std::cout << "QgsVectorLayer::setCoordinateSystem ------------------------------------------------start" << std::endl;
-  std::cout << "QgsVectorLayer::setCoordinateSystem ----- Computing Coordinate System" << std::endl;
-#endif
+  QgsDebugMsg("QgsVectorLayer::setCoordinateSystem ------------------------------------------------start");
+  QgsDebugMsg("QgsVectorLayer::setCoordinateSystem ----- Computing Coordinate System");
   //
   // Get the layers project info and set up the QgsCoordinateTransform 
   // for this layer
@@ -3255,18 +3241,13 @@ void QgsVectorLayer::setCoordinateSystem()
     {
       mySourceWKT=QString("");
     }
-
-#ifdef QGISDEBUG
-    std::cout << "QgsVectorLayer::setCoordinateSystem --- using wkt\n" << mySourceWKT.toLocal8Bit().data() << std::endl;
-#endif
+    QgsDebugMsg("QgsVectorLayer::setCoordinateSystem --- using wkt " + mySourceWKT);
     mCoordinateTransform->sourceSRS().createFromWkt(mySourceWKT);
     //mCoordinateTransform->sourceSRS()->createFromWkt(getProjectionWKT());
   }
   else
   {
-#ifdef QGISDEBUG
-    std::cout << "QgsVectorLayer::setCoordinateSystem --- using srid " << srid << std::endl;
-#endif
+    QgsDebugMsg("QgsVectorLayer::setCoordinateSystem --- using srid " + QString::number(srid));
     mCoordinateTransform->sourceSRS().createFromSrid(srid);
   }
 
@@ -3287,9 +3268,7 @@ void QgsVectorLayer::setCoordinateSystem()
   // the same as the input projection, otherwise set the output to the
   // project srs
 
-#ifdef QGISDEBUG
-  std::cout << "Layer registry has " << QgsMapLayerRegistry::instance()->count() << " layers " << std::endl;
-#endif     
+  QgsDebugMsg("Layer registry has " + QString::number(QgsMapLayerRegistry::instance()->count()) + " layers ");
   if (QgsMapLayerRegistry::instance()->count() ==0)
   {
     mCoordinateTransform->destSRS().createFromProj4(

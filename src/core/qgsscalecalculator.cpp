@@ -20,6 +20,7 @@
 #include <assert.h>
 #include <math.h>
 #include <qstring.h>
+#include "qgslogger.h"
 #include "qgsrect.h"
 #include "qgsscalecalculator.h"
 
@@ -66,9 +67,7 @@ double QgsScaleCalculator::calculate(QgsRect &mapExtent, int canvasWidth)
       assert("bad map units");
       break; 
   }
-#ifdef QGISDEBUG
-  std::cerr << "Using conversionFactor of " << conversionFactor << std::endl; 
-#endif
+  QgsDebugMsg("Using conversionFactor of " + QString::number(conversionFactor));
   double scale = (delta * conversionFactor)/(canvasWidth/mDpi);
   return scale;
 }
@@ -97,10 +96,6 @@ double  QgsScaleCalculator::calculateGeographicDistance(QgsRect &mapExtent)
   double R = ra* sqrt(1-pow(e,2))/(1 - pow(e,2)*pow(sin(lat1*rads),2));
   double d = c *R; // kilometers;
   double meters = d * 1000.0;
-
-
-#ifdef QGISDEBUG
-  std::cerr << "Distance across map extent (m): " << meters << std::endl; 
-#endif
+  QgsDebugMsg("Distance across map extent (m): " + QString::number(meters));
   return meters;
 }
