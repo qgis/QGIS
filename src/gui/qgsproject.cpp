@@ -719,9 +719,10 @@ static QString _getVersion(QDomDocument const &doc)
 /**
    locate a qgsMapCanvas object
 */
-static QgsMapCanvas * _findMapCanvas(QString const &canonicalMapCanvasName)
+static QgsMapCanvas * _findMapCanvas()
 {
   QgsMapCanvas * theMapCanvas = 0x0;
+  QString canonicalMapCanvasName = "theMapCanvas";
 
   QWidgetList wlist = QApplication::topLevelWidgets();
   foreach (QWidget *widget, QApplication::topLevelWidgets()) 
@@ -739,7 +740,7 @@ static QgsMapCanvas * _findMapCanvas(QString const &canonicalMapCanvasName)
   } 
   else
   {
-    qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).toLocal8Bit().data());
+    qDebug("Unable to find the map canvas widget with name " + canonicalMapCanvasName);
 
     return 0x0;                 // XXX some sort of error value? Exception?
   }
@@ -901,14 +902,11 @@ static pair< bool, list<QDomNode> > _getMapLayers(QDomDocument const &doc)
 /**
    Sets the given canvas' extents
 
-   @param canonicalName will be "theMapCanvas" or "theOverviewCanvas"; these
-   are set when those are created in qgisapp ctor
 */
-static void _setCanvasExtent(QString const &canonicalMapCanvasName,
-                             QgsRect const &newExtent)
+static void _setCanvasExtent(QgsRect const &newExtent)
 {
     // first find the canonical map canvas
-    QgsMapCanvas *theMapCanvas = _findMapCanvas(canonicalMapCanvasName);
+    QgsMapCanvas *theMapCanvas = _findMapCanvas();
 
     if (!theMapCanvas)
     {
@@ -937,28 +935,24 @@ static void _setCanvasExtent(QString const &canonicalMapCanvasName,
    set the overview canvas to that instead of stupidly setting the overview
    canvas to the *same* extent that's in the main map canvas.
 
-   @param canonicalMapCanvasName will be "theMapCanvas" or "theOverviewCanvas"; these
-   are set when those are created in qgisapp ctor
-
 */
-static QgsRect _getFullExtent(QString const &canonicalMapCanvasName)
+static QgsRect _getFullExtent()
 {
     // XXX since this is a cut-n-paste from above, maybe generalize to a
     // XXX separate function?
     // first find the canonical map canvas
-    QgsMapCanvas *theMapCanvas = _findMapCanvas(canonicalMapCanvasName);
+    QgsMapCanvas *theMapCanvas = _findMapCanvas();
 
     if (!theMapCanvas)
     {
-        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).toLocal8Bit().data());
-
+      // _findMapCanvas() will produce an error if the map canvas wasn't found
         return QgsRect();           // XXX some sort of error value? Exception?
     }
 
 
     return theMapCanvas->fullExtent();
 
-} // _getFullExtent( QString const & canonicalMapCanvasName )
+} // _getFullExtent( )
 
 
 
@@ -972,28 +966,24 @@ static QgsRect _getFullExtent(QString const &canonicalMapCanvasName)
    set the overview canvas to that instead of stupidly setting the overview
    canvas to the *same* extent that's in the main map canvas.
 
-   @param canonicalMapCanvasName will be "theMapCanvas" or "theOverviewCanvas"; these
-   are set when those are created in qgisapp ctor
-
 */
-static QgsRect _getExtent(QString const &canonicalMapCanvasName)
+static QgsRect _getExtent()
 {
     // XXX since this is a cut-n-paste from above, maybe generalize to a
     // XXX separate function?
     // first find the canonical map canvas
-    QgsMapCanvas *theMapCanvas = _findMapCanvas(canonicalMapCanvasName);
+    QgsMapCanvas *theMapCanvas = _findMapCanvas();
 
     if (!theMapCanvas)
     {
-        qDebug(("Unable to find canvas widget " + canonicalMapCanvasName).toLocal8Bit().data());
-
+      // _findMapCanvas will produce an error if the map canvas wasn't found
         return QgsRect();           // XXX some sort of error value? Exception?
     }
 
 
     return theMapCanvas->extent();
 
-} // _getExtent( QString const & canonicalMapCanvasName )
+} // _getExtent( )
 
 
 
@@ -1101,7 +1091,9 @@ bool QgsProject::read()
 
     // now set the map units; note, alters QgsProject::instance().
     _getMapUnits(*doc);
-    _findMapCanvas("theMapCanvas")->setMapUnits(mapUnits());
+    QgsMapCanvas* canvas = _findMapCanvas();
+    if (canvas)
+      canvas->setMapUnits(mapUnits());
 
     // get the map layers
     pair< bool, list<QDomNode> > getMapLayersResults =  _getMapLayers(*doc);
@@ -1122,12 +1114,6 @@ bool QgsProject::read()
 
          // return false;
     }
-
-    // ensure that overview map canvas is set to *entire* extent
-    QgsRect mapCanvasFullExtent = _getFullExtent("theMapCanvas");
-    _setCanvasExtent("theOverviewCanvas", mapCanvasFullExtent);
-    // now restore the extent for the main canvas
-    _setCanvasExtent("theMapCanvas", savedExtent);
 
     if ( ! getMapLayersResults.first )
     {
@@ -1309,13 +1295,10 @@ bool QgsProject::write()
 
   // extents and layers info are written by the map canvas
   // find the canonical map canvas
-  QgsMapCanvas *theMapCanvas = _findMapCanvas("theMapCanvas");
+  QgsMapCanvas *theMapCanvas = _findMapCanvas();
 
   if (!theMapCanvas)
   {
-    qDebug("Unable to find canvas widget theMapCanvas");
-
-
     // Actually this might be run from the test harness, and therefore
     // there won't be a GUI, so no map canvas.   Just blithely continue on.
   }
