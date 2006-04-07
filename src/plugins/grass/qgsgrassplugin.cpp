@@ -244,7 +244,7 @@ void QgsGrassPlugin::mapsetChanged ()
         mOpenToolsAction->setEnabled(false);
 	mRegionAction->setEnabled(false);
 	mEditRegionAction->setEnabled(false);
-        mRegion->hide();
+        mRegionBand->hide();
         mCloseMapsetAction->setEnabled(false);
         mNewVectorAction->setEnabled(false);
 
