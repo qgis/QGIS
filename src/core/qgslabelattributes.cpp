@@ -53,9 +53,6 @@ QgsLabelAttributes::QgsLabelAttributes( bool def )
       mBorderWidthIsSet( false ),
       mBorderStyleIsSet( false )
 {
-#ifdef QGISDEBUG
-    std::cerr << "QgsLabelAttributes::QgsLabelAttributes()" << std::endl;
-#endif
 
     if ( def ) { // set defaults
 	setText ( "Label" );

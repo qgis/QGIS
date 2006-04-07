@@ -48,9 +48,6 @@ static const char * const ident_ =
 
 QgsLabel::QgsLabel( std::vector<QgsField> const & fields )
 {
-#ifdef QGISDEBUG
-    std::cerr << "QgsLabel::QgsLabel()" << std::endl;
-#endif
 
     mField = fields;
     mLabelField.resize ( LabelFieldCount );

@@ -27,9 +27,8 @@
 #define QgsDebugMsgLevel(str, level) QgsLogger::debug(QString(str), level,\
 __FILE__, __FUNCTION__, __LINE__);
 #else
-#define QgsDebugMsg(str)
-#define QgsDebugMsgVal(str, val, level) 
-#define QgsDebugMsgLevel(str, level) ""
+#define QgsDebugMsg(str)  
+#define QgsDebugMsgLevel(str, level) 
 #endif
 
 /**QgsLogger is a class to print debug/warning/error messages to the console. The advantage of this class over std::cout, std::cerr & co. is that the output can be controlled with environment variables:

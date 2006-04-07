@@ -16,6 +16,7 @@
 
 #include <cmath>
 
+#include "qgslogger.h"
 #include "qgsmaprender.h"
 #include "qgsscalecalculator.h"
 #include "qgsmaptopixel.h"
@@ -143,13 +144,17 @@ void QgsMapRender::adjustExtentToSize()
   }
 
 #ifdef QGISDEBUG
-  std::cout << "========== Current Scale ==========" << std::endl;
-  std::cout << "Current extent is " << mExtent.stringRep().toLocal8Bit().data() << std::endl;
-  std::cout << "MuppX is: " << muppX << "\n" << "MuppY is: " << muppY << std::endl;
-  std::cout << "Pixmap width: " << myWidth << ", height: " << myHeight << std::endl;
-  std::cout << "Extent width: " << mExtent.width() << ", height: " << mExtent.height() << std::endl;
-  std::cout << "whitespace: " << whitespace << std::endl;
+  QgsDebugMsg("========== Current Scale ==========");
+  QgsDebugMsg("Current extent is " + mExtent.stringRep());
+  QgsLogger::debug("MuppX", muppX, 1, __FILE__, __FUNCTION__, __LINE__);
+  QgsLogger::debug("MuppY", muppY, 1, __FILE__, __FUNCTION__, __LINE__);
+  QgsLogger::debug("Pixmap width", myWidth, 1, __FILE__, __FUNCTION__, __LINE__);
+  QgsLogger::debug("Pixmap height", myHeight, 1, __FILE__, __FUNCTION__, __LINE__);
+  QgsLogger::debug("Extent width", mExtent.width(), 1, __FILE__, __FUNCTION__, __LINE__);
+  QgsLogger::debug("Extent height", mExtent.height(), 1, __FILE__, __FUNCTION__, __LINE__);
+  QgsLogger::debug("whitespace: ", whitespace, 1, __FILE__, __FUNCTION__, __LINE__);
 #endif
+
 
   // update extent
   mExtent.setXmin(dxmin);
@@ -161,8 +166,7 @@ void QgsMapRender::adjustExtentToSize()
   mScale = mScaleCalculator->calculate(mExtent, myWidth);
 
 #ifdef QGISDEBUG
-  std::cout << "Scale (assuming meters as map units) = 1:" << mScale << std::endl;
-  std::cout << "------------------------------------------ " << std::endl;
+  QgsLogger::debug("Scale (assuming meters as map units) = 1", mScale, 1, __FILE__, __FUNCTION__, __LINE__);
 #endif
 
   mCoordXForm->setParameters(mMupp, dxmin, dymin, myHeight);
@@ -171,14 +175,11 @@ void QgsMapRender::adjustExtentToSize()
 
 void QgsMapRender::render(QPainter* painter)
 {
-
-#ifdef QGISDEBUG
-  std::cout << "========== Rendering ==========" << std::endl;
-#endif
+  QgsDebugMsg("========== Rendering ==========");
 
   if (mExtent.isEmpty())
   {
-    std::cout << "empty extent... not rendering" << endl;
+    QgsLogger::warning("empty extent... not rendering");
     return;
   }
 
@@ -191,7 +192,7 @@ void QgsMapRender::render(QPainter* painter)
   int myRenderCounter = 0;
   
 #ifdef QGISDEBUG
-  std::cout << "QgsMapRender::render: Starting to render layer stack." << std::endl;
+  QgsDebugMsg("QgsMapRender::render: Starting to render layer stack.");
   QTime renderTime;
   renderTime.start();
 #endif
@@ -201,9 +202,7 @@ void QgsMapRender::render(QPainter* painter)
   
   while (li != layers.end())
   {
-#ifdef QGISDEBUG
-    std::cout << "QgsMapRender::render: at layer item '" << (*li).toLocal8Bit().data() << "'." << std::endl;
-#endif
+    QgsDebugMsg("QgsMapRender::render: at layer item '" + (*li));
 
     // This call is supposed to cause the progress bar to
     // advance. However, it seems that updating the progress bar is
@@ -211,39 +210,33 @@ void QgsMapRender::render(QPainter* painter)
     // passed into this function), as Qt produces a number of errors
     // when try to do so. I'm (Gavin) not sure how to fix this, but
     // added these comments and debug statement to help others...
-    std::cerr << "If there is a QPaintEngine error here, it is caused by an"
-              << " emit call just after line " << __LINE__ 
-              << " in file " << __FILE__ << ".\n";
+    QgsDebugMsg("If there is a QPaintEngine error here, it is caused by an emit call");
 
     emit setProgress(myRenderCounter++,layers.size());
     QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer(*li);
 
     if (!ml)
     {
-#ifdef QGISDEBUG
-      std::cout << "QgsMapRender::render: layer not found in registry!" << std::endl;
-#endif
+      QgsLogger::warning("QgsMapRender::render: layer not found in registry!");
       li++;
       continue;
     }
         
 #ifdef QGISDEBUG
-    std::cout << "QgsMapRender::render: Rendering layer " << ml->name().toLocal8Bit().data() << '\n'
-      << "  Layer minscale " << ml->minScale() 
-      << ", maxscale " << ml->maxScale() << '\n' 
-      << "  Scale dep. visibility enabled? " 
-      << ml->scaleBasedVisibility() << '\n'
-      << "  Input extent: " << ml->extent().stringRep().toLocal8Bit().data() 
-      << std::endl;
+		QgsDebugMsg("QgsMapRender::render: Rendering layer " + ml->name());
+		QgsLogger::debug("  Layer minscale ", ml->minScale(), 1, __FILE__, __FUNCTION__, __LINE__);
+		QgsLogger::debug("  Layer maxscale ", ml->maxScale(), 1, __FILE__, __FUNCTION__, __LINE__);
+		QgsLogger::debug("  Scale dep. visibility enabled? ", ml->scaleBasedVisibility(), 1,\
+				 __FILE__, __FUNCTION__, __LINE__);
+		QgsLogger::debug("  Input extent: " + ml->extent().stringRep(), 1, __FILE__, __FUNCTION__, __LINE__);
     try
     {
-      std::cout << "  Transformed extent: " 
-          << ml->coordinateTransform()->transformBoundingBox(ml->extent()).stringRep().toLocal8Bit().data() 
-          << std::endl;
+      QgsDebugMsg("  Transformed extent: " + ml->coordinateTransform()->transformBoundingBox(ml->extent()).stringRep());
     }
     catch (QgsCsException &cse)
     {
-      qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what());
+      QgsLogger::warning("Transform error caught in " + QString(__FILE__) + " line " + QString(__LINE__) +\
+			 QString(cse.what()));
     }
 #endif
 
@@ -273,10 +266,8 @@ void QgsMapRender::render(QPainter* painter)
       }
       else
       {
-#ifdef QGISDEBUG
-        std::cout << "QgsMapRender::render: Layer not rendered because it is not within "
-            << "the defined visibility scale range" << std::endl;
-#endif
+	QgsDebugMsg("QgsMapRender::render: Layer not rendered because it is not within the defined \
+visibility scale range")
       }
         
     } // if (ml->visible())
@@ -285,9 +276,7 @@ void QgsMapRender::render(QPainter* painter)
     
   } // while (li != end)
       
-#ifdef QGISDEBUG
-  std::cout << "QgsMapRender::render: Done rendering map layers" << std::endl;
-#endif
+    QgsDebugMsg("QgsMapRender::render: Done rendering map layers");
 
   if (!mOverview)
   {
@@ -321,8 +310,8 @@ void QgsMapRender::render(QPainter* painter)
   emit setProgress(1,1);      
       
 #ifdef QGISDEBUG
-  std::cout << "QgsMapRender::render: Rendering done in " <<
-               renderTime.elapsed() / 1000.0 << " seconds" << std::endl;
+  QgsLogger::debug("QgsMapRender::render: Rendering done in (seconds)", renderTime.elapsed() / 1000.0, 1,\
+		   __FILE__, __FUNCTION__, __LINE__);
 #endif
 
   mDrawing = false;

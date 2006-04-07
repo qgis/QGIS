@@ -14,7 +14,7 @@
  ***************************************************************************/
 /* $Id$ */
 
-
+#include "qgslogger.h"
 #include "qgsmaplayerset.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
@@ -29,10 +29,7 @@ void QgsMapLayerSet::setLayerSet(const std::deque<QString>& layers)
 
 void QgsMapLayerSet::updateFullExtent()
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsMapLayerSet::updateFullExtent() called !" << std::endl;
-#endif
-    
+  QgsDebugMsg("QgsMapLayerSet::updateFullExtent() called !");
   QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
   bool projectionsEnabled = (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0);
   
@@ -48,16 +45,13 @@ void QgsMapLayerSet::updateFullExtent()
     QgsMapLayer * lyr = registry->mapLayer(*it);
     if (lyr == NULL)
     {
-      std::cout << "WARNING: layer '" << (*it).toLocal8Bit().data()
-          << "' not found in map layer registry!" << std::endl;
+      QgsLogger::warning("WARNING: layer '" + (*it) + "' not found in map layer registry!");
     }
     else
     {
-    
-#ifdef QGISDEBUG 
-      std::cout << "Updating extent using " << lyr->name().toLocal8Bit().data() << std::endl;
-      std::cout << "Input extent: " << lyr->extent().stringRep().toLocal8Bit().data() << std::endl;
-#endif 
+      QgsDebugMsg("Updating extent using " + lyr->name());
+      QgsDebugMsg("Input extent: " + lyr->extent().stringRep());
+
       // Layer extents are stored in the coordinate system (CS) of the
       // layer. The extent must be projected to the canvas CS prior to passing
       // on to the updateFullExtent function
@@ -72,7 +66,8 @@ void QgsMapLayerSet::updateFullExtent()
         }
         catch (QgsCsException &cse)
         {
-          qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what());
+	  QgsLogger::warning("Transform error caught in " + QString(__FILE__) + " line " +\
+			     QString::number(__LINE__) + QString(cse.what()));
         }
       }
       else

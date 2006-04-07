@@ -1520,7 +1520,7 @@ const std::list<std::pair<QString, QString> >& attributes)
     OGRDataSource::DestroyDataSource(dataSource);
 
 #ifdef QGISDEBUG
-    QgsLogger::debug("GDAL Version number", GDAL_VERSION_NUM, __FILE__, __FUNCTION__, __LINE__);
+    QgsLogger::debug("GDAL Version number", GDAL_VERSION_NUM, 1, __FILE__, __FUNCTION__, __LINE__);
 #endif
 #if GDAL_VERSION_NUM >= 1310
     if(reference)
