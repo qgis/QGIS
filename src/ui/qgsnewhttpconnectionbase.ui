@@ -93,10 +93,7 @@
          </sizepolicy>
         </property>
         <property name="toolTip" >
-         <string>Port number of your HTTP proxy (optional)</string>
-        </property>
-        <property name="maxLength" >
-         <number>5</number>
+         <string>Your user name for the HTTP proxy (optional)</string>
         </property>
        </widget>
       </item>
@@ -111,10 +108,7 @@
          </sizepolicy>
         </property>
         <property name="toolTip" >
-         <string>Port number of your HTTP proxy (optional)</string>
-        </property>
-        <property name="maxLength" >
-         <number>5</number>
+         <string>Password for your HTTP proxy (optional)</string>
         </property>
         <property name="echoMode" >
          <enum>QLineEdit::Password</enum>
