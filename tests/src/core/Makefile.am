@@ -9,6 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 bin_PROGRAMS = testqgsapplication \
+		testqgsfield \
                testqgssymbol
 
 #
@@ -26,6 +27,7 @@ GLOBALCXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(P
 	$(MOC) -o $@ $<
 
 BUILT_SOURCES = $(testqgsapplication_MOC) \
+		$(testqgsfield_MOC) \
                 $(testqgssymbol_MOC)
 
 CLEANFILES = $(BUILT_SOURCES)
@@ -44,3 +46,8 @@ testqgssymbol_MOC = testqgssymbol.moc.cpp
 testqgssymbol_SOURCES = testqgssymbol.cpp 
 testqgssymbol_LDADD = $(GLOBALLDADD)
 testqgssymbol_CXXFLAGS =  $(GLOBALCXXFLAGS)
+
+testqgsfield_MOC = testqgsfield.moc.cpp
+testqgsfield_SOURCES = testqgsfield.cpp
+testqgsfield_LDADD = $(GLOBALLDADD)
+testqgsfield_CXXFLAGS =  $(GLOBALCXXFLAGS)
