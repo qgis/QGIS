@@ -27,9 +27,9 @@
 #include <netinet/in.h>
 #endif
 
-#include <qobject.h>
-#include <qstring.h>
-#include <qstringlist.h>
+#include <QObject>
+#include <QString>
+#include <QStringList>
 
 class QgsRect;
 class QgsFeature;

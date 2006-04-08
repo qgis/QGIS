@@ -23,11 +23,11 @@
 
 using namespace std;
 
-#include <qmessagebox.h>
-#include <qstring.h>
-#include <qdir.h>
-#include <qlibrary.h>
-#include <qapplication.h>
+#include <QMessageBox>
+#include <QString>
+#include <QDir>
+#include <QLibrary>
+#include <QApplication>
 
 
 #include "qgis.h"
