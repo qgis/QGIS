@@ -25,9 +25,10 @@
  This structure stores the database connection information, including host, database,
   user name, password, schema, password, and sql where clause
  */
-#include <qstring.h> 
-struct QgsDataSourceURI
+#include <QString> 
+class QgsDataSourceURI
 {
+ public:
   //! host name
   QString host;
   //! database name
