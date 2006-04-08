@@ -437,7 +437,7 @@ QString QgsVectorLayerProperties::getMetadata()
 
     if ( ! coordinateTransform )
     {
-        throw QgsCsException( string("unable to get layer coordinate transform object") );
+        throw QgsCsException( std::string("unable to get layer coordinate transform object") );
     }
 
     QgsRect myProjectedExtent = coordinateTransform->transformBoundingBox(layer->extent());
