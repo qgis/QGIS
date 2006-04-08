@@ -21,7 +21,7 @@ GLOBALCXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(P
 # Instruction for running the qt4 meta object compiler 
 #
 
-%.moc.cpp: %.h
+%.moc.cpp: %.cpp
 	$(MOC) -o $@ $<
 
 #
