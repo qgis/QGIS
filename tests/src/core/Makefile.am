@@ -8,7 +8,8 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-bin_PROGRAMS = testqgsapplication
+bin_PROGRAMS = testqgsapplication \
+               testqgssymbol
 
 #
 # Define some global variables that will be used for building each test
@@ -24,7 +25,8 @@ GLOBALCXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(P
 %.moc.cpp: %.cpp
 	$(MOC) -o $@ $<
 
-BUILT_SOURCES = $(testqgsapplication_MOC)
+BUILT_SOURCES = $(testqgsapplication_MOC) \
+                $(testqgssymbol_MOC)
 
 CLEANFILES = $(BUILT_SOURCES)
 
@@ -38,3 +40,7 @@ testqgsapplication_LDADD = $(GLOBALLDADD)
 testqgsapplication_CXXFLAGS =  $(GLOBALCXXFLAGS)
 
 
+testqgssymbol_MOC = testqgssymbol.moc.cpp
+testqgssymbol_SOURCES = testqgssymbol.cpp 
+testqgssymbol_LDADD = $(GLOBALLDADD)
+testqgssymbol_CXXFLAGS =  $(GLOBALCXXFLAGS)

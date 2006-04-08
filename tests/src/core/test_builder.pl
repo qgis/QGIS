@@ -39,7 +39,7 @@ if(($createIt eq 'y') || ($createIt eq 'Y'))
   # its a go -- create the unit test and modify the build files
   #
   system("cp test_template.cpp test$testClassLowerCaseName.cpp");
-  
+
   # Substitute the class name in the file
   system("perl -pi -e 's/\\\[testClassLowerCaseName\\\]/$testClassLowerCaseName/g' test$testClassLowerCaseName.cpp");
   system("perl -pi -e 's/\\\[testClassCamelCaseName\\\]/$testClass/g' test$testClassLowerCaseName.cpp");
@@ -76,15 +76,15 @@ if(($createIt eq 'y') || ($createIt eq 'Y'))
     }
   }
   #before closing the file add the lines for our new test class
-  print MAKEFILEMOD "test${testClassLowerCaseName}_MOC = test${testClassLowerCaseName}.moc.cpp"
-  print MAKEFILEMOD "test${testClassLowerCaseName}_SOURCES = ${testClassLowerCaseName}.cpp"
-  print MAKEFILEMOD "test${testClassLowerCaseName}_LDADD = $(GLOBALLDADD)"
-  print MAKEFILEMOD "test${testClassLowerCaseName}_CXXFLAGS =  $(GLOBALCXXFLAGS)"
-  
+  print MAKEFILEMOD "test${testClassLowerCaseName}_MOC = test${testClassLowerCaseName}.moc.cpp";
+  print MAKEFILEMOD "test${testClassLowerCaseName}_SOURCES = ${testClassLowerCaseName}.cpp";
+  print MAKEFILEMOD "test${testClassLowerCaseName}_LDADD = $(GLOBALLDADD)";
+  print MAKEFILEMOD "test${testClassLowerCaseName}_CXXFLAGS =  $(GLOBALCXXFLAGS)";
+
   # close the Makefile file handles
   close MAKEFILEMOD;
   close MAKEFILE;
-  
+
   # save Makefile.am in case we die before done moving things around
   system("mv Makefile.am Makefile.am.save");
   # move the new Makefile.am to where it belongs
@@ -92,15 +92,16 @@ if(($createIt eq 'y') || ($createIt eq 'Y'))
   # delete the original Makefile.am
   unlink("Makefile.am.save");
 
-  }
-  
-print << "EOP";
 
-Your test unit has been created now as testClassLowerCaseName.cpp.
+  print << "EOP";
+
+Your test unit has been created now as ${testClassLowerCaseName}.cpp.
 
 EOP
 
-}else{
+}
+else
+{
   # user cancelled
   print "Test unit not created\n";
 }
