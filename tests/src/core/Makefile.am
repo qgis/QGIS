@@ -24,6 +24,10 @@ GLOBALCXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(P
 %.moc.cpp: %.cpp
 	$(MOC) -o $@ $<
 
+BUILT_SOURCES = $(testqgsapplication_MOC)
+
+CLEANFILES = $(BUILT_SOURCES)
+
 #
 # Specify the compilation files for each unit test now
 #
@@ -33,6 +37,4 @@ testqgsapplication_SOURCES = testqgsapplication.cpp
 testqgsapplication_LDADD = $(GLOBALLDADD)
 testqgsapplication_CXXFLAGS =  $(GLOBALCXXFLAGS)
 
-BUILT_SOURCES = $(testqgsapplication_MOC)
 
-CLEANFILES = $(BUILT_SOURCES)
