@@ -506,7 +506,7 @@ void QgsAttributeTable::putFeatureInTable(int row, QgsFeature* fet)
   int id = fet->featureId();
   setText(row, 0, QString::number(id));
   insertFeatureId(id, row);  //insert the id into the search tree of qgsattributetable
-  std::vector < QgsFeatureAttribute > attr = fet->attributeMap();
+  const std::vector < QgsFeatureAttribute >& attr = fet->attributeMap();
   for (int i = 0; i < attr.size(); i++)
   {
     // get the field values
