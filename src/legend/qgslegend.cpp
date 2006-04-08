@@ -482,7 +482,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
     
     setExpanded(indexFromItem(llayer), true);
     setExpanded(indexFromItem(llfgroup), false);
-    //todo: only if qsetting for 'legend layer file visible' is not set
+    //only if qsetting for 'legend layer file visible' is not set
     if(!mShowLegendLayerFiles)
       {
 	setItemHidden(llfgroup, true);

@@ -138,6 +138,11 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
   // have no effect on existing layers
   QSettings settings;
   updateThreshold = settings.readNumEntry("Map/updateThreshold", 1000);
+  //editing is now enabled by default
+  if(dataProvider->capabilities()&QgsVectorDataProvider::AddFeatures)
+    {
+      startEditing();
+    }
 } // QgsVectorLayer ctor
 
 
@@ -1265,6 +1270,16 @@ void QgsVectorLayer::initContextMenu_(QgisApp * app)
   {
     mToggleEditingAction = popMenu->addAction(tr("Allow Editing"),this,SLOT(toggleEditing()));
     mToggleEditingAction->setCheckable(true);
+    mToggleEditingAction->blockSignals(true);
+    if(mEditable)
+      {
+	mToggleEditingAction->setChecked(true);
+      }
+    else
+      {
+	mToggleEditingAction->setChecked(false);
+      }
+    mToggleEditingAction->blockSignals(false);
   }
 
   if(cap&QgsVectorDataProvider::SaveAsShapefile)
