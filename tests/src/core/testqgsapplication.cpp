@@ -7,18 +7,14 @@
 
 class TestQgsApplication: public QObject
 {
-    Q_OBJECT;
-      public:
-      private slots:
-            void authorsFilePath();
+  Q_OBJECT;
+  private slots:
+    void authorsFilePath()
+    {
+      QString myPath = QgsApplication::authorsFilePath();
+      QVERIFY(!myPath.isNull());
+    }
 };
-
-
-void TestQgsApplication::authorsFilePath()
-{
-  QString myPath = QgsApplication::authorsFilePath();
-  QVERIFY(!myPath.isNull());
-}
 
 QTEST_MAIN(TestQgsApplication)
 #include "testqgsapplication.moc.cpp"
