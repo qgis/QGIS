@@ -57,18 +57,14 @@ if(($createIt eq 'y') || ($createIt eq 'Y'))
     if(/^\s*bin_PROGRAMS =*/)
     {
       # add our application binary name to the next line
-      print MAKEFILEMOD "\\"; 
-      print MAKEFILEMOD "\t\t$testClassLowerCaseName \n";
-    }
-    else
-    {
       print MAKEFILEMOD;
+      print MAKEFILEMOD "\t\ttest$testClassLowerCaseName \\\n";
     }
-    if(/^\s*BUILT_SOURCES =*/)
+    elsif(/^\s*BUILT_SOURCES =*/)
     {
       # add our application binary name to the next line
-      print MAKEFILEMOD "\\"; 
-      print MAKEFILEMOD "\t\t${testClassLowerCaseName}_MOC \n";
+      print MAKEFILEMOD;
+      print MAKEFILEMOD "\t\t\$(test${testClassLowerCaseName}_MOC) \\\n";
     }
     else
     {
@@ -76,10 +72,11 @@ if(($createIt eq 'y') || ($createIt eq 'Y'))
     }
   }
   #before closing the file add the lines for our new test class
-  print MAKEFILEMOD "test${testClassLowerCaseName}_MOC = test${testClassLowerCaseName}.moc.cpp";
-  print MAKEFILEMOD "test${testClassLowerCaseName}_SOURCES = ${testClassLowerCaseName}.cpp";
-  print MAKEFILEMOD "test${testClassLowerCaseName}_LDADD = $(GLOBALLDADD)";
-  print MAKEFILEMOD "test${testClassLowerCaseName}_CXXFLAGS =  $(GLOBALCXXFLAGS)";
+  print MAKEFILEMOD "\n";
+  print MAKEFILEMOD "test${testClassLowerCaseName}_MOC = test${testClassLowerCaseName}.moc.cpp\n";
+  print MAKEFILEMOD "test${testClassLowerCaseName}_SOURCES = test${testClassLowerCaseName}.cpp\n";
+  print MAKEFILEMOD "test${testClassLowerCaseName}_LDADD = \$(GLOBALLDADD)\n";
+  print MAKEFILEMOD "test${testClassLowerCaseName}_CXXFLAGS =  \$(GLOBALCXXFLAGS)\n";
 
   # close the Makefile file handles
   close MAKEFILEMOD;
