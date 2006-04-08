@@ -477,7 +477,7 @@ void QgsMapCanvas::zoomToSelected()
 #ifdef QGISDEBUG 
           std::cout << "Throwing exception "<< __FILE__ << __LINE__ << std::endl; 
 #endif
-          throw QgsCsException( string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
+          throw QgsCsException( std::string("NO COORDINATE TRANSFORM FOUND FOR LAYER") );
         }
 
         rect = lyr->coordinateTransform()->transformBoundingBox(lyr->bBoxOfSelected());
