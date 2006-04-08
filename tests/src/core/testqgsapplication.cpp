@@ -5,18 +5,6 @@
 #include <QString>
 
 
-TestQgsApplication::TestQgsApplication() : QObject()
-{
-
-}
-
-
-TestQgsApplication::~TestQgsApplication()
-{
-
-}
-
-
 void TestQgsApplication::authorsFilePath()
 {
   QString myPath = QgsApplication::authorsFilePath();
