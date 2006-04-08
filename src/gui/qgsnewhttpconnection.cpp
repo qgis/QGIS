@@ -67,9 +67,9 @@ void QgsNewHttpConnection::saveConnection()
   QString baseKey = "/Qgis/connections-wms/";
   
   baseKey += txtName->text();
-  settings.writeEntry(baseKey + "/url", txtUrl->text());
-  settings.writeEntry(baseKey + "/proxyhost", txtProxyHost->text());
-  settings.writeEntry(baseKey + "/proxyport", txtProxyPort->text());
+  settings.writeEntry(baseKey + "/url", txtUrl->text().trimmed());
+  settings.writeEntry(baseKey + "/proxyhost", txtProxyHost->text().trimmed());
+  settings.writeEntry(baseKey + "/proxyport", txtProxyPort->text().trimmed());
   
   accept();
 }
