@@ -10,15 +10,28 @@
 
 bin_PROGRAMS = testqgsapplication
 
+#
+# Define some global variables that will be used for building each test
+#
+
+GLOBALLDADD = $(QT_LDADD) $(PG_LIB) $(GDAL_LDADD) -lproj ../../../src/core/libqgis_core.la ../../../src/gui/libqgis_gui.la  
+GLOBALCXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PG_INC)  -I../../../src/core
+
+#
+# Instruction for running the qt4 meta object compiler 
+#
 
 %.moc.cpp: %.h
 	$(MOC) -o $@ $<
 
+#
+# Specify the compilation files for each unit test now
+#
+
 testqgsapplication_MOC = testqgsapplication.moc.cpp
 testqgsapplication_SOURCES = testqgsapplication.cpp 
-
-testqgsapplication_LDADD = $(QT_LDADD) $(PG_LIB) $(GDAL_LDADD) -lproj ../../../src/core/libqgis_core.la ../../../src/gui/libqgis_gui.la  
-testqgsapplication_CXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(PG_INC)  -I../../../src/core
+testqgsapplication_LDADD = $(GLOBALLDADD)
+testqgsapplication_CXXFLAGS =  $(GLOBALCXXFLAGS)
 
 BUILT_SOURCES = $(testqgsapplication_MOC)
 
