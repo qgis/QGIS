@@ -377,7 +377,8 @@ QString const & QgsFeature::wellKnownText() const
   }
   else
   {
-    return QString::null;   // TODO: Test for mGeometry in all functions of this class
+    static QString emptyString("");
+    return emptyString;   // TODO: Test for mGeometry in all functions of this class
   }  
 /*  
     if(mWKT.isNull())
