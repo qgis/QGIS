@@ -698,6 +698,8 @@ bool QgsWmsProvider::retrieveServerCapabilities(bool forceRefresh)
   std::cout << "QgsWmsProvider::getServerCapabilities: exiting." << std::endl;
 #endif
 
+  return TRUE;
+
 }
 
 
