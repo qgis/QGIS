@@ -191,8 +191,8 @@ case "${QT_VER}" in
       QT4_SQLINC=$QTDIR/lib/QtSql.framework/Headers
       QT4_XMLINC=$QTDIR/lib/QtXml.framework/Headers
       QT4_SVGINC=$QTDIR/lib/QtSvg.framework/Headers
-      QT4_TESINC=$QTDIR/lib/QtTest.framework/Headers
-      QT4_DESIGNERINC=$QTDIR/lib/QtDesigner.framework/Headers
+      QT4_TESTINC=$QTDIR/include/QtTest
+      QT4_DESIGNERINC=$QTDIR/include/QtDesigner
 	  ;;
     *)
       QT4_3SUPPORTINC=$QTINC/Qt3Support
@@ -207,7 +207,6 @@ case "${QT_VER}" in
       QT4_DESIGNERINC=$QTINC/QtDesigner
       ;;
     esac
-    QT4_DESIGNERINC=$QTINC/QtDesigner
     QT4_DEFAULTINC=$QTDIR/mkspecs/default
     ;;
   *)
@@ -336,8 +335,8 @@ case "${host}" in
       QT_IS_MT="yes"
       QT_IS_EMBEDDED="yes"
     elif test "x`ls $QTDIR/lib/QtCore.framework/QtCore 2> /dev/null`" != x ; then
-      QT_LIB="-Xlinker -F$QTDIR/lib -framework QtCore -framework Qt3Support -framework QtGui -framework QtNetwork -framework QtXml -framework QtSvg"
-      QT_CXXFLAGS="-DQT3_SUPPORT -F$QTDIR/lib -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QT4_SVGINC -I$QT4_TESTINC -I$QT4_DESIGNERINC"
+      QT_LIB="-Xlinker -F$QTDIR/lib -framework Qt3Support -framework QtCore -framework QtGui -framework QtNetwork -framework QtXml -framework QtSvg -L$QTDIR/lib -lQtDesigner -lQtTest"
+      QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_SVGINC -I$QT4_XMLINC -I$QT4_DESIGNERINC -I$QT4_TESTINC -I$QTDIR/include"
       QT_IS_MT="yes"
     fi
     ;;
