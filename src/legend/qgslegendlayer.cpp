@@ -88,9 +88,6 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(LEGEND_ITEM_TYPE type)
 
 QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(const QgsLegendItem* li) const
 {
-#ifdef QGISDEBUG
-  qWarning("in QgsLegendLayer::accept");
-#endif
   if(li && li != this)
     {
       LEGEND_ITEM_TYPE type = li->type();
@@ -103,7 +100,11 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayer::accept(const QgsLegendItem* li) const
 	}
       else if(type == LEGEND_GROUP)
 	{
-	  return REORDER;
+	  //only parent legend layers can change positions with groups
+	  if(parent() == 0)
+	    {
+	      return REORDER;
+	    }
 	}
     }
   return NO_ACTION;

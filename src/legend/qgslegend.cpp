@@ -450,23 +450,26 @@ int QgsLegend::getItemPos(QTreeWidgetItem* item)
 
 void QgsLegend::addLayer( QgsMapLayer * layer )
 {
-  QgsLegendLayer * llayer = new QgsLegendLayer(layer->name());
-    mStateOfCheckBoxes.insert(std::make_pair(llayer, Qt::Checked)); //insert the check state into the map to query for changes later
+  QgsLegendLayer * llayer = new QgsLegendLayer(layer->name());//generate entry for mStateOfCheckBoxes below
     QgsLegendLayerFileGroup * llfgroup = new QgsLegendLayerFileGroup(llayer,QString("Files"));
     QgsLegendLayerFile * llfile = new QgsLegendLayerFile(llfgroup, QgsLegendLayerFile::nameFromLayer(layer), layer);
     llayer->setLayerTypeIcon();
     
-    //set the correct check state
+    //set the correct check states
     blockSignals(true);
     if(layer->visible())
       {
 	llfile->setCheckState(0, Qt::Checked);
+	llayer->setCheckState(0, Qt::Checked);
 	mStateOfCheckBoxes.insert(std::make_pair(llfile, Qt::Checked)); //insert the check state into the map to query for changes later
+	mStateOfCheckBoxes.insert(std::make_pair(llayer, Qt::Checked));
       }
     else
       {
 	llfile->setCheckState(0, Qt::Unchecked);
+	llayer->setCheckState(0, Qt::Unchecked);
 	mStateOfCheckBoxes.insert(std::make_pair(llfile, Qt::Unchecked)); //insert the check state into the map to query for changes later
+	mStateOfCheckBoxes.insert(std::make_pair(llayer, Qt::Unchecked));
       }
     blockSignals(false);
    
