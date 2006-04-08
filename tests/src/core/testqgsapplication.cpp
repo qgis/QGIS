@@ -1,8 +1,17 @@
 #include <QtTest>
-#include <qgsapplication.h>
-#include "testqgsapplication.h"
 #include <QObject>
 #include <QString>
+#include <QObject>
+//header for class being tested
+#include <qgsapplication.h>
+
+class TestQgsApplication: public QObject
+{
+    Q_OBJECT;
+      public:
+      private slots:
+            void authorsFilePath();
+};
 
 
 void TestQgsApplication::authorsFilePath()
