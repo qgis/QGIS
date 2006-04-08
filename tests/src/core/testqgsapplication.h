@@ -7,8 +7,6 @@ class TestQgsApplication: public QObject
 {
   Q_OBJECT;
   public:
-    TestQgsApplication();
-    ~TestQgsApplication();
   private slots:
     void authorsFilePath();
 };
