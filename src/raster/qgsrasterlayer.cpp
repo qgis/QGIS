@@ -2466,12 +2466,13 @@ void QgsRasterLayer::drawMultiBandColor(QPainter * theQPainter, QgsRasterViewPor
   
 #ifdef QGISDEBUG
     QPixmap* pm = dynamic_cast<QPixmap*>(theQPainter->device());
-    QgsDebugMsg("QgsRasterLayer::drawMultiBandColor: theQPainter stats: ");
-    QgsDebugMsg("width = " + QString::number(pm->width()));
-    QgsDebugMsg("height = " + QString::number(pm->height()));
-
-    pm->save("/tmp/qgis-rasterlayer-drawmultibandcolor-test-a.png", "PNG");
-
+    if(pm)
+      {
+	QgsDebugMsg("QgsRasterLayer::drawMultiBandColor: theQPainter stats: ");
+	QgsDebugMsg("width = " + QString::number(pm->width()));
+	QgsDebugMsg("height = " + QString::number(pm->height()));
+	pm->save("/tmp/qgis-rasterlayer-drawmultibandcolor-test-a.png", "PNG");
+      }
 #endif
   
   // \/\/\/ - added to handle zoomed-in rasters
@@ -2514,8 +2515,10 @@ QgsDebugMsg("QgsRasterLayer::drawSingleBandGray: painting image to canvas from s
 
 #ifdef QGISDEBUG
     QgsDebugMsg("QgsRasterLayer::drawMultiBandColor: theQPainter->drawImage.");
-    pm->save("/tmp/qgis-rasterlayer-drawmultibandcolor-test-b.png", "PNG");
-
+    if(pm)
+      {
+	pm->save("/tmp/qgis-rasterlayer-drawmultibandcolor-test-b.png", "PNG");
+      }
 #endif
                          
   //free the scanline memory
