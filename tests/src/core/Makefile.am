@@ -9,6 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 bin_PROGRAMS = testqgsapplication \
+		testqgsgeometry \
 		testqgsfeature \
 		testqgsfield \
                testqgssymbol
@@ -28,6 +29,7 @@ GLOBALCXXFLAGS = $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(GDAL_CFLAGS) $(QT_CXXFLAGS) $(P
 	$(MOC) -o $@ $<
 
 BUILT_SOURCES = $(testqgsapplication_MOC) \
+		$(testqgsgeometry_MOC) \
 		$(testqgsfeature_MOC) \
 		$(testqgsfield_MOC) \
                 $(testqgssymbol_MOC)
@@ -58,3 +60,8 @@ testqgsfeature_MOC = testqgsfeature.moc.cpp
 testqgsfeature_SOURCES = testqgsfeature.cpp
 testqgsfeature_LDADD = $(GLOBALLDADD)
 testqgsfeature_CXXFLAGS =  $(GLOBALCXXFLAGS)
+
+testqgsgeometry_MOC = testqgsgeometry.moc.cpp
+testqgsgeometry_SOURCES = testqgsgeometry.cpp
+testqgsgeometry_LDADD = $(GLOBALLDADD)
+testqgsgeometry_CXXFLAGS =  $(GLOBALCXXFLAGS)

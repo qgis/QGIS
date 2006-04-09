@@ -10,6 +10,7 @@ use Cwd;
 
 #make sure we are in a the tests/src/core dir 
 $myDir = fastgetcwd;
+$sourceDir = "../../../src/core";
 print "\n\nChecking that we are in the <qgis dir>/test/src/core/ directory....";
 if ($myDir =~ m/tests\/src\/core$/) 
 {
@@ -23,14 +24,47 @@ else
   exit;
 }
 # get the needed information from the user
-print "\n\nEnter the name of the class for which the test will be created.\n";
-print "Used mixed case notation.\n";
-print "e.g. QgsSymbol\n";
-$testClass =<STDIN>;
-chop $testClass;
+$testClass="";
+$argCount = $#ARGV+1;
+if ($argCount > 0)
+{
+  $testClass=@ARGV[ 0 ];
+}
+else
+{
+  print "\n\nEnter the name of the class for which the test will be created.\n";
+  print "Used mixed case notation.\n";
+  print "e.g. QgsSymbol\n";
+  $testClass =<STDIN>;
+  chop $testClass;
+}
+
 $testClassLowerCaseName = lc($testClass); #todo convert to lower case 
+
+#
+# Check source file is ok
+#
+
+if ($testClass eq "") 
+{
+  print "ClassName not supplied ...exiting...";
+  exit;
+}
+print "Checking if source class exists in filesystem ...";
+if (-e "${sourceDir}/${testClassLowerCaseName}.cpp" ) 
+{
+  print "yes\n";
+}
+else
+{
+  print "no, exiting\n";
+  print "${sourceDir}/${testClassLowerCaseName}.cpp does not exist!\n";
+  exit;
+}
+
+
 print "Stubs will be created for the following methods:\n";
-open CPPFILE, "<../../../src/core/$testClassLowerCaseName.cpp"|| die 'Unable to open header file $testClassLowerCaseName.cpp';
+open CPPFILE, "<$sourceDir/$testClassLowerCaseName.cpp"|| die 'Unable to open header file $testClassLowerCaseName.cpp';
 $stubString="";
 $lastLine="";
 while(<CPPFILE>)
@@ -58,10 +92,18 @@ while(<CPPFILE>)
     $lastLine=$line;
   }
 }
-print "-----------------------------\n";  
-print "Create the unit test? [y/n]: ";
-$createIt = <STDIN>;
-chop $createIt;
+$createIt="n";
+if ($argCount eq 0)
+{
+  print "-----------------------------\n";  
+  print "Create the unit test? [y/n]: ";
+  $createIt = <STDIN>;
+  chop $createIt;
+}
+else
+{
+  $createIt="y";
+}
 
 if(($createIt eq 'y') || ($createIt eq 'Y'))
 {
