@@ -732,7 +732,7 @@ QByteArray QgsWmsProvider::retrieveUrl(QString url)
 
     mError += "\n" + tr("Tried URL: ") + url;
 
-    return 0;
+    return QByteArray("");
   }
 
   if (http.responseContentType() == "application/vnd.ogc.se_xml")
@@ -756,7 +756,7 @@ QByteArray QgsWmsProvider::retrieveUrl(QString url)
             << mError.toLocal8Bit().data() << "'." << std::endl;
 #endif
 
-    return 0;
+    return QByteArray("");
   }
 
   return httpResponse;
