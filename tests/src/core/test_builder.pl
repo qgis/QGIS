@@ -32,6 +32,7 @@ $testClassLowerCaseName = lc($testClass); #todo convert to lower case
 print "Stubs will be created for the following methods:\n";
 open CPPFILE, "<../../../src/core/$testClassLowerCaseName.cpp"|| die 'Unable to open header file $testClassLowerCaseName.cpp';
 $stubString="";
+$lastLine="";
 while(<CPPFILE>)
 {
   if(m/${testClass}::[A-Za-z0-9]*\(/)
@@ -42,11 +43,19 @@ while(<CPPFILE>)
     $line =~ s/:://g;
     #strip off the (
     $line =~ s/\(//g;
-    #add it to our stub code
-    $stubString = $stubString . "    void $line()\n\(\n\n\)\n";
-    #show the user the list
-    print $line;
-    print "\n";
+    if ($lastLine eq $line)
+    {
+      #duplicate entry
+    }
+    else
+    {
+      #add it to our stub code
+      $stubString = $stubString . "    void $line()\n\{\n\n\};\n";
+      #show the user the list
+      print $line;
+      print "\n";
+    }
+    $lastLine=$line;
   }
 }
 print "-----------------------------\n";  
