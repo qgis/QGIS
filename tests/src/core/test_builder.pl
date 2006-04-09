@@ -29,6 +29,27 @@ print "e.g. QgsSymbol\n";
 $testClass =<STDIN>;
 chop $testClass;
 $testClassLowerCaseName = lc($testClass); #todo convert to lower case 
+print "Stubs will be created for the following methods:\n";
+open CPPFILE, "<../../../src/core/$testClassLowerCaseName.cpp"|| die 'Unable to open header file $testClassLowerCaseName.cpp';
+$stubString="";
+while(<CPPFILE>)
+{
+  if(m/${testClass}::[A-Za-z0-9]*\(/)
+  {
+    #get the matched part of the line
+    $line = $&;
+    #strip off the ::
+    $line =~ s/:://g;
+    #strip off the (
+    $line =~ s/\(//g;
+    #add it to our stub code
+    $stubString = $stubString . "    void $line()\n\(\n\n\)\n";
+    #show the user the list
+    print $line;
+  }
+}
+print $stubString;
+print "-----------------------------\n";  
 print "Create the unit test? [y/n]: ";
 $createIt = <STDIN>;
 chop $createIt;
@@ -43,11 +64,7 @@ if(($createIt eq 'y') || ($createIt eq 'Y'))
   # Substitute the class name in the file
   system("perl -pi -e 's/\\\[testClassLowerCaseName\\\]/$testClassLowerCaseName/g' test$testClassLowerCaseName.cpp");
   system("perl -pi -e 's/\\\[testClassCamelCaseName\\\]/$testClass/g' test$testClassLowerCaseName.cpp");
-  #
-  # TODO: write a parser to pull out method signatures from class bing tested and create a stub
-  # for each method in the generated test class to replace teh [TestMethods] placeholder
-  #
-
+  system("perl -pi -e 's/\\\[TestMethods\\\]/$stubString/g' test$testClassLowerCaseName.cpp");
   # Add an entry to Makefile.am
   open MAKEFILE, "<./Makefile.am" || die 'Unable to open Makefile.am';
   open MAKEFILEMOD, ">./Makefile.am.mod" || die 'Unable to create Makefile.am.mod';
