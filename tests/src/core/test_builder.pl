@@ -46,9 +46,9 @@ while(<CPPFILE>)
     $stubString = $stubString . "    void $line()\n\(\n\n\)\n";
     #show the user the list
     print $line;
+    print "\n";
   }
 }
-print $stubString;
 print "-----------------------------\n";  
 print "Create the unit test? [y/n]: ";
 $createIt = <STDIN>;
