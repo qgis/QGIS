@@ -3,5 +3,5 @@ LIST=`ls -lah |grep rwxr-xr-x |grep -v ^d |grep -v pl$ |grep -v ~$ |grep -v .sh$
 for FILE in $LIST; 
 do 
   echo "Running $FILE"
-  `./${FILE}`
+  ./${FILE} | tail -2 |head -1
 done
