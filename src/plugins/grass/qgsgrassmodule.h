@@ -102,6 +102,11 @@ public:
     // ! Check if file is in mExecPath
     static bool inExecPath ( QString file );
 
+    // ! Get executable + arguments. Executable is returned as first string.
+    // On Window if the module is script the executable will be path to shell
+    // Returns empty list if not found.
+    static QStringList execArguments ( QString module );
+
 public slots:
     //! Run the module with current options
     void on_mRunButton_clicked() { run(); }
