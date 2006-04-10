@@ -14,6 +14,7 @@ endif
 
 
 SUBDIRS = $(GEOPROCESSING) \
+		qgis_community \
 		$(SPIT) \
 		$(GRASS) \
 		$(COMMUNITY) \
