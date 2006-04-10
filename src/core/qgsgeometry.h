@@ -243,18 +243,6 @@ class QgsGeometry {
                             const geos::CoordinateSequence*  old_sequence,
                                   geos::CoordinateSequence** new_sequence);
 
-    /** Moves the vertex at the given vertex index (first number is index 0)
-     *  in the given GEOS Coordinate Sequence.
-     *  @param old_sequence   The sequence to update (The caller remains the owner).
-     *  @param new_sequence   The updated sequence (The caller becomes the owner if the function returns TRUE).
-     *  Returns FALSE if atVertex does not correspond to a valid vertex number
-     *  on the Coordinate Sequence.
-     */
-    bool moveVertexAt(double x, double y,
-                      int atVertex,
-                      const geos::CoordinateSequence*  old_sequence,
-                            geos::CoordinateSequence** new_sequence);
-
     /** Removes the vertex at the given vertex index (first number is index 0)
      *  in the given GEOS Coordinate Sequence.
      *  @param old_sequence   The sequence to update (The caller remains the owner).
@@ -270,6 +258,18 @@ class QgsGeometry {
                         const geos::CoordinateSequence*  old_sequence,
                               geos::CoordinateSequence** new_sequence);
 
+    /**Moves a vertex of mGeos to a new position. Internally, a new polygon is created instead of mGeos.
+     Returns true in case of success*/
+    bool moveVertexFromPolygon(int atVertex, double x, double y);
+
+    bool deleteVertexFromPolygon(int atVertex);
+
+    bool insertVertexToPolygon(int beforeVertex, double x, double y);
+
+    /**Creates a new polygon from a coordinate sequence
+     @param coords The coordinate array for the new polygon (the new polygon does not take ownership of the sequence
+    @param pointsInRings A vector containing the number of points going into each ring*/
+    geos::Polygon* createPolygonFromCoordSequence(const geos::CoordinateSequence* coords, const std::vector<int>& pointsInRings) const;
 
 }; // class QgsGeometry
 
