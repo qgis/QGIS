@@ -152,6 +152,39 @@ bool QgsGrassModule::inExecPath ( QString file )
     return true;
 }
 
+QStringList QgsGrassModule::execArguments ( QString module )
+{
+    QString exe;
+    QStringList arguments;
+  
+    exe = QgsGrassModule::findExec ( module );
+    if ( exe.isNull() )
+    {
+        return arguments;
+    }
+
+#if defined(WIN32)
+    QFileInfo fi ( exe );
+    if ( fi.isExecutable() )
+    {
+        arguments.append(exe);
+    }
+    else // script
+    {
+	QString cmd = QgsApplication::applicationDirPath() + "/msys/bin/sh";
+	arguments.append ( cmd );
+
+	// Important! Otherwise it does not find DLL even if it is in PATH
+	arguments.append ( "--login" ); 
+	arguments.append ( exe );
+    }
+#else
+    arguments.append(exe);
+#endif
+
+    return arguments;
+}
+
 QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QgisApp *qgisApp, QgisIface *iface, 
 	                     QString path, QWidget * parent, const char * name, Qt::WFlags f )
              :QgsGrassModuleBase ( ), mSuccess(false)
@@ -324,40 +357,17 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
     mXName = xname;
     mParent = parent;
     
-    QString exe;
+    QStringList arguments = QgsGrassModule::execArguments(mXName);
 
-#if defined(WIN32)
-    exe = QgsGrassModule::findExec ( xname );
-    if ( exe.isNull() )
+    if ( arguments.size() == 0 ) 
     {
 	QMessageBox::warning( 0, "Warning", "Cannot find module " 
-                                  + xname );
+                                  + mXName );
         return;
     }
-#else
-    exe = mXName;
-#endif
 
-    QString cmd;
-    QStringList arguments;
+    QString cmd = arguments.takeFirst();
 
-#if defined(WIN32)
-    QFileInfo fi ( exe );
-    if ( fi.isExecutable() )
-    {
-        cmd = exe;
-    }
-    else // script
-    {
-	cmd = QgsApplication::applicationDirPath() + "/msys/bin/sh";
-
-	// Important! Otherwise it does not find DLL even if it is in PATH
-	arguments.append ( "--login" ); 
-	arguments.append ( exe );
-    }
-#else
-    cmd = exe;
-#endif
     arguments.append ( "--interface-description" );
 
     QProcess process( this );
@@ -1098,21 +1108,36 @@ void QgsGrassModule::run()
         //          -> necessary to pass region as enviroment variable
         //             but the feature is available in GRASS 6.1 only since 23.3.2006
 
-        QStringList env;
-
         if ( resetRegion )
         {
+            QStringList env;
             env = QProcess::systemEnvironment();
             QString reg = QgsGrass::regionString( &tempWindow );
 	    std::cerr << "reg: " << reg.ascii() << std::endl;
             env.append ( "GRASS_REGION=" + reg );
+            mProcess.setEnvironment ( env );
         }
-        mProcess.setEnvironment ( env );
 
-	mProcess.start( mXName, arguments );
+	QStringList execArguments = QgsGrassModule::execArguments(mXName);
 
-        if ( resetRegion )
+	if ( execArguments.size() == 0 ) 
+	{
+	    QMessageBox::warning( 0, "Warning", "Cannot find module " 
+				      + mXName );
+	    return;
+	}
+
+	QString cmd = execArguments.takeFirst();
+        execArguments += arguments;
+
+	mProcess.start( cmd, execArguments );
+
+        mProcess.waitForStarted();
+        if ( mProcess.state() != QProcess::Running )
         {
+            QMessageBox::warning( 0, "Warning", "Cannot start module: " 
+                                  + mProcess.errorString() );
+	    return;
         }
 
 	mTabWidget->setCurrentPage(1);
