@@ -507,188 +507,43 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
 
 }
 
-
-bool QgsGeometry::moveVertexAt(double x, double y,
-                               int atVertex,
-                               const geos::CoordinateSequence*  old_sequence,
-                                     geos::CoordinateSequence** new_sequence)
-{
-  int numPoints = old_sequence->getSize();
-
-  // Bounds checking
-  if (
-      (atVertex <  0)         ||
-      (atVertex >= numPoints)
-     )
-  {
-    (*new_sequence) = 0;
-    return FALSE;
-  }
-
-  // Copy to the new sequence, including the moved vertex
-  (*new_sequence) = new geos::DefaultCoordinateSequence();
-
-  for (int i = 0; i < numPoints; i++)
-  {
-    // Do we move the vertex here?
-    if (atVertex == i)
-    {
-      (*new_sequence)->add( geos::Coordinate(x, y) );
-    }
-    else
-    {
-      (*new_sequence)->add( old_sequence->getAt(i) );
-    }
-  }
-// TODO: Check that the sequence is still simple, e.g. with geos::Geometry->isSimple()
-  return true;
-}
-
-
 bool QgsGeometry::moveVertexAt(double x, double y, 
                                QgsGeometryVertexIndex atVertex)
 {
-
-#ifdef QGISDEBUG
-      std::cout << "QgsGeometry::moveVertexAt: Entered with "
-         << "x " << x << ", y " << y 
-//         << "beforeVertex " << beforeVertex << ", atRing " << atRing << ", atItem"
-//         << " " << atItem            
-                << "." << std::endl;
-#endif
-
   exportWkbToGeos();
-
   if (mGeos)
   {
-    geos::CoordinateSequence* old_sequence = mGeos->getCoordinates();
-    geos::CoordinateSequence* new_sequence;
-    if(moveVertexAt(x, y, atVertex.back(), old_sequence, &new_sequence))
-      {
-	switch (mGeos->getGeometryTypeId())
-	  {
-	  case geos::GEOS_POINT:
-	    {
-	      delete new_sequence;
-	      return false;
-	    }  
-	  case geos::GEOS_LINESTRING:
-	    {
-	      setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(new_sequence) ) );
-	      break;
-	    } 
-	  case geos::GEOS_POLYGON:
-	    {
-	      //make sure the ring is closed if the first/last point is moved
-	      if(atVertex.back() == 0)
-		{
-		  new_sequence->setAt(geos::Coordinate(x, y), new_sequence->getSize()-1);
-		}
-	      else if(atVertex.back() == new_sequence->getSize()-1)
-		{
-		  new_sequence->setAt(geos::Coordinate(x, y), 0);
-		}
-#ifdef QGISDEBUG
-	      for(int i = 0; i < new_sequence->getSize(); ++i)
-		{
-		  qWarning(QString::number(new_sequence->getAt(i).x)+"//"+QString::number(new_sequence->getAt(i).y));
-		}
-#endif
-		geos::LinearRing* theRing;	
-		try
-		  {
-		    theRing = geosGeometryFactory->createLinearRing(new_sequence);
-		  }
-		catch(geos::IllegalArgumentException* e)
-		  {
-		    return false;
-		  }
-	      std::vector<geos::Geometry*>* holes = new std::vector<geos::Geometry*>(); //no holes
-	      setGeos(static_cast<geos::Geometry*>(geosGeometryFactory->createPolygon(theRing, holes)));
-	      break;
-	    }
-	  }
-	delete old_sequence;
-	mDirtyWkb = true;
-	return true;
-      }
-    else
-      {
-	return false;
-      }
-#if 0
     switch (mGeos->getGeometryTypeId())
     {
-      case geos::GEOS_POINT:                 // a point
+    case geos::GEOS_POINT:
       {
-        // Cannot move an arbitrary vertex to a point!
-        return FALSE;
-
-      } // case geos::GEOS_POINT
-
-      case geos::GEOS_LINESTRING:            // a linestring
+	return false;
+      }  
+    case geos::GEOS_LINESTRING:
       {
-        // Get the embedded GEOS Coordinate Sequence
-        geos::LineString* geosls = static_cast<geos::LineString*>(mGeos);
-        const geos::CoordinateSequence* old_sequence = geosls->getCoordinatesRO();
-              geos::CoordinateSequence* new_sequence;
-
-        if ( moveVertexAt(x, y, atVertex.back(), old_sequence, (&new_sequence) ) )
-        {
-          // Put in the new GEOS geometry
-          setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(new_sequence) ) );
-	  mDirtyWkb = true;
-          return TRUE;
-        }
-        else
-        {
-          return FALSE;
-        }
-
-      } // case geos::GEOS_LINESTRING
-
-      case geos::GEOS_LINEARRING:            // a linear ring (linestring with 1st point == last point)
+	geos::CoordinateSequence* sequence = mGeos->getCoordinates();
+	sequence->setAt(geos::Coordinate(x, y), atVertex.back());
+	setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(sequence) ) );
+	break;
+      } 
+    case geos::GEOS_POLYGON:
       {
-        // TODO
-        break;
-      } // case geos::GEOS_LINEARRING
-  
-      case geos::GEOS_POLYGON:               // a polygon
-      {
-        // TODO
-        break;
-      } // case geos::GEOS_POLYGON
-  
-      case geos::GEOS_MULTIPOINT:            // a collection of points
-      {
-        // TODO
-        break;
-      } // case geos::GEOS_MULTIPOINT
-  
-      case geos::GEOS_MULTILINESTRING:       // a collection of linestrings
-      {
-        // TODO
-        break;
-      } // case geos::GEOS_MULTILINESTRING
-  
-      case geos::GEOS_MULTIPOLYGON:          // a collection of polygons
-      {
-        // TODO
-        break;
-      } // case geos::GEOS_MULTIPOLYGON
-  
-      case geos::GEOS_GEOMETRYCOLLECTION:    // a collection of heterogeneus geometries
-      {
-        // TODO
-        break;
-      } // case geos::GEOS_GEOMETRYCOLLECTION
-  
-    } // switch (mGeos->getGeometryTypeId())
-#endif //0
-  } // if (mGeos)
-
-  return FALSE;
-
+	if(moveVertexFromPolygon(atVertex.back(), x, y))
+	  {
+	    mDirtyWkb = true;
+	    return true;
+	  }
+	else
+	  {
+	    return false;
+	  }
+      }
+      mDirtyWkb = true;
+      return true;
+    }
+  }
+		    
+  return false;
 }
 
 
@@ -2225,4 +2080,140 @@ double QgsGeometry::distanceSquaredPointToSegment(QgsPoint& point,
 
 }
                    
+bool QgsGeometry::moveVertexFromPolygon(int atVertex, double x, double y)
+{
+  if(!mGeos)
+    {
+      return false;
+    }
 
+  geos::Polygon* originalpoly = dynamic_cast<geos::Polygon*>(mGeos);
+  if(!originalpoly)
+    {
+      return false;
+    }
+  
+  geos::CoordinateSequence* coordinates = originalpoly->getCoordinates();
+  std::vector<int> rings(originalpoly->getNumInteriorRing() + 1); //a vector storing the number of points in each ring
+  //todo: consider that the point to be moved could be the starting point/ end point of a ring
+  const geos::LineString* outerRing = originalpoly->getExteriorRing();
+  int pointcounter = 0;
+
+  if(atVertex == 0 || atVertex == outerRing->getNumPoints()-1)
+    {
+      coordinates->setAt(geos::Coordinate(x, y), 0);
+      coordinates->setAt(geos::Coordinate(x, y), outerRing->getNumPoints()-1);
+    }
+  else if(atVertex < outerRing->getNumPoints())
+    {
+      coordinates->setAt(geos::Coordinate(x, y), atVertex);
+    }
+  rings[0] = outerRing->getNumPoints();
+  pointcounter += outerRing->getNumPoints();
+
+  for(int i = 0; i < originalpoly->getNumInteriorRing(); ++i)
+    {
+      const geos::LineString* innerRing = originalpoly->getInteriorRingN(i);
+      if(atVertex == pointcounter || atVertex== pointcounter + innerRing->getNumPoints()-1)
+	{
+	  coordinates->setAt(geos::Coordinate(x, y), pointcounter);
+	  coordinates->setAt(geos::Coordinate(x, y), pointcounter + innerRing->getNumPoints()-1);
+	}
+      else if(atVertex > pointcounter && atVertex < pointcounter + innerRing->getNumPoints()-1)
+	{
+	  coordinates->setAt(geos::Coordinate(x, y), atVertex);
+	}
+      rings[i+1] = innerRing->getNumPoints();
+      pointcounter += innerRing->getNumPoints();
+    }
+  
+  geos::Polygon* newPolygon = createPolygonFromCoordSequence(coordinates, rings);
+  delete coordinates;
+  if(newPolygon)
+    {
+      delete mGeos;
+      mGeos = newPolygon;
+      return true;
+    }
+  else
+    {
+      return false;
+    }
+}
+
+bool QgsGeometry::deleteVertexFromPolygon(int atVertex)
+{
+  return false; //soon
+}
+
+bool QgsGeometry::insertVertexToPolygon(int beforeVertex, double x, double y)
+{
+  return false; //soon
+}
+
+geos::Polygon* QgsGeometry::createPolygonFromCoordSequence(const geos::CoordinateSequence* coords, const std::vector<int>& pointsInRings) const
+{
+  
+  geos::CoordinateSequence* outerRingSequence = new geos::DefaultCoordinateSequence();
+  int pointcounter = 0;
+  for(int i = 0; i < pointsInRings[0]; ++i)
+    {
+      outerRingSequence->add(geos::Coordinate(coords->getAt(pointcounter)));
+      ++pointcounter;
+    }
+  geos::LinearRing* newOuterRing = 0;
+  try
+    {
+      newOuterRing = geosGeometryFactory->createLinearRing(outerRingSequence);
+    }
+  catch(geos::IllegalArgumentException* e)
+    {
+      delete outerRingSequence;
+      return 0;
+    }
+
+  std::vector<geos::Geometry*>* newInnerRings = new std::vector<geos::Geometry*>(pointsInRings.size()-1);
+  
+  for(int i = 0; i < pointsInRings.size()-1; ++i)
+    {
+      geos::CoordinateSequence* innerRingSequence = new geos::DefaultCoordinateSequence();
+      for(int j = 0; j < pointsInRings[i+1]; ++j)
+	{
+	  innerRingSequence->add(geos::Coordinate(coords->getAt(pointcounter)));
+	  ++pointcounter;
+	}
+      geos::LinearRing* newInnerRing = 0;
+      try
+	{
+	  newInnerRing = geosGeometryFactory->createLinearRing(innerRingSequence);
+	}
+      catch(geos::IllegalArgumentException* e)
+	{
+	  delete outerRingSequence;
+	  //also delete the already created rings
+	  for(int j = 0; j < i; ++j)
+	    {
+	      delete (*newInnerRings)[i];
+	    }
+	  return 0;
+	}
+      (*newInnerRings)[i] = newInnerRing;
+    }
+  
+  geos::Polygon* newPolygon = 0;
+  try
+    {
+      newPolygon = geosGeometryFactory->createPolygon(newOuterRing, newInnerRings);
+    }
+  catch(geos::IllegalArgumentException* e)
+    {
+      delete newOuterRing;
+      for(int i = 0; i < newInnerRings->size(); ++i)
+	{
+	  delete (*newInnerRings)[i];
+	}
+      return 0;
+    }
+
+  return newPolygon;
+}
