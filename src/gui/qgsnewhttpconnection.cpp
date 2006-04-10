@@ -39,6 +39,8 @@ QgsNewHttpConnection::QgsNewHttpConnection(QWidget *parent, const QString& connN
       txtUrl->setText      (settings.readEntry(key + "/url"));
       txtProxyHost->setText(settings.readEntry(key + "/proxyhost"));
       txtProxyPort->setText(settings.readEntry(key + "/proxyport"));
+      txtProxyUser->setText(settings.readEntry(key + "/proxyuser"));
+      txtProxyPass->setText(settings.readEntry(key + "/proxypassword"));
     }
 
   QWidget::setTabOrder(txtName, txtUrl);
@@ -70,6 +72,9 @@ void QgsNewHttpConnection::saveConnection()
   settings.writeEntry(baseKey + "/url", txtUrl->text().trimmed());
   settings.writeEntry(baseKey + "/proxyhost", txtProxyHost->text().trimmed());
   settings.writeEntry(baseKey + "/proxyport", txtProxyPort->text().trimmed());
+  settings.writeEntry(baseKey + "/proxyuser", txtProxyUser->text().trimmed());
+  settings.writeEntry(baseKey + "/proxypassword", 
+                      txtProxyPass->text().trimmed());
   
   accept();
 }
