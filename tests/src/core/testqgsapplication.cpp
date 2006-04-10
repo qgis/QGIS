@@ -9,11 +9,55 @@ class TestQgsApplication: public QObject
 {
   Q_OBJECT;
   private slots:
-    void authorsFilePath()
-    {
-      QString myPath = QgsApplication::authorsFilePath();
-      QVERIFY(!myPath.isNull());
-    }
+        void QgsApplicationQgsApplication()
+{
+
+};
+    void QgsApplicationselectTheme()
+{
+
+};
+    void QgsApplicationauthorsFilePath()
+{
+
+};
+    void QgsApplicationdeveloperPath()
+{
+
+};
+    void QgsApplicationhelpAppPath()
+{
+
+};
+    void QgsApplicationi18nPath()
+{
+
+};
+    void QgsApplicationqgisMasterDbFilePath()
+{
+
+};
+    void QgsApplicationqgisSettingsDirPath()
+{
+
+};
+    void QgsApplicationqgisUserDbFilePath()
+{
+
+};
+    void QgsApplicationsplashPath()
+{
+
+};
+    void QgsApplicationsrsDbFilePath()
+{
+
+};
+    void QgsApplicationsvgPath()
+{
+
+};
+
 };
 
 QTEST_MAIN(TestQgsApplication)
