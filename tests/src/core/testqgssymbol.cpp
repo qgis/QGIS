@@ -9,13 +9,87 @@ class TestQgsSymbol: public QObject
 {
   Q_OBJECT;
   private slots:
-    void setPointSize()
-    {
-      QgsSymbol mySymbol;
-      mySymbol.setPointSize(4);
-      int mySize = mySymbol.pointSize();
-      QCOMPARE(mySize,4);
-    }
+        void QgsSymbolQgsSymbol()
+{
+
+};
+    void QgsSymbolcolor()
+{
+
+};
+    void QgsSymbolsetColor()
+{
+
+};
+    void QgsSymbolfillColor()
+{
+
+};
+    void QgsSymbolsetFillColor()
+{
+
+};
+    void QgsSymbollineWidth()
+{
+
+};
+    void QgsSymbolsetLineWidth()
+{
+
+};
+    void QgsSymbolsetLineStyle()
+{
+
+};
+    void QgsSymbolsetFillStyle()
+{
+
+};
+    void QgsSymbolsetNamedPointSymbol()
+{
+
+};
+    void QgsSymbolpointSymbolName()
+{
+
+};
+    void QgsSymbolsetPointSize()
+{
+
+};
+    void QgsSymbolpointSize()
+{
+
+};
+    void QgsSymbolgetLineSymbolAsPixmap()
+{
+
+};
+    void QgsSymbolgetPolygonSymbolAsPixmap()
+{
+
+};
+    void QgsSymbolgetPointSymbolAsPixmap()
+{
+
+};
+    void QgsSymbolcache()
+{
+
+};
+    void QgsSymbolcache2()
+{
+
+};
+    void QgsSymbolwriteXML()
+{
+
+};
+    void QgsSymbolreadXML()
+{
+
+};
+
 };
 
 QTEST_MAIN(TestQgsSymbol)

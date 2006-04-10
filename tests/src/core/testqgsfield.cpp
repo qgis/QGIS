@@ -9,6 +9,51 @@ class TestQgsField: public QObject
 {
   Q_OBJECT;
   private slots:
+        void QgsFieldQgsField()
+{
+
+};
+    void QgsFieldname()
+{
+
+};
+    void QgsFieldtype()
+{
+
+};
+    void QgsFieldlength()
+{
+
+};
+    void QgsFieldprecision()
+{
+
+};
+    void QgsFieldisNumeric()
+{
+
+};
+    void QgsFieldsetName()
+{
+
+};
+    void QgsFieldsetType()
+{
+
+};
+    void QgsFieldsetLength()
+{
+
+};
+    void QgsFieldsetPrecision()
+{
+
+};
+    void QgsFieldsetNumeric()
+{
+
+};
+
 };
 
 QTEST_MAIN(TestQgsField)
