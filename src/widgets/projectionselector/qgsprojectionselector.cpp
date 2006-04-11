@@ -148,6 +148,7 @@ void QgsProjectionSelector::setSelectedSRSName(QString theSRSName)
 {
   mSRSNameSelection = theSRSName;
   mSRSNameSelectionPending = TRUE;
+  applySRSNameSelection();
 }
 
 
@@ -155,6 +156,7 @@ void QgsProjectionSelector::setSelectedSRSID(long theSRSID)
 {
   mSRSIDSelection = theSRSID;
   mSRSIDSelectionPending = TRUE;
+  applySRSIDSelection();
 }
 
 
