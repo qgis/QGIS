@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -x
 DIRS=`ls -1F | grep '/$'`
-OUTFILE=/tmp/qgistest.`date +%d%h%Y_%Hh%M`.html
+OUTFILE=/tmp/qgistest.`date +%d%h%Y_%H%M`.html
 TOTALDIRS=0
 TOTALEXES=0
 TOTALFAILED=0
@@ -10,36 +10,56 @@ TOTALSKIPPED=0
 echo "<html>" > ${OUTFILE}
 echo "<head>" >> ${OUTFILE}
 echo "<style type="text/css">" >> ${OUTFILE}
-echo "body {background: white}" >> ${OUTFILE}
+echo "body {background: white;  text-align: center;    min-width: 600px;  }" >> ${OUTFILE}
+echo "#wrapper {  margin:0 auto;  width:600px;    text-align: left;  }" >> ${OUTFILE}
+
 echo "h1 {text-align: center;}" >> ${OUTFILE}
 echo "h2 {text-align: center;}" >> ${OUTFILE}
-echo ".module {background: #FF9D4D; width: 32em;}" >> ${OUTFILE}
-echo ".suiteSummary {background: #F9E5D5; font-weight: bold; width: 20em; float:left;}" >> ${OUTFILE}
-echo ".moduleHeader {background: #EB6E08; font-size: bigger; font-weight: bold; text-align: center; width: 32em; margin-top: 1em; margin-bottom: 0em; }" >> ${OUTFILE}
-echo ".moduleSummary {background: #FCBA82; font-weight: bold; width: 20em; float:left;}" >> ${OUTFILE}
+
 echo ".unitSummary {background: #EFEFEF; width: 20em; float:left;}" >> ${OUTFILE}
 echo ".unitSummaryFailed {background: #EFEFEF; color: crimson; width: 20em; float:left;}" >> ${OUTFILE}
 echo ".unitTotalExes {background: #EFEFEF; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
 echo ".unitTotalPasses {background: #EFEFEF; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
 echo ".unitTotalFails {background: #EFEFEF; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
 echo ".unitTotalSkipped {background: #EFEFEF; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
-echo ".moduleTotalExes {background: #FCBA82; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
-echo ".moduleTotalPasses {background: #FCBA82; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
-echo ".moduleTotalFails {background: #FCBA82; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
-echo ".moduleTotalSkipped {background: #FCBA82; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
-echo ".suiteTotalExes {background: #FF9946; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
-echo ".suiteTotalPasses {background: #FF9946; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
-echo ".suiteTotalFails {background: #FF9946; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
-echo ".suiteTotalSkipped {background: #FF9946; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
+
+echo ".colSummary {background: #FEB87F; font-weight: bold; width: 20em; float:left;}" >> ${OUTFILE}
+echo ".colTotalExes {background: #FEB87F;font-weight: bold; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
+echo ".colTotalPasses {background: #FEB87F;font-weight: bold; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
+echo ".colTotalFails {background: #FEB87F;font-weight: bold; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
+echo ".colTotalSkipped {background: #FEB87F;font-weight: bold; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
+
+echo ".module {background: #FF9D4D; width: 32em;}" >> ${OUTFILE}
+echo ".moduleHeader {background: #EB6E08; font-size: bigger; font-weight: bold; text-align: center; width: 32em; margin-top: 1em; margin-bottom: 0em; }" >> ${OUTFILE}
+echo ".moduleSummary {background: #FCBA82; font-weight: bold; width: 20em; float:left;}" >> ${OUTFILE}
+echo ".moduleTotalExes {background: #FCBA82;font-weight: bold;  width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
+echo ".moduleTotalPasses {background: #FCBA82;font-weight: bold;  width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
+echo ".moduleTotalFails {background: #FCBA82;font-weight: bold;  width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
+echo ".moduleTotalSkipped {background: #FCBA82;font-weight: bold;  width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
+
+echo ".suiteSummary {background: #FF9946; font-weight: bold; width: 20em; float:left;}" >> ${OUTFILE}
+echo ".suiteTotalExes {background: #FF9946;font-weight: bold;  width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
+echo ".suiteTotalPasses {background: #FF9946;font-weight: bold;  width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
+echo ".suiteTotalFails {background: #FF9946;font-weight: bold;  width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
+echo ".suiteTotalSkipped {background: #FF9946;font-weight: bold;  width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
+
 echo "</style>" >> ${OUTFILE}
 echo "</head>" >> ${OUTFILE}
 echo "<body>" >> ${OUTFILE}
+echo "<div id="wrapper">" >> ${OUTFILE}
 echo "<h1>QGIS Unit Tests</h1>" >> ${OUTFILE}
-echo "<h2>`date +'%d %h %Y : %H%M'`</h2>" >> ${OUTFILE}
+echo "<h2>`date +'%d %h %Y : %H h %M'`</h2>" >> ${OUTFILE}
 for DIR in $DIRS
 do
   echo "<div class='module'>"  >> ${OUTFILE}
   echo "<div class='moduleHeader'>Module : ${DIR}</div><br/>" >> ${OUTFILE}
+  #print col headers
+  echo "<div class="colSummary">&nbsp;</div>" >> ${OUTFILE}
+  echo "<div class="colTotalExes">#</div>" >> ${OUTFILE}
+  echo "<div class="colTotalPasses">P</div>" >> ${OUTFILE}
+  echo "<div class="colTotalFails">F</div>" >> ${OUTFILE}
+  echo "<div class="colTotalSkipped">S</div>" >> ${OUTFILE}
+  echo "<br/>" >> ${OUTFILE}
   TOTALDIREXES=0
   TOTALDIRFAILED=0
   TOTALDIRPASSED=0
@@ -96,6 +116,7 @@ echo "<div class="suiteTotalPasses">$TOTALPASSED</div>" >> ${OUTFILE}
 echo "<div class="suiteTotalFails">$TOTALFAILED</div>" >> ${OUTFILE}
 echo "<div class="suiteTotalSkipped">$TOTALSKIPPED</div>" >> ${OUTFILE}
 echo "<br/>" >> ${OUTFILE}
+echo "</div> <!-- end of wrapper -->" >> ${OUTFILE}
 echo "</body>" >> ${OUTFILE}
 echo "</html>" >> ${OUTFILE}
 firefox ${OUTFILE}
