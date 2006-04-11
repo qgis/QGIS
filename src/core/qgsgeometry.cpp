@@ -633,9 +633,16 @@ bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
   
       case geos::GEOS_POLYGON:               // a polygon
       {
-        // TODO
-        break;
-      } // case geos::GEOS_POLYGON
+        if(deleteVertexFromPolygon(atVertex.back()))
+	  {
+	    mDirtyWkb = true;
+	    return true;
+	  }
+	else
+	  {
+	    return false;
+	  }
+      }
   
       case geos::GEOS_MULTIPOINT:            // a collection of points
       {
@@ -2143,7 +2150,77 @@ bool QgsGeometry::moveVertexFromPolygon(int atVertex, double x, double y)
 
 bool QgsGeometry::deleteVertexFromPolygon(int atVertex)
 {
-  return false; //soon
+  if(!mGeos)
+    {
+      return false;
+    }
+
+  geos::Polygon* originalpoly = dynamic_cast<geos::Polygon*>(mGeos);
+  if(!originalpoly)
+    {
+      return false;
+    }
+  
+  geos::CoordinateSequence* coordinates = originalpoly->getCoordinates();
+  std::vector<int> rings(originalpoly->getNumInteriorRing() + 1); //a vector storing the number of points in each ring
+  //todo: consider that the point to be moved could be the starting point/ end point of a ring
+  const geos::LineString* outerRing = originalpoly->getExteriorRing();
+  int pointcounter = 0;
+
+  if(atVertex == 0 || atVertex == outerRing->getNumPoints()-1)
+    {
+      coordinates->setAt(coordinates->getAt(1), outerRing->getNumPoints()-1);
+      coordinates->deleteAt(0);
+      rings[0] = outerRing->getNumPoints()-1;
+      pointcounter += outerRing->getNumPoints()-1;
+    }
+  else if(atVertex < outerRing->getNumPoints())
+    {
+      coordinates->deleteAt(atVertex);
+      rings[0] = outerRing->getNumPoints()-1;
+      pointcounter += outerRing->getNumPoints()-1;
+    }
+  else
+    {
+      rings[0] = outerRing->getNumPoints();
+      pointcounter += outerRing->getNumPoints();
+    }
+
+  for(int i = 0; i < originalpoly->getNumInteriorRing(); ++i)
+    {
+      const geos::LineString* innerRing = originalpoly->getInteriorRingN(i);
+      if(atVertex == pointcounter || atVertex== pointcounter + innerRing->getNumPoints()-1)
+	{
+	  coordinates->setAt(coordinates->getAt(pointcounter+1), pointcounter + innerRing->getNumPoints()-1);
+	  coordinates->deleteAt(pointcounter);
+	  pointcounter += innerRing->getNumPoints()-1;
+	  rings[i+1] = innerRing->getNumPoints()-1;
+	}
+      else if(atVertex > pointcounter && atVertex < pointcounter + innerRing->getNumPoints()-1)
+	{
+	  coordinates->deleteAt(atVertex);
+	  rings[i+1] = innerRing->getNumPoints()-1;
+	  pointcounter += innerRing->getNumPoints()-1;
+	}
+      else
+	{
+	  rings[i+1] = innerRing->getNumPoints();
+	  pointcounter += innerRing->getNumPoints();
+	}
+    }
+  
+  geos::Polygon* newPolygon = createPolygonFromCoordSequence(coordinates, rings);
+  delete coordinates;
+  if(newPolygon)
+    {
+      delete mGeos;
+      mGeos = newPolygon;
+      return true;
+    }
+  else
+    {
+      return false;
+    }
 }
 
 bool QgsGeometry::insertVertexToPolygon(int beforeVertex, double x, double y)
@@ -2168,7 +2245,6 @@ geos::Polygon* QgsGeometry::createPolygonFromCoordSequence(const geos::Coordinat
     }
   catch(geos::IllegalArgumentException* e)
     {
-      delete outerRingSequence;
       return 0;
     }
 
@@ -2189,12 +2265,6 @@ geos::Polygon* QgsGeometry::createPolygonFromCoordSequence(const geos::Coordinat
 	}
       catch(geos::IllegalArgumentException* e)
 	{
-	  delete outerRingSequence;
-	  //also delete the already created rings
-	  for(int j = 0; j < i; ++j)
-	    {
-	      delete (*newInnerRings)[i];
-	    }
 	  return 0;
 	}
       (*newInnerRings)[i] = newInnerRing;
@@ -2207,11 +2277,6 @@ geos::Polygon* QgsGeometry::createPolygonFromCoordSequence(const geos::Coordinat
     }
   catch(geos::IllegalArgumentException* e)
     {
-      delete newOuterRing;
-      for(int i = 0; i < newInnerRings->size(); ++i)
-	{
-	  delete (*newInnerRings)[i];
-	}
       return 0;
     }
 
