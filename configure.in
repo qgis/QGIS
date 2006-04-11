@@ -505,6 +505,7 @@ AC_CONFIG_FILES([
   tests/src/Makefile
   tests/src/core/Makefile
   tests/src/gui/Makefile
+  tests/src/raster/Makefile
   qgis.spec
 ])
 
