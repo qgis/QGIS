@@ -142,10 +142,10 @@ testqgsgeometry_SOURCES = testqgsgeometry.cpp
 testqgsgeometry_LDADD = $(GLOBALLDADD)
 testqgsgeometry_CXXFLAGS =  $(GLOBALCXXFLAGS)
 
-testqgsbookmarkitem_MOC = testqgsbookmarkitem.moc.cpp
-testqgsbookmarkitem_SOURCES = testqgsbookmarkitem.cpp
-testqgsbookmarkitem_LDADD = $(GLOBALLDADD)
-testqgsbookmarkitem_CXXFLAGS =  $(GLOBALCXXFLAGS)
+#testqgsbookmarkitem_MOC = testqgsbookmarkitem.moc.cpp
+#testqgsbookmarkitem_SOURCES = testqgsbookmarkitem.cpp
+#testqgsbookmarkitem_LDADD = $(GLOBALLDADD)
+#testqgsbookmarkitem_CXXFLAGS =  $(GLOBALCXXFLAGS)
 
 testqgscolortable_MOC = testqgscolortable.moc.cpp
 testqgscolortable_SOURCES = testqgscolortable.cpp
@@ -172,10 +172,10 @@ testqgsdatasource_SOURCES = testqgsdatasource.cpp
 testqgsdatasource_LDADD = $(GLOBALLDADD)
 testqgsdatasource_CXXFLAGS =  $(GLOBALCXXFLAGS)
 
-testqgsdistancearea_MOC = testqgsdistancearea.moc.cpp
-testqgsdistancearea_SOURCES = testqgsdistancearea.cpp
-testqgsdistancearea_LDADD = $(GLOBALLDADD)
-testqgsdistancearea_CXXFLAGS =  $(GLOBALCXXFLAGS)
+#testqgsdistancearea_MOC = testqgsdistancearea.moc.cpp
+#testqgsdistancearea_SOURCES = testqgsdistancearea.cpp
+#testqgsdistancearea_LDADD = $(GLOBALLDADD)
+#testqgsdistancearea_CXXFLAGS =  $(GLOBALCXXFLAGS)
 
 testqgsfeatureattribute_MOC = testqgsfeatureattribute.moc.cpp
 testqgsfeatureattribute_SOURCES = testqgsfeatureattribute.cpp
@@ -187,10 +187,10 @@ testqgsgeometryvertexindex_SOURCES = testqgsgeometryvertexindex.cpp
 testqgsgeometryvertexindex_LDADD = $(GLOBALLDADD)
 testqgsgeometryvertexindex_CXXFLAGS =  $(GLOBALCXXFLAGS)
 
-testqgslabelattributes_MOC = testqgslabelattributes.moc.cpp
-testqgslabelattributes_SOURCES = testqgslabelattributes.cpp
-testqgslabelattributes_LDADD = $(GLOBALLDADD)
-testqgslabelattributes_CXXFLAGS =  $(GLOBALCXXFLAGS)
+#testqgslabelattributes_MOC = testqgslabelattributes.moc.cpp
+#testqgslabelattributes_SOURCES = testqgslabelattributes.cpp
+#testqgslabelattributes_LDADD = $(GLOBALLDADD)
+#testqgslabelattributes_CXXFLAGS =  $(GLOBALCXXFLAGS)
 
 testqgsline_MOC = testqgsline.moc.cpp
 testqgsline_SOURCES = testqgsline.cpp
