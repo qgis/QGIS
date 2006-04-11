@@ -515,16 +515,19 @@ AC_DEFUN([AQ_CHECK_QT4],[
     
   AC_ARG_WITH([qtdir], AC_HELP_STRING([--with-qtdir=DIR],[Qt4 installation directory]),
               QTDIR="$withval", QTDIR="")
+  AC_ARG_WITH([qt-pkg-config], AC_HELP_STRING([--with-qt-pkg-config],
+              [Detect Qt4 directory using pkg-config instead of using --with-qtdir. Works only with Qt4 version for X11.]),
+              QT_PKG_CONFIG="y", QT_PKG_CONFIG="n")
 
-  QT_MIN_VER=4.1.0
-
-  if test "x$QTDIR" = "x" ; then
+  if test "$QT_PKG_CONFIG" = "y" ; then
   
     dnl ---------------------------------------------------------------------------
     dnl we will use PKGCONFIG, check that all needed Qt4 components are there
     dnl ---------------------------------------------------------------------------
     
-    PKG_CHECK_MODULES(QT, QtCore QtGui Qt3Support QtNetwork QtXml QtSvg >= $QT_MIN_VER)
+    QT_MIN_VER=4.1.0
+
+    PKG_CHECK_MODULES(QT, QtCore QtGui Qt3Support QtNetwork QtXml QtSvg QtTest >= $QT_MIN_VER)
 
     dnl check for Qt binaries needed for compilation: moc,uic,rcc
     dnl (we could also check for moc and uic versions)
@@ -540,6 +543,15 @@ AC_DEFUN([AQ_CHECK_QT4],[
     AC_CHECK_PROG(RCC, rcc, rcc)
     if test x$RCC = x ; then
       AC_MSG_ERROR([*** rcc must be in path])
+    fi
+
+    dnl workaround for case when QtTest doesn't report QtTest subdirectory
+    dnl in include path (this is not a very nice check)
+    PKG_CHECK_MODULES(QT_TEST, QtTest >= $QT_MIN_VER)
+    QT_TEST_CFLAGS=`echo $QT_TEST_CFLAGS | sed 's/[ \t]*$//'` # remove trailing spaces
+    QTTEST_HAS_SUBDIR=`echo $QT_TEST_CFLAGS | grep '/QtTest' | wc -l`
+    if test "$QTTEST_HAS_SUBDIR" -eq "0" ; then
+      QT_CFLAGS="$QT_CFLAGS $QT_TEST_CFLAGS/QtTest"
     fi
 
     dnl set and display variables
