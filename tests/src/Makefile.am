@@ -9,5 +9,6 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 SUBDIRS = core \
-          gui
+          gui \
+          raster
 

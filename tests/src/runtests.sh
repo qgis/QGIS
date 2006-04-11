@@ -1,6 +1,6 @@
 #!/bin/bash
 #set -x
-DIRS=`ls -lah | grep ^d|grep -v '\.$' |grep -v '\.\.$' |grep -v '.svn' |awk '{print $8}' | awk '$1=$1' RS=`
+DIRS=`ls -1F |grep / |sed 's/\///g'`
 
 TOTALDIRS=0
 TOTALEXES=0
