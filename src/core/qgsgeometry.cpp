@@ -524,11 +524,12 @@ bool QgsGeometry::moveVertexAt(double x, double y,
 	geos::CoordinateSequence* sequence = mGeos->getCoordinates();
 	sequence->setAt(geos::Coordinate(x, y), atVertex.back());
 	setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(sequence) ) );
-	break;
+	mDirtyWkb = true;
+	return true;
       } 
     case geos::GEOS_POLYGON:
       {
-	if(moveVertexFromPolygon(atVertex.back(), x, y))
+	if(movePolygonVertex(atVertex.back(), x, y))
 	  {
 	    mDirtyWkb = true;
 	    return true;
@@ -538,48 +539,11 @@ bool QgsGeometry::moveVertexAt(double x, double y,
 	    return false;
 	  }
       }
-      mDirtyWkb = true;
-      return true;
     }
   }
 		    
   return false;
 }
-
-
-bool QgsGeometry::deleteVertexAt(int atVertex,
-                                 const geos::CoordinateSequence*  old_sequence,
-                                       geos::CoordinateSequence** new_sequence)
-{
-  int numPoints = old_sequence->getSize();
-
-  // Bounds checking
-  if (
-      (atVertex <  0)         ||
-      (atVertex >= numPoints) ||
-      (numPoints <= 2)            // guard against collapsing to a point
-     )
-  {
-    (*new_sequence) = 0;
-    return FALSE;
-  }
-
-  // Copy to the new sequence, excepting the deleted vertex
-  (*new_sequence) = new geos::DefaultCoordinateSequence();
-
-  for (int i = 0; i < numPoints; i++)
-  {
-    // Do we delete (omit) the vertex here?
-    if (atVertex != i)
-    {
-      (*new_sequence)->add( old_sequence->getAt(i) );
-    }
-  }
-
-  // TODO: Check that the sequence is still simple, e.g. with geos::Geometry->isSimple()
-  return true;
-}
-
 
 bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
 {
@@ -608,21 +572,19 @@ bool QgsGeometry::deleteVertexAt(QgsGeometryVertexIndex atVertex)
       {
          // Get the embedded GEOS Coordinate Sequence
         geos::LineString* geosls = static_cast<geos::LineString*>(mGeos);
-        const geos::CoordinateSequence* old_sequence = geosls->getCoordinatesRO();
-              geos::CoordinateSequence* new_sequence;
-
-        if ( deleteVertexAt(atVertex.back(), old_sequence, (&new_sequence) ) )
-        {
-          // Put in the new GEOS geometry
-          setGeos( static_cast<geos::Geometry*>( geosGeometryFactory->createLineString(new_sequence) ) );
-	  mDirtyWkb = true;
-          return TRUE;
-        }
+        geos::CoordinateSequence* sequence = geosls->getCoordinates();
+        sequence->deleteAt(atVertex.back());
+	geos::LineString* newLineString = geosGeometryFactory->createLineString(sequence);
+	if(newLineString)
+	  {
+	    setGeos(newLineString);
+	    mDirtyWkb = true;
+	    return TRUE;
+	  }
         else
-        {
-          return FALSE;
-        }
-
+	  {
+	    return FALSE;
+	  }
       } // case geos::GEOS_LINESTRING
   
       case geos::GEOS_LINEARRING:            // a linear ring (linestring with 1st point == last point)
@@ -2087,7 +2049,7 @@ double QgsGeometry::distanceSquaredPointToSegment(QgsPoint& point,
 
 }
                    
-bool QgsGeometry::moveVertexFromPolygon(int atVertex, double x, double y)
+bool QgsGeometry::movePolygonVertex(int atVertex, double x, double y)
 {
   if(!mGeos)
     {

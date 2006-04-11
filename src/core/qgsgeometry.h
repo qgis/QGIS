@@ -243,24 +243,9 @@ class QgsGeometry {
                             const geos::CoordinateSequence*  old_sequence,
                                   geos::CoordinateSequence** new_sequence);
 
-    /** Removes the vertex at the given vertex index (first number is index 0)
-     *  in the given GEOS Coordinate Sequence.
-     *  @param old_sequence   The sequence to update (The caller remains the owner).
-     *  @param new_sequence   The updated sequence (The caller becomes the owner if the function returns TRUE).
-     *  Returns FALSE if atVertex does not correspond to a valid vertex number
-     *  on the Coordinate Sequence, or if the number of remaining verticies
-     *  would be less than two.
-     *  It is up to the caller to distinguish between
-     *  these error conditions.  (Or maybe we add another method to this
-     *  object to help make the distinction?)
-     */
-    bool deleteVertexAt(int atVertex,
-                        const geos::CoordinateSequence*  old_sequence,
-                              geos::CoordinateSequence** new_sequence);
-
     /**Moves a vertex of mGeos to a new position. Internally, a new polygon is created instead of mGeos.
      Returns true in case of success*/
-    bool moveVertexFromPolygon(int atVertex, double x, double y);
+    bool movePolygonVertex(int atVertex, double x, double y);
 
     bool deleteVertexFromPolygon(int atVertex);
 
