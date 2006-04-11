@@ -43,7 +43,7 @@ bin_PROGRAMS = testqgsapplication \
 		testqgssymbol \
 		testqgsvectordataprovider 
 # testqgslabelattributes 
-# testqgsdistancearea \
+# testqgsdistancearea 
 # testqgsbookmarkitem 
 
 #
