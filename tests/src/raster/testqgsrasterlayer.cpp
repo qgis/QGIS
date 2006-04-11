@@ -133,10 +133,6 @@ class TestQgsRasterLayer: public QObject
 {
 
 };
-    void QgsRasterLayergetRasterBandStats()
-{
-
-};
     void QgsRasterLayersetRedBandName()
 {
 
@@ -226,10 +222,6 @@ class TestQgsRasterLayer: public QObject
 
 };
     void QgsRasterLayerpopulateHistogram()
-{
-
-};
-    void QgsRasterLayerQgsRasterLayer()
 {
 
 };
