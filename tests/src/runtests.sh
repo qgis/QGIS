@@ -1,6 +1,6 @@
 #!/bin/bash
 #set -x
-DIRS=`ls -1F |grep / |sed 's/\///g'`
+DIRS=`ls -1F | grep '/$'`
 
 TOTALDIRS=0
 TOTALEXES=0
@@ -13,10 +13,10 @@ do
   TOTALDIRFAILED=0
   TOTALDIRPASSED=0
   TOTALDIRSKIPPED=0
-  LIST=`ls -lah $DIR |grep rwxr-xr-x |grep -v ^d |grep -v pl$ |grep -v ~$ |grep -v .sh$ |awk '{print $8}'|awk '$1=$1' RS=`
+  LIST=`find $DIR -type f -perm +111 -maxdepth 1 | egrep -v '(\.sh$|\.pl$)'`
   for FILE in $LIST
   do 
-    RESULT=`$DIR/${FILE} | tail -2 |head -1` #TODO maybe just grep for 'Totals'
+    RESULT=`${FILE} | grep '^Totals:'`
     PASSED=`echo ${RESULT} | awk '{print $2}'`
     FAILED=`echo ${RESULT} | awk '{print $4}'`
     SKIPPED=`echo ${RESULT} | awk '{print $6}'`
