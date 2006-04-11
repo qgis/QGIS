@@ -10,27 +10,29 @@ TOTALSKIPPED=0
 echo "<html>" > ${OUTFILE}
 echo "<head>" >> ${OUTFILE}
 echo "<style type="text/css">" >> ${OUTFILE}
-echo "body {background: white;  text-align: center;    min-width: 600px;  }" >> ${OUTFILE}
-echo "#wrapper {  margin:0 auto;  width:600px;    text-align: left;  }" >> ${OUTFILE}
+echo "body {background: white;  text-align: center;    min-width: 33em;  }" >> ${OUTFILE}
+echo "#wrapper {  margin:0 auto;  width:33em;    text-align: left;  }" >> ${OUTFILE}
 
 echo "h1 {text-align: center;}" >> ${OUTFILE}
 echo "h2 {text-align: center;}" >> ${OUTFILE}
 
+echo ".statusPass {background: green; width: 1em; float:left;}" >> ${OUTFILE}
+echo ".statusFail {background: crimson; width: 1em; float:left;}" >> ${OUTFILE}
+
 echo ".unitSummary {background: #EFEFEF; width: 20em; float:left;}" >> ${OUTFILE}
-echo ".unitSummaryFailed {background: #EFEFEF; color: crimson; width: 20em; float:left;}" >> ${OUTFILE}
 echo ".unitTotalExes {background: #EFEFEF; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
 echo ".unitTotalPasses {background: #EFEFEF; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
 echo ".unitTotalFails {background: #EFEFEF; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
 echo ".unitTotalSkipped {background: #EFEFEF; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
 
-echo ".colSummary {background: #FEB87F; font-weight: bold; width: 20em; float:left;}" >> ${OUTFILE}
+echo ".colSummary {background: #FEB87F; font-weight: bold; width: 21em; float:left;}" >> ${OUTFILE}
 echo ".colTotalExes {background: #FEB87F;font-weight: bold; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
 echo ".colTotalPasses {background: #FEB87F;font-weight: bold; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
 echo ".colTotalFails {background: #FEB87F;font-weight: bold; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
 echo ".colTotalSkipped {background: #FEB87F;font-weight: bold; width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
 
-echo ".module {background: #FF9D4D; width: 32em;}" >> ${OUTFILE}
-echo ".moduleHeader {background: #EB6E08; font-size: bigger; font-weight: bold; text-align: center; width: 32em; margin-top: 1em; margin-bottom: 0em; }" >> ${OUTFILE}
+echo ".module {background: #FF9D4D; width: 33em;}" >> ${OUTFILE}
+echo ".moduleHeader {background: #EB6E08; font-size: bigger; font-weight: bold; text-align: center; width: 33em; margin-top: 1em; margin-bottom: 0em; }" >> ${OUTFILE}
 echo ".moduleSummary {background: #FCBA82; font-weight: bold; width: 20em; float:left;}" >> ${OUTFILE}
 echo ".moduleTotalExes {background: #FCBA82;font-weight: bold;  width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
 echo ".moduleTotalPasses {background: #FCBA82;font-weight: bold;  width: 3em; text-align: center; float:left;}" >> ${OUTFILE}
@@ -79,6 +81,12 @@ do
     TOTALPASSED=`expr $TOTALPASSED + $PASSED`
     TOTALSKIPPED=`expr $TOTALSKIPPED + $SKIPPED`
     TOTALEXES=`expr $TOTALEXES + 1`
+    if (( $FAILED ))
+    then
+      echo "<div class="statusFail">&nbsp;</div>" >> ${OUTFILE}
+    else
+      echo "<div class="statusPass">&nbsp;</div>" >> ${OUTFILE}
+    fi
     echo "<div class="unitSummary">$FILE</div>" >> ${OUTFILE}
     echo "<div class="unitTotalExes">&nbsp;</div>" >> ${OUTFILE}
     echo "<div class="unitTotalPasses">$PASSED</div>" >> ${OUTFILE}
@@ -94,6 +102,12 @@ do
   echo "MODULE TEST CASES PASSED  : ${TOTALDIRPASSED}"
   echo "MODULE TEST CASES FAILED  : ${TOTALDIRFAILED}"
   echo "MODULE TEST CASES SKIPPED : ${TOTALDIRSKIPPED}"
+  if (( $DIRFAILED ))
+  then
+    echo "<div class="statusFail">&nbsp;</div>" >> ${OUTFILE}
+  else
+    echo "<div class="statusPass">&nbsp;</div>" >> ${OUTFILE}
+  fi
   echo "<div class="moduleSummary">Totals:</div>" >> ${OUTFILE}
   echo "<div class="moduleTotalExes">$TOTALDIREXES</div>" >> ${OUTFILE}
   echo "<div class="moduleTotalPasses">$TOTALDIRPASSED</div>" >> ${OUTFILE}
@@ -110,6 +124,12 @@ echo "TOTAL TEST CASES PASSED  : ${TOTALPASSED}"
 echo "TOTAL TEST CASES FAILED  : ${TOTALFAILED}"
 echo "TOTAL TEST CASES SKIPPED : ${TOTALSKIPPED}"
 echo "<div class='moduleHeader'>Global Summary:</div><br/>" >> ${OUTFILE}
+if (( $TOTALFAILED ))
+then
+  echo "<div class="statusFail">&nbsp;</div>" >> ${OUTFILE}
+else
+  echo "<div class="statusPass">&nbsp;</div>" >> ${OUTFILE}
+fi
 echo "<div class="suiteSummary">Totals:</div>" >> ${OUTFILE}
 echo "<div class="suiteTotalExes">$TOTALEXES</div>" >> ${OUTFILE}
 echo "<div class="suiteTotalPasses">$TOTALPASSED</div>" >> ${OUTFILE}
