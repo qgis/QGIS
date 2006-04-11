@@ -292,11 +292,8 @@ void QgsMeasure::canvasPressEvent(QMouseEvent * e)
 
 void QgsMeasure::canvasMoveEvent(QMouseEvent * e)
 {
-  if (e->state() & Qt::LeftButton)
-  {
-    QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates(e->pos().x(), e->pos().y());
-    mouseMove(point);
-  }
+  QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates(e->pos().x(), e->pos().y());
+  mouseMove(point);
 }
 
 
