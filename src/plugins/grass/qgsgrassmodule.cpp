@@ -1108,15 +1108,21 @@ void QgsGrassModule::run()
         //          -> necessary to pass region as enviroment variable
         //             but the feature is available in GRASS 6.1 only since 23.3.2006
 
+        QStringList environment = QProcess::systemEnvironment();
         if ( resetRegion )
         {
-            QStringList env;
-            env = QProcess::systemEnvironment();
             QString reg = QgsGrass::regionString( &tempWindow );
 	    std::cerr << "reg: " << reg.ascii() << std::endl;
-            env.append ( "GRASS_REGION=" + reg );
-            mProcess.setEnvironment ( env );
+            environment.append ( "GRASS_REGION=" + reg );
         }
+
+        // I was not able to get scripts working on Windows 
+        // via QProcess and sh.exe (MinGW). g.parser runs well 
+        // and it sets parameters correctly as enviroment variables
+        // but it fails (without error) to re-run the script with
+        // execlp(). And I could not figure out why it fails.
+        // Because of this problem we simulate here what g.parser
+        // normaly does and that way we can avoid it. 
 
 	QStringList execArguments = QgsGrassModule::execArguments(mXName);
 
@@ -1127,9 +1133,40 @@ void QgsGrassModule::run()
 	    return;
 	}
 
+#if defined(WIN32)
+        // we already know it exists from execArguments()
+        QString exe = QgsGrassModule::findExec ( mXName );
+        QFileInfo fi ( exe );
+        if ( !fi.isExecutable() )
+        {
+             // Set enviroment variables
+             for ( int i = 0; i < arguments.size(); i++ )
+             {
+                 QString arg = arguments.at(i);
+                 QString env;
+                 if ( arg.at(0) == '-' ) //flag
+                 {
+                     env = "GIS_FLAG_" + QString(arg.at(0).toUpper()) 
+                           + "=1";
+                 }
+                 else // option
+                 {
+                     QStringList opt = arg.split("=");
+                     env = "GIS_OPT_" + opt.takeFirst().toUpper();
+                     env += "=" + opt.join("="); // rejoin rest
+                 }
+	         std::cerr << "set: " << env.ascii() << std::endl;
+                 environment.append(env);
+             }
+             arguments.clear();
+             arguments.append ( "@ARGS_PARSED@" );
+        }
+#endif
+
 	QString cmd = execArguments.takeFirst();
         execArguments += arguments;
 
+        mProcess.setEnvironment ( environment );
 	mProcess.start( cmd, execArguments );
 
         mProcess.waitForStarted();
