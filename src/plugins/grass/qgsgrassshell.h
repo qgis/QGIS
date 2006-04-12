@@ -195,6 +195,9 @@ private:
 
     // Horizontal tabulator stop
     std::vector<bool> mTabStop;
+
+    // How many lines to skip, used to skip output of first commands sent to shell
+    int mSkipLines; 
 };
 
 class QgsGrassShellText : public Q3TextEdit

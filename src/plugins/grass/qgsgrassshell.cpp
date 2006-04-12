@@ -56,6 +56,7 @@ QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools,
     QDialog(parent), QgsGrassShellBase(), mTools(tools)
 {
     mValid = false;
+    mSkipLines = 2;
 
 #ifdef WIN32
     QMessageBox::warning( 0, "Warning", 
@@ -236,6 +237,12 @@ QgsGrassShell::QgsGrassShell ( QgsGrassTools *tools,
         mTabStop[i*8] = true;
     }
 
+    // Set trap to write history on SIGUSR1
+    //QString trap = "trap 'history -w' SIGUSR1\015\012";
+    QString trap = "trap 'history -w' SIGUSR1\015";
+    write( mFdMaster, trap.ascii(), trap.length());
+    mText->clear();
+
     resizeTerminal();
     mValid = true;
 #endif // !WIN32
@@ -247,12 +254,10 @@ QgsGrassShell::~QgsGrassShell()
     std::cerr << "QgsGrassShell::~QgsGrassShell()" << std::endl;
 #endif
 
-    // TODO: find signal to write history before exit
-    //       instead of sending 'exit'
-
-    write( mFdMaster, "exit\015\012", 6);
-
 #ifndef WIN32
+    // This was old trick to write history
+    /*
+    write( mFdMaster, "exit\015\012", 6);
     while ( 1 ) 
     {
 	readStdout(0);
@@ -265,15 +270,20 @@ QgsGrassShell::~QgsGrassShell()
         t.tv_nsec = 10000000; // 0.01 s
         nanosleep ( &t, &r );
     }
-#endif
+    */
 
-    /* 
+    // Write history
+    if ( kill(mPid,SIGUSR1) == -1 )
+    {
+        std::cerr << "cannot write history (signal SIGUSR1 to pid = " << mPid << ")" << std::endl;
+    }
+
     std::cerr << "kill shell pid = " << mPid << std::endl;
     if ( kill(mPid,SIGTERM ) == -1 )
     {
         std::cerr << "cannot kill shell pid = " << mPid << std::endl;
     }
-     */
+#endif
 }
 
 void QgsGrassShell::keyPressEvent( QKeyEvent * e  )
@@ -810,6 +820,11 @@ void QgsGrassShell::insert ( QString s )
 
 void QgsGrassShell::newLine()
 {
+    if ( mSkipLines > 0 )
+    {
+        mText->clear();
+        mSkipLines--;
+    }
     if ( mNewLine ) 
     {
         mText->setTextFormat(Qt::PlainText);
