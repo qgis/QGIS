@@ -470,8 +470,15 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
 
       case geos::GEOS_POLYGON:               // a polygon
       {
-        // TODO
-        break;
+        if(insertVertexToPolygon(beforeVertex.back(), x, y))
+	  {
+	    mDirtyWkb = true;
+	    return true;
+	  }
+	else
+	  {
+	    return false;
+	  }
       } // case geos::GEOS_POLYGON
   
       case geos::GEOS_MULTIPOINT:            // a collection of points
@@ -915,7 +922,8 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
   double *thisx,*thisy;
   double *prevx,*prevy;
   double testdist;
-  
+  int closestSegmentIndex;
+
   // Initialise some stuff
   beforeVertex.clear();
   sqrDist   = std::numeric_limits<double>::max();
@@ -925,15 +933,8 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
       exportGeosToWkb();
     }
 
-// TODO: Convert this to a GEOS comparison not a WKB comparison.
   if (mGeometry)
-  {
-//    int wkbType;
-//    double x,y;
-//    double *thisx,*thisy;
-//    double *prevx,*prevy;
-//    double testdist;
-    
+  { 
     memcpy(&wkbType, (mGeometry+1), sizeof(int));
     
     switch (wkbType)
@@ -943,7 +944,7 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
       return QgsPoint(0,0);
      
     case QGis::WKBLineString:
-      int closestSegmentIndex = 0;
+      closestSegmentIndex = 0;
       unsigned char* ptr = mGeometry + 5;
       int* npoints = (int*) ptr;
       ptr += sizeof(int);
@@ -988,8 +989,11 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
 
       break;
 
-      // TODO: Other geometry types
-      
+      //todo: add wkb parsing
+    case QGis::WKBPolygon:
+      {
+	break;
+      }
     } // switch (wkbType)
     
   } // if (mGeometry)
@@ -2064,7 +2068,6 @@ bool QgsGeometry::movePolygonVertex(int atVertex, double x, double y)
   
   geos::CoordinateSequence* coordinates = originalpoly->getCoordinates();
   std::vector<int> rings(originalpoly->getNumInteriorRing() + 1); //a vector storing the number of points in each ring
-  //todo: consider that the point to be moved could be the starting point/ end point of a ring
   const geos::LineString* outerRing = originalpoly->getExteriorRing();
   int pointcounter = 0;
 
@@ -2125,7 +2128,6 @@ bool QgsGeometry::deleteVertexFromPolygon(int atVertex)
   
   geos::CoordinateSequence* coordinates = originalpoly->getCoordinates();
   std::vector<int> rings(originalpoly->getNumInteriorRing() + 1); //a vector storing the number of points in each ring
-  //todo: consider that the point to be moved could be the starting point/ end point of a ring
   const geos::LineString* outerRing = originalpoly->getExteriorRing();
   int pointcounter = 0;
 
@@ -2187,7 +2189,68 @@ bool QgsGeometry::deleteVertexFromPolygon(int atVertex)
 
 bool QgsGeometry::insertVertexToPolygon(int beforeVertex, double x, double y)
 {
-  return false; //soon
+  if(!mGeos)
+    {
+      return false;
+    }
+
+  geos::Polygon* originalpoly = dynamic_cast<geos::Polygon*>(mGeos);
+  if(!originalpoly)
+    {
+      return false;
+    }
+  
+  geos::CoordinateSequence* coordinates = originalpoly->getCoordinates();
+  //the sequence where the point will be inserted
+  geos::CoordinateSequence* newSequence = new geos::DefaultCoordinateSequence();
+  std::vector<int> rings(originalpoly->getNumInteriorRing() + 1); //a vector storing the number of points in each ring
+  const geos::LineString* outerRing = originalpoly->getExteriorRing();
+  
+  int coordinateCounter = 0;
+  int numRingPoints = 0;
+  for(int i = 0; i < outerRing->getNumPoints(); ++i)
+    {
+      newSequence->add(coordinates->getAt(coordinateCounter), true);
+      ++coordinateCounter;
+      ++numRingPoints;
+      if(coordinateCounter == beforeVertex)
+	{
+	  ++numRingPoints;
+	  newSequence->add(geos::Coordinate(x, y), true);
+	}
+    }
+  rings[0] = numRingPoints;
+
+  for(int i = 0; i < originalpoly->getNumInteriorRing(); ++i)
+    {
+      numRingPoints = 0;
+      const geos::LineString* innerRing = originalpoly->getInteriorRingN(i);
+      for(int j = 0; j < originalpoly->getNumInteriorRing(); ++j)
+	{
+	  newSequence->add(coordinates->getAt(coordinateCounter), true);
+	  ++numRingPoints;
+	  ++coordinateCounter;
+	  if(coordinateCounter == beforeVertex)
+	    {
+	      ++numRingPoints;
+	      newSequence->add(geos::Coordinate(x, y), true);
+	    }
+	}
+      rings[i+1] = numRingPoints;
+    }
+  geos::Polygon* newPolygon = createPolygonFromCoordSequence(newSequence, rings);
+  delete coordinates;
+  delete newSequence;
+  if(newPolygon)
+    {
+      delete mGeos;
+      mGeos = newPolygon;
+      return true;
+    }
+  else
+    {
+      return false;
+    }
 }
 
 geos::Polygon* QgsGeometry::createPolygonFromCoordSequence(const geos::CoordinateSequence* coords, const std::vector<int>& pointsInRings) const
