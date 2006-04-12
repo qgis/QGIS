@@ -219,6 +219,9 @@ public:
     // \param all false only the mas which were switched on
     virtual bool inputRegion( struct Cell_head *window, bool all ) { return false; }
 
+    // ! Flag names
+    virtual QStringList flagNames() { return QStringList() ; }
+
 protected:
     //! QGIS application
     QgisApp *mQgisApp;
@@ -273,6 +276,7 @@ public:
     bool usesRegion();
     bool requestsRegion();
     bool inputRegion( struct Cell_head *window, bool all );
+    QStringList flagNames() { return mFlagNames; }
 
 private:
     //! Name of module executable 
@@ -284,6 +288,8 @@ private:
     //! Option items
     std::vector<QgsGrassModuleItem*> mItems;
 
+    //! List of all flags. Necessary for scripts.
+    QStringList mFlagNames;
 };
 
 /*! \class QgsGrassModuleItem
