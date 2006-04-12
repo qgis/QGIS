@@ -940,55 +940,57 @@ QgsPoint QgsGeometry::closestSegmentWithContext(QgsPoint& point,
     switch (wkbType)
     {
     case QGis::WKBPoint:
-      // Points have no lines
-      return QgsPoint(0,0);
-     
-    case QGis::WKBLineString:
-      closestSegmentIndex = 0;
-      unsigned char* ptr = mGeometry + 5;
-      int* npoints = (int*) ptr;
-      ptr += sizeof(int);
-      for (int index=0; index < *npoints; ++index)
       {
-        if (index > 0)
-        {
-          prevx = thisx;  
-          prevy = thisy;  
-        }
-        
-        thisx = (double*) ptr;
-        ptr += sizeof(double);
-        thisy = (double*) ptr;
-        
-        if (index > 0)
-        {
-          if (
-               (
-                 testdist = distanceSquaredPointToSegment(point,
-                                                          prevx, prevy,
-                                                          thisx, thisy,
-                                                          minDistPoint)  // TODO: save minDistPoint into something meaningful.
-               )
-               < sqrDist )
-          {
-#ifdef QGISDEBUG
-//      std::cout << "QgsGeometry::closestSegment: testDist "
-//                << testdist << ", sqrDist"
-//                << sqrDist
-//                << "." << std::endl;
-#endif
-            closestSegmentIndex = index;
-            sqrDist = testdist;
-          }
-        }
-        
-        ptr += sizeof(double);
+	// Points have no lines
+	return QgsPoint(0,0);
       }
-
-      beforeVertex.push_back(closestSegmentIndex);
-
-      break;
-
+    case QGis::WKBLineString:
+      {
+	closestSegmentIndex = 0;
+	unsigned char* ptr = mGeometry + 5;
+	int* npoints = (int*) ptr;
+	ptr += sizeof(int);
+	for (int index=0; index < *npoints; ++index)
+	  {
+	    if (index > 0)
+	      {
+		prevx = thisx;  
+		prevy = thisy;  
+	      }
+	    
+	    thisx = (double*) ptr;
+	    ptr += sizeof(double);
+	    thisy = (double*) ptr;
+	    
+	    if (index > 0)
+	      {
+		if (
+		    (
+		     testdist = distanceSquaredPointToSegment(point,
+							      prevx, prevy,
+							      thisx, thisy,
+							      minDistPoint)  // TODO: save minDistPoint into something meaningful.
+		     )
+		    < sqrDist )
+		  {
+#ifdef QGISDEBUG
+		    //      std::cout << "QgsGeometry::closestSegment: testDist "
+		    //                << testdist << ", sqrDist"
+		    //                << sqrDist
+		    //                << "." << std::endl;
+#endif
+		    closestSegmentIndex = index;
+		    sqrDist = testdist;
+		  }
+	      }
+	    
+	    ptr += sizeof(double);
+	  }
+	
+	beforeVertex.push_back(closestSegmentIndex);
+	
+	break;
+      }
       //todo: add wkb parsing
     case QGis::WKBPolygon:
       {
