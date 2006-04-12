@@ -501,6 +501,26 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions (
 	n = n.nextSibling();
     }
 
+    // Create list of flags
+    n = gDocElem.firstChild();
+    while( !n.isNull() ) 
+    {
+	QDomElement e = n.toElement();
+	if( !e.isNull() )
+        {
+	    QString optionType = e.tagName();
+	    std::cout << "optionType = " << optionType.toLocal8Bit().data() << std::endl;
+
+	    if ( optionType == "flag" )
+            {
+		QString name = e.attribute("name").trimmed();
+		std::cout << "name = " << name.data() << std::endl;
+		mFlagNames.append( name );
+            }
+        }
+	n = n.nextSibling();
+    }
+
     layout->addStretch();
 }
 
@@ -1139,6 +1159,8 @@ void QgsGrassModule::run()
         QFileInfo fi ( exe );
         if ( !fi.isExecutable() )
         {
+             QStringList usedFlagNames;
+
              // Set enviroment variables
              for ( int i = 0; i < arguments.size(); i++ )
              {
@@ -1146,8 +1168,9 @@ void QgsGrassModule::run()
                  QString env;
                  if ( arg.at(0) == '-' ) //flag
                  {
-                     env = "GIS_FLAG_" + QString(arg.at(0).toUpper()) 
+                     env = "GIS_FLAG_" + QString(arg.at(1).toUpper()) 
                            + "=1";
+                     usedFlagNames.append(arg.at(1));
                  }
                  else // option
                  {
@@ -1158,6 +1181,28 @@ void QgsGrassModule::run()
 	         std::cerr << "set: " << env.ascii() << std::endl;
                  environment.append(env);
              }
+
+             // Set remaining flags
+             QStringList allFlagNames = mOptions->flagNames();
+             for ( int i = 0; i < allFlagNames.size(); i++ )
+             {
+                 bool used = false;
+	         for ( int j = 0; j < usedFlagNames.size(); j++ ) 
+                 {
+                     if ( usedFlagNames.at(j) == allFlagNames.at(i) )
+                     {
+                         used = true;
+                         break;
+                     }
+                 }
+                 if ( used ) continue;
+                 QString env = "GIS_FLAG_" 
+                             + QString(allFlagNames.at(i).toUpper())
+                             + "=0";
+	         std::cerr << "set: " << env.ascii() << std::endl;
+                 environment.append(env);
+             }
+
              arguments.clear();
              arguments.append ( "@ARGS_PARSED@" );
         }
