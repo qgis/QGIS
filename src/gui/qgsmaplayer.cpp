@@ -37,6 +37,7 @@
 #include "qgsproject.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
+#include "qgslegend.h"
 #include "qgslegendlayerfile.h"
 
 
@@ -105,6 +106,9 @@ void QgsMapLayer::setLayerName(const QString & _newVal)
 {
   QgsDebugMsg("QgsMapLayer::setLayerName: new name is '" + _newVal);
   layerName = _newVal;
+  // And update the legend if one exists
+  if (mLegend)
+    mLegend->setName(mLegendLayerFile, layerName);
 }
 
 /** Read property of QString layerName. */

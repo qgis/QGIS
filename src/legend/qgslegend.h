@@ -26,6 +26,7 @@
 
 class QgisApp;
 class QgsLegendLayer;
+class QgsLegendLayerFile;
 class QgsLegendItem;
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -144,6 +145,10 @@ class QgsLegend : public QTreeWidget
   /**Removes the symbology items of a layer and adds new ones. If other files are in the same legend layer, the new symbology settings are copied.
    Note: the QIcon* are deleted and therefore need to be allocated by calling functions using operator new*/
   void changeSymbologySettings(const QString& key, const std::list< std::pair<QString, QIcon*> >* newSymbologyItems);
+
+  /** Sets the name of the QgsLegendLayer that is the parent of 
+      the given QgsLegendLayerFile */
+  void setName(QgsLegendLayerFile* w, QString layerName);
 
 public slots:
 
