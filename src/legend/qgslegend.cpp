@@ -1281,6 +1281,22 @@ void QgsLegend::changeSymbologySettings(const QString& key, const std::list< std
   setCurrentItem(theCurrentItem);
 }
 
+void QgsLegend::setName(QgsLegendLayerFile* legendLayerFile,
+                        QString layerName)
+{
+  if (legendLayerFile)
+  {
+    QTreeWidgetItem* p = legendLayerFile->parent();
+    if (p)
+    {
+      p = p->parent();
+      if (p)
+        p->setText(0, layerName);
+    }
+  }
+
+}
+
 void QgsLegend::handleItemChange(QTreeWidgetItem* item, int row)
 {
   if(!item)
