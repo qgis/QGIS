@@ -4053,7 +4053,7 @@ void QgisApp::socketConnectionClosed()
         // show more info
         QgsMessageViewer *mv = new QgsMessageViewer(this);
         mv->setCaption(tr("QGIS - Changes in SVN Since Last Release"));
-        mv->setMessageAsPlainText(parts[2]);
+        mv->setMessageAsHtml(parts[2]);
         mv->exec();
       }
     }
