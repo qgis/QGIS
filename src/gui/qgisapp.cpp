@@ -2416,13 +2416,6 @@ void QgisApp::newVectorLayer()
 
   delete openFileDialog;
 
-
-  // check to see if user specified the extension. if not, add it...
-  //if(filename.find(QRegExp("\\.shp$")) == -1)
-  //{
-  //filename += ".shp";
-  //}
-
   //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
   QString ogrlib = pReg->library("ogr");
@@ -2468,67 +2461,6 @@ void QgisApp::newVectorLayer()
 #endif
     }
   }
-
-#if 0
-  //create the new layer with QgsVectorFileWriter
-  QgsVectorFileWriter* writer=0;
-
-  if(geometrytype == QGis::WKBPoint)
-  {
-    writer=new QgsVectorFileWriter(filename,enc,wkbPoint);
-    if(!writer->initialise())
-    {
-      QMessageBox::warning(0,tr("Warning"),tr("Writing of the layer failed"),QMessageBox::Ok,Qt::NoButton);
-      return;
-    }
-  }
-  else if(geometrytype == QGis::WKBLineString)
-  {
-    writer=new QgsVectorFileWriter(filename,enc,wkbLineString);
-    if(!writer->initialise())
-    {
-      QMessageBox::warning(0,tr("Warning"),tr("Writing of the layer failed"),QMessageBox::Ok,Qt::NoButton);
-      return;
-    }
-  }
-  else if(geometrytype == QGis::WKBPolygon)
-  {
-    writer=new QgsVectorFileWriter(filename,enc,wkbPolygon);
-    if(!writer->initialise())
-    {
-      QMessageBox::warning(0,tr("Warning"),tr("Writing of the layer failed"),QMessageBox::Ok,Qt::NoButton);
-      return;
-    }
-  }
-  else
-  {
-#ifdef QGISDEBUG
-    qWarning("QgisApp.cpp: geometry type not recognised");
-#endif
-
-    return;
-  }
-
-  if(writer)
-  {
-    for(std::list<std::pair<QString, QString> >::iterator it=attributes.begin();it!=attributes.end();++it)
-    {
-      if(it->second=="Real")
-      {
-        writer->createField(it->first, OFTReal, 10, 3);
-      }
-      else if(it->second=="Integer")
-      {
-        writer->createField(it->first, OFTInteger, 10, 3);
-      }
-      else if(it->second=="String")
-      {
-        writer->createField(it->first, OFTString, 40, 1);
-      }
-    }
-  }
-  delete writer;
-#endif //0
 
   //then add the layer to the view
   QStringList filelist;
