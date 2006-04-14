@@ -66,6 +66,11 @@ public:
     //! String containing the selected WMS-format CRS
     QString selectedCrs();
 
+    //! Stores which server is now selected.
+    void serverChanged();
+
+    //! Set the server connection combo box to that stored in the config file. 
+    void setConnectionListPosition();
 
 public slots:
 
@@ -99,6 +104,8 @@ public slots:
     //! show whatever error is exposed by the QgsWmsProvider.
     void showError(QgsWmsProvider * wms);
 
+    //! Stores the selected datasource whenerver it is changed
+    void on_cmbConnections_activated(int);
 
 private:
 
