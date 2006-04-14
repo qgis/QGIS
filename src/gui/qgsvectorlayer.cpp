@@ -126,23 +126,23 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
   if(valid)
   {
     setCoordinateSystem();
-  }
 
-  // Default for the popup menu
-  popMenu = 0;
+    // Default for the popup menu
+    popMenu = 0;
 
-  // Get the update threshold from user settings. We
-  // do this only on construction to avoid the penality of
-  // fetching this each time the layer is drawn. If the user
-  // changes the threshold from the preferences dialog, it will
-  // have no effect on existing layers
-  QSettings settings;
-  updateThreshold = settings.readNumEntry("Map/updateThreshold", 1000);
-  //editing is now enabled by default
-  if(dataProvider->capabilities()&QgsVectorDataProvider::AddFeatures)
+    // Get the update threshold from user settings. We
+    // do this only on construction to avoid the penality of
+    // fetching this each time the layer is drawn. If the user
+    // changes the threshold from the preferences dialog, it will
+    // have no effect on existing layers
+    QSettings settings;
+    updateThreshold = settings.readNumEntry("Map/updateThreshold", 1000);
+    //editing is now enabled by default
+    if(dataProvider->capabilities()&QgsVectorDataProvider::AddFeatures)
     {
       startEditing();
     }
+  }
 } // QgsVectorLayer ctor
 
 

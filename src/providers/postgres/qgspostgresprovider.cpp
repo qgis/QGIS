@@ -64,7 +64,7 @@ const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 
 
 QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
-    : QgsVectorDataProvider(uri)
+  : QgsVectorDataProvider(uri), geomType(QGis::WKBUnknown)
 {
   // assume this is a valid layer until we determine otherwise
   valid = true;
@@ -345,6 +345,10 @@ QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
   {
     valid = false;
   }
+
+  // Close the database connection if the layer isn't going to be loaded.
+  if (!valid)
+    PQfinish(connection);
 }
 
 QgsPostgresProvider::~QgsPostgresProvider()
@@ -2500,8 +2504,7 @@ bool QgsPostgresProvider::getGeometryDetails()
       showMessageBox(tr("Unknown geometry type"), 
 	tr("Column ") + geometryColumn + tr(" in ") +
 	   mSchemaTableName + tr(" has a geometry type of ") +
-	   QString::number(geomType) + 
-	   tr(", which Qgis does not currently support."));
+           fType + tr(", which Qgis does not currently support."));
       valid = false;
     }
   }
@@ -2515,11 +2518,15 @@ bool QgsPostgresProvider::getGeometryDetails()
   }
 
 #ifdef QGISDEBUG
-  std::cout << "SRID is " << srid.toLocal8Bit().data() << '\n'
-    << "type is " << fType.toLocal8Bit().data() << '\n'
-    << "Feature type is " << geomType << '\n'
-    << "Feature type name is " 
-    << QGis::qgisFeatureTypes[geomType] << std::endl;
+  if (valid)
+    std::cout << "SRID is " << srid.toLocal8Bit().data() << '\n'
+              << "type is " << fType.toLocal8Bit().data() << '\n'
+              << "Feature type is " << geomType << '\n'
+              << "Feature type name is " 
+              << QGis::qgisFeatureTypes[geomType] << std::endl;
+  else
+    std::cout << "Failed to get geometry details for Postgres layer."
+              << std::endl;
 #endif
 
   return valid;
@@ -2532,7 +2539,7 @@ PGresult* QgsPostgresProvider::executeDbCommand(PGconn* connection,
 #ifdef QGISDEBUG
   std::cout << "Executed SQL: " << sql.local8Bit().data() << '\n';
   if (PQresultStatus(result) == PGRES_TUPLES_OK)
-    std::cout << "Command was successful.";
+    std::cout << "Command was successful.\n";
   else
     std::cout << "Command was unsuccessful. The error message was: "
               << PQresultErrorMessage(result) << ".\n";
