@@ -87,6 +87,7 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
       void on_lstTables_itemDoubleClicked(QTableWidgetItem *);
       void setSql(QTableWidgetItem *);
       void on_btnHelp_clicked();
+      void on_cmbConnections_activated(int);
       void setLayerType(QString schema, QString table, QString column,
                         QString type);
  private:
