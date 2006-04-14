@@ -50,6 +50,7 @@ QgsMapLayer::QgsMapLayer(int type,
                      // can be used) until we learn otherwise
         dataSource(source),
         internalName(lyrname),
+        popMenu(0),
         mShowInOverviewAction(0),
         mShowInOverview(false),
         mCoordinateTransform(0),
