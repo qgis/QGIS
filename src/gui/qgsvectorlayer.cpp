@@ -1249,6 +1249,17 @@ QGis::VectorType QgsVectorLayer::vectorType() const
 #endif
 
   }
+
+  // We shouldn't get here, and if we have, other things are likely to
+  // go wrong. Code that uses the vectorType() return value should be
+  // rewritten to cope with a value of QGis::Unknown. To make this
+  // need known, the following message is printed every time we get
+  // here.
+  std::cerr << "WARNING: This code (file " << __FILE__ << ", line "
+            << __LINE__ << ") should never be reached. "
+            << "Problems may occur...\n";
+
+  return QGis::Unknown;
 }
 
 QgsVectorLayerProperties *QgsVectorLayer::propertiesDialog()

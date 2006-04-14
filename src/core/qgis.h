@@ -63,7 +63,8 @@ public:
   {
     Point,
     Line,
-    Polygon
+    Polygon,
+    Unknown
   };
   static const char *qgisVectorGeometryType[];
   
