@@ -149,6 +149,12 @@ void QgsDbSourceSelect::on_btnHelp_clicked()
 }
 /** End Autoconnected SLOTS **/
 
+// Remember which database is selected
+void QgsDbSourceSelect::on_cmbConnections_activated(int)
+{
+  dbChanged();
+}
+
 void QgsDbSourceSelect::setLayerType(QString schema, 
                                      QString table, QString column,
                                      QString type)
