@@ -457,6 +457,18 @@ void QgsMapCanvas::mapUnitsChanged()
   // We assume that if the map units have changed, the changed value
   // will be accessible from QgsProject.
   setMapUnits(QgsProject::instance()->mapUnits());
+  // Since the map units have changed, force a recalculation of the scale.
+  mMapRender->updateScale();
+  // And then force a redraw of the scale number in the status bar
+  updateScale();
+  // And then redraw the map to force the scale bar to update
+  // itself. This is less than ideal as the entire map gets redrawn
+  // just to get the scale bar to redraw itself. If we ask the scale
+  // bar to redraw itself without redrawing the map, the existing
+  // scale bar is not removed, and we end up with two scale bars in
+  // the same location. This can perhaps be fixed when/if the scale
+  // bar is done as a transparent layer on top of the map canvas.
+  render();
 }
 
 void QgsMapCanvas::zoomToSelected()
