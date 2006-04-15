@@ -62,6 +62,9 @@ class QgsMapRender : public QObject
     double scale() const { return mScale; }
     double mupp() const { return mMupp; }
 
+    //! Recalculate the map scale
+    void updateScale();
+
     QGis::units mapUnits() const { return mMapUnits; }
     void setMapUnits(QGis::units u);
     

@@ -57,6 +57,10 @@ QgsRect QgsMapRender::extent()
   return mExtent;
 }
 
+void QgsMapRender::updateScale()
+{
+  mScale = mScaleCalculator->calculate(mExtent, mSize.width());
+}
 
 bool QgsMapRender::setExtent(const QgsRect& extent)
 {
@@ -163,7 +167,7 @@ void QgsMapRender::adjustExtentToSize()
   mExtent.setYmax(dymax);
   
   // update the scale
-  mScale = mScaleCalculator->calculate(mExtent, myWidth);
+  updateScale();
 
 #ifdef QGISDEBUG
   QgsLogger::debug("Scale (assuming meters as map units) = 1", mScale, 1, __FILE__, __FUNCTION__, __LINE__);
