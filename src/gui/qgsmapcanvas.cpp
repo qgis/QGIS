@@ -515,7 +515,7 @@ void QgsMapCanvas::zoomToSelected()
     {
       // Expand rect to give a bit of space around the selected
       // objects so as to keep them clear of the map boundaries
-      rect.expand(1.1);
+      rect.scale(1.1);
       setExtent(rect);
       refresh();
       return;
