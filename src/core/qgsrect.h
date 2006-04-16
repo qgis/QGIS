@@ -21,9 +21,7 @@
 
 #include <iosfwd>
 
-#ifndef QSTRING_H
-#include <qstring.h>
-#endif
+class QString;
 
 #include "qgspoint.h"
 
@@ -79,9 +77,9 @@ class QgsRect
     //! Center point of the rectangle
     QgsPoint center() const;
     //! Scale the rectangle around its center point
-    void scale(double, QgsPoint *c =0);
+    void scale(double, const QgsPoint *c =0);
     //! Expand the rectangle to support zoom out scaling
-    void expand(double, QgsPoint *c = 0);
+    void expand(double, const QgsPoint *c = 0);
     //! return the intersection with the given rectangle
     QgsRect intersect(QgsRect *rect);
     //! expand the rectangle so that covers both the original rectangle and the given rectangle
