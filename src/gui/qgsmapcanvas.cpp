@@ -513,13 +513,10 @@ void QgsMapCanvas::zoomToSelected()
     //zoom to an area
     else
     {
-      // TODO: why such complicated way? [MD]
-      QgsRect r;
-      r.setXmin(rect.xMin());
-      r.setYmin(rect.yMin());
-      r.setXmax(rect.xMax());
-      r.setYmax(rect.yMax());
-      setExtent(r);
+      // Expand rect to give a bit of space around the selected
+      // objects so as to keep them clear of the map boundaries
+      rect.expand(1.1);
+      setExtent(rect);
       refresh();
       return;
     }
