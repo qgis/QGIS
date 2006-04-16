@@ -8,7 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-bin_PROGRAMS = testqgsrasterlayer 
+nodist_PROGRAMS = testqgsrasterlayer 
 
 #
 # Define some global variables that will be used for building each test
