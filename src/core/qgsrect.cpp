@@ -22,8 +22,8 @@
 #ifdef WIN32
 #include <limits>
 #endif
-#include <qstring.h>
-#include <qtextstream.h> 
+#include <QString>
+#include <QTextStream> 
 
 #include "qgspoint.h"
 #include "qgsrect.h"
@@ -86,7 +86,7 @@ void QgsRect::setMinimal()
   ymax =-std::numeric_limits<double>::max();
 }
 
-void QgsRect::scale(double scaleFactor, QgsPoint * cp)
+void QgsRect::scale(double scaleFactor, const QgsPoint * cp)
 {
   // scale from the center
   double centerX, centerY;
@@ -107,7 +107,7 @@ void QgsRect::scale(double scaleFactor, QgsPoint * cp)
   ymax = centerY + newHeight / 2.0;
 }
 
-void QgsRect::expand(double scaleFactor, QgsPoint * cp)
+void QgsRect::expand(double scaleFactor, const QgsPoint * cp)
 {
   // scale from the center
   double centerX, centerY;
