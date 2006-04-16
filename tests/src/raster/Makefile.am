@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 nodist_PROGRAMS = testqgsrasterlayer 
-
+nodistdir = .
 #
 # Define some global variables that will be used for building each test
 #
