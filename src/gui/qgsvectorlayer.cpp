@@ -1332,6 +1332,31 @@ QgsRect QgsVectorLayer::bBoxOfSelected()
       retval.combineExtentWith(&r);
     }
   }
+
+  if (retval.width() == 0.0 || retval.height() == 0.0)
+  {
+    // If all of the features are at the one point, buffer the
+    // rectangle a bit. If they are all at zero, do something a bit
+    // more crude.
+
+    if (retval.xMin() == 0.0 && retval.xMax() == 0.0 &&
+        retval.yMin() == 0.0 && retval.yMax() == 0.0)
+    {
+      retval.set(-1.0, -1.0, 1.0, 1.0);
+    }
+    else
+    {
+      const double padFactor = 0.05;
+      double widthPad = retval.xMin() * padFactor;
+      double heightPad = retval.yMin() * padFactor;
+      double xmin = retval.xMin() - widthPad;
+      double xmax = retval.xMax() + widthPad;
+      double ymin = retval.yMin() - heightPad;
+      double ymax = retval.yMax() + heightPad;
+      retval.set(xmin, ymin, xmax, ymax);
+    }
+  }
+
   return retval;
 }
 
