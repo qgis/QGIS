@@ -2685,7 +2685,7 @@ void QgsVectorLayer::refreshLegend()
 {
   if(mLegend && m_renderer)
     {
-      std::list< std::pair<QString, QIcon*> > itemList;
+      std::list< std::pair<QString, QPixmap> > itemList;
       m_renderer->refreshLegend(&itemList);
       if(m_renderer->needsAttributes()) //create an item for each classification field (only one for most renderers)
 	{
@@ -2694,7 +2694,7 @@ void QgsVectorLayer::refreshLegend()
 	    {
 	      const QgsField theField = (dataProvider->fields())[*it];
 	      QString classfieldname = theField.name();
-	      itemList.push_front(std::make_pair(classfieldname, (QIcon*)0));
+	      itemList.push_front(std::make_pair(classfieldname, QPixmap()));
 	    }
 	}
       mLegend->changeSymbologySettings(getLayerID(), &itemList);

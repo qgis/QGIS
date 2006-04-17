@@ -17,21 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "qgslegend.h"
 #include "qgslegendsymbologyitem.h"
 
-QgsLegendSymbologyItem::QgsLegendSymbologyItem(QTreeWidgetItem * theItem,QString theString)
- : QgsLegendItem(theItem, theString)
+QgsLegendSymbologyItem::QgsLegendSymbologyItem(QTreeWidgetItem * theItem,QString theString, int pixmapWidth, int pixmapHeight)
+  : QgsLegendItem(theItem, theString), mPixmapWidth(pixmapWidth), mPixmapHeight(pixmapHeight)
 {
   mType = LEGEND_SYMBOL_ITEM;
 }
 
-QgsLegendSymbologyItem::QgsLegendSymbologyItem(): QgsLegendItem()
+QgsLegendSymbologyItem::QgsLegendSymbologyItem(int pixmapWidth, int pixmapHeight): QgsLegendItem(), mPixmapWidth(pixmapWidth), mPixmapHeight(pixmapHeight)
 {
   mType = LEGEND_SYMBOL_ITEM;
 }
 
 QgsLegendSymbologyItem::~QgsLegendSymbologyItem()
-{
+{  
 }
 
 QgsLegendItem::DRAG_ACTION QgsLegendSymbologyItem::accept(LEGEND_ITEM_TYPE type)

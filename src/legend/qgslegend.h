@@ -22,6 +22,7 @@
 
 #include <deque>
 #include <map>
+#include <set>
 #include <QTreeWidget>
 
 class QgisApp;
@@ -144,11 +145,24 @@ class QgsLegend : public QTreeWidget
 
   /**Removes the symbology items of a layer and adds new ones. If other files are in the same legend layer, the new symbology settings are copied.
    Note: the QIcon* are deleted and therefore need to be allocated by calling functions using operator new*/
-  void changeSymbologySettings(const QString& key, const std::list< std::pair<QString, QIcon*> >* newSymbologyItems);
+  void changeSymbologySettings(const QString& key, const std::list< std::pair<QString, QPixmap> >* newSymbologyItems);
+  
+  /**Adds an entry to mPixmapWidthValues*/
+  void addPixmapWidthValue(int width);
+
+  /**Adds an entry to mPixmapHeightValues*/
+  void addPixmapHeightValue(int height);
+
+  /**Removes an entry from mPixmapWidthValues*/
+  void removePixmapWidthValue(int width);
+
+  /**Removes an entry from mPixmapHeightValues*/
+  void removePixmapHeightValue(int height);
 
   /** Sets the name of the QgsLegendLayer that is the parent of 
       the given QgsLegendLayerFile */
   void setName(QgsLegendLayerFile* w, QString layerName);
+
 
 public slots:
 
@@ -227,6 +241,8 @@ this item may be moved back to the original position with resetToInitialPosition
   /**Returns the legend layer to which a map layer gelongs*/
   QgsLegendLayer* findLegendLayer(const QString& layerKey);
 
+  /**Checks mPixmapWidthValues and mPixmapHeightValues and sets a new icon size if necessary*/
+  void adjustIconSize();
 
   private slots:
 
@@ -328,6 +344,17 @@ private:
   /**Map that keeps track of which checkboxes are in which check state. This is necessary because QTreeView does not emit 
      a signal for check state changes*/
   std::map<QTreeWidgetItem*, Qt::CheckState> mStateOfCheckBoxes;
+
+  /**Stores the width values of the LegendSymbologyItem pixmaps. The purpose of this is that the legend may automatically change
+   the global IconWidth when items are added or removed*/
+  std::multiset<int> mPixmapWidthValues;
+
+  /**Stores the width values of the LegendSymbologyItem pixmaps. The purpose of this is that the legend may automatically change
+   the global IconWidth when items are added or removed*/
+  std::multiset<int> mPixmapHeightValues;
+
+  /**QgsLegend does not set the icon with/height to values lower than the minimum icon size*/
+  QSize mMinimumIconSize;
 
 signals:
   void zOrderChanged(QgsLegend * lv);
