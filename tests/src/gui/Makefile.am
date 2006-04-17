@@ -8,8 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-nodistdir = .
-nodist_PROGRAMS = testqgisapp \
+noinst_PROGRAMS = testqgisapp \
 		testqgsabout \
 		testqgsaddattrdialog \
 		testqgsattributeactiondialog \
