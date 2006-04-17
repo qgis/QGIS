@@ -121,3 +121,10 @@ void QgsLegendItem::restoreAppearanceSettings()
       static_cast<QgsLegendItem*>(child(i))->restoreAppearanceSettings();
     }
 }
+
+QgsLegend* QgsLegendItem::legend() const
+{
+  QTreeWidget* treeWidgetPtr = treeWidget();
+  QgsLegend* legendPtr = dynamic_cast<QgsLegend*>(treeWidgetPtr);
+  return legendPtr;
+}

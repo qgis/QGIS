@@ -13,7 +13,7 @@ QgsRenderer::QgsRenderer()
 
 }
 
-void QgsRenderer::refreshLegend(std::list< std::pair<QString, QIcon*> >* symbologyList) const
+void QgsRenderer::refreshLegend(std::list< std::pair<QString, QPixmap> >* symbologyList) const
 {
     if(symbologyList)
     {
@@ -36,8 +36,6 @@ void QgsRenderer::refreshLegend(std::list< std::pair<QString, QIcon*> >* symbolo
 	    {
 	      pix = (*it)->getPolygonSymbolAsPixmap();
 	    }
-	  
-	  QIcon* theIcon = new QIcon(pix);
  
 	  QString values;
 	  lw = (*it)->lowerValue();
@@ -57,7 +55,7 @@ void QgsRenderer::refreshLegend(std::list< std::pair<QString, QIcon*> >* symbolo
 	      values += " ";
 	      values += label;
 	    }
-	  symbologyList->push_back(std::make_pair(values, theIcon));
+	  symbologyList->push_back(std::make_pair(values, pix));
 	}
     }
 }

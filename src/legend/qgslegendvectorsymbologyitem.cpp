@@ -17,8 +17,8 @@
 
 #include "qgslegendvectorsymbologyitem.h"
 
-QgsLegendVectorSymbologyItem::QgsLegendVectorSymbologyItem(QTreeWidgetItem * theItem, QString col1)
-: QgsLegendSymbologyItem(theItem, col1)
+QgsLegendVectorSymbologyItem::QgsLegendVectorSymbologyItem(QTreeWidgetItem * theItem, QString col1, int pixmapWidth, int pixmapHeight)
+: QgsLegendSymbologyItem(theItem, col1, pixmapWidth, pixmapHeight)
 {
     mType = LEGEND_VECTOR_SYMBOL_ITEM;
 }

@@ -23,6 +23,7 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 
+class QgsLegend;
 class QgsLegendGroup;
 class QgsLegendLayer;
 class QgsLegendPropertyGroup;
@@ -39,7 +40,7 @@ public:
     QgsLegendItem(QTreeWidgetItem*, QString);
     QgsLegendItem (QTreeWidget*,QString);
     QgsLegendItem();
-    ~QgsLegendItem();
+    virtual ~QgsLegendItem();
 
    enum LEGEND_ITEM_TYPE 
    {
@@ -95,6 +96,8 @@ public:
     void storeAppearanceSettings();
     /**Restore appearanc settings (expanded and hidden) e.g. after being inserted into a new place in the tree widget*/
     void restoreAppearanceSettings();
+    /**Returns a pointer to the legend widget*/
+    QgsLegend* legend() const;
 protected:
    bool mLeafNodeFlag;
    LEGEND_ITEM_TYPE mType;

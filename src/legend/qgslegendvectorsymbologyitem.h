@@ -26,7 +26,7 @@ class QgsSymbol;
 class QgsLegendVectorSymbologyItem: public QgsLegendSymbologyItem
 {
  public:
-    QgsLegendVectorSymbologyItem(QTreeWidgetItem * theItem, QString col1);
+    QgsLegendVectorSymbologyItem(QTreeWidgetItem * theItem, QString col1, int pixmapWidth, int pixmapHeight);
     /**Add a symbol to the list such that it will be updated if necessary*/
     void addSymbol(QgsSymbol* s);
     /**Brings up a single symbol dialog. The changes are then applied to all entries of mSymbols*/

@@ -28,12 +28,17 @@
 class QgsLegendSymbologyItem : public QgsLegendItem
 {
 public:
-    QgsLegendSymbologyItem(QTreeWidgetItem* theItem, QString theString);
-    QgsLegendSymbologyItem();
+    QgsLegendSymbologyItem(QTreeWidgetItem* theItem, QString theString, int pixmapWidth, int pixmapHeight);
+    QgsLegendSymbologyItem(int pixmapWidth, int pixmapHeight);
     ~QgsLegendSymbologyItem();
     bool isLeafNode() {return true;}
     DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
     QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
+    int pixmapWidth() const {return mPixmapWidth;}
+    int pixmapHeight() const {return mPixmapHeight;}
+ protected:
+    int mPixmapWidth;
+    int mPixmapHeight;
 };
 
 #endif

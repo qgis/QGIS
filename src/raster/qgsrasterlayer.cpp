@@ -5059,9 +5059,8 @@ void QgsRasterLayer::refreshLegend()
 {
   if(mLegend)
     {
-      std::list< std::pair<QString, QIcon*> > itemList;
-      QIcon* theIcon = new QIcon(getLegendQPixmap(true));
-      itemList.push_back(std::make_pair("", theIcon));
+      std::list< std::pair<QString, QPixmap> > itemList;
+      itemList.push_back(std::make_pair("", getLegendQPixmap(true)));
       mLegend->changeSymbologySettings(getLayerID(), &itemList);
     }
 }

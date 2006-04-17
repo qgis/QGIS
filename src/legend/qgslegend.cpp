@@ -54,7 +54,7 @@ const int AUTOSCROLL_MARGIN = 16;
    set mItemBeingMoved pointer to 0 to prevent SuSE 9.0 crash
 */
 QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
-  : QTreeWidget(parent), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0), mShowLegendLayerFiles(false)
+  : QTreeWidget(parent), mApp(app), mMousePressedFlag(false), mItemBeingMoved(0), mMapCanvas(0), mShowLegendLayerFiles(false), mMinimumIconSize(20, 20)
 {
   connect( this, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
 	   this, SLOT(handleItemChange(QTreeWidgetItem*, int)));
@@ -69,7 +69,6 @@ QgsLegend::QgsLegend(QgisApp* app, QWidget * parent, const char *name)
   QFont f("Arial", 10, QFont::Normal);
   setFont(f);
   setBackgroundColor(QColor(192, 192, 192));
-  //setIconSize(QSize(30, 30));
   setColumnCount(1);
   QStringList myList("Layers");
   setHeaderLabels(myList);
@@ -1043,6 +1042,36 @@ QgsLegendLayer* QgsLegend::findLegendLayer(const QString& layerKey)
   return 0;
 }
 
+void QgsLegend::adjustIconSize()
+{
+  if(mPixmapWidthValues.size() > 0 && mPixmapHeightValues.size() > 0)
+    { 
+      std::multiset<int>::const_reverse_iterator width_it = mPixmapWidthValues.rbegin();
+      std::multiset<int>::const_reverse_iterator height_it = mPixmapHeightValues.rbegin();
+      int maxWidth = *width_it;
+      int maxHeight = *height_it;
+
+      QSize currentIconSize = iconSize();
+      if(maxWidth == currentIconSize.width() && maxHeight == currentIconSize.height())
+	{
+	  //no resizing necessary
+	  return;
+	}
+
+      //keep the minimum size
+      if(maxWidth < mMinimumIconSize.width())
+	{
+	  maxWidth = mMinimumIconSize.width();
+	}
+      if(maxHeight < mMinimumIconSize.height())
+	{
+	  maxHeight = mMinimumIconSize.height();
+	}
+
+      setIconSize(QSize(maxWidth, maxHeight));
+    }
+}
+
 bool QgsLegend::yCoordAboveCenter(QgsLegendItem* it, int ycoord)
 {
   QRect rect = visualItemRect(it);
@@ -1232,7 +1261,7 @@ std::deque<QString> QgsLegend::layerIDs()
   return layers;
 }
 
-void QgsLegend::changeSymbologySettings(const QString& key, const std::list< std::pair<QString, QIcon*> >* newSymbologyItems)
+void QgsLegend::changeSymbologySettings(const QString& key, const std::list< std::pair<QString, QPixmap> >* newSymbologyItems)
 {
   QgsMapLayer* theMapLayer = QgsMapLayerRegistry::instance()->mapLayer(key);
   if(!theMapLayer)
@@ -1255,7 +1284,9 @@ void QgsLegend::changeSymbologySettings(const QString& key, const std::list< std
       theSymbologyItem = dynamic_cast<QgsLegendSymbologyItem*>((theLegendLayer)->child(i));
       if(theSymbologyItem)
 	{
-	  theLegendLayer->takeChild(i);
+	  removePixmapWidthValue(theSymbologyItem->pixmapWidth());
+	  removePixmapHeightValue(theSymbologyItem->pixmapHeight());
+	  delete (theLegendLayer->takeChild(i));
 	}
     }
 
@@ -1263,13 +1294,15 @@ void QgsLegend::changeSymbologySettings(const QString& key, const std::list< std
   if(newSymbologyItems)
     {
       int childposition = 0; //position to insert the items
-      for(std::list< std::pair<QString, QIcon*> >::const_iterator it= newSymbologyItems->begin(); it != newSymbologyItems->end(); ++it)
+      for(std::list< std::pair<QString, QPixmap> >::const_iterator it= newSymbologyItems->begin(); it != newSymbologyItems->end(); ++it)
 	{
-	  QgsLegendSymbologyItem* theItem = new QgsLegendSymbologyItem();
+	  QgsLegendSymbologyItem* theItem = new QgsLegendSymbologyItem(it->second.width(), it->second.height());
 	  theItem->setText(0, it->first);
-	  theItem->setIcon(0, *(it->second));
+	  theItem->setIcon(0, QIcon(it->second));
 	  theLegendLayer->insertChild(childposition, theItem);
-	  delete (it->second);//free the memory for the QIcon*
+	  //add the width and height values to the multisets
+	  addPixmapWidthValue(theItem->pixmapWidth());
+	  addPixmapHeightValue(theItem->pixmapHeight());
 	  ++childposition;
 	}
     }
@@ -1279,6 +1312,37 @@ void QgsLegend::changeSymbologySettings(const QString& key, const std::list< std
 
   //restore the current item again
   setCurrentItem(theCurrentItem);
+  adjustIconSize();
+}
+
+void QgsLegend::addPixmapWidthValue(int width)
+{
+  mPixmapWidthValues.insert(width);
+}
+
+void QgsLegend::addPixmapHeightValue(int height)
+{
+  mPixmapHeightValues.insert(height);
+}
+
+void QgsLegend::removePixmapWidthValue(int width)
+{
+  std::multiset<int>::iterator it = mPixmapWidthValues.find(width);
+  if (it != mPixmapWidthValues.end())
+    {
+      mPixmapWidthValues.erase(it);
+    }
+  //todo: adapt the icon size if width is the largest value and the size of the next element is higher than the minimum
+}
+
+void QgsLegend::removePixmapHeightValue(int height)
+{
+  std::multiset<int>::iterator it = mPixmapHeightValues.find(height);
+  if (it != mPixmapHeightValues.end())
+    {
+      mPixmapHeightValues.erase(height);
+    }
+  //todo: adapt the icon size if height is the largest value and the size of the next element is higher than the minimum
 }
 
 void QgsLegend::setName(QgsLegendLayerFile* legendLayerFile,
