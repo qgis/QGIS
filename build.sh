@@ -19,11 +19,15 @@ then
  # - show warnings
  if [ x$2 = xdebug ]
  then
+   echo "Building with debug support"
    AUTOGEN_FLAGS="--enable-debug"
    export CFLAGS="-g -Wall"
    export CXXFLAGS="-g -Wall"
- elif [ $2 = static ]
+ fi
+ 
+ if [ x$2 = "static" ]
  then
+   echo "Building with qgis statically linked to dependencies"
    #this is to tell linker to statically linke
    #against deps like gdal etc - useful for
    #trying to build a distributeable binary of qgis

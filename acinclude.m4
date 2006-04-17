@@ -354,25 +354,7 @@ case "${host}" in
     else
       QT_IS_STATIC="no"
     fi
-    # set link parameters based on shared/mt libs or static lib
-    if test "x`ls $QTDIR/${_lib}/libqt.a* 2> /dev/null`" != x ; then
-      QT_LIB="-lqt"
-      QT_IS_MT="no"
-    elif test "x`ls $QTDIR/${_lib}/libqt-mt.so* 2> /dev/null`" != x ; then
-      QT_LIB="-lqt-mt"
-      QT_IS_MT="yes"
-    elif test "x`ls $QTDIR/${_lib}/libqt.so* 2> /dev/null`" != x ; then
-      QT_LIB="-lqt"
-      QT_IS_MT="no"
-    elif test "x`ls $QTDIR/${_lib}/libqte.* 2> /dev/null`" != x ; then
-      QT_LIB="-lqte"
-      QT_IS_MT="no"
-      QT_IS_EMBEDDED="yes"
-    elif test "x`ls $QTDIR/${_lib}/libqte-mt.* 2> /dev/null`" != x ; then
-      QT_LIB="-lqte-mt"
-      QT_IS_MT="yes"
-      QT_IS_EMBEDDED="yes"
-    elif test "x`ls $QTDIR/${_lib}/libQtCore.* /usr/lib/libQtCore.* 2> /dev/null`" != x ; then
+    if test "x`ls $QTDIR/${_lib}/libQtCore.* /usr/lib/libQtCore.* 2> /dev/null`" != x ; then
 AC_MSG_RESULT([libQtCore found])
       QT_LIB="-lQtCore -lQt3Support -lQtGui -lQtNetwork -lQtSvg"
 QT_CXXFLAGS="-DQT3_SUPPORT -I$QT4_DEFAULTINC -I$QT4_3SUPPORTINC -I$QT4_COREINC -I$QT4_DESIGNERINC -I$QT4_GUIINC -I$QT4_NETWORKINC -I$QT4_OPENGLINC -I$QT4_SQLINC -I$QT4_XMLINC -I$QTINC -I$QT4_SVGINC -I$QT4_TESTINC -I$QT4_DESIGNERINC"
@@ -442,7 +424,7 @@ case "${host}" in
   *win*)
     # linker flag to suppress console when linking a GUI app on Win32
     QT_GUILINK="/subsystem:windows"
-    if test $QT_MAJOR = "3" ; then
+    if test $QT_MAJOR = "4" ; then
       if test $QT_IS_MT = yes ; then
         QT_LIBS="/nodefaultlib:libcmt"
       else
