@@ -17,22 +17,27 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "qgslegend.h"
+
 #include "qgslegendsymbologyitem.h"
 
 QgsLegendSymbologyItem::QgsLegendSymbologyItem(QTreeWidgetItem * theItem,QString theString, int pixmapWidth, int pixmapHeight)
-  : QgsLegendItem(theItem, theString), mPixmapWidth(pixmapWidth), mPixmapHeight(pixmapHeight)
+  : QgsLegendItem(theItem, theString), mPixmapWidth(pixmapWidth), mPixmapHeight(pixmapHeight), mLegend(0)
 {
   mType = LEGEND_SYMBOL_ITEM;
 }
 
-QgsLegendSymbologyItem::QgsLegendSymbologyItem(int pixmapWidth, int pixmapHeight): QgsLegendItem(), mPixmapWidth(pixmapWidth), mPixmapHeight(pixmapHeight)
+QgsLegendSymbologyItem::QgsLegendSymbologyItem(int pixmapWidth, int pixmapHeight): QgsLegendItem(), mPixmapWidth(pixmapWidth), mPixmapHeight(pixmapHeight), mLegend(0)
 {
   mType = LEGEND_SYMBOL_ITEM;
 }
 
 QgsLegendSymbologyItem::~QgsLegendSymbologyItem()
 {  
+  if(mLegend)
+    {
+      mLegend->removePixmapWidthValue(mPixmapWidth);
+      mLegend->removePixmapHeightValue(mPixmapHeight);
+    }
 }
 
 QgsLegendItem::DRAG_ACTION QgsLegendSymbologyItem::accept(LEGEND_ITEM_TYPE type)
@@ -43,5 +48,15 @@ QgsLegendItem::DRAG_ACTION QgsLegendSymbologyItem::accept(LEGEND_ITEM_TYPE type)
 QgsLegendItem::DRAG_ACTION QgsLegendSymbologyItem::accept(const QgsLegendItem* li) const
 {
   return NO_ACTION;
+}
+
+void QgsLegendSymbologyItem::setLegend(QgsLegend* theLegend)
+{
+  mLegend = theLegend;
+  if(mLegend)
+    {
+      mLegend->addPixmapWidthValue(mPixmapWidth);
+      mLegend->addPixmapHeightValue(mPixmapHeight);
+    }
 }
 
