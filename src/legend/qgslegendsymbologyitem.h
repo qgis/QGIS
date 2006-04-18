@@ -20,6 +20,7 @@
 #ifndef QGSLEGENDSYMBOLOGYITEM_H
 #define QGSLEGENDSYMBOLOGYITEM_H
 
+#include "qgslegend.h"
 #include <qgslegenditem.h>
 
 /**
@@ -36,9 +37,14 @@ public:
     QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
     int pixmapWidth() const {return mPixmapWidth;}
     int pixmapHeight() const {return mPixmapHeight;}
+    void setLegend(QgsLegend* theLegend);
+    QgsLegend* legend() const {return mLegend;}
  protected:
     int mPixmapWidth;
     int mPixmapHeight;
+    /**This pointer is needed to remove the width/height values of this item
+     in the legend even if this item is not in the legend anymore*/
+    QgsLegend* mLegend;
 };
 
 #endif

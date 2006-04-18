@@ -5060,7 +5060,7 @@ void QgsRasterLayer::refreshLegend()
   if(mLegend)
     {
       std::list< std::pair<QString, QPixmap> > itemList;
-      QPixmap legendpixmap = getLegendQPixmap(true).scaled(20, 20);
+      QPixmap legendpixmap = getLegendQPixmap(true).scaled(20, 20, Qt::KeepAspectRatio);
       itemList.push_back(std::make_pair("", legendpixmap));
       mLegend->changeSymbologySettings(getLayerID(), &itemList);
     }

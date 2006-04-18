@@ -109,7 +109,10 @@ void QgsLegend::removeAll()
 {
   mStateOfCheckBoxes.clear();
   clear();
+  mPixmapWidthValues.clear();
+  mPixmapHeightValues.clear();
   updateMapCanvasLayerSet();
+  setIconSize(mMinimumIconSize);
 }
 
 void QgsLegend::removeLayer(QString layer_key)
@@ -131,6 +134,7 @@ void QgsLegend::removeLayer(QString layer_key)
 		  //remove the map entry for the checkbox
 		  mStateOfCheckBoxes.erase(llf);
 		  removeItem(llf);
+		  delete llf;
 		  break;
 		}
 	    }
@@ -139,6 +143,7 @@ void QgsLegend::removeLayer(QString layer_key)
     }
 
     updateMapCanvasLayerSet();
+    adjustIconSize();
 }
 
 void QgsLegend::mousePressEvent(QMouseEvent * e)
@@ -548,6 +553,7 @@ void QgsLegend::legendGroupRemove()
             child = lg->child(0);
         }
 	delete lg;
+	adjustIconSize();
     }
 }
 
@@ -584,6 +590,8 @@ void QgsLegend::legendLayerRemove()
      mMapCanvas->refresh();
    }
    removeItem(ll);
+   delete ll;
+   adjustIconSize();
 }
 
 void QgsLegend::legendLayerAddToOverview()
@@ -1284,8 +1292,6 @@ void QgsLegend::changeSymbologySettings(const QString& key, const std::list< std
       theSymbologyItem = dynamic_cast<QgsLegendSymbologyItem*>((theLegendLayer)->child(i));
       if(theSymbologyItem)
 	{
-	  removePixmapWidthValue(theSymbologyItem->pixmapWidth());
-	  removePixmapHeightValue(theSymbologyItem->pixmapHeight());
 	  delete (theLegendLayer->takeChild(i));
 	}
     }
@@ -1297,12 +1303,10 @@ void QgsLegend::changeSymbologySettings(const QString& key, const std::list< std
       for(std::list< std::pair<QString, QPixmap> >::const_iterator it= newSymbologyItems->begin(); it != newSymbologyItems->end(); ++it)
 	{
 	  QgsLegendSymbologyItem* theItem = new QgsLegendSymbologyItem(it->second.width(), it->second.height());
+	  theItem->setLegend(this);
 	  theItem->setText(0, it->first);
 	  theItem->setIcon(0, QIcon(it->second));
 	  theLegendLayer->insertChild(childposition, theItem);
-	  //add the width and height values to the multisets
-	  addPixmapWidthValue(theItem->pixmapWidth());
-	  addPixmapHeightValue(theItem->pixmapHeight());
 	  ++childposition;
 	}
     }
