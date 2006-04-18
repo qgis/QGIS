@@ -52,3 +52,4 @@ then
                              --with-qtdir=$QTDIR \
                              --with-grass=/usr/lib/grass && make && make install
 
+                             #--enable-unittests \
