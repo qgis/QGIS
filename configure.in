@@ -381,15 +381,15 @@ fi
 AM_CONDITIONAL([HAVE_EXPAT], [test "$have_expat_lib" = "yes"])
 
 dnl ---------------------------------------------------------------------------
-dnl Community registration plugin
+dnl unittests 
 dnl ---------------------------------------------------------------------------
-AC_ARG_ENABLE(community,
-  AC_HELP_STRING([--enable-community],
-                 [Enable the community registration plugin (broken!)]),
+AC_ARG_ENABLE(unittests,
+  AC_HELP_STRING([--enable-unittests],
+                 [Enable the compilation of unittests]),
                  [ac_com=yes], [ac_com=no])
-AC_MSG_CHECKING([community registration plugin should be installed (broken)])
+AC_MSG_CHECKING([Whether to build unit tests])
 AC_MSG_RESULT([$ac_com])
-AM_CONDITIONAL([WITH_COMMUNITY], [test "$ac_com" = "yes"])
+AM_CONDITIONAL([WITH_UNITTESTS], [test "$ac_com" = "yes"])
 
 
 dnl ---------------------------------------------------------------------------
