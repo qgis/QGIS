@@ -407,12 +407,9 @@ long QgsProjectionSelector::getCurrentLongAttribute(QString attributeName)
       return mySrid.toLong();
     }
   }
-  else
-  {
-    // No node is selected, return null
-    return (long)NULL;
-  }
 
+  // No node is selected, return null
+  return (long)NULL;
 }
 
 
