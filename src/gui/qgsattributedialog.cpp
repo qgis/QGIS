@@ -29,6 +29,7 @@ QgsAttributeDialog::QgsAttributeDialog(const std::vector<QgsFeatureAttribute>* a
     for(std::vector<QgsFeatureAttribute>::const_iterator it=attributes->begin();it!=attributes->end();++it)
     {
       QTableWidgetItem * myFieldItem = new QTableWidgetItem((*it).fieldName());
+      myFieldItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
       mTable->setItem(index, 0, myFieldItem);
       QTableWidgetItem * myValueItem = new QTableWidgetItem((*it).fieldValue());
       mTable->setItem(index, 1, myValueItem);
