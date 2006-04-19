@@ -78,6 +78,8 @@ class QgsRenderer
     virtual void refreshLegend(std::list< std::pair<QString, QPixmap> >* symbologyList) const;
     /**Returns a copy of the renderer (a deep copy on the heap)*/
     virtual QgsRenderer* clone() const=0;
+    /**Returns true if this renderer returns a pixmap in the render method (e.g. for point data or diagrams)*/
+    virtual bool containsPixmap() const;
     /**Color to draw selected features - static so we can change it in proj props and automatically 
        all renderers are updated*/
     static QColor mSelectionColor;
