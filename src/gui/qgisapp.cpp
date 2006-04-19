@@ -3624,7 +3624,8 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
 
       switch (pType())
       {
-        case QgisPlugin::UI:
+      case QgisPlugin::RENDERER:
+      case QgisPlugin::UI:
           {
             // UI only -- doesn't use mapcanvas
             create_ui *cf = (create_ui *) myLib->resolve("classFactory");
