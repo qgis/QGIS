@@ -60,3 +60,15 @@ void QgsRenderer::refreshLegend(std::list< std::pair<QString, QPixmap> >* symbol
     }
 }
 
+bool QgsRenderer::containsPixmap() const
+{
+  //default implementation returns true only for points
+  switch(mVectorType)
+    {
+    case QGis::Point:
+       return true;
+    default:
+      return false;
+    }
+}
+
